@@ -1,0 +1,16 @@
+import { pageRender, screen, mockRouter } from "test-utils";
+import {{pascalCase name}} from "pages";
+
+
+describe("{{pascalCase name}}", () => {
+	beforeEach(() => {
+		mockRouter.setCurrentUrl("/page-path");
+	});
+
+	it("renders without error", () => {
+		const { container } = pageRender(<{{pascalCase name}} />);
+		expect(container).not.toBeEmptyDOMElement();
+	});
+
+	// TODO: Write other tests here..
+});

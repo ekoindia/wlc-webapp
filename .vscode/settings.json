@@ -1,0 +1,18 @@
+{
+  "editor.detectIndentation": false,
+  "eslint.options": {
+    "overrideConfigFile": "../.eslintrc.json"
+  },
+  "eslint.run": "onSave",
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  }
+}

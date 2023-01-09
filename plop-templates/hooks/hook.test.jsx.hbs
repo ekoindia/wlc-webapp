@@ -1,0 +1,7 @@
+import { renderHook } from "test-utils";
+import { use{{pascalCase name}} } from "hooks";
+
+test("renders hook", () => {
+    const {result} = renderHook(() => use{{pascalCase name}}());
+    expect(result.current).toBeUndefined();
+});

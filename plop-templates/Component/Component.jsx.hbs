@@ -1,0 +1,63 @@
+{{#if hooks}}
+import React, {
+	{{#each hooks}}
+	{{this}},
+	{{/each}}
+} from "react";
+{{/if}}
+{{#unless hooks}}
+import React from "react";
+{{/unless}}
+
+{{~#if (isInArray "useReducer" hooks) }}
+
+// TODO: Update your reducer state as required...
+const initialState = {count: 0};
+
+const reducer = (state, { type, payload }) => {
+	switch (type) {
+		case 'INC':
+			return {count: state.count + 1};
+		case 'DEC':
+			return {count: state.count - 1};
+		case 'ADD':
+			return {count: state.count + payload};
+		default:
+			throw new Error(`Unknown action type: ${type}`);
+	}
+};
+{{/if}}
+
+/**
+ * A <{{pascalCase name}}> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<{{pascalCase name}}></{{pascalCase name}}>`
+ */
+const {{pascalCase name}} = ({ className = "", ...props })  => {
+	{{#if (isInArray "useState" hooks) }}
+	const [count, setCount] = useState(0);		// TODO: Edit state as required
+
+	{{/if}}
+
+	{{~#if (isInArray "useReducer" hooks) }}
+	const [state, dispatch] = useReducer(reducer, initialState);	// TODO: Edit state as required
+
+	{{/if}}
+
+	{{~#if (isInArray "useEffect" hooks) }}
+	useEffect(() => {
+		// TODO: Add your useEffect code here and update dependencies as required
+	}, []);
+
+	{{/if}}
+
+	return (
+		<div className={`${className}`} {...props}>
+			{{name}}
+		</div>
+	);
+};
+
+export default {{pascalCase name}};
