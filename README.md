@@ -12,7 +12,9 @@ Guide - [https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your
 
 -   npm i lint
 
-### husky
+### husky -
+
+Ref : https://www.coffeeclass.io/articles/commit-better-code-with-husky-prettier-eslint-lint-staged
 
 -   npm i husky --save-dev
 -   add "prepare": "husky install” in script
@@ -20,6 +22,8 @@ Guide - [https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your
 -   npx husky add .husky/pre-commit "npm lint”
 -   npm add -D @commitlint/config-conventional @commitlint/cli
 -   put rules -pending
+
+-
 
 ### .vscode folder
 
