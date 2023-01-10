@@ -3,7 +3,7 @@ import { Inter } from "@next/font/google";
 import Head from "next/head";
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+export default function Index() {
 	return (
 		<>
 			<Head>
@@ -18,9 +18,7 @@ export default function Home() {
 				/>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<Box bg="primary.light"> Hello</Box>
-			<Box bg="accent.DEFAULT"> asdfasdf</Box>
-			<Box bg="secondary.dark"> asdfasdfasd</Box>
+			<Box bg="primary.light">Hello World</Box>
 		</>
 	);
 }
