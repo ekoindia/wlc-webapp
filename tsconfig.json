@@ -13,7 +13,8 @@
 			"constants/*": ["./constants/*"],
 			"contexts/*": ["./context/*"],
 			"hooks/*": ["./hooks/*"],
-			"public/*": ["./public/*"]
+			"public/*": ["./public/*"],
+			"@/pages/*":["pages/*"]
 		},
 		"allowJs": true,
 		"skipLibCheck": true,
