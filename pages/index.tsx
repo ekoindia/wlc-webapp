@@ -1,12 +1,11 @@
-import { Box } from "@chakra-ui/react";
 import { Inter } from "@next/font/google";
-import Head from "next/head";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Index() {
 	return (
-		<>
-			<Head>
+		<div>
+			<h1>hello team</h1>
+			{/* <Head>
 				<title>Eko Admin</title>
 				<meta
 					name="description"
@@ -18,7 +17,7 @@ export default function Index() {
 				/>
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
-			<Box bg="primary.light">Hello World</Box>
-		</>
+			<Box bg="primary.light">Hello World</Box> */}
+		</div>
 	);
 }
