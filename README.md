@@ -60,3 +60,22 @@ Ref : https://www.coffeeclass.io/articles/commit-better-code-with-husky-prettier
 ### Chromatic
 
 ### postcss
+
+### jest
+
+- npm install --save-dev jest jest-environment-jsdom @testing-library/react @testing-library/jest-dom
+
+- create two file 1.jest.config.js
+                  2.jest.setup.js
+
+-create folder test
+-make similar folder & file like comoponent and pages
+
+-package:-"@testing-library/dom": "^8.19.0",
+		  "@testing-library/jest-dom": "^5.16.5",
+		  "@testing-library/react": "^13.4.0",
+		  "@testing-library/user-event": "^14.4.3",
+
+-rule added in jest.setup.js ('^@/pages/(.*)$' : '<rootDir>/pages/$1',)
+
+
