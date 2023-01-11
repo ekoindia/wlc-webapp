@@ -7,7 +7,7 @@ import React, { useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Button></Button>`
  */
-const Button = ({ className = "", props }) => {
+const Buttons = ({ className = "", props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 
 	const { title, children, onClick, variant, colorScheme, size } = props;
@@ -30,4 +30,4 @@ Button.defaultProps = {
 	colorScheme: "#FE9F00",
 };
 
-export default Button;
+export default Buttons;
