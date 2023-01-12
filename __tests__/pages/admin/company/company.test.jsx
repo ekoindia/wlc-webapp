@@ -1,13 +1,14 @@
 import { pageRender, screen, mockRouter } from "test-utils";
-import Network from "pages";
+import Company from "pages";
 
-describe("Network", () => {
+
+describe("Company", () => {
 	beforeEach(() => {
 		mockRouter.setCurrentUrl("/page-path");
 	});
 
 	it("renders without error", () => {
-		const { container } = pageRender(<Network />);
+		const { container } = pageRender(<Company />);
 		expect(container).not.toBeEmptyDOMElement();
 	});
 
