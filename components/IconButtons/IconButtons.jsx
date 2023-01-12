@@ -27,7 +27,13 @@ const IconButtons = (props) => {
 	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
 	const styledIcon =
 		iconFill === 1 ? (
-			<Circle bg={fill} color={"white"} size={"30px"} {...circleStyle}>
+			<Circle
+				bg={fill}
+				color={"white"}
+				size={"30px"}
+				boxShadow="0px 0px 10px #FE9F008C"
+				{...circleStyle}
+			>
 				<Image src={iconPath} {...iconStyle} />
 			</Circle>
 		) : (
@@ -36,10 +42,6 @@ const IconButtons = (props) => {
 
 	const ordr1 = iconPos === "right" ? 1 : 2;
 	const ordr2 = ordr1 === 1 ? 2 : 1;
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
 
 	return (
 		<Button

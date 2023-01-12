@@ -1,12 +1,47 @@
-import { Box, Divider, Flex, Heading, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import {
+	Button,
+	Center,
+	Divider,
+	Flex,
+	Heading,
+	Image,
+	Text,
+} from "@chakra-ui/react";
 import { Buttons, Input } from "../../";
 
-const Login = ({ setStep }) => {
-	const [number, setNumber] = useState();
+const Login = ({ setStep, setNumber, number }) => {
+	const onChangeHandler = (val) => {
+		if (val.length <= 10) setNumber(val);
+	};
 	return (
 		<Flex direction="column">
 			<Heading as="h3">Login</Heading>
+
+			<Button
+				variant
+				mt="4.35rem"
+				h="4.5rem"
+				bg="#4185F4"
+				w="100%"
+				fontSize="2xl"
+				color="white"
+				fontWeight="medium"
+				borderRadius="10px"
+				position="relative"
+				onClick={() => setStep(2)}
+			>
+				<Center
+					bg="#FFFFFF"
+					p="13px"
+					borderRadius="10px"
+					position="absolute"
+					left="2px"
+				>
+					<Image src="./icons/google.png" />
+				</Center>
+				Login with Google
+			</Button>
+
 			<Flex align="center" justify="center" py="5.62rem">
 				<Divider w="13rem" borderColor="#707070" />
 				<Text
@@ -29,6 +64,7 @@ const Login = ({ setStep }) => {
 				invalid={false}
 				errorMsg="Hello this is error"
 				mb="4.35rem"
+				onChange={onChangeHandler}
 				labelStyle={{
 					fontSize: "lg",
 					color: "light",

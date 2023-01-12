@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Login, MobileVerify, VerifyOtp } from ".";
 
 const LoginPanel = ({ className = "", ...props }) => {
-	const [step, setStep] = useState(2); // TODO: Edit state as required
-
+	const [step, setStep] = useState(0); // TODO: Edit state as required
+	const [number, setNumber] = useState();
 	return (
 		<Center
 			w="full"
@@ -31,8 +31,20 @@ const LoginPanel = ({ className = "", ...props }) => {
 					borderRadius="1.25rem"
 					bg="#FFFFFF"
 				>
-					{step === 0 ? <Login setStep={setStep} /> : ""}
-					{step === 1 ? <VerifyOtp setStep={setStep} /> : ""}
+					{step === 0 ? (
+						<Login
+							setStep={setStep}
+							number={number}
+							setNumber={setNumber}
+						/>
+					) : (
+						""
+					)}
+					{step === 1 ? (
+						<VerifyOtp setStep={setStep} number={number} />
+					) : (
+						""
+					)}
 					{step === 2 ? <MobileVerify setStep={setStep} /> : ""}
 				</Box>
 			</Flex>

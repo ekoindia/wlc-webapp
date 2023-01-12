@@ -8,9 +8,15 @@ import {
 	PinInputField,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons } from "../../";
+import { Buttons, IconButtons } from "../../";
 
 const VerifyOtp = ({ number, setStep }) => {
+	const formatNum =
+		number.slice(0, 3) +
+		" " +
+		number.slice(2, 5) +
+		" " +
+		number.slice(5, 11);
 	return (
 		<Flex direction="column">
 			<Flex align="center">
@@ -22,10 +28,17 @@ const VerifyOtp = ({ number, setStep }) => {
 				</Heading>
 			</Flex>
 
-			<Flex mt="30px" ml="3rem" fontSize="lg">
+			<Flex mt="30px" ml="3rem" fontSize="lg" align="center">
 				<Text>
-					Sent on <Text as="b">+91 989 134 5867</Text>
+					Sent on{" "}
+					<Text as="span" fontWeight="semibold">
+						+91 {formatNum}
+					</Text>
 				</Text>
+				<IconButtons
+					iconPath="/icons/pen.svg"
+					iconStyle={{ h: "12px", w: "12px" }}
+				/>
 			</Flex>
 
 			<HStack justify="space-between" mt="7.25rem">
@@ -39,12 +52,16 @@ const VerifyOtp = ({ number, setStep }) => {
 				</PinInput>
 			</HStack>
 
-			<Flex justify="center" mb="6.25rem" mt="2.5rem">
-				<Text>
-					Did not receive yet?
-					<Text pl="3" as="span">
-						Resend OTP
-					</Text>
+			<Flex justify="center" mb="6.25rem" mt="2.5rem" align="center">
+				<Text>Did not receive yet?</Text>
+				<Text
+					pl="2.5"
+					as="span"
+					color="accent.DEFAULT"
+					fontSize="lg"
+					fontWeight="medium"
+				>
+					Resend OTP
 				</Text>
 			</Flex>
 
@@ -54,7 +71,6 @@ const VerifyOtp = ({ number, setStep }) => {
 				fontSize="xl"
 				borderRadius="10px"
 				boxShadow="0px 3px 10px #FE9F0040"
-				// onClick={() => setStep(prev => prev + 1)}
 			/>
 		</Flex>
 	);
