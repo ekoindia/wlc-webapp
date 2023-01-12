@@ -1,4 +1,4 @@
-import { Heading, Stack, StackDivider } from "@chakra-ui/react";
+import { Box, Heading, Stack, StackDivider, Text } from "@chakra-ui/react";
 import { Cards } from "../";
 
 const ContactPane = () => {
@@ -11,7 +11,21 @@ const ContactPane = () => {
 				direction={"column"}
 				divider={<StackDivider />}
 				mt={"5"}
-			></Stack>
+				fontSize={14}
+			>
+				<Box display={"flex"}>
+					<Text>Date of birth:</Text>
+					<Text fontWeight={"medium"}>&nbsp; 06/02/1989</Text>
+				</Box>
+				<Box display={"flex"}>
+					<Text>Gender:</Text>
+					<Text fontWeight={"medium"}>&nbsp; Male</Text>
+				</Box>
+				<Box display={"flex"}>
+					<Text>Shop name:</Text>
+					<Text fontWeight={"medium"}>&nbsp; Alam Store</Text>
+				</Box>
+			</Stack>
 		</Cards>
 	);
 };

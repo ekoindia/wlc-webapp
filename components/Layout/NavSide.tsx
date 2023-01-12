@@ -23,7 +23,7 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
-import { adminMenu } from "constants";
+import { adminMenu } from "constants/adminMenu";
 import { ReactNode, ReactText } from "react";
 import { IconType } from "react-icons";
 import { FiMenu } from "react-icons/fi";
