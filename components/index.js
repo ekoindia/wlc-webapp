@@ -3,7 +3,7 @@ import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
 import { Layout } from "./Layout";
 import { Network } from "./Network";
-import { Profile } from "./Profile";
+import { ProfilePanel } from "./Profile";
 import { SearchFilterSort } from "./SearchFilterSort";
 
 export {
@@ -12,6 +12,6 @@ export {
 	Layout,
 	Cards,
 	Buttons,
-	Profile,
+	ProfilePanel,
 	/* PLOP_INJECT_EXPORT */
 };

@@ -1,54 +1,32 @@
-import React, { ReactNode } from "react";
 import {
-	IconButton,
 	Avatar,
 	Box,
+	BoxProps,
+	Card,
+	CardBody,
 	CloseButton,
-	Flex,
-	HStack,
-	VStack,
-	Icon,
-	useColorModeValue,
-	Link,
 	Drawer,
 	DrawerContent,
-	Text,
-	useDisclosure,
-	BoxProps,
+	Flex,
 	FlexProps,
+	HStack,
+	Icon,
+	IconButton,
+	Link,
 	Menu,
 	MenuButton,
-	MenuDivider,
-	MenuItem,
 	MenuList,
 	Stack,
 	StackDivider,
+	Text,
+	useColorModeValue,
+	useDisclosure,
+	VStack,
 } from "@chakra-ui/react";
-import { Card, CardHeader, CardBody, CardFooter } from "@chakra-ui/react";
-import {
-	FiHome,
-	FiTrendingUp,
-	FiCompass,
-	FiStar,
-	FiSettings,
-	FiMenu,
-	FiBell,
-	FiChevronDown,
-} from "react-icons/fi";
+import { adminMenu } from "constants";
+import { ReactNode, ReactText } from "react";
 import { IconType } from "react-icons";
-import { ReactText } from "react";
-
-interface LinkItemProps {
-	name: string;
-	icon: IconType;
-}
-const LinkItems: Array<LinkItemProps> = [
-	{ name: "My Network", icon: FiHome },
-	{ name: "Transaction History", icon: FiTrendingUp },
-	{ name: "Invoicing", icon: FiCompass },
-	{ name: "Pricing & Commission", icon: FiStar },
-	{ name: "Company Profile", icon: FiSettings },
-];
+import { FiMenu } from "react-icons/fi";
 
 export default function SidebarWithHeader({
 	children,
@@ -57,11 +35,17 @@ export default function SidebarWithHeader({
 }) {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	return (
-		<Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+		<Box
+			minH="100vh"
+			// bg={useColorModeValue("gray.100", "gray.900")}
+		>
+			<MobileNav onOpen={onOpen} />
 			<SidebarContent
 				onClose={() => onClose}
 				display={{ base: "none", md: "block" }}
-			/>
+			>
+				<Box p="4">{children}</Box>
+			</SidebarContent>
 			<Drawer
 				autoFocus={false}
 				isOpen={isOpen}
@@ -76,10 +60,6 @@ export default function SidebarWithHeader({
 				</DrawerContent>
 			</Drawer>
 			{/* mobilenav */}
-			<MobileNav onOpen={onOpen} />
-			<Box ml={{ base: 0, md: 60 }} p="4">
-				{children}
-			</Box>
 		</Box>
 	);
 }
@@ -90,29 +70,32 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	return (
-		<Box
-			mt="90px"
-			transition="3s ease"
-			bg={"#11299E"}
-			borderRight="12px"
-			borderRightColor={useColorModeValue("gray.200", "gray.700")}
-			w={250}
-			pos="fixed"
-			h="full"
-			{...rest}
-		>
-			<Flex mx="9" justifyContent="space-between">
-				<CloseButton
-					display={{ base: "flex", md: "none" }}
-					onClick={onClose}
-				/>
-			</Flex>
-			{LinkItems.map((link) => (
-				<NavItem key={link.name} icon={link.icon}>
-					{link.name}
-				</NavItem>
-			))}
-		</Box>
+		<Flex direction="row" h="auto">
+			<Box
+				// mt="90px"
+				// transition="3s ease"
+				bg="#11299E"
+				borderRight="12px"
+				borderRightColor={useColorModeValue("gray.200", "gray.700")}
+				w={250}
+				// pos="fixed"
+				{...rest}
+				h="container"
+			>
+				<Flex mx="9" justifyContent="space-between">
+					<CloseButton
+						display={{ base: "flex", md: "none" }}
+						onClick={onClose}
+					/>
+				</Flex>
+				{adminMenu.map((link) => (
+					<NavItem key={link.name} icon={link.icon}>
+						{link.name}
+					</NavItem>
+				))}
+			</Box>
+			{rest.children}
+		</Flex>
 	);
 };
 
@@ -168,6 +151,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 			height="90px"
 			align="center"
 			bg="#FFFFFF"
+			boxShadow="0px 3px 10px #0000001A"
 			{...rest}
 		>
 			<Box ml={30}>
