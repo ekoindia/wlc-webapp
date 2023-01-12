@@ -1,19 +1,15 @@
 /* PLOP_INJECT_IMPORT */
-import { SearchFilterSort } from "./SearchFilterSort";
-import { Network } from "./Network";
-import { Layout } from "./Layout";
-import { Sidebar } from "./Sidebar";
-import { Navbar } from "./Navbar";
-import { Cards } from "./Cards";
 import { Buttons } from "./Buttons";
+import { Cards } from "./Cards";
+import { Layout } from "./Layout";
+import { Network } from "./Network";
 import { Profile } from "./Profile";
+import { SearchFilterSort } from "./SearchFilterSort";
 
 export {
 	SearchFilterSort,
 	Network,
 	Layout,
-	Sidebar,
-	Navbar,
 	Cards,
 	Buttons,
 	Profile,
