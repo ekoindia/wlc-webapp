@@ -10,7 +10,7 @@
 			"contexts/*": ["./context/*"],
 			"hooks/*": ["./hooks/*"],
 			"public/*": ["./public/*"],
-			"@/pages/*":["pages/*"]
+			"@/pages/*": ["pages/*"]
 		},
 		"allowJs": true,
 		"skipLibCheck": true,
