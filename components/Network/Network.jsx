@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Tables from "./Tables";
 
 /**
  * A <Network> component
@@ -16,7 +17,7 @@ const Network = ({ className = "", ...props }) => {
 
 	return (
 		<div className={`${className}`} {...props}>
-			Network
+			Namskar....!
 		</div>
 	);
 };
