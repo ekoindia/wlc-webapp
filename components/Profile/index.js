@@ -3,4 +3,4 @@ export { default as CompanyPane } from "./CompanyPane";
 export { default as ContactPane } from "./ContactPane";
 export { default as DocPane } from "./DocPane";
 export { default as PersonalPane } from "./PersonalPane";
-export { default as Profile } from "./Profile";
+export { default as ProfilePanel } from "./ProfilePanel";

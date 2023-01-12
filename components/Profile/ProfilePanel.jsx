@@ -14,7 +14,7 @@ import {
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Profile></Profile>`
  */
-const Profile = ({ className = "", ...props }) => {
+const ProfilePanel = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 
 	useEffect(() => {
@@ -22,7 +22,7 @@ const Profile = ({ className = "", ...props }) => {
 	}, []);
 
 	return (
-		<Box>
+		<Box bg="white">
 			<Flex gap={30} align={"center"} wrap={"wrap"} mt={5}>
 				<CompanyPane />
 				<AddressPane />
@@ -36,4 +36,4 @@ const Profile = ({ className = "", ...props }) => {
 	);
 };
 
-export default Profile;
+export default ProfilePanel;

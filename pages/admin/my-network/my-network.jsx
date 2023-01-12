@@ -1,6 +1,6 @@
-import React from "react";
+import Layout from "components";
 import Head from "next/head";
-import Layout from 
+import React from "react";
 
 const MyNetwork = () => {
 	return (
@@ -8,7 +8,7 @@ const MyNetwork = () => {
 			<Head>
 				<title>My-Network | Eko API Marketplace</title>
 			</Head>
-			<h1>Add Page Content Here</h1>
+			<Layout>wrefstredtgtre</Layout>
 		</>
 	);
 };
