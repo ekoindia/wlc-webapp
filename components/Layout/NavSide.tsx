@@ -70,14 +70,14 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	return (
-		<Flex direction="row" h="auto">
+		<Flex>
 			<Box
 				// mt="90px"
 				// transition="3s ease"
 				bg="#11299E"
 				borderRight="12px"
 				borderRightColor={useColorModeValue("gray.200", "gray.700")}
-				w={250}
+				w="250px"
 				// pos="fixed"
 				{...rest}
 				h="container"
