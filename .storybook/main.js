@@ -1,10 +1,19 @@
 const path = require("path");
 
+const path = require("path");
+
 module.exports = {
 	stories: [
 		// "./*.stories.@(js,jsx,mdx)",
+		// "./*.stories.@(js,jsx,mdx)",
 		"../stories/**/*.stories.mdx",
 		"../stories/**/*.stories.@(js|jsx|ts|tsx)",
+		"../components/**/*.stories.mdx",
+		"../components/**/*.stories.@(js|jsx|ts|tsx)",
+		// "../features/**/*.stories.mdx",
+		// "../features/**/*.stories.@(js|jsx|ts|tsx)",
+		"../pages/**/*.stories.mdx",
+		"../pages/**/*.stories.@(js|jsx|ts|tsx)",
 		"../components/**/*.stories.mdx",
 		"../components/**/*.stories.@(js|jsx|ts|tsx)",
 		// "../features/**/*.stories.mdx",
