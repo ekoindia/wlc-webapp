@@ -15,21 +15,20 @@ const Buttons = (props) => {
 		onClick,
 		variant,
 		size,
-		rightIcon,
-		leftIcon,
+		color,
 		colorType = 1,
 		...rest
 	} = props;
 
 	const fill = colorType === 1 ? "primary.DEFAULT" : "accent.DEFAULT";
 	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
-
+	const shade = color ? color : "white";
 	return (
 		<Button
 			variant={variant}
 			size={size}
 			onClick={onClick}
-			color="white"
+			color={shade}
 			{...rest}
 			bg={fill}
 			_hover={{

@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Tags } from "./Tags";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
 import { IconButtons } from "./IconButtons";
@@ -12,6 +13,7 @@ import { ProfilePanel } from "./Profile";
 import { SearchFilterSort } from "./SearchFilterSort";
 
 export {
+	Tags,
 	IconButtons,
 	InputMsg,
 	InputLabel,
