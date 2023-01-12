@@ -1,5 +1,5 @@
 import { Box, Button, Circle, Image } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 /**
  * A <IconButtons> component
@@ -25,6 +25,7 @@ const IconButtons = (props) => {
 
 	const fill = colorType === 1 ? "primary.DEFAULT" : "accent.DEFAULT";
 	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
+	//const shadow = colorType === 1 ? "shadow.primary" : "shadow.accent";
 	const styledIcon =
 		iconFill === 1 ? (
 			<Circle
