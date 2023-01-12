@@ -17,13 +17,17 @@ export const light = extendTheme({
 			DEFAULT: "#1F5AA7",
 			dark: "#164d94",
 		},
+    shadow:{
+      primary:'#FE9F008C',
+      accent:'#11299E1A'
+    },
 		success: "#00C341",
 		error: "#FF4081",
 		divider: "#E9EDF1",
 		hint: "#D2D2D2",
 		dark: "#0F0F0F",
 		light: "#555555",
-        focusbg: "#FFFBF3"
+    focusbg: "#FFFBF3"
         
 	},
 });
