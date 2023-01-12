@@ -29,6 +29,7 @@ const Buttons = (props) => {
 			variant={variant}
 			size={size}
 			onClick={onClick}
+			color="white"
 			{...rest}
 			bg={fill}
 			_hover={{

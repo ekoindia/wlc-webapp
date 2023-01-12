@@ -16,23 +16,23 @@ const IconButtons = (props) => {
 		onClick,
 		colorType = 1,
 		iconPos = "right",
-		iconFill = "true",
+		iconFill = 1,
 		iconPath,
-		iconW,
-		iconH,
-		size,
+		iconStyle,
+		circleStyle,
 		...rest
 	} = props;
 
 	const fill = colorType === 1 ? "primary.DEFAULT" : "accent.DEFAULT";
 	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
-	const styledIcon = iconFill ? (
-		<Circle bg={fill} color={"white"} size={size}>
-			<Image src={iconPath} w={iconW} h={iconH} />
-		</Circle>
-	) : (
-		<Image src={iconPath} w={iconW} h={iconH} />
-	);
+	const styledIcon =
+		iconFill === 1 ? (
+			<Circle bg={fill} color={"white"} size={"30px"} {...circleStyle}>
+				<Image src={iconPath} {...iconStyle} />
+			</Circle>
+		) : (
+			<Image src={iconPath} {...iconStyle} />
+		);
 
 	const ordr1 = iconPos === "right" ? 1 : 2;
 	const ordr2 = ordr1 === 1 ? 2 : 1;
@@ -51,7 +51,12 @@ const IconButtons = (props) => {
 			}}
 		>
 			<Box display={"flex"} alignItems="center" gap={1.5}>
-				<Box as="span" order={ordr1} fontSize={"14px"}>
+				<Box
+					as="span"
+					order={ordr1}
+					fontSize={"14px"}
+					fontWeight={"semibold"}
+				>
 					{title}
 				</Box>
 				<Box as="span" order={ordr2}>
