@@ -20,6 +20,7 @@ const Buttons = (props) => {
 		colorType = 1,
 		...rest
 	} = props;
+
 	const fill = colorType === 1 ? "primary.DEFAULT" : "accent.DEFAULT";
 	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
 
@@ -28,11 +29,7 @@ const Buttons = (props) => {
 			variant={variant}
 			size={size}
 			onClick={onClick}
-			rightIcon={rightIcon}
-			leftIcon={leftIcon}
-			style={{ textDecoration: "none" }}
 			{...rest}
-			// colorScheme={fill}
 			bg={fill}
 			_hover={{
 				bg: hoverFill,
@@ -42,14 +39,6 @@ const Buttons = (props) => {
 			{children}
 		</Button>
 	);
-};
-
-Buttons.defaultProps = {
-	variant: "solid",
-	colorScheme: "primary.DEFAULT",
-	size: "lg",
-	rightIcon: "",
-	leftIcon: "",
 };
 
 export default Buttons;
