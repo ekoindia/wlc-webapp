@@ -1,4 +1,3 @@
-import { ArrowForwardIcon } from "@chakra-ui/icons";
 import {
 	Avatar,
 	Box,
@@ -9,7 +8,7 @@ import {
 	Image,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons, Cards } from "..";
+import { Buttons, Cards, IconButtons } from "..";
 
 const CompanyPane = () => {
 	return (
@@ -112,10 +111,12 @@ const CompanyPane = () => {
 				</Flex>
 				<Divider />
 				<Flex align="center" justify="center" mt="4">
-					<Buttons
+					<IconButtons
 						title="View All Transactions"
-						variant="link"
-						rightIcon={<ArrowForwardIcon />}
+						iconFill="0"
+						iconPath="/icons/nextArrow.svg"
+						iconPos="right"
+						iconStyle={{ h: "15px", w: "18px" }}
 					/>
 				</Flex>
 			</Box>

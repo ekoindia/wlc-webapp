@@ -36,9 +36,49 @@ const DocPane = () => {
 						title="Download"
 						iconPos="left"
 						iconPath="/icons/download.svg"
-						iconW="14px"
-						iconH="14px"
-						size="30px"
+						iconStyle={{ h: "14px", w: "14px" }}
+					/>
+				</Box>
+				<Box
+					display={"flex"}
+					alignContent={"center"}
+					justifyContent={"space-between"}
+				>
+					<Flex align={"center"}>
+						<Image
+							src="/images/seller_logo.jpg"
+							h={42}
+							w={42}
+							borderRadius={"5"}
+						/>
+						<Text>Customer Photo</Text>
+					</Flex>
+					<IconButtons
+						title="Download"
+						iconPos="left"
+						iconPath="/icons/download.svg"
+						iconStyle={{ h: "14px", w: "14px" }}
+					/>
+				</Box>
+				<Box
+					display={"flex"}
+					alignContent={"center"}
+					justifyContent={"space-between"}
+				>
+					<Flex align={"center"}>
+						<Image
+							src="/images/seller_logo.jpg"
+							h={42}
+							w={42}
+							borderRadius={"5"}
+						/>
+						<Text>Customer Photo</Text>
+					</Flex>
+					<IconButtons
+						title="Download"
+						iconPos="left"
+						iconPath="/icons/download.svg"
+						iconStyle={{ h: "14px", w: "14px" }}
 					/>
 				</Box>
 				<Box
@@ -60,9 +100,28 @@ const DocPane = () => {
 						title="Download"
 						iconPos="left"
 						iconPath="/icons/download.svg"
-						iconW="14px"
-						iconH="14px"
-						size="30px"
+						iconStyle={{ h: "14px", w: "14px" }}
+					/>
+				</Box>
+				<Box
+					display={"flex"}
+					alignContent={"center"}
+					justifyContent={"space-between"}
+				>
+					<Flex align={"center"}>
+						<Image
+							src="/images/seller_logo.jpg"
+							h={42}
+							w={42}
+							borderRadius={"5"}
+						/>
+						<Text>Customer Photo</Text>
+					</Flex>
+					<IconButtons
+						title="Download"
+						iconPos="left"
+						iconPath="/icons/download.svg"
+						iconStyle={{ h: "14px", w: "14px" }}
 					/>
 				</Box>
 				<Box
@@ -84,81 +143,7 @@ const DocPane = () => {
 						title="Download"
 						iconPos="left"
 						iconPath="/icons/download.svg"
-						iconW="14px"
-						iconH="14px"
-						size="30px"
-					/>
-				</Box>
-				<Box
-					display={"flex"}
-					alignContent={"center"}
-					justifyContent={"space-between"}
-				>
-					<Flex align={"center"}>
-						<Image
-							src="/images/seller_logo.jpg"
-							h={42}
-							w={42}
-							borderRadius={"5"}
-						/>
-						<Text>Customer Photo</Text>
-					</Flex>
-
-					<IconButtons
-						title="Download"
-						iconPos="left"
-						iconPath="/icons/download.svg"
-						iconW="14px"
-						iconH="14px"
-						size="30px"
-					/>
-				</Box>
-				<Box
-					display={"flex"}
-					alignContent={"center"}
-					justifyContent={"space-between"}
-				>
-					<Flex align={"center"}>
-						<Image
-							src="/images/seller_logo.jpg"
-							h={42}
-							w={42}
-							borderRadius={"5"}
-						/>
-						<Text>Customer Photo</Text>
-					</Flex>
-
-					<IconButtons
-						title="Download"
-						iconPos="left"
-						iconPath="/icons/download.svg"
-						iconW="14px"
-						iconH="14px"
-						size="30px"
-					/>
-				</Box>
-				<Box
-					display={"flex"}
-					alignContent={"center"}
-					justifyContent={"space-between"}
-				>
-					<Flex align={"center"}>
-						<Image
-							src="/images/seller_logo.jpg"
-							h={42}
-							w={42}
-							borderRadius={"5"}
-						/>
-						<Text>Customer Photo</Text>
-					</Flex>
-
-					<IconButtons
-						title="Download"
-						iconPos="left"
-						iconPath="/icons/download.svg"
-						iconW="14px"
-						iconH="14px"
-						size="30px"
+						iconStyle={{ h: "14px", w: "14px" }}
 					/>
 				</Box>
 
