@@ -5,16 +5,12 @@
 		"baseUrl": ".",
 		"paths": {
 			"test-utils": ["./__tests__/test-utils/test-utils"],
-			"components": ["./components"],
-			"constants": ["./constants"],
-			"contexts": ["./context"],
-			"hooks": ["./hooks"],
 			"components/*": ["./components/*"],
 			"constants/*": ["./constants/*"],
 			"contexts/*": ["./context/*"],
 			"hooks/*": ["./hooks/*"],
 			"public/*": ["./public/*"],
-			"@/pages/*":["pages/*"]
+			"@/pages/*": ["pages/*"]
 		},
 		"allowJs": true,
 		"skipLibCheck": true,
