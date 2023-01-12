@@ -78,4 +78,3 @@ Ref : https://www.coffeeclass.io/articles/commit-better-code-with-husky-prettier
 
 -rule added in jest.setup.js ('^@/pages/(.*)$' : '<rootDir>/pages/$1',)
 
-

@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 /**
  * A <Button> component
  * TODO: Write more description here
@@ -7,17 +7,28 @@ import React, { useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Button></Button>`
  */
-const Buttons = ({ className = "", props }) => {
+const Buttons = (props) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
-
-	const { title, children, onClick, variant, colorScheme, size } = props;
+	const {
+		title,
+		children,
+		onClick,
+		variant,
+		fill,
+		size,
+		rightIcon,
+		leftIcon,
+	} = props;
 
 	return (
 		<Button
 			variant={variant}
-			colorScheme={colorScheme}
+			colorScheme={fill}
 			size={size}
 			onClick={onClick}
+			rightIcon={rightIcon}
+			leftIcon={leftIcon}
+			style={{ textDecoration: "none" }}
 		>
 			{title}
 			{children}
@@ -25,9 +36,12 @@ const Buttons = ({ className = "", props }) => {
 	);
 };
 
-Button.defaultProps = {
+Buttons.defaultProps = {
 	variant: "solid",
-	colorScheme: "#FE9F00",
+	colorScheme: "primary.DEFAULT",
+	size: "lg",
+	rightIcon: "",
+	leftIcon: "",
 };
 
 export default Buttons;
