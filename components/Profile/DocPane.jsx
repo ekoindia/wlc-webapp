@@ -1,7 +1,6 @@
 import { DownloadIcon } from "@chakra-ui/icons";
 import {
 	Box,
-	Circle,
 	Flex,
 	Heading,
 	Image,
@@ -9,7 +8,7 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons, Cards } from "../";
+import { Buttons, Cards, IconButtons } from "../";
 
 const DocPane = () => {
 	return (
@@ -33,13 +32,14 @@ const DocPane = () => {
 						/>
 						<Text>Customer Photo</Text>
 					</Flex>
-
-					<Buttons variant={"link"}>
-						<Circle bg={"primary.DEFAULT"} size={6} mr={1.5}>
-							<Image src="/icons/download.svg" w={3} h={3} />
-						</Circle>
-						<Text fontSize={16}>Download</Text>
-					</Buttons>
+					<IconButtons
+						title="Download"
+						iconPos="left"
+						iconPath="/icons/download.svg"
+						iconW="14px"
+						iconH="14px"
+						size="30px"
+					/>
 				</Box>
 				<Box
 					display={"flex"}
@@ -56,12 +56,14 @@ const DocPane = () => {
 						<Text>Customer Photo</Text>
 					</Flex>
 
-					<Buttons variant={"link"}>
-						<Circle bg={"primary.DEFAULT"} size={6} mr={1.5}>
-							<Image src="/icons/download.svg" w={3} h={3} />
-						</Circle>
-						<Text fontSize={16}>Download</Text>
-					</Buttons>
+					<IconButtons
+						title="Download"
+						iconPos="left"
+						iconPath="/icons/download.svg"
+						iconW="14px"
+						iconH="14px"
+						size="30px"
+					/>
 				</Box>
 				<Box
 					display={"flex"}
@@ -78,12 +80,14 @@ const DocPane = () => {
 						<Text>Customer Photo</Text>
 					</Flex>
 
-					<Buttons variant={"link"}>
-						<Circle bg={"primary.DEFAULT"} size={6} mr={1.5}>
-							<Image src="/icons/download.svg" w={3} h={3} />
-						</Circle>
-						<Text fontSize={16}>Download</Text>
-					</Buttons>
+					<IconButtons
+						title="Download"
+						iconPos="left"
+						iconPath="/icons/download.svg"
+						iconW="14px"
+						iconH="14px"
+						size="30px"
+					/>
 				</Box>
 				<Box
 					display={"flex"}
@@ -100,12 +104,14 @@ const DocPane = () => {
 						<Text>Customer Photo</Text>
 					</Flex>
 
-					<Buttons variant={"link"}>
-						<Circle bg={"primary.DEFAULT"} size={6} mr={1.5}>
-							<Image src="/icons/download.svg" w={3} h={3} />
-						</Circle>
-						<Text fontSize={16}>Download</Text>
-					</Buttons>
+					<IconButtons
+						title="Download"
+						iconPos="left"
+						iconPath="/icons/download.svg"
+						iconW="14px"
+						iconH="14px"
+						size="30px"
+					/>
 				</Box>
 				<Box
 					display={"flex"}
@@ -122,12 +128,14 @@ const DocPane = () => {
 						<Text>Customer Photo</Text>
 					</Flex>
 
-					<Buttons variant={"link"}>
-						<Circle bg={"primary.DEFAULT"} size={6} mr={1.5}>
-							<Image src="/icons/download.svg" w={3} h={3} />
-						</Circle>
-						<Text fontSize={16}>Download</Text>
-					</Buttons>
+					<IconButtons
+						title="Download"
+						iconPos="left"
+						iconPath="/icons/download.svg"
+						iconW="14px"
+						iconH="14px"
+						size="30px"
+					/>
 				</Box>
 				<Box
 					display={"flex"}
@@ -144,12 +152,14 @@ const DocPane = () => {
 						<Text>Customer Photo</Text>
 					</Flex>
 
-					<Buttons variant={"link"}>
-						<Circle bg={"primary.DEFAULT"} size={6} mr={1.5}>
-							<Image src="/icons/download.svg" w={3} h={3} />
-						</Circle>
-						<Text fontSize={16}>Download</Text>
-					</Buttons>
+					<IconButtons
+						title="Download"
+						iconPos="left"
+						iconPath="/icons/download.svg"
+						iconW="14px"
+						iconH="14px"
+						size="30px"
+					/>
 				</Box>
 
 				<Box mt={8}>
