@@ -16,7 +16,7 @@ const ContactPane = () => {
 					title="Edit Details"
 					iconPos="left"
 					iconPath="/icons/pen.svg"
-					iconStyle={{ h: "14px", w: "14px" }}
+					iconStyle={{ h: "12px", w: "12px" }}
 				></IconButtons>
 			</Box>
 
