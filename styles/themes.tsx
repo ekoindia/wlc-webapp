@@ -23,8 +23,7 @@ export const light = extendTheme({
 		hint: "#D2D2D2",
 		dark: "#0F0F0F",
 		light: "#555555",
+        focusbg: "#FFFBF3"
+        
 	},
-  borders: {
-    success: "#00C341",
-  }
 });
