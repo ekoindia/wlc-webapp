@@ -14,21 +14,29 @@ const Buttons = (props) => {
 		children,
 		onClick,
 		variant,
-		fill,
 		size,
 		rightIcon,
 		leftIcon,
+		colorType = 1,
+		...rest
 	} = props;
+	const fill = colorType === 1 ? "primary.DEFAULT" : "accent.DEFAULT";
+	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
 
 	return (
 		<Button
 			variant={variant}
-			colorScheme={fill}
 			size={size}
 			onClick={onClick}
 			rightIcon={rightIcon}
 			leftIcon={leftIcon}
 			style={{ textDecoration: "none" }}
+			{...rest}
+			// colorScheme={fill}
+			bg={fill}
+			_hover={{
+				bg: hoverFill,
+			}}
 		>
 			{title}
 			{children}
