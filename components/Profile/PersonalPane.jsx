@@ -1,12 +1,24 @@
 import { Box, Heading, Stack, StackDivider, Text } from "@chakra-ui/react";
-import { Cards } from "../";
+import { Cards, IconButtons } from "../";
 
 const PersonalPane = () => {
 	return (
 		<Cards h="365px">
-			<Heading fontSize={18} fontWeight="semibold" color={"light"}>
-				Personal information
-			</Heading>
+			<Box
+				display="flex"
+				alignItems={"center"}
+				justifyContent="space-between"
+			>
+				<Heading fontSize={18} fontWeight="semibold" color={"light"}>
+					Personal information
+				</Heading>
+				<IconButtons
+					title="Edit Details"
+					iconPos="left"
+					iconPath="/icons/pen.svg"
+					iconStyle={{ h: "14px", w: "14px" }}
+				></IconButtons>
+			</Box>
 			<Stack
 				direction={"column"}
 				divider={<StackDivider />}

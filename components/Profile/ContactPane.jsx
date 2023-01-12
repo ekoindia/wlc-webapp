@@ -1,12 +1,25 @@
 import { Box, Heading, Stack, StackDivider, Text } from "@chakra-ui/react";
-import { Cards } from "../";
+import { Cards, IconButtons } from "../";
 
 const ContactPane = () => {
 	return (
 		<Cards h="365px">
-			<Heading fontSize={18} fontWeight="semibold" color={"light"}>
-				Contact information
-			</Heading>
+			<Box
+				display="flex"
+				alignItems="center"
+				justifyContent="space-between"
+			>
+				<Heading fontSize={18} fontWeight="semibold" color={"light"}>
+					Contact information
+				</Heading>
+				<IconButtons
+					title="Edit Details"
+					iconPos="left"
+					iconPath="/icons/pen.svg"
+					iconStyle={{ h: "14px", w: "14px" }}
+				></IconButtons>
+			</Box>
+
 			<Stack
 				direction={"column"}
 				divider={<StackDivider />}
@@ -14,16 +27,27 @@ const ContactPane = () => {
 				fontSize={14}
 			>
 				<Box display={"flex"}>
-					<Text>Date of birth:</Text>
-					<Text fontWeight={"medium"}>&nbsp; 06/02/1989</Text>
+					<Text>Mobile number:</Text>
+					<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
+				</Box>
+				<Box display={"flex"} justifyContent={"space-between"}>
+					<Box display={"flex"} as="span">
+						<Text>Email:</Text>
+						<Text fontWeight={"medium"}>
+							&nbsp; angeltech@email.co.in
+						</Text>
+					</Box>
+					<Box
+						as="span"
+						color="accent.DEFAULT"
+						fontWeight={"semibold"}
+					>
+						Email Now
+					</Box>
 				</Box>
 				<Box display={"flex"}>
-					<Text>Gender:</Text>
-					<Text fontWeight={"medium"}>&nbsp; Male</Text>
-				</Box>
-				<Box display={"flex"}>
-					<Text>Shop name:</Text>
-					<Text fontWeight={"medium"}>&nbsp; Alam Store</Text>
+					<Text>Landline:</Text>
+					<Text fontWeight={"medium"}>&nbsp; 0123 - 23412332</Text>
 				</Box>
 			</Stack>
 		</Cards>

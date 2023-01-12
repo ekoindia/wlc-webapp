@@ -62,7 +62,7 @@ const CompanyPane = () => {
 			</Box>
 
 			<Box mt={12}>
-				<Buttons title="Update Information" />
+				<Buttons w="215px" h="60px" title="Update Information" />
 			</Box>
 
 			<Box

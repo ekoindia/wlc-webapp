@@ -148,7 +148,12 @@ const DocPane = () => {
 				</Box>
 
 				<Box mt={8}>
-					<Buttons title="Download All" leftIcon={<DownloadIcon />} />
+					<Buttons
+						w="215px"
+						h="60px"
+						title="Download All"
+						leftIcon={<DownloadIcon />}
+					/>
 				</Box>
 			</Stack>
 		</Cards>
