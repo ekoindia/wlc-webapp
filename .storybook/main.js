@@ -1,10 +1,19 @@
 const path = require("path");
 
+const path = require("path");
+
 module.exports = {
 	stories: [
 		// "./*.stories.@(js,jsx,mdx)",
+		// "./*.stories.@(js,jsx,mdx)",
 		"../stories/**/*.stories.mdx",
 		"../stories/**/*.stories.@(js|jsx|ts|tsx)",
+		"../components/**/*.stories.mdx",
+		"../components/**/*.stories.@(js|jsx|ts|tsx)",
+		// "../features/**/*.stories.mdx",
+		// "../features/**/*.stories.@(js|jsx|ts|tsx)",
+		"../pages/**/*.stories.mdx",
+		"../pages/**/*.stories.@(js|jsx|ts|tsx)",
 		"../components/**/*.stories.mdx",
 		"../components/**/*.stories.@(js|jsx|ts|tsx)",
 		// "../features/**/*.stories.mdx",
@@ -17,6 +26,7 @@ module.exports = {
 		"@storybook/addon-essentials",
 		"@storybook/addon-interactions",
 		"@storybook/addon-postcss",
+		"@chakra-ui/storybook-addon",
 		{
 			name: "@storybook/addon-storysource",
 			// See all options here:
@@ -36,6 +46,9 @@ module.exports = {
 			},
 		},
 	],
+	features: {
+		emotionAlias: false,
+	},
 	framework: "@storybook/react",
 	core: {
 		builder: "@storybook/builder-webpack5",
@@ -58,6 +71,11 @@ module.exports = {
 		config.resolve.alias["hooks"] = path.resolve(__dirname, "../hooks");
 		config.resolve.alias["context"] = path.resolve(__dirname, "../context");
 		config.resolve.alias["utils"] = path.resolve(__dirname, "../utils");
+		config.module.rules.push({
+			test: /\.mjs$/,
+			include: /node_modules/,
+			type: "javascript/auto",
+		});
 		return config;
 	},
 	// typescript: {

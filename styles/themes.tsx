@@ -24,4 +24,7 @@ export const light = extendTheme({
 		dark: "#0F0F0F",
 		light: "#555555",
 	},
+  borders: {
+    success: "#00C341",
+  }
 });
