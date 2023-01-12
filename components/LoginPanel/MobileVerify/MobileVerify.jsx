@@ -1,6 +1,6 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
-import { Buttons, Input } from "../../";
+import { Buttons, IconButtons, Input } from "../../";
 
 const MobileVerify = ({ className = "", setStep, ...props }) => {
 	return (
@@ -14,10 +14,14 @@ const MobileVerify = ({ className = "", setStep, ...props }) => {
 				</Heading>
 			</Flex>
 
-			<Flex mt="30px" ml="3rem" mb="6.8rem" fontSize="lg">
+			<Flex mt="30px" ml="3rem" mb="6.8rem" fontSize="lg" align="center">
 				<Text>
-					Sent on <Text as="b">+91 989 134 5867</Text>
+					Sent on <Text as="b">abhishek.kumar@eko.co.in</Text>
 				</Text>
+				<IconButtons
+					iconPath="/icons/pen.svg"
+					iconStyle={{ h: "12px", w: "12px" }}
+				/>
 			</Flex>
 
 			<Input
