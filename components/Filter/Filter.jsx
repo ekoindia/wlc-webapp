@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import {
+	Box,
+	Button,
+	Checkbox,
 	Drawer,
 	DrawerBody,
-	DrawerFooter,
+	DrawerContent,
 	DrawerHeader,
 	DrawerOverlay,
-	DrawerContent,
-	DrawerCloseButton,
-	Button,
+	Flex,
+	Input,
 	Text,
+	useDisclosure,
 } from "@chakra-ui/react";
-import { useDisclosure } from "@chakra-ui/react";
+import { Buttons, IconButtons } from "..";
 /**
  * A <Filter> component
  * TODO: Write more description here
@@ -39,27 +42,99 @@ function Filter() {
 				w={"122px"}
 				bg={"#FFFFFF"}
 				border="1px solid #11299E"
-				boxShadow={"box-shadow: 0px 3px 10px #11299E1A;"}
+				boxShadow={"box-shadow: 0px 3px 10px #11299E1A"}
 			>
 				<Text color="#11299E">Filter</Text>
 			</Button>
+
 			<Drawer
 				isOpen={isOpen}
 				placement="right"
 				onClose={onClose}
 				finalFocusRef={btnRef}
+				size={"md"}
 			>
 				<DrawerOverlay />
 				<DrawerContent>
-					<DrawerCloseButton />
-					<DrawerHeader>Create your account</DrawerHeader>
+					<DrawerHeader>
+						<Box display={"flex"} justifyContent={"space-between"}>
+							<Box>Filter</Box>
+							<Box onClick={onClose}>Close</Box>
+							{/* //TODO update this to button after updating buttons to accept multiple colors */}
+						</Box>
+					</DrawerHeader>
 
-					<DrawerFooter>
-						<Button variant="outline" mr={5} onClick={onClose}>
-							Cancel
-						</Button>
-						<Button colorScheme="blue">Save</Button>
-					</DrawerFooter>
+					<DrawerBody>
+						<Box mt={2}>
+							<Text
+								color={"light"}
+								fontWeight={"semibold"}
+								fontSize={"18px"}
+							>
+								Filter by profile type
+							</Text>
+							<Flex wrap={"wrap"} gap={24} mt="3">
+								<Checkbox colorScheme="orange">
+									iMerchant
+								</Checkbox>
+								<Checkbox colorScheme="orange">Seller</Checkbox>
+							</Flex>
+						</Box>
+						<Box mt={16}>
+							<Text
+								color={"light"}
+								fontWeight={"semibold"}
+								fontSize={"18px"}
+							>
+								Filter by account status
+							</Text>
+							<Flex wrap={"wrap"} gap={24} mt="3">
+								<Checkbox colorScheme="orange">Active</Checkbox>
+								<Checkbox colorScheme="orange">
+									Inactive
+								</Checkbox>
+							</Flex>
+						</Box>
+						<Box mt={16}>
+							<Text>Filter by activation date range</Text>
+							<Flex wrap={"wrap"} mt="3">
+								<Input
+									w={"3xs"}
+									size="md"
+									type="date"
+									min="1970-01-01"
+									max="2100-12-31"
+								/>
+								<Input
+									w={"3xs"}
+									size="md"
+									type="date"
+									min="1970-01-01"
+									max="2100-12-31"
+								/>
+							</Flex>
+						</Box>
+						<Box
+							display={"flex"}
+							justifyContent={"flex-end"}
+							gap={16}
+							mt={44}
+						>
+							<IconButtons
+								title="Clear All"
+								colorType="0"
+								textStyle={{
+									fontSize: "20px",
+								}}
+							></IconButtons>
+							<Buttons
+								w="118px"
+								h="64px"
+								fontSize="20px"
+								title="Apply"
+							></Buttons>
+						</Box>
+					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
 		</>

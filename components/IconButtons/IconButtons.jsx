@@ -20,6 +20,7 @@ const IconButtons = (props) => {
 		iconPath,
 		iconStyle,
 		circleStyle,
+		textStyle,
 		...rest
 	} = props;
 
@@ -59,12 +60,17 @@ const IconButtons = (props) => {
 					order={ordr1}
 					fontSize={"14px"}
 					fontWeight={"semibold"}
+					{...textStyle}
 				>
 					{title}
 				</Box>
-				<Box as="span" order={ordr2}>
-					{styledIcon}
-				</Box>
+				{iconPath ? (
+					<Box as="span" order={ordr2}>
+						{styledIcon}
+					</Box>
+				) : (
+					""
+				)}
 			</Box>
 		</Button>
 	);
