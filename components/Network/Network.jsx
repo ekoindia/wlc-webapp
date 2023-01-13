@@ -27,7 +27,6 @@ const Network = ({ className = "", ...props }) => {
 					<Sort />
 				</Flex>
 			</Box>
-			<Tables />
 		</Box>
 	);
 };
