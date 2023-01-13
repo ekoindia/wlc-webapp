@@ -36,6 +36,7 @@ const VerifyOtp = ({ number, setStep }) => {
 					</Text>
 				</Text>
 				<IconButtons
+					onClick={() => setStep((prev) => prev - 1)}
 					iconPath="/icons/pen.svg"
 					iconStyle={{ h: "12px", w: "12px" }}
 				/>

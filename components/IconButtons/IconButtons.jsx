@@ -50,6 +50,7 @@ const IconButtons = (props) => {
 			variant={"link"}
 			style={{ textDecoration: "none" }}
 			color={fill}
+			onClick={onClick}
 			_hover={{
 				color: hoverFill,
 			}}
