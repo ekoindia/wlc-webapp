@@ -10,7 +10,6 @@ import { Layout } from "./Layout";
 import { LoginPanel } from "./LoginPanel";
 import { Network } from "./Network";
 import { ProfilePanel } from "./Profile";
-import { SearchFilterSort } from "./SearchFilterSort";
 
 export {
 	Tags,
@@ -19,7 +18,6 @@ export {
 	InputLabel,
 	Input,
 	LoginPanel,
-	SearchFilterSort,
 	Network,
 	Layout,
 	Cards,

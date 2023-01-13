@@ -24,7 +24,7 @@ const LoginPanel = ({ className = "", ...props }) => {
 				</Box>
 				<Box
 					w="43.75rem"
-					h="44rem"
+					h="45rem"
 					px="1.875rem"
 					py="2.5rem"
 					boxShadow="0px 3px 20px #00000005"
@@ -45,7 +45,15 @@ const LoginPanel = ({ className = "", ...props }) => {
 					) : (
 						""
 					)}
-					{step === 2 ? <MobileVerify setStep={setStep} /> : ""}
+					{step === 2 ? (
+						<MobileVerify
+							setStep={setStep}
+							number={number}
+							setNumber={setNumber}
+						/>
+					) : (
+						""
+					)}
 				</Box>
 			</Flex>
 		</Center>
