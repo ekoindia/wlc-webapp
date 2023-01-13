@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import { SearchFilterSort } from "components/SearchFilterSort";
+import { Filter } from "components/Filter";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { SearchFilterSort } from "components/SearchFilterSort";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("SearchFilterSort", () => {
+describe("Filter", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<SearchFilterSort />);
+		const { container } = render(<Filter />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("SearchFilterSort", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for SearchFilterSort in __tests__/components/SearchFilterSort/SearchFilterSort.test.jsx"
+		"TODO: add proper test cases for Filter in __tests__/components/Filter/Filter.test.jsx"
 	);
 });
