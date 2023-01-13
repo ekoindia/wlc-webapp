@@ -10,7 +10,9 @@ import { Layout } from "./Layout";
 import { LoginPanel } from "./LoginPanel";
 import { Network } from "./Network";
 import { ProfilePanel } from "./Profile";
-import { SearchFilterSort } from "./SearchFilterSort";
+import { SearchBar } from "./SearchBar";
+import { Sort } from "./Sort";
+import { Filter } from "./Filter";
 
 export {
 	Tags,
@@ -19,11 +21,14 @@ export {
 	InputLabel,
 	Input,
 	LoginPanel,
-	SearchFilterSort,
 	Network,
 	Layout,
 	Cards,
 	Buttons,
 	ProfilePanel,
+	SearchBar,
+	Sort,
+	Filter,
+
 	/* PLOP_INJECT_EXPORT */
 };
