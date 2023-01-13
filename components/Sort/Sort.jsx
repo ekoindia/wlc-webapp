@@ -31,23 +31,33 @@ const Sort = ({ className = "", ...props }) => {
 	return (
 		<Box>
 			<Menu>
-				<MenuButton
-					w="220px"
-					h="48px"
-					border=" 1px solid #D2D2D2"
-					borderRadius="10px"
-					bg="#FFFFFF"
-					opacity={1}
-					as={Button}
-					rightIcon={<img src="/icons/profiledropdown.svg" />}
+				<Box
+					display="flex"
+					justifyContent="center"
+					alignItems="center"
+					gap="20px"
 				>
-					<Text>Recenty Added</Text>
-				</MenuButton>
-				<MenuList>
-					<MenuItem>Recent Added</MenuItem>
-					<MenuItem>Status: Active</MenuItem>
-					<MenuItem>Status: Inactive</MenuItem>
-				</MenuList>
+					<Box fontSize="18px" fontWeight="600" color="dark">
+						Sort By :{" "}
+					</Box>
+					<MenuButton
+						w="220px"
+						h="48px"
+						border=" 1px solid #D2D2D2"
+						borderRadius="10px"
+						bg={"white"}
+						opacity={1}
+						as={Button}
+						rightIcon={<img src="/icons/profiledropdown.svg" />}
+					>
+						<Text>Recenty Added</Text>
+					</MenuButton>
+					<MenuList>
+						<MenuItem>Recent Added </MenuItem>
+						<MenuItem>Status: Active</MenuItem>
+						<MenuItem>Status: Inactive</MenuItem>
+					</MenuList>
+				</Box>
 			</Menu>
 		</Box>
 	);
