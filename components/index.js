@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Breadcrumbs } from "./Breadcrumb";
 import { Tags } from "./Tags";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
@@ -10,7 +11,9 @@ import { Layout } from "./Layout";
 import { LoginPanel } from "./LoginPanel";
 import { Network } from "./Network";
 import { ProfilePanel } from "./Profile";
-import { SearchFilterSort } from "./SearchFilterSort";
+import { SearchBar } from "./SearchBar";
+import { Sort } from "./Sort";
+import { Filter } from "./Filter";
 
 export {
 	Tags,
@@ -25,5 +28,10 @@ export {
 	Cards,
 	Buttons,
 	ProfilePanel,
+	SearchBar,
+	Sort,
+	Filter,
+	Breadcrumbs,
+
 	/* PLOP_INJECT_EXPORT */
 };

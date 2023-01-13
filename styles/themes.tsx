@@ -27,7 +27,9 @@ export const light = extendTheme({
 		hint: "#D2D2D2",
 		dark: "#0F0F0F",
 		light: "#555555",
-    focusbg: "#FFFBF3"
+    focusbg: "#FFFBF3",
+	white:"#FFFFFF"
+
         
 	},
 });
