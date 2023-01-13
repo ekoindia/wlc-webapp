@@ -7,11 +7,30 @@ import {
 	Image,
 	Text,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { Buttons, Input } from "../../";
 
 const Login = ({ setStep, setNumber, number }) => {
+	const [value, setValue] = useState(number);
+	const [errorMsg, setErrorMsg] = useState(false);
+	const [invalid, setInvalid] = useState("");
+
 	const onChangeHandler = (val) => {
-		if (val.length <= 10) setNumber(val);
+		if (val == "" || /^[6-9]\d{0,9}$/g.test(val)) {
+			console.log("bwjnfj");
+			setValue(val);
+		}
+	};
+
+	const onVerify = () => {
+		console.log(/^[6-9]{1}[0-9]{9}$/g.test(value));
+		if (/^[6-9]{1}[0-9]{9}$/g.test(value)) {
+			setNumber(value);
+			setStep((prev) => prev + 1);
+		} else {
+			setErrorMsg("Required");
+			setInvalid(true);
+		}
 	};
 	return (
 		<Flex direction="column">
@@ -58,11 +77,9 @@ const Login = ({ setStep, setNumber, number }) => {
 			<Input
 				label="Enter mobile number"
 				placeholder={"XXX XXX XXXX"}
-				value={number}
-				disabled={false}
-				hidden={false}
-				invalid={false}
-				errorMsg="Hello this is error"
+				value={value}
+				invalid={invalid}
+				errorMsg={errorMsg}
 				mb="4.35rem"
 				onChange={onChangeHandler}
 				labelStyle={{
@@ -74,6 +91,10 @@ const Login = ({ setStep, setNumber, number }) => {
 				}}
 				inputContStyle={{ h: "4rem", pos: "relative" }}
 				isNumInput={true}
+				inputProps={{ maxLength: 10 }}
+				onFocus={() => {
+					setInvalid(false);
+				}}
 			/>
 
 			<Buttons
@@ -82,7 +103,7 @@ const Login = ({ setStep, setNumber, number }) => {
 				fontSize="xl"
 				borderRadius="10px"
 				boxShadow="0px 3px 10px #FE9F0040"
-				onClick={() => setStep((prev) => prev + 1)}
+				onClick={onVerify}
 			/>
 		</Flex>
 	);
