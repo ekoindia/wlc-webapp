@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SearchBar } from "components/SearchBar";
 import { Filter, Sort } from "..";
-import { Tables, Table1 } from ".";
 import { Box, Flex } from "@chakra-ui/react";
 
 /**
@@ -20,11 +19,29 @@ const Network = ({ className = "", ...props }) => {
 
 	return (
 		<Box className={`${className}`} {...props}>
-			<Box display={"flex"} justifyContent={"space-between"} w={"80vw"}>
+			<Box
+				fontSize={"36px"}
+				color={"dark"}
+				font="normal 600 30px/36px Inter;"
+				opacity={1}
+				mt="86px"
+			>
+				My Network
+			</Box>
+			<Box
+				display={"flex"}
+				justifyContent={"space-between"}
+				w={"85vw"}
+				mt="20px"
+			>
 				<SearchBar />
 				<Flex>
-					<Filter />
-					<Sort />
+					<Box mr={"129px"}>
+						<Filter />
+					</Box>
+					<Box>
+						<Sort />
+					</Box>
 				</Flex>
 			</Box>
 		</Box>
