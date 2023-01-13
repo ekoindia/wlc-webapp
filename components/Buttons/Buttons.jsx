@@ -14,34 +14,31 @@ const Buttons = (props) => {
 		children,
 		onClick,
 		variant,
-		fill,
 		size,
-		rightIcon,
-		leftIcon,
+		color,
+		colorType = 1,
+		...rest
 	} = props;
 
+	const fill = colorType === 1 ? "primary.DEFAULT" : "accent.DEFAULT";
+	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
+	const shade = color ? color : "white";
 	return (
 		<Button
 			variant={variant}
-			colorScheme={fill}
 			size={size}
 			onClick={onClick}
-			rightIcon={rightIcon}
-			leftIcon={leftIcon}
-			style={{ textDecoration: "none" }}
+			color={shade}
+			{...rest}
+			bg={fill}
+			_hover={{
+				bg: hoverFill,
+			}}
 		>
 			{title}
 			{children}
 		</Button>
 	);
-};
-
-Buttons.defaultProps = {
-	variant: "solid",
-	colorScheme: "primary.DEFAULT",
-	size: "lg",
-	rightIcon: "",
-	leftIcon: "",
 };
 
 export default Buttons;

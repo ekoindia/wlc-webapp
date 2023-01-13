@@ -82,6 +82,84 @@ module.exports = (plop) => {
 		],
 	});
 
+	plop.setGenerator("Path-Component", {
+		description: "Create a reusable component",
+		prompts: [
+			{
+				type: "input",
+				name: "name",
+				message: "Name of the component?",
+				validate: requireField("name"),
+			},
+			{
+				type: "input",
+				name: "path",
+				message:
+					"Path for the component dont use slash before and after.",
+				validate: requireField("path"),
+			},
+			{
+				type: "checkbox",
+				name: "hooks",
+				message:
+					"Select required hooks (Space to select, Enter when done):",
+				choices: [
+					{ name: "useEffect" },
+					{ name: "useState" },
+					{ name: "useReducer" },
+				],
+			},
+		],
+		actions: [
+			{
+				// Add component
+				type: "add",
+				path: "components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
+				templateFile: "plop-templates/Component/Component.jsx.hbs",
+			},
+			{
+				// Add Storybook stories file for the component
+				type: "add",
+				path: "components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+				templateFile:
+					"plop-templates/Component/Component.stories.jsx.hbs",
+			},
+			{
+				// Add component index file
+				type: "add",
+				path: "components/{{path}}/{{pascalCase name}}/index.js",
+				templateFile: "plop-templates/Component/index.js.hbs",
+			},
+			{
+				// Add Jest test for the component
+				type: "add",
+				path: "__tests__/components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
+				templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+			},
+			{
+				// Add components index file (if it does not already exist)
+				type: "add",
+				path: "components/{{path}}/index.js",
+				templateFile: "plop-templates/injectable-index.js.hbs",
+				skipIfExists: true,
+			},
+			{
+				// Append component import in the components index file
+				type: "append",
+				path: "components/{{path}}/index.js",
+				pattern: `/* PLOP_INJECT_IMPORT */`,
+				template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
+			},
+			{
+				// Append component export in the components index file
+				type: "append",
+				path: "components/{{path}}/index.js",
+				pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
+				template: `\t{{pascalCase name}},`,
+			},
+		],
+	});
+
 	plop.setGenerator("Page-Component", {
 		description: "Create a Page-Component",
 		prompts: [

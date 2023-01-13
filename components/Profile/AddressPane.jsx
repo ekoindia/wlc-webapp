@@ -6,7 +6,7 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons, Cards } from "../";
+import { Buttons, Cards, IconButtons } from "../";
 
 const AddressPane = () => {
 	return (
@@ -42,11 +42,21 @@ const AddressPane = () => {
 						align={"center"}
 						wrap={"wrap"}
 					>
-						<Buttons title="Update Address"></Buttons>
 						<Buttons
-							title="View on Google Maps"
-							variant="link"
+							w="189px"
+							h="60px"
+							title="Update Address"
 						></Buttons>
+						<IconButtons
+							title="View on Google Maps"
+							colorType="0"
+							iconPath="/icons/location.svg"
+							iconPos="left"
+							iconStyle={{ h: "15px", w: "18px" }}
+							circleStyle={{
+								boxShadow: "0px 0px 10px #11299E1A",
+							}}
+						/>
 					</Flex>
 				</Box>
 			</Stack>
