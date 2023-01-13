@@ -1,6 +1,5 @@
 /* PLOP_INJECT_IMPORT */
 import { Breadcrumbs } from "./Breadcrumb";
-import { Tags } from "./Tags";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
 import { Filter } from "./Filter";
@@ -32,6 +31,5 @@ export {
 	Sort,
 	Filter,
 	Breadcrumbs,
-
 	/* PLOP_INJECT_EXPORT */
 };
