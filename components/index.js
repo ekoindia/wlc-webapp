@@ -3,6 +3,7 @@ import { Breadcrumbs } from "./Breadcrumb";
 import { Tags } from "./Tags";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
+import { Filter } from "./Filter";
 import { IconButtons } from "./IconButtons";
 import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
@@ -13,7 +14,7 @@ import { Network } from "./Network";
 import { ProfilePanel } from "./Profile";
 import { SearchBar } from "./SearchBar";
 import { Sort } from "./Sort";
-import { Filter } from "./Filter";
+import { Tags } from "./Tags";
 
 export {
 	Tags,
