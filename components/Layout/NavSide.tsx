@@ -80,7 +80,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 				w="250px"
 				// pos="fixed"
 				{...rest}
-				h="container"
+				minHeight="90vh"
+				maxHeight="container"
 			>
 				<Flex mx="9" justifyContent="space-between">
 					<CloseButton

@@ -22,7 +22,6 @@ export {
 	InputLabel,
 	Input,
 	LoginPanel,
-	SearchFilterSort,
 	Network,
 	Layout,
 	Cards,
