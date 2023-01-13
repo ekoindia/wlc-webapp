@@ -45,6 +45,7 @@ function Filter() {
 				boxShadow={"box-shadow: 0px 3px 10px #11299E1A"}
 			>
 				<Text color="#11299E">Filter</Text>
+				{/* //TODO need to add icon here as well */}
 			</Button>
 
 			<Drawer
