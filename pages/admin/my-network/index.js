@@ -1,1 +1,1 @@
-export { default } from "./MyNetwork";
+export { default } from "./my-network";
