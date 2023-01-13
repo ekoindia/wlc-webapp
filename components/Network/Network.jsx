@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Tables from "./Tables";
+import { SearchBar } from "components/SearchBar";
+import { Filter, Sort } from "..";
+import { Tables, Table1 } from ".";
+import { Box, Flex } from "@chakra-ui/react";
 
 /**
  * A <Network> component
@@ -16,9 +19,16 @@ const Network = ({ className = "", ...props }) => {
 	}, []);
 
 	return (
-		<div className={`${className}`} {...props}>
-			Namskar....!
-		</div>
+		<Box className={`${className}`} {...props}>
+			<Box display={"flex"} justifyContent={"space-between"} w={"80vw"}>
+				<SearchBar />
+				<Flex>
+					<Filter />
+					<Sort />
+				</Flex>
+			</Box>
+			<Tables />
+		</Box>
 	);
 };
 
