@@ -50,9 +50,9 @@ const AddressPane = () => {
 						<IconButtons
 							title="View on Google Maps"
 							colorType="0"
-							iconPath="/icons/location.svg"
+							iconName="near-me"
 							iconPos="left"
-							iconStyle={{ h: "15px", w: "18px" }}
+							iconStyle={{ w: "11px", h: "11px" }}
 							circleStyle={{
 								boxShadow: "0px 0px 10px #11299E1A",
 							}}
