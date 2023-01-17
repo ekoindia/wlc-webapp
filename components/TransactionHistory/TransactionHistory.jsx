@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-
+import { useEffect, useState } from "react";
+import { SearchBar } from "..";
 /**
  * A <TransactionHistory> component
  * TODO: Write more description here
@@ -16,7 +16,7 @@ const TransactionHistory = ({ className = "", ...props }) => {
 
 	return (
 		<div className={`${className}`} {...props}>
-			TransactionHistory
+			<SearchBar />
 		</div>
 	);
 };

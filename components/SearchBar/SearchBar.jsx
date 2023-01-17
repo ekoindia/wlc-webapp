@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { Box, Input } from "@chakra-ui/react";
 
 /**
@@ -19,7 +18,7 @@ export function SearchBar({ onChangeHandler }) {
 	return (
 		<Box>
 			<Input
-				placeholder="Search by name or mobile"
+				placeholder="Search by name or mobile number"
 				size="lg"
 				width="600px"
 			/>
