@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { SearchBar, Tables } from "..";
+
 /**
- * A <TransactionHistory> component
+ * A <Tables> component
  * TODO: Write more description here
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<TransactionHistory></TransactionHistory>`
+ * @example	`<Tables></Tables>`
  */
-const TransactionHistory = ({ className = "", ...props }) => {
+const Tables = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 
 	useEffect(() => {
@@ -16,10 +16,9 @@ const TransactionHistory = ({ className = "", ...props }) => {
 
 	return (
 		<div className={`${className}`} {...props}>
-			<SearchBar />
-			<Tables />
+			Tables
 		</div>
 	);
 };
 
-export default TransactionHistory;
+export default Tables;
