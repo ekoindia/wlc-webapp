@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Icon } from "./Icon";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
@@ -16,6 +17,7 @@ import { Sort } from "./Sort";
 import { Tags } from "./Tags";
 
 export {
+	Icon,
 	Tags,
 	IconButtons,
 	InputMsg,
