@@ -7,7 +7,10 @@ export type IconNameType =
 	| "chevron-left"
 	| "arrow-forward"
 	| "add"
-	| "chevron-right";
+	| "chevron-right"
+	| "mode-edit"
+	| "account-balance-wallet"
+	| "near-me";
 
 type Props = {
 	name: IconNameType;
@@ -24,14 +27,16 @@ type Props = {
  * @example	`<Icon></Icon>`
  */
 
-export const Icon = ({ name, style, ...rest }: Props) => {
+const Icon = ({ name, style, ...rest }: Props) => {
 	const transform = IconLibrary[name]?.transform;
 	const viewBox = IconLibrary[name]?.viewBox;
-	const paths = IconLibrary[name]?.paths[0];
+	const path = IconLibrary[name]?.path;
 
 	return (
 		<svg style={style} viewBox={viewBox} {...rest} className="custom-icon">
-			<path d={paths} fill="currentColor" transform={transform} />
+			<path d={path} fill="currentColor" transform={transform} />
 		</svg>
 	);
 };
+
+export default Icon;
