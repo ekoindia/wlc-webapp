@@ -26,14 +26,25 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 		<div className={`${className}`} {...props}>
 			<Breadcrumb separator={<CustomizedBreadcrumbSeparator />}>
 				<BreadcrumbItem>
-					<BreadcrumbLink href="/admin/my-network#">
+					<BreadcrumbLink
+						href="/admin/my-network"
+						display="flex"
+						gap="5px"
+					>
 						<img src="/icons/home.svg" />
+						Home
+					</BreadcrumbLink>
+				</BreadcrumbItem>
+
+				<BreadcrumbItem activecolor="">
+					<BreadcrumbLink href="/admin/my-network">
+						My Network
 					</BreadcrumbLink>
 				</BreadcrumbItem>
 
 				<BreadcrumbItem>
-					<BreadcrumbLink href="/admin/my-network#">
-						My Network
+					<BreadcrumbLink href="/admin/my-network/profile">
+						Profile Details
 					</BreadcrumbLink>
 				</BreadcrumbItem>
 			</Breadcrumb>
