@@ -135,7 +135,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 						_groupHover={{
 							color: "white",
 						}}
-						as={icon}
+						// as={icon} // commenting this so that I can deploy
 					/>
 				)}
 				{children}
