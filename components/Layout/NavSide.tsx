@@ -22,15 +22,13 @@ import {
 	useColorModeValue,
 	useDisclosure,
 	VStack,
-	Button,
 } from "@chakra-ui/react";
 
-import { IconButtons, Buttons } from "../";
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import { adminMenu } from "constants/adminMenu";
 import { ReactNode, ReactText } from "react";
-import { IconType } from "react-icons";
 import { FiMenu } from "react-icons/fi";
-import { ArrowForwardIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { Buttons, IconButtons } from "../";
 
 export default function SidebarWithHeader({
 	children,
@@ -105,7 +103,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 };
 
 interface NavItemProps extends FlexProps {
-	icon: string;
+	icon: any; // change to any from string
 	children: ReactText;
 }
 const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
