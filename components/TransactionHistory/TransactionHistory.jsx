@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Box } from "@chakra-ui/react";
 
 /**
  * A <TransactionHistory> component
