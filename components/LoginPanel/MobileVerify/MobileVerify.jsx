@@ -1,8 +1,30 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { useState } from "react";
 import { Buttons, IconButtons, Input } from "../../";
 
-const MobileVerify = ({ className = "", setStep, ...props }) => {
+const MobileVerify = ({ number, setNumber, setStep }) => {
+	const [value, setValue] = useState(number);
+	const [errorMsg, setErrorMsg] = useState(false);
+	const [invalid, setInvalid] = useState("");
+
+	const onChangeHandler = (val) => {
+		if (val == "" || /^[6-9]\d{0,9}$/g.test(val)) {
+			console.log("bwjnfj");
+			setValue(val);
+		}
+	};
+
+	const onVerify = () => {
+		console.log(/^[6-9]{1}[0-9]{9}$/g.test(value));
+		if (/^[6-9]{1}[0-9]{9}$/g.test(value)) {
+			setNumber(value);
+			setStep(1);
+		} else {
+			setErrorMsg("Required");
+			setInvalid(true);
+		}
+	};
 	return (
 		<Flex direction="column">
 			<Flex align="center">
@@ -27,19 +49,23 @@ const MobileVerify = ({ className = "", setStep, ...props }) => {
 			<Input
 				label="Enter mobile number"
 				placeholder={"XXX XXX XXXX"}
-				// value={number}
-				disabled={false}
-				hidden={false}
-				invalid={false}
-				errorMsg="Hello this is error"
+				value={value}
+				invalid={invalid}
+				errorMsg={errorMsg}
 				labelStyle={{
 					fontSize: "lg",
 					color: "light",
 					pl: "0",
+					mb: "0.8rem",
 					fontWeight: "semibold",
 				}}
 				inputContStyle={{ h: "4rem", pos: "relative" }}
 				isNumInput={true}
+				inputProps={{ maxLength: 10 }}
+				onFocus={() => {
+					setInvalid(false);
+				}}
+				onChange={onChangeHandler}
 			/>
 
 			<Buttons
@@ -49,7 +75,7 @@ const MobileVerify = ({ className = "", setStep, ...props }) => {
 				fontSize="xl"
 				borderRadius="10px"
 				boxShadow="0px 3px 10px #FE9F0040"
-				// onClick={() => setStep(prev => prev + 1)}
+				onClick={onVerify}
 			/>
 		</Flex>
 	);

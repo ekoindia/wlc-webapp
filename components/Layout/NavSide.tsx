@@ -23,10 +23,12 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
+
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import { adminMenu } from "constants/adminMenu";
 import { ReactNode, ReactText } from "react";
-import { IconType } from "react-icons";
 import { FiMenu } from "react-icons/fi";
+import { Buttons, IconButtons } from "../";
 
 export default function SidebarWithHeader({
 	children,
@@ -101,7 +103,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 };
 
 interface NavItemProps extends FlexProps {
-	icon: IconType;
+	icon: any; // change to any from string
 	children: ReactText;
 }
 const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
@@ -133,7 +135,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 						_groupHover={{
 							color: "white",
 						}}
-						as={icon}
+						// as={icon} // commenting this so that I can deploy
 					/>
 				)}
 				{children}
@@ -151,7 +153,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 			justify="space-between"
 			height="90px"
 			align="center"
-			bg="#FFFFFF"
+			bg="white"
 			boxShadow="0px 3px 10px #0000001A"
 			{...rest}
 		>
@@ -184,7 +186,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 								<VStack
 									display={{ base: "none", md: "flex" }}
 									alignItems="flex-start"
-									spacing="1px"
+									spacing="5px"
 									ml="2"
 								>
 									<Text
@@ -205,38 +207,72 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 						</MenuButton>
 						<MenuList
 							h="470px"
-							w="350px"
-							bg={useColorModeValue("white", "gray.900")}
-							borderColor={useColorModeValue(
-								"gray.200",
-								"gray.700"
-							)}
+							w="395px"
+							mr="20px"
+							boxShadow="0px 6px 10px #00000033"
+							border="1px solid #D2D2D2"
+							borderRadius="10px"
 						>
 							<Card>
-								<Box bg={"#1F3ABC"} h={100} display="flex">
-									<Box
-										fontSize={14}
-										color="#FFD93B"
-										mt={5}
-										ml={2}
-										borderRadius="15px"
-									>
-										Akash Enterprises
-										<Box color="#FFFFFF" fontSize={10}>
+								<Box bg={"#1F3ABC"} h="120px">
+									<Box ml="20px">
+										<Box
+											display="flex"
+											mt="20px"
+											gap="50px"
+										>
+											<Box
+												fontSize={"14px"}
+												color={"highlight"} // need to update the color
+												borderRadius="15px"
+											>
+												Akash Enterprises
+											</Box>
+											<Box
+												fontSize="10px"
+												color={"white"}
+												mt="4px"
+											>
+												(Eko Code: 501837634)
+											</Box>
+										</Box>
+
+										<Box color={"focusbg"} fontSize={10}>
 											angeltech.google.co.in
 										</Box>
-										<Box color="#FFFFFF" fontSize={10}>
-											+91 9871679433 <img src="" />
+										<Box>
+											<Box
+												display={"flex"}
+												alignItems={"center"}
+												color={"focusbg"}
+												fontSize={10}
+												gap="80px"
+											>
+												<Box as={"span"}>
+													+91 9871679433
+													<IconButtons
+														iconPath="/icons/pen.svg"
+														iconStyle={{
+															h: "8px",
+															w: "8px",
+														}}
+														circleStyle={{
+															h: "21px",
+															w: "21px",
+														}}
+													></IconButtons>
+												</Box>
+												<Buttons
+													w="108px"
+													h="36px"
+													fontSize="12px"
+													title="View Profile"
+													rightIcon={
+														<ChevronRightIcon />
+													}
+												/>
+											</Box>
 										</Box>
-									</Box>
-									<Box
-										mt={5}
-										ml={20}
-										color="#FFFFFF"
-										fontSize={10}
-									>
-										(Eko Code: 501837634)
-										<br />
 									</Box>
 								</Box>
 
@@ -245,17 +281,29 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 										divider={<StackDivider />}
 										spacing="4"
 									>
-										<Box>Business Contact</Box>
+										<Flex justifyContent="space-between">
+											Business Contact
+											<img src="/icons/forwardarrow.svg" />
+										</Flex>
 
-										<Box>Need Help</Box>
+										<Flex justifyContent="space-between">
+											Need Help
+											<img src="/icons/forwardarrow.svg" />
+										</Flex>
 
-										<Box>Help Center</Box>
+										<Flex justifyContent="space-between">
+											Help Center
+											<img src="/icons/forwardarrow.svg" />
+										</Flex>
 
-										<Box>Settings</Box>
+										<Flex justifyContent="space-between">
+											Settings
+											<img src="/icons/forwardarrow.svg" />
+										</Flex>
 									</Stack>
 								</CardBody>
 							</Card>
-							<Box mt={50} ml={10} color="#FF4081" fontSize={14}>
+							<Box mt={50} ml={10} color={"error"} fontSize={14}>
 								Logout
 							</Box>
 						</MenuList>

@@ -1,5 +1,6 @@
-import React from "react";
+import { Layout, TransactionHistory } from "components";
 import Head from "next/head";
+import React from "react";
 
 const TrxnHistory = () => {
 	return (
@@ -7,7 +8,10 @@ const TrxnHistory = () => {
 			<Head>
 				<title>Trxn-History | Eko API Marketplace</title>
 			</Head>
-			<h1>Add Page Content Here</h1>
+
+			<Layout>
+				<TransactionHistory />
+			</Layout>
 		</>
 	);
 };
