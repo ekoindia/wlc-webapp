@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { SearchBar, Tables } from "..";
+import React, { useEffect, useState } from "react";
+import { Box } from "@chakra-ui/react";
+
 /**
  * A <TransactionHistory> component
  * TODO: Write more description here
@@ -15,10 +16,9 @@ const TransactionHistory = ({ className = "", ...props }) => {
 	}, []);
 
 	return (
-		<div className={`${className}`} {...props}>
-			<SearchBar />
-			<Tables />
-		</div>
+		<Box className={`${className}`} {...props}>
+			TransactionHistory
+		</Box>
 	);
 };
 
