@@ -1,1 +1,1 @@
-export { default as TrxnHistory } from "./TrxnHistory";
+export { default } from "./trxn-history";

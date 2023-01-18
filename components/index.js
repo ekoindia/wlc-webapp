@@ -1,4 +1,7 @@
 /* PLOP_INJECT_IMPORT */
+import { Tables } from "./Tables";
+import { TransactionHistory } from "./TransactionHistory";
+import { Icon } from "./Icon";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
@@ -16,6 +19,9 @@ import { Sort } from "./Sort";
 import { Tags } from "./Tags";
 
 export {
+	Tables,
+	TransactionHistory,
+	Icon,
 	Tags,
 	IconButtons,
 	InputMsg,

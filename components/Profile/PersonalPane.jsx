@@ -15,7 +15,7 @@ const PersonalPane = () => {
 				<IconButtons
 					title="Edit Details"
 					iconPos="left"
-					iconPath="/icons/pen.svg"
+					iconName="mode-edit"
 					iconStyle={{ h: "12px", w: "12px" }}
 				></IconButtons>
 			</Box>
