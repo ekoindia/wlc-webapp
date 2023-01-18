@@ -153,7 +153,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 			justify="space-between"
 			height="90px"
 			align="center"
-			bg="#FFFFFF"
+			bg="white"
 			boxShadow="0px 3px 10px #0000001A"
 			{...rest}
 		>
@@ -186,7 +186,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 								<VStack
 									display={{ base: "none", md: "flex" }}
 									alignItems="flex-start"
-									spacing="1px"
+									spacing="5px"
 									ml="2"
 								>
 									<Text
@@ -207,16 +207,15 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 						</MenuButton>
 						<MenuList
 							h="470px"
-							w="350px"
-							bg={useColorModeValue("white", "gray.900")}
-							borderColor={useColorModeValue(
-								"gray.200",
-								"gray.700"
-							)}
+							w="395px"
+							mr="20px"
+							boxShadow="0px 6px 10px #00000033"
+							border="1px solid #D2D2D2"
+							borderRadius="10px"
 						>
 							<Card>
 								<Box bg={"#1F3ABC"} h="120px">
-									<Box ml="5px">
+									<Box ml="20px">
 										<Box
 											display="flex"
 											mt="20px"
@@ -224,7 +223,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 										>
 											<Box
 												fontSize={"14px"}
-												color={"primary.light"} // need to update the color
+												color={"highlight"} // need to update the color
 												borderRadius="15px"
 											>
 												Akash Enterprises
