@@ -17,10 +17,12 @@ import { ProfilePanel } from "./Profile";
 import { SearchBar } from "./SearchBar";
 import { Sort } from "./Sort";
 import { Tags } from "./Tags";
+import { AccountStatement } from "./TransactionHistory/AccountStatement";
 
 export {
 	Tables,
 	TransactionHistory,
+	AccountStatement,
 	Icon,
 	Tags,
 	IconButtons,
