@@ -1,5 +1,5 @@
+import { DOTS, usePagination } from "hooks";
 import { useEffect, useState } from "react";
-
 /**
  * A <Pagination> component
  * TODO: Write more description here
