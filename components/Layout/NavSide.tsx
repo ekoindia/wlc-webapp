@@ -182,7 +182,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 				onClick={onOpen}
 				variant="outline"
 				aria-label="open menu"
-				icon={<FiMenu />}
+				// icon={<FiMenu />}
 			/>
 
 			<HStack spacing={{ base: "0", md: "" }}>
@@ -285,7 +285,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 													fontSize="12px"
 													title="View Profile"
 													rightIcon={
-														<ChevronRightIcon />
+														// <ChevronRightIcon />
 													}
 												/>
 											</Box>
