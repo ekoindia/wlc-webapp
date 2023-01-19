@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Filter, SearchBar, Sort } from "..";
+import { Filter, SearchBar, Sort, Tables } from "..";
 
 /**
  * A <Network> component
@@ -23,7 +23,7 @@ const Network = ({ className = "", ...props }) => {
 				color={"dark"}
 				font="normal 600 30px/36px Inter;"
 				opacity={1}
-				mt="86px"
+				mt="40px"
 			>
 				My Network
 			</Box>
@@ -43,7 +43,9 @@ const Network = ({ className = "", ...props }) => {
 					</Box>
 				</Flex>
 			</Box>
-			{/* <Tables /> */}
+			<Box mt={"10px"}>
+				<Tables />
+			</Box>
 		</Box>
 	);
 };

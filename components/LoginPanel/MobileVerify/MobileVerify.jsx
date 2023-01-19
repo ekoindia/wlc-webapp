@@ -2,6 +2,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { Buttons, IconButtons, Input } from "../../";
+import { useRouter } from "next/router";
 
 const MobileVerify = ({ number, setNumber, setStep }) => {
 	const [value, setValue] = useState(number);
@@ -13,6 +14,10 @@ const MobileVerify = ({ number, setNumber, setStep }) => {
 			console.log("bwjnfj");
 			setValue(val);
 		}
+	};
+	const router = useRouter();
+	const redirect = () => {
+		router.push("/admin/my-network");
 	};
 
 	const onVerify = () => {
@@ -75,7 +80,8 @@ const MobileVerify = ({ number, setNumber, setStep }) => {
 				fontSize="xl"
 				borderRadius="10px"
 				boxShadow="0px 3px 10px #FE9F0040"
-				onClick={onVerify}
+				// onClick={onVerify}
+				onClick={redirect} // need to remove
 			/>
 		</Flex>
 	);

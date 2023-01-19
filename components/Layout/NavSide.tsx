@@ -98,6 +98,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 						iconName={menu.icon}
 						onClick={() => router.push(menu.link)}
 					>
+						{/* <a
+              className={`cursor-pointer ${
+                router.pathname === menu.link
+                  ? 'text-blue-500'
+                  : 'hover:bg-gray-900 hover:text-blue-500'
+              }`}		
+            ></a> */}
 						{menu.name}
 					</NavItem>
 				))}
@@ -125,7 +132,13 @@ const NavItem = ({ iconName, url, children, ...rest }: NavItemProps) => {
 		// 	 }}
 
 		// >
+
 		<Flex
+			focus={{
+				color: "white",
+				borderLeft: "8px solid #FE7D00",
+				bg: "#081E89",
+			}}
 			fontSize="16px"
 			color="#FFFFFF"
 			align="center"
@@ -135,6 +148,8 @@ const NavItem = ({ iconName, url, children, ...rest }: NavItemProps) => {
 			borderBottom="1px solid #1F3ABC"
 			_hover={{
 				color: "white",
+				borderLeft: "8px solid #FE7D00",
+				bg: "#081E89",
 			}}
 			// background =" #081E89"
 			{...rest}
@@ -231,7 +246,12 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 							borderRadius="10px"
 						>
 							<Card>
-								<Box bg={"#1F3ABC"} h="120px">
+								<Box
+									bg={"#1F3ABC"}
+									h="120px"
+									mt="-7px"
+									borderRadius="10px 10px 0px 0px"
+								>
 									<Box ml="20px">
 										<Box
 											display="flex"
