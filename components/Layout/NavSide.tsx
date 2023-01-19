@@ -23,10 +23,8 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 
-import { ChevronRightIcon } from "@chakra-ui/icons";
 import { adminMenu } from "constants/adminMenu";
 import { ReactNode, ReactText } from "react";
-import { FiMenu } from "react-icons/fi";
 import { Buttons, IconButtons, Icon } from "../";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import { useRouter } from "next/router";
