@@ -8,6 +8,11 @@ import { useEffect, useState } from "react";
  * @example	`<Pagination></Pagination>`
  */
 const Pagination = (props) => {
+	const [count, setCount] = useState(0); // TODO: Edit state as required
+
+	useEffect(() => {
+		// TODO: Add your useEffect code here and update dependencies as required
+	}, []);
 	const {
 		onPageChange,
 		totalCount,
@@ -37,12 +42,6 @@ const Pagination = (props) => {
 	};
 
 	let lastPage = paginationRange[paginationRange.length - 1];
-
-	const [count, setCount] = useState(0); // TODO: Edit state as required
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
 
 	return (
 		<ul
