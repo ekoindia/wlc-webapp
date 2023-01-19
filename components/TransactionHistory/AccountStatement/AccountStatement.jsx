@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Text, Box } from "@chakra-ui/react";
 
 /**
  * A <AccountStatement> component
@@ -15,9 +16,9 @@ const AccountStatement = ({ className = "", ...props }) => {
 	}, []);
 
 	return (
-		<div className={`${className}`} {...props}>
-			AccountStatement
-		</div>
+		<Box className={`${className}`} {...props}>
+			<Text size> Account Statement</Text>
+		</Box>
 	);
 };
 

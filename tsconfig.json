@@ -25,7 +25,7 @@
 		"isolatedModules": true,
 		"jsx": "preserve"
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/SearchBar/SearchFilterSort.jsx", "components/Network/Tables.jsx"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/SearchBar/SearchFilterSort.jsx", "components/Network/Tables.jsx", "constants/adminMenu.ts"],
 	"exclude": [
 		"node_modules",
 		".next",
