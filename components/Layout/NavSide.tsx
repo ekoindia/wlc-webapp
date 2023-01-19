@@ -23,10 +23,8 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 
-import { ChevronRightIcon } from "@chakra-ui/icons";
 import { adminMenu } from "constants/adminMenu";
 import { ReactNode, ReactText } from "react";
-import { FiMenu } from "react-icons/fi";
 import { Buttons, IconButtons, Icon } from "../";
 import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 import { useRouter } from "next/router";
@@ -184,7 +182,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 				onClick={onOpen}
 				variant="outline"
 				aria-label="open menu"
-				icon={<FiMenu />}
+				// icon={<FiMenu />}
 			/>
 
 			<HStack spacing={{ base: "0", md: "" }}>
@@ -286,9 +284,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 													h="36px"
 													fontSize="12px"
 													title="View Profile"
-													rightIcon={
-														<ChevronRightIcon />
-													}
+													// rightIcon={
+													// 	// <ChevronRightIcon />
+													// }
 												/>
 											</Box>
 										</Box>
