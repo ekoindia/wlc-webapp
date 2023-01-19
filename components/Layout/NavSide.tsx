@@ -10,7 +10,6 @@ import {
 	Flex,
 	FlexProps,
 	HStack,
-	Icon,
 	IconButton,
 	Link,
 	Menu,
@@ -24,11 +23,11 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 
-import { ChevronRightIcon } from "@chakra-ui/icons";
 import { adminMenu } from "constants/adminMenu";
 import { ReactNode, ReactText } from "react";
-import { FiMenu } from "react-icons/fi";
-import { Buttons, IconButtons } from "../";
+import { Buttons, IconButtons, Icon } from "../";
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import { useRouter } from "next/router";
 
 export default function SidebarWithHeader({
 	children,
@@ -71,6 +70,7 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+	const router = useRouter();
 	return (
 		<Flex>
 			<Box
@@ -91,9 +91,14 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 						onClick={onClose}
 					/>
 				</Flex>
-				{adminMenu.map((link) => (
-					<NavItem key={link.name} icon={link.icon}>
-						{link.name}
+				{adminMenu.map((menu, idx) => (
+					<NavItem
+						key={idx}
+						gap="10px"
+						iconName={menu.icon}
+						onClick={() => router.push(menu.link)}
+					>
+						{menu.name}
 					</NavItem>
 				))}
 			</Box>
@@ -102,33 +107,39 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	);
 };
 
+import { IconNameType } from "../Icon/Icon";
+
 interface NavItemProps extends FlexProps {
-	icon: any; // change to any from string
+	iconName: IconNameType;
 	children: ReactText;
+	url?: string;
 }
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ iconName, url, children, ...rest }: NavItemProps) => {
 	return (
-		<Link
-			href="#"
-			style={{ textDecoration: "none" }}
-			_focus={{ boxShadow: "none" }}
+		// <Link
+		// 	href={url}
+		// 	style={{ textDecoration: "none" }}
+		// 	_focus={{
+		// 		bg:" #081E89",
+		// 		border: "1px solid #1F3ABC"
+		// 	 }}
+
+		// >
+		<Flex
+			fontSize="16px"
+			color="#FFFFFF"
+			align="center"
+			p="4"
+			role="group"
+			cursor="pointer"
+			borderBottom="1px solid #1F3ABC"
+			_hover={{
+				color: "white",
+			}}
+			// background =" #081E89"
+			{...rest}
 		>
-			<Flex
-				fontSize="16px"
-				color={"#FFFFFF"}
-				align="center"
-				p="4"
-				mx=""
-				borderRadius="lg"
-				role="group"
-				cursor="pointer"
-				_hover={{
-					bg: "#1F3ABC",
-					color: "white",
-				}}
-				{...rest}
-			>
-				{icon && (
+			{/* {icon && (
 					<Icon
 						mr="4"
 						fontSize=""
@@ -137,10 +148,16 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 						}}
 						// as={icon} // commenting this so that I can deploy
 					/>
-				)}
-				{children}
-			</Flex>
-		</Link>
+				)} */}
+			<Box>
+				<Icon
+					name={iconName}
+					style={{ width: "27px", height: "27px" }}
+				/>
+			</Box>
+			{children}
+		</Flex>
+		// </Link>
 	);
 };
 
@@ -153,7 +170,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 			justify="space-between"
 			height="90px"
 			align="center"
-			bg="#FFFFFF"
+			bg="white"
 			boxShadow="0px 3px 10px #0000001A"
 			{...rest}
 		>
@@ -165,7 +182,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 				onClick={onOpen}
 				variant="outline"
 				aria-label="open menu"
-				icon={<FiMenu />}
+				// icon={<FiMenu />}
 			/>
 
 			<HStack spacing={{ base: "0", md: "" }}>
@@ -186,7 +203,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 								<VStack
 									display={{ base: "none", md: "flex" }}
 									alignItems="flex-start"
-									spacing="1px"
+									spacing="5px"
 									ml="2"
 								>
 									<Text
@@ -207,16 +224,15 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 						</MenuButton>
 						<MenuList
 							h="470px"
-							w="350px"
-							bg={useColorModeValue("white", "gray.900")}
-							borderColor={useColorModeValue(
-								"gray.200",
-								"gray.700"
-							)}
+							w="395px"
+							mr="20px"
+							boxShadow="0px 6px 10px #00000033"
+							border="1px solid #D2D2D2"
+							borderRadius="10px"
 						>
 							<Card>
 								<Box bg={"#1F3ABC"} h="120px">
-									<Box ml="5px">
+									<Box ml="20px">
 										<Box
 											display="flex"
 											mt="20px"
@@ -224,7 +240,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 										>
 											<Box
 												fontSize={"14px"}
-												color={"primary.light"} // need to update the color
+												color={"highlight"} // need to update the color
 												borderRadius="15px"
 											>
 												Akash Enterprises
@@ -268,9 +284,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 													h="36px"
 													fontSize="12px"
 													title="View Profile"
-													rightIcon={
-														<ChevronRightIcon />
-													}
+													// rightIcon={
+													// 	// <ChevronRightIcon />
+													// }
 												/>
 											</Box>
 										</Box>

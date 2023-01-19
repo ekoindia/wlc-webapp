@@ -10,9 +10,14 @@ export type IconNameType =
 	| "chevron-right"
 	| "mode-edit"
 	| "account-balance-wallet"
-	| "near-me";
+	| "near-me"
+	| "person"
+	| "refer"
+	| "invoice"
+	| "swap-horiz"
+	| "commission-percent";
 
-type Props = {
+export type IconProps = {
 	name: IconNameType;
 	color?: string;
 	width?: string;
@@ -27,7 +32,7 @@ type Props = {
  * @example	`<Icon></Icon>`
  */
 
-const Icon = ({ name, style, ...rest }: Props) => {
+const Icon = ({ name, style, ...rest }: IconProps) => {
 	const transform = IconLibrary[name]?.transform;
 	const viewBox = IconLibrary[name]?.viewBox;
 	const path = IconLibrary[name]?.path;

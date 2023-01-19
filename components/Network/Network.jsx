@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SearchBar } from "components/SearchBar";
 import { Filter, Sort } from "..";
+import { Tables } from ".";
 import { Box, Flex } from "@chakra-ui/react";
 
 /**
@@ -44,6 +45,7 @@ const Network = ({ className = "", ...props }) => {
 					</Box>
 				</Flex>
 			</Box>
+			<Tables />
 		</Box>
 	);
 };
