@@ -284,9 +284,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 													h="36px"
 													fontSize="12px"
 													title="View Profile"
-													rightIcon={
-														// <ChevronRightIcon />
-													}
+													// rightIcon={
+													// 	// <ChevronRightIcon />
+													// }
 												/>
 											</Box>
 										</Box>
