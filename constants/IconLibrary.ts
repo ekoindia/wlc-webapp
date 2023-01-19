@@ -13,7 +13,7 @@ export const IconLibrary: IconObjType = {
 		viewBox: "0 0 24 24",
 		path: "M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z",
 	},
-	"arrow-forward": {
+	"chevron-right": {
 		viewBox: "0 0 11.314 11.314",
 		path: "M292.383,142.4a.794.794,0,0,0-1.587,0v6.413a.794.794,0,0,0,.794.794H298a.794.794,0,1,0,0-1.587H292.38Z",
 
@@ -31,7 +31,7 @@ export const IconLibrary: IconObjType = {
 		viewBox: "0 0 24 24",
 		path: "M10,22V14H2a2,2,0,0,1,0-4h8V2a2,2,0,0,1,4,0v8h8a2,2,0,0,1,0,4H14v8a2,2,0,0,1-4,0Z",
 	},
-	"chevron-right": {
+	"arrow-forward": {
 		viewBox: "0 0 18 15",
 		path: "M210.764,158.349l-.631-.671-6.411-6.829-1.392,1.342,4.868,5.183H192.764v1.951H207.2l-4.868,5.183,1.392,1.342,6.411-6.829Z",
 
