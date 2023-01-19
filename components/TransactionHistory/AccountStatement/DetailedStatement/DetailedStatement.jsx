@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Text, Box, Flex, Center, Spacer } from "@chakra-ui/react";
-import { Cards, Tags, Buttons, Icon } from "../..";
-import { useRouter } from "next/router";
+import { Cards, Tags, Buttons, Icon } from "../../..";
 /**
- * A <AccountStatement> component
+ * A <DetailedStatement> component
  * TODO: Write more description here
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<AccountStatement></AccountStatement>`
+ * @example	`<DetailedStatement></DetailedStatement>`
  */
-const AccountStatement = ({ className = "", ...props }) => {
+const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
-
-	const router = useRouter();
-	const handleClick = (e) => {
-		router.push("/admin/trxn-history/account-statement/detailed-statement");
-	};
 
 	return (
 		<>
@@ -30,30 +24,31 @@ const AccountStatement = ({ className = "", ...props }) => {
 					fontWeight={"semibold"}
 					marginLeft={"1rem"}
 				>
-					Account Statement
+					Detailed Statement
 				</Text>
 			</Box>
+
 			<Cards w="1610px" h="160px" marginTop={"1.5rem"}>
 				<Flex flexDirection={"column"} gap="1rem">
 					<Box display={"flex"} justifyContent={"space-between"}>
 						<Text
 							fontWeight={"semibold"}
 							color={"light"}
-							fontSize={"18px"}
+							fontSize={18}
 						>
 							Account information
 						</Text>
-						<Text color={"accent.DEFAULT"} fontSize={"16px"}>
+						<Text color={"accent.DEFAULT"} fontSize={16}>
 							as on 04/01/2023
 						</Text>
 					</Box>
 					<Box display={"flex"} justifyContent={"space-between"}>
 						<Box>
-							<Text fontSize={"14px"} color={"light"}>
+							<Text fontSize={14} color={"light"}>
 								Account Holder
 							</Text>
 							<Text
-								fontSize={"16px"}
+								fontSize={16}
 								color={"dark"}
 								fontWeight={"medium"}
 							>
@@ -62,11 +57,11 @@ const AccountStatement = ({ className = "", ...props }) => {
 						</Box>
 						<Box display={"flex"}>
 							<Box>
-								<Text fontSize={"14px"} color={"light"}>
+								<Text fontSize={14} color={"light"}>
 									Account Number
 								</Text>
 								<Text
-									fontSize={"16px"}
+									fontSize={16}
 									color={"dark"}
 									fontWeight={"medium"}
 								>
@@ -82,11 +77,11 @@ const AccountStatement = ({ className = "", ...props }) => {
 							</Box>
 						</Box>
 						<Box>
-							<Text fontSize={"14px"} color={"light"}>
+							<Text fontSize={14} color={"light"}>
 								Bank Name
 							</Text>
 							<Text
-								fontSize={"16px"}
+								fontSize={16}
 								color={"dark"}
 								fontWeight={"medium"}
 							>
@@ -94,11 +89,11 @@ const AccountStatement = ({ className = "", ...props }) => {
 							</Text>
 						</Box>
 						<Box>
-							<Text fontSize={"14px"} color={"light"}>
+							<Text fontSize={14} color={"light"}>
 								Account Type
 							</Text>
 							<Text
-								fontSize={"16px"}
+								fontSize={16}
 								color={"dark"}
 								fontWeight={"medium"}
 							>
@@ -106,7 +101,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 							</Text>
 						</Box>
 						<Box>
-							<Text fontSize={"14px"} color={"light"}>
+							<Text fontSize={14} color={"light"}>
 								Current Balance
 							</Text>
 							<Box
@@ -131,14 +126,6 @@ const AccountStatement = ({ className = "", ...props }) => {
 								</Text>
 							</Box>
 						</Box>
-						<Buttons
-							onClick={handleClick}
-							title={"View Detailed Statement"}
-							w={"258px"}
-							h={"60px"}
-							fontSize={"16px"}
-							fontWeight={"bold"}
-						></Buttons>
 					</Box>
 				</Flex>
 			</Cards>
@@ -146,4 +133,4 @@ const AccountStatement = ({ className = "", ...props }) => {
 	);
 };
 
-export default AccountStatement;
+export default DetailedStatement;
