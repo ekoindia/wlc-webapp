@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Pagination } from "./Pagination";
 import { Tables } from "./Tables";
 import { TransactionHistory } from "./TransactionHistory";
 import { Icon } from "./Icon";
@@ -21,6 +22,7 @@ import { AccountStatement } from "./TransactionHistory/AccountStatement";
 import { DetailedStatement } from "./TransactionHistory/AccountStatement";
 
 export {
+	Pagination,
 	Tables,
 	TransactionHistory,
 	AccountStatement,
