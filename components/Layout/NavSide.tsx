@@ -10,7 +10,6 @@ import {
 	Flex,
 	FlexProps,
 	HStack,
-	Icon,
 	IconButton,
 	Link,
 	Menu,
@@ -23,10 +22,14 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
+
+import { ChevronRightIcon } from "@chakra-ui/icons";
 import { adminMenu } from "constants/adminMenu";
 import { ReactNode, ReactText } from "react";
-import { IconType } from "react-icons";
 import { FiMenu } from "react-icons/fi";
+import { Buttons, IconButtons, Icon } from "../";
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import { useRouter } from "next/router";
 
 export default function SidebarWithHeader({
 	children,
@@ -69,6 +72,7 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+	const router = useRouter();
 	return (
 		<Flex>
 			<Box
@@ -89,9 +93,14 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 						onClick={onClose}
 					/>
 				</Flex>
-				{adminMenu.map((link) => (
-					<NavItem key={link.name} icon={link.icon}>
-						{link.name}
+				{adminMenu.map((menu, idx) => (
+					<NavItem
+						key={idx}
+						gap="10px"
+						iconName={menu.icon}
+						onClick={() => router.push(menu.link)}
+					>
+						{menu.name}
 					</NavItem>
 				))}
 			</Box>
@@ -100,45 +109,57 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	);
 };
 
+import { IconNameType } from "../Icon/Icon";
+
 interface NavItemProps extends FlexProps {
-	icon: IconType;
+	iconName: IconNameType;
 	children: ReactText;
+	url?: string;
 }
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ iconName, url, children, ...rest }: NavItemProps) => {
 	return (
-		<Link
-			href="#"
-			style={{ textDecoration: "none" }}
-			_focus={{ boxShadow: "none" }}
+		// <Link
+		// 	href={url}
+		// 	style={{ textDecoration: "none" }}
+		// 	_focus={{
+		// 		bg:" #081E89",
+		// 		border: "1px solid #1F3ABC"
+		// 	 }}
+
+		// >
+		<Flex
+			fontSize="16px"
+			color="#FFFFFF"
+			align="center"
+			p="4"
+			role="group"
+			cursor="pointer"
+			borderBottom="1px solid #1F3ABC"
+			_hover={{
+				color: "white",
+			}}
+			// background =" #081E89"
+			{...rest}
 		>
-			<Flex
-				fontSize="16px"
-				color={"#FFFFFF"}
-				align="center"
-				p="4"
-				mx=""
-				borderRadius="lg"
-				role="group"
-				cursor="pointer"
-				_hover={{
-					bg: "#1F3ABC",
-					color: "white",
-				}}
-				{...rest}
-			>
-				{icon && (
+			{/* {icon && (
 					<Icon
 						mr="4"
 						fontSize=""
 						_groupHover={{
 							color: "white",
 						}}
-						as={icon}
+						// as={icon} // commenting this so that I can deploy
 					/>
-				)}
-				{children}
-			</Flex>
-		</Link>
+				)} */}
+			<Box>
+				<Icon
+					name={iconName}
+					style={{ width: "27px", height: "27px" }}
+				/>
+			</Box>
+			{children}
+		</Flex>
+		// </Link>
 	);
 };
 
@@ -151,7 +172,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 			justify="space-between"
 			height="90px"
 			align="center"
-			bg="#FFFFFF"
+			bg="white"
 			boxShadow="0px 3px 10px #0000001A"
 			{...rest}
 		>
@@ -184,7 +205,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 								<VStack
 									display={{ base: "none", md: "flex" }}
 									alignItems="flex-start"
-									spacing="1px"
+									spacing="5px"
 									ml="2"
 								>
 									<Text
@@ -205,38 +226,72 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 						</MenuButton>
 						<MenuList
 							h="470px"
-							w="350px"
-							bg={useColorModeValue("white", "gray.900")}
-							borderColor={useColorModeValue(
-								"gray.200",
-								"gray.700"
-							)}
+							w="395px"
+							mr="20px"
+							boxShadow="0px 6px 10px #00000033"
+							border="1px solid #D2D2D2"
+							borderRadius="10px"
 						>
 							<Card>
-								<Box bg={"#1F3ABC"} h={100} display="flex">
-									<Box
-										fontSize={14}
-										color="#FFD93B"
-										mt={5}
-										ml={2}
-										borderRadius="15px"
-									>
-										Akash Enterprises
-										<Box color="#FFFFFF" fontSize={10}>
+								<Box bg={"#1F3ABC"} h="120px">
+									<Box ml="20px">
+										<Box
+											display="flex"
+											mt="20px"
+											gap="50px"
+										>
+											<Box
+												fontSize={"14px"}
+												color={"highlight"} // need to update the color
+												borderRadius="15px"
+											>
+												Akash Enterprises
+											</Box>
+											<Box
+												fontSize="10px"
+												color={"white"}
+												mt="4px"
+											>
+												(Eko Code: 501837634)
+											</Box>
+										</Box>
+
+										<Box color={"focusbg"} fontSize={10}>
 											angeltech.google.co.in
 										</Box>
-										<Box color="#FFFFFF" fontSize={10}>
-											+91 9871679433 <img src="" />
+										<Box>
+											<Box
+												display={"flex"}
+												alignItems={"center"}
+												color={"focusbg"}
+												fontSize={10}
+												gap="80px"
+											>
+												<Box as={"span"}>
+													+91 9871679433
+													<IconButtons
+														iconPath="/icons/pen.svg"
+														iconStyle={{
+															h: "8px",
+															w: "8px",
+														}}
+														circleStyle={{
+															h: "21px",
+															w: "21px",
+														}}
+													></IconButtons>
+												</Box>
+												<Buttons
+													w="108px"
+													h="36px"
+													fontSize="12px"
+													title="View Profile"
+													rightIcon={
+														<ChevronRightIcon />
+													}
+												/>
+											</Box>
 										</Box>
-									</Box>
-									<Box
-										mt={5}
-										ml={20}
-										color="#FFFFFF"
-										fontSize={10}
-									>
-										(Eko Code: 501837634)
-										<br />
 									</Box>
 								</Box>
 
@@ -245,17 +300,29 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 										divider={<StackDivider />}
 										spacing="4"
 									>
-										<Box>Business Contact</Box>
+										<Flex justifyContent="space-between">
+											Business Contact
+											<img src="/icons/forwardarrow.svg" />
+										</Flex>
 
-										<Box>Need Help</Box>
+										<Flex justifyContent="space-between">
+											Need Help
+											<img src="/icons/forwardarrow.svg" />
+										</Flex>
 
-										<Box>Help Center</Box>
+										<Flex justifyContent="space-between">
+											Help Center
+											<img src="/icons/forwardarrow.svg" />
+										</Flex>
 
-										<Box>Settings</Box>
+										<Flex justifyContent="space-between">
+											Settings
+											<img src="/icons/forwardarrow.svg" />
+										</Flex>
 									</Stack>
 								</CardBody>
 							</Card>
-							<Box mt={50} ml={10} color="#FF4081" fontSize={14}>
+							<Box mt={50} ml={10} color={"error"} fontSize={14}>
 								Logout
 							</Box>
 						</MenuList>

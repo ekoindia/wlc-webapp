@@ -13,7 +13,7 @@ const Buttons = (props) => {
 		title,
 		children,
 		onClick,
-		variant,
+		variant = "solid",
 		size,
 		color,
 		colorType = 1,
@@ -25,13 +25,15 @@ const Buttons = (props) => {
 	const shade = color ? color : "white";
 	return (
 		<Button
-			variant={variant}
 			size={size}
 			onClick={onClick}
 			color={shade}
 			{...rest}
 			bg={fill}
 			_hover={{
+				bg: hoverFill,
+			}}
+			_focus={{
 				bg: hoverFill,
 			}}
 		>

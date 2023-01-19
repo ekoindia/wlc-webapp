@@ -19,6 +19,7 @@ const Inputs = ({
 	errorStyle,
 	inputContStyle,
 	inputNumStyle,
+	inputProps,
 	...props
 }) => {
 	// TODO: Edit state as required
@@ -36,14 +37,19 @@ const Inputs = ({
 					hidden={hidden}
 					value={value}
 					w="100%"
+					onChange={(e) => onChange(e.target.value)}
 					pl={isNumInput ? "7.6rem" : ""}
 					height="100%"
+					_hover={{
+						border: "",
+					}}
 					_focus={{
 						bg: "focusbg",
 						boxShadow: "0px 3px 6px #0000001A",
 						borderColor: "hint",
 						transition: "box-shadow 0.3s ease-out",
 					}}
+					{...inputProps}
 				/>
 				{isNumInput && (
 					<Center
@@ -54,7 +60,7 @@ const Inputs = ({
 						height="100%"
 						w="5.6rem"
 						borderRight="1px solid"
-						borderColor="hint"
+						borderColor={invalid && errorMsg ? "error" : "hint"}
 						zIndex="1100"
 						{...inputNumStyle}
 					>
@@ -70,6 +76,10 @@ const Inputs = ({
 			) : null}
 		</Flex>
 	);
+};
+
+Inputs.defaultProps = {
+	onChange: () => {},
 };
 
 export default Inputs;
