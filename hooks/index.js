@@ -1,2 +1,2 @@
 /* PLOP_INJECT_EXPORT */
-export { default as usePagination } from "./usePagination";
+export { default as usePagination, DOTS } from "./usePagination";

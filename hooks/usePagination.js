@@ -2,6 +2,14 @@
  * Hook for Pagination
  * @param {string} defaultValue
  */
+
+export const DOTS = "...";
+
+const range = (start, end) => {
+	let length = end - start + 1;
+	return Array.from({ length }, (_, idx) => idx + start);
+};
+
 const usePagination = ({
 	totalCount,
 	pageSize,
