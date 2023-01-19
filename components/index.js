@@ -16,6 +16,7 @@ import { Network } from "./Network";
 import { ProfilePanel } from "./Profile";
 import { SearchBar } from "./SearchBar";
 import { Sort } from "./Sort";
+import { Filter } from "./Filter";
 import { Tags } from "./Tags";
 import { AccountStatement } from "./TransactionHistory/AccountStatement";
 
