@@ -15,7 +15,9 @@ export type IconNameType =
 	| "refer"
 	| "invoice"
 	| "swap-horiz"
-	| "commission-percent";
+	| "commission-percent"
+	| "rupee"
+	| "arrow-back";
 
 export type IconProps = {
 	name: IconNameType;

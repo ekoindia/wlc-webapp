@@ -1,15 +1,18 @@
 import React from "react";
 import Head from "next/head";
+import { DetailedStatement, Layout } from "components";
 
-const DetailedStatement = () => {
+const detStatement = () => {
 	return (
 		<>
 			<Head>
 				<title>Detailed-Statement | Eko API Marketplace</title>
 			</Head>
-			<h1>Add Page Content Here</h1>
+			<Layout>
+				<DetailedStatement />
+			</Layout>
 		</>
 	);
 };
 
-export default DetailedStatement;
+export default detStatement;

@@ -107,7 +107,7 @@ const CompanyPane = () => {
 					<IconButtons
 						title="View All Transactions"
 						iconFill="0"
-						iconPath="/icons/nextArrow.svg"
+						iconName="arrow-forward"
 						iconPos="right"
 						iconStyle={{ h: "15px", w: "18px" }}
 					/>

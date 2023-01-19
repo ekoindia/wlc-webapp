@@ -18,11 +18,13 @@ import { SearchBar } from "./SearchBar";
 import { Sort } from "./Sort";
 import { Tags } from "./Tags";
 import { AccountStatement } from "./TransactionHistory/AccountStatement";
+import { DetailedStatement } from "./TransactionHistory/AccountStatement";
 
 export {
 	Tables,
 	TransactionHistory,
 	AccountStatement,
+	DetailedStatement,
 	Icon,
 	Tags,
 	IconButtons,
