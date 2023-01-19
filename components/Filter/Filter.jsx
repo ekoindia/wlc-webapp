@@ -14,7 +14,7 @@ import {
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { Buttons, IconButtons } from "..";
+import { Buttons, IconButtons, Icon } from "..";
 /**
  * A <Filter> component
  * TODO: Write more description here
@@ -44,7 +44,21 @@ function Filter() {
 				border="1px solid #11299E"
 				boxShadow={"box-shadow: 0px 3px 10px #11299E1A"}
 			>
-				<Text color="#11299E">Filter</Text>
+				<Text
+					color="#11299E"
+					display={"flex"}
+					alignItems={"center"}
+					fontSize={"18px"}
+				>
+					<Icon
+						name="filter"
+						width="24px"
+						height="25px"
+						size={"30px"}
+						style={{ marginRight: ".3rem" }}
+					/>
+					Filter
+				</Text>
 				{/* //TODO need to add icon here as well */}
 			</Button>
 
@@ -59,8 +73,37 @@ function Filter() {
 				<DrawerContent>
 					<DrawerHeader>
 						<Box display={"flex"} justifyContent={"space-between"}>
-							<Box>Filter</Box>
-							<Box onClick={onClose}>Close</Box>
+							<Box
+								display={"flex"}
+								alignItems={"center"}
+								fontWeight={"semibold"}
+								fontSize={"30px"}
+							>
+								<Icon
+									name="filter"
+									width="40px"
+									height="40px"
+									size={"30px"}
+									style={{ marginRight: ".3rem" }}
+								/>
+								Filter
+							</Box>
+							<Box
+								display={"flex"}
+								alignItems={"center"}
+								onClick={onClose}
+								fontSize={"18px"}
+								cursor={"pointer"}
+								color={"light"}
+							>
+								<Icon
+									name="close-outline"
+									width="24px"
+									height="24px"
+									style={{ marginRight: ".3rem" }}
+								/>
+								Close
+							</Box>
 							{/* //TODO update this to button after updating buttons to accept multiple colors */}
 						</Box>
 					</DrawerHeader>

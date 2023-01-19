@@ -53,9 +53,22 @@ const Sort = ({ className = "", ...props }) => {
 						<Text>Recenty Added</Text>
 					</MenuButton>
 					<MenuList>
-						<MenuItem>Recent Added </MenuItem>
-						<MenuItem>Status: Active</MenuItem>
-						<MenuItem>Status: Inactive</MenuItem>
+						<MenuItem color={"dark"} fontWeight={"semibold"}>
+							Recently Added
+						</MenuItem>
+						<MenuItem color={"light"} fontWeight={"semibold"}>
+							Status:{" "}
+							<Box as="span" color={"dark"}>
+								{" "}
+								&nbsp; Active
+							</Box>
+						</MenuItem>
+						<MenuItem color={"light"} fontWeight={"semibold"}>
+							Status:{" "}
+							<Box as="span" color={"dark"}>
+								&nbsp; Inactive
+							</Box>{" "}
+						</MenuItem>
 					</MenuList>
 				</Box>
 			</Menu>
