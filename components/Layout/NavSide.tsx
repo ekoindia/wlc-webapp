@@ -288,7 +288,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 												<Box as={"span"}>
 													+91 9871679433
 													<IconButtons
-														iconPath="/icons/pen.svg"
+														iconName="mode-edit"
 														iconStyle={{
 															h: "8px",
 															w: "8px",
@@ -319,22 +319,48 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 										spacing="4"
 									>
 										<Flex justifyContent="space-between">
-											Business Contact
+											<Text
+												style={{
+													font: "normal normal medium 14px/36px Inter;",
+												}}
+											>
+												{" "}
+												Business Contact{" "}
+											</Text>
 											<img src="/icons/forwardarrow.svg" />
 										</Flex>
 
 										<Flex justifyContent="space-between">
-											Need Help
+											<Text
+												style={{
+													font: "normal normal medium 14px/36px Inter;",
+												}}
+											>
+												Need Help
+											</Text>
 											<img src="/icons/forwardarrow.svg" />
 										</Flex>
 
 										<Flex justifyContent="space-between">
-											Help Center
+											<Text
+												style={{
+													font: "normal normal medium 14px/36px Inter;",
+												}}
+											>
+												{" "}
+												Help Center
+											</Text>
 											<img src="/icons/forwardarrow.svg" />
 										</Flex>
 
 										<Flex justifyContent="space-between">
-											Settings
+											<Text
+												style={{
+													font: "normal normal medium 14px/36px Inter;",
+												}}
+											>
+												Settings
+											</Text>
 											<img src="/icons/forwardarrow.svg" />
 										</Flex>
 									</Stack>
