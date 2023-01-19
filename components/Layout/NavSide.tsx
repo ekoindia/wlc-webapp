@@ -10,7 +10,6 @@ import {
 	Flex,
 	FlexProps,
 	HStack,
-	Icon,
 	IconButton,
 	Link,
 	Menu,
@@ -28,7 +27,9 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import { adminMenu } from "constants/adminMenu";
 import { ReactNode, ReactText } from "react";
 import { FiMenu } from "react-icons/fi";
-import { Buttons, IconButtons } from "../";
+import { Buttons, IconButtons, Icon } from "../";
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import { useRouter } from "next/router";
 
 export default function SidebarWithHeader({
 	children,
@@ -71,6 +72,7 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+	const router = useRouter();
 	return (
 		<Flex>
 			<Box
@@ -91,9 +93,14 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 						onClick={onClose}
 					/>
 				</Flex>
-				{adminMenu.map((link) => (
-					<NavItem key={link.name} icon={link.icon}>
-						{link.name}
+				{adminMenu.map((menu, idx) => (
+					<NavItem
+						key={idx}
+						gap="10px"
+						iconName={menu.icon}
+						onClick={() => router.push(menu.link)}
+					>
+						{menu.name}
 					</NavItem>
 				))}
 			</Box>
@@ -102,33 +109,39 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	);
 };
 
+import { IconNameType } from "../Icon/Icon";
+
 interface NavItemProps extends FlexProps {
-	icon: any; // change to any from string
+	iconName: IconNameType;
 	children: ReactText;
+	url?: string;
 }
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ iconName, url, children, ...rest }: NavItemProps) => {
 	return (
-		<Link
-			href="#"
-			style={{ textDecoration: "none" }}
-			_focus={{ boxShadow: "none" }}
+		// <Link
+		// 	href={url}
+		// 	style={{ textDecoration: "none" }}
+		// 	_focus={{
+		// 		bg:" #081E89",
+		// 		border: "1px solid #1F3ABC"
+		// 	 }}
+
+		// >
+		<Flex
+			fontSize="16px"
+			color="#FFFFFF"
+			align="center"
+			p="4"
+			role="group"
+			cursor="pointer"
+			borderBottom="1px solid #1F3ABC"
+			_hover={{
+				color: "white",
+			}}
+			// background =" #081E89"
+			{...rest}
 		>
-			<Flex
-				fontSize="16px"
-				color={"#FFFFFF"}
-				align="center"
-				p="4"
-				mx=""
-				borderRadius="lg"
-				role="group"
-				cursor="pointer"
-				_hover={{
-					bg: "#1F3ABC",
-					color: "white",
-				}}
-				{...rest}
-			>
-				{icon && (
+			{/* {icon && (
 					<Icon
 						mr="4"
 						fontSize=""
@@ -137,10 +150,16 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
 						}}
 						// as={icon} // commenting this so that I can deploy
 					/>
-				)}
-				{children}
-			</Flex>
-		</Link>
+				)} */}
+			<Box>
+				<Icon
+					name={iconName}
+					style={{ width: "27px", height: "27px" }}
+				/>
+			</Box>
+			{children}
+		</Flex>
+		// </Link>
 	);
 };
 
