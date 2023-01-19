@@ -9,6 +9,7 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Buttons, IconButtons } from "../../";
+import { useRouter } from "next/router";
 
 const VerifyOtp = ({ number, setStep }) => {
 	const formatNum =
@@ -17,6 +18,12 @@ const VerifyOtp = ({ number, setStep }) => {
 		number.slice(2, 5) +
 		" " +
 		number.slice(5, 11);
+
+	const router = useRouter();
+	const redirect = () => {
+		router.push("/admin/my-network");
+	};
+
 	return (
 		<Flex direction="column">
 			<Flex align="center">
@@ -72,6 +79,7 @@ const VerifyOtp = ({ number, setStep }) => {
 				fontSize="xl"
 				borderRadius="10px"
 				boxShadow="0px 3px 10px #FE9F0040"
+				onClick={redirect} // dummy onClick
 			/>
 		</Flex>
 	);
