@@ -19,7 +19,8 @@ export type IconNameType =
 	| "rupee"
 	| "arrow-back"
 	| "close-outline"
-	| "filter";
+	| "filter"
+	| "home";
 
 export type IconProps = {
 	name: IconNameType;
