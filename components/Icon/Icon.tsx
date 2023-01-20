@@ -20,6 +20,7 @@ export type IconNameType =
 	| "rupee"
 	| "close-outline"
 	| "filter"
+	| "home"
 	| "caret-up"
 	| "caret-down"
 	| "sort";
