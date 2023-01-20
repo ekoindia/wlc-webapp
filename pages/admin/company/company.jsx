@@ -1,13 +1,15 @@
-import React from "react";
+import { Layout } from "components";
 import Head from "next/head";
-
+import React from "react";
 const Company = () => {
 	return (
 		<>
 			<Head>
 				<title>Company | Eko API Marketplace</title>
 			</Head>
-			<h1>Add Page Content Here</h1>
+			<Layout>
+				<h1>Add Page Content Here</h1>
+			</Layout>
 		</>
 	);
 };

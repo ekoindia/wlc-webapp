@@ -11,7 +11,6 @@ import {
 	FlexProps,
 	HStack,
 	IconButton,
-	Link,
 	Menu,
 	MenuButton,
 	MenuList,
@@ -24,10 +23,10 @@ import {
 } from "@chakra-ui/react";
 
 import { adminMenu } from "constants/adminMenu";
-import { ReactNode, ReactText } from "react";
-import { Buttons, IconButtons, Icon } from "../";
-import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { ReactNode, ReactText, useEffect, useState } from "react";
+import { Buttons, Icon, IconButtons } from "../";
 
 export default function SidebarWithHeader({
 	children,
@@ -71,16 +70,19 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 	const router = useRouter();
+	const [currentRoute, setcurrentRoute] = useState("my-network");
+
+	useEffect(() => {
+		setcurrentRoute(router.pathname.split("/")[2]);
+	}, [router.asPath]);
+
 	return (
 		<Flex>
 			<Box
-				// mt="90px"
-				// transition="3s ease"
 				bg="#11299E"
 				borderRight="12px"
 				borderRightColor={useColorModeValue("gray.200", "gray.700")}
 				w="250px"
-				// pos="fixed"
 				{...rest}
 				minHeight="90vh"
 				maxHeight="container"
@@ -92,21 +94,33 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 					/>
 				</Flex>
 				{adminMenu.map((menu, idx) => (
-					<NavItem
-						key={idx}
-						gap="10px"
-						iconName={menu.icon}
-						onClick={() => router.push(menu.link)}
-					>
-						{/* <a
+					<Link href={menu.link} key={idx} legacyBehavior={true}>
+						<NavItem
+							key={idx}
+							gap="10px"
+							iconName={menu.icon}
+							bg={
+								currentRoute === menu.link.split("/")[2]
+									? "#081E89"
+									: ""
+							}
+							borderLeft="8px"
+							borderLeftColor={
+								currentRoute === menu.link.split("/")[2]
+									? "#FE7D00"
+									: "transparent"
+							}
+						>
+							{/* <a
               className={`cursor-pointer ${
                 router.pathname === menu.link
                   ? 'text-blue-500'
                   : 'hover:bg-gray-900 hover:text-blue-500'
               }`}		
             ></a> */}
-						{menu.name}
-					</NavItem>
+							{menu.name}
+						</NavItem>
+					</Link>
 				))}
 			</Box>
 			{rest.children}
@@ -141,11 +155,11 @@ const NavItem = ({ iconName, url, children, ...rest }: NavItemProps) => {
 			role="group"
 			cursor="pointer"
 			borderBottom="1px solid #1F3ABC"
-			_hover={{
-				color: "white",
-				borderLeft: "8px solid #FE7D00",
-				bg: "#081E89",
-			}}
+			// _hover={{
+			// 	color: "white",
+			// 	borderLeft: "8px solid #FE7D00",
+			// 	bg: "#081E89",
+			// }}
 			// background =" #081E89"
 			{...rest}
 		>

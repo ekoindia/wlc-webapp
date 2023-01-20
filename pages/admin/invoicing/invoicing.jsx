@@ -1,5 +1,6 @@
-import React from "react";
+import { Layout } from "components";
 import Head from "next/head";
+import React from "react";
 
 const Invoicing = () => {
 	return (
@@ -7,7 +8,9 @@ const Invoicing = () => {
 			<Head>
 				<title>Invoicing | Eko API Marketplace</title>
 			</Head>
-			<h1>Add Page Content Here</h1>
+			<Layout>
+				<h1>Add Page Content Here</h1>
+			</Layout>
 		</>
 	);
 };
