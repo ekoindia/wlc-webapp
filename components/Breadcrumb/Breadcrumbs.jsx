@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import {
+	Box,
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbLink,
-	Box,
+	color,
+	Text,
 } from "@chakra-ui/react";
+import { Icon } from "../";
 /**
  * A <Breadcrumb> component
  * TODO: Write more description here
@@ -13,31 +17,99 @@ import {
  * @example	`<Breadcrumb></Breadcrumb>`
  */
 const Breadcrumbs = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
+	const router = useRouter();
+	const [breadcrumbs, setBreadcrumbs] = useState();
 
 	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
-	const CustomizedBreadcrumbSeparator = () => {
-		return <div>&gt;</div>;
-	};
+		const pathWithoutQuery = router.asPath.split("?")[0];
+		let pathArray = pathWithoutQuery.split("/");
+		pathArray.shift();
+
+		pathArray = pathArray.filter((path) => path !== "");
+
+		const breadcrumbs = pathArray.map((path, index) => {
+			const href = "/" + pathArray.slice(0, index + 1).join("/");
+			return {
+				href,
+				label: path.charAt(0).toUpperCase() + path.slice(1),
+				isCurrent: index === pathArray.length - 1,
+			};
+		});
+
+		setBreadcrumbs(breadcrumbs);
+	}, [router.asPath]);
+
+	function capitalizeWordsBreadcrumbs(str) {
+		return str
+			.replace(/\b[a-z]/g, function (f) {
+				return f.toUpperCase();
+			})
+			.replace(/-/g, " ");
+	}
 
 	return (
-		<div className={`${className}`} {...props}>
-			<Breadcrumb separator={<CustomizedBreadcrumbSeparator />}>
-				<BreadcrumbItem>
-					<BreadcrumbLink href="/admin/my-network#">
-						<img src="/icons/home.svg" />
-					</BreadcrumbLink>
-				</BreadcrumbItem>
-
-				<BreadcrumbItem>
-					<BreadcrumbLink href="/admin/my-network#">
-						My Network
-					</BreadcrumbLink>
-				</BreadcrumbItem>
-			</Breadcrumb>
-		</div>
+		<>
+			<Box m={3} marginBottom={6}>
+				<Breadcrumb
+					separator={
+						<Icon
+							width="6px"
+							height="6px"
+							name="chevron-right"
+							color={"light"}
+						/>
+					}
+				>
+					<BreadcrumbItem key={0}>
+						<BreadcrumbLink
+							href="/"
+							_hover={{ textDecoration: "none" }}
+							fontWeight={"semibold"}
+							fontSize={"13px"}
+							color={"accent.DEFAULT"}
+							lineHeight={0}
+						>
+							<Box
+								gap={"1"}
+								display={"flex"}
+								alignItems={"center"}
+							>
+								<Icon width="14px" height="13px" name="home" />
+								<Text>Home</Text>
+							</Box>
+						</BreadcrumbLink>
+					</BreadcrumbItem>
+					{breadcrumbs &&
+						breadcrumbs.map((breadcrumb, index) => (
+							<BreadcrumbItem
+								key={index}
+								isCurrentPage={
+									index === breadcrumbs.length - 1
+										? true
+										: false
+								}
+							>
+								<BreadcrumbLink
+									href={breadcrumb.href}
+									_hover={{ textDecoration: "none" }}
+									fontWeight={"semibold"}
+									fontSize={"13px"}
+									color={
+										breadcrumb.isCurrent
+											? "light"
+											: "accent.DEFAULT"
+									}
+									lineHeight={0}
+								>
+									{capitalizeWordsBreadcrumbs(
+										breadcrumb.label
+									)}
+								</BreadcrumbLink>
+							</BreadcrumbItem>
+						))}
+				</Breadcrumb>
+			</Box>
+		</>
 	);
 };
 
