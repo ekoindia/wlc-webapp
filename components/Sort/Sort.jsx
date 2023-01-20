@@ -49,21 +49,54 @@ const Sort = ({ className = "", ...props }) => {
 						opacity={1}
 						as={Button}
 						rightIcon={<img src="/icons/profiledropdown.svg" />}
+						_active={{
+							bg: "white",
+						}}
+						_hover={{
+							bg: "none",
+						}}
 					>
 						<Text>Recenty Added</Text>
 					</MenuButton>
 					<MenuList>
-						<MenuItem color={"dark"} fontWeight={"semibold"}>
+						<MenuItem
+							color={"dark"}
+							fontWeight={"semibold"}
+							_active={{
+								bg: "white",
+							}}
+							_hover={{
+								bg: "none",
+							}}
+						>
 							Recently Added
 						</MenuItem>
-						<MenuItem color={"light"} fontWeight={"semibold"}>
+						<MenuItem
+							color={"light"}
+							fontWeight={"semibold"}
+							_active={{
+								bg: "white",
+							}}
+							_hover={{
+								bg: "none",
+							}}
+						>
 							Status:{" "}
 							<Box as="span" color={"dark"}>
 								{" "}
 								&nbsp; Active
 							</Box>
 						</MenuItem>
-						<MenuItem color={"light"} fontWeight={"semibold"}>
+						<MenuItem
+							color={"light"}
+							fontWeight={"semibold"}
+							_active={{
+								bg: "white",
+							}}
+							_hover={{
+								bg: "none",
+							}}
+						>
 							Status:{" "}
 							<Box as="span" color={"dark"}>
 								&nbsp; Inactive
