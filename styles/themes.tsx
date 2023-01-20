@@ -5,11 +5,13 @@ const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
 	style: ["normal"],
 	fallback: ["system-ui", "sans-serif"],
+    subsets:["latin"]
 });
 const roboto = Roboto({
 	weight: ["400", "500", "700"],
 	style: ["normal"],
 	fallback: ["system-ui", "sans-serif"],
+    subsets:["latin"]
 });
 
 console.log(theme);
@@ -170,6 +172,7 @@ export const light = extendTheme({
 	fonts: {
 		body: `${inter.style.fontFamily}`,
 		heading: `${inter.style.fontFamily}`,
+        roboto_font:`${roboto.style.fontFamily}`
 	},
 	fontSizes: {
 		xs: "0.75rem",

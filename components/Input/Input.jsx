@@ -30,6 +30,7 @@ const Inputs = ({
 			<Flex pos="relative" {...inputContStyle}>
 				<Input
 					borderColor={errorMsg && invalid ? "error" : "hint"}
+					bg={errorMsg && invalid ? "#fff7fa" : ""}
 					name={name}
 					placeholder={placeholder}
 					type={type}
