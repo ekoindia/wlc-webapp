@@ -15,16 +15,38 @@ const Login = ({ setStep, setNumber, number }) => {
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
 
+	function formatNum(num) {
+		let formatted_num = "";
+		// This is for space removal when user removes the input
+		if (value.slice(0, value.length - 1) === num && num !== "") {
+			return num;
+		} else {
+			for (let i in num) {
+				if (num[i] !== " ") {
+					if (i === "2" || i === "6") {
+						formatted_num += num[i] + " ";
+					} else formatted_num += num[i];
+				}
+			}
+			return formatted_num;
+		}
+	}
+
 	const onChangeHandler = (val) => {
-		if (val == "" || /^[6-9]\d{0,9}$/g.test(val)) {
-			console.log("bwjnfj");
-			setValue(val);
+		// /^[6-9]\d{0,9}$/g.test(val)
+		// /^[6-9]\d{0,2}\s\d{0,3}\s\d{0,4}$/g
+		// [6-9]?(\d{0,2})?(\s\d{0,3})?(\s\d{0,4})
+		if (
+			val == "" ||
+			/^[6-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(val)
+		) {
+			setValue(formatNum(val));
 		}
 	};
 
 	const onVerify = () => {
-		console.log(/^[6-9]{1}[0-9]{9}$/g.test(value));
-		if (/^[6-9]{1}[0-9]{9}$/g.test(value)) {
+		// console.log(/^[6-9]{1}[0-9]{9}$/g.test(value));
+		if (value.length == 12) {
 			setNumber(value);
 			setStep((prev) => prev + 1);
 		} else {
@@ -62,16 +84,16 @@ const Login = ({ setStep, setNumber, number }) => {
 			</Button>
 
 			<Flex align="center" justify="center" py="5.62rem">
-				<Divider w="13rem" borderColor="#707070" />
+				<Divider w="12.5rem" borderColor="#707070" />
 				<Text
 					fontSize="1rem"
 					color="#0F0F0F"
-					px="1.5"
+					px="12px"
 					width="fit-content"
 				>
 					Or login with mobile number
 				</Text>
-				<Divider w="13rem" borderColor="#707070" />
+				<Divider w="12.5rem" borderColor="#707070" />
 			</Flex>
 
 			<Input
@@ -91,7 +113,7 @@ const Login = ({ setStep, setNumber, number }) => {
 				}}
 				inputContStyle={{ h: "4rem", pos: "relative" }}
 				isNumInput={true}
-				inputProps={{ maxLength: 10 }}
+				inputProps={{ maxLength: 12 }}
 				onFocus={() => {
 					setInvalid(false);
 				}}

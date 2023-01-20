@@ -4,7 +4,7 @@ import { Login, MobileVerify, VerifyOtp } from ".";
 
 const LoginPanel = ({ className = "", ...props }) => {
 	const [step, setStep] = useState(0); // TODO: Edit state as required
-	const [number, setNumber] = useState();
+	const [number, setNumber] = useState("");
 	return (
 		<Center
 			w="full"
@@ -23,7 +23,13 @@ const LoginPanel = ({ className = "", ...props }) => {
 					/>
 				</Box>
 				<Box
-					w="43.75rem"
+					w={{
+						xs: "20.6rem",
+						sm: "30.6rem",
+						md: "43.75rem",
+						lg: "43.75rem",
+						xl: "43.75rem",
+					}}
 					h="45rem"
 					px="1.875rem"
 					py="2.5rem"
