@@ -1,6 +1,7 @@
-import { extendTheme, Highlight } from "@chakra-ui/react";
+import { extendTheme } from "@chakra-ui/react";
 
 export const light = extendTheme({
+
 	colors: {
 		primary: {
 			light: "#ffad23",
@@ -28,9 +29,7 @@ export const light = extendTheme({
 		dark: "#0F0F0F",
 		light: "#555555",
     focusbg: "#FFFBF3",
-	white:"#FFFFFF",
-	highlight:"#FFD93B"
-
-        
+	  white:"#FFFFFF",
+	  highlight:"#FFD93B"        
 	},
 });
