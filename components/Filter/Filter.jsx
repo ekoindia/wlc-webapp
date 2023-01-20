@@ -42,7 +42,13 @@ function Filter() {
 				w={"122px"}
 				bg={"#FFFFFF"}
 				border="1px solid #11299E"
-				boxShadow={"box-shadow: 0px 3px 10px #11299E1A"}
+				boxShadow="box-shadow: 0px 3px 10px #11299E1A"
+				_hover={{
+					bg: "none",
+				}}
+				_active={{
+					bg: "white",
+				}}
 			>
 				<Text
 					color="#11299E"

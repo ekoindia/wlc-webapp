@@ -49,7 +49,7 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Box m={3} marginBottom={6}>
+			<Box marginBottom={6}>
 				<Breadcrumb
 					separator={
 						<Icon

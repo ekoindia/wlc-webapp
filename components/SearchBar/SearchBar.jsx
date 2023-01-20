@@ -20,12 +20,13 @@ export function SearchBar({ onChangeHandler }) {
 			<Input
 				placeholder="Search by name or mobile number"
 				size="lg"
+				borderRadius="10px"
 				width="600px"
+				border=" 1px solid #D2D2D2"
+				boxShadow="box-shadow: 0px 3px 6px #0000001A"
 				_focus={{
 					bg: "focusbg",
 					boxShadow: "0px 3px 6px #0000001A",
-					borderColor: "hint",
-					transition: "box-shadow 0.3s ease-out",
 				}}
 			/>
 		</Box>
