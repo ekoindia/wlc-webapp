@@ -125,7 +125,10 @@ const Tables = ({ className = "", ...props }) => {
 									</Td>
 									<Td>...</Td>
 									<Td>
-										<Icon name="arrow-forward" />
+										<Icon
+											onClick={redirect}
+											name="arrow-forward"
+										/>
 									</Td>
 								</Tr>
 							);
