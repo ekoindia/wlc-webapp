@@ -21,6 +21,12 @@ export function SearchBar({ onChangeHandler }) {
 				placeholder="Search by name or mobile number"
 				size="lg"
 				width="600px"
+				_focus={{
+					bg: "focusbg",
+					boxShadow: "0px 3px 6px #0000001A",
+					borderColor: "hint",
+					transition: "box-shadow 0.3s ease-out",
+				}}
 			/>
 		</Box>
 	);
