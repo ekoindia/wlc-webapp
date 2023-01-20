@@ -94,7 +94,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 					/>
 				</Flex>
 				{adminMenu.map((menu, idx) => (
-					<Link href={menu.link} legacyBehavior={true}>
+					<Link href={menu.link} key={idx} legacyBehavior={true}>
 						<NavItem
 							key={idx}
 							gap="10px"
