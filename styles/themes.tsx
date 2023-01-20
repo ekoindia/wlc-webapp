@@ -23,41 +23,41 @@ export const light = extendTheme({
 		xl: "1200px",
 		"2xl": "1400px",
 	},
-	components: {
-		Button: {
-			...theme.components.Button,
+	// components: {
+	// 	Button: {
+	// 		...theme.components.Button,
 
-			variants: {
-				primary: {
-					bg:"red"
-				},
-				accent: {
-					bg:"blue"
-				},
-				// add more variants as needed
-			},
-			sizes: {
-				lg: {
-					apply: "textStyles.body3Semi",
-					px: 6,
-					minW: "12rem",
-					h: "4.8rem",
-				},
-				md: {
-					apply: "textStyles.body3Semi",
-					px: 5,
-					minW: "12rem",
-					h: "5rem",
-				},
-				sm: {
-					apply: "textStyles.body4Semi",
-					px: 4,
-					minW: "10rem",
-					h: "3.2rem",
-				},
-			},
-		},
-	},
+	// 		variants: {
+	// 			primary: {
+	// 				bg:"red"
+	// 			},
+	// 			accent: {
+	// 				bg:"blue"
+	// 			},
+	// 			// add more variants as needed
+	// 		},
+	// 		sizes: {
+	// 			lg: {
+	// 				apply: "textStyles.body3Semi",
+	// 				px: 6,
+	// 				minW: "12rem",
+	// 				h: "4.8rem",
+	// 			},
+	// 			md: {
+	// 				apply: "textStyles.body3Semi",
+	// 				px: 5,
+	// 				minW: "12rem",
+	// 				h: "5rem",
+	// 			},
+	// 			sm: {
+	// 				apply: "textStyles.body4Semi",
+	// 				px: 4,
+	// 				minW: "10rem",
+	// 				h: "3.2rem",
+	// 			},
+	// 		},
+	// 	},
+	// },
 	colors: {
 		primary: {
 			light: "#ffad23",
