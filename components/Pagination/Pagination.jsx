@@ -1,18 +1,10 @@
+import { Box, Flex, Square } from "@chakra-ui/react";
 import { DOTS, usePagination } from "hooks";
-import { useEffect, useState } from "react";
-/**
- * A <Pagination> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Pagination></Pagination>`
- */
+import { useState } from "react";
+
 const Pagination = (props) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
 	const {
 		onPageChange,
 		totalCount,
@@ -44,57 +36,40 @@ const Pagination = (props) => {
 	let lastPage = paginationRange[paginationRange.length - 1];
 
 	return (
-		<ul
-			// className={classnames("pagination-container", { [className]: className })}
-			className={`pagination-container ${className}`}
-		>
-			{/* arrow-back */}
-			<li
-				// className={classnames("pagination-item", {
-				// 	disabled: currentPage === 1,
-				// })}
-				className={`pagination-item`}
-				// TODO disabled where currentPage === 1
-				onClick={onPrevious}
-			>
-				<div className="arrow left" />
-			</li>
-			{/* page-numbers */}
-			{paginationRange.map((pageNumber, index) => {
-				if (pageNumber === DOTS) {
-					return (
-						<li className="pagination-item dots" key={index}>
-							&#8230;
-						</li>
-					);
-				}
-
-				return (
-					<li
-						// className={classnames("pagination-item", {
-						// 	selected: pageNumber === currentPage,
-						// })}
-						className={`pagination-item`}
-						// TODO selected where pageNumber === currentPage
-						onClick={() => onPageChange(pageNumber)}
-						key={index}
-					>
-						{pageNumber}
-					</li>
-				);
-			})}
-			{/* arrow next */}
-			<li
-				// className={classnames("pagination-item", {
-				// 	disabled: currentPage === lastPage,
-				// })}
-				className={`pagination-item`}
-				// TODO disabled where currentPage === lastPage
-				onClick={onNext}
-			>
-				<div className="arrow right" />
-			</li>
-		</ul>
+		<>
+			<>
+				<Flex>
+					<Box w={"20px"} onClick={onPrevious} cursor="pointer">
+						&lt;
+					</Box>
+					<Box display={"flex"}>
+						{paginationRange.map((pageNumber, index) => {
+							if (pageNumber === DOTS) {
+								return (
+									<Box as="span" key={index}>
+										&#8230;
+									</Box>
+								);
+							}
+							return (
+								<Square
+									bg="divider"
+									// TODO selected where pageNumber === currentPage
+									onClick={() => onPageChange(pageNumber)}
+									key={index}
+									cursor="pointer"
+								>
+									&nbsp; &nbsp;{pageNumber}&nbsp;&nbsp;
+								</Square>
+							);
+						})}
+					</Box>
+					<Box w={"20px"} onClick={onNext} cursor="pointer">
+						&gt;
+					</Box>
+				</Flex>
+			</>
+		</>
 	);
 };
 
