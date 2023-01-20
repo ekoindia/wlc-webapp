@@ -5,9 +5,10 @@ export type IconNameType =
 	| "file-download"
 	| "file-upload"
 	| "chevron-left"
-	| "arrow-forward"
-	| "add"
 	| "chevron-right"
+	| "arrow-forward"
+	| "arrow-back"
+	| "add"
 	| "mode-edit"
 	| "account-balance-wallet"
 	| "near-me"
@@ -17,10 +18,12 @@ export type IconNameType =
 	| "swap-horiz"
 	| "commission-percent"
 	| "rupee"
-	| "arrow-back"
 	| "close-outline"
 	| "filter"
-	| "home";
+	| "home"
+	| "caret-up"
+	| "caret-down"
+	| "sort";
 
 export type IconProps = {
 	name: IconNameType;
