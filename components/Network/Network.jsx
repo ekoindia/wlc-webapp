@@ -34,8 +34,8 @@ const Network = ({ className = "", ...props }) => {
 				mt="20px"
 			>
 				<SearchBar />
-				<Flex>
-					<Box mr={"129px"}>
+				<Flex gap="50px">
+					<Box>
 						<Filter />
 					</Box>
 					<Box>

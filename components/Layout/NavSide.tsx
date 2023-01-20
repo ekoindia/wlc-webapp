@@ -134,11 +134,6 @@ const NavItem = ({ iconName, url, children, ...rest }: NavItemProps) => {
 		// >
 
 		<Flex
-			focus={{
-				color: "white",
-				borderLeft: "8px solid #FE7D00",
-				bg: "#081E89",
-			}}
 			fontSize="16px"
 			color="#FFFFFF"
 			align="center"
@@ -239,7 +234,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 						</MenuButton>
 						<MenuList
 							h="470px"
-							w="395px"
+							w="349px"
 							mr="20px"
 							boxShadow="0px 6px 10px #00000033"
 							border="1px solid #D2D2D2"
@@ -249,7 +244,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 								<Box
 									bg={"#1F3ABC"}
 									h="120px"
-									mt="-7px"
+									mt="-10px"
 									borderRadius="10px 10px 0px 0px"
 								>
 									<Box ml="20px">
@@ -261,7 +256,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 											<Box
 												fontSize={"14px"}
 												color={"highlight"} // need to update the color
-												borderRadius="15px"
 											>
 												Akash Enterprises
 											</Box>
@@ -277,15 +271,15 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 										<Box color={"focusbg"} fontSize={10}>
 											angeltech.google.co.in
 										</Box>
-										<Box>
+										<Box pr="20px">
 											<Box
 												display={"flex"}
+												justifyContent="space-between"
 												alignItems={"center"}
 												color={"focusbg"}
 												fontSize={10}
-												gap="80px"
 											>
-												<Box as={"span"}>
+												<Box>
 													+91 9871679433
 													<IconButtons
 														iconName="mode-edit"
@@ -303,11 +297,17 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 													w="108px"
 													h="36px"
 													fontSize="12px"
-													title="View Profile"
+
 													// rightIcon={
 													// 	// <ChevronRightIcon />
 													// }
-												/>
+												>
+													View Profile{" "}
+													<Icon
+														name="chevron-right"
+														height="10px"
+													/>
+												</Buttons>
 											</Box>
 										</Box>
 									</Box>
