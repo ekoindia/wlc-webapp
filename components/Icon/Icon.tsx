@@ -23,7 +23,8 @@ export type IconNameType =
 	| "home"
 	| "caret-up"
 	| "caret-down"
-	| "sort";
+	| "sort"
+	| "search";
 
 export type IconProps = {
 	name: IconNameType;
