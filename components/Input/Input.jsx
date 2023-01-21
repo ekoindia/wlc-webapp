@@ -39,7 +39,7 @@ const Inputs = ({
 					value={value}
 					w="100%"
 					onChange={(e) => onChange(e.target.value)}
-					pl={isNumInput ? "7.6rem" : ""}
+					pl={isNumInput ? [16, 16, "7.6rem"] : ""}
 					height="100%"
 					_hover={{
 						border: "",
@@ -59,7 +59,7 @@ const Inputs = ({
 						top="0"
 						left="0"
 						height="100%"
-						w="5.6rem"
+						w={[14, 14, "5.6rem"]}
 						borderRight="1px solid"
 						borderColor={invalid && errorMsg ? "error" : "hint"}
 						zIndex="1100"

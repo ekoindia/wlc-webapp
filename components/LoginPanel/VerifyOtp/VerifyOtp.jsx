@@ -99,25 +99,29 @@ const VerifyOtp = ({ number, setStep }) => {
 
 			<Flex justify="center" mb="6.25rem" mt="2.5rem" align="center">
 				<Text>Did not receive yet?</Text>
-				{timer >= 1 ? (
-					<Box color="error" display="flex">
-						&nbsp;
-						<Icon name="file-upload" width="12px" />
-						00:{timer}
-					</Box>
-				) : (
-					<Text
-						pl="2.5"
-						as="span"
-						color="accent.DEFAULT"
-						fontSize="lg"
-						fontWeight="medium"
-						fontFamily="roboto_font"
-						onClick={() => resetTimer()}
-					>
-						Resend OTP
-					</Text>
-				)}
+				<Box
+					pl="2.5"
+					fontSize="lg"
+					fontFamily="roboto_font"
+					fontWeight="medium"
+				>
+					{timer >= 1 ? (
+						<Box color="error" display="flex">
+							&nbsp;
+							<Icon name="file-upload" width="10px" />
+							&nbsp; &nbsp;00:{timer <= 9 ? "0" + timer : timer}
+						</Box>
+					) : (
+						<Text
+							cursor="pointer"
+							as="span"
+							color="accent.DEFAULT"
+							onClick={() => resetTimer()}
+						>
+							Resend OTP
+						</Text>
+					)}
+				</Box>
 			</Flex>
 
 			<Buttons

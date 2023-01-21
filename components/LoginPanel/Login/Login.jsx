@@ -1,14 +1,6 @@
-import {
-	Button,
-	Center,
-	Divider,
-	Flex,
-	Heading,
-	Image,
-	Text,
-} from "@chakra-ui/react";
+import { Button, Center, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import { useState } from "react";
-import { Buttons, Input } from "../../";
+import { Buttons, Divider, Input } from "../../";
 
 const Login = ({ setStep, setNumber, number }) => {
 	const [value, setValue] = useState(number);
@@ -56,45 +48,40 @@ const Login = ({ setStep, setNumber, number }) => {
 	};
 	return (
 		<Flex direction="column">
-			<Heading as="h3">Login</Heading>
+			<Heading as="h3" fontSize={["xl", "xl", "3xl"]}>
+				Login
+			</Heading>
 
 			<Button
 				variant
-				mt="4.35rem"
-				h="4.5rem"
 				bg="#4185F4"
-				w="100%"
-				fontSize="2xl"
+				mt={[2.5, 2.5, "4.35rem"]}
+				h={[16, 16, "4.5rem", "4.5rem"]}
+				fontSize={["lg", "lg", "2xl", "2xl"]}
 				color="white"
 				fontWeight="medium"
 				borderRadius="10px"
 				position="relative"
 				onClick={() => setStep(2)}
+				boxShadow="0px 3px 10px #4185F433;"
 			>
 				<Center
 					bg="#FFFFFF"
-					p="13px"
+					p={["9px", "9px", "13px", "13px", "13px"]}
 					borderRadius="10px"
 					position="absolute"
 					left="2px"
 				>
 					<Image src="./icons/google.png" />
 				</Center>
-				Login with Google
+				<Text ml={[10, 10, null]}>Login with Google</Text>
 			</Button>
 
-			<Flex align="center" justify="center" py="5.62rem">
-				<Divider w="12.5rem" borderColor="#707070" />
-				<Text
-					fontSize="1rem"
-					color="#0F0F0F"
-					px="12px"
-					width="fit-content"
-				>
-					Or login with mobile number
-				</Text>
-				<Divider w="12.5rem" borderColor="#707070" />
-			</Flex>
+			<Divider
+				title="Or login with mobile number"
+				py={["4rem", "4rem", "5.62rem"]}
+				fontSize={["xs", "xs", "md", "md"]}
+			/>
 
 			<Input
 				label="Enter mobile number"
@@ -102,16 +89,20 @@ const Login = ({ setStep, setNumber, number }) => {
 				value={value}
 				invalid={invalid}
 				errorMsg={errorMsg}
-				mb="4.35rem"
+				mb={[10, 10, "4.35rem"]}
 				onChange={onChangeHandler}
 				labelStyle={{
-					fontSize: "lg",
+					fontSize: ["sm", "sm", "lg"],
 					color: "light",
 					pl: "0",
 					fontWeight: "semibold",
-					mb: "0.8rem",
+					mb: [2.5, 2.5, "0.8rem"],
 				}}
-				inputContStyle={{ h: "4rem", pos: "relative" }}
+				inputContStyle={{
+					h: ["3rem", "3rem", "4rem"],
+					pos: "relative",
+					borderRadius: [10, 10, 15],
+				}}
 				isNumInput={true}
 				inputProps={{ maxLength: 12 }}
 				onFocus={() => {
@@ -121,8 +112,8 @@ const Login = ({ setStep, setNumber, number }) => {
 
 			<Buttons
 				title="Verify"
-				h="4.5rem"
-				fontSize="xl"
+				h={[16, 16, "4.5rem", "4.5rem"]}
+				fontSize={["lg", "lg", "xl"]}
 				borderRadius="10px"
 				boxShadow="0px 3px 10px #FE9F0040"
 				onClick={onVerify}
