@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Divider } from "./Divider";
 import { Pagination } from "./Pagination";
 import { Tables } from "./Tables";
 import { TransactionHistory } from "./TransactionHistory";
@@ -22,6 +23,7 @@ import { AccountStatement } from "./TransactionHistory/AccountStatement";
 import { DetailedStatement } from "./TransactionHistory/AccountStatement";
 
 export {
+	Divider,
 	Pagination,
 	Tables,
 	TransactionHistory,

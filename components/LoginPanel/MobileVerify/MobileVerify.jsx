@@ -1,8 +1,8 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Buttons, IconButtons, Input } from "../../";
-import { useRouter } from "next/router";
 
 const MobileVerify = ({ number, setNumber, setStep }) => {
 	const [value, setValue] = useState(number);
@@ -46,7 +46,7 @@ const MobileVerify = ({ number, setNumber, setStep }) => {
 					Sent on <Text as="b">abhishek.kumar@eko.co.in</Text>
 				</Text>
 				<IconButtons
-					iconPath="/icons/pen.svg"
+					iconName="mode-edit"
 					iconStyle={{ h: "12px", w: "12px" }}
 				/>
 			</Flex>

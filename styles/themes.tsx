@@ -14,11 +14,12 @@ const roboto = Roboto({
     subsets:["latin"]
 });
 
-console.log(theme);
+// console.log(theme);
 
 export const light = extendTheme({
 	breakpoints: {
 		// w={{ sm: 300, md: 400, base: 500}}
+        base:"350px",
 		sm: "440px",
 		md: "768px",
 		lg: "1024px",
@@ -99,14 +100,19 @@ export const light = extendTheme({
 	},
 	radii: {
 		none: "0",
-		sm: "0.125rem",
 		base: "0.25rem",
+		sm: "0.125rem",
 		md: "0.375rem",
 		lg: "0.5rem",
 		xl: "0.75rem",
 		"2xl": "1rem",
 		"3xl": "1.5rem",
 		full: "9999px",
+        // According to ds
+        5:"5px",
+        10:"10px",
+        15:"15px",
+        20:"20px"
 	},
 	shadows: {},
 	sizes: {
@@ -140,13 +146,13 @@ export const light = extendTheme({
 		1: "0.25rem",
 		1.5: "0.375rem",
 		2: "0.5rem",
-		2.5: "0.625rem",
+		2.5: "0.625rem", // 10px
 		3: "0.75rem",
 		3.5: "0.875rem",
-		4: "1rem",
-		5: "1.25rem",
-		6: "1.5rem",
-		7: "1.75rem",
+		4: "1rem", // 16px
+		5: "1.25rem", //20px
+		6: "1.5rem", //24px
+		7: "1.75rem", // 28px
 		8: "2rem",
 		9: "2.25rem",
 		10: "2.5rem",
@@ -175,12 +181,12 @@ export const light = extendTheme({
         roboto_font:`${roboto.style.fontFamily}`
 	},
 	fontSizes: {
-		xs: "0.75rem",
-		sm: "0.875rem",
-		md: "1rem",
-		lg: "1.125rem",
-		xl: "1.25rem",
-		"2xl": "1.5rem",
+		xs: "0.75rem", // 12px
+		sm: "0.875rem", // 14px
+		md: "1rem", // 16px
+		lg: "1.125rem", // 18px
+		xl: "1.25rem", // 20px
+		"2xl": "1.5rem", // 24px
 		"3xl": "1.875rem",
 		"4xl": "2.25rem",
 		"5xl": "3rem",
