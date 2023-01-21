@@ -1,9 +1,10 @@
 import { Box, Flex, Square } from "@chakra-ui/react";
 import { DOTS, usePagination } from "hooks";
 import { useState } from "react";
+import { Icon } from "..";
 
 const Pagination = (props) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
+	const [currPageNumber, setCurrPageNumber] = useState(1);
 
 	const {
 		onPageChange,
@@ -25,51 +26,76 @@ const Pagination = (props) => {
 		return null;
 	}
 
-	const onNext = () => {
-		onPageChange(currentPage + 1);
-	};
-
-	const onPrevious = () => {
-		onPageChange(currentPage - 1);
-	};
-
 	let lastPage = paginationRange[paginationRange.length - 1];
 
 	return (
-		<>
-			<>
-				<Flex>
-					<Box w={"20px"} onClick={onPrevious} cursor="pointer">
-						&lt;
-					</Box>
-					<Box display={"flex"}>
-						{paginationRange.map((pageNumber, index) => {
-							if (pageNumber === DOTS) {
-								return (
-									<Box as="span" key={index}>
-										&#8230;
-									</Box>
-								);
+		<Flex gap={6} py="37px" justify={"center"}>
+			<Flex
+				w={"20px"}
+				color={currentPage !== 1 ? "light" : "hint"}
+				onClick={() => {
+					onPageChange(
+						currentPage !== 1 ? currentPage - 1 : currentPage
+					);
+					setCurrPageNumber(
+						currentPage !== 1 ? currentPage - 1 : currentPage
+					);
+				}}
+				cursor="pointer"
+			>
+				<Icon name="arrow-back" />
+			</Flex>
+			<Flex gap={6}>
+				{paginationRange.map((pageNumber, index) => {
+					if (pageNumber === DOTS) {
+						return (
+							<Box as="span" key={index}>
+								&#8230;
+							</Box>
+						);
+					}
+					return (
+						<Square
+							size={"24px"}
+							borderRadius="6px"
+							key={index}
+							cursor="pointer"
+							bg={
+								currPageNumber === pageNumber
+									? "accent.DEFAULT"
+									: ""
 							}
-							return (
-								<Square
-									bg="divider"
-									// TODO selected where pageNumber === currentPage
-									onClick={() => onPageChange(pageNumber)}
-									key={index}
-									cursor="pointer"
-								>
-									&nbsp; &nbsp;{pageNumber}&nbsp;&nbsp;
-								</Square>
-							);
-						})}
-					</Box>
-					<Box w={"20px"} onClick={onNext} cursor="pointer">
-						&gt;
-					</Box>
-				</Flex>
-			</>
-		</>
+							color={
+								currPageNumber === pageNumber
+									? "white"
+									: "light"
+							}
+							onClick={() => {
+								onPageChange(pageNumber);
+								setCurrPageNumber(pageNumber);
+							}}
+						>
+							{pageNumber}
+						</Square>
+					);
+				})}
+			</Flex>
+			<Flex
+				w={"20px"}
+				color={currentPage !== lastPage ? "light" : "hint"}
+				cursor="pointer"
+				onClick={() => {
+					onPageChange(
+						currentPage !== lastPage ? currentPage + 1 : currentPage
+					);
+					setCurrPageNumber(
+						currentPage !== lastPage ? currentPage + 1 : currentPage
+					);
+				}}
+			>
+				<Icon name="arrow-forward" />
+			</Flex>
+		</Flex>
 	);
 };
 

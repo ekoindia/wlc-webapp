@@ -51,11 +51,14 @@ const Tables = ({ className = "", ...props }) => {
 	const redirect = () => {
 		router.push("my-network/profile");
 	};
-
 	return (
-		<div className={`${className}`} {...props}>
-			<TableContainer>
-				<Table variant={"striped"}>
+		<>
+			<TableContainer
+				borderRadius="10px 10px 0 0"
+				mt="20px"
+				border="1px solid #E9EDF1;"
+			>
+				<Table variant={"evenStriped"} bg="white">
 					<Thead bg="hint">
 						<Tr>
 							{/* // TODO Make this dynamic 👇 */}
@@ -64,7 +67,8 @@ const Tables = ({ className = "", ...props }) => {
 									Sr. No.
 									<Box as="span" onClick={onSortChange}>
 										<Icon
-											name={sortIcon[currentSort]}
+											// name={sortIcon[currentSort]} // uncomment this to have interative sort
+											name="sort"
 											width="20px"
 											height="20px"
 										/>
@@ -101,7 +105,6 @@ const Tables = ({ className = "", ...props }) => {
 											<Box as="span">{item.name}</Box>
 										</Flex>
 									</Td>
-									{/* <Td>{item.name}</Td> */}
 									<Td>{item.mobile_number}</Td>
 									<Td>{item.type}</Td>
 									<Td>{item.createdAt}</Td>
@@ -114,6 +117,7 @@ const Tables = ({ className = "", ...props }) => {
 											<Box>{item.location}</Box>
 											<Box>
 												<IconButtons
+													onClick={redirect}
 													iconName="near-me"
 													iconStyle={{
 														w: "11px",
@@ -125,10 +129,13 @@ const Tables = ({ className = "", ...props }) => {
 									</Td>
 									<Td>...</Td>
 									<Td>
-										<Icon
-											onClick={redirect}
-											name="arrow-forward"
-										/>
+										<Box as="span" color="hint">
+											<Icon
+												name="arrow-forward"
+												width="24px"
+												height="21px"
+											/>
+										</Box>
 									</Td>
 								</Tr>
 							);
@@ -147,7 +154,7 @@ const Tables = ({ className = "", ...props }) => {
 					onPageChange={(page) => setCurrentPage(page)}
 				/>
 			</Flex>
-		</div>
+		</>
 	);
 };
 
