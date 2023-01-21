@@ -24,6 +24,7 @@ const Cards = ({ className = "", children, ...props }) => {
 			p="5"
 			h="620px"
 			w="490px"
+			bg="white"
 			{...props}
 		>
 			{children}
