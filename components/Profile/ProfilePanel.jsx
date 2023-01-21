@@ -23,7 +23,7 @@ const ProfilePanel = ({ className = "", ...props }) => {
 	}, []);
 
 	return (
-		<Box bg="white">
+		<Box>
 			<Box display={"flex"} alignItems={"center"}>
 				<Icon name="arrow-back" width="18px" height="15px" />
 				<Text

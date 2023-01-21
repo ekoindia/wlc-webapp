@@ -24,6 +24,7 @@ export function SearchBar({ onChangeHandler }) {
 				width="600px"
 				border=" 1px solid #D2D2D2"
 				boxShadow="box-shadow: 0px 3px 6px #0000001A"
+				bg="white"
 				_focus={{
 					bg: "focusbg",
 					boxShadow: "0px 3px 6px #0000001A",
