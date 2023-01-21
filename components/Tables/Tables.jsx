@@ -56,7 +56,7 @@ const Tables = ({ className = "", ...props }) => {
 			<TableContainer
 				borderRadius="10px 10px 0 0"
 				mt="20px"
-				border="1px solid #E9EDF1;"
+				border="1px solid #E9EDF1"
 			>
 				<Table variant={"evenStriped"} bg="white">
 					<Thead bg="hint">
