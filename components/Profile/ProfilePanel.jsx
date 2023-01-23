@@ -39,7 +39,7 @@ const ProfilePanel = ({ className = "", ...props }) => {
 				<AddressPane />
 				<DocPane />
 			</Flex>
-			<Flex gap={30} align={"center"} wrap={"wrap"} mt={16}>
+			<Flex gap={30} align={"center"} wrap={"wrap"} mt={12}>
 				<PersonalPane />
 				<ContactPane />
 			</Flex>

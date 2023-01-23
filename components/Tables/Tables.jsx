@@ -67,7 +67,7 @@ const Tables = ({ className = "", ...props }) => {
 									Sr. No.
 									<Box as="span" onClick={onSortChange}>
 										<Icon
-											// name={sortIcon[currentSort]} // uncomment this to have interative sort
+											//name={sortIcon[currentSort]} // uncomment this to have interative sort
 											name="sort"
 											width="20px"
 											height="20px"
