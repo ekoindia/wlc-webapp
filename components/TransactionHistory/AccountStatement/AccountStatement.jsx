@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Text, Box, Flex, Center, Spacer } from "@chakra-ui/react";
-import { Cards, Tags, Buttons, Icon } from "../..";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-/**
- * A <AccountStatement> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<AccountStatement></AccountStatement>`
- */
+import { useEffect, useState } from "react";
+import { Buttons, Cards, Icon, Tags } from "../..";
+import AccountStatementTable from "./AccountStatementTable";
+
 const AccountStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 
@@ -144,6 +139,9 @@ const AccountStatement = ({ className = "", ...props }) => {
 					</Box>
 				</Flex>
 			</Cards>
+			<Box>
+				<AccountStatementTable />
+			</Box>
 		</>
 	);
 };

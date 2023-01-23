@@ -34,6 +34,9 @@ export const light = extendTheme({
             _even:{
               background:'shade'
             }
+          },
+          th:{
+              textTransform: 'Capitalize'
           }
         }
       }

@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Text, Box, Flex, Center, Spacer } from "@chakra-ui/react";
-import { Cards, Tags, Buttons, Icon } from "../../..";
-/**
- * A <DetailedStatement> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<DetailedStatement></DetailedStatement>`
- */
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Cards, Icon, SearchBar, Tags } from "../../..";
+import DetailedStatementTable from "./DetailedStatementTable";
+
 const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 
@@ -129,6 +124,12 @@ const DetailedStatement = ({ className = "", ...props }) => {
 					</Box>
 				</Flex>
 			</Cards>
+			<Box marginTop={"2.5rem"}>
+				<SearchBar />
+			</Box>
+			<Box>
+				<DetailedStatementTable />
+			</Box>
 		</>
 	);
 };

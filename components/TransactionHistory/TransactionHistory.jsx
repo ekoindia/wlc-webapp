@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Box } from "@chakra-ui/react";
-
+import { Box, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Icon, SearchBar } from "..";
+import TrxnHistTable from "./TrxnHistTable";
 /**
  * A <TransactionHistory> component
  * TODO: Write more description here
@@ -16,9 +17,24 @@ const TransactionHistory = ({ className = "", ...props }) => {
 	}, []);
 
 	return (
-		<Box className={`${className}`} {...props}>
-			TransactionHistory
-		</Box>
+		<>
+			<Box display={"flex"} alignItems={"center"}>
+				<Icon name="arrow-back" width="18px" height="15px" />
+				<Text
+					fontSize={"30px"}
+					fontWeight={"semibold"}
+					marginLeft={"1rem"}
+				>
+					Transaction History
+				</Text>
+			</Box>
+			<Box marginTop={"1.5rem"}>
+				<SearchBar />
+			</Box>
+			<Box w="1610px">
+				<TrxnHistTable />
+			</Box>
+		</>
 	);
 };
 
