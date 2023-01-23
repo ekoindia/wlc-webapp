@@ -19,12 +19,12 @@ const roboto = Roboto({
 export const light = extendTheme({
 	breakpoints: {
 		// w={{ sm: 300, md: 400, base: 500}}
-        base:"350px",
+        base:"0",
 		sm: "440px",
 		md: "768px",
 		lg: "1024px",
 		xl: "1200px",
-		"2xl": "1400px",
+		"2xl": "1800px",
 	},
 	components: {
     Table:{
@@ -34,43 +34,37 @@ export const light = extendTheme({
             _even:{
               background:'shade'
             }
+          },
+          th:{
+              textTransform: 'Capitalize'
           }
         }
       }
-    }
-		// Button: {
-		// 	...theme.components.Button,
-
-		// 	variants: {
-		// 		primary: {
-		// 			bg:"red"
-		// 		},
-		// 		accent: {
-		// 			bg:"blue"
-		// 		},
-		// 		// add more variants as needed
-		// 	},
-		// 	sizes: {
-		// 		lg: {
-		// 			apply: "textStyles.body3Semi",
-		// 			px: 6,
-		// 			minW: "12rem",
-		// 			h: "4.8rem",
-		// 		},
-		// 		md: {
-		// 			apply: "textStyles.body3Semi",
-		// 			px: 5,
-		// 			minW: "12rem",
-		// 			h: "5rem",
-		// 		},
-		// 		sm: {
-		// 			apply: "textStyles.body4Semi",
-		// 			px: 4,
-		// 			minW: "10rem",
-		// 			h: "3.2rem",
-		// 		},
-		// 	},
-		// },
+    },
+		Button: {
+			...theme.components.Button,
+			variants: {
+				primary: {
+					bg:"primary.DEFAULT",
+                    boxShadow:"0px 3px 10px #FE9F0040",
+                    borderRadius:10,
+                    color:"white",
+                    _hover:{
+                        bg:"primary.dark"
+                    }
+				},
+				accent: {
+					bg:"accent.DEFAULT",
+                    boxShadow:"0px 3px 10px #11299e96",
+                    borderRadius:10,
+                     color:"white",
+                    _hover:{
+                        bg:"accent.dark"
+                    }
+				},
+				// add more variants as needed
+			},
+		},
 	},
 	colors: {
 		primary: {
@@ -90,7 +84,7 @@ export const light = extendTheme({
 		},
 		shadow: {
 			primary: "#FE9F008C",
-			accent: "#11299E1A",
+			accent: "#11299e96",
 		},
 		success: "#00C341",
 		error: "#FF4081",
@@ -104,7 +98,13 @@ export const light = extendTheme({
 		highlight: "#FFD93B",
     bg:"#F5F6F8"
 	},
-	styles: {},
+	styles: {
+        global: {
+      "html": {
+        letterSpacing:"0.19px"
+      },
+    },
+    },
 	borders: {
 		none: 0,
 		"1px": "1px solid",
@@ -169,9 +169,10 @@ export const light = extendTheme({
 		8: "2rem",
 		9: "2.25rem",
 		10: "2.5rem",
-		12: "3rem",
+		12: "3rem", 
 		14: "3.5rem",
 		16: "4rem",
+		17: "4.5rem",
 		20: "5rem",
 		24: "6rem",
 		28: "7rem",

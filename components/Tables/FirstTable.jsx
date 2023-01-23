@@ -15,32 +15,12 @@ import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { Icon, IconButtons, Pagination, Tags } from "..";
 
+let PageSize = 10;
+
 const Tables = ({ className = "", ...props }) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentSort, setCurrentSort] = useState("default");
 
-	/* for table th */
-	const my_network_table = [
-		{ field: "Name", sorting: true },
-		{ field: "Mobile Number", sorting: true },
-		{ field: "Type", sorting: true },
-		{ field: "Account Status", sorting: true },
-		{ field: "Location", sorting: true },
-		{ field: "Activity", sorting: true },
-		{ field: "Description", sorting: true },
-	];
-
-	/* for page size */
-	let PageSize = 10;
-
-	/* for sort icon */
-	const sortIcon = {
-		ascending: "caret-up",
-		descending: "caret-down",
-		default: "sort",
-	};
-
-	/* for sort icon change */
 	const onSortChange = () => {
 		let nextSort;
 
@@ -55,6 +35,12 @@ const Tables = ({ className = "", ...props }) => {
 		setCurrentSort(nextSort);
 	};
 
+	const sortIcon = {
+		ascending: "caret-up",
+		descending: "caret-down",
+		default: "sort",
+	};
+
 	const currentTableData = useMemo(() => {
 		const firstPageIndex = (currentPage - 1) * PageSize;
 		const lastPageIndex = firstPageIndex + PageSize;
@@ -65,7 +51,6 @@ const Tables = ({ className = "", ...props }) => {
 	const redirect = () => {
 		router.push("my-network/profile");
 	};
-
 	return (
 		<>
 			<TableContainer
@@ -76,98 +61,27 @@ const Tables = ({ className = "", ...props }) => {
 				<Table variant={"evenStriped"} bg="white">
 					<Thead bg="hint">
 						<Tr>
-							<Th>Sr. No.</Th>
+							{/* // TODO Make this dynamic 👇 */}
 							<Th>
-								<Flex gap="2">
-									<Box>Name</Box>
-									<Box onClick={onSortChange}>
+								<Flex>
+									Sr. No.
+									<Box as="span" onClick={onSortChange}>
 										<Icon
 											//name={sortIcon[currentSort]} // uncomment this to have interative sort
 											name="sort"
-											width="6px"
-											height="13px"
+											width="20px"
+											height="20px"
 										/>
 									</Box>
 								</Flex>
 							</Th>
-							<Th>
-								<Flex gap="2">
-									<Box>Mobile Number</Box>
-									<Box onClick={onSortChange}>
-										<Icon
-											//name={sortIcon[currentSort]} // uncomment this to have interative sort
-											name="sort"
-											width="6px"
-											height="13px"
-										/>
-									</Box>
-								</Flex>
-							</Th>
-							<Th>
-								<Flex gap="2">
-									<Box>Type</Box>
-									<Box onClick={onSortChange}>
-										<Icon
-											//name={sortIcon[currentSort]} // uncomment this to have interative sort
-											name="sort"
-											width="6px"
-											height="13px"
-										/>
-									</Box>
-								</Flex>
-							</Th>
-							<Th>
-								<Flex gap="2">
-									<Box>Onboarded on</Box>
-									<Box onClick={onSortChange}>
-										<Icon
-											//name={sortIcon[currentSort]} // uncomment this to have interative sort
-											name="sort"
-											width="6px"
-											height="13px"
-										/>
-									</Box>
-								</Flex>
-							</Th>
-							<Th>
-								<Flex gap="2">
-									<Box>Account Status</Box>
-									<Box onClick={onSortChange}>
-										<Icon
-											//name={sortIcon[currentSort]} // uncomment this to have interative sort
-											name="sort"
-											width="6px"
-											height="13px"
-										/>
-									</Box>
-								</Flex>
-							</Th>
-							<Th>
-								<Flex gap="2">
-									<Box>Eko Code</Box>
-									<Box onClick={onSortChange}>
-										<Icon
-											//name={sortIcon[currentSort]} // uncomment this to have interative sort
-											name="sort"
-											width="6px"
-											height="13px"
-										/>
-									</Box>
-								</Flex>
-							</Th>
-							<Th>
-								<Flex gap="2">
-									<Box>Location</Box>
-									<Box onClick={onSortChange}>
-										<Icon
-											//name={sortIcon[currentSort]} // uncomment this to have interative sort
-											name="sort"
-											width="6px"
-											height="13px"
-										/>
-									</Box>
-								</Flex>
-							</Th>
+							<Th>Name</Th>
+							<Th>Mobile Number</Th>
+							<Th>Type</Th>
+							<Th>Onboarded on</Th>
+							<Th>Account Status</Th>
+							<Th>Eko Code</Th>
+							<Th>Location</Th>
 							<Th></Th>
 							<Th></Th>
 						</Tr>
@@ -203,6 +117,7 @@ const Tables = ({ className = "", ...props }) => {
 											<Box>{item.location}</Box>
 											<Box>
 												<IconButtons
+													onClick={redirect}
 													iconName="near-me"
 													iconStyle={{
 														w: "11px",
@@ -214,11 +129,7 @@ const Tables = ({ className = "", ...props }) => {
 									</Td>
 									<Td>...</Td>
 									<Td>
-										<Box
-											as="span"
-											color="hint"
-											onClick={redirect}
-										>
+										<Box as="span" color="hint">
 											<Icon
 												name="arrow-forward"
 												width="24px"

@@ -1,11 +1,12 @@
 import { Button, Center, Flex, Heading, Image, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Buttons, Divider, Input } from "../../";
 
 const Login = ({ setStep, setNumber, number }) => {
 	const [value, setValue] = useState(number);
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
+	const EnterRef = useRef();
 
 	function formatNum(num) {
 		let formatted_num = "";
@@ -46,18 +47,30 @@ const Login = ({ setStep, setNumber, number }) => {
 			setInvalid(true);
 		}
 	};
+
+	const onkeyHandler = (e) => {
+		if (e.code === "Enter") {
+			EnterRef.current.focus();
+		}
+	};
 	return (
 		<Flex direction="column">
-			<Heading as="h3" fontSize={["xl", "xl", "3xl"]}>
+			<Heading as="h3" fontSize={{ base: "xl", "2xl": "3xl" }}>
 				Login
 			</Heading>
 
 			<Button
 				variant
 				bg="#4185F4"
-				mt={[2.5, 2.5, "4.35rem"]}
-				h={[16, 16, "4.5rem", "4.5rem"]}
-				fontSize={["lg", "lg", "2xl", "2xl"]}
+				mt={{
+					base: 4,
+					"2xl": "4.35rem",
+				}}
+				h={{
+					base: 16,
+					"2xl": "4.5rem",
+				}}
+				fontSize={{ base: "lg", "2xl": "2xl" }}
 				color="white"
 				fontWeight="medium"
 				borderRadius="10px"
@@ -67,20 +80,20 @@ const Login = ({ setStep, setNumber, number }) => {
 			>
 				<Center
 					bg="#FFFFFF"
-					p={["9px", "9px", "13px", "13px", "13px"]}
+					p={{ base: "9px", "2xl": "13px" }}
 					borderRadius="10px"
 					position="absolute"
 					left="2px"
 				>
-					<Image src="./icons/google.png" />
+					<Image src="./icons/google.png" w={{}} />
 				</Center>
 				<Text ml={[10, 10, null]}>Login with Google</Text>
 			</Button>
 
 			<Divider
 				title="Or login with mobile number"
-				py={["4rem", "4rem", "5.62rem"]}
-				fontSize={["xs", "xs", "md", "md"]}
+				py={{ base: "4rem", "2xl": "5.62rem" }}
+				fontSize={{ base: "xs", "2xl": "md" }}
 			/>
 
 			<Input
@@ -89,34 +102,33 @@ const Login = ({ setStep, setNumber, number }) => {
 				value={value}
 				invalid={invalid}
 				errorMsg={errorMsg}
-				mb={[10, 10, "4.35rem"]}
+				mb={{ base: 10, "2xl": "4.35rem" }}
 				onChange={onChangeHandler}
 				labelStyle={{
-					fontSize: ["sm", "sm", "lg"],
+					fontSize: { base: "sm", "2xl": "lg" },
 					color: "light",
 					pl: "0",
 					fontWeight: "semibold",
-					mb: [2.5, 2.5, "0.8rem"],
+					mb: { base: 2.5, "2xl": "0.8rem" },
 				}}
 				inputContStyle={{
-					h: ["3rem", "3rem", "4rem"],
+					h: { base: "3rem", "2xl": "4rem" },
 					pos: "relative",
-					borderRadius: [10, 10, 15],
 				}}
 				isNumInput={true}
 				inputProps={{ maxLength: 12 }}
 				onFocus={() => {
 					setInvalid(false);
 				}}
+				onKeyDown={onkeyHandler}
 			/>
 
 			<Buttons
 				title="Verify"
-				h={[16, 16, "4.5rem", "4.5rem"]}
-				fontSize={["lg", "lg", "xl"]}
-				borderRadius="10px"
-				boxShadow="0px 3px 10px #FE9F0040"
+				h={{ base: 16, "2xl": "4.5rem" }}
+				fontSize={{ base: "lg", "2xl": "xl" }}
 				onClick={onVerify}
+				ref={EnterRef}
 			/>
 		</Flex>
 	);

@@ -18,7 +18,8 @@ const IconButtons = (props) => {
 
 	const fill = colorType === 1 ? "primary.DEFAULT" : "accent.DEFAULT";
 	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
-	const shadow = colorType === 1 ? "shadow.primary" : "shadow.accent";
+	const shadow =
+		colorType === 1 ? "0px 0px 10px #FE9F008C" : "0px 0px 10px #11299e96";
 
 	const styledIcon =
 		iconFill === 1 ? (
@@ -26,7 +27,7 @@ const IconButtons = (props) => {
 				bg={fill}
 				color={"white"}
 				size={"30px"}
-				boxShadow="0px 0px 10px #FE9F008C"
+				boxShadow={shadow}
 				{...circleStyle}
 			>
 				<Box as="i" {...iconStyle}>
