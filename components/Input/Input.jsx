@@ -29,17 +29,18 @@ const Inputs = ({
 			{label ? <InputLabel {...labelStyle}>{label}</InputLabel> : null}
 			<Flex pos="relative" {...inputContStyle}>
 				<Input
-					borderColor={errorMsg && invalid ? "error" : "hint"}
-					bg={errorMsg && invalid ? "#fff7fa" : ""}
 					name={name}
 					placeholder={placeholder}
 					type={type}
 					disabled={disabled}
 					hidden={hidden}
 					value={value}
+					borderRadius={{ base: 10, "2xl": 15 }}
+					borderColor={errorMsg && invalid ? "error" : "hint"}
+					bg={errorMsg && invalid ? "#fff7fa" : ""}
 					w="100%"
 					onChange={(e) => onChange(e.target.value)}
-					pl={isNumInput ? [16, 16, "7.6rem"] : ""}
+					pl={isNumInput ? { base: 17, "2xl": "7.6rem" } : ""}
 					height="100%"
 					_hover={{
 						border: "",
@@ -54,12 +55,11 @@ const Inputs = ({
 				/>
 				{isNumInput && (
 					<Center
-						as="span"
 						pos="absolute"
 						top="0"
 						left="0"
 						height="100%"
-						w={[14, 14, "5.6rem"]}
+						w={{ base: 14, "2xl": "5.6rem" }}
 						borderRight="1px solid"
 						borderColor={invalid && errorMsg ? "error" : "hint"}
 						zIndex="1100"
