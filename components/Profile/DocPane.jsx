@@ -11,7 +11,7 @@ import { Buttons, Cards, Icon, IconButtons } from "../";
 
 const DocPane = () => {
 	return (
-		<Cards w="530px">
+		<Cards>
 			<Heading fontSize={18} fontWeight="semibold" color={"light"}>
 				Document Center
 			</Heading>

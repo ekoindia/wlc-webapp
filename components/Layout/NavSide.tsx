@@ -251,7 +251,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 							</HStack>
 						</MenuButton>
 						<MenuList
-							h="470px"
+							h="430px"
 							w="349px"
 							mr="20px"
 							boxShadow="0px 6px 10px #00000033"
@@ -293,23 +293,27 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 											<Box
 												display={"flex"}
 												justifyContent="space-between"
-												alignItems="center"
 												color={"focusbg"}
-												fontSize={10}
+												fontSize="10px"
 											>
-												<Box>
-													+91 9871679433
-													<IconButtons
-														iconName="mode-edit"
-														iconStyle={{
-															h: "8px",
-															w: "8px",
-														}}
-														circleStyle={{
-															h: "21px",
-															w: "21px",
-														}}
-													></IconButtons>
+												<Box
+													display="flex"
+													alignItems="center"
+												>
+													<Box>+91 9871679433</Box>
+													<Box>
+														<IconButtons
+															iconName="mode-edit"
+															iconStyle={{
+																h: "8px",
+																w: "8px",
+															}}
+															circleStyle={{
+																h: "21px",
+																w: "21px",
+															}}
+														></IconButtons>
+													</Box>
 												</Box>
 												<Buttons
 													w="108px"
@@ -382,12 +386,20 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 											</Text>
 											<img src="/icons/forwardarrow.svg" />
 										</Flex>
+
+										<Flex>
+											<Box
+												mt="20px"
+												ml={10}
+												color={"error"}
+												fontSize={14}
+											>
+												Logout
+											</Box>
+										</Flex>
 									</Stack>
 								</CardBody>
 							</Card>
-							<Box mt={50} ml={10} color={"error"} fontSize={14}>
-								Logout
-							</Box>
 						</MenuList>
 					</Menu>
 				</Flex>
