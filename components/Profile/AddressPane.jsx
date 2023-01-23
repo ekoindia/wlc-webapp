@@ -53,9 +53,6 @@ const AddressPane = () => {
 							iconName="near-me"
 							iconPos="left"
 							iconStyle={{ w: "11px", h: "11px" }}
-							circleStyle={{
-								boxShadow: "0px 0px 10px #11299E1A",
-							}}
 						/>
 					</Flex>
 				</Box>
