@@ -86,9 +86,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 				bg="#11299E"
 				borderRight="12px"
 				borderRightColor={useColorModeValue("gray.200", "gray.700")}
-				w="250px"
+				minWidth={"250px"}
 				{...rest}
-				height={isLargerThan769 ? "100vh" : "92vh"}
+				minHeight={isLargerThan769 ? "100vh" : "calc(100vh - 90px)"}
+				maxHeight="100%"
 				paddingTop={".5"}
 			>
 				<Flex mx="9" justifyContent="space-between"></Flex>
@@ -189,237 +190,251 @@ interface MobileProps extends FlexProps {
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 	return (
-		<Flex
-			justify="space-between"
-			height="90px"
-			align="center"
-			bg="white"
-			boxShadow="0px 3px 10px #0000001A"
-			{...rest}
-		>
-			<Box display={"flex"} alignItems={"center"} px={"4"}>
-				<IconButton
-					display={{ base: "flex", md: "none" }}
-					onClick={onOpen}
-					aria-label="open menu"
-					icon={<Icon name="nav-menu" />}
-					bgColor="transparent"
-				/>
-				{/* <img src="/icons/logoimage.png" alt="asd" /> */}
-				<Image src="/icons/logoimage.png" alt="logo" px={"2.5"} />
-			</Box>
-			<Hide above="sm">
-				<Avatar
-					h="48px"
-					w="48px"
-					src={
-						"https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-					}
-					mx={"4"}
-				/>
-			</Hide>
-			<Hide below="sm">
-				<HStack spacing={{ base: "0", md: "" }}>
-					<Flex alignItems={"center"}>
-						<Menu>
-							<MenuButton
-								py={2}
-								transition="all 0.3s"
-								_focus={{ boxShadow: "none" }}
-							>
-								<HStack style={{ marginRight: "30PX" }}>
-									<Avatar
-										h="48px"
-										w="48px"
-										src={
-											"https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-										}
-									/>
-									<VStack
-										display={{ base: "none", md: "flex" }}
-										alignItems="flex-start"
-										spacing="5px"
-										ml="2"
-									>
-										{" "}
-										<Box display="flex" alignItems="center">
-											<Text
-												fontSize="18px"
-												color="#0F0F0F"
-												fontWeight={600}
-											>
-												Akash Enterprises
-											</Text>
-											<Box pl={5}>
-												<img src="/icons/profiledropdown.svg" />
-											</Box>
-										</Box>
-										<Text fontSize="14px" color="#1F5AA7">
-											Logged in as admin
-										</Text>
-									</VStack>
-								</HStack>
-							</MenuButton>
-							<MenuList
-								h="430px"
-								w="349px"
-								mr="20px"
-								boxShadow="0px 6px 10px #00000033"
-								border="1px solid #D2D2D2"
-								borderRadius="10px"
-							>
-								<Card>
-									<Box
-										bg={"#1F3ABC"}
-										h="120px"
-										mt="-10px"
-										borderRadius="10px 10px 0px 0px"
-									>
-										<Box ml="20px">
+		<div style={{ width: "100%", height: "90px" }}>
+			<Flex
+				justify="space-between"
+				height="90px"
+				align="center"
+				bg="white"
+				position="fixed"
+				zIndex={"9"}
+				width={"100%"}
+				boxShadow="0px 3px 10px #0000001A"
+				{...rest}
+			>
+				<Box display={"flex"} alignItems={"center"} px={"4"}>
+					<IconButton
+						display={{ base: "flex", md: "none" }}
+						onClick={onOpen}
+						aria-label="open menu"
+						icon={<Icon name="nav-menu" />}
+						bgColor="transparent"
+					/>
+					{/* <img src="/icons/logoimage.png" alt="asd" /> */}
+					<Image src="/icons/logoimage.png" alt="logo" px={"2.5"} />
+				</Box>
+				<Hide above="sm">
+					<Avatar
+						h="48px"
+						w="48px"
+						src={
+							"https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+						}
+						mx={"4"}
+					/>
+				</Hide>
+				<Hide below="sm">
+					<HStack spacing={{ base: "0", md: "" }}>
+						<Flex alignItems={"center"}>
+							<Menu>
+								<MenuButton
+									py={2}
+									transition="all 0.3s"
+									_focus={{ boxShadow: "none" }}
+								>
+									<HStack style={{ marginRight: "30PX" }}>
+										<Avatar
+											h="48px"
+											w="48px"
+											src={
+												"https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+											}
+										/>
+										<VStack
+											display={{
+												base: "none",
+												md: "flex",
+											}}
+											alignItems="flex-start"
+											spacing="5px"
+											ml="2"
+										>
+											{" "}
 											<Box
 												display="flex"
-												mt="20px"
-												gap="50px"
+												alignItems="center"
 											>
-												<Box
-													fontSize={"14px"}
-													color={"highlight"} // need to update the color
+												<Text
+													fontSize="18px"
+													color="#0F0F0F"
+													fontWeight={600}
 												>
 													Akash Enterprises
-												</Box>
-												<Box
-													fontSize="10px"
-													color={"white"}
-													mt="4px"
-												>
-													(Eko Code: 501837634)
+												</Text>
+												<Box pl={5}>
+													<img src="/icons/profiledropdown.svg" />
 												</Box>
 											</Box>
-
-											<Box
-												color={"focusbg"}
-												fontSize={10}
+											<Text
+												fontSize="14px"
+												color="#1F5AA7"
 											>
-												angeltech.google.co.in
-											</Box>
-											<Box pr="15px">
+												Logged in as admin
+											</Text>
+										</VStack>
+									</HStack>
+								</MenuButton>
+								<MenuList
+									h="430px"
+									w="349px"
+									mr="20px"
+									boxShadow="0px 6px 10px #00000033"
+									border="1px solid #D2D2D2"
+									borderRadius="10px"
+								>
+									<Card>
+										<Box
+											bg={"#1F3ABC"}
+											h="120px"
+											mt="-10px"
+											borderRadius="10px 10px 0px 0px"
+										>
+											<Box ml="20px">
 												<Box
-													display={"flex"}
-													justifyContent="space-between"
-													color={"focusbg"}
-													fontSize="10px"
+													display="flex"
+													mt="20px"
+													gap="50px"
 												>
 													<Box
-														display="flex"
-														alignItems="center"
+														fontSize={"14px"}
+														color={"highlight"} // need to update the color
 													>
-														<Box>
-															+91 9871679433
-														</Box>
-														<Box>
-															<IconButtons
-																iconName="mode-edit"
-																iconStyle={{
-																	h: "8px",
-																	w: "8px",
-																}}
-																circleStyle={{
-																	h: "21px",
-																	w: "21px",
-																}}
-															></IconButtons>
-														</Box>
+														Akash Enterprises
 													</Box>
-													<Buttons
-														w="108px"
-														h="36px"
-														fontSize="12px"
-
-														// rightIcon={
-														// 	// <ChevronRightIcon />
-														// }
+													<Box
+														fontSize="10px"
+														color={"white"}
+														mt="4px"
 													>
-														View Profile{" "}
-														<Icon
-															name="chevron-right"
-															// height="10px"
-															// width="20px"
-														/>
-													</Buttons>
+														(Eko Code: 501837634)
+													</Box>
+												</Box>
+
+												<Box
+													color={"focusbg"}
+													fontSize={10}
+												>
+													angeltech.google.co.in
+												</Box>
+												<Box pr="15px">
+													<Box
+														display={"flex"}
+														justifyContent="space-between"
+														color={"focusbg"}
+														fontSize="10px"
+													>
+														<Box
+															display="flex"
+															alignItems="center"
+														>
+															<Box>
+																+91 9871679433
+															</Box>
+															<Box>
+																<IconButtons
+																	iconName="mode-edit"
+																	iconStyle={{
+																		h: "8px",
+																		w: "8px",
+																	}}
+																	circleStyle={{
+																		h: "21px",
+																		w: "21px",
+																	}}
+																></IconButtons>
+															</Box>
+														</Box>
+														<Buttons
+															w="108px"
+															h="36px"
+															fontSize="12px"
+
+															// rightIcon={
+															// 	// <ChevronRightIcon />
+															// }
+														>
+															View Profile{" "}
+															<Icon
+																name="chevron-right"
+																// height="10px"
+																// width="20px"
+															/>
+														</Buttons>
+													</Box>
 												</Box>
 											</Box>
 										</Box>
-									</Box>
 
-									<CardBody>
-										<Stack
-											divider={<StackDivider />}
-											spacing="4"
-										>
-											<Flex justifyContent="space-between">
-												<Text
-													style={{
-														font: "normal normal medium 14px/36px Inter;",
-													}}
-												>
-													{" "}
-													Business Contact{" "}
-												</Text>
-												<img src="/icons/forwardarrow.svg" />
-											</Flex>
+										<CardBody>
+											<Stack
+												divider={<StackDivider />}
+												spacing="4"
+											>
+												<Flex justifyContent="space-between">
+													<Text
+														style={{
+															font: "normal normal medium 14px/36px Inter;",
+														}}
+													>
+														{" "}
+														Business Contact{" "}
+													</Text>
+													<img src="/icons/forwardarrow.svg" />
+												</Flex>
 
-											<Flex justifyContent="space-between">
-												<Text
-													style={{
-														font: "normal normal medium 14px/36px Inter;",
-													}}
-												>
-													Need Help
-												</Text>
-												<img src="/icons/forwardarrow.svg" />
-											</Flex>
+												<Flex justifyContent="space-between">
+													<Text
+														style={{
+															font: "normal normal medium 14px/36px Inter;",
+														}}
+													>
+														Need Help
+													</Text>
+													<img src="/icons/forwardarrow.svg" />
+												</Flex>
 
-											<Flex justifyContent="space-between">
-												<Text
-													style={{
-														font: "normal normal medium 14px/36px Inter;",
-													}}
-												>
-													{" "}
-													Help Center
-												</Text>
-												<img src="/icons/forwardarrow.svg" />
-											</Flex>
+												<Flex justifyContent="space-between">
+													<Text
+														style={{
+															font: "normal normal medium 14px/36px Inter;",
+														}}
+													>
+														{" "}
+														Help Center
+													</Text>
+													<img src="/icons/forwardarrow.svg" />
+												</Flex>
 
-											<Flex justifyContent="space-between">
-												<Text
-													style={{
-														font: "normal normal medium 14px/36px Inter;",
-													}}
-												>
-													Settings
-												</Text>
-												<img src="/icons/forwardarrow.svg" />
-											</Flex>
+												<Flex justifyContent="space-between">
+													<Text
+														style={{
+															font: "normal normal medium 14px/36px Inter;",
+														}}
+													>
+														Settings
+													</Text>
+													<img src="/icons/forwardarrow.svg" />
+												</Flex>
 
-											<Flex>
-												<Box
-													mt="20px"
-													ml={10}
-													color={"error"}
-													fontSize={14}
-												>
-													Logout
-												</Box>
-											</Flex>
-										</Stack>
-									</CardBody>
-								</Card>
-							</MenuList>
-						</Menu>
-					</Flex>
-				</HStack>
-			</Hide>
-		</Flex>
+												<Flex>
+													<Box
+														mt="20px"
+														ml={10}
+														color={"error"}
+														fontSize={14}
+													>
+														Logout
+													</Box>
+												</Flex>
+											</Stack>
+										</CardBody>
+									</Card>
+								</MenuList>
+							</Menu>
+						</Flex>
+					</HStack>
+				</Hide>
+			</Flex>
+		</div>
 	);
 };
