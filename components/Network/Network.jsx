@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Filter, SearchBar, Sort, Tables } from "..";
 
@@ -18,14 +18,10 @@ const Network = ({ className = "", ...props }) => {
 
 	return (
 		<Box className={`${className}`} {...props}>
-			<Box
-				fontSize={"36px"}
-				color={"dark"}
-				font="normal 600 30px/36px Inter;"
-				opacity={1}
-				mt="40px"
-			>
-				My Network
+			<Box display={"flex"} alignItems={"center"}>
+				<Text fontSize={"30px"} fontWeight={"semibold"}>
+					My Network
+				</Text>
 			</Box>
 			<Box
 				display={"flex"}

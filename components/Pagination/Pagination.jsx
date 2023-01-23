@@ -43,7 +43,7 @@ const Pagination = (props) => {
 				}}
 				cursor="pointer"
 			>
-				<Icon name="arrow-back" />
+				<Icon name="chevron-left" />
 			</Flex>
 			<Flex gap={6}>
 				{paginationRange.map((pageNumber, index) => {
@@ -56,7 +56,8 @@ const Pagination = (props) => {
 					}
 					return (
 						<Square
-							size={"24px"}
+							size="auto"
+							px="7px"
 							borderRadius="6px"
 							key={index}
 							cursor="pointer"
@@ -75,7 +76,7 @@ const Pagination = (props) => {
 								setCurrPageNumber(pageNumber);
 							}}
 						>
-							{pageNumber}
+							<Box>{pageNumber}</Box>
 						</Square>
 					);
 				})}
@@ -93,7 +94,7 @@ const Pagination = (props) => {
 					);
 				}}
 			>
-				<Icon name="arrow-forward" />
+				<Icon name="chevron-right" />
 			</Flex>
 		</Flex>
 	);
