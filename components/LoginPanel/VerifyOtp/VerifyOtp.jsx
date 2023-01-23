@@ -1,5 +1,6 @@
 import {
 	Box,
+	Center,
 	Flex,
 	Heading,
 	HStack,
@@ -45,35 +46,46 @@ const VerifyOtp = ({ number, setStep }) => {
 	return (
 		<Flex direction="column">
 			<Flex align="center">
-				<Box onClick={() => setStep(0)} cursor="pointer">
-					{/* <ArrowBackIcon boxSize={6} w="18px" h="15px" /> */}
-					<Icon name="arrow-back" width="18px" />
+				<Box
+					onClick={() => setStep(0)}
+					w="18px"
+					h="15px"
+					cursor="pointer"
+				>
+					<Icon name="arrow-back" />
 				</Box>
 				<Heading
 					as="h3"
-					pl={5}
+					pl={{ base: 3.5, "2xl": 5 }}
 					fontWeight="semibold"
+					fontSize={{ base: "xl", "2xl": "3xl" }}
 					letterSpacing="wide"
 				>
 					Verify with OTP
 				</Heading>
 			</Flex>
 
-			<Flex mt="30px" ml="2.4rem" fontSize="lg" align="center">
-				<Text>
-					Sent on{" "}
-					<Text as="span" fontWeight="semibold">
+			<Flex
+				mt={{ base: 2.5, "2xl": "30px" }}
+				ml={{ base: 9, "2xl": "2.4rem" }}
+				mb={{ base: "5rem", "2xl": "7.25rem" }}
+				fontSize={{ base: "sm", "2xl": "lg" }}
+				align="center"
+			>
+				<Flex align="center" wrap="wrap">
+					<Text>Sent on&nbsp;</Text>
+					<Center as="b">
 						+91 {number}
-					</Text>
-				</Text>
-				<IconButtons
-					onClick={() => setStep((prev) => prev - 1)}
-					iconName="mode-edit"
-					iconStyle={{ h: "12px", w: "12px" }}
-				/>
+						<IconButtons
+							onClick={() => setStep((prev) => prev - 1)}
+							iconName="mode-edit"
+							iconStyle={{ h: "12px", w: "12px" }}
+						/>
+					</Center>
+				</Flex>
 			</Flex>
 
-			<HStack justify="space-between" mt="7.25rem">
+			<HStack justify="space-between">
 				<PinInput
 					autoFocus
 					type="number"
@@ -89,6 +101,8 @@ const VerifyOtp = ({ number, setStep }) => {
 								key={idx}
 								{...pinInputStyle}
 								bg={Otp[idx] ? "focusbg" : ""}
+								h={{ base: 12, "2xl": 16 }}
+								borderRadius="10"
 								boxShadow={
 									Otp[idx] ? "0px 3px 6px #0000001A" : ""
 								}
@@ -97,19 +111,19 @@ const VerifyOtp = ({ number, setStep }) => {
 				</PinInput>
 			</HStack>
 
-			<Flex justify="center" mb="6.25rem" mt="2.5rem" align="center">
+			<Flex
+				justify="center"
+				mt={{ base: 6, "2xl": "2.5rem" }}
+				fontSize={{ base: "sm", "2xl": "lg" }}
+				align="center"
+			>
 				<Text>Did not receive yet?</Text>
-				<Box
-					pl="2.5"
-					fontSize="lg"
-					fontFamily="roboto_font"
-					fontWeight="medium"
-				>
+				<Box pl="2.5" fontFamily="roboto_font" fontWeight="medium">
 					{timer >= 1 ? (
 						<Box color="error" display="flex">
 							&nbsp;
 							<Icon name="file-upload" width="10px" />
-							&nbsp; &nbsp;00:{timer <= 9 ? "0" + timer : timer}
+							&nbsp;00:{timer <= 9 ? "0" + timer : timer}
 						</Box>
 					) : (
 						<Text
@@ -125,11 +139,10 @@ const VerifyOtp = ({ number, setStep }) => {
 			</Flex>
 
 			<Buttons
-				title="Verify"
-				h="4.5rem"
-				fontSize="xl"
-				borderRadius="10px"
-				boxShadow="0px 3px 10px #FE9F0040"
+				title="Submit"
+				mt={{ base: "3.25rem", "2xl": "6.25rem" }}
+				h={{ base: 16, "2xl": "4.5rem" }}
+				fontSize={{ base: "lg", "2xl": "xl" }}
 				onClick={redirect} // dummy onClick
 			/>
 		</Flex>
