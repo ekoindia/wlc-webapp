@@ -6,7 +6,7 @@ const TrxnHistory = () => {
 	return (
 		<>
 			<Head>
-				<title>Trxn-History | Eko API Marketplace</title>
+				<title>Transaction History | Eko API Marketplace</title>
 			</Head>
 
 			<Layout>

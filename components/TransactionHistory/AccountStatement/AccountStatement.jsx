@@ -18,7 +18,9 @@ const AccountStatement = ({ className = "", ...props }) => {
 
 	const router = useRouter();
 	const handleClick = (e) => {
-		router.push("/admin/trxn-history/account-statement/detailed-statement");
+		router.push(
+			"/admin/transaction-history/account-statement/detailed-statement"
+		);
 	};
 
 	return (

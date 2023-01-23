@@ -35,8 +35,9 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 				isCurrent: index === pathArray.length - 1,
 			};
 		});
-
+		breadcrumbs.shift();
 		setBreadcrumbs(breadcrumbs);
+		console.log(breadcrumbs);
 	}, [router.asPath]);
 
 	function capitalizeWordsBreadcrumbs(str) {
@@ -53,8 +54,8 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 				<Breadcrumb
 					separator={
 						<Icon
-							width="6px"
-							height="6px"
+							width="9px"
+							height="9px"
 							name="chevron-right"
 							color={"light"}
 						/>
@@ -62,9 +63,8 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 				>
 					<BreadcrumbItem key={0}>
 						<BreadcrumbLink
-							href="/"
+							href="#"
 							_hover={{ textDecoration: "none" }}
-							fontWeight={"semibold"}
 							fontSize={"13px"}
 							color={"accent.DEFAULT"}
 							lineHeight={0}
@@ -92,7 +92,6 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 								<BreadcrumbLink
 									href={breadcrumb.href}
 									_hover={{ textDecoration: "none" }}
-									fontWeight={"semibold"}
 									fontSize={"13px"}
 									color={
 										breadcrumb.isCurrent
