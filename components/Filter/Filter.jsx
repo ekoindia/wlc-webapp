@@ -44,7 +44,7 @@ function Filter() {
 				border="1px solid #11299E"
 				boxShadow="box-shadow: 0px 3px 10px #11299E1A"
 				_hover={{
-					bg: "none",
+					bg: "white",
 				}}
 				_active={{
 					bg: "white",
