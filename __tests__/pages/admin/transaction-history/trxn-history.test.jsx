@@ -1,7 +1,6 @@
 import { pageRender, screen, mockRouter } from "test-utils";
 import TrxnHistory from "pages";
 
-
 describe("TrxnHistory", () => {
 	beforeEach(() => {
 		mockRouter.setCurrentUrl("/page-path");

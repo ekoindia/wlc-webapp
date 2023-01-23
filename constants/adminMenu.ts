@@ -14,7 +14,7 @@ export const adminMenu: adminMenuType[] = [
 	{
 		icon: "swap-horiz",
 		name: "Transaction History",
-		link: "/admin/trxn-history",
+		link: "/admin/transaction-history",
 	},
 	{
 		icon: "invoice",
