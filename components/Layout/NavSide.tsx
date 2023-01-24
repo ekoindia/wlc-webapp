@@ -4,7 +4,6 @@ import {
 	BoxProps,
 	Card,
 	CardBody,
-	CloseButton,
 	Drawer,
 	DrawerContent,
 	Flex,
@@ -30,6 +29,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode, ReactText, useEffect, useState } from "react";
 import { Buttons, Icon, IconButtons } from "../";
+import { useGetLogoContext } from "../../contexts/getLogoContext";
 
 export default function SidebarWithHeader({
 	children,
@@ -189,6 +189,7 @@ interface MobileProps extends FlexProps {
 	onOpen: () => void;
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+	const { logo } = useGetLogoContext();
 	return (
 		<div style={{ width: "100%", height: "90px" }}>
 			<Flex
@@ -211,7 +212,12 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 						bgColor="transparent"
 					/>
 					{/* <img src="/icons/logoimage.png" alt="asd" /> */}
-					<Image src="/icons/logoimage.png" alt="logo" px={"2.5"} />
+					{/* <Image src="/icons/logoimage.png" alt="logo" px={"2.5"} /> */}
+					<Image
+						src={logo || "/icons/logoimage.png"}
+						alt="logo"
+						px={"2.5"}
+					/>
 				</Box>
 				<Hide above="sm">
 					<Avatar
