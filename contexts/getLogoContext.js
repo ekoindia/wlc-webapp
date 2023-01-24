@@ -13,7 +13,7 @@ const GetLogoProvider = ({ children }) => {
 				sessionStorage.setItem("logo", logo);
 			}
 		}
-	}, []);
+	}, [logo]);
 	return (
 		<GetLogoContext.Provider value={{ logo, setLogo }}>
 			{children}
