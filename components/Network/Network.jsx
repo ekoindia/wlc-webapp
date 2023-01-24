@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { NetworkTable } from ".";
 import { Filter, SearchBar, Sort } from "..";
-import NetworkTable from "./NetworkTable";
 
 /**
  * A <Network> component

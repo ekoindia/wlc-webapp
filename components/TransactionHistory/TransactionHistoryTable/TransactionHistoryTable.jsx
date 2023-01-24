@@ -1,7 +1,7 @@
 import { mockData } from "constants/mockTableData";
-import { Tables } from "..";
+import { Tables } from "../..";
 
-const NetworkTable = () => {
+const TransactionHistoryTable = () => {
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
@@ -13,7 +13,7 @@ const NetworkTable = () => {
 		{ name: "type", field: "Type", sorting: true },
 		{
 			name: "createdAt",
-			field: "Onboarded On",
+			field: "Account Number",
 			sorting: true,
 		},
 		{
@@ -22,18 +22,14 @@ const NetworkTable = () => {
 			sorting: true,
 			show: "Tag",
 		},
-		{ name: "ekocsp_code", field: "Eko Code", sorting: true },
 		{
 			name: "location",
 			field: "Location",
 			sorting: true,
 			show: "IconButton",
 		},
-		{ name: "", field: "", show: "Modal" },
 		{ name: "", field: "", show: "ArrowForward" },
 	];
-
-	/* data ✔ || pagesize ✔ || order ✔ */
 
 	return (
 		<>
@@ -42,4 +38,4 @@ const NetworkTable = () => {
 	);
 };
 
-export default NetworkTable;
+export default TransactionHistoryTable;
