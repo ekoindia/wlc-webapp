@@ -24,12 +24,7 @@ const Network = ({ className = "", ...props }) => {
 					My Network
 				</Text>
 			</Box>
-			<Box
-				display={"flex"}
-				justifyContent={"space-between"}
-				w={"85vw"}
-				mt="20px"
-			>
+			<Box display={"flex"} justifyContent={"space-between"} mt="20px">
 				<SearchBar />
 				<Flex gap="50px">
 					<Box>
