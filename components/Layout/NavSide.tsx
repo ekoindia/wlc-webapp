@@ -379,7 +379,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 												<Flex justifyContent="space-between">
 													<Text
 														style={{
-															font: "normal normal medium 14px/36px Inter;",
+															font: "normal normal medium 14px/36px Inter",
 														}}
 													>
 														{" "}
@@ -391,7 +391,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 												<Flex justifyContent="space-between">
 													<Text
 														style={{
-															font: "normal normal medium 14px/36px Inter;",
+															font: "normal normal medium 14px/36px Inter",
 														}}
 													>
 														Need Help
@@ -402,7 +402,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 												<Flex justifyContent="space-between">
 													<Text
 														style={{
-															font: "normal normal medium 14px/36px Inter;",
+															font: "normal normal medium 14px/36px Inter",
 														}}
 													>
 														{" "}
@@ -414,7 +414,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 												<Flex justifyContent="space-between">
 													<Text
 														style={{
-															font: "normal normal medium 14px/36px Inter;",
+															font: "normal normal medium 14px/36px Inter",
 														}}
 													>
 														Settings
