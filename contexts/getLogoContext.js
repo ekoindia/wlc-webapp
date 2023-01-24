@@ -9,7 +9,9 @@ const GetLogoProvider = ({ children }) => {
 		if (sessionStorage.getItem("logo")) {
 			setLogo(sessionStorage.getItem("logo"));
 		} else {
-			sessionStorage.setItem("logo", logo);
+			if (logo !== "") {
+				sessionStorage.setItem("logo", logo);
+			}
 		}
 	}, []);
 	return (
