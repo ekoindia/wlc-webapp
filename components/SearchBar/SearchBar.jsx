@@ -23,15 +23,15 @@ export function SearchBar({ onChangeHandler }) {
 				<InputLeftElement
 					pointerEvents="none"
 					alignItems="center"
-					children={
+					children={[
 						<Icon
 							name="search"
 							color="#555555"
 							width="20"
 							height="20"
 							pl="20px"
-						/>
-					}
+						/>,
+					]}
 				/>
 				<Input
 					placeholder="Search by name or mobile number"
