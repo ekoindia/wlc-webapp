@@ -26,7 +26,9 @@ export type IconNameType =
 	| "sort"
 	| "search"
 	| "nav-menu"
-	| "drop-down";
+	| "drop-down"
+	| "logout"
+	| "timer";
 
 export type IconProps = {
 	name: IconNameType;

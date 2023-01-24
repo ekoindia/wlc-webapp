@@ -10,11 +10,13 @@ import {
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
+	Grid,
+	GridItem,
 	Input,
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { Buttons, IconButtons, Icon } from "..";
+import { Buttons, Icon, IconButtons } from "..";
 /**
  * A <Filter> component
  * TODO: Write more description here
@@ -44,7 +46,7 @@ function Filter() {
 				border="1px solid #11299E"
 				boxShadow="box-shadow: 0px 3px 10px #11299E1A"
 				_hover={{
-					bg: "none",
+					bg: "white",
 				}}
 				_active={{
 					bg: "white",
@@ -75,21 +77,22 @@ function Filter() {
 				finalFocusRef={btnRef}
 				size={"md"}
 			>
-				<DrawerOverlay />
+				<DrawerOverlay bg="#e9edf1b3" backdropFilter="blur(6px)" />
 				<DrawerContent>
-					<DrawerHeader>
+					<DrawerHeader py="3.43rem" pl="3.125rem">
 						<Box display={"flex"} justifyContent={"space-between"}>
 							<Box
 								display={"flex"}
 								alignItems={"center"}
 								fontWeight={"semibold"}
-								fontSize={"30px"}
+								fontSize="30px"
+								lineHeight="0px"
 							>
 								<Icon
 									name="filter"
 									width="40px"
-									height="40px"
-									size={"30px"}
+									height="25px"
+									// size={"30px"}
 									style={{ marginRight: ".3rem" }}
 								/>
 								Filter
@@ -98,9 +101,10 @@ function Filter() {
 								display={"flex"}
 								alignItems={"center"}
 								onClick={onClose}
-								fontSize={"18px"}
+								fontSize="18px"
 								cursor={"pointer"}
 								color={"light"}
+								lineHeight="0px"
 							>
 								<Icon
 									name="close-outline"
@@ -114,49 +118,84 @@ function Filter() {
 						</Box>
 					</DrawerHeader>
 
-					<DrawerBody>
+					<DrawerBody pl="3.125rem">
 						<Box mt={2}>
 							<Text
-								color={"light"}
-								fontWeight={"semibold"}
-								fontSize={"18px"}
+								color="light"
+								fontWeight="semibold"
+								fontSize="lg"
 							>
 								Filter by profile type
 							</Text>
-							<Flex wrap={"wrap"} gap={24} mt="3">
-								<Checkbox colorScheme="orange">
-									iMerchant
-								</Checkbox>
-								<Checkbox colorScheme="orange">Seller</Checkbox>
-							</Flex>
+							<Grid
+								templateColumns="repeat(2, 1fr)"
+								mt="5"
+								gap="2"
+							>
+								<GridItem w="100%">
+									<Checkbox variant="rounded">
+										Merchant
+									</Checkbox>
+								</GridItem>
+								<GridItem w="100%">
+									<Checkbox variant="rounded">
+										Seller
+									</Checkbox>
+								</GridItem>
+							</Grid>
 						</Box>
+
 						<Box mt={16}>
 							<Text
 								color={"light"}
 								fontWeight={"semibold"}
-								fontSize={"18px"}
+								fontSize="lg"
 							>
 								Filter by account status
 							</Text>
-							<Flex wrap={"wrap"} gap={24} mt="3">
-								<Checkbox colorScheme="orange">Active</Checkbox>
-								<Checkbox colorScheme="orange">
-									Inactive
-								</Checkbox>
-							</Flex>
+							<Grid
+								templateColumns="repeat(2, 1fr)"
+								mt="5"
+								gap="2"
+							>
+								<GridItem w="100%">
+									<Checkbox
+										variant="rounded"
+										borderRadius="20px"
+									>
+										Active
+									</Checkbox>
+								</GridItem>
+								<GridItem w="100%">
+									<Checkbox variant="rounded">
+										Inactive
+									</Checkbox>
+								</GridItem>
+							</Grid>
 						</Box>
+
 						<Box mt={16}>
-							<Text>Filter by activation date range</Text>
-							<Flex wrap={"wrap"} mt="3">
+							<Text
+								color={"light"}
+								fontWeight={"semibold"}
+								fontSize="lg"
+							>
+								Filter by activation date range
+							</Text>
+							<Flex wrap={"wrap"} mt="5">
 								<Input
-									w={"3xs"}
+									w={"52"}
 									size="md"
 									type="date"
-									min="1970-01-01"
-									max="2100-12-31"
+									borderRight="none"
+									borderRightRadius="none"
+									// min="1970-01-01"
+									// max="2100-12-31"
+									placeholder="From"
 								/>
 								<Input
-									w={"3xs"}
+									borderLeftRadius="none"
+									w={"52"}
 									size="md"
 									type="date"
 									min="1970-01-01"
@@ -164,6 +203,7 @@ function Filter() {
 								/>
 							</Flex>
 						</Box>
+
 						<Box
 							display={"flex"}
 							justifyContent={"flex-end"}

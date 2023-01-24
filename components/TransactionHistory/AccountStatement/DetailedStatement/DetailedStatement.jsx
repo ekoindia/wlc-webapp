@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Cards, Headings, Icon, SearchBar, Tags } from "../../..";
-import DetailedStatementTable from "./DetailedStatementTable";
+import { DetailedStatementTable } from "./DetailedStatementTable";
 
 const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required

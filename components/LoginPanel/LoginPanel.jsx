@@ -1,10 +1,12 @@
 import { Box, Flex, Image } from "@chakra-ui/react";
+import { useGetLogoContext } from "contexts/getLogoContext";
 import { useState } from "react";
 import { Login, MobileVerify, VerifyOtp } from ".";
 
 const LoginPanel = ({ className = "", ...props }) => {
 	const [step, setStep] = useState(0); // TODO: Edit state as required
 	const [number, setNumber] = useState("");
+	const { logo } = useGetLogoContext();
 	return (
 		<Flex
 			position={{ base: "fixed", md: "none" }}
@@ -34,7 +36,8 @@ const LoginPanel = ({ className = "", ...props }) => {
 					}}
 				>
 					<Image
-						src="./images/logoimage.png"
+						// src="./images/logoimage.png"
+						src={logo || "./images/logoimage.png"}
 						pl={{ base: 4, md: "0" }}
 						w={{ base: "9rem", md: "14rem", "2xl": "19rem" }}
 						height={{ base: "2.2rem", md: "3.5rem", "2xl": "5rem" }}

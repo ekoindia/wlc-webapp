@@ -53,7 +53,7 @@ const Sort = ({ className = "", ...props }) => {
 							bg: "white",
 						}}
 						_hover={{
-							bg: "none",
+							bg: "white",
 						}}
 					>
 						<Text>Recenty Added</Text>

@@ -1,7 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { TransactionHistoryTable } from ".";
 import { Icon, SearchBar } from "..";
-import TrxnHistTable from "./TrxnHistTable";
 /**
  * A <TransactionHistory> component
  * TODO: Write more description here
@@ -22,7 +22,7 @@ const TransactionHistory = ({ className = "", ...props }) => {
 				<SearchBar />
 			</Box>
 			<Box w="1610px">
-				<TrxnHistTable />
+				<TransactionHistoryTable />
 			</Box>
 		</>
 	);
