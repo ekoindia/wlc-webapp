@@ -2,7 +2,7 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Buttons, Cards, Icon, Tags } from "../..";
-import AccountStatementTable from "./AccountStatementTable";
+import { AccountStatementTable } from "./AccountStatementTable";
 
 const AccountStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
