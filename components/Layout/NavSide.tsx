@@ -25,11 +25,11 @@ import {
 } from "@chakra-ui/react";
 
 import { adminMenu } from "constants/adminMenu";
-import { useGetLogoContext } from "contexts/getLogoContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ReactNode, ReactText, useEffect, useState } from "react";
 import { Buttons, Icon, IconButtons } from "../";
+import { useGetLogoContext } from "../../contexts/getLogoContext";
 
 export default function SidebarWithHeader({
 	children,
