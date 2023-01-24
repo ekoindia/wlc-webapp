@@ -26,6 +26,7 @@ export type IconNameType =
 	| "sort"
 	| "search"
 	| "nav-menu"
+	| "drop-down"
 	| "logout"
 	| "timer";
 
