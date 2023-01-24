@@ -60,6 +60,7 @@ const IconButtons = (props) => {
 					{...textStyle}
 				>
 					{title}
+					{children}
 				</Box>
 				{iconName ? (
 					<Box as="span" order={ordr2}>
