@@ -18,7 +18,6 @@ const roboto = Roboto({
 
 export const light = extendTheme({
 	breakpoints: {
-		// w={{ sm: 300, md: 400, base: 500}}
         base:"0",
 		sm: "440px",
 		md: "768px",
@@ -27,20 +26,20 @@ export const light = extendTheme({
 		"2xl": "1800px",
 	},
 	components: {
-    Table:{
-      variants:{
-        evenStriped:{
-          tr:{
-            _even:{
-              background:'shade'
+        Table:{
+        variants:{
+            evenStriped:{
+            tr:{
+                _even:{
+                background:'shade'
+                }
+            },
+            th:{
+                textTransform: 'Capitalize'
             }
-          },
-          th:{
-              textTransform: 'Capitalize'
-          }
+            }
         }
-      }
-    },
+        },
 		Button: {
 			...theme.components.Button,
 			variants: {
@@ -62,9 +61,27 @@ export const light = extendTheme({
                         bg:"accent.dark"
                     }
 				},
-				// add more variants as needed
 			},
 		},
+        Checkbox:{
+            variants:{
+                rounded:{
+                    control:{
+                        w:"24px",
+                        h:"24px",
+                        border:"1px solid #11299E",
+                        borderColor:"#11299E",
+                        borderRadius:"6px",
+                        _checked:{
+                            bg:"#11299E",
+                        },
+                        _focus:{
+                            boxShadow:"none",
+                        }
+                    },
+                }
+            }
+        }
 	},
 	colors: {
 		primary: {
@@ -94,15 +111,13 @@ export const light = extendTheme({
 		light: "#555555",
 		focusbg: "#FFFBF3",
 		white: "#FFFFFF",
-    shade: '#F2F2F2',
+        shade: '#F2F2F2',
 		highlight: "#FFD93B",
-    bg:"#F5F6F8"
+        bg:"#F5F6F8"
 	},
 	styles: {
         global: {
-      "html": {
-        letterSpacing:"0.19px"
-      },
+      
     },
     },
 	borders: {
@@ -190,7 +205,7 @@ export const light = extendTheme({
 		96: "24rem",
 	},
 	fonts: {
-		body: `${inter.style.fontFamily}`,
+		// body: `${inter.style.fontFamily}`,
 		heading: `${inter.style.fontFamily}`,
         roboto_font:`${roboto.style.fontFamily}`
 	},

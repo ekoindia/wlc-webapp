@@ -121,8 +121,7 @@ const VerifyOtp = ({ number, setStep }) => {
 				<Box pl="2.5" fontFamily="roboto_font" fontWeight="medium">
 					{timer >= 1 ? (
 						<Box color="error" display="flex">
-							&nbsp;
-							<Icon name="file-upload" width="10px" />
+							<Icon name="timer" width="18px" />
 							&nbsp;00:{timer <= 9 ? "0" + timer : timer}
 						</Box>
 					) : (
