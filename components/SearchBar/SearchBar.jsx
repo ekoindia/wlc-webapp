@@ -1,4 +1,6 @@
-import { Box, Input } from "@chakra-ui/react";
+import { Input, Box } from "@chakra-ui/react";
+import { InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { Icon } from "..";
 
 /**
  * A <SearchFilterSort> component
@@ -17,19 +19,34 @@ import { Box, Input } from "@chakra-ui/react";
 export function SearchBar({ onChangeHandler }) {
 	return (
 		<Box>
-			<Input
-				placeholder="Search by name or mobile number"
-				size="lg"
-				borderRadius="10px"
-				width="600px"
-				border=" 1px solid #D2D2D2"
-				boxShadow="box-shadow: 0px 3px 6px #0000001A"
-				bg="white"
-				_focus={{
-					bg: "focusbg",
-					boxShadow: "0px 3px 6px #0000001A",
-				}}
-			/>
+			<InputGroup>
+				<InputLeftElement
+					pointerEvents="none"
+					alignItems="center"
+					children={
+						<Icon
+							name="search"
+							color="#555555"
+							width="20"
+							height="20"
+							pl="20px"
+						/>
+					}
+				/>
+				<Input
+					placeholder="Search by name or mobile number"
+					size="lg"
+					borderRadius="10px"
+					width="600px"
+					border=" 1px solid #D2D2D2"
+					boxShadow="box-shadow: 0px 3px 6px #0000001A"
+					bg="white"
+					_focus={{
+						bg: "focusbg",
+						boxShadow: "0px 3px 6px #0000001A",
+					}}
+				/>
+			</InputGroup>
 		</Box>
 	);
 }
