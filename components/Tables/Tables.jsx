@@ -10,14 +10,12 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { Icon, IconButtons, Pagination, Tags } from "..";
 
 const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
-	//const [currentSort, setCurrentSort] = useState("default");
-	const router = useRouter();
+	const [currentSort, setCurrentSort] = useState("default");
 
 	const { pageLimit: PageSize = 10, data: tableData, renderer } = props;
 
@@ -26,10 +24,6 @@ const Tables = (props) => {
 		const lastPageIndex = firstPageIndex + PageSize;
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
-
-	const redirect = () => {
-		router.push("my-network/profile");
-	};
 
 	const getTh = () => {
 		return renderer.map((item, index) => {
@@ -78,8 +72,6 @@ const Tables = (props) => {
 				return <Td>{getStatusStyle(item[column.name])}</Td>;
 			case "Modal":
 				return <Td>{getModalStyle()}</Td>;
-			case "ArrowForward":
-				return <Td>{getArrowStyle(redirect)}</Td>;
 			case "IconButton":
 				return <Td>{getLocationStyle(item[column.name])}</Td>;
 			case "Avatar":
@@ -87,6 +79,8 @@ const Tables = (props) => {
 			default:
 				if (column?.field === "Sr. No.") {
 					return <Td>{index}</Td>;
+				} else if (column?.redirect !== undefined) {
+					return <Td>{getArrowStyle(column.redirect)}</Td>;
 				} else {
 					return <Td>{item[column.name]}</Td>;
 				}

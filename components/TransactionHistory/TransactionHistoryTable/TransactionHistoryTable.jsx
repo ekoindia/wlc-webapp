@@ -1,7 +1,13 @@
 import { mockData } from "constants/mockTableData";
+import { useRouter } from "next/router";
 import { Tables } from "../..";
 
 const TransactionHistoryTable = () => {
+	const router = useRouter();
+	const redirectToAccountStatement = () => {
+		router.push("transaction-history/account-statement");
+	};
+
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
@@ -28,7 +34,11 @@ const TransactionHistoryTable = () => {
 			sorting: true,
 			show: "IconButton",
 		},
-		{ name: "", field: "", show: "ArrowForward" },
+		{
+			name: "",
+			field: "",
+			redirect: redirectToAccountStatement,
+		},
 	];
 
 	return (
