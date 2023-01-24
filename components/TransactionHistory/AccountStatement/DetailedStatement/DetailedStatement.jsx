@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Cards, Icon, SearchBar, Tags } from "../../..";
+import { Cards, Headings, Icon, SearchBar, Tags } from "../../..";
 import DetailedStatementTable from "./DetailedStatementTable";
 
 const DetailedStatement = ({ className = "", ...props }) => {
@@ -12,17 +12,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Box display={"flex"} alignItems={"center"}>
-				<Icon name="arrow-back" width="18px" height="15px" />
-				<Text
-					fontSize={"30px"}
-					fontWeight={"semibold"}
-					marginLeft={"1rem"}
-				>
-					Detailed Statement
-				</Text>
-			</Box>
-
+			<Headings title={"Detailed Statement"} />
 			<Cards w="1610px" h="160px" marginTop={"1.5rem"}>
 				<Flex flexDirection={"column"} gap="1rem">
 					<Box display={"flex"} justifyContent={"space-between"}>

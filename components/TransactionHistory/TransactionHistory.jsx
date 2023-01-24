@@ -18,16 +18,6 @@ const TransactionHistory = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Box display={"flex"} alignItems={"center"}>
-				<Icon name="arrow-back" width="18px" height="15px" />
-				<Text
-					fontSize={"30px"}
-					fontWeight={"semibold"}
-					marginLeft={"1rem"}
-				>
-					Transaction History
-				</Text>
-			</Box>
 			<Box marginTop={"1.5rem"}>
 				<SearchBar />
 			</Box>
