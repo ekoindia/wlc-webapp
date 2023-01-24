@@ -422,15 +422,18 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 													<img src="/icons/forwardarrow.svg" />
 												</Flex>
 
-												<Flex>
-													<Box
-														mt="20px"
-														ml={10}
-														color={"error"}
-														fontSize={14}
-													>
-														Logout
-													</Box>
+												<Flex
+													my="10px"
+													// ml={10}
+													color={"error"}
+													fontSize={14}
+													gap="10px"
+												>
+													<Icon
+														name="logout"
+														width="18"
+													/>
+													Logout
 												</Flex>
 											</Stack>
 										</CardBody>
