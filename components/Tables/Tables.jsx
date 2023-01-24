@@ -35,7 +35,7 @@ const Tables = (props) => {
 		return renderer.map((item, index) => {
 			if (item.sorting) {
 				return (
-					<Th>
+					<Th key={index}>
 						<Flex gap={2}>
 							{item.field}
 							<Box as="span" onClick={onSortChange}>
@@ -50,7 +50,7 @@ const Tables = (props) => {
 					</Th>
 				);
 			} else {
-				return <Th>{item.field}</Th>;
+				return <Th key={index}>{item.field}</Th>;
 			}
 		});
 	};
