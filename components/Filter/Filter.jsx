@@ -42,9 +42,11 @@ function Filter() {
 				onClick={onOpen}
 				h={"48px"}
 				w={"122px"}
-				bg={"#FFFFFF"}
+				bg="#FFFFFF"
+				color="#11299E"
 				border="1px solid #11299E"
-				boxShadow="box-shadow: 0px 3px 10px #11299E1A"
+				boxShadow=" 0px 3px 10px #11299E1A"
+				borderRadius="10"
 				_hover={{
 					bg: "white",
 				}}
@@ -52,19 +54,20 @@ function Filter() {
 					bg: "white",
 				}}
 			>
+				<Icon
+					name="filter"
+					width="24px"
+					height="25px"
+					size={"30px"}
+					style={{ marginRight: ".3rem" }}
+				/>
 				<Text
+					as="span"
 					color="#11299E"
 					display={"flex"}
 					alignItems={"center"}
-					fontSize={"18px"}
+					fontSize="18px"
 				>
-					<Icon
-						name="filter"
-						width="24px"
-						height="25px"
-						size={"30px"}
-						style={{ marginRight: ".3rem" }}
-					/>
 					Filter
 				</Text>
 				{/* //TODO need to add icon here as well */}
