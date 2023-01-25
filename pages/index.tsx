@@ -2,7 +2,6 @@ import { Inter } from "@next/font/google";
 import { LoginPanel } from "components";
 import { useEffect } from "react";
 import { useGetLogoContext } from "../contexts/getLogoContext";
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Index({ data }) {
 	console.log(data);

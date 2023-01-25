@@ -1,4 +1,5 @@
-import { Box, Input } from "@chakra-ui/react";
+import { Box, Center, Input } from "@chakra-ui/react";
+import { Icon } from "..";
 
 /**
  * A <SearchFilterSort> component
@@ -16,20 +17,40 @@ import { Box, Input } from "@chakra-ui/react";
 
 export function SearchBar({ onChangeHandler }) {
 	return (
-		<Box>
+		<Box position="relative">
 			<Input
+				color="light"
 				placeholder="Search by name or mobile number"
 				size="lg"
 				borderRadius="10px"
 				width="600px"
+				h="48px"
 				border=" 1px solid #D2D2D2"
 				boxShadow="box-shadow: 0px 3px 6px #0000001A"
 				bg="white"
 				_focus={{
 					bg: "focusbg",
 					boxShadow: "0px 3px 6px #0000001A",
+					border: " 1px solid #D2D2D2",
 				}}
+				_placeholder={{
+					color: "light",
+					fontSize: "sm",
+				}}
+				pl="55px"
 			/>
+			<Center
+				position="absolute"
+				top="0"
+				left="0"
+				width="60px"
+				height="100%"
+				zIndex="popover"
+				color="light"
+				h="48px"
+			>
+				<Icon name="search" height="20px" width="20px" />
+			</Center>
 		</Box>
 	);
 }
