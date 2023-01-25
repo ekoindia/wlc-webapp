@@ -7,27 +7,36 @@ import {
 	MenuItem,
 	MenuList,
 } from "@chakra-ui/react";
+import { Icon } from "..";
 
 const Sort = ({ className = "", ...props }) => {
 	return (
 		<Box>
-			<Menu>
+			<Menu width="220px" autoSelect={false}>
 				{({ isOpen }) => (
-					<Box display="flex" alignItems="center" gap="20px">
-						<Box fontSize="18px" fontWeight="600" color="dark">
+					<Box display="flex" alignItems="center" gap="15px">
+						<Box fontSize="lg" fontWeight="semibold" color="dark">
 							Sort By :
 						</Box>
 						<MenuButton
-							textAlign="start"
-							isActive={isOpen}
+							px={5}
 							w="220px"
 							h="48px"
+							fontSize="md"
+							fontWeight="normal"
+							textAlign="start"
+							borderRadius="6px"
 							border=" 1px solid #D2D2D2"
-							borderRadius="10px"
+							isActive={isOpen}
 							bg="white"
-							opacity={1}
 							as={Button}
-							rightIcon={<img src="/icons/profiledropdown.svg" />}
+							rightIcon={
+								<Icon
+									name="drop-down"
+									width="16px"
+									color="#555555"
+								/>
+							}
 							_active={{
 								bg: "white",
 							}}
@@ -37,49 +46,68 @@ const Sort = ({ className = "", ...props }) => {
 						>
 							{isOpen ? "Recently Added" : "Data Added"}
 						</MenuButton>
-						<MenuList p="0 4px">
+
+						<MenuList
+							minWidth="220px"
+							px={5}
+							py="none"
+							border="1px solid #D2D2D2"
+							top="0px"
+							transform="translate(1672px, 275px)"
+							fontSize="md"
+							fontWeight="normal"
+						>
 							<MenuItem
+								pt={4}
+								pb={3}
+								px="0px"
 								color="dark"
-								fontWeight="semibold"
-								_active={{
-									bg: "white",
-								}}
+								fontWeight="normal"
+								// _active={{
+								//     bg: "white",
+								// }}
 								_hover={{
-									bg: "none",
+									bg: "white",
 								}}
 							>
 								Recently Added
 							</MenuItem>
-							<MenuDivider w="90%" margin="auto" />
+							<MenuDivider margin="auto" />
 							<MenuItem
+								pt={4}
+								pb={3}
+								px="0px"
 								color="light"
-								fontWeight="semibold"
-								_active={{
-									bg: "white",
-								}}
+								fontWeight="normal"
+								// _active={{
+								//     bg: "white",
+								// }}
 								_hover={{
-									bg: "none",
+									bg: "white",
 								}}
 							>
 								Status:
 								<Box as="span" color="dark">
-									&nbsp; Active
+									&nbsp;Active
 								</Box>
 							</MenuItem>
-							<MenuDivider w="90%" margin="auto" />
+							<MenuDivider margin="auto" />
 							<MenuItem
+								pt={4}
+								pb={5}
+								px="0px"
 								color="light"
-								fontWeight="semibold"
-								_active={{
-									bg: "white",
-								}}
+								fontWeight="normal"
+								// _active={{
+								//     bg: "white",
+								// }}
 								_hover={{
-									bg: "none",
+									bg: "white",
 								}}
 							>
 								Status:
 								<Box as="span" color="dark">
-									&nbsp; Inactive
+									&nbsp;Inactive
 								</Box>
 							</MenuItem>
 						</MenuList>
