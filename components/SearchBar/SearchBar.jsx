@@ -45,7 +45,7 @@ export function SearchBar({ onChangeHandler }) {
 				left="0"
 				width="60px"
 				height="100%"
-				zIndex="popover"
+				zIndex="1"
 				color="light"
 				h="48px"
 			>
