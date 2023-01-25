@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import {
 	AddressPane,
@@ -7,7 +7,7 @@ import {
 	DocPane,
 	PersonalPane,
 } from ".";
-import { Headings, Icon } from "..";
+import { Headings } from "..";
 /**
  * A <Profile> component
  * TODO: Write more description here
@@ -24,7 +24,7 @@ const ProfilePanel = ({ className = "", ...props }) => {
 
 	return (
 		<Box>
-			<Headings title={"Profile Details"} />
+			<Headings title={"Profile Details"} marginLeft="1rem" />
 			<Flex gap={30} align={"center"} wrap={"wrap"} mt={5}>
 				<CompanyPane />
 				<AddressPane />
