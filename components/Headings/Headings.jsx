@@ -10,13 +10,17 @@ import { Icon } from "..";
  * @example	`<Headings></Headings>`
  */
 const Headings = (props) => {
-	const { hasIcon = true, title } = props;
+	const { hasIcon = true, title, marginLeft } = props;
 	return (
 		<Box display={"flex"} alignItems={"center"}>
 			{hasIcon ? (
 				<Icon name="arrow-back" width="18px" height="15px" />
 			) : null}
-			<Text fontSize={"30px"} fontWeight={"semibold"} marginLeft={"1rem"}>
+			<Text
+				fontSize={"30px"}
+				fontWeight={"semibold"}
+				marginLeft={marginLeft}
+			>
 				{title}
 			</Text>
 		</Box>

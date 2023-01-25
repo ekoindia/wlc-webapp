@@ -12,7 +12,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Headings title={"Detailed Statement"} />
+			<Headings title={"Detailed Statement"} marginLeft={"1rem"} />
 			<Cards w="1610px" h="160px" marginTop={"1.5rem"}>
 				<Flex flexDirection={"column"} gap="1rem">
 					<Box display={"flex"} justifyContent={"space-between"}>

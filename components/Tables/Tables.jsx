@@ -155,7 +155,7 @@ const Tables = (props) => {
 
 	return (
 		<>
-			<Box>
+			<Box w="1610px">
 				<TableContainer
 					borderRadius="10px 10px 0 0"
 					mt="20px"
