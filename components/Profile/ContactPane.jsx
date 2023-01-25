@@ -17,7 +17,7 @@ const ContactPane = () => {
 					iconPos="left"
 					iconName="mode-edit"
 					iconStyle={{ h: "12px", w: "12px" }}
-				></IconButtons>
+				/>
 			</Box>
 
 			<Stack

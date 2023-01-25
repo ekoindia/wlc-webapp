@@ -25,15 +25,15 @@ const ProfilePanel = ({ className = "", ...props }) => {
 	return (
 		<Box>
 			<Headings title={"Profile Details"} marginLeft="1rem" />
-			<Flex gap={30} align={"center"} wrap={"wrap"} mt={5}>
+			<Flex gap={30} wrap={"wrap"} mt={5}>
 				<CompanyPane />
 				<AddressPane />
 				<DocPane />
-			</Flex>
-			<Flex gap={30} align={"center"} wrap={"wrap"} mt={12}>
 				<PersonalPane />
 				<ContactPane />
 			</Flex>
+			{/* <Flex gap={30} align={"center"} wrap={"wrap"} mt={12}>
+            </Flex> */}
 		</Box>
 	);
 };

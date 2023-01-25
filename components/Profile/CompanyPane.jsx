@@ -97,7 +97,13 @@ const CompanyPane = () => {
 						</Flex>
 					</Box>
 					<Box>
-						<Circle size={10} bg={"success"} color="white">
+						<Circle
+							size={12}
+							bg={"success"}
+							color="white"
+							boxShadow="0px 3px 6px #00000029"
+							border="2px solid #FFFFFF"
+						>
 							<Icon name="add" height="24px" width="24px" />
 						</Circle>
 					</Box>
@@ -105,8 +111,8 @@ const CompanyPane = () => {
 				<Divider />
 				<Flex align="center" justify="center" mt="6">
 					<IconButtons>
-						<Flex alignItems="center" gap="2">
-							<Text>View All Transactions</Text>
+						<Flex alignItems="center" gap="3">
+							<Text fontSize="md">View All Transactions</Text>
 							<Icon
 								name="arrow-forward"
 								width="18px"

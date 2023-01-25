@@ -16,7 +16,12 @@ const DocPane = () => {
 				Document Center
 			</Heading>
 
-			<Stack direction={"column"} divider={<StackDivider />} mt={"5"}>
+			<Stack
+				direction={"column"}
+				divider={<StackDivider />}
+				spacing="15px"
+				mt={"5"}
+			>
 				<Box
 					display={"flex"}
 					alignContent={"center"}
@@ -144,7 +149,7 @@ const DocPane = () => {
 					/>
 				</Box>
 
-				<Box mt={8}>
+				<Box mt="15px" justifySelf="end">
 					<Buttons w="215px" h="60px">
 						<Icon name="file-download" width="18px" />
 						&nbsp; Download All
