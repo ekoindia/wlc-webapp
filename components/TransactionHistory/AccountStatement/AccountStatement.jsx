@@ -20,7 +20,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Headings title={"Account Statement"} />
+			<Headings title={"Account Statement"} marginLeft={"1rem"} />
 			<Cards w="1610px" h="160px" marginTop={"1.5rem"}>
 				<Flex flexDirection={"column"} gap="1rem">
 					<Box display={"flex"} justifyContent={"space-between"}>

@@ -1,7 +1,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { TransactionHistoryTable } from ".";
-import { SearchBar } from "..";
+import { Headings, Icon, SearchBar } from "..";
 /**
  * A <TransactionHistory> component
  * TODO: Write more description here
@@ -18,12 +18,8 @@ const TransactionHistory = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Box display={"flex"} alignItems={"center"}>
-				<Text fontSize={"30px"} fontWeight={"semibold"}>
-					Transaction History
-				</Text>
-			</Box>
-			<Box mt="1.25rem">
+			<Headings title={"Transaction History"} hasIcon={false} />
+			<Box marginTop={"1.5rem"}>
 				<SearchBar />
 			</Box>
 			<Box w="1610px">
