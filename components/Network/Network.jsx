@@ -11,11 +11,15 @@ import { Filter, Headings, SearchBar, Sort } from "..";
  * @example	`<Network></Network>`
  */
 const Network = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
+	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
+
+	function onChangeHandler(e) {
+		setSearchValue(e);
+	}
 
 	return (
 		<>
@@ -26,7 +30,10 @@ const Network = ({ className = "", ...props }) => {
 					justifyContent={"space-between"}
 					mt="20px"
 				>
-					<SearchBar />
+					<SearchBar
+						onChangeHandler={onChangeHandler}
+						value={searchValue}
+					/>
 					<Flex gap="50px">
 						<Box>
 							<Filter />
