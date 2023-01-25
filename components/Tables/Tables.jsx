@@ -59,7 +59,7 @@ const Tables = (props) => {
 						return generateRow(
 							item,
 							r,
-							index + currentPage * 10 - 9
+							index + currentPage * PageSize - (PageSize - 1)
 						);
 					})}
 				</Tr>
