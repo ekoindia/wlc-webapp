@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { NetworkTable } from ".";
 import { Filter, Headings, SearchBar, Sort } from "..";
@@ -24,7 +24,6 @@ const Network = ({ className = "", ...props }) => {
 				<Box
 					display={"flex"}
 					justifyContent={"space-between"}
-					w={"85vw"}
 					mt="20px"
 				>
 					<SearchBar />
