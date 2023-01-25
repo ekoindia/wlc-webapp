@@ -5,6 +5,11 @@ import { DetailedStatementTable } from "./DetailedStatementTable";
 
 const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
+	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
+
+	function onChangeHandler(e) {
+		setSearchValue(e);
+	}
 
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
@@ -114,8 +119,11 @@ const DetailedStatement = ({ className = "", ...props }) => {
 					</Box>
 				</Flex>
 			</Cards>
-			<Box marginTop={"2.5rem"}>
-				<SearchBar />
+			<Box marginTop={"2.5rem"} width="600px">
+				<SearchBar
+					onChangeHandler={onChangeHandler}
+					value={searchValue}
+				/>
 			</Box>
 			<Box>
 				<DetailedStatementTable />

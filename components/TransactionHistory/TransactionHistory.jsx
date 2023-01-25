@@ -1,7 +1,7 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { TransactionHistoryTable } from ".";
-import { Headings, Icon, SearchBar } from "..";
+import { Headings, SearchBar } from "..";
 /**
  * A <TransactionHistory> component
  * TODO: Write more description here
@@ -11,6 +11,11 @@ import { Headings, Icon, SearchBar } from "..";
  */
 const TransactionHistory = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
+	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
+
+	function onChangeHandler(e) {
+		setSearchValue(e);
+	}
 
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
@@ -19,8 +24,11 @@ const TransactionHistory = ({ className = "", ...props }) => {
 	return (
 		<>
 			<Headings title={"Transaction History"} hasIcon={false} />
-			<Box marginTop={"1.5rem"}>
-				<SearchBar />
+			<Box marginTop={"1.5rem"} width="600px">
+				<SearchBar
+					onChangeHandler={onChangeHandler}
+					value={searchValue}
+				/>
 			</Box>
 			<Box w="1610px">
 				<TransactionHistoryTable />
