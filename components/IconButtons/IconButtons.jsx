@@ -51,11 +51,11 @@ const IconButtons = (props) => {
 				color: hoverFill,
 			}}
 		>
-			<Box display={"flex"} alignItems="center" gap={1.5}>
+			<Box display={"flex"} alignItems="center" gap={2}>
 				<Box
 					as="span"
 					order={ordr1}
-					fontSize={"14px"}
+					fontSize="md"
 					fontWeight={"semibold"}
 					{...textStyle}
 				>
