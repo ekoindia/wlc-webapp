@@ -1,4 +1,11 @@
-import { Box, Center, Input } from "@chakra-ui/react";
+import {
+	Box,
+	Center,
+	Input,
+	StackDivider,
+	Text,
+	VStack,
+} from "@chakra-ui/react";
 import { Icon } from "..";
 
 /**
@@ -15,10 +22,11 @@ import { Icon } from "..";
 // 	// TODO: Add your useEffect code here and update dependencies as required
 // }, []);
 
-export function SearchBar({ onChangeHandler }) {
+export function SearchBar({ onChangeHandler, value }) {
 	return (
 		<Box position="relative">
 			<Input
+				value={value}
 				color="light"
 				placeholder="Search by name or mobile number"
 				size="lg"
@@ -38,6 +46,7 @@ export function SearchBar({ onChangeHandler }) {
 					fontSize: "sm",
 				}}
 				pl="55px"
+				onChange={(e) => onChangeHandler(e.target.value)}
 			/>
 			<Center
 				position="absolute"
@@ -51,6 +60,50 @@ export function SearchBar({ onChangeHandler }) {
 			>
 				<Icon name="search" height="20px" width="20px" />
 			</Center>
+			{value !== "" && (
+				<Box
+					position="absolute"
+					top="106%"
+					width="100%"
+					h="210px"
+					zIndex="1"
+					bg="white"
+					borderRadius="10"
+					border="1px solid #D2D2D2"
+					p="20px 29px 40px 20px "
+				>
+					<VStack
+						align="flex-start"
+						divider={<StackDivider />}
+						spacing="15px"
+					>
+						<Box>
+							<Text as="p" fontSize="sm">
+								9891745076
+							</Text>
+							<Text as="p" fontSize="10px" color="#11299E">
+								Rajesh Enterprises
+							</Text>
+						</Box>
+						<Box>
+							<Text as="p" fontSize="sm">
+								9891745076
+							</Text>
+							<Text as="p" fontSize="10px" color="#11299E">
+								Rajesh Enterprises
+							</Text>
+						</Box>
+						<Box>
+							<Text as="p" fontSize="sm">
+								9891745076
+							</Text>
+							<Text as="p" fontSize="10px" color="#11299E">
+								Rajesh Enterprises
+							</Text>
+						</Box>
+					</VStack>
+				</Box>
+			)}
 		</Box>
 	);
 }
