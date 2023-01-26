@@ -31,8 +31,21 @@ export const light = extendTheme({
             evenStriped:{
             tr:{
                 _even:{
-                background:'shade'
+                background:'shade',
+                  _hover:{
+                    bg:'#e6e6e6',
+                    transition:'background 200ms ease-in',
+                    cursor: 'pointer',
+                  }
+                },
+                _odd:{
+                  _hover:{
+                    bg:'#e6e6e6',
+                    transition:'background 200ms ease-in',
+                    cursor: 'pointer'
+                  }
                 }
+               
             },
             th:{
                 textTransform: 'Capitalize'
