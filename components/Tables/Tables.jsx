@@ -10,6 +10,7 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { Icon, IconButtons, Pagination, Tags } from "..";
 
@@ -18,6 +19,11 @@ const Tables = (props) => {
 	const [currentSort, setCurrentSort] = useState("default");
 
 	const { pageLimit: PageSize = 10, data: tableData, renderer } = props;
+	const router = useRouter();
+
+	// const redirectToProfileRow = () => {
+	// 	router.push("my-network/profile");
+	// };
 
 	const currentTableData = useMemo(() => {
 		const firstPageIndex = (currentPage - 1) * PageSize;
