@@ -48,7 +48,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									base: "4",
 									md: "3",
 									xl: "3.5",
-									"2xl": "7",
+									"2xl": "5",
 								}}
 								w={"full"}
 								role="group"
