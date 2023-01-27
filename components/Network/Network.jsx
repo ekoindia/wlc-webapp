@@ -23,7 +23,7 @@ const Network = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Box className={`${className}`} {...props}>
+			<Box w={"100%"}>
 				<Box
 					display={"flex"}
 					justifyContent={"space-between"}
