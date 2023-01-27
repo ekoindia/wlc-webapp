@@ -123,9 +123,9 @@ const Tables = (props) => {
 					onClick={redirect}
 					fontSize={{ md: "14px", xl: "16px" }}
 				>
-					{renderer.map((r) => {
+					{renderer.map((r, index) => {
 						return (
-							<Td p={{ md: ".5em", xl: "1em" }}>
+							<Td p={{ md: ".5em", xl: "1em" }} key={index}>
 								{prepareRow(
 									item,
 									r,
