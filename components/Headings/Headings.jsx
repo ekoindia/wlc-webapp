@@ -1,27 +1,28 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { Icon } from "..";
 
-/**
- * A <Headings> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Headings></Headings>`
- */
 const Headings = (props) => {
-	const { hasIcon = true, title, marginLeft } = props;
+	const { hasIcon = true, title, marginLeft = "1rem", redirectPath } = props;
+
+	const router = useRouter();
+	const redirectTo = () => {
+		router.push(`${redirectPath}`);
+	};
 	return (
-		<Box display={"flex"} alignItems={"center"}>
+		<Box onClick={redirectTo}>
 			{hasIcon ? (
-				<Icon name="arrow-back" width="18px" height="15px" />
-			) : null}
-			<Text
-				fontSize={"30px"}
-				fontWeight={"semibold"}
-				marginLeft={marginLeft}
-			>
-				{title}
-			</Text>
+				<Flex alignItems="center" gap="4" cursor="pointer">
+					<Icon name="arrow-back" width="18px" height="15px" />
+					<Text fontSize={"30px"} fontWeight={"semibold"}>
+						{title}
+					</Text>
+				</Flex>
+			) : (
+				<Text fontSize={"30px"} fontWeight={"semibold"}>
+					{title}
+				</Text>
+			)}
 		</Box>
 	);
 };
