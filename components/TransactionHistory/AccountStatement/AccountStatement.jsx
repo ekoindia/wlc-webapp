@@ -1,7 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Buttons, Cards, Headings, Icon, Tags } from "../..";
+import { Buttons, Cards, Icon, Tags } from "../..";
 import { AccountStatementTable } from "./AccountStatementTable";
 
 const AccountStatement = ({ className = "", ...props }) => {
@@ -20,7 +20,6 @@ const AccountStatement = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Headings title={"Account Statement"} marginLeft={"1rem"} />
 			<Cards w="1610px" h="160px" marginTop={"1.5rem"}>
 				<Flex flexDirection={"column"} gap="1rem">
 					<Box display={"flex"} justifyContent={"space-between"}>

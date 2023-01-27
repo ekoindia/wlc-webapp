@@ -1,24 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import {
 	Box,
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbLink,
-	color,
 	Text,
 } from "@chakra-ui/react";
-import { Icon } from "../";
-/**
- * A <Breadcrumb> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Breadcrumb></Breadcrumb>`
- */
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { Headings, Icon } from "../";
+
 const Breadcrumbs = ({ className = "", ...props }) => {
 	const router = useRouter();
 	const [breadcrumbs, setBreadcrumbs] = useState();
+
+	//? Add text accordingly here 👇
+	const textChanger = {
+		Profile: "Profile Details",
+	};
+
+	const capitalizeWordsBreadcrumbs = (str) => {
+		if (str in textChanger) {
+			str = textChanger[str];
+		}
+		return str
+			.replace(/\b[a-z]/g, function (f) {
+				return f.toUpperCase();
+			})
+			.replace(/-/g, " ");
+	};
 
 	useEffect(() => {
 		const pathWithoutQuery = router.asPath.split("?")[0];
@@ -31,22 +40,15 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 			const href = "/" + pathArray.slice(0, index + 1).join("/");
 			return {
 				href,
-				label: path.charAt(0).toUpperCase() + path.slice(1),
+				label: capitalizeWordsBreadcrumbs(
+					path.charAt(0).toUpperCase() + path.slice(1)
+				),
 				isCurrent: index === pathArray.length - 1,
 			};
 		});
 		breadcrumbs.shift();
 		setBreadcrumbs(breadcrumbs);
-		console.log(breadcrumbs);
 	}, [router.asPath]);
-
-	function capitalizeWordsBreadcrumbs(str) {
-		return str
-			.replace(/\b[a-z]/g, function (f) {
-				return f.toUpperCase();
-			})
-			.replace(/-/g, " ");
-	}
 
 	return (
 		<>
@@ -100,13 +102,26 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 									}
 									lineHeight={0}
 								>
-									{capitalizeWordsBreadcrumbs(
-										breadcrumb.label
-									)}
+									{breadcrumb.label}
 								</BreadcrumbLink>
 							</BreadcrumbItem>
 						))}
 				</Breadcrumb>
+			</Box>
+			<Box>
+				{breadcrumbs ? (
+					<Headings
+						hasIcon={breadcrumbs.length > 1 ? true : false}
+						title={breadcrumbs[breadcrumbs.length - 1].label}
+						redirectPath={
+							breadcrumbs.length > 1
+								? breadcrumbs[breadcrumbs.length - 2].href
+								: ""
+						}
+					/>
+				) : (
+					""
+				)}
 			</Box>
 		</>
 	);
