@@ -22,17 +22,15 @@ const TransactionHistory = ({ className = "", ...props }) => {
 	}, []);
 
 	return (
-		<>
+		<Box w="100%">
 			<Box marginTop={"1.5rem"} width="600px">
 				<SearchBar
 					onChangeHandler={onChangeHandler}
 					value={searchValue}
 				/>
 			</Box>
-			<Box w="1610px">
-				<TransactionHistoryTable />
-			</Box>
-		</>
+			<TransactionHistoryTable />
+		</Box>
 	);
 };
 
