@@ -14,12 +14,12 @@ const Headings = (props) => {
 			{hasIcon ? (
 				<Flex alignItems="center" gap="4" cursor="pointer">
 					<Icon name="arrow-back" width="18px" height="15px" />
-					<Text fontSize={"30px"} fontWeight={"semibold"}>
+					<Text fontSize="30px" fontWeight="semibold">
 						{title}
 					</Text>
 				</Flex>
 			) : (
-				<Text fontSize={"30px"} fontWeight={"semibold"}>
+				<Text fontSize="30px" fontWeight="semibold">
 					{title}
 				</Text>
 			)}
