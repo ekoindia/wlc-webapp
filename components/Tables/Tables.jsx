@@ -165,7 +165,7 @@ const Tables = (props) => {
 	const prepareCard = () => {
 		return currentTableData.map((item, index) => {
 			return (
-				<Cards width="100%" height>
+				<Cards key={index} width="100%" height>
 					Hello
 					{console.log(item.name)}
 				</Cards>
