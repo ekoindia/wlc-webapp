@@ -105,7 +105,7 @@ const Tables = (props) => {
 			return (
 				<Tr key={index} onClick={redirect}>
 					{renderer.map((r) => {
-						return generateRow(
+						return prepareRow(
 							item,
 							r,
 							index + currentPage * PageSize - (PageSize - 1)
@@ -115,7 +115,7 @@ const Tables = (props) => {
 			);
 		});
 	};
-	const generateRow = (item, column, index) => {
+	const prepareRow = (item, column, index) => {
 		switch (column?.show) {
 			case "Tag":
 				return <Td>{getStatusStyle(item[column.name])}</Td>;
