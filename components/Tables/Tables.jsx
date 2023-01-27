@@ -158,7 +158,7 @@ const Tables = (props) => {
 
 	return (
 		<>
-			<Box w="1610px">
+			<Box w="100%">
 				<TableContainer
 					borderRadius="10px 10px 0 0"
 					mt="20px"
@@ -171,6 +171,7 @@ const Tables = (props) => {
 						<Tbody>{getTr()}</Tbody>
 					</Table>
 				</TableContainer>
+
 				{/* Pagination */}
 				<Flex justify={"flex-end"}>
 					<Pagination
