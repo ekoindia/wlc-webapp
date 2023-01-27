@@ -7,6 +7,7 @@ import {
 	DocPane,
 	PersonalPane,
 } from ".";
+import { Headings } from "..";
 /**
  * A <Profile> component
  * TODO: Write more description here
@@ -22,16 +23,17 @@ const ProfilePanel = ({ className = "", ...props }) => {
 	}, []);
 
 	return (
-		<Box bg="white">
-			<Flex gap={30} align={"center"} wrap={"wrap"} mt={5}>
+		<Box>
+			<Headings title={"Profile Details"} marginLeft="1rem" />
+			<Flex gap={30} wrap={"wrap"} mt={5}>
 				<CompanyPane />
 				<AddressPane />
 				<DocPane />
-			</Flex>
-			<Flex gap={30} align={"center"} wrap={"wrap"} mt={16}>
 				<PersonalPane />
 				<ContactPane />
 			</Flex>
+			{/* <Flex gap={30} align={"center"} wrap={"wrap"} mt={12}>
+            </Flex> */}
 		</Box>
 	);
 };

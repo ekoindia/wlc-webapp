@@ -5,10 +5,9 @@ import {
 	Divider,
 	Flex,
 	Heading,
-	Image,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons, Cards, IconButtons } from "..";
+import { Buttons, Cards, Icon, IconButtons } from "..";
 
 const CompanyPane = () => {
 	return (
@@ -77,11 +76,10 @@ const CompanyPane = () => {
 					<Box alignItems="center">
 						<Flex gap={4} align="center" justify="center">
 							<Circle size={10} bg={"divider"}>
-								<Image
-									src="/icons/wallet.svg"
-									alt="Wallet"
-									h="21px"
-									w="24px"
+								<Icon
+									name="account-balance-wallet"
+									width="24px"
+									height="21px"
 								/>
 							</Circle>
 							<Box>
@@ -99,25 +97,29 @@ const CompanyPane = () => {
 						</Flex>
 					</Box>
 					<Box>
-						<Circle size={10} bg={"success"} color="white">
-							<Image
-								src="/icons/plus.svg"
-								alt="Add"
-								h="24px"
-								w="24px"
-							/>
+						<Circle
+							size={12}
+							bg={"success"}
+							color="white"
+							boxShadow="0px 3px 6px #00000029"
+							border="2px solid #FFFFFF"
+						>
+							<Icon name="add" height="24px" width="24px" />
 						</Circle>
 					</Box>
 				</Flex>
 				<Divider />
-				<Flex align="center" justify="center" mt="4">
-					<IconButtons
-						title="View All Transactions"
-						iconFill="0"
-						iconPath="/icons/nextArrow.svg"
-						iconPos="right"
-						iconStyle={{ h: "15px", w: "18px" }}
-					/>
+				<Flex align="center" justify="center" mt="6">
+					<IconButtons>
+						<Flex alignItems="center" gap="3">
+							<Text fontSize="md">View All Transactions</Text>
+							<Icon
+								name="arrow-forward"
+								width="18px"
+								height="15px"
+							/>
+						</Flex>
+					</IconButtons>
 				</Flex>
 			</Box>
 		</Cards>

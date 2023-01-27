@@ -1,53 +1,118 @@
-import React, { useEffect, useState } from "react";
-
 import {
-	Menu,
-	MenuButton,
-	MenuList,
-	MenuItem,
-	MenuItemOption,
-	MenuGroup,
-	MenuOptionGroup,
-	MenuDivider,
 	Box,
 	Button,
-	Text,
+	Menu,
+	MenuButton,
+	MenuDivider,
+	MenuItem,
+	MenuList,
 } from "@chakra-ui/react";
+import { Icon } from "..";
 
-/**
- * A <Sort> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Sort></Sort>`
- */
 const Sort = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
-
 	return (
 		<Box>
-			<Menu>
-				<MenuButton
-					w="220px"
-					h="48px"
-					border=" 1px solid #D2D2D2"
-					borderRadius="10px"
-					bg="#FFFFFF"
-					opacity={1}
-					as={Button}
-					rightIcon={<img src="/icons/profiledropdown.svg" />}
-				>
-					<Text>Recenty Added</Text>
-				</MenuButton>
-				<MenuList>
-					<MenuItem>Recent Added</MenuItem>
-					<MenuItem>Status: Active</MenuItem>
-					<MenuItem>Status: Inactive</MenuItem>
-				</MenuList>
+			<Menu width="220px" autoSelect={false}>
+				{({ isOpen }) => (
+					<Box display="flex" alignItems="center" gap="15px">
+						<Box fontSize="lg" fontWeight="semibold" color="dark">
+							Sort By :
+						</Box>
+						<MenuButton
+							px={5}
+							w="220px"
+							h="48px"
+							fontSize="md"
+							fontWeight="normal"
+							textAlign="start"
+							borderRadius="6px"
+							border=" 1px solid #D2D2D2"
+							isActive={isOpen}
+							bg="white"
+							as={Button}
+							rightIcon={
+								<Icon
+									name="drop-down"
+									width="16px"
+									color="#555555"
+								/>
+							}
+							_active={{
+								bg: "white",
+							}}
+							_hover={{
+								bg: "white",
+							}}
+						>
+							{isOpen ? "Recently Added" : "Data Added"}
+						</MenuButton>
+
+						<MenuList
+							minWidth="220px"
+							px={5}
+							py="none"
+							border="1px solid #D2D2D2"
+							top="0px"
+							transform="translate(1672px, 275px)"
+							fontSize="md"
+							fontWeight="normal"
+						>
+							<MenuItem
+								pt={4}
+								pb={3}
+								px="0px"
+								color="dark"
+								fontWeight="normal"
+								// _active={{
+								//     bg: "white",
+								// }}
+								_hover={{
+									bg: "white",
+								}}
+							>
+								Recently Added
+							</MenuItem>
+							<MenuDivider margin="auto" />
+							<MenuItem
+								pt={4}
+								pb={3}
+								px="0px"
+								color="light"
+								fontWeight="normal"
+								// _active={{
+								//     bg: "white",
+								// }}
+								_hover={{
+									bg: "white",
+								}}
+							>
+								Status:
+								<Box as="span" color="dark">
+									&nbsp;Active
+								</Box>
+							</MenuItem>
+							<MenuDivider margin="auto" />
+							<MenuItem
+								pt={4}
+								pb={5}
+								px="0px"
+								color="light"
+								fontWeight="normal"
+								// _active={{
+								//     bg: "white",
+								// }}
+								_hover={{
+									bg: "white",
+								}}
+							>
+								Status:
+								<Box as="span" color="dark">
+									&nbsp;Inactive
+								</Box>
+							</MenuItem>
+						</MenuList>
+					</Box>
+				)}
 			</Menu>
 		</Box>
 	);

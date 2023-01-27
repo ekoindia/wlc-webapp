@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Box, Input } from "@chakra-ui/react";
+import {
+	Box,
+	Center,
+	Input,
+	StackDivider,
+	Text,
+	VStack,
+} from "@chakra-ui/react";
+import { Icon } from "..";
 
 /**
  * A <SearchFilterSort> component
@@ -15,13 +22,31 @@ import { Box, Input } from "@chakra-ui/react";
 // 	// TODO: Add your useEffect code here and update dependencies as required
 // }, []);
 
-export function SearchBar({ onChangeHandler }) {
+export function SearchBar({ onChangeHandler, value }) {
 	return (
 		<Box position="relative">
 			<Input
-				placeholder="Search by name or mobile"
+				value={value}
+				color="light"
+				placeholder="Search by name or mobile number"
 				size="lg"
+				borderRadius="10px"
 				width="600px"
+				h="48px"
+				border=" 1px solid #D2D2D2"
+				boxShadow="box-shadow: 0px 3px 6px #0000001A"
+				bg="white"
+				_focus={{
+					bg: "focusbg",
+					boxShadow: "0px 3px 6px #0000001A",
+					border: " 1px solid #D2D2D2",
+				}}
+				_placeholder={{
+					color: "light",
+					fontSize: "sm",
+				}}
+				pl="55px"
+				onChange={(e) => onChangeHandler(e.target.value)}
 			/>
 			<Center
 				position="absolute"

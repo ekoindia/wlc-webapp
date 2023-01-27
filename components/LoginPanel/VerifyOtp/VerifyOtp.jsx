@@ -1,6 +1,6 @@
-import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
 	Box,
+	Center,
 	Flex,
 	Heading,
 	HStack,
@@ -8,69 +8,141 @@ import {
 	PinInputField,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons, IconButtons } from "../../";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
+import { Buttons, Icon, IconButtons } from "../../";
+
+const pinInputStyle = {
+	w: "95px",
+	h: "64px",
+	borderColor: "hint",
+};
 
 const VerifyOtp = ({ number, setStep }) => {
-	const formatNum =
-		number.slice(0, 3) +
-		" " +
-		number.slice(2, 5) +
-		" " +
-		number.slice(5, 11);
+	const [Otp, setOtp] = useState("");
+	const router = useRouter();
+	const [timer, setTimer] = useState(30);
+	const timeOutCallback = useCallback(
+		() => setTimer((currTimer) => currTimer - 1),
+		[]
+	);
+
+	useEffect(() => {
+		timer > 0 && setTimeout(timeOutCallback, 1000);
+	}, [timer, timeOutCallback]);
+
+	console.log(timer);
+
+	const resetTimer = function () {
+		if (!timer || timer <= 0) {
+			setTimer(30);
+		}
+	};
+
+	const redirect = () => {
+		router.push("/admin/my-network");
+	};
+
 	return (
 		<Flex direction="column">
 			<Flex align="center">
-				<Box onClick={() => setStep(0)}>
-					<ArrowBackIcon boxSize={6} w="18px" h="15px" />
+				<Box
+					onClick={() => setStep(0)}
+					w="18px"
+					h="15px"
+					cursor="pointer"
+				>
+					<Icon name="arrow-back" />
 				</Box>
-				<Heading as="h3" pl={5} fontWeight="600">
+				<Heading
+					as="h3"
+					pl={{ base: 3.5, "2xl": 5 }}
+					fontWeight="semibold"
+					fontSize={{ base: "xl", "2xl": "3xl" }}
+					letterSpacing="wide"
+				>
 					Verify with OTP
 				</Heading>
 			</Flex>
 
-			<Flex mt="30px" ml="3rem" fontSize="lg" align="center">
-				<Text>
-					Sent on{" "}
-					<Text as="span" fontWeight="semibold">
-						+91 {formatNum}
-					</Text>
-				</Text>
-				<IconButtons
-					iconPath="/icons/pen.svg"
-					iconStyle={{ h: "12px", w: "12px" }}
-				/>
+			<Flex
+				mt={{ base: 2.5, "2xl": "30px" }}
+				ml={{ base: 9, "2xl": "2.4rem" }}
+				mb={{ base: "5rem", "2xl": "7.25rem" }}
+				fontSize={{ base: "sm", "2xl": "lg" }}
+				align="center"
+			>
+				<Flex align="center" wrap="wrap">
+					<Text>Sent on&nbsp;</Text>
+					<Center as="b">
+						+91 {number}
+						<IconButtons
+							onClick={() => setStep((prev) => prev - 1)}
+							iconName="mode-edit"
+							iconStyle={{ h: "12px", w: "12px" }}
+						/>
+					</Center>
+				</Flex>
 			</Flex>
 
-			<HStack justify="space-between" mt="7.25rem">
-				<PinInput type="number" otp size="lg" placeholder="">
-					<PinInputField w="95px" h="64px" borderColor="hint" />
-					<PinInputField w="95px" h="64px" borderColor="hint" />
-					<PinInputField w="95px" h="64px" borderColor="hint" />
-					<PinInputField w="95px" h="64px" borderColor="hint" />
-					<PinInputField w="95px" h="64px" borderColor="hint" />
-					<PinInputField w="95px" h="64px" borderColor="hint" />
+			<HStack justify="space-between">
+				<PinInput
+					autoFocus
+					type="number"
+					otp
+					size="lg"
+					placeholder=""
+					onChange={(e) => setOtp(e)}
+				>
+					{Array(6)
+						.fill(null)
+						.map((el, idx) => (
+							<PinInputField
+								key={idx}
+								{...pinInputStyle}
+								bg={Otp[idx] ? "focusbg" : ""}
+								h={{ base: 12, "2xl": 16 }}
+								borderRadius="10"
+								boxShadow={
+									Otp[idx] ? "0px 3px 6px #0000001A" : ""
+								}
+							/>
+						))}
 				</PinInput>
 			</HStack>
 
-			<Flex justify="center" mb="6.25rem" mt="2.5rem" align="center">
+			<Flex
+				justify="center"
+				mt={{ base: 6, "2xl": "2.5rem" }}
+				fontSize={{ base: "sm", "2xl": "lg" }}
+				align="center"
+			>
 				<Text>Did not receive yet?</Text>
-				<Text
-					pl="2.5"
-					as="span"
-					color="accent.DEFAULT"
-					fontSize="lg"
-					fontWeight="medium"
-				>
-					Resend OTP
-				</Text>
+				<Box pl="2.5" fontFamily="roboto_font" fontWeight="medium">
+					{timer >= 1 ? (
+						<Box color="error" display="flex">
+							<Icon name="timer" width="18px" />
+							&nbsp;00:{timer <= 9 ? "0" + timer : timer}
+						</Box>
+					) : (
+						<Text
+							cursor="pointer"
+							as="span"
+							color="accent.DEFAULT"
+							onClick={() => resetTimer()}
+						>
+							Resend OTP
+						</Text>
+					)}
+				</Box>
 			</Flex>
 
 			<Buttons
-				title="Verify"
-				h="4.5rem"
-				fontSize="xl"
-				borderRadius="10px"
-				boxShadow="0px 3px 10px #FE9F0040"
+				title="Submit"
+				mt={{ base: "3.25rem", "2xl": "6.25rem" }}
+				h={{ base: 16, "2xl": "4.5rem" }}
+				fontSize={{ base: "lg", "2xl": "xl" }}
+				onClick={redirect} // dummy onClick
 			/>
 		</Flex>
 	);

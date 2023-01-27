@@ -1,44 +1,41 @@
-import { Box, Button, Circle, Image } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Button, Circle } from "@chakra-ui/react";
+import { Icon } from "..";
 
-/**
- * A <IconButtons> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<IconButtons></IconButtons>`
- */
 const IconButtons = (props) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const {
 		title,
-		children,
-		onClick,
 		colorType = 1,
+		iconName,
 		iconPos = "right",
 		iconFill = 1,
-		iconPath,
 		iconStyle,
 		circleStyle,
+		textStyle,
+		children,
+		onClick,
 		...rest
 	} = props;
 
 	const fill = colorType === 1 ? "primary.DEFAULT" : "accent.DEFAULT";
 	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
-	//const shadow = colorType === 1 ? "shadow.primary" : "shadow.accent";
+	const shadow =
+		colorType === 1 ? "0px 0px 10px #FE9F008C" : "0px 0px 10px #11299e96";
+
 	const styledIcon =
 		iconFill === 1 ? (
 			<Circle
 				bg={fill}
 				color={"white"}
 				size={"30px"}
-				boxShadow="0px 0px 10px #FE9F008C"
+				boxShadow={shadow}
 				{...circleStyle}
 			>
-				<Image src={iconPath} {...iconStyle} />
+				<Box as="i" {...iconStyle}>
+					<Icon name={iconName} />
+				</Box>
 			</Circle>
 		) : (
-			<Image src={iconPath} {...iconStyle} />
+			<Icon name={iconName} {...iconStyle} />
 		);
 
 	const ordr1 = iconPos === "right" ? 1 : 2;
@@ -49,22 +46,29 @@ const IconButtons = (props) => {
 			variant={"link"}
 			style={{ textDecoration: "none" }}
 			color={fill}
+			onClick={onClick}
 			_hover={{
 				color: hoverFill,
 			}}
 		>
-			<Box display={"flex"} alignItems="center" gap={1.5}>
+			<Box display={"flex"} alignItems="center" gap={2}>
 				<Box
 					as="span"
 					order={ordr1}
-					fontSize={"14px"}
+					fontSize="md"
 					fontWeight={"semibold"}
+					{...textStyle}
 				>
 					{title}
+					{children}
 				</Box>
-				<Box as="span" order={ordr2}>
-					{styledIcon}
-				</Box>
+				{iconName ? (
+					<Box as="span" order={ordr2}>
+						{styledIcon}
+					</Box>
+				) : (
+					""
+				)}
 			</Box>
 		</Button>
 	);

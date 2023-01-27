@@ -19,6 +19,7 @@ const Inputs = ({
 	errorStyle,
 	inputContStyle,
 	inputNumStyle,
+	inputProps,
 	...props
 }) => {
 	// TODO: Edit state as required
@@ -28,33 +29,39 @@ const Inputs = ({
 			{label ? <InputLabel {...labelStyle}>{label}</InputLabel> : null}
 			<Flex pos="relative" {...inputContStyle}>
 				<Input
-					borderColor={errorMsg && invalid ? "error" : "hint"}
 					name={name}
 					placeholder={placeholder}
 					type={type}
 					disabled={disabled}
 					hidden={hidden}
 					value={value}
+					borderRadius={{ base: 10, "2xl": 15 }}
+					borderColor={errorMsg && invalid ? "error" : "hint"}
+					bg={errorMsg && invalid ? "#fff7fa" : ""}
 					w="100%"
-					pl={isNumInput ? "7.6rem" : ""}
+					onChange={(e) => onChange(e.target.value)}
+					pl={isNumInput ? { base: 17, "2xl": "7.6rem" } : ""}
 					height="100%"
+					_hover={{
+						border: "",
+					}}
 					_focus={{
 						bg: "focusbg",
 						boxShadow: "0px 3px 6px #0000001A",
 						borderColor: "hint",
 						transition: "box-shadow 0.3s ease-out",
 					}}
+					{...inputProps}
 				/>
 				{isNumInput && (
 					<Center
-						as="span"
 						pos="absolute"
 						top="0"
 						left="0"
 						height="100%"
-						w="5.6rem"
+						w={{ base: 14, "2xl": "5.6rem" }}
 						borderRight="1px solid"
-						borderColor="hint"
+						borderColor={invalid && errorMsg ? "error" : "hint"}
 						zIndex="1100"
 						{...inputNumStyle}
 					>
@@ -70,6 +77,10 @@ const Inputs = ({
 			) : null}
 		</Flex>
 	);
+};
+
+Inputs.defaultProps = {
+	onChange: () => {},
 };
 
 export default Inputs;

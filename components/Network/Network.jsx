@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { SearchBar } from "components/SearchBar";
-import { Filter, Sort } from "..";
-import { Tables, Table1 } from ".";
 import { Box, Flex } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { NetworkTable } from ".";
+import { Filter, Headings, SearchBar, Sort } from "..";
 
 /**
  * A <Network> component
@@ -12,22 +11,43 @@ import { Box, Flex } from "@chakra-ui/react";
  * @example	`<Network></Network>`
  */
 const Network = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
+	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
 
+	function onChangeHandler(e) {
+		setSearchValue(e);
+	}
+
 	return (
-		<Box className={`${className}`} {...props}>
-			<Box display={"flex"} justifyContent={"space-between"} w={"80vw"}>
-				<SearchBar />
-				<Flex>
-					<Filter />
-					<Sort />
-				</Flex>
+		<>
+			<Headings title={"My Network"} hasIcon={false} />
+			<Box className={`${className}`} {...props}>
+				<Box
+					display={"flex"}
+					justifyContent={"space-between"}
+					mt="20px"
+				>
+					<SearchBar
+						onChangeHandler={onChangeHandler}
+						value={searchValue}
+					/>
+					<Flex gap="50px">
+						<Box>
+							<Filter />
+						</Box>
+						<Box>
+							<Sort />
+						</Box>
+					</Flex>
+				</Box>
+				<Box mt={"10px"}>
+					<NetworkTable />
+				</Box>
 			</Box>
-		</Box>
+		</>
 	);
 };
 
