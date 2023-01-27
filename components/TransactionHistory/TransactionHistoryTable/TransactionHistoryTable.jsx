@@ -4,7 +4,8 @@ import { Tables } from "../..";
 
 const TransactionHistoryTable = () => {
 	const router = useRouter();
-	const redirectToAccountStatement = () => {
+	const redirect = (props) => {
+		//TODO add props to have dynamic routes according to clicks
 		router.push("transaction-history/account-statement");
 	};
 
@@ -37,13 +38,18 @@ const TransactionHistoryTable = () => {
 		{
 			name: "",
 			field: "",
-			redirect: redirectToAccountStatement,
+			show: "Arrow",
 		},
 	];
 
 	return (
 		<>
-			<Tables pageLimit={10} renderer={renderer} data={mockData} />
+			<Tables
+				pageLimit={10}
+				renderer={renderer}
+				data={mockData}
+				redirect={redirect}
+			/>
 		</>
 	);
 };

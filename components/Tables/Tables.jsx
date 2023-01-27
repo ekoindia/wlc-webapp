@@ -10,7 +10,6 @@ import {
 	Thead,
 	Tr,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { Icon, IconButtons, Pagination, Tags } from "..";
 
@@ -18,12 +17,12 @@ const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentSort, setCurrentSort] = useState("default");
 
-	const { pageLimit: PageSize = 10, data: tableData, renderer } = props;
-	const router = useRouter();
-
-	// const redirectToProfileRow = () => {
-	// 	router.push("my-network/profile");
-	// };
+	const {
+		pageLimit: PageSize = 10,
+		data: tableData,
+		renderer,
+		redirect,
+	} = props;
 
 	const currentTableData = useMemo(() => {
 		const firstPageIndex = (currentPage - 1) * PageSize;
@@ -31,67 +30,6 @@ const Tables = (props) => {
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
 
-	const getTh = () => {
-		return renderer.map((item, index) => {
-			if (item.sorting) {
-				return (
-					<Th key={index}>
-						<Flex gap={2}>
-							{item.field}
-							<Box as="span" onClick={onSortChange}>
-								<Icon
-									//name={sortIcon[currentSort]} // uncomment this to have interative sort
-									name="sort"
-									width="6px"
-									height="13px"
-								/>
-							</Box>
-						</Flex>
-					</Th>
-				);
-			} else {
-				return <Th key={index}>{item.field}</Th>;
-			}
-		});
-	};
-	const getTr = () => {
-		return currentTableData.map((item, index) => {
-			return (
-				<Tr key={index}>
-					{renderer.map((r) => {
-						if (currentPage === 1) {
-							return generateRow(item, r, index + 1);
-						}
-						return generateRow(
-							item,
-							r,
-							index + currentPage * PageSize - (PageSize - 1)
-						);
-					})}
-				</Tr>
-			);
-		});
-	};
-	const generateRow = (item, column, index) => {
-		switch (column?.show) {
-			case "Tag":
-				return <Td>{getStatusStyle(item[column.name])}</Td>;
-			case "Modal":
-				return <Td>{getModalStyle()}</Td>;
-			case "IconButton":
-				return <Td>{getLocationStyle(item[column.name])}</Td>;
-			case "Avatar":
-				return <Td>{getNameStyle(item[column.name])}</Td>;
-			default:
-				if (column?.field === "Sr. No.") {
-					return <Td>{index}</Td>;
-				} else if (column?.redirect !== undefined) {
-					return <Td>{getArrowStyle(column.redirect)}</Td>;
-				} else {
-					return <Td>{item[column.name]}</Td>;
-				}
-		}
-	};
 	/* for row element styling */
 	const getNameStyle = (name) => {
 		return (
@@ -128,15 +66,74 @@ const Tables = (props) => {
 			</Flex>
 		);
 	};
-	const getArrowStyle = (redirect) => {
+	const getArrowStyle = () => {
 		return (
-			<Box as="span" color="hint" onClick={redirect}>
+			<Box as="span" color="hint">
 				<Icon name="arrow-forward" width="24px" height="21px" />
 			</Box>
 		);
 	};
 	const getModalStyle = (data) => {
 		return <Box>...</Box>;
+	};
+
+	const getTh = () => {
+		return renderer.map((item, index) => {
+			if (item.sorting) {
+				return (
+					<Th key={index}>
+						<Flex gap={2}>
+							{item.field}
+							<Box as="span" onClick={onSortChange}>
+								<Icon
+									//name={sortIcon[currentSort]} // uncomment this to have interative sort
+									name="sort"
+									width="6px"
+									height="13px"
+								/>
+							</Box>
+						</Flex>
+					</Th>
+				);
+			} else {
+				return <Th key={index}>{item.field}</Th>;
+			}
+		});
+	};
+	const getTr = () => {
+		return currentTableData.map((item, index) => {
+			return (
+				<Tr key={index} onClick={redirect}>
+					{renderer.map((r) => {
+						return generateRow(
+							item,
+							r,
+							index + currentPage * PageSize - (PageSize - 1)
+						);
+					})}
+				</Tr>
+			);
+		});
+	};
+	const generateRow = (item, column, index) => {
+		switch (column?.show) {
+			case "Tag":
+				return <Td>{getStatusStyle(item[column.name])}</Td>;
+			case "Modal":
+				return <Td>{getModalStyle()}</Td>;
+			case "IconButton":
+				return <Td>{getLocationStyle(item[column.name])}</Td>;
+			case "Avatar":
+				return <Td>{getNameStyle(item[column.name])}</Td>;
+			case "Arrow":
+				return <Td>{getArrowStyle()}</Td>;
+			default:
+				if (column?.field === "Sr. No.") {
+					return <Td>{index}</Td>;
+				} else {
+					return <Td>{item[column.name]}</Td>;
+				}
+		}
 	};
 
 	/* for sort icon & icon change */
