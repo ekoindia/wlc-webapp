@@ -52,7 +52,7 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Box marginBottom={6}>
+			<Box>
 				<Breadcrumb
 					separator={
 						<Icon
@@ -65,9 +65,14 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 				>
 					<BreadcrumbItem key={0}>
 						<BreadcrumbLink
-							href="#"
+							href="/admin/my-network"
 							_hover={{ textDecoration: "none" }}
-							fontSize={"13px"}
+							fontSize={{
+								md: "xs",
+								lg: "xs",
+								xl: "xs",
+								"2xl": "md",
+							}}
 							color={"accent.DEFAULT"}
 							lineHeight={0}
 						>
@@ -76,8 +81,17 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 								display={"flex"}
 								alignItems={"center"}
 							>
-								<Icon width="14px" height="13px" name="home" />
-								<Text>Home</Text>
+								<Box
+									width={{ base: "16px", md: "14px" }}
+									height={{ base: "16px", md: "14px" }}
+								>
+									<Icon
+										name="home"
+										width="100%"
+										height="100%"
+									/>
+								</Box>
+								<Text mt={"0.1vw"}>Home</Text>
 							</Box>
 						</BreadcrumbLink>
 					</BreadcrumbItem>
@@ -94,7 +108,12 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 								<BreadcrumbLink
 									href={breadcrumb.href}
 									_hover={{ textDecoration: "none" }}
-									fontSize={"13px"}
+									fontSize={{
+										md: "xs",
+										lg: "xs",
+										xl: "xs",
+										"2xl": "md",
+									}}
 									color={
 										breadcrumb.isCurrent
 											? "light"
