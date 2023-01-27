@@ -23,6 +23,7 @@ const NavBar = (props) => {
 				top={"0%"}
 				w={"full"}
 				position={"fixed"}
+				zIndex={"99"}
 				as="section"
 				boxShadow={"0px 3px 10px #0000001A"}
 			>
@@ -68,7 +69,7 @@ const NavBar = (props) => {
 						)}
 						{!isSmallerThan770 && (
 							<Menu>
-								<MenuButton zIndex={"999"}>
+								<MenuButton>
 									<Flex
 										align={"center"}
 										cursor={"pointer"}
