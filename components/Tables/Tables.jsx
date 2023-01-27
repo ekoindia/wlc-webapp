@@ -9,13 +9,16 @@ import {
 	Th,
 	Thead,
 	Tr,
+	useMediaQuery,
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
-import { Icon, IconButtons, Pagination, Tags } from "..";
+import { Cards, Icon, IconButtons, Pagination, Tags } from "..";
 
 const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentSort, setCurrentSort] = useState("default");
+
+	const [isSmallerThan770] = useMediaQuery("(max-width: 770px)");
 
 	const {
 		pageLimit: PageSize = 10,
@@ -81,7 +84,11 @@ const Tables = (props) => {
 		return renderer.map((item, index) => {
 			if (item.sorting) {
 				return (
-					<Th key={index}>
+					<Th
+						key={index}
+						p={{ md: ".5em", xl: "1em" }}
+						fontSize={{ md: "14px", xl: "16px" }}
+					>
 						<Flex gap={2}>
 							{item.field}
 							<Box as="span" onClick={onSortChange}>
@@ -96,19 +103,37 @@ const Tables = (props) => {
 					</Th>
 				);
 			} else {
-				return <Th key={index}>{item.field}</Th>;
+				return (
+					<Th
+						key={index}
+						p={{ md: ".5em", xl: "1em" }}
+						fontSize={{ md: "14px", xl: "16px" }}
+					>
+						{item.field}
+					</Th>
+				);
 			}
 		});
 	};
 	const getTr = () => {
 		return currentTableData.map((item, index) => {
 			return (
-				<Tr key={index} onClick={redirect}>
-					{renderer.map((r) => {
-						return prepareRow(
-							item,
-							r,
-							index + currentPage * PageSize - (PageSize - 1)
+				<Tr
+					key={index}
+					onClick={redirect}
+					fontSize={{ md: "14px", xl: "16px" }}
+				>
+					{renderer.map((r, index) => {
+						return (
+							<Td p={{ md: ".5em", xl: "1em" }} key={index}>
+								{prepareRow(
+									item,
+									r,
+									index +
+										currentPage * PageSize -
+										(PageSize - 1)
+								)}
+							</Td>
 						);
 					})}
 				</Tr>
@@ -118,24 +143,35 @@ const Tables = (props) => {
 	const prepareRow = (item, column, index) => {
 		switch (column?.show) {
 			case "Tag":
-				return <Td>{getStatusStyle(item[column.name])}</Td>;
+				return getStatusStyle(item[column.name]);
 			case "Modal":
-				return <Td>{getModalStyle()}</Td>;
+				return getModalStyle();
 			case "IconButton":
-				return <Td>{getLocationStyle(item[column.name])}</Td>;
+				return getLocationStyle(item[column.name]);
 			case "Avatar":
-				return <Td>{getNameStyle(item[column.name])}</Td>;
+				return getNameStyle(item[column.name]);
 			case "Arrow":
-				return <Td>{getArrowStyle()}</Td>;
+				return getArrowStyle();
 			default:
 				if (column?.field === "Sr. No.") {
-					return <Td>{index}</Td>;
+					return index;
 				} else {
-					return <Td>{item[column.name]}</Td>;
+					return item[column.name];
 				}
 		}
 	};
 
+	/* For Responsive */
+	const prepareCard = () => {
+		return currentTableData.map((item, index) => {
+			return (
+				<Cards key={index} width="100%" height>
+					Hello
+					{console.log(item.name)}
+				</Cards>
+			);
+		});
+	};
 	/* for sort icon & icon change */
 	const sortIcon = {
 		ascending: "caret-up",
@@ -159,29 +195,34 @@ const Tables = (props) => {
 	return (
 		<>
 			<Box w="100%">
-				<TableContainer
-					borderRadius="10px 10px 0 0"
-					mt="20px"
-					border="1px solid #E9EDF1"
-				>
-					<Table variant={"evenStriped"} bg="white">
-						<Thead bg="hint">
-							<Tr>{getTh()}</Tr>
-						</Thead>
-						<Tbody>{getTr()}</Tbody>
-					</Table>
-				</TableContainer>
-
-				{/* Pagination */}
-				<Flex justify={"flex-end"}>
-					<Pagination
-						className="pagination-bar"
-						currentPage={currentPage}
-						totalCount={tableData.length}
-						pageSize={PageSize}
-						onPageChange={(page) => setCurrentPage(page)}
-					/>
-				</Flex>
+				{!isSmallerThan770 ? (
+					<>
+						<TableContainer
+							borderRadius="10px 10px 0 0"
+							mt="20px"
+							border="1px solid #E9EDF1"
+						>
+							<Table variant={"evenStriped"} bg="white">
+								<Thead bg="hint">
+									<Tr>{getTh()}</Tr>
+								</Thead>
+								<Tbody>{getTr()}</Tbody>
+							</Table>
+						</TableContainer>
+						{/* Pagination */}
+						<Flex justify={"flex-end"}>
+							<Pagination
+								className="pagination-bar"
+								currentPage={currentPage}
+								totalCount={tableData.length}
+								pageSize={PageSize}
+								onPageChange={(page) => setCurrentPage(page)}
+							/>
+						</Flex>
+					</>
+				) : (
+					<Box>{prepareCard()}</Box>
+				)}
 			</Box>
 		</>
 	);
