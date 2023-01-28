@@ -4,8 +4,9 @@ import { Tables } from "../..";
 
 const NetworkTable = () => {
 	const router = useRouter();
-	const redirectToProfile = () => {
-		router.push("my-network/profile");
+	const redirect = () => {
+		//TODO add props to have dynamic routes according to clicks
+		router.push(`my-network/profile/`);
 	};
 	const renderer = [
 		{ name: "", field: "Sr. No." },
@@ -35,14 +36,19 @@ const NetworkTable = () => {
 			show: "IconButton",
 		},
 		{ name: "", field: "", show: "Modal" },
-		{ name: "", field: "", redirect: redirectToProfile },
+		{ name: "", field: "", show: "Arrow" },
 	];
 
 	/* data ✔ || pagesize ✔ || order ✔ */
 
 	return (
 		<>
-			<Tables pageLimit={10} renderer={renderer} data={mockData} />
+			<Tables
+				pageLimit={10}
+				renderer={renderer}
+				data={mockData}
+				redirect={redirect}
+			/>
 		</>
 	);
 };

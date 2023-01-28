@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { NetworkTable } from ".";
-import { Filter, Headings, SearchBar, Sort } from "..";
+import { Filter, SearchBar, Sort } from "..";
 
 /**
  * A <Network> component
@@ -23,8 +23,7 @@ const Network = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Headings title={"My Network"} hasIcon={false} />
-			<Box className={`${className}`} {...props}>
+			<Box w={"100%"}>
 				<Box
 					display={"flex"}
 					justifyContent={"space-between"}
