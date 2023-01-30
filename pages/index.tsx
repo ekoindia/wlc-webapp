@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useGetLogoContext } from "../contexts/getLogoContext";
 
 export default function Index({ data }) {
-	console.log(data);
+	// console.log(data);
 
 	const { logo, setLogo } = useGetLogoContext();
 	useEffect(() => {
