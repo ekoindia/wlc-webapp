@@ -6,7 +6,7 @@
 			"components": ["./components"],
 			"features": ["./features"],
 			"constants": ["./constants"],
-			"context": ["./context"],
+			"contexts": ["./contexts"],
 			"hooks": ["./hooks"],
 			"components/*": ["./components/*"],
 			"features/*": ["./features/*"],

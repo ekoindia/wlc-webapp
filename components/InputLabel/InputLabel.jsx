@@ -5,8 +5,8 @@ const InputLabel = ({ htmlFor, children, ...props }) => {
 		<Text
 			htmlFor={htmlFor || undefined}
 			fontSize="xs"
-			pl="6px"
 			mb="2px"
+			color="light"
 			{...props}
 		>
 			{children}

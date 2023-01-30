@@ -65,12 +65,12 @@ export function SearchBar({ onChangeHandler, value }) {
 					position="absolute"
 					top="106%"
 					width="100%"
-					h="210px"
+					h="214px"
 					zIndex="1"
 					bg="white"
 					borderRadius="10"
 					border="1px solid #D2D2D2"
-					p="20px 29px 40px 20px "
+					p="20px 29px 24px 20px "
 				>
 					<VStack
 						align="flex-start"
