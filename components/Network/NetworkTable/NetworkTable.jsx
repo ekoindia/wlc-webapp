@@ -1,7 +1,12 @@
 import { mockData } from "constants/mockTableData";
+import { useRouter } from "next/router";
 import { Tables } from "../..";
 
 const NetworkTable = () => {
+	const router = useRouter();
+	const redirectToProfile = () => {
+		router.push("my-network/profile");
+	};
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
@@ -30,7 +35,7 @@ const NetworkTable = () => {
 			show: "IconButton",
 		},
 		{ name: "", field: "", show: "Modal" },
-		{ name: "", field: "", show: "ArrowForward" },
+		{ name: "", field: "", redirect: redirectToProfile },
 	];
 
 	/* data ✔ || pagesize ✔ || order ✔ */

@@ -23,7 +23,7 @@ const Cards = ({ className = "", children, ...props }) => {
 			border="1px solid #D2D2D2"
 			p="5"
 			h="620px"
-			w="490px"
+			w="505px"
 			bg="white"
 			{...props}
 		>

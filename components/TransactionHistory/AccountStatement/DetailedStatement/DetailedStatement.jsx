@@ -1,10 +1,15 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Cards, Icon, SearchBar, Tags } from "../../..";
+import { Cards, Headings, Icon, SearchBar, Tags } from "../../..";
 import { DetailedStatementTable } from "./DetailedStatementTable";
 
 const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
+	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
+
+	function onChangeHandler(e) {
+		setSearchValue(e);
+	}
 
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
@@ -12,17 +17,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Box display={"flex"} alignItems={"center"}>
-				<Icon name="arrow-back" width="18px" height="15px" />
-				<Text
-					fontSize={"30px"}
-					fontWeight={"semibold"}
-					marginLeft={"1rem"}
-				>
-					Detailed Statement
-				</Text>
-			</Box>
-
+			<Headings title={"Detailed Statement"} marginLeft={"1rem"} />
 			<Cards w="1610px" h="160px" marginTop={"1.5rem"}>
 				<Flex flexDirection={"column"} gap="1rem">
 					<Box display={"flex"} justifyContent={"space-between"}>
@@ -124,8 +119,11 @@ const DetailedStatement = ({ className = "", ...props }) => {
 					</Box>
 				</Flex>
 			</Cards>
-			<Box marginTop={"2.5rem"}>
-				<SearchBar />
+			<Box marginTop={"2.5rem"} width="600px">
+				<SearchBar
+					onChangeHandler={onChangeHandler}
+					value={searchValue}
+				/>
 			</Box>
 			<Box>
 				<DetailedStatementTable />

@@ -16,20 +16,20 @@ import { Icon, IconButtons, Pagination, Tags } from "..";
 
 const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
-	//const [currentSort, setCurrentSort] = useState("default");
-	const router = useRouter();
+	const [currentSort, setCurrentSort] = useState("default");
 
 	const { pageLimit: PageSize = 10, data: tableData, renderer } = props;
+	const router = useRouter();
+
+	// const redirectToProfileRow = () => {
+	// 	router.push("my-network/profile");
+	// };
 
 	const currentTableData = useMemo(() => {
 		const firstPageIndex = (currentPage - 1) * PageSize;
 		const lastPageIndex = firstPageIndex + PageSize;
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
-
-	const redirect = () => {
-		router.push("my-network/profile");
-	};
 
 	const getTh = () => {
 		return renderer.map((item, index) => {
@@ -65,7 +65,7 @@ const Tables = (props) => {
 						return generateRow(
 							item,
 							r,
-							index + currentPage * 10 - 9
+							index + currentPage * PageSize - (PageSize - 1)
 						);
 					})}
 				</Tr>
@@ -78,8 +78,6 @@ const Tables = (props) => {
 				return <Td>{getStatusStyle(item[column.name])}</Td>;
 			case "Modal":
 				return <Td>{getModalStyle()}</Td>;
-			case "ArrowForward":
-				return <Td>{getArrowStyle(redirect)}</Td>;
 			case "IconButton":
 				return <Td>{getLocationStyle(item[column.name])}</Td>;
 			case "Avatar":
@@ -87,6 +85,8 @@ const Tables = (props) => {
 			default:
 				if (column?.field === "Sr. No.") {
 					return <Td>{index}</Td>;
+				} else if (column?.redirect !== undefined) {
+					return <Td>{getArrowStyle(column.redirect)}</Td>;
 				} else {
 					return <Td>{item[column.name]}</Td>;
 				}
@@ -161,7 +161,7 @@ const Tables = (props) => {
 
 	return (
 		<>
-			<Box>
+			<Box w="1610px">
 				<TableContainer
 					borderRadius="10px 10px 0 0"
 					mt="20px"
