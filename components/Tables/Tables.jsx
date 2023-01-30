@@ -6,6 +6,7 @@ import {
 	TableContainer,
 	Tbody,
 	Td,
+	Text,
 	Th,
 	Thead,
 	Tr,
@@ -123,7 +124,7 @@ const Tables = (props) => {
 					onClick={redirect}
 					fontSize={{ md: "14px", xl: "16px" }}
 				>
-					{renderer.map((r, index) => {
+					{renderer.map((r) => {
 						return (
 							<Td p={{ md: ".5em", xl: "1em" }} key={index}>
 								{prepareRow(
@@ -165,9 +166,25 @@ const Tables = (props) => {
 	const prepareCard = () => {
 		return currentTableData.map((item, index) => {
 			return (
-				<Cards key={index} width="100%" height>
-					Hello
-					{console.log(item.name)}
+				<Cards key={index} width="90%" height="auto">
+					<Flex justifyContent="space-between">
+						{getNameStyle(item.name)}
+						<Text>...</Text>
+					</Flex>
+					<Flex direction="column" w="80%" m="auto">
+						<Text>Mobile Number: {item.mobile_number}</Text>
+						<Text>Type: {item.type}</Text>
+						<Text>Onboarded on: {item.createdAt}</Text>
+						<Text>Eko Code: {item.ekocsp_code}</Text>
+						<Flex
+							direction="row"
+							justifyContent="space-between"
+							wrap="wrap"
+						>
+							{getStatusStyle(item.account_status)}
+							{getLocationStyle(item.location)}
+						</Flex>
+					</Flex>
 				</Cards>
 			);
 		});
@@ -221,7 +238,9 @@ const Tables = (props) => {
 						</Flex>
 					</>
 				) : (
-					<Box>{prepareCard()}</Box>
+					<Flex direction="column" gap="4" alignItems="center">
+						{prepareCard()}
+					</Flex>
 				)}
 			</Box>
 		</>
