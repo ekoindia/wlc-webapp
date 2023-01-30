@@ -166,20 +166,46 @@ const Tables = (props) => {
 	const prepareCard = () => {
 		return currentTableData.map((item, index) => {
 			return (
-				<Cards key={index} width="90%" height="auto">
+				<Cards key={index} width="90%" height="auto" p="15px">
 					<Flex justifyContent="space-between">
-						{getNameStyle(item.name)}
+						<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
+							{getNameStyle(item.name)}
+						</Box>
 						<Text>...</Text>
 					</Flex>
-					<Flex direction="column" w="80%" m="auto">
-						<Text>Mobile Number: {item.mobile_number}</Text>
-						<Text>Type: {item.type}</Text>
-						<Text>Onboarded on: {item.createdAt}</Text>
-						<Text>Eko Code: {item.ekocsp_code}</Text>
+					<Flex
+						direction="column"
+						fontSize={{ base: "sm" }}
+						pl="42px"
+					>
+						<Flex gap="2">
+							<Box as="span" color="light">
+								Mobile Number:
+							</Box>
+							<Box as="span" color="dark">
+								{item.mobile_number}
+							</Box>
+						</Flex>
+						<Flex gap="2">
+							<Box as="span" color="light">
+								Type:
+							</Box>
+							<Box as="span" color="dark">
+								{item.type}
+							</Box>
+						</Flex>
+						<Flex gap="2">
+							<Box as="span" color="light">
+								Onboarded on:
+							</Box>
+							<Box as="span" color="dark">
+								{item.createdAt}
+							</Box>
+						</Flex>
 						<Flex
-							direction="row"
 							justifyContent="space-between"
-							wrap="wrap"
+							mt="10px"
+							py="10px"
 						>
 							{getStatusStyle(item.account_status)}
 							{getLocationStyle(item.location)}
