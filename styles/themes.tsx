@@ -14,7 +14,7 @@ const roboto = Roboto({
 	subsets: ["latin"],
 });
 
-console.log(theme);
+// console.log(theme);
 
 export const light = extendTheme({
 	breakpoints: {
@@ -87,9 +87,9 @@ export const light = extendTheme({
 					},
 				},
 			},
-			defaultProps: {
-				variant: "primary",
-			},
+			// defaultProps: {
+			// 	variant: "primary",
+			// },
 		},
 		Checkbox: {
 			variants: {
