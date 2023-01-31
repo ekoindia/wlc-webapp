@@ -28,7 +28,7 @@ export const light = extendTheme({
 	components: {
 		Table: {
 			variants: {
-				evenStriped: {
+        evenStripedClickableRow: {
 					tr: {
 						_even: {
 							background: "shade",
@@ -47,6 +47,17 @@ export const light = extendTheme({
 								cursor: "pointer",
 							},
 						},
+					},
+					th: {
+						textTransform: "Capitalize",
+					},
+				},
+				evenStriped: {
+					tr: {
+						_even: {
+							background: "shade",
+						},
+					
 					},
 					th: {
 						textTransform: "Capitalize",

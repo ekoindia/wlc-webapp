@@ -48,6 +48,7 @@ const NetworkTable = () => {
 				renderer={renderer}
 				data={mockData}
 				redirect={redirect}
+				variant="evenStripedClickableRow"
 			/>
 		</>
 	);

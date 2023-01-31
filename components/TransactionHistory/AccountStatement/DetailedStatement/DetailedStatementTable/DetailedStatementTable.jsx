@@ -23,7 +23,12 @@ const DetailedStatementTable = () => {
 
 	return (
 		<>
-			<Tables pageLimit={10} renderer={renderer} data={mockData} />
+			<Tables
+				pageLimit={10}
+				renderer={renderer}
+				data={mockData}
+				variant="evenStriped"
+			/>
 		</>
 	);
 };

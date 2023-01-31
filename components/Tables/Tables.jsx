@@ -26,6 +26,7 @@ const Tables = (props) => {
 		data: tableData,
 		renderer,
 		redirect,
+		variant,
 	} = props;
 
 	const currentTableData = useMemo(() => {
@@ -257,7 +258,7 @@ const Tables = (props) => {
 								},
 							}}
 						>
-							<Table variant={"evenStriped"} bg="white">
+							<Table variant={variant} bg="white">
 								<Thead bg="hint">
 									<Tr>{getTh()}</Tr>
 								</Thead>
