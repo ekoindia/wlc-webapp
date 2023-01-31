@@ -1,5 +1,4 @@
 import { Button } from "@chakra-ui/react";
-import React from "react";
 
 /**
  * A <Tags> component
@@ -16,7 +15,7 @@ const statusChecker = {
 	Other: "#71797E",
 };
 
-const Tags = ({ className = "", status = "Active", ...props }) => {
+const Tags = ({ className = "", status = "Active", styles, ...props }) => {
 	const sts = statusChecker[status];
 	return (
 		<Button
@@ -25,7 +24,9 @@ const Tags = ({ className = "", status = "Active", ...props }) => {
 			borderRadius={"28"}
 			colorScheme={sts}
 			color={sts}
-			px={"22px"}
+			bg="white"
+			px={{ base: "16px", md: "18px", xl: "22px" }}
+			{...styles}
 		>
 			{status}
 		</Button>
