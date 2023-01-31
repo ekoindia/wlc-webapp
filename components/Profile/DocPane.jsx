@@ -40,7 +40,10 @@ const DocPane = () => {
 						title="Download"
 						iconPos="left"
 						iconName="file-download"
-						iconStyle={{ h: "14px", w: "14px" }}
+						iconStyle={{
+							width: "14px",
+							height: "14px",
+						}}
 					/>
 				</Box>
 				<Box
@@ -61,7 +64,10 @@ const DocPane = () => {
 						title="Download"
 						iconPos="left"
 						iconName="file-download"
-						iconStyle={{ h: "14px", w: "14px" }}
+						iconStyle={{
+							width: "14px",
+							height: "14px",
+						}}
 					/>
 				</Box>
 				<Box
@@ -82,7 +88,10 @@ const DocPane = () => {
 						title="Download"
 						iconPos="left"
 						iconName="file-download"
-						iconStyle={{ h: "14px", w: "14px" }}
+						iconStyle={{
+							width: "14px",
+							height: "14px",
+						}}
 					/>
 				</Box>
 				<Box
@@ -103,7 +112,10 @@ const DocPane = () => {
 						title="Download"
 						iconPos="left"
 						iconName="file-download"
-						iconStyle={{ h: "14px", w: "14px" }}
+						iconStyle={{
+							width: "14px",
+							height: "14px",
+						}}
 					/>
 				</Box>
 				<Box
@@ -124,7 +136,10 @@ const DocPane = () => {
 						title="Download"
 						iconPos="left"
 						iconName="file-download"
-						iconStyle={{ h: "14px", w: "14px" }}
+						iconStyle={{
+							width: "14px",
+							height: "14px",
+						}}
 					/>
 				</Box>
 				<Box
@@ -145,7 +160,10 @@ const DocPane = () => {
 						title="Download"
 						iconPos="left"
 						iconName="file-download"
-						iconStyle={{ h: "14px", w: "14px" }}
+						iconStyle={{
+							width: "14px",
+							height: "14px",
+						}}
 					/>
 				</Box>
 
