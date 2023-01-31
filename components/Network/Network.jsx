@@ -1,21 +1,16 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import useRequest from "hooks/useRequest";
+import { useState } from "react";
 import { NetworkTable } from ".";
 import { Filter, SearchBar, Sort } from "..";
 
-/**
- * A <Network> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Network></Network>`
- */
 const Network = ({ className = "", ...props }) => {
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
+	let data = useRequest({
+		baseUrl: "https://jsonplaceholder.typicode.com/posts",
+	});
+	console.log(data.data);
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
