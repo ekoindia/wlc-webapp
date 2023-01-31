@@ -33,6 +33,7 @@ export const light = extendTheme({
 						_even: {
 							background: "shade",
 							_hover: {
+								// bg: "#fea1000d",
 								bg: "#e6e6e6",
 								transition: "background 200ms ease-in",
 								cursor: "pointer",
@@ -40,6 +41,7 @@ export const light = extendTheme({
 						},
 						_odd: {
 							_hover: {
+                // bg: "#fea1000d",
 								bg: "#e6e6e6",
 								transition: "background 200ms ease-in",
 								cursor: "pointer",

@@ -244,6 +244,18 @@ const Tables = (props) => {
 							borderRadius="10px 10px 0 0"
 							mt="20px"
 							border="1px solid #E9EDF1"
+							css={{
+								"&::-webkit-scrollbar": {
+									height: "0.8vw",
+								},
+								"&::-webkit-scrollbar-track": {
+									height: "0.8vw",
+								},
+								"&::-webkit-scrollbar-thumb": {
+									background: "#D2D2D2",
+									borderRadius: "5px",
+								},
+							}}
 						>
 							<Table variant={"evenStriped"} bg="white">
 								<Thead bg="hint">
