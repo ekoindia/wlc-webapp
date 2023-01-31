@@ -110,16 +110,15 @@ const CompanyPane = () => {
 				</Flex>
 				<Divider />
 				<Flex align="center" justify="center" mt="6">
-					<IconButtons>
-						<Flex alignItems="center" gap="3">
-							<Text fontSize="md">View All Transactions</Text>
-							<Icon
-								name="arrow-forward"
-								width="18px"
-								height="15px"
-							/>
-						</Flex>
-					</IconButtons>
+					<IconButtons
+						title="View All Transactions"
+						iconName="arrow-forward"
+						hasBG={false}
+						iconStyle={{
+							width: "18px",
+							height: "15px",
+						}}
+					/>
 				</Flex>
 			</Box>
 		</Cards>
