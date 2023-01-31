@@ -141,7 +141,8 @@ export const light = extendTheme({
 		white: "#FFFFFF",
 		shade: "#F2F2F2",
 		highlight: "#FFD93B",
-		bg: "#F5F6F8",
+        bg:"#F5F6F8",
+		inputlabel:"#0C243B",
 	},
 	styles: {
 		global: {},
