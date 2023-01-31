@@ -6,24 +6,27 @@ import {
 	TableContainer,
 	Tbody,
 	Td,
+	Text,
 	Th,
 	Thead,
 	Tr,
+	useMediaQuery,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
-import { Icon, IconButtons, Pagination, Tags } from "..";
+import { Cards, Icon, IconButtons, Pagination, Tags } from "..";
 
 const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentSort, setCurrentSort] = useState("default");
 
-	const { pageLimit: PageSize = 10, data: tableData, renderer } = props;
-	const router = useRouter();
+	const [isSmallerThan770] = useMediaQuery("(max-width: 770px)");
 
-	// const redirectToProfileRow = () => {
-	// 	router.push("my-network/profile");
-	// };
+	const {
+		pageLimit: PageSize = 10,
+		data: tableData,
+		renderer,
+		redirect,
+	} = props;
 
 	const currentTableData = useMemo(() => {
 		const firstPageIndex = (currentPage - 1) * PageSize;
@@ -31,67 +34,6 @@ const Tables = (props) => {
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
 
-	const getTh = () => {
-		return renderer.map((item, index) => {
-			if (item.sorting) {
-				return (
-					<Th key={index}>
-						<Flex gap={2}>
-							{item.field}
-							<Box as="span" onClick={onSortChange}>
-								<Icon
-									//name={sortIcon[currentSort]} // uncomment this to have interative sort
-									name="sort"
-									width="6px"
-									height="13px"
-								/>
-							</Box>
-						</Flex>
-					</Th>
-				);
-			} else {
-				return <Th key={index}>{item.field}</Th>;
-			}
-		});
-	};
-	const getTr = () => {
-		return currentTableData.map((item, index) => {
-			return (
-				<Tr key={index}>
-					{renderer.map((r) => {
-						if (currentPage === 1) {
-							return generateRow(item, r, index + 1);
-						}
-						return generateRow(
-							item,
-							r,
-							index + currentPage * PageSize - (PageSize - 1)
-						);
-					})}
-				</Tr>
-			);
-		});
-	};
-	const generateRow = (item, column, index) => {
-		switch (column?.show) {
-			case "Tag":
-				return <Td>{getStatusStyle(item[column.name])}</Td>;
-			case "Modal":
-				return <Td>{getModalStyle()}</Td>;
-			case "IconButton":
-				return <Td>{getLocationStyle(item[column.name])}</Td>;
-			case "Avatar":
-				return <Td>{getNameStyle(item[column.name])}</Td>;
-			default:
-				if (column?.field === "Sr. No.") {
-					return <Td>{index}</Td>;
-				} else if (column?.redirect !== undefined) {
-					return <Td>{getArrowStyle(column.redirect)}</Td>;
-				} else {
-					return <Td>{item[column.name]}</Td>;
-				}
-		}
-	};
 	/* for row element styling */
 	const getNameStyle = (name) => {
 		return (
@@ -128,9 +70,9 @@ const Tables = (props) => {
 			</Flex>
 		);
 	};
-	const getArrowStyle = (redirect) => {
+	const getArrowStyle = () => {
 		return (
-			<Box as="span" color="hint" onClick={redirect}>
+			<Box as="span" color="hint">
 				<Icon name="arrow-forward" width="24px" height="21px" />
 			</Box>
 		);
@@ -139,6 +81,140 @@ const Tables = (props) => {
 		return <Box>...</Box>;
 	};
 
+	const getTh = () => {
+		return renderer.map((item, index) => {
+			if (item.sorting) {
+				return (
+					<Th
+						key={index}
+						p={{ md: ".5em", xl: "1em" }}
+						fontSize={{ md: "14px", xl: "16px" }}
+					>
+						<Flex gap={2}>
+							{item.field}
+							<Box as="span" onClick={onSortChange}>
+								<Icon
+									//name={sortIcon[currentSort]} // uncomment this to have interative sort
+									name="sort"
+									width="6px"
+									height="13px"
+								/>
+							</Box>
+						</Flex>
+					</Th>
+				);
+			} else {
+				return (
+					<Th
+						key={index}
+						p={{ md: ".5em", xl: "1em" }}
+						fontSize={{ md: "14px", xl: "16px" }}
+					>
+						{item.field}
+					</Th>
+				);
+			}
+		});
+	};
+	const getTr = () => {
+		return currentTableData.map((item, index) => {
+			return (
+				<Tr
+					key={index}
+					onClick={redirect}
+					fontSize={{ md: "14px", xl: "16px" }}
+				>
+					{renderer.map((r, rIndex) => {
+						return (
+							<Td p={{ md: ".5em", xl: "1em" }} key={rIndex}>
+								{prepareRow(
+									item,
+									r,
+									index +
+										currentPage * PageSize -
+										(PageSize - 1)
+								)}
+							</Td>
+						);
+					})}
+				</Tr>
+			);
+		});
+	};
+	const prepareRow = (item, column, index) => {
+		switch (column?.show) {
+			case "Tag":
+				return getStatusStyle(item[column.name]);
+			case "Modal":
+				return getModalStyle();
+			case "IconButton":
+				return getLocationStyle(item[column.name]);
+			case "Avatar":
+				return getNameStyle(item[column.name]);
+			case "Arrow":
+				return getArrowStyle();
+			default:
+				if (column?.field === "Sr. No.") {
+					return index;
+				} else {
+					return item[column.name];
+				}
+		}
+	};
+
+	/* For Responsive */
+	const prepareCard = () => {
+		return currentTableData.map((item, index) => {
+			return (
+				<Cards key={index} width="90%" height="auto" p="15px">
+					<Flex justifyContent="space-between">
+						<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
+							{getNameStyle(item.name)}
+						</Box>
+						<Text>...</Text>
+					</Flex>
+					<Flex
+						direction="column"
+						fontSize={{ base: "sm" }}
+						pl="42px"
+					>
+						<Flex gap="2">
+							<Box as="span" color="light">
+								Mobile Number:
+							</Box>
+							<Box as="span" color="dark">
+								{item.mobile_number}
+							</Box>
+						</Flex>
+						<Flex gap="2">
+							<Box as="span" color="light">
+								Type:
+							</Box>
+							<Box as="span" color="dark">
+								{item.type}
+							</Box>
+						</Flex>
+						<Flex gap="2">
+							<Box as="span" color="light">
+								Onboarded on:
+							</Box>
+							<Box as="span" color="dark">
+								{item.createdAt}
+							</Box>
+						</Flex>
+						<Flex
+							justifyContent="space-between"
+							mt="10px"
+							py="10px"
+						>
+							{getStatusStyle(item.account_status)}
+							{getLocationStyle(item.location)}
+						</Flex>
+					</Flex>
+				</Cards>
+			);
+		});
+	};
 	/* for sort icon & icon change */
 	const sortIcon = {
 		ascending: "caret-up",
@@ -161,29 +237,37 @@ const Tables = (props) => {
 
 	return (
 		<>
-			<Box w="1610px">
-				<TableContainer
-					borderRadius="10px 10px 0 0"
-					mt="20px"
-					border="1px solid #E9EDF1"
-				>
-					<Table variant={"evenStriped"} bg="white">
-						<Thead bg="hint">
-							<Tr>{getTh()}</Tr>
-						</Thead>
-						<Tbody>{getTr()}</Tbody>
-					</Table>
-				</TableContainer>
-				{/* Pagination */}
-				<Flex justify={"flex-end"}>
-					<Pagination
-						className="pagination-bar"
-						currentPage={currentPage}
-						totalCount={tableData.length}
-						pageSize={PageSize}
-						onPageChange={(page) => setCurrentPage(page)}
-					/>
-				</Flex>
+			<Box w="100%">
+				{!isSmallerThan770 ? (
+					<>
+						<TableContainer
+							borderRadius="10px 10px 0 0"
+							mt="20px"
+							border="1px solid #E9EDF1"
+						>
+							<Table variant={"evenStriped"} bg="white">
+								<Thead bg="hint">
+									<Tr>{getTh()}</Tr>
+								</Thead>
+								<Tbody>{getTr()}</Tbody>
+							</Table>
+						</TableContainer>
+						{/* Pagination */}
+						<Flex justify={"flex-end"}>
+							<Pagination
+								className="pagination-bar"
+								currentPage={currentPage}
+								totalCount={tableData.length}
+								pageSize={PageSize}
+								onPageChange={(page) => setCurrentPage(page)}
+							/>
+						</Flex>
+					</>
+				) : (
+					<Flex direction="column" gap="4" alignItems="center">
+						{prepareCard()}
+					</Flex>
+				)}
 			</Box>
 		</>
 	);

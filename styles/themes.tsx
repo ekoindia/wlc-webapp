@@ -5,20 +5,20 @@ const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
 	style: ["normal"],
 	fallback: ["system-ui", "sans-serif"],
-    subsets:["latin"]
+	subsets: ["latin"],
 });
 const roboto = Roboto({
 	weight: ["400", "500", "700"],
 	style: ["normal"],
 	fallback: ["system-ui", "sans-serif"],
-    subsets:["latin"]
+	subsets: ["latin"],
 });
 
 // console.log(theme);
 
 export const light = extendTheme({
 	breakpoints: {
-        base:"0",
+		base: "0",
 		sm: "440px",
 		md: "768px",
 		lg: "1024px",
@@ -26,75 +26,90 @@ export const light = extendTheme({
 		"2xl": "1800px",
 	},
 	components: {
-        Table:{
-        variants:{
-            evenStriped:{
-            tr:{
-                _even:{
-                background:'shade',
-                  _hover:{
-                    bg:'#e6e6e6',
-                    transition:'background 200ms ease-in',
-                    cursor: 'pointer',
-                  }
-                },
-                _odd:{
-                  _hover:{
-                    bg:'#e6e6e6',
-                    transition:'background 200ms ease-in',
-                    cursor: 'pointer'
-                  }
-                }
-               
-            },
-            th:{
-                textTransform: 'Capitalize'
-            }
-            }
-        }
-        },
-		Button: {
-			...theme.components.Button,
+		Table: {
 			variants: {
-				primary: {
-					bg:"primary.DEFAULT",
-                    boxShadow:"0px 3px 10px #FE9F0040",
-                    borderRadius:10,
-                    color:"white",
-                    _hover:{
-                        bg:"primary.dark"
-                    }
-				},
-				accent: {
-					bg:"accent.DEFAULT",
-                    boxShadow:"0px 3px 10px #11299e96",
-                    borderRadius:10,
-                     color:"white",
-                    _hover:{
-                        bg:"accent.dark"
-                    }
+				evenStriped: {
+					tr: {
+						_even: {
+							background: "shade",
+							_hover: {
+								bg: "#e6e6e6",
+								transition: "background 200ms ease-in",
+								cursor: "pointer",
+							},
+						},
+						_odd: {
+							_hover: {
+								bg: "#e6e6e6",
+								transition: "background 200ms ease-in",
+								cursor: "pointer",
+							},
+						},
+					},
+					th: {
+						textTransform: "Capitalize",
+					},
 				},
 			},
 		},
-        Checkbox:{
-            variants:{
-                rounded:{
-                    control:{
-                        w:"24px",
-                        h:"24px",
-                        border:"1px solid #11299E",
-                        borderColor:"#11299E",
-                        borderRadius:"6px",
-                        _checked:{
-                            bg:"#11299E",
-                        },
-                        _focus:{
-                            boxShadow:"none",
-                        }
-                    },
-                }
-            }
-        }
+		Button: {
+			...theme.components.Button,
+			baseStyle: {
+				...theme.components.Button.baseStyle,
+				_disabled: {
+					bg: "gray.200",
+					color: "gray.500",
+				},
+				_hover: {
+					_disabled: {
+						bg: "gray.200",
+						color: "gray.500",
+					},
+				},
+			},
+			variants: {
+				primary: {
+					bg: "primary.DEFAULT",
+					boxShadow: "0px 3px 10px #FE9F0040",
+					borderRadius: 10,
+					color: "white",
+					_hover: {
+						bg: "primary.dark",
+					},
+				},
+				accent: {
+					bg: "accent.DEFAULT",
+					boxShadow: "0px 3px 10px #11299e96",
+					borderRadius: 10,
+					color: "white",
+					_hover: {
+						bg: "accent.dark",
+					},
+				},
+			},
+			// defaultProps: {
+			// 	variant: "primary",
+			// },
+		},
+		Checkbox: {
+			variants: {
+				rounded: {
+					control: {
+						w: "24px",
+						h: "24px",
+						border: "1px solid #11299E",
+						borderColor: "#11299E",
+						borderRadius: "6px",
+						_checked: {
+							bg: "#11299E",
+						},
+						_focus: {
+							boxShadow: "none",
+						},
+					},
+				},
+			},
+		},
 	},
 	colors: {
 		primary: {
@@ -124,16 +139,14 @@ export const light = extendTheme({
 		light: "#555555",
 		focusbg: "#FFFBF3",
 		white: "#FFFFFF",
-        shade: '#F2F2F2',
+		shade: "#F2F2F2",
 		highlight: "#FFD93B",
         bg:"#F5F6F8",
 		inputlabel:"#0C243B",
 	},
 	styles: {
-        global: {
-      
-    },
-    },
+		global: {},
+	},
 	borders: {
 		none: 0,
 		"1px": "1px solid",
@@ -150,11 +163,11 @@ export const light = extendTheme({
 		"2xl": "1rem",
 		"3xl": "1.5rem",
 		full: "9999px",
-        // According to ds
-        5:"5px",
-        10:"10px",
-        15:"15px",
-        20:"20px"
+		// According to ds
+		5: "5px",
+		10: "10px",
+		15: "15px",
+		20: "20px",
 	},
 	shadows: {},
 	sizes: {
@@ -198,7 +211,7 @@ export const light = extendTheme({
 		8: "2rem",
 		9: "2.25rem",
 		10: "2.5rem",
-		12: "3rem", 
+		12: "3rem",
 		14: "3.5rem",
 		16: "4rem",
 		17: "4.5rem",
@@ -221,9 +234,10 @@ export const light = extendTheme({
 	fonts: {
 		// body: `${inter.style.fontFamily}`,
 		heading: `${inter.style.fontFamily}`,
-        roboto_font:`${roboto.style.fontFamily}`
+		roboto_font: `${roboto.style.fontFamily}`,
 	},
 	fontSizes: {
+		vxs: "0.5rem",
 		xs: "0.75rem", // 12px
 		sm: "0.875rem", // 14px
 		md: "1rem", // 16px

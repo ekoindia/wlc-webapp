@@ -1,14 +1,15 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Inter } from "@next/font/google";
 import { LoginPanel } from "components";
 import { useEffect } from "react";
 import { useGetLogoContext } from "../contexts/getLogoContext";
 
 export default function Index({ data }) {
-	console.log(data);
+	// console.log(data);
 
 	const { logo, setLogo } = useGetLogoContext();
 	useEffect(() => {
-		setLogo(data.link);
+		setLogo(data?.link);
 	}, [data]);
 
 	return <LoginPanel />;

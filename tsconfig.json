@@ -7,7 +7,7 @@
 			"test-utils": ["./__tests__/test-utils/test-utils"],
 			"components/*": ["./components/*"],
 			"constants/*": ["./constants/*"],
-			"contexts/*": ["./context/*"],
+			"contexts/*": ["./contexts/*"],
 			"hooks/*": ["./hooks/*"],
 			"public/*": ["./public/*"],
 			"@/pages/*": ["pages/*"]

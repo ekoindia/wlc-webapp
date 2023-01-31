@@ -1,4 +1,7 @@
 /* PLOP_INJECT_IMPORT */
+import { RouteProtecter } from "./RouteProtecter";
+import { SideBar } from "./SideBar";
+import { NavBar } from "./NavBar";
 import { Headings } from "./Headings";
 import { Divider } from "./Divider";
 import { Pagination } from "./Pagination";
@@ -24,6 +27,9 @@ import { AccountStatement } from "./TransactionHistory/AccountStatement";
 import { DetailedStatement } from "./TransactionHistory/AccountStatement";
 
 export {
+	RouteProtecter,
+	SideBar,
+	NavBar,
 	Headings,
 	Divider,
 	Pagination,

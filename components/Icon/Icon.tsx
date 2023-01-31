@@ -28,7 +28,8 @@ export type IconNameType =
 	| "nav-menu"
 	| "drop-down"
 	| "logout"
-	| "timer";
+	| "timer"
+	| "camera";
 
 export type IconProps = {
 	name: IconNameType;
