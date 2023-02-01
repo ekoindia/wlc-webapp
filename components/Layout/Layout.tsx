@@ -44,7 +44,7 @@ const Layout = (props) => {
 							},
 						}}
 					>
-						{!isSmallerThan770 && <Breadcrumbs />}
+						<Breadcrumbs isSmallerThan770={isSmallerThan770} />
 
 						{props.children}
 					</Box>

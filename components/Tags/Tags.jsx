@@ -7,7 +7,13 @@ const statusChecker = {
 	Other: "light",
 };
 
-const Tags = ({ className = "", status = "Active", styles, ...props }) => {
+const Tags = ({
+	className = "",
+	status = "Active",
+	px = { base: "16px", md: "18px", xl: "22px" },
+	styles,
+	...props
+}) => {
 	const sts = statusChecker[status];
 	return (
 		<Button
@@ -17,8 +23,11 @@ const Tags = ({ className = "", status = "Active", styles, ...props }) => {
 			colorScheme={sts}
 			color={sts}
 			bg="white"
-			px={{ base: "16px", md: "18px", xl: "22px" }}
+			size={"md"}
+			fontWeight={"regular"}
+			px={px}
 			{...styles}
+			{...props}
 		>
 			{status}
 		</Button>
