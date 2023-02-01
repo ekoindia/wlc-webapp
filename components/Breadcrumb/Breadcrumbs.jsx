@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Headings, Icon } from "../";
 
-const Breadcrumbs = ({ className = "", ...props }) => {
+const Breadcrumbs = ({ isSmallerThan770, ...props }) => {
 	const router = useRouter();
 	const [breadcrumbs, setBreadcrumbs] = useState();
 
@@ -52,81 +52,83 @@ const Breadcrumbs = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Box>
-				<Breadcrumb
-					separator={
-						<Icon
-							width="9px"
-							height="9px"
-							name="chevron-right"
-							color={"light"}
-						/>
-					}
-				>
-					<BreadcrumbItem key={0}>
-						<BreadcrumbLink
-							href="/admin/my-network"
-							_hover={{ textDecoration: "none" }}
-							fontSize={{
-								md: "xs",
-								lg: "xs",
-								xl: "xs",
-								"2xl": "md",
-							}}
-							color={"accent.DEFAULT"}
-							lineHeight={0}
-						>
-							<Box
-								gap={"1"}
-								display={"flex"}
-								alignItems={"center"}
+			{!isSmallerThan770 && (
+				<Box>
+					<Breadcrumb
+						separator={
+							<Icon
+								width="9px"
+								height="9px"
+								name="chevron-right"
+								color={"light"}
+							/>
+						}
+					>
+						<BreadcrumbItem key={0}>
+							<BreadcrumbLink
+								href="/admin/my-network"
+								_hover={{ textDecoration: "none" }}
+								fontSize={{
+									md: "xs",
+									lg: "xs",
+									xl: "xs",
+									"2xl": "md",
+								}}
+								color={"accent.DEFAULT"}
+								lineHeight={0}
 							>
 								<Box
-									width={{ base: "16px", md: "14px" }}
-									height={{ base: "16px", md: "14px" }}
+									gap={"1"}
+									display={"flex"}
+									alignItems={"center"}
 								>
-									<Icon
-										name="home"
-										width="100%"
-										height="100%"
-									/>
+									<Box
+										width={{ base: "16px", md: "14px" }}
+										height={{ base: "16px", md: "14px" }}
+									>
+										<Icon
+											name="home"
+											width="100%"
+											height="100%"
+										/>
+									</Box>
+									<Text mt={"0.1vw"}>Home</Text>
 								</Box>
-								<Text mt={"0.1vw"}>Home</Text>
-							</Box>
-						</BreadcrumbLink>
-					</BreadcrumbItem>
-					{breadcrumbs &&
-						breadcrumbs.map((breadcrumb, index) => (
-							<BreadcrumbItem
-								key={index}
-								isCurrentPage={
-									index === breadcrumbs.length - 1
-										? true
-										: false
-								}
-							>
-								<BreadcrumbLink
-									href={breadcrumb.href}
-									_hover={{ textDecoration: "none" }}
-									fontSize={{
-										md: "xs",
-										lg: "xs",
-										xl: "xs",
-										"2xl": "md",
-									}}
-									color={
-										breadcrumb.isCurrent
-											? "light"
-											: "accent.DEFAULT"
+							</BreadcrumbLink>
+						</BreadcrumbItem>
+						{breadcrumbs &&
+							breadcrumbs.map((breadcrumb, index) => (
+								<BreadcrumbItem
+									key={index}
+									isCurrentPage={
+										index === breadcrumbs.length - 1
+											? true
+											: false
 									}
-									lineHeight={0}
 								>
-									{breadcrumb.label}
-								</BreadcrumbLink>
-							</BreadcrumbItem>
-						))}
-				</Breadcrumb>
-			</Box>
+									<BreadcrumbLink
+										href={breadcrumb.href}
+										_hover={{ textDecoration: "none" }}
+										fontSize={{
+											md: "xs",
+											lg: "xs",
+											xl: "xs",
+											"2xl": "md",
+										}}
+										color={
+											breadcrumb.isCurrent
+												? "light"
+												: "accent.DEFAULT"
+										}
+										lineHeight={0}
+									>
+										{breadcrumb.label}
+									</BreadcrumbLink>
+								</BreadcrumbItem>
+							))}
+					</Breadcrumb>
+				</Box>
+			)}
 			<Box>
 				{breadcrumbs ? (
 					<Headings
