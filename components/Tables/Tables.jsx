@@ -63,8 +63,8 @@ const Tables = (props) => {
 					<IconButtons
 						iconName="near-me"
 						iconStyle={{
-							w: "11px",
-							h: "11px",
+							width: "12px",
+							height: "12px",
 						}}
 					/>
 				</Box>

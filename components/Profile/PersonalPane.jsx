@@ -16,7 +16,10 @@ const PersonalPane = () => {
 					title="Edit Details"
 					iconPos="left"
 					iconName="mode-edit"
-					iconStyle={{ h: "12px", w: "12px" }}
+					iconStyle={{
+						width: "12px",
+						height: "12px",
+					}}
 				></IconButtons>
 			</Box>
 			<Stack

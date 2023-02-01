@@ -14,7 +14,7 @@ const roboto = Roboto({
 	subsets: ["latin"],
 });
 
-// console.log(theme);
+//console.log(theme);
 
 export const light = extendTheme({
 	breakpoints: {
@@ -28,24 +28,16 @@ export const light = extendTheme({
 	components: {
 		Table: {
 			variants: {
-        evenStripedClickableRow: {
+				evenStripedClickableRow: {
 					tr: {
 						_even: {
 							background: "shade",
-							_hover: {
-								// bg: "#fea1000d",
-								bg: "#e6e6e6",
-								transition: "background 200ms ease-in",
-								cursor: "pointer",
-							},
 						},
-						_odd: {
-							_hover: {
-                // bg: "#fea1000d",
-								bg: "#e6e6e6",
-								transition: "background 200ms ease-in",
-								cursor: "pointer",
-							},
+						_hover: {
+							// bg: "#fea1000d",
+							bg: "#e6e6e6",
+							transition: "background 200ms ease-in",
+							cursor: "pointer",
 						},
 					},
 					th: {
@@ -57,7 +49,6 @@ export const light = extendTheme({
 						_even: {
 							background: "shade",
 						},
-					
 					},
 					th: {
 						textTransform: "Capitalize",
@@ -99,10 +90,12 @@ export const light = extendTheme({
 						bg: "accent.dark",
 					},
 				},
+				link: {
+					_hover: {
+						textDecoration: "none",
+					},
+				},
 			},
-			// defaultProps: {
-			// 	variant: "primary",
-			// },
 		},
 		Checkbox: {
 			variants: {
@@ -154,8 +147,8 @@ export const light = extendTheme({
 		white: "#FFFFFF",
 		shade: "#F2F2F2",
 		highlight: "#FFD93B",
-        bg:"#F5F6F8",
-		inputlabel:"#0C243B",
+		bg: "#F5F6F8",
+		inputlabel: "#0C243B",
 	},
 	styles: {
 		global: {},
