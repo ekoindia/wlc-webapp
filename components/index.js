@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Menus } from "./Menus";
 import { RouteProtecter } from "./RouteProtecter";
 import { SideBar } from "./SideBar";
 import { NavBar } from "./NavBar";
@@ -27,6 +28,7 @@ import { AccountStatement } from "./TransactionHistory/AccountStatement";
 import { DetailedStatement } from "./TransactionHistory/AccountStatement";
 
 export {
+	Menus,
 	RouteProtecter,
 	SideBar,
 	NavBar,
