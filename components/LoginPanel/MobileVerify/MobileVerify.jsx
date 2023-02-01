@@ -65,7 +65,7 @@ const MobileVerify = ({ number, setNumber, setStep }) => {
 						abhishek.kumar@eko.co.in
 						<IconButtons
 							iconName="mode-edit"
-							iconStyle={{ h: "12px", w: "12px" }}
+							iconStyle={{ height: "12px", width: "12px" }}
 						/>
 					</Center>
 				</Flex>

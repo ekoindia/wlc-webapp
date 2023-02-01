@@ -79,7 +79,7 @@ const VerifyOtp = ({ number, setStep }) => {
 						<IconButtons
 							onClick={() => setStep((prev) => prev - 1)}
 							iconName="mode-edit"
-							iconStyle={{ h: "12px", w: "12px" }}
+							iconStyle={{ height: "12px", width: "12px" }}
 						/>
 					</Center>
 				</Flex>
