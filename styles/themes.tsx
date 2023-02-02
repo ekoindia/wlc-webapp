@@ -42,6 +42,8 @@ export const light = extendTheme({
 					},
 					th: {
 						textTransform: "Capitalize",
+            bg:'hint',
+            transition:'none'
 					},
 				},
 				evenStriped: {
@@ -52,6 +54,8 @@ export const light = extendTheme({
 					},
 					th: {
 						textTransform: "Capitalize",
+            bg:'hint',
+            transition:'none'
 					},
 				},
 			},

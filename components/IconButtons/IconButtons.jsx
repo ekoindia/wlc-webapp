@@ -9,7 +9,9 @@ const IconButtons = (props) => {
 		variant = "primary",
 		isRound = true,
 		hasBG = true,
+		hasIcon = true,
 		iconStyle,
+		textStyle,
 		children,
 		onClick,
 		...rest
@@ -24,28 +26,39 @@ const IconButtons = (props) => {
 	const textOrder = iconOrder === 1 ? 2 : 1;
 
 	return (
-		<Button display="flex" alignItems="center" gap={2} variant="link">
-			{hasBG ? (
+		<Button
+			display="flex"
+			alignItems="center"
+			gap={2}
+			variant="link"
+			onClick={onClick}
+			color={color}
+			_hover={{ color: hoverColor }}
+			_active={{ color: hoverColor }}
+		>
+			{hasIcon ? (
 				<Box order={iconOrder}>
-					<IconButton
-						size="sm"
-						isRound={isRound}
-						variant={variant}
-						icon={<Icon name={iconName} {...iconStyle} />}
-					/>
+					{hasBG ? (
+						<Box>
+							<IconButton
+								size="sm"
+								isRound={isRound}
+								variant={variant}
+								icon={<Icon name={iconName} {...iconStyle} />}
+							/>
+						</Box>
+					) : (
+						<Box color="inherit">
+							<Icon name={iconName} {...iconStyle} />
+						</Box>
+					)}
 				</Box>
 			) : (
-				<Box order={iconOrder} color={color}>
-					<Icon name={iconName} {...iconStyle} />
-				</Box>
+				""
 			)}
 
 			<Box order={textOrder}>
-				<Text
-					color={color}
-					_hover={{ fontcolor: { hoverColor } }} //TODO fix hover on text
-					_active={{ color: { hoverColor } }}
-				>
+				<Text color="inherit" {...textStyle}>
 					{title}
 				</Text>
 			</Box>
