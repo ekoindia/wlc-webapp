@@ -8,14 +8,20 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerContent,
+	DrawerFooter,
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
 	Grid,
 	GridItem,
+	HStack,
 	Input,
+	InputGroup,
+	InputLeftAddon,
+	Stack,
 	Text,
 	useDisclosure,
+	VStack,
 } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons } from "..";
 
@@ -125,35 +131,87 @@ function Filter() {
 					</Text>
 				</Button>
 			</Box>
+
 			<Drawer
 				isOpen={isOpen}
 				placement="right"
 				onClose={onClose}
 				finalFocusRef={btnRef}
-				size={"md"}
+				size={{
+					base: "full",
+					sm: "xs",
+					md: "sm",
+					lg: "sm",
+					"2xl": "lg",
+				}}
 			>
-				<DrawerOverlay bg="#e9edf1b3" backdropFilter="blur(6px)" />
-				<DrawerContent>
-					<DrawerHeader py="3.43rem" pl="3.125rem">
-						<Box display={"flex"} justifyContent={"space-between"}>
+				<DrawerOverlay
+					bg="#e9edf1b3"
+					backdropFilter="blur(6px)"
+					width={"100%"}
+					h={"100%"}
+				/>
+				<DrawerContent
+					// zIndex={"999999999999999999"}
+					borderTopRadius={{ base: "20px", sm: "0px" }}
+					mt={{ base: "8", sm: "0px" }}
+				>
+					<DrawerHeader borderTopRadius={"50%"}>
+						<Box
+							display={"flex"}
+							justifyContent={"space-between"}
+							w={"100%"}
+							py={{
+								base: "5px",
+								sm: "0px",
+								md: "0px",
+								lg: "0px",
+								xl: "0px",
+								"2xl": ".5vw",
+							}}
+							px={{
+								base: "3px",
+								sm: "0px",
+								md: "0px",
+								lg: "0px",
+								xl: "0px",
+								"2xl": "1.2vw",
+							}}
+						>
 							<Box
 								display={"flex"}
 								alignItems={"center"}
+								gap={"10px"}
 								fontWeight={"semibold"}
-								fontSize="30px"
-								lineHeight="0px"
 							>
-								<Icon
-									name="filter"
-									width="40px"
-									height="25px"
-									// size={"30px"}
-									style={{ marginRight: ".3rem" }}
-								/>
-								Filter
+								<Center
+									w={{
+										base: "15px",
+										sm: "10px",
+										md: "20px",
+										lg: "20px",
+										xl: "20px",
+										"2xl": "40px",
+									}}
+								>
+									<Icon name="filter" width="100%" />
+								</Center>
+								<Text
+									fontSize={{
+										base: "md",
+										sm: "md",
+										md: "sm",
+										lg: "md",
+										xl: "md",
+										"2xl": "3xl",
+									}}
+								>
+									Filter
+								</Text>
 							</Box>
 							<Box
 								display={"flex"}
+								gap={"3px"}
 								alignItems={"center"}
 								onClick={onClose}
 								fontSize="18px"
@@ -161,124 +219,311 @@ function Filter() {
 								color={"light"}
 								lineHeight="0px"
 							>
-								<Icon
-									name="close-outline"
-									width="24px"
-									height="24px"
-									style={{ marginRight: ".3rem" }}
-								/>
-								Close
+								<Center
+									w={{
+										base: "15px",
+										sm: "10px",
+										md: "20px",
+										lg: "20px",
+										xl: "20px",
+										"2xl": "40px",
+									}}
+								>
+									<Icon name="close-outline" width="100%" />
+								</Center>
+								<Text
+									fontSize={{
+										base: "sm",
+										sm: "xs",
+										md: "sm",
+										lg: "sm",
+										xl: "md",
+										"2xl": "3xl",
+									}}
+								>
+									Close
+								</Text>
 							</Box>
-							{/* //TODO update this to button after updating buttons to accept multiple colors */}
 						</Box>
 					</DrawerHeader>
 
-					<DrawerBody pl="3.125rem">
-						<Box mt={2}>
-							<Text
-								color="light"
-								fontWeight="semibold"
-								fontSize="lg"
-							>
-								Filter by profile type
-							</Text>
-							<Grid
-								templateColumns="repeat(2, 1fr)"
-								mt="5"
-								gap="2"
-							>
-								<GridItem w="100%">
-									<Checkbox variant="rounded">
-										Merchant
-									</Checkbox>
-								</GridItem>
-								<GridItem w="100%">
-									<Checkbox variant="rounded">
-										Seller
-									</Checkbox>
-								</GridItem>
-							</Grid>
-						</Box>
-
-						<Box mt={16}>
-							<Text
-								color={"light"}
-								fontWeight={"semibold"}
-								fontSize="lg"
-							>
-								Filter by account status
-							</Text>
-							<Grid
-								templateColumns="repeat(2, 1fr)"
-								mt="5"
-								gap="2"
-							>
-								<GridItem w="100%">
-									<Checkbox
-										variant="rounded"
-										borderRadius="20px"
-									>
-										Active
-									</Checkbox>
-								</GridItem>
-								<GridItem w="100%">
-									<Checkbox variant="rounded">
-										Inactive
-									</Checkbox>
-								</GridItem>
-							</Grid>
-						</Box>
-
-						<Box mt={16}>
-							<Text
-								color={"light"}
-								fontWeight={"semibold"}
-								fontSize="lg"
-							>
-								Filter by activation date range
-							</Text>
-							<Flex wrap={"wrap"} mt="5">
-								<Input
-									w={"52"}
-									size="md"
-									type="date"
-									borderRight="none"
-									borderRightRadius="none"
-									// min="1970-01-01"
-									// max="2100-12-31"
-									placeholder="From"
-								/>
-								<Input
-									borderLeftRadius="none"
-									w={"52"}
-									size="md"
-									type="date"
-									min="1970-01-01"
-									max="2100-12-31"
-								/>
-							</Flex>
-						</Box>
-
-						<Box
-							display={"flex"}
-							justifyContent={"flex-end"}
-							gap={16}
-							mt={44}
+					<DrawerBody>
+						<Stack
+							gap={{ base: "20vw", sm: "5vw" }}
+							py={{
+								base: "8",
+								sm: "8",
+								md: "0px",
+								lg: "1px",
+								xl: "1px",
+								"2xl": "2vw",
+							}}
+							px={{
+								base: "2",
+								sm: "2",
+								md: "0px",
+								lg: "0px",
+								xl: "0px",
+								"2xl": "1.2vw",
+							}}
 						>
-							<IconButtons
-								title="Clear All"
-								colorType="0"
-								textStyle={{
-									fontSize: "20px",
+							<VStack
+								w={"100%"}
+								gap={{
+									base: "10",
+									lg: "6",
+									xl: "10",
+									"2xl": "24",
 								}}
-							></IconButtons>
-							<Buttons
-								w="118px"
-								h="64px"
-								fontSize="20px"
-								title="Apply"
-							></Buttons>
-						</Box>
+							>
+								<VStack
+									align={"flex-start"}
+									w={"full"}
+									gap={{
+										base: "px",
+										sm: "px",
+										md: "0.5",
+										lg: "0.5",
+										xl: "2",
+										"2xl": "2.5",
+									}}
+								>
+									<Text
+										as={"span"}
+										fontSize={{
+											base: "sm",
+											sm: "sm",
+											md: "sm",
+											lg: "sm",
+											xl: "md",
+											"2xl": "lg",
+										}}
+										fontWeight={"semibold"}
+									>
+										Filter by profile type
+									</Text>
+									<HStack w={"100%"}>
+										<Box w={"50%"} h={"100%"}>
+											<Checkbox
+												variant="rounded"
+												spacing={"2"}
+												size={{
+													base: "sm",
+													sm: "sm",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												iMerchant
+											</Checkbox>
+										</Box>
+										<Box w={"50%"} h={"100%"}>
+											<Checkbox
+												spacing={"2"}
+												variant="rounded"
+												size={{
+													base: "sm",
+													sm: "sm",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												Seller
+											</Checkbox>
+										</Box>
+									</HStack>
+								</VStack>
+								<VStack
+									align={"flex-start"}
+									w={"full"}
+									gap={{
+										base: "px",
+										sm: "px",
+										md: "0.5",
+										lg: "0.5",
+										xl: "2",
+										"2xl": "2.5",
+									}}
+								>
+									<Text
+										as={"span"}
+										fontSize={{
+											base: "sm",
+											sm: "sm",
+											md: "sm",
+											lg: "sm",
+											xl: "md",
+											"2xl": "lg",
+										}}
+										fontWeight={"semibold"}
+									>
+										Filter by account status
+									</Text>
+									<HStack w={"100%"}>
+										<Box w={"50%"} h={"100%"}>
+											<Checkbox
+												variant="rounded"
+												spacing={"2"}
+												size={{
+													base: "xs",
+													sm: "xs",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												Active
+											</Checkbox>
+										</Box>
+										<Box w={"50%"} h={"100%"}>
+											<Checkbox
+												spacing={"2"}
+												variant="rounded"
+												size={{
+													base: "xs",
+													sm: "xs",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												Inactive
+											</Checkbox>
+										</Box>
+									</HStack>
+								</VStack>
+								<VStack
+									align={"flex-start"}
+									w={"full"}
+									gap={{
+										base: "px",
+										sm: "px",
+										md: "0.5",
+										lg: "0.5",
+										xl: "2",
+										"2xl": "2.5",
+									}}
+								>
+									<Text
+										as={"span"}
+										fontSize={{
+											base: "sm",
+											sm: "sm",
+											md: "sm",
+											lg: "sm",
+											xl: "md",
+											"2xl": "lg",
+										}}
+										fontWeight={"semibold"}
+									>
+										Filter by activation date range
+									</Text>
+									<Flex
+										w={"100%"}
+										justifyContent={"space-between"}
+										direction={{
+											base: "column",
+											md: "row",
+										}}
+										gap={{
+											base: "3",
+											sm: "3",
+											md: "0.5",
+											lg: "0.5",
+											xl: "2",
+											"2xl": "2.5",
+										}}
+									>
+										<InputGroup
+											borderRadius={"0px"}
+											size={{
+												base: "sm",
+												sm: "sm",
+												lg: "sm",
+												xl: "sm",
+												"2xl": "lg",
+											}}
+										>
+											<InputLeftAddon children="From:" />
+											<Input
+												borderRadius={"0px"}
+												type="date"
+												placeholder="phone number"
+											/>
+										</InputGroup>
+										<InputGroup
+											borderRadius={"0px"}
+											size={{
+												base: "sm",
+												sm: "sm",
+												lg: "sm",
+												xl: "sm",
+												"2xl": "lg",
+											}}
+										>
+											<InputLeftAddon
+												children="To:"
+												borderRadius={"0px"}
+											/>
+											<Input
+												borderRadius={"0px"}
+												type="date"
+												placeholder="phone number"
+											/>
+										</InputGroup>
+									</Flex>
+								</VStack>
+							</VStack>
+							<Flex
+								justifyContent={"flex-end"}
+								gap={{
+									base: "7",
+									sm: "6",
+									md: "10",
+									lg: "8",
+									xl: "12",
+									"2xl": "14",
+								}}
+							>
+								<Buttons
+									variant="link"
+									colorScheme="#11299E"
+									size={{
+										base: "lg",
+										sm: "sm",
+										md: "sm",
+										lg: "sm",
+										xl: "md",
+										"2xl": "lg",
+									}}
+									fontWeight={"bold"}
+									fontSize={"xl"}
+									onClick={onClose}
+								>
+									Clear All
+								</Buttons>
+								<Buttons
+									size={{
+										base: "lg",
+										sm: "sm",
+										md: "sm",
+										lg: "sm",
+										xl: "md",
+										"2xl": "lg",
+									}}
+									fontWeight={"bold"}
+									fontSize={"xl"}
+								>
+									Apply
+								</Buttons>
+							</Flex>
+						</Stack>
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
