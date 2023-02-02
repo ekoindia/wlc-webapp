@@ -12,7 +12,13 @@ const Layout = (props) => {
 				setNavOpen={setIsNavOpen}
 				isSmallerThan770={isSmallerThan770}
 			/>
-			<Flex width={"full"} height={"calc(100vh - 4.5vw)"}>
+			<Flex
+				width={"full"}
+				height={{
+					base: "calc(100vh - 12.2vw)",
+					sm: "calc(100vh - 4.5vw)",
+				}}
+			>
 				<SideBar
 					navOpen={isNavOpen}
 					setNavOpen={setIsNavOpen}

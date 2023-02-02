@@ -25,79 +25,106 @@ function Filter() {
 
 	return (
 		<>
-			<Button
-				my={"1vw"}
-				display={"flex"}
-				justifyContent={"space-evenly"}
-				alignItems={"center"}
-				ref={btnRef}
-				onClick={onOpen}
-				h={{
-					base: "8.5vw",
-					sm: "5vw",
-					md: "4vw",
-					lg: "3vw",
-					xl: "2.5vw",
-					"2xl": "2vw",
-				}}
-				w={{
-					base: "8vw",
-					sm: "12vw",
-					md: "10vw",
-					lg: "7vw",
-					xl: "7vw",
-					"2xl": "6vw",
-				}}
-				bg="#FFFFFF"
-				color="#11299E"
-				border="1px solid #11299E"
-				boxShadow=" 0px 3px 10px #11299E1A"
-				borderRadius="10"
-				_hover={{
-					bg: "white",
-				}}
-				_active={{
-					bg: "white",
-				}}
-			>
-				<Center
-					width={{
-						base: "10px",
-						sm: "12px",
-						md: "12px",
-						lg: "14px",
-						xl: "16px",
-						"2xl": "20px",
+			<Box display={{ base: "none", sm: "initial" }}>
+				<Button
+					my={"1vw"}
+					display={"flex"}
+					justifyContent={"space-evenly"}
+					alignItems={"center"}
+					ref={btnRef}
+					onClick={onOpen}
+					h={{
+						base: "8.5vw",
+						sm: "5vw",
+						md: "4vw",
+						lg: "3vw",
+						xl: "2.5vw",
+						"2xl": "2vw",
 					}}
-					height={{
-						base: "10px",
-						sm: "12px",
-						md: "12px",
-						lg: "14px",
-						xl: "16px",
-						"2xl": "20px",
+					w={{
+						base: "8vw",
+						sm: "12vw",
+						md: "10vw",
+						lg: "7vw",
+						xl: "7vw",
+						"2xl": "6vw",
 					}}
-					mr={"2px"}
-				>
-					<Icon name="filter" />
-				</Center>
-				<Text
-					as="span"
+					bg="#FFFFFF"
 					color="#11299E"
-					fontSize={{
-						base: "5px",
-						sm: "xs",
-						md: "xs",
-						lg: "xs",
-						xl: "sm",
-						"2xl": "xl",
+					border="1px solid #11299E"
+					boxShadow=" 0px 3px 10px #11299E1A"
+					borderRadius="10"
+					_hover={{
+						bg: "white",
 					}}
-					lineHeight={"0"}
+					_active={{
+						bg: "white",
+					}}
 				>
-					Filter
-				</Text>
-			</Button>
+					<Center
+						width={{
+							base: "10px",
+							sm: "12px",
+							md: "12px",
+							lg: "14px",
+							xl: "16px",
+							"2xl": "20px",
+						}}
+						height={{
+							base: "10px",
+							sm: "12px",
+							md: "12px",
+							lg: "14px",
+							xl: "16px",
+							"2xl": "20px",
+						}}
+						mr={"2px"}
+					>
+						<Icon name="filter" />
+					</Center>
+					<Text
+						as="span"
+						color="#11299E"
+						fontSize={{
+							base: "5px",
+							sm: "xs",
+							md: "xs",
+							lg: "xs",
+							xl: "sm",
+							"2xl": "xl",
+						}}
+						lineHeight={"0"}
+					>
+						Filter
+					</Text>
+				</Button>
+			</Box>
 
+			<Box display={{ base: "initial", sm: "none" }}>
+				<Button
+					display={"flex"}
+					gap={"10px"}
+					ref={btnRef}
+					onClick={onOpen}
+					w={"100%"}
+					h={"100%"}
+					bg="primary.DEFAULT"
+					color="#11299E"
+					borderRadius={"0px"}
+					boxShadow=" 0px 3px 10px #11299E1A"
+				>
+					<Icon name="filter" width="25px" color="white" />
+					<Text
+						as="span"
+						color="white"
+						fontSize={"18px"}
+						lineHeight={"0"}
+						fontWeight={"semibold"}
+					>
+						Filter
+					</Text>
+				</Button>
+			</Box>
 			<Drawer
 				isOpen={isOpen}
 				placement="right"

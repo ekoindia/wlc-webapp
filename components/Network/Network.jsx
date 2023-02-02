@@ -1,4 +1,5 @@
-import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
+import { Box, Flex, HStack, useMediaQuery } from "@chakra-ui/react";
+import { ResSortAndFilter } from "components/Sort/Sort";
 import useRequest from "hooks/useRequest";
 import { useState } from "react";
 import { NetworkTable } from ".";
@@ -26,7 +27,7 @@ const Network = ({ className = "", ...props }) => {
 					/>
 
 					{!isMobileScreen && (
-						<Flex gap={"20px"}>
+						<Flex gap={"20px"} align={"center"}>
 							<Box>
 								<Filter />
 							</Box>
@@ -36,9 +37,11 @@ const Network = ({ className = "", ...props }) => {
 						</Flex>
 					)}
 				</Box>
+
 				<Box>
 					<NetworkTable />
 				</Box>
+				<ResSortAndFilter />
 			</Box>
 		</>
 	);
