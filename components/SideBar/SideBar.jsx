@@ -58,7 +58,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									currentRoute === menu.link.split("/")[2] &&
 									"#081E89"
 								}
-								borderLeft={isSmallerThan769 ? "6px" : "8px"}
+								borderLeft={isSmallerThan769 ? "8px" : "8px"}
 								borderLeftColor={
 									currentRoute === menu.link.split("/")[2]
 										? "#FE7D00"

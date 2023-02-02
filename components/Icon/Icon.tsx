@@ -30,7 +30,8 @@ export type IconNameType =
 	| "logout"
 	| "timer"
 	| "camera"
-	| "more-vert";
+	| "more-vert"
+	| "sort-by";
 
 export type IconProps = {
 	name: IconNameType;
