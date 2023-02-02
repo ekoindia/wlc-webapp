@@ -1,6 +1,7 @@
 import {
 	Box,
 	Button,
+	Center,
 	Menu,
 	MenuButton,
 	MenuDivider,
@@ -11,19 +12,84 @@ import { Icon } from "..";
 
 const Sort = ({ className = "", ...props }) => {
 	return (
-		<Box>
-			<Menu width="220px" autoSelect={false}>
+		<Box
+			h={{
+				base: "8.5vw",
+				sm: "7vw",
+				md: "4vw",
+				lg: "3vw",
+				xl: "2.5vw",
+				"2xl": "2vw",
+			}}
+		>
+			<Menu
+				autoSelect={false}
+				matchWidth={"false"}
+				w={{
+					base: "5vw",
+					sm: "5vw",
+					md: "5vw",
+					lg: "13vw",
+					xl: "10vw",
+					"2xl": "14vw",
+				}}
+			>
 				{({ isOpen }) => (
-					<Box display="flex" alignItems="center" gap="15px">
-						<Box fontSize="lg" fontWeight="semibold" color="dark">
+					<Box
+						display="flex"
+						alignItems="center"
+						justifyContent={"space-evenly"}
+						gap="15px"
+						w={{
+							base: "5vw",
+							sm: "5vw",
+							md: "5vw",
+							lg: "20vw",
+							xl: "20vw",
+							"2xl": "18vw",
+						}}
+					>
+						<Box
+							fontSize={{
+								base: "5px",
+								sm: "5px",
+								md: "xs",
+								lg: "xs",
+								xl: "sm",
+								"2xl": "xl",
+							}}
+							// fontWeight="semibold"
+							color="dark"
+							fontWeight={"medium"}
+						>
 							Sort By :
 						</Box>
 						<MenuButton
-							px={5}
-							w="220px"
-							h="48px"
-							fontSize="md"
-							fontWeight="normal"
+							w={{
+								base: "5vw",
+								sm: "5vw",
+								md: "5vw",
+								lg: "13vw",
+								xl: "14vw",
+								"2xl": "12vw",
+							}}
+							h={{
+								base: "8.5vw",
+								sm: "7vw",
+								md: "4vw",
+								lg: "3vw",
+								xl: "2.5vw",
+								"2xl": "2vw",
+							}}
+							fontSize={{
+								base: "5px",
+								sm: "5px",
+								md: "xs",
+								lg: "xs",
+								xl: "sm",
+								"2xl": "xl",
+							}}
+							fontWeight={"medium"}
 							textAlign="start"
 							borderRadius="6px"
 							border=" 1px solid #D2D2D2"
@@ -31,11 +97,30 @@ const Sort = ({ className = "", ...props }) => {
 							bg="white"
 							as={Button}
 							rightIcon={
-								<Icon
-									name="drop-down"
-									width="16px"
-									color="#555555"
-								/>
+								<Center
+									width={{
+										base: "10px",
+										sm: "10px",
+										md: "12px",
+										lg: "13px",
+										xl: "14px",
+										"2xl": "20px",
+									}}
+									height={{
+										base: "10px",
+										sm: "10px",
+										md: "12px",
+										lg: "13px",
+										xl: "14px",
+										"2xl": "20px",
+									}}
+								>
+									<Icon
+										name="drop-down"
+										width="16px"
+										color="#555555"
+									/>
+								</Center>
 							}
 							_active={{
 								bg: "white",
@@ -48,24 +133,27 @@ const Sort = ({ className = "", ...props }) => {
 						</MenuButton>
 
 						<MenuList
-							minWidth="220px"
-							px={5}
-							py="none"
+							minW={{
+								base: "5vw",
+								sm: "5vw",
+								md: "5vw",
+								lg: "13vw",
+								xl: "10vw",
+								"2xl": "12vw",
+							}}
+							fontSize={{
+								base: "5px",
+								sm: "5px",
+								md: "xs",
+								lg: "xs",
+								xl: "sm",
+								"2xl": "xl",
+							}}
 							border="1px solid #D2D2D2"
-							top="0px"
-							transform="translate(1672px, 275px)"
-							fontSize="md"
-							fontWeight="normal"
 						>
 							<MenuItem
-								pt={4}
-								pb={3}
-								px="0px"
+								fontWeight={"medium"}
 								color="dark"
-								fontWeight="normal"
-								// _active={{
-								//     bg: "white",
-								// }}
 								_hover={{
 									bg: "white",
 								}}
@@ -74,39 +162,33 @@ const Sort = ({ className = "", ...props }) => {
 							</MenuItem>
 							<MenuDivider margin="auto" />
 							<MenuItem
-								pt={4}
-								pb={3}
-								px="0px"
 								color="light"
-								fontWeight="normal"
-								// _active={{
-								//     bg: "white",
-								// }}
 								_hover={{
 									bg: "white",
 								}}
 							>
 								Status:
-								<Box as="span" color="dark">
+								<Box
+									as="span"
+									color="dark"
+									fontWeight={"medium"}
+								>
 									&nbsp;Active
 								</Box>
 							</MenuItem>
 							<MenuDivider margin="auto" />
 							<MenuItem
-								pt={4}
-								pb={5}
-								px="0px"
 								color="light"
-								fontWeight="normal"
-								// _active={{
-								//     bg: "white",
-								// }}
 								_hover={{
 									bg: "white",
 								}}
 							>
 								Status:
-								<Box as="span" color="dark">
+								<Box
+									as="span"
+									color="dark"
+									fontWeight={"medium"}
+								>
 									&nbsp;Inactive
 								</Box>
 							</MenuItem>
