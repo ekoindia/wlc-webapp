@@ -26,6 +26,7 @@ function Filter() {
 	return (
 		<>
 			<Button
+				my={"1vw"}
 				display={"flex"}
 				justifyContent={"space-evenly"}
 				alignItems={"center"}
@@ -33,7 +34,7 @@ function Filter() {
 				onClick={onOpen}
 				h={{
 					base: "8.5vw",
-					sm: "7vw",
+					sm: "5vw",
 					md: "4vw",
 					lg: "3vw",
 					xl: "2.5vw",
@@ -41,7 +42,7 @@ function Filter() {
 				}}
 				w={{
 					base: "8vw",
-					sm: "8vw",
+					sm: "12vw",
 					md: "10vw",
 					lg: "7vw",
 					xl: "7vw",
@@ -62,7 +63,7 @@ function Filter() {
 				<Center
 					width={{
 						base: "10px",
-						sm: "10px",
+						sm: "12px",
 						md: "12px",
 						lg: "14px",
 						xl: "16px",
@@ -70,7 +71,7 @@ function Filter() {
 					}}
 					height={{
 						base: "10px",
-						sm: "10px",
+						sm: "12px",
 						md: "12px",
 						lg: "14px",
 						xl: "16px",
@@ -85,7 +86,7 @@ function Filter() {
 					color="#11299E"
 					fontSize={{
 						base: "5px",
-						sm: "5px",
+						sm: "xs",
 						md: "xs",
 						lg: "xs",
 						xl: "sm",

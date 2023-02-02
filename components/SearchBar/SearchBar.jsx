@@ -15,13 +15,14 @@ export function SearchBar({ onChangeHandler, value }) {
 			w={"fit-content"}
 			h={{
 				base: "8.5vw",
-				sm: "7vw",
+				sm: "5vw",
 				md: "4vw",
 				lg: "3vw",
 				xl: "2.5vw",
 				"2xl": "2vw",
 			}}
-			mx={{ base: "auto", md: "0px" }}
+			mx={{ base: "auto", sm: "0px" }}
+			my={{ base: "2vw", md: "1vw" }}
 		>
 			<Input
 				value={value}
@@ -30,7 +31,7 @@ export function SearchBar({ onChangeHandler, value }) {
 				borderRadius="10px"
 				width={{
 					base: "95vw",
-					sm: "20vw",
+					sm: "45vw",
 					md: "40vw",
 					lg: "30vw",
 					xl: "30vw",
