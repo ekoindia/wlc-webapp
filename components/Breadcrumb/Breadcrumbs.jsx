@@ -133,7 +133,7 @@ const Breadcrumbs = ({ isSmallerThan770, ...props }) => {
 				{breadcrumbs ? (
 					<Headings
 						hasIcon={breadcrumbs.length > 1 ? true : false}
-						title={breadcrumbs[breadcrumbs.length - 1].label}
+						title={breadcrumbs[breadcrumbs.length - 1]?.label}
 						redirectPath={
 							breadcrumbs.length > 1
 								? breadcrumbs[breadcrumbs.length - 2].href

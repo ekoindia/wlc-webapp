@@ -8,6 +8,8 @@
 			"components/*": ["./components/*"],
 			"constants/*": ["./constants/*"],
 			"contexts/*": ["./contexts/*"],
+			"helpers/*": ["./helpers/*"],
+			"libs/*": ["./libs/*"],
 			"hooks/*": ["./hooks/*"],
 			"public/*": ["./public/*"],
 			"@/pages/*": ["pages/*"]
