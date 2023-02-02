@@ -21,7 +21,12 @@ const Headings = (props) => {
 					gap={{ base: "2", lg: "4" }}
 					cursor="pointer"
 				>
-					<Icon name="arrow-back" width="14px" height="13px" />
+					<Box
+						width={{ base: "14px", "2xl": "25px" }}
+						height={{ base: "13px", "2xl": "25px" }}
+					>
+						<Icon name="arrow-back" />
+					</Box>
 					<Text
 						fontSize={{
 							base: "12px",
