@@ -12,7 +12,7 @@ const Headings = (props) => {
 	return (
 		<Box
 			onClick={redirectTo}
-			marginTop={"1.8vw"}
+			marginTop={"1.3vw"}
 			px={{ base: "1.5vw", lg: "0px" }}
 		>
 			{hasIcon ? (
@@ -37,7 +37,7 @@ const Headings = (props) => {
 			) : (
 				<Text
 					fontSize={{
-						base: "4px",
+						base: "12px",
 						md: "15px",
 						lg: "18px",
 						"2xl": "35px",
