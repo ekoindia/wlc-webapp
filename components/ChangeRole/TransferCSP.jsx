@@ -222,6 +222,7 @@ const TransferCSP = () => {
 						AngelTech Private Limited
 					</Text>
 					<Flex
+						w="100%"
 						direction="column"
 						border="card"
 						borderRadius="10"
