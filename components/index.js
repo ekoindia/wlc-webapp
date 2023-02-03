@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { SellerDetails } from "./SellerDetails";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
@@ -31,6 +32,7 @@ import {
 } from "./TransactionHistory/AccountStatement";
 
 export {
+	SellerDetails,
 	ChangeRole,
 	Menus,
 	RouteProtecter,
