@@ -167,7 +167,13 @@ const Tables = (props) => {
 	const prepareCard = () => {
 		return currentTableData.map((item, index) => {
 			return (
-				<Cards key={index} width="90%" height="auto" p="15px">
+				<Cards
+					key={index}
+					width="90%"
+					height="auto"
+					p="15px"
+					onClick={redirect}
+				>
 					<Flex justifyContent="space-between">
 						<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
 							{getNameStyle(item.name)}
