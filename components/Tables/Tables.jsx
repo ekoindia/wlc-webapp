@@ -19,7 +19,7 @@ const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentSort, setCurrentSort] = useState("default");
 
-	const [isSmallerThan770] = useMediaQuery("(max-width: 770px)");
+	const [isSmallerThan770] = useMediaQuery("(max-width: 768px)");
 
 	const {
 		pageLimit: PageSize = 10,

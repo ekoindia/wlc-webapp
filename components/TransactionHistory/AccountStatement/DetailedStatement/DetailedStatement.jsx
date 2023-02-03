@@ -1,4 +1,12 @@
-import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	HStack,
+	Input,
+	Text,
+	useMediaQuery,
+	VStack,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Buttons, Cards, Icon, SearchBar, Tags } from "../../..";
 import { DetailedStatementTable } from "./DetailedStatementTable";
@@ -15,7 +23,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 	return (
 		<>
 			<Box
-				display={{ base: "none", sm: "flex" }}
+				display={{ base: "none", md: "flex" }}
 				w={{ base: "90%", md: "100%" }}
 				maxH={{
 					base: "120vh",
@@ -295,6 +303,87 @@ const DetailedStatement = ({ className = "", ...props }) => {
 					value={searchValue}
 				/>
 			</Box>
+
+			<VStack
+				display={{ base: "flex", md: "none" }}
+				w={"100%"}
+				my={"30px"}
+				gap={"20px"}
+				mb={"50px"}
+			>
+				<VStack align={"flex-start"} w={"full"}>
+					<Text as={"span"} fontSize={"16px"} fontWeight={"semibold"}>
+						Filter by date
+					</Text>
+					<Flex
+						w={"100%"}
+						justifyContent={"space-between"}
+						direction={{ base: "column", sm: "row" }}
+						gap={"20px"}
+					>
+						<Flex
+							align={"center"}
+							gap={"5px"}
+							h={"48px"}
+							w={"100%"}
+							border={"1px solid #D2D2D2"}
+							borderRadius={"10px"}
+							overflow={"hidden"}
+							bg={"white"}
+						>
+							<HStack
+								h={"100%"}
+								bg={"bg"}
+								w={{ base: "25%", sm: "30%" }}
+								pl={{ base: "15px", sm: "8px" }}
+							>
+								<Text>From:</Text>
+							</HStack>
+							<Box w={"70%"}>
+								<Input
+									size="sm"
+									type="date"
+									border={"none"}
+									focusBorderColor={"transparent"}
+								/>
+							</Box>
+						</Flex>
+						<Flex
+							align={"center"}
+							gap={"5px"}
+							h={"48px"}
+							w={"100%"}
+							border={"1px solid #D2D2D2"}
+							borderRadius={"10px"}
+							overflow={"hidden"}
+							bg={"white"}
+						>
+							<HStack
+								h={"100%"}
+								bg={"bg"}
+								w={{ base: "25%", sm: "30%" }}
+								pl={{ base: "15px", sm: "10px" }}
+							>
+								<Text>To:</Text>
+							</HStack>
+							<Box w={"70%"}>
+								<Input
+									size="sm"
+									type="date"
+									border={"none"}
+									focusBorderColor={"transparent"}
+								/>
+							</Box>
+						</Flex>
+					</Flex>
+				</VStack>
+				<Buttons
+					title={"Filter"}
+					w={"100%"}
+					h={{ base: "54px", sm: "50px" }}
+				/>
+			</VStack>
+
 			<Box>
 				<DetailedStatementTable />
 			</Box>
