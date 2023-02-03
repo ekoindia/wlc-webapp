@@ -239,7 +239,200 @@ function Filter() {
 					</DrawerHeader>
 
 					<DrawerBody>
-						<p>Drawer Body here</p>
+						<Stack
+							gap={{ base: "5vw", sm: "5vw" }}
+							py={{
+								base: "1",
+								sm: "8",
+								md: "0px",
+								lg: "1px",
+								xl: "1px",
+								"2xl": "1.3vw",
+							}}
+							px={{
+								base: "2",
+								sm: "2",
+								md: "0px",
+								lg: "0px",
+								xl: "0px",
+								"2xl": "1.2vw",
+							}}
+						>
+							<VStack
+								w={"100%"}
+								gap={{
+									base: "6",
+									lg: "6",
+									xl: "10",
+									"2xl": "17",
+								}}
+							>
+								<VStack
+									align={"flex-start"}
+									w={"full"}
+									gap={{
+										base: "px",
+										sm: "px",
+										md: "0.5",
+										lg: "0.5",
+										xl: "0.5",
+										"2xl": "2.5",
+									}}
+								>
+									<Text
+										as={"span"}
+										fontSize={{
+											base: "sm",
+											sm: "sm",
+											md: "sm",
+											lg: "sm",
+											xl: "md",
+											"2xl": "lg",
+										}}
+										fontWeight={"semibold"}
+									>
+										Filter by profile type
+									</Text>
+									<HStack w={"100%"}>
+										<Box w={"50%"} h={"100%"}>
+											<Checkbox
+												variant="rounded"
+												spacing={"2"}
+												size={{
+													base: "sm",
+													sm: "sm",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												iMerchant
+											</Checkbox>
+										</Box>
+										<Box w={"50%"} h={"100%"}>
+											<Checkbox
+												spacing={"2"}
+												variant="rounded"
+												size={{
+													base: "sm",
+													sm: "sm",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												Seller
+											</Checkbox>
+										</Box>
+									</HStack>
+								</VStack>
+								<VStack
+									align={"flex-start"}
+									w={"full"}
+									gap={{
+										base: "px",
+										sm: "px",
+										md: "0.5",
+										lg: "0.5",
+										xl: "0.5",
+										"2xl": "2.5",
+									}}
+								>
+									<Text
+										as={"span"}
+										fontSize={{
+											base: "sm",
+											sm: "sm",
+											md: "sm",
+											lg: "sm",
+											xl: "md",
+											"2xl": "lg",
+										}}
+										fontWeight={"semibold"}
+									>
+										Filter by account status
+									</Text>
+									<HStack w={"100%"}>
+										<Box w={"50%"}>
+											<Checkbox
+												variant="rounded"
+												spacing={"2"}
+												size={{
+													base: "xs",
+													sm: "xs",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												Active
+											</Checkbox>
+										</Box>
+										<Box w={"50%"} h={"100%"}>
+											<Checkbox
+												spacing={"2"}
+												variant="rounded"
+												size={{
+													base: "xs",
+													sm: "xs",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												Inactive
+											</Checkbox>
+										</Box>
+									</HStack>
+								</VStack>
+								<h2>Date Filter Here</h2>
+							</VStack>
+							<Flex
+								justifyContent={"flex-end"}
+								gap={{
+									base: "7",
+									sm: "6",
+									md: "10",
+									lg: "8",
+									xl: "12",
+									"2xl": "14",
+								}}
+							>
+								<IconButtons
+									hasIcon={false}
+									title={"Clear All"}
+									variant={"accent"}
+									textStyle={{ fontWeight: "bold" }}
+									size={{
+										base: "lg",
+										sm: "sm",
+										md: "sm",
+										lg: "sm",
+										xl: "md",
+										"2xl": "lg",
+									}}
+								/>
+
+								<Buttons
+									size={{
+										base: "lg",
+										sm: "sm",
+										md: "sm",
+										lg: "sm",
+										xl: "md",
+										"2xl": "lg",
+									}}
+									title={"Apply"}
+									fontWeight={"bold"}
+									fontSize={"xl"}
+									borderRadius={"4px"}
+								/>
+							</Flex>
+						</Stack>
 					</DrawerBody>
 				</DrawerContent>
 			</Drawer>
