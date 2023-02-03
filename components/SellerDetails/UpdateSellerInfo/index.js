@@ -1,1 +1,4 @@
-export { default as UpdateSellerInfo } from "./UpdateSellerInfo";
+export {
+	PreviewPersonalInfo,
+	default as UpdateSellerInfo,
+} from "./UpdateSellerInfo";
