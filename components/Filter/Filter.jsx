@@ -389,8 +389,54 @@ function Filter() {
 										</Box>
 									</HStack>
 								</VStack>
-								<h2>Date Filter Here</h2>
 							</VStack>
+
+							<VStack
+								align={"flex-start"}
+								w={"full"}
+								gap={{
+									base: "px",
+									sm: "px",
+									md: "0.5",
+									lg: "0.5",
+									xl: "0.5",
+									"2xl": "2.5",
+								}}
+							>
+								<Text
+									as={"span"}
+									fontSize={{
+										base: "sm",
+										sm: "sm",
+										md: "sm",
+										lg: "sm",
+										xl: "md",
+										"2xl": "lg",
+									}}
+									fontWeight={"semibold"}
+								>
+									Filter by activation date range
+								</Text>
+								<Flex
+									w={"100%"}
+									justifyContent={"space-between"}
+									direction={{
+										base: "column",
+										// md: "row",
+									}}
+									gap={{
+										base: "3",
+										sm: "2",
+										md: "1",
+										lg: "1.5",
+										xl: "2",
+										"2xl": "2.5",
+									}}
+								>
+									<h2>date will here</h2>
+								</Flex>
+							</VStack>
+
 							<Flex
 								justifyContent={"flex-end"}
 								gap={{
