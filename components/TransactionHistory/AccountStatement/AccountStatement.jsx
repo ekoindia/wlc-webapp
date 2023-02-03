@@ -6,7 +6,7 @@ import { AccountStatementTable } from "./AccountStatementTable";
 
 const AccountStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
-	const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
+	const [isMobileScreen] = useMediaQuery("(max-width: 768px)");
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
@@ -21,7 +21,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 	return (
 		<>
 			<Box
-				w={{ base: "90%", md: "100%" }}
+				w={{ base: "100%", md: "100%" }}
 				maxH={{
 					base: "120vh",
 					md: "20vw",
@@ -236,7 +236,9 @@ const AccountStatement = ({ className = "", ...props }) => {
 									</Flex>
 								</>
 							)}
-							{isMobileScreen && <Divider />}
+							{isMobileScreen && (
+								<Divider my={{ base: "5px", sm: "10px" }} />
+							)}
 							<Flex
 								direction={"column"}
 								gap={{ base: "5px", md: "0px", "2xl": "5px" }}
@@ -291,6 +293,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 							{isMobileScreen && (
 								<Box my={"5vw"}>
 									<Text
+										as={"Button"}
 										cursor={"pointer"}
 										fontSize={"18px"}
 										color={"primary.DEFAULT"}
