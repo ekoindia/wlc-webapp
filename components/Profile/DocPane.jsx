@@ -1,179 +1,188 @@
 import {
 	Box,
+	Divider,
 	Flex,
 	Heading,
 	Image,
-	Stack,
-	StackDivider,
 	Text,
+	useMediaQuery,
 } from "@chakra-ui/react";
 import { Buttons, Cards, Icon, IconButtons } from "../";
 
 const DocPane = () => {
+	const [isSmallerThan440] = useMediaQuery("(max-width:440px)");
 	return (
 		<Cards>
-			<Heading fontSize={18} fontWeight="semibold" color={"light"}>
+			<Heading
+				fontSize={{ base: 16, md: 18 }}
+				fontWeight="semibold"
+				color={"light"}
+			>
 				Document Center
 			</Heading>
 
-			<Stack
-				direction={"column"}
-				divider={<StackDivider />}
-				spacing="15px"
-				mt={"5"}
-			>
-				<Box
-					display={"flex"}
-					alignContent={"center"}
-					justifyContent={"space-between"}
-				>
-					<Flex align={"center"}>
-						<Image
-							src="/images/seller_logo.jpg"
-							h={42}
-							w={42}
-							borderRadius={"5"}
+			<Flex direction={"column"} spacing="15px" mt={"5"}>
+				{/* <Box h="439px"> */}
+				<Box h="439px" fontSize={{ base: "14px", md: "16px" }}>
+					<Box
+						display={"flex"}
+						alignContent={"center"}
+						justifyContent={"space-between"}
+					>
+						<Flex align={"center"}>
+							<Image
+								src="/images/seller_logo.jpg"
+								h={42}
+								w={42}
+								borderRadius={"5"}
+							/>
+							<Text>Customer Photo</Text>
+						</Flex>
+						<IconButtons
+							title="Download"
+							iconPos="left"
+							iconName="file-download"
+							iconStyle={{
+								width: "14px",
+								height: "14px",
+							}}
 						/>
-						<Text>Customer Photo</Text>
-					</Flex>
-					<IconButtons
-						title="Download"
-						iconPos="left"
-						iconName="file-download"
-						iconStyle={{
-							width: "14px",
-							height: "14px",
-						}}
-					/>
-				</Box>
-				<Box
-					display={"flex"}
-					alignContent={"center"}
-					justifyContent={"space-between"}
-				>
-					<Flex align={"center"}>
-						<Image
-							src="/images/seller_logo.jpg"
-							h={42}
-							w={42}
-							borderRadius={"5"}
+					</Box>
+					<Divider my={2} />
+					<Box
+						display={"flex"}
+						alignContent={"center"}
+						justifyContent={"space-between"}
+					>
+						<Flex align={"center"}>
+							<Image
+								src="/images/seller_logo.jpg"
+								h={42}
+								w={42}
+								borderRadius={"5"}
+							/>
+							<Text>Customer Photo</Text>
+						</Flex>
+						<IconButtons
+							title="Download"
+							iconPos="left"
+							iconName="file-download"
+							iconStyle={{
+								width: "14px",
+								height: "14px",
+							}}
 						/>
-						<Text>Customer Photo</Text>
-					</Flex>
-					<IconButtons
-						title="Download"
-						iconPos="left"
-						iconName="file-download"
-						iconStyle={{
-							width: "14px",
-							height: "14px",
-						}}
-					/>
-				</Box>
-				<Box
-					display={"flex"}
-					alignContent={"center"}
-					justifyContent={"space-between"}
-				>
-					<Flex align={"center"}>
-						<Image
-							src="/images/seller_logo.jpg"
-							h={42}
-							w={42}
-							borderRadius={"5"}
+					</Box>
+					<Divider my={2} />
+					<Box
+						display={"flex"}
+						alignContent={"center"}
+						justifyContent={"space-between"}
+					>
+						<Flex align={"center"}>
+							<Image
+								src="/images/seller_logo.jpg"
+								h={42}
+								w={42}
+								borderRadius={"5"}
+							/>
+							<Text>Customer Photo</Text>
+						</Flex>
+						<IconButtons
+							title="Download"
+							iconPos="left"
+							iconName="file-download"
+							iconStyle={{
+								width: "14px",
+								height: "14px",
+							}}
 						/>
-						<Text>Customer Photo</Text>
-					</Flex>
-					<IconButtons
-						title="Download"
-						iconPos="left"
-						iconName="file-download"
-						iconStyle={{
-							width: "14px",
-							height: "14px",
-						}}
-					/>
-				</Box>
-				<Box
-					display={"flex"}
-					alignContent={"center"}
-					justifyContent={"space-between"}
-				>
-					<Flex align={"center"}>
-						<Image
-							src="/images/seller_logo.jpg"
-							h={42}
-							w={42}
-							borderRadius={"5"}
+					</Box>
+					<Divider my={2} />
+					<Box
+						display={"flex"}
+						alignContent={"center"}
+						justifyContent={"space-between"}
+					>
+						<Flex align={"center"}>
+							<Image
+								src="/images/seller_logo.jpg"
+								h={42}
+								w={42}
+								borderRadius={"5"}
+							/>
+							<Text>Customer Photo</Text>
+						</Flex>
+						<IconButtons
+							title="Download"
+							iconPos="left"
+							iconName="file-download"
+							iconStyle={{
+								width: "14px",
+								height: "14px",
+							}}
 						/>
-						<Text>Customer Photo</Text>
-					</Flex>
-					<IconButtons
-						title="Download"
-						iconPos="left"
-						iconName="file-download"
-						iconStyle={{
-							width: "14px",
-							height: "14px",
-						}}
-					/>
-				</Box>
-				<Box
-					display={"flex"}
-					alignContent={"center"}
-					justifyContent={"space-between"}
-				>
-					<Flex align={"center"}>
-						<Image
-							src="/images/seller_logo.jpg"
-							h={42}
-							w={42}
-							borderRadius={"5"}
+					</Box>
+					<Divider my={2} />
+					<Box
+						display={"flex"}
+						alignContent={"center"}
+						justifyContent={"space-between"}
+					>
+						<Flex align={"center"}>
+							<Image
+								src="/images/seller_logo.jpg"
+								h={42}
+								w={42}
+								borderRadius={"5"}
+							/>
+							<Text>Customer Photo</Text>
+						</Flex>
+						<IconButtons
+							title="Download"
+							iconPos="left"
+							iconName="file-download"
+							iconStyle={{
+								width: "14px",
+								height: "14px",
+							}}
 						/>
-						<Text>Customer Photo</Text>
-					</Flex>
-					<IconButtons
-						title="Download"
-						iconPos="left"
-						iconName="file-download"
-						iconStyle={{
-							width: "14px",
-							height: "14px",
-						}}
-					/>
-				</Box>
-				<Box
-					display={"flex"}
-					alignContent={"center"}
-					justifyContent={"space-between"}
-				>
-					<Flex align={"center"}>
-						<Image
-							src="/images/seller_logo.jpg"
-							h={42}
-							w={42}
-							borderRadius={"5"}
+					</Box>
+					<Divider my={2} />
+					<Box
+						display={"flex"}
+						alignContent={"center"}
+						justifyContent={"space-between"}
+					>
+						<Flex align={"center"}>
+							<Image
+								src="/images/seller_logo.jpg"
+								h={42}
+								w={42}
+								borderRadius={"5"}
+							/>
+							<Text>Customer Photo</Text>
+						</Flex>
+						<IconButtons
+							title="Download"
+							iconPos="left"
+							iconName="file-download"
+							iconStyle={{
+								width: "14px",
+								height: "14px",
+							}}
 						/>
-						<Text>Customer Photo</Text>
-					</Flex>
-					<IconButtons
-						title="Download"
-						iconPos="left"
-						iconName="file-download"
-						iconStyle={{
-							width: "14px",
-							height: "14px",
-						}}
-					/>
+					</Box>
+					<Divider my={2} />
 				</Box>
 
 				<Box mt="15px" justifySelf="end">
-					<Buttons w="215px" h="60px">
+					<Buttons w={{ base: "100%", md: "215px" }} h="60px">
 						<Icon name="file-download" width="18px" />
 						&nbsp; Download All
 					</Buttons>
 				</Box>
-			</Stack>
+			</Flex>
 		</Cards>
 	);
 };
