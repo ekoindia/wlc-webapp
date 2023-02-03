@@ -266,7 +266,6 @@ export const ResSortAndFilter = () => {
 			h={"15vw"}
 			bottom={"0%"}
 			left={"0%"}
-			// zIndex={"999999"}
 			zIndex={"99"}
 			boxShadow={"0px -3px 10px #0000001A"}
 		>
