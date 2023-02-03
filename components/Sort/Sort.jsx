@@ -26,8 +26,8 @@ const Sort = ({ className = "", ...props }) => {
 					sm: "5.5vw",
 					md: "4vw",
 					lg: "3vw",
-					xl: "2.5vw",
-					"2xl": "2vw",
+					xl: "2.6vw",
+					"2xl": "2.4vw",
 				}}
 			>
 				<Menu
@@ -85,8 +85,8 @@ const Sort = ({ className = "", ...props }) => {
 									sm: "5vw",
 									md: "4vw",
 									lg: "3vw",
-									xl: "2.5vw",
-									"2xl": "2vw",
+									xl: "2.6vw",
+									"2xl": "2.4vw",
 								}}
 								fontSize={{
 									base: "5px",
@@ -98,7 +98,12 @@ const Sort = ({ className = "", ...props }) => {
 								}}
 								fontWeight={"medium"}
 								textAlign="start"
-								borderRadius="6px"
+								borderRadius={{
+									base: "7px",
+									md: "7px",
+									lg: "5px",
+									"2xl": "10px",
+								}}
 								border=" 1px solid #D2D2D2"
 								isActive={isOpen}
 								bg="white"
