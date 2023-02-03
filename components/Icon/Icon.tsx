@@ -31,7 +31,8 @@ export type IconNameType =
 	| "timer"
 	| "camera"
 	| "more-vert"
-	| "sort-by";
+	| "sort-by"
+	| "fast-forward";
 
 export type IconProps = {
 	name: IconNameType;
