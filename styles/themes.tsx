@@ -104,12 +104,12 @@ export const light = extendTheme({
 		Checkbox: {
 			variants: {
 				rounded: {
-					control: {
-						w: "24px",
-						h: "24px",
+                    control: {
+						w: "15px",
+						h: "15px",
 						border: "1px solid #11299E",
 						borderColor: "#11299E",
-						borderRadius: "6px",
+						borderRadius: "3px",
 						_checked: {
 							bg: "#11299E",
 						},
