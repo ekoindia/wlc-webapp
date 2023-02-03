@@ -1,5 +1,6 @@
 import {
 	Box,
+	Center,
 	Drawer,
 	DrawerContent,
 	DrawerOverlay,
@@ -69,22 +70,20 @@ const SideBarMenu = ({ className = "", ...props }) => {
 										: "transparent"
 								}
 							>
-								<Box>
-									<Icon
-										name={menu.icon}
-										style={
-											isSmallerThan769
-												? {
-														width: "6vw",
-														height: "6vw",
-												  }
-												: {
-														width: "3.4vw",
-														height: "3.4vw",
-												  }
-										}
-									/>
-								</Box>
+								<Center
+									w={{
+										base: "5.5vw",
+										sm: "3.4vw",
+										md: "1vw",
+									}}
+									h={{
+										base: "5.5vw",
+										sm: "3.4vw",
+										md: "1vw",
+									}}
+								>
+									<Icon name={menu.icon} />
+								</Center>
 								{menu.name}
 							</Flex>
 						</Link>
