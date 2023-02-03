@@ -105,11 +105,11 @@ export const light = extendTheme({
 			variants: {
 				rounded: {
 					control: {
-						w: "24px",
-						h: "24px",
+						w: "15px",
+						h: "15px",
 						border: "1px solid #11299E",
 						borderColor: "#11299E",
-						borderRadius: "6px",
+						borderRadius: "3px",
 						_checked: {
 							bg: "#11299E",
 						},

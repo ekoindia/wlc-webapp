@@ -21,7 +21,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 	return (
 		<>
 			<Box
-				w={{ base: "90%", md: "100%" }}
+				w={{ base: "95%", md: "100%" }}
 				maxH={{
 					base: "120vh",
 					md: "20vw",
