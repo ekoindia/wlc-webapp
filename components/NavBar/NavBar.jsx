@@ -18,7 +18,11 @@ const NavBar = (props) => {
 	const { setNavOpen, isSmallerThan770 } = props;
 	return (
 		<>
-			<Box as="nav" w={"full"} h={{ base: "12.2vw", sm: "4.5vw" }}></Box>
+			<Box
+				as="nav"
+				w={"full"}
+				h={{ base: "12.2vw", sm: "10vw", md: "4.5vw" }}
+			></Box>
 			<Box
 				top={"0%"}
 				w={"full"}
@@ -31,13 +35,13 @@ const NavBar = (props) => {
 					position={"sticky"}
 					as="nav"
 					w={"full"}
-					h={{ base: "12.2vw", sm: "4.5vw" }}
+					h={{ base: "12.2vw", sm: "10vw", md: "4.5vw" }}
 				>
 					<HStack
 						bg={"white"}
 						h={"full"}
 						justifyContent={"space-between"}
-						px={{ base: "4", xl: "6" }}
+						px={{ base: "4", sm: "6", md: "4", xl: "6" }}
 					>
 						<Box display={"flex"} alignItems={"center"}>
 							{isSmallerThan770 && (
@@ -48,21 +52,21 @@ const NavBar = (props) => {
 									aria-label="open menu"
 									icon={<Icon name="nav-menu" />}
 									size={"xs"}
-									mr={"1vw"}
+									mr={{ base: "1vw", sm: "2vw", md: "1vw" }}
 									variant="none"
 								/>
 							)}
 							<Image
 								src="/icons/logoimage.png"
 								alt="logo"
-								maxW={{ base: "24vw", sm: "9vw" }}
+								maxW={{ base: "24vw", sm: "18vw", md: "9vw" }}
 							/>
 						</Box>
 
 						{isSmallerThan770 && (
 							<Avatar
-								w={{ base: "6vw", sm: "2.4vw" }}
-								h={{ base: "6vw", sm: "2.4vw" }}
+								w={{ base: "6vw", sm: "5.5vw", md: "2.4vw" }}
+								h={{ base: "6vw", sm: "5.5vw", md: "2.4vw" }}
 								name="demo-user"
 								src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
 							/>

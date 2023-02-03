@@ -24,7 +24,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 
 	return (
 		<Box
-			minW={isSmallerThan769 ? "full" : "13.5vw"}
+			minW={{ base: "full", sm: "55vw", md: "13.5vw" }}
 			bgColor={"accent.DEFAULT"}
 			height={"100%"}
 		>
@@ -39,7 +39,11 @@ const SideBarMenu = ({ className = "", ...props }) => {
 						>
 							<Flex
 								key={index}
-								fontSize={isSmallerThan769 ? "3.6vw" : ".85vw"}
+								fontSize={{
+									base: "3.6vw",
+									sm: "2.5vw",
+									md: ".85vw",
+								}}
 								gap="10px"
 								color="#FFFFFF"
 								align="center"
@@ -75,8 +79,8 @@ const SideBarMenu = ({ className = "", ...props }) => {
 														height: "6vw",
 												  }
 												: {
-														width: "1vw",
-														height: "1vw",
+														width: "3.4vw",
+														height: "3.4vw",
 												  }
 										}
 									/>
