@@ -12,6 +12,7 @@ import {
 	MenuList,
 	MenuOptionGroup,
 	Radio,
+	Text,
 } from "@chakra-ui/react";
 import { Filter, Icon } from "..";
 
@@ -19,7 +20,7 @@ const Sort = ({ className = "", ...props }) => {
 	return (
 		<>
 			<Box
-				display={{ base: "none", sm: "flex" }}
+				display={{ base: "none", md: "flex" }}
 				my={"1vw"}
 				h={{
 					base: "8.5vw",
@@ -210,22 +211,13 @@ const Sort = ({ className = "", ...props }) => {
 				</Menu>
 			</Box>
 
-			<Box display={{ sm: "none" }} w={"100%"} overflow={"hidden"}>
+			<Box display={{ md: "none" }} w={"100%"} overflow={"hidden"}>
 				<Menu autoSelect={false} matchWidth={"false"} flip={"true"}>
 					<MenuButton
 						aria-label="Options"
 						w={"100%"}
-						h={"15vw"}
-						fontWeight={"semibold"}
-						border={"none"}
-						fontSize={"18px"}
-						borderRadius={"0px"}
 						bg="white"
 						color="accent.DEFAULT"
-						as={Button}
-						leftIcon={
-							<Icon name="sort-by" width="24px" height="21px" />
-						}
 						_active={{
 							bg: "white",
 						}}
@@ -233,7 +225,25 @@ const Sort = ({ className = "", ...props }) => {
 							bg: "white",
 						}}
 					>
-						Sort By
+						<Button
+							display={"flex"}
+							gap={"10px"}
+							w={"100%"}
+							h={"15vw"}
+							color="#11299E"
+							borderRadius={"0px"}
+							boxShadow=" 0px 3px 10px #11299E1A"
+						>
+							<Icon name="sort-by" width="24px" height="21px" />
+							<Text
+								color="#11299E"
+								fontSize={"18px"}
+								lineHeight={"0"}
+								fontWeight={"semibold"}
+							>
+								Sort by
+							</Text>
+						</Button>
 					</MenuButton>
 
 					<MenuList borderTopRadius={"15px"} minW={"100%"}>
@@ -265,7 +275,7 @@ export default Sort;
 export const ResSortAndFilter = () => {
 	return (
 		<Flex
-			display={{ base: "flex", sm: "none" }}
+			display={{ base: "flex", md: "none" }}
 			position={"absolute"}
 			w={"100%"}
 			h={"15vw"}

@@ -26,7 +26,7 @@ function Filter() {
 
 	return (
 		<>
-			<Box display={{ base: "none", sm: "initial" }}>
+			<Box display={{ base: "none", md: "initial" }}>
 				<Button
 					my={"1vw"}
 					display={"flex"}
@@ -106,7 +106,7 @@ function Filter() {
 				</Button>
 			</Box>
 
-			<Box display={{ base: "initial", sm: "none" }}>
+			<Box display={{ base: "initial", md: "none" }}>
 				<Button
 					display={"flex"}
 					gap={"10px"}
