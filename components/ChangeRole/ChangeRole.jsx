@@ -21,10 +21,10 @@ const ChangeRole = ({ className = "", ...props }) => {
 	return (
 		<Flex
 			my="7.5"
-			boxShadow="0px 5px 15px #0000000D;"
+			boxShadow={{ base: "", md: "0px 5px 15px #0000000D;" }}
 			border={{ base: "", md: "card" }}
 			borderRadius={{ base: "0", md: "10" }}
-			bg={{ base: "transparent", md: "white" }}
+			bg={{ base: "none", md: "white" }}
 			align={{ base: "center", md: "flex-start" }}
 			direction="column"
 			rowGap={{ base: "10px", md: "0" }}
@@ -75,7 +75,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 				border={{ base: "card", md: "none" }}
 				px={{ base: "0", md: "7.5" }}
 				pt={{ base: "3", md: "10.5" }}
-				w={{ base: "92%", md: "80%" }}
+				w={{ base: "92%", md: "100%" }}
 				boxShadow={{ base: "0px 5px 15px #0000000D", md: "none" }}
 				borderRadius={{ base: "10px", md: "none" }}
 			>
