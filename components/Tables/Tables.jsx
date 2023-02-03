@@ -169,7 +169,7 @@ const Tables = (props) => {
 			return (
 				<Cards
 					key={index}
-					width="90%"
+					width="100%"
 					height="auto"
 					p="15px"
 					onClick={redirect}
