@@ -39,8 +39,8 @@ function Filter() {
 						sm: "5vw",
 						md: "4vw",
 						lg: "3vw",
-						xl: "2.5vw",
-						"2xl": "2vw",
+						xl: "2.6vw",
+						"2xl": "2.4vw",
 					}}
 					w={{
 						base: "8vw",
@@ -54,7 +54,12 @@ function Filter() {
 					color="#11299E"
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
-					borderRadius="10"
+					borderRadius={{
+						base: "7px",
+						md: "7px",
+						lg: "5px",
+						"2xl": "10px",
+					}}
 					_hover={{
 						bg: "white",
 					}}

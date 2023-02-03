@@ -12,14 +12,14 @@ export function SearchBar({ onChangeHandler, value }) {
 	return (
 		<Box
 			position="relative"
-			w={"fit-content"}
+			w={"100%"}
 			h={{
-				base: "8.5vw",
-				sm: "5vw",
+				base: "11vw",
+				sm: "7vw",
 				md: "4vw",
 				lg: "3vw",
-				xl: "2.5vw",
-				"2xl": "2vw",
+				xl: "2.6vw",
+				"2xl": "2.4vw",
 			}}
 			mx={{ base: "auto", sm: "0px" }}
 			my={{ base: "2vw", md: "1vw" }}
@@ -28,10 +28,14 @@ export function SearchBar({ onChangeHandler, value }) {
 				value={value}
 				placeholder="Search by name or mobile number"
 				size="lg"
-				borderRadius="10px"
+				borderRadius={{
+					base: "7px",
+					md: "7px",
+					lg: "5px",
+					"2xl": "10px",
+				}}
 				width={{
-					base: "95vw",
-					sm: "45vw",
+					base: "100%",
 					md: "40vw",
 					lg: "30vw",
 					xl: "30vw",
