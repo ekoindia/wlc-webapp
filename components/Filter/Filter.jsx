@@ -12,6 +12,7 @@ import {
 	DrawerOverlay,
 	Flex,
 	HStack,
+	Input,
 	Stack,
 	Text,
 	useDisclosure,
@@ -137,7 +138,7 @@ function Filter() {
 					md: "sm",
 					lg: "xs",
 					xl: "sm",
-					"2xl": "lg",
+					"2xl": "md",
 				}}
 			>
 				<DrawerOverlay
@@ -149,6 +150,7 @@ function Filter() {
 				<DrawerContent
 					borderTopRadius={{ base: "20px", sm: "0px" }}
 					mt={{ base: "8", sm: "0px" }}
+					p={"10px"}
 				>
 					<DrawerHeader>
 						<Box
@@ -246,7 +248,7 @@ function Filter() {
 								sm: "8",
 								md: "0px",
 								lg: "1px",
-								xl: "1px",
+								xl: "3",
 								"2xl": "1.3vw",
 							}}
 							px={{
@@ -263,7 +265,7 @@ function Filter() {
 								gap={{
 									base: "6",
 									lg: "6",
-									xl: "10",
+									xl: "8",
 									"2xl": "17",
 								}}
 							>
@@ -389,52 +391,120 @@ function Filter() {
 										</Box>
 									</HStack>
 								</VStack>
-							</VStack>
-
-							<VStack
-								align={"flex-start"}
-								w={"full"}
-								gap={{
-									base: "px",
-									sm: "px",
-									md: "0.5",
-									lg: "0.5",
-									xl: "0.5",
-									"2xl": "2.5",
-								}}
-							>
-								<Text
-									as={"span"}
-									fontSize={{
-										base: "sm",
-										sm: "sm",
-										md: "sm",
-										lg: "sm",
-										xl: "md",
-										"2xl": "lg",
-									}}
-									fontWeight={"semibold"}
-								>
-									Filter by activation date range
-								</Text>
-								<Flex
-									w={"100%"}
-									justifyContent={"space-between"}
-									direction={{
-										base: "column",
-										// md: "row",
-									}}
+								<VStack
+									align={"flex-start"}
+									w={"full"}
 									gap={{
-										base: "3",
-										sm: "2",
-										md: "1",
-										lg: "1.5",
-										xl: "2",
+										base: "px",
+										sm: "px",
+										md: "0.5",
+										lg: "0.5",
+										xl: "0.5",
 										"2xl": "2.5",
 									}}
 								>
-									<h2>date will here</h2>
-								</Flex>
+									<Text
+										as={"span"}
+										fontSize={{
+											base: "sm",
+											sm: "sm",
+											md: "sm",
+											lg: "sm",
+											xl: "md",
+											"2xl": "lg",
+										}}
+										fontWeight={"semibold"}
+									>
+										Filter by activation date range
+									</Text>
+									<Flex
+										w={"100%"}
+										justifyContent={"space-between"}
+										direction={{
+											base: "column",
+											// md: "row",
+										}}
+										gap={{
+											base: "3",
+											sm: "2",
+											md: "1",
+											lg: "1.5",
+											xl: "2",
+											"2xl": "2.5",
+										}}
+									>
+										<Flex
+											align={"center"}
+											gap={"5px"}
+											h={{
+												base: "11vw",
+												sm: "30px",
+												md: "30px",
+												lg: "30px",
+												xl: "35px",
+												"2xl": "45px",
+											}}
+											w={{ base: "100%", md: "80%" }}
+											border={"1px solid #D2D2D2"}
+											borderRadius={"8px"}
+											overflow={"hidden"}
+										>
+											<HStack
+												h={"100%"}
+												bg={"bg"}
+												w={"25%"}
+												pl={"15px"}
+											>
+												<Text>From:</Text>
+											</HStack>
+											<Box w={"70%"}>
+												<Input
+													size="sm"
+													type="date"
+													border={"none"}
+													focusBorderColor={
+														"transparent"
+													}
+												/>
+											</Box>
+										</Flex>
+										<Flex
+											align={"center"}
+											gap={"5px"}
+											h={{
+												base: "11vw",
+												sm: "30px",
+												md: "30px",
+												lg: "30px",
+												xl: "35px",
+												"2xl": "45px",
+											}}
+											w={{ base: "100%", md: "80%" }}
+											border={"1px solid #D2D2D2"}
+											borderRadius={"8px"}
+											overflow={"hidden"}
+										>
+											<HStack
+												h={"100%"}
+												bg={"bg"}
+												w={"25%"}
+												pl={"15px"}
+											>
+												<Text>To:</Text>
+											</HStack>
+											<Box w={"70%"}>
+												<Input
+													size="sm"
+													type="date"
+													border={"none"}
+													focusBorderColor={
+														"transparent"
+													}
+												/>
+											</Box>
+										</Flex>
+									</Flex>
+								</VStack>
 							</VStack>
 
 							<Flex
