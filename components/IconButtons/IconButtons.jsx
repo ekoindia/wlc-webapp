@@ -36,7 +36,8 @@ const IconButtons = (props) => {
 			_hover={{ color: hoverColor }}
 			_active={{ color: hoverColor }}
 		>
-			{hasIcon ? (
+			{/*  //TODO fix this hydration error 👇 (root cause : hasIcon, code line [41 - 60]) */}
+			{/* {hasIcon ? (
 				<Box order={iconOrder}>
 					{hasBG ? (
 						<Box>
@@ -55,7 +56,7 @@ const IconButtons = (props) => {
 				</Box>
 			) : (
 				""
-			)}
+			)} */}
 
 			<Box order={textOrder}>
 				<Text color="inherit" {...textStyle}>
