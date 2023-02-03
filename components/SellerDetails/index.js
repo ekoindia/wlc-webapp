@@ -1,1 +1,1 @@
-export { default as SellerDetails } from "./SellerDetails";
+export { UpdateSellerInfo, default as SellerDetails } from "./SellerDetails";
