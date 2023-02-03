@@ -3,4 +3,5 @@ export const Endpoints = {
 	LOGOUT: "/revoke",
 	SENDOTP: "/sendotp",
 	REFRESHTOKEN: "/token",
+	NETWORKTABLE: "/test",
 };
