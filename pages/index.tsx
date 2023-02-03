@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Inter } from "@next/font/google";
 import { LoginPanel } from "components";
 import { useEffect } from "react";
@@ -8,7 +9,7 @@ export default function Index({ data }) {
 
 	const { logo, setLogo } = useGetLogoContext();
 	useEffect(() => {
-		setLogo(data.link);
+		setLogo(data?.link);
 	}, [data]);
 
 	return <LoginPanel />;

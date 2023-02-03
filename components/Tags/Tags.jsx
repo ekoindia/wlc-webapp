@@ -1,22 +1,19 @@
 import { Button } from "@chakra-ui/react";
-import React from "react";
-
-/**
- * A <Tags> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Tags></Tags>`
- */
 
 const statusChecker = {
-	Active: "#00C341",
-	Pending: "#FE9F00",
-	Inactive: "#FF4081",
-	Other: "#71797E",
+	Active: "success",
+	Pending: "primary.DEFAULT",
+	Inactive: "error",
+	Other: "light",
 };
 
-const Tags = ({ className = "", status = "Active", ...props }) => {
+const Tags = ({
+	className = "",
+	status = "Active",
+	px = { base: "16px", md: "18px", xl: "22px" },
+	styles,
+	...props
+}) => {
 	const sts = statusChecker[status];
 	return (
 		<Button
@@ -25,7 +22,12 @@ const Tags = ({ className = "", status = "Active", ...props }) => {
 			borderRadius={"28"}
 			colorScheme={sts}
 			color={sts}
-			px={"22px"}
+			bg="white"
+			size={"md"}
+			fontWeight={"regular"}
+			px={px}
+			{...styles}
+			{...props}
 		>
 			{status}
 		</Button>

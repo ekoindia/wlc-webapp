@@ -45,11 +45,13 @@ const AddressPane = () => {
 						<Buttons w="189px" h="60px" title="Update Address" />
 						<IconButtons
 							title="View on Google Maps"
-							colorType="0"
+							variant="accent"
 							iconName="near-me"
 							iconPos="left"
-							fontSize="md"
-							iconStyle={{ w: "11px", h: "11px" }}
+							iconStyle={{
+								width: "11px",
+								height: "11px",
+							}}
 						/>
 					</Flex>
 				</Box>

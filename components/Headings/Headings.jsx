@@ -1,27 +1,57 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { Icon } from "..";
 
-/**
- * A <Headings> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Headings></Headings>`
- */
 const Headings = (props) => {
-	const { hasIcon = true, title, marginLeft } = props;
+	const { hasIcon = true, title, marginLeft = "1rem", redirectPath } = props;
+
+	const router = useRouter();
+	const redirectTo = () => {
+		router.push(`${redirectPath}`);
+	};
 	return (
-		<Box display={"flex"} alignItems={"center"}>
+		<Box
+			onClick={redirectTo}
+			marginTop={"1.3vw"}
+			px={{ base: "1.5vw", lg: "0px" }}
+		>
 			{hasIcon ? (
-				<Icon name="arrow-back" width="18px" height="15px" />
-			) : null}
-			<Text
-				fontSize={"30px"}
-				fontWeight={"semibold"}
-				marginLeft={marginLeft}
-			>
-				{title}
-			</Text>
+				<Flex
+					alignItems="center"
+					gap={{ base: "2", lg: "4" }}
+					cursor="pointer"
+				>
+					<Box
+						width={{ base: "14px", "2xl": "25px" }}
+						height={{ base: "13px", "2xl": "25px" }}
+					>
+						<Icon name="arrow-back" />
+					</Box>
+					<Text
+						fontSize={{
+							base: "12px",
+							md: "15px",
+							lg: "18px",
+							"2xl": "35px",
+						}}
+						fontWeight="semibold"
+					>
+						{title}
+					</Text>
+				</Flex>
+			) : (
+				<Text
+					fontSize={{
+						base: "12px",
+						md: "15px",
+						lg: "18px",
+						"2xl": "35px",
+					}}
+					fontWeight="semibold"
+				>
+					{title}
+				</Text>
+			)}
 		</Box>
 	);
 };

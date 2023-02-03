@@ -1,21 +1,17 @@
-import { Box, Flex } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Box, Flex, HStack, useMediaQuery } from "@chakra-ui/react";
+import { ResSortAndFilter } from "components/Sort/Sort";
+import useRequest from "hooks/useRequest";
+import { useState } from "react";
 import { NetworkTable } from ".";
-import { Filter, Headings, SearchBar, Sort } from "..";
+import { Filter, SearchBar, Sort } from "..";
 
-/**
- * A <Network> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Network></Network>`
- */
 const Network = ({ className = "", ...props }) => {
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
+	const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
+	let data = useRequest({
+		baseUrl: "https://jsonplaceholder.typicode.com/posts",
+	});
+	console.log(data.data);
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -23,29 +19,29 @@ const Network = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Headings title={"My Network"} hasIcon={false} />
-			<Box className={`${className}`} {...props}>
-				<Box
-					display={"flex"}
-					justifyContent={"space-between"}
-					mt="20px"
-				>
+			<Box w={"100%"}>
+				<Box display={"flex"} justifyContent={"space-between"}>
 					<SearchBar
 						onChangeHandler={onChangeHandler}
 						value={searchValue}
 					/>
-					<Flex gap="50px">
-						<Box>
-							<Filter />
-						</Box>
-						<Box>
-							<Sort />
-						</Box>
-					</Flex>
+
+					{!isMobileScreen && (
+						<Flex gap={"20px"} align={"center"}>
+							<Box>
+								<Filter />
+							</Box>
+							<Box>
+								<Sort />
+							</Box>
+						</Flex>
+					)}
 				</Box>
-				<Box mt={"10px"}>
+
+				<Box>
 					<NetworkTable />
 				</Box>
+				<ResSortAndFilter />
 			</Box>
 		</>
 	);

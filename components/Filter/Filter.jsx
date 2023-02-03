@@ -3,6 +3,7 @@ import React from "react";
 import {
 	Box,
 	Button,
+	Center,
 	Checkbox,
 	Drawer,
 	DrawerBody,
@@ -17,19 +18,6 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons } from "..";
-/**
- * A <Filter> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Filter></Filter>`
- */
-
-// const [count, setCount] = useState(0);		// TODO: Edit state as required
-
-//  useEffect(() => {
-// 	// TODO: Add your useEffect code here and update dependencies as required
-//  }, []);
 
 function Filter() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,42 +25,106 @@ function Filter() {
 
 	return (
 		<>
-			<Button
-				ref={btnRef}
-				onClick={onOpen}
-				h={"48px"}
-				w={"122px"}
-				bg="#FFFFFF"
-				color="#11299E"
-				border="1px solid #11299E"
-				boxShadow=" 0px 3px 10px #11299E1A"
-				borderRadius="10"
-				_hover={{
-					bg: "white",
-				}}
-				_active={{
-					bg: "white",
-				}}
-			>
-				<Icon
-					name="filter"
-					width="24px"
-					height="25px"
-					size={"30px"}
-					style={{ marginRight: ".3rem" }}
-				/>
-				<Text
-					as="span"
-					color="#11299E"
+			<Box display={{ base: "none", sm: "initial" }}>
+				<Button
+					my={"1vw"}
 					display={"flex"}
+					justifyContent={"space-evenly"}
 					alignItems={"center"}
-					fontSize="18px"
+					ref={btnRef}
+					onClick={onOpen}
+					h={{
+						base: "8.5vw",
+						sm: "5vw",
+						md: "4vw",
+						lg: "3vw",
+						xl: "2.5vw",
+						"2xl": "2vw",
+					}}
+					w={{
+						base: "8vw",
+						sm: "12vw",
+						md: "10vw",
+						lg: "7vw",
+						xl: "7vw",
+						"2xl": "6vw",
+					}}
+					bg="#FFFFFF"
+					color="#11299E"
+					border="1px solid #11299E"
+					boxShadow=" 0px 3px 10px #11299E1A"
+					borderRadius="10"
+					_hover={{
+						bg: "white",
+					}}
+					_active={{
+						bg: "white",
+					}}
 				>
-					Filter
-				</Text>
-				{/* //TODO need to add icon here as well */}
-			</Button>
+					<Center
+						width={{
+							base: "10px",
+							sm: "12px",
+							md: "12px",
+							lg: "14px",
+							xl: "16px",
+							"2xl": "20px",
+						}}
+						height={{
+							base: "10px",
+							sm: "12px",
+							md: "12px",
+							lg: "14px",
+							xl: "16px",
+							"2xl": "20px",
+						}}
+						mr={"2px"}
+					>
+						<Icon name="filter" />
+					</Center>
+					<Text
+						as="span"
+						color="#11299E"
+						fontSize={{
+							base: "5px",
+							sm: "xs",
+							md: "xs",
+							lg: "xs",
+							xl: "sm",
+							"2xl": "xl",
+						}}
+						lineHeight={"0"}
+					>
+						Filter
+					</Text>
+				</Button>
+			</Box>
 
+			<Box display={{ base: "initial", sm: "none" }}>
+				<Button
+					display={"flex"}
+					gap={"10px"}
+					ref={btnRef}
+					onClick={onOpen}
+					w={"100%"}
+					h={"100%"}
+					bg="primary.DEFAULT"
+					color="#11299E"
+					borderRadius={"0px"}
+					boxShadow=" 0px 3px 10px #11299E1A"
+				>
+					<Icon name="filter" width="25px" color="white" />
+					<Text
+						as="span"
+						color="white"
+						fontSize={"18px"}
+						lineHeight={"0"}
+						fontWeight={"semibold"}
+					>
+						Filter
+					</Text>
+				</Button>
+			</Box>
 			<Drawer
 				isOpen={isOpen}
 				placement="right"
