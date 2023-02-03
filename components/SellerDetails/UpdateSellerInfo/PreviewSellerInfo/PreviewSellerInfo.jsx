@@ -9,7 +9,7 @@ import { Buttons } from "../../..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<PreviewPersonalInfo></PreviewPersonalInfo>`
  */
-const PreviewPersonalInfo = ({ className = "", ...props }) => {
+const PreviewSellerInfo = ({ className = "", ...props }) => {
 	return (
 		<Flex
 			w={{ base: "100%", "2xl": "80.5vw" }}
@@ -183,4 +183,4 @@ const PreviewPersonalInfo = ({ className = "", ...props }) => {
 	);
 };
 
-export default PreviewPersonalInfo;
+export default PreviewSellerInfo;
