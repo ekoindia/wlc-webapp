@@ -6,14 +6,13 @@ import {
 	TableContainer,
 	Tbody,
 	Td,
-	Text,
 	Th,
 	Thead,
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
-import { Cards, Icon, IconButtons, Pagination, Tags } from "..";
+import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
 
 const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
@@ -79,7 +78,11 @@ const Tables = (props) => {
 		);
 	};
 	const getModalStyle = (data) => {
-		return <Box>...</Box>;
+		return (
+			<>
+				<Menus></Menus>
+			</>
+		);
 	};
 
 	const getTh = () => {
@@ -178,7 +181,7 @@ const Tables = (props) => {
 						<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
 							{getNameStyle(item.name)}
 						</Box>
-						<Text>...</Text>
+						<Menus type="inverted" />
 					</Flex>
 					<Flex
 						direction="column"
