@@ -10,6 +10,7 @@ import { Cards, IconButtons } from "../";
 
 const ContactPane = () => {
 	const [isSmallerThan440] = useMediaQuery("(max-width:440px)");
+	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
 	return (
 		<Cards h="365px">
 			<Box
@@ -48,7 +49,7 @@ const ContactPane = () => {
 					</Box>
 					<IconButtons
 						variant="success"
-						hasIcon={isSmallerThan440 ? true : false}
+						hasIcon={isSmallerThan768 ? true : false}
 						iconName="mode-edit"
 						iconStyle={{
 							width: "12px",
@@ -64,9 +65,9 @@ const ContactPane = () => {
 						</Text>
 					</Box>
 					<IconButtons
-						title={isSmallerThan440 ? "" : "Email Now"}
+						title={isSmallerThan768 ? "" : "Email Now"}
 						variant="accent"
-						hasIcon={isSmallerThan440 ? true : false}
+						hasIcon={isSmallerThan768 ? true : false}
 						iconName="mode-edit"
 						iconStyle={{
 							width: "12px",
