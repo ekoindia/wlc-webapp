@@ -5,17 +5,23 @@ import {
 	Stack,
 	StackDivider,
 	Text,
+	useMediaQuery,
 } from "@chakra-ui/react";
 import { Buttons, Cards, IconButtons } from "../";
 
 const AddressPane = () => {
+	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
 	return (
 		<Cards>
-			<Heading fontSize={18} fontWeight="semibold" color={"light"}>
+			<Heading
+				fontSize={{ base: 16, md: 18 }}
+				fontWeight="semibold"
+				color={"light"}
+			>
 				Address Details
 			</Heading>
 			<Stack direction={"column"} divider={<StackDivider />} mt={"5"}>
-				<Box mb={26}>
+				<Box mb={26} fontSize={{ base: 14, md: 16 }}>
 					<Text>A 615, Gali No. 8, Jaitpur Extension Part 2</Text>
 					<Text>Badarpur, New Delhi</Text>
 					<Text>110044</Text>
@@ -38,21 +44,31 @@ const AddressPane = () => {
 					</Box>
 					<Flex
 						mt={9}
-						justify={"space-between"}
-						align={"center"}
-						wrap={"wrap"}
+						justify="space-between"
+						align="center"
+						wrap="wrap"
 					>
-						<Buttons w="189px" h="60px" title="Update Address" />
-						<IconButtons
-							title="View on Google Maps"
-							variant="accent"
-							iconName="near-me"
-							iconPos="left"
-							iconStyle={{
-								width: "11px",
-								height: "11px",
-							}}
+						<Buttons
+							w={{ base: "100%", md: "189px" }}
+							h="60px"
+							title="Update Address"
 						/>
+						<Box
+							margin={isSmallerThan768 ? "auto" : ""}
+							mt={isSmallerThan768 ? "30px" : ""}
+							mb={isSmallerThan768 ? "10px" : ""}
+						>
+							<IconButtons
+								title="View on Google Maps"
+								variant="accent"
+								iconName="near-me"
+								iconPos="left"
+								iconStyle={{
+									width: "11px",
+									height: "11px",
+								}}
+							/>
+						</Box>
 					</Flex>
 				</Box>
 			</Stack>

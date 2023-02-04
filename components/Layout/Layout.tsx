@@ -4,7 +4,7 @@ import { Breadcrumbs, NavBar, SideBar } from "..";
 
 const Layout = (props) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
-	const [isSmallerThan770] = useMediaQuery("(max-width: 1400px)");
+	const [isSmallerThan770] = useMediaQuery("(max-width: 768px)");
 
 	return (
 		<Box w={"full"} minH={"100vh"}>
@@ -12,7 +12,13 @@ const Layout = (props) => {
 				setNavOpen={setIsNavOpen}
 				isSmallerThan770={isSmallerThan770}
 			/>
-			<Flex width={"full"} height={"calc(100vh - 4.5vw)"}>
+			<Flex
+				width={"full"}
+				height={{
+					base: "calc(100vh - 12.2vw)",
+					sm: "calc(100vh - 4.5vw)",
+				}}
+			>
 				<SideBar
 					navOpen={isNavOpen}
 					setNavOpen={setIsNavOpen}
@@ -20,12 +26,18 @@ const Layout = (props) => {
 				/>
 				{/* Main Content here */}
 
-				<Box minH={"calc(100vh- 4.5vw)"} w={"full"}>
+				<Box
+					minH={"calc(100vh- 4.5vw)"}
+					w={"full"}
+					bg={"bg"}
+					overflow={"hidden"}
+				>
 					<Box
 						w={"full"}
 						h={"100%"}
 						overflowY={"scroll"}
 						p={"1.2vw"}
+						pr={"0.6vw"}
 						css={{
 							"&::-webkit-scrollbar": {
 								width: "0.6vw",
@@ -39,7 +51,7 @@ const Layout = (props) => {
 							},
 						}}
 					>
-						{!isSmallerThan770 && <Breadcrumbs />}
+						<Breadcrumbs isSmallerThan770={isSmallerThan770} />
 
 						{props.children}
 					</Box>
@@ -50,26 +62,3 @@ const Layout = (props) => {
 };
 
 export default Layout;
-
-// import { Box, Show } from "@chakra-ui/react";
-// import { Breadcrumbs } from "..";
-// import NavSide from "./NavSide";
-
-// // const {Content} = Layout;
-
-// const Layout = (props) => {
-// 	return (
-// 		<Box bg="bg">
-// 			<NavSide>
-// 				<Box p={4}>
-// 					<Show breakpoint="(min-width: 450px)">
-// 						<Breadcrumbs />
-// 					</Show>
-// 					{props.children}
-// 				</Box>
-// 			</NavSide>
-// 		</Box>
-// 	);
-// };
-
-// export default Layout;

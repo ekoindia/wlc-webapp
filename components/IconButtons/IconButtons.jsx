@@ -1,4 +1,5 @@
 import { Box, Button, IconButton, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { Icon } from "..";
 
 const IconButtons = (props) => {
@@ -9,11 +10,19 @@ const IconButtons = (props) => {
 		variant = "primary",
 		isRound = true,
 		hasBG = true,
+		hasIcon = true,
 		iconStyle,
+		textStyle,
 		children,
 		onClick,
 		...rest
 	} = props;
+
+	const [hasMounted, setHasMounted] = useState(false);
+
+	useEffect(() => {
+		setHasMounted(true);
+	}, []);
 
 	/* icon color */
 	const color = variant == "primary" ? "primary.DEFAULT" : "accent.DEFAULT";
@@ -24,27 +33,51 @@ const IconButtons = (props) => {
 	const textOrder = iconOrder === 1 ? 2 : 1;
 
 	return (
-		<Button display="flex" alignItems="center" gap={2} variant="link">
-			{hasBG ? (
+		<Button
+			display="flex"
+			alignItems="center"
+			gap={2}
+			variant="link"
+			onClick={onClick}
+			color={color}
+			_hover={{ color: hoverColor }}
+			_active={{ color: hoverColor }}
+		>
+			{hasIcon ? (
 				<Box order={iconOrder}>
-					<IconButton
-						size="sm"
-						isRound={isRound}
-						variant={variant}
-						icon={<Icon name={iconName} {...iconStyle} />}
-					/>
+					{hasMounted && (
+						<>
+							{hasBG ? (
+								<>
+									<IconButton
+										size="sm"
+										isRound={isRound}
+										variant={variant}
+										icon={
+											<Icon
+												name={iconName}
+												{...iconStyle}
+											/>
+										}
+									/>
+								</>
+							) : (
+								<Box color="inherit">
+									<Icon name={iconName} {...iconStyle} />
+								</Box>
+							)}
+						</>
+					)}
 				</Box>
 			) : (
-				<Box order={iconOrder} color={color}>
-					<Icon name={iconName} {...iconStyle} />
-				</Box>
+				""
 			)}
 
 			<Box order={textOrder}>
 				<Text
-					color={color}
-					_hover={{ fontcolor: { hoverColor } }} //TODO fix hover on text
-					_active={{ color: { hoverColor } }}
+					color="inherit"
+					fontSize={{ base: "12px", md: "14px" }}
+					{...textStyle}
 				>
 					{title}
 				</Text>

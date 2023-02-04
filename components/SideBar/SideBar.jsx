@@ -1,5 +1,6 @@
 import {
 	Box,
+	Center,
 	Drawer,
 	DrawerContent,
 	DrawerOverlay,
@@ -24,7 +25,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 
 	return (
 		<Box
-			minW={isSmallerThan769 ? "full" : "13.5vw"}
+			minW={{ base: "full", sm: "55vw", md: "13.5vw" }}
 			bgColor={"accent.DEFAULT"}
 			height={"100%"}
 		>
@@ -39,7 +40,11 @@ const SideBarMenu = ({ className = "", ...props }) => {
 						>
 							<Flex
 								key={index}
-								fontSize={isSmallerThan769 ? "3.6vw" : ".85vw"}
+								fontSize={{
+									base: "3.6vw",
+									sm: "2.5vw",
+									md: ".85vw",
+								}}
 								gap="10px"
 								color="#FFFFFF"
 								align="center"
@@ -58,29 +63,27 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									currentRoute === menu.link.split("/")[2] &&
 									"#081E89"
 								}
-								borderLeft={isSmallerThan769 ? "6px" : "8px"}
+								borderLeft={isSmallerThan769 ? "8px" : "8px"}
 								borderLeftColor={
 									currentRoute === menu.link.split("/")[2]
 										? "#FE7D00"
 										: "transparent"
 								}
 							>
-								<Box>
-									<Icon
-										name={menu.icon}
-										style={
-											isSmallerThan769
-												? {
-														width: "6vw",
-														height: "6vw",
-												  }
-												: {
-														width: "1vw",
-														height: "1vw",
-												  }
-										}
-									/>
-								</Box>
+								<Center
+									w={{
+										base: "5.5vw",
+										sm: "3.4vw",
+										md: "1vw",
+									}}
+									h={{
+										base: "5.5vw",
+										sm: "3.4vw",
+										md: "1vw",
+									}}
+								>
+									<Icon name={menu.icon} />
+								</Center>
 								{menu.name}
 							</Flex>
 						</Link>

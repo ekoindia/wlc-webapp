@@ -1,4 +1,4 @@
-import { Box, Flex, Image } from "@chakra-ui/react";
+import { Box, Flex, Grid, Image } from "@chakra-ui/react";
 import { useGetLogoContext } from "contexts/getLogoContext";
 import { useState } from "react";
 import { Login, MobileVerify, VerifyOtp } from ".";
@@ -9,25 +9,28 @@ const LoginPanel = ({ className = "", ...props }) => {
 	const { logo } = useGetLogoContext();
 	return (
 		<Flex
-			position={{ base: "fixed", md: "none" }}
 			w="full"
 			h="100vh"
-			flexDirection="column"
-			alignItems="center"
-			justifyContent={{ sm: "normal", md: "center" }}
-			bg="#F5F6F8"
+			alignItems={{ sm: "normal", md: "center" }}
+			justifyContent="center"
+			bg="bg"
+			position={{ base: "fixed", md: "none" }}
 		>
-			<Flex
-				direction="column"
-				align="center"
+			<Grid
+				// direction="column"
+				// justifyContent="center"
+				// align="center"
+				justifyItems="center"
 				w={{ base: "100%", md: "30rem", "2xl": "43.75rem" }}
 			>
 				{/* Logo */}
 				<Box
+					justifySelf="flex-start"
 					display="flex"
 					alignItems="center"
 					w="full"
-					h={{ base: "3.5rem", "2xl": "auto" }}
+					minH={{ base: "3.5rem", "2xl": "auto" }}
+					h={{ base: "10vw", md: "3.5rem", "2xl": "auto" }}
 					bg={{ base: "white", md: "transparent" }}
 					mb={{ base: 4, md: 8, "2xl": "3.8rem" }}
 					boxShadow={{
@@ -83,7 +86,7 @@ const LoginPanel = ({ className = "", ...props }) => {
 						""
 					)}
 				</Box>
-			</Flex>
+			</Grid>
 		</Flex>
 	);
 };

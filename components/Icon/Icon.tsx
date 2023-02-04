@@ -29,7 +29,10 @@ export type IconNameType =
 	| "drop-down"
 	| "logout"
 	| "timer"
-	| "camera";
+	| "camera"
+	| "more-vert"
+	| "sort-by"
+	| "fast-forward";
 
 export type IconProps = {
 	name: IconNameType;

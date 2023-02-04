@@ -1,129 +1,389 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	HStack,
+	Input,
+	Text,
+	useMediaQuery,
+	VStack,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Cards, Icon, SearchBar, Tags } from "../../..";
+import { Buttons, Cards, Icon, SearchBar, Tags } from "../../..";
 import { DetailedStatementTable } from "./DetailedStatementTable";
 
 const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
+	// const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
 	}
 
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
-
 	return (
 		<>
-			<Cards w="1610px" h="160px" marginTop={"1.5rem"}>
-				<Flex flexDirection={"column"} gap="1rem">
-					<Box display={"flex"} justifyContent={"space-between"}>
-						<Text
-							fontWeight={"semibold"}
-							color={"light"}
-							fontSize={18}
+			<Box
+				display={{ base: "none", md: "flex" }}
+				w={{ base: "90%", md: "100%" }}
+				maxH={{
+					base: "120vh",
+					md: "20vw",
+					lg: "12vw",
+					"2xl": "10vw",
+				}}
+				margin={"auto"}
+			>
+				<Cards
+					marginTop={{ base: "1rem", md: "1.5rem" }}
+					w={"100%"}
+					h={"100%"}
+				>
+					<Flex
+						flexDirection={"column"}
+						justifyContent={"center"}
+						h={"100%"}
+						gap={{
+							base: "10px",
+							md: "6px",
+							lg: "5px",
+							"2xl": "15px",
+						}}
+						px={{ base: "3vw", md: "0" }}
+					>
+						<Flex
+							justifyContent={"space-between"}
+							direction={{ base: "column", md: "row" }}
 						>
-							Account information
-						</Text>
-						<Text color={"accent.DEFAULT"} fontSize={16}>
-							as on 04/01/2023
-						</Text>
-					</Box>
-					<Box display={"flex"} justifyContent={"space-between"}>
-						<Box>
-							<Text fontSize={14} color={"light"}>
-								Account Holder
+							<Text
+								fontWeight={"semibold"}
+								color={"light"}
+								fontSize={{
+									base: "16px",
+									md: "11px",
+									lg: "11px",
+									"2xl": "18px",
+								}}
+							>
+								Account information
 							</Text>
 							<Text
-								fontSize={16}
-								color={"dark"}
-								fontWeight={"medium"}
-							>
-								Saurabh Mullick
-							</Text>
-						</Box>
-						<Box display={"flex"}>
-							<Box>
-								<Text fontSize={14} color={"light"}>
-									Account Number
-								</Text>
-								<Text
-									fontSize={16}
-									color={"dark"}
-									fontWeight={"medium"}
-								>
-									000300000517693
-								</Text>
-							</Box>
-							<Box
-								marginLeft={"1rem"}
-								display={"flex"}
-								marginTop={".3rem"}
-							>
-								<Tags></Tags>
-							</Box>
-						</Box>
-						<Box>
-							<Text fontSize={14} color={"light"}>
-								Bank Name
-							</Text>
-							<Text
-								fontSize={16}
-								color={"dark"}
-								fontWeight={"medium"}
-							>
-								ICICI Bank
-							</Text>
-						</Box>
-						<Box>
-							<Text fontSize={14} color={"light"}>
-								Account Type
-							</Text>
-							<Text
-								fontSize={16}
-								color={"dark"}
-								fontWeight={"medium"}
-							>
-								Current ECP
-							</Text>
-						</Box>
-						<Box>
-							<Text fontSize={14} color={"light"}>
-								Current Balance
-							</Text>
-							<Box
-								display={"flex"}
-								alignItems={"center"}
 								color={"accent.DEFAULT"}
+								fontSize={{
+									base: "14px",
+									md: "10px",
+									lg: "9px",
+									"2xl": "16px",
+								}}
 							>
-								<Icon
-									name="rupee"
-									width="12.25px"
-									height="16.34px"
-								/>
+								as on 04/01/2023
+							</Text>
+						</Flex>
+
+						<Flex
+							w={"100%"}
+							align={{ base: "flex-start", md: "center" }}
+							justifyContent={"space-between"}
+							direction={{ base: "column", md: "row" }}
+							gap={{ base: "15px", sm: "0px" }}
+						>
+							<Flex
+								direction={"column"}
+								gap={{
+									base: "5px",
+									md: "0px",
+									"2xl": "5px",
+								}}
+							>
 								<Text
-									display={"flex"}
-									alignItems={"center"}
-									fontSize={20}
-									color={"accent.DEFAULT"}
-									marginLeft={".5rem"}
+									fontSize={{
+										base: "14px",
+										md: "10px",
+										lg: "12px",
+										"2xl": "16px",
+									}}
+									color={"light"}
+								>
+									Account Holder
+								</Text>
+								<Text
+									fontSize={{
+										base: "16px",
+										md: "11px",
+										lg: "13px",
+										"2xl": "18px",
+									}}
+									color={"black"}
 									fontWeight={"medium"}
 								>
-									15,893.00
+									{" "}
+									Saurabh Mullick
 								</Text>
-							</Box>
-						</Box>
-					</Box>
-				</Flex>
-			</Cards>
-			<Box marginTop={"2.5rem"} width="600px">
+							</Flex>
+							<Flex
+								gap={{
+									base: "20px",
+									lg: "8px",
+									"2xl": "15px",
+								}}
+								align={"center"}
+								justifyContent={{
+									base: "space-between",
+									md: "init",
+								}}
+								w={{ base: "100%", sm: "initial" }}
+							>
+								<Flex
+									direction={"column"}
+									gap={{
+										base: "0px",
+										md: "0px",
+										"2xl": "5px",
+									}}
+								>
+									<Text
+										fontSize={{
+											base: "14px",
+											md: "10px",
+											lg: "12px",
+											"2xl": "16px",
+										}}
+										color={"light"}
+									>
+										Account Number
+									</Text>
+									<Text
+										fontSize={{
+											base: "16px",
+											md: "11px",
+											lg: "13px",
+											"2xl": "18px",
+										}}
+										color={"black"}
+										fontWeight={"medium"}
+									>
+										000300000517693
+									</Text>
+								</Flex>
+								<Tags
+									size={{
+										base: "sm",
+										md: "sm",
+										lg: "sm",
+										"2xl": "lg",
+									}}
+								/>
+							</Flex>
+
+							<Flex
+								direction={"column"}
+								gap={{
+									base: "5px",
+									md: "0px",
+									"2xl": "5px",
+								}}
+							>
+								<Text
+									fontSize={{
+										base: "14px",
+										md: "10px",
+										lg: "12px",
+										"2xl": "16px",
+									}}
+									color={"light"}
+								>
+									Bank Name
+								</Text>
+								<Text
+									fontSize={{
+										base: "16px",
+										md: "11px",
+										lg: "13px",
+										"2xl": "18px",
+									}}
+									color={"black"}
+									fontWeight={"medium"}
+								>
+									ICICI Bank
+								</Text>
+							</Flex>
+							<Flex
+								direction={"column"}
+								gap={{
+									base: "5px",
+									md: "0px",
+									"2xl": "5px",
+								}}
+							>
+								<Text
+									fontSize={{
+										base: "14px",
+										md: "10px",
+										lg: "12px",
+										"2xl": "16px",
+									}}
+									color={"light"}
+								>
+									Account Type
+								</Text>
+								<Text
+									fontSize={{
+										base: "16px",
+										md: "11px",
+										lg: "13px",
+										"2xl": "18px",
+									}}
+									color={"black"}
+									fontWeight={"medium"}
+								>
+									Current ECP
+								</Text>
+							</Flex>
+							<Flex
+								direction={"column"}
+								gap={{
+									base: "5px",
+									md: "0px",
+									"2xl": "5px",
+								}}
+							>
+								<Text
+									fontSize={{
+										base: "14px",
+										md: "9px",
+										lg: "12px",
+										"2xl": "16px",
+									}}
+									color={"light"}
+								>
+									Current Balance
+								</Text>
+								<Flex
+									align={"center"}
+									color={"accent.DEFAULT"}
+									gap={"5px"}
+								>
+									<Box
+										w={{
+											base: "10px",
+											md: "8px",
+											lg: "9.5px",
+											"2xl": "12px",
+										}}
+										h={{
+											base: "12px",
+											md: "10px",
+											lg: "11px",
+											"2xl": "15px",
+										}}
+									>
+										<Icon name="rupee" width="100%" />
+									</Box>
+									<Text
+										fontSize={{
+											base: "16px",
+											md: "12px",
+											lg: "14px",
+											"2xl": "20px",
+										}}
+										color={"accent.DEFAULT"}
+										fontWeight={"bold"}
+									>
+										15,893.00
+									</Text>
+								</Flex>
+							</Flex>
+						</Flex>
+					</Flex>
+				</Cards>
+			</Box>
+
+			<Box>
 				<SearchBar
 					onChangeHandler={onChangeHandler}
 					value={searchValue}
 				/>
 			</Box>
+
+			<VStack
+				display={{ base: "flex", md: "none" }}
+				w={"100%"}
+				my={"30px"}
+				gap={"20px"}
+				mb={"50px"}
+			>
+				<VStack align={"flex-start"} w={"full"}>
+					<Text as={"span"} fontSize={"16px"} fontWeight={"semibold"}>
+						Filter by date
+					</Text>
+					<Flex
+						w={"100%"}
+						justifyContent={"space-between"}
+						direction={{ base: "column", sm: "row" }}
+						gap={"20px"}
+					>
+						<Flex
+							align={"center"}
+							gap={"5px"}
+							h={"48px"}
+							w={"100%"}
+							border={"1px solid #D2D2D2"}
+							borderRadius={"10px"}
+							overflow={"hidden"}
+							bg={"white"}
+						>
+							<HStack
+								h={"100%"}
+								bg={"bg"}
+								w={{ base: "25%", sm: "30%" }}
+								pl={{ base: "15px", sm: "8px" }}
+							>
+								<Text>From:</Text>
+							</HStack>
+							<Box w={"70%"}>
+								<Input
+									size="sm"
+									type="date"
+									border={"none"}
+									focusBorderColor={"transparent"}
+								/>
+							</Box>
+						</Flex>
+						<Flex
+							align={"center"}
+							gap={"5px"}
+							h={"48px"}
+							w={"100%"}
+							border={"1px solid #D2D2D2"}
+							borderRadius={"10px"}
+							overflow={"hidden"}
+							bg={"white"}
+						>
+							<HStack
+								h={"100%"}
+								bg={"bg"}
+								w={{ base: "25%", sm: "30%" }}
+								pl={{ base: "15px", sm: "10px" }}
+							>
+								<Text>To:</Text>
+							</HStack>
+							<Box w={"70%"}>
+								<Input
+									size="sm"
+									type="date"
+									border={"none"}
+									focusBorderColor={"transparent"}
+								/>
+							</Box>
+						</Flex>
+					</Flex>
+				</VStack>
+				<Buttons
+					title={"Filter"}
+					w={"100%"}
+					h={{ base: "54px", sm: "50px" }}
+				/>
+			</VStack>
+
 			<Box>
 				<DetailedStatementTable />
 			</Box>
