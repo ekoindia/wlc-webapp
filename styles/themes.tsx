@@ -1,6 +1,6 @@
 import { extendTheme, theme } from "@chakra-ui/react";
 import { Inter, Roboto } from "@next/font/google";
-import { tabsTheme } from './theme_system/theme/components/tab';
+import { tabsTheme } from "./theme_system/theme/components/tab";
 
 const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
@@ -44,8 +44,8 @@ export const light = extendTheme({
 					},
 					th: {
 						textTransform: "Capitalize",
-            bg:'hint',
-            transition:'none'
+						bg: "hint",
+						transition: "none",
 					},
 				},
 				evenStriped: {
@@ -56,8 +56,8 @@ export const light = extendTheme({
 					},
 					th: {
 						textTransform: "Capitalize",
-            bg:'hint',
-            transition:'none'
+						bg: "hint",
+						transition: "none",
 					},
 				},
 			},
@@ -96,6 +96,15 @@ export const light = extendTheme({
 						bg: "accent.dark",
 					},
 				},
+				success: {
+					bg: "success",
+					boxShadow: "0px 3px 10px #00c34150",
+					borderRadius: 10,
+					color: "white",
+					_hover: {
+						bg: "#00a336",
+					},
+				},
 				link: {
 					_hover: {
 						textDecoration: "none",
@@ -106,7 +115,7 @@ export const light = extendTheme({
 		Checkbox: {
 			variants: {
 				rounded: {
-                    control: {
+					control: {
 						w: "15px",
 						h: "15px",
 						border: "1px solid #11299E",
@@ -122,8 +131,7 @@ export const light = extendTheme({
 				},
 			},
 		},
-        Tabs:tabsTheme
-
+		Tabs: tabsTheme,
 	},
 	colors: {
 		primary: {
@@ -166,7 +174,7 @@ export const light = extendTheme({
 		"1px": "1px solid",
 		"2px": "0.125rem solid",
 		"10px": "0.625rem solid",
-        "card": "1px solid #D2D2D2"
+		card: "1px solid #D2D2D2",
 	},
 	radii: {
 		none: "0",
@@ -223,9 +231,9 @@ export const light = extendTheme({
 		5: "1.25rem", //20px
 		6: "1.5rem", //24px
 		7: "1.75rem", // 28px
-		7.5: "1.875rem", // 28px - added 
+		7.5: "1.875rem", // 28px - added
 		8: "2rem",
-        8.5:"2.125rem", // 24px- added
+		8.5: "2.125rem", // 24px- added
 		9: "2.25rem",
 		10: "2.5rem",
 		10.5: "2.625rem", // 42px - added

@@ -26,7 +26,7 @@ const PersonalPane = () => {
 				</Heading>
 				<IconButtons
 					title={isSmallerThan440 ? "" : "Edit Details"}
-					iconPos="left"
+					iconPos={isSmallerThan440 ? "" : "left"}
 					iconName="mode-edit"
 					iconStyle={{
 						width: "12px",

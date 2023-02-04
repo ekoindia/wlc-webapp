@@ -26,7 +26,7 @@ const ContactPane = () => {
 				</Heading>
 				<IconButtons
 					title={isSmallerThan440 ? "" : "Edit Details"}
-					iconPos="left"
+					iconPos={isSmallerThan440 ? "" : "left"}
 					iconName="mode-edit"
 					iconStyle={{
 						width: "12px",
@@ -41,9 +41,20 @@ const ContactPane = () => {
 				mt={"5"}
 				fontSize={14}
 			>
-				<Box display={"flex"}>
-					<Text>Mobile number:</Text>
-					<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
+				<Box display={"flex"} justifyContent={"space-between"}>
+					<Box display={"flex"} as="span">
+						<Text>Mobile number:</Text>
+						<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
+					</Box>
+					<IconButtons
+						variant="success"
+						hasIcon={isSmallerThan440 ? true : false}
+						iconName="mode-edit"
+						iconStyle={{
+							width: "12px",
+							height: "12px",
+						}}
+					/>
 				</Box>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<Box display={"flex"} as="span">
@@ -52,13 +63,16 @@ const ContactPane = () => {
 							&nbsp; angeltech@email.co.in
 						</Text>
 					</Box>
-					<Box
-						as="span"
-						color="accent.DEFAULT"
-						fontWeight={"semibold"}
-					>
-						Email Now
-					</Box>
+					<IconButtons
+						title={isSmallerThan440 ? "" : "Email Now"}
+						variant="accent"
+						hasIcon={isSmallerThan440 ? true : false}
+						iconName="mode-edit"
+						iconStyle={{
+							width: "12px",
+							height: "12px",
+						}}
+					/>
 				</Box>
 				<Box display={"flex"}>
 					<Text>Landline:</Text>
