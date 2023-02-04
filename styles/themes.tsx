@@ -96,6 +96,15 @@ export const light = extendTheme({
 						bg: "accent.dark",
 					},
 				},
+				success: {
+					bg: "success",
+					boxShadow: "0px 3px 10px #00c34150",
+					borderRadius: 10,
+					color: "white",
+					_hover: {
+						bg: "#00a336",
+					},
+				},
 				link: {
 					_hover: {
 						textDecoration: "none",
