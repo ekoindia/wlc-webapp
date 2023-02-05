@@ -34,57 +34,6 @@ const Tables = (props) => {
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
 
-	/* for row element styling */
-	const getNameStyle = (name) => {
-		return (
-			<Flex align={"center"} gap="0.625rem">
-				<Box>
-					<Avatar
-						bg="accent.DEFAULT"
-						color="divider"
-						size="sm"
-						name={name}
-						// src={item.link}
-					/>
-				</Box>
-				<Box as="span">{name}</Box>
-			</Flex>
-		);
-	};
-	const getStatusStyle = (status) => {
-		return <Tags status={status} />;
-	};
-	const getLocationStyle = (location, lat, long) => {
-		return (
-			<Flex alignItems={"center"}>
-				<Box>{location}</Box>
-				<Box>
-					<IconButtons
-						iconName="near-me"
-						iconStyle={{
-							width: "12px",
-							height: "12px",
-						}}
-					/>
-				</Box>
-			</Flex>
-		);
-	};
-	const getArrowStyle = () => {
-		return (
-			<Box as="span" color="hint">
-				<Icon name="arrow-forward" width="24px" height="21px" />
-			</Box>
-		);
-	};
-	const getModalStyle = (data) => {
-		return (
-			<>
-				<Menus></Menus>
-			</>
-		);
-	};
-
 	const getTh = () => {
 		return renderer.map((item, index) => {
 			if (item.sorting) {
@@ -296,3 +245,54 @@ const Tables = (props) => {
 };
 
 export default Tables;
+
+/* for row element styling */
+export const getNameStyle = (name) => {
+	return (
+		<Flex align={"center"} gap="0.625rem">
+			<Box>
+				<Avatar
+					bg="accent.DEFAULT"
+					color="divider"
+					size="sm"
+					name={name}
+					// src={item.link}
+				/>
+			</Box>
+			<Box as="span">{name}</Box>
+		</Flex>
+	);
+};
+export const getStatusStyle = (status) => {
+	return <Tags status={status} />;
+};
+export const getLocationStyle = (location, lat, long) => {
+	return (
+		<Flex alignItems={"center"}>
+			<Box>{location}</Box>
+			<Box>
+				<IconButtons
+					iconName="near-me"
+					iconStyle={{
+						width: "12px",
+						height: "12px",
+					}}
+				/>
+			</Box>
+		</Flex>
+	);
+};
+export const getArrowStyle = () => {
+	return (
+		<Box as="span" color="hint">
+			<Icon name="arrow-forward" width="24px" height="21px" />
+		</Box>
+	);
+};
+export const getModalStyle = (data) => {
+	return (
+		<>
+			<Menus />
+		</>
+	);
+};
