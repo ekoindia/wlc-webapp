@@ -34,12 +34,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 
 	return (
 		<Flex
-			// w={{ base: "	", xl: "100%", "2xl": "100%" }}
 			w="100%"
-			// h="full"
-			// h={{ base: "", "2xl": "" }}
-			// bg={{ base: "none", "2xl": "white" }}
-			// p={{ base: "0", xl: "1", "2xl": "1.875rem	" }}
 			p={{
 				base: "",
 				sm: "0px",
@@ -78,7 +73,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 			<Flex direction={"column"}>
 				<Box
 					bg={{ base: "#FFFFFF", "2xl": "none" }}
-					// w={{ base: "98vw", md: "83vw", xl: "100%", "2xl": "51vw" }}
 					alignItems={{ base: "center", "2xl": "none" }}
 					//
 				>
@@ -99,18 +93,14 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						}}
 					>
 						<Heading
-							// fontSize={"1.5em"}
 							fontSize={{ base: "1.2em", "2xl": "1.5em" }}
 							color={"#11299E"}
-							// mt={"24px"}
 							fontWeight="semibold"
-							// m={{ base: "10px", "2xl": "0px" }}
 						>
 							Angel Tech Private Limited
 						</Heading>
 						<Text
 							fontSize={{ base: "0.9em", "2xl": "1em" }}
-							// m={{ base: "8px", "2xl": "0px" }}
 							color="#0F0F0F"
 						>
 							Edit the fields below and click Preview. Click
@@ -119,19 +109,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						</Text>
 					</Flex>
 				</Box>
-				{!isTablet && (
-					<Divider
-						mt="15px"
-						// m={{
-						// 	base: "1rem",
-						// 	md: "1rem",
-						// 	xl: "0",
-						// 	"2xl": "0.6rem",
-						// }}
-						color="#D2D2D2"
-						// w={{ base: "none", md: "80%", xl: "", "2xl": "100%" }}
-					/>
-				)}
+				{!isTablet && <Divider mt="15px" color="#D2D2D2" />}
 			</Flex>
 
 			<Flex
@@ -144,7 +122,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 					xl: "100%",
 					"2xl": "full",
 				}}
-				// p={{ base: "20px", "2xl": "0" }}
 				m={{ base: "1rem", lg: "0px" }}
 				borderRadius={{ base: "10px", xl: "0", "2xl": "none" }}
 				border={{
@@ -169,7 +146,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						xl: "70%",
 						"2xl": "63%",
 					}}
-					// mb={{ base: "2.2rem", "2xl": "0" }}
 					mt="2rem"
 					p={{ base: "10px", "2xl": "0px" }}
 				>
@@ -183,7 +159,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				</HStack>
 				<Flex
 					rowGap={{ base: "2.8rem", sm: "2.5rem", "2xl": "2.5rem" }}
-					// mt={{ base: "0px", "2xl": "1.2rem" }}
 					p={{
 						base: "0px 0px 0px 20px",
 						md: "0px 0px 0px 60px",
@@ -200,7 +175,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							"2xl": "1.2rem",
 						}}
 						mt="1.2rem"
-						// m={{ base: "" }}
 						direction={"row"}
 					>
 						<Box>
@@ -530,10 +504,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 			{!isTablet && (
 				<Flex
 					rowGap={{ base: "2.8rem", sm: "2.5rem", "2xl": "2.5rem" }}
-					// mt={{ base: "0px", "2xl": "1.2rem" }}
 					direction="column"
 					bg="white"
-					// p={{ base: "20px", "2xl": "0" }}
 				>
 					<Box>
 						<Text fontSize={"20px"} fontWeight="bold" mt="4.5rem">
@@ -853,10 +825,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 			{!isTablet && (
 				<Flex
 					rowGap={{ base: "2.8rem", sm: "2.5rem", "2xl": "2.5rem" }}
-					// mt={{ base: "0px", "2xl": "1.2rem" }}
 					direction="column"
 					bg="white"
-					// p={{ base: "20px", "2xl": "0px" }}
 				>
 					<Box>
 						<Text fontSize={"20px"} fontWeight="bold" mt="4.5rem">
@@ -902,7 +872,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							lg: "3rem",
 							"2xl": "1.2rem",
 						}}
-						// m={{ base: "" }}
 					>
 						<Box>
 							<Input
