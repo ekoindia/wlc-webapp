@@ -29,12 +29,19 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 
 	return (
 		<Flex
-			w={{ base: "", xl: "100%", "2xl": "100%" }}
-			h={{ base: "950px", md: "full", "2xl": "39.5vw" }}
-			bg={{ base: "#F5F6F8", "2xl": "white" }}
+			w="full"
+			h="auto"
+			bg={{
+				base: "none",
+				md: "none",
+				lg: "white",
+				xl: "white",
+				"2xl": "white",
+			}}
 			border={{
 				base: "",
 				sm: "",
+				lg: "1px solid #D2D2D2",
 				xl: "1px solid #D2D2D2",
 				"2xl": "1px solid #D2D2D2",
 			}}
@@ -47,44 +54,37 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 			}}
 			boxShadow={{
 				base: "",
-				xl: "0px 5px 15px #0000000D",
-				"2xl": "0px 5px 15px #0000000D",
 			}}
 			direction="column"
-
-			// p="20px"
+			p={{
+				base: "",
+				sm: "",
+				md: "",
+				lg: "24px 30px 87px 30px",
+				xl: "24px 30px 87px 30px",
+				"2xl": "24px 30px 87px 30px",
+			}}
 		>
 			{" "}
 			<Box
 				bg={{ base: "#FFFFFF", "2xl": "white" }}
 				w={{ base: "full", lg: "100%", xl: "99.9%", "2xl": "60vw" }}
-				m={{ base: "0px", sm: "0px", "2xl": "1.5rem 0 1rem 1.9rem" }}
 				alignItems={{ base: "center", "2xl": "none" }}
-				p={{ base: "0px", lg: "20px", "2xl": "0px" }}
 			>
-				<Flex direction={"column"}>
+				<Flex
+					direction={"column"}
+					p={{ base: "5px", sm: "0px" }}
+					border={{ base: "1px solid #D2D2D2", md: "none" }}
+				>
 					<Heading
 						fontSize={{ base: "1.1rem", "2xl": "1.5em" }}
 						color={"#11299E"}
-						mt={"24px"}
 						fontWeight="semibold"
-						m={{
-							base: "7px 0px 0px 10px",
-							sm: "0px",
-							"2xl": "0px",
-						}}
 					>
 						Angel Tech Private Limited
 					</Heading>
 					<Text
 						fontSize={{ base: "0.8em", "2xl": "1em" }}
-						m={{
-							base: "6px 0px 0px 10px",
-							sm: "0px",
-							md: "8px",
-							lg: "5px",
-							"2xl": "0px",
-						}}
 						color="#0F0F0F"
 					>
 						Edit the fields below and click Preview. Click Cancel to
@@ -93,34 +93,14 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					</Text>
 				</Flex>
 			</Box>
-			{!isTablet && (
-				<Divider
-					ml={{
-						md: "1rem",
-						xl: "0",
-						"2xl": "1.8rem",
-					}}
-					color="#D2D2D2"
-					w={{ base: "none", md: "80%", xl: "", "2xl": "96%" }}
-				/>
-			)}
+			{!isTablet && <Divider color="#D2D2D2" mt="15px" />}
 			<Box
 				bg="#FFFFFF"
-				w={{
-					base: "85vw",
-					lg: "100%",
-					md: "90%",
-					xl: "100%",
-					"2xl": "51vw",
-				}}
-				m={{
-					base: "1.1rem 0px 0px 10px",
-					md: "1.1rem 0px 0px 0px",
-					"2xl": "0px 0px 0px 1.875rem",
-					sm: "0px",
-					lg: "0",
-					md: "2rem",
-					xl: "0px",
+				m={{ base: "20px", md: "40px", lg: "0px" }}
+				p={{
+					base: "20px 0px 0px 30px",
+					md: "30px 0px 0px 80px",
+					lg: "0px",
 				}}
 				borderRadius={{
 					base: "10px",
@@ -131,7 +111,8 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
 					"2xl": "none",
-					lg: "0px 5px 15px #0000000D",
+					lg: "none",
+					xl: "none",
 				}}
 				border={{
 					base: " 1px solid #D2D2D2",
@@ -140,16 +121,17 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					xl: "none",
 					lg: "none",
 				}}
-				p={{
-					base: "15px",
-					md: "1.1rem 0 1rem 7rem",
-					lg: "1.1rem 0 1rem 1rem",
-					xl: "2rem",
-					"2xl": "0px",
-				}}
 				alignContent="center"
 			>
-				<Box mt={{ base: "0", sm: "", "2xl": "3.1rem" }}>
+				<Box
+					mt={{
+						base: "0px",
+						sm: "",
+						lg: "2rem",
+						xl: "2.5rem",
+						"2xl": "3.1rem",
+					}}
+				>
 					<Text
 						fontWeight="bold"
 						fontSize={{ base: "15px", "2xl": "20px" }}
@@ -197,8 +179,8 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 							<Select
 								placeholder="--Select--"
 								w={{
-									base: "17rem",
-									md: "50vw",
+									base: "15rem",
+									md: "60vw",
 									xl: "25vw",
 									lg: "35vw",
 									"2xl": "25vw",
@@ -242,8 +224,8 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						<Select
 							placeholder="Vijay Kumar -- 9711217911 --21809910"
 							w={{
-								base: "17rem",
-								md: "50vw",
+								base: "15rem",
+								md: "60vw",
 								lg: "35vw",
 								xl: "25vw",
 								"2xl": "25vw",
@@ -259,7 +241,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				</Flex>
 				<Flex
 					mt={{ base: "3rem", "2xl": "2.8rem" }}
-					gap={{ base: "7.3rem", "2xl": "1.4rem" }}
+					gap={{ base: "5.3rem", "2xl": "1.4rem" }}
 				>
 					<Text fontSize={"16px"} fontWeight="semibold">
 						Is he trained?
@@ -292,8 +274,8 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						inputContStyle={{
 							h: { base: "3rem", "2xl": "3rem" },
 							w: {
-								base: "17rem",
-								md: "50vw",
+								base: "15rem",
+								md: "60vw",
 								lg: "35vw",
 								xl: "25vw",
 								"2xl": "25vw",
