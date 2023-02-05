@@ -1,5 +1,5 @@
 export {
-	UpdateSellerAddess,
+	UpdateSellerAddress,
 	UpdatePersonalInfo,
 	UpdateSellerInfo,
 	default as SellerDetails,

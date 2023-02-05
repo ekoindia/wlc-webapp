@@ -46,6 +46,7 @@ const Inputs = ({
 	inputContStyle,
 	inputNumStyle,
 	inputProps,
+	required = false,
 	...props
 }) => {
 	// TODO: Edit state as required
@@ -68,7 +69,11 @@ const Inputs = ({
 
 	return (
 		<Flex direction="column" {...props}>
-			{label ? <InputLabel {...labelStyle}>{label}</InputLabel> : null}
+			{label ? (
+				<InputLabel required={required} {...labelStyle}>
+					{label}
+				</InputLabel>
+			) : null}
 			<Flex pos="relative" {...inputContStyle}>
 				<Input
 					name={name}
@@ -77,7 +82,8 @@ const Inputs = ({
 					disabled={disabled}
 					hidden={hidden}
 					value={value}
-					borderRadius={{ base: 10, "2xl": 15 }}
+					required={required}
+					borderRadius={{ base: 10, "2xl": 10 }}
 					borderColor={errorMsg && invalid ? "error" : "hint"}
 					bg={errorMsg && invalid ? "#fff7fa" : ""}
 					w="100%"
