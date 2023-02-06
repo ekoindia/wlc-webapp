@@ -1,7 +1,30 @@
-import { Box, Heading, Stack, StackDivider, Text } from "@chakra-ui/react";
+import {
+	Box,
+	Heading,
+	Stack,
+	StackDivider,
+	Text,
+	useMediaQuery,
+} from "@chakra-ui/react";
 import { Cards, IconButtons } from "../";
 
 const ContactPane = () => {
+	// const [useDim, setDim] = useState("");
+	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
+	// useEffect(() => {
+	// 	window.addEventListener("resize", (e) => {
+	// 		console.log("inside useEffect", useDim);
+	// 		let innerWidth = e.currentTarget.innerWidth;
+	// 		if (innerWidth < 768) {
+	// 			console.log("innerWidth", innerWidth);
+	// 			setDim(innerWidth);
+	// 		}
+	// 	});
+	// 	return () => {
+	// 		window.removeEventListener("resize");
+	// 	};
+	// }, []);
+
 	return (
 		<Cards h="365px">
 			<Box
@@ -9,15 +32,22 @@ const ContactPane = () => {
 				alignItems="center"
 				justifyContent="space-between"
 			>
-				<Heading fontSize={18} fontWeight="semibold" color={"light"}>
+				<Heading
+					fontSize={{ base: 16, md: 18 }}
+					fontWeight="semibold"
+					color={"light"}
+				>
 					Contact information
 				</Heading>
 				<IconButtons
-					title="Edit Details"
-					iconPos="left"
-					iconPath="/icons/pen.svg"
-					iconStyle={{ h: "12px", w: "12px" }}
-				></IconButtons>
+					title={isSmallerThan768 ? "" : "Edit Details"}
+					iconPos={isSmallerThan768 ? "" : "left"}
+					iconName="mode-edit"
+					iconStyle={{
+						width: "12px",
+						height: "12px",
+					}}
+				/>
 			</Box>
 
 			<Stack
@@ -26,9 +56,20 @@ const ContactPane = () => {
 				mt={"5"}
 				fontSize={14}
 			>
-				<Box display={"flex"}>
-					<Text>Mobile number:</Text>
-					<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
+				<Box display={"flex"} justifyContent={"space-between"}>
+					<Box display={"flex"} as="span">
+						<Text>Mobile number:</Text>
+						<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
+					</Box>
+					<IconButtons
+						variant="success"
+						hasIcon={isSmallerThan768 ? true : false}
+						iconName="phone"
+						iconStyle={{
+							width: "12px",
+							height: "12px",
+						}}
+					/>
 				</Box>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<Box display={"flex"} as="span">
@@ -37,17 +78,16 @@ const ContactPane = () => {
 							&nbsp; angeltech@email.co.in
 						</Text>
 					</Box>
-					<Box
-						as="span"
-						color="accent.DEFAULT"
-						fontWeight={"semibold"}
-					>
-						Email Now
-					</Box>
-				</Box>
-				<Box display={"flex"}>
-					<Text>Landline:</Text>
-					<Text fontWeight={"medium"}>&nbsp; 0123 - 23412332</Text>
+					<IconButtons
+						title={isSmallerThan768 ? "" : "Email Now"}
+						variant="accent"
+						hasIcon={isSmallerThan768 ? true : false}
+						iconName="mail"
+						iconStyle={{
+							width: "12px",
+							height: "12px",
+						}}
+					/>
 				</Box>
 			</Stack>
 		</Cards>

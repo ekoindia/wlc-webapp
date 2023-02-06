@@ -5,20 +5,28 @@ import {
 	Divider,
 	Flex,
 	Heading,
-	Image,
 	Text,
+	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Cards, IconButtons } from "..";
+import { Buttons, Cards, Icon, IconButtons } from "..";
 
 const CompanyPane = () => {
+	const [isSmallerThan440] = useMediaQuery("(max-width:440px)");
 	return (
 		<Cards>
 			<Flex gap="5" align="center">
-				<Circle bg="divider" size={28}>
-					<Avatar w="90" h="90" src="/images/seller_logo.jpg" />
+				<Circle bg="divider" size={{ base: 20, md: 28 }}>
+					<Avatar
+						w={{ base: 16, md: 90 }}
+						h={{ base: 16, md: 90 }}
+						src="/images/seller_logo.jpg"
+					/>
 				</Circle>
 				<Box>
-					<Heading fontSize={18} fontWeight="semibold">
+					<Heading
+						fontSize={{ base: 20, md: 18 }}
+						fontWeight="semibold"
+					>
 						Angel Tech Private Limited
 					</Heading>
 					<Flex fontSize={14} fontWeight="medium">
@@ -30,29 +38,55 @@ const CompanyPane = () => {
 				</Box>
 			</Flex>
 
-			<Box mt="70">
+			<Box mt={{ base: "38", md: "70" }}>
 				<Flex justify="space-between" h="42px" wrap={"wrap"}>
-					<Box>
+					<Box
+						display="flex"
+						flexDirection={isSmallerThan440 ? "row" : "column"}
+						alignItems="center"
+						gap={isSmallerThan440 ? 2 : 0}
+					>
 						<Text color="light" fontSize={14}>
 							Account type
+							{isSmallerThan440 ? <Text as="span">:</Text> : ""}
 						</Text>
 						<Text color="dark" fontSize={16} fontWeight="medium">
 							iMerchant
 						</Text>
 					</Box>
-					<Divider orientation="vertical" />
-					<Box>
+					{isSmallerThan440 ? (
+						<Divider orientation="horizontal" my={2} />
+					) : (
+						<Divider orientation="vertical" />
+					)}
+					<Box
+						display="flex"
+						flexDirection={isSmallerThan440 ? "row" : "column"}
+						alignItems="center"
+						gap={isSmallerThan440 ? 2 : 0}
+					>
 						<Text color="light" fontSize={14}>
 							Plan name
+							{isSmallerThan440 ? <Text as="span">:</Text> : ""}
 						</Text>
 						<Text color="dark" fontSize={16} fontWeight="medium">
 							Specialist
 						</Text>
 					</Box>
-					<Divider orientation="vertical" />
-					<Box>
+					{isSmallerThan440 ? (
+						<Divider orientation="horizontal" my={2} />
+					) : (
+						<Divider orientation="vertical" />
+					)}
+					<Box
+						display="flex"
+						flexDirection={isSmallerThan440 ? "row" : "column"}
+						alignItems="center"
+						gap={isSmallerThan440 ? 2 : 0}
+					>
 						<Text color="light" fontSize={14}>
 							KYC status
+							{isSmallerThan440 ? <Text as="span">:</Text> : ""}
 						</Text>
 						<Text color="dark" fontSize={16} fontWeight="medium">
 							KYC Compliant
@@ -61,12 +95,16 @@ const CompanyPane = () => {
 				</Flex>
 			</Box>
 
-			<Box mt={12}>
-				<Buttons w="215px" h="60px" title="Update Information" />
+			<Box mt={{ base: "95", md: "70" }}>
+				<Buttons
+					w={{ base: "100%", md: "215px" }}
+					h="60px"
+					title="Update Information"
+				/>
 			</Box>
 
 			<Box
-				mt="70"
+				mt={{ base: "38", md: "70" }}
 				p="20px"
 				h="160"
 				border="1px solid #D2D2D2"
@@ -76,12 +114,11 @@ const CompanyPane = () => {
 				<Flex justify="space-between" align="center" mb={4}>
 					<Box alignItems="center">
 						<Flex gap={4} align="center" justify="center">
-							<Circle size={10} bg={"divider"}>
-								<Image
-									src="/icons/wallet.svg"
-									alt="Wallet"
-									h="21px"
-									w="24px"
+							<Circle size={14} bg={"divider"}>
+								<Icon
+									name="account-balance-wallet"
+									width="24px"
+									height="21px"
 								/>
 							</Circle>
 							<Box>
@@ -99,24 +136,27 @@ const CompanyPane = () => {
 						</Flex>
 					</Box>
 					<Box>
-						<Circle size={10} bg={"success"} color="white">
-							<Image
-								src="/icons/plus.svg"
-								alt="Add"
-								h="24px"
-								w="24px"
-							/>
+						<Circle
+							size={isSmallerThan440 ? 10 : 12}
+							bg={"success"}
+							color="white"
+							boxShadow="0px 3px 6px #00000029"
+							border="2px solid #FFFFFF"
+						>
+							<Icon name="add" height="24px" width="24px" />
 						</Circle>
 					</Box>
 				</Flex>
 				<Divider />
-				<Flex align="center" justify="center" mt="4">
+				<Flex align="center" justify="center" mt="6">
 					<IconButtons
 						title="View All Transactions"
-						iconFill="0"
-						iconPath="/icons/nextArrow.svg"
-						iconPos="right"
-						iconStyle={{ h: "15px", w: "18px" }}
+						iconName="arrow-forward"
+						hasBG={false}
+						iconStyle={{
+							width: "18px",
+							height: "15px",
+						}}
 					/>
 				</Flex>
 			</Box>

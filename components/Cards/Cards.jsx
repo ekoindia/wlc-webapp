@@ -1,4 +1,4 @@
-import { Card } from "@chakra-ui/react";
+import { Card, useMediaQuery } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 /**
@@ -9,8 +9,10 @@ import { useEffect, useState } from "react";
  * @example	`<Cards></Cards>`
  */
 const Cards = ({ className = "", children, ...props }) => {
+	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 
+	const { onClick } = props;
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
@@ -22,8 +24,10 @@ const Cards = ({ className = "", children, ...props }) => {
 			boxShadow="0px 5px 15px #0000000D"
 			border="1px solid #D2D2D2"
 			p="5"
-			h="620px"
-			w="490px"
+			h={isSmallerThan768 ? "auto" : "620px"}
+			w={isSmallerThan768 ? "100%" : "505px"}
+			bg="white"
+			onClick={onClick}
 			{...props}
 		>
 			{children}

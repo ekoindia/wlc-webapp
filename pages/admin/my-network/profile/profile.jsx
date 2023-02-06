@@ -1,4 +1,5 @@
 import { Layout, ProfilePanel } from "components";
+import { UpdatePersonalInfo } from "../../../../components/Profile/UpdatePersonalInfo";
 import Head from "next/head";
 import React from "react";
 

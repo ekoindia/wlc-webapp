@@ -1,77 +1,86 @@
-import { Box, Button, Circle, Image } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, Button, IconButton, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Icon } from "..";
 
-/**
- * A <IconButtons> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<IconButtons></IconButtons>`
- */
 const IconButtons = (props) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const {
 		title,
+		iconName,
+		iconPos = "right",
+		variant = "primary",
+		isRound = true,
+		hasBG = true,
+		hasIcon = true,
+		iconStyle,
+		textStyle,
 		children,
 		onClick,
-		colorType = 1,
-		iconPos = "right",
-		iconFill = 1,
-		iconPath,
-		iconStyle,
-		circleStyle,
-		textStyle,
 		...rest
 	} = props;
 
-	const fill = colorType === 1 ? "primary.DEFAULT" : "accent.DEFAULT";
-	const hoverFill = colorType === 1 ? "primary.dark" : "accent.dark";
-	//const shadow = colorType === 1 ? "shadow.primary" : "shadow.accent";
-	const styledIcon =
-		iconFill === 1 ? (
-			<Circle
-				bg={fill}
-				color={"white"}
-				size={"30px"}
-				boxShadow="0px 0px 10px #FE9F008C"
-				{...circleStyle}
-			>
-				<Image src={iconPath} {...iconStyle} />
-			</Circle>
-		) : (
-			<Image src={iconPath} {...iconStyle} />
-		);
+	const [hasMounted, setHasMounted] = useState(false);
 
-	const ordr1 = iconPos === "right" ? 1 : 2;
-	const ordr2 = ordr1 === 1 ? 2 : 1;
+	useEffect(() => {
+		setHasMounted(true);
+	}, []);
+
+	/* icon color */
+	const color = variant == "primary" ? "primary.DEFAULT" : "accent.DEFAULT";
+	/* text color on hover */
+	const hoverColor = variant == "primary" ? "primary.dark" : "accent.dark";
+	/* icon order */
+	const iconOrder = iconPos === "left" ? 1 : 2;
+	const textOrder = iconOrder === 1 ? 2 : 1;
 
 	return (
 		<Button
-			variant={"link"}
-			style={{ textDecoration: "none" }}
-			color={fill}
+			display="flex"
+			alignItems="center"
+			gap={2}
+			variant="link"
 			onClick={onClick}
-			_hover={{
-				color: hoverFill,
-			}}
+			color={color}
+			_hover={{ color: hoverColor }}
+			_active={{ color: hoverColor }}
 		>
-			<Box display={"flex"} alignItems="center" gap={1.5}>
-				<Box
-					as="span"
-					order={ordr1}
-					fontSize={"14px"}
-					fontWeight={"semibold"}
+			{hasIcon ? (
+				<Box order={iconOrder}>
+					{hasMounted && (
+						<>
+							{hasBG ? (
+								<>
+									<IconButton
+										size="sm"
+										isRound={isRound}
+										variant={variant}
+										icon={
+											<Icon
+												name={iconName}
+												{...iconStyle}
+											/>
+										}
+									/>
+								</>
+							) : (
+								<Box color="inherit">
+									<Icon name={iconName} {...iconStyle} />
+								</Box>
+							)}
+						</>
+					)}
+				</Box>
+			) : (
+				""
+			)}
+
+			<Box order={textOrder}>
+				<Text
+					color="inherit"
+					fontSize={{ base: "12px", md: "14px" }}
 					{...textStyle}
 				>
 					{title}
-				</Box>
-				{iconPath ? (
-					<Box as="span" order={ordr2}>
-						{styledIcon}
-					</Box>
-				) : (
-					""
-				)}
+				</Text>
 			</Box>
 		</Button>
 	);

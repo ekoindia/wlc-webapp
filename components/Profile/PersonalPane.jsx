@@ -1,7 +1,15 @@
-import { Box, Heading, Stack, StackDivider, Text } from "@chakra-ui/react";
+import {
+	Box,
+	Heading,
+	Stack,
+	StackDivider,
+	Text,
+	useMediaQuery,
+} from "@chakra-ui/react";
 import { Cards, IconButtons } from "../";
 
 const PersonalPane = () => {
+	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
 	return (
 		<Cards h="365px">
 			<Box
@@ -9,14 +17,21 @@ const PersonalPane = () => {
 				alignItems={"center"}
 				justifyContent="space-between"
 			>
-				<Heading fontSize={18} fontWeight="semibold" color={"light"}>
+				<Heading
+					fontSize={{ base: 16, md: 18 }}
+					fontWeight="semibold"
+					color={"light"}
+				>
 					Personal information
 				</Heading>
 				<IconButtons
-					title="Edit Details"
-					iconPos="left"
-					iconPath="/icons/pen.svg"
-					iconStyle={{ h: "12px", w: "12px" }}
+					title={isSmallerThan768 ? "" : "Edit Details"}
+					iconPos={isSmallerThan768 ? "" : "left"}
+					iconName="mode-edit"
+					iconStyle={{
+						width: "12px",
+						height: "12px",
+					}}
 				></IconButtons>
 			</Box>
 			<Stack
