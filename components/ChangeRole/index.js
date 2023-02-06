@@ -1,1 +1,1 @@
-export { default as ChangeRole } from "./ChangeRole";
+export { MoveAgents, default as ChangeRole } from "./ChangeRole";
