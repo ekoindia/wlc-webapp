@@ -2,13 +2,13 @@ import {
 	Avatar,
 	Box,
 	Button,
-	Checkbox,
 	Circle,
 	Flex,
 	Select,
 	Text,
 } from "@chakra-ui/react";
 import { Buttons, Icon } from "..";
+import MoveAgents from "./MoveAgents/MoveAgents";
 
 // text - align: left;
 // font: normal normal 600 16px / 18px Inter;
@@ -71,7 +71,7 @@ const data = [
 	},
 ];
 
-const TransferCSP = () => {
+const TransferCSP = ({ setIsShowSelectAgent }) => {
 	return (
 		<Box>
 			{/* Select  */}
@@ -127,6 +127,7 @@ const TransferCSP = () => {
 				mt="70px"
 				direction="column"
 				display={{ base: "flex", md: "none" }}
+				onClick={() => setIsShowSelectAgent(true)}
 			>
 				<Buttons h="54px" fontSize="md">
 					Select Agents
@@ -138,70 +139,7 @@ const TransferCSP = () => {
 
 			{/* Select for Move */}
 			<Flex mt="10.5" h="auto" display={{ base: "none", md: "flex" }}>
-				<Box w="500px">
-					<Text
-						color="#0C243B"
-						fontSize="md"
-						fontWeight="semibold"
-						mb="15px"
-					>
-						<Text color="light" as="span">
-							Select Sellers From:
-						</Text>{" "}
-						AngelTech Private Limited
-					</Text>
-
-					<Flex
-						direction="column"
-						border="card"
-						borderRadius="10"
-						h="635px"
-						overflow="hidden"
-					>
-						<Flex p="5" bg="divider" columnGap="15px">
-							<Checkbox variant="rounded" />
-							<Text>Select All</Text>
-						</Flex>
-						<Box
-							overflow="auto"
-							css={{
-								"&::-webkit-scrollbar": {
-									width: "7px",
-								},
-								"&::-webkit-scrollbar-track": {
-									width: "7px",
-								},
-								"&::-webkit-scrollbar-thumb": {
-									background: "#555555",
-									borderRadius: "5px",
-									border: "1px solid #707070",
-								},
-							}}
-						>
-							{data.map((ele, idx) => {
-								return (
-									<Flex
-										align="center"
-										px="5"
-										py="4"
-										bg="inherit"
-										key={idx}
-										columnGap="15px"
-										_even={{
-											backgroundColor: "shade",
-										}}
-										color="accent.DEFAULT"
-										fontSize="sm"
-									>
-										<Checkbox variant="rounded" />
-										<Avatar src="https://bit.ly/broken-link" />
-										<Text ml="-5px">{ele.title}</Text>
-									</Flex>
-								);
-							})}
-						</Box>
-					</Flex>
-				</Box>
+				<MoveAgents />
 
 				<Flex width="180px" align="center" justify="center">
 					<Circle bg="#1F5AA7" w="82px" h="82px" color="#E9EDF1">
@@ -251,8 +189,13 @@ const TransferCSP = () => {
 							align="center"
 							columnGap="15px"
 						>
-							<Avatar src="https://bit.ly/broken-link" />R J
-							Finance
+							<Avatar
+								name={"R"}
+								bg="accent.DEFAULT"
+								w="36px"
+								h="36px"
+							/>
+							R J Finance
 						</Flex>
 						{data.map((ele, idx) => {
 							return (
@@ -269,8 +212,12 @@ const TransferCSP = () => {
 									columnGap="15px"
 									align="center"
 								>
-									{" "}
-									<Avatar src="https://bit.ly/broken-link" />
+									<Avatar
+										name={ele.title[0]}
+										bg="accent.DEFAULT"
+										w="36px"
+										h="36px"
+									/>
 									{ele.title}
 								</Flex>
 							);
@@ -285,10 +232,10 @@ const TransferCSP = () => {
 				columnGap="36px"
 				display={{ base: "none", md: "flex" }}
 			>
-				<Buttons w="164px" h="64px">
+				<Buttons w="164px" h="64px" fontSize={"xl"}>
 					Move Now
 				</Buttons>
-				<Button variant="link" color="accent.DEFAULT">
+				<Button variant="link" color="accent.DEFAULT" fontSize={"xl"}>
 					Cancel
 				</Button>
 			</Flex>
