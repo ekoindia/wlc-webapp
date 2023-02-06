@@ -1,5 +1,6 @@
 import {
 	Box,
+	Center,
 	Flex,
 	HStack,
 	Input,
@@ -7,7 +8,7 @@ import {
 	useMediaQuery,
 	VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Buttons, Cards, Icon, SearchBar, Tags } from "../../..";
 import { DetailedStatementTable } from "./DetailedStatementTable";
 
@@ -15,6 +16,16 @@ const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 	// const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
+	const [dateText, setDateText] = useState("DD/MM/YYYY");
+
+	const inputRef = useRef(null);
+
+	const handleClickForInput = (e) => {
+		inputRef.current.click();
+	};
+	const handleClearForInput = () => {
+		setDateText("DD/MM/YYYY");
+	};
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -331,22 +342,54 @@ const DetailedStatement = ({ className = "", ...props }) => {
 							overflow={"hidden"}
 							bg={"white"}
 						>
-							<HStack
-								h={"100%"}
-								bg={"bg"}
-								w={{ base: "25%", sm: "30%" }}
-								pl={{ base: "15px", sm: "8px" }}
-							>
-								<Text>From:</Text>
-							</HStack>
-							<Box w={"70%"}>
-								<Input
-									size="sm"
-									type="date"
-									border={"none"}
-									focusBorderColor={"transparent"}
-								/>
-							</Box>
+							<Flex w={"100%"} align={"center"} h={"100%"}>
+								<Flex
+									pr={"3vw"}
+									align={"center"}
+									w={"20%"}
+									h={"100%"}
+									justifyContent={"end"}
+								>
+									<Text as={"span"}>From:</Text>
+								</Flex>
+								<Flex w={"65%"} h={"100%"}>
+									<Box
+										w={"100%"}
+										h={"100%"}
+										position={"relative"}
+										display={"flex"}
+										alignItems={"center"}
+									>
+										<Text
+											as={"button"}
+											onClick={handleClickForInput}
+										>
+											{dateText}
+										</Text>
+										<Input
+											w={"2px"}
+											size="xs"
+											type="date"
+											height={"100%"}
+											ref={inputRef}
+											onChange={(e) => {
+												setDateText(
+													e.currentTarget.value
+												);
+											}}
+											border={"none"}
+											focusBorderColor={"transparent"}
+										/>
+									</Box>
+								</Flex>
+								<Center w={"20%"} h={"100%"}>
+									<Icon
+										name="calender"
+										width="23px"
+										height="'24px"
+									/>
+								</Center>
+							</Flex>
 						</Flex>
 						<Flex
 							align={"center"}
@@ -358,22 +401,54 @@ const DetailedStatement = ({ className = "", ...props }) => {
 							overflow={"hidden"}
 							bg={"white"}
 						>
-							<HStack
-								h={"100%"}
-								bg={"bg"}
-								w={{ base: "25%", sm: "30%" }}
-								pl={{ base: "15px", sm: "10px" }}
-							>
-								<Text>To:</Text>
-							</HStack>
-							<Box w={"70%"}>
-								<Input
-									size="sm"
-									type="date"
-									border={"none"}
-									focusBorderColor={"transparent"}
-								/>
-							</Box>
+							<Flex w={"100%"} align={"center"} h={"100%"}>
+								<Flex
+									pr={"3vw"}
+									align={"center"}
+									w={"15%"}
+									h={"100%"}
+									justifyContent={"end"}
+								>
+									<Text as={"span"}>To:</Text>
+								</Flex>
+								<Flex w={"65%"} h={"100%"}>
+									<Box
+										w={"100%"}
+										h={"100%"}
+										position={"relative"}
+										display={"flex"}
+										alignItems={"center"}
+									>
+										<Text
+											as={"button"}
+											onClick={handleClickForInput}
+										>
+											{dateText}
+										</Text>
+										<Input
+											w={"2px"}
+											size="xs"
+											type="date"
+											height={"100%"}
+											ref={inputRef}
+											onChange={(e) => {
+												setDateText(
+													e.currentTarget.value
+												);
+											}}
+											border={"none"}
+											focusBorderColor={"transparent"}
+										/>
+									</Box>
+								</Flex>
+								<Center w={"20%"} h={"100%"}>
+									<Icon
+										name="calender"
+										width="23px"
+										height="'24px"
+									/>
+								</Center>
+							</Flex>
 						</Flex>
 					</Flex>
 				</VStack>
