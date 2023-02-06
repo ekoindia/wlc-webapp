@@ -9,7 +9,22 @@ import {
 import { Cards, IconButtons } from "../";
 
 const ContactPane = () => {
+	// const [useDim, setDim] = useState("");
 	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
+	// useEffect(() => {
+	// 	window.addEventListener("resize", (e) => {
+	// 		console.log("inside useEffect", useDim);
+	// 		let innerWidth = e.currentTarget.innerWidth;
+	// 		if (innerWidth < 768) {
+	// 			console.log("innerWidth", innerWidth);
+	// 			setDim(innerWidth);
+	// 		}
+	// 	});
+	// 	return () => {
+	// 		window.removeEventListener("resize");
+	// 	};
+	// }, []);
+
 	return (
 		<Cards h="365px">
 			<Box
@@ -49,7 +64,7 @@ const ContactPane = () => {
 					<IconButtons
 						variant="success"
 						hasIcon={isSmallerThan768 ? true : false}
-						iconName="mode-edit"
+						iconName="phone"
 						iconStyle={{
 							width: "12px",
 							height: "12px",
@@ -67,16 +82,12 @@ const ContactPane = () => {
 						title={isSmallerThan768 ? "" : "Email Now"}
 						variant="accent"
 						hasIcon={isSmallerThan768 ? true : false}
-						iconName="mode-edit"
+						iconName="mail"
 						iconStyle={{
 							width: "12px",
 							height: "12px",
 						}}
 					/>
-				</Box>
-				<Box display={"flex"}>
-					<Text>Landline:</Text>
-					<Text fontWeight={"medium"}>&nbsp; 0123 - 23412332</Text>
 				</Box>
 			</Stack>
 		</Cards>
