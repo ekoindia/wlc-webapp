@@ -8,6 +8,7 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerContent,
+	DrawerFooter,
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
