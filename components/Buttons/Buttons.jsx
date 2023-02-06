@@ -14,7 +14,6 @@ function Buttons(props, ref) {
 		onClick,
 		variant = "primary",
 		size,
-		color,
 		// colorType = 1,
 		...rest
 	} = props;

@@ -38,10 +38,12 @@ const Menus = (props) => {
 					icon={<Icon name="more-vert" height="18px" width="4px" />}
 					bg={type === "inverted" ? "white" : "primary.DEFAULT"}
 					_hover={{
-						bg: type === "inverted" ? "white" : "primary.DEFAULT",
+						color: type === "inverted" ? "primary.dark" : "white",
+						bg: type === "inverted" ? "white" : "primary.dark",
 					}}
 					_active={{
-						bg: type === "inverted" ? "white" : "primary.DEFAULT",
+						color: type === "inverted" ? "primary.dark" : "white",
+						bg: type === "inverted" ? "white" : "primary.dark",
 					}}
 				/>
 				<MenuList>

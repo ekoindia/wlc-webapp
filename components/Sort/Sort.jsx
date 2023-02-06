@@ -253,14 +253,24 @@ const Sort = ({ className = "", ...props }) => {
 							type="radio"
 							fontSize={"16px"}
 						>
-							<MenuItemOption value="reca" fontSize={"12px"}>
+							<MenuItemOption
+								value="reca"
+								fontSize={"12px"}
+								fontWeight={"medium"}
+							>
 								Recently Added
 							</MenuItemOption>
 							<MenuItemOption value="ac" fontSize={"12px"}>
-								Status: Active
+								Status:
+								<Text as={"span"} fontWeight={"medium"}>
+									&nbsp; Active
+								</Text>
 							</MenuItemOption>
 							<MenuItemOption value="inac" fontSize={"12px"}>
-								Status: Inactive
+								Status:
+								<Text as={"span"} fontWeight={"medium"}>
+									&nbsp; Inactive
+								</Text>
 							</MenuItemOption>
 						</MenuOptionGroup>
 					</MenuList>
@@ -276,7 +286,7 @@ export const ResSortAndFilter = () => {
 	return (
 		<Flex
 			display={{ base: "flex", md: "none" }}
-			position={"absolute"}
+			position={"fixed"}
 			w={"100%"}
 			h={"15vw"}
 			bottom={"0%"}
