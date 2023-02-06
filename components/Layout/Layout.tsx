@@ -16,7 +16,8 @@ const Layout = (props) => {
 				width={"full"}
 				height={{
 					base: "calc(100vh - 12.2vw)",
-					sm: "calc(100vh - 4.5vw)",
+					sm: "calc(100vh - 10vw)",
+					md: "calc(100vh - 4.5vw)",
 				}}
 			>
 				<SideBar
