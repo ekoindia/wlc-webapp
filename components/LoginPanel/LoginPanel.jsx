@@ -10,7 +10,8 @@ const LoginPanel = ({ className = "", ...props }) => {
 	return (
 		<Flex
 			w="full"
-			h="100vh"
+			// h="100vh"
+			h={{ base: "100%", md: "100vh" }}
 			alignItems={{ sm: "normal", md: "center" }}
 			justifyContent="center"
 			bg="bg"
@@ -22,6 +23,7 @@ const LoginPanel = ({ className = "", ...props }) => {
 				// align="center"
 				justifyItems="center"
 				w={{ base: "100%", md: "30rem", "2xl": "43.75rem" }}
+				h={{ base: "100%", md: "initial" }}
 			>
 				{/* Logo */}
 				<Box
@@ -32,7 +34,7 @@ const LoginPanel = ({ className = "", ...props }) => {
 					minH={{ base: "3.5rem", "2xl": "auto" }}
 					h={{ base: "10vw", md: "3.5rem", "2xl": "auto" }}
 					bg={{ base: "white", md: "transparent" }}
-					mb={{ base: 4, md: 8, "2xl": "3.8rem" }}
+					mb={{ base: "0", md: 8, "2xl": "3.8rem" }}
 					boxShadow={{
 						base: "0px 3px 15px #0000001A",
 						md: "none",
