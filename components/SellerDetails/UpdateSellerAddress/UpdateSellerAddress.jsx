@@ -132,8 +132,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				}}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
-					xl: "0",
-					lg: "0",
+					xl: "none",
+					lg: "none",
 					"2xl": "none",
 				}}
 			>
