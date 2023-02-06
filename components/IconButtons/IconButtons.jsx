@@ -1,4 +1,5 @@
 import { Box, Button, IconButton, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { Icon } from "..";
 
 const IconButtons = (props) => {
@@ -16,6 +17,12 @@ const IconButtons = (props) => {
 		onClick,
 		...rest
 	} = props;
+
+	const [hasMounted, setHasMounted] = useState(false);
+
+	useEffect(() => {
+		setHasMounted(true);
+	}, []);
 
 	/* icon color */
 	const color = variant == "primary" ? "primary.DEFAULT" : "accent.DEFAULT";
@@ -38,19 +45,28 @@ const IconButtons = (props) => {
 		>
 			{hasIcon ? (
 				<Box order={iconOrder}>
-					{hasBG ? (
-						<Box>
-							<IconButton
-								size="sm"
-								isRound={isRound}
-								variant={variant}
-								icon={<Icon name={iconName} {...iconStyle} />}
-							/>
-						</Box>
-					) : (
-						<Box color="inherit">
-							<Icon name={iconName} {...iconStyle} />
-						</Box>
+					{hasMounted && (
+						<>
+							{hasBG ? (
+								<>
+									<IconButton
+										size="sm"
+										isRound={isRound}
+										variant={variant}
+										icon={
+											<Icon
+												name={iconName}
+												{...iconStyle}
+											/>
+										}
+									/>
+								</>
+							) : (
+								<Box color="inherit">
+									<Icon name={iconName} {...iconStyle} />
+								</Box>
+							)}
+						</>
 					)}
 				</Box>
 			) : (
@@ -58,7 +74,11 @@ const IconButtons = (props) => {
 			)}
 
 			<Box order={textOrder}>
-				<Text color="inherit" {...textStyle}>
+				<Text
+					color="inherit"
+					fontSize={{ base: "12px", md: "14px" }}
+					{...textStyle}
+				>
 					{title}
 				</Text>
 			</Box>

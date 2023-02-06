@@ -12,12 +12,8 @@ import {
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
-	Grid,
-	GridItem,
 	HStack,
 	Input,
-	InputGroup,
-	InputLeftAddon,
 	Stack,
 	Text,
 	useDisclosure,
@@ -31,7 +27,7 @@ function Filter() {
 
 	return (
 		<>
-			<Box display={{ base: "none", sm: "initial" }}>
+			<Box display={{ base: "none", md: "initial" }}>
 				<Button
 					my={"1vw"}
 					display={"flex"}
@@ -44,8 +40,8 @@ function Filter() {
 						sm: "5vw",
 						md: "4vw",
 						lg: "3vw",
-						xl: "2.5vw",
-						"2xl": "2vw",
+						xl: "2.6vw",
+						"2xl": "2.4vw",
 					}}
 					w={{
 						base: "8vw",
@@ -59,7 +55,12 @@ function Filter() {
 					color="#11299E"
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
-					borderRadius="10"
+					borderRadius={{
+						base: "7px",
+						md: "7px",
+						lg: "5px",
+						"2xl": "10px",
+					}}
 					_hover={{
 						bg: "white",
 					}}
@@ -106,7 +107,7 @@ function Filter() {
 				</Button>
 			</Box>
 
-			<Box display={{ base: "initial", sm: "none" }}>
+			<Box display={{ base: "initial", md: "none" }}>
 				<Button
 					display={"flex"}
 					gap={"10px"}
@@ -141,8 +142,9 @@ function Filter() {
 					base: "full",
 					sm: "xs",
 					md: "sm",
-					lg: "sm",
-					"2xl": "lg",
+					lg: "xs",
+					xl: "sm",
+					"2xl": "md",
 				}}
 			>
 				<DrawerOverlay
@@ -152,11 +154,11 @@ function Filter() {
 					h={"100%"}
 				/>
 				<DrawerContent
-					// zIndex={"999999999999999999"}
 					borderTopRadius={{ base: "20px", sm: "0px" }}
 					mt={{ base: "8", sm: "0px" }}
+					p={"10px"}
 				>
-					<DrawerHeader borderTopRadius={"50%"}>
+					<DrawerHeader>
 						<Box
 							display={"flex"}
 							justifyContent={"space-between"}
@@ -164,9 +166,6 @@ function Filter() {
 							py={{
 								base: "5px",
 								sm: "0px",
-								md: "0px",
-								lg: "0px",
-								xl: "0px",
 								"2xl": ".5vw",
 							}}
 							px={{
@@ -191,7 +190,7 @@ function Filter() {
 										md: "20px",
 										lg: "20px",
 										xl: "20px",
-										"2xl": "40px",
+										"2xl": "25px",
 									}}
 								>
 									<Icon name="filter" width="100%" />
@@ -203,7 +202,7 @@ function Filter() {
 										md: "sm",
 										lg: "md",
 										xl: "md",
-										"2xl": "3xl",
+										"2xl": "2xl",
 									}}
 								>
 									Filter
@@ -226,7 +225,7 @@ function Filter() {
 										md: "20px",
 										lg: "20px",
 										xl: "20px",
-										"2xl": "40px",
+										"2xl": "25px",
 									}}
 								>
 									<Icon name="close-outline" width="100%" />
@@ -238,7 +237,7 @@ function Filter() {
 										md: "sm",
 										lg: "sm",
 										xl: "md",
-										"2xl": "3xl",
+										"2xl": "2xl",
 									}}
 								>
 									Close
@@ -249,14 +248,14 @@ function Filter() {
 
 					<DrawerBody>
 						<Stack
-							gap={{ base: "20vw", sm: "5vw" }}
+							gap={{ base: "5vw", sm: "5vw" }}
 							py={{
-								base: "8",
+								base: "1",
 								sm: "8",
 								md: "0px",
 								lg: "1px",
-								xl: "1px",
-								"2xl": "2vw",
+								xl: "3",
+								"2xl": "1.3vw",
 							}}
 							px={{
 								base: "2",
@@ -270,10 +269,10 @@ function Filter() {
 							<VStack
 								w={"100%"}
 								gap={{
-									base: "10",
+									base: "6",
 									lg: "6",
-									xl: "10",
-									"2xl": "24",
+									xl: "8",
+									"2xl": "17",
 								}}
 							>
 								<VStack
@@ -284,7 +283,7 @@ function Filter() {
 										sm: "px",
 										md: "0.5",
 										lg: "0.5",
-										xl: "2",
+										xl: "0.5",
 										"2xl": "2.5",
 									}}
 								>
@@ -345,7 +344,7 @@ function Filter() {
 										sm: "px",
 										md: "0.5",
 										lg: "0.5",
-										xl: "2",
+										xl: "0.5",
 										"2xl": "2.5",
 									}}
 								>
@@ -364,7 +363,7 @@ function Filter() {
 										Filter by account status
 									</Text>
 									<HStack w={"100%"}>
-										<Box w={"50%"} h={"100%"}>
+										<Box w={"50%"}>
 											<Checkbox
 												variant="rounded"
 												spacing={"2"}
@@ -406,7 +405,7 @@ function Filter() {
 										sm: "px",
 										md: "0.5",
 										lg: "0.5",
-										xl: "2",
+										xl: "0.5",
 										"2xl": "2.5",
 									}}
 								>
@@ -429,57 +428,91 @@ function Filter() {
 										justifyContent={"space-between"}
 										direction={{
 											base: "column",
-											md: "row",
+											// md: "row",
 										}}
 										gap={{
 											base: "3",
-											sm: "3",
-											md: "0.5",
-											lg: "0.5",
+											sm: "2",
+											md: "1",
+											lg: "1.5",
 											xl: "2",
 											"2xl": "2.5",
 										}}
 									>
-										<InputGroup
-											borderRadius={"0px"}
-											size={{
-												base: "sm",
-												sm: "sm",
-												lg: "sm",
-												xl: "sm",
-												"2xl": "lg",
+										<Flex
+											align={"center"}
+											gap={"5px"}
+											h={{
+												base: "11vw",
+												sm: "30px",
+												md: "30px",
+												lg: "30px",
+												xl: "35px",
+												"2xl": "45px",
 											}}
+											w={{ base: "100%", md: "80%" }}
+											border={"1px solid #D2D2D2"}
+											borderRadius={"8px"}
+											overflow={"hidden"}
 										>
-											<InputLeftAddon children="From:" />
-											<Input
-												borderRadius={"0px"}
-												type="date"
-												placeholder="phone number"
-											/>
-										</InputGroup>
-										<InputGroup
-											borderRadius={"0px"}
-											size={{
-												base: "sm",
-												sm: "sm",
-												lg: "sm",
-												xl: "sm",
-												"2xl": "lg",
+											<HStack
+												h={"100%"}
+												bg={"bg"}
+												w={"25%"}
+												pl={"15px"}
+											>
+												<Text>From:</Text>
+											</HStack>
+											<Box w={"70%"}>
+												<Input
+													size="sm"
+													type="date"
+													border={"none"}
+													focusBorderColor={
+														"transparent"
+													}
+												/>
+											</Box>
+										</Flex>
+										<Flex
+											align={"center"}
+											gap={"5px"}
+											h={{
+												base: "11vw",
+												sm: "30px",
+												md: "30px",
+												lg: "30px",
+												xl: "35px",
+												"2xl": "45px",
 											}}
+											w={{ base: "100%", md: "80%" }}
+											border={"1px solid #D2D2D2"}
+											borderRadius={"8px"}
+											overflow={"hidden"}
 										>
-											<InputLeftAddon
-												children="To:"
-												borderRadius={"0px"}
-											/>
-											<Input
-												borderRadius={"0px"}
-												type="date"
-												placeholder="phone number"
-											/>
-										</InputGroup>
+											<HStack
+												h={"100%"}
+												bg={"bg"}
+												w={"25%"}
+												pl={"15px"}
+											>
+												<Text>To:</Text>
+											</HStack>
+											<Box w={"70%"}>
+												<Input
+													size="sm"
+													type="date"
+													border={"none"}
+													focusBorderColor={
+														"transparent"
+													}
+												/>
+											</Box>
+										</Flex>
 									</Flex>
 								</VStack>
 							</VStack>
+
 							<Flex
 								justifyContent={"flex-end"}
 								gap={{
@@ -491,9 +524,11 @@ function Filter() {
 									"2xl": "14",
 								}}
 							>
-								<Buttons
-									variant="link"
-									colorScheme="#11299E"
+								<IconButtons
+									hasIcon={false}
+									title={"Clear All"}
+									variant={"accent"}
+									textStyle={{ fontWeight: "bold" }}
 									size={{
 										base: "lg",
 										sm: "sm",
@@ -502,12 +537,8 @@ function Filter() {
 										xl: "md",
 										"2xl": "lg",
 									}}
-									fontWeight={"bold"}
-									fontSize={"xl"}
-									onClick={onClose}
-								>
-									Clear All
-								</Buttons>
+								/>
+
 								<Buttons
 									size={{
 										base: "lg",
@@ -517,11 +548,11 @@ function Filter() {
 										xl: "md",
 										"2xl": "lg",
 									}}
+									title={"Apply"}
 									fontWeight={"bold"}
 									fontSize={"xl"}
-								>
-									Apply
-								</Buttons>
+									borderRadius={"4px"}
+								/>
 							</Flex>
 						</Stack>
 					</DrawerBody>

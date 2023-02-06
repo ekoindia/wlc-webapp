@@ -6,20 +6,19 @@ import {
 	TableContainer,
 	Tbody,
 	Td,
-	Text,
 	Th,
 	Thead,
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
-import { Cards, Icon, IconButtons, Pagination, Tags } from "..";
+import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
 
 const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentSort, setCurrentSort] = useState("default");
 
-	const [isSmallerThan770] = useMediaQuery("(max-width: 770px)");
+	const [isSmallerThan770] = useMediaQuery("(max-width: 768px)");
 
 	const {
 		pageLimit: PageSize = 10,
@@ -34,53 +33,6 @@ const Tables = (props) => {
 		const lastPageIndex = firstPageIndex + PageSize;
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
-
-	/* for row element styling */
-	const getNameStyle = (name) => {
-		return (
-			<Flex align={"center"} gap="0.625rem">
-				<Box>
-					<Avatar
-						bg="accent.DEFAULT"
-						color="divider"
-						size="sm"
-						name={name}
-						// src={item.link}
-					/>
-				</Box>
-				<Box as="span">{name}</Box>
-			</Flex>
-		);
-	};
-	const getStatusStyle = (status) => {
-		return <Tags status={status} />;
-	};
-	const getLocationStyle = (location, lat, long) => {
-		return (
-			<Flex alignItems={"center"}>
-				<Box>{location}</Box>
-				<Box>
-					<IconButtons
-						iconName="near-me"
-						iconStyle={{
-							width: "12px",
-							height: "12px",
-						}}
-					/>
-				</Box>
-			</Flex>
-		);
-	};
-	const getArrowStyle = () => {
-		return (
-			<Box as="span" color="hint">
-				<Icon name="arrow-forward" width="24px" height="21px" />
-			</Box>
-		);
-	};
-	const getModalStyle = (data) => {
-		return <Box>...</Box>;
-	};
 
 	const getTh = () => {
 		return renderer.map((item, index) => {
@@ -167,12 +119,18 @@ const Tables = (props) => {
 	const prepareCard = () => {
 		return currentTableData.map((item, index) => {
 			return (
-				<Cards key={index} width="90%" height="auto" p="15px">
+				<Cards
+					key={index}
+					width="100%"
+					height="auto"
+					p="15px"
+					onClick={redirect}
+				>
 					<Flex justifyContent="space-between">
 						<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
 							{getNameStyle(item.name)}
 						</Box>
-						<Text>...</Text>
+						<Menus type="inverted" />
 					</Flex>
 					<Flex
 						direction="column"
@@ -287,3 +245,54 @@ const Tables = (props) => {
 };
 
 export default Tables;
+
+/* for row element styling */
+export const getNameStyle = (name) => {
+	return (
+		<Flex align={"center"} gap="0.625rem">
+			<Box>
+				<Avatar
+					bg="accent.DEFAULT"
+					color="divider"
+					size="sm"
+					name={name}
+					// src={item.link}
+				/>
+			</Box>
+			<Box as="span">{name}</Box>
+		</Flex>
+	);
+};
+export const getStatusStyle = (status) => {
+	return <Tags status={status} />;
+};
+export const getLocationStyle = (location, lat, long) => {
+	return (
+		<Flex alignItems={"center"}>
+			<Box>{location}</Box>
+			<Box>
+				<IconButtons
+					iconName="near-me"
+					iconStyle={{
+						width: "12px",
+						height: "12px",
+					}}
+				/>
+			</Box>
+		</Flex>
+	);
+};
+export const getArrowStyle = () => {
+	return (
+		<Box as="span" color="hint">
+			<Icon name="arrow-forward" width="24px" height="21px" />
+		</Box>
+	);
+};
+export const getModalStyle = (data) => {
+	return (
+		<>
+			<Menus />
+		</>
+	);
+};

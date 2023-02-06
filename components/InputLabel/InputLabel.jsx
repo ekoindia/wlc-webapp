@@ -1,6 +1,6 @@
 import { Text } from "@chakra-ui/react";
 
-const InputLabel = ({ htmlFor, children, ...props }) => {
+const InputLabel = ({ htmlFor, required, children, ...props }) => {
 	return (
 		<Text
 			htmlFor={htmlFor || undefined}
@@ -9,6 +9,13 @@ const InputLabel = ({ htmlFor, children, ...props }) => {
 			color="light"
 			{...props}
 		>
+			{required ? (
+				<Text as="span" color="error">
+					*
+				</Text>
+			) : (
+				""
+			)}
 			{children}
 		</Text>
 	);

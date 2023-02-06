@@ -4,7 +4,7 @@ import { Breadcrumbs, NavBar, SideBar } from "..";
 
 const Layout = (props) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
-	const [isSmallerThan770] = useMediaQuery("(max-width: 770px)");
+	const [isSmallerThan770] = useMediaQuery("(max-width: 768px)");
 
 	return (
 		<Box w={"full"} minH={"100vh"}>
@@ -37,6 +37,7 @@ const Layout = (props) => {
 						h={"100%"}
 						overflowY={"scroll"}
 						p={"1.2vw"}
+						pr={"0.6vw"}
 						css={{
 							"&::-webkit-scrollbar": {
 								width: "0.6vw",

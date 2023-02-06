@@ -22,14 +22,15 @@ const Headings = (props) => {
 					cursor="pointer"
 				>
 					<Box
-						width={{ base: "14px", "2xl": "25px" }}
-						height={{ base: "13px", "2xl": "25px" }}
+						width={{ base: "14px", sm: "16px", "2xl": "25px" }}
+						height={{ base: "13px", sm: "16px", "2xl": "25px" }}
 					>
 						<Icon name="arrow-back" />
 					</Box>
 					<Text
 						fontSize={{
 							base: "12px",
+							sm: "18px",
 							md: "15px",
 							lg: "18px",
 							"2xl": "35px",
@@ -43,6 +44,7 @@ const Headings = (props) => {
 				<Text
 					fontSize={{
 						base: "12px",
+						sm: "18px",
 						md: "15px",
 						lg: "18px",
 						"2xl": "35px",

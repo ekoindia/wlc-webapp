@@ -26,16 +26,18 @@ const Network = ({ className = "", ...props }) => {
 						value={searchValue}
 					/>
 
-					{!isMobileScreen && (
-						<Flex gap={"20px"} align={"center"}>
-							<Box>
-								<Filter />
-							</Box>
-							<Box>
-								<Sort />
-							</Box>
-						</Flex>
-					)}
+					<Flex
+						display={{ base: "none", md: "flex" }}
+						gap={{ sm: "5px", md: "20px" }}
+						align={"center"}
+					>
+						<Box>
+							<Filter />
+						</Box>
+						<Box>
+							<Sort />
+						</Box>
+					</Flex>
 				</Box>
 
 				<Box>
