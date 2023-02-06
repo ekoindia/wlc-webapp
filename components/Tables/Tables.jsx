@@ -255,7 +255,7 @@ export const getNameStyle = (name) => {
 					bg="accent.DEFAULT"
 					color="divider"
 					size="sm"
-					name={name}
+					name={name[0]}
 					// src={item.link}
 				/>
 			</Box>
