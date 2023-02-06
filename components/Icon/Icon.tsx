@@ -32,7 +32,9 @@ export type IconNameType =
 	| "camera"
 	| "more-vert"
 	| "sort-by"
-	| "fast-forward";
+	| "fast-forward"
+	| "mail"
+	| "phone";
 
 export type IconProps = {
 	name: IconNameType;
