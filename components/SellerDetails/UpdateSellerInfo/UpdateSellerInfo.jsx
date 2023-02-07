@@ -129,7 +129,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				}}
 				alignContent="center"
 			>
-				<Box mt={{ base: "0", sm: "", md: "0rem", "2xl": "3.1rem" }}>
+				<Box mt={{ base: "0", sm: "", lg: "2rem", "2xl": "3.1rem" }}>
 					<Text
 						fontWeight="bold"
 						fontSize={{ base: "15px", "2xl": "20px" }}
