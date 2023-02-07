@@ -201,7 +201,7 @@ const Tables = (props) => {
 					<>
 						<TableContainer
 							borderRadius="10px 10px 0 0"
-							mt="20px"
+							mt={{ base: "20px", "2xl": "10px" }}
 							border="1px solid #E9EDF1"
 							css={{
 								"&::-webkit-scrollbar": {
@@ -235,7 +235,12 @@ const Tables = (props) => {
 						</Flex>
 					</>
 				) : (
-					<Flex direction="column" gap="4" alignItems="center">
+					<Flex
+						direction="column"
+						gap="4"
+						alignItems="center"
+						mt={"15px"}
+					>
 						{prepareCard()}
 					</Flex>
 				)}

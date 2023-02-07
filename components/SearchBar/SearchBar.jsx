@@ -19,10 +19,10 @@ export function SearchBar({ onChangeHandler, value }) {
 				md: "4vw",
 				lg: "3vw",
 				xl: "2.6vw",
-				"2xl": "2.4vw",
+				"2xl": "2.2vw",
 			}}
 			mx={{ base: "auto", sm: "0px" }}
-			my={{ base: "2vw", md: "1vw" }}
+			mt={{ base: "2vw", md: "1vw", "2xl": ".5vw" }}
 		>
 			<Input
 				value={value}
