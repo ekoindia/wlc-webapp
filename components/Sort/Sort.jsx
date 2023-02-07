@@ -31,18 +31,7 @@ const Sort = ({ className = "", ...props }) => {
 					"2xl": "2.2vw",
 				}}
 			>
-				<Menu
-					autoSelect={false}
-					matchWidth={"false"}
-					// w={{
-					// 	base: "5vw",
-					// 	sm: "5vw",
-					// 	md: "5vw",
-					// 	lg: "13vw",
-					// 	xl: "10vw",
-					// 	"2xl": "14vw",
-					// }}
-				>
+				<Menu autoSelect={false} matchWidth={"false"}>
 					{({ isOpen }) => (
 						<Box
 							display="flex"
@@ -211,12 +200,20 @@ const Sort = ({ className = "", ...props }) => {
 				</Menu>
 			</Box>
 
-			<Box display={{ md: "none" }} w={"100%"} overflow={"hidden"}>
+			<Box
+				display={{ md: "none" }}
+				w={"100%"}
+				overflow={"hidden"}
+				h={"100%"}
+			>
 				<Menu autoSelect={false} matchWidth={"false"} flip={"true"}>
 					<MenuButton
+						as={Button}
 						aria-label="Options"
 						w={"100%"}
 						bg="white"
+						h={"100%"}
+						borderRadius={"0px"}
 						color="accent.DEFAULT"
 						_active={{
 							bg: "white",
@@ -225,25 +222,19 @@ const Sort = ({ className = "", ...props }) => {
 							bg: "white",
 						}}
 					>
-						<Button
-							display={"flex"}
-							gap={"10px"}
-							w={"100%"}
-							h={"15vw"}
+						<Text
 							color="#11299E"
-							borderRadius={"0px"}
-							boxShadow=" 0px 3px 10px #11299E1A"
+							fontSize={"18px"}
+							lineHeight={"0"}
+							fontWeight={"semibold"}
+							display={"flex"}
+							justifyContent={"center"}
+							alignItems={"center"}
+							gap={"10px"}
 						>
 							<Icon name="sort-by" width="24px" height="21px" />
-							<Text
-								color="#11299E"
-								fontSize={"18px"}
-								lineHeight={"0"}
-								fontWeight={"semibold"}
-							>
-								Sort by
-							</Text>
-						</Button>
+							Sort by
+						</Text>
 					</MenuButton>
 
 					<MenuList borderTopRadius={"15px"} minW={"100%"}>
