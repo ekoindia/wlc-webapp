@@ -31,6 +31,8 @@ import {
 	DetailedStatement,
 } from "./TransactionHistory/AccountStatement";
 
+import { UpdateSellerInfo } from "./SellerDetails/UpdateSellerInfo";
+
 export {
 	SellerDetails,
 	ChangeRole,
@@ -61,5 +63,7 @@ export {
 	Sort,
 	Filter,
 	Breadcrumbs,
+	UpdateSellerInfo,
+
 	/* PLOP_INJECT_EXPORT */
 };
