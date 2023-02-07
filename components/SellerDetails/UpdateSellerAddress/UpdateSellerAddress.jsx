@@ -428,38 +428,28 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										State
 									</Text>
 								</Flex>
-								<Box mt={{ base: 2.5, md: "0" }}>
-									<Box mb={{ base: 2.5, "2xl": "0.8rem" }}>
-										<Text
-											fontSize={{ base: "md" }}
-											color="inputlabel"
-											pl="0"
-											fontWeight="600"
-										>
-											Ownership Type
-										</Text>
-									</Box>
-									<Box>
-										<Select
-											placeholder="-- Select --"
-											icon={<Icon name="caret-down" />}
-											h={{ base: "3rem", "2xl": "3rem" }}
-											w={{
-												base: "100%",
 
-												md: "42vw",
-												lg: "37vw",
-												xl: "28vw",
-												"2xl": "25vw",
-											}}
-											borderRadius={{
-												base: 10,
-												"2xl": 10,
-											}}
-										></Select>
-									</Box>
+								<Box>
+									<Select
+										placeholder="-- Select --"
+										icon={<Icon name="caret-down" />}
+										h={{ base: "3rem", "2xl": "3rem" }}
+										w={{
+											base: "100%",
+
+											md: "42vw",
+											lg: "37vw",
+											xl: "28vw",
+											"2xl": "25vw",
+										}}
+										borderRadius={{
+											base: 10,
+											"2xl": 10,
+										}}
+									></Select>
 								</Box>
 							</Box>
+
 							<Box
 								mt={{
 									base: "2.8rem",
