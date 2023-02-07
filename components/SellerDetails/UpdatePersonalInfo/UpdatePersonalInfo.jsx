@@ -78,6 +78,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 				xl: "20px",
 				"2xl": "14px 30px 30px 30px",
 			}}
+			mt="20px"
 
 			//
 		>
