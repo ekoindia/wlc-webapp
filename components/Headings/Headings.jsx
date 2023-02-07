@@ -12,7 +12,7 @@ const Headings = (props) => {
 	return (
 		<Box
 			onClick={redirectTo}
-			marginTop={"1.3vw"}
+			marginTop={"1vw"}
 			px={{ base: "1.5vw", lg: "0px" }}
 		>
 			{hasIcon ? (
@@ -22,8 +22,8 @@ const Headings = (props) => {
 					cursor="pointer"
 				>
 					<Box
-						width={{ base: "14px", sm: "16px", "2xl": "25px" }}
-						height={{ base: "13px", sm: "16px", "2xl": "25px" }}
+						width={{ base: "14px", sm: "16px", "2xl": "18px" }}
+						height={{ base: "13px", sm: "16px", "2xl": "18px" }}
 					>
 						<Icon name="arrow-back" />
 					</Box>
@@ -33,7 +33,7 @@ const Headings = (props) => {
 							sm: "18px",
 							md: "15px",
 							lg: "18px",
-							"2xl": "35px",
+							"2xl": "20px",
 						}}
 						fontWeight="semibold"
 					>
@@ -47,7 +47,7 @@ const Headings = (props) => {
 						sm: "18px",
 						md: "15px",
 						lg: "18px",
-						"2xl": "35px",
+						"2xl": "20px",
 					}}
 					fontWeight="semibold"
 				>

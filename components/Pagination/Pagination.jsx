@@ -29,7 +29,12 @@ const Pagination = (props) => {
 	let lastPage = paginationRange[paginationRange.length - 1];
 
 	return (
-		<Flex my="37px" justifyContent="space-between" w="100%">
+		<Flex
+			mt="30px"
+			mb={{ base: "30px", "2xl": "10px" }}
+			justifyContent="space-between"
+			w="100%"
+		>
 			<Flex gap={2} color="light">
 				<Box as="span">Results</Box>
 				<Box as="span" color="dark">
