@@ -11,7 +11,7 @@ import {
 	Switch,
 } from "@chakra-ui/react";
 import { Buttons, Input, Icon, IconButtons } from "../../";
-import { redirect } from "next/dist/server/api-utils";
+import Router from "next/router";
 /**
  * A <UpdateSellerInfo> component
  * TODO: Write more description here
@@ -129,7 +129,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				}}
 				alignContent="center"
 			>
-				<Box mt={{ base: "0", sm: "", md: "0rem", "2xl": "3.1rem" }}>
+				<Box mt={{ base: "0", sm: "", lg: "2rem", "2xl": "3.1rem" }}>
 					<Text
 						fontWeight="bold"
 						fontSize={{ base: "15px", "2xl": "20px" }}
@@ -340,6 +340,11 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						}}
 					>
 						<Buttons
+							onClick={() =>
+								Router.push(
+									"/admin/my-network/profile/up-sell-info/preview-sell-info"
+								)
+							}
 							h="3.5rem"
 							title="Preview"
 							w={{
@@ -359,7 +364,6 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						fontSize="1.2rem"
 						fontWeight="bold"
 						background={"none"}
-						onClick={redirect}
 					>
 						Cancel
 					</Button>
