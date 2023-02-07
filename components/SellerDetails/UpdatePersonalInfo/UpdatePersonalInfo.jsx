@@ -31,6 +31,8 @@ import { redirect } from "next/dist/server/api-utils";
  */
 const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	const [value, setValue] = useState();
+	const [files, setFiles] = useState(null);
+	const inputRef = useRef();
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
 	const EnterRef = useRef();
@@ -39,7 +41,16 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	const [isTablet] = useMediaQuery("(max-width: 770px)");
 
 	const [count, setCount] = useState(0); // TODO: Edit state as required
+	const handleDragOver = (event) => {
+		event.preventDefault();
+	};
 
+	const handleDrop = (event) => {
+		event.preventDefault();
+
+		setFiles(event.dataTransfer.files);
+		console.log(event);
+	};
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
@@ -188,6 +199,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							alignItems={"center"}
 							direction={{ base: "column", md: "row" }}
 							borderRadius="10px"
+							onDragOver={handleDragOver}
+							onDrop={handleDrop}
 						>
 							<Flex>
 								<Circle bg="divider" size={28}>
@@ -212,8 +225,22 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									change your photograph
 								</Text>
 							</Flex>
+							<Input
+								type="file"
+								onChange={(event) =>
+									setFiles(event.target.files)
+								}
+								hidden
+								ref={inputRef}
+							/>
+
 							<Flex>
-								<Buttons w="8.125rem" h="3rem" title="Browse" />
+								<Buttons
+									w="8.125rem"
+									h="3rem"
+									title="Browse"
+									onClick={() => inputRef.current.click()}
+								/>
 							</Flex>
 						</Flex>
 					)}
