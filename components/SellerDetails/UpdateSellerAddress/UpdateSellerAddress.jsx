@@ -138,7 +138,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				<Flex
 					direction={"column"}
 					p={{ base: "15px", md: "px" }}
-					mt={{ base: "0rem", "2xl": "2.8rem" }}
+					mt={{ base: "0rem", md: "1rem", "2xl": "2.8rem" }}
 				>
 					<HStack
 						justifyContent={"space-between"}

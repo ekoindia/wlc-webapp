@@ -33,6 +33,7 @@ import {
 
 import { UpdateSellerInfo } from "./SellerDetails/UpdateSellerInfo";
 import { UpdatePersonalInfo } from "./SellerDetails/UpdatePersonalInfo";
+import { UpdateSellerAddress } from "./SellerDetails/UpdateSellerAddress";
 
 export {
 	SellerDetails,
@@ -66,6 +67,7 @@ export {
 	Breadcrumbs,
 	UpdateSellerInfo,
 	UpdatePersonalInfo,
+	UpdateSellerAddress,
 
 	/* PLOP_INJECT_EXPORT */
 };
