@@ -70,6 +70,11 @@ const DocPane = () => {
 							<Text>Customer Photo</Text>
 						</Flex>
 						<IconButtons
+							onClick={() =>
+								Router.push(
+									"/admin/my-network/profile/up-per-info"
+								)
+							}
 							title="Download"
 							iconPos="left"
 							iconName="file-download"
