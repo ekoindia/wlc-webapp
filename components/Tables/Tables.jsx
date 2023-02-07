@@ -41,7 +41,7 @@ const Tables = (props) => {
 					<Th
 						key={index}
 						p={{ md: ".5em", xl: "1em" }}
-						fontSize={{ md: "14px", xl: "16px" }}
+						fontSize={{ md: "10px", xl: "11px", "2xl": "16px" }}
 					>
 						<Flex gap={2}>
 							{item.field}
@@ -61,7 +61,7 @@ const Tables = (props) => {
 					<Th
 						key={index}
 						p={{ md: ".5em", xl: "1em" }}
-						fontSize={{ md: "14px", xl: "16px" }}
+						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 					>
 						{item.field}
 					</Th>
@@ -75,7 +75,7 @@ const Tables = (props) => {
 				<Tr
 					key={index}
 					onClick={redirect}
-					fontSize={{ md: "14px", xl: "16px" }}
+					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 				>
 					{renderer.map((r, rIndex) => {
 						return (
@@ -201,7 +201,7 @@ const Tables = (props) => {
 					<>
 						<TableContainer
 							borderRadius="10px 10px 0 0"
-							mt="20px"
+							mt={{ base: "20px", "2xl": "10px" }}
 							border="1px solid #E9EDF1"
 							css={{
 								"&::-webkit-scrollbar": {
@@ -235,7 +235,12 @@ const Tables = (props) => {
 						</Flex>
 					</>
 				) : (
-					<Flex direction="column" gap="4" alignItems="center">
+					<Flex
+						direction="column"
+						gap="4"
+						alignItems="center"
+						mt={"15px"}
+					>
 						{prepareCard()}
 					</Flex>
 				)}
@@ -254,7 +259,7 @@ export const getNameStyle = (name) => {
 				<Avatar
 					bg="accent.DEFAULT"
 					color="divider"
-					size="sm"
+					size={{ base: "sm", sm: "sm", md: "xs", lg: "sm" }}
 					name={name[0]}
 					// src={item.link}
 				/>
@@ -264,35 +269,53 @@ export const getNameStyle = (name) => {
 	);
 };
 export const getStatusStyle = (status) => {
-	return <Tags status={status} />;
+	return (
+		<Tags
+			size={{ base: "sm", lg: "sm", "2xl": "md" }}
+			px={"10px"}
+			status={status}
+		/>
+	);
 };
 export const getLocationStyle = (location, lat, long) => {
 	return (
 		<Flex alignItems={"center"}>
 			<Box>{location}</Box>
-			<Box>
-				<IconButtons
-					iconName="near-me"
-					iconStyle={{
-						width: "12px",
-						height: "12px",
-					}}
-				/>
-			</Box>
+			{/* <Box h={'fit-content'}> */}
+			<IconButtons
+				// iconSize={{base: 'sm', md: "xs", lg: "xs", "2xl": "sm" }}
+				iconSize={"xs"}
+				iconName="near-me"
+				iconStyle={{
+					width: "12px",
+					height: "12px",
+				}}
+			/>
+			{/* </Box> */}
 		</Flex>
 	);
 };
 export const getArrowStyle = () => {
 	return (
-		<Box as="span" color="hint">
-			<Icon name="arrow-forward" width="24px" height="21px" />
+		<Box
+			color="hint"
+			width={{ md: "16px", lg: "20px", "2xl": "24px" }}
+			height={{ md: "16px", lg: "20px", "2xl": "24px" }}
+		>
+			<Icon name="arrow-forward" width="100%" />
 		</Box>
 	);
 };
 export const getModalStyle = (data) => {
 	return (
 		<>
-			<Menus />
+			<Menus
+				minH={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				height={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				iconStyles={{ height: "15px", width: "4px" }}
+			/>
 		</>
 	);
 };

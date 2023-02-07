@@ -8,6 +8,7 @@ import {
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { Buttons, Cards, Icon, IconButtons } from "../";
+import Router from "next/router";
 
 const DocPane = () => {
 	const [isSmallerThan440] = useMediaQuery("(max-width:440px)");
@@ -39,6 +40,11 @@ const DocPane = () => {
 							<Text>Customer Photo</Text>
 						</Flex>
 						<IconButtons
+							onClick={() =>
+								Router.push(
+									"/admin/my-network/profile/up-sell-info"
+								)
+							}
 							title="Download"
 							iconPos="left"
 							iconName="file-download"
@@ -64,6 +70,11 @@ const DocPane = () => {
 							<Text>Customer Photo</Text>
 						</Flex>
 						<IconButtons
+							onClick={() =>
+								Router.push(
+									"/admin/my-network/profile/up-per-info"
+								)
+							}
 							title="Download"
 							iconPos="left"
 							iconName="file-download"
@@ -89,6 +100,11 @@ const DocPane = () => {
 							<Text>Customer Photo</Text>
 						</Flex>
 						<IconButtons
+							onClick={() =>
+								Router.push(
+									"/admin/my-network/profile/up-sell-add"
+								)
+							}
 							title="Download"
 							iconPos="left"
 							iconName="file-download"
