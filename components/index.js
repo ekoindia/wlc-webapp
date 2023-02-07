@@ -32,6 +32,7 @@ import {
 } from "./TransactionHistory/AccountStatement";
 
 import { UpdateSellerInfo } from "./SellerDetails/UpdateSellerInfo";
+import { UpdatePersonalInfo } from "./SellerDetails/UpdatePersonalInfo";
 
 export {
 	SellerDetails,
@@ -64,6 +65,7 @@ export {
 	Filter,
 	Breadcrumbs,
 	UpdateSellerInfo,
+	UpdatePersonalInfo,
 
 	/* PLOP_INJECT_EXPORT */
 };
