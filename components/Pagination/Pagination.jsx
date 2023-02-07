@@ -1,4 +1,4 @@
-import { Box, Flex, Square } from "@chakra-ui/react";
+import { Box, Center, Flex, Square } from "@chakra-ui/react";
 import { DOTS, usePagination } from "hooks";
 import { useState } from "react";
 import { Icon } from "..";
@@ -34,6 +34,7 @@ const Pagination = (props) => {
 			mb={{ base: "30px", "2xl": "10px" }}
 			justifyContent="space-between"
 			w="100%"
+			fontSize={{ md: "12px", "2xl": "16px" }}
 		>
 			<Flex gap={2} color="light">
 				<Box as="span">Results</Box>
@@ -59,9 +60,14 @@ const Pagination = (props) => {
 					}}
 					cursor="pointer"
 				>
-					<Icon name="chevron-left" width="20px" />
+					<Center
+						width={{ md: "15px", "2xl": "20px" }}
+						height={"100%"}
+					>
+						<Icon name="chevron-left" width="100%" />
+					</Center>
 				</Flex>
-				<Flex gap={6}>
+				<Flex gap={{ md: "4", "2xl": "6" }}>
 					{paginationRange.map((pageNumber, index) => {
 						if (pageNumber === DOTS) {
 							return (
@@ -113,7 +119,13 @@ const Pagination = (props) => {
 						);
 					}}
 				>
-					<Icon name="chevron-right" width="20px" />
+					{/* <Icon name="chevron-right" width="20px" /> */}
+					<Center
+						width={{ md: "15px", "2xl": "20px" }}
+						height={"100%"}
+					>
+						<Icon name="chevron-right" width="100%" />
+					</Center>
 				</Flex>
 			</Flex>
 		</Flex>
