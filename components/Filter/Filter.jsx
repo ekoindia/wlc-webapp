@@ -29,7 +29,7 @@ function Filter() {
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
 				<Button
-					my={"1vw"}
+					mt={{ base: "1vw", "2xl": ".5vw" }}
 					display={"flex"}
 					justifyContent={"space-evenly"}
 					alignItems={"center"}
@@ -41,7 +41,7 @@ function Filter() {
 						md: "4vw",
 						lg: "3vw",
 						xl: "2.6vw",
-						"2xl": "2.4vw",
+						"2xl": "2.2vw",
 					}}
 					w={{
 						base: "8vw",

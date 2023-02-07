@@ -21,14 +21,14 @@ const Sort = ({ className = "", ...props }) => {
 		<>
 			<Box
 				display={{ base: "none", md: "flex" }}
-				my={"1vw"}
+				mt={{ base: "1vw", "2xl": ".5vw" }}
 				h={{
 					base: "8.5vw",
 					sm: "5.5vw",
 					md: "4vw",
 					lg: "3vw",
 					xl: "2.6vw",
-					"2xl": "2.4vw",
+					"2xl": "2.2vw",
 				}}
 			>
 				<Menu
@@ -87,7 +87,7 @@ const Sort = ({ className = "", ...props }) => {
 									md: "4vw",
 									lg: "3vw",
 									xl: "2.6vw",
-									"2xl": "2.4vw",
+									"2xl": "2.2vw",
 								}}
 								fontSize={{
 									base: "5px",

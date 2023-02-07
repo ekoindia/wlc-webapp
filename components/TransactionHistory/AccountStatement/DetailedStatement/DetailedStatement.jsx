@@ -1,14 +1,5 @@
-import {
-	Box,
-	Center,
-	Flex,
-	HStack,
-	Input,
-	Text,
-	useMediaQuery,
-	VStack,
-} from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
+import { Box, Center, Flex, Input, Text, VStack } from "@chakra-ui/react";
+import { useRef, useState } from "react";
 import { Buttons, Cards, Icon, SearchBar, Tags } from "../../..";
 import { DetailedStatementTable } from "./DetailedStatementTable";
 
@@ -16,21 +7,25 @@ const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 	// const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
-	const [dateText, setDateText] = useState("DD/MM/YYYY");
+	const [dateText, setDateText] = useState({
+		from: "DD/MM/YYYY",
+		to: "DD/MM/YYYY",
+	});
 
-	const inputRef = useRef(null);
+	const fromRef = useRef(null);
+	const toRef = useRef(null);
 
-	const handleClickForInput = (e) => {
-		inputRef.current.click();
-	};
-	const handleClearForInput = () => {
-		setDateText("DD/MM/YYYY");
+	const handleClickForInput = (type) => {
+		if (type == "to") {
+			toRef.current.click();
+		} else {
+			fromRef.current.click();
+		}
 	};
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
 	}
-
 	return (
 		<>
 			<Box
@@ -45,7 +40,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 				margin={"auto"}
 			>
 				<Cards
-					marginTop={{ base: "1rem", md: "1.5rem" }}
+					marginTop={{ base: "1rem", md: "1.5rem", "2xl": "0.8rem" }}
 					w={"100%"}
 					h={"100%"}
 				>
@@ -315,6 +310,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 				/>
 			</Box>
 
+			{/* Mobile Date Filter */}
 			<VStack
 				display={{ base: "flex", md: "none" }}
 				w={"100%"}
@@ -334,25 +330,26 @@ const DetailedStatement = ({ className = "", ...props }) => {
 					>
 						<Flex
 							align={"center"}
-							gap={"5px"}
+							px={"2"}
 							h={"48px"}
-							w={"100%"}
+							w={{ base: "100%", sm: "50%" }}
 							border={"1px solid #D2D2D2"}
 							borderRadius={"10px"}
 							overflow={"hidden"}
-							bg={"white"}
+							onClick={(e) => handleClickForInput("from")}
 						>
 							<Flex w={"100%"} align={"center"} h={"100%"}>
 								<Flex
+									onClick={(e) => handleClickForInput("from")}
 									pr={"3vw"}
 									align={"center"}
-									w={"20%"}
+									w={{ base: "20%", sm: "30%" }}
 									h={"100%"}
 									justifyContent={"end"}
 								>
 									<Text as={"span"}>From:</Text>
 								</Flex>
-								<Flex w={"65%"} h={"100%"}>
+								<Flex w={{ base: "60%", sm: "50%" }} h={"100%"}>
 									<Box
 										w={"100%"}
 										h={"100%"}
@@ -360,22 +357,32 @@ const DetailedStatement = ({ className = "", ...props }) => {
 										display={"flex"}
 										alignItems={"center"}
 									>
-										<Text
-											as={"button"}
-											onClick={handleClickForInput}
-										>
-											{dateText}
+										<Text as={"button"}>
+											{dateText.from}
 										</Text>
 										<Input
 											w={"2px"}
 											size="xs"
 											type="date"
 											height={"100%"}
-											ref={inputRef}
+											ref={fromRef}
 											onChange={(e) => {
-												setDateText(
-													e.currentTarget.value
-												);
+												if (!e.target.value) {
+													setDateText((prev) => {
+														return {
+															...prev,
+															from: "DD/MM/YYYY",
+														};
+													});
+												} else {
+													setDateText((prev) => {
+														return {
+															...prev,
+															from: e.target
+																.value,
+														};
+													});
+												}
 											}}
 											border={"none"}
 											focusBorderColor={"transparent"}
@@ -391,27 +398,28 @@ const DetailedStatement = ({ className = "", ...props }) => {
 								</Center>
 							</Flex>
 						</Flex>
+
 						<Flex
 							align={"center"}
-							gap={"5px"}
+							px={"2"}
 							h={"48px"}
-							w={"100%"}
+							w={{ base: "100%", sm: "50%" }}
 							border={"1px solid #D2D2D2"}
 							borderRadius={"10px"}
 							overflow={"hidden"}
-							bg={"white"}
+							onClick={(e) => handleClickForInput("to")}
 						>
 							<Flex w={"100%"} align={"center"} h={"100%"}>
 								<Flex
 									pr={"3vw"}
 									align={"center"}
-									w={"15%"}
+									w={{ base: "15%", sm: "25%" }}
 									h={"100%"}
 									justifyContent={"end"}
 								>
 									<Text as={"span"}>To:</Text>
 								</Flex>
-								<Flex w={"65%"} h={"100%"}>
+								<Flex w={{ base: "65%", sm: "55%" }} h={"100%"}>
 									<Box
 										w={"100%"}
 										h={"100%"}
@@ -419,22 +427,29 @@ const DetailedStatement = ({ className = "", ...props }) => {
 										display={"flex"}
 										alignItems={"center"}
 									>
-										<Text
-											as={"button"}
-											onClick={handleClickForInput}
-										>
-											{dateText}
-										</Text>
+										<Text as={"button"}>{dateText.to}</Text>
 										<Input
 											w={"2px"}
 											size="xs"
 											type="date"
 											height={"100%"}
-											ref={inputRef}
+											ref={toRef}
 											onChange={(e) => {
-												setDateText(
-													e.currentTarget.value
-												);
+												if (!e.target.value) {
+													setDateText((prev) => {
+														return {
+															...prev,
+															to: "DD/MM/YYYY",
+														};
+													});
+												} else {
+													setDateText((prev) => {
+														return {
+															...prev,
+															to: e.target.value,
+														};
+													});
+												}
 											}}
 											border={"none"}
 											focusBorderColor={"transparent"}
