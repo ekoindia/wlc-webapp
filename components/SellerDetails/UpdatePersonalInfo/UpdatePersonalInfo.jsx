@@ -94,7 +94,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 			//
 		>
 			<Box
-				bg={{ base: "#FFFFFF", "2xl": "white" }}
+				// bg={{ base: "#FFFFFF", "2xl": "white" }}
 				w={{
 					base: "100%",
 					md: "100%",
@@ -104,7 +104,13 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 				}}
 				alignItems={{ base: "center", "2xl": "none" }}
 			>
-				<Flex direction={"column"} p={{ base: "5px" }}>
+				<Flex
+					direction={"column"}
+					borderRadius={{ base: "10px" }}
+					border={{ base: "1px solid #D2D2D2", md: "none" }}
+					p={{ base: "10px", md: "0px" }}
+					bg={"white"}
+				>
 					<Heading
 						fontSize={{ base: "1rem", "2xl": "1.5em" }}
 						color={"#11299E"}
@@ -147,7 +153,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 					lg: "none",
 					"2xl": "none",
 				}}
-				m={{ base: "1rem", lg: "0px" }}
+				mt={{ base: "10px", lg: "0px" }}
+				mb={"20px"}
 			>
 				<VStack align={{ base: "none", "2xl": "" }}>
 					<HStack

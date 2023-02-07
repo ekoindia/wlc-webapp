@@ -72,6 +72,8 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				bg={{ base: "#FFFFFF", "2xl": "white" }}
 				w={{ base: "full", lg: "100%" }}
 				p={{ base: "10px", lg: "0px" }}
+				borderRadius={{ base: "10px", md: "none" }}
+				border={{ base: "1px solid #D2D2D2", md: "none" }}
 			>
 				<Flex direction={"column"}>
 					<Heading
@@ -108,7 +110,9 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					lg: "0px",
 					xl: "0px",
 				}}
-				m={{ base: "20px", md: "20px", lg: "0px" }}
+				// m={{ base: "20px", md: "20px", lg: "0px" }}
+				mt={{ base: "10px", lg: "0" }}
+				mb={"20px"}
 				borderRadius={{
 					base: "10px",
 					md: "10px",

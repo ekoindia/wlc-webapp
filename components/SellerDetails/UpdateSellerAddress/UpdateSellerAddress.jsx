@@ -67,21 +67,23 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				md: "none",
 				lg: "white",
 			}}
-			mt={{ base: "0px", md: "30px" }}
+			mt={{ base: "10px", md: "30px" }}
 		>
 			<Flex direction={"column"}>
 				<Box
 					bg={{ base: "#FFFFFF", "2xl": "none" }}
 					alignItems={{ base: "center", "2xl": "none" }}
+					borderRadius={{ base: "10px", md: "none" }}
+					border={{ base: "1px solid #D2D2D2", md: "none" }}
 				>
 					<Flex
 						direction={"column"}
 						p={{ base: "10px", md: "0px 2px 0px 2px", lg: "0px" }}
-						border={{
-							base: "1px solid #D2D2D2",
+						// border={{
+						// 	base: "1px solid #D2D2D2",
 
-							lg: "0",
-						}}
+						// 	lg: "0",
+						// }}
 						boxShadow={{
 							base: "0px 5px 15px #0000000D",
 							lg: "none",
@@ -113,13 +115,15 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				direction={"column"}
 				bg={"white"}
 				w={{
-					base: "89vw",
+					base: "100%",
 					md: "95%",
 					lg: "100%",
 					xl: "100%",
 					"2xl": "full",
 				}}
-				m={{ base: "1rem", lg: "0px" }}
+				m={{ base: "0rem", lg: "0px" }}
+				mt={{ base: "10px", md: "0px" }}
+				mb={"20px"}
 				borderRadius={{ base: "10px", xl: "0", "2xl": "none" }}
 				border={{
 					base: "1px solid #D2D2D2",
