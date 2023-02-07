@@ -16,6 +16,9 @@ const Breadcrumbs = ({ isSmallerThan770, ...props }) => {
 	//? Add text accordingly here 👇
 	const textChanger = {
 		Profile: "Profile Details",
+		// 'Up Per Info':"Update Personal Information",
+		// 'Up Sell Info':'Update Seller Information',
+		// 'Up Sell Add':"Update Selller Address",
 	};
 
 	const capitalizeWordsBreadcrumbs = (str) => {
