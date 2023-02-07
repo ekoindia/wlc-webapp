@@ -51,7 +51,7 @@ const LoginPanel = ({ className = "", ...props }) => {
 
 				{/* Login Card */}
 				<Box
-					maxW={{ sm: "30rem", lg: "none" }}
+					maxW={{ base: "90vw", sm: "30rem", lg: "none" }}
 					w={{
 						base: "90%",
 						md: "30rem",
