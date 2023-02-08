@@ -78,7 +78,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				>
 					<Flex
 						direction={"column"}
-						p={{ base: "10px", md: "0px 2px 0px 2px", lg: "0px" }}
+						p={{ base: "12px", md: "0px 2px 0px 2px", lg: "0px" }}
 						// border={{
 						// 	base: "1px solid #D2D2D2",
 
@@ -92,15 +92,16 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						}}
 					>
 						<Heading
-							fontSize={{ base: "1.1em", "2xl": "1.5em" }}
+							fontSize={{ base: "18px", "2xl": "1.5em" }}
 							color={"#11299E"}
 							fontWeight="semibold"
 						>
 							Angel Tech Private Limited
 						</Heading>
 						<Text
-							fontSize={{ base: "0.9em", "2xl": "1em" }}
+							fontSize={{ base: "12px", "2xl": "1em" }}
 							color="#0F0F0F"
+							pt={{ base: "5px", md: "initial" }}
 						>
 							Edit the fields below and click Preview. Click
 							Cancel to return to Client HomePage without
