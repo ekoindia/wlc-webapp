@@ -4,14 +4,9 @@ import { Breadcrumbs, NavBar, SideBar } from "..";
 
 const Layout = (props) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
-	const [isSmallerThan770] = useMediaQuery("(max-width: 768px)");
-
 	return (
 		<Box w={"full"} minH={"100vh"}>
-			<NavBar
-				setNavOpen={setIsNavOpen}
-				isSmallerThan770={isSmallerThan770}
-			/>
+			<NavBar setNavOpen={setIsNavOpen} />
 			<Flex
 				width={"full"}
 				height={{
@@ -20,11 +15,7 @@ const Layout = (props) => {
 					md: "calc(100vh - 4.5vw)",
 				}}
 			>
-				<SideBar
-					navOpen={isNavOpen}
-					setNavOpen={setIsNavOpen}
-					isSmallerThan770={isSmallerThan770}
-				/>
+				<SideBar navOpen={isNavOpen} setNavOpen={setIsNavOpen} />
 				{/* Main Content here */}
 
 				<Box
@@ -54,7 +45,7 @@ const Layout = (props) => {
 							},
 						}}
 					>
-						<Breadcrumbs isSmallerThan770={isSmallerThan770} />
+						<Breadcrumbs />
 
 						{props.children}
 					</Box>

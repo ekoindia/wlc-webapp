@@ -323,7 +323,12 @@ function Filter() {
 										<Box
 											w={"fit-content"}
 											h={"100%"}
-											px={{ base: "0px", md: "5px" }}
+											px={{
+												base: "0px",
+												md: "5px",
+												xl: "20px",
+												"2xl": "30px",
+											}}
 										>
 											<Checkbox
 												spacing={"2"}
