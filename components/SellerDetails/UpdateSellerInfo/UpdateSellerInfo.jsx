@@ -214,9 +214,9 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								"2xl": "0",
 							}}
 						>
-							<Text fontSize="0.9rem">Created By</Text> :{"   "}
+							<Text fontSize="sm">Created By</Text> :{"   "}
 							&nbsp;
-							<Text fontSize={"1rem"} fontWeight={"semibold"}>
+							<Text fontSize={"md"} fontWeight={"semibold"}>
 								Default ERO
 							</Text>
 						</Flex>
@@ -238,7 +238,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						}}
 					>
 						<Text
-							fontSize={"16px"}
+							fontSize={"md"}
 							fontWeight="semibold"
 							mb={{ base: "0.3rem", md: "", "2xl": "0.6rem" }}
 						>
@@ -264,9 +264,10 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				</Flex>
 				<Flex
 					mt={{ base: "3rem", "2xl": "2.8rem" }}
-					gap={{ base: "7rem", lg: "1.2rem" }}
+					gap={{ base: "0", lg: "1.2rem" }}
+					justifyContent={{ base: "space-between", lg: "flex-start" }}
 				>
-					<Text fontSize={"16px"} fontWeight="semibold">
+					<Text fontSize={"md"} fontWeight="semibold">
 						Is he trained?
 					</Text>
 					<Box>
