@@ -34,6 +34,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 			border={{ base: "", md: "card" }}
 			borderRadius={{ base: "0", md: "10" }}
 			boxShadow={{ base: "", md: "0px 5px 15px #0000000D;" }}
+			overflow={"hidden"}
 		>
 			<Flex
 				w="100%"
@@ -46,6 +47,8 @@ const ChangeRole = ({ className = "", ...props }) => {
 				borderBottom={{ base: "card", md: "0" }}
 				direction="column"
 				rowGap={{ base: "10px", md: "0" }}
+				borderRadius={{ base: "10px", md: "none" }}
+				border={{ base: "1px solid #D2D2D2", md: "none" }}
 			>
 				<Text
 					as="h1"

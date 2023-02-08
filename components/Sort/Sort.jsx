@@ -275,22 +275,26 @@ export default Sort;
 
 export const ResSortAndFilter = () => {
 	return (
-		<Flex
+		<Box
 			display={{ base: "flex", md: "none" }}
-			position={"fixed"}
-			w={"100%"}
-			h={"15vw"}
-			bottom={"0%"}
-			left={"0%"}
-			zIndex={"99"}
-			boxShadow={"0px -3px 10px #0000001A"}
+			pb={{ base: "20vw", sm: "15vw", md: "0px" }}
 		>
-			<Box w={"50%"} h={"100%"} bg={"white"}>
-				<Sort />
-			</Box>
-			<Box w={"50%"} h={"100%"}>
-				<Filter />
-			</Box>
-		</Flex>
+			<Flex
+				position={"fixed"}
+				w={"100%"}
+				h={"15vw"}
+				bottom={"0%"}
+				left={"0%"}
+				zIndex={"99"}
+				boxShadow={"0px -3px 10px #0000001A"}
+			>
+				<Box w={"50%"} h={"100%"} bg={"white"}>
+					<Sort />
+				</Box>
+				<Box w={"50%"} h={"100%"}>
+					<Filter />
+				</Box>
+			</Flex>
+		</Box>
 	);
 };
