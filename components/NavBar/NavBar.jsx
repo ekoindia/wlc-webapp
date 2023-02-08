@@ -15,7 +15,7 @@ import {
 import { Buttons, Icon } from "..";
 
 const NavBar = (props) => {
-	const { setNavOpen, isSmallerThan770 } = props;
+	const { setNavOpen } = props;
 	return (
 		<>
 			<Box
@@ -44,18 +44,18 @@ const NavBar = (props) => {
 						px={{ base: "4", sm: "6", md: "4", xl: "6" }}
 					>
 						<Box display={"flex"} alignItems={"center"}>
-							{isSmallerThan770 && (
-								<IconButton
-									onClick={() => {
-										setNavOpen(true);
-									}}
-									aria-label="open menu"
-									icon={<Icon name="nav-menu" />}
-									size={"xs"}
-									mr={{ base: "1vw", sm: "2vw", md: "1vw" }}
-									variant="none"
-								/>
-							)}
+							<IconButton
+								display={{ md: "none" }}
+								onClick={() => {
+									setNavOpen(true);
+								}}
+								aria-label="open menu"
+								icon={<Icon name="nav-menu" />}
+								size={"xs"}
+								mr={{ base: "1vw", sm: "2vw", md: "1vw" }}
+								variant="none"
+							/>
+
 							<Image
 								src="/icons/logoimage.png"
 								alt="logo"
@@ -63,15 +63,14 @@ const NavBar = (props) => {
 							/>
 						</Box>
 
-						{isSmallerThan770 && (
-							<Avatar
-								w={{ base: "6vw", sm: "5.5vw", md: "2.4vw" }}
-								h={{ base: "6vw", sm: "5.5vw", md: "2.4vw" }}
-								name="demo-user"
-								src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-							/>
-						)}
-						{!isSmallerThan770 && (
+						<Avatar
+							display={{ base: "flex", md: "none" }}
+							w={{ base: "6vw", sm: "5.5vw", md: "2.4vw" }}
+							h={{ base: "6vw", sm: "5.5vw", md: "2.4vw" }}
+							name="demo-user"
+							src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+						/>
+						<Box display={{ base: "none", md: "flex" }}>
 							<Menu>
 								<MenuButton>
 									<Flex
@@ -369,7 +368,7 @@ const NavBar = (props) => {
 									</Box>
 								</MenuList>
 							</Menu>
-						)}
+						</Box>
 					</HStack>
 				</Box>
 			</Box>
