@@ -25,7 +25,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	return !isShowSelectAgent ? (
 		<Flex
-			my="7.5"
+			my={{ base: "3", md: "7.5" }}
 			align={{ base: "center", md: "flex-start" }}
 			pb={{ base: "0", md: "40px" }}
 			bg={{ base: "none", md: "white" }}
@@ -83,7 +83,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 				border={{ base: "card", md: "none" }}
 				px={{ base: "0", md: "7.5" }}
 				pt={{ base: "3", md: "10.5" }}
-				w={{ base: "92%", md: "100%" }}
+				w={{ base: "100%", md: "100%" }}
 				boxShadow={{ base: "0px 5px 15px #0000000D", md: "none" }}
 				borderRadius={{ base: "10px", md: "none" }}
 			>
