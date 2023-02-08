@@ -19,6 +19,7 @@ import {
 	HStack,
 	useMediaQuery,
 	VStack,
+	Input as CInput,
 } from "@chakra-ui/react";
 import { Buttons, Input, Icon, IconButtons } from "../../";
 import { redirect } from "next/dist/server/api-utils";
@@ -232,7 +233,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									change your photograph
 								</Text>
 							</Flex>
-							<Input
+							<cInput
 								type="file"
 								onChange={(event) =>
 									setFiles(event.target.files)
@@ -292,7 +293,11 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 				<Flex direction={"column"}>
 					<Box>
 						<Flex
-							gap={{ base: "0", lg: "1rem", "2xl": "2.8rem" }}
+							gap={{
+								base: "2.5rem",
+								lg: "1rem",
+								"2xl": "2.8rem",
+							}}
 							mt="2.4rem"
 							wrap="wrap"
 						>
@@ -569,7 +574,11 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 						</Flex>
 						<Flex
 							mt="2.5rem"
-							gap={{ base: "0", lg: "1rem", "2xl": "2.8rem" }}
+							gap={{
+								base: "2.5rem",
+								lg: "1rem",
+								"2xl": "2.8rem",
+							}}
 							wrap={"wrap"}
 							alignItems={{ base: "", "2xl": "center" }}
 						>
