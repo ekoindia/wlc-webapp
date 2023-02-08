@@ -234,7 +234,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									change your photograph
 								</Text>
 							</Flex>
-							<cInput
+							<CInput
 								type="file"
 								onChange={(event) =>
 									setFiles(event.target.files)
