@@ -57,7 +57,6 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 			//
 		>
 			<Box
-				// bg={{ base: "#FFFFFF", "2xl": "white" }}
 				w={{
 					base: "100%",
 					md: "100%",
@@ -132,12 +131,6 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 
 					<Flex
 						mt={{ base: "1.8rem", "2xl": "0" }}
-						// gap={{ base: "px" }}
-						// alignContent={{
-						// 	base: "",
-						// 	md: "center",
-						// 	"2xl": "center",
-						// }}
 						direction="column"
 					>
 						<Text fontSize="0.8rem">Created By</Text>
@@ -148,12 +141,6 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 					</Flex>
 					<Flex
 						mt={{ base: "1.8rem", "2xl": "0" }}
-						// gap={{ base: "5px" }}
-						// alignContent={{
-						// 	base: "",
-						// 	md: "center",
-						// 	"2xl": "center",
-						// }}
 						direction="column"
 					>
 						<Text fontSize="0.8rem">Parent</Text>
@@ -164,12 +151,6 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 					</Flex>
 					<Flex
 						mt={{ base: "1.8rem", "2xl": "0" }}
-						// gap={{ base: "5px" }}
-						// alignContent={{
-						// 	base: "",
-						// 	md: "center",
-						// 	"2xl": "center",
-						// }}
 						direction="column"
 					>
 						<Text fontSize="0.8rem">External id</Text>
@@ -180,12 +161,6 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 					</Flex>
 					<Flex
 						mt={{ base: "1.8rem", "2xl": "0" }}
-						// gap={{ base: "5px" }}
-						// alignContent={{
-						// 	base: "",
-						// 	md: "center",
-						// 	"2xl": "center",
-						// }}
 						direction="column"
 					>
 						<Text fontSize="0.8rem">Trained</Text>
@@ -196,12 +171,6 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 					</Flex>
 					<Flex
 						mt={{ base: "1.8rem", "2xl": "0" }}
-						// gap={{ base: "5px" }}
-						// alignContent={{
-						// 	base: "",
-						// 	md: "center",
-						// 	"2xl": "center",
-						// }}
 						direction="column"
 					>
 						<Text fontSize="0.8rem">Training Date</Text>
@@ -244,7 +213,6 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 								"2xl": "8.75rem",
 							}}
 							fontSize="16px"
-							// fontWeight="bold"
 						/>
 					</Box>
 					<Button
