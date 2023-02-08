@@ -164,8 +164,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							base: "100%",
 
 							lg: "80vw",
-							xl: "80vw",
-							"2xl": "51vw",
+							xl: "65vw",
+							"2xl": "54vw",
 						}}
 					>
 						<Text
@@ -197,8 +197,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								base: "100	%",
 								md: "81vw",
 								lg: "80vw",
-								xl: "80vw",
-								"2xl": "51vw",
+								xl: "65vw",
+								"2xl": "54vw",
 							}}
 							p="20px"
 							h={"9.375em"}
@@ -291,13 +291,17 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 				<Flex direction={"column"}>
 					<Box>
-						<Flex gap={"2rem"} mt="2.4rem" wrap="wrap">
+						<Flex
+							gap={{ base: "0", lg: "1rem", "2xl": "2.8rem" }}
+							mt="2.4rem"
+							wrap="wrap"
+						>
 							<Box
 								w={{
 									base: "100%",
 									md: "100%",
 									lg: "46%",
-									xl: "34.5%",
+									xl: "26.5%",
 									"2xl": "20%",
 								}}
 							>
@@ -322,8 +326,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 											md: "100%",
-											lg: "20rem",
-											"2xl": "15.75vw",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
 										},
 										pos: "relative",
 										alignItems: "center",
@@ -341,7 +345,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									base: "100%",
 									md: "100%",
 									lg: "46%",
-									xl: "34.5%",
+									xl: "26.5%",
 									"2xl": "20%",
 								}}
 							>
@@ -365,8 +369,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 											md: "100%",
-											lg: "20rem",
-											"2xl": "15.75vw",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
 										},
 										pos: "relative",
 									}}
@@ -383,7 +387,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									base: "100%",
 									md: "100%",
 									lg: "46%",
-									xl: "34.5%",
+									xl: "30.5%",
 									"2xl": "20%",
 								}}
 							>
@@ -407,8 +411,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 											md: "100%",
-											lg: "20rem",
-											"2xl": "15.75vw",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
 										},
 										pos: "relative",
 									}}
@@ -428,7 +432,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									base: "100%",
 									md: "100%",
 									lg: "46%",
-									xl: "34.5%",
+									xl: "26.5%",
 									"2xl": "31%",
 								}}
 							>
@@ -455,8 +459,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 											md: "100%",
-											lg: "20rem",
-											"2xl": "15.75vw",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
 										},
 										pos: "relative",
 									}}
@@ -510,60 +514,62 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								base: "100%",
 								md: "100%",
 								lg: "46%",
-								xl: "34.5%",
+								xl: "26.5%",
 								"2xl": "31%",
 							}}
 						>
-							<Text
-								fontSize={{ base: "sm", "2xl": "md" }}
-								mb={{ base: 2.5, "2xl": "0.3rem" }}
-								color="inputlabe"
-								pl="0"
-								fontWeight="600"
+							<Box
+								w={{
+									base: "100%",
+									md: "100%",
+									lg: "18.5rem",
+									xl: "26.5%",
+									"2xl": "63%",
+								}}
 							>
-								Marital Status
-							</Text>
-							<Menu>
-								<MenuButton
+								<Box mb={{ base: 2.5, "2xl": "0.7rem" }}>
+									<Text
+										style={{
+											fontSize: { base: "16px" },
+											color: "inputlabel",
+
+											fontWeight: "600",
+										}}
+									>
+										Martial Status
+									</Text>
+								</Box>
+								<Select
+									placeholder="--Select--"
 									h={{ base: "3rem", "2xl": "3rem" }}
 									w={{
 										base: "100%",
 										md: "100%",
-										lg: "20rem",
-										"2xl": "15.75vw",
+										lg: "18.5rem",
+										"2xl": "20.6875rem",
 									}}
-									fontSize="md"
-									fontWeight="normal"
-									textAlign="start"
-									borderRadius="10px"
-									border=" 1px solid #D2D2D2"
-									bg="white"
-									as={Button}
-									rightIcon={
-										<Icon
-											name="caret-down"
-											width="13"
-											color="#555555"
-										/>
+									mt={{ base: "0.7rem", "2xl": "0" }}
+									position="relative"
+									borderRadius={{ base: 10, "2xl": 10 }}
+									border="1px solid #D2D2D2;"
+									_focus={{
+										bg: "focusbg",
+										boxShadow: "0px 3px 6px #0000001A",
+										borderColor: "hint",
+										transition: "box-shadow 0.3s ease-out",
+									}}
+									icon={
+										<Icon name="caret-down" width="17px" />
 									}
-									_active={{
-										bg: "white",
-									}}
-									_hover={{
-										bg: "white",
-									}}
 								>
-									{"-- Select --"}
-								</MenuButton>
-								<MenuList w={{ base: "18rem", "2xl": "25vw" }}>
-									<MenuItem></MenuItem>
-									<MenuItem></MenuItem>
-								</MenuList>
-							</Menu>
+									<option value="option1">Married</option>
+									<option value="option2">UnMarried</option>
+								</Select>
+							</Box>
 						</Flex>
 						<Flex
 							mt="2.5rem"
-							gap="2rem"
+							gap={{ base: "0", lg: "1rem", "2xl": "2.8rem" }}
 							wrap={"wrap"}
 							alignItems={{ base: "", "2xl": "center" }}
 						>
@@ -572,7 +578,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									base: "100%",
 									md: "100%",
 									lg: "46%",
-									xl: "34.5%",
+									xl: "26.5%",
 									"2xl": "20%",
 								}}
 							>
@@ -596,8 +602,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 											md: "100%",
-											lg: "20rem",
-											"2xl": "15.75vw",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
 										},
 										pos: "relative",
 									}}
@@ -614,7 +620,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									base: "100%",
 									md: "100%",
 									lg: "46%",
-									xl: "34.5%",
+									xl: "26.5%",
 									"2xl": "20%",
 								}}
 							>
@@ -636,8 +642,9 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									w={{
 										base: "100%",
 										md: "100%",
-										lg: "20rem",
-										"2xl": "15.75vw",
+										lg: "18.5rem",
+
+										"2xl": "20.6875rem",
 									}}
 									mt={{ base: "0.7rem", "2xl": "0" }}
 									position="relative"
