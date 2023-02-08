@@ -6,8 +6,9 @@ import {
 	Text,
 	Button,
 	useMediaQuery,
+	Divider,
 } from "@chakra-ui/react";
-import { Buttons, Divider } from "../../..";
+import { Buttons } from "../../..";
 import Router from "next/router";
 
 /**
@@ -23,7 +24,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 		<Flex
 			direction={"column"}
 			w="full"
-			h="auto"
+			h={{ base: "auto", md: "700px" }}
 			bg={{
 				base: "none",
 				md: "none",
@@ -98,10 +99,9 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 				h="full"
 				p={{
 					base: "16px",
-					sm: "20px",
+
 					md: "20px",
 					lg: "0px",
-					xl: "0px",
 				}}
 				borderRadius={{ base: "10px", lg: "0", xl: "0" }}
 				boxShadow={{
@@ -120,8 +120,8 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 				mb={"20px"}
 				direction="column"
 			>
-				<Box>
-					<Box>
+				<Flex direction="column">
+					<Box mt={{ base: "20px", md: "20px" }}>
 						<Text
 							fontSize={{ base: "1rem" }}
 							fontWeight={{ base: "semibold" }}
@@ -129,50 +129,90 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 							Membership related information
 						</Text>
 					</Box>
+					<Flex gap={{ base: "0", md: "12.5rem" }} mt="20px">
+						<Flex
+							display={{ base: "none", md: "flex" }}
+							// mt={{ base: "1rem", "2xl": "0" }}
+							direction="column"
+							gap="5px"
+						>
+							<Text fontSize="0.8rem">
+								Network Assigned Manager
+							</Text>
 
-					<Flex
-						mt={{ base: "1.8rem", "2xl": "0" }}
-						direction="column"
-					>
-						<Text fontSize="0.8rem">Created By</Text>
+							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
+								Default ERO
+							</Text>
+						</Flex>
 
-						<Text fontSize={"0.9rem"} fontWeight={"bold"}>
-							Default ERO
-						</Text>
+						<Flex
+							// mt={{ base: "1.8rem", "2xl": "0" }}
+							direction="column"
+						>
+							<Text fontSize="0.8rem">Created By</Text>
+
+							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
+								Default ERO
+							</Text>
+						</Flex>
 					</Flex>
 					<Flex
-						mt={{ base: "1.8rem", "2xl": "0" }}
-						direction="column"
+						direction={{ base: "column", md: "row" }}
+						gap={{ base: "", md: "17.8rem" }}
+						mt={{ base: "20px", md: "40px" }}
 					>
-						<Text fontSize="0.8rem">Parent</Text>
+						<Flex
+							// mt={{ base: "1.8rem", "2xl": "0" }}
+							direction="column"
+						>
+							<Text fontSize="0.8rem">Parent</Text>
 
-						<Text fontSize={"0.9rem"} fontWeight={"bold"}>
-							Vijay Kumar
-						</Text>
+							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
+								Vijay Kumar
+							</Text>
+						</Flex>
+						<Flex
+							mt={{ base: "20px", "2xl": "0" }}
+							direction="column"
+						>
+							<Text fontSize="0.8rem">External id</Text>
+
+							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
+								1
+							</Text>
+						</Flex>
 					</Flex>
 					<Flex
-						mt={{ base: "1.8rem", "2xl": "0" }}
-						direction="column"
+						direction={{ base: "column", md: "row" }}
+						gap={{ base: "", md: "20rem" }}
+						mt={{ base: "20px", md: "40px" }}
 					>
-						<Text fontSize="0.8rem">External id</Text>
+						<Flex
+							// mt={{ base: "1.8rem", "2xl": "0" }}
+							direction={"column"}
+						>
+							<Text fontSize="0.8rem">Trained</Text>
 
-						<Text fontSize={"0.9rem"} fontWeight={"bold"}>
-							1
-						</Text>
+							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
+								No
+							</Text>
+						</Flex>
+						<Flex
+							mt={{ base: "20px", "2xl": "0" }}
+							direction="column"
+							display={{ base: "none", md: "flex" }}
+						>
+							<Text fontSize="0.8rem">Training Id</Text>
+
+							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
+								N.A.
+							</Text>
+						</Flex>
 					</Flex>
 					<Flex
-						mt={{ base: "1.8rem", "2xl": "0" }}
+						mt={{ base: "20px", "2xl": "0" }}
 						direction="column"
-					>
-						<Text fontSize="0.8rem">Trained</Text>
-
-						<Text fontSize={"0.9rem"} fontWeight={"bold"}>
-							No
-						</Text>
-					</Flex>
-					<Flex
-						mt={{ base: "1.8rem", "2xl": "0" }}
-						direction="column"
+						display={{ base: "flex", md: "none" }}
 					>
 						<Text fontSize="0.8rem">Training Date</Text>
 
@@ -180,7 +220,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 							Not Available
 						</Text>
 					</Flex>
-				</Box>
+				</Flex>
 				<Flex
 					alignItems="center"
 					gap="1.5rem"
@@ -204,7 +244,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 					>
 						<Buttons
 							h="3.5rem"
-							title="Submit"
+							title="Save Now"
 							w={{
 								base: "100%",
 								md: "100%",
