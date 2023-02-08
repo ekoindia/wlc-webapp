@@ -30,8 +30,8 @@ const Pagination = (props) => {
 
 	return (
 		<Flex
-			mt="30px"
-			mb={{ base: "30px", "2xl": "10px" }}
+			mt="20px"
+			mb={{ base: "30px", "2xl": "0px" }}
 			justifyContent="space-between"
 			w="100%"
 			fontSize={{ md: "12px", "2xl": "16px" }}
