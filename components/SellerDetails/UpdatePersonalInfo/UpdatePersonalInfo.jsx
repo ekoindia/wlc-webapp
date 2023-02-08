@@ -22,7 +22,7 @@ import {
 	Input as CInput,
 } from "@chakra-ui/react";
 import { Buttons, Input, Icon, IconButtons } from "../../";
-import { redirect } from "next/dist/server/api-utils";
+import Router from "next/router";
 /**
  * A <UpdatePersonalInfo> component
  * TODO: Write more description here
@@ -709,16 +709,15 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 									"2xl": "8.75rem",
 								}}
-								fontSize="20px"
+								fontSize="md"
 								fontWeight="bold"
 							/>
 						</Box>
 						<Button
 							color="#11299E"
-							fontSize="1.2rem"
+							fontSize="md"
 							fontWeight="bold"
 							background={"none"}
-							onClick={redirect}
 						>
 							Cancel
 						</Button>
