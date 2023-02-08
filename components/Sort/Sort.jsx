@@ -8,13 +8,14 @@ import {
 	MenuDivider,
 	MenuGroup,
 	MenuItem,
-	MenuItemOption,
 	MenuList,
-	MenuOptionGroup,
 	Radio,
+	RadioGroup,
+	Stack,
+	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Filter, Icon } from "..";
+import { Divider, Filter, Icon } from "..";
 
 const Sort = ({ className = "", ...props }) => {
 	return (
@@ -238,32 +239,31 @@ const Sort = ({ className = "", ...props }) => {
 					</MenuButton>
 
 					<MenuList borderTopRadius={"15px"} minW={"100%"}>
-						<MenuOptionGroup
-							defaultValue="reca"
-							title="Sort by"
-							type="radio"
-							fontSize={"16px"}
-						>
-							<MenuItemOption
-								value="reca"
-								fontSize={"12px"}
-								fontWeight={"medium"}
-							>
-								Recently Added
-							</MenuItemOption>
-							<MenuItemOption value="ac" fontSize={"12px"}>
-								Status:
-								<Text as={"span"} fontWeight={"medium"}>
-									&nbsp; Active
-								</Text>
-							</MenuItemOption>
-							<MenuItemOption value="inac" fontSize={"12px"}>
-								Status:
-								<Text as={"span"} fontWeight={"medium"}>
-									&nbsp; Inactive
-								</Text>
-							</MenuItemOption>
-						</MenuOptionGroup>
+						<MenuGroup title="Sort by" fontSize={"16px"}>
+							<RadioGroup px={"5vw"}>
+								<Stack
+									divider={
+										<StackDivider borderColor="gray.200" />
+									}
+									direction="column"
+									fontWeight={"medium"}
+								>
+									<Radio value="1">Recently Added</Radio>
+									<Radio value="2">
+										<Text as={"spa"} fontWeight={"normal"}>
+											Status:
+										</Text>
+										Active
+									</Radio>
+									<Radio value="3">
+										<Text as={"spa"} fontWeight={"normal"}>
+											Status:
+										</Text>
+										Inactive
+									</Radio>
+								</Stack>
+							</RadioGroup>
+						</MenuGroup>
 					</MenuList>
 				</Menu>
 			</Box>
