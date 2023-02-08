@@ -8,6 +8,7 @@ import {
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { Buttons, Divider } from "../../..";
+import Router from "next/router";
 
 /**
  * A <PreviewPersonalInfo> component
@@ -216,6 +217,11 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 						/>
 					</Box>
 					<Button
+						onClick={() =>
+							Router.push(
+								"/admin/my-network/profile/up-sell-info"
+							)
+						}
 						color="#11299E"
 						fontSize=""
 						fontWeight="bold"
