@@ -91,6 +91,7 @@ const Login = ({ setStep, setNumber, number }) => {
 			</Button>
 
 			<Divider
+				cursor="default"
 				title="Or login with mobile number"
 				py={{ base: "4rem", "2xl": "5.62rem" }}
 				fontSize={{ base: "xs", "2xl": "md" }}
