@@ -76,21 +76,24 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				border={{ base: "1px solid #D2D2D2", md: "none" }}
 			>
 				<Flex direction={"column"}>
-					<Heading
-						fontSize={{ base: "18px", md: "1.2em", lg: "2xl" }}
-						color={"#11299E"}
-						fontWeight="semibold"
+					<Text
+						as="h1"
+						color="accent.DEFAULT"
+						fontWeight="bold"
+						fontSize={{ base: "lg", md: "2xl" }}
 					>
 						Angel Tech Private Limited
-					</Heading>
-					<Text
-						fontSize={{ base: "12px", lg: "md" }}
-						pt={{ base: "5px", md: "initial" }}
-						color="#0F0F0F"
-					>
-						Edit the fields below and click Preview. Click Cancel to
-						return to Client HomePage without submitting
-						information.
+					</Text>
+					<Text fontSize={{ base: "xs", md: "md" }}>
+						Edit the fields below and click Preview.
+						<Text
+							as="span"
+							display={{ base: "block", md: "inline" }}
+						>
+							{" "}
+							Click Cancel to return to Client HomePage without
+							submitting information.
+						</Text>
 					</Text>
 				</Flex>
 			</Box>
