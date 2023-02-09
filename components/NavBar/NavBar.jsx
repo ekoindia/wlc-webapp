@@ -121,7 +121,7 @@ const NavBar = (props) => {
 								<MenuList
 									w={{
 										base: "20vw",
-										lg: "19vw",
+										lg: "22vw",
 										"2xl": "18vw",
 									}}
 									border={"none"}
@@ -165,7 +165,13 @@ const NavBar = (props) => {
 													right: "2.7%",
 												}}
 											/>
-											<Box w={"full"} px={"0.2vw"}>
+											<Box
+												w={"full"}
+												px={{
+													base: "0.4vw",
+													lg: "0.2vw",
+												}}
+											>
 												<Flex
 													w={"full"}
 													align={"flex-end"}
@@ -174,14 +180,22 @@ const NavBar = (props) => {
 													}
 												>
 													<Text
-														fontSize={"0.85vw"}
+														fontSize={{
+															md: "11px",
+															lg: "12px",
+															"2xl": "16px",
+														}}
 														w={"fit-content"}
 														color={"highlight"}
 													>
 														Aakash Enterprises
 													</Text>
 													<Text
-														fontSize={"0.55vw"}
+														fontSize={{
+															md: "9px",
+															lg: "10px",
+															"2xl": "12px",
+														}}
 														w={"fit-content"}
 														color={"white"}
 													>
@@ -190,7 +204,11 @@ const NavBar = (props) => {
 												</Flex>
 												<Flex w={"full"} py={".3vw"}>
 													<Text
-														fontSize={"0.55vw"}
+														fontSize={{
+															md: "9px",
+															lg: "10px",
+															"2xl": "12px",
+														}}
 														w={"fit-content"}
 														color={"white"}
 													>
@@ -217,9 +235,11 @@ const NavBar = (props) => {
 															}
 														>
 															<Text
-																fontSize={
-																	"0.7vw"
-																}
+																fontSize={{
+																	md: "9px",
+																	lg: "10px",
+																	"2xl": "12px",
+																}}
 																color={"white"}
 															>
 																+91 9871 67943
