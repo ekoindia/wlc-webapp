@@ -135,7 +135,7 @@ const Dmt = ({ className = "", ...props }) => {
 						justifyContent={"space-between"}
 						mr={"20px"}
 					>
-						<InputGroup w={"25vw"} h={"2.5vw"}>
+						{/* <InputGroup w={"25vw"} h={"2.5vw"}>
 							<Input
 								placeholder="Commission Percentage"
 								defaultValue={"2.5"}
@@ -155,7 +155,7 @@ const Dmt = ({ className = "", ...props }) => {
 								h={"100%"}
 								pr={"5"}
 							/>
-						</InputGroup>
+						</InputGroup> */}
 
 						<Flex gap={"16"}>
 							<Buttons size={"lg"} title={"Save Commissions"} />
