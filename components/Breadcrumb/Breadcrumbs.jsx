@@ -16,6 +16,7 @@ const Breadcrumbs = ({ ...props }) => {
 	//? Add text accordingly here 👇
 	const textChanger = {
 		Profile: "Profile Details",
+		Pricing: "Pricing & Commissions",
 		// 'Up Per Info':"Update Personal Information",
 		// 'Up Sell Info':'Update Seller Information',
 		// 'Up Sell Add':"Update Selller Address",

@@ -238,7 +238,7 @@ export const light = extendTheme({
 		10: "2.5rem",
 		10.5: "2.625rem", // 42px - added
 		12: "3rem",
-		14: "3.5rem",
+		14: "3.5rem", //56px
 		16: "4rem",
 		17: "4.5rem",
 		20: "5rem",

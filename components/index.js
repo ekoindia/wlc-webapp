@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { PricingCommissions } from "./PricingCommissions";
 import { SellerDetails } from "./SellerDetails";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
@@ -37,6 +38,7 @@ import { UpdateSellerAddress } from "./SellerDetails/UpdateSellerAddress";
 import { PreviewSellerInfo } from "./SellerDetails";
 
 export {
+	PricingCommissions,
 	SellerDetails,
 	ChangeRole,
 	Menus,
