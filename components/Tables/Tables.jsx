@@ -11,6 +11,7 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
 
@@ -18,13 +19,12 @@ const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentSort, setCurrentSort] = useState("default");
 
-	const [isSmallerThan770] = useMediaQuery("(max-width: 768px)");
+	const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
 
 	const {
 		pageLimit: PageSize = 10,
 		data: tableData,
 		renderer,
-		redirect,
 		variant,
 	} = props;
 
@@ -33,6 +33,11 @@ const Tables = (props) => {
 		const lastPageIndex = firstPageIndex + PageSize;
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
+
+	const router = useRouter();
+	const redirect = () => {
+		router.push(`my-network/profile/`);
+	};
 
 	const getTh = () => {
 		return renderer.map((item, index) => {
@@ -80,7 +85,7 @@ const Tables = (props) => {
 					{renderer.map((r, rIndex) => {
 						return (
 							<Td p={{ md: ".5em", xl: "1em" }} key={rIndex}>
-								{prepareRow(
+								{prepareCol(
 									item,
 									r,
 									index +
@@ -94,7 +99,7 @@ const Tables = (props) => {
 			);
 		});
 	};
-	const prepareRow = (item, column, index) => {
+	const prepareCol = (item, column, index) => {
 		switch (column?.show) {
 			case "Tag":
 				return getStatusStyle(item[column.name]);
@@ -197,7 +202,7 @@ const Tables = (props) => {
 	return (
 		<>
 			<Box w="100%">
-				{!isSmallerThan770 ? (
+				{!isSmallerThan768 ? (
 					<>
 						<TableContainer
 							borderRadius="10px 10px 0 0"
@@ -277,21 +282,26 @@ export const getStatusStyle = (status) => {
 		/>
 	);
 };
-export const getLocationStyle = (location, lat, long) => {
+export const getLocationStyle = (
+	location,
+	lat = 23.1967657,
+	long = 77.4270079
+) => {
 	return (
 		<Flex alignItems={"center"}>
 			<Box>{location}</Box>
-			{/* <Box h={'fit-content'}> */}
 			<IconButtons
-				// iconSize={{base: 'sm', md: "xs", lg: "xs", "2xl": "sm" }}
 				iconSize={"xs"}
 				iconName="near-me"
 				iconStyle={{
 					width: "12px",
 					height: "12px",
 				}}
+				onClick={(e) => {
+					openGoogleMap(lat, long);
+					e.stopPropagation();
+				}}
 			/>
-			{/* </Box> */}
 		</Flex>
 	);
 };
@@ -315,7 +325,16 @@ export const getModalStyle = (data) => {
 				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
 				height={{ base: "25px", xl: "25px", "2xl": "30px" }}
 				iconStyles={{ height: "15px", width: "4px" }}
+				onClick={(e) => {
+					e.stopPropagation();
+				}}
 			/>
 		</>
 	);
+};
+
+export const openGoogleMap = ({ latitude, longitude }) => {
+	const lat = parseFloat(latitude);
+	const lng = parseFloat(longitude);
+	window.open(`https://maps.google.com/?q=${lat},${lng}`, "_blank");
 };
