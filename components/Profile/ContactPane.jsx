@@ -9,7 +9,6 @@ import {
 import { Cards, IconButtons } from "../";
 
 const ContactPane = () => {
-	// const [useDim, setDim] = useState("");
 	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
 	// useEffect(() => {
 	// 	window.addEventListener("resize", (e) => {
@@ -24,6 +23,17 @@ const ContactPane = () => {
 	// 		window.removeEventListener("resize");
 	// 	};
 	// }, []);
+
+	const contactData = [
+		{
+			label: "Mobile Number",
+			data: "+91 9898239232",
+		},
+		{
+			label: "Email",
+			data: "angeltech@email.co.in",
+		},
+	];
 
 	return (
 		<Cards h="365px">
@@ -51,14 +61,14 @@ const ContactPane = () => {
 			</Box>
 
 			<Stack
-				direction={"column"}
+				direction="column"
 				divider={<StackDivider />}
-				mt={"5"}
+				mt="5"
 				fontSize={14}
 			>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<Box display={"flex"} as="span">
-						<Text>Mobile number:</Text>
+						<Text color="light">Mobile number:</Text>
 						<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
 					</Box>
 					<IconButtons
@@ -73,7 +83,7 @@ const ContactPane = () => {
 				</Box>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<Box display={"flex"} as="span">
-						<Text>Email:</Text>
+						<Text color="light">Email:</Text>
 						<Text fontWeight={"medium"}>
 							&nbsp; angeltech@email.co.in
 						</Text>
