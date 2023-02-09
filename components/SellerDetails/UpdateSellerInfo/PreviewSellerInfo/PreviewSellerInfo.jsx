@@ -265,7 +265,11 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 						color="#11299E"
 						fontSize=""
 						fontWeight="bold"
-						background={"none"}
+						bg="white"
+						_focus={{
+							bg: "white",
+						}}
+						_hover="none"
 					>
 						Cancel
 					</Button>
