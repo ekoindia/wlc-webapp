@@ -51,6 +51,7 @@ const Menus = (props) => {
 		buttonStyle,
 		iconStyles = { height: "18px", width: "4px" },
 		itemStyles,
+		onClick,
 	} = props;
 
 	const pseudoStyles = {
@@ -75,7 +76,10 @@ const Menus = (props) => {
 			: { icon: <Icon name={iconName} {...iconStyles} /> };
 
 	return (
-		<Box color={type === "inverted" ? "primary.DEFAULT" : "white"}>
+		<Box
+			color={type === "inverted" ? "primary.DEFAULT" : "white"}
+			onClick={onClick}
+		>
 			<Menu autoSelect={false}>
 				{({ isOpen }) => (
 					<>

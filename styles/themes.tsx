@@ -89,7 +89,8 @@ export const light = extendTheme({
 				},
 				accent: {
 					bg: "accent.DEFAULT",
-					boxShadow: "0px 3px 10px #11299e96",
+					// boxShadow: "0px 3px 10px #11299e5f",
+					boxShadow: "0px 3px 10px #11299E1A",
 					borderRadius: 10,
 					color: "white",
 					_hover: {
@@ -238,7 +239,7 @@ export const light = extendTheme({
 		10: "2.5rem",
 		10.5: "2.625rem", // 42px - added
 		12: "3rem",
-		14: "3.5rem",
+		14: "3.5rem", //56px
 		16: "4rem",
 		17: "4.5rem",
 		20: "5rem",
