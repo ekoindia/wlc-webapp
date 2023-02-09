@@ -194,7 +194,7 @@ const Dmt = ({ className = "", ...props }) => {
 							h={{
 								base: "11vw",
 								sm: "9vw",
-								md: "7vw",
+								md: "6.5vw",
 								lg: "2.7vw",
 								"2xl": "2.3vw",
 							}}
