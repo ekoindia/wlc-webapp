@@ -91,21 +91,24 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							"2xl": "none",
 						}}
 					>
-						<Heading
-							fontSize={{ base: "18px", "2xl": "1.5em" }}
-							color={"#11299E"}
-							fontWeight="semibold"
+						<Text
+							as="h1"
+							color="accent.DEFAULT"
+							fontWeight="bold"
+							fontSize={{ base: "lg", md: "2xl" }}
 						>
 							Angel Tech Private Limited
-						</Heading>
-						<Text
-							fontSize={{ base: "12px", "2xl": "1em" }}
-							color="#0F0F0F"
-							pt={{ base: "5px", md: "initial" }}
-						>
-							Edit the fields below and click Preview. Click
-							Cancel to return to Client HomePage without
-							submitting information.
+						</Text>
+						<Text fontSize={{ base: "xs", md: "md" }}>
+							Edit the fields below and click Preview.
+							<Text
+								as="span"
+								display={{ base: "block", md: "inline" }}
+							>
+								{" "}
+								Click Cancel to return to Client HomePage
+								without submitting information.
+							</Text>
 						</Text>
 					</Flex>
 				</Box>
