@@ -73,12 +73,12 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				<Box
 					bg={{ base: "#FFFFFF", "2xl": "none" }}
 					alignItems={{ base: "center", "2xl": "none" }}
-					borderRadius={{ base: "10px", md: "none" }}
-					border={{ base: "1px solid #D2D2D2", md: "none" }}
+					borderRadius={{ base: "10px", lg: "none" }}
+					border={{ base: "1px solid #D2D2D2", lg: "none" }}
 				>
 					<Flex
 						direction={"column"}
-						p={{ base: "12px", md: "0px 2px 0px 2px", lg: "0px" }}
+						p={{ base: "12px", lg: "0px" }}
 						// border={{
 						// 	base: "1px solid #D2D2D2",
 
@@ -115,15 +115,16 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 			<Flex
 				direction={"column"}
 				bg={"white"}
+				//  bg="green"
 				w={{
 					base: "100%",
-					md: "95%",
+					md: "100%",
 					lg: "100%",
 					xl: "100%",
 					"2xl": "full",
 				}}
 				m={{ base: "0rem", lg: "0px" }}
-				mt={{ base: "10px", md: "0px" }}
+				mt={{ base: "18px", lg: "0px" }}
 				mb={"20px"}
 				borderRadius={{ base: "10px", xl: "0", "2xl": "none" }}
 				border={{
@@ -215,7 +216,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "42vw",
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -269,7 +270,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "42vw",
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -325,7 +326,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "42vw",
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -377,7 +378,413 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "42vw",
+											md: "38vw",
+											lg: "37vw",
+											xl: "28vw",
+											"2xl": "25vw",
+										},
+										pos: "relative",
+										alignItems: "center",
+									}}
+									// isNumInput={true}
+									// inputProps={{ maxLength: 12 }}
+									// onFocus={() => {
+									// 	setInvalid(false);
+									// }}
+									// onKeyDown={onkeyHandler}
+								/>
+							</Box>
+						</Flex>
+						<Flex
+							gap={{
+								md: "1.5rem",
+								xl: "1.5rem",
+								lg: "1rem",
+								"2xl": "1.2rem",
+							}}
+							wrap={"wrap"}
+							alignContent="center"
+						>
+							<Box
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
+							>
+								<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
+									<Text as="span" color="error">
+										*
+									</Text>
+									&nbsp;{" "}
+									<Text
+										as="b"
+										style={{
+											fontSize: {
+												base: "sm",
+												"2xl": "lg",
+											},
+											color: "inputlabe",
+											pl: "0",
+											fontWeight: "600",
+										}}
+									>
+										State
+									</Text>
+								</Flex>
+
+								<Box>
+									<Select
+										placeholder="Uttarpradesh"
+										w={{
+											base: "100%",
+											md: "38vw",
+											xl: "25vw",
+											lg: "35vw",
+											"2xl": "25vw",
+										}}
+										h={"3rem"}
+										borderRadius="10px"
+										icon={<Icon name="caret-down" />}
+									>
+										<option value="option1">Delhi</option>
+										<option value="option2">Punjab</option>
+									</Select>
+								</Box>
+							</Box>
+
+							<Box
+								mt={{
+									base: "2.8rem",
+									md: "0",
+									xl: "0",
+									"2xl": "0",
+								}}
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
+							>
+								<Input
+									label=" Country"
+									placeholder={"India"}
+									required="true"
+									// value={value}
+									// invalid={true}
+									// errorMsg={"Please enter"}
+									// mb={{ base: 10, "2xl": "4.35rem" }}
+									// onChange={onChangeHandler}
+									labelStyle={{
+										fontSize: { base: "md" },
+										color: "inputlabel",
+										pl: "0",
+										fontWeight: "600",
+										mb: { base: 2.5, "2xl": "0.8rem" },
+									}}
+									inputContStyle={{
+										h: { base: "3rem", "2xl": "3rem" },
+										w: {
+											base: "100%",
+
+											md: "38vw",
+											lg: "37vw",
+											xl: "28vw",
+											"2xl": "25vw",
+										},
+										pos: "relative",
+										alignItems: "center",
+									}}
+									// isNumInput={true}
+									// inputProps={{ maxLength: 12 }}
+									// onFocus={() => {
+									// 	setInvalid(false);
+									// }}
+									// onKeyDown={onkeyHandler}
+								/>
+							</Box>
+						</Flex>
+
+						<Box mt={{ base: 2.5, md: "0" }}>
+							<Box mb={{ base: 2.5, "2xl": "0.8rem" }}>
+								<Text
+									fontSize={{ base: "md" }}
+									color="inputlabel"
+									pl="0"
+									fontWeight="600"
+								>
+									Ownership Type
+								</Text>
+							</Box>
+							<Box>
+								<Select
+									placeholder="--Select--"
+									w={{
+										base: "100%",
+										md: "38vw",
+										xl: "25vw",
+										lg: "35vw",
+										"2xl": "25vw",
+									}}
+									h={"3rem"}
+									borderRadius="10px"
+									icon={<Icon name="caret-down" />}
+								>
+									<option value="option1">Option 1</option>
+									<option value="option2">Option 2</option>
+								</Select>
+							</Box>
+						</Box>
+					</Flex>
+
+					<Flex
+						mt={{ base: "2.8rem", md: "3rem", "2xl": "3rem" }}
+						gap={{ base: "1rem", md: "4rem", "2xl": "2rem" }}
+						p={{ base: "5px", md: "0px" }}
+					>
+						<Box>
+							<Text
+								fontSize={{ base: "14px", md: "16px" }}
+								fontWeight="semibold"
+							>
+								Is your permanent address is same as above ?
+							</Text>
+						</Box>
+						<Box>
+							{" "}
+							<Switch colorScheme="pink" size="lg" />
+						</Box>
+					</Flex>
+				</Flex>
+				<Flex display={{ base: "none", md: "flex" }} direction="column">
+					<Box>
+						<Text
+							fontSize={"20px"}
+							fontWeight="semibold"
+							mt="4.688rem"
+						>
+							Permanent Address
+						</Text>
+					</Box>
+					<Flex
+						rowGap={{
+							base: "2.8rem",
+							sm: "2.5rem",
+							"2xl": "2.5rem",
+						}}
+						direction="column"
+					>
+						<Flex
+							wrap={"wrap"}
+							gap={{
+								md: "1.5rem",
+								xl: "1.5rem",
+								lg: "1rem",
+								"2xl": "1.2rem",
+								// base:"1rem"
+							}}
+							mt={{ base: "2.25rem", md: "1.2rem" }}
+							direction={"row"}
+						>
+							<Box
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
+							>
+								<Input
+									label="Address Line 1"
+									placeholder={
+										"B-373 Second Floor Sector - 20"
+									}
+									// value={value}
+									// invalid={true}
+									// errorMsg={"Please enter"}
+									// mb={{ base: 10, "2xl": "4.35rem" }}
+									// onChange={onChangeHandler}
+									required="true"
+									labelStyle={{
+										fontSize: { base: "md" },
+										color: "inputlabel",
+										pl: "0",
+										fontWeight: "600",
+										mb: { base: 2.5, "2xl": "0.8rem" },
+									}}
+									inputContStyle={{
+										h: { base: "3rem", "2xl": "3rem" },
+										w: {
+											base: "100%",
+
+											md: "38vw",
+											lg: "37vw",
+											xl: "28vw",
+											"2xl": "25vw",
+										},
+										pos: "relative",
+										alignItems: "center",
+									}}
+									// isNumInput={true}
+									// inputProps={{ maxLength: 12 }}
+									// onFocus={() => {
+									// 	setInvalid(false);
+									// }}
+									// onKeyDown={onkeyHandler}
+								/>
+							</Box>
+							<Box
+								mt={{
+									base: "2.8rem",
+									md: "0",
+									lg: "0",
+									xl: "0",
+									"2xl": "0",
+								}}
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
+							>
+								<Input
+									label=" Address Line 2"
+									placeholder={
+										"B-373 Second Floor Sector - 20"
+									}
+									// value={value}
+									// invalid={true}
+									// errorMsg={"Please enter"}
+									// mb={{ base: 10, "2xl": "4.35rem" }}
+									// onChange={onChangeHandler}
+									labelStyle={{
+										fontSize: { base: "md" },
+										color: "inputlabel",
+										pl: "0",
+										fontWeight: "600",
+										mb: { base: 2.5, "2xl": "0.8rem" },
+									}}
+									inputContStyle={{
+										h: { base: "3rem", "2xl": "3rem" },
+										w: {
+											base: "100%",
+
+											md: "38vw",
+											lg: "37vw",
+											xl: "28vw",
+											"2xl": "25vw",
+										},
+										pos: "relative",
+										alignItems: "center",
+									}}
+									// isNumInput={true}
+									// inputProps={{ maxLength: 12 }}
+									// onFocus={() => {
+									// 	setInvalid(false);
+									// }}
+									// onKeyDown={onkeyHandler}
+								/>
+							</Box>
+						</Flex>
+						<Flex
+							wrap={"wrap"}
+							gap={{
+								md: "1.5rem",
+								xl: "1.5rem",
+								lg: "1rem",
+								"2xl": "1.2rem",
+							}}
+						>
+							<Box
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
+							>
+								<Input
+									label="Postal Code"
+									placeholder={"201301"}
+									// value={value}
+									// invalid={true}
+									// errorMsg={"Please enter"}
+									// mb={{ base: 10, "2xl": "4.35rem" }}
+									// onChange={onChangeHandler}
+									required="true"
+									labelStyle={{
+										fontSize: { base: "md" },
+										color: "inputlabel",
+										pl: "0",
+										fontWeight: "600",
+										mb: { base: 2.5, "2xl": "0.8rem" },
+									}}
+									inputContStyle={{
+										h: { base: "3rem", "2xl": "3rem" },
+										w: {
+											base: "100%",
+
+											md: "38vw",
+											lg: "37vw",
+											xl: "28vw",
+											"2xl": "25vw",
+										},
+										pos: "relative",
+										alignItems: "center",
+									}}
+									// isNumInput={true}
+									// inputProps={{ maxLength: 12 }}
+									// onFocus={() => {
+									// 	setInvalid(false);
+									// }}
+									// onKeyDown={onkeyHandler}
+								/>
+							</Box>
+							<Box
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
+								mt={{
+									base: "2.8rem",
+									md: "0",
+									lg: "0",
+									xl: "0",
+									"2xl": "0",
+								}}
+							>
+								<Input
+									label=" City"
+									placeholder={"Noida"}
+									// value={value}
+									// invalid={true}
+									// errorMsg={"Please enter"}
+									// mb={{ base: 10, "2xl": "4.35rem" }}
+									// onChange={onChangeHandler}
+									labelStyle={{
+										fontSize: { base: "md" },
+										color: "inputlabel",
+										pl: "0",
+										fontWeight: "600",
+										mb: { base: 2.5, "2xl": "0.8rem" },
+									}}
+									inputContStyle={{
+										h: { base: "3rem", "2xl": "3rem" },
+										w: {
+											base: "100%",
+
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -442,7 +849,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w={{
 											base: "100%",
 
-											md: "42vw",
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -491,7 +898,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "42vw",
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -528,354 +935,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									w={{
 										base: "100%",
 
-										md: "42vw",
-										lg: "37vw",
-										xl: "28vw",
-										"2xl": "25vw",
-									}}
-									borderRadius={{ base: 10, "2xl": 10 }}
-								></Select>
-							</Box>
-						</Box>
-					</Flex>
-
-					<Flex
-						mt={{ base: "2.8rem", md: "3rem", "2xl": "3rem" }}
-						gap={{ base: "1rem", md: "4rem", "2xl": "2rem" }}
-						p={{ base: "5px", md: "0px" }}
-					>
-						<Box>
-							<Text
-								fontSize={{ base: "14px", md: "16px" }}
-								fontWeight="semibold"
-							>
-								Is your permanent address is same as above ?
-							</Text>
-						</Box>
-						<Box>
-							{" "}
-							<Switch colorScheme="pink" size="lg" />
-						</Box>
-					</Flex>
-				</Flex>
-				<Flex display={{ base: "none", md: "flex" }} direction="column">
-					<Box>
-						<Text
-							fontSize={"20px"}
-							fontWeight="semibold"
-							mt="4.688rem"
-						>
-							Permanent Address
-						</Text>
-					</Box>
-					<Flex
-						mt={{ base: "", md: "1.3rem" }}
-						rowGap={{ base: "2.8rem", sm: "2.5rem", "2xl": "2rem" }}
-						direction="column"
-						bg="white"
-					>
-						<Flex
-							wrap={"wrap"}
-							gap={{
-								md: "1.5rem",
-								xl: "1.5rem",
-								lg: "1rem",
-								"2xl": "1.2rem",
-							}}
-						>
-							<Box>
-								<Input
-									label="Address Line 1"
-									placeholder={
-										"B-373 Second Floor Sector - 20"
-									}
-									required="true"
-									// value={value}
-									// invalid={true}
-									// errorMsg={"Please enter"}
-									// mb={{ base: 10, "2xl": "4.35rem" }}
-									// onChange={onChangeHandler}
-									labelStyle={{
-										fontSize: { base: "md" },
-										color: "inputlabel",
-										pl: "0",
-										fontWeight: "600",
-										mb: { base: 2.5, "2xl": "0.8rem" },
-									}}
-									inputContStyle={{
-										h: { base: "3rem", "2xl": "3rem" },
-										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
-											lg: "37vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
-										pos: "relative",
-										alignItems: "center",
-									}}
-									// isNumInput={true}
-									// inputProps={{ maxLength: 12 }}
-									// onFocus={() => {
-									// 	setInvalid(false);
-									// }}
-									// onKeyDown={onkeyHandler}
-								/>
-							</Box>
-							<Box
-								mt={{
-									base: "2.8rem",
-									md: "0",
-									xl: "0",
-									"2xl": "0",
-								}}
-							>
-								<Input
-									label=" Address Line 2"
-									placeholder={
-										"B-373 Second Floor Sector - 20"
-									}
-									// value={value}
-									// invalid={true}
-									// errorMsg={"Please enter"}
-									// mb={{ base: 10, "2xl": "4.35rem" }}
-									// onChange={onChangeHandler}
-									labelStyle={{
-										fontSize: { base: "md" },
-										color: "inputlabel",
-										pl: "0",
-										fontWeight: "600",
-										mb: { base: 2.5, "2xl": "0.8rem" },
-									}}
-									inputContStyle={{
-										h: { base: "3rem", "2xl": "3rem" },
-										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
-											lg: "37vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
-										pos: "relative",
-										alignItems: "center",
-									}}
-									// isNumInput={true}
-									// inputProps={{ maxLength: 12 }}
-									// onFocus={() => {
-									// 	setInvalid(false);
-									// }}
-									// onKeyDown={onkeyHandler}
-								/>
-							</Box>
-						</Flex>
-						<Flex
-							wrap={"wrap"}
-							gap={{
-								md: "1.5rem",
-								xl: "1.5rem",
-								lg: "1rem",
-								"2xl": "1.2rem",
-							}}
-						>
-							<Box>
-								<Input
-									label="Postal Code"
-									placeholder={"201301"}
-									required="true"
-									// value={value}
-									// invalid={true}
-									// errorMsg={"Please enter"}
-									// mb={{ base: 10, "2xl": "4.35rem" }}
-									// onChange={onChangeHandler}
-									labelStyle={{
-										fontSize: { base: "md" },
-										color: "inputlabel",
-										pl: "0",
-										fontWeight: "600",
-										mb: { base: 2.5, "2xl": "0.8rem" },
-									}}
-									inputContStyle={{
-										h: { base: "3rem", "2xl": "3rem" },
-										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
-											lg: "37vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
-										pos: "relative",
-										alignItems: "center",
-									}}
-									// isNumInput={true}
-									// inputProps={{ maxLength: 12 }}
-									// onFocus={() => {
-									// 	setInvalid(false);
-									// }}
-									// onKeyDown={onkeyHandler}
-								/>
-							</Box>
-							<Box
-								mt={{
-									base: "2.8rem",
-									md: "0",
-									xl: "0",
-									"2xl": "0",
-								}}
-							>
-								<Input
-									label=" City"
-									placeholder={"Noida"}
-									// value={value}
-									// invalid={true}
-									// errorMsg={"Please enter"}
-									// mb={{ base: 10, "2xl": "4.35rem" }}
-									// onChange={onChangeHandler}
-									labelStyle={{
-										fontSize: { base: "md" },
-										color: "inputlabel",
-										pl: "0",
-										fontWeight: "600",
-										mb: { base: 2.5, "2xl": "0.8rem" },
-									}}
-									inputContStyle={{
-										h: { base: "3rem", "2xl": "3rem" },
-										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
-											lg: "37vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
-										pos: "relative",
-										alignItems: "center",
-									}}
-									// isNumInput={true}
-									// inputProps={{ maxLength: 12 }}
-									// onFocus={() => {
-									// 	setInvalid(false);
-									// }}
-									// onKeyDown={onkeyHandler}
-								/>
-							</Box>
-						</Flex>
-						<Flex
-							gap={{
-								md: "1.5rem",
-								xl: "1.5rem",
-								lg: "1rem",
-								"2xl": "1.2rem",
-							}}
-							wrap={"wrap"}
-							alignContent="center"
-						>
-							<Box mt={{ base: 2.5, lg: "10px", "2xl": "1rem" }}>
-								<Text
-									as="b"
-									style={{
-										fontSize: { base: "sm", "2xl": "lg" },
-										color: "inputlabe",
-										pl: "0",
-										fontWeight: "600",
-									}}
-								>
-									State
-								</Text>
-
-								<Box>
-									<Select
-										placeholder="Uttarpradesh"
-										icon={<Icon name="caret-down" />}
-										h={{ base: "3rem", "2xl": "3rem" }}
-										w={{
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
-											lg: "37vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										}}
-										borderRadius={{ base: 10, "2xl": 10 }}
-									>
-										<option value="option1">
-											MadhyaPradesh
-										</option>
-										<option value="option2">Delhi</option>
-									</Select>
-								</Box>
-							</Box>
-							<Box
-								mt={{
-									base: "2.8rem",
-									md: "0",
-									xl: "0",
-									"2xl": "0",
-								}}
-							>
-								<Input
-									label=" Country"
-									placeholder={"India"}
-									required="true"
-									// value={value}
-									// invalid={true}
-									// errorMsg={"Please enter"}
-									// mb={{ base: 10, "2xl": "4.35rem" }}
-									// onChange={onChangeHandler}
-									labelStyle={{
-										fontSize: { base: "md" },
-										color: "inputlabel",
-										pl: "0",
-										fontWeight: "600",
-										mb: { base: 2.5, "2xl": "0.8rem" },
-									}}
-									inputContStyle={{
-										h: { base: "3rem", "2xl": "3rem" },
-										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
-											lg: "37vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
-										pos: "relative",
-										alignItems: "center",
-									}}
-									// isNumInput={true}
-									// inputProps={{ maxLength: 12 }}
-									// onFocus={() => {
-									// 	setInvalid(false);
-									// }}
-									// onKeyDown={onkeyHandler}
-								/>
-							</Box>
-						</Flex>
-
-						<Box mt={{ base: 2.5, md: "0", "2xl": "1rem" }}>
-							<Text
-								as="b"
-								style={{
-									fontSize: { base: "sm", "2xl": "lg" },
-									color: "inputlabe",
-									pl: "0",
-									fontWeight: "600",
-								}}
-							>
-								Ownership Type
-							</Text>
-
-							<Box>
-								<Select
-									placeholder="-- Select --"
-									icon={<Icon name="caret-down" />}
-									h={{ base: "3rem", "2xl": "3rem" }}
-									w={{
-										base: "19rem",
-										sm: "55vw",
-										md: "42vw",
+										md: "38vw",
 										lg: "37vw",
 										xl: "28vw",
 										"2xl": "25vw",
@@ -896,6 +956,50 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							New Address
 						</Text>
 					</Box>
+					<Box mt={{ base: 2.5, lg: "0", "2xl": "0px" }}>
+						<Box mb={{ base: 2.5, "2xl": "" }}>
+							<Text
+								as="b"
+								style={{
+									fontSize: { base: "md" },
+									color: "inputlabel",
+									pl: "0",
+									fontWeight: "600",
+								}}
+							>
+								Address Type
+							</Text>
+						</Box>
+
+						<Box>
+							<Flex
+								w={{
+									base: "100%",
+									md: "100%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "32%",
+								}}
+							>
+								<Select
+									placeholder="--Select--"
+									w={{
+										base: "100%",
+										md: "38vw",
+										xl: "25vw",
+										lg: "35vw",
+										"2xl": "25vw",
+									}}
+									h={"3rem"}
+									borderRadius="10px"
+									icon={<Icon name="caret-down" />}
+								>
+									<option value="option1">Option 1</option>
+									<option value="option2">Option 2</option>
+								</Select>
+							</Flex>
+						</Box>
+					</Box>
 					<Flex
 						rowGap={{
 							base: "2.8rem",
@@ -903,41 +1007,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							"2xl": "2.5rem",
 						}}
 						direction="column"
-						bg="white"
-						mt={{ base: "", md: "1.313rem" }}
 					>
-						<Box mt={{ base: 2.5, lg: "0", "2xl": "0px" }}>
-							<Box mb={{ base: 2.5, "2xl": "" }}>
-								<Text
-									as="b"
-									style={{
-										fontSize: { base: "md" },
-										color: "inputlabel",
-										pl: "0",
-										fontWeight: "600",
-									}}
-								>
-									Address Type
-								</Text>
-							</Box>
-
-							<Box>
-								<Select
-									placeholder="-- Select --"
-									icon={<Icon name="Inputdropdown" />}
-									h={{ base: "3rem", "2xl": "3rem" }}
-									w={{
-										base: "19rem",
-										sm: "55vw",
-										md: "42vw",
-										lg: "37vw",
-										xl: "28vw",
-										"2xl": "25vw",
-									}}
-									borderRadius={{ base: 10, "2xl": 10 }}
-								></Select>
-							</Box>
-						</Box>
 						<Flex
 							wrap={"wrap"}
 							gap={{
@@ -945,20 +1015,31 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								xl: "1.5rem",
 								lg: "1rem",
 								"2xl": "1.2rem",
+								// base:"1rem"
 							}}
+							mt={{ base: "2.25rem", md: "1.2rem" }}
+							direction={"row"}
 						>
-							<Box>
+							<Box
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
+							>
 								<Input
 									label="Address Line 1"
 									placeholder={
 										"B-373 Second Floor Sector - 20"
 									}
-									required="true"
 									// value={value}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
 									// onChange={onChangeHandler}
+									required="true"
 									labelStyle={{
 										fontSize: { base: "md" },
 										color: "inputlabel",
@@ -969,9 +1050,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
+											base: "100%",
+
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -991,8 +1072,16 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
+									lg: "0",
 									xl: "0",
 									"2xl": "0",
+								}}
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
 								}}
 							>
 								<Input
@@ -1015,9 +1104,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
+											base: "100%",
+
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1043,16 +1132,24 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								"2xl": "1.2rem",
 							}}
 						>
-							<Box>
+							<Box
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
+							>
 								<Input
 									label="Postal Code"
 									placeholder={"201301"}
-									required="true"
 									// value={value}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
 									// onChange={onChangeHandler}
+									required="true"
 									labelStyle={{
 										fontSize: { base: "md" },
 										color: "inputlabel",
@@ -1063,9 +1160,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
+											base: "100%",
+
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1082,9 +1179,17 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								/>
 							</Box>
 							<Box
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
 								mt={{
 									base: "2.8rem",
 									md: "0",
+									lg: "0",
 									xl: "0",
 									"2xl": "0",
 								}}
@@ -1107,9 +1212,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
+											base: "100%",
+
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1136,47 +1241,70 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							wrap={"wrap"}
 							alignContent="center"
 						>
-							<Box mt={{ base: 2.5, lg: "10px", "2xl": "1rem" }}>
-								<Text
-									as="b"
-									style={{
-										fontSize: { base: "sm", "2xl": "lg" },
-										color: "inputlabe",
-										pl: "0",
-										fontWeight: "600",
-									}}
-								>
-									State
-								</Text>
+							<Box
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
+								}}
+							>
+								<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
+									<Text as="span" color="error">
+										*
+									</Text>
+									&nbsp;{" "}
+									<Text
+										as="b"
+										style={{
+											fontSize: {
+												base: "sm",
+												"2xl": "lg",
+											},
+											color: "inputlabe",
+											pl: "0",
+											fontWeight: "600",
+										}}
+									>
+										State
+									</Text>
+								</Flex>
 
 								<Box>
 									<Select
-										placeholder="Uttarpradesh"
+										placeholder="-- Select --"
 										icon={<Icon name="caret-down" />}
 										h={{ base: "3rem", "2xl": "3rem" }}
 										w={{
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
+											base: "100%",
+
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										}}
-										borderRadius={{ base: 10, "2xl": 10 }}
-									>
-										<option value="option1">
-											MadhyaPradesh
-										</option>
-										<option value="option2">Delhi</option>
-									</Select>
+										borderRadius={{
+											base: 10,
+											"2xl": 10,
+										}}
+									></Select>
 								</Box>
 							</Box>
+
 							<Box
 								mt={{
 									base: "2.8rem",
 									md: "0",
 									xl: "0",
 									"2xl": "0",
+								}}
+								w={{
+									base: "100%",
+									md: "48%",
+									lg: "46%",
+									xl: "34.5%",
+									"2xl": "31%",
 								}}
 							>
 								<Input
@@ -1198,9 +1326,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
-											base: "19rem",
-											sm: "55vw",
-											md: "42vw",
+											base: "100%",
+
+											md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1218,28 +1346,26 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							</Box>
 						</Flex>
 
-						<Box mt={{ base: 2.5, lg: "0", "2xl": "1rem" }}>
-							<Text
-								as="b"
-								style={{
-									fontSize: { base: "sm", "2xl": "lg" },
-									color: "inputlabe",
-									pl: "0",
-									fontWeight: "600",
-								}}
-							>
-								Ownership Type
-							</Text>
-
+						<Box mt={{ base: 2.5, md: "0" }}>
+							<Box mb={{ base: 2.5, "2xl": "0.8rem" }}>
+								<Text
+									fontSize={{ base: "md" }}
+									color="inputlabel"
+									pl="0"
+									fontWeight="600"
+								>
+									Ownership Type
+								</Text>
+							</Box>
 							<Box>
 								<Select
 									placeholder="-- Select --"
 									icon={<Icon name="caret-down" />}
 									h={{ base: "3rem", "2xl": "3rem" }}
 									w={{
-										base: "19rem",
-										sm: "55vw",
-										md: "42vw",
+										base: "100%",
+
+										md: "38vw",
 										lg: "37vw",
 										xl: "28vw",
 										"2xl": "25vw",
@@ -1299,7 +1425,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						fontSize={"20px"}
 						fontWeight="bold"
 						background={"none"}
-						ml={{ base: "rem", "2xl": "0" }}
 					>
 						Cancel
 					</Button>
