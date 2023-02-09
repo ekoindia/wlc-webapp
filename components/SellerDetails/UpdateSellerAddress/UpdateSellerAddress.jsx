@@ -47,31 +47,25 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 			border={{
 				base: "none",
 				lg: "1px solid #D2D2D2",
-				xl: "1px solid #D2D2D2",
-				"2xl": "1px solid #D2D2D2",
 			}}
 			boxShadow={{
 				base: "none",
 				lg: "0px 5px 15px #0000000D",
-				"2xl": "0px 5px 15px #0000000D",
 			}}
 			borderRadius={{
 				base: "none",
 				md: "10px",
-				lg: "10px",
-				xl: "10px",
-				"2xl": "10px",
 			}}
 			bg={{
 				base: "none",
-				md: "none",
+
 				lg: "white",
 			}}
 			mt={{ base: "10px", md: "30px" }}
 		>
 			<Flex direction={"column"}>
 				<Box
-					bg={{ base: "#FFFFFF", "2xl": "none" }}
+					bg={{ base: "white", "2xl": "none" }}
 					alignItems={{ base: "center", "2xl": "none" }}
 					borderRadius={{ base: "10px", lg: "none" }}
 					border={{ base: "1px solid #D2D2D2", lg: "none" }}
@@ -79,16 +73,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 					<Flex
 						direction={"column"}
 						p={{ base: "12px", lg: "0px" }}
-						// border={{
-						// 	base: "1px solid #D2D2D2",
-
-						// 	lg: "0",
-						// }}
 						boxShadow={{
 							base: "0px 5px 15px #0000000D",
 							lg: "none",
-							xl: "none",
-							"2xl": "none",
 						}}
 					>
 						<Text
@@ -112,7 +99,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						</Text>
 					</Flex>
 				</Box>
-				{!isTablet && <Divider mt="15px" color="#D2D2D2" />}
+				<Flex display={{ base: "none", lg: "flex" }}>
+					<Divider color="hint" mt="15px" />
+				</Flex>
 			</Flex>
 
 			<Flex
@@ -121,26 +110,20 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				//  bg="green"
 				w={{
 					base: "100%",
-					md: "100%",
-					lg: "100%",
-					xl: "100%",
+
 					"2xl": "full",
 				}}
-				m={{ base: "0rem", lg: "0px" }}
 				mt={{ base: "18px", lg: "0px" }}
 				mb={"20px"}
 				borderRadius={{ base: "10px", xl: "0", "2xl": "none" }}
 				border={{
 					base: "1px solid #D2D2D2",
 					lg: "0",
-					xl: "0",
-					"2xl": "none",
 				}}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
-					xl: "none",
+
 					lg: "none",
-					"2xl": "none",
 				}}
 				p={{ base: "0px", md: "20px", lg: "0px" }}
 			>
@@ -165,13 +148,12 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						>
 							Current Address
 						</Text>
-						<Text color="#FF4081">* Mandatory</Text>
+						<Text color="error">* Mandatory</Text>
 					</HStack>
 					<Flex
 						rowGap={{
 							base: "2.8rem",
 							sm: "2.5rem",
-							"2xl": "2.5rem",
 						}}
 						direction="column"
 					>
@@ -1387,7 +1369,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								boxShadow="0px 3px 10px #11299E33"
 							>
 								<Text
-									color={"#11299E"}
+									color={"accent.DEFAULT"}
 									fontSize="20px"
 									fontWeight={"bold"}
 								>
@@ -1424,7 +1406,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						/>
 					</Box>
 					<Button
-						color="#11299E"
+						color={"accent.DEFAULT"}
 						fontSize={"20px"}
 						fontWeight="bold"
 						bg="white"
