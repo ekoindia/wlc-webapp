@@ -1424,7 +1424,11 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						color="#11299E"
 						fontSize={"20px"}
 						fontWeight="bold"
-						background={"none"}
+						bg="white"
+						_focus={{
+							bg: "white",
+						}}
+						_hover="none"
 					>
 						Cancel
 					</Button>
