@@ -10,18 +10,12 @@ const Headings = (props) => {
 		router.push(`${redirectPath}`);
 	};
 	return (
-		<Box
-			onClick={redirectTo}
-			marginTop={"1vw"}
-			px={{ base: "1.5vw", lg: "0px" }}
-		>
+		<Box marginTop={"1vw"} px={{ base: "1.5vw", lg: "0px" }}>
 			{hasIcon ? (
-				<Flex
-					alignItems="center"
-					gap={{ base: "2", lg: "4" }}
-					cursor="pointer"
-				>
+				<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>
 					<Box
+						onClick={redirectTo}
+						cursor="pointer"
 						width={{ base: "14px", sm: "16px", "2xl": "18px" }}
 						height={{ base: "13px", sm: "16px", "2xl": "18px" }}
 					>

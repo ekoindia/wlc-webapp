@@ -60,8 +60,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 				</Text>
 				<Text fontSize={{ base: "xs", md: "md" }}>
 					Edit the fields below and click Preview.
-					<Text display={{ base: "block", md: "inline" }}>
-						{" "}
+					<Text as="span" display={{ base: "block", md: "inline" }}>
 						Click Cancel to return to Client HomePage without
 						submitting information.
 					</Text>
