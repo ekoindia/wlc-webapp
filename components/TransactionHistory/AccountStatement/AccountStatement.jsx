@@ -81,7 +81,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 							align={{ base: "flex-start", md: "center" }}
 							justifyContent={"space-between"}
 							direction={{ base: "column", md: "row" }}
-							gap={{ base: "15px", sm: "0px" }}
+							gap={{ base: "8px", sm: "0px" }}
 						>
 							{!isMobileScreen && (
 								<Flex

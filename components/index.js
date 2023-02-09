@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { PricingCommissions } from "./PricingCommissions";
 import { SellerDetails } from "./SellerDetails";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
@@ -31,7 +32,13 @@ import {
 	DetailedStatement,
 } from "./TransactionHistory/AccountStatement";
 
+import { UpdateSellerInfo } from "./SellerDetails/UpdateSellerInfo";
+import { UpdatePersonalInfo } from "./SellerDetails/UpdatePersonalInfo";
+import { UpdateSellerAddress } from "./SellerDetails/UpdateSellerAddress";
+import { PreviewSellerInfo } from "./SellerDetails";
+
 export {
+	PricingCommissions,
 	SellerDetails,
 	ChangeRole,
 	Menus,
@@ -61,5 +68,10 @@ export {
 	Sort,
 	Filter,
 	Breadcrumbs,
+	UpdateSellerInfo,
+	UpdatePersonalInfo,
+	UpdateSellerAddress,
+	PreviewSellerInfo,
+
 	/* PLOP_INJECT_EXPORT */
 };

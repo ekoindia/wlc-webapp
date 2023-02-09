@@ -11,7 +11,7 @@ import {
 	Switch,
 } from "@chakra-ui/react";
 import { Buttons, Input, Icon, IconButtons } from "../../";
-import { redirect } from "next/dist/server/api-utils";
+import Router from "next/router";
 /**
  * A <UpdateSellerInfo> component
  * TODO: Write more description here
@@ -41,7 +41,6 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 			border={{
 				base: "",
 				sm: "",
-				lg: "1px solid #D2D2D2",
 				xl: "1px solid #D2D2D2",
 				"2xl": "1px solid #D2D2D2",
 			}}
@@ -54,37 +53,39 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 			}}
 			boxShadow={{
 				base: "",
+				xl: "0px 5px 15px #0000000D",
+				"2xl": "0px 5px 15px #0000000D",
 			}}
 			direction="column"
 			p={{
-				base: "",
-				sm: "",
-				md: "",
-				lg: "24px 30px 87px 30px",
-				xl: "24px 30px 87px 30px",
-				"2xl": "24px 30px 87px 30px",
+				base: "0px",
+
+				md: "0px",
+				lg: "20px",
+
+				"2xl": "14px 30px 30px 30px",
 			}}
+			mt="20px"
 		>
 			{" "}
 			<Box
 				bg={{ base: "#FFFFFF", "2xl": "white" }}
-				w={{ base: "full", lg: "100%", xl: "99.9%", "2xl": "60vw" }}
-				alignItems={{ base: "center", "2xl": "none" }}
+				w={{ base: "full", lg: "100%" }}
+				p={{ base: "12px", lg: "0px" }}
+				borderRadius={{ base: "10px", md: "none" }}
+				border={{ base: "1px solid #D2D2D2", md: "none" }}
 			>
-				<Flex
-					direction={"column"}
-					p={{ base: "5px", sm: "0px" }}
-					border={{ base: "1px solid #D2D2D2", md: "none" }}
-				>
+				<Flex direction={"column"}>
 					<Heading
-						fontSize={{ base: "1.1rem", "2xl": "1.5em" }}
+						fontSize={{ base: "18px", md: "1.2em", lg: "2xl" }}
 						color={"#11299E"}
 						fontWeight="semibold"
 					>
 						Angel Tech Private Limited
 					</Heading>
 					<Text
-						fontSize={{ base: "0.8em", "2xl": "1em" }}
+						fontSize={{ base: "12px", lg: "md" }}
+						pt={{ base: "5px", md: "initial" }}
 						color="#0F0F0F"
 					>
 						Edit the fields below and click Preview. Click Cancel to
@@ -93,15 +94,26 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					</Text>
 				</Flex>
 			</Box>
-			{!isTablet && <Divider color="#D2D2D2" mt="15px" />}
-			<Box
+			{!isTablet && (
+				<Divider
+					mt={{ base: "", md: "1rem", "2xl": "1.2rem" }}
+					color="#D2D2D2"
+				/>
+			)}
+			<Flex
 				bg="#FFFFFF"
-				m={{ base: "20px", md: "40px", lg: "0px" }}
+				h="auto"
+				direction={"column"}
 				p={{
-					base: "20px 0px 0px 30px",
-					md: "30px 0px 0px 80px",
+					base: "20px",
+					sm: "20px",
+					md: "20px",
 					lg: "0px",
+					xl: "0px",
 				}}
+				// m={{ base: "20px", md: "20px", lg: "0px" }}
+				mt={{ base: "10px", lg: "0" }}
+				mb={"20px"}
 				borderRadius={{
 					base: "10px",
 					md: "10px",
@@ -110,9 +122,8 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				}}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
-					"2xl": "none",
 					lg: "none",
-					xl: "none",
+					"2xl": "none",
 				}}
 				border={{
 					base: " 1px solid #D2D2D2",
@@ -123,15 +134,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				}}
 				alignContent="center"
 			>
-				<Box
-					mt={{
-						base: "0px",
-						sm: "",
-						lg: "2rem",
-						xl: "2.5rem",
-						"2xl": "3.1rem",
-					}}
-				>
+				<Box mt={{ base: "0", sm: "", lg: "2rem", "2xl": "3.1rem" }}>
 					<Text
 						fontWeight="bold"
 						fontSize={{ base: "15px", "2xl": "20px" }}
@@ -175,12 +178,20 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 							"2xl": "center",
 						}}
 					>
-						<Flex>
+						<Flex
+							w={{
+								base: "100%",
+								md: "100%",
+								lg: "46%",
+								xl: "34.5%",
+								"2xl": "32%",
+							}}
+						>
 							<Select
 								placeholder="--Select--"
 								w={{
-									base: "15rem",
-									md: "60vw",
+									base: "100%",
+									md: "100%",
 									xl: "25vw",
 									lg: "35vw",
 									"2xl": "25vw",
@@ -203,9 +214,9 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								"2xl": "0",
 							}}
 						>
-							<Text fontSize="0.9rem">Created By</Text> :{"   "}
+							<Text fontSize="sm">Created By</Text> :{"   "}
 							&nbsp;
-							<Text fontSize={"1rem"} fontWeight={"semibold"}>
+							<Text fontSize={"md"} fontWeight={"semibold"}>
 								Default ERO
 							</Text>
 						</Flex>
@@ -217,15 +228,27 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					alignItems="center"
 					wrap="wrap"
 				>
-					<Box>
-						<Text fontSize={"16px"} fontWeight="semibold">
+					<Box
+						w={{
+							base: "100%",
+							md: "100%",
+							lg: "46%",
+							xl: "34.5%",
+							"2xl": "32%",
+						}}
+					>
+						<Text
+							fontSize={"md"}
+							fontWeight="semibold"
+							mb={{ base: "0.3rem", md: "", "2xl": "0.6rem" }}
+						>
 							Parent
 						</Text>
 						<Select
 							placeholder="Vijay Kumar -- 9711217911 --21809910"
 							w={{
-								base: "15rem",
-								md: "60vw",
+								base: "100%",
+								md: "100%",
 								lg: "35vw",
 								xl: "25vw",
 								"2xl": "25vw",
@@ -241,9 +264,10 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				</Flex>
 				<Flex
 					mt={{ base: "3rem", "2xl": "2.8rem" }}
-					gap={{ base: "5.3rem", "2xl": "1.4rem" }}
+					gap={{ base: "0", lg: "1.2rem" }}
+					justifyContent={{ base: "space-between", lg: "flex-start" }}
 				>
-					<Text fontSize={"16px"} fontWeight="semibold">
+					<Text fontSize={"md"} fontWeight="semibold">
 						Is he trained?
 					</Text>
 					<Box>
@@ -253,72 +277,108 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				</Flex>
 				<Flex mt={"2.5rem"}>
 					{" "}
-					<Input
-						label="Trained on"
-						placeholder={""}
-						type="date"
-						dateFormat="DD/MM/yyyy"
-						icon={<Icon name="celender" />}
-						// value={value}
-						// invalid={invalid}
-						// errorMsg={errorMsg}
-						// mb={{ base: 10, "2xl": "4.35rem" }}
-						// onChange={onChangeHandler}
-						labelStyle={{
-							fontSize: { base: "md" },
-							color: "inputlabel",
-							pl: "0",
-							fontWeight: "600",
-							mb: { base: 2.5, "2xl": "0.8rem" },
+					<Box
+						w={{
+							base: "100%",
+							md: "100%",
+							xl: "25vw",
+							lg: "35vw",
+							"2xl": "25vw",
 						}}
-						inputContStyle={{
-							h: { base: "3rem", "2xl": "3rem" },
-							w: {
-								base: "15rem",
-								md: "60vw",
-								lg: "35vw",
-								xl: "25vw",
-								"2xl": "25vw",
-							},
-							pos: "relative",
-						}}
-						// isNumInput={true}
-						// inputProps={{ maxLength: 12 }}
-						// onFocus={() => {
-						// 	setInvalid(false);
-						// }}
-						// onKeyDown={onkeyHandler}
-					/>
+					>
+						<Input
+							label="Trained on"
+							placeholder={""}
+							type="date"
+							dateFormat="DD/MM/yyyy"
+							icon={<Icon name="celender" />}
+							// value={value}
+							// invalid={invalid}
+							// errorMsg={errorMsg}
+							// mb={{ base: 10, "2xl": "4.35rem" }}
+							// onChange={onChangeHandler}
+							labelStyle={{
+								fontSize: { base: "md" },
+								color: "inputlabel",
+								pl: "0",
+								fontWeight: "600",
+								mb: { base: 2.5, "2xl": "0.8rem" },
+							}}
+							inputContStyle={{
+								h: { base: "3rem", "2xl": "3rem" },
+								w: {
+									base: "100%",
+									md: "100%",
+									lg: "35vw",
+									xl: "25vw",
+									"2xl": "25vw",
+								},
+								pos: "relative",
+							}}
+							// isNumInput={true}
+							// inputProps={{ maxLength: 12 }}
+							// onFocus={() => {
+							// 	setInvalid(false);
+							// }}
+							// onKeyDown={onkeyHandler}
+						/>
+					</Box>
 				</Flex>
-
 				<Flex
 					alignItems="center"
-					gap={{ base: "2.1rem", "2xl": "3.8rem" }}
-					mt="4.3rem"
+					gap="1.5rem"
+					mt="3.3rem"
 					wrap="wrap"
+					flexDirection={{
+						base: "column",
+						lg: "row",
+						xl: "row",
+						"2xl": "row",
+					}}
 				>
-					<Box>
+					<Box
+						w={{
+							base: "100%",
+							md: "100%",
+							lg: "20%",
+							xl: "15%",
+							"2xl": "10%",
+						}}
+					>
 						<Buttons
+							onClick={() =>
+								Router.push(
+									"/admin/my-network/profile/up-sell-info/preview-sell-info"
+								)
+							}
 							h="3.5rem"
 							title="Preview"
 							w={{
-								base: "75vw",
-								sm: "8.75rem",
+								base: "100%",
+								md: "100%",
+								lg: "8.75rem",
+								xl: "8.75rem",
+
 								"2xl": "8.75rem",
 							}}
+							fontSize="20px"
+							fontWeight="bold"
 						/>
 					</Box>
 					<Button
 						color="#11299E"
-						fontSize={"1.2rem"}
-						fontWeight="semibold"
-						background={"none"}
-						ml={{ base: "5.5rem", "2xl": "0" }}
+						fontSize="1.2rem"
+						fontWeight="bold"
+						bg="white"
+						_focus={{
+							bg: "white",
+						}}
+						_hover="none"
 					>
 						Cancel
 					</Button>
 				</Flex>
-			</Box>
+			</Flex>
 		</Flex>
 	);
 };

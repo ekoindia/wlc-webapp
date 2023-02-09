@@ -14,6 +14,7 @@ const IconButtons = (props) => {
 		iconStyle,
 		textStyle,
 		children,
+		iconSize = "sm",
 		onClick,
 		...rest
 	} = props;
@@ -50,7 +51,7 @@ const IconButtons = (props) => {
 							{hasBG ? (
 								<>
 									<IconButton
-										size="sm"
+										size={iconSize}
 										isRound={isRound}
 										variant={variant}
 										icon={

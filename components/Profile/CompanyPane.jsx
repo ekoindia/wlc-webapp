@@ -9,7 +9,7 @@ import {
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { Buttons, Cards, Icon, IconButtons } from "..";
-
+import Router from "next/router";
 const CompanyPane = () => {
 	const [isSmallerThan440] = useMediaQuery("(max-width:440px)");
 	return (
@@ -97,6 +97,9 @@ const CompanyPane = () => {
 
 			<Box mt={{ base: "95", md: "70" }}>
 				<Buttons
+					onClick={() =>
+						Router.push("/admin/my-network/profile/up-sell-info")
+					}
 					w={{ base: "100%", md: "215px" }}
 					h="60px"
 					title="Update Information"

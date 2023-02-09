@@ -1,13 +1,5 @@
-import {
-	Box,
-	Flex,
-	HStack,
-	Input,
-	Text,
-	useMediaQuery,
-	VStack,
-} from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Box, Center, Flex, Input, Text, VStack } from "@chakra-ui/react";
+import { useRef, useState } from "react";
 import { Buttons, Cards, Icon, SearchBar, Tags } from "../../..";
 import { DetailedStatementTable } from "./DetailedStatementTable";
 
@@ -15,11 +7,25 @@ const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 	// const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
+	const [dateText, setDateText] = useState({
+		from: "DD/MM/YYYY",
+		to: "DD/MM/YYYY",
+	});
+
+	const fromRef = useRef(null);
+	const toRef = useRef(null);
+
+	const handleClickForInput = (type) => {
+		if (type == "to") {
+			toRef.current.click();
+		} else {
+			fromRef.current.click();
+		}
+	};
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
 	}
-
 	return (
 		<>
 			<Box
@@ -34,7 +40,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 				margin={"auto"}
 			>
 				<Cards
-					marginTop={{ base: "1rem", md: "1.5rem" }}
+					marginTop={{ base: "1rem", md: "1.5rem", "2xl": "0.8rem" }}
 					w={"100%"}
 					h={"100%"}
 				>
@@ -304,6 +310,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 				/>
 			</Box>
 
+			{/* Mobile Date Filter */}
 			<VStack
 				display={{ base: "flex", md: "none" }}
 				w={"100%"}
@@ -323,57 +330,140 @@ const DetailedStatement = ({ className = "", ...props }) => {
 					>
 						<Flex
 							align={"center"}
-							gap={"5px"}
+							px={"2"}
 							h={"48px"}
-							w={"100%"}
+							w={{ base: "100%", sm: "50%" }}
 							border={"1px solid #D2D2D2"}
 							borderRadius={"10px"}
 							overflow={"hidden"}
-							bg={"white"}
+							onClick={(e) => handleClickForInput("from")}
 						>
-							<HStack
-								h={"100%"}
-								bg={"bg"}
-								w={{ base: "25%", sm: "30%" }}
-								pl={{ base: "15px", sm: "8px" }}
-							>
-								<Text>From:</Text>
-							</HStack>
-							<Box w={"70%"}>
-								<Input
-									size="sm"
-									type="date"
-									border={"none"}
-									focusBorderColor={"transparent"}
-								/>
-							</Box>
+							<Flex w={"100%"} align={"center"} h={"100%"}>
+								<Flex
+									onClick={(e) => handleClickForInput("from")}
+									pr={"3vw"}
+									align={"center"}
+									w={{ base: "20%", sm: "30%" }}
+									h={"100%"}
+									justifyContent={"end"}
+								>
+									<Text as={"span"}>From:</Text>
+								</Flex>
+								<Flex w={{ base: "60%", sm: "50%" }} h={"100%"}>
+									<Box
+										w={"100%"}
+										h={"100%"}
+										position={"relative"}
+										display={"flex"}
+										alignItems={"center"}
+									>
+										<Text as={"button"}>
+											{dateText.from}
+										</Text>
+										<Input
+											w={"2px"}
+											size="xs"
+											type="date"
+											height={"100%"}
+											ref={fromRef}
+											onChange={(e) => {
+												if (!e.target.value) {
+													setDateText((prev) => {
+														return {
+															...prev,
+															from: "DD/MM/YYYY",
+														};
+													});
+												} else {
+													setDateText((prev) => {
+														return {
+															...prev,
+															from: e.target
+																.value,
+														};
+													});
+												}
+											}}
+											border={"none"}
+											focusBorderColor={"transparent"}
+										/>
+									</Box>
+								</Flex>
+								<Center w={"20%"} h={"100%"}>
+									<Icon
+										name="calender"
+										width="23px"
+										height="'24px"
+									/>
+								</Center>
+							</Flex>
 						</Flex>
+
 						<Flex
 							align={"center"}
-							gap={"5px"}
+							px={"2"}
 							h={"48px"}
-							w={"100%"}
+							w={{ base: "100%", sm: "50%" }}
 							border={"1px solid #D2D2D2"}
 							borderRadius={"10px"}
 							overflow={"hidden"}
-							bg={"white"}
+							onClick={(e) => handleClickForInput("to")}
 						>
-							<HStack
-								h={"100%"}
-								bg={"bg"}
-								w={{ base: "25%", sm: "30%" }}
-								pl={{ base: "15px", sm: "10px" }}
-							>
-								<Text>To:</Text>
-							</HStack>
-							<Box w={"70%"}>
-								<Input
-									size="sm"
-									type="date"
-									border={"none"}
-									focusBorderColor={"transparent"}
-								/>
-							</Box>
+							<Flex w={"100%"} align={"center"} h={"100%"}>
+								<Flex
+									pr={"3vw"}
+									align={"center"}
+									w={{ base: "15%", sm: "25%" }}
+									h={"100%"}
+									justifyContent={"end"}
+								>
+									<Text as={"span"}>To:</Text>
+								</Flex>
+								<Flex w={{ base: "65%", sm: "55%" }} h={"100%"}>
+									<Box
+										w={"100%"}
+										h={"100%"}
+										position={"relative"}
+										display={"flex"}
+										alignItems={"center"}
+									>
+										<Text as={"button"}>{dateText.to}</Text>
+										<Input
+											w={"2px"}
+											size="xs"
+											type="date"
+											height={"100%"}
+											ref={toRef}
+											onChange={(e) => {
+												if (!e.target.value) {
+													setDateText((prev) => {
+														return {
+															...prev,
+															to: "DD/MM/YYYY",
+														};
+													});
+												} else {
+													setDateText((prev) => {
+														return {
+															...prev,
+															to: e.target.value,
+														};
+													});
+												}
+											}}
+											border={"none"}
+											focusBorderColor={"transparent"}
+										/>
+									</Box>
+								</Flex>
+								<Center w={"20%"} h={"100%"}>
+									<Icon
+										name="calender"
+										width="23px"
+										height="'24px"
+									/>
+								</Center>
+							</Flex>
 						</Flex>
 					</Flex>
 				</VStack>

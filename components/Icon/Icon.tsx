@@ -34,7 +34,9 @@ export type IconNameType =
 	| "sort-by"
 	| "fast-forward"
 	| "mail"
-	| "phone";
+	| "phone"
+	| "calender"
+	| "rupee_bg";
 
 export type IconProps = {
 	name: IconNameType;

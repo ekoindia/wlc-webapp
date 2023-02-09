@@ -19,9 +19,10 @@ import {
 	HStack,
 	useMediaQuery,
 	VStack,
+	Input as CInput,
 } from "@chakra-ui/react";
 import { Buttons, Input, Icon, IconButtons } from "../../";
-import { redirect } from "next/dist/server/api-utils";
+import Router from "next/router";
 /**
  * A <UpdatePersonalInfo> component
  * TODO: Write more description here
@@ -31,6 +32,8 @@ import { redirect } from "next/dist/server/api-utils";
  */
 const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	const [value, setValue] = useState();
+	const [files, setFiles] = useState(null);
+	const inputRef = useRef();
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
 	const EnterRef = useRef();
@@ -39,7 +42,16 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	const [isTablet] = useMediaQuery("(max-width: 770px)");
 
 	const [count, setCount] = useState(0); // TODO: Edit state as required
+	const handleDragOver = (event) => {
+		event.preventDefault();
+	};
 
+	const handleDrop = (event) => {
+		event.preventDefault();
+
+		setFiles(event.dataTransfer.files);
+		console.log(event);
+	};
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
@@ -70,12 +82,20 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 				lg: "1px solid #D2D2D2",
 				"2xl": "1px solid #D2D2D2",
 			}}
-			p={{ base: "", sm: "0px", md: "20px", xl: "20px", "2xl": "30px" }}
+			p={{
+				base: "0px",
+
+				md: "0px",
+				lg: "20px",
+				xl: "20px",
+				"2xl": "14px 30px 30px 30px",
+			}}
+			mt="20px"
 
 			//
 		>
 			<Box
-				bg={{ base: "#FFFFFF", "2xl": "white" }}
+				// bg={{ base: "#FFFFFF", "2xl": "white" }}
 				w={{
 					base: "100%",
 					md: "100%",
@@ -83,20 +103,26 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 					xl: "70vw",
 					"2xl": "51vw",
 				}}
-				p={{ base: "", sm: "0px" }}
 				alignItems={{ base: "center", "2xl": "none" }}
 			>
-				<Flex direction={"column"} p={{ base: "5px" }}>
+				<Flex
+					direction={"column"}
+					borderRadius={{ base: "10px" }}
+					border={{ base: "1px solid #D2D2D2", md: "none" }}
+					p={{ base: "12px", md: "0px" }}
+					bg={"white"}
+				>
 					<Heading
-						fontSize={{ base: "1rem", "2xl": "1.5em" }}
+						fontSize={{ base: "18px", "2xl": "1.5em" }}
 						color={"#11299E"}
 						fontWeight="semibold"
 					>
 						Angel Tech Private Limited
 					</Heading>
 					<Text
-						fontSize={{ base: "0.8em", "2xl": "1em" }}
+						fontSize={{ base: "12px", "2xl": "1em" }}
 						color="#0F0F0F"
+						pt={{ base: "5px", md: "initial" }}
 					>
 						Edit the fields below and click Preview. Click Cancel to
 						return to Client HomePage without submitting
@@ -105,24 +131,17 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 				</Flex>
 			</Box>
 
-			{!isTablet && (
-				<Divider
-					color="#D2D2D2"
-					w={{ base: "none", md: "100%", xl: "100%", "2xl": "100%" }}
-					mt="20px"
-				/>
-			)}
+			{!isTablet && <Divider color="#D2D2D2" mt="10px" />}
 			<Box
 				bg="#FFFFFF"
-				w={{ base: "100%", md: "83vw", lg: "95%", "2xl": "70vw" }}
 				h="full"
-				m={{
-					base: "18px 0px 0px 0px",
-					sm: "18px",
+				p={{
+					base: "20px",
+					sm: "20px",
+					md: "20px",
 					lg: "0px",
 					xl: "0px",
 				}}
-				p={{ base: "0px", sm: "20px", lg: "0px", xl: "0px" }}
 				borderRadius={{ base: "10px", lg: "0", xl: "0" }}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
@@ -136,19 +155,20 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 					lg: "none",
 					"2xl": "none",
 				}}
+				mt={{ base: "10px", lg: "0px" }}
+				mb={"20px"}
 			>
 				<VStack align={{ base: "none", "2xl": "" }}>
 					<HStack
 						justifyContent={"space-between"}
-						mt={{ base: "0px", lg: "2rem" }}
+						mt={{ base: "0px", lg: "3.1rem" }}
 						w={{
 							base: "100%",
-							md: "90%",
+
 							lg: "80vw",
-							xl: "80vw",
-							"2xl": "51vw",
+							xl: "65vw",
+							"2xl": "54vw",
 						}}
-						p={{ base: "10px", sm: "0px" }}
 					>
 						<Text
 							fontSize={{
@@ -176,11 +196,11 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 					{!isTablet && (
 						<Flex
 							w={{
-								base: "%",
+								base: "100	%",
 								md: "81vw",
 								lg: "80vw",
-								xl: "80vw",
-								"2xl": "51vw",
+								xl: "65vw",
+								"2xl": "54vw",
 							}}
 							p="20px"
 							h={"9.375em"}
@@ -188,6 +208,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							alignItems={"center"}
 							direction={{ base: "column", md: "row" }}
 							borderRadius="10px"
+							onDragOver={handleDragOver}
+							onDrop={handleDrop}
 						>
 							<Flex>
 								<Circle bg="divider" size={28}>
@@ -212,26 +234,41 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									change your photograph
 								</Text>
 							</Flex>
+							<CInput
+								type="file"
+								onChange={(event) =>
+									setFiles(event.target.files)
+								}
+								hidden
+								ref={inputRef}
+							/>
+
 							<Flex>
-								<Buttons w="8.125rem" h="3rem" title="Browse" />
+								<Buttons
+									w="8.125rem"
+									h="3rem"
+									title="Browse"
+									onClick={() => inputRef.current.click()}
+								/>
 							</Flex>
 						</Flex>
 					)}
 					{isTablet && (
-						<Box
-							w={{ base: "80vw", lg: "70vw", "2xl": "51vw" }}
+						<Flex
+							w={{
+								base: "100%",
+								md: "100%",
+								lg: "70vw",
+								"2xl": "51vw",
+							}}
 							h={"9.375em"}
 							bg="white"
+							justifyContent={"center"}
 							alignItems={"center"}
-							direction={{ base: "column", md: "row" }}
+							direction={{ base: "column", md: "Column" }}
 							borderRadius="10px"
 						>
-							<Circle
-								bg="divider"
-								size={28}
-								mt="20px"
-								ml={{ base: "100px", md: "250px" }}
-							>
+							<Circle bg="divider" size={28}>
 								<Avatar
 									w="90"
 									h="90"
@@ -239,7 +276,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								/>
 							</Circle>
 							<Box
-								ml={{ base: "10.6rem", md: "310px" }}
+								ml={{ base: "3.6rem", md: "3.6rem" }}
 								marginTop="-2rem"
 							>
 								<IconButtons
@@ -250,16 +287,30 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									}}
 								/>
 							</Box>
-						</Box>
+						</Flex>
 					)}
 				</VStack>
 
-				<Box>
-					<Box
-						pl={{ base: "25px", sm: "0px", md: "60px", lg: "0px" }}
-					>
-						<Flex gap={"2.3rem"} mt="2.4rem" wrap="wrap">
-							<Box>
+				<Flex direction={"column"}>
+					<Box>
+						<Flex
+							gap={{
+								base: "2.5rem",
+								lg: "1rem",
+								"2xl": "2.8rem",
+							}}
+							mt="2.4rem"
+							wrap="wrap"
+						>
+							<Box
+								w={{
+									base: "100%",
+									md: "100%",
+									lg: "46%",
+									xl: "26.5%",
+									"2xl": "20%",
+								}}
+							>
 								<Input
 									label="First Name"
 									placeholder={"Saurabh"}
@@ -279,10 +330,10 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
-											base: "16rem",
-											md: "28rem",
-											lg: "20rem",
-											"2xl": "15.75vw",
+											base: "100%",
+											md: "100%",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
 										},
 										pos: "relative",
 										alignItems: "center",
@@ -295,7 +346,15 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									// onKeyDown={onkeyHandler}
 								/>
 							</Box>
-							<Box>
+							<Box
+								w={{
+									base: "100%",
+									md: "100%",
+									lg: "46%",
+									xl: "26.5%",
+									"2xl": "20%",
+								}}
+							>
 								<Input
 									label="Middle Name"
 									placeholder={""}
@@ -314,10 +373,10 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
-											base: "16rem",
-											md: "28rem",
-											lg: "20rem",
-											"2xl": "15.75vw",
+											base: "100%",
+											md: "100%",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
 										},
 										pos: "relative",
 									}}
@@ -329,7 +388,15 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									// onKeyDown={onkeyHandler}
 								/>
 							</Box>
-							<Box>
+							<Box
+								w={{
+									base: "100%",
+									md: "100%",
+									lg: "46%",
+									xl: "30.5%",
+									"2xl": "20%",
+								}}
+							>
 								<Input
 									label="Last Name"
 									placeholder={"Mullick"}
@@ -348,10 +415,10 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
-											base: "16rem",
-											md: "28rem",
-											lg: "20rem",
-											"2xl": "15.75vw",
+											base: "100%",
+											md: "100%",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
 										},
 										pos: "relative",
 									}}
@@ -366,41 +433,51 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 						</Flex>
 						<Flex mt={"2.5rem"}>
 							{" "}
-							<Input
-								label="Date of birth"
-								placeholder={""}
-								type="date"
-								dateFormat="DD/MM/yyyy"
-								required="true"
-								// value={value}
-								// invalid={invalid}
-								// errorMsg={errorMsg}
-								// mb={{ base: 10, "2xl": "4.35rem" }}
-								// onChange={onChangeHandler}
-								labelStyle={{
-									fontSize: { base: "md" },
-									color: "inputlabel",
-									pl: "0",
-									fontWeight: "600",
-									mb: { base: 2.5, "2xl": "0.3rem" },
+							<Box
+								w={{
+									base: "100%",
+									md: "100%",
+									lg: "46%",
+									xl: "26.5%",
+									"2xl": "31%",
 								}}
-								inputContStyle={{
-									h: { base: "3rem", "2xl": "3rem" },
-									w: {
-										base: "16rem",
-										md: "28rem",
-										lg: "20rem",
-										"2xl": "15.75vw",
-									},
-									pos: "relative",
-								}}
-								// isNumInput={true}
-								// inputProps={{ maxLength: 12 }}
-								// onFocus={() => {
-								// 	setInvalid(false);
-								// }}
-								// onKeyDown={onkeyHandler}
-							/>
+							>
+								<Input
+									label="Date of birth"
+									placeholder={""}
+									type="date"
+									dateFormat="DD/MM/yyyy"
+									required="true"
+									// value={value}
+									// invalid={invalid}
+									// errorMsg={errorMsg}
+									// mb={{ base: 10, "2xl": "4.35rem" }}
+									// onChange={onChangeHandler}
+									labelStyle={{
+										fontSize: { base: "md" },
+										color: "inputlabel",
+										pl: "0",
+										fontWeight: "600",
+										mb: { base: 2.5, "2xl": "0.3rem" },
+									}}
+									inputContStyle={{
+										h: { base: "3rem", "2xl": "3rem" },
+										w: {
+											base: "100%",
+											md: "100%",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
+										},
+										pos: "relative",
+									}}
+									// isNumInput={true}
+									// inputProps={{ maxLength: 12 }}
+									// onFocus={() => {
+									// 	setInvalid(false);
+									// }}
+									// onKeyDown={onkeyHandler}
+								/>
+							</Box>
 						</Flex>
 
 						<Flex mt={"2.5rem"} direction="column">
@@ -429,66 +506,92 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									<Radio size="lg" value="1">
 										Male
 									</Radio>
-									<Radio value="2">Female</Radio>
+									<Radio size="lg" value="2">
+										Female
+									</Radio>
 								</Stack>
 							</RadioGroup>
 						</Flex>
 
-						<Flex mt="2.5rem" direction={"column"}>
-							<Text
-								fontSize={{ base: "sm", "2xl": "md" }}
-								mb={{ base: 2.5, "2xl": "0.3rem" }}
-								color="inputlabe"
-								pl="0"
-								fontWeight="600"
+						<Flex
+							mt="2.5rem"
+							direction={"column"}
+							w={{
+								base: "100%",
+								md: "100%",
+								lg: "46%",
+								xl: "26.5%",
+								"2xl": "31%",
+							}}
+						>
+							<Box
+								w={{
+									base: "100%",
+									md: "100%",
+									lg: "18.5rem",
+									xl: "26.5%",
+									"2xl": "63%",
+								}}
 							>
-								Marital Status
-							</Text>
-							<Menu>
-								<MenuButton
+								<Box mb={{ base: 2.5, "2xl": "0.7rem" }}>
+									<Text
+										style={{
+											fontSize: { base: "16px" },
+											color: "inputlabel",
+
+											fontWeight: "600",
+										}}
+									>
+										Martial Status
+									</Text>
+								</Box>
+								<Select
+									placeholder="--Select--"
 									h={{ base: "3rem", "2xl": "3rem" }}
 									w={{
-										base: "16rem",
-										md: "28rem",
-										lg: "20rem",
-										"2xl": "15.75vw",
+										base: "100%",
+										md: "100%",
+										lg: "18.5rem",
+										"2xl": "20.6875rem",
 									}}
-									fontSize="md"
-									fontWeight="normal"
-									textAlign="start"
-									borderRadius="10px"
-									border=" 1px solid #D2D2D2"
-									bg="white"
-									as={Button}
-									rightIcon={
-										<Icon
-											name="caret-down"
-											width="13"
-											color="#555555"
-										/>
+									mt={{ base: "0.7rem", "2xl": "0" }}
+									position="relative"
+									borderRadius={{ base: 10, "2xl": 10 }}
+									border="1px solid #D2D2D2;"
+									_focus={{
+										bg: "focusbg",
+										boxShadow: "0px 3px 6px #0000001A",
+										borderColor: "hint",
+										transition: "box-shadow 0.3s ease-out",
+									}}
+									icon={
+										<Icon name="caret-down" width="17px" />
 									}
-									_active={{
-										bg: "white",
-									}}
-									_hover={{
-										bg: "white",
-									}}
 								>
-									{"-- Select --"}
-								</MenuButton>
-								<MenuList w={{ base: "18rem", "2xl": "25vw" }}>
-									<MenuItem></MenuItem>
-									<MenuItem></MenuItem>
-								</MenuList>
-							</Menu>
+									<option value="option1">Married</option>
+									<option value="option2">UnMarried</option>
+								</Select>
+							</Box>
 						</Flex>
 						<Flex
 							mt="2.5rem"
-							gap="2.2rem"
+							gap={{
+								base: "2.5rem",
+								lg: "1rem",
+								"2xl": "2.8rem",
+							}}
 							wrap={"wrap"}
 							alignItems={{ base: "", "2xl": "center" }}
 						>
-							<Box>
+							<Box
+								w={{
+									base: "100%",
+									md: "100%",
+									lg: "46%",
+									xl: "26.5%",
+									"2xl": "20%",
+								}}
+							>
 								<Input
 									label="Shop Name"
 									placeholder={"Alam Store"}
@@ -507,10 +610,10 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
-											base: "16rem",
-											md: "28rem",
-											lg: "20rem",
-											"2xl": "15.75vw",
+											base: "100%",
+											md: "100%",
+											lg: "18.5rem",
+											"2xl": "20.6875rem",
 										},
 										pos: "relative",
 									}}
@@ -522,29 +625,39 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									// onKeyDown={onkeyHandler}
 								/>
 							</Box>
-							<Box>
-								<Text
-									style={{
-										fontSize: { base: "16px" },
-										color: "inputlabel",
+							<Box
+								w={{
+									base: "100%",
+									md: "100%",
+									lg: "46%",
+									xl: "26.5%",
+									"2xl": "20%",
+								}}
+							>
+								<Box mb={{ base: 2.5, "2xl": "0.7rem" }}>
+									<Text
+										style={{
+											fontSize: { base: "16px" },
+											color: "inputlabel",
 
-										fontWeight: "600",
-										mb: { base: 2.5, "2xl": "0.3rem" },
-									}}
-								>
-									Shop Type
-								</Text>
+											fontWeight: "600",
+										}}
+									>
+										Shop Type
+									</Text>
+								</Box>
 								<Select
 									placeholder="General"
 									h={{ base: "3rem", "2xl": "3rem" }}
 									w={{
-										base: "16rem",
-										md: "28rem",
-										lg: "20rem",
-										"2xl": "15.75vw",
+										base: "100%",
+										md: "100%",
+										lg: "18.5rem",
+
+										"2xl": "20.6875rem",
 									}}
 									mt={{ base: "0.7rem", "2xl": "0" }}
-									pos="relative"
+									position="relative"
 									borderRadius={{ base: 10, "2xl": 10 }}
 									border="1px solid #D2D2D2;"
 									_focus={{
@@ -566,8 +679,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 					<Flex
 						alignItems="center"
-						gap="2rem"
-						mt="4.3rem"
+						gap="1.5rem"
+						mt="3.3rem"
 						wrap="wrap"
 						flexDirection={{
 							base: "column",
@@ -576,31 +689,44 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							"2xl": "row",
 						}}
 					>
-						<Box>
+						<Box
+							w={{
+								base: "100%",
+								md: "100%",
+								lg: "20%",
+								xl: "15%",
+								"2xl": "10%",
+							}}
+						>
 							<Buttons
 								h="3.5rem"
 								title="Preview"
 								w={{
-									base: "75vw",
-									sm: "50vw",
+									base: "100%",
+									md: "100%",
 									lg: "8.75rem",
 									xl: "8.75rem",
 
 									"2xl": "8.75rem",
 								}}
+								fontSize="md"
+								fontWeight="bold"
 							/>
 						</Box>
 						<Button
 							color="#11299E"
-							fontSize={"1.2rem"}
-							fontWeight="semibold"
-							background={"none"}
-							onClick={redirect}
+							fontSize="md"
+							fontWeight="bold"
+							bg="white"
+							_focus={{
+								bg: "white",
+							}}
+							_hover="none"
 						>
 							Cancel
 						</Button>
 					</Flex>
-				</Box>
+				</Flex>
 			</Box>
 		</Flex>
 	);

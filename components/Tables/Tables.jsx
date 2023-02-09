@@ -11,6 +11,7 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
 
@@ -18,13 +19,12 @@ const Tables = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [currentSort, setCurrentSort] = useState("default");
 
-	const [isSmallerThan770] = useMediaQuery("(max-width: 768px)");
+	const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
 
 	const {
 		pageLimit: PageSize = 10,
 		data: tableData,
 		renderer,
-		redirect,
 		variant,
 	} = props;
 
@@ -34,6 +34,11 @@ const Tables = (props) => {
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
 
+	const router = useRouter();
+	const redirect = () => {
+		router.push(`my-network/profile/`);
+	};
+
 	const getTh = () => {
 		return renderer.map((item, index) => {
 			if (item.sorting) {
@@ -41,7 +46,7 @@ const Tables = (props) => {
 					<Th
 						key={index}
 						p={{ md: ".5em", xl: "1em" }}
-						fontSize={{ md: "14px", xl: "16px" }}
+						fontSize={{ md: "10px", xl: "11px", "2xl": "16px" }}
 					>
 						<Flex gap={2}>
 							{item.field}
@@ -61,7 +66,7 @@ const Tables = (props) => {
 					<Th
 						key={index}
 						p={{ md: ".5em", xl: "1em" }}
-						fontSize={{ md: "14px", xl: "16px" }}
+						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 					>
 						{item.field}
 					</Th>
@@ -75,12 +80,12 @@ const Tables = (props) => {
 				<Tr
 					key={index}
 					onClick={redirect}
-					fontSize={{ md: "14px", xl: "16px" }}
+					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 				>
 					{renderer.map((r, rIndex) => {
 						return (
 							<Td p={{ md: ".5em", xl: "1em" }} key={rIndex}>
-								{prepareRow(
+								{prepareCol(
 									item,
 									r,
 									index +
@@ -94,7 +99,7 @@ const Tables = (props) => {
 			);
 		});
 	};
-	const prepareRow = (item, column, index) => {
+	const prepareCol = (item, column, index) => {
 		switch (column?.show) {
 			case "Tag":
 				return getStatusStyle(item[column.name]);
@@ -197,11 +202,11 @@ const Tables = (props) => {
 	return (
 		<>
 			<Box w="100%">
-				{!isSmallerThan770 ? (
+				{!isSmallerThan768 ? (
 					<>
 						<TableContainer
 							borderRadius="10px 10px 0 0"
-							mt="20px"
+							mt={{ base: "20px", "2xl": "10px" }}
 							border="1px solid #E9EDF1"
 							css={{
 								"&::-webkit-scrollbar": {
@@ -235,7 +240,12 @@ const Tables = (props) => {
 						</Flex>
 					</>
 				) : (
-					<Flex direction="column" gap="4" alignItems="center">
+					<Flex
+						direction="column"
+						gap="4"
+						alignItems="center"
+						mt={"15px"}
+					>
 						{prepareCard()}
 					</Flex>
 				)}
@@ -254,8 +264,8 @@ export const getNameStyle = (name) => {
 				<Avatar
 					bg="accent.DEFAULT"
 					color="divider"
-					size="sm"
-					name={name}
+					size={{ base: "sm", sm: "sm", md: "xs", lg: "sm" }}
+					name={name[0]}
 					// src={item.link}
 				/>
 			</Box>
@@ -264,35 +274,67 @@ export const getNameStyle = (name) => {
 	);
 };
 export const getStatusStyle = (status) => {
-	return <Tags status={status} />;
+	return (
+		<Tags
+			size={{ base: "sm", lg: "sm", "2xl": "md" }}
+			px={"10px"}
+			status={status}
+		/>
+	);
 };
-export const getLocationStyle = (location, lat, long) => {
+export const getLocationStyle = (
+	location,
+	lat = 23.1967657,
+	long = 77.4270079
+) => {
 	return (
 		<Flex alignItems={"center"}>
 			<Box>{location}</Box>
-			<Box>
-				<IconButtons
-					iconName="near-me"
-					iconStyle={{
-						width: "12px",
-						height: "12px",
-					}}
-				/>
-			</Box>
+			<IconButtons
+				iconSize={"xs"}
+				iconName="near-me"
+				iconStyle={{
+					width: "12px",
+					height: "12px",
+				}}
+				onClick={(e) => {
+					openGoogleMap(lat, long);
+					e.stopPropagation();
+				}}
+			/>
 		</Flex>
 	);
 };
 export const getArrowStyle = () => {
 	return (
-		<Box as="span" color="hint">
-			<Icon name="arrow-forward" width="24px" height="21px" />
+		<Box
+			color="hint"
+			width={{ md: "16px", lg: "20px", "2xl": "24px" }}
+			height={{ md: "16px", lg: "20px", "2xl": "24px" }}
+		>
+			<Icon name="arrow-forward" width="100%" />
 		</Box>
 	);
 };
 export const getModalStyle = (data) => {
 	return (
 		<>
-			<Menus />
+			<Menus
+				minH={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				height={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				iconStyles={{ height: "15px", width: "4px" }}
+				onClick={(e) => {
+					e.stopPropagation();
+				}}
+			/>
 		</>
 	);
+};
+
+export const openGoogleMap = ({ latitude, longitude }) => {
+	const lat = parseFloat(latitude);
+	const lng = parseFloat(longitude);
+	window.open(`https://maps.google.com/?q=${lat},${lng}`, "_blank");
 };

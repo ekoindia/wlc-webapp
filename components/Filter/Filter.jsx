@@ -8,7 +8,6 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerContent,
-	DrawerFooter,
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
@@ -29,7 +28,7 @@ function Filter() {
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
 				<Button
-					my={"1vw"}
+					mt={{ base: "1vw", "2xl": ".5vw" }}
 					display={"flex"}
 					justifyContent={"space-evenly"}
 					alignItems={"center"}
@@ -41,7 +40,7 @@ function Filter() {
 						md: "4vw",
 						lg: "3vw",
 						xl: "2.6vw",
-						"2xl": "2.4vw",
+						"2xl": "2.2vw",
 					}}
 					w={{
 						base: "8vw",
@@ -186,7 +185,7 @@ function Filter() {
 								<Center
 									w={{
 										base: "15px",
-										sm: "10px",
+										sm: "15px",
 										md: "20px",
 										lg: "20px",
 										xl: "20px",
@@ -221,7 +220,7 @@ function Filter() {
 								<Center
 									w={{
 										base: "15px",
-										sm: "10px",
+										sm: "15px",
 										md: "20px",
 										lg: "20px",
 										xl: "20px",
@@ -259,7 +258,7 @@ function Filter() {
 							}}
 							px={{
 								base: "2",
-								sm: "2",
+								sm: "0",
 								md: "0px",
 								lg: "0px",
 								xl: "0px",
@@ -301,8 +300,11 @@ function Filter() {
 									>
 										Filter by profile type
 									</Text>
-									<HStack w={"100%"}>
-										<Box w={"50%"} h={"100%"}>
+									<HStack
+										w={"100%"}
+										gap={{ base: "3px", md: "10px" }}
+									>
+										<Box w={"fit-content"} h={"100%"}>
 											<Checkbox
 												variant="rounded"
 												spacing={"2"}
@@ -318,7 +320,16 @@ function Filter() {
 												iMerchant
 											</Checkbox>
 										</Box>
-										<Box w={"50%"} h={"100%"}>
+										<Box
+											w={"fit-content"}
+											h={"100%"}
+											px={{
+												base: "0px",
+												md: "5px",
+												xl: "20px",
+												"2xl": "30px",
+											}}
+										>
 											<Checkbox
 												spacing={"2"}
 												variant="rounded"
@@ -332,6 +343,22 @@ function Filter() {
 												}}
 											>
 												Seller
+											</Checkbox>
+										</Box>
+										<Box w={"fit-content"} h={"100%"}>
+											<Checkbox
+												spacing={"2"}
+												variant="rounded"
+												size={{
+													base: "sm",
+													sm: "sm",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												Distributer
 											</Checkbox>
 										</Box>
 									</HStack>
@@ -368,8 +395,8 @@ function Filter() {
 												variant="rounded"
 												spacing={"2"}
 												size={{
-													base: "xs",
-													sm: "xs",
+													base: "sm",
+													sm: "sm",
 													md: "sm",
 													lg: "sm",
 													xl: "sm",
@@ -384,8 +411,8 @@ function Filter() {
 												spacing={"2"}
 												variant="rounded"
 												size={{
-													base: "xs",
-													sm: "xs",
+													base: "sm",
+													sm: "sm",
 													md: "sm",
 													lg: "sm",
 													xl: "sm",

@@ -8,41 +8,31 @@ import {
 	MenuDivider,
 	MenuGroup,
 	MenuItem,
-	MenuItemOption,
 	MenuList,
-	MenuOptionGroup,
 	Radio,
+	RadioGroup,
+	Stack,
+	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Filter, Icon } from "..";
+import { Divider, Filter, Icon } from "..";
 
 const Sort = ({ className = "", ...props }) => {
 	return (
 		<>
 			<Box
 				display={{ base: "none", md: "flex" }}
-				my={"1vw"}
+				mt={{ base: "1vw", "2xl": ".5vw" }}
 				h={{
 					base: "8.5vw",
 					sm: "5.5vw",
 					md: "4vw",
 					lg: "3vw",
 					xl: "2.6vw",
-					"2xl": "2.4vw",
+					"2xl": "2.2vw",
 				}}
 			>
-				<Menu
-					autoSelect={false}
-					matchWidth={"false"}
-					// w={{
-					// 	base: "5vw",
-					// 	sm: "5vw",
-					// 	md: "5vw",
-					// 	lg: "13vw",
-					// 	xl: "10vw",
-					// 	"2xl": "14vw",
-					// }}
-				>
+				<Menu autoSelect={false} matchWidth={"false"}>
 					{({ isOpen }) => (
 						<Box
 							display="flex"
@@ -87,7 +77,7 @@ const Sort = ({ className = "", ...props }) => {
 									md: "4vw",
 									lg: "3vw",
 									xl: "2.6vw",
-									"2xl": "2.4vw",
+									"2xl": "2.2vw",
 								}}
 								fontSize={{
 									base: "5px",
@@ -211,12 +201,20 @@ const Sort = ({ className = "", ...props }) => {
 				</Menu>
 			</Box>
 
-			<Box display={{ md: "none" }} w={"100%"} overflow={"hidden"}>
+			<Box
+				display={{ md: "none" }}
+				w={"100%"}
+				overflow={"hidden"}
+				h={"100%"}
+			>
 				<Menu autoSelect={false} matchWidth={"false"} flip={"true"}>
 					<MenuButton
+						as={Button}
 						aria-label="Options"
 						w={"100%"}
 						bg="white"
+						h={"100%"}
+						borderRadius={"0px"}
 						color="accent.DEFAULT"
 						_active={{
 							bg: "white",
@@ -225,54 +223,47 @@ const Sort = ({ className = "", ...props }) => {
 							bg: "white",
 						}}
 					>
-						<Button
-							display={"flex"}
-							gap={"10px"}
-							w={"100%"}
-							h={"15vw"}
+						<Text
 							color="#11299E"
-							borderRadius={"0px"}
-							boxShadow=" 0px 3px 10px #11299E1A"
+							fontSize={"18px"}
+							lineHeight={"0"}
+							fontWeight={"semibold"}
+							display={"flex"}
+							justifyContent={"center"}
+							alignItems={"center"}
+							gap={"10px"}
 						>
 							<Icon name="sort-by" width="24px" height="21px" />
-							<Text
-								color="#11299E"
-								fontSize={"18px"}
-								lineHeight={"0"}
-								fontWeight={"semibold"}
-							>
-								Sort by
-							</Text>
-						</Button>
+							Sort by
+						</Text>
 					</MenuButton>
 
 					<MenuList borderTopRadius={"15px"} minW={"100%"}>
-						<MenuOptionGroup
-							defaultValue="reca"
-							title="Sort by"
-							type="radio"
-							fontSize={"16px"}
-						>
-							<MenuItemOption
-								value="reca"
-								fontSize={"12px"}
-								fontWeight={"medium"}
-							>
-								Recently Added
-							</MenuItemOption>
-							<MenuItemOption value="ac" fontSize={"12px"}>
-								Status:
-								<Text as={"span"} fontWeight={"medium"}>
-									&nbsp; Active
-								</Text>
-							</MenuItemOption>
-							<MenuItemOption value="inac" fontSize={"12px"}>
-								Status:
-								<Text as={"span"} fontWeight={"medium"}>
-									&nbsp; Inactive
-								</Text>
-							</MenuItemOption>
-						</MenuOptionGroup>
+						<MenuGroup title="Sort by" fontSize={"16px"}>
+							<RadioGroup px={"5vw"}>
+								<Stack
+									divider={
+										<StackDivider borderColor="gray.200" />
+									}
+									direction="column"
+									fontWeight={"medium"}
+								>
+									<Radio value="1">Recently Added</Radio>
+									<Radio value="2">
+										<Text as={"spa"} fontWeight={"normal"}>
+											Status:
+										</Text>
+										Active
+									</Radio>
+									<Radio value="3">
+										<Text as={"spa"} fontWeight={"normal"}>
+											Status:
+										</Text>
+										Inactive
+									</Radio>
+								</Stack>
+							</RadioGroup>
+						</MenuGroup>
 					</MenuList>
 				</Menu>
 			</Box>
@@ -284,22 +275,26 @@ export default Sort;
 
 export const ResSortAndFilter = () => {
 	return (
-		<Flex
+		<Box
 			display={{ base: "flex", md: "none" }}
-			position={"fixed"}
-			w={"100%"}
-			h={"15vw"}
-			bottom={"0%"}
-			left={"0%"}
-			zIndex={"99"}
-			boxShadow={"0px -3px 10px #0000001A"}
+			pb={{ base: "20vw", sm: "15vw", md: "0px" }}
 		>
-			<Box w={"50%"} h={"100%"} bg={"white"}>
-				<Sort />
-			</Box>
-			<Box w={"50%"} h={"100%"}>
-				<Filter />
-			</Box>
-		</Flex>
+			<Flex
+				position={"fixed"}
+				w={"100%"}
+				h={"15vw"}
+				bottom={"0%"}
+				left={"0%"}
+				zIndex={"99"}
+				boxShadow={"0px -3px 10px #0000001A"}
+			>
+				<Box w={"50%"} h={"100%"} bg={"white"}>
+					<Sort />
+				</Box>
+				<Box w={"50%"} h={"100%"}>
+					<Filter />
+				</Box>
+			</Flex>
+		</Box>
 	);
 };
