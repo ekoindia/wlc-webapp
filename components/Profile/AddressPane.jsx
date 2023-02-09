@@ -8,7 +8,7 @@ import {
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { Buttons, Cards, IconButtons } from "../";
-
+import Router from "next/router";
 const AddressPane = () => {
 	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
 	return (
@@ -49,6 +49,11 @@ const AddressPane = () => {
 						wrap="wrap"
 					>
 						<Buttons
+							onClick={() =>
+								Router.push(
+									"/admin/my-network/profile/up-sell-add"
+								)
+							}
 							w={{ base: "100%", md: "189px" }}
 							h="60px"
 							title="Update Address"
