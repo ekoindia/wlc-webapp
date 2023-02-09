@@ -71,20 +71,21 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 			<Box
 				bg={{ base: "#FFFFFF", "2xl": "white" }}
 				w={{ base: "full", lg: "100%" }}
-				p={{ base: "10px", lg: "0px" }}
+				p={{ base: "12px", lg: "0px" }}
 				borderRadius={{ base: "10px", md: "none" }}
 				border={{ base: "1px solid #D2D2D2", md: "none" }}
 			>
 				<Flex direction={"column"}>
 					<Heading
-						fontSize={{ base: "1.1rem", md: "1.2em", lg: "2xl" }}
+						fontSize={{ base: "18px", md: "1.2em", lg: "2xl" }}
 						color={"#11299E"}
 						fontWeight="semibold"
 					>
 						Angel Tech Private Limited
 					</Heading>
 					<Text
-						fontSize={{ base: "0.85rem", lg: "md" }}
+						fontSize={{ base: "12px", lg: "md" }}
+						pt={{ base: "5px", md: "initial" }}
 						color="#0F0F0F"
 					>
 						Edit the fields below and click Preview. Click Cancel to
@@ -213,9 +214,9 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								"2xl": "0",
 							}}
 						>
-							<Text fontSize="0.9rem">Created By</Text> :{"   "}
+							<Text fontSize="sm">Created By</Text> :{"   "}
 							&nbsp;
-							<Text fontSize={"1rem"} fontWeight={"semibold"}>
+							<Text fontSize={"md"} fontWeight={"semibold"}>
 								Default ERO
 							</Text>
 						</Flex>
@@ -237,7 +238,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						}}
 					>
 						<Text
-							fontSize={"16px"}
+							fontSize={"md"}
 							fontWeight="semibold"
 							mb={{ base: "0.3rem", md: "", "2xl": "0.6rem" }}
 						>
@@ -263,9 +264,10 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				</Flex>
 				<Flex
 					mt={{ base: "3rem", "2xl": "2.8rem" }}
-					gap={{ base: "7rem", lg: "1.2rem" }}
+					gap={{ base: "0", lg: "1.2rem" }}
+					justifyContent={{ base: "space-between", lg: "flex-start" }}
 				>
-					<Text fontSize={"16px"} fontWeight="semibold">
+					<Text fontSize={"md"} fontWeight="semibold">
 						Is he trained?
 					</Text>
 					<Box>

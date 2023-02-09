@@ -9,7 +9,7 @@ import {
 
 const ProfilePanel = ({ className = "", ...props }) => {
 	return (
-		<Box>
+		<Box pb={{ base: "15px", sm: "initial" }}>
 			<Flex gap={30} wrap={"wrap"} mt={5}>
 				<CompanyPane />
 				<AddressPane />
