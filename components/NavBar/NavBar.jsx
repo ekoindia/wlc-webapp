@@ -122,7 +122,7 @@ const NavBar = (props) => {
 									w={{
 										base: "20vw",
 										lg: "19vw",
-										"2xl": "18.5vw",
+										"2xl": "18vw",
 									}}
 									border={"none"}
 									bg={"transparent"}
@@ -169,17 +169,19 @@ const NavBar = (props) => {
 												<Flex
 													w={"full"}
 													align={"flex-end"}
-													gap={"24px"}
+													justifyContent={
+														"space-between"
+													}
 												>
 													<Text
-														fontSize={"14px"}
+														fontSize={"0.85vw"}
 														w={"fit-content"}
 														color={"highlight"}
 													>
 														Aakash Enterprises
 													</Text>
 													<Text
-														fontSize={"10px"}
+														fontSize={"0.55vw"}
 														w={"fit-content"}
 														color={"white"}
 													>
@@ -188,7 +190,7 @@ const NavBar = (props) => {
 												</Flex>
 												<Flex w={"full"} py={".3vw"}>
 													<Text
-														fontSize={"11px"}
+														fontSize={"0.55vw"}
 														w={"fit-content"}
 														color={"white"}
 													>
@@ -220,7 +222,7 @@ const NavBar = (props) => {
 																}
 																color={"white"}
 															>
-																+91 987167943
+																+91 9871 67943
 															</Text>
 															<Box
 																p={"0.3vw"}
@@ -242,8 +244,8 @@ const NavBar = (props) => {
 													</Flex>
 													<Flex>
 														<Buttons
-															fontSize={"12px"}
-															w={"6.2vw"}
+															fontSize={"0.6vw"}
+															w={"7vw"}
 															h={"2.3vw"}
 															fontWeight={
 																"medium"
@@ -259,7 +261,7 @@ const NavBar = (props) => {
 															</Text>
 															<Icon
 																name="chevron-right"
-																height="25%"
+																height="22%"
 															/>
 														</Buttons>
 													</Flex>
