@@ -164,7 +164,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 										base: "sm",
 										md: "sm",
 										lg: "sm",
-										"2xl": "lg",
+										"2xl": "md",
 									}}
 								/>
 							</Flex>
