@@ -35,7 +35,8 @@ export type IconNameType =
 	| "fast-forward"
 	| "mail"
 	| "phone"
-	| "calender";
+	| "calender"
+	| "rupee_bg";
 
 export type IconProps = {
 	name: IconNameType;
