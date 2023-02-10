@@ -6,12 +6,13 @@ const PricingCommissions = ({ className = "", ...props }) => {
 	return (
 		<Box
 			w={"100%"}
-			minH={"100%"}
+			minH={"80%"}
 			bg={"white"}
 			mt={{ base: "15px", "2xl": "25px" }}
-			borderRadius={"10px"}
+			borderRadius={{ base: "8px", md: "10px" }}
 			border={"card"}
 			boxShadow={" 0px 5px 15px #0000000D"}
+			mb={"10px"}
 		>
 			<Tabs
 				position="relative"
@@ -37,27 +38,27 @@ const PricingCommissions = ({ className = "", ...props }) => {
 						},
 					}}
 				>
-					<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
+					<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
 						DMT
 					</Tab>
-					<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
+					<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
 						AEPS
 					</Tab>
-					<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
+					<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
 						Aadhaar Pay
 					</Tab>
-					<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
+					<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
 						Indo-Nepal Fund Transfer
 					</Tab>
-					<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
+					<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
 						BBPS
 					</Tab>
 				</TabList>
 
 				<TabPanels
-					px={{ base: "18px", md: "0" }}
+					px={{ base: "10px", md: "0" }}
 					mt={{ base: "23px", md: "25px", lg: "25px", "2xl": "38px" }}
-					pb={"30px"}
+					pb={"20px"}
 				>
 					<TabPanel>
 						<Dmt />
