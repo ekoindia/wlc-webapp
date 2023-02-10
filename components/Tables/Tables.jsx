@@ -135,7 +135,12 @@ const Tables = (props) => {
 						<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
 							{getNameStyle(item.name)}
 						</Box>
-						<Menus type="inverted" />
+						<Menus
+							type="inverted"
+							onClick={(e) => {
+								e.stopPropagation();
+							}}
+						/>
 					</Flex>
 					<Flex
 						direction="column"
