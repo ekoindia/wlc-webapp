@@ -7,7 +7,8 @@ const Headings = (props) => {
 
 	const router = useRouter();
 	const redirectTo = () => {
-		router.push(`${redirectPath}`);
+		// router.push(`${redirectPath}`);
+		router.back();
 	};
 	return (
 		<Box marginTop={"1vw"} px={{ base: "1.5vw", lg: "0px" }}>

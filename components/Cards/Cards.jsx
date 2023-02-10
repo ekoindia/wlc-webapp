@@ -18,7 +18,7 @@ const Cards = ({ className = "", children, ...props }) => {
 			border="1px solid #D2D2D2"
 			p="5"
 			h={{ base: "auto", md: "620px" }}
-			w={{ base: "100%", md: "505px" }}
+			w={{ base: "100%", md: "490px" }}
 			bg="white"
 			onClick={onClick}
 			{...props}

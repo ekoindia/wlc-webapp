@@ -210,32 +210,28 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 				</Flex>
 				<Flex
 					alignItems="center"
-					gap="1.5rem"
-					mt="3.3rem"
-					wrap="wrap"
-					flexDirection={{
-						base: "column",
-						lg: "row",
+					gap={{ base: "2.1rem", md: "4.8rem", "2xl": "4.8rem" }}
+					mt="4.2rem"
+					w={{
+						base: "100%",
+						md: "48%",
+						lg: "46%",
+						xl: "14.5%",
+						"2xl": "",
 					}}
+					p={{ base: "20px", md: "0px" }}
+					direction={{ base: "column", md: "row" }}
 				>
-					<Box
-						w={{
-							base: "100%",
-
-							lg: "20%",
-							xl: "15%",
-							"2xl": "10%",
-						}}
-					>
+					<Box w="100%">
 						<Buttons
 							h="3.5rem"
 							title="Save Now"
+							fontSize="20px"
+							fontWeight="bold"
 							w={{
 								base: "100%",
-
-								lg: "8.75rem",
+								md: "10rem",
 							}}
-							fontSize="16px"
 						/>
 					</Box>
 					<Button
@@ -244,8 +240,8 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 								"/admin/my-network/profile/up-sell-info"
 							)
 						}
-						color="#11299E"
-						fontSize=""
+						color={"accent.DEFAULT"}
+						fontSize={"20px"}
 						fontWeight="bold"
 						bg="white"
 						_focus={{
