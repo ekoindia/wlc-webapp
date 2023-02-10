@@ -5,8 +5,8 @@ const useRequest = ({ method = "GET", baseUrl, timeout, body }) => {
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
-	console.log("method", method);
-	console.log("baseUrl", baseUrl);
+	// console.log("method", method);
+	// console.log("baseUrl", baseUrl);
 
 	const fetcher = (...args) => fetch(...args).then((res) => res.json());
 

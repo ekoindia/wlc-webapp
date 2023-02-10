@@ -98,6 +98,7 @@ const Login = ({ setStep, setNumber, number }) => {
 			/>
 
 			<Input
+				cursor="default"
 				label="Enter mobile number"
 				placeholder={"XXX XXX XXXX"}
 				value={value}
