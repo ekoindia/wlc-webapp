@@ -12,21 +12,27 @@ import {
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
 
 const Tables = (props) => {
-	const [currentPage, setCurrentPage] = useState(1);
-	const [currentSort, setCurrentSort] = useState("default");
-
-	const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
-
 	const {
 		pageLimit: PageSize = 10,
 		data: tableData,
 		renderer,
 		variant,
 	} = props;
+	const router = useRouter();
+	const [currentSort, setCurrentSort] = useState("default");
+	const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
+	const [currentPage, setCurrentPage] = useState(1);
+
+	useEffect(() => {
+		if (router.query.page && +router.query.page !== currentPage) {
+			setCurrentPage(+router.query.page);
+			console.log("Table : useEffect Page", router.query.page);
+		}
+	}, [router.query.page]);
 
 	const currentTableData = useMemo(() => {
 		const firstPageIndex = (currentPage - 1) * PageSize;
@@ -34,7 +40,6 @@ const Tables = (props) => {
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
 
-	const router = useRouter();
 	const redirect = () => {
 		router.push(`my-network/profile/`);
 	};
@@ -240,7 +245,13 @@ const Tables = (props) => {
 								currentPage={currentPage}
 								totalCount={tableData.length}
 								pageSize={PageSize}
-								onPageChange={(page) => setCurrentPage(page)}
+								onPageChange={(page) => {
+									console.log(page);
+									router.query.page = page;
+									console.log("Page", page);
+									router.replace(router);
+									setCurrentPage(page);
+								}}
 							/>
 						</Flex>
 					</>
@@ -337,7 +348,6 @@ export const getModalStyle = (data) => {
 		</>
 	);
 };
-
 export const openGoogleMap = ({ latitude, longitude }) => {
 	const lat = parseFloat(latitude);
 	const lng = parseFloat(longitude);
