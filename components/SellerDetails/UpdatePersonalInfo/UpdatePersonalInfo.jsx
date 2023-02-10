@@ -63,31 +63,25 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 			h="auto"
 			bg={{
 				base: "none",
-				md: "none",
+
 				lg: "white",
-				xl: "white",
-				"2xl": "white",
 			}}
 			borderRadius="10px"
 			boxShadow={{
 				base: "none",
-				md: "none",
-				xl: "0px 5px 15px #0000000D",
-				"2xl": "0px 5px 15px #0000000D",
+
+				lg: "0px 5px 15px #0000000D",
 			}}
 			border={{
 				base: "none",
-				md: "none",
-				xl: "1px solid #D2D2D2",
+
 				lg: "1px solid #D2D2D2",
-				"2xl": "1px solid #D2D2D2",
 			}}
 			p={{
 				base: "0px",
 
-				md: "0px",
 				lg: "20px",
-				xl: "20px",
+
 				"2xl": "14px 30px 30px 30px",
 			}}
 			mt="20px"
@@ -95,10 +89,9 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 			//
 		>
 			<Box
-				// bg={{ base: "#FFFFFF", "2xl": "white" }}
 				w={{
 					base: "100%",
-					md: "100%",
+
 					lg: "97%",
 					xl: "70vw",
 					"2xl": "51vw",
@@ -108,8 +101,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 				<Flex
 					direction={"column"}
 					borderRadius={{ base: "10px" }}
-					border={{ base: "1px solid #D2D2D2", md: "none" }}
-					p={{ base: "12px", md: "0px" }}
+					border={{ base: "1px solid #D2D2D2", lg: "none" }}
+					p={{ base: "12px", lg: "0px" }}
 					bg={"white"}
 				>
 					<Text
@@ -134,29 +127,27 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 				</Flex>
 			</Box>
 
-			{!isTablet && <Divider color="#D2D2D2" mt="10px" />}
+			<Flex display={{ base: "none", lg: "flex" }}>
+				<Divider color="hint" mt="15px" />
+			</Flex>
 			<Box
-				bg="#FFFFFF"
+				bg="white"
 				h="full"
 				p={{
 					base: "20px",
-					sm: "20px",
-					md: "20px",
+
 					lg: "0px",
-					xl: "0px",
 				}}
 				borderRadius={{ base: "10px", lg: "0", xl: "0" }}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
-					xl: "none",
+
 					lg: "none",
-					"2xl": "none",
 				}}
 				border={{
 					base: " 1px solid #D2D2D2",
-					xl: "none",
+
 					lg: "none",
-					"2xl": "none",
 				}}
 				mt={{ base: "10px", lg: "0px" }}
 				mb={"20px"}
@@ -177,20 +168,16 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							fontSize={{
 								base: "sm",
 								md: "md",
-								xl: "md",
-								"2xl": "md",
 							}}
 							fontWeight="semibold"
 						>
 							Merchant information
 						</Text>
 						<Text
-							color="#FF4081"
+							color="error"
 							fontSize={{
 								base: "sm",
 								md: "md",
-								xl: "md",
-								"2xl": "md",
 							}}
 						>
 							* Mandatory
@@ -199,15 +186,15 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 					{!isTablet && (
 						<Flex
 							w={{
-								base: "100	%",
-								md: "81vw",
-								lg: "80vw",
-								xl: "65vw",
+								base: "100%",
+								md: "80vw",
+
+								xl: "66vw",
 								"2xl": "54vw",
 							}}
 							p="20px"
 							h={"9.375em"}
-							bg="#F5F6F8"
+							bg="bg"
 							alignItems={"center"}
 							direction={{ base: "column", md: "row" }}
 							borderRadius="10px"
@@ -299,7 +286,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 						<Flex
 							gap={{
 								base: "2.5rem",
-								lg: "1rem",
+
+								xl: "1rem",
 								"2xl": "2.8rem",
 							}}
 							mt="2.4rem"
@@ -308,7 +296,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							<Box
 								w={{
 									base: "100%",
-									md: "100%",
+
 									lg: "46%",
 									xl: "26.5%",
 									"2xl": "20%",
@@ -334,7 +322,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-											md: "100%",
+
 											lg: "18.5rem",
 											"2xl": "20.6875rem",
 										},
@@ -352,7 +340,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							<Box
 								w={{
 									base: "100%",
-									md: "100%",
+
 									lg: "46%",
 									xl: "26.5%",
 									"2xl": "20%",
@@ -377,7 +365,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-											md: "100%",
+
 											lg: "18.5rem",
 											"2xl": "20.6875rem",
 										},
@@ -394,7 +382,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							<Box
 								w={{
 									base: "100%",
-									md: "100%",
+
 									lg: "46%",
 									xl: "30.5%",
 									"2xl": "20%",
@@ -419,7 +407,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-											md: "100%",
+
 											lg: "18.5rem",
 											"2xl": "20.6875rem",
 										},
@@ -439,7 +427,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							<Box
 								w={{
 									base: "100%",
-									md: "100%",
+
 									lg: "46%",
 									xl: "26.5%",
 									"2xl": "31%",
@@ -449,7 +437,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									label="Date of birth"
 									placeholder={""}
 									type="date"
-									dateFormat="DD/MM/yyyy"
+									dateFormat="DD/MM/YYYY"
 									required="true"
 									// value={value}
 									// invalid={invalid}
@@ -467,8 +455,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-											md: "100%",
-											lg: "18.5rem",
+
+											lg: "25.5rem",
 											"2xl": "20.6875rem",
 										},
 										pos: "relative",
@@ -488,7 +476,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								style={{
 									fontSize: { base: "sm", "2xl": "lg" },
 									color: "inputlabe",
-									pl: "0",
+
 									fontWeight: "600",
 								}}
 							>
@@ -521,7 +509,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							direction={"column"}
 							w={{
 								base: "100%",
-								md: "100%",
+
 								lg: "46%",
 								xl: "26.5%",
 								"2xl": "31%",
@@ -530,7 +518,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							<Box
 								w={{
 									base: "100%",
-									md: "100%",
+
 									lg: "18.5rem",
 									xl: "26.5%",
 									"2xl": "63%",
@@ -553,8 +541,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									h={{ base: "3rem", "2xl": "3rem" }}
 									w={{
 										base: "100%",
-										md: "100%",
-										lg: "18.5rem",
+
+										lg: "25rem",
 										"2xl": "20.6875rem",
 									}}
 									mt={{ base: "0.7rem", "2xl": "0" }}
@@ -580,7 +568,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							mt="2.5rem"
 							gap={{
 								base: "2.5rem",
-								lg: "1rem",
+								xl: "1rem",
 								"2xl": "2.8rem",
 							}}
 							wrap={"wrap"}
@@ -589,7 +577,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							<Box
 								w={{
 									base: "100%",
-									md: "100%",
+
 									lg: "46%",
 									xl: "26.5%",
 									"2xl": "20%",
@@ -614,7 +602,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-											md: "100%",
+
 											lg: "18.5rem",
 											"2xl": "20.6875rem",
 										},
@@ -631,7 +619,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							<Box
 								w={{
 									base: "100%",
-									md: "100%",
+
 									lg: "46%",
 									xl: "26.5%",
 									"2xl": "20%",
@@ -654,7 +642,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									h={{ base: "3rem", "2xl": "3rem" }}
 									w={{
 										base: "100%",
-										md: "100%",
+
 										lg: "18.5rem",
 
 										"2xl": "20.6875rem",
@@ -688,14 +676,12 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 						flexDirection={{
 							base: "column",
 							lg: "row",
-							xl: "row",
-							"2xl": "row",
 						}}
 					>
 						<Box
 							w={{
 								base: "100%",
-								md: "100%",
+
 								lg: "20%",
 								xl: "15%",
 								"2xl": "10%",
@@ -706,18 +692,15 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								title="Preview"
 								w={{
 									base: "100%",
-									md: "100%",
-									lg: "8.75rem",
-									xl: "8.75rem",
 
-									"2xl": "8.75rem",
+									lg: "8.75rem",
 								}}
 								fontSize="md"
 								fontWeight="bold"
 							/>
 						</Box>
 						<Button
-							color="#11299E"
+							color={"accent.DEFAULT"}
 							fontSize="md"
 							fontWeight="bold"
 							bg="white"

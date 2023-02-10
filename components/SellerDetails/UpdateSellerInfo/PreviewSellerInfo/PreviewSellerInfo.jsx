@@ -19,7 +19,6 @@ import Router from "next/router";
  * @example	`<PreviewPersonalInfo></PreviewPersonalInfo>`
  */
 const PreviewSellerInfo = ({ className = "", ...props }) => {
-	const [isTablet] = useMediaQuery("(max-width: 770px)");
 	return (
 		<Flex
 			direction={"column"}
@@ -27,31 +26,25 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 			h={{ base: "auto", md: "700px" }}
 			bg={{
 				base: "none",
-				md: "none",
+
 				lg: "white",
-				xl: "white",
-				"2xl": "white",
 			}}
 			borderRadius="10px"
 			boxShadow={{
 				base: "none",
-				md: "none",
-				xl: "0px 5px 15px #0000000D",
-				"2xl": "0px 5px 15px #0000000D",
+
+				lg: "0px 5px 15px #0000000D",
 			}}
 			border={{
 				base: "none",
-				md: "none",
-				xl: "1px solid #D2D2D2",
+
 				lg: "1px solid #D2D2D2",
-				"2xl": "1px solid #D2D2D2",
 			}}
 			p={{
 				base: "0px",
 
-				md: "0px",
 				lg: "20px",
-				xl: "20px",
+
 				"2xl": "14px 30px 30px 30px",
 			}}
 			mt="20px"
@@ -61,7 +54,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 			<Box
 				w={{
 					base: "100%",
-					md: "100%",
+
 					lg: "97%",
 					xl: "70vw",
 					"2xl": "51vw",
@@ -71,8 +64,8 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 				<Flex
 					direction={"column"}
 					borderRadius={{ base: "10px" }}
-					border={{ base: "1px solid #D2D2D2", md: "none" }}
-					p={{ base: "12px", md: "0px" }}
+					border={{ base: "1px solid #D2D2D2", lg: "none" }}
+					p={{ base: "10px", lg: "0px" }}
 					bg={"white"}
 				>
 					<Text
@@ -96,9 +89,11 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 					</Text>
 				</Flex>
 			</Box>
-			{!isTablet && <Divider color="#D2D2D2" mt="10px" />}
+			<Flex display={{ base: "none", lg: "flex" }}>
+				<Divider color="hint" mt="15px" />
+			</Flex>
 			<Flex
-				bg="#FFFFFF"
+				bg="white"
 				h="full"
 				p={{
 					base: "16px",
@@ -106,7 +101,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 					md: "20px",
 					lg: "0px",
 				}}
-				borderRadius={{ base: "10px", lg: "0", xl: "0" }}
+				borderRadius={{ base: "10px", lg: "0" }}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
 					xl: "none",
@@ -115,16 +110,15 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 				}}
 				border={{
 					base: " 1px solid #D2D2D2",
-					xl: "none",
+
 					lg: "none",
-					"2xl": "none",
 				}}
 				mt={{ base: "16px", lg: "0px" }}
 				mb={"20px"}
 				direction="column"
 			>
 				<Flex direction="column">
-					<Box mt={{ base: "20px", md: "20px" }}>
+					<Box mt={{ base: "0px", md: "40px" }}>
 						<Text
 							fontSize={{ base: "1rem" }}
 							fontWeight={{ base: "semibold" }}
@@ -135,7 +129,6 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 					<Flex gap={{ base: "0", md: "12.5rem" }} mt="20px">
 						<Flex
 							display={{ base: "none", md: "flex" }}
-							// mt={{ base: "1rem", "2xl": "0" }}
 							direction="column"
 							gap="5px"
 						>
@@ -148,10 +141,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 							</Text>
 						</Flex>
 
-						<Flex
-							// mt={{ base: "1.8rem", "2xl": "0" }}
-							direction="column"
-						>
+						<Flex direction="column">
 							<Text fontSize="0.8rem">Created By</Text>
 
 							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
@@ -164,10 +154,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 						gap={{ base: "", md: "17.8rem" }}
 						mt={{ base: "20px", md: "40px" }}
 					>
-						<Flex
-							// mt={{ base: "1.8rem", "2xl": "0" }}
-							direction="column"
-						>
+						<Flex direction="column">
 							<Text fontSize="0.8rem">Parent</Text>
 
 							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
@@ -178,7 +165,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 							mt={{ base: "20px", "2xl": "0" }}
 							direction="column"
 						>
-							<Text fontSize="0.8rem">External id</Text>
+							<Text fontSize="0.8rem">External ID</Text>
 
 							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
 								1
@@ -190,10 +177,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 						gap={{ base: "", md: "20rem" }}
 						mt={{ base: "20px", md: "40px" }}
 					>
-						<Flex
-							// mt={{ base: "1.8rem", "2xl": "0" }}
-							direction={"column"}
-						>
+						<Flex direction={"column"}>
 							<Text fontSize="0.8rem">Trained</Text>
 
 							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
@@ -205,7 +189,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 							direction="column"
 							display={{ base: "none", md: "flex" }}
 						>
-							<Text fontSize="0.8rem">Training Id</Text>
+							<Text fontSize="0.8rem">Training ID</Text>
 
 							<Text fontSize={"0.9rem"} fontWeight={"bold"}>
 								N.A.
@@ -226,37 +210,28 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 				</Flex>
 				<Flex
 					alignItems="center"
-					gap="1.5rem"
-					mt="3.3rem"
-					wrap="wrap"
-					flexDirection={{
-						base: "column",
-						lg: "row",
-						xl: "row",
-						"2xl": "row",
+					gap={{ base: "2.1rem", md: "4.8rem", "2xl": "4.8rem" }}
+					mt="4.2rem"
+					w={{
+						base: "100%",
+						md: "48%",
+						lg: "46%",
+						xl: "14.5%",
+						"2xl": "",
 					}}
+					p={{ base: "20px", md: "0px" }}
+					direction={{ base: "column", md: "row" }}
 				>
-					<Box
-						w={{
-							base: "100%",
-							md: "100%",
-							lg: "20%",
-							xl: "15%",
-							"2xl": "10%",
-						}}
-					>
+					<Box w="100%">
 						<Buttons
 							h="3.5rem"
 							title="Save Now"
+							fontSize="20px"
+							fontWeight="bold"
 							w={{
 								base: "100%",
-								md: "100%",
-								lg: "8.75rem",
-								xl: "8.75rem",
-
-								"2xl": "8.75rem",
+								md: "10rem",
 							}}
-							fontSize="16px"
 						/>
 					</Box>
 					<Button
@@ -265,8 +240,8 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 								"/admin/my-network/profile/up-sell-info"
 							)
 						}
-						color="#11299E"
-						fontSize=""
+						color={"accent.DEFAULT"}
+						fontSize={"20px"}
 						fontWeight="bold"
 						bg="white"
 						_focus={{

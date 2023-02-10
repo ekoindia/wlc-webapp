@@ -54,13 +54,11 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 			boxShadow={{
 				base: "",
 				xl: "0px 5px 15px #0000000D",
-				"2xl": "0px 5px 15px #0000000D",
 			}}
 			direction="column"
 			p={{
 				base: "0px",
 
-				md: "0px",
 				lg: "20px",
 
 				"2xl": "14px 30px 30px 30px",
@@ -72,8 +70,8 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				bg={{ base: "#FFFFFF", "2xl": "white" }}
 				w={{ base: "full", lg: "100%" }}
 				p={{ base: "12px", lg: "0px" }}
-				borderRadius={{ base: "10px", md: "none" }}
-				border={{ base: "1px solid #D2D2D2", md: "none" }}
+				borderRadius={{ base: "10px", lg: "none" }}
+				border={{ base: "1px solid #D2D2D2", lg: "none" }}
 			>
 				<Flex direction={"column"}>
 					<Text
@@ -97,42 +95,32 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					</Text>
 				</Flex>
 			</Box>
-			{!isTablet && (
-				<Divider
-					mt={{ base: "", md: "1rem", "2xl": "1.2rem" }}
-					color="#D2D2D2"
-				/>
-			)}
+			<Flex display={{ base: "none", lg: "flex" }}>
+				<Divider color="hint" mt="15px" />
+			</Flex>
 			<Flex
-				bg="#FFFFFF"
+				bg="white"
 				h="auto"
 				direction={"column"}
 				p={{
 					base: "20px",
-					sm: "20px",
-					md: "20px",
+
 					lg: "0px",
-					xl: "0px",
 				}}
 				// m={{ base: "20px", md: "20px", lg: "0px" }}
 				mt={{ base: "10px", lg: "0" }}
 				mb={"20px"}
 				borderRadius={{
 					base: "10px",
-					md: "10px",
+
 					lg: "0px",
-					xl: "0px",
 				}}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
 					lg: "none",
-					"2xl": "none",
 				}}
 				border={{
 					base: " 1px solid #D2D2D2",
-					md: "1px solid #D2D2D2",
-					"2xl": "none",
-					xl: "none",
 					lg: "none",
 				}}
 				alignContent="center"
@@ -140,7 +128,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				<Box mt={{ base: "0", sm: "", lg: "2rem", "2xl": "3.1rem" }}>
 					<Text
 						fontWeight="bold"
-						fontSize={{ base: "15px", "2xl": "20px" }}
+						fontSize={{ base: "15px", md: "20px" }}
 					>
 						Membership related information
 					</Text>
@@ -152,9 +140,9 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				>
 					<Box>
 						<Text
-							fontSize={{ base: "0.9rem", "2xl": "1rem" }}
+							fontSize={{ base: "0.9rem", md: "1rem" }}
 							fontWeight="semibold"
-							mb={{ base: "0.3rem", md: "", "2xl": "0.6rem" }}
+							mb={{ base: "0.3rem", md: "", md: "0.6rem" }}
 						>
 							Network Manager Assigned
 						</Text>
@@ -162,29 +150,21 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					<Flex
 						direction={{
 							base: "column",
-							md: "column",
-							xl: "row",
 							lg: "row",
-							"2xl": "row",
 						}}
 						gap={{
 							base: "",
-							xl: "3.7rem",
 							lg: "3.7rem",
-							"2xl": "3.7rem",
 						}}
 						alignItems={{
 							base: "none",
-							md: "none",
 							lg: "center",
-							xl: "center",
-							"2xl": "center",
 						}}
 					>
 						<Flex
 							w={{
 								base: "100%",
-								md: "100%",
+
 								lg: "46%",
 								xl: "34.5%",
 								"2xl": "32%",
@@ -194,7 +174,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								placeholder="--Select--"
 								w={{
 									base: "100%",
-									md: "100%",
+
 									xl: "25vw",
 									lg: "35vw",
 									"2xl": "25vw",
@@ -213,8 +193,6 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 							mt={{
 								base: "2.5rem",
 								lg: "0rem",
-								xl: "0",
-								"2xl": "0",
 							}}
 						>
 							<Text fontSize="sm">Created By</Text> :{"   "}
@@ -234,7 +212,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					<Box
 						w={{
 							base: "100%",
-							md: "100%",
+
 							lg: "46%",
 							xl: "34.5%",
 							"2xl": "32%",
@@ -243,7 +221,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						<Text
 							fontSize={"md"}
 							fontWeight="semibold"
-							mb={{ base: "0.3rem", md: "", "2xl": "0.6rem" }}
+							mb={{ base: "0.3rem", md: "", md: "0.6rem" }}
 						>
 							Parent
 						</Text>
@@ -251,7 +229,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 							placeholder="Vijay Kumar -- 9711217911 --21809910"
 							w={{
 								base: "100%",
-								md: "100%",
+
 								lg: "35vw",
 								xl: "25vw",
 								"2xl": "25vw",
@@ -283,7 +261,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					<Box
 						w={{
 							base: "100%",
-							md: "100%",
+
 							xl: "25vw",
 							lg: "35vw",
 							"2xl": "25vw",
@@ -311,7 +289,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								h: { base: "3rem", "2xl": "3rem" },
 								w: {
 									base: "100%",
-									md: "100%",
+
 									lg: "35vw",
 									xl: "25vw",
 									"2xl": "25vw",
@@ -342,7 +320,6 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					<Box
 						w={{
 							base: "100%",
-							md: "100%",
 							lg: "20%",
 							xl: "15%",
 							"2xl": "10%",
@@ -358,7 +335,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 							title="Preview"
 							w={{
 								base: "100%",
-								md: "100%",
+
 								lg: "8.75rem",
 								xl: "8.75rem",
 
@@ -369,7 +346,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						/>
 					</Box>
 					<Button
-						color="#11299E"
+						color={"accent.DEFAULT"}
 						fontSize="1.2rem"
 						fontWeight="bold"
 						bg="white"
