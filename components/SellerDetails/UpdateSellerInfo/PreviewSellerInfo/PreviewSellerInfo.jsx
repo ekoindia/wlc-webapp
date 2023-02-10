@@ -230,7 +230,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 							fontWeight="bold"
 							w={{
 								base: "100%",
-								md: "10.2rem",
+								md: "10rem",
 							}}
 						/>
 					</Box>
