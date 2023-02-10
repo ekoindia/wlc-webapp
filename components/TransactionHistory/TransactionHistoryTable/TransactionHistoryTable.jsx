@@ -4,10 +4,6 @@ import { Tables } from "../..";
 
 const TransactionHistoryTable = () => {
 	const router = useRouter();
-	const redirect = (props) => {
-		//TODO add props to have dynamic routes according to clicks
-		router.push("transaction-history/account-statement");
-	};
 
 	const renderer = [
 		{ name: "", field: "Sr. No." },
@@ -48,8 +44,8 @@ const TransactionHistoryTable = () => {
 				pageLimit={10}
 				renderer={renderer}
 				data={mockData}
-				redirect={redirect}
 				variant="evenStripedClickableRow"
+				tableName="Transaction"
 			/>
 		</>
 	);

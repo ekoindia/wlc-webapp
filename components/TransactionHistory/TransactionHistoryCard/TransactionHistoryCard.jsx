@@ -4,24 +4,23 @@ import {
 	getNameStyle,
 	getStatusStyle,
 } from "components/Tables/Tables";
-import { Cards, Menus } from "../../";
+import { Menus } from "../../";
 
-const TransactionHistoryCard = ({ className = "", ...props }) => {
-	const item = {
-		agent_mobile: "+91 95999 13099",
-		agent_name: "RJ Tech",
-		agent_type: "Seller",
-		account_status: "Active",
-		location: "Delhi NCR",
-		account_number: "000300000517693",
-	};
+const TransactionHistoryCard = (props) => {
+	const { item } = props;
 	return (
-		<Cards key={index} width="100%" height="auto" p="15px">
+		<>
 			<Flex justifyContent="space-between">
 				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-					{getNameStyle(item.agent_name)}
+					{/* {getNameStyle(item.agent_name)} */}
+					{getNameStyle(item.name)}
 				</Box>
-				<Menus type="inverted" />
+				<Menus
+					type="inverted"
+					onClick={(e) => {
+						e.stopPropagation();
+					}}
+				/>
 			</Flex>
 			<Flex direction="column" fontSize={{ base: "sm" }} pl="42px">
 				<Flex gap="2">
@@ -29,7 +28,8 @@ const TransactionHistoryCard = ({ className = "", ...props }) => {
 						Mobile Number:
 					</Box>
 					<Box as="span" color="dark">
-						{item.agent_mobile}
+						{/* {item.agent_mobile} */}
+						{item.mobile_number}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -37,7 +37,8 @@ const TransactionHistoryCard = ({ className = "", ...props }) => {
 						Type:
 					</Box>
 					<Box as="span" color="dark">
-						{item.agent_type}
+						{/* {item.agent_type} */}
+						{item.type}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -45,7 +46,8 @@ const TransactionHistoryCard = ({ className = "", ...props }) => {
 						Account Number:
 					</Box>
 					<Box as="span" color="dark">
-						{item.onboarded_on}
+						{/* {item.onboarded_on} */}
+						{item.createdAt}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -53,7 +55,8 @@ const TransactionHistoryCard = ({ className = "", ...props }) => {
 						Eko Code:
 					</Box>
 					<Box as="span" color="dark">
-						{item.eko_code}
+						{/* {item.eko_code}  */}
+						{item.ekocsp_code}
 					</Box>
 				</Flex>
 				<Flex justifyContent="space-between" mt="10px" py="10px">
@@ -61,7 +64,7 @@ const TransactionHistoryCard = ({ className = "", ...props }) => {
 					{getLocationStyle(item.location)}
 				</Flex>
 			</Flex>
-		</Cards>
+		</>
 	);
 };
 
