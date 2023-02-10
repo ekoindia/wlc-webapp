@@ -11,6 +11,8 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
+import { NetworkCard } from "components/Network";
+import { TransactionHistoryCard } from "components/TransactionHistory";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
@@ -21,6 +23,7 @@ const Tables = (props) => {
 		data: tableData,
 		renderer,
 		variant,
+		tableName,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
@@ -41,7 +44,14 @@ const Tables = (props) => {
 	}, [currentPage]);
 
 	const redirect = () => {
-		router.push(`my-network/profile/`);
+		switch (tableName) {
+			case "Network":
+				router.push(`my-network/profile/`);
+				break;
+			case "Transaction":
+				router.push(`transaction-history/account-statement/`);
+				break;
+		}
 	};
 
 	const getTh = () => {
@@ -128,65 +138,31 @@ const Tables = (props) => {
 	/* For Responsive */
 	const prepareCard = () => {
 		return currentTableData.map((item, index) => {
-			return (
-				<Cards
-					key={index}
-					width="100%"
-					height="auto"
-					p="15px"
-					onClick={redirect}
-				>
-					<Flex justifyContent="space-between">
-						<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-							{getNameStyle(item.name)}
-						</Box>
-						<Menus
-							type="inverted"
-							onClick={(e) => {
-								e.stopPropagation();
-							}}
-						/>
-					</Flex>
-					<Flex
-						direction="column"
-						fontSize={{ base: "sm" }}
-						pl="42px"
+			if (tableName === "Network") {
+				return (
+					<Cards
+						key={index}
+						width="100%"
+						height="auto"
+						p="15px"
+						onClick={redirect}
 					>
-						<Flex gap="2">
-							<Box as="span" color="light">
-								Mobile Number:
-							</Box>
-							<Box as="span" color="dark">
-								{item.mobile_number}
-							</Box>
-						</Flex>
-						<Flex gap="2">
-							<Box as="span" color="light">
-								Type:
-							</Box>
-							<Box as="span" color="dark">
-								{item.type}
-							</Box>
-						</Flex>
-						<Flex gap="2">
-							<Box as="span" color="light">
-								Onboarded on:
-							</Box>
-							<Box as="span" color="dark">
-								{item.createdAt}
-							</Box>
-						</Flex>
-						<Flex
-							justifyContent="space-between"
-							mt="10px"
-							py="10px"
-						>
-							{getStatusStyle(item.account_status)}
-							{getLocationStyle(item.location)}
-						</Flex>
-					</Flex>
-				</Cards>
-			);
+						<NetworkCard item={item} />
+					</Cards>
+				);
+			} else if (tableName === "Transaction") {
+				return (
+					<Cards
+						key={index}
+						width="100%"
+						height="auto"
+						p="15px"
+						onClick={redirect}
+					>
+						<TransactionHistoryCard item={item} />
+					</Cards>
+				);
+			}
 		});
 	};
 	/* for sort icon & icon change */
