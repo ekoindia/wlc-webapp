@@ -102,7 +102,6 @@ const Menus = (props) => {
 							minW="120px"
 							fontSize={{
 								base: "xs",
-								xl: "sm",
 							}}
 							{...listStyles}
 						>
