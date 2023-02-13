@@ -93,7 +93,7 @@ const Sort = ({ className = "", ...props }) => {
 									base: "7px",
 									md: "7px",
 									lg: "5px",
-									"2xl": "10px",
+									"2xl": "6px",
 								}}
 								border=" 1px solid #D2D2D2"
 								isActive={isOpen}
