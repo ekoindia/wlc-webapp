@@ -2,7 +2,6 @@
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
-import { ChangeRole } from "./ChangeRole";
 import { Divider } from "./Divider";
 import { Filter } from "./Filter";
 import { Headings } from "./Headings";
@@ -16,7 +15,6 @@ import { Menus } from "./Menus";
 import { NavBar } from "./NavBar";
 import { Network } from "./Network";
 import { Pagination } from "./Pagination";
-import { PricingCommissions } from "./PricingCommissions";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
 import { SellerDetails } from "./SellerDetails";
@@ -36,9 +34,7 @@ import { UpdateSellerAddress } from "./SellerDetails/UpdateSellerAddress";
 import { UpdateSellerInfo } from "./SellerDetails/UpdateSellerInfo";
 
 export {
-	PricingCommissions,
 	SellerDetails,
-	ChangeRole,
 	Menus,
 	RouteProtecter,
 	SideBar,

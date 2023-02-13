@@ -1,10 +1,10 @@
 import React from "react";
-import PricingCommissions from "./PricingCommissions";
+import PricingCommission from "./PricingCommission";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/PricingCommissions",
-	component: PricingCommissions,
+	title: "Component/PricingCommission",
+	component: PricingCommission,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -47,7 +47,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <PricingCommissions {...args} />;
+const Template = (args) => <PricingCommission {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
