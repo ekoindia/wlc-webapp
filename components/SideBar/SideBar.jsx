@@ -6,6 +6,7 @@ import {
 	DrawerOverlay,
 	Flex,
 	useDisclosure,
+	useMediaQuery,
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -16,6 +17,7 @@ import { adminMenu } from "../../constants/adminMenu";
 const SideBarMenu = ({ className = "", ...props }) => {
 	const router = useRouter();
 	const [currentRoute, setcurrentRoute] = useState();
+	const [isSmallerThan1024] = useMediaQuery("(max-width: 1024px)");
 
 	useEffect(() => {
 		setcurrentRoute(router.pathname.split("/")[2]);
@@ -41,12 +43,13 @@ const SideBarMenu = ({ className = "", ...props }) => {
 								fontSize={{
 									base: "3.6vw",
 									sm: "2.5vw",
-									md: ".85vw",
+									md: ".95vw",
+									xl: ".85vw",
 								}}
 								gap="10px"
 								color="#FFFFFF"
 								align="center"
-								px={{ base: "2", lg: "3", "2xl": "4" }}
+								px={{ base: "1", lg: "2", "2xl": "4" }}
 								py={{
 									base: "4",
 									md: "3",
@@ -61,7 +64,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									currentRoute === menu.link.split("/")[2] &&
 									"#081E89"
 								}
-								borderLeft={"8px"}
+								borderLeft={isSmallerThan1024 ? "4px" : "8px"}
 								borderLeftColor={
 									currentRoute === menu.link.split("/")[2]
 										? "#FE7D00"

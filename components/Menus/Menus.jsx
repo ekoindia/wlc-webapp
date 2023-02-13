@@ -51,6 +51,7 @@ const Menus = (props) => {
 		buttonStyle,
 		iconStyles = { height: "18px", width: "4px" },
 		itemStyles,
+		listStyles,
 		onClick,
 	} = props;
 
@@ -97,7 +98,7 @@ const Menus = (props) => {
 						>
 							{title}
 						</MenuButton>
-						<MenuList>
+						<MenuList py="0px" minW="120px" {...listStyles}>
 							{menulist.map((item, index) => {
 								return (
 									<>
@@ -105,12 +106,24 @@ const Menus = (props) => {
 											color="dark"
 											key={index}
 											onClick={item.onClick}
+											p="8px 10px"
+											fontSize={{
+												base: "10px",
+												sm: "xs",
+											}}
+											fontWeight="medium"
+											_hover={{
+												bg: "white",
+											}}
 											{...itemStyles}
 										>
 											{item.item}
 										</MenuItem>
 										{index !== menulist.length - 1 && (
-											<MenuDivider />
+											<MenuDivider
+												margin="auto"
+												w="84%"
+											/>
 										)}
 									</>
 								);

@@ -44,6 +44,7 @@ const NetworkTable = () => {
 				renderer={renderer}
 				data={mockData}
 				variant="evenStripedClickableRow"
+				tableName="Network"
 			/>
 		</>
 	);

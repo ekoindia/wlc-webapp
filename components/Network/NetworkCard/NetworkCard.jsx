@@ -4,27 +4,23 @@ import {
 	getNameStyle,
 	getStatusStyle,
 } from "components/Tables/Tables";
-import { Cards, Menus } from "../../";
+import { Menus } from "../../";
 
 const NetworkCard = (props) => {
-	// const { item, index } = props;
-	const index = 123;
-	const item = {
-		agent_mobile: 123123,
-		agent_name: "jhkajsdhfl",
-		onboarded_on: "2020/12/12",
-		agent_type: "Seller",
-		eko_code: 123123,
-		account_status: "Active",
-		location: "Delhi NCR",
-	};
+	const { item } = props;
+
 	return (
-		<Cards key={index} width="100%" height="auto" p="15px">
+		<>
 			<Flex justifyContent="space-between">
 				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-					{getNameStyle(item.agent_name)}
+					{getNameStyle(item.name)}
 				</Box>
-				<Menus type="inverted" />
+				<Menus
+					type="inverted"
+					onClick={(e) => {
+						e.stopPropagation();
+					}}
+				/>
 			</Flex>
 			<Flex direction="column" fontSize={{ base: "sm" }} pl="42px">
 				<Flex gap="2">
@@ -32,7 +28,7 @@ const NetworkCard = (props) => {
 						Mobile Number:
 					</Box>
 					<Box as="span" color="dark">
-						{item.agent_mobile}
+						{item.mobile_number}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -40,7 +36,7 @@ const NetworkCard = (props) => {
 						Type:
 					</Box>
 					<Box as="span" color="dark">
-						{item.agent_type}
+						{item.type}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -48,15 +44,7 @@ const NetworkCard = (props) => {
 						Onboarded on:
 					</Box>
 					<Box as="span" color="dark">
-						{item.onboarded_on}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Eko Code:
-					</Box>
-					<Box as="span" color="dark">
-						{item.eko_code}
+						{item.createdAt}
 					</Box>
 				</Flex>
 				<Flex justifyContent="space-between" mt="10px" py="10px">
@@ -64,7 +52,7 @@ const NetworkCard = (props) => {
 					{getLocationStyle(item.location)}
 				</Flex>
 			</Flex>
-		</Cards>
+		</>
 	);
 };
 

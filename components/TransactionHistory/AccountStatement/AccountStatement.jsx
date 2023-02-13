@@ -164,7 +164,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 										base: "sm",
 										md: "sm",
 										lg: "sm",
-										"2xl": "lg",
+										"2xl": "md",
 									}}
 								/>
 							</Flex>
@@ -322,7 +322,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 								fontSize={{
 									base: "14px",
 									md: "8px",
-									lg: "0.7vw",
+									lg: "0.8vw",
 									"2xl": "0.8vw",
 								}}
 								fontWeight={"bold"}

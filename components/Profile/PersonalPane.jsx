@@ -7,6 +7,7 @@ import {
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { Cards, IconButtons } from "../";
+import Router from "next/router";
 
 const PersonalPane = () => {
 	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
@@ -39,6 +40,9 @@ const PersonalPane = () => {
 					Personal information
 				</Heading>
 				<IconButtons
+					onClick={() =>
+						Router.push("/admin/my-network/profile/up-per-info")
+					}
 					title={isSmallerThan768 ? "" : "Edit Details"}
 					iconPos={isSmallerThan768 ? "" : "left"}
 					iconName="mode-edit"
