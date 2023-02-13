@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Input } from "@chakra-ui/react";
+import { Center, Flex, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import { InputLabel, InputMsg } from "../";
 
@@ -112,6 +112,7 @@ const Inputs = ({
 						borderRight="1px solid"
 						borderColor={invalid && errorMsg ? "error" : "hint"}
 						zIndex="1100"
+						userSelect="none"
 						{...inputNumStyle}
 					>
 						+91

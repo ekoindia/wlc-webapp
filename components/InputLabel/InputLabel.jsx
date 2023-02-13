@@ -7,6 +7,7 @@ const InputLabel = ({ htmlFor, required, children, ...props }) => {
 			fontSize="xs"
 			mb="2px"
 			color="light"
+			variant="selectNone"
 			{...props}
 		>
 			{required ? (

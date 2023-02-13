@@ -31,7 +31,7 @@ const VerifyOtp = ({ number, setStep }) => {
 		timer > 0 && setTimeout(timeOutCallback, 1000);
 	}, [timer, timeOutCallback]);
 
-	console.log(timer);
+	// console.log(timer);
 
 	const resetTimer = function () {
 		if (!timer || timer <= 0) {
@@ -60,6 +60,7 @@ const VerifyOtp = ({ number, setStep }) => {
 					fontWeight="semibold"
 					fontSize={{ base: "xl", "2xl": "3xl" }}
 					letterSpacing="wide"
+					variant="selectNone"
 				>
 					Verify with OTP
 				</Heading>
@@ -72,7 +73,7 @@ const VerifyOtp = ({ number, setStep }) => {
 				fontSize={{ base: "sm", "2xl": "lg" }}
 				align="center"
 			>
-				<Flex align="center" wrap="wrap">
+				<Flex align="center" wrap="wrap" userSelect="none">
 					<Text>Sent on&nbsp;</Text>
 					<Center as="b">
 						+91 {number}
@@ -121,26 +122,33 @@ const VerifyOtp = ({ number, setStep }) => {
 				justify="center"
 				mt={{ base: 6, "2xl": "2.5rem" }}
 				fontSize={{ base: "sm", "2xl": "lg" }}
-				align="center"
+				fontFamily="roboto_font"
+				fontWeight="normal"
+				gap="0px 10px"
+				userSelect="none"
 			>
-				<Text>Did not receive yet?</Text>
-				<Box pl="2.5" fontFamily="roboto_font" fontWeight="medium">
-					{timer >= 1 ? (
-						<Box color="error" display="flex">
+				{timer >= 1 ? (
+					<>
+						<Text as={"span"}>Resend otp in </Text>
+						<Flex color="error" columnGap="4px">
 							<Icon name="timer" width="18px" />
-							&nbsp;00:{timer <= 9 ? "0" + timer : timer}
-						</Box>
-					) : (
+							00:{timer <= 9 ? "0" + timer : timer}
+						</Flex>
+					</>
+				) : (
+					<>
+						<Text as={"span"}>Did not receive yet?</Text>
 						<Text
 							cursor="pointer"
 							as="span"
 							color="accent.DEFAULT"
-							onClick={() => resetTimer()}
+							onClick={resetTimer}
+							fontWeight="medium"
 						>
 							Resend OTP
 						</Text>
-					)}
-				</Box>
+					</>
+				)}
 			</Flex>
 
 			<Buttons
