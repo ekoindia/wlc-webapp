@@ -337,6 +337,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 							borderRadius={"10px"}
 							overflow={"hidden"}
 							onClick={(e) => handleClickForInput("from")}
+							bg={"white"}
 						>
 							<Flex w={"100%"} align={"center"} h={"100%"}>
 								<Flex
@@ -407,6 +408,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 							border={"1px solid #D2D2D2"}
 							borderRadius={"10px"}
 							overflow={"hidden"}
+							bg={"white"}
 							onClick={(e) => handleClickForInput("to")}
 						>
 							<Flex w={"100%"} align={"center"} h={"100%"}>
