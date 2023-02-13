@@ -133,6 +133,21 @@ export const light = extendTheme({
 			},
 		},
 		Tabs: tabsTheme,
+		Heading: {
+			variants: {
+				selectNone: {
+					...theme.components.Heading,
+					userSelect: "none",
+				},
+			},
+		},
+		Text: {
+			variants: {
+				selectNone: {
+					userSelect: "none",
+				},
+			},
+		},
 	},
 	colors: {
 		primary: {

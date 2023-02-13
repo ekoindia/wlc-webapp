@@ -55,7 +55,11 @@ const Login = ({ setStep, setNumber, number }) => {
 	};
 	return (
 		<Flex direction="column">
-			<Heading as="h3" fontSize={{ base: "xl", "2xl": "3xl" }}>
+			<Heading
+				variant="selectNone"
+				as="h3"
+				fontSize={{ base: "xl", "2xl": "3xl" }}
+			>
 				Login
 			</Heading>
 
@@ -87,7 +91,9 @@ const Login = ({ setStep, setNumber, number }) => {
 				>
 					<Image src="./icons/google.png" w={{}} />
 				</Center>
-				<Text ml={[10, 10, null]}>Login with Google</Text>
+				<Text ml={[10, 10, null]} variant="selectNone">
+					Login with Google
+				</Text>
 			</Button>
 
 			<Divider

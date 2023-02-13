@@ -10,6 +10,7 @@ const Divider = ({ title, titleStyle, ...props }) => {
 				// display="block"
 			>
 				<Text
+					variant="selectNone"
 					position="relative"
 					px="12px"
 					// display="inline-block"

@@ -42,6 +42,7 @@ const MobileVerify = ({ number, setNumber, setStep }) => {
 					<Icon name="arrow-back" />
 				</Box>
 				<Heading
+					variant="selectNone"
 					as="h3"
 					pl={{ base: 3.5, "2xl": 5 }}
 					fontWeight="600"
@@ -58,6 +59,7 @@ const MobileVerify = ({ number, setNumber, setStep }) => {
 				mb={{ base: "3.6rem", "2xl": "6.8rem" }}
 				fontSize={{ base: "sm", "2xl": "lg" }}
 				align="center"
+				userSelect="none"
 			>
 				<Flex align="center" wrap="wrap">
 					<Text>Sent on&nbsp;</Text>
