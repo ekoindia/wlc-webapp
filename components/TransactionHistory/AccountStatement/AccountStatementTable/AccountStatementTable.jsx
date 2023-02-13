@@ -28,6 +28,7 @@ const AccountStatementTable = () => {
 				renderer={renderer}
 				data={mockData}
 				variant="evenStriped"
+				tableName="Account"
 			/>
 		</>
 	);

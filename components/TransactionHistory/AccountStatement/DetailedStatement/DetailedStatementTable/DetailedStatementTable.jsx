@@ -28,6 +28,7 @@ const DetailedStatementTable = () => {
 				renderer={renderer}
 				data={mockData}
 				variant="evenStriped"
+				tableName="Detailed"
 			/>
 		</>
 	);

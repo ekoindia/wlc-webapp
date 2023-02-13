@@ -1,11 +1,9 @@
 import { Box, Center, Flex, Square } from "@chakra-ui/react";
 import { DOTS, usePagination } from "hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "..";
 
 const Pagination = (props) => {
-	const [currPageNumber, setCurrPageNumber] = useState(1);
-
 	const {
 		onPageChange,
 		totalCount,
@@ -14,6 +12,12 @@ const Pagination = (props) => {
 		pageSize,
 		className,
 	} = props;
+	const [currPageNumber, setCurrPageNumber] = useState(1);
+
+	useEffect(() => {
+		// console.log("Use Effect", currentPage);
+		setCurrPageNumber(currentPage);
+	}, [currentPage]);
 
 	const paginationRange = usePagination({
 		currentPage,
