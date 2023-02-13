@@ -1,6 +1,4 @@
 /* PLOP_INJECT_IMPORT */
-import { PricingCommissions } from "./PricingCommissions";
-import { SellerDetails } from "./SellerDetails";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
@@ -14,14 +12,15 @@ import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
 import { Layout } from "./Layout";
-import { LoginPanel } from "./LoginPanel";
 import { Menus } from "./Menus";
 import { NavBar } from "./NavBar";
 import { Network } from "./Network";
 import { Pagination } from "./Pagination";
+import { PricingCommissions } from "./PricingCommissions";
 import { ProfilePanel } from "./Profile";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
+import { SellerDetails } from "./SellerDetails";
 import { SideBar } from "./SideBar";
 import { Sort } from "./Sort";
 import { Tables } from "./Tables";
@@ -32,10 +31,10 @@ import {
 	DetailedStatement,
 } from "./TransactionHistory/AccountStatement";
 
-import { UpdateSellerInfo } from "./SellerDetails/UpdateSellerInfo";
+import { PreviewSellerInfo } from "./SellerDetails";
 import { UpdatePersonalInfo } from "./SellerDetails/UpdatePersonalInfo";
 import { UpdateSellerAddress } from "./SellerDetails/UpdateSellerAddress";
-import { PreviewSellerInfo } from "./SellerDetails";
+import { UpdateSellerInfo } from "./SellerDetails/UpdateSellerInfo";
 
 export {
 	PricingCommissions,
@@ -58,7 +57,6 @@ export {
 	InputMsg,
 	InputLabel,
 	Input,
-	LoginPanel,
 	Network,
 	Layout,
 	Cards,
@@ -72,6 +70,5 @@ export {
 	UpdatePersonalInfo,
 	UpdateSellerAddress,
 	PreviewSellerInfo,
-
 	/* PLOP_INJECT_EXPORT */
 };

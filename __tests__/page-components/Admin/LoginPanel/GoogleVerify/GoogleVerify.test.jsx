@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import { Admin } from "components/Admin";
+import { GoogleVerify } from "components/GoogleVerify";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { Admin } from "components/Admin";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Admin", () => {
+describe("GoogleVerify", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Admin />);
+		const { container } = render(<GoogleVerify />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -45,9 +45,9 @@ describe("Admin", () => {
 		// expect(container).toMatchSnapshot();
 	});
 
-
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
-	test.todo("TODO: add proper test cases for Admin in __tests__/components/Admin/Admin.test.jsx");
-
+	test.todo(
+		"TODO: add proper test cases for GoogleVerify in __tests__/components/GoogleVerify/GoogleVerify.test.jsx"
+	);
 });
