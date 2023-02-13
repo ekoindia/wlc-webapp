@@ -95,8 +95,13 @@ const Login = ({ setStep, setNumber, number }) => {
 					borderRadius="10px"
 					position="absolute"
 					left="2px"
+					h="calc(100% - 4px)"
+					w={{ base: "60px", "2xl": "68px" }}
 				>
-					<Image src="./icons/google.png" w={{}} />
+					<Image
+						src="./icons/google.svg"
+						w={{ base: "40px", "2xl": "48px" }}
+					/>
 				</Center>
 				<Text ml={[10, 10, null]} variant="selectNone">
 					Login with Google
