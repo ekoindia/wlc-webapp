@@ -113,6 +113,9 @@ const Menus = (props) => {
 											key={index}
 											onClick={item.onClick}
 											px="10px"
+											_hover={{
+												bg: "white",
+											}}
 											{...itemStyles}
 										>
 											{item.item}
