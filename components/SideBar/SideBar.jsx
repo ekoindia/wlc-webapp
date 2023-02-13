@@ -49,7 +49,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 								gap="10px"
 								color="#FFFFFF"
 								align="center"
-								px={{ base: "1", lg: "2", "2xl": "4" }}
+								px={{ base: "2", md: "1", lg: "2", "2xl": "4" }}
 								py={{
 									base: "4",
 									md: "3",
