@@ -101,7 +101,8 @@ const Menus = (props) => {
 						<MenuList
 							minW="120px"
 							fontSize={{
-								base: "xs",
+								base: "10px",
+								sm: "xs",
 							}}
 							{...listStyles}
 						>
