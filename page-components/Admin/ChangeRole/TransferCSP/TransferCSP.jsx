@@ -7,8 +7,8 @@ import {
 	Select,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons, Icon } from "..";
-import MoveAgents from "./MoveAgents/MoveAgents";
+import { Buttons, Icon } from "components";
+import { MoveAgents } from "..";
 
 // text - align: left;
 // font: normal normal 600 16px / 18px Inter;

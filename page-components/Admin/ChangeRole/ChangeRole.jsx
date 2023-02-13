@@ -9,10 +9,9 @@ import {
 	Tabs,
 	Text,
 } from "@chakra-ui/react";
+import { Buttons } from "components";
 import { useState } from "react";
-import { Buttons } from "..";
-import MoveAgents from "./MoveAgents/MoveAgents";
-import TransferCSP from "./TransferCSP";
+import { MoveAgents, TransferCSP } from ".";
 
 /**
  * A <ChangeRole> component
@@ -21,6 +20,7 @@ import TransferCSP from "./TransferCSP";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<ChangeRole></ChangeRole>`
  */
+
 const ChangeRole = ({ className = "", ...props }) => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	return !isShowSelectAgent ? (

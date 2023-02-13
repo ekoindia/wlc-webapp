@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	Flex,
 	HStack,
 	Input,
@@ -11,9 +10,16 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons } from "components/Buttons";
-import { Icon } from "components/Icon";
+import { Buttons, Icon } from "components";
 import React, { useRef } from "react";
+
+/**
+ * A <Dmt> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<Dmt></Dmt>`
+ */
 
 const Dmt = ({ className = "", ...props }) => {
 	const focusRef = useRef(null);

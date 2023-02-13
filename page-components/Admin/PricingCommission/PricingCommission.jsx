@@ -1,7 +1,13 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import React from "react";
 import { Dmt } from "./Dmt";
-
+/**
+ * A <PricingCommission> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<PricingCommission></PricingCommission>`
+ */
 const PricingCommissions = ({ className = "", ...props }) => {
 	return (
 		<Box

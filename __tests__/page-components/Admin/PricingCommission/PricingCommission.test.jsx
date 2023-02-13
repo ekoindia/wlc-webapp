@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import { PricingCommissions } from "components/PricingCommissions";
+import { PricingCommission } from "components/PricingCommission";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { PricingCommissions } from "components/PricingCommissions";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("PricingCommissions", () => {
+describe("PricingCommission", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<PricingCommissions />);
+		const { container } = render(<PricingCommission />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("PricingCommissions", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for PricingCommissions in __tests__/components/PricingCommissions/PricingCommissions.test.jsx"
+		"TODO: add proper test cases for PricingCommission in __tests__/components/PricingCommission/PricingCommission.test.jsx"
 	);
 });
