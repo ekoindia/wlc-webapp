@@ -99,6 +99,7 @@ const Menus = (props) => {
 							{title}
 						</MenuButton>
 						<MenuList
+							py="0px"
 							minW="120px"
 							fontSize={{
 								base: "10px",
