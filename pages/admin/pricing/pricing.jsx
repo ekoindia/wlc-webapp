@@ -1,6 +1,6 @@
 import { Layout } from "components";
 import Head from "next/head";
-import { PricingCommission } from "Page-components/Admin";
+import { PricingCommission } from "page-components/Admin";
 import React from "react";
 
 const Pricing = () => {
