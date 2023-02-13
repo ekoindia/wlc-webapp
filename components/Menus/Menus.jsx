@@ -98,15 +98,7 @@ const Menus = (props) => {
 						>
 							{title}
 						</MenuButton>
-						<MenuList
-							py="0px"
-							minW="120px"
-							fontSize={{
-								base: "10px",
-								sm: "xs",
-							}}
-							{...listStyles}
-						>
+						<MenuList py="0px" minW="120px" {...listStyles}>
 							{menulist.map((item, index) => {
 								return (
 									<>
@@ -114,7 +106,12 @@ const Menus = (props) => {
 											color="dark"
 											key={index}
 											onClick={item.onClick}
-											px="10px"
+											p="8px 10px"
+											fontSize={{
+												base: "10px",
+												sm: "xs",
+											}}
+											fontWeight="medium"
 											_hover={{
 												bg: "white",
 											}}
