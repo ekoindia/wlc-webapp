@@ -17,9 +17,9 @@ const Breadcrumbs = ({ ...props }) => {
 	const textChanger = {
 		Profile: "Seller Details",
 		Pricing: "Pricing & Commissions",
-		// "up-sell-info": "Update Personal Information",
-		// 'Up Sell Info':'Update Seller Information',
-		// 'Up Sell Add':"Update Selller Address",
+		"Up-sell-info": "Update Seller Information",
+		"Up-per-info": "Update Personal Information",
+		"Up-sell-add": "Update Seller Address",
 	};
 
 	const capitalizeWordsBreadcrumbs = (str) => {
