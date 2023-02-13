@@ -1,9 +1,15 @@
 import { Box, Flex, Grid, Image } from "@chakra-ui/react";
 import { useGetLogoContext } from "contexts/getLogoContext";
 import { useState } from "react";
-import { Login, MobileVerify, VerifyOtp } from ".";
+import { GoogleVerify, Login, VerifyOtp } from ".";
 
-const LoginPanel = ({ className = "", ...props }) => {
+/**
+ * This is the main component where all the Login related component rendered.
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @example	`<LoginPanel></LoginPanel>`
+ */
+
+const LoginPanel = (props) => {
 	const [step, setStep] = useState(0); // TODO: Edit state as required
 	const [number, setNumber] = useState("");
 	const { logo } = useGetLogoContext();
@@ -79,7 +85,7 @@ const LoginPanel = ({ className = "", ...props }) => {
 						""
 					)}
 					{step === 2 ? (
-						<MobileVerify
+						<GoogleVerify
 							setStep={setStep}
 							number={number}
 							setNumber={setNumber}

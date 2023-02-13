@@ -8,9 +8,17 @@ import {
 	PinInputField,
 	Text,
 } from "@chakra-ui/react";
+import { Buttons, Icon, IconButtons } from "components";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
-import { Buttons, Icon, IconButtons } from "../../";
+
+/**
+ * A <VerifyOtp> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<VerifyOtp></VerifyOtp>`
+ */
 
 const pinInputStyle = {
 	w: "95px",

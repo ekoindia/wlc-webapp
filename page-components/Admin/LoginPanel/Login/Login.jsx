@@ -1,7 +1,14 @@
 import { Button, Center, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import { Buttons, Divider, Input } from "components";
 import { useRef, useState } from "react";
-import { Buttons, Divider, Input } from "../../";
 
+/**
+ * A <Login> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<Login></Login>`
+ */
 const Login = ({ setStep, setNumber, number }) => {
 	const [value, setValue] = useState(number);
 	const [errorMsg, setErrorMsg] = useState(false);

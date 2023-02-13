@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Inter } from "@next/font/google";
-import { LoginPanel } from "components";
+import { LoginPanel } from "page-components/Admin";
 import { useEffect } from "react";
 import { useGetLogoContext } from "../contexts/getLogoContext";
 

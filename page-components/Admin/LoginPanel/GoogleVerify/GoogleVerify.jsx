@@ -1,9 +1,16 @@
 import { Box, Center, Flex, Heading, Text } from "@chakra-ui/react";
+import { Buttons, Icon, IconButtons, Input } from "components";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Buttons, Icon, IconButtons, Input } from "../../";
 
-const MobileVerify = ({ number, setNumber, setStep }) => {
+/**
+ * A <GoogleVerify> component
+ * TODO: Used when the google auth is successfull
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<GoogleVerify></GoogleVerify>`
+ */
+const GoogleVerify = ({ number, setNumber, setStep }) => {
 	const [value, setValue] = useState(number);
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
@@ -110,4 +117,4 @@ const MobileVerify = ({ number, setNumber, setStep }) => {
 	);
 };
 
-export default MobileVerify;
+export default GoogleVerify;
