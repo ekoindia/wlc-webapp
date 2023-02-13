@@ -203,6 +203,7 @@ function Filter() {
 										xl: "md",
 										"2xl": "2xl",
 									}}
+									fontWeight={"semibold"}
 								>
 									Filter
 								</Text>
@@ -223,7 +224,7 @@ function Filter() {
 										sm: "15px",
 										md: "20px",
 										lg: "20px",
-										xl: "20px",
+										xl: "16px",
 										"2xl": "25px",
 									}}
 								>
@@ -235,8 +236,8 @@ function Filter() {
 										sm: "xs",
 										md: "sm",
 										lg: "sm",
-										xl: "md",
-										"2xl": "2xl",
+										xl: "sm",
+										"2xl": "xl",
 									}}
 								>
 									Close

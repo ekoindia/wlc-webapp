@@ -43,7 +43,7 @@ const CompanyPane = () => {
 					<Box
 						display="flex"
 						flexDirection={isSmallerThan440 ? "row" : "column"}
-						alignItems="center"
+						alignItems={{ base: "center", sm: "flex-start" }}
 						gap={isSmallerThan440 ? 2 : 0}
 					>
 						<Text color="light" fontSize={14}>
@@ -62,7 +62,7 @@ const CompanyPane = () => {
 					<Box
 						display="flex"
 						flexDirection={isSmallerThan440 ? "row" : "column"}
-						alignItems="center"
+						alignItems={{ base: "center", sm: "flex-start" }}
 						gap={isSmallerThan440 ? 2 : 0}
 					>
 						<Text color="light" fontSize={14}>
@@ -81,7 +81,7 @@ const CompanyPane = () => {
 					<Box
 						display="flex"
 						flexDirection={isSmallerThan440 ? "row" : "column"}
-						alignItems="center"
+						alignItems={{ base: "center", sm: "flex-start" }}
 						gap={isSmallerThan440 ? 2 : 0}
 					>
 						<Text color="light" fontSize={14}>
