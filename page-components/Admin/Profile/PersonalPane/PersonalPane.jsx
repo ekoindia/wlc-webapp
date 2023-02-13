@@ -6,9 +6,16 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Cards, IconButtons } from "../";
+import { Cards, IconButtons } from "components";
 import Router from "next/router";
 
+/**
+ * A <PersonalPane> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<PersonalPane></PersonalPane>`
+ */
 const PersonalPane = () => {
 	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
 
