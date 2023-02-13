@@ -13,6 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { NetworkCard } from "components/Network";
 import { TransactionHistoryCard } from "components/TransactionHistory";
+import { AccountStatementCard } from "components/TransactionHistory/AccountStatement";
+import { DetailedStatementCard } from "components/TransactionHistory/AccountStatement/DetailedStatement";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
@@ -160,6 +162,18 @@ const Tables = (props) => {
 						onClick={redirect}
 					>
 						<TransactionHistoryCard item={item} />
+					</Cards>
+				);
+			} else if (tableName === "Account") {
+				return (
+					<Cards key={index} width="100%" height="auto" p="15px">
+						<AccountStatementCard item={item} />
+					</Cards>
+				);
+			} else if (tableName === "Detailed") {
+				return (
+					<Cards key={index} width="100%" height="auto" p="15px">
+						<DetailedStatementCard item={item} />
 					</Cards>
 				);
 			}
