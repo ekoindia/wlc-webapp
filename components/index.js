@@ -17,7 +17,6 @@ import { NavBar } from "./NavBar";
 import { Network } from "./Network";
 import { Pagination } from "./Pagination";
 import { PricingCommissions } from "./PricingCommissions";
-import { ProfilePanel } from "./Profile";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
 import { SellerDetails } from "./SellerDetails";
@@ -61,7 +60,6 @@ export {
 	Layout,
 	Cards,
 	Buttons,
-	ProfilePanel,
 	SearchBar,
 	Sort,
 	Filter,

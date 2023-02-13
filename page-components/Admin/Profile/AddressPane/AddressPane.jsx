@@ -7,8 +7,16 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Cards, IconButtons } from "../";
+import { Buttons, Cards, IconButtons } from "components";
 import Router from "next/router";
+
+/**
+ * A <AddressPane> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<AddressPane></AddressPane>`
+ */
 const AddressPane = () => {
 	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
 	return (

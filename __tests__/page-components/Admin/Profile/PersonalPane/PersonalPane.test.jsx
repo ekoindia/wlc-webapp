@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import { UpdatePersonalInfo } from "components/UpdatePersonalInfo";
+import { PersonalPane } from "components/PersonalPane";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { UpdatePersonalInfo } from "components/UpdatePersonalInfo";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("UpdatePersonalInfo", () => {
+describe("PersonalPane", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<UpdatePersonalInfo />);
+		const { container } = render(<PersonalPane />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("UpdatePersonalInfo", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for UpdatePersonalInfo in __tests__/components/UpdatePersonalInfo/UpdatePersonalInfo.test.jsx"
+		"TODO: add proper test cases for PersonalPane in __tests__/components/PersonalPane/PersonalPane.test.jsx"
 	);
 });

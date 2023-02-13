@@ -1,5 +1,6 @@
-import { Layout, ProfilePanel } from "components";
+import { Layout } from "components";
 import Head from "next/head";
+import { ProfilePanel } from "page-components/Admin";
 import React from "react";
 
 const Profile = () => {

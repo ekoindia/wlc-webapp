@@ -8,8 +8,15 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Cards, Icon, IconButtons } from "..";
+import { Buttons, Cards, Icon, IconButtons } from "components";
 import Router from "next/router";
+/**
+ * A <CompanyPane> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<CompanyPane></CompanyPane>`
+ */
 const CompanyPane = () => {
 	const [isSmallerThan440] = useMediaQuery("(max-width:440px)");
 	return (
