@@ -239,7 +239,7 @@ const Sort = ({ className = "", ...props }) => {
 					</MenuButton>
 
 					<MenuList borderTopRadius={"15px"} minW={"100%"}>
-						<MenuGroup title="Sort by" fontSize={"16px"}>
+						<MenuGroup title="Sort by" fontSize={"18px"}>
 							<RadioGroup px={"5vw"}>
 								<Stack
 									divider={
@@ -248,19 +248,35 @@ const Sort = ({ className = "", ...props }) => {
 									direction="column"
 									fontWeight={"medium"}
 								>
-									<Radio value="1">Recently Added</Radio>
-									<Radio value="2">
-										<Text as={"spa"} fontWeight={"normal"}>
-											Status:
-										</Text>
-										Active
-									</Radio>
-									<Radio value="3">
-										<Text as={"spa"} fontWeight={"normal"}>
-											Status:
-										</Text>
-										Inactive
-									</Radio>
+									<MenuItem p={"0px"} bgColor={"white"}>
+										<Radio value="1" size={"lg"}>
+											Recently Added
+										</Radio>
+									</MenuItem>
+
+									<MenuItem p={"0px"} bgColor={"white"}>
+										<Radio value="2" size={"lg"}>
+											<Text
+												as={"span"}
+												fontWeight={"normal"}
+											>
+												Status:
+											</Text>
+											Active
+										</Radio>
+									</MenuItem>
+
+									<MenuItem p={"0px"} bgColor={"white"}>
+										<Radio value="3" size={"lg"}>
+											<Text
+												as={"span"}
+												fontWeight={"normal"}
+											>
+												Status:
+											</Text>
+											Inactive
+										</Radio>
+									</MenuItem>
 								</Stack>
 							</RadioGroup>
 						</MenuGroup>
