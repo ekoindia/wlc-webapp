@@ -70,7 +70,7 @@ const NavContent = ({ setNavOpen }) => {
 			>
 				<Box display={"flex"} alignItems={"center"}>
 					<IconButton
-						display={{ md: "none" }}
+						display={{ lg: "none" }}
 						onClick={() => {
 							setNavOpen(true);
 						}}
