@@ -46,11 +46,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 		<Flex
 			w="100%"
 			p={{
-				base: "",
-				sm: "0px",
-				md: "0px",
+				base: "0px",
+
 				lg: "20px",
-				xl: "20px",
+
 				"2xl": "14px 30px 30px 30px",
 			}}
 			direction={"column"}
@@ -71,14 +70,15 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 
 				lg: "white",
 			}}
-			mt={{ base: "10px", md: "30px" }}
+			mt={{ base: "0px", md: "30px" }}
 		>
 			<Flex direction={"column"}>
 				<Box
 					bg={{ base: "white", "2xl": "none" }}
 					alignItems={{ base: "center", "2xl": "none" }}
-					borderRadius={{ base: "10px", lg: "none" }}
-					border={{ base: "1px solid #D2D2D2", lg: "none" }}
+					// borderRadius={{ base: "10px", lg: "none" }}
+					// border={{ base:  "0px 1px solid #D2D2D2 0px 0px", lg: "none" }}
+					borderBottom={{ base: "1px solid #D2D2D2", md: "none" }}
 				>
 					<Flex
 						direction={"column"}
@@ -87,6 +87,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							base: "0px 5px 15px #0000000D",
 							lg: "none",
 						}}
+						gap={{ base: "5px", md: "0px" }}
 					>
 						<Text
 							as="h1"
@@ -119,12 +120,14 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				bg={"white"}
 				//  bg="green"
 				w={{
-					base: "100%",
+					base: "90%",
 
-					"2xl": "full",
+					md: "100%",
 				}}
 				mt={{ base: "18px", lg: "0px" }}
 				mb={"20px"}
+				// mx="16px"
+				mx={{ base: "auto", md: "0px" }}
 				borderRadius={{ base: "10px", xl: "0", "2xl": "none" }}
 				border={{
 					base: "1px solid #D2D2D2",
@@ -147,8 +150,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						w={{
 							base: "100%",
 
-							lg: "97%",
-							xl: "70%",
+							lg: "94%",
+							xl: "71%",
 							"2xl": "63%",
 						}}
 					>
@@ -174,7 +177,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								xl: "1.5rem",
 								lg: "1rem",
 								"2xl": "1.2rem",
-								// base:"1rem"
 							}}
 							mt={{ base: "2.25rem", md: "1.2rem" }}
 							direction={"row"}
@@ -242,9 +244,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Address Line 2"
-									// placeholder={
-									// 	"B-373 Second Floor Sector - 20"
-									// }
+									placeholder={
+										"B-373 Second Floor Sector - 20"
+									}
 									value={item.AddressLine2}
 									// invalid={true}
 									// errorMsg={"Please enter"}
