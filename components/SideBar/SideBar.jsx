@@ -122,10 +122,10 @@ const MenuBar = ({ props }) => {
 const SideBar = (props) => {
 	return (
 		<>
-			<Box display={{ base: "flex", lg: "none" }}>
+			<Box display={{ base: "flex", md: "none" }}>
 				<MenuBar props={props} />
 			</Box>
-			<Box display={{ base: "none", lg: "flex" }}>
+			<Box display={{ base: "none", md: "flex" }}>
 				<SideBarMenu />
 			</Box>
 		</>
