@@ -44,7 +44,7 @@ const Layout = (props) => {
 						// p={"1vw"}
 						// pr={"0.6vw"}
 						p={{ base: "0px", sm: "0px", md: "1vw", "2xl": ".8vw" }}
-						pb={"0px"}
+						pb={{ base: "20px", md: "0px" }}
 						css={{
 							"&::-webkit-scrollbar": {
 								width: "0.6vw",

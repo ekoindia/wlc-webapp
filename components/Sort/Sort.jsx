@@ -238,11 +238,7 @@ const Sort = ({ className = "", ...props }) => {
 						</Text>
 					</MenuButton>
 
-					<MenuList
-						borderTopRadius={"15px"}
-						minW={"100%"}
-						bgColor={"red"}
-					>
+					<MenuList borderTopRadius={"15px"} minW={"100%"}>
 						<MenuGroup title="Sort by" fontSize={"16px"}>
 							<RadioGroup px={"5vw"}>
 								<Stack
