@@ -16,7 +16,7 @@ import { Cards, IconButtons } from "components";
  * @example	`<ContactPane></ContactPane>`
  */
 const ContactPane = () => {
-	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
+	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 	// useEffect(() => {
 	// 	window.addEventListener("resize", (e) => {
 	// 		console.log("inside useEffect", useDim);
@@ -57,8 +57,8 @@ const ContactPane = () => {
 					Contact information
 				</Heading>
 				<IconButtons
-					title={isSmallerThan768 ? "" : "Edit Details"}
-					iconPos={isSmallerThan768 ? "" : "left"}
+					title={isSmallerThan769 ? "" : "Edit Details"}
+					iconPos={isSmallerThan769 ? "" : "left"}
 					iconName="mode-edit"
 					iconStyle={{
 						width: "12px",
@@ -80,7 +80,7 @@ const ContactPane = () => {
 					</Box>
 					<IconButtons
 						variant="success"
-						hasIcon={isSmallerThan768 ? true : false}
+						hasIcon={isSmallerThan769 ? true : false}
 						iconName="phone"
 						iconStyle={{
 							width: "12px",
@@ -96,9 +96,9 @@ const ContactPane = () => {
 						</Text>
 					</Box>
 					<IconButtons
-						title={isSmallerThan768 ? "" : "Email Now"}
+						title={isSmallerThan769 ? "" : "Email Now"}
 						variant="accent"
-						hasIcon={isSmallerThan768 ? true : false}
+						hasIcon={isSmallerThan769 ? true : false}
 						iconName="mail"
 						iconStyle={{
 							width: "12px",

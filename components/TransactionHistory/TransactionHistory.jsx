@@ -12,14 +12,16 @@ const TransactionHistory = ({ className = "", ...props }) => {
 	}
 
 	return (
-		<Box w="100%">
+		<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
 			<Box>
 				<SearchBar
 					onChangeHandler={onChangeHandler}
 					value={searchValue}
 				/>
 			</Box>
-			<TransactionHistoryTable />
+			<Box>
+				<TransactionHistoryTable />
+			</Box>
 		</Box>
 	);
 };

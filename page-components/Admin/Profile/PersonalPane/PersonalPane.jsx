@@ -17,7 +17,7 @@ import Router from "next/router";
  * @example	`<PersonalPane></PersonalPane>`
  */
 const PersonalPane = () => {
-	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
+	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 
 	const personalData = [
 		{ name: "date_of_birth", label: "Date of birth", value: "06/02/1989" },
@@ -50,8 +50,8 @@ const PersonalPane = () => {
 					onClick={() =>
 						Router.push("/admin/my-network/profile/up-per-info")
 					}
-					title={isSmallerThan768 ? "" : "Edit Details"}
-					iconPos={isSmallerThan768 ? "" : "left"}
+					title={isSmallerThan769 ? "" : "Edit Details"}
+					iconPos={isSmallerThan769 ? "" : "left"}
 					iconName="mode-edit"
 					iconStyle={{
 						width: "12px",

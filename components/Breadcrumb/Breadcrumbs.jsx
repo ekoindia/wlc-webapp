@@ -142,7 +142,7 @@ const Breadcrumbs = (props) => {
 
 			{isSmallerThan769 ? (
 				isNavVisible && (
-					<Box>
+					<Box mt={"26px"}>
 						{breadcrumbs && (
 							<Headings
 								hasIcon={breadcrumbs.length > 1 ? true : false}

@@ -49,7 +49,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 								gap="10px"
 								color="#FFFFFF"
 								align="center"
-								px={{ base: "2", md: "1", lg: "2", "2xl": "4" }}
+								px={{ base: "3", md: "1", lg: "2", "2xl": "4" }}
 								py={{
 									base: "4",
 									md: "3",
@@ -122,10 +122,10 @@ const MenuBar = ({ props }) => {
 const SideBar = (props) => {
 	return (
 		<>
-			<Box display={{ base: "flex", md: "none" }}>
+			<Box display={{ base: "flex", lg: "none" }}>
 				<MenuBar props={props} />
 			</Box>
-			<Box display={{ base: "none", md: "flex" }}>
+			<Box display={{ base: "none", lg: "flex" }}>
 				<SideBarMenu />
 			</Box>
 		</>
