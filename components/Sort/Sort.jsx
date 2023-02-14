@@ -90,10 +90,10 @@ const Sort = ({ className = "", ...props }) => {
 								fontWeight={"medium"}
 								textAlign="start"
 								borderRadius={{
-									base: "7px",
-									md: "7px",
-									lg: "5px",
-									"2xl": "10px",
+									base: "6px",
+									md: "6px",
+									lg: "6px",
+									"2xl": "6px",
 								}}
 								border=" 1px solid #D2D2D2"
 								isActive={isOpen}

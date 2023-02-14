@@ -282,7 +282,7 @@ export const getNameStyle = (name) => {
 export const getStatusStyle = (status) => {
 	return (
 		<Tags
-			size={{ base: "sm", lg: "xs", "2xl": "md" }}
+			size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
 			px={"10px"}
 			status={status}
 		/>
