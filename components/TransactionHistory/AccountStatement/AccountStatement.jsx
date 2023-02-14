@@ -316,13 +316,14 @@ const AccountStatement = ({ className = "", ...props }) => {
 									onClick={handleClick}
 									title={"View Detailed Statement"}
 									w={{
-										base: "95%",
+										base: "100%",
 										md: "15vw",
 										lg: "12vw",
 										"2xl": "12vw",
 									}}
 									h={{
-										base: "11vw",
+										base: "54px",
+										sm: "48px",
 										md: "4.5vw",
 										lg: "3.5vw",
 										"2xl": "3vw",
