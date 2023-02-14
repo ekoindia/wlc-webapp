@@ -13,7 +13,7 @@ const Network = ({ className = "", ...props }) => {
 
 	return (
 		<>
-			<Box w={"100%"}>
+			<Box w={"100%"} px={{ base: "16px", md: "initial" }}>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<SearchBar
 						onChangeHandler={onChangeHandler}
@@ -34,7 +34,7 @@ const Network = ({ className = "", ...props }) => {
 					</Flex>
 				</Box>
 
-				<Box px={{ base: "16px", md: "initial" }}>
+				<Box>
 					<NetworkTable />
 				</Box>
 				<ResSortAndFilter />

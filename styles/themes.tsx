@@ -18,11 +18,12 @@ const roboto = Roboto({
 // console.log(theme.components.Tabs.baseStyle);
 // console.log(tabsTheme);
 // console.log(theme)
+
 export const light = extendTheme({
 	breakpoints: {
 		base: "0",
 		sm: "440px",
-		md: "768px",
+		md: "769px",
 		lg: "1024px",
 		xl: "1200px",
 		"2xl": "1800px",
@@ -229,7 +230,7 @@ export const light = extendTheme({
 		"8xl": "90rem",
 		container: {
 			sm: "640px",
-			md: "768px",
+			md: "769px",
 			lg: "1024px",
 			xl: "1280px",
 		},

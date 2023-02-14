@@ -18,7 +18,8 @@ const PricingCommissions = ({ className = "", ...props }) => {
 			borderRadius={{ base: "8px", md: "10px" }}
 			border={"card"}
 			boxShadow={" 0px 5px 15px #0000000D"}
-			mb={"10px"}
+			mb={{ base: "26px", md: "10px" }}
+			mx={{ base: "16px", md: "none" }}
 		>
 			<Tabs
 				position="relative"

@@ -6,7 +6,7 @@ import { AccountStatementTable } from "./AccountStatementTable";
 
 const AccountStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
-	const [isMobileScreen] = useMediaQuery("(max-width: 768px)");
+	const [isMobileScreen] = useMediaQuery("(max-width: 769px)");
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
