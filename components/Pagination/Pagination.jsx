@@ -42,7 +42,12 @@ const Pagination = (props) => {
 		>
 			<Flex gap={2} color="light">
 				<Box as="span">Results</Box>
-				<Box as="span" color="dark">
+				<Box
+					as="span"
+					color="dark"
+					fontWeight={"medium"}
+					fontFamily={"roboto"}
+				>
 					{currentPage * pageSize - (pageSize - 1)} -{" "}
 					{currentPage * pageSize > totalCount
 						? totalCount

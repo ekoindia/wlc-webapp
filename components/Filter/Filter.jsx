@@ -55,9 +55,9 @@ function Filter() {
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
 					borderRadius={{
-						base: "7px",
-						md: "7px",
-						lg: "5px",
+						base: "10px",
+						md: "8px",
+						lg: "10px",
 						"2xl": "10px",
 					}}
 					_hover={{
