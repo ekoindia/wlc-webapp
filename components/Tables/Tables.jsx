@@ -1,11 +1,13 @@
 import {
 	Avatar,
 	Box,
+	Divider,
 	Flex,
 	Table,
 	TableContainer,
 	Tbody,
 	Td,
+	Text,
 	Th,
 	Thead,
 	Tr,
@@ -29,7 +31,7 @@ const Tables = (props) => {
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
-	const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
+	const [isSmallerThan769] = useMediaQuery("(max-width: 769px)");
 	const [currentPage, setCurrentPage] = useState(1);
 
 	useEffect(() => {
@@ -116,6 +118,7 @@ const Tables = (props) => {
 			);
 		});
 	};
+
 	const prepareCol = (item, column, index) => {
 		switch (column?.show) {
 			case "Tag":
@@ -166,15 +169,21 @@ const Tables = (props) => {
 				);
 			} else if (tableName === "Account") {
 				return (
-					<Cards key={index} width="100%" height="auto" p="15px">
+					<Box bg="white" key={index} width="100%" height="auto">
 						<AccountStatementCard item={item} />
-					</Cards>
+						{index !== currentTableData.length - 1 && (
+							<Divider my="20px" />
+						)}
+					</Box>
 				);
 			} else if (tableName === "Detailed") {
 				return (
-					<Cards key={index} width="100%" height="auto" p="15px">
+					<Box bg="white" key={index} width="100%" height="auto">
 						<DetailedStatementCard item={item} />
-					</Cards>
+						{index !== currentTableData.length - 1 && (
+							<Divider my="20px" />
+						)}
+					</Box>
 				);
 			}
 		});
@@ -202,7 +211,7 @@ const Tables = (props) => {
 	return (
 		<>
 			<Box w="100%">
-				{!isSmallerThan768 ? (
+				{!isSmallerThan769 ? (
 					<>
 						<TableContainer
 							borderRadius="10px 10px 0 0"
@@ -248,10 +257,30 @@ const Tables = (props) => {
 				) : (
 					<Flex
 						direction="column"
-						gap="4"
 						alignItems="center"
-						mt={"15px"}
+						mt="16px"
+						p="16px"
+						boxShadow="0px 5px 15px #0000000D"
+						border="1px solid #D2D2D2"
+						gap={tableName === "Account" || "Detailed" ? 0 : 4}
+						bg={
+							tableName === "Account" || "Detailed"
+								? "white"
+								: "none"
+						}
 					>
+						{tableName === "Account" || "Detailed" ? (
+							<Text
+								color="light"
+								width="100%"
+								fontWeight="semibold"
+								paddingBottom="16px"
+							>
+								Recent Transaction
+							</Text>
+						) : (
+							""
+						)}
 						{prepareCard()}
 					</Flex>
 				)}

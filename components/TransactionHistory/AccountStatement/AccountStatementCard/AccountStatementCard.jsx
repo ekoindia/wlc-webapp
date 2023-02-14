@@ -13,55 +13,50 @@ const AccountStatementCard = (props) => {
 		balance: "123123",
 	};
 	return (
-		<>
-			<Flex direction="column">
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Transaction ID:
-					</Box>
-					<Box as="span" color="dark">
-						{/* {item.agent_mobile} */}
-						{item.transactionId}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Date & Time:
-					</Box>
-					<Box as="span" color="dark">
-						{/* {item.agent_mobile} */}
-						{item.datetime}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Activity:
-					</Box>
-					<Box as="span" color="dark">
-						{/* {item.agent_mobile} */}
-						{item.activity}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Description:
-					</Box>
-					<Box as="span" color="dark">
-						{/* {item.agent_mobile} */}
-						{item.description}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Amount
-					</Box>
-					<Box as="span" color="dark">
-						{/* {item.agent_mobile} */}
-						{item.amount}
-					</Box>
-				</Flex>
+		<Flex direction="column" fontSize="12px" rowGap="2">
+			<Flex gap="2">
+				<Box as="span" color="light">
+					Transaction ID:
+				</Box>
+				<Box as="span" color="dark">
+					{/* {item.agent_mobile} */}
+					{item.transactionId}
+				</Box>
 			</Flex>
-		</>
+			<Flex gap="2">
+				<Box as="span" color="light">
+					Date & Time:
+				</Box>
+				<Box as="span" color="dark">
+					{/* {item.agent_mobile} */}
+					{item.datetime}
+				</Box>
+			</Flex>
+			<Flex gap="2">
+				<Box as="span" color="light">
+					Activity:
+				</Box>
+				<Box as="span" color="dark">
+					{/* {item.agent_mobile} */}
+					{item.activity}
+				</Box>
+			</Flex>
+			<Flex gap="2">
+				<Box as="span" color="light">
+					Description:
+				</Box>
+				<Box as="span" color="dark">
+					{/* {item.agent_mobile} */}
+					{item.description}
+				</Box>
+			</Flex>
+			<Flex gap="2">
+				<Box as="span" color="dark">
+					{/* {item.agent_mobile} */}
+					&#x20B9;{item.amount}
+				</Box>
+			</Flex>
+		</Flex>
 	);
 };
 
