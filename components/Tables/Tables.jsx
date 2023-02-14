@@ -271,46 +271,87 @@ const Tables = (props) => {
 						</Flex>
 					</>
 				) : (
-					<Flex
-						direction="column"
-						alignItems="center"
-						borderRadius="10px 10px 0 0"
-						mt="16px"
-						boxShadow={
-							tableName === "Account" || tableName === "Detailed"
-								? "0px 5px 15px #0000000D"
-								: ""
-						}
-						border={
-							tableName === "Account" || tableName === "Detailed"
-								? "1px solid #D2D2D2"
-								: ""
-						}
-						gap={
-							tableName === "Account" || tableName === "Detailed"
-								? 0
-								: 4
-						}
-						bg={
-							tableName === "Account" || tableName === "Detailed"
-								? "white"
-								: ""
-						}
-					>
-						{tableName === "Account" || tableName === "Detailed" ? (
-							<Text
-								color="light"
-								width="100%"
-								p="16px 16px 0"
-								fontWeight="semibold"
+					<>
+						<Flex
+							direction="column"
+							alignItems="center"
+							borderRadius="10px 10px 0 0"
+							mt="16px"
+							boxShadow={
+								tableName === "Account" ||
+								tableName === "Detailed"
+									? "0px 5px 15px #0000000D"
+									: ""
+							}
+							border={
+								tableName === "Account" ||
+								tableName === "Detailed"
+									? "1px solid #D2D2D2"
+									: ""
+							}
+							gap={
+								tableName === "Account" ||
+								tableName === "Detailed"
+									? 0
+									: 4
+							}
+							bg={
+								tableName === "Account" ||
+								tableName === "Detailed"
+									? "white"
+									: ""
+							}
+						>
+							{tableName === "Account" ||
+							tableName === "Detailed" ? (
+								<Text
+									color="light"
+									width="100%"
+									p="16px 16px 0"
+									fontWeight="semibold"
+								>
+									Recent Transaction
+								</Text>
+							) : (
+								""
+							)}
+							{prepareCard()}
+						</Flex>
+
+						<Flex
+							align="center"
+							justifyContent="center"
+							w="100%"
+							h="94px"
+						>
+							<Flex
+								align="center"
+								justifyContent="center"
+								w="220px"
+								h="54px"
+								border="1px solid #11299E"
+								borderRadius="10px"
+								opacity="1"
+								cursor="pointer"
 							>
-								Recent Transaction
-							</Text>
-						) : (
-							""
-						)}
-						{prepareCard()}
-					</Flex>
+								<IconButtons
+									variant="accent"
+									title="Show More"
+									hasBG={false}
+									iconPos="left"
+									iconName="file-upload"
+									textStyle={{
+										fontSize: "18px",
+										fontWeight: "bold",
+									}}
+									iconStyle={{
+										height: "24px",
+										width: "24px",
+									}}
+								/>
+							</Flex>
+						</Flex>
+					</>
 				)}
 			</Box>
 		</>
