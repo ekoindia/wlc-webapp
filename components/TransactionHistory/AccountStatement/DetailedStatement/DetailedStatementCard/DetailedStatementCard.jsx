@@ -14,7 +14,7 @@ const DetailedStatementCard = (props) => {
 	};
 	return (
 		<>
-			<Flex direction="column">
+			<Flex direction="column" fontSize="12px" rowGap="2">
 				<Flex gap="2">
 					<Box as="span" color="light">
 						Transaction ID:
@@ -53,8 +53,8 @@ const DetailedStatementCard = (props) => {
 				</Flex>
 			</Flex>
 			<Flex justifyContent="space-between">
-				{item.amount}
-				{item.balance}
+				<Box> &#x20B9;{item.amount}</Box>
+				<Box> &#x20B9;{item.balance}</Box>
 			</Flex>
 		</>
 	);
