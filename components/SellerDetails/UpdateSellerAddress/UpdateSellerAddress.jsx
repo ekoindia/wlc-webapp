@@ -48,14 +48,14 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 			p={{
 				base: "0px",
 
-				lg: "20px",
+				md: "20px",
 
 				"2xl": "14px 30px 30px 30px",
 			}}
 			direction={"column"}
 			border={{
 				base: "none",
-				lg: "1px solid #D2D2D2",
+				md: "1px solid #D2D2D2",
 			}}
 			boxShadow={{
 				base: "none",
@@ -68,7 +68,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 			bg={{
 				base: "none",
 
-				lg: "white",
+				md: "white",
 			}}
 			mt={{ base: "0px", md: "30px" }}
 		>
@@ -82,10 +82,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				>
 					<Flex
 						direction={"column"}
-						p={{ base: "12px", lg: "0px" }}
+						p={{ base: "12px", md: "0px" }}
 						boxShadow={{
 							base: "0px 5px 15px #0000000D",
-							lg: "none",
+							md: "none",
 						}}
 						gap={{ base: "5px", md: "0px" }}
 					>
@@ -110,7 +110,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						</Text>
 					</Flex>
 				</Box>
-				<Flex display={{ base: "none", lg: "flex" }}>
+				<Flex display={{ base: "none", md: "flex" }}>
 					<Divider color="hint" mt="15px" />
 				</Flex>
 			</Flex>
@@ -124,19 +124,19 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 
 					md: "100%",
 				}}
-				mt={{ base: "18px", lg: "0px" }}
+				mt={{ base: "18px", md: "0px" }}
 				mb={"20px"}
 				// mx="16px"
 				mx={{ base: "auto", md: "0px" }}
-				borderRadius={{ base: "10px", xl: "0", "2xl": "none" }}
+				borderRadius={{ base: "10px", md: "0", "2xl": "none" }}
 				border={{
 					base: "1px solid #D2D2D2",
-					lg: "0",
+					md: "0",
 				}}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
 
-					lg: "none",
+					md: "none",
 				}}
 				p={{ base: "0px", md: "20px", lg: "0px" }}
 			>
