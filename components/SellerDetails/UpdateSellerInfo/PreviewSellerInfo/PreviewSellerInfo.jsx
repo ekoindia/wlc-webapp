@@ -47,7 +47,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 
 				"2xl": "14px 30px 30px 30px",
 			}}
-			mt="20px"
+			mt={{ base: "0px", lg: "30px" }}
 
 			//
 		>
@@ -63,9 +63,8 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 			>
 				<Flex
 					direction={"column"}
-					borderRadius={{ base: "10px" }}
-					border={{ base: "1px solid #D2D2D2", lg: "none" }}
 					p={{ base: "10px", lg: "0px" }}
+					borderBottom={{ base: "1px solid #D2D2D2", lg: "none" }}
 					bg={"white"}
 				>
 					<Text
@@ -97,24 +96,21 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 				h="full"
 				p={{
 					base: "16px",
-
 					md: "20px",
 					lg: "0px",
 				}}
 				borderRadius={{ base: "10px", lg: "0" }}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
-					xl: "none",
 					lg: "none",
-					"2xl": "none",
 				}}
 				border={{
 					base: " 1px solid #D2D2D2",
-
 					lg: "none",
 				}}
 				mt={{ base: "16px", lg: "0px" }}
 				mb={"20px"}
+				mx={{ base: "16px", md: "0px" }}
 				direction="column"
 			>
 				<Flex direction="column">

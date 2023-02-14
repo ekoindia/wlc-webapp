@@ -40,16 +40,12 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 			}}
 			border={{
 				base: "",
-				sm: "",
-				xl: "1px solid #D2D2D2",
-				"2xl": "1px solid #D2D2D2",
+
+				lg: "1px solid #D2D2D2",
 			}}
 			borderRadius={{
 				base: "",
 				md: "10px",
-				md: "10px",
-				xl: "10px",
-				"2xl": "10px",
 			}}
 			boxShadow={{
 				base: "",
@@ -63,17 +59,17 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 
 				"2xl": "14px 30px 30px 30px",
 			}}
-			mt="20px"
+			mt={{ base: "0px", md: "30px" }}
 		>
 			{" "}
 			<Box
 				bg={{ base: "#FFFFFF", "2xl": "white" }}
-				w={{ base: "full", lg: "100%" }}
-				p={{ base: "12px", lg: "0px" }}
-				borderRadius={{ base: "10px", lg: "none" }}
-				border={{ base: "1px solid #D2D2D2", lg: "none" }}
+				w={{ base: "100%" }}
+				// borderRadius={{ base: "10px", lg: "none" }}
+				// border={{ base: "1px solid #D2D2D2", lg: "none" }}
+				borderBottom={{ base: "1px solid #D2D2D2", lg: "none" }}
 			>
-				<Flex direction={"column"}>
+				<Flex direction={"column"} p={{ base: "12px", lg: "0px" }}>
 					<Text
 						as="h1"
 						color="accent.DEFAULT"
@@ -107,8 +103,8 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 
 					lg: "0px",
 				}}
-				// m={{ base: "20px", md: "20px", lg: "0px" }}
-				mt={{ base: "10px", lg: "0" }}
+				mx={{ base: "16px", md: "0px" }}
+				mt={{ base: "18px", lg: "0" }}
 				mb={"20px"}
 				borderRadius={{
 					base: "10px",
