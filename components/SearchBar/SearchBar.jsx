@@ -21,7 +21,7 @@ export function SearchBar({ onChangeHandler, value }) {
 				xl: "2.6vw",
 				"2xl": "2.2vw",
 			}}
-			mx={{ base: "auto", sm: "0px" }}
+			mx={{ base: "16px", sm: "0px" }}
 			mt={{ base: "2vw", md: "1vw", "2xl": ".5vw" }}
 		>
 			<Input
