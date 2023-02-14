@@ -1,11 +1,13 @@
 import {
 	Avatar,
 	Box,
+	Divider,
 	Flex,
 	Table,
 	TableContainer,
 	Tbody,
 	Td,
+	Text,
 	Th,
 	Thead,
 	Tr,
@@ -116,6 +118,7 @@ const Tables = (props) => {
 			);
 		});
 	};
+
 	const prepareCol = (item, column, index) => {
 		switch (column?.show) {
 			case "Tag":
@@ -166,15 +169,33 @@ const Tables = (props) => {
 				);
 			} else if (tableName === "Account") {
 				return (
-					<Cards key={index} width="100%" height="auto" p="15px">
-						<AccountStatementCard item={item} />
-					</Cards>
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="20px 16px"
+						>
+							<AccountStatementCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && <Divider />}
+					</>
 				);
 			} else if (tableName === "Detailed") {
 				return (
-					<Cards key={index} width="100%" height="auto" p="15px">
+					<Box
+						bg="white"
+						key={index}
+						width="100%"
+						height="auto"
+						px="16px"
+					>
 						<DetailedStatementCard item={item} />
-					</Cards>
+						{index !== currentTableData.length - 1 && (
+							<Divider my="20px" />
+						)}
+					</Box>
 				);
 			}
 		});
@@ -248,10 +269,42 @@ const Tables = (props) => {
 				) : (
 					<Flex
 						direction="column"
-						gap="4"
 						alignItems="center"
-						mt={"15px"}
+						borderRadius="10px 10px 0 0"
+						mt="16px"
+						boxShadow={
+							tableName === "Account" || tableName === "Detailed"
+								? "0px 5px 15px #0000000D"
+								: ""
+						}
+						border={
+							tableName === "Account" || tableName === "Detailed"
+								? "1px solid #D2D2D2"
+								: ""
+						}
+						gap={
+							tableName === "Account" || tableName === "Detailed"
+								? 0
+								: 4
+						}
+						bg={
+							tableName === "Account" || tableName === "Detailed"
+								? "white"
+								: ""
+						}
 					>
+						{tableName === "Account" || tableName === "Detailed" ? (
+							<Text
+								color="light"
+								width="100%"
+								p="16px 16px 0"
+								fontWeight="semibold"
+							>
+								Recent Transaction
+							</Text>
+						) : (
+							""
+						)}
 						{prepareCard()}
 					</Flex>
 				)}
