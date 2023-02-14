@@ -46,6 +46,12 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 		event.preventDefault();
 	};
 
+	const item = {
+		Name: "Saurabh",
+		LastName: "Mullick",
+		ShopName: "Alam Store",
+	};
+
 	const handleDrop = (event) => {
 		event.preventDefault();
 
@@ -306,7 +312,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									label="First Name"
 									placeholder={"Saurabh"}
 									required="true"
-									// value={value}
+									value={item.Name}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -349,7 +355,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								<Input
 									label="Middle Name"
 									placeholder={""}
-									// value={value}
 									// invalid={invalid}
 									// errorMsg={errorMsg}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -391,7 +396,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								<Input
 									label="Last Name"
 									placeholder={"Mullick"}
-									// value={value}
+									value={item.LastName}
 									// invalid={invalid}
 									// errorMsg={errorMsg}
 									// mb={{	 base: 10, "2xl": "4.35rem" }}
@@ -586,7 +591,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								<Input
 									label="Shop Name"
 									placeholder={"Alam Store"}
-									// value={value}
+									value={item.ShopName}
 									// invalid={invalid}
 									// errorMsg={errorMsg}
 									// mb={{	 base: 10, "2xl": "4.35rem" }}
