@@ -8,9 +8,13 @@
 			"contexts": ["./contexts/*"],
 			"hooks": ["./hooks/*"],
 			"components/*": ["./components/*"],
+			"page-components/*": [
+				"./page-components/*",
+				"./page-components/Admin/*"
+			],
 			"public/*": ["./public/*"],
 			"helpers/*": ["./helpers/*"],
-			"libs/*": ["./libs/*"],
+			"libs/*": ["./libs/*"]
 		}
 	},
 	"include": ["**/*.js", "**/*.jsx"],

@@ -6,6 +6,10 @@
 		"paths": {
 			"test-utils": ["./__tests__/test-utils/test-utils"],
 			"components/*": ["./components/*"],
+			"page-components/*": [
+				"./page-components/*",
+				"./page-components/Admin/*"
+			],
 			"constants/*": ["./constants/*"],
 			"contexts/*": ["./contexts/*"],
 			"helpers/*": ["./helpers/*"],
@@ -27,7 +31,14 @@
 		"isolatedModules": true,
 		"jsx": "preserve"
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/SearchBar/SearchFilterSort.jsx", "components/Network/Tables.jsx", "constants/adminMenu.ts"],
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		"components/SearchBar/SearchFilterSort.jsx",
+		"components/Network/Tables.jsx",
+		"constants/adminMenu.ts"
+	],
 	"exclude": [
 		"node_modules",
 		".next",

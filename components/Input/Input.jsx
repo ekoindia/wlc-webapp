@@ -87,6 +87,7 @@ const Inputs = ({
 					borderColor={errorMsg && invalid ? "error" : "hint"}
 					bg={errorMsg && invalid ? "#fff7fa" : ""}
 					w="100%"
+					inputMode={isNumInput ? "numeric" : "text"}
 					onChange={(e) => onChangeHandler(e.target.value)}
 					pl={isNumInput ? { base: 17, "2xl": "7.6rem" } : ""}
 					height="100%"

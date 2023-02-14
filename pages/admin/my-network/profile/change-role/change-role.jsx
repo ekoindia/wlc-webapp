@@ -1,4 +1,5 @@
-import { ChangeRole, Layout } from "components";
+import { Layout } from "components";
+import { ChangeRole } from "page-components/Admin";
 import React from "react";
 
 const changeRole = () => {
