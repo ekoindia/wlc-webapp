@@ -41,7 +41,7 @@ const NavBar = (props) => {
 						isNavVisible ? (
 							<NavContent setNavOpen={setNavOpen} />
 						) : (
-							<Flex h="100%" alignItems="center" px={"16px"}>
+							<Flex h="100%" alignItems="center">
 								<Headings
 									title={headingObj.title}
 									hasIcon={headingObj.hasIcon}
@@ -70,7 +70,7 @@ const NavContent = ({ setNavOpen }) => {
 			>
 				<Box display={"flex"} alignItems={"center"}>
 					<IconButton
-						display={{ md: "none" }}
+						display={{ lg: "none" }}
 						onClick={() => {
 							setNavOpen(true);
 						}}

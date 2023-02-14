@@ -33,47 +33,38 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 			h="auto"
 			bg={{
 				base: "none",
-				md: "none",
-				lg: "white",
-				xl: "white",
-				"2xl": "white",
+				md: "white",
 			}}
 			border={{
 				base: "",
-				sm: "",
-				xl: "1px solid #D2D2D2",
-				"2xl": "1px solid #D2D2D2",
+
+				md: "1px solid #D2D2D2",
 			}}
 			borderRadius={{
 				base: "",
 				md: "10px",
-				md: "10px",
-				xl: "10px",
-				"2xl": "10px",
 			}}
 			boxShadow={{
-				base: "",
-				xl: "0px 5px 15px #0000000D",
+				base: "none",
+				md: "0px 5px 15px #0000000D",
 			}}
 			direction="column"
 			p={{
 				base: "0px",
-
-				lg: "20px",
-
+				md: "20px",
 				"2xl": "14px 30px 30px 30px",
 			}}
-			mt="20px"
+			mt={{ base: "0px", md: "30px" }}
 		>
 			{" "}
 			<Box
 				bg={{ base: "#FFFFFF", "2xl": "white" }}
-				w={{ base: "full", lg: "100%" }}
-				p={{ base: "12px", lg: "0px" }}
-				borderRadius={{ base: "10px", lg: "none" }}
-				border={{ base: "1px solid #D2D2D2", lg: "none" }}
+				w={{ base: "100%" }}
+				// borderRadius={{ base: "10px", lg: "none" }}
+				// border={{ base: "1px solid #D2D2D2", lg: "none" }}
+				borderBottom={{ base: "1px solid #D2D2D2", md: "none" }}
 			>
-				<Flex direction={"column"}>
+				<Flex direction={"column"} p={{ base: "12px", md: "0px" }}>
 					<Text
 						as="h1"
 						color="accent.DEFAULT"
@@ -95,7 +86,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					</Text>
 				</Flex>
 			</Box>
-			<Flex display={{ base: "none", lg: "flex" }}>
+			<Flex display={{ base: "none", md: "flex" }}>
 				<Divider color="hint" mt="15px" />
 			</Flex>
 			<Flex
@@ -105,23 +96,23 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				p={{
 					base: "20px",
 
-					lg: "0px",
+					md: "0px",
 				}}
-				// m={{ base: "20px", md: "20px", lg: "0px" }}
-				mt={{ base: "10px", lg: "0" }}
+				mx={{ base: "16px", md: "0px" }}
+				mt={{ base: "18px", lg: "0" }}
 				mb={"20px"}
 				borderRadius={{
 					base: "10px",
 
-					lg: "0px",
+					md: "0px",
 				}}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
-					lg: "none",
+					md: "none",
 				}}
 				border={{
 					base: " 1px solid #D2D2D2",
-					lg: "none",
+					md: "none",
 				}}
 				alignContent="center"
 			>
@@ -150,21 +141,21 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					<Flex
 						direction={{
 							base: "column",
-							lg: "row",
+							md: "row",
 						}}
 						gap={{
 							base: "",
-							lg: "3.7rem",
+							md: "3.7rem",
 						}}
 						alignItems={{
 							base: "none",
-							lg: "center",
+							md: "center",
 						}}
 					>
 						<Flex
 							w={{
 								base: "100%",
-
+								md: "60%",
 								lg: "46%",
 								xl: "34.5%",
 								"2xl": "32%",
@@ -174,7 +165,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								placeholder="--Select--"
 								w={{
 									base: "100%",
-
+									md: "55vw",
 									xl: "25vw",
 									lg: "35vw",
 									"2xl": "25vw",
@@ -192,8 +183,9 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 							display={"flex"}
 							mt={{
 								base: "2.5rem",
-								lg: "0rem",
+								md: "0rem",
 							}}
+							alignItems={"center"}
 						>
 							<Text fontSize="sm">Created By</Text> :{"   "}
 							&nbsp;
@@ -212,7 +204,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					<Box
 						w={{
 							base: "100%",
-
+							md: "60%",
 							lg: "46%",
 							xl: "34.5%",
 							"2xl": "32%",
@@ -229,7 +221,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 							placeholder="Vijay Kumar -- 9711217911 --21809910"
 							w={{
 								base: "100%",
-
+								md: "55vw",
 								lg: "35vw",
 								xl: "25vw",
 								"2xl": "25vw",
@@ -245,8 +237,8 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				</Flex>
 				<Flex
 					mt={{ base: "3rem", "2xl": "2.8rem" }}
-					gap={{ base: "0", lg: "1.2rem" }}
-					justifyContent={{ base: "space-between", lg: "flex-start" }}
+					gap={{ base: "0", md: "5rem", lg: "1.2rem" }}
+					justifyContent={{ base: "space-between", md: "flex-start" }}
 				>
 					<Text fontSize={"md"} fontWeight="semibold">
 						Is he trained?
@@ -289,7 +281,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								h: { base: "3rem", "2xl": "3rem" },
 								w: {
 									base: "100%",
-
+									md: "55vw",
 									lg: "35vw",
 									xl: "25vw",
 									"2xl": "25vw",

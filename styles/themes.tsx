@@ -18,6 +18,7 @@ const roboto = Roboto({
 // console.log(theme.components.Tabs.baseStyle);
 // console.log(tabsTheme);
 // console.log(theme)
+
 export const light = extendTheme({
 	breakpoints: {
 		base: "0",

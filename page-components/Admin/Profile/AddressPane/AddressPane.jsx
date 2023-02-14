@@ -11,7 +11,7 @@ import { Buttons, Cards, IconButtons } from "components";
 import Router from "next/router";
 
 const AddressPane = () => {
-	const [isSmallerThan768] = useMediaQuery("(max-width:768px)");
+	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 	return (
 		<Cards>
 			<Heading
@@ -60,9 +60,9 @@ const AddressPane = () => {
 							title="Update Address"
 						/>
 						<Box
-							margin={isSmallerThan768 ? "auto" : ""}
-							mt={isSmallerThan768 ? "30px" : ""}
-							mb={isSmallerThan768 ? "10px" : ""}
+							margin={isSmallerThan769 ? "auto" : ""}
+							mt={isSmallerThan769 ? "30px" : ""}
+							mb={isSmallerThan769 ? "10px" : ""}
 						>
 							<IconButtons
 								title="View on Google Maps"
