@@ -43,7 +43,7 @@ const Layout = (props) => {
 						overflowY={"scroll"}
 						// p={"1vw"}
 						// pr={"0.6vw"}
-						p={{ base: "4vw", sm: "3vw", md: "1vw", "2xl": ".8vw" }}
+						p={{ base: "0px", sm: "3vw", md: "1vw", "2xl": ".8vw" }}
 						pb={"0px"}
 						css={{
 							"&::-webkit-scrollbar": {

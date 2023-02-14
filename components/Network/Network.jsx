@@ -34,7 +34,7 @@ const Network = ({ className = "", ...props }) => {
 					</Flex>
 				</Box>
 
-				<Box>
+				<Box px={{ base: "16px", md: "initial" }}>
 					<NetworkTable />
 				</Box>
 				<ResSortAndFilter />

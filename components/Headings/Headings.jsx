@@ -11,20 +11,23 @@ const Headings = (props) => {
 		router.back();
 	};
 	return (
-		<Box marginTop={"1vw"} px={{ base: "1.5vw", lg: "0px" }}>
+		<Box
+			marginTop={{ base: "0px", md: "1vw" }}
+			px={{ base: "16px", lg: "0px" }}
+		>
 			{hasIcon ? (
 				<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>
 					<Box
 						onClick={redirectTo}
 						cursor="pointer"
-						width={{ base: "14px", sm: "16px", "2xl": "18px" }}
-						height={{ base: "13px", sm: "16px", "2xl": "18px" }}
+						width={{ base: "15px", sm: "16px", "2xl": "18px" }}
+						height={{ base: "15px", sm: "16px", "2xl": "18px" }}
 					>
 						<Icon name="arrow-back" />
 					</Box>
 					<Text
 						fontSize={{
-							base: "12px",
+							base: "18px",
 							sm: "18px",
 							md: "15px",
 							lg: "18px",
@@ -38,7 +41,7 @@ const Headings = (props) => {
 			) : (
 				<Text
 					fontSize={{
-						base: "12px",
+						base: "18px",
 						sm: "18px",
 						md: "15px",
 						lg: "18px",
