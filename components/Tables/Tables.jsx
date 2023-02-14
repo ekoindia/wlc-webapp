@@ -175,13 +175,11 @@ const Tables = (props) => {
 							key={index}
 							width="100%"
 							height="auto"
-							px="16px"
+							p="20px 16px"
 						>
 							<AccountStatementCard item={item} />
 						</Box>
-						{index !== currentTableData.length - 1 && (
-							<Divider my="20px" />
-						)}
+						{index !== currentTableData.length - 1 && <Divider />}
 					</>
 				);
 			} else if (tableName === "Detailed") {
@@ -272,6 +270,7 @@ const Tables = (props) => {
 					<Flex
 						direction="column"
 						alignItems="center"
+						borderRadius="10px 10px 0 0"
 						mt="16px"
 						boxShadow="0px 5px 15px #0000000D"
 						border="1px solid #D2D2D2"
@@ -286,9 +285,8 @@ const Tables = (props) => {
 							<Text
 								color="light"
 								width="100%"
-								p="16px"
+								p="16px 16px 0"
 								fontWeight="semibold"
-								paddingBottom="16px"
 							>
 								Recent Transaction
 							</Text>
