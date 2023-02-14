@@ -9,18 +9,19 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Headings, Icon } from "../";
 
-const Breadcrumbs = ({ ...props }) => {
+const textChanger = {
+	Profile: "Seller Details",
+	Pricing: "Pricing & Commissions",
+	"Up-sell-info": "Update Seller Information",
+	"Up-per-info": "Update Personal Information",
+	"Up-sell-add": "Update Seller Address",
+};
+
+const Breadcrumbs = (props) => {
 	const router = useRouter();
 	const [breadcrumbs, setBreadcrumbs] = useState();
 
-	//? Add text accordingly here 👇
-	const textChanger = {
-		Profile: "Seller Details",
-		Pricing: "Pricing & Commissions",
-		"Up-sell-info": "Update Seller Information",
-		"Up-per-info": "Update Personal Information",
-		"Up-sell-add": "Update Seller Address",
-	};
+	const { setNav, setHeadingObj, isNavVisible, isSmallerThan769 } = props;
 
 	const capitalizeWordsBreadcrumbs = (str) => {
 		if (str in textChanger) {
@@ -52,6 +53,13 @@ const Breadcrumbs = ({ ...props }) => {
 		});
 		breadcrumbs.shift();
 		setBreadcrumbs(breadcrumbs);
+		if (breadcrumbs.length > 1) {
+			setNav(false);
+		}
+		setHeadingObj({
+			title: breadcrumbs[breadcrumbs.length - 1]?.label,
+			hasIcon: breadcrumbs.length > 1 ? true : false,
+		});
 	}, [router.asPath]);
 
 	return (
@@ -131,21 +139,38 @@ const Breadcrumbs = ({ ...props }) => {
 						))}
 				</Breadcrumb>
 			</Box>
-			<Box>
-				{breadcrumbs ? (
-					<Headings
-						hasIcon={breadcrumbs.length > 1 ? true : false}
-						title={breadcrumbs[breadcrumbs.length - 1]?.label}
-						redirectPath={
-							breadcrumbs.length > 1
-								? breadcrumbs[breadcrumbs.length - 2].href
-								: ""
-						}
-					/>
-				) : (
-					""
-				)}
-			</Box>
+
+			{isSmallerThan769 ? (
+				isNavVisible && (
+					<Box>
+						{breadcrumbs && (
+							<Headings
+								hasIcon={breadcrumbs.length > 1 ? true : false}
+								title={
+									breadcrumbs[breadcrumbs.length - 1]?.label
+								}
+								redirectPath={
+									breadcrumbs.length > 1 &&
+									breadcrumbs[breadcrumbs.length - 2].href
+								}
+							/>
+						)}
+					</Box>
+				)
+			) : (
+				<Box>
+					{breadcrumbs && (
+						<Headings
+							hasIcon={breadcrumbs.length > 1 ? true : false}
+							title={breadcrumbs[breadcrumbs.length - 1]?.label}
+							redirectPath={
+								breadcrumbs.length > 1 &&
+								breadcrumbs[breadcrumbs.length - 2].href
+							}
+						/>
+					)}
+				</Box>
+			)}
 		</>
 	);
 };

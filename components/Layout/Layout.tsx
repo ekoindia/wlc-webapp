@@ -4,9 +4,22 @@ import { Breadcrumbs, NavBar, SideBar } from "..";
 
 const Layout = (props) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
+	const [isNav, setNav] = useState(true);
+	const [headingObj, setHeadingObj] = useState({
+		title: null,
+		hasIcon: false,
+	});
+	const [isSmallerThan769] = useMediaQuery("(max-width: 769px)");
+
 	return (
 		<Box w={"full"} minH={"100vh"}>
-			<NavBar setNavOpen={setIsNavOpen} />
+			<NavBar
+				setNavOpen={setIsNavOpen}
+				isNavVisible={isNav}
+				isSmallerThan769={isSmallerThan769}
+				headingObj={headingObj}
+			/>
+
 			<Flex
 				width={"full"}
 				height={{
@@ -45,7 +58,12 @@ const Layout = (props) => {
 							},
 						}}
 					>
-						<Breadcrumbs />
+						<Breadcrumbs
+							setNav={setNav}
+							setHeadingObj={setHeadingObj}
+							isNavVisible={isNav}
+							isSmallerThan769={isSmallerThan769}
+						/>
 
 						{props.children}
 					</Box>
