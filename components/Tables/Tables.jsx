@@ -189,12 +189,10 @@ const Tables = (props) => {
 						key={index}
 						width="100%"
 						height="auto"
-						px="16px"
+						p="20px 16px"
 					>
 						<DetailedStatementCard item={item} />
-						{index !== currentTableData.length - 1 && (
-							<Divider my="20px" />
-						)}
+						{index !== currentTableData.length - 1 && <Divider />}
 					</Box>
 				);
 			}
