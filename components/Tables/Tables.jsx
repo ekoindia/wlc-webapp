@@ -272,16 +272,28 @@ const Tables = (props) => {
 						alignItems="center"
 						borderRadius="10px 10px 0 0"
 						mt="16px"
-						boxShadow="0px 5px 15px #0000000D"
-						border="1px solid #D2D2D2"
-						gap={tableName === "Account" || "Detailed" ? 0 : 4}
+						boxShadow={
+							tableName === "Account" || tableName === "Detailed"
+								? "0px 5px 15px #0000000D"
+								: ""
+						}
+						border={
+							tableName === "Account" || tableName === "Detailed"
+								? "1px solid #D2D2D2"
+								: ""
+						}
+						gap={
+							tableName === "Account" || tableName === "Detailed"
+								? 0
+								: 4
+						}
 						bg={
-							tableName === "Account" || "Detailed"
+							tableName === "Account" || tableName === "Detailed"
 								? "white"
-								: "none"
+								: ""
 						}
 					>
-						{tableName === "Account" || "Detailed" ? (
+						{tableName === "Account" || tableName === "Detailed" ? (
 							<Text
 								color="light"
 								width="100%"
