@@ -186,18 +186,20 @@ const Tables = (props) => {
 				);
 			} else if (tableName === "Detailed") {
 				return (
-					<Box
-						bg="white"
-						key={index}
-						width="100%"
-						height="auto"
-						p="20px 16px"
-					>
-						<DetailedStatementCard item={item} />
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="20px 16px"
+						>
+							<DetailedStatementCard item={item} />
+						</Box>
 						{index !== currentTableData.length - 1 && (
 							<Divider border="1px solid #D2D2D2" />
 						)}
-					</Box>
+					</>
 				);
 			}
 		});
