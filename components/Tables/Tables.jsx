@@ -169,16 +169,30 @@ const Tables = (props) => {
 				);
 			} else if (tableName === "Account") {
 				return (
-					<Box bg="white" key={index} width="100%" height="auto">
-						<AccountStatementCard item={item} />
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							px="16px"
+						>
+							<AccountStatementCard item={item} />
+						</Box>
 						{index !== currentTableData.length - 1 && (
 							<Divider my="20px" />
 						)}
-					</Box>
+					</>
 				);
 			} else if (tableName === "Detailed") {
 				return (
-					<Box bg="white" key={index} width="100%" height="auto">
+					<Box
+						bg="white"
+						key={index}
+						width="100%"
+						height="auto"
+						px="16px"
+					>
 						<DetailedStatementCard item={item} />
 						{index !== currentTableData.length - 1 && (
 							<Divider my="20px" />
@@ -259,7 +273,6 @@ const Tables = (props) => {
 						direction="column"
 						alignItems="center"
 						mt="16px"
-						p="16px"
 						boxShadow="0px 5px 15px #0000000D"
 						border="1px solid #D2D2D2"
 						gap={tableName === "Account" || "Detailed" ? 0 : 4}
@@ -273,6 +286,7 @@ const Tables = (props) => {
 							<Text
 								color="light"
 								width="100%"
+								p="16px"
 								fontWeight="semibold"
 								paddingBottom="16px"
 							>
