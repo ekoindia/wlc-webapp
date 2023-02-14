@@ -90,7 +90,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 				"2xl": "14px 30px 30px 30px",
 			}}
-			mt="20px"
+			mt={{ base: "0px", lg: "30px" }}
 
 			//
 		>
@@ -106,8 +106,9 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 			>
 				<Flex
 					direction={"column"}
-					borderRadius={{ base: "10px" }}
-					border={{ base: "1px solid #D2D2D2", lg: "none" }}
+					// borderRadius={{ base: "10px" }}
+					// border={{ base: "1px solid #D2D2D2", lg: "none" }}
+					borderBottom={{ base: "1px solid #D2D2D2", md: "none" }}
 					p={{ base: "12px", lg: "0px" }}
 					bg={"white"}
 				>
@@ -155,8 +156,9 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 					lg: "none",
 				}}
-				mt={{ base: "10px", lg: "0px" }}
+				mt={{ base: "18px", lg: "0px" }}
 				mb={"20px"}
+				mx={{ base: "16px", md: "0px" }}
 			>
 				<VStack align={{ base: "none", "2xl": "" }}>
 					<HStack
@@ -167,7 +169,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 							lg: "80vw",
 							xl: "65vw",
-							"2xl": "54vw",
+							"2xl": "54.5vw",
 						}}
 					>
 						<Text
@@ -196,7 +198,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								md: "80vw",
 
 								xl: "66vw",
-								"2xl": "54vw",
+								"2xl": "54.5vw",
 							}}
 							p="20px"
 							h={"9.375em"}
