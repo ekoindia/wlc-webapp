@@ -24,10 +24,20 @@ import { Buttons, Input, Icon, IconButtons } from "../..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<UpdateSellerAddress></UpdateSellerAddress>`
  */
+
 const UpdateSellerAddress = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0);
 	const [isTablet] = useMediaQuery("(max-width: 820px)"); // TODO: Edit state as required
 
+	const item = {
+		AddressLine1: "B-373 Second Floor Sector - 20",
+		AddressLine2: "B-373 Second Floor Sector - 20",
+		PostalCode: 201301,
+		City: "Noida",
+		State: "Uttarpradesh",
+		Country: "India",
+		OwnershipType: "123123",
+	};
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
@@ -180,10 +190,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Address Line 1"
-									placeholder={
-										"B-373 Second Floor Sector - 20"
-									}
-									// value={value}
+									value={item.AddressLine1}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -235,10 +242,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Address Line 2"
-									placeholder={
-										"B-373 Second Floor Sector - 20"
-									}
-									// value={value}
+									// placeholder={
+									// 	"B-373 Second Floor Sector - 20"
+									// }
+									value={item.AddressLine2}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -293,7 +300,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								<Input
 									label="Postal Code"
 									placeholder={"201301"}
-									// value={value}
+									value={item.PostalCode}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -346,7 +353,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								<Input
 									label=" City"
 									placeholder={"Noida"}
-									// value={value}
+									value={item.City}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -459,7 +466,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									label=" Country"
 									placeholder={"India"}
 									required="true"
-									// value={value}
+									value={item.Country}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -589,6 +596,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									placeholder={
 										"B-373 Second Floor Sector - 20"
 									}
+									value={item.AddressLine1}
 									// value={value}
 									// invalid={true}
 									// errorMsg={"Please enter"}
@@ -644,7 +652,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									placeholder={
 										"B-373 Second Floor Sector - 20"
 									}
-									// value={value}
+									value={item.AddressLine2}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -699,7 +707,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								<Input
 									label="Postal Code"
 									placeholder={"201301"}
-									// value={value}
+									value={item.PostalCode}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -752,7 +760,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								<Input
 									label=" City"
 									placeholder={"Noida"}
-									// value={value}
+									value={item.City}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -866,7 +874,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									label=" Country"
 									placeholder={"India"}
 									required="true"
-									// value={value}
+									value={item.Country}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1019,7 +1027,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									placeholder={
 										"B-373 Second Floor Sector - 20"
 									}
-									// value={value}
+									value={item.AddressLine1}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1074,7 +1082,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									placeholder={
 										"B-373 Second Floor Sector - 20"
 									}
-									// value={value}
+									value={item.AddressLine2}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1129,7 +1137,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								<Input
 									label="Postal Code"
 									placeholder={"201301"}
-									// value={value}
+									value={item.PostalCode}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1182,7 +1190,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								<Input
 									label=" City"
 									placeholder={"Noida"}
-									// value={value}
+									value={item.City}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1296,7 +1304,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									label=" Country"
 									placeholder={"India"}
 									required="true"
-									// value={value}
+									value={item.Country}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
