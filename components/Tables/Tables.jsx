@@ -179,7 +179,9 @@ const Tables = (props) => {
 						>
 							<AccountStatementCard item={item} />
 						</Box>
-						{index !== currentTableData.length - 1 && <Divider />}
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
 					</>
 				);
 			} else if (tableName === "Detailed") {
@@ -189,11 +191,11 @@ const Tables = (props) => {
 						key={index}
 						width="100%"
 						height="auto"
-						px="16px"
+						p="20px 16px"
 					>
 						<DetailedStatementCard item={item} />
 						{index !== currentTableData.length - 1 && (
-							<Divider my="20px" />
+							<Divider border="1px solid #D2D2D2" />
 						)}
 					</Box>
 				);

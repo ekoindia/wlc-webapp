@@ -52,7 +52,11 @@ const DetailedStatementCard = (props) => {
 					</Box>
 				</Flex>
 			</Flex>
-			<Flex justifyContent="space-between">
+			<Flex
+				justifyContent="space-between"
+				fontSize="16px"
+				fontWeight="medium"
+			>
 				<Box> &#x20B9;{item.amount}</Box>
 				<Box> &#x20B9;{item.balance}</Box>
 			</Flex>

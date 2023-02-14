@@ -50,7 +50,7 @@ const AccountStatementCard = (props) => {
 					{item.description}
 				</Box>
 			</Flex>
-			<Flex gap="2">
+			<Flex gap="2" fontSize="16px" fontWeight="medium">
 				<Box as="span" color="dark">
 					{/* {item.agent_mobile} */}
 					&#x20B9;{item.amount}
