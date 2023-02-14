@@ -43,13 +43,14 @@ const SideBarMenu = ({ className = "", ...props }) => {
 								fontSize={{
 									base: "3.6vw",
 									sm: "2.5vw",
-									md: ".95vw",
+									md: "1.5vw",
+									lg: ".9vw",
 									xl: ".85vw",
 								}}
 								gap="10px"
 								color="#FFFFFF"
 								align="center"
-								px={{ base: "3", md: "1", lg: "2", "2xl": "4" }}
+								px={{ base: "3", md: "3", lg: "2", "2xl": "4" }}
 								py={{
 									base: "4",
 									md: "3",
@@ -64,7 +65,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									currentRoute === menu.link.split("/")[2] &&
 									"#081E89"
 								}
-								borderLeft={isSmallerThan1024 ? "4px" : "8px"}
+								borderLeft="8px"
 								borderLeftColor={
 									currentRoute === menu.link.split("/")[2]
 										? "#FE7D00"
@@ -75,15 +76,17 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									w={{
 										base: "5.5vw",
 										sm: "3.4vw",
-										md: "1vw",
+										md: "1.5vw",
+										lg: "1vw",
 									}}
 									h={{
 										base: "5.5vw",
 										sm: "3.4vw",
-										md: "1vw",
+										md: "1.5vw",
+										lg: "1vw",
 									}}
 								>
-									<Icon name={menu.icon} />
+									<Icon name={menu.icon} width={"100%"} />
 								</Center>
 								{menu.name}
 							</Flex>
