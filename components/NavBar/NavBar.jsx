@@ -13,9 +13,12 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { Buttons, Headings, Icon } from "..";
+import { useUser } from "contexts/UserContext";
+import { useRouter } from "next/router";
 
 const NavBar = (props) => {
 	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj } = props;
+
 	return (
 		<>
 			<Box
@@ -60,6 +63,12 @@ const NavBar = (props) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen }) => {
+	const { logout } = useUser();
+	const router = useRouter();
+	const logoutHandler = () => {
+		router.push("/");
+		logout();
+	};
 	return (
 		<>
 			<HStack
@@ -395,6 +404,7 @@ const NavContent = ({ setNavOpen }) => {
 									</HStack>
 									<Divider w={"90%"} />
 									<HStack
+										onClick={logoutHandler}
 										minH={"2vw"}
 										w={"90%"}
 										justifyContent={"flex-start"}

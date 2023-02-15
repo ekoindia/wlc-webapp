@@ -25,29 +25,33 @@ export const UserReducer = (state, { type, payload }) => {
 					payload.userDetails
 				)
 			) {
-				console.log("login nahi hua");
+				console.log("login Failed");
 				return state;
 			}
 
 			const newState = {
-				...state,
 				loggedIn: true,
-				role: "producer", // TODO: Deduce user role (developer/producer)
 				userId: payload.userId,
 				sessionKey: payload.sessionKey,
 				userDetails: payload.userDetails,
 				profileDetails: payload.profileDetails || {},
+				...state,
 			};
 
 			sessionStorage.setItem("ConnectSession", JSON.stringify(newState));
+			// sessionStorage.setItem("access_token", JSON.stringify(newState));
+			// sessionStorage.setItem("refresh_token", JSON.stringify(newState));
+			// sessionStorage.setItem("access_token_lite", JSON.stringify(newState));
+			// sessionStorage.setItem("access_token_crm", JSON.stringify(newState));
+			// sessionStorage.setItem("user_details", JSON.stringify(newState));
+			// sessionStorage.setItem("account_details", JSON.stringify(newState));
+			// sessionStorage.setItem("personal_details", JSON.stringify(newState));
+			// sessionStorage.setItem("shop_details", JSON.stringify(newState));
 			return newState;
 		}
 
 		case "LOGOUT": {
-			sessionStorage.setItem(
-				"ConnectSession",
-				JSON.stringify(defaultUserState)
-			);
+			sessionStorage.removeItem("ConnectSession");
 			return defaultUserState;
 		}
 

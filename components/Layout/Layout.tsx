@@ -2,7 +2,7 @@ import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
 import { useState } from "react";
 import { Breadcrumbs, NavBar, SideBar } from "..";
 
-const Layout = (props) => {
+const Layout = ({ isLoggedIn, children, props }) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const [isNav, setNav] = useState(true);
 	const [headingObj, setHeadingObj] = useState({
@@ -11,7 +11,7 @@ const Layout = (props) => {
 	});
 	const [isSmallerThan769] = useMediaQuery("(max-width: 769px)");
 
-	return (
+	return isLoggedIn ? (
 		<Box w={"full"} minH={"100vh"}>
 			<NavBar
 				setNavOpen={setIsNavOpen}
@@ -65,11 +65,13 @@ const Layout = (props) => {
 							isSmallerThan769={isSmallerThan769}
 						/>
 
-						{props.children}
+						{children}
 					</Box>
 				</Box>
 			</Flex>
 		</Box>
+	) : (
+		<>{children}</>
 	);
 };
 

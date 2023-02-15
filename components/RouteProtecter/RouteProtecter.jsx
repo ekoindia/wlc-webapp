@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useUser } from "contexts/UserContext";
 import React, { useEffect, useRef, useState } from "react";
 import { Layout } from "..";
+import { Button } from "@chakra-ui/react";
 
 /**
  * A <RouteProtecter> component
@@ -13,57 +14,79 @@ import { Layout } from "..";
 
 const RouteProtecter = (props) => {
 	const { router, children } = props;
-	const { loggedIn } = useUser()[0];
+	const { redirect, setRedirect, userData } = useUser();
+	const { loggedIn } = userData;
 	const [authorized, setAuthorized] = useState(false);
+	const storeUrlRef = useRef();
 
-	console.info("RouteProtecter: start", loggedIn);
+	console.info("RouteProtecter: start");
+	console.log(loggedIn, authorized);
 
 	useEffect(() => {
-		if (router.pathname.startsWith("/admin") && loggedIn) {
-			console.log("RouteProtecter: check pathname");
-			setAuthorized(true);
-		} else {
-			router.push("/");
+		console.log(router.pathname);
+		// on initial load - run auth check
+		authCheck(router.asPath);
+		const preventAccess = () => setAuthorized(false);
+
+		router.events.on("routeChangeStart", preventAccess);
+		router.events.on("routeChangeComplete", authCheck);
+
+		return () => {
+			router.events.off("routeChangeStart", preventAccess);
+			router.events.off("routeChangeComplete", authCheck);
+		};
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [router.pathname, loggedIn, router, router.events]);
+
+	function authCheck(url) {
+		const publicLinks = ["/"];
+		const path = url.split("?")[0];
+		if (!loggedIn && !publicLinks.includes(path)) {
+			console.log("Route Protector : Not logged");
 			setAuthorized(false);
+			router.push("/");
+		} else {
+			console.log("Route Protector : logged");
+			setAuthorized(true);
+			// if (loggedIn && redirect !== url) {
+			// 	console.log("Redirect Executed");
+			// 	storeUrlRef.current = url;
+			// }
+			// else{
+			// 	console.log("Else Redirect Executed", storeUrlRef.current);
+			// 	setRedirect(storeUrlRef.current);
+			// }
+			// if (loggedIn && redirect !== storeUrlRef) {
+			// 	// 	if (router.pathname.startsWith("/admin")) {
+			// 	// 		console.log("RouteProtecter: check pathname");
+			// 	// 		setAuthorized(true);
+			// 	console.log("Redirect Executed");
+			// 	storeUrlRef(url)
+			// }
+			// 	else {
+			// 		setAuthorized(true);
+			// 	}
 		}
-	}, [router.pathname]);
-
-	// useEffect(() => {
-	// 	// on initial load - run auth check
-	// 	authCheck(router.asPath);
-	// 	setAuthorized(true);
-	// 	// on route change start - hide page content by setting authorized to false
-	// 	const hideContent = () => setAuthorized(false);
-	// 	router.events.on('routeChangeStart', hideContent);
-	// 	// on route change complete - run auth check
-	// 	router.events.on('routeChangeComplete', authCheck)
-	// 	// unsubscribe from events in useEffect return function
-	// 	return () => {
-	// 		router.events.off('routeChangeStart', hideContent);
-	// 		router.events.off('routeChangeComplete', authCheck);
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, []);
-
-	// function authCheck(url) {
-	// 	// redirect to login page if accessing a private page and not logged in
-	// 	const publicLinks = ['/', '/login'];
-	// 	const path = url.split('?')[0];
-	// 	if (!loggedIn && !publicLinks.includes(path)) {
-	// 		setAuthorized(false);
-	// 		router.push({
-	// 			pathname: '/',							// '/login'
-	// 			// query: { returnUrl: router.asPath }
-	// 		});
-	// 	} else {
-	// 		setAuthorized(true);
-	// 	}
-	// }
+	}
 
 	return (
 		<>
-			{authorized && children}
-			{!loggedIn && !authorized && children}
+			{authorized ? (
+				loggedIn ? (
+					<Layout isLoggedIn={loggedIn}>{children}</Layout>
+				) : (
+					children
+				)
+			) : (
+				<Button
+					onClick={() => {
+						router.push("/");
+					}}
+				>
+					You dont have access to this page
+				</Button>
+			)}
 		</>
 	);
 };

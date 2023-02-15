@@ -1,6 +1,12 @@
 import { Endpoints } from "constants/EndPoints";
 
-function sendOtpRequest(PostData) {
+function sendOtpRequest(number, toast) {
+	const PostData = {
+		platfom: "web",
+		mobile: RemoveFormatted(number),
+		client_ref_id: "242942347012342346",
+		app: "Connect",
+	};
 	fetch(process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.SENDOTP, {
 		method: "POST",
 		headers: {
@@ -8,13 +14,36 @@ function sendOtpRequest(PostData) {
 		},
 		body: JSON.stringify(PostData),
 	})
-		.then((res) => res.json())
+		.then((response) => {
+			if (response.ok) {
+				toast({
+					title: "Resend Otp Successfully",
+					status: "success",
+					duration: 2000,
+					isClosable: true,
+					position: "top-right",
+				});
+				return response.json();
+			} else {
+				const err = new Error("Response not Ok");
+				err.response = response;
+				throw err;
+			}
+		})
 		.then((data) => console.log(data))
-		.catch((e) => console.log(e));
+		.catch((e) =>
+			toast({
+				title: "Something went wrong",
+				status: "error",
+				duration: 2000,
+				isClosable: true,
+				position: "top-right",
+			})
+		);
 }
 
 function RemoveFormatted(number) {
-	return number.slice(0, 3) + number.slice(4, 7) + number.slice(8);
+	return number.replace(/\D/g, "");
 }
 
 export { sendOtpRequest, RemoveFormatted };

@@ -7,10 +7,14 @@ import {
 	PinInput,
 	PinInputField,
 	Text,
+	useToast,
 } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons } from "components";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+import { useLogin } from "hooks";
+import { useUser } from "contexts/UserContext";
+import { sendOtpRequest } from "helpers";
 
 /**
  * A <VerifyOtp> component
@@ -30,6 +34,10 @@ const VerifyOtp = ({ number, setStep }) => {
 	const [Otp, setOtp] = useState("");
 	const router = useRouter();
 	const [timer, setTimer] = useState(30);
+	const { userState, login } = useUser();
+	const [loading, submitLogin] = useLogin(login);
+	const toast = useToast();
+
 	const timeOutCallback = useCallback(
 		() => setTimer((currTimer) => currTimer - 1),
 		[]
@@ -51,11 +59,24 @@ const VerifyOtp = ({ number, setStep }) => {
 		router.push("/admin/my-network");
 	};
 
+	const resendOtpHandler = () => {
+		resetTimer();
+		sendOtpRequest(number.formatted, toast);
+	};
+
+	const verifyOtpHandler = () => {
+		submitLogin({
+			id_type: "Mobile",
+			mobile: number.original,
+			id_token: Otp,
+		});
+	};
+
 	return (
 		<Flex direction="column">
 			<Flex align="center">
 				<Box
-					onClick={() => setStep(0)}
+					onClick={() => setStep("LOGIN")}
 					w="18px"
 					h="15px"
 					cursor="pointer"
@@ -84,9 +105,9 @@ const VerifyOtp = ({ number, setStep }) => {
 				<Flex align="center" wrap="wrap" userSelect="none">
 					<Text>Sent on&nbsp;</Text>
 					<Center as="b">
-						+91 {number}
+						+91 {number.formatted}
 						<IconButtons
-							onClick={() => setStep((prev) => prev - 1)}
+							onClick={() => setStep("LOGIN")}
 							iconName="mode-edit"
 							iconStyle={{ height: "12px", width: "12px" }}
 						/>
@@ -150,7 +171,7 @@ const VerifyOtp = ({ number, setStep }) => {
 							cursor="pointer"
 							as="span"
 							color="accent.DEFAULT"
-							onClick={resetTimer}
+							onClick={resendOtpHandler}
 							fontWeight="medium"
 						>
 							Resend OTP
@@ -164,7 +185,9 @@ const VerifyOtp = ({ number, setStep }) => {
 				mt={{ base: "3.25rem", "2xl": "6.25rem" }}
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
-				onClick={redirect} // dummy onClick
+				// onClick={redirect} // dummy onClick
+				disabled={loading}
+				onClick={verifyOtpHandler}
 			/>
 		</Flex>
 	);

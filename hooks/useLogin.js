@@ -6,6 +6,7 @@ function useLogin(login, setStep, setEmail) {
 
 	function submitLogin(data) {
 		setBusy(true);
+		console.log("Data", JSON.stringify(data));
 
 		fetch(
 			process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.LOGIN,
@@ -14,10 +15,11 @@ function useLogin(login, setStep, setEmail) {
 				headers: {
 					"Content-type": "application/json",
 				},
-				data: data,
+				body: JSON.stringify(data),
 			}
 		)
 			.then((response) => {
+				console.log(response);
 				if (response.ok) {
 					return response.json();
 				} else {
@@ -36,13 +38,14 @@ function useLogin(login, setStep, setEmail) {
 				}
 
 				if (
-					data.details.mobile === "1" &&
-					data.details.user_type === "-1"
+					data.details.mobile.length < 7 &&
+					data.details.user_type === "-1" &&
+					data.id_type === "Google"
 				) {
 					console.log("Setting states");
 
 					setEmail(data.details.email);
-					setStep("MOBILE_VERIFY");
+					setStep("GOOGLE_VERIFY");
 				} else {
 					login({
 						userId: data.details.mobile,

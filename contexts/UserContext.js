@@ -5,6 +5,7 @@ import React, {
 	useEffect,
 	useMemo,
 	useReducer,
+	useState,
 } from "react";
 import { defaultUserState, UserReducer } from "./UserReducer";
 
@@ -14,6 +15,7 @@ const UserProvider = ({ children }) => {
 	// User/Session State (Logged-out by default)
 	const [state, dispatch] = useReducer(UserReducer, defaultUserState);
 	const router = useRouter();
+	const [redirect, setRedirect] = useState("/admin/my-network");
 
 	// Get default session from browser's sessionStorage
 	useEffect(() => {
@@ -41,24 +43,30 @@ const UserProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (state.loggedIn) {
-			router.push("/admin/my-network");
-		} else {
-			router.push("/");
+			console.log("User Context : ", state.loggedIn, redirect);
+			router.push(redirect);
 		}
-	}, [state.loggedIn]);
+	}, [state.loggedIn, redirect]);
 
-	const login = (sessionData) =>
+	const login = (sessionData) => {
+		console.log("Login : Executed");
 		dispatch({
 			type: "LOGIN",
 			payload: {
 				...sessionData,
 			},
 		});
-
+	};
 	const logout = () => dispatch({ type: "LOGOUT" });
 
 	const contextValue = useMemo(() => {
-		return [state, login, logout];
+		return {
+			userData: state,
+			redirect,
+			setRedirect,
+			login,
+			logout,
+		};
 	}, [state]);
 
 	// console.log(state);

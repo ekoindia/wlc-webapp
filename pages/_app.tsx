@@ -4,6 +4,9 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { GetLogoProvider } from "../contexts/getLogoContext";
 import { light } from "../styles/themes";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { UserProvider, useUser } from "../contexts/UserContext";
+import { Layout, RouteProtecter } from "components";
 
 const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
@@ -11,7 +14,8 @@ const inter = Inter({
 	fallback: ["system-ui", "sans-serif"],
 	subsets: ["cyrillic"],
 });
-export default function App({ Component, pageProps }: AppProps) {
+
+export default function App({ Component, pageProps, router }: AppProps) {
 	return (
 		<>
 			<Head>
@@ -21,13 +25,19 @@ export default function App({ Component, pageProps }: AppProps) {
 				/>
 			</Head>
 
-			<ChakraProvider theme={light}>
-				<GetLogoProvider>
+			<GoogleOAuthProvider clientId="476909327136-6uv46cem9eoiqs7kv7lr59r623996ba0.apps.googleusercontent.com">
+				<ChakraProvider theme={light}>
 					<main className={inter.className}>
-						<Component {...pageProps} />
+						<UserProvider>
+							<GetLogoProvider>
+								<RouteProtecter router={router}>
+									<Component {...pageProps} />
+								</RouteProtecter>
+							</GetLogoProvider>
+						</UserProvider>
 					</main>
-				</GetLogoProvider>
-			</ChakraProvider>
+				</ChakraProvider>
+			</GoogleOAuthProvider>
 		</>
 	);
 }

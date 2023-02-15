@@ -1,4 +1,4 @@
-import { Box, Flex, Grid, Image } from "@chakra-ui/react";
+import { Box, Flex, Grid, Image, SlideFade } from "@chakra-ui/react";
 import { useGetLogoContext } from "contexts/getLogoContext";
 import { useState } from "react";
 import { GoogleVerify, Login, VerifyOtp } from ".";
@@ -10,8 +10,12 @@ import { GoogleVerify, Login, VerifyOtp } from ".";
  */
 
 const LoginPanel = (props) => {
-	const [step, setStep] = useState(0); // TODO: Edit state as required
-	const [number, setNumber] = useState("");
+	const [step, setStep] = useState("LOGIN"); // TODO: Edit state as required
+	const [email, setEmail] = useState("");
+	const [number, setNumber] = useState({
+		original: "",
+		formatted: "",
+	});
 	const { logo } = useGetLogoContext();
 	return (
 		<Flex
@@ -70,28 +74,28 @@ const LoginPanel = (props) => {
 					borderRadius={{ base: 15, "2xl": 20 }}
 					bg="#FFFFFF"
 				>
-					{step === 0 ? (
+					{step === "LOGIN" && (
 						<Login
 							setStep={setStep}
 							number={number}
 							setNumber={setNumber}
+							setEmail={setEmail}
 						/>
-					) : (
-						""
 					)}
-					{step === 1 ? (
-						<VerifyOtp setStep={setStep} number={number} />
-					) : (
-						""
+					{step === "VERIFY_OTP" && (
+						<SlideFade offsetX={100} offsetY={0} in={true}>
+							<VerifyOtp setStep={setStep} number={number} />
+						</SlideFade>
 					)}
-					{step === 2 ? (
-						<GoogleVerify
-							setStep={setStep}
-							number={number}
-							setNumber={setNumber}
-						/>
-					) : (
-						""
+					{step === "GOOGLE_VERIFY" && (
+						<SlideFade offsetX={100} offsetY={0} in={true}>
+							<GoogleVerify
+								setStep={setStep}
+								number={number}
+								email={email}
+								setNumber={setNumber}
+							/>
+						</SlideFade>
 					)}
 				</Box>
 			</Grid>
