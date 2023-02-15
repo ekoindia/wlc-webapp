@@ -27,7 +27,7 @@ const PricingCommissions = ({ className = "", ...props }) => {
 					defaultIndex={0}
 					variant="colorful"
 					bg={{ base: "#FFFFFF", md: "transparent" }}
-					px={{ base: "1", sm: "3", md: "7.5" }}
+					px={{ base: "0", sm: "3", md: "7.5" }}
 					pt={{ base: "3", md: "4", "2xl": "7" }}
 					w={{ base: "100%", md: "100%" }}
 					borderRadius={"10px"}
