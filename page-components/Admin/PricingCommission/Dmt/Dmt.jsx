@@ -28,14 +28,14 @@ const Dmt = ({ className = "", ...props }) => {
 
 	const popBoxHandle = (boxStateFlag) => {
 		if (boxStateFlag) {
-			focusRef.current.style.opacity = "1";
+			focusRef.current.style.display = "block";
 		} else {
-			focusRef.current.style.opacity = "0";
+			focusRef.current.style.display = "none	";
 		}
 	};
 
 	return (
-		<Stack w={"100%"} minH={{ base: "800px", md: "100%" }} gap={"10"}>
+		<Stack w={"100%"} minH={{ base: "100%", md: "100%" }} gap={"10"}>
 			<VStack w={"100%"} gap={".5"}>
 				<Box w={"100%"}>
 					<Text
@@ -223,7 +223,7 @@ const Dmt = ({ className = "", ...props }) => {
 				<HStack
 					justifyContent={"flex-start"}
 					w={"100%"}
-					h={{ base: "150px", md: "183px" }}
+					minH={{ base: "50px", md: "183px" }}
 					direction={{ base: "column", md: "row" }}
 				>
 					<Flex
@@ -405,7 +405,7 @@ const Dmt = ({ className = "", ...props }) => {
 												alignItems={"center"}
 												// gap={"10px"}
 											>
-												cancel
+												Cancel
 											</Text>
 										</Button>
 									</Flex>
@@ -453,8 +453,7 @@ const Dmt = ({ className = "", ...props }) => {
 							h={"180px"}
 							borderRadius={"10px"}
 							transition={"ease"}
-							display={{ base: "block", md: "block" }}
-							opacity={"0"}
+							display={"none"}
 							ref={focusRef}
 						>
 							<Box w={"100%"} h={"200px"}>
