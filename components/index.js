@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Selects } from "./Selects";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
@@ -34,6 +35,7 @@ import { UpdateSellerAddress } from "./SellerDetails/UpdateSellerAddress";
 import { UpdateSellerInfo } from "./SellerDetails/UpdateSellerInfo";
 
 export {
+	Selects,
 	SellerDetails,
 	Menus,
 	RouteProtecter,
