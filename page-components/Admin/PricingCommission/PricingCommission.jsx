@@ -46,19 +46,19 @@ const PricingCommissions = ({ className = "", ...props }) => {
 							},
 						}}
 					>
-						<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
+						<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
 							DMT
 						</Tab>
-						<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
+						<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
 							AEPS
 						</Tab>
-						<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
+						<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
 							Aadhaar Pay
 						</Tab>
-						<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
+						<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
 							Indo-Nepal Fund Transfer
 						</Tab>
-						<Tab fontSize={{ base: "xs", md: "sm", "2xl": "md" }}>
+						<Tab fontSize={{ base: "sm", md: "sm", "2xl": "md" }}>
 							BBPS
 						</Tab>
 					</TabList>

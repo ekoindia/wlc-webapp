@@ -34,14 +34,14 @@ const Dmt = ({ className = "", ...props }) => {
 
 	return (
 		<Stack w={"100%"} minH={"100%"} gap={"10"}>
-			<VStack w={"100%"} gap={"2.5"}>
+			<VStack w={"100%"} gap={".5"}>
 				<Box w={"100%"}>
 					<Text
 						fontSize={{
 							base: "sm",
-							md: "sm",
-							lg: "sm",
-							xl: "sm",
+							md: "md",
+							lg: "md",
+							xl: "md",
 							"2xl": "lg",
 						}}
 						fontWeight={"semibold"}
@@ -52,47 +52,23 @@ const Dmt = ({ className = "", ...props }) => {
 				<HStack justifyContent={"flex-start"} w={"100%"}>
 					<RadioGroup w={"100%"}>
 						<Stack
-							direction="row"
-							gap={{ base: "5px", sm: "20px", md: "60px" }}
+							direction={{ base: "column", md: "row" }}
+							gap={{ base: "25px", sm: "20px", md: "60px" }}
 							flexWrap={"wrap"}
 						>
-							<Radio
-								size={{
-									base: "sm",
-									md: "sm",
-									lg: "md",
-									"2xl": "lg",
-								}}
-								value="1"
-							>
-								<Text fontSize={{ base: "xs", sm: "inherit" }}>
+							<Radio size="lg" value="1">
+								<Text fontSize={{ base: "md", sm: "inherit" }}>
 									Individuals
 								</Text>
 							</Radio>
 
-							<Radio
-								size={{
-									base: "sm",
-									md: "sm",
-									lg: "md",
-									"2xl": "lg",
-								}}
-								value="2"
-							>
-								<Text fontSize={{ base: "xs", sm: "inherit" }}>
+							<Radio size="lg" value="2">
+								<Text fontSize={{ base: "md", sm: "inherit" }}>
 									Distributors
 								</Text>
 							</Radio>
-							<Radio
-								size={{
-									base: "sm",
-									md: "sm",
-									lg: "md",
-									"2xl": "lg",
-								}}
-								value="3"
-							>
-								<Text fontSize={{ base: "xs", sm: "inherit" }}>
+							<Radio size="lg" value="3">
+								<Text fontSize={{ base: "md", sm: "inherit" }}>
 									Products
 								</Text>
 							</Radio>
@@ -119,15 +95,15 @@ const Dmt = ({ className = "", ...props }) => {
 						w={{
 							base: "100%",
 							sm: "280px",
-							md: "280px",
+							md: "350px",
 							lg: "300px",
 							xl: "380px",
 							"2xl": "500px",
 						}}
 						h={{
-							base: "40px",
+							base: "48px",
 							sm: "35px",
-							md: "35px",
+							md: "42px",
 							lg: "33px",
 							xl: "38px",
 							"2xl": "48px",
@@ -138,6 +114,7 @@ const Dmt = ({ className = "", ...props }) => {
 							border: "1px solid #D2D2D2",
 							boxShadow: "none",
 						}}
+						borderRadius="10px"
 						icon={<Icon name="caret-down" />}
 					>
 						<option value="option1">Option 1</option>
@@ -165,15 +142,15 @@ const Dmt = ({ className = "", ...props }) => {
 						w={{
 							base: "100%",
 							sm: "280px",
-							md: "280px",
+							md: "350px",
 							lg: "300px",
 							xl: "380px",
 							"2xl": "500px",
 						}}
 						h={{
-							base: "40px",
+							base: "48px",
 							sm: "35px",
-							md: "35px",
+							md: "42px",
 							lg: "33px",
 							xl: "38px",
 							"2xl": "48px",
@@ -184,6 +161,7 @@ const Dmt = ({ className = "", ...props }) => {
 							border: "1px solid #D2D2D2",
 							boxShadow: "none",
 						}}
+						borderRadius="10px"
 						icon={<Icon name="caret-down" />}
 					>
 						<option value="option1">Option 1</option>
@@ -211,33 +189,17 @@ const Dmt = ({ className = "", ...props }) => {
 				<HStack justifyContent={"flex-start"} w={"100%"}>
 					<RadioGroup w={"100%"}>
 						<Stack
-							direction="row"
+							direction={{ base: "column", md: "row" }}
 							gap={{ base: "5px", sm: "20px", md: "60px" }}
 							flexWrap={"wrap"}
 						>
-							<Radio
-								size={{
-									base: "sm",
-									md: "sm",
-									lg: "md",
-									"2xl": "lg",
-								}}
-								value="1"
-							>
+							<Radio size="lg" value="1">
 								<Text fontSize={{ base: "xs", sm: "inherit" }}>
 									Percentage (%)
 								</Text>
 							</Radio>
 
-							<Radio
-								size={{
-									base: "sm",
-									md: "sm",
-									lg: "md",
-									"2xl": "lg",
-								}}
-								value="2"
-							>
+							<Radio size="lg" value="2">
 								<Text fontSize={{ base: "xs", sm: "inherit" }}>
 									Fixed
 								</Text>
@@ -266,7 +228,7 @@ const Dmt = ({ className = "", ...props }) => {
 						h={"100%"}
 						direction={"column"}
 						justifyContent={"space-between"}
-						// w={"100%"}
+						w="auto"
 						// bg={"red"}
 						mr={"30px"}
 					>
@@ -274,21 +236,21 @@ const Dmt = ({ className = "", ...props }) => {
 							w={{
 								base: "100%",
 								sm: "280px",
-								md: "280px",
+								md: "350px",
 								lg: "300px",
 								xl: "380px",
 								"2xl": "500px",
 							}}
 							h={{
-								base: "40px",
+								base: "48px",
 								sm: "35px",
-								md: "35px",
+								md: "42px",
 								lg: "36px",
 								xl: "37px",
 								"2xl": "50px",
 							}}
 							border={"card"}
-							borderRadius={{ base: "5px", xl: "8px" }}
+							borderRadius={{ base: "10px", xl: "10px" }}
 							pr={"15px"}
 						>
 							<Input
