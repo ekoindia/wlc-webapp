@@ -22,8 +22,9 @@ const Network = ({ className = "", ...props }) => {
 
 					<Flex
 						display={{ base: "none", md: "flex" }}
-						gap={{ sm: "5px", md: "20px" }}
+						gap={{ sm: "5px", md: "50px" }}
 						align={"center"}
+						justifyContent={"space-between"}
 					>
 						<Box>
 							<Filter />
@@ -34,7 +35,7 @@ const Network = ({ className = "", ...props }) => {
 					</Flex>
 				</Box>
 
-				<Box>
+				<Box mt={{ base: "none", md: "20px" }}>
 					<NetworkTable />
 				</Box>
 				<ResSortAndFilter />
