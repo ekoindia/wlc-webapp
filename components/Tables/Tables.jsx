@@ -13,9 +13,9 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { AccountStatementCard } from "components/TransactionHistory/AccountStatement";
-import { DetailedStatementCard } from "components/TransactionHistory/AccountStatement/DetailedStatement";
 import { useRouter } from "next/router";
+import { AccountStatementCard } from "page-components/Admin/AccountStatement";
+import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
 import { useEffect, useMemo, useState } from "react";

@@ -1,5 +1,13 @@
+import { Tables } from "components";
 import { mockData } from "constants/mockTableData";
-import { Tables } from "../../../..";
+
+/**
+ * A <DetailedStatementTable> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<DetailedStatementTable></DetailedStatementTable>`
+ */
 
 const DetailedStatementTable = () => {
 	const renderer = [
