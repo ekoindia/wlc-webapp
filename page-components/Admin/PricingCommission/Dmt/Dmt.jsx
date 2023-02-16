@@ -35,12 +35,7 @@ const Dmt = ({ className = "", ...props }) => {
 	};
 
 	return (
-		<Stack
-			w={"100%"}
-			minH={{ base: "100%", md: "100%" }}
-			gap={"10"}
-			pl={{ base: "0px", md: "20px" }}
-		>
+		<Stack w={"100%"} minH={{ base: "100%", md: "100%" }} gap={"10"}>
 			<VStack w={"100%"} gap={".5"}>
 				<Box w={"100%"}>
 					<Text
