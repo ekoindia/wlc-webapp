@@ -1,8 +1,18 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { Filter } from "components/Filter";
+import { SearchBar } from "components/SearchBar";
+import { Sort } from "components/Sort";
 import { ResSortAndFilter } from "components/Sort/Sort";
 import { useState } from "react";
-import { NetworkTable } from ".";
-import { Filter, SearchBar, Sort } from "..";
+import { NetworkTable } from "./NetworkTable";
+
+/**
+ * A <Network> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<Network></Network>`
+ */
 
 const Network = ({ className = "", ...props }) => {
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required

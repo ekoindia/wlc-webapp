@@ -1,10 +1,18 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { Menus } from "components";
 import {
 	getLocationStyle,
 	getNameStyle,
 	getStatusStyle,
 } from "components/Tables/Tables";
-import { Menus } from "../../";
+
+/**
+ * A <NetworkCard> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<NetworkCard></NetworkCard>`
+ */
 
 const NetworkCard = (props) => {
 	const { item } = props;

@@ -13,7 +13,6 @@ import { InputMsg } from "./InputMsg";
 import { Layout } from "./Layout";
 import { Menus } from "./Menus";
 import { NavBar } from "./NavBar";
-import { Network } from "./Network";
 import { Pagination } from "./Pagination";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
@@ -52,7 +51,6 @@ export {
 	InputMsg,
 	InputLabel,
 	Input,
-	Network,
 	Layout,
 	Cards,
 	Buttons,
