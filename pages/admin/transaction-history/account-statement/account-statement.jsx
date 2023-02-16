@@ -1,5 +1,6 @@
+import { Layout } from "components";
+import { AccountStatement } from "page-components/Admin";
 import React from "react";
-import { AccountStatement, Layout } from "components";
 
 const accStatement = () => {
 	return (

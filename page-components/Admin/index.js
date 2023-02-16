@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { AccountStatement } from "./AccountStatement";
 import { TransactionHistory } from "./TransactionHistory";
 import { Network } from "./Network";
 import { ChangeRole } from "./ChangeRole";
@@ -7,6 +8,7 @@ import { LoginPanel } from "./LoginPanel";
 import { ProfilePanel } from "./Profile";
 
 export {
+	AccountStatement,
 	TransactionHistory,
 	Network,
 	ChangeRole,
