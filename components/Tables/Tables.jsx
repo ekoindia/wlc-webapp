@@ -339,7 +339,7 @@ const Tables = (props) => {
 									title="Show More"
 									hasBG={false}
 									iconPos="left"
-									iconName="file-upload"
+									iconName="refresh"
 									textStyle={{
 										fontSize: "18px",
 										fontWeight: "bold",
