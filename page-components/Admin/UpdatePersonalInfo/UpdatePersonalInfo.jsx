@@ -1,28 +1,23 @@
-import React, { useEffect, useState, useRef } from "react";
 import {
-	Box,
-	Text,
-	Heading,
-	Divider,
 	Avatar,
+	Box,
+	Button,
 	Circle,
+	Divider,
 	Flex,
+	HStack,
+	Input as CInput,
 	Radio,
 	RadioGroup,
 	Select,
 	Stack,
-	Button,
-	Menu,
-	MenuButton,
-	MenuItem,
-	MenuList,
-	HStack,
+	Text,
 	useMediaQuery,
 	VStack,
-	Input as CInput,
 } from "@chakra-ui/react";
-import { Buttons, Input, Icon, IconButtons } from "../../";
-import Router from "next/router";
+import { Buttons, Icon, IconButtons, Input } from "components";
+import React, { useEffect, useRef, useState } from "react";
+
 /**
  * A <UpdatePersonalInfo> component
  * TODO: Write more description here
@@ -30,6 +25,7 @@ import Router from "next/router";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<UpdatePersonalInfo></UpdatePersonalInfo>`
  */
+
 const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	const [value, setValue] = useState();
 	const [files, setFiles] = useState(null);

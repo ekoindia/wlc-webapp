@@ -1,22 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
-	Flex,
-	Text,
-	Heading,
 	Box,
-	Divider,
-	useMediaQuery,
-	Switch,
-	Menu,
-	MenuButton,
 	Button,
-	MenuItem,
-	MenuList,
-	Select,
+	Divider,
+	Flex,
 	HStack,
+	Select,
+	Switch,
+	Text,
+	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Input, Icon, IconButtons } from "../..";
+import { Buttons, Icon, Input } from "components";
 /**
  * A <UpdateSellerAddress> component
  * TODO: Write more description here

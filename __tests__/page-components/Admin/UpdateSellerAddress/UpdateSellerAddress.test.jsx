@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import { PreviewPersonalInfo } from "components/PreviewPersonalInfo";
+import { UpdateSellerAddress } from "components/UpdateSellerAddress";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { PreviewPersonalInfo } from "components/PreviewPersonalInfo";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("PreviewPersonalInfo", () => {
+describe("UpdateSellerAddress", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<PreviewPersonalInfo />);
+		const { container } = render(<UpdateSellerAddress />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("PreviewPersonalInfo", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for PreviewPersonalInfo in __tests__/components/PreviewPersonalInfo/PreviewPersonalInfo.test.jsx"
+		"TODO: add proper test cases for UpdateSellerAddress in __tests__/components/UpdateSellerAddress/UpdateSellerAddress.test.jsx"
 	);
 });

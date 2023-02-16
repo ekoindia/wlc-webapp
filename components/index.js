@@ -16,17 +16,12 @@ import { NavBar } from "./NavBar";
 import { Pagination } from "./Pagination";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
-import { SellerDetails } from "./SellerDetails";
 import { SideBar } from "./SideBar";
 import { Sort } from "./Sort";
 import { Tables } from "./Tables";
 import { Tags } from "./Tags";
 
-import { UpdatePersonalInfo } from "./SellerDetails/UpdatePersonalInfo";
-import { UpdateSellerAddress } from "./SellerDetails/UpdateSellerAddress";
-
 export {
-	SellerDetails,
 	Menus,
 	RouteProtecter,
 	SideBar,
@@ -48,7 +43,5 @@ export {
 	Sort,
 	Filter,
 	Breadcrumbs,
-	UpdatePersonalInfo,
-	UpdateSellerAddress,
 	/* PLOP_INJECT_EXPORT */
 };
