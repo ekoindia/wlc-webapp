@@ -3,7 +3,7 @@ import Head from "next/head";
 import { TransactionHistory } from "page-components/Admin";
 import React from "react";
 
-const TrxnHistory = () => {
+const TransactionHistoryPage = () => {
 	return (
 		<>
 			<Head>
@@ -17,4 +17,4 @@ const TrxnHistory = () => {
 	);
 };
 
-export default TrxnHistory;
+export default TransactionHistoryPage;

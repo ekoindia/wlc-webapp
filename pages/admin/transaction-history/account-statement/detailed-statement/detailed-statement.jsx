@@ -3,7 +3,7 @@ import Head from "next/head";
 import { DetailedStatement } from "page-components/Admin";
 import React from "react";
 
-const detStatement = () => {
+const DetailedStatementPage = () => {
 	return (
 		<>
 			<Head>
@@ -16,4 +16,4 @@ const detStatement = () => {
 	);
 };
 
-export default detStatement;
+export default DetailedStatementPage;
