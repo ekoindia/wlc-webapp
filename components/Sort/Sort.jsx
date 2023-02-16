@@ -37,15 +37,14 @@ const Sort = ({ className = "", ...props }) => {
 						<Box
 							display="flex"
 							alignItems="center"
-							justifyContent={"space-evenly"}
-							gap="15px"
+							justifyContent={"space-between"}
 							w={{
 								base: "5vw",
 								sm: "35vw",
 								md: "30vw",
 								lg: "20vw",
 								xl: "20vw",
-								"2xl": "18vw",
+								"2xl": "16vw",
 							}}
 						>
 							<Box
@@ -55,10 +54,10 @@ const Sort = ({ className = "", ...props }) => {
 									md: "xs",
 									lg: "xs",
 									xl: "sm",
-									"2xl": "xl",
+									"2xl": "lg",
 								}}
 								color="dark"
-								fontWeight={"medium"}
+								fontWeight={"bold"}
 							>
 								Sort By :
 							</Box>
@@ -69,7 +68,7 @@ const Sort = ({ className = "", ...props }) => {
 									md: "20vw",
 									lg: "13vw",
 									xl: "14vw",
-									"2xl": "12vw",
+									"2xl": "11vw",
 								}}
 								h={{
 									base: "8.5vw",
@@ -85,7 +84,7 @@ const Sort = ({ className = "", ...props }) => {
 									md: "xs",
 									lg: "xs",
 									xl: "sm",
-									"2xl": "xl",
+									"2xl": "md",
 								}}
 								fontWeight={"medium"}
 								textAlign="start"
@@ -95,6 +94,7 @@ const Sort = ({ className = "", ...props }) => {
 									lg: "6px",
 									"2xl": "6px",
 								}}
+								boxShadow="0px 5px 15px #0000001A"
 								border=" 1px solid #D2D2D2"
 								isActive={isOpen}
 								bg="white"
@@ -136,13 +136,14 @@ const Sort = ({ className = "", ...props }) => {
 							</MenuButton>
 
 							<MenuList
+								p="5px"
 								minW={{
 									base: "5vw",
 									sm: "5vw",
 									md: "5vw",
 									lg: "13vw",
 									xl: "10vw",
-									"2xl": "12vw",
+									"2xl": "11vw",
 								}}
 								fontSize={{
 									base: "5px",
@@ -150,7 +151,7 @@ const Sort = ({ className = "", ...props }) => {
 									md: "xs",
 									lg: "xs",
 									xl: "sm",
-									"2xl": "xl",
+									"2xl": "md",
 								}}
 								border="1px solid #D2D2D2"
 							>
@@ -160,10 +161,11 @@ const Sort = ({ className = "", ...props }) => {
 									_hover={{
 										bg: "white",
 									}}
+									pt="10px"
 								>
 									Recently Added
 								</MenuItem>
-								<MenuDivider margin="auto" />
+								<MenuDivider margin="auto" mx="10px" />
 								<MenuItem
 									color="light"
 									_hover={{
@@ -179,7 +181,7 @@ const Sort = ({ className = "", ...props }) => {
 										&nbsp;Active
 									</Box>
 								</MenuItem>
-								<MenuDivider margin="auto" />
+								<MenuDivider margin="auto" mx="10px" />
 								<MenuItem
 									color="light"
 									_hover={{
