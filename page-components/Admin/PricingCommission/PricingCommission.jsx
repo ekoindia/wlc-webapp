@@ -10,7 +10,7 @@ import { Dmt } from "./Dmt";
  */
 const PricingCommissions = ({ className = "", ...props }) => {
 	return (
-		<Box px={{ base: "16px", md: "initial" }}>
+		<Box px={{ base: "16px", md: "initial" }} pl="20px">
 			<Box
 				w={"100%"}
 				minH={"80%"}
@@ -27,13 +27,14 @@ const PricingCommissions = ({ className = "", ...props }) => {
 					defaultIndex={0}
 					variant="colorful"
 					bg={{ base: "#FFFFFF", md: "transparent" }}
-					px={{ base: "0", sm: "3", md: "7.5" }}
+					// px={{ base: "0", sm: "3", md: "7.5" }}
 					pt={{ base: "3", md: "4", "2xl": "7" }}
 					w={{ base: "100%", md: "100%" }}
 					borderRadius={"10px"}
 				>
 					<TabList
 						color="light"
+						pl={{ base: "10px", md: "20px" }}
 						css={{
 							"&::-webkit-scrollbar": {
 								display: "none",
@@ -64,7 +65,7 @@ const PricingCommissions = ({ className = "", ...props }) => {
 					</TabList>
 
 					<TabPanels
-						px={{ base: "10px", md: "0" }}
+						px={{ base: "17px", md: "0" }}
 						mt={{
 							base: "23px",
 							md: "25px",

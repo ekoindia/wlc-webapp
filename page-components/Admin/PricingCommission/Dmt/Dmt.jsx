@@ -35,7 +35,12 @@ const Dmt = ({ className = "", ...props }) => {
 	};
 
 	return (
-		<Stack w={"100%"} minH={{ base: "100%", md: "100%" }} gap={"10"}>
+		<Stack
+			w={"100%"}
+			minH={{ base: "100%", md: "100%" }}
+			gap={"10"}
+			pl={{ base: "0px", md: "20px" }}
+		>
 			<VStack w={"100%"} gap={".5"}>
 				<Box w={"100%"}>
 					<Text
@@ -55,7 +60,7 @@ const Dmt = ({ className = "", ...props }) => {
 					<RadioGroup w={"100%"}>
 						<Stack
 							direction={{ base: "column", md: "row" }}
-							gap={{ base: "25px", sm: "20px", md: "60px" }}
+							gap={{ base: "25px", sm: "20px", md: "20px" }}
 							flexWrap={"wrap"}
 						>
 							<Radio size="lg" value="1">
@@ -96,19 +101,18 @@ const Dmt = ({ className = "", ...props }) => {
 						placeholder="-- Select --"
 						w={{
 							base: "100%",
-							sm: "280px",
-							md: "350px",
-							lg: "300px",
-							xl: "380px",
+							sm: "72%",
+							md: "420px",
+
 							"2xl": "500px",
 						}}
 						h={{
 							base: "48px",
-							sm: "35px",
-							md: "42px",
-							lg: "33px",
-							xl: "38px",
-							"2xl": "48px",
+							sm: "45px",
+							md: "48px",
+							// lg: "33px",
+							// xl: "38px",
+							// "2xl": "48px",
 						}}
 						fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
 						focusBorderColor={"#D2D2D2"}
@@ -143,18 +147,18 @@ const Dmt = ({ className = "", ...props }) => {
 						placeholder="-- Select --"
 						w={{
 							base: "100%",
-							sm: "280px",
-							md: "350px",
-							lg: "300px",
-							xl: "380px",
+							sm: "72%",
+							md: "420px",
+							// lg: "300px",
+							// xl: "380px",
 							"2xl": "500px",
 						}}
 						h={{
 							base: "48px",
-							sm: "35px",
-							md: "42px",
-							lg: "33px",
-							xl: "38px",
+							sm: "45px",
+							md: "48px",
+							// lg: "33px",
+							// xl: "38px",
 							"2xl": "48px",
 						}}
 						fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
@@ -230,38 +234,38 @@ const Dmt = ({ className = "", ...props }) => {
 						h={"100%"}
 						direction={{ base: "column", md: "row" }}
 						justifyContent={"space-between"}
-						w="auto"
-						// w={'100%'}
-						// bg="blue"
-						mr={"30px"}
+						// w="auto"
+						w={{ base: "100%", xl: "71%", "2xl": "56.5%" }}
+						mr={{ base: "0px", md: "50px" }}
 					>
 						<Flex direction={"column"} rowGap={"4.375rem"}>
 							<Flex
 								w={{
-									base: "310px",
-									sm: "280px",
-									md: "350px",
-									lg: "300px",
-									xl: "380px",
+									base: "100%",
+									sm: "72%",
+									md: "420px",
+									// lg: "300px",
+									// xl: "380px",
 									"2xl": "500px",
 								}}
 								h={{
 									base: "48px",
-									sm: "35px",
-									md: "42px",
-									lg: "36px",
-									xl: "37px",
+									sm: "45px",
+									md: "48px",
+									// lg: "36px",
+									// xl: "37px",
 									"2xl": "50px",
 								}}
 								border={"card"}
 								borderRadius={{ base: "10px", xl: "10px" }}
 								pr={"15px"}
+								gap="15px"
 							>
 								<Input
 									placeholder="Commission Percentage"
 									defaultValue={"2.5"}
 									type={"number"}
-									w={{ base: "250px", md: "100%" }}
+									w={{ base: "100%", sm: "100%", md: "100%" }}
 									h={"48px"}
 									border={"none"}
 									min={"0"}
@@ -300,7 +304,7 @@ const Dmt = ({ className = "", ...props }) => {
 								}}
 							>
 								<Flex
-									gap={{ base: "5", sm: "0", xl: "5" }}
+									gap={{ base: "5", md: "4.375rem" }}
 									align={"center"}
 									display={{ base: "none", md: "flex" }}
 								>
@@ -308,56 +312,57 @@ const Dmt = ({ className = "", ...props }) => {
 										w={{
 											base: "100%",
 											sm: "150px",
-											md: "150px",
-											lg: "130px",
-											xl: "160px",
-											"2xl": "249px",
+											md: "249px",
+											// lg: "130px",
+											// xl: "160px",
+											// "2xl": "249px",
 										}}
 										h={{
 											base: "40px",
 											sm: "40px",
-											md: "40px",
-											lg: "38px",
-											xl: "45px",
-											"2xl": "64px",
+											md: "64px",
+											// lg: "38px",
+											// xl: "45px",
+											// "2xl": "64px",
 										}}
 										fontSize={{
 											base: "xs",
-											md: "xs",
-											lg: "xs",
-											xl: "sm",
-											"2xl": "lg",
+											md: "lg",
+											// lg: "xs",
+											// xl: "sm",
+											// "2xl": "lg",
 										}}
 										borderRadius={{
 											base: "5px",
-											xl: "10px",
+											md: "10px",
 										}}
 										title="Save Commissions"
 										fontWeight={"bold"}
+										boxShadow="0px 3px 10px #FE9F0040"
 									/>
 									<Buttons
-										w={{
-											base: "100%",
-											sm: "150px",
-											md: "150px",
-											lg: "130px",
-											xl: "160px",
-											"2xl": "249px",
-										}}
-										h={{
-											base: "40px",
-											sm: "40px",
-											md: "40px",
-											lg: "38px",
-											xl: "45px",
-											"2xl": "64px",
-										}}
+										// w={{
+										// 	base: "100%",
+										// 	sm: "150px",
+										// 	md: "150px",
+										// 	lg: "130px",
+										// 	xl: "160px",
+										// 	"2xl": "249px",
+										// }}
+										// h={{
+										// 	base: "40px",
+										// 	sm: "40px",
+										// 	md: "40px",
+										// 	lg: "38px",
+										// 	xl: "45px",
+										// 	"2xl": "64px",
+										// }}
 										fontSize={{
 											base: "xs",
-											md: "xs",
-											lg: "xs",
-											xl: "sm",
-											"2xl": "lg",
+											md: "lg",
+											// lg: "xs",
+											// xl: "sm",
+											// "2xl": "lg",
 										}}
 										borderRadius={{
 											base: "5px",
@@ -447,9 +452,9 @@ const Dmt = ({ className = "", ...props }) => {
 						<Box
 							mt={{ base: "10px", md: "0" }}
 							position={"relative"}
-							bg={"#FFFBF3"}
+							// bg={"#FFFBF3"}
 							border={"1px solid #FE9F00"}
-							w={{ base: "83vw", md: "sm" }}
+							w={{ base: "80vw", sm: "72%", md: "42%", xl: "sm" }}
 							h={"180px"}
 							borderRadius={"10px"}
 							transition={"ease"}
@@ -475,7 +480,11 @@ const Dmt = ({ className = "", ...props }) => {
 									bg={"#FFFBF3"}
 									borderRadius={"10px"}
 									left={"0%"}
-									width={"100%"}
+									width={{
+										base: "100%",
+										sm: "100%",
+										md: "100%",
+									}}
 									h={"100%"}
 									position={"absolute"}
 									px={"11px"}
