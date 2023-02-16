@@ -1,7 +1,15 @@
 import { Box, Center, Flex, Input, Text, VStack } from "@chakra-ui/react";
+import { Buttons, Cards, Icon, SearchBar, Tags } from "components";
 import { useRef, useState } from "react";
-import { Buttons, Cards, Icon, SearchBar, Tags } from "../../..";
-import { DetailedStatementTable } from "./DetailedStatementTable";
+import { DetailedStatementTable } from ".";
+
+/**
+ * A <DetailedStatement> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<DetailedStatement></DetailedStatement>`
+ */
 
 const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
