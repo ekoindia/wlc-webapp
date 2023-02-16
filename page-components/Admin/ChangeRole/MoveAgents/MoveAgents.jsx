@@ -87,7 +87,11 @@ const MoveAgents = ({ ShowSelectAgents, className = "", ...props }) => {
 					fontWeight="semibold"
 					mb="15px"
 				>
-					<Text color="light" as="span">
+					<Text
+						color="light"
+						as="span"
+						display={{ md: "block", lg: "inline-block" }}
+					>
 						Select Sellers From:
 					</Text>{" "}
 					AngelTech Private Limited

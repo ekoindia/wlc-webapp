@@ -25,7 +25,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	return !isShowSelectAgent ? (
 		<Flex
-			my={{ base: "3", md: "7.5" }}
+			my={{ base: "0", md: "7.5" }}
 			align={{ base: "center", md: "flex-start" }}
 			pb={{ base: "0", md: "40px" }}
 			bg={{ base: "none", md: "white" }}
@@ -47,8 +47,9 @@ const ChangeRole = ({ className = "", ...props }) => {
 				borderBottom={{ base: "card", md: "0" }}
 				direction="column"
 				rowGap={{ base: "10px", md: "0" }}
-				borderRadius={{ base: "10px", md: "none" }}
+				borderRadius={{ base: "0px", md: "none" }}
 				border={{ base: "1px solid #D2D2D2", md: "none" }}
+				borderTop="none"
 			>
 				<Text
 					as="h1"
@@ -82,7 +83,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 				border={{ base: "card", md: "none" }}
 				px={{ base: "0", md: "7.5" }}
 				pt={{ base: "3", md: "10.5" }}
-				w={{ base: "100%", md: "100%" }}
+				w={{ base: "92%", md: "100%" }}
 				boxShadow={{ base: "0px 5px 15px #0000000D", md: "none" }}
 				borderRadius={{ base: "10px", md: "none" }}
 			>
@@ -108,7 +109,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 
 				<TabPanels
 					px={{ base: "18px", md: "0" }}
-					mt={{ base: "23px", md: "46px" }}
+					mt={{ base: "23px", md: "32px", lg: "46px" }}
 				>
 					<TabPanel>
 						<TransferCSP
@@ -140,6 +141,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 				position={"fixed"}
 				w={"100%"}
 				h={"15vw"}
+				maxH={"80px"}
 				bottom={"0%"}
 				left={"0%"}
 				zIndex={"99"}
