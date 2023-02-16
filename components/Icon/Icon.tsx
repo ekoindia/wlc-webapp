@@ -36,7 +36,8 @@ export type IconNameType =
 	| "mail"
 	| "phone"
 	| "calender"
-	| "rupee_bg";
+	| "rupee_bg"
+	| "refresh";
 
 export type IconProps = {
 	name: IconNameType;
