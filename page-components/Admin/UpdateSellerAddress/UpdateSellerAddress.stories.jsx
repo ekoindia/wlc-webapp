@@ -1,10 +1,10 @@
 import React from "react";
-import PreviewPersonalInfo from "./PreviewSellerInfo";
+import UpdateSellerAddress from "./UpdateSellerAddress";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/PreviewPersonalInfo",
-	component: PreviewPersonalInfo,
+	title: "Component/UpdateSellerAddress",
+	component: UpdateSellerAddress,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -47,7 +47,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <PreviewPersonalInfo {...args} />;
+const Template = (args) => <UpdateSellerAddress {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
