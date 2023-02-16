@@ -1,5 +1,6 @@
+import { Layout } from "components";
+import { UpdateSellerInfo } from "page-components/Admin";
 import React from "react";
-import { UpdateSellerInfo, Layout } from "components";
 
 function updateSellerInfo() {
 	return (

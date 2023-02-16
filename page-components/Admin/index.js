@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { UpdateSellerInfo } from "./UpdateSellerInfo";
 import { DetailedStatement } from "./DetailedStatement";
 import { AccountStatement } from "./AccountStatement";
 import { TransactionHistory } from "./TransactionHistory";
@@ -9,6 +10,7 @@ import { LoginPanel } from "./LoginPanel";
 import { ProfilePanel } from "./Profile";
 
 export {
+	UpdateSellerInfo,
 	DetailedStatement,
 	AccountStatement,
 	TransactionHistory,
