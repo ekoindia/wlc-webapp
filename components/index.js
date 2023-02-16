@@ -21,7 +21,6 @@ import { SideBar } from "./SideBar";
 import { Sort } from "./Sort";
 import { Tables } from "./Tables";
 import { Tags } from "./Tags";
-import { TransactionHistory } from "./TransactionHistory";
 import {
 	AccountStatement,
 	DetailedStatement,
@@ -42,7 +41,6 @@ export {
 	Divider,
 	Pagination,
 	Tables,
-	TransactionHistory,
 	AccountStatement,
 	DetailedStatement,
 	Icon,
