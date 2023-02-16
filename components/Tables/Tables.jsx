@@ -13,11 +13,11 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { NetworkCard } from "components/Network";
 import { TransactionHistoryCard } from "components/TransactionHistory";
 import { AccountStatementCard } from "components/TransactionHistory/AccountStatement";
 import { DetailedStatementCard } from "components/TransactionHistory/AccountStatement/DetailedStatement";
 import { useRouter } from "next/router";
+import { NetworkCard } from "page-components/Admin/Network";
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
 
