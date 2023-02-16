@@ -63,38 +63,30 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	}, []);
 
 	return (
-		<Box p={{ base: "16px", lg: "initial" }}>
+		<Box>
 			<Flex
 				direction={"column"}
 				w="full"
 				h="auto"
 				bg={{
 					base: "none",
-
 					md: "white",
 				}}
 				borderRadius="10px"
 				boxShadow={{
 					base: "none",
-
 					md: "0px 5px 15px #0000000D",
 				}}
 				border={{
 					base: "none",
-
 					md: "1px solid #D2D2D2",
 				}}
 				p={{
 					base: "0px",
-
 					md: "20px",
-
-					"2xl": "14px 30px 30px 30px",
+					"2xl": "24px 30px 30px 30px",
 				}}
 				mt={{ base: "0px", md: "30px" }}
-				// mx={{base:"16px", lg:"0"}}
-
-				//
 			>
 				<Box
 					w={{
@@ -108,8 +100,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 				>
 					<Flex
 						direction={"column"}
-						// borderRadius={{ base: "10px" }}
-						// border={{ base: "1px solid #D2D2D2", lg: "none" }}
 						borderBottom={{ base: "1px solid #D2D2D2", md: "none" }}
 						p={{ base: "12px", md: "0px" }}
 						bg={"white"}
@@ -122,7 +112,10 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 						>
 							Angel Tech Private Limited
 						</Text>
-						<Text fontSize={{ base: "xs", md: "md" }}>
+						<Text
+							fontSize={{ base: "xs", md: "md" }}
+							mt={{ base: "5px", md: "2px" }}
+						>
 							Edit the fields below and click Preview.
 							<Text
 								as="span"
@@ -137,28 +130,25 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 				</Box>
 
 				<Flex display={{ base: "none", md: "flex" }}>
-					<Divider color="hint" mt="15px" />
+					<Divider color="hint" mt="20px" />
 				</Flex>
 				<Box
 					bg="white"
 					h="full"
 					p={{
 						base: "20px",
-
 						md: "0px",
 					}}
 					borderRadius={{ base: "10px", md: "0" }}
 					boxShadow={{
 						base: "0px 5px 15px #0000000D",
-
 						md: "none",
 					}}
 					border={{
 						base: " 1px solid #D2D2D2",
-
 						md: "none",
 					}}
-					mt={{ base: "18px", md: "40px" }}
+					mt={{ base: "18px", md: "0px" }}
 					mb={"20px"}
 					mx={{ base: "16px", md: "0px" }}
 				>
@@ -168,9 +158,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							mt={{ base: "0px", lg: "3.1rem" }}
 							w={{
 								base: "100%",
-
 								lg: "80vw",
-								xl: "65vw",
+								xl: "66vw",
 								"2xl": "54.5vw",
 							}}
 						>
@@ -193,81 +182,25 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								* Mandatory
 							</Text>
 						</HStack>
-						{!isTablet && (
-							<Flex
-								w={{
-									base: "100%",
-									md: "100%vw",
+						<Flex
+							w={{
+								base: "100%",
+								md: "100%vw",
 
-									xl: "66vw",
-									"2xl": "54.5vw",
-								}}
-								p="20px"
-								h={"9.375em"}
-								bg="bg"
-								alignItems={"center"}
-								direction={{ base: "column", md: "row" }}
-								borderRadius="10px"
-								onDragOver={handleDragOver}
-								onDrop={handleDrop}
-							>
-								<Flex>
-									<Circle bg="divider" size={28}>
-										<Avatar
-											w="90"
-											h="90"
-											src="/images/seller_logo.jpg"
-										/>
-									</Circle>
-								</Flex>
-								<Flex w="100%" display={"flex"}>
-									<Text
-										color="#555555"
-										pl={{
-											base: "10px",
-											md: "20px",
-											"2xl": "30px",
-										}}
-										fontSize={"md"}
-									>
-										Drag and drop new image or click browse
-										to change your photograph
-									</Text>
-								</Flex>
-								<CInput
-									type="file"
-									onChange={(event) =>
-										setFiles(event.target.files)
-									}
-									hidden
-									ref={inputRef}
-								/>
-
-								<Flex>
-									<Buttons
-										w="8.125rem"
-										h="3rem"
-										title="Browse"
-										onClick={() => inputRef.current.click()}
-									/>
-								</Flex>
-							</Flex>
-						)}
-						{isTablet && (
-							<Flex
-								w={{
-									base: "100%",
-									md: "100%",
-									lg: "70vw",
-									"2xl": "51vw",
-								}}
-								h={"9.375em"}
-								bg="white"
-								justifyContent={"center"}
-								alignItems={"center"}
-								direction={{ base: "column", md: "Column" }}
-								borderRadius="10px"
-							>
+								xl: "66vw",
+								"2xl": "54.5vw",
+							}}
+							display={{ base: "none", lg: "flex" }}
+							p="20px"
+							h={"9.375em"}
+							bg="bg"
+							alignItems={"center"}
+							direction={{ base: "column", md: "row" }}
+							borderRadius="10px"
+							onDragOver={handleDragOver}
+							onDrop={handleDrop}
+						>
+							<Flex>
 								<Circle bg="divider" size={28}>
 									<Avatar
 										w="90"
@@ -275,20 +208,75 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										src="/images/seller_logo.jpg"
 									/>
 								</Circle>
-								<Box
-									ml={{ base: "3.6rem", md: "3.6rem" }}
-									marginTop="-2rem"
-								>
-									<IconButtons
-										iconName="camera"
-										iconStyle={{
-											h: "12.53px",
-											width: "14px",
-										}}
-									/>
-								</Box>
 							</Flex>
-						)}
+							<Flex w="100%" display={"flex"}>
+								<Text
+									color="#555555"
+									pl={{
+										base: "10px",
+										md: "20px",
+										"2xl": "30px",
+									}}
+									fontSize={"md"}
+								>
+									Drag and drop new image or click browse to
+									change your photograph
+								</Text>
+							</Flex>
+							<CInput
+								type="file"
+								onChange={(event) =>
+									setFiles(event.target.files)
+								}
+								hidden
+								ref={inputRef}
+							/>
+
+							<Flex>
+								<Buttons
+									w="8.125rem"
+									h="3rem"
+									title="Browse"
+									onClick={() => inputRef.current.click()}
+								/>
+							</Flex>
+						</Flex>
+
+						<Flex
+							w={{
+								base: "100%",
+								md: "100%",
+								lg: "70vw",
+								"2xl": "51vw",
+							}}
+							h={"9.375em"}
+							bg="white"
+							justifyContent={"center"}
+							alignItems={"center"}
+							direction={{ base: "column", md: "Column" }}
+							borderRadius="10px"
+							display={{ base: "flex", lg: "none" }}
+						>
+							<Circle bg="divider" size={28}>
+								<Avatar
+									w="90"
+									h="90"
+									src="/images/seller_logo.jpg"
+								/>
+							</Circle>
+							<Box
+								ml={{ base: "3.6rem", md: "3.6rem" }}
+								marginTop="-2rem"
+							>
+								<IconButtons
+									iconName="camera"
+									iconStyle={{
+										h: "12.53px",
+										width: "14px",
+									}}
+								/>
+							</Box>
+						</Flex>
 					</VStack>
 
 					<Flex direction={"column"}>
@@ -297,7 +285,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								gap={{
 									base: "2.5rem",
 
-									xl: "1rem",
+									xl: "1.5rem",
 									"2xl": "2.8rem",
 								}}
 								mt="2.4rem"
@@ -306,7 +294,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								<Box
 									w={{
 										base: "100%",
-
 										md: "46%",
 										xl: "26.5%",
 										"2xl": "20%",
@@ -332,7 +319,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											h: { base: "3rem", "2xl": "3rem" },
 											w: {
 												base: "100%",
-
 												lg: "18.5rem",
 												"2xl": "20.6875rem",
 											},
@@ -698,14 +684,14 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							wrap="wrap"
 							flexDirection={{
 								base: "column",
-								lg: "row",
+								md: "row",
 							}}
 						>
 							<Box
 								w={{
 									base: "100%",
+									md: "20%",
 
-									lg: "20%",
 									xl: "15%",
 									"2xl": "10%",
 								}}
@@ -715,7 +701,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									title="Preview"
 									w={{
 										base: "100%",
-
 										lg: "8.75rem",
 									}}
 									fontSize="md"
