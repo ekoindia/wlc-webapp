@@ -59,18 +59,18 @@ const Dmt = ({ className = "", ...props }) => {
 							flexWrap={"wrap"}
 						>
 							<Radio size="lg" value="1">
-								<Text fontSize={{ base: "md", sm: "inherit" }}>
+								<Text fontSize={{ base: "sm", sm: "md" }}>
 									Individuals
 								</Text>
 							</Radio>
 
 							<Radio size="lg" value="2">
-								<Text fontSize={{ base: "md", sm: "inherit" }}>
+								<Text fontSize={{ base: "sm", sm: "md" }}>
 									Distributors
 								</Text>
 							</Radio>
 							<Radio size="lg" value="3">
-								<Text fontSize={{ base: "md", sm: "inherit" }}>
+								<Text fontSize={{ base: "sm", sm: "md" }}>
 									Products
 								</Text>
 							</Radio>
@@ -97,7 +97,7 @@ const Dmt = ({ className = "", ...props }) => {
 						w={{
 							base: "100%",
 							sm: "72%",
-							md: "420px",
+							md: "380px",
 
 							"2xl": "500px",
 						}}
@@ -105,9 +105,6 @@ const Dmt = ({ className = "", ...props }) => {
 							base: "48px",
 							sm: "45px",
 							md: "48px",
-							// lg: "33px",
-							// xl: "38px",
-							// "2xl": "48px",
 						}}
 						fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
 						focusBorderColor={"#D2D2D2"}
@@ -143,17 +140,15 @@ const Dmt = ({ className = "", ...props }) => {
 						w={{
 							base: "100%",
 							sm: "72%",
-							md: "420px",
-							// lg: "300px",
-							// xl: "380px",
+							md: "380px",
+
 							"2xl": "500px",
 						}}
 						h={{
 							base: "48px",
 							sm: "45px",
 							md: "48px",
-							// lg: "33px",
-							// xl: "38px",
+
 							"2xl": "48px",
 						}}
 						fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
@@ -231,14 +226,14 @@ const Dmt = ({ className = "", ...props }) => {
 						justifyContent={"space-between"}
 						// w="auto"
 						w={{ base: "100%", xl: "71%", "2xl": "56.5%" }}
-						mr={{ base: "0px", md: "50px" }}
+						mr={{ base: "0px", lg: "50px" }}
 					>
 						<Flex direction={"column"} rowGap={"4.375rem"}>
 							<Flex
 								w={{
 									base: "100%",
 									sm: "72%",
-									md: "420px",
+									md: "380px",
 									// lg: "300px",
 									// xl: "380px",
 									"2xl": "500px",
@@ -260,7 +255,7 @@ const Dmt = ({ className = "", ...props }) => {
 									placeholder="Commission Percentage"
 									defaultValue={"2.5"}
 									type={"number"}
-									w={{ base: "100%", sm: "100%", md: "100%" }}
+									w={{ base: "100%" }}
 									h={"48px"}
 									border={"none"}
 									min={"0"}
@@ -299,7 +294,7 @@ const Dmt = ({ className = "", ...props }) => {
 								}}
 							>
 								<Flex
-									gap={{ base: "5", md: "4.375rem" }}
+									gap={{ base: "5", md: "3.375rem" }}
 									align={"center"}
 									display={{ base: "none", md: "flex" }}
 								>
@@ -307,25 +302,19 @@ const Dmt = ({ className = "", ...props }) => {
 										w={{
 											base: "100%",
 											sm: "150px",
-											md: "249px",
-											// lg: "130px",
-											// xl: "160px",
-											// "2xl": "249px",
+											md: "200px",
+											lg: "210px",
+
+											"2xl": "249px",
 										}}
 										h={{
 											base: "40px",
 											sm: "40px",
 											md: "64px",
-											// lg: "38px",
-											// xl: "45px",
-											// "2xl": "64px",
 										}}
 										fontSize={{
 											base: "xs",
 											md: "lg",
-											// lg: "xs",
-											// xl: "sm",
-											// "2xl": "lg",
 										}}
 										borderRadius={{
 											base: "5px",
@@ -336,28 +325,9 @@ const Dmt = ({ className = "", ...props }) => {
 										boxShadow="0px 3px 10px #FE9F0040"
 									/>
 									<Buttons
-										// w={{
-										// 	base: "100%",
-										// 	sm: "150px",
-										// 	md: "150px",
-										// 	lg: "130px",
-										// 	xl: "160px",
-										// 	"2xl": "249px",
-										// }}
-										// h={{
-										// 	base: "40px",
-										// 	sm: "40px",
-										// 	md: "40px",
-										// 	lg: "38px",
-										// 	xl: "45px",
-										// 	"2xl": "64px",
-										// }}
 										fontSize={{
 											base: "xs",
 											md: "lg",
-											// lg: "xs",
-											// xl: "sm",
-											// "2xl": "lg",
 										}}
 										borderRadius={{
 											base: "5px",
@@ -449,7 +419,7 @@ const Dmt = ({ className = "", ...props }) => {
 							position={"relative"}
 							// bg={"#FFFBF3"}
 							border={"1px solid #FE9F00"}
-							w={{ base: "80vw", sm: "72%", md: "42%", xl: "sm" }}
+							w={{ base: "80vw", sm: "72%", md: "45%", xl: "sm" }}
 							h={"180px"}
 							borderRadius={"10px"}
 							transition={"ease"}

@@ -41,7 +41,7 @@ const Sort = ({ className = "", ...props }) => {
 							w={{
 								base: "5vw",
 								sm: "35vw",
-								md: "30vw",
+								md: "28vw",
 								lg: "20vw",
 								xl: "20vw",
 								"2xl": "16vw",

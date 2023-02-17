@@ -147,8 +147,8 @@ const Tables = (props) => {
 				return (
 					<Cards
 						key={index}
-						width="100%"
-						height="auto"
+						w="100%"
+						h="auto"
 						p="15px"
 						onClick={redirect}
 					>
@@ -159,8 +159,8 @@ const Tables = (props) => {
 				return (
 					<Cards
 						key={index}
-						width="100%"
-						height="auto"
+						w="100%"
+						h="auto"
 						p="15px"
 						onClick={redirect}
 					>

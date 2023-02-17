@@ -16,7 +16,7 @@ export function SearchBar({ onChangeHandler, value }) {
 			h={{
 				base: "11vw",
 				sm: "7vw",
-				md: "4vw",
+				md: "5.2vw",
 				lg: "3vw",
 				xl: "2.6vw",
 				"2xl": "2.2vw",
@@ -35,7 +35,7 @@ export function SearchBar({ onChangeHandler, value }) {
 				}}
 				width={{
 					base: "100%",
-					md: "40vw",
+					md: "50vw",
 					lg: "30vw",
 					xl: "30vw",
 					"2xl": "30vw",
