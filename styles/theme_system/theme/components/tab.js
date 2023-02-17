@@ -3,6 +3,7 @@ import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 
 const { definePartsStyle, defineMultiStyleConfig } =
 	createMultiStyleConfigHelpers(tabsAnatomy.keys);
+
 // define a custom variant
 const colorfulVariant = definePartsStyle((props) => {
 	return {
@@ -38,7 +39,7 @@ const colorfulVariant = definePartsStyle((props) => {
 			},
 		},
 		tablist: {
-			borderBottom: "1px solid #E9EDF1",
+			borderBottom: "card",
 			overflow: "auto",
 			overflowY: "hidden",
 		},
@@ -52,18 +53,5 @@ const variants = {
 	colorful: colorfulVariant,
 };
 
-// const baseStyle = definePartsStyle({
-//     // define the part you're going to style
-//     tab: {
-//         fontWeight: 'semibold', // change the font weight
-//         color: "red"
-//     },
-//     tabpanel: {
-//         fontFamily: 'mono', // change the font family
-//     },
-// })
 // export the component theme
 export const tabsTheme = defineMultiStyleConfig({ variants });
-
-// // now we can use the `colorful` variant with a different color Scheme
-// < Tabs variant = "colorful" colorScheme = "purple" ... />

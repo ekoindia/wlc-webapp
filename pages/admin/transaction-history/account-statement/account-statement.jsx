@@ -1,7 +1,8 @@
+import { Layout } from "components";
+import { AccountStatement } from "page-components/Admin";
 import React from "react";
-import { AccountStatement, Layout } from "components";
 
-const accStatement = () => {
+const AccountStatementPage = () => {
 	return (
 		<div>
 			<Layout>
@@ -11,4 +12,4 @@ const accStatement = () => {
 	);
 };
 
-export default accStatement;
+export default AccountStatementPage;

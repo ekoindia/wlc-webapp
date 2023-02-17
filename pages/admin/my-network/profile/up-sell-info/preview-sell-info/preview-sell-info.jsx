@@ -1,5 +1,6 @@
+import { Layout } from "components";
+import { PreviewSellerInfo } from "page-components/Admin/UpdateSellerInfo";
 import React from "react";
-import { PreviewSellerInfo, Layout } from "components";
 
 function previewPersonalInfo() {
 	return (

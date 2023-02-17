@@ -43,9 +43,9 @@ const SideBarMenu = ({ className = "", ...props }) => {
 								fontSize={{
 									base: "3.6vw",
 									sm: "2.5vw",
-									md: "1.5vw",
-									lg: ".9vw",
-									xl: ".85vw",
+									md: "2vw",
+									lg: "1vw",
+									"2xl": ".85vw",
 								}}
 								gap="10px"
 								color="#FFFFFF"
@@ -76,14 +76,18 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									w={{
 										base: "5.5vw",
 										sm: "3.4vw",
-										md: "1.5vw",
-										lg: "1vw",
+										md: "2.5vw",
+										lg: "1.8vw",
+										xl: "1.5vw",
+										"2xl": "1vw",
 									}}
 									h={{
 										base: "5.5vw",
 										sm: "3.4vw",
-										md: "1.5vw",
-										lg: "1vw",
+										md: "2.5vw",
+										lg: "1.8vw",
+										xl: "1.5vw",
+										"2xl": "1vw",
 									}}
 								>
 									<Icon name={menu.icon} width={"100%"} />

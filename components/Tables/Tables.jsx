@@ -13,11 +13,11 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { NetworkCard } from "components/Network";
-import { TransactionHistoryCard } from "components/TransactionHistory";
-import { AccountStatementCard } from "components/TransactionHistory/AccountStatement";
-import { DetailedStatementCard } from "components/TransactionHistory/AccountStatement/DetailedStatement";
 import { useRouter } from "next/router";
+import { AccountStatementCard } from "page-components/Admin/AccountStatement";
+import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
+import { NetworkCard } from "page-components/Admin/Network";
+import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
 
@@ -147,8 +147,8 @@ const Tables = (props) => {
 				return (
 					<Cards
 						key={index}
-						width="100%"
-						height="auto"
+						w="100%"
+						h="auto"
 						p="15px"
 						onClick={redirect}
 					>
@@ -159,8 +159,8 @@ const Tables = (props) => {
 				return (
 					<Cards
 						key={index}
-						width="100%"
-						height="auto"
+						w="100%"
+						h="auto"
 						p="15px"
 						onClick={redirect}
 					>
@@ -339,7 +339,7 @@ const Tables = (props) => {
 									title="Show More"
 									hasBG={false}
 									iconPos="left"
-									iconName="file-upload"
+									iconName="refresh"
 									textStyle={{
 										fontSize: "18px",
 										fontWeight: "bold",
