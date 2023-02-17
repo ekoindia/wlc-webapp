@@ -245,7 +245,12 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					</Text>
 					<Box>
 						{" "}
-						<Switch colorScheme="green" size="lg" />
+						<Switch
+							checkedChildren="开启"
+							unCheckedChildren="关闭"
+							colorScheme="green"
+							size="lg"
+						/>
 					</Box>
 				</Flex>
 				<Flex mt={"2.5rem"}>
@@ -297,49 +302,38 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						/>
 					</Box>
 				</Flex>
+
 				<Flex
 					alignItems="center"
-					gap="1.5rem"
-					mt="3.3rem"
-					wrap="wrap"
-					flexDirection={{
-						base: "column",
-						lg: "row",
-						xl: "row",
-						"2xl": "row",
+					gap={{
+						base: "2.1rem",
+						md: "4.8rem",
+						"2xl": "4.8rem",
 					}}
+					mt="4.2rem"
+					justifyContent={"flex-start"}
+					direction={{ base: "column", sm: "row" }}
 				>
-					<Box
+					<Buttons
+						onClick={() =>
+							Router.push(
+								"/admin/my-network/profile/up-sell-info/preview-sell-info"
+							)
+						}
+						h="3.5rem"
+						title="Preview"
+						fontSize="20px"
+						fontWeight="bold"
 						w={{
 							base: "100%",
-							lg: "20%",
-							xl: "15%",
-							"2xl": "10%",
+							sm: "10rem",
+							md: "12.2rem",
 						}}
-					>
-						<Buttons
-							onClick={() =>
-								Router.push(
-									"/admin/my-network/profile/up-sell-info/preview-sell-info"
-								)
-							}
-							h="3.5rem"
-							title="Preview"
-							w={{
-								base: "100%",
+					/>
 
-								lg: "8.75rem",
-								xl: "8.75rem",
-
-								"2xl": "8.75rem",
-							}}
-							fontSize="20px"
-							fontWeight="bold"
-						/>
-					</Box>
 					<Button
 						color={"accent.DEFAULT"}
-						fontSize="1.2rem"
+						fontSize={"20px"}
 						fontWeight="bold"
 						bg="white"
 						_focus={{
