@@ -133,7 +133,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 					h="full"
 					p={{
 						base: "20px",
-						md: "0px",
+						lg: "0px",
 					}}
 					borderRadius={{ base: "10px", md: "0" }}
 					boxShadow={{
@@ -154,7 +154,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							mt={{ base: "0px", lg: "3.1rem" }}
 							w={{
 								base: "100%",
-								lg: "80vw",
+								lg: "77.5vw",
 								xl: "66vw",
 								"2xl": "54.5vw",
 							}}
@@ -297,9 +297,9 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								>
 									<Input
 										label="First Name"
-										placeholder={"Saurabh"}
+										// placeholder={"Saurabh"}
 										required="true"
-										value={item.Name}
+										defaultvalue={item.Name}
 										// invalid={true}
 										// errorMsg={"Please enter"}
 										// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -381,8 +381,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								>
 									<Input
 										label="Last Name"
-										placeholder={"Mullick"}
-										value={item.LastName}
+										// placeholder={"Mullick"}
+										defaultvalue={item.LastName}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
 										// mb={{	 base: 10, "2xl": "4.35rem" }}
@@ -430,6 +430,12 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										type="date"
 										dateFormat="DD/MM/YYYY"
 										required="true"
+										icon={
+											<Icon
+												name="caret-down"
+												width="17px"
+											/>
+										}
 										// value={value}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
@@ -452,6 +458,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											},
 											pos: "relative",
 										}}
+
 										// isNumInput={true}
 										// inputProps={{ maxLength: 12 }}
 										// onFocus={() => {
@@ -675,37 +682,30 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 						<Flex
 							alignItems="center"
-							gap="1.5rem"
-							mt="3.3rem"
-							wrap="wrap"
-							flexDirection={{
-								base: "column",
-								md: "row",
+							gap={{
+								base: "2.1rem",
+								md: "4.8rem",
+								"2xl": "4.8rem",
 							}}
+							mt="4.2rem"
+							justifyContent={"flex-start"}
+							direction={{ base: "column", sm: "row" }}
 						>
-							<Box
+							<Buttons
+								h="3.5rem"
+								title="Preview"
+								fontSize="20px"
+								fontWeight="bold"
 								w={{
 									base: "100%",
-									md: "20%",
-
-									xl: "15%",
-									"2xl": "10%",
+									sm: "10rem",
+									md: "12.2rem",
 								}}
-							>
-								<Buttons
-									h="3.5rem"
-									title="Preview"
-									w={{
-										base: "100%",
-										lg: "8.75rem",
-									}}
-									fontSize="md"
-									fontWeight="bold"
-								/>
-							</Box>
+							/>
+
 							<Button
 								color={"accent.DEFAULT"}
-								fontSize="md"
+								fontSize={"20px"}
 								fontWeight="bold"
 								bg="white"
 								_focus={{

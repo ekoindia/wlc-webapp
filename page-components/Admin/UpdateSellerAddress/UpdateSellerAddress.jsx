@@ -65,14 +65,12 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 
 				md: "white",
 			}}
-			mt={{ base: "0px", md: "30px" }}
+			m={{ base: "0px", md: "30px 0px 20px 0px" }}
 		>
 			<Flex direction={"column"}>
 				<Box
 					bg={{ base: "white", "2xl": "none" }}
 					alignItems={{ base: "center", "2xl": "none" }}
-					// borderRadius={{ base: "10px", lg: "none" }}
-					// border={{ base:  "0px 1px solid #D2D2D2 0px 0px", lg: "none" }}
 					borderBottom={{ base: "1px solid #D2D2D2", md: "none" }}
 				>
 					<Flex
@@ -113,7 +111,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 			<Flex
 				direction={"column"}
 				bg={"white"}
-				//  bg="green"
 				w={{
 					base: "90%",
 
@@ -121,7 +118,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				}}
 				mt={{ base: "18px", md: "0px" }}
 				mb={"20px"}
-				// mx="16px"
 				mx={{ base: "auto", md: "0px" }}
 				borderRadius={{ base: "10px", md: "0", "2xl": "none" }}
 				border={{
@@ -130,10 +126,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				}}
 				boxShadow={{
 					base: "0px 5px 15px #0000000D",
-
 					md: "none",
 				}}
-				p={{ base: "0px", md: "20px", lg: "0px" }}
+				p={{ base: "0px", md: "0px", lg: "0px" }}
 			>
 				<Flex
 					direction={"column"}
@@ -145,7 +140,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						w={{
 							base: "100%",
 
-							lg: "94%",
+							lg: "%",
 							xl: "71%",
 							"2xl": "63%",
 						}}
@@ -168,9 +163,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						<Flex
 							wrap={"wrap"}
 							gap={{
-								md: "1.5rem",
+								md: "1.7rem",
+								lg: "3.1rem",
 								xl: "1.5rem",
-								lg: "1rem",
+
 								"2xl": "1.2rem",
 							}}
 							mt={{ base: "2.25rem", md: "1.2rem" }}
@@ -187,7 +183,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Address Line 1"
-									value={item.AddressLine1}
+									defaultvalue={item.AddressLine1}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -205,7 +201,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											//  md: "95%",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -239,10 +235,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Address Line 2"
-									placeholder={
-										"B-373 Second Floor Sector - 20"
-									}
-									value={item.AddressLine2}
+									// placeholder={
+									// 	"B-373 Second Floor Sector - 20"
+									// }
+									defaultvalue={item.AddressLine2}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -259,7 +255,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "95%",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -280,8 +276,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							wrap={"wrap"}
 							gap={{
 								md: "1.5rem",
+
 								xl: "1.5rem",
-								lg: "1rem",
+								lg: "3.1rem",
 								"2xl": "1.2rem",
 							}}
 						>
@@ -296,8 +293,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Postal Code"
-									placeholder={"201301"}
-									value={item.PostalCode}
+									// placeholder={"201301"}
+									defaultvalue={item.PostalCode}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -315,7 +312,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -349,8 +346,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" City"
-									placeholder={"Noida"}
-									value={item.City}
+									// placeholder={"Noida"}
+									defaultvalue={item.City}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -367,7 +364,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -386,9 +383,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						</Flex>
 						<Flex
 							gap={{
-								md: "1.5rem",
+								md: "1.7rem",
 								xl: "1.5rem",
-								lg: "1rem",
+								lg: "3.1rem",
 								"2xl": "1.2rem",
 							}}
 							wrap={"wrap"}
@@ -429,9 +426,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										placeholder="Uttarpradesh"
 										w={{
 											base: "100%",
-											md: "38vw",
+											// md: "38vw",
 											xl: "25vw",
-											lg: "35vw",
+											lg: "37vw",
 											"2xl": "25vw",
 										}}
 										h={"3rem"}
@@ -461,9 +458,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Country"
-									placeholder={"India"}
+									// placeholder={"India"}
 									required="true"
-									value={item.Country}
+									defaultvalue={item.Country}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -480,7 +477,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -514,9 +511,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									placeholder="--Select--"
 									w={{
 										base: "100%",
-										md: "38vw",
+										md: "43vw",
 										xl: "25vw",
-										lg: "35vw",
+										lg: "37vw",
 										"2xl": "25vw",
 									}}
 									h={"3rem"}
@@ -562,6 +559,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 					<Flex
 						rowGap={{
 							base: "2.8rem",
+							// md:"1.5",
 							sm: "2.5rem",
 							"2xl": "2.5rem",
 						}}
@@ -570,9 +568,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						<Flex
 							wrap={"wrap"}
 							gap={{
-								md: "1.5rem",
+								md: "1.7rem",
 								xl: "1.5rem",
-								lg: "1rem",
+								lg: "3.1rem",
 								"2xl": "1.2rem",
 								// base:"1rem"
 							}}
@@ -590,10 +588,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Address Line 1"
-									placeholder={
-										"B-373 Second Floor Sector - 20"
-									}
-									value={item.AddressLine1}
+									// placeholder={
+									// 	"B-373 Second Floor Sector - 20"
+									// }
+									defaultvalue={item.AddressLine1}
 									// value={value}
 									// invalid={true}
 									// errorMsg={"Please enter"}
@@ -612,7 +610,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -646,10 +644,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Address Line 2"
-									placeholder={
-										"B-373 Second Floor Sector - 20"
-									}
-									value={item.AddressLine2}
+									// placeholder={
+									// 	"B-373 Second Floor Sector - 20"
+									// }
+									defaultvalue={item.AddressLine2}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -666,7 +664,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -688,7 +686,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							gap={{
 								md: "1.5rem",
 								xl: "1.5rem",
-								lg: "1rem",
+								lg: "3.1rem",
 								"2xl": "1.2rem",
 							}}
 						>
@@ -703,8 +701,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Postal Code"
-									placeholder={"201301"}
-									value={item.PostalCode}
+									// placeholder={"201301"}
+									defaultvalue={item.PostalCode}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -722,7 +720,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -756,8 +754,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" City"
-									placeholder={"Noida"}
-									value={item.City}
+									// placeholder={"Noida"}
+									defaultvalue={item.City}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -774,7 +772,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -793,9 +791,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						</Flex>
 						<Flex
 							gap={{
-								md: "1.5rem",
+								md: "1.7rem",
 								xl: "1.5rem",
-								lg: "1rem",
+								lg: "3.1rem",
 								"2xl": "1.2rem",
 							}}
 							wrap={"wrap"}
@@ -839,7 +837,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w={{
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -869,9 +867,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Country"
-									placeholder={"India"}
+									// placeholder={"India"}
 									required="true"
-									value={item.Country}
+									defaultvalue={item.Country}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -888,7 +886,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -925,7 +923,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									w={{
 										base: "100%",
 
-										md: "38vw",
+										md: "43vw",
 										lg: "37vw",
 										xl: "28vw",
 										"2xl": "25vw",
@@ -966,7 +964,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								w={{
 									base: "100%",
 									md: "100%",
-									lg: "46%",
+									lg: "48%",
 									xl: "34.5%",
 									"2xl": "32%",
 								}}
@@ -975,9 +973,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									placeholder="--Select--"
 									w={{
 										base: "100%",
-										md: "38vw",
+										md: "43vw",
 										xl: "25vw",
-										lg: "35vw",
+										lg: "37vw",
 										"2xl": "25vw",
 									}}
 									h={"3rem"}
@@ -1001,9 +999,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						<Flex
 							wrap={"wrap"}
 							gap={{
-								md: "1.5rem",
+								md: "1.7rem",
 								xl: "1.5rem",
-								lg: "1rem",
+								lg: "3.1rem",
 								"2xl": "1.2rem",
 								// base:"1rem"
 							}}
@@ -1021,10 +1019,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Address Line 1"
-									placeholder={
-										"B-373 Second Floor Sector - 20"
-									}
-									value={item.AddressLine1}
+									// placeholder={
+									// 	"B-373 Second Floor Sector - 20"
+									// }
+									defaultvalue={item.AddressLine1}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1042,7 +1040,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1076,10 +1074,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Address Line 2"
-									placeholder={
-										"B-373 Second Floor Sector - 20"
-									}
-									value={item.AddressLine2}
+									// placeholder={
+									// 	"B-373 Second Floor Sector - 20"
+									// }
+									defaultvalue={item.AddressLine2}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1096,7 +1094,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1118,7 +1116,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							gap={{
 								md: "1.5rem",
 								xl: "1.5rem",
-								lg: "1rem",
+								lg: "3.1rem",
 								"2xl": "1.2rem",
 							}}
 						>
@@ -1133,8 +1131,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Postal Code"
-									placeholder={"201301"}
-									value={item.PostalCode}
+									// placeholder={"201301"}
+									defaultvalue={item.PostalCode}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1152,7 +1150,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1179,15 +1177,12 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
-									lg: "0",
-									xl: "0",
-									"2xl": "0",
 								}}
 							>
 								<Input
 									label=" City"
-									placeholder={"Noida"}
-									value={item.City}
+									// placeholder={"Noida"}
+									defaultvalue={item.City}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1204,7 +1199,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1225,7 +1220,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							gap={{
 								md: "1.5rem",
 								xl: "1.5rem",
-								lg: "1rem",
+								lg: "3.1rem",
 								"2xl": "1.2rem",
 							}}
 							wrap={"wrap"}
@@ -1269,7 +1264,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w={{
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1299,9 +1294,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Country"
-									placeholder={"India"}
+									// placeholder={"India"}
 									required="true"
-									value={item.Country}
+									defaultvalue={item.Country}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -1318,7 +1313,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										w: {
 											base: "100%",
 
-											md: "38vw",
+											// md: "38vw",
 											lg: "37vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1355,7 +1350,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									w={{
 										base: "100%",
 
-										md: "38vw",
+										md: "43vw",
 										lg: "37vw",
 										xl: "28vw",
 										"2xl": "25vw",
@@ -1388,28 +1383,29 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 					alignItems="center"
 					gap={{ base: "2.1rem", md: "4.8rem", "2xl": "4.8rem" }}
 					mt="4.2rem"
-					w={{
-						base: "100%",
-						md: "48%",
-						lg: "46%",
-						xl: "14.5%",
-						"2xl": "",
-					}}
+					// w={{
+					// 	base: "100%",
+					// 	md: "48%",
+					// 	lg: "46%",
+					// 	xl: "14.5%",
+					// 	"2xl": "",
+					// }}
+					justifyContent={"flex-start"}
 					p={{ base: "20px", md: "0px" }}
-					direction={{ base: "column", md: "row" }}
+					direction={{ base: "column", sm: "row" }}
 				>
-					<Box w="100%">
-						<Buttons
-							h="3.5rem"
-							title="Save Changes"
-							fontSize="20px"
-							fontWeight="bold"
-							w={{
-								base: "100%",
-								md: "12.2rem",
-							}}
-						/>
-					</Box>
+					<Buttons
+						h="3.5rem"
+						title="Save Changes"
+						fontSize="20px"
+						fontWeight="bold"
+						w={{
+							base: "100%",
+							sm: "10rem",
+							md: "12.2rem",
+						}}
+					/>
+
 					<Button
 						color={"accent.DEFAULT"}
 						fontSize={"20px"}

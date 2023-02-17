@@ -196,36 +196,34 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 						</Text>
 					</Flex>
 				</Flex>
+
 				<Flex
 					alignItems="center"
-					gap={{ base: "2.1rem", md: "4.8rem", "2xl": "4.8rem" }}
-					mt="4.2rem"
-					w={{
-						base: "100%",
-						md: "48%",
-						lg: "46%",
-						xl: "14.5%",
-						"2xl": "",
+					gap={{
+						base: "2.1rem",
+						md: "4.8rem",
+						"2xl": "4.8rem",
 					}}
-					p={{ base: "20px", md: "0px" }}
-					direction={{ base: "column", md: "row" }}
+					mt="4.2rem"
+					justifyContent={"flex-start"}
+					direction={{ base: "column", sm: "row" }}
 				>
-					<Box w="100%">
-						<Buttons
-							h="3.5rem"
-							title="Save Now"
-							fontSize="20px"
-							fontWeight="bold"
-							w={{
-								base: "100%",
-								md: "10rem",
-							}}
-						/>
-					</Box>
+					<Buttons
+						h="3.5rem"
+						title="Save Now"
+						fontSize="20px"
+						fontWeight="bold"
+						w={{
+							base: "100%",
+							sm: "10rem",
+							md: "12.2rem",
+						}}
+					/>
+
 					<Button
 						onClick={() =>
 							Router.push(
-								"/admin/my-network/profile/up-sell-info"
+								"/admin/my-network/profile/up-sell-info/preview-sell-info"
 							)
 						}
 						color={"accent.DEFAULT"}
