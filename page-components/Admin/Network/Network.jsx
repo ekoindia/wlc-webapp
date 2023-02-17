@@ -32,7 +32,7 @@ const Network = ({ className = "", ...props }) => {
 
 					<Flex
 						display={{ base: "none", md: "flex" }}
-						gap={{ sm: "5px", md: "50px" }}
+						gap={{ sm: "5px", md: "20px", lg: "50px" }}
 						align={"center"}
 						justifyContent={"space-between"}
 					>

@@ -43,7 +43,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 								fontSize={{
 									base: "3.6vw",
 									sm: "2.5vw",
-									md: "1.5vw",
+									md: "2vw",
 									lg: ".9vw",
 									xl: ".85vw",
 								}}
@@ -76,13 +76,13 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									w={{
 										base: "5.5vw",
 										sm: "3.4vw",
-										md: "1.5vw",
+										md: "2.5vw",
 										lg: "1vw",
 									}}
 									h={{
 										base: "5.5vw",
 										sm: "3.4vw",
-										md: "1.5vw",
+										md: "2.5vw",
 										lg: "1vw",
 									}}
 								>

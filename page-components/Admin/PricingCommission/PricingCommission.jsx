@@ -65,7 +65,7 @@ const PricingCommissions = ({ className = "", ...props }) => {
 					</TabList>
 
 					<TabPanels
-						px={{ base: "17px", md: "20px" }}
+						px={{ base: "17px", md: "15px", lg: "20px" }}
 						mt={{
 							base: "23px",
 							md: "25px",
