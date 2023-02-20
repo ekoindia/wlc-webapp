@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Switch } from "./Switch";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
@@ -23,6 +24,7 @@ import { Tables } from "./Tables";
 import { Tags } from "./Tags";
 
 export {
+	Switch,
 	Menus,
 	RouteProtecter,
 	SideBar,
