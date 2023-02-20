@@ -13,28 +13,15 @@ import { InputMsg } from "./InputMsg";
 import { Layout } from "./Layout";
 import { Menus } from "./Menus";
 import { NavBar } from "./NavBar";
-import { Network } from "./Network";
 import { Pagination } from "./Pagination";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
-import { SellerDetails } from "./SellerDetails";
 import { SideBar } from "./SideBar";
 import { Sort } from "./Sort";
 import { Tables } from "./Tables";
 import { Tags } from "./Tags";
-import { TransactionHistory } from "./TransactionHistory";
-import {
-	AccountStatement,
-	DetailedStatement,
-} from "./TransactionHistory/AccountStatement";
-
-import { PreviewSellerInfo } from "./SellerDetails";
-import { UpdatePersonalInfo } from "./SellerDetails/UpdatePersonalInfo";
-import { UpdateSellerAddress } from "./SellerDetails/UpdateSellerAddress";
-import { UpdateSellerInfo } from "./SellerDetails/UpdateSellerInfo";
 
 export {
-	SellerDetails,
 	Menus,
 	RouteProtecter,
 	SideBar,
@@ -43,16 +30,12 @@ export {
 	Divider,
 	Pagination,
 	Tables,
-	TransactionHistory,
-	AccountStatement,
-	DetailedStatement,
 	Icon,
 	Tags,
 	IconButtons,
 	InputMsg,
 	InputLabel,
 	Input,
-	Network,
 	Layout,
 	Cards,
 	Buttons,
@@ -60,9 +43,5 @@ export {
 	Sort,
 	Filter,
 	Breadcrumbs,
-	UpdateSellerInfo,
-	UpdatePersonalInfo,
-	UpdateSellerAddress,
-	PreviewSellerInfo,
 	/* PLOP_INJECT_EXPORT */
 };

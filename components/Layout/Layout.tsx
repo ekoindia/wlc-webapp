@@ -40,7 +40,7 @@ const Layout = ({ isLoggedIn, children, props }) => {
 					<Box
 						w={"full"}
 						h={"100%"}
-						overflowY={"scroll"}
+						overflowY={"auto"}
 						// p={"1vw"}
 						// pr={"0.6vw"}
 						p={{ base: "0px", sm: "0px", md: "2vw", "2xl": ".8vw" }}

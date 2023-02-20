@@ -78,7 +78,7 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 			<Flex
 				px="0"
 				columnGap={{ base: "0", md: "180px" }}
-				rowGap={{ base: "40px", md: "0" }}
+				rowGap={{ base: "40px", md: "30px" }}
 				flexWrap="wrap"
 			>
 				<Box w={{ base: "100%", md: "500px" }}>
@@ -90,7 +90,9 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 					>
 						Select distributor to transfer agents from
 					</Text>
+
 					<Select
+						w="100%"
 						placeholder="--Select--"
 						h="12"
 						icon={<Icon name="caret-down" />}
@@ -125,16 +127,24 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 			{/* Button for mobile responsive */}
 			<Flex
 				mt="70px"
-				direction="column"
+				mb="14px"
 				display={{ base: "flex", md: "none" }}
+				direction={{ base: "column", sm: "row" }}
+				columnGap="30px"
+				rowGap="24px"
 				onClick={() => setIsShowSelectAgent(true)}
 			>
 				<Buttons h="54px" fontSize="md">
 					Select Agents
 				</Buttons>
-				<Button variant="link" color="accent.DEFAULT" my="35px">
+				<Buttons
+					h="54px"
+					variant=""
+					color="accent.DEFAULT"
+					fontSize="md"
+				>
 					Cancel
-				</Button>
+				</Buttons>
 			</Flex>
 
 			{/* Select for Move */}
@@ -154,8 +164,12 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 						fontWeight="semibold"
 						mb="15px"
 					>
-						<Text as="span" color="light">
-							Select Sellers From:
+						<Text
+							as="span"
+							color="light"
+							display={{ md: "block", lg: "inline-block" }}
+						>
+							Move Sellers To:
 						</Text>{" "}
 						AngelTech Private Limited
 					</Text>

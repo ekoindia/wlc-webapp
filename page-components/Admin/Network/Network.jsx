@@ -1,0 +1,57 @@
+import { Box, Flex } from "@chakra-ui/react";
+import { Filter } from "components/Filter";
+import { SearchBar } from "components/SearchBar";
+import { Sort } from "components/Sort";
+import { ResSortAndFilter } from "components/Sort/Sort";
+import { useState } from "react";
+import { NetworkTable } from "./NetworkTable";
+
+/**
+ * A <Network> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<Network></Network>`
+ */
+
+const Network = ({ className = "", ...props }) => {
+	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
+
+	function onChangeHandler(e) {
+		setSearchValue(e);
+	}
+
+	return (
+		<>
+			<Box w={"100%"} px={{ base: "16px", md: "initial" }}>
+				<Box display={"flex"} justifyContent={"space-between"}>
+					<SearchBar
+						onChangeHandler={onChangeHandler}
+						value={searchValue}
+					/>
+
+					<Flex
+						display={{ base: "none", md: "flex" }}
+						gap={{ sm: "5px", md: "20px", lg: "50px" }}
+						align={"center"}
+						justifyContent={"space-between"}
+					>
+						<Box>
+							<Filter />
+						</Box>
+						<Box>
+							<Sort />
+						</Box>
+					</Flex>
+				</Box>
+
+				<Box mt={{ base: "none", md: "20px" }}>
+					<NetworkTable />
+				</Box>
+				<ResSortAndFilter />
+			</Box>
+		</>
+	);
+};
+
+export default Network;
