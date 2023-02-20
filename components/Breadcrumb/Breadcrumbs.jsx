@@ -15,6 +15,7 @@ const textChanger = {
 	"Up-sell-info": "Update Seller Information",
 	"Up-per-info": "Update Personal Information",
 	"Up-sell-add": "Update Seller Address",
+	"Preview-sell-info": "Preview Seller Information",
 };
 
 const Breadcrumbs = (props) => {
