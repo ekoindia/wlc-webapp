@@ -169,6 +169,8 @@ export const light = extendTheme({
 		shadow: {
 			primary: "#FE9F008C",
 			accent: "#11299e96",
+			success: "#009B34",
+			error: "#CA1B56",
 		},
 		success: "#00C341",
 		error: "#FF4081",
