@@ -25,7 +25,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 				/>
 			</Head>
 
-			<GoogleOAuthProvider clientId="476909327136-6uv46cem9eoiqs7kv7lr59r623996ba0.apps.googleusercontent.com">
+			<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_CLIENT_ID}>
 				<ChakraProvider theme={light}>
 					<main className={inter.className}>
 						<UserProvider>

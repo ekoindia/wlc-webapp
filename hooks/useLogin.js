@@ -9,7 +9,12 @@ function useLogin(login, setStep, setEmail) {
 		console.log("Data", JSON.stringify(data));
 
 		fetch(
-			process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.LOGIN,
+			process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL +
+				`${
+					data.id_type === "Mobile"
+						? Endpoints.LOGIN
+						: Endpoints.GOOGLELOGIN
+				}`,
 			{
 				method: "POST",
 				headers: {
@@ -30,32 +35,32 @@ function useLogin(login, setStep, setEmail) {
 					throw err;
 				}
 			})
-			.then((data) => {
-				console.log("LOGIN RESPONSE >>>> ", data);
+			.then((res) => {
+				console.log("LOGIN RESPONSE >>>> ", res);
 
-				if (!data.details.mobile) {
-					throw new Error(data.message || "Something went wrong!");
+				if (!res.details.mobile) {
+					throw new Error(res.message || "Something went wrong!");
 				}
 
 				if (
-					data.details.mobile.length < 7 &&
-					data.details.user_type === "-1" &&
+					res.details.mobile.length < 7 &&
+					res.details.user_type === -1 &&
 					data.id_type === "Google"
 				) {
 					console.log("Setting states");
 
-					setEmail(data.details.email);
+					setEmail(res.details.email);
 					setStep("GOOGLE_VERIFY");
 				} else {
 					login({
-						userId: data.details.mobile,
-						sessionKey: data.access_token_lite,
-						userDetails: data.details,
+						userId: res.details.mobile,
+						sessionKey: res.access_token_lite,
+						userDetails: res.details,
 						profileDetails: {
-							account_details: data.account_details,
-							personal_details: data.personal_details,
-							shop_details: data.shop_details,
-							extras: data.extras,
+							account_details: res.account_details,
+							personal_details: res.personal_details,
+							shop_details: res.shop_details,
+							extras: res.extras,
 						},
 					});
 				}

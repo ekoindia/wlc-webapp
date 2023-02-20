@@ -10,12 +10,13 @@ import { GoogleVerify, Login, VerifyOtp } from ".";
  */
 
 const LoginPanel = (props) => {
-	const [step, setStep] = useState("LOGIN"); // TODO: Edit state as required
+	const [step, setStep] = useState("LOGIN");
 	const [email, setEmail] = useState("");
 	const [number, setNumber] = useState({
 		original: "",
 		formatted: "",
 	});
+	const [loginType, setLoginType] = useState("Mobile");
 	const { logo } = useGetLogoContext();
 	return (
 		<Flex
@@ -80,11 +81,16 @@ const LoginPanel = (props) => {
 							number={number}
 							setNumber={setNumber}
 							setEmail={setEmail}
+							setLoginType={setLoginType}
 						/>
 					)}
 					{step === "VERIFY_OTP" && (
 						<SlideFade offsetX={100} offsetY={0} in={true}>
-							<VerifyOtp setStep={setStep} number={number} />
+							<VerifyOtp
+								loginType={loginType}
+								setStep={setStep}
+								number={number}
+							/>
 						</SlideFade>
 					)}
 					{step === "GOOGLE_VERIFY" && (

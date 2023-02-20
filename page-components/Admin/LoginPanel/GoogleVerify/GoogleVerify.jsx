@@ -1,54 +1,35 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons, Input } from "components";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { sendOtpRequest, RemoveFormatted } from "helpers";
 
 /**
  * A <GoogleVerify> component
- * TODO: Used when the google auth is successfull
+ * TODO: Used when the google auth is successfull to verify phone number if the user is new
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<GoogleVerify></GoogleVerify>`
  */
-const GoogleVerify = ({ number, setNumber, setStep }) => {
-	const [value, setValue] = useState(number.formatted);
-	const [errorMsg, setErrorMsg] = useState(false);
-	const [invalid, setInvalid] = useState("");
+const GoogleVerify = ({ email, number, setNumber, setStep }) => {
 	const toast = useToast();
+	const [value, setValue] = useState(number.formatted);
+	const [invalid, setInvalid] = useState("");
+	const [errorMsg, setErrorMsg] = useState(false);
 
 	const onChangeHandler = (val) => {
 		setValue(val);
 	};
 
-	const router = useRouter();
-	const redirect = () => {
-		router.push("/admin/my-network");
-	};
-
 	const onVerifyOtp = () => {
 		if (value.length === 12) {
-			toast({
-				title: "OTP Sended Successfully",
-				// description: "We've created your account for you.",
-				status: "success",
-				duration: 2000,
-				isClosable: true,
-			});
+			let originalNum = RemoveFormatted(value);
 			setNumber({
-				original: RemoveFormatted(value),
+				original: originalNum,
 				formatted: value,
 			});
 
 			setStep("VERIFY_OTP");
-
-			const PostData = {
-				platfom: "web",
-				mobile: RemoveFormatted(value),
-				client_ref_id: "242942347012342346",
-				app: "Connect",
-			};
-			sendOtpRequest(PostData);
+			sendOtpRequest(originalNum, toast);
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);
@@ -90,8 +71,15 @@ const GoogleVerify = ({ number, setNumber, setStep }) => {
 				<Flex align="center" wrap="wrap">
 					<Text>Sent on&nbsp;</Text>
 					<Center as="b">
-						abhishek.kumar@eko.co.in
+						{email}
 						<IconButtons
+							onClick={() => {
+								setStep("LOGIN");
+								setNumber({
+									original: "",
+									formatted: "",
+								});
+							}}
 							iconName="mode-edit"
 							iconStyle={{ height: "12px", width: "12px" }}
 						/>
@@ -130,7 +118,6 @@ const GoogleVerify = ({ number, setNumber, setStep }) => {
 				mt={{ base: 10, "2xl": "4.35rem" }}
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
-				// onClick={redirect} // need to remove
 				onClick={onVerifyOtp}
 			/>
 		</Flex>

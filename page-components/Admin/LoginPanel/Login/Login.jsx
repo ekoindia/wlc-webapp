@@ -15,7 +15,7 @@ import { sendOtpRequest, RemoveFormatted } from "helpers";
  * @example	`<Login></Login>`
  */
 
-const Login = ({ setStep, setNumber, number, setEmail }) => {
+const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
 	const { login } = useUser();
@@ -27,37 +27,19 @@ const Login = ({ setStep, setNumber, number, setEmail }) => {
 
 	const googleLoginHandler = useGoogleLogin({
 		onSuccess: async (response) => {
-			try {
-				console.log("Bearer token", response);
-				// const postData = {
-				// 	id_type: "Google",
-				// 	id_token: response.access_token
-				// }
-				// googleHandler(postData);
-
-				// const res = await fetch(
-				// 	"https://www.googleapis.com/oauth2/v3/userinfo",
-				// 	{
-				// 		headers: {
-				// 			Authorization: `Bearer ${response.access_token}`,
-				// 		},
-				// 	}
-				// );
-				// const data = await res.json();
-				// setEmail(data.email);
-				// console.log("data", data);
-				const res = await fetch("http://localhost:3334/", {
-					headers: {
-						Authorization: `Bearer ${response.access_token}`,
-					},
-				});
-				const data = await res.json();
-				// setEmail(data.email);
-				console.log("data", data);
-			} catch (err) {
-				console.log(err);
-			}
+			const postData = {
+				id_type: "Google",
+				id_token: response.code,
+			};
+			googleHandler(postData);
+			setLoginType("Google");
+			setNumber({
+				original: "",
+				formatted: "",
+			});
 		},
+		onError: (err) => console.log(err),
+		flow: "auth-code",
 	});
 
 	const onChangeHandler = (val) => {
@@ -70,7 +52,7 @@ const Login = ({ setStep, setNumber, number, setEmail }) => {
 				original: RemoveFormatted(value),
 				formatted: value,
 			});
-
+			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
 			sendOtpRequest(value, toast);
 		} else {

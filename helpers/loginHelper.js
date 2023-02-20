@@ -3,10 +3,11 @@ import { Endpoints } from "constants/EndPoints";
 function sendOtpRequest(number, toast) {
 	const PostData = {
 		platfom: "web",
-		mobile: RemoveFormatted(number),
+		mobile: number,
 		client_ref_id: "242942347012342346",
 		app: "Connect",
 	};
+
 	fetch(process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.SENDOTP, {
 		method: "POST",
 		headers: {
@@ -45,5 +46,17 @@ function sendOtpRequest(number, toast) {
 function RemoveFormatted(number) {
 	return number.replace(/\D/g, "");
 }
+
+function setAuthTokens(data) {}
+
+function updateAuthTokens(data) {}
+
+function getAuthTokens(data) {}
+
+function clearAuthTokens(data) {}
+
+function revokeSession() {}
+
+function getAccessTokenUsingRefreshToken() {}
 
 export { sendOtpRequest, RemoveFormatted };
