@@ -1,5 +1,6 @@
+import { Layout } from "components";
+import { UpdateSellerAddress } from "page-components/Admin";
 import React from "react";
-import { UpdateSellerAddress, Layout } from "components";
 function upSellAdd() {
 	return (
 		<Layout>
