@@ -13,7 +13,7 @@ const Headings = (props) => {
 	return (
 		<Box
 			marginTop={{ base: "0px", md: "1vw" }}
-			px={{ base: "16px", lg: "0px" }}
+			px={{ base: "16px", md: "0px" }}
 		>
 			{hasIcon ? (
 				<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>
@@ -29,9 +29,9 @@ const Headings = (props) => {
 						fontSize={{
 							base: "18px",
 							sm: "18px",
-							md: "15px",
+							md: "20px",
 							lg: "18px",
-							"2xl": "20px",
+							"2xl": "30px",
 						}}
 						fontWeight="semibold"
 					>
@@ -43,9 +43,9 @@ const Headings = (props) => {
 					fontSize={{
 						base: "18px",
 						sm: "18px",
-						md: "15px",
+						md: "20px",
 						lg: "18px",
-						"2xl": "20px",
+						"2xl": "30px",
 					}}
 					fontWeight="semibold"
 				>

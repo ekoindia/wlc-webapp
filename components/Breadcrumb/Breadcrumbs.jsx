@@ -80,12 +80,7 @@ const Breadcrumbs = (props) => {
 						<BreadcrumbLink
 							href="/admin/my-network"
 							_hover={{ textDecoration: "none" }}
-							fontSize={{
-								md: "xs",
-								lg: "xs",
-								xl: "xs",
-								"2xl": "md",
-							}}
+							fontSize="xs"
 							color={"accent.DEFAULT"}
 							lineHeight={0}
 						>
@@ -121,12 +116,7 @@ const Breadcrumbs = (props) => {
 								<BreadcrumbLink
 									href={breadcrumb.href}
 									_hover={{ textDecoration: "none" }}
-									fontSize={{
-										md: "xs",
-										lg: "xs",
-										xl: "xs",
-										"2xl": "md",
-									}}
+									fontSize="xs"
 									color={
 										breadcrumb.isCurrent
 											? "light"
@@ -159,7 +149,9 @@ const Breadcrumbs = (props) => {
 					</Box>
 				)
 			) : (
-				<Box>
+				<Box
+					mt={{ base: "0px", md: "25px", lg: "30px", "2xl": "38px" }}
+				>
 					{breadcrumbs && (
 						<Headings
 							hasIcon={breadcrumbs.length > 1 ? true : false}
