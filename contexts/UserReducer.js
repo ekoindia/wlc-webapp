@@ -30,14 +30,14 @@ export const UserReducer = (state, { type, payload }) => {
 			}
 
 			const newState = {
+				...state,
 				loggedIn: true,
 				userId: payload.userId,
 				sessionKey: payload.sessionKey,
 				userDetails: payload.userDetails,
 				profileDetails: payload.profileDetails || {},
-				...state,
 			};
-
+			console.log("newState", newState);
 			sessionStorage.setItem("ConnectSession", JSON.stringify(newState));
 			// sessionStorage.setItem("access_token", JSON.stringify(newState));
 			// sessionStorage.setItem("refresh_token", JSON.stringify(newState));

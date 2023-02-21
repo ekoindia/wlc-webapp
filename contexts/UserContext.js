@@ -44,12 +44,15 @@ const UserProvider = ({ children }) => {
 	useEffect(() => {
 		if (state.loggedIn) {
 			console.log("User Context : ", state.loggedIn, redirect);
-			router.push(redirect);
+
+			if (router.pathname.includes("/admin"))
+				router.push(router.pathname);
+			else router.replace("/admin/my-network");
 		}
 	}, [state.loggedIn, redirect]);
 
 	const login = (sessionData) => {
-		console.log("Login : Executed");
+		console.log("Login : Executed", sessionData);
 		dispatch({
 			type: "LOGIN",
 			payload: {
@@ -68,8 +71,6 @@ const UserProvider = ({ children }) => {
 			logout,
 		};
 	}, [state]);
-
-	// console.log(state);
 
 	return (
 		<UserContext.Provider value={contextValue}>

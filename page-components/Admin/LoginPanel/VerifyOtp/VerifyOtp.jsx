@@ -30,7 +30,7 @@ const pinInputStyle = {
 	borderColor: "hint",
 };
 
-const VerifyOtp = ({ number, setStep }) => {
+const VerifyOtp = ({ loginType, number, setStep }) => {
 	const [Otp, setOtp] = useState("");
 	const router = useRouter();
 	const [timer, setTimer] = useState(30);
@@ -55,13 +55,9 @@ const VerifyOtp = ({ number, setStep }) => {
 		}
 	};
 
-	const redirect = () => {
-		router.push("/admin/my-network");
-	};
-
 	const resendOtpHandler = () => {
 		resetTimer();
-		sendOtpRequest(number.formatted, toast);
+		sendOtpRequest(number.original, toast, "resend");
 	};
 
 	const verifyOtpHandler = () => {
@@ -76,7 +72,11 @@ const VerifyOtp = ({ number, setStep }) => {
 		<Flex direction="column">
 			<Flex align="center">
 				<Box
-					onClick={() => setStep("LOGIN")}
+					onClick={() =>
+						setStep(
+							loginType === "Mobile" ? "LOGIN" : "GOOGLE_VERIFY"
+						)
+					}
 					w="18px"
 					h="15px"
 					cursor="pointer"
@@ -107,7 +107,13 @@ const VerifyOtp = ({ number, setStep }) => {
 					<Center as="b">
 						+91 {number.formatted}
 						<IconButtons
-							onClick={() => setStep("LOGIN")}
+							onClick={() =>
+								setStep(
+									loginType === "Mobile"
+										? "LOGIN"
+										: "GOOGLE_VERIFY"
+								)
+							}
 							iconName="mode-edit"
 							iconStyle={{ height: "12px", width: "12px" }}
 						/>
