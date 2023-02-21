@@ -4,11 +4,10 @@ import {
 	Divider,
 	Flex,
 	Select,
-	Switch,
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Icon, Input } from "components";
+import { Buttons, Icon, Input, Switch } from "components";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 /**
@@ -244,13 +243,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						Is he trained?
 					</Text>
 					<Box>
-						{" "}
-						<Switch
-							checkedChildren="开启"
-							unCheckedChildren="关闭"
-							colorScheme="green"
-							size="lg"
-						/>
+						<Switch />
 					</Box>
 				</Flex>
 				<Flex mt={"2.5rem"}>

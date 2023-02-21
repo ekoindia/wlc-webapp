@@ -7,11 +7,10 @@ import {
 	Flex,
 	HStack,
 	Select,
-	Switch,
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Icon, Input } from "components";
+import { Buttons, Icon, Input, Switch } from "components";
 /**
  * A <UpdateSellerAddress> component
  * TODO: Write more description here
@@ -541,8 +540,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							</Text>
 						</Box>
 						<Box>
-							{" "}
-							<Switch colorScheme="pink" size="lg" />
+							<Switch />
 						</Box>
 					</Flex>
 				</Flex>

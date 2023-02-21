@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Switch } from "./Switch";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
 import { Cards } from "./Cards";
@@ -16,16 +17,19 @@ import { NavBar } from "./NavBar";
 import { Pagination } from "./Pagination";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
+import { Selects } from "./Selects";
 import { SideBar } from "./SideBar";
 import { Sort } from "./Sort";
 import { Tables } from "./Tables";
 import { Tags } from "./Tags";
 
 export {
+	Switch,
 	Menus,
 	RouteProtecter,
 	SideBar,
 	NavBar,
+	Selects,
 	Headings,
 	Divider,
 	Pagination,
