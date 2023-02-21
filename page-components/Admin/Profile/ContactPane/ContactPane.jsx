@@ -50,7 +50,7 @@ const ContactPane = () => {
 				justifyContent="space-between"
 			>
 				<Heading
-					fontSize={{ base: 16, md: 18 }}
+					fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 					fontWeight="semibold"
 					color={"light"}
 				>
@@ -71,7 +71,7 @@ const ContactPane = () => {
 				direction="column"
 				divider={<StackDivider />}
 				mt="5"
-				fontSize={14}
+				fontSize={{ base: 14, md: 12, lg: 14 }}
 			>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<Box display={"flex"} as="span">

@@ -22,21 +22,24 @@ const CompanyPane = () => {
 	return (
 		<Cards>
 			<Flex gap="5" align="center">
-				<Circle bg="divider" size={{ base: 20, md: 28 }}>
+				<Circle bg="divider" size={{ base: 20, lg: 20, xl: 28 }}>
 					<Avatar
-						w={{ base: 16, md: 90 }}
-						h={{ base: 16, md: 90 }}
+						w={{ base: 16, lg: 59, xl: 90 }}
+						h={{ base: 16, lg: 59, xl: 90 }}
 						src="/images/seller_logo.jpg"
 					/>
 				</Circle>
 				<Box>
 					<Heading
-						fontSize={{ base: 20, md: 18 }}
+						fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 						fontWeight="semibold"
 					>
 						Angel Tech Private Limited
 					</Heading>
-					<Flex fontSize={14} fontWeight="medium">
+					<Flex
+						fontSize={{ base: 14, md: 12, lg: 14 }}
+						fontWeight="medium"
+					>
 						<Text>Eko Code:</Text>
 						<Text color={"primary.DEFAULT"}>
 							<span>&nbsp;</span> 387608
@@ -45,7 +48,7 @@ const CompanyPane = () => {
 				</Box>
 			</Flex>
 
-			<Box mt={{ base: "38", md: "70" }}>
+			<Box mt={{ base: "38", lg: "39", xl: "70" }}>
 				<Flex justify="space-between" h="42px" wrap={"wrap"}>
 					<Box
 						display="flex"
@@ -53,11 +56,18 @@ const CompanyPane = () => {
 						alignItems={{ base: "center", sm: "flex-start" }}
 						gap={isSmallerThan440 ? 2 : 0}
 					>
-						<Text color="light" fontSize={14}>
+						<Text
+							color="light"
+							fontSize={{ base: 14, md: 12, lg: 14 }}
+						>
 							Account type
 							{isSmallerThan440 ? <Text as="span">:</Text> : ""}
 						</Text>
-						<Text color="dark" fontSize={16} fontWeight="medium">
+						<Text
+							color="dark"
+							fontSize={{ base: 16, md: 13, lg: 16 }}
+							fontWeight="medium"
+						>
 							iMerchant
 						</Text>
 					</Box>
@@ -72,11 +82,18 @@ const CompanyPane = () => {
 						alignItems={{ base: "center", sm: "flex-start" }}
 						gap={isSmallerThan440 ? 2 : 0}
 					>
-						<Text color="light" fontSize={14}>
+						<Text
+							color="light"
+							fontSize={{ base: 14, md: 12, lg: 14 }}
+						>
 							Plan name
 							{isSmallerThan440 ? <Text as="span">:</Text> : ""}
 						</Text>
-						<Text color="dark" fontSize={16} fontWeight="medium">
+						<Text
+							color="dark"
+							fontSize={{ base: 16, md: 13, lg: 16 }}
+							fontWeight="medium"
+						>
 							Specialist
 						</Text>
 					</Box>
@@ -91,30 +108,37 @@ const CompanyPane = () => {
 						alignItems={{ base: "center", sm: "flex-start" }}
 						gap={isSmallerThan440 ? 2 : 0}
 					>
-						<Text color="light" fontSize={14}>
+						<Text
+							color="light"
+							fontSize={{ base: 14, md: 12, lg: 14 }}
+						>
 							KYC status
 							{isSmallerThan440 ? <Text as="span">:</Text> : ""}
 						</Text>
-						<Text color="dark" fontSize={16} fontWeight="medium">
+						<Text
+							color="dark"
+							fontSize={{ base: 16, md: 13, lg: 16 }}
+							fontWeight="medium"
+						>
 							KYC Compliant
 						</Text>
 					</Box>
 				</Flex>
 			</Box>
 
-			<Box mt={{ base: "95", md: "70" }}>
+			<Box mt={{ base: "95", lg: "20", xl: "70" }}>
 				<Buttons
 					onClick={() =>
 						Router.push("/admin/my-network/profile/up-sell-info")
 					}
-					w={{ base: "100%", md: "215px" }}
+					w={{ base: "100%", lg: "205px", xl: "215px" }}
 					h="60px"
 					title="Update Information"
 				/>
 			</Box>
 
 			<Box
-				mt={{ base: "38", md: "70" }}
+				mt={{ base: "38", md: "50", xl: "70" }}
 				p="20px"
 				h="160"
 				border="1px solid #D2D2D2"

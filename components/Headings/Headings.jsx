@@ -30,7 +30,7 @@ const Headings = (props) => {
 							base: "18px",
 							sm: "18px",
 							md: "20px",
-							lg: "18px",
+							lg: "25px",
 							"2xl": "30px",
 						}}
 						fontWeight="semibold"
@@ -44,7 +44,7 @@ const Headings = (props) => {
 						base: "18px",
 						sm: "18px",
 						md: "20px",
-						lg: "18px",
+						lg: "25px",
 						"2xl": "30px",
 					}}
 					fontWeight="semibold"

@@ -17,8 +17,8 @@ const Cards = ({ className = "", children, ...props }) => {
 			boxShadow="0px 5px 15px #0000000D"
 			border="1px solid #D2D2D2"
 			p="5"
-			h={{ base: "auto", xl: "620px" }}
-			w={{ base: "100%", md: "47%", lg: "404px", xl: "490px" }}
+			h={{ base: "auto", md: "600px", xl: "620px" }}
+			w={{ base: "100%", md: "47%", lg: "48%", xl: "490px" }}
 			bg="white"
 			onClick={onClick}
 			{...props}
