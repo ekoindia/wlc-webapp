@@ -24,6 +24,7 @@ const Switch = (props) => {
 			align="center"
 			justify="center"
 			cursor="pointer"
+			userSelect="none"
 		>
 			<Flex
 				direction={switched ? "row" : "row-reverse"}
@@ -32,15 +33,10 @@ const Switch = (props) => {
 				w="90%"
 				h="23px"
 			>
-				<Flex
-					color="white"
-					fontSize="12px"
-					px="4px"
-					// alignItems={{ base: "center", md: "flex-end" }}
-				>
+				<Flex color="white" fontSize="12px" px="8px">
 					{switched ? "Yes" : "No"}
 				</Flex>
-				<Flex transition="all .3s linear">
+				<Flex>
 					<Circle
 						bg="white"
 						size="23px"
