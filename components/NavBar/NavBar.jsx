@@ -26,7 +26,7 @@ const NavBar = (props) => {
 					sm: "56px",
 					md: "50px",
 					lg: "60px",
-					xl: "70px",
+					xl: "50px",
 					"2xl": "90px",
 				}}
 			></Box>
@@ -47,7 +47,7 @@ const NavBar = (props) => {
 						sm: "56px",
 						md: "50px",
 						lg: "60px",
-						xl: "70px",
+						xl: "50px",
 						"2xl": "90px",
 					}}
 				>
@@ -107,7 +107,7 @@ const NavContent = ({ setNavOpen }) => {
 							sm: "34px",
 							md: "30px",
 							lg: "34px",
-							xl: "40px",
+							xl: "30px",
 							"2xl": "46px",
 						}}
 					/>
@@ -126,7 +126,7 @@ const NavContent = ({ setNavOpen }) => {
 										sm: "34px",
 										md: "30px",
 										lg: "34px",
-										xl: "40px",
+										xl: "30px",
 										"2xl": "46px",
 									}}
 									h={{
@@ -134,7 +134,7 @@ const NavContent = ({ setNavOpen }) => {
 										sm: "34px",
 										md: "30px",
 										lg: "34px",
-										xl: "40px",
+										xl: "30px",
 										"2xl": "46px",
 									}}
 									name="demo-user"
@@ -158,7 +158,7 @@ const NavContent = ({ setNavOpen }) => {
 											fontSize={{
 												md: "12px",
 												lg: "14px",
-												xl: "16px",
+												xl: "12px",
 												"2xl": "18px",
 											}}
 											fontWeight={"semibold"}
@@ -175,9 +175,9 @@ const NavContent = ({ setNavOpen }) => {
 									</Box>
 									<Text
 										fontSize={{
-											md: "8px",
+											md: "10px",
 											lg: "10px",
-											xl: "12px",
+											xl: "10px",
 											"2xl": "14px",
 										}}
 										color={"secondary.DEFAULT"}

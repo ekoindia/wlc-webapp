@@ -23,9 +23,12 @@ const Layout = (props) => {
 			<Flex
 				width={"full"}
 				height={{
-					base: "calc(100vh - 12.2vw)",
-					sm: "calc(100vh - 10vw)",
-					md: "calc(100vh - 4.5vw)",
+					base: "calc(100vh - 56px)",
+					sm: "calc(100vh - 56px)",
+					md: "calc(100vh - 50px)",
+					lg: "calc(100vh - 60px)",
+					xl: "calc(100vh - 50px)",
+					"2xl": "calc(100vh - 90px)",
 				}}
 			>
 				<SideBar navOpen={isNavOpen} setNavOpen={setIsNavOpen} />
