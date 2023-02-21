@@ -54,15 +54,16 @@ const DocPane = () => {
 	return (
 		<Cards>
 			<Heading
-				fontSize={{ base: 16, md: 18 }}
+				fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 				fontWeight="semibold"
 				color={"light"}
+				mt="5px"
 			>
 				Document Center
 			</Heading>
 
 			<Flex direction={"column"}>
-				<Box h="474px" fontSize={{ base: "14px", md: "16px" }}>
+				<Box h="474px" fontSize={{ base: 16, md: 14, lg: 16 }}>
 					<Stack direction="column" divider={<StackDivider />} mt="5">
 						{docData.map((item, index) => (
 							<Box
