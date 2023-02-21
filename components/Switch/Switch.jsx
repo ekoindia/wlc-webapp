@@ -9,8 +9,8 @@ import { useState } from "react";
  * @example	`<Switch></Switch>`
  */
 const Switch = (props) => {
-	const { status } = props;
-	const [switched, setSwitched] = useState(status || true);
+	const { status = true } = props;
+	const [switched, setSwitched] = useState(status);
 	const handleSwitch = () => {
 		setSwitched(!switched);
 	};
