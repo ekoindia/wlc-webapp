@@ -31,7 +31,7 @@ const Tables = (props) => {
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
-	const [isSmallerThan769] = useMediaQuery("(max-width: 769px)");
+	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	const [currentPage, setCurrentPage] = useState(1);
 
 	useEffect(() => {
@@ -227,7 +227,7 @@ const Tables = (props) => {
 	return (
 		<>
 			<Box w="100%">
-				{!isSmallerThan769 ? (
+				{!isSmallerThan860 ? (
 					<>
 						<TableContainer
 							borderRadius="10px 10px 0 0"
