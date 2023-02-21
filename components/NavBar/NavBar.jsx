@@ -191,10 +191,11 @@ const NavContent = ({ setNavOpen }) => {
 
 						<MenuList
 							w={{
-								sm: "50vw",
-								md: "20vw",
-								lg: "22vw",
-								"2xl": "18vw",
+								sm: "270px",
+								md: "280px",
+								lg: "300px",
+								xl: "350px",
+								"2xl": "400px",
 							}}
 							border={"none"}
 							bg={"transparent"}
@@ -242,8 +243,8 @@ const MyAccountCard = () => {
 			>
 				<Icon
 					name="drop-down"
-					width="0.85vw"
-					height="0.85vw"
+					width="16px"
+					height="16px"
 					color="#11299E"
 					style={{
 						transform: "rotate(180deg)",
@@ -262,14 +263,15 @@ const MyAccountCard = () => {
 					<Flex
 						w={"full"}
 						align={"flex-end"}
-						justifyContent={"space-between"}
+						// justifyContent={"space-betw"}
+						gap={{ base: "25px", xl: "20px", "2xl": "25px" }}
 					>
 						<Text
 							fontSize={{
 								sm: "12px",
-								md: "11px",
-								lg: "12px",
-								"2xl": "16px",
+								md: "12px",
+								lg: "14px",
+								"2xl": "14px",
 							}}
 							w={"fit-content"}
 							color={"highlight"}
@@ -279,23 +281,30 @@ const MyAccountCard = () => {
 						<Text
 							fontSize={{
 								sm: "10px",
-								md: "9px",
-								lg: "10px",
-								"2xl": "12px",
+								md: "8px",
+								lg: "8px",
+								xl: "10px",
+								"2xl": "10px",
 							}}
 							w={"fit-content"}
 							color={"white"}
 						>
-							(Eko Code: 501837634)
+							(Eko Code:{" "}
+							<Text as={"span"} fontWeight={"medium"}>
+								{" "}
+								501837634
+							</Text>
+							)
 						</Text>
 					</Flex>
 					<Flex w={"full"} py={".3vw"}>
 						<Text
 							fontSize={{
 								sm: "10px",
-								md: "9px",
-								lg: "10px",
-								"2xl": "12px",
+								md: "8px",
+								lg: "8px",
+								xl: "10px",
+								"2xl": "10px",
 							}}
 							w={"fit-content"}
 							color={"white"}
@@ -313,23 +322,23 @@ const MyAccountCard = () => {
 								<Text
 									fontSize={{
 										sm: "10px",
-										md: "9px",
+										md: "8px",
 										lg: "10px",
-										"2xl": "12px",
+										"2xl": "10px",
 									}}
 									color={"white"}
 								>
 									+91 9871 67943
 								</Text>
 								<Box
-									p={"0.3vw"}
+									p={"3.5px"}
 									bg={"primary.dark"}
 									borderRadius={"50%"}
 									ml={"0.6vw"}
 								>
 									<Icon
 										name="mode-edit"
-										width=".5vw"
+										width="8px"
 										color="white"
 									/>
 								</Box>
@@ -338,8 +347,22 @@ const MyAccountCard = () => {
 						<Flex>
 							<Buttons
 								fontSize={"0.6vw"}
-								w={"7vw"}
-								h={"2.3vw"}
+								w={{
+									base: "108px",
+									sm: "90px",
+									md: "90px",
+									lg: "100px",
+									xl: "100px",
+									"2xl": "108px",
+								}}
+								h={{
+									base: "36px",
+									sm: "30px",
+									md: "30px",
+									lg: "30px",
+									xl: "34px",
+									"2xl": "36px",
+								}}
 								fontWeight={"medium"}
 								borderRadius={{
 									base: "4px",
@@ -347,8 +370,20 @@ const MyAccountCard = () => {
 									"2xl": "5px",
 								}}
 							>
-								<Text mr={".2vw"}>View Profile</Text>
-								<Icon name="chevron-right" height="22%" />
+								<Text
+									mr={".2vw"}
+									fontSize={{
+										base: "8px",
+										sm: "8px",
+										md: "8px",
+										lg: "10px",
+										xl: "10px",
+										"2xl": "12px",
+									}}
+								>
+									View Profile &gt;
+								</Text>
+								{/* <Icon name="chevron-right" height="22%" /> */}
 							</Buttons>
 						</Flex>
 					</Flex>
@@ -371,8 +406,21 @@ const MyAccountCard = () => {
 					justifyContent={"space-between"}
 					cursor={"pointer"}
 				>
-					<Text fontSize={"0.8vw"}>Business Contact</Text>
-					<Icon name="chevron-right" width="0.6vw" height="0.6vw" />
+					<Text
+						fontSize={{
+							base: "10px",
+							sm: "10px",
+							md: "10px",
+							lg: "12px",
+							xl: "12px",
+							"2xl": "14px",
+						}}
+					>
+						Business Contact
+					</Text>
+					{/* <Box  width={{base: "8px", sm: "8px", md: "8px", lg: "8px", xl: "8px", "2xl": "8px"}} height={{base: "8px", sm: "8px", md: "8px", lg: "8px", xl: "8px", "2xl": "8px"}} > */}
+					<Icon name="chevron-right" width="8px" height="8px" />
+					{/* </Box> */}
 				</HStack>
 				<Divider w={"90%"} />
 				<HStack
@@ -381,8 +429,19 @@ const MyAccountCard = () => {
 					justifyContent={"space-between"}
 					cursor={"pointer"}
 				>
-					<Text fontSize={"0.8vw"}>Need Help</Text>
-					<Icon name="chevron-right" width="0.6vw" height="0.6vw" />
+					<Text
+						fontSize={{
+							base: "10px",
+							sm: "10px",
+							md: "10px",
+							lg: "12px",
+							xl: "12px",
+							"2xl": "14px",
+						}}
+					>
+						Need Help
+					</Text>
+					<Icon name="chevron-right" width="8px" height="8px" />
 				</HStack>
 				<Divider w={"90%"} />
 				<HStack
@@ -391,8 +450,19 @@ const MyAccountCard = () => {
 					justifyContent={"space-between"}
 					cursor={"pointer"}
 				>
-					<Text fontSize={"0.8vw"}>Help Center</Text>
-					<Icon name="chevron-right" width="0.6vw" height="0.6vw" />
+					<Text
+						fontSize={{
+							base: "10px",
+							sm: "10px",
+							md: "10px",
+							lg: "12px",
+							xl: "12px",
+							"2xl": "14px",
+						}}
+					>
+						Help Center
+					</Text>
+					<Icon name="chevron-right" width="8px" height="8px" />
 				</HStack>
 				<Divider w={"90%"} />
 				<HStack
@@ -401,8 +471,19 @@ const MyAccountCard = () => {
 					justifyContent={"space-between"}
 					cursor={"pointer"}
 				>
-					<Text fontSize={"0.8vw"}>Settings</Text>
-					<Icon name="chevron-right" width="0.6vw" height="0.6vw" />
+					<Text
+						fontSize={{
+							base: "10px",
+							sm: "10px",
+							md: "10px",
+							lg: "12px",
+							xl: "12px",
+							"2xl": "14px",
+						}}
+					>
+						Settings
+					</Text>
+					<Icon name="chevron-right" width="8px" height="8px" />
 				</HStack>
 				<Divider w={"90%"} />
 				<HStack
@@ -415,11 +496,18 @@ const MyAccountCard = () => {
 					<Icon
 						name="logout"
 						color="#FF4081"
-						width="0.9vw"
-						height="0.9vw"
+						width="18px"
+						height="18px"
 					/>
 					<Text
-						fontSize={"0.8vw"}
+						fontSize={{
+							base: "10px",
+							sm: "10px",
+							md: "10px",
+							lg: "12px",
+							xl: "12px",
+							"2xl": "14px",
+						}}
 						color={"error"}
 						fontWeight={"medium"}
 					>
