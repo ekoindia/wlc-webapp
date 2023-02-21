@@ -191,7 +191,7 @@ const NavContent = ({ setNavOpen }) => {
 
 						<MenuList
 							w={{
-								sm: "60vw",
+								sm: "50vw",
 								md: "20vw",
 								lg: "22vw",
 								"2xl": "18vw",
@@ -228,8 +228,8 @@ const MyAccountCard = () => {
 			}}
 		>
 			<VStack
-				px={{ sm: "1", lg: "4" }}
-				py={{ sm: "1", lg: "3" }}
+				px={{ sm: "2", md: "1", lg: "4" }}
+				py={{ sm: "2", md: "1", lg: "3" }}
 				w={"full"}
 				minH={"6vw"}
 				bg={"accent.DEFAULT"}
@@ -266,6 +266,7 @@ const MyAccountCard = () => {
 					>
 						<Text
 							fontSize={{
+								sm: "12px",
 								md: "11px",
 								lg: "12px",
 								"2xl": "16px",
@@ -277,6 +278,7 @@ const MyAccountCard = () => {
 						</Text>
 						<Text
 							fontSize={{
+								sm: "10px",
 								md: "9px",
 								lg: "10px",
 								"2xl": "12px",
@@ -290,6 +292,7 @@ const MyAccountCard = () => {
 					<Flex w={"full"} py={".3vw"}>
 						<Text
 							fontSize={{
+								sm: "10px",
 								md: "9px",
 								lg: "10px",
 								"2xl": "12px",
@@ -309,6 +312,7 @@ const MyAccountCard = () => {
 							<Box display={"flex"} alignItems={"center"}>
 								<Text
 									fontSize={{
+										sm: "10px",
 										md: "9px",
 										lg: "10px",
 										"2xl": "12px",
