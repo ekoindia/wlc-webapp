@@ -21,7 +21,7 @@ const NavBar = (props) => {
 			<Box
 				as="nav"
 				w={"full"}
-				h={{ base: "12.2vw", sm: "10vw", md: "4.5vw" }}
+				h={{ base: "12.2vw", sm: "10vw", md: "50px", xl: "4.5vw" }}
 			></Box>
 			<Box
 				top={"0%"}
@@ -35,7 +35,7 @@ const NavBar = (props) => {
 					position={"sticky"}
 					as="nav"
 					w={"full"}
-					h={{ base: "12.2vw", sm: "10vw", md: "4.5vw" }}
+					h={{ base: "12.2vw", sm: "10vw", md: "50px", xl: "4.5vw" }}
 				>
 					{isSmallerThan769 ? (
 						isNavVisible ? (
@@ -91,7 +91,8 @@ const NavContent = ({ setNavOpen }) => {
 						maxW={{
 							base: "24vw",
 							sm: "18vw",
-							md: "9vw",
+							md: "11vw",
+							lg: "9vw",
 						}}
 					/>
 				</Box>
@@ -123,10 +124,18 @@ const NavContent = ({ setNavOpen }) => {
 									w={{
 										base: "6vw",
 										sm: "2.4vw",
+										md: "4.1vw",
+										lg: "3.3vw",
+										xl: "2.8vw",
+										"2xl": "2.4vw",
 									}}
 									h={{
 										base: "6vw",
 										sm: "2.4vw",
+										md: "4.1vw",
+										lg: "3.3vw",
+										xl: "2.8vw",
+										"2xl": "2.4vw",
 									}}
 									name="demo-user"
 									src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
@@ -136,23 +145,40 @@ const NavContent = ({ setNavOpen }) => {
 									h={"2.3vw"}
 									justify={"center"}
 									direction={"column"}
+									lineHeight={{
+										md: "15px",
+										lg: "16px",
+										xl: "18px",
+										"2xl": "22px",
+									}}
 								>
 									<Box display={"flex"} alignItems={"center"}>
 										<Text
-											fontSize={".85vw"}
+											fontSize={{
+												md: "1.5vw",
+												lg: "1.2vw",
+												xl: "0.89vw",
+												"2xl": "0.89vw",
+											}}
 											fontWeight={"semibold"}
 											mr={"1.7vw"}
 										>
 											Aakash Enterprises
 										</Text>
-										<Icon
-											name="drop-down"
-											width="0.75vw"
-											height="0.70vw"
-										/>
+										<Box
+											width={{ md: "1vw", lg: "0.75vw" }}
+											height={{ md: "1vw", lg: "0.70vw" }}
+										>
+											<Icon name="drop-down" />
+										</Box>
 									</Box>
 									<Text
-										fontSize={"0.7vw"}
+										fontSize={{
+											md: "1.2vw",
+											lg: "1vw",
+											xl: "0.70vw",
+											"2xl": "0.70vw",
+										}}
 										color={"secondary.DEFAULT"}
 										textAlign={"start"}
 									>

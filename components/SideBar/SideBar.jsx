@@ -44,8 +44,9 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									base: "3.6vw",
 									sm: "2.5vw",
 									md: "2vw",
-									lg: "1vw",
-									"2xl": ".85vw",
+									lg: "1.09vw",
+									xl: "0.8vw",
+									"2xl": "0.8vw",
 								}}
 								gap="10px"
 								color="#FFFFFF"
