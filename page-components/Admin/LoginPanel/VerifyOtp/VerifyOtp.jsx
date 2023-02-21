@@ -57,7 +57,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 
 	const resendOtpHandler = () => {
 		resetTimer();
-		sendOtpRequest(number.formatted, toast);
+		sendOtpRequest(number.original, toast, "resend");
 	};
 
 	const verifyOtpHandler = () => {

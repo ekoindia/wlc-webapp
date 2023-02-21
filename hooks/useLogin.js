@@ -1,9 +1,10 @@
 import { Endpoints } from "constants/EndPoints";
 import { useState } from "react";
+import { useToast } from "@chakra-ui/react";
 
 function useLogin(login, setStep, setEmail) {
 	const [busy, setBusy] = useState(false);
-
+	const toast = useToast();
 	function submitLogin(data) {
 		setBusy(true);
 		console.log("Data", JSON.stringify(data));
@@ -36,10 +37,16 @@ function useLogin(login, setStep, setEmail) {
 				}
 			})
 			.then((res) => {
-				console.log("LOGIN RESPONSE >>>> ", res);
+				console.log("LOGIN RESPONSE >>>> ", res.status);
 
-				if (!res.details.mobile) {
-					throw new Error(res.message || "Something went wrong!");
+				if (res.status === 302) {
+					toast({
+						title: "Please Enter Correct OTP or resend ",
+						status: "error",
+						duration: 1000,
+						isClosable: true,
+						position: "top-right",
+					});
 				}
 
 				if (
@@ -54,7 +61,7 @@ function useLogin(login, setStep, setEmail) {
 				} else {
 					login({
 						userId: res.details.mobile,
-						sessionKey: res.access_token_lite,
+						sessionKey: res.access_token,
 						userDetails: res.details,
 						profileDetails: {
 							account_details: res.account_details,
@@ -64,20 +71,11 @@ function useLogin(login, setStep, setEmail) {
 						},
 					});
 				}
-
-				// toast.success("Logged in as " + data.details.name);
 			})
 			.catch((e) => {
-				// toast.error("Login Failed. Please try again. ");
 				console.error("Login Error: ", e);
 			})
 			.finally(() => setBusy(false));
-
-		// login({
-		//     userId: "#123456",
-		//     sessionKey: "dsfsdjnfsj32423jbcs",
-		//     userDetails: "sdfsfsdfsd",
-		// });
 	}
 
 	return [busy, submitLogin];

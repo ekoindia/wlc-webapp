@@ -48,13 +48,14 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 
 	const SendOtp = () => {
 		if (value.length === 12) {
+			let originalNum = RemoveFormatted(value);
 			setNumber({
-				original: RemoveFormatted(value),
+				original: originalNum,
 				formatted: value,
 			});
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
-			sendOtpRequest(value, toast);
+			sendOtpRequest(originalNum, toast);
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);
