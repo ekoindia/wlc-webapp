@@ -220,8 +220,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 							w={{
 								sm: "270px",
 								md: "280px",
-								lg: "300px",
-								xl: "350px",
+								lg: "290px",
+								xl: "320px",
 								"2xl": "349px",
 							}}
 							border={"none"}
@@ -257,7 +257,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 			w={{ base: "100%", sm: "initial" }}
 		>
 			<VStack
-				px={{ base: "3", sm: "2", md: "1", lg: "4" }}
+				px={{ base: "3", sm: "2", md: "2", lg: "4" }}
 				py={{ base: "2", sm: "2", md: "1", lg: "" }}
 				w={"full"}
 				minH={"6vw"}
@@ -302,7 +302,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					w={"full"}
 					px={{
 						base: "vw",
-						lg: "0.2vw",
+						md: "0.2vw",
 					}}
 					py={{ base: "10px", sm: "0px" }}
 				>
