@@ -37,7 +37,8 @@ export type IconNameType =
 	| "phone"
 	| "calender"
 	| "rupee_bg"
-	| "refresh";
+	| "refresh"
+	| "close";
 
 export type IconProps = {
 	name: IconNameType;
