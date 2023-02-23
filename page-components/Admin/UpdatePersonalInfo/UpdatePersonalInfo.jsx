@@ -265,6 +265,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								marginTop="-2rem"
 							>
 								<IconButtons
+									onClick={() => inputRef.current.click()}
 									iconName="camera"
 									iconStyle={{
 										h: "12.53px",
