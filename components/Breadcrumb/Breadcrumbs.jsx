@@ -83,7 +83,7 @@ const Breadcrumbs = (props) => {
 							_hover={{ textDecoration: "none" }}
 							fontSize="xs"
 							color={"accent.DEFAULT"}
-							lineHeight={0}
+							lineHeight={1}
 						>
 							<Box
 								gap={"1"}
@@ -123,7 +123,7 @@ const Breadcrumbs = (props) => {
 											? "light"
 											: "accent.DEFAULT"
 									}
-									lineHeight={0}
+									lineHeight={1}
 								>
 									{breadcrumb.label}
 								</BreadcrumbLink>

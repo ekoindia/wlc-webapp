@@ -10,7 +10,6 @@ const Headings = (props) => {
 		redirectPath,
 		propComp,
 	} = props;
-	console.log("propComp", propComp);
 
 	const router = useRouter();
 	const redirectTo = () => {

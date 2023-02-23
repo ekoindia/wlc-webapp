@@ -78,15 +78,18 @@ const ContactPane = () => {
 						<Text color="light">Mobile number:</Text>
 						<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
 					</Box>
-					<IconButtons
-						variant="success"
-						hasIcon={isSmallerThan769 ? true : false}
-						iconName="phone"
-						iconStyle={{
-							width: "12px",
-							height: "12px",
-						}}
-					/>
+					{isSmallerThan769 ? (
+						<IconButtons
+							variant="success"
+							iconName="phone"
+							iconStyle={{
+								width: "12px",
+								height: "12px",
+							}}
+						/>
+					) : (
+						""
+					)}
 				</Box>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<Box display={"flex"} as="span">
