@@ -99,7 +99,7 @@ function Filter() {
 							xl: "sm",
 							"2xl": "xl",
 						}}
-						lineHeight={"0"}
+						lineHeight={1}
 					>
 						Filter
 					</Text>
