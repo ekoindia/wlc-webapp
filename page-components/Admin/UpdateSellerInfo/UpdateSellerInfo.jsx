@@ -53,14 +53,12 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 				md: "20px",
 				"2xl": "14px 30px 30px 30px",
 			}}
-			mt={{ base: "0px", md: "30px" }}
+			// mt={{ base: "0px", md: "30px" }}
 		>
 			{" "}
 			<Box
 				bg={{ base: "#FFFFFF", "2xl": "white" }}
 				w={{ base: "100%" }}
-				// borderRadius={{ base: "10px", lg: "none" }}
-				// border={{ base: "1px solid #D2D2D2", lg: "none" }}
 				borderBottom={{ base: "1px solid #D2D2D2", md: "none" }}
 			>
 				<Flex direction={"column"} p={{ base: "12px", md: "0px" }}>
