@@ -22,7 +22,8 @@ const Breadcrumbs = (props) => {
 	const router = useRouter();
 	const [breadcrumbs, setBreadcrumbs] = useState();
 
-	const { setNav, setHeadingObj, isNavVisible, isSmallerThan769 } = props;
+	const { setNav, setHeadingObj, isNavVisible, isSmallerThan769, propComp } =
+		props;
 
 	const capitalizeWordsBreadcrumbs = (str) => {
 		if (str in textChanger) {
@@ -160,6 +161,7 @@ const Breadcrumbs = (props) => {
 								breadcrumbs.length > 1 &&
 								breadcrumbs[breadcrumbs.length - 2].href
 							}
+							propComp={propComp}
 						/>
 					)}
 				</Box>
