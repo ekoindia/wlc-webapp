@@ -22,7 +22,7 @@ const Sort = ({ className = "", ...props }) => {
 		<>
 			<Box
 				display={{ base: "none", md: "flex" }}
-				mt={{ base: "1vw", "2xl": ".5vw" }}
+				// mt={{ base: "1vw", "2xl": ".5vw" }}
 				h={{
 					base: "8.5vw",
 					sm: "5.5vw",

@@ -15,7 +15,7 @@ const PricingCommissions = ({ className = "", ...props }) => {
 				w={"100%"}
 				minH={"80%"}
 				bg={"white"}
-				mt={{ base: "15px", "2xl": "25px" }}
+				// mt={{ base: "15px", "2xl": "25px" }}
 				borderRadius={{ base: "8px", md: "10px" }}
 				border={"card"}
 				boxShadow={" 0px 5px 15px #0000000D"}
