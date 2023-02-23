@@ -82,7 +82,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 					md: "20px",
 					"2xl": "24px 30px 30px 30px",
 				}}
-				mt={{ base: "0px", md: "30px" }}
 			>
 				<Box
 					w={{
@@ -265,6 +264,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								marginTop="-2rem"
 							>
 								<IconButtons
+									onClick={() => inputRef.current.click()}
 									iconName="camera"
 									iconStyle={{
 										h: "12.53px",

@@ -64,7 +64,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 
 				md: "white",
 			}}
-			m={{ base: "0px", md: "30px 0px 20px 0px" }}
+			// m={{ base: "0px", md: "30px 0px 20px 0px" }}
 		>
 			<Flex direction={"column"}>
 				<Box
