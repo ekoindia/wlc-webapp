@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, IconButton } from "@chakra-ui/react";
 import { Menus } from "components";
 import {
 	getLocationStyle,
@@ -24,6 +24,9 @@ const NetworkCard = (props) => {
 					{getNameStyle(item.name)}
 				</Box>
 				<Menus
+					iconName="more-vert"
+					as={IconButton}
+					iconStyles={{ width: "4px", height: "18px" }}
 					type="inverted"
 					onClick={(e) => {
 						e.stopPropagation();
