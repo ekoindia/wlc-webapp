@@ -7,6 +7,7 @@ import {
 	Stack,
 	StackDivider,
 	Text,
+	useMediaQuery,
 } from "@chakra-ui/react";
 import { Buttons, Cards, Icon, IconButtons } from "components";
 
@@ -18,6 +19,8 @@ import { Buttons, Cards, Icon, IconButtons } from "components";
  * @example	`<DocPane></DocPane>`
  */
 const DocPane = () => {
+	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
+
 	const docData = [
 		{
 			image: "/images/seller_logo.jpg",
@@ -98,7 +101,11 @@ const DocPane = () => {
 								</Flex>
 								<IconButtons
 									title={
-										item.available ? "Download" : "Upload"
+										isSmallerThan769
+											? ""
+											: item.available
+											? "Download"
+											: "Upload"
 									}
 									iconPos="left"
 									variant={

@@ -38,6 +38,8 @@ export type IconNameType =
 	| "calender"
 	| "rupee_bg"
 	| "refresh"
+	| "arrow-up"
+	| "arrow-down"
 	| "close";
 
 export type IconProps = {
