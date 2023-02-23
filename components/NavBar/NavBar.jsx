@@ -10,14 +10,31 @@ import {
 	MenuButton,
 	MenuList,
 	Text,
+	useMediaQuery,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Headings, Icon } from "..";
+import { useState } from "react";
+import { Buttons, Headings, Icon, IconButtons } from "..";
 
 const NavBar = (props) => {
+	const [isSmallerThan440] = useMediaQuery("(max-width: 440px)");
+	const [isCardOpen, setIsCardOpen] = useState(false);
 	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj } = props;
+
 	return (
 		<>
+			{isCardOpen && (
+				<Box
+					display={{ base: "flex", sm: "none" }}
+					width="100%"
+					h="100%"
+					position={"fixed"}
+					zIndex={"999"}
+				>
+					<MyAccountCard setIsCardOpen={setIsCardOpen} />
+				</Box>
+			)}
+
 			<Box
 				as="nav"
 				w={"full"}
@@ -53,7 +70,10 @@ const NavBar = (props) => {
 				>
 					{isSmallerThan769 ? (
 						isNavVisible ? (
-							<NavContent setNavOpen={setNavOpen} />
+							<NavContent
+								setNavOpen={setNavOpen}
+								setIsCardOpen={setIsCardOpen}
+							/>
 						) : (
 							<Flex h="100%" alignItems="center">
 								<Headings
@@ -63,7 +83,10 @@ const NavBar = (props) => {
 							</Flex>
 						)
 					) : (
-						<NavContent setNavOpen={setNavOpen} />
+						<NavContent
+							setNavOpen={setNavOpen}
+							setIsCardOpen={setIsCardOpen}
+						/>
 					)}
 				</Box>
 			</Box>
@@ -73,7 +96,7 @@ const NavBar = (props) => {
 
 export default NavBar;
 
-const NavContent = ({ setNavOpen }) => {
+const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	return (
 		<>
 			<HStack
@@ -114,7 +137,11 @@ const NavContent = ({ setNavOpen }) => {
 				</Box>
 				<Box display={{ base: "flex", md: "flex" }}>
 					<Menu>
-						<MenuButton>
+						<MenuButton
+							onClick={() => {
+								setIsCardOpen(true);
+							}}
+						>
 							<Flex
 								align={"center"}
 								cursor={"pointer"}
@@ -193,9 +220,9 @@ const NavContent = ({ setNavOpen }) => {
 							w={{
 								sm: "270px",
 								md: "280px",
-								lg: "300px",
-								xl: "350px",
-								"2xl": "400px",
+								lg: "290px",
+								xl: "320px",
+								"2xl": "349px",
 							}}
 							border={"none"}
 							bg={"transparent"}
@@ -217,7 +244,7 @@ const NavContent = ({ setNavOpen }) => {
 	);
 };
 
-const MyAccountCard = () => {
+const MyAccountCard = ({ setIsCardOpen }) => {
 	return (
 		<Box
 			border={"1px solid #D2D2D2"}
@@ -227,10 +254,11 @@ const MyAccountCard = () => {
 				lg: "0.4rem",
 				"2xl": ".9rem",
 			}}
+			w={{ base: "100%", sm: "initial" }}
 		>
 			<VStack
-				px={{ sm: "2", md: "1", lg: "4" }}
-				py={{ sm: "2", md: "1", lg: "3" }}
+				px={{ base: "3", sm: "2", md: "2", lg: "4" }}
+				py={{ base: "2", sm: "2", md: "1", lg: "" }}
 				w={"full"}
 				minH={"6vw"}
 				bg={"accent.DEFAULT"}
@@ -241,33 +269,60 @@ const MyAccountCard = () => {
 					"2xl": ".9rem",
 				}}
 			>
-				<Icon
-					name="drop-down"
-					width="16px"
-					height="16px"
-					color="#11299E"
-					style={{
-						transform: "rotate(180deg)",
-						position: "absolute",
-						top: "-8.5%",
-						right: "2.7%",
-					}}
-				/>
+				<Flex
+					color="white"
+					justifyContent={"flex-end"}
+					w="100%"
+					display={{ base: "flex", sm: "none" }}
+				>
+					<Icon
+						name="close"
+						width="	16px"
+						onClick={() => {
+							setIsCardOpen(false);
+						}}
+					/>
+				</Flex>
+				<Box display={{ base: "none", sm: "initial" }}>
+					<Icon
+						name="drop-down"
+						width="16px"
+						height="16px"
+						color="#11299E"
+						style={{
+							transform: "rotate(180deg)",
+							position: "absolute",
+							top: "-8.5%",
+							right: "2.7%",
+						}}
+					/>
+				</Box>
+
 				<Box
 					w={"full"}
 					px={{
-						base: "0.4vw",
-						lg: "0.2vw",
+						base: "vw",
+						md: "0.2vw",
 					}}
+					py={{ base: "10px", sm: "0px" }}
 				>
 					<Flex
 						w={"full"}
 						align={"flex-end"}
-						// justifyContent={"space-betw"}
-						gap={{ base: "25px", xl: "20px", "2xl": "25px" }}
+						wrap="wrap"
+						justifyContent={{
+							base: "space-between",
+							sm: "initial",
+						}}
+						gap={{
+							sm: "25px",
+							xl: "20px",
+							"2xl": "25px",
+						}}
 					>
 						<Text
 							fontSize={{
+								base: "16px",
 								sm: "12px",
 								md: "12px",
 								lg: "14px",
@@ -280,6 +335,7 @@ const MyAccountCard = () => {
 						</Text>
 						<Text
 							fontSize={{
+								base: "12px",
 								sm: "10px",
 								md: "8px",
 								lg: "8px",
@@ -300,6 +356,7 @@ const MyAccountCard = () => {
 					<Flex w={"full"} py={".3vw"}>
 						<Text
 							fontSize={{
+								base: "12px",
 								sm: "10px",
 								md: "8px",
 								lg: "8px",
@@ -316,11 +373,14 @@ const MyAccountCard = () => {
 						w={"full"}
 						pb={".3vw"}
 						justifyContent={"space-between"}
+						mt={{ base: "8px", sm: "initial" }}
+						wrap="wrap"
 					>
 						<Flex justifyContent={"space-between"} mt={".4vw"}>
 							<Box display={"flex"} alignItems={"center"}>
 								<Text
 									fontSize={{
+										base: "12px",
 										sm: "10px",
 										md: "8px",
 										lg: "10px",
@@ -330,25 +390,28 @@ const MyAccountCard = () => {
 								>
 									+91 9871 67943
 								</Text>
-								<Box
-									p={"3.5px"}
-									bg={"primary.dark"}
-									borderRadius={"50%"}
-									ml={"0.6vw"}
-								>
-									<Icon
-										name="mode-edit"
-										width="8px"
-										color="white"
-									/>
+								<Box ml={{ base: "15px", sm: "initial" }}>
+									<IconButtons
+										iconSize={{ base: "sm", sm: "xs" }}
+										// onClick={() =>
+										// 	Router.push("/admin/my-network/profile/up-per-info")
+										// }
+
+										iconName="mode-edit"
+										iconStyle={{
+											width: "10px",
+											height: "10px",
+										}}
+									></IconButtons>
 								</Box>
 							</Box>
 						</Flex>
+
 						<Flex>
 							<Buttons
 								fontSize={"0.6vw"}
 								w={{
-									base: "108px",
+									base: "140px",
 									sm: "90px",
 									md: "90px",
 									lg: "100px",
@@ -356,7 +419,7 @@ const MyAccountCard = () => {
 									"2xl": "108px",
 								}}
 								h={{
-									base: "36px",
+									base: "48px",
 									sm: "30px",
 									md: "30px",
 									lg: "30px",
@@ -365,7 +428,7 @@ const MyAccountCard = () => {
 								}}
 								fontWeight={"medium"}
 								borderRadius={{
-									base: "4px",
+									base: "10px",
 									lg: "6px",
 									"2xl": "5px",
 								}}
@@ -373,7 +436,7 @@ const MyAccountCard = () => {
 								<Text
 									mr={".2vw"}
 									fontSize={{
-										base: "8px",
+										base: "14px",
 										sm: "8px",
 										md: "8px",
 										lg: "10px",
@@ -383,15 +446,16 @@ const MyAccountCard = () => {
 								>
 									View Profile &gt;
 								</Text>
-								{/* <Icon name="chevron-right" height="22%" /> */}
 							</Buttons>
 						</Flex>
 					</Flex>
 				</Box>
 			</VStack>
+
 			<VStack
 				w={"full"}
 				minH={"13vw"}
+				h={{ base: "100%", sm: "initial" }}
 				bg={"white"}
 				py={"3"}
 				borderBottomRadius={{
@@ -399,16 +463,18 @@ const MyAccountCard = () => {
 					lg: "0.4rem",
 					"2xl": ".9rem",
 				}}
+				gap={{ base: "15px", sm: "initial" }}
 			>
 				<HStack
-					h={"1.65vw"}
+					h={{ base: "1.65", sm: "1.65vw" }}
 					w={"90%"}
 					justifyContent={"space-between"}
 					cursor={"pointer"}
+					mt={{ base: "15px", sm: "initial" }}
 				>
 					<Text
 						fontSize={{
-							base: "10px",
+							base: "14px",
 							sm: "10px",
 							md: "10px",
 							lg: "12px",
@@ -418,9 +484,8 @@ const MyAccountCard = () => {
 					>
 						Business Contact
 					</Text>
-					{/* <Box  width={{base: "8px", sm: "8px", md: "8px", lg: "8px", xl: "8px", "2xl": "8px"}} height={{base: "8px", sm: "8px", md: "8px", lg: "8px", xl: "8px", "2xl": "8px"}} > */}
+
 					<Icon name="chevron-right" width="8px" height="8px" />
-					{/* </Box> */}
 				</HStack>
 				<Divider w={"90%"} />
 				<HStack
@@ -431,7 +496,7 @@ const MyAccountCard = () => {
 				>
 					<Text
 						fontSize={{
-							base: "10px",
+							base: "14px",
 							sm: "10px",
 							md: "10px",
 							lg: "12px",
@@ -452,7 +517,7 @@ const MyAccountCard = () => {
 				>
 					<Text
 						fontSize={{
-							base: "10px",
+							base: "14px",
 							sm: "10px",
 							md: "10px",
 							lg: "12px",
@@ -473,7 +538,7 @@ const MyAccountCard = () => {
 				>
 					<Text
 						fontSize={{
-							base: "10px",
+							base: "14px",
 							sm: "10px",
 							md: "10px",
 							lg: "12px",
@@ -501,7 +566,7 @@ const MyAccountCard = () => {
 					/>
 					<Text
 						fontSize={{
-							base: "10px",
+							base: "14px",
 							sm: "10px",
 							md: "10px",
 							lg: "12px",

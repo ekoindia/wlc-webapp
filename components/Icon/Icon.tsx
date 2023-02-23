@@ -39,7 +39,8 @@ export type IconNameType =
 	| "rupee_bg"
 	| "refresh"
 	| "arrow-up"
-	| "arrow-down";
+	| "arrow-down"
+	| "close";
 
 export type IconProps = {
 	name: IconNameType;
