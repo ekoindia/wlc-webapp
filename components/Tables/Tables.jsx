@@ -150,7 +150,7 @@ const Tables = (props) => {
 						key={index}
 						w="100%"
 						h="auto"
-						p="15px"
+						p="16px"
 						onClick={redirect}
 					>
 						<NetworkCard item={item} />

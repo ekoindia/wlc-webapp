@@ -38,7 +38,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 		<>
 			<Box
 				px={{ base: "16px", md: "initial" }}
-				marginTop={{ base: "26px", md: "24px" }}
+				marginTop={{ base: "26px", md: "0px" }}
 			>
 				<Box
 					display={{ base: "none", md: "flex" }}
@@ -52,11 +52,11 @@ const DetailedStatement = ({ className = "", ...props }) => {
 					margin={"auto"}
 				>
 					<Cards
-						marginTop={{
-							base: "1rem",
-							md: "1.5rem",
-							"2xl": "0.8rem",
-						}}
+						// marginTop={{
+						// 	base: "1rem",
+						// 	md: "1.5rem",
+						// 	"2xl": "0.8rem",
+						// }}
 						w={"100%"}
 						h={"100%"}
 					>
@@ -319,7 +319,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 					</Cards>
 				</Box>
 
-				<Box>
+				<Box paddingTop={{ md: "24px" }}>
 					<SearchBar
 						onChangeHandler={onChangeHandler}
 						value={searchValue}

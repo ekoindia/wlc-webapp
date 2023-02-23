@@ -151,7 +151,13 @@ const Breadcrumbs = (props) => {
 				)
 			) : (
 				<Box
-					mt={{ base: "0px", md: "25px", lg: "30px", "2xl": "38px" }}
+					mt={{
+						base: "0px",
+						md: "16px",
+						lg: "20px",
+						xl: "24px",
+						"2xl": "30px",
+					}}
 				>
 					{breadcrumbs && (
 						<Headings

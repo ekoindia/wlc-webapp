@@ -28,7 +28,7 @@ function Filter() {
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
 				<Button
-					mt={{ base: "1vw", "2xl": ".5vw" }}
+					// mt={{ base: "1vw", "2xl": ".5vw" }}
 					display={"flex"}
 					justifyContent={"space-evenly"}
 					alignItems={"center"}

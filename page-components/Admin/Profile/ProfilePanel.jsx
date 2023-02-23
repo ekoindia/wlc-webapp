@@ -79,7 +79,7 @@ const ProfilePanel = (props) => {
 				lg: "repeat(auto-fit,minmax(490px,1fr))",
 			}}
 			justifyContent="center"
-			py={{ base: "20px" }}
+			py={{ base: "20px", md: "0px" }}
 			gap={(4, 6)}
 		>
 			<GridItem>
