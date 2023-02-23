@@ -33,7 +33,7 @@ const PersonalPane = () => {
 	];
 
 	return (
-		<Cards h="365px">
+		<Cards h="auto">
 			<Box
 				display="flex"
 				alignItems={"center"}

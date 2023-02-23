@@ -10,6 +10,7 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Buttons } from "components";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { MoveAgents, TransferCSP } from ".";
 
@@ -23,6 +24,7 @@ import { MoveAgents, TransferCSP } from ".";
 
 const ChangeRole = ({ className = "", ...props }) => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
+	const tab = +useRouter().query.tab;
 	return !isShowSelectAgent ? (
 		<Flex
 			my={{ base: "0", md: "7.5" }}
@@ -76,7 +78,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 
 			<Tabs
 				position="relative"
-				defaultIndex={0}
+				defaultIndex={tab || 0}
 				variant="colorful"
 				//Responsive style
 				bg={{ base: "#FFFFFF", md: "transparent" }}

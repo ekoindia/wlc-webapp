@@ -3,6 +3,7 @@ import {
 	Box,
 	Divider,
 	Flex,
+	IconButton,
 	Table,
 	TableContainer,
 	Tbody,
@@ -424,6 +425,9 @@ export const getModalStyle = (data) => {
 	return (
 		<>
 			<Menus
+				type="everted"
+				as={IconButton}
+				iconName="more-vert"
 				minH={{ base: "25px", xl: "25px", "2xl": "30px" }}
 				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
 				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
