@@ -1,5 +1,4 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import React from "react";
 import { Dmt } from "./Dmt";
 /**
  * A <PricingCommission> component
@@ -10,7 +9,7 @@ import { Dmt } from "./Dmt";
  */
 const PricingCommissions = ({ className = "", ...props }) => {
 	return (
-		<Box px={{ base: "16px", md: "initial" }} pl="20px">
+		<Box px={{ base: "16px", md: "initial" }}>
 			<Box
 				w={"100%"}
 				minH={"80%"}

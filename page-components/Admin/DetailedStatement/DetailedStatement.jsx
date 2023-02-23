@@ -38,7 +38,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 		<>
 			<Box
 				px={{ base: "16px", md: "initial" }}
-				// marginTop={{ base: "26px", md: "24px" }}
+				marginTop={{ base: "26px", md: "0px" }}
 			>
 				<Box
 					display={{ base: "none", md: "flex" }}
@@ -319,7 +319,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 					</Cards>
 				</Box>
 
-				<Box>
+				<Box paddingTop={{ md: "24px" }}>
 					<SearchBar
 						onChangeHandler={onChangeHandler}
 						value={searchValue}
