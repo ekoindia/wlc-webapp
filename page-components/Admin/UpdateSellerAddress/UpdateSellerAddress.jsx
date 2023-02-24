@@ -38,7 +38,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 
 	return (
 		<Flex
-			w="100%"
+			w="full"
+			h="auto"
 			p={{
 				base: "0px",
 
@@ -108,16 +109,17 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 			</Flex>
 
 			<Flex
+				// bg="red"
 				direction={"column"}
 				bg={"white"}
 				w={{
-					base: "90%",
+					base: "93%",
 
 					md: "100%",
 				}}
 				mt={{ base: "18px", md: "0px" }}
 				mb={"20px"}
-				mx={{ base: "auto", md: "0px" }}
+				mx={{ base: "16px", md: "0px" }}
 				borderRadius={{ base: "10px", md: "0", "2xl": "none" }}
 				border={{
 					base: "1px solid #D2D2D2",
@@ -127,7 +129,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 					base: "0px 5px 15px #0000000D",
 					md: "none",
 				}}
-				p={{ base: "0px", md: "0px", lg: "0px" }}
 			>
 				<Flex
 					direction={"column"}
@@ -196,12 +197,12 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										mb: { base: 2.5, "2xl": "0.8rem" },
 									}}
 									inputContStyle={{
-										h: { base: "3rem", "2xl": "3rem" },
+										h: { base: "3rem" },
 										w: {
 											base: "100%",
 
 											//  md: "95%",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -255,7 +256,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "95%",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -312,7 +313,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -364,7 +365,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -427,7 +428,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 											// md: "38vw",
 											xl: "25vw",
-											lg: "37vw",
+											lg: "34vw",
+											xl: "28vw",
 											"2xl": "25vw",
 										}}
 										h={"3rem"}
@@ -477,7 +479,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -511,8 +513,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									w={{
 										base: "100%",
 										md: "43vw",
-										xl: "25vw",
-										lg: "37vw",
+										lg: "34vw",
+										xl: "28vw",
 										"2xl": "25vw",
 									}}
 									h={"3rem"}
@@ -609,7 +611,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -663,7 +665,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -719,7 +721,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -771,7 +773,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -836,7 +838,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										}}
@@ -885,7 +887,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -922,7 +924,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										base: "100%",
 
 										md: "43vw",
-										lg: "37vw",
+										lg: "34vw",
 										xl: "28vw",
 										"2xl": "25vw",
 									}}
@@ -972,8 +974,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									w={{
 										base: "100%",
 										md: "43vw",
-										xl: "25vw",
-										lg: "37vw",
+
+										lg: "34vw",
+										xl: "28vw",
 										"2xl": "25vw",
 									}}
 									h={"3rem"}
@@ -1039,7 +1042,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -1093,7 +1096,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -1149,7 +1152,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -1198,7 +1201,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										},
@@ -1263,7 +1266,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											base: "100%",
 
 											// md: "38vw",
-											lg: "37vw",
+											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
 										}}
@@ -1349,7 +1352,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										base: "100%",
 
 										md: "43vw",
-										lg: "37vw",
+										lg: "34vw",
 										xl: "28vw",
 										"2xl": "25vw",
 									}}
