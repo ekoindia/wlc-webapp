@@ -49,11 +49,11 @@ const changeRoleButton = () => {
 				iconName="arrow-down"
 				iconStyles={{ height: "10px", width: "14px" }}
 				buttonStyle={{
-					height: "64px",
-					width: "250px",
+					height: { md: "48px", lg: "64px" },
+					width: { md: "180px", lg: "250px" },
 					border: "1px solid #FE9F00",
 					boxShadow: "0px 3px 10px #FE9F0040",
-					fontSize: "20px",
+					fontSize: { md: "16px", lg: "20px" },
 					textAlign: "left",
 					borderRadius: "10px",
 				}}
