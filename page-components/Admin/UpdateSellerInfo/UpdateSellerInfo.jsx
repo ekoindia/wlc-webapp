@@ -28,145 +28,97 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 
 	return (
 		<Flex
+			pb={{ base: "0", md: "40px" }}
+			bg={{ base: "none", md: "white" }}
+			direction="column"
+			rowGap={{ base: "10px", md: "0" }}
+			border={{ base: "", md: "card" }}
+			borderRadius={{ base: "0", md: "10" }}
+			boxShadow={{ base: "none", md: "0px 5px 15px #0000000D;" }}
+			overflow={"hidden"}
 			w="full"
 			h="auto"
-			bg={{
-				base: "none",
-				md: "white",
-			}}
-			border={{
-				base: "",
-
-				md: "1px solid #D2D2D2",
-			}}
-			borderRadius={{
-				base: "",
-				md: "10px",
-			}}
-			boxShadow={{
-				base: "none",
-				md: "0px 5px 15px #0000000D",
-			}}
-			direction="column"
-			p={{
-				base: "0px",
-				md: "20px",
-				"2xl": "14px 30px 30px 30px",
-			}}
-			// mt={{ base: "0px", md: "30px" }}
 		>
-			{" "}
-			<Box
-				bg={{ base: "#FFFFFF", "2xl": "white" }}
-				w={{ base: "100%" }}
+			<Flex
+				w="100%"
+				pt="3.5"
+				px={{ base: "4", md: "7.5" }}
+				pb={{ base: "3.5", md: "5" }}
+				bg="white"
+				direction="column"
+				rowGap={{ base: "10px", md: "0" }}
 				borderBottom={{ base: "1px solid #D2D2D2", md: "none" }}
 			>
-				<Flex direction={"column"} p={{ base: "12px", md: "0px" }}>
-					<Text
-						as="h1"
-						color="accent.DEFAULT"
-						fontWeight="bold"
-						fontSize={{ base: "lg", md: "2xl" }}
-					>
-						Angel Tech Private Limited
+				{" "}
+				<Text
+					as="h1"
+					color="accent.DEFAULT"
+					fontWeight="bold"
+					fontSize={{ base: "lg", md: "2xl" }}
+				>
+					Angel Tech Private Limited
+				</Text>
+				<Text fontSize={{ base: "xs", md: "md" }}>
+					Edit the fields below and click Preview.
+					<Text as="span" display={{ base: "block", md: "inline" }}>
+						Click Cancel to return to Client HomePage without
+						submitting information.
 					</Text>
-					<Text fontSize={{ base: "xs", md: "md" }}>
-						Edit the fields below and click Preview.
-						<Text
-							as="span"
-							display={{ base: "block", md: "inline" }}
-						>
-							{" "}
-							Click Cancel to return to Client HomePage without
-							submitting information.
-						</Text>
-					</Text>
-				</Flex>
-			</Box>
-			<Flex display={{ base: "none", md: "flex" }}>
-				<Divider color="hint" mt="15px" />
+				</Text>
 			</Flex>
+			<Divider
+				w={{ base: "0", md: "calc(100% - 60px)" }}
+				mx="auto"
+				color="divider"
+			/>
 			<Flex
 				bg="white"
 				h="auto"
 				direction={"column"}
-				p={{
-					base: "20px",
-
-					md: "0px",
-				}}
+				px={{ base: "16px", md: "7.5" }}
 				mx={{ base: "16px", md: "0px" }}
 				mt={{ base: "18px", lg: "0" }}
 				mb={"20px"}
-				borderRadius={{
-					base: "10px",
-
-					md: "0px",
-				}}
-				boxShadow={{
-					base: "0px 5px 15px #0000000D",
-					md: "none",
-				}}
-				border={{
-					base: " 1px solid #D2D2D2",
-					md: "none",
-				}}
+				borderRadius={{ base: "10px", md: "0px" }}
+				boxShadow={{ base: "0px 5px 15px #0000000D", md: "none" }}
+				border={{ base: "1px solid #D2D2D2", md: "none" }}
 				alignContent="center"
 			>
-				<Box mt={{ base: "0", sm: "", lg: "2rem", "2xl": "3.1rem" }}>
+				<Box mt={{ base: "16px", lg: "2rem", "2xl": "3.1rem" }}>
 					<Text
-						fontWeight="bold"
+						fontWeight={"semibold"}
 						fontSize={{ base: "15px", md: "20px" }}
 					>
 						Membership related information
 					</Text>
 				</Box>
-				<Flex
-					mt={{ base: "2.5rem", "2xl": "20px" }}
-					wrap="wrap"
-					direction="column"
-				>
-					<Box>
+				<Flex direction="column">
+					<Flex mt={{ base: "30px", "2xl": "20px" }} wrap="wrap">
 						<Text
-							fontSize={{ base: "0.9rem", md: "1rem" }}
+							color="#0C243B"
+							fontSize={{ base: "sm", md: "md" }}
 							fontWeight="semibold"
-							mb={{ base: "0.3rem", md: "", md: "0.6rem" }}
+							mb="2.5"
 						>
 							Network Manager Assigned
 						</Text>
-					</Box>
+					</Flex>
 					<Flex
-						direction={{
-							base: "column",
-							md: "row",
-						}}
-						gap={{
-							base: "",
-							md: "3.7rem",
-						}}
-						alignItems={{
-							base: "none",
-							md: "center",
-						}}
+						direction={{ base: "column", md: "row" }}
+						gap={{ base: "40px", md: "60px" }}
+						alignItems={{ base: "none", md: "center" }}
 					>
 						<Flex
 							w={{
 								base: "100%",
-								md: "60%",
-								lg: "46%",
-								xl: "34.5%",
-								"2xl": "32%",
+								md: "400px",
+								lg: "400px",
+								xl: "500px",
 							}}
 						>
 							<Select
 								placeholder="--Select--"
-								w={{
-									base: "100%",
-									md: "55vw",
-									xl: "25vw",
-									lg: "35vw",
-									"2xl": "25vw",
-								}}
+								w="100%"
 								h={"3rem"}
 								borderRadius="10px"
 								icon={<Icon name="caret-down" />}
@@ -175,15 +127,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								<option value="option2">Option 2</option>
 							</Select>
 						</Flex>
-
-						<Flex
-							display={"flex"}
-							mt={{
-								base: "2.5rem",
-								md: "0rem",
-							}}
-							alignItems={"center"}
-						>
+						<Flex>
 							<Text fontSize="sm">Created By</Text> :{"   "}
 							&nbsp;
 							<Text fontSize={"md"} fontWeight={"semibold"}>
@@ -192,68 +136,64 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						</Flex>
 					</Flex>
 				</Flex>
-
-				<Flex
-					mt={{ base: "2.5rem", "2xl": "2.8rem" }}
-					alignItems="center"
-					wrap="wrap"
-				>
-					<Box
-						w={{
-							base: "100%",
-							md: "60%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "32%",
-						}}
-					>
+				<Flex direction="column" mt="40px" wrap="wrap">
+					<Flex>
 						<Text
-							fontSize={"md"}
+							color="#0C243B"
+							fontSize={{ base: "sm", md: "md" }}
 							fontWeight="semibold"
-							mb={{ base: "0.3rem", md: "", md: "0.6rem" }}
+							mb="2.5"
 						>
 							Parent
 						</Text>
-						<Select
-							placeholder="Vijay Kumar -- 9711217911 --21809910"
+					</Flex>
+					<Flex>
+						<Flex
 							w={{
 								base: "100%",
-								md: "55vw",
-								lg: "35vw",
-								xl: "25vw",
-								"2xl": "25vw",
+								md: "400px",
+								lg: "400px",
+								xl: "500px",
 							}}
-							h={"3rem"}
-							borderRadius="10px"
-							icon={<Icon name="caret-down" />}
 						>
-							<option value="option1">Option 1</option>
-							<option value="option2">Option 2</option>
-						</Select>
-					</Box>
+							<Select
+								placeholder="--Select--"
+								w="100%"
+								h={"3rem"}
+								borderRadius="10px"
+								icon={<Icon name="caret-down" />}
+							>
+								<option value="option1">Option 1</option>
+								<option value="option2">Option 2</option>
+							</Select>
+						</Flex>
+					</Flex>
 				</Flex>
 				<Flex
 					mt={{ base: "3rem", "2xl": "2.8rem" }}
 					gap={{ base: "0", md: "5rem", lg: "1.2rem" }}
 					justifyContent={{ base: "space-between", md: "flex-start" }}
 				>
-					<Text fontSize={"md"} fontWeight="semibold">
+					<Text
+						color="#0C243B"
+						fontSize={{ base: "sm", md: "md" }}
+						fontWeight="semibold"
+					>
 						Is he trained?
 					</Text>
 					<Box>
 						<Switch />
 					</Box>
 				</Flex>
-				<Flex mt={"2.5rem"}>
-					{" "}
+				<Flex mt={{ base: "3rem", "2xl": "2.8rem" }}>
 					<Box
-						w={{
-							base: "100%",
-
-							xl: "25vw",
-							lg: "35vw",
-							"2xl": "25vw",
-						}}
+						// w={{
+						// 	base: "100%",
+						// 	xl: "25vw",
+						// 	lg: "35vw",
+						// 	"2xl": "27vw",
+						// }}
+						w="100%"
 					>
 						<Input
 							label="Trained on"
@@ -277,10 +217,9 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								h: { base: "3rem", "2xl": "3rem" },
 								w: {
 									base: "100%",
-									md: "55vw",
-									lg: "35vw",
-									xl: "25vw",
-									"2xl": "25vw",
+									md: "400px",
+									lg: "400px",
+									xl: "500px",
 								},
 								pos: "relative",
 							}}
@@ -293,7 +232,6 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						/>
 					</Box>
 				</Flex>
-
 				<Flex
 					alignItems="center"
 					gap={{
@@ -339,5 +277,4 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 		</Flex>
 	);
 };
-
 export default UpdateSellerInfo;
