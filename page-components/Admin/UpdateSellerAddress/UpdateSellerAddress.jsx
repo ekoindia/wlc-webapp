@@ -40,32 +40,12 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 		<Flex
 			w="full"
 			h="auto"
-			p={{
-				base: "0px",
-
-				md: "20px",
-
-				"2xl": "14px 30px 30px 30px",
-			}}
+			p={{ base: "0px", md: "20px", "2xl": "14px 30px 30px 30px" }}
 			direction={"column"}
-			border={{
-				base: "none",
-				md: "1px solid #D2D2D2",
-			}}
-			boxShadow={{
-				base: "none",
-				lg: "0px 5px 15px #0000000D",
-			}}
-			borderRadius={{
-				base: "none",
-				md: "10px",
-			}}
-			bg={{
-				base: "none",
-
-				md: "white",
-			}}
-			// m={{ base: "0px", md: "30px 0px 20px 0px" }}
+			border={{ base: "", md: "card" }}
+			borderRadius={{ base: "0", md: "10" }}
+			boxShadow={{ base: "none", md: "0px 5px 15px #0000000D;" }}
+			bg={{ base: "none", md: "white" }}
 		>
 			<Flex direction={"column"}>
 				<Box
@@ -139,9 +119,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						justifyContent={"space-between"}
 						w={{
 							base: "100%",
-
-							lg: "%",
-							xl: "71%",
+							xl: "72%",
 							"2xl": "63%",
 						}}
 					>
@@ -200,8 +178,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h: { base: "3rem" },
 										w: {
 											base: "100%",
-
-											//  md: "95%",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -221,9 +197,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
-									lg: "0",
-									xl: "0",
-									"2xl": "0",
 								}}
 								w={{
 									base: "100%",
@@ -254,8 +227,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-
-											// md: "95%",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -311,8 +282,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-
-											// md: "38vw",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -339,9 +308,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
-									lg: "0",
-									xl: "0",
-									"2xl": "0",
 								}}
 							>
 								<Input
@@ -446,8 +412,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
-									xl: "0",
-									"2xl": "0",
 								}}
 								w={{
 									base: "100%",
@@ -477,8 +441,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-
-											// md: "38vw",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -630,9 +592,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
-									lg: "0",
-									xl: "0",
-									"2xl": "0",
 								}}
 								w={{
 									base: "100%",
@@ -663,8 +622,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-
-											// md: "38vw",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -747,9 +704,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
-									lg: "0",
-									xl: "0",
-									"2xl": "0",
 								}}
 							>
 								<Input
@@ -854,8 +808,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
-									xl: "0",
-									"2xl": "0",
 								}}
 								w={{
 									base: "100%",
@@ -974,7 +926,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									w={{
 										base: "100%",
 										md: "43vw",
-
 										lg: "34vw",
 										xl: "28vw",
 										"2xl": "25vw",
@@ -1040,8 +991,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-
-											// md: "38vw",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1061,9 +1010,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
-									lg: "0",
-									xl: "0",
-									"2xl": "0",
 								}}
 								w={{
 									base: "100%",
@@ -1094,8 +1040,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-
-											// md: "38vw",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1150,8 +1094,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-
-											// md: "38vw",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1199,8 +1141,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h: { base: "3rem", "2xl": "3rem" },
 										w: {
 											base: "100%",
-
-											// md: "38vw",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1264,8 +1204,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										h={{ base: "3rem", "2xl": "3rem" }}
 										w={{
 											base: "100%",
-
-											// md: "38vw",
 											lg: "34vw",
 											xl: "28vw",
 											"2xl": "25vw",
@@ -1282,8 +1220,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								mt={{
 									base: "2.8rem",
 									md: "0",
-									xl: "0",
-									"2xl": "0",
 								}}
 								w={{
 									base: "100%",
@@ -1384,13 +1320,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 					alignItems="center"
 					gap={{ base: "2.1rem", md: "4.8rem", "2xl": "4.8rem" }}
 					mt="4.2rem"
-					// w={{
-					// 	base: "100%",
-					// 	md: "48%",
-					// 	lg: "46%",
-					// 	xl: "14.5%",
-					// 	"2xl": "",
-					// }}
 					justifyContent={"flex-start"}
 					p={{ base: "20px", md: "0px" }}
 					direction={{ base: "column", sm: "row" }}
@@ -1424,5 +1353,4 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 		</Flex>
 	);
 };
-
 export default UpdateSellerAddress;
