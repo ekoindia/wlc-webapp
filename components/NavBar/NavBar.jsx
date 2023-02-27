@@ -10,14 +10,12 @@ import {
 	MenuButton,
 	MenuList,
 	Text,
-	useMediaQuery,
 	VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Buttons, Headings, Icon, IconButtons } from "..";
 
 const NavBar = (props) => {
-	const [isSmallerThan440] = useMediaQuery("(max-width: 440px)");
 	const [isCardOpen, setIsCardOpen] = useState(false);
 	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj } = props;
 
