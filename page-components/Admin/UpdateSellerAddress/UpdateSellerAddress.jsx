@@ -896,7 +896,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							New Address
 						</Text>
 					</Box>
-					<Box mt={{ base: 2.5, lg: "0", "2xl": "0px" }}>
+					<Box mt={{ base: 2.5, lg: "15px" }}>
 						<Box mb={{ base: 2.5, "2xl": "" }}>
 							<Text
 								as="b"
