@@ -66,7 +66,7 @@ const Breadcrumbs = (props) => {
 
 	return (
 		<>
-			<Box display={{ base: "none", md: "flex" }}>
+			<Box display={{ base: "none", lg: "flex" }}>
 				<Breadcrumb
 					separator={
 						<Icon
