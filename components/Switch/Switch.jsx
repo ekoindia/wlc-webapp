@@ -9,10 +9,13 @@ import { useState } from "react";
  * @example	`<Switch></Switch>`
  */
 const Switch = (props) => {
-	const { status = true } = props;
-	const [switched, setSwitched] = useState(status);
+	const { initialValue, setVisible } = props;
+
+	const [switched, setSwitched] = useState(initialValue);
+
 	const handleSwitch = () => {
 		setSwitched(!switched);
+		setVisible(!switched);
 	};
 	return (
 		<Flex
