@@ -18,10 +18,9 @@ const Headings = (props) => {
 	};
 	return (
 		<Flex
-			// marginTop={{ base: "0px", md: "1vw" }}
 			marginBottom={{
-				base: "10px",
-				sm: "8px",
+				// base: "10px",
+				// sm: "8px",
 				md: "12px",
 				lg: "16px",
 				xl: "18px",
