@@ -32,7 +32,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 		setNumAddress(numAddress + 1);
 		console.log("numAddress", numAddress);
 	};
-
 	const item = {
 		AddressLine1: "B-373 Second Floor Sector - 20",
 		AddressLine2: "B-373 Second Floor Sector - 20",
@@ -270,7 +269,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Postal Code"
-									// placeholder={"201301"}
 									defaultvalue={item.PostalCode}
 									// invalid={true}
 									// errorMsg={"Please enter"}
@@ -295,12 +293,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										pos: "relative",
 										alignItems: "center",
 									}}
-									// isNumInput={true}
-									// inputProps={{ maxLength: 12 }}
-									// onFocus={() => {
-									// 	setInvalid(false);
-									// }}
-									// onKeyDown={onkeyHandler}
 								/>
 							</Box>
 							<Box
@@ -318,7 +310,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" City"
-									// placeholder={"Noida"}
 									defaultvalue={item.City}
 									// invalid={true}
 									// errorMsg={"Please enter"}
@@ -344,12 +335,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										pos: "relative",
 										alignItems: "center",
 									}}
-									// isNumInput={true}
-									// inputProps={{ maxLength: 12 }}
-									// onFocus={() => {
-									// 	setInvalid(false);
-									// }}
-									// onKeyDown={onkeyHandler}
 								/>
 							</Box>
 						</Flex>
@@ -398,7 +383,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										placeholder="Uttarpradesh"
 										w={{
 											base: "100%",
-											// md: "38vw",
 											xl: "25vw",
 											lg: "34vw",
 											xl: "28vw",
@@ -429,7 +413,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Country"
-									// placeholder={"India"}
 									required="true"
 									defaultvalue={item.Country}
 									// invalid={true}
@@ -454,12 +437,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										pos: "relative",
 										alignItems: "center",
 									}}
-									// isNumInput={true}
-									// inputProps={{ maxLength: 12 }}
-									// onFocus={() => {
-									// 	setInvalid(false);
-									// }}
-									// onKeyDown={onkeyHandler}
 								/>
 							</Box>
 						</Flex>
