@@ -77,6 +77,7 @@ const NavBar = (props) => {
 								<Headings
 									title={headingObj.title}
 									hasIcon={headingObj.hasIcon}
+									insideNav={true}
 								/>
 							</Flex>
 						)

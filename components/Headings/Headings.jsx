@@ -5,6 +5,7 @@ import { Icon } from "..";
 const Headings = (props) => {
 	const {
 		hasIcon = true,
+		insideNav = false,
 		title,
 		marginLeft = "1rem",
 		redirectPath,
@@ -19,8 +20,8 @@ const Headings = (props) => {
 	return (
 		<Flex
 			marginBottom={{
-				// base: "10px",
-				// sm: "8px",
+				base: !insideNav ? "10px" : "0px",
+				sm: !insideNav ? "8px" : "0px",
 				md: "12px",
 				lg: "16px",
 				xl: "18px",
