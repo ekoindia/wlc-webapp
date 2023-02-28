@@ -24,24 +24,41 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 	const test = true;
 	const [visible, setVisible] = useState(test);
 	const [formCount, setFormCount] = useState(1);
-	console.log("formCount", formCount);
+	const [formData, setFormData] = useState({
+		AddressLine1: "",
+		AddressLine2: "",
+		PostalCode: "",
+		City: "",
+		State: "",
+		Country: "",
+		OwnershipType: "",
+	});
 
 	function handleAddNewAddress() {
 		setFormCount((prevCount) => prevCount + 1);
 	}
-	const item = {
-		AddressLine1: "B-373 Second Floor Sector - 20",
-		AddressLine2: "B-373 Second Floor Sector - 20",
-		PostalCode: 201301,
-		City: "Noida",
-		State: "Uttarpradesh",
-		Country: "India",
-		OwnershipType: "123123",
-	};
+	// const item = {
+	// 	AddressLine1: "B-373 Second Floor Sector - 20",
+	// 	AddressLine2: "B-373 Second Floor Sector - 20",
+	// 	PostalCode: 201301,
+	// 	City: "Noida",
+	// 	State: "Uttarpradesh",
+	// 	Country: "India",
+	// 	OwnershipType: "123123",
+	// };
 	useEffect(() => {
+		setFormData({
+			address1: "B-373 Second Floor Sector",
+			address2: "B-373 Second Floor Sector - 20",
+			PostalCode: 201301,
+			City: "Noida",
+			State: "Uttarpradesh",
+			Country: "India",
+			OwnershipType: "123123",
+		});
+
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
-
 	function renderForms() {
 		const forms = [];
 
@@ -64,6 +81,11 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 		}
 
 		return forms;
+	}
+
+	function handleInputChange(event) {
+		const { name, value } = event.target;
+		setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
 	}
 
 	return (
@@ -173,7 +195,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Address Line 1"
-									defaultvalue={item.AddressLine1}
+									// defaultvalue={item.AddressLine1}
+									name="address1"
+									value={formData.address1}
+									onChange={handleInputChange}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -220,14 +245,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Address Line 2"
-									// placeholder={
-									// 	"B-373 Second Floor Sector - 20"
-									// }
-									defaultvalue={item.AddressLine2}
+									value={formData.address2}
+									onChange={handleInputChange}
 									// invalid={true}
 									// errorMsg={"Please enter"}
-									// mb={{ base: 10, "2xl": "4.35rem" }}
-									// onChange={onChangeHandler}
 									labelStyle={{
 										fontSize: { base: "md" },
 										color: "inputlabel",
@@ -276,11 +297,13 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label="Postal Code"
-									defaultvalue={item.PostalCode}
+									name="PostalCode"
+									value={formData.PostalCode}
+									onChange={handleInputChange}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
-									// onChange={onChangeHandler}
+
 									required="true"
 									labelStyle={{
 										fontSize: { base: "md" },
@@ -317,7 +340,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" City"
-									defaultvalue={item.City}
+									value={formData.City}
+									name="City"
+									onChange={handleInputChange}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -420,8 +445,10 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							>
 								<Input
 									label=" Country"
+									name="Country"
 									required="true"
-									defaultvalue={item.Country}
+									value={formData.Country}
+									onChange={handleInputChange}
 									// invalid={true}
 									// errorMsg={"Please enter"}
 									// mb={{ base: 10, "2xl": "4.35rem" }}
