@@ -401,7 +401,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 										md: "46%",
 										xl: "26.5%",
-										"2xl": "31%",
+										"2xl": "500px",
 									}}
 								>
 									<Input
@@ -434,7 +434,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 												base: "100%",
 
 												lg: "25.5rem",
-												"2xl": "20.6875rem",
+												"2xl": "100%",
 											},
 											pos: "relative",
 										}}
@@ -492,7 +492,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 										lg: "18.5rem",
 										xl: "26.5%",
-										"2xl": "63%",
+										"2xl": "500px",
 									}}
 								>
 									<Box mb={{ base: 2.5, "2xl": "0.7rem" }}>
@@ -514,7 +514,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											base: "100%",
 
 											lg: "25rem",
-											"2xl": "20.6875rem",
+											"2xl": "100%",
 										}}
 										mt={{ base: "0.7rem", "2xl": "0" }}
 										position="relative"
