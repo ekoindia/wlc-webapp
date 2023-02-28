@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
  */
 
 const UpdateSellerInfo = ({ className = "", ...props }) => {
+	const test = true;
+	const [visible, setVisible] = useState(test);
 	const [count, setCount] = useState(0);
 	const [isTablet] = useMediaQuery("(max-width: 820px)"); // TODO: Edit state as required
 
@@ -182,7 +184,7 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 						Is he trained?
 					</Text>
 					<Box>
-						<Switch />
+						<Switch setVisible={setVisible} initialValue={test} />
 					</Box>
 				</Flex>
 				<Flex mt={{ base: "3rem", "2xl": "2.8rem" }}>
