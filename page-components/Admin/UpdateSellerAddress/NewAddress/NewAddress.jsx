@@ -10,7 +10,7 @@ import { Box, Flex, Select, Text } from "@chakra-ui/react";
  * @example	`<NewAddress></NewAddress>`
  */
 const NewAddress = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
+	// TODO: Edit state as required
 
 	const item = {
 		AddressLine1: "B-373 Second Floor Sector - 20",
@@ -28,11 +28,6 @@ const NewAddress = ({ className = "", ...props }) => {
 
 	return (
 		<Box>
-			<Box>
-				<Text fontSize={"20px"} fontWeight="semibold" mt="4.688rem">
-					New Address
-				</Text>
-			</Box>
 			<Box mt={{ base: 2.5, lg: "15px" }}>
 				<Box mb={{ base: 2.5, "2xl": "" }}>
 					<Text
@@ -52,7 +47,6 @@ const NewAddress = ({ className = "", ...props }) => {
 					<Flex
 						w={{
 							base: "100%",
-							md: "100%",
 							lg: "48%",
 							xl: "34.5%",
 							"2xl": "32%",
@@ -92,7 +86,6 @@ const NewAddress = ({ className = "", ...props }) => {
 						xl: "1.5rem",
 						lg: "3.1rem",
 						"2xl": "1.2rem",
-						// base:"1rem"
 					}}
 					mt={{ base: "2.25rem", md: "1.2rem" }}
 					direction={"row"}
@@ -179,8 +172,8 @@ const NewAddress = ({ className = "", ...props }) => {
 					wrap={"wrap"}
 					gap={{
 						md: "1.5rem",
-						xl: "1.5rem",
 						lg: "3.1rem",
+						xl: "1.5rem",
 						"2xl": "1.2rem",
 					}}
 				>
@@ -195,7 +188,6 @@ const NewAddress = ({ className = "", ...props }) => {
 					>
 						<Input
 							label="Postal Code"
-							// placeholder={"201301"}
 							defaultvalue={item.PostalCode}
 							// invalid={true}
 							// errorMsg={"Please enter"}
@@ -266,8 +258,8 @@ const NewAddress = ({ className = "", ...props }) => {
 				<Flex
 					gap={{
 						md: "1.5rem",
-						xl: "1.5rem",
 						lg: "3.1rem",
+						xl: "1.5rem",
 						"2xl": "1.2rem",
 					}}
 					wrap={"wrap"}
@@ -383,7 +375,6 @@ const NewAddress = ({ className = "", ...props }) => {
 							h={{ base: "3rem", "2xl": "3rem" }}
 							w={{
 								base: "100%",
-
 								md: "43vw",
 								lg: "34vw",
 								xl: "28vw",
