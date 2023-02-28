@@ -22,16 +22,13 @@ import { PermanentAddress, NewAddress } from ".";
 
 const UpdateSellerAddress = ({ className = "", ...props }) => {
 	const test = true;
-	const [count, setCount] = useState(0);
-	const [isTablet] = useMediaQuery("(max-width: 820px)");
-	const [showComponent, setShowComponent] = useState(false);
 	const [visible, setVisible] = useState(test);
-	const [numAddress, setNumAddress] = useState(1);
+	const [formCount, setFormCount] = useState(1);
+	console.log("formCount", formCount);
 
-	const handleAddNewAddress = () => {
-		setNumAddress(numAddress + 1);
-		console.log("numAddress", numAddress);
-	};
+	function handleAddNewAddress() {
+		setFormCount((prevCount) => prevCount + 1);
+	}
 	const item = {
 		AddressLine1: "B-373 Second Floor Sector - 20",
 		AddressLine2: "B-373 Second Floor Sector - 20",
@@ -44,6 +41,30 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
+
+	function renderForms() {
+		const forms = [];
+
+		for (let i = 1; i <= formCount; i++) {
+			forms.push(
+				<div key={i}>
+					<Box>
+						<Text
+							fontSize={"20px"}
+							fontWeight="semibold"
+							mt="4.688rem"
+						>
+							New Address {i === 1 ? "" : i}
+						</Text>
+					</Box>
+
+					<NewAddress />
+				</div>
+			);
+		}
+
+		return forms;
+	}
 
 	return (
 		<Flex
@@ -105,14 +126,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				mb={"20px"}
 				mx={{ base: "16px", md: "0px" }}
 				borderRadius={{ base: "10px", md: "0", "2xl": "none" }}
-				border={{
-					base: "1px solid #D2D2D2",
-					md: "0",
-				}}
-				boxShadow={{
-					base: "0px 5px 15px #0000000D",
-					md: "none",
-				}}
+				border={{ base: "1px solid #D2D2D2", md: "0" }}
+				boxShadow={{ base: "0px 5px 15px #0000000D", md: "none" }}
 			>
 				{/* Current Address */}
 				<Flex
@@ -122,11 +137,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				>
 					<HStack
 						justifyContent={"space-between"}
-						w={{
-							base: "100%",
-							xl: "72%",
-							"2xl": "63%",
-						}}
+						w={{ base: "100%", xl: "72%", "2xl": "63%" }}
 					>
 						<Text
 							fontSize={{ base: "md", md: "xl" }}
@@ -137,10 +148,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						<Text color="error">* Mandatory</Text>
 					</HStack>
 					<Flex
-						rowGap={{
-							base: "2.8rem",
-							sm: "2.5rem",
-						}}
+						rowGap={{ base: "2.8rem", sm: "2.5rem" }}
 						direction="column"
 					>
 						<Flex
@@ -149,7 +157,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								md: "1.7rem",
 								lg: "3.1rem",
 								xl: "1.5rem",
-
 								"2xl": "1.2rem",
 							}}
 							mt={{ base: "2.25rem", md: "1.2rem" }}
@@ -472,7 +479,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							</Box>
 						</Box>
 					</Flex>
-
+					{/* switch */}
 					<Flex
 						mt={{ base: "2.8rem", md: "3rem", "2xl": "3rem" }}
 						gap={{ base: "1rem", md: "4rem", "2xl": "2rem" }}
@@ -503,9 +510,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 
 				{/* New Address */}
 				<Flex display={{ base: "none", md: "flex" }} direction="column">
-					{Array.from({ length: numAddress }).map((_, index) => (
-						<NewAddress key={index} count={index + 1} />
-					))}
+					{renderForms()}
 				</Flex>
 
 				<Flex
