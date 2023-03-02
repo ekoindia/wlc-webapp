@@ -51,10 +51,11 @@ const Inputs = ({
 }) => {
 	// TODO: Edit state as required
 	const [number, setNumber] = useState("");
-	const onChangeHandler = (val) => {
+	const onChangeHandler = (e) => {
 		// /^[6-9]\d{0,9}$/g.test(val)
 		// /^[6-9]\d{0,2}\s\d{0,3}\s\d{0,4}$/g
 		// [6-9]?(\d{0,2})?(\s\d{0,3})?(\s\d{0,4})
+		let val = e.target.value;
 		if (isNumInput) {
 			if (
 				val == "" ||
@@ -64,7 +65,7 @@ const Inputs = ({
 				onChange(formatted);
 				setNumber(formatted);
 			}
-		} else onChange(val);
+		} else onChange(e);
 	};
 
 	return (
@@ -88,7 +89,7 @@ const Inputs = ({
 					bg={errorMsg && invalid ? "#fff7fa" : ""}
 					w="100%"
 					inputMode={isNumInput ? "numeric" : "text"}
-					onChange={(e) => onChangeHandler(e.target.value)}
+					onChange={(e) => onChangeHandler(e)}
 					pl={isNumInput ? { base: 17, "2xl": "7.6rem" } : ""}
 					height="100%"
 					_hover={{

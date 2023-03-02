@@ -30,7 +30,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 		<>
 			<Box
 				px={{ base: "16px", md: "initial" }}
-				marginTop={{ base: "26px", md: "24px" }}
+				marginTop={{ base: "26px", md: "0px" }}
 			>
 				<Box
 					w={{ base: "100%", md: "100%" }}

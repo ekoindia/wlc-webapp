@@ -25,7 +25,14 @@ const SideBarMenu = ({ className = "", ...props }) => {
 
 	return (
 		<Box
-			minW={{ base: "full", sm: "55vw", md: "13.5vw" }}
+			minW={{
+				base: "full",
+				sm: "55vw",
+				md: "13.5vw",
+				lg: "200px",
+				xl: "200px",
+				"2xl": "250px",
+			}}
 			bgColor={"accent.DEFAULT"}
 			height={"100%"}
 		>
@@ -41,13 +48,14 @@ const SideBarMenu = ({ className = "", ...props }) => {
 							<Flex
 								key={index}
 								fontSize={{
-									base: "3.6vw",
-									sm: "2.5vw",
-									md: "2vw",
-									lg: "1vw",
-									"2xl": ".85vw",
+									base: "14px",
+									sm: "14px",
+									md: "12px",
+									lg: "12px",
+									xl: "12px",
+									"2xl": "16px",
 								}}
-								gap="10px"
+								gap="13px"
 								color="#FFFFFF"
 								align="center"
 								px={{ base: "3", md: "3", lg: "2", "2xl": "4" }}
@@ -74,20 +82,20 @@ const SideBarMenu = ({ className = "", ...props }) => {
 							>
 								<Center
 									w={{
-										base: "5.5vw",
-										sm: "3.4vw",
-										md: "2.5vw",
-										lg: "1.8vw",
-										xl: "1.5vw",
-										"2xl": "1vw",
+										base: "20px",
+										sm: "20px",
+										md: "18px",
+										lg: "18px",
+										xl: "18px",
+										"2xl": "27px",
 									}}
 									h={{
-										base: "5.5vw",
-										sm: "3.4vw",
-										md: "2.5vw",
-										lg: "1.8vw",
-										xl: "1.5vw",
-										"2xl": "1vw",
+										base: "20px",
+										sm: "20px",
+										md: "18px",
+										lg: "18px",
+										xl: "18px",
+										"2xl": "20px",
 									}}
 								>
 									<Icon name={menu.icon} width={"100%"} />

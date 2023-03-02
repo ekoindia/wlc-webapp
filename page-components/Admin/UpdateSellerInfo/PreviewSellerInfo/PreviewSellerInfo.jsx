@@ -39,7 +39,7 @@ const PreviewSellerInfo = ({ className = "", ...props }) => {
 
 				"2xl": "14px 30px 30px 30px",
 			}}
-			mt={{ base: "0px", lg: "30px" }}
+			// mt={{ base: "0px", lg: "30px" }}
 
 			//
 		>

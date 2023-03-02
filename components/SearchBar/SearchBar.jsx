@@ -16,12 +16,12 @@ export function SearchBar({ onChangeHandler, value }) {
 			h={{
 				base: "11vw",
 				sm: "7vw",
-				md: "5.2vw",
+				md: "4vw",
 				lg: "3vw",
 				xl: "2.6vw",
 				"2xl": "2.2vw",
 			}}
-			mt={{ base: "10px", md: "1vw", "2xl": ".5vw" }}
+			// mt={{ base: "10px", md: "1vw", "2xl": ".5vw" }}
 		>
 			<Input
 				value={value}

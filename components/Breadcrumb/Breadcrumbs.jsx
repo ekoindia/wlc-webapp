@@ -22,7 +22,8 @@ const Breadcrumbs = (props) => {
 	const router = useRouter();
 	const [breadcrumbs, setBreadcrumbs] = useState();
 
-	const { setNav, setHeadingObj, isNavVisible, isSmallerThan769 } = props;
+	const { setNav, setHeadingObj, isNavVisible, isSmallerThan769, propComp } =
+		props;
 
 	const capitalizeWordsBreadcrumbs = (str) => {
 		if (str in textChanger) {
@@ -65,7 +66,7 @@ const Breadcrumbs = (props) => {
 
 	return (
 		<>
-			<Box display={{ base: "none", md: "flex" }}>
+			<Box display={{ base: "none", lg: "flex" }}>
 				<Breadcrumb
 					separator={
 						<Icon
@@ -80,14 +81,9 @@ const Breadcrumbs = (props) => {
 						<BreadcrumbLink
 							href="/admin/my-network"
 							_hover={{ textDecoration: "none" }}
-							fontSize={{
-								md: "xs",
-								lg: "xs",
-								xl: "xs",
-								"2xl": "md",
-							}}
+							fontSize="xs"
 							color={"accent.DEFAULT"}
-							lineHeight={0}
+							lineHeight={1}
 						>
 							<Box
 								gap={"1"}
@@ -121,18 +117,13 @@ const Breadcrumbs = (props) => {
 								<BreadcrumbLink
 									href={breadcrumb.href}
 									_hover={{ textDecoration: "none" }}
-									fontSize={{
-										md: "xs",
-										lg: "xs",
-										xl: "xs",
-										"2xl": "md",
-									}}
+									fontSize="xs"
 									color={
 										breadcrumb.isCurrent
 											? "light"
 											: "accent.DEFAULT"
 									}
-									lineHeight={0}
+									lineHeight={1}
 								>
 									{breadcrumb.label}
 								</BreadcrumbLink>
@@ -159,7 +150,15 @@ const Breadcrumbs = (props) => {
 					</Box>
 				)
 			) : (
-				<Box>
+				<Box
+					mt={{
+						base: "0px",
+						md: "16px",
+						lg: "20px",
+						xl: "24px",
+						"2xl": "30px",
+					}}
+				>
 					{breadcrumbs && (
 						<Headings
 							hasIcon={breadcrumbs.length > 1 ? true : false}
@@ -168,6 +167,7 @@ const Breadcrumbs = (props) => {
 								breadcrumbs.length > 1 &&
 								breadcrumbs[breadcrumbs.length - 2].href
 							}
+							propComp={propComp}
 						/>
 					)}
 				</Box>

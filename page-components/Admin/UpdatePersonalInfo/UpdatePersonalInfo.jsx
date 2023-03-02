@@ -35,9 +35,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	const EnterRef = useRef();
 	const [values, setValues] = React.useState("1");
 	// const [isSmallerThan500] = useMediaQuery("(max-width: 1400px)");
-	const [isTablet] = useMediaQuery("(max-width: 770px)");
-
-	const [count, setCount] = useState(0); // TODO: Edit state as required
+	// TODO: Edit state as required
 	const handleDragOver = (event) => {
 		event.preventDefault();
 	};
@@ -82,7 +80,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 					md: "20px",
 					"2xl": "24px 30px 30px 30px",
 				}}
-				mt={{ base: "0px", md: "30px" }}
 			>
 				<Box
 					w={{
@@ -154,7 +151,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							mt={{ base: "0px", lg: "3.1rem" }}
 							w={{
 								base: "100%",
-								lg: "77.5vw",
+								lg: "71.5vw",
 								xl: "66vw",
 								"2xl": "54.5vw",
 							}}
@@ -265,6 +262,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								marginTop="-2rem"
 							>
 								<IconButtons
+									onClick={() => inputRef.current.click()}
 									iconName="camera"
 									iconStyle={{
 										h: "12.53px",
@@ -321,12 +319,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											pos: "relative",
 											alignItems: "center",
 										}}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 								<Box
@@ -362,12 +354,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											},
 											pos: "relative",
 										}}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 								<Box
@@ -404,12 +390,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											},
 											pos: "relative",
 										}}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 							</Flex>
@@ -421,7 +401,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 										md: "46%",
 										xl: "26.5%",
-										"2xl": "31%",
+										"2xl": "500px",
 									}}
 								>
 									<Input
@@ -454,17 +434,10 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 												base: "100%",
 
 												lg: "25.5rem",
-												"2xl": "20.6875rem",
+												"2xl": "100%",
 											},
 											pos: "relative",
 										}}
-
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 							</Flex>
@@ -519,7 +492,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 										lg: "18.5rem",
 										xl: "26.5%",
-										"2xl": "63%",
+										"2xl": "500px",
 									}}
 								>
 									<Box mb={{ base: 2.5, "2xl": "0.7rem" }}>
@@ -541,7 +514,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											base: "100%",
 
 											lg: "25rem",
-											"2xl": "20.6875rem",
+											"2xl": "100%",
 										}}
 										mt={{ base: "0.7rem", "2xl": "0" }}
 										position="relative"
@@ -612,12 +585,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											},
 											pos: "relative",
 										}}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 								<Box

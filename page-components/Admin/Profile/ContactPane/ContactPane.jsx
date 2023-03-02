@@ -43,14 +43,14 @@ const ContactPane = () => {
 	];
 
 	return (
-		<Cards h="365px">
+		<Cards h="auto">
 			<Box
 				display="flex"
 				alignItems="center"
 				justifyContent="space-between"
 			>
 				<Heading
-					fontSize={{ base: 16, md: 18 }}
+					fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 					fontWeight="semibold"
 					color={"light"}
 				>
@@ -71,22 +71,25 @@ const ContactPane = () => {
 				direction="column"
 				divider={<StackDivider />}
 				mt="5"
-				fontSize={14}
+				fontSize={{ base: 14, md: 12, lg: 14 }}
 			>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<Box display={"flex"} as="span">
 						<Text color="light">Mobile number:</Text>
 						<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
 					</Box>
-					<IconButtons
-						variant="success"
-						hasIcon={isSmallerThan769 ? true : false}
-						iconName="phone"
-						iconStyle={{
-							width: "12px",
-							height: "12px",
-						}}
-					/>
+					{isSmallerThan769 ? (
+						<IconButtons
+							variant="success"
+							iconName="phone"
+							iconStyle={{
+								width: "12px",
+								height: "12px",
+							}}
+						/>
+					) : (
+						""
+					)}
 				</Box>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<Box display={"flex"} as="span">

@@ -2,7 +2,7 @@ import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
 import { useState } from "react";
 import { Breadcrumbs, NavBar, SideBar } from "..";
 
-const Layout = ({ isLoggedIn, children, props }) => {
+const Layout = ({ isLoggedIn, children, propComp, ...props }) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const [isNav, setNav] = useState(true);
 	const [headingObj, setHeadingObj] = useState({
@@ -23,9 +23,12 @@ const Layout = ({ isLoggedIn, children, props }) => {
 			<Flex
 				width={"full"}
 				height={{
-					base: "calc(100vh - 12.2vw)",
-					sm: "calc(100vh - 10vw)",
-					md: "calc(100vh - 4.5vw)",
+					base: "calc(100vh - 56px)",
+					sm: "calc(100vh - 56px)",
+					md: "calc(100vh - 50px)",
+					lg: "calc(100vh - 60px)",
+					xl: "calc(100vh - 50px)",
+					"2xl": "calc(100vh - 90px)",
 				}}
 			>
 				<SideBar navOpen={isNavOpen} setNavOpen={setIsNavOpen} />
@@ -43,8 +46,14 @@ const Layout = ({ isLoggedIn, children, props }) => {
 						overflowY={"auto"}
 						// p={"1vw"}
 						// pr={"0.6vw"}
-						p={{ base: "0px", sm: "0px", md: "2vw", "2xl": ".8vw" }}
+						p={{
+							base: "0px",
+							sm: "0px",
+							md: "2vw",
+							"2xl": "1.5vw",
+						}}
 						pb={{ base: "20px", md: "0px" }}
+						// mt="20px"
 						css={{
 							"&::-webkit-scrollbar": {
 								width: "0.6vw",
@@ -63,6 +72,7 @@ const Layout = ({ isLoggedIn, children, props }) => {
 							setHeadingObj={setHeadingObj}
 							isNavVisible={isNav}
 							isSmallerThan769={isSmallerThan769}
+							propComp={propComp}
 						/>
 
 						{children}

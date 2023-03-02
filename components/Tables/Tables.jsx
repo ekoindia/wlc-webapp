@@ -3,6 +3,7 @@ import {
 	Box,
 	Divider,
 	Flex,
+	IconButton,
 	Table,
 	TableContainer,
 	Tbody,
@@ -31,7 +32,7 @@ const Tables = (props) => {
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
-	const [isSmallerThan769] = useMediaQuery("(max-width: 769px)");
+	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	const [currentPage, setCurrentPage] = useState(1);
 
 	useEffect(() => {
@@ -149,7 +150,7 @@ const Tables = (props) => {
 						key={index}
 						w="100%"
 						h="auto"
-						p="15px"
+						p="16px"
 						onClick={redirect}
 					>
 						<NetworkCard item={item} />
@@ -227,7 +228,7 @@ const Tables = (props) => {
 	return (
 		<>
 			<Box w="100%">
-				{!isSmallerThan769 ? (
+				{!isSmallerThan860 ? (
 					<>
 						<TableContainer
 							borderRadius="10px 10px 0 0"
@@ -424,6 +425,9 @@ export const getModalStyle = (data) => {
 	return (
 		<>
 			<Menus
+				type="everted"
+				as={IconButton}
+				iconName="more-vert"
 				minH={{ base: "25px", xl: "25px", "2xl": "30px" }}
 				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
 				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
