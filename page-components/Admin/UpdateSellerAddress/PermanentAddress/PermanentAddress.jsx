@@ -33,37 +33,33 @@ const PermanentAddress = (props) => {
 					Permanent Address
 				</Text>
 			</Box>
-			<Flex
-				rowGap={{
-					base: "2.8rem",
-					sm: "2.5rem",
-				}}
-				direction="column"
-			>
+			<Flex rowGap="2.5rem" direction="column">
 				<Flex
 					wrap={"wrap"}
 					gap={{
 						md: "1.7rem",
+						lg: "2rem",
 						xl: "1.5rem",
-						lg: "3.1rem",
 						"2xl": "1.2rem",
 					}}
-					mt={{ base: "2.25rem", md: "1.2rem" }}
+					mt="1.2rem"
 					direction={"row"}
 				>
 					<Box
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
 							label="Address Line 1"
-							defaultvalue={item.AddressLine1}
-							// value={value}
+							// defaultvalue={item.AddressLine1}
+							name="address1"
+							// value={formData.address1}
+							// onChange={handleInputChange}
 							// invalid={true}
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -77,38 +73,34 @@ const PermanentAddress = (props) => {
 								mb: { base: 2.5, "2xl": "0.8rem" },
 							}}
 							inputContStyle={{
-								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+								h: { base: "3rem" },
+								w: "100%",
 								pos: "relative",
 								alignItems: "center",
 							}}
+							// isNumInput={true}
+							// inputProps={{ maxLength: 12 }}
+							// onFocus={() => {
+							// 	setInvalid(false);
+							// }}
+							// onKeyDown={onkeyHandler}
 						/>
 					</Box>
 					<Box
-						mt={{
-							base: "2.8rem",
-							md: "0",
-						}}
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
 							label=" Address Line 2"
-							defaultvalue={item.AddressLine2}
+							// value={formData.address2}
+							// onChange={handleInputChange}
 							// invalid={true}
 							// errorMsg={"Please enter"}
-							// mb={{ base: 10, "2xl": "4.35rem" }}
-							// onChange={onChangeHandler}
 							labelStyle={{
 								fontSize: { base: "md" },
 								color: "inputlabel",
@@ -118,24 +110,25 @@ const PermanentAddress = (props) => {
 							}}
 							inputContStyle={{
 								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+								w: "100%",
 								pos: "relative",
 								alignItems: "center",
 							}}
+							// isNumInput={true}
+							// inputProps={{ maxLength: 12 }}
+							// onFocus={() => {
+							// 	setInvalid(false);
+							// }}
+							// onKeyDown={onkeyHandler}
 						/>
 					</Box>
 				</Flex>
 				<Flex
 					wrap={"wrap"}
 					gap={{
-						md: "1.5rem",
+						md: "1.7rem",
+						lg: "2rem",
 						xl: "1.5rem",
-						lg: "3.1rem",
 						"2xl": "1.2rem",
 					}}
 				>
@@ -143,18 +136,20 @@ const PermanentAddress = (props) => {
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
 							label="Postal Code"
-							defaultvalue={item.PostalCode}
+							name="PostalCode"
+							// value={formData.PostalCode}
+							// onChange={handleInputChange}
 							// invalid={true}
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
-							// onChange={onChangeHandler}
+
 							required="true"
 							labelStyle={{
 								fontSize: { base: "md" },
@@ -165,12 +160,7 @@ const PermanentAddress = (props) => {
 							}}
 							inputContStyle={{
 								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+								w: "100%",
 								pos: "relative",
 								alignItems: "center",
 							}}
@@ -180,18 +170,16 @@ const PermanentAddress = (props) => {
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
-						}}
-						mt={{
-							base: "2.8rem",
-							md: "0",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
 							label=" City"
-							defaultvalue={item.City}
+							// value={formData.City}
+							// name="City"
+							// onChange={handleInputChange}
 							// invalid={true}
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -205,12 +193,8 @@ const PermanentAddress = (props) => {
 							}}
 							inputContStyle={{
 								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+
+								w: "100%",
 								pos: "relative",
 								alignItems: "center",
 							}}
@@ -220,8 +204,8 @@ const PermanentAddress = (props) => {
 				<Flex
 					gap={{
 						md: "1.7rem",
+						lg: "2rem",
 						xl: "1.5rem",
-						lg: "3.1rem",
 						"2xl": "1.2rem",
 					}}
 					wrap={"wrap"}
@@ -231,9 +215,9 @@ const PermanentAddress = (props) => {
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
@@ -259,20 +243,15 @@ const PermanentAddress = (props) => {
 
 						<Box>
 							<Select
-								placeholder="-- Select --"
+								placeholder="Uttarpradesh"
+								w="100%"
+								h={"3rem"}
+								borderRadius="10px"
 								icon={<Icon name="caret-down" />}
-								h={{ base: "3rem", "2xl": "3rem" }}
-								w={{
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								}}
-								borderRadius={{
-									base: 10,
-									"2xl": 10,
-								}}
-							></Select>
+							>
+								<option value="option1">Delhi</option>
+								<option value="option2">Punjab</option>
+							</Select>
 						</Box>
 					</Box>
 
@@ -284,15 +263,17 @@ const PermanentAddress = (props) => {
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
 							label=" Country"
-							required="true"
-							defaultvalue={item.Country}
+							name="Country"
+							// required="true"
+							// value={formData.Country}
+							// onChange={handleInputChange}
 							// invalid={true}
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -306,12 +287,8 @@ const PermanentAddress = (props) => {
 							}}
 							inputContStyle={{
 								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+								w: "100%",
+
 								pos: "relative",
 								alignItems: "center",
 							}}
@@ -319,32 +296,50 @@ const PermanentAddress = (props) => {
 					</Box>
 				</Flex>
 
-				<Box mt={{ base: 2.5, md: "0" }}>
-					<Box mb={{ base: 2.5, "2xl": "0.8rem" }}>
+				<Box
+					w={{
+						base: "100%",
+						md: "48%",
+						lg: "350px",
+						xl: "400px",
+						"2xl": "500px",
+					}}
+				>
+					<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
 						<Text
-							fontSize={{ base: "md" }}
-							color="inputlabel"
-							pl="0"
-							fontWeight="600"
+							as="b"
+							style={{
+								fontSize: {
+									base: "sm",
+									"2xl": "lg",
+								},
+								color: "inputlabe",
+								pl: "0",
+								fontWeight: "600",
+							}}
 						>
 							Ownership Type
 						</Text>
-					</Box>
-					<Box>
-						<Select
-							placeholder="-- Select --"
-							icon={<Icon name="caret-down" />}
-							h={{ base: "3rem", "2xl": "3rem" }}
-							w={{
-								base: "100%",
+					</Flex>
 
-								md: "43vw",
-								lg: "34vw",
-								xl: "28vw",
-								"2xl": "25vw",
-							}}
-							borderRadius={{ base: 10, "2xl": 10 }}
-						></Select>
+					<Box
+						w={{
+							base: "100%",
+							// md: "48%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
+						}}
+					>
+						<Select
+							placeholder="Permanent"
+							w="100%"
+							h={"3rem"}
+							borderRadius="10px"
+							icon={<Icon name="caret-down" />}
+						>
+							<option value="Permanent"></option>
+						</Select>
 					</Box>
 				</Box>
 			</Flex>
