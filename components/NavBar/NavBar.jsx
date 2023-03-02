@@ -97,12 +97,6 @@ const NavBar = (props) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
-	const { logout } = useUser();
-	const router = useRouter();
-	const logoutHandler = () => {
-		router.push("/");
-		logout();
-	};
 	return (
 		<>
 			<HStack
@@ -251,6 +245,13 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 };
 
 const MyAccountCard = ({ setIsCardOpen }) => {
+	const { logout } = useUser();
+	const router = useRouter();
+	const logoutHandler = () => {
+		router.push("/");
+		logout();
+	};
+
 	return (
 		<Box
 			border={"1px solid #D2D2D2"}
@@ -563,6 +564,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					justifyContent={"flex-start"}
 					cursor={"pointer"}
 					py={"0.6vw"}
+					onClick={logoutHandler}
 				>
 					<Icon
 						name="logout"

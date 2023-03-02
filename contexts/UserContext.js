@@ -48,10 +48,9 @@ const UserProvider = ({ children }) => {
 
 	useEffect(() => {
 		if (state.loggedIn) {
-			console.log("User Context : ", state.loggedIn);
+			console.log("User Context : ", state.loggedIn, router.asPath);
 
-			if (router.pathname.includes("/admin"))
-				router.push(router.pathname);
+			if (router.pathname.includes("/admin")) router.push(router.asPath);
 			else router.replace("/admin/my-network");
 		}
 	}, [state.loggedIn]);

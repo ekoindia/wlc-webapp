@@ -12,31 +12,75 @@ import { Button } from "@chakra-ui/react";
  * @example	`<RouteProtecter></RouteProtecter>`
  */
 
+const isBrowser = () => typeof window !== "undefined";
+
+const publicLinks = ["/"];
+const roleRoutes = {
+	admin: "/admin",
+	agent: "/agent",
+};
+
 const RouteProtecter = (props) => {
 	const { router, children } = props; //TODO : Getting Error in _app.tsx
 	const { userData } = useUser();
-	const { loggedIn } = userData;
+	const { loggedIn, role } = userData;
 	const [authorized, setAuthorized] = useState(false);
 
 	console.info("RouteProtecter: start");
 	console.log({ loggedIn: loggedIn, authorized: authorized });
 
+	// if (
+	// 	isBrowser() &&
+	// 	userData?.loggedIn !== true &&
+	// 	router?.pathname in PageRoles &&
+	// 	!PageRoles[router?.pathname].includes('admin')
+	// ) {
+	// 	router.push({ pathname: '/'});
+	// }
+
 	useEffect(() => {
-		console.log(router.pathname);
-		// on initial load - run auth check
-		authCheck(router.asPath);
-		// const preventAccess = () => setAuthorized(false);
+		console.log("router.pathname", router.pathname);
+		const path = router.pathname.split("?")[0];
+		// if (
+		// 	isBrowser() &&
+		// 	userData?.loggedIn !== true &&
+		// 	router?.pathname in PageRoles &&
+		// 	!PageRoles[router?.pathname].includes('admin')
+		// ) {
+		// 	router.push({ pathname: '/' });
+		// }
+		// else{
+		// 	if (userData?.loggedIn && router?.pathname in PageRoles){
+		// 		router.back()
+		// 	}
+		// 	if (!userData?.loggedIn){
+		// 		router.push('/')
+		// 	}
+		// 	setAuthorized(true)
 
-		// router.events.on("routeChangeStart", preventAccess);
-		// router.events.on("routeChangeComplete", authCheck);
+		// }
 
-		// return () => {
-		// 	router.events.off("routeChangeStart", preventAccess);
-		// 	router.events.off("routeChangeComplete", authCheck);
-		// };
+		// authCheck(router.asPath);
+		// setAuthorized(true);
 
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [router.pathname, userData]);
+		if (loggedIn) {
+			if (
+				publicLinks.includes(path) ||
+				path[0].includes(roleRoutes[role])
+			) {
+				router.back();
+			}
+			if (!authorized) {
+				setAuthorized(true);
+			}
+			// if (path[0].includes(roleRoutes[role]){
+			// 	setAuthorized(true)
+			// }
+		} else if (!loggedIn) {
+			router.push("/");
+			setAuthorized(false);
+		}
+	}, [router.asPath, loggedIn]);
 
 	function authCheck(url) {
 		console.log(" protected route : authCheck - ", loggedIn, url);
@@ -47,47 +91,36 @@ const RouteProtecter = (props) => {
 			console.log("Route Protector : Not logged");
 			setAuthorized(false);
 			router.push("/");
-		} else {
+		} else if (loggedIn && router.pathname.includes("/admin")) {
 			console.log("Route Protector : logged");
+			// router.push(router.pathname);
 			setAuthorized(true);
-			// if (loggedIn && redirect !== url) {
-			// 	console.log("Redirect Executed");
-			// 	storeUrlRef.current = url;
-			// }
-			// else{
-			// 	console.log("Else Redirect Executed", storeUrlRef.current);
-			// 	setRedirect(storeUrlRef.current);
-			// }
-			// if (loggedIn && redirect !== storeUrlRef) {
-			// 	// 	if (router.pathname.startsWith("/admin")) {
-			// 	// 		console.log("RouteProtecter: check pathname");
-			// 	// 		setAuthorized(true);
-			// 	console.log("Redirect Executed");
-			// 	storeUrlRef(url)
-			// }
-			// 	else {
-			// 		setAuthorized(true);
-			// 	}
 		}
 	}
 
 	return (
 		<>
-			{authorized ? (
+			{authorized && loggedIn ? (
+				<Layout isLoggedIn={loggedIn}>{children}</Layout>
+			) : (
+				children
+			)}
+			{/* {authorized ? (
 				loggedIn ? (
 					<Layout isLoggedIn={loggedIn}>{children}</Layout>
 				) : (
 					children
 				)
-			) : (
-				<Button
-					onClick={() => {
-						router.push("/");
-					}}
-				>
-					You dont have access to this page
-				</Button>
-			)}
+			) :
+				(
+					<Button
+						onClick={() => {
+							router.push("/");
+						}}
+					>
+						You dont have access to this page
+					</Button>
+				)} */}
 		</>
 	);
 };

@@ -1,6 +1,8 @@
 import { Box, Flex, Grid, Image, SlideFade } from "@chakra-ui/react";
 import { useGetLogoContext } from "contexts/getLogoContext";
-import { useState } from "react";
+import { useUser } from "contexts/UserContext";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import { GoogleVerify, Login, VerifyOtp } from ".";
 
 /**
@@ -18,6 +20,9 @@ const LoginPanel = (props) => {
 	});
 	const [loginType, setLoginType] = useState("Mobile");
 	const { logo } = useGetLogoContext();
+	const router = useRouter();
+	// const { userData } = useUser();
+	// useRedirectPageOnLogin(router, userData )
 	return (
 		<Flex
 			w="full"
@@ -110,3 +115,14 @@ const LoginPanel = (props) => {
 };
 
 export default LoginPanel;
+
+const useRedirectPageOnLogin = (router, userState) => {
+	useEffect(() => {
+		if (userState?.loggedIn) {
+			// Redirect user to the next page
+			// router.push(router?.query?.next || Pages.HOME);
+			router.push("/admin/mynetwork");
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [userState?.loggedIn]);
+};
