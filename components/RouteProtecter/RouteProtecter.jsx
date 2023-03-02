@@ -6,42 +6,43 @@ import { Button } from "@chakra-ui/react";
 
 /**
  * A <RouteProtecter> component
- * TODO: Write more description here
+ * TODO: to protect the private routes and gives access to route according to user role.
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<RouteProtecter></RouteProtecter>`
  */
 
 const RouteProtecter = (props) => {
-	const { router, children } = props;
-	const { redirect, setRedirect, userData } = useUser();
+	const { router, children } = props; //TODO : Getting Error in _app.tsx
+	const { userData } = useUser();
 	const { loggedIn } = userData;
 	const [authorized, setAuthorized] = useState(false);
-	const storeUrlRef = useRef();
 
 	console.info("RouteProtecter: start");
-	console.log(loggedIn, authorized);
+	console.log({ loggedIn: loggedIn, authorized: authorized });
 
 	useEffect(() => {
 		console.log(router.pathname);
 		// on initial load - run auth check
 		authCheck(router.asPath);
-		const preventAccess = () => setAuthorized(false);
+		// const preventAccess = () => setAuthorized(false);
 
-		router.events.on("routeChangeStart", preventAccess);
-		router.events.on("routeChangeComplete", authCheck);
+		// router.events.on("routeChangeStart", preventAccess);
+		// router.events.on("routeChangeComplete", authCheck);
 
-		return () => {
-			router.events.off("routeChangeStart", preventAccess);
-			router.events.off("routeChangeComplete", authCheck);
-		};
+		// return () => {
+		// 	router.events.off("routeChangeStart", preventAccess);
+		// 	router.events.off("routeChangeComplete", authCheck);
+		// };
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [router.pathname, loggedIn, router, router.events]);
+	}, [router.pathname, userData]);
 
 	function authCheck(url) {
+		console.log(" protected route : authCheck - ", loggedIn, url);
 		const publicLinks = ["/"];
 		const path = url.split("?")[0];
+		console.log("path", path);
 		if (!loggedIn && !publicLinks.includes(path)) {
 			console.log("Route Protector : Not logged");
 			setAuthorized(false);
