@@ -8,7 +8,6 @@ import {
 	HStack,
 	Select,
 	Text,
-	useMediaQuery,
 } from "@chakra-ui/react";
 import { Buttons, Icon, Input, Switch } from "components";
 import { PermanentAddress, NewAddress } from ".";
@@ -23,7 +22,7 @@ import { PermanentAddress, NewAddress } from ".";
 const UpdateSellerAddress = ({ className = "", ...props }) => {
 	const test = true;
 	const [visible, setVisible] = useState(test);
-	const [formCount, setFormCount] = useState(1);
+	const [formCount, setFormCount] = useState(0);
 	const [formData, setFormData] = useState({
 		AddressLine1: "",
 		AddressLine2: "",
@@ -34,18 +33,6 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 		OwnershipType: "",
 	});
 
-	function handleAddNewAddress() {
-		setFormCount((prevCount) => prevCount + 1);
-	}
-	// const item = {
-	// 	AddressLine1: "B-373 Second Floor Sector - 20",
-	// 	AddressLine2: "B-373 Second Floor Sector - 20",
-	// 	PostalCode: 201301,
-	// 	City: "Noida",
-	// 	State: "Uttarpradesh",
-	// 	Country: "India",
-	// 	OwnershipType: "123123",
-	// };
 	useEffect(() => {
 		setFormData({
 			address1: "B-373 Second Floor Sector",
@@ -59,6 +46,12 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
+
+	function handleAddNewAddress() {
+		setFormCount((prevCount) => prevCount + 1);
+	}
+
+	//  Add new Address form render
 	function renderForms() {
 		const forms = [];
 
@@ -83,6 +76,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 		return forms;
 	}
 
+	//  Edit Input value
 	function handleInputChange(event) {
 		const { name, value } = event.target;
 		setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
@@ -159,7 +153,13 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 				>
 					<HStack
 						justifyContent={"space-between"}
-						w={{ base: "100%", xl: "72%", "2xl": "63%" }}
+						// w={{ base: "100%", xl: "73%", "2xl": "66%" }}
+						w={{
+							base: "100%",
+							lg: "736px",
+							xl: "824px",
+							"2xl": "1020px",
+						}}
 					>
 						<Text
 							fontSize={{ base: "md", md: "xl" }}
@@ -169,6 +169,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						</Text>
 						<Text color="error">* Mandatory</Text>
 					</HStack>
+
 					<Flex
 						rowGap={{ base: "2.8rem", sm: "2.5rem" }}
 						direction="column"
@@ -177,7 +178,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							wrap={"wrap"}
 							gap={{
 								md: "1.7rem",
-								lg: "3.1rem",
+								lg: "2rem",
 								xl: "1.5rem",
 								"2xl": "1.2rem",
 							}}
@@ -188,9 +189,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								w={{
 									base: "100%",
 									md: "48%",
-									lg: "46%",
-									xl: "34.5%",
-									"2xl": "31%",
+									lg: "350px",
+									xl: "400px",
+									"2xl": "500px",
 								}}
 							>
 								<Input
@@ -213,12 +214,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									}}
 									inputContStyle={{
 										h: { base: "3rem" },
-										w: {
-											base: "100%",
-											lg: "34vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
+										w: "100%",
 										pos: "relative",
 										alignItems: "center",
 									}}
@@ -238,9 +234,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								w={{
 									base: "100%",
 									md: "48%",
-									lg: "46%",
-									xl: "34.5%",
-									"2xl": "31%",
+									lg: "350px",
+									xl: "400px",
+									"2xl": "500px",
 								}}
 							>
 								<Input
@@ -258,12 +254,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									}}
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
-										w: {
-											base: "100%",
-											lg: "34vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
+										w: "100%",
 										pos: "relative",
 										alignItems: "center",
 									}}
@@ -279,10 +270,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						<Flex
 							wrap={"wrap"}
 							gap={{
-								md: "1.5rem",
-
+								md: "1.7rem",
+								lg: "2rem",
 								xl: "1.5rem",
-								lg: "3.1rem",
 								"2xl": "1.2rem",
 							}}
 						>
@@ -290,9 +280,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								w={{
 									base: "100%",
 									md: "48%",
-									lg: "46%",
-									xl: "34.5%",
-									"2xl": "31%",
+									lg: "350px",
+									xl: "400px",
+									"2xl": "500px",
 								}}
 							>
 								<Input
@@ -314,12 +304,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									}}
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
-										w: {
-											base: "100%",
-											lg: "34vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
+										w: "100%",
 										pos: "relative",
 										alignItems: "center",
 									}}
@@ -329,9 +314,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								w={{
 									base: "100%",
 									md: "48%",
-									lg: "46%",
-									xl: "34.5%",
-									"2xl": "31%",
+									lg: "350px",
+									xl: "400px",
+									"2xl": "500px",
 								}}
 								mt={{
 									base: "2.8rem",
@@ -356,14 +341,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									}}
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
-										w: {
-											base: "100%",
 
-											// md: "38vw",
-											lg: "34vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
+										w: "100%",
 										pos: "relative",
 										alignItems: "center",
 									}}
@@ -373,8 +352,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 						<Flex
 							gap={{
 								md: "1.7rem",
+								lg: "2rem",
 								xl: "1.5rem",
-								lg: "3.1rem",
 								"2xl": "1.2rem",
 							}}
 							wrap={"wrap"}
@@ -384,9 +363,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								w={{
 									base: "100%",
 									md: "48%",
-									lg: "46%",
-									xl: "34.5%",
-									"2xl": "31%",
+									lg: "350px",
+									xl: "400px",
+									"2xl": "500px",
 								}}
 							>
 								<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
@@ -415,10 +394,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										placeholder="Uttarpradesh"
 										w={{
 											base: "100%",
-											xl: "25vw",
-											lg: "34vw",
-											xl: "28vw",
-											"2xl": "25vw",
+											// lg: "34vw",
+											// xl: "28vw",
+											// "2xl": "25vw",
 										}}
 										h={"3rem"}
 										borderRadius="10px"
@@ -438,9 +416,9 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 								w={{
 									base: "100%",
 									md: "48%",
-									lg: "46%",
-									xl: "34.5%",
-									"2xl": "31%",
+									lg: "350px",
+									xl: "400px",
+									"2xl": "500px",
 								}}
 							>
 								<Input
@@ -462,12 +440,8 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 									}}
 									inputContStyle={{
 										h: { base: "3rem", "2xl": "3rem" },
-										w: {
-											base: "100%",
-											lg: "34vw",
-											xl: "28vw",
-											"2xl": "25vw",
-										},
+										w: "100%",
+
 										pos: "relative",
 										alignItems: "center",
 									}}
@@ -475,33 +449,55 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 							</Box>
 						</Flex>
 
-						<Box mt={{ base: 2.5, md: "0" }}>
-							<Box mb={{ base: 2.5, "2xl": "0.8rem" }}>
+						<Box
+							w={{
+								base: "100%",
+								md: "48%",
+								lg: "350px",
+								xl: "400px",
+								"2xl": "500px",
+							}}
+						>
+							<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
 								<Text
-									fontSize={{ base: "md" }}
-									color="inputlabel"
-									pl="0"
-									fontWeight="600"
+									as="b"
+									style={{
+										fontSize: {
+											base: "sm",
+											"2xl": "lg",
+										},
+										color: "inputlabe",
+										pl: "0",
+										fontWeight: "600",
+									}}
 								>
 									Ownership Type
 								</Text>
-							</Box>
-							<Box>
+							</Flex>
+
+							<Box
+								w={{
+									base: "100%",
+									// md: "48%",
+									lg: "350px",
+									xl: "400px",
+									"2xl": "500px",
+								}}
+							>
 								<Select
-									placeholder="--Select--"
+									placeholder="Permanent"
 									w={{
 										base: "100%",
-										md: "43vw",
-										lg: "34vw",
-										xl: "28vw",
-										"2xl": "25vw",
+										// 		xl: "25vw",
+										// 		lg: "350px",
+										// xl: "400px",
+										// "2xl": "500px",
 									}}
 									h={"3rem"}
 									borderRadius="10px"
 									icon={<Icon name="caret-down" />}
 								>
-									<option value="option1">Option 1</option>
-									<option value="option2">Option 2</option>
+									<option value="Permanent"></option>
 								</Select>
 							</Box>
 						</Box>
