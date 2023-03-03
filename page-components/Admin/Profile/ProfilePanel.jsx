@@ -74,13 +74,13 @@ const ProfilePanel = (props) => {
 		<Grid
 			templateColumns={{
 				base: "repeat(auto-fit,minmax(280px,0.90fr))",
-				sm: "repeat(auto-fit,minmax(370px,0.90fr))",
-				md: "repeat(auto-fit,minmax(380px,1fr))",
+				sm: "repeat(auto-fit,minmax(380px,0.90fr))",
+				md: "repeat(auto-fit,minmax(360px,1fr))",
 				lg: "repeat(auto-fit,minmax(490px,1fr))",
 			}}
 			justifyContent="center"
 			py={{ base: "20px", md: "0px" }}
-			gap={(4, 6)}
+			gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 		>
 			<GridItem>
 				<CompanyPane />

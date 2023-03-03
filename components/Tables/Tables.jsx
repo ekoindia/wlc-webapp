@@ -48,9 +48,10 @@ const Tables = (props) => {
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
 
-	const redirect = () => {
+	const onRowClick = () => {
 		switch (tableName) {
 			case "Network":
+				variant;
 				router.push(`my-network/profile/`);
 				break;
 			case "Transaction":
@@ -99,7 +100,7 @@ const Tables = (props) => {
 			return (
 				<Tr
 					key={index}
-					onClick={redirect}
+					onClick={onRowClick}
 					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 				>
 					{renderer.map((r, rIndex) => {
@@ -151,7 +152,7 @@ const Tables = (props) => {
 						w="100%"
 						h="auto"
 						p="16px"
-						onClick={redirect}
+						onClick={onRowClick}
 					>
 						<NetworkCard item={item} />
 					</Cards>
@@ -163,7 +164,7 @@ const Tables = (props) => {
 						w="100%"
 						h="auto"
 						p="15px"
-						onClick={redirect}
+						onClick={onRowClick}
 					>
 						<TransactionHistoryCard item={item} />
 					</Cards>
