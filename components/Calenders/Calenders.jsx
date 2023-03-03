@@ -49,7 +49,7 @@ const Calenders = ({
 			</Flex>
 
 			<Flex
-				h="100%"
+				h="3rem"
 				w="100%"
 				border={"1px solid #D2D2D2"}
 				borderRadius="10px"

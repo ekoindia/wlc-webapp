@@ -15,7 +15,7 @@ import {
 	useMediaQuery,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Icon, IconButtons, Input } from "components";
+import { Buttons, Icon, IconButtons, Input, Calenders } from "components";
 import React, { useEffect, useRef, useState } from "react";
 
 /**
@@ -404,18 +404,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										"2xl": "500px",
 									}}
 								>
-									<Input
+									<Calenders
 										label="Date of birth"
-										placeholder={""}
-										type="date"
-										dateFormat="DD/MM/YYYY"
-										required="true"
-										icon={
-											<Icon
-												name="caret-down"
-												width="17px"
-											/>
-										}
 										// value={value}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
@@ -429,7 +419,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											mb: { base: 2.5, "2xl": "0.3rem" },
 										}}
 										inputContStyle={{
-											h: { base: "3rem", "2xl": "3rem" },
 											w: {
 												base: "100%",
 
