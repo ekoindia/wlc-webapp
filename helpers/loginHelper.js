@@ -8,6 +8,7 @@ function sendOtpRequest(number, toast, sendState) {
 		app: "Connect",
 	};
 
+	// if (false)
 	fetch(process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.SENDOTP, {
 		method: "POST",
 		headers: {
@@ -16,6 +17,7 @@ function sendOtpRequest(number, toast, sendState) {
 		body: JSON.stringify(PostData),
 	})
 		.then((response) => {
+			console.log("response", response);
 			if (response.ok) {
 				return response.json();
 			} else {
@@ -44,7 +46,7 @@ function sendOtpRequest(number, toast, sendState) {
 		})
 		.catch((e) =>
 			toast({
-				title: "Something went wrong",
+				title: "Send OTP failed",
 				status: "error",
 				duration: 2000,
 				isClosable: true,

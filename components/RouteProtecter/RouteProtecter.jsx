@@ -1,8 +1,6 @@
-import { useRouter } from "next/router";
 import { useUser } from "contexts/UserContext";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout } from "..";
-import { Button } from "@chakra-ui/react";
 
 /**
  * A <RouteProtecter> component
@@ -40,7 +38,8 @@ const RouteProtecter = (props) => {
 
 	useEffect(() => {
 		console.log("router.pathname", router.pathname);
-		const path = router.pathname.split("?")[0];
+		const path = router.pathname.split("?");
+		console.log("path", path);
 		// if (
 		// 	isBrowser() &&
 		// 	userData?.loggedIn !== true &&
@@ -65,8 +64,8 @@ const RouteProtecter = (props) => {
 
 		if (loggedIn) {
 			if (
-				publicLinks.includes(path) ||
-				path[0].includes(roleRoutes[role])
+				publicLinks.includes(path[0]) ||
+				!path[0].includes(roleRoutes[role])
 			) {
 				router.back();
 			}
@@ -77,10 +76,11 @@ const RouteProtecter = (props) => {
 			// 	setAuthorized(true)
 			// }
 		} else if (!loggedIn) {
-			router.push("/");
+			if (!publicLinks.includes(path[0])) router.push("/");
+			console.log("I am out");
 			setAuthorized(false);
 		}
-	}, [router.asPath, loggedIn]);
+	}, [router.asPath]);
 
 	function authCheck(url) {
 		console.log(" protected route : authCheck - ", loggedIn, url);
