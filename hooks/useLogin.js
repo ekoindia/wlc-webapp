@@ -50,6 +50,7 @@ function useLogin(login, setStep, setEmail) {
 							isClosable: true,
 							position: "top-right",
 						});
+						return;
 					}
 
 					if (
