@@ -1,5 +1,6 @@
 import { Layout } from "components";
 import Head from "next/head";
+import { PricingCommission } from "page-components/Admin";
 import React from "react";
 
 const Pricing = () => {
@@ -9,7 +10,7 @@ const Pricing = () => {
 				<title>Pricing | Eko API Marketplace</title>
 			</Head>
 			<Layout>
-				<h1>Add Page Content Here</h1>
+				<PricingCommission />
 			</Layout>
 		</>
 	);

@@ -1,4 +1,4 @@
-import { Box, Center, Flex, Input } from "@chakra-ui/react";
+import { Center, Flex, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import { InputLabel, InputMsg } from "../";
 
@@ -46,14 +46,16 @@ const Inputs = ({
 	inputContStyle,
 	inputNumStyle,
 	inputProps,
+	required = false,
 	...props
 }) => {
 	// TODO: Edit state as required
 	const [number, setNumber] = useState("");
-	const onChangeHandler = (val) => {
+	const onChangeHandler = (e) => {
 		// /^[6-9]\d{0,9}$/g.test(val)
 		// /^[6-9]\d{0,2}\s\d{0,3}\s\d{0,4}$/g
 		// [6-9]?(\d{0,2})?(\s\d{0,3})?(\s\d{0,4})
+		let val = e.target.value;
 		if (isNumInput) {
 			if (
 				val == "" ||
@@ -63,12 +65,16 @@ const Inputs = ({
 				onChange(formatted);
 				setNumber(formatted);
 			}
-		} else onChange(val);
+		} else onChange(e);
 	};
 
 	return (
 		<Flex direction="column" {...props}>
-			{label ? <InputLabel {...labelStyle}>{label}</InputLabel> : null}
+			{label ? (
+				<InputLabel required={required} {...labelStyle}>
+					{label}
+				</InputLabel>
+			) : null}
 			<Flex pos="relative" {...inputContStyle}>
 				<Input
 					name={name}
@@ -77,11 +83,13 @@ const Inputs = ({
 					disabled={disabled}
 					hidden={hidden}
 					value={value}
-					borderRadius={{ base: 10, "2xl": 15 }}
+					required={required}
+					borderRadius={{ base: 10, "2xl": 10 }}
 					borderColor={errorMsg && invalid ? "error" : "hint"}
 					bg={errorMsg && invalid ? "#fff7fa" : ""}
 					w="100%"
-					onChange={(e) => onChangeHandler(e.target.value)}
+					inputMode={isNumInput ? "numeric" : "text"}
+					onChange={(e) => onChangeHandler(e)}
 					pl={isNumInput ? { base: 17, "2xl": "7.6rem" } : ""}
 					height="100%"
 					_hover={{
@@ -106,6 +114,7 @@ const Inputs = ({
 						borderRight="1px solid"
 						borderColor={invalid && errorMsg ? "error" : "hint"}
 						zIndex="1100"
+						userSelect="none"
 						{...inputNumStyle}
 					>
 						+91

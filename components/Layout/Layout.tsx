@@ -3,27 +3,36 @@ import { useState } from "react";
 import { Breadcrumbs, NavBar, SideBar } from "..";
 
 const Layout = (props) => {
+	const { propComp } = props;
 	const [isNavOpen, setIsNavOpen] = useState(false);
-	const [isSmallerThan770] = useMediaQuery("(max-width: 770px)");
+	const [isNav, setNav] = useState(true);
+	const [headingObj, setHeadingObj] = useState({
+		title: null,
+		hasIcon: false,
+	});
+	const [isSmallerThan769] = useMediaQuery("(max-width: 769px)");
 
 	return (
 		<Box w={"full"} minH={"100vh"}>
 			<NavBar
 				setNavOpen={setIsNavOpen}
-				isSmallerThan770={isSmallerThan770}
+				isNavVisible={isNav}
+				isSmallerThan769={isSmallerThan769}
+				headingObj={headingObj}
 			/>
+
 			<Flex
 				width={"full"}
 				height={{
-					base: "calc(100vh - 12.2vw)",
-					sm: "calc(100vh - 4.5vw)",
+					base: "calc(100vh - 56px)",
+					sm: "calc(100vh - 56px)",
+					md: "calc(100vh - 50px)",
+					lg: "calc(100vh - 60px)",
+					xl: "calc(100vh - 50px)",
+					"2xl": "calc(100vh - 90px)",
 				}}
 			>
-				<SideBar
-					navOpen={isNavOpen}
-					setNavOpen={setIsNavOpen}
-					isSmallerThan770={isSmallerThan770}
-				/>
+				<SideBar navOpen={isNavOpen} setNavOpen={setIsNavOpen} />
 				{/* Main Content here */}
 
 				<Box
@@ -35,8 +44,17 @@ const Layout = (props) => {
 					<Box
 						w={"full"}
 						h={"100%"}
-						overflowY={"scroll"}
-						p={"1.2vw"}
+						overflowY={"auto"}
+						// p={"1vw"}
+						// pr={"0.6vw"}
+						p={{
+							base: "0px",
+							sm: "0px",
+							md: "2vw",
+							"2xl": "1.5vw",
+						}}
+						pb={{ base: "20px", md: "0px" }}
+						// mt="20px"
 						css={{
 							"&::-webkit-scrollbar": {
 								width: "0.6vw",
@@ -50,7 +68,13 @@ const Layout = (props) => {
 							},
 						}}
 					>
-						<Breadcrumbs isSmallerThan770={isSmallerThan770} />
+						<Breadcrumbs
+							setNav={setNav}
+							setHeadingObj={setHeadingObj}
+							isNavVisible={isNav}
+							isSmallerThan769={isSmallerThan769}
+							propComp={propComp}
+						/>
 
 						{props.children}
 					</Box>

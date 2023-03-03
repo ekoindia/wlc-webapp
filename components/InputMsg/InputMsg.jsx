@@ -10,7 +10,14 @@ import { Text } from "@chakra-ui/react";
 const InputMsg = ({ error = false, children, ...props }) => {
 	if (!children) return null;
 	return (
-		<Text pl="6px" mt="4px" fontSize="xs" color="error" {...props}>
+		<Text
+			pl="6px"
+			mt="4px"
+			fontSize="xs"
+			color="error"
+			{...props}
+			variant="selectNone"
+		>
 			{children}
 		</Text>
 	);

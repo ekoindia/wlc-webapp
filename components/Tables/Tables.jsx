@@ -1,7 +1,9 @@
 import {
 	Avatar,
 	Box,
+	Divider,
 	Flex,
+	IconButton,
 	Table,
 	TableContainer,
 	Tbody,
@@ -12,22 +14,33 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { useMemo, useState } from "react";
-import { Cards, Icon, IconButtons, Pagination, Tags } from "..";
+import { useRouter } from "next/router";
+import { AccountStatementCard } from "page-components/Admin/AccountStatement";
+import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
+import { NetworkCard } from "page-components/Admin/Network";
+import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
+import { useEffect, useMemo, useState } from "react";
+import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
 
 const Tables = (props) => {
-	const [currentPage, setCurrentPage] = useState(1);
-	const [currentSort, setCurrentSort] = useState("default");
-
-	const [isSmallerThan770] = useMediaQuery("(max-width: 770px)");
-
 	const {
 		pageLimit: PageSize = 10,
 		data: tableData,
 		renderer,
-		redirect,
 		variant,
+		tableName,
 	} = props;
+	const router = useRouter();
+	const [currentSort, setCurrentSort] = useState("default");
+	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
+	const [currentPage, setCurrentPage] = useState(1);
+
+	useEffect(() => {
+		if (router.query.page && +router.query.page !== currentPage) {
+			setCurrentPage(+router.query.page);
+			console.log("Table : useEffect Page", router.query.page);
+		}
+	}, [router.query.page]);
 
 	const currentTableData = useMemo(() => {
 		const firstPageIndex = (currentPage - 1) * PageSize;
@@ -35,51 +48,15 @@ const Tables = (props) => {
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
 
-	/* for row element styling */
-	const getNameStyle = (name) => {
-		return (
-			<Flex align={"center"} gap="0.625rem">
-				<Box>
-					<Avatar
-						bg="accent.DEFAULT"
-						color="divider"
-						size="sm"
-						name={name}
-						// src={item.link}
-					/>
-				</Box>
-				<Box as="span">{name}</Box>
-			</Flex>
-		);
-	};
-	const getStatusStyle = (status) => {
-		return <Tags status={status} />;
-	};
-	const getLocationStyle = (location, lat, long) => {
-		return (
-			<Flex alignItems={"center"}>
-				<Box>{location}</Box>
-				<Box>
-					<IconButtons
-						iconName="near-me"
-						iconStyle={{
-							width: "12px",
-							height: "12px",
-						}}
-					/>
-				</Box>
-			</Flex>
-		);
-	};
-	const getArrowStyle = () => {
-		return (
-			<Box as="span" color="hint">
-				<Icon name="arrow-forward" width="24px" height="21px" />
-			</Box>
-		);
-	};
-	const getModalStyle = (data) => {
-		return <Box>...</Box>;
+	const redirect = () => {
+		switch (tableName) {
+			case "Network":
+				router.push(`my-network/profile/`);
+				break;
+			case "Transaction":
+				router.push(`transaction-history/account-statement/`);
+				break;
+		}
 	};
 
 	const getTh = () => {
@@ -89,7 +66,7 @@ const Tables = (props) => {
 					<Th
 						key={index}
 						p={{ md: ".5em", xl: "1em" }}
-						fontSize={{ md: "14px", xl: "16px" }}
+						fontSize={{ md: "10px", xl: "11px", "2xl": "16px" }}
 					>
 						<Flex gap={2}>
 							{item.field}
@@ -109,7 +86,7 @@ const Tables = (props) => {
 					<Th
 						key={index}
 						p={{ md: ".5em", xl: "1em" }}
-						fontSize={{ md: "14px", xl: "16px" }}
+						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 					>
 						{item.field}
 					</Th>
@@ -123,12 +100,12 @@ const Tables = (props) => {
 				<Tr
 					key={index}
 					onClick={redirect}
-					fontSize={{ md: "14px", xl: "16px" }}
+					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 				>
 					{renderer.map((r, rIndex) => {
 						return (
 							<Td p={{ md: ".5em", xl: "1em" }} key={rIndex}>
-								{prepareRow(
+								{prepareCol(
 									item,
 									r,
 									index +
@@ -142,7 +119,8 @@ const Tables = (props) => {
 			);
 		});
 	};
-	const prepareRow = (item, column, index) => {
+
+	const prepareCol = (item, column, index) => {
 		switch (column?.show) {
 			case "Tag":
 				return getStatusStyle(item[column.name]);
@@ -166,54 +144,65 @@ const Tables = (props) => {
 	/* For Responsive */
 	const prepareCard = () => {
 		return currentTableData.map((item, index) => {
-			return (
-				<Cards key={index} width="90%" height="auto" p="15px">
-					<Flex justifyContent="space-between">
-						<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-							{getNameStyle(item.name)}
-						</Box>
-						<Text>...</Text>
-					</Flex>
-					<Flex
-						direction="column"
-						fontSize={{ base: "sm" }}
-						pl="42px"
+			if (tableName === "Network") {
+				return (
+					<Cards
+						key={index}
+						w="100%"
+						h="auto"
+						p="16px"
+						onClick={redirect}
 					>
-						<Flex gap="2">
-							<Box as="span" color="light">
-								Mobile Number:
-							</Box>
-							<Box as="span" color="dark">
-								{item.mobile_number}
-							</Box>
-						</Flex>
-						<Flex gap="2">
-							<Box as="span" color="light">
-								Type:
-							</Box>
-							<Box as="span" color="dark">
-								{item.type}
-							</Box>
-						</Flex>
-						<Flex gap="2">
-							<Box as="span" color="light">
-								Onboarded on:
-							</Box>
-							<Box as="span" color="dark">
-								{item.createdAt}
-							</Box>
-						</Flex>
-						<Flex
-							justifyContent="space-between"
-							mt="10px"
-							py="10px"
+						<NetworkCard item={item} />
+					</Cards>
+				);
+			} else if (tableName === "Transaction") {
+				return (
+					<Cards
+						key={index}
+						w="100%"
+						h="auto"
+						p="15px"
+						onClick={redirect}
+					>
+						<TransactionHistoryCard item={item} />
+					</Cards>
+				);
+			} else if (tableName === "Account") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="20px 16px"
 						>
-							{getStatusStyle(item.account_status)}
-							{getLocationStyle(item.location)}
-						</Flex>
-					</Flex>
-				</Cards>
-			);
+							<AccountStatementCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
+					</>
+				);
+			} else if (tableName === "Detailed") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="20px 16px"
+						>
+							<DetailedStatementCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
+					</>
+				);
+			}
 		});
 	};
 	/* for sort icon & icon change */
@@ -239,11 +228,11 @@ const Tables = (props) => {
 	return (
 		<>
 			<Box w="100%">
-				{!isSmallerThan770 ? (
+				{!isSmallerThan860 ? (
 					<>
 						<TableContainer
 							borderRadius="10px 10px 0 0"
-							mt="20px"
+							mt={{ base: "20px", "2xl": "10px" }}
 							border="1px solid #E9EDF1"
 							css={{
 								"&::-webkit-scrollbar": {
@@ -272,14 +261,98 @@ const Tables = (props) => {
 								currentPage={currentPage}
 								totalCount={tableData.length}
 								pageSize={PageSize}
-								onPageChange={(page) => setCurrentPage(page)}
+								onPageChange={(page) => {
+									console.log(page);
+									router.query.page = page;
+									console.log("Page", page);
+									router.replace(router);
+									setCurrentPage(page);
+								}}
 							/>
 						</Flex>
 					</>
 				) : (
-					<Flex direction="column" gap="4" alignItems="center">
-						{prepareCard()}
-					</Flex>
+					<>
+						<Flex
+							direction="column"
+							alignItems="center"
+							borderRadius="10px 10px 0 0"
+							mt="16px"
+							boxShadow={
+								tableName === "Account" ||
+								tableName === "Detailed"
+									? "0px 5px 15px #0000000D"
+									: ""
+							}
+							border={
+								tableName === "Account" ||
+								tableName === "Detailed"
+									? "1px solid #D2D2D2"
+									: ""
+							}
+							gap={
+								tableName === "Account" ||
+								tableName === "Detailed"
+									? 0
+									: 4
+							}
+							bg={
+								tableName === "Account" ||
+								tableName === "Detailed"
+									? "white"
+									: ""
+							}
+						>
+							{tableName === "Account" ||
+							tableName === "Detailed" ? (
+								<Text
+									color="light"
+									width="100%"
+									p="16px 16px 0"
+									fontWeight="semibold"
+								>
+									Recent Transaction
+								</Text>
+							) : (
+								""
+							)}
+							{prepareCard()}
+						</Flex>
+
+						<Flex
+							align="center"
+							justifyContent="center"
+							w="100%"
+							h="94px"
+						>
+							<Flex
+								align="center"
+								justifyContent="center"
+								w="220px"
+								h="54px"
+								border="1px solid #11299E"
+								borderRadius="10px"
+								opacity="1"
+								cursor="pointer"
+							>
+								<IconButtons
+									variant="accent"
+									title="Show More"
+									hasBG={false}
+									iconPos="left"
+									iconName="refresh"
+									textStyle={{
+										fontSize: "18px",
+										fontWeight: "bold",
+									}}
+									iconStyle={{
+										height: "24px",
+										width: "24px",
+									}}
+								/>
+							</Flex>
+						</Flex>
+					</>
 				)}
 			</Box>
 		</>
@@ -287,3 +360,88 @@ const Tables = (props) => {
 };
 
 export default Tables;
+
+/* for row element styling */
+export const getNameStyle = (name) => {
+	return (
+		<Flex align={"center"} gap="0.625rem">
+			<Box>
+				<Avatar
+					bg="accent.DEFAULT"
+					color="divider"
+					size={{ base: "sm", sm: "sm", md: "xs", lg: "sm" }}
+					name={name[0]}
+					// src={item.link}
+				/>
+			</Box>
+			<Box as="span">{name}</Box>
+		</Flex>
+	);
+};
+export const getStatusStyle = (status) => {
+	return (
+		<Tags
+			size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
+			px={"10px"}
+			status={status}
+		/>
+	);
+};
+export const getLocationStyle = (
+	location,
+	lat = 23.1967657,
+	long = 77.4270079
+) => {
+	return (
+		<Flex alignItems={"center"}>
+			<Box>{location}</Box>
+			<IconButtons
+				iconSize={"xs"}
+				iconName="near-me"
+				iconStyle={{
+					width: "12px",
+					height: "12px",
+				}}
+				onClick={(e) => {
+					openGoogleMap(lat, long);
+					e.stopPropagation();
+				}}
+			/>
+		</Flex>
+	);
+};
+export const getArrowStyle = () => {
+	return (
+		<Box
+			color="hint"
+			width={{ md: "16px", lg: "20px", "2xl": "24px" }}
+			height={{ md: "16px", lg: "20px", "2xl": "24px" }}
+		>
+			<Icon name="arrow-forward" width="100%" />
+		</Box>
+	);
+};
+export const getModalStyle = (data) => {
+	return (
+		<>
+			<Menus
+				type="everted"
+				as={IconButton}
+				iconName="more-vert"
+				minH={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				height={{ base: "25px", xl: "25px", "2xl": "30px" }}
+				iconStyles={{ height: "15px", width: "4px" }}
+				onClick={(e) => {
+					e.stopPropagation();
+				}}
+			/>
+		</>
+	);
+};
+export const openGoogleMap = ({ latitude, longitude }) => {
+	const lat = parseFloat(latitude);
+	const lng = parseFloat(longitude);
+	window.open(`https://maps.google.com/?q=${lat},${lng}`, "_blank");
+};

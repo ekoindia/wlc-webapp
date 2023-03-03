@@ -1,5 +1,6 @@
 import {
 	Box,
+	Center,
 	Drawer,
 	DrawerContent,
 	DrawerOverlay,
@@ -16,7 +17,7 @@ import { adminMenu } from "../../constants/adminMenu";
 const SideBarMenu = ({ className = "", ...props }) => {
 	const router = useRouter();
 	const [currentRoute, setcurrentRoute] = useState();
-	const [isSmallerThan769] = useMediaQuery("(max-width: 440px)");
+	const [isSmallerThan1024] = useMediaQuery("(max-width: 1024px)");
 
 	useEffect(() => {
 		setcurrentRoute(router.pathname.split("/")[2]);
@@ -24,7 +25,14 @@ const SideBarMenu = ({ className = "", ...props }) => {
 
 	return (
 		<Box
-			minW={isSmallerThan769 ? "full" : "13.5vw"}
+			minW={{
+				base: "full",
+				sm: "55vw",
+				md: "13.5vw",
+				lg: "200px",
+				xl: "200px",
+				"2xl": "250px",
+			}}
 			bgColor={"accent.DEFAULT"}
 			height={"100%"}
 		>
@@ -39,11 +47,18 @@ const SideBarMenu = ({ className = "", ...props }) => {
 						>
 							<Flex
 								key={index}
-								fontSize={isSmallerThan769 ? "3.6vw" : ".85vw"}
-								gap="10px"
+								fontSize={{
+									base: "14px",
+									sm: "14px",
+									md: "12px",
+									lg: "12px",
+									xl: "12px",
+									"2xl": "16px",
+								}}
+								gap="13px"
 								color="#FFFFFF"
 								align="center"
-								px={{ base: "2", lg: "3", "2xl": "4" }}
+								px={{ base: "3", md: "3", lg: "2", "2xl": "4" }}
 								py={{
 									base: "4",
 									md: "3",
@@ -58,29 +73,33 @@ const SideBarMenu = ({ className = "", ...props }) => {
 									currentRoute === menu.link.split("/")[2] &&
 									"#081E89"
 								}
-								borderLeft={isSmallerThan769 ? "8px" : "8px"}
+								borderLeft="8px"
 								borderLeftColor={
 									currentRoute === menu.link.split("/")[2]
 										? "#FE7D00"
 										: "transparent"
 								}
 							>
-								<Box>
-									<Icon
-										name={menu.icon}
-										style={
-											isSmallerThan769
-												? {
-														width: "6vw",
-														height: "6vw",
-												  }
-												: {
-														width: "1vw",
-														height: "1vw",
-												  }
-										}
-									/>
-								</Box>
+								<Center
+									w={{
+										base: "20px",
+										sm: "20px",
+										md: "18px",
+										lg: "18px",
+										xl: "18px",
+										"2xl": "27px",
+									}}
+									h={{
+										base: "20px",
+										sm: "20px",
+										md: "18px",
+										lg: "18px",
+										xl: "18px",
+										"2xl": "20px",
+									}}
+								>
+									<Icon name={menu.icon} width={"100%"} />
+								</Center>
 								{menu.name}
 							</Flex>
 						</Link>
@@ -115,9 +134,16 @@ const MenuBar = ({ props }) => {
 	);
 };
 
-const SideBar = ({ isSmallerThan770, ...props }) => {
+const SideBar = (props) => {
 	return (
-		<>{isSmallerThan770 ? <MenuBar props={props} /> : <SideBarMenu />}</>
+		<>
+			<Box display={{ base: "flex", lg: "none" }}>
+				<MenuBar props={props} />
+			</Box>
+			<Box display={{ base: "none", lg: "flex" }}>
+				<SideBarMenu />
+			</Box>
+		</>
 	);
 };
 

@@ -1,5 +1,6 @@
 import { extendTheme, theme } from "@chakra-ui/react";
 import { Inter, Roboto } from "@next/font/google";
+import { tabsTheme } from "./theme_system/theme/components/tab";
 
 const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
@@ -14,7 +15,9 @@ const roboto = Roboto({
 	subsets: ["latin"],
 });
 
-//console.log(theme);
+// console.log(theme.components.Tabs.baseStyle);
+// console.log(tabsTheme);
+// console.log(theme)
 
 export const light = extendTheme({
 	breakpoints: {
@@ -42,8 +45,8 @@ export const light = extendTheme({
 					},
 					th: {
 						textTransform: "Capitalize",
-            bg:'hint',
-            transition:'none'
+						bg: "hint",
+						transition: "none",
 					},
 				},
 				evenStriped: {
@@ -54,8 +57,8 @@ export const light = extendTheme({
 					},
 					th: {
 						textTransform: "Capitalize",
-            bg:'hint',
-            transition:'none'
+						bg: "hint",
+						transition: "none",
 					},
 				},
 			},
@@ -87,11 +90,21 @@ export const light = extendTheme({
 				},
 				accent: {
 					bg: "accent.DEFAULT",
-					boxShadow: "0px 3px 10px #11299e96",
+					// boxShadow: "0px 3px 10px #11299e5f",
+					boxShadow: "0px 3px 10px #11299E1A",
 					borderRadius: 10,
 					color: "white",
 					_hover: {
 						bg: "accent.dark",
+					},
+				},
+				success: {
+					bg: "success",
+					boxShadow: "0px 3px 10px #00c34150",
+					borderRadius: 10,
+					color: "white",
+					_hover: {
+						bg: "#00a336",
 					},
 				},
 				link: {
@@ -120,6 +133,22 @@ export const light = extendTheme({
 				},
 			},
 		},
+		Tabs: tabsTheme,
+		Heading: {
+			variants: {
+				selectNone: {
+					...theme.components.Heading,
+					userSelect: "none",
+				},
+			},
+		},
+		Text: {
+			variants: {
+				selectNone: {
+					userSelect: "none",
+				},
+			},
+		},
 	},
 	colors: {
 		primary: {
@@ -140,6 +169,8 @@ export const light = extendTheme({
 		shadow: {
 			primary: "#FE9F008C",
 			accent: "#11299e96",
+			success: "#009B34",
+			error: "#CA1B56",
 		},
 		success: "#00C341",
 		error: "#FF4081",
@@ -162,6 +193,7 @@ export const light = extendTheme({
 		"1px": "1px solid",
 		"2px": "0.125rem solid",
 		"10px": "0.625rem solid",
+		card: "1px solid #D2D2D2",
 	},
 	radii: {
 		none: "0",
@@ -213,16 +245,19 @@ export const light = extendTheme({
 		2: "0.5rem",
 		2.5: "0.625rem", // 10px
 		3: "0.75rem",
-		3.5: "0.875rem",
+		3.5: "0.875rem", // 14px
 		4: "1rem", // 16px
 		5: "1.25rem", //20px
 		6: "1.5rem", //24px
 		7: "1.75rem", // 28px
+		7.5: "1.875rem", // 28px - added
 		8: "2rem",
+		8.5: "2.125rem", // 24px- added
 		9: "2.25rem",
 		10: "2.5rem",
+		10.5: "2.625rem", // 42px - added
 		12: "3rem",
-		14: "3.5rem",
+		14: "3.5rem", //56px
 		16: "4rem",
 		17: "4.5rem",
 		20: "5rem",

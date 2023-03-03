@@ -1,11 +1,9 @@
-import { Box, Flex, Square } from "@chakra-ui/react";
+import { Box, Center, Flex, Square } from "@chakra-ui/react";
 import { DOTS, usePagination } from "hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "..";
 
 const Pagination = (props) => {
-	const [currPageNumber, setCurrPageNumber] = useState(1);
-
 	const {
 		onPageChange,
 		totalCount,
@@ -14,6 +12,12 @@ const Pagination = (props) => {
 		pageSize,
 		className,
 	} = props;
+	const [currPageNumber, setCurrPageNumber] = useState(1);
+
+	useEffect(() => {
+		// console.log("Use Effect", currentPage);
+		setCurrPageNumber(currentPage);
+	}, [currentPage]);
 
 	const paginationRange = usePagination({
 		currentPage,
@@ -29,10 +33,21 @@ const Pagination = (props) => {
 	let lastPage = paginationRange[paginationRange.length - 1];
 
 	return (
-		<Flex my="37px" justifyContent="space-between" w="100%">
+		<Flex
+			mt="20px"
+			mb={{ base: "30px", "2xl": "0px" }}
+			justifyContent="space-between"
+			w="100%"
+			fontSize={{ md: "12px", "2xl": "16px" }}
+		>
 			<Flex gap={2} color="light">
 				<Box as="span">Results</Box>
-				<Box as="span" color="dark">
+				<Box
+					as="span"
+					color="dark"
+					fontWeight={"medium"}
+					fontFamily={"roboto"}
+				>
 					{currentPage * pageSize - (pageSize - 1)} -{" "}
 					{currentPage * pageSize > totalCount
 						? totalCount
@@ -54,9 +69,14 @@ const Pagination = (props) => {
 					}}
 					cursor="pointer"
 				>
-					<Icon name="chevron-left" width="20px" />
+					<Center
+						width={{ md: "15px", "2xl": "20px" }}
+						height={"100%"}
+					>
+						<Icon name="chevron-left" width="100%" />
+					</Center>
 				</Flex>
-				<Flex gap={6}>
+				<Flex gap={{ md: "4", "2xl": "6" }}>
 					{paginationRange.map((pageNumber, index) => {
 						if (pageNumber === DOTS) {
 							return (
@@ -108,7 +128,13 @@ const Pagination = (props) => {
 						);
 					}}
 				>
-					<Icon name="chevron-right" width="20px" />
+					{/* <Icon name="chevron-right" width="20px" /> */}
+					<Center
+						width={{ md: "15px", "2xl": "20px" }}
+						height={"100%"}
+					>
+						<Icon name="chevron-right" width="100%" />
+					</Center>
 				</Flex>
 			</Flex>
 		</Flex>

@@ -31,7 +31,16 @@ export type IconNameType =
 	| "timer"
 	| "camera"
 	| "more-vert"
-	| "sort-by";
+	| "sort-by"
+	| "fast-forward"
+	| "mail"
+	| "phone"
+	| "calender"
+	| "rupee_bg"
+	| "refresh"
+	| "arrow-up"
+	| "arrow-down"
+	| "close";
 
 export type IconProps = {
 	name: IconNameType;

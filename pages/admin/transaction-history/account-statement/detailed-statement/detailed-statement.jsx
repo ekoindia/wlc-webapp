@@ -1,8 +1,9 @@
-import React from "react";
+import { Layout } from "components";
 import Head from "next/head";
-import { DetailedStatement, Layout } from "components";
+import { DetailedStatement } from "page-components/Admin";
+import React from "react";
 
-const detStatement = () => {
+const DetailedStatementPage = () => {
 	return (
 		<>
 			<Head>
@@ -15,4 +16,4 @@ const detStatement = () => {
 	);
 };
 
-export default detStatement;
+export default DetailedStatementPage;

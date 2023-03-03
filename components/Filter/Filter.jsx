@@ -12,12 +12,8 @@ import {
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
-	Grid,
-	GridItem,
 	HStack,
 	Input,
-	InputGroup,
-	InputLeftAddon,
 	Stack,
 	Text,
 	useDisclosure,
@@ -31,9 +27,9 @@ function Filter() {
 
 	return (
 		<>
-			<Box display={{ base: "none", sm: "initial" }}>
+			<Box display={{ base: "none", md: "initial" }}>
 				<Button
-					my={"1vw"}
+					// mt={{ base: "1vw", "2xl": ".5vw" }}
 					display={"flex"}
 					justifyContent={"space-evenly"}
 					alignItems={"center"}
@@ -44,8 +40,8 @@ function Filter() {
 						sm: "5vw",
 						md: "4vw",
 						lg: "3vw",
-						xl: "2.5vw",
-						"2xl": "2vw",
+						xl: "2.6vw",
+						"2xl": "2.2vw",
 					}}
 					w={{
 						base: "8vw",
@@ -59,7 +55,12 @@ function Filter() {
 					color="#11299E"
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
-					borderRadius="10"
+					borderRadius={{
+						base: "10px",
+						md: "8px",
+						lg: "10px",
+						"2xl": "10px",
+					}}
 					_hover={{
 						bg: "white",
 					}}
@@ -99,14 +100,14 @@ function Filter() {
 							xl: "sm",
 							"2xl": "xl",
 						}}
-						lineHeight={"0"}
+						lineHeight={1}
 					>
 						Filter
 					</Text>
 				</Button>
 			</Box>
 
-			<Box display={{ base: "initial", sm: "none" }}>
+			<Box display={{ base: "initial", md: "none" }}>
 				<Button
 					display={"flex"}
 					gap={"10px"}
@@ -143,7 +144,7 @@ function Filter() {
 					md: "sm",
 					lg: "xs",
 					xl: "sm",
-					"2xl": "lg",
+					"2xl": "md",
 				}}
 			>
 				<DrawerOverlay
@@ -155,6 +156,7 @@ function Filter() {
 				<DrawerContent
 					borderTopRadius={{ base: "20px", sm: "0px" }}
 					mt={{ base: "8", sm: "0px" }}
+					p={"10px"}
 				>
 					<DrawerHeader>
 						<Box
@@ -184,7 +186,7 @@ function Filter() {
 								<Center
 									w={{
 										base: "15px",
-										sm: "10px",
+										sm: "15px",
 										md: "20px",
 										lg: "20px",
 										xl: "20px",
@@ -202,6 +204,7 @@ function Filter() {
 										xl: "md",
 										"2xl": "2xl",
 									}}
+									fontWeight={"semibold"}
 								>
 									Filter
 								</Text>
@@ -219,10 +222,10 @@ function Filter() {
 								<Center
 									w={{
 										base: "15px",
-										sm: "10px",
+										sm: "15px",
 										md: "20px",
 										lg: "20px",
-										xl: "20px",
+										xl: "16px",
 										"2xl": "25px",
 									}}
 								>
@@ -234,8 +237,8 @@ function Filter() {
 										sm: "xs",
 										md: "sm",
 										lg: "sm",
-										xl: "md",
-										"2xl": "2xl",
+										xl: "sm",
+										"2xl": "xl",
 									}}
 								>
 									Close
@@ -252,12 +255,12 @@ function Filter() {
 								sm: "8",
 								md: "0px",
 								lg: "1px",
-								xl: "1px",
+								xl: "3",
 								"2xl": "1.3vw",
 							}}
 							px={{
 								base: "2",
-								sm: "2",
+								sm: "0",
 								md: "0px",
 								lg: "0px",
 								xl: "0px",
@@ -269,7 +272,7 @@ function Filter() {
 								gap={{
 									base: "6",
 									lg: "6",
-									xl: "10",
+									xl: "8",
 									"2xl": "17",
 								}}
 							>
@@ -299,8 +302,11 @@ function Filter() {
 									>
 										Filter by profile type
 									</Text>
-									<HStack w={"100%"}>
-										<Box w={"50%"} h={"100%"}>
+									<HStack
+										w={"100%"}
+										gap={{ base: "3px", md: "10px" }}
+									>
+										<Box w={"fit-content"} h={"100%"}>
 											<Checkbox
 												variant="rounded"
 												spacing={"2"}
@@ -316,7 +322,16 @@ function Filter() {
 												iMerchant
 											</Checkbox>
 										</Box>
-										<Box w={"50%"} h={"100%"}>
+										<Box
+											w={"fit-content"}
+											h={"100%"}
+											px={{
+												base: "0px",
+												md: "5px",
+												xl: "20px",
+												"2xl": "30px",
+											}}
+										>
 											<Checkbox
 												spacing={"2"}
 												variant="rounded"
@@ -330,6 +345,22 @@ function Filter() {
 												}}
 											>
 												Seller
+											</Checkbox>
+										</Box>
+										<Box w={"fit-content"} h={"100%"}>
+											<Checkbox
+												spacing={"2"}
+												variant="rounded"
+												size={{
+													base: "sm",
+													sm: "sm",
+													md: "sm",
+													lg: "sm",
+													xl: "sm",
+													"2xl": "lg",
+												}}
+											>
+												Distributer
 											</Checkbox>
 										</Box>
 									</HStack>
@@ -366,8 +397,8 @@ function Filter() {
 												variant="rounded"
 												spacing={"2"}
 												size={{
-													base: "xs",
-													sm: "xs",
+													base: "sm",
+													sm: "sm",
 													md: "sm",
 													lg: "sm",
 													xl: "sm",
@@ -382,8 +413,8 @@ function Filter() {
 												spacing={"2"}
 												variant="rounded"
 												size={{
-													base: "xs",
-													sm: "xs",
+													base: "sm",
+													sm: "sm",
 													md: "sm",
 													lg: "sm",
 													xl: "sm",
@@ -437,48 +468,80 @@ function Filter() {
 											"2xl": "2.5",
 										}}
 									>
-										<InputGroup
-											borderRadius={"0px"}
-											size={{
-												base: "xs",
-												sm: "xs",
-												lg: "xs",
-												xl: "sm",
-												"2xl": "sm",
+										<Flex
+											align={"center"}
+											gap={"5px"}
+											h={{
+												base: "11vw",
+												sm: "30px",
+												md: "30px",
+												lg: "30px",
+												xl: "35px",
+												"2xl": "45px",
 											}}
+											w={{ base: "100%", md: "80%" }}
+											border={"1px solid #D2D2D2"}
+											borderRadius={"8px"}
+											overflow={"hidden"}
 										>
-											<InputLeftAddon children="From:" />
-											<Input
-												borderRadius={"0px"}
-												type="date"
-											/>
-										</InputGroup>
-										<InputGroup
-											borderRadius={"0px"}
-											size={{
-												base: "xs",
-												sm: "xs",
-												lg: "xs",
-												xl: "sm",
-												"2xl": "sm",
+											<HStack
+												h={"100%"}
+												bg={"bg"}
+												w={"25%"}
+												pl={"15px"}
+											>
+												<Text>From:</Text>
+											</HStack>
+											<Box w={"70%"}>
+												<Input
+													size="sm"
+													type="date"
+													border={"none"}
+													focusBorderColor={
+														"transparent"
+													}
+												/>
+											</Box>
+										</Flex>
+										<Flex
+											align={"center"}
+											gap={"5px"}
+											h={{
+												base: "11vw",
+												sm: "30px",
+												md: "30px",
+												lg: "30px",
+												xl: "35px",
+												"2xl": "45px",
 											}}
+											w={{ base: "100%", md: "80%" }}
+											border={"1px solid #D2D2D2"}
+											borderRadius={"8px"}
+											overflow={"hidden"}
 										>
-											<InputLeftAddon
-												children="To:"
-												borderRadius={"0px"}
-												width={{
-													base: "48px",
-													xl: "60px",
-												}}
-											/>
-											<Input
-												borderRadius={"0px"}
-												type="date"
-											/>
-										</InputGroup>
+											<HStack
+												h={"100%"}
+												bg={"bg"}
+												w={"25%"}
+												pl={"15px"}
+											>
+												<Text>To:</Text>
+											</HStack>
+											<Box w={"70%"}>
+												<Input
+													size="sm"
+													type="date"
+													border={"none"}
+													focusBorderColor={
+														"transparent"
+													}
+												/>
+											</Box>
+										</Flex>
 									</Flex>
 								</VStack>
 							</VStack>
+
 							<Flex
 								justifyContent={"flex-end"}
 								gap={{

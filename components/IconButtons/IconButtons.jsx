@@ -1,4 +1,5 @@
 import { Box, Button, IconButton, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { Icon } from "..";
 
 const IconButtons = (props) => {
@@ -13,9 +14,16 @@ const IconButtons = (props) => {
 		iconStyle,
 		textStyle,
 		children,
+		iconSize = "sm",
 		onClick,
 		...rest
 	} = props;
+
+	const [hasMounted, setHasMounted] = useState(false);
+
+	useEffect(() => {
+		setHasMounted(true);
+	}, []);
 
 	/* icon color */
 	const color = variant == "primary" ? "primary.DEFAULT" : "accent.DEFAULT";
@@ -36,30 +44,42 @@ const IconButtons = (props) => {
 			_hover={{ color: hoverColor }}
 			_active={{ color: hoverColor }}
 		>
-			{/*  //TODO fix this hydration error 👇 (root cause : hasIcon, code line [41 - 60]) */}
-			{/* {hasIcon ? (
+			{hasIcon ? (
 				<Box order={iconOrder}>
-					{hasBG ? (
-						<Box>
-							<IconButton
-								size="sm"
-								isRound={isRound}
-								variant={variant}
-								icon={<Icon name={iconName} {...iconStyle} />}
-							/>
-						</Box>
-					) : (
-						<Box color="inherit">
-							<Icon name={iconName} {...iconStyle} />
-						</Box>
+					{hasMounted && (
+						<>
+							{hasBG ? (
+								<>
+									<IconButton
+										size={iconSize}
+										isRound={isRound}
+										variant={variant}
+										icon={
+											<Icon
+												name={iconName}
+												{...iconStyle}
+											/>
+										}
+									/>
+								</>
+							) : (
+								<Box color="inherit">
+									<Icon name={iconName} {...iconStyle} />
+								</Box>
+							)}
+						</>
 					)}
 				</Box>
 			) : (
 				""
-			)} */}
+			)}
 
 			<Box order={textOrder}>
-				<Text color="inherit" {...textStyle}>
+				<Text
+					color="inherit"
+					fontSize={{ base: "12px", md: "14px" }}
+					{...textStyle}
+				>
 					{title}
 				</Text>
 			</Box>
