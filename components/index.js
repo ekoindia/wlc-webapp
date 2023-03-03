@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Calenders } from "./Calenders";
 import { Switch } from "./Switch";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
@@ -24,6 +25,7 @@ import { Tables } from "./Tables";
 import { Tags } from "./Tags";
 
 export {
+	Calenders,
 	Switch,
 	Menus,
 	RouteProtecter,
