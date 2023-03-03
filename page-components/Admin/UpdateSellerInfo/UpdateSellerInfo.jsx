@@ -7,7 +7,7 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Icon, Input, Switch } from "components";
+import { Buttons, Icon, Input, Switch, Calenders } from "components";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 /**
@@ -188,21 +188,9 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 					</Box>
 				</Flex>
 				<Flex mt={{ base: "3rem", "2xl": "2.8rem" }}>
-					<Box
-						// w={{
-						// 	base: "100%",
-						// 	xl: "25vw",
-						// 	lg: "35vw",
-						// 	"2xl": "27vw",
-						// }}
-						w="100%"
-					>
-						<Input
+					<Box w="100%">
+						<Calenders
 							label="Trained on"
-							placeholder={""}
-							type="date"
-							dateFormat="DD/MM/yyyy"
-							icon={<Icon name="celender" />}
 							// value={value}
 							// invalid={invalid}
 							// errorMsg={errorMsg}
@@ -216,7 +204,6 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								mb: { base: 2.5, "2xl": "0.8rem" },
 							}}
 							inputContStyle={{
-								h: { base: "3rem", "2xl": "3rem" },
 								w: {
 									base: "100%",
 									md: "400px",
@@ -225,12 +212,6 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 								},
 								pos: "relative",
 							}}
-							// isNumInput={true}
-							// inputProps={{ maxLength: 12 }}
-							// onFocus={() => {
-							// 	setInvalid(false);
-							// }}
-							// onKeyDown={onkeyHandler}
 						/>
 					</Box>
 				</Flex>
