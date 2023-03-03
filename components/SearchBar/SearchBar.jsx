@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Icon } from "..";
 
-export function SearchBar({ onChangeHandler, value }) {
+export function SearchBar({ onChangeHandler, value, inputContProps }) {
 	return (
 		<Box
 			position="relative"
@@ -21,25 +21,22 @@ export function SearchBar({ onChangeHandler, value }) {
 				xl: "2.6vw",
 				"2xl": "2.2vw",
 			}}
+			width={{
+				base: "100%",
+				md: "50vw",
+				lg: "30vw",
+				xl: "30vw",
+				"2xl": "30vw",
+			}}
+			{...inputContProps}
 			// mt={{ base: "10px", md: "1vw", "2xl": ".5vw" }}
 		>
 			<Input
 				value={value}
 				placeholder="Search by name or mobile number"
 				size="lg"
-				borderRadius={{
-					base: "7px",
-					md: "7px",
-					lg: "5px",
-					"2xl": "10px",
-				}}
-				width={{
-					base: "100%",
-					md: "50vw",
-					lg: "30vw",
-					xl: "30vw",
-					"2xl": "30vw",
-				}}
+				borderRadius="10px"
+				w="100%"
 				h="100%"
 				fontSize={{ base: "xs", "2xl": "sm" }}
 				border=" 1px solid #D2D2D2"

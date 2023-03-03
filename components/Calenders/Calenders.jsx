@@ -18,6 +18,7 @@ const Calenders = ({
 	required = false,
 	labelStyle,
 	inputContStyle,
+	position,
 	calendersProps,
 	labelPosition,
 	...props
@@ -56,7 +57,7 @@ const Calenders = ({
 				overflow={"hidden"}
 				onClick={(e) => handleClickForInput("from")}
 				bg={"white"}
-				px="15px"
+				px="10px"
 				_hover={{
 					bg: "focusbg",
 					boxShadow: "0px 3px 6px #0000001A",
@@ -72,15 +73,21 @@ const Calenders = ({
 					alignItems={"center"}
 				>
 					{/* From To */}
-					<Flex gap="5px">
+					<Flex alignItems={"center"}>
 						<Flex
 							onClick={(e) => handleClickForInput("from")}
 							align={"center"}
-							w="100%"
 						>
 							{" "}
 							{sublabel ? (
-								<InputLabel required={required} fontSize="14px">
+								<InputLabel
+									required={required}
+									fontSize={{
+										base: "14px",
+										md: "12px",
+										xl: "14px",
+									}}
+								>
 									{sublabel}:
 								</InputLabel>
 							) : (
@@ -89,8 +96,15 @@ const Calenders = ({
 						</Flex>
 						{/* Input Palceholder */}
 
-						<Flex w="100px">
-							<Text fontSize="14px" w="100px">
+						<Flex w={{ base: "120px", md: "100px" }}>
+							<Text
+								fontSize={{
+									base: "14px",
+									md: "12px",
+									xl: "14px",
+								}}
+								w="100%"
+							>
 								{dateText.from}
 							</Text>
 						</Flex>
@@ -107,7 +121,7 @@ const Calenders = ({
 							>
 								<Input
 									size="xs"
-									w="2px"
+									w="1px"
 									type="date"
 									height="100%"
 									ref={fromRef}
@@ -140,7 +154,11 @@ const Calenders = ({
 								<Center alignItems="flex-end">
 									<Icon
 										name="calender"
-										width="23px"
+										width={{
+											base: "",
+											md: "20px",
+											xl: "23px",
+										}}
 										height="24px"
 									/>
 								</Center>

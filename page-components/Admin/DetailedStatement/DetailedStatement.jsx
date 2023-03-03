@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Input, Text, VStack } from "@chakra-ui/react";
-import { Buttons, Cards, Icon, SearchBar, Tags } from "components";
+import { Buttons, Cards, Icon, SearchBar, Tags, Calenders } from "components";
 import { useRef, useState } from "react";
 import { DetailedStatementTable } from ".";
 
@@ -318,194 +318,110 @@ const DetailedStatement = ({ className = "", ...props }) => {
 						</Flex>
 					</Cards>
 				</Box>
-
-				<Box paddingTop={{ md: "24px" }}>
-					<SearchBar
-						onChangeHandler={onChangeHandler}
-						value={searchValue}
-					/>
-				</Box>
-
-				{/* Mobile Date Filter */}
-				<VStack
-					display={{ base: "flex", md: "none" }}
-					w={"100%"}
-					my={"30px"}
-					gap={"20px"}
-					mb={"50px"}
+				<Flex
+					paddingTop={{ md: "24px" }}
+					justifyContent={{ base: "", md: "space-between" }}
+					direction={{ base: "column", md: "row" }}
 				>
-					<VStack align={"flex-start"} w={"full"}>
-						<Text
-							as={"span"}
-							fontSize={"16px"}
-							fontWeight={"semibold"}
-						>
-							Filter by date
-						</Text>
-						<Flex
-							w={"100%"}
-							justifyContent={"space-between"}
-							direction={{ base: "column", sm: "row" }}
-							gap={"20px"}
-						>
-							<Flex
-								align={"center"}
-								px={"2"}
-								h={"48px"}
-								w={{ base: "100%", sm: "50%" }}
-								border={"1px solid #D2D2D2"}
-								borderRadius={"10px"}
-								overflow={"hidden"}
-								onClick={(e) => handleClickForInput("from")}
-								bg={"white"}
-							>
-								<Flex w={"100%"} align={"center"} h={"100%"}>
-									<Flex
-										onClick={(e) =>
-											handleClickForInput("from")
-										}
-										pr={"3vw"}
-										align={"center"}
-										w={{ base: "20%", sm: "30%" }}
-										h={"100%"}
-										justifyContent={"end"}
-									>
-										<Text as={"span"}>From:</Text>
-									</Flex>
-									<Flex
-										w={{ base: "60%", sm: "50%" }}
-										h={"100%"}
-									>
-										<Box
-											w={"100%"}
-											h={"100%"}
-											position={"relative"}
-											display={"flex"}
-											alignItems={"center"}
-										>
-											<Text as={"button"}>
-												{dateText.from}
-											</Text>
-											<Input
-												w={"2px"}
-												size="xs"
-												type="date"
-												height={"100%"}
-												ref={fromRef}
-												onChange={(e) => {
-													if (!e.target.value) {
-														setDateText((prev) => {
-															return {
-																...prev,
-																from: "DD/MM/YYYY",
-															};
-														});
-													} else {
-														setDateText((prev) => {
-															return {
-																...prev,
-																from: e.target
-																	.value,
-															};
-														});
-													}
-												}}
-												border={"none"}
-												focusBorderColor={"transparent"}
-											/>
-										</Box>
-									</Flex>
-									<Center w={"20%"} h={"100%"}>
-										<Icon
-											name="calender"
-											width="23px"
-											height="'24px"
-										/>
-									</Center>
-								</Flex>
-							</Flex>
+					<Flex>
+						<SearchBar
+							onChangeHandler={onChangeHandler}
+							value={searchValue}
+							inputContProps={{
+								h: { base: "3rem", md: "2.5rem", xl: "3rem" },
+								width: {
+									base: "100%",
+									md: "200px",
+									xl: "400px",
+									"2xl": "600px",
+								},
+							}}
+						/>
+					</Flex>
 
-							<Flex
-								align={"center"}
-								px={"2"}
-								h={"48px"}
-								w={{ base: "100%", sm: "50%" }}
-								border={"1px solid #D2D2D2"}
-								borderRadius={"10px"}
-								overflow={"hidden"}
-								bg={"white"}
-								onClick={(e) => handleClickForInput("to")}
+					<Flex
+						alignItems={{ base: "initial", md: "center" }}
+						direction={{ base: "column", md: "row" }}
+						gap={{ base: "20px", md: "0" }}
+						mt={{ base: "30px", md: "0px" }}
+					>
+						<Box pr={{ md: "5px", xl: "10px" }}>
+							<Text
+								fontWeight={"semibold"}
+								fontSize={{
+									md: "10px",
+									lg: "12px",
+									xl: "16px",
+								}}
 							>
-								<Flex w={"100%"} align={"center"} h={"100%"}>
-									<Flex
-										pr={"3vw"}
-										align={"center"}
-										w={{ base: "15%", sm: "25%" }}
-										h={"100%"}
-										justifyContent={"end"}
-									>
-										<Text as={"span"}>To:</Text>
-									</Flex>
-									<Flex
-										w={{ base: "65%", sm: "55%" }}
-										h={"100%"}
-									>
-										<Box
-											w={"100%"}
-											h={"100%"}
-											position={"relative"}
-											display={"flex"}
-											alignItems={"center"}
-										>
-											<Text as={"button"}>
-												{dateText.to}
-											</Text>
-											<Input
-												w={"2px"}
-												size="xs"
-												type="date"
-												height={"100%"}
-												ref={toRef}
-												onChange={(e) => {
-													if (!e.target.value) {
-														setDateText((prev) => {
-															return {
-																...prev,
-																to: "DD/MM/YYYY",
-															};
-														});
-													} else {
-														setDateText((prev) => {
-															return {
-																...prev,
-																to: e.target
-																	.value,
-															};
-														});
-													}
-												}}
-												border={"none"}
-												focusBorderColor={"transparent"}
-											/>
-										</Box>
-									</Flex>
-									<Center w={"20%"} h={"100%"}>
-										<Icon
-											name="calender"
-											width="23px"
-											height="'24px"
-										/>
-									</Center>
-								</Flex>
-							</Flex>
+								Filter by date:
+							</Text>
+						</Box>
+						<Flex>
+							<Calenders
+								w="100%"
+								sublabel="From"
+								inputContStyle={{
+									w: {
+										base: "100%",
+										md: "190px",
+										xl: "200px",
+										"2xl": "274px",
+									},
+									borderRadius: {
+										base: "10px",
+										md: "10px 0px 0px 10px",
+									},
+									borderRight: { base: "flex", md: "none" },
+									h: {
+										base: "3rem",
+										md: "2.5rem",
+										xl: "3rem",
+									},
+								}}
+							/>
 						</Flex>
-					</VStack>
-					<Buttons
-						title={"Filter"}
-						w={"100%"}
-						h={{ base: "54px", sm: "50px" }}
-					/>
-				</VStack>
+						<Flex>
+							<Calenders
+								sublabel="To"
+								w="100%"
+								inputContStyle={{
+									w: {
+										base: "100%",
+										md: "180px",
+										xl: "200px",
+										"2xl": "274px",
+									},
+
+									borderRadius: {
+										base: "10px",
+										md: "0px 10px 10px 0px",
+									},
+									h: {
+										base: "3rem",
+										md: "2.5rem",
+										xl: "3rem",
+									},
+								}}
+							/>
+						</Flex>
+						<Flex pl={{ md: "5px", xl: "10px" }}>
+							<Buttons
+								h={{ base: "3rem", md: "2.5em", xl: "3rem" }}
+								title="Apply"
+								fontSize={{ base: "", lg: "15px", xl: "20px" }}
+								fontWeight="bold"
+								w={{
+									base: "100%",
+									sm: "10rem",
+									md: "5rem",
+									xl: "6.5rem",
+									"2xl": "7.375rem",
+								}}
+							/>
+						</Flex>
+					</Flex>
+				</Flex>
 
 				<Box>
 					<DetailedStatementTable />
