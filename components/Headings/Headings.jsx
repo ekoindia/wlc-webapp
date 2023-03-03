@@ -22,7 +22,7 @@ const Headings = (props) => {
 			marginBottom={{
 				base: !insideNav ? "10px" : "0px",
 				sm: !insideNav ? "8px" : "0px",
-				md: "12px",
+				md: !insideNav ? "12px" : "0px",
 				lg: "16px",
 				xl: "18px",
 				"2xl": "20px",
