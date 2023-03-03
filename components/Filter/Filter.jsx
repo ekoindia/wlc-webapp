@@ -534,7 +534,7 @@ function Filter() {
 
 								{/* Calender */}
 
-								<Flex direction={"column"}>
+								<Flex direction={"column"} w="100%">
 									<Text
 										fontSize={{
 											base: "",
@@ -552,12 +552,12 @@ function Filter() {
 											base: "column",
 											md: "row",
 										}}
-										w="full"
 										gap={{ base: "20px", md: "0px" }}
 									>
-										<Flex>
+										<Flex w="100%">
 											<Calenders
 												// label="Filter by activation date range"
+												w="100%"
 												sublabel="From"
 												labelStyle={{
 													fontSize: "lg",
@@ -566,7 +566,7 @@ function Filter() {
 												}}
 												inputContStyle={{
 													w: {
-														base: "311px",
+														base: "100%",
 														md: "205px",
 														// xl: "200px",
 														"2xl": "274px",
@@ -576,12 +576,16 @@ function Filter() {
 														base: "10px",
 														md: "10px 0px 0px 10px",
 													},
+													borderRight: {
+														base: "flex",
+														md: "none",
+													},
 												}}
 											/>
 										</Flex>
-										<Flex>
+										<Flex w="100%">
 											<Calenders
-												label=""
+												w="100%"
 												sublabel="To"
 												labelStyle={{
 													fontSize: "lg",
@@ -590,7 +594,7 @@ function Filter() {
 												}}
 												inputContStyle={{
 													w: {
-														base: "311px",
+														base: "100%",
 														md: "205px",
 														"2xl": "274px",
 													},
