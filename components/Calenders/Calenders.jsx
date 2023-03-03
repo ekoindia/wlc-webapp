@@ -58,7 +58,7 @@ const Calenders = ({
 				overflow={"hidden"}
 				onClick={(e) => handleClickForInput("from")}
 				bg={"white"}
-				px="10px"
+				px="20px"
 				_hover={{
 					bg: "focusbg",
 					boxShadow: "0px 3px 6px #0000001A",
@@ -89,7 +89,7 @@ const Calenders = ({
 										xl: "14px",
 									}}
 								>
-									{sublabel}:
+									{sublabel}:&nbsp;
 								</InputLabel>
 							) : (
 								""
@@ -152,15 +152,18 @@ const Calenders = ({
 
 							{/* Icon */}
 							<Flex>
-								<Center alignItems="flex-end">
+								<Center
+									alignItems="flex-end"
+									width={{
+										base: "",
+										md: "20px",
+										xl: "23px",
+									}}
+								>
 									<Icon
+										color="dark"
 										name="calender"
-										width={{
-											base: "",
-											md: "20px",
-											xl: "23px",
-										}}
-										height="24px"
+										height="25px"
 									/>
 								</Center>
 							</Flex>
