@@ -15,7 +15,7 @@ import {
 	useMediaQuery,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Icon, IconButtons, Input } from "components";
+import { Buttons, Icon, IconButtons, Input, Calenders } from "components";
 import React, { useEffect, useRef, useState } from "react";
 
 /**
@@ -35,9 +35,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	const EnterRef = useRef();
 	const [values, setValues] = React.useState("1");
 	// const [isSmallerThan500] = useMediaQuery("(max-width: 1400px)");
-	const [isTablet] = useMediaQuery("(max-width: 770px)");
-
-	const [count, setCount] = useState(0); // TODO: Edit state as required
+	// TODO: Edit state as required
 	const handleDragOver = (event) => {
 		event.preventDefault();
 	};
@@ -153,7 +151,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							mt={{ base: "0px", lg: "3.1rem" }}
 							w={{
 								base: "100%",
-								lg: "77.5vw",
+								lg: "71.5vw",
 								xl: "66vw",
 								"2xl": "54.5vw",
 							}}
@@ -321,12 +319,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											pos: "relative",
 											alignItems: "center",
 										}}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 								<Box
@@ -362,12 +354,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											},
 											pos: "relative",
 										}}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 								<Box
@@ -404,12 +390,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											},
 											pos: "relative",
 										}}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 							</Flex>
@@ -421,21 +401,11 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 										md: "46%",
 										xl: "26.5%",
-										"2xl": "31%",
+										"2xl": "500px",
 									}}
 								>
-									<Input
+									<Calenders
 										label="Date of birth"
-										placeholder={""}
-										type="date"
-										dateFormat="DD/MM/YYYY"
-										required="true"
-										icon={
-											<Icon
-												name="caret-down"
-												width="17px"
-											/>
-										}
 										// value={value}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
@@ -449,22 +419,14 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											mb: { base: 2.5, "2xl": "0.3rem" },
 										}}
 										inputContStyle={{
-											h: { base: "3rem", "2xl": "3rem" },
 											w: {
 												base: "100%",
 
 												lg: "25.5rem",
-												"2xl": "20.6875rem",
+												"2xl": "100%",
 											},
 											pos: "relative",
 										}}
-
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 							</Flex>
@@ -519,7 +481,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 
 										lg: "18.5rem",
 										xl: "26.5%",
-										"2xl": "63%",
+										"2xl": "500px",
 									}}
 								>
 									<Box mb={{ base: 2.5, "2xl": "0.7rem" }}>
@@ -541,7 +503,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											base: "100%",
 
 											lg: "25rem",
-											"2xl": "20.6875rem",
+											"2xl": "100%",
 										}}
 										mt={{ base: "0.7rem", "2xl": "0" }}
 										position="relative"
@@ -612,12 +574,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											},
 											pos: "relative",
 										}}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
 									/>
 								</Box>
 								<Box

@@ -28,75 +28,68 @@ const NewAddress = ({ className = "", ...props }) => {
 
 	return (
 		<Box>
-			<Box mt={{ base: 2.5, lg: "15px" }}>
-				<Box mb={{ base: 2.5, "2xl": "" }}>
+			<Box
+				mt={{ base: 2.5, lg: "15px" }}
+				w={{
+					base: "100%",
+					md: "48%",
+					lg: "350px",
+					xl: "400px",
+					"2xl": "500px",
+				}}
+			>
+				<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
+					<Text as="span" color="error">
+						*
+					</Text>
+					&nbsp;{" "}
 					<Text
 						as="b"
 						style={{
-							fontSize: "md",
-							color: "inputlabel",
+							fontSize: {
+								base: "sm",
+								"2xl": "lg",
+							},
+							color: "inputlabe",
 							pl: "0",
 							fontWeight: "600",
 						}}
 					>
 						Address Type
 					</Text>
-				</Box>
+				</Flex>
 
 				<Box>
-					<Flex
-						w={{
-							base: "100%",
-							lg: "48%",
-							xl: "34.5%",
-							"2xl": "32%",
-						}}
+					<Select
+						placeholder="Permanent"
+						w="100%"
+						h={"3rem"}
+						borderRadius="10px"
+						icon={<Icon name="caret-down" />}
 					>
-						<Select
-							placeholder="--Select--"
-							w={{
-								base: "100%",
-								md: "43vw",
-								lg: "34vw",
-								xl: "28vw",
-								"2xl": "25vw",
-							}}
-							h={"3rem"}
-							borderRadius="10px"
-							icon={<Icon name="caret-down" />}
-						>
-							<option value="option1">Option 1</option>
-							<option value="option2">Option 2</option>
-						</Select>
-					</Flex>
+						<option value="option1">Local</option>
+					</Select>
 				</Box>
 			</Box>
-			<Flex
-				rowGap={{
-					base: "2.8rem",
-					sm: "2.5rem",
-					"2xl": "2.5rem",
-				}}
-				direction="column"
-			>
+			<Flex rowGap="2.5rem" direction="column">
 				<Flex
 					wrap={"wrap"}
 					gap={{
 						md: "1.7rem",
 						xl: "1.5rem",
-						lg: "3.1rem",
+						lg: "2rem",
 						"2xl": "1.2rem",
 					}}
-					mt={{ base: "2.25rem", md: "1.2rem" }}
+					mt="1.2rem"
 					direction={"row"}
 				>
 					<Box
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
@@ -116,28 +109,19 @@ const NewAddress = ({ className = "", ...props }) => {
 							}}
 							inputContStyle={{
 								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+								w: "100%",
 								pos: "relative",
 								alignItems: "center",
 							}}
 						/>
 					</Box>
 					<Box
-						mt={{
-							base: "2.8rem",
-							md: "0",
-						}}
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
@@ -156,12 +140,7 @@ const NewAddress = ({ className = "", ...props }) => {
 							}}
 							inputContStyle={{
 								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+								w: "100%",
 								pos: "relative",
 								alignItems: "center",
 							}}
@@ -172,7 +151,7 @@ const NewAddress = ({ className = "", ...props }) => {
 					wrap={"wrap"}
 					gap={{
 						md: "1.5rem",
-						lg: "3.1rem",
+						lg: "2rem",
 						xl: "1.5rem",
 						"2xl": "1.2rem",
 					}}
@@ -181,9 +160,9 @@ const NewAddress = ({ className = "", ...props }) => {
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
@@ -203,12 +182,7 @@ const NewAddress = ({ className = "", ...props }) => {
 							}}
 							inputContStyle={{
 								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+								w: "100%",
 								pos: "relative",
 								alignItems: "center",
 							}}
@@ -218,13 +192,9 @@ const NewAddress = ({ className = "", ...props }) => {
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
-						}}
-						mt={{
-							base: "2.8rem",
-							md: "0",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
@@ -243,12 +213,7 @@ const NewAddress = ({ className = "", ...props }) => {
 							}}
 							inputContStyle={{
 								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+								w: "100%",
 								pos: "relative",
 								alignItems: "center",
 							}}
@@ -258,7 +223,7 @@ const NewAddress = ({ className = "", ...props }) => {
 				<Flex
 					gap={{
 						md: "1.5rem",
-						lg: "3.1rem",
+						lg: "2rem",
 						xl: "1.5rem",
 						"2xl": "1.2rem",
 					}}
@@ -269,9 +234,9 @@ const NewAddress = ({ className = "", ...props }) => {
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
@@ -295,36 +260,34 @@ const NewAddress = ({ className = "", ...props }) => {
 							</Text>
 						</Flex>
 
-						<Box>
+						<Box
+							w={{
+								base: "100%",
+								// md: "48%",
+								lg: "350px",
+								xl: "400px",
+								"2xl": "500px",
+							}}
+						>
 							<Select
-								placeholder="-- Select --"
+								placeholder="UttarPradesh"
+								w="100%"
+								h={"3rem"}
+								borderRadius="10px"
 								icon={<Icon name="caret-down" />}
-								h={{ base: "3rem", "2xl": "3rem" }}
-								w={{
-									base: "100%",
-									lg: "34vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								}}
-								borderRadius={{
-									base: 10,
-									"2xl": 10,
-								}}
-							></Select>
+							>
+								<option value="Delhi"></option>
+							</Select>
 						</Box>
 					</Box>
 
 					<Box
-						mt={{
-							base: "2.8rem",
-							md: "0",
-						}}
 						w={{
 							base: "100%",
 							md: "48%",
-							lg: "46%",
-							xl: "34.5%",
-							"2xl": "31%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
 						}}
 					>
 						<Input
@@ -344,12 +307,7 @@ const NewAddress = ({ className = "", ...props }) => {
 							}}
 							inputContStyle={{
 								h: { base: "3rem", "2xl": "3rem" },
-								w: {
-									base: "100%",
-									lg: "37vw",
-									xl: "28vw",
-									"2xl": "25vw",
-								},
+								w: "100%",
 								pos: "relative",
 								alignItems: "center",
 							}}
@@ -357,31 +315,50 @@ const NewAddress = ({ className = "", ...props }) => {
 					</Box>
 				</Flex>
 
-				<Box mt={{ base: 2.5, md: "0" }}>
-					<Box mb={{ base: 2.5, "2xl": "0.8rem" }}>
+				<Box
+					w={{
+						base: "100%",
+						md: "48%",
+						lg: "350px",
+						xl: "400px",
+						"2xl": "500px",
+					}}
+				>
+					<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
 						<Text
-							fontSize={{ base: "md" }}
-							color="inputlabel"
-							pl="0"
-							fontWeight="600"
+							as="b"
+							style={{
+								fontSize: {
+									base: "sm",
+									"2xl": "lg",
+								},
+								color: "inputlabe",
+								pl: "0",
+								fontWeight: "600",
+							}}
 						>
 							Ownership Type
 						</Text>
-					</Box>
-					<Box>
+					</Flex>
+
+					<Box
+						w={{
+							base: "100%",
+							// md: "48%",
+							lg: "350px",
+							xl: "400px",
+							"2xl": "500px",
+						}}
+					>
 						<Select
-							placeholder="-- Select --"
+							placeholder="Permanent"
+							w="100%"
+							h={"3rem"}
+							borderRadius="10px"
 							icon={<Icon name="caret-down" />}
-							h={{ base: "3rem", "2xl": "3rem" }}
-							w={{
-								base: "100%",
-								md: "43vw",
-								lg: "34vw",
-								xl: "28vw",
-								"2xl": "25vw",
-							}}
-							borderRadius={{ base: 10, "2xl": 10 }}
-						></Select>
+						>
+							<option value="Permanent"></option>
+						</Select>
 					</Box>
 				</Box>
 			</Flex>
