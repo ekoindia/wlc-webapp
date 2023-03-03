@@ -21,6 +21,7 @@ const Calenders = ({
 	position,
 	calendersProps,
 	labelPosition,
+
 	...props
 }) => {
 	const [dateText, setDateText] = useState({
@@ -96,7 +97,7 @@ const Calenders = ({
 						</Flex>
 						{/* Input Palceholder */}
 
-						<Flex w={{ base: "120px", md: "100px" }}>
+						<Flex w="100%">
 							<Text
 								fontSize={{
 									base: "14px",
