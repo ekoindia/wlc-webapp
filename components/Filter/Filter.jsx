@@ -8,6 +8,7 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerContent,
+	DrawerFooter,
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
@@ -18,7 +19,7 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Icon, IconButtons } from "..";
+import { Buttons, Icon, IconButtons, Calenders } from "..";
 
 function Filter() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -28,7 +29,6 @@ function Filter() {
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
 				<Button
-					// mt={{ base: "1vw", "2xl": ".5vw" }}
 					display={"flex"}
 					justifyContent={"space-evenly"}
 					alignItems={"center"}
@@ -71,7 +71,7 @@ function Filter() {
 						width={{
 							base: "10px",
 							sm: "12px",
-							md: "12px",
+
 							lg: "14px",
 							xl: "16px",
 							"2xl": "20px",
@@ -79,7 +79,7 @@ function Filter() {
 						height={{
 							base: "10px",
 							sm: "12px",
-							md: "12px",
+
 							lg: "14px",
 							xl: "16px",
 							"2xl": "20px",
@@ -94,10 +94,9 @@ function Filter() {
 						fontSize={{
 							base: "5px",
 							sm: "xs",
-							md: "xs",
-							lg: "xs",
+
 							xl: "sm",
-							"2xl": "xl",
+							"2xl": "lg",
 						}}
 						lineHeight={1}
 					>
@@ -141,9 +140,8 @@ function Filter() {
 					base: "full",
 					sm: "xs",
 					md: "sm",
-					lg: "xs",
-					xl: "sm",
-					"2xl": "md",
+
+					"2xl": "lg",
 				}}
 			>
 				<DrawerOverlay
@@ -155,7 +153,7 @@ function Filter() {
 				<DrawerContent
 					borderTopRadius={{ base: "20px", sm: "0px" }}
 					mt={{ base: "8", sm: "0px" }}
-					p={"10px"}
+					// p={"10px"}
 				>
 					<DrawerHeader>
 						<Box
@@ -170,10 +168,8 @@ function Filter() {
 							px={{
 								base: "3px",
 								sm: "0px",
-								md: "0px",
-								lg: "0px",
-								xl: "0px",
-								"2xl": "1.2vw",
+
+								"2xl": "1.5vw",
 							}}
 						>
 							<Box
@@ -187,8 +183,7 @@ function Filter() {
 										base: "15px",
 										sm: "15px",
 										md: "20px",
-										lg: "20px",
-										xl: "20px",
+
 										"2xl": "25px",
 									}}
 								>
@@ -197,10 +192,10 @@ function Filter() {
 								<Text
 									fontSize={{
 										base: "md",
-										sm: "md",
+
 										md: "sm",
 										lg: "md",
-										xl: "md",
+
 										"2xl": "2xl",
 									}}
 									fontWeight={"semibold"}
@@ -223,7 +218,7 @@ function Filter() {
 										base: "15px",
 										sm: "15px",
 										md: "20px",
-										lg: "20px",
+
 										xl: "16px",
 										"2xl": "25px",
 									}}
@@ -235,8 +230,7 @@ function Filter() {
 										base: "sm",
 										sm: "xs",
 										md: "sm",
-										lg: "sm",
-										xl: "sm",
+
 										"2xl": "xl",
 									}}
 								>
@@ -248,7 +242,12 @@ function Filter() {
 
 					<DrawerBody>
 						<Stack
-							gap={{ base: "5vw", sm: "5vw" }}
+							gap={{
+								base: "25vw",
+								sm: "5vw",
+								md: "15vw",
+								lg: "13vw",
+							}}
 							py={{
 								base: "1",
 								sm: "8",
@@ -261,18 +260,18 @@ function Filter() {
 								base: "2",
 								sm: "0",
 								md: "0px",
-								lg: "0px",
-								xl: "0px",
-								"2xl": "1.2vw",
+
+								"2xl": "1.5vw",
 							}}
 						>
 							<VStack
 								w={"100%"}
 								gap={{
 									base: "6",
-									lg: "6",
-									xl: "8",
-									"2xl": "17",
+									md: "70px",
+									lg: "52px",
+									xl: "50px",
+									"2xl": "60px",
 								}}
 							>
 								<VStack
@@ -280,10 +279,9 @@ function Filter() {
 									w={"full"}
 									gap={{
 										base: "px",
-										sm: "px",
+
 										md: "0.5",
-										lg: "0.5",
-										xl: "0.5",
+
 										"2xl": "2.5",
 									}}
 								>
@@ -291,9 +289,7 @@ function Filter() {
 										as={"span"}
 										fontSize={{
 											base: "sm",
-											sm: "sm",
-											md: "sm",
-											lg: "sm",
+
 											xl: "md",
 											"2xl": "lg",
 										}}
@@ -312,9 +308,7 @@ function Filter() {
 												size={{
 													base: "sm",
 													sm: "sm",
-													md: "sm",
-													lg: "sm",
-													xl: "sm",
+
 													"2xl": "lg",
 												}}
 											>
@@ -328,7 +322,7 @@ function Filter() {
 												base: "0px",
 												md: "5px",
 												xl: "20px",
-												"2xl": "30px",
+												"2xl": "1.5vw",
 											}}
 										>
 											<Checkbox
@@ -337,9 +331,7 @@ function Filter() {
 												size={{
 													base: "sm",
 													sm: "sm",
-													md: "sm",
-													lg: "sm",
-													xl: "sm",
+
 													"2xl": "lg",
 												}}
 											>
@@ -425,7 +417,7 @@ function Filter() {
 										</Box>
 									</HStack>
 								</VStack>
-								<VStack
+								{/* <VStack
 									align={"flex-start"}
 									w={"full"}
 									gap={{
@@ -538,11 +530,85 @@ function Filter() {
 											</Box>
 										</Flex>
 									</Flex>
-								</VStack>
+								</VStack> */}
+
+								{/* Calender */}
+
+								<Flex direction={"column"}>
+									<Text
+										fontSize={{
+											base: "",
+											md: "16px",
+											"2xl": "18px",
+										}}
+										fontWeight="semibold"
+										mb="20px"
+									>
+										Filter by activation date range
+									</Text>
+									<Flex
+										alignItems={"center"}
+										direction={{
+											base: "column",
+											md: "row",
+										}}
+										w="full"
+										gap={{ base: "20px", md: "0px" }}
+									>
+										<Flex>
+											<Calenders
+												// label="Filter by activation date range"
+												sublabel="From"
+												labelStyle={{
+													fontSize: "lg",
+													fontWeight: "semibold",
+													mb: "1.2rem",
+												}}
+												inputContStyle={{
+													w: {
+														base: "311px",
+														md: "205px",
+														// xl: "200px",
+														"2xl": "274px",
+													},
+													h: "48px",
+													borderRadius: {
+														base: "10px",
+														md: "10px 0px 0px 10px",
+													},
+												}}
+											/>
+										</Flex>
+										<Flex>
+											<Calenders
+												label=""
+												sublabel="To"
+												labelStyle={{
+													fontSize: "lg",
+													fontWeight: "semibold",
+													mb: "1.2rem",
+												}}
+												inputContStyle={{
+													w: {
+														base: "311px",
+														md: "205px",
+														"2xl": "274px",
+													},
+													h: "48px",
+													borderRadius: {
+														base: "10px",
+														md: "0px 10px 10px 0px",
+													},
+												}}
+											/>
+										</Flex>
+									</Flex>
+								</Flex>
 							</VStack>
 
 							<Flex
 								justifyContent={"flex-end"}
+								alignItems="center"
 								gap={{
 									base: "7",
 									sm: "6",
@@ -552,34 +618,29 @@ function Filter() {
 									"2xl": "14",
 								}}
 							>
-								<IconButtons
-									hasIcon={false}
-									title={"Clear All"}
-									variant={"accent"}
-									textStyle={{ fontWeight: "bold" }}
-									size={{
-										base: "lg",
-										sm: "sm",
-										md: "sm",
-										lg: "sm",
-										xl: "md",
-										"2xl": "lg",
+								<Button
+									color={"accent.DEFAULT"}
+									fontSize={"20px"}
+									fontWeight="bold"
+									bg="white"
+									_focus={{
+										bg: "white",
 									}}
-								/>
+									_hover="none"
+								>
+									Clear all
+								</Button>
 
 								<Buttons
-									size={{
-										base: "lg",
-										sm: "sm",
-										md: "sm",
-										lg: "sm",
-										xl: "md",
-										"2xl": "lg",
+									h="3.6rem"
+									title="Apply"
+									fontSize="20px"
+									fontWeight="bold"
+									w={{
+										base: "50%",
+										sm: "10rem",
+										md: "7.375rem",
 									}}
-									title={"Apply"}
-									fontWeight={"bold"}
-									fontSize={"xl"}
-									borderRadius={"4px"}
 								/>
 							</Flex>
 						</Stack>
