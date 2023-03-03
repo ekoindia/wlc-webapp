@@ -39,7 +39,7 @@ const Calenders = ({
 		}
 	};
 	return (
-		<Flex direction={{ base: "row", md: "column" }} {...props}>
+		<Flex direction={{ base: "column", md: "" }} {...props}>
 			<Flex>
 				{label ? (
 					<InputLabel required={required} {...labelStyle}>
@@ -52,7 +52,6 @@ const Calenders = ({
 				h="100%"
 				w="100%"
 				border={"1px solid #D2D2D2"}
-				// borderRadius={"10px"}
 				borderRadius="10px"
 				overflow={"hidden"}
 				onClick={(e) => handleClickForInput("from")}
@@ -103,7 +102,6 @@ const Calenders = ({
 							<Box
 								w={"100%"}
 								h={"100%"}
-								// position={"relative"}
 								display={"flex"}
 								alignItems={"center"}
 							>
@@ -113,7 +111,6 @@ const Calenders = ({
 									type="date"
 									height="100%"
 									ref={fromRef}
-									// border="1px solid"
 									onClick={(e) => handleClickForInput("from")}
 									onChange={(e) => {
 										if (!e.target.value) {
