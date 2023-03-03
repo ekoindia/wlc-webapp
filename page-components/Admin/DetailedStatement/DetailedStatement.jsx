@@ -15,21 +15,6 @@ const DetailedStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 	// const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
-	const [dateText, setDateText] = useState({
-		from: "DD/MM/YYYY",
-		to: "DD/MM/YYYY",
-	});
-
-	const fromRef = useRef(null);
-	const toRef = useRef(null);
-
-	const handleClickForInput = (type) => {
-		if (type == "to") {
-			toRef.current.click();
-		} else {
-			fromRef.current.click();
-		}
-	};
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
