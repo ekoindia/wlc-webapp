@@ -53,7 +53,7 @@ const Layout = (props) => {
 							md: "2vw",
 							"2xl": "1.5vw",
 						}}
-						pb={{ base: "20px", md: "0px" }}
+						pb={{ base: "20px", md: "30px", "2xl": "30px" }}
 						// mt="20px"
 						css={{
 							"&::-webkit-scrollbar": {

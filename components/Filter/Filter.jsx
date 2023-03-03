@@ -565,12 +565,7 @@ function Filter() {
 													mb: "1.2rem",
 												}}
 												inputContStyle={{
-													w: {
-														base: "100%",
-														md: "205px",
-														// xl: "200px",
-														"2xl": "274px",
-													},
+													w: "100%",
 													h: "48px",
 													borderRadius: {
 														base: "10px",
@@ -593,11 +588,7 @@ function Filter() {
 													mb: "1.2rem",
 												}}
 												inputContStyle={{
-													w: {
-														base: "100%",
-														md: "205px",
-														"2xl": "274px",
-													},
+													w: "100%",
 													h: "48px",
 													borderRadius: {
 														base: "10px",
