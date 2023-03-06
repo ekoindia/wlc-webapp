@@ -27,7 +27,7 @@ const Headings = (props) => {
 				xl: "18px",
 				"2xl": "20px",
 			}}
-			px={{ base: "16px", md: "0px" }}
+			px={{ base: "16px", md: !insideNav ? "0px" : "16px" }}
 			justify="space-between"
 			align="center"
 		>
