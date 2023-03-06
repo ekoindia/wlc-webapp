@@ -1,4 +1,4 @@
 import { adminMenu } from "./adminMenu";
+import { ChangeRoleMenu } from "./ChangeRoleMenu";
 import { Endpoints } from "./EndPoints";
-
-export { adminMenu, Endpoints };
+export { adminMenu, Endpoints, ChangeRoleMenu };
