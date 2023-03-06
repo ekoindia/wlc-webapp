@@ -27,7 +27,7 @@ const PermanentAddress = (props) => {
 	}, []);
 
 	return (
-		<Box>
+		<Box mx={{ base: "16px", md: "0px" }}>
 			<Box>
 				<Text fontSize={"20px"} fontWeight="semibold" mt="4.688rem">
 					Permanent Address
@@ -93,6 +93,10 @@ const PermanentAddress = (props) => {
 							lg: "350px",
 							xl: "400px",
 							"2xl": "500px",
+						}}
+						mt={{
+							base: "2.8rem",
+							md: "0",
 						}}
 					>
 						<Input
@@ -173,6 +177,10 @@ const PermanentAddress = (props) => {
 							lg: "350px",
 							xl: "400px",
 							"2xl": "500px",
+						}}
+						mt={{
+							base: "2.8rem",
+							md: "0",
 						}}
 					>
 						<Input
