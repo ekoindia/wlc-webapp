@@ -27,6 +27,7 @@ const Headings = (props) => {
 				xl: "18px",
 				"2xl": "20px",
 			}}
+			width="100%"
 			px={{ base: "16px", md: !insideNav ? "0px" : "16px" }}
 			justify="space-between"
 			align="center"
@@ -70,7 +71,9 @@ const Headings = (props) => {
 					</Text>
 				)}
 			</Box>
-			<Box>{propComp}</Box>
+			{propComp ? (
+				<Box>{!insideNav ? propComp : "Change Role"}</Box>
+			) : null}
 		</Flex>
 	);
 };
