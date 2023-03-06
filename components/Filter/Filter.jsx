@@ -34,13 +34,13 @@ function Filter() {
 					alignItems={"center"}
 					ref={btnRef}
 					onClick={onOpen}
-					h="3rem"
+					h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
 					w={{
 						base: "8vw",
 						sm: "12vw",
 						md: "10vw",
 						lg: "7vw",
-						xl: "7vw",
+						xl: "8vw",
 						"2xl": "6vw",
 					}}
 					bg="#FFFFFF"
