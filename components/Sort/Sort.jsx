@@ -70,7 +70,11 @@ const Sort = ({ className = "", ...props }) => {
 									xl: "14vw",
 									"2xl": "11vw",
 								}}
-								h="3rem"
+								h={{
+									base: "3rem",
+									md: "2.5rem",
+									"2xl": "3rem",
+								}}
 								fontSize={{
 									base: "5px",
 									sm: "xs",

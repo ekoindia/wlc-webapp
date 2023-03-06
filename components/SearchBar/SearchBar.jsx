@@ -13,7 +13,7 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 		<Box
 			position="relative"
 			w={"100%"}
-			h="3rem"
+			h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
 			width={{
 				base: "100%",
 				md: "50vw",
