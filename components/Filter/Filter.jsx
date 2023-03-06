@@ -34,14 +34,7 @@ function Filter() {
 					alignItems={"center"}
 					ref={btnRef}
 					onClick={onOpen}
-					h={{
-						base: "8.5vw",
-						sm: "5vw",
-						md: "4vw",
-						lg: "3vw",
-						xl: "2.6vw",
-						"2xl": "2.2vw",
-					}}
+					h="3rem"
 					w={{
 						base: "8vw",
 						sm: "12vw",
@@ -54,12 +47,7 @@ function Filter() {
 					color="#11299E"
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
-					borderRadius={{
-						base: "10px",
-						md: "8px",
-						lg: "10px",
-						"2xl": "10px",
-					}}
+					borderRadius="10px"
 					_hover={{
 						bg: "white",
 					}}
