@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Breadcrumbs, NavBar, SideBar } from "..";
 
 const Layout = (props) => {
-	const { propComp } = props;
+	const { children, propComp } = props;
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const [isNav, setNav] = useState(true);
 	const [headingObj, setHeadingObj] = useState({
@@ -19,6 +19,7 @@ const Layout = (props) => {
 				isNavVisible={isNav}
 				isSmallerThan769={isSmallerThan769}
 				headingObj={headingObj}
+				propComp={propComp}
 			/>
 
 			<Flex
@@ -76,7 +77,7 @@ const Layout = (props) => {
 							propComp={propComp}
 						/>
 
-						{props.children}
+						{children}
 					</Box>
 				</Box>
 			</Flex>
