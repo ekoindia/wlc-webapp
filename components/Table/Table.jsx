@@ -4,7 +4,7 @@ import {
 	Divider,
 	Flex,
 	IconButton,
-	Table,
+	Table as ChakraTable,
 	TableContainer,
 	Tbody,
 	Td,
@@ -22,7 +22,7 @@ import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
 
-const Tables = (props) => {
+const Table = (props) => {
 	const {
 		pageLimit: PageSize = 10,
 		data: tableData,
@@ -248,12 +248,12 @@ const Tables = (props) => {
 								},
 							}}
 						>
-							<Table variant={variant} bg="white">
+							<ChakraTable variant={variant} bg="white">
 								<Thead bg="hint">
 									<Tr>{getTh()}</Tr>
 								</Thead>
 								<Tbody>{getTr()}</Tbody>
-							</Table>
+							</ChakraTable>
 						</TableContainer>
 						{/* Pagination */}
 						<Flex justify={"flex-end"}>
@@ -360,7 +360,7 @@ const Tables = (props) => {
 	);
 };
 
-export default Tables;
+export default Table;
 
 /* for row element styling */
 export const getNameStyle = (name) => {

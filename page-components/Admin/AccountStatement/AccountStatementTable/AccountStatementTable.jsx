@@ -1,9 +1,9 @@
-import { Tables } from "components";
+import { Table } from "components";
 import { mockData } from "constants/mockTableData";
 
 /**
  * A <AccountStatementTable> component
- * TODO: Write more description here
+ * TODO: This is account statement table with not clickable rows
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<AccountStatementTable></AccountStatementTable>`
@@ -31,7 +31,7 @@ const AccountStatementTable = () => {
 
 	return (
 		<>
-			<Tables
+			<Table
 				pageLimit={10}
 				renderer={renderer}
 				data={mockData}

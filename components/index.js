@@ -1,8 +1,7 @@
 /* PLOP_INJECT_IMPORT */
-import { Calenders } from "./Calenders";
-import { Switch } from "./Switch";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
+import { Calenders } from "./Calenders";
 import { Cards } from "./Cards";
 import { Divider } from "./Divider";
 import { Filter } from "./Filter";
@@ -21,10 +20,12 @@ import { SearchBar } from "./SearchBar";
 import { Selects } from "./Selects";
 import { SideBar } from "./SideBar";
 import { Sort } from "./Sort";
-import { Tables } from "./Tables";
+import { Switch } from "./Switch";
+import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	Table,
 	Calenders,
 	Switch,
 	Menus,
@@ -35,7 +36,6 @@ export {
 	Headings,
 	Divider,
 	Pagination,
-	Tables,
 	Icon,
 	Tags,
 	IconButtons,

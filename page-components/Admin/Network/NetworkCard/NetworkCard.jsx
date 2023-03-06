@@ -4,7 +4,7 @@ import {
 	getLocationStyle,
 	getNameStyle,
 	getStatusStyle,
-} from "components/Tables/Tables";
+} from "components/Table/Table";
 
 /**
  * A <NetworkCard> component
