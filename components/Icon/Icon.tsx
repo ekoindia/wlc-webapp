@@ -40,7 +40,8 @@ export type IconNameType =
 	| "refresh"
 	| "arrow-up"
 	| "arrow-down"
-	| "close";
+	| "close"
+	| "	percent_bg";
 
 export type IconProps = {
 	name: IconNameType;

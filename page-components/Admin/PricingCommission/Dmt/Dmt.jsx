@@ -12,8 +12,8 @@ import {
 	VStack,
 	Button,
 } from "@chakra-ui/react";
-import { Buttons, Icon } from "components";
-import React, { useRef } from "react";
+import { Buttons, Icon, InputLabel } from "components";
+import React, { useRef, useState } from "react";
 
 /**
  * A <Dmt> component
@@ -24,8 +24,16 @@ import React, { useRef } from "react";
  */
 
 const Dmt = ({ className = "", ...props }) => {
+	const [value, setValue] = useState("0");
+	const [iconValue, setIconValue] = useState("percent");
+
 	const focusRef = useRef(null);
 
+	const SelectData = [
+		{ label: ["Select Products", "Select Slab"] },
+		{ label: ["Select Individuals", "Select Slab"] },
+		{ label: ["Select Distributors", "Select Slab"] },
+	];
 	const popBoxHandle = (boxStateFlag) => {
 		if (boxStateFlag) {
 			focusRef.current.style.display = "block";
@@ -38,26 +46,27 @@ const Dmt = ({ className = "", ...props }) => {
 		<Stack w={"100%"} minH={{ base: "100%", md: "100%" }} gap={"10"}>
 			<VStack w={"100%"} gap={".5"}>
 				<Box w={"100%"}>
-					<Text
-						fontSize={{
-							base: "sm",
-							md: "md",
-							lg: "md",
-							xl: "md",
-							"2xl": "lg",
-						}}
-						fontWeight={"semibold"}
-					>
+					<Text fontSize={"md"} fontWeight={"semibold"}>
 						Select commissions for
 					</Text>
 				</Box>
 				<HStack justifyContent={"flex-start"} w={"100%"}>
-					<RadioGroup w={"100%"}>
+					<RadioGroup
+						w={"100%"}
+						onChange={setValue}
+						value={value}
+						defaultValue="0"
+					>
 						<Stack
 							direction={{ base: "column", md: "row" }}
 							gap={{ base: "25px", sm: "20px", md: "20px" }}
 							flexWrap={"wrap"}
 						>
+							<Radio size="lg" value="0">
+								<Text fontSize={{ base: "sm", sm: "md" }}>
+									Products
+								</Text>
+							</Radio>
 							<Radio size="lg" value="1">
 								<Text fontSize={{ base: "sm", sm: "md" }}>
 									Individuals
@@ -69,133 +78,48 @@ const Dmt = ({ className = "", ...props }) => {
 									Distributors
 								</Text>
 							</Radio>
-							<Radio size="lg" value="3">
-								<Text fontSize={{ base: "sm", sm: "md" }}>
-									Products
-								</Text>
-							</Radio>
 						</Stack>
 					</RadioGroup>
 				</HStack>
 			</VStack>
 
-			<VStack w={"100%"} gap={"2.5"}>
-				<Box w={"100%"}>
-					<Text
-						fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
-						fontWeight={"semibold"}
-					>
-						Select Distributors
-					</Text>
-				</Box>
-				<HStack
-					justifyContent={{ base: "center", sm: "flex-start" }}
-					w={"100%"}
-				>
-					<Select
-						placeholder="-- Select --"
-						w={{
-							base: "100%",
-							sm: "72%",
-							md: "380px",
+			{value ? (
+				<>
+					<Flex>
+						<PriceSelect label={SelectData[+value].label[0]} />
+					</Flex>
 
-							"2xl": "500px",
-						}}
-						h={{
-							base: "48px",
-							sm: "45px",
-							md: "48px",
-						}}
-						fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
-						focusBorderColor={"#D2D2D2"}
-						_focus={{
-							border: "1px solid #D2D2D2",
-							boxShadow: "none",
-						}}
-						borderRadius="10px"
-						icon={<Icon name="caret-down" />}
-					>
-						<option value="option1">Option 1</option>
-						<option value="option2">Option 2</option>
-						<option value="option3">Option 3</option>
-					</Select>
-				</HStack>
-			</VStack>
+					<Flex>
+						<PriceSelect label={SelectData[+value].label[1]} />
+					</Flex>
+				</>
+			) : null}
 
 			<VStack w={"100%"} gap={"2.5"}>
 				<Box w={"100%"}>
-					<Text
-						fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
-						fontWeight={"semibold"}
-					>
-						Select Slab
-					</Text>
-				</Box>
-				<HStack
-					justifyContent={{ base: "center", sm: "flex-start" }}
-					w={"100%"}
-				>
-					<Select
-						placeholder="-- Select --"
-						w={{
-							base: "100%",
-							sm: "72%",
-							md: "380px",
-
-							"2xl": "500px",
-						}}
-						h={{
-							base: "48px",
-							sm: "45px",
-							md: "48px",
-
-							"2xl": "48px",
-						}}
-						fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
-						focusBorderColor={"#D2D2D2"}
-						_focus={{
-							border: "1px solid #D2D2D2",
-							boxShadow: "none",
-						}}
-						borderRadius="10px"
-						icon={<Icon name="caret-down" />}
-					>
-						<option value="option1">Option 1</option>
-						<option value="option2">Option 2</option>
-						<option value="option3">Option 3</option>
-					</Select>
-				</HStack>
-			</VStack>
-
-			<VStack w={"100%"} gap={"2.5"}>
-				<Box w={"100%"}>
-					<Text
-						fontSize={{
-							base: "sm",
-							md: "sm",
-							lg: "sm",
-							xl: "sm",
-							"2xl": "lg",
-						}}
-						fontWeight={"semibold"}
-					>
+					<Text fontSize={"md"} fontWeight={"semibold"}>
 						Select Commission Type
 					</Text>
 				</Box>
 				<HStack justifyContent={"flex-start"} w={"100%"}>
-					<RadioGroup w={"100%"}>
+					<RadioGroup
+						w={"100%"}
+						onChange={setIconValue}
+						value={iconValue}
+						defaultValue="0"
+					>
 						<Stack
 							direction={{ base: "column", md: "row" }}
 							gap={{ base: "5px", sm: "20px", md: "60px" }}
 							flexWrap={"wrap"}
 						>
-							<Radio size="lg" value="1">
+							<Radio size="lg" value="percent">
 								<Text fontSize={{ base: "xs", sm: "inherit" }}>
 									Percentage (%)
 								</Text>
 							</Radio>
 
-							<Radio size="lg" value="2">
+							<Radio size="lg" value="fixed">
 								<Text fontSize={{ base: "xs", sm: "inherit" }}>
 									Fixed
 								</Text>
@@ -207,10 +131,7 @@ const Dmt = ({ className = "", ...props }) => {
 
 			<VStack w={"100%"} gap={"2.5"}>
 				<Box w={"100%"} h={"100%"}>
-					<Text
-						fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
-						fontWeight={"semibold"}
-					>
+					<Text fontSize={"md"} fontWeight={"semibold"}>
 						Define Commission
 					</Text>
 				</Box>
@@ -234,18 +155,11 @@ const Dmt = ({ className = "", ...props }) => {
 									base: "100%",
 									sm: "72%",
 									md: "380px",
-									// lg: "300px",
-									// xl: "380px",
+									xl: "400px",
+
 									"2xl": "500px",
 								}}
-								h={{
-									base: "48px",
-									sm: "45px",
-									md: "48px",
-									// lg: "36px",
-									// xl: "37px",
-									"2xl": "50px",
-								}}
+								h="3rem"
 								border={"card"}
 								borderRadius={{ base: "10px", xl: "10px" }}
 								pr={"15px"}
@@ -273,7 +187,11 @@ const Dmt = ({ className = "", ...props }) => {
 									}}
 								/>
 								<Icon
-									name="rupee_bg"
+									name={
+										iconValue === "percent"
+											? "percent_bg"
+											: "rupee_bg"
+									}
 									width="23px"
 									h="20px"
 									color={"#11299E"}
@@ -419,7 +337,12 @@ const Dmt = ({ className = "", ...props }) => {
 							position={"relative"}
 							// bg={"#FFFBF3"}
 							border={"1px solid #FE9F00"}
-							w={{ base: "80vw", sm: "72%", md: "45%", xl: "sm" }}
+							w={{
+								base: "80vw",
+								sm: "72%",
+								md: "45%",
+								xl: "42%",
+							}}
 							h={"180px"}
 							borderRadius={"10px"}
 							transition={"ease"}
@@ -617,3 +540,61 @@ const Dmt = ({ className = "", ...props }) => {
 };
 
 export default Dmt;
+
+const PriceSelect = ({
+	label,
+	required = false,
+	labelStyle,
+	inputContStyle,
+	...props
+}) => {
+	const [values, setValues] = useState(0);
+	return (
+		<Flex direction={"column"} w="100%">
+			<Flex>
+				{label ? (
+					<InputLabel
+						required={required}
+						fontSize="md"
+						color="inputlabel"
+						// pl: "0",
+						fontWeight="600"
+						mb={{ base: 2.5, "2xl": "0.8rem" }}
+					>
+						{label}
+					</InputLabel>
+				) : null}
+			</Flex>
+
+			<Flex
+				justifyContent={{ base: "center", sm: "flex-start" }}
+				w={{
+					base: "100%",
+					sm: "72%",
+					md: "380px",
+					xl: "400px",
+					"2xl": "500px",
+				}}
+			>
+				<Select
+					placeholder="-- Select --"
+					w="100%"
+					h="3rem"
+					fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
+					focusBorderColor={"#D2D2D2"}
+					_focus={{
+						border: "1px solid #D2D2D2",
+						boxShadow: "none",
+					}}
+					borderRadius="10px"
+					icon={<Icon name="caret-down" />}
+					{...inputContStyle}
+				>
+					<option value="option1">Option 1</option>
+					<option value="option2">Option 2</option>
+					<option value="option3">Option 3</option>
+				</Select>
+			</Flex>
+		</Flex>
+	);
+};
