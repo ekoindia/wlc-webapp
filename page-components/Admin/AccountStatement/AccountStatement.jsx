@@ -14,7 +14,7 @@ import { AccountStatementTable } from ".";
 
 const AccountStatement = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0); // TODO: Edit state as required
-	const [isMobileScreen] = useMediaQuery("(max-width: 769px)");
+	const [isMobileScreen] = useMediaQuery("(max-width: 767px)");
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
@@ -126,7 +126,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 										</Text>
 									</Flex>
 								)}
-								<Flex
+								{/* <Flex
 									gap={{
 										base: "20px",
 										lg: "8px",
@@ -250,100 +250,106 @@ const AccountStatement = ({ className = "", ...props }) => {
 								)}
 								{isMobileScreen && (
 									<Divider my={{ base: "5px", sm: "10px" }} />
-								)}
-								<Flex
-									direction={"column"}
-									gap={{
-										base: "5px",
-										md: "0px",
-										"2xl": "5px",
-									}}
-								>
-									<Text
-										fontSize={{
-											base: "14px",
-											md: "9px",
-											lg: "12px",
-											"2xl": "16px",
-										}}
-										color={"light"}
-									>
-										Current Balance
-									</Text>
+								)} */}
+								<Flex direction={{ base: "column", md: "row" }}>
 									<Flex
-										align={"center"}
-										color={"accent.DEFAULT"}
-										gap={"5px"}
+										direction={"column"}
+										gap={{
+											base: "5px",
+											md: "0px",
+											"2xl": "5px",
+										}}
+										pr={{ base: "", md: "20px" }}
 									>
-										<Box
-											w={{
-												base: "10px",
-												md: "8px",
-												lg: "9.5px",
-												"2xl": "12px",
-											}}
-											h={{
-												base: "12px",
-												md: "10px",
-												lg: "11px",
-												"2xl": "15px",
-											}}
-										>
-											<Icon name="rupee" width="100%" />
-										</Box>
 										<Text
 											fontSize={{
-												base: "16px",
-												md: "12px",
-												lg: "14px",
-												"2xl": "20px",
+												base: "14px",
+												md: "9px",
+												lg: "12px",
+												"2xl": "16px",
 											}}
+											color={"light"}
+										>
+											Current Balance
+										</Text>
+										<Flex
+											align={"center"}
 											color={"accent.DEFAULT"}
-											fontWeight={"bold"}
+											gap={"5px"}
 										>
-											15,893.00
-										</Text>
+											<Box
+												w={{
+													base: "10px",
+													md: "8px",
+													lg: "9.5px",
+													"2xl": "12px",
+												}}
+												h={{
+													base: "12px",
+													md: "10px",
+													lg: "11px",
+													"2xl": "15px",
+												}}
+											>
+												<Icon
+													name="rupee"
+													width="100%"
+												/>
+											</Box>
+											<Text
+												fontSize={{
+													base: "16px",
+													md: "12px",
+													lg: "14px",
+													"2xl": "20px",
+												}}
+												color={"accent.DEFAULT"}
+												fontWeight={"bold"}
+											>
+												15,893.00
+											</Text>
+										</Flex>
 									</Flex>
-								</Flex>
 
-								{isMobileScreen && (
-									<Box my={"5vw"}>
-										<Text
-											as={"Button"}
-											cursor={"pointer"}
-											fontSize={"18px"}
-											color={"primary.DEFAULT"}
-											fontWeight={"bold"}
-										>
-											+ Show More
-										</Text>
-									</Box>
-								)}
-								<Buttons
-									m={{ base: "auto", sm: "initial" }}
-									onClick={handleClick}
-									title={"View Detailed Statement"}
-									w={{
-										base: "100%",
-										md: "15vw",
-										lg: "12vw",
-										"2xl": "12vw",
-									}}
-									h={{
-										base: "54px",
-										sm: "48px",
-										md: "4.5vw",
-										lg: "3.5vw",
-										"2xl": "3vw",
-									}}
-									fontSize={{
-										base: "14px",
-										md: "8px",
-										lg: "0.8vw",
-										"2xl": "0.8vw",
-									}}
-									fontWeight={"bold"}
-								></Buttons>
+									{isMobileScreen && (
+										<Box my={"5vw"}>
+											<Text
+												as={"Button"}
+												cursor={"pointer"}
+												fontSize={"18px"}
+												color={"primary.DEFAULT"}
+												fontWeight={"bold"}
+											>
+												+ Show More
+											</Text>
+										</Box>
+									)}
+									<Buttons
+										m={{ base: "auto", sm: "initial" }}
+										onClick={handleClick}
+										title={"View Detailed Statement"}
+										w={{
+											base: "100%",
+											md: "15vw",
+											lg: "12vw",
+											"2xl": "12vw",
+										}}
+										h={{
+											base: "54px",
+											sm: "48px",
+											md: "4.5vw",
+											lg: "3.5vw",
+											"2xl": "3vw",
+										}}
+										fontSize={{
+											base: "14px",
+											md: "8px",
+											lg: "0.8vw",
+											"2xl": "0.8vw",
+										}}
+										fontWeight={"bold"}
+									></Buttons>
+								</Flex>
 							</Flex>
 						</Flex>
 					</Cards>
