@@ -58,7 +58,7 @@ const Calenders = ({
 				overflow={"hidden"}
 				onClick={(e) => handleClickForInput("from")}
 				bg={"white"}
-				px="20px"
+				px="10px"
 				_hover={{
 					bg: "focusbg",
 					boxShadow: "0px 3px 6px #0000001A",
