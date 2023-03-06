@@ -1,10 +1,10 @@
-import { Tables } from "components";
+import { Table } from "components";
 import { mockData } from "constants/mockTableData";
 import { useRouter } from "next/router";
 
 /**
  * A <TransactionHistoryTable> component
- * TODO: Write more description here
+ * TODO: This is transaction history table with clickable rows
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<TransactionHistoryTable></TransactionHistoryTable>`
@@ -47,7 +47,7 @@ const TransactionHistoryTable = () => {
 
 	return (
 		<>
-			<Tables
+			<Table
 				pageLimit={10}
 				renderer={renderer}
 				data={mockData}
