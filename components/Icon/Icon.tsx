@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import { IconLibrary } from "constants/IconLibrary";
 import React from "react";
 
@@ -42,7 +43,10 @@ export type IconNameType =
 	| "arrow-down"
 	| "close"
 	| "	percent_bg"
-	| "dashboard";
+	| "dashboard"
+	| "decrease"
+	| "increase"
+	| "people";
 
 export type IconProps = {
 	name: IconNameType;
@@ -65,9 +69,11 @@ const Icon = ({ name, style, ...rest }: IconProps) => {
 	const path = IconLibrary[name]?.path;
 
 	return (
-		<svg style={style} viewBox={viewBox} {...rest} className="custom-icon">
-			<path d={path} fill="currentColor" transform={transform} />
-		</svg>
+		<Box {...rest}>
+			<svg style={style} viewBox={viewBox} className="custom-icon">
+				<path d={path} fill="currentColor" transform={transform} />
+			</svg>
+		</Box>
 	);
 };
 
