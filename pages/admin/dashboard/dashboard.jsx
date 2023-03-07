@@ -1,6 +1,15 @@
 import React from "react";
 import Head from "next/head";
-import { Grid, GridItem, Box, Text, Flex } from "@chakra-ui/react";
+import {
+	Grid,
+	GridItem,
+	Box,
+	Text,
+	Flex,
+	Stack,
+	StackDivider,
+	Divider,
+} from "@chakra-ui/react";
 import { Layout, Icon } from "components";
 
 const cardData = [
@@ -9,7 +18,8 @@ const cardData = [
 		icon: "refer",
 		title: "Total Distributors",
 		description: "317",
-		statu: "increment",
+		percentage: "25%",
+		statu: "Increase",
 		// imageUrl: "https://via.placeholder.com/150",
 	},
 	{
@@ -17,28 +27,31 @@ const cardData = [
 		icon: "people",
 		title: "Active Distributors",
 		description: "220",
-		statu: "increment",
+		percentage: "-11%",
+		statu: "Decrese",
 		// imageUrl: "https://via.placeholder.com/150",
 	},
 	{
 		id: 3,
 		icon: "rupee_bg",
 		title: "GTV",
+		percentage: "2.2%",
 		description: "1,48,000",
-		statu: "increment",
+		statu: "Increase",
 		// imageUrl: "https://via.placeholder.com/150",
 	},
 	{
 		id: 4,
 		icon: "commission-percent",
 		title: "Total RA Cases",
+		percentage: "-1.9%",
 		description: "07",
-		statu: "increment",
+		statu: "Decrese",
 		// imageUrl: "https://via.placeholder.com/150",
 	},
 ];
 
-function Card({ title, description, icon, statu }) {
+function Card({ title, description, icon, statu, percentage }) {
 	return (
 		<Flex
 			borderRadius="10px"
@@ -71,16 +84,27 @@ function Card({ title, description, icon, statu }) {
 					<Flex alignItems={"center"} gap="5px" mt={2}>
 						<Flex w="100%" h="100%">
 							<Icon
-								color="success"
-								name={
-									statu == "increment"
-										? "increase"
-										: "decrement"
+								color={
+									statu === "Increase" ? "success" : "error"
 								}
-								// color="white"
+								name={
+									statu == "Increase"
+										? "increase"
+										: "decrease"
+								}
 								width="14px"
 								h="8px"
 							/>
+						</Flex>
+						<Flex>
+							<Text
+								color={
+									statu === "Increase" ? "success" : "error"
+								}
+								fontSize="xs"
+							>
+								{percentage}
+							</Text>
 						</Flex>
 
 						<Flex>
@@ -116,6 +140,14 @@ function Card({ title, description, icon, statu }) {
 }
 
 const Dashboard = () => {
+	const successRateData = [
+		{ name: "DMT", value: "24%" },
+		{ name: "BBPS", value: "18%" },
+		{ name: "AePS cashout", value: "38%" },
+		{ name: "AePS mini statement", value: "11%" },
+		{ name: "Account Verification", value: "9%" },
+	];
+
 	return (
 		<>
 			{console.log("cardData", cardData)}
@@ -130,6 +162,7 @@ const Dashboard = () => {
 							<Card
 								title={card.title}
 								description={card.description}
+								percentage={card.percentage}
 								statu={card.statu}
 								icon={card.icon}
 								// imageUrl={card.imageUrl}
@@ -140,13 +173,127 @@ const Dashboard = () => {
 
 				{/* CENTER ITEM */}
 				<Grid
-					templateColumns="69% 29%"
-					gap={"2%"}
+					templateColumns="69% 30%"
+					gap={"1%"}
 					minH="390px"
 					mt="30px"
 				>
-					<GridItem bg="white">Column 1</GridItem>
-					<GridItem bg="white">Column 2</GridItem>
+					<GridItem
+						bg="white"
+						p="30px 20px 30px 20px"
+						borderRadius={"10px"}
+						border=" 1px solid #E9EDF1"
+					>
+						<Flex justifyContent="space-between">
+							<Flex>
+								<Text fontSize={"xl"} fontWeight="semibold">
+									Earning Overview
+								</Text>
+							</Flex>
+							<Flex gap="15px">
+								<Flex
+									w="100px"
+									h="40px"
+									borderRadius="20"
+									alignItems="center"
+									justifyContent="center"
+									bg="divider"
+									_active={{
+										bg: "accent.DEFAULT",
+									}}
+								>
+									<Text
+										color="dark"
+										_active={{
+											color: "white",
+										}}
+									>
+										Cashout
+									</Text>
+								</Flex>
+								<Flex
+									w="100px"
+									h="40px"
+									borderRadius="20"
+									alignItems="center"
+									justifyContent="center"
+									bg="divider"
+									_active={{
+										bg: "accent.DEFAULT",
+									}}
+								>
+									<Text
+										color="dark"
+										_active={{
+											color: "white",
+										}}
+									>
+										DMT
+									</Text>
+								</Flex>
+								<Flex
+									w="100px"
+									h="40px"
+									borderRadius="20"
+									alignItems="center"
+									justifyContent="center"
+									bg="divider"
+									_active={{}}
+								>
+									<Text>BBPS</Text>
+								</Flex>
+							</Flex>
+						</Flex>
+					</GridItem>
+					<GridItem
+						bg="white"
+						p="30px 20px 30px 20px"
+						borderRadius={"10px"}
+						border=" 1px solid #E9EDF1"
+					>
+						<Flex>
+							<Text fontSize={"xl"} fontWeight="semibold">
+								Success Rate
+							</Text>
+						</Flex>
+						<Divider borderColor="divider" />
+						<Flex>
+							<Stack
+								direction={"column"}
+								divider={<StackDivider borderColor="divider" />}
+								mt={"5"}
+								fontSize={{ base: 14, md: 12, lg: 14 }}
+								w="100%"
+								gap="8px"
+							>
+								{successRateData.map((item, index) => (
+									<Flex
+										display={"flex"}
+										key={index}
+										justifyContent="space-between"
+									>
+										<Flex>
+											<Text
+												fontSize={"16px"}
+												color="dark"
+											>
+												{item.name}
+											</Text>
+										</Flex>
+										<Flex>
+											<Text
+												fontSize={"16px"}
+												color="accent.DEFAULT"
+												fontWeight={"bold"}
+											>
+												{item.value}
+											</Text>
+										</Flex>
+									</Flex>
+								))}
+							</Stack>
+						</Flex>
+					</GridItem>
 				</Grid>
 			</Layout>
 		</>
