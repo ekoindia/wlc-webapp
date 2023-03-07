@@ -282,18 +282,19 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						}}
 					/>
 				</Flex>
-				<Box display={{ base: "none", sm: "initial" }}>
+				<Box>
 					<Icon
+						display={{ base: "none", sm: "initial" }}
 						name="drop-down"
 						width="16px"
 						height="16px"
 						color="#11299E"
-						style={{
-							transform: "rotate(180deg)",
-							position: "absolute",
-							top: "-8.5%",
-							right: "2.7%",
-						}}
+						// style={{
+						transform="rotate(180deg)"
+						position="absolute"
+						top="-8.5%"
+						right="2.7%"
+						// }}
 					/>
 				</Box>
 
