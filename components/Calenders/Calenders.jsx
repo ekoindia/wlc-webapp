@@ -151,21 +151,18 @@ const Calenders = ({
 							</Box>
 
 							{/* Icon */}
-							<Flex>
-								<Center
-									alignItems="flex-end"
-									width={{
-										base: "",
-										md: "20px",
-										xl: "23px",
-									}}
-								>
-									<Icon
-										color="dark"
-										name="calender"
-										height="25px"
-									/>
-								</Center>
+							<Flex
+								w="100%"
+								h="100%"
+								alignItems="center"
+								justifyContent="center"
+							>
+								<Icon
+									color="dark"
+									name="calender"
+									width="27px"
+									h="26px"
+								/>
 							</Flex>
 						</Flex>
 					</Flex>
