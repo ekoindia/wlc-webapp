@@ -55,7 +55,7 @@ function Filter() {
 						bg: "white",
 					}}
 				>
-					<Box
+					<Center
 						alignItems={"center"}
 						width={{
 							base: "10px",
@@ -76,7 +76,7 @@ function Filter() {
 						mr={"2px"}
 					>
 						<Icon name="filter" />
-					</Box>
+					</Center>
 					<Text
 						as="span"
 						color="#11299E"
