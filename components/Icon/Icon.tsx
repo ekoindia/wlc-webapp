@@ -41,7 +41,8 @@ export type IconNameType =
 	| "arrow-up"
 	| "arrow-down"
 	| "close"
-	| "	percent_bg";
+	| "	percent_bg"
+	| "dashboard";
 
 export type IconProps = {
 	name: IconNameType;
