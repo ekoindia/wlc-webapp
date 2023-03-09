@@ -69,11 +69,9 @@ const Icon = ({ name, style, ...rest }: IconProps) => {
 	const path = IconLibrary[name]?.path;
 
 	return (
-		<Box {...rest}>
-			<svg style={style} viewBox={viewBox} className="custom-icon">
-				<path d={path} fill="currentColor" transform={transform} />
-			</svg>
-		</Box>
+		<svg style={style} viewBox={viewBox} {...rest} className="custom-icon">
+			<path d={path} fill="currentColor" transform={transform} />
+		</svg>
 	);
 };
 
