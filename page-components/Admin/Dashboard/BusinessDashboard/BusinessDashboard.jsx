@@ -22,7 +22,6 @@ const cardData = [
 		description: "317",
 		percentage: "25%",
 		statu: "Increase",
-		// imageUrl: "https://via.placeholder.com/150",
 	},
 	{
 		id: 2,
@@ -163,7 +162,7 @@ const BusinessDashboard = () => {
 		{
 			title: "Transaction",
 			count: "117 cr.",
-			lastPeriod: "110.8 cr",
+			lastPeriod: "11.8",
 			icon: "increase",
 			percentage: "8%",
 			stat: "Increase",
@@ -223,14 +222,23 @@ const BusinessDashboard = () => {
 			</Grid>
 
 			{/* CENTER ITEM */}
-			<Grid templateColumns="69% 30%" gap={"1%"} minH="390px" mt="30px">
+			<Grid
+				templateColumns="69% 30%"
+				gap={"1%"}
+				minH="390px"
+				mt="30px"
+				direction="row"
+			>
 				<GridItem
 					bg="white"
 					p="30px 20px 30px 20px"
 					borderRadius={"10px"}
 					border=" 1px solid #E9EDF1"
 				>
-					<Flex justifyContent="space-between">
+					<Flex
+						justifyContent="space-between"
+						flexDirection={{ base: "column", md: "row" }}
+					>
 						<Flex>
 							<Text fontSize={"xl"} fontWeight="semibold">
 								Earning Overview
@@ -296,7 +304,14 @@ const BusinessDashboard = () => {
 						direction={{ base: "column", md: "row" }}
 						divider={<StackDivider borderColor="divider" />}
 						w="100%"
-						gap={{ base: "10px", md: "30px" }}
+						gap={{
+							base: "10px",
+							md: "30px",
+							lg: "25px",
+							xl: "5px",
+							"2xl": "30px",
+						}}
+						wrap="wrap	"
 					>
 						{EarningData.map((item, index) => (
 							<Flex
@@ -309,7 +324,11 @@ const BusinessDashboard = () => {
 								</Flex>
 								<Flex>
 									<Text
-										fontSize={"2xl"}
+										fontSize={{
+											base: "",
+											xl: "lg",
+											"2xl": "2xl",
+										}}
 										fontWeight="bold"
 										color="accent.DEFAULT"
 									>
