@@ -1,5 +1,6 @@
 import React from "react";
 import { BusinessDashboard } from "./BusinessDashboard";
+import { OnboardingDashboard } from "./OnboardingDashboard";
 
 /**
  * A <Dashboard> component
