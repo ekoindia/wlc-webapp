@@ -1,4 +1,5 @@
 import React from "react";
+import { BusinessDashboard } from "./BusinessDashboard";
 
 /**
  * A <Dashboard> component
@@ -10,7 +11,7 @@ import React from "react";
 const Dashboard = ({ className = "", ...props }) => {
 	return (
 		<div className={`${className}`} {...props}>
-			Dashboard
+			<BusinessDashboard />
 		</div>
 	);
 };
