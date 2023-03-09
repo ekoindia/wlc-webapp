@@ -46,7 +46,9 @@ export type IconNameType =
 	| "dashboard"
 	| "decrease"
 	| "increase"
-	| "people";
+	| "people"
+	| "arrow-increase"
+	| "arrow-decrease";
 
 export type IconProps = {
 	name: IconNameType;

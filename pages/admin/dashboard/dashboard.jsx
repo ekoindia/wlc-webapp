@@ -9,8 +9,9 @@ import {
 	Stack,
 	StackDivider,
 	Divider,
+	VStack,
 } from "@chakra-ui/react";
-import { Layout, Icon } from "components";
+import { Layout, Icon, IconButtons } from "components";
 
 const cardData = [
 	{
@@ -82,11 +83,12 @@ function Card({ title, description, icon, statu, percentage }) {
 						</Text>
 					</Flex>
 					<Flex alignItems={"center"} gap="5px" mt={2}>
-						<Flex w="100%" h="100%">
+						<Flex
+							w="100%"
+							h="100%"
+							color={statu === "Increase" ? "success" : "error"}
+						>
 							<Icon
-								color={
-									statu === "Increase" ? "success" : "error"
-								}
 								name={
 									statu == "Increase"
 										? "increase"
@@ -146,6 +148,57 @@ const Dashboard = () => {
 		{ name: "AePS cashout", value: "38%" },
 		{ name: "AePS mini statement", value: "11%" },
 		{ name: "Account Verification", value: "9%" },
+	];
+
+	const EarningData = [
+		{
+			title: "GTV",
+			count: "12 Cr",
+			lastPeriod: "9 cr.",
+			icon: "increase",
+			percentage: "25%",
+			stat: "Increase",
+		},
+		{
+			title: "Transaction",
+			count: "117 cr.",
+			lastPeriod: "110.8 cr",
+			icon: "increase",
+			percentage: "8%",
+			stat: "Increase",
+		},
+		{
+			title: "Active Agents",
+			count: "1317",
+			lastPeriod: "1319",
+			icon: "decrease",
+			percentage: "-1.8%",
+			stat: "Decrease",
+		},
+		{
+			title: "Inactive Agents",
+			count: "18",
+			lastPeriod: "17",
+			icon: "increase",
+			percentage: "2.2%",
+			stat: "Increase",
+		},
+		{
+			title: "Onboarded Agents",
+			count: "6",
+			lastPeriod: "5",
+			icon: "increase",
+			percentage: "0.2%",
+			stat: "Increase",
+		},
+		{
+			title: "RA Cases",
+			count: "3",
+			lastPeriod: "4",
+			icon: "decrease",
+			percentage: "-1.8%",
+			stat: "Decrease	",
+		},
 	];
 
 	return (
@@ -244,7 +297,100 @@ const Dashboard = () => {
 								</Flex>
 							</Flex>
 						</Flex>
+						<Divider my="40px" />
+
+						<Stack
+							direction={{ base: "column", md: "row" }}
+							divider={<StackDivider borderColor="divider" />}
+							w="100%"
+							gap={{ base: "10px", md: "30px" }}
+						>
+							{EarningData.map((item, index) => (
+								<Flex
+									key={index}
+									direction={"column"}
+									alignItems="center"
+								>
+									<Flex>
+										<Text fontSize="sm">{item.title}</Text>
+									</Flex>
+									<Flex>
+										<Text
+											fontSize={"2xl"}
+											fontWeight="bold"
+											color="accent.DEFAULT"
+										>
+											{item.count}
+										</Text>
+									</Flex>
+									<Flex>
+										<Text fontSize={"xs"}>
+											Last Period&nbsp;{item.lastPeriod}
+										</Text>
+									</Flex>
+									<Flex
+										alignItems={"center"}
+										gap="7px"
+										mt={2}
+									>
+										<Flex
+											w="100%"
+											h="100%"
+											color={
+												item.stat === "Increase"
+													? "success"
+													: "error"
+											}
+										>
+											<Icon
+												name={
+													item.stat == "Increase"
+														? "arrow-increase"
+														: "arrow-decrease"
+												}
+												width="14px"
+												h="8px"
+											/>
+										</Flex>
+										<Flex>
+											<Text
+												color={
+													item.stat === "Increase"
+														? "success"
+														: "error"
+												}
+												fontSize="xs"
+											>
+												{item.percentage}
+											</Text>
+										</Flex>
+
+										<Flex>
+											<Text color="light" fontSize="xs">
+												{item.stat}
+											</Text>
+										</Flex>
+									</Flex>
+								</Flex>
+							))}
+						</Stack>
+
+						<Flex justifyContent={"center"} mt="40px">
+							<IconButtons
+								iconName="file-download"
+								iconPos="left"
+								title="Download Reports"
+								iconStyle={{
+									width: "14px",
+									height: "14px",
+								}}
+								textStyle={{
+									fontSize: "16px",
+								}}
+							/>
+						</Flex>
 					</GridItem>
+
 					<GridItem
 						bg="white"
 						p="30px 20px 30px 20px"
@@ -257,6 +403,7 @@ const Dashboard = () => {
 							</Text>
 						</Flex>
 						<Divider borderColor="divider" />
+
 						<Flex>
 							<Stack
 								direction={"column"}
@@ -268,7 +415,6 @@ const Dashboard = () => {
 							>
 								{successRateData.map((item, index) => (
 									<Flex
-										display={"flex"}
 										key={index}
 										justifyContent="space-between"
 									>
