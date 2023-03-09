@@ -3,7 +3,7 @@ import Head from "next/head";
 import { Dashboard } from "page-components/Admin";
 import React from "react";
 
-const Dashboard = () => {
+const Dashboards = () => {
 	return (
 		<>
 			<Head>
@@ -16,4 +16,4 @@ const Dashboard = () => {
 	);
 };
 
-export default Dashboard;
+export default Dashboards;
