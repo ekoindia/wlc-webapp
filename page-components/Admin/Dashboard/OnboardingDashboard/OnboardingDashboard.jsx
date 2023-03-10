@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Flex, Center, Text, Box } from "@chakra-ui/react";
 import { Icon } from "components";
+import { OnboardingDasboardTable } from "./OnboardingDasboardTable";
 
 /**
  * A <OnboardingDashboard> component
@@ -82,7 +83,7 @@ function Card({ title, status, count }) {
 	return (
 		<Flex
 			minH="90px"
-			minW="148px"
+			minW="146px"
 			border="1px solid #E9EDF1"
 			bg="white"
 			borderRadius={"10px"}
@@ -110,7 +111,7 @@ function Card({ title, status, count }) {
 
 const OnboardingDashboard = () => {
 	return (
-		<Flex>
+		<Flex direction={"column"}>
 			<Flex
 				justifyContent={"space-evenly"}
 				minH="175px"
@@ -130,7 +131,7 @@ const OnboardingDashboard = () => {
 
 							lg: "14px",
 							xl: "16px",
-							"2xl": "25px",
+							"2xl": "22px",
 						}}
 						height={{
 							base: "10px",
@@ -138,10 +139,10 @@ const OnboardingDashboard = () => {
 
 							lg: "14px",
 							xl: "16px",
-							"2xl": "23px",
+							"2xl": "22px",
 						}}
 					>
-						<Icon name="filter" style={{ w: "100%" }} />
+						<Icon name="filter" style={{ width: "100%" }} />
 					</Center>
 					<Text fontSize="lg" fontWeight={"semibold"}>
 						Filter using onboarding status
@@ -160,6 +161,24 @@ const OnboardingDashboard = () => {
 					))}
 				</Flex>
 			</Flex>
+			<Box
+				direction={"column"}
+				bg="white"
+				// px="20px"
+				mt="20px"
+				border=" 1px solid #E9EDF1"
+				borderRadius={"10px"}
+				px="20px"
+				mx={{ base: "20px", md: "0px" }}
+			>
+				<Box py="30px">
+					{" "}
+					<Text fontSize="xl" fontWeight="semibold">
+						Onboarded Merchants
+					</Text>
+				</Box>
+				<OnboardingDasboardTable />
+			</Box>
 		</Flex>
 	);
 };
