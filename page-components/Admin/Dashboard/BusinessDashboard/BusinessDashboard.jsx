@@ -56,7 +56,7 @@ function Card({ title, description, icon, statu, percentage }) {
 			borderRadius="10px"
 			border="1px solid #E9EDF1"
 			overflow="hidden"
-			p={"20px 25px 20px 25px"}
+			p={{ base: "10px", md: "20px 25px 20px 25px" }}
 			bg="white"
 			justifyContent={"space-between"}
 			alignItems="center"
@@ -232,7 +232,11 @@ const BusinessDashboard = () => {
 
 			{/* CENTER ITEM */}
 			<Grid
-				templateColumns={{ base: "1fr", md: "2.5fr 1fr" }}
+				templateColumns={{
+					base: "1fr",
+					md: "1.8fr 1fr",
+					xl: "2.5fr 1fr",
+				}}
 				gap={"1%"}
 				minH="390px"
 				mt="30px"
@@ -248,14 +252,14 @@ const BusinessDashboard = () => {
 				>
 					<Flex
 						justifyContent="space-between"
-						flexDirection={{ base: "column", md: "row" }}
+						flexDirection={{ base: "column", lg: "row" }}
 					>
 						<Flex>
 							<Text fontSize={"xl"} fontWeight="semibold">
 								Earning Overview
 							</Text>
 						</Flex>
-						<Flex gap="15px" mt={{ base: "25px", md: "0px" }}>
+						<Flex gap="15px" mt={{ base: "25px", lg: "0px" }}>
 							<Flex
 								w="100px"
 								h="40px"
@@ -335,17 +339,17 @@ const BusinessDashboard = () => {
 							</Flex>
 						</Flex>
 					</Flex>
-					<Divider my={{ base: "20px", md: "40px" }} />
+					<Divider my={{ base: "20px", md: "20px", xl: "40px" }} />
 
 					<Stack
-						direction={{ base: "column", md: "row" }}
+						direction={{ base: "column", xl: "row" }}
 						divider={<StackDivider borderColor="divider" />}
 						w="100%"
 						gap={{
 							base: "10px",
 							md: "30px",
-							lg: "25px",
-							xl: "5px",
+							lg: "5px",
+							xl: "1px",
 							"2xl": "30px",
 						}}
 						wrap="wrap	"
@@ -353,11 +357,11 @@ const BusinessDashboard = () => {
 						{EarningData.map((item, index) => (
 							<Flex
 								key={index}
-								direction={{ base: "row", md: "column" }}
+								direction={{ base: "row", xl: "column" }}
 								alignItems="center"
 								justifyContent={"space-between"}
 							>
-								<Flex flexDir={{ base: "column", md: "none" }}>
+								<Flex flexDir={{ base: "column", xl: "none" }}>
 									<Flex>
 										<Text fontSize="sm">{item.title}</Text>
 									</Flex>
@@ -376,7 +380,7 @@ const BusinessDashboard = () => {
 									</Flex>
 								</Flex>
 
-								<Flex flexDir={{ base: "column", md: "none" }}>
+								<Flex flexDir={{ base: "column", xl: "none" }}>
 									<Flex>
 										<Text fontSize={"xs"}>
 											Last Period&nbsp;{item.lastPeriod}
@@ -498,17 +502,21 @@ const BusinessDashboard = () => {
 			<Box
 				bg="white"
 				mt="30px"
-				p="20px"
-				border="border: 1px solid #E9EDF1"
+				p="10px"
+				border=" 1px solid #E9EDF1"
 				borderRadius={"10px"}
 			>
-				<Flex justifyContent="space-between" py="30px" wrap="wrap">
+				<Flex
+					justifyContent="space-between"
+					py={{ base: "0px", md: "30px" }}
+					flexDirection={{ base: "column", md: "row" }}
+				>
 					<Flex>
 						<Text fontSize={"xl"} fontWeight="semibold">
 							GTV wise Top Merchants
 						</Text>
 					</Flex>
-					<Flex gap="15px">
+					<Flex gap="15px" mt={{ base: "25px", md: "0px" }}>
 						<Flex
 							w="100px"
 							h="40px"
