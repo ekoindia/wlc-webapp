@@ -88,9 +88,21 @@ function Card({ title, status, count }) {
 			borderRadius={"10px"}
 		>
 			<Flex direction={"column"} p="10px">
-				<Text>{title}</Text>
-				<Text>{status}</Text>
-				<Text>{count}</Text>
+				<Flex direction={{ base: "row", md: "column" }}>
+					<Text fontSize={{ base: "xs", md: "sm" }}>{title}</Text>
+					<Text fontSize={{ base: "xs", md: "sm" }}>
+						&nbsp;{status}
+					</Text>
+				</Flex>
+				<Flex>
+					<Text
+						fontSize={{ base: "sm", md: "lg" }}
+						fontWeight="bold"
+						color="accent.DEFAULT"
+					>
+						{count}
+					</Text>
+				</Flex>
 			</Flex>
 		</Flex>
 	);
@@ -103,9 +115,9 @@ const OnboardingDashboard = () => {
 				justifyContent={"space-evenly"}
 				minH="175px"
 				w="100%"
-				bg="white"
+				bg={{ base: "none", md: "white" }}
 				p="20px"
-				border=" 1px solid #E9EDF1"
+				border={{ base: "none", md: " 1px solid #E9EDF1" }}
 				borderRadius={"10px"}
 				direction={"column"}
 			>
@@ -136,7 +148,7 @@ const OnboardingDashboard = () => {
 					</Text>
 				</Flex>
 
-				<Flex gap="10px">
+				<Flex gap="10px" overflowX="auto">
 					{cardData.map((card) => (
 						<Box key={card}>
 							<Card
