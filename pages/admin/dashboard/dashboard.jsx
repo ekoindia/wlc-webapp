@@ -7,7 +7,7 @@ const Dashboards = () => {
 	return (
 		<>
 			<Head>
-				<title>Pricing | Eko API Marketplace</title>
+				<title>Dashboard | Eko API Marketplace</title>
 			</Head>
 			<Layout>
 				<Dashboard />

@@ -1,5 +1,3 @@
-import React from "react";
-
 import {
 	Grid,
 	GridItem,
@@ -9,10 +7,10 @@ import {
 	Stack,
 	StackDivider,
 	Divider,
-	VStack,
 } from "@chakra-ui/react";
 import { Icon, IconButtons } from "components";
 import { BusinessDashboardTable } from "./BusinessDashboardTable";
+import { useState } from "react";
 
 const cardData = [
 	{
@@ -150,6 +148,17 @@ const BusinessDashboard = () => {
 		{ name: "Account Verification", value: "9%" },
 	];
 
+	const [activeIndex, setActiveIndex] = useState(0);
+	const [activeGtv, setActiveGtv] = useState(3);
+
+	const onClick = (gtv) => {
+		setActiveGtv(gtv);
+	};
+
+	const handleClick = (index) => {
+		setActiveIndex(index);
+	};
+
 	const EarningData = [
 		{
 			title: "GTV",
@@ -202,11 +211,11 @@ const BusinessDashboard = () => {
 	];
 
 	return (
-		<>
+		<Flex direction={"column"} px={{ base: "20px", md: "0px" }}>
 			{console.log("cardData", cardData)}
 
 			{/* CARD */}
-			<Grid templateColumns="repeat(4, 1fr)" gap={5}>
+			<Grid templateColumns="repeat(4, 4fr)" gap={5} overflowX="auto">
 				{cardData.map((card) => (
 					<GridItem key={card.id} colSpan={1}>
 						<Card
@@ -223,17 +232,19 @@ const BusinessDashboard = () => {
 
 			{/* CENTER ITEM */}
 			<Grid
-				templateColumns="69% 30%"
+				templateColumns={{ base: "1fr", md: "2.5fr 1fr" }}
 				gap={"1%"}
 				minH="390px"
 				mt="30px"
-				direction="row"
+				flexDir={{ base: "column", md: "row" }}
 			>
 				<GridItem
 					bg="white"
-					p="30px 20px 30px 20px"
+					p={{ base: "15px", md: "30px 20px 30px 20px" }}
 					borderRadius={"10px"}
 					border=" 1px solid #E9EDF1"
+					w={{ base: "92%", md: "100%" }}
+					// w="100%"
 				>
 					<Flex
 						justifyContent="space-between"
@@ -244,20 +255,26 @@ const BusinessDashboard = () => {
 								Earning Overview
 							</Text>
 						</Flex>
-						<Flex gap="15px">
+						<Flex gap="15px" mt={{ base: "25px", md: "0px" }}>
 							<Flex
 								w="100px"
 								h="40px"
 								borderRadius="20"
 								alignItems="center"
 								justifyContent="center"
-								bg="divider"
-								_active={{
-									bg: "accent.DEFAULT",
-								}}
+								// bg="divider"
+								bg={
+									activeIndex === 0
+										? "accent.DEFAULT"
+										: "divider"
+								}
+								_hover={{ bg: "accent.DEFAULT" }}
+								onClick={() => handleClick(0)}
 							>
 								<Text
-									color="dark"
+									color={activeIndex === 0 ? "white" : "dark"}
+									_hover={{ color: "white" }}
+									fontSize={{ base: "sm", md: "md" }}
 									_active={{
 										color: "white",
 									}}
@@ -271,13 +288,19 @@ const BusinessDashboard = () => {
 								borderRadius="20"
 								alignItems="center"
 								justifyContent="center"
-								bg="divider"
-								_active={{
-									bg: "accent.DEFAULT",
-								}}
+								// bg="divider"
+								bg={
+									activeIndex === 1
+										? "accent.DEFAULT"
+										: "divider"
+								}
+								_hover={{ bg: "accent.DEFAULT" }}
+								onClick={() => handleClick(1)}
 							>
 								<Text
-									color="dark"
+									color={activeIndex === 1 ? "white" : "dark"}
+									_hover={{ color: "white" }}
+									fontSize={{ base: "sm", md: "md" }}
 									_active={{
 										color: "white",
 									}}
@@ -291,14 +314,28 @@ const BusinessDashboard = () => {
 								borderRadius="20"
 								alignItems="center"
 								justifyContent="center"
-								bg="divider"
-								_active={{}}
+								bg={
+									activeIndex === 2
+										? "accent.DEFAULT"
+										: "divider"
+								}
+								_hover={{ bg: "accent.DEFAULT" }}
+								onClick={() => handleClick(2)}
 							>
-								<Text>BBPS</Text>
+								<Text
+									color={activeIndex === 2 ? "white" : "dark"}
+									_hover={{ color: "white" }}
+									fontSize={{ base: "sm", md: "md" }}
+									_active={{
+										color: "white",
+									}}
+								>
+									BBPS
+								</Text>
 							</Flex>
 						</Flex>
 					</Flex>
-					<Divider my="40px" />
+					<Divider my={{ base: "20px", md: "40px" }} />
 
 					<Stack
 						direction={{ base: "column", md: "row" }}
@@ -316,67 +353,77 @@ const BusinessDashboard = () => {
 						{EarningData.map((item, index) => (
 							<Flex
 								key={index}
-								direction={"column"}
+								direction={{ base: "row", md: "column" }}
 								alignItems="center"
+								justifyContent={"space-between"}
 							>
-								<Flex>
-									<Text fontSize="sm">{item.title}</Text>
-								</Flex>
-								<Flex>
-									<Text
-										fontSize={{
-											base: "",
-											xl: "lg",
-											"2xl": "2xl",
-										}}
-										fontWeight="bold"
-										color="accent.DEFAULT"
-									>
-										{item.count}
-									</Text>
-								</Flex>
-								<Flex>
-									<Text fontSize={"xs"}>
-										Last Period&nbsp;{item.lastPeriod}
-									</Text>
-								</Flex>
-								<Flex alignItems={"center"} gap="7px" mt={2}>
-									<Flex
-										w="100%"
-										h="100%"
-										color={
-											item.stat === "Increase"
-												? "success"
-												: "error"
-										}
-									>
-										<Icon
-											name={
-												item.stat == "Increase"
-													? "arrow-increase"
-													: "arrow-decrease"
-											}
-											width="14px"
-											h="8px"
-										/>
+								<Flex flexDir={{ base: "column", md: "none" }}>
+									<Flex>
+										<Text fontSize="sm">{item.title}</Text>
 									</Flex>
 									<Flex>
 										<Text
+											fontSize={{
+												base: "",
+												xl: "lg",
+												"2xl": "2xl",
+											}}
+											fontWeight="bold"
+											color="accent.DEFAULT"
+										>
+											{item.count}
+										</Text>
+									</Flex>
+								</Flex>
+
+								<Flex flexDir={{ base: "column", md: "none" }}>
+									<Flex>
+										<Text fontSize={"xs"}>
+											Last Period&nbsp;{item.lastPeriod}
+										</Text>
+									</Flex>
+									<Flex
+										alignItems={"center"}
+										gap="7px"
+										mt={2}
+									>
+										<Flex
+											w="100%"
+											h="100%"
 											color={
 												item.stat === "Increase"
 													? "success"
 													: "error"
 											}
-											fontSize="xs"
 										>
-											{item.percentage}
-										</Text>
-									</Flex>
+											<Icon
+												name={
+													item.stat == "Increase"
+														? "arrow-increase"
+														: "arrow-decrease"
+												}
+												width="14px"
+												h="8px"
+											/>
+										</Flex>
+										<Flex>
+											<Text
+												color={
+													item.stat === "Increase"
+														? "success"
+														: "error"
+												}
+												fontSize="xs"
+											>
+												{item.percentage}
+											</Text>
+										</Flex>
 
-									<Flex>
-										<Text color="light" fontSize="xs">
-											{item.stat}
-										</Text>
+										<Flex>
+											<Text color="light" fontSize="xs">
+												{item.stat}
+											</Text>
+										</Flex>
 									</Flex>
 								</Flex>
 							</Flex>
@@ -404,9 +451,10 @@ const BusinessDashboard = () => {
 					p="30px 20px 30px 20px"
 					borderRadius={"10px"}
 					border=" 1px solid #E9EDF1"
+					w={{ base: "92%", md: "100%" }}
 				>
 					<Flex>
-						<Text fontSize={"xl"} fontWeight="semibold">
+						<Text fontSize={"xl"} fontWeight="semibold" mb="16px">
 							Success Rate
 						</Text>
 					</Flex>
@@ -454,7 +502,7 @@ const BusinessDashboard = () => {
 				border="border: 1px solid #E9EDF1"
 				borderRadius={"10px"}
 			>
-				<Flex justifyContent="space-between" py="30px">
+				<Flex justifyContent="space-between" py="30px" wrap="wrap">
 					<Flex>
 						<Text fontSize={"xl"} fontWeight="semibold">
 							GTV wise Top Merchants
@@ -467,13 +515,15 @@ const BusinessDashboard = () => {
 							borderRadius="20"
 							alignItems="center"
 							justifyContent="center"
-							bg="divider"
-							_active={{
-								bg: "accent.DEFAULT",
-							}}
+							// bg="divider"
+							bg={activeGtv === 3 ? "accent.DEFAULT" : "divider"}
+							_hover={{ bg: "accent.DEFAULT" }}
+							onClick={() => onClick(3)}
 						>
 							<Text
-								color="dark"
+								color={activeGtv === 3 ? "white" : "dark"}
+								_hover={{ color: "white" }}
+								fontSize={{ base: "sm", md: "md" }}
 								_active={{
 									color: "white",
 								}}
@@ -487,13 +537,15 @@ const BusinessDashboard = () => {
 							borderRadius="20"
 							alignItems="center"
 							justifyContent="center"
-							bg="divider"
-							_active={{
-								bg: "accent.DEFAULT",
-							}}
+							// bg="divider"
+							bg={activeGtv === 4 ? "accent.DEFAULT" : "divider"}
+							_hover={{ bg: "accent.DEFAULT" }}
+							onClick={() => onClick(4)}
 						>
 							<Text
-								color="dark"
+								color={activeGtv === 4 ? "white" : "dark"}
+								_hover={{ color: "white" }}
+								fontSize={{ base: "sm", md: "md" }}
 								_active={{
 									color: "white",
 								}}
@@ -507,16 +559,40 @@ const BusinessDashboard = () => {
 							borderRadius="20"
 							alignItems="center"
 							justifyContent="center"
-							bg="divider"
-							_active={{}}
+							bg={activeGtv === 5 ? "accent.DEFAULT" : "divider"}
+							_hover={{ bg: "accent.DEFAULT" }}
+							onClick={() => onClick(5)}
 						>
-							<Text>BBPS</Text>
+							<Text
+								color={activeGtv === 5 ? "white" : "dark"}
+								_hover={{ color: "white" }}
+								fontSize={{ base: "sm", md: "md" }}
+								_active={{
+									color: "white",
+								}}
+							>
+								BBPS
+							</Text>
 						</Flex>
 					</Flex>
 				</Flex>
 				<BusinessDashboardTable />
+				<Flex justifyContent={"center"} mt="40px">
+					<IconButtons
+						iconName="file-download"
+						iconPos="left"
+						title="Download Reports"
+						iconStyle={{
+							width: "14px",
+							height: "14px",
+						}}
+						textStyle={{
+							fontSize: "16px",
+						}}
+					/>
+				</Flex>
 			</Box>
-		</>
+		</Flex>
 	);
 };
 
