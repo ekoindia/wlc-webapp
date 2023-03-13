@@ -28,16 +28,14 @@ const cardData = [
 		description: "220",
 		percentage: "-11%",
 		statu: "Decrese",
-		// imageUrl: "https://via.placeholder.com/150",
 	},
 	{
 		id: 3,
 		icon: "rupee_bg",
 		title: "GTV",
 		percentage: "2.2%",
-		description: "1,48,000",
+		description: "148",
 		statu: "Increase",
-		// imageUrl: "https://via.placeholder.com/150",
 	},
 	{
 		id: 4,
@@ -46,7 +44,6 @@ const cardData = [
 		percentage: "-1.9%",
 		description: "07",
 		statu: "Decrese",
-		// imageUrl: "https://via.placeholder.com/150",
 	},
 ];
 
@@ -61,7 +58,7 @@ function Card({ title, description, icon, statu, percentage }) {
 			justifyContent={"space-between"}
 			alignItems="center"
 			minH="95px"
-			minW="247"
+			minW="260"
 		>
 			{/* <Image src={""} alt={title} /> */}
 			<Flex direction={"column"}>
@@ -233,7 +230,7 @@ const BusinessDashboard = () => {
 			{/* CENTER ITEM */}
 			<Grid
 				templateColumns={{
-					base: "1fr",
+					base: "repeat(auto-fit,minmax(280px,1fr))",
 					md: "1.8fr 1fr",
 					xl: "2.5fr 1fr",
 				}}
@@ -247,8 +244,7 @@ const BusinessDashboard = () => {
 					p={{ base: "15px", md: "30px 20px 30px 20px" }}
 					borderRadius={"10px"}
 					border=" 1px solid #E9EDF1"
-					w={{ base: "92%", md: "100%" }}
-					// w="100%"
+					w="100%"
 				>
 					<Flex
 						justifyContent="space-between"
@@ -347,9 +343,9 @@ const BusinessDashboard = () => {
 						w="100%"
 						gap={{
 							base: "10px",
-							md: "30px",
+							md: "5px",
 							lg: "5px",
-							xl: "1px",
+							xl: "5px",
 							"2xl": "30px",
 						}}
 						wrap="wrap	"
@@ -358,14 +354,20 @@ const BusinessDashboard = () => {
 							<Flex
 								key={index}
 								direction={{ base: "row", xl: "column" }}
-								alignItems="center"
+								// alignItems="center"
 								justifyContent={"space-between"}
+								textAlign={{ base: "none", xl: "center" }}
+
+								// alignContent="center"
 							>
-								<Flex flexDir={{ base: "column", xl: "none" }}>
-									<Flex>
+								<Flex
+									flexDir={{ base: "column", xl: "none" }}
+									rowGap="10px"
+								>
+									<Box>
 										<Text fontSize="sm">{item.title}</Text>
-									</Flex>
-									<Flex>
+									</Box>
+									<Box>
 										<Text
 											fontSize={{
 												base: "",
@@ -377,21 +379,24 @@ const BusinessDashboard = () => {
 										>
 											{item.count}
 										</Text>
-									</Flex>
+									</Box>
 								</Flex>
 
-								<Flex flexDir={{ base: "column", xl: "none" }}>
-									<Flex>
+								<Flex
+									flexDir={{ base: "column", xl: "none" }}
+									rowGap="10px"
+								>
+									<Box>
 										<Text fontSize={"xs"}>
 											Last Period&nbsp;{item.lastPeriod}
 										</Text>
-									</Flex>
+									</Box>
 									<Flex
 										alignItems={"center"}
 										gap="7px"
 										mt={2}
 									>
-										<Flex
+										<Box
 											w="100%"
 											h="100%"
 											color={
@@ -409,8 +414,8 @@ const BusinessDashboard = () => {
 												width="14px"
 												h="8px"
 											/>
-										</Flex>
-										<Flex>
+										</Box>
+										<Box>
 											<Text
 												color={
 													item.stat === "Increase"
@@ -421,13 +426,13 @@ const BusinessDashboard = () => {
 											>
 												{item.percentage}
 											</Text>
-										</Flex>
+										</Box>
 
-										<Flex>
+										<Box>
 											<Text color="light" fontSize="xs">
 												{item.stat}
 											</Text>
-										</Flex>
+										</Box>
 									</Flex>
 								</Flex>
 							</Flex>
@@ -455,7 +460,7 @@ const BusinessDashboard = () => {
 					p="30px 20px 30px 20px"
 					borderRadius={"10px"}
 					border=" 1px solid #E9EDF1"
-					w={{ base: "92%", md: "100%" }}
+					w={{ base: "100%", md: "100%" }}
 				>
 					<Flex>
 						<Text fontSize={"xl"} fontWeight="semibold" mb="16px">
