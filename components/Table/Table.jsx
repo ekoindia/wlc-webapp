@@ -24,6 +24,7 @@ import { AccountStatementCard } from "page-components/Admin/AccountStatement";
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
+import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Pagination } from "..";
 
@@ -34,6 +35,7 @@ const Table = (props) => {
 		renderer,
 		variant,
 		tableName,
+		isScrollRequired,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
@@ -202,6 +204,23 @@ const Table = (props) => {
 							p="20px 16px"
 						>
 							<DetailedStatementCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
+					</>
+				);
+			} else if (tableName === "Business") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="0px"
+						>
+							<BusinessDashboardCard item={item} />
 						</Box>
 						{index !== currentTableData.length - 1 && (
 							<Divider border="1px solid #D2D2D2" />
