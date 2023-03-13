@@ -77,7 +77,7 @@ export const UserReducer = (state, { type, payload }) => {
 		}
 
 		case "LOGOUT": {
-			revokeSession(payload.userId || 1);
+			revokeSession(state.userId || 1);
 			clearAuthTokens();
 			return defaultUserState;
 		}

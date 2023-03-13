@@ -1,6 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Inter } from "@next/font/google";
-import type { AppProps } from "next/app";
 import Head from "next/head";
 import { GetLogoProvider } from "../contexts/getLogoContext";
 import { light } from "../styles/themes";
@@ -15,7 +14,7 @@ const inter = Inter({
 	subsets: ["cyrillic"],
 });
 
-export default function App({ Component, pageProps, router }: AppProps) {
+export default function App({ Component, pageProps, router }) {
 	return (
 		<>
 			<Head>
@@ -27,15 +26,15 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
 			<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_CLIENT_ID}>
 				<ChakraProvider theme={light}>
-					<main className={inter.className}>
+					{/* <main className={inter.className}> */}
+					<GetLogoProvider>
 						<UserProvider>
-							<GetLogoProvider>
-								<RouteProtecter router={router}>
-									<Component {...pageProps} />
-								</RouteProtecter>
-							</GetLogoProvider>
+							<RouteProtecter router={router}>
+								<Component {...pageProps} />
+							</RouteProtecter>
 						</UserProvider>
-					</main>
+					</GetLogoProvider>
+					{/* </main> */}
 				</ChakraProvider>
 			</GoogleOAuthProvider>
 		</>

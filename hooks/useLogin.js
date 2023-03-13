@@ -11,7 +11,7 @@ function useLogin(login, setStep, setEmail) {
 	function submitLogin(data) {
 		setBusy(true);
 		console.log("Data", JSON.stringify(data));
-		if (true) {
+		if (false) {
 			fetch(
 				process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL +
 					`${

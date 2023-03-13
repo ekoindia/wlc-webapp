@@ -3,13 +3,14 @@ import {
 	getAuthTokens,
 	getSessions,
 } from "helpers/loginHelper";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import React, {
 	createContext,
 	useContext,
 	useEffect,
 	useMemo,
 	useReducer,
+	useState,
 } from "react";
 import { defaultUserState, UserReducer } from "./UserReducer";
 
@@ -17,7 +18,8 @@ const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(UserReducer, defaultUserState);
-	const router = useRouter();
+	const [loading, setLoading] = useState(true);
+	console.log("%cExecuted UserContext: Start ", "color:blue");
 
 	// Get default session from browser's sessionStorage
 	useEffect(() => {
@@ -31,6 +33,11 @@ const UserProvider = ({ children }) => {
 				Session.details.mobile
 			)
 		) {
+			console.log("Not logged");
+			setLoading(() => {
+				console.log("State set");
+				return false;
+			});
 			return;
 		}
 
@@ -43,15 +50,25 @@ const UserProvider = ({ children }) => {
 				type: "INIT_USER_STORE",
 				payload: sessionState,
 			});
+			setLoading(false);
 		}
 	}, []);
 
 	useEffect(() => {
+		console.log("User Context : UseEffect", {
+			logged: state.loggedIn,
+			path: Router.asPath,
+		});
 		if (state.loggedIn) {
-			console.log("User Context : ", state.loggedIn, router.asPath);
+			// setLoading(false)
+			console.log("User Context : ", state.loggedIn, Router.asPath);
 
-			if (router.pathname.includes("/admin")) router.push(router.asPath);
-			else router.replace("/admin/my-network");
+			// if (Router.pathname.includes("/admin")) Router.push(Router.asPath);
+			// else Router.replace("/admin/my-network");
+			if (!Router.pathname.includes("/admin")) {
+				console.log("Redirect");
+				Router.replace("/admin/my-network");
+			}
 		}
 	}, [state.loggedIn]);
 
@@ -63,7 +80,7 @@ const UserProvider = ({ children }) => {
 	};
 
 	const logout = () => {
-		dispatch({ type: "LOGOUT", payload: state });
+		dispatch({ type: "LOGOUT" });
 	};
 
 	const contextValue = useMemo(() => {
@@ -71,8 +88,12 @@ const UserProvider = ({ children }) => {
 			userData: state,
 			login,
 			logout,
+			loading,
 		};
-	}, [state]);
+	}, [state, loading]);
+	console.log("%cExecuted : UserContext: End", "color:blue");
+	// if (loading)
+	// 	return "loading..."
 
 	return (
 		<UserContext.Provider value={contextValue}>

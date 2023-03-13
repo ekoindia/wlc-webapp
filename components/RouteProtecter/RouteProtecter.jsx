@@ -10,8 +10,6 @@ import { Layout } from "..";
  * @example	`<RouteProtecter></RouteProtecter>`
  */
 
-const isBrowser = () => typeof window !== "undefined";
-
 const publicLinks = ["/"];
 const roleRoutes = {
 	admin: "/admin",
@@ -20,52 +18,28 @@ const roleRoutes = {
 
 const RouteProtecter = (props) => {
 	const { router, children } = props; //TODO : Getting Error in _app.tsx
-	const { userData } = useUser();
+	const { userData, loading } = useUser();
 	const { loggedIn, role } = userData;
 	const [authorized, setAuthorized] = useState(false);
+	// const [loading, setLoading] = useState(true)
 
-	console.info("RouteProtecter: start");
-	console.log({ loggedIn: loggedIn, authorized: authorized });
-
-	// if (
-	// 	isBrowser() &&
-	// 	userData?.loggedIn !== true &&
-	// 	router?.pathname in PageRoles &&
-	// 	!PageRoles[router?.pathname].includes('admin')
-	// ) {
-	// 	router.push({ pathname: '/'});
-	// }
+	console.log("%cRoute-Protecter: Start", "color:green");
+	console.log({
+		loggedIn: loggedIn,
+		authorized: authorized,
+		loading: loading,
+	});
 
 	useEffect(() => {
 		console.log("router.pathname", router.pathname);
-		const path = router.pathname.split("?");
+		// const path = router.asPath.split("?");
+		const path = router.asPath;
 		console.log("path", path);
-		// if (
-		// 	isBrowser() &&
-		// 	userData?.loggedIn !== true &&
-		// 	router?.pathname in PageRoles &&
-		// 	!PageRoles[router?.pathname].includes('admin')
-		// ) {
-		// 	router.push({ pathname: '/' });
-		// }
-		// else{
-		// 	if (userData?.loggedIn && router?.pathname in PageRoles){
-		// 		router.back()
-		// 	}
-		// 	if (!userData?.loggedIn){
-		// 		router.push('/')
-		// 	}
-		// 	setAuthorized(true)
 
-		// }
-
-		// authCheck(router.asPath);
-		// setAuthorized(true);
-
-		if (loggedIn) {
+		if (loggedIn && !loading) {
 			if (
-				publicLinks.includes(path[0]) ||
-				!path[0].includes(roleRoutes[role])
+				publicLinks.includes(path) ||
+				!path.includes(roleRoutes[role])
 			) {
 				router.back();
 			}
@@ -75,12 +49,21 @@ const RouteProtecter = (props) => {
 			// if (path[0].includes(roleRoutes[role]){
 			// 	setAuthorized(true)
 			// }
-		} else if (!loggedIn) {
-			if (!publicLinks.includes(path[0])) router.push("/");
+			// setLoading(false)
+		} else if (!loggedIn && !loading) {
 			console.log("I am out");
-			setAuthorized(false);
+			if (!publicLinks.includes(path)) {
+				console.log("Enter in else if");
+				router.push("/");
+			}
+			if (authorized) setAuthorized(false);
+			// setLoading(false)
 		}
-	}, [router.asPath]);
+
+		return () => {
+			// setLoading(false);
+		};
+	}, [router.asPath, loading]);
 
 	function authCheck(url) {
 		console.log(" protected route : authCheck - ", loggedIn, url);
@@ -98,10 +81,13 @@ const RouteProtecter = (props) => {
 		}
 	}
 
+	console.log("%cRoute-Protecter: End", "color:green");
+	if (loading) return "Loading...";
+
 	return (
 		<>
-			{authorized && loggedIn ? (
-				<Layout isLoggedIn={loggedIn}>{children}</Layout>
+			{loggedIn ? (
+				<Layout isLoggedIn={true}>{children}</Layout>
 			) : (
 				children
 			)}
