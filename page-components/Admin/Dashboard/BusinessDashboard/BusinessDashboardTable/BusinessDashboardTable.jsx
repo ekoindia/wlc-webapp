@@ -40,12 +40,12 @@ const BusinessTable = () => {
 	return (
 		<>
 			<Table
-				pageLimit={10}
+				pageLimit={100}
 				renderer={renderer}
 				data={mockData}
 				variant="evenStriped"
 				tableName="Business"
-				isScrollRequired={true}
+				isScrollrequired={true}
 				border="none"
 				scrollCSS={{}}
 			/>
