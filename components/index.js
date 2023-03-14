@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Select } from "./Select";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
 import { Calenders } from "./Calenders";
@@ -17,7 +18,6 @@ import { NavBar } from "./NavBar";
 import { Pagination } from "./Pagination";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
-import { Selects } from "./Selects";
 import { SideBar } from "./SideBar";
 import { Sort } from "./Sort";
 import { Switch } from "./Switch";
@@ -25,6 +25,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	Select,
 	Table,
 	Calenders,
 	Switch,
@@ -32,7 +33,6 @@ export {
 	RouteProtecter,
 	SideBar,
 	NavBar,
-	Selects,
 	Headings,
 	Divider,
 	Pagination,
