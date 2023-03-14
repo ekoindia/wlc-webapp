@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { LoginPanel } from "page-components/Admin";
+import { LoginPanel } from "page-components";
 import { useEffect } from "react";
 import { useGetLogoContext } from "../contexts/getLogoContext";
 
