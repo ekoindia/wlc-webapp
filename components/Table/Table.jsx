@@ -307,9 +307,9 @@ const Table = (props) => {
 							<ChakraTable variant={variant} bg="white">
 								<Thead
 									bg="hint"
-									position="sticky"
-									top="0"
-									zIndex="sticky"
+									position={isScrollrequired ? "sticky" : ""}
+									top={isScrollrequired ? "0" : ""}
+									zIndex={isScrollrequired ? "sticky" : ""}
 								>
 									<Tr>{getTh()}</Tr>
 								</Thead>
