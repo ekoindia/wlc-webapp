@@ -9,7 +9,7 @@ import { mockData } from "constants/mockTableData";
  * @example	`<NetworkTable></NetworkTable>`
  */
 
-const NetworkTable = () => {
+const BusinessTable = () => {
 	const recordCound = 10;
 
 	const renderer = [
@@ -40,14 +40,17 @@ const NetworkTable = () => {
 	return (
 		<>
 			<Table
-				pageLimit={recordCound}
+				pageLimit={100}
 				renderer={renderer}
 				data={mockData}
-				variant="evenStripedClickableRow"
-				tableName="Network"
+				variant="evenStriped"
+				tableName="Business"
+				isScrollrequired={true}
+				border="none"
+				scrollCSS={{}}
 			/>
 		</>
 	);
 };
 
-export default NetworkTable;
+export default BusinessTable;

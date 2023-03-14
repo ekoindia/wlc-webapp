@@ -24,6 +24,8 @@ import { AccountStatementCard } from "page-components/Admin/AccountStatement";
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
+import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
+import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/OnboardingDashboard";
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Pagination } from "..";
 
@@ -34,6 +36,7 @@ const Table = (props) => {
 		renderer,
 		variant,
 		tableName,
+		isScrollrequired = false,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
@@ -208,6 +211,40 @@ const Table = (props) => {
 						)}
 					</>
 				);
+			} else if (tableName === "Business") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="0px"
+						>
+							<BusinessDashboardCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
+					</>
+				);
+			} else if (tableName === "Onboarding") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="0px"
+						>
+							<OnboardingDashboardCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
+					</>
+				);
 			}
 		});
 	};
@@ -240,6 +277,8 @@ const Table = (props) => {
 							borderRadius="10px 10px 0 0"
 							mt={{ base: "20px", "2xl": "10px" }}
 							border="1px solid #E9EDF1"
+							maxH={isScrollrequired ? "1000px" : "auto"}
+							overflowY={isScrollrequired ? "auto" : "initial"}
 							css={{
 								"&::-webkit-scrollbar": {
 									height: "0.8vw",
@@ -251,10 +290,27 @@ const Table = (props) => {
 									background: "#D2D2D2",
 									borderRadius: "5px",
 								},
+
+								"&::-webkit-scrollbar": {
+									width: "7px",
+								},
+								"&::-webkit-scrollbar-track": {
+									width: "7px",
+								},
+								"&::-webkit-scrollbar-thumb": {
+									background: "#555555",
+									borderRadius: "5px",
+									border: "1px solid #707070",
+								},
 							}}
 						>
 							<ChakraTable variant={variant} bg="white">
-								<Thead bg="hint">
+								<Thead
+									bg="hint"
+									position="sticky"
+									top="0"
+									zIndex="sticky"
+								>
 									<Tr>{getTh()}</Tr>
 								</Thead>
 								<Tbody>{getTr()}</Tbody>
