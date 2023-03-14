@@ -21,7 +21,6 @@ const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
 	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
 		props;
-
 	return (
 		<>
 			{isCardOpen && (
