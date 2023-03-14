@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Box, Flex } from "@chakra-ui/react";
 import { getNameStyle, getStatusStyle } from "helpers";
+import { Box, Flex } from "@chakra-ui/react";
+
 /**
- * A <BusinessDashboardCard> component
+ * A <OnboardingDashboardCard> component
  * TODO: Write more description here
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<BusinessDashboardCard></BusinessDashboardCard>`
+ * @example	`<OnboardingDashboardCard></OnboardingDashboardCard>`
  */
-const BusinessDashboardCard = ({ className = "", ...props }) => {
+const OnboardingDashboardCard = ({ className = "", ...props }) => {
 	const [count, setCount] = useState(0);
 
 	const item = {
-		transactionId: 270000,
-		TotalTransaction: 1277000,
-		name: "DMT Commission",
-		description:
-			"Saurabh Mullick, 9654110669 A/C:20082437069 STATE BANK OF INDIA",
-		racases: "20",
-		date: "5/10/2017",
-		DistributorMapped: "Izma Finance",
+		ekocode: 10167076,
+		refiD: 1277000,
+		name: "Rajesh Gupta",
+		Location: "Gurugram, Sector 45, Haryana",
+		businesstype: "Money Transfer",
+		Onboardedon: "3 Days ago",
 	}; // TODO: Edit state as required
 
 	useEffect(() => {
@@ -37,57 +36,52 @@ const BusinessDashboardCard = ({ className = "", ...props }) => {
 			<Flex direction="column" fontSize="12px" rowGap="2" pl="42px">
 				<Flex gap="2">
 					<Box as="span" color="light">
-						GTV:
+						Eko Code:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
-						&#x20B9;{item.transactionId}
+						&#x20B9;{item.ekocode}
 					</Box>
 				</Flex>
 				<Flex gap="2">
 					<Box as="span" color="light">
-						Total Transaction:
+						Ref.ID:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
-						{item.TotalTransaction}
+						{item.refiD}
 					</Box>
 				</Flex>
 				<Flex gap="2">
 					<Box as="span" color="light">
-						RA cases:
+						Location:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
-						{item.racases}
+						{item.Location}
 					</Box>
 				</Flex>
 				<Flex gap="2">
 					<Box as="span" color="light">
-						Onboarding Date:
+						Business Type:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
-						{item.date}
+						{item.businesstype}
 					</Box>
 				</Flex>
 				<Flex gap="2">
 					<Box as="span" color="dark">
-						Distributor Mapped:
+						Onoarded on:
 						{/* {item.agent_mobile} */}
 						<Box as="span" color="dark" fontWeight={"medium"}>
-							{item.DistributorMapped}
+							{item.Onboardedon}
 						</Box>
-						{item.amount}
 					</Box>
-				</Flex>
-
-				<Flex justifyContent="space-between" py="10px">
-					{getStatusStyle(item.account_status)}
 				</Flex>
 			</Flex>
 		</>
 	);
 };
 
-export default BusinessDashboardCard;
+export default OnboardingDashboardCard;

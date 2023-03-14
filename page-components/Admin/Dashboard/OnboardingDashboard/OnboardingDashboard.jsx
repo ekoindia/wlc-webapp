@@ -31,7 +31,7 @@ const cardData = [
 	},
 	{
 		id: 3,
-		title: "Business details ",
+		title: "Businessdetails ",
 		status: "captured",
 		count: "40",
 	},
@@ -73,26 +73,40 @@ const cardData = [
 	},
 	{
 		id: 10,
-		title: "Non transacting ",
+		title: "Nontransacting ",
 		status: "live",
 		count: "63",
 	},
 ];
 
-function Card({ title, status, count }) {
+function Card({ title, status, count, activeCardIndex, index }) {
 	return (
 		<Flex
-			minH="90px"
-			minW="146px"
+			minH={{ base: "60px", lg: "90px" }}
+			minW={{ base: "138", lg: "145px" }}
 			border="1px solid #E9EDF1"
-			bg="white"
+			borderColor={
+				activeCardIndex === index ? "secondary.DEFAULT" : "grey.300"
+			}
+			boxShadow={
+				activeCardIndex === index ? "0px 3px 10px #1F5AA733" : "none"
+			}
+			bg={"white"}
 			borderRadius={"10px"}
 		>
 			<Flex direction={"column"} p="10px">
 				<Flex direction={{ base: "row", md: "column" }}>
-					<Text fontSize={{ base: "xs", md: "sm" }}>{title}</Text>
-					<Text fontSize={{ base: "xs", md: "sm" }}>
-						&nbsp;{status}
+					<Text
+						fontSize={{ base: "xs", md: "sm" }}
+						fontWeight={"medium"}
+					>
+						{title}
+					</Text>
+					<Text
+						fontSize={{ base: "xs", md: "sm" }}
+						fontWeight={"medium"}
+					>
+						{status}
 					</Text>
 				</Flex>
 				<Flex>
@@ -109,7 +123,14 @@ function Card({ title, status, count }) {
 	);
 }
 
-const OnboardingDashboard = () => {
+const OnboardingDashboard = (props) => {
+	const [activeCardIndex, setActiveCardIndex] = useState(null);
+	console.log("activeCardIndex", activeCardIndex);
+
+	const handleCardClick = (index) => {
+		setActiveCardIndex(index);
+	};
+
 	return (
 		<Flex direction={"column"}>
 			<Flex
@@ -117,16 +138,16 @@ const OnboardingDashboard = () => {
 				minH="175px"
 				w="100%"
 				bg={{ base: "none", md: "white" }}
-				p="20px"
+				px="20px"
 				border={{ base: "none", md: " 1px solid #E9EDF1" }}
 				borderRadius={"10px"}
 				direction={"column"}
 			>
-				<Flex alignItems={"center"} pb="20px" gap="15px">
+				<Flex alignItems={"center"} gap="15px">
 					<Center
 						alignItems={"center"}
 						width={{
-							base: "10px",
+							base: "18px",
 							sm: "12px",
 
 							lg: "14px",
@@ -134,7 +155,7 @@ const OnboardingDashboard = () => {
 							"2xl": "22px",
 						}}
 						height={{
-							base: "10px",
+							base: "11.5px",
 							sm: "12px",
 
 							lg: "14px",
@@ -144,18 +165,23 @@ const OnboardingDashboard = () => {
 					>
 						<Icon name="filter" style={{ width: "100%" }} />
 					</Center>
-					<Text fontSize="lg" fontWeight={"semibold"}>
+					<Text
+						fontSize={{ base: "sm", md: "lg" }}
+						fontWeight={"semibold"}
+					>
 						Filter using onboarding status
 					</Text>
 				</Flex>
 
-				<Flex gap="10px" overflowX="auto">
-					{cardData.map((card) => (
-						<Box key={card}>
+				<Flex gap="10px" overflowX="auto" p="5px">
+					{cardData.map((card, index) => (
+						<Box key={index} onClick={() => handleCardClick(index)}>
 							<Card
 								title={card.title}
 								status={card.status}
 								count={card.count}
+								activeCardIndex={activeCardIndex}
+								index={index}
 							/>
 						</Box>
 					))}
@@ -165,7 +191,7 @@ const OnboardingDashboard = () => {
 				direction={"column"}
 				bg="white"
 				// px="20px"
-				mt="20px"
+				mt={{ base: "0px", md: "20px" }}
 				border=" 1px solid #E9EDF1"
 				borderRadius={"10px"}
 				px="20px"
@@ -173,7 +199,10 @@ const OnboardingDashboard = () => {
 			>
 				<Box py="30px">
 					{" "}
-					<Text fontSize="xl" fontWeight="semibold">
+					<Text
+						fontSize={{ base: "md", lg: "xl" }}
+						fontWeight="semibold"
+					>
 						Onboarded Merchants
 					</Text>
 				</Box>

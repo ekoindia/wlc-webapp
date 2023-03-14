@@ -48,11 +48,12 @@ const NetworkTable = () => {
 	return (
 		<>
 			<Table
-				pageLimit={recordCound}
+				pageLimit={50}
 				renderer={renderer}
 				data={mockData}
 				variant="evenStripedClickableRow"
-				tableName="Network"
+				tableName="Onboarding"
+				isScrollrequired={true}
 			/>
 		</>
 	);
