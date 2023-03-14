@@ -7,6 +7,11 @@ type adminMenuType = {
 };
 export const adminMenu: adminMenuType[] = [
 	{
+		icon: "dashboard",
+		name: "Dashboard",
+		link: "/admin/dashboard",
+	},
+	{
 		icon: "refer",
 		name: "My Network",
 		link: "/admin/my-network",

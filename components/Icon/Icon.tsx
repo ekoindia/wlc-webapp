@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import { IconLibrary } from "constants/IconLibrary";
 import React from "react";
 
@@ -40,7 +41,14 @@ export type IconNameType =
 	| "refresh"
 	| "arrow-up"
 	| "arrow-down"
-	| "close";
+	| "close"
+	| "	percent_bg"
+	| "dashboard"
+	| "decrease"
+	| "increase"
+	| "people"
+	| "arrow-increase"
+	| "arrow-decrease";
 
 export type IconProps = {
 	name: IconNameType;

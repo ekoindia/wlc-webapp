@@ -89,7 +89,7 @@ const Calenders = ({
 										xl: "14px",
 									}}
 								>
-									{sublabel}:
+									{sublabel}:&nbsp;
 								</InputLabel>
 							) : (
 								""
@@ -151,18 +151,18 @@ const Calenders = ({
 							</Box>
 
 							{/* Icon */}
-							<Flex>
-								<Center alignItems="flex-end">
-									<Icon
-										name="calender"
-										width={{
-											base: "",
-											md: "20px",
-											xl: "23px",
-										}}
-										height="24px"
-									/>
-								</Center>
+							<Flex
+								w="100%"
+								h="100%"
+								alignItems="center"
+								justifyContent="center"
+							>
+								<Icon
+									color="dark"
+									name="calender"
+									width="27px"
+									h="26px"
+								/>
 							</Flex>
 						</Flex>
 					</Flex>

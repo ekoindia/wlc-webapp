@@ -126,7 +126,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 										Saurabh Mullick
 									</Text>
 								</Flex>
-								<Flex
+								{/* <Flex
 									gap={{
 										base: "20px",
 										lg: "8px",
@@ -244,7 +244,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 									>
 										Current ECP
 									</Text>
-								</Flex>
+								</Flex> */}
 								<Flex
 									direction={"column"}
 									gap={{

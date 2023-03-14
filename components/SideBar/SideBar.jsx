@@ -8,11 +8,11 @@ import {
 	useDisclosure,
 	useMediaQuery,
 } from "@chakra-ui/react";
+import { adminMenu } from "constants";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Icon } from "..";
-import { adminMenu } from "../../constants/adminMenu";
 
 const SideBarMenu = ({ className = "", ...props }) => {
 	const router = useRouter();
@@ -37,8 +37,13 @@ const SideBarMenu = ({ className = "", ...props }) => {
 			height={"100%"}
 		>
 			<Flex>
-				<Box bg="#11299E" borderRight="12px" height={"100%"} w={"full"}>
-					{adminMenu.map((menu, index) => (
+				<Box
+					bg="accent.DEFAULT"
+					borderRight="12px"
+					height={"100%"}
+					w={"full"}
+				>
+					{adminMenu?.map((menu, index) => (
 						<Link
 							href={menu.link}
 							key={index}

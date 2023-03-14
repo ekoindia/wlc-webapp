@@ -14,27 +14,19 @@ const Menus = (props) => {
 	const menuList = [
 		{
 			item: "Proceed",
-			onClick: function () {
-				console.log("clicked1");
-			},
+			path: "",
 		},
 		{
 			item: "Mark Inactive",
-			onClick: function () {
-				console.log("clicked2");
-			},
+			path: "",
 		},
 		{
 			item: "Mark Pending",
-			onClick: function () {
-				console.log("clicked3");
-			},
+			path: "",
 		},
 		{
 			item: "Change Role",
-			onClick: function () {
-				router.push("/admin/my-network/profile/change-role");
-			},
+			path: "/admin/my-network/profile/change-role",
 		},
 	];
 
@@ -104,7 +96,9 @@ const Menus = (props) => {
 										<MenuItem
 											color="dark"
 											key={index}
-											onClick={item.onClick}
+											onClick={() => {
+												router.push(item.path);
+											}}
 											p="8px 10px"
 											fontSize={{
 												base: "10px",
