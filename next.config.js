@@ -5,6 +5,7 @@ const nextConfig = {
 	env: {
 		production: process.env.PRODUCTION,
 		development: process.env.DEVELOPMENT,
+		client_id: process.env.CLIENT_ID,
 	},
 };
 

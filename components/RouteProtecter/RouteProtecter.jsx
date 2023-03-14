@@ -1,69 +1,112 @@
-import { useRouter } from "next/router";
 import { useUser } from "contexts/UserContext";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Layout } from "..";
 
 /**
  * A <RouteProtecter> component
- * TODO: Write more description here
+ * TODO: to protect the private routes and gives access to route according to user role.
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<RouteProtecter></RouteProtecter>`
  */
 
-const RouteProtecter = (props) => {
-	const { router, children } = props;
-	const { loggedIn } = useUser()[0];
-	const [authorized, setAuthorized] = useState(false);
+const publicLinks = ["/"];
+const roleRoutes = {
+	admin: "/admin",
+	agent: "/agent",
+};
 
-	console.info("RouteProtecter: start", loggedIn);
+const RouteProtecter = (props) => {
+	const { router, children } = props; //TODO : Getting Error in _app.tsx
+	const { userData, loading } = useUser();
+	const { loggedIn, role } = userData;
+	const [authorized, setAuthorized] = useState(false);
+	// const [loading, setLoading] = useState(true)
+
+	console.log("%cRoute-Protecter: Start", "color:green");
+	console.log({
+		loggedIn: loggedIn,
+		authorized: authorized,
+		loading: loading,
+	});
 
 	useEffect(() => {
-		if (router.pathname.startsWith("/admin") && loggedIn) {
-			console.log("RouteProtecter: check pathname");
-			setAuthorized(true);
-		} else {
-			router.push("/");
-			setAuthorized(false);
+		console.log("router.pathname", router.pathname);
+		// const path = router.asPath.split("?");
+		const path = router.asPath;
+		console.log("path", path);
+
+		if (loggedIn && !loading) {
+			if (
+				publicLinks.includes(path) ||
+				!path.includes(roleRoutes[role])
+			) {
+				router.back();
+			}
+			if (!authorized) {
+				setAuthorized(true);
+			}
+			// if (path[0].includes(roleRoutes[role]){
+			// 	setAuthorized(true)
+			// }
+			// setLoading(false)
+		} else if (!loggedIn && !loading) {
+			console.log("I am out");
+			if (!publicLinks.includes(path)) {
+				console.log("Enter in else if");
+				router.push("/");
+			}
+			if (authorized) setAuthorized(false);
+			// setLoading(false)
 		}
-	}, [router.pathname]);
 
-	// useEffect(() => {
-	// 	// on initial load - run auth check
-	// 	authCheck(router.asPath);
-	// 	setAuthorized(true);
-	// 	// on route change start - hide page content by setting authorized to false
-	// 	const hideContent = () => setAuthorized(false);
-	// 	router.events.on('routeChangeStart', hideContent);
-	// 	// on route change complete - run auth check
-	// 	router.events.on('routeChangeComplete', authCheck)
-	// 	// unsubscribe from events in useEffect return function
-	// 	return () => {
-	// 		router.events.off('routeChangeStart', hideContent);
-	// 		router.events.off('routeChangeComplete', authCheck);
-	// 	}
-	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	// }, []);
+		return () => {
+			// setLoading(false);
+		};
+	}, [router.asPath, loading]);
 
-	// function authCheck(url) {
-	// 	// redirect to login page if accessing a private page and not logged in
-	// 	const publicLinks = ['/', '/login'];
-	// 	const path = url.split('?')[0];
-	// 	if (!loggedIn && !publicLinks.includes(path)) {
-	// 		setAuthorized(false);
-	// 		router.push({
-	// 			pathname: '/',							// '/login'
-	// 			// query: { returnUrl: router.asPath }
-	// 		});
-	// 	} else {
-	// 		setAuthorized(true);
-	// 	}
-	// }
+	function authCheck(url) {
+		console.log(" protected route : authCheck - ", loggedIn, url);
+		const publicLinks = ["/"];
+		const path = url.split("?")[0];
+		console.log("path", path);
+		if (!loggedIn && !publicLinks.includes(path)) {
+			console.log("Route Protector : Not logged");
+			setAuthorized(false);
+			router.push("/");
+		} else if (loggedIn && router.pathname.includes("/admin")) {
+			console.log("Route Protector : logged");
+			// router.push(router.pathname);
+			setAuthorized(true);
+		}
+	}
+
+	console.log("%cRoute-Protecter: End", "color:green");
+	if (loading) return "Loading...";
 
 	return (
 		<>
-			{authorized && children}
-			{!loggedIn && !authorized && children}
+			{loggedIn ? (
+				<Layout isLoggedIn={true}>{children}</Layout>
+			) : (
+				children
+			)}
+			{/* {authorized ? (
+				loggedIn ? (
+					<Layout isLoggedIn={loggedIn}>{children}</Layout>
+				) : (
+					children
+				)
+			) :
+				(
+					<Button
+						onClick={() => {
+							router.push("/");
+						}}
+					>
+						You dont have access to this page
+					</Button>
+				)} */}
 		</>
 	);
 };

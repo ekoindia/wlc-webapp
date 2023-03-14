@@ -1,34 +1,48 @@
-import { useRouter } from "next/router";
+import {
+	createUserState,
+	getAuthTokens,
+	getSessions,
+} from "helpers/loginHelper";
+import Router from "next/router";
 import React, {
 	createContext,
 	useContext,
 	useEffect,
 	useMemo,
 	useReducer,
+	useState,
 } from "react";
 import { defaultUserState, UserReducer } from "./UserReducer";
 
 const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-	// User/Session State (Logged-out by default)
 	const [state, dispatch] = useReducer(UserReducer, defaultUserState);
-	const router = useRouter();
+	const [loading, setLoading] = useState(true);
+	console.log("%cExecuted UserContext: Start ", "color:blue");
 
 	// Get default session from browser's sessionStorage
 	useEffect(() => {
-		const strSession = sessionStorage.getItem("ConnectSession");
-		if (!strSession) {
+		const Session = getSessions();
+		console.log("Executed UserContext: Session", Session);
+		if (
+			!(
+				Session &&
+				Session.details &&
+				Session.access_token &&
+				Session.details.mobile
+			)
+		) {
+			console.log("Not logged");
+			setLoading(() => {
+				console.log("State set");
+				return false;
+			});
 			return;
 		}
 
-		let sessionState;
-		try {
-			sessionState = JSON.parse(strSession);
-		} catch (e) {
-			console.error(e);
-			return;
-		}
+		let sessionState = createUserState(Session);
+		console.log("sessionState", sessionState);
 
 		if (sessionState) {
 			// Load UserState from sessionStorage
@@ -36,32 +50,50 @@ const UserProvider = ({ children }) => {
 				type: "INIT_USER_STORE",
 				payload: sessionState,
 			});
+			setLoading(false);
 		}
 	}, []);
 
 	useEffect(() => {
+		console.log("User Context : UseEffect", {
+			logged: state.loggedIn,
+			path: Router.asPath,
+		});
 		if (state.loggedIn) {
-			router.push("/admin/my-network");
-		} else {
-			router.push("/");
+			// setLoading(false)
+			console.log("User Context : ", state.loggedIn, Router.asPath);
+
+			// if (Router.pathname.includes("/admin")) Router.push(Router.asPath);
+			// else Router.replace("/admin/my-network");
+			if (!Router.pathname.includes("/admin")) {
+				console.log("Redirect");
+				Router.replace("/admin/my-network");
+			}
 		}
 	}, [state.loggedIn]);
 
-	const login = (sessionData) =>
+	const login = (sessionData) => {
 		dispatch({
 			type: "LOGIN",
-			payload: {
-				...sessionData,
-			},
+			payload: { ...sessionData },
 		});
+	};
 
-	const logout = () => dispatch({ type: "LOGOUT" });
+	const logout = () => {
+		dispatch({ type: "LOGOUT" });
+	};
 
 	const contextValue = useMemo(() => {
-		return [state, login, logout];
-	}, [state]);
-
-	// console.log(state);
+		return {
+			userData: state,
+			login,
+			logout,
+			loading,
+		};
+	}, [state, loading]);
+	console.log("%cExecuted : UserContext: End", "color:blue");
+	// if (loading)
+	// 	return "loading..."
 
 	return (
 		<UserContext.Provider value={contextValue}>

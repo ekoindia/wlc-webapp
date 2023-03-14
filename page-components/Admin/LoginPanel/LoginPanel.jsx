@@ -1,6 +1,8 @@
-import { Box, Flex, Grid, Image } from "@chakra-ui/react";
+import { Box, Flex, Grid, Image, SlideFade } from "@chakra-ui/react";
 import { useGetLogoContext } from "contexts/getLogoContext";
-import { useState } from "react";
+import { useUser } from "contexts/UserContext";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import { GoogleVerify, Login, VerifyOtp } from ".";
 
 /**
@@ -10,9 +12,17 @@ import { GoogleVerify, Login, VerifyOtp } from ".";
  */
 
 const LoginPanel = (props) => {
-	const [step, setStep] = useState(0); // TODO: Edit state as required
-	const [number, setNumber] = useState("");
+	const [step, setStep] = useState("LOGIN");
+	const [email, setEmail] = useState("");
+	const [number, setNumber] = useState({
+		original: "",
+		formatted: "",
+	});
+	const [loginType, setLoginType] = useState("Mobile");
 	const { logo } = useGetLogoContext();
+	const router = useRouter();
+	// const { userData } = useUser();
+	// useRedirectPageOnLogin(router, userData )
 	return (
 		<Flex
 			w="full"
@@ -71,28 +81,33 @@ const LoginPanel = (props) => {
 					borderRadius={{ base: 15, "2xl": 20 }}
 					bg="#FFFFFF"
 				>
-					{step === 0 ? (
+					{step === "LOGIN" && (
 						<Login
 							setStep={setStep}
 							number={number}
 							setNumber={setNumber}
+							setEmail={setEmail}
+							setLoginType={setLoginType}
 						/>
-					) : (
-						""
 					)}
-					{step === 1 ? (
-						<VerifyOtp setStep={setStep} number={number} />
-					) : (
-						""
+					{step === "VERIFY_OTP" && (
+						<SlideFade offsetX={100} offsetY={0} in={true}>
+							<VerifyOtp
+								loginType={loginType}
+								setStep={setStep}
+								number={number}
+							/>
+						</SlideFade>
 					)}
-					{step === 2 ? (
-						<GoogleVerify //TODO mobileVerifyPane
-							setStep={setStep}
-							number={number}
-							setNumber={setNumber}
-						/>
-					) : (
-						""
+					{step === "GOOGLE_VERIFY" && (
+						<SlideFade offsetX={100} offsetY={0} in={true}>
+							<GoogleVerify
+								setStep={setStep}
+								number={number}
+								email={email}
+								setNumber={setNumber}
+							/>
+						</SlideFade>
 					)}
 				</Box>
 			</Grid>
@@ -101,3 +116,14 @@ const LoginPanel = (props) => {
 };
 
 export default LoginPanel;
+
+const useRedirectPageOnLogin = (router, userState) => {
+	useEffect(() => {
+		if (userState?.loggedIn) {
+			// Redirect user to the next page
+			// router.push(router?.query?.next || Pages.HOME);
+			router.push("/admin/mynetwork");
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [userState?.loggedIn]);
+};

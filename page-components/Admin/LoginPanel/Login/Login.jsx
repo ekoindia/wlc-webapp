@@ -1,6 +1,11 @@
 import { Button, Center, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import { Buttons, Divider, Input } from "components";
 import { useRef, useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
+import { useToast } from "@chakra-ui/react";
+import { useLogin } from "hooks";
+import { useUser } from "contexts/UserContext";
+import { sendOtpRequest, RemoveFormatted } from "helpers";
 
 /**
  * A <Login> component
@@ -9,46 +14,48 @@ import { useRef, useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Login></Login>`
  */
-const Login = ({ setStep, setNumber, number }) => {
-	const [value, setValue] = useState(number);
+
+const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
+	const EnterRef = useRef();
+	const toast = useToast();
+	const { login } = useUser();
+	const [busy, googleHandler] = useLogin(login, setStep, setEmail);
+
+	const [value, setValue] = useState(number.formatted);
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
-	const EnterRef = useRef();
 
-	function formatNum(num) {
-		let formatted_num = "";
-		// This is for space removal when user removes the input
-		if (value.slice(0, value.length - 1) === num && num !== "") {
-			return num;
-		} else {
-			for (let i in num) {
-				if (num[i] !== " ") {
-					if (i === "2" || i === "6") {
-						formatted_num += num[i] + " ";
-					} else formatted_num += num[i];
-				}
-			}
-			return formatted_num;
-		}
-	}
+	const googleLoginHandler = useGoogleLogin({
+		onSuccess: async (response) => {
+			const postData = {
+				id_type: "Google",
+				id_token: response.code,
+			};
+			googleHandler(postData);
+			setLoginType("Google");
+			setNumber({
+				original: "",
+				formatted: "",
+			});
+		},
+		onError: (err) => console.log(err),
+		flow: "auth-code",
+	});
 
 	const onChangeHandler = (val) => {
-		// /^[6-9]\d{0,9}$/g.test(val)
-		// /^[6-9]\d{0,2}\s\d{0,3}\s\d{0,4}$/g
-		// [6-9]?(\d{0,2})?(\s\d{0,3})?(\s\d{0,4})
-		if (
-			val == "" ||
-			/^[6-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(val)
-		) {
-			setValue(formatNum(val));
-		}
+		setValue(val);
 	};
 
-	const onVerify = () => {
-		// console.log(/^[6-9]{1}[0-9]{9}$/g.test(value));
-		if (value.length == 12) {
-			setNumber(value);
-			setStep((prev) => prev + 1);
+	const SendOtp = () => {
+		if (value.length === 12) {
+			let originalNum = RemoveFormatted(value);
+			setNumber({
+				original: originalNum,
+				formatted: value,
+			});
+			setLoginType("Mobile");
+			setStep("VERIFY_OTP");
+			sendOtpRequest(originalNum, toast);
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);
@@ -60,6 +67,7 @@ const Login = ({ setStep, setNumber, number }) => {
 			EnterRef.current.focus();
 		}
 	};
+
 	return (
 		<Flex direction="column">
 			<Heading
@@ -86,7 +94,7 @@ const Login = ({ setStep, setNumber, number }) => {
 				fontWeight="medium"
 				borderRadius="10px"
 				position="relative"
-				onClick={() => setStep(2)}
+				onClick={googleLoginHandler}
 				boxShadow="0px 3px 10px #4185F433;"
 			>
 				<Center
@@ -147,7 +155,7 @@ const Login = ({ setStep, setNumber, number }) => {
 				title="Verify"
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
-				onClick={onVerify}
+				onClick={SendOtp}
 				ref={EnterRef}
 			/>
 		</Flex>
