@@ -527,7 +527,7 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 
 				{/* Permanent Address */}
 
-				<Flex display={{ base: "none", md: "flex" }} direction="column">
+				<Flex display={{ base: "flex", md: "flex" }} direction="column">
 					{!visible ? <PermanentAddress /> : ""}
 				</Flex>
 

@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import { Tables } from "components/Tables";
+import { OnboardingDasboardTable } from "components/OnboardingDasboardTable";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { Tables } from "components/Tables";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Tables", () => {
+describe("OnboardingDasboardTable", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Tables />);
+		const { container } = render(<OnboardingDasboardTable />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Tables", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Tables in __tests__/components/Tables/Tables.test.jsx"
+		"TODO: add proper test cases for OnboardingDasboardTable in __tests__/components/OnboardingDasboardTable/OnboardingDasboardTable.test.jsx"
 	);
 });

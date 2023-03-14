@@ -1,9 +1,9 @@
-import { Tables } from "components";
+import { Table } from "components";
 import { mockData } from "constants/mockTableData";
 
 /**
  * A <NetworkTable> component
- * TODO: Write more description here
+ * TODO: This is my network table with clickable rows
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkTable></NetworkTable>`
@@ -43,11 +43,9 @@ const NetworkTable = () => {
 		{ name: "", field: "", show: "Arrow" },
 	];
 
-	/* data ✔ || pagesize ✔ || order ✔ */
-
 	return (
 		<>
-			<Tables
+			<Table
 				pageLimit={recordCound}
 				renderer={renderer}
 				data={mockData}

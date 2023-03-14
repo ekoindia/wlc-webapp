@@ -1,10 +1,10 @@
 import React from "react";
-import Selects from "./Selects";
+import BusinessDashboard from "./BusinessDashboard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Selects",
-	component: Selects,
+	title: "Component/BusinessDashboard",
+	component: BusinessDashboard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -47,7 +47,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <Selects {...args} />;
+const Template = (args) => <BusinessDashboard {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

@@ -1,10 +1,10 @@
 import React from "react";
-import Tables from "./Tables";
+import Dashboard from "./Dashboard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Tables",
-	component: Tables,
+	title: "Component/Dashboard",
+	component: Dashboard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -47,7 +47,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <Tables {...args} />;
+const Template = (args) => <Dashboard {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

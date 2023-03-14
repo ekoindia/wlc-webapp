@@ -1,1 +1,9 @@
-export { sendOtpRequest, RemoveFormatted } from "./loginHelper";
+export { RemoveFormatted, sendOtpRequest } from "./loginHelper";
+export {
+	getArrowStyle,
+	getLocationStyle,
+	getModalStyle,
+	getNameStyle,
+	getStatusStyle,
+	openGoogleMap,
+} from "./TableHelpers";

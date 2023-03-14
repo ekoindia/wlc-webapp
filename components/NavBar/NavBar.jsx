@@ -19,7 +19,9 @@ import { useRouter } from "next/router";
 
 const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
-	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj } = props;
+	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
+		props;
+
 	return (
 		<>
 			{isCardOpen && (
@@ -79,6 +81,7 @@ const NavBar = (props) => {
 									title={headingObj.title}
 									hasIcon={headingObj.hasIcon}
 									insideNav={true}
+									propComp={propComp}
 								/>
 							</Flex>
 						)

@@ -1,5 +1,6 @@
 import { Box, Button, Grid, GridItem } from "@chakra-ui/react";
 import { Menus } from "components";
+import { ChangeRoleMenu } from "constants";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import {
@@ -12,39 +13,14 @@ import {
 
 const changeRoleButton = () => {
 	const router = useRouter();
-	const menuList = [
-		{
-			item: "Transfer Merchants",
-			onClick: function () {
-				router.push("/admin/my-network/profile/change-role?tab=0");
-			},
-		},
-		{
-			item: "Promote Csp To Scsp",
-			onClick: function () {
-				router.push("/admin/my-network/profile/change-role?tab=1");
-			},
-		},
-		{
-			item: "Demote Distributor",
-			onClick: function () {
-				router.push("/admin/my-network/profile/change-role?tab=2");
-			},
-		},
-		{
-			item: "Upgrade Merchant To I-Merchant",
-			onClick: function () {
-				router.push("/admin/my-network/profile/change-role?tab=3");
-			},
-		},
-	];
+
 	return (
 		<Box>
 			<Menus
 				as={Button}
 				type="everted"
 				title="Change Role"
-				menulist={menuList}
+				menulist={ChangeRoleMenu}
 				iconPos="right"
 				iconName="arrow-down"
 				iconStyles={{ height: "10px", width: "14px" }}
@@ -57,7 +33,10 @@ const changeRoleButton = () => {
 					textAlign: "left",
 					borderRadius: "10px",
 				}}
-				listStyles={{ height: "150px", width: "250px" }}
+				listStyles={{
+					height: "150px",
+					width: "250px",
+				}}
 			/>
 		</Box>
 	);
@@ -74,13 +53,13 @@ const ProfilePanel = (props) => {
 		<Grid
 			templateColumns={{
 				base: "repeat(auto-fit,minmax(280px,0.90fr))",
-				sm: "repeat(auto-fit,minmax(370px,0.90fr))",
-				md: "repeat(auto-fit,minmax(380px,1fr))",
+				sm: "repeat(auto-fit,minmax(380px,0.90fr))",
+				md: "repeat(auto-fit,minmax(360px,1fr))",
 				lg: "repeat(auto-fit,minmax(490px,1fr))",
 			}}
 			justifyContent="center"
 			py={{ base: "20px", md: "0px" }}
-			gap={(4, 6)}
+			gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 		>
 			<GridItem>
 				<CompanyPane />

@@ -77,11 +77,16 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 			{/* Select  */}
 			<Flex
 				px="0"
-				columnGap={{ base: "0", md: "180px" }}
+				columnGap={{
+					base: "0",
+					md: "180px",
+					xl: "160px",
+					"2xl": "180px",
+				}}
 				rowGap={{ base: "40px", md: "30px" }}
 				flexWrap="wrap"
 			>
-				<Box w={{ base: "100%", md: "500px" }}>
+				<Box w={{ base: "100%", xl: "470px", "2xl": "500px" }}>
 					<Text
 						color="#0C243B"
 						fontSize={{ base: "sm", md: "md" }}
@@ -102,7 +107,7 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 						<option value="option3">Option 3</option>
 					</Select>
 				</Box>
-				<Box w={{ base: "100%", md: "500px" }}>
+				<Box w={{ base: "100%", xl: "480px", "2xl": "500px" }}>
 					<Text
 						color="#0C243B"
 						fontSize={{ base: "sm", md: "md" }}

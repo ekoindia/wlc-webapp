@@ -71,12 +71,9 @@ const Sort = ({ className = "", ...props }) => {
 									"2xl": "11vw",
 								}}
 								h={{
-									base: "8.5vw",
-									sm: "5vw",
-									md: "4vw",
-									lg: "3vw",
-									xl: "2.6vw",
-									"2xl": "2.2vw",
+									base: "3rem",
+									md: "2.5rem",
+									"2xl": "3rem",
 								}}
 								fontSize={{
 									base: "5px",
@@ -88,12 +85,7 @@ const Sort = ({ className = "", ...props }) => {
 								}}
 								fontWeight={"medium"}
 								textAlign="start"
-								borderRadius={{
-									base: "6px",
-									md: "6px",
-									lg: "6px",
-									"2xl": "6px",
-								}}
+								borderRadius="6px"
 								boxShadow="0px 5px 15px #0000001A"
 								border=" 1px solid #D2D2D2"
 								isActive={isOpen}

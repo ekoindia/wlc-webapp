@@ -13,14 +13,7 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 		<Box
 			position="relative"
 			w={"100%"}
-			h={{
-				base: "11vw",
-				sm: "7vw",
-				md: "4vw",
-				lg: "3vw",
-				xl: "2.6vw",
-				"2xl": "2.2vw",
-			}}
+			h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
 			width={{
 				base: "100%",
 				md: "50vw",
@@ -83,7 +76,7 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 							<Text as="p" fontSize="sm">
 								9891745076
 							</Text>
-							<Text as="p" fontSize="10px" color="#11299E">
+							<Text as="p" fontSize="10px" color="accent.DEFAULT">
 								Rajesh Enterprises
 							</Text>
 						</Box>
@@ -91,7 +84,7 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 							<Text as="p" fontSize="sm">
 								9891745076
 							</Text>
-							<Text as="p" fontSize="10px" color="#11299E">
+							<Text as="p" fontSize="10px" color="accent.DEFAULT">
 								Rajesh Enterprises
 							</Text>
 						</Box>
@@ -99,7 +92,7 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 							<Text as="p" fontSize="sm">
 								9891745076
 							</Text>
-							<Text as="p" fontSize="10px" color="#11299E">
+							<Text as="p" fontSize="10px" color="accent.DEFAULT">
 								Rajesh Enterprises
 							</Text>
 						</Box>

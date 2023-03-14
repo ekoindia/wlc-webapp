@@ -43,7 +43,7 @@ const ContactPane = () => {
 	];
 
 	return (
-		<Cards h="auto">
+		<Cards h={{ base: "auto", lg: "100%" }}>
 			<Box
 				display="flex"
 				alignItems="center"
