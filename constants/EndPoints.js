@@ -5,4 +5,5 @@ export const Endpoints = {
 	SENDOTP: "/sendotp",
 	REFRESHTOKEN: "/token",
 	NETWORKTABLE: "/test",
+	TRANSACTION: "/transactions/do",
 };

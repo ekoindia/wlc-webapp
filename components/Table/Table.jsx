@@ -12,6 +12,7 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
+import { Endpoints } from "constants/EndPoints";
 import {
 	getArrowStyle,
 	getLocationStyle,
@@ -19,13 +20,14 @@ import {
 	getNameStyle,
 	getStatusStyle,
 } from "helpers";
+import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { AccountStatementCard } from "page-components/Admin/AccountStatement";
+import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
+import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/OnboardingDashboard";
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
-import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
-import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/OnboardingDashboard";
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Pagination } from "..";
 
@@ -42,6 +44,31 @@ const Table = (props) => {
 	const [currentSort, setCurrentSort] = useState("default");
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	const [currentPage, setCurrentPage] = useState(1);
+	// const [tableData, setTableData] = useState([]);
+	const [pageNumber, setPageNumber] = useState(null);
+
+	/* API CALLING */
+	let data = useRequest({
+		method: "POST",
+		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+		headers: {
+			"tf-req-uri-root-path": "/ekoicici/v1",
+			"tf-req-uri":
+				"/network/agents/transaction_history?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
+			"tf-req-method": "GET",
+		},
+	});
+
+	// useEffect(() => {
+	// 	setPageNumber(data?.data?.data?.page_number);
+	// 	setTableData(data?.data?.data?.agent_details);
+	// 	localStorage.setItem(
+	// 		"network_data",
+	// 		JSON.stringify(data?.data?.data?.agent_details)
+	// 	);
+	// }, [data]);
+
+	console.log("data", data);
 
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== currentPage) {
