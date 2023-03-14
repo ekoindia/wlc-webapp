@@ -1,14 +1,11 @@
-import { Button, Center } from "@chakra-ui/react";
-import { LoginPanel } from "page-components/Admin";
+import { Box } from "@chakra-ui/react";
+import { Select } from "components";
 import React from "react";
 const chakra = () => {
 	return (
-		<Center>
-			<Button size={"md"} variant="accent">
-				CLick me{" "}
-			</Button>
-			<LoginPanel />
-		</Center>
+		<Box>
+			<Select />
+		</Box>
 	);
 };
 

@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import { Selects } from "components/Selects";
+import { Select } from "components/Select";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { Selects } from "components/Selects";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Selects", () => {
+describe("Select", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Selects />);
+		const { container } = render(<Select />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Selects", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Selects in __tests__/components/Selects/Selects.test.jsx"
+		"TODO: add proper test cases for Select in __tests__/components/Select/Select.test.jsx"
 	);
 });
