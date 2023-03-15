@@ -1,4 +1,4 @@
 import { adminMenu } from "./adminMenu";
 import { Endpoints } from "./EndPoints";
-
-export { adminMenu, Endpoints };
+import { roleInitialRoute, publicLinks, roleRoutes } from "./validRoutes";
+export { adminMenu, Endpoints, publicLinks, roleRoutes, roleInitialRoute };

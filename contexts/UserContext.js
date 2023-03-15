@@ -13,6 +13,7 @@ import React, {
 	useState,
 } from "react";
 import { defaultUserState, UserReducer } from "./UserReducer";
+import { roleRoutes, roleInitialRoute } from "constants";
 
 const UserContext = createContext();
 
@@ -35,7 +36,7 @@ const UserProvider = ({ children }) => {
 		) {
 			console.log("Not logged");
 			setLoading(() => {
-				console.log("State set");
+				console.log("Setting loading state");
 				return false;
 			});
 			return;
@@ -54,23 +55,27 @@ const UserProvider = ({ children }) => {
 		}
 	}, []);
 
-	useEffect(() => {
-		console.log("User Context : UseEffect", {
-			logged: state.loggedIn,
-			path: Router.asPath,
-		});
-		if (state.loggedIn) {
-			// setLoading(false)
-			console.log("User Context : ", state.loggedIn, Router.asPath);
+	// useEffect(() => {
+	// 	console.log("User Context : UseEffect", {
+	// 		logged: state.loggedIn,
+	// 		path: Router.asPath,
+	// 	});
 
-			// if (Router.pathname.includes("/admin")) Router.push(Router.asPath);
-			// else Router.replace("/admin/my-network");
-			if (!Router.pathname.includes("/admin")) {
-				console.log("Redirect");
-				Router.replace("/admin/my-network");
-			}
-		}
-	}, [state.loggedIn]);
+	// 	if (state.loggedIn) {
+	// 		// setLoading(false)
+	// 		console.log("User Context : ", state.loggedIn, Router.asPath);
+
+	// 		if (Router.pathname === '/404') return true
+	// 		else if (Router.pathname.includes("/admin")) Router.push(Router.asPath);
+	// 		else Router.replace("/admin/my-network");
+
+	// 		// the above condition is for when user refrehes the poge
+	// 		// if (!Router.pathname.includes(roleRoutes[state.role])) {
+	// 		// 	console.log("Redirect");
+	// 		// 	Router.replace(roleInitialRoute[state.role]);
+	// 		// }
+	// 	}
+	// }, [state.loggedIn]);
 
 	const login = (sessionData) => {
 		dispatch({

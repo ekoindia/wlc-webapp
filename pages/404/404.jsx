@@ -1,10 +1,39 @@
 import React from "react";
-
+import { Box, Center, Flex, Text } from "@chakra-ui/react";
+import { Buttons } from "components";
 const index = () => {
 	return (
-		<>
-			<h1>Page not found</h1>
-		</>
+		<Center h="100vh">
+			<Center
+				flexDirection="column"
+				color={"#232323"}
+				rowGap={"10px"}
+				w="30%"
+			>
+				<Box fontWeight={"700"}>
+					<Text as="h1" fontSize="146px" lineHeight="normal">
+						404
+					</Text>
+				</Box>
+				<Text
+					as="h2"
+					fontSize="22px"
+					fontWeight={"700"}
+					color="inherit"
+					textTransform={"uppercase"}
+				>
+					Oops! Page Not Be Found
+				</Text>
+
+				<Text as={"p"} color={"#787878"} fontWeight={"400"}>
+					Sorry but the page you are looking for does not exist, have
+					been removed. name changed or is temporarily unavailable
+				</Text>
+				<Buttons>
+					<a href="#">Back to homepage</a>
+				</Buttons>
+			</Center>
+		</Center>
 	);
 };
 

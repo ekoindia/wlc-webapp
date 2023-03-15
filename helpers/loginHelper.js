@@ -145,7 +145,23 @@ function revokeSession(user_id) {
 	});
 }
 
-function getAccessTokenUsingRefreshToken() {}
+function generateNewAccessToken(refresh_token) {
+	if (!(refresh_token && refresh_token.length > 1)) {
+		console.log("Please provide valid refresh token.");
+		return;
+	}
+
+	// fetch(process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.GENERATE_TOKEN, {
+	// 	method: "POST",
+	// 	body: {
+	// 		refresh_token: refresh_token
+	// 	}
+	// }).then((res) => {
+	// 	return response.json()													)
+	// }).then((data) => {
+
+	// } )
+}
 
 export {
 	sendOtpRequest,
@@ -154,7 +170,7 @@ export {
 	getAuthTokens,
 	clearAuthTokens,
 	revokeSession,
-	getAccessTokenUsingRefreshToken,
+	generateNewAccessToken,
 	getSessions,
 	createUserState,
 };

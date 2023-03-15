@@ -3,6 +3,6 @@ export const Endpoints = {
 	GOOGLELOGIN: "/wlc-login",
 	LOGOUT: "/revoke",
 	SENDOTP: "/sendotp",
-	REFRESHTOKEN: "/token",
+	GENERATE_TOKEN: "/token",
 	NETWORKTABLE: "/test",
 };
