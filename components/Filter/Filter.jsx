@@ -34,32 +34,20 @@ function Filter() {
 					alignItems={"center"}
 					ref={btnRef}
 					onClick={onOpen}
-					h={{
-						base: "8.5vw",
-						sm: "5vw",
-						md: "4vw",
-						lg: "3vw",
-						xl: "2.6vw",
-						"2xl": "2.2vw",
-					}}
+					h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
 					w={{
 						base: "8vw",
 						sm: "12vw",
 						md: "10vw",
 						lg: "7vw",
-						xl: "7vw",
+						xl: "8vw",
 						"2xl": "6vw",
 					}}
 					bg="#FFFFFF"
 					color="#11299E"
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
-					borderRadius={{
-						base: "10px",
-						md: "8px",
-						lg: "10px",
-						"2xl": "10px",
-					}}
+					borderRadius="10px"
 					_hover={{
 						bg: "white",
 					}}
@@ -68,6 +56,7 @@ function Filter() {
 					}}
 				>
 					<Center
+						alignItems={"center"}
 						width={{
 							base: "10px",
 							sm: "12px",
@@ -565,12 +554,7 @@ function Filter() {
 													mb: "1.2rem",
 												}}
 												inputContStyle={{
-													w: {
-														base: "100%",
-														md: "205px",
-														// xl: "200px",
-														"2xl": "274px",
-													},
+													w: "100%",
 													h: "48px",
 													borderRadius: {
 														base: "10px",
@@ -593,11 +577,7 @@ function Filter() {
 													mb: "1.2rem",
 												}}
 												inputContStyle={{
-													w: {
-														base: "100%",
-														md: "205px",
-														"2xl": "274px",
-													},
+													w: "100%",
 													h: "48px",
 													borderRadius: {
 														base: "10px",

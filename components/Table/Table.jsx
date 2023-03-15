@@ -1,10 +1,8 @@
 import {
-	Avatar,
 	Box,
 	Divider,
 	Flex,
-	IconButton,
-	Table,
+	Table as ChakraTable,
 	TableContainer,
 	Tbody,
 	Td,
@@ -14,21 +12,31 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
+import {
+	getArrowStyle,
+	getLocationStyle,
+	getModalStyle,
+	getNameStyle,
+	getStatusStyle,
+} from "helpers";
 import { useRouter } from "next/router";
 import { AccountStatementCard } from "page-components/Admin/AccountStatement";
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
+import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
+import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/OnboardingDashboard";
 import { useEffect, useMemo, useState } from "react";
-import { Cards, Icon, IconButtons, Menus, Pagination, Tags } from "..";
+import { Cards, Icon, IconButtons, Pagination } from "..";
 
-const Tables = (props) => {
+const Table = (props) => {
 	const {
 		pageLimit: PageSize = 10,
 		data: tableData,
 		renderer,
 		variant,
 		tableName,
+		isScrollrequired = false,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
@@ -48,9 +56,10 @@ const Tables = (props) => {
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
 
-	const redirect = () => {
+	const onRowClick = () => {
 		switch (tableName) {
 			case "Network":
+				variant;
 				router.push(`my-network/profile/`);
 				break;
 			case "Transaction":
@@ -99,7 +108,7 @@ const Tables = (props) => {
 			return (
 				<Tr
 					key={index}
-					onClick={redirect}
+					onClick={onRowClick}
 					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 				>
 					{renderer.map((r, rIndex) => {
@@ -151,7 +160,7 @@ const Tables = (props) => {
 						w="100%"
 						h="auto"
 						p="16px"
-						onClick={redirect}
+						onClick={onRowClick}
 					>
 						<NetworkCard item={item} />
 					</Cards>
@@ -163,7 +172,7 @@ const Tables = (props) => {
 						w="100%"
 						h="auto"
 						p="15px"
-						onClick={redirect}
+						onClick={onRowClick}
 					>
 						<TransactionHistoryCard item={item} />
 					</Cards>
@@ -202,6 +211,40 @@ const Tables = (props) => {
 						)}
 					</>
 				);
+			} else if (tableName === "Business") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="0px"
+						>
+							<BusinessDashboardCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
+					</>
+				);
+			} else if (tableName === "Onboarding") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="0px"
+						>
+							<OnboardingDashboardCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
+					</>
+				);
 			}
 		});
 	};
@@ -234,6 +277,8 @@ const Tables = (props) => {
 							borderRadius="10px 10px 0 0"
 							mt={{ base: "20px", "2xl": "10px" }}
 							border="1px solid #E9EDF1"
+							maxH={isScrollrequired ? "1000px" : "auto"}
+							overflowY={isScrollrequired ? "auto" : "initial"}
 							css={{
 								"&::-webkit-scrollbar": {
 									height: "0.8vw",
@@ -245,14 +290,31 @@ const Tables = (props) => {
 									background: "#D2D2D2",
 									borderRadius: "5px",
 								},
+
+								"&::-webkit-scrollbar": {
+									width: "7px",
+								},
+								"&::-webkit-scrollbar-track": {
+									width: "7px",
+								},
+								"&::-webkit-scrollbar-thumb": {
+									background: "#555555",
+									borderRadius: "5px",
+									border: "1px solid #707070",
+								},
 							}}
 						>
-							<Table variant={variant} bg="white">
-								<Thead bg="hint">
+							<ChakraTable variant={variant} bg="white">
+								<Thead
+									bg="hint"
+									position="sticky"
+									top="0"
+									zIndex="sticky"
+								>
 									<Tr>{getTh()}</Tr>
 								</Thead>
 								<Tbody>{getTr()}</Tbody>
-							</Table>
+							</ChakraTable>
 						</TableContainer>
 						{/* Pagination */}
 						<Flex justify={"flex-end"}>
@@ -359,89 +421,4 @@ const Tables = (props) => {
 	);
 };
 
-export default Tables;
-
-/* for row element styling */
-export const getNameStyle = (name) => {
-	return (
-		<Flex align={"center"} gap="0.625rem">
-			<Box>
-				<Avatar
-					bg="accent.DEFAULT"
-					color="divider"
-					size={{ base: "sm", sm: "sm", md: "xs", lg: "sm" }}
-					name={name[0]}
-					// src={item.link}
-				/>
-			</Box>
-			<Box as="span">{name}</Box>
-		</Flex>
-	);
-};
-export const getStatusStyle = (status) => {
-	return (
-		<Tags
-			size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
-			px={"10px"}
-			status={status}
-		/>
-	);
-};
-export const getLocationStyle = (
-	location,
-	lat = 23.1967657,
-	long = 77.4270079
-) => {
-	return (
-		<Flex alignItems={"center"}>
-			<Box>{location}</Box>
-			<IconButtons
-				iconSize={"xs"}
-				iconName="near-me"
-				iconStyle={{
-					width: "12px",
-					height: "12px",
-				}}
-				onClick={(e) => {
-					openGoogleMap(lat, long);
-					e.stopPropagation();
-				}}
-			/>
-		</Flex>
-	);
-};
-export const getArrowStyle = () => {
-	return (
-		<Box
-			color="hint"
-			width={{ md: "16px", lg: "20px", "2xl": "24px" }}
-			height={{ md: "16px", lg: "20px", "2xl": "24px" }}
-		>
-			<Icon name="arrow-forward" width="100%" />
-		</Box>
-	);
-};
-export const getModalStyle = (data) => {
-	return (
-		<>
-			<Menus
-				type="everted"
-				as={IconButton}
-				iconName="more-vert"
-				minH={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				height={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				iconStyles={{ height: "15px", width: "4px" }}
-				onClick={(e) => {
-					e.stopPropagation();
-				}}
-			/>
-		</>
-	);
-};
-export const openGoogleMap = ({ latitude, longitude }) => {
-	const lat = parseFloat(latitude);
-	const lng = parseFloat(longitude);
-	window.open(`https://maps.google.com/?q=${lat},${lng}`, "_blank");
-};
+export default Table;

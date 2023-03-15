@@ -22,12 +22,13 @@ const Headings = (props) => {
 			marginBottom={{
 				base: !insideNav ? "10px" : "0px",
 				sm: !insideNav ? "8px" : "0px",
-				md: "12px",
+				md: !insideNav ? "12px" : "0px",
 				lg: "16px",
 				xl: "18px",
 				"2xl": "20px",
 			}}
-			px={{ base: "16px", md: "0px" }}
+			width="100%"
+			px={{ base: "16px", md: !insideNav ? "0px" : "16px" }}
 			justify="space-between"
 			align="center"
 		>
@@ -70,7 +71,9 @@ const Headings = (props) => {
 					</Text>
 				)}
 			</Box>
-			<Box>{propComp}</Box>
+			{propComp ? (
+				<Box>{!insideNav ? propComp : "Change Role"}</Box>
+			) : null}
 		</Flex>
 	);
 };

@@ -1,10 +1,6 @@
 import { Box, Flex, IconButton } from "@chakra-ui/react";
 import { Menus } from "components";
-import {
-	getLocationStyle,
-	getNameStyle,
-	getStatusStyle,
-} from "components/Tables/Tables";
+import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
 
 /**
  * A <TransactionHistoryCard> component
