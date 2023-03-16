@@ -5,4 +5,5 @@ export const Endpoints = {
 	SENDOTP: "/sendotp",
 	GENERATE_TOKEN: "/token",
 	NETWORKTABLE: "/test",
+	TRANSACTION: "/transactions/do",
 };
