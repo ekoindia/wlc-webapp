@@ -1,7 +1,7 @@
-import { Endpoints } from "constants/EndPoints";
-import { useState } from "react";
 import { useToast } from "@chakra-ui/react";
+import { Endpoints } from "constants/EndPoints";
 import { useUser } from "contexts/UserContext";
+import { useState } from "react";
 
 function useLogin(login, setStep, setEmail) {
 	const { login: processLoginResponse } = useUser();
@@ -11,7 +11,7 @@ function useLogin(login, setStep, setEmail) {
 	function submitLogin(data) {
 		setBusy(true);
 		console.log("Data", JSON.stringify(data));
-		if (false) {
+		if (true) {
 			fetch(
 				process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL +
 					`${
