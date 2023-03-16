@@ -13,7 +13,7 @@ import React, {
 	useState,
 } from "react";
 import { defaultUserState, UserReducer } from "./UserReducer";
-import { roleRoutes, roleInitialRoute } from "constants";
+import { baseRoute, initialRoute } from "constants";
 
 const UserContext = createContext();
 
@@ -51,7 +51,7 @@ const UserProvider = ({ children }) => {
 				type: "INIT_USER_STORE",
 				payload: sessionState,
 			});
-			setLoading(false);
+			// setLoading(false);
 		}
 	}, []);
 
@@ -94,6 +94,7 @@ const UserProvider = ({ children }) => {
 			login,
 			logout,
 			loading,
+			setLoading,
 		};
 	}, [state, loading]);
 	console.log("%cExecuted : UserContext: End", "color:blue");

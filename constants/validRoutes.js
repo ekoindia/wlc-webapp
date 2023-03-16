@@ -1,13 +1,13 @@
 const publicLinks = ["/"];
 
-const roleRoutes = {
+const baseRoute = {
 	admin: "/admin",
-	agent: "/",
+	nonAdmin: "/",
 };
 
-const roleInitialRoute = {
+const initialRoute = {
 	admin: "/admin/my-network",
-	agent: "/home",
+	nonAdmin: "/home",
 };
 
-export { publicLinks, roleRoutes, roleInitialRoute };
+export { publicLinks, baseRoute, initialRoute };
