@@ -51,6 +51,15 @@ const Select = (props) => {
 		setOpen(!open);
 	};
 
+	const handleClick = (checked, value) => {
+		console.log("checked", checked);
+		if (checked) {
+			handleOptionSelect(value);
+		} else {
+			handleOptionDeselect(value);
+		}
+	};
+
 	const handleOptionSelect = (optionValue) => {
 		if (optionValue === "*") {
 			// select all
@@ -131,17 +140,11 @@ const Select = (props) => {
 													variant="rounded"
 													isChecked={selectAllChecked}
 													onChange={(event) => {
-														if (
-															event.target.checked
-														) {
-															handleOptionSelect(
-																selectObj.value
-															);
-														} else {
-															handleOptionDeselect(
-																selectObj.value
-															);
-														}
+														handleClick(
+															event.target
+																.checked,
+															selectObj.value
+														);
 													}}
 												>
 													{selectObj.label}
@@ -159,17 +162,11 @@ const Select = (props) => {
 														row.value
 													)}
 													onChange={(event) => {
-														if (
-															event.target.checked
-														) {
-															handleOptionSelect(
-																row.value
-															);
-														} else {
-															handleOptionDeselect(
-																row.value
-															);
-														}
+														handleClick(
+															event.target
+																.checked,
+															row.value
+														);
 													}}
 												>
 													{row.label}
