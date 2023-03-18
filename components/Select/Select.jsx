@@ -37,30 +37,28 @@ const Select = (props) => {
 		options = dummyOptions,
 		isSelectAllNeeded = true,
 		variant = "striped",
-		isScrollNeeded = true,
 	} = props;
 	const [open, setOpen] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 
-	console.log("selectedOptions", selectedOptions);
-
-	const selectObj = { value: "*", label: "Select All" };
+	const selectOptions = isSelectAllNeeded
+		? [{ value: "*", label: "Select All" }, ...options]
+		: options;
 
 	const handleInputClick = () => {
 		setOpen(!open);
 	};
 
 	const handleClick = (checked, value) => {
-		console.log("checked", checked);
 		if (checked) {
-			handleOptionSelect(value);
+			handleOptionMultiSelect(value);
 		} else {
-			handleOptionDeselect(value);
+			handleOptionMultiDeselect(value);
 		}
 	};
 
-	const handleOptionSelect = (optionValue) => {
+	const handleOptionMultiSelect = (optionValue) => {
 		if (optionValue === "*") {
 			// select all
 			const allOptions = options.map((option) => option.value);
@@ -71,7 +69,7 @@ const Select = (props) => {
 		}
 	};
 
-	const handleOptionDeselect = (optionValue) => {
+	const handleOptionMultiDeselect = (optionValue) => {
 		if (optionValue === "*") {
 			// deselect all
 			setSelectedOptions([]);
@@ -132,35 +130,17 @@ const Select = (props) => {
 						>
 							<Table variant={variant}>
 								<Tbody>
-									{/* select all */}
-									{isSelectAllNeeded && (
-										<Tr key={selectObj.value}>
-											<Td>
-												<Checkbox
-													variant="rounded"
-													isChecked={selectAllChecked}
-													onChange={(event) => {
-														handleClick(
-															event.target
-																.checked,
-															selectObj.value
-														);
-													}}
-												>
-													{selectObj.label}
-												</Checkbox>
-											</Td>
-										</Tr>
-									)}
-									{/* options */}
-									{options.map((row) => (
+									{selectOptions.map((row) => (
 										<Tr key={row.value} h="50px" w="100%">
 											<Td>
 												<Checkbox
 													variant="rounded"
-													isChecked={selectedOptions.includes(
-														row.value
-													)}
+													isChecked={
+														selectAllChecked ||
+														selectedOptions.includes(
+															row.value
+														)
+													}
 													onChange={(event) => {
 														handleClick(
 															event.target
