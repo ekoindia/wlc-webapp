@@ -1,6 +1,7 @@
 import { extendTheme, theme } from "@chakra-ui/react";
 import { Inter, Roboto } from "@next/font/google";
 import { tabsTheme } from "./theme_system/theme/components/tab";
+// console.log('theme', theme)
 
 const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
@@ -211,7 +212,9 @@ export const light = extendTheme({
 		15: "15px",
 		20: "20px",
 	},
-	shadows: {},
+	shadows: {
+		"sh-otpfocus": "0px 3px 6px #0000001A",
+	},
 	sizes: {
 		max: "max-content",
 		min: "min-content",

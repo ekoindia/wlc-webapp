@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { OtpInput } from "./OtpInput";
 import { Select } from "./Select";
 import { Breadcrumbs } from "./Breadcrumb";
 import { Buttons } from "./Buttons";
@@ -25,6 +26,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	OtpInput,
 	Select,
 	Table,
 	Calenders,
