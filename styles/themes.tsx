@@ -173,6 +173,7 @@ export const light = extendTheme({
 			success: "#009B34",
 			error: "#CA1B56",
 		},
+		google: "#4185F4",
 		success: "#00C341",
 		error: "#FF4081",
 		divider: "#E9EDF1",
@@ -214,6 +215,9 @@ export const light = extendTheme({
 	},
 	shadows: {
 		"sh-otpfocus": "0px 3px 6px #0000001A",
+		"sh-header": "0px 3px 6px #0000001A",
+		"sh-card": "0px 3px 20px #00000005",
+		"sh-googlebtn": "0px 3px 10px #4185F433",
 	},
 	sizes: {
 		max: "max-content",

@@ -72,7 +72,7 @@ const Login = ({ setStep, setNumber, number }) => {
 
 			<Button
 				variant
-				bg="#4185F4"
+				bg="google"
 				mt={{
 					base: 4,
 					"2xl": "4.35rem",
@@ -87,10 +87,10 @@ const Login = ({ setStep, setNumber, number }) => {
 				borderRadius="10px"
 				position="relative"
 				onClick={() => setStep(2)}
-				boxShadow="0px 3px 10px #4185F433;"
+				boxShadow="sh-googlebtn"
 			>
 				<Center
-					bg="#FFFFFF"
+					bg="white"
 					p={{ base: "9px", "2xl": "13px" }}
 					borderRadius="10px"
 					position="absolute"
