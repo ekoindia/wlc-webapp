@@ -8,7 +8,7 @@ import {
 	Text,
 	Tr,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "..";
 
 /**
@@ -42,9 +42,11 @@ const Select = (props) => {
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 
-	const selectOptions = isSelectAllNeeded
-		? [{ value: "*", label: "Select All" }, ...options]
-		: options;
+	useEffect(() => {
+		if (selectedOptions.length === options.length) {
+			setSelectAllChecked(true);
+		}
+	}, [selectedOptions]);
 
 	const handleInputClick = () => {
 		setOpen(!open);
@@ -81,6 +83,10 @@ const Select = (props) => {
 			setSelectAllChecked(false);
 		}
 	};
+
+	const selectOptions = isSelectAllNeeded
+		? [{ value: "*", label: "Select All" }, ...options]
+		: options;
 
 	return (
 		<>
