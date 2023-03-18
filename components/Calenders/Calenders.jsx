@@ -26,8 +26,8 @@ const Calenders = ({
 }) => {
 	const [dateText, setDateText] = useState({
 		// TODO: Edit state as required
-		from: "DD/MM/YYYY",
-		to: "DD/MM/YYYY",
+		from: "YYYY/MM/DD",
+		to: "YYYY/MM/DD",
 	});
 	const fromRef = useRef(null);
 	const toRef = useRef(null);
