@@ -111,7 +111,7 @@ const Select = (props) => {
 					</Flex>
 				</Flex>
 				<Flex w="100%">
-					{open ? (
+					{open && (
 						<TableContainer
 							w="100%"
 							maxH={{ base: "380px" }}
@@ -133,7 +133,7 @@ const Select = (props) => {
 							<Table variant={variant}>
 								<Tbody>
 									{/* select all */}
-									{isSelectAllNeeded ? (
+									{isSelectAllNeeded && (
 										<Tr key={selectObj.value}>
 											<Td>
 												<Checkbox
@@ -151,7 +151,7 @@ const Select = (props) => {
 												</Checkbox>
 											</Td>
 										</Tr>
-									) : null}
+									)}
 									{/* options */}
 									{options.map((row) => (
 										<Tr key={row.value} h="50px" w="100%">
@@ -177,7 +177,7 @@ const Select = (props) => {
 								</Tbody>
 							</Table>
 						</TableContainer>
-					) : null}
+					)}
 				</Flex>
 			</Flex>
 		</>
