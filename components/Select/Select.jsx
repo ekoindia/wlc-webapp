@@ -1,13 +1,4 @@
-import {
-	Checkbox,
-	Flex,
-	Table,
-	TableContainer,
-	Tbody,
-	Td,
-	Text,
-	Tr,
-} from "@chakra-ui/react";
+import { Checkbox, Flex, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Icon } from "..";
 
@@ -116,8 +107,9 @@ const Select = (props) => {
 				</Flex>
 				<Flex w="100%">
 					{open && (
-						<TableContainer
+						<Flex
 							w="100%"
+							direction="column"
 							maxH={{ base: "380px" }}
 							overflowY="auto"
 							css={{
@@ -134,35 +126,36 @@ const Select = (props) => {
 								},
 							}}
 						>
-							<Table variant={variant}>
-								<Tbody>
-									{selectOptions.map((row) => (
-										<Tr key={row.value} h="50px" w="100%">
-											<Td>
-												<Checkbox
-													variant="rounded"
-													isChecked={
-														selectAllChecked ||
-														selectedOptions.includes(
-															row.value
-														)
-													}
-													onChange={(event) => {
-														handleClick(
-															event.target
-																.checked,
-															row.value
-														);
-													}}
-												>
-													{row.label}
-												</Checkbox>
-											</Td>
-										</Tr>
-									))}
-								</Tbody>
-							</Table>
-						</TableContainer>
+							{selectOptions.map((row) => (
+								<Flex
+									key={row.value}
+									h="50px"
+									w="100%"
+									direction="column"
+									px="5"
+									py={{ base: "2.5", md: "4" }}
+									_odd={{
+										backgroundColor: "shade",
+									}}
+								>
+									<Checkbox
+										variant="rounded"
+										isChecked={
+											selectAllChecked ||
+											selectedOptions.includes(row.value)
+										}
+										onChange={(event) => {
+											handleClick(
+												event.target.checked,
+												row.value
+											);
+										}}
+									>
+										{row.label}
+									</Checkbox>
+								</Flex>
+							))}
+						</Flex>
 					)}
 				</Flex>
 			</Flex>
