@@ -12,7 +12,7 @@ import { Buttons, Icon, InputLabel } from "components";
 
 const Calenders = ({
 	label,
-	sublabel,
+	placeholder,
 	name,
 	type,
 	required = false,
@@ -26,8 +26,8 @@ const Calenders = ({
 }) => {
 	const [dateText, setDateText] = useState({
 		// TODO: Edit state as required
-		from: "YYYY/MM/DD",
-		to: "YYYY/MM/DD",
+		from: "DD/MM/YYYY",
+		to: "DD/MM/YYYY",
 	});
 	const fromRef = useRef(null);
 	const toRef = useRef(null);
@@ -80,7 +80,7 @@ const Calenders = ({
 							align={"center"}
 						>
 							{" "}
-							{sublabel ? (
+							{placeholder ? (
 								<InputLabel
 									required={required}
 									fontSize={{
@@ -89,7 +89,7 @@ const Calenders = ({
 										xl: "14px",
 									}}
 								>
-									{sublabel}:&nbsp;
+									{placeholder}:&nbsp;
 								</InputLabel>
 							) : (
 								""
