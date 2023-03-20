@@ -25,7 +25,7 @@ const DetailedStatementTable = () => {
 			name: "description",
 			field: "Description",
 		},
-		{ name: "amount", field: "Amount" },
+		{ name: "amount", field: "Amount", show: "debit_credit" },
 		{ name: "running_balance", field: "Running Balance" },
 	];
 

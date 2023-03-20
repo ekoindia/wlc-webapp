@@ -34,7 +34,7 @@ import { Cards, Icon, IconButtons, Pagination } from "..";
 const Table = (props) => {
 	const {
 		pageLimit: PageSize = 10,
-		data: tableData,
+		// data: tableData,
 		renderer,
 		variant,
 		tableName,
@@ -44,8 +44,9 @@ const Table = (props) => {
 	const [currentSort, setCurrentSort] = useState("default");
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	const [currentPage, setCurrentPage] = useState(1);
-	// const [tableData, setTableData] = useState([]);
+	const [tableData, setTableData] = useState([]);
 	const [pageNumber, setPageNumber] = useState(null);
+	const [totalRecords, setTotalRecords] = useState();
 
 	/* API CALLING */
 	let data = useRequest({
@@ -54,19 +55,22 @@ const Table = (props) => {
 		headers: {
 			"tf-req-uri-root-path": "/ekoicici/v1",
 			"tf-req-uri":
-				"/network/agents/transaction_history?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
+				"/network/agents/transaction_history/recent_transaction/account_statement?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=41&search_value=9911572989",
 			"tf-req-method": "GET",
 		},
 	});
-
-	// useEffect(() => {
-	// 	setPageNumber(data?.data?.data?.page_number);
-	// 	setTableData(data?.data?.data?.agent_details);
-	// 	localStorage.setItem(
-	// 		"network_data",
-	// 		JSON.stringify(data?.data?.data?.agent_details)
-	// 	);
-	// }, [data]);
+	{
+		console.log("data", data);
+	}
+	useEffect(() => {
+		setPageNumber(data?.data?.data?.page_number);
+		setTableData(data?.data?.data?.account_statement_details);
+		setTotalRecords(data?.data?.data?.TotalRecords);
+		localStorage.setItem(
+			"network_data",
+			JSON.stringify(data?.data?.data?.account_statement_details)
+		);
+	}, [data]);
 
 	console.log("data", data);
 
@@ -82,6 +86,7 @@ const Table = (props) => {
 		const lastPageIndex = firstPageIndex + PageSize;
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
+	// console.log('currentTableData', currentTableData)
 
 	const onRowClick = () => {
 		switch (tableName) {
@@ -348,7 +353,7 @@ const Table = (props) => {
 							<Pagination
 								className="pagination-bar"
 								currentPage={currentPage}
-								totalCount={tableData.length}
+								totalCount={totalRecords || 0}
 								pageSize={PageSize}
 								onPageChange={(page) => {
 									console.log(page);
