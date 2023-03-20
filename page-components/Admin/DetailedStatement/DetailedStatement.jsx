@@ -345,7 +345,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 						<Flex>
 							<Calenders
 								w="100%"
-								sublabel="From"
+								placeholder="From"
 								inputContStyle={{
 									w: {
 										base: "100%",
@@ -368,7 +368,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 						</Flex>
 						<Flex>
 							<Calenders
-								sublabel="To"
+								placeholder="To"
 								w="100%"
 								inputContStyle={{
 									w: {
