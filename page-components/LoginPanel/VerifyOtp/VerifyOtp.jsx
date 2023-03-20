@@ -1,14 +1,5 @@
-import {
-	Box,
-	Center,
-	Flex,
-	Heading,
-	HStack,
-	PinInput,
-	PinInputField,
-	Text,
-} from "@chakra-ui/react";
-import { Buttons, Icon, IconButtons } from "components";
+import { Box, Center, Flex, Heading, Text } from "@chakra-ui/react";
+import { Buttons, Icon, IconButtons, OtpInput } from "components";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
@@ -20,14 +11,9 @@ import { useCallback, useEffect, useState } from "react";
  * @example	`<VerifyOtp></VerifyOtp>`
  */
 
-const pinInputStyle = {
-	w: "95px",
-	h: "64px",
-	borderColor: "hint",
-};
-
 const VerifyOtp = ({ number, setStep }) => {
 	const [Otp, setOtp] = useState("");
+	console.log("Otp", Otp);
 	const router = useRouter();
 	const [timer, setTimer] = useState(30);
 	const timeOutCallback = useCallback(
@@ -94,7 +80,7 @@ const VerifyOtp = ({ number, setStep }) => {
 				</Flex>
 			</Flex>
 
-			<HStack justify="space-between">
+			{/* <HStack justify="space-between">
 				<PinInput
 					autoFocus
 					type="number"
@@ -124,7 +110,19 @@ const VerifyOtp = ({ number, setStep }) => {
 							/>
 						))}
 				</PinInput>
-			</HStack>
+			</HStack> */}
+
+			<OtpInput
+				inputStyle={{
+					w: "95px",
+					h: { base: 12, "2xl": 16 },
+					fontSize: { base: "sm", "2xl": "2xl" },
+				}}
+				containerStyle={{
+					justifyContent: "space-between",
+				}}
+				onChange={setOtp}
+			/>
 
 			<Flex
 				justify="center"

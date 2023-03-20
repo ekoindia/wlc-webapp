@@ -547,7 +547,7 @@ function Filter() {
 											<Calenders
 												// label="Filter by activation date range"
 												w="100%"
-												sublabel="From"
+												placeholder="From"
 												labelStyle={{
 													fontSize: "lg",
 													fontWeight: "semibold",
@@ -570,7 +570,7 @@ function Filter() {
 										<Flex w="100%">
 											<Calenders
 												w="100%"
-												sublabel="To"
+												placeholder="To"
 												labelStyle={{
 													fontSize: "lg",
 													fontWeight: "semibold",

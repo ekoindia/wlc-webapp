@@ -42,14 +42,13 @@ const LoginPanel = (props) => {
 					bg={{ base: "white", md: "transparent" }}
 					mb={{ base: "0", md: 8, "2xl": "3.8rem" }}
 					boxShadow={{
-						base: "0px 3px 15px #0000001A",
+						base: "sh-card",
 						md: "none",
 					}}
 				>
 					<Image
-						// src="./images/logoimage.png"
 						src={logo || "./images/logoimage.png"}
-						alt="" //TODO <companyname>
+						alt="logo" //TODO <companyname>
 						pl={{ base: 4, md: "0" }}
 						w={{ base: "9rem", md: "14rem", "2xl": "19rem" }}
 						height={{ base: "2.2rem", md: "3.5rem", "2xl": "5rem" }}
@@ -67,9 +66,9 @@ const LoginPanel = (props) => {
 					h={{ base: "31rem", "2xl": "44.3rem" }}
 					px={{ base: 5, "2xl": 7 }}
 					py={{ base: 7, "2xl": 10 }}
-					boxShadow="0px 3px 20px #00000005"
+					boxShadow="sh-card"
 					borderRadius={{ base: 15, "2xl": 20 }}
-					bg="#FFFFFF"
+					bg="white"
 				>
 					{step === 0 ? (
 						<Login
