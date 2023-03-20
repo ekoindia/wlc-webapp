@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Text } from "@chakra-ui/react";
+import { Checkbox, Flex, Input, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Icon } from "..";
 
@@ -11,27 +11,60 @@ import { Icon } from "..";
  */
 
 const dummyOptions = [
-	{ value: "option1", label: "Option 1" },
-	{ value: "option2", label: "Option 2" },
-	{ value: "option3", label: "Option 3" },
-	{ value: "option4", label: "Option 4" },
-	{ value: "option5", label: "Option 5" },
-	{ value: "option6", label: "Option 6" },
-	{ value: "option7", label: "Option 7" },
-	{ value: "option8", label: "Option 8" },
-	{ value: "option9", label: "Option 9" },
-	{ value: "option10", label: "Option 10" },
+	{ value: "apple", label: "Apple" },
+	{ value: "banana", label: "Banana" },
+	{ value: "orange", label: "Orange" },
+	{ value: "pear", label: "Pear" },
+	{ value: "grape", label: "Grape" },
+	{ value: "kiwi", label: "Kiwi" },
+	{ value: "mango", label: "Mango" },
+	{ value: "pineapple", label: "Pineapple" },
+	{ value: "watermelon", label: "Watermelon" },
+	{ value: "strawberry", label: "Strawberry" },
+	{ value: "blueberry", label: "Blueberry" },
+	{ value: "raspberry", label: "Raspberry" },
+	{ value: "blackberry", label: "Blackberry" },
+	{ value: "pomegranate", label: "Pomegranate" },
+	{ value: "peach", label: "Peach" },
+	{ value: "apricot", label: "Apricot" },
+	{ value: "plum", label: "Plum" },
+	{ value: "cherry", label: "Cherry" },
+	{ value: "grapefruit", label: "Grapefruit" },
+	{ value: "lemon", label: "Lemon" },
+	{ value: "lime", label: "Lime" },
+	{ value: "tangerine", label: "Tangerine" },
+	{ value: "mandarin", label: "Mandarin" },
+	{ value: "peppermint", label: "Peppermint" },
+	{ value: "persimmon", label: "Persimmon" },
+	{ value: "guava", label: "Guava" },
+	{ value: "papaya", label: "Papaya" },
+	{ value: "dragonfruit", label: "Dragonfruit" },
+	{ value: "starfruit", label: "Starfruit" },
+	{ value: "passionfruit", label: "Passionfruit" },
 ];
 
 const Select = (props) => {
 	const {
 		options = dummyOptions,
-		isSelectAllNeeded = true,
+		multiple = true, // Enable multiple selection - bool
+		searchable = true, // User can filter items - bool
+		taggable, // Selected items rendered as tags - bool
+		placeholder = "-- Select --", // select placeholders - string
 		variant = "striped",
 	} = props;
+
+	// const selectOptions = multiple
+	// 	? [{ value: "*", label: "Select All" }, ...options]
+	// 	: options;
+
+	const selectObject = { value: "*", label: "Select All" };
+
 	const [open, setOpen] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
+	const [filteredOptions, setFilteredOptions] = useState();
+	const [searchTerm, setSearchTerm] = useState("");
+	console.log("selectedOptions", selectedOptions);
 
 	useEffect(() => {
 		if (selectedOptions.length === options.length) {
@@ -39,8 +72,19 @@ const Select = (props) => {
 		}
 	}, [selectedOptions]);
 
-	const handleInputClick = () => {
+	useEffect(() => {
+		let tempOptions = options.filter((option) =>
+			option.label.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+		setFilteredOptions(tempOptions);
+	}, [searchTerm]);
+
+	const handleSelectBoxClick = () => {
 		setOpen(!open);
+	};
+
+	const handleInputChange = (event) => {
+		setSearchTerm(event.target.value);
 	};
 
 	const handleClick = (checked, value) => {
@@ -54,7 +98,7 @@ const Select = (props) => {
 	const handleOptionMultiSelect = (optionValue) => {
 		if (optionValue === "*") {
 			// select all
-			const allOptions = options.map((option) => option.value);
+			const allOptions = filteredOptions.map((option) => option.value);
 			setSelectedOptions(allOptions);
 			setSelectAllChecked(true);
 		} else {
@@ -75,13 +119,9 @@ const Select = (props) => {
 		}
 	};
 
-	const selectOptions = isSelectAllNeeded
-		? [{ value: "*", label: "Select All" }, ...options]
-		: options;
-
 	return (
 		<>
-			<Flex direction="column" w="500px">
+			<Flex w="500px" cursor="pointer" direction="column">
 				<Flex
 					h="48px"
 					w="100%"
@@ -90,14 +130,32 @@ const Select = (props) => {
 					border="1px solid #D2D2D2"
 					borderRadius="10px"
 					padding="9px 20px"
-					onClick={handleInputClick}
+					onClick={handleSelectBoxClick}
 				>
-					<Flex>
-						{!(selectedOptions.length > 0) ? (
-							<Text>-- Select --</Text>
-						) : (
-							getSelectedStyle(selectedOptions)
-							// selectedOptions
+					<Flex align="center">
+						<Flex>
+							{!(selectedOptions.length > 0) ? (
+								<Text>{placeholder}</Text>
+							) : (
+								getSelectedStyle(selectedOptions)
+								// selectedOptions
+							)}
+						</Flex>
+						{searchable && (
+							<Flex>
+								<Input
+									w="100%"
+									minW="2px"
+									type="text"
+									opacity="1"
+									outline="0px"
+									px="10px"
+									margin="0px"
+									border="0px"
+									value={searchTerm}
+									onChange={handleInputChange}
+								/>
+							</Flex>
 						)}
 					</Flex>
 
@@ -126,14 +184,43 @@ const Select = (props) => {
 								},
 							}}
 						>
-							{selectOptions.map((row) => (
+							{multiple && filteredOptions.length > 0 && (
+								<Flex
+									key={selectObject.value}
+									h="50px"
+									w="100%"
+									direction="column"
+									px="5"
+									py={{ base: "2.5", md: "3" }}
+									bg="#E9EDF1"
+								>
+									<Checkbox
+										variant="rounded"
+										isChecked={
+											selectAllChecked ||
+											selectedOptions.includes(
+												selectObject.value
+											)
+										}
+										onChange={(event) => {
+											handleClick(
+												event.target.checked,
+												selectObject.value
+											);
+										}}
+									>
+										{selectObject.label}
+									</Checkbox>
+								</Flex>
+							)}
+							{filteredOptions.map((row) => (
 								<Flex
 									key={row.value}
 									h="50px"
 									w="100%"
 									direction="column"
 									px="5"
-									py={{ base: "2.5", md: "4" }}
+									py={{ base: "2.5", md: "3" }}
 									_odd={{
 										backgroundColor: "shade",
 									}}
