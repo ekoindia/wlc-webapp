@@ -40,7 +40,7 @@ const BusinessTable = () => {
 	return (
 		<>
 			<Table
-				pageLimit={100}
+				pageLimit={mockData.length}
 				renderer={renderer}
 				data={mockData}
 				variant="evenStriped"

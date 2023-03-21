@@ -1,4 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
+import { Icon } from "components";
 
 /**
  * A <DetailedStatementCard> component
@@ -17,8 +18,9 @@ const DetailedStatementCard = (props) => {
 		description:
 			"Saurabh Mullick, 9654110669 A/C:20082437069 STATE BANK OF INDIA",
 		amount: "20",
+		debit_credit: "DR",
 		type: "credit",
-		balance: "123123",
+		balance: "15,893.00",
 	};
 	return (
 		<>
@@ -27,7 +29,7 @@ const DetailedStatementCard = (props) => {
 					<Box as="span" color="light">
 						Transaction ID:
 					</Box>
-					<Box as="span" color="dark">
+					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
 						{item.transactionId}
 					</Box>
@@ -36,7 +38,7 @@ const DetailedStatementCard = (props) => {
 					<Box as="span" color="light">
 						Date & Time:
 					</Box>
-					<Box as="span" color="dark">
+					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
 						{item.datetime}
 					</Box>
@@ -45,28 +47,58 @@ const DetailedStatementCard = (props) => {
 					<Box as="span" color="light">
 						Activity:
 					</Box>
-					<Box as="span" color="dark">
+					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
 						{item.activity}
 					</Box>
 				</Flex>
-				<Flex gap="2">
+				<Flex direction={"column"}>
 					<Box as="span" color="light">
 						Description:
 					</Box>
-					<Box as="span" color="dark">
+					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
 						{item.description}
 					</Box>
 				</Flex>
 			</Flex>
-			<Flex
-				justifyContent="space-between"
-				fontSize="16px"
-				fontWeight="medium"
-			>
-				<Box> &#x20B9;{item.amount}</Box>
-				<Box> &#x20B9;{item.balance}</Box>
+			<Flex justifyContent="space-between" mt="14px">
+				{" "}
+				<Flex direction={"column"}>
+					<Box as="span" color="light" fontSize="12px">
+						Amount
+					</Box>
+					<Flex display={"flex"}>
+						<Box> &#x20B9;{item.amount}</Box>
+						<Box
+							mt="3px"
+							w="100%"
+							h="100%"
+							color={
+								item.debit_credit === "DR" ? "success" : "error"
+							}
+						>
+							<Icon
+								name={
+									item.debit_credit == "DR"
+										? "arrow-increase"
+										: "arrow-decrease"
+								}
+								width="14px"
+								h="10px"
+							/>
+						</Box>
+					</Flex>
+				</Flex>
+				<Flex direction={"column"}>
+					<Box as="span" color="light" fontSize="12px">
+						Running Balance
+					</Box>
+					<Box fontSize="16px" fontWeight="medium">
+						{" "}
+						&#x20B9;{item.balance}
+					</Box>
+				</Flex>
 			</Flex>
 		</>
 	);
