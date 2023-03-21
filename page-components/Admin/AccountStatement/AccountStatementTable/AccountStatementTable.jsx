@@ -1,5 +1,5 @@
 import { Table } from "components";
-import { mockData } from "constants/mockTableData";
+// import { mockData } from "constants/mockTableData";
 
 /**
  * A <AccountStatementTable> component
@@ -12,29 +12,29 @@ import { mockData } from "constants/mockTableData";
 const AccountStatementTable = () => {
 	const renderer = [
 		{
-			name: "mobile_number",
+			name: "transaction_id",
 			field: "Transaction ID",
 		},
 		{
-			name: "createdAt",
+			name: "date_time",
 			field: "Date & Time",
 			sorting: true,
 		},
-		{ name: "type", field: "Activity" },
+		{ name: "activity", field: "Activity" },
 		{
-			name: "type",
+			name: "description",
 			field: "Description",
 		},
 
-		{ name: "ekocsp_code", field: "Amount" },
+		{ name: "amount", field: "Amount" },
 	];
 
 	return (
 		<>
 			<Table
-				pageLimit={10}
+				pageLimit={15}
 				renderer={renderer}
-				data={mockData}
+				// data={mockData}
 				variant="evenStriped"
 				tableName="Account"
 			/>
