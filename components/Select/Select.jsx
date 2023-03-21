@@ -60,31 +60,48 @@ const Select = (props) => {
 	const selectObject = { value: "*", label: "Select All" };
 
 	const [open, setOpen] = useState(false);
-	const [selectedOptions, setSelectedOptions] = useState([]);
+	const [selectedOptions, setSelectedOptions] = useState({});
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
-	const [filteredOptions, setFilteredOptions] = useState();
+	const [filteredOptions, setFilteredOptions] = useState(options);
 	const [searchTerm, setSearchTerm] = useState("");
 	console.log("selectedOptions", selectedOptions);
 
 	useEffect(() => {
-		if (selectedOptions.length === options.length) {
+		if (Object.keys(selectedOptions)?.length === options.length) {
 			setSelectAllChecked(true);
 		}
 	}, [selectedOptions]);
 
-	useEffect(() => {
-		let tempOptions = options.filter((option) =>
-			option.label.toLowerCase().includes(searchTerm.toLowerCase())
-		);
-		setFilteredOptions(tempOptions);
-	}, [searchTerm]);
+	// useEffect(() => {
+	// 	let tempOptions = options.filter((option) =>
+	// 		option.label.toLowerCase().includes(searchTerm.toLowerCase())
+	// 	);
+	// 	setFilteredOptions(tempOptions);
+	// }, [searchTerm]);
 
 	const handleSelectBoxClick = () => {
 		setOpen(!open);
 	};
 
 	const handleInputChange = (event) => {
+		console.log("eee", event.target.value);
+		let isSelectAll = true;
 		setSearchTerm(event.target.value);
+		//  Search
+		let tempOptions = options.filter((option) =>
+			option.label
+				.toLowerCase()
+				.includes(event.target.value.toLowerCase())
+		);
+		console.log("tempOptions", tempOptions);
+		setFilteredOptions(tempOptions);
+		// Check for select all
+		tempOptions.forEach((ele) => {
+			if (!selectedOptions[ele.value]) isSelectAll = false;
+		});
+		if (isSelectAll) {
+			setSelectAllChecked(true);
+		} else setSelectAllChecked(false);
 	};
 
 	const handleClick = (checked, value) => {
@@ -97,19 +114,27 @@ const Select = (props) => {
 
 	const handleOptionMultiSelect = (optionValue) => {
 		if (optionValue === "*") {
+			console.log("optionValue", optionValue);
 			// select all
-			const allOptions = filteredOptions.map((option) => option.value);
+			let allOptions = {};
+			filteredOptions.forEach((option) => {
+				allOptions[option.value] = 1;
+			});
+			console.log("allOptions", allOptions);
 			setSelectedOptions(allOptions);
 			setSelectAllChecked(true);
 		} else {
-			setSelectedOptions((prevState) => [...prevState, optionValue]);
+			setSelectedOptions((prevState) => ({
+				...prevState,
+				[optionValue]: 1,
+			}));
 		}
 	};
 
 	const handleOptionMultiDeselect = (optionValue) => {
 		if (optionValue === "*") {
 			// deselect all
-			setSelectedOptions([]);
+			setSelectedOptions({});
 			setSelectAllChecked(false);
 		} else {
 			setSelectedOptions(
@@ -118,7 +143,8 @@ const Select = (props) => {
 			setSelectAllChecked(false);
 		}
 	};
-
+	console.log("filtered", filteredOptions);
+	const selectedOptionsLength = Object.keys(selectedOptions);
 	return (
 		<>
 			<Flex w="500px" cursor="pointer" direction="column">
@@ -134,7 +160,7 @@ const Select = (props) => {
 				>
 					<Flex align="center">
 						<Flex>
-							{!(selectedOptions.length > 0) ? (
+							{!(selectedOptionsLength > 0) ? (
 								<Text>{placeholder}</Text>
 							) : (
 								getSelectedStyle(selectedOptions)
@@ -184,6 +210,7 @@ const Select = (props) => {
 								},
 							}}
 						>
+							{/* Show select all options */}
 							{multiple && filteredOptions.length > 0 && (
 								<Flex
 									key={selectObject.value}
@@ -196,11 +223,13 @@ const Select = (props) => {
 								>
 									<Checkbox
 										variant="rounded"
+										// isChecked={
+										// 	selectAllChecked ||
+										// 	selectedOptions.includes(selectObject.value)
+										// }
 										isChecked={
 											selectAllChecked ||
-											selectedOptions.includes(
-												selectObject.value
-											)
+											selectedOptions[selectObject.value]
 										}
 										onChange={(event) => {
 											handleClick(
@@ -227,9 +256,13 @@ const Select = (props) => {
 								>
 									<Checkbox
 										variant="rounded"
+										// isChecked={
+										// 	selectAllChecked ||
+										// 	selectedOptions.includes(row.value)
+										// }
 										isChecked={
 											selectAllChecked ||
-											selectedOptions.includes(row.value)
+											selectedOptions[row.value]
 										}
 										onChange={(event) => {
 											handleClick(
