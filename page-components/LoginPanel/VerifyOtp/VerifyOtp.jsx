@@ -1,7 +1,10 @@
-import { Box, Center, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons, OtpInput } from "components";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
+import { useLogin } from "hooks";
+import { useUser } from "contexts/UserContext";
+import { sendOtpRequest } from "helpers";
 
 /**
  * A <VerifyOtp> component
@@ -11,11 +14,20 @@ import { useCallback, useEffect, useState } from "react";
  * @example	`<VerifyOtp></VerifyOtp>`
  */
 
-const VerifyOtp = ({ number, setStep }) => {
+const pinInputStyle = {
+	w: "95px",
+	h: "64px",
+	borderColor: "hint",
+};
+
+const VerifyOtp = ({ loginType, number, setStep }) => {
 	const [Otp, setOtp] = useState("");
-	console.log("Otp", Otp);
 	const router = useRouter();
 	const [timer, setTimer] = useState(30);
+	const { userState, login } = useUser();
+	const [loading, submitLogin] = useLogin(login);
+	const toast = useToast();
+
 	const timeOutCallback = useCallback(
 		() => setTimer((currTimer) => currTimer - 1),
 		[]
@@ -33,15 +45,28 @@ const VerifyOtp = ({ number, setStep }) => {
 		}
 	};
 
-	const redirect = () => {
-		router.push("/admin/my-network");
+	const resendOtpHandler = () => {
+		resetTimer();
+		sendOtpRequest(number.original, toast, "resend");
+	};
+
+	const verifyOtpHandler = () => {
+		submitLogin({
+			id_type: "Mobile",
+			mobile: number.original,
+			id_token: Otp,
+		});
 	};
 
 	return (
 		<Flex direction="column">
 			<Flex align="center">
 				<Box
-					onClick={() => setStep(0)}
+					onClick={() =>
+						setStep(
+							loginType === "Mobile" ? "LOGIN" : "GOOGLE_VERIFY"
+						)
+					}
 					w="18px"
 					h="15px"
 					cursor="pointer"
@@ -70,47 +95,21 @@ const VerifyOtp = ({ number, setStep }) => {
 				<Flex align="center" wrap="wrap" userSelect="none">
 					<Text>Sent on&nbsp;</Text>
 					<Center as="b">
-						+91 {number}
+						+91 {number.formatted}
 						<IconButtons
-							onClick={() => setStep((prev) => prev - 1)}
+							onClick={() =>
+								setStep(
+									loginType === "Mobile"
+										? "LOGIN"
+										: "GOOGLE_VERIFY"
+								)
+							}
 							iconName="mode-edit"
 							iconStyle={{ height: "12px", width: "12px" }}
 						/>
 					</Center>
 				</Flex>
 			</Flex>
-
-			{/* <HStack justify="space-between">
-				<PinInput
-					autoFocus
-					type="number"
-					otp
-					size="lg"
-					placeholder=""
-					onChange={(e) => setOtp(e)}
-				>
-					{Array(6)
-						.fill(null)
-						.map((el, idx) => (
-							<PinInputField
-								key={idx}
-								{...pinInputStyle}
-								bg={Otp[idx] ? "focusbg" : ""}
-								h={{ base: 12, "2xl": 16 }}
-								borderRadius="10"
-								boxShadow={
-									Otp[idx] ? "0px 3px 6px #0000001A" : ""
-								}
-								_focus={{
-									bg: "focusbg",
-									boxShadow: "0px 3px 6px #0000001A",
-									borderColor: "hint",
-									transition: "box-shadow 0.3s ease-out",
-								}}
-							/>
-						))}
-				</PinInput>
-			</HStack> */}
 
 			<OtpInput
 				inputStyle={{
@@ -148,7 +147,7 @@ const VerifyOtp = ({ number, setStep }) => {
 							cursor="pointer"
 							as="span"
 							color="accent.DEFAULT"
-							onClick={resetTimer}
+							onClick={resendOtpHandler}
 							fontWeight="medium"
 						>
 							Resend OTP
@@ -162,7 +161,9 @@ const VerifyOtp = ({ number, setStep }) => {
 				mt={{ base: "3.25rem", "2xl": "6.25rem" }}
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
-				onClick={redirect} // dummy onClick
+				// onClick={redirect} // dummy onClick
+				disabled={loading}
+				onClick={verifyOtpHandler}
 			/>
 		</Flex>
 	);

@@ -1,47 +1,47 @@
-import { Box, Center, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons, Input } from "components";
-import { useRouter } from "next/router";
 import { useState } from "react";
+import { sendOtpRequest, RemoveFormatted } from "helpers";
 
 /**
  * A <GoogleVerify> component
- * TODO: Used when the google auth is successfull
+ * TODO: Used when the google auth is successfull to verify phone number if the user is new
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<GoogleVerify></GoogleVerify>`
  */
-const GoogleVerify = ({ number, setNumber, setStep }) => {
-	const [value, setValue] = useState(number);
-	const [errorMsg, setErrorMsg] = useState(false);
+const GoogleVerify = ({ email, number, setNumber, setStep }) => {
+	const toast = useToast();
+	const [value, setValue] = useState(number.formatted);
 	const [invalid, setInvalid] = useState("");
+	const [errorMsg, setErrorMsg] = useState(false);
 
 	const onChangeHandler = (val) => {
-		if (val == "" || /^[6-9]\d{0,9}$/g.test(val)) {
-			console.log("bwjnfj");
-			setValue(val);
-		}
-	};
-	const router = useRouter();
-	const redirect = () => {
-		router.push("/admin/my-network");
+		setValue(val);
 	};
 
-	const onVerify = () => {
-		console.log(/^[6-9]{1}[0-9]{9}$/g.test(value));
-		if (/^[6-9]{1}[0-9]{9}$/g.test(value)) {
-			setNumber(value);
-			setStep(1);
+	const onVerifyOtp = () => {
+		if (value.length === 12) {
+			let originalNum = RemoveFormatted(value);
+			setNumber({
+				original: originalNum,
+				formatted: value,
+			});
+
+			setStep("VERIFY_OTP");
+			sendOtpRequest(originalNum, toast);
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);
 		}
 	};
+
 	return (
 		<Flex direction="column">
 			{/* Heading with Icon */}
 			<Flex align="center">
 				<Box
-					onClick={() => setStep(0)}
+					onClick={() => setStep("LOGIN")}
 					w="18px"
 					h="15px"
 					cursor="pointer"
@@ -71,8 +71,15 @@ const GoogleVerify = ({ number, setNumber, setStep }) => {
 				<Flex align="center" wrap="wrap">
 					<Text>Sent on&nbsp;</Text>
 					<Center as="b">
-						abhishek.kumar@eko.co.in
+						{email}
 						<IconButtons
+							onClick={() => {
+								setStep("LOGIN");
+								setNumber({
+									original: "",
+									formatted: "",
+								});
+							}}
 							iconName="mode-edit"
 							iconStyle={{ height: "12px", width: "12px" }}
 						/>
@@ -99,7 +106,7 @@ const GoogleVerify = ({ number, setNumber, setStep }) => {
 					pos: "relative",
 				}}
 				isNumInput={true}
-				inputProps={{ maxLength: 10 }}
+				inputProps={{ maxLength: 12 }}
 				onFocus={() => {
 					setInvalid(false);
 				}}
@@ -111,7 +118,7 @@ const GoogleVerify = ({ number, setNumber, setStep }) => {
 				mt={{ base: 10, "2xl": "4.35rem" }}
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
-				onClick={redirect} // need to remove
+				onClick={onVerifyOtp}
 			/>
 		</Flex>
 	);
