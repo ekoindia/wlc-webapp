@@ -10,10 +10,9 @@ function useLogin(login, setStep, setEmail) {
 
 	function submitLogin(data) {
 		setBusy(true);
-		console.log("Data", JSON.stringify(data));
-		if (!true) {
+		if (true) {
 			fetch(
-				process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL +
+				process.env.NEXT_PUBLIC_API_BASE_URL +
 					`${
 						data.id_type === "Mobile"
 							? Endpoints.LOGIN

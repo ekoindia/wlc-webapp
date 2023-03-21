@@ -9,8 +9,7 @@ function sendOtpRequest(number, toast, sendState) {
 		app: "Connect",
 	};
 
-	// if (false)
-	fetch(process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.SENDOTP, {
+	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.SENDOTP, {
 		method: "POST",
 		headers: {
 			"Content-type": "application/json",
@@ -169,7 +168,7 @@ function revokeSession(user_id) {
 		console.log("REFRESH TOKEN REVOKED", res);
 		return;
 	}
-	fetch(process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.LOGOUT, {
+	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
 		method: "post",
 		headers: {
 			"Content-type": "application/json",
