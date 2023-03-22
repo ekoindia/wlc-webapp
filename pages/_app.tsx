@@ -1,8 +1,9 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Inter } from "@next/font/google";
+import { GetLogoProvider } from "contexts/getLogoContext";
+import { MenuProvider } from "contexts/MenuContext";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { GetLogoProvider } from "../contexts/getLogoContext";
 import { light } from "../styles/themes";
 
 const inter = Inter({
@@ -23,9 +24,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
 			<ChakraProvider theme={light}>
 				<GetLogoProvider>
-					<main className={inter.className}>
-						<Component {...pageProps} />
-					</main>
+					<MenuProvider>
+						<main className={inter.className}>
+							<Component {...pageProps} />
+						</main>
+					</MenuProvider>
 				</GetLogoProvider>
 			</ChakraProvider>
 		</>

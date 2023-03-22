@@ -3,7 +3,7 @@ import { Select } from "components";
 import React from "react";
 const chakra = () => {
 	return (
-		<Box bg={"green.100"}>
+		<Box>
 			<Select />
 		</Box>
 	);
