@@ -2,12 +2,11 @@ const publicLinks = ["/"];
 
 const baseRoute = {
 	admin: "/admin",
-	nonAdmin: "/",
 };
 
 const initialRoute = {
-	admin: "/admin/my-network",
-	nonAdmin: "/home",
+	admin: "/admin",
+	"non-admin": "/home",
 };
 
 export { publicLinks, baseRoute, initialRoute };

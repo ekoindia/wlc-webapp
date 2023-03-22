@@ -30,7 +30,7 @@ const index = () => {
 					been removed. name changed or is temporarily unavailable
 				</Text>
 				<Buttons>
-					<a href="#">Back to homepage</a>
+					<a href="/">Back to homepage</a>
 				</Buttons>
 			</Center>
 		</Center>
