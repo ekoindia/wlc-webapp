@@ -69,7 +69,7 @@ const Home = ({ className = "", ...props }) => {
 							Profile Score is 62%
 						</Text>
 					</Box>
-					<Box px="150px" mt="50px">
+					<Box mt="50px" display={"flex"} justifyContent="center">
 						<Buttons
 							fontSize={"0.6vw"}
 							w={{
@@ -95,7 +95,6 @@ const Home = ({ className = "", ...props }) => {
 							border="2px solid white"
 						>
 							<Text
-								mr={".2vw"}
 								fontSize={{
 									base: "14px",
 									sm: "8px",

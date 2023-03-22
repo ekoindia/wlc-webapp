@@ -61,6 +61,18 @@ export const light = extendTheme({
 						transition: "none",
 					},
 				},
+				nonAdmin: {
+					th: {
+						textTransform: "Capitalize",
+						bg: "divider",
+						transition: "none",
+					},
+					tr: {
+						_even: {
+							background: "bg",
+						},
+					},
+				},
 			},
 		},
 		Button: {
