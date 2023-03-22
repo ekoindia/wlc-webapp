@@ -18,6 +18,7 @@ import {
 	getModalStyle,
 	getNameStyle,
 	getStatusStyle,
+	getAccordian,
 } from "helpers";
 import { useRouter } from "next/router";
 import { AccountStatementCard } from "page-components/Admin/AccountStatement";
@@ -26,6 +27,7 @@ import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
 import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
 import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/OnboardingDashboard";
+import { TransactionCard } from "page-components/NonAdmin/Transaction";
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Pagination } from "..";
 
@@ -37,6 +39,7 @@ const Table = (props) => {
 		variant,
 		tableName,
 		isScrollrequired = false,
+		accordian = false,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
@@ -135,6 +138,9 @@ const Table = (props) => {
 				return getStatusStyle(item[column.name]);
 			case "Modal":
 				return getModalStyle();
+			case "Accordian":
+				return getAccordian();
+
 			case "IconButton":
 				return getLocationStyle(item[column.name]);
 			case "Avatar":
@@ -239,6 +245,23 @@ const Table = (props) => {
 							p="0px"
 						>
 							<OnboardingDashboardCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
+					</>
+				);
+			} else if (tableName === "Transactions") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="0px"
+						>
+							<TransactionCard item={item} />
 						</Box>
 						{index !== currentTableData.length - 1 && (
 							<Divider border="1px solid #D2D2D2" />

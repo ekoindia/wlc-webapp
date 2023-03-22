@@ -7,4 +7,5 @@ export {
 	getNameStyle,
 	getStatusStyle,
 	openGoogleMap,
+	getAccordian,
 } from "./TableHelpers";

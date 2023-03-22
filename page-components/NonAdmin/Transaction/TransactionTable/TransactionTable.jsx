@@ -9,28 +9,28 @@ import { mockData } from "constants/mockTableData";
  * @example	`<DetailedStatementTable></DetailedStatementTable>`
  */
 
-const DetailedStatementTable = () => {
+const TransactionTable = () => {
 	const renderer = [
+		{ name: "", field: "", show: "Accordian" },
 		{
-			name: "",
-			field: "Transaction ID",
+			name: "name",
+			field: "Transaction Type",
+			sorting: true,
+			show: "Avatar",
 		},
-		{
-			name: "mobile_number",
-			field: "Transaction ID",
-		},
+
 		{
 			name: "createdAt",
-			field: "Date & Time",
+			field: "Description",
 			sorting: true,
 		},
-		{ name: "type", field: "Activity" },
+		{ name: "type", field: "Transaction ID" },
 		{
 			name: "type",
-			field: "Description",
+			field: "Amount",
 		},
-		{ name: "ekocsp_code", field: "Amount" },
-		{ name: "ekocsp_code", field: "Running Balance" },
+		{ name: "ekocsp_code", field: "Date" },
+		{ name: "ekocsp_code", field: "Time" },
 	];
 
 	return (
@@ -39,11 +39,12 @@ const DetailedStatementTable = () => {
 				pageLimit={10}
 				renderer={renderer}
 				data={mockData}
-				variant="evenStriped"
-				tableName="Detailed"
+				variant="nonAdmin"
+				tableName="Transactions"
+				accordian={true}
 			/>
 		</>
 	);
 };
 
-export default DetailedStatementTable;
+export default TransactionTable;
