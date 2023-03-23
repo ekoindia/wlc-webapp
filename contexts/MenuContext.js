@@ -1,9 +1,11 @@
 import { processTransactionData } from "helpers";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useUser } from "./UserContext";
 
 const MenuContext = createContext();
 
 const MenuProvider = ({ children }) => {
+	const { userData } = useUser();
 	const [interactions, setInteractions] = useState({
 		interaction_list: [],
 		_role_tx_list: {},
@@ -17,7 +19,7 @@ const MenuProvider = ({ children }) => {
 				method: "POST",
 				headers: {
 					"Content-type": "application/json",
-					// Authorization: `Bearer ${"jjhhj"}`,
+					Authorization: `Bearer ${userData?.access_token}`,
 				},
 				body: JSON.stringify({ org_id: -1 }),
 			}
@@ -31,7 +33,7 @@ const MenuProvider = ({ children }) => {
 				}
 			})
 			.catch((err) => console.log(err));
-	}, []);
+	}, [userData]);
 
 	// console.log("interactions", interactions);
 	//TODO fetch menu data,process data, set in local storage

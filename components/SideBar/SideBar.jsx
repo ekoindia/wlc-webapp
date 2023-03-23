@@ -15,13 +15,15 @@ import {
 } from "@chakra-ui/react";
 import { adminMenu, nonAdminMenu } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
+import { useUser } from "contexts/UserContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Icon } from "..";
 
 //FOR LAPTOP SCREENS
-const SideBarMenu = ({ className = "", role = "nadmin", ...props }) => {
+const SideBarMenu = ({ className = "", ...props }) => {
+	const { userData } = useUser();
 	const { interaction_list } = useMenuContext();
 	console.log("interaction_list", interaction_list);
 	const router = useRouter();
@@ -32,7 +34,7 @@ const SideBarMenu = ({ className = "", role = "nadmin", ...props }) => {
 		setcurrentRoute(router.pathname.split("/")[2]);
 	}, [router.asPath]);
 
-	const menuList = role === "admin" ? adminMenu : nonAdminMenu;
+	const menuList = userData?.role === "admin" ? adminMenu : nonAdminMenu;
 
 	return (
 		<Box
