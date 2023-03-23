@@ -1,10 +1,10 @@
 import {
-	Box,
-	Heading,
-	Stack,
-	StackDivider,
-	Text,
-	useMediaQuery,
+    Box,
+    Heading,
+    Stack,
+    StackDivider,
+    Text,
+    useMediaQuery
 } from "@chakra-ui/react";
 import { Cards, IconButtons } from "components";
 import Router from "next/router";
@@ -16,21 +16,18 @@ import Router from "next/router";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<PersonalPane></PersonalPane>`
  */
-const PersonalPane = () => {
+const PersonalPane = (props) => {
+    const personalpane = props.rowdata;
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 
 	const personalData = [
-		{ name: "date_of_birth", label: "Date of birth", value: "06/02/1989" },
-		{ name: "gender", label: "Gender", value: "Male" },
-		{ name: "shop_name", label: "Shop name", value: "Alam Store" },
-		{
-			name: "marital_status",
-			label: "Marital Status",
-			value: "Not disclosed",
-		},
-		{ name: "monthly_income", label: "Monthly Income", value: "NA" },
-		{ name: "shop_type", label: "Shop Type", value: "Kirana" },
-	];
+        { name: "date_of_birth", label: "Date of birth", value: personalpane.date_of_birth },
+        { name: "gender", label: "Gender", value: personalpane.gender },
+        { name: "shop_name", label: "Shop name", value: personalpane.shop_name },
+        { name: "marital_status", label: "Marital Status", value: personalpane.marital_status },
+        { name: "monthly_income", label: "Monthly Income", value: personalpane.monthly_income },
+        { name: "shop_type", label: "Shop Type", value: personalpane.shop_type },
+    ];
 
 	return (
 		<Cards h="auto">

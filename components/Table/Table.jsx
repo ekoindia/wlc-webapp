@@ -12,7 +12,6 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Endpoints } from "constants/EndPoints";
 import {
 	getArrowStyle,
 	getLocationStyle,
@@ -20,7 +19,6 @@ import {
 	getNameStyle,
 	getStatusStyle,
 } from "helpers";
-import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { AccountStatementCard } from "page-components/Admin/AccountStatement";
 import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
@@ -39,6 +37,7 @@ const Table = (props) => {
 		variant,
 		tableName,
 		isScrollrequired = false,
+		onRowClick,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
@@ -46,29 +45,9 @@ const Table = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	// const [tableData, setTableData] = useState([]);
 	const [pageNumber, setPageNumber] = useState(null);
-
 	/* API CALLING */
-	let data = useRequest({
-		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-		headers: {
-			"tf-req-uri-root-path": "/ekoicici/v1",
-			"tf-req-uri":
-				"/network/agents/transaction_history?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
-			"tf-req-method": "GET",
-		},
-	});
-
-	// useEffect(() => {
-	// 	setPageNumber(data?.data?.data?.page_number);
-	// 	setTableData(data?.data?.data?.agent_details);
-	// 	localStorage.setItem(
-	// 		"network_data",
-	// 		JSON.stringify(data?.data?.data?.agent_details)
-	// 	);
-	// }, [data]);
-
-	console.log("data", data);
+	// const transaction = apisHelper('transaction');
+	// console.log("getAPIdatasdfashfhjashfjshdajfashjfsjh",transaction);
 
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== currentPage) {
@@ -83,17 +62,8 @@ const Table = (props) => {
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
 
-	const onRowClick = () => {
-		switch (tableName) {
-			case "Network":
-				variant;
-				router.push(`my-network/profile/`);
-				break;
-			case "Transaction":
-				router.push(`transaction-history/account-statement/`);
-				break;
-		}
-	};
+	// const ekoCodes = tableData.map(item => item.eko_code);
+	// console.log(ekoCodes);
 
 	const getTh = () => {
 		return renderer.map((item, index) => {
@@ -135,7 +105,7 @@ const Table = (props) => {
 			return (
 				<Tr
 					key={index}
-					onClick={onRowClick}
+					onClick={() => onRowClick(tableData[index])}
 					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 				>
 					{renderer.map((r, rIndex) => {
