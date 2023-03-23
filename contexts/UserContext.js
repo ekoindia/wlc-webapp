@@ -1,8 +1,4 @@
-import {
-	createUserState,
-	getAuthTokens,
-	getSessions,
-} from "helpers/loginHelper";
+import { createUserState, getSessions } from "helpers/loginHelper";
 import Router from "next/router";
 import React, {
 	createContext,
@@ -13,12 +9,12 @@ import React, {
 	useState,
 } from "react";
 import { defaultUserState, UserReducer } from "./UserReducer";
-import { baseRoute, initialRoute } from "constants";
 
 const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(UserReducer, defaultUserState);
+	const [isTokenUpdating, setIsTokenUpdating] = useState(false);
 	const [loading, setLoading] = useState(true);
 	console.log("%cExecuted UserContext: Start ", "color:blue");
 
@@ -77,6 +73,12 @@ const UserProvider = ({ children }) => {
 	// 	}
 	// }, [state.loggedIn]);
 
+	const updateUserInfo = (data) => {
+		dispatch({
+			type: "UPDATE_USER_STORE",
+			payload: { ...data },
+		});
+	};
 	const login = (sessionData) => {
 		dispatch({
 			type: "LOGIN",
@@ -95,6 +97,9 @@ const UserProvider = ({ children }) => {
 			logout,
 			loading,
 			setLoading,
+			updateUserInfo,
+			setIsTokenUpdating,
+			isTokenUpdating,
 		};
 	}, [state, loading]);
 	console.log("%cExecuted : UserContext: End", "color:blue");

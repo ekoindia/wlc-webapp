@@ -1,9 +1,8 @@
 export const Endpoints = {
-	LOGIN: "/login",
-	GOOGLELOGIN: "/wlc-login",
-	LOGOUT: "/revoke",
-	SENDOTP: "/sendotp",
-	GENERATE_TOKEN: "/token",
-	NETWORKTABLE: "/test",
+	LOGIN: "/authentication/login",
+	GOOGLELOGIN: "/authentication/wlc-login",
+	LOGOUT: "/authentication/revoke",
+	SENDOTP: "/authentication/sendotp",
+	GENERATE_TOKEN: "/authentication/token",
 	TRANSACTION: "/transactions/do",
 };

@@ -9,7 +9,7 @@ export const adminMenu: adminMenuType[] = [
 	{
 		icon: "dashboard",
 		name: "Dashboard",
-		link: "/admin/dashboard",
+		link: "/admin",
 	},
 	{
 		icon: "refer",
