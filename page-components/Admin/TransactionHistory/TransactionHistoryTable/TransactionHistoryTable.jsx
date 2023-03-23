@@ -44,10 +44,14 @@ const TransactionHistoryTable = () => {
 			show: "Arrow",
 		},
 	];
-
+	function onRowClick() {
+		const router = useRouter();
+		router.push("transaction-history/account-statement/");
+	}
 	return (
 		<>
 			<Table
+				onClck={onRowClick}
 				pageLimit={10}
 				renderer={renderer}
 				data={mockData}
