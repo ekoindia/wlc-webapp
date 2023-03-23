@@ -1,23 +1,23 @@
 import {
-	Box,
-	Divider,
-	Flex,
-	Table as ChakraTable,
-	TableContainer,
-	Tbody,
-	Td,
-	Text,
-	Th,
-	Thead,
-	Tr,
-	useMediaQuery,
+    Box,
+    Divider,
+    Flex,
+    Table as ChakraTable,
+    TableContainer,
+    Tbody,
+    Td,
+    Text,
+    Th,
+    Thead,
+    Tr,
+    useMediaQuery
 } from "@chakra-ui/react";
 import {
-	getArrowStyle,
-	getLocationStyle,
-	getModalStyle,
-	getNameStyle,
-	getStatusStyle,
+    apisHelper, getArrowStyle,
+    getLocationStyle,
+    getModalStyle,
+    getNameStyle,
+    getStatusStyle
 } from "helpers";
 import { useRouter } from "next/router";
 import { AccountStatementCard } from "page-components/Admin/AccountStatement";
@@ -49,6 +49,9 @@ const Table = (props) => {
 	// const transaction = apisHelper('transaction');
 	// console.log("getAPIdatasdfashfhjashfjshdajfashjfsjh",transaction);
 
+    const transaction = apisHelper('transaction');
+    console.log("getAPIdatasdfashfhjashfjshdajfashjfsjh",transaction);
+    
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== currentPage) {
 			setCurrentPage(+router.query.page);
