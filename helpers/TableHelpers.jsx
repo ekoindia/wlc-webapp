@@ -17,11 +17,12 @@ export const getNameStyle = (name) => {
 		</Flex>
 	);
 };
-export const getStatusStyle = (status) => {
+export const getStatusStyle = (status, tableName) => {
 	return (
 		<Tags
 			size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
 			px={"10px"}
+			borderRadius={tableName === "Transactions" ? "10" : "28"}
 			status={status}
 		/>
 	);

@@ -24,13 +24,19 @@ const TransactionTable = () => {
 			field: "Description",
 			sorting: true,
 		},
-		{ name: "type", field: "Transaction ID" },
+		{ name: "type", field: "Transaction ID", sorting: true },
 		{
 			name: "type",
 			field: "Amount",
+			sorting: true,
 		},
-		{ name: "ekocsp_code", field: "Date" },
-		{ name: "ekocsp_code", field: "Time" },
+		{ name: "ekocsp_code", field: "Date", sorting: true },
+		{ name: "ekocsp_code", field: "Time", sorting: true },
+		{
+			name: "account_status",
+
+			show: "Tag",
+		},
 	];
 
 	return (

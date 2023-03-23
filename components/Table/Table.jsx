@@ -29,7 +29,7 @@ import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessD
 import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/OnboardingDashboard";
 import { TransactionCard } from "page-components/NonAdmin/Transaction";
 import { useEffect, useMemo, useState } from "react";
-import { Cards, Icon, IconButtons, Pagination } from "..";
+import { Cards, Icon, IconButtons, Pagination, Buttons } from "..";
 
 const Table = (props) => {
 	const {
@@ -45,6 +45,17 @@ const Table = (props) => {
 	const [currentSort, setCurrentSort] = useState("default");
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	const [currentPage, setCurrentPage] = useState(1);
+
+	const [expandedRow, setExpandedRow] = useState(null);
+	const handleRowClick = (index) => {
+		if (index === expandedRow) {
+			// If the clicked row is already expanded, collapse it
+			setExpandedRow(null);
+		} else {
+			// Otherwise, expand the clicked row
+			setExpandedRow(index);
+		}
+	};
 
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== currentPage) {
@@ -109,25 +120,141 @@ const Table = (props) => {
 	const getTr = () => {
 		return currentTableData.map((item, index) => {
 			return (
-				<Tr
-					key={index}
-					onClick={onRowClick}
-					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
-				>
-					{renderer.map((r, rIndex) => {
-						return (
-							<Td p={{ md: ".5em", xl: "1em" }} key={rIndex}>
-								{prepareCol(
-									item,
-									r,
-									index +
-										currentPage * PageSize -
-										(PageSize - 1)
-								)}
-							</Td>
-						);
-					})}
-				</Tr>
+				<>
+					<Tr
+						key={index}
+						onClick={onRowClick}
+						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
+					>
+						{renderer.map((r, rIndex) => {
+							return (
+								<Td
+									p={{ md: ".5em", xl: "1em" }}
+									key={rIndex}
+									onClick={() => handleRowClick(index)}
+								>
+									{prepareCol(
+										item,
+										r,
+										index +
+											currentPage * PageSize -
+											(PageSize - 1)
+									)}
+								</Td>
+							);
+						})}
+					</Tr>
+
+					{/* <============================= ExpandRow Data Item============================> */}
+
+					{accordian && (
+						<Tr>
+							{expandedRow === index && (
+								<Td colSpan={8}>
+									<Flex justifyContent={"space-between"}>
+										<Flex
+											justifyContent={"space-evenly"}
+											w="50%"
+										>
+											<Flex direction={"column"}>
+												<Text
+													fontSize={{
+														lg: "10px",
+														xl: "12px",
+														"2xl": "14px",
+													}}
+													color="light"
+												>
+													Customer Charges{" "}
+												</Text>
+												<Text
+													fontSize={{
+														lg: "12px",
+														xl: "14px",
+														"2xl": "16px",
+													}}
+													fontWeight="semibold"
+												>
+													10
+												</Text>
+											</Flex>
+											<Flex direction={"column"}>
+												<Text
+													fontSize={{
+														lg: "10px",
+														xl: "12px",
+														"2xl": "14px",
+													}}
+													color="light"
+												>
+													Commission Earned
+												</Text>
+												<Text
+													fontSize={{
+														lg: "12px",
+														xl: "14px",
+														"2xl": "16px",
+													}}
+													fontWeight="semibold"
+												>
+													{" "}
+													1.80{" "}
+												</Text>
+											</Flex>
+											<Flex direction={"column"}>
+												<Text
+													fontSize={{
+														lg: "10px",
+														xl: "12px",
+														"2xl": "14px",
+													}}
+													color="light"
+												>
+													Balance Amount{" "}
+												</Text>
+												<Text
+													fontSize={{
+														lg: "12px",
+														xl: "14px",
+														"2xl": "16px",
+													}}
+													fontWeight="semibold"
+												>
+													48,375.00{" "}
+												</Text>
+											</Flex>
+										</Flex>
+										<Flex>
+											<Buttons
+												w={{
+													lg: "80%",
+													xl: "90%",
+													"2xl": "100%",
+												}}
+												h={{
+													lg: "35px",
+													xl: "40px",
+													"2xl": "47px",
+												}}
+												onClick={setExpandedRow}
+											>
+												<Text
+													fontSize={{
+														lg: "10px",
+														xl: "12",
+														"2xl": "14px",
+													}}
+												>
+													Repeat Transaction
+												</Text>
+											</Buttons>
+										</Flex>
+									</Flex>
+								</Td>
+							)}
+						</Tr>
+					)}
+				</>
 			);
 		});
 	};
@@ -135,7 +262,7 @@ const Table = (props) => {
 	const prepareCol = (item, column, index) => {
 		switch (column?.show) {
 			case "Tag":
-				return getStatusStyle(item[column.name]);
+				return getStatusStyle(item[column.name], tableName);
 			case "Modal":
 				return getModalStyle();
 			case "Accordian":
@@ -260,12 +387,13 @@ const Table = (props) => {
 							width="100%"
 							height="auto"
 							p="0px"
+							borderRadius=" 10px"
 						>
 							<TransactionCard item={item} />
 						</Box>
-						{index !== currentTableData.length - 1 && (
+						{/* {index !== currentTableData.length - 1 && (
 							<Divider border="1px solid #D2D2D2" />
-						)}
+						)} */}
 					</>
 				);
 			}
