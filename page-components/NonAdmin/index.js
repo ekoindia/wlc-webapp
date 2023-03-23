@@ -1,4 +1,4 @@
 import { Home } from "./Home";
-import { Transaction } from "./Transaction";
+import { Transaction, TransactionCard } from "./Transaction";
 
-export { Transaction, Home };
+export { Transaction, Home, TransactionCard };
