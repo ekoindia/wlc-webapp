@@ -1,4 +1,5 @@
 export { RemoveFormatted, sendOtpRequest } from "./loginHelper";
+export { processTransactionData } from "./processData";
 export {
 	getArrowStyle,
 	getLocationStyle,
@@ -6,4 +7,5 @@ export {
 	getNameStyle,
 	getStatusStyle,
 	openGoogleMap,
+	getAccordian,
 } from "./TableHelpers";
