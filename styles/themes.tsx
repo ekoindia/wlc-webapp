@@ -62,6 +62,18 @@ export const light = extendTheme({
 						transition: "none",
 					},
 				},
+				nonAdmin: {
+					th: {
+						textTransform: "Capitalize",
+						bg: "divider",
+						transition: "none",
+					},
+					tr: {
+						_even: {
+							background: "bg",
+						},
+					},
+				},
 			},
 		},
 		Button: {
@@ -196,6 +208,7 @@ export const light = extendTheme({
 		"2px": "0.125rem solid",
 		"10px": "0.625rem solid",
 		card: "1px solid #D2D2D2",
+		"br-menu": "1px solid #1F3ABC",
 	},
 	radii: {
 		none: "0",

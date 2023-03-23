@@ -1,7 +1,8 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Inter } from "@next/font/google";
+import { GetLogoProvider } from "contexts/getLogoContext";
+import { MenuProvider } from "contexts/MenuContext";
 import Head from "next/head";
-import { GetLogoProvider } from "../contexts/getLogoContext";
 import { light } from "../styles/themes";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { UserProvider, useUser } from "../contexts/UserContext";
@@ -26,15 +27,17 @@ export default function App({ Component, pageProps, router }) {
 
 			<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_CLIENT_ID}>
 				<ChakraProvider theme={light}>
-					{/* <main className={inter.className}> */}
 					<GetLogoProvider>
 						<UserProvider>
-							<RouteProtecter router={router}>
-								<Component {...pageProps} />
-							</RouteProtecter>
+							<MenuProvider>
+								<RouteProtecter router={router}>
+									<main className={inter.className}>
+										<Component {...pageProps} />
+									</main>
+								</RouteProtecter>
+							</MenuProvider>
 						</UserProvider>
 					</GetLogoProvider>
-					{/* </main> */}
 				</ChakraProvider>
 			</GoogleOAuthProvider>
 		</>

@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import {
+	getAccordian,
 	getArrowStyle,
 	getLocationStyle,
 	getModalStyle,
@@ -28,6 +29,7 @@ import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/Onboard
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
+import { TransactionCard } from "page-components/NonAdmin/Transaction";
 import { useEffect, useMemo, useState } from "react";
 import { Cards, Icon, IconButtons, Pagination } from "..";
 
@@ -39,6 +41,7 @@ const Table = (props) => {
 		variant,
 		tableName,
 		isScrollrequired = false,
+		accordian = false,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
@@ -162,6 +165,9 @@ const Table = (props) => {
 				return getStatusStyle(item[column.name]);
 			case "Modal":
 				return getModalStyle();
+			case "Accordian":
+				return getAccordian();
+
 			case "IconButton":
 				return getLocationStyle(item[column.name]);
 			case "Avatar":
@@ -266,6 +272,23 @@ const Table = (props) => {
 							p="0px"
 						>
 							<OnboardingDashboardCard item={item} />
+						</Box>
+						{index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)}
+					</>
+				);
+			} else if (tableName === "Transactions") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="0px"
+						>
+							<TransactionCard item={item} />
 						</Box>
 						{index !== currentTableData.length - 1 && (
 							<Divider border="1px solid #D2D2D2" />
