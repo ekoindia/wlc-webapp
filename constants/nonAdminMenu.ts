@@ -26,7 +26,7 @@ export const nonAdminMenu: nonAdminMenuType[] = [
 	{
 		icon: "refer",
 		name: "Select Plan",
-		link: "",
+		link: "/select-plan",
 	},
 	{
 		icon: "refer",
@@ -42,12 +42,12 @@ export const nonAdminMenu: nonAdminMenuType[] = [
 			{
 				icon: "commission-percent",
 				label: "Transaction History",
-				link: "",
+				link: "/transaction-history",
 			},
 			{
 				icon: "commission-percent",
 				label: "Settings",
-				link: "",
+				link: "/settings",
 			},
 		],
 	},

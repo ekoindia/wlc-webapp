@@ -1,4 +1,3 @@
-import { transactionSample } from "constants";
 import { processTransactionData } from "helpers";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -12,17 +11,29 @@ const MenuProvider = ({ children }) => {
 
 	useEffect(() => {
 		//API call /transaction to fetch menu list
-		// fetch("/db/transactionSample.json", {
-		// 	method: "get",
-		// })
-		// 	.then((res) => res.json())
-		// 	.then((data) => console.log(data))
-		// 	.catch((err) => console.log(err));
-		const processedData = processTransactionData(transactionSample);
-		setInteractions(processedData);
+		const transactionData = fetch(
+			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions",
+			{
+				method: "POST",
+				headers: {
+					"Content-type": "application/json",
+					// Authorization: `Bearer ${"jjhhj"}`,
+				},
+				body: JSON.stringify({ org_id: -1 }),
+			}
+		)
+			.then((res) => res.json())
+			.then((data) => {
+				if (data.length) {
+					const processedData = processTransactionData(data);
+					console.log("processedData", processedData);
+					setInteractions(processedData);
+				}
+			})
+			.catch((err) => console.log(err));
 	}, []);
 
-	console.log("interactions", interactions);
+	// console.log("interactions", interactions);
 	//TODO fetch menu data,process data, set in local storage
 
 	return (

@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { Icon } from "..";
 
 //FOR LAPTOP SCREENS
-const SideBarMenu = ({ className = "", role = "admin", ...props }) => {
+const SideBarMenu = ({ className = "", role = "nadmin", ...props }) => {
 	const { interaction_list } = useMenuContext();
 	console.log("interaction_list", interaction_list);
 	const router = useRouter();
@@ -127,6 +127,7 @@ const MenuBar = ({ props }) => {
 	);
 };
 
+//EXPORT
 const SideBar = (props) => {
 	return (
 		<>
@@ -230,7 +231,10 @@ const CollapseMenu = (props) => {
 									return (
 										<Link
 											key={index}
-											href=""
+											href={
+												item.link ||
+												`/transaction/${item.id}`
+											}
 											// href={prehref + `/${item.id}`}
 										>
 											<Flex
@@ -290,7 +294,7 @@ const CollapseMenu = (props) => {
 const LinkMenu = (props) => {
 	const { menu, currentRoute, index } = props;
 	return (
-		<Link href={menu.link || ""} key={index}>
+		<Link href={menu.link} key={index}>
 			<Flex
 				key={index}
 				fontSize={{
