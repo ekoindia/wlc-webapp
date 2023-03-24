@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { OtpInput } from "./OtpInput";
 import { Select } from "./Select";
 import { Breadcrumbs } from "./Breadcrumb";
@@ -26,6 +27,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	BreadcrumbsWrapper,
 	OtpInput,
 	Select,
 	Table,

@@ -31,16 +31,20 @@ const Home = ({ className = "", ...props }) => {
 				<Box
 					h="400px"
 					w="500px"
-					bg="accent.DEFAULT"
 					border="1px solid grey"
 					borderRadius={"10px"}
+					backgroundImage="./bg.svg"
+					objectFit={"cover"}
+					backgroundRepeat="no-repeat"
+					backgroundSize={"cover"}
 				>
 					<Box display={"flex"} justifyContent={"center"} mt="20px">
 						<Image
-							src="/images/EmptyState.jpg"
+							src="/images/EmptyState.png"
 							alt="logo"
 							borderRadius={"50px"}
-							maxH={{
+							w="96px"
+							minW={{
 								base: "35px",
 								sm: "34px",
 								md: "30px",
