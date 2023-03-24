@@ -33,23 +33,12 @@ const pillsData = [
 	{ id: "7", name: "Bill Payment" },
 	{ id: "8", name: "Deposit" },
 ];
-const pillWidths = [
-	"45px",
-	"79px",
-	"111px",
-	"139px",
-	"95px",
-	"89px",
-	"86px",
-	"64px",
-];
 
 function Pill({ name, activePillIndex, index }) {
 	return (
 		<Box
 			h="23px"
-			w={pillWidths[index]}
-			// w="full"
+			w="full%"
 			px="10px"
 			border="1px solid #D2D2D2"
 			borderRadius="30px"
@@ -114,10 +103,10 @@ const Transaction = () => {
 			>
 				{/* <===========================Toggles Button ===============================> */}
 				<Flex gap="8px" overflowX="auto">
-					{pillsData.map((toggle, index, pillWidths) => (
+					{pillsData.map((pill, index, pillWidths) => (
 						<Box key={index} onClick={() => handlePillClick(index)}>
 							<Pill
-								name={toggle.name}
+								name={pill.name}
 								activePillIndex={activePillIndex}
 								index={index}
 							/>
