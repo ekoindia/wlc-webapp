@@ -47,7 +47,7 @@ const Table = (props) => {
 	const [pageNumber, setPageNumber] = useState(null);
 	/* API CALLING */
 	// const transaction = apisHelper('transaction');
-	// console.log("tableDatatableDatatableDatatableDatatableData", tableData);
+	console.log("tableDatatableDatatableDatatableDatatableData", tableData);
 	// console.log(tableName, "tableNametableNametableNametableName");
 	// console.log(transaction, "transaction");
 	useEffect(() => {
