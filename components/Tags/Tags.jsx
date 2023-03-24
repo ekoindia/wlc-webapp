@@ -5,6 +5,7 @@ const statusChecker = {
 	Pending: "primary.DEFAULT",
 	Inactive: "error",
 	Other: "light",
+	Cancel: "error",
 };
 
 const Tags = ({

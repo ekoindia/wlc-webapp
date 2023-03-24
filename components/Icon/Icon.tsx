@@ -48,7 +48,8 @@ export type IconNameType =
 	| "increase"
 	| "people"
 	| "arrow-increase"
-	| "arrow-decrease";
+	| "arrow-decrease"
+	| "remove";
 
 export type IconProps = {
 	name: IconNameType;
