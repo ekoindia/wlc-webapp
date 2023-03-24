@@ -1,6 +1,13 @@
-import { Box, Center, Flex, Input, Text, VStack } from "@chakra-ui/react";
-import { Buttons, Cards, Icon, SearchBar, Tags, Calenders } from "components";
-import { useRef, useState } from "react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import {
+	Buttons,
+	Calenders,
+	Cards,
+	Headings,
+	Icon,
+	SearchBar,
+} from "components";
+import { useState } from "react";
 import { DetailedStatementTable } from ".";
 
 /**
@@ -21,6 +28,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 	}
 	return (
 		<>
+			<Headings title="Detailed Statement" />
 			<Box
 				px={{ base: "16px", md: "initial" }}
 				marginTop={{ base: "26px", md: "0px" }}

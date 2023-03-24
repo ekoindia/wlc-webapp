@@ -3,66 +3,20 @@ import {
 	Breadcrumb,
 	BreadcrumbItem,
 	BreadcrumbLink,
-	Text,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { Headings, Icon } from "../";
-
-const textChanger = {
-	Profile: "Seller Details",
-	Pricing: "Pricing & Commissions",
-	"Up-sell-info": "Update Seller Information",
-	"Up-per-info": "Update Personal Information",
-	"Up-sell-add": "Update Seller Address",
-	"Preview-sell-info": "Preview Seller Information",
-};
+import { Icon } from "../";
 
 const Breadcrumbs = (props) => {
-	const router = useRouter();
-	const [breadcrumbs, setBreadcrumbs] = useState();
-
-	const { setNav, setHeadingObj, isNavVisible, isSmallerThan769, propComp } =
-		props;
-
-	const capitalizeWordsBreadcrumbs = (str) => {
-		if (str in textChanger) {
-			str = textChanger[str];
-		}
-		return str
-			.replace(/\b[a-z]/g, function (f) {
-				return f.toUpperCase();
-			})
-			.replace(/-/g, " ");
-	};
-
-	useEffect(() => {
-		const pathWithoutQuery = router.asPath.split("?")[0];
-		let pathArray = pathWithoutQuery.split("/");
-		pathArray.shift();
-
-		pathArray = pathArray.filter((path) => path !== "");
-
-		const breadcrumbs = pathArray.map((path, index) => {
-			const href = "/" + pathArray.slice(0, index + 1).join("/");
-			return {
-				href,
-				label: capitalizeWordsBreadcrumbs(
-					path.charAt(0).toUpperCase() + path.slice(1)
-				),
-				isCurrent: index === pathArray.length - 1,
-			};
-		});
-		breadcrumbs.shift();
-		setBreadcrumbs(breadcrumbs);
-		if (breadcrumbs.length > 1) {
-			setNav(false);
-		}
-		setHeadingObj({
-			title: breadcrumbs[breadcrumbs.length - 1]?.label,
-			hasIcon: breadcrumbs.length > 1 ? true : false,
-		});
-	}, [router.asPath]);
+	const {
+		setNav,
+		setHeadingObj,
+		isNavVisible,
+		isSmallerThan769,
+		propComp,
+		hrefs,
+		labels,
+		handleOnClick,
+	} = props;
 
 	return (
 		<>
@@ -77,101 +31,53 @@ const Breadcrumbs = (props) => {
 						/>
 					}
 				>
-					<BreadcrumbItem key={0}>
+					<BreadcrumbItem>
 						<BreadcrumbLink
-							href="/admin/my-network"
-							_hover={{ textDecoration: "none" }}
 							fontSize="xs"
+							display={"flex"}
 							color={"accent.DEFAULT"}
-							lineHeight={1}
+							_hover={{ textDecoration: "none" }}
 						>
 							<Box
-								gap={"1"}
-								display={"flex"}
-								alignItems={"center"}
+								mr="1"
+								width={{ base: "16px", md: "14px" }}
+								height={{ base: "16px", md: "14px" }}
 							>
-								<Box
-									width={{ base: "16px", md: "14px" }}
-									height={{ base: "16px", md: "14px" }}
-								>
-									<Icon
-										name="home"
-										width="100%"
-										height="100%"
-									/>
-								</Box>
-								<Text mt={"0.1vw"}>Home</Text>
+								<Icon name="home" width="100%" height="100%" />
 							</Box>
+							Home
 						</BreadcrumbLink>
 					</BreadcrumbItem>
-					{breadcrumbs &&
-						breadcrumbs.map((breadcrumb, index) => (
-							<BreadcrumbItem
-								key={index}
-								isCurrentPage={
-									index === breadcrumbs.length - 1
-										? true
-										: false
-								}
-							>
+					{hrefs?.map((item, index) => {
+						const handleBreadcrumbOnClick = () => {
+							if (index !== hrefs.length - 1) {
+								handleOnClick(hrefs[index]);
+							}
+						};
+						return (
+							<BreadcrumbItem key={index}>
 								<BreadcrumbLink
-									href={breadcrumb.href}
+									onClick={handleBreadcrumbOnClick}
 									_hover={{ textDecoration: "none" }}
 									fontSize="xs"
 									color={
-										breadcrumb.isCurrent
+										index === hrefs.length - 1
 											? "light"
 											: "accent.DEFAULT"
 									}
-									lineHeight={1}
+									cursor={
+										index === hrefs.length - 1
+											? "default"
+											: "pointer"
+									}
 								>
-									{breadcrumb.label}
+									{labels[index]}
 								</BreadcrumbLink>
 							</BreadcrumbItem>
-						))}
+						);
+					})}
 				</Breadcrumb>
 			</Box>
-
-			{isSmallerThan769 ? (
-				isNavVisible && (
-					<Box mt={"26px"}>
-						{breadcrumbs && (
-							<Headings
-								hasIcon={breadcrumbs.length > 1 ? true : false}
-								title={
-									breadcrumbs[breadcrumbs.length - 1]?.label
-								}
-								redirectPath={
-									breadcrumbs.length > 1 &&
-									breadcrumbs[breadcrumbs.length - 2].href
-								}
-							/>
-						)}
-					</Box>
-				)
-			) : (
-				<Box
-					mt={{
-						base: "0px",
-						md: "16px",
-						lg: "20px",
-						xl: "24px",
-						"2xl": "30px",
-					}}
-				>
-					{breadcrumbs && (
-						<Headings
-							hasIcon={breadcrumbs.length > 1 ? true : false}
-							title={breadcrumbs[breadcrumbs.length - 1]?.label}
-							redirectPath={
-								breadcrumbs.length > 1 &&
-								breadcrumbs[breadcrumbs.length - 2].href
-							}
-							propComp={propComp}
-						/>
-					)}
-				</Box>
-			)}
 		</>
 	);
 };

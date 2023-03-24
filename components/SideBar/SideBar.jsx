@@ -23,10 +23,10 @@ import { Icon } from "..";
 //FOR LAPTOP SCREENS
 const SideBarMenu = ({ className = "", role = "admin", ...props }) => {
 	const { interaction_list } = useMenuContext();
-	console.log("interaction_list", interaction_list);
+	// console.log("interaction_list", interaction_list);
 	const router = useRouter();
 	const [currentRoute, setcurrentRoute] = useState();
-	console.log("currentRoute", currentRoute);
+	// console.log("currentRoute", currentRoute);
 
 	useEffect(() => {
 		setcurrentRoute(router.pathname.split("/")[2]);
