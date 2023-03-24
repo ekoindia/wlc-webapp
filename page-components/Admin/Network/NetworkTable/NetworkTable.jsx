@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { apisHelper } from "helpers/apisHelper";
 import { useRouter } from "next/router";
 const data = {
 	response_status_id: 1,
@@ -493,9 +494,9 @@ const data = {
  * @example	`<NetworkTable></NetworkTable>`
  */
 
-const NetworkTable = () => {
+const NetworkTable = ({ sortValue, searchValue }) => {
 	// const recordCound = 10;
-
+	// console.log(searchValue,"search network table")
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
@@ -519,17 +520,19 @@ const NetworkTable = () => {
 		{ name: "", field: "", show: "Arrow" },
 	];
 	const router = useRouter();
-	const agentDetails = data?.data?.agent_details ?? [];
+	const apidata = apisHelper("Network");
+	console.log(apidata, "apidataapidataapidata");
+	const agentDetails = apidata?.data?.data?.agent_details ?? [];
 	const onRowClick = (rowData) => {
-        const ekocode = rowData.eko_code;
-        localStorage.setItem("rowData", JSON.stringify(rowData));
-        router.push({
-          pathname: "/admin/my-network/profile",
-          query: { ekocode },
-          state: { rowData },
-        });
-      };
-      
+		const ekocode = rowData.eko_code;
+		localStorage.setItem("rowData", JSON.stringify(rowData));
+		router.push({
+			pathname: "/admin/my-network/profile",
+			query: { ekocode },
+			state: { rowData },
+		});
+	};
+
 	return (
 		<>
 			<Table
