@@ -14,8 +14,14 @@ import { NetworkTable } from "./NetworkTable";
  * @example	`<Network></Network>`
  */
 
-const Network = ({ className = "", ...props }) => {
+const Network = ({ className = "", ...props },) => {
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
+    const [sortValue,setSortvalue] = useState();
+	// const [status, setStatus] = useState("");
+    const handleStatusClick = (value) => {
+        setSortvalue(value);
+     };
+     console.log(sortValue,"sortValue");
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -40,13 +46,13 @@ const Network = ({ className = "", ...props }) => {
 							<Filter />
 						</Box>
 						<Box>
-							<Sort />
+							<Sort handleStatusClick={handleStatusClick}/>
 						</Box>
 					</Flex>
 				</Box>
 
 				<Box mt={{ base: "none", md: "20px" }}>
-					<NetworkTable />
+					<NetworkTable sortValue={sortValue} searchValue = {searchValue}/>
 				</Box>
 				<ResSortAndFilter />
 			</Box>

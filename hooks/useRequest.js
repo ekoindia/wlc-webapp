@@ -15,7 +15,7 @@ const useRequest = ({
 	const [isLoading, setIsLoading] = useState(true);
 
 	const { userData } = useUser();
-	console.log("userData", userData);
+	// console.log("userData", userData);
 	// console.log("method", method);
 	// console.log("baseUrl", baseUrl);
 
