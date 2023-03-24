@@ -80,25 +80,8 @@ export const getModalStyle = (data) => {
 		</>
 	);
 };
-export const getAccordian = (data) => {
-	return (
-		<Box
-			bg="primary.DEFAULT"
-			minH={{ base: "24px", xl: "24px", "2xl": "24px" }}
-			minW={{ base: "24px", xl: "24px", "2xl": "24px" }}
-			width={{ base: "24px", xl: "24px", "2xl": "24px" }}
-			height={{ base: "24px", xl: "24px", "2xl": "324px0px" }}
-			borderRadius="30px"
-			display={"flex"}
-			justifyContent={"center"}
-			alignItems="center"
-			cursor={"pointer"}
-		>
-			<Box alignItems={"center"}>
-				<Icon name="add" width="16px" color="white" />
-			</Box>
-		</Box>
-	);
+export const getAccordian = (props) => {
+	return <></>;
 };
 
 export const openGoogleMap = ({ latitude, longitude }) => {

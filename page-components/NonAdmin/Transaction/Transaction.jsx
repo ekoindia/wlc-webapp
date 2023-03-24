@@ -23,7 +23,7 @@ import { TransactionTable } from "./TransactionTable";
  * @example	`<Transaction></Transaction>`
  */
 
-const toggleData = [
+const pillsData = [
 	{ id: "1", name: "All" },
 	{ id: "2", name: "Send Cash" },
 	{ id: "3", name: "AePS Transaction" },
@@ -33,7 +33,7 @@ const toggleData = [
 	{ id: "7", name: "Bill Payment" },
 	{ id: "8", name: "Deposit" },
 ];
-const buttonWidths = [
+const pillWidths = [
 	"45px",
 	"79px",
 	"111px",
@@ -44,23 +44,24 @@ const buttonWidths = [
 	"64px",
 ];
 
-function Toggle({ name, activeToggleIndex, index }) {
+function Pill({ name, activePillIndex, index }) {
 	return (
 		<Box
 			h="23px"
-			w={buttonWidths[index]}
+			w={pillWidths[index]}
+			// w="full"
 			px="10px"
 			border="1px solid #D2D2D2"
 			borderRadius="30px"
-			bg={activeToggleIndex === index ? "accent.DEFAULT" : "white"}
-			color={activeToggleIndex === index ? "white" : "light"}
+			bg={activePillIndex === index ? "accent.DEFAULT" : "white"}
+			color={activePillIndex === index ? "white" : "light"}
 			_hover={{ bg: "accent.DEFAULT", color: "white" }}
 			display={"flex"}
 			justifyContent={"center"}
 			alignItems="center"
 		>
 			<Box display={"flex"} textAlign="justify">
-				<Text fontSize={"10px"}>{name}</Text>
+				<Text fontSize={"12px"}>{name}</Text>
 			</Box>
 		</Box>
 	);
@@ -68,15 +69,15 @@ function Toggle({ name, activeToggleIndex, index }) {
 
 const Transaction = () => {
 	const [count, setCount] = useState(0);
-	const [activeToggleIndex, setActiveToggleIndex] = useState(0);
+	const [activePillIndex, setActivePillIndex] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
 	// TODO: Edit state as required
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
 	} // TODO: Edit state as required
-	const handleToggleClick = (index) => {
-		setActiveToggleIndex(index);
+	const handlePillClick = (index) => {
+		setActivePillIndex(index);
 	};
 
 	const [isOpen, setIsOpen] = useState(false);
@@ -113,14 +114,11 @@ const Transaction = () => {
 			>
 				{/* <===========================Toggles Button ===============================> */}
 				<Flex gap="8px" overflowX="auto">
-					{toggleData.map((toggle, index, toggleWidths) => (
-						<Box
-							key={index}
-							onClick={() => handleToggleClick(index)}
-						>
-							<Toggle
+					{pillsData.map((toggle, index, pillWidths) => (
+						<Box key={index} onClick={() => handlePillClick(index)}>
+							<Pill
 								name={toggle.name}
-								activeToggleIndex={activeToggleIndex}
+								activePillIndex={activePillIndex}
 								index={index}
 							/>
 						</Box>
@@ -138,7 +136,7 @@ const Transaction = () => {
 								width: {
 									base: "270px",
 									md: "400px",
-									lg: "200px",
+									lg: "150px",
 									xl: "300px",
 									"2xl": "450px",
 								},
