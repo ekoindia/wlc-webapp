@@ -9,6 +9,7 @@ const Headings = (props) => {
 		title,
 		marginLeft = "1rem",
 		redirectPath,
+		isMTRequired = true,
 		propComp,
 	} = props;
 
@@ -29,11 +30,11 @@ const Headings = (props) => {
 				"2xl": "20px",
 			}}
 			mt={{
-				base: "0px",
-				md: "16px",
-				lg: "20px",
-				xl: "24px",
-				"2xl": "30px",
+				base: isMTRequired && "0px",
+				md: isMTRequired && "16px",
+				lg: isMTRequired && "20px",
+				xl: isMTRequired && "24px",
+				"2xl": isMTRequired && "30px",
 			}}
 			width="100%"
 			px={{ base: "16px", md: !insideNav ? "0px" : "16px" }}

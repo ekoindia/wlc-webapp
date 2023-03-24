@@ -11,7 +11,11 @@ import { BusinessDashboard } from "./BusinessDashboard";
 const Dashboard = ({ className = "", ...props }) => {
 	return (
 		<div className={`${className}`} {...props}>
-			<Headings title="Business Dashboard" hasIcon={false} />
+			<Headings
+				title="Business Dashboard"
+				hasIcon={false}
+				isMTRequired={false}
+			/>
 			<BusinessDashboard />
 		</div>
 	);
