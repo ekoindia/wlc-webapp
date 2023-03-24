@@ -8,7 +8,7 @@ const MenuProvider = ({ children }) => {
 	const { userData } = useUser();
 	const [interactions, setInteractions] = useState({
 		interaction_list: [],
-		_role_tx_list: {},
+		role_tx_list: {},
 	});
 
 	useEffect(() => {
