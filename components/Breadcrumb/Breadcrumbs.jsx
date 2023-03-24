@@ -55,7 +55,7 @@ const Breadcrumbs = (props) => {
 							}
 						};
 						return (
-							<BreadcrumbItem>
+							<BreadcrumbItem key={index}>
 								<BreadcrumbLink
 									onClick={handleBreadcrumbOnClick}
 									_hover={{ textDecoration: "none" }}
