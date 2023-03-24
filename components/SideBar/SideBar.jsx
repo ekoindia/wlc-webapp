@@ -6,6 +6,7 @@ import {
 	AccordionPanel,
 	Box,
 	Center,
+	Circle,
 	Drawer,
 	DrawerContent,
 	DrawerOverlay,
@@ -13,6 +14,7 @@ import {
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
+import { roles } from "constants";
 import { adminMenu, nonAdminMenu } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
@@ -20,6 +22,22 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Icon } from "..";
+
+function isCurrentRoute(router, currPath, role) {
+	const path = router.asPath.split("?")[0];
+	console.log("roles", path.split("/"));
+	const currentRoute =
+		role === roles["admin"] ? path.split("/")[2] : path.split("/")[1];
+	if (role === roles["admin"] && currentRoute === currPath.split("/")[2]) {
+		return true;
+	}
+	if (
+		role === roles["non-admin"] &&
+		currentRoute === currPath.split("/")[1] &&
+		currPath === path
+	)
+		return true;
+}
 
 //FOR LAPTOP SCREENS
 const SideBarMenu = ({ className = "", ...props }) => {
@@ -71,6 +89,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 											menu={menu}
 											interaction_list={interaction_list}
 											currentRoute={currentRoute}
+											role={userData?.role}
 										/>
 									</>
 								);
@@ -83,6 +102,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 												menu.subLevelObject
 											}
 											currentRoute={currentRoute}
+											role={userData?.role}
 										/>
 									</>
 								);
@@ -93,6 +113,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 											menu={menu}
 											currentRoute={currentRoute}
 											index={index}
+											role={userData?.role}
 										/>
 									</>
 								);
@@ -122,7 +143,7 @@ const MenuBar = ({ props }) => {
 			size="full"
 		>
 			<DrawerOverlay />
-			<DrawerContent maxW={"250px"} boxShadow={"none"}>
+			<DrawerContent maxW="250px" boxShadow={"none"}>
 				<SideBarMenu />
 			</DrawerContent>
 		</Drawer>
@@ -146,16 +167,12 @@ const SideBar = (props) => {
 export default SideBar;
 
 const CollapseMenu = (props) => {
-	const { menu, interaction_list, currentRoute } = props;
+	const { menu, interaction_list, currentRoute, role } = props;
 	const router = useRouter();
-	console.log("router", router);
 	return (
 		<Flex textColor="white" justify="space-between">
 			<Accordion allowMultiple w="100%">
-				<AccordionItem
-					borderBottom="1px solid #1F3ABC"
-					borderTop="none"
-				>
+				<AccordionItem borderBottom="br-sidebar" borderTop="none">
 					{({ isExpanded }) => (
 						<>
 							<AccordionButton
@@ -216,71 +233,95 @@ const CollapseMenu = (props) => {
 											{menu.name}
 										</Text>
 									</Flex>
-									{!isExpanded ? (
-										<Icon name="add" width="12px" />
-									) : (
-										<MinusIcon width={"12px"} />
-									)}
+									<Circle bg="icon_bg_blue" size="5">
+										{!isExpanded ? (
+											<Icon name="expand" width="10px" />
+										) : (
+											<Icon name="remove" width="10px" />
+										)}
+									</Circle>
 								</Flex>
 							</AccordionButton>
 
-							<AccordionPanel
-								pb={4}
-								padding={"0px"}
-								border="none"
-							>
+							<AccordionPanel padding={"0px"} border="none">
 								{interaction_list?.map((item, index) => {
+									const link =
+										item.link || `/transaction/${item?.id}`;
 									return (
-										<Link
-											key={index}
-											href={
-												item.link ||
-												`/transaction/${item.id}`
-											}
-											// href={prehref + `/${item.id}`}
-										>
-											<Flex
-												align="center"
-												padding="12px 14px 12px 30px"
-												justify="space-between"
-												paddingLeft="40px"
-												borderTop="br-menu"
-												// bg={
-												// 	`/transaction/${item.id}` ===
-												// 		router.asPath &&
-												// 	"#081E89"
-												// }
-												// borderLeftColor={
-												// 	`/transaction/${item.id}` ===
-												// 	router.asPath
-												// 		? "#FE7D00"
-												// 		: "transparent"
-												// }
+										<Link key={index} href={link}>
+											<Box
+												w="100%"
+												padding="0px 14px 0px 40px"
+												bg={
+													isCurrentRoute(
+														router,
+														link,
+														role
+													)
+														? "sidebar.active-bg"
+														: ""
+												}
+												borderLeft="8px"
+												borderLeftColor={
+													isCurrentRoute(
+														router,
+														link,
+														role
+													)
+														? "sidebar.active-border"
+														: "transparent"
+												}
+												outline={
+													isCurrentRoute(
+														router,
+														link,
+														role
+													)
+														? "var(--chakra-borders-br-sidebar)"
+														: ""
+												}
 											>
 												<Flex
 													align="center"
-													columnGap="10px"
+													justify="space-between"
+													padding="12px 0px 12px 0px"
+													borderTop="br-sidebar"
+													borderTopStyle="dashed"
 												>
-													<MinusIcon fontSize="12px" />
-													<Text
-														fontSize={{
-															base: "12px",
-															sm: "12px",
-															md: "11px",
-															lg: "11px",
-															xl: "11px",
-															"2xl": "14px",
-														}}
-														textColor={"white"}
+													<Flex
+														align="center"
+														columnGap="10px"
 													>
-														{item.label}
-													</Text>
+														<MinusIcon fontSize="12px" />
+														<Text
+															fontSize={{
+																base: "12px",
+																sm: "12px",
+																md: "11px",
+																lg: "11px",
+																xl: "11px",
+																"2xl": "14px",
+															}}
+															textColor={"white"}
+														>
+															{item.label}
+														</Text>
+													</Flex>
+													<Icon
+														color={
+															isCurrentRoute(
+																router,
+																link,
+																role
+															)
+																? "#FE7D00"
+																: "#556FEF"
+														}
+														name="chevron-right"
+														width="12px"
+													/>
 												</Flex>
-												<Icon
-													name="chevron-right"
-													width="12px"
-												/>
-											</Flex>
+											</Box>
 										</Link>
 									);
 								})}
@@ -294,7 +335,8 @@ const CollapseMenu = (props) => {
 };
 
 const LinkMenu = (props) => {
-	const { menu, currentRoute, index } = props;
+	const { menu, currentRoute, index, role } = props;
+	const router = useRouter();
 	return (
 		<Link href={menu.link} key={index}>
 			<Flex
@@ -308,7 +350,7 @@ const LinkMenu = (props) => {
 					"2xl": "16px",
 				}}
 				gap="13px"
-				color="#FFFFFF"
+				color="white"
 				align="center"
 				px={{
 					base: "3",
@@ -325,12 +367,16 @@ const LinkMenu = (props) => {
 				w={"full"}
 				role="group"
 				cursor="pointer"
-				borderBottom="1px solid #1F3ABC"
-				bg={currentRoute === menu.link.split("/")[2] && "#081E89"}
+				borderBottom="br-sidebar"
+				bg={
+					isCurrentRoute(router, menu.link, role)
+						? "sidebar.active-bg"
+						: ""
+				}
 				borderLeft="8px"
 				borderLeftColor={
-					currentRoute === menu.link.split("/")[2]
-						? "#FE7D00"
+					isCurrentRoute(router, menu.link, role)
+						? "sidebar.active-border"
 						: "transparent"
 				}
 			>
