@@ -33,7 +33,7 @@ function isCurrentRoute(router, currPath, role) {
 	}
 	if (
 		role === roles["non-admin"] &&
-		currentRoute === currPath.split("/")[1] &&
+		// currentRoute === currPath.split("/")[1] ||
 		currPath === path
 	)
 		return true;

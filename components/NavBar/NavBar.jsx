@@ -99,6 +99,7 @@ const NavBar = (props) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
+	const { userData } = useUser();
 	return (
 		<>
 			<HStack
@@ -169,52 +170,63 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 									name="demo-user"
 									src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
 								/>
-								<Flex
-									ml={"0.5vw"}
-									h={"2.3vw"}
-									justify={"center"}
-									direction={"column"}
-									display={{ base: "none", md: "flex" }}
-									lineHeight={{
-										md: "15px",
-										lg: "16px",
-										xl: "18px",
-										"2xl": "22px",
-									}}
-								>
-									<Box display={"flex"} alignItems={"center"}>
+								{userData?.role === "admin" ? (
+									<Flex
+										ml={"0.5vw"}
+										h={"2.3vw"}
+										justify={"center"}
+										direction={"column"}
+										display={{ base: "none", md: "flex" }}
+										lineHeight={{
+											md: "15px",
+											lg: "16px",
+											xl: "18px",
+											"2xl": "22px",
+										}}
+									>
+										<Box
+											display={"flex"}
+											alignItems={"center"}
+										>
+											<Text
+												fontSize={{
+													md: "12px",
+													lg: "14px",
+													xl: "12px",
+													"2xl": "18px",
+												}}
+												fontWeight={"semibold"}
+												mr={"1.7vw"}
+											>
+												Aakash Enterprises
+											</Text>
+											<Box
+												width={{
+													md: "1vw",
+													lg: "0.75vw",
+												}}
+												height={{
+													md: "1vw",
+													lg: "0.70vw",
+												}}
+											>
+												<Icon name="drop-down" />
+											</Box>
+										</Box>
 										<Text
 											fontSize={{
-												md: "12px",
-												lg: "14px",
-												xl: "12px",
-												"2xl": "18px",
+												md: "10px",
+												lg: "10px",
+												xl: "10px",
+												"2xl": "14px",
 											}}
-											fontWeight={"semibold"}
-											mr={"1.7vw"}
+											color={"secondary.DEFAULT"}
+											textAlign={"start"}
 										>
-											Aakash Enterprises
+											Logged in as admin
 										</Text>
-										<Box
-											width={{ md: "1vw", lg: "0.75vw" }}
-											height={{ md: "1vw", lg: "0.70vw" }}
-										>
-											<Icon name="drop-down" />
-										</Box>
-									</Box>
-									<Text
-										fontSize={{
-											md: "10px",
-											lg: "10px",
-											xl: "10px",
-											"2xl": "14px",
-										}}
-										color={"secondary.DEFAULT"}
-										textAlign={"start"}
-									>
-										Logged in as admin
-									</Text>
-								</Flex>
+									</Flex>
+								) : null}
 							</Flex>
 						</MenuButton>
 
@@ -247,7 +259,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 };
 
 const MyAccountCard = ({ setIsCardOpen }) => {
-	const { logout } = useUser();
+	const { logout, userData } = useUser();
 	const router = useRouter();
 	const logoutHandler = () => {
 		router.push("/");
