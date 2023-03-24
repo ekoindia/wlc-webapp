@@ -68,13 +68,13 @@ const Layout = ({ isLoggedIn, children, propComp, ...props }) => {
 							},
 						}}
 					>
-						<Breadcrumbs
+						{/* <Breadcrumbs
 							setNav={setNav}
 							setHeadingObj={setHeadingObj}
 							isNavVisible={isNav}
 							isSmallerThan769={isSmallerThan769}
 							propComp={propComp}
-						/>
+						/> */}
 
 						{children}
 					</Box>

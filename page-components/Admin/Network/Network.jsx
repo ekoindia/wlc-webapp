@@ -1,5 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Filter } from "components/Filter";
+import { Headings } from "components/Headings";
 import { SearchBar } from "components/SearchBar";
 import { Sort } from "components/Sort";
 import { ResSortAndFilter } from "components/Sort/Sort";
@@ -23,6 +24,7 @@ const Network = ({ className = "", ...props }) => {
 
 	return (
 		<>
+			<Headings title="My Network" hasIcon={false} />
 			<Box w={"100%"} px={{ base: "16px", md: "initial" }}>
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<SearchBar

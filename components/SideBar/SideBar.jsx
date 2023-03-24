@@ -43,10 +43,10 @@ function isCurrentRoute(router, currPath, role) {
 const SideBarMenu = ({ className = "", ...props }) => {
 	const { userData } = useUser();
 	const { interaction_list } = useMenuContext();
-	console.log("interaction_list", interaction_list);
+	// console.log("interaction_list", interaction_list);
 	const router = useRouter();
 	const [currentRoute, setcurrentRoute] = useState();
-	console.log("currentRoute", currentRoute);
+	// console.log("currentRoute", currentRoute);
 
 	useEffect(() => {
 		setcurrentRoute(router.pathname.split("/")[2]);

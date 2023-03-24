@@ -19,6 +19,7 @@ const Headings = (props) => {
 	};
 	return (
 		<Flex
+			display={{ base: "none", lg: "flex" }} //TODO update this ASAP
 			marginBottom={{
 				base: !insideNav ? "10px" : "0px",
 				sm: !insideNav ? "8px" : "0px",
@@ -26,6 +27,13 @@ const Headings = (props) => {
 				lg: "16px",
 				xl: "18px",
 				"2xl": "20px",
+			}}
+			mt={{
+				base: "0px",
+				md: "16px",
+				lg: "20px",
+				xl: "24px",
+				"2xl": "30px",
 			}}
 			width="100%"
 			px={{ base: "16px", md: !insideNav ? "0px" : "16px" }}

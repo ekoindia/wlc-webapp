@@ -1,4 +1,6 @@
-import { Layout } from "components";
+import { BreadcrumbsWrapper, Layout } from "components";
+import { PricingCommissionObject } from "constants";
+
 import Head from "next/head";
 import { PricingCommission } from "page-components/Admin";
 import React from "react";
@@ -10,7 +12,9 @@ const Pricing = () => {
 				<title>Pricing | Eko API Marketplace</title>
 			</Head>
 			<Layout>
-				<PricingCommission />
+				<BreadcrumbsWrapper BreadcrumbsObject={PricingCommissionObject}>
+					<PricingCommission />
+				</BreadcrumbsWrapper>
 			</Layout>
 		</>
 	);
