@@ -129,13 +129,14 @@ const Table = (props) => {
 						{renderer.map((r, rIndex) => {
 							return (
 								<Td
+									onClick={() => handleRowClick(index)}
 									p={{ md: ".5em", xl: "1em" }}
 									key={rIndex}
-									onClick={() => handleRowClick(index)}
 								>
 									{prepareCol(
 										item,
 										r,
+										index,
 										index +
 											currentPage * PageSize -
 											(PageSize - 1)
@@ -150,7 +151,7 @@ const Table = (props) => {
 					{accordian && (
 						<Tr>
 							{expandedRow === index && (
-								<Td colSpan={8}>
+								<Td colSpan={8} expandedRow={expandedRow}>
 									<Flex justifyContent={"space-between"}>
 										<Flex
 											justifyContent={"space-evenly"}
@@ -259,14 +260,35 @@ const Table = (props) => {
 		});
 	};
 
-	const prepareCol = (item, column, index) => {
+	const prepareCol = (item, column, index, serialNo) => {
 		switch (column?.show) {
 			case "Tag":
 				return getStatusStyle(item[column.name], tableName);
 			case "Modal":
 				return getModalStyle();
 			case "Accordian":
-				return getAccordian();
+				return (
+					<Box
+						bg="primary.DEFAULT"
+						minH={{ base: "24px", xl: "24px", "2xl": "24px" }}
+						minW={{ base: "24px", xl: "24px", "2xl": "24px" }}
+						width={{ base: "24px", xl: "24px", "2xl": "24px" }}
+						height={{ base: "24px", xl: "24px", "2xl": "324px0px" }}
+						borderRadius="30px"
+						display={"flex"}
+						justifyContent={"center"}
+						alignItems="center"
+						cursor={"pointer"}
+					>
+						<Box alignItems={"center"}>
+							<Icon
+								name={expandedRow === index ? "remove" : "add"}
+								width="15px"
+								color="white"
+							/>
+						</Box>
+					</Box>
+				);
 
 			case "IconButton":
 				return getLocationStyle(item[column.name]);
@@ -276,7 +298,7 @@ const Table = (props) => {
 				return getArrowStyle();
 			default:
 				if (column?.field === "Sr. No.") {
-					return index;
+					return serialNo;
 				} else {
 					return item[column.name];
 				}
