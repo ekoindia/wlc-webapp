@@ -28,7 +28,7 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 				value={value}
 				placeholder="Search by name or mobile number"
 				size="lg"
-				borderRadius="10px"
+				borderRadius={{ base: "6px", md: "10px" }}
 				w="100%"
 				h="100%"
 				fontSize={{ base: "xs", "2xl": "sm" }}

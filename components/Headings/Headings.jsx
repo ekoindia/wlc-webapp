@@ -9,6 +9,7 @@ const Headings = (props) => {
 		title,
 		marginLeft = "1rem",
 		redirectPath,
+		isMTRequired = true,
 		propComp,
 	} = props;
 
@@ -19,6 +20,7 @@ const Headings = (props) => {
 	};
 	return (
 		<Flex
+			display={{ base: "none", lg: "flex" }} //TODO update this ASAP
 			marginBottom={{
 				base: !insideNav ? "10px" : "0px",
 				sm: !insideNav ? "8px" : "0px",
@@ -26,6 +28,13 @@ const Headings = (props) => {
 				lg: "16px",
 				xl: "18px",
 				"2xl": "20px",
+			}}
+			mt={{
+				base: isMTRequired && "0px",
+				md: isMTRequired && "16px",
+				lg: isMTRequired && "20px",
+				xl: isMTRequired && "24px",
+				"2xl": isMTRequired && "30px",
 			}}
 			width="100%"
 			px={{ base: "16px", md: !insideNav ? "0px" : "16px" }}

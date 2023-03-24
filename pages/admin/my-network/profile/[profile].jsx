@@ -1,4 +1,6 @@
-import { Layout } from "components";
+import { BreadcrumbsWrapper, Layout } from "components";
+import { NetworkObject } from "constants";
+
 import Head from "next/head";
 import { ProfilePanel } from "page-components/Admin";
 import React, { useState } from "react";
@@ -11,7 +13,9 @@ const Profile = () => {
 				<title>Profile | Eko API Marketplace</title>
 			</Head>
 			<Layout propComp={comp}>
-				<ProfilePanel setComp={setComp} />
+				<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+					<ProfilePanel setComp={setComp} />
+				</BreadcrumbsWrapper>
 			</Layout>
 		</>
 	);

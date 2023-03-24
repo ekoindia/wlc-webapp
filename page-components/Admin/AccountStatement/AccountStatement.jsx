@@ -1,5 +1,5 @@
-import { Box, Divider, Flex, Text, useMediaQuery } from "@chakra-ui/react";
-import { Buttons, Cards, Icon, Tags } from "components";
+import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
+import { Buttons, Cards, Headings, Icon } from "components";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AccountStatementTable } from ".";
@@ -28,6 +28,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 
 	return (
 		<>
+			<Headings title="Account Statement" />
 			<Box
 				px={{ base: "16px", md: "initial" }}
 				marginTop={{ base: "26px", md: "0px" }}
