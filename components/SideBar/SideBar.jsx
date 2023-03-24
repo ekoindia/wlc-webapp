@@ -23,20 +23,25 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Icon } from "..";
 
-function isCurrentRoute(router, currPath, role) {
+function isCurrentRoute(router, currPath) {
 	const path = router.asPath.split("?")[0];
-	console.log("roles", path.split("/"));
-	const currentRoute =
-		role === roles["admin"] ? path.split("/")[2] : path.split("/")[1];
-	if (role === roles["admin"] && currentRoute === currPath.split("/")[2]) {
-		return true;
+	if (path === currPath) return true;
+
+	const splittedPath = path.split("/");
+	const splittedCurrPath = currPath.split("/");
+	let isSamePath = false;
+
+	for (let i = 1; i < splittedCurrPath.length; i++) {
+		if (
+			splittedPath[i] === splittedCurrPath[i] &&
+			splittedCurrPath[i] !== "admin"
+		) {
+			isSamePath = true;
+		} else {
+			isSamePath = false;
+		}
 	}
-	if (
-		role === roles["non-admin"] &&
-		// currentRoute === currPath.split("/")[1] ||
-		currPath === path
-	)
-		return true;
+	return isSamePath ? true : false;
 }
 
 //FOR LAPTOP SCREENS
@@ -247,36 +252,29 @@ const CollapseMenu = (props) => {
 								{interaction_list?.map((item, index) => {
 									const link =
 										item.link || `/transaction/${item?.id}`;
+									const isCurrent = isCurrentRoute(
+										router,
+										link,
+										role
+									);
 									return (
 										<Link key={index} href={link}>
 											<Box
 												w="100%"
 												padding="0px 14px 0px 40px"
 												bg={
-													isCurrentRoute(
-														router,
-														link,
-														role
-													)
+													isCurrent
 														? "sidebar.active-bg"
 														: ""
 												}
 												borderLeft="8px"
 												borderLeftColor={
-													isCurrentRoute(
-														router,
-														link,
-														role
-													)
+													isCurrent
 														? "sidebar.active-border"
 														: "transparent"
 												}
 												outline={
-													isCurrentRoute(
-														router,
-														link,
-														role
-													)
+													isCurrent
 														? "var(--chakra-borders-br-sidebar)"
 														: ""
 												}
@@ -309,11 +307,7 @@ const CollapseMenu = (props) => {
 													</Flex>
 													<Icon
 														color={
-															isCurrentRoute(
-																router,
-																link,
-																role
-															)
+															isCurrent
 																? "#FE7D00"
 																: "#556FEF"
 														}
@@ -337,6 +331,7 @@ const CollapseMenu = (props) => {
 const LinkMenu = (props) => {
 	const { menu, currentRoute, index, role } = props;
 	const router = useRouter();
+	const isCurrent = isCurrentRoute(router, menu.link, role);
 	return (
 		<Link href={menu.link} key={index}>
 			<Flex
@@ -368,16 +363,10 @@ const LinkMenu = (props) => {
 				role="group"
 				cursor="pointer"
 				borderBottom="br-sidebar"
-				bg={
-					isCurrentRoute(router, menu.link, role)
-						? "sidebar.active-bg"
-						: ""
-				}
+				bg={isCurrent ? "sidebar.active-bg" : ""}
 				borderLeft="8px"
 				borderLeftColor={
-					isCurrentRoute(router, menu.link, role)
-						? "sidebar.active-border"
-						: "transparent"
+					isCurrent ? "sidebar.active-border" : "transparent"
 				}
 			>
 				<Center
