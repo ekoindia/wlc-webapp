@@ -1,4 +1,9 @@
 import { adminMenu } from "./adminMenu";
+import {
+	NetworkObject,
+	TransactionHistoryObject,
+	PricingCommissionObject,
+} from "./BreadcrumbsData";
 import { ChangeRoleMenu } from "./ChangeRoleMenu";
 import { Endpoints } from "./EndPoints";
 import { nonAdminMenu } from "./nonAdminMenu";
@@ -9,4 +14,7 @@ export {
 	ChangeRoleMenu,
 	nonAdminMenu,
 	transactionSample,
+	NetworkObject,
+	TransactionHistoryObject,
+	PricingCommissionObject,
 };

@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { SearchBar } from "components";
+import { Headings, SearchBar } from "components";
 import { useState } from "react";
 import { TransactionHistoryTable } from ".";
 
@@ -19,17 +19,20 @@ const TransactionHistory = ({ className = "", ...props }) => {
 	}
 
 	return (
-		<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
-			<Box>
-				<SearchBar
-					onChangeHandler={onChangeHandler}
-					value={searchValue}
-				/>
+		<>
+			<Headings title="Transaction History" hasIcon={false} />
+			<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
+				<Box>
+					<SearchBar
+						onChangeHandler={onChangeHandler}
+						value={searchValue}
+					/>
+				</Box>
+				<Box>
+					<TransactionHistoryTable />
+				</Box>
 			</Box>
-			<Box>
-				<TransactionHistoryTable />
-			</Box>
-		</Box>
+		</>
 	);
 };
 

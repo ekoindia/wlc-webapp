@@ -22,7 +22,7 @@ const MenuProvider = ({ children }) => {
 		setInteractions(processedData);
 	}, []);
 
-	console.log("interactions", interactions);
+	// console.log("interactions", interactions);
 	//TODO fetch menu data,process data, set in local storage
 
 	return (
