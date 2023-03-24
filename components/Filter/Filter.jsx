@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
 	Box,
@@ -24,6 +24,25 @@ import { Buttons, Icon, IconButtons, Calenders } from "..";
 function Filter() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const btnRef = React.useRef();
+	const [filterValues, setFilterValues] = useState();
+	const handleInputChange = (event) => {
+		const { id, type, checked, value } = event.target;
+
+		setFilterValues((prevState) => {
+			const newState = {
+				...prevState,
+				[id]: type === "checkbox" ? checked : value,
+			};
+			if (type === "checkbox" && !checked) {
+				delete newState[id];
+			}
+			return newState;
+		});
+	};
+	const handleApplyClick = () => {
+		console.log(filterValues);
+		// Do something with the filter values (e.g., send them to the server)
+	};
 
 	return (
 		<>
@@ -292,6 +311,8 @@ function Filter() {
 									>
 										<Box w={"fit-content"} h={"100%"}>
 											<Checkbox
+												onChange={handleInputChange}
+												id="imerchant"
 												variant="rounded"
 												spacing={"2"}
 												size={{
@@ -315,6 +336,8 @@ function Filter() {
 											}}
 										>
 											<Checkbox
+												onChange={handleInputChange}
+												id="seller"
 												spacing={"2"}
 												variant="rounded"
 												size={{
@@ -329,6 +352,8 @@ function Filter() {
 										</Box>
 										<Box w={"fit-content"} h={"100%"}>
 											<Checkbox
+												onChange={handleInputChange}
+												id="distributer"
 												spacing={"2"}
 												variant="rounded"
 												size={{
@@ -374,6 +399,8 @@ function Filter() {
 									<HStack w={"100%"}>
 										<Box w={"50%"}>
 											<Checkbox
+												onChange={handleInputChange}
+												id="active"
 												variant="rounded"
 												spacing={"2"}
 												size={{
@@ -390,6 +417,8 @@ function Filter() {
 										</Box>
 										<Box w={"50%"} h={"100%"}>
 											<Checkbox
+												onChange={handleInputChange}
+												id="inactive"
 												spacing={"2"}
 												variant="rounded"
 												size={{
@@ -620,6 +649,7 @@ function Filter() {
 									title="Apply"
 									fontSize="20px"
 									fontWeight="bold"
+									onClick={handleApplyClick}
 									w={{
 										base: "50%",
 										sm: "10rem",

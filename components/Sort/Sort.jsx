@@ -15,9 +15,9 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Divider, Filter, Icon } from "..";
+import { Filter, Icon } from "..";
 
-const Sort = ({ className = "", ...props }) => {
+const Sort = ({ className = "", handleStatusClick }) => {
 	return (
 		<>
 			<Box
@@ -163,6 +163,9 @@ const Sort = ({ className = "", ...props }) => {
 									_hover={{
 										bg: "white",
 									}}
+									onClick={(value) =>
+										handleStatusClick("Active")
+									}
 								>
 									Status:
 									<Box
@@ -179,6 +182,9 @@ const Sort = ({ className = "", ...props }) => {
 									_hover={{
 										bg: "white",
 									}}
+									onClick={() =>
+										handleStatusClick("Inactive")
+									}
 								>
 									Status:
 									<Box
