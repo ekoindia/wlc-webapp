@@ -238,11 +238,11 @@ const CollapseMenu = (props) => {
 											{menu.name}
 										</Text>
 									</Flex>
-									<Circle bg="icon_bg_blue" size="5">
+									<Circle bg="sidebar.icon-bg" size="5">
 										{!isExpanded ? (
-											<Icon name="expand" width="10px" />
+											<Icon name="expand" width="12px" />
 										) : (
-											<Icon name="remove" width="10px" />
+											<Icon name="remove" width="12px" />
 										)}
 									</Circle>
 								</Flex>
