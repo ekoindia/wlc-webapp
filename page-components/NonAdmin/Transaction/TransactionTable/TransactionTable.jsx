@@ -45,9 +45,10 @@ const TransactionTable = () => {
 				pageLimit={10}
 				renderer={renderer}
 				data={mockData}
-				variant="nonAdmin"
+				variant="darkStriped"
 				tableName="Transactions"
 				accordian={true}
+				isPaginationRequired={false}
 			/>
 		</>
 	);
