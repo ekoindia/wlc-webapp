@@ -494,7 +494,17 @@ const data = {
  * @example	`<NetworkTable></NetworkTable>`
  */
 
-const NetworkTable = ({ sortValue, searchValue }) => {
+const NetworkTable = ({
+	sortValue,
+	searchValue = "34535345435",
+	filter = {
+		agentType: "csp",
+		agentAccountStatus: "Active",
+		onBoardingDateFrom: "2017-08-03",
+		onBoardingDateTo: "2018-04-11",
+	},
+}) => {
+
 	// const recordCound = 10;
 	// console.log(searchValue,"search network table")
 	const renderer = [
@@ -521,6 +531,26 @@ const NetworkTable = ({ sortValue, searchValue }) => {
 	];
 	const router = useRouter();
 	const apidata = apisHelper("Network");
+	let postData = "";
+	if (searchValue) postData += `searchValue=${searchValue}`;
+	if (Object.keys(filter).length) {
+		let filterKeys = Object.keys(filter);
+		let filterQuery = "filter=true";
+		filterKeys.forEach((ele) => {
+			filterQuery += `&${ele}=${filter[ele]}`;
+			// filterQuery += `filter=true&agentType=${}&agentType=${}&agentAccountStatus=${}&onBoardingDateFrom=${}&=${}&=${}`
+		});
+		if (postData != "") postData += "&" + filterQuery;
+		else postData += filterQuery;
+	}
+	if (sortValue) {
+		if (postData != "") postData += `&sortValue=${sortValue}`;
+		else postData += `sortValue=${sortValue}`;
+	}
+	console.log("====================================");
+	console.log("postData", postData);
+	console.log("====================================");
+
 	console.log(apidata, "apidataapidataapidata");
 	const agentDetails = apidata?.data?.data?.agent_details ?? [];
 	const onRowClick = (rowData) => {

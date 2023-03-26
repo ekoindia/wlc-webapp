@@ -154,6 +154,7 @@ const Sort = ({ className = "" ,handleStatusClick},) => {
 										bg: "white",
 									}}
 									pt="10px"
+                                    onClick={(value)=>handleStatusClick('recent')}
 								>
 									Recently Added
 								</MenuItem>
@@ -163,7 +164,8 @@ const Sort = ({ className = "" ,handleStatusClick},) => {
 									_hover={{
 										bg: "white",
 									}}
-                                    onClick={(value) => handleStatusClick('Active')}
+                                    onClick={(value) => handleStatusClick('active')}
+
 								>
 									Status:
 									<Box
@@ -180,7 +182,7 @@ const Sort = ({ className = "" ,handleStatusClick},) => {
 									_hover={{
 										bg: "white",
 									}}
-                                    onClick={() => handleStatusClick('Inactive')}
+                                    onClick={(value) => handleStatusClick('inactive')}
 								>
 									Status:
 									<Box
