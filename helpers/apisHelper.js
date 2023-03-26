@@ -23,7 +23,7 @@ export const apisHelper = (tablename, searchValue) => {
             break;
         case "Transaction":
             endpoint = transaction.path;
-            parameters = transaction.parameters ;
+            parameters = `&search_value=${searchValue}`+transaction.parameters ;
             // + `&search_value=${searchValue}`
             break;
         default:

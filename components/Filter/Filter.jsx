@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 
 import {
 	Box,
@@ -8,42 +8,54 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerContent,
-	DrawerFooter,
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
 	HStack,
-	Input,
 	Stack,
 	Text,
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Icon, IconButtons, Calenders } from "..";
+import { Buttons, Calenders, Icon } from "..";
 
 function Filter() {
+	const filterOptions = [
+		{
+			title: "Filter by profile type",
+			options: [
+				{ label: "iMerchant", value: "iMerchant" },
+				{ label: "Seller", value: "Seller" },
+			],
+		},
+		{
+			title: "Filter by account status",
+			options: [
+				{ label: "Active", value: "Active" },
+				{ label: "Inactive", value: "Inactive" },
+			],
+		},
+	];
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const btnRef = React.useRef();
-    const [filterValues, setFilterValues] = useState();
-    const handleInputChange = (event) => {
-        const { id, type, checked, value } = event.target;
-    
-        setFilterValues((prevState) => {
-            const newState = {
-              ...prevState,
-              [id]: type === "checkbox" ? checked : value,
-            };
-            if (type === "checkbox" && !checked) {
-              delete newState[id];
-            }
-            return newState;
-          });
+	const [filterValues, setFilterValues] = useState();
+	const handleInputChange = (event) => {
+		const { id, type, checked, value } = event.target;
+
+		setFilterValues((prevState) => ({
+			...prevState,
+			[id]: type === "checkbox" ? checked : value,
+		}));
+	};
+	const handleApplyClick = () => {
+        const checkedValues = Object.entries(filterValues)
+          .filter(([key, value]) => value === true)
+          .map(([key, value]) => key);
+      
+        console.log(checkedValues);
+        // Do something with the checked values (e.g., send them to the server)
       };
-    const handleApplyClick = () => {
-        console.log(filterValues);
-        // Do something with the filter values (e.g., send them to the server)
-      };
-    
+      
 	return (
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
@@ -293,262 +305,66 @@ function Filter() {
 										"2xl": "2.5",
 									}}
 								>
-									<Text
-										as={"span"}
-										fontSize={{
-											base: "sm",
+									{filterOptions.map(
+										({ title, options }, index) => (
+											<React.Fragment key={title}>
+												<Text
+													as={"span"}
+													fontSize={{
+														base: "sm",
 
-											xl: "md",
-											"2xl": "lg",
-										}}
-										fontWeight={"semibold"}
-									>
-										Filter by profile type
-									</Text>
-									<HStack
-										w={"100%"}
-										gap={{ base: "3px", md: "10px" }}
-									>
-										<Box w={"fit-content"} h={"100%"}>
-											<Checkbox
-                                            onChange={handleInputChange}
-                                                id="imerchant"
-												variant="rounded"
-												spacing={"2"}
-												size={{
-													base: "sm",
-													sm: "sm",
-
-													"2xl": "lg",
-												}}
-											>
-												iMerchant
-											</Checkbox>
-										</Box>
-										<Box
-											w={"fit-content"}
-											h={"100%"}
-											px={{
-												base: "0px",
-												md: "5px",
-												xl: "20px",
-												"2xl": "1.5vw",
-											}}
-										>
-											<Checkbox
-                                            onChange={handleInputChange}
-                                            id="seller"
-												spacing={"2"}
-												variant="rounded"
-												size={{
-													base: "sm",
-													sm: "sm",
-
-													"2xl": "lg",
-												}}
-											>
-												Seller
-											</Checkbox>
-										</Box>
-										<Box w={"fit-content"} h={"100%"}>
-											<Checkbox
-                                            onChange={handleInputChange}
-                                            id="distributer"
-												spacing={"2"}
-												variant="rounded"
-												size={{
-													base: "sm",
-													sm: "sm",
-													md: "sm",
-													lg: "sm",
-													xl: "sm",
-													"2xl": "lg",
-												}}
-											>
-												Distributer
-											</Checkbox>
-										</Box>
-									</HStack>
+														xl: "md",
+														"2xl": "lg",
+													}}
+													fontWeight={"semibold"}
+													pt={
+														index === 1 ? "10" : "0"
+													} // add padding for second title
+												>
+													{title}
+												</Text>
+												<HStack
+													w={"100%"}
+													gap={{
+														base: "3px",
+														md: "10px",
+													}}
+												>
+													{options.map(
+														({ label, value }) => (
+															<Box
+																key={value}
+																w={"50%"}
+																h={"100%"}
+															>
+																<Checkbox
+																	onChange={
+																		handleInputChange
+																	}
+																	id={value}
+																	variant="rounded"
+																	spacing={
+																		"2"
+																	}
+																	size={{
+																		base: "sm",
+																		sm: "sm",
+																		md: "sm",
+																		lg: "sm",
+																		xl: "sm",
+																		"2xl": "lg",
+																	}}
+																>
+																	{label}
+																</Checkbox>
+															</Box>
+														)
+													)}
+												</HStack>
+											</React.Fragment>
+										)
+									)}
 								</VStack>
-								<VStack
-									align={"flex-start"}
-									w={"full"}
-									gap={{
-										base: "px",
-										sm: "px",
-										md: "0.5",
-										lg: "0.5",
-										xl: "0.5",
-										"2xl": "2.5",
-									}}
-								>
-									<Text
-										as={"span"}
-										fontSize={{
-											base: "sm",
-											sm: "sm",
-											md: "sm",
-											lg: "sm",
-											xl: "md",
-											"2xl": "lg",
-										}}
-										fontWeight={"semibold"}
-									>
-										Filter by account status
-									</Text>
-									<HStack w={"100%"}>
-										<Box w={"50%"}>
-											<Checkbox
-                                            onChange={handleInputChange}
-                                            id="active"
-												variant="rounded"
-												spacing={"2"}
-												size={{
-													base: "sm",
-													sm: "sm",
-													md: "sm",
-													lg: "sm",
-													xl: "sm",
-													"2xl": "lg",
-												}}
-											>
-												Active
-											</Checkbox>
-										</Box>
-										<Box w={"50%"} h={"100%"}>
-											<Checkbox
-                                            onChange={handleInputChange}
-                                            id="inactive"
-												spacing={"2"}
-												variant="rounded"
-												size={{
-													base: "sm",
-													sm: "sm",
-													md: "sm",
-													lg: "sm",
-													xl: "sm",
-													"2xl": "lg",
-												}}
-											>
-												Inactive
-											</Checkbox>
-										</Box>
-									</HStack>
-								</VStack>
-								{/* <VStack
-									align={"flex-start"}
-									w={"full"}
-									gap={{
-										base: "px",
-										sm: "px",
-										md: "0.5",
-										lg: "0.5",
-										xl: "0.5",
-										"2xl": "2.5",
-									}}
-								>
-									<Text
-										as={"span"}
-										fontSize={{
-											base: "sm",
-											sm: "sm",
-											md: "sm",
-											lg: "sm",
-											xl: "md",
-											"2xl": "lg",
-										}}
-										fontWeight={"semibold"}
-									>
-										Filter by activation date range
-									</Text>
-									<Flex
-										w={"100%"}
-										justifyContent={"space-between"}
-										direction={{
-											base: "column",
-											// md: "row",
-										}}
-										gap={{
-											base: "3",
-											sm: "2",
-											md: "1",
-											lg: "1.5",
-											xl: "2",
-											"2xl": "2.5",
-										}}
-									>
-										<Flex
-											align={"center"}
-											gap={"5px"}
-											h={{
-												base: "11vw",
-												sm: "30px",
-												md: "30px",
-												lg: "30px",
-												xl: "35px",
-												"2xl": "45px",
-											}}
-											w={{ base: "100%", md: "80%" }}
-											border={"1px solid #D2D2D2"}
-											borderRadius={"8px"}
-											overflow={"hidden"}
-										>
-											<HStack
-												h={"100%"}
-												bg={"bg"}
-												w={"25%"}
-												pl={"15px"}
-											>
-												<Text>From:</Text>
-											</HStack>
-											<Box w={"70%"}>
-												<Input
-													size="sm"
-													type="date"
-													border={"none"}
-													focusBorderColor={
-														"transparent"
-													}
-												/>
-											</Box>
-										</Flex>
-										<Flex
-											align={"center"}
-											gap={"5px"}
-											h={{
-												base: "11vw",
-												sm: "30px",
-												md: "30px",
-												lg: "30px",
-												xl: "35px",
-												"2xl": "45px",
-											}}
-											w={{ base: "100%", md: "80%" }}
-											border={"1px solid #D2D2D2"}
-											borderRadius={"8px"}
-											overflow={"hidden"}
-										>
-											<HStack
-												h={"100%"}
-												bg={"bg"}
-												w={"25%"}
-												pl={"15px"}
-											>
-												<Text>To:</Text>
-											</HStack>
-											<Box w={"70%"}>
-												<Input
-													size="sm"
-													type="date"
-													border={"none"}
-													focusBorderColor={
-														"transparent"
-													}
-												/>
-											</Box>
-										</Flex>
-									</Flex>
-								</VStack> */}
 
 								{/* Calender */}
 
@@ -649,7 +465,7 @@ function Filter() {
 									title="Apply"
 									fontSize="20px"
 									fontWeight="bold"
-                                    onClick={handleApplyClick}
+									onClick={handleApplyClick}
 									w={{
 										base: "50%",
 										sm: "10rem",
