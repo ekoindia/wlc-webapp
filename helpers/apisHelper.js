@@ -1,7 +1,7 @@
 import useRequest from "hooks/useRequest";
 import { useUser } from "contexts/UserContext";
 let transaction = {
-	path: "/network/agents/transaction_history/recent_transaction?",
+	path: "/network/agents/transaction_history?",
 	parameters:
 		"initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
 };
@@ -16,8 +16,8 @@ let recentTransaction = {
 	parameters:
 		"initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
 };
-let account_statement = {
-	path: "/network/agents/transaction_history/recent_transaction/account_statement?",
+let account = {
+	path: "/network/agents/transaction_history/recent_transaction?",
 	parameters:
 		"initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
 };
@@ -41,9 +41,9 @@ export const apisHelper = (tablename, searchValue) => {
 			endpoint = recentTransaction.path;
 			parameters = recentTransaction.parameters;
 			break;
-		case "account_statement":
-			endpoint = account_statement.path;
-			parameters = account_statement.parameters;
+		case "Account":
+			endpoint = account.path;
+			parameters = account.parameters;
 			break;
 		default:
 			throw new Error(`Invalid tablename: ${tablename}`);

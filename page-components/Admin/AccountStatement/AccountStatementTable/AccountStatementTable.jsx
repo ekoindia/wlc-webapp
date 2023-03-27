@@ -1,4 +1,6 @@
 import { Table } from "components";
+import { apisHelper } from "helpers/apisHelper";
+
 // import { mockData } from "constants/mockTableData";
 
 /**
@@ -29,12 +31,18 @@ const AccountStatementTable = () => {
 		{ name: "amount", field: "Amount" },
 	];
 
+	/* api call*/
+	const Accountapicall = apisHelper("Account");
+	const AccountStatementData =
+		Accountapicall?.data?.data?.recent_transaction_details ?? [];
+
+	console.log(AccountStatementData, "AccountStatementData");
 	return (
 		<>
 			<Table
 				pageLimit={15}
 				renderer={renderer}
-				// data={mockData}
+				data={AccountStatementData}
 				variant="evenStriped"
 				tableName="Account"
 			/>

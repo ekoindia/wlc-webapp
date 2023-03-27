@@ -16,7 +16,7 @@ const TransactionHistory = ({ className = "", ...props }) => {
 
 	const router = useRouter();
 	const handleClick = (e) => {
-		router.push("/admin/transaction-history/account-statemen");
+		router.push("/admin/transaction-history/account-statement");
 	};
 
 	function onChangeHandler(e) {
