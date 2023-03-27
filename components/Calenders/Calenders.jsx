@@ -21,24 +21,28 @@ const Calenders = ({
 	position,
 	calendersProps,
 	labelPosition,
-
+	value,
+	onChange = () => {},
 	...props
 }) => {
-	const [dateText, setDateText] = useState({
-		// TODO: Edit state as required
-		from: "DD/MM/YYYY",
-		to: "DD/MM/YYYY",
-	});
+	const [dateText, setDateText] = useState("");
+	console.log("value", value);
+
+	{
+		console.log("dateTextdateTextdateText", dateText);
+	}
 	const fromRef = useRef(null);
 	const toRef = useRef(null);
+	const calendarRef = useRef(null);
 
-	const handleClickForInput = (type) => {
-		if (type == "to") {
-			toRef.current.showPicker();
-		} else {
-			console.log(fromRef.current);
-			fromRef.current.showPicker();
-		}
+	const handleClickForInput = () => {
+		// if (tpe == "to") {
+		// 	toRef.current.showPicker();
+		// } else {
+		// 	console.log(fromRef.current);
+		// 	fromRef.current.showPicker();
+		// }
+		calendarRef.current.showPicker();
 	};
 	return (
 		<Flex direction={{ base: "column", md: "" }} {...props}>
@@ -56,7 +60,7 @@ const Calenders = ({
 				border={"1px solid #D2D2D2"}
 				borderRadius="10px"
 				overflow={"hidden"}
-				onClick={(e) => handleClickForInput("from")}
+				onClick={handleClickForInput}
 				bg={"white"}
 				px="10px"
 				_hover={{
@@ -75,10 +79,7 @@ const Calenders = ({
 				>
 					{/* From To */}
 					<Flex alignItems={"center"}>
-						<Flex
-							onClick={(e) => handleClickForInput("from")}
-							align={"center"}
-						>
+						<Flex onClick={handleClickForInput} align={"center"}>
 							{" "}
 							{placeholder ? (
 								<InputLabel
@@ -106,7 +107,7 @@ const Calenders = ({
 								}}
 								w="100%"
 							>
-								{dateText.from}
+								{value || "DD/MM/YYYY"}
 							</Text>
 						</Flex>
 					</Flex>
@@ -125,25 +126,11 @@ const Calenders = ({
 									w="1px"
 									type="date"
 									height="100%"
-									ref={fromRef}
-									onClick={(e) => handleClickForInput("from")}
-									onChange={(e) => {
-										if (!e.target.value) {
-											setDateText((prev) => {
-												return {
-													...prev,
-													from: "DD/MM/YYYY",
-												};
-											});
-										} else {
-											setDateText((prev) => {
-												return {
-													...prev,
-													from: e.target.value,
-												};
-											});
-										}
-									}}
+									// min="2023-01-20"
+									// max="2023-04-20"
+									ref={calendarRef}
+									onClick={handleClickForInput}
+									onChange={(e) => onChange(e)}
 									border={"none"}
 									focusBorderColor={"transparent"}
 									{...calendersProps}
