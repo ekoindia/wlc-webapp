@@ -31,7 +31,8 @@ const AccountStatementTable = () => {
 		{ name: "amount", field: "Amount" },
 	];
 
-	/* api call*/
+	// <=======================API CALL===============================>
+
 	const Accountapicall = apisHelper("Account");
 	const AccountStatementData =
 		Accountapicall?.data?.data?.recent_transaction_details ?? [];

@@ -21,6 +21,7 @@ const TransactionHistoryTable = () => {
 			sorting: true,
 		},
 		{ name: "agent_type", field: "Type", sorting: true },
+
 		// {
 		// 	name: "createdAt",
 		// 	field: "Account Number",
@@ -49,7 +50,7 @@ const TransactionHistoryTable = () => {
 		router.push("transaction-history/account-statement/");
 	}
 
-	/* api call*/
+	// <======================= API CALL===============================>
 	const trasaction_historyapicall = apisHelper("Transaction");
 	const TransactionHistorytData =
 		trasaction_historyapicall?.data?.data?.transaction_details ?? [];
