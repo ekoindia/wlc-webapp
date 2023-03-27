@@ -13,12 +13,11 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { Buttons, Headings, Icon, IconButtons } from "..";
+import { Buttons, Icon, IconButtons } from "..";
 
 const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
-	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
-		props;
+	const { setNavOpen } = props;
 
 	return (
 		<>
@@ -67,28 +66,10 @@ const NavBar = (props) => {
 						"2xl": "90px",
 					}}
 				>
-					{isSmallerThan769 ? (
-						isNavVisible ? (
-							<NavContent
-								setNavOpen={setNavOpen}
-								setIsCardOpen={setIsCardOpen}
-							/>
-						) : (
-							<Flex h="100%" alignItems="center">
-								<Headings
-									title={headingObj.title}
-									hasIcon={headingObj.hasIcon}
-									insideNav={true}
-									propComp={propComp}
-								/>
-							</Flex>
-						)
-					) : (
-						<NavContent
-							setNavOpen={setNavOpen}
-							setIsCardOpen={setIsCardOpen}
-						/>
-					)}
+					<NavContent
+						setNavOpen={setNavOpen}
+						setIsCardOpen={setIsCardOpen}
+					/>
 				</Box>
 			</Box>
 		</>

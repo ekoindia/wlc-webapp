@@ -1,6 +1,7 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Inter } from "@next/font/google";
 import { GetLogoProvider } from "contexts/getLogoContext";
+import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -24,11 +25,13 @@ export default function App({ Component, pageProps }: AppProps) {
 
 			<ChakraProvider theme={light}>
 				<GetLogoProvider>
-					<MenuProvider>
-						<main className={inter.className}>
-							<Component {...pageProps} />
-						</main>
-					</MenuProvider>
+					<LayoutProvider>
+						<MenuProvider>
+							<main className={inter.className}>
+								<Component {...pageProps} />
+							</main>
+						</MenuProvider>
+					</LayoutProvider>
 				</GetLogoProvider>
 			</ChakraProvider>
 		</>

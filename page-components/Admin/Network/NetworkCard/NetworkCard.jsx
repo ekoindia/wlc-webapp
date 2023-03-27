@@ -11,7 +11,7 @@ import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
  */
 
 const NetworkCard = (props) => {
-	// const { item } = props;
+	const { item } = props;
 
 	return (
 		<>
