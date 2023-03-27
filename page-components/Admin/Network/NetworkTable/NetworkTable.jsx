@@ -504,6 +504,7 @@ const NetworkTable = ({
 		onBoardingDateTo: "2018-04-11",
 	},
 }) => {
+
 	// const recordCound = 10;
 	// console.log(searchValue,"search network table")
 	const renderer = [

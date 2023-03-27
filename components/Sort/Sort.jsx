@@ -165,6 +165,7 @@ const Sort = ({ className = "" ,handleStatusClick},) => {
 										bg: "white",
 									}}
                                     onClick={(value) => handleStatusClick('active')}
+
 								>
 									Status:
 									<Box

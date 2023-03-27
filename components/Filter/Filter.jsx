@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React,{useState} from "react";
 
 import {
 	Box,
@@ -38,24 +38,26 @@ function Filter() {
 	];
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const btnRef = React.useRef();
-	const [filterValues, setFilterValues] = useState();
-	const handleInputChange = (event) => {
-		const { id, type, checked, value } = event.target;
-
-		setFilterValues((prevState) => ({
-			...prevState,
-			[id]: type === "checkbox" ? checked : value,
-		}));
-	};
-	const handleApplyClick = () => {
-        const checkedValues = Object.entries(filterValues)
-          .filter(([key, value]) => value === true)
-          .map(([key, value]) => key);
-      
-        console.log(checkedValues);
-        // Do something with the checked values (e.g., send them to the server)
+    const [filterValues, setFilterValues] = useState();
+    const handleInputChange = (event) => {
+        const { id, type, checked, value } = event.target;
+    
+        setFilterValues((prevState) => {
+            const newState = {
+              ...prevState,
+              [id]: type === "checkbox" ? checked : value,
+            };
+            if (type === "checkbox" && !checked) {
+              delete newState[id];
+            }
+            return newState;
+          });
       };
-      
+    const handleApplyClick = () => {
+        console.log(filterValues);
+        // Do something with the filter values (e.g., send them to the server)
+      };
+    
 	return (
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
@@ -305,6 +307,7 @@ function Filter() {
 										"2xl": "2.5",
 									}}
 								>
+
 									{filterOptions.map(
 										({ title, options }, index) => (
 											<React.Fragment key={title}>
@@ -465,7 +468,7 @@ function Filter() {
 									title="Apply"
 									fontSize="20px"
 									fontWeight="bold"
-									onClick={handleApplyClick}
+                  onClick={handleApplyClick}
 									w={{
 										base: "50%",
 										sm: "10rem",
