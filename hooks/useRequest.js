@@ -62,7 +62,7 @@ const useRequest = ({
 		setIsLoading(false);
 	}, [fetchedError]);
 
-	console.log("data useRequest", data);
+	// console.log("data useRequest", data);
 	return { data, error, isLoading, revalidate, mutate };
 };
 

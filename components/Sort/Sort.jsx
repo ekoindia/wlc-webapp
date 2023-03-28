@@ -294,7 +294,6 @@ export default Sort;
 
 export const ResSortAndFilter = (props) => {
 	const { setFilter } = props;
-	console.log("setFilter", setFilter);
 	return (
 		<Box
 			display={{ base: "flex", md: "none" }}

@@ -18,14 +18,10 @@ const Network = ({ className = "", ...props }) => {
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 	const [sortValue, setSortvalue] = useState();
 	const [filter, setFilter] = useState();
-	console.log("setFilter", setFilter);
-	console.log("filter in network", filter);
 
-	// const [status, setStatus] = useState("");
 	const handleStatusClick = (value) => {
 		setSortvalue(value);
 	};
-	//  console.log(sortValue,"sortValue");
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
