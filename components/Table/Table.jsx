@@ -32,7 +32,7 @@ import { Cards, Icon, IconButtons, Pagination } from "..";
 const Table = (props) => {
 	const {
 		pageLimit: PageSize = 10,
-		data: tableData,
+		data,
 		totalRecords,
 		setPageNumber,
 		renderer,
@@ -86,11 +86,11 @@ const Table = (props) => {
 		});
 	};
 	const getTr = () => {
-		return tableData.map((item, index) => {
+		return data.map((item, index) => {
 			return (
 				<Tr
 					key={index}
-					onClick={() => onRowClick(tableData[index])}
+					onClick={() => onRowClick(data[index])}
 					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 				>
 					{renderer.map((r, rIndex) => {
