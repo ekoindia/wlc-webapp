@@ -22,7 +22,6 @@ const NetworkTable = ({
 	},
 }) => {
 	const [pageNumber, setPageNumber] = useState(1);
-	console.log("pageNumber", pageNumber);
 	const { userData } = useUser();
 	const renderer = [
 		{ name: "", field: "Sr. No." },
