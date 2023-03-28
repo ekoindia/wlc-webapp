@@ -45,11 +45,8 @@ const Table = (props) => {
 	const [currentPage, setCurrentPage] = useState(1);
 	// const [tableData, setTableData] = useState([]);
 	const [pageNumber, setPageNumber] = useState(null);
-	/* API CALLING */
-	// const transaction = apisHelper('transaction');
-	console.log("tableDatatableDatatableDatatableDatatableData", tableData);
-	// console.log(tableName, "tableNametableNametableNametableName");
-	// console.log(transaction, "transaction");
+	// /* API CALLING */
+	console.log("tableData", tableData);
 
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== currentPage) {

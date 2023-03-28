@@ -292,7 +292,9 @@ const Sort = ({ className = "", handleStatusClick }) => {
 
 export default Sort;
 
-export const ResSortAndFilter = () => {
+export const ResSortAndFilter = (props) => {
+	const { setFilter } = props;
+	console.log("setFilter", setFilter);
 	return (
 		<Box
 			display={{ base: "flex", md: "none" }}
@@ -311,7 +313,7 @@ export const ResSortAndFilter = () => {
 					<Sort />
 				</Box>
 				<Box w={"50%"} h={"100%"}>
-					<Filter />
+					<Filter setFilter={setFilter} />
 				</Box>
 			</Flex>
 		</Box>

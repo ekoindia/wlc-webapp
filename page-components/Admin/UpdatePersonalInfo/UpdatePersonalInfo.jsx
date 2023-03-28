@@ -34,6 +34,42 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	const [invalid, setInvalid] = useState("");
 	const EnterRef = useRef();
 	const [values, setValues] = React.useState("1");
+	const [formData, setFormData] = useState();
+	console.log("setFormData", setFormData);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
+	console.log(formData, "wdhbwhjbdhjb");
+	const onChangeHandler = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
+		// Log the data object to the console
+	};
+
+	const headers = {
+		"Content-Type": "application/json",
+		initiator_id: "9451000001",
+		user_code: "10000020",
+		org_id: "1",
+		source: "WLC",
+		client_ref_id: "202301031354123456",
+		dob: "2018-06-28",
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		fetch("", {
+			method: "PUT",
+			headers: headers,
+			body: JSON.stringify(formData),
+		})
+			.then((response) => {
+				console.log(response, "njdjnjwn");
+				// Handle successful response
+			})
+			.catch((error) => {
+				console.log(error);
+				// Handle error response
+			});
+	};
 	// const [isSmallerThan500] = useMediaQuery("(max-width: 1400px)");
 	// TODO: Edit state as required
 	const handleDragOver = (event) => {
@@ -295,13 +331,14 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								>
 									<Input
 										label="First Name"
+										name="firstName"
 										// placeholder={"Saurabh"}
 										required="true"
-										defaultvalue={item.Name}
+										// value={formData.firstName}
 										// invalid={true}
 										// errorMsg={"Please enter"}
 										// mb={{ base: 10, "2xl": "4.35rem" }}
-										// onChange={onChangeHandler}
+										onChange={onChangeHandler}
 										labelStyle={{
 											fontSize: { base: "md" },
 											color: "inputlabel",
@@ -328,11 +365,13 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								>
 									<Input
 										label="Middle Name"
+										name="middleName"
+										// value={formData.middleName}
 										placeholder={""}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
 										// mb={{ base: 10, "2xl": "4.35rem" }}
-										// onChange={onChangeHandler}
+										onChange={onChangeHandler}
 										labelStyle={{
 											fontSize: { base: "md" },
 											color: "inputlabel",
@@ -358,12 +397,14 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								>
 									<Input
 										label="Last Name"
+										name="lastName"
+										// value={formData.lastName}
 										// placeholder={"Mullick"}
-										defaultvalue={item.LastName}
+										// defaultvalue={item.LastName}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
 										// mb={{	 base: 10, "2xl": "4.35rem" }}
-										// onChange={onChangeHandler}
+										onChange={onChangeHandler}
 										labelStyle={{
 											fontSize: { base: "md" },
 											color: "inputlabel",
@@ -392,11 +433,12 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								>
 									<Calenders
 										label="Date of birth"
-										// value={value}
+										name="dateOfBirth"
+										// value={formData.dateOfBirth}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
 										// mb={{ base: 10, "2xl": "4.35rem" }}
-										// onChange={onChangeHandler}
+										onChange={onChangeHandler}
 										labelStyle={{
 											fontSize: { base: "md" },
 											color: "inputlabel",
@@ -468,8 +510,11 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									</Text>
 								</Box>
 								<Select
-									placeholder="--Select--"
-									h={{ base: "3rem", "2xl": "3rem" }}
+									placeholder="--Select"
+									name="shopType"
+									// value={formData.shopType}
+									onChange={onChangeHandler}
+									h="3rem"
 									w="100%"
 									mt={{ base: "0.7rem", "2xl": "0" }}
 									position="relative"
@@ -485,8 +530,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										<Icon name="caret-down" width="17px" />
 									}
 								>
-									<option value="option1">Married</option>
-									<option value="option2">UnMarried</option>
+									<option value="married">married</option>
+									<option value="unmarried">unmarried</option>
 								</Select>
 							</Box>
 
@@ -512,11 +557,12 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									<Input
 										label="Shop Name"
 										placeholder={"Alam Store"}
-										value={item.ShopName}
+										name="shopName"
+										// value={formData.shopName}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
 										// mb={{	 base: 10, "2xl": "4.35rem" }}
-										// onChange={onChangeHandler}
+										onChange={onChangeHandler}
 										labelStyle={{
 											fontSize: { base: "16px" },
 											color: "inputlabel",
@@ -554,6 +600,9 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									</Box>
 									<Select
 										placeholder="General"
+										name="shopType"
+										// value={formData.shopType}
+										onChange={onChangeHandler}
 										h="3rem"
 										w="100%"
 										mt={{ base: "0.7rem", "2xl": "0" }}
@@ -598,6 +647,9 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 						>
 							<Buttons
 								h="3.5rem"
+								type="submit"
+								isLoading={isLoading}
+								onClick={handleSubmit}
 								title="Preview"
 								fontSize="20px"
 								fontWeight="bold"
