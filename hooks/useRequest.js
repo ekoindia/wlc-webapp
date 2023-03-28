@@ -1,4 +1,5 @@
 import { useUser } from "contexts/UserContext";
+import { localStorageProvider } from "helpers";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -18,6 +19,7 @@ const useRequest = ({
 	// console.log("userData", userData);
 	// console.log("method", method);
 	// console.log("baseUrl", baseUrl);
+	// console.log("headers", headers);
 
 	const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
@@ -25,6 +27,7 @@ const useRequest = ({
 		data: fetchedData,
 		error: fetchedError,
 		revalidate,
+		mutate,
 	} = useSWR(
 		`${baseUrl}`,
 		(url) =>
@@ -36,8 +39,13 @@ const useRequest = ({
 					...headers,
 				},
 				body: body ? JSON.stringify(body) : null,
-			})
-		// { revalidateOnFocus: false, revalidateOnMount: false, ...options }
+			}),
+		{
+			provider: localStorageProvider,
+			// revalidateOnFocus: false,
+			revalidateOnMount: true,
+			...options,
+		}
 	);
 
 	useEffect(() => {
@@ -54,7 +62,8 @@ const useRequest = ({
 		setIsLoading(false);
 	}, [fetchedError]);
 
-	return { data, error, isLoading, revalidate };
+	console.log("data useRequest", data);
+	return { data, error, isLoading, revalidate, mutate };
 };
 
 export default useRequest;

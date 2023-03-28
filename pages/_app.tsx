@@ -1,11 +1,13 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Inter } from "@next/font/google";
-import Head from "next/head";
-import { GetLogoProvider } from "../contexts/getLogoContext";
-import { light } from "../styles/themes";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { UserProvider, useUser } from "../contexts/UserContext";
-import { Layout, RouteProtecter } from "components";
+import { RouteProtecter } from "components";
+import { localStorageProvider } from "helpers";
+import Head from "next/head";
+import { SWRConfig } from "swr";
+import { GetLogoProvider } from "../contexts/getLogoContext";
+import { UserProvider } from "../contexts/UserContext";
+import { light } from "../styles/themes";
 
 const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
@@ -30,7 +32,11 @@ export default function App({ Component, pageProps, router }) {
 					<GetLogoProvider>
 						<UserProvider>
 							<RouteProtecter router={router}>
-								<Component {...pageProps} />
+								<SWRConfig
+									value={{ provider: localStorageProvider }}
+								>
+									<Component {...pageProps} />
+								</SWRConfig>
 							</RouteProtecter>
 						</UserProvider>
 					</GetLogoProvider>

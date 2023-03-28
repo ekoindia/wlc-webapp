@@ -26,13 +26,15 @@ import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/Onboard
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Cards, Icon, IconButtons, Pagination } from "..";
 
 const Table = (props) => {
 	const {
 		pageLimit: PageSize = 10,
 		data: tableData,
+		totalRecords,
+		setPageNumber,
 		renderer,
 		variant,
 		tableName,
@@ -43,28 +45,15 @@ const Table = (props) => {
 	const [currentSort, setCurrentSort] = useState("default");
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	const [currentPage, setCurrentPage] = useState(1);
-	// const [tableData, setTableData] = useState([]);
-	const [pageNumber, setPageNumber] = useState(null);
-	/* API CALLING */
-	// const transaction = apisHelper('transaction');
-	// console.log("tableDatatableDatatableDatatableDatatableData", tableData);
-	// console.log(tableName, "tableNametableNametableNametableName");
-	// console.log(transaction, "transaction");
+
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== currentPage) {
 			setCurrentPage(+router.query.page);
-			console.log("Table : useEffect Page", router.query.page);
+			console.log("router.query.page", router.query.page);
 		}
 	}, [router.query.page]);
 
-	const currentTableData = useMemo(() => {
-		const firstPageIndex = (currentPage - 1) * PageSize;
-		const lastPageIndex = firstPageIndex + PageSize;
-		return tableData.slice(firstPageIndex, lastPageIndex);
-	}, [currentPage]);
-
-	// const ekoCodes = tableData.map(item => item.eko_code);
-	// console.log(ekoCodes);
+	setPageNumber(currentPage);
 
 	const getTh = () => {
 		return renderer.map((item, index) => {
@@ -78,12 +67,7 @@ const Table = (props) => {
 						<Flex gap={2}>
 							{item.field}
 							<Box as="span" onClick={onSortChange}>
-								<Icon
-									//name={sortIcon[currentSort]} // uncomment this to have interative sort
-									name="sort"
-									width="6px"
-									height="13px"
-								/>
+								<Icon name="sort" width="6px" height="13px" />
 							</Box>
 						</Flex>
 					</Th>
@@ -102,7 +86,7 @@ const Table = (props) => {
 		});
 	};
 	const getTr = () => {
-		return currentTableData.map((item, index) => {
+		return tableData.map((item, index) => {
 			return (
 				<Tr
 					key={index}
@@ -319,7 +303,7 @@ const Table = (props) => {
 							<Pagination
 								className="pagination-bar"
 								currentPage={currentPage}
-								totalCount={tableData.length || 40}
+								totalCount={totalRecords || 10}
 								pageSize={PageSize}
 								onPageChange={(page) => {
 									console.log(page);
