@@ -14,25 +14,25 @@ import { NetworkTable } from "./NetworkTable";
  * @example	`<Network></Network>`
  */
 
-const Network = ({ className = "", ...props },) => {
+const Network = ({ className = "", ...props }) => {
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
-    const [sortValue,setSortvalue] = useState();
-
-    const [filter,setFilter] = useState();
-    console.log(filter,"filterValuesfilterValuesfilterValuesfilterValuesfilterValuesfilterValuesfilterValues")
+	const [sortValue, setSortvalue] = useState();
+	const [filter, setFilter] = useState();
+	console.log("setFilter", setFilter);
+	console.log("filter in network", filter);
 
 	// const [status, setStatus] = useState("");
-    const handleStatusClick = (value) => {
-        setSortvalue(value);
-     };
-     console.log(sortValue,"sortValue");
+	const handleStatusClick = (value) => {
+		setSortvalue(value);
+	};
+	//  console.log(sortValue,"sortValue");
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
 	}
-    const onfilterHandler = (value)=>{
-        setFilter(value)
-    }
+	const onfilterHandler = (value) => {
+		setFilter(value);
+	};
 	return (
 		<>
 			<Box w={"100%"} px={{ base: "16px", md: "initial" }}>
@@ -49,19 +49,23 @@ const Network = ({ className = "", ...props },) => {
 						justifyContent={"space-between"}
 					>
 						<Box>
-							<Filter />
+							<Filter setFilter={setFilter} />
 						</Box>
 						<Box>
-							<Sort handleStatusClick={handleStatusClick}/>
+							<Sort handleStatusClick={handleStatusClick} />
 						</Box>
 					</Flex>
 				</Box>
 
 				<Box mt={{ base: "none", md: "20px" }}>
-
-					<NetworkTable sortValue={sortValue} searchValue = {searchValue} onfilterHandler={onfilterHandler}/>
+					<NetworkTable
+						sortValue={sortValue}
+						searchValue={searchValue}
+						onfilterHandler={sortValue}
+						filtervalues={filter}
+					/>
 				</Box>
-				<ResSortAndFilter />
+				<ResSortAndFilter setFilter={setFilter} />
 			</Box>
 		</>
 	);

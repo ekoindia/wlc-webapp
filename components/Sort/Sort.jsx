@@ -1,23 +1,23 @@
 import {
-    Box,
-    Button,
-    Center,
-    Flex,
-    Menu,
-    MenuButton,
-    MenuDivider,
-    MenuGroup,
-    MenuItem,
-    MenuList,
-    Radio,
-    RadioGroup,
-    Stack,
-    StackDivider,
-    Text
+	Box,
+	Button,
+	Center,
+	Flex,
+	Menu,
+	MenuButton,
+	MenuDivider,
+	MenuGroup,
+	MenuItem,
+	MenuList,
+	Radio,
+	RadioGroup,
+	Stack,
+	StackDivider,
+	Text,
 } from "@chakra-ui/react";
 import { Filter, Icon } from "..";
 
-const Sort = ({ className = "" ,handleStatusClick},) => {
+const Sort = ({ className = "", handleStatusClick }) => {
 	return (
 		<>
 			<Box
@@ -154,7 +154,9 @@ const Sort = ({ className = "" ,handleStatusClick},) => {
 										bg: "white",
 									}}
 									pt="10px"
-                                    onClick={(value)=>handleStatusClick('recent')}
+									onClick={(value) =>
+										handleStatusClick("recent")
+									}
 								>
 									Recently Added
 								</MenuItem>
@@ -182,7 +184,9 @@ const Sort = ({ className = "" ,handleStatusClick},) => {
 									_hover={{
 										bg: "white",
 									}}
-                                    onClick={(value) => handleStatusClick('inactive')}
+									onClick={(value) =>
+										handleStatusClick("inactive")
+									}
 								>
 									Status:
 									<Box
@@ -287,7 +291,9 @@ const Sort = ({ className = "" ,handleStatusClick},) => {
 
 export default Sort;
 
-export const ResSortAndFilter = () => {
+export const ResSortAndFilter = (props) => {
+	const { setFilter } = props;
+	console.log("setFilter", setFilter);
 	return (
 		<Box
 			display={{ base: "flex", md: "none" }}
@@ -306,7 +312,7 @@ export const ResSortAndFilter = () => {
 					<Sort />
 				</Box>
 				<Box w={"50%"} h={"100%"}>
-					<Filter />
+					<Filter setFilter={setFilter} />
 				</Box>
 			</Flex>
 		</Box>
