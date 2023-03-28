@@ -497,16 +497,18 @@ const data = {
 const NetworkTable = ({
 	sortValue,
 	searchValue = "34535345435",
-    filtervalues,
-	filter=filtervalues
-    //  = {
-	// 	agentType: "csp",
-	// 	agentAccountStatus: "Active",
-	// 	onBoardingDateFrom: "2017-08-03",
-	// 	onBoardingDateTo: "2018-04-11",
-	// },
+	filter
+     = {
+		agentType: "csp",
+		agentAccountStatus: "Active",
+		onBoardingDateFrom: "2017-08-03",
+		onBoardingDateTo: "2018-04-11",
+	},
 }) => {
-    console.log('filtervalues', filter)
+    console.log('filtervalues in', filter)
+
+	// const recordCound = 10;
+	// console.log(searchValue,"search network table")
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React,{useState} from "react";
 
 import {
 	Box,
@@ -305,6 +305,7 @@ function Filter(props) {
 										"2xl": "2.5",
 									}}
 								>
+
 									{filterOptions.map(
 										({ title, options, name }, index) => (
 											<React.Fragment key={title}>

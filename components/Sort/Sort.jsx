@@ -166,9 +166,8 @@ const Sort = ({ className = "", handleStatusClick }) => {
 									_hover={{
 										bg: "white",
 									}}
-									onClick={(value) =>
-										handleStatusClick("active")
-									}
+                                    onClick={(value) => handleStatusClick('active')}
+
 								>
 									Status:
 									<Box
