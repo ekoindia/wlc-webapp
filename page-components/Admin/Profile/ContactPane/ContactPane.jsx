@@ -16,7 +16,7 @@ import { Cards, IconButtons } from "components";
  * @example	`<ContactPane></ContactPane>`
  */
 const ContactPane = (props) => {
-    const contactdata = props.rowdata;
+	const contactdata = props.rowdata;
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 	// useEffect(() => {
 	// 	window.addEventListener("resize", (e) => {
@@ -66,7 +66,9 @@ const ContactPane = (props) => {
 				<Box display={"flex"} justifyContent={"space-between"}>
 					<Box display={"flex"} as="span">
 						<Text color="light">Mobile number:</Text>
-						<Text fontWeight={"medium"}>&nbsp; {contactdata.mobile_number}</Text>
+						<Text fontWeight={"medium"}>
+							&nbsp; {contactdata.mobile_number}
+						</Text>
 					</Box>
 					{isSmallerThan769 ? (
 						<IconButtons

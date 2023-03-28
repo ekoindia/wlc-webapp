@@ -1,7 +1,7 @@
 import { Table } from "components";
 import { mockData } from "constants/mockTableData";
 import { useRouter } from "next/router";
-
+import { apisHelper } from "helpers/apisHelper";
 /**
  * A <TransactionHistoryTable> component
  * TODO: This is transaction history table with clickable rows
@@ -14,23 +14,23 @@ const TransactionHistoryTable = () => {
 
 	const renderer = [
 		{ name: "", field: "Sr. No." },
-		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
+		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
 		{
-			name: "mobile_number",
+			name: "agent_mobile",
 			field: "Mobile Number",
 			sorting: true,
 		},
-		{ name: "type", field: "Type", sorting: true },
-		{
-			name: "createdAt",
-			field: "Account Number",
-			sorting: true,
-		},
+		{ name: "agent_type", field: "Type", sorting: true },
+
+		// {
+		// 	name: "createdAt",
+		// 	field: "Account Number",
+		// 	sorting: true,
+		// },
 		{
 			name: "account_status",
 			field: "Account Status",
 			sorting: true,
-			show: "Tag",
 		},
 		{
 			name: "location",
@@ -44,17 +44,26 @@ const TransactionHistoryTable = () => {
 			show: "Arrow",
 		},
 	];
+
 	function onRowClick() {
 		const router = useRouter();
 		router.push("transaction-history/account-statement/");
 	}
+
+	// <======================= API CALL===============================>
+	const trasaction_historyapicall = apisHelper("Transaction");
+	const TransactionHistorytData =
+		trasaction_historyapicall?.data?.data?.transaction_details ?? [];
+
+	console.log(TransactionHistorytData, "AccountStatementData");
+
 	return (
 		<>
 			<Table
 				onClck={onRowClick}
 				pageLimit={10}
 				renderer={renderer}
-				data={mockData}
+				data={TransactionHistorytData}
 				variant="evenStripedClickableRow"
 				tableName="Transaction"
 			/>

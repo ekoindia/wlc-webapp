@@ -17,9 +17,9 @@ import { NetworkTable } from "./NetworkTable";
 const Network = ({ className = "", ...props }) => {
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 	const [sortValue, setSortvalue] = useState();
-
 	const [filter, setFilter] = useState();
-	// console.log(filter,"filterValuesfilterValuesfilterValuesfilterValuesfilterValuesfilterValuesfilterValues")
+	console.log("setFilter", setFilter);
+	console.log("filter in network", filter);
 
 	// const [status, setStatus] = useState("");
 	const handleStatusClick = (value) => {
@@ -49,7 +49,7 @@ const Network = ({ className = "", ...props }) => {
 						justifyContent={"space-between"}
 					>
 						<Box>
-							<Filter />
+							<Filter setFilter={setFilter} />
 						</Box>
 						<Box>
 							<Sort handleStatusClick={handleStatusClick} />
@@ -61,10 +61,11 @@ const Network = ({ className = "", ...props }) => {
 					<NetworkTable
 						sortValue={sortValue}
 						searchValue={searchValue}
-						onfilterHandler={onfilterHandler}
+						onfilterHandler={sortValue}
+						filtervalues={filter}
 					/>
 				</Box>
-				<ResSortAndFilter />
+				<ResSortAndFilter setFilter={setFilter} />
 			</Box>
 		</>
 	);
