@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 
 import {
 	Box,
@@ -28,7 +28,7 @@ function Filter(props) {
 			options: [
 				{ label: "iMerchant", value: "iMerchant" },
 				{ label: "Seller", value: "Seller" },
-                { label: "Distributer", value: "Seller" },
+				{ label: "Distributer", value: "Seller" },
 			],
 		},
 		{
@@ -53,7 +53,7 @@ function Filter(props) {
 	};
 	const handleApply = () => {
 		setFilter(filterValues);
-        console.log('filterValues', filterValues)
+		console.log("filterValues", filterValues);
 	};
 
 	return (
@@ -305,7 +305,6 @@ function Filter(props) {
 										"2xl": "2.5",
 									}}
 								>
-
 									{filterOptions.map(
 										({ title, options, name }, index) => (
 											<React.Fragment key={title}>

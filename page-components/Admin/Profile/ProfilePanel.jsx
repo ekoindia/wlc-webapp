@@ -44,16 +44,16 @@ const ProfilePanel = (props) => {
 	const rowData = storedData ? JSON.parse(storedData) : null;
 	// console.log(rowData, "rowData");
 	const companypane = rowData.profile;
-    const addresspane = rowData.address_details;
-    const documentpane = rowData.document_details;
-    const personalpane = rowData.personal_information;
-    const contactpane = rowData.contact_information;
+	const addresspane = rowData.address_details;
+	const documentpane = rowData.document_details;
+	const personalpane = rowData.personal_information;
+	const contactpane = rowData.contact_information;
 
 	console.log(companypane, "companyPane");
-    console.log(addresspane, "addresspane");
-    console.log(documentpane, "documentpane");
-    console.log(personalpane, "personalpane");
-    console.log(contactpane, "contactpane");
+	console.log(addresspane, "addresspane");
+	console.log(documentpane, "documentpane");
+	console.log(personalpane, "personalpane");
+	console.log(contactpane, "contactpane");
 	const { setComp } = props;
 
 	useEffect(() => {

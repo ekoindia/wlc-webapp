@@ -497,15 +497,14 @@ const data = {
 const NetworkTable = ({
 	sortValue,
 	searchValue = "34535345435",
-	filter
-     = {
+	filter = {
 		agentType: "csp",
 		agentAccountStatus: "Active",
 		onBoardingDateFrom: "2017-08-03",
 		onBoardingDateTo: "2018-04-11",
 	},
 }) => {
-    console.log('filtervalues in', filter)
+	console.log("filtervalues in", filter);
 
 	// const recordCound = 10;
 	// console.log(searchValue,"search network table")

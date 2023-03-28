@@ -46,9 +46,8 @@ const Table = (props) => {
 	// const [tableData, setTableData] = useState([]);
 	const [pageNumber, setPageNumber] = useState(null);
 	// /* API CALLING */
-    console.log('tableData', tableData)
+	console.log("tableData", tableData);
 
-    
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== currentPage) {
 			setCurrentPage(+router.query.page);
@@ -61,6 +60,7 @@ const Table = (props) => {
 		const lastPageIndex = firstPageIndex + PageSize;
 		return tableData.slice(firstPageIndex, lastPageIndex);
 	}, [currentPage]);
+	// console.log('currentTableData', currentTableData)
 
 	// const ekoCodes = tableData.map(item => item.eko_code);
 	// console.log(ekoCodes);
