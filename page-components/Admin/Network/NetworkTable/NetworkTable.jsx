@@ -3,6 +3,7 @@ import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { useState } from "react";
+
 /**
  * A <NetworkTable> component
  * TODO: This is my network table with clickable rows
@@ -23,6 +24,7 @@ const NetworkTable = ({
 }) => {
 	const [pageNumber, setPageNumber] = useState(1);
 	const { userData } = useUser();
+
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
