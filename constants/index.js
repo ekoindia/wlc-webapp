@@ -1,15 +1,15 @@
 import { adminMenu } from "./adminMenu";
+import { allowedCategories } from "./allowedCategories";
 import {
 	NetworkObject,
-	TransactionHistoryObject,
 	PricingCommissionObject,
+	TransactionHistoryObject,
 } from "./BreadcrumbsData";
-import { ChangeRoleMenu } from "./ChangeRoleMenu";
 import { Endpoints } from "./EndPoints";
-import { initialRoute, publicLinks, baseRoute } from "./validRoutes";
 import { nonAdminMenu } from "./nonAdminMenu";
-import { transactionSample } from "./transactionSample";
 import { roles } from "./role";
+import { transactionSample } from "./transactionSample";
+import { baseRoute, initialRoute, publicLinks } from "./validRoutes";
 export {
 	roles,
 	adminMenu,
@@ -22,4 +22,5 @@ export {
 	NetworkObject,
 	TransactionHistoryObject,
 	PricingCommissionObject,
+	allowedCategories,
 };

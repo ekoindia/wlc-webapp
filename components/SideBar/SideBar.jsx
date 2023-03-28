@@ -44,6 +44,22 @@ function isCurrentRoute(router, currPath) {
 	return isSamePath ? true : false;
 }
 
+//MAIN EXPORT
+const SideBar = (props) => {
+	return (
+		<>
+			<Box display={{ base: "flex", lg: "none" }}>
+				<MenuBar props={props} />
+			</Box>
+			<Box display={{ base: "none", lg: "flex" }}>
+				<SideBarMenu />
+			</Box>
+		</>
+	);
+};
+
+export default SideBar;
+
 //FOR LAPTOP SCREENS
 const SideBarMenu = ({ className = "", ...props }) => {
 	const { userData } = useUser();
@@ -154,22 +170,6 @@ const MenuBar = ({ props }) => {
 		</Drawer>
 	);
 };
-
-//EXPORT
-const SideBar = (props) => {
-	return (
-		<>
-			<Box display={{ base: "flex", lg: "none" }}>
-				<MenuBar props={props} />
-			</Box>
-			<Box display={{ base: "none", lg: "flex" }}>
-				<SideBarMenu />
-			</Box>
-		</>
-	);
-};
-
-export default SideBar;
 
 const CollapseMenu = (props) => {
 	const { menu, interaction_list, currentRoute, role } = props;
