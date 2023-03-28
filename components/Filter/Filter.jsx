@@ -19,17 +19,21 @@ import {
 } from "@chakra-ui/react";
 import { Buttons, Calenders, Icon } from "..";
 
-function Filter() {
+function Filter(props) {
+	const { setFilter } = props;
 	const filterOptions = [
 		{
 			title: "Filter by profile type",
+			name: "agentType",
 			options: [
 				{ label: "iMerchant", value: "iMerchant" },
 				{ label: "Seller", value: "Seller" },
+                { label: "Distributer", value: "Seller" },
 			],
 		},
 		{
 			title: "Filter by account status",
+			name: "agentAccountStatus",
 			options: [
 				{ label: "Active", value: "Active" },
 				{ label: "Inactive", value: "Inactive" },
@@ -40,22 +44,18 @@ function Filter() {
 	const btnRef = React.useRef();
 	const [filterValues, setFilterValues] = useState();
 	const handleInputChange = (event) => {
-		const { id, type, checked, value } = event.target;
+		const { name, type, checked, value } = event.target;
 
 		setFilterValues((prevState) => ({
 			...prevState,
-			[id]: type === "checkbox" ? checked : value,
+			[name]: value,
 		}));
 	};
-	const handleApplyClick = () => {
-        const checkedValues = Object.entries(filterValues)
-          .filter(([key, value]) => value === true)
-          .map(([key, value]) => key);
-      
-        console.log(checkedValues);
-        // Do something with the checked values (e.g., send them to the server)
-      };
-      
+	const handleApply = () => {
+		setFilter(filterValues);
+        console.log('filterValues', filterValues)
+	};
+
 	return (
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
@@ -306,7 +306,7 @@ function Filter() {
 									}}
 								>
 									{filterOptions.map(
-										({ title, options }, index) => (
+										({ title, options, name }, index) => (
 											<React.Fragment key={title}>
 												<Text
 													as={"span"}
@@ -338,10 +338,13 @@ function Filter() {
 																h={"100%"}
 															>
 																<Checkbox
+																	value={
+																		value
+																	}
 																	onChange={
 																		handleInputChange
 																	}
-																	id={value}
+																	name={name}
 																	variant="rounded"
 																	spacing={
 																		"2"
@@ -465,7 +468,7 @@ function Filter() {
 									title="Apply"
 									fontSize="20px"
 									fontWeight="bold"
-									onClick={handleApplyClick}
+									onClick={handleApply}
 									w={{
 										base: "50%",
 										sm: "10rem",

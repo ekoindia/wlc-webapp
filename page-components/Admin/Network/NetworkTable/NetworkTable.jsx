@@ -497,15 +497,16 @@ const data = {
 const NetworkTable = ({
 	sortValue,
 	searchValue = "34535345435",
-	filter = {
-		agentType: "csp",
-		agentAccountStatus: "Active",
-		onBoardingDateFrom: "2017-08-03",
-		onBoardingDateTo: "2018-04-11",
-	},
+    filtervalues,
+	filter=filtervalues
+    //  = {
+	// 	agentType: "csp",
+	// 	agentAccountStatus: "Active",
+	// 	onBoardingDateFrom: "2017-08-03",
+	// 	onBoardingDateTo: "2018-04-11",
+	// },
 }) => {
-	// const recordCound = 10;
-	// console.log(searchValue,"search network table")
+    console.log('filtervalues', filter)
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
@@ -529,8 +530,8 @@ const NetworkTable = ({
 		{ name: "", field: "", show: "Arrow" },
 	];
 	const router = useRouter();
-	const apidata = apisHelper("Network");
 	let postData = "";
+
 	if (searchValue) postData += `searchValue=${searchValue}`;
 	if (Object.keys(filter).length) {
 		let filterKeys = Object.keys(filter);
@@ -546,11 +547,9 @@ const NetworkTable = ({
 		if (postData != "") postData += `&sortValue=${sortValue}`;
 		else postData += `sortValue=${sortValue}`;
 	}
-	console.log("====================================");
-	console.log("postData", postData);
-	console.log("====================================");
+	/* API CALL */
+	const apidata = apisHelper("Network", postData);
 
-	console.log(apidata, "apidataapidataapidata");
 	const agentDetails = apidata?.data?.data?.agent_details ?? [];
 	const onRowClick = (rowData) => {
 		const ekocode = rowData.eko_code;
