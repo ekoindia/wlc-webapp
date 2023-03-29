@@ -240,7 +240,10 @@ const CollapseMenu = (props) => {
 									</Flex>
 									<Circle bg="icon_bg_blue" size="5">
 										{!isExpanded ? (
-											<Icon name="expand" width="10px" />
+											<Icon
+												name="expand-add"
+												width="10px"
+											/>
 										) : (
 											<Icon name="remove" width="10px" />
 										)}

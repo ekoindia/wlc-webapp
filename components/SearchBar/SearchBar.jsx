@@ -53,7 +53,7 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 				// h="48px"
 				color={"light"}
 			>
-				<Icon name="search" height="40%" />
+				<Icon name="search" width="18px" />
 			</Center>
 			{value !== "" && (
 				<Box

@@ -37,7 +37,8 @@ const Sort = ({ className = "", ...props }) => {
 						<Box
 							display="flex"
 							alignItems="center"
-							justifyContent={"space-between"}
+							// justifyContent={"space-between"}
+							columnGap="10px"
 							w={{
 								base: "5vw",
 								sm: "35vw",
@@ -87,7 +88,7 @@ const Sort = ({ className = "", ...props }) => {
 								textAlign="start"
 								borderRadius="6px"
 								boxShadow="0px 5px 15px #0000001A"
-								border=" 1px solid #D2D2D2"
+								border="card"
 								isActive={isOpen}
 								bg="white"
 								as={Button}
@@ -111,9 +112,9 @@ const Sort = ({ className = "", ...props }) => {
 										}}
 									>
 										<Icon
-											name="drop-down"
+											name="caret-down"
 											width="16px"
-											color="#555555"
+											color="light"
 										/>
 									</Center>
 								}
@@ -145,7 +146,7 @@ const Sort = ({ className = "", ...props }) => {
 									xl: "sm",
 									"2xl": "md",
 								}}
-								border="1px solid #D2D2D2"
+								border="card"
 							>
 								<MenuItem
 									fontWeight={"medium"}
@@ -218,7 +219,7 @@ const Sort = ({ className = "", ...props }) => {
 						}}
 					>
 						<Text
-							color="#11299E"
+							color="accent.DEFAULT"
 							fontSize={"18px"}
 							lineHeight={"0"}
 							fontWeight={"semibold"}
