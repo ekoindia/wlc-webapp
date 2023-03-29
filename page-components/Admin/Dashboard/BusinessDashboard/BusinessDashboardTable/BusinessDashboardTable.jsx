@@ -42,7 +42,7 @@ const BusinessTable = () => {
 			<Table
 				pageLimit={mockData.length}
 				renderer={renderer}
-				data={mockData}
+				data={mockData.slice(0, 20)}
 				variant="evenStriped"
 				tableName="Business"
 				isScrollrequired={true}
