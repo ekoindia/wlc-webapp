@@ -1,4 +1,4 @@
-const publicLinks = ["/"];
+const publicLinks = ["/", "/chakra", "/oldicons", "/newicons"];
 
 const baseRoute = {
 	admin: "/admin",

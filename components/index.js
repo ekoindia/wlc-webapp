@@ -25,8 +25,10 @@ import { Sort } from "./Sort";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
 import { Tags } from "./Tags";
+import { SvgIcon } from "./SvgIcon";
 
 export {
+	SvgIcon,
 	BreadcrumbsWrapper,
 	OtpInput,
 	Select,

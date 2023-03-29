@@ -266,7 +266,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 											base: "14px",
 											md: "9px",
 											lg: "12px",
-											"2xl": "16px",
+											"2xl": "14px",
 										}}
 										color={"light"}
 									>
@@ -277,7 +277,8 @@ const DetailedStatement = ({ className = "", ...props }) => {
 										color={"accent.DEFAULT"}
 										gap={"5px"}
 									>
-										<Box
+										<Icon
+											name="rupee"
 											w={{
 												base: "10px",
 												md: "8px",
@@ -290,9 +291,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 												lg: "11px",
 												"2xl": "15px",
 											}}
-										>
-											<Icon name="rupee" width="100%" />
-										</Box>
+										/>
 										<Text
 											fontSize={{
 												base: "16px",

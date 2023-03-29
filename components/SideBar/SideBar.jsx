@@ -44,6 +44,22 @@ function isCurrentRoute(router, currPath) {
 	return isSamePath ? true : false;
 }
 
+//MAIN EXPORT
+const SideBar = (props) => {
+	return (
+		<>
+			<Box display={{ base: "flex", lg: "none" }}>
+				<MenuBar props={props} />
+			</Box>
+			<Box display={{ base: "none", lg: "flex" }}>
+				<SideBarMenu />
+			</Box>
+		</>
+	);
+};
+
+export default SideBar;
+
 //FOR LAPTOP SCREENS
 const SideBarMenu = ({ className = "", ...props }) => {
 	const { userData } = useUser();
@@ -155,22 +171,6 @@ const MenuBar = ({ props }) => {
 	);
 };
 
-//EXPORT
-const SideBar = (props) => {
-	return (
-		<>
-			<Box display={{ base: "flex", lg: "none" }}>
-				<MenuBar props={props} />
-			</Box>
-			<Box display={{ base: "none", lg: "flex" }}>
-				<SideBarMenu />
-			</Box>
-		</>
-	);
-};
-
-export default SideBar;
-
 const CollapseMenu = (props) => {
 	const { menu, interaction_list, currentRoute, role } = props;
 	const router = useRouter();
@@ -181,7 +181,7 @@ const CollapseMenu = (props) => {
 					{({ isExpanded }) => (
 						<>
 							<AccordionButton
-								paddingLeft={{
+								pl={{
 									base: "5",
 									md: "5",
 									lg: "4",
@@ -190,7 +190,7 @@ const CollapseMenu = (props) => {
 								py={{
 									base: "4",
 									md: "3",
-									xl: "3",
+									xl: "3.5",
 									"2xl": "5",
 								}}
 							>
@@ -202,7 +202,8 @@ const CollapseMenu = (props) => {
 									padding="0px"
 								>
 									<Flex align="center" gap="13px" w={"full"}>
-										<Center
+										<Icon
+											name={menu.icon}
 											w={{
 												base: "20px",
 												sm: "20px",
@@ -211,20 +212,7 @@ const CollapseMenu = (props) => {
 												xl: "18px",
 												"2xl": "27px",
 											}}
-											h={{
-												base: "20px",
-												sm: "20px",
-												md: "18px",
-												lg: "18px",
-												xl: "18px",
-												"2xl": "20px",
-											}}
-										>
-											<Icon
-												name={menu.icon}
-												width={"100%"}
-											/>
-										</Center>
+										/>
 										<Text
 											fontSize={{
 												base: "14px",
@@ -240,7 +228,10 @@ const CollapseMenu = (props) => {
 									</Flex>
 									<Circle bg="sidebar.icon-bg" size="5">
 										{!isExpanded ? (
-											<Icon name="expand" width="12px" />
+											<Icon
+												name="expand-add"
+												width="10px"
+											/>
 										) : (
 											<Icon name="remove" width="12px" />
 										)}
@@ -290,7 +281,17 @@ const CollapseMenu = (props) => {
 														align="center"
 														columnGap="10px"
 													>
-														<MinusIcon fontSize="12px" />
+														<Icon
+															name={item.icon}
+															w={{
+																base: "20px",
+																sm: "20px",
+																md: "18px",
+																lg: "18px",
+																xl: "18px",
+																"2xl": "27px",
+															}}
+														/>
 														<Text
 															fontSize={{
 																base: "12px",
@@ -369,7 +370,8 @@ const LinkMenu = (props) => {
 					isCurrent ? "sidebar.active-border" : "transparent"
 				}
 			>
-				<Center
+				<Icon
+					name={menu.icon}
 					w={{
 						base: "20px",
 						sm: "20px",
@@ -378,17 +380,7 @@ const LinkMenu = (props) => {
 						xl: "18px",
 						"2xl": "27px",
 					}}
-					h={{
-						base: "20px",
-						sm: "20px",
-						md: "18px",
-						lg: "18px",
-						xl: "18px",
-						"2xl": "20px",
-					}}
-				>
-					<Icon name={menu.icon} width={"100%"} />
-				</Center>
+				/>
 				{menu.name}
 			</Flex>
 		</Link>

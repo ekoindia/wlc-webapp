@@ -78,6 +78,7 @@ const Calenders = ({
 						<Flex
 							onClick={(e) => handleClickForInput("from")}
 							align={"center"}
+							lineHeight="normal"
 						>
 							{" "}
 							{placeholder ? (
@@ -105,6 +106,7 @@ const Calenders = ({
 									xl: "14px",
 								}}
 								w="100%"
+								lineHeight="normal"
 							>
 								{dateText.from}
 							</Text>
@@ -151,19 +153,19 @@ const Calenders = ({
 							</Box>
 
 							{/* Icon */}
-							<Flex
+							{/* <Flex
 								w="100%"
 								h="100%"
 								alignItems="center"
 								justifyContent="center"
-							>
-								<Icon
-									color="dark"
-									name="calender"
-									width="27px"
-									h="26px"
-								/>
-							</Flex>
+							> */}
+							<Icon
+								color="dark"
+								name="calender"
+								width="23px"
+								h="24px"
+							/>
+							{/* </Flex> */}
 						</Flex>
 					</Flex>
 				</Flex>

@@ -67,11 +67,9 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 							loginType === "Mobile" ? "LOGIN" : "GOOGLE_VERIFY"
 						)
 					}
-					w="18px"
-					h="15px"
 					cursor="pointer"
 				>
-					<Icon name="arrow-back" />
+					<Icon name="arrow-back" w="18px" h="15px" />
 				</Box>
 				<Heading
 					as="h3"
