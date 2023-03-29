@@ -198,6 +198,7 @@ export const light = extendTheme({
 		highlight: "#FFD93B",
 		bg: "#F5F6F8",
 		inputlabel: "#0C243B",
+		overlayBg: "#e9edf1b3",
 		sidebar: {
 			"icon-bg": "#1F3ABC",
 			"active-border": "#FE7D00",
