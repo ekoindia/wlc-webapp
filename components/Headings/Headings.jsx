@@ -44,14 +44,13 @@ const Headings = (props) => {
 			<Box>
 				{hasIcon ? (
 					<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>
-						<Box
+						<Icon
+							name="arrow-back"
 							onClick={redirectTo}
 							cursor="pointer"
 							width={{ base: "15px", sm: "16px", "2xl": "18px" }}
 							height={{ base: "15px", sm: "16px", "2xl": "18px" }}
-						>
-							<Icon name="arrow-back" />
-						</Box>
+						/>
 						<Text
 							fontSize={{
 								base: "18px",

@@ -116,16 +116,17 @@ const Table = (props) => {
 						p={{ md: ".5em", xl: "1em" }}
 						fontSize={{ md: "10px", xl: "11px", "2xl": "16px" }}
 					>
-						<Flex gap={2}>
+						<Flex gap={2} align="center">
 							{item.field}
-							<Box as="span" onClick={onSortChange}>
-								<Icon
-									//name={sortIcon[currentSort]} // uncomment this to have interative sort
-									name="sort"
-									width="6px"
-									height="13px"
-								/>
-							</Box>
+							{/* <Box as="span" h="auto" onClick={onSortChange}> */}
+							<Icon
+								//name={sortIcon[currentSort]}
+								onClick={onSortChange} // uncomment this to have interative sort
+								name="sort"
+								width="6px"
+								height="13px"
+							/>
+							{/* </Box> */}
 						</Flex>
 					</Th>
 				);

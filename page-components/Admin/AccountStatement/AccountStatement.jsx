@@ -278,7 +278,8 @@ const AccountStatement = ({ className = "", ...props }) => {
 											color={"accent.DEFAULT"}
 											gap={"5px"}
 										>
-											<Box
+											<Icon
+												name="rupee"
 												w={{
 													base: "10px",
 													md: "8px",
@@ -291,12 +292,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 													lg: "11px",
 													"2xl": "15px",
 												}}
-											>
-												<Icon
-													name="rupee"
-													width="100%"
-												/>
-											</Box>
+											/>
 											<Text
 												fontSize={{
 													base: "16px",

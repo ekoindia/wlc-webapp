@@ -19,34 +19,34 @@ export const nonAdminMenu: nonAdminMenuType[] = [
 	// 	comp: true,
 	// },
 	{
-		icon: "dashboard",
+		icon: "menu-home",
 		name: "Home",
 		link: "/home",
 	},
 	{
-		icon: "refer",
+		icon: "select-plan",
 		name: "Select Plan",
 		link: "/select-plan",
 	},
 	{
-		icon: "refer",
+		icon: "transaction",
 		name: "Start A Transaction",
 		subLevel: true,
 		api: true,
 	},
 	{
-		icon: "invoice",
+		icon: "others",
 		name: "Others",
 		subLevel: true,
 		subLevelObject: [
 			{
-				icon: "commission-percent",
+				icon: "view-transaction-history",
 				label: "Transaction History",
 				link: "/transaction-history",
 			},
 			{
-				icon: "commission-percent",
-				label: "Settings",
+				icon: "manage",
+				label: "Manage My Account",
 				link: "/settings",
 			},
 		],

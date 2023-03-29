@@ -87,8 +87,8 @@ const AddressPane = () => {
 								iconName="near-me"
 								iconPos="left"
 								iconStyle={{
-									width: "11px",
-									height: "11px",
+									width: "16px",
+									height: "16px",
 								}}
 							/>
 						</Box>
