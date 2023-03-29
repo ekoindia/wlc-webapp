@@ -123,6 +123,7 @@ const Calenders = ({
 								<Input
 									size="xs"
 									w="1px"
+									name={name}
 									type="date"
 									height="100%"
 									ref={fromRef}
