@@ -164,6 +164,7 @@ const Dmt = ({ className = "", ...props }) => {
 								borderRadius={{ base: "10px", xl: "10px" }}
 								pr={"15px"}
 								gap="15px"
+								align="center"
 							>
 								<Input
 									placeholder="Commission Percentage"
@@ -192,9 +193,9 @@ const Dmt = ({ className = "", ...props }) => {
 											? "percent_bg"
 											: "rupee_bg"
 									}
-									width="23px"
+									w="23px"
 									h="20px"
-									color={"#11299E"}
+									color="accent.DEFAULT"
 								/>
 							</Flex>
 
@@ -335,7 +336,6 @@ const Dmt = ({ className = "", ...props }) => {
 						<Box
 							mt={{ base: "10px", md: "0" }}
 							position={"relative"}
-							// bg={"#FFFBF3"}
 							border={"1px solid #FE9F00"}
 							w={{
 								base: "80vw",
@@ -391,10 +391,15 @@ const Dmt = ({ className = "", ...props }) => {
 										<Text fontSize={"12px"}>
 											Benchmark Transaction
 										</Text>
-										<Flex align={"center"} gap={"5px"}>
-											<Box width="7px" height="9px">
-												<Icon name="rupee" />
-											</Box>
+										<Flex
+											align={"center"}
+											columnGap={"5px"}
+										>
+											<Icon
+												name="rupee"
+												w="9px"
+												h="11px"
+											/>
 											<Text fontSize={"12px"}>
 												5000.00
 											</Text>
@@ -425,12 +430,12 @@ const Dmt = ({ className = "", ...props }) => {
 													gap={"5px"}
 													align={"center"}
 												>
-													<Box
-														width={"8px"}
-														height={"9px"}
-													>
-														<Icon name="rupee" />
-													</Box>
+													<Icon
+														name="rupee"
+														w="9px"
+														h="11px"
+													/>
+
 													<Text
 														fontSize={"14px"}
 														fontWeight={"semibold"}
@@ -453,12 +458,12 @@ const Dmt = ({ className = "", ...props }) => {
 													gap={"5px"}
 													align={"center"}
 												>
-													<Box
-														width={"8px"}
-														height={"9px"}
-													>
-														<Icon name="rupee" />
-													</Box>
+													<Icon
+														name="rupee"
+														w="9px"
+														h="11px"
+													/>
+
 													<Text
 														fontSize={"14px"}
 														fontWeight={"semibold"}
@@ -485,12 +490,12 @@ const Dmt = ({ className = "", ...props }) => {
 													gap={"5px"}
 													align={"center"}
 												>
-													<Box
-														width={"8px"}
-														height={"9px"}
-													>
-														<Icon name="rupee" />
-													</Box>
+													<Icon
+														name="rupee"
+														w="9px"
+														h="11px"
+													/>
+
 													<Text
 														fontSize={"14px"}
 														fontWeight={"semibold"}
@@ -513,12 +518,11 @@ const Dmt = ({ className = "", ...props }) => {
 													gap={"5px"}
 													align={"center"}
 												>
-													<Box
-														width={"8px"}
-														height={"9px"}
-													>
-														<Icon name="rupee" />
-													</Box>
+													<Icon
+														name="rupee"
+														w="9px"
+														h="11px"
+													/>
 													<Text
 														fontSize={"14px"}
 														fontWeight={"semibold"}
@@ -587,7 +591,7 @@ const PriceSelect = ({
 						boxShadow: "none",
 					}}
 					borderRadius="10px"
-					icon={<Icon name="caret-down" />}
+					icon={<Icon name="caret-down" w="14px" h="10px" />}
 					{...inputContStyle}
 				>
 					<option value="option1">Option 1</option>

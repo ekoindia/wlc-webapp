@@ -21,7 +21,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const { login } = useUser();
 	const [busy, googleHandler] = useLogin(login, setStep, setEmail);
 
-	const [value, setValue] = useState(number.formatted);
+	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
 
@@ -127,11 +127,16 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				cursor="default"
 				label="Enter mobile number"
 				placeholder={"XXX XXX XXXX"}
+				type="mobile_number"
 				value={value}
 				invalid={invalid}
 				errorMsg={errorMsg}
 				mb={{ base: 10, "2xl": "4.35rem" }}
+				maxW="100%"
+				isPrefixVisible={true}
+				prefixSymbol={"+91"}
 				onChange={onChangeHandler}
+				maxlength={12}
 				labelStyle={{
 					fontSize: { base: "sm", "2xl": "lg" },
 					color: "light",
@@ -143,12 +148,11 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 					h: { base: "3rem", "2xl": "4rem" },
 					pos: "relative",
 				}}
-				isNumInput={true}
-				inputProps={{ maxLength: 12 }}
 				onFocus={() => {
 					setInvalid(false);
 				}}
 				onKeyDown={onkeyHandler}
+				// parameter_type_id={"15"}
 			/>
 
 			<Buttons

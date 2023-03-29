@@ -39,14 +39,6 @@ const Sort = ({ className = "", ...props }) => {
 							alignItems="center"
 							// justifyContent={"space-between"}
 							columnGap="10px"
-							w={{
-								base: "5vw",
-								sm: "35vw",
-								md: "28vw",
-								lg: "20vw",
-								xl: "20vw",
-								"2xl": "16vw",
-							}}
 						>
 							<Box
 								fontSize={{

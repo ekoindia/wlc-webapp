@@ -222,7 +222,14 @@ const CollapseMenu = (props) => {
 										>
 											<Icon
 												name={menu.icon}
-												width={"100%"}
+												w={{
+													base: "20px",
+													sm: "20px",
+													md: "18px",
+													lg: "18px",
+													xl: "18px",
+													"2xl": "27px",
+												}}
 											/>
 										</Center>
 										<Text
@@ -293,7 +300,17 @@ const CollapseMenu = (props) => {
 														align="center"
 														columnGap="10px"
 													>
-														<MinusIcon fontSize="12px" />
+														<Icon
+															name={item.icon}
+															w={{
+																base: "20px",
+																sm: "20px",
+																md: "18px",
+																lg: "18px",
+																xl: "18px",
+																"2xl": "27px",
+															}}
+														/>
 														<Text
 															fontSize={{
 																base: "12px",
@@ -372,7 +389,8 @@ const LinkMenu = (props) => {
 					isCurrent ? "sidebar.active-border" : "transparent"
 				}
 			>
-				<Center
+				<Icon
+					name={menu.icon}
 					w={{
 						base: "20px",
 						sm: "20px",
@@ -381,17 +399,7 @@ const LinkMenu = (props) => {
 						xl: "18px",
 						"2xl": "27px",
 					}}
-					h={{
-						base: "20px",
-						sm: "20px",
-						md: "18px",
-						lg: "18px",
-						xl: "18px",
-						"2xl": "20px",
-					}}
-				>
-					<Icon name={menu.icon} width={"100%"} />
-				</Center>
+				/>
 				{menu.name}
 			</Flex>
 		</Link>

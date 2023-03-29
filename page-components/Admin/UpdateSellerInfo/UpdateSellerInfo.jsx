@@ -128,7 +128,13 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 									w="100%"
 									h={"3rem"}
 									borderRadius="10px"
-									icon={<Icon name="caret-down" />}
+									icon={
+										<Icon
+											name="caret-down"
+											w="14px"
+											h="10px"
+										/>
+									}
 								>
 									<option value="option1">Option 1</option>
 									<option value="option2">Option 2</option>
@@ -168,7 +174,13 @@ const UpdateSellerInfo = ({ className = "", ...props }) => {
 									w="100%"
 									h={"3rem"}
 									borderRadius="10px"
-									icon={<Icon name="caret-down" />}
+									icon={
+										<Icon
+											name="caret-down"
+											w="14px"
+											h="10px"
+										/>
+									}
 								>
 									<option value="option1">Option 1</option>
 									<option value="option2">Option 2</option>

@@ -22,7 +22,7 @@ const changeRoleButton = () => {
 				title="Change Role"
 				menulist={ChangeRoleMenu}
 				iconPos="right"
-				iconName="arrow-down"
+				iconName="caret-down"
 				iconStyles={{ height: "10px", width: "14px" }}
 				buttonStyle={{
 					height: { md: "48px", lg: "64px" },
