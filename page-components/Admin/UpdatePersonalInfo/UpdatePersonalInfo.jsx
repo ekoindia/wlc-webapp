@@ -12,11 +12,14 @@ import {
 	Select,
 	Stack,
 	Text,
-	useMediaQuery,
+	Center,
+	Image,
 	VStack,
 } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons, Input, Calenders } from "components";
 import React, { useEffect, useRef, useState } from "react";
+import { Endpoints } from "constants/EndPoints";
+import { useUser } from "contexts/UserContext";
 
 /**
  * A <UpdatePersonalInfo> component
@@ -27,8 +30,6 @@ import React, { useEffect, useRef, useState } from "react";
  */
 
 const UpdatePersonalInfo = ({ className = "", ...props }) => {
-	const [value, setValue] = useState();
-	const [files, setFiles] = useState(null);
 	const inputRef = useRef();
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
@@ -38,59 +39,70 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 	console.log("setFormData", setFormData);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
-	console.log(formData, "wdhbwhjbdhjb");
+	const [imageUrl, setImageUrl] = useState("");
+	const [dragOver, setDragOver] = useState(false);
+
+	const { userData } = useUser();
+
 	const onChangeHandler = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
-		// Log the data object to the console
 	};
 
-	const headers = {
-		"Content-Type": "application/json",
+	const data = {
 		initiator_id: "9451000001",
 		user_code: "10000020",
 		org_id: "1",
 		source: "WLC",
 		client_ref_id: "202301031354123456",
-		dob: "2018-06-28",
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		fetch("", {
-			method: "PUT",
-			headers: headers,
-			body: JSON.stringify(formData),
+		fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			method: "POST",
+			headers: {
+				"Content-type": "application/json",
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": "/network/agents/profile/personalInfo/update",
+				"tf-req-method": "PUT",
+
+				authorization: `Bearer ${userData.access_token}`,
+			},
+			body: JSON.stringify({ ...data, ...formData }),
 		})
 			.then((response) => {
 				console.log(response, "njdjnjwn");
-				// Handle successful response
 			})
 			.catch((error) => {
 				console.log(error);
-				// Handle error response
 			});
 	};
-	// const [isSmallerThan500] = useMediaQuery("(max-width: 1400px)");
-	// TODO: Edit state as required
-	const handleDragOver = (event) => {
+
+	// <================File Upload=========================>
+
+	function handleFileInputChange(event) {
+		const file = event.target.files[0];
+		const imageUrl = URL.createObjectURL(file);
+		setImageUrl(imageUrl);
+	}
+
+	function handleDragOver(event) {
 		event.preventDefault();
-	};
+		setDragOver(true);
+	}
 
-	const item = {
-		Name: "Saurabh",
-		LastName: "Mullick",
-		ShopName: "Alam Store",
-	};
-
-	const handleDrop = (event) => {
+	function handleDragLeave(event) {
 		event.preventDefault();
+		setDragOver(false);
+	}
 
-		setFiles(event.dataTransfer.files);
-		console.log(event);
-	};
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
+	function handleDrop(event) {
+		event.preventDefault();
+		setDragOver(false);
+		const file = event.dataTransfer.files[0];
+		const imageUrl = URL.createObjectURL(file);
+		setImageUrl(imageUrl);
+	}
 
 	return (
 		<Box>
@@ -211,6 +223,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								* Mandatory
 							</Text>
 						</HStack>
+						{/* <========================Drag Box And Browse Button to upload image ==========================> */}
 						<Flex
 							w={{
 								base: "100%",
@@ -227,20 +240,27 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							direction={{ base: "column", md: "row" }}
 							borderRadius="10px"
 							onDragOver={handleDragOver}
+							onDragLeave={handleDragLeave}
 							onDrop={handleDrop}
 						>
-							<Flex>
+							{imageUrl ? (
 								<Circle bg="divider" size={28}>
-									<Avatar
-										w="90"
-										h="90"
-										src="/images/seller_logo.jpg"
-									/>
+									<Avatar w="90px" h="90px" src={imageUrl} />
 								</Circle>
-							</Flex>
+							) : (
+								<Flex>
+									<Circle bg="divider" size={28}>
+										<Avatar
+											w="90"
+											h="90"
+											src="/images/seller_logo.jpg"
+										/>
+									</Circle>
+								</Flex>
+							)}
 							<Flex w="100%" display={"flex"}>
 								<Text
-									color="#555555"
+									color="light"
 									pl={{
 										base: "10px",
 										md: "20px",
@@ -254,19 +274,21 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							</Flex>
 							<CInput
 								type="file"
-								onChange={(event) =>
-									setFiles(event.target.files)
-								}
-								hidden
-								ref={inputRef}
+								onChange={handleFileInputChange}
+								style={{ display: "none" }}
+								id="fileInput"
 							/>
 
 							<Flex>
 								<Buttons
+									onClick={() =>
+										document
+											.getElementById("fileInput")
+											.click()
+									}
 									w="8.125rem"
 									h="3rem"
 									title="Browse"
-									onClick={() => inputRef.current.click()}
 								/>
 							</Flex>
 						</Flex>
@@ -298,7 +320,11 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								marginTop="-2rem"
 							>
 								<IconButtons
-									onClick={() => inputRef.current.click()}
+									onClick={() =>
+										document
+											.getElementById("fileInput")
+											.click()
+									}
 									iconName="camera"
 									iconStyle={{
 										h: "12.53px",
@@ -331,7 +357,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								>
 									<Input
 										label="First Name"
-										name="firstName"
+										name="first_name"
 										// placeholder={"Saurabh"}
 										required="true"
 										// value={formData.firstName}
@@ -340,7 +366,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										// mb={{ base: 10, "2xl": "4.35rem" }}
 										onChange={onChangeHandler}
 										labelStyle={{
-											fontSize: { base: "md" },
+											fontSize: "md",
 											color: "inputlabel",
 											pl: "0",
 											fontWeight: "600",
@@ -365,7 +391,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								>
 									<Input
 										label="Middle Name"
-										name="middleName"
+										name="middle_name"
 										// value={formData.middleName}
 										placeholder={""}
 										// invalid={invalid}
@@ -373,7 +399,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										// mb={{ base: 10, "2xl": "4.35rem" }}
 										onChange={onChangeHandler}
 										labelStyle={{
-											fontSize: { base: "md" },
+											fontSize: "md",
 											color: "inputlabel",
 											pl: "0",
 											fontWeight: "600",
@@ -397,7 +423,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								>
 									<Input
 										label="Last Name"
-										name="lastName"
+										name="last_name"
 										// value={formData.lastName}
 										// placeholder={"Mullick"}
 										// defaultvalue={item.LastName}
@@ -406,7 +432,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										// mb={{	 base: 10, "2xl": "4.35rem" }}
 										onChange={onChangeHandler}
 										labelStyle={{
-											fontSize: { base: "md" },
+											fontSize: "md",
 											color: "inputlabel",
 											pl: "0",
 											fontWeight: "600",
@@ -430,17 +456,18 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 										xl: "450px",
 										"2xl": "500px",
 									}}
+									name="dob"
 								>
 									<Calenders
 										label="Date of birth"
-										name="dateOfBirth"
+										name="dob"
 										// value={formData.dateOfBirth}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
 										// mb={{ base: 10, "2xl": "4.35rem" }}
 										onChange={onChangeHandler}
 										labelStyle={{
-											fontSize: { base: "md" },
+											fontSize: "md",
 											color: "inputlabel",
 											pl: "0",
 											fontWeight: "600",
@@ -457,7 +484,10 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 							<Flex mt={"2.5rem"} direction="column">
 								<Text
 									style={{
-										fontSize: { base: "sm", "2xl": "lg" },
+										fontSize: {
+											base: "sm",
+											"2xl": "lg",
+										},
 										color: "inputlabe",
 
 										fontWeight: "600",
@@ -468,19 +498,27 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									</Text>
 									Gender
 								</Text>
-								<RadioGroup
-									onChange={setValue}
-									value={value}
-									mt="0.8rem"
-								>
+								<RadioGroup mt="0.8rem">
 									<Stack
 										direction="row"
-										gap={{ base: "6rem", "2xl": "3.7rem" }}
+										gap={{
+											base: "6rem",
+											"2xl": "3.7rem",
+										}}
+										// value={value}
 									>
-										<Radio size="lg" value="1">
+										<Radio
+											size="lg"
+											value="male"
+											name="gender"
+										>
 											Male
 										</Radio>
-										<Radio size="lg" value="2">
+										<Radio
+											size="lg"
+											value="female"
+											name="gender"
+										>
 											Female
 										</Radio>
 									</Stack>
@@ -500,7 +538,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 								<Box mb={{ base: 2.5, "2xl": "0.7rem" }}>
 									<Text
 										style={{
-											fontSize: { base: "16px" },
+											fontSize: "md",
 											color: "inputlabel",
 
 											fontWeight: "600",
@@ -510,8 +548,8 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									</Text>
 								</Box>
 								<Select
-									placeholder="--Select"
-									name="shopType"
+									placeholder="--Select--"
+									name="marital_status"
 									// value={formData.shopType}
 									onChange={onChangeHandler}
 									h="3rem"
@@ -557,7 +595,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									<Input
 										label="Shop Name"
 										placeholder={"Alam Store"}
-										name="shopName"
+										name="shop_name"
 										// value={formData.shopName}
 										// invalid={invalid}
 										// errorMsg={errorMsg}
@@ -600,7 +638,7 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 									</Box>
 									<Select
 										placeholder="General"
-										name="shopType"
+										name="shop_type"
 										// value={formData.shopType}
 										onChange={onChangeHandler}
 										h="3rem"
@@ -623,11 +661,11 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 											/>
 										}
 									>
-										<option value="option1">
-											Option 1
+										<option value="Electronics Store">
+											Electronics Store
 										</option>
-										<option value="option2">
-											Option 2
+										<option value="Fast Food Restaurant">
+											Fast Food Restaurant
 										</option>
 									</Select>
 								</Box>
