@@ -181,7 +181,7 @@ const CollapseMenu = (props) => {
 					{({ isExpanded }) => (
 						<>
 							<AccordionButton
-								paddingLeft={{
+								pl={{
 									base: "5",
 									md: "5",
 									lg: "4",
@@ -190,7 +190,7 @@ const CollapseMenu = (props) => {
 								py={{
 									base: "4",
 									md: "3",
-									xl: "3",
+									xl: "3.5",
 									"2xl": "5",
 								}}
 							>
@@ -202,7 +202,8 @@ const CollapseMenu = (props) => {
 									padding="0px"
 								>
 									<Flex align="center" gap="13px" w={"full"}>
-										<Center
+										<Icon
+											name={menu.icon}
 											w={{
 												base: "20px",
 												sm: "20px",
@@ -211,27 +212,7 @@ const CollapseMenu = (props) => {
 												xl: "18px",
 												"2xl": "27px",
 											}}
-											h={{
-												base: "20px",
-												sm: "20px",
-												md: "18px",
-												lg: "18px",
-												xl: "18px",
-												"2xl": "20px",
-											}}
-										>
-											<Icon
-												name={menu.icon}
-												w={{
-													base: "20px",
-													sm: "20px",
-													md: "18px",
-													lg: "18px",
-													xl: "18px",
-													"2xl": "27px",
-												}}
-											/>
-										</Center>
+										/>
 										<Text
 											fontSize={{
 												base: "14px",
