@@ -40,13 +40,8 @@ const GoogleVerify = ({ email, number, setNumber, setStep }) => {
 		<Flex direction="column">
 			{/* Heading with Icon */}
 			<Flex align="center">
-				<Box
-					onClick={() => setStep("LOGIN")}
-					w="18px"
-					h="15px"
-					cursor="pointer"
-				>
-					<Icon name="arrow-back" />
+				<Box onClick={() => setStep("LOGIN")} cursor="pointer">
+					<Icon name="arrow-back" w="18px" h="15px" />
 				</Box>
 				<Heading
 					variant="selectNone"
