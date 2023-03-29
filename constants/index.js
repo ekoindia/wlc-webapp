@@ -9,8 +9,11 @@ import { Endpoints } from "./EndPoints";
 import { nonAdminMenu } from "./nonAdminMenu";
 import { roles } from "./role";
 import { transactionSample } from "./transactionSample";
+import { oldIcons } from "./connectIcons";
 import { baseRoute, initialRoute, publicLinks } from "./validRoutes";
+
 export {
+	oldIcons,
 	roles,
 	adminMenu,
 	Endpoints,
