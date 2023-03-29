@@ -2,8 +2,7 @@ import { Table } from "components";
 import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 /**
  * A <NetworkTable> component
  * TODO: This is my network table with clickable rows
@@ -23,6 +22,7 @@ const NetworkTable = ({
 	},
 }) => {
 	const [pageNumber, setPageNumber] = useState(1);
+	console.log("pageNumber", pageNumber);
 	const { userData } = useUser();
 
 	const renderer = [
@@ -49,16 +49,50 @@ const NetworkTable = ({
 	];
 	const router = useRouter();
 
-	const { data, error, isLoading, mutate, revalidate } = useRequest({
+	let headers = {
+		"tf-req-uri-root-path": "/ekoicici/v1",
+		"tf-req-uri": `/network/agents?initiator_id=9911572989&user_code=99029899&org_id=1&source=WLC&record_count=10&client_ref_id=202301031354123456&page_number=${pageNumber}`,
+		"tf-req-method": "GET",
+	};
+	console.log("headers in network table", headers["tf-req-uri"]);
+
+	const { data, error, isLoading, mutate } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-		headers: {
-			"tf-req-uri-root-path": "/ekoicici/v1",
-			"tf-req-uri": `/network/agents?initiator_id=9911572989&user_code=99029899&org_id=1&source=WLC&record_count=10&client_ref_id=202301031354123456&page_number=${pageNumber}`,
-			"tf-req-method": "GET",
-			authorization: `Bearer ${userData.access_token}`,
-		},
+		headers: { ...headers },
+		authorization: `Bearer ${userData.access_token}`,
 	});
+	// const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+	// const {
+	// 	data,
+	// 	error,
+	// 	// revalidate,
+	// 	mutate,
+	// } = useSWR(
+	// 	process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+	// 	(url) =>
+	// 		fetcher(url, {
+	// 			method: "post",
+	// 			headers: {
+	// 				"Content-Type": "application/json",
+	// 				authorization: `Bearer ${userData.access_token}`,
+	// 				...headers,
+	// 			},
+	// 		}),
+	// 	{
+	// 		// provider: localStorageProvider,
+	// 		revalidateOnFocus: false,
+	// 		revalidateOnMount: false,
+	// 	}
+	// );
+
+	useEffect(() => {
+		mutate(
+			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+			headers
+		);
+	}, [pageNumber]);
 
 	let postData = "";
 	if (searchValue) postData += `searchValue=${searchValue}`;
@@ -79,6 +113,8 @@ const NetworkTable = ({
 
 	const totalRecords = data?.data?.TotalRecords;
 	const agentDetails = data?.data?.agent_details ?? [];
+
+	// console.log("data in network table", data);
 
 	const onRowClick = (rowData) => {
 		const ekocode = rowData.eko_code;
@@ -101,6 +137,7 @@ const NetworkTable = ({
 				tableName="Network"
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}
+				pageNumber={pageNumber}
 			/>
 		</>
 	);

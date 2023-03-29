@@ -34,6 +34,7 @@ const Table = (props) => {
 		pageLimit: PageSize = 10,
 		data,
 		totalRecords,
+		pageNumber,
 		setPageNumber,
 		renderer,
 		variant,
@@ -44,16 +45,16 @@ const Table = (props) => {
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
-	const [currentPage, setCurrentPage] = useState(1);
+	// const [currentPage, setCurrentPage] = useState(1);
+	// console.log("currentPage", currentPage);
 
 	useEffect(() => {
-		if (router.query.page && +router.query.page !== currentPage) {
-			setCurrentPage(+router.query.page);
-			console.log("router.query.page", router.query.page);
+		if (router.query.page && +router.query.page !== pageNumber) {
+			// setCurrentPage(+router.query.page);
+			setPageNumber(+router.query.page);
+			// console.log("router.query.page", router.query.page);
 		}
 	}, [router.query.page]);
-
-	setPageNumber(currentPage);
 
 	const getTh = () => {
 		return renderer.map((item, index) => {
@@ -100,7 +101,7 @@ const Table = (props) => {
 									item,
 									r,
 									index +
-										currentPage * PageSize -
+										pageNumber * PageSize -
 										(PageSize - 1)
 								)}
 							</Td>
@@ -302,15 +303,15 @@ const Table = (props) => {
 						<Flex justify={"flex-end"}>
 							<Pagination
 								className="pagination-bar"
-								currentPage={currentPage}
+								currentPage={pageNumber}
 								totalCount={totalRecords || 10}
 								pageSize={PageSize}
 								onPageChange={(page) => {
-									console.log(page);
 									router.query.page = page;
-									console.log("Page", page);
+									console.log("Page inside pagination", page);
 									router.replace(router);
-									setCurrentPage(page);
+									// setCurrentPage(page);
+									setPageNumber(page);
 								}}
 							/>
 						</Flex>

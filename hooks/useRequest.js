@@ -1,5 +1,4 @@
 import { useUser } from "contexts/UserContext";
-import { localStorageProvider } from "helpers";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -11,6 +10,8 @@ const useRequest = ({
 	body,
 	options = {},
 }) => {
+	// console.log("::::Api Call started::::");
+	// console.log("headers in useRequest", headers["tf-req-uri"]);
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
@@ -19,14 +20,12 @@ const useRequest = ({
 	// console.log("userData", userData);
 	// console.log("method", method);
 	// console.log("baseUrl", baseUrl);
-	// console.log("headers", headers);
-
 	const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 	const {
 		data: fetchedData,
 		error: fetchedError,
-		revalidate,
+		// revalidate,
 		mutate,
 	} = useSWR(
 		`${baseUrl}`,
@@ -41,9 +40,9 @@ const useRequest = ({
 				body: body ? JSON.stringify(body) : null,
 			}),
 		{
-			provider: localStorageProvider,
-			// revalidateOnFocus: false,
-			revalidateOnMount: true,
+			// provider: localStorageProvider,
+			revalidateOnFocus: false,
+			revalidateOnMount: false,
 			...options,
 		}
 	);
@@ -63,7 +62,7 @@ const useRequest = ({
 	}, [fetchedError]);
 
 	// console.log("data useRequest", data);
-	return { data, error, isLoading, revalidate, mutate };
+	return { data, error, isLoading, mutate };
 };
 
 export default useRequest;
