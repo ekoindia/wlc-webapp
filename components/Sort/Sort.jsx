@@ -186,7 +186,7 @@ const Sort = (props) => {
 										bg: "white",
 									}}
 									onClick={() =>
-										handleStatusClick("closed")
+										handleStatusClick("inactive")
 									}
 								>
 									Status:
