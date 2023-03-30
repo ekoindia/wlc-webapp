@@ -305,19 +305,15 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						}}
 					/>
 				</Flex>
-				<Box display={{ base: "none", sm: "initial" }}>
-					<Icon
-						name="arrow-drop-down"
-						width="16px"
-						height="16px"
-						color="accent.DEFAULT"
-						style={{
-							transform: "rotate(180deg)",
-							position: "absolute",
-							top: "-8.5%",
-							right: "2.7%",
-						}}
-					/>
+				<Box
+					display={{ base: "none", sm: "initial" }}
+					color="accent.DEFAULT"
+					transform="rotate(180deg)"
+					position="absolute"
+					top="-19%"
+					right="2%"
+				>
+					<Icon name="arrow-drop-down" width="16px" height="16px" />
 				</Box>
 
 				<Box
@@ -341,6 +337,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							xl: "20px",
 							"2xl": "25px",
 						}}
+						lineHeight="normal"
 					>
 						<Text
 							fontSize={{
@@ -366,10 +363,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							}}
 							w={"fit-content"}
 							color={"white"}
+							mb="3px"
 						>
 							(Eko Code:{" "}
 							<Text as={"span"} fontWeight={"medium"}>
-								{" "}
 								501837634
 							</Text>
 							)
@@ -414,7 +411,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								</Text>
 								<Box ml={{ base: "15px", sm: "initial" }}>
 									<IconButtons
-										iconSize={{ base: "sm", sm: "xs" }}
+										iconSize={"xs"}
 										// onClick={() =>
 										// 	Router.push("/admin/my-network/profile/up-per-info")
 										// }
@@ -424,7 +421,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 											width: "10px",
 											height: "10px",
 										}}
-									></IconButtons>
+									/>
 								</Box>
 							</Box>
 						</Flex>
