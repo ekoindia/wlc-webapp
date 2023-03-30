@@ -151,9 +151,12 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 				direction={{ base: "column", sm: "row" }}
 				columnGap="30px"
 				rowGap="24px"
-				onClick={() => setIsShowSelectAgent(true)}
 			>
-				<Buttons h="54px" fontSize="md">
+				<Buttons
+					h="54px"
+					fontSize="md"
+					onClick={() => setIsShowSelectAgent(true)}
+				>
 					Select Agents
 				</Buttons>
 				<Buttons
