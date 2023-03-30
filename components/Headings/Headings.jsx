@@ -7,8 +7,9 @@ const Headings = (props) => {
 	const {
 		hasIcon = true, //TODO hasBackIcon or something -- hasIcon is ambiguous
 		title,
-		redirectPath,
+		redirectHandler,
 		propComp,
+		isCompVisible = true,
 	} = props;
 
 	const router = useRouter();
@@ -69,7 +70,7 @@ const Headings = (props) => {
 					<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>
 						{hasIcon && (
 							<Box
-								onClick={redirectPath || redirectTo}
+								onClick={redirectHandler || redirectTo}
 								cursor="pointer"
 							>
 								<Icon
@@ -101,7 +102,7 @@ const Headings = (props) => {
 						</Text>
 					</Flex>
 				</Box>
-				{propComp}
+				{isCompVisible && propComp}
 			</Flex>
 			{isNavHidden && (
 				<Box

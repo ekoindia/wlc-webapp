@@ -24,6 +24,7 @@ import {
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { AccountStatementCard } from "page-components/Admin/AccountStatement";
+import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
