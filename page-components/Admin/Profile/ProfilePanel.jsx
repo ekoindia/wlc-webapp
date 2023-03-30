@@ -1,8 +1,6 @@
 import { Box, Button, Grid, GridItem } from "@chakra-ui/react";
 import { Headings, Menus } from "components";
 import { ChangeRoleMenu } from "constants";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 import {
 	AddressPane,
 	CompanyPane,
@@ -12,8 +10,6 @@ import {
 } from ".";
 
 const changeRoleButton = () => {
-	const router = useRouter();
-
 	return (
 		<Box>
 			<Menus
@@ -43,15 +39,9 @@ const changeRoleButton = () => {
 };
 
 const ProfilePanel = (props) => {
-	const { setComp } = props;
-
-	useEffect(() => {
-		setComp(changeRoleButton);
-	}, []);
-
 	return (
 		<>
-			<Headings title="Seller Details" />
+			<Headings title="Seller Details" propComp={changeRoleButton()} />
 			<Grid
 				templateColumns={{
 					base: "repeat(auto-fit,minmax(280px,0.90fr))",
