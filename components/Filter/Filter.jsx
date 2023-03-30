@@ -21,14 +21,17 @@ import { Buttons, Calenders, Icon } from "..";
 
 function Filter(props) {
 	const { setFilter } = props;
+	const [filterValues, setFilterValues] = useState();
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const btnRef = React.useRef();
 	const filterOptions = [
 		{
 			title: "Filter by profile type",
 			name: "agentType",
 			options: [
-				{ label: "iMerchant", value: "iMerchant" },
-				{ label: "Seller", value: "Seller" },
-				{ label: "Distributer", value: "Seller" },
+				{ label: "iMerchant", value: "icsp" },
+				{ label: "Seller", value: "csp" },
+				{ label: "Distributer", value: "scsp" },
 			],
 		},
 		{
@@ -36,21 +39,19 @@ function Filter(props) {
 			name: "agentAccountStatus",
 			options: [
 				{ label: "Active", value: "Active" },
-				{ label: "Inactive", value: "Inactive" },
+				{ label: "Inactive", value: "closed" },
 			],
 		},
 	];
-	const { isOpen, onOpen, onClose } = useDisclosure();
-	const btnRef = React.useRef();
-	const [filterValues, setFilterValues] = useState();
+
 	const handleInputChange = (event) => {
 		const { name, type, checked, value } = event.target;
-
 		setFilterValues((prevState) => ({
 			...prevState,
 			[name]: value,
 		}));
 	};
+    
 	const handleApply = () => {
 		setFilter(filterValues);
 		console.log("filterValues", filterValues);

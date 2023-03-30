@@ -15,8 +15,7 @@ const TransactionHistoryCard = (props) => {
 		<>
 			<Flex justifyContent="space-between">
 				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-					{/* {getNameStyle(item.agent_name)} */}
-					{getNameStyle(item.name)}
+					{getNameStyle(item.agent_name)}
 				</Box>
 				<Menus
 					iconName="more-vert"

@@ -1,7 +1,7 @@
 import { Table } from "components";
 import { apisHelper } from "helpers/apisHelper";
 
-// import { mockData } from "constants/mockTableData";
+import { mockData } from "constants/mockTableData";
 
 /**
  * A <AccountStatementTable> component
@@ -11,41 +11,48 @@ import { apisHelper } from "helpers/apisHelper";
  * @example	`<AccountStatementTable></AccountStatementTable>`
  */
 
-const AccountStatementTable = () => {
+const AccountStatementTable = (props) => {
+    const acctabledata = props;
 	const renderer = [
 		{
+			name: "transaction_id",
 			name: "transaction_id",
 			field: "Transaction ID",
 		},
 		{
 			name: "date_time",
+			name: "date_time",
 			field: "Date & Time",
 			sorting: true,
 		},
 		{ name: "activity", field: "Activity" },
+		{ name: "activity", field: "Activity" },
 		{
+			name: "description",
 			name: "description",
 			field: "Description",
 		},
 
 		{ name: "amount", field: "Amount" },
+		{ name: "amount", field: "Amount" },
 	];
 
 	// <=======================API CALL===============================>
 
-	const Accountapicall = apisHelper("Account");
-	const AccountStatementData =
-		Accountapicall?.data?.data?.recent_transaction_details ?? [];
+	// const Accountapicall = apisHelper("Account");
+	// const AccountStatementData =
+		// Accountapicall?.data?.data?.recent_transaction_details ?? [];
 
-	console.log(AccountStatementData, "AccountStatementData");
+	// console.log(AccountStatementData, "AccountStatementData");
 	return (
 		<>
 			<Table
 				pageLimit={15}
 				renderer={renderer}
-				data={AccountStatementData}
+				data={mockData}
 				variant="evenStriped"
 				tableName="Account"
+                ispagintationrequire={false}
 			/>
 		</>
 	);

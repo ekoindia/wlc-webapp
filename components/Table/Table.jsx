@@ -40,10 +40,11 @@ const Table = (props) => {
 		variant,
 		tableName,
 		isScrollrequired = false,
-		onRowClick,
+		onRowClick,ispagintationrequire=true,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
+    // console.log('data', data)
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	// const [currentPage, setCurrentPage] = useState(1);
 	// console.log("currentPage", currentPage);
@@ -135,7 +136,7 @@ const Table = (props) => {
 
 	/* For Responsive */
 	const prepareCard = () => {
-		return currentTableData.map((item, index) => {
+		return data.map((item, index) => {
 			if (tableName === "Network") {
 				return (
 					<Cards
@@ -300,6 +301,7 @@ const Table = (props) => {
 							</ChakraTable>
 						</TableContainer>
 						{/* Pagination */}
+                        {ispagintationrequire &&(
 						<Flex justify={"flex-end"}>
 							<Pagination
 								className="pagination-bar"
@@ -314,7 +316,7 @@ const Table = (props) => {
 									setPageNumber(page);
 								}}
 							/>
-						</Flex>
+						</Flex>)}
 					</>
 				) : (
 					<>

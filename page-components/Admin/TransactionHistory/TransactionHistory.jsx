@@ -14,10 +14,7 @@ import { useRouter } from "next/router";
 const TransactionHistory = ({ className = "", ...props }) => {
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 
-	const router = useRouter();
-	const handleClick = (e) => {
-		router.push("/admin/transaction-history/account-statement");
-	};
+	// const router = useRouter();
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -26,14 +23,15 @@ const TransactionHistory = ({ className = "", ...props }) => {
 	return (
 		<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
 			<Box>
-				<Button onClick={handleClick} bg="red " h="20px" w="20px" />
 				<SearchBar
 					onChangeHandler={onChangeHandler}
-					value={searchValue}
+					// value={searchValue}
+					searchedvalue={searchValue}
+					setSearchValue={setSearchValue}
 				/>
 			</Box>
 			<Box>
-				<TransactionHistoryTable />
+				<TransactionHistoryTable searchValue={searchValue} />
 			</Box>
 		</Box>
 	);
