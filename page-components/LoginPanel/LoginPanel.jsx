@@ -79,7 +79,7 @@ const LoginPanel = (props) => {
 					py={{ base: 7, "2xl": 10 }}
 					boxShadow="0px 3px 20px #00000005"
 					borderRadius={{ base: 15, "2xl": 20 }}
-					bg="#FFFFFF"
+					bg="white"
 				>
 					{step === "LOGIN" && (
 						<Login
