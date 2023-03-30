@@ -182,15 +182,17 @@ const connecticon = () => {
 			height={"auto"}
 			wrap="wrap"
 			rowGap={"10px"}
-			columnGap="10px"
+			columnGap="11px"
 			padding={"20px"}
 		>
 			{iconName.map((ele) => (
 				<Center
-					width={"100px"}
-					h="50px"
+					key={ele}
+					width={"103px"}
+					h="55px"
 					bg="blackAlpha.300"
 					flexDir="column"
+					color=""
 				>
 					<SvgIcon name={ele} height="24px" />
 					<Text fontSize=".5rem">{ele}</Text>
