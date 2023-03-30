@@ -1,5 +1,6 @@
 import { Box, Divider, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { Buttons, Cards, Icon, Tags } from "components";
+import { apisHelper } from "helpers/apisHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AccountStatementTable } from ".";
@@ -18,14 +19,26 @@ const AccountStatement = ({ className = "", ...props }) => {
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
+    const accountapi = apisHelper("accountStatement");
+    const { data } = accountapi?.data ?? {};
+    const acctabledata = data?.account_statement_details ?? [];
+    const agentname = data?.agent_name ?? [];
+    const saving_balance = data?.saving_balance ?? [];
+
 
 	const router = useRouter();
-	const handleClick = (e) => {
+    /*redirect to detiled statement*/
+    const handleClick = (e) => {
 		router.push(
 			"/admin/transaction-history/account-statement/detailed-statement"
 		);
 	};
-
+    /*getting mobile number as a quey param*/
+    const dataquery = router.query;
+    console.log('dataquery', dataquery)
+    /*current date*/
+    const current = new Date();
+    const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
 	return (
 		<>
 			<Box
@@ -80,7 +93,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 										"2xl": "16px",
 									}}
 								>
-									as on 04/01/2023
+									as on {date}
 								</Text>
 							</Flex>
 
@@ -122,135 +135,11 @@ const AccountStatement = ({ className = "", ...props }) => {
 											fontWeight={"medium"}
 										>
 											{" "}
-											Saurabh Mullick
+											{agentname}
 										</Text>
 									</Flex>
 								)}
-								{/* <Flex
-									gap={{
-										base: "20px",
-										lg: "8px",
-										"2xl": "15px",
-									}}
-									align={"center"}
-									justifyContent={{
-										base: "space-between",
-										md: "init",
-									}}
-									w={{ base: "100%", sm: "initial" }}
-								>
-									<Flex
-										direction={"column"}
-										gap={{
-											base: "0px",
-											md: "0px",
-											"2xl": "5px",
-										}}
-									>
-										<Text
-											fontSize={{
-												base: "14px",
-												md: "10px",
-												lg: "12px",
-												"2xl": "16px",
-											}}
-											color={"light"}
-										>
-											Account Number
-										</Text>
-										<Text
-											fontSize={{
-												base: "16px",
-												md: "11px",
-												lg: "13px",
-												"2xl": "18px",
-											}}
-											color={"black"}
-											fontWeight={"medium"}
-										>
-											000300000517693
-										</Text>
-									</Flex>
-									<Tags
-										size={{
-											base: "sm",
-											md: "sm",
-											lg: "sm",
-											"2xl": "md",
-										}}
-									/>
-								</Flex>
-								{!isMobileScreen && (
-									<>
-										<Flex
-											direction={"column"}
-											gap={{
-												base: "5px",
-												md: "0px",
-												"2xl": "5px",
-											}}
-										>
-											<Text
-												fontSize={{
-													base: "14px",
-													md: "10px",
-													lg: "12px",
-													"2xl": "16px",
-												}}
-												color={"light"}
-											>
-												Bank Name
-											</Text>
-											<Text
-												fontSize={{
-													base: "16px",
-													md: "11px",
-													lg: "13px",
-													"2xl": "18px",
-												}}
-												color={"black"}
-												fontWeight={"medium"}
-											>
-												ICICI Bank
-											</Text>
-										</Flex>
-										<Flex
-											direction={"column"}
-											gap={{
-												base: "5px",
-												md: "0px",
-												"2xl": "5px",
-											}}
-										>
-											<Text
-												fontSize={{
-													base: "14px",
-													md: "10px",
-													lg: "12px",
-													"2xl": "16px",
-												}}
-												color={"light"}
-											>
-												Account Type
-											</Text>
-											<Text
-												fontSize={{
-													base: "16px",
-													md: "11px",
-													lg: "13px",
-													"2xl": "18px",
-												}}
-												color={"black"}
-												fontWeight={"medium"}
-											>
-												Current ECP
-											</Text>
-										</Flex>
-									</>
-								)}
-								{isMobileScreen && (
-									<Divider my={{ base: "5px", sm: "10px" }} />
-								)} */}
+								
 								<Flex direction={{ base: "column", md: "row" }}>
 									<Flex
 										direction={"column"}
@@ -306,7 +195,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 												color={"accent.DEFAULT"}
 												fontWeight={"bold"}
 											>
-												15,893.00
+												{saving_balance}
 											</Text>
 										</Flex>
 									</Flex>
@@ -355,7 +244,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 					</Cards>
 				</Box>
 				<Box marginTop={{ base: "20px", lg: "0rem" }}>
-					<AccountStatementTable />
+					<AccountStatementTable acctabledata={acctabledata}/>
 				</Box>
 			</Box>
 		</>

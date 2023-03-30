@@ -17,7 +17,11 @@ import {
 } from "@chakra-ui/react";
 import { Filter, Icon } from "..";
 
-const Sort = ({ className = "", handleStatusClick }) => {
+const Sort = (props) => {
+	const { setSort } = props;
+	const handleStatusClick = (value) => {
+		setSort(value);
+	};
 	return (
 		<>
 			<Box
@@ -154,9 +158,7 @@ const Sort = ({ className = "", handleStatusClick }) => {
 										bg: "white",
 									}}
 									pt="10px"
-									onClick={(value) =>
-										handleStatusClick("recent")
-									}
+									onClick={() => handleStatusClick("recent")}
 								>
 									Recently Added
 								</MenuItem>
@@ -166,9 +168,7 @@ const Sort = ({ className = "", handleStatusClick }) => {
 									_hover={{
 										bg: "white",
 									}}
-									onClick={(value) =>
-										handleStatusClick("active")
-									}
+									onClick={() => handleStatusClick("active")}
 								>
 									Status:
 									<Box
@@ -185,8 +185,8 @@ const Sort = ({ className = "", handleStatusClick }) => {
 									_hover={{
 										bg: "white",
 									}}
-									onClick={(value) =>
-										handleStatusClick("inactive")
+									onClick={() =>
+										handleStatusClick("closed")
 									}
 								>
 									Status:

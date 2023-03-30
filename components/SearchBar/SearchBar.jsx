@@ -1,14 +1,24 @@
-import {
-	Box,
-	Center,
-	Input,
-	StackDivider,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
+import { Box, Center, Input } from "@chakra-ui/react";
+import { useState } from "react";
 import { Icon } from "..";
 
-export function SearchBar({ onChangeHandler, value, inputContProps }) {
+export function SearchBar(props) {
+	const { setSearch } = props;
+	const [value, setValue] = useState("");
+
+	const handleKeyDown = (e) => {
+		if (e.key === "Enter" && value.length === 10) {
+			console.log(value);
+			setSearch(value);
+		}
+	};
+
+	const handleChange = (e) => {
+		const inputValue = e.target.value;
+		if (inputValue.length <= 10) {
+			setValue(inputValue);
+		}
+	};
 	return (
 		<Box
 			position="relative"
@@ -21,7 +31,6 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 				xl: "30vw",
 				"2xl": "30vw",
 			}}
-			{...inputContProps}
 			// mt={{ base: "10px", md: "1vw", "2xl": ".5vw" }}
 		>
 			<Input
@@ -41,7 +50,8 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 					border: " 1px solid #D2D2D2",
 				}}
 				pl={{ base: "30px", lg: "35px", "2xl": "55px" }}
-				onChange={(e) => onChangeHandler(e.target.value)}
+				onKeyDown={handleKeyDown}
+				onChange={handleChange}
 			/>
 			<Center
 				position="absolute"
@@ -55,7 +65,7 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 			>
 				<Icon name="search" height="40%" />
 			</Center>
-			{value !== "" && (
+			{/* {value !== "" && (
 				<Box
 					position="absolute"
 					top="106%"
@@ -98,7 +108,7 @@ export function SearchBar({ onChangeHandler, value, inputContProps }) {
 						</Box>
 					</VStack>
 				</Box>
-			)}
+			)} */}
 		</Box>
 	);
 }

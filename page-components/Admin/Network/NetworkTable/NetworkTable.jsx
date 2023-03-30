@@ -1,8 +1,5 @@
 import { Table } from "components";
-import { useUser } from "contexts/UserContext";
-import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 /**
  * A <NetworkTable> component
  * TODO: This is my network table with clickable rows
@@ -13,17 +10,36 @@ import { useEffect, useState } from "react";
 
 const NetworkTable = ({
 	sortValue,
-	searchValue = "34535345435",
-	filter = {
-		agentType: "csp",
-		agentAccountStatus: "Active",
-		onBoardingDateFrom: "2017-08-03",
-		onBoardingDateTo: "2018-04-11",
-	},
+	searchValue,
+	filterValues,
+	pageNumber,
+	setPageNumber,
+	totalRecords,
+	agentDetails,
+	// filter = {
+	// 	agentType: "csp",
+	// 	agentAccountStatus: "active",
+	// 	onBoardingDateFrom: "2016-08-03",
+	// 	onBoardingDateTo: "2018-04-11",
+	// },
 }) => {
-	const [pageNumber, setPageNumber] = useState(1);
-	console.log("pageNumber", pageNumber);
-	const { userData } = useUser();
+	// let postData = "";
+	// if (searchValue) postData += `search_value=${searchValue}&`;
+	// if (sortValue) {
+	// 	postData += `sortValue=${sortValue}&`;
+	// }
+	// if (Object.keys(filter).length) {
+	// 	let filterKeys = Object.keys(filter);
+	// 	let filterQuery = "filter=false";
+	// 	filterKeys.forEach((ele) => {
+	// 		filterQuery += `&${ele}=${filter[ele]}`;
+	// 	});
+	// 	postData += filterQuery;
+	// }
+
+	// const [pageNumber, setPageNumber] = useState(1);
+	// console.log("pageNumber", pageNumber);
+	// const { userData } = useUser();
 
 	const renderer = [
 		{ name: "", field: "Sr. No." },
@@ -49,80 +65,39 @@ const NetworkTable = ({
 	];
 	const router = useRouter();
 
-	let headers = {
-		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents?initiator_id=9911572989&user_code=99029899&org_id=1&source=WLC&record_count=10&client_ref_id=202301031354123456&page_number=${pageNumber}`,
-		"tf-req-method": "GET",
-	};
-	console.log("headers in network table", headers["tf-req-uri"]);
+	// let headers = {
+	// 	"tf-req-uri-root-path": "/ekoicici/v1",
+	// 	"tf-req-uri": `/network/agents?initiator_id=9911572989&user_code=99029899&org_id=1&source=WLC&record_count=10&client_ref_id=202301031354123456&page_number=${pageNumber}&${postData}`,
+	// 	"tf-req-method": "GET",
+	// };
+	// const { data, error, isLoading, mutate } = useRequest({
+	// 	method: "POST",
+	// 	baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+	// 	headers: { ...headers },
+	// 	authorization: `Bearer ${userData.access_token}`,
+	// });
 
-	const { data, error, isLoading, mutate } = useRequest({
-		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-		headers: { ...headers },
-		authorization: `Bearer ${userData.access_token}`,
-	});
-	// const fetcher = (...args) => fetch(...args).then((res) => res.json());
+	// useEffect(() => {
+	// 	mutate(
+	// 		process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+	// 		headers
+	// 	);
+	// }, [pageNumber, headers["tf-req-uri"]]);
 
-	// const {
-	// 	data,
-	// 	error,
-	// 	// revalidate,
-	// 	mutate,
-	// } = useSWR(
-	// 	process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-	// 	(url) =>
-	// 		fetcher(url, {
-	// 			method: "post",
-	// 			headers: {
-	// 				"Content-Type": "application/json",
-	// 				authorization: `Bearer ${userData.access_token}`,
-	// 				...headers,
-	// 			},
-	// 		}),
-	// 	{
-	// 		// provider: localStorageProvider,
-	// 		revalidateOnFocus: false,
-	// 		revalidateOnMount: false,
-	// 	}
-	// );
-
-	useEffect(() => {
-		mutate(
-			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-			headers
-		);
-	}, [pageNumber]);
-
-	let postData = "";
-	if (searchValue) postData += `searchValue=${searchValue}`;
-	if (Object.keys(filter).length) {
-		let filterKeys = Object.keys(filter);
-		let filterQuery = "filter=true";
-		filterKeys.forEach((ele) => {
-			filterQuery += `&${ele}=${filter[ele]}`;
-			// filterQuery += `filter=true&agentType=${}&agentType=${}&agentAccountStatus=${}&onBoardingDateFrom=${}&=${}&=${}`
-		});
-		if (postData != "") postData += "&" + filterQuery;
-		else postData += filterQuery;
-	}
-	if (sortValue) {
-		if (postData != "") postData += `&sortValue=${sortValue}`;
-		else postData += `sortValue=${sortValue}`;
-	}
-
-	const totalRecords = data?.data?.TotalRecords;
-	const agentDetails = data?.data?.agent_details ?? [];
+	// console.log("data", data);
+	// const totalRecords = data?.data?.TotalRecords;
+	// const agentDetails = data?.data?.agent_details ?? [];
 
 	// console.log("data in network table", data);
-
+	/* for seller details */
 	const onRowClick = (rowData) => {
 		const ekocode = rowData.eko_code;
+		console.log("ekocode", ekocode);
 		localStorage.setItem("rowData", JSON.stringify(rowData));
 		router.push({
-			pathname: "/admin/my-network/profile",
+			pathname: `/admin/my-network/profile`,
 			query: { ekocode },
-			state: { rowData },
+			// state: { rowData },
 		});
 	};
 
@@ -132,12 +107,12 @@ const NetworkTable = ({
 				onRowClick={onRowClick}
 				pageLimit="10"
 				renderer={renderer}
-				data={agentDetails}
 				variant="evenStripedClickableRow"
 				tableName="Network"
-				totalRecords={totalRecords}
-				setPageNumber={setPageNumber}
-				pageNumber={pageNumber}
+				totalRecords={totalRecords} //table pagination
+				setPageNumber={setPageNumber} //table
+				pageNumber={pageNumber} 
+				data={agentDetails}
 			/>
 		</>
 	);
