@@ -38,7 +38,8 @@ function Pill({ name, activePillIndex, index }) {
 	return (
 		<Box
 			h="23px"
-			w="full%"
+			w="100%"
+			whiteSpace="nowrap"
 			px="10px"
 			border="1px solid #D2D2D2"
 			borderRadius="30px"
@@ -98,12 +99,16 @@ const Transaction = () => {
 
 			<Flex
 				justifyContent={"space-between"}
-				direction={{ base: "column", lg: "row" }}
-				alignItems={{ base: "none", xl: "center" }}
+				direction={{ base: "column-reverse", lg: "row" }}
+				alignItems={{ base: "none", lg: "center" }}
 			>
 				{/* <===========================Toggles Button ===============================> */}
-				<Flex gap="8px" overflowX="auto">
-					{pillsData.map((pill, index, pillWidths) => (
+				<Flex
+					gap="8px"
+					overflowX="auto"
+					mt={{ base: "40px", lg: "0px" }}
+				>
+					{pillsData.map((pill, index) => (
 						<Box key={index} onClick={() => handlePillClick(index)}>
 							<Pill
 								name={pill.name}
@@ -113,17 +118,13 @@ const Transaction = () => {
 						</Box>
 					))}
 				</Flex>
-				<Flex
-					gap="10px"
-					mt={{ base: "40px", lg: "0px" }}
-					justifyContent="space-between"
-				>
+				<Flex gap="10px" justifyContent="space-between">
 					{/* <==========Search =========> */}
 					<Flex>
 						<SearchBar
 							inputContProps={{
 								width: {
-									base: "270px",
+									base: "282px",
 									md: "400px",
 									lg: "150px",
 									xl: "300px",

@@ -1,5 +1,6 @@
 import {
 	Box,
+	Flex,
 	Heading,
 	Stack,
 	StackDivider,
@@ -73,11 +74,11 @@ const ContactPane = () => {
 				mt="5"
 				fontSize={{ base: 14, md: 12, lg: 14 }}
 			>
-				<Box display={"flex"} justifyContent={"space-between"}>
-					<Box display={"flex"} as="span">
+				<Flex justifyContent={"space-between"}>
+					<Flex as="span" align="center">
 						<Text color="light">Mobile number:</Text>
 						<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
-					</Box>
+					</Flex>
 					{isSmallerThan769 ? (
 						<IconButtons
 							variant="success"
@@ -90,14 +91,14 @@ const ContactPane = () => {
 					) : (
 						""
 					)}
-				</Box>
-				<Box display={"flex"} justifyContent={"space-between"}>
-					<Box display={"flex"} as="span">
+				</Flex>
+				<Flex justifyContent={"space-between"}>
+					<Flex as="span" align="center">
 						<Text color="light">Email:</Text>
 						<Text fontWeight={"medium"}>
 							&nbsp; angeltech@email.co.in
 						</Text>
-					</Box>
+					</Flex>
 					<IconButtons
 						title={isSmallerThan769 ? "" : "Email Now"}
 						variant="accent"
@@ -108,7 +109,7 @@ const ContactPane = () => {
 							height: "12px",
 						}}
 					/>
-				</Box>
+				</Flex>
 			</Stack>
 		</Cards>
 	);
