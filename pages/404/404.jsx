@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
 import { Buttons } from "components";
+import Link from "next/link";
 const index = () => {
 	return (
 		<Center h="100vh">
@@ -29,9 +30,9 @@ const index = () => {
 					Sorry but the page you are looking for does not exist, have
 					been removed. name changed or is temporarily unavailable
 				</Text>
-				<Buttons>
-					<a href="/">Back to homepage</a>
-				</Buttons>
+				<Link href="/">
+					<Buttons>Back to homepage</Buttons>
+				</Link>
 			</Center>
 		</Center>
 	);
