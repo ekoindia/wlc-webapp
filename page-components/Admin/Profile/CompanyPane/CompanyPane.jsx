@@ -40,7 +40,7 @@ const CompanyPane = () => {
 						fontSize={{ base: 14, md: 12, lg: 14 }}
 						fontWeight="medium"
 					>
-						<Text>Eko Code:</Text>
+						<Text>User Code:</Text>
 						<Text color={"primary.DEFAULT"}>
 							<span>&nbsp;</span> 387608
 						</Text>

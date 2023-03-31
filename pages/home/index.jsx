@@ -6,7 +6,12 @@ import { Layout, Headings } from "components";
 const home = () => {
 	return (
 		<>
-			<Headings title="Home" hasIcon={false} isMTRequired={false} />
+			<Headings
+				title="Home"
+				hasIcon={false}
+				isMTRequired={false}
+				mt="0"
+			/>
 			<Home />
 		</>
 	);
