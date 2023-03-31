@@ -1,9 +1,11 @@
 import { Box, Divider, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { Buttons, Cards, Icon, Tags } from "components";
 import { apisHelper } from "helpers/apisHelper";
+import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AccountStatementTable } from ".";
+import { useUser } from "contexts/UserContext";
 
 /**
  * A <AccountStatement> component
@@ -14,16 +16,36 @@ import { AccountStatementTable } from ".";
  */
 
 const AccountStatement = ({ className = "", ...props }) => {
+    const { userData } = useUser();
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [isMobileScreen] = useMediaQuery("(max-width: 767px)");
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
-    const accountapi = apisHelper("accountStatement");
-    const { data } = accountapi?.data ?? {};
-    const acctabledata = data?.account_statement_details ?? [];
-    const agentname = data?.agent_name ?? [];
-    const saving_balance = data?.saving_balance ?? [];
+    	/* API CALLING */
+
+	let headers = {
+		"tf-req-uri-root-path": "/ekoicici/v1",
+		"tf-req-uri": `/network/agents/transaction_history?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989`,
+		"tf-req-method": "GET",
+	};
+    
+	const { data, error, isLoading, mutate } = useRequest({
+		method: "POST",
+		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+		headers: { ...headers },
+		authorization: `Bearer ${userData.access_token}`,
+	});
+
+	useEffect(() => {
+		mutate(
+			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+			headers
+		);
+	}, [headers["tf-req-uri"]]);
+    const acctabledata = data?.data?.transaction_details ?? [];
+    const agentname = acctabledata[0]?.agent_name ?? [];
+    const saving_balance = acctabledata[0]?.saving_balance ?? [];
 
 
 	const router = useRouter();

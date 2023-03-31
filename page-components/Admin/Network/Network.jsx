@@ -17,7 +17,7 @@ import { NetworkTable } from "./NetworkTable";
  */
 
 const Network = ({ className = "", ...props }) => {
-	const [search, setSearch] = useState(""); // TODO: Edit state as required
+	const [search, setSearch] = useState(""); 
 	const [sort, setSort] = useState();
 	console.log("sortValue", sort);
 	const [filter, setFilter] = useState({});

@@ -1,28 +1,5 @@
 import { Table } from "components";
-import { apisHelper } from "helpers/apisHelper";
 import { useRouter } from "next/router";
-
-const datadummy = {
-	response_status_id: 1,
-	data: {
-		client_ref_id: "202301031354123456",
-		transaction_details: [
-			{
-				agent_type: "I-CSP",
-				saving_balance: "1000000.000",
-				agent_name: "Airwave Teleservices",
-				latitude: "28.65561600",
-				location: "GurgaonHaryana",
-				agent_mobile: "9768685676",
-				account_status: "Agreement Pending",
-				longitude: "77.20468480",
-			},
-		],
-	},
-	response_type_id: 1803,
-	message: "Success! Transaction History Found!",
-	status: 1803,
-};
 /**
 //  * A <TransactionHistoryTable> component
  * TODO: This is transaction history table with clickable rows
@@ -30,14 +7,15 @@ const datadummy = {
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<TransactionHistoryTable></TransactionHistoryTable>`
  */
-const TransactionHistoryTable = (searchValue) => {
-    console.log('searchValue', searchValue)
-	const router = useRouter();
-	const apidata = apisHelper("Transaction", searchValue);
-	// console.log("apidata", apidata);
-	// console.log("apidata", apidata);
-	const transactiondata = apidata?.data?.data?.transaction_details ?? [];
+const TransactionHistoryTable = (props) => {
+	const { searchValue, transactiondata } = props;
 	console.log("transactiondata", transactiondata);
+	const router = useRouter();
+	// const apidata = apisHelper("Transaction", searchValue);
+	// console.log("apidata", apidata);
+	// console.log("apidata", apidata);
+	// const transactiondata = apidata?.data?.data?.transaction_details ?? [];
+	// console.log("transactiondata", transactiondata);
 
 	const renderer = [
 		{ name: "", field: "Sr. No." },

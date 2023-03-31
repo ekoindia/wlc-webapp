@@ -88,7 +88,7 @@ const Table = (props) => {
 		});
 	};
 	const getTr = () => {
-		return data.map((item, index) => {
+		return data?.map((item, index) => {
 			return (
 				<Tr
 					key={index}
