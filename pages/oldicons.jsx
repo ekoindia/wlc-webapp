@@ -175,6 +175,7 @@ const connecticon = () => {
 		"cashout",
 		"view-transaction-history",
 		"manage",
+		"expand-add",
 	];
 
 	return (

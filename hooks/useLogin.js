@@ -39,7 +39,7 @@ function useLogin(login, setStep, setEmail) {
 					}
 				})
 				.then((responseData) => {
-					console.log("LOGIN RESPONSE >>>> ", responseData.status);
+					console.log("LOGIN RESPONSE >>>> ", responseData);
 
 					if (responseData.status === 302) {
 						toast({
@@ -59,8 +59,8 @@ function useLogin(login, setStep, setEmail) {
 					) {
 						console.log("Setting states");
 
-						setEmail(res.details.email);
-						setStep("GOOGLE_VERIFY");
+						setStep("SOCIAL_VERIFY");
+						setEmail(responseData.details.email);
 					} else {
 						processLoginResponse(responseData);
 
