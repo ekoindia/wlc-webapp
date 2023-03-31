@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
 	Box,
@@ -24,6 +24,64 @@ import { Buttons, Icon, IconButtons, Calenders } from "..";
 function Filter() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const btnRef = React.useRef();
+	const [dateText, setDateText] = useState({
+		// TODO: Edit state as required
+		// from: "",
+		// to: "DD/MM/YYYY",
+	});
+	console.log("dateText", dateText);
+
+	const onDateChange = (e, type) => {
+		if (type === "from") {
+			if (!e.target.value)
+				setDateText((prev) => {
+					return {
+						...prev,
+						from: "DD/MM/YYYY",
+					};
+				});
+			else
+				setDateText((prev) => {
+					return {
+						...prev,
+						from: e.target.value,
+					};
+				});
+		} else {
+			if (!e.target.value)
+				setDateText((prev) => {
+					return {
+						...prev,
+						to: "DD/MM/YYYY",
+					};
+				});
+			else
+				setDateText((prev) => {
+					return {
+						...prev,
+						to: e.target.value,
+					};
+				});
+		}
+	};
+	// const onDateChange = (e, type) => {
+	// 	console.log('e', e.target.value)
+	// 	if (type === 'from') {
+	// 		setDateText((prev) => {
+	// 			return {
+	// 				...prev,
+	// 				from: "DD/MM/YYYY",
+	// 			};
+	// 		});
+	// 	} else {
+	// 		setDateText((prev) => {
+	// 			return {
+	// 				...prev,
+	// 				to: e.target.value,
+	// 			};
+	// 		});
+	// 	}
+	// }
 
 	return (
 		<>
@@ -565,6 +623,10 @@ function Filter() {
 														md: "none",
 													},
 												}}
+												onChange={(e) =>
+													onDateChange(e, "from")
+												}
+												value={dateText.from}
 											/>
 										</Flex>
 										<Flex w="100%">
@@ -584,6 +646,10 @@ function Filter() {
 														md: "0px 10px 10px 0px",
 													},
 												}}
+												onChange={(e) =>
+													onDateChange(e, "to")
+												}
+												value={dateText.to}
 											/>
 										</Flex>
 									</Flex>
@@ -634,4 +700,5 @@ function Filter() {
 		</>
 	);
 }
+
 export default Filter;

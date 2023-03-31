@@ -63,8 +63,10 @@ export type IconNameType =
 export type IconProps = {
 	name: IconNameType;
 	color?: string;
-	width?: string;
-	height?: string;
+	width?: any;
+	height?: any;
+	w?: any;
+	h?: any;
 	size?: string;
 	style?: React.CSSProperties;
 };
@@ -76,14 +78,27 @@ export type IconProps = {
  * @example	`<Icon></Icon>`
  */
 
-const Icon = ({ name, style, size = "24px", ...rest }: IconProps) => {
-	const transform = IconLibrary[name]?.transform;
+const Icon = ({ name, style, w, h, width, height, ...rest }: IconProps) => {
+	// const transform = IconLibrary[name]?.transform;
 	const viewBox = IconLibrary[name]?.viewBox;
 	const path = IconLibrary[name]?.path;
 
+	let sizeX = "24px";
+	let sizeY = "24px";
+	if ((w && h) || (width && height)) {
+		sizeX = width || w;
+		sizeY = height || h;
+	} else if (w || width) {
+		sizeX = w || width;
+		sizeY = sizeX;
+	} else if (h || height) {
+		sizeY = h || height;
+		sizeX = sizeY;
+	}
+
 	return (
 		// <Center style={style} maxH="24px" maxW="24px" {...rest}>
-		<Box maxH="24px" maxW="24px" w={size} h={size} {...rest}>
+		<Box w={sizeX} h={sizeY} {...rest}>
 			<svg
 				style={{ width: "inherit", height: "inherit" }}
 				viewBox={viewBox}

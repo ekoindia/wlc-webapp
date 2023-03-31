@@ -100,7 +100,14 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 						w="100%"
 						placeholder="--Select--"
 						h="12"
-						icon={<Icon name="caret-down" />}
+						icon={
+							<Icon
+								name="caret-down"
+								w="14px"
+								h="10px"
+								color="light"
+							/>
+						}
 					>
 						<option value="option1">Option 1</option>
 						<option value="option2">Option 2</option>
@@ -120,7 +127,14 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 						placeholder="--Select--"
 						size="md"
 						h="12"
-						icon={<Icon name="caret-down" />}
+						icon={
+							<Icon
+								name="caret-down"
+								w="14px"
+								h="10px"
+								color="light"
+							/>
+						}
 					>
 						<option value="option1">Option 1</option>
 						<option value="option2">Option 2</option>
@@ -137,9 +151,12 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 				direction={{ base: "column", sm: "row" }}
 				columnGap="30px"
 				rowGap="24px"
-				onClick={() => setIsShowSelectAgent(true)}
 			>
-				<Buttons h="54px" fontSize="md">
+				<Buttons
+					h="54px"
+					fontSize="md"
+					onClick={() => setIsShowSelectAgent(true)}
+				>
 					Select Agents
 				</Buttons>
 				<Buttons
