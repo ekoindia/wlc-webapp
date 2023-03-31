@@ -3,15 +3,14 @@ import { useLayoutContext } from "contexts/LayoutContext";
 import { useRouter } from "next/router";
 import { Icon } from "..";
 
-const Headings = (props) => {
-	const {
-		hasIcon = true, //TODO hasBackIcon or something -- hasIcon is ambiguous
-		title,
-		redirectHandler,
-		propComp,
-		isCompVisible = true,
-	} = props;
-
+const Headings = ({
+	hasIcon = true, //TODO hasBackIcon or something -- hasIcon is ambiguous
+	title,
+	redirectHandler,
+	propComp,
+	isCompVisible = true,
+	...rest
+}) => {
 	const router = useRouter();
 	const redirectTo = () => {
 		router.back();
@@ -52,7 +51,15 @@ const Headings = (props) => {
 	return (
 		<>
 			<Flex
-				my={{
+				mt={{
+					base: isNavHidden ? "0px" : "10px",
+					sm: isNavHidden ? "0px" : "8px",
+					md: isNavHidden ? "0px" : "12px",
+					lg: "16px",
+					xl: "18px",
+					"2xl": "20px",
+				}}
+				mb={{
 					base: isNavHidden ? "0px" : "10px",
 					sm: isNavHidden ? "0px" : "8px",
 					md: isNavHidden ? "0px" : "12px",
@@ -64,7 +71,7 @@ const Headings = (props) => {
 				px={{ base: "16px", md: "0px" }}
 				justify="space-between"
 				align="center"
-				{...styles}
+				{...rest}
 			>
 				<Box>
 					<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>

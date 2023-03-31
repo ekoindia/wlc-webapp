@@ -348,7 +348,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							color={"white"}
 							mb="3px"
 						>
-							(Eko Code:{" "}
+							(User Code:{" "}
 							<Text as={"span"} fontWeight={"medium"}>
 								501837634
 							</Text>
