@@ -3,7 +3,7 @@ import { useGetLogoContext } from "contexts/getLogoContext";
 import { useUser } from "contexts/UserContext";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { GoogleVerify, Login, VerifyOtp } from ".";
+import { Login, VerifyOtp, SocialVerify } from ".";
 
 /**
  * This is the main component where all the Login related component rendered.
@@ -99,9 +99,9 @@ const LoginPanel = (props) => {
 							/>
 						</SlideFade>
 					)}
-					{step === "GOOGLE_VERIFY" && (
+					{step === "SOCIAL_VERIFY" && (
 						<SlideFade offsetX={100} offsetY={0} in={true}>
-							<GoogleVerify
+							<SocialVerify
 								setStep={setStep}
 								number={number}
 								email={email}

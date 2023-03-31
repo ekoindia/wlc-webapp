@@ -4,13 +4,13 @@ import { useState } from "react";
 import { sendOtpRequest, RemoveFormatted } from "helpers";
 
 /**
- * A <GoogleVerify> component
+ * A <SocialVerify> component
  * TODO: Used when the google auth is successfull to verify phone number if the user is new
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<GoogleVerify></GoogleVerify>`
+ * @example	`<SocialVerify></SocialVerify>`
  */
-const GoogleVerify = ({ email, number, setNumber, setStep }) => {
+const SocialVerify = ({ email, number, setNumber, setStep }) => {
 	const toast = useToast();
 	const [value, setValue] = useState(number.formatted);
 	const [invalid, setInvalid] = useState("");
@@ -119,4 +119,4 @@ const GoogleVerify = ({ email, number, setNumber, setStep }) => {
 	);
 };
 
-export default GoogleVerify;
+export default SocialVerify;
