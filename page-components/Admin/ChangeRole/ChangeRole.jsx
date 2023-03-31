@@ -25,6 +25,11 @@ import { MoveAgents, TransferCSP } from ".";
 const ChangeRole = ({ className = "", ...props }) => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	const tab = +useRouter().query.tab;
+
+	function backHandler() {
+		setIsShowSelectAgent((prev) => !prev);
+	}
+
 	return !isShowSelectAgent ? (
 		<>
 			<Headings title="Change Role" />
@@ -138,7 +143,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 		</>
 	) : (
 		<>
-			<Headings title="Select Agents" />
+			<Headings title="Select Agents" redirectHandler={backHandler} />
 			<Box>
 				{/* Move button for mobile responsive */}
 				<MoveAgents
