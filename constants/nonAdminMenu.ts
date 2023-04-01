@@ -47,7 +47,7 @@ export const nonAdminMenu: nonAdminMenuType[] = [
 			{
 				icon: "manage",
 				label: "Manage My Account",
-				link: "/settings",
+				link: "/transaction/536",
 			},
 		],
 	},
