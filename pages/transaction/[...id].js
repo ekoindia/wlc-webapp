@@ -12,8 +12,8 @@ const Transaction = () => {
 	const start_id = id && id.length > 0 ? id[0] : 0;
 
 	const { userData } = useUser();
-	const { _role_tx_list } = useMenuContext();
-	console.log(">>> USER DATA:: ", userData, _role_tx_list);
+	const { role_tx_list } = useMenuContext();
+	console.log(">>> USER DATA:: ", userData, role_tx_list);
 
 	// const _onTrxnBusyChanged = (e) => {
 	// 	console.log(">>> _onTrxnBusyChanged:: ", e);
@@ -67,7 +67,7 @@ const Transaction = () => {
 			<Script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js" />
 			{/* <Layout> */}
 			<tf-wlc-widget
-				role_trxn_list={JSON.stringify(_role_tx_list)}
+				role_trxn_list={JSON.stringify(role_tx_list)}
 				logged_in={userData.loggedIn}
 				interaction_id={start_id}
 				user_id={userData.userId}
