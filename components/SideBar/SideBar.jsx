@@ -14,8 +14,7 @@ import {
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { roles } from "constants";
-import { adminMenu, nonAdminMenu } from "constants";
+import { adminMenu, nonAdminMenu, roles } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
 import Link from "next/link";
@@ -25,7 +24,7 @@ import { Icon } from "..";
 
 function isCurrentRoute(router, currPath, role) {
 	const path = router.asPath.split("?")[0];
-	console.log("roles", path.split("/"));
+	// console.log("roles", path.split("/"));
 	const currentRoute =
 		role === roles["admin"] ? path.split("/")[2] : path.split("/")[1];
 	if (role === roles["admin"] && currentRoute === currPath.split("/")[2]) {

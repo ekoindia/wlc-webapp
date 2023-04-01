@@ -14,7 +14,7 @@ const MenuProvider = ({ children }) => {
 	useEffect(() => {
 		//API call /transaction to fetch menu list
 		const transactionData = fetch(
-			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions",
+			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/wlc",
 			{
 				method: "POST",
 				headers: {

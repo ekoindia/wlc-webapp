@@ -196,7 +196,7 @@ export const light = extendTheme({
 		white: "#FFFFFF",
 		shade: "#F2F2F2",
 		highlight: "#FFD93B",
-		bg: "#F5F6F8",
+		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
 		inputlabel: "#0C243B",
 		sidebar: {
 			"icon-bg": "#1F3ABC",
