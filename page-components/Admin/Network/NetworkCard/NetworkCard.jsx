@@ -11,7 +11,7 @@ import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
  */
 
 const NetworkCard = (props) => {
-	// const { item } = props;
+	const { item } = props;
 
 	return (
 		<>
@@ -22,7 +22,7 @@ const NetworkCard = (props) => {
 				<Menus
 					iconName="more-vert"
 					as={IconButton}
-					iconStyles={{ width: "4px", height: "18px" }}
+					// iconStyles={{ width: "24px", height: "24px" }}
 					type="inverted"
 					onClick={(e) => {
 						e.stopPropagation();

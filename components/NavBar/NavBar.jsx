@@ -13,7 +13,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { Buttons, Headings, Icon, IconButtons } from "..";
+import { Buttons, Icon, IconButtons } from "..";
 import { useUser } from "contexts/UserContext";
 import { useRouter } from "next/router";
 
@@ -21,6 +21,7 @@ const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
 	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
 		props;
+
 	return (
 		<>
 			{isCardOpen && (
@@ -68,28 +69,10 @@ const NavBar = (props) => {
 						"2xl": "90px",
 					}}
 				>
-					{isSmallerThan769 ? (
-						isNavVisible ? (
-							<NavContent
-								setNavOpen={setNavOpen}
-								setIsCardOpen={setIsCardOpen}
-							/>
-						) : (
-							<Flex h="100%" alignItems="center">
-								<Headings
-									title={headingObj.title}
-									hasIcon={headingObj.hasIcon}
-									insideNav={true}
-									propComp={propComp}
-								/>
-							</Flex>
-						)
-					) : (
-						<NavContent
-							setNavOpen={setNavOpen}
-							setIsCardOpen={setIsCardOpen}
-						/>
-					)}
+					<NavContent
+						setNavOpen={setNavOpen}
+						setIsCardOpen={setIsCardOpen}
+					/>
 				</Box>
 			</Box>
 		</>
@@ -115,7 +98,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 							setNavOpen(true);
 						}}
 						aria-label="open menu"
-						icon={<Icon name="nav-menu" />}
+						icon={<Icon name="menu" />}
 						size={"sm"}
 						mr={{
 							base: "1vw",
@@ -196,11 +179,13 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 													"2xl": "18px",
 												}}
 												fontWeight={"semibold"}
-												mr={"1.7vw"}
+												mr={"1.6vw"}
 											>
 												Aakash Enterprises
 											</Text>
-											<Box
+
+											<Icon
+												name="arrow-drop-down"
 												width={{
 													md: "1vw",
 													lg: "0.75vw",
@@ -209,9 +194,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 													md: "1vw",
 													lg: "0.70vw",
 												}}
-											>
-												<Icon name="drop-down" />
-											</Box>
+												pt="2px"
+											/>
 										</Box>
 										<Text
 											fontSize={{
@@ -262,13 +246,13 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 	const { logout, userData } = useUser();
 	const router = useRouter();
 	const logoutHandler = () => {
-		router.push("/");
+		// router.push("/");
 		logout();
 	};
 
 	return (
 		<Box
-			border={"1px solid #D2D2D2"}
+			border="card"
 			boxShadow={"0px 6px 10px #00000033"}
 			borderRadius={{
 				base: "0.3rem",
@@ -304,19 +288,15 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						}}
 					/>
 				</Flex>
-				<Box display={{ base: "none", sm: "initial" }}>
-					<Icon
-						name="drop-down"
-						width="16px"
-						height="16px"
-						color="#11299E"
-						style={{
-							transform: "rotate(180deg)",
-							position: "absolute",
-							top: "-8.5%",
-							right: "2.7%",
-						}}
-					/>
+				<Box
+					display={{ base: "none", sm: "initial" }}
+					color="accent.DEFAULT"
+					transform="rotate(180deg)"
+					position="absolute"
+					top="-19%"
+					right="2%"
+				>
+					<Icon name="arrow-drop-down" width="16px" height="16px" />
 				</Box>
 
 				<Box
@@ -340,6 +320,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							xl: "20px",
 							"2xl": "25px",
 						}}
+						lineHeight="normal"
 					>
 						<Text
 							fontSize={{
@@ -365,10 +346,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							}}
 							w={"fit-content"}
 							color={"white"}
+							mb="3px"
 						>
 							(Eko Code:{" "}
 							<Text as={"span"} fontWeight={"medium"}>
-								{" "}
 								501837634
 							</Text>
 							)
@@ -413,7 +394,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								</Text>
 								<Box ml={{ base: "15px", sm: "initial" }}>
 									<IconButtons
-										iconSize={{ base: "sm", sm: "xs" }}
+										iconSize={"xs"}
 										// onClick={() =>
 										// 	Router.push("/admin/my-network/profile/up-per-info")
 										// }
@@ -423,7 +404,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 											width: "10px",
 											height: "10px",
 										}}
-									></IconButtons>
+									/>
 								</Box>
 							</Box>
 						</Flex>

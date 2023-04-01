@@ -402,7 +402,13 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 											}}
 											h={"3rem"}
 											borderRadius="10px"
-											icon={<Icon name="caret-down" />}
+											icon={
+												<Icon
+													name="caret-down"
+													w="14px"
+													h="10px"
+												/>
+											}
 										>
 											<option value="option1">
 												Delhi
@@ -501,7 +507,13 @@ const UpdateSellerAddress = ({ className = "", ...props }) => {
 										}}
 										h={"3rem"}
 										borderRadius="10px"
-										icon={<Icon name="caret-down" />}
+										icon={
+											<Icon
+												name="caret-down"
+												w="14px"
+												h="10px"
+											/>
+										}
 									>
 										<option value="Permanent"></option>
 									</Select>

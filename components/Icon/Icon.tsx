@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { IconLibrary } from "constants/IconLibrary";
+
 import React from "react";
 
 export type IconNameType =
@@ -26,8 +27,8 @@ export type IconNameType =
 	| "caret-down"
 	| "sort"
 	| "search"
-	| "nav-menu"
-	| "drop-down"
+	| "menu"
+	| "arrow-drop-down"
 	| "logout"
 	| "timer"
 	| "camera"
@@ -42,7 +43,7 @@ export type IconNameType =
 	| "arrow-up"
 	| "arrow-down"
 	| "close"
-	| "	percent_bg"
+	| "percent_bg"
 	| "dashboard"
 	| "decrease"
 	| "increase"
@@ -50,13 +51,23 @@ export type IconNameType =
 	| "arrow-increase"
 	| "arrow-decrease"
 	| "remove"
-	| "expand";
+	| "expand"
+	| "cashout"
+	| "transaction"
+	| "others"
+	| "menu-home"
+	| "select-plan"
+	| "manage"
+	| "view-transaction-history";
 
 export type IconProps = {
 	name: IconNameType;
 	color?: string;
-	width?: string;
-	height?: string;
+	width?: any;
+	height?: any;
+	w?: any;
+	h?: any;
+	size?: string;
 	style?: React.CSSProperties;
 };
 /**
@@ -67,15 +78,40 @@ export type IconProps = {
  * @example	`<Icon></Icon>`
  */
 
-const Icon = ({ name, style, ...rest }: IconProps) => {
-	const transform = IconLibrary[name]?.transform;
+const Icon = ({ name, style, w, h, width, height, ...rest }: IconProps) => {
+	// const transform = IconLibrary[name]?.transform;
 	const viewBox = IconLibrary[name]?.viewBox;
 	const path = IconLibrary[name]?.path;
 
+	let sizeX = "24px";
+	let sizeY = "24px";
+	if ((w && h) || (width && height)) {
+		sizeX = width || w;
+		sizeY = height || h;
+	} else if (w || width) {
+		sizeX = w || width;
+		sizeY = sizeX;
+	} else if (h || height) {
+		sizeY = h || height;
+		sizeX = sizeY;
+	}
+
 	return (
-		<svg style={style} viewBox={viewBox} {...rest} className="custom-icon">
-			<path d={path} fill="currentColor" transform={transform} />
-		</svg>
+		// <Center style={style} maxH="24px" maxW="24px" {...rest}>
+		<Box w={sizeX} h={sizeY} {...rest}>
+			<svg
+				style={{ width: "inherit", height: "inherit" }}
+				viewBox={viewBox}
+				fill="currentColor"
+				dangerouslySetInnerHTML={{ __html: path }}
+			></svg>
+		</Box>
+		// </Center>
+		// <svg style={style}
+		// viewBox={viewBox}
+		//  {...rest} className="custom-icon">
+		// 	<path d={path} fill="currentColor" transform={transform} />
+		// </svg>
 	);
 };
 

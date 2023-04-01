@@ -22,21 +22,42 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Icon } from "..";
 
-function isCurrentRoute(router, currPath, role) {
+function isCurrentRoute(router, currPath) {
 	const path = router.asPath.split("?")[0];
-	// console.log("roles", path.split("/"));
-	const currentRoute =
-		role === roles["admin"] ? path.split("/")[2] : path.split("/")[1];
-	if (role === roles["admin"] && currentRoute === currPath.split("/")[2]) {
-		return true;
+	if (path === currPath) return true;
+
+	const splittedPath = path.split("/");
+	const splittedCurrPath = currPath.split("/");
+	let isSamePath = false;
+
+	for (let i = 1; i < splittedCurrPath.length; i++) {
+		if (
+			splittedPath[i] === splittedCurrPath[i] &&
+			splittedCurrPath[i] !== "admin"
+		) {
+			isSamePath = true;
+		} else {
+			isSamePath = false;
+		}
 	}
-	if (
-		role === roles["non-admin"] &&
-		// currentRoute === currPath.split("/")[1] ||
-		currPath === path
-	)
-		return true;
+	return isSamePath ? true : false;
 }
+
+//MAIN EXPORT
+const SideBar = (props) => {
+	return (
+		<>
+			<Box display={{ base: "flex", lg: "none" }}>
+				<MenuBar props={props} />
+			</Box>
+			<Box display={{ base: "none", lg: "flex" }}>
+				<SideBarMenu />
+			</Box>
+		</>
+	);
+};
+
+export default SideBar;
 
 //FOR LAPTOP SCREENS
 const SideBarMenu = ({ className = "", ...props }) => {
@@ -149,22 +170,6 @@ const MenuBar = ({ props }) => {
 	);
 };
 
-//EXPORT
-const SideBar = (props) => {
-	return (
-		<>
-			<Box display={{ base: "flex", lg: "none" }}>
-				<MenuBar props={props} />
-			</Box>
-			<Box display={{ base: "none", lg: "flex" }}>
-				<SideBarMenu />
-			</Box>
-		</>
-	);
-};
-
-export default SideBar;
-
 const CollapseMenu = (props) => {
 	const { menu, interaction_list, currentRoute, role } = props;
 	const router = useRouter();
@@ -175,7 +180,7 @@ const CollapseMenu = (props) => {
 					{({ isExpanded }) => (
 						<>
 							<AccordionButton
-								paddingLeft={{
+								pl={{
 									base: "5",
 									md: "5",
 									lg: "4",
@@ -184,7 +189,7 @@ const CollapseMenu = (props) => {
 								py={{
 									base: "4",
 									md: "3",
-									xl: "3",
+									xl: "3.5",
 									"2xl": "5",
 								}}
 							>
@@ -196,7 +201,8 @@ const CollapseMenu = (props) => {
 									padding="0px"
 								>
 									<Flex align="center" gap="13px" w={"full"}>
-										<Center
+										<Icon
+											name={menu.icon}
 											w={{
 												base: "20px",
 												sm: "20px",
@@ -205,20 +211,7 @@ const CollapseMenu = (props) => {
 												xl: "18px",
 												"2xl": "27px",
 											}}
-											h={{
-												base: "20px",
-												sm: "20px",
-												md: "18px",
-												lg: "18px",
-												xl: "18px",
-												"2xl": "20px",
-											}}
-										>
-											<Icon
-												name={menu.icon}
-												width={"100%"}
-											/>
-										</Center>
+										/>
 										<Text
 											fontSize={{
 												base: "14px",
@@ -232,11 +225,14 @@ const CollapseMenu = (props) => {
 											{menu.name}
 										</Text>
 									</Flex>
-									<Circle bg="icon_bg_blue" size="5">
+									<Circle bg="sidebar.icon-bg" size="5">
 										{!isExpanded ? (
-											<Icon name="expand" width="10px" />
+											<Icon
+												name="expand-add"
+												width="10px"
+											/>
 										) : (
-											<Icon name="remove" width="10px" />
+											<Icon name="remove" width="12px" />
 										)}
 									</Circle>
 								</Flex>
@@ -246,36 +242,29 @@ const CollapseMenu = (props) => {
 								{interaction_list?.map((item, index) => {
 									const link =
 										item.link || `/transaction/${item?.id}`;
+									const isCurrent = isCurrentRoute(
+										router,
+										link,
+										role
+									);
 									return (
 										<Link key={index} href={link}>
 											<Box
 												w="100%"
 												padding="0px 14px 0px 40px"
 												bg={
-													isCurrentRoute(
-														router,
-														link,
-														role
-													)
+													isCurrent
 														? "sidebar.active-bg"
 														: ""
 												}
 												borderLeft="8px"
 												borderLeftColor={
-													isCurrentRoute(
-														router,
-														link,
-														role
-													)
+													isCurrent
 														? "sidebar.active-border"
 														: "transparent"
 												}
 												outline={
-													isCurrentRoute(
-														router,
-														link,
-														role
-													)
+													isCurrent
 														? "var(--chakra-borders-br-sidebar)"
 														: ""
 												}
@@ -291,7 +280,17 @@ const CollapseMenu = (props) => {
 														align="center"
 														columnGap="10px"
 													>
-														<MinusIcon fontSize="12px" />
+														<Icon
+															name={item.icon}
+															w={{
+																base: "20px",
+																sm: "20px",
+																md: "18px",
+																lg: "18px",
+																xl: "18px",
+																"2xl": "27px",
+															}}
+														/>
 														<Text
 															fontSize={{
 																base: "12px",
@@ -308,11 +307,7 @@ const CollapseMenu = (props) => {
 													</Flex>
 													<Icon
 														color={
-															isCurrentRoute(
-																router,
-																link,
-																role
-															)
+															isCurrent
 																? "#FE7D00"
 																: "#556FEF"
 														}
@@ -336,6 +331,7 @@ const CollapseMenu = (props) => {
 const LinkMenu = (props) => {
 	const { menu, currentRoute, index, role } = props;
 	const router = useRouter();
+	const isCurrent = isCurrentRoute(router, menu.link, role);
 	return (
 		<Link href={menu.link} key={index}>
 			<Flex
@@ -367,19 +363,14 @@ const LinkMenu = (props) => {
 				role="group"
 				cursor="pointer"
 				borderBottom="br-sidebar"
-				bg={
-					isCurrentRoute(router, menu.link, role)
-						? "sidebar.active-bg"
-						: ""
-				}
+				bg={isCurrent ? "sidebar.active-bg" : ""}
 				borderLeft="8px"
 				borderLeftColor={
-					isCurrentRoute(router, menu.link, role)
-						? "sidebar.active-border"
-						: "transparent"
+					isCurrent ? "sidebar.active-border" : "transparent"
 				}
 			>
-				<Center
+				<Icon
+					name={menu.icon}
 					w={{
 						base: "20px",
 						sm: "20px",
@@ -388,17 +379,7 @@ const LinkMenu = (props) => {
 						xl: "18px",
 						"2xl": "27px",
 					}}
-					h={{
-						base: "20px",
-						sm: "20px",
-						md: "18px",
-						lg: "18px",
-						xl: "18px",
-						"2xl": "20px",
-					}}
-				>
-					<Icon name={menu.icon} width={"100%"} />
-				</Center>
+				/>
 				{menu.name}
 			</Flex>
 		</Link>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
 	Box,
@@ -24,6 +24,64 @@ import { Buttons, Icon, IconButtons, Calenders } from "..";
 function Filter() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const btnRef = React.useRef();
+	const [dateText, setDateText] = useState({
+		// TODO: Edit state as required
+		// from: "",
+		// to: "DD/MM/YYYY",
+	});
+	console.log("dateText", dateText);
+
+	const onDateChange = (e, type) => {
+		if (type === "from") {
+			if (!e.target.value)
+				setDateText((prev) => {
+					return {
+						...prev,
+						from: "DD/MM/YYYY",
+					};
+				});
+			else
+				setDateText((prev) => {
+					return {
+						...prev,
+						from: e.target.value,
+					};
+				});
+		} else {
+			if (!e.target.value)
+				setDateText((prev) => {
+					return {
+						...prev,
+						to: "DD/MM/YYYY",
+					};
+				});
+			else
+				setDateText((prev) => {
+					return {
+						...prev,
+						to: e.target.value,
+					};
+				});
+		}
+	};
+	// const onDateChange = (e, type) => {
+	// 	console.log('e', e.target.value)
+	// 	if (type === 'from') {
+	// 		setDateText((prev) => {
+	// 			return {
+	// 				...prev,
+	// 				from: "DD/MM/YYYY",
+	// 			};
+	// 		});
+	// 	} else {
+	// 		setDateText((prev) => {
+	// 			return {
+	// 				...prev,
+	// 				to: e.target.value,
+	// 			};
+	// 		});
+	// 	}
+	// }
 
 	return (
 		<>
@@ -38,13 +96,13 @@ function Filter() {
 					w={{
 						base: "8vw",
 						sm: "12vw",
-						md: "10vw",
-						lg: "7vw",
+						md: "12vw",
+						lg: "9vw",
 						xl: "8vw",
-						"2xl": "6vw",
+						"2xl": "7vw",
 					}}
-					bg="#FFFFFF"
-					color="#11299E"
+					bg="white"
+					color="accent.DEFAULT"
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
 					borderRadius="10px"
@@ -75,11 +133,11 @@ function Filter() {
 						}}
 						mr={"2px"}
 					>
-						<Icon name="filter" />
+						<Icon name="filter" h="15px" />
 					</Center>
 					<Text
 						as="span"
-						color="#11299E"
+						color="accent.DEFAULT"
 						fontSize={{
 							base: "5px",
 							sm: "xs",
@@ -103,11 +161,11 @@ function Filter() {
 					w={"100%"}
 					h={"100%"}
 					bg="primary.DEFAULT"
-					color="#11299E"
+					color="accent.DEFAULT"
 					borderRadius={"0px"}
 					boxShadow=" 0px 3px 10px #11299E1A"
 				>
-					<Icon name="filter" width="25px" color="white" />
+					<Icon name="filter" w="25px" color="white" />
 					<Text
 						as="span"
 						color="white"
@@ -134,7 +192,7 @@ function Filter() {
 				}}
 			>
 				<DrawerOverlay
-					bg="#e9edf1b3"
+					bg="overlayBg"
 					backdropFilter="blur(6px)"
 					width={"100%"}
 					h={"100%"}
@@ -565,6 +623,10 @@ function Filter() {
 														md: "none",
 													},
 												}}
+												onChange={(e) =>
+													onDateChange(e, "from")
+												}
+												value={dateText.from}
 											/>
 										</Flex>
 										<Flex w="100%">
@@ -584,6 +646,10 @@ function Filter() {
 														md: "0px 10px 10px 0px",
 													},
 												}}
+												onChange={(e) =>
+													onDateChange(e, "to")
+												}
+												value={dateText.to}
 											/>
 										</Flex>
 									</Flex>
@@ -634,4 +700,5 @@ function Filter() {
 		</>
 	);
 }
+
 export default Filter;

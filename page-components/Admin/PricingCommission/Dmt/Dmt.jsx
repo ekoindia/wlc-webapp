@@ -136,6 +136,7 @@ const Dmt = ({ className = "", ...props }) => {
 					</Text>
 				</Box>
 				<HStack
+					className="hstack"
 					justifyContent={"flex-start"}
 					w={"100%"}
 					minH={{ base: "50px", md: "183px" }}
@@ -144,8 +145,7 @@ const Dmt = ({ className = "", ...props }) => {
 					<Flex
 						h={"100%"}
 						direction={{ base: "column", md: "row" }}
-						justifyContent={"space-between"}
-						// w="auto"
+						columnGap="20px"
 						w={{ base: "100%", xl: "71%", "2xl": "56.5%" }}
 						mr={{ base: "0px", lg: "50px" }}
 					>
@@ -164,6 +164,7 @@ const Dmt = ({ className = "", ...props }) => {
 								borderRadius={{ base: "10px", xl: "10px" }}
 								pr={"15px"}
 								gap="15px"
+								align="center"
 							>
 								<Input
 									placeholder="Commission Percentage"
@@ -192,9 +193,9 @@ const Dmt = ({ className = "", ...props }) => {
 											? "percent_bg"
 											: "rupee_bg"
 									}
-									width="23px"
+									w="23px"
 									h="20px"
-									color={"#11299E"}
+									color="accent.DEFAULT"
 								/>
 							</Flex>
 
@@ -284,7 +285,7 @@ const Dmt = ({ className = "", ...props }) => {
 											}}
 										>
 											<Text
-												color="#11299E"
+												color="accent.DEFAULT"
 												fontSize={"20px"}
 												lineHeight={"0"}
 												fontWeight={"semibold"}
@@ -306,7 +307,7 @@ const Dmt = ({ className = "", ...props }) => {
 											w={"50vw"}
 											h={"63px"}
 											bg="primary.DEFAULT"
-											color="#11299E"
+											color="accent.DEFAULT"
 											borderRadius={"0px"}
 											boxShadow=" 0px 3px 10px #11299E1A"
 											_active={{
@@ -334,17 +335,17 @@ const Dmt = ({ className = "", ...props }) => {
 
 						<Box
 							mt={{ base: "10px", md: "0" }}
-							position={"relative"}
-							// bg={"#FFFBF3"}
-							border={"1px solid #FE9F00"}
+							position="relative"
+							border="br-popupcard"
+							boxShadow="0px 3px 6px #EFEFEF"
 							w={{
-								base: "80vw",
+								base: "100%",
 								sm: "72%",
 								md: "45%",
 								xl: "42%",
 							}}
 							h={"180px"}
-							borderRadius={"10px"}
+							borderRadius={{ base: "6px", sm: "10px" }}
 							transition={"ease"}
 							display={"none"}
 							ref={focusRef}
@@ -353,19 +354,18 @@ const Dmt = ({ className = "", ...props }) => {
 								<Box
 									width={"15px"}
 									height={"15px"}
-									borderBottom={"1px solid #FE9F00"}
-									borderLeft={"1px solid #FE9F00"}
-									borderTop={"1px solid #FE9F00"}
-									borderRadius={"2px"}
+									border="br-popupcard"
+									borderRight="none"
+									borderRadius="2px"
 									transform={"rotate(45deg)"}
 									mt={{ base: "-4px", md: "15px" }}
 									ml={{ base: "25px", md: "-4px" }}
-									bg={"#FFFBF3"}
+									bg="focusbg"
 								></Box>
 
 								<Box
 									top={"0%"}
-									bg={"#FFFBF3"}
+									bg="focusbg"
 									borderRadius={"10px"}
 									left={"0%"}
 									width={{
@@ -378,35 +378,45 @@ const Dmt = ({ className = "", ...props }) => {
 									px={"11px"}
 									py={"10px"}
 								>
-									<HStack
-										justify={"space-between"}
-										color={"white"}
-										borderRadius={"6px"}
-										h={"31px"}
+									<Flex
 										w={"100%"}
+										h={{ base: "auto", sm: "30px" }}
+										color={"white"}
 										bg={"primary.DEFAULT"}
-										px={"15px"}
-										py={"8px"}
+										borderRadius={"6px"}
+										justify={"space-between"}
+										px={{ base: "12px", sm: "15px" }}
+										py={{ base: "7px", sm: "8px" }}
+										flexDir={{ base: "column", sm: "row" }}
+										align={{ base: "", sm: "row" }}
 									>
-										<Text fontSize={"12px"}>
+										<Text
+											fontSize={"12px"}
+											lineHeight="normal"
+										>
 											Benchmark Transaction
 										</Text>
-										<Flex align={"center"} gap={"5px"}>
-											<Box width="7px" height="9px">
-												<Icon name="rupee" />
-											</Box>
+										<Flex
+											align={"center"}
+											columnGap={"5px"}
+										>
+											<Icon
+												name="rupee"
+												w="9px"
+												h="11px"
+											/>
 											<Text fontSize={"12px"}>
 												5000.00
 											</Text>
 										</Flex>
-									</HStack>
+									</Flex>
 									<Flex
 										w={"100%"}
-										h={"calc( 100% - 31px)"}
+										h={"calc( 100% - 30px)"}
 										p={"7px"}
 										py={"14px"}
 										direction={"column"}
-										gap={"25px"}
+										gap={{ base: "15px", sm: "25px" }}
 									>
 										<Flex w={"100%"}>
 											<Flex
@@ -425,12 +435,12 @@ const Dmt = ({ className = "", ...props }) => {
 													gap={"5px"}
 													align={"center"}
 												>
-													<Box
-														width={"8px"}
-														height={"9px"}
-													>
-														<Icon name="rupee" />
-													</Box>
+													<Icon
+														name="rupee"
+														w="9px"
+														h="11px"
+													/>
+
 													<Text
 														fontSize={"14px"}
 														fontWeight={"semibold"}
@@ -453,12 +463,12 @@ const Dmt = ({ className = "", ...props }) => {
 													gap={"5px"}
 													align={"center"}
 												>
-													<Box
-														width={"8px"}
-														height={"9px"}
-													>
-														<Icon name="rupee" />
-													</Box>
+													<Icon
+														name="rupee"
+														w="9px"
+														h="11px"
+													/>
+
 													<Text
 														fontSize={"14px"}
 														fontWeight={"semibold"}
@@ -485,12 +495,12 @@ const Dmt = ({ className = "", ...props }) => {
 													gap={"5px"}
 													align={"center"}
 												>
-													<Box
-														width={"8px"}
-														height={"9px"}
-													>
-														<Icon name="rupee" />
-													</Box>
+													<Icon
+														name="rupee"
+														w="9px"
+														h="11px"
+													/>
+
 													<Text
 														fontSize={"14px"}
 														fontWeight={"semibold"}
@@ -513,12 +523,11 @@ const Dmt = ({ className = "", ...props }) => {
 													gap={"5px"}
 													align={"center"}
 												>
-													<Box
-														width={"8px"}
-														height={"9px"}
-													>
-														<Icon name="rupee" />
-													</Box>
+													<Icon
+														name="rupee"
+														w="9px"
+														h="11px"
+													/>
 													<Text
 														fontSize={"14px"}
 														fontWeight={"semibold"}
@@ -587,7 +596,7 @@ const PriceSelect = ({
 						boxShadow: "none",
 					}}
 					borderRadius="10px"
-					icon={<Icon name="caret-down" />}
+					icon={<Icon name="caret-down" w="14px" h="10px" />}
 					{...inputContStyle}
 				>
 					<option value="option1">Option 1</option>

@@ -24,6 +24,7 @@ import {
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { AccountStatementCard } from "page-components/Admin/AccountStatement";
+import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
@@ -40,6 +41,7 @@ const Table = (props) => {
 		tableName,
 		isScrollrequired = false,
 		accordian = false,
+		isPaginationRequired = true,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
@@ -116,16 +118,17 @@ const Table = (props) => {
 						p={{ md: ".5em", xl: "1em" }}
 						fontSize={{ md: "10px", xl: "11px", "2xl": "16px" }}
 					>
-						<Flex gap={2}>
+						<Flex gap={2} align="center">
 							{item.field}
-							<Box as="span" onClick={onSortChange}>
-								<Icon
-									//name={sortIcon[currentSort]} // uncomment this to have interative sort
-									name="sort"
-									width="6px"
-									height="13px"
-								/>
-							</Box>
+							{/* <Box as="span" h="auto" onClick={onSortChange}> */}
+							<Icon
+								//name={sortIcon[currentSort]}
+								onClick={onSortChange} // uncomment this to have interative sort
+								name="sort"
+								width="6px"
+								height="13px"
+							/>
+							{/* </Box> */}
 						</Flex>
 					</Th>
 				);
@@ -150,6 +153,11 @@ const Table = (props) => {
 						key={index}
 						onClick={onRowClick}
 						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
+						style={{
+							backgroundColor:
+								accordian &&
+								(index % 2 === 0 ? "#F6F6F6" : "#F5F6FF"),
+						}}
 					>
 						{renderer.map((r, rIndex) => {
 							return (
@@ -515,21 +523,23 @@ const Table = (props) => {
 							</ChakraTable>
 						</TableContainer>
 						{/* Pagination */}
-						<Flex justify={"flex-end"}>
-							<Pagination
-								className="pagination-bar"
-								currentPage={currentPage}
-								totalCount={tableData.length}
-								pageSize={PageSize}
-								onPageChange={(page) => {
-									console.log(page);
-									router.query.page = page;
-									console.log("Page", page);
-									router.replace(router);
-									setCurrentPage(page);
-								}}
-							/>
-						</Flex>
+						{isPaginationRequired && (
+							<Flex justify={"flex-end"}>
+								<Pagination
+									className="pagination-bar"
+									currentPage={currentPage}
+									totalCount={tableData.length}
+									pageSize={PageSize}
+									onPageChange={(page) => {
+										console.log(page);
+										router.query.page = page;
+										console.log("Page", page);
+										router.replace(router);
+										setCurrentPage(page);
+									}}
+								/>
+							</Flex>
+						)}
 					</>
 				) : (
 					<>

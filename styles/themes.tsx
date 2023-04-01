@@ -198,6 +198,7 @@ export const light = extendTheme({
 		highlight: "#FFD93B",
 		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
 		inputlabel: "#0C243B",
+		overlayBg: "#e9edf1b3",
 		sidebar: {
 			"icon-bg": "#1F3ABC",
 			"active-border": "#FE7D00",
@@ -214,6 +215,7 @@ export const light = extendTheme({
 		"10px": "0.625rem solid",
 		card: "1px solid #D2D2D2",
 		"br-sidebar": "1px solid #1F3ABC",
+		"br-popupcard": "1px solid #FE9F00",
 	},
 	radii: {
 		none: "0",

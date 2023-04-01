@@ -186,7 +186,11 @@ const Select = (props) => {
 					</Flex>
 
 					<Flex>
-						<Icon name="drop-down" height="14px" width="10px" />
+						<Icon
+							name="arrow-drop-down"
+							height="14px"
+							width="10px"
+						/>
 					</Flex>
 				</Flex>
 				<Flex w="100%">
