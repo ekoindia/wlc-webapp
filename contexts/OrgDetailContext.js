@@ -16,7 +16,7 @@ const OrgDetailProvider = ({ children }) => {
 	}, [orgDetail?.app_name]);
 
 	useEffect(() => {
-		window.addEventListener("beforeunload", () => {
+		window.addEventListener("unload", () => {
 			sessionStorage.removeItem("org_detail");
 		});
 	}, []);
