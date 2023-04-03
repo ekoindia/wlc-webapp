@@ -14,6 +14,13 @@ const OrgDetailProvider = ({ children }) => {
 			}
 		}
 	}, [orgDetail?.app_name]);
+
+	useEffect(() => {
+		window.addEventListener("beforeunload", () => {
+			sessionStorage.removeItem("org_detail");
+		});
+	}, []);
+
 	return (
 		<OrgDetailContext.Provider value={{ orgDetail, setOrgDetail }}>
 			{children}

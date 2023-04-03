@@ -71,7 +71,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 		setcurrentRoute(router.pathname.split("/")[2]);
 	}, [router.asPath]);
 
-	const menuList = userData?.role === "admin" ? adminMenu : nonAdminMenu;
+	const menuList = userData?.is_org_admin ? adminMenu : nonAdminMenu;
 
 	return (
 		<Box
@@ -88,7 +88,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 		>
 			<Flex direction="column">
 				<Box borderRight="12px" height={"100%"} w={"full"}>
-					{userData?.role === "non-admin" && (
+					{userData?.is_org_admin === 0 && (
 						<>
 							<ProfileCard
 								name={userData?.userDetails?.name}
