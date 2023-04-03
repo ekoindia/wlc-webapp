@@ -1,11 +1,18 @@
-import { Button, Center, Flex, Heading, Image, Text } from "@chakra-ui/react";
-import { Buttons, Divider, Input } from "components";
-import { useRef, useState } from "react";
+import {
+	Button,
+	Center,
+	Flex,
+	Heading,
+	Image,
+	Text,
+	useToast,
+} from "@chakra-ui/react";
 import { useGoogleLogin } from "@react-oauth/google";
-import { useToast } from "@chakra-ui/react";
-import { useLogin } from "hooks";
+import { Buttons, Divider, Input } from "components";
 import { useUser } from "contexts/UserContext";
-import { sendOtpRequest, RemoveFormatted } from "helpers";
+import { RemoveFormatted, sendOtpRequest } from "helpers";
+import { useLogin } from "hooks";
+import { useRef, useState } from "react";
 
 /**
  * A <Login> component
@@ -136,7 +143,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				isPrefixVisible={true}
 				prefixSymbol={"+91"}
 				onChange={onChangeHandler}
-				maxlength={12}
+				maxLength={12}
 				isNumInput={true}
 				labelStyle={{
 					fontSize: { base: "sm", "2xl": "lg" },
