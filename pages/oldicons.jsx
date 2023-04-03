@@ -176,6 +176,7 @@ const connecticon = () => {
 		"view-transaction-history",
 		"manage",
 		"expand-add",
+		"phone-circle-outline",
 	];
 
 	return (
