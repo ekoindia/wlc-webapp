@@ -48,7 +48,7 @@ const TransactionHistory = ({ className = "", ...props }) => {
 	return (
 		<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
 			<Box>
-				<SearchBar value={search} setSearch={setSearch} />
+				<SearchBar value={search} setSearch={setSearch} searchlimit={10}/>
 			</Box>
 			<Box>
 				<TransactionHistoryTable transactiondata={transactiondata} />

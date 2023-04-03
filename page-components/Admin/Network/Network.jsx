@@ -74,7 +74,7 @@ const Network = ({ className = "", ...props }) => {
 		<>
 			<Box w={"100%"} px={{ base: "16px", md: "initial" }}>
 				<Box display={"flex"} justifyContent={"space-between"}>
-					<SearchBar value={search} setSearch={setSearch} />
+					<SearchBar value={search} setSearch={setSearch} searchlimit={10}/>
 					<Flex
 						display={{ base: "none", md: "flex" }}
 						gap={{ sm: "5px", md: "20px", lg: "50px" }}

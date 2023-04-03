@@ -1,5 +1,5 @@
 import { Table } from "components";
-// import { mockData } from "constants/mockTableData";
+import { mockData } from "constants/mockTableData";
 
 /**
  * A <DetailedStatementTable> component
@@ -34,7 +34,7 @@ const DetailedStatementTable = () => {
 			<Table
 				pageLimit={10}
 				renderer={renderer}
-				// data={mockData}
+				data={mockData}
 				variant="evenStriped"
 				tableName="Detailed"
 			/>

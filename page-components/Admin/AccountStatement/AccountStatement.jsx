@@ -26,7 +26,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989`,
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989`,
 		"tf-req-method": "GET",
 	};
     
@@ -43,11 +43,12 @@ const AccountStatement = ({ className = "", ...props }) => {
 			headers
 		);
 	}, [headers["tf-req-uri"]]);
-    const acctabledata = data?.data?.transaction_details ?? [];
+    console.log('data', data)
+    const acctabledata = data?.data?.recent_transaction_details ?? [];
+    const actable = data?.data?.recent_transaction_details ?? [];
+    console.log('tabledata', actable)
     const agentname = acctabledata[0]?.agent_name ?? [];
     const saving_balance = acctabledata[0]?.saving_balance ?? [];
-
-
 	const router = useRouter();
     /*redirect to detiled statement*/
     const handleClick = (e) => {

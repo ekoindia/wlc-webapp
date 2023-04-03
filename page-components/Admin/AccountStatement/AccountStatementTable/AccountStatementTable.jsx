@@ -13,27 +13,24 @@ import { mockData } from "constants/mockTableData";
 
 const AccountStatementTable = (props) => {
     const acctabledata = props;
+    console.log('acctabledata', acctabledata)
+    
 	const renderer = [
 		{
-			name: "transaction_id",
 			name: "transaction_id",
 			field: "Transaction ID",
 		},
 		{
 			name: "date_time",
-			name: "date_time",
 			field: "Date & Time",
 			sorting: true,
 		},
 		{ name: "activity", field: "Activity" },
-		{ name: "activity", field: "Activity" },
 		{
-			name: "description",
 			name: "description",
 			field: "Description",
 		},
 
-		{ name: "amount", field: "Amount" },
 		{ name: "amount", field: "Amount" },
 	];
 
@@ -49,7 +46,7 @@ const AccountStatementTable = (props) => {
 			<Table
 				pageLimit={15}
 				renderer={renderer}
-				data={mockData}
+				data={acctabledata}
 				variant="evenStriped"
 				tableName="Account"
                 ispagintationrequire={false}
