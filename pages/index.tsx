@@ -15,7 +15,6 @@ export default function Index({ data }) {
 }
 
 export async function getServerSideProps({ req }) {
-	// console.log(req.headers.host.split('.')[0]);
 	let data = {};
 	if (process.env.NEXT_PUBLIC_ENV === "local") {
 		data = {
@@ -34,14 +33,24 @@ export async function getServerSideProps({ req }) {
 			},
 		};
 	} else {
-		const subdomain = req.headers.host.split(".")[0];
-		const domain = req.headers.host.split(".");
-		data = await fetch(
-			`https://sore-teal-codfish-tux.cyclic.app/logos/${subdomain}`
-		)
-			.then((data) => data.json())
-			.then((res) => res)
-			.catch((e) => console.log(e));
+		let hostPath = req.headers.host;
+		let domainPath = process.env.WLC_SUBDOMAIN_ROOT;
+		let dotIndex = hostPath.indexOf(".");
+
+		if (hostPath.slice(dotIndex + 1) === domainPath) {
+			const subdomain = hostPath.split(".")[0];
+
+			data = await fetch(
+				`https://sore-teal-codfish-tux.cyclic.app/logos/${subdomain}`
+			)
+				.then((data) => data.json())
+				.then((res) => res)
+				.catch((e) => console.log(e));
+		} else {
+			return {
+				notFound: true,
+			};
+		}
 	}
 
 	return {
