@@ -315,7 +315,11 @@ const Table = (props) => {
 					>
 						<Box alignItems={"center"}>
 							<Icon
-								name={expandedRow === index ? "remove" : "add"}
+								name={
+									expandedRow === index
+										? "remove"
+										: "expand-add"
+								}
 								width="15px"
 								color="white"
 							/>

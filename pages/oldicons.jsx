@@ -1,6 +1,6 @@
 import { Center, Flex, Text } from "@chakra-ui/react";
+import { Icon } from "components";
 import React from "react";
-import { SvgIcon } from "components";
 
 const connecticon = () => {
 	const iconName = [
@@ -175,6 +175,9 @@ const connecticon = () => {
 		"cashout",
 		"view-transaction-history",
 		"manage",
+		"expand-add",
+		"wallet-outline",
+		"phone-circle-outline",
 	];
 
 	return (
@@ -192,9 +195,8 @@ const connecticon = () => {
 					h="55px"
 					bg="blackAlpha.300"
 					flexDir="column"
-					color=""
 				>
-					<SvgIcon name={ele} height="24px" />
+					<Icon name={ele} height="24px" />
 					<Text fontSize=".5rem">{ele}</Text>
 				</Center>
 			))}

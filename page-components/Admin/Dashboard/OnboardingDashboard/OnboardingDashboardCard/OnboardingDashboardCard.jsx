@@ -36,7 +36,7 @@ const OnboardingDashboardCard = ({ className = "", ...props }) => {
 			<Flex direction="column" fontSize="12px" rowGap="2" pl="42px">
 				<Flex gap="2">
 					<Box as="span" color="light">
-						Eko Code:
+						User Code:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}

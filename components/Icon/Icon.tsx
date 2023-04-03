@@ -58,7 +58,9 @@ export type IconNameType =
 	| "menu-home"
 	| "select-plan"
 	| "manage"
-	| "view-transaction-history";
+	| "view-transaction-history"
+	| "wallet-outline"
+	| "phone-circle-outline";
 
 export type IconProps = {
 	name: IconNameType;

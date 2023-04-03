@@ -1,9 +1,9 @@
 import { Box, Flex, Grid, Image, SlideFade } from "@chakra-ui/react";
-import { useGetLogoContext } from "contexts/getLogoContext";
+import { useOrgDetailContext } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { GoogleVerify, Login, VerifyOtp } from ".";
+import { Login, VerifyOtp, SocialVerify } from ".";
 
 /**
  * This is the main component where all the Login related component rendered.
@@ -19,10 +19,8 @@ const LoginPanel = (props) => {
 		formatted: "",
 	});
 	const [loginType, setLoginType] = useState("Mobile");
-	const { logo } = useGetLogoContext();
-	const router = useRouter();
-	// const { userData } = useUser();
-	// useRedirectPageOnLogin(router, userData )
+	const { orgDetail } = useOrgDetailContext();
+
 	return (
 		<Flex
 			w="full"
@@ -57,9 +55,8 @@ const LoginPanel = (props) => {
 					}}
 				>
 					<Image
-						// src="./images/logoimage.png"
-						src={logo || "./images/logoimage.png"}
-						alt="" //TODO <companyname>
+						src={orgDetail.logo || "./images/logoimage.png"}
+						alt={orgDetail.app_name + "'s logo" || "logo"}
 						pl={{ base: 4, md: "0" }}
 						w={{ base: "9rem", md: "14rem", "2xl": "19rem" }}
 						height={{ base: "2.2rem", md: "3.5rem", "2xl": "5rem" }}
@@ -99,9 +96,9 @@ const LoginPanel = (props) => {
 							/>
 						</SlideFade>
 					)}
-					{step === "GOOGLE_VERIFY" && (
+					{step === "SOCIAL_VERIFY" && (
 						<SlideFade offsetX={100} offsetY={0} in={true}>
-							<GoogleVerify
+							<SocialVerify
 								setStep={setStep}
 								number={number}
 								email={email}
