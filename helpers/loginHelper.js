@@ -76,7 +76,7 @@ function createUserState(data) {
 	const state = {
 		loggedIn: true,
 		role: "non-admin",
-		isAdmin: 0,
+		is_org_admin: 0,
 		access_token: data.access_token,
 		refresh_token: data.refresh_token,
 		token_timeout: tokenTimeout,

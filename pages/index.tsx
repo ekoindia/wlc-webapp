@@ -46,11 +46,13 @@ export async function getServerSideProps({ req }) {
 				.then((data) => data.json())
 				.then((res) => res)
 				.catch((e) => console.log(e));
-		} else {
-			return {
-				notFound: true,
-			};
 		}
+	}
+
+	if (!Object.entries(data).length) {
+		return {
+			notFound: true,
+		};
 	}
 
 	return {
