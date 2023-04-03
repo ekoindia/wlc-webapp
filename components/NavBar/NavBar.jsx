@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { Buttons, Icon, IconButtons } from "..";
-import { useUser } from "contexts/UserContext";
+import { useUser, useOrgDetailContext } from "contexts";
 import { useRouter } from "next/router";
 
 const NavBar = (props) => {
@@ -83,6 +83,8 @@ export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	const { userData } = useUser();
+	const { orgDetail } = useOrgDetailContext();
+
 	return (
 		<>
 			<HStack
@@ -109,8 +111,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 					/>
 
 					<Image
-						src="/icons/logoimage.png"
-						alt="logo"
+						src={orgDetail.logo || "./images/logoimage.png"}
+						alt={orgDetail.app_name + "'s logo" || "logo"}
 						maxH={{
 							base: "35px",
 							sm: "34px",

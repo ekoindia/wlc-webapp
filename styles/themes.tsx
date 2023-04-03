@@ -204,6 +204,7 @@ export const light = extendTheme({
 			"active-border": "#FE7D00",
 			"active-bg": "#081E89",
 			"card-bg": "#102174",
+			"card-bg-dark": "#091968",
 			font: "#556FEF",
 		},
 	},

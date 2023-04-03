@@ -1,13 +1,12 @@
-import { ChakraProvider } from "@chakra-ui/react";
+import Head from "next/head";
 import { Inter } from "@next/font/google";
-import { GetLogoProvider } from "contexts/getLogoContext";
+import { ChakraProvider } from "@chakra-ui/react";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
-import Head from "next/head";
 import { light } from "../styles/themes";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { UserProvider, useUser } from "../contexts/UserContext";
-import { Layout, RouteProtecter } from "components";
+import { UserProvider, OrgDetailProvider } from "contexts";
+import { RouteProtecter } from "components";
 
 const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
@@ -16,7 +15,7 @@ const inter = Inter({
 	subsets: ["cyrillic"],
 });
 
-export default function App({ Component, pageProps, router }) {
+export default function App({ Component, pageProps, router, data }) {
 	return (
 		<>
 			<Head>
@@ -26,9 +25,11 @@ export default function App({ Component, pageProps, router }) {
 				/>
 			</Head>
 
-			<GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_CLIENT_ID}>
+			<GoogleOAuthProvider
+				clientId={pageProps?.data?.login_types?.google?.client_id}
+			>
 				<ChakraProvider theme={light}>
-					<GetLogoProvider>
+					<OrgDetailProvider>
 						<UserProvider>
 							<LayoutProvider>
 								<MenuProvider>
@@ -40,9 +41,65 @@ export default function App({ Component, pageProps, router }) {
 								</MenuProvider>
 							</LayoutProvider>
 						</UserProvider>
-					</GetLogoProvider>
+					</OrgDetailProvider>
 				</ChakraProvider>
 			</GoogleOAuthProvider>
 		</>
 	);
 }
+
+// App.getInitialProps = async function({ Component, ctx }) {
+// 	console.log("getInitialProps Executed");
+
+// 	let data = {}
+// 	if (typeof window === "undefined"){
+// 		if (process.env.NEXT_PUBLIC_ENV === "local"){
+// 			data = {
+// 					"subdomainDetails": {
+// 						"app_name": "EKO",
+// 						"support_contacts": {
+// 							"phone": "7689323333",
+// 							"email": "support@absprint.com"
+// 						},
+// 						"org_id": 1,
+// 						"logo": "https://files.eko.in/wlcorgs10000515connect.logo",
+// 						"theme": {
+// 							"secondary_color": "#8675656",
+// 							"primary_color": "#323233"
+// 						},
+// 						"org_name": "EKO",
+// 						"login_types": {
+// 							"google": {
+// 								"client_id": "476909327136-dirc650g1e8ri7de5o2anrgdg1o2s760.apps.googleusercontent.com"
+// 							}
+// 						}
+// 					}
+// 				}
+// 		}
+// 		else {
+// 			const domain = ctx.req.headers.host.split(".");
+// 			const subdomain = ctx.req.headers.host.split(".")[0];
+// 			data = await fetch(`https://sore-teal-codfish-tux.cyclic.app/logos/${subdomain}`)
+// 			.then((data) => data.json())
+// 			.then((res) => res)
+// 			.catch((e) => console.log(e));
+// 		}
+// 	}
+// 	else{
+// 		console.log("Else Executed");
+
+// 	// 	data = sessionStorage.getItem('org_detail')
+// 	// 	if (!data){
+// 	// 		data = await fetch(
+// 	// 	`https://sore-teal-codfish-tux.cyclic.app/logos/${subdomain}`
+// 	// )
+// 	// 	.then((data) => data.json())
+// 	// 	.then((res) => res)
+// 	// 	.catch((e) => console.log(e));
+// 	// 	}
+// 	// 	}
+
+// 	}
+
+//   return { data: data }
+// }
