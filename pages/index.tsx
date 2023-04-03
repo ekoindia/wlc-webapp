@@ -29,7 +29,7 @@ export async function getServerSideProps({ req }) {
 			},
 			login_types: {
 				google: {
-					client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
+					client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
 				},
 			},
 		};
