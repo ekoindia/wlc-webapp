@@ -59,6 +59,7 @@ export type IconNameType =
 	| "select-plan"
 	| "manage"
 	| "view-transaction-history"
+	| "wallet-outline"
 	| "phone-circle-outline";
 
 export type IconProps = {

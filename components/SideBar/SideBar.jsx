@@ -1,4 +1,3 @@
-import { MinusIcon } from "@chakra-ui/icons";
 import {
 	Accordion,
 	AccordionButton,
@@ -6,7 +5,6 @@ import {
 	AccordionPanel,
 	Avatar,
 	Box,
-	Center,
 	Circle,
 	Drawer,
 	DrawerContent,
@@ -15,7 +13,6 @@ import {
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { roles } from "constants";
 import { adminMenu, nonAdminMenu } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
@@ -92,11 +89,15 @@ const SideBarMenu = ({ className = "", ...props }) => {
 			<Flex direction="column">
 				<Box borderRight="12px" height={"100%"} w={"full"}>
 					{userData?.role === "non-admin" && (
-						<ProfileCard
-							name={userData?.userDetails?.name}
-							mobileNumber={userData?.userDetails?.mobile}
-							img={userData?.userDetails?.pic}
-						/>
+						<>
+							<ProfileCard
+								name={userData?.userDetails?.name}
+								mobileNumber={userData?.userDetails?.mobile}
+								img={userData?.userDetails?.pic}
+							/>
+
+							<BalanceCard />
+						</>
 					)}
 
 					{menuList?.map((menu, index) => {
@@ -349,9 +350,9 @@ const LinkMenu = (props) => {
 					xl: "12px",
 					"2xl": "16px",
 				}}
-				gap="13px"
 				color="white"
 				align="center"
+				gap="13px"
 				px={{
 					base: "3",
 					md: "3",
@@ -391,10 +392,97 @@ const LinkMenu = (props) => {
 	);
 };
 
-const WalletBalance = () => {
+const BalanceCard = ({ balance = "100" }) => {
 	return (
-		<Flex>
-			<Flex>data 1</Flex>
+		<Flex
+			padding={{
+				base: "15px 10px 10px 15px",
+			}}
+			width="100%"
+			align="center"
+			justify="space-between"
+			bg="sidebar.card-bg-dark"
+			borderBottom="br-sidebar"
+		>
+			<Flex gap={{ base: "2.5" }}>
+				<Flex>
+					<Icon
+						name="wallet-outline"
+						color="#556fef"
+						w={{
+							base: "22px",
+							sm: "22px",
+							md: "22px",
+							lg: "22px",
+							xl: "22px",
+							"2xl": "27px",
+						}}
+					/>
+				</Flex>
+				<Flex direction="column">
+					<Text
+						color="white"
+						fontSize={{
+							base: "12px",
+							sm: "12px",
+							md: "12px",
+							lg: "12px",
+							xl: "12px",
+							"2xl": "16px",
+						}}
+						lineHeight="1"
+					>
+						Wallet Balance
+					</Text>
+					<Flex color="#FFD93B" align="center" gap="1">
+						<Icon
+							name="rupee"
+							w={{
+								base: "12px",
+								sm: "12px",
+								md: "13px",
+								lg: "12px",
+								xl: "12px",
+								"2xl": "14px",
+							}}
+							h={{
+								base: "12px",
+								sm: "12px",
+								md: "13px",
+								lg: "12px",
+								xl: "12px",
+								"2xl": "14px",
+							}}
+						/>
+						<Text
+							fontSize={{
+								base: "16px",
+								sm: "16px",
+								md: "14px",
+								lg: "14px",
+								xl: "14px",
+								"2xl": "18px",
+							}}
+						>
+							{balance}
+						</Text>
+					</Flex>
+				</Flex>
+			</Flex>
+			<Flex>
+				<Circle
+					size={{ base: "8", md: "6", lg: "8" }}
+					bg={"success"}
+					color="white"
+					boxShadow="0px 3px 6px #00000029"
+					border="2px solid #FFFFFF"
+				>
+					<Icon
+						name="add"
+						width={{ base: "16px", md: "14px", lg: "16px" }}
+					/>
+				</Circle>
+			</Flex>
 		</Flex>
 	);
 };
@@ -414,6 +502,7 @@ const ProfileCard = ({ name, mobileNumber, img }) => {
 			}}
 			align="center"
 			bg="sidebar.card-bg"
+			borderBottom="br-sidebar"
 			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
 		>
 			<Circle bg="sidebar.icon-bg" size={{ base: 14, lg: 12, xl: 14 }}>
