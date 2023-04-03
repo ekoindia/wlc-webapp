@@ -11,11 +11,7 @@ const TransactionHistoryTable = (props) => {
 	const { searchValue, transactiondata } = props;
 	console.log("transactiondata", transactiondata);
 	const router = useRouter();
-	// const apidata = apisHelper("Transaction", searchValue);
-	// console.log("apidata", apidata);
-	// console.log("apidata", apidata);
-	// const transactiondata = apidata?.data?.data?.transaction_details ?? [];
-	// console.log("transactiondata", transactiondata);
+
 
 	const renderer = [
 		{ name: "", field: "Sr. No." },
