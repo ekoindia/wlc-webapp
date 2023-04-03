@@ -4,17 +4,7 @@ import { Home } from "page-components/NonAdmin";
 import { Layout, Headings } from "components";
 
 const home = () => {
-	return (
-		<>
-			<Headings
-				title="Home"
-				hasIcon={false}
-				isMTRequired={false}
-				mt="0"
-			/>
-			<Home />
-		</>
-	);
+	return <Home />;
 };
 
 export default home;

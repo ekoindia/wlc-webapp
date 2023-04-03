@@ -137,6 +137,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				prefixSymbol={"+91"}
 				onChange={onChangeHandler}
 				maxlength={12}
+				isNumInput={true}
 				labelStyle={{
 					fontSize: { base: "sm", "2xl": "lg" },
 					color: "light",

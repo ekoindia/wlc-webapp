@@ -175,6 +175,8 @@ const connecticon = () => {
 		"cashout",
 		"view-transaction-history",
 		"manage",
+		"expand-add",
+		"phone-circle-outline",
 	];
 
 	return (

@@ -203,6 +203,8 @@ export const light = extendTheme({
 			"icon-bg": "#1F3ABC",
 			"active-border": "#FE7D00",
 			"active-bg": "#081E89",
+			"card-bg": "#102174",
+			font: "#556FEF",
 		},
 	},
 	styles: {
