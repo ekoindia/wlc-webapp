@@ -13,7 +13,7 @@ import {
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { adminMenu, nonAdminMenu } from "constants";
+import { adminMenu, nonAdminMenu, roles } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
 import Link from "next/link";
