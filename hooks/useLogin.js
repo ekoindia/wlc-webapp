@@ -10,7 +10,7 @@ function useLogin(login, setStep, setEmail) {
 
 	function submitLogin(data) {
 		setBusy(true);
-		if (false) {
+		if (true) {
 			fetch(
 				process.env.NEXT_PUBLIC_API_BASE_URL +
 					`${
