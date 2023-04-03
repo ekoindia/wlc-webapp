@@ -11,8 +11,10 @@ import {
 } from "@chakra-ui/react";
 import { Buttons } from "components";
 import { useRouter } from "next/router";
-import { useState } from "react";
+
 import { MoveAgents, TransferCSP } from ".";
+import { useUser } from "contexts/UserContext";
+import { useEffect, useState } from "react";
 
 /**
  * A <ChangeRole> component
@@ -22,9 +24,79 @@ import { MoveAgents, TransferCSP } from ".";
  * @example	`<ChangeRole></ChangeRole>`
  */
 
-const ChangeRole = ({ className = "", ...props }) => {
+const ChangeRole = (props) => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	const tab = +useRouter().query.tab;
+	const [fromValue, setFromValue] = useState("");
+	const [toValue, setToValue] = useState("");
+	const [distributor, setDistributor] = useState([]);
+	const [scspFrom, setScspFrom] = useState([]);
+	const [scspto, setScspTo] = useState([]);
+
+	const handleFromValueChange = (value) => {
+		console.log("Selected fromValue:", value);
+	};
+
+	const { userData } = useUser();
+	function handleFromChange(event) {
+		setFromValue(event.target.value);
+	}
+
+	function handleToChange(event) {
+		setToValue(event.target.value);
+	}
+
+	const body = {
+		initiator_id: "9451000001",
+		org_id: "1",
+		source: "WLC",
+		client_ref_id: "202301031354123456",
+		scspFrom: fromValue,
+		scspTo: toValue,
+	};
+
+	let headers = {
+		"tf-req-uri-root-path": "/ekoicici/v1",
+		"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
+		"tf-req-method": "PUT",
+		authorization: `Bearer ${userData.access_token}`,
+	};
+
+	// let distributor =[]
+
+	useEffect(() => {
+		fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
+			method: "POST",
+			headers: {
+				"Content-type": "application/json",
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
+				"tf-req-method": "PUT",
+				authorization: `Bearer ${userData.access_token}`,
+			},
+			body: JSON.stringify(body),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log("datadatadatadatadatadatadata", data);
+
+				const distributor = data?.data?.allScspList ?? [];
+				setDistributor(distributor);
+
+				const scspFrom = data?.data?.allCspListOfScspFrom ?? [];
+				console.log("scspFrom", scspFrom);
+				setScspFrom(scspFrom);
+
+				const ScspTo = data?.data?.allCspListOfScspTo ?? [];
+				setScspTo(scspto);
+			})
+			.catch((error) => {
+				console.error("Error:", error);
+			});
+	}, [fromValue, toValue]);
+
+	// const transferCspData = distributor;
+
 	return !isShowSelectAgent ? (
 		<Flex
 			// my={{ base: "0", md: "7.5" }}
@@ -116,6 +188,8 @@ const ChangeRole = ({ className = "", ...props }) => {
 					<TabPanel>
 						<TransferCSP
 							setIsShowSelectAgent={setIsShowSelectAgent}
+							distributor={distributor}
+							scspto={scspto}
 						/>
 					</TabPanel>
 					<TabPanel>
@@ -136,6 +210,7 @@ const ChangeRole = ({ className = "", ...props }) => {
 			<MoveAgents
 				ShowSelectAgents={isShowSelectAgent}
 				setShowSelectAgent={setIsShowSelectAgent}
+				scspFrom={scspFrom}
 			/>
 			<Flex
 				Flex

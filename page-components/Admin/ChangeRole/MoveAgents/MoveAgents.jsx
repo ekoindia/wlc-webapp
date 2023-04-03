@@ -68,6 +68,8 @@ const MoveAgents = ({ ShowSelectAgents, className = "", ...props }) => {
 	const [checked, setChecked] = useState(Array(data.length).fill(false));
 	const [isSelectAll, setIsSelectAll] = useState(false);
 
+	//scsp from data
+	const { scspFrom } = props;
 	function selectAllHandler() {
 		if (!isSelectAll) setChecked((prev) => Array(prev.length).fill(true));
 		else setChecked((prev) => Array(prev.length).fill(false));
@@ -131,7 +133,7 @@ const MoveAgents = ({ ShowSelectAgents, className = "", ...props }) => {
 						},
 					}}
 				>
-					{data.map((ele, idx) => {
+					{scspTo.map((ele, idx) => {
 						return (
 							<Flex
 								align="center"
@@ -153,13 +155,13 @@ const MoveAgents = ({ ShowSelectAgents, className = "", ...props }) => {
 									onChange={() => OnCheckHandler(idx)}
 								/>
 								<Avatar
-									name={ele.title[0]}
+									name={ele.DisplayName[0]}
 									bg="accent.DEFAULT"
 									w="36px"
 									h="36px"
 								/>
 								<Text ml="-5px" fontSize="sm">
-									{ele.title}
+									{ele.DisplayName}
 								</Text>
 							</Flex>
 						);

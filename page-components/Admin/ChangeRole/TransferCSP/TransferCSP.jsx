@@ -73,48 +73,27 @@ const dataa = [
 	},
 ];
 
-const TransferCSP = ({ setIsShowSelectAgent }) => {
+const TransferCSP = (setIsShowSelectAgent, props) => {
 	const [fromValue, setFromValue] = useState("");
 	const [toValue, setToValue] = useState("");
+	const [data, setData] = useState("");
+	const { onFromValueChange, ...rest } = props;
+	// const [distributor, setDistributor] = useState([]);
+	// const [scspFrom, setScspFrom]=useState([]);
+	// const [scspto, setScspTo]=useState([]);
 
-	function handleFromChange(event) {
-		setFromValue(event.target.value);
-	}
+	const { distributor, scspTo } = props;
+	console.log("distributor", distributor);
+
+	const handleFromChange = (event) => {
+		const value = event.target.value;
+		setFromValue(value);
+		onFromValueChange(value);
+	};
 
 	function handleToChange(event) {
 		setToValue(event.target.value);
 	}
-
-	const body = {
-		initiator_id: "9451000001",
-		org_id: "1",
-		source: "WLC",
-		client_ref_id: "202301031354123456",
-		scspFrom: "7744",
-		scspTo: "5555",
-	};
-
-	let headers = {
-		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
-		"tf-req-method": "PUT",
-	};
-
-	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
-		method: "POST",
-		headers: headers,
-		body: JSON.stringify(body),
-	})
-		.then((response) => response.json())
-		.then((data) => {
-			console.log("data", data);
-		})
-		.catch((error) => {
-			console.error("Error:", error);
-		});
-
-	const distributor = data?.data?.allScspList ?? [];
-	console.log("optionFdistributordistributorrom", distributor);
 
 	return (
 		<Box>
@@ -140,16 +119,6 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 						Select distributor to transfer agents from
 					</Text>
 
-					{/* <Select
-						w="100%"
-						placeholder="--Select--"
-						h="12"
-						icon={<Icon name="caret-down" />}
-					>
-						<option value="option1">Option 1</option>
-						<option value="option2">Option 2</option>
-						<option value="option3">Option 3</option>
-					</Select> */}
 					<Select
 						id="from-select"
 						value={fromValue}
@@ -158,8 +127,9 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 						placeholder="--Select--"
 						h="12"
 						icon={<Icon name="caret-down" />}
+						distributor={distributor}
+						{...rest}
 					>
-						{" "}
 						{console.log("fromValue", fromValue)}
 						{distributor.map((option) => (
 							<option key={option.value} value={option.ekocspid}>
@@ -283,7 +253,7 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 							/>
 							R J Finance
 						</Flex>
-						{dataa.map((ele, idx) => {
+						{scspTo.map((ele, idx) => {
 							return (
 								<Flex
 									px="5"
@@ -299,12 +269,12 @@ const TransferCSP = ({ setIsShowSelectAgent }) => {
 									align="center"
 								>
 									<Avatar
-										name={ele.title[0]}
+										name={ele.DisplayName[0]}
 										bg="accent.DEFAULT"
 										w="36px"
 										h="36px"
 									/>
-									{ele.title}
+									{ele.DisplayName}
 								</Flex>
 							);
 						})}
