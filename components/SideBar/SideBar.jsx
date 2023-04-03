@@ -4,6 +4,7 @@ import {
 	AccordionButton,
 	AccordionItem,
 	AccordionPanel,
+	Avatar,
 	Box,
 	Center,
 	Circle,
@@ -82,19 +83,22 @@ const SideBarMenu = ({ className = "", ...props }) => {
 				sm: "55vw",
 				md: "13.5vw",
 				lg: "200px",
-				xl: "200px",
+				xl: "225px",
 				"2xl": "250px",
 			}}
 			bgColor={"accent.DEFAULT"}
 			height={"100%"}
 		>
-			<Flex>
-				<Box
-					bg="accent.DEFAULT"
-					borderRight="12px"
-					height={"100%"}
-					w={"full"}
-				>
+			<Flex direction="column">
+				<Box borderRight="12px" height={"100%"} w={"full"}>
+					{userData?.role === "non-admin" && (
+						<ProfileCard
+							name={userData?.userDetails?.name}
+							mobileNumber={userData?.userDetails?.mobile}
+							img={userData?.userDetails?.pic}
+						/>
+					)}
+
 					{menuList?.map((menu, index) => {
 						switch (true) {
 							case menu.comp:
@@ -391,6 +395,59 @@ const WalletBalance = () => {
 	return (
 		<Flex>
 			<Flex>data 1</Flex>
+		</Flex>
+	);
+};
+
+const ProfileCard = ({ name, mobileNumber, img }) => {
+	function formatNumber(number) {
+		if (!number) return null;
+		let len = number.length;
+		return number.slice(0, len / 2) + " " + number.slice(len / 2);
+	}
+	return (
+		<Flex
+			h="90px"
+			w="100%"
+			padding={{
+				base: "15px 10px 19px 15px",
+			}}
+			align="center"
+			bg="sidebar.card-bg"
+			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
+		>
+			<Circle bg="sidebar.icon-bg" size={{ base: 14, lg: 12, xl: 14 }}>
+				<Avatar
+					w={{ base: "50px", lg: "48px", xl: "50px" }}
+					h="50px"
+					src={img}
+					name={name[0]}
+				/>
+			</Circle>
+
+			<Flex
+				direction="column"
+				justify="space-between"
+				justifyContent="space-between"
+				h="100%"
+				lineHeight="18px"
+			>
+				<Text as="span" fontSize="12px" color="sidebar.font">
+					Welcome
+					<Text color="highlight" fontSize="14px">
+						{name || "Abhishek Jaiswal"}
+					</Text>
+				</Text>
+				<Flex
+					align="center"
+					fontSize="12px"
+					columnGap="5px"
+					color="white"
+				>
+					<Icon name="phone-circle-outline" w="18px" h="18px"></Icon>
+					{formatNumber(mobileNumber) || "95989 13094"}
+				</Flex>
+			</Flex>
 		</Flex>
 	);
 };
