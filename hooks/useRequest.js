@@ -1,5 +1,4 @@
 import { useUser } from "contexts/UserContext";
-import { generateNewAccessToken } from "helpers/loginHelper";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -11,38 +10,23 @@ const useRequest = ({
 	body,
 	options = {},
 }) => {
+	// console.log("::::Api Call started::::");
+	// console.log("headers in useRequest", headers["tf-req-uri"]);
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
-	let currentTime = new Date().toLocaleString();
 
-	const {
-		userData,
-		logout,
-		updateUserInfo,
-		isTokenUpdating,
-		setIsTokenUpdating,
-	} = useUser();
-	console.log("userData", userData);
-	const fetcher = (...args) => fetch(...args).then((res) => res.json());
+	const { userData } = useUser();
+	// console.log("userData", userData);
 	// console.log("method", method);
 	// console.log("baseUrl", baseUrl);
-	if (!userData.access_token || isTokenUpdating) {
-		return;
-	} else if (userData.token_timeout <= currentTime) {
-		setIsTokenUpdating(true);
-		generateNewAccessToken(
-			userData.refresh_token,
-			logout,
-			updateUserInfo,
-			setIsTokenUpdating
-		);
-	}
+	const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 	const {
 		data: fetchedData,
 		error: fetchedError,
-		mutate: fetchData,
+		// revalidate,
+		mutate,
 	} = useSWR(
 		`${baseUrl}`,
 		(url) =>
@@ -55,7 +39,12 @@ const useRequest = ({
 				},
 				body: body ? JSON.stringify(body) : null,
 			}),
-		{ revalidateOnFocus: false, revalidateOnMount: false, ...options }
+		{
+			// provider: localStorageProvider,
+			revalidateOnFocus: false,
+			revalidateOnMount: false,
+			...options,
+		}
 	);
 
 	useEffect(() => {
@@ -72,7 +61,8 @@ const useRequest = ({
 		setIsLoading(false);
 	}, [fetchedError]);
 
-	return { data, error, isLoading, fetchData };
+	// console.log("data useRequest", data);
+	return { data, error, isLoading, mutate };
 };
 
 export default useRequest;
