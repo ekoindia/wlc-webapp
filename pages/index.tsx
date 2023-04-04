@@ -17,7 +17,7 @@ export default function Index({ data }) {
 export async function getServerSideProps({ req }) {
 	// console.log(req.headers.host.split('.')[0]);
 	let data = {};
-	if (process.env.NEXT_PUBLIC_ENV === "local") {
+	if (process.env.NEXT_PUBLIC_ENV === "development") {
 		data = {
 			org_id: process.env.WLC_ORG_ID,
 			app_name: process.env.WLC_APP_NAME,
