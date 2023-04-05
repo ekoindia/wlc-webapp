@@ -45,6 +45,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 		);
 	}, [headers["tf-req-uri"]]);
 	const acctabledata = data?.data?.recent_transaction_details ?? [];
+    console.log('acctabledata', acctabledata)
 	const actable = data?.data ?? [];
 	const agentname = actable?.agent_name ?? [];
 	const saving_balance = actable?.saving_balance ?? [];

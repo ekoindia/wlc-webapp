@@ -51,12 +51,49 @@ function Filter(props) {
 			[name]: value,
 		}));
 	};
-    
-	const handleApply = () => {
-		setFilter(filterValues);
-		console.log("filterValues", filterValues);
-	};
 
+	const handleApply = () => {
+		setFilter({ ...filterValues, ...dateText });
+        onClose();
+	};
+	const [dateText, setDateText] = useState({
+		onBoardingDateFrom: "",
+		onBoardingDateTo: "",
+	});
+
+	const onDateChange = (e, type) => {
+		if (type === "onBoardingDateFrom") {
+			if (!e.target.value)
+				setDateText((prev) => {
+					return {
+						...prev,
+						onBoardingDateFrom: "DD/MM/YYYY",
+					};
+				});
+			else
+				setDateText((prev) => {
+					return {
+						...prev,
+						onBoardingDateFrom: e.target.value,
+					};
+				});
+		} else {
+			if (!e.target.value)
+				setDateText((prev) => {
+					return {
+						...prev,
+						onBoardingDateTo: "DD/MM/YYYY",
+					};
+				});
+			else
+				setDateText((prev) => {
+					return {
+						...prev,
+						onBoardingDateTo: e.target.value,
+					};
+				});
+		}
+	};
 	return (
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
@@ -394,6 +431,8 @@ function Filter(props) {
 									>
 										<Flex w="100%">
 											<Calenders
+												minDate={"2016-01-20"}
+												maxDate={"2020-01-20"}
 												// label="Filter by activation date range"
 												w="100%"
 												sublabel="From"
@@ -414,10 +453,21 @@ function Filter(props) {
 														md: "none",
 													},
 												}}
+												onChange={(e) =>
+													onDateChange(
+														e,
+														"onBoardingDateFrom"
+													)
+												}
+												value={
+													dateText.onBoardingDateFrom
+												}
 											/>
 										</Flex>
 										<Flex w="100%">
 											<Calenders
+												minDate={"2016-01-20"}
+												maxDate={"2020-01-20"}
 												w="100%"
 												sublabel="To"
 												labelStyle={{
@@ -433,6 +483,15 @@ function Filter(props) {
 														md: "0px 10px 10px 0px",
 													},
 												}}
+												onChange={(e) =>
+													onDateChange(
+														e,
+														"onBoardingDateTo"
+													)
+												}
+												value={
+													dateText.onBoardingDateTo
+												}
 											/>
 										</Flex>
 									</Flex>

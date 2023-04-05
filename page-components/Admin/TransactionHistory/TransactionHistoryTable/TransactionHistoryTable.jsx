@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
  */
 const TransactionHistoryTable = (props) => {
 	const { searchValue, transactiondata } = props;
-	console.log("transactiondata", transactiondata);
 	const router = useRouter();
 
 

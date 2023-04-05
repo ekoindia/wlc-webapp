@@ -1,14 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import {
-	Box,
-	Center,
-	Flex,
-	Input,
-	Text,
-	VStack,
-	Button,
-} from "@chakra-ui/react";
-import { Buttons, Icon, InputLabel } from "components";
+import { Box, Flex, Input, Text } from "@chakra-ui/react";
+import { Icon, InputLabel } from "components";
+import { useRef, useState } from "react";
 
 const Calenders = ({
 	label,
@@ -22,14 +14,12 @@ const Calenders = ({
 	calendersProps,
 	labelPosition,
 	value,
+	minDate,
+	maxDate,
 	onChange = () => {},
 	...props
 }) => {
 	const [dateText, setDateText] = useState("");
-
-	{
-		console.log("dateTextdateTextdateText", dateText);
-	}
 	const fromRef = useRef(null);
 	const toRef = useRef(null);
 	const calendarRef = useRef(null);
@@ -125,8 +115,8 @@ const Calenders = ({
 									w="1px"
 									type="date"
 									height="100%"
-									// min="2023-01-20"
-									// max="2023-04-20"
+									min={minDate}
+									max={maxDate}
 									ref={calendarRef}
 									onClick={handleClickForInput}
 									onChange={(e) => onChange(e)}

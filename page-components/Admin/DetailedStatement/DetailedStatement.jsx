@@ -20,7 +20,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 	const { userData } = useUser();
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [search, setSearch] = useState("");
-    const [dateText, setDateText] = useState({
+	const [dateText, setDateText] = useState({
 		// TODO: Edit state as required
 		from: "",
 		to: "DD/MM/YYYY",
@@ -33,9 +33,9 @@ const DetailedStatement = ({ className = "", ...props }) => {
 			console.log("No date selected");
 		} else {
 			mutate(
-                process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-                headers
-            );
+				process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+				headers
+			);
 		}
 	};
 	/* API CALLING */
@@ -278,7 +278,9 @@ const DetailedStatement = ({ className = "", ...props }) => {
 				>
 					<Flex>
 						<SearchBar
-							searchlimit={5}
+							minSearchLimit={2}
+							maxSearchLimit={10}
+							placeholder="Search by transaction ID or amount"
 							value={search}
 							setSearch={setSearch}
 							inputContProps={{
@@ -314,6 +316,8 @@ const DetailedStatement = ({ className = "", ...props }) => {
 						<Flex>
 							<Calenders
 								// label="Filter by activation date range"
+								minDate={"2016-01-20"}
+								maxDate={"2020-01-20"}
 								w="100%"
 								placeholder="From"
 								labelStyle={{
@@ -340,6 +344,8 @@ const DetailedStatement = ({ className = "", ...props }) => {
 						<Flex>
 							<Calenders
 								// label="Filter by activation date range"
+								minDate={"2016-01-20"}
+								maxDate={"2020-01-20"}
 								w="100%"
 								placeholder="to"
 								labelStyle={{

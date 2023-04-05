@@ -40,8 +40,9 @@ const Table = (props) => {
 		variant,
 		tableName,
 		isScrollrequired = false,
-		onRowClick,ispagintationrequire=true,
+		onRowClick,ispagintationrequire=true,isOnclickRequire=true,
 	} = props;
+    console.log('pageNumber', pageNumber)
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
     // console.log('data', data)
@@ -92,7 +93,7 @@ const Table = (props) => {
 			return (
 				<Tr
 					key={index}
-					onClick={() => onRowClick(data[index])}
+                    onClick={isOnclickRequire ? () => onRowClick(data[index]) : undefined}
 					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 				>
 					{renderer.map((r, rIndex) => {

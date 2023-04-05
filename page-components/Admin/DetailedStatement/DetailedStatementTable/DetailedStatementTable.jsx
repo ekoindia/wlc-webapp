@@ -33,6 +33,7 @@ const DetailedStatementTable = (props) => {
 	return (
 		<>
 			<Table
+                isOnclickRequire={false}
 				pageLimit={10}
 				renderer={renderer}
 				data={detiledData}
