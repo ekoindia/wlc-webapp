@@ -1,23 +1,28 @@
 const isProd = process.env.NEXT_PUBLIC_ENV === "production";
 
 /** @type {import('next').NextConfig} */
-const { RegExpIgnorePlugin } = require("webpack");
+
+const { IgnorePlugin } = require("webpack");
 
 const nextConfig = {
 	reactStrictMode: false,
 	swcMinify: true,
-	webpack: (config, { isServer }) => {
-		// Exclude Storybook from being compiled in production builds
-		if (!isServer && isProd) {
-			config.plugins.push(
-				new RegExpIgnorePlugin([
-					// Ignore Storybook files
-					/stories\//,
-				])
-			);
-		}
-		return config;
-	},
+	//webpack: (config) => {
+	// Exclude Storybook from being compiled in production builds
+	//if (isProd) {
+	// config.plugins.push(
+	// 	new IgnorePlugin({
+	// 		resourceRegExp: /\/stories\//,
+	// 	})
+	// );
+	/* another */
+	// config.module.rules.push({
+	// 	test: /\.stories\.(js|jsx|ts|tsx)$/,
+	// 	loader: "ignore-loader",
+	// });
+	// }
+	// return config;
+	//},
 	compiler: {
 		removeConsole: isProd ? { exclude: ["error"] } : false,
 	},
