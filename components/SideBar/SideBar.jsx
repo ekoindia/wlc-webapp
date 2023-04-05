@@ -102,12 +102,6 @@ const SideBarMenu = ({ className = "", ...props }) => {
 
 					{menuList?.map((menu, index) => {
 						switch (true) {
-							case menu.comp:
-								return (
-									<>
-										<WalletBalance />
-									</>
-								);
 							case menu.subLevel && menu.api:
 								return (
 									<>
