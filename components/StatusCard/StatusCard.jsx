@@ -73,16 +73,6 @@ const StatusCard = ({ className = "", ...props }) => {
 							w={{ base: "14px", md: "12px", "2xl": "16px" }}
 							h={{ base: "14px", md: "12px", "2xl": "16px" }}
 						/>
-						{/* <Text
-							fontSize={{
-								base: "14px",
-								md: "12px",
-								"2xl": "16px",
-							}}
-							fontWeight="medium"
-						>
-							{data?.data?.balance}
-						</Text> */}
 						<Text
 							fontSize={{
 								base: "14px",
@@ -91,7 +81,7 @@ const StatusCard = ({ className = "", ...props }) => {
 							}}
 							fontWeight="medium"
 						>
-							100000.0
+							{data?.data?.balance}
 						</Text>
 					</Flex>
 				</Flex>

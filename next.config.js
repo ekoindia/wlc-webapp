@@ -6,7 +6,7 @@ const nextConfig = {
 	swcMinify: true,
 	webpack: (config, { isServer }) => {
 		// Exclude Storybook from being compiled in production builds
-		if (!isServer && process.env.NODE_ENV === "production") {
+		if (!isServer && process.env.NEXT_PUBLIC_ENV === "production") {
 			config.plugins.push(
 				new RegExpIgnorePlugin([
 					// Ignore Storybook files
