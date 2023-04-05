@@ -10,7 +10,7 @@ function useLogin(login, setStep, setEmail) {
 
 	function submitLogin(data) {
 		setBusy(true);
-		if (false) {
+		if (true) {
 			fetch(
 				process.env.NEXT_PUBLIC_API_BASE_URL +
 					`${
@@ -90,17 +90,26 @@ function useLogin(login, setStep, setEmail) {
 				long_session: false,
 				token_expiration: 18000,
 				details: {
-					user_type: -1,
-					mobile: "1",
-					role_list: "-1",
-					login_id: "",
-					name: "",
-					email: "xyz@gmail.com",
-					code: "",
+					alternate_mobiles: [],
+					code: "99094675",
+					contacts: [
+						{
+							cellnumber: "8045681393",
+							name: "Customer Support",
+							email: "cs@eko.co.in",
+							relation: "",
+						},
+					],
+					date_of_joining: "2020-07-13 14:21:18",
+					email: "testdistributor32@gmail.com",
+					login_id: 2886068045,
+					mobile: "8888888888",
+					name: "Shubh Enterprises",
+					onboarding: 0,
+					pic: "https://lh3.googleusercontent.com/a/AGNmyxaHRKHCkLmpHKiehZhbpljGiFNCNAl5PkOX4vCz=s96-c",
+					uid: 197950,
+					user_type: 3,
 					zoho_id: "",
-					pic: "https://lh3.googleusercontent.com/a/AEdFTp6UQoU...",
-					show_dashboard: 0,
-					tf_config_rev: "1405",
 				},
 			});
 	}

@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import { Login } from "components/Login";
+import { ProfileCard } from "components/ProfileCard";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { Login } from "components/Login";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Login", () => {
+describe("ProfileCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Login />);
+		const { container } = render(<ProfileCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Login", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Login in __tests__/components/Login/Login.test.jsx"
+		"TODO: add proper test cases for ProfileCard in __tests__/components/ProfileCard/ProfileCard.test.jsx"
 	);
 });

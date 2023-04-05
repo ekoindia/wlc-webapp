@@ -10,14 +10,6 @@ type nonAdminMenuType = {
 	subLevelObject?: any;
 };
 export const nonAdminMenu: nonAdminMenuType[] = [
-	// {
-	// 	name: "Profile",
-	// 	comp: true,
-	// },
-	// {
-	// 	name: "Wallet Balance",
-	// 	comp: true,
-	// },
 	{
 		icon: "menu-home",
 		name: "Home",

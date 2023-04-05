@@ -74,10 +74,7 @@ function createUserState(data) {
 	console.log("tokenTimeout", tokenTimeout);
 	const state = {
 		loggedIn: true,
-		role: "non-admin",
-		isAdmin: 0,
-		// role: data.is_org_admin ? "admin" : "non-admin",
-		// is_org_admin: data.is_org_admin === 1  ? true : false,		// 0 or 1
+		is_org_admin: 1,
 		access_token: data.access_token,
 		refresh_token: data.refresh_token,
 		token_timeout: tokenTimeout,

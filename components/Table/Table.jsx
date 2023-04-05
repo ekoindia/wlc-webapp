@@ -1,8 +1,8 @@
 import {
 	Box,
+	Table as ChakraTable,
 	Divider,
 	Flex,
-	Table as ChakraTable,
 	TableContainer,
 	Tbody,
 	Td,
@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import {
-	getAccordian,
 	getArrowStyle,
 	getLocationStyle,
 	getModalStyle,
@@ -25,12 +24,13 @@ import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { AccountStatementCard } from "page-components/Admin/AccountStatement";
 import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
+import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/OnboardingDashboard";
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
 import { TransactionCard } from "page-components/NonAdmin/Transaction";
 import { useEffect, useMemo, useState } from "react";
-import { Cards, Icon, IconButtons, Pagination, Buttons } from "..";
+import { Buttons, Cards, Icon, IconButtons, Pagination } from "..";
 
 const Table = (props) => {
 	const {

@@ -1,5 +1,5 @@
 import { render } from "test-utils";
-import { LoginPanel } from "components/LoginPanel";
+import { StatusCard } from "components/StatusCard";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { LoginPanel } from "components/LoginPanel";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("LoginPanel", () => {
+describe("StatusCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<LoginPanel />);
+		const { container } = render(<StatusCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("LoginPanel", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for LoginPanel in __tests__/components/LoginPanel/LoginPanel.test.jsx"
+		"TODO: add proper test cases for StatusCard in __tests__/components/StatusCard/StatusCard.test.jsx"
 	);
 });

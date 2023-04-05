@@ -1,10 +1,10 @@
 import React from "react";
-import RouteProtecter from "./RouteProtecter";
+import StatusCard from "./StatusCard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/RouteProtecter",
-	component: RouteProtecter,
+	title: "Component/StatusCard",
+	component: StatusCard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -47,7 +47,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <RouteProtecter {...args} />;
+const Template = (args) => <StatusCard {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
