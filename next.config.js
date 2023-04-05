@@ -1,31 +1,43 @@
 const isProd = process.env.NEXT_PUBLIC_ENV === "production";
 
-/** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+	enabled: process.env.ANALYZE === "true",
+});
 
-const { IgnorePlugin } = require("webpack");
-
-const nextConfig = {
-	reactStrictMode: false,
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = withBundleAnalyzer({
+	/* config options here */
+	reactStrictMode: true,
+	poweredByHeader: false,
 	swcMinify: true,
-	//webpack: (config) => {
-	// Exclude Storybook from being compiled in production builds
-	//if (isProd) {
-	// config.plugins.push(
-	// 	new IgnorePlugin({
-	// 		resourceRegExp: /\/stories\//,
-	// 	})
-	// );
-	/* another */
-	// config.module.rules.push({
-	// 	test: /\.stories\.(js|jsx|ts|tsx)$/,
-	// 	loader: "ignore-loader",
-	// });
-	// }
-	// return config;
-	//},
+	eslint: {
+		dirs: [
+			"components",
+			"page-components",
+			"pages",
+			"features",
+			"libs",
+			"utils",
+			"helpers",
+			"hooks",
+			"contexts",
+			"constants",
+		],
+	},
 	compiler: {
+		reactRemoveProperties: true, // removes ^data-test properties in build
 		removeConsole: isProd ? { exclude: ["error"] } : false,
 	},
-};
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "**.eko.in",
+			},
+		],
+	},
+});
 
 module.exports = nextConfig;

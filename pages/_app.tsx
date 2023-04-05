@@ -1,12 +1,12 @@
-import Head from "next/head";
-import { Inter } from "@next/font/google";
 import { ChakraProvider } from "@chakra-ui/react";
+import { Inter } from "@next/font/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { RouteProtecter } from "components";
+import { OrgDetailProvider, UserProvider } from "contexts";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
+import Head from "next/head";
 import { light } from "../styles/themes";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import { UserProvider, OrgDetailProvider } from "contexts";
-import { RouteProtecter } from "components";
 
 const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
@@ -22,6 +22,12 @@ export default function App({ Component, pageProps, router, data }) {
 				<meta
 					name="viewport"
 					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+				/>
+				<link
+					rel="icon"
+					type="image/png"
+					href="/favicon-32x32.png"
+					sizes="32x32"
 				/>
 			</Head>
 
