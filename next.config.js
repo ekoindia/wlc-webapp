@@ -6,9 +6,9 @@ const { RegExpIgnorePlugin } = require("webpack");
 const nextConfig = {
 	reactStrictMode: false,
 	swcMinify: true,
-	webpack: (config, { isServer }) => {
+	webpack: (config) => {
 		// Exclude Storybook from being compiled in production builds
-		if (!isServer && isProd) {
+		if (isProd) {
 			config.plugins.push(
 				new RegExpIgnorePlugin([
 					// Ignore Storybook files
