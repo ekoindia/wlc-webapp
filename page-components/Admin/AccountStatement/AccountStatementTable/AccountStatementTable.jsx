@@ -1,7 +1,4 @@
 import { Table } from "components";
-import { apisHelper } from "helpers/apisHelper";
-
-import { mockData } from "constants/mockTableData";
 
 /**
  * A <AccountStatementTable> component
@@ -12,28 +9,24 @@ import { mockData } from "constants/mockTableData";
  */
 
 const AccountStatementTable = (props) => {
-    const acctabledata = props;
+	const { acctabledata } = props;
+
 	const renderer = [
 		{
-			name: "transaction_id",
 			name: "transaction_id",
 			field: "Transaction ID",
 		},
 		{
 			name: "date_time",
-			name: "date_time",
 			field: "Date & Time",
 			sorting: true,
 		},
 		{ name: "activity", field: "Activity" },
-		{ name: "activity", field: "Activity" },
 		{
-			name: "description",
 			name: "description",
 			field: "Description",
 		},
 
-		{ name: "amount", field: "Amount" },
 		{ name: "amount", field: "Amount" },
 	];
 
@@ -41,18 +34,19 @@ const AccountStatementTable = (props) => {
 
 	// const Accountapicall = apisHelper("Account");
 	// const AccountStatementData =
-		// Accountapicall?.data?.data?.recent_transaction_details ?? [];
+	// Accountapicall?.data?.data?.recent_transaction_details ?? [];
 
 	// console.log(AccountStatementData, "AccountStatementData");
 	return (
 		<>
 			<Table
+				isOnclickRequire={false}
 				pageLimit={15}
 				renderer={renderer}
-				data={mockData}
+				data={acctabledata}
 				variant="evenStriped"
 				tableName="Account"
-                ispagintationrequire={false}
+				ispagintationrequire={false}
 			/>
 		</>
 	);

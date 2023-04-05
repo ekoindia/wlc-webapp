@@ -1,12 +1,10 @@
-import { Box, Divider, Flex, Text, useMediaQuery } from "@chakra-ui/react";
-import { Buttons, Cards, Icon, Tags } from "components";
-import { apisHelper } from "helpers/apisHelper";
+import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
+import { Buttons, Cards, Icon } from "components";
+import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AccountStatementTable } from ".";
-import { useUser } from "contexts/UserContext";
-
 /**
  * A <AccountStatement> component
  * TODO: Write more description here
@@ -16,20 +14,23 @@ import { useUser } from "contexts/UserContext";
  */
 
 const AccountStatement = ({ className = "", ...props }) => {
-    const { userData } = useUser();
+	const router = useRouter();
+	const { cellnumber } = router.query;
+
+	const { userData } = useUser();
 	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [isMobileScreen] = useMediaQuery("(max-width: 767px)");
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
-    	/* API CALLING */
+	/* API CALLING */
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989`,
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=${cellnumber}`,
 		"tf-req-method": "GET",
 	};
-    
+
 	const { data, error, isLoading, mutate } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
@@ -43,24 +44,24 @@ const AccountStatement = ({ className = "", ...props }) => {
 			headers
 		);
 	}, [headers["tf-req-uri"]]);
-    const acctabledata = data?.data?.transaction_details ?? [];
-    const agentname = acctabledata[0]?.agent_name ?? [];
-    const saving_balance = acctabledata[0]?.saving_balance ?? [];
-
-
-	const router = useRouter();
-    /*redirect to detiled statement*/
-    const handleClick = (e) => {
-		router.push(
-			"/admin/transaction-history/account-statement/detailed-statement"
-		);
+	const acctabledata = data?.data?.recent_transaction_details ?? [];
+    console.log('acctabledata', acctabledata)
+	const actable = data?.data ?? [];
+	const agentname = actable?.agent_name ?? [];
+	const saving_balance = actable?.saving_balance ?? [];
+	/*redirect to detiled statement*/
+	const handleClick = (e) => {
+		router.push({
+			pathname:
+				"/admin/transaction-history/account-statement/detailed-statement",
+			query: { cellnumber },
+		});
 	};
-    /*getting mobile number as a quey param*/
-    const dataquery = router.query;
-    console.log('dataquery', dataquery)
-    /*current date*/
-    const current = new Date();
-    const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+	/*current date*/
+	const current = new Date();
+	const date = `${current.getDate()}/${
+		current.getMonth() + 1
+	}/${current.getFullYear()}`;
 	return (
 		<>
 			<Box
@@ -161,7 +162,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 										</Text>
 									</Flex>
 								)}
-								
+
 								<Flex direction={{ base: "column", md: "row" }}>
 									<Flex
 										direction={"column"}
@@ -266,7 +267,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 					</Cards>
 				</Box>
 				<Box marginTop={{ base: "20px", lg: "0rem" }}>
-					<AccountStatementTable acctabledata={acctabledata}/>
+					<AccountStatementTable acctabledata={acctabledata} />
 				</Box>
 			</Box>
 		</>

@@ -1,7 +1,10 @@
-import { Box, Center, Flex, Input, Text, VStack } from "@chakra-ui/react";
-import { Buttons, Cards, Icon, SearchBar, Tags, Calenders } from "components";
-import { useRef, useState } from "react";
-import { DetailedStatementTable } from ".";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { Buttons, Calenders, Cards, Icon, SearchBar } from "components";
+import { useUser } from "contexts/UserContext";
+import useRequest from "hooks/useRequest";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { DetailedStatementTable } from "./DetailedStatementTable";
 
 /**
  * A <DetailedStatement> component
@@ -12,13 +15,96 @@ import { DetailedStatementTable } from ".";
  */
 
 const DetailedStatement = ({ className = "", ...props }) => {
+	const router = useRouter();
+	const { cellnumber } = router.query;
+	const { userData } = useUser();
 	const [count, setCount] = useState(0); // TODO: Edit state as required
-	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
+	const [search, setSearch] = useState("");
+	const [dateText, setDateText] = useState({
+		// TODO: Edit state as required
+		from: "",
+		to: "DD/MM/YYYY",
+	});
+	console.log("dateText", dateText);
 	// const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
 
-	function onChangeHandler(e) {
-		setSearchValue(e);
-	}
+	const handleApply = () => {
+		if (dateText.to === "YYYY/MM/DD" && dateText.from === "YYYY/MM/DD") {
+			console.log("No date selected");
+		} else {
+			mutate(
+				process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+				headers
+			);
+		}
+	};
+	/* API CALLING */
+
+	let headers = {
+		"tf-req-uri-root-path": "/ekoicici/v1",
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction/account_statement?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_recent=${search}&search_value=${cellnumber}&transaction_date_from=${dateText.from}&transaction_date_to=${dateText.to}`,
+		"tf-req-method": "GET",
+	};
+
+	const { data, error, isLoading, mutate } = useRequest({
+		method: "POST",
+		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+		headers: { ...headers },
+		authorization: `Bearer ${userData.access_token}`,
+	});
+
+	useEffect(() => {
+		mutate(
+			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+			headers
+		);
+	}, [search]);
+	console.log("data", data);
+	const detiledData = data?.data?.account_statement_details ?? [];
+	const detailTable = data?.data ?? [];
+	const agentname = detailTable?.agent_name ?? [];
+	const currentbalance = detailTable.saving_balance ?? [];
+
+	const current = new Date();
+	const date = `${current.getDate()}/${
+		current.getMonth() + 1
+	}/${current.getFullYear()}`;
+	/*calander */
+
+	const onDateChange = (e, type) => {
+		if (type === "from") {
+			if (!e.target.value)
+				setDateText((prev) => {
+					return {
+						...prev,
+						from: "DD/MM/YYYY",
+					};
+				});
+			else
+				setDateText((prev) => {
+					return {
+						...prev,
+						from: e.target.value,
+					};
+				});
+		} else {
+			if (!e.target.value)
+				setDateText((prev) => {
+					return {
+						...prev,
+						to: "DD/MM/YYYY",
+					};
+				});
+			else
+				setDateText((prev) => {
+					return {
+						...prev,
+						to: e.target.value,
+					};
+				});
+		}
+	};
+
 	return (
 		<>
 			<Box
@@ -82,7 +168,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 										"2xl": "16px",
 									}}
 								>
-									as on 04/01/2023
+									as on {date}
 								</Text>
 							</Flex>
 
@@ -123,7 +209,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 										fontWeight={"medium"}
 									>
 										{" "}
-										Saurabh 
+										{agentname}
 									</Text>
 								</Flex>
 
@@ -177,7 +263,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 											color={"accent.DEFAULT"}
 											fontWeight={"bold"}
 										>
-											15,893.00
+											{currentbalance}
 										</Text>
 									</Flex>
 								</Flex>
@@ -192,8 +278,11 @@ const DetailedStatement = ({ className = "", ...props }) => {
 				>
 					<Flex>
 						<SearchBar
-							onChangeHandler={onChangeHandler}
-							value={searchValue}
+							minSearchLimit={2}
+							maxSearchLimit={10}
+							placeholder="Search by transaction ID or amount"
+							value={search}
+							setSearch={setSearch}
 							inputContProps={{
 								h: { base: "3rem", md: "2.5rem", xl: "3rem" },
 								width: {
@@ -226,50 +315,58 @@ const DetailedStatement = ({ className = "", ...props }) => {
 						</Box>
 						<Flex>
 							<Calenders
+								// label="Filter by activation date range"
+								minDate={"2016-01-20"}
+								maxDate={"2020-01-20"}
 								w="100%"
-								sublabel="From"
+								placeholder="From"
+								labelStyle={{
+									fontSize: "lg",
+									fontWeight: "semibold",
+									mb: "1.2rem",
+								}}
 								inputContStyle={{
-									w: {
-										base: "100%",
-										md: "190px",
-										xl: "200px",
-										"2xl": "274px",
-									},
+									w: "100%",
+									h: "48px",
 									borderRadius: {
 										base: "10px",
 										md: "10px 0px 0px 10px",
 									},
-									borderRight: { base: "flex", md: "none" },
-									h: {
-										base: "3rem",
-										md: "2.5rem",
-										xl: "3rem",
+									borderRight: {
+										base: "flex",
+										md: "none",
 									},
 								}}
+								onChange={(e) => onDateChange(e, "from")}
+								value={dateText.from}
 							/>
 						</Flex>
 						<Flex>
 							<Calenders
-								sublabel="To"
+								// label="Filter by activation date range"
+								minDate={"2016-01-20"}
+								maxDate={"2020-01-20"}
 								w="100%"
+								placeholder="to"
+								labelStyle={{
+									fontSize: "lg",
+									fontWeight: "semibold",
+									mb: "1.2rem",
+								}}
 								inputContStyle={{
-									w: {
-										base: "100%",
-										md: "180px",
-										xl: "200px",
-										"2xl": "274px",
-									},
-
+									w: "100%",
+									h: "48px",
 									borderRadius: {
 										base: "10px",
-										md: "0px 10px 10px 0px",
+										md: "10px 0px 0px 10px",
 									},
-									h: {
-										base: "3rem",
-										md: "2.5rem",
-										xl: "3rem",
+									borderRight: {
+										base: "flex",
+										md: "none",
 									},
 								}}
+								onChange={(e) => onDateChange(e, "to")}
+								value={dateText.to}
 							/>
 						</Flex>
 						<Flex pl={{ md: "5px", xl: "10px" }}>
@@ -285,13 +382,14 @@ const DetailedStatement = ({ className = "", ...props }) => {
 									xl: "6.5rem",
 									"2xl": "7.375rem",
 								}}
+								onClick={handleApply}
 							/>
 						</Flex>
 					</Flex>
 				</Flex>
 
 				<Box>
-					<DetailedStatementTable />
+					<DetailedStatementTable detiledData={detiledData} />
 				</Box>
 			</Box>
 		</>

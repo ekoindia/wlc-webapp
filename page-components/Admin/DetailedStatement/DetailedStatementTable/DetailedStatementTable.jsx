@@ -1,5 +1,4 @@
 import { Table } from "components";
-// import { mockData } from "constants/mockTableData";
 
 /**
  * A <DetailedStatementTable> component
@@ -9,7 +8,9 @@ import { Table } from "components";
  * @example	`<DetailedStatementTable></DetailedStatementTable>`
  */
 
-const DetailedStatementTable = () => {
+const DetailedStatementTable = (props) => {
+    const {detiledData} = props;
+
 	const renderer = [
 		{
 			name: "transaction_id",
@@ -32,9 +33,10 @@ const DetailedStatementTable = () => {
 	return (
 		<>
 			<Table
+                isOnclickRequire={false}
 				pageLimit={10}
 				renderer={renderer}
-				// data={mockData}
+				data={detiledData}
 				variant="evenStriped"
 				tableName="Detailed"
 			/>

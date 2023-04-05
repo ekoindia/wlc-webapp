@@ -1,18 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
-import {
-	Box,
-	Center,
-	Flex,
-	Input,
-	Text,
-	VStack,
-	Button,
-} from "@chakra-ui/react";
-import { Buttons, Icon, InputLabel } from "components";
+import { Box, Flex, Input, Text } from "@chakra-ui/react";
+import { Icon, InputLabel } from "components";
+import { useRef, useState } from "react";
 
 const Calenders = ({
 	label,
-	sublabel,
+	placeholder,
 	name,
 	type,
 	required = false,
@@ -21,24 +13,25 @@ const Calenders = ({
 	position,
 	calendersProps,
 	labelPosition,
-
+	value,
+	minDate,
+	maxDate,
+	onChange = () => {},
 	...props
 }) => {
-	const [dateText, setDateText] = useState({
-		// TODO: Edit state as required
-		from: "DD/MM/YYYY",
-		to: "DD/MM/YYYY",
-	});
+	const [dateText, setDateText] = useState("");
 	const fromRef = useRef(null);
 	const toRef = useRef(null);
+	const calendarRef = useRef(null);
 
-	const handleClickForInput = (type) => {
-		if (type == "to") {
-			toRef.current.showPicker();
-		} else {
-			console.log(fromRef.current);
-			fromRef.current.showPicker();
-		}
+	const handleClickForInput = () => {
+		// if (tpe == "to") {
+		// 	toRef.current.showPicker();
+		// } else {
+		// 	console.log(fromRef.current);
+		// 	fromRef.current.showPicker();
+		// }
+		calendarRef.current.showPicker();
 	};
 	return (
 		<Flex direction={{ base: "column", md: "" }} {...props}>
@@ -56,7 +49,7 @@ const Calenders = ({
 				border={"1px solid #D2D2D2"}
 				borderRadius="10px"
 				overflow={"hidden"}
-				onClick={(e) => handleClickForInput("from")}
+				onClick={handleClickForInput}
 				bg={"white"}
 				px="10px"
 				_hover={{
@@ -75,12 +68,9 @@ const Calenders = ({
 				>
 					{/* From To */}
 					<Flex alignItems={"center"}>
-						<Flex
-							onClick={(e) => handleClickForInput("from")}
-							align={"center"}
-						>
+						<Flex onClick={handleClickForInput} align={"center"}>
 							{" "}
-							{sublabel ? (
+							{placeholder ? (
 								<InputLabel
 									required={required}
 									fontSize={{
@@ -89,7 +79,7 @@ const Calenders = ({
 										xl: "14px",
 									}}
 								>
-									{sublabel}:&nbsp;
+									{placeholder}:&nbsp;
 								</InputLabel>
 							) : (
 								""
@@ -106,7 +96,7 @@ const Calenders = ({
 								}}
 								w="100%"
 							>
-								{dateText.from}
+								{value || "DD/MM/YYYY"}
 							</Text>
 						</Flex>
 					</Flex>
@@ -123,28 +113,13 @@ const Calenders = ({
 								<Input
 									size="xs"
 									w="1px"
-									name={name}
 									type="date"
 									height="100%"
-									ref={fromRef}
-									onClick={(e) => handleClickForInput("from")}
-									onChange={(e) => {
-										if (!e.target.value) {
-											setDateText((prev) => {
-												return {
-													...prev,
-													from: "DD/MM/YYYY",
-												};
-											});
-										} else {
-											setDateText((prev) => {
-												return {
-													...prev,
-													from: e.target.value,
-												};
-											});
-										}
-									}}
+									min={minDate}
+									max={maxDate}
+									ref={calendarRef}
+									onClick={handleClickForInput}
+									onChange={(e) => onChange(e)}
 									border={"none"}
 									focusBorderColor={"transparent"}
 									{...calendersProps}
