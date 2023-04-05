@@ -27,26 +27,30 @@ function sendOtpRequest(number, toast, sendState) {
 			}
 		})
 		.then((data) => {
-			toast({
-				title: `${
-					sendState === "resend" ? "Resend" : "Send"
-				} Otp Successfully: ${data.data.otp}`,
-				status: "success",
-				duration: 2000,
-				isClosable: true,
-				position: "top-right",
-			});
+			// Show otp hint in the toast only in development environments
+			if (process.env.NODE_ENV !== "production") {
+				toast({
+					title: `${
+						sendState === "resend" ? "Resend" : "Send"
+					} Otp Successfully: ${data.data.otp}`,
+					status: "success",
+					duration: 2000,
+					isClosable: true,
+					position: "top-right",
+				});
+			}
 		})
-		.catch((e) =>
-			toast({
-				title: `${
-					sendState === "resend" ? "Resend" : "Send"
-				} Otp failed`,
-				status: "error",
-				duration: 2000,
-				isClosable: true,
-				position: "top-right",
-			})
+		.catch(
+			(e) =>
+				toast({
+					title: `${
+						sendState === "resend" ? "Resend" : "Send"
+					} Otp failed`,
+					status: "error",
+					duration: 2000,
+					isClosable: true,
+					position: "top-right",
+				}) // TODO: Go back to submit mobile screen
 		);
 }
 
