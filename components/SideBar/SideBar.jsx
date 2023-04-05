@@ -71,7 +71,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 		setcurrentRoute(router.pathname.split("/")[2]);
 	}, [router.asPath]);
 
-	const menuList = userData?.is_org_admin ? adminMenu : nonAdminMenu;
+	const menuList = userData?.is_org_admin === 1 ? adminMenu : nonAdminMenu;
 
 	return (
 		<Box
@@ -505,13 +505,8 @@ const ProfileCard = ({ name, mobileNumber, img }) => {
 			borderBottom="br-sidebar"
 			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
 		>
-			<Circle bg="sidebar.icon-bg" size={{ base: 14, lg: 12, xl: 14 }}>
-				<Avatar
-					w={{ base: "50px", lg: "48px", xl: "50px" }}
-					h="50px"
-					src={img}
-					name={name[0]}
-				/>
+			<Circle bg="sidebar.icon-bg" size={"14"}>
+				<Avatar w="50px" h="50px" src={img} name={name[0]} />
 			</Circle>
 
 			<Flex

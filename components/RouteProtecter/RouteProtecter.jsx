@@ -18,9 +18,11 @@ const isBrowser = typeof window !== "undefined";
 const RouteProtecter = (props) => {
 	const { router, children } = props; //TODO : Getting Error in _app.tsx
 	const { userData, loading, setLoading } = useUser();
-	const { loggedIn, role } = userData;
+	const { loggedIn, is_org_admin } = userData;
 	const [authorized, setAuthorized] = useState(false);
 	const [is404, setIs404] = useState(false);
+
+	const role = is_org_admin === 1 ? "admin" : "non-admin";
 
 	console.log("%cRoute-Protecter: Start\n", "color:green", {
 		loggedIn: loggedIn,
