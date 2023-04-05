@@ -31,10 +31,7 @@ const UserProvider = ({ children }) => {
 			)
 		) {
 			console.log("Not logged");
-			setLoading(() => {
-				console.log("Setting loading state");
-				return false;
-			});
+			setLoading(false);
 			return;
 		}
 
