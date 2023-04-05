@@ -71,7 +71,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 		setcurrentRoute(router.pathname.split("/")[2]);
 	}, [router.asPath]);
 
-	const menuList = userData?.is_org_admin ? adminMenu : nonAdminMenu;
+	const menuList = userData?.is_org_admin === 1 ? adminMenu : nonAdminMenu;
 
 	return (
 		<Box
