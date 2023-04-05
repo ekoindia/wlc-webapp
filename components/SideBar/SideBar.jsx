@@ -3,7 +3,6 @@ import {
 	AccordionButton,
 	AccordionItem,
 	AccordionPanel,
-	Avatar,
 	Box,
 	Circle,
 	Drawer,
@@ -13,13 +12,13 @@ import {
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { adminMenu, nonAdminMenu, roles } from "constants";
+import { adminMenu, nonAdminMenu } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Icon } from "..";
+import { Icon, ProfileCard, StatusCard } from "..";
 
 function isCurrentRoute(router, currPath) {
 	const path = router.asPath.split("?")[0];
@@ -61,6 +60,7 @@ export default SideBar;
 //FOR LAPTOP SCREENS
 const SideBarMenu = ({ className = "", ...props }) => {
 	const { userData } = useUser();
+	console.log("userData", userData);
 	const { interaction_list } = useMenuContext();
 	// console.log("interaction_list", interaction_list);
 	const router = useRouter();
@@ -71,7 +71,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 		setcurrentRoute(router.pathname.split("/")[2]);
 	}, [router.asPath]);
 
-	const menuList = userData?.role === "admin" ? adminMenu : nonAdminMenu;
+	const menuList = userData?.is_org_admin === 1 ? adminMenu : nonAdminMenu;
 
 	return (
 		<Box
@@ -88,7 +88,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 		>
 			<Flex direction="column">
 				<Box borderRight="12px" height={"100%"} w={"full"}>
-					{userData?.role === "non-admin" && (
+					{userData?.is_org_admin === 0 && (
 						<>
 							<ProfileCard
 								name={userData?.userDetails?.name}
@@ -96,18 +96,12 @@ const SideBarMenu = ({ className = "", ...props }) => {
 								img={userData?.userDetails?.pic}
 							/>
 
-							<BalanceCard />
+							<StatusCard />
 						</>
 					)}
 
 					{menuList?.map((menu, index) => {
 						switch (true) {
-							case menu.comp:
-								return (
-									<>
-										<WalletBalance />
-									</>
-								);
 							case menu.subLevel && menu.api:
 								return (
 									<>
@@ -389,154 +383,5 @@ const LinkMenu = (props) => {
 				{menu.name}
 			</Flex>
 		</Link>
-	);
-};
-
-const BalanceCard = ({ balance = "100" }) => {
-	return (
-		<Flex
-			padding={{
-				base: "15px 10px 10px 15px",
-			}}
-			width="100%"
-			align="center"
-			justify="space-between"
-			bg="sidebar.card-bg-dark"
-			borderBottom="br-sidebar"
-		>
-			<Flex gap={{ base: "2.5" }}>
-				<Flex>
-					<Icon
-						name="wallet-outline"
-						color="#556fef"
-						w={{
-							base: "22px",
-							sm: "22px",
-							md: "22px",
-							lg: "22px",
-							xl: "22px",
-							"2xl": "27px",
-						}}
-					/>
-				</Flex>
-				<Flex direction="column">
-					<Text
-						color="white"
-						fontSize={{
-							base: "12px",
-							sm: "12px",
-							md: "12px",
-							lg: "12px",
-							xl: "12px",
-							"2xl": "16px",
-						}}
-						lineHeight="1"
-					>
-						Wallet Balance
-					</Text>
-					<Flex color="#FFD93B" align="center" gap="1">
-						<Icon
-							name="rupee"
-							w={{
-								base: "12px",
-								sm: "12px",
-								md: "13px",
-								lg: "12px",
-								xl: "12px",
-								"2xl": "14px",
-							}}
-							h={{
-								base: "12px",
-								sm: "12px",
-								md: "13px",
-								lg: "12px",
-								xl: "12px",
-								"2xl": "14px",
-							}}
-						/>
-						<Text
-							fontSize={{
-								base: "16px",
-								sm: "16px",
-								md: "14px",
-								lg: "14px",
-								xl: "14px",
-								"2xl": "18px",
-							}}
-						>
-							{balance}
-						</Text>
-					</Flex>
-				</Flex>
-			</Flex>
-			<Flex>
-				<Circle
-					size={{ base: "8", md: "6", lg: "8" }}
-					bg={"success"}
-					color="white"
-					boxShadow="0px 3px 6px #00000029"
-					border="2px solid #FFFFFF"
-				>
-					<Icon
-						name="add"
-						width={{ base: "16px", md: "14px", lg: "16px" }}
-					/>
-				</Circle>
-			</Flex>
-		</Flex>
-	);
-};
-
-const ProfileCard = ({ name, mobileNumber, img }) => {
-	function formatNumber(number) {
-		if (!number) return null;
-		let len = number.length;
-		return number.slice(0, len / 2) + " " + number.slice(len / 2);
-	}
-	return (
-		<Flex
-			h="90px"
-			w="100%"
-			padding={{
-				base: "15px 10px 19px 15px",
-			}}
-			align="center"
-			bg="sidebar.card-bg"
-			borderBottom="br-sidebar"
-			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
-		>
-			<Circle bg="sidebar.icon-bg" size={{ base: 14, lg: 12, xl: 14 }}>
-				<Avatar
-					w={{ base: "50px", lg: "48px", xl: "50px" }}
-					h="50px"
-					src={img}
-					name={name[0]}
-				/>
-			</Circle>
-
-			<Flex
-				direction="column"
-				justify="space-between"
-				justifyContent="space-between"
-				h="100%"
-				lineHeight="18px"
-			>
-				<Text as="span" fontSize="12px" color="sidebar.font">
-					Welcome
-					<Text color="highlight" fontSize="14px">
-						{name || "Abhishek Jaiswal"}
-					</Text>
-				</Text>
-				<Flex
-					align="center"
-					fontSize="12px"
-					columnGap="5px"
-					color="white"
-				>
-					<Icon name="phone-circle-outline" w="18px" h="18px"></Icon>
-					{formatNumber(mobileNumber) || "95989 13094"}
-				</Flex>
-			</Flex>
-		</Flex>
 	);
 };
