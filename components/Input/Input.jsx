@@ -1,5 +1,4 @@
 import { Center, Flex, Input } from "@chakra-ui/react";
-import { useState } from "react";
 import { InputLabel, InputMsg } from "../";
 
 /**
@@ -50,7 +49,7 @@ const Inputs = ({
 	...props
 }) => {
 	// TODO: Edit state as required
-	const [number, setNumber] = useState("");
+	// const [number, setNumber] = useState("");
 	const onChangeHandler = (e) => {
 		// /^[6-9]\d{0,9}$/g.test(val)
 		// /^[6-9]\d{0,2}\s\d{0,3}\s\d{0,4}$/g
@@ -63,7 +62,7 @@ const Inputs = ({
 			) {
 				let formatted = formatNum(value, val);
 				onChange(formatted);
-				setNumber(formatted);
+				// setNumber(formatted);
 			}
 		} else onChange(e);
 	};

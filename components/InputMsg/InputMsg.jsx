@@ -7,7 +7,7 @@ import { Text } from "@chakra-ui/react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<InputMsg></InputMsg>`
  */
-const InputMsg = ({ error = false, children, ...props }) => {
+const InputMsg = ({ /* error = false, */ children, ...props }) => {
 	if (!children) return null;
 	return (
 		<Text

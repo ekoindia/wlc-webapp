@@ -1,4 +1,3 @@
-import React from "react";
 import ProfileCard from "./ProfileCard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

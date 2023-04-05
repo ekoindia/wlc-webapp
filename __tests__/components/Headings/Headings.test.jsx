@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Headings } from "components/Headings";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

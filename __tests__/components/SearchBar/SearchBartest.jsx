@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { SearchFilterSort } from "components/SearchFilterSort";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

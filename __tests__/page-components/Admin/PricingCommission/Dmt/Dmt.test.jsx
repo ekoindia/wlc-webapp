@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Dmt } from "components/Dmt";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

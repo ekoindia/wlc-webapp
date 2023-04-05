@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { GoogleVerify } from "components/GoogleVerify";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

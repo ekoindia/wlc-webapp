@@ -43,6 +43,7 @@ const IconButtons = (props) => {
 			color={color}
 			_hover={{ color: hoverColor }}
 			_active={{ color: hoverColor }}
+			{...rest}
 		>
 			{hasIcon ? (
 				<Box order={iconOrder}>

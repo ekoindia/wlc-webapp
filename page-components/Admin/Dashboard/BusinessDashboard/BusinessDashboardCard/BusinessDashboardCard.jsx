@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import { getNameStyle, getStatusStyle } from "helpers";
+import { useEffect, useState } from "react";
 /**
  * A <BusinessDashboardCard> component
  * TODO: Write more description here

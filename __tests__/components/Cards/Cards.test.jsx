@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Cards } from "components/Cards";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

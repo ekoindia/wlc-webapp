@@ -3,7 +3,7 @@ import { NetworkObject } from "constants";
 
 import Head from "next/head";
 import { ProfilePanel } from "page-components/Admin";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const Profile = () => {
 	const [comp, setComp] = useState();

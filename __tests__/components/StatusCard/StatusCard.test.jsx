@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { StatusCard } from "components/StatusCard";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

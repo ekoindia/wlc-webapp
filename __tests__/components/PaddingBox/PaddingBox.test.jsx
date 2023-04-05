@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { PaddingBox } from "components/PaddingBox";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

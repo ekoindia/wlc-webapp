@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { NavBar } from "components/NavBar";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

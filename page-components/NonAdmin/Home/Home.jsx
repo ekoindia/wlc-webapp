@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
 import { Box, Grid, GridItem, Image, Text } from "@chakra-ui/react";
 import { Buttons } from "components";
+import { useEffect, useState } from "react";
 /**
  * A <Home> component
  * TODO: Write more description here

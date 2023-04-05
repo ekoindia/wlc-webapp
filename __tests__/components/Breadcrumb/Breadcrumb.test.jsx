@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Breadcrumb } from "components/Breadcrumb";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

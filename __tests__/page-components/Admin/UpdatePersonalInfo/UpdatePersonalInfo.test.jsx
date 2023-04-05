@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { UpdatePersonalInfo } from "components/UpdatePersonalInfo";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

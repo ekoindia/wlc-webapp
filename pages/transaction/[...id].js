@@ -3,7 +3,7 @@ import { useUser } from "contexts/UserContext";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Script from "next/script";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 const Transaction = () => {
 	const router = useRouter();

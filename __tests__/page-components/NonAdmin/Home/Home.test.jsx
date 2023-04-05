@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Home } from "components/Home";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

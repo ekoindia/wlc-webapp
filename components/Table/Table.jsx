@@ -1,8 +1,8 @@
 import {
 	Box,
-	Table as ChakraTable,
 	Divider,
 	Flex,
+	Table as ChakraTable,
 	TableContainer,
 	Tbody,
 	Td,
@@ -492,19 +492,10 @@ const Table = (props) => {
 							css={{
 								"&::-webkit-scrollbar": {
 									height: "0.8vw",
-								},
-								"&::-webkit-scrollbar-track": {
-									height: "0.8vw",
-								},
-								"&::-webkit-scrollbar-thumb": {
-									background: "#D2D2D2",
-									borderRadius: "5px",
-								},
-
-								"&::-webkit-scrollbar": {
 									width: "7px",
 								},
 								"&::-webkit-scrollbar-track": {
+									height: "0.8vw",
 									width: "7px",
 								},
 								"&::-webkit-scrollbar-thumb": {

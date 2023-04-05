@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { CompanyPane } from "components/CompanyPane";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

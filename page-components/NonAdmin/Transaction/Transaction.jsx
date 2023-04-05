@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from "react";
 import {
-	Flex,
 	Box,
-	Text,
-	Center,
+	Flex,
 	Modal,
-	ModalOverlay,
-	ModalContent,
-	ModalHeader,
 	ModalBody,
+	ModalContent,
 	ModalFooter,
+	ModalHeader,
+	Text,
 } from "@chakra-ui/react";
+import { Buttons, Calenders, Icon, Input } from "components";
 import { SearchBar } from "components/SearchBar";
-import { Buttons, Headings, Icon, Calenders, Input } from "components";
+import { useEffect, useState } from "react";
 import { TransactionTable } from "./TransactionTable";
 
 /**

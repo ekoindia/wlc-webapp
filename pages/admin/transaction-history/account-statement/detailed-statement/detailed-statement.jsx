@@ -3,8 +3,6 @@ import { TransactionHistoryObject } from "constants";
 import Head from "next/head";
 import { DetailedStatement } from "page-components/Admin";
 
-import React from "react";
-
 const DetailedStatementPage = () => {
 	return (
 		<>

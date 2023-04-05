@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { VerifyOtp } from "components/VerifyOtp";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

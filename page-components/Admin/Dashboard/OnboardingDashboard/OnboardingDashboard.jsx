@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Flex, Center, Text, Box } from "@chakra-ui/react";
+import { Box, Center, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
+import { useState } from "react";
 import { OnboardingDasboardTable } from "./OnboardingDasboardTable";
 
 /**

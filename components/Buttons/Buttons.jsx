@@ -1,5 +1,5 @@
 import { Button } from "@chakra-ui/react";
-import React from "react";
+import { forwardRef } from "react";
 
 function Buttons(props, ref) {
 	const {
@@ -25,6 +25,4 @@ function Buttons(props, ref) {
 	);
 }
 
-Buttons = React.forwardRef(Buttons);
-
-export default Buttons;
+export default forwardRef(Buttons);

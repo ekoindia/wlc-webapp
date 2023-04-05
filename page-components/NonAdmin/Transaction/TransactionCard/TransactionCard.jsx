@@ -5,10 +5,8 @@ import {
 	AccordionPanel,
 	Box,
 	Flex,
-	IconButton,
 } from "@chakra-ui/react";
-import { Menus } from "components";
-import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
+import { getStatusStyle } from "helpers";
 import { useState } from "react";
 
 /**

@@ -8,11 +8,11 @@ import { Icon } from "../";
 
 const Breadcrumbs = (props) => {
 	const {
-		setNav,
-		setHeadingObj,
-		isNavVisible,
-		isSmallerThan769,
-		propComp,
+		// setNav,
+		// setHeadingObj,
+		// isNavVisible,
+		// isSmallerThan769,
+		// propComp,
 		hrefs,
 		labels,
 		handleOnClick,

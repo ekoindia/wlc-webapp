@@ -168,9 +168,10 @@ function clearAuthTokens() {
 function revokeSession(user_id) {
 	const refresh_token = sessionStorage.getItem("refresh_token");
 	if (user_id === 1) {
-		console.log("REFRESH TOKEN REVOKED", res);
+		console.log("REFRESH TOKEN ALREADY REVOKED");
 		return;
 	}
+
 	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
 		method: "post",
 		headers: {

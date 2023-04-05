@@ -1,16 +1,16 @@
 import {
+	Box,
+	Divider,
+	Flex,
 	Grid,
 	GridItem,
-	Box,
-	Text,
-	Flex,
 	Stack,
 	StackDivider,
-	Divider,
+	Text,
 } from "@chakra-ui/react";
 import { Icon, IconButtons } from "components";
-import { BusinessDashboardTable } from "./BusinessDashboardTable";
 import { useState } from "react";
+import { BusinessDashboardTable } from "./BusinessDashboardTable";
 
 const cardData = [
 	{

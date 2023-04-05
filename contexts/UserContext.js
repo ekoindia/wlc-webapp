@@ -1,6 +1,5 @@
 import { createUserState, getSessions } from "helpers/loginHelper";
-import Router from "next/router";
-import React, {
+import {
 	createContext,
 	useContext,
 	useEffect,

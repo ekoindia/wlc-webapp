@@ -2,7 +2,6 @@ import { BreadcrumbsWrapper, Layout } from "components";
 import { NetworkObject } from "constants";
 import Head from "next/head";
 import { Network } from "page-components/Admin";
-import React from "react";
 
 const MyNetwork = () => {
 	return (
