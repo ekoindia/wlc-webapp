@@ -15,22 +15,23 @@ export default function Index({ data }) {
 }
 
 export async function getServerSideProps({ req }) {
-	let data = {};
+	let org_detail = {};
+
 	if (process.env.NEXT_PUBLIC_ENV === "development") {
-		data = {
+		org_detail = {
 			org_id: process.env.WLC_ORG_ID || 1,
 			app_name: process.env.WLC_APP_NAME || "wlc",
 			org_name: process.env.WLC_ORG_NAME || "wlc",
 			logo: process.env.WLC_LOGO,
-			support_contacts: {
-				phone: process.env.WLC_SUPPORT_CONTACTS_PHONE || 1234567890,
-				email:
-					process.env.WLC_SUPPORT_CONTACTS_EMAIL || "xyz@gmail.com",
-			},
 			login_types: {
 				google: {
 					client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
 				},
+			},
+			support_contacts: {
+				phone: process.env.WLC_SUPPORT_CONTACTS_PHONE || 1234567890,
+				email:
+					process.env.WLC_SUPPORT_CONTACTS_EMAIL || "xyz@gmail.com",
 			},
 		};
 	} else {
@@ -42,14 +43,14 @@ export async function getServerSideProps({ req }) {
 			domainOrSubdomain = hostPath.split(".")[0];
 		else domainOrSubdomain = hostPath;
 
-		data = await fetch(
+		org_detail = await fetch(
 			`https://sore-teal-codfish-tux.cyclic.app/logos/${domainOrSubdomain}`
 		)
 			.then((data) => data.json())
 			.then((res) => res)
 			.catch((e) => console.log(e));
 	}
-	if (!Object.entries(data).length) {
+	if (!Object.entries(org_detail).length) {
 		return {
 			notFound: true,
 		};
@@ -57,7 +58,7 @@ export async function getServerSideProps({ req }) {
 
 	return {
 		props: {
-			data: data,
+			data: org_detail,
 		},
 	};
 }
