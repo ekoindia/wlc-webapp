@@ -14,7 +14,7 @@ const MenuProvider = ({ children }) => {
 	useEffect(() => {
 		let local_interaction_list = localStorage.getItem("interaction_list");
 		let local_role_tx_list = localStorage.getItem("role_tx_list");
-		if (userData?.is_org_admin === 0) {
+		if (userData?.is_org_admin !== 1) {
 			if (
 				local_interaction_list &&
 				local_role_tx_list &&
