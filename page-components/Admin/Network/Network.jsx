@@ -15,7 +15,7 @@ import { NetworkTable } from "./NetworkTable";
  * @example	`<Network></Network>`
  */
 
-const Network = ({ className = "", ...props }) => {
+const Network = (/* { className = "", ...props } */) => {
 	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
 
 	function onChangeHandler(e) {

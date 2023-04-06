@@ -8,7 +8,7 @@ import { Box, Flex } from "@chakra-ui/react";
  * @example	`<AccountStatementCard></AccountStatementCard>`
  */
 
-const AccountStatementCard = (props) => {
+const AccountStatementCard = (/*props*/) => {
 	//const { item } = props;
 	const item = {
 		transactionId: 3027555195,
@@ -20,6 +20,7 @@ const AccountStatementCard = (props) => {
 		type: "credit",
 		balance: "123123",
 	};
+
 	return (
 		<Flex direction="column" fontSize="12px" rowGap="2">
 			<Flex gap="2">

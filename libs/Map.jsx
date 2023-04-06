@@ -1,9 +1,6 @@
 import { Spinner } from "@chakra-ui/react";
-import { Inter } from "@next/font/google";
 import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
 import { useMemo } from "react";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Map(props) {
 	const { isLoaded } = useLoadScript({

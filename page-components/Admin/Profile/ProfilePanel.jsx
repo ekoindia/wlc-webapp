@@ -11,7 +11,7 @@ import {
 	PersonalPane,
 } from ".";
 
-const ChangeRoleDesktop = ({ menuHandler, ...rest }) => {
+const ChangeRoleDesktop = ({ menuHandler /* , ...rest */ }) => {
 	return (
 		<Box>
 			<Box display={{ base: "none", md: "block" }}>
@@ -49,7 +49,7 @@ const ChangeRoleDesktop = ({ menuHandler, ...rest }) => {
 		</Box>
 	);
 };
-const ChangeRoleMobile = ({ menuHandler, ...rest }) => {
+const ChangeRoleMobile = () => {
 	return (
 		<Box bg="shade" w="100%" h="100vh" px="4" mt="12px">
 			{ChangeRoleMenu.map((ele, idx) => (
@@ -71,11 +71,11 @@ const ChangeRoleMobile = ({ menuHandler, ...rest }) => {
 	);
 };
 
-const ProfilePanel = (props) => {
+const ProfilePanel = (/* props */) => {
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
-	function menuHandler() {
+	const menuHandler = () => {
 		setIsMenuVisible((prev) => !prev);
-	}
+	};
 
 	return (
 		<>

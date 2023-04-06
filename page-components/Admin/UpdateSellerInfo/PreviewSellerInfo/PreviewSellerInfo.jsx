@@ -10,7 +10,7 @@ import Router from "next/router";
  * @example	`<PreviewSellerInfo></PreviewSellerInfo>`
  */
 
-const PreviewSellerInfo = ({ className = "", ...props }) => {
+const PreviewSellerInfo = () => {
 	return (
 		<>
 			<Headings title="Preview Seller Information" />

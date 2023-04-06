@@ -64,7 +64,7 @@ const data = [
  * @example	`<MoveAgents></MoveAgents>`
  */
 
-const MoveAgents = ({ ShowSelectAgents, className = "", ...props }) => {
+const MoveAgents = ({ ShowSelectAgents /* className = "", ...props  */ }) => {
 	const [checked, setChecked] = useState(Array(data.length).fill(false));
 	const [isSelectAll, setIsSelectAll] = useState(false);
 

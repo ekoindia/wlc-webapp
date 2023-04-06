@@ -11,11 +11,12 @@ import { TransactionHistoryTable } from ".";
  * @example	`<TransactionHistory></TransactionHistory>`
  */
 
-const TransactionHistory = ({ className = "", ...props }) => {
-	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
+const TransactionHistory = () => {
+	const [searchValue, setSearchValue] = useState("");
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
+		//TODO re-check
 	}
 
 	return (

@@ -58,14 +58,11 @@ const SideBar = (props) => {
 export default SideBar;
 
 //FOR LAPTOP SCREENS
-const SideBarMenu = ({ className = "", ...props }) => {
+const SideBarMenu = (/* { className = "", ...props } */) => {
 	const { userData } = useUser();
-	console.log("userData", userData);
 	const { interaction_list } = useMenuContext();
-	// console.log("interaction_list", interaction_list);
 	const router = useRouter();
 	const [currentRoute, setcurrentRoute] = useState();
-	// console.log("currentRoute", currentRoute);
 
 	useEffect(() => {
 		setcurrentRoute(router.pathname.split("/")[2]);
@@ -149,7 +146,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 //FOR MOBILE SCREENS
 const MenuBar = ({ props }) => {
 	const { navOpen, setNavOpen } = props;
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	const { /* isOpen, onOpen, */ onClose } = useDisclosure();
 	return (
 		<Drawer
 			autoFocus={false}
@@ -171,7 +168,7 @@ const MenuBar = ({ props }) => {
 };
 
 const CollapseMenu = (props) => {
-	const { menu, interaction_list, currentRoute, role } = props;
+	const { menu, interaction_list, /* currentRoute, */ role } = props;
 	const router = useRouter();
 	return (
 		<Flex textColor="white" justify="space-between">
@@ -329,7 +326,7 @@ const CollapseMenu = (props) => {
 };
 
 const LinkMenu = (props) => {
-	const { menu, currentRoute, index, role } = props;
+	const { menu, /* currentRoute, */ index, role } = props;
 	const router = useRouter();
 	const isCurrent = isCurrentRoute(router, menu.link, role);
 	return (

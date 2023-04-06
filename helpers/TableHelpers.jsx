@@ -61,7 +61,7 @@ export const getArrowStyle = () => {
 		</Box>
 	);
 };
-export const getModalStyle = (data) => {
+export const getModalStyle = (/* data */) => {
 	return (
 		<>
 			<Menus
@@ -80,7 +80,7 @@ export const getModalStyle = (data) => {
 		</>
 	);
 };
-export const getAccordian = (props) => {
+export const getAccordian = (/* props */) => {
 	return <></>;
 };
 

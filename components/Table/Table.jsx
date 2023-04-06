@@ -44,11 +44,11 @@ const Table = (props) => {
 		isPaginationRequired = true,
 	} = props;
 	const router = useRouter();
-	const [currentSort, setCurrentSort] = useState("default");
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	const [currentPage, setCurrentPage] = useState(1);
+	// const [currentSort, setCurrentSort] = useState("default");
 	// const [tableData, setTableData] = useState([]);
-	const [pageNumber, setPageNumber] = useState(null);
+	// const [pageNumber, setPageNumber] = useState(null);
 
 	/* API CALLING */
 	let data = useRequest({
@@ -122,8 +122,7 @@ const Table = (props) => {
 							{item.field}
 							{/* <Box as="span" h="auto" onClick={onSortChange}> */}
 							<Icon
-								//name={sortIcon[currentSort]}
-								onClick={onSortChange} // uncomment this to have interative sort
+								// onClick={onSortChange}
 								name="sort"
 								width="6px"
 								height="13px"
@@ -459,24 +458,24 @@ const Table = (props) => {
 		});
 	};
 	/* for sort icon & icon change */
-	const sortIcon = {
-		ascending: "caret-up",
-		descending: "caret-down",
-		default: "sort",
-	};
-	const onSortChange = () => {
-		let nextSort;
+	// const sortIcon = {
+	// 	ascending: "caret-up",
+	// 	descending: "caret-down",
+	// 	default: "sort",
+	// };
+	// const onSortChange = () => {
+	// 	let nextSort;
 
-		if (currentSort === "ascending") {
-			nextSort = "descending";
-		} else if (currentSort === "descending") {
-			nextSort = "default";
-		} else {
-			nextSort = "ascending";
-		}
+	// 	if (currentSort === "ascending") {
+	// 		nextSort = "descending";
+	// 	} else if (currentSort === "descending") {
+	// 		nextSort = "default";
+	// 	} else {
+	// 		nextSort = "ascending";
+	// 	}
 
-		setCurrentSort(nextSort);
-	};
+	// 	setCurrentSort(nextSort);
+	// };
 
 	return (
 		<>

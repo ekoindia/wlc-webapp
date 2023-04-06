@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Buttons, Calenders, Icon, Input } from "components";
 import { SearchBar } from "components/SearchBar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TransactionTable } from "./TransactionTable";
 
 /**
@@ -56,14 +56,12 @@ function Pill({ name, activePillIndex, index }) {
 }
 
 const Transaction = () => {
-	const [count, setCount] = useState(0);
 	const [activePillIndex, setActivePillIndex] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
-	// TODO: Edit state as required
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
-	} // TODO: Edit state as required
+	}
 	const handlePillClick = (index) => {
 		setActivePillIndex(index);
 	};
@@ -72,10 +70,6 @@ const Transaction = () => {
 
 	const onClose = () => setIsOpen(false);
 	const onOpen = () => setIsOpen(true);
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
 
 	return (
 		<Flex

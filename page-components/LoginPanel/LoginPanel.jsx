@@ -9,7 +9,7 @@ import { Login, SocialVerify, VerifyOtp } from ".";
  * @example	`<LoginPanel></LoginPanel>`
  */
 
-const LoginPanel = (props) => {
+const LoginPanel = (/* props */) => {
 	const [step, setStep] = useState("LOGIN");
 	const [email, setEmail] = useState("");
 	const [number, setNumber] = useState({

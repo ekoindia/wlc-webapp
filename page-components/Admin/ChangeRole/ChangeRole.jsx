@@ -22,7 +22,7 @@ import { MoveAgents, TransferCSP } from ".";
  * @example	`<ChangeRole></ChangeRole>`
  */
 
-const ChangeRole = ({ className = "", ...props }) => {
+const ChangeRole = () => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	const tab = +useRouter().query.tab;
 

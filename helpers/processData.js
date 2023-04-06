@@ -5,10 +5,10 @@ export const processTransactionData = (tmp_lst) => {
 	let role_tx_list = {};
 	let len = tmp_lst ? tmp_lst.length : 0;
 	let last_category = "";
-	let lastCategory;
-	let category_list;
-	let k, l, _lbl, m;
-	let processedData;
+	// let lastCategory;
+	// let category_list;
+	// let k, l, _lbl, m;
+	// let processedData;
 	// console.log("len", len);
 
 	for (let i = 0; i < len; i++) {

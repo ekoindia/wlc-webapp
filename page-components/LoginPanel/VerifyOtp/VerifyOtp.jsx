@@ -3,7 +3,6 @@ import { Buttons, Icon, IconButtons, OtpInput } from "components";
 import { useUser } from "contexts/UserContext";
 import { sendOtpRequest } from "helpers";
 import { useLogin } from "hooks";
-import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 /**
@@ -14,17 +13,16 @@ import { useCallback, useEffect, useState } from "react";
  * @example	`<VerifyOtp></VerifyOtp>`
  */
 
-const pinInputStyle = {
-	w: "95px",
-	h: "64px",
-	borderColor: "hint",
-};
+// const pinInputStyle = {
+// 	w: "95px",
+// 	h: "64px",
+// 	borderColor: "hint",
+// };
 
 const VerifyOtp = ({ loginType, number, setStep }) => {
 	const [Otp, setOtp] = useState("");
-	const router = useRouter();
 	const [timer, setTimer] = useState(30);
-	const { userState, login } = useUser();
+	const { login } = useUser();
 	const [loading, submitLogin] = useLogin(login);
 	const toast = useToast();
 

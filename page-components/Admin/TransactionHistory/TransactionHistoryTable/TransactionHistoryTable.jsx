@@ -1,6 +1,5 @@
 import { Table } from "components";
 import { mockData } from "constants/mockTableData";
-import { useRouter } from "next/router";
 
 /**
  * A <TransactionHistoryTable> component
@@ -10,8 +9,6 @@ import { useRouter } from "next/router";
  * @example	`<TransactionHistoryTable></TransactionHistoryTable>`
  */
 const TransactionHistoryTable = () => {
-	const router = useRouter();
-
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "name", field: "Name", sorting: true, show: "Avatar" },

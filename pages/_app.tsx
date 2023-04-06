@@ -15,7 +15,7 @@ const inter = Inter({
 	subsets: ["cyrillic"],
 });
 
-export default function App({ Component, pageProps, router, data }) {
+export default function App({ Component, pageProps, router /* data */ }) {
 	return (
 		<>
 			<Head>

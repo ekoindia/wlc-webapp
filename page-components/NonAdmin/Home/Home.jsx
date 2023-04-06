@@ -1,6 +1,5 @@
 import { Box, Grid, GridItem, Image, Text } from "@chakra-ui/react";
 import { Buttons } from "components";
-import { useEffect, useState } from "react";
 /**
  * A <Home> component
  * TODO: Write more description here
@@ -8,13 +7,7 @@ import { useEffect, useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Home></Home>`
  */
-const Home = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
-
+const Home = () => {
 	return (
 		<Grid
 			templateColumns={{

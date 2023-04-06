@@ -17,7 +17,7 @@ import { useState } from "react";
  * @example	`<NetworkCard></NetworkCard>`
  */
 
-const TransactionCard = (props) => {
+const TransactionCard = (/* props */) => {
 	const [expanded, setExpanded] = useState(false);
 	// const { item } = props;
 	const item = {

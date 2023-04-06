@@ -22,7 +22,7 @@ import {
 	IconButtons,
 	Input,
 } from "components";
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 /**
  * A <UpdatePersonalInfo> component
@@ -32,16 +32,16 @@ import React, { useEffect, useRef, useState } from "react";
  * @example	`<UpdatePersonalInfo></UpdatePersonalInfo>`
  */
 
-const UpdatePersonalInfo = ({ className = "", ...props }) => {
+const UpdatePersonalInfo = () => {
 	const [value, setValue] = useState();
 	const [files, setFiles] = useState(null);
+	console.log("files", files);
 	const inputRef = useRef();
-	const [errorMsg, setErrorMsg] = useState(false);
-	const [invalid, setInvalid] = useState("");
-	const EnterRef = useRef();
-	const [values, setValues] = React.useState("1");
-	// const [isSmallerThan500] = useMediaQuery("(max-width: 1400px)");
-	// TODO: Edit state as required
+	// const [errorMsg, setErrorMsg] = useState(false);
+	// const [invalid, setInvalid] = useState("");
+	// const EnterRef = useRef();
+	// const [values, setValues] = React.useState("1");
+
 	const handleDragOver = (event) => {
 		event.preventDefault();
 	};
@@ -58,9 +58,6 @@ const UpdatePersonalInfo = ({ className = "", ...props }) => {
 		setFiles(event.dataTransfer.files);
 		console.log(event);
 	};
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
 
 	return (
 		<>

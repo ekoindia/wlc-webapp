@@ -1,15 +1,7 @@
-import {
-	Box,
-	Button,
-	Divider,
-	Flex,
-	Select,
-	Text,
-	useMediaQuery,
-} from "@chakra-ui/react";
+import { Box, Button, Divider, Flex, Select, Text } from "@chakra-ui/react";
 import { Buttons, Calenders, Headings, Icon, Switch } from "components";
 import Router from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 /**
  * A <UpdateSellerInfo> component
  * TODO: Write more description here
@@ -18,15 +10,10 @@ import { useEffect, useState } from "react";
  * @example	`<UpdateSellerInfo></UpdateSellerInfo>`
  */
 
-const UpdateSellerInfo = ({ className = "", ...props }) => {
+const UpdateSellerInfo = () => {
 	const test = true;
 	const [visible, setVisible] = useState(test);
-	const [count, setCount] = useState(0);
-	const [isTablet] = useMediaQuery("(max-width: 820px)"); // TODO: Edit state as required
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
+	console.log("visible", visible); //TODO confirm with deepak why use test here??
 
 	return (
 		<>

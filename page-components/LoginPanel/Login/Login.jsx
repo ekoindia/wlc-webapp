@@ -26,7 +26,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
 	const { login } = useUser();
-	const [busy, googleHandler] = useLogin(login, setStep, setEmail);
+	const [/* busy, */ googleHandler] = useLogin(login, setStep, setEmail);
 
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);

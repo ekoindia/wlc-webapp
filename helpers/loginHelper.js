@@ -41,7 +41,7 @@ function sendOtpRequest(number, toast, sendState) {
 			}
 		})
 		.catch(
-			(e) =>
+			(/* e */) =>
 				toast({
 					title: `${
 						sendState === "resend" ? "Resend" : "Send"
