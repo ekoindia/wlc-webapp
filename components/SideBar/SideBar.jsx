@@ -85,7 +85,7 @@ const SideBarMenu = (/* { className = "", ...props } */) => {
 		>
 			<Flex direction="column">
 				<Box borderRight="12px" height={"100%"} w={"full"}>
-					{userData?.is_org_admin === 0 && (
+					{userData?.is_org_admin !== 1 && (
 						<>
 							<ProfileCard
 								name={userData?.userDetails?.name}
