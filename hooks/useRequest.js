@@ -5,7 +5,7 @@ import useSWR from "swr";
 const useRequest = ({
 	method = "GET",
 	baseUrl,
-	timeout,
+	// timeout,
 	headers,
 	body,
 	options = {},

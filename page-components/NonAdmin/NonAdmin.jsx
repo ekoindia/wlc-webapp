@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 /**
  * A <NonAdmin> component
@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
  * @example	`<NonAdmin></NonAdmin>`
  */
 const NonAdmin = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
+	// const [count, setCount] = useState(0); // TODO: Edit state as required
 
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required

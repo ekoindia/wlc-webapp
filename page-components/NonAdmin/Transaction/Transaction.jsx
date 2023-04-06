@@ -56,7 +56,7 @@ function Pill({ name, activePillIndex, index }) {
 }
 
 const Transaction = () => {
-	const [count, setCount] = useState(0);
+	// const [count, setCount] = useState(0);
 	const [activePillIndex, setActivePillIndex] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
 	// TODO: Edit state as required

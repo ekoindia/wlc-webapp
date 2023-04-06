@@ -17,7 +17,7 @@ import { useState } from "react";
  * @example	`<NetworkCard></NetworkCard>`
  */
 
-const TransactionCard = (props) => {
+const TransactionCard = (/* props */) => {
 	const [expanded, setExpanded] = useState(false);
 	// const { item } = props;
 	const item = {
@@ -62,7 +62,7 @@ const TransactionCard = (props) => {
 				</Flex>
 				<Flex gap="2" fontSize={"10px"} color="dark">
 					<Box as="span" color="light">
-						Transaction Id :
+						Transaction Id:
 					</Box>
 					<Box as="span" color="dark">
 						{item.transactionId}
@@ -89,7 +89,7 @@ const TransactionCard = (props) => {
 						<AccordionPanel display={expanded ? "block" : "none"}>
 							<Flex gap="2px">
 								<Box as="span" fontSize={"10px"} color="light">
-									Transaction :
+									Transaction:
 								</Box>
 								<Box
 									as="span"
@@ -102,7 +102,7 @@ const TransactionCard = (props) => {
 							</Flex>
 							<Flex gap="2px">
 								<Box as="span" fontSize={"10px"} color="light">
-									Ammount :
+									Amount:
 								</Box>
 								<Box
 									as="span"
@@ -115,7 +115,7 @@ const TransactionCard = (props) => {
 							</Flex>
 							<Flex gap="2px">
 								<Box as="span" fontSize={"10px"} color="light">
-									BalanceAmmount :
+									Balance Amount:
 								</Box>
 								<Box
 									as="span"
