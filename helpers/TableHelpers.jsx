@@ -61,7 +61,7 @@ export const getArrowStyle = () => {
 		</Box>
 	);
 };
-export const getModalStyle = (/* data */) => {
+export const getModalStyle = () => {
 	return (
 		<>
 			<Menus
@@ -80,9 +80,9 @@ export const getModalStyle = (/* data */) => {
 		</>
 	);
 };
-export const getAccordian = (/* props */) => {
-	return <></>;
-};
+// export const getAccordian = (props) => {
+// 	return <></>;
+// };
 
 export const openGoogleMap = ({ latitude, longitude }) => {
 	const lat = parseFloat(latitude);

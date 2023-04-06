@@ -13,12 +13,6 @@ import { useCallback, useEffect, useState } from "react";
  * @example	`<VerifyOtp></VerifyOtp>`
  */
 
-// const pinInputStyle = {
-// 	w: "95px",
-// 	h: "64px",
-// 	borderColor: "hint",
-// };
-
 const VerifyOtp = ({ loginType, number, setStep }) => {
 	const [Otp, setOtp] = useState("");
 	const [timer, setTimer] = useState(30);
