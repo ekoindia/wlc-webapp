@@ -9,7 +9,6 @@ const statusChecker = {
 };
 
 const Tags = ({
-	className = "",
 	status = "Active",
 	px = { base: "16px", md: "18px", xl: "22px" },
 	styles,

@@ -32,16 +32,16 @@ const ContactPane = () => {
 	// 	};
 	// }, []);
 
-	const contactData = [
-		{
-			label: "Mobile Number",
-			data: "+91 9898239232",
-		},
-		{
-			label: "Email",
-			data: "angeltech@email.co.in",
-		},
-	];
+	// const contactData = [
+	// 	{
+	// 		label: "Mobile Number",
+	// 		data: "+91 9898239232",
+	// 	},
+	// 	{
+	// 		label: "Email",
+	// 		data: "angeltech@email.co.in",
+	// 	},
+	// ];
 
 	return (
 		<Cards h={{ base: "auto", lg: "100%" }}>

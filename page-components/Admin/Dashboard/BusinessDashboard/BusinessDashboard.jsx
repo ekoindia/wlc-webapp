@@ -147,6 +147,7 @@ const BusinessDashboard = () => {
 
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [activeGtv, setActiveGtv] = useState(3);
+	console.log("activeGtv", activeGtv);
 
 	const onClick = (gtv) => {
 		setActiveGtv(gtv);
@@ -209,7 +210,7 @@ const BusinessDashboard = () => {
 
 	return (
 		<Flex direction={"column"} px={{ base: "20px", md: "0px" }}>
-			{console.log("cardData", cardData)}
+			{/* {console.log("cardData", cardData)} */}
 
 			{/* CARD */}
 			<Grid templateColumns="repeat(4, 4fr)" gap={5} overflowX="auto">

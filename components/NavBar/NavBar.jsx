@@ -13,14 +13,12 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useOrgDetailContext, useUser } from "contexts";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { Buttons, Icon, IconButtons } from "..";
 
 const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
-	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
-		props;
+	const { setNavOpen } = props;
 
 	return (
 		<>
@@ -245,8 +243,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 };
 
 const MyAccountCard = ({ setIsCardOpen }) => {
-	const { logout, userData } = useUser();
-	const router = useRouter();
+	const { logout } = useUser();
 	const logoutHandler = () => {
 		// router.push("/");
 		logout();

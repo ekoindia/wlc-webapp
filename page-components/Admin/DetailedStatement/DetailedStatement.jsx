@@ -18,10 +18,8 @@ import { DetailedStatementTable } from ".";
  * @example	`<DetailedStatement></DetailedStatement>`
  */
 
-const DetailedStatement = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
-	const [searchValue, setSearchValue] = useState(""); // TODO: Edit state as required
-	// const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
+const DetailedStatement = (/* { className = "", ...props } */) => {
+	const [searchValue, setSearchValue] = useState("");
 
 	function onChangeHandler(e) {
 		setSearchValue(e);

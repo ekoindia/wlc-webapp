@@ -10,7 +10,7 @@ function useLogin(login, setStep, setEmail) {
 
 	function submitLogin(data) {
 		setBusy(true);
-		// if (true) {
+		// if (false) {
 		fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL +
 				`${
@@ -81,7 +81,8 @@ function useLogin(login, setStep, setEmail) {
 				console.error("Login Error: ", e);
 			})
 			.finally(() => setBusy(false));
-		// } else
+		// }
+		// else
 		// 	processLoginResponse({
 		// 		auth_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1",
 		// 		access_token:

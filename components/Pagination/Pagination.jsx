@@ -10,7 +10,7 @@ const Pagination = (props) => {
 		siblingCount = 1,
 		currentPage,
 		pageSize,
-		className,
+		className = "pagination",
 	} = props;
 	const [currPageNumber, setCurrPageNumber] = useState(1);
 
@@ -34,6 +34,7 @@ const Pagination = (props) => {
 
 	return (
 		<Flex
+			className={className}
 			mt="20px"
 			mb={{ base: "30px", "2xl": "0px" }}
 			justifyContent="space-between"

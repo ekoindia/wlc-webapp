@@ -1,6 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { getNameStyle, getStatusStyle } from "helpers";
-import { useEffect, useState } from "react";
 /**
  * A <BusinessDashboardCard> component
  * TODO: Write more description here
@@ -8,9 +7,7 @@ import { useEffect, useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<BusinessDashboardCard></BusinessDashboardCard>`
  */
-const BusinessDashboardCard = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0);
-
+const BusinessDashboardCard = () => {
 	const item = {
 		transactionId: 270000,
 		TotalTransaction: 1277000,
@@ -20,11 +17,7 @@ const BusinessDashboardCard = ({ className = "", ...props }) => {
 		racases: "20",
 		date: "5/10/2017",
 		DistributorMapped: "Izma Finance",
-	}; // TODO: Edit state as required
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
+	};
 
 	return (
 		<>

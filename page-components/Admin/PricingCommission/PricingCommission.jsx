@@ -8,7 +8,7 @@ import { Dmt } from "./Dmt";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<PricingCommission></PricingCommission>`
  */
-const PricingCommissions = ({ className = "", ...props }) => {
+const PricingCommissions = () => {
 	return (
 		<>
 			<Headings title="Pricing & Commissions" hasIcon={false} />

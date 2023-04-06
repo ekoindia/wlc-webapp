@@ -9,7 +9,7 @@ import { Icon } from "components";
  * @example	`<DetailedStatementCard></DetailedStatementCard>`
  */
 
-const DetailedStatementCard = (props) => {
+const DetailedStatementCard = (/* props */) => {
 	//const { item } = props;
 	const item = {
 		transactionId: 3027555195,

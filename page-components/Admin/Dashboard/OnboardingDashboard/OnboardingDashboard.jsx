@@ -10,12 +10,6 @@ import { OnboardingDasboardTable } from "./OnboardingDasboardTable";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<OnboardingDashboard></OnboardingDashboard>`
  */
-// const OnboardingDashboard = ({ className = "", ...props }) => {
-// const [count, setCount] = useState(0); // TODO: Edit state as required
-
-// useEffect(() => {
-// 	// TODO: Add your useEffect code here and update dependencies as required
-// }, []);
 
 const cardData = [
 	{
@@ -123,7 +117,7 @@ function Card({ title, status, count, activeCardIndex, index }) {
 	);
 }
 
-const OnboardingDashboard = (props) => {
+const OnboardingDashboard = (/* props */) => {
 	const [activeCardIndex, setActiveCardIndex] = useState(null);
 	console.log("activeCardIndex", activeCardIndex);
 

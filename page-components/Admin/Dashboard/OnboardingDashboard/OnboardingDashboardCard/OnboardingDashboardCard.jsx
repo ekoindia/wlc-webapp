@@ -1,6 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { getNameStyle } from "helpers";
-import { useEffect, useState } from "react";
 
 /**
  * A <OnboardingDashboardCard> component
@@ -9,9 +8,7 @@ import { useEffect, useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<OnboardingDashboardCard></OnboardingDashboardCard>`
  */
-const OnboardingDashboardCard = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0);
-
+const OnboardingDashboardCard = () => {
 	const item = {
 		ekocode: 10167076,
 		refiD: 1277000,
@@ -19,11 +16,7 @@ const OnboardingDashboardCard = ({ className = "", ...props }) => {
 		Location: "Gurugram, Sector 45, Haryana",
 		businesstype: "Money Transfer",
 		Onboardedon: "3 Days ago",
-	}; // TODO: Edit state as required
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
+	};
 
 	return (
 		<>

@@ -17,7 +17,7 @@ import {
 } from "@chakra-ui/react";
 import { Filter, Icon } from "..";
 
-const Sort = ({ className = "", ...props }) => {
+const Sort = () => {
 	return (
 		<>
 			<Box

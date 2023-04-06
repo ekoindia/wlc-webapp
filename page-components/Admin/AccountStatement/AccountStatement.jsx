@@ -1,7 +1,7 @@
 import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { Buttons, Cards, Headings, Icon } from "components";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AccountStatementTable } from ".";
 
 /**
@@ -12,15 +12,14 @@ import { AccountStatementTable } from ".";
  * @example	`<AccountStatement></AccountStatement>`
  */
 
-const AccountStatement = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
+const AccountStatement = () => {
 	const [isMobileScreen] = useMediaQuery("(max-width: 767px)");
 	useEffect(() => {
 		// TODO: Add your useEffect code here and update dependencies as required
 	}, []);
 
 	const router = useRouter();
-	const handleClick = (e) => {
+	const handleClick = () => {
 		router.push(
 			"/admin/transaction-history/account-statement/detailed-statement"
 		);

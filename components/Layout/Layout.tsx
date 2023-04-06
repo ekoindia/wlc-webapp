@@ -3,27 +3,13 @@ import { useLayoutContext } from "contexts/LayoutContext";
 import { useState } from "react";
 import { NavBar, SideBar } from "..";
 
-const Layout = ({ isLoggedIn, children, propComp /* , ...props */ }) => {
+const Layout = ({ isLoggedIn, children /* , ...props */ }) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
-	const [isNav, setNav] = useState(true);
 	const { isNavHidden } = useLayoutContext();
-	// const [headingObj, setHeadingObj] = useState({
-	// 	title: null,
-	// 	hasIcon: false,
-	// });
-	// const [isSmallerThan769] = useMediaQuery("(max-width: 769px)");
 
 	return isLoggedIn ? (
 		<Box w={"full"} minH={"100vh"}>
-			{!isNavHidden && (
-				<NavBar
-					setNavOpen={setIsNavOpen}
-					isNavVisible={isNav}
-					// isSmallerThan769={isSmallerThan769}
-					// headingObj={headingObj}
-					// propComp={propComp}
-				/>
-			)}
+			{!isNavHidden && <NavBar setNavOpen={setIsNavOpen} />}
 
 			<Flex
 				width={"full"}

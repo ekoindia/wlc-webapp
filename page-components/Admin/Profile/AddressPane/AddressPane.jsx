@@ -5,13 +5,11 @@ import {
 	Stack,
 	StackDivider,
 	Text,
-	useMediaQuery,
 } from "@chakra-ui/react";
 import { Buttons, Cards, IconButtons } from "components";
 import Router from "next/router";
 
 const AddressPane = () => {
-	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 	return (
 		<Cards>
 			<Heading
