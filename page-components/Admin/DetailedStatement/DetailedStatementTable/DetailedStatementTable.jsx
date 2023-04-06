@@ -12,10 +12,6 @@ import { mockData } from "constants/mockTableData";
 const DetailedStatementTable = () => {
 	const renderer = [
 		{
-			name: "",
-			field: "Transaction ID",
-		},
-		{
 			name: "mobile_number",
 			field: "Transaction ID",
 		},

@@ -9,7 +9,6 @@ const Headings = ({
 	redirectHandler,
 	propComp,
 	isCompVisible = true,
-	...rest
 }) => {
 	const router = useRouter();
 	const redirectTo = () => {
