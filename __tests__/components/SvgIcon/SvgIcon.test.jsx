@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { SvgIcon } from "components/SvgIcon";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

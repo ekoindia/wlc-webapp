@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { PricingCommission } from "components/PricingCommission";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

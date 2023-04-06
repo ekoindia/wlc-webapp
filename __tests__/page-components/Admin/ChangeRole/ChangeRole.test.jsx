@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { ChangeRole } from "components/ChangeRole";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

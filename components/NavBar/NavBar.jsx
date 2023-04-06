@@ -12,10 +12,10 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import { useOrgDetailContext, useUser } from "contexts";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Buttons, Icon, IconButtons } from "..";
-import { useUser, useOrgDetailContext } from "contexts";
-import { useRouter } from "next/router";
 
 const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);

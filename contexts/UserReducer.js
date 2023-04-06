@@ -1,10 +1,10 @@
 import {
-	setandUpdateAuthTokens,
 	clearAuthTokens,
-	revokeSession,
 	createUserState,
-	setUserDetails,
 	getTokenExpiryTime,
+	revokeSession,
+	setandUpdateAuthTokens,
+	setUserDetails,
 } from "helpers/loginHelper";
 
 export const defaultUserState = {
@@ -23,6 +23,7 @@ export const UserReducer = (state, { type, payload }) => {
 		case "INIT_USER_STORE": {
 			return payload;
 		}
+
 		case "UPDATE_USER_STORE": {
 			if (payload && payload.access_token && payload.refresh_token) {
 				console.log("Updated userStore");
@@ -38,6 +39,7 @@ export const UserReducer = (state, { type, payload }) => {
 				sessionStorage.setItem("token_timeout", tokenTimeout);
 				return newState;
 			}
+			break;
 		}
 
 		case "LOGIN": {

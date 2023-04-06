@@ -3,7 +3,7 @@ import { useLayoutContext } from "contexts/LayoutContext";
 import { useState } from "react";
 import { NavBar, SideBar } from "..";
 
-const Layout = ({ isLoggedIn, children, propComp, ...props }) => {
+const Layout = ({ isLoggedIn, children, propComp /* , ...props */ }) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const [isNav, setNav] = useState(true);
 	const { isNavHidden } = useLayoutContext();

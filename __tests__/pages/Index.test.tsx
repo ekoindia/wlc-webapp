@@ -1,4 +1,3 @@
-import React from "react";
 import Index from "@/pages/index";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";

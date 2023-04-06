@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { LoginPanel } from "components/LoginPanel";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

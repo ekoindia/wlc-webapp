@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Select } from "components/Select";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

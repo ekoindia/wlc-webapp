@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Transaction } from "components/Transaction";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

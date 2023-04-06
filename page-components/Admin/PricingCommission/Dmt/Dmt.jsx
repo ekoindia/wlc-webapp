@@ -1,5 +1,6 @@
 import {
 	Box,
+	Button,
 	Flex,
 	HStack,
 	Input,
@@ -7,13 +8,11 @@ import {
 	RadioGroup,
 	Select,
 	Stack,
-	MenuButton,
 	Text,
 	VStack,
-	Button,
 } from "@chakra-ui/react";
 import { Buttons, Icon, InputLabel } from "components";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 /**
  * A <Dmt> component

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { AddressPane } from "components/AddressPane";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

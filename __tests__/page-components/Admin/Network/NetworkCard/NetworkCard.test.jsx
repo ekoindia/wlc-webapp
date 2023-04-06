@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { NetworkCard } from "components/NetworkCard";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

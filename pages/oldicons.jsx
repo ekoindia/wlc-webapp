@@ -1,6 +1,5 @@
 import { Center, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import React from "react";
 
 const connecticon = () => {
 	const iconName = [

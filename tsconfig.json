@@ -34,10 +34,10 @@
 	"include": [
 		"next-env.d.ts",
 		"**/*.ts",
-		"**/*.tsx",
-		"components/SearchBar/SearchFilterSort.jsx",
-		"components/Network/Table.jsx",
-		"constants/adminMenu.ts"
+		"**/*.tsx"
+		// "components/SearchBar/SearchFilterSort.jsx",
+		// "components/Network/Table.jsx",
+		// "constants/adminMenu.ts"
 	],
 	"exclude": [
 		"node_modules",
@@ -48,6 +48,7 @@
 		"plop-templates",
 		"public",
 		"stories",
-		"styles"
+		"styles",
+		"db"
 	]
 }

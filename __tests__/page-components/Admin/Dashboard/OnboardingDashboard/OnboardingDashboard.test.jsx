@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { OnboardingDashboard } from "components/OnboardingDashboard";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

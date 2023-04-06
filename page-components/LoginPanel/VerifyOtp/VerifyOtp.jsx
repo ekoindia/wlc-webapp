@@ -1,10 +1,10 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons, OtpInput } from "components";
-import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
-import { useLogin } from "hooks";
 import { useUser } from "contexts/UserContext";
 import { sendOtpRequest } from "helpers";
+import { useLogin } from "hooks";
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 
 /**
  * A <VerifyOtp> component

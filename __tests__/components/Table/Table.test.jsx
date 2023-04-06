@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Table } from "components/Table";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

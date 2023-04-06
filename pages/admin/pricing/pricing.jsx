@@ -3,7 +3,6 @@ import { PricingCommissionObject } from "constants";
 
 import Head from "next/head";
 import { PricingCommission } from "page-components/Admin";
-import React from "react";
 
 const Pricing = () => {
 	return (

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Divider } from "components/Divider";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { AccountStatement } from "components/AccountStatement";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

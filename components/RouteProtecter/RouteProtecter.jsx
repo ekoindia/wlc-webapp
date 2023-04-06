@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { Center, Spinner } from "@chakra-ui/react";
-import { Layout } from "..";
+import { baseRoute, initialRoute, publicLinks } from "constants";
 import { useUser } from "contexts/UserContext";
-import { publicLinks, baseRoute, initialRoute } from "constants";
+import { useEffect, useState } from "react";
+import { Layout } from "..";
 
 /**
  * A <RouteProtecter> component

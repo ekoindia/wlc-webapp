@@ -8,18 +8,16 @@ import {
 	Drawer,
 	DrawerBody,
 	DrawerContent,
-	DrawerFooter,
 	DrawerHeader,
 	DrawerOverlay,
 	Flex,
 	HStack,
-	Input,
 	Stack,
 	Text,
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Icon, IconButtons, Calenders } from "..";
+import { Buttons, Calenders, Icon } from "..";
 
 function Filter() {
 	const { isOpen, onOpen, onClose } = useDisclosure();

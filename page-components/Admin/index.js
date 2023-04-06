@@ -1,15 +1,15 @@
 /* PLOP_INJECT_IMPORT */
+import { AccountStatement } from "./AccountStatement";
+import { ChangeRole } from "./ChangeRole";
 import { Dashboard } from "./Dashboard";
+import { DetailedStatement } from "./DetailedStatement";
+import { Network } from "./Network";
+import { PricingCommission } from "./PricingCommission";
+import { ProfilePanel } from "./Profile";
+import { TransactionHistory } from "./TransactionHistory";
 import { UpdatePersonalInfo } from "./UpdatePersonalInfo";
 import { UpdateSellerAddress } from "./UpdateSellerAddress";
 import { UpdateSellerInfo } from "./UpdateSellerInfo";
-import { DetailedStatement } from "./DetailedStatement";
-import { AccountStatement } from "./AccountStatement";
-import { TransactionHistory } from "./TransactionHistory";
-import { Network } from "./Network";
-import { ChangeRole } from "./ChangeRole";
-import { PricingCommission } from "./PricingCommission";
-import { ProfilePanel } from "./Profile";
 
 export {
 	Dashboard,

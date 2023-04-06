@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Buttons } from "components/Buttons";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

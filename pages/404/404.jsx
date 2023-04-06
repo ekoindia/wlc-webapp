@@ -1,5 +1,4 @@
-import React from "react";
-import { Box, Center, Flex, Text } from "@chakra-ui/react";
+import { Box, Center, Text } from "@chakra-ui/react";
 import { Buttons } from "components";
 import Link from "next/link";
 const index = () => {

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { NonAdmin } from "components/NonAdmin";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

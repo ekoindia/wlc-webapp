@@ -1,8 +1,6 @@
 import { BreadcrumbsWrapper, Layout } from "components";
-import { AccountStatement } from "page-components/Admin";
 import { TransactionHistoryObject } from "constants";
-
-import React from "react";
+import { AccountStatement } from "page-components/Admin";
 
 const AccountStatementPage = () => {
 	return (

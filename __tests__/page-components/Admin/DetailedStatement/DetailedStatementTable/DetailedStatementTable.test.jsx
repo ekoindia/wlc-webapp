@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { DetailedStatementTable } from "components/DetailedStatementTable";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Switch } from "components/Switch";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { IconButtons } from "components/IconButtons";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

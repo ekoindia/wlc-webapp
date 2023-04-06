@@ -1,5 +1,5 @@
-import { pageRender, screen, mockRouter } from "test-utils";
 import Dashboard from "pages";
+import { mockRouter, pageRender } from "test-utils";
 
 describe("Dashboard", () => {
 	beforeEach(() => {

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Icon, Input } from "components";
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
+import { Icon, Input } from "components";
+import { useEffect, useState } from "react";
 
 /**
  * A <PermanentAddress> component

@@ -1,4 +1,3 @@
-import React from "react";
 import Calenders from "./Calenders";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

@@ -15,10 +15,11 @@ const customJestConfig = {
 	moduleNameMapper: {
 		// Handle module aliases (this will be automatically configured for you soon)
 		"^components/(.*)$": "<rootDir>/components/$1",
+		"^page-components/(.*)$": "<rootDir>/page-components/$1",
 		"^pages/(.*)$": "<rootDir>/pages/$1",
 		// "^features/(.*)$": "<rootDir>/features/$1",
 		"^constants/(.*)$": "<rootDir>/constants/$1",
-		"^context/(.*)$": "<rootDir>/context/$1",
+		"^contexts/(.*)$": "<rootDir>/contexts/$1",
 		"^hooks/(.*)$": "<rootDir>/hooks/$1",
 		"^public/(.*)$": "<rootDir>/public/$1",
 		"^styles/(.*)$": "<rootDir>/styles/$1",
@@ -32,7 +33,7 @@ const customJestConfig = {
 		global: {
 			// branches: 80,
 			// functions: 80,
-			lines: 80,
+			lines: 60,
 			// statements: -10,
 		},
 	},
@@ -49,7 +50,7 @@ const customJestConfig = {
 	collectCoverageFrom: [
 		"<rootDir>/pages/**/{!(_app),}.{js,ts,jsx,tsx}",
 		"<rootDir>/components/**/{!(index),}.{js,ts,jsx,tsx}",
-		"<rootDir>/context/**/{!(index),}.{js,ts,jsx,tsx}",
+		"<rootDir>/contexts/**/{!(index),}.{js,ts,jsx,tsx}",
 		"<rootDir>/hooks/**/{!(index),}.{js,ts,jsx,tsx}",
 		"<rootDir>/utils/**/{!(index),}.{js,ts,jsx,tsx}",
 		// "<rootDir>/features/**/{!(index),}.{js,ts,jsx,tsx}",

@@ -1,7 +1,6 @@
-import React from "react";
 // import { oldIcons as IconLibrary } from "constants/connectIcons";
-import { IconLibrary } from "constants/IconLibrary";
 import { Center } from "@chakra-ui/react";
+import { IconLibrary } from "constants/IconLibrary";
 /**
  * A <SvgIcon> component
  * TODO: Write more description here

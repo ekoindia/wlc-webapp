@@ -15,7 +15,7 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Divider, Filter, Icon } from "..";
+import { Filter, Icon } from "..";
 
 const Sort = ({ className = "", ...props }) => {
 	return (

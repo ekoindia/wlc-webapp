@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { OtpInput } from "components/OtpInput";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

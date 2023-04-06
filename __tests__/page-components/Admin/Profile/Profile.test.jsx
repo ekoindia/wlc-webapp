@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Profile } from "components/Profile";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

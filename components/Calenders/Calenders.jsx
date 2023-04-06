@@ -1,14 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
-import {
-	Box,
-	Center,
-	Flex,
-	Input,
-	Text,
-	VStack,
-	Button,
-} from "@chakra-ui/react";
-import { Buttons, Icon, InputLabel } from "components";
+import { Box, Flex, Input, Text } from "@chakra-ui/react";
+import { Icon, InputLabel } from "components";
+import { useRef } from "react";
 
 const Calenders = ({
 	label,
@@ -25,14 +17,14 @@ const Calenders = ({
 	onChange = () => {},
 	...props
 }) => {
-	const [dateText, setDateText] = useState("");
-	console.log("value", value);
+	// const [dateText] = useState("");
+	// console.log("value", value);
 
-	{
-		console.log("dateTextdateTextdateText", dateText);
-	}
-	const fromRef = useRef(null);
-	const toRef = useRef(null);
+	// {
+	// 	console.log("dateTextdateTextdateText", dateText);
+	// }
+	// const fromRef = useRef(null);
+	// const toRef = useRef(null);
 	const calendarRef = useRef(null);
 
 	const handleClickForInput = () => {

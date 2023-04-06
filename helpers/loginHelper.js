@@ -27,26 +27,30 @@ function sendOtpRequest(number, toast, sendState) {
 			}
 		})
 		.then((data) => {
-			toast({
-				title: `${
-					sendState === "resend" ? "Resend" : "Send"
-				} Otp Successfully: ${data.data.otp}`,
-				status: "success",
-				duration: 2000,
-				isClosable: true,
-				position: "top-right",
-			});
+			// Show otp hint in the toast only in development environments
+			if (process.env.NODE_ENV !== "production") {
+				toast({
+					title: `${
+						sendState === "resend" ? "Resend" : "Send"
+					} Otp Successfully: ${data.data.otp}`,
+					status: "success",
+					duration: 2000,
+					isClosable: true,
+					position: "top-right",
+				});
+			}
 		})
-		.catch((e) =>
-			toast({
-				title: `${
-					sendState === "resend" ? "Resend" : "Send"
-				} Otp failed`,
-				status: "error",
-				duration: 2000,
-				isClosable: true,
-				position: "top-right",
-			})
+		.catch(
+			(e) =>
+				toast({
+					title: `${
+						sendState === "resend" ? "Resend" : "Send"
+					} Otp failed`,
+					status: "error",
+					duration: 2000,
+					isClosable: true,
+					position: "top-right",
+				}) // TODO: Go back to submit mobile screen
 		);
 }
 
@@ -164,9 +168,10 @@ function clearAuthTokens() {
 function revokeSession(user_id) {
 	const refresh_token = sessionStorage.getItem("refresh_token");
 	if (user_id === 1) {
-		console.log("REFRESH TOKEN REVOKED", res);
+		console.log("REFRESH TOKEN ALREADY REVOKED");
 		return;
 	}
+
 	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
 		method: "post",
 		headers: {

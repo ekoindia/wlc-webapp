@@ -1,7 +1,7 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons, Input } from "components";
+import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useState } from "react";
-import { sendOtpRequest, RemoveFormatted } from "helpers";
 
 /**
  * A <SocialVerify> component

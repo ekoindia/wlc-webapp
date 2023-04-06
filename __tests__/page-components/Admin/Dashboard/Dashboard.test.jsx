@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Dashboard } from "components/Dashboard";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

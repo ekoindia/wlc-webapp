@@ -1,9 +1,7 @@
 import { Box, Flex, Grid, Image, SlideFade } from "@chakra-ui/react";
 import { useOrgDetailContext } from "contexts";
-import { useUser } from "contexts/UserContext";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
-import { Login, VerifyOtp, SocialVerify } from ".";
+import { useState } from "react";
+import { Login, SocialVerify, VerifyOtp } from ".";
 
 /**
  * This is the main component where all the Login related component rendered.

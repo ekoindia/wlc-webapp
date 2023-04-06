@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Pagination } from "components/Pagination";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:
