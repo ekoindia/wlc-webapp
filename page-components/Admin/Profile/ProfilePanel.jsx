@@ -1,16 +1,8 @@
-import {
-	Box,
-	Button,
-	Flex,
-	Grid,
-	GridItem,
-	HStack,
-	StackDivider,
-	Text,
-	VStack,
-} from "@chakra-ui/react";
-import { Buttons, Divider, Headings, Icon, Menus } from "components";
+import { Box, Button, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
+import { Buttons, Headings, Icon, Menus } from "components";
 import { ChangeRoleMenu } from "constants/ChangeRoleMenu";
+import Link from "next/link";
+import { useState } from "react";
 import {
 	AddressPane,
 	CompanyPane,
@@ -18,8 +10,6 @@ import {
 	DocPane,
 	PersonalPane,
 } from ".";
-import { useState } from "react";
-import Link from "next/link";
 
 const ChangeRoleDesktop = ({ menuHandler, ...rest }) => {
 	return (
@@ -61,7 +51,7 @@ const ChangeRoleDesktop = ({ menuHandler, ...rest }) => {
 };
 const ChangeRoleMobile = ({ menuHandler, ...rest }) => {
 	return (
-		<Box bg="shade" w="100%" h="100vh" px="4" mt="12px">
+		<Box bg="shade" w="100%" h="100vh" px="4" pt="12px">
 			{ChangeRoleMenu.map((ele, idx) => (
 				<Link href={ele.path} key={ele.item}>
 					<Flex

@@ -51,15 +51,7 @@ const Headings = ({
 	return (
 		<>
 			<Flex
-				mt={{
-					base: isNavHidden ? "0px" : "10px",
-					sm: isNavHidden ? "0px" : "8px",
-					md: isNavHidden ? "0px" : "12px",
-					lg: "16px",
-					xl: "18px",
-					"2xl": "20px",
-				}}
-				mb={{
+				my={{
 					base: isNavHidden ? "0px" : "10px",
 					sm: isNavHidden ? "0px" : "8px",
 					md: isNavHidden ? "0px" : "12px",
@@ -71,7 +63,7 @@ const Headings = ({
 				px={{ base: "16px", md: "0px" }}
 				justify="space-between"
 				align="center"
-				{...rest}
+				{...styles}
 			>
 				<Box>
 					<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>
