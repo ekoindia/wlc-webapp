@@ -29,24 +29,24 @@ const Headings = ({
 		setNavHidden(false);
 	}
 
-	// const styles = isNavHidden && {
-	// 	h: {
-	// 		base: "56px",
-	// 		sm: "56px",
-	// 		md: "50px",
-	// 		lg: "60px",
-	// 		xl: "50px",
-	// 		"2xl": "90px",
-	// 	},
-	// 	top: "0%",
-	// 	w: "full",
-	// 	position: "fixed",
-	// 	zIndex: "99",
-	// 	as: "section",
-	// 	boxShadow: "0px 3px 10px #0000001A",
-	// 	bg: "white",
-	// 	justifyContent: "space-between",
-	// };
+	const styles = isNavHidden && {
+		h: {
+			base: "56px",
+			sm: "56px",
+			md: "50px",
+			lg: "60px",
+			xl: "50px",
+			"2xl": "90px",
+		},
+		top: "0%",
+		w: "full",
+		position: "fixed",
+		zIndex: "99",
+		as: "section",
+		boxShadow: "0px 3px 10px #0000001A",
+		bg: "white",
+		justifyContent: "space-between",
+	};
 
 	return (
 		<>
