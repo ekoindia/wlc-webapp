@@ -136,7 +136,7 @@ export const processTransactionData = (tmp_lst) => {
 		//   //var _lbl = tmp_lst[i]['label'].match(/\b(\w)/g).join('').toLowerCase() +
 		//   //	tmp_lst[i]['label'].replace(/[^a-zA-Z]+/g,'').toLowerCase() +
 		//   //	'zyqpjduxcvlkswntfobigrhame';		//allow other letters as shortcut (sorted by reverse order of popularity of letters in common words)
-		//    TO SUPPORT HINDI n other INTERNATIONAL CHARACTERS: .match(/(^|[- _,.()])[^- _,.()]/g).map(function(a){return a.length>1? a[1] : a}).join(.......)
+		//   // TO SUPPORT HINDI n other INTERNATIONAL CHARACTERS: .match(/(^|[- _,.()])[^- _,.()]/g).map(function(a){return a.length>1? a[1] : a}).join(.......)
 
 		//   _lbl = tmp_lst[i].label.match(/(^|[- _,.()/&0-9])[^- _,.()/&0-9]/g).map(function(a){
 		//         return a.length>1? a[1] : a;

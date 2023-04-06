@@ -9,10 +9,10 @@ import Head from "next/head";
 import { light } from "../styles/themes";
 
 const inter = Inter({
-	weight: ["400", "500", "600", "700", "800"],
-	style: ["normal"],
+	weight: "variable",
+	subsets: ["latin"],
+	// style: ["normal"],
 	fallback: ["system-ui", "sans-serif"],
-	subsets: ["cyrillic"],
 });
 
 export default function App({ Component, pageProps, router }) {

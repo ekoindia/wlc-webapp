@@ -13,12 +13,15 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { useOrgDetailContext, useUser } from "contexts";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { Buttons, Icon, IconButtons } from "..";
 
 const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
-	const { setNavOpen } = props;
+	const { userData } = useUser();
+	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
+		props;
 
 	return (
 		<>
@@ -81,6 +84,7 @@ export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	const { userData } = useUser();
+	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
 
 	return (
@@ -181,7 +185,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												fontWeight={"semibold"}
 												mr={"1.6vw"}
 											>
-												Aakash Enterprises
+												{userDetails?.name}
 											</Text>
 
 											<Icon
@@ -243,7 +247,10 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 };
 
 const MyAccountCard = ({ setIsCardOpen }) => {
-	const { logout } = useUser();
+	const { logout, userData } = useUser();
+	const { userDetails } = userData;
+
+	const router = useRouter();
 	const logoutHandler = () => {
 		// router.push("/");
 		logout();
@@ -332,7 +339,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							w={"fit-content"}
 							color={"highlight"}
 						>
-							Aakash Enterprises
+							{userDetails?.name}
 						</Text>
 						<Text
 							fontSize={{
@@ -349,7 +356,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						>
 							(User Code:{" "}
 							<Text as={"span"} fontWeight={"medium"}>
-								501837634
+								{userDetails?.code}
 							</Text>
 							)
 						</Text>
@@ -367,7 +374,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							w={"fit-content"}
 							color={"white"}
 						>
-							angeltech.google.co.in
+							{userDetails?.email}
 						</Text>
 					</Flex>
 					<Flex
@@ -389,7 +396,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									}}
 									color={"white"}
 								>
-									+91 9871 67943
+									+91{" "}
+									{userDetails?.mobile.slice(0, 5) +
+										" " +
+										userDetails?.mobile.slice(5)}
 								</Text>
 								<Box ml={{ base: "15px", sm: "initial" }}>
 									<IconButtons
