@@ -9,7 +9,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
  */
 const nextConfig = withBundleAnalyzer({
 	/* config options here */
-	reactStrictMode: true,
+	reactStrictMode: false,
 	poweredByHeader: false,
 	swcMinify: true,
 	eslint: {

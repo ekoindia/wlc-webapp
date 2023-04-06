@@ -51,7 +51,7 @@ const ChangeRoleDesktop = ({ menuHandler /* , ...rest */ }) => {
 };
 const ChangeRoleMobile = () => {
 	return (
-		<Box bg="shade" w="100%" h="100vh" px="4" mt="12px">
+		<Box bg="shade" w="100%" h="100vh" px="4" pt="12px">
 			{ChangeRoleMenu.map((ele, idx) => (
 				<Link href={ele.path} key={ele.item}>
 					<Flex
