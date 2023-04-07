@@ -16,7 +16,11 @@ export default function Index({ data }) {
 
 export async function getServerSideProps({ req }) {
 	let data = {};
-	if (process.env.NEXT_PUBLIC_ENV === "development") {
+	const invalidOrg = {
+		notFound: true,
+	};
+
+	if (process.env.NEXT_PUBLIC_ENV === "development2") {
 		data = {
 			org_id: process.env.WLC_ORG_ID || 1,
 			app_name: process.env.WLC_APP_NAME || "wlc",
@@ -34,25 +38,59 @@ export async function getServerSideProps({ req }) {
 			},
 		};
 	} else {
-		let hostPath = req.headers.host;
-		let domainPath = process.env.WLC_SUBDOMAIN_ROOT;
-		let domainOrSubdomain = "";
+		const host = req.headers.host;
+		console.log("host: ", host);
 
-		if (hostPath.endsWith(domainPath))
-			domainOrSubdomain = hostPath.split(".")[0];
-		else domainOrSubdomain = hostPath;
+		const subdomainRootHost =
+			"." + (process.env.WLC_SUBDOMAIN_ROOT || "xxxx");
+		let domain = "";
+		let subdomain = "";
+
+		if (host.endsWith(subdomainRootHost)) {
+			// Subdomain root found. Extract subdomain from host
+			subdomain = host.slice(0, -subdomainRootHost.length);
+		} else {
+			// Subdomain root not found. Get the whole host as domain
+			domain = host;
+		}
+
+		if (!domain && !subdomain) {
+			return invalidOrg;
+		}
 
 		data = await fetch(
-			`https://sore-teal-codfish-tux.cyclic.app/logos/${domainOrSubdomain}`
+			process.env.NEXT_PUBLIC_API_BASE_URL +
+				"/wlctransactions/wlcorgmeta",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					// 'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				// body: JSON.stringify({ sub_domain: "simple" }),
+				body: JSON.stringify(
+					domain
+						? { domain: encodeURIComponent(domain) }
+						: { sub_domain: encodeURIComponent(subdomain) }
+				),
+			}
 		)
 			.then((data) => data.json())
-			.then((res) => res)
-			.catch((e) => console.log(e));
+			.then((res) => {
+				if (res && res.status == 0) {
+					return res.data;
+				} else {
+					return invalidOrg;
+				}
+			})
+			.catch((e) => {
+				console.error("Error getting org details: ", e);
+				return invalidOrg;
+			});
 	}
+
 	if (!Object.entries(data).length) {
-		return {
-			notFound: true,
-		};
+		return invalidOrg;
 	}
 
 	return {
