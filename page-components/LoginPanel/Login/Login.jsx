@@ -1,14 +1,6 @@
-import {
-	Button,
-	Center,
-	Flex,
-	Heading,
-	Image,
-	Text,
-	useToast,
-} from "@chakra-ui/react";
-import { useGoogleLogin } from "@react-oauth/google";
-import { Buttons, Divider, Input } from "components";
+import { Flex, Heading, useToast } from "@chakra-ui/react";
+// import { useGoogleLogin } from "@react-oauth/google";
+import { Buttons, Input } from "components";
 import { useUser } from "contexts/UserContext";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useLogin } from "hooks";
@@ -32,22 +24,22 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
 
-	const googleLoginHandler = useGoogleLogin({
-		onSuccess: async (response) => {
-			const postData = {
-				id_type: "Google",
-				id_token: response.code,
-			};
-			googleHandler(postData);
-			setLoginType("Google");
-			setNumber({
-				original: "",
-				formatted: "",
-			});
-		},
-		onError: (err) => console.log(err),
-		flow: "auth-code",
-	});
+	// const googleLoginHandler = useGoogleLogin({
+	// 	onSuccess: async (response) => {
+	// 		const postData = {
+	// 			id_type: "Google",
+	// 			id_token: response.code,
+	// 		};
+	// 		googleHandler(postData);
+	// 		setLoginType("Google");
+	// 		setNumber({
+	// 			original: "",
+	// 			formatted: "",
+	// 		});
+	// 	},
+	// 	onError: (err) => console.log(err),
+	// 	flow: "auth-code",
+	// });
 
 	const onChangeHandler = (val) => {
 		setValue(val);
@@ -85,7 +77,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				Login
 			</Heading>
 
-			<Button
+			{/* <Button
 				variant
 				bg="#4185F4"
 				mt={{
@@ -128,7 +120,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				title="Or login with mobile number"
 				py={{ base: "4rem", "2xl": "5.62rem" }}
 				fontSize={{ base: "xs", "2xl": "md" }}
-			/>
+			/> */}
 
 			<Input
 				cursor="default"
