@@ -195,6 +195,7 @@ export const light = extendTheme({
 		focusbg: "#FFFBF3",
 		white: "#FFFFFF",
 		shade: "#F2F2F2",
+		darkShade: "#e6e6e6",
 		highlight: "#FFD93B",
 		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
 		inputlabel: "#0C243B",

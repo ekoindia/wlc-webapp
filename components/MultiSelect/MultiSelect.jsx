@@ -343,10 +343,11 @@ const MultiSelect = ({
 										_odd={{
 											backgroundColor: "shade",
 										}}
-										bg={
-											highlightedIndex === index &&
-											"red.100"
-										}
+										style={{
+											backgroundColor:
+												highlightedIndex === index &&
+												"#e6e6e6",
+										}}
 										onKeyDown={handleInputKeyDown}
 									>
 										<Checkbox
