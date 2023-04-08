@@ -1,4 +1,4 @@
-import { Select } from "components/Select";
+import { MultiSelect } from "components/MultiSelect";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Select", () => {
+describe("MultiSelect", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Select />);
+		const { container } = render(<MultiSelect />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Select", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Select in __tests__/components/Select/Select.test.jsx"
+		"TODO: add proper test cases for MultiSelect in __tests__/components/MultiSelect/MultiSelect.test.jsx"
 	);
 });

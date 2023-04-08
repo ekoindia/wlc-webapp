@@ -1,10 +1,10 @@
 import { Box } from "@chakra-ui/react";
-import { BreadcrumbsWrapper, Select } from "components";
+import { MultiSelect } from "components";
 const chakra = () => {
 	return (
 		<Box>
-			<Select />
-			<BreadcrumbsWrapper />
+			<MultiSelect />
+			{/* <BreadcrumbsWrapper /> */}
 		</Box>
 	);
 };

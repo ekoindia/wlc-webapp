@@ -1,13 +1,13 @@
-import { Checkbox, Flex, Input } from "@chakra-ui/react";
+import { Checkbox, Flex, Input, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "..";
 
 /**
- * A <Select> component
- * TODO: A custom <Select> component built on top of react-select.
+ * A <MultiSelect> component
+ * With search, checkbox, multiselect, functionality
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Select></Select>`
+ * @example	`<MultiSelect></MultiSelect>`
  */
 
 const dummyOptions = [
@@ -43,37 +43,38 @@ const dummyOptions = [
 	{ value: "passionfruit", label: "Passionfruit" },
 ];
 
-const Select = (props) => {
-	const {
-		options = dummyOptions,
-		multiple = true, // Enable multiple selection - bool
-		searchable = true, // User can filter items - bool
-		//taggable, // Selected items rendered as tags - bool
-		//placeholder = "-- Select --", // select placeholders - string
-		//variant = "striped",
-	} = props;
-
+const MultiSelect = ({
+	options = dummyOptions,
+	placeholder = "-- Select --",
+}) => {
 	const inputRef = useRef();
 	const [open, setOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedOptions, setSelectedOptions] = useState({});
+	const [selectedOptionsArr, setSelectedOptionsArr] = useState([]);
 	const [highlightedIndex, setHighlightedIndex] = useState(-1);
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 	const [filteredOptions, setFilteredOptions] = useState(options);
 
-	useEffect(() => {
-		if (Object.keys(selectedOptions)?.length === options.length) {
-			setSelectAllChecked(true);
-		}
-	}, [selectedOptions]);
-
+	/* needed for select all option */
 	const selectObject = { value: "*", label: "Select All" };
+
+	useEffect(() => {
+		let keys = Object.keys(selectedOptions);
+		if (keys?.length === filteredOptions.length) {
+			setSelectAllChecked(true);
+		} else {
+			setSelectAllChecked(false);
+		}
+		setSelectAll(filteredOptions, selectedOptions);
+		setSelectedOptionsArr(keys);
+	}, [selectedOptions]);
 
 	const handleSelectBoxClick = () => {
 		setOpen(!open);
 	};
 
-	const handleSearch = () => {
+	const handleSearch = (event) => {
 		//  Search
 		let tempOptions = options.filter((option) =>
 			option.label
@@ -95,8 +96,8 @@ const Select = (props) => {
 			setSelectAllChecked(false);
 		}
 	};
+
 	// key press handling
-	//TODO add scroll on arrow key up & down
 	const handleInputKeyDown = (event) => {
 		if (event.keyCode === 8 && searchTerm === "") {
 			//BACKSPACE
@@ -109,21 +110,34 @@ const Select = (props) => {
 		}
 		if (event.keyCode === 40) {
 			//DOWN
+			event.preventDefault();
 			setHighlightedIndex((prev) => {
 				const next = prev + 1;
 				return next >= filteredOptions.length ? 0 : next;
 			});
 		} else if (event.keyCode === 38) {
 			//UP
+			event.preventDefault();
 			setHighlightedIndex((prev) => {
 				const next = prev - 1;
-				return next < 0 ? options.length - 1 : next;
+				return next < 0 ? filteredOptions.length - 1 : next;
 			});
 		} else if (event.keyCode === 13) {
 			//ENTER
 			if (highlightedIndex !== -1) {
-				let temp = filteredOptions[highlightedIndex];
-				setSelectedOptions((prev) => ({ ...prev, [temp.value]: true }));
+				let valObj = filteredOptions[highlightedIndex];
+				if (!selectedOptions[valObj.value]) {
+					setSelectedOptions((prev) => ({
+						...prev,
+						[valObj.value]: true,
+					}));
+				} else {
+					setSelectedOptions((prev) => {
+						let temp = { ...prev };
+						delete temp[valObj.value];
+						return temp;
+					});
+				}
 			}
 		}
 	};
@@ -133,7 +147,7 @@ const Select = (props) => {
 			setOpen(true);
 		}
 		setSearchTerm(event.target.value);
-		const updatedOptions = handleSearch();
+		const updatedOptions = handleSearch(event);
 		setFilteredOptions(updatedOptions);
 		// Check for select all
 		setSelectAll(updatedOptions, selectedOptions);
@@ -147,6 +161,7 @@ const Select = (props) => {
 			handleOptionMultiDeselect(value);
 		}
 	};
+
 	/* handle when user select a option */
 	const handleOptionMultiSelect = (optionValue) => {
 		if (optionValue === "*") {
@@ -168,13 +183,10 @@ const Select = (props) => {
 	};
 	/* handle when user de-select a option */
 	const handleOptionMultiDeselect = (optionValue) => {
-		console.log("handleOptionMultiDeselect", optionValue);
 		if (optionValue === "*") {
-			console.log("*", optionValue);
 			// deselect all
 			setSelectAllChecked(false);
 			if (searchTerm !== "") {
-				console.log("searchTerm", searchTerm);
 				setSelectedOptions((prev) => {
 					let temp = { ...prev };
 					filteredOptions.forEach((option) => {
@@ -189,7 +201,7 @@ const Select = (props) => {
 				delete temp[optionValue];
 				return temp;
 			});
-			setSelectAllChecked(false); //TODO FOR DELETE
+			setSelectAllChecked(false);
 		}
 	};
 
@@ -200,7 +212,9 @@ const Select = (props) => {
 			delete temp[key];
 			return temp;
 		});
-		setSelectAllChecked(false); //TODO TEST FOR DELETE
+		if (selectAllChecked) {
+			setSelectAllChecked(false);
+		}
 	};
 
 	return (
@@ -217,7 +231,6 @@ const Select = (props) => {
 					px="20px"
 					align="center"
 					position="relative"
-					// justify="space-between"
 					transition="all 100ms ease 0s"
 					border="card"
 					borderRadius="10px"
@@ -237,44 +250,39 @@ const Select = (props) => {
 						}}
 					>
 						{/* {placeholder} */}
-						{Object.keys(selectedOptions).map((name, index) => {
-							return getSelectedStyle(
-								name,
-								index,
-								onDeleteHandler
-							);
-						})}
-						{/* {!(selectedOptionsLength > 0) ? (
-								<Text>{placeholder}</Text>
-							) : (
-								getSelectedStyle(selectedOptions)
-								// selectedOptions
-							)} */}
+						{selectedOptionsArr.length > 0 ? (
+							selectedOptionsArr.map((name, index) =>
+								getSelectedStyle(name, index, onDeleteHandler)
+							)
+						) : searchTerm === "" ? (
+							<Text>{placeholder}</Text>
+						) : null}
 					</Flex>
 					<Flex w="auto" align="center">
-						{searchable && (
-							<Input
-								w="100%"
-								minW="2px"
-								type="text"
-								// opacity="1"
-								padding="2px 8px"
-								outline="none"
-								border="none"
-								value={searchTerm}
-								onChange={handleInputChange}
-								onKeyDown={handleInputKeyDown}
-								ref={inputRef}
-								_focus={{
-									border: "none",
-									outline: "none",
-									boxShadow: "none",
-								}}
-							/>
-						)}
+						<Input
+							w="100%"
+							minW="2px"
+							type="text"
+							padding="2px 8px"
+							outline="none"
+							border="none"
+							value={searchTerm}
+							onChange={handleInputChange}
+							onKeyDown={handleInputKeyDown}
+							ref={inputRef}
+							_focus={{
+								border: "none",
+								outline: "none",
+								boxShadow: "none",
+							}}
+						/>
 					</Flex>
 					<Flex ml="auto">
-						<Icon name="drop-down" height="14px" width="10px" />
+						<Icon
+							name={open ? "caret-up" : "caret-down"}
+							height="14px"
+							width="10px"
+						/>
 					</Flex>
 				</Flex>
 				<Flex w="100%">
@@ -299,7 +307,7 @@ const Select = (props) => {
 							}}
 						>
 							{/* Show select all options */}
-							{multiple && filteredOptions.length > 0 && (
+							{filteredOptions.length > 0 && (
 								<Flex
 									key={selectObject.value}
 									h="50px"
@@ -311,14 +319,7 @@ const Select = (props) => {
 								>
 									<Checkbox
 										variant="rounded"
-										// isChecked={
-										// 	selectAllChecked ||
-										// 	selectedOptions.includes(selectObject.value)
-										// }
-										isChecked={
-											selectAllChecked
-											//  ||	selectedOptions[selectObject.value]
-										}
+										isChecked={selectAllChecked}
 										onChange={(event) => {
 											handleClick(
 												event.target.checked,
@@ -350,10 +351,6 @@ const Select = (props) => {
 									>
 										<Checkbox
 											variant="rounded"
-											// isChecked={
-											// 	selectAllChecked ||
-											// 	selectedOptions.includes(row.value)
-											// }
 											isChecked={
 												selectAllChecked ||
 												selectedOptions[row.value] !==
@@ -379,7 +376,7 @@ const Select = (props) => {
 	);
 };
 
-export default Select;
+export default MultiSelect;
 
 const getSelectedStyle = (name, index, onDeleteHandler) => {
 	return (
@@ -403,8 +400,9 @@ const getSelectedStyle = (name, index, onDeleteHandler) => {
 				</Flex>
 				<Flex>
 					<Icon
-						name="arrow-down"
-						width="12px"
+						name="close"
+						width="8px"
+						color="accent.DEFAULT"
 						onClick={(e) => {
 							onDeleteHandler(name);
 							e.stopPropagation();
