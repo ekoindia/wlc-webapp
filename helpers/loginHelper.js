@@ -1,37 +1,24 @@
 import { Endpoints } from "constants/EndPoints";
-import jwt from "jsonwebtoken";
+import { fetcher } from "./apiHelper";
 
 function sendOtpRequest(number, toast, sendState) {
 	const PostData = {
 		platfom: "web",
 		mobile: number,
-		client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
+		// client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
 		app: "Connect",
 	};
 
-	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.SENDOTP, {
-		method: "POST",
-		headers: {
-			"Content-type": "application/json",
-		},
-		body: JSON.stringify(PostData),
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.SENDOTP, {
+		body: PostData,
+		timeout: 30000,
 	})
-		.then((response) => {
-			console.log("response", response);
-			if (response.ok) {
-				return response.json();
-			} else {
-				const err = new Error("Response not Ok");
-				err.response = response;
-				throw err;
-			}
-		})
 		.then((data) => {
 			// Show otp hint in the toast only in development environments
 			if (process.env.NODE_ENV !== "production") {
 				toast({
 					title: `${
-						sendState === "resend" ? "Resend" : "Send"
+						sendState === "resend" ? "Resent" : "Sent"
 					} Otp Successfully: ${data.data.otp}`,
 					status: "success",
 					duration: 2000,
@@ -45,7 +32,7 @@ function sendOtpRequest(number, toast, sendState) {
 				toast({
 					title: `${
 						sendState === "resend" ? "Resend" : "Send"
-					} Otp failed`,
+					} Otp failed. Please try again.`,
 					status: "error",
 					duration: 2000,
 					isClosable: true,
@@ -58,16 +45,22 @@ function RemoveFormatted(number) {
 	return number.replace(/\D/g, "");
 }
 
+/**
+ * Calculates the expiry time of the token which is 75% of the actual token lifetime.
+ * @param {object} data The response data from the login API
+ * @param {number} data.token_timeout Already calculated expiry time of the token in milliseconds
+ * @param {number} data.token_expiration The token lifetime in seconds
+ * @returns {number} The expiry time of the token in milliseconds
+ */
 function getTokenExpiryTime(data) {
-	console.log("data", data);
-	let tokenTimeout = data?.token_timeout;
-	if (!data.token_timeout) {
-		const decoded = jwt.decode(data.access_token);
-		const token_lifetime = (data.token_expiration * 75) / 100; // 25% of token_Expiration
-		const tokenExpiryInMS = (decoded.iat + token_lifetime) * 1000;
-		tokenTimeout = new Date(tokenExpiryInMS).toLocaleString();
+	// console.log("getTokenExpiryTime: data=", data);
+	if (!data) return 0;
+	if (data.token_timeout) return data.token_timeout;
+	if (data.token_expiration) {
+		const token_lifetime_75percent = data.token_expiration * 0.75;
+		return Date.now() + token_lifetime_75percent * 1000;
 	}
-	return tokenTimeout;
+	return 0;
 }
 
 /*
@@ -172,56 +165,50 @@ function revokeSession(user_id) {
 		return;
 	}
 
-	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
-		method: "post",
-		headers: {
-			"Content-type": "application/json",
-		},
-		body: JSON.stringify({
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
+		body: {
 			user_id: user_id,
 			refresh_token: refresh_token,
-		}),
-	}).then(function (res) {
-		console.log("REFRESH TOKEN REVOKED", res);
-	});
+		},
+		timeout: 60000,
+	})
+		.then((data) => console.log("REFRESH TOKEN REVOKED", data))
+		.catch((err) => console.log("REFRESH TOKEN REVOKE ERROR: ", err));
 }
 
 function generateNewAccessToken(
 	refresh_token,
-	logout,
 	updateUserInfo,
-	setIsTokenUpdating
+	isTokenUpdating,
+	setIsTokenUpdating,
+	logout
 ) {
 	console.log("refresh_token", refresh_token);
+
 	if (!(refresh_token && refresh_token.length > 1)) {
-		console.log("Please provide valid refresh token.");
+		console.warn("Please provide valid refresh token.");
 		return;
 	}
 
-	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN, {
-		method: "POST",
-		headers: {
-			"Content-type": "application/json",
-		},
-		body: JSON.stringify({
+	if (isTokenUpdating) {
+		console.warn("Already refreshing token.");
+		return;
+	}
+
+	setIsTokenUpdating(true);
+
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN, {
+		body: {
 			refresh_token: refresh_token,
-		}),
+		},
+		timeout: 60000,
 	})
-		.then((response) => {
-			console.log("response", response);
-			if (response.ok) {
-				return response.json();
-			} else {
-				throw new Error("Failed");
-			}
-		})
 		.then((data) => {
 			updateUserInfo(data);
 		})
 		.catch((err) => {
-			console.log("err", err);
-			console.log("logout");
-			// logout();
+			console.error("Error refreshing token: ", err);
+			logout && logout();
 		})
 		.finally(setIsTokenUpdating(false));
 }
