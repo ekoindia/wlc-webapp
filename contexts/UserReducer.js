@@ -27,14 +27,14 @@ export const UserReducer = (state, { type, payload }) => {
 		case "UPDATE_USER_STORE": {
 			if (payload && payload.access_token && payload.refresh_token) {
 				console.log("Updated userStore");
-				delete payload["long_session"];
+				delete payload["long_session"]; // FIX: Why remove long_session???
 				let tokenTimeout = getTokenExpiryTime(payload);
 				const newState = {
 					...state,
 					...payload,
-					token_timeout: tokenTimeout,
+					token_timeout: tokenTimeout || state.token_timeout, // Persist the old token_timeout if the new one is not available
 				};
-				console.log("newState", newState);
+				console.log("newUserState", newState);
 				setandUpdateAuthTokens(payload);
 				sessionStorage.setItem("token_timeout", tokenTimeout);
 				return newState;
