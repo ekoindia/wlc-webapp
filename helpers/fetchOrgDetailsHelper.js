@@ -79,9 +79,11 @@ export const fetchOrgDetails = async (host) => {
 	// Check cache for invalid (sub)domain
 	if (!orgDetails && INVALID_DOMAIN_CACHE.has(domain || subdomain)) {
 		// Bust the cache for invalid domains every 24 hours
+		// Also bust the cache if the cache size is more than 1000
 		if (
 			Date.now() - LAST_INVALID_DOMAIN_CACHE_BUST_TIME >
-			CACHE_EXPIRY_TIME
+				CACHE_EXPIRY_TIME ||
+			INVALID_DOMAIN_CACHE.size > 1000
 		) {
 			INVALID_DOMAIN_CACHE.clear();
 			LAST_INVALID_DOMAIN_CACHE_BUST_TIME = Date.now();
