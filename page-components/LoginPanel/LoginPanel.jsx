@@ -53,8 +53,11 @@ const LoginPanel = () => {
 					}}
 				>
 					<Image
-						src={orgDetail.logo || "./images/logoimage.png"}
-						alt={orgDetail.app_name + "'s logo" || "logo"}
+						src={
+							orgDetail.logo ||
+							"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56'%3E%3Crect fill='%23bbb' width='200' height='56' rx='6' ry='6'/%3E%3C/svg%3E"
+						}
+						alt={orgDetail.app_name + " logo"}
 						pl={{ base: 4, md: "0" }}
 						w={{ base: "9rem", md: "14rem", "2xl": "19rem" }}
 						height={{ base: "2.2rem", md: "3.5rem", "2xl": "5rem" }}
