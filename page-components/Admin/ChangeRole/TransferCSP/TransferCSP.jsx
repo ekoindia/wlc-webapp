@@ -270,7 +270,7 @@ const TransferCSP = ({
 							/>
 							R J Finance
 						</Flex>
-						{scspto.map((ele, idx) => {
+						{scspTo.map((ele, idx) => {
 							return (
 								<Flex
 									px="5"

@@ -70,7 +70,6 @@ export function SearchBar(props) {
 				bg="white"
 				_focus={{
 					bg: "focusbg",
-					boxShadow: "0px 3px 6px #0000001A",
 					border: isInvalid
 						? "1px solid #FF0000"
 						: "1px solid #D2D2D2",

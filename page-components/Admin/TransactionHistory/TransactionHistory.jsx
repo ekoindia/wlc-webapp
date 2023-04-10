@@ -15,7 +15,7 @@ const TransactionHistory = () => {
 	const [search, setSearch] = useState("");
 
 	function onChangeHandler(e) {
-		setSearchValue(e);
+		setSearch(e);
 		//TODO re-check
 	}
 	/* API CALLING */

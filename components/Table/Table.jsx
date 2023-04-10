@@ -28,7 +28,7 @@ import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
 import { TransactionCard } from "page-components/NonAdmin/Transaction";
 import { useEffect, useState } from "react";
-import { Cards, Icon, IconButtons, Pagination } from "..";
+import { Buttons, Cards, Icon, IconButtons, Pagination } from "..";
 
 const Table = (props) => {
 	const {
