@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { Icon } from "..";
 
 /**
- * A <MultiSelect> component
- * With search, checkbox, multiselect, functionality
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<MultiSelect></MultiSelect>`
+ * A <MultiSelect> select component
+ * with multiselect, search, checkbox functionality
+ * @param	{Array}	[prop.options]	options (array of objects) from which multiselect component will populate data and let user select.
+ * @param	{string}	[prop.placeholder]	placeholder to show when nothing is selected.
+ * @param	{object}	[prop.renderer]	object which contains label & value, which will let multiselect component know what is going to be the label and value from particular data.
+ * @param	{string}	[prop.setData]	setter which parent component will pass to multiselect to get the data/values/options which is selected by the user.
+ * @example	`<MultiSelect options={options}	renderer={renderer} placeholder = "Please Select Something"/>`
  */
 
 const MultiSelect = ({
