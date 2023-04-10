@@ -1,6 +1,7 @@
 import { Flex, Heading, useToast } from "@chakra-ui/react";
 // import { useGoogleLogin } from "@react-oauth/google";
 import { Buttons, Input } from "components";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useLogin } from "hooks";
@@ -19,6 +20,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const toast = useToast();
 	const { login } = useUser();
 	const [/* busy, */ googleHandler] = useLogin(login, setStep, setEmail);
+	const { orgDetail } = useOrgDetailContext();
 
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
@@ -54,7 +56,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			});
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
-			sendOtpRequest(originalNum, toast);
+			sendOtpRequest(orgDetail.org_id, originalNum, toast);
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);

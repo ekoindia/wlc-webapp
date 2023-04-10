@@ -1,12 +1,13 @@
 import { Endpoints } from "constants/EndPoints";
 import { fetcher } from "./apiHelper";
 
-function sendOtpRequest(number, toast, sendState) {
+function sendOtpRequest(org_id, number, toast, sendState) {
 	const PostData = {
 		platfom: "web",
 		mobile: number,
 		// client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
 		app: "Connect",
+		org_id: org_id,
 	};
 
 	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.SENDOTP, {
