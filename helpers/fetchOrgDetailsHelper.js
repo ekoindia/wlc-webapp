@@ -1,7 +1,7 @@
 /**
  * @description This helper is used to fetch the org detail associated with a (sub)domain on server-side only (inside getServerSideProps)
  * - It caches the org details for 24 hours
- * - It caches invalid (sub)domains for 24 hours
+ * - It caches invalid (sub)domains for 24 hours or until the cache size is more than 1000
  */
 
 import { Endpoints } from "constants/EndPoints";
@@ -18,7 +18,7 @@ let LAST_INVALID_DOMAIN_CACHE_BUST_TIME = Date.now();
 // Cache expiry time in milliseconds
 const CACHE_EXPIRY_TIME = 1000 * 60 * 60 * 24; // 24 hours
 
-// Data if org not found
+// Response data, if org not found
 const invalidOrg = {
 	notFound: true,
 };
@@ -134,7 +134,7 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 	)
 		.then((data) => data.json())
 		.then((res) => {
-			if (res && res.status == 0) {
+			if (res && res.data && res.data.org_id) {
 				return res.data;
 			} else {
 				return null;
