@@ -1,5 +1,6 @@
 import {
 	Box,
+	Flex,
 	Heading,
 	Stack,
 	StackDivider,
@@ -15,8 +16,7 @@ import { Cards, IconButtons } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<ContactPane></ContactPane>`
  */
-const ContactPane = (props) => {
-	const contactdata = props.rowdata;
+const ContactPane = ({ rowdata: contactdata }) => {
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 	// useEffect(() => {
 	// 	window.addEventListener("resize", (e) => {
@@ -63,13 +63,13 @@ const ContactPane = (props) => {
 				mt="5"
 				fontSize={{ base: 14, md: 12, lg: 14 }}
 			>
-				<Box display={"flex"} justifyContent={"space-between"}>
-					<Box display={"flex"} as="span">
+				<Flex justifyContent={"space-between"}>
+					<Flex as="span" align="center">
 						<Text color="light">Mobile number:</Text>
 						<Text fontWeight={"medium"}>
 							&nbsp; {contactdata.mobile_number}
 						</Text>
-					</Box>
+					</Flex>
 					{isSmallerThan769 ? (
 						<IconButtons
 							variant="success"
@@ -82,14 +82,14 @@ const ContactPane = (props) => {
 					) : (
 						""
 					)}
-				</Box>
-				<Box display={"flex"} justifyContent={"space-between"}>
-					<Box display={"flex"} as="span">
+				</Flex>
+				<Flex justifyContent={"space-between"}>
+					<Flex as="span" align="center">
 						<Text color="light">Email:</Text>
 						<Text fontWeight={"medium"}>
 							&nbsp; {contactdata.email}
 						</Text>
-					</Box>
+					</Flex>
 					<IconButtons
 						title={isSmallerThan769 ? "" : "Email Now"}
 						variant="accent"
@@ -100,7 +100,7 @@ const ContactPane = (props) => {
 							height: "12px",
 						}}
 					/>
-				</Box>
+				</Flex>
 			</Stack>
 		</Cards>
 	);

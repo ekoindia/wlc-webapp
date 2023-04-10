@@ -4,7 +4,7 @@ export const mockData = [
 		mobile_number: "+91 95999 13099",
 		type: "iMerchant",
 		createdAt: "12/10/2012",
-		account_status: "Active",
+		account_status: "Cancel",
 		ekocsp_code: "10167082",
 		location: "Delhi NCR",
 	},

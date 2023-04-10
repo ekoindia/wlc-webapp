@@ -1,11 +1,12 @@
 import { useUser } from "contexts/UserContext";
+import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 const useRequest = ({
 	method = "GET",
 	baseUrl,
-	timeout,
+	// timeout,
 	headers,
 	body,
 	options = {},
@@ -15,12 +16,20 @@ const useRequest = ({
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
+	// let currentTime = new Date().toLocaleString();
 
-	const { userData } = useUser();
+	const {
+		userData,
+		updateUserInfo,
+		isTokenUpdating,
+		setIsTokenUpdating,
+		// logout,
+	} = useUser();
+
 	// console.log("userData", userData);
 	// console.log("method", method);
 	// console.log("baseUrl", baseUrl);
-	const fetcher = (...args) => fetch(...args).then((res) => res.json());
+	// const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 	const {
 		data: fetchedData,
@@ -30,15 +39,22 @@ const useRequest = ({
 	} = useSWR(
 		`${baseUrl}`,
 		(url) =>
-			fetcher(url, {
-				method,
-				headers: {
-					"Content-Type": "application/json",
-					authorization: `Bearer ${userData.access_token}`,
-					...headers,
+			fetcher(
+				url,
+				{
+					method,
+					headers,
+					token: userData.access_token,
+					body,
 				},
-				body: body ? JSON.stringify(body) : null,
-			}),
+				{
+					token_timeout: userData.token_timeout,
+					refresh_token: userData.refresh_token,
+					updateUserInfo,
+					isTokenUpdating,
+					setIsTokenUpdating,
+				}
+			),
 		{
 			// provider: localStorageProvider,
 			revalidateOnFocus: false,

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { DocPane } from "components/DocPane";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

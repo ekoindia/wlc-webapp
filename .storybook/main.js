@@ -67,7 +67,10 @@ module.exports = {
 			"../constants"
 		);
 		config.resolve.alias["hooks"] = path.resolve(__dirname, "../hooks");
-		config.resolve.alias["context"] = path.resolve(__dirname, "../context");
+		config.resolve.alias["contexts"] = path.resolve(
+			__dirname,
+			"../contexts"
+		);
 		config.resolve.alias["utils"] = path.resolve(__dirname, "../utils");
 		config.module.rules.push({
 			test: /\.mjs$/,

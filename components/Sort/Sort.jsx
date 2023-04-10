@@ -41,15 +41,8 @@ const Sort = (props) => {
 						<Box
 							display="flex"
 							alignItems="center"
-							justifyContent={"space-between"}
-							w={{
-								base: "5vw",
-								sm: "35vw",
-								md: "28vw",
-								lg: "20vw",
-								xl: "20vw",
-								"2xl": "16vw",
-							}}
+							// justifyContent={"space-between"}
+							columnGap="10px"
 						>
 							<Box
 								fontSize={{
@@ -91,7 +84,7 @@ const Sort = (props) => {
 								textAlign="start"
 								borderRadius="6px"
 								boxShadow="0px 5px 15px #0000001A"
-								border=" 1px solid #D2D2D2"
+								border="card"
 								isActive={isOpen}
 								bg="white"
 								as={Button}
@@ -115,9 +108,9 @@ const Sort = (props) => {
 										}}
 									>
 										<Icon
-											name="drop-down"
+											name="caret-down"
 											width="16px"
-											color="#555555"
+											color="light"
 										/>
 									</Center>
 								}
@@ -149,7 +142,7 @@ const Sort = (props) => {
 									xl: "sm",
 									"2xl": "md",
 								}}
-								border="1px solid #D2D2D2"
+								border="card"
 							>
 								<MenuItem
 									fontWeight={"medium"}
@@ -227,7 +220,7 @@ const Sort = (props) => {
 						}}
 					>
 						<Text
-							color="#11299E"
+							color="accent.DEFAULT"
 							fontSize={"18px"}
 							lineHeight={"0"}
 							fontWeight={"semibold"}
@@ -241,9 +234,14 @@ const Sort = (props) => {
 						</Text>
 					</MenuButton>
 
-					<MenuList borderTopRadius={"15px"} minW={"100%"}>
+					<MenuList
+						borderRadius={"15px 15px 0px 0px"}
+						border="0"
+						minW={"100%"}
+						boxShadow="0px -10px 30px #0000001A"
+					>
 						<MenuGroup title="Sort by" fontSize={"18px"}>
-							<RadioGroup px={"5vw"}>
+							<RadioGroup mx={"16px"} my="16px">
 								<Stack
 									divider={
 										<StackDivider borderColor="gray.200" />
@@ -253,7 +251,9 @@ const Sort = (props) => {
 								>
 									<MenuItem p={"0px"} bgColor={"white"}>
 										<Radio value="1" size={"lg"}>
-											Recently Added
+											<Text fontSize="sm">
+												Recently Added
+											</Text>
 										</Radio>
 									</MenuItem>
 
@@ -262,10 +262,10 @@ const Sort = (props) => {
 											<Text
 												as={"span"}
 												fontWeight={"normal"}
+												fontSize="sm"
 											>
-												Status:
+												Status: Active
 											</Text>
-											Active
 										</Radio>
 									</MenuItem>
 
@@ -274,10 +274,10 @@ const Sort = (props) => {
 											<Text
 												as={"span"}
 												fontWeight={"normal"}
+												fontSize="sm"
 											>
-												Status:
+												Status: Inactive
 											</Text>
-											Inactive
 										</Radio>
 									</MenuItem>
 								</Stack>

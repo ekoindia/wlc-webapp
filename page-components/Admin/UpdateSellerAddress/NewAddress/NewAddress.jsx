@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Icon, Input, Buttons } from "components";
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
+import { Icon, Input } from "components";
 
 /**
  * A <NewAddress> component
@@ -9,9 +8,7 @@ import { Box, Flex, Select, Text } from "@chakra-ui/react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NewAddress></NewAddress>`
  */
-const NewAddress = ({ className = "", ...props }) => {
-	// TODO: Edit state as required
-
+const NewAddress = () => {
 	const item = {
 		AddressLine1: "B-373 Second Floor Sector - 20",
 		AddressLine2: "B-373 Second Floor Sector - 20",
@@ -21,10 +18,6 @@ const NewAddress = ({ className = "", ...props }) => {
 		Country: "India",
 		OwnershipType: "123123",
 	};
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
 
 	return (
 		<Box>

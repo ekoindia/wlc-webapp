@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Icon, Input } from "components";
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
+import { Icon, Input } from "components";
 
 /**
  * A <PermanentAddress> component
@@ -9,22 +8,16 @@ import { Box, Flex, Select, Text } from "@chakra-ui/react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<PermanentAddress></PermanentAddress>`
  */
-const PermanentAddress = (props) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
-
-	const item = {
-		AddressLine1: "B-373 Second Floor Sector - 20",
-		AddressLine2: "B-373 Second Floor Sector - 20",
-		PostalCode: 201301,
-		City: "Noida",
-		State: "Uttarpradesh",
-		Country: "India",
-		OwnershipType: "123123",
-	};
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
+const PermanentAddress = (/* props */) => {
+	// const item = {
+	// 	AddressLine1: "B-373 Second Floor Sector - 20",
+	// 	AddressLine2: "B-373 Second Floor Sector - 20",
+	// 	PostalCode: 201301,
+	// 	City: "Noida",
+	// 	State: "Uttarpradesh",
+	// 	Country: "India",
+	// 	OwnershipType: "123123",
+	// };
 
 	return (
 		<Box mx={{ base: "16px", md: "0px" }}>

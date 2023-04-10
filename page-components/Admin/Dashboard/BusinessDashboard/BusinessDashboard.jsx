@@ -1,16 +1,16 @@
 import {
+	Box,
+	Divider,
+	Flex,
 	Grid,
 	GridItem,
-	Box,
-	Text,
-	Flex,
 	Stack,
 	StackDivider,
-	Divider,
+	Text,
 } from "@chakra-ui/react";
 import { Icon, IconButtons } from "components";
-import { BusinessDashboardTable } from "./BusinessDashboardTable";
 import { useState } from "react";
+import { BusinessDashboardTable } from "./BusinessDashboardTable";
 
 const cardData = [
 	{
@@ -147,6 +147,7 @@ const BusinessDashboard = () => {
 
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [activeGtv, setActiveGtv] = useState(3);
+	console.log("activeGtv", activeGtv);
 
 	const onClick = (gtv) => {
 		setActiveGtv(gtv);
@@ -209,7 +210,7 @@ const BusinessDashboard = () => {
 
 	return (
 		<Flex direction={"column"} px={{ base: "20px", md: "0px" }}>
-			{console.log("cardData", cardData)}
+			{/* {console.log("cardData", cardData)} */}
 
 			{/* CARD */}
 			<Grid templateColumns="repeat(4, 4fr)" gap={5} overflowX="auto">
@@ -268,16 +269,16 @@ const BusinessDashboard = () => {
 										? "accent.DEFAULT"
 										: "divider"
 								}
-								_hover={{ bg: "accent.DEFAULT" }}
+								color={activeIndex === 0 ? "white" : "dark"}
+								_hover={{
+									bg: "accent.DEFAULT",
+									color: "white",
+								}}
 								onClick={() => handleClick(0)}
 							>
 								<Text
-									color={activeIndex === 0 ? "white" : "dark"}
-									_hover={{ color: "white" }}
+									color={"inherit"}
 									fontSize={{ base: "sm", md: "md" }}
-									_active={{
-										color: "white",
-									}}
 								>
 									Cashout
 								</Text>
@@ -294,16 +295,16 @@ const BusinessDashboard = () => {
 										? "accent.DEFAULT"
 										: "divider"
 								}
-								_hover={{ bg: "accent.DEFAULT" }}
+								color={activeIndex === 1 ? "white" : "dark"}
+								_hover={{
+									bg: "accent.DEFAULT",
+									color: "white",
+								}}
 								onClick={() => handleClick(1)}
 							>
 								<Text
-									color={activeIndex === 1 ? "white" : "dark"}
-									_hover={{ color: "white" }}
+									color={"inherit"}
 									fontSize={{ base: "sm", md: "md" }}
-									_active={{
-										color: "white",
-									}}
 								>
 									DMT
 								</Text>
@@ -319,16 +320,16 @@ const BusinessDashboard = () => {
 										? "accent.DEFAULT"
 										: "divider"
 								}
-								_hover={{ bg: "accent.DEFAULT" }}
+								color={activeIndex === 2 ? "white" : "dark"}
+								_hover={{
+									bg: "accent.DEFAULT",
+									color: "white",
+								}}
 								onClick={() => handleClick(2)}
 							>
 								<Text
-									color={activeIndex === 2 ? "white" : "dark"}
-									_hover={{ color: "white" }}
+									color={"inherit"}
 									fontSize={{ base: "sm", md: "md" }}
-									_active={{
-										color: "white",
-									}}
 								>
 									BBPS
 								</Text>
@@ -529,17 +530,19 @@ const BusinessDashboard = () => {
 							alignItems="center"
 							justifyContent="center"
 							// bg="divider"
-							bg={activeGtv === 3 ? "accent.DEFAULT" : "divider"}
-							_hover={{ bg: "accent.DEFAULT" }}
+							bg={
+								activeIndex === 3 ? "accent.DEFAULT" : "divider"
+							}
+							color={activeIndex === 3 ? "white" : "dark"}
+							_hover={{
+								bg: "accent.DEFAULT",
+								color: "white",
+							}}
 							onClick={() => onClick(3)}
 						>
 							<Text
-								color={activeGtv === 3 ? "white" : "dark"}
-								_hover={{ color: "white" }}
+								color={"inherit"}
 								fontSize={{ base: "sm", md: "md" }}
-								_active={{
-									color: "white",
-								}}
 							>
 								Cashout
 							</Text>
@@ -551,17 +554,20 @@ const BusinessDashboard = () => {
 							alignItems="center"
 							justifyContent="center"
 							// bg="divider"
-							bg={activeGtv === 4 ? "accent.DEFAULT" : "divider"}
-							_hover={{ bg: "accent.DEFAULT" }}
+							// bg="divider"
+							bg={
+								activeIndex === 4 ? "accent.DEFAULT" : "divider"
+							}
+							color={activeIndex === 4 ? "white" : "dark"}
+							_hover={{
+								bg: "accent.DEFAULT",
+								color: "white",
+							}}
 							onClick={() => onClick(4)}
 						>
 							<Text
-								color={activeGtv === 4 ? "white" : "dark"}
-								_hover={{ color: "white" }}
+								color={"inherit"}
 								fontSize={{ base: "sm", md: "md" }}
-								_active={{
-									color: "white",
-								}}
 							>
 								DMT
 							</Text>
@@ -572,17 +578,20 @@ const BusinessDashboard = () => {
 							borderRadius="20"
 							alignItems="center"
 							justifyContent="center"
-							bg={activeGtv === 5 ? "accent.DEFAULT" : "divider"}
-							_hover={{ bg: "accent.DEFAULT" }}
+							// bg="divider"
+							bg={
+								activeIndex === 5 ? "accent.DEFAULT" : "divider"
+							}
+							color={activeIndex === 5 ? "white" : "dark"}
+							_hover={{
+								bg: "accent.DEFAULT",
+								color: "white",
+							}}
 							onClick={() => onClick(5)}
 						>
 							<Text
-								color={activeGtv === 5 ? "white" : "dark"}
-								_hover={{ color: "white" }}
+								color={"inherit"}
 								fontSize={{ base: "sm", md: "md" }}
-								_active={{
-									color: "white",
-								}}
 							>
 								BBPS
 							</Text>

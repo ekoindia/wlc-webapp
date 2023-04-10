@@ -1,4 +1,3 @@
-import React from "react";
 import NavBar from "./NavBar";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

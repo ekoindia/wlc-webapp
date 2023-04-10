@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { DetailedStatementCard } from "components/DetailedStatementCard";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

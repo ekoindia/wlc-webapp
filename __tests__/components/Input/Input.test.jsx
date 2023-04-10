@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Input } from "components/Input";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

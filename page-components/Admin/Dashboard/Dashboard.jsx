@@ -1,6 +1,5 @@
-import React from "react";
+import { Headings } from "components/Headings";
 import { BusinessDashboard } from "./BusinessDashboard";
-import { OnboardingDashboard } from "./OnboardingDashboard";
 
 /**
  * A <Dashboard> component
@@ -12,6 +11,7 @@ import { OnboardingDashboard } from "./OnboardingDashboard";
 const Dashboard = ({ className = "", ...props }) => {
 	return (
 		<div className={`${className}`} {...props}>
+			<Headings title="Business Dashboard" hasIcon={false} />
 			<BusinessDashboard />
 		</div>
 	);

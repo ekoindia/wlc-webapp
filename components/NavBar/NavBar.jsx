@@ -12,15 +12,17 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { Buttons, Headings, Icon, IconButtons } from "..";
-import { useUser } from "contexts/UserContext";
+import { useOrgDetailContext, useUser } from "contexts";
 import { useRouter } from "next/router";
+import { useState } from "react";
+import { Buttons, Icon, IconButtons } from "..";
 
 const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
+	const { userData } = useUser();
 	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
 		props;
+
 	return (
 		<>
 			{isCardOpen && (
@@ -68,28 +70,10 @@ const NavBar = (props) => {
 						"2xl": "90px",
 					}}
 				>
-					{isSmallerThan769 ? (
-						isNavVisible ? (
-							<NavContent
-								setNavOpen={setNavOpen}
-								setIsCardOpen={setIsCardOpen}
-							/>
-						) : (
-							<Flex h="100%" alignItems="center">
-								<Headings
-									title={headingObj.title}
-									hasIcon={headingObj.hasIcon}
-									insideNav={true}
-									propComp={propComp}
-								/>
-							</Flex>
-						)
-					) : (
-						<NavContent
-							setNavOpen={setNavOpen}
-							setIsCardOpen={setIsCardOpen}
-						/>
-					)}
+					<NavContent
+						setNavOpen={setNavOpen}
+						setIsCardOpen={setIsCardOpen}
+					/>
 				</Box>
 			</Box>
 		</>
@@ -99,6 +83,10 @@ const NavBar = (props) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
+	const { userData } = useUser();
+	const { userDetails } = userData;
+	const { orgDetail } = useOrgDetailContext();
+
 	return (
 		<>
 			<HStack
@@ -114,7 +102,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 							setNavOpen(true);
 						}}
 						aria-label="open menu"
-						icon={<Icon name="nav-menu" />}
+						icon={<Icon name="menu" />}
 						size={"sm"}
 						mr={{
 							base: "1vw",
@@ -125,8 +113,11 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 					/>
 
 					<Image
-						src="/icons/logoimage.png"
-						alt="logo"
+						src={
+							orgDetail.logo ||
+							"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56'%3E%3Crect fill='%23bbb' width='200' height='56' rx='6' ry='6'/%3E%3C/svg%3E"
+						}
+						alt={orgDetail.app_name + "'s logo" || "logo"}
 						maxH={{
 							base: "35px",
 							sm: "34px",
@@ -169,52 +160,64 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 									name="demo-user"
 									src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
 								/>
-								<Flex
-									ml={"0.5vw"}
-									h={"2.3vw"}
-									justify={"center"}
-									direction={"column"}
-									display={{ base: "none", md: "flex" }}
-									lineHeight={{
-										md: "15px",
-										lg: "16px",
-										xl: "18px",
-										"2xl": "22px",
-									}}
-								>
-									<Box display={"flex"} alignItems={"center"}>
+								{userData?.is_org_admin === 1 ? (
+									<Flex
+										ml={"0.5vw"}
+										h={"2.3vw"}
+										justify={"center"}
+										direction={"column"}
+										display={{ base: "none", md: "flex" }}
+										lineHeight={{
+											md: "15px",
+											lg: "16px",
+											xl: "18px",
+											"2xl": "22px",
+										}}
+									>
+										<Box
+											display={"flex"}
+											alignItems={"center"}
+										>
+											<Text
+												fontSize={{
+													md: "12px",
+													lg: "14px",
+													xl: "12px",
+													"2xl": "18px",
+												}}
+												fontWeight={"semibold"}
+												mr={"1.6vw"}
+											>
+												{userDetails?.name}
+											</Text>
+
+											<Icon
+												name="arrow-drop-down"
+												width={{
+													md: "1vw",
+													lg: "0.75vw",
+												}}
+												height={{
+													md: "1vw",
+													lg: "0.70vw",
+												}}
+												pt="2px"
+											/>
+										</Box>
 										<Text
 											fontSize={{
-												md: "12px",
-												lg: "14px",
-												xl: "12px",
-												"2xl": "18px",
+												md: "10px",
+												lg: "10px",
+												xl: "10px",
+												"2xl": "14px",
 											}}
-											fontWeight={"semibold"}
-											mr={"1.7vw"}
+											color={"secondary.DEFAULT"}
+											textAlign={"start"}
 										>
-											Aakash Enterprises
+											Logged in as admin
 										</Text>
-										<Box
-											width={{ md: "1vw", lg: "0.75vw" }}
-											height={{ md: "1vw", lg: "0.70vw" }}
-										>
-											<Icon name="drop-down" />
-										</Box>
-									</Box>
-									<Text
-										fontSize={{
-											md: "10px",
-											lg: "10px",
-											xl: "10px",
-											"2xl": "14px",
-										}}
-										color={"secondary.DEFAULT"}
-										textAlign={"start"}
-									>
-										Logged in as admin
-									</Text>
-								</Flex>
+									</Flex>
+								) : null}
 							</Flex>
 						</MenuButton>
 
@@ -247,16 +250,18 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 };
 
 const MyAccountCard = ({ setIsCardOpen }) => {
-	const { logout } = useUser();
+	const { logout, userData } = useUser();
+	const { userDetails } = userData;
+
 	const router = useRouter();
 	const logoutHandler = () => {
-		router.push("/");
+		// router.push("/");
 		logout();
 	};
 
 	return (
 		<Box
-			border={"1px solid #D2D2D2"}
+			border="card"
 			boxShadow={"0px 6px 10px #00000033"}
 			borderRadius={{
 				base: "0.3rem",
@@ -292,19 +297,15 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						}}
 					/>
 				</Flex>
-				<Box display={{ base: "none", sm: "initial" }}>
-					<Icon
-						name="drop-down"
-						width="16px"
-						height="16px"
-						color="#11299E"
-						style={{
-							transform: "rotate(180deg)",
-							position: "absolute",
-							top: "-8.5%",
-							right: "2.7%",
-						}}
-					/>
+				<Box
+					display={{ base: "none", sm: "initial" }}
+					color="accent.DEFAULT"
+					transform="rotate(180deg)"
+					position="absolute"
+					top="-19%"
+					right="2%"
+				>
+					<Icon name="arrow-drop-down" width="16px" height="16px" />
 				</Box>
 
 				<Box
@@ -328,6 +329,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							xl: "20px",
 							"2xl": "25px",
 						}}
+						lineHeight="normal"
 					>
 						<Text
 							fontSize={{
@@ -340,7 +342,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							w={"fit-content"}
 							color={"highlight"}
 						>
-							Aakash Enterprises
+							{userDetails?.name}
 						</Text>
 						<Text
 							fontSize={{
@@ -353,11 +355,11 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							}}
 							w={"fit-content"}
 							color={"white"}
+							mb="3px"
 						>
-							(Eko Code:{" "}
+							(User Code:{" "}
 							<Text as={"span"} fontWeight={"medium"}>
-								{" "}
-								501837634
+								{userDetails?.code}
 							</Text>
 							)
 						</Text>
@@ -375,7 +377,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							w={"fit-content"}
 							color={"white"}
 						>
-							angeltech.google.co.in
+							{userDetails?.email}
 						</Text>
 					</Flex>
 					<Flex
@@ -397,11 +399,14 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									}}
 									color={"white"}
 								>
-									+91 9871 67943
+									+91{" "}
+									{userDetails?.mobile.slice(0, 5) +
+										" " +
+										userDetails?.mobile.slice(5)}
 								</Text>
 								<Box ml={{ base: "15px", sm: "initial" }}>
 									<IconButtons
-										iconSize={{ base: "sm", sm: "xs" }}
+										iconSize={"xs"}
 										// onClick={() =>
 										// 	Router.push("/admin/my-network/profile/up-per-info")
 										// }
@@ -411,7 +416,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 											width: "10px",
 											height: "10px",
 										}}
-									></IconButtons>
+									/>
 								</Box>
 							</Box>
 						</Flex>

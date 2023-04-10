@@ -1,9 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { Filter } from "components/Filter";
-import { SearchBar } from "components/SearchBar";
-import { Sort } from "components/Sort";
+import { Filter, Headings, SearchBar, Sort } from "components";
 import { ResSortAndFilter } from "components/Sort/Sort";
-import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import { NetworkTable } from "./NetworkTable";
@@ -16,13 +13,12 @@ import { NetworkTable } from "./NetworkTable";
  * @example	`<Network></Network>`
  */
 
-const Network = ({ className = "", ...props }) => {
-	const [search, setSearch] = useState(""); 
+const Network = () => {
+	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState();
 	const [filter, setFilter] = useState({});
 
 	const [pageNumber, setPageNumber] = useState(1);
-	const { userData } = useUser();
 
 	console.log("filter", filter);
 	/* Filter */
@@ -51,7 +47,6 @@ const Network = ({ className = "", ...props }) => {
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },
-		authorization: `Bearer ${userData.access_token}`,
 	});
 
 	useEffect(() => {
@@ -61,15 +56,21 @@ const Network = ({ className = "", ...props }) => {
 		);
 	}, [pageNumber, headers["tf-req-uri"]]);
 
-	const totalRecords = data?.data?.TotalRecords;
+	const totalRecords = data?.data?.totalRecords;
 	const agentDetails = data?.data?.agent_details ?? [];
 
 	// console.log("onfilterHandler", onfilterHandler);
 	return (
 		<>
+			<Headings title="My Network" hasIcon={false} />
 			<Box w={"100%"} px={{ base: "16px", md: "initial" }}>
 				<Box display={"flex"} justifyContent={"space-between"}>
-					<SearchBar value={search} setSearch={setSearch} minSearchLimit={10} maxSearchLimit={10}/>
+					<SearchBar
+						value={search}
+						setSearch={setSearch}
+						minSearchLimit={10}
+						maxSearchLimit={10}
+					/>
 					<Flex
 						display={{ base: "none", md: "flex" }}
 						gap={{ sm: "5px", md: "20px", lg: "50px" }}

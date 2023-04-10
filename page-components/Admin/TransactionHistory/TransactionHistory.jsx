@@ -1,8 +1,6 @@
 import { Box } from "@chakra-ui/react";
-import { SearchBar } from "components";
-import { useUser } from "contexts/UserContext";
+import { Headings, SearchBar } from "components";
 import useRequest from "hooks/useRequest";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { TransactionHistoryTable } from ".";
 /**
@@ -13,15 +11,12 @@ import { TransactionHistoryTable } from ".";
  * @example	`<TransactionHistory></TransactionHistory>`
  */
 
-const TransactionHistory = ({ className = "", ...props }) => {
-	const { userData } = useUser();
-	const router = useRouter();
+const TransactionHistory = () => {
 	const [search, setSearch] = useState("");
-
-	// const router = useRouter();
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
+		//TODO re-check
 	}
 	/* API CALLING */
 
@@ -34,7 +29,6 @@ const TransactionHistory = ({ className = "", ...props }) => {
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },
-		authorization: `Bearer ${userData.access_token}`,
 	});
 
 	useEffect(() => {
@@ -46,14 +40,24 @@ const TransactionHistory = ({ className = "", ...props }) => {
 	const transactiondata = data?.data?.transaction_details ?? [];
 
 	return (
-		<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
-			<Box>
-				<SearchBar value={search} setSearch={setSearch} minSearchLimit={10} maxSearchLimit={10}/>
+		<>
+			<Headings title="Transaction History" hasIcon={false} />
+			<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
+				<Box>
+					<SearchBar
+						value={search}
+						setSearch={setSearch}
+						minSearchLimit={10}
+						maxSearchLimit={10}
+					/>
+				</Box>
+				<Box>
+					<TransactionHistoryTable
+						transactiondata={transactiondata}
+					/>
+				</Box>
 			</Box>
-			<Box>
-				<TransactionHistoryTable transactiondata={transactiondata} />
-			</Box>
-		</Box>
+		</>
 	);
 };
 

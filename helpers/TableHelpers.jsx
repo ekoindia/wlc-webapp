@@ -17,11 +17,12 @@ export const getNameStyle = (name) => {
 		</Flex>
 	);
 };
-export const getStatusStyle = (status) => {
+export const getStatusStyle = (status, tableName) => {
 	return (
 		<Tags
 			size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
 			px={"10px"}
+			borderRadius={tableName === "Transactions" ? "10" : "28"}
 			status={status}
 		/>
 	);
@@ -38,8 +39,8 @@ export const getLocationStyle = (
 				iconSize={"xs"}
 				iconName="near-me"
 				iconStyle={{
-					width: "12px",
-					height: "12px",
+					width: "16px",
+					height: "16px",
 				}}
 				onClick={(e) => {
 					openGoogleMap(lat, long);
@@ -60,7 +61,7 @@ export const getArrowStyle = () => {
 		</Box>
 	);
 };
-export const getModalStyle = (data) => {
+export const getModalStyle = () => {
 	return (
 		<>
 			<Menus
@@ -71,7 +72,7 @@ export const getModalStyle = (data) => {
 				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
 				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
 				height={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				iconStyles={{ height: "15px", width: "4px" }}
+				// iconStyles={{ height: "15px", width: "4px" }}
 				onClick={(e) => {
 					e.stopPropagation();
 				}}
@@ -79,6 +80,10 @@ export const getModalStyle = (data) => {
 		</>
 	);
 };
+// export const getAccordian = (props) => {
+// 	return <></>;
+// };
+
 export const openGoogleMap = ({ latitude, longitude }) => {
 	const lat = parseFloat(latitude);
 	const lng = parseFloat(longitude);

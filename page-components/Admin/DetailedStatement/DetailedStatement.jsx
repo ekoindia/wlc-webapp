@@ -1,10 +1,16 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { Buttons, Calenders, Cards, Icon, SearchBar } from "components";
-import { useUser } from "contexts/UserContext";
+import {
+	Buttons,
+	Calenders,
+	Cards,
+	Headings,
+	Icon,
+	SearchBar,
+} from "components";
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { DetailedStatementTable } from "./DetailedStatementTable";
+import { DetailedStatementTable } from ".";
 
 /**
  * A <DetailedStatement> component
@@ -14,19 +20,15 @@ import { DetailedStatementTable } from "./DetailedStatementTable";
  * @example	`<DetailedStatement></DetailedStatement>`
  */
 
-const DetailedStatement = ({ className = "", ...props }) => {
+const DetailedStatement = () => {
 	const router = useRouter();
 	const { cellnumber } = router.query;
-	const { userData } = useUser();
-	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [search, setSearch] = useState("");
 	const [dateText, setDateText] = useState({
-		// TODO: Edit state as required
 		from: "",
 		to: "DD/MM/YYYY",
 	});
 	console.log("dateText", dateText);
-	// const [isMobileScreen] = useMediaQuery("(max-width: 440px)");
 
 	const handleApply = () => {
 		if (dateText.to === "YYYY/MM/DD" && dateText.from === "YYYY/MM/DD") {
@@ -50,7 +52,6 @@ const DetailedStatement = ({ className = "", ...props }) => {
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },
-		authorization: `Bearer ${userData.access_token}`,
 	});
 
 	useEffect(() => {
@@ -107,6 +108,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 
 	return (
 		<>
+			<Headings title="Detailed Statement" />
 			<Box
 				px={{ base: "16px", md: "initial" }}
 				marginTop={{ base: "26px", md: "0px" }}
@@ -226,7 +228,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 											base: "14px",
 											md: "9px",
 											lg: "12px",
-											"2xl": "16px",
+											"2xl": "14px",
 										}}
 										color={"light"}
 									>
@@ -237,7 +239,8 @@ const DetailedStatement = ({ className = "", ...props }) => {
 										color={"accent.DEFAULT"}
 										gap={"5px"}
 									>
-										<Box
+										<Icon
+											name="rupee"
 											w={{
 												base: "10px",
 												md: "8px",
@@ -250,9 +253,7 @@ const DetailedStatement = ({ className = "", ...props }) => {
 												lg: "11px",
 												"2xl": "15px",
 											}}
-										>
-											<Icon name="rupee" width="100%" />
-										</Box>
+										/>
 										<Text
 											fontSize={{
 												base: "16px",

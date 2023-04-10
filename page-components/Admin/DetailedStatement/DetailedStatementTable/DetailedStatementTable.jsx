@@ -9,7 +9,7 @@ import { Table } from "components";
  */
 
 const DetailedStatementTable = (props) => {
-    const {detiledData} = props;
+	const { detiledData } = props;
 
 	const renderer = [
 		{
@@ -33,7 +33,7 @@ const DetailedStatementTable = (props) => {
 	return (
 		<>
 			<Table
-                isOnclickRequire={false}
+				isOnclickRequire={false}
 				pageLimit={10}
 				renderer={renderer}
 				data={detiledData}

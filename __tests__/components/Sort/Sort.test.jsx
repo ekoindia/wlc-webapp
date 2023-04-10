@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Sort } from "components/Sort";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

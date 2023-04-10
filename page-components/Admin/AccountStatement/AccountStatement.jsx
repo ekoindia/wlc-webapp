@@ -1,9 +1,8 @@
 import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
-import { Buttons, Cards, Icon } from "components";
-import { useUser } from "contexts/UserContext";
+import { Buttons, Cards, Headings, Icon } from "components";
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AccountStatementTable } from ".";
 /**
  * A <AccountStatement> component
@@ -13,16 +12,11 @@ import { AccountStatementTable } from ".";
  * @example	`<AccountStatement></AccountStatement>`
  */
 
-const AccountStatement = ({ className = "", ...props }) => {
+const AccountStatement = () => {
 	const router = useRouter();
 	const { cellnumber } = router.query;
-
-	const { userData } = useUser();
-	const [count, setCount] = useState(0); // TODO: Edit state as required
 	const [isMobileScreen] = useMediaQuery("(max-width: 767px)");
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
+
 	/* API CALLING */
 
 	let headers = {
@@ -35,7 +29,6 @@ const AccountStatement = ({ className = "", ...props }) => {
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },
-		authorization: `Bearer ${userData.access_token}`,
 	});
 
 	useEffect(() => {
@@ -44,8 +37,9 @@ const AccountStatement = ({ className = "", ...props }) => {
 			headers
 		);
 	}, [headers["tf-req-uri"]]);
+
 	const acctabledata = data?.data?.recent_transaction_details ?? [];
-    console.log('acctabledata', acctabledata)
+	console.log("acctabledata", acctabledata);
 	const actable = data?.data ?? [];
 	const agentname = actable?.agent_name ?? [];
 	const saving_balance = actable?.saving_balance ?? [];
@@ -62,8 +56,10 @@ const AccountStatement = ({ className = "", ...props }) => {
 	const date = `${current.getDate()}/${
 		current.getMonth() + 1
 	}/${current.getFullYear()}`;
+
 	return (
 		<>
+			<Headings title="Account Statement" />
 			<Box
 				px={{ base: "16px", md: "initial" }}
 				marginTop={{ base: "26px", md: "0px" }}
@@ -189,7 +185,8 @@ const AccountStatement = ({ className = "", ...props }) => {
 											color={"accent.DEFAULT"}
 											gap={"5px"}
 										>
-											<Box
+											<Icon
+												name="rupee"
 												w={{
 													base: "10px",
 													md: "8px",
@@ -202,12 +199,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 													lg: "11px",
 													"2xl": "15px",
 												}}
-											>
-												<Icon
-													name="rupee"
-													width="100%"
-												/>
-											</Box>
+											/>
 											<Text
 												fontSize={{
 													base: "16px",

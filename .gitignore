@@ -23,10 +23,13 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+build-storybook.log*
 .pnpm-debug.log*
 
 # local env files
 .env*.local
+.env*.development
+.env
 
 # vercel
 .vercel

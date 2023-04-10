@@ -8,8 +8,7 @@ import { Box, Flex } from "@chakra-ui/react";
  * @example	`<AccountStatementCard></AccountStatementCard>`
  */
 
-const AccountStatementCard = (props) => {
-	const { item } = props;
+const AccountStatementCard = ({ item }) => {
 	// const item = {
 	// 	transactionId: 3027555195,
 	// 	datetime: "29/11/2022, 09:58:48 AM",

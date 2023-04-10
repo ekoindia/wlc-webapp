@@ -1,112 +1,108 @@
+import { Center, Spinner } from "@chakra-ui/react";
+import { baseRoute, initialRoute, publicLinks } from "constants";
 import { useUser } from "contexts/UserContext";
 import { useEffect, useState } from "react";
 import { Layout } from "..";
 
 /**
  * A <RouteProtecter> component
- * TODO: to protect the private routes and gives access to route according to user role.
+ * TODO: To protect the private routes and give access to route according to user role.
  * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param	{string}	[prop.router]	Router is passed from _app.js
+ * @param	{string}	[prop.children]	Children is also passed from _app.js
  * @example	`<RouteProtecter></RouteProtecter>`
  */
 
-const publicLinks = ["/"];
-const roleRoutes = {
-	admin: "/admin",
-	agent: "/agent",
-};
+const isBrowser = typeof window !== "undefined";
 
 const RouteProtecter = (props) => {
 	const { router, children } = props; //TODO : Getting Error in _app.tsx
-	const { userData, loading } = useUser();
-	const { loggedIn, role } = userData;
+	const { userData, loading, setLoading } = useUser();
+	const { loggedIn, is_org_admin } = userData;
 	const [authorized, setAuthorized] = useState(false);
-	// const [loading, setLoading] = useState(true)
+	// const [is404, setIs404] = useState(false);
 
-	console.log("%cRoute-Protecter: Start", "color:green");
-	console.log({
+	const role = is_org_admin === 1 ? "admin" : "non-admin";
+
+	console.log("%cRoute-Protecter: Start\n", "color:green", {
 		loggedIn: loggedIn,
 		authorized: authorized,
 		loading: loading,
 	});
 
 	useEffect(() => {
-		console.log("router.pathname", router.pathname);
-		// const path = router.asPath.split("?");
-		const path = router.asPath;
-		console.log("path", path);
+		const path = router.pathname;
+		console.log("Path", path);
 
-		if (loggedIn && !loading) {
-			if (
-				publicLinks.includes(path) ||
-				!path.includes(roleRoutes[role])
-			) {
-				router.back();
-			}
-			if (!authorized) {
-				setAuthorized(true);
-			}
-			// if (path[0].includes(roleRoutes[role]){
-			// 	setAuthorized(true)
-			// }
-			// setLoading(false)
-		} else if (!loggedIn && !loading) {
-			console.log("I am out");
+		if (path === "/404") {
+			console.log("Enter in 404", path);
+			setLoading(false);
+			// setIs404(true);
+		}
+		// when the user is loggedIn and loading is false
+		else if (!loggedIn && !loading) {
+			console.log("::::Enter in nonLogged::::");
+			console.log("condition 1 :", !publicLinks.includes(path));
+			// This condition will redirect to initial path if the route is inaccessible
 			if (!publicLinks.includes(path)) {
-				console.log("Enter in else if");
+				console.log("Enter in nonLogged : if");
 				router.push("/");
+				return;
 			}
 			if (authorized) setAuthorized(false);
-			// setLoading(false)
-		}
-
-		return () => {
-			// setLoading(false);
-		};
-	}, [router.asPath, loading]);
-
-	function authCheck(url) {
-		console.log(" protected route : authCheck - ", loggedIn, url);
-		const publicLinks = ["/"];
-		const path = url.split("?")[0];
-		console.log("path", path);
-		if (!loggedIn && !publicLinks.includes(path)) {
-			console.log("Route Protector : Not logged");
-			setAuthorized(false);
-			router.push("/");
-		} else if (loggedIn && router.pathname.includes("/admin")) {
-			console.log("Route Protector : logged");
-			// router.push(router.pathname);
+		} else if (loggedIn && role === "admin") {
+			console.log("::::Enter in Admin::::");
+			console.log("condition 1 :", !path.includes(baseRoute[role]));
+			console.log("condition 2 :", publicLinks.includes(path));
+			// This condition will redirect to initial path if the route is inaccessible after loggedIn
+			if (publicLinks.includes(path) || !path.includes(baseRoute[role])) {
+				console.log("Enter in admin : if");
+				router.replace(initialRoute[role]);
+				return;
+			}
+			setLoading(false);
+			setAuthorized(true);
+		} else if (loggedIn && role === "non-admin") {
+			console.log("::::Enter in nonAdmin::::");
+			console.log("condition 1 :", path.includes(baseRoute[role]));
+			console.log("condition 2 :", publicLinks.includes(path));
+			// Above condition will check, publicLink contain path or path contain "/admin"
+			if (publicLinks.includes(path) || path.includes("/admin")) {
+				console.log("Enter in nonAdmin : if");
+				router.replace(initialRoute[role]);
+				return;
+			}
+			setLoading(false);
 			setAuthorized(true);
 		}
+	}, [router.asPath, loading, loggedIn]);
+
+	/**
+	 * Remove the flash of private pages when user is not nonLogged
+	 * Show Spinner
+	 */
+	if (
+		(isBrowser &&
+			router.pathname !== "/404" &&
+			!publicLinks.includes(router.pathname) &&
+			!loggedIn) ||
+		loading
+	) {
+		return (
+			<Center height={"100vh"}>
+				<Spinner />
+			</Center>
+		);
 	}
 
 	console.log("%cRoute-Protecter: End", "color:green");
-	if (loading) return "Loading...";
-
 	return (
 		<>
-			{loggedIn ? (
+			{loggedIn && authorized ? (
 				<Layout isLoggedIn={true}>{children}</Layout>
 			) : (
 				children
 			)}
-			{/* {authorized ? (
-				loggedIn ? (
-					<Layout isLoggedIn={loggedIn}>{children}</Layout>
-				) : (
-					children
-				)
-			) :
-				(
-					<Button
-						onClick={() => {
-							router.push("/");
-						}}
-					>
-						You dont have access to this page
-					</Button>
-				)} */}
 		</>
 	);
 };

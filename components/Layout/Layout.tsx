@@ -1,25 +1,15 @@
-import { Box, Flex, useMediaQuery } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
+import { useLayoutContext } from "contexts/LayoutContext";
 import { useState } from "react";
-import { Breadcrumbs, NavBar, SideBar } from "..";
+import { NavBar, SideBar } from "..";
 
-const Layout = ({ isLoggedIn, children, propComp, ...props }) => {
+const Layout = ({ isLoggedIn, children /* , ...props */ }) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
-	const [isNav, setNav] = useState(true);
-	const [headingObj, setHeadingObj] = useState({
-		title: null,
-		hasIcon: false,
-	});
-	const [isSmallerThan769] = useMediaQuery("(max-width: 769px)");
+	const { isNavHidden } = useLayoutContext();
 
 	return isLoggedIn ? (
 		<Box w={"full"} minH={"100vh"}>
-			<NavBar
-				setNavOpen={setIsNavOpen}
-				isNavVisible={isNav}
-				isSmallerThan769={isSmallerThan769}
-				headingObj={headingObj}
-				propComp={propComp}
-			/>
+			{!isNavHidden && <NavBar setNavOpen={setIsNavOpen} />}
 
 			<Flex
 				width={"full"}
@@ -68,13 +58,13 @@ const Layout = ({ isLoggedIn, children, propComp, ...props }) => {
 							},
 						}}
 					>
-						<Breadcrumbs
+						{/* <Breadcrumbs
 							setNav={setNav}
 							setHeadingObj={setHeadingObj}
 							isNavVisible={isNav}
 							isSmallerThan769={isSmallerThan769}
 							propComp={propComp}
-						/>
+						/> */}
 
 						{children}
 					</Box>

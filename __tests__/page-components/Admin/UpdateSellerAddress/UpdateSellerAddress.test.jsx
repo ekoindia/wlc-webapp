@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { UpdateSellerAddress } from "components/UpdateSellerAddress";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

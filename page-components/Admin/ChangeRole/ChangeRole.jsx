@@ -1,5 +1,4 @@
 import {
-	Box,
 	Divider,
 	Flex,
 	Tab,
@@ -9,12 +8,12 @@ import {
 	Tabs,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons } from "components";
+import { Buttons, Headings } from "components";
 import { useRouter } from "next/router";
 
-import { MoveAgents, TransferCSP } from ".";
 import { useUser } from "contexts/UserContext";
 import { useEffect, useState } from "react";
+import { MoveAgents, TransferCSP } from ".";
 
 /**
  * A <ChangeRole> component
@@ -24,7 +23,7 @@ import { useEffect, useState } from "react";
  * @example	`<ChangeRole></ChangeRole>`
  */
 
-const ChangeRole = (props) => {
+const ChangeRole = () => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	const tab = +useRouter().query.tab;
 	const [fromValue, setFromValue] = useState("");
@@ -32,12 +31,12 @@ const ChangeRole = (props) => {
 	const [distributor, setDistributor] = useState([]);
 	const [scspFrom, setScspFrom] = useState([]);
 	const [scspto, setScspTo] = useState([]);
+	const { userData } = useUser();
 
 	const handleFromValueChange = (value) => {
 		console.log("Selected fromValue:", value);
 	};
 
-	const { userData } = useUser();
 	function handleFromChange(event) {
 		setFromValue(event.target.value);
 	}
@@ -59,7 +58,6 @@ const ChangeRole = (props) => {
 		"tf-req-uri-root-path": "/ekoicici/v1",
 		"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
 		"tf-req-method": "PUT",
-		authorization: `Bearer ${userData.access_token}`,
 	};
 
 	// let distributor =[]
@@ -97,120 +95,132 @@ const ChangeRole = (props) => {
 
 	// const transferCspData = distributor;
 
+	function backHandler() {
+		setIsShowSelectAgent((prev) => !prev);
+	}
+
 	return !isShowSelectAgent ? (
-		<Flex
-			// my={{ base: "0", md: "7.5" }}
-			align={{ base: "center", md: "flex-start" }}
-			pb={{ base: "0", md: "40px" }}
-			bg={{ base: "none", md: "white" }}
-			direction="column"
-			rowGap={{ base: "10px", md: "0" }}
-			border={{ base: "", md: "card" }}
-			borderRadius={{ base: "0", md: "10" }}
-			boxShadow={{ base: "", md: "0px 5px 15px #0000000D;" }}
-			overflow={"hidden"}
-		>
+		<>
+			<Headings title="Change Role" />
 			<Flex
-				w="100%"
-				pt="3.5"
-				px={{ base: "4", md: "7.5" }}
-				pb={{ base: "3.5", md: "5" }}
-				bg="white"
-				borderTopLeftRadius={{ base: "0", md: "10" }}
-				borderTopRightRadius={{ base: "0", md: "10" }}
-				borderBottom={{ base: "card", md: "0" }}
+				// my={{ base: "0", md: "7.5" }}
+				align={{ base: "center", md: "flex-start" }}
+				pb={{ base: "0", md: "40px" }}
+				bg={{ base: "none", md: "white" }}
 				direction="column"
 				rowGap={{ base: "10px", md: "0" }}
-				borderRadius={{ base: "0px", md: "none" }}
-				border={{ base: "1px solid #D2D2D2", md: "none" }}
-				borderTop="none"
+				border={{ base: "", md: "card" }}
+				borderRadius={{ base: "0", md: "10" }}
+				boxShadow={{ base: "", md: "0px 5px 15px #0000000D;" }}
+				overflow={"hidden"}
 			>
-				<Text
-					as="h1"
-					color="accent.DEFAULT"
-					fontWeight="bold"
-					fontSize={{ base: "lg", md: "2xl" }}
+				<Flex
+					w="100%"
+					pt="3.5"
+					px={{ base: "4", md: "7.5" }}
+					pb={{ base: "3.5", md: "5" }}
+					bg="white"
+					borderTopLeftRadius={{ base: "0", md: "10" }}
+					borderTopRightRadius={{ base: "0", md: "10" }}
+					borderBottom={{ base: "card", md: "0" }}
+					direction="column"
+					rowGap={{ base: "10px", md: "0" }}
+					borderRadius={{ base: "0px", md: "none" }}
+					border={{ base: "1px solid #D2D2D2", md: "none" }}
+					borderTop="none"
 				>
-					Angel Tech Private Limited
-				</Text>
-				<Text fontSize={{ base: "xs", md: "md" }}>
-					Edit the fields below and click Preview.
-					<Text as="span" display={{ base: "block", md: "inline" }}>
-						Click Cancel to return to Client HomePage without
-						submitting information.
+					<Text
+						as="h1"
+						color="accent.DEFAULT"
+						fontWeight="bold"
+						fontSize={{ base: "lg", md: "2xl" }}
+					>
+						Angel Tech Private Limited
 					</Text>
-				</Text>
+					<Text fontSize={{ base: "xs", md: "md" }}>
+						Edit the fields below and click Preview.
+						<Text
+							as="span"
+							display={{ base: "block", md: "inline" }}
+						>
+							Click Cancel to return to Client HomePage without
+							submitting information.
+						</Text>
+					</Text>
+				</Flex>
+
+				<Divider
+					w={{ base: "0", md: "calc(100% - 60px)" }}
+					mx="auto"
+					color="divider"
+				/>
+
+				<Tabs
+					position="relative"
+					defaultIndex={tab || 0}
+					variant="colorful"
+					//Responsive style
+					bg={{ base: "#FFFFFF", md: "transparent" }}
+					border={{ base: "card", md: "none" }}
+					px={{ base: "0", md: "7.5" }}
+					pt={{ base: "3", md: "10.5" }}
+					w={{ base: "92%", md: "100%" }}
+					boxShadow={{ base: "0px 5px 15px #0000000D", md: "none" }}
+					borderRadius={{ base: "10px", md: "none" }}
+				>
+					<TabList
+						color="light"
+						css={{
+							"&::-webkit-scrollbar": {
+								display: "none",
+							},
+							"&::-moz-scrollbar": {
+								display: "none",
+							},
+							"&::scrollbar": {
+								display: "none",
+							},
+						}}
+					>
+						<Tab>Transfer CSPs</Tab>
+						<Tab>Promote Csp To Scsp</Tab>
+						<Tab>Demote Distributor</Tab>
+						<Tab>Upgrade Merchant To I-Merchant</Tab>
+					</TabList>
+
+					<TabPanels
+						px={{ base: "18px", md: "0" }}
+						mt={{ base: "23px", md: "32px", lg: "46px" }}
+					>
+						<TabPanel>
+							<TransferCSP
+								setIsShowSelectAgent={setIsShowSelectAgent}
+								distributor={distributor}
+								// onFromValueChange={}
+								scspTo={scspto}
+							/>
+						</TabPanel>
+						<TabPanel>
+							<p>two!</p>
+						</TabPanel>
+						<TabPanel>
+							<p>three!</p>
+						</TabPanel>
+						<TabPanel>
+							<p>three!</p>
+						</TabPanel>
+					</TabPanels>
+				</Tabs>
 			</Flex>
-
-			<Divider
-				w={{ base: "0", md: "calc(100% - 60px)" }}
-				mx="auto"
-				color="divider"
-			/>
-
-			<Tabs
-				position="relative"
-				defaultIndex={tab || 0}
-				variant="colorful"
-				//Responsive style
-				bg={{ base: "#FFFFFF", md: "transparent" }}
-				border={{ base: "card", md: "none" }}
-				px={{ base: "0", md: "7.5" }}
-				pt={{ base: "3", md: "10.5" }}
-				w={{ base: "92%", md: "100%" }}
-				boxShadow={{ base: "0px 5px 15px #0000000D", md: "none" }}
-				borderRadius={{ base: "10px", md: "none" }}
-			>
-				<TabList
-					color="light"
-					css={{
-						"&::-webkit-scrollbar": {
-							display: "none",
-						},
-						"&::-moz-scrollbar": {
-							display: "none",
-						},
-						"&::scrollbar": {
-							display: "none",
-						},
-					}}
-				>
-					<Tab>Transfer CSPs</Tab>
-					<Tab>Promote Csp To Scsp</Tab>
-					<Tab>Demote Distributor</Tab>
-					<Tab>Upgrade Merchant To I-Merchant</Tab>
-				</TabList>
-
-				<TabPanels
-					px={{ base: "18px", md: "0" }}
-					mt={{ base: "23px", md: "32px", lg: "46px" }}
-				>
-					<TabPanel>
-						<TransferCSP
-							setIsShowSelectAgent={setIsShowSelectAgent}
-							distributor={distributor}
-							scspto={scspto}
-						/>
-					</TabPanel>
-					<TabPanel>
-						<p>two!</p>
-					</TabPanel>
-					<TabPanel>
-						<p>three!</p>
-					</TabPanel>
-					<TabPanel>
-						<p>three!</p>
-					</TabPanel>
-				</TabPanels>
-			</Tabs>
-		</Flex>
+		</>
 	) : (
-		<Box>
+		<>
+			<Headings title="Select Agents" redirectHandler={backHandler} />
+
 			{/* Move button for mobile responsive */}
 			<MoveAgents
 				ShowSelectAgents={isShowSelectAgent}
-				setShowSelectAgent={setIsShowSelectAgent}
-				scspFrom={scspFrom}
+				options={scspFrom}
 			/>
 			<Flex
 				Flex
@@ -244,7 +254,7 @@ const ChangeRole = (props) => {
 					Move Now
 				</Buttons>
 			</Flex>
-		</Box>
+		</>
 	);
 };
 

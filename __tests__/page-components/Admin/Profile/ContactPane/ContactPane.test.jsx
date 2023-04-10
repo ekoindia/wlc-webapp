@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { ContactPane } from "components/ContactPane";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

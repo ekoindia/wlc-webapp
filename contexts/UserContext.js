@@ -1,10 +1,5 @@
+import { createUserState, getSessions } from "helpers/loginHelper";
 import {
-	createUserState,
-	getAuthTokens,
-	getSessions,
-} from "helpers/loginHelper";
-import Router from "next/router";
-import React, {
 	createContext,
 	useContext,
 	useEffect,
@@ -18,6 +13,7 @@ const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(UserReducer, defaultUserState);
+	const [isTokenUpdating, setIsTokenUpdating] = useState(false);
 	const [loading, setLoading] = useState(true);
 	console.log("%cExecuted UserContext: Start ", "color:blue");
 
@@ -34,10 +30,7 @@ const UserProvider = ({ children }) => {
 			)
 		) {
 			console.log("Not logged");
-			setLoading(() => {
-				console.log("State set");
-				return false;
-			});
+			setLoading(false);
 			return;
 		}
 
@@ -50,28 +43,38 @@ const UserProvider = ({ children }) => {
 				type: "INIT_USER_STORE",
 				payload: sessionState,
 			});
-			setLoading(false);
+			// setLoading(false);
 		}
 	}, []);
 
-	useEffect(() => {
-		console.log("User Context : UseEffect", {
-			logged: state.loggedIn,
-			path: Router.asPath,
+	// useEffect(() => {
+	// 	console.log("User Context : UseEffect", {
+	// 		logged: state.loggedIn,
+	// 		path: Router.asPath,
+	// 	});
+
+	// 	if (state.loggedIn) {
+	// 		// setLoading(false)
+	// 		console.log("User Context : ", state.loggedIn, Router.asPath);
+
+	// 		if (Router.pathname === '/404') return true
+	// 		else if (Router.pathname.includes("/admin")) Router.push(Router.asPath);
+	// 		else Router.replace("/admin/my-network");
+
+	// 		// the above condition is for when user refrehes the poge
+	// 		// if (!Router.pathname.includes(roleRoutes[state.role])) {
+	// 		// 	console.log("Redirect");
+	// 		// 	Router.replace(roleInitialRoute[state.role]);
+	// 		// }
+	// 	}
+	// }, [state.loggedIn]);
+
+	const updateUserInfo = (data) => {
+		dispatch({
+			type: "UPDATE_USER_STORE",
+			payload: { ...data },
 		});
-		if (state.loggedIn) {
-			// setLoading(false)
-			console.log("User Context : ", state.loggedIn, Router.asPath);
-
-			// if (Router.pathname.includes("/admin")) Router.push(Router.asPath);
-			// else Router.replace("/admin/my-network");
-			if (!Router.pathname.includes("/admin")) {
-				console.log("Redirect");
-				Router.replace("/admin/my-network");
-			}
-		}
-	}, [state.loggedIn]);
-
+	};
 	const login = (sessionData) => {
 		dispatch({
 			type: "LOGIN",
@@ -89,6 +92,10 @@ const UserProvider = ({ children }) => {
 			login,
 			logout,
 			loading,
+			setLoading,
+			updateUserInfo,
+			setIsTokenUpdating,
+			isTokenUpdating,
 		};
 	}, [state, loading]);
 	console.log("%cExecuted : UserContext: End", "color:blue");

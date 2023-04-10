@@ -8,10 +8,8 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Buttons, Icon } from "components";
+import { useState } from "react";
 import { MoveAgents } from "..";
-import useRequest from "hooks/useRequest";
-import { useUser } from "contexts/UserContext";
-import { useEffect, useState } from "react";
 // text - align: left;
 // font: normal normal 600 16px / 18px Inter;
 // letter - spacing: 0px;
@@ -73,17 +71,19 @@ const dataa = [
 	},
 ];
 
-const TransferCSP = (setIsShowSelectAgent, props) => {
+const TransferCSP = ({
+	setIsShowSelectAgent,
+	distributor,
+	scspTo,
+	onFromValueChange,
+	...rest
+}) => {
 	const [fromValue, setFromValue] = useState("");
 	const [toValue, setToValue] = useState("");
 	const [data, setData] = useState("");
-	const { onFromValueChange, ...rest } = props;
 	// const [distributor, setDistributor] = useState([]);
 	// const [scspFrom, setScspFrom]=useState([]);
 	// const [scspto, setScspTo]=useState([]);
-
-	const { distributor, scspTo } = props;
-	console.log("distributor", distributor);
 
 	const handleFromChange = (event) => {
 		const value = event.target.value;
@@ -126,7 +126,14 @@ const TransferCSP = (setIsShowSelectAgent, props) => {
 						w="100%"
 						placeholder="--Select--"
 						h="12"
-						icon={<Icon name="caret-down" />}
+						icon={
+							<Icon
+								name="caret-down"
+								w="14px"
+								h="10px"
+								color="light"
+							/>
+						}
 						distributor={distributor}
 						{...rest}
 					>
@@ -154,7 +161,14 @@ const TransferCSP = (setIsShowSelectAgent, props) => {
 						w="100%"
 						placeholder="--Select--"
 						h="12"
-						icon={<Icon name="caret-down" />}
+						icon={
+							<Icon
+								name="caret-down"
+								w="14px"
+								h="10px"
+								color="light"
+							/>
+						}
 					>
 						{distributor.map((option) => (
 							<option key={option.value} value={option.ekocspid}>
@@ -174,9 +188,12 @@ const TransferCSP = (setIsShowSelectAgent, props) => {
 				direction={{ base: "column", sm: "row" }}
 				columnGap="30px"
 				rowGap="24px"
-				onClick={() => setIsShowSelectAgent(true)}
 			>
-				<Buttons h="54px" fontSize="md">
+				<Buttons
+					h="54px"
+					fontSize="md"
+					onClick={() => setIsShowSelectAgent(true)}
+				>
 					Select Agents
 				</Buttons>
 				<Buttons
@@ -253,7 +270,7 @@ const TransferCSP = (setIsShowSelectAgent, props) => {
 							/>
 							R J Finance
 						</Flex>
-						{scspTo.map((ele, idx) => {
+						{scspto.map((ele, idx) => {
 							return (
 								<Flex
 									px="5"

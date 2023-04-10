@@ -1,57 +1,43 @@
 import { Endpoints } from "constants/EndPoints";
+import { fetcher } from "./apiHelper";
 
 function sendOtpRequest(number, toast, sendState) {
 	const PostData = {
 		platfom: "web",
 		mobile: number,
-		client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
+		// client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
 		app: "Connect",
 	};
 
-	// if (false)
-	fetch(process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.SENDOTP, {
-		method: "POST",
-		headers: {
-			"Content-type": "application/json",
-		},
-		body: JSON.stringify(PostData),
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.SENDOTP, {
+		body: PostData,
+		timeout: 30000,
 	})
-		.then((response) => {
-			console.log("response", response);
-			if (response.ok) {
-				return response.json();
-			} else {
-				const err = new Error("Response not Ok");
-				err.response = response;
-				throw err;
+		.then((data) => {
+			// Show otp hint in the toast only in development environments
+			if (process.env.NODE_ENV !== "production") {
+				toast({
+					title: `${
+						sendState === "resend" ? "Resent" : "Sent"
+					} Otp Successfully: ${data.data.otp}`,
+					status: "success",
+					duration: 2000,
+					isClosable: true,
+					position: "top-right",
+				});
 			}
 		})
-		.then((data) => {
-			if (sendState === "resend")
+		.catch(
+			() =>
 				toast({
-					title: "Resend Otp Successfully",
-					status: "success",
+					title: `${
+						sendState === "resend" ? "Resend" : "Send"
+					} Otp failed. Please try again.`,
+					status: "error",
 					duration: 2000,
 					isClosable: true,
 					position: "top-right",
-				});
-			else
-				toast({
-					title: "Send Otp Successfully",
-					status: "success",
-					duration: 2000,
-					isClosable: true,
-					position: "top-right",
-				});
-		})
-		.catch((e) =>
-			toast({
-				title: "Send OTP failed",
-				status: "error",
-				duration: 2000,
-				isClosable: true,
-				position: "top-right",
-			})
+				}) // TODO: Go back to submit mobile screen
 		);
 }
 
@@ -59,17 +45,36 @@ function RemoveFormatted(number) {
 	return number.replace(/\D/g, "");
 }
 
+/**
+ * Calculates the expiry time of the token which is 75% of the actual token lifetime.
+ * @param {object} data The response data from the login API
+ * @param {number} data.token_timeout Already calculated expiry time of the token in milliseconds
+ * @param {number} data.token_expiration The token lifetime in seconds
+ * @returns {number} The expiry time of the token in milliseconds
+ */
+function getTokenExpiryTime(data) {
+	// console.log("getTokenExpiryTime: data=", data);
+	if (!data) return 0;
+	if (data.token_timeout) return data.token_timeout;
+	if (data.token_expiration) {
+		const token_lifetime_75percent = data.token_expiration * 0.75;
+		return Date.now() + token_lifetime_75percent * 1000;
+	}
+	return 0;
+}
+
 /*
  * createUserState(data) is used to create userState.
- *
  */
-
 function createUserState(data) {
+	let tokenTimeout = getTokenExpiryTime(data);
+	console.log("tokenTimeout", tokenTimeout);
 	const state = {
 		loggedIn: true,
-		role: "admin",
+		is_org_admin: data?.details?.is_org_admin || 0,
 		access_token: data.access_token,
 		refresh_token: data.refresh_token,
+		token_timeout: tokenTimeout,
 		userId: data?.details?.mobile,
 		uid: data.details?.uid,
 		userDetails: {
@@ -81,6 +86,30 @@ function createUserState(data) {
 	};
 
 	return state;
+}
+
+function setUserDetails(data) {
+	try {
+		sessionStorage.setItem("token_timeout", data.token_timeout);
+		sessionStorage.setItem(
+			"user_details",
+			JSON.stringify(data.userDetails)
+		);
+		sessionStorage.setItem(
+			"personal_details",
+			JSON.stringify(data.personalDetails)
+		);
+		sessionStorage.setItem(
+			"shop_details",
+			JSON.stringify(data.shopDetails)
+		);
+		sessionStorage.setItem(
+			"account_details",
+			JSON.stringify(data.accountDetails)
+		);
+	} catch (err) {
+		console.warn("Updating to session-storage failed: ", err);
+	}
 }
 
 function setandUpdateAuthTokens(data) {
@@ -112,6 +141,7 @@ function ParseJson(data) {
 function getSessions() {
 	const userData = {
 		...getAuthTokens(),
+		token_timeout: sessionStorage.getItem("token_timeout"),
 		details: ParseJson(sessionStorage.getItem("user_details")),
 		account_details: ParseJson(sessionStorage.getItem("account_details")),
 		personal_details: ParseJson(sessionStorage.getItem("personal_details")),
@@ -131,21 +161,57 @@ function clearAuthTokens() {
 function revokeSession(user_id) {
 	const refresh_token = sessionStorage.getItem("refresh_token");
 	if (user_id === 1) {
-		console.log("REFRESH TOKEN REVOKED", res);
+		console.log("REFRESH TOKEN ALREADY REVOKED");
 		return;
 	}
-	fetch(process.env.NEXT_PUBLIC_API_AUTHENTICATION_URL + Endpoints.LOGOUT, {
-		method: "post",
+
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
 		body: {
 			user_id: user_id,
 			refresh_token: refresh_token,
 		},
-	}).then(function (res) {
-		console.log("REFRESH TOKEN REVOKED", res);
-	});
+		timeout: 60000,
+	})
+		.then((data) => console.log("REFRESH TOKEN REVOKED", data))
+		.catch((err) => console.log("REFRESH TOKEN REVOKE ERROR: ", err));
 }
 
-function getAccessTokenUsingRefreshToken() {}
+function generateNewAccessToken(
+	refresh_token,
+	updateUserInfo,
+	isTokenUpdating,
+	setIsTokenUpdating,
+	logout
+) {
+	console.log("refresh_token", refresh_token);
+
+	if (!(refresh_token && refresh_token.length > 1)) {
+		console.warn("Please provide valid refresh token.");
+		return;
+	}
+
+	if (isTokenUpdating) {
+		console.warn("Already refreshing token.");
+		return;
+	}
+
+	setIsTokenUpdating(true);
+
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN, {
+		body: {
+			refresh_token: refresh_token,
+		},
+		timeout: 60000,
+	})
+		.then((data) => {
+			updateUserInfo(data);
+		})
+		.catch((err) => {
+			console.error("Error refreshing token: ", err);
+			logout && logout();
+		})
+		.finally(setIsTokenUpdating(false));
+}
 
 export {
 	sendOtpRequest,
@@ -154,7 +220,9 @@ export {
 	getAuthTokens,
 	clearAuthTokens,
 	revokeSession,
-	getAccessTokenUsingRefreshToken,
+	generateNewAccessToken,
 	getSessions,
 	createUserState,
+	setUserDetails,
+	getTokenExpiryTime,
 };

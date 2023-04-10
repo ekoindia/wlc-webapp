@@ -26,6 +26,7 @@ import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/Onboard
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
+import { TransactionCard } from "page-components/NonAdmin/Transaction";
 import { useEffect, useState } from "react";
 import { Cards, Icon, IconButtons, Pagination } from "..";
 
@@ -40,12 +41,15 @@ const Table = (props) => {
 		variant,
 		tableName,
 		isScrollrequired = false,
-		onRowClick,ispagintationrequire=true,isOnclickRequire=true,
+		accordian = false,
+		onRowClick,
+		isPaginationRequired = true,
+		isOnclickRequire = true,
 	} = props;
-    console.log('pageNumber', pageNumber)
+	console.log("pageNumber", pageNumber);
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
-    // console.log('data', data)
+	// console.log('data', data)
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	// const [currentPage, setCurrentPage] = useState(1);
 	// console.log("currentPage", currentPage);
@@ -67,11 +71,16 @@ const Table = (props) => {
 						p={{ md: ".5em", xl: "1em" }}
 						fontSize={{ md: "10px", xl: "11px", "2xl": "16px" }}
 					>
-						<Flex gap={2}>
+						<Flex gap={2} align="center">
 							{item.field}
-							<Box as="span" onClick={onSortChange}>
-								<Icon name="sort" width="6px" height="13px" />
-							</Box>
+							{/* <Box as="span" h="auto" onClick={onSortChange}> */}
+							<Icon
+								// onClick={onSortChange}
+								name="sort"
+								width="6px"
+								height="13px"
+							/>
+							{/* </Box> */}
 						</Flex>
 					</Th>
 				);
@@ -91,35 +100,189 @@ const Table = (props) => {
 	const getTr = () => {
 		return data?.map((item, index) => {
 			return (
-				<Tr
-					key={index}
-                    onClick={isOnclickRequire ? () => onRowClick(data[index]) : undefined}
-					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
-				>
-					{renderer.map((r, rIndex) => {
-						return (
-							<Td p={{ md: ".5em", xl: "1em" }} key={rIndex}>
-								{prepareCol(
-									item,
-									r,
-									index +
-										pageNumber * PageSize -
-										(PageSize - 1)
-								)}
-							</Td>
-						);
-					})}
-				</Tr>
+				<>
+					<Tr
+						key={index}
+						onClick={
+							isOnclickRequire
+								? () => onRowClick(data[index])
+								: undefined
+						}
+						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
+						style={{
+							backgroundColor:
+								accordian &&
+								(index % 2 === 0 ? "#F6F6F6" : "#F5F6FF"),
+						}}
+					>
+						{renderer.map((r, rIndex) => {
+							return (
+								<Td
+									// onClick={() => onRowClick(data[index])} Todo: deepak will check
+									p={{ md: ".5em", xl: "1em" }}
+									key={rIndex}
+								>
+									{prepareCol(
+										item,
+										r,
+										index,
+										index +
+											pageNumber * PageSize -
+											(PageSize - 1)
+									)}
+								</Td>
+							);
+						})}
+					</Tr>
+
+					{/* <============================= ExpandRow Data Item============================> */}
+
+					{accordian && (
+						<Tr>
+							{expandedRow === index && (
+								<Td colSpan={8} expandedRow={expandedRow}>
+									<Flex justifyContent={"space-between"}>
+										<Flex
+											justifyContent={"space-evenly"}
+											w="50%"
+										>
+											<Flex direction={"column"}>
+												<Text
+													fontSize={{
+														lg: "10px",
+														xl: "12px",
+														"2xl": "14px",
+													}}
+													color="light"
+												>
+													Customer Charges{" "}
+												</Text>
+												<Text
+													fontSize={{
+														lg: "12px",
+														xl: "14px",
+														"2xl": "16px",
+													}}
+													fontWeight="semibold"
+												>
+													10
+												</Text>
+											</Flex>
+											<Flex direction={"column"}>
+												<Text
+													fontSize={{
+														lg: "10px",
+														xl: "12px",
+														"2xl": "14px",
+													}}
+													color="light"
+												>
+													Commission Earned
+												</Text>
+												<Text
+													fontSize={{
+														lg: "12px",
+														xl: "14px",
+														"2xl": "16px",
+													}}
+													fontWeight="semibold"
+												>
+													{" "}
+													1.80{" "}
+												</Text>
+											</Flex>
+											<Flex direction={"column"}>
+												<Text
+													fontSize={{
+														lg: "10px",
+														xl: "12px",
+														"2xl": "14px",
+													}}
+													color="light"
+												>
+													Balance Amount{" "}
+												</Text>
+												<Text
+													fontSize={{
+														lg: "12px",
+														xl: "14px",
+														"2xl": "16px",
+													}}
+													fontWeight="semibold"
+												>
+													48,375.00{" "}
+												</Text>
+											</Flex>
+										</Flex>
+										<Flex>
+											<Buttons
+												w={{
+													lg: "80%",
+													xl: "90%",
+													"2xl": "100%",
+												}}
+												h={{
+													lg: "35px",
+													xl: "40px",
+													"2xl": "47px",
+												}}
+												onClick={setExpandedRow}
+											>
+												<Text
+													fontSize={{
+														lg: "10px",
+														xl: "12",
+														"2xl": "14px",
+													}}
+												>
+													Repeat Transaction
+												</Text>
+											</Buttons>
+										</Flex>
+									</Flex>
+								</Td>
+							)}
+						</Tr>
+					)}
+				</>
 			);
 		});
 	};
 
-	const prepareCol = (item, column, index) => {
+	const prepareCol = (item, column, index, serialNo) => {
 		switch (column?.show) {
 			case "Tag":
-				return getStatusStyle(item[column.name]);
+				return getStatusStyle(item[column.name], tableName);
 			case "Modal":
 				return getModalStyle();
+			case "Accordian":
+				return (
+					<Box
+						bg="primary.DEFAULT"
+						minH={{ base: "24px", xl: "24px", "2xl": "24px" }}
+						minW={{ base: "24px", xl: "24px", "2xl": "24px" }}
+						width={{ base: "24px", xl: "24px", "2xl": "24px" }}
+						height={{ base: "24px", xl: "24px", "2xl": "324px0px" }}
+						borderRadius="30px"
+						display={"flex"}
+						justifyContent={"center"}
+						alignItems="center"
+						cursor={"pointer"}
+					>
+						<Box alignItems={"center"}>
+							<Icon
+								name={
+									expandedRow === index
+										? "remove"
+										: "expand-add"
+								}
+								width="15px"
+								color="white"
+							/>
+						</Box>
+					</Box>
+				);
+
 			case "IconButton":
 				return getLocationStyle(item[column.name]);
 			case "Avatar":
@@ -128,7 +291,7 @@ const Table = (props) => {
 				return getArrowStyle();
 			default:
 				if (column?.field === "Sr. No.") {
-					return index;
+					return serialNo;
 				} else {
 					return item[column.name];
 				}
@@ -230,28 +393,46 @@ const Table = (props) => {
 						)}
 					</>
 				);
+			} else if (tableName === "Transactions") {
+				return (
+					<>
+						<Box
+							bg="white"
+							key={index}
+							width="100%"
+							height="auto"
+							p="0px"
+							borderRadius=" 10px"
+						>
+							<TransactionCard item={item} />
+						</Box>
+						{/* {index !== currentTableData.length - 1 && (
+							<Divider border="1px solid #D2D2D2" />
+						)} */}
+					</>
+				);
 			}
 		});
 	};
 	/* for sort icon & icon change */
-	const sortIcon = {
-		ascending: "caret-up",
-		descending: "caret-down",
-		default: "sort",
-	};
-	const onSortChange = () => {
-		let nextSort;
+	// const sortIcon = {
+	// 	ascending: "caret-up",
+	// 	descending: "caret-down",
+	// 	default: "sort",
+	// };
+	// const onSortChange = () => {
+	// 	let nextSort;
 
-		if (currentSort === "ascending") {
-			nextSort = "descending";
-		} else if (currentSort === "descending") {
-			nextSort = "default";
-		} else {
-			nextSort = "ascending";
-		}
+	// 	if (currentSort === "ascending") {
+	// 		nextSort = "descending";
+	// 	} else if (currentSort === "descending") {
+	// 		nextSort = "default";
+	// 	} else {
+	// 		nextSort = "ascending";
+	// 	}
 
-		setCurrentSort(nextSort);
-	};
+	// 	setCurrentSort(nextSort);
+	// };
 
 	return (
 		<>
@@ -267,19 +448,10 @@ const Table = (props) => {
 							css={{
 								"&::-webkit-scrollbar": {
 									height: "0.8vw",
-								},
-								"&::-webkit-scrollbar-track": {
-									height: "0.8vw",
-								},
-								"&::-webkit-scrollbar-thumb": {
-									background: "#D2D2D2",
-									borderRadius: "5px",
-								},
-
-								"&::-webkit-scrollbar": {
 									width: "7px",
 								},
 								"&::-webkit-scrollbar-track": {
+									height: "0.8vw",
 									width: "7px",
 								},
 								"&::-webkit-scrollbar-thumb": {
@@ -292,9 +464,9 @@ const Table = (props) => {
 							<ChakraTable variant={variant} bg="white">
 								<Thead
 									bg="hint"
-									position="sticky"
-									top="0"
-									zIndex="sticky"
+									position={isScrollrequired ? "sticky" : ""}
+									top={isScrollrequired ? "0" : ""}
+									zIndex={isScrollrequired ? "sticky" : ""}
 								>
 									<Tr>{getTh()}</Tr>
 								</Thead>
@@ -302,22 +474,26 @@ const Table = (props) => {
 							</ChakraTable>
 						</TableContainer>
 						{/* Pagination */}
-                        {ispagintationrequire &&(
-						<Flex justify={"flex-end"}>
-							<Pagination
-								className="pagination-bar"
-								currentPage={pageNumber}
-								totalCount={totalRecords || 10}
-								pageSize={PageSize}
-								onPageChange={(page) => {
-									router.query.page = page;
-									console.log("Page inside pagination", page);
-									router.replace(router);
-									// setCurrentPage(page);
-									setPageNumber(page);
-								}}
-							/>
-						</Flex>)}
+						{isPaginationRequired && (
+							<Flex justify={"flex-end"}>
+								<Pagination
+									className="pagination-bar"
+									currentPage={pageNumber}
+									totalCount={totalRecords || 10}
+									pageSize={PageSize}
+									onPageChange={(page) => {
+										router.query.page = page;
+										console.log(
+											"Page inside pagination",
+											page
+										);
+										router.replace(router);
+										// setCurrentPage(page);
+										setPageNumber(page);
+									}}
+								/>
+							</Flex>
+						)}
 					</>
 				) : (
 					<>

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { BusinessDashboard } from "components/BusinessDashboard";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

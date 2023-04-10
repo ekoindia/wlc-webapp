@@ -1,6 +1,7 @@
 import { extendTheme, theme } from "@chakra-ui/react";
 import { Inter, Roboto } from "@next/font/google";
 import { tabsTheme } from "./theme_system/theme/components/tab";
+// console.log('theme', theme)
 
 const inter = Inter({
 	weight: ["400", "500", "600", "700", "800"],
@@ -59,6 +60,18 @@ export const light = extendTheme({
 						textTransform: "Capitalize",
 						bg: "hint",
 						transition: "none",
+					},
+				},
+				nonAdmin: {
+					th: {
+						textTransform: "Capitalize",
+						bg: "divider",
+						transition: "none",
+					},
+					tr: {
+						_even: {
+							background: "bg",
+						},
 					},
 				},
 			},
@@ -172,6 +185,7 @@ export const light = extendTheme({
 			success: "#009B34",
 			error: "#CA1B56",
 		},
+		google: "#4185F4",
 		success: "#00C341",
 		error: "#FF4081",
 		divider: "#E9EDF1",
@@ -181,9 +195,19 @@ export const light = extendTheme({
 		focusbg: "#FFFBF3",
 		white: "#FFFFFF",
 		shade: "#F2F2F2",
+		darkShade: "#e6e6e6",
 		highlight: "#FFD93B",
-		bg: "#F5F6F8",
+		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
 		inputlabel: "#0C243B",
+		overlayBg: "#e9edf1b3",
+		sidebar: {
+			"icon-bg": "#1F3ABC",
+			"active-border": "#FE7D00",
+			"active-bg": "#081E89",
+			"card-bg": "#102174",
+			"card-bg-dark": "#091968",
+			font: "#556FEF",
+		},
 	},
 	styles: {
 		global: {},
@@ -194,6 +218,8 @@ export const light = extendTheme({
 		"2px": "0.125rem solid",
 		"10px": "0.625rem solid",
 		card: "1px solid #D2D2D2",
+		"br-sidebar": "1px solid #1F3ABC",
+		"br-popupcard": "1px solid #FE9F00",
 	},
 	radii: {
 		none: "0",
@@ -211,7 +237,12 @@ export const light = extendTheme({
 		15: "15px",
 		20: "20px",
 	},
-	shadows: {},
+	shadows: {
+		"sh-otpfocus": "0px 3px 6px #0000001A",
+		"sh-header": "0px 3px 6px #0000001A",
+		"sh-card": "0px 3px 20px #00000005",
+		"sh-googlebtn": "0px 3px 10px #4185F433",
+	},
 	sizes: {
 		max: "max-content",
 		min: "min-content",

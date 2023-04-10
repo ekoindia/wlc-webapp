@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { PersonalPane } from "components/PersonalPane";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

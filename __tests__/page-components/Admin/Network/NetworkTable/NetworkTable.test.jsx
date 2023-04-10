@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { NetworkTable } from "components/NetworkTable";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { BusinessDashboardTable } from "components/BusinessDashboardTable";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

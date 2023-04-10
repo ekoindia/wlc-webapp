@@ -17,10 +17,11 @@ export const apisHelper = (tablename, postData) => {
 		parameters:
 			"initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
 	};
-    let detiledstatement = {
-        path:"/network/agents/transaction_history/recent_transaction/account_statement?",
-parameters:"initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
-    }
+	let detiledstatement = {
+		path: "/network/agents/transaction_history/recent_transaction/account_statement?",
+		parameters:
+			"initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
+	};
 	const { userData } = useUser();
 
 	let endpoint;

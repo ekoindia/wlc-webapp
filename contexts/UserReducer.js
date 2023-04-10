@@ -1,8 +1,10 @@
 import {
-	setandUpdateAuthTokens,
 	clearAuthTokens,
-	revokeSession,
 	createUserState,
+	getTokenExpiryTime,
+	revokeSession,
+	setandUpdateAuthTokens,
+	setUserDetails,
 } from "helpers/loginHelper";
 
 export const defaultUserState = {
@@ -20,6 +22,24 @@ export const UserReducer = (state, { type, payload }) => {
 	switch (type) {
 		case "INIT_USER_STORE": {
 			return payload;
+		}
+
+		case "UPDATE_USER_STORE": {
+			if (payload && payload.access_token && payload.refresh_token) {
+				console.log("Updated userStore");
+				delete payload["long_session"]; // FIX: Why remove long_session???
+				let tokenTimeout = getTokenExpiryTime(payload);
+				const newState = {
+					...state,
+					...payload,
+					token_timeout: tokenTimeout || state.token_timeout, // Persist the old token_timeout if the new one is not available
+				};
+				console.log("newUserState", newState);
+				setandUpdateAuthTokens(payload);
+				sessionStorage.setItem("token_timeout", tokenTimeout);
+				return newState;
+			}
+			break;
 		}
 
 		case "LOGIN": {
@@ -56,22 +76,7 @@ export const UserReducer = (state, { type, payload }) => {
 			// }
 
 			setandUpdateAuthTokens(payload);
-			sessionStorage.setItem(
-				"user_details",
-				JSON.stringify(newState.userDetails)
-			);
-			sessionStorage.setItem(
-				"personal_details",
-				JSON.stringify(newState.personalDetails)
-			);
-			sessionStorage.setItem(
-				"shop_details",
-				JSON.stringify(newState.shopDetails)
-			);
-			sessionStorage.setItem(
-				"account_details",
-				JSON.stringify(newState.accountDetails)
-			);
+			setUserDetails(newState);
 
 			return newState;
 		}

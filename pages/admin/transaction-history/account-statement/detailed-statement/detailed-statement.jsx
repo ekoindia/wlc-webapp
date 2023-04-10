@@ -1,7 +1,7 @@
-import { Layout } from "components";
+import { BreadcrumbsWrapper, Layout } from "components";
+import { TransactionHistoryObject } from "constants";
 import Head from "next/head";
 import { DetailedStatement } from "page-components/Admin";
-import React from "react";
 
 const DetailedStatementPage = () => {
 	return (
@@ -10,7 +10,11 @@ const DetailedStatementPage = () => {
 				<title>Detailed-Statement | Eko API Marketplace</title>
 			</Head>
 			<Layout>
-				<DetailedStatement />
+				<BreadcrumbsWrapper
+					BreadcrumbsObject={TransactionHistoryObject}
+				>
+					<DetailedStatement />
+				</BreadcrumbsWrapper>
 			</Layout>
 		</>
 	);

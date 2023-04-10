@@ -54,7 +54,7 @@ function Filter(props) {
 
 	const handleApply = () => {
 		setFilter({ ...filterValues, ...dateText });
-        onClose();
+		onClose();
 	};
 	const [dateText, setDateText] = useState({
 		onBoardingDateFrom: "",
@@ -107,13 +107,13 @@ function Filter(props) {
 					w={{
 						base: "8vw",
 						sm: "12vw",
-						md: "10vw",
-						lg: "7vw",
+						md: "12vw",
+						lg: "9vw",
 						xl: "8vw",
-						"2xl": "6vw",
+						"2xl": "7vw",
 					}}
-					bg="#FFFFFF"
-					color="#11299E"
+					bg="white"
+					color="accent.DEFAULT"
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
 					borderRadius="10px"
@@ -144,11 +144,11 @@ function Filter(props) {
 						}}
 						mr={"2px"}
 					>
-						<Icon name="filter" />
+						<Icon name="filter" h="15px" />
 					</Center>
 					<Text
 						as="span"
-						color="#11299E"
+						color="accent.DEFAULT"
 						fontSize={{
 							base: "5px",
 							sm: "xs",
@@ -172,11 +172,11 @@ function Filter(props) {
 					w={"100%"}
 					h={"100%"}
 					bg="primary.DEFAULT"
-					color="#11299E"
+					color="accent.DEFAULT"
 					borderRadius={"0px"}
 					boxShadow=" 0px 3px 10px #11299E1A"
 				>
-					<Icon name="filter" width="25px" color="white" />
+					<Icon name="filter" w="25px" color="white" />
 					<Text
 						as="span"
 						color="white"
@@ -203,7 +203,7 @@ function Filter(props) {
 				}}
 			>
 				<DrawerOverlay
-					bg="#e9edf1b3"
+					bg="overlayBg"
 					backdropFilter="blur(6px)"
 					width={"100%"}
 					h={"100%"}
@@ -435,7 +435,7 @@ function Filter(props) {
 												maxDate={"2020-01-20"}
 												// label="Filter by activation date range"
 												w="100%"
-												sublabel="From"
+												placeholder="From"
 												labelStyle={{
 													fontSize: "lg",
 													fontWeight: "semibold",
@@ -469,7 +469,7 @@ function Filter(props) {
 												minDate={"2016-01-20"}
 												maxDate={"2020-01-20"}
 												w="100%"
-												sublabel="To"
+												placeholder="To"
 												labelStyle={{
 													fontSize: "lg",
 													fontWeight: "semibold",
@@ -543,4 +543,5 @@ function Filter(props) {
 		</>
 	);
 }
+
 export default Filter;

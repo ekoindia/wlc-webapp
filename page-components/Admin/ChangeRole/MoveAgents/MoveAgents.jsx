@@ -64,12 +64,10 @@ const data = [
  * @example	`<MoveAgents></MoveAgents>`
  */
 
-const MoveAgents = ({ ShowSelectAgents, className = "", ...props }) => {
+const MoveAgents = ({ ShowSelectAgents, options = [] }) => {
 	const [checked, setChecked] = useState(Array(data.length).fill(false));
 	const [isSelectAll, setIsSelectAll] = useState(false);
 
-	//scsp from data
-	const { scspFrom } = props;
 	function selectAllHandler() {
 		if (!isSelectAll) setChecked((prev) => Array(prev.length).fill(true));
 		else setChecked((prev) => Array(prev.length).fill(false));
@@ -133,7 +131,7 @@ const MoveAgents = ({ ShowSelectAgents, className = "", ...props }) => {
 						},
 					}}
 				>
-					{scspTo.map((ele, idx) => {
+					{options.map((ele, idx) => {
 						return (
 							<Flex
 								align="center"

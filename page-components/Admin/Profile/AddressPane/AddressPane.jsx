@@ -10,8 +10,7 @@ import {
 import { Buttons, Cards, IconButtons } from "components";
 import Router from "next/router";
 
-const AddressPane = (props) => {
-	const addressdata = props.rowdata;
+const AddressPane = ({ rowdata: addressdata }) => {
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 	return (
 		<Cards>
@@ -88,8 +87,8 @@ const AddressPane = (props) => {
 								iconName="near-me"
 								iconPos="left"
 								iconStyle={{
-									width: "11px",
-									height: "11px",
+									width: "16px",
+									height: "16px",
 								}}
 							/>
 						</Box>

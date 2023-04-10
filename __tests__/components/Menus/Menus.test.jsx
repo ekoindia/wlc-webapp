@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Menus } from "components/Menus";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

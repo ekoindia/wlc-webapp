@@ -1,36 +1,39 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { LoginPanel } from "page-components/Admin";
+import {
+	dummyOrgDetails,
+	fetchOrgDetails,
+} from "helpers/fetchOrgDetailsHelper";
+import { LoginPanel } from "page-components";
 import { useEffect } from "react";
-import { useGetLogoContext } from "../contexts/getLogoContext";
+import { useOrgDetailContext } from "../contexts";
 
 export default function Index({ data }) {
-	// console.log(data);
+	console.log("ServerSideProps:: Org=", data);
 
-	const { logo, setLogo } = useGetLogoContext();
+	const { setOrgDetail } = useOrgDetailContext();
 	useEffect(() => {
-		setLogo(data?.link);
+		setOrgDetail(data);
 	}, [data]);
 
 	return <LoginPanel />;
 }
 
 export async function getServerSideProps({ req }) {
-	// console.log(req.headers.host.split('.')[0]);
-	const subdomain = req.headers.host.split(".")[0];
-	const domain = req.headers.host.split(".");
-	const data = await fetch(
-		`https://sore-teal-codfish-tux.cyclic.app/logos/${subdomain}`
-	)
-		.then((data) => data.json())
-		.then((res) => res)
-		.catch((e) => console.log(e));
+	let data = {};
+
+	if (process.env.NEXT_PUBLIC_ENV === "development") {
+		// Dummy data for development
+		data = dummyOrgDetails();
+	} else {
+		// Get org details of the associated host from server
+		data = await fetchOrgDetails(req.headers.host);
+	}
+
+	// data = await fetchOrgDetails("simple.cashere.co");
+
 	return {
 		props: {
-			data: {
-				...data,
-				subdomain,
-				domain,
-			},
+			data: data || {},
 		},
 	};
 }

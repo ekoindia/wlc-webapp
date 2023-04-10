@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { RouteProtecter } from "components/RouteProtecter";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

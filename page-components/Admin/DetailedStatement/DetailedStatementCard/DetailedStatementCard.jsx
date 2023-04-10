@@ -9,8 +9,7 @@ import { Icon } from "components";
  * @example	`<DetailedStatementCard></DetailedStatementCard>`
  */
 
-const DetailedStatementCard = (props) => {
-	const { item } = props;
+const DetailedStatementCard = ({ item }) => {
 	// const item = {
 	// 	transactionId: 3027555195,
 	// 	datetime: "29/11/2022, 09:58:48 AM",

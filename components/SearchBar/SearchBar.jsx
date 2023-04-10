@@ -24,7 +24,7 @@ export function SearchBar(props) {
 			} else {
 				setIsInvalid(true);
 			}
-		} else if (e.keyCode === 8 ) {
+		} else if (e.keyCode === 8) {
 			// add condition to check if backspace key was pressed
 			setSearch(""); // clear the search
 			setIsInvalid(true);
@@ -62,7 +62,7 @@ export function SearchBar(props) {
 						: "Search by name or mobile number"
 				}
 				size="lg"
-				borderRadius="10px"
+				borderRadius={{ base: "6px", md: "10px" }}
 				w="100%"
 				h="100%"
 				fontSize={{ base: "xs", "2xl": "sm" }}
@@ -92,7 +92,7 @@ export function SearchBar(props) {
 				// h="48px"
 				color={"light"}
 			>
-				<Icon name="search" height="40%" />
+				<Icon name="search" width="18px" />
 			</Center>
 			{/* {value !== "" && (
 				<Box

@@ -1,4 +1,3 @@
-import React from "react";
 import ChangeRole from "./ChangeRole";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

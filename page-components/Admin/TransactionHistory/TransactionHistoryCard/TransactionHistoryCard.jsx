@@ -57,7 +57,7 @@ const TransactionHistoryCard = (props) => {
 				</Flex>
 				<Flex gap="2">
 					<Box as="span" color="light">
-						Eko Code:
+						User Code:
 					</Box>
 					<Box as="span" color="dark">
 						{/* {item.eko_code}  */}

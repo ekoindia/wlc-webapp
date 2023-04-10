@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { SideBar } from "components/SideBar";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

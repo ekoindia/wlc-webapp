@@ -7,10 +7,8 @@ import { useRouter } from "next/router";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<TransactionHistoryTable></TransactionHistoryTable>`
  */
-const TransactionHistoryTable = (props) => {
-	const { searchValue, transactiondata } = props;
+const TransactionHistoryTable = ({ searchValue, transactiondata }) => {
 	const router = useRouter();
-
 
 	const renderer = [
 		{ name: "", field: "Sr. No." },

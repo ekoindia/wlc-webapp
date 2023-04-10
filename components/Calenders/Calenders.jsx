@@ -1,6 +1,6 @@
 import { Box, Flex, Input, Text } from "@chakra-ui/react";
 import { Icon, InputLabel } from "components";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 const Calenders = ({
 	label,
@@ -19,9 +19,14 @@ const Calenders = ({
 	onChange = () => {},
 	...props
 }) => {
-	const [dateText, setDateText] = useState("");
-	const fromRef = useRef(null);
-	const toRef = useRef(null);
+	// const [dateText] = useState("");
+	// console.log("value", value);
+
+	// {
+	// 	console.log("dateTextdateTextdateText", dateText);
+	// }
+	// const fromRef = useRef(null);
+	// const toRef = useRef(null);
 	const calendarRef = useRef(null);
 
 	const handleClickForInput = () => {
@@ -68,7 +73,11 @@ const Calenders = ({
 				>
 					{/* From To */}
 					<Flex alignItems={"center"}>
-						<Flex onClick={handleClickForInput} align={"center"}>
+						<Flex
+							onClick={handleClickForInput}
+							align={"center"}
+							lineHeight="normal"
+						>
 							{" "}
 							{placeholder ? (
 								<InputLabel
@@ -95,6 +104,7 @@ const Calenders = ({
 									xl: "14px",
 								}}
 								w="100%"
+								lineHeight="normal"
 							>
 								{value || "DD/MM/YYYY"}
 							</Text>
@@ -127,19 +137,19 @@ const Calenders = ({
 							</Box>
 
 							{/* Icon */}
-							<Flex
+							{/* <Flex
 								w="100%"
 								h="100%"
 								alignItems="center"
 								justifyContent="center"
-							>
-								<Icon
-									color="dark"
-									name="calender"
-									width="27px"
-									h="26px"
-								/>
-							</Flex>
+							> */}
+							<Icon
+								color="dark"
+								name="calender"
+								width="23px"
+								h="24px"
+							/>
+							{/* </Flex> */}
 						</Flex>
 					</Flex>
 				</Flex>

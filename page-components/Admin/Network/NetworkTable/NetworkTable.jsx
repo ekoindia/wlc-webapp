@@ -111,7 +111,7 @@ const NetworkTable = ({
 				tableName="Network"
 				totalRecords={totalRecords} //table pagination
 				setPageNumber={setPageNumber} //table
-				pageNumber={pageNumber} 
+				pageNumber={pageNumber}
 				data={agentDetails}
 			/>
 		</>
