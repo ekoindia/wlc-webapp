@@ -117,7 +117,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 							orgDetail.logo ||
 							"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56'%3E%3Crect fill='%23bbb' width='200' height='56' rx='6' ry='6'/%3E%3C/svg%3E"
 						}
-						alt={orgDetail.app_name + "'s logo" || "logo"}
+						alt={orgDetail.app_name + " logo"}
 						maxH={{
 							base: "35px",
 							sm: "34px",
