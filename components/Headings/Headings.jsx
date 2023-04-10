@@ -2,7 +2,16 @@ import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { useLayoutContext } from "contexts/LayoutContext";
 import { useRouter } from "next/router";
 import { Icon } from "..";
-
+/**
+ * A <Heading> component
+ * TODO: Write more description here
+ * @arg 	{String}	title	Properties passed to the component
+ * @arg 	{Boolean}	hasIcon	Properties passed to the component
+ * @arg 	{Component}	propComp	Properties passed to the component
+ * @arg 	{Function}	redirectHandler	Properties passed to the component
+ * @arg 	{Function}	redirectHandler	Properties passed to the component
+ * @example	`<Heading></Heading>`
+ */
 const Headings = ({
 	hasIcon = true, //TODO hasBackIcon or something -- hasIcon is ambiguous
 	title,

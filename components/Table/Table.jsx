@@ -53,7 +53,16 @@ const Table = (props) => {
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 	// const [currentPage, setCurrentPage] = useState(1);
 	// console.log("currentPage", currentPage);
-
+	const [expandedRow, setExpandedRow] = useState(null);
+	const handleRowClick = (index) => {
+		if (index === expandedRow) {
+			// If the clicked row is already expanded, collapse it
+			setExpandedRow(null);
+		} else {
+			// Otherwise, expand the clicked row
+			setExpandedRow(index);
+		}
+	};
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== pageNumber) {
 			// setCurrentPage(+router.query.page);
