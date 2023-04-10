@@ -1,6 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Inter } from "@next/font/google";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+// import { GoogleOAuthProvider } from "@react-oauth/google";
 import { RouteProtecter } from "components";
 import { OrgDetailProvider, UserProvider } from "contexts";
 import { LayoutProvider } from "contexts/LayoutContext";
@@ -31,25 +31,25 @@ export default function App({ Component, pageProps, router }) {
 				/>
 			</Head>
 
-			<GoogleOAuthProvider
+			{/* <GoogleOAuthProvider
 				clientId={pageProps?.data?.login_types?.google?.client_id}
-			>
-				<ChakraProvider theme={light}>
-					<OrgDetailProvider>
-						<UserProvider>
-							<LayoutProvider>
-								<MenuProvider>
-									<RouteProtecter router={router}>
-										<main className={inter.className}>
-											<Component {...pageProps} />
-										</main>
-									</RouteProtecter>
-								</MenuProvider>
-							</LayoutProvider>
-						</UserProvider>
-					</OrgDetailProvider>
-				</ChakraProvider>
-			</GoogleOAuthProvider>
+			> */}
+			<ChakraProvider theme={light}>
+				<OrgDetailProvider>
+					<UserProvider>
+						<LayoutProvider>
+							<MenuProvider>
+								<RouteProtecter router={router}>
+									<main className={inter.className}>
+										<Component {...pageProps} />
+									</main>
+								</RouteProtecter>
+							</MenuProvider>
+						</LayoutProvider>
+					</UserProvider>
+				</OrgDetailProvider>
+			</ChakraProvider>
+			{/* </GoogleOAuthProvider> */}
 		</>
 	);
 }

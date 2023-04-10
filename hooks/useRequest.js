@@ -1,5 +1,5 @@
 import { useUser } from "contexts/UserContext";
-// import { generateNewAccessToken } from "helpers/loginHelper";
+import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 
@@ -20,29 +20,16 @@ const useRequest = ({
 
 	const {
 		userData,
+		updateUserInfo,
+		isTokenUpdating,
+		setIsTokenUpdating,
 		// logout,
-		// updateUserInfo,
-		// isTokenUpdating,
-		// setIsTokenUpdating,
 	} = useUser();
 
-	// console.log("isTokenUpdating", isTokenUpdating);
-	// if (isTokenUpdating) {
-	// 	return;
-	// } else if (userData.token_timeout <= currentTime) {
-	// 	console.log(">>>>>>>>>>>>>>>>>Inside token Updating>>>>>>>>>>>>>>>>");
-	// 	setIsTokenUpdating(() => {
-	// 		console.log("Updating IsTokenUpdating");
-	// 		return true;
-	// 	});
-	// 	generateNewAccessToken(
-	// 		userData.refresh_token,
-	// 		logout,
-	// 		updateUserInfo,
-	// 		setIsTokenUpdating
-	// 	);
-	// }
-	const fetcher = (...args) => fetch(...args).then((res) => res.json());
+	// console.log("userData", userData);
+	// console.log("method", method);
+	// console.log("baseUrl", baseUrl);
+	// const fetcher = (...args) => fetch(...args).then((res) => res.json());
 
 	const {
 		data: fetchedData,
@@ -52,15 +39,22 @@ const useRequest = ({
 	} = useSWR(
 		`${baseUrl}`,
 		(url) =>
-			fetcher(url, {
-				method,
-				headers: {
-					"Content-Type": "application/json",
-					authorization: `Bearer ${userData.access_token}`,
-					...headers,
+			fetcher(
+				url,
+				{
+					method,
+					headers,
+					token: userData.access_token,
+					body,
 				},
-				body: body ? JSON.stringify(body) : null,
-			}),
+				{
+					token_timeout: userData.token_timeout,
+					refresh_token: userData.refresh_token,
+					updateUserInfo,
+					isTokenUpdating,
+					setIsTokenUpdating,
+				}
+			),
 		{
 			// provider: localStorageProvider,
 			revalidateOnFocus: false,

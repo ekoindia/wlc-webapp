@@ -1,6 +1,7 @@
 import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { useUser } from "contexts/UserContext";
+import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 
 function useLogin(login, setStep, setEmail) {
@@ -10,8 +11,8 @@ function useLogin(login, setStep, setEmail) {
 
 	function submitLogin(data) {
 		setBusy(true);
-		// if (false) {
-		fetch(
+		// if (true) {
+		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL +
 				`${
 					data.id_type === "Mobile"
@@ -19,33 +20,18 @@ function useLogin(login, setStep, setEmail) {
 						: Endpoints.GOOGLELOGIN
 				}`,
 			{
-				method: "POST",
-				headers: {
-					"Content-type": "application/json",
-				},
-				body: JSON.stringify(data),
+				body: data,
+				timeout: 60000,
 			}
 		)
-			.then((response) => {
-				console.log(response);
-				if (response.ok) {
-					return response.json();
-				} else {
-					const err = new Error(
-						response.message || "Response not Ok"
-					);
-					err.response = response;
-					throw err;
-				}
-			})
 			.then((responseData) => {
 				console.log("LOGIN RESPONSE >>>> ", responseData);
 
-				if (responseData.status === 302) {
+				if (!responseData.access_token) {
 					toast({
-						title: "Please Enter Correct OTP or resend ",
+						title: "Wrong OTP. Please try again. ",
 						status: "error",
-						duration: 1000,
+						duration: 5000,
 						isClosable: true,
 						position: "top-right",
 					});
@@ -63,18 +49,6 @@ function useLogin(login, setStep, setEmail) {
 					setEmail(responseData.details.email);
 				} else {
 					processLoginResponse(responseData);
-
-					// ProcessLoginResponse({
-					// 	userId: res.details.mobile,
-					// 	sessionKey: res.access_token,
-					// 	userDetails: res.details,
-					// 	profileDetails: {
-					// 		account_details: res.account_details,
-					// 		personal_details: res.personal_details,
-					// 		shop_details: res.shop_details,
-					// 		extras: res.extras,
-					// 	},
-					// });
 				}
 			})
 			.catch((e) => {

@@ -5,7 +5,7 @@ const home = () => {
 	return (
 		<>
 			<Head>
-				<title>HOME | WLC</title>
+				<title>Home</title>
 			</Head>
 			<Home />
 		</>
