@@ -33,7 +33,9 @@ export default function App({ Component, pageProps, router }) {
 				/>
 			</Head>
 
-			<GoogleOAuthProvider clientId={""}>
+			<GoogleOAuthProvider
+				clientId={pageProps?.data?.login_types?.google?.client_id || ""}
+			>
 				<ChakraProvider theme={light}>
 					<OrgDetailProvider>
 						<UserProvider>

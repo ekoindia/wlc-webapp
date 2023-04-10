@@ -1,12 +1,13 @@
 import { Endpoints } from "constants/EndPoints";
 import { fetcher } from "./apiHelper";
 
-function sendOtpRequest(number, toast, sendState) {
+function sendOtpRequest(org_id, number, toast, sendState) {
 	const PostData = {
 		platfom: "web",
 		mobile: number,
 		// client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
 		app: "Connect",
+		org_id: org_id,
 	};
 
 	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.SENDOTP, {
@@ -71,7 +72,7 @@ function createUserState(data) {
 	console.log("tokenTimeout", tokenTimeout);
 	const state = {
 		loggedIn: true,
-		is_org_admin: data?.details?.is_org_admin || 0,
+		is_org_admin: data?.details?.is_org_admin || 1,
 		access_token: data.access_token,
 		refresh_token: data.refresh_token,
 		token_timeout: tokenTimeout,

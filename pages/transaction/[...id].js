@@ -72,7 +72,10 @@ const Transaction = () => {
 				<title>Transaction</title>
 				<link
 					rel="import"
-					href="http://localhost:3000/elements/tf-eko-connect-widget/tf-wlc-widget.html"
+					href={
+						process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
+						"/elements/tf-eko-connect-widget/tf-wlc-widget.html"
+					}
 				/>
 			</Head>
 			<Script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js" />
