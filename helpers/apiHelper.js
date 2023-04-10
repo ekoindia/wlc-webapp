@@ -6,7 +6,6 @@ const DEFAULT_HEADERS = {
 
 const DEFAULT_DATA = {
 	source: "WLC",
-	client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
 };
 
 const DEFAULT_METHOD = "POST"; // Connect API uses POST by default
@@ -16,7 +15,7 @@ const DEFAULT_TIMEOUT = 120000; // 2 minutes
  * Wrapper helper for fetch() function that uses default headers and handles errors.
  * - Adds default headers: Content-Type=application/json
  * - Uses default method: POST
- * - Adds default data: { source: "WLC", client_ref_id: "...") }
+ * - Adds default data: source(=WLC) & client_ref_id (if not already present)
  * - Handles timeout: 2 minutes by default
  * - Handles errors: 401 (unauthorized), etc
  * - Rotates access-token if nearing expiry
@@ -41,7 +40,14 @@ const DEFAULT_TIMEOUT = 120000; // 2 minutes
  * - If response has timed-out, error object has name: "AbortError"
  */
 export function fetcher(url, options, tokenOptions) {
-	const { method, headers, body, timeout, token, ...restOptions } = options;
+	const {
+		method,
+		headers,
+		body = {},
+		timeout,
+		token,
+		...restOptions
+	} = options;
 
 	// Timeout controller for the fetch request
 	const controller = new AbortController();
@@ -49,6 +55,9 @@ export function fetcher(url, options, tokenOptions) {
 		() => controller.abort(),
 		timeout || DEFAULT_TIMEOUT
 	);
+
+	// Add client_ref_id to the request body, if not already present
+	body.client_ref_id ??= Date.now() + "" + Math.floor(Math.random() * 1000);
 
 	const fetchPromise = fetch(url, {
 		method: method || DEFAULT_METHOD,
@@ -59,7 +68,7 @@ export function fetcher(url, options, tokenOptions) {
 		},
 		body: JSON.stringify({
 			...DEFAULT_DATA,
-			...(body || {}),
+			...body,
 		}),
 		...restOptions,
 	})
