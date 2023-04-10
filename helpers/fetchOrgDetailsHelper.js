@@ -52,6 +52,15 @@ export const dummyOrgDetails = () => {
  * @returns {object} org details or {notFound: true} if org not found
  */
 export const fetchOrgDetails = async (host) => {
+	if (process.env.NEXT_PUBLIC_ENV === "development") {
+		// Dummy data for development
+		return {
+			props: {
+				data: dummyOrgDetails(),
+			},
+		};
+	}
+
 	if (!host) {
 		return invalidOrg;
 	}
@@ -109,7 +118,13 @@ export const fetchOrgDetails = async (host) => {
 		}
 	}
 
-	return orgDetails || invalidOrg;
+	return orgDetails
+		? {
+				props: {
+					data: orgDetails,
+				},
+		  }
+		: invalidOrg;
 };
 
 /**
