@@ -10,42 +10,11 @@ import { Icon } from "..";
  * @example	`<MultiSelect></MultiSelect>`
  */
 
-const dummyOptions = [
-	{ value: "apple", label: "Apple" },
-	{ value: "banana", label: "Banana" },
-	{ value: "orange", label: "Orange" },
-	{ value: "pear", label: "Pear" },
-	{ value: "grape", label: "Grape" },
-	{ value: "kiwi", label: "Kiwi" },
-	{ value: "mango", label: "Mango" },
-	{ value: "pineapple", label: "Pineapple" },
-	{ value: "watermelon", label: "Watermelon" },
-	{ value: "strawberry", label: "Strawberry" },
-	{ value: "blueberry", label: "Blueberry" },
-	{ value: "raspberry", label: "Raspberry" },
-	{ value: "blackberry", label: "Blackberry" },
-	{ value: "pomegranate", label: "Pomegranate" },
-	{ value: "peach", label: "Peach" },
-	{ value: "apricot", label: "Apricot" },
-	{ value: "plum", label: "Plum" },
-	{ value: "cherry", label: "Cherry" },
-	{ value: "grapefruit", label: "Grapefruit" },
-	{ value: "lemon", label: "Lemon" },
-	{ value: "lime", label: "Lime" },
-	{ value: "tangerine", label: "Tangerine" },
-	{ value: "mandarin", label: "Mandarin" },
-	{ value: "peppermint", label: "Peppermint" },
-	{ value: "persimmon", label: "Persimmon" },
-	{ value: "guava", label: "Guava" },
-	{ value: "papaya", label: "Papaya" },
-	{ value: "dragonfruit", label: "Dragonfruit" },
-	{ value: "starfruit", label: "Starfruit" },
-	{ value: "passionfruit", label: "Passionfruit" },
-];
-
 const MultiSelect = ({
-	options = dummyOptions,
+	options,
 	placeholder = "-- Select --",
+	renderer,
+	setData,
 }) => {
 	const inputRef = useRef();
 	const [open, setOpen] = useState(false);
@@ -68,6 +37,7 @@ const MultiSelect = ({
 		}
 		setSelectAll(filteredOptions, selectedOptions);
 		setSelectedOptionsArr(keys);
+		setData(keys);
 	}, [selectedOptions]);
 
 	const handleSelectBoxClick = () => {
@@ -77,7 +47,8 @@ const MultiSelect = ({
 	const handleSearch = (event) => {
 		//  Search
 		let tempOptions = options.filter((option) =>
-			option.label
+			option[renderer.label]
+				// option.label
 				.toLowerCase()
 				.includes(event.target.value.toLowerCase())
 		);
@@ -88,7 +59,8 @@ const MultiSelect = ({
 	const setSelectAll = (options, selectedOptions) => {
 		let isSelectAll = true;
 		options.forEach((ele) => {
-			if (!selectedOptions[ele.value]) isSelectAll = false;
+			if (!selectedOptions[ele[renderer.value]]) isSelectAll = false;
+			// if (!selectedOptions[ele.value]) isSelectAll = false;
 		});
 		if (isSelectAll) {
 			setSelectAllChecked(true);
@@ -126,15 +98,18 @@ const MultiSelect = ({
 			//ENTER
 			if (highlightedIndex !== -1) {
 				let valObj = filteredOptions[highlightedIndex];
-				if (!selectedOptions[valObj.value]) {
+				if (!selectedOptions[valObj[renderer.value]]) {
+					// if (!selectedOptions[valObj.value]) {
 					setSelectedOptions((prev) => ({
 						...prev,
-						[valObj.value]: true,
+						[valObj[renderer.value]]: true,
+						// [valObj.value]: true,
 					}));
 				} else {
 					setSelectedOptions((prev) => {
 						let temp = { ...prev };
-						delete temp[valObj.value];
+						delete temp[valObj[renderer.value]];
+						// delete temp[valObj.value];
 						return temp;
 					});
 				}
@@ -168,7 +143,9 @@ const MultiSelect = ({
 			// select all
 			let allOptions = {};
 			filteredOptions.forEach((option) => {
-				allOptions[option.value] = true;
+				console.log("option", option);
+				allOptions[option[renderer.value]] = true;
+				// allOptions[option.value] = true;
 			});
 			setSelectedOptions((prev) => ({ ...prev, ...allOptions }));
 			setSelectAllChecked((prev) => !prev);
@@ -190,7 +167,8 @@ const MultiSelect = ({
 				setSelectedOptions((prev) => {
 					let temp = { ...prev };
 					filteredOptions.forEach((option) => {
-						delete temp[option.value];
+						delete temp[option[renderer.value]];
+						// delete temp[option.value];
 					});
 					return temp;
 				});
@@ -354,17 +332,25 @@ const MultiSelect = ({
 											variant="rounded"
 											isChecked={
 												selectAllChecked ||
-												selectedOptions[row.value] !==
-													undefined
+												selectedOptions[
+													row[renderer.value]
+												] !== undefined
 											}
+											// isChecked={
+											// 	selectAllChecked ||
+											// 	selectedOptions[row.value] !==
+											// 		undefined
+											// }
 											onChange={(event) => {
 												handleClick(
 													event.target.checked,
-													row.value
+													row[renderer.value]
+													// row.value
 												);
 											}}
 										>
-											{row.label}
+											{row[renderer.label]}
+											{/* {row.label} */}
 										</Checkbox>
 									</Flex>
 								);
