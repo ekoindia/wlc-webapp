@@ -10,7 +10,7 @@ const Transaction = () => {
 	const router = useRouter();
 	const { id } = router.query;
 	console.log("id::::", id);
-	let test
+	let test2;
 	const start_id = id && id.length > 0 ? id[0] : 0;
 
 	const { userData } = useUser();
