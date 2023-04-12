@@ -35,7 +35,7 @@ const dummyOptions = [
 	{ mobile: "passionfruit", name: "Passionfruit" },
 ];
 
-const chakra = () => {
+const Test = () => {
 	const [data, setData] = useState([]);
 	console.log("data", data);
 	const renderer = {
@@ -58,4 +58,4 @@ const chakra = () => {
 	);
 };
 
-export default chakra;
+export default Test;

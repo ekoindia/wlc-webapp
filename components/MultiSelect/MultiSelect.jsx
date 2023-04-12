@@ -11,7 +11,6 @@ import { Icon } from "..";
  * @param	{string}	[prop.setData]	setter which parent component will pass to multiselect to get the data/values/options which is selected by the user.
  * @example	`<MultiSelect options={options}	renderer={renderer} placeholder = "Please Select Something"/>`
  */
-
 const MultiSelect = ({
 	options,
 	placeholder = "-- Select --",
