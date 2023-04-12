@@ -1,9 +1,13 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { Filter, Headings, SearchBar, Sort } from "components";
-import { ResSortAndFilter } from "components/Sort/Sort";
+import { Headings, SearchBar } from "components";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
-import { NetworkTable } from "./NetworkTable";
+import {
+	NetworkFilter,
+	NetworkSort,
+	NetworkTable,
+	SortAndFilterMobile,
+} from ".";
 
 /**
  * A <Network> component
@@ -12,7 +16,6 @@ import { NetworkTable } from "./NetworkTable";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Network></Network>`
  */
-
 const Network = () => {
 	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState();
@@ -78,20 +81,19 @@ const Network = () => {
 						justifyContent={"space-between"}
 					>
 						<Box>
-							<Filter filter={filter} setFilter={setFilter} />
+							<NetworkFilter
+								filter={filter}
+								setFilter={setFilter}
+							/>
 						</Box>
 						<Box>
-							<Sort sort={sort} setSort={setSort} />
+							<NetworkSort sort={sort} setSort={setSort} />
 						</Box>
 					</Flex>
 				</Box>
 
 				<Box mt={{ base: "none", md: "20px" }}>
 					<NetworkTable
-						// sortValue={sortValue}
-						// searchValue={searchValue}
-						// onfilterHandler={sortValue}
-						// filter={filter}
 						setFilter={setFilter}
 						pageNumber={pageNumber}
 						totalRecords={totalRecords}
@@ -99,7 +101,7 @@ const Network = () => {
 						setPageNumber={setPageNumber}
 					/>
 				</Box>
-				<ResSortAndFilter
+				<SortAndFilterMobile
 					filter={filter}
 					sort={sort}
 					setFilter={setFilter}

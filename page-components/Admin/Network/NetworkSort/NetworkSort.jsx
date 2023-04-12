@@ -2,7 +2,6 @@ import {
 	Box,
 	Button,
 	Center,
-	Flex,
 	Menu,
 	MenuButton,
 	MenuDivider,
@@ -15,10 +14,16 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Filter, Icon } from "..";
+import { Icon } from "components";
 
-const Sort = (props) => {
-	const { setSort } = props;
+/**
+ * A <NetworkSort> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<NetworkSort></NetworkSort>`
+ */
+const NetworkSort = ({ setSort }) => {
 	const handleStatusClick = (value) => {
 		setSort(value);
 	};
@@ -290,31 +295,30 @@ const Sort = (props) => {
 	);
 };
 
-export default Sort;
+export default NetworkSort;
 
-export const ResSortAndFilter = (props) => {
-	const { setFilter } = props;
-	return (
-		<Box
-			display={{ base: "flex", md: "none" }}
-			pb={{ base: "20vw", sm: "15vw", md: "0px" }}
-		>
-			<Flex
-				position={"fixed"}
-				w={"100%"}
-				h={"15vw"}
-				bottom={"0%"}
-				left={"0%"}
-				zIndex={"99"}
-				boxShadow={"0px -3px 10px #0000001A"}
-			>
-				<Box w={"50%"} h={"100%"} bg={"white"}>
-					<Sort />
-				</Box>
-				<Box w={"50%"} h={"100%"}>
-					<Filter setFilter={setFilter} />
-				</Box>
-			</Flex>
-		</Box>
-	);
-};
+// export const SortAndFilterMobile = ({ setFilter }) => {
+// 	return (
+// 		<Box
+// 			display={{ base: "flex", md: "none" }}
+// 			pb={{ base: "20vw", sm: "15vw", md: "0px" }}
+// 		>
+// 			<Flex
+// 				position={"fixed"}
+// 				w={"100%"}
+// 				h={"15vw"}
+// 				bottom={"0%"}
+// 				left={"0%"}
+// 				zIndex={"99"}
+// 				boxShadow={"0px -3px 10px #0000001A"}
+// 			>
+// 				<Box w={"50%"} h={"100%"} bg={"white"}>
+// 					<Sort />
+// 				</Box>
+// 				<Box w={"50%"} h={"100%"}>
+// 					<NetworkFilter setFilter={setFilter} />
+// 				</Box>
+// 			</Flex>
+// 		</Box>
+// 	);
+// };
