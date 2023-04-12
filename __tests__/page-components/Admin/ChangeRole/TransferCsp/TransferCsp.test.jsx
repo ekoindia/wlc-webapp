@@ -1,4 +1,4 @@
-import { TransferCsp } from "components/TransferCsp";
+import TransferCsp from "page-components/Admin/ChangeRole/TransferCsp/TransferCsp";
 import { render } from "test-utils";
 
 /*

@@ -1,5 +1,5 @@
-import { TransactionHistoryTable } from "components/TransactionHistoryTable";
-import { render } from "test-utils";
+import TransactionHistoryTable from "page-components/Admin/TransactionHistory/TransactionHistoryTable/TransactionHistoryTable";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("TransactionHistoryTable", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<TransactionHistoryTable />);
+		const { container } = pageRender(<TransactionHistoryTable />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -1,4 +1,4 @@
-import { Buttons } from "components/Buttons";
+import Buttons from "components/Buttons/Buttons";
 import { render } from "test-utils";
 
 /*

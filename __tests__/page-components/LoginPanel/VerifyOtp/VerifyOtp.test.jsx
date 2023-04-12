@@ -1,5 +1,5 @@
-import { VerifyOtp } from "components/VerifyOtp";
-import { render } from "test-utils";
+import VerifyOtp from "page-components/LoginPanel/VerifyOtp/VerifyOtp";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,10 @@ import { render } from "test-utils";
 
 describe("VerifyOtp", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<VerifyOtp />);
+		const { container } = pageRender(
+			// TODO: mock setStep function
+			<VerifyOtp loginType="mobile" number="9876543210" />
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

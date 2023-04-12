@@ -1,5 +1,5 @@
-import { NetworkTable } from "components/NetworkTable";
-import { render } from "test-utils";
+import NetworkTable from "page-components/Admin/Network/NetworkTable/NetworkTable";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("NetworkTable", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<NetworkTable />);
+		const { container } = pageRender(<NetworkTable />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

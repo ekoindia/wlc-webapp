@@ -1,5 +1,6 @@
 import { Table } from "components/Table";
-import { render } from "test-utils";
+import { mockData } from "constants/mockTableData";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -15,9 +16,36 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
+const renderer = [
+	{
+		name: "mobile_number",
+		field: "Transaction ID",
+	},
+	{
+		name: "createdAt",
+		field: "Date & Time",
+		sorting: true,
+	},
+	{ name: "type", field: "Activity" },
+	{
+		name: "type",
+		field: "Description",
+	},
+
+	{ name: "ekocsp_code", field: "Amount" },
+];
+
 describe("Table", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Table />);
+		const { container } = pageRender(
+			<Table
+				pageLimit={10}
+				renderer={renderer}
+				data={mockData}
+				variant="evenStriped"
+				tableName="Account"
+			/>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

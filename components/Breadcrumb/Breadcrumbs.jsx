@@ -13,8 +13,8 @@ const Breadcrumbs = (props) => {
 		// isNavVisible,
 		// isSmallerThan769,
 		// propComp,
-		hrefs,
-		labels,
+		hrefs = [],
+		labels = [],
 		handleOnClick,
 	} = props;
 

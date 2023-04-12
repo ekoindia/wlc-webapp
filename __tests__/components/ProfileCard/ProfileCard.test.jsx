@@ -17,7 +17,13 @@ import { render } from "test-utils";
 
 describe("ProfileCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<ProfileCard />);
+		const { container } = render(
+			<ProfileCard
+				name="Amit"
+				mobileNumber="9876543210"
+				img="noimg.png"
+			/>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

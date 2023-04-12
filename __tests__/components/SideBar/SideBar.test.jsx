@@ -1,5 +1,5 @@
 import { SideBar } from "components/SideBar";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("SideBar", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<SideBar />);
+		const { container } = pageRender(<SideBar />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

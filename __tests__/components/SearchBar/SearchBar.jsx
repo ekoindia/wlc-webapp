@@ -1,4 +1,4 @@
-import { Profile } from "components/Profile";
+import SearchBar from "components/SearchBar/SearchBar";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Profile", () => {
+describe("SearchFilterSort", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Profile />);
+		const { container } = render(<SearchBar />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Profile", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Profile in __tests__/components/Profile/Profile.test.jsx"
+		"TODO: add proper test cases for SearchBar in __tests__/components/SearchBar/SearchBar.test.jsx"
 	);
 });

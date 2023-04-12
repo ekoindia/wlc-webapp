@@ -1,5 +1,5 @@
-import { OnboardingDashboard } from "components/OnboardingDashboard";
-import { render } from "test-utils";
+import OnboardingDashboard from "page-components/Admin/Dashboard/OnboardingDashboard/OnboardingDashboard";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("OnboardingDashboard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<OnboardingDashboard />);
+		const { container } = pageRender(<OnboardingDashboard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -1,5 +1,5 @@
-import { CompanyPane } from "components/CompanyPane";
-import { render } from "test-utils";
+import CompanyPane from "page-components/Admin/Profile/CompanyPane/CompanyPane";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,18 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
+global.fetch = jest.fn(() =>
+	Promise.resolve({
+		json: () =>
+			Promise.resolve({
+				// Mock data here
+			}),
+	})
+);
+
 describe("CompanyPane", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<CompanyPane />);
+		const { container } = pageRender(<CompanyPane />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

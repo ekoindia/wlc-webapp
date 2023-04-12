@@ -1,5 +1,5 @@
-import { AddressPane } from "components/AddressPane";
-import { render } from "test-utils";
+import AddressPane from "page-components/Admin/Profile/AddressPane/AddressPane";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("AddressPane", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<AddressPane />);
+		const { container } = pageRender(<AddressPane />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -2,6 +2,7 @@ import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
+import useRefreshAccessToken from "./useRefreshToken.js";
 
 const useRequest = ({
 	method = "GET",
@@ -16,15 +17,9 @@ const useRequest = ({
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
-	// let currentTime = new Date().toLocaleString();
+	const { generateNewToken } = useRefreshAccessToken();
 
-	const {
-		userData,
-		updateUserInfo,
-		isTokenUpdating,
-		setIsTokenUpdating,
-		// logout,
-	} = useUser();
+	const { userData } = useUser();
 
 	// console.log("userData", userData);
 	// console.log("method", method);
@@ -47,13 +42,7 @@ const useRequest = ({
 					token: userData.access_token,
 					body,
 				},
-				{
-					token_timeout: userData.token_timeout,
-					refresh_token: userData.refresh_token,
-					updateUserInfo,
-					isTokenUpdating,
-					setIsTokenUpdating,
-				}
+				generateNewToken
 			),
 		{
 			// provider: localStorageProvider,
@@ -77,7 +66,6 @@ const useRequest = ({
 		setIsLoading(false);
 	}, [fetchedError]);
 
-	// console.log("data useRequest", data);
 	return { data, error, isLoading, mutate };
 };
 

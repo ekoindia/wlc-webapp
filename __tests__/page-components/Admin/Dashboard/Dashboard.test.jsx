@@ -1,5 +1,5 @@
-import { Dashboard } from "components/Dashboard";
-import { render } from "test-utils";
+import Dashboard from "page-components/Admin/Dashboard/Dashboard";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Dashboard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Dashboard />);
+		const { container } = pageRender(<Dashboard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

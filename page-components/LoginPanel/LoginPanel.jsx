@@ -5,10 +5,8 @@ import { Login, SocialVerify, VerifyOtp } from ".";
 
 /**
  * This is the main component where all the Login related component rendered.
- * @arg 	{Object}	prop	Properties passed to the component
  * @example	`<LoginPanel></LoginPanel>`
  */
-
 const LoginPanel = () => {
 	const [step, setStep] = useState("LOGIN");
 	const [email, setEmail] = useState("");
