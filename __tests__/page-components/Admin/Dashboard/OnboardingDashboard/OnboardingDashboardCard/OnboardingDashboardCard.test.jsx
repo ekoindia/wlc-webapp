@@ -1,4 +1,4 @@
-import { OnboardingDashboardCard } from "components/OnboardingDashboardCard";
+import OnboardingDashboardCard from "page-components/Admin/Dashboard/OnboardingDashboard/OnboardingDashboardCard/OnboardingDashboardCard";
 import { render } from "test-utils";
 
 /*

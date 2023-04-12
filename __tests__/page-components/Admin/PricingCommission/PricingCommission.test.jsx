@@ -1,5 +1,5 @@
-import { PricingCommission } from "components/PricingCommission";
-import { render } from "test-utils";
+import PricingCommission from "page-components/Admin/PricingCommission/PricingCommission";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("PricingCommission", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<PricingCommission />);
+		const { container } = pageRender(<PricingCommission />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

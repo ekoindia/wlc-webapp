@@ -1,4 +1,4 @@
-import { PermanentAddress } from "components/PermanentAddress";
+import PermanentAddress from "page-components/Admin/UpdateSellerAddress/PermanentAddress/PermanentAddress";
 import { render } from "test-utils";
 
 /*

@@ -1,4 +1,4 @@
-import { Calenders } from "components/Calenders";
+import Calenders from "components/Calenders/Calenders";
 import { render } from "test-utils";
 
 /*

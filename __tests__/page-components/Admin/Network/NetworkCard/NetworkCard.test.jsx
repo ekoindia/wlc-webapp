@@ -1,5 +1,5 @@
-import { NetworkCard } from "components/NetworkCard";
-import { render } from "test-utils";
+import NetworkCard from "page-components/Admin/Network/NetworkCard/NetworkCard";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,18 @@ import { render } from "test-utils";
 
 describe("NetworkCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<NetworkCard />);
+		const { container } = pageRender(
+			<NetworkCard
+				item={{
+					name: "Abhishek Kumar",
+					mobile_number: "1234567890",
+					type: "admin",
+					createdAt: "2021-08-01 12:00:00",
+					account_status: "active",
+					location: "Delhi",
+				}}
+			/>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

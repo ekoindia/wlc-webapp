@@ -1,5 +1,5 @@
-import { DetailedStatementTable } from "components/DetailedStatementTable";
-import { render } from "test-utils";
+import DetailedStatementTable from "page-components/Admin/DetailedStatement/DetailedStatementTable/DetailedStatementTable";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("DetailedStatementTable", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<DetailedStatementTable />);
+		const { container } = pageRender(<DetailedStatementTable />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

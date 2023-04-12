@@ -11,21 +11,11 @@ export default function Map(props) {
 	});
 	if (!isLoaded) return <Spinner />;
 
-	return (
-		<>
-			<GMap props={props} />
-		</>
-	);
+	return <GMap {...props} />;
 }
 
 function GMap(props) {
-	const {
-		width = "100%",
-		height = "100%",
-		zoom = 12,
-		lat,
-		lng,
-	} = props.props;
+	const { width = "100%", height = "100%", zoom = 12, lat, lng } = props;
 
 	const center = useMemo(
 		() => ({ lat: parseFloat(lat), lng: parseFloat(lng) }),

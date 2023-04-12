@@ -9,7 +9,7 @@ export const getNameStyle = (name) => {
 					bg="accent.DEFAULT"
 					color="divider"
 					size={{ base: "sm", sm: "sm", md: "xs", lg: "sm" }}
-					name={name[0]}
+					name={(name || "").charAt(0)}
 					// src={item.link}
 				/>
 			</Box>

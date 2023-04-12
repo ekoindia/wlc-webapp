@@ -1,4 +1,4 @@
-import { Dmt } from "components/Dmt";
+import Dmt from "page-components/Admin/PricingCommission/Dmt/Dmt";
 import { render } from "test-utils";
 
 /*

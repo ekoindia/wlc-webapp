@@ -1,4 +1,4 @@
-import { NewAddress } from "components/NewAddress";
+import NewAddress from "page-components/Admin/UpdateSellerAddress/NewAddress/NewAddress";
 import { render } from "test-utils";
 
 /*

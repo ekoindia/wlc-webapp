@@ -35,8 +35,8 @@ export default function App({ Component, pageProps, router }) {
 				clientId={pageProps?.data?.login_types?.google?.client_id}
 			> */}
 			<ChakraProvider theme={light}>
-				<OrgDetailProvider>
-					<UserProvider>
+				<OrgDetailProvider orgMockData={null}>
+					<UserProvider userMockData={null}>
 						<LayoutProvider>
 							<MenuProvider>
 								<RouteProtecter router={router}>

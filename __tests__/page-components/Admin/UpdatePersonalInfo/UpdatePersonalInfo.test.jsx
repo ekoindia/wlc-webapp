@@ -1,5 +1,5 @@
-import { UpdatePersonalInfo } from "components/UpdatePersonalInfo";
-import { render } from "test-utils";
+import UpdatePersonalInfo from "page-components/Admin/UpdatePersonalInfo/UpdatePersonalInfo";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("UpdatePersonalInfo", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<UpdatePersonalInfo />);
+		const { container } = pageRender(<UpdatePersonalInfo />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

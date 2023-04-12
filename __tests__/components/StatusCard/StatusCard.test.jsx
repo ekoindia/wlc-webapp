@@ -1,5 +1,5 @@
 import { StatusCard } from "components/StatusCard";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("StatusCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<StatusCard />);
+		const { container } = pageRender(<StatusCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

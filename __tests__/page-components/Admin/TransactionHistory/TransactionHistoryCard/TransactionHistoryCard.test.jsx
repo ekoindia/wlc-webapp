@@ -1,5 +1,5 @@
-import { TransactionHistoryCard } from "components/TransactionHistoryCard";
-import { render } from "test-utils";
+import TransactionHistoryCard from "page-components/Admin/TransactionHistory/TransactionHistoryCard/TransactionHistoryCard";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("TransactionHistoryCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<TransactionHistoryCard />);
+		const { container } = pageRender(<TransactionHistoryCard item={{}} />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

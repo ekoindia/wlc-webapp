@@ -46,7 +46,7 @@ const SideBar = (props) => {
 	return (
 		<>
 			<Box display={{ base: "flex", lg: "none" }}>
-				<MenuBar props={props} />
+				<MenuBar {...props} />
 			</Box>
 			<Box display={{ base: "none", lg: "flex" }}>
 				<SideBarMenu />
@@ -147,7 +147,7 @@ const SideBarMenu = ({ className = "", ...props }) => {
 };
 
 //FOR MOBILE SCREENS
-const MenuBar = ({ props }) => {
+const MenuBar = (props) => {
 	const { navOpen, setNavOpen } = props;
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	return (

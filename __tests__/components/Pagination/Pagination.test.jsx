@@ -17,7 +17,15 @@ import { render } from "test-utils";
 
 describe("Pagination", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Pagination />);
+		// TODO: mock onPageChange method
+		const { container } = render(
+			<Pagination
+				totalCount="50"
+				siblingCount="1"
+				currentPage="1"
+				pageSize="10"
+			/>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
