@@ -5,6 +5,12 @@
 		"next/core-web-vitals",
 		"prettier"
 	],
+	"env": {
+		"browser": true,
+		"es6": true,
+		"node": true,
+		"jest": true
+	},
 	"plugins": ["prettier"],
 	"ignorePatterns": ["**/*.BAK.*", "**/*.stories.*"],
 	"globals": {

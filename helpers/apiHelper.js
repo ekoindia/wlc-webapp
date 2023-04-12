@@ -84,7 +84,6 @@ export function fetcher(url, options, tokenOptions) {
 					err.name = "Unauthorized";
 					// TODO: Handle unauthorized error by refreshing token
 				}
-				// TODO: Handle timeout error
 				throw err;
 			}
 		})

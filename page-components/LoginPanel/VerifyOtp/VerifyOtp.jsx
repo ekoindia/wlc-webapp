@@ -1,5 +1,6 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons, OtpInput } from "components";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { sendOtpRequest } from "helpers";
 import { useLogin } from "hooks";
@@ -17,6 +18,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 	const [Otp, setOtp] = useState("");
 	const [timer, setTimer] = useState(30);
 	const { login } = useUser();
+	const { orgDetail } = useOrgDetailContext();
 	const [loading, submitLogin] = useLogin(login);
 	const toast = useToast();
 
@@ -39,7 +41,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 
 	const resendOtpHandler = () => {
 		resetTimer();
-		sendOtpRequest(number.original, toast, "resend");
+		sendOtpRequest(orgDetail.org_id, number.original, toast, "resend");
 	};
 
 	const verifyOtpHandler = () => {
@@ -47,6 +49,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 			id_type: "Mobile",
 			mobile: number.original,
 			id_token: Otp,
+			org_id: orgDetail.org_id,
 		});
 	};
 

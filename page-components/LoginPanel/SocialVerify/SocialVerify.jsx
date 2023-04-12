@@ -1,5 +1,6 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Buttons, Icon, IconButtons, Input } from "components";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useState } from "react";
 
@@ -15,6 +16,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 	const [value, setValue] = useState(number.formatted);
 	const [invalid, setInvalid] = useState("");
 	const [errorMsg, setErrorMsg] = useState(false);
+	const { orgDetail } = useOrgDetailContext();
 
 	const onChangeHandler = (val) => {
 		setValue(val);
@@ -29,7 +31,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 			});
 
 			setStep("VERIFY_OTP");
-			sendOtpRequest(originalNum, toast);
+			sendOtpRequest(orgDetail.org_id, originalNum, toast);
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);
