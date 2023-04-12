@@ -1,7 +1,8 @@
 import { Box, Center, Text } from "@chakra-ui/react";
 import { Buttons } from "components";
 import Link from "next/link";
-const index = () => {
+
+const Custom404 = () => {
 	return (
 		<Center h="100vh">
 			<Center
@@ -22,12 +23,12 @@ const index = () => {
 					color="inherit"
 					textTransform={"uppercase"}
 				>
-					Oops! Page Not Be Found
+					Oops! Page Not Found
 				</Text>
 
 				<Text as={"p"} color={"#787878"} fontWeight={"400"}>
-					Sorry but the page you are looking for does not exist, have
-					been removed. name changed or is temporarily unavailable
+					Sorry, but the page you are looking for does not exist, or,
+					has been removed.
 				</Text>
 				<Link href="/">
 					<Buttons>Back to homepage</Buttons>
@@ -37,4 +38,4 @@ const index = () => {
 	);
 };
 
-export default index;
+export default Custom404;
