@@ -14,6 +14,8 @@ const Calenders = ({
 	calendersProps,
 	labelPosition,
 	value,
+	minDate,
+	maxDate,
 	onChange = () => {},
 	...props
 }) => {
@@ -123,8 +125,8 @@ const Calenders = ({
 									w="1px"
 									type="date"
 									height="100%"
-									// min="2023-01-20"
-									// max="2023-04-20"
+									min={minDate}
+									max={maxDate}
 									ref={calendarRef}
 									onClick={handleClickForInput}
 									onChange={(e) => onChange(e)}

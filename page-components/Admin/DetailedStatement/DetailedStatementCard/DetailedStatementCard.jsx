@@ -9,19 +9,18 @@ import { Icon } from "components";
  * @example	`<DetailedStatementCard></DetailedStatementCard>`
  */
 
-const DetailedStatementCard = (props) => {
-	//const { item } = props;
-	const item = {
-		transactionId: 3027555195,
-		datetime: "29/11/2022, 09:58:48 AM",
-		activity: "DMT Commission",
-		description:
-			"Saurabh Mullick, 9654110669 A/C:20082437069 STATE BANK OF INDIA",
-		amount: "20",
-		debit_credit: "DR",
-		type: "credit",
-		balance: "15,893.00",
-	};
+const DetailedStatementCard = ({ item }) => {
+	// const item = {
+	// 	transactionId: 3027555195,
+	// 	datetime: "29/11/2022, 09:58:48 AM",
+	// 	activity: "DMT Commission",
+	// 	description:
+	// 		"Saurabh Mullick, 9654110669 A/C:20082437069 STATE BANK OF INDIA",
+	// 	amount: "20",
+	// 	debit_credit: "DR",
+	// 	type: "credit",
+	// 	balance: "15,893.00",
+	// };
 	return (
 		<>
 			<Flex direction="column" fontSize="12px" rowGap="2">
@@ -31,7 +30,7 @@ const DetailedStatementCard = (props) => {
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
-						{item.transactionId}
+						{/* {item.transaction_id} */}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -40,7 +39,7 @@ const DetailedStatementCard = (props) => {
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
-						{item.datetime}
+						{item.date_time}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -69,13 +68,17 @@ const DetailedStatementCard = (props) => {
 						Amount
 					</Box>
 					<Flex display={"flex"}>
-						<Box> &#x20B9;{item.amount}</Box>
+						<Box fontSize="16px" fontWeight="medium">
+							{" "}
+							&#x20B9;{item.amount}
+						</Box>
+						&nbsp;
 						<Box
 							mt="3px"
 							w="100%"
 							h="100%"
 							color={
-								item.debit_credit === "DR" ? "success" : "error"
+								item.debit_credit === "DR" ? "error" : "success"
 							}
 						>
 							<Icon
@@ -96,7 +99,7 @@ const DetailedStatementCard = (props) => {
 					</Box>
 					<Box fontSize="16px" fontWeight="medium">
 						{" "}
-						&#x20B9;{item.balance}
+						&#x20B9;{item.running_balance}
 					</Box>
 				</Flex>
 			</Flex>

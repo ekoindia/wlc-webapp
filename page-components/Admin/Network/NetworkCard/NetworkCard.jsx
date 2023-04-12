@@ -17,7 +17,7 @@ const NetworkCard = (props) => {
 		<>
 			<Flex justifyContent="space-between">
 				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-					{getNameStyle(item.name)}
+					{getNameStyle(item.agent_name)}
 				</Box>
 				<Menus
 					iconName="more-vert"
@@ -35,7 +35,7 @@ const NetworkCard = (props) => {
 						Mobile Number:
 					</Box>
 					<Box as="span" color="dark">
-						{item.mobile_number}
+						{item.agent_mobile}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -43,7 +43,7 @@ const NetworkCard = (props) => {
 						Type:
 					</Box>
 					<Box as="span" color="dark">
-						{item.type}
+						{item.agent_type}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -51,7 +51,7 @@ const NetworkCard = (props) => {
 						Onboarded on:
 					</Box>
 					<Box as="span" color="dark">
-						{item.createdAt}
+						{item.onboarded_on}
 					</Box>
 				</Flex>
 				<Flex justifyContent="space-between" mt="10px" py="10px">

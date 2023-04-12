@@ -22,7 +22,7 @@ import { useRef, useState } from "react";
  * @example	`<Dmt></Dmt>`
  */
 
-const Dmt = ({ className = "", ...props }) => {
+const Dmt = () => {
 	const [value, setValue] = useState("0");
 	const [iconValue, setIconValue] = useState("percent");
 
@@ -552,11 +552,11 @@ export default Dmt;
 const PriceSelect = ({
 	label,
 	required = false,
-	labelStyle,
+	/* labelStyle, */
 	inputContStyle,
-	...props
+	/* ...props */
 }) => {
-	const [values, setValues] = useState(0);
+	// const [values, setValues] = useState(0);
 	return (
 		<Flex direction={"column"} w="100%">
 			<Flex>

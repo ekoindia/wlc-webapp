@@ -10,7 +10,7 @@ import {
 import { Buttons, Cards, IconButtons } from "components";
 import Router from "next/router";
 
-const AddressPane = () => {
+const AddressPane = ({ rowdata: addressdata }) => {
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 	return (
 		<Cards>

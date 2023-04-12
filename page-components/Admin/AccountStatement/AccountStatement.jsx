@@ -1,9 +1,9 @@
 import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { Buttons, Cards, Headings, Icon } from "components";
+import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AccountStatementTable } from ".";
-
 /**
  * A <AccountStatement> component
  * TODO: Write more description here
@@ -12,19 +12,50 @@ import { AccountStatementTable } from ".";
  * @example	`<AccountStatement></AccountStatement>`
  */
 
-const AccountStatement = ({ className = "", ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
-	const [isMobileScreen] = useMediaQuery("(max-width: 767px)");
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
-
+const AccountStatement = () => {
 	const router = useRouter();
-	const handleClick = (e) => {
-		router.push(
-			"/admin/transaction-history/account-statement/detailed-statement"
-		);
+	const { cellnumber } = router.query;
+	const [isMobileScreen] = useMediaQuery("(max-width: 767px)");
+
+	/* API CALLING */
+
+	let headers = {
+		"tf-req-uri-root-path": "/ekoicici/v1",
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=${cellnumber}`,
+		"tf-req-method": "GET",
 	};
+
+	const { data, error, isLoading, mutate } = useRequest({
+		method: "POST",
+		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+		headers: { ...headers },
+	});
+
+	useEffect(() => {
+		mutate(
+			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+			headers
+		);
+	}, [headers["tf-req-uri"]]);
+
+	const acctabledata = data?.data?.recent_transaction_details ?? [];
+	console.log("acctabledata", acctabledata);
+	const actable = data?.data ?? [];
+	const agentname = actable?.agent_name ?? [];
+	const saving_balance = actable?.saving_balance ?? [];
+	/*redirect to detiled statement*/
+	const handleClick = (e) => {
+		router.push({
+			pathname:
+				"/admin/transaction-history/account-statement/detailed-statement",
+			query: { cellnumber },
+		});
+	};
+	/*current date*/
+	const current = new Date();
+	const date = `${current.getDate()}/${
+		current.getMonth() + 1
+	}/${current.getFullYear()}`;
 
 	return (
 		<>
@@ -81,7 +112,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 										"2xl": "16px",
 									}}
 								>
-									as on 04/01/2023
+									as on {date}
 								</Text>
 							</Flex>
 
@@ -123,135 +154,11 @@ const AccountStatement = ({ className = "", ...props }) => {
 											fontWeight={"medium"}
 										>
 											{" "}
-											Saurabh Mullick
+											{agentname}
 										</Text>
 									</Flex>
 								)}
-								{/* <Flex
-									gap={{
-										base: "20px",
-										lg: "8px",
-										"2xl": "15px",
-									}}
-									align={"center"}
-									justifyContent={{
-										base: "space-between",
-										md: "init",
-									}}
-									w={{ base: "100%", sm: "initial" }}
-								>
-									<Flex
-										direction={"column"}
-										gap={{
-											base: "0px",
-											md: "0px",
-											"2xl": "5px",
-										}}
-									>
-										<Text
-											fontSize={{
-												base: "14px",
-												md: "10px",
-												lg: "12px",
-												"2xl": "16px",
-											}}
-											color={"light"}
-										>
-											Account Number
-										</Text>
-										<Text
-											fontSize={{
-												base: "16px",
-												md: "11px",
-												lg: "13px",
-												"2xl": "18px",
-											}}
-											color={"black"}
-											fontWeight={"medium"}
-										>
-											000300000517693
-										</Text>
-									</Flex>
-									<Tags
-										size={{
-											base: "sm",
-											md: "sm",
-											lg: "sm",
-											"2xl": "md",
-										}}
-									/>
-								</Flex>
-								{!isMobileScreen && (
-									<>
-										<Flex
-											direction={"column"}
-											gap={{
-												base: "5px",
-												md: "0px",
-												"2xl": "5px",
-											}}
-										>
-											<Text
-												fontSize={{
-													base: "14px",
-													md: "10px",
-													lg: "12px",
-													"2xl": "16px",
-												}}
-												color={"light"}
-											>
-												Bank Name
-											</Text>
-											<Text
-												fontSize={{
-													base: "16px",
-													md: "11px",
-													lg: "13px",
-													"2xl": "18px",
-												}}
-												color={"black"}
-												fontWeight={"medium"}
-											>
-												ICICI Bank
-											</Text>
-										</Flex>
-										<Flex
-											direction={"column"}
-											gap={{
-												base: "5px",
-												md: "0px",
-												"2xl": "5px",
-											}}
-										>
-											<Text
-												fontSize={{
-													base: "14px",
-													md: "10px",
-													lg: "12px",
-													"2xl": "16px",
-												}}
-												color={"light"}
-											>
-												Account Type
-											</Text>
-											<Text
-												fontSize={{
-													base: "16px",
-													md: "11px",
-													lg: "13px",
-													"2xl": "18px",
-												}}
-												color={"black"}
-												fontWeight={"medium"}
-											>
-												Current ECP
-											</Text>
-										</Flex>
-									</>
-								)}
-								{isMobileScreen && (
-									<Divider my={{ base: "5px", sm: "10px" }} />
-								)} */}
+
 								<Flex direction={{ base: "column", md: "row" }}>
 									<Flex
 										direction={"column"}
@@ -303,7 +210,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 												color={"accent.DEFAULT"}
 												fontWeight={"bold"}
 											>
-												15,893.00
+												{saving_balance}
 											</Text>
 										</Flex>
 									</Flex>
@@ -352,7 +259,7 @@ const AccountStatement = ({ className = "", ...props }) => {
 					</Cards>
 				</Box>
 				<Box marginTop={{ base: "20px", lg: "0rem" }}>
-					<AccountStatementTable />
+					<AccountStatementTable acctabledata={acctabledata} />
 				</Box>
 			</Box>
 		</>

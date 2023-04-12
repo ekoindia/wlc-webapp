@@ -2,16 +2,14 @@ import { Table } from "components";
 import { mockData } from "constants/mockTableData";
 
 /**
- * A <NetworkTable> component
- * TODO: This is my network table with clickable rows
+ * A <OnboardingDasboardTable> component
+ * TODO: This is my OnboardingDasboardTable table with clickable rows
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<NetworkTable></NetworkTable>`
+ * @example	`<OnboardingDasboardTable></OnboardingDasboardTable>`
  */
 
-const NetworkTable = () => {
-	const recordCound = 10;
-
+const OnboardingDasboardTable = () => {
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{
@@ -59,4 +57,4 @@ const NetworkTable = () => {
 	);
 };
 
-export default NetworkTable;
+export default OnboardingDasboardTable;

@@ -1,11 +1,13 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { Inter } from "@next/font/google";
-// import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { RouteProtecter } from "components";
 import { OrgDetailProvider, UserProvider } from "contexts";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
+import { localStorageProvider } from "helpers";
 import Head from "next/head";
+import { SWRConfig } from "swr";
 import { light } from "../styles/themes";
 
 const inter = Inter({
@@ -31,25 +33,31 @@ export default function App({ Component, pageProps, router }) {
 				/>
 			</Head>
 
-			{/* <GoogleOAuthProvider
-				clientId={pageProps?.data?.login_types?.google?.client_id}
-			> */}
-			<ChakraProvider theme={light}>
-				<OrgDetailProvider orgMockData={null}>
-					<UserProvider userMockData={null}>
-						<LayoutProvider>
-							<MenuProvider>
-								<RouteProtecter router={router}>
-									<main className={inter.className}>
-										<Component {...pageProps} />
-									</main>
-								</RouteProtecter>
-							</MenuProvider>
-						</LayoutProvider>
-					</UserProvider>
-				</OrgDetailProvider>
-			</ChakraProvider>
-			{/* </GoogleOAuthProvider> */}
+			<GoogleOAuthProvider
+				clientId={pageProps?.data?.login_types?.google?.client_id || ""}
+			>
+				<ChakraProvider theme={light}>
+					<OrgDetailProvider>
+						<UserProvider>
+							<LayoutProvider>
+								<MenuProvider>
+									<RouteProtecter router={router}>
+										<SWRConfig
+											value={{
+												provider: localStorageProvider,
+											}}
+										>
+											<main className={inter.className}>
+												<Component {...pageProps} />
+											</main>
+										</SWRConfig>
+									</RouteProtecter>
+								</MenuProvider>
+							</LayoutProvider>
+						</UserProvider>
+					</OrgDetailProvider>
+				</ChakraProvider>
+			</GoogleOAuthProvider>
 		</>
 	);
 }

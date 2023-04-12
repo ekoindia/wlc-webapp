@@ -12,7 +12,6 @@ import {
 	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Endpoints } from "constants/EndPoints";
 import {
 	getArrowStyle,
 	getLocationStyle,
@@ -20,7 +19,6 @@ import {
 	getNameStyle,
 	getStatusStyle,
 } from "helpers";
-import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { AccountStatementCard } from "page-components/Admin/AccountStatement";
 import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
@@ -29,50 +27,32 @@ import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
 import { TransactionCard } from "page-components/NonAdmin/Transaction";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Buttons, Cards, Icon, IconButtons, Pagination } from "..";
 
 const Table = (props) => {
 	const {
 		pageLimit: PageSize = 10,
-		data: tableData,
+		data,
+		totalRecords,
+		pageNumber,
+		setPageNumber,
 		renderer,
 		variant,
 		tableName,
 		isScrollrequired = false,
 		accordian = false,
+		onRowClick,
 		isPaginationRequired = true,
+		isOnclickRequire = true,
 	} = props;
+	console.log("pageNumber", pageNumber);
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
+	// console.log('data', data)
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
-	const [currentPage, setCurrentPage] = useState(1);
-	// const [tableData, setTableData] = useState([]);
-	const [pageNumber, setPageNumber] = useState(null);
-
-	/* API CALLING */
-	let data = useRequest({
-		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-		headers: {
-			"tf-req-uri-root-path": "/ekoicici/v1",
-			"tf-req-uri":
-				"/network/agents/transaction_history?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=9911572989",
-			"tf-req-method": "GET",
-		},
-	});
-
-	// useEffect(() => {
-	// 	setPageNumber(data?.data?.data?.page_number);
-	// 	setTableData(data?.data?.data?.agent_details);
-	// 	localStorage.setItem(
-	// 		"network_data",
-	// 		JSON.stringify(data?.data?.data?.agent_details)
-	// 	);
-	// }, [data]);
-
-	console.log("data", data);
-
+	// const [currentPage, setCurrentPage] = useState(1);
+	// console.log("currentPage", currentPage);
 	const [expandedRow, setExpandedRow] = useState(null);
 	const handleRowClick = (index) => {
 		if (index === expandedRow) {
@@ -83,31 +63,13 @@ const Table = (props) => {
 			setExpandedRow(index);
 		}
 	};
-
 	useEffect(() => {
-		if (router.query.page && +router.query.page !== currentPage) {
-			setCurrentPage(+router.query.page);
-			console.log("Table : useEffect Page", router.query.page);
+		if (router.query.page && +router.query.page !== pageNumber) {
+			// setCurrentPage(+router.query.page);
+			setPageNumber(+router.query.page);
+			// console.log("router.query.page", router.query.page);
 		}
 	}, [router.query.page]);
-
-	const currentTableData = useMemo(() => {
-		const firstPageIndex = (currentPage - 1) * PageSize;
-		const lastPageIndex = firstPageIndex + PageSize;
-		return tableData.slice(firstPageIndex, lastPageIndex);
-	}, [currentPage]);
-
-	const onRowClick = () => {
-		switch (tableName) {
-			case "Network":
-				variant;
-				router.push(`my-network/profile/`);
-				break;
-			case "Transaction":
-				router.push(`transaction-history/account-statement/`);
-				break;
-		}
-	};
 
 	const getTh = () => {
 		return renderer.map((item, index) => {
@@ -122,8 +84,7 @@ const Table = (props) => {
 							{item.field}
 							{/* <Box as="span" h="auto" onClick={onSortChange}> */}
 							<Icon
-								//name={sortIcon[currentSort]}
-								onClick={onSortChange} // uncomment this to have interative sort
+								// onClick={onSortChange}
 								name="sort"
 								width="6px"
 								height="13px"
@@ -146,12 +107,16 @@ const Table = (props) => {
 		});
 	};
 	const getTr = () => {
-		return currentTableData.map((item, index) => {
+		return data?.map((item, index) => {
 			return (
 				<>
 					<Tr
 						key={index}
-						onClick={onRowClick}
+						onClick={
+							isOnclickRequire
+								? () => onRowClick(data[index])
+								: undefined
+						}
 						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 						style={{
 							backgroundColor:
@@ -162,7 +127,7 @@ const Table = (props) => {
 						{renderer.map((r, rIndex) => {
 							return (
 								<Td
-									onClick={() => handleRowClick(index)}
+									// onClick={() => onRowClick(data[index])} Todo: deepak will check
 									p={{ md: ".5em", xl: "1em" }}
 									key={rIndex}
 								>
@@ -171,7 +136,7 @@ const Table = (props) => {
 										r,
 										index,
 										index +
-											currentPage * PageSize -
+											pageNumber * PageSize -
 											(PageSize - 1)
 									)}
 								</Td>
@@ -344,7 +309,7 @@ const Table = (props) => {
 
 	/* For Responsive */
 	const prepareCard = () => {
-		return currentTableData.map((item, index) => {
+		return data.map((item, index) => {
 			if (tableName === "Network") {
 				return (
 					<Cards
@@ -381,7 +346,7 @@ const Table = (props) => {
 						>
 							<AccountStatementCard item={item} />
 						</Box>
-						{index !== currentTableData.length - 1 && (
+						{index !== data.length - 1 && (
 							<Divider border="1px solid #D2D2D2" />
 						)}
 					</>
@@ -398,7 +363,7 @@ const Table = (props) => {
 						>
 							<DetailedStatementCard item={item} />
 						</Box>
-						{index !== currentTableData.length - 1 && (
+						{index !== data.length - 1 && (
 							<Divider border="1px solid #D2D2D2" />
 						)}
 					</>
@@ -415,7 +380,7 @@ const Table = (props) => {
 						>
 							<BusinessDashboardCard item={item} />
 						</Box>
-						{index !== currentTableData.length - 1 && (
+						{index !== data.length - 1 && (
 							<Divider border="1px solid #D2D2D2" />
 						)}
 					</>
@@ -432,7 +397,7 @@ const Table = (props) => {
 						>
 							<OnboardingDashboardCard item={item} />
 						</Box>
-						{index !== currentTableData.length - 1 && (
+						{index !== data.length - 1 && (
 							<Divider border="1px solid #D2D2D2" />
 						)}
 					</>
@@ -459,24 +424,24 @@ const Table = (props) => {
 		});
 	};
 	/* for sort icon & icon change */
-	const sortIcon = {
-		ascending: "caret-up",
-		descending: "caret-down",
-		default: "sort",
-	};
-	const onSortChange = () => {
-		let nextSort;
+	// const sortIcon = {
+	// 	ascending: "caret-up",
+	// 	descending: "caret-down",
+	// 	default: "sort",
+	// };
+	// const onSortChange = () => {
+	// 	let nextSort;
 
-		if (currentSort === "ascending") {
-			nextSort = "descending";
-		} else if (currentSort === "descending") {
-			nextSort = "default";
-		} else {
-			nextSort = "ascending";
-		}
+	// 	if (currentSort === "ascending") {
+	// 		nextSort = "descending";
+	// 	} else if (currentSort === "descending") {
+	// 		nextSort = "default";
+	// 	} else {
+	// 		nextSort = "ascending";
+	// 	}
 
-		setCurrentSort(nextSort);
-	};
+	// 	setCurrentSort(nextSort);
+	// };
 
 	return (
 		<>
@@ -522,15 +487,18 @@ const Table = (props) => {
 							<Flex justify={"flex-end"}>
 								<Pagination
 									className="pagination-bar"
-									currentPage={currentPage}
-									totalCount={tableData.length}
+									currentPage={pageNumber}
+									totalCount={totalRecords || 10}
 									pageSize={PageSize}
 									onPageChange={(page) => {
-										console.log(page);
 										router.query.page = page;
-										console.log("Page", page);
+										console.log(
+											"Page inside pagination",
+											page
+										);
 										router.replace(router);
-										setCurrentPage(page);
+										// setCurrentPage(page);
+										setPageNumber(page);
 									}}
 								/>
 							</Flex>

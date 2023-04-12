@@ -1,20 +1,20 @@
 import { extendTheme, theme } from "@chakra-ui/react";
-import { Inter, Roboto } from "@next/font/google";
+// import { Inter, Roboto } from "@next/font/google";
 import { tabsTheme } from "./theme_system/theme/components/tab";
 // console.log('theme', theme)
 
-const inter = Inter({
-	weight: ["400", "500", "600", "700", "800"],
-	style: ["normal"],
-	fallback: ["system-ui", "sans-serif"],
-	subsets: ["latin"],
-});
-const roboto = Roboto({
-	weight: ["400", "500", "700"],
-	style: ["normal"],
-	fallback: ["system-ui", "sans-serif"],
-	subsets: ["latin"],
-});
+// const inter = Inter({
+// 	weight: ["400", "500", "600", "700", "800"],
+// 	style: ["normal"],
+// 	fallback: ["system-ui", "sans-serif"],
+// 	subsets: ["latin"],
+// });
+// const roboto = Roboto({
+// 	weight: ["400", "500", "700"],
+// 	style: ["normal"],
+// 	fallback: ["system-ui", "sans-serif"],
+// 	subsets: ["latin"],
+// });
 
 // console.log(theme.components.Tabs.baseStyle);
 // console.log(tabsTheme);
@@ -195,6 +195,7 @@ export const light = extendTheme({
 		focusbg: "#FFFBF3",
 		white: "#FFFFFF",
 		shade: "#F2F2F2",
+		darkShade: "#e6e6e6",
 		highlight: "#FFD93B",
 		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
 		inputlabel: "#0C243B",
@@ -308,8 +309,8 @@ export const light = extendTheme({
 	},
 	fonts: {
 		// body: `${inter.style.fontFamily}`,
-		heading: `${inter.style.fontFamily}`,
-		roboto_font: `${roboto.style.fontFamily}`,
+		// heading: `${inter.style.fontFamily}`,
+		// roboto_font: `${roboto.style.fontFamily}`,
 	},
 	fontSizes: {
 		vxs: "0.5rem",

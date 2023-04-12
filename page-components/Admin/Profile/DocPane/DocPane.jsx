@@ -18,7 +18,8 @@ import { Buttons, Cards, Icon, IconButtons } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<DocPane></DocPane>`
  */
-const DocPane = () => {
+const DocPane = (props) => {
+	const docdata = props.rowdata;
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 
 	const docData = [

@@ -16,7 +16,7 @@ import { Cards, IconButtons } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<ContactPane></ContactPane>`
  */
-const ContactPane = () => {
+const ContactPane = ({ rowdata: contactdata }) => {
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 	// useEffect(() => {
 	// 	window.addEventListener("resize", (e) => {
@@ -31,17 +31,6 @@ const ContactPane = () => {
 	// 		window.removeEventListener("resize");
 	// 	};
 	// }, []);
-
-	const contactData = [
-		{
-			label: "Mobile Number",
-			data: "+91 9898239232",
-		},
-		{
-			label: "Email",
-			data: "angeltech@email.co.in",
-		},
-	];
 
 	return (
 		<Cards h={{ base: "auto", lg: "100%" }}>
@@ -77,7 +66,9 @@ const ContactPane = () => {
 				<Flex justifyContent={"space-between"}>
 					<Flex as="span" align="center">
 						<Text color="light">Mobile number:</Text>
-						<Text fontWeight={"medium"}>&nbsp; +91 9898239232</Text>
+						<Text fontWeight={"medium"}>
+							&nbsp; {contactdata.mobile_number}
+						</Text>
 					</Flex>
 					{isSmallerThan769 ? (
 						<IconButtons
@@ -96,7 +87,7 @@ const ContactPane = () => {
 					<Flex as="span" align="center">
 						<Text color="light">Email:</Text>
 						<Text fontWeight={"medium"}>
-							&nbsp; angeltech@email.co.in
+							&nbsp; {contactdata.email}
 						</Text>
 					</Flex>
 					<IconButtons

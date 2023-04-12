@@ -2,14 +2,22 @@ import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
 import { useLayoutContext } from "contexts/LayoutContext";
 import { useRouter } from "next/router";
 import { Icon } from "..";
-
+/**
+ * A <Heading> component
+ * TODO: Write more description here
+ * @arg 	{String}	title	Properties passed to the component
+ * @arg 	{Boolean}	hasIcon	Properties passed to the component
+ * @arg 	{Component}	propComp	Properties passed to the component
+ * @arg 	{Function}	redirectHandler	Properties passed to the component
+ * @arg 	{Function}	redirectHandler	Properties passed to the component
+ * @example	`<Heading></Heading>`
+ */
 const Headings = ({
 	hasIcon = true, //TODO hasBackIcon or something -- hasIcon is ambiguous
 	title,
 	redirectHandler,
 	propComp,
 	isCompVisible = true,
-	...rest
 }) => {
 	const router = useRouter();
 	const redirectTo = () => {
@@ -29,37 +37,29 @@ const Headings = ({
 		setNavHidden(false);
 	}
 
-	// const styles = isNavHidden && {
-	// 	h: {
-	// 		base: "56px",
-	// 		sm: "56px",
-	// 		md: "50px",
-	// 		lg: "60px",
-	// 		xl: "50px",
-	// 		"2xl": "90px",
-	// 	},
-	// 	top: "0%",
-	// 	w: "full",
-	// 	position: "fixed",
-	// 	zIndex: "99",
-	// 	as: "section",
-	// 	boxShadow: "0px 3px 10px #0000001A",
-	// 	bg: "white",
-	// 	justifyContent: "space-between",
-	// };
+	const styles = isNavHidden && {
+		h: {
+			base: "56px",
+			sm: "56px",
+			md: "50px",
+			lg: "60px",
+			xl: "50px",
+			"2xl": "90px",
+		},
+		top: "0%",
+		w: "full",
+		position: "fixed",
+		zIndex: "99",
+		as: "section",
+		boxShadow: "0px 3px 10px #0000001A",
+		bg: "white",
+		justifyContent: "space-between",
+	};
 
 	return (
 		<>
 			<Flex
-				mt={{
-					base: isNavHidden ? "0px" : "10px",
-					sm: isNavHidden ? "0px" : "8px",
-					md: isNavHidden ? "0px" : "12px",
-					lg: "16px",
-					xl: "18px",
-					"2xl": "20px",
-				}}
-				mb={{
+				my={{
 					base: isNavHidden ? "0px" : "10px",
 					sm: isNavHidden ? "0px" : "8px",
 					md: isNavHidden ? "0px" : "12px",
@@ -71,7 +71,7 @@ const Headings = ({
 				px={{ base: "16px", md: "0px" }}
 				justify="space-between"
 				align="center"
-				{...rest}
+				{...styles}
 			>
 				<Box>
 					<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>

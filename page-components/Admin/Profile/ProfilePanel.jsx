@@ -11,7 +11,7 @@ import {
 	PersonalPane,
 } from ".";
 
-const ChangeRoleDesktop = ({ menuHandler, ...rest }) => {
+const ChangeRoleDesktop = ({ menuHandler }) => {
 	return (
 		<Box>
 			<Box display={{ base: "none", md: "block" }}>
@@ -49,9 +49,9 @@ const ChangeRoleDesktop = ({ menuHandler, ...rest }) => {
 		</Box>
 	);
 };
-const ChangeRoleMobile = ({ menuHandler, ...rest }) => {
+const ChangeRoleMobile = () => {
 	return (
-		<Box bg="shade" w="100%" h="100vh" px="4" mt="12px">
+		<Box bg="shade" w="100%" h="100vh" px="4" pt="12px">
 			{ChangeRoleMenu.map((ele, idx) => (
 				<Link href={ele.path} key={ele.item}>
 					<Flex
@@ -71,11 +71,25 @@ const ChangeRoleMobile = ({ menuHandler, ...rest }) => {
 	);
 };
 
-const ProfilePanel = (props) => {
+const ProfilePanel = () => {
+	const storedData = localStorage.getItem("rowData");
+	const rowData = storedData ? JSON.parse(storedData) : null;
+	// console.log(rowData, "rowData");
+	const companypane = rowData.profile;
+	const addresspane = rowData.address_details;
+	const documentpane = rowData.document_details;
+	const personalpane = rowData.personal_information;
+	const contactpane = rowData.contact_information;
+
+	// console.log(companypane, "companyPane");
+	// console.log(addresspane, "addresspane");
+	// console.log(documentpane, "documentpane");
+	// console.log(personalpane, "personalpane");
+	// console.log(contactpane, "contactpane");
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
-	function menuHandler() {
+	const menuHandler = () => {
 		setIsMenuVisible((prev) => !prev);
-	}
+	};
 
 	return (
 		<>
@@ -100,19 +114,19 @@ const ProfilePanel = (props) => {
 					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 				>
 					<GridItem>
-						<CompanyPane />
+						<CompanyPane rowdata={companypane} />
 					</GridItem>
 					<GridItem>
-						<AddressPane />
+						<AddressPane rowdata={addresspane} />
 					</GridItem>
 					<GridItem>
-						<DocPane />
+						<DocPane rowdata={documentpane} />
 					</GridItem>
 					<GridItem>
-						<PersonalPane />
+						<PersonalPane rowdata={personalpane} />
 					</GridItem>
 					<GridItem>
-						<ContactPane />
+						<ContactPane rowdata={contactpane} />
 					</GridItem>
 				</Grid>
 			)}

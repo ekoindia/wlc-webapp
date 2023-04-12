@@ -11,7 +11,7 @@ import { Icon } from "..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<StatusCard></StatusCard>`
  */
-const StatusCard = ({ className = "", ...props }) => {
+const StatusCard = () => {
 	const [disabled, setDisabled] = useState(false);
 	const { data, mutate } = useRequest({
 		method: "POST",

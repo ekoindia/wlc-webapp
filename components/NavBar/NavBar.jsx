@@ -19,6 +19,7 @@ import { Buttons, Icon, IconButtons } from "..";
 
 const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
+	const { userData } = useUser();
 	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
 		props;
 
@@ -83,6 +84,7 @@ export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	const { userData } = useUser();
+	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
 
 	return (
@@ -115,7 +117,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 							orgDetail.logo ||
 							"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56'%3E%3Crect fill='%23bbb' width='200' height='56' rx='6' ry='6'/%3E%3C/svg%3E"
 						}
-						alt={orgDetail.app_name + "'s logo" || "logo"}
+						alt={orgDetail.app_name + " logo"}
 						maxH={{
 							base: "35px",
 							sm: "34px",
@@ -186,7 +188,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												fontWeight={"semibold"}
 												mr={"1.6vw"}
 											>
-												Aakash Enterprises
+												{userDetails?.name}
 											</Text>
 
 											<Icon
@@ -249,6 +251,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 
 const MyAccountCard = ({ setIsCardOpen }) => {
 	const { logout, userData } = useUser();
+	const { userDetails } = userData;
+
 	const router = useRouter();
 	const logoutHandler = () => {
 		// router.push("/");
@@ -338,7 +342,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							w={"fit-content"}
 							color={"highlight"}
 						>
-							Aakash Enterprises
+							{userDetails?.name}
 						</Text>
 						<Text
 							fontSize={{
@@ -355,7 +359,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						>
 							(User Code:{" "}
 							<Text as={"span"} fontWeight={"medium"}>
-								501837634
+								{userDetails?.code}
 							</Text>
 							)
 						</Text>
@@ -373,7 +377,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							w={"fit-content"}
 							color={"white"}
 						>
-							angeltech.google.co.in
+							{userDetails?.email}
 						</Text>
 					</Flex>
 					<Flex
@@ -395,7 +399,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									}}
 									color={"white"}
 								>
-									+91 9871 67943
+									+91{" "}
+									{userDetails?.mobile.slice(0, 5) +
+										" " +
+										userDetails?.mobile.slice(5)}
 								</Text>
 								<Box ml={{ base: "15px", sm: "initial" }}>
 									<IconButtons

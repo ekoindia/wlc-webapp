@@ -89,3 +89,21 @@ export const openGoogleMap = ({ latitude, longitude }) => {
 	const lng = parseFloat(longitude);
 	window.open(`https://maps.google.com/?q=${lat},${lng}`, "_blank");
 };
+
+export const getStatus = (debit_credit) => {
+	return (
+		<Flex
+			w="100%"
+			h="100%"
+			color={debit_credit === "CR" ? "success" : "error"}
+		>
+			<Icon
+				name={
+					debit_credit == "DR" ? "arrow-increase" : "arrow-decrease"
+				}
+				width="14px"
+				h="8px"
+			/>
+		</Flex>
+	);
+};

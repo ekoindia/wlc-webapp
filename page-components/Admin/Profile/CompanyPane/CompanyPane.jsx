@@ -17,7 +17,9 @@ import Router from "next/router";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<CompanyPane></CompanyPane>`
  */
-const CompanyPane = () => {
+const CompanyPane = (props) => {
+	const compdata = props.rowdata;
+	// console.log(compdata, "Company pane data");
 	const [isSmallerThan440] = useMediaQuery("(max-width:440px)");
 	return (
 		<Cards>
@@ -34,7 +36,7 @@ const CompanyPane = () => {
 						fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 						fontWeight="semibold"
 					>
-						Angel Tech Private Limited
+						{compdata.shop_name}
 					</Heading>
 					<Flex
 						fontSize={{ base: 14, md: 12, lg: 14 }}
@@ -42,7 +44,7 @@ const CompanyPane = () => {
 					>
 						<Text>User Code:</Text>
 						<Text color={"primary.DEFAULT"}>
-							<span>&nbsp;</span> 387608
+							<span>&nbsp;</span> {compdata.eko_code}
 						</Text>
 					</Flex>
 				</Box>
@@ -68,7 +70,7 @@ const CompanyPane = () => {
 							fontSize={{ base: 16, md: 13, lg: 16 }}
 							fontWeight="medium"
 						>
-							iMerchant
+							{compdata.account_type}
 						</Text>
 					</Box>
 					{isSmallerThan440 ? (
@@ -94,7 +96,7 @@ const CompanyPane = () => {
 							fontSize={{ base: 16, md: 13, lg: 16 }}
 							fontWeight="medium"
 						>
-							Specialist
+							{compdata.plan_name}
 						</Text>
 					</Box>
 					{isSmallerThan440 ? (
@@ -164,7 +166,8 @@ const CompanyPane = () => {
 									fontWeight="medium"
 									fontSize={20}
 								>
-									<span>&#x20B9; </span>15,893.00
+									<span>&#x20B9; </span>
+									{compdata.wallet_balance}
 								</Text>
 							</Box>
 						</Flex>

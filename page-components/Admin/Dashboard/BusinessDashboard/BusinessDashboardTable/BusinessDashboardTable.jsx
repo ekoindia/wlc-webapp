@@ -2,16 +2,14 @@ import { Table } from "components";
 import { mockData } from "constants/mockTableData";
 
 /**
- * A <NetworkTable> component
+ * A <BusinessDashboardTable> component
  * TODO: This is my network table with clickable rows
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<NetworkTable></NetworkTable>`
+ * @example	`<BusinessDashboardTable></BusinessDashboardTable>`
  */
 
-const BusinessTable = () => {
-	const recordCound = 10;
-
+const BusinessDashboardTable = () => {
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
@@ -53,4 +51,4 @@ const BusinessTable = () => {
 	);
 };
 
-export default BusinessTable;
+export default BusinessDashboardTable;

@@ -19,7 +19,7 @@ import { NewAddress, PermanentAddress } from ".";
  * @example	`<UpdateSellerAddress></UpdateSellerAddress>`
  */
 
-const UpdateSellerAddress = ({ className = "", ...props }) => {
+const UpdateSellerAddress = () => {
 	const test = true;
 	const [visible, setVisible] = useState(test);
 	const [formCount, setFormCount] = useState(0);

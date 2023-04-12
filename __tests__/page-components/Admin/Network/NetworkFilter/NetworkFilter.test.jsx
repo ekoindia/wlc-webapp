@@ -1,4 +1,4 @@
-import { Filter } from "components/Filter";
+import { NetworkFilter } from "components/NetworkFilter";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Filter", () => {
+describe("NetworkFilter", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Filter />);
+		const { container } = render(<NetworkFilter />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Filter", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Filter in __tests__/components/Filter/Filter.test.jsx"
+		"TODO: add proper test cases for NetworkFilter in __tests__/components/NetworkFilter/NetworkFilter.test.jsx"
 	);
 });

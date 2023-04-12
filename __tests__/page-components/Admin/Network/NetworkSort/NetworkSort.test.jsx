@@ -1,4 +1,4 @@
-import { Sort } from "components/Sort";
+import { NetworkSort } from "components/NetworkSort";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Sort", () => {
+describe("NetworkSort", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Sort />);
+		const { container } = render(<NetworkSort />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Sort", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Sort in __tests__/components/Sort/Sort.test.jsx"
+		"TODO: add proper test cases for NetworkSort in __tests__/components/NetworkSort/NetworkSort.test.jsx"
 	);
 });

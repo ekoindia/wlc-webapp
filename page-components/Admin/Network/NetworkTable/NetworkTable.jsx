@@ -1,6 +1,5 @@
 import { Table } from "components";
-import { mockData } from "constants/mockTableData";
-
+import { useRouter } from "next/router";
 /**
  * A <NetworkTable> component
  * TODO: This is my network table with clickable rows
@@ -9,30 +8,28 @@ import { mockData } from "constants/mockTableData";
  * @example	`<NetworkTable></NetworkTable>`
  */
 
-const NetworkTable = () => {
-	const recordCound = 10;
-
+const NetworkTable = ({
+	sortValue,
+	searchValue,
+	filterValues,
+	pageNumber,
+	setPageNumber,
+	totalRecords,
+	agentDetails,
+}) => {
 	const renderer = [
 		{ name: "", field: "Sr. No." },
-		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
-		{
-			name: "mobile_number",
-			field: "Mobile Number",
-			sorting: true,
-		},
-		{ name: "type", field: "Type", sorting: true },
-		{
-			name: "createdAt",
-			field: "Onboarded On",
-			sorting: true,
-		},
+		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
+		{ name: "agent_mobile", field: "Mobile Number", sorting: true },
+		{ name: "agent_type", field: "Type", sorting: true },
+		{ name: "onboarded_on", field: "Onboarded On", sorting: true },
 		{
 			name: "account_status",
 			field: "Account Status",
 			sorting: true,
 			show: "Tag",
 		},
-		{ name: "ekocsp_code", field: "Eko Code", sorting: true },
+		{ name: "eko_code", field: "Eko Code", sorting: true },
 		{
 			name: "location",
 			field: "Location",
@@ -42,15 +39,31 @@ const NetworkTable = () => {
 		{ name: "", field: "", show: "Modal" },
 		{ name: "", field: "", show: "Arrow" },
 	];
+	const router = useRouter();
+
+	const onRowClick = (rowData) => {
+		const ekocode = rowData.eko_code;
+		console.log("ekocode", ekocode);
+		localStorage.setItem("rowData", JSON.stringify(rowData));
+		router.push({
+			pathname: `/admin/my-network/profile`,
+			query: { ekocode },
+			// state: { rowData },
+		});
+	};
 
 	return (
 		<>
 			<Table
-				pageLimit={recordCound}
+				onRowClick={onRowClick}
+				pageLimit="10"
 				renderer={renderer}
-				data={mockData}
 				variant="evenStripedClickableRow"
 				tableName="Network"
+				totalRecords={totalRecords} //table pagination
+				setPageNumber={setPageNumber} //table
+				pageNumber={pageNumber}
+				data={agentDetails}
 			/>
 		</>
 	);

@@ -17,32 +17,71 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Calenders, Icon } from "..";
+import { Buttons, Calenders, Icon } from "components";
 
-function Filter() {
+/**
+ * A NetworkFilter component
+ * is a filter drawer on network page
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<NetworkFilter></NetworkFilter>`
+ */
+const NetworkFilter = ({ filter, setFilter }) => {
+	const [filterValues, setFilterValues] = useState();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const btnRef = React.useRef();
+	console.log("filter", filter);
+	const filterOptions = [
+		{
+			title: "Filter by profile type",
+			name: "agentType",
+			options: [
+				{ label: "iMerchant", value: "icsp" },
+				{ label: "Seller", value: "csp" },
+				{ label: "Distributer", value: "scsp" },
+			],
+		},
+		{
+			title: "Filter by account status",
+			name: "agentAccountStatus",
+			options: [
+				{ label: "Active", value: "Active" },
+				{ label: "Inactive", value: "closed" },
+			],
+		},
+	];
+
+	const handleInputChange = (event) => {
+		const { name, type, checked, value } = event.target;
+		setFilterValues((prevState) => ({
+			...prevState,
+			[name]: value,
+		}));
+	};
+
+	const handleApply = () => {
+		setFilter({ ...filterValues, ...dateText });
+		onClose();
+	};
 	const [dateText, setDateText] = useState({
-		// TODO: Edit state as required
-		// from: "",
-		// to: "DD/MM/YYYY",
+		onBoardingDateFrom: "",
+		onBoardingDateTo: "",
 	});
-	console.log("dateText", dateText);
 
 	const onDateChange = (e, type) => {
-		if (type === "from") {
+		if (type === "onBoardingDateFrom") {
 			if (!e.target.value)
 				setDateText((prev) => {
 					return {
 						...prev,
-						from: "DD/MM/YYYY",
+						onBoardingDateFrom: "DD/MM/YYYY",
 					};
 				});
 			else
 				setDateText((prev) => {
 					return {
 						...prev,
-						from: e.target.value,
+						onBoardingDateFrom: e.target.value,
 					};
 				});
 		} else {
@@ -50,37 +89,18 @@ function Filter() {
 				setDateText((prev) => {
 					return {
 						...prev,
-						to: "DD/MM/YYYY",
+						onBoardingDateTo: "DD/MM/YYYY",
 					};
 				});
 			else
 				setDateText((prev) => {
 					return {
 						...prev,
-						to: e.target.value,
+						onBoardingDateTo: e.target.value,
 					};
 				});
 		}
 	};
-	// const onDateChange = (e, type) => {
-	// 	console.log('e', e.target.value)
-	// 	if (type === 'from') {
-	// 		setDateText((prev) => {
-	// 			return {
-	// 				...prev,
-	// 				from: "DD/MM/YYYY",
-	// 			};
-	// 		});
-	// 	} else {
-	// 		setDateText((prev) => {
-	// 			return {
-	// 				...prev,
-	// 				to: e.target.value,
-	// 			};
-	// 		});
-	// 	}
-	// }
-
 	return (
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
@@ -330,252 +350,69 @@ function Filter() {
 										"2xl": "2.5",
 									}}
 								>
-									<Text
-										as={"span"}
-										fontSize={{
-											base: "sm",
+									{filterOptions.map(
+										({ title, options, name }, index) => (
+											<React.Fragment key={title}>
+												<Text
+													as={"span"}
+													fontSize={{
+														base: "sm",
 
-											xl: "md",
-											"2xl": "lg",
-										}}
-										fontWeight={"semibold"}
-									>
-										Filter by profile type
-									</Text>
-									<HStack
-										w={"100%"}
-										gap={{ base: "3px", md: "10px" }}
-									>
-										<Box w={"fit-content"} h={"100%"}>
-											<Checkbox
-												variant="rounded"
-												spacing={"2"}
-												size={{
-													base: "sm",
-													sm: "sm",
-
-													"2xl": "lg",
-												}}
-											>
-												iMerchant
-											</Checkbox>
-										</Box>
-										<Box
-											w={"fit-content"}
-											h={"100%"}
-											px={{
-												base: "0px",
-												md: "5px",
-												xl: "20px",
-												"2xl": "1.5vw",
-											}}
-										>
-											<Checkbox
-												spacing={"2"}
-												variant="rounded"
-												size={{
-													base: "sm",
-													sm: "sm",
-
-													"2xl": "lg",
-												}}
-											>
-												Seller
-											</Checkbox>
-										</Box>
-										<Box w={"fit-content"} h={"100%"}>
-											<Checkbox
-												spacing={"2"}
-												variant="rounded"
-												size={{
-													base: "sm",
-													sm: "sm",
-													md: "sm",
-													lg: "sm",
-													xl: "sm",
-													"2xl": "lg",
-												}}
-											>
-												Distributer
-											</Checkbox>
-										</Box>
-									</HStack>
+														xl: "md",
+														"2xl": "lg",
+													}}
+													fontWeight={"semibold"}
+													pt={
+														index === 1 ? "10" : "0"
+													} // add padding for second title
+												>
+													{title}
+												</Text>
+												<HStack
+													w={"100%"}
+													gap={{
+														base: "3px",
+														md: "10px",
+													}}
+												>
+													{options.map(
+														({ label, value }) => (
+															<Box
+																key={value}
+																w={"50%"}
+																h={"100%"}
+															>
+																<Checkbox
+																	value={
+																		value
+																	}
+																	onChange={
+																		handleInputChange
+																	}
+																	name={name}
+																	variant="rounded"
+																	spacing={
+																		"2"
+																	}
+																	size={{
+																		base: "sm",
+																		sm: "sm",
+																		md: "sm",
+																		lg: "sm",
+																		xl: "sm",
+																		"2xl": "lg",
+																	}}
+																>
+																	{label}
+																</Checkbox>
+															</Box>
+														)
+													)}
+												</HStack>
+											</React.Fragment>
+										)
+									)}
 								</VStack>
-								<VStack
-									align={"flex-start"}
-									w={"full"}
-									gap={{
-										base: "px",
-										sm: "px",
-										md: "0.5",
-										lg: "0.5",
-										xl: "0.5",
-										"2xl": "2.5",
-									}}
-								>
-									<Text
-										as={"span"}
-										fontSize={{
-											base: "sm",
-											sm: "sm",
-											md: "sm",
-											lg: "sm",
-											xl: "md",
-											"2xl": "lg",
-										}}
-										fontWeight={"semibold"}
-									>
-										Filter by account status
-									</Text>
-									<HStack w={"100%"}>
-										<Box w={"50%"}>
-											<Checkbox
-												variant="rounded"
-												spacing={"2"}
-												size={{
-													base: "sm",
-													sm: "sm",
-													md: "sm",
-													lg: "sm",
-													xl: "sm",
-													"2xl": "lg",
-												}}
-											>
-												Active
-											</Checkbox>
-										</Box>
-										<Box w={"50%"} h={"100%"}>
-											<Checkbox
-												spacing={"2"}
-												variant="rounded"
-												size={{
-													base: "sm",
-													sm: "sm",
-													md: "sm",
-													lg: "sm",
-													xl: "sm",
-													"2xl": "lg",
-												}}
-											>
-												Inactive
-											</Checkbox>
-										</Box>
-									</HStack>
-								</VStack>
-								{/* <VStack
-									align={"flex-start"}
-									w={"full"}
-									gap={{
-										base: "px",
-										sm: "px",
-										md: "0.5",
-										lg: "0.5",
-										xl: "0.5",
-										"2xl": "2.5",
-									}}
-								>
-									<Text
-										as={"span"}
-										fontSize={{
-											base: "sm",
-											sm: "sm",
-											md: "sm",
-											lg: "sm",
-											xl: "md",
-											"2xl": "lg",
-										}}
-										fontWeight={"semibold"}
-									>
-										Filter by activation date range
-									</Text>
-									<Flex
-										w={"100%"}
-										justifyContent={"space-between"}
-										direction={{
-											base: "column",
-											// md: "row",
-										}}
-										gap={{
-											base: "3",
-											sm: "2",
-											md: "1",
-											lg: "1.5",
-											xl: "2",
-											"2xl": "2.5",
-										}}
-									>
-										<Flex
-											align={"center"}
-											gap={"5px"}
-											h={{
-												base: "11vw",
-												sm: "30px",
-												md: "30px",
-												lg: "30px",
-												xl: "35px",
-												"2xl": "45px",
-											}}
-											w={{ base: "100%", md: "80%" }}
-											border={"1px solid #D2D2D2"}
-											borderRadius={"8px"}
-											overflow={"hidden"}
-										>
-											<HStack
-												h={"100%"}
-												bg={"bg"}
-												w={"25%"}
-												pl={"15px"}
-											>
-												<Text>From:</Text>
-											</HStack>
-											<Box w={"70%"}>
-												<Input
-													size="sm"
-													type="date"
-													border={"none"}
-													focusBorderColor={
-														"transparent"
-													}
-												/>
-											</Box>
-										</Flex>
-										<Flex
-											align={"center"}
-											gap={"5px"}
-											h={{
-												base: "11vw",
-												sm: "30px",
-												md: "30px",
-												lg: "30px",
-												xl: "35px",
-												"2xl": "45px",
-											}}
-											w={{ base: "100%", md: "80%" }}
-											border={"1px solid #D2D2D2"}
-											borderRadius={"8px"}
-											overflow={"hidden"}
-										>
-											<HStack
-												h={"100%"}
-												bg={"bg"}
-												w={"25%"}
-												pl={"15px"}
-											>
-												<Text>To:</Text>
-											</HStack>
-											<Box w={"70%"}>
-												<Input
-													size="sm"
-													type="date"
-													border={"none"}
-													focusBorderColor={
-														"transparent"
-													}
-												/>
-											</Box>
-										</Flex>
-									</Flex>
-								</VStack> */}
 
 								{/* Calender */}
 
@@ -601,6 +438,8 @@ function Filter() {
 									>
 										<Flex w="100%">
 											<Calenders
+												minDate={"2016-01-20"}
+												maxDate={"2020-01-20"}
 												// label="Filter by activation date range"
 												w="100%"
 												placeholder="From"
@@ -622,13 +461,20 @@ function Filter() {
 													},
 												}}
 												onChange={(e) =>
-													onDateChange(e, "from")
+													onDateChange(
+														e,
+														"onBoardingDateFrom"
+													)
 												}
-												value={dateText.from}
+												value={
+													dateText.onBoardingDateFrom
+												}
 											/>
 										</Flex>
 										<Flex w="100%">
 											<Calenders
+												minDate={"2016-01-20"}
+												maxDate={"2020-01-20"}
 												w="100%"
 												placeholder="To"
 												labelStyle={{
@@ -645,9 +491,14 @@ function Filter() {
 													},
 												}}
 												onChange={(e) =>
-													onDateChange(e, "to")
+													onDateChange(
+														e,
+														"onBoardingDateTo"
+													)
 												}
-												value={dateText.to}
+												value={
+													dateText.onBoardingDateTo
+												}
 											/>
 										</Flex>
 									</Flex>
@@ -684,6 +535,7 @@ function Filter() {
 									title="Apply"
 									fontSize="20px"
 									fontWeight="bold"
+									onClick={handleApply}
 									w={{
 										base: "50%",
 										sm: "10rem",
@@ -697,6 +549,6 @@ function Filter() {
 			</Drawer>
 		</>
 	);
-}
+};
 
-export default Filter;
+export default NetworkFilter;

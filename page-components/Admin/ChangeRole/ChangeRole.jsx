@@ -1,5 +1,4 @@
 import {
-	Box,
 	Divider,
 	Flex,
 	Tab,
@@ -11,7 +10,9 @@ import {
 } from "@chakra-ui/react";
 import { Buttons, Headings } from "components";
 import { useRouter } from "next/router";
-import { useState } from "react";
+
+import { useUser } from "contexts/UserContext";
+import { useEffect, useState } from "react";
 import { MoveAgents, TransferCSP } from ".";
 
 /**
@@ -22,9 +23,77 @@ import { MoveAgents, TransferCSP } from ".";
  * @example	`<ChangeRole></ChangeRole>`
  */
 
-const ChangeRole = ({ className = "", ...props }) => {
+const ChangeRole = () => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	const tab = +useRouter().query.tab;
+	const [fromValue, setFromValue] = useState("");
+	const [toValue, setToValue] = useState("");
+	const [distributor, setDistributor] = useState([]);
+	const [scspFrom, setScspFrom] = useState([]);
+	const [scspto, setScspTo] = useState([]);
+	const { userData } = useUser();
+
+	const handleFromValueChange = (value) => {
+		console.log("Selected fromValue:", value);
+	};
+
+	function handleFromChange(event) {
+		setFromValue(event.target.value);
+	}
+
+	function handleToChange(event) {
+		setToValue(event.target.value);
+	}
+
+	const body = {
+		initiator_id: "9451000001",
+		org_id: "1",
+		source: "WLC",
+		client_ref_id: "202301031354123456",
+		scspFrom: fromValue,
+		scspTo: toValue,
+	};
+
+	let headers = {
+		"tf-req-uri-root-path": "/ekoicici/v1",
+		"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
+		"tf-req-method": "PUT",
+	};
+
+	// let distributor =[]
+
+	useEffect(() => {
+		fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
+			method: "POST",
+			headers: {
+				"Content-type": "application/json",
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
+				"tf-req-method": "PUT",
+				authorization: `Bearer ${userData.access_token}`,
+			},
+			body: JSON.stringify(body),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log("datadatadatadatadatadatadata", data);
+
+				const distributor = data?.data?.allScspList ?? [];
+				setDistributor(distributor);
+
+				const scspFrom = data?.data?.allCspListOfScspFrom ?? [];
+				console.log("scspFrom", scspFrom);
+				setScspFrom(scspFrom);
+
+				const ScspTo = data?.data?.allCspListOfScspTo ?? [];
+				setScspTo(scspto);
+			})
+			.catch((error) => {
+				console.error("Error:", error);
+			});
+	}, [fromValue, toValue]);
+
+	// const transferCspData = distributor;
 
 	function backHandler() {
 		setIsShowSelectAgent((prev) => !prev);
@@ -126,6 +195,9 @@ const ChangeRole = ({ className = "", ...props }) => {
 						<TabPanel>
 							<TransferCSP
 								setIsShowSelectAgent={setIsShowSelectAgent}
+								distributor={distributor}
+								// onFromValueChange={}
+								scspTo={scspto}
 							/>
 						</TabPanel>
 						<TabPanel>
@@ -144,45 +216,44 @@ const ChangeRole = ({ className = "", ...props }) => {
 	) : (
 		<>
 			<Headings title="Select Agents" redirectHandler={backHandler} />
-			<Box>
-				{/* Move button for mobile responsive */}
-				<MoveAgents
-					ShowSelectAgents={isShowSelectAgent}
-					setShowSelectAgent={setIsShowSelectAgent}
-				/>
-				<Flex
-					Flex
-					display={{ base: "flex", md: "none" }}
-					position={"fixed"}
-					w={"100%"}
-					h={"15vw"}
-					maxH={"80px"}
-					bottom={"0%"}
-					left={"0%"}
-					zIndex={"99"}
-					boxShadow={"0px -3px 10px #0000001A"}
+
+			{/* Move button for mobile responsive */}
+			<MoveAgents
+				ShowSelectAgents={isShowSelectAgent}
+				options={scspFrom}
+			/>
+			<Flex
+				Flex
+				display={{ base: "flex", md: "none" }}
+				position={"fixed"}
+				w={"100%"}
+				h={"15vw"}
+				maxH={"80px"}
+				bottom={"0%"}
+				left={"0%"}
+				zIndex={"99"}
+				boxShadow={"0px -3px 10px #0000001A"}
+			>
+				<Buttons
+					variant="ghost"
+					w={"50%"}
+					h={"100%"}
+					bg={"white"}
+					fontSize="18px"
+					color="accent.DEFAULT"
+					onClick={() => setIsShowSelectAgent(false)}
 				>
-					<Buttons
-						variant="ghost"
-						w={"50%"}
-						h={"100%"}
-						bg={"white"}
-						fontSize="18px"
-						color="accent.DEFAULT"
-						onClick={() => setIsShowSelectAgent(false)}
-					>
-						Go Back
-					</Buttons>
-					<Buttons
-						w={"50%"}
-						h={"100%"}
-						fontSize="18px"
-						borderRadius="none"
-					>
-						Move Now
-					</Buttons>
-				</Flex>
-			</Box>
+					Go Back
+				</Buttons>
+				<Buttons
+					w={"50%"}
+					h={"100%"}
+					fontSize="18px"
+					borderRadius="none"
+				>
+					Move Now
+				</Buttons>
+			</Flex>
 		</>
 	);
 };

@@ -35,8 +35,8 @@
 	"include": [
 		"next-env.d.ts",
 		"**/*.ts",
-		"**/*.tsx"
-		// "components/SearchBar/SearchFilterSort.jsx",
+		"**/*.tsx",
+		"pages/index.tsx" // "components/SearchBar/SearchFilterSort.jsx",
 		// "components/Network/Table.jsx",
 		// "constants/adminMenu.ts"
 	],

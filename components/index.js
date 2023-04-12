@@ -5,7 +5,6 @@ import { Buttons } from "./Buttons";
 import { Calenders } from "./Calenders";
 import { Cards } from "./Cards";
 import { Divider } from "./Divider";
-import { Filter } from "./Filter";
 import { Headings } from "./Headings";
 import { Icon } from "./Icon";
 import { IconButtons } from "./IconButtons";
@@ -14,15 +13,14 @@ import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
 import { Layout } from "./Layout";
 import { Menus } from "./Menus";
+import { MultiSelect } from "./MultiSelect";
 import { NavBar } from "./NavBar";
 import { OtpInput } from "./OtpInput";
 import { Pagination } from "./Pagination";
 import { ProfileCard } from "./ProfileCard";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
-import { Select } from "./Select";
 import { SideBar } from "./SideBar";
-import { Sort } from "./Sort";
 import { StatusCard } from "./StatusCard";
 import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
@@ -30,12 +28,12 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	MultiSelect,
 	StatusCard,
 	ProfileCard,
 	SvgIcon,
 	BreadcrumbsWrapper,
 	OtpInput,
-	Select,
 	Table,
 	Calenders,
 	Switch,
@@ -56,8 +54,6 @@ export {
 	Cards,
 	Buttons,
 	SearchBar,
-	Sort,
-	Filter,
 	Breadcrumbs,
 	/* PLOP_INJECT_EXPORT */
 };
