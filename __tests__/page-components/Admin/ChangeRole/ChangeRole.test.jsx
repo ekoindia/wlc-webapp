@@ -1,5 +1,5 @@
-import { ChangeRole } from "components/ChangeRole";
-import { render } from "test-utils";
+import ChangeRole from "page-components/Admin/ChangeRole/ChangeRole";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("ChangeRole", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<ChangeRole />);
+		const { container } = pageRender(<ChangeRole />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

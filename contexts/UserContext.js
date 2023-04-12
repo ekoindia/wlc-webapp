@@ -11,16 +11,23 @@ import { defaultUserState, UserReducer } from "./UserReducer";
 
 const UserContext = createContext();
 
-const UserProvider = ({ children }) => {
+const UserProvider = ({ userMockData, children }) => {
 	const [state, dispatch] = useReducer(UserReducer, defaultUserState);
 	const [isTokenUpdating, setIsTokenUpdating] = useState(false);
 	const [loading, setLoading] = useState(true);
-	console.log("%cExecuted UserContext: Start ", "color:blue");
 
 	// Get default session from browser's sessionStorage
 	useEffect(() => {
+		// Mock user data for testing
+		if (userMockData && userMockData.access_token) {
+			dispatch({
+				type: "INIT_USER_STORE",
+				payload: userMockData,
+			});
+			return;
+		}
+
 		const Session = getSessions();
-		console.log("Executed UserContext: Session", Session);
 		if (
 			!(
 				Session &&
@@ -98,7 +105,6 @@ const UserProvider = ({ children }) => {
 			isTokenUpdating,
 		};
 	}, [state, loading]);
-	console.log("%cExecuted : UserContext: End", "color:blue");
 	// if (loading)
 	// 	return "loading..."
 

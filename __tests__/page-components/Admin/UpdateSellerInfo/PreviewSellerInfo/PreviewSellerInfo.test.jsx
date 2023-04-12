@@ -1,5 +1,5 @@
-import { PreviewSellerInfo } from "components/PreviewSellerInfo";
-import { render } from "test-utils";
+import PreviewSellerInfo from "page-components/Admin/UpdateSellerInfo/PreviewSellerInfo/PreviewSellerInfo";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("PreviewSellerInfo", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<PreviewSellerInfo />);
+		const { container } = pageRender(<PreviewSellerInfo />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

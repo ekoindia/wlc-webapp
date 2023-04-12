@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("InputMsg", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<InputMsg />);
+		const { container } = render(<InputMsg>Hello</InputMsg>);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

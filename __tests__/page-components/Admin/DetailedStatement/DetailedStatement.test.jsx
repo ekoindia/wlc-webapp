@@ -1,5 +1,5 @@
-import { DetailedStatement } from "components/DetailedStatement";
-import { render } from "test-utils";
+import DetailedStatement from "page-components/Admin/DetailedStatement/DetailedStatement";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("DetailedStatement", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<DetailedStatement />);
+		const { container } = pageRender(<DetailedStatement />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

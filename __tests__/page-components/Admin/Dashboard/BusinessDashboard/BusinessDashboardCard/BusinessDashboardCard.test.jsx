@@ -1,4 +1,4 @@
-import { BusinessDashboardCard } from "components/BusinessDashboardCard";
+import BusinessDashboardCard from "page-components/Admin/Dashboard/BusinessDashboard/BusinessDashboardCard/BusinessDashboardCard";
 import { render } from "test-utils";
 
 /*

@@ -1,4 +1,4 @@
-import { TransactionCard } from "components/TransactionCard";
+import TransactionCard from "page-components/NonAdmin/Transaction/TransactionCard/TransactionCard";
 import { render } from "test-utils";
 
 /*

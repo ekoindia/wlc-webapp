@@ -1,4 +1,4 @@
-import { PersonalPane } from "components/PersonalPane";
+import PersonalPane from "page-components/Admin/Profile/PersonalPane/PersonalPane";
 import { render } from "test-utils";
 
 /*

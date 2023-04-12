@@ -1,4 +1,4 @@
-import { DocPane } from "components/DocPane";
+import DocPane from "page-components/Admin/Profile/DocPane/DocPane";
 import { render } from "test-utils";
 
 /*

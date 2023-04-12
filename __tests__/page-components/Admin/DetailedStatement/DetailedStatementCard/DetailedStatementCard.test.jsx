@@ -1,4 +1,4 @@
-import { DetailedStatementCard } from "components/DetailedStatementCard";
+import DetailedStatementCard from "page-components/Admin/DetailedStatement/DetailedStatementCard/DetailedStatementCard";
 import { render } from "test-utils";
 
 /*

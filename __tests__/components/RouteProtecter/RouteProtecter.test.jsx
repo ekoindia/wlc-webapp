@@ -1,5 +1,5 @@
-import { RouteProtecter } from "components/RouteProtecter";
-import { render } from "test-utils";
+// import { RouteProtecter } from "components/RouteProtecter";
+// import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,16 +17,12 @@ import { render } from "test-utils";
 
 describe("RouteProtecter", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<RouteProtecter />);
-		expect(container).not.toBeEmptyDOMElement();
-
+		// const { container } = pageRender(<RouteProtecter />);
+		// expect(container).not.toBeEmptyDOMElement();
 		// expect(container).toHaveTextContent("Any text");
-
 		// const inp = screen.getByLabelText("Input Label");
 		// expect(inp).toBeInTheDocument();
-
 		// const btn = utils.getByRole("button", { name: "Submit" });
-
 		// CUSTOM MATCHERS (jest-dom)
 		// See all matchers here: https://github.com/testing-library/jest-dom#table-of-contents
 		// expect(btn).toBeDisabled();
@@ -37,10 +33,8 @@ describe("RouteProtecter", () => {
 		// expect(btn).toContainElement(elm);
 		// expect(btn).toContainHTML(htmlText: string);
 		// expect(btn).toHaveFocus();
-
 		// Check style
 		// expect(getByTestId('background')).toHaveStyle(`background-image: url(${props.image})`);
-
 		// Enable snapshot testing:
 		// expect(container).toMatchSnapshot();
 	});

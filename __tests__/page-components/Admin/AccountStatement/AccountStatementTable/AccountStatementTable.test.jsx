@@ -1,5 +1,5 @@
-import { AccountStatementTable } from "components/AccountStatementTable";
-import { render } from "test-utils";
+import AccountStatementTable from "page-components/Admin/AccountStatement/AccountStatementTable/AccountStatementTable";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("AccountStatementTable", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<AccountStatementTable />);
+		const { container } = pageRender(<AccountStatementTable />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

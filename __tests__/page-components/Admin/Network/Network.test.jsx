@@ -1,5 +1,5 @@
-import { Network } from "components/Network";
-import { render } from "test-utils";
+import Network from "page-components/Admin/Network/Network";
+import { adminRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Network", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Network />);
+		const { container } = adminRender(<Network />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

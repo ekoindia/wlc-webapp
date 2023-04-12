@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper } from "components/BreadcrumbsWrapper";
+import BreadcrumbsWrapper from "components/BreadcrumbsWrapper/BreadcrumbsWrapper";
 import { render } from "test-utils";
 
 /*

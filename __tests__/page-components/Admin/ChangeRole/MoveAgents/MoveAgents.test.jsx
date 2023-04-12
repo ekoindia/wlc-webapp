@@ -1,4 +1,4 @@
-import { MoveAgents } from "components/MoveAgents";
+import MoveAgents from "page-components/Admin/ChangeRole/MoveAgents/MoveAgents";
 import { render } from "test-utils";
 
 /*
