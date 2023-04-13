@@ -23,7 +23,6 @@ const Network = () => {
 
 	const [pageNumber, setPageNumber] = useState(1);
 
-	console.log("filter", filter);
 	/* Filter */
 	let postData = "";
 	if (search) postData += `search_value=${search}&`;
