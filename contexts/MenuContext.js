@@ -63,7 +63,9 @@ const MenuProvider = ({ children }) => {
 								);
 							}
 						})
-						.catch((err) => console.error(err));
+						.catch((err) =>
+							console.error("MenuProvider error: ", err)
+						);
 				}
 			}
 		} else {
