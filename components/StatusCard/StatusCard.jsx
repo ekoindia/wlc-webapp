@@ -1,9 +1,10 @@
 import { Circle, Flex, Text } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
+import { FrontendUrls } from "constants/FrontendUrls";
 import useRequest from "hooks/useRequest";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Icon } from "..";
-
 /**
  * A <StatusCard> component
  * TODO: Write more description here
@@ -12,6 +13,7 @@ import { Icon } from "..";
  * @example	`<StatusCard></StatusCard>`
  */
 const StatusCard = () => {
+	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
 	const { data, mutate } = useRequest({
 		method: "POST",
@@ -34,6 +36,7 @@ const StatusCard = () => {
 	};
 
 	const handleAddClick = () => {
+		router.push(FrontendUrls.LOAD_BALANCE);
 		console.log("clicked");
 	};
 
