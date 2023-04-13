@@ -8,92 +8,78 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Buttons, Icon } from "components";
-import { useState } from "react";
-import { MoveAgents } from "..";
-// text - align: left;
-// font: normal normal 600 16px / 18px Inter;
-// letter - spacing: 0px;
-// color: #0C243B;
-// opacity: 1;
+import { Endpoints } from "constants/EndPoints";
+import { useUser } from "contexts/UserContext";
+import { fetcher } from "helpers/apiHelper";
+import { useEffect, useState } from "react";
+import { MoveAgents as FromAgents } from "..";
 
-const dataa = [
-	{
-		title: "R. J. Technology",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "R. J. Technology",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "R. J. Technology",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "R. J. Technology",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-];
+const TransferCSP = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
+	function handleSelectedEkocspids(newSelectedEkocspids) {
+		setSelectedEkocspids(newSelectedEkocspids);
+	}
 
-const TransferCsp = ({
-	setIsShowSelectAgent,
-	distributor,
-	scspTo,
-	onFromValueChange,
-	...rest
-}) => {
+	const [selectedEkocspids, setSelectedEkocspids] = useState([]);
 	const [fromValue, setFromValue] = useState("");
 	const [toValue, setToValue] = useState("");
-	const [data, setData] = useState("");
-	// const [distributor, setDistributor] = useState([]);
-	// const [scspFrom, setScspFrom]=useState([]);
-	// const [scspto, setScspTo]=useState([]);
+	const [distributor, setDistributor] = useState([]);
+	const [scspFrom, setScspFrom] = useState([]);
+	const [scspto, setScspTo] = useState([]);
+	const { userData } = useUser();
+	const [fromSellerid, setFromSellerid] = useState([]);
 
 	const handleFromChange = (event) => {
-		const value = event.target.value;
-		setFromValue(value);
-		onFromValueChange(value);
+		setFromValue(event.target.value);
 	};
-
 	function handleToChange(event) {
 		setToValue(event.target.value);
 	}
+
+	const handleMoveagent = () => {
+		setFromSellerid(selectedEkocspids);
+	};
+
+	const body = {
+		initiator_id: "9451000001",
+		org_id: "1",
+		source: "WLC",
+		client_ref_id: "202301031354123456",
+		scspFrom: fromValue,
+		scspTo: toValue,
+		selectedTransferredCSPList: fromSellerid,
+	};
+
+	useEffect(() => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"Content-Type": "application/json",
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
+				"tf-req-method": "PUT",
+			},
+			body: body,
+			token: userData.access_token,
+		})
+			.then((data) => {
+				const distributor = data?.data?.allScspList ?? [];
+				console.log("distributor", distributor);
+				setDistributor(distributor);
+
+				const scspFrom = data?.data?.allCspListOfScspFrom ?? [];
+				console.log("scspFrom", scspFrom);
+				setScspFrom(scspFrom);
+
+				const scspTo = data?.data?.allCspListOfScspTo ?? [];
+				console.log("scsp", scspTo);
+				setScspTo(scspTo);
+
+				// Call the onScspFromChange function with the scspFrom values
+				onScspFromChange(scspFrom);
+			})
+			.catch((error) => {
+				console.error("📡 Fetch Error:", error);
+			});
+	}, [fromValue, toValue, fromSellerid]);
 
 	return (
 		<Box>
@@ -109,7 +95,7 @@ const TransferCsp = ({
 				rowGap={{ base: "40px", md: "30px" }}
 				flexWrap="wrap"
 			>
-				<Box w={{ base: "100%", xl: "470px", "2xl": "500px" }}>
+				<Box w={{ base: "100%", xl: "460px", "2xl": "500px" }}>
 					<Text
 						color="#0C243B"
 						fontSize={{ base: "sm", md: "md" }}
@@ -135,17 +121,15 @@ const TransferCsp = ({
 							/>
 						}
 						distributor={distributor}
-						{...rest}
 					>
-						{console.log("fromValue", fromValue)}
-						{distributor.map((option) => (
+						{distributor?.map((option) => (
 							<option key={option.value} value={option.ekocspid}>
 								{option.DisplayName}
 							</option>
 						))}
 					</Select>
 				</Box>
-				<Box w={{ base: "100%", xl: "480px", "2xl": "500px" }}>
+				<Box w={{ base: "100%", xl: "460px", "2xl": "500px" }}>
 					<Text
 						color="#0C243B"
 						fontSize={{ base: "sm", md: "md" }}
@@ -175,7 +159,6 @@ const TransferCsp = ({
 								{option.DisplayName}
 							</option>
 						))}
-						{console.log("TOValue", toValue)}
 					</Select>
 				</Box>
 			</Flex>
@@ -208,14 +191,21 @@ const TransferCsp = ({
 
 			{/* Select for Move */}
 			<Flex mt="10.5" h="auto" display={{ base: "none", md: "flex" }}>
-				<MoveAgents />
-
+				<FromAgents
+					options={scspFrom}
+					selectedEkocspids={selectedEkocspids}
+					onSelectedEkocspidsChange={handleSelectedEkocspids}
+				/>{" "}
 				<Flex width="180px" align="center" justify="center">
-					<Circle bg="#1F5AA7" w="82px" h="82px" color="#E9EDF1">
+					<Circle
+						bg="secondary.DEFAULT"
+						w="82px"
+						h="82px"
+						color="divider"
+					>
 						<Icon name="fast-forward" width="34px" height="36px" />
 					</Circle>
 				</Flex>
-
 				<Box w="500px">
 					<Text
 						color="#0C243B"
@@ -253,48 +243,34 @@ const TransferCsp = ({
 							},
 						}}
 					>
-						<Flex
-							px="5"
-							py="4"
-							bg="inherit"
-							color="accent.DEFAULT"
-							fontSize="sm"
-							align="center"
-							columnGap="15px"
-						>
-							<Avatar
-								name={"R"}
-								bg="accent.DEFAULT"
-								w="36px"
-								h="36px"
-							/>
-							R J Finance
-						</Flex>
-						{scspTo.map((ele, idx) => {
-							return (
-								<Flex
-									px="5"
-									py="4"
-									bg="inherit"
-									key={idx}
-									_even={{
-										bg: "shade",
-									}}
-									color="accent.DEFAULT"
-									fontSize="sm"
-									columnGap="15px"
-									align="center"
-								>
-									<Avatar
-										name={ele.DisplayName[0]}
-										bg="accent.DEFAULT"
-										w="36px"
-										h="36px"
-									/>
-									{ele.DisplayName}
-								</Flex>
-							);
-						})}
+						{/* Move Sellerr To */}
+						{scspto.length
+							? scspto.map((ele, idx) => {
+									return (
+										<Flex
+											px="5"
+											py="4"
+											bg="inherit"
+											key={idx}
+											_even={{
+												bg: "shade",
+											}}
+											color="accent.DEFAULT"
+											fontSize="sm"
+											columnGap="15px"
+											align="center"
+										>
+											<Avatar
+												name={ele.DisplayName[0]}
+												bg="accent.DEFAULT"
+												w="36px"
+												h="36px"
+											/>
+											{ele.DisplayName}
+										</Flex>
+									);
+							  })
+							: null}
 					</Flex>
 				</Box>
 			</Flex>
@@ -305,7 +281,12 @@ const TransferCsp = ({
 				columnGap="36px"
 				display={{ base: "none", md: "flex" }}
 			>
-				<Buttons w="164px" h="64px" fontSize={"xl"}>
+				<Buttons
+					w="164px"
+					h="64px"
+					fontSize={"xl"}
+					onClick={handleMoveagent}
+				>
 					Move Now
 				</Buttons>
 				<Button variant="link" color="accent.DEFAULT" fontSize={"xl"}>
@@ -316,4 +297,4 @@ const TransferCsp = ({
 	);
 };
 
-export default TransferCsp;
+export default TransferCSP;
