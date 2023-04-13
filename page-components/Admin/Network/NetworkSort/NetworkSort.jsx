@@ -296,29 +296,3 @@ const NetworkSort = ({ setSort }) => {
 };
 
 export default NetworkSort;
-
-// export const SortAndFilterMobile = ({ setFilter }) => {
-// 	return (
-// 		<Box
-// 			display={{ base: "flex", md: "none" }}
-// 			pb={{ base: "20vw", sm: "15vw", md: "0px" }}
-// 		>
-// 			<Flex
-// 				position={"fixed"}
-// 				w={"100%"}
-// 				h={"15vw"}
-// 				bottom={"0%"}
-// 				left={"0%"}
-// 				zIndex={"99"}
-// 				boxShadow={"0px -3px 10px #0000001A"}
-// 			>
-// 				<Box w={"50%"} h={"100%"} bg={"white"}>
-// 					<Sort />
-// 				</Box>
-// 				<Box w={"50%"} h={"100%"}>
-// 					<NetworkFilter setFilter={setFilter} />
-// 				</Box>
-// 			</Flex>
-// 		</Box>
-// 	);
-// };
