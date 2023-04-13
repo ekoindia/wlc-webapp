@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
+// Creating context
 const OrgDetailContext = createContext();
 
+// Creating context provider for providing Organization details
 const OrgDetailProvider = ({ orgMockData, children }) => {
 	const [orgDetail, setOrgDetail] = useState({});
 
@@ -21,12 +23,6 @@ const OrgDetailProvider = ({ orgMockData, children }) => {
 			}
 		}
 	}, [orgDetail?.app_name]);
-
-	useEffect(() => {
-		window.addEventListener("unload", () => {
-			sessionStorage.removeItem("org_detail");
-		});
-	}, []);
 
 	return (
 		<OrgDetailContext.Provider value={{ orgDetail, setOrgDetail }}>

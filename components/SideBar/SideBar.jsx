@@ -12,7 +12,7 @@ import {
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { adminMenu, nonAdminMenu } from "constants";
+import { adminSidebarMenu, sidebarMenu } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
 import Link from "next/link";
@@ -68,7 +68,8 @@ const SideBarMenu = (/* { className = "", ...props } */) => {
 		setcurrentRoute(router.pathname.split("/")[2]);
 	}, [router.asPath]);
 
-	const menuList = userData?.is_org_admin === 1 ? adminMenu : nonAdminMenu;
+	const menuList =
+		userData?.is_org_admin === 1 ? adminSidebarMenu : sidebarMenu;
 
 	return (
 		<Box
