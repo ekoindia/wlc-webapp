@@ -17,5 +17,19 @@ export default function Index({ data }) {
 
 export async function getServerSideProps({ req }) {
 	// Get org details (like, logo, name, etc) from server
-	return await fetchOrgDetails(req.headers.host);
+	const org_details = await fetchOrgDetails(req.headers.host);
+
+	console.debug(
+		"[pages/index] ServerSideProps:: ",
+		JSON.stringify(
+			{
+				host: req.headers.host,
+				org: org_details,
+			},
+			null,
+			2
+		)
+	);
+
+	return org_details;
 }

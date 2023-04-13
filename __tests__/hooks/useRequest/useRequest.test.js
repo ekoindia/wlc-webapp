@@ -2,7 +2,7 @@
 import { UserProvider } from "contexts/UserContext";
 import { useRequest } from "hooks/useRequest";
 import { renderHook } from "test-utils";
-import { MockUser } from "test-utils.mocks";
+import { MockUser } from "test-utils-mocks";
 
 // const mockedFetcher = jest.fn(() =>
 // 	Promise.resolve({
