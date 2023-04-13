@@ -14,6 +14,24 @@ const NetworkTable = ({
 	totalRecords,
 	agentDetails,
 }) => {
+	// let postData = "";
+	// if (searchValue) postData += `search_value=${searchValue}&`;
+	// if (sortValue) {
+	// 	postData += `sortValue=${sortValue}&`;
+	// }
+	// if (Object.keys(filter).length) {
+	// 	let filterKeys = Object.keys(filter);
+	// 	let filterQuery = "filter=false";
+	// 	filterKeys.forEach((ele) => {
+	// 		filterQuery += `&${ele}=${filter[ele]}`;
+	// 	});
+	// 	postData += filterQuery;
+	// }
+
+	// const [pageNumber, setPageNumber] = useState(1);
+	// console.log("pageNumber", pageNumber);
+	// const { userData } = useUser();
+
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },

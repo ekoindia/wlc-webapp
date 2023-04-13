@@ -1,4 +1,4 @@
-import { SearchFilterSort } from "components/SearchFilterSort";
+import { SortAndFilterMobile } from "components/SortAndFilterMobile";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("SearchFilterSort", () => {
+describe("SortAndFilterMobile", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<SearchFilterSort />);
+		const { container } = render(<SortAndFilterMobile />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("SearchFilterSort", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for SearchFilterSort in __tests__/components/SearchFilterSort/SearchFilterSort.test.jsx"
+		"TODO: add proper test cases for SortAndFilterMobile in __tests__/components/SortAndFilterMobile/SortAndFilterMobile.test.jsx"
 	);
 });

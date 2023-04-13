@@ -72,7 +72,7 @@ function createUserState(data) {
 	console.log("tokenTimeout", tokenTimeout);
 	const state = {
 		loggedIn: true,
-		is_org_admin: data?.details?.is_org_admin || 1,
+		is_org_admin: data?.details?.is_org_admin || 0,
 		access_token: data.access_token,
 		refresh_token: data.refresh_token,
 		token_timeout: tokenTimeout,

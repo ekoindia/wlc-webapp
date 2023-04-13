@@ -17,13 +17,20 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Calenders, Icon } from "..";
+import { Buttons, Calenders, Icon } from "components";
 
-function Filter(props) {
-	const { setFilter } = props;
+/**
+ * A NetworkFilter component
+ * is a filter drawer on network page
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<NetworkFilter></NetworkFilter>`
+ */
+const NetworkFilter = ({ filter, setFilter }) => {
 	const [filterValues, setFilterValues] = useState();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const btnRef = React.useRef();
+	console.log("filter", filter);
 	const filterOptions = [
 		{
 			title: "Filter by profile type",
@@ -542,6 +549,6 @@ function Filter(props) {
 			</Drawer>
 		</>
 	);
-}
+};
 
-export default Filter;
+export default NetworkFilter;

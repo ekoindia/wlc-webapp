@@ -9,7 +9,7 @@ import { Icon } from "..";
  * @example	`<ProfileCard></ProfileCard>`
  */
 const ProfileCard = (props) => {
-	const { name, mobileNumber, img } = props;
+	const { name = "", mobileNumber, img } = props;
 
 	const formatNumber = (number) => {
 		if (!number) return null;
@@ -34,7 +34,7 @@ const ProfileCard = (props) => {
 					w={{ base: "50px", lg: "48px", xl: "50px" }}
 					h="50px"
 					src={img}
-					name={name[0]}
+					name={name.charAt(0)}
 				/>
 			</Circle>
 
@@ -48,7 +48,7 @@ const ProfileCard = (props) => {
 				<Text as="span" fontSize="12px" color="sidebar.font">
 					Welcome
 					<Text color="highlight" fontSize="14px">
-						{name || "Abhishek Jaiswal"}
+						{name}
 					</Text>
 				</Text>
 				<Flex
@@ -58,7 +58,7 @@ const ProfileCard = (props) => {
 					color="white"
 				>
 					<Icon name="phone-circle-outline" w="18px" h="18px"></Icon>
-					{formatNumber(mobileNumber) || "95989 13094"}
+					{formatNumber(mobileNumber)}
 				</Flex>
 			</Flex>
 		</Flex>

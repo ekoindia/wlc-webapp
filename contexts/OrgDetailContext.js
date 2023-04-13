@@ -2,8 +2,15 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const OrgDetailContext = createContext();
 
-const OrgDetailProvider = ({ children }) => {
+const OrgDetailProvider = ({ orgMockData, children }) => {
 	const [orgDetail, setOrgDetail] = useState({});
+
+	// Set mock data for testing
+	useEffect(() => {
+		if (orgMockData && orgMockData.org_id) {
+			setOrgDetail(orgMockData);
+		}
+	}, [orgMockData]);
 
 	useEffect(() => {
 		if (sessionStorage.getItem("org_detail")) {

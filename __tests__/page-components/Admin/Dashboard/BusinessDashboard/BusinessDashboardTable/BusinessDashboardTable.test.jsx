@@ -1,5 +1,5 @@
-import { BusinessDashboardTable } from "components/BusinessDashboardTable";
-import { render } from "test-utils";
+import BusinessDashboardTable from "page-components/Admin/Dashboard/BusinessDashboard/BusinessDashboardTable/BusinessDashboardTable";
+import { adminRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("BusinessDashboardTable", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<BusinessDashboardTable />);
+		const { container } = adminRender(<BusinessDashboardTable />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

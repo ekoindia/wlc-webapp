@@ -87,7 +87,7 @@ const Menus = (props) => {
 							{...pseudoStyles}
 							{...props}
 						>
-							{isOpen ? title : title}
+							{title}
 							{/* 👆 this can be used to set different title on menu open and close with two different title props  */}
 						</MenuButton>
 						<MenuList py="0px" minW="120px" {...listStyles}>

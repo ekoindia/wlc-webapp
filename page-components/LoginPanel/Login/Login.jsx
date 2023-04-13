@@ -9,12 +9,14 @@ import { useRef, useState } from "react";
 
 /**
  * A <Login> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * Responsible for handling different types of login like Mobile Number & Google Login
+ * @params 	{Function}	setStep		Function to set the step like LOGIN, VERIFYOTP & SOCIALVERIFY
+ * @params 	{Function}	setNumber	Function to set the users mobile number if the user is loogin using Mobile number
+ * @params 	{Object}	number		Object which gives the number in two forms formatted and original (or unformatted)
+ * @params 	{Function}	setEmail	Function to set the users email
+ * @params 	{Function}	setLoginType	Function to set the login type
  * @example	`<Login></Login>`
  */
-
 const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const EnterRef = useRef();
 	const toast = useToast();

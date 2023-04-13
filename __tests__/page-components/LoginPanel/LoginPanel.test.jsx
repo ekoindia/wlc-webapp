@@ -1,5 +1,5 @@
-import { LoginPanel } from "components/LoginPanel";
-import { render } from "test-utils";
+import { LoginPanel } from "page-components";
+import { loggedOutPageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("LoginPanel", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<LoginPanel />);
+		const { container } = loggedOutPageRender(<LoginPanel />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

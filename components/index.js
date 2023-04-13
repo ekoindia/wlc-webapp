@@ -5,7 +5,6 @@ import { Buttons } from "./Buttons";
 import { Calenders } from "./Calenders";
 import { Cards } from "./Cards";
 import { Divider } from "./Divider";
-import { Filter } from "./Filter";
 import { Headings } from "./Headings";
 import { Icon } from "./Icon";
 import { IconButtons } from "./IconButtons";
@@ -23,7 +22,6 @@ import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
 import { Select } from "./Select";
 import { SideBar } from "./SideBar";
-import { Sort } from "./Sort";
 import { StatusCard } from "./StatusCard";
 import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
@@ -58,8 +56,6 @@ export {
 	Cards,
 	Buttons,
 	SearchBar,
-	Sort,
-	Filter,
 	Breadcrumbs,
 	/* PLOP_INJECT_EXPORT */
 };

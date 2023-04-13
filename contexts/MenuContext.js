@@ -13,7 +13,7 @@ const MenuProvider = ({ children }) => {
 	});
 
 	useEffect(() => {
-		console.log("userData::", userData);
+		// console.log("userData::", userData);
 
 		if (userData?.loggedIn && userData?.userId > 1) {
 			if (userData?.is_org_admin !== 1) {

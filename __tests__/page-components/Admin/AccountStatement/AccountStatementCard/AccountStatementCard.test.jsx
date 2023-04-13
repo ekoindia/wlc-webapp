@@ -1,4 +1,4 @@
-import { AccountStatementCard } from "components/AccountStatementCard";
+import AccountStatementCard from "page-components/Admin/AccountStatement/AccountStatementCard/AccountStatementCard";
 import { render } from "test-utils";
 
 /*

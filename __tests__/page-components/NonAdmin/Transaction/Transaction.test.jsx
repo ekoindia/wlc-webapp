@@ -1,5 +1,5 @@
-import { Transaction } from "components/Transaction";
-import { render } from "test-utils";
+import Transaction from "page-components/NonAdmin/Transaction/Transaction";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Transaction", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Transaction />);
+		const { container } = pageRender(<Transaction />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
