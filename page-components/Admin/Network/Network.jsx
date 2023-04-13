@@ -20,7 +20,6 @@ const Network = () => {
 
 	const [pageNumber, setPageNumber] = useState(1);
 
-	console.log("filter", filter);
 	/* Filter */
 	let postData = "";
 	if (search) postData += `search_value=${search}&`;
@@ -88,10 +87,6 @@ const Network = () => {
 
 				<Box mt={{ base: "none", md: "20px" }}>
 					<NetworkTable
-						// sortValue={sortValue}
-						// searchValue={searchValue}
-						// onfilterHandler={sortValue}
-						// filter={filter}
 						setFilter={setFilter}
 						pageNumber={pageNumber}
 						totalRecords={totalRecords}
