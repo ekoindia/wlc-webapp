@@ -71,7 +71,7 @@ const dataa = [
 	},
 ];
 
-const TransferCSP = ({
+const TransferCsp = ({
 	setIsShowSelectAgent,
 	distributor,
 	scspTo,
@@ -316,4 +316,4 @@ const TransferCSP = ({
 	);
 };
 
-export default TransferCSP;
+export default TransferCsp;

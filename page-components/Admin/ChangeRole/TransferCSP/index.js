@@ -1,1 +1,1 @@
-export { default as TransferCSP } from "./TransferCSP";
+export { default as TransferCsp } from "./TransferCsp";
