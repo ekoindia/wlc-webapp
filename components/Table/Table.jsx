@@ -47,7 +47,6 @@ const Table = (props) => {
 		isPaginationRequired = true,
 		isOnclickRequire = true,
 	} = props;
-	console.log("pageNumber", pageNumber);
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
 	// console.log('data', data)
@@ -292,7 +291,7 @@ const Table = (props) => {
 						w="100%"
 						h="auto"
 						p="16px"
-						onClick={onRowClick}
+						onClick={() => onRowClick(data[index])}
 					>
 						<NetworkCard item={item} />
 					</Cards>

@@ -20,6 +20,7 @@ const TransferCSP = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
 	}
 
 	const [selectedEkocspids, setSelectedEkocspids] = useState([]);
+
 	const [fromValue, setFromValue] = useState("");
 	const [toValue, setToValue] = useState("");
 	const [distributor, setDistributor] = useState([]);
@@ -297,4 +298,4 @@ const TransferCSP = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
 	);
 };
 
-export default TransferCSP;
+export default TransferCsp;

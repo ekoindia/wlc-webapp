@@ -12,8 +12,10 @@ import {
 import { Buttons, Headings } from "components";
 import { useRouter } from "next/router";
 
-import { useState } from "react";
-import { MoveAgents, TransferCSP } from ".";
+import { useUser } from "contexts/UserContext";
+import { useEffect, useState } from "react";
+import { MoveAgents, TransferCsp } from ".";
+
 
 /**
  * A <ChangeRole> component
@@ -129,7 +131,7 @@ const ChangeRole = (props) => {
 						mt={{ base: "23px", md: "32px", lg: "46px" }}
 					>
 						<TabPanel>
-							<TransferCSP
+							<TransferCsp
 								setIsShowSelectAgent={setIsShowSelectAgent}
 								onScspFromChange={handleScspFromChange}
 							/>

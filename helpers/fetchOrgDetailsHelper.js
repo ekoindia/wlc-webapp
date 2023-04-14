@@ -99,7 +99,10 @@ export const fetchOrgDetails = async (host) => {
 			INVALID_DOMAIN_CACHE.clear();
 			LAST_INVALID_DOMAIN_CACHE_BUST_TIME = Date.now();
 		} else {
-			return invalidOrg;
+			return {
+				...invalidOrg,
+				cached: true,
+			};
 		}
 	}
 
@@ -110,6 +113,7 @@ export const fetchOrgDetails = async (host) => {
 
 		// Cache the org details
 		if (orgDetails?.org_id) {
+			// console.debug("Caching Org details::: ", orgDetails);
 			ORG_CACHE[domain || subdomain] = {
 				...orgDetails,
 				cache_expires: Date.now() + CACHE_EXPIRY_TIME,

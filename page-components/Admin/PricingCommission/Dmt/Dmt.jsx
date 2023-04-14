@@ -6,13 +6,14 @@ import {
 	Input,
 	Radio,
 	RadioGroup,
-	Select,
 	Stack,
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Icon, InputLabel } from "components";
-import { useRef, useState } from "react";
+import { Buttons, Icon, MultiSelect, Select } from "components";
+import { useUser } from "contexts/UserContext";
+import useRequest from "hooks/useRequest";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * A <Dmt> component
@@ -23,16 +24,37 @@ import { useRef, useState } from "react";
  */
 
 const Dmt = () => {
-	const [value, setValue] = useState("0");
+	const { userData } = useUser();
+	const [selected, setSelected] = useState("");
+	const [selectedArr, setSelectedArr] = useState([]);
 	const [iconValue, setIconValue] = useState("percent");
-
+	const [selectedValue, setSelectedValue] = useState("1");
 	const focusRef = useRef(null);
-
-	const SelectData = [
-		{ label: ["Select Products", "Select Slab"] },
-		{ label: ["Select Individuals", "Select Slab"] },
-		{ label: ["Select Distributors", "Select Slab"] },
+	const [value, setValue] = useState("1");
+	const [selectedCommissionFor, setCommissionFor] = useState("1");
+	const [dmt, setDmt] = useState(0);
+	const [commission, setCommission] = useState(2.5);
+	const handleRadioChange = (value) => {
+		setSelectedValue(value);
+	};
+	const handleCommissionFor = (event) => {
+		setCommissionFor(event.target.value);
+		setValue(event.target.value);
+	};
+	const commisionFor = [
+		{ key: "1", label: "Individuals" },
+		{ key: "2", label: "Distributors" },
+		{ key: "3", label: "Products" },
 	];
+	const getLabelFromKey = (key) => {
+		const radio = commisionFor.find((radio) => radio.key === key);
+		return radio ? radio.label : "";
+	};
+	const slabData = [
+		{ key: 1, minSlabAmount: 100, maxSlabAmount: 200 },
+		{ key: 2, minSlabAmount: 200, maxSlabAmount: 400 },
+	];
+
 	const popBoxHandle = (boxStateFlag) => {
 		if (boxStateFlag) {
 			focusRef.current.style.display = "block";
@@ -40,7 +62,56 @@ const Dmt = () => {
 			focusRef.current.style.display = "none	";
 		}
 	};
+	const defineCommisionHandler = (e) => {
+		setCommission(e.target.value);
+	};
+	const handlesetPricing = () => {
+		setDmt((prevDmt) => (prevDmt === 1 ? 0 : 1));
+	};
+	const newSelectedArr = selectedArr
+		? selectedArr.map((str) => parseInt(str))
+		: [];
+	console.log("newSelectedArr", newSelectedArr);
+	//remove quotes from array
+	/* API CALLING */
+	let headers = {
+		"tf-req-uri-root-path": "/ekoicici/v1",
+		"tf-req-uri": `/network/pricing_commissions/dmt`,
+		"tf-req-method": "POST",
+	};
+	const { data, error, isLoading, mutate } = useRequest({
+		method: "POST",
+		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+		headers: { ...headers },
+		body: {
+			initiator_id: "9451000001",
+			user_code: "10000020",
+			org_id: "1",
+			source: "WLC",
+			client_ref_id: "202301031354123456",
+			operation_type: selectedCommissionFor, //selectedCommissionFor
+			CspList: newSelectedArr,
+			operation: dmt,
+			min_slab_amount: selected.minSlabAmount, //selected.minSlabAmount
+			max_slab_amount: selected.maxSlabAmount, //selected.maxSlabAmount
+			actual_pricing: commission,
+			pricing_type: selectedValue, //selectedValue
+			OrgId: "1",
+		},
+		authorization: `Bearer ${userData.access_token}`,
+	});
+	useEffect(() => {
+		mutate(
+			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+			headers
+		);
+	}, [headers["tf-req-uri"], selectedCommissionFor, dmt]);
+	const selectdata = data?.data?.allCspList ?? [];
 
+	const renderer = {
+		value: "ekocspid",
+		label: "DisplayName",
+	};
 	return (
 		<Stack w={"100%"} minH={{ base: "100%", md: "100%" }} gap={"10"}>
 			<VStack w={"100%"} gap={".5"}>
@@ -61,38 +132,42 @@ const Dmt = () => {
 							gap={{ base: "25px", sm: "20px", md: "20px" }}
 							flexWrap={"wrap"}
 						>
-							<Radio size="lg" value="0">
-								<Text fontSize={{ base: "sm", sm: "md" }}>
-									Products
-								</Text>
-							</Radio>
-							<Radio size="lg" value="1">
-								<Text fontSize={{ base: "sm", sm: "md" }}>
-									Individuals
-								</Text>
-							</Radio>
-
-							<Radio size="lg" value="2">
-								<Text fontSize={{ base: "sm", sm: "md" }}>
-									Distributors
-								</Text>
-							</Radio>
+							{commisionFor.map((radio) => (
+								<Radio
+									key={radio.key}
+									size="lg"
+									value={radio.key}
+									isChecked={
+										selectedCommissionFor === radio.key
+									}
+									onChange={handleCommissionFor}
+								>
+									<Text fontSize={{ base: "sm", sm: "md" }}>
+										{radio.label}
+									</Text>
+								</Radio>
+							))}
 						</Stack>
 					</RadioGroup>
 				</HStack>
 			</VStack>
 
-			{value ? (
-				<>
-					<Flex>
-						<PriceSelect label={SelectData[+value].label[0]} />
-					</Flex>
+			<Flex>
+				<MultiSelect
+					label={`Select ${getLabelFromKey(value)}`} //title change according to radio button value
+					options={selectdata}
+					renderer={renderer}
+					setData={setSelectedArr}
+				/>
+			</Flex>
 
-					<Flex>
-						<PriceSelect label={SelectData[+value].label[1]} />
-					</Flex>
-				</>
-			) : null}
+			<Flex>
+				<Select
+					label="Select Slab"
+					data={slabData}
+					setSelected={setSelected}
+				/>
+			</Flex>
 
 			<VStack w={"100%"} gap={"2.5"}>
 				<Box w={"100%"}>
@@ -103,22 +178,22 @@ const Dmt = () => {
 				<HStack justifyContent={"flex-start"} w={"100%"}>
 					<RadioGroup
 						w={"100%"}
-						onChange={setIconValue}
-						value={iconValue}
-						defaultValue="0"
+						defaultValue="1"
+						value={selectedValue}
+						onChange={handleRadioChange}
 					>
 						<Stack
 							direction={{ base: "column", md: "row" }}
 							gap={{ base: "5px", sm: "20px", md: "60px" }}
 							flexWrap={"wrap"}
 						>
-							<Radio size="lg" value="percent">
+							<Radio size="lg" value="1">
 								<Text fontSize={{ base: "xs", sm: "inherit" }}>
 									Percentage (%)
 								</Text>
 							</Radio>
 
-							<Radio size="lg" value="fixed">
+							<Radio size="lg" value="2">
 								<Text fontSize={{ base: "xs", sm: "inherit" }}>
 									Fixed
 								</Text>
@@ -167,8 +242,8 @@ const Dmt = () => {
 							>
 								<Input
 									placeholder="Commission Percentage"
-									defaultValue={"2.5"}
-									type={"number"}
+									defaultValue={2.5}
+									type="text"
 									w={{ base: "100%" }}
 									h={"48px"}
 									border={"none"}
@@ -184,6 +259,14 @@ const Dmt = () => {
 									}}
 									onBlur={() => {
 										popBoxHandle(false);
+									}}
+									onChange={defineCommisionHandler}
+									onKeyPress={(event) => {
+										if (
+											!/[0-9.]|Backspace/.test(event.key)
+										) {
+											event.preventDefault();
+										}
 									}}
 								/>
 								<Icon
@@ -241,6 +324,7 @@ const Dmt = () => {
 										title="Save Commissions"
 										fontWeight={"bold"}
 										boxShadow="0px 3px 10px #FE9F0040"
+										onClick={handlesetPricing}
 									/>
 									<Buttons
 										fontSize={{
@@ -302,7 +386,7 @@ const Dmt = () => {
 											display={"flex"}
 											gap={"10px"}
 											// ref={btnRef}
-											// onClick={onOpen}
+											onClick={handlesetPricing}
 											w={"50vw"}
 											h={"63px"}
 											bg="primary.DEFAULT"
@@ -548,61 +632,3 @@ const Dmt = () => {
 };
 
 export default Dmt;
-
-const PriceSelect = ({
-	label,
-	required = false,
-	/* labelStyle, */
-	inputContStyle,
-	/* ...props */
-}) => {
-	// const [values, setValues] = useState(0);
-	return (
-		<Flex direction={"column"} w="100%">
-			<Flex>
-				{label ? (
-					<InputLabel
-						required={required}
-						fontSize="md"
-						color="inputlabel"
-						// pl: "0",
-						fontWeight="600"
-						mb={{ base: 2.5, "2xl": "0.8rem" }}
-					>
-						{label}
-					</InputLabel>
-				) : null}
-			</Flex>
-
-			<Flex
-				justifyContent={{ base: "center", sm: "flex-start" }}
-				w={{
-					base: "100%",
-					sm: "72%",
-					md: "380px",
-					xl: "400px",
-					"2xl": "500px",
-				}}
-			>
-				<Select
-					placeholder="-- Select --"
-					w="100%"
-					h="3rem"
-					fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
-					focusBorderColor={"#D2D2D2"}
-					_focus={{
-						border: "1px solid #D2D2D2",
-						boxShadow: "none",
-					}}
-					borderRadius="10px"
-					icon={<Icon name="caret-down" w="14px" h="10px" />}
-					{...inputContStyle}
-				>
-					<option value="option1">Option 1</option>
-					<option value="option2">Option 2</option>
-					<option value="option3">Option 3</option>
-				</Select>
-			</Flex>
-		</Flex>
-	);
-};

@@ -9,14 +9,29 @@ import { useRouter } from "next/router";
  */
 
 const NetworkTable = ({
-	sortValue,
-	searchValue,
-	filterValues,
 	pageNumber,
 	setPageNumber,
 	totalRecords,
 	agentDetails,
 }) => {
+	// let postData = "";
+	// if (searchValue) postData += `search_value=${searchValue}&`;
+	// if (sortValue) {
+	// 	postData += `sortValue=${sortValue}&`;
+	// }
+	// if (Object.keys(filter).length) {
+	// 	let filterKeys = Object.keys(filter);
+	// 	let filterQuery = "filter=false";
+	// 	filterKeys.forEach((ele) => {
+	// 		filterQuery += `&${ele}=${filter[ele]}`;
+	// 	});
+	// 	postData += filterQuery;
+	// }
+
+	// const [pageNumber, setPageNumber] = useState(1);
+	// console.log("pageNumber", pageNumber);
+	// const { userData } = useUser();
+
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
@@ -40,10 +55,9 @@ const NetworkTable = ({
 		{ name: "", field: "", show: "Arrow" },
 	];
 	const router = useRouter();
-
 	const onRowClick = (rowData) => {
 		const ekocode = rowData.eko_code;
-		console.log("ekocode", ekocode);
+		console.log(rowData, "rowdata");
 		localStorage.setItem("rowData", JSON.stringify(rowData));
 		router.push({
 			pathname: `/admin/my-network/profile`,
@@ -60,8 +74,8 @@ const NetworkTable = ({
 				renderer={renderer}
 				variant="evenStripedClickableRow"
 				tableName="Network"
-				totalRecords={totalRecords} //table pagination
-				setPageNumber={setPageNumber} //table
+				totalRecords={totalRecords}
+				setPageNumber={setPageNumber}
 				pageNumber={pageNumber}
 				data={agentDetails}
 			/>
