@@ -4,7 +4,7 @@ export { localStorageProvider } from "./localStorageProvider";
 export { RemoveFormatted, sendOtpRequest } from "./loginHelper";
 export { processTransactionData } from "./processData";
 export {
-	// getAccordian,
+	getAccordian,
 	getArrowStyle,
 	getLocationStyle,
 	getModalStyle,
