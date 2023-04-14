@@ -4,7 +4,6 @@ import { Buttons, Input } from "components";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
-import { useLogin } from "hooks";
 import { useRef, useState } from "react";
 
 /**
@@ -21,7 +20,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
 	const { login } = useUser();
-	const [/* busy, */ googleHandler] = useLogin(login, setStep, setEmail);
+	// const [/* busy, */ googleHandler] = useLogin(login, setStep, setEmail);
 	const { orgDetail } = useOrgDetailContext();
 
 	const [value, setValue] = useState(number.formatted || "");

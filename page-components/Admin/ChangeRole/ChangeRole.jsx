@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 
 import { useUser } from "contexts/UserContext";
 import { useEffect, useState } from "react";
-import { MoveAgents, TransferCSP } from ".";
+import { MoveAgents, TransferCsp } from ".";
 
 /**
  * A <ChangeRole> component
@@ -193,7 +193,7 @@ const ChangeRole = () => {
 						mt={{ base: "23px", md: "32px", lg: "46px" }}
 					>
 						<TabPanel>
-							<TransferCSP
+							<TransferCsp
 								setIsShowSelectAgent={setIsShowSelectAgent}
 								distributor={distributor}
 								// onFromValueChange={}
