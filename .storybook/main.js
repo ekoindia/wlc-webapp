@@ -2,7 +2,6 @@ const path = require("path");
 
 module.exports = {
 	stories: [
-		// "../components/Cards/Cards.stories.jsx",
 		"../stories/**/*.stories.mdx",
 		"../stories/**/*.stories.@(js|jsx|ts|tsx)",
 		"../components/**/*.stories.mdx",
@@ -46,6 +45,9 @@ module.exports = {
 		builder: "@storybook/builder-webpack5",
 	},
 	staticDirs: ["../public"],
+	docs: {
+		autodocs: true,
+	},
 	webpackFinal: async (config) => {
 		config.resolve.alias["components"] = path.resolve(
 			__dirname,
