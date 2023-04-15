@@ -64,7 +64,12 @@ export const fetchOrgDetails = async (host) => {
 	}
 
 	if (!host) {
-		return invalidOrg;
+		return {
+			...invalidOrg,
+			props: {
+				reason: "No host detected: " + host,
+			},
+		};
 	}
 
 	const subdomainRootHost = "." + (process.env.WLC_SUBDOMAIN_ROOT || "xxxx");
@@ -81,7 +86,12 @@ export const fetchOrgDetails = async (host) => {
 	}
 
 	if (!(domain || subdomain)) {
-		return invalidOrg;
+		return {
+			...invalidOrg,
+			props: {
+				reason: "Couldn't parse (sub)domain. Host = " + host,
+			},
+		};
 	}
 
 	// Check cache for valid (sub)domain
@@ -101,7 +111,9 @@ export const fetchOrgDetails = async (host) => {
 		} else {
 			return {
 				...invalidOrg,
-				cached: true,
+				props: {
+					cached: true,
+				},
 			};
 		}
 	}
@@ -110,6 +122,8 @@ export const fetchOrgDetails = async (host) => {
 	if (!orgDetails || orgDetails?.cache_expires < Date.now()) {
 		// Fetch org details from API
 		orgDetails = await fetchOrgDetailsfromApi(domain, subdomain);
+
+		console.log("Fetched Org details::: ", orgDetails);
 
 		// Cache the org details
 		if (orgDetails?.org_id) {
@@ -130,7 +144,12 @@ export const fetchOrgDetails = async (host) => {
 					data: orgDetails,
 				},
 		  }
-		: invalidOrg;
+		: {
+				...invalidOrg,
+				props: {
+					reason: "Org details null",
+				},
+		  };
 };
 
 /**
