@@ -8,6 +8,7 @@ export function SearchBar(props) {
 		minSearchLimit = 5,
 		maxSearchLimit = 10,
 		placeholder,
+		inputContStyle,
 	} = props;
 	const [value, setValue] = useState("");
 	const [isInvalid, setIsInvalid] = useState(false);
@@ -53,6 +54,7 @@ export function SearchBar(props) {
 				xl: "30vw",
 				"2xl": "30vw",
 			}}
+			{...inputContStyle}
 		>
 			<Input
 				value={value}

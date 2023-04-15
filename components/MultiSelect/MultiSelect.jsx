@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Input, Text } from "@chakra-ui/react";
+import { Box, Checkbox, Flex, Input, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "..";
 
@@ -15,7 +15,8 @@ const MultiSelect = ({
 	options,
 	placeholder = "-- Select --",
 	renderer,
-	setData,
+	setData, //ToDo:need to be pass selected data when dropdown is closed
+	label,
 }) => {
 	const inputRef = useRef();
 	const [open, setOpen] = useState(false);
@@ -25,9 +26,12 @@ const MultiSelect = ({
 	const [highlightedIndex, setHighlightedIndex] = useState(-1);
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 	const [filteredOptions, setFilteredOptions] = useState(options);
-
 	/* needed for select all option */
 	const selectObject = { value: "*", label: "Select All" };
+
+	useEffect(() => {
+		setFilteredOptions(options);
+	}, [options]);
 
 	useEffect(() => {
 		let keys = Object.keys(selectedOptions);
@@ -144,7 +148,6 @@ const MultiSelect = ({
 			// select all
 			let allOptions = {};
 			filteredOptions.forEach((option) => {
-				console.log("option", option);
 				allOptions[option[renderer.value]] = true;
 				// allOptions[option.value] = true;
 			});
@@ -197,7 +200,12 @@ const MultiSelect = ({
 	};
 
 	return (
-		<>
+		<Flex direction="column" rowGap="2">
+			<Box w={"100%"}>
+				<Text fontSize={"md"} fontWeight={"semibold"}>
+					{label ? label : ""}
+				</Text>
+			</Box>
 			<Flex
 				w="500px"
 				cursor="pointer"
@@ -360,7 +368,7 @@ const MultiSelect = ({
 					)}
 				</Flex>
 			</Flex>
-		</>
+		</Flex>
 	);
 };
 

@@ -44,11 +44,12 @@ const TransactionTable = () => {
 			<Table
 				pageLimit={10}
 				renderer={renderer}
-				data={mockData}
+				data={mockData.slice(0, 10)} // only show the first 15 items
 				variant="darkStriped"
 				tableName="Transactions"
 				accordian={true}
 				isPaginationRequired={false}
+				isOnclickRequire={false}
 			/>
 		</>
 	);
