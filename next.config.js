@@ -6,7 +6,7 @@ const excludeLogTypes = ["error"];
 if (isDebugMode) {
 	excludeLogTypes.push("debug");
 }
-const removeConsoleOptions = isProd ? { exclude: excludeLogTypes } : true;
+const removeConsoleOptions = isProd ? { exclude: excludeLogTypes } : false;
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
 	enabled: process.env.ANALYZE === "true",
