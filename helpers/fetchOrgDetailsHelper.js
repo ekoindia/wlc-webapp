@@ -184,6 +184,20 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 		if (data && data.data && data.data.org_id) {
 			return data.data;
 		} else {
+			console.debug(
+				"Org details not found on server: ",
+				JSON.stringify(
+					{
+						status: res.status,
+						domain: domain,
+						sub_domain: subdomain,
+						data: data,
+					},
+					null,
+					2
+				)
+			);
+
 			return null;
 		}
 	} catch (e) {
