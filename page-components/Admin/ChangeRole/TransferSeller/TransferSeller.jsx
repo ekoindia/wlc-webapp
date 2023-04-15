@@ -14,7 +14,7 @@ import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import { MoveAgents as FromAgents } from "..";
 
-const TransferCSP = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
+const TransferSeller = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
 	function handleSelectedEkocspids(newSelectedEkocspids) {
 		setSelectedEkocspids(newSelectedEkocspids);
 	}
@@ -298,4 +298,4 @@ const TransferCSP = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
 	);
 };
 
-export default TransferCsp;
+export default TransferSeller;
