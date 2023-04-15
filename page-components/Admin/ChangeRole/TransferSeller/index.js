@@ -1,1 +1,1 @@
-export { default as TransferCsp } from "./TransferCsp";
+export { default as TransferSeller } from "./TransferSeller";
