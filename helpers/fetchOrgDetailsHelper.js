@@ -176,6 +176,23 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 		);
 
 		if (!res.ok) {
+			console.debug(
+				"Org details not found on server: ",
+				JSON.stringify(
+					{
+						url:
+							process.env.NEXT_PUBLIC_API_BASE_URL +
+							Endpoints.GET_ORG_FROM_DOMAIN,
+						status: res.status,
+						domain: domain,
+						sub_domain: subdomain,
+						data: await res.text(),
+					},
+					null,
+					2
+				)
+			);
+
 			return null;
 		}
 
@@ -188,6 +205,9 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 				"Org details not found on server: ",
 				JSON.stringify(
 					{
+						url:
+							process.env.NEXT_PUBLIC_API_BASE_URL +
+							Endpoints.GET_ORG_FROM_DOMAIN,
 						status: res.status,
 						domain: domain,
 						sub_domain: subdomain,
