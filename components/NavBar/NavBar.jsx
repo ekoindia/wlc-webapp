@@ -12,14 +12,14 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
+import { adminProfileMenu, profileMenu } from "constants";
 import { useOrgDetailContext, useUser } from "contexts";
-import { useRouter } from "next/router";
+import Link from "next/link";
 import { useState } from "react";
 import { Buttons, Icon, IconButtons } from "..";
 
 const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
-	const { userData } = useUser();
 	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
 		props;
 
@@ -157,8 +157,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 										xl: "30px",
 										"2xl": "46px",
 									}}
-									name="demo-user"
-									src="https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+									name={userDetails?.name[0]}
+									lineHeight="3px"
+									src={userData?.userDetails?.pic}
 								/>
 								{userData?.is_org_admin === 1 ? (
 									<Flex
@@ -252,8 +253,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 const MyAccountCard = ({ setIsCardOpen }) => {
 	const { logout, userData } = useUser();
 	const { userDetails } = userData;
-
-	const router = useRouter();
+	const menulist =
+		userData?.is_org_admin === 1 ? adminProfileMenu : profileMenu;
 	const logoutHandler = () => {
 		// router.push("/");
 		logout();
@@ -468,7 +469,6 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 
 			<VStack
 				w={"full"}
-				minH={"13vw"}
 				h={{ base: "100%", sm: "initial" }}
 				bg={"white"}
 				py={"3"}
@@ -479,92 +479,38 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				}}
 				gap={{ base: "15px", sm: "initial" }}
 			>
-				<HStack
-					h={{ base: "1.65", sm: "1.65vw" }}
-					w={"90%"}
-					justifyContent={"space-between"}
-					cursor={"pointer"}
-					mt={{ base: "15px", sm: "initial" }}
-				>
-					<Text
-						fontSize={{
-							base: "14px",
-							sm: "10px",
-							md: "10px",
-							lg: "12px",
-							xl: "12px",
-							"2xl": "14px",
-						}}
-					>
-						Business Contact
-					</Text>
-
-					<Icon name="chevron-right" width="8px" height="8px" />
-				</HStack>
-				<Divider w={"90%"} />
-				<HStack
-					h={"1.65vw"}
-					w={"90%"}
-					justifyContent={"space-between"}
-					cursor={"pointer"}
-				>
-					<Text
-						fontSize={{
-							base: "14px",
-							sm: "10px",
-							md: "10px",
-							lg: "12px",
-							xl: "12px",
-							"2xl": "14px",
-						}}
-					>
-						Need Help
-					</Text>
-					<Icon name="chevron-right" width="8px" height="8px" />
-				</HStack>
-				<Divider w={"90%"} />
-				<HStack
-					h={"1.65vw"}
-					w={"90%"}
-					justifyContent={"space-between"}
-					cursor={"pointer"}
-				>
-					<Text
-						fontSize={{
-							base: "14px",
-							sm: "10px",
-							md: "10px",
-							lg: "12px",
-							xl: "12px",
-							"2xl": "14px",
-						}}
-					>
-						Help Center
-					</Text>
-					<Icon name="chevron-right" width="8px" height="8px" />
-				</HStack>
-				<Divider w={"90%"} />
-				<HStack
-					h={"1.65vw"}
-					w={"90%"}
-					justifyContent={"space-between"}
-					cursor={"pointer"}
-				>
-					<Text
-						fontSize={{
-							base: "14px",
-							sm: "10px",
-							md: "10px",
-							lg: "12px",
-							xl: "12px",
-							"2xl": "14px",
-						}}
-					>
-						Settings
-					</Text>
-					<Icon name="chevron-right" width="8px" height="8px" />
-				</HStack>
-				<Divider w={"90%"} />
+				{menulist.map((ele, idx) => (
+					<>
+						<HStack
+							h={{ base: "1.65", sm: "1.65vw" }}
+							w={"90%"}
+							justifyContent={"space-between"}
+							cursor={"pointer"}
+							mt={{ base: "15px", sm: "initial" }}
+						>
+							<Link href={ele.link}>
+								<Text
+									fontSize={{
+										base: "14px",
+										sm: "10px",
+										md: "10px",
+										lg: "12px",
+										xl: "12px",
+										"2xl": "14px",
+									}}
+								>
+									{ele.title}
+								</Text>
+							</Link>
+							<Icon
+								name="chevron-right"
+								width="8px"
+								height="8px"
+							/>
+						</HStack>
+						<Divider w={"90%"} />
+					</>
+				))}
 				<HStack
 					minH={"2vw"}
 					w={"90%"}

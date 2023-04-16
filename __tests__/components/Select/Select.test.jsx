@@ -1,4 +1,4 @@
-import TransferSeller from "page-components/Admin/ChangeRole/TransferSeller/TransferSeller";
+import { Select } from "components/Select";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("TransferSeller", () => {
+describe("Select", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<TransferSeller />);
+		const { container } = render(<Select />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("TransferSeller", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for TransferSeller in __tests__/components/TransferSeller/TransferSeller.test.jsx"
+		"TODO: add proper test cases for Select in __tests__/components/Select/Select.test.jsx"
 	);
 });

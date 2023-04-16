@@ -1,4 +1,5 @@
 import {
+	Box,
 	Divider,
 	Flex,
 	Tab,
@@ -11,9 +12,8 @@ import {
 import { Buttons, Headings } from "components";
 import { useRouter } from "next/router";
 
-import { useUser } from "contexts/UserContext";
-import { useEffect, useState } from "react";
-import { MoveAgents, TransferCSP } from ".";
+import { useState } from "react";
+import { MoveAgents, TransferSeller } from ".";
 
 /**
  * A <ChangeRole> component
@@ -23,87 +23,23 @@ import { MoveAgents, TransferCSP } from ".";
  * @example	`<ChangeRole></ChangeRole>`
  */
 
-const ChangeRole = () => {
+const ChangeRole = (props) => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
+	console.log("isShowSelectAgent", isShowSelectAgent);
 	const tab = +useRouter().query.tab;
-	const [fromValue, setFromValue] = useState("");
-	const [toValue, setToValue] = useState("");
-	const [distributor, setDistributor] = useState([]);
-	const [scspFrom, setScspFrom] = useState([]);
-	const [scspto, setScspTo] = useState([]);
-	const { userData } = useUser();
+	const [scspFromValue, setScspFromValue] = useState("");
+	console.log("scspFromValue", scspFromValue);
+	const [selectedEkocspidsCR, setSelectedEkocspidsCR] = useState([]);
+	console.log("selectedEkocspidsCR", selectedEkocspidsCR);
 
-	const handleFromValueChange = (value) => {
-		console.log("Selected fromValue:", value);
+	const handleScspFromChange = (value) => {
+		setScspFromValue(value);
 	};
-
-	function handleFromChange(event) {
-		setFromValue(event.target.value);
-	}
-
-	function handleToChange(event) {
-		setToValue(event.target.value);
-	}
-
-	const body = {
-		initiator_id: "9451000001",
-		org_id: "1",
-		source: "WLC",
-		client_ref_id: "202301031354123456",
-		scspFrom: fromValue,
-		scspTo: toValue,
-	};
-
-	let headers = {
-		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
-		"tf-req-method": "PUT",
-	};
-
-	// let distributor =[]
-
-	useEffect(() => {
-		fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
-			method: "POST",
-			headers: {
-				"Content-type": "application/json",
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
-				"tf-req-method": "PUT",
-				authorization: `Bearer ${userData.access_token}`,
-			},
-			body: JSON.stringify(body),
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				console.log("datadatadatadatadatadatadata", data);
-
-				const distributor = data?.data?.allScspList ?? [];
-				setDistributor(distributor);
-
-				const scspFrom = data?.data?.allCspListOfScspFrom ?? [];
-				console.log("scspFrom", scspFrom);
-				setScspFrom(scspFrom);
-
-				const ScspTo = data?.data?.allCspListOfScspTo ?? [];
-				setScspTo(scspto);
-			})
-			.catch((error) => {
-				console.error("Error:", error);
-			});
-	}, [fromValue, toValue]);
-
-	// const transferCspData = distributor;
-
-	function backHandler() {
-		setIsShowSelectAgent((prev) => !prev);
-	}
 
 	return !isShowSelectAgent ? (
 		<>
 			<Headings title="Change Role" />
 			<Flex
-				// my={{ base: "0", md: "7.5" }}
 				align={{ base: "center", md: "flex-start" }}
 				pb={{ base: "0", md: "40px" }}
 				bg={{ base: "none", md: "white" }}
@@ -193,11 +129,9 @@ const ChangeRole = () => {
 						mt={{ base: "23px", md: "32px", lg: "46px" }}
 					>
 						<TabPanel>
-							<TransferCSP
+							<TransferSeller
 								setIsShowSelectAgent={setIsShowSelectAgent}
-								distributor={distributor}
-								// onFromValueChange={}
-								scspTo={scspto}
+								onScspFromChange={handleScspFromChange}
 							/>
 						</TabPanel>
 						<TabPanel>
@@ -214,13 +148,11 @@ const ChangeRole = () => {
 			</Flex>
 		</>
 	) : (
-		<>
-			<Headings title="Select Agents" redirectHandler={backHandler} />
-
+		<Box>
 			{/* Move button for mobile responsive */}
 			<MoveAgents
-				ShowSelectAgents={isShowSelectAgent}
-				options={scspFrom}
+				options={scspFromValue}
+				setSelectedEkocspidsCR={setSelectedEkocspidsCR}
 			/>
 			<Flex
 				Flex
@@ -254,7 +186,7 @@ const ChangeRole = () => {
 					Move Now
 				</Buttons>
 			</Flex>
-		</>
+		</Box>
 	);
 };
 

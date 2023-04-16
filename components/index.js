@@ -20,6 +20,7 @@ import { Pagination } from "./Pagination";
 import { ProfileCard } from "./ProfileCard";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
+import { Select } from "./Select";
 import { SideBar } from "./SideBar";
 import { StatusCard } from "./StatusCard";
 import { SvgIcon } from "./SvgIcon";
@@ -28,6 +29,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	Select,
 	MultiSelect,
 	StatusCard,
 	ProfileCard,

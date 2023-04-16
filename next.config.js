@@ -1,4 +1,12 @@
 const isProd = process.env.NEXT_PUBLIC_ENV === "production";
+const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
+
+// Config for removing console logs in production
+const excludeLogTypes = ["error"];
+if (isDebugMode) {
+	excludeLogTypes.push("debug");
+}
+const removeConsoleOptions = isProd ? { exclude: excludeLogTypes } : false;
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
 	enabled: process.env.ANALYZE === "true",
@@ -9,7 +17,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
  */
 const nextConfig = withBundleAnalyzer({
 	/* config options here */
-	reactStrictMode: true,
+	reactStrictMode: isProd ? false : true,
 	poweredByHeader: false,
 	swcMinify: true,
 	eslint: {
@@ -28,7 +36,7 @@ const nextConfig = withBundleAnalyzer({
 	},
 	compiler: {
 		reactRemoveProperties: true, // removes ^data-test properties in build
-		removeConsole: isProd ? { exclude: ["error"] } : false,
+		removeConsole: removeConsoleOptions,
 	},
 	images: {
 		remotePatterns: [
