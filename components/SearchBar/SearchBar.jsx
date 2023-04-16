@@ -8,18 +8,17 @@ export function SearchBar(props) {
 		minSearchLimit = 5,
 		maxSearchLimit = 10,
 		placeholder,
+		numbersOnly = false,
 		inputContStyle,
 	} = props;
 	const [value, setValue] = useState("");
 	const [isInvalid, setIsInvalid] = useState(false);
-	console.log("isInvalid", isInvalid);
 	const handleKeyDown = (e) => {
 		if (e.key === "Enter") {
 			if (
 				value.length >= minSearchLimit &&
 				value.length <= maxSearchLimit
 			) {
-				console.log(value);
 				setSearch(value);
 				setIsInvalid(false);
 			} else {
@@ -34,7 +33,14 @@ export function SearchBar(props) {
 
 	const handleChange = (e) => {
 		const inputValue = e.target.value;
-		if (inputValue.length <= maxSearchLimit) {
+
+		let isValid = true;
+		if (numbersOnly) {
+			// Regular expression to allow only numbers and decimal points
+			isValid = /^[0-9]*\.?[0-9]*$/.test(inputValue);
+		}
+
+		if (isValid && inputValue.length <= maxSearchLimit) {
 			setValue(inputValue);
 			setIsInvalid(inputValue.length < minSearchLimit);
 		} else {
