@@ -134,7 +134,7 @@ const DocPane = (props) => {
 				<Button
 					w={{ base: "100%", md: "215px" }}
 					h="60px"
-					leftIcon={<Icon name="file-download" width="18px" />}
+					icon={<Icon name="file-download" width="18px" />}
 				>
 					Download All
 				</Button>

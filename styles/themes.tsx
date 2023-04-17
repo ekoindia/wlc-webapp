@@ -1,6 +1,8 @@
 import { extendTheme, theme } from "@chakra-ui/react";
 // import { Inter, Roboto } from "@next/font/google";
 import { tabsTheme } from "./theme_system/theme/components/tab";
+
+import { buttonTheme } from "./theme_system/theme/components/button";
 // console.log('theme', theme)
 
 // const inter = Inter({
@@ -76,57 +78,7 @@ export const light = extendTheme({
 				},
 			},
 		},
-		Button: {
-			...theme.components.Button,
-			baseStyle: {
-				...theme.components.Button.baseStyle,
-				_disabled: {
-					bg: "gray.200",
-					color: "gray.500",
-				},
-				_hover: {
-					_disabled: {
-						bg: "gray.200",
-						color: "gray.500",
-					},
-				},
-			},
-			variants: {
-				primary: {
-					bg: "primary.DEFAULT",
-					boxShadow: "0px 3px 10px #FE9F0040",
-					borderRadius: 10,
-					color: "white",
-					_hover: {
-						bg: "primary.dark",
-					},
-				},
-				accent: {
-					bg: "accent.DEFAULT",
-					// boxShadow: "0px 3px 10px #11299e5f",
-					boxShadow: "0px 3px 10px #11299E1A",
-					borderRadius: 10,
-					color: "white",
-					_hover: {
-						bg: "accent.dark",
-					},
-				},
-				success: {
-					bg: "success",
-					boxShadow: "0px 3px 10px #00c34150",
-					borderRadius: 10,
-					color: "white",
-					_hover: {
-						bg: "#00a336",
-					},
-				},
-				link: {
-					_hover: {
-						textDecoration: "none",
-					},
-				},
-			},
-		},
+		Button: buttonTheme,
 		Checkbox: {
 			variants: {
 				rounded: {

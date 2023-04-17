@@ -23,6 +23,7 @@ import {
 } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useUser } from "contexts/UserContext";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 /**
@@ -35,7 +36,7 @@ import { useState } from "react";
 
 const UpdatePersonalInfo = () => {
 	// const inputRef = useRef();
-
+	const router = useRouter();
 	const [formData, setFormData] = useState();
 	console.log("setFormData", setFormData);
 	const [isLoading, setIsLoading] = useState(false);
@@ -726,9 +727,10 @@ const UpdatePersonalInfo = () => {
 								mt="4.2rem"
 								justifyContent={"flex-start"}
 								direction={{ base: "column", sm: "row" }}
+								h="3.5rem"
 							>
 								<Button
-									h="3.5rem"
+									h="100%"
 									type="submit"
 									isLoading={isLoading}
 									onClick={handleSubmit}
@@ -744,14 +746,12 @@ const UpdatePersonalInfo = () => {
 								</Button>
 
 								<Button
+									h="100%"
 									color={"accent.DEFAULT"}
 									fontSize={"20px"}
 									fontWeight="bold"
-									// _focus={{
-									// 	bg: "white",
-									// }}
-									// _hover="none"
 									variant="ghost"
+									onClick={() => router.back()}
 								>
 									Cancel
 								</Button>
