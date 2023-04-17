@@ -24,10 +24,9 @@ export function SearchBar(props) {
 			} else {
 				setIsInvalid(true);
 			}
-		} else if (e.keyCode === 8) {
-			// add condition to check if backspace key was pressed
-			setSearch(""); // clear the search
-			setIsInvalid(true);
+		}
+		if (isInvalid) {
+			setIsInvalid(false);
 		}
 	};
 
@@ -42,9 +41,7 @@ export function SearchBar(props) {
 
 		if (isValid && inputValue.length <= maxSearchLimit) {
 			setValue(inputValue);
-			setIsInvalid(inputValue.length < minSearchLimit);
-		} else {
-			setIsInvalid(true);
+			// setIsInvalid(inputValue.length < minSearchLimit);
 		}
 	};
 
@@ -62,6 +59,13 @@ export function SearchBar(props) {
 			}}
 			{...inputContStyle}
 		>
+			{/* <Box
+        h="100%"
+        w="2px"
+        display="block"
+        bg="red"
+        transition="width 0.1s ease-out"
+    ></Box> */}
 			<Input
 				value={value}
 				placeholder={
@@ -101,6 +105,7 @@ export function SearchBar(props) {
 			>
 				<Icon name="search" width="18px" />
 			</Center>
+
 			{/* {value !== "" && (
 				<Box
 					position="absolute"
