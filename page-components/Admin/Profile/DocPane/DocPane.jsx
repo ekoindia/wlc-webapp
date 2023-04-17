@@ -9,7 +9,7 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Cards, Icon, IconButtons } from "components";
+import { Button, Cards, Icon, IconButtons } from "components";
 
 /**
  * A <DocPane> component
@@ -131,10 +131,13 @@ const DocPane = (props) => {
 					<Divider mt="10px" />
 				</Box>
 
-				<Buttons w={{ base: "100%", md: "215px" }} h="60px">
-					<Icon name="file-download" width="18px" />
-					&nbsp; Download All
-				</Buttons>
+				<Button
+					w={{ base: "100%", md: "215px" }}
+					h="60px"
+					leftIcon={<Icon name="file-download" width="18px" />}
+				>
+					Download All
+				</Button>
 			</Flex>
 		</Cards>
 	);

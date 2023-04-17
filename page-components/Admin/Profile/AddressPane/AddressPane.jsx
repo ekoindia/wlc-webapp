@@ -7,7 +7,7 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Cards, IconButtons } from "components";
+import { Button, Cards, IconButtons } from "components";
 import Router from "next/router";
 
 const AddressPane = ({ rowdata: addressdata }) => {
@@ -65,7 +65,7 @@ const AddressPane = ({ rowdata: addressdata }) => {
 						direction={{ base: "column", lg: "row" }}
 						rowGap="16px"
 					>
-						<Buttons
+						<Button
 							onClick={() =>
 								Router.push(
 									"/admin/my-network/profile/up-sell-add"
@@ -73,8 +73,9 @@ const AddressPane = ({ rowdata: addressdata }) => {
 							}
 							w={{ base: "100%", lg: "45%", xl: "189px" }}
 							h="60px"
-							title="Update Address"
-						/>
+						>
+							Update Address
+						</Button>
 						<Box
 
 						// margin={isSmallerThan769 ? "auto" : ""}

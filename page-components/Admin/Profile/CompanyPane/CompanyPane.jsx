@@ -8,7 +8,7 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Buttons, Cards, Icon, IconButtons } from "components";
+import { Button, Cards, Icon, IconButtons } from "components";
 import Router from "next/router";
 /**
  * A <CompanyPane> component
@@ -129,14 +129,16 @@ const CompanyPane = (props) => {
 			</Box>
 
 			<Box mt={{ base: "95", lg: "20", xl: "70" }}>
-				<Buttons
+				<Button
 					onClick={() =>
 						Router.push("/admin/my-network/profile/up-sell-info")
 					}
 					w={{ base: "100%", lg: "205px", xl: "215px" }}
 					h="60px"
-					title="Update Information"
-				/>
+					disabled={true}
+				>
+					Update Information
+				</Button>
 			</Box>
 
 			<Box

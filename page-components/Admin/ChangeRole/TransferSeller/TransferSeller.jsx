@@ -1,13 +1,5 @@
-import {
-	Avatar,
-	Box,
-	Button,
-	Circle,
-	Flex,
-	Select,
-	Text,
-} from "@chakra-ui/react";
-import { Buttons, Icon } from "components";
+import { Avatar, Box, Circle, Flex, Select, Text } from "@chakra-ui/react";
+import { Button, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
@@ -173,21 +165,21 @@ const TransferSeller = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
 				columnGap="30px"
 				rowGap="24px"
 			>
-				<Buttons
+				<Button
 					h="54px"
 					fontSize="md"
 					onClick={() => setIsShowSelectAgent(true)}
 				>
 					Select Agents
-				</Buttons>
-				<Buttons
+				</Button>
+				<Button
 					h="54px"
-					variant=""
+					variant="ghost"
 					color="accent.DEFAULT"
 					fontSize="md"
 				>
 					Cancel
-				</Buttons>
+				</Button>
 			</Flex>
 
 			{/* Select for Move */}
@@ -281,16 +273,23 @@ const TransferSeller = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
 				mt="70px"
 				columnGap="36px"
 				display={{ base: "none", md: "flex" }}
+				align={"center"}
+				h="64px"
 			>
-				<Buttons
+				<Button
 					w="164px"
-					h="64px"
+					h="100%"
 					fontSize={"xl"}
 					onClick={handleMoveagent}
 				>
 					Move Now
-				</Buttons>
-				<Button variant="link" color="accent.DEFAULT" fontSize={"xl"}>
+				</Button>
+				<Button
+					variant="ghost"
+					color="accent.DEFAULT"
+					fontSize={"xl"}
+					h="100%"
+				>
 					Cancel
 				</Button>
 			</Flex>

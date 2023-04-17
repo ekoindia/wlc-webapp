@@ -1,4 +1,4 @@
-import Buttons from "components/Buttons/Buttons";
+import { Button } from "components/Button/Button";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Buttons", () => {
+describe("Button", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Buttons />);
+		const { container } = render(<Button />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Buttons", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Buttons in __tests__/components/Buttons/Buttons.test.jsx"
+		"TODO: add proper test cases for Button in __tests__/components/Button/Button.test.jsx"
 	);
 });

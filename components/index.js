@@ -1,7 +1,7 @@
 /* PLOP_INJECT_IMPORT */
 import { Breadcrumbs } from "./Breadcrumb";
 import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
-import { Buttons } from "./Buttons";
+import { Button } from "./Button";
 import { Calenders } from "./Calenders";
 import { Cards } from "./Cards";
 import { Divider } from "./Divider";
@@ -29,6 +29,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	Button,
 	Select,
 	MultiSelect,
 	StatusCard,
@@ -54,7 +55,6 @@ export {
 	Input,
 	Layout,
 	Cards,
-	Buttons,
 	SearchBar,
 	Breadcrumbs,
 	/* PLOP_INJECT_EXPORT */

@@ -1,5 +1,5 @@
 import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
-import { Buttons, Cards, Headings, Icon } from "components";
+import { Button, Cards, Headings, Icon } from "components";
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -228,10 +228,9 @@ const AccountStatement = () => {
 											</Text>
 										</Box>
 									)}
-									<Buttons
+									<Button
 										m={{ base: "auto", sm: "initial" }}
 										onClick={handleClick}
-										title={"View Detailed Statement"}
 										w={{
 											base: "100%",
 											md: "15vw",
@@ -252,7 +251,9 @@ const AccountStatement = () => {
 											"2xl": "0.8vw",
 										}}
 										fontWeight={"bold"}
-									></Buttons>
+									>
+										View Detailed Statement
+									</Button>
 								</Flex>
 							</Flex>
 						</Flex>

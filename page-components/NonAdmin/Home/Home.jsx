@@ -1,5 +1,5 @@
 import { Box, Grid, GridItem, Image, Text } from "@chakra-ui/react";
-import { Buttons } from "components";
+import { Button } from "components";
 /**
  * A <Home> component
  * TODO: Write more description here
@@ -67,7 +67,7 @@ const Home = () => {
 						</Text>
 					</Box>
 					<Box mt="50px" display={"flex"} justifyContent="center">
-						<Buttons
+						<Button
 							fontSize={"0.6vw"}
 							w={{
 								base: "140px",
@@ -103,7 +103,7 @@ const Home = () => {
 							>
 								View Profile &gt;
 							</Text>
-						</Buttons>
+						</Button>
 					</Box>
 				</Box>
 			</GridItem>

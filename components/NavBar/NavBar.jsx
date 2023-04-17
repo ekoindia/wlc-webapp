@@ -16,7 +16,7 @@ import { adminProfileMenu, profileMenu } from "constants";
 import { useOrgDetailContext, useUser } from "contexts";
 import Link from "next/link";
 import { useState } from "react";
-import { Buttons, Icon, IconButtons } from "..";
+import { Button, Icon, IconButtons } from "..";
 
 const NavBar = (props) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
@@ -423,7 +423,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						</Flex>
 
 						<Flex>
-							<Buttons
+							<Button
 								fontSize={"0.6vw"}
 								w={{
 									base: "140px",
@@ -461,7 +461,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								>
 									View Profile &gt;
 								</Text>
-							</Buttons>
+							</Button>
 						</Flex>
 					</Flex>
 				</Box>

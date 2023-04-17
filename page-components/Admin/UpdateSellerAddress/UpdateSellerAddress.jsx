@@ -1,15 +1,7 @@
 import { useEffect, useState } from "react";
 
-import {
-	Box,
-	Button,
-	Divider,
-	Flex,
-	HStack,
-	Select,
-	Text,
-} from "@chakra-ui/react";
-import { Buttons, Headings, Icon, Input, Switch } from "components";
+import { Box, Divider, Flex, HStack, Select, Text } from "@chakra-ui/react";
+import { Button, Headings, Icon, Input, Switch } from "components";
 import { NewAddress, PermanentAddress } from ".";
 /**
  * A <UpdateSellerAddress> component
@@ -567,7 +559,7 @@ const UpdateSellerAddress = () => {
 						direction="column"
 					>
 						<Flex display={{ base: "none", md: "flex" }}>
-							<Buttons
+							<Button
 								w="15rem"
 								h="3.5rem"
 								bg="white"
@@ -583,7 +575,7 @@ const UpdateSellerAddress = () => {
 								>
 									+&nbsp; Add New Address
 								</Text>
-							</Buttons>
+							</Button>
 						</Flex>
 						<Flex
 							direction={{ base: "column", sm: "row" }}
@@ -594,9 +586,8 @@ const UpdateSellerAddress = () => {
 								"2xl": "4.8rem",
 							}}
 						>
-							<Buttons
+							<Button
 								h="3.5rem"
-								title="Save Changes"
 								fontSize="20px"
 								fontWeight="bold"
 								w={{
@@ -604,7 +595,9 @@ const UpdateSellerAddress = () => {
 									sm: "10rem",
 									md: "12.2rem",
 								}}
-							/>
+							>
+								Save Changes
+							</Button>
 
 							<Button
 								color={"accent.DEFAULT"}
@@ -615,6 +608,7 @@ const UpdateSellerAddress = () => {
 									bg: "white",
 								}}
 								_hover="none"
+								variant="ghost"
 							>
 								Cancel
 							</Button>

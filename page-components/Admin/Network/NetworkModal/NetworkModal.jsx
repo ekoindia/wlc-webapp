@@ -1,5 +1,4 @@
 import {
-	Button,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
@@ -11,7 +10,7 @@ import {
 	Textarea,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { Buttons } from "components/Buttons";
+import { Button } from "components/Button";
 
 /**
  * A <NetworkModal> component
@@ -49,13 +48,14 @@ const NetworkModal = ({ className = "", ...props }) => {
 						justifyContent="center"
 						paddingBottom={{ base: 4, md: 8 }}
 					>
-						<Buttons
-							title="Save"
+						<Button
 							h={{ base: "44px", md: "56px" }}
 							width="100%"
 							fontSize={{ base: "14px", md: "16px" }}
 							onClick={onClose}
-						/>
+						>
+							Save
+						</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>

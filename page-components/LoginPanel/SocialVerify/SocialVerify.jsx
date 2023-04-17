@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
-import { Buttons, Icon, IconButtons, Input } from "components";
+import { Button, Icon, IconButtons, Input } from "components";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useState } from "react";
@@ -110,13 +110,14 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 				onChange={onChangeHandler}
 			/>
 
-			<Buttons
-				title="Verify"
+			<Button
 				mt={{ base: 10, "2xl": "4.35rem" }}
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
 				onClick={onVerifyOtp}
-			/>
+			>
+				Verify
+			</Button>
 		</Flex>
 	);
 };
