@@ -9,7 +9,7 @@ import {
 	Tabs,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons, Headings } from "components";
+import { Button, Headings } from "components";
 import { useRouter } from "next/router";
 
 import { useState } from "react";
@@ -166,7 +166,7 @@ const ChangeRole = (props) => {
 				zIndex={"99"}
 				boxShadow={"0px -3px 10px #0000001A"}
 			>
-				<Buttons
+				<Button
 					variant="ghost"
 					w={"50%"}
 					h={"100%"}
@@ -176,15 +176,15 @@ const ChangeRole = (props) => {
 					onClick={() => setIsShowSelectAgent(false)}
 				>
 					Go Back
-				</Buttons>
-				<Buttons
+				</Button>
+				<Button
 					w={"50%"}
 					h={"100%"}
 					fontSize="18px"
 					borderRadius="none"
 				>
 					Move Now
-				</Buttons>
+				</Button>
 			</Flex>
 		</Box>
 	);

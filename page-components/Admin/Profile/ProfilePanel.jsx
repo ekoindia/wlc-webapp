@@ -1,5 +1,5 @@
-import { Box, Button, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
-import { Buttons, Headings, Icon, Menus } from "components";
+import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
+import { Button, Headings, Icon, Menus } from "components";
 import { ChangeRoleMenu } from "constants/ChangeRoleMenu";
 import Link from "next/link";
 import { useState } from "react";
@@ -38,14 +38,15 @@ const ChangeRoleDesktop = ({ menuHandler }) => {
 					}}
 				/>
 			</Box>
-			<Buttons
-				title="Change Role"
+			<Button
 				display={{ base: "block", md: "none" }}
 				onClick={menuHandler}
-				variant=""
+				variant="ghost"
 				color="primary.DEFAULT"
 				px="none"
-			/>
+			>
+				Change Role
+			</Button>
 		</Box>
 	);
 };

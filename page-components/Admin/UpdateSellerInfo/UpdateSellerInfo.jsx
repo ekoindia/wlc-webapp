@@ -1,5 +1,5 @@
-import { Box, Button, Divider, Flex, Select, Text } from "@chakra-ui/react";
-import { Buttons, Calenders, Headings, Icon, Switch } from "components";
+import { Box, Divider, Flex, Select, Text } from "@chakra-ui/react";
+import { Button, Calenders, Headings, Icon, Switch } from "components";
 import Router from "next/router";
 import { useState } from "react";
 /**
@@ -236,14 +236,13 @@ const UpdateSellerInfo = () => {
 						justifyContent={"flex-start"}
 						direction={{ base: "column", sm: "row" }}
 					>
-						<Buttons
+						<Button
 							onClick={() =>
 								Router.push(
 									"/admin/my-network/profile/up-sell-info/preview-sell-info"
 								)
 							}
 							h="3.5rem"
-							title="Preview"
 							fontSize="20px"
 							fontWeight="bold"
 							w={{
@@ -251,7 +250,9 @@ const UpdateSellerInfo = () => {
 								sm: "10rem",
 								md: "12.2rem",
 							}}
-						/>
+						>
+							Preview
+						</Button>
 
 						<Button
 							color={"accent.DEFAULT"}
@@ -262,6 +263,7 @@ const UpdateSellerInfo = () => {
 								bg: "white",
 							}}
 							_hover="none"
+							variant="ghost"
 						>
 							Cancel
 						</Button>

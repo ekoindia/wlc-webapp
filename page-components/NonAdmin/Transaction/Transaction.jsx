@@ -8,7 +8,7 @@ import {
 	ModalHeader,
 	Text,
 } from "@chakra-ui/react";
-import { Buttons, Calenders, Icon, Input } from "components";
+import { Button, Calenders, Icon, Input } from "components";
 import { SearchBar } from "components/SearchBar";
 import { useEffect, useState } from "react";
 import { TransactionTable } from "./TransactionTable";
@@ -138,7 +138,7 @@ const Transaction = () => {
 
 					{/* <==========Filter Button =========> */}
 					<Flex>
-						<Buttons
+						<Button
 							w="100%"
 							h="36px"
 							_hover={{ bg: "accent.DEFAULT" }}
@@ -149,7 +149,7 @@ const Transaction = () => {
 							<Text display={{ base: "none", md: "flex" }}>
 								Filter
 							</Text>
-						</Buttons>
+						</Button>
 					</Flex>
 
 					{/* <===================Filter Modal Code ==========================> */}
@@ -282,7 +282,7 @@ const Transaction = () => {
 								</Flex>
 							</ModalBody>
 							<ModalFooter>
-								<Buttons
+								<Button
 									onClick={onClose}
 									w={{
 										base: "100%",
@@ -293,7 +293,7 @@ const Transaction = () => {
 									h={{ base: "64px", xl: "56px" }}
 								>
 									Apply Now
-								</Buttons>
+								</Button>
 							</ModalFooter>
 						</ModalContent>
 					</Modal>

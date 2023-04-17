@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	Flex,
 	HStack,
 	Input,
@@ -10,7 +9,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Icon, MultiSelect, Select } from "components";
+import { Button, Icon, MultiSelect, Select } from "components";
 import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useEffect, useRef, useState } from "react";
@@ -299,7 +298,7 @@ const Dmt = () => {
 									align={"center"}
 									display={{ base: "none", md: "flex" }}
 								>
-									<Buttons
+									<Button
 										w={{
 											base: "100%",
 											sm: "150px",
@@ -321,12 +320,13 @@ const Dmt = () => {
 											base: "5px",
 											md: "10px",
 										}}
-										title="Save Commissions"
 										fontWeight={"bold"}
 										boxShadow="0px 3px 10px #FE9F0040"
 										onClick={handlesetPricing}
-									/>
-									<Buttons
+									>
+										Save Commissions
+									</Button>
+									<Button
 										fontSize={{
 											base: "xs",
 											md: "lg",
@@ -335,11 +335,12 @@ const Dmt = () => {
 											base: "5px",
 											xl: "10px",
 										}}
-										title="Cancel"
-										variant={"link"}
+										variant="ghost"
 										color={"accent.DEFAULT"}
 										fontWeight={"bold"}
-									/>
+									>
+										Cancel
+									</Button>
 								</Flex>
 
 								<Flex

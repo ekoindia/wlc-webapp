@@ -1,7 +1,6 @@
 import {
 	Avatar,
 	Box,
-	Button,
 	Circle,
 	Divider,
 	Flex,
@@ -15,7 +14,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import {
-	Buttons,
+	Button,
 	Calenders,
 	Headings,
 	Icon,
@@ -291,7 +290,7 @@ const UpdatePersonalInfo = () => {
 								/>
 
 								<Flex>
-									<Buttons
+									<Button
 										onClick={() =>
 											document
 												.getElementById("fileInput")
@@ -299,8 +298,9 @@ const UpdatePersonalInfo = () => {
 										}
 										w="8.125rem"
 										h="3rem"
-										title="Browse"
-									/>
+									>
+										Browse
+									</Button>
 								</Flex>
 							</Flex>
 
@@ -727,12 +727,11 @@ const UpdatePersonalInfo = () => {
 								justifyContent={"flex-start"}
 								direction={{ base: "column", sm: "row" }}
 							>
-								<Buttons
+								<Button
 									h="3.5rem"
 									type="submit"
 									isLoading={isLoading}
 									onClick={handleSubmit}
-									title="Preview"
 									fontSize="20px"
 									fontWeight="bold"
 									w={{
@@ -740,17 +739,19 @@ const UpdatePersonalInfo = () => {
 										sm: "10rem",
 										md: "12.2rem",
 									}}
-								/>
+								>
+									Preview
+								</Button>
 
 								<Button
 									color={"accent.DEFAULT"}
 									fontSize={"20px"}
 									fontWeight="bold"
-									bg="white"
-									_focus={{
-										bg: "white",
-									}}
-									_hover="none"
+									// _focus={{
+									// 	bg: "white",
+									// }}
+									// _hover="none"
+									variant="ghost"
 								>
 									Cancel
 								</Button>

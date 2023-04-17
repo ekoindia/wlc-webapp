@@ -267,8 +267,8 @@ const MultiSelect = ({
 					<Flex ml="auto">
 						<Icon
 							name={open ? "caret-up" : "caret-down"}
-							height="14px"
-							width="10px"
+							width="14px"
+							height="10px"
 						/>
 					</Flex>
 				</Flex>
