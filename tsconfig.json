@@ -5,7 +5,6 @@
 		"baseUrl": ".",
 		"paths": {
 			"test-utils": ["./__tests__/test-utils/test-utils"],
-			"test-utils.mocks": ["./__tests__/test-utils/test-utils.mocks"],
 			"components/*": ["./components/*"],
 			"page-components/*": [
 				"./page-components/*",
@@ -17,6 +16,7 @@
 			"libs/*": ["./libs/*"],
 			"hooks/*": ["./hooks/*"],
 			"public/*": ["./public/*"],
+			"pages/*": ["./pages/*"],
 			"@/pages/*": ["pages/*"]
 		},
 		"allowJs": true,
@@ -32,14 +32,7 @@
 		"isolatedModules": true,
 		"jsx": "preserve"
 	},
-	"include": [
-		"next-env.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		"pages/index.tsx" // "components/SearchBar/SearchFilterSort.jsx",
-		// "components/Network/Table.jsx",
-		// "constants/adminMenu.ts"
-	],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
 	"exclude": [
 		"node_modules",
 		".next",

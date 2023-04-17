@@ -3,7 +3,6 @@
 		"baseUrl": ".",
 		"paths": {
 			"test-utils": ["./__tests__/test-utils/test-utils"],
-			"test-utils.mocks": ["./__tests__/test-utils/test-utils.mocks"],
 			"components": ["./components/*"],
 			"constants": ["./constants/*"],
 			"contexts": ["./contexts/*"],

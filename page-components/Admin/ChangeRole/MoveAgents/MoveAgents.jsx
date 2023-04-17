@@ -1,61 +1,6 @@
 import { Avatar, Box, Checkbox, Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
-const data = [
-	{
-		title: "R. J. Technology",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "R. J. Technology",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "R. J. Technology",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "R. J. Technology",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-	{
-		title: "Aarkay Finance",
-		img: "",
-	},
-];
-
 /**
  * A <MoveAgents> component
  * TODO: Write more description here
@@ -64,25 +9,58 @@ const data = [
  * @example	`<MoveAgents></MoveAgents>`
  */
 
-const MoveAgents = ({ ShowSelectAgents, options = [] }) => {
-	const [checked, setChecked] = useState(Array(data.length).fill(false));
+const MoveAgents = ({
+	ShowSelectAgents,
+	options,
+	selectedEkocspids,
+	onSelectedEkocspidsChange,
+	setSelectedEkocspidsCR,
+}) => {
+	const [checked, setChecked] = useState(Array(options.length).fill(false));
 	const [isSelectAll, setIsSelectAll] = useState(false);
 
 	function selectAllHandler() {
-		if (!isSelectAll) setChecked((prev) => Array(prev.length).fill(true));
-		else setChecked((prev) => Array(prev.length).fill(false));
+		if (!isSelectAll) {
+			setChecked(Array(checked.length).fill(true));
+			onSelectedEkocspidsChange(options.map((option) => option.ekocspid));
+		} else {
+			setChecked(Array(checked.length).fill(false));
+			onSelectedEkocspidsChange([]);
+		}
 		setIsSelectAll((prev) => !prev);
 	}
-	const OnCheckHandler = (key) => {
-		let temp = checked;
-		temp[key] = !temp[key];
-		setChecked([...temp]);
-	};
+
+	function OnCheckHandler(idx) {
+		setChecked((prev) => {
+			const newChecked = [...prev];
+			newChecked[idx] = !newChecked[idx];
+			return newChecked;
+		});
+		if (checked[idx]) {
+			onSelectedEkocspidsChange((prev) => [
+				...prev,
+				options[idx].ekocspid,
+			]);
+			setSelectedEkocspidsCR((prev) => {
+				[...prev, options[idx].ekocspid];
+			});
+		} else {
+			onSelectedEkocspidsChange((prev) =>
+				prev.filter((id) => id !== options[idx].ekocspid)
+			);
+		}
+	}
+
+	// for duplicated entry
+	// useEffect(() => {
+	//   const uniqueEkocspids = [...new Set(selectedEkocspids)];
+	//   onSelectedEkocspidsChange(uniqueEkocspids);
+	// }, [checked]);
 	return (
 		<Box w={{ base: "100%", md: "500px" }} bg="white">
 			{!ShowSelectAgents ? (
 				<Text
-					color="#0C243B"
+					color="inputlabel"
 					fontSize="md"
 					fontWeight="semibold"
 					mb="15px"
@@ -131,39 +109,41 @@ const MoveAgents = ({ ShowSelectAgents, options = [] }) => {
 						},
 					}}
 				>
-					{options.map((ele, idx) => {
-						return (
-							<Flex
-								align="center"
-								px="5"
-								py={{ base: "2.5", md: "4" }}
-								bg="inherit"
-								key={idx}
-								columnGap="15px"
-								_even={{
-									backgroundColor: "shade",
-								}}
-								color="accent.DEFAULT"
-								fontSize="sm"
-								onClick={() => OnCheckHandler(idx)}
-							>
-								<Checkbox
-									variant="rounded"
-									isChecked={checked[idx]}
-									onChange={() => OnCheckHandler(idx)}
-								/>
-								<Avatar
-									name={ele.DisplayName[0]}
-									bg="accent.DEFAULT"
-									w="36px"
-									h="36px"
-								/>
-								<Text ml="-5px" fontSize="sm">
-									{ele.DisplayName}
-								</Text>
-							</Flex>
-						);
-					})}
+					{/* Select Sellers From */}
+					{options &&
+						options.map((ele, idx) => {
+							return (
+								<Flex
+									align="center"
+									px="5"
+									py={{ base: "2.5", md: "4" }}
+									bg="inherit"
+									key={idx}
+									columnGap="15px"
+									_even={{
+										backgroundColor: "shade",
+									}}
+									color="accent.DEFAULT"
+									fontSize="sm"
+									onClick={() => OnCheckHandler(idx)}
+								>
+									<Checkbox
+										variant="rounded"
+										isChecked={checked[idx]}
+										onChange={() => OnCheckHandler(idx)}
+									/>
+									<Avatar
+										name={ele.DisplayName[0]}
+										bg="accent.DEFAULT"
+										w="36px"
+										h="36px"
+									/>
+									<Text ml="-5px" fontSize="sm">
+										{ele.DisplayName}
+									</Text>
+								</Flex>
+							);
+						})}
 				</Box>
 			</Flex>
 		</Box>

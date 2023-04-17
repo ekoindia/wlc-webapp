@@ -3,11 +3,11 @@ import { generateNewAccessToken } from "helpers/loginHelper";
 import { useCallback } from "react";
 
 /**
- * @name useRefreshAccessToken
+ * @name useRefreshToken
  * @description Use this hook to refresh access_token from any component or hook or context
- * @example const { generateNewToken } =  useRefreshAccessToken();
+ * @example const { generateNewToken } =  useRefreshToken();
  */
-const useRefreshAccessToken = () => {
+const useRefreshToken = () => {
 	// Taken out the data from userContext
 	const {
 		userData,
@@ -38,10 +38,10 @@ const useRefreshAccessToken = () => {
 				logout
 			);
 		}
-	});
+	}, [refresh_token, token_timeout, isTokenUpdating]);
 
 	// generateNewToken function is used to generate new token access token
 	return { generateNewToken };
 };
 
-export default useRefreshAccessToken;
+export default useRefreshToken;

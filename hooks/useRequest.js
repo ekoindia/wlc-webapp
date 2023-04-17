@@ -2,7 +2,7 @@ import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import useRefreshAccessToken from "./useRefreshToken.js";
+import useRefreshToken from "./useRefreshToken.js";
 
 const useRequest = ({
 	method = "GET",
@@ -17,7 +17,7 @@ const useRequest = ({
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
-	const { generateNewToken } = useRefreshAccessToken();
+	const { generateNewToken } = useRefreshToken();
 
 	const { userData } = useUser();
 

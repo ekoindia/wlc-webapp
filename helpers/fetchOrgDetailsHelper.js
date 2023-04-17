@@ -16,7 +16,7 @@ const INVALID_DOMAIN_CACHE = new Set();
 let LAST_INVALID_DOMAIN_CACHE_BUST_TIME = Date.now();
 
 // Cache expiry time in milliseconds
-const CACHE_EXPIRY_TIME = 1000 * 60 * 60 * 24; // 24 hours
+const CACHE_EXPIRY_TIME = 1000 * (process.env.ORG_CACHE_EXPIRY_SEC || 1);
 
 // Response data, if org not found
 const invalidOrg = {
@@ -24,25 +24,22 @@ const invalidOrg = {
 };
 
 /**
- * Get dummy org details (used in development)
- * @returns {object} dummy org details
+ * Mock org details (used in development)
  */
-export const dummyOrgDetails = () => {
-	return {
-		org_id: process.env.WLC_ORG_ID || 2,
-		app_name: process.env.WLC_APP_NAME || "Wlc",
-		org_name: process.env.WLC_ORG_NAME || "Wlc",
-		logo: process.env.WLC_LOGO,
-		support_contacts: {
-			phone: process.env.WLC_SUPPORT_CONTACTS_PHONE || 1234567890,
-			email: process.env.WLC_SUPPORT_CONTACTS_EMAIL || "xyz@gmail.com",
+export const MockOrgDetails = {
+	org_id: process.env.WLC_ORG_ID || 2,
+	app_name: process.env.WLC_APP_NAME || "Wlc",
+	org_name: process.env.WLC_ORG_NAME || "Wlc",
+	logo: process.env.WLC_LOGO,
+	support_contacts: {
+		phone: process.env.WLC_SUPPORT_CONTACTS_PHONE || 1234567890,
+		email: process.env.WLC_SUPPORT_CONTACTS_EMAIL || "xyz@gmail.com",
+	},
+	login_types: {
+		google: {
+			client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
 		},
-		login_types: {
-			google: {
-				client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-			},
-		},
-	};
+	},
 };
 
 /**
@@ -53,16 +50,26 @@ export const dummyOrgDetails = () => {
  */
 export const fetchOrgDetails = async (host) => {
 	if (process.env.NEXT_PUBLIC_ENV === "development") {
-		// Dummy data for development
-		return {
-			props: {
-				data: dummyOrgDetails(),
-			},
-		};
+		if (process.env.WLC_MOCK_HOST) {
+			// Mock hostname to get details from server
+			host = process.env.WLC_MOCK_HOST;
+		} else {
+			// Mock data for development
+			return {
+				props: {
+					data: MockOrgDetails,
+				},
+			};
+		}
 	}
 
 	if (!host) {
-		return invalidOrg;
+		return {
+			...invalidOrg,
+			props: {
+				reason: "No host detected: " + host,
+			},
+		};
 	}
 
 	const subdomainRootHost = "." + (process.env.WLC_SUBDOMAIN_ROOT || "xxxx");
@@ -79,7 +86,12 @@ export const fetchOrgDetails = async (host) => {
 	}
 
 	if (!(domain || subdomain)) {
-		return invalidOrg;
+		return {
+			...invalidOrg,
+			props: {
+				reason: "Couldn't parse (sub)domain. Host = " + host,
+			},
+		};
 	}
 
 	// Check cache for valid (sub)domain
@@ -97,7 +109,12 @@ export const fetchOrgDetails = async (host) => {
 			INVALID_DOMAIN_CACHE.clear();
 			LAST_INVALID_DOMAIN_CACHE_BUST_TIME = Date.now();
 		} else {
-			return invalidOrg;
+			return {
+				...invalidOrg,
+				props: {
+					cached: true,
+				},
+			};
 		}
 	}
 
@@ -106,8 +123,11 @@ export const fetchOrgDetails = async (host) => {
 		// Fetch org details from API
 		orgDetails = await fetchOrgDetailsfromApi(domain, subdomain);
 
+		console.log("Fetched Org details::: ", orgDetails);
+
 		// Cache the org details
 		if (orgDetails?.org_id) {
+			// console.debug("Caching Org details::: ", orgDetails);
 			ORG_CACHE[domain || subdomain] = {
 				...orgDetails,
 				cache_expires: Date.now() + CACHE_EXPIRY_TIME,
@@ -124,7 +144,12 @@ export const fetchOrgDetails = async (host) => {
 					data: orgDetails,
 				},
 		  }
-		: invalidOrg;
+		: {
+				...invalidOrg,
+				props: {
+					reason: "Org details null",
+				},
+		  };
 };
 
 /**
@@ -133,30 +158,70 @@ export const fetchOrgDetails = async (host) => {
  * @param subdomain
  */
 const fetchOrgDetailsfromApi = async (domain, subdomain) => {
-	await fetch(
-		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GET_ORG_FROM_DOMAIN,
-		{
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(
-				domain
-					? { domain: encodeURIComponent(domain) }
-					: { sub_domain: encodeURIComponent(subdomain) }
-			),
-		}
-	)
-		.then((data) => data.json())
-		.then((res) => {
-			if (res && res.data && res.data.org_id) {
-				return res.data;
-			} else {
-				return null;
+	try {
+		const res = await fetch(
+			process.env.NEXT_PUBLIC_API_BASE_URL +
+				Endpoints.GET_ORG_FROM_DOMAIN,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(
+					domain
+						? { domain: encodeURIComponent(domain) }
+						: { sub_domain: encodeURIComponent(subdomain) }
+				),
 			}
-		})
-		.catch((e) => {
-			console.error("Error getting org details: ", e);
+		);
+
+		if (!res.ok) {
+			console.debug(
+				"Org details not found on server: ",
+				JSON.stringify(
+					{
+						url:
+							process.env.NEXT_PUBLIC_API_BASE_URL +
+							Endpoints.GET_ORG_FROM_DOMAIN,
+						status: res.status,
+						domain: domain,
+						sub_domain: subdomain,
+						data: await res.text(),
+					},
+					null,
+					2
+				)
+			);
+
 			return null;
-		});
+		}
+
+		const data = await res.json();
+
+		if (data && data.data && data.data.org_id) {
+			return data.data;
+		} else {
+			console.debug(
+				"Org details not found on server: ",
+				JSON.stringify(
+					{
+						url:
+							process.env.NEXT_PUBLIC_API_BASE_URL +
+							Endpoints.GET_ORG_FROM_DOMAIN,
+						status: res.status,
+						domain: domain,
+						sub_domain: subdomain,
+						data: data,
+					},
+					null,
+					2
+				)
+			);
+
+			return null;
+		}
+	} catch (e) {
+		console.error("Error getting org details: ", e);
+		return null;
+	}
 };

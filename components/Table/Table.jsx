@@ -13,6 +13,7 @@ import {
 	useMediaQuery,
 } from "@chakra-ui/react";
 import {
+	getAccordian,
 	getArrowStyle,
 	getLocationStyle,
 	getModalStyle,
@@ -126,7 +127,7 @@ const Table = (props) => {
 						{renderer.map((r, rIndex) => {
 							return (
 								<Td
-									// onClick={() => onRowClick(data[index])} Todo: deepak will check
+									onClick={() => handleRowClick(index)}
 									p={{ md: ".5em", xl: "1em" }}
 									key={rIndex}
 								>
@@ -267,33 +268,7 @@ const Table = (props) => {
 			case "Modal":
 				return getModalStyle(eko_code, account_status);
 			case "Accordian":
-				return (
-					<Box
-						bg="primary.DEFAULT"
-						minH={{ base: "24px", xl: "24px", "2xl": "24px" }}
-						minW={{ base: "24px", xl: "24px", "2xl": "24px" }}
-						width={{ base: "24px", xl: "24px", "2xl": "24px" }}
-						height={{ base: "24px", xl: "24px", "2xl": "324px0px" }}
-						borderRadius="30px"
-						display={"flex"}
-						justifyContent={"center"}
-						alignItems="center"
-						cursor={"pointer"}
-					>
-						<Box alignItems={"center"}>
-							<Icon
-								name={
-									expandedRow === index
-										? "remove"
-										: "expand-add"
-								}
-								width="15px"
-								color="white"
-							/>
-						</Box>
-					</Box>
-				);
-
+				return getAccordian(expandedRow, index);
 			case "IconButton":
 				return getLocationStyle(item[column.name]);
 			case "Avatar":

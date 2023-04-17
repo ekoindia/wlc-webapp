@@ -12,7 +12,7 @@ import {
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { adminMenu, nonAdminMenu } from "constants";
+import { adminSidebarMenu, sidebarMenu } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
 import Link from "next/link";
@@ -68,7 +68,8 @@ const SideBarMenu = (/* { className = "", ...props } */) => {
 		setcurrentRoute(router.pathname.split("/")[2]);
 	}, [router.asPath]);
 
-	const menuList = userData?.is_org_admin === 1 ? adminMenu : nonAdminMenu;
+	const menuList =
+		userData?.is_org_admin === 1 ? adminSidebarMenu : sidebarMenu;
 
 	return (
 		<Box
@@ -88,12 +89,13 @@ const SideBarMenu = (/* { className = "", ...props } */) => {
 					{userData?.is_org_admin !== 1 && (
 						<>
 							<ProfileCard
+								key={"profileStatus"}
 								name={userData?.userDetails?.name}
 								mobileNumber={userData?.userDetails?.mobile}
 								img={userData?.userDetails?.pic}
 							/>
 
-							<StatusCard />
+							<StatusCard key={"walletStatus"} />
 						</>
 					)}
 
@@ -101,38 +103,33 @@ const SideBarMenu = (/* { className = "", ...props } */) => {
 						switch (true) {
 							case menu.subLevel && menu.api:
 								return (
-									<>
-										<CollapseMenu
-											menu={menu}
-											interaction_list={interaction_list}
-											currentRoute={currentRoute}
-											role={userData?.role}
-										/>
-									</>
+									<CollapseMenu
+										key={menu.name}
+										menu={menu}
+										interaction_list={interaction_list}
+										currentRoute={currentRoute}
+										role={userData?.role}
+									/>
 								);
 							case menu.subLevel && menu.subLevelObject != null:
 								return (
-									<>
-										<CollapseMenu
-											menu={menu}
-											interaction_list={
-												menu.subLevelObject
-											}
-											currentRoute={currentRoute}
-											role={userData?.role}
-										/>
-									</>
+									<CollapseMenu
+										key={menu.name}
+										menu={menu}
+										interaction_list={menu.subLevelObject}
+										currentRoute={currentRoute}
+										role={userData?.role}
+									/>
 								);
 							default:
 								return (
-									<>
-										<LinkMenu
-											menu={menu}
-											currentRoute={currentRoute}
-											index={index}
-											role={userData?.role}
-										/>
-									</>
+									<LinkMenu
+										key={menu.name}
+										menu={menu}
+										currentRoute={currentRoute}
+										index={index}
+										role={userData?.role}
+									/>
 								);
 						}
 					})}
@@ -245,7 +242,7 @@ const CollapseMenu = (props) => {
 										role
 									);
 									return (
-										<Link key={index} href={link}>
+										<Link key={item.label} href={link}>
 											<Box
 												w="100%"
 												padding="0px 14px 0px 40px"

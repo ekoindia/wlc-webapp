@@ -86,10 +86,30 @@ export const getModalStyle = (eko_code, account_status) => {
 		</>
 	);
 };
-// export const getAccordian = (props) => {
-// 	return <></>;
-// };
-
+export const getAccordian = (expandedRow, index) => {
+	return (
+		<>
+			<Box
+				bg="primary.DEFAULT"
+				width="24px"
+				height="24px"
+				borderRadius="30px"
+				display={"flex"}
+				justifyContent={"center"}
+				alignItems="center"
+				cursor={"pointer"}
+			>
+				<Box alignItems={"center"}>
+					<Icon
+						name={expandedRow === index ? "remove" : "add"}
+						width="15px"
+						color="white"
+					/>
+				</Box>
+			</Box>
+		</>
+	);
+};
 export const openGoogleMap = ({ latitude, longitude }) => {
 	const lat = parseFloat(latitude);
 	const lng = parseFloat(longitude);

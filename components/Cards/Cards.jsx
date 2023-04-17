@@ -7,8 +7,8 @@ import { Card } from "@chakra-ui/react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Cards></Cards>`
  */
-const Cards = ({ className = "", children, ...props }) => {
-	const { onClick } = props;
+const Cards = ({ className = "", children, ...rest }) => {
+	const { onClick } = rest;
 
 	return (
 		<Card
@@ -20,7 +20,7 @@ const Cards = ({ className = "", children, ...props }) => {
 			h={{ base: "auto", md: "600px", xl: "620px" }}
 			bg="white"
 			onClick={onClick}
-			{...props}
+			{...rest}
 		>
 			{children}
 		</Card>

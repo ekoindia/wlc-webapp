@@ -8,6 +8,7 @@ export function SearchBar(props) {
 		minSearchLimit = 5,
 		maxSearchLimit = 10,
 		placeholder,
+		inputContStyle,
 		numbersOnly = false,
 	} = props;
 	const [value, setValue] = useState("");
@@ -56,6 +57,7 @@ export function SearchBar(props) {
 				xl: "30vw",
 				"2xl": "30vw",
 			}}
+			{...inputContStyle}
 		>
 			{/* <Box
         h="100%"

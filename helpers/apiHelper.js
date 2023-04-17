@@ -75,7 +75,15 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 			if (res.ok) {
 				return res.json();
 			} else {
-				console.error("📡 Fetch Error:", { url, options, res });
+				res.text().then((text) => {
+					console.error("📡 Fetch Error:", {
+						url,
+						options,
+						res,
+						body: text,
+					});
+				});
+
 				const err = new Error("Failed");
 				err.response = res;
 				err.status = res.status;
