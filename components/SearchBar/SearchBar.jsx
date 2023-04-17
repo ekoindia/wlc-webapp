@@ -9,36 +9,39 @@ export function SearchBar(props) {
 		maxSearchLimit = 10,
 		placeholder,
 		inputContStyle,
+		numbersOnly = false,
 	} = props;
 	const [value, setValue] = useState("");
 	const [isInvalid, setIsInvalid] = useState(false);
-	console.log("isInvalid", isInvalid);
 	const handleKeyDown = (e) => {
 		if (e.key === "Enter") {
 			if (
 				value.length >= minSearchLimit &&
 				value.length <= maxSearchLimit
 			) {
-				console.log(value);
 				setSearch(value);
 				setIsInvalid(false);
 			} else {
 				setIsInvalid(true);
 			}
-		} else if (e.keyCode === 8) {
-			// add condition to check if backspace key was pressed
-			setSearch(""); // clear the search
-			setIsInvalid(true);
+		}
+		if (isInvalid) {
+			setIsInvalid(false);
 		}
 	};
 
 	const handleChange = (e) => {
 		const inputValue = e.target.value;
-		if (inputValue.length <= maxSearchLimit) {
+
+		let isValid = true;
+		if (numbersOnly) {
+			// Regular expression to allow only numbers and decimal points
+			isValid = /^[0-9]*\.?[0-9]*$/.test(inputValue);
+		}
+
+		if (isValid && inputValue.length <= maxSearchLimit) {
 			setValue(inputValue);
-			setIsInvalid(inputValue.length < minSearchLimit);
-		} else {
-			setIsInvalid(true);
+			// setIsInvalid(inputValue.length < minSearchLimit);
 		}
 	};
 
@@ -56,6 +59,13 @@ export function SearchBar(props) {
 			}}
 			{...inputContStyle}
 		>
+			{/* <Box
+        h="100%"
+        w="2px"
+        display="block"
+        bg="red"
+        transition="width 0.1s ease-out"
+    ></Box> */}
 			<Input
 				value={value}
 				placeholder={
@@ -95,6 +105,7 @@ export function SearchBar(props) {
 			>
 				<Icon name="search" width="18px" />
 			</Center>
+
 			{/* {value !== "" && (
 				<Box
 					position="absolute"

@@ -3,40 +3,33 @@ import { useLayoutContext } from "contexts/LayoutContext";
 import { useState } from "react";
 import { NavBar, SideBar } from "..";
 
-const Layout = ({ isLoggedIn, children /* , ...props */ }) => {
+const Layout = ({ isLoggedIn, children }) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const { isNavHidden } = useLayoutContext();
 
 	return isLoggedIn ? (
-		<Box w={"full"} minH={"100vh"}>
+		<Box w={"full"}>
 			{!isNavHidden && <NavBar setNavOpen={setIsNavOpen} />}
 
-			<Flex
-				width={"full"}
-				height={{
-					base: "calc(100vh - 56px)",
-					sm: "calc(100vh - 56px)",
-					md: "calc(100vh - 50px)",
-					lg: "calc(100vh - 60px)",
-					xl: "calc(100vh - 50px)",
-					"2xl": "calc(100vh - 90px)",
-				}}
-			>
+			<Flex>
 				<SideBar navOpen={isNavOpen} setNavOpen={setIsNavOpen} />
 				{/* Main Content here */}
 
 				<Box
-					minH={"calc(100vh- 4.5vw)"}
+					minH={{
+						base: "calc(100vh - 56px)",
+						sm: "calc(100vh - 56px)",
+						md: "calc(100vh - 50px)",
+						lg: "calc(100vh - 60px)",
+						xl: "calc(100vh - 50px)",
+						"2xl": "calc(100vh - 90px)",
+					}}
 					w={"full"}
 					bg={"bg"}
 					overflow={"hidden"}
 				>
 					<Box
-						w={"full"}
-						h={"100%"}
 						overflowY={"auto"}
-						// p={"1vw"}
-						// pr={"0.6vw"}
 						p={{
 							base: "0px",
 							sm: "0px",
@@ -44,7 +37,6 @@ const Layout = ({ isLoggedIn, children /* , ...props */ }) => {
 							"2xl": "1.5vw",
 						}}
 						pb={{ base: "20px", md: "30px", "2xl": "30px" }}
-						// mt="20px"
 						css={{
 							"&::-webkit-scrollbar": {
 								width: "0.6vw",
@@ -58,14 +50,6 @@ const Layout = ({ isLoggedIn, children /* , ...props */ }) => {
 							},
 						}}
 					>
-						{/* <Breadcrumbs
-							setNav={setNav}
-							setHeadingObj={setHeadingObj}
-							isNavVisible={isNav}
-							isSmallerThan769={isSmallerThan769}
-							propComp={propComp}
-						/> */}
-
 						{children}
 					</Box>
 				</Box>

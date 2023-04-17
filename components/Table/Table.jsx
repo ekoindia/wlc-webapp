@@ -260,11 +260,14 @@ const Table = (props) => {
 	};
 
 	const prepareCol = (item, column, index, serialNo) => {
+		console.log(item.account_status);
+		const account_status = item?.account_status;
+		const eko_code = item?.profile?.eko_code ?? [];
 		switch (column?.show) {
 			case "Tag":
 				return getStatusStyle(item[column.name], tableName);
 			case "Modal":
-				return getModalStyle();
+				return getModalStyle(eko_code, account_status);
 			case "Accordian":
 				return getAccordian(expandedRow, index);
 			case "IconButton":
