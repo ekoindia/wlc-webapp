@@ -28,7 +28,7 @@ const DetailedStatement = () => {
 		from: "",
 		to: "DD/MM/YYYY",
 	});
-	console.log("dateText", dateText);
+	console.log("search", search);
 
 	const handleApply = () => {
 		if (dateText.to === "YYYY/MM/DD" && dateText.from === "YYYY/MM/DD") {
@@ -279,6 +279,7 @@ const DetailedStatement = () => {
 				>
 					<Flex>
 						<SearchBar
+							numbersOnly={true}
 							minSearchLimit={2}
 							maxSearchLimit={10}
 							placeholder="Search by transaction ID or amount"
@@ -321,21 +322,22 @@ const DetailedStatement = () => {
 								maxDate={"2020-01-20"}
 								w="100%"
 								placeholder="From"
-								labelStyle={{
-									fontSize: "lg",
-									fontWeight: "semibold",
-									mb: "1.2rem",
-								}}
 								inputContStyle={{
-									w: "100%",
-									h: "48px",
+									w: {
+										base: "100%",
+										md: "190px",
+										xl: "200px",
+										"2xl": "274px",
+									},
 									borderRadius: {
 										base: "10px",
 										md: "10px 0px 0px 10px",
 									},
-									borderRight: {
-										base: "flex",
-										md: "none",
+									borderRight: { base: "flex", md: "none" },
+									h: {
+										base: "3rem",
+										md: "2.5rem",
+										xl: "3rem",
 									},
 								}}
 								onChange={(e) => onDateChange(e, "from")}
@@ -347,23 +349,24 @@ const DetailedStatement = () => {
 								// label="Filter by activation date range"
 								minDate={"2016-01-20"}
 								maxDate={"2020-01-20"}
+								placeholder="To"
 								w="100%"
-								placeholder="to"
-								labelStyle={{
-									fontSize: "lg",
-									fontWeight: "semibold",
-									mb: "1.2rem",
-								}}
 								inputContStyle={{
-									w: "100%",
-									h: "48px",
+									w: {
+										base: "100%",
+										md: "180px",
+										xl: "200px",
+										"2xl": "274px",
+									},
+
 									borderRadius: {
 										base: "10px",
-										md: "10px 0px 0px 10px",
+										md: "0px 10px 10px 0px",
 									},
-									borderRight: {
-										base: "flex",
-										md: "none",
+									h: {
+										base: "3rem",
+										md: "2.5rem",
+										xl: "3rem",
 									},
 								}}
 								onChange={(e) => onDateChange(e, "to")}

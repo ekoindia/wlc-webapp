@@ -11,25 +11,6 @@ import { Icon } from "..";
 
 const Menus = (props) => {
 	const router = useRouter();
-	const menuList = [
-		{
-			item: "Proceed",
-			path: "",
-		},
-		{
-			item: "Mark Inactive",
-			path: "",
-		},
-		{
-			item: "Mark Pending",
-			path: "",
-		},
-		{
-			item: "Change Role",
-			path: "/admin/my-network/profile/change-role",
-		},
-	];
-
 	const {
 		minH,
 		minW,
@@ -45,7 +26,7 @@ const Menus = (props) => {
 		itemStyles,
 		listStyles,
 		onClick,
-		menulist = menuList,
+		menulist,
 	} = props;
 
 	const pseudoStyles = {
@@ -59,7 +40,6 @@ const Menus = (props) => {
 			bg: type === "inverted" ? "white" : "primary.dark",
 		},
 	};
-
 	const iconWPos =
 		iconPos === "right"
 			? { rightIcon: <Icon name={iconName} {...iconStyles} /> }
@@ -98,7 +78,11 @@ const Menus = (props) => {
 											color="dark"
 											key={index}
 											onClick={() => {
-												router.push(item.path);
+												if (item.handleClick) {
+													item.handleClick();
+												} else {
+													router.push(item.path);
+												}
 											}}
 											p="8px 10px"
 											fontSize={{
