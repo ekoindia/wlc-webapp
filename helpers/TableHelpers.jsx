@@ -1,5 +1,6 @@
-import { Avatar, Box, Flex, IconButton } from "@chakra-ui/react";
-import { Icon, IconButtons, Menus, Tags } from "components";
+import { Avatar, Box, Flex } from "@chakra-ui/react";
+import { Icon, IconButtons, Tags } from "components";
+import { NetworkMenuWrapper } from "page-components/Admin/Network";
 
 export const getNameStyle = (name) => {
 	return (
@@ -61,10 +62,11 @@ export const getArrowStyle = () => {
 		</Box>
 	);
 };
-export const getModalStyle = () => {
+export const getModalStyle = (eko_code, account_status) => {
+	console.log("eko_code in tablehelpers", eko_code);
 	return (
 		<>
-			<Menus
+			{/* <Menus
 				type="everted"
 				as={IconButton}
 				iconName="more-vert"
@@ -76,6 +78,10 @@ export const getModalStyle = () => {
 				onClick={(e) => {
 					e.stopPropagation();
 				}}
+			/> */}
+			<NetworkMenuWrapper
+				eko_code={eko_code}
+				account_status={account_status}
 			/>
 		</>
 	);

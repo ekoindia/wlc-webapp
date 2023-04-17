@@ -16,7 +16,7 @@ import { Menus } from "components/Menus";
 import { Endpoints } from "constants/EndPoints";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 /**
  * A <NetworkMenuWrapper> component
@@ -27,8 +27,9 @@ import { useEffect, useState } from "react";
  */
 
 const NetworkMenuWrapper = (props) => {
-	const { eko_code } = props;
-	// console.log("eko_code in networkmenu", eko_code);
+	const { eko_code, account_status } = props;
+	const { onOpen, onClose } = useDisclosure();
+	const [reason, setReason] = useState("");
 	const menuList = [
 		{
 			item: "Proceed",
@@ -53,19 +54,22 @@ const NetworkMenuWrapper = (props) => {
 	];
 	const [isOpen, setOpen] = useState(false);
 	const { userData } = useUser();
-	const body = {
-		initiator_id: "9911572989",
-		user_code: "99029899",
-		org_id: "1",
-		source: "WLC",
-		client_ref_id: "202301031354123456",
-	};
-	useEffect(() => {
+	const handleSave = () => {
+		console.log("Reason for marking inactive:", reason);
+
+		// API call
+		const body = {
+			initiator_id: "9911572989",
+			user_code: "99029899",
+			org_id: "1",
+			source: "WLC",
+			client_ref_id: "202301031354123456",
+		};
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"Content-Type": "application/json",
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:17/descrip_note:nkxnakv`,
+				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:17/descrip_note:${reason}`,
 				"tf-req-method": "PUT",
 			},
 			body: body,
@@ -73,16 +77,12 @@ const NetworkMenuWrapper = (props) => {
 		})
 			.then((data) => {
 				console.log("data", data);
+				// Close the dialog box after the API call succeeds
+				onClose();
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
 			});
-	}, []);
-	const { onOpen, onClose } = useDisclosure();
-	const [reason, setReason] = useState("");
-	const handleSave = () => {
-		console.log("Reason for marking inactive:", reason);
-		onClose();
 	};
 	return (
 		<div>
@@ -107,10 +107,10 @@ const NetworkMenuWrapper = (props) => {
 					width={{ base: "100%", md: "465px" }}
 					height="auto"
 				>
-					<ModalHeader>Mark Inactive</ModalHeader>
+					<ModalHeader>Mark {account_status}</ModalHeader>
 					<ModalCloseButton color="#D2D2D2" size="lg" />
 					<ModalBody>
-						<Text>Reason for marking inactive</Text>
+						<Text>Reason for marking {account_status}</Text>
 						<Textarea
 							width="100%"
 							h={{ base: "200px", md: "250px" }}
