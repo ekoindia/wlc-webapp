@@ -316,6 +316,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						md: "0.2vw",
 					}}
 					py={{ base: "10px", sm: "0px" }}
+					userSelect="none"
 				>
 					<Flex
 						w={"full"}
@@ -340,10 +341,15 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								lg: "14px",
 								"2xl": "14px",
 							}}
-							w={"fit-content"}
 							color={"highlight"}
+							textTransform="capitalize"
+							whiteSpace="nowrap"
+							overflow="hidden"
+							textOverflow="ellipsis"
+							width="40%"
+							title={userDetails?.name}
 						>
-							{userDetails?.name}
+							{userDetails?.name?.toLowerCase()}
 						</Text>
 						<Text
 							fontSize={{

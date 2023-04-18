@@ -89,19 +89,19 @@ const StatusCard = () => {
 					</Flex>
 				</Flex>
 			</Flex>
-			<Flex>
-				<Circle
-					size={{ base: "6", "2xl": "8" }}
-					bg={"success"}
-					color="white"
-					boxShadow="0px 3px 6px #00000029"
-					border="2px solid #FFFFFF"
-					cursor="pointer"
-					onClick={handleAddClick}
-				>
-					<Icon name="add" width={{ base: "12px", "2xl": "16px" }} />
-				</Circle>
-			</Flex>
+			{/* <Flex> */}
+			<Circle
+				size={{ base: "6", "2xl": "8" }}
+				bg={"success"}
+				color="white"
+				boxShadow="0px 3px 6px #00000029"
+				border="2px solid #FFFFFF"
+				cursor="pointer"
+				onClick={handleAddClick}
+			>
+				<Icon name="add" width={{ base: "12px", "2xl": "16px" }} />
+			</Circle>
+			{/* </Flex> */}
 		</Flex>
 	);
 };
