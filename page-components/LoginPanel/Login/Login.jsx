@@ -1,6 +1,6 @@
 import { Flex, Heading, useToast } from "@chakra-ui/react";
 // import { useGoogleLogin } from "@react-oauth/google";
-import { Buttons, Input } from "components";
+import { Button, Input } from "components";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
@@ -158,13 +158,14 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				// parameter_type_id={"15"}
 			/>
 
-			<Buttons
-				title="Verify"
+			<Button
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
 				onClick={SendOtp}
 				ref={EnterRef}
-			/>
+			>
+				Verify
+			</Button>
 		</Flex>
 	);
 };

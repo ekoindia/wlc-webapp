@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import {
 	Box,
-	Button,
 	Center,
 	Checkbox,
 	Drawer,
@@ -17,7 +16,7 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
-import { Buttons, Calenders, Icon } from "components";
+import { Button, Calenders, Icon } from "components";
 
 /**
  * A NetworkFilter component
@@ -106,93 +105,66 @@ const NetworkFilter = ({ filter, setFilter }) => {
 			<Box display={{ base: "none", md: "initial" }}>
 				<Button
 					display={"flex"}
-					justifyContent={"space-evenly"}
-					alignItems={"center"}
+					gap="2px"
+					// justifyContent={"space-evenly"}
+					// alignItems={"center"}
 					ref={btnRef}
 					onClick={onOpen}
 					h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
 					w={{
-						base: "8vw",
-						sm: "12vw",
-						md: "12vw",
-						lg: "9vw",
-						xl: "8vw",
+						md: "110px",
 						"2xl": "7vw",
+					}}
+					fontSize={{
+						sm: "md",
+						xl: "lg",
 					}}
 					bg="white"
 					color="accent.DEFAULT"
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
-					borderRadius="10px"
 					_hover={{
 						bg: "white",
 					}}
 					_active={{
 						bg: "white",
 					}}
+					lineHeight="normal"
+					leftIcon={
+						<Icon
+							name="filter"
+							width={{
+								md: "20px",
+								xl: "24px",
+							}}
+							height={{
+								md: "14px",
+								xl: "16px",
+							}}
+						/>
+					}
 				>
-					<Center
-						alignItems={"center"}
-						width={{
-							base: "10px",
-							sm: "12px",
-
-							lg: "14px",
-							xl: "16px",
-							"2xl": "20px",
-						}}
-						height={{
-							base: "10px",
-							sm: "12px",
-
-							lg: "14px",
-							xl: "16px",
-							"2xl": "20px",
-						}}
-						mr={"2px"}
-					>
-						<Icon name="filter" h="15px" />
-					</Center>
-					<Text
-						as="span"
-						color="accent.DEFAULT"
-						fontSize={{
-							base: "5px",
-							sm: "xs",
-
-							xl: "sm",
-							"2xl": "lg",
-						}}
-						lineHeight={1}
-					>
-						Filter
-					</Text>
+					Filter
 				</Button>
 			</Box>
 
 			<Box display={{ base: "initial", md: "none" }}>
 				<Button
 					display={"flex"}
-					gap={"10px"}
+					gap={"4px"}
 					ref={btnRef}
 					onClick={onOpen}
 					w={"100%"}
 					h={"100%"}
-					bg="primary.DEFAULT"
-					color="accent.DEFAULT"
 					borderRadius={"0px"}
 					boxShadow=" 0px 3px 10px #11299E1A"
+					leftIcon={<Icon name="filter" w="25px" color="white" />}
+					color="white"
+					fontSize={"18px"}
+					lineHeight={"0"}
+					fontWeight={"semibold"}
 				>
-					<Icon name="filter" w="25px" color="white" />
-					<Text
-						as="span"
-						color="white"
-						fontSize={"18px"}
-						lineHeight={"0"}
-						fontWeight={"semibold"}
-					>
-						Filter
-					</Text>
+					Filter
 				</Button>
 			</Box>
 
@@ -521,16 +493,16 @@ const NetworkFilter = ({ filter, setFilter }) => {
 									color={"accent.DEFAULT"}
 									fontSize={"20px"}
 									fontWeight="bold"
-									bg="white"
-									_focus={{
-										bg: "white",
-									}}
-									_hover="none"
+									// _focus={{
+									// 	bg: "white",
+									// }}
+									// _hover="none"
+									variant="ghost"
 								>
 									Clear all
 								</Button>
 
-								<Buttons
+								<Button
 									h="3.6rem"
 									title="Apply"
 									fontSize="20px"
@@ -541,7 +513,9 @@ const NetworkFilter = ({ filter, setFilter }) => {
 										sm: "10rem",
 										md: "7.375rem",
 									}}
-								/>
+								>
+									Apply
+								</Button>
 							</Flex>
 						</Stack>
 					</DrawerBody>

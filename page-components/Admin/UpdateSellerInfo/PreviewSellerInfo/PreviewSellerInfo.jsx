@@ -1,5 +1,5 @@
-import { Box, Button, Divider, Flex, Text } from "@chakra-ui/react";
-import { Buttons, Headings } from "components";
+import { Box, Divider, Flex, Text } from "@chakra-ui/react";
+import { Button, Headings } from "components";
 import Router from "next/router";
 
 /**
@@ -210,9 +210,8 @@ const PreviewSellerInfo = () => {
 						justifyContent={"flex-start"}
 						direction={{ base: "column", sm: "row" }}
 					>
-						<Buttons
+						<Button
 							h="3.5rem"
-							title="Save Now"
 							fontSize="20px"
 							fontWeight="bold"
 							w={{
@@ -220,7 +219,9 @@ const PreviewSellerInfo = () => {
 								sm: "10rem",
 								md: "12.2rem",
 							}}
-						/>
+						>
+							Save Now
+						</Button>
 
 						<Button
 							onClick={() =>

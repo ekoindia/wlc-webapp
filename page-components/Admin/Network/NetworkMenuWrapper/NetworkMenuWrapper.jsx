@@ -11,10 +11,9 @@ import {
 	Textarea,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { Buttons } from "components/Buttons";
-import { Menus } from "components/Menus";
+import { Button, Menus } from "components";
 import { Endpoints } from "constants/EndPoints";
-import { useUser } from "contexts/UserContext";
+import { useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 
@@ -101,7 +100,12 @@ const NetworkMenuWrapper = (props) => {
 					e.stopPropagation();
 				}}
 			/>
-			<Modal isOpen={isOpen} onClose={() => setOpen(false)} size="lg">
+			<Modal
+				isOpen={isOpen}
+				onClose={() => setOpen(false)}
+				size="lg"
+				isCentered={true}
+			>
 				<ModalOverlay />
 				<ModalContent
 					width={{ base: "100%", md: "465px" }}
@@ -110,7 +114,9 @@ const NetworkMenuWrapper = (props) => {
 					<ModalHeader>Mark {account_status}</ModalHeader>
 					<ModalCloseButton color="#D2D2D2" size="lg" />
 					<ModalBody>
-						<Text>Reason for marking {account_status}</Text>
+						<Text>
+							Reason for marking {account_status?.toLowerCase()}
+						</Text>
 						<Textarea
 							width="100%"
 							h={{ base: "200px", md: "250px" }}
@@ -125,13 +131,14 @@ const NetworkMenuWrapper = (props) => {
 						justifyContent="center"
 						paddingBottom={{ base: 4, md: 8 }}
 					>
-						<Buttons
-							title="Save"
+						<Button
 							h={{ base: "44px", md: "56px" }}
 							width="100%"
 							fontSize={{ base: "14px", md: "16px" }}
 							onClick={handleSave}
-						/>
+						>
+							Save
+						</Button>
 					</ModalFooter>
 				</ModalContent>
 			</Modal>

@@ -1,5 +1,5 @@
 import { Box, Center, Text } from "@chakra-ui/react";
-import { Buttons } from "components";
+import { Button } from "components";
 import Link from "next/link";
 
 const Custom404 = () => {
@@ -31,7 +31,7 @@ const Custom404 = () => {
 					has been removed.
 				</Text>
 				<Link href="/">
-					<Buttons>Back to homepage</Buttons>
+					<Button>Back to homepage</Button>
 				</Link>
 			</Center>
 		</Center>

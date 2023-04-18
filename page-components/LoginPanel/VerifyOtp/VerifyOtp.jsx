@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
-import { Buttons, Icon, IconButtons, OtpInput } from "components";
+import { Button, Icon, IconButtons, OtpInput } from "components";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { sendOtpRequest } from "helpers";
@@ -149,15 +149,15 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 				)}
 			</Flex>
 
-			<Buttons
-				title="Submit"
+			<Button
 				mt={{ base: "3.25rem", "2xl": "6.25rem" }}
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
-				// onClick={redirect} // dummy onClick
 				disabled={loading}
 				onClick={verifyOtpHandler}
-			/>
+			>
+				Submit
+			</Button>
 		</Flex>
 	);
 };

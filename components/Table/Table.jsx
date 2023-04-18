@@ -29,7 +29,7 @@ import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
 import { TransactionCard } from "page-components/NonAdmin/Transaction";
 import { useEffect, useState } from "react";
-import { Buttons, Cards, Icon, IconButtons, Pagination } from "..";
+import { Button, Cards, Icon, IconButtons, Pagination } from "..";
 
 const Table = (props) => {
 	const {
@@ -43,9 +43,9 @@ const Table = (props) => {
 		tableName,
 		isScrollrequired = false,
 		accordian = false,
-		onRowClick,
+		onRowClick = () => {},
 		isPaginationRequired = true,
-		isOnclickRequire = true,
+		// isOnclickRequire = true,
 	} = props;
 	const router = useRouter();
 	const [currentSort, setCurrentSort] = useState("default");
@@ -113,9 +113,10 @@ const Table = (props) => {
 					<Tr
 						key={index}
 						onClick={
-							isOnclickRequire
-								? () => onRowClick(data[index])
-								: undefined
+							() => onRowClick(data[index])
+							// ?
+							// isOnclickRequire
+							// 	: undefined
 						}
 						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 						style={{
@@ -224,7 +225,7 @@ const Table = (props) => {
 											</Flex>
 										</Flex>
 										<Flex>
-											<Buttons
+											<Button
 												w={{
 													lg: "80%",
 													xl: "90%",
@@ -246,7 +247,7 @@ const Table = (props) => {
 												>
 													Repeat Transaction
 												</Text>
-											</Buttons>
+											</Button>
 										</Flex>
 									</Flex>
 								</Td>

@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import {
-	Buttons,
+	Button,
 	Calenders,
 	Cards,
 	Headings,
@@ -374,9 +374,8 @@ const DetailedStatement = () => {
 							/>
 						</Flex>
 						<Flex pl={{ md: "5px", xl: "10px" }}>
-							<Buttons
+							<Button
 								h={{ base: "3rem", md: "2.5em", xl: "3rem" }}
-								title="Apply"
 								fontSize={{ base: "", lg: "15px", xl: "20px" }}
 								fontWeight="bold"
 								w={{
@@ -387,7 +386,9 @@ const DetailedStatement = () => {
 									"2xl": "7.375rem",
 								}}
 								onClick={handleApply}
-							/>
+							>
+								Apply
+							</Button>
 						</Flex>
 					</Flex>
 				</Flex>
