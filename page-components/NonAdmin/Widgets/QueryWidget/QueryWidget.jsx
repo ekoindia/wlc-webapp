@@ -1,5 +1,5 @@
 import { Box, Flex, GridItem, Text } from "@chakra-ui/react";
-import { Buttons } from "components";
+import { Button } from "components";
 /**
  * A <QueryWidget> component
  * TODO: Write more description here
@@ -45,7 +45,7 @@ const QueryWidget = ({ className = "", ...props }) => {
 						</Text>
 					</Flex>
 					<Box textAlign={"center"} mt={{ base: "0px", md: "40px" }}>
-						<Buttons>Write to us</Buttons>
+						<Button>Write to us</Button>
 					</Box>
 				</Flex>
 			</GridItem>

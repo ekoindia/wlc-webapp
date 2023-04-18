@@ -1,5 +1,5 @@
 import { Box, Flex, GridItem, Image, Text } from "@chakra-ui/react";
-import { Buttons } from "components";
+import { Button } from "components";
 /**
  * A <EkycWidget> component
  * TODO: Write more description here
@@ -106,7 +106,7 @@ const EkycWidget = ({ className = "", ...props }) => {
 						display={"flex"}
 						justifyContent={{ base: "left", md: "center" }}
 					>
-						<Buttons
+						<Button
 							fontWeight={"medium"}
 							borderRadius="6px"
 							bg="transparent"
@@ -114,7 +114,7 @@ const EkycWidget = ({ className = "", ...props }) => {
 							border="2px solid white"
 						>
 							Proceed &gt;
-						</Buttons>
+						</Button>
 					</Box>
 				</Flex>
 			</Flex>
