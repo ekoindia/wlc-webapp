@@ -1,4 +1,4 @@
-import { Avatar, Circle, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "..";
 
 /**
@@ -29,9 +29,14 @@ const ProfileCard = (props) => {
 			borderBottom="br-sidebar"
 			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
 		>
-			<Circle bg="sidebar.icon-bg" size={{ base: 14, lg: 14, xl: 14 }}>
-				<Avatar w="50px" h="50px" src={img} name={name.charAt(0)} />
-			</Circle>
+			<Avatar
+				w="50px"
+				h="50px"
+				src={img}
+				name={name.charAt(0)}
+				outline="3px solid"
+				outlineColor="sidebar.icon-bg"
+			/>
 
 			<Flex
 				direction="column"
