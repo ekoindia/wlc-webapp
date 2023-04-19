@@ -12,11 +12,14 @@ const QueryWidget = ({ className = "", ...props }) => {
 		base: "white",
 		md: "transparent",
 	});
+	const handleContact = () => {
+		console.log("handleContact");
+	};
 	return (
 		<div className={`${className}`} {...props}>
 			<GridItem>
 				<Flex
-					h={{ base: "auto", sm: "350px", md: "387px", lg: "400px" }}
+					h={{ base: "auto", sm: "200px", md: "387px", lg: "400px" }}
 					w={{ base: "100%", sm: "100%", md: "450px", lg: "480px" }}
 					borderRadius={{
 						base: "0px 0px 0px 0px",
@@ -25,15 +28,19 @@ const QueryWidget = ({ className = "", ...props }) => {
 					}}
 					background={{
 						base: "linear-gradient(to bottom, #2dbb5c, #02762c)",
-						md: "url('./havequery.svg'), linear-gradient(to bottom, #2dbb5c, #02762c)",
+						md: "url('./havequery.svg'), no-repeat,linear-gradient(to bottom, #2dbb5c, #02762c)",
 					}}
-					background-repeat="no-repeat"
+					// background-repeat= "no-repeat !important"
 					backgroundSize="cover"
 					direction={"column"}
-					align={{ base: "flex-start", md: "center" }}
-					rowGap={{ base: "20px", md: "50px" }}
-					px={{ base: "20px", md: "20px" }}
-					py={{ base: "20px", md: "24px" }}
+					align={{
+						base: "flex-start",
+						sm: "flex-start",
+						md: "center",
+					}}
+					rowGap={{ base: "20px", sm: "30px", md: "50px" }}
+					px={{ base: "20px", sm: "40px", md: "20px" }}
+					py={{ base: "20px", sm: "30px", md: "24px" }}
 					backgroundPosition="center"
 				>
 					{/* have a query */}
@@ -44,7 +51,7 @@ const QueryWidget = ({ className = "", ...props }) => {
 						alignItems="baseline"
 						color={"white"}
 						as="b"
-						pt={{ base: "0px", md: "40px" }}
+						pt={{ base: "0px", sm: "20px", md: "40px" }}
 						direction={"row"}
 					>
 						<Text
@@ -108,18 +115,13 @@ const QueryWidget = ({ className = "", ...props }) => {
 								border={{ base: "", md: "1px solid white" }}
 								_hover={{ bg: hoverBg }}
 								color={{ base: "#11299E", md: "white" }}
+								onClick={handleContact}
 								icon={
 									<Icon
 										name="chat-outline"
 										h={{ base: "18px", md: "20px" }}
 									/>
 								}
-								// size={{
-								// 	base: "sm",
-								// 	sm: "sm",
-								// 	xs: "xs",
-								// 	md: "lg",
-								// }}
 								borderRadius="10px"
 								h={{ base: "40px", md: "48px" }}
 								w={{ base: "120px", md: "190px" }}
