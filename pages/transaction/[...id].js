@@ -22,7 +22,7 @@ const Transaction = () => {
 	const { role_tx_list } = useMenuContext();
 	console.log(">>> USER DATA:: ", userData, role_tx_list);
 
-	const { widgetLoading } = useSetupWidgetEventListeners();
+	const { widgetLoading } = useSetupWidgetEventListeners(router);
 
 	return (
 		<>
@@ -66,7 +66,11 @@ const Transaction = () => {
 /**
  * Add listeners for the custom events dispatched by the Connect widget.
  */
-const setupWidgetEventListeners = ({ setWidgetLoading, generateNewToken }) => {
+const setupWidgetEventListeners = ({
+	setWidgetLoading,
+	generateNewToken,
+	router,
+}) => {
 	/**
 	 * Event called when the user session expires
 	 * and the widget needs to refresh the access-token.
@@ -83,6 +87,50 @@ const setupWidgetEventListeners = ({ setWidgetLoading, generateNewToken }) => {
 
 	const onOpenUrl = (e) => {
 		console.log("🎬 >>> onOpenUrl:: ", e);
+
+		if (!e?.detail) {
+			return;
+		}
+
+		let uri = e.detail.trim();
+
+		// Remove the (sub)domain or 'https://connect.eko.in/' from internal links...
+		const re = new RegExp(
+			"^(" + window.location.origin + "|(https?://)?connect.eko.in)",
+			"i"
+		);
+		uri = uri.replace(re, "");
+
+		if (false === /^(?:[-_a-z]+:|[a-z]+\.)/i.test(uri)) {
+			// Open Internal Page (eg:  "/transaction/64")
+
+			// Ensure '/' at beginning of URL
+			uri = (uri.startsWith("/") ? "" : "/") + uri;
+
+			// Open URL internally (same browser tab/window)
+			router.push(uri);
+		} else {
+			// Open External Link (new browser tab/window)...
+			console.log("Opening External Link: ", uri);
+			window.open(uri, "_blank");
+		}
+	};
+
+	const onGotoTrxn = (e) => {
+		if (!e?.detail?.trxnid) {
+			return;
+		}
+
+		// Open the transaction page
+		router.push("/transaction/" + e.detail.trxnid);
+	};
+
+	const onGotoHist = (e) => {
+		let filter_string = e?.detail?.product_id
+			? "?product_id=" + e?.detail?.product_id
+			: "";
+
+		router.push("/history" + filter_string);
 	};
 
 	const onWlcWidgetLoad = () => {
@@ -92,12 +140,14 @@ const setupWidgetEventListeners = ({ setWidgetLoading, generateNewToken }) => {
 	window.addEventListener("iron-signal-login-again", onLoginAgain);
 	window.addEventListener("trxn-busy-change", onTrxnBusyChanged);
 	window.addEventListener("open-url", onOpenUrl);
+	window.addEventListener("iron-signal-goto-transaction", onGotoTrxn);
+	window.addEventListener("iron-signal-goto-history", onGotoHist);
 	window.addEventListener("wlc-widget-loaded", onWlcWidgetLoad);
 
 	// TODO: Add these Event listeners as well:
 	// iron-signal-profile-reloaded
-	// on-iron-signal-goto-transaction
-	// on-iron-signal-goto-history
+	// [DONE] on-iron-signal-goto-transaction
+	// [DONE] on-iron-signal-goto-history
 	// on-iron-signal-capture-location
 
 	// Cleanup...
@@ -106,6 +156,8 @@ const setupWidgetEventListeners = ({ setWidgetLoading, generateNewToken }) => {
 		window.removeEventListener("iron-signal-login-again", onLoginAgain);
 		window.removeEventListener("trxn-busy-change", onTrxnBusyChanged);
 		window.removeEventListener("open-url", onOpenUrl);
+		window.removeEventListener("iron-signal-goto-transaction", onGotoTrxn);
+		window.removeEventListener("iron-signal-goto-history", onGotoHist);
 		window.removeEventListener("wlc-widget-loaded", onWlcWidgetLoad);
 	};
 };
@@ -121,7 +173,7 @@ const configurePolymer = () => {
 	};
 };
 
-const useSetupWidgetEventListeners = () => {
+const useSetupWidgetEventListeners = (router) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
 
@@ -132,6 +184,7 @@ const useSetupWidgetEventListeners = () => {
 		const cleanup = setupWidgetEventListeners({
 			setWidgetLoading,
 			generateNewToken,
+			router,
 		});
 		configurePolymer();
 
