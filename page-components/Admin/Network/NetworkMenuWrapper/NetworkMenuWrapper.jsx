@@ -32,7 +32,7 @@ const NetworkMenuWrapper = (props) => {
 	const menuList = [
 		{
 			item: "Proceed",
-			path: "",
+			path: `/admin/my-network/profile?ekocode=${eko_code}`,
 		},
 		{
 			item: "Mark Inactive",
