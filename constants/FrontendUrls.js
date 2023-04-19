@@ -1,3 +1,9 @@
 export const FrontendUrls = {
-	LOAD_BALANCE: "/transaction/491",
+	transaction: (id) => {
+		let url = "/transaction";
+		if (Array.isArray(id)) {
+			id.forEach((id) => (url += `/${id}`));
+		} else url += `/${id}`;
+		return url;
+	},
 };
