@@ -255,15 +255,14 @@ const UpdateSellerInfo = () => {
 						</Button>
 
 						<Button
-							color={"accent.DEFAULT"}
+							color={"red"}
 							fontSize={"20px"}
 							fontWeight="bold"
-							bg="white"
 							_focus={{
 								bg: "white",
 							}}
-							_hover="none"
 							variant="ghost"
+							onClick={() => Router.back()}
 						>
 							Cancel
 						</Button>

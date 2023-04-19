@@ -1,7 +1,7 @@
-import { Center, Flex, Text } from "@chakra-ui/react";
-import { MultiSelect } from "components";
-import { useState } from "react";
-
+import { Center } from "@chakra-ui/react";
+import { /* MultiSelect */ Button } from "components";
+// import { useState } from "react";
+import { useWallet } from "contexts";
 const dummyOptions = [
 	{ mobile: "apple", name: "Apple" },
 	{ mobile: "banana", name: "Banana" },
@@ -36,15 +36,18 @@ const dummyOptions = [
 ];
 
 const Test = () => {
-	const [data, setData] = useState([]);
-	console.log("data", data);
-	const renderer = {
-		value: "mobile",
-		label: "name",
-	};
+	// const [data, setData] = useState([]);
+	// console.log("data", data);
+	// const renderer = {
+	// 	value: "mobile",
+	// 	label: "name",
+	// };
+	const { refreshWallet, setBalance, balance } = useWallet();
 	return (
 		<Center height="100vh">
-			<Flex direction="column" rowGap="2">
+			<Button onClick={() => setBalance("1000")}>Update Balance</Button>
+			<Button onClick={() => refreshWallet()}>refreshWallet</Button>
+			{/* <Flex direction="column" rowGap="2">
 				<Text fontSize="16px" fontWeight="bold">
 					Select Distributor
 				</Text>
@@ -53,7 +56,7 @@ const Test = () => {
 					renderer={renderer}
 					setData={setData}
 				/>
-			</Flex>
+			</Flex> */}
 		</Center>
 	);
 };

@@ -130,7 +130,7 @@ const NetworkFilter = ({ filter, setFilter }) => {
 						bg: "white",
 					}}
 					lineHeight="normal"
-					leftIcon={
+					icon={
 						<Icon
 							name="filter"
 							width={{

@@ -1,4 +1,5 @@
-const publicLinks = ["/", "/test", "/oldicons", "/newicons"];
+// If you want to use any route without login just add it in the publiclink array.
+const publicLinks = ["/", "/oldicons", "/newicons"];
 
 const baseRoute = {
 	admin: "/admin",

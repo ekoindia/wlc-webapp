@@ -2,7 +2,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { Inter } from "@next/font/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { RouteProtecter } from "components";
-import { OrgDetailProvider, UserProvider } from "contexts";
+import { OrgDetailProvider, UserProvider, WalletProvider } from "contexts";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
@@ -42,17 +42,22 @@ export default function App({ Component, pageProps, router }) {
 						<UserProvider userMockData={null}>
 							<LayoutProvider>
 								<MenuProvider>
-									<RouteProtecter router={router}>
-										<SWRConfig
-											value={{
-												provider: localStorageProvider,
-											}}
-										>
-											<main className={inter.className}>
-												<Component {...pageProps} />
-											</main>
-										</SWRConfig>
-									</RouteProtecter>
+									<WalletProvider>
+										<RouteProtecter router={router}>
+											<SWRConfig
+												value={{
+													provider:
+														localStorageProvider,
+												}}
+											>
+												<main
+													className={inter.className}
+												>
+													<Component {...pageProps} />
+												</main>
+											</SWRConfig>
+										</RouteProtecter>
+									</WalletProvider>
 								</MenuProvider>
 							</LayoutProvider>
 						</UserProvider>

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-
 import { Box, Divider, Flex, HStack, Select, Text } from "@chakra-ui/react";
 import { Button, Headings, Icon, Input, Switch } from "components";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { NewAddress, PermanentAddress } from ".";
+
 /**
  * A <UpdateSellerAddress> component
  * TODO: Write more description here
@@ -12,6 +13,7 @@ import { NewAddress, PermanentAddress } from ".";
  */
 
 const UpdateSellerAddress = () => {
+	const router = useRouter();
 	const test = true;
 	const [visible, setVisible] = useState(test);
 	const [formCount, setFormCount] = useState(0);
@@ -585,9 +587,10 @@ const UpdateSellerAddress = () => {
 								md: "4.8rem",
 								"2xl": "4.8rem",
 							}}
+							h="3.5rem"
 						>
 							<Button
-								h="3.5rem"
+								h="100%"
 								fontSize="20px"
 								fontWeight="bold"
 								w={{
@@ -600,15 +603,12 @@ const UpdateSellerAddress = () => {
 							</Button>
 
 							<Button
+								h="100%"
 								color={"accent.DEFAULT"}
 								fontSize={"20px"}
 								fontWeight="bold"
-								bg="white"
-								_focus={{
-									bg: "white",
-								}}
-								_hover="none"
 								variant="ghost"
+								onClick={() => router.back()}
 							>
 								Cancel
 							</Button>

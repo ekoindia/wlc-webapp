@@ -1,10 +1,10 @@
 import { Circle, Flex, Text } from "@chakra-ui/react";
-import { Endpoints } from "constants/EndPoints";
 import { FrontendUrls } from "constants/FrontendUrls";
-import useRequest from "hooks/useRequest";
+import { useWallet } from "contexts/WalletContext";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Icon } from "..";
+
 /**
  * A <StatusCard> component
  * TODO: Write more description here
@@ -12,32 +12,40 @@ import { Icon } from "..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<StatusCard></StatusCard>`
  */
-const StatusCard = () => {
+const StatusCard = (bgColor) => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
-	const { data, mutate } = useRequest({
-		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-		body: {
-			interaction_type_id: 9,
-		},
-	});
+	const { refreshWallet, balance } = useWallet();
+	// const { data, mutate } = useRequest({
+	// 	method: "POST",
+	// 	baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+	// 	body: {
+	// 		interaction_type_id: 9,
+	// 	},
+	// });
 
-	useEffect(() => {
-		mutate();
-	}, []);
-
-	const handleWalletClick = () => {
-		if (!disabled) {
-			setDisabled(true);
-			// fetch updated account balance here, call status hook
-			setTimeout(() => setDisabled(false), 10000); // enable button after 10 sec
-		}
-	};
+	// useEffect(() => {
+	// 	mutate();
+	// }, []);
 
 	const handleAddClick = () => {
 		router.push(FrontendUrls.LOAD_BALANCE);
 		console.log("clicked");
+	};
+
+	const onRefreshHandler = () => {
+		if (!disabled) {
+			setDisabled(true);
+			// fetching updated account balance
+			refreshWallet();
+			// Added 30sec timer
+			setTimeout(() => setDisabled(false), 30000); // enable button after 10 sec
+		}
+	};
+
+	const disableRefreshBtn = {
+		opacity: disabled ? 0.3 : 1,
+		cursor: disabled ? "not-allowed" : "pointer",
 	};
 
 	return (
@@ -47,17 +55,16 @@ const StatusCard = () => {
 			px="15px"
 			align="center"
 			justify="space-between"
-			bg="sidebar.card-bg-dark"
+			bg={bgColor || "sidebar.card-bg-dark"}
 			borderBottom="br-sidebar"
 		>
 			<Flex align="flex-start" gap="2.5">
 				<Icon
 					name="wallet-outline"
-					color={!disabled ? "#556fef" : "hint"}
-					cursor={!disabled ? "pointer" : "default"}
+					color={"sidebar.font"}
+					cursor={"pointer"}
 					w={{ base: "24px", md: "24px", "2xl": "32px" }}
 					h={{ base: "22px", md: "22px", "2xl": "30px" }}
-					onClick={handleWalletClick}
 				/>
 				<Flex direction="column">
 					<Text
@@ -69,6 +76,7 @@ const StatusCard = () => {
 						}}
 					>
 						Wallet Balance
+						{console.log("bgColor", bgColor)}
 					</Text>
 					<Flex color="#FFD93B" align="center" gap="0.25">
 						<Icon
@@ -84,12 +92,22 @@ const StatusCard = () => {
 							}}
 							fontWeight="medium"
 						>
-							{data?.data?.balance}
+							{balance}
 						</Text>
 					</Flex>
 				</Flex>
 			</Flex>
-			<Flex>
+			<Flex columnGap="14px" align="center">
+				{
+					<Icon
+						name="refresh"
+						color="white"
+						cursor="pointer"
+						onClick={onRefreshHandler}
+						w="22px"
+						{...disableRefreshBtn}
+					/>
+				}
 				<Circle
 					size={{ base: "6", "2xl": "8" }}
 					bg={"success"}

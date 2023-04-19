@@ -17,9 +17,13 @@ import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Icon, ProfileCard, StatusCard } from "..";
 
+/**
+ * A helper function that checks the path of sidebar item and current route if matches
+ * return true either false
+ * */
 function isCurrentRoute(router, currPath) {
 	const path = router.asPath.split("?")[0];
 	if (path === currPath) return true;
@@ -58,34 +62,31 @@ const SideBar = (props) => {
 export default SideBar;
 
 //FOR LAPTOP SCREENS
-const SideBarMenu = (/* { className = "", ...props } */) => {
+const SideBarMenu = () => {
 	const { userData } = useUser();
 	const { interaction_list } = useMenuContext();
 	const router = useRouter();
-	const [currentRoute, setcurrentRoute] = useState();
-
-	useEffect(() => {
-		setcurrentRoute(router.pathname.split("/")[2]);
-	}, [router.asPath]);
 
 	const menuList =
 		userData?.is_org_admin === 1 ? adminSidebarMenu : sidebarMenu;
 
 	return (
 		<Box
-			minW={{
-				base: "full",
-				sm: "55vw",
-				md: "13.5vw",
-				lg: "200px",
-				xl: "225px",
-				"2xl": "250px",
+			className="sidebar"
+			w={{
+				// base: "full",
+				// sm: "55vw",
+				// md: "13.5vw",
+				// lg: "225px",
+				// xl: "250px",
+				// "2xl": "250px",
+				base: "250px",
 			}}
 			bgColor={"accent.DEFAULT"}
 			height={"100%"}
 		>
 			<Flex direction="column">
-				<Box borderRight="12px" height={"100%"} w={"full"}>
+				<Box borderRight="12px" height={"100%"} w={"100%"}>
 					{userData?.is_org_admin !== 1 && (
 						<>
 							<ProfileCard
@@ -107,7 +108,6 @@ const SideBarMenu = (/* { className = "", ...props } */) => {
 										key={menu.name}
 										menu={menu}
 										interaction_list={interaction_list}
-										currentRoute={currentRoute}
 										role={userData?.role}
 									/>
 								);
@@ -117,7 +117,6 @@ const SideBarMenu = (/* { className = "", ...props } */) => {
 										key={menu.name}
 										menu={menu}
 										interaction_list={menu.subLevelObject}
-										currentRoute={currentRoute}
 										role={userData?.role}
 									/>
 								);
@@ -126,7 +125,6 @@ const SideBarMenu = (/* { className = "", ...props } */) => {
 									<LinkMenu
 										key={menu.name}
 										menu={menu}
-										currentRoute={currentRoute}
 										index={index}
 										role={userData?.role}
 									/>
@@ -143,7 +141,11 @@ const SideBarMenu = (/* { className = "", ...props } */) => {
 //FOR MOBILE SCREENS
 const MenuBar = (props) => {
 	const { navOpen, setNavOpen } = props;
+	const router = useRouter();
 	const { /* isOpen, onOpen, */ onClose } = useDisclosure();
+	useEffect(() => {
+		setNavOpen(false);
+	}, [router.asPath]);
 	return (
 		<Drawer
 			autoFocus={false}
@@ -158,7 +160,7 @@ const MenuBar = (props) => {
 		>
 			<DrawerOverlay />
 			<DrawerContent maxW="250px" boxShadow={"none"}>
-				<SideBarMenu />
+				<SideBarMenu setNavOpen={setNavOpen} />
 			</DrawerContent>
 		</Drawer>
 	);

@@ -1,4 +1,4 @@
-import { Avatar, Circle, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "..";
 
 /**
@@ -29,26 +29,35 @@ const ProfileCard = (props) => {
 			borderBottom="br-sidebar"
 			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
 		>
-			<Circle bg="sidebar.icon-bg" size={{ base: 14, lg: 12, xl: 14 }}>
-				<Avatar
-					w={{ base: "50px", lg: "48px", xl: "50px" }}
-					h="50px"
-					src={img}
-					name={name.charAt(0)}
-				/>
-			</Circle>
+			<Avatar
+				w="50px"
+				h="50px"
+				src={img}
+				name={name.charAt(0)}
+				outline="3px solid"
+				outlineColor="sidebar.icon-bg"
+			/>
 
 			<Flex
 				direction="column"
 				justify="space-between"
 				justifyContent="space-between"
 				h="100%"
+				w="100%"
 				lineHeight="18px"
 			>
 				<Text as="span" fontSize="12px" color="sidebar.font">
 					Welcome
-					<Text color="highlight" fontSize="14px">
-						{name}
+					<Text
+						color="highlight"
+						fontSize="14px"
+						textTransform="capitalize"
+						whiteSpace="nowrap"
+						overflow="hidden"
+						textOverflow="ellipsis"
+						width="85%"
+					>
+						{name?.toLowerCase()}
 					</Text>
 				</Text>
 				<Flex
@@ -57,7 +66,7 @@ const ProfileCard = (props) => {
 					columnGap="5px"
 					color="white"
 				>
-					<Icon name="phone-circle-outline" w="18px" h="18px"></Icon>
+					<Icon name="phone-circle-outline" w="18px" h="18px" />
 					{formatNumber(mobileNumber)}
 				</Flex>
 			</Flex>

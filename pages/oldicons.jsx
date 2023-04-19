@@ -177,6 +177,7 @@ const connecticon = () => {
 		"expand-add",
 		"wallet-outline",
 		"phone-circle-outline",
+		"chat-outline",
 	];
 
 	return (
