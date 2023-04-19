@@ -1,42 +1,49 @@
 import { Table } from "components";
-import { mockData } from "constants/mockTableData";
+import { getTableProcessedData } from "helpers/processData";
 
 /**
- * A <DetailedStatementTable> component
- * TODO: This is detailed statement table with not clickable rows
+ * A <TransactionTable> component
+ * TODO: Write Description here
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<DetailedStatementTable></DetailedStatementTable>`
+ * @example	`<TransactionTable></TransactionTable>`
  */
 
-const TransactionTable = () => {
+const TransactionTable = ({ transactionList }) => {
+	const processedData = getTableProcessedData(transactionList);
 	const renderer = [
 		{ name: "", field: "", show: "Accordian" },
 		{
-			name: "name",
+			name: "trx_name",
 			field: "Transaction Type",
 			sorting: true,
 			show: "Avatar",
 		},
-
 		{
-			name: "createdAt",
+			name: "description",
 			field: "Description",
-			sorting: true,
+			// sorting: true,
 		},
-		{ name: "type", field: "Transaction ID", sorting: true },
+		{ name: "trx_id", field: "Transaction ID", sorting: true },
 		{
-			name: "type",
+			name: "amount",
 			field: "Amount",
+			show: "Amount",
 			sorting: true,
 		},
-		{ name: "ekocsp_code", field: "Date", sorting: true },
-		{ name: "ekocsp_code", field: "Time", sorting: true },
+		{ name: "date", field: "Date", sorting: true },
+		{ name: "time", field: "Time", sorting: true },
 		{
-			name: "account_status",
-
+			name: "status",
 			show: "Tag",
 		},
+	];
+
+	const rendererExpandedRow = [
+		{ name: "balance", field: "Balance Amount", show: "Amount" },
+		{ name: "trackingNumber", field: "Tracking Number" },
+		{ name: "date", field: "Date" },
+		{ name: "time", field: "Time" },
 	];
 
 	return (
@@ -44,7 +51,8 @@ const TransactionTable = () => {
 			<Table
 				pageLimit={10}
 				renderer={renderer}
-				data={mockData.slice(0, 10)} // only show the first 15 items
+				rendererExpandedRow={rendererExpandedRow}
+				data={processedData}
 				variant="darkStriped"
 				tableName="Transactions"
 				accordian={true}
