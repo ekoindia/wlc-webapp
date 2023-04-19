@@ -89,15 +89,21 @@ const setupWidgetEventListeners = ({ setWidgetLoading, generateNewToken }) => {
 		setWidgetLoading(false);
 	};
 
-	window.addEventListener("login-again", onLoginAgain);
+	window.addEventListener("iron-signal-login-again", onLoginAgain);
 	window.addEventListener("trxn-busy-change", onTrxnBusyChanged);
 	window.addEventListener("open-url", onOpenUrl);
 	window.addEventListener("wlc-widget-loaded", onWlcWidgetLoad);
 
+	// TODO: Add these Event listeners as well:
+	// iron-signal-profile-reloaded
+	// on-iron-signal-goto-transaction
+	// on-iron-signal-goto-history
+	// on-iron-signal-capture-location
+
 	// Cleanup...
 	return () => {
 		// On component unmount, remove the event listeners.
-		window.removeEventListener("login-again", onLoginAgain);
+		window.removeEventListener("iron-signal-login-again", onLoginAgain);
 		window.removeEventListener("trxn-busy-change", onTrxnBusyChanged);
 		window.removeEventListener("open-url", onOpenUrl);
 		window.removeEventListener("wlc-widget-loaded", onWlcWidgetLoad);
