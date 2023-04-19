@@ -28,7 +28,7 @@ const QueryWidget = ({ className = "", ...props }) => {
 					}}
 					background={{
 						base: "linear-gradient(to bottom, #2dbb5c, #02762c)",
-						md: "url('./havequery.svg'), no-repeat,linear-gradient(to bottom, #2dbb5c, #02762c)",
+						md: "url('./havequery.svg') no-repeat, linear-gradient(to bottom, #2dbb5c, #02762c)",
 					}}
 					// background-repeat= "no-repeat !important"
 					backgroundSize="cover"
