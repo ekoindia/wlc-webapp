@@ -13,7 +13,8 @@ import {
 	useMediaQuery,
 } from "@chakra-ui/react";
 import {
-	getAccordian,
+	getAccordianIcon,
+	getAmountStyle,
 	getArrowStyle,
 	getLocationStyle,
 	getModalStyle,
@@ -39,6 +40,7 @@ const Table = (props) => {
 		pageNumber,
 		setPageNumber,
 		renderer,
+		rendererExpandedRow,
 		variant,
 		tableName,
 		isScrollrequired = false,
@@ -48,12 +50,10 @@ const Table = (props) => {
 		// isOnclickRequire = true,
 	} = props;
 	const router = useRouter();
-	const [currentSort, setCurrentSort] = useState("default");
-	// console.log('data', data)
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
-	// const [currentPage, setCurrentPage] = useState(1);
-	// console.log("currentPage", currentPage);
+
 	const [expandedRow, setExpandedRow] = useState(null);
+	console.log("expandedRow", expandedRow);
 	const handleRowClick = (index) => {
 		if (index === expandedRow) {
 			// If the clicked row is already expanded, collapse it
@@ -82,14 +82,12 @@ const Table = (props) => {
 					>
 						<Flex gap={2} align="center">
 							{item.field}
-							{/* <Box as="span" h="auto" onClick={onSortChange}> */}
 							<Icon
 								// onClick={onSortChange}
 								name="sort"
 								width="6px"
 								height="13px"
 							/>
-							{/* </Box> */}
 						</Flex>
 					</Th>
 				);
@@ -144,114 +142,61 @@ const Table = (props) => {
 							);
 						})}
 					</Tr>
-
-					{/* <============================= ExpandRow Data Item============================> */}
-
-					{accordian && (
-						<Tr>
-							{expandedRow === index && (
-								<Td colSpan={8} expandedRow={expandedRow}>
-									<Flex justifyContent={"space-between"}>
-										<Flex
-											justifyContent={"space-evenly"}
-											w="50%"
-										>
-											<Flex direction={"column"}>
-												<Text
-													fontSize={{
-														lg: "10px",
-														xl: "12px",
-														"2xl": "14px",
-													}}
-													color="light"
-												>
-													Customer Charges{" "}
-												</Text>
-												<Text
-													fontSize={{
-														lg: "12px",
-														xl: "14px",
-														"2xl": "16px",
-													}}
-													fontWeight="semibold"
-												>
-													10
-												</Text>
-											</Flex>
-											<Flex direction={"column"}>
-												<Text
-													fontSize={{
-														lg: "10px",
-														xl: "12px",
-														"2xl": "14px",
-													}}
-													color="light"
-												>
-													Commission Earned
-												</Text>
-												<Text
-													fontSize={{
-														lg: "12px",
-														xl: "14px",
-														"2xl": "16px",
-													}}
-													fontWeight="semibold"
-												>
-													{" "}
-													1.80{" "}
-												</Text>
-											</Flex>
-											<Flex direction={"column"}>
-												<Text
-													fontSize={{
-														lg: "10px",
-														xl: "12px",
-														"2xl": "14px",
-													}}
-													color="light"
-												>
-													Balance Amount{" "}
-												</Text>
-												<Text
-													fontSize={{
-														lg: "12px",
-														xl: "14px",
-														"2xl": "16px",
-													}}
-													fontWeight="semibold"
-												>
-													48,375.00{" "}
-												</Text>
-											</Flex>
-										</Flex>
-										<Flex>
-											<Button
-												w={{
-													lg: "80%",
-													xl: "90%",
-													"2xl": "100%",
-												}}
-												h={{
-													lg: "35px",
-													xl: "40px",
-													"2xl": "47px",
-												}}
-												onClick={setExpandedRow}
-											>
-												<Text
-													fontSize={{
-														lg: "10px",
-														xl: "12",
-														"2xl": "14px",
-													}}
-												>
-													Repeat Transaction
-												</Text>
-											</Button>
-										</Flex>
+					{/* For Expanded Row */}
+					{accordian && expandedRow === index && (
+						<Tr
+							style={{
+								backgroundColor:
+									accordian &&
+									(index % 2 === 0 ? "#F6F6F6" : "#F5F6FF"),
+							}}
+						>
+							<Td
+								colSpan={renderer.length}
+								pr="16px"
+								pl={{
+									md: "42px",
+									// lg: "42px",
+									xl: "60px",
+									"2xl": "100px",
+								}}
+							>
+								<Flex justify={"space-between"}>
+									<Flex
+										w="88%"
+										gap={{ md: "6", xl: "8", "2xl": "10" }}
+										wrap="wrap"
+										key={index}
+										fontSize={{
+											md: "10px",
+											xl: "12px",
+											"2xl": "16px",
+										}}
+									>
+										{prepareExpandedRow(item)}
 									</Flex>
-								</Td>
-							)}
+									<Button
+										w={{
+											md: "120px",
+											xl: "150px",
+											"2xl": "170px",
+										}}
+										h={{
+											md: "36px",
+											xl: "42px",
+											"2xl": "48px",
+										}}
+										fontSize={{
+											md: "10px",
+											xl: "12px",
+											"2xl": "14px",
+										}}
+										disabled
+									>
+										Repeat Transaction
+									</Button>
+								</Flex>
+							</Td>
 						</Tr>
 					)}
 				</>
@@ -260,7 +205,6 @@ const Table = (props) => {
 	};
 
 	const prepareCol = (item, column, index, serialNo) => {
-		console.log(item.account_status);
 		const account_status = item?.account_status;
 		const eko_code = item?.profile?.eko_code ?? [];
 		switch (column?.show) {
@@ -269,13 +213,15 @@ const Table = (props) => {
 			case "Modal":
 				return getModalStyle(eko_code, account_status);
 			case "Accordian":
-				return getAccordian(expandedRow, index);
+				return getAccordianIcon(expandedRow, index);
 			case "IconButton":
 				return getLocationStyle(item[column.name]);
 			case "Avatar":
 				return getNameStyle(item[column.name]);
 			case "Arrow":
 				return getArrowStyle();
+			case "Amount":
+				return getAmountStyle(item[column.name], item.trx_type);
 			default:
 				if (column?.field === "Sr. No.") {
 					return serialNo;
@@ -391,35 +337,30 @@ const Table = (props) => {
 							p="0px"
 							borderRadius=" 10px"
 						>
-							<TransactionCard item={item} />
+							<TransactionCard
+								item={item}
+								rendererExpandedRow={rendererExpandedRow}
+							/>
 						</Box>
-						{/* {index !== currentTableData.length - 1 && (
-							<Divider border="1px solid #D2D2D2" />
-						)} */}
 					</>
 				);
 			}
 		});
 	};
-	/* for sort icon & icon change */
-	// const sortIcon = {
-	// 	ascending: "caret-up",
-	// 	descending: "caret-down",
-	// 	default: "sort",
-	// };
-	// const onSortChange = () => {
-	// 	let nextSort;
 
-	// 	if (currentSort === "ascending") {
-	// 		nextSort = "descending";
-	// 	} else if (currentSort === "descending") {
-	// 		nextSort = "default";
-	// 	} else {
-	// 		nextSort = "ascending";
-	// 	}
-
-	// 	setCurrentSort(nextSort);
-	// };
+	/* For Expanded Colomn */
+	const prepareExpandedRow = (row) => {
+		return rendererExpandedRow?.map((item, index) => {
+			return (
+				row[item.name] /* prepareCol(row[item.name], item) */ && (
+					<Flex key={index} direction="column">
+						<Text textColor="light">{item.field}</Text>
+						<Text fontWeight="bold">{row[item.name]}</Text>
+					</Flex>
+				)
+			);
+		});
+	};
 
 	return (
 		<>

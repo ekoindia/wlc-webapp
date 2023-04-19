@@ -1,5 +1,6 @@
 import { Circle, Flex, Text } from "@chakra-ui/react";
-import { FrontendUrls } from "constants/FrontendUrls";
+import { TransactionTypes } from "constants";
+import { useMenuContext } from "contexts";
 import { useWallet } from "contexts/WalletContext";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -15,7 +16,9 @@ import { Icon } from "..";
 const StatusCard = (bgColor) => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
-	const { refreshWallet, balance } = useWallet();
+	const { refreshWallet, balance, loading } = useWallet();
+	const { role_tx_list } = useMenuContext();
+
 	// const { data, mutate } = useRequest({
 	// 	method: "POST",
 	// 	baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -29,8 +32,19 @@ const StatusCard = (bgColor) => {
 	// }, []);
 
 	const handleAddClick = () => {
-		router.push(FrontendUrls.LOAD_BALANCE);
-		console.log("clicked");
+		let id;
+		for (
+			let i = 0;
+			i < TransactionTypes.ADD_VALUE_TRXN_ID_LIST.length;
+			i++
+		) {
+			let trxn_id = TransactionTypes.ADD_VALUE_TRXN_ID_LIST[i];
+			if (role_tx_list[trxn_id]) {
+				id = trxn_id;
+				break;
+			}
+		}
+		router.push(id ? `/transaction/${id}` : "");
 	};
 
 	const onRefreshHandler = () => {
@@ -44,8 +58,8 @@ const StatusCard = (bgColor) => {
 	};
 
 	const disableRefreshBtn = {
-		opacity: disabled ? 0.3 : 1,
-		cursor: disabled ? "not-allowed" : "pointer",
+		opacity: disabled || loading ? 0.3 : 1,
+		cursor: disabled || loading ? "not-allowed" : "pointer",
 	};
 
 	return (
@@ -97,25 +111,28 @@ const StatusCard = (bgColor) => {
 					</Flex>
 				</Flex>
 			</Flex>
-			<Flex columnGap="14px" align="center">
-				{
+			<Flex columnGap="12px" align="center">
+				<Circle
+					size={{ base: "6", "2xl": "8" }}
+					bg="white"
+					onClick={onRefreshHandler}
+					{...disableRefreshBtn}
+				>
 					<Icon
 						name="refresh"
-						color="white"
-						cursor="pointer"
-						onClick={onRefreshHandler}
-						w="22px"
-						{...disableRefreshBtn}
+						width={{ base: "12px", "2xl": "16px" }}
+						color="sidebar.card-bg-dark"
 					/>
-				}
+				</Circle>
 				<Circle
 					size={{ base: "6", "2xl": "8" }}
 					bg={"success"}
 					color="white"
 					boxShadow="0px 3px 6px #00000029"
 					border="2px solid #FFFFFF"
-					cursor="pointer"
 					onClick={handleAddClick}
+					opacity={loading ? 0.3 : 1}
+					cursor={loading ? "not-allowed" : "pointer"}
 				>
 					<Icon name="add" width={{ base: "12px", "2xl": "16px" }} />
 				</Circle>
