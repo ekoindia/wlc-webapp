@@ -2,10 +2,12 @@ import { Button } from "@chakra-ui/react";
 
 const statusChecker = {
 	Active: "success",
-	Pending: "primary.DEFAULT",
+	Success: "success",
 	Inactive: "error",
-	Other: "light",
 	Cancel: "error",
+	Failed: "error",
+	Pending: "primary.DEFAULT",
+	Other: "light",
 };
 
 const Tags = ({
