@@ -1,4 +1,4 @@
-import { Avatar, Box, Flex } from "@chakra-ui/react";
+import { Avatar, Box, Circle, Flex, Text } from "@chakra-ui/react";
 import { Icon, IconButtons, Tags } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 
@@ -20,12 +20,14 @@ export const getNameStyle = (name) => {
 };
 export const getStatusStyle = (status, tableName) => {
 	return (
-		<Tags
-			size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
-			px={"10px"}
-			borderRadius={tableName === "Transactions" ? "10" : "28"}
-			status={status}
-		/>
+		<Flex justify={tableName === "Transactions" ? "end" : ""}>
+			<Tags
+				size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
+				px={"10px"}
+				borderRadius={tableName === "Transactions" ? "10" : "28"}
+				status={status}
+			/>
+		</Flex>
 	);
 };
 export const getLocationStyle = (
@@ -66,19 +68,6 @@ export const getModalStyle = (eko_code, account_status) => {
 	console.log("eko_code in tablehelpers", eko_code);
 	return (
 		<>
-			{/* <Menus
-				type="everted"
-				as={IconButton}
-				iconName="more-vert"
-				minH={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				height={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				// iconStyles={{ height: "15px", width: "4px" }}
-				onClick={(e) => {
-					e.stopPropagation();
-				}}
-			/> */}
 			<NetworkMenuWrapper
 				eko_code={eko_code}
 				account_status={account_status}
@@ -86,30 +75,47 @@ export const getModalStyle = (eko_code, account_status) => {
 		</>
 	);
 };
-export const getAccordian = (expandedRow, index) => {
+export const getAccordianIcon = (expandedRow, index) => {
 	return (
-		<>
-			<Box
-				bg="primary.DEFAULT"
-				width="24px"
-				height="24px"
-				borderRadius="30px"
-				display={"flex"}
-				justifyContent={"center"}
-				alignItems="center"
-				cursor={"pointer"}
-			>
-				<Box alignItems={"center"}>
-					<Icon
-						name={expandedRow === index ? "remove" : "add"}
-						width="15px"
-						color="white"
-					/>
-				</Box>
-			</Box>
-		</>
+		<Flex justify="center" align="center">
+			<Circle bg="primary.DEFAULT" size="24px" cursor="pointer">
+				<Icon
+					name={expandedRow === index ? "remove" : "expand-add"}
+					width="12px"
+					color="white"
+				/>
+			</Circle>
+		</Flex>
 	);
 };
+
+export const getAmountStyle = (amount, trx_type) => {
+	console.log("trx_type", trx_type);
+	console.log("amount", amount);
+	return (
+		amount !== undefined && (
+			<Flex align="center" gap="2">
+				<Flex align="center" gap="1">
+					<Icon name="rupee" h="12px" w="9px" />
+					<Text>{amount}</Text>
+				</Flex>
+				{trx_type && (
+					<Icon
+						name={
+							trx_type === "debit"
+								? "arrow-increase"
+								: "arrow-decrease"
+						}
+						h="16px"
+						w="14px"
+						color={trx_type === "debit" ? "error" : "success"}
+					/>
+				)}
+			</Flex>
+		)
+	);
+};
+
 export const openGoogleMap = ({ latitude, longitude }) => {
 	const lat = parseFloat(latitude);
 	const lng = parseFloat(longitude);

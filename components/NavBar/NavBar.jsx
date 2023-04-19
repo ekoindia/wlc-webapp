@@ -18,10 +18,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button, Icon, IconButtons } from "..";
 
-const NavBar = (props) => {
+const NavBar = ({ setNavOpen }) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
-	const { setNavOpen, isNavVisible, isSmallerThan769, headingObj, propComp } =
-		props;
 
 	return (
 		<>
