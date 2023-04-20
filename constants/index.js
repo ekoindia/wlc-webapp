@@ -11,7 +11,9 @@ import { FrontendUrls } from "./FrontendUrls";
 import { adminProfileMenu, profileMenu } from "./profileCardMenus";
 import { roles } from "./role";
 import { adminSidebarMenu, sidebarMenu } from "./SidebarMenu";
-import { transactionSample } from "./transactionSample";
+import { table_data_mock } from "./table_data_mock";
+import { transactions_mock } from "./transactions_mock";
+import { transaction_history_mock } from "./transaction_history_mock";
 import { baseRoute, initialRoute, publicLinks } from "./validRoutes";
 export {
 	TransactionTypes,
@@ -26,9 +28,11 @@ export {
 	publicLinks,
 	baseRoute,
 	initialRoute,
-	transactionSample,
+	transactions_mock,
 	NetworkObject,
 	TransactionHistoryObject,
+	transaction_history_mock,
+	table_data_mock,
 	PricingCommissionObject,
 	allowedCategories,
 };

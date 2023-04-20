@@ -74,7 +74,7 @@ const Transaction = () => {
 		user_id: 8888888888,
 		interaction_type_id: 154,
 		start_index: 0,
-		limit: 10,
+		// limit: 25,
 		account_id: 391179,
 	};
 
@@ -91,7 +91,6 @@ const Transaction = () => {
 	// 	);
 	// }, []);
 
-	console.log("data", data);
 	const transactionList = data?.data?.transaction_list ?? [];
 	console.log("transactionList", transactionList);
 
@@ -114,12 +113,6 @@ const Transaction = () => {
 				bg={{ base: "none", md: "white" }}
 				px="16px"
 			>
-				{/* <Box>
-					<Text fontSize="24px" fontWeight={"semibold"}>
-						Transaction History
-					</Text>
-				</Box> */}
-
 				<Flex
 					justifyContent={"space-between"}
 					direction={{ base: "column-reverse", lg: "row" }}

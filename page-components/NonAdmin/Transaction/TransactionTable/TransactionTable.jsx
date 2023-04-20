@@ -49,7 +49,7 @@ const TransactionTable = ({ transactionList }) => {
 	return (
 		<>
 			<Table
-				pageLimit={10}
+				// pageLimit={10}
 				renderer={renderer}
 				rendererExpandedRow={rendererExpandedRow}
 				data={processedData}

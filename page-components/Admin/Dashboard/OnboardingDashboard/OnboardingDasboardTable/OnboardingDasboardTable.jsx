@@ -1,5 +1,5 @@
 import { Table } from "components";
-import { mockData } from "constants/mockTableData";
+import { table_data_mock } from "constants/table_data_mock";
 
 /**
  * A <OnboardingDasboardTable> component
@@ -48,7 +48,7 @@ const OnboardingDasboardTable = () => {
 			<Table
 				pageLimit={50}
 				renderer={renderer}
-				data={mockData}
+				data={table_data_mock.slice(0, 20)}
 				variant="evenStripedClickableRow"
 				tableName="Onboarding"
 				isScrollrequired={true}
