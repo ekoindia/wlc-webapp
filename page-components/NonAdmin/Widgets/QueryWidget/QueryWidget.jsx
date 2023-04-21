@@ -1,5 +1,5 @@
-import { Box, Flex, GridItem, Text } from "@chakra-ui/react";
-import { Button } from "components";
+import { Flex, GridItem, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Button, Icon } from "components";
 /**
  * A <QueryWidget> component
  * TODO: Write more description here
