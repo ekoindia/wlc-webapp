@@ -6,7 +6,7 @@ import {
 } from "./BreadcrumbsData";
 import { oldIcons } from "./connectIcons";
 import { Endpoints } from "./EndPoints";
-import { TransactionTypes } from "./Epstransactiontypes";
+import { TransactionTypes } from "./EpsTransactionTypes";
 import { FrontendUrls } from "./FrontendUrls";
 import { adminProfileMenu, profileMenu } from "./profileCardMenus";
 import { roles } from "./role";
