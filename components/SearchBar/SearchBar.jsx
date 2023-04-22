@@ -8,8 +8,8 @@ export function SearchBar(props) {
 		minSearchLimit = 5,
 		maxSearchLimit = 10,
 		placeholder,
-		inputContStyle,
 		numbersOnly = false,
+		inputContStyle,
 	} = props;
 	const [value, setValue] = useState("");
 	const [isInvalid, setIsInvalid] = useState(false);
