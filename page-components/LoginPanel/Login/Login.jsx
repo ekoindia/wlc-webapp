@@ -1,10 +1,9 @@
 import { Flex, Heading, useToast } from "@chakra-ui/react";
-// import { useGoogleLogin } from "@react-oauth/google";
-import { Button, Input } from "components";
+import { Button, Divider, Input } from "components";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
-import { useUser } from "contexts/UserContext";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useRef, useState } from "react";
+import { GoogleButton } from "./GoogleButton";
 
 /**
  * A <Login> component
@@ -19,30 +18,11 @@ import { useRef, useState } from "react";
 const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
-	const { login } = useUser();
-	// const [/* busy, */ googleHandler] = useLogin(login, setStep, setEmail);
 	const { orgDetail } = useOrgDetailContext();
-
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
-
-	// const googleLoginHandler = useGoogleLogin({
-	// 	onSuccess: async (response) => {
-	// 		const postData = {
-	// 			id_type: "Google",
-	// 			id_token: response.code,
-	// 		};
-	// 		googleHandler(postData);
-	// 		setLoginType("Google");
-	// 		setNumber({
-	// 			original: "",
-	// 			formatted: "",
-	// 		});
-	// 	},
-	// 	onError: (err) => console.log(err),
-	// 	flow: "auth-code",
-	// });
+	let login_types = Object.keys(orgDetail?.login_types);
 
 	const onChangeHandler = (val) => {
 		setValue(val);
@@ -76,54 +56,37 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				variant="selectNone"
 				as="h3"
 				fontSize={{ base: "xl", "2xl": "3xl" }}
+				mb={{
+					base: 4,
+					"2xl": "4.35rem",
+				}}
 			>
 				Login
 			</Heading>
 
-			{/* <Button
-				variant
-				bg="#4185F4"
-				mt={{
-					base: 4,
-					"2xl": "4.35rem",
-				}}
-				h={{
-					base: 16,
-					"2xl": "4.5rem",
-				}}
-				fontSize={{ base: "lg", "2xl": "2xl" }}
-				color="white"
-				fontWeight="medium"
-				borderRadius="10px"
-				position="relative"
-				onClick={googleLoginHandler}
-				boxShadow="0px 3px 10px #4185F433;"
-			>
-				<Center
-					bg="#FFFFFF"
-					p={{ base: "9px", "2xl": "13px" }}
-					borderRadius="10px"
-					position="absolute"
-					left="2px"
-					h="calc(100% - 4px)"
-					w={{ base: "60px", "2xl": "68px" }}
-				>
-					<Image
-						src="./icons/google.svg"
-						w={{ base: "40px", "2xl": "48px" }}
-					/>
-				</Center>
-				<Text ml={[10, 10, null]} variant="selectNone">
-					Login with Google
-				</Text>
-			</Button>
-
-			<Divider
-				cursor="default"
-				title="Or login with mobile number"
-				py={{ base: "4rem", "2xl": "5.62rem" }}
-				fontSize={{ base: "xs", "2xl": "md" }}
-			/> */}
+			{login_types.map((key) => {
+				switch (key) {
+					case "google":
+						return (
+							<GoogleButton
+								setStep={setStep}
+								setLoginType={setLoginType}
+								setNumber={setNumber}
+								setEmail={setEmail}
+							/>
+						);
+					default:
+						return null;
+				}
+			})}
+			{login_types.length ? (
+				<Divider
+					title="Or login with mobile number"
+					cursor="default"
+					py={{ base: "4rem", "2xl": "5.62rem" }}
+					fontSize={{ base: "xs", "2xl": "md" }}
+				/>
+			) : null}
 
 			<Input
 				cursor="default"
@@ -155,7 +118,6 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 					setInvalid(false);
 				}}
 				onKeyDown={onkeyHandler}
-				// parameter_type_id={"15"}
 			/>
 
 			<Button

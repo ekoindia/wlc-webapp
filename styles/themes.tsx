@@ -137,7 +137,7 @@ export const light = extendTheme({
 			success: "#009B34",
 			error: "#CA1B56",
 		},
-		google: "#4185F4",
+		"google-btn-bg": "#4185F4",
 		success: "#00C341",
 		error: "#FF4081",
 		divider: "#E9EDF1",
