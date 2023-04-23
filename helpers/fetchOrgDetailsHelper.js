@@ -112,6 +112,7 @@ export const fetchOrgDetails = async (host) => {
 			return {
 				...invalidOrg,
 				props: {
+					reason: "Org not found",
 					cached: true,
 				},
 			};
@@ -147,7 +148,7 @@ export const fetchOrgDetails = async (host) => {
 		: {
 				...invalidOrg,
 				props: {
-					reason: "Org details null",
+					reason: "Org not found",
 				},
 		  };
 };

@@ -13,7 +13,7 @@ import { Icon } from "..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<StatusCard></StatusCard>`
  */
-const StatusCard = () => {
+const StatusCard = (bgColor) => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
 	const { refreshWallet, balance, loading } = useWallet();
@@ -69,7 +69,7 @@ const StatusCard = () => {
 			px="15px"
 			align="center"
 			justify="space-between"
-			bg="sidebar.card-bg-dark"
+			bg={bgColor || "sidebar.card-bg-dark"}
 			borderBottom="br-sidebar"
 		>
 			<Flex align="flex-start" gap="2.5">
@@ -90,6 +90,7 @@ const StatusCard = () => {
 						}}
 					>
 						Wallet Balance
+						{console.log("bgColor", bgColor)}
 					</Text>
 					<Flex color="#FFD93B" align="center" gap="0.25">
 						<Icon

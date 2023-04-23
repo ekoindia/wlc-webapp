@@ -60,7 +60,8 @@ export type IconNameType =
 	| "manage"
 	| "view-transaction-history"
 	| "wallet-outline"
-	| "phone-circle-outline";
+	| "phone-circle-outline"
+	| "chat-outline";
 
 export type IconProps = {
 	name: IconNameType;
