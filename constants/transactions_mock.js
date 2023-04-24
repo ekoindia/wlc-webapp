@@ -1,4 +1,5 @@
-export const transactionSample = [
+/* contains transactions data  */
+export const transactions_mock = [
 	{
 		id: 371,
 		interaction_type_id: 117,

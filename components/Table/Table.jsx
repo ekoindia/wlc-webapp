@@ -334,7 +334,7 @@ const Table = (props) => {
 							key={index}
 							width="100%"
 							height="auto"
-							p="0px"
+							p="16px"
 							borderRadius=" 10px"
 						>
 							<TransactionCard
