@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Calenders, Headings, Icon, Input } from "components";
 import { SearchBar } from "components/SearchBar";
+import { useUser } from "contexts";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import { TransactionTable } from ".";
@@ -106,6 +107,9 @@ const Transaction = () => {
 	const [activePillIndex, setActivePillIndex] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
+	const { userData } = useUser();
+	const { accountDetails } = userData;
+	const { account_list } = accountDetails;
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -113,16 +117,19 @@ const Transaction = () => {
 	const handlePillClick = (index) => {
 		setActivePillIndex(index);
 	};
-	const limit = 25;
+	const limit = 25; // Page size
 	const body = {
 		client_ref_id: 551681714635439,
 		locale: "en",
 		user_id: 8888888888,
 		interaction_type_id: 154,
 		start_index: currentPage * limit,
-		account_id: 391179,
 		limit: limit,
 	};
+
+	if (account_list && account_list.length > 0 && account_list[0].id) {
+		body.account_id = account_list[0].id;
+	}
 
 	const { data, mutate } = useRequest({
 		method: "POST",
