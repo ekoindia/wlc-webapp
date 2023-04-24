@@ -14,6 +14,7 @@
 			"contexts/*": ["./contexts/*"],
 			"helpers/*": ["./helpers/*"],
 			"libs/*": ["./libs/*"],
+			"utils/*": ["./utils/*"],
 			"hooks/*": ["./hooks/*"],
 			"public/*": ["./public/*"],
 			"pages/*": ["./pages/*"],
