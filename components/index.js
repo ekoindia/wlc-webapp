@@ -4,6 +4,7 @@ import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
 import { Cards } from "./Cards";
+import { Currency } from "./Currency";
 import { Divider } from "./Divider";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
@@ -29,8 +30,11 @@ import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
 import { Tags } from "./Tags";
+import { Value } from "./Value";
 
 export {
+	Currency,
+	Value,
 	PaddingBox,
 	IcoButton,
 	Button,
