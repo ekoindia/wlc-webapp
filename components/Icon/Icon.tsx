@@ -101,12 +101,7 @@ const Icon = ({ name, style, w, h, width, height, ...rest }: IconProps) => {
 
 	return (
 		// <Center style={style} maxH="24px" maxW="24px" {...rest}>
-		<Box
-			w={sizeX}
-			h={sizeY}
-			{...rest}
-			transform="translate3d(0.5px, 0.4px, 0px);"
-		>
+		<Box w={sizeX} h={sizeY} {...rest}>
 			<svg
 				style={{ width: sizeX, height: sizeY }}
 				viewBox={viewBox}
