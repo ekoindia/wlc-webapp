@@ -14,7 +14,6 @@ import { light } from "../styles/themes";
 const inter = Inter({
 	weight: "variable",
 	subsets: ["latin"],
-	// style: ["normal"],
 	fallback: ["system-ui", "sans-serif"],
 });
 

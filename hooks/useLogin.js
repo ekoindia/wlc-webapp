@@ -4,7 +4,7 @@ import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 
-function useLogin(login, setStep, setEmail) {
+function useLogin(setStep, setEmail) {
 	const { login: processLoginResponse } = useUser();
 	const [busy, setBusy] = useState(false);
 	const toast = useToast();
