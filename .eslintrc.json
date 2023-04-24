@@ -17,7 +17,8 @@
 		"React": "readonly",
 		"describe": "readonly",
 		"it": "readonly",
-		"expect": "readonly"
+		"expect": "readonly",
+		"JSX": "readonly"
 	},
 	"overrides": [
 		{
