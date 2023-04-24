@@ -6,6 +6,7 @@ import { Calenders } from "./Calenders";
 import { Cards } from "./Cards";
 import { Divider } from "./Divider";
 import { Headings } from "./Headings";
+import { IcoButton } from "./IcoButton";
 import { Icon } from "./Icon";
 import { IconButtons } from "./IconButtons";
 import { Input } from "./Input";
@@ -29,6 +30,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	IcoButton,
 	Button,
 	Select,
 	MultiSelect,

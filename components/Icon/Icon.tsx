@@ -111,6 +111,7 @@ const Icon = ({ name, style, w, h, width, height, ...rest }: IconProps) => {
 				style={{ width: sizeX, height: sizeY }}
 				viewBox={viewBox}
 				fill="currentColor"
+				aria-label={name}
 				dangerouslySetInnerHTML={{ __html: path }}
 			></svg>
 		</Box>

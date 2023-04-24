@@ -13,7 +13,7 @@ import { Icon } from "..";
  * @example	`<Heading></Heading>`
  */
 const Headings = ({
-	hasIcon = true, //TODO hasBackIcon or something -- hasIcon is ambiguous
+	hasIcon = true,
 	title,
 	redirectHandler,
 	propComp,
