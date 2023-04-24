@@ -1,5 +1,6 @@
 import {
 	Box,
+	Center,
 	Flex,
 	Modal,
 	ModalBody,
@@ -11,7 +12,7 @@ import {
 import { Button, Calenders, Headings, Icon, Input } from "components";
 import { SearchBar } from "components/SearchBar";
 import useRequest from "hooks/useRequest";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TransactionTable } from ".";
 
 /**
@@ -57,9 +58,54 @@ function Pill({ name, activePillIndex, index }) {
 	);
 }
 
+/* Custom pagination for Transaction History Table */
+const TransactionPagination = ({ hasNext, currentPage, setCurrentPage }) => {
+	return (
+		<Flex
+			gap={6}
+			mt="20px"
+			mb={{ base: "30px", "2xl": "0px" }}
+			fontSize={{ md: "14px", "2xl": "18px" }}
+		>
+			<Flex
+				cursor="pointer"
+				onClick={() => {
+					setCurrentPage(
+						currentPage + 1 !== 1 ? currentPage - 1 : currentPage
+					);
+				}}
+			>
+				<Center
+					height="100%"
+					width={{ md: "15px", "2xl": "20px" }}
+					color={currentPage + 1 === 1 ? "hint" : "dark"}
+				>
+					<Icon name="chevron-left" width="100%" />
+				</Center>
+			</Flex>
+			<Text userSelect="none">{currentPage + 1}</Text>
+			<Flex
+				cursor="pointer"
+				onClick={() => {
+					setCurrentPage(hasNext ? currentPage + 1 : currentPage);
+				}}
+			>
+				<Center
+					height="100%"
+					width={{ md: "15px", "2xl": "20px" }}
+					color={hasNext ? "dark" : "hint"}
+				>
+					<Icon name="chevron-right" width="100%" />
+				</Center>
+			</Flex>
+		</Flex>
+	);
+};
+
 const Transaction = () => {
 	const [activePillIndex, setActivePillIndex] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
+	const [currentPage, setCurrentPage] = useState(0);
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -67,33 +113,30 @@ const Transaction = () => {
 	const handlePillClick = (index) => {
 		setActivePillIndex(index);
 	};
-
+	const limit = 10;
 	const body = {
 		client_ref_id: 551681714635439,
 		locale: "en",
 		user_id: 8888888888,
 		interaction_type_id: 154,
-		start_index: 0,
-		// limit: 25,
+		start_index: currentPage * limit,
 		account_id: 391179,
+		limit: limit,
 	};
 
-	const { data, error, isLoading, mutate } = useRequest({
+	const { data, mutate } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		body: { ...body },
 	});
 
-	// useEffect(() => {
-	// 	mutate(
-	// 		process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do"
-	// 		// headers
-	// 	);
-	// }, []);
+	useEffect(() => {
+		mutate(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do");
+	}, [currentPage]);
 
 	const transactionList = data?.data?.transaction_list ?? [];
-	console.log("transactionList", transactionList);
-
+	const listLength = transactionList.length;
+	const hasNext = !(listLength < limit);
 	const [isOpen, setIsOpen] = useState(false);
 
 	const onClose = () => setIsOpen(false);
@@ -324,6 +367,13 @@ const Transaction = () => {
 				</Flex>
 				{/* <=============================Transaction Table & Card ===============================> */}
 				<TransactionTable transactionList={transactionList} />
+				<Flex justify="flex-end">
+					<TransactionPagination
+						hasNext={hasNext}
+						currentPage={currentPage}
+						setCurrentPage={setCurrentPage}
+					/>
+				</Flex>
 			</Flex>
 		</>
 	);

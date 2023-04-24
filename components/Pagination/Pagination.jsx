@@ -34,7 +34,6 @@ const Pagination = (props) => {
 
 	return (
 		<Flex
-			className={className}
 			mt="20px"
 			mb={{ base: "30px", "2xl": "0px" }}
 			justifyContent="space-between"

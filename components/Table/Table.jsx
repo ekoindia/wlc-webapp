@@ -53,7 +53,6 @@ const Table = (props) => {
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 
 	const [expandedRow, setExpandedRow] = useState(null);
-	console.log("expandedRow", expandedRow);
 	const handleRowClick = (index) => {
 		if (index === expandedRow) {
 			// If the clicked row is already expanded, collapse it

@@ -90,8 +90,6 @@ export const getAccordianIcon = (expandedRow, index) => {
 };
 
 export const getAmountStyle = (amount, trx_type) => {
-	console.log("trx_type", trx_type);
-	console.log("amount", amount);
 	return (
 		amount !== undefined && (
 			<Flex align="center" gap="2">
