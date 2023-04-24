@@ -1,13 +1,13 @@
 import { Flex, GridItem, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 /**
- * A <QueryWidget> component
- * TODO: Write more description here
+ * A QueryWidget component
+ * Contact widget on home page
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<QueryWidget></QueryWidget>`
  */
-const QueryWidget = ({ className = "", ...props }) => {
+const QueryWidget = () => {
 	const hoverBg = useBreakpointValue({
 		base: "white",
 		md: "transparent",
@@ -16,11 +16,37 @@ const QueryWidget = ({ className = "", ...props }) => {
 		console.log("handleContact");
 	};
 	return (
-		<div className={`${className}`} {...props}>
+		<div>
 			<GridItem>
 				<Flex
-					h={{ base: "auto", sm: "200px", md: "387px", lg: "400px" }}
-					w={{ base: "100%", sm: "100%", md: "450px", lg: "480px" }}
+					minH={{
+						base: "auto",
+						sm: "200px",
+						md: "387px",
+						lg: "300px",
+						xl: "400px",
+					}}
+					maxH={{
+						base: "auto",
+						sm: "200px",
+						md: "387px",
+						lg: "400px",
+					}}
+					// w={{ base: "100%", sm: "100%", md: "450px", lg: "480px" }}
+					minW={{
+						base: "100%",
+						sm: "100%",
+						md: "420px",
+						lg: "360px",
+						xl: "350px",
+					}}
+					maxW={{
+						base: "100%",
+						sm: "100%",
+						md: "420px",
+						lg: "400px",
+						xl: "480px",
+					}}
 					borderRadius={{
 						base: "0px 0px 20px 20px",
 						sm: "0px 0px 2px 2px",
@@ -38,9 +64,26 @@ const QueryWidget = ({ className = "", ...props }) => {
 						sm: "flex-start",
 						md: "center",
 					}}
-					rowGap={{ base: "20px", sm: "30px", md: "50px" }}
-					px={{ base: "20px", sm: "40px", md: "20px" }}
-					py={{ base: "20px", sm: "30px", md: "24px" }}
+					rowGap={{
+						base: "20px",
+						sm: "30px",
+						md: "50px",
+						lg: "30px",
+					}}
+					px={{
+						base: "20px",
+						sm: "40px",
+						md: "20px",
+						lg: "20px",
+						xl: "20px",
+					}}
+					py={{
+						base: "20px",
+						sm: "30px",
+						md: "24px",
+						lg: "20px",
+						xl: "20px",
+					}}
 					backgroundPosition="center"
 				>
 					<Flex
@@ -50,7 +93,7 @@ const QueryWidget = ({ className = "", ...props }) => {
 						alignItems="baseline"
 						color={"white"}
 						as="b"
-						pt={{ base: "0px", sm: "20px", md: "40px" }}
+						pt={{ base: "0px", sm: "20px", md: "40px", lg: "18px" }}
 						direction={"row"}
 					>
 						<Text fontSize={"21px"} display={"inline"}>
@@ -89,13 +132,19 @@ const QueryWidget = ({ className = "", ...props }) => {
 								>
 									Call us on
 								</Text>
-								<Text
-									as="b"
-									color={"white"}
-									fontSize={{ base: "0.700rem", md: "lg" }}
-								>
-									+91 124 456 6200
-								</Text>
+								<a href="tel:+911244566200">
+									<Text
+										as="b"
+										color={"white"}
+										fontSize={{
+											base: "0.700rem",
+											md: "lg",
+										}}
+										href="tel:+911244566200"
+									>
+										+91 124 456 6200
+									</Text>
+								</a>
 							</Flex>
 						</Flex>
 						<Text

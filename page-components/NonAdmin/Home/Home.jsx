@@ -1,8 +1,8 @@
 import { Grid } from "@chakra-ui/react";
 import QueryWidget from "../Widgets/QueryWidget/QueryWidget";
 /**
- * A <Home> component
- * TODO: Write more description here
+ * A Home component
+ * main component where other widget card are align in a grid
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Home></Home>`
@@ -23,6 +23,8 @@ const Home = () => {
 			gap={{ base: (2, 4), sm: (2, 4), md: (4, 2), lg: (4, 4) }}
 		>
 			<QueryWidget />
+			{/* <TransactionWidget/> */}
+			{/* <EkycWidget/> */}
 		</Grid>
 	);
 };
