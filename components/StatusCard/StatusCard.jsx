@@ -1,4 +1,4 @@
-import { Circle, Flex, Text } from "@chakra-ui/react";
+import { Circle, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { TransactionTypes } from "constants";
 import { useMenuContext } from "contexts";
 import { useWallet } from "contexts/WalletContext";
@@ -17,8 +17,8 @@ const StatusCard = (bgColor) => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
 	const { refreshWallet, balance, loading } = useWallet();
-	const { role_tx_list } = useMenuContext();
-
+	const { interactions } = useMenuContext();
+	const { role_tx_list } = interactions;
 	// const { data, mutate } = useRequest({
 	// 	method: "POST",
 	// 	baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -57,9 +57,10 @@ const StatusCard = (bgColor) => {
 		}
 	};
 
+	let isBalanceFetching = balance > 0 || balance === 0 ? false : true;
 	const disableRefreshBtn = {
-		opacity: disabled || loading ? 0.3 : 1,
-		cursor: disabled || loading ? "not-allowed" : "pointer",
+		opacity: disabled || isBalanceFetching ? 0.3 : 1,
+		cursor: disabled || isBalanceFetching ? "not-allowed" : "pointer",
 	};
 
 	return (
@@ -90,7 +91,6 @@ const StatusCard = (bgColor) => {
 						}}
 					>
 						Wallet Balance
-						{console.log("bgColor", bgColor)}
 					</Text>
 					<Flex color="#FFD93B" align="center" gap="0.25">
 						<Icon
@@ -116,30 +116,40 @@ const StatusCard = (bgColor) => {
 				</Flex>
 			</Flex>
 			<Flex columnGap="12px" align="center">
-				<Circle
-					size={{ base: "6", "2xl": "8" }}
-					bg="white"
-					onClick={onRefreshHandler}
-					{...disableRefreshBtn}
+				<Tooltip label="Refresh" /* hasArrow="true" */ placement="top">
+					<Circle
+						size={{ base: "6", "2xl": "8" }}
+						bg="white"
+						onClick={onRefreshHandler}
+						{...disableRefreshBtn}
+					>
+						<Icon
+							name="refresh"
+							width={{ base: "12px", "2xl": "16px" }}
+							color="sidebar.card-bg-dark"
+						/>
+					</Circle>
+				</Tooltip>
+				<Tooltip
+					label="Load Balance"
+					/* hasArrow="true" */ placement="top"
 				>
-					<Icon
-						name="refresh"
-						width={{ base: "12px", "2xl": "16px" }}
-						color="sidebar.card-bg-dark"
-					/>
-				</Circle>
-				<Circle
-					size={{ base: "6", "2xl": "8" }}
-					bg={"success"}
-					color="white"
-					boxShadow="0px 3px 6px #00000029"
-					border="2px solid #FFFFFF"
-					onClick={handleAddClick}
-					opacity={loading ? 0.3 : 1}
-					cursor={loading ? "not-allowed" : "pointer"}
-				>
-					<Icon name="add" width={{ base: "12px", "2xl": "16px" }} />
-				</Circle>
+					<Circle
+						size={{ base: "6", "2xl": "8" }}
+						bg={"success"}
+						color="white"
+						boxShadow="0px 3px 6px #00000029"
+						border="2px solid #FFFFFF"
+						onClick={handleAddClick}
+						opacity={isBalanceFetching ? 0.3 : 1}
+						cursor={isBalanceFetching ? "not-allowed" : "pointer"}
+					>
+						<Icon
+							name="add"
+							width={{ base: "12px", "2xl": "16px" }}
+						/>
+					</Circle>
+				</Tooltip>
 			</Flex>
 		</Flex>
 	);
