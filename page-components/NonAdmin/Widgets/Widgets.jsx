@@ -7,9 +7,9 @@ import QueryWidget from "./QueryWidget/QueryWidget";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Widgets></Widgets>`
  */
-const Widgets = ({ className = "", ...props }) => {
+const Widgets = () => {
 	return (
-		<div className={`${className}`} {...props}>
+		<div>
 			<Grid
 				width={"100%"}
 				templateColumns={{
