@@ -59,6 +59,15 @@ const IcoButton = ({
 			? "32px"
 			: size;
 
+	const iconSize: string =
+		size === "lg"
+			? "32px"
+			: size === "md"
+			? "24px"
+			: size === "sm"
+			? "16px"
+			: null;
+
 	const btnTheme: Object =
 		theme === "dark"
 			? {
@@ -87,7 +96,7 @@ const IcoButton = ({
 			cursor={clickable ? "auto" : "pointer"}
 			onClick={onClick}
 		>
-			<Icon name={iconName} {...iconStyle} />
+			<Icon name={iconName} w={iconSize} {...iconStyle} />
 		</Center>
 	);
 };
