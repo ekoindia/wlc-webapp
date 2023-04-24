@@ -6,11 +6,12 @@ type Props = {
 	iconName: IconNameType;
 	size: "lg" | "md" | "sm" | string;
 	iconStyle: Object;
-	theme?: string;
+	theme?: "dark" | "light" | Object;
 	bg?: string;
-	round?: string | number;
+	round?: "full" | string | number;
 	boxShadow?: string;
 	title?: string;
+	onClick?: () => void;
 };
 
 /**
@@ -18,14 +19,15 @@ type Props = {
  * @arg 	{Object}	prop	Properties passed to the component
  * @param {IconNameType} iconName - The name of the icon to display.
  * @param {string} size - The size of the button. Can be "lg", "md", "sm", or a custom string.
- * @param {Object} iconStyle - The styles to apply to the icon.
- * @param {string} theme - The color theme of the button. Can be "light" or "dark".
+ * @param {Object} iconStyle - The styles to apply to the icon (should contain width, height).
+ * @param {string} theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
  * @param {string} bg - The background color of the button.
  * @param {string|number} round - The rounding of the button. Can be a string, a number, or "full".
  * @param {string} boxShadow - The box shadow of the button.
  * @param {string} title - The title of the button.
+ * @param {MouseEvent} onClick - The click event handler
  * @example
- * // Example usage:
+ * //Example usage:
  * <IcoButton
  *    iconName="view-transaction-history"
  *    size="lg"
@@ -42,9 +44,13 @@ const IcoButton = ({
 	round,
 	boxShadow,
 	title = "IcoButton",
+	onClick,
 }: Props): JSX.Element => {
-	const roundness = round === "full" ? "full" : `${round || 10}`;
-	const bgSize =
+	const clickable: boolean = onClick === undefined;
+
+	const roundness: string = round === "full" ? "full" : `${round || 10}`;
+
+	const bgSize: string =
 		size === "lg"
 			? "64px"
 			: size === "md"
@@ -53,27 +59,20 @@ const IcoButton = ({
 			? "32px"
 			: size;
 
-	const btnTheme =
+	const btnTheme: Object =
 		theme === "dark"
 			? {
 					bg: "inputlabel",
+					color: "white",
 					boxShadow: "0px 3px 10px #0000001A",
 			  }
 			: theme === "light"
 			? {
 					bg: "divider",
+					color: "accent.DEFAULT",
 					border: "1px solid #E9EDF1",
 			  }
-			: {};
-
-	const iconColor =
-		theme === "dark"
-			? {
-					color: "white",
-			  }
-			: theme === "light"
-			? { color: "accent.DEFAULT" }
-			: {};
+			: theme;
 
 	return (
 		<Center
@@ -85,8 +84,10 @@ const IcoButton = ({
 			rounded={roundness}
 			boxShadow={boxShadow}
 			{...btnTheme}
+			cursor={clickable ? "auto" : "pointer"}
+			onClick={onClick}
 		>
-			<Icon name={iconName} {...iconStyle} {...iconColor} />
+			<Icon name={iconName} {...iconStyle} />
 		</Center>
 	);
 };

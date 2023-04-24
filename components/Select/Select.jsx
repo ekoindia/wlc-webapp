@@ -13,7 +13,7 @@ const Select = (props) => {
 	const {
 		label,
 		required = false,
-		labelStyle,
+		// labelStyle,
 		inputContStyle,
 		data,
 		setSelected,
