@@ -113,7 +113,7 @@ const Transaction = () => {
 	const handlePillClick = (index) => {
 		setActivePillIndex(index);
 	};
-	const limit = 10;
+	const limit = 25;
 	const body = {
 		client_ref_id: 551681714635439,
 		locale: "en",
@@ -131,7 +131,7 @@ const Transaction = () => {
 	});
 
 	useEffect(() => {
-		mutate(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do");
+		mutate();
 	}, [currentPage]);
 
 	const transactionList = data?.data?.transaction_list ?? [];

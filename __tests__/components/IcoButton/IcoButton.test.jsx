@@ -21,6 +21,7 @@ describe("IcoButton", () => {
 		const { container } = render(<IcoButton />);
 		expect(container).not.toBeEmptyDOMElement();
 	});
+
 	it("should render the button with the correct icon", () => {
 		render(<IcoButton iconName="view-transaction-history" />);
 		const iconElement = screen.getByLabelText("view-transaction-history");
