@@ -1,15 +1,15 @@
 import { Grid } from "@chakra-ui/react";
-import QueryWidget from "./QueryWidget/QueryWidget";
+import { CommonTransaction, QueryWidget, TransactionWidget } from ".";
 /**
- * A <Widgets> component
- * TODO: Write more description here
+ * A Widgets component
+ * Now component only imported for testing in storybook
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Widgets></Widgets>`
  */
-const Widgets = ({ className = "", ...props }) => {
+const Widgets = () => {
 	return (
-		<div className={`${className}`} {...props}>
+		<div>
 			<Grid
 				width={"100%"}
 				templateColumns={{
@@ -17,18 +17,26 @@ const Widgets = ({ className = "", ...props }) => {
 					sm: "repeat(1, 1fr)",
 					md: "repeat(2, 1fr)",
 					lg: "repeat(2, 1fr)",
-					xl: "repeat(2,1fr)",
+					xl: "repeat(3,1fr)",
+					// "2xl": "repeat(4,1fr)",
 				}}
 				justifyContent="center"
 				p={{ base: "0px 0px 0px 0px", md: "20px 20px 20px 20px" }}
-				gap={{ base: (2, 4), sm: (2, 4), md: (4, 2), lg: (4, 4) }}
+				gap={{
+					base: (2, 4),
+					sm: (2, 4),
+					md: (4, 2),
+					lg: (4, 4),
+					xl: (4, 4),
+				}}
 			>
 				{/* <EkycWidget /> */}
 				{/* <Box display={{ base: "block", lg: "none" }}>
 					<StatusCard bgColor={"white"} />
 				</Box> */}
 				<QueryWidget />
-				{/* <CommonTransaction /> */}
+				<TransactionWidget />
+				<CommonTransaction />
 			</Grid>
 		</div>
 	);

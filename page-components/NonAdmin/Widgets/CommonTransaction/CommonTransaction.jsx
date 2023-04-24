@@ -1,18 +1,45 @@
 import { Box, Flex, GridItem, SkeletonCircle, Text } from "@chakra-ui/react";
 /**
- * A <CommonTransaction> component
- * TODO: Write more description here
+ * A CommonTransaction component
+ * Is a set of icon which have most common transaction done on platform
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<CommonTransaction></CommonTransaction>`
  */
-const CommonTransaction = ({ className = "", ...props }) => {
+const CommonTransaction = () => {
 	return (
-		<div className={`${className}`} {...props}>
+		<div>
 			<GridItem>
 				<Flex
-					h={{ base: "auto", sm: "350px", md: "387px", lg: "400px" }}
-					w={{ base: "100%", sm: "100%", md: "450px", lg: "480px" }}
+					minH={{
+						base: "auto",
+						sm: "200px",
+						md: "387px",
+						lg: "320px",
+						xl: "400px",
+					}}
+					maxH={{
+						base: "auto",
+						sm: "200px",
+						md: "387px",
+						lg: "400px",
+						xl: "400px",
+					}}
+					// w={{ base: "100%", sm: "100%", md: "450px", lg: "480px" }}
+					minW={{
+						base: "100%",
+						sm: "100%",
+						md: "420px",
+						lg: "360px",
+						xl: "350px",
+					}}
+					maxW={{
+						base: "100%",
+						sm: "100%",
+						md: "420px",
+						lg: "400px",
+						xl: "480px",
+					}}
 					borderRadius={{
 						base: "0px 0px 0px 0px",
 						sm: "0px 0px 2px 2px",
