@@ -30,13 +30,6 @@ const Layout = ({ isLoggedIn, children }) => {
 				>
 					<Box
 						overflowY={"auto"}
-						p={{
-							base: "0px",
-							sm: "0px",
-							md: "2vw",
-							"2xl": "1.5vw",
-						}}
-						pb={{ base: "20px", md: "30px", "2xl": "30px" }}
 						css={{
 							"&::-webkit-scrollbar": {
 								width: "0.6vw",

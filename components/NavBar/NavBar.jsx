@@ -486,6 +486,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				{menulist.map((ele, idx) => (
 					<>
 						<HStack
+							key={ele.title}
 							h={{ base: "1.65", sm: "1.65vw" }}
 							w={"90%"}
 							justifyContent={"space-between"}

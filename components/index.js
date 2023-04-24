@@ -17,6 +17,7 @@ import { Menus } from "./Menus";
 import { MultiSelect } from "./MultiSelect";
 import { NavBar } from "./NavBar";
 import { OtpInput } from "./OtpInput";
+import { PaddingBox } from "./PaddingBox";
 import { Pagination } from "./Pagination";
 import { ProfileCard } from "./ProfileCard";
 import { RouteProtecter } from "./RouteProtecter";
@@ -30,6 +31,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	PaddingBox,
 	IcoButton,
 	Button,
 	Select,

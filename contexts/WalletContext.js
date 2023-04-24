@@ -22,12 +22,12 @@ const WalletContext = createContext();
  * */
 const useFetchBalance = (setBalance) => {
 	const { userData } = useUser();
-	const [loading, setLoading] = useState(false);
+	// const [loading, setLoading] = useState(false);
 	const { generateNewToken } = useRefreshToken();
 
 	const fetchBalance = useCallback(() => {
 		console.log("::::fetchBalance::::");
-		setLoading(true);
+		// setLoading(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -42,15 +42,15 @@ const useFetchBalance = (setBalance) => {
 			.then((data) => {
 				if (data?.data?.customer_id) {
 					console.log("useFetchBalance Balance: ", data);
-					setBalance(data?.data?.balance || 0);
+					setBalance(+data?.data?.balance || 0);
 				}
 			})
 			.catch((err) => {
 				console.error("useFetchBalance error: ", err);
-			})
-			.finally(() => setLoading(false));
+			});
+		// .finally(() => setLoading(false));
 	});
-	return { fetchBalance, loading };
+	return { fetchBalance /* loading */ };
 };
 
 /**
@@ -62,8 +62,8 @@ const useFetchBalance = (setBalance) => {
  * @property {string} balance - used to get the wallet balance value
  */
 const WalletProvider = ({ children }) => {
-	const [balance, setBalance] = useState("");
-	const { fetchBalance, loading } = useFetchBalance(setBalance);
+	const [balance, setBalance] = useState(null);
+	const { fetchBalance } = useFetchBalance(setBalance);
 	const { userData } = useUser();
 
 	useEffect(() => {
@@ -81,7 +81,6 @@ const WalletProvider = ({ children }) => {
 				refreshWallet: fetchBalance,
 				setBalance,
 				balance,
-				loading,
 			}}
 		>
 			{children}

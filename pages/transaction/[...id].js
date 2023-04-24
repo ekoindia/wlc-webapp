@@ -1,4 +1,5 @@
 import { Flex, Spinner } from "@chakra-ui/react";
+import { PaddingBox } from "components";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
 import useRefreshToken from "hooks/useRefreshToken";
@@ -6,7 +7,6 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useState } from "react";
-
 /**
  * The transaction page component to render all financial transaction flows.
  * Currently, it loads the connect-wlc-widget.
@@ -19,13 +19,14 @@ const Transaction = () => {
 	console.log("Transaction id to load: ", id);
 
 	const { userData } = useUser();
-	const { role_tx_list } = useMenuContext();
+	const { interactions } = useMenuContext();
+	const { role_tx_list } = interactions;
 	console.log(">>> USER DATA:: ", userData, role_tx_list);
 
 	const { widgetLoading } = useSetupWidgetEventListeners(router);
 
 	return (
-		<>
+		<PaddingBox noSpacing={true}>
 			<Head>
 				<title>Transaction</title>
 				<link
@@ -59,7 +60,7 @@ const Transaction = () => {
 				language="en"
 			></tf-wlc-widget>
 			{/* dark-theme={true} */}
-		</>
+		</PaddingBox>
 	);
 };
 
