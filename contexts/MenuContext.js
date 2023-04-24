@@ -11,6 +11,7 @@ const MenuProvider = ({ children }) => {
 		interaction_list: [],
 		role_tx_list: {},
 	});
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		// console.log("userData::", userData);
@@ -18,9 +19,9 @@ const MenuProvider = ({ children }) => {
 		if (userData?.loggedIn && userData?.userId > 1) {
 			if (userData?.is_org_admin !== 1) {
 				// load menu & role data only if user is not an admin
+				setLoading(true);
 
 				// TODO: use SWR with caching
-
 				let local_interaction_list =
 					sessionStorage.getItem("interaction_list") || "[]";
 				let local_role_tx_list =
@@ -36,6 +37,7 @@ const MenuProvider = ({ children }) => {
 						interaction_list: JSON.parse(local_interaction_list),
 						role_tx_list: JSON.parse(local_role_tx_list),
 					});
+					setLoading(false);
 				} else {
 					fetcher(
 						process.env.NEXT_PUBLIC_API_BASE_URL +
@@ -47,6 +49,7 @@ const MenuProvider = ({ children }) => {
 					)
 						// .then((res) => res.json())
 						.then((data) => {
+							setLoading(false);
 							if (data.length) {
 								const processedData =
 									processTransactionData(data);
@@ -65,22 +68,26 @@ const MenuProvider = ({ children }) => {
 						})
 						.catch((err) =>
 							console.error("MenuProvider error: ", err)
-						);
+						)
+						.finally(() => setLoading(false));
 				}
 			}
-		} else {
-			// Not logged in...reset roles & menu...
-			setInteractions({
-				role_tx_list: {},
-				interaction_list: [],
-			});
-			sessionStorage.setItem("interaction_list", "[]");
-			sessionStorage.setItem("role_tx_list", "{}");
 		}
+		// Commentted this beacuse there is no mean of this.
+		// else {
+		//     // Not logged in...reset roles & menu...
+		//     setLoading(false);
+		//     setInteractions({
+		//         role_tx_list: {},
+		//         interaction_list: [],
+		//     });
+		//     sessionStorage.setItem("interaction_list", "[]");
+		//     sessionStorage.setItem("role_tx_list", "{}");
+		// }
 	}, [userData?.loggedIn, userData?.userId, userData?.is_org_admin]);
 
 	return (
-		<MenuContext.Provider value={interactions}>
+		<MenuContext.Provider value={{ interactions, loading }}>
 			{children}
 		</MenuContext.Provider>
 	);
