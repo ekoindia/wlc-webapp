@@ -95,9 +95,13 @@ const StatusCard = (bgColor) => {
 					<Flex color="#FFD93B" align="center" gap="0.25">
 						<Icon
 							name="rupee"
-							w={{ base: "14px", md: "12px", "2xl": "16px" }}
-							h={{ base: "14px", md: "12px", "2xl": "16px" }}
+							w={{ base: "9px", /*  md: "9px", */ "2xl": "10px" }}
+							h={{
+								base: "12px",
+								/* md: "12px", */ "2xl": "13px",
+							}}
 						/>
+
 						<Text
 							fontSize={{
 								base: "14px",
@@ -106,7 +110,7 @@ const StatusCard = (bgColor) => {
 							}}
 							fontWeight="medium"
 						>
-							{balance}
+							&#8201;{balance}
 						</Text>
 					</Flex>
 				</Flex>

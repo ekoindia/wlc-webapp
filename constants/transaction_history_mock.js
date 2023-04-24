@@ -1,4 +1,5 @@
-export const transactionHistoryData = {
+/* contains mock data for transaction history table */
+export const transaction_history_mock = {
 	response_status_id: 0,
 	data: {
 		asofdate: "2023-04-18 16:39:18.0",

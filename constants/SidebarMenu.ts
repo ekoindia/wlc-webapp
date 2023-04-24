@@ -32,21 +32,21 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 		name: "Transaction History",
 		link: "/admin/transaction-history",
 	},
-	{
-		icon: "invoice",
-		name: "Invoicing",
-		link: "/admin/invoicing",
-	},
+	// {
+	// 	icon: "invoice",
+	// 	name: "Invoicing",
+	// 	link: "/admin/invoicing",
+	// },
 	{
 		icon: "commission-percent",
 		name: "Pricing & Comission",
 		link: "/admin/pricing",
 	},
-	{
-		icon: "person",
-		name: "Company profile",
-		link: "/admin/company",
-	},
+	// {
+	// 	icon: "person",
+	// 	name: "Company profile",
+	// 	link: "/admin/company",
+	// },
 ];
 
 export const sidebarMenu: sidebarMenuType[] = [

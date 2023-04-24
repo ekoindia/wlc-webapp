@@ -1,4 +1,5 @@
-export const mockData = [
+/* ontains mock data for Network, Account, Detailed table, & Dashboard (for Admin) */
+export const table_data_mock = [
 	{
 		name: "R. J. Technology",
 		mobile_number: "+91 95999 13099",
