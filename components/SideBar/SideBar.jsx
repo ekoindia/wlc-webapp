@@ -21,9 +21,11 @@ import { useEffect } from "react";
 import { Icon, ProfileCard, StatusCard } from "..";
 
 /**
- * A helper function that checks the path of sidebar item and current route if matches
- * return true either false
- * */
+ * A helper function to check if the current route is the same as the route passed to it.
+ * @param {Object} router The router object from next/router.
+ * @param {string} currPath The path to compare with the current route.
+ * @returns {boolean} True if the current route is the same as the route passed to it.
+ **/
 function isCurrentRoute(router, currPath) {
 	const path = router.asPath.split("?")[0];
 	if (path === currPath) return true;
@@ -64,8 +66,9 @@ export default SideBar;
 //FOR LAPTOP SCREENS
 const SideBarMenu = () => {
 	const { userData } = useUser();
-	const { interaction_list } = useMenuContext();
-	const router = useRouter();
+	const { interactions } = useMenuContext();
+	const { interaction_list } = interactions;
+	// const router = useRouter();
 
 	const menuList =
 		userData?.is_org_admin === 1 ? adminSidebarMenu : sidebarMenu;
@@ -169,6 +172,7 @@ const MenuBar = (props) => {
 const CollapseMenu = (props) => {
 	const { menu, interaction_list, /* currentRoute, */ role } = props;
 	const router = useRouter();
+
 	return (
 		<Flex textColor="white" justify="space-between">
 			<Accordion allowMultiple w="100%">
