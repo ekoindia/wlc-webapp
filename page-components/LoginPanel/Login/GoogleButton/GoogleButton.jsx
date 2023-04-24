@@ -65,7 +65,12 @@ const GoogleButton = ({
 				h="calc(100% - 4px)"
 				w={{ base: "60px", "2xl": "68px" }}
 			>
-				<Image src="./icons/google.svg" width={48} height={48} />
+				<Image
+					src="./icons/google.svg"
+					width={48}
+					height={48}
+					loading="eager"
+				/>
 			</Center>
 			<Text ml={[10, 10, null]} variant="selectNone">
 				Login with Google

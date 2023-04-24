@@ -22,7 +22,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
-	let login_types = Object.keys(orgDetail?.login_types);
+	let login_types = Object.keys(orgDetail?.login_types || {});
 
 	const onChangeHandler = (val) => {
 		setValue(val);
