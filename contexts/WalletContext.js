@@ -40,8 +40,9 @@ const useFetchBalance = (setBalance) => {
 			generateNewToken
 		)
 			.then((data) => {
-				if (data?.data?.customer_id) {
-					console.log("useFetchBalance Balance: ", data);
+				console.log("useFetchBalance Balance: ", data);
+
+				if (data && data.data && "balance" in data.data) {
 					setBalance(+data?.data?.balance || 0);
 				}
 			})
@@ -92,7 +93,7 @@ const WalletProvider = ({ children }) => {
  * @name useWallet
  * @description This hook will directly provide the WalletContext values
  * @returns Object - The object will the data
- * @example import useWallet from 'contexts'
+ * @example import { useWallet } from 'contexts';
  * const { refreshWallet, setBalance, balance} = useWallet();
  */
 const useWallet = () => {
