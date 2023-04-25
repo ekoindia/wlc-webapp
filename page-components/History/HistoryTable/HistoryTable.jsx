@@ -9,7 +9,7 @@ import { getTableProcessedData } from "helpers/processData";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<HistoryTable></HistoryTable>` TODO: Fix example
  */
-const HistoryTable = ({ transactionList, ...rest }) => {
+const HistoryTable = ({ transactionList }) => {
 	const processedData = getTableProcessedData(transactionList);
 	const renderer = [
 		{ name: "", field: "", show: "Accordian" },

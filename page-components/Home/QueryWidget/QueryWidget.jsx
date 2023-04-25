@@ -8,7 +8,7 @@ import { Button, Icon } from "components";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<QueryWidget></QueryWidget>` TODO: Fix example
  */
-const QueryWidget = ({ prop1, ...rest }) => {
+const QueryWidget = () => {
 	const hoverBg = useBreakpointValue({
 		base: "white",
 		md: "transparent",

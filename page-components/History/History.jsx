@@ -22,7 +22,7 @@ import { HistoryPagination, HistoryTable } from ".";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<History></History>` TODO: Fix example
  */
-const History = ({ prop1, ...rest }) => {
+const History = () => {
 	const [activePillIndex, setActivePillIndex] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);

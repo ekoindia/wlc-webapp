@@ -9,7 +9,7 @@ import { QueryWidget } from ".";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Home></Home>` TODO: Fix example
  */
-const Home = ({ ...rest }) => {
+const Home = () => {
 	return (
 		<Grid
 			width={"100%"}

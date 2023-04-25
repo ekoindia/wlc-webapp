@@ -8,7 +8,7 @@ import { Button } from "components";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<KycWidget></KycWidget>` TODO: Fix example
  */
-const KycWidget = ({ prop1, ...rest }) => {
+const KycWidget = () => {
 	return (
 		<GridItem>
 			<Flex

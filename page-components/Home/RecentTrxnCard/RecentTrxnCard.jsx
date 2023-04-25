@@ -7,7 +7,7 @@ import { Box, Flex, Text } from "@chakra-ui/react";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<RecentTrxnCard></RecentTrxnCard>` TODO: Fix example
  */
-const RecentTrxnCard = ({ prop1, ...rest }) => {
+const RecentTrxnCard = () => {
 	return (
 		<div>
 			<Flex

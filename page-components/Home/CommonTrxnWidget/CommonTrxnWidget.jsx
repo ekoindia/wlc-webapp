@@ -7,7 +7,7 @@ import { Box, Flex, GridItem, SkeletonCircle, Text } from "@chakra-ui/react";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<CommonTrxnWidget></CommonTrxnWidget>` TODO: Fix example
  */
-const CommonTrxnWidget = ({ prop1, ...rest }) => {
+const CommonTrxnWidget = () => {
 	return (
 		<div>
 			<GridItem>

@@ -18,7 +18,7 @@ import { getNameStyle, getStatusStyle } from "helpers/TableHelpers";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<HistoryCard></HistoryCard>` TODO: Fix example
  */
-const HistoryCard = ({ item, rendererExpandedRow, ...rest }) => {
+const HistoryCard = ({ item, rendererExpandedRow }) => {
 	return (
 		<>
 			<Flex justifyContent="space-between">
