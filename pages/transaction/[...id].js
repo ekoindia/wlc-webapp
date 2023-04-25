@@ -1,5 +1,6 @@
 import { Flex, Spinner } from "@chakra-ui/react";
 import { PaddingBox } from "components";
+import { useWallet } from "contexts";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
 import useRefreshToken from "hooks/useRefreshToken";
@@ -7,6 +8,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useState } from "react";
+
 /**
  * The transaction page component to render all financial transaction flows.
  * Currently, it loads the connect-wlc-widget.
@@ -70,6 +72,7 @@ const Transaction = () => {
 const setupWidgetEventListeners = ({
 	setWidgetLoading,
 	generateNewToken,
+	setBalance,
 	router,
 }) => {
 	/**
@@ -84,6 +87,7 @@ const setupWidgetEventListeners = ({
 
 	const onTrxnBusyChanged = (e) => {
 		console.log("🎬 >>> onTrxnBusyChanged:: ", e);
+		// TODO: Implement this function...
 	};
 
 	const onOpenUrl = (e) => {
@@ -117,32 +121,85 @@ const setupWidgetEventListeners = ({
 		}
 	};
 
-	const onGotoTrxn = (e) => {
-		if (!e?.detail?.trxnid) {
+	const onGotoTrxn = ({ trxnid }) => {
+		if (!trxnid) {
 			return;
 		}
 
 		// Open the transaction page
-		router.push("/transaction/" + e.detail.trxnid);
+		router.push("/transaction/" + trxnid);
 	};
 
-	const onGotoHist = (e) => {
-		let filter_string = e?.detail?.product_id
-			? "?product_id=" + e?.detail?.product_id
-			: "";
+	const onGotoHist = ({ product_id }) => {
+		const filter_string = product_id ? "?product_id=" + product_id : "";
 
 		router.push("/history" + filter_string);
+	};
+
+	const setWalletBalance = (balance) => {
+		console.log("🎬 >>> setWalletBalance:: ", balance);
+
+		if (balance === null || balance === undefined || balance === "") {
+			return;
+		}
+
+		setBalance(balance);
+	};
+
+	/**
+	 * Common events listener for the custom global events dispatched by the Connect widget.
+	 * Supports the following events (identified by the "name" property in the event detail object):
+	 * 	- update-status: Wallet balance updated,
+	 * 	- track-event: Track an event in Google Analytics,
+	 * 	- capture-location: Capture the user's current location.
+	 * 	- login-again: Login again (refresh access-token) when the session expires.
+	 * 	- goto-transaction: Open the transaction page.
+	 * 	- goto-history: Open the history page.
+	 * @param {Object} e.detail	- The event detail object
+	 * @param {String} e.detail.name	- The name of the event
+	 */
+	const onIronSignal = (e) => {
+		console.log("🎬 >>> onIronSignal:: ", e?.detail);
+		// update-status
+		// track-event
+		// capture-location
+		// login-again", onLoginAgain
+		// goto-transaction", onGotoTrxn
+		// goto-history", onGotoHist
+
+		if (!e?.detail?.name) {
+			return;
+		}
+
+		switch (e.detail.name) {
+			case "update-status":
+				// Update wallet balance in the header (as reported by the Connect Widget)
+				if (e?.detail?.data?.balance) {
+					setWalletBalance(e.detail.data.balance);
+				}
+				break;
+			case "login-again":
+				// Login again (refresh access-token) when the session expires
+				onLoginAgain();
+				break;
+			case "goto-transaction":
+				// Open the transaction page
+				onGotoTrxn(e?.detail);
+				break;
+			case "goto-history":
+				// Open the transaction page
+				onGotoHist(e?.detail);
+				break;
+		}
 	};
 
 	const onWlcWidgetLoad = () => {
 		setWidgetLoading(false);
 	};
 
-	window.addEventListener("iron-signal-login-again", onLoginAgain);
+	window.addEventListener("iron-signal", onIronSignal);
 	window.addEventListener("trxn-busy-change", onTrxnBusyChanged);
 	window.addEventListener("open-url", onOpenUrl);
-	window.addEventListener("iron-signal-goto-transaction", onGotoTrxn);
-	window.addEventListener("iron-signal-goto-history", onGotoHist);
 	window.addEventListener("wlc-widget-loaded", onWlcWidgetLoad);
 
 	// TODO: Add these Event listeners as well:
@@ -154,11 +211,9 @@ const setupWidgetEventListeners = ({
 	// Cleanup...
 	return () => {
 		// On component unmount, remove the event listeners.
-		window.removeEventListener("iron-signal-login-again", onLoginAgain);
+		window.removeEventListener("iron-signal", onIronSignal);
 		window.removeEventListener("trxn-busy-change", onTrxnBusyChanged);
 		window.removeEventListener("open-url", onOpenUrl);
-		window.removeEventListener("iron-signal-goto-transaction", onGotoTrxn);
-		window.removeEventListener("iron-signal-goto-history", onGotoHist);
 		window.removeEventListener("wlc-widget-loaded", onWlcWidgetLoad);
 	};
 };
@@ -181,10 +236,14 @@ const useSetupWidgetEventListeners = (router) => {
 	// To refresh access-token when it expires
 	const { generateNewToken } = useRefreshToken();
 
+	// To update Wallet balance
+	const { setBalance } = useWallet();
+
 	useEffect(function () {
 		const cleanup = setupWidgetEventListeners({
 			setWidgetLoading,
 			generateNewToken,
+			setBalance,
 			router,
 		});
 		configurePolymer();
