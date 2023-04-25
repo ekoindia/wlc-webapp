@@ -58,6 +58,11 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 	// Add client_ref_id to the request body, if not already present
 	body.client_ref_id ??= Date.now() + "" + Math.floor(Math.random() * 1000);
 
+	console.log("📡 Starting Fetch:", {
+		url,
+		options,
+	});
+
 	const fetchPromise = fetch(url, {
 		method: method || DEFAULT_METHOD,
 		headers: {
@@ -73,6 +78,11 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 	})
 		.then((res) => {
 			if (res.ok) {
+				console.log("📡 Fetch Result:", {
+					url,
+					options,
+					res,
+				});
 				return res.json();
 			} else {
 				res.text().then((text) => {
