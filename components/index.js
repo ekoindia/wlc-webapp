@@ -6,6 +6,7 @@ import { Calenders } from "./Calenders";
 import { Cards } from "./Cards";
 import { Currency } from "./Currency";
 import { Divider } from "./Divider";
+import { EkoConnectWidget } from "./EkoConnectWidget";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
 import { Icon } from "./Icon";
@@ -33,6 +34,7 @@ import { Tags } from "./Tags";
 import { Value } from "./Value";
 
 export {
+	EkoConnectWidget,
 	Currency,
 	Value,
 	PaddingBox,
