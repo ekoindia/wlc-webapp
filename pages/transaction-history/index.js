@@ -1,10 +1,14 @@
 import { PaddingBox } from "components";
-import { Transaction } from "page-components/NonAdmin";
+import Head from "next/head";
+import { History } from "page-components";
 
 const home = () => {
 	return (
 		<PaddingBox>
-			<Transaction />
+			<Head>
+				<title>Transaction History</title>
+			</Head>
+			<History />
 		</PaddingBox>
 	);
 };
