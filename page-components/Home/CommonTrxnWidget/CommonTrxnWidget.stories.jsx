@@ -2,7 +2,7 @@ import CommonTrxnWidget from "./CommonTrxnWidget";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/CommonTrxnWidget",
+	title: "PageComponent/Home/CommonTrxnWidget",
 	component: CommonTrxnWidget,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

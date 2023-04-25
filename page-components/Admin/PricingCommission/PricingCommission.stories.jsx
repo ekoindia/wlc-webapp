@@ -2,7 +2,7 @@ import PricingCommission from "./PricingCommission";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/PricingCommission",
+	title: "PageComponent/Admin/PricingCommission",
 	component: PricingCommission,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

@@ -2,7 +2,7 @@ import HistoryPagination from "./HistoryPagination";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/HistoryPagination",
+	title: "PageComponent/History/HistoryPagination",
 	component: HistoryPagination,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

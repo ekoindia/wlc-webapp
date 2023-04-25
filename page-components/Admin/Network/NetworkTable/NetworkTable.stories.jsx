@@ -2,7 +2,7 @@ import NetworkTable from "./NetworkTable";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/NetworkTable",
+	title: "PageComponent/Admin/Network/NetworkTable",
 	component: NetworkTable,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

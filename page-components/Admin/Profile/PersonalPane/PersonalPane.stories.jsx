@@ -2,7 +2,7 @@ import PersonalPane from "./PersonalPane";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/PersonalPane",
+	title: "PageComponent/Admin/Profile/PersonalPane",
 	component: PersonalPane,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

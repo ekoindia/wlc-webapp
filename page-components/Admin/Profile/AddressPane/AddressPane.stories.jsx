@@ -2,7 +2,7 @@ import AddressPane from "./AddressPane";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/AddressPane",
+	title: "PageComponent/Admin/Profile/AddressPane",
 	component: AddressPane,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

@@ -2,7 +2,7 @@ import AccountStatementCard from "./AccountStatementCard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/AccountStatementCard",
+	title: "PageComponent/Admin/AccountStatement/AccountStatementCard",
 	component: AccountStatementCard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

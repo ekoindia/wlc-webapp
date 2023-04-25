@@ -2,7 +2,7 @@ import ProfilePanel from "./ProfilePanel";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/ProfilePanel",
+	title: "PageComponent/Admin/Profile",
 	component: ProfilePanel,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

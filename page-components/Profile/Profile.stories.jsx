@@ -2,7 +2,7 @@ import Profile from "./Profile";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Profile",
+	title: "PageComponent/Profile",
 	component: Profile,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

@@ -2,7 +2,7 @@ import HistoryTable from "./HistoryTable";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/HistoryTable",
+	title: "PageComponent/History/HistoryTable",
 	component: HistoryTable,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

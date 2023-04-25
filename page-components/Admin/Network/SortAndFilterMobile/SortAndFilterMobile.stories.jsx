@@ -2,7 +2,7 @@ import SortAndFilterMobile from "./SortAndFilterMobile";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/SortAndFilterMobile",
+	title: "PageComponent/Admin/Network/SortAndFilterMobile",
 	component: SortAndFilterMobile,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

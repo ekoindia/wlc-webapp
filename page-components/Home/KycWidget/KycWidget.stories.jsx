@@ -2,7 +2,7 @@ import KycWidget from "./KycWidget";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/KycWidget",
+	title: "PageComponent/Home/KycWidget",
 	component: KycWidget,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

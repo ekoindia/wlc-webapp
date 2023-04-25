@@ -2,7 +2,7 @@ import History from "./History";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/History",
+	title: "PageComponent/History",
 	component: History,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

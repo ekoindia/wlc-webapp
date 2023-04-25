@@ -2,7 +2,7 @@ import CompanyPane from "./CompanyPane";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/CompanyPane",
+	title: "PageComponent/Admin/Profile/CompanyPane",
 	component: CompanyPane,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

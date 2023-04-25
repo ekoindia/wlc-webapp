@@ -2,7 +2,7 @@ import OnboardingDashboardCard from "./OnboardingDashboardCard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/OnboardingDashboardCard",
+	title: "PageComponent/Admin/Dashboard/OnboardingDashboard/OnboardingDashboardCard",
 	component: OnboardingDashboardCard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

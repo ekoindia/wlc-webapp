@@ -2,7 +2,7 @@ import DetailedStatement from "./DetailedStatement";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/DetailedStatement",
+	title: "PageComponent/Admin/DetailedStatement",
 	component: DetailedStatement,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
