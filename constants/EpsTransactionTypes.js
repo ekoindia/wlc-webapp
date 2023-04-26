@@ -3,4 +3,5 @@ export const TransactionTypes = {
 		491, // Retailers (Load E-value)
 		240, // Distributors (Request E-value)
 	],
+	RECHARGE_AND_BILL_PAYMENT: 244,
 };

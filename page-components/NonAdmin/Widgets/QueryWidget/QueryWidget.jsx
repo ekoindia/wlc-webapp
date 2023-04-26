@@ -1,5 +1,6 @@
 import { Flex, GridItem, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
+import { useUser } from "contexts/UserContext";
 /**
  * A QueryWidget component
  * Contact widget on home page
@@ -8,13 +9,17 @@ import { Button, Icon } from "components";
  * @example	`<QueryWidget></QueryWidget>`
  */
 const QueryWidget = () => {
+	const { userData } = useUser();
+	const data = userData?.userDetails?.contacts ?? [];
 	const hoverBg = useBreakpointValue({
 		base: "white",
 		md: "transparent",
 	});
-	const handleContact = () => {
-		console.log("handleContact");
-	};
+	function handleContact() {
+		// Replace with the URL of your mailbox
+		const mailboxUrl = `mailto:${data[0].email}`;
+		window.location.href = mailboxUrl;
+	}
 	return (
 		<div>
 			<GridItem>
@@ -24,39 +29,38 @@ const QueryWidget = () => {
 						sm: "200px",
 						md: "387px",
 						lg: "300px",
-						xl: "400px",
+						xl: "387px",
 					}}
 					maxH={{
 						base: "auto",
 						sm: "200px",
 						md: "387px",
 						lg: "400px",
+						xl: "387px",
 					}}
-					// w={{ base: "100%", sm: "100%", md: "450px", lg: "480px" }}
 					minW={{
 						base: "100%",
 						sm: "100%",
-						md: "420px",
+						md: "380px",
 						lg: "360px",
 						xl: "350px",
 					}}
 					maxW={{
 						base: "100%",
 						sm: "100%",
-						md: "420px",
+						md: "1000px",
 						lg: "400px",
-						xl: "480px",
+						xl: "580px",
 					}}
 					borderRadius={{
-						base: "0px 0px 20px 20px",
+						base: "0px 0px 0px 0px",
 						sm: "0px 0px 2px 2px",
-						md: "20px",
+						md: "10px",
 					}}
 					background={{
 						base: "linear-gradient(to bottom, #2dbb5c, #02762c)",
 						md: "url('./havequery.svg') no-repeat, linear-gradient(to bottom, #2dbb5c, #02762c)",
 					}}
-					// background-repeat= "no-repeat !important"
 					backgroundSize="cover"
 					direction={"column"}
 					align={{
@@ -73,16 +77,16 @@ const QueryWidget = () => {
 					px={{
 						base: "20px",
 						sm: "40px",
-						md: "20px",
-						lg: "20px",
-						xl: "20px",
+						md: "18px",
+						lg: "15px",
+						xl: "25px",
 					}}
 					py={{
 						base: "20px",
 						sm: "30px",
-						md: "24px",
+						md: "18px",
 						lg: "20px",
-						xl: "20px",
+						xl: "25px",
 					}}
 					backgroundPosition="center"
 				>
@@ -94,6 +98,7 @@ const QueryWidget = () => {
 						color={"white"}
 						as="b"
 						pt={{ base: "0px", sm: "20px", md: "40px", lg: "18px" }}
+						pb={{ base: "0px", sm: "20px", md: "10px", lg: "25px" }}
 						direction={"row"}
 					>
 						<Text fontSize={"21px"} display={"inline"}>
@@ -132,7 +137,7 @@ const QueryWidget = () => {
 								>
 									Call us on
 								</Text>
-								<a href="tel:+911244566200">
+								<a href={`tel:${data.cellnumber}`}>
 									<Text
 										as="b"
 										color={"white"}
@@ -140,9 +145,8 @@ const QueryWidget = () => {
 											base: "0.700rem",
 											md: "lg",
 										}}
-										href="tel:+911244566200"
 									>
-										+91 124 456 6200
+										{data[0].cellnumber}
 									</Text>
 								</a>
 							</Flex>
@@ -156,22 +160,35 @@ const QueryWidget = () => {
 						</Text>
 						<Flex direction={"column"}>
 							<Button
-								bg={{ base: "white", md: "transparent" }}
+								bg={"white"}
 								border={{ base: "", md: "1px solid white" }}
 								_hover={{ bg: hoverBg }}
-								color={{ base: "#11299E", md: "white" }}
 								onClick={handleContact}
 								icon={
 									<Icon
 										name="chat-outline"
 										h={{ base: "18px", md: "20px" }}
+										color="accent.DEFAULT"
 									/>
 								}
-								borderRadius="10px"
-								h={{ base: "40px", md: "48px" }}
-								w={{ base: "120px", md: "190px" }}
+								borderRadius={{ base: "5px", md: "10px" }}
+								h={{
+									base: "40px",
+									md: "48px",
+									lg: "44px",
+									xl: "48px",
+								}}
+								w={{
+									base: "120px",
+									md: "190px",
+									lg: "180px",
+									xl: "190px",
+								}}
 							>
-								<Text fontSize={{ base: "sm" }}>
+								<Text
+									fontSize={{ base: "sm" }}
+									color="accent.DEFAULT"
+								>
 									Write to us
 								</Text>
 							</Button>

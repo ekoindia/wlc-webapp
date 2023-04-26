@@ -178,6 +178,16 @@ const connecticon = () => {
 		"wallet-outline",
 		"phone-circle-outline",
 		"chat-outline",
+		"smartphone-circle-button",
+		"satelite-outline",
+		"electricity-outline",
+		"gas-outline",
+		"insurance-outline",
+		"percent-outline",
+		"pendrive-outline",
+		"creditcard-outline",
+		"aeps-outline",
+		"dmt-outline",
 	];
 
 	return (

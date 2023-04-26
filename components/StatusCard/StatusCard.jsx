@@ -13,7 +13,7 @@ import { Icon } from "..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<StatusCard></StatusCard>`
  */
-const StatusCard = (bgColor) => {
+const StatusCard = ({ bgColor, iconColor }) => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
 	const { refreshWallet, balance, loading } = useWallet();
@@ -76,7 +76,7 @@ const StatusCard = (bgColor) => {
 			<Flex align="flex-start" gap="2.5">
 				<Icon
 					name="wallet-outline"
-					color={"sidebar.font"}
+					color={iconColor || "sidebar.font"}
 					cursor={"pointer"}
 					w={{ base: "24px", md: "24px", "2xl": "32px" }}
 					h={{ base: "22px", md: "22px", "2xl": "30px" }}
@@ -92,7 +92,11 @@ const StatusCard = (bgColor) => {
 					>
 						Wallet Balance
 					</Text>
-					<Flex color="#FFD93B" align="center" gap="0.25">
+					<Flex
+						color={iconColor || "#FFD93B"}
+						align="center"
+						gap="0.25"
+					>
 						<Icon
 							name="rupee"
 							w={{ base: "9px", /*  md: "9px", */ "2xl": "10px" }}
