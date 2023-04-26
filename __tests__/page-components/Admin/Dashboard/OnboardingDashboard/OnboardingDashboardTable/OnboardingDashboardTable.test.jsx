@@ -1,5 +1,5 @@
-import OnboardingDasboardTable from "page-components/Admin/Dashboard/OnboardingDashboard/OnboardingDasboardTable/OnboardingDasboardTable";
-import { adminRender } from "test-utils";
+import { OnboardingDashboardTable } from "components/OnboardingDashboardTable";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { adminRender } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("OnboardingDasboardTable", () => {
+describe("OnboardingDashboardTable", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = adminRender(<OnboardingDasboardTable />);
+		const { container } = render(<OnboardingDashboardTable />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("OnboardingDasboardTable", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for OnboardingDasboardTable in __tests__/components/OnboardingDasboardTable/OnboardingDasboardTable.test.jsx"
+		"TODO: add proper test cases for OnboardingDashboardTable in __tests__/components/OnboardingDashboardTable/OnboardingDashboardTable.test.jsx"
 	);
 });

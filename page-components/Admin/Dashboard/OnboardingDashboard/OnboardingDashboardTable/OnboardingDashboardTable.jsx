@@ -1,15 +1,14 @@
 import { Table } from "components";
 import { table_data_mock } from "constants/table_data_mock";
-
 /**
- * A <OnboardingDasboardTable> component
- * TODO: This is my OnboardingDasboardTable table with clickable rows
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<OnboardingDasboardTable></OnboardingDasboardTable>`
+ * A <OnboardingDashboardTable> component
+ * TODO: Write more description here
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	prop.prop1	TODO: Property description.
+ * @param	{...*}	rest	Rest of the props passed to this component.
+ * @example	`<OnboardingDashboardTable></OnboardingDashboardTable>` TODO: Fix example
  */
-
-const OnboardingDasboardTable = () => {
+const OnboardingDashboardTable = ({ prop1, ...rest }) => {
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{
@@ -57,4 +56,4 @@ const OnboardingDasboardTable = () => {
 	);
 };
 
-export default OnboardingDasboardTable;
+export default OnboardingDashboardTable;

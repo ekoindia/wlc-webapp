@@ -1,7 +1,7 @@
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useState } from "react";
-import { OnboardingDasboardTable } from "./OnboardingDasboardTable";
+import { OnboardingDashboardTable } from ".";
 
 /**
  * A <OnboardingDashboard> component
@@ -200,7 +200,7 @@ const OnboardingDashboard = (/* props */) => {
 						Onboarded Merchants
 					</Text>
 				</Box>
-				<OnboardingDasboardTable />
+				<OnboardingDashboardTable />
 			</Box>
 		</Flex>
 	);
