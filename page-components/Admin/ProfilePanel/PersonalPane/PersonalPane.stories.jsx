@@ -1,9 +1,9 @@
-import CompanyPane from "./CompanyPane";
+import PersonalPane from "./PersonalPane";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "PageComponent/Admin/Profile/CompanyPane",
-	component: CompanyPane,
+	title: "PageComponent/Admin/ProfilePanel/PersonalPane",
+	component: PersonalPane,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +46,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <CompanyPane {...args} />;
+const Template = (args) => <PersonalPane {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

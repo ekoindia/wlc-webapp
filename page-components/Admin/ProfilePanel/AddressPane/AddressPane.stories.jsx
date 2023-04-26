@@ -1,9 +1,9 @@
-import ProfilePanel from "./ProfilePanel";
+import AddressPane from "./AddressPane";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "PageComponent/Admin/Profile",
-	component: ProfilePanel,
+	title: "PageComponent/Admin/ProfilePanel/AddressPane",
+	component: AddressPane,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +46,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <ProfilePanel {...args} />;
+const Template = (args) => <AddressPane {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
