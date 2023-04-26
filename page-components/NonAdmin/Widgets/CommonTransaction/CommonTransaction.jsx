@@ -55,10 +55,11 @@ const CommonTransaction = () => {
 	const { role_tx_list } = interactions;
 
 	useEffect(() => {
+		//getting group_interaction_ids from recharge & bill payment
 		let group_interaction_ids =
 			role_tx_list[TransactionTypes.RECHARGE_AND_BILL_PAYMENT]
 				.group_interaction_ids;
-
+		// str to array
 		group_interaction_ids = group_interaction_ids.split(",").map(Number);
 
 		const temp = []; // create a new array to store the new data
