@@ -6,8 +6,9 @@ import {
 	useBreakpointValue,
 } from "@chakra-ui/react";
 import { Button, IcoButton } from "components";
+import { TransactionTypes } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 /**
  * A CommonTransaction component
  * Is a set of icon which have most common transaction done on platform
@@ -47,11 +48,31 @@ const transactionsData = [
 		buttonTitle: "View Transaction 2",
 	},
 ];
+
 const CommonTransaction = () => {
+	const [data, setData] = useState([]);
 	const { interactions } = useMenuContext();
-	const { role_tx_list, interaction_list } = interactions;
-	console.log("interaction_list", interaction_list);
-	console.log("role_tx_list", role_tx_list);
+	const { role_tx_list } = interactions;
+
+	useEffect(() => {
+		let group_interaction_ids =
+			role_tx_list[TransactionTypes.RECHARGE_AND_BILL_PAYMENT]
+				.group_interaction_ids;
+
+		group_interaction_ids = group_interaction_ids.split(",").map(Number);
+
+		const temp = []; // create a new array to store the new data
+
+		group_interaction_ids.forEach((id) => {
+			if (id in role_tx_list) {
+				temp.push(role_tx_list[id]); // push each new element to the new array
+			}
+		});
+
+		setData(temp); // set the new array to the data state
+	}, [role_tx_list]); //TODO check dependency for this useEffect 👆👆
+
+	console.log("data", data);
 
 	const [showAll, setShowAll] = useState(false);
 
