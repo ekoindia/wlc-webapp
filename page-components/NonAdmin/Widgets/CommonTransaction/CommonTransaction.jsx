@@ -16,38 +16,6 @@ import { useEffect, useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<CommonTransaction></CommonTransaction>`
  */
-const transactionsData = [
-	{
-		title: "Aeps Cashout",
-		commission: "5%",
-		iconName: "aeps-outline",
-		buttonTitle: "View Transaction 1",
-	},
-	{
-		title: "DMT High Limit",
-		commission: "7%",
-		iconName: "dmt-outline",
-		buttonTitle: "View Transaction 2",
-	},
-	{
-		title: "Mobile Recharge",
-		commission: "7%",
-		iconName: "smartphone-circle-button",
-		buttonTitle: "View Transaction 2",
-	},
-	{
-		title: "Credit Card Bill",
-		commission: "7%",
-		iconName: "creditcard-outline",
-		buttonTitle: "View Transaction 2",
-	},
-	{
-		title: "LIC Bill Pay",
-		commission: "7%",
-		iconName: "insurance-outline",
-		buttonTitle: "View Transaction 2",
-	},
-];
 
 const CommonTransaction = () => {
 	const [data, setData] = useState([]);
@@ -79,18 +47,16 @@ const CommonTransaction = () => {
 
 	const breakpointValue = useBreakpointValue({
 		base: 3,
-		md: transactionsData.length,
+		md: data.length,
 	});
 
 	const showAllButton = useBreakpointValue({
-		base: transactionsData.length > 3 && !showAll,
-		md: transactionsData.length > 3 && !showAll,
+		base: data.length > 3 && !showAll,
+		md: data.length > 3 && !showAll,
 		lg: false,
 	});
 
-	const showTransactions = showAll
-		? transactionsData
-		: transactionsData.slice(0, breakpointValue);
+	const showTransactions = showAll ? data : data.slice(0, breakpointValue);
 	return (
 		<div>
 			<Flex
@@ -156,7 +122,9 @@ const CommonTransaction = () => {
 				m={{ base: "18px", sm: "10px", md: "0px" }}
 			>
 				<Box>
-					<Text as="b">Most common transactions</Text>
+					<Text as="b" fontSize={{ base: "sm", md: "md" }}>
+						Most common transactions
+					</Text>
 				</Box>
 				<SimpleGrid
 					columns={{ base: 3, sm: 3, md: 3 }}
@@ -180,11 +148,9 @@ const CommonTransaction = () => {
 							// mb={{ base: "30px", lg: "40px", xl: "40px" }}
 						>
 							<IcoButton
-								title={transaction.buttonTitle}
+								title={transaction.label}
 								iconName={
-									index < 5
-										? transaction.iconName
-										: "more-horiz"
+									index < 5 ? transaction.icon : "more-horiz"
 								}
 								iconStyle={{
 									width: "30px",
@@ -200,18 +166,28 @@ const CommonTransaction = () => {
 								alignItems="center"
 							></IcoButton>
 							<Text
-								fontSize={{ base: "11px", lg: "sm", xl: "md" }}
+								fontSize={{
+									base: "11px",
+									lg: "sm",
+									xl: "sm",
+									"2xl": "md",
+								}}
 								color="accent.DEFAULT"
 								pt={{ base: "5px" }}
 							>
-								{transaction.title}
+								{transaction.label}
 							</Text>
 							<Text
-								fontSize={{ base: "11px", lg: "xs" }}
+								fontSize={{
+									base: "11px",
+									lg: "xs",
+									xl: "xs",
+									"2xl": "sm",
+								}}
 								color="shadow.dark"
 								pt={{ base: "5px" }}
 							>
-								{transaction.commission} Commission
+								2% Commission
 							</Text>
 						</Box>
 					))}
