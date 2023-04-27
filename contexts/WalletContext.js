@@ -1,4 +1,4 @@
-import { Endpoints } from "constants";
+import { Endpoints, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import {
@@ -33,7 +33,7 @@ const useFetchBalance = (setBalance) => {
 			{
 				token: userData?.access_token,
 				body: {
-					interaction_type_id: 9,
+					interaction_type_id: TransactionTypes.GET_WALLET_BALANCE,
 				},
 				timeout: 30000,
 			},
