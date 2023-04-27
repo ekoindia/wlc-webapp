@@ -15,7 +15,7 @@ import {
 import { adminProfileMenu, profileMenu } from "constants";
 import { useOrgDetailContext, useUser } from "contexts";
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Button, Icon, IconButtons } from "..";
 
 const NavBar = ({ setNavOpen }) => {
@@ -483,10 +483,9 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				}}
 				gap={{ base: "15px", sm: "initial" }}
 			>
-				{menulist.map((ele, idx) => (
-					<>
+				{menulist.map((ele) => (
+					<Fragment key={"mnu-" + ele.title + ele.link}>
 						<HStack
-							key={ele.title}
 							h={{ base: "1.65", sm: "1.65vw" }}
 							w={"90%"}
 							justifyContent={"space-between"}
@@ -514,7 +513,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							/>
 						</HStack>
 						<Divider w={"90%"} />
-					</>
+					</Fragment>
 				))}
 				<HStack
 					minH={"2vw"}
