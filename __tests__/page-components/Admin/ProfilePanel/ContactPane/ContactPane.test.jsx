@@ -1,4 +1,4 @@
-import ContactPane from "page-components/Admin/Profile/ContactPane/ContactPane";
+import ContactPane from "page-components/Admin/ProfilePanel/ContactPane/ContactPane";
 import { render } from "test-utils";
 
 /*

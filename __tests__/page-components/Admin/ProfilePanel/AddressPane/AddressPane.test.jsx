@@ -1,4 +1,4 @@
-import AddressPane from "page-components/Admin/Profile/AddressPane/AddressPane";
+import AddressPane from "page-components/Admin/ProfilePanel/AddressPane/AddressPane";
 import { pageRender } from "test-utils";
 
 /*

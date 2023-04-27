@@ -1,4 +1,4 @@
-import CompanyPane from "page-components/Admin/Profile/CompanyPane/CompanyPane";
+import CompanyPane from "page-components/Admin/ProfilePanel/CompanyPane/CompanyPane";
 import { pageRender } from "test-utils";
 
 /*
