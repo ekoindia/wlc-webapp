@@ -1,4 +1,4 @@
-import PersonalPane from "page-components/Admin/Profile/PersonalPane/PersonalPane";
+import DocPane from "page-components/Admin/ProfilePanel/DocPane/DocPane";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("PersonalPane", () => {
+describe("DocPane", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<PersonalPane />);
+		const { container } = render(<DocPane />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("PersonalPane", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for PersonalPane in __tests__/components/PersonalPane/PersonalPane.test.jsx"
+		"TODO: add proper test cases for DocPane in __tests__/components/DocPane/DocPane.test.jsx"
 	);
 });
