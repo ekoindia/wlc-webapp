@@ -2,7 +2,7 @@ import ContactPane from "./ContactPane";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/ContactPane",
+	title: "PageComponent/Admin/Profile/ContactPane",
 	component: ContactPane,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

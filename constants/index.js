@@ -6,7 +6,7 @@ import {
 } from "./BreadcrumbsData";
 import { oldIcons } from "./connectIcons";
 import { Endpoints } from "./EndPoints";
-import { TransactionTypes } from "./EpsTransactionTypes";
+import { TransactionIds, TransactionTypes } from "./EpsTransactions";
 import { FrontendUrls } from "./FrontendUrls";
 import { adminProfileMenu, profileMenu } from "./profileCardMenus";
 import { roles } from "./role";
@@ -17,6 +17,7 @@ import { transaction_history_mock } from "./transaction_history_mock";
 import { baseRoute, initialRoute, publicLinks } from "./validRoutes";
 export {
 	TransactionTypes,
+	TransactionIds,
 	FrontendUrls,
 	adminSidebarMenu,
 	sidebarMenu,

@@ -2,7 +2,7 @@ import PermanentAddress from "./PermanentAddress";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/PermanentAddress",
+	title: "PageComponent/Admin/UpdateSellerAddress/PermanentAddress",
 	component: PermanentAddress,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

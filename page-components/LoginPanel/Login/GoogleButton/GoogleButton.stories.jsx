@@ -2,7 +2,7 @@ import GoogleButton from "./GoogleButton";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "GoogleButton",
+	title: "PageComponent/LoginPanel/Login/GoogleButton",
 	component: GoogleButton,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

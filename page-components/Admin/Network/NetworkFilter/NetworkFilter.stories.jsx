@@ -2,7 +2,7 @@ import NetworkFilter from "./NetworkFilter";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/NetworkFilter",
+	title: "PageComponent/Admin/Network/NetworkFilter",
 	component: NetworkFilter,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

@@ -2,7 +2,7 @@ import UpdateSellerAddress from "./UpdateSellerAddress";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/UpdateSellerAddress",
+	title: "PageComponent/Admin/UpdateSellerAddress",
 	component: UpdateSellerAddress,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

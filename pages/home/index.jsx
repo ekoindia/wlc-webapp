@@ -1,6 +1,6 @@
 import { PaddingBox } from "components";
 import Head from "next/head";
-import { Home } from "page-components/NonAdmin";
+import { Home } from "page-components";
 
 const home = () => {
 	return (

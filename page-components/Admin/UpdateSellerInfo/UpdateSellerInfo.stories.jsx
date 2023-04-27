@@ -2,7 +2,7 @@ import UpdateSellerInfo from "./UpdateSellerInfo";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/UpdateSellerInfo",
+	title: "PageComponent/Admin/UpdateSellerInfo",
 	component: UpdateSellerInfo,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

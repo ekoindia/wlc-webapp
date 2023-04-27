@@ -2,7 +2,7 @@ import DocPane from "./DocPane";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/DocPane",
+	title: "PageComponent/Admin/Profile/DocPane",
 	component: DocPane,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

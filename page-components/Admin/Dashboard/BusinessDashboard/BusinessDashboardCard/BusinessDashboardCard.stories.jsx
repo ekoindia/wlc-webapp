@@ -2,7 +2,7 @@ import BusinessDashboardCard from "./BusinessDashboardCard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/BusinessDashboardCard",
+	title: "PageComponent/Admin/Dashboard/BusinessDashboard/BusinessDashboardCard",
 	component: BusinessDashboardCard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

@@ -2,7 +2,7 @@ import Dashboard from "./Dashboard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Dashboard",
+	title: "PageComponent/Admin/Dashboard",
 	component: Dashboard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

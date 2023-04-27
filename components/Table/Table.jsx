@@ -28,7 +28,7 @@ import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/Onboard
 import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
 import { NetworkCard } from "page-components/Admin/Network";
 import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
-import { TransactionCard } from "page-components/NonAdmin/Transaction";
+import { HistoryCard } from "page-components/History";
 import { useEffect, useState } from "react";
 import { Button, Cards, Icon, IconButtons, Pagination } from "..";
 
@@ -336,7 +336,7 @@ const Table = (props) => {
 							p="16px"
 							borderRadius=" 10px"
 						>
-							<TransactionCard
+							<HistoryCard
 								item={item}
 								rendererExpandedRow={rendererExpandedRow}
 							/>

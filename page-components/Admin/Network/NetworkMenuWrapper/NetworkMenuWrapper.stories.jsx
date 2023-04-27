@@ -2,7 +2,7 @@ import NetworkMenuWrapper from "./NetworkMenuWrapper";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/NetworkMenuWrapper",
+	title: "PageComponent/Admin/Network/NetworkMenuWrapper",
 	component: NetworkMenuWrapper,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

@@ -2,7 +2,7 @@ import Dmt from "./Dmt";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Dmt",
+	title: "PageComponent/Admin/PricingCommission/Dmt",
 	component: Dmt,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

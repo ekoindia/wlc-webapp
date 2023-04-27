@@ -2,7 +2,7 @@ import TransactionHistoryCard from "./TransactionHistoryCard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/TransactionHistoryCard",
+	title: "PageComponent/Admin/TransactionHistory/TransactionHistoryCard",
 	component: TransactionHistoryCard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

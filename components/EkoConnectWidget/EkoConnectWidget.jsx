@@ -1,5 +1,6 @@
 import { Flex, Spinner } from "@chakra-ui/react";
 import { PaddingBox } from "components";
+import { TransactionIds } from "constants";
 import { useWallet } from "contexts";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
@@ -19,17 +20,19 @@ import { useEffect, useState } from "react";
  * - Location capture.
  * - Toast notifications.
  * - Raise Query (ticket management).
- * @param	{string}	start_id	The transaction id to load.
+ * @param	{string}	start_id	The transaction id to load. Start of the path.
+ * @param	{array}	paths	The list of sub-paths to load.
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<EkoConnectWidget start_id="123" />`
+ * @example	`<EkoConnectWidget start_id="123" route_params={{trxntypeid: 123, subpath_list: ["123"]}} />`
  */
-const EkoConnectWidget = ({ start_id, ...rest }) => {
+const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	console.log("[EkoConnectWidget] Transaction id to load: ", start_id);
 
 	const router = useRouter();
 	const { userData } = useUser();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
+	const { balance } = useWallet();
 	console.log("[EkoConnectWidget] >>> USER DATA:: ", userData, role_tx_list);
 
 	const { widgetLoading } = useSetupWidgetEventListeners(router);
@@ -61,14 +64,34 @@ const EkoConnectWidget = ({ start_id, ...rest }) => {
 			)}
 
 			<tf-wlc-widget
-				role_trxn_list={JSON.stringify(role_tx_list)}
-				logged_in={userData.loggedIn}
 				interaction_id={start_id}
+				route_params={JSON.stringify({
+					trxntypeid: start_id,
+					subpath_list: paths,
+				})}
+				logged_in={userData.loggedIn}
 				user_id={userData.userId}
 				login_id={userData.userDetails.login_id}
+				role_trxn_list={JSON.stringify(role_tx_list)}
+				save_trxn_enabled={userData.userDetails.save_trxn_enabled}
+				save_threshold_amount={
+					userData.userDetails.save_threshold_amount
+				}
+				user_balance={balance}
 				language="en"
+				enable-print={true}
+				user_details={userData.userDetails}
+				account_details={userData.accountDetails}
+				personal_details={userData.personalDetails}
+				shop_details={userData.shopDetails}
+				session_details={userData.sessionDetails}
+				show_set_pin={showSetPIN(
+					TransactionIds.SET_PIN,
+					role_tx_list,
+					userData?.userDetails?.is_pin_not_set
+				)}
 			></tf-wlc-widget>
-			{/* dark-theme={true} */}
+			{/* dark-theme={true} autolink_params={autolinkParams} zoho_id={userData.userDetails.zoho_id} */}
 		</PaddingBox>
 	);
 };
@@ -236,6 +259,11 @@ const configurePolymer = () => {
 	};
 };
 
+/**
+ * Custom hook to setup event listeners for the Connect widget.
+ * @param {*} router - The React Router instance
+ * @returns	{Object} - The widgetLoading state
+ */
 const useSetupWidgetEventListeners = (router) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
@@ -260,6 +288,22 @@ const useSetupWidgetEventListeners = (router) => {
 	}, []);
 
 	return { widgetLoading };
+};
+
+/**
+ * Show nudges to Set PIN?
+ * Show if:
+ * 1. interaction-id to 'Set PIN' is available in current role
+ * 2. this.user_details.is_pin_not_set = 1
+ * @param {String} set_pin_transaction_id - The transaction-id to 'Set PIN'
+ * @returns {Boolean} - True if the nudge should be shown, false otherwise
+ */
+const showSetPIN = (set_pin_transaction_id, role_tx_list, is_pin_not_set) => {
+	return set_pin_transaction_id &&
+		set_pin_transaction_id in role_tx_list &&
+		is_pin_not_set == 1
+		? true
+		: false;
 };
 
 export default EkoConnectWidget;

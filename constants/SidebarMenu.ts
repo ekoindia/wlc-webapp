@@ -1,4 +1,5 @@
 import { IconNameType } from "components/Icon/Icon";
+import { TransactionIds } from ".";
 
 type sidebarMenuType = {
 	icon?: IconNameType;
@@ -79,7 +80,7 @@ export const sidebarMenu: sidebarMenuType[] = [
 			{
 				icon: "manage",
 				label: "Manage My Account",
-				link: "/transaction/536",
+				link: "/transaction/" + TransactionIds.MANAGE_MY_ACCOUNT,
 			},
 		],
 	},
