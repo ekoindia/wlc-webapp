@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Calenders, Headings, Icon, Input } from "components";
 import { SearchBar } from "components/SearchBar";
+import { TransactionTypes } from "constants";
 import { useUser } from "contexts";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
@@ -41,7 +42,7 @@ const History = () => {
 		client_ref_id: 551681714635439,
 		locale: "en",
 		user_id: 8888888888,
-		interaction_type_id: 154,
+		interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
 		start_index: currentPage * limit,
 		limit: limit,
 	};

@@ -1,5 +1,5 @@
 import { Circle, Flex, Text, Tooltip } from "@chakra-ui/react";
-import { TransactionTypes } from "constants";
+import { TransactionIds } from "constants";
 import { useMenuContext } from "contexts";
 import { useWallet } from "contexts/WalletContext";
 import { useRouter } from "next/router";
@@ -19,26 +19,15 @@ const StatusCard = (bgColor) => {
 	const { refreshWallet, balance, loading } = useWallet();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
-	// const { data, mutate } = useRequest({
-	// 	method: "POST",
-	// 	baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-	// 	body: {
-	// 		interaction_type_id: 9,
-	// 	},
-	// });
-
-	// useEffect(() => {
-	// 	mutate();
-	// }, []);
 
 	const handleAddClick = () => {
 		let id;
 		for (
 			let i = 0;
-			i < TransactionTypes.ADD_VALUE_TRXN_ID_LIST.length;
+			i < TransactionIds.LOAD_WALLET_TRXN_ID_LIST.length;
 			i++
 		) {
-			let trxn_id = TransactionTypes.ADD_VALUE_TRXN_ID_LIST[i];
+			let trxn_id = TransactionIds.LOAD_WALLET_TRXN_ID_LIST[i];
 			if (role_tx_list[trxn_id]) {
 				id = trxn_id;
 				break;
