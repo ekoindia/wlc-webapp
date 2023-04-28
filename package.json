@@ -26,9 +26,10 @@
 		"build-storybook": "build-storybook",
 		"test": "jest",
 		"pretest": "npm run lint",
-		"test-watch": "jest --watchAll",
-		"coverage": "jest --coverage",
-		"update-snapshots": "jest --updateSnapshot",
+		"test-file": "jest --coverage=false --verbose",
+		"test-watch": "jest --coverage=false --watch",
+		"test-coverage": "jest --coverage",
+		"test-update-snapshots": "jest --updateSnapshot",
 		"check-updates": "echo 'TO UPDATE, RUN: npm install package-name' && npm outdated --depth=0"
 	},
 	"resolutions": {
