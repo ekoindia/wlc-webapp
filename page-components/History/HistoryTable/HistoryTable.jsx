@@ -1,5 +1,5 @@
 import { Table } from "components";
-import { getTableProcessedData } from "helpers/processData";
+import { getHistoryTableProcessedData } from ".";
 
 /**
  * A <HistoryTable> component
@@ -10,7 +10,7 @@ import { getTableProcessedData } from "helpers/processData";
  * @example	`<HistoryTable></HistoryTable>` TODO: Fix example
  */
 const HistoryTable = ({ transactionList }) => {
-	const processedData = getTableProcessedData(transactionList);
+	const processedData = getHistoryTableProcessedData(transactionList);
 	const renderer = [
 		{ name: "", field: "", show: "Accordian" },
 		{
@@ -22,7 +22,7 @@ const HistoryTable = ({ transactionList }) => {
 		{
 			name: "description",
 			field: "Description",
-			// sorting: true,
+			show: "Description",
 		},
 		{ name: "trx_id", field: "Transaction ID", sorting: true },
 		{
@@ -40,10 +40,14 @@ const HistoryTable = ({ transactionList }) => {
 	];
 
 	const rendererExpandedRow = [
+		// { name: "date", field: "Date" },
+		// { name: "time", field: "Time" },
+		{ name: "customerMobile", field: "Customer Mobile" },
 		{ name: "balance", field: "Balance Amount", show: "Amount" },
+		{ name: "commissionEarned", field: "Commission Earned" },
+		{ name: "Fee", field: "fee" },
+		{ name: "TID", field: "tid" },
 		{ name: "trackingNumber", field: "Tracking Number" },
-		{ name: "date", field: "Date" },
-		{ name: "time", field: "Time" },
 	];
 
 	return (
@@ -54,7 +58,7 @@ const HistoryTable = ({ transactionList }) => {
 				rendererExpandedRow={rendererExpandedRow}
 				data={processedData}
 				variant="darkStriped"
-				tableName="Transactions"
+				tableName="History"
 				accordian={true}
 				isPaginationRequired={false}
 				isOnclickRequire={false}

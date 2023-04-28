@@ -17,22 +17,23 @@ export const getHistoryTableProcessedData = (data) => {
 			temp["date"] = date;
 			temp["time"] = time;
 		}
-		if (row.amount_dr !== undefined) {
+		if (row.amount_dr) {
 			temp["amount"] = row.amount_dr;
 			temp["trx_type"] = "debit";
 		}
-		if (row.amount_cr !== undefined) {
+		if (row.amount_cr) {
 			temp["amount"] = row.amount_cr;
 			temp["trx_type"] = "credit";
 		}
-		if (row.status_id !== undefined) {
-			temp["status_id"] = row.status_id;
-			temp["status"] =
-				row.status_id === 0
-					? row.status
-					: row.status_id === 1
-					? row.status
-					: "";
+		if (row.status) {
+			// temp["status_id"] = row.status_id;
+			// temp["status"] =
+			// 	row.status_id === 0
+			// 		? row.status
+			// 		: row.status_id === 1
+			// 		? row.status
+			// 		: "";
+			temp["status"] = row.status;
 		}
 		if (row.r_bal) {
 			temp["balance"] = row.r_bal;
