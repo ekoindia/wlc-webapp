@@ -292,6 +292,7 @@ const History = () => {
 					</Flex>
 				</Flex>
 				{/* <=============================Transaction Table & Card ===============================> */}
+				{/* // TODO add condition: if pageLimit is a multiple of totalRecords then show "no items" or "no more items" accordingly */}
 				<HistoryTable transactionList={transactionList} />
 				<Flex justify="flex-end">
 					<HistoryPagination
