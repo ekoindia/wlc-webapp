@@ -1,11 +1,11 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
-import { Inter } from "@next/font/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { RouteProtecter } from "components";
 import { OrgDetailProvider, UserProvider, WalletProvider } from "contexts";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
+import { Inter } from "next/font/google";
 import Head from "next/head";
 import { SWRConfig } from "swr";
 

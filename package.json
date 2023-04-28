@@ -47,7 +47,6 @@
 		"@chakra-ui/react": "^2.6.0",
 		"@emotion/react": "^11.10.5",
 		"@emotion/styled": "^11.10.5",
-		"@next/font": "^13.3.0",
 		"@react-google-maps/api": "^2.18.1",
 		"@react-oauth/google": "^0.11.0",
 		"@types/node": "^18.16.0",
