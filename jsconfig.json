@@ -13,6 +13,7 @@
 				"./page-components/*",
 				"./page-components/Admin/*"
 			],
+			"tf-components/*": ["./tf-components/*"],
 			"public/*": ["./public/*"],
 			"helpers/*": ["./helpers/*"],
 			"libs/*": ["./libs/*"]

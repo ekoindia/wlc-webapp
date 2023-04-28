@@ -1,4 +1,4 @@
-import { Circle, Flex, Text, Tooltip } from "@chakra-ui/react";
+import { Circle, Flex, Text, Tooltip, useToast } from "@chakra-ui/react";
 import { TransactionIds } from "constants";
 import { useMenuContext } from "contexts";
 import { useWallet } from "contexts/WalletContext";
@@ -16,6 +16,7 @@ import { Icon } from "..";
 const StatusCard = (bgColor) => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
+	const toast = useToast();
 	const { refreshWallet, balance, loading } = useWallet();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
@@ -33,6 +34,17 @@ const StatusCard = (bgColor) => {
 				break;
 			}
 		}
+
+		if (!id) {
+			toast({
+				title: "No role found to add balance",
+				status: "error",
+				duration: 2000,
+			});
+			console.error("Add Balance not found in roles");
+			return;
+		}
+
 		router.push(id ? `/transaction/${id}` : "");
 	};
 

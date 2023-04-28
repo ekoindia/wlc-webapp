@@ -10,6 +10,7 @@
 				"./page-components/*",
 				"./page-components/Admin/*"
 			],
+			"tf-components/*": ["./tf-components/*"],
 			"constants/*": ["./constants/*"],
 			"contexts/*": ["./contexts/*"],
 			"helpers/*": ["./helpers/*"],

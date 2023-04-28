@@ -24,6 +24,7 @@ const nextConfig = withBundleAnalyzer({
 		dirs: [
 			"components",
 			"page-components",
+			"tf-components",
 			"pages",
 			"features",
 			"libs",
