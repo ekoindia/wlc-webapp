@@ -47,10 +47,10 @@ const CommonTrxnWidget = () => {
 		<div>
 			<Flex
 				minH={{
-					base: "auto",
+					base: "200px",
 					sm: "auto",
 					md: "387px",
-					lg: "300px",
+					lg: "340px",
 					xl: "387px",
 				}}
 				maxH={{
@@ -81,9 +81,6 @@ const CommonTrxnWidget = () => {
 				}}
 				background={"white"}
 				direction={"column"}
-				// align={{
-				// 	base: "flex-start",
-				// }}
 				rowGap={{
 					base: "20px",
 					sm: "30px",
@@ -105,9 +102,9 @@ const CommonTrxnWidget = () => {
 					lg: "14px",
 					xl: "15px",
 				}}
-				m={{ base: "18px", sm: "10px", md: "0px" }}
+				m={{ base: "16px", sm: "10px", md: "0px" }}
 			>
-				<Box p={{ base: "0px 20px 0px 20px", md: "0px 0px 0px 0px" }}>
+				<Box p={{ base: "0px 20px 0px 0px", md: "0px 0px 0px 0px" }}>
 					<Text as="b" fontSize={{ base: "sm", md: "md" }}>
 						Most common transactions
 					</Text>
@@ -169,7 +166,8 @@ const CommonTrxnWidget = () => {
 								>
 									{transaction.label}
 								</Text>
-								<Text
+								{/*commision data not there*/}
+								{/* <Text
 									fontSize={{
 										base: "11px",
 										lg: "xs",
@@ -179,8 +177,8 @@ const CommonTrxnWidget = () => {
 									color="shadow.dark"
 									pt={{ base: "3px" }}
 								>
-									2% Commission
-								</Text>
+									{transaction.commission}% Commission
+								</Text> */}
 							</Box>
 						</>
 					))}
