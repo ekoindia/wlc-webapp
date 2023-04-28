@@ -32,13 +32,11 @@ import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
 import { Tags } from "./Tags";
-import { Value } from "./Value";
 
 export {
 	DateView,
 	EkoConnectWidget,
 	Currency,
-	Value,
 	PaddingBox,
 	IcoButton,
 	Button,
