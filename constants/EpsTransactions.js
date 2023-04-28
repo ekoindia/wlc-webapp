@@ -26,4 +26,5 @@ export const TransactionIds = {
 	DELETE_ALT_MOBILE: 823,
 	SET_PIN: 736,
 	EKOSTORE: 246,
+	BILL_PAYMENT: 244,
 };

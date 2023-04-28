@@ -1,5 +1,5 @@
 import { Grid } from "@chakra-ui/react";
-import { QueryWidget } from ".";
+import { BillPaymentCard, CommonTrxnWidget, QueryWidget } from ".";
 
 /**
  * A <Home> component
@@ -25,9 +25,10 @@ const Home = () => {
 			gap={{ base: (2, 4), sm: (2, 4), md: (4, 2), lg: (4, 4) }}
 		>
 			<QueryWidget />
-			{/* <RecentTrxnCard />
-			<KycWidget />
-			<CommonTrxnWidget /> */}
+			{/* <RecentTrxnCard /> */}
+			{/*<KycWidget />*/}
+			<CommonTrxnWidget />
+			<BillPaymentCard />
 		</Grid>
 	);
 };

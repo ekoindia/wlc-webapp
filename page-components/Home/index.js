@@ -1,3 +1,4 @@
+export { BillPaymentCard } from "./BillPaymentCard";
 export { CommonTrxnWidget } from "./CommonTrxnWidget";
 export { default as Home } from "./Home";
 export { KycWidget } from "./KycWidget";
