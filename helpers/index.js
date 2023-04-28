@@ -9,6 +9,7 @@ export {
 	getAccordianIcon,
 	getAmountStyle,
 	getArrowStyle,
+	getDescriptionStyle,
 	getLocationStyle,
 	getModalStyle,
 	getNameStyle,
