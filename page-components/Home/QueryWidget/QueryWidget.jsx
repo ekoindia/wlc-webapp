@@ -2,7 +2,7 @@ import { Flex, GridItem, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { useUser } from "contexts/UserContext";
 /**
- * A QueryWidget component
+ * Contact widget in home page
  * Contact widget on home page
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
@@ -133,8 +133,9 @@ const QueryWidget = () => {
 							<Flex direction={"column"}>
 								<Text
 									color={"white"}
-									fontSize={{ base: "0.700rem", md: "lg" }}
-									textAlign={{ base: "auto", md: "center" }}
+									fontSize={{ base: "0.700rem", md: "18px" }}
+									textAlign={{ base: "auto", md: "auto" }}
+									paddingLeft={{ base: "0px", md: "15px" }}
 								>
 									Call us on
 								</Text>
@@ -147,7 +148,7 @@ const QueryWidget = () => {
 											md: "lg",
 										}}
 									>
-										{data[0].cellnumber}
+										+91 {data[0].cellnumber}
 									</Text>
 								</a>
 							</Flex>
