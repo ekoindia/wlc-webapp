@@ -27,6 +27,7 @@ import { Icon, ProfileCard, StatusCard } from "..";
  * @returns {boolean} True if the current route is the same as the route passed to it.
  **/
 function isCurrentRoute(router, currPath) {
+	// TODO: Fix: Inefficient code. Refactor this.
 	const path = router.asPath.split("?")[0];
 	if (path === currPath) return true;
 
