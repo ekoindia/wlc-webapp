@@ -1,4 +1,5 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import { Icon } from "components";
 /**
  * A <RecentTrxnCard> component
  * TODO: Write more description here
@@ -13,51 +14,97 @@ const RecentTrxnCard = () => {
 			<Flex
 				minH={{
 					base: "auto",
-					sm: "200px",
+					sm: "auto",
 					md: "387px",
-					lg: "320px",
-					xl: "400px",
+					lg: "300px",
+					xl: "387px",
 				}}
 				maxH={{
 					base: "auto",
-					sm: "200px",
+					sm: "auto",
 					md: "387px",
 					lg: "400px",
-					xl: "400px",
+					xl: "387px",
 				}}
-				// w={{ base: "100%", sm: "100%", md: "450px", lg: "480px" }}
 				minW={{
-					base: "100%",
-					sm: "100%",
-					md: "420px",
+					base: "auto",
+					sm: "auto",
+					md: "380px",
 					lg: "360px",
 					xl: "350px",
 				}}
 				maxW={{
-					base: "100%",
-					sm: "100%",
-					md: "420px",
+					base: "auto",
+					sm: "auto",
+					md: "1000px",
 					lg: "400px",
-					xl: "480px",
+					xl: "580px",
 				}}
 				borderRadius={{
-					base: "0px 0px 0px 0px",
-					sm: "0px 0px 2px 2px",
-					md: "15px",
+					base: "10px 10px 10px 10px",
+					sm: "10px 10px 10px 10px",
+					md: "10px",
 				}}
-				background-repeat="no-repeat"
-				backgroundSize="cover"
+				background={"white"}
 				direction={"column"}
-				align={{ base: "flex-start" }}
-				rowGap={{ base: "20px", md: "0px" }}
-				px={{ base: "20px", md: "20px" }}
-				py={{ base: "20px", md: "24px" }}
-				bg={"white"}
+				// align={{
+				// 	base: "flex-start",
+				// }}
+				rowGap={{
+					base: "20px",
+					sm: "30px",
+					md: "50px",
+					lg: "20px",
+					xl: "10px",
+				}}
+				px={{
+					base: "20px",
+					sm: "40px",
+					md: "18px",
+					lg: "15px",
+					xl: "15px 10px",
+				}}
+				py={{
+					base: "12px",
+					sm: "30px",
+					md: "18px",
+					lg: "14px",
+					xl: "15px",
+				}}
+				m={{ base: "18px", sm: "10px", md: "0px" }}
 			>
-				<Box>
+				<Flex justifyContent="space-between">
 					<Text as="b">Recent transactions</Text>
-				</Box>
-				<Flex direction={"column"}></Flex>
+					<Text as="b" color="primary.DEFAULT">
+						Show All
+					</Text>
+				</Flex>
+				<Flex justifyContent="space-between">
+					<Flex justifyContent="space-between">
+						<Avatar
+							size="lg"
+							border="2px solid #D2D2D2"
+							bg="white"
+							src="https://asia-exshopstatic-vivofs.vivo.com/KuCZNhz3cVxH4yrP/tw/1661950644473/355d924dfa49d160b07d5bd60b3c3ce4.jpg"
+						/>
+						<Box>
+							<Text fontSize={{ xl: "md" }}>
+								AePS Cashout to xxxxxx9834
+							</Text>
+							<Text>Transaction ID: 876430982351</Text>
+						</Box>
+					</Flex>
+					<Flex justifyContent="space-between" alignItems="center">
+						<Text color="primary.DEFAULT" paddingRight="6px">
+							Details
+						</Text>
+						<Icon
+							w="12px"
+							name="arrow-forward"
+							color="primary.DEFAULT"
+						/>
+					</Flex>
+				</Flex>
 			</Flex>
 		</div>
 	);
