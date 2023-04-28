@@ -2,16 +2,6 @@ import { Currency, DateView } from "components";
 import { ParamType } from "constants";
 
 /**
- * Returns the input component based on the parameter_type_id.
- */
-// const getInputComponent = (parameter_type_id) => {
-// 	switch (parameter_type_id) {
-// 		case ParamType.MONEY:
-// 		case ParamType.MONEY_ABSOLUTE:
-// 			return Currency;
-// 		case ParamType.DATE:
-
-/**
  * Shows formatted values based on the type of value and other formatting options.
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.value]	The value to display.
@@ -26,7 +16,7 @@ import { ParamType } from "constants";
 const Value = ({
 	value,
 	value_formatted,
-	parameter_type_id = 12,
+	parameter_type_id = ParamType.TEXT,
 	metadata = "",
 	format = "",
 	preserveFraction = false,
