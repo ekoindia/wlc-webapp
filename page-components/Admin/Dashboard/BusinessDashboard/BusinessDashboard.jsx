@@ -566,7 +566,11 @@ const BusinessDashboard = () => {
 				<BusinessDashboardTable tableData={tableData} />
 
 				{/* <================Download Button===============> */}
-				<Flex justifyContent={"center"} mt="40px">
+				<Flex
+					justifyContent={"center"}
+					mt="40px"
+					display={{ base: "none", md: "flex" }}
+				>
 					<IconButtons
 						iconName="file-download"
 						iconPos="left"
