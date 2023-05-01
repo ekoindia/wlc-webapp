@@ -1,5 +1,4 @@
 import { Table } from "components";
-import { table_data_mock } from "constants/table_data_mock";
 
 /**
  * A <BusinessDashboardTable> component
@@ -9,42 +8,48 @@ import { table_data_mock } from "constants/table_data_mock";
  * @example	`<BusinessDashboardTable></BusinessDashboardTable>`
  */
 
-const BusinessDashboardTable = () => {
+const BusinessDashboardTable = ({ tableData }) => {
 	const renderer = [
 		{ name: "", field: "Sr. No." },
 		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
 		{
-			name: "mobile_number",
+			name: "gtv",
 			field: "GTV",
 			sorting: true,
 		},
-		{ name: "type", field: "Total Transaction", sorting: true },
 		{
-			name: "account_status",
+			name: "totalTransactions",
+			field: "Total Transaction",
+			sorting: true,
+		},
+		{
+			name: "status",
 			field: "Status",
 			show: "Tag",
 			sorting: true,
 		},
 		{
-			name: "createdAt",
+			name: "raCases",
 			field: "RA Cases",
 			sorting: true,
 		},
-		{ name: "ekocsp_code", field: "Onboarding Date", sorting: true },
+		{ name: "onboardingDate", field: "Onboarding Date", sorting: true },
 
-		{ name: "name", field: "Distributor Mapped", sorting: true },
+		{
+			name: "distributorMapped",
+			field: "Distributor Mapped",
+			sorting: true,
+		},
 	];
 
 	return (
 		<>
 			<Table
 				renderer={renderer}
-				data={table_data_mock.slice(0, 20)}
+				data={tableData}
 				variant="evenStriped"
 				tableName="Business"
-				isScrollrequired={true}
 				border="none"
-				scrollCSS={{}}
 			/>
 		</>
 	);

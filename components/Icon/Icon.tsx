@@ -61,7 +61,8 @@ export type IconNameType =
 	| "view-transaction-history"
 	| "wallet-outline"
 	| "phone-circle-outline"
-	| "chat-outline";
+	| "chat-outline"
+	| "check";
 
 export type IconProps = {
 	name: IconNameType;
@@ -103,7 +104,7 @@ const Icon = ({ name, style, w, h, width, height, ...rest }: IconProps) => {
 		// <Center style={style} maxH="24px" maxW="24px" {...rest}>
 		<Box w={sizeX} h={sizeY} {...rest}>
 			<svg
-				style={{ width: sizeX, height: sizeY }}
+				style={{ width: "inherit", height: "inherit" }}
 				viewBox={viewBox}
 				fill="currentColor"
 				aria-label={name}

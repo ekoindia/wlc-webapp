@@ -10,44 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { Icon, IconButtons } from "components";
 import { useState } from "react";
+import { BusinessDashboardData } from "../dasboard.mocks";
 import { BusinessDashboardTable } from "./BusinessDashboardTable";
 
-const cardData = [
-	{
-		id: 1,
-		icon: "refer",
-		title: "Total Distributors",
-		description: "317",
-		percentage: "25%",
-		statu: "Increase",
-	},
-	{
-		id: 2,
-		icon: "people",
-		title: "Active Distributors",
-		description: "220",
-		percentage: "-11%",
-		statu: "Decrese",
-	},
-	{
-		id: 3,
-		icon: "rupee_bg",
-		title: "GTV",
-		percentage: "2.2%",
-		description: "148",
-		statu: "Increase",
-	},
-	{
-		id: 4,
-		icon: "commission-percent",
-		title: "Total RA Cases",
-		percentage: "-1.9%",
-		description: "07",
-		statu: "Decrese",
-	},
-];
-
-function Card({ title, description, icon, statu, percentage }) {
+function Card({ title, totalDistributers, icon, increaseOrDecrease }) {
 	return (
 		<Flex
 			borderRadius="10px"
@@ -74,39 +40,45 @@ function Card({ title, description, icon, statu, percentage }) {
 							fontWeight={"bold"}
 							mt={2}
 						>
-							{description}
+							{totalDistributers}
 						</Text>
 					</Flex>
 					<Flex alignItems={"center"} gap="5px" mt={2}>
-						<Flex
-							w="100%"
-							h="100%"
-							color={statu === "Increase" ? "success" : "error"}
-						>
-							<Icon
-								name={
-									statu == "Increase"
-										? "increase"
-										: "decrease"
-								}
-								width="14px"
-								h="8px"
-							/>
-						</Flex>
+						<Icon
+							color={increaseOrDecrease > 0 ? "success" : "error"}
+							name={
+								increaseOrDecrease > 0
+									? "increase"
+									: increaseOrDecrease < 0
+									? "decrease"
+									: ""
+							}
+							width="14px"
+							h="8px"
+						/>
+
 						<Flex>
 							<Text
 								color={
-									statu === "Increase" ? "success" : "error"
+									increaseOrDecrease > 0
+										? "success"
+										: increaseOrDecrease < 0
+										? "error"
+										: ""
 								}
 								fontSize="xs"
 							>
-								{percentage}
+								{increaseOrDecrease}%
 							</Text>
 						</Flex>
 
 						<Flex>
 							<Text color="light" fontSize="xs">
-								{statu}
+								{increaseOrDecrease > 0
+									? "Increase"
+									: increaseOrDecrease < 0
+									? "Decrease"
+									: ""}
 							</Text>
 						</Flex>
 					</Flex>
@@ -137,98 +109,92 @@ function Card({ title, description, icon, statu, percentage }) {
 }
 
 const BusinessDashboard = () => {
-	const successRateData = [
-		{ name: "DMT", value: "24%" },
-		{ name: "BBPS", value: "18%" },
-		{ name: "AePS cashout", value: "38%" },
-		{ name: "AePS mini statement", value: "11%" },
-		{ name: "Account Verification", value: "9%" },
-	];
-
 	const [activeIndex, setActiveIndex] = useState(0);
-	const [activeGtv, setActiveGtv] = useState(3);
-	console.log("activeGtv", activeGtv);
+	const [activeGtv, setActiveGtv] = useState(0);
+	// const [topPanel, setTopPanel] = useState(0);
+	// const [earningOverview, setEarningOverview] = useState(0);
+	// const [successRate, setSuccessRate] = useState(0);
+	// const { userData } = useUser();
 
-	const onClick = (gtv) => {
-		setActiveGtv(gtv);
+	const data = BusinessDashboardData;
+
+	// let headers = {
+	// 	"tf-req-uri-root-path": "/ekoicici/v1",
+	// 	"tf-req-uri": `/network/agents/C`,
+	// 	"tf-req-method": "GET",
+	// };
+
+	// const { error, isLoading, mutate } = useRequest({
+	// 	method: "POST",
+	// 	baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+	// 	headers: { ...headers },
+	// });
+
+	// useEffect(() => {
+	// 	mutate(
+	// 		process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+	// 		headers
+	// 	);
+	// },
+	// [headers["tf-req-uri"]]);
+
+	const topPanel = data[0]?.data?.dashboard_details[0]?.topPanel ?? [];
+	const topPanelData = Object.entries(topPanel).map(([key, value]) => ({
+		id: key,
+		title: key.toUpperCase(),
+		value:
+			value.totalDistributers ||
+			value.grossTransactionValue ||
+			value.raCases ||
+			value.activeDistributers,
+		increaseOrDecrease: value.increaseOrDecrease,
+	}));
+	const earningOverview =
+		data[0]?.data?.dashboard_details[0]?.earningOverview ?? [];
+	const successRate = data[0]?.data?.dashboard_details[0]?.successRate ?? [];
+	const tableData = data[0]?.data?.dashboard_details[0]?.topMerchants ?? [];
+	const earningOverviewData = Object.entries(earningOverview).map(
+		([key, value]) => ({
+			title: key,
+			count:
+				value.amount ||
+				value.transactions ||
+				value.active ||
+				value.onboarded ||
+				value.raCases,
+			lastPeriod: `Last Period ${value.lastPeriod}`,
+			percentage: `${value.increaseOrDecrease}%`,
+			status:
+				value.increaseOrDecrease > 0
+					? "Increase"
+					: value.increaseOrDecrease < 0
+					? "Decrease"
+					: null,
+		})
+	);
+
+	const onClick = (index) => {
+		setActiveGtv(index);
 	};
-
 	const handleClick = (index) => {
 		setActiveIndex(index);
 	};
-
-	const EarningData = [
-		{
-			title: "GTV",
-			count: "12 Cr",
-			lastPeriod: "9 cr.",
-			icon: "increase",
-			percentage: "25%",
-			stat: "Increase",
-		},
-		{
-			title: "Transaction",
-			count: "117 cr.",
-			lastPeriod: "11.8",
-			icon: "increase",
-			percentage: "8%",
-			stat: "Increase",
-		},
-		{
-			title: "Active Agents",
-			count: "1317",
-			lastPeriod: "1319",
-			icon: "decrease",
-			percentage: "-1.8%",
-			stat: "Decrease",
-		},
-		{
-			title: "Inactive Agents",
-			count: "18",
-			lastPeriod: "17",
-			icon: "increase",
-			percentage: "2.2%",
-			stat: "Increase",
-		},
-		{
-			title: "Onboarded Agents",
-			count: "6",
-			lastPeriod: "5",
-			icon: "increase",
-			percentage: "0.2%",
-			stat: "Increase",
-		},
-		{
-			title: "RA Cases",
-			count: "3",
-			lastPeriod: "4",
-			icon: "decrease",
-			percentage: "-1.8%",
-			stat: "Decrease	",
-		},
-	];
-
 	return (
 		<Flex direction={"column"} px={{ base: "20px", md: "0px" }}>
-			{/* {console.log("cardData", cardData)} */}
-
-			{/* CARD */}
+			{/*<========================= Top Pannel ==============================>*/}
 			<Grid templateColumns="repeat(4, 4fr)" gap={5} overflowX="auto">
-				{cardData.map((card) => (
+				{topPanelData.map((card) => (
 					<GridItem key={card.id} colSpan={1}>
 						<Card
 							title={card.title}
-							description={card.description}
-							percentage={card.percentage}
-							statu={card.statu}
+							totalDistributers={card.value}
+							increaseOrDecrease={card.increaseOrDecrease}
 							icon={card.icon}
-							// imageUrl={card.imageUrl}
 						/>
 					</GridItem>
 				))}
 			</Grid>
 
-			{/* CENTER ITEM */}
 			<Grid
 				templateColumns={{
 					base: "repeat(auto-fit,minmax(280px,1fr))",
@@ -338,6 +304,8 @@ const BusinessDashboard = () => {
 					</Flex>
 					<Divider my={{ base: "20px", md: "20px", xl: "40px" }} />
 
+					{/* <===================Earning Overview==================> */}
+
 					<Stack
 						direction={{ base: "column", xl: "row" }}
 						divider={<StackDivider borderColor="divider" />}
@@ -346,27 +314,29 @@ const BusinessDashboard = () => {
 							base: "10px",
 							md: "5px",
 							lg: "5px",
-							xl: "5px",
-							"2xl": "30px",
+							xl: "10px",
+							"2xl": "50px",
 						}}
 						wrap="wrap	"
 					>
-						{EarningData.map((item, index) => (
+						{earningOverviewData.map((item, index) => (
 							<Flex
 								key={index}
 								direction={{ base: "row", xl: "column" }}
-								// alignItems="center"
 								justifyContent={"space-between"}
 								textAlign={{ base: "none", xl: "center" }}
-
-								// alignContent="center"
 							>
 								<Flex
 									flexDir={{ base: "column", xl: "none" }}
 									rowGap="10px"
 								>
 									<Box>
-										<Text fontSize="sm">{item.title}</Text>
+										<Text fontSize="sm">
+											{item.title
+												.charAt(0)
+												.toUpperCase() +
+												item.title.slice(1)}
+										</Text>
 									</Box>
 									<Box>
 										<Text
@@ -382,14 +352,13 @@ const BusinessDashboard = () => {
 										</Text>
 									</Box>
 								</Flex>
-
 								<Flex
 									flexDir={{ base: "column", xl: "none" }}
 									rowGap="10px"
 								>
 									<Box>
 										<Text fontSize={"xs"}>
-											Last Period&nbsp;{item.lastPeriod}
+											{item.lastPeriod}
 										</Text>
 									</Box>
 									<Flex
@@ -401,16 +370,19 @@ const BusinessDashboard = () => {
 											w="100%"
 											h="100%"
 											color={
-												item.stat === "Increase"
+												item.status === "Increase"
 													? "success"
 													: "error"
 											}
 										>
 											<Icon
 												name={
-													item.stat == "Increase"
+													item.status === "Increase"
 														? "arrow-increase"
-														: "arrow-decrease"
+														: item.status ===
+														  "Decrease"
+														? "arrow-decrease"
+														: ""
 												}
 												width="14px"
 												h="8px"
@@ -419,19 +391,21 @@ const BusinessDashboard = () => {
 										<Box>
 											<Text
 												color={
-													item.stat === "Increase"
+													item.status === "Increase"
 														? "success"
-														: "error"
+														: item.status ===
+														  "Dncrease"
+														? "error"
+														: ""
 												}
 												fontSize="xs"
 											>
 												{item.percentage}
 											</Text>
 										</Box>
-
 										<Box>
 											<Text color="light" fontSize="xs">
-												{item.stat}
+												{item.status}
 											</Text>
 										</Box>
 									</Flex>
@@ -450,18 +424,19 @@ const BusinessDashboard = () => {
 								height: "14px",
 							}}
 							textStyle={{
-								fontSize: "16px",
+								fontSize: "md",
 							}}
 						/>
 					</Flex>
 				</GridItem>
 
+				{/* <============= Success Rate Card======================> */}
 				<GridItem
 					bg="white"
 					p="30px 20px 30px 20px"
 					borderRadius={"10px"}
 					border=" 1px solid #E9EDF1"
-					w={{ base: "100%", md: "100%" }}
+					w={"100%"}
 				>
 					<Flex>
 						<Text fontSize={"xl"} fontWeight="semibold" mb="16px">
@@ -479,27 +454,23 @@ const BusinessDashboard = () => {
 							w="100%"
 							gap="8px"
 						>
-							{successRateData.map((item, index) => (
-								<Flex
-									key={index}
-									justifyContent="space-between"
-								>
+							{Object.entries(successRate).map(([key, value]) => (
+								<Flex key={key} justifyContent="space-between">
 									<Flex>
-										<Text fontSize={"16px"} color="dark">
-											{item.name}
-										</Text>
+										{key.charAt(0).toUpperCase() +
+											key.slice(1)}
 									</Flex>
 									<Flex>
 										<Text
-											fontSize={"16px"}
+											fontSize="16px"
 											color="accent.DEFAULT"
-											fontWeight={"bold"}
+											fontWeight="bold"
 										>
-											{item.value}
+											{value.Percentage}%
 										</Text>
 									</Flex>
 								</Flex>
-							))}
+							))}{" "}
 						</Stack>
 					</Flex>
 				</GridItem>
@@ -512,6 +483,7 @@ const BusinessDashboard = () => {
 				border=" 1px solid #E9EDF1"
 				borderRadius={"10px"}
 			>
+				{/* <=============================== Tags for Table  Cashout DMT BBPS=============================> */}
 				<Flex
 					justifyContent="space-between"
 					py={{ base: "0px", md: "30px" }}
@@ -529,16 +501,13 @@ const BusinessDashboard = () => {
 							borderRadius="20"
 							alignItems="center"
 							justifyContent="center"
-							// bg="divider"
-							bg={
-								activeIndex === 3 ? "accent.DEFAULT" : "divider"
-							}
-							color={activeIndex === 3 ? "white" : "dark"}
+							bg={activeGtv === 0 ? "accent.DEFAULT" : "divider"}
+							color={activeGtv === 0 ? "white" : "dark"}
 							_hover={{
 								bg: "accent.DEFAULT",
 								color: "white",
 							}}
-							onClick={() => onClick(3)}
+							onClick={() => onClick(0)}
 						>
 							<Text
 								color={"inherit"}
@@ -553,17 +522,13 @@ const BusinessDashboard = () => {
 							borderRadius="20"
 							alignItems="center"
 							justifyContent="center"
-							// bg="divider"
-							// bg="divider"
-							bg={
-								activeIndex === 4 ? "accent.DEFAULT" : "divider"
-							}
-							color={activeIndex === 4 ? "white" : "dark"}
+							bg={activeGtv === 1 ? "accent.DEFAULT" : "divider"}
+							color={activeGtv === 1 ? "white" : "dark"}
 							_hover={{
 								bg: "accent.DEFAULT",
 								color: "white",
 							}}
-							onClick={() => onClick(4)}
+							onClick={() => onClick(1)}
 						>
 							<Text
 								color={"inherit"}
@@ -579,15 +544,13 @@ const BusinessDashboard = () => {
 							alignItems="center"
 							justifyContent="center"
 							// bg="divider"
-							bg={
-								activeIndex === 5 ? "accent.DEFAULT" : "divider"
-							}
-							color={activeIndex === 5 ? "white" : "dark"}
+							bg={activeGtv === 2 ? "accent.DEFAULT" : "divider"}
+							color={activeGtv === 2 ? "white" : "dark"}
 							_hover={{
 								bg: "accent.DEFAULT",
 								color: "white",
 							}}
-							onClick={() => onClick(5)}
+							onClick={() => onClick(2)}
 						>
 							<Text
 								color={"inherit"}
@@ -598,7 +561,11 @@ const BusinessDashboard = () => {
 						</Flex>
 					</Flex>
 				</Flex>
-				<BusinessDashboardTable />
+
+				{/* <======================= Table =============================> */}
+				<BusinessDashboardTable tableData={tableData} />
+
+				{/* <================Download Button===============> */}
 				<Flex justifyContent={"center"} mt="40px">
 					<IconButtons
 						iconName="file-download"

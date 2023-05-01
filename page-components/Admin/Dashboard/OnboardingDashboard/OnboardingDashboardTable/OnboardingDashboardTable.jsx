@@ -1,5 +1,4 @@
 import { Table } from "components";
-import { table_data_mock } from "constants/table_data_mock";
 /**
  * A <OnboardingDashboardTable> component
  * TODO: Write more description here
@@ -8,49 +7,65 @@ import { table_data_mock } from "constants/table_data_mock";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<OnboardingDashboardTable></OnboardingDashboardTable>` TODO: Fix example
  */
-const OnboardingDashboardTable = ({ prop1, ...rest }) => {
+const OnboardingDashboardTable = ({ tableData }) => {
 	const renderer = [
-		{ name: "", field: "Sr. No." },
+		{ name: "", field: "", show: "Accordian" },
 		{
-			name: "name",
+			name: "merchantName",
 			field: "Merchant's Name",
 			sorting: true,
 			show: "Avatar",
 		},
 		{
-			name: "mobile_number",
+			name: "ekoCode",
 			field: "Eko Code",
 			sorting: true,
 		},
-		{ name: "type", field: "Ref. ID", sorting: true },
+
 		{
-			name: "type",
+			name: "city",
+
 			field: "Location",
 
 			sorting: true,
 		},
 		{
-			name: "createdAt",
+			name: "businesstType",
 			field: "Business Type",
 			sorting: true,
 		},
 		{
-			name: "account_status",
+			name: "onboardedOn",
 			field: "Onboarded on",
-			show: "Tag",
+
 			sorting: true,
 		},
 	];
 
+	const rendererExpandedRow = [
+		{ name: "businessName", field: "Business Name " },
+		{ name: "daysinFunnelr", field: "Days in funnel" },
+		{ name: "businessDetailsCaptured", field: "Business details captured" },
+		{ name: "aadhaarCaptured", field: "Aadhaar captured" },
+		{ name: "panCaptured", field: "PAN captured " },
+		{ name: "account_status", field: "e-KYC done" },
+		{ name: "agreementSigned", field: "Agreement signed" },
+		{ name: "onboarded", field: "Onboarded" },
+		{ name: "transacting", field: "Transacting" },
+	];
 	return (
 		<>
 			<Table
 				pageLimit={50}
 				renderer={renderer}
-				data={table_data_mock.slice(0, 20)}
+				rendererExpandedRow={rendererExpandedRow}
+				data={tableData}
 				variant="evenStripedClickableRow"
 				tableName="Onboarding"
 				isScrollrequired={true}
+				accordian={true}
+				isPaginationRequired={false}
+				isOnclickRequire={false}
 			/>
 		</>
 	);

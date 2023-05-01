@@ -1,7 +1,8 @@
 import { Box, Center, Flex, Text } from "@chakra-ui/react";
-import { Icon } from "components";
+import { Icon, IconButtons } from "components";
 import { useState } from "react";
 import { OnboardingDashboardTable } from ".";
+import { OnboardingDashboardData } from "../dasboard.mocks";
 
 /**
  * A <OnboardingDashboard> component
@@ -10,68 +11,6 @@ import { OnboardingDashboardTable } from ".";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<OnboardingDashboard></OnboardingDashboard>`
  */
-
-const cardData = [
-	{
-		title: "Partial ",
-		status: "account",
-		count: "550",
-	},
-	{
-		id: 2,
-		title: "Onboarding ",
-		status: "funnel",
-		count: "12",
-	},
-	{
-		id: 3,
-		title: "Businessdetails ",
-		status: "captured",
-		count: "40",
-	},
-	{
-		id: 4,
-		title: "Aadhaar ",
-		status: "captured",
-		count: "20",
-	},
-	{
-		id: 5,
-		title: "PAN ",
-		status: "captured",
-		count: "67",
-	},
-	{
-		id: 6,
-		title: "eKYC ",
-		status: "completed",
-		count: "17",
-	},
-	{
-		id: 7,
-		title: "Agreement ",
-		status: "signed",
-		count: "121",
-	},
-	{
-		id: 8,
-		title: "Onboarded",
-		status: "",
-		count: "121",
-	},
-	{
-		id: 9,
-		title: "Subscription ",
-		status: "pending",
-		count: "63",
-	},
-	{
-		id: 10,
-		title: "Nontransacting ",
-		status: "live",
-		count: "63",
-	},
-];
 
 function Card({ title, status, count, activeCardIndex, index }) {
 	return (
@@ -121,6 +60,24 @@ const OnboardingDashboard = (/* props */) => {
 	const [activeCardIndex, setActiveCardIndex] = useState(null);
 	console.log("activeCardIndex", activeCardIndex);
 
+	const data = OnboardingDashboardData;
+	console.log("data", data);
+	const topPanel =
+		data[0]?.data?.onboarding_dashboard_details[0]?.topPanel ?? [];
+	console.log("topPanel", topPanel);
+	const topPanelData = Object.entries(topPanel).map(([key, value]) => {
+		const words = key.split(/(?=[A-Z])/); // split title into words before uppercase letters
+		return {
+			title: `${words[0]} ${words.slice(1).join(" ")}`, // combine first word with remaining words separated by a space
+			count: value,
+		};
+	});
+	const tableData =
+		data[0]?.data?.onboarding_dashboard_details[1]?.onboardedMerchants ??
+		[];
+	console.log("tableData", tableData);
+
+	console.log("OnboardingDashboardData", OnboardingDashboardData);
 	const handleCardClick = (index) => {
 		setActiveCardIndex(index);
 	};
@@ -129,7 +86,8 @@ const OnboardingDashboard = (/* props */) => {
 		<Flex direction={"column"}>
 			<Flex
 				justifyContent={"space-evenly"}
-				minH="175px"
+				minH={{ base: "initial", md: "175px" }}
+				py={{ base: "10px", md: "initial" }}
 				w="100%"
 				bg={{ base: "none", md: "white" }}
 				px="20px"
@@ -167,12 +125,16 @@ const OnboardingDashboard = (/* props */) => {
 					</Text>
 				</Flex>
 
-				<Flex gap="10px" overflowX="auto" p="5px">
-					{cardData.map((card, index) => (
+				<Flex
+					gap="10px"
+					overflowX="auto"
+					p="5px"
+					justifyContent={"space-between"}
+				>
+					{topPanelData.map((card, index) => (
 						<Box key={index} onClick={() => handleCardClick(index)}>
 							<Card
 								title={card.title}
-								status={card.status}
 								count={card.count}
 								activeCardIndex={activeCardIndex}
 								index={index}
@@ -200,7 +162,21 @@ const OnboardingDashboard = (/* props */) => {
 						Onboarded Merchants
 					</Text>
 				</Box>
-				<OnboardingDashboardTable />
+				<OnboardingDashboardTable tableData={tableData} />
+				<Flex justifyContent={"center"} my="40px">
+					<IconButtons
+						iconName="file-download"
+						iconPos="left"
+						title="Download Reports"
+						iconStyle={{
+							width: "14px",
+							height: "14px",
+						}}
+						textStyle={{
+							fontSize: "md",
+						}}
+					/>
+				</Flex>
 			</Box>
 		</Flex>
 	);
