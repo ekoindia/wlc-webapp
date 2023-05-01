@@ -58,13 +58,12 @@ function Card({ title, status, count, activeCardIndex, index }) {
 
 const OnboardingDashboard = (/* props */) => {
 	const [activeCardIndex, setActiveCardIndex] = useState(null);
-	console.log("activeCardIndex", activeCardIndex);
 
 	const data = OnboardingDashboardData;
-	console.log("data", data);
+
 	const topPanel =
 		data[0]?.data?.onboarding_dashboard_details[0]?.topPanel ?? [];
-	console.log("topPanel", topPanel);
+
 	const topPanelData = Object.entries(topPanel).map(([key, value]) => {
 		const words = key.split(/(?=[A-Z])/); // split title into words before uppercase letters
 		return {
@@ -75,9 +74,7 @@ const OnboardingDashboard = (/* props */) => {
 	const tableData =
 		data[0]?.data?.onboarding_dashboard_details[1]?.onboardedMerchants ??
 		[];
-	console.log("tableData", tableData);
 
-	console.log("OnboardingDashboardData", OnboardingDashboardData);
 	const handleCardClick = (index) => {
 		setActiveCardIndex(index);
 	};

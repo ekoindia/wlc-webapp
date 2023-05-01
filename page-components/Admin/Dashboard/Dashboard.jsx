@@ -65,9 +65,7 @@ const DashboardHeadingFilter = () => {
 		fromDate,
 		toDate,
 	});
-	{
-		console.log("dateText", dateText);
-	}
+
 	const onDateChange = (e, type) => {
 		if (type === "fromDate") {
 			if (!e.target.value)
