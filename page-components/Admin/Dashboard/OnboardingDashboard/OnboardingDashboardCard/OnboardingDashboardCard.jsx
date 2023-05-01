@@ -8,21 +8,21 @@ import { getNameStyle } from "helpers";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<OnboardingDashboardCard></OnboardingDashboardCard>`
  */
-const OnboardingDashboardCard = () => {
-	const item = {
-		ekocode: 10167076,
-		refiD: 1277000,
-		name: "Rajesh Gupta",
-		Location: "Gurugram, Sector 45, Haryana",
-		businesstype: "Money Transfer",
-		Onboardedon: "3 Days ago",
-	};
+const OnboardingDashboardCard = ({ item }) => {
+	// const item = {
+	// 	ekocode: 10167076,
+	// 	refiD: 1277000,
+	// 	name: "Rajesh Gupta",
+	// 	Location: "Gurugram, Sector 45, Haryana",
+	// 	businesstype: "Money Transfer",
+	// 	Onboardedon: "3 Days ago",
+	// };
 
 	return (
 		<>
 			<Flex justifyContent="space-between">
 				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-					{getNameStyle(item.name)}
+					{getNameStyle(item.merchantName)}
 				</Box>
 			</Flex>
 
@@ -33,25 +33,17 @@ const OnboardingDashboardCard = () => {
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
-						&#x20B9;{item.ekocode}
+						{item.ekoCode}
 					</Box>
 				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Ref.ID:
-					</Box>
-					<Box as="span" color="dark" fontWeight={"medium"}>
-						{/* {item.agent_mobile} */}
-						{item.refiD}
-					</Box>
-				</Flex>
+
 				<Flex gap="2">
 					<Box as="span" color="light">
 						Location:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
-						{item.Location}
+						{item.city}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -60,15 +52,15 @@ const OnboardingDashboardCard = () => {
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
 						{/* {item.agent_mobile} */}
-						{item.businesstype}
+						{item.businesstType}
 					</Box>
 				</Flex>
 				<Flex gap="2">
-					<Box as="span" color="dark">
+					<Box as="span" color="light">
 						Onoarded on:
 						{/* {item.agent_mobile} */}
 						<Box as="span" color="dark" fontWeight={"medium"}>
-							{item.Onboardedon}
+							{item.onboardedOn}
 						</Box>
 					</Box>
 				</Flex>
