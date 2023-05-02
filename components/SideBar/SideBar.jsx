@@ -68,7 +68,10 @@ const SideBarMenu = () => {
 	const { userData } = useUser();
 	const { interactions } = useMenuContext();
 	const { interaction_list } = interactions;
-	// const router = useRouter();
+	const router = useRouter();
+	const onProfileClick = () => {
+		router.push("/profile");
+	};
 
 	const menuList =
 		userData?.is_org_admin === 1 ? adminSidebarMenu : sidebarMenu;
@@ -97,6 +100,8 @@ const SideBarMenu = () => {
 								name={userData?.userDetails?.name}
 								mobileNumber={userData?.userDetails?.mobile}
 								img={userData?.userDetails?.pic}
+								onClick={onProfileClick}
+								cursor="pointer"
 							/>
 
 							<StatusCard key={"walletStatus"} />

@@ -14,6 +14,7 @@ import { adminSidebarMenu, sidebarMenu } from "./SidebarMenu";
 import { table_data_mock } from "./table_data_mock";
 import { transactions_mock } from "./transactions_mock";
 import { transaction_history_mock } from "./transaction_history_mock";
+import { UserType, UserTypeLabel } from "./userTypes";
 import { baseRoute, initialRoute, publicLinks } from "./validRoutes";
 export {
 	TransactionTypes,
@@ -36,4 +37,6 @@ export {
 	table_data_mock,
 	PricingCommissionObject,
 	allowedCategories,
+	UserTypeLabel,
+	UserType,
 };
