@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Layout } from "components/Layout";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { Layout } from "components/Layout";
 
 describe("Layout", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Layout />);
+		const { container } = pageRender(<Layout />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

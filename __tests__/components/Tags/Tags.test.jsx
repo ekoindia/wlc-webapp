@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { Tags } from "components/Tags";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

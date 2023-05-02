@@ -1,18 +1,23 @@
-import React from "react";
+import { BreadcrumbsWrapper, Layout } from "components";
+import { TransactionHistoryObject } from "constants";
 import Head from "next/head";
-import { DetailedStatement, Layout } from "components";
+import { DetailedStatement } from "page-components/Admin";
 
-const detStatement = () => {
+const DetailedStatementPage = () => {
 	return (
 		<>
 			<Head>
 				<title>Detailed-Statement | Eko API Marketplace</title>
 			</Head>
 			<Layout>
-				<DetailedStatement />
+				<BreadcrumbsWrapper
+					BreadcrumbsObject={TransactionHistoryObject}
+				>
+					<DetailedStatement />
+				</BreadcrumbsWrapper>
 			</Layout>
 		</>
 	);
 };
 
-export default detStatement;
+export default DetailedStatementPage;

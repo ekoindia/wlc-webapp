@@ -1,10 +1,9 @@
-import React from "react";
-import SearchFilterSort from "./SearchFilterSort";
+import SearchBar from "./SearchBar";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/SearchFilterSort",
-	component: SearchFilterSort,
+	title: "Component/SearchBar",
+	component: SearchBar,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -47,7 +46,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <SearchFilterSort {...args} />;
+const Template = (args) => <SearchBar {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

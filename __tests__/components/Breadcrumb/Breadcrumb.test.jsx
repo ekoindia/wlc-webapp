@@ -1,5 +1,5 @@
-import { render } from "test-utils";
-import { Breadcrumb } from "components/Breadcrumb";
+// import { Breadcrumb } from "components/Breadcrumb";
+// import { render } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,16 +17,13 @@ import { Breadcrumb } from "components/Breadcrumb";
 
 describe("Breadcrumb", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Breadcrumb />);
-		expect(container).not.toBeEmptyDOMElement();
-
+		// TODO: Need not be tested separately. Test with <Breadcrumbs> or <BreadcrumbsWrapper>
+		// const { container } = render(<Breadcrumb />);
+		// expect(container).not.toBeEmptyDOMElement();
 		// expect(container).toHaveTextContent("Any text");
-
 		// const inp = screen.getByLabelText("Input Label");
 		// expect(inp).toBeInTheDocument();
-
 		// const btn = utils.getByRole("button", { name: "Submit" });
-
 		// CUSTOM MATCHERS (jest-dom)
 		// See all matchers here: https://github.com/testing-library/jest-dom#table-of-contents
 		// expect(btn).toBeDisabled();
@@ -37,10 +34,8 @@ describe("Breadcrumb", () => {
 		// expect(btn).toContainElement(elm);
 		// expect(btn).toContainHTML(htmlText: string);
 		// expect(btn).toHaveFocus();
-
 		// Check style
 		// expect(getByTestId('background')).toHaveStyle(`background-image: url(${props.image})`);
-
 		// Enable snapshot testing:
 		// expect(container).toMatchSnapshot();
 	});

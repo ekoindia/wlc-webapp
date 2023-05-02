@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { InputMsg } from "components/InputMsg";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { InputMsg } from "components/InputMsg";
 
 describe("InputMsg", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<InputMsg />);
+		const { container } = render(<InputMsg>Hello</InputMsg>);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -9,7 +9,8 @@ yarn.lock
 package-lock.json
 plop-templates
 public
-styles
 .git
 .cache
 yarn.lock
+*.md
+**/*.md

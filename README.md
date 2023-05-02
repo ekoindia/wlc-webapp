@@ -2,15 +2,10 @@
 
 Guide - [https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7](https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7)
 
-### Typescript app
-
-### prettier
-
--   npm i prettier --save-dev
-
-### link
-
--   npm i lint
+## Prepare Development Envoirnment:
+- Run `npm i`
+- Run `npm run prepare`
+- Make sure the _.husky/pre-commit_ file is executable by running: `chmod +x pre-commit`
 
 ### husky -
 

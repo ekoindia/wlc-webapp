@@ -1,14 +1,19 @@
-import React from "react";
-import { AccountStatement, Layout } from "components";
+import { BreadcrumbsWrapper, Layout } from "components";
+import { TransactionHistoryObject } from "constants";
+import { AccountStatement } from "page-components/Admin";
 
-const accStatement = () => {
+const AccountStatementPage = () => {
 	return (
 		<div>
 			<Layout>
-				<AccountStatement />
+				<BreadcrumbsWrapper
+					BreadcrumbsObject={TransactionHistoryObject}
+				>
+					<AccountStatement />
+				</BreadcrumbsWrapper>
 			</Layout>
 		</div>
 	);
 };
 
-export default accStatement;
+export default AccountStatementPage;

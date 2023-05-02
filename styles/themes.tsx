@@ -1,25 +1,30 @@
 import { extendTheme, theme } from "@chakra-ui/react";
-import { Inter, Roboto } from "@next/font/google";
+// import { Inter, Roboto } from "@next/font/google";
+import { tabsTheme } from "./theme_system/theme/components/tab";
 
-const inter = Inter({
-	weight: ["400", "500", "600", "700", "800"],
-	style: ["normal"],
-	fallback: ["system-ui", "sans-serif"],
-    subsets:["latin"]
-});
-const roboto = Roboto({
-	weight: ["400", "500", "700"],
-	style: ["normal"],
-	fallback: ["system-ui", "sans-serif"],
-    subsets:["latin"]
-});
+import { buttonTheme } from "./theme_system/theme/components/button";
+// console.log('theme', theme)
 
-// console.log(theme);
+// const inter = Inter({
+// 	weight: ["400", "500", "600", "700", "800"],
+// 	style: ["normal"],
+// 	fallback: ["system-ui", "sans-serif"],
+// 	subsets: ["latin"],
+// });
+// const roboto = Roboto({
+// 	weight: ["400", "500", "700"],
+// 	style: ["normal"],
+// 	fallback: ["system-ui", "sans-serif"],
+// 	subsets: ["latin"],
+// });
+
+// console.log(theme.components.Tabs.baseStyle);
+// console.log(tabsTheme);
+// console.log(theme)
 
 export const light = extendTheme({
 	breakpoints: {
-		// w={{ sm: 300, md: 400, base: 500}}
-        base:"0",
+		base: "0",
 		sm: "440px",
 		md: "768px",
 		lg: "1024px",
@@ -27,42 +32,86 @@ export const light = extendTheme({
 		"2xl": "1800px",
 	},
 	components: {
-    Table:{
-      variants:{
-        evenStriped:{
-          tr:{
-            _even:{
-              background:'shade'
-            }
-          },
-          th:{
-              textTransform: 'Capitalize'
-          }
-        }
-      }
-    },
-		Button: {
-			...theme.components.Button,
+		Table: {
 			variants: {
-				primary: {
-					bg:"primary.DEFAULT",
-                    boxShadow:"0px 3px 10px #FE9F0040",
-                    borderRadius:10,
-                    color:"white",
-                    _hover:{
-                        bg:"primary.dark"
-                    }
+				evenStripedClickableRow: {
+					tr: {
+						_even: {
+							background: "shade",
+						},
+						_hover: {
+							// bg: "#fea1000d",
+							bg: "#e6e6e6",
+							transition: "background 200ms ease-in",
+							cursor: "pointer",
+						},
+					},
+					th: {
+						textTransform: "Capitalize",
+						bg: "hint",
+						transition: "none",
+					},
 				},
-				accent: {
-					bg:"accent.DEFAULT",
-                    boxShadow:"0px 3px 10px #11299e96",
-                    borderRadius:10,
-                     color:"white",
-                    _hover:{
-                        bg:"accent.dark"
-                    }
+				evenStriped: {
+					tr: {
+						_even: {
+							background: "shade",
+						},
+					},
+					th: {
+						textTransform: "Capitalize",
+						bg: "hint",
+						transition: "none",
+					},
 				},
-				// add more variants as needed
+				nonAdmin: {
+					th: {
+						textTransform: "Capitalize",
+						bg: "divider",
+						transition: "none",
+					},
+					tr: {
+						_even: {
+							background: "bg",
+						},
+					},
+				},
+			},
+		},
+		Button: buttonTheme,
+		Checkbox: {
+			variants: {
+				rounded: {
+					control: {
+						w: "15px",
+						h: "15px",
+						border: "1px solid #11299E",
+						borderColor: "#11299E",
+						borderRadius: "3px",
+						_checked: {
+							bg: "#11299E",
+						},
+						_focus: {
+							boxShadow: "none",
+						},
+					},
+				},
+			},
+		},
+		Tabs: tabsTheme,
+		Heading: {
+			variants: {
+				selectNone: {
+					...theme.components.Heading,
+					userSelect: "none",
+				},
+			},
+		},
+		Text: {
+			variants: {
+				selectNone: {
+					userSelect: "none",
+				},
 			},
 		},
 	},
@@ -85,7 +134,10 @@ export const light = extendTheme({
 		shadow: {
 			primary: "#FE9F008C",
 			accent: "#11299e96",
+			success: "#009B34",
+			error: "#CA1B56",
 		},
+		"google-btn-bg": "#4185F4",
 		success: "#00C341",
 		error: "#FF4081",
 		divider: "#E9EDF1",
@@ -94,22 +146,32 @@ export const light = extendTheme({
 		light: "#555555",
 		focusbg: "#FFFBF3",
 		white: "#FFFFFF",
-    shade: '#F2F2F2',
+		shade: "#F2F2F2",
+		darkShade: "#e6e6e6",
 		highlight: "#FFD93B",
-    bg:"#F5F6F8"
+		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
+		inputlabel: "#0C243B",
+		overlayBg: "#e9edf1b3",
+		sidebar: {
+			"icon-bg": "#1F3ABC",
+			"active-border": "#FE7D00",
+			"active-bg": "#081E89",
+			"card-bg": "#102174",
+			"card-bg-dark": "#091968",
+			font: "#556FEF",
+		},
 	},
 	styles: {
-        global: {
-      "html": {
-        letterSpacing:"0.19px"
-      },
-    },
-    },
+		global: {},
+	},
 	borders: {
 		none: 0,
 		"1px": "1px solid",
 		"2px": "0.125rem solid",
 		"10px": "0.625rem solid",
+		card: "1px solid #D2D2D2",
+		"br-sidebar": "1px solid #1F3ABC",
+		"br-popupcard": "1px solid #FE9F00",
 	},
 	radii: {
 		none: "0",
@@ -121,13 +183,18 @@ export const light = extendTheme({
 		"2xl": "1rem",
 		"3xl": "1.5rem",
 		full: "9999px",
-        // According to ds
-        5:"5px",
-        10:"10px",
-        15:"15px",
-        20:"20px"
+		// According to ds
+		5: "5px",
+		10: "10px",
+		15: "15px",
+		20: "20px",
 	},
-	shadows: {},
+	shadows: {
+		"sh-otpfocus": "0px 3px 6px #0000001A",
+		"sh-header": "0px 3px 6px #0000001A",
+		"sh-card": "0px 3px 20px #00000005",
+		"sh-googlebtn": "0px 3px 10px #4185F433",
+	},
 	sizes: {
 		max: "max-content",
 		min: "min-content",
@@ -161,16 +228,19 @@ export const light = extendTheme({
 		2: "0.5rem",
 		2.5: "0.625rem", // 10px
 		3: "0.75rem",
-		3.5: "0.875rem",
+		3.5: "0.875rem", // 14px
 		4: "1rem", // 16px
 		5: "1.25rem", //20px
 		6: "1.5rem", //24px
 		7: "1.75rem", // 28px
+		7.5: "1.875rem", // 28px - added
 		8: "2rem",
+		8.5: "2.125rem", // 24px- added
 		9: "2.25rem",
 		10: "2.5rem",
-		12: "3rem", 
-		14: "3.5rem",
+		10.5: "2.625rem", // 42px - added
+		12: "3rem",
+		14: "3.5rem", //56px
 		16: "4rem",
 		17: "4.5rem",
 		20: "5rem",
@@ -190,11 +260,12 @@ export const light = extendTheme({
 		96: "24rem",
 	},
 	fonts: {
-		body: `${inter.style.fontFamily}`,
-		heading: `${inter.style.fontFamily}`,
-        roboto_font:`${roboto.style.fontFamily}`
+		// body: `${inter.style.fontFamily}`,
+		// heading: `${inter.style.fontFamily}`,
+		// roboto_font: `${roboto.style.fontFamily}`,
 	},
 	fontSizes: {
+		vxs: "0.5rem",
 		xs: "0.75rem", // 12px
 		sm: "0.875rem", // 14px
 		md: "1rem", // 16px

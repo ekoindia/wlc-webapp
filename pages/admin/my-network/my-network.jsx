@@ -1,6 +1,7 @@
-import { Layout, Network } from "components";
+import { BreadcrumbsWrapper, Layout } from "components";
+import { NetworkObject } from "constants";
 import Head from "next/head";
-import React from "react";
+import { Network } from "page-components/Admin";
 
 const MyNetwork = () => {
 	return (
@@ -9,7 +10,9 @@ const MyNetwork = () => {
 				<title>My-Network | Eko API Marketplace</title>
 			</Head>
 			<Layout>
-				<Network />
+				<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+					<Network />
+				</BreadcrumbsWrapper>
 			</Layout>
 		</>
 	);

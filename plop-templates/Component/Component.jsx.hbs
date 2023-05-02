@@ -31,11 +31,12 @@ const reducer = (state, { type, payload }) => {
 /**
  * A <{{pascalCase name}}> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<{{pascalCase name}}></{{pascalCase name}}>`
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	prop.prop1	TODO: Property description.
+ * @param	{...*}	rest	Rest of the props passed to this component.
+ * @example	`<{{pascalCase name}}></{{pascalCase name}}>` TODO: Fix example
  */
-const {{pascalCase name}} = ({ className = "", ...props })  => {
+const {{pascalCase name}} = ({ prop1, ...rest })  => {
 	{{#if (isInArray "useState" hooks) }}
 	const [count, setCount] = useState(0);		// TODO: Edit state as required
 
@@ -54,7 +55,7 @@ const {{pascalCase name}} = ({ className = "", ...props })  => {
 	{{/if}}
 
 	return (
-		<div className={`${className}`} {...props}>
+		<div {...rest}>
 			{{name}}
 		</div>
 	);

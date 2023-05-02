@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { InputLabel } from "components/InputLabel";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

@@ -1,5 +1,4 @@
 import { Card } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 
 /**
  * A <Cards> component
@@ -8,12 +7,8 @@ import { useEffect, useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Cards></Cards>`
  */
-const Cards = ({ className = "", children, ...props }) => {
-	const [count, setCount] = useState(0); // TODO: Edit state as required
-
-	useEffect(() => {
-		// TODO: Add your useEffect code here and update dependencies as required
-	}, []);
+const Cards = ({ className = "", children, ...rest }) => {
+	const { onClick } = rest;
 
 	return (
 		<Card
@@ -22,10 +17,10 @@ const Cards = ({ className = "", children, ...props }) => {
 			boxShadow="0px 5px 15px #0000000D"
 			border="1px solid #D2D2D2"
 			p="5"
-			h="620px"
-			w="490px"
+			h={{ base: "auto", md: "600px", xl: "620px" }}
 			bg="white"
-			{...props}
+			onClick={onClick}
+			{...rest}
 		>
 			{children}
 		</Card>

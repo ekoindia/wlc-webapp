@@ -1,1 +1,1 @@
-export { default } from "./trxn-history";
+export { default } from "./transaction-history";

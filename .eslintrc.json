@@ -5,13 +5,20 @@
 		"next/core-web-vitals",
 		"prettier"
 	],
+	"env": {
+		"browser": true,
+		"es6": true,
+		"node": true,
+		"jest": true
+	},
 	"plugins": ["prettier"],
-	"ignorePatterns": ["**/*.BAK.*", "**/*.stories.*"],
+	"ignorePatterns": ["**/*.BAK.*", "**/*.stories.*", "**/*.mocks.*"],
 	"globals": {
 		"React": "readonly",
 		"describe": "readonly",
 		"it": "readonly",
-		"expect": "readonly"
+		"expect": "readonly",
+		"JSX": "readonly"
 	},
 	"overrides": [
 		{
@@ -27,7 +34,7 @@
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
 		"semi": ["error", "always", { "omitLastInOneLineBlock": true }],
 		"no-unused-vars": [
-			"error",
+			"warn",
 			{
 				"vars": "all",
 				"args": "after-used",

@@ -1,8 +1,7 @@
 /* PLOP_INJECT_IMPORT */
-import { Admin } from "./Admin";
-
-
-export {
-	Admin,
-	/* PLOP_INJECT_EXPORT */
-};
+import {} from "./Admin";
+import { LoginPanel } from "./LoginPanel";
+export { History } from "./History";
+export { Home } from "./Home";
+export { Profile } from "./Profile";
+export { LoginPanel };

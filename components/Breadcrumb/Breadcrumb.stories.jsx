@@ -1,10 +1,9 @@
-import React from "react";
-import Breadcrumb from "./Breadcrumb";
+import Breadcrumbs from "./Breadcrumbs";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Breadcrumb",
-	component: Breadcrumb,
+	title: "Component/Breadcrumbs",
+	component: Breadcrumbs,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -47,7 +46,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <Breadcrumb {...args} />;
+const Template = (args) => <Breadcrumbs {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

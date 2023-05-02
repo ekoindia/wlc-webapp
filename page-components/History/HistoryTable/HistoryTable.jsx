@@ -1,0 +1,70 @@
+import { Table } from "components";
+import { getHistoryTableProcessedData } from ".";
+
+/**
+ * A <HistoryTable> component
+ * TODO: Write more description here
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	prop.prop1	TODO: Property description.
+ * @param	{...*}	rest	Rest of the props passed to this component.
+ * @example	`<HistoryTable></HistoryTable>` TODO: Fix example
+ */
+const HistoryTable = ({ transactionList }) => {
+	const processedData = getHistoryTableProcessedData(transactionList);
+	const renderer = [
+		{ name: "", field: "", show: "Accordian" },
+		{
+			name: "trx_name",
+			field: "Transaction Type",
+			sorting: true,
+			show: "Avatar",
+		},
+		{
+			name: "description",
+			field: "Description",
+			show: "Description",
+		},
+		{ name: "trx_id", field: "Transaction ID", sorting: true },
+		{
+			name: "amount",
+			field: "Amount",
+			show: "Amount",
+			sorting: true,
+		},
+		{ name: "date", field: "Date", sorting: true },
+		{ name: "time", field: "Time", sorting: true },
+		{
+			name: "status",
+			show: "Tag",
+		},
+	];
+
+	const rendererExpandedRow = [
+		// { name: "date", field: "Date" },
+		// { name: "time", field: "Time" },
+		{ name: "customerMobile", field: "Customer Mobile" },
+		{ name: "balance", field: "Balance Amount", show: "Amount" },
+		{ name: "commissionEarned", field: "Commission Earned" },
+		{ name: "Fee", field: "fee" },
+		{ name: "TID", field: "tid" },
+		{ name: "trackingNumber", field: "Tracking Number" },
+	];
+
+	return (
+		<>
+			<Table
+				// pageLimit={10}
+				renderer={renderer}
+				rendererExpandedRow={rendererExpandedRow}
+				data={processedData}
+				variant="darkStriped"
+				tableName="History"
+				accordian={true}
+				isPaginationRequired={false}
+				isOnclickRequire={false}
+			/>
+		</>
+	);
+};
+
+export default HistoryTable;
