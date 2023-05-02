@@ -32,8 +32,6 @@ function useLogin(login, setStep, setEmail) {
 						title: "Wrong OTP. Please try again. ",
 						status: "error",
 						duration: 5000,
-						isClosable: true,
-						position: "top-right",
 					});
 					return;
 				}

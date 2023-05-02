@@ -80,11 +80,11 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 				user_balance={balance}
 				language="en"
 				enable-print={true}
-				user_details={userData.userDetails}
-				account_details={userData.accountDetails}
-				personal_details={userData.personalDetails}
-				shop_details={userData.shopDetails}
-				session_details={userData.sessionDetails}
+				user_details={JSON.stringify(userData.userDetails)}
+				account_details={JSON.stringify(userData.accountDetails)}
+				personal_details={JSON.stringify(userData.personalDetails)}
+				shop_details={JSON.stringify(userData.shopDetails)}
+				session_details={JSON.stringify(userData.sessionDetails)}
 				show_set_pin={showSetPIN(
 					TransactionIds.SET_PIN,
 					role_tx_list,
