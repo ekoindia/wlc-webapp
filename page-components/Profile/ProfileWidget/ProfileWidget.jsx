@@ -1,6 +1,6 @@
 import { Avatar, Box, Flex, Progress, Text } from "@chakra-ui/react";
 import { Button, Icon, IconButtons } from "components";
-import { UserTypeLabel } from "constants/userTypes";
+import { UserTypeLabel } from "constants";
 import { useUser } from "contexts/UserContext";
 
 /**
