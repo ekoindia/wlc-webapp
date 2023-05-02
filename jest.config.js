@@ -16,6 +16,7 @@ const customJestConfig = {
 		// Handle module aliases (this will be automatically configured for you soon)
 		"^components/(.*)$": "<rootDir>/components/$1",
 		"^page-components/(.*)$": "<rootDir>/page-components/$1",
+		"^tf-components/(.*)$": "<rootDir>/tf-components/$1",
 		"^pages/(.*)$": "<rootDir>/pages/$1",
 		// "^features/(.*)$": "<rootDir>/features/$1",
 		"^constants/(.*)$": "<rootDir>/constants/$1",
@@ -51,6 +52,7 @@ const customJestConfig = {
 		"<rootDir>/pages/**/{!(_app),}.{js,ts,jsx,tsx}",
 		"<rootDir>/components/**/{!(index),}.{js,ts,jsx,tsx}",
 		"<rootDir>/page-components/**/{!(index),}.{js,ts,jsx,tsx}",
+		"<rootDir>/tf-components/**/{!(index),}.{js,ts,jsx,tsx}",
 		"<rootDir>/contexts/**/{!(index),}.{js,ts,jsx,tsx}",
 		"<rootDir>/hooks/**/{!(index),}.{js,ts,jsx,tsx}",
 		"<rootDir>/utils/**/{!(index),}.{js,ts,jsx,tsx}",
