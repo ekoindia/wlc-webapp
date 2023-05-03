@@ -26,7 +26,7 @@ import { useEffect, useState } from "react";
  * @example	`<EkoConnectWidget start_id="123" route_params={{trxntypeid: 123, subpath_list: ["123"]}} />`
  */
 const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
-	console.log("[EkoConnectWidget] Transaction id to load: ", start_id);
+	console.log("[EkoConnectWidget] Transaction id to load: ", start_id, paths);
 
 	const router = useRouter();
 	const { userData } = useUser();
