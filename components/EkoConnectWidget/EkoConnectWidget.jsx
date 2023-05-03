@@ -1,9 +1,12 @@
 import { Flex, Spinner } from "@chakra-ui/react";
 import { PaddingBox } from "components";
 import { TransactionIds } from "constants";
-import { useWallet } from "contexts";
-import { useMenuContext } from "contexts/MenuContext";
-import { useUser } from "contexts/UserContext";
+import {
+	useMenuContext,
+	useOrgDetailContext,
+	useUser,
+	useWallet,
+} from "contexts";
 import useRefreshToken from "hooks/useRefreshToken";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -30,10 +33,16 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 	const router = useRouter();
 	const { userData } = useUser();
+	const { orgDetail } = useOrgDetailContext();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 	const { balance } = useWallet();
-	console.log("[EkoConnectWidget] >>> USER DATA:: ", userData, role_tx_list);
+	console.log(
+		"[EkoConnectWidget] >>> ORG + USER DATA:: ",
+		orgDetail,
+		userData,
+		role_tx_list
+	);
 
 	const { widgetLoading } = useSetupWidgetEventListeners(router);
 
@@ -90,6 +99,13 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 					role_tx_list,
 					userData?.userDetails?.is_pin_not_set
 				)}
+				receipt-title={orgDetail.app_name || orgDetail.org_name || ""}
+				receipt-subtitle={
+					orgDetail.app_name === orgDetail.org_name
+						? ""
+						: orgDetail.org_name || ""
+				}
+				receipt-logo={orgDetail.logo || ""}
 			></tf-wlc-widget>
 			{/* dark-theme={true} autolink_params={autolinkParams} zoho_id={userData.userDetails.zoho_id} */}
 		</PaddingBox>
