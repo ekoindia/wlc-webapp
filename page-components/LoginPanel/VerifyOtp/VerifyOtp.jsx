@@ -19,7 +19,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 	const [timer, setTimer] = useState(30);
 	const { login } = useUser();
 	const { orgDetail } = useOrgDetailContext();
-	const [loading, submitLogin] = useLogin(login);
+	const [loading, submitLogin] = useLogin(login, setStep);
 	const toast = useToast();
 
 	const timeOutCallback = useCallback(
