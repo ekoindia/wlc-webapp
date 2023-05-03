@@ -35,7 +35,6 @@ function sendOtpRequest(org_id, number, toast, sendState) {
 					} Otp failed. Please try again.`,
 					status: "error",
 					duration: 2000,
-					position: "top-right",
 				}) // TODO: Go back to submit mobile screen
 		);
 }

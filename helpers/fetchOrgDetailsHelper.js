@@ -16,7 +16,7 @@ const INVALID_DOMAIN_CACHE = new Set();
 let LAST_INVALID_DOMAIN_CACHE_BUST_TIME = Date.now();
 
 // Cache expiry time in milliseconds
-const CACHE_EXPIRY_TIME = 1000 * (process.env.ORG_CACHE_EXPIRY_SEC || 1);
+const CACHE_EXPIRY_TIME = 1000 * (process.env.ORG_CACHE_EXPIRY_SEC || 0);
 
 // Response data, if org not found
 const invalidOrg = {
