@@ -1,5 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Headings, SearchBar } from "components";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
+import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import {
@@ -17,6 +19,8 @@ import {
  * @example	`<Network></Network>`
  */
 const Network = () => {
+	const { userData } = useUser();
+	const { orgDetail } = useOrgDetailContext();
 	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState();
 	const [filter, setFilter] = useState({});
@@ -42,7 +46,7 @@ const Network = () => {
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents?initiator_id=9911572989&user_code=99029899&org_id=1&source=WLC&record_count=10&client_ref_id=202301031354123456&page_number=${pageNumber}&${postData}`,
+		"tf-req-uri": `/network/agents?record_count=10&page_number=${pageNumber}&${postData}`,
 		"tf-req-method": "GET",
 	};
 	const { data, error, isLoading, mutate } = useRequest({
