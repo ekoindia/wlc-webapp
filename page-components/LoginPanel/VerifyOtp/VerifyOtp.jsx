@@ -125,15 +125,13 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 				justify="center"
 				mt={{ base: 6, "2xl": "2.5rem" }}
 				fontSize={{ base: "sm", "2xl": "lg" }}
-				fontFamily="roboto_font"
-				fontWeight="normal"
 				gap="0px 10px"
 				userSelect="none"
 			>
 				{timer >= 1 ? (
 					<>
 						<Text as={"span"}>Resend otp in </Text>
-						<Flex color="error" columnGap="4px">
+						<Flex align="center" color="error" columnGap="4px">
 							<Icon name="timer" width="18px" />
 							00:{timer <= 9 ? "0" + timer : timer}
 						</Flex>
