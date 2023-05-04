@@ -6,14 +6,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 /**
- * A <BillPaymentCard> component
- * Recharge and bill payment card in home
+ * A <BillPaymentWidget> component
+ * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<BillPaymentCard></BillPaymentCard>` TODO: Fix example
+ * @example	`<BillPaymentWidget></BillPaymentWidget>` TODO: Fix example
  */
-const BillPaymentCard = () => {
+const BillPaymentWidget = () => {
 	const router = useRouter();
 	const [isCardVisible, setIsCardVisible] = useState(false);
 	const [data, setData] = useState([]);
@@ -37,7 +37,10 @@ const BillPaymentCard = () => {
 				temp.push(role_tx_list[id]); // push each new element to the new array
 			}
 		});
-
+		console.log(
+			role_tx_list,
+			"LIC Bill PaymentLIC Bill PaymentLIC Bill Payment"
+		);
 		setData(temp); // set the new array to the data state
 		setIsCardVisible(temp.length > 0);
 	}, [role_tx_list]);
@@ -115,6 +118,7 @@ const BillPaymentCard = () => {
 					<SimpleGrid
 						columns={{ base: 4, sm: 4, md: 4 }}
 						spacing={{ base: "3", lg: "8", xl: "8" }}
+						alignItems="flex-start"
 					>
 						{data.map((transaction, index) => (
 							<Box
@@ -138,7 +142,9 @@ const BillPaymentCard = () => {
 									}}
 									theme="dark"
 									rounded="full"
-									onClick={() => handleIconClick()}
+									onClick={() =>
+										handleIconClick(transaction.id)
+									}
 								></IcoButton>
 								<Text
 									size={{ base: "sm", md: "lg" }}
@@ -191,4 +197,4 @@ const BillPaymentCard = () => {
 	);
 };
 
-export default BillPaymentCard;
+export default BillPaymentWidget;

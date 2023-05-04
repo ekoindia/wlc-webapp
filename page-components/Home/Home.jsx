@@ -1,5 +1,10 @@
-import { Grid } from "@chakra-ui/react";
-import { BillPaymentCard, CommonTrxnWidget, QueryWidget } from ".";
+import { Grid, GridItem } from "@chakra-ui/react";
+import {
+	BillPaymentWidget,
+	CommonTrxnWidget,
+	QueryWidget,
+	RecentTrxnWidget,
+} from ".";
 
 /**
  * A <Home> component
@@ -13,22 +18,31 @@ const Home = () => {
 	return (
 		<>
 			<Grid
-				width={"100%"}
 				templateColumns={{
-					base: "repeat(1, 1fr)",
-					sm: "repeat(1, 1fr)",
-					md: "repeat(2, 1fr)",
-					lg: "repeat(2, 1fr)",
-					xl: "repeat(2,1fr)",
+					base: "repeat(auto-fit,minmax(280px,1fr))",
+					sm: "repeat(auto-fit,minmax(380px,1fr))",
+					md: "repeat(auto-fit,minmax(360px,1fr))",
+					// lg: "repeat(auto-fit,minmax(360px,1fr))",
+					xl: "repeat(auto-fit,minmax(440px,1fr))",
 				}}
 				justifyContent="center"
-				gap={{ base: (2, 4), sm: (2, 4), md: (4, 2), lg: (4, 4) }}
+				py={{ base: "20px", md: "0px" }}
+				gap={{ base: (2, 2), md: (4, 2), lg: (4, 6) }}
+				width={"100%"}
 			>
-				<QueryWidget />
-				{/* <RecentTrxnCard /> */}
+				<GridItem>
+					<RecentTrxnWidget />
+				</GridItem>
 				{/*<KycWidget />*/}
-				<CommonTrxnWidget />
-				<BillPaymentCard />
+				<GridItem>
+					<CommonTrxnWidget />
+				</GridItem>
+				<GridItem>
+					<QueryWidget />
+				</GridItem>
+				<GridItem>
+					<BillPaymentWidget />
+				</GridItem>
 			</Grid>
 		</>
 	);

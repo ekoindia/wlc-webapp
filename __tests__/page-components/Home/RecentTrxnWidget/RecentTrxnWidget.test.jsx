@@ -1,4 +1,4 @@
-import { RecentTrxnCard } from "components/RecentTrxnCard";
+import { RecentTrxnWidget } from "components/RecentTrxnWidget";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("RecentTrxnCard", () => {
+describe("RecentTrxnWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<RecentTrxnCard />);
+		const { container } = render(<RecentTrxnWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("RecentTrxnCard", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for RecentTrxnCard in __tests__/components/RecentTrxnCard/RecentTrxnCard.test.jsx"
+		"TODO: add proper test cases for RecentTrxnWidget in __tests__/components/RecentTrxnWidget/RecentTrxnWidget.test.jsx"
 	);
 });
