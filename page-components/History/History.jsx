@@ -215,7 +215,8 @@ const History = () => {
 												w="100%"
 												label="Amount"
 												type="number"
-												placeholder={"₹ Enter Amount"}
+												placeholder="Enter Amount"
+												leftAddon="₹"
 												// required="true"
 												// defaultvalue={item.Name}
 												// invalid={true}
@@ -235,9 +236,9 @@ const History = () => {
 														lg: "300px",
 														xl: "400px",
 													},
-													h: "42px",
-													pos: "relative",
-													borderRadius: "6px",
+													// h: "42px",
+													// pos: "relative",
+													// borderRadius: "6px",
 												}}
 											/>
 										</Flex>
@@ -265,9 +266,9 @@ const History = () => {
 														lg: "300px",
 														xl: "400px",
 													},
-													h: "42px",
-													pos: "relative",
-													borderRadius: "6px",
+													// h: "42px",
+													// pos: "relative",
+													// borderRadius: "6px",
 												}}
 											/>
 										</Flex>

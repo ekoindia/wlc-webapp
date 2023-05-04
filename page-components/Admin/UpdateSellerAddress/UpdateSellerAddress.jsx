@@ -208,12 +208,12 @@ const UpdateSellerAddress = () => {
 											fontWeight: "600",
 											mb: { base: 2.5, "2xl": "0.8rem" },
 										}}
-										inputContStyle={{
-											h: { base: "3rem" },
-											w: "100%",
-											pos: "relative",
-											alignItems: "center",
-										}}
+										// inputContStyle={{
+										// 	h: { base: "3rem" },
+										// 	w: "100%",
+										// 	pos: "relative",
+										// 	alignItems: "center",
+										// }}
 										// isNumInput={true}
 										// inputProps={{ maxLength: 12 }}
 										// onFocus={() => {
@@ -236,7 +236,7 @@ const UpdateSellerAddress = () => {
 									}}
 								>
 									<Input
-										label=" Address Line 2"
+										label="Address Line 2"
 										value={formData.address2}
 										onChange={handleInputChange}
 										// invalid={true}
@@ -248,12 +248,12 @@ const UpdateSellerAddress = () => {
 											fontWeight: "600",
 											mb: { base: 2.5, "2xl": "0.8rem" },
 										}}
-										inputContStyle={{
-											h: { base: "3rem", "2xl": "3rem" },
-											w: "100%",
-											pos: "relative",
-											alignItems: "center",
-										}}
+										// inputContStyle={{
+										// 	h: { base: "3rem", "2xl": "3rem" },
+										// 	w: "100%",
+										// 	pos: "relative",
+										// 	alignItems: "center",
+										// }}
 										// isNumInput={true}
 										// inputProps={{ maxLength: 12 }}
 										// onFocus={() => {
@@ -298,12 +298,12 @@ const UpdateSellerAddress = () => {
 											fontWeight: "600",
 											mb: { base: 2.5, "2xl": "0.8rem" },
 										}}
-										inputContStyle={{
-											h: { base: "3rem", "2xl": "3rem" },
-											w: "100%",
-											pos: "relative",
-											alignItems: "center",
-										}}
+										// inputContStyle={{
+										// 	h: { base: "3rem", "2xl": "3rem" },
+										// 	w: "100%",
+										// 	pos: "relative",
+										// 	alignItems: "center",
+										// }}
 									/>
 								</Box>
 								<Box
@@ -320,7 +320,7 @@ const UpdateSellerAddress = () => {
 									}}
 								>
 									<Input
-										label=" City"
+										label="City"
 										value={formData.City}
 										name="City"
 										onChange={handleInputChange}
@@ -335,13 +335,13 @@ const UpdateSellerAddress = () => {
 											fontWeight: "600",
 											mb: { base: 2.5, "2xl": "0.8rem" },
 										}}
-										inputContStyle={{
-											h: { base: "3rem", "2xl": "3rem" },
+										// inputContStyle={{
+										// 	h: { base: "3rem", "2xl": "3rem" },
 
-											w: "100%",
-											pos: "relative",
-											alignItems: "center",
-										}}
+										// 	w: "100%",
+										// 	pos: "relative",
+										// 	alignItems: "center",
+										// }}
 									/>
 								</Box>
 							</Flex>
@@ -428,7 +428,7 @@ const UpdateSellerAddress = () => {
 									}}
 								>
 									<Input
-										label=" Country"
+										label="Country"
 										name="Country"
 										required="true"
 										value={formData.Country}
@@ -444,13 +444,13 @@ const UpdateSellerAddress = () => {
 											fontWeight: "600",
 											mb: { base: 2.5, "2xl": "0.8rem" },
 										}}
-										inputContStyle={{
-											h: { base: "3rem", "2xl": "3rem" },
-											w: "100%",
+										// inputContStyle={{
+										// 	h: { base: "3rem", "2xl": "3rem" },
+										// 	w: "100%",
 
-											pos: "relative",
-											alignItems: "center",
-										}}
+										// 	pos: "relative",
+										// 	alignItems: "center",
+										// }}
 									/>
 								</Box>
 							</Flex>

@@ -387,15 +387,15 @@ const UpdatePersonalInfo = () => {
 													"2xl": "0.3rem",
 												},
 											}}
-											inputContStyle={{
-												h: {
-													base: "3rem",
-													"2xl": "3rem",
-												},
-												w: "100%",
-												pos: "relative",
-												alignItems: "center",
-											}}
+											// inputContStyle={{
+											// 	h: {
+											// 		base: "3rem",
+											// 		"2xl": "3rem",
+											// 	},
+											// 	w: "100%",
+											// 	pos: "relative",
+											// 	alignItems: "center",
+											// }}
 										/>
 									</Box>
 									<Box
@@ -411,7 +411,7 @@ const UpdatePersonalInfo = () => {
 											label="Middle Name"
 											name="middle_name"
 											// value={formData.middleName}
-											placeholder={""}
+											// placeholder={""}
 											// invalid={invalid}
 											// errorMsg={errorMsg}
 											// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -426,11 +426,11 @@ const UpdatePersonalInfo = () => {
 													"2xl": "0.3rem",
 												},
 											}}
-											inputContStyle={{
-												h: "3rem",
-												w: "100%",
-												pos: "relative",
-											}}
+											// inputContStyle={{
+											// 	h: "3rem",
+											// 	w: "100%",
+											// 	pos: "relative",
+											// }}
 										/>
 									</Box>
 									<Box
@@ -462,14 +462,14 @@ const UpdatePersonalInfo = () => {
 													"2xl": "0.3rem",
 												},
 											}}
-											inputContStyle={{
-												h: {
-													base: "3rem",
-													"2xl": "3rem",
-												},
-												w: "100%",
-												pos: "relative",
-											}}
+											// inputContStyle={{
+											// 	h: {
+											// 		base: "3rem",
+											// 		"2xl": "3rem",
+											// 	},
+											// 	w: "100%",
+											// 	pos: "relative",
+											// }}
 										/>
 									</Box>
 								</Flex>
@@ -630,7 +630,7 @@ const UpdatePersonalInfo = () => {
 									>
 										<Input
 											label="Shop Name"
-											placeholder={"Alam Store"}
+											// placeholder={"Alam Store"}
 											name="shop_name"
 											// value={formData.shopName}
 											// invalid={invalid}
@@ -647,11 +647,11 @@ const UpdatePersonalInfo = () => {
 													"2xl": "0.3rem",
 												},
 											}}
-											inputContStyle={{
-												h: "3rem",
-												w: "100%",
-												pos: "relative",
-											}}
+											// inputContStyle={{
+											// 	h: "3rem",
+											// 	w: "100%",
+											// 	pos: "relative",
+											// }}
 										/>
 									</Box>
 									<Box
