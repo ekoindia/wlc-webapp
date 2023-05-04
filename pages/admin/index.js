@@ -1,4 +1,4 @@
-import { Layout } from "components";
+import { Layout, PaddingBox } from "components";
 import Head from "next/head";
 import { Dashboard } from "page-components/Admin";
 
@@ -9,7 +9,9 @@ const Dashboards = () => {
 				<title>Dashboard</title>
 			</Head>
 			<Layout>
-				<Dashboard />
+				<PaddingBox>
+					<Dashboard />
+				</PaddingBox>
 			</Layout>
 		</>
 	);

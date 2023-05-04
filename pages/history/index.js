@@ -2,15 +2,17 @@ import { PaddingBox } from "components";
 import Head from "next/head";
 import { History } from "page-components";
 
-const home = () => {
+const HistoryPage = () => {
 	return (
-		<PaddingBox>
+		<>
 			<Head>
 				<title>Transaction History</title>
 			</Head>
-			<History />
-		</PaddingBox>
+			<PaddingBox>
+				<History />
+			</PaddingBox>
+		</>
 	);
 };
 
-export default home;
+export default HistoryPage;
