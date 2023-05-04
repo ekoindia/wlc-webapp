@@ -1,11 +1,11 @@
-import { ChakraProvider } from "@chakra-ui/react";
-import { Inter } from "@next/font/google";
+import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { RouteProtecter } from "components";
 import { OrgDetailProvider, UserProvider, WalletProvider } from "contexts";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
+import { Inter } from "next/font/google";
 import Head from "next/head";
 import { SWRConfig } from "swr";
 
@@ -16,6 +16,13 @@ const inter = Inter({
 	subsets: ["latin"],
 	fallback: ["system-ui", "sans-serif"],
 });
+
+// Configure Chakra Toast default properties
+const toastDefaultOptions = {
+	position: "bottom-right" as ToastPosition,
+	duration: 6000,
+	isClosable: true,
+};
 
 export default function App({ Component, pageProps, router }) {
 	return (
@@ -36,7 +43,10 @@ export default function App({ Component, pageProps, router }) {
 			<GoogleOAuthProvider
 				clientId={pageProps?.data?.login_types?.google?.client_id || ""}
 			>
-				<ChakraProvider theme={light}>
+				<ChakraProvider
+					theme={light}
+					toastOptions={{ defaultOptions: toastDefaultOptions }}
+				>
 					<OrgDetailProvider orgMockData={null}>
 						<UserProvider userMockData={null}>
 							<LayoutProvider>

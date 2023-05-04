@@ -16,14 +16,13 @@ function sendOtpRequest(org_id, number, toast, sendState) {
 	})
 		.then((data) => {
 			// Show otp hint in the toast only in development environments
-			if (process.env.NODE_ENV !== "production") {
+			if (process.env.NEXT_PUBLIC_ENV !== "production") {
 				toast({
 					title: `${
 						sendState === "resend" ? "Resent" : "Sent"
 					} Otp Successfully: ${data.data.otp}`,
 					status: "success",
-					duration: 2000,
-					isClosable: true,
+					duration: 3000,
 					position: "top-right",
 				});
 			}
@@ -36,8 +35,6 @@ function sendOtpRequest(org_id, number, toast, sendState) {
 					} Otp failed. Please try again.`,
 					status: "error",
 					duration: 2000,
-					isClosable: true,
-					position: "top-right",
 				}) // TODO: Go back to submit mobile screen
 		);
 }

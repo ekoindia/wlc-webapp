@@ -8,9 +8,7 @@ import { Icon } from "..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<ProfileCard></ProfileCard>`
  */
-const ProfileCard = (props) => {
-	const { name = "", mobileNumber, img } = props;
-
+const ProfileCard = ({ name = "", mobileNumber, img, onClick, ...rest }) => {
 	const formatNumber = (number) => {
 		if (!number) return null;
 		let len = number.length;
@@ -28,6 +26,8 @@ const ProfileCard = (props) => {
 			bg="sidebar.card-bg"
 			borderBottom="br-sidebar"
 			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
+			onClick={onClick}
+			{...rest}
 		>
 			<Avatar
 				w="50px"

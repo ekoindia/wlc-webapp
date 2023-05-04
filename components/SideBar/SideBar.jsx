@@ -27,6 +27,7 @@ import { Icon, ProfileCard, StatusCard } from "..";
  * @returns {boolean} True if the current route is the same as the route passed to it.
  **/
 function isCurrentRoute(router, currPath) {
+	// TODO: Fix: Inefficient code. Refactor this.
 	const path = router.asPath.split("?")[0];
 	if (path === currPath) return true;
 
@@ -68,7 +69,10 @@ const SideBarMenu = () => {
 	const { userData } = useUser();
 	const { interactions } = useMenuContext();
 	const { interaction_list } = interactions;
-	// const router = useRouter();
+	const router = useRouter();
+	const onProfileClick = () => {
+		router.push("/profile");
+	};
 
 	const menuList =
 		userData?.is_org_admin === 1 ? adminSidebarMenu : sidebarMenu;
@@ -97,6 +101,8 @@ const SideBarMenu = () => {
 								name={userData?.userDetails?.name}
 								mobileNumber={userData?.userDetails?.mobile}
 								img={userData?.userDetails?.pic}
+								onClick={onProfileClick}
+								cursor="pointer"
 							/>
 
 							<StatusCard key={"walletStatus"} />

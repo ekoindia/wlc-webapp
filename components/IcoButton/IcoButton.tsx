@@ -38,16 +38,16 @@ const IcoButton = ({
 	iconName,
 	size,
 	iconStyle,
-	theme,
+	theme = "light",
 	bg,
-	rounded,
-	title,
+	rounded = "10",
+	title = "Icon Button",
 	onClick,
 	...rest
 }: Props): JSX.Element => {
 	const clickable: boolean = onClick === undefined;
 
-	const roundness: string = rounded === "full" ? "full" : `${rounded || 10}`;
+	// const roundness: string = rounded === "full" ? "full" : `${rounded || 10}`;
 
 	const bgSize: string =
 		size === "lg"
@@ -89,7 +89,7 @@ const IcoButton = ({
 			bg={bg}
 			width={bgSize}
 			height={bgSize}
-			rounded={roundness}
+			rounded={rounded}
 			cursor={clickable ? "auto" : "pointer"}
 			onClick={onClick}
 			{...btnTheme}
@@ -101,8 +101,3 @@ const IcoButton = ({
 };
 
 export default IcoButton;
-
-IcoButton.defaultProps = {
-	theme: "light",
-	title: "Icon Button",
-};

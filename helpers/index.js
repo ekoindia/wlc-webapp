@@ -1,20 +1,15 @@
 export { fetcher } from "./apiHelper";
-export { dummyOrgDetails, fetchOrgDetails } from "./fetchOrgDetailsHelper";
+export {
+	/* dummyOrgDetails,  */ fetchOrgDetails,
+} from "./fetchOrgDetailsHelper";
 export { localStorageProvider } from "./localStorageProvider";
 export { RemoveFormatted, sendOtpRequest } from "./loginHelper";
+export { processTransactionData } from "./processTransactionData";
 export {
-	filterNarrationText,
-	getFormattedDateAndTime,
-	getNarrationText,
-	getTableProcessedData,
-	limitNarrationText,
-	processTransactionData,
-} from "./processData";
-export {
-	getAccordian,
 	getAccordianIcon,
 	getAmountStyle,
 	getArrowStyle,
+	getDescriptionStyle,
 	getLocationStyle,
 	getModalStyle,
 	getNameStyle,

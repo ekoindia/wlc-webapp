@@ -5,30 +5,37 @@ import { NetworkMenuWrapper } from "page-components/Admin/Network";
 export const getNameStyle = (name) => {
 	return (
 		<Flex align={"center"} gap="0.625rem">
-			<Box>
-				<Avatar
-					bg="accent.DEFAULT"
-					color="divider"
-					size={{ base: "sm", sm: "sm", md: "xs", lg: "sm" }}
-					name={(name || "").charAt(0)}
-					// src={item.link}
-				/>
-			</Box>
+			<Avatar
+				bg="accent.DEFAULT"
+				color="divider"
+				size={{ base: "sm", sm: "sm", md: "xs", lg: "sm" }}
+				name={(name || "").charAt(0)}
+				// src={item.link}
+			/>
 			<Box as="span">{name}</Box>
 		</Flex>
 	);
 };
 export const getStatusStyle = (status, tableName) => {
-	return (
-		<Flex justify={tableName === "Transactions" ? "end" : ""}>
+	return tableName === "History" && status === "Failed" ? (
+		<Flex justify="end">
 			<Tags
 				size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
-				px={"10px"}
-				borderRadius={tableName === "Transactions" ? "10" : "28"}
+				px="10px"
+				borderRadius="10"
 				status={status}
 			/>
 		</Flex>
-	);
+	) : tableName !== "History" ? (
+		<Flex>
+			<Tags
+				size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
+				px="10px"
+				borderRadius="28"
+				status={status}
+			/>
+		</Flex>
+	) : null;
 };
 export const getLocationStyle = (
 	location,
@@ -111,6 +118,14 @@ export const getAmountStyle = (amount, trx_type) => {
 				)}
 			</Flex>
 		)
+	);
+};
+
+export const getDescriptionStyle = (description) => {
+	return (
+		<Text whiteSpace="normal" overflowWrap="break-word">
+			{description}
+		</Text>
 	);
 };
 

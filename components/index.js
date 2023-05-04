@@ -5,6 +5,7 @@ import { Button } from "./Button";
 import { Calenders } from "./Calenders";
 import { Cards } from "./Cards";
 import { Currency } from "./Currency";
+import { DateView } from "./DateView";
 import { Divider } from "./Divider";
 import { EkoConnectWidget } from "./EkoConnectWidget";
 import { Headings } from "./Headings";
@@ -31,12 +32,11 @@ import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
 import { Tags } from "./Tags";
-import { Value } from "./Value";
 
 export {
+	DateView,
 	EkoConnectWidget,
 	Currency,
-	Value,
 	PaddingBox,
 	IcoButton,
 	Button,
