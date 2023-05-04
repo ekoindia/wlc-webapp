@@ -11,7 +11,6 @@ import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { DetailedStatementTable } from ".";
-
 /**
  * A <DetailedStatement> component
  * TODO: Write more description here
@@ -28,7 +27,6 @@ const DetailedStatement = () => {
 		from: "",
 		to: "DD/MM/YYYY",
 	});
-	console.log("search", search);
 
 	const handleApply = () => {
 		if (dateText.to === "YYYY/MM/DD" && dateText.from === "YYYY/MM/DD") {
@@ -44,7 +42,7 @@ const DetailedStatement = () => {
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history/recent_transaction/account_statement?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_recent=${search}&search_value=${cellnumber}&transaction_date_from=${dateText.from}&transaction_date_to=${dateText.to}`,
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction/account_statement?record_count=10&search_recent=${search}&search_value=${cellnumber}&transaction_date_from=${dateText.from}&transaction_date_to=${dateText.to}`,
 		"tf-req-method": "GET",
 	};
 
@@ -60,7 +58,6 @@ const DetailedStatement = () => {
 			headers
 		);
 	}, [search]);
-	console.log("data", data);
 	const detiledData = data?.data?.account_statement_details ?? [];
 	const detailTable = data?.data ?? [];
 	const agentname = detailTable?.agent_name ?? [];

@@ -1,6 +1,7 @@
 import { Avatar, Box, Circle, Flex, Select, Text } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ const TransferSeller = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
 	const [scspFrom, setScspFrom] = useState([]);
 	const [scspto, setScspTo] = useState([]);
 	const { userData } = useUser();
+	const { orgDetail } = useOrgDetailContext();
 	const [fromSellerid, setFromSellerid] = useState([]);
 
 	const handleFromChange = (event) => {
@@ -33,10 +35,6 @@ const TransferSeller = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
 	};
 
 	const body = {
-		initiator_id: "9451000001",
-		org_id: "1",
-		source: "WLC",
-		client_ref_id: "202301031354123456",
 		scspFrom: fromValue,
 		scspTo: toValue,
 		selectedTransferredCSPList: fromSellerid,
