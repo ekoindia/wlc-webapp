@@ -57,8 +57,8 @@ const LoginPanel = () => {
 						}
 						alt={orgDetail.app_name + " logo"}
 						pl={{ base: 4, md: "0" }}
-						mw={{ base: "100%", md: "28rem", "2xl": "43.75rem" }}
-						h={{ base: 16, "2xl": "4.5rem" }}
+						mw={{ base: "9rem", md: "14rem", "2xl": "19rem" }}
+						height={{ base: "2.2rem", md: 16 }}
 					/>
 				</Box>
 
