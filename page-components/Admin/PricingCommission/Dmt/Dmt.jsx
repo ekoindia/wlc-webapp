@@ -10,10 +10,10 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { Button, Icon, MultiSelect, Select } from "components";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useEffect, useRef, useState } from "react";
-
 /**
  * A <Dmt> component
  * TODO: Write more description here
@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from "react";
 
 const Dmt = () => {
 	const { userData } = useUser();
+	const { orgDetail } = useOrgDetailContext();
 	const [selected, setSelected] = useState("");
 	const [selectedArr, setSelectedArr] = useState([]);
 	const [iconValue, setIconValue] = useState("percent");
@@ -83,11 +84,6 @@ const Dmt = () => {
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },
 		body: {
-			initiator_id: "9451000001",
-			user_code: "10000020",
-			org_id: "1",
-			source: "WLC",
-			client_ref_id: "202301031354123456",
 			operation_type: selectedCommissionFor, //selectedCommissionFor
 			CspList: newSelectedArr,
 			operation: dmt,

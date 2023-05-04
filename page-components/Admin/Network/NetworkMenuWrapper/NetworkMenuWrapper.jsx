@@ -13,7 +13,8 @@ import {
 } from "@chakra-ui/react";
 import { Button, Menus } from "components";
 import { Endpoints } from "constants/EndPoints";
-import { useUser } from "contexts";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
+import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 
@@ -26,6 +27,8 @@ import { useState } from "react";
  */
 
 const NetworkMenuWrapper = (props) => {
+	const { userData } = useUser();
+	const { orgDetail } = useOrgDetailContext();
 	const { eko_code, account_status } = props;
 	const { onOpen, onClose } = useDisclosure();
 	const [reason, setReason] = useState("");
@@ -52,17 +55,12 @@ const NetworkMenuWrapper = (props) => {
 		},
 	];
 	const [isOpen, setOpen] = useState(false);
-	const { userData } = useUser();
 	const handleSave = () => {
-		console.log("Reason for marking inactive:", reason);
-
 		// API call
 		const body = {
-			initiator_id: "9911572989",
-			user_code: "99029899",
-			org_id: "1",
-			source: "WLC",
-			client_ref_id: "202301031354123456",
+			initiator_id: userData.accountDetails.mobile,
+			user_code: userData.accountDetails.code,
+			org_id: orgDetail.org_id,
 		};
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
@@ -74,9 +72,7 @@ const NetworkMenuWrapper = (props) => {
 			body: body,
 			token: userData.access_token,
 		})
-			.then((data) => {
-				console.log("data", data);
-				// Close the dialog box after the API call succeeds
+			.then(() => {
 				onClose();
 			})
 			.catch((error) => {
