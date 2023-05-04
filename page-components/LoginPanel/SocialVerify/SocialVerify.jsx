@@ -91,6 +91,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 				value={value}
 				invalid={invalid}
 				errorMsg={errorMsg}
+				radius={10}
 				labelStyle={{
 					color: "light",
 					pl: "0",
@@ -98,10 +99,10 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 					fontSize: { base: "sm", "2xl": "lg" },
 					fontWeight: "semibold",
 				}}
-				inputContStyle={{
-					h: { base: "3rem", "2xl": "4rem" },
-					pos: "relative",
-				}}
+				// inputContStyle={{
+				// 	h: { base: "3rem", "2xl": "4rem" },
+				// 	pos: "relative",
+				// }}
 				isNumInput={true}
 				inputProps={{ maxLength: 12 }}
 				onFocus={() => {
