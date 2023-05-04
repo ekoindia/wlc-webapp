@@ -27,7 +27,7 @@ const OtpInput = ({
 	const inputbg = inputStyle?.background || " ";
 
 	return (
-		<Flex minW={"10rem"} columnGap={"5px"} {...containerStyle}>
+		<Flex minW={"10rem"} columnGap={"10px"} wrap="wrap" {...containerStyle}>
 			<PinInput
 				autoFocus
 				type="number"

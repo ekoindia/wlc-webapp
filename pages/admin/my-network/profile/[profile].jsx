@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, Layout } from "components";
+import { BreadcrumbsWrapper, Layout, PaddingBox } from "components";
 import { NetworkObject } from "constants";
 
 import Head from "next/head";
@@ -10,12 +10,14 @@ const Profile = () => {
 	return (
 		<>
 			<Head>
-				<title>Profile | Eko API Marketplace</title>
+				<title>Seller Details</title>
 			</Head>
-			<Layout propComp={comp}>
-				<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
-					<ProfilePanel setComp={setComp} />
-				</BreadcrumbsWrapper>
+			<Layout /* propComp={comp} */>
+				<PaddingBox>
+					<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+						<ProfilePanel setComp={setComp} />
+					</BreadcrumbsWrapper>
+				</PaddingBox>
 			</Layout>
 		</>
 	);

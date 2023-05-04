@@ -19,7 +19,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 	const [timer, setTimer] = useState(30);
 	const { login } = useUser();
 	const { orgDetail } = useOrgDetailContext();
-	const [loading, submitLogin] = useLogin(login);
+	const [loading, submitLogin] = useLogin(login, setStep);
 	const toast = useToast();
 
 	const timeOutCallback = useCallback(
@@ -104,17 +104,22 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 				</Flex>
 			</Flex>
 
-			<OtpInput
-				inputStyle={{
-					w: "95px",
-					h: { base: 12, "2xl": 16 },
-					fontSize: { base: "sm", "2xl": "2xl" },
-				}}
-				containerStyle={{
-					justifyContent: "space-between",
-				}}
-				onChange={setOtp}
-			/>
+			<Flex w="full" align="center" justify="center">
+				<OtpInput
+					inputStyle={{
+						w: { base: 12, md: "72px", "2xl": "96px" },
+						h: { base: 12, "2xl": 16 },
+						fontSize: { base: "sm", "2xl": "2xl" },
+					}}
+					containerStyle={
+						{
+							// justifyContent: "space-between",
+						}
+					}
+					length={4}
+					onChange={setOtp}
+				/>
+			</Flex>
 
 			<Flex
 				justify="center"

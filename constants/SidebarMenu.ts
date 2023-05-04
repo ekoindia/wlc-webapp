@@ -75,7 +75,7 @@ export const sidebarMenu: sidebarMenuType[] = [
 			{
 				icon: "view-transaction-history",
 				label: "Transaction History",
-				link: "/transaction-history",
+				link: "/history",
 			},
 			{
 				icon: "manage",

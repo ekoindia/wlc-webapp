@@ -1,18 +1,24 @@
-import { BreadcrumbsWrapper, Layout } from "components";
+import { BreadcrumbsWrapper, Layout, PaddingBox } from "components";
 import { TransactionHistoryObject } from "constants";
+import Head from "next/head";
 import { AccountStatement } from "page-components/Admin";
 
 const AccountStatementPage = () => {
 	return (
-		<div>
+		<>
+			<Head>
+				<title>Account Statement</title>
+			</Head>
 			<Layout>
-				<BreadcrumbsWrapper
-					BreadcrumbsObject={TransactionHistoryObject}
-				>
-					<AccountStatement />
-				</BreadcrumbsWrapper>
+				<PaddingBox>
+					<BreadcrumbsWrapper
+						BreadcrumbsObject={TransactionHistoryObject}
+					>
+						<AccountStatement />
+					</BreadcrumbsWrapper>
+				</PaddingBox>
 			</Layout>
-		</div>
+		</>
 	);
 };
 
