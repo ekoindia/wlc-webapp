@@ -8,6 +8,7 @@ import { Currency } from "./Currency";
 import { DateView } from "./DateView";
 import { Divider } from "./Divider";
 import { EkoConnectWidget } from "./EkoConnectWidget";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
 import { Icon } from "./Icon";
@@ -36,6 +37,7 @@ import { Tags } from "./Tags";
 export {
 	DateView,
 	EkoConnectWidget,
+	ErrorBoundary,
 	Currency,
 	PaddingBox,
 	IcoButton,
