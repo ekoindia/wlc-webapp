@@ -32,7 +32,7 @@ const LoginPanel = () => {
 				// justifyContent="center"
 				// align="center"
 				justifyItems="center"
-				w={{ base: "100%", md: "30rem", "2xl": "43.75rem" }}
+				w={{ base: "100%", md: "28rem", "2xl": "43.75rem" }}
 				h={{ base: "100%", md: "initial" }}
 			>
 				{/* Logo */}
@@ -67,7 +67,7 @@ const LoginPanel = () => {
 					maxW={{ base: "90vw", sm: "30rem", lg: "none" }}
 					w={{
 						base: "90%",
-						md: "30rem",
+						md: "28rem",
 						"2xl": "43.75rem",
 					}}
 					h={{ base: "31rem", "2xl": "44.3rem" }}
