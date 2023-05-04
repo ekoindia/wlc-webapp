@@ -148,6 +148,9 @@ function getSessions() {
 	return userData;
 }
 
+/**
+ * Clears all the auth tokens from the session storage.
+ */
 function clearAuthTokens() {
 	sessionStorage.removeItem("access_token");
 	sessionStorage.removeItem("refresh_token");
@@ -156,21 +159,25 @@ function clearAuthTokens() {
 	sessionStorage.clear();
 }
 
+/**
+ * Revoke server-side refresh-token for this session. Used during logout.
+ * @param {*} user_id	The User-ID of the user
+ */
 function revokeSession(user_id) {
-	const refresh_token = sessionStorage.getItem("refresh_token");
 	if (user_id === 1) {
 		console.log("REFRESH TOKEN ALREADY REVOKED");
 		return;
 	}
 
+	const refresh_token = sessionStorage.getItem("refresh_token");
 	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
 		body: {
 			user_id: user_id,
 			refresh_token: refresh_token,
 		},
-		timeout: 60000,
+		timeout: 5000,
 	})
-		.then((data) => console.log("REFRESH TOKEN REVOKED", data))
+		// .then((data) => console.log("REFRESH TOKEN REVOKED: ", data))
 		.catch((err) => console.log("REFRESH TOKEN REVOKE ERROR: ", err));
 }
 
