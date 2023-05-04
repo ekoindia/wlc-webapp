@@ -1,6 +1,6 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { RouteProtecter } from "components";
+import { ErrorBoundary, RouteProtecter } from "components";
 import { OrgDetailProvider, UserProvider, WalletProvider } from "contexts";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
@@ -59,11 +59,17 @@ export default function App({ Component, pageProps, router }) {
 														localStorageProvider,
 												}}
 											>
-												<main
-													className={inter.className}
-												>
-													<Component {...pageProps} />
-												</main>
+												<ErrorBoundary>
+													<main
+														className={
+															inter.className
+														}
+													>
+														<Component
+															{...pageProps}
+														/>
+													</main>
+												</ErrorBoundary>
 											</SWRConfig>
 										</RouteProtecter>
 									</WalletProvider>
