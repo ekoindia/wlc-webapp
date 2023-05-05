@@ -176,12 +176,12 @@ const QueryWidget = () => {
 											base: "",
 											md: "1px solid white",
 										}}
-										_hover={{ bg: hoverBg }}
+										color="accent.DEFAULT"
+										_hover={{ bg: hoverBg, color: "white" }}
 										icon={
 											<Icon
 												name="chat-outline"
 												h={{ base: "18px", md: "20px" }}
-												color="accent.DEFAULT"
 											/>
 										}
 										borderRadius={{
@@ -201,10 +201,7 @@ const QueryWidget = () => {
 											xl: "190px",
 										}}
 									>
-										<Text
-											fontSize={{ base: "sm" }}
-											color="accent.DEFAULT"
-										>
+										<Text fontSize={{ base: "sm" }}>
 											Write to us
 										</Text>
 									</Button>

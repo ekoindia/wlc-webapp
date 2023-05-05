@@ -60,14 +60,7 @@ const RecentTrxnWidget = () => {
 		<Flex
 			direction="column"
 			background="white"
-			maxH={{
-				base: "auto",
-				md: "387px",
-			}}
-			minH={{
-				base: "auto",
-				md: "387px",
-			}}
+			h={{ base: "auto", md: "387px" }}
 			p="5"
 			borderRadius="10px"
 			m={{ base: "16px", md: "auto" }}
