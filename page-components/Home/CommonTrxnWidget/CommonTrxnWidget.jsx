@@ -30,10 +30,7 @@ const CommonTrxnWidget = () => {
 
 	const showAllButton = useBreakpointValue({
 		base: interaction_list.length > 3 && !showAll,
-		sm: interaction_list.length > 3 && !showAll,
 		md: false,
-		lg: false,
-		xl: false,
 	});
 
 	const showTransactions = showAll
@@ -46,7 +43,7 @@ const CommonTrxnWidget = () => {
 	return (
 		<div>
 			<Flex
-				minH={{
+				h={{
 					base: "auto",
 					md: "387px",
 				}}
@@ -62,8 +59,8 @@ const CommonTrxnWidget = () => {
 					</Text>
 				</Box>
 				<SimpleGrid
-					columns={{ base: 3, sm: 3, md: 3 }}
-					spacing={{ md: "4", lg: "4", xl: "14" }}
+					columns="3"
+					spacing={{ base: "4", md: "12" }}
 					justifyContent="center"
 					textAlign="center"
 					alignItems="flex-start"
@@ -137,6 +134,7 @@ const CommonTrxnWidget = () => {
 						justifyContent="center"
 						alignItems="center"
 						textAlign="center"
+						pt={{ base: "24px", md: "0px" }}
 					>
 						<Button
 							onClick={() => setShowAll(true)}

@@ -1,4 +1,4 @@
-import { Flex, GridItem, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Flex, GridItem, Text } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { useUser } from "contexts/UserContext";
 /**
@@ -12,44 +12,17 @@ import { useUser } from "contexts/UserContext";
 const QueryWidget = () => {
 	const { userData } = useUser();
 	const data = userData?.userDetails?.contacts ?? [];
-	const hoverBg = useBreakpointValue({
-		base: "white",
-		md: "transparent",
-	});
+
 	return (
 		<div>
 			<GridItem>
 				<Flex
-					minH={{
+					h={{
 						base: "auto",
-						sm: "200px",
 						md: "387px",
-						lg: "300px",
-						xl: "387px",
-					}}
-					maxH={{
-						base: "auto",
-						sm: "200px",
-						md: "387px",
-						lg: "400px",
-						xl: "387px",
-					}}
-					minW={{
-						base: "100%",
-						sm: "100%",
-						md: "380px",
-						lg: "360px",
-						xl: "350px",
-					}}
-					maxW={{
-						base: "100%",
-						sm: "100%",
-						md: "1000px",
-						lg: "400px",
-						xl: "580px",
 					}}
 					borderRadius={{
-						base: "0px 0px 0px 0px",
+						base: "0px",
 						sm: "0px 0px 2px 2px",
 						md: "10px",
 					}}
@@ -61,7 +34,6 @@ const QueryWidget = () => {
 					direction={"column"}
 					align={{
 						base: "flex-start",
-						sm: "flex-start",
 						md: "center",
 					}}
 					rowGap={{
@@ -118,14 +90,19 @@ const QueryWidget = () => {
 					>
 						{data[0]?.cellnumber ? (
 							<Flex>
-								<Icon
-									h={{ base: "32px", md: "32px" }}
-									name="phone-circle-outline"
-									color="white"
-									display="flex"
-									mt={{ base: "2px", md: "23px" }}
-									mr={{ base: "4px", md: "8px" }}
-								/>
+								<a
+									href={`tel:${data[0].cellnumber}`}
+									target="_blank"
+								>
+									<Icon
+										h={{ base: "32px", md: "32px" }}
+										name="phone-circle-outline"
+										color="white"
+										display="flex"
+										mt={{ base: "2px", md: "23px" }}
+										mr={{ base: "4px", md: "8px" }}
+									/>
+								</a>
 								<Flex direction={"column"}>
 									<Text
 										color={"white"}
@@ -133,7 +110,7 @@ const QueryWidget = () => {
 											base: "0.700rem",
 											md: "18px",
 										}}
-										textAlign={{ base: "auto", md: "auto" }}
+										textAlign="auto"
 										paddingLeft={{
 											base: "0px",
 											md: "15px",
@@ -141,7 +118,10 @@ const QueryWidget = () => {
 									>
 										Call us on
 									</Text>
-									<a href={`tel:${data[0].cellnumber}`}>
+									<a
+										href={`tel:${data[0].cellnumber}`}
+										target="_blank"
+									>
 										<Text
 											as="b"
 											color={"white"}
@@ -169,15 +149,18 @@ const QueryWidget = () => {
 
 						{data[0]?.email ? (
 							<Flex direction={"column"}>
-								<a href={`mailto:${data[0].email}`}>
+								<a
+									href={`mailto:${data[0].email}`}
+									target="_blank"
+								>
 									<Button
 										bg={"white"}
-										border={{
-											base: "",
-											md: "1px solid white",
-										}}
+										border="1px solid white"
 										color="accent.DEFAULT"
-										_hover={{ bg: hoverBg, color: "white" }}
+										_hover={{
+											bg: "transparent",
+											color: "white",
+										}}
 										icon={
 											<Icon
 												name="chat-outline"
@@ -191,14 +174,10 @@ const QueryWidget = () => {
 										h={{
 											base: "40px",
 											md: "48px",
-											lg: "44px",
-											xl: "48px",
 										}}
 										w={{
 											base: "120px",
 											md: "190px",
-											lg: "180px",
-											xl: "190px",
 										}}
 									>
 										<Text fontSize={{ base: "sm" }}>

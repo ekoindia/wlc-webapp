@@ -51,41 +51,13 @@ const BillPaymentWidget = () => {
 		<div>
 			{isCardVisible && (
 				<Flex
-					minH={{
+					h={{
 						base: "auto",
-						sm: "auto",
 						md: "387px",
-						lg: "300px",
-						xl: "387px",
 					}}
-					maxH={{
-						base: "auto",
-						sm: "auto",
-						md: "387px",
-						lg: "400px",
-						xl: "400px",
-					}}
-					minW={{
-						base: "auto",
-						sm: "auto",
-						md: "380px",
-						lg: "360px",
-						xl: "350px",
-					}}
-					maxW={{
-						base: "auto",
-						sm: "auto",
-						md: "1000px",
-						lg: "400px",
-						xl: "580px",
-					}}
-					borderRadius={{
-						base: "10px 10px 10px 10px",
-						sm: "10px 10px 10px 10px",
-						md: "10px",
-					}}
-					background={"white"}
-					direction={"column"}
+					borderRadius="10px"
+					background="white"
+					direction="column"
 					// align={{
 					// 	base: "flex-start",
 					// }}

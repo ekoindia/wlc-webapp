@@ -31,14 +31,14 @@ const Home = () => {
 				width={"100%"}
 			>
 				<GridItem>
-					<RecentTrxnWidget />
+					<CommonTrxnWidget />
 				</GridItem>
 				{/*<KycWidget />*/}
 				<GridItem>
-					<CommonTrxnWidget />
+					<QueryWidget />
 				</GridItem>
 				<GridItem>
-					<QueryWidget />
+					<RecentTrxnWidget />
 				</GridItem>
 				<GridItem>
 					<BillPaymentWidget />
