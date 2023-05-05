@@ -109,6 +109,12 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 							: orgDetail.org_name || ""
 					}
 					receipt-logo={orgDetail.logo || ""}
+					analytics-partner-tracking-id={
+						process.env.NEXT_PUBLIC_WIDGET_GA_ID || ""
+					}
+					analytics-partner-user-id={
+						userData.accountDetails.code || ""
+					}
 				></tf-wlc-widget>
 				{/* dark-theme={true} autolink_params={autolinkParams} zoho_id={userData.userDetails.zoho_id} */}
 			</ErrorBoundary>
