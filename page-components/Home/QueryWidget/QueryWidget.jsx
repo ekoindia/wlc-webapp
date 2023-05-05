@@ -16,17 +16,6 @@ const QueryWidget = () => {
 		base: "white",
 		md: "transparent",
 	});
-
-	function handleContact() {
-		// Replace with the URL of your mailbox
-		const mailboxUrl = `mailto:${data[0].email}`;
-		window.location.href = mailboxUrl;
-	}
-
-	if (!(data && data.length > 0)) {
-		return null;
-	}
-
 	return (
 		<div>
 			<GridItem>
@@ -180,39 +169,43 @@ const QueryWidget = () => {
 
 						{data[0]?.email ? (
 							<Flex direction={"column"}>
-								<Button
-									bg={"white"}
-									border={{ base: "", md: "1px solid white" }}
-									_hover={{ bg: hoverBg }}
-									onClick={handleContact}
-									icon={
-										<Icon
-											name="chat-outline"
-											h={{ base: "18px", md: "20px" }}
-											color="accent.DEFAULT"
-										/>
-									}
-									borderRadius={{ base: "5px", md: "10px" }}
-									h={{
-										base: "40px",
-										md: "48px",
-										lg: "44px",
-										xl: "48px",
-									}}
-									w={{
-										base: "120px",
-										md: "190px",
-										lg: "180px",
-										xl: "190px",
-									}}
-								>
-									<Text
-										fontSize={{ base: "sm" }}
+								<a href={`mailto:${data[0].email}`}>
+									<Button
+										bg={"white"}
+										border={{
+											base: "",
+											md: "1px solid white",
+										}}
 										color="accent.DEFAULT"
+										_hover={{ bg: hoverBg, color: "white" }}
+										icon={
+											<Icon
+												name="chat-outline"
+												h={{ base: "18px", md: "20px" }}
+											/>
+										}
+										borderRadius={{
+											base: "5px",
+											md: "10px",
+										}}
+										h={{
+											base: "40px",
+											md: "48px",
+											lg: "44px",
+											xl: "48px",
+										}}
+										w={{
+											base: "120px",
+											md: "190px",
+											lg: "180px",
+											xl: "190px",
+										}}
 									>
-										Write to us
-									</Text>
-								</Button>
+										<Text fontSize={{ base: "sm" }}>
+											Write to us
+										</Text>
+									</Button>
+								</a>
 							</Flex>
 						) : null}
 					</Flex>

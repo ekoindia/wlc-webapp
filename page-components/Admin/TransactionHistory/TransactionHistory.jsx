@@ -1,5 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { Headings, SearchBar } from "components";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
+import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import { TransactionHistoryTable } from ".";
@@ -12,6 +14,8 @@ import { TransactionHistoryTable } from ".";
  */
 
 const TransactionHistory = () => {
+	const { userData } = useUser();
+	const { orgDetail } = useOrgDetailContext();
 	const [search, setSearch] = useState("");
 
 	function onChangeHandler(e) {
@@ -22,7 +26,7 @@ const TransactionHistory = () => {
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=${search}`,
+		"tf-req-uri": `/network/agents/transaction_history?record_count=10&search_value=${search}`,
 		"tf-req-method": "GET",
 	};
 	const { data, error, isLoading, mutate } = useRequest({

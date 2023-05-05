@@ -50,13 +50,7 @@ const UpdatePersonalInfo = () => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	const data = {
-		initiator_id: "9451000001",
-		user_code: "10000020",
-		org_id: "1",
-		source: "WLC",
-		client_ref_id: "202301031354123456",
-	};
+	const data = {};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -73,7 +67,7 @@ const UpdatePersonalInfo = () => {
 			body: JSON.stringify({ ...data, ...formData }),
 		})
 			.then((response) => {
-				console.log(response, "njdjnjwn");
+				console.log(response);
 			})
 			.catch((error) => {
 				console.log(error);

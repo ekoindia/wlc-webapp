@@ -13,13 +13,13 @@ export const UserType = {
 
 export const UserTypeLabel = {
 	1: "Distributor",
-	2: "Retailer",
-	3: "iRetailer",
+	2: "Seller",
+	3: "iSeller",
 	4: "Cash Executive", // FOS / CCE / Cash Executive / EkoStar?
 	5: "Sales Executive",
-	6: "Sub-Retailer",
+	6: "Sub-Seller",
 	7: "Super-Distributor",
-	8: "Payment Retailer",
+	8: "Payment Seller",
 	10: "Personal User", // Customer
 	23: "Enterprise Partner", // API Partner Dashboard
 };

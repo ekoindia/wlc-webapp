@@ -11,6 +11,7 @@ import { Button, Cards, IconButtons } from "components";
 import Router from "next/router";
 
 const AddressPane = ({ rowdata: addressdata }) => {
+	console.log("addressdata", addressdata);
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 	return (
 		<Cards>
@@ -31,9 +32,7 @@ const AddressPane = ({ rowdata: addressdata }) => {
 					mb={{ base: 26, md: 3, xl: 26 }}
 					fontSize={{ base: 16, md: 14, lg: 16 }}
 				>
-					<Text>A 615, Gali No. 8, Jaitpur Extension Part 2</Text>
-					<Text>Badarpur, New Delhi</Text>
-					<Text>110044</Text>
+					<Text>{addressdata.address}</Text>
 				</Box>
 				<Box>
 					<Box mt={{ base: 26, md: 2, xl: 26 }}>

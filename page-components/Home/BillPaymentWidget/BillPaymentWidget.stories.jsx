@@ -1,9 +1,9 @@
-import RecentTrxnCard from "./RecentTrxnCard";
+import BillPaymentWidget from "./BillPaymentWidget";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "PageComponent/Home/RecentTrxnCard",
-	component: RecentTrxnCard,
+	title: "Component/BillPaymentWidget",
+	component: BillPaymentWidget,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +46,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <RecentTrxnCard {...args} />;
+const Template = (args) => <BillPaymentWidget {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

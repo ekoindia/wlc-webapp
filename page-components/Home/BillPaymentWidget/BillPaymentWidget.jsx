@@ -6,14 +6,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 /**
- * A <BillPaymentCard> component
- * Recharge and bill payment card in home
+ * A <BillPaymentWidget> component
+ * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<BillPaymentCard></BillPaymentCard>` TODO: Fix example
+ * @example	`<BillPaymentWidget></BillPaymentWidget>` TODO: Fix example
  */
-const BillPaymentCard = () => {
+const BillPaymentWidget = () => {
 	const router = useRouter();
 	const [isCardVisible, setIsCardVisible] = useState(false);
 	const [data, setData] = useState([]);
@@ -24,12 +24,10 @@ const BillPaymentCard = () => {
 		if (!role_tx_list[TransactionIds.BILL_PAYMENT]) {
 			return;
 		}
-
 		//getting group_interaction_ids from recharge & bill payment
 		let group_interaction_ids =
 			role_tx_list[TransactionIds.BILL_PAYMENT].group_interaction_ids;
-
-		// str to array of numbers
+		// str to array
 		group_interaction_ids = group_interaction_ids.split(",").map(Number);
 
 		const bbps_tx_list = [];
@@ -42,15 +40,12 @@ const BillPaymentCard = () => {
 				});
 			}
 		});
-
-		setData(bbps_tx_list);
+		setData(bbps_tx_list); // set the new array to the data state
 		setIsCardVisible(bbps_tx_list.length > 0);
 	}, [role_tx_list]);
-
 	const handleIconClick = (id) => {
 		router.push(`transaction/${TransactionIds.BILL_PAYMENT}/${id}`);
 	};
-
 	return (
 		<div>
 			{isCardVisible && (
@@ -122,6 +117,7 @@ const BillPaymentCard = () => {
 					<SimpleGrid
 						columns={{ base: 4, sm: 4, md: 4 }}
 						spacing={{ base: "3", lg: "8", xl: "8" }}
+						alignItems="flex-start"
 					>
 						{data.map((transaction, index) => (
 							<Box
@@ -200,4 +196,4 @@ const BillPaymentCard = () => {
 	);
 };
 
-export default BillPaymentCard;
+export default BillPaymentWidget;
