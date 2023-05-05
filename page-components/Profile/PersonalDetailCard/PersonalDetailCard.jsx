@@ -25,7 +25,7 @@ const PersonalDetailCard = () => {
 	return (
 		<Flex
 			w="100%"
-			h={{ base: "240px", sm: "350px", md: "387px", lg: "400px" }}
+			h={{ base: "400px" }}
 			bg="white"
 			direction="column"
 			borderRadius="10px"

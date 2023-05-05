@@ -21,7 +21,6 @@ const Profile = ({ prop1, ...rest }) => {
 				base: "repeat(auto-fit,minmax(280px,0.90fr))",
 				sm: "repeat(auto-fit,minmax(380px,0.90fr))",
 				md: "repeat(auto-fit,minmax(360px,1fr))",
-				// lg: "repeat(auto-fit,minmax(360px,1fr))",
 				xl: "repeat(auto-fit,minmax(440px,1fr))",
 			}}
 			justifyContent="center"
@@ -41,7 +40,6 @@ const Profile = ({ prop1, ...rest }) => {
 			<GridItem>
 				<PersonalDetailCard />
 			</GridItem>
-			<GridItem>{/* <ProfileWidget /> */}</GridItem>
 		</Grid>
 	);
 };
