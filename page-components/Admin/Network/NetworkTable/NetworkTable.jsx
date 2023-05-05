@@ -26,7 +26,7 @@ const NetworkTable = ({
 			sorting: true,
 			show: "Tag",
 		},
-		{ name: "eko_code", field: "Eko Code", sorting: true },
+		{ name: "eko_code", field: "User Code", sorting: true },
 		{
 			name: "location",
 			field: "Location",

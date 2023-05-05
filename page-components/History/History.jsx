@@ -39,8 +39,6 @@ const History = () => {
 	};
 	const limit = 25; // Page size
 	const body = {
-		locale: "en",
-		user_id: 8888888888,
 		interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
 		start_index: currentPage * limit,
 		limit: limit,

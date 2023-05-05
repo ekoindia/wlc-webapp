@@ -5,7 +5,7 @@ const Invoicing = () => {
 	return (
 		<>
 			<Head>
-				<title>Invoicing | Eko API Marketplace</title>
+				<title>Invoicing</title>
 			</Head>
 			<Layout>
 				<h1>Add Page Content Here</h1>
