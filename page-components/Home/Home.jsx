@@ -33,15 +33,19 @@ const Home = () => {
 				<GridItem>
 					<CommonTrxnWidget />
 				</GridItem>
+
 				{/*<KycWidget />*/}
+
 				<GridItem>
-					<QueryWidget />
+					<BillPaymentWidget />
 				</GridItem>
+
 				<GridItem>
 					<RecentTrxnWidget />
 				</GridItem>
+
 				<GridItem>
-					<BillPaymentWidget />
+					<QueryWidget />
 				</GridItem>
 			</Grid>
 		</>
