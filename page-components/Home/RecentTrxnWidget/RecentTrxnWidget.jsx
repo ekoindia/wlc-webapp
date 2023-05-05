@@ -1,7 +1,6 @@
 import { Avatar, Box, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { TransactionTypes } from "constants";
-import { transaction_history_mock } from "constants/transaction_history_mock";
 import { useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
@@ -19,40 +18,45 @@ const RecentTrxnWidget = () => {
 	const router = useRouter();
 	const { userData } = useUser();
 	const [data, setData] = useState([]);
-	const limit = 10;
-	const body = {
-		interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
-		start_index: 0,
-		limit: limit,
-	};
+	const limit = useBreakpointValue({
+		base: 5,
+		md: 10,
+	});
+
 	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
-			headers: {
-				"Content-Type": "application/json",
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-method": "POST",
+			body: {
+				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
+				start_index: 0,
+				limit: limit,
 			},
-			body: body,
 			token: userData.access_token,
-		})
-			.then((data) => {
-				setData(data);
-			})
-			.catch((error) => {
-				console.error("📡 Fetch Error:", error);
+		}).then((data) => {
+			const tx_list = (data?.data?.transaction_list ?? []).map((tx) => {
+				const amt = tx.amount_dr || tx.amount_cr || 0;
+				return {
+					tid: tx.tid,
+					name: tx.tx_name,
+					desc:
+						tx.tx_name +
+						(amt ? ` of ₹${amt}` : "") +
+						(tx.customer_mobile
+							? ` for ${tx.customer_mobile}`
+							: ""),
+				};
 			});
-	});
-	const transactionList = data?.data?.transaction_list ?? [];
-	console.log("transactionList", transactionList);
-	const mockdata = transaction_history_mock?.data?.transaction_list ?? [];
+			setData(tx_list);
+			console.log(
+				"DATA::::::: ",
+				data?.data?.transaction_list ?? [],
+				tx_list
+			);
+		});
+	}, []);
 
-	const handleshowall = (id) => {
-		router.push(`transaction-history?search=${id}`);
+	const handleShowHistory = (id) => {
+		router.push("/history" + (id ? `?search=${id}` : ""));
 	};
-	const transactionsToDisplay = useBreakpointValue({
-		base: mockdata.slice(0, 5),
-		md: mockdata,
-	});
 
 	return (
 		<Flex
@@ -69,7 +73,7 @@ const RecentTrxnWidget = () => {
 					<Text
 						as="b"
 						color="primary.DEFAULT"
-						onClick={handleshowall}
+						onClick={() => handleShowHistory()}
 						cursor="pointer"
 						display={{ base: "none", md: "block" }}
 					>
@@ -97,14 +101,14 @@ const RecentTrxnWidget = () => {
 				rowGap={{ base: "19px", md: "10px" }}
 				mt="20px"
 			>
-				{transactionsToDisplay.map((item) => (
-					<Flex key={item.id}>
+				{data.map((tx) => (
+					<Flex key={tx.tid}>
 						<Flex>
 							<Avatar
 								h={{ base: "42px", md: "56px" }}
 								w={{ base: "42px", md: "56px" }}
 								border="2px solid #D2D2D2"
-								name={item.tx_name}
+								name={tx.name}
 							/>
 						</Flex>
 						<Flex
@@ -118,28 +122,30 @@ const RecentTrxnWidget = () => {
 								<Text
 									fontSize={{ base: "xs", md: "sm" }}
 									fontWeight="medium"
+									noOfLines={1}
 								>
-									{item.recipient_mobile
-										? `AePS Cashout to xxxxxx${item.recipient_mobile.slice(
-												-4
-										  )}`
-										: "No recipient mobile available"}
+									{tx.desc}
 								</Text>
 
 								<Flex
 									alignItems="baseline"
 									fontSize={{ base: "xs", xl: "xs" }}
 								>
-									<Text fontWeight="normal" color="light">
+									<Text
+										fontWeight="normal"
+										color="light"
+										noOfLines={1}
+									>
 										Transaction ID:
 									</Text>
-									<Text ml="1">{item.tid}</Text>
+									<Text ml="1">{tx.tid}</Text>
 								</Flex>
 							</Flex>
 							<Flex
 								justifyContent="space-between"
 								alignItems="center"
-								onClick={() => handleshowall(item.tid)}
+								ml={1}
+								onClick={() => handleShowHistory(tx.tid)}
 								cursor="pointer"
 							>
 								<Text
@@ -168,7 +174,7 @@ const RecentTrxnWidget = () => {
 				py="15px"
 			>
 				<Button
-					onClick={handleshowall}
+					onClick={() => handleShowHistory()}
 					justifyContent="center"
 					size="md"
 				>
