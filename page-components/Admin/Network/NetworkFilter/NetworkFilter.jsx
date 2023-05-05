@@ -35,7 +35,7 @@ const NetworkFilter = ({ filter, setFilter }) => {
 			title: "Filter by profile type",
 			name: "agentType",
 			options: [
-				{ label: "iMerchant", value: "icsp" },
+				{ label: "iSeller", value: "icsp" },
 				{ label: "Seller", value: "csp" },
 				{ label: "Distributer", value: "scsp" },
 			],

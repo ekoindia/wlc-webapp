@@ -33,8 +33,6 @@ const AddressPane = ({ rowdata: addressdata }) => {
 					fontSize={{ base: 16, md: 14, lg: 16 }}
 				>
 					<Text>{addressdata.address}</Text>
-					<Text>Badarpur, New Delhi</Text>
-					<Text>110044</Text>
 				</Box>
 				<Box>
 					<Box mt={{ base: 26, md: 2, xl: 26 }}>

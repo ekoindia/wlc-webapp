@@ -50,13 +50,7 @@ const UpdatePersonalInfo = () => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
-	const data = {
-		initiator_id: "9451000001",
-		user_code: "10000020",
-		org_id: "1",
-		source: "WLC",
-		client_ref_id: "202301031354123456",
-	};
+	const data = {};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -73,7 +67,7 @@ const UpdatePersonalInfo = () => {
 			body: JSON.stringify({ ...data, ...formData }),
 		})
 			.then((response) => {
-				console.log(response, "njdjnjwn");
+				console.log(response);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -387,15 +381,15 @@ const UpdatePersonalInfo = () => {
 													"2xl": "0.3rem",
 												},
 											}}
-											inputContStyle={{
-												h: {
-													base: "3rem",
-													"2xl": "3rem",
-												},
-												w: "100%",
-												pos: "relative",
-												alignItems: "center",
-											}}
+											// inputContStyle={{
+											// 	h: {
+											// 		base: "3rem",
+											// 		"2xl": "3rem",
+											// 	},
+											// 	w: "100%",
+											// 	pos: "relative",
+											// 	alignItems: "center",
+											// }}
 										/>
 									</Box>
 									<Box
@@ -411,7 +405,7 @@ const UpdatePersonalInfo = () => {
 											label="Middle Name"
 											name="middle_name"
 											// value={formData.middleName}
-											placeholder={""}
+											// placeholder={""}
 											// invalid={invalid}
 											// errorMsg={errorMsg}
 											// mb={{ base: 10, "2xl": "4.35rem" }}
@@ -426,11 +420,11 @@ const UpdatePersonalInfo = () => {
 													"2xl": "0.3rem",
 												},
 											}}
-											inputContStyle={{
-												h: "3rem",
-												w: "100%",
-												pos: "relative",
-											}}
+											// inputContStyle={{
+											// 	h: "3rem",
+											// 	w: "100%",
+											// 	pos: "relative",
+											// }}
 										/>
 									</Box>
 									<Box
@@ -462,14 +456,14 @@ const UpdatePersonalInfo = () => {
 													"2xl": "0.3rem",
 												},
 											}}
-											inputContStyle={{
-												h: {
-													base: "3rem",
-													"2xl": "3rem",
-												},
-												w: "100%",
-												pos: "relative",
-											}}
+											// inputContStyle={{
+											// 	h: {
+											// 		base: "3rem",
+											// 		"2xl": "3rem",
+											// 	},
+											// 	w: "100%",
+											// 	pos: "relative",
+											// }}
 										/>
 									</Box>
 								</Flex>
@@ -630,7 +624,7 @@ const UpdatePersonalInfo = () => {
 									>
 										<Input
 											label="Shop Name"
-											placeholder={"Alam Store"}
+											// placeholder={"Alam Store"}
 											name="shop_name"
 											// value={formData.shopName}
 											// invalid={invalid}
@@ -647,11 +641,11 @@ const UpdatePersonalInfo = () => {
 													"2xl": "0.3rem",
 												},
 											}}
-											inputContStyle={{
-												h: "3rem",
-												w: "100%",
-												pos: "relative",
-											}}
+											// inputContStyle={{
+											// 	h: "3rem",
+											// 	w: "100%",
+											// 	pos: "relative",
+											// }}
 										/>
 									</Box>
 									<Box

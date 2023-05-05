@@ -1,8 +1,9 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Divider, Flex, Text } from "@chakra-ui/react";
+import { Icon } from "components/Icon";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useMenuContext } from "contexts/MenuContext";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 /**
  * A <ManageMyAccountCard> component
@@ -16,9 +17,8 @@ const ManageMyAccountCard = () => {
 	const { interactions } = useMenuContext();
 	const router = useRouter();
 	const [data, setData] = useState([]);
-	console.log("data", data);
 	const { role_tx_list } = interactions;
-	console.log("role_tx_list", role_tx_list[TransactionIds.MANAGE_MY_ACCOUNT]);
+	const dataLength = data.length;
 
 	useEffect(() => {
 		if (!role_tx_list[TransactionIds.MANAGE_MY_ACCOUNT]) {
@@ -28,18 +28,19 @@ const ManageMyAccountCard = () => {
 		let group_interaction_ids =
 			role_tx_list[TransactionIds.MANAGE_MY_ACCOUNT]
 				.group_interaction_ids;
+
 		// str to array
 		group_interaction_ids = group_interaction_ids.split(",").map(Number);
 
-		const temp = []; // create a new array to store the new data
+		const mma_tx_list = []; // storing transaction list
 
 		group_interaction_ids.forEach((id) => {
 			if (id in role_tx_list) {
-				temp.push(role_tx_list[id]); // push each new element to the new array
+				mma_tx_list.push({ id: id, ...role_tx_list[id] });
 			}
 		});
 
-		setData(temp); // set the new array to the data state
+		setData(mma_tx_list); // set the new array to the data state
 	}, [role_tx_list]);
 
 	const OnClick = (id) => {
@@ -49,7 +50,7 @@ const ManageMyAccountCard = () => {
 	return (
 		<Flex
 			w="100%"
-			h={{ base: "240px", sm: "350px", md: "387px", lg: "400px" }}
+			h={{ base: "400px" }}
 			bg="white"
 			direction="column"
 			borderRadius="10px"
@@ -60,6 +61,22 @@ const ManageMyAccountCard = () => {
 			<Text fontWeight="semibold" fontSize={{ base: "18px" }}>
 				Manage My Account
 			</Text>
+
+			<Flex direction="column" mt="20px" rowGap="10px" overflow="auto">
+				{data.map((tx, idx) => (
+					<Fragment key={tx.id}>
+						<Flex
+							align="center"
+							justify="space-between"
+							onClick={OnClick}
+						>
+							<Text fontSize={{ base: "16px" }}>{tx.label}</Text>
+							<Icon name="chevron-right" w="8px" />
+						</Flex>
+						{dataLength > idx + 1 ? <Divider /> : null}
+					</Fragment>
+				))}
+			</Flex>
 		</Flex>
 	);
 };

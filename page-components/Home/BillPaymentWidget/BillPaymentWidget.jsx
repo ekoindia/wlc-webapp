@@ -30,19 +30,18 @@ const BillPaymentWidget = () => {
 		// str to array
 		group_interaction_ids = group_interaction_ids.split(",").map(Number);
 
-		const temp = []; // create a new array to store the new data
+		const bbps_tx_list = [];
 
 		group_interaction_ids.forEach((id) => {
 			if (id in role_tx_list) {
-				temp.push(role_tx_list[id]); // push each new element to the new array
+				bbps_tx_list.push({
+					id: id,
+					...role_tx_list[id],
+				});
 			}
 		});
-		console.log(
-			role_tx_list,
-			"LIC Bill PaymentLIC Bill PaymentLIC Bill Payment"
-		);
-		setData(temp); // set the new array to the data state
-		setIsCardVisible(temp.length > 0);
+		setData(bbps_tx_list); // set the new array to the data state
+		setIsCardVisible(bbps_tx_list.length > 0);
 	}, [role_tx_list]);
 	const handleIconClick = (id) => {
 		router.push(`transaction/${TransactionIds.BILL_PAYMENT}/${id}`);

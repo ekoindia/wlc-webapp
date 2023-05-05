@@ -19,10 +19,8 @@ const RecentTrxnWidget = () => {
 	const router = useRouter();
 	const { userData } = useUser();
 	const [data, setData] = useState([]);
-	let limit = 10;
+	const limit = 10;
 	const body = {
-		locale: "en",
-		user_id: 8888888888,
 		interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
 		start_index: 0,
 		limit: limit,

@@ -72,7 +72,6 @@ export const getArrowStyle = () => {
 	);
 };
 export const getModalStyle = (eko_code, account_status) => {
-	console.log("eko_code in tablehelpers", eko_code);
 	return (
 		<>
 			<NetworkMenuWrapper

@@ -58,9 +58,9 @@ const NetworkMenuWrapper = (props) => {
 	const handleSave = () => {
 		// API call
 		const body = {
-			initiator_id: userData.accountDetails.mobile,
+			// initiator_id: userData.accountDetails.mobile,
 			user_code: userData.accountDetails.code,
-			org_id: orgDetail.org_id,
+			// org_id: orgDetail.org_id,
 		};
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
