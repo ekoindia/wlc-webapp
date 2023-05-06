@@ -17,23 +17,21 @@ const TransactionHistory = () => {
 
 	/* API CALLING */
 
-	let headers = {
-		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history?record_count=10&search_value=${search}`,
-		"tf-req-method": "GET",
-	};
 	const { data, mutate } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-		headers: { ...headers },
+		headers: {
+			"tf-req-uri-root-path": "/ekoicici/v1",
+			"tf-req-uri": `/network/agents/transaction_history?record_count=10&search_value=${search}`,
+			"tf-req-method": "GET",
+		},
 	});
 
 	useEffect(() => {
-		mutate(
-			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-			headers
-		);
-	}, [headers["tf-req-uri"]]);
+		if (!(search && search.length >= 8)) return;
+		// Search again
+		mutate();
+	}, [search]);
 
 	const transactiondata = data?.data?.transaction_details || [];
 
@@ -51,7 +49,7 @@ const TransactionHistory = () => {
 					type="number"
 					value={search}
 					showButton={true}
-					minSearchLimit={5}
+					minSearchLimit={8}
 					maxSearchLimit={10}
 					setSearch={setSearch}
 					setIsSearching={setIsSearching}
