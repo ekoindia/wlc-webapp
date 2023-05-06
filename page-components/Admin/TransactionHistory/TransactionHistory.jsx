@@ -1,7 +1,5 @@
-import { Box } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Headings, SearchBar } from "components";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
-import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import { TransactionHistoryTable } from ".";
@@ -14,14 +12,9 @@ import { TransactionHistoryTable } from ".";
  */
 
 const TransactionHistory = () => {
-	const { userData } = useUser();
-	const { orgDetail } = useOrgDetailContext();
-	const [search, setSearch] = useState("");
+	const [search, setSearch] = useState(null);
+	const [isSearching, setIsSearching] = useState(false);
 
-	function onChangeHandler(e) {
-		setSearch(e);
-		//TODO re-check
-	}
 	/* API CALLING */
 
 	let headers = {
@@ -29,7 +22,7 @@ const TransactionHistory = () => {
 		"tf-req-uri": `/network/agents/transaction_history?record_count=10&search_value=${search}`,
 		"tf-req-method": "GET",
 	};
-	const { data, error, isLoading, mutate } = useRequest({
+	const { data, mutate } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },
@@ -41,26 +34,41 @@ const TransactionHistory = () => {
 			headers
 		);
 	}, [headers["tf-req-uri"]]);
-	const transactiondata = data?.data?.transaction_details ?? [];
+
+	const transactiondata = data?.data?.transaction_details || [];
 
 	return (
 		<>
 			<Headings title="Transaction History" hasIcon={false} />
-			<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
-				<Box>
-					<SearchBar
-						value={search}
-						setSearch={setSearch}
-						minSearchLimit={10}
-						maxSearchLimit={10}
-					/>
-				</Box>
-				<Box>
-					<TransactionHistoryTable
-						transactiondata={transactiondata}
-					/>
-				</Box>
-			</Box>
+			<Flex
+				direction="column"
+				w="100%"
+				px={{ base: "16px", md: "initial" }}
+				pb={"20px"}
+			>
+				<SearchBar
+					placeholder="Search by mobile number or user code"
+					type="number"
+					value={search}
+					showButton={true}
+					minSearchLimit={5}
+					maxSearchLimit={10}
+					setSearch={setSearch}
+					setIsSearching={setIsSearching}
+				/>
+
+				{isSearching ? (
+					transactiondata.length ? (
+						<TransactionHistoryTable
+							transactiondata={transactiondata}
+						/>
+					) : (
+						<Flex justify="center" align="center" h="100px">
+							<Text textColor="light">No Data Found</Text>
+						</Flex>
+					)
+				) : null}
+			</Flex>
 		</>
 	);
 };

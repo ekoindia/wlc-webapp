@@ -3,6 +3,8 @@ import {
 	Input as ChakraInput,
 	InputGroup,
 	InputLeftAddon,
+	InputLeftElement,
+	InputRightElement,
 } from "@chakra-ui/react";
 import { InputLabel, InputMsg } from "../";
 
@@ -40,6 +42,10 @@ const Input = ({
 	value,
 	type = "text",
 	leftAddon,
+	inputLeftElement,
+	inputLeftElementStyle,
+	inputRightElement,
+	inputRightElementStyle,
 	disabled = false,
 	hidden = false,
 	invalid = false,
@@ -49,16 +55,13 @@ const Input = ({
 	errorStyle,
 	inputContStyle,
 	inputNumStyle,
-	inputProps,
 	radius,
 	required = false,
 	onChange = () => {},
-	...props
+	onKeyDown = () => {},
+	...rest
 }) => {
 	const onChangeHandler = (e) => {
-		// /^[6-9]\d{0,9}$/g.test(val)
-		// /^[6-9]\d{0,2}\s\d{0,3}\s\d{0,4}$/g
-		// [6-9]?(\d{0,2})?(\s\d{0,3})?(\s\d{0,4})
 		let val = e.target.value;
 		if (isNumInput) {
 			if (
@@ -73,12 +76,13 @@ const Input = ({
 	};
 
 	return (
-		<Flex direction="column" {...props}>
+		<Flex direction="column" w="100%" {...inputContStyle}>
 			{label ? (
 				<InputLabel required={required} {...labelStyle}>
 					{label}
 				</InputLabel>
 			) : null}
+
 			<InputGroup size="lg">
 				{leftAddon ? (
 					<InputLeftAddon
@@ -89,6 +93,15 @@ const Input = ({
 					>
 						{leftAddon}
 					</InputLeftAddon>
+				) : null}
+
+				{inputLeftElement ? (
+					<InputLeftElement
+						pointerEvents="none"
+						{...inputLeftElementStyle}
+					>
+						{inputLeftElement}
+					</InputLeftElement>
 				) : null}
 
 				<ChakraInput
@@ -105,7 +118,7 @@ const Input = ({
 					w="100%"
 					inputMode={isNumInput ? "numeric" : "text"}
 					onChange={(e) => onChangeHandler(e)}
-					// height="100%"
+					onKeyDown={onKeyDown}
 					_hover={{
 						border: "",
 					}}
@@ -115,8 +128,17 @@ const Input = ({
 						borderColor: "hint",
 						transition: "box-shadow 0.3s ease-out",
 					}}
-					{...inputProps}
+					{...rest}
 				/>
+
+				{inputRightElement ? (
+					<InputRightElement
+						pointerEvents="none"
+						{...inputRightElementStyle}
+					>
+						{inputRightElement}
+					</InputRightElement>
+				) : null}
 
 				{/* {isNumInput && (
 					<Center

@@ -107,18 +107,8 @@ const History = () => {
 						{/* <==========Search =========> */}
 						<Flex>
 							<SearchBar
-								inputContStyle={{
-									width: {
-										base: "282px",
-										md: "400px",
-										lg: "150px",
-										xl: "300px",
-										"2xl": "450px",
-									},
-									h: "36px",
-								}}
-								onChangeHandler={onChangeHandler}
 								value={searchValue}
+								onChangeHandler={onChangeHandler}
 							/>
 						</Flex>
 

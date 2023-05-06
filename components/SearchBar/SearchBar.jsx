@@ -1,157 +1,97 @@
-import { Box, Center, Input } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { useState } from "react";
-import { Icon } from "..";
+import { Button, Icon, Input } from "..";
 
-export function SearchBar(props) {
-	const {
-		setSearch,
-		minSearchLimit = 5,
-		maxSearchLimit = 10,
-		placeholder,
-		numbersOnly = false,
-		inputContStyle,
-	} = props;
+/**
+ * A <SearchBar> component
+ * TODO: A reusable component for SearchBar
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<SearchBar></SearchBar>`
+ */
+const SearchBar = ({
+	type,
+	setSearch,
+	setIsSearching,
+	minSearchLimit = 0,
+	maxSearchLimit = 10,
+	placeholder,
+	showButton = false,
+	seachContStyle,
+	btnTitle,
+	btnStyle,
+}) => {
 	const [value, setValue] = useState("");
-	const [isInvalid, setIsInvalid] = useState(false);
+	const [errorMsg, setErrorMsg] = useState(false);
+	const [invalid, setInvalid] = useState(true);
+
 	const handleKeyDown = (e) => {
 		if (e.key === "Enter") {
 			if (
 				value.length >= minSearchLimit &&
 				value.length <= maxSearchLimit
 			) {
+				setIsSearching(true);
 				setSearch(value);
-				setIsInvalid(false);
+				setInvalid(false);
 			} else {
-				setIsInvalid(true);
+				setInvalid(true);
+				setErrorMsg("Please enter correct value");
 			}
 		}
-		if (isInvalid) {
-			setIsInvalid(false);
+		if (e.key !== "Enter" && invalid) {
+			setInvalid(false);
+		}
+	};
+
+	const handleBtnClick = () => {
+		if (value.length >= minSearchLimit && value.length <= maxSearchLimit) {
+			setIsSearching(true);
+			setSearch(value);
+			setInvalid(false);
+		} else {
+			setInvalid(true);
+			setErrorMsg("Please enter correct value");
 		}
 	};
 
 	const handleChange = (e) => {
 		const inputValue = e.target.value;
-
-		let isValid = true;
-		if (numbersOnly) {
-			// Regular expression to allow only numbers and decimal points
-			isValid = /^[0-9]*\.?[0-9]*$/.test(inputValue);
-		}
-
-		if (isValid && inputValue.length <= maxSearchLimit) {
+		//TODO prevent user from entering letter 'e' when type is number
+		if (inputValue.length <= maxSearchLimit) {
+			//when type is number, this will prevent user from entering more value
 			setValue(inputValue);
-			// setIsInvalid(inputValue.length < minSearchLimit);
 		}
 	};
 
 	return (
-		<Box
-			position="relative"
-			w={"100%"}
-			h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
-			width={{
-				base: "100%",
-				md: "50vw",
-				lg: "30vw",
-				xl: "30vw",
-				"2xl": "30vw",
-			}}
-			{...inputContStyle}
+		<Flex
+			w={{ base: "100%", md: "auto", xl: "600px" }}
+			align="flex-start"
+			gap={showButton ? "2" : null}
+			{...seachContStyle}
 		>
-			{/* <Box
-        h="100%"
-        w="2px"
-        display="block"
-        bg="red"
-        transition="width 0.1s ease-out"
-    ></Box> */}
 			<Input
+				placeholder={placeholder || "Search by name or mobile number"}
+				inputLeftElement={<Icon name="search" width="18px" />}
+				inputLeftElementStyle={{ color: "light" }}
+				type={type}
+				radius={10}
+				maxLength={maxSearchLimit} //will work when type is text
 				value={value}
-				placeholder={
-					placeholder
-						? placeholder
-						: "Search by name or mobile number"
-				}
-				size="lg"
-				borderRadius={{ base: "6px", md: "10px" }}
-				w="100%"
-				h="100%"
-				fontSize={{ base: "xs", "2xl": "sm" }}
-				border=" 1px solid #D2D2D2"
-				bg="white"
-				_focus={{
-					bg: "focusbg",
-					border: isInvalid
-						? "1px solid #FF0000"
-						: "1px solid #D2D2D2",
-					boxShadow: isInvalid
-						? "0 0 2px 2px rgba(255, 0, 0, 0.5)"
-						: "",
-				}}
-				pl={{ base: "30px", lg: "35px", "2xl": "55px" }}
-				onKeyDown={handleKeyDown}
+				invalid={invalid}
+				errorMsg={errorMsg}
 				onChange={handleChange}
+				onKeyDown={handleKeyDown}
+				_placeholder={{ fontSize: "sm" }}
 			/>
-			<Center
-				position="absolute"
-				top="0"
-				left="0"
-				width={{ base: "35px", lg: "40px", "2xl": "60px" }}
-				height="100%"
-				zIndex="1"
-				// h="48px"
-				color={"light"}
-			>
-				<Icon name="search" width="18px" />
-			</Center>
-
-			{/* {value !== "" && (
-				<Box
-					position="absolute"
-					top="106%"
-					width="100%"
-					h="214px"
-					zIndex="1"
-					bg="white"
-					borderRadius="10"
-					border="1px solid #D2D2D2"
-					p="20px 29px 24px 20px "
-				>
-					<VStack
-						align="flex-start"
-						divider={<StackDivider />}
-						spacing="15px"
-					>
-						<Box>
-							<Text as="p" fontSize="sm">
-								9891745076
-							</Text>
-							<Text as="p" fontSize="10px" color="accent.DEFAULT">
-								Rajesh Enterprises
-							</Text>
-						</Box>
-						<Box>
-							<Text as="p" fontSize="sm">
-								9891745076
-							</Text>
-							<Text as="p" fontSize="10px" color="accent.DEFAULT">
-								Rajesh Enterprises
-							</Text>
-						</Box>
-						<Box>
-							<Text as="p" fontSize="sm">
-								9891745076
-							</Text>
-							<Text as="p" fontSize="10px" color="accent.DEFAULT">
-								Rajesh Enterprises
-							</Text>
-						</Box>
-					</VStack>
-				</Box>
-			)} */}
-		</Box>
+			{showButton ? (
+				<Button size="lg" onClick={handleBtnClick} {...btnStyle}>
+					{btnTitle || "Search"}
+				</Button>
+			) : null}
+		</Flex>
 	);
-}
+};
 
 export default SearchBar;
