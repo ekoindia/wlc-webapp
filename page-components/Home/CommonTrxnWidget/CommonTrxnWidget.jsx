@@ -53,7 +53,7 @@ const CommonTrxnWidget = () => {
 				borderRadius="10px"
 				m={{ base: "16px", md: "auto" }}
 			>
-				<Box p={{ base: "0px 20px 0px 0px", md: "0px 0px 0px 0px" }}>
+				<Box>
 					<Text as="b" fontSize={{ base: "sm", md: "md" }}>
 						Most common transactions
 					</Text>

@@ -17,6 +17,8 @@ const BillPaymentWidget = () => {
 	const router = useRouter();
 	const [isCardVisible, setIsCardVisible] = useState(false);
 	const [data, setData] = useState([]);
+	const [more, setMore] = useState(false);
+	console.log("data", data);
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 
@@ -43,8 +45,18 @@ const BillPaymentWidget = () => {
 		setData(bbps_tx_list); // set the new array to the data state
 		setIsCardVisible(bbps_tx_list.length > 0);
 	}, [role_tx_list]);
+
+	useEffect(() => {
+		if (data.length > 8) {
+			setData(data.slice(0, 7));
+			setMore(true);
+		}
+	}, [data]);
+
 	const handleIconClick = (id) => {
-		router.push(`transaction/${TransactionIds.BILL_PAYMENT}/${id}`);
+		router.push(
+			`transaction/${TransactionIds.BILL_PAYMENT}/` + (id ? `${id}` : "")
+		);
 	};
 	return (
 		<div>
@@ -54,42 +66,20 @@ const BillPaymentWidget = () => {
 						base: "auto",
 						md: "387px",
 					}}
-					borderRadius="10px"
-					background="white"
 					direction="column"
-					// align={{
-					// 	base: "flex-start",
-					// }}
-					rowGap={{
-						base: "20px",
-						sm: "30px",
-						md: "50px",
-						lg: "20px",
-						xl: "10px",
-					}}
-					px={{
-						base: "20px",
-						sm: "40px",
-						md: "18px",
-						lg: "15px",
-						xl: "20px",
-					}}
-					py={{
-						base: "12px",
-						sm: "30px",
-						md: "18px",
-						lg: "10px",
-						xl: "25px",
-					}}
-					m={{ base: "18px", sm: "10px", md: "0px" }}
+					background="white"
+					p="5"
+					borderRadius="10px"
+					m={{ base: "16px", md: "auto" }}
 				>
-					<Box>
+					<Box fontSize={{ base: "sm", md: "md" }}>
 						<Text as="b">Recharge & bill payments</Text>
 					</Box>
 					<SimpleGrid
-						columns={{ base: 4, sm: 4, md: 4 }}
-						spacing={{ base: "3", lg: "8", xl: "8" }}
+						columns="4"
+						spacing={{ base: "4", md: "12" }}
 						alignItems="flex-start"
+						justifyContent="center"
 					>
 						{data.map((transaction, index) => (
 							<Box
@@ -98,6 +88,7 @@ const BillPaymentWidget = () => {
 								flexDirection="column"
 								alignItems="center"
 								justifyContent="center"
+								pt={{ base: "22px" }}
 							>
 								<IcoButton
 									title={transaction.label}
@@ -116,7 +107,7 @@ const BillPaymentWidget = () => {
 									onClick={() =>
 										handleIconClick(transaction.id)
 									}
-								></IcoButton>
+								/>
 								<Text
 									size={{ base: "sm", md: "lg" }}
 									pt={{ base: "5px" }}
@@ -128,10 +119,51 @@ const BillPaymentWidget = () => {
 									}}
 									textAlign="center"
 								>
-									{transaction.label}
+									{transaction.label.length > 17
+										? `${transaction.label.slice(0, 17)}...`
+										: transaction.label}
 								</Text>
 							</Box>
 						))}
+						{more ? (
+							<Box
+								display="flex"
+								flexDirection="column"
+								alignItems="center"
+								justifyContent="center"
+								pt={{ base: "22px" }}
+							>
+								<IcoButton
+									title="more"
+									iconName="more-horiz"
+									iconStyle={{
+										width: "30px",
+										height: "30px",
+									}}
+									size={{
+										base: "48px",
+										lg: "56px",
+										xl: "64px",
+									}}
+									theme="gray"
+									rounded="full"
+									onClick={() => handleIconClick()}
+								/>
+								<Text
+									size={{ base: "sm", md: "lg" }}
+									pt={{ base: "5px" }}
+									fontSize={{
+										base: "10px",
+										md: "sm",
+										lg: "16px/18px",
+										xl: "16px/18px",
+									}}
+									textAlign="center"
+								>
+									More
+								</Text>
+							</Box>
+						) : null}
 					</SimpleGrid>
 					{/* Once data is there for offers,show this row*/}
 					{/* <Flex
