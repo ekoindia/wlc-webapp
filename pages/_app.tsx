@@ -42,7 +42,7 @@ export default function App({ Component, pageProps, router }) {
 			</Head>
 
 			{process.env.NEXT_PUBLIC_GTM_ID ? (
-				<Script id="google-tag-manager" strategy="afterInteractive">
+				<Script id="google-tag-manager" strategy="lazyOnload">
 					{`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
