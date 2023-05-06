@@ -104,7 +104,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 				// 	pos: "relative",
 				// }}
 				isNumInput={true}
-				inputProps={{ maxLength: 12 }}
+				maxLength={12}
 				onFocus={() => {
 					setInvalid(false);
 				}}

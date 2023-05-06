@@ -350,139 +350,154 @@ const Table = (props) => {
 	};
 
 	return (
-		<Box w="100%">
-			{!isSmallerThan860 ? (
-				<>
-					<TableContainer
-						borderRadius="10px 10px 0 0"
-						mt={{ base: "20px", "2xl": "10px" }}
-						border="1px solid #E9EDF1"
-						maxH={isScrollrequired ? "1000px" : "auto"}
-						overflowY={isScrollrequired ? "auto" : "initial"}
-						css={{
-							"&::-webkit-scrollbar": {
-								height: "0.8vw",
-								width: "7px",
-							},
-							"&::-webkit-scrollbar-track": {
-								height: "0.8vw",
-								width: "7px",
-							},
-							"&::-webkit-scrollbar-thumb": {
-								background: "#555555",
-								borderRadius: "5px",
-								border: "1px solid #707070",
-							},
-						}}
-					>
-						<ChakraTable variant={variant} bg="white">
-							<Thead
-								bg="hint"
-								position={isScrollrequired ? "sticky" : ""}
-								top={isScrollrequired ? "0" : ""}
-								zIndex={isScrollrequired ? "sticky" : ""}
-							>
-								<Tr>{getTh()}</Tr>
-							</Thead>
-							<Tbody>{getTr()}</Tbody>
-						</ChakraTable>
-					</TableContainer>
-					{/* Pagination */}
-					{isPaginationRequired && (
-						<Flex justify={"flex-end"}>
-							<Pagination
-								className="pagination-bar"
-								currentPage={pageNumber}
-								totalCount={totalRecords || 10}
-								pageSize={PageSize}
-								onPageChange={(page) => {
-									router.query.page = page;
-									router.replace(router);
-									// setCurrentPage(page);
-									setPageNumber(page);
+		<Box>
+			{data.length > 0 ? (
+				<Box w="100%">
+					{!isSmallerThan860 ? (
+						<>
+							<TableContainer
+								borderRadius="10px 10px 0 0"
+								mt={{ base: "20px", "2xl": "10px" }}
+								border="1px solid #E9EDF1"
+								maxH={isScrollrequired ? "1000px" : "auto"}
+								overflowY={
+									isScrollrequired ? "auto" : "initial"
+								}
+								css={{
+									"&::-webkit-scrollbar": {
+										height: "0.8vw",
+										width: "7px",
+									},
+									"&::-webkit-scrollbar-track": {
+										height: "0.8vw",
+										width: "7px",
+									},
+									"&::-webkit-scrollbar-thumb": {
+										background: "#555555",
+										borderRadius: "5px",
+										border: "1px solid #707070",
+									},
 								}}
-							/>
-						</Flex>
-					)}
-				</>
-			) : (
-				<>
-					<Flex
-						direction="column"
-						alignItems="center"
-						borderRadius="10px 10px 0 0"
-						mt="16px"
-						boxShadow={
-							tableName === "Account" || tableName === "Detailed"
-								? "0px 5px 15px #0000000D"
-								: ""
-						}
-						border={
-							tableName === "Account" || tableName === "Detailed"
-								? "1px solid #D2D2D2"
-								: ""
-						}
-						gap={
-							tableName === "Account" || tableName === "Detailed"
-								? 0
-								: 4
-						}
-						bg={
-							tableName === "Account" || tableName === "Detailed"
-								? "white"
-								: ""
-						}
-					>
-						{tableName === "Account" || tableName === "Detailed" ? (
-							<Text
-								color="light"
-								width="100%"
-								p="16px 16px 0"
-								fontWeight="semibold"
 							>
-								Recent Transaction
-							</Text>
-						) : (
-							""
-						)}
-						{prepareCard()}
-					</Flex>
+								<ChakraTable variant={variant} bg="white">
+									<Thead
+										bg="hint"
+										position={
+											isScrollrequired ? "sticky" : ""
+										}
+										top={isScrollrequired ? "0" : ""}
+										zIndex={
+											isScrollrequired ? "sticky" : ""
+										}
+									>
+										<Tr>{getTh()}</Tr>
+									</Thead>
+									<Tbody>{getTr()}</Tbody>
+								</ChakraTable>
+							</TableContainer>
+							{/* Pagination */}
+							{isPaginationRequired && (
+								<Flex justify={"flex-end"}>
+									<Pagination
+										className="pagination-bar"
+										currentPage={pageNumber}
+										totalCount={totalRecords || 10}
+										pageSize={PageSize}
+										onPageChange={(page) => {
+											router.query.page = page;
+											router.replace(router);
+											// setCurrentPage(page);
+											setPageNumber(page);
+										}}
+									/>
+								</Flex>
+							)}
+						</>
+					) : (
+						<>
+							<Flex
+								direction="column"
+								alignItems="center"
+								borderRadius="10px 10px 0 0"
+								mt="16px"
+								boxShadow={
+									tableName === "Account" ||
+									tableName === "Detailed"
+										? "0px 5px 15px #0000000D"
+										: ""
+								}
+								border={
+									tableName === "Account" ||
+									tableName === "Detailed"
+										? "1px solid #D2D2D2"
+										: ""
+								}
+								gap={
+									tableName === "Account" ||
+									tableName === "Detailed"
+										? 0
+										: 4
+								}
+								bg={
+									tableName === "Account" ||
+									tableName === "Detailed"
+										? "white"
+										: ""
+								}
+							>
+								{tableName === "Account" ||
+								tableName === "Detailed" ? (
+									<Text
+										color="light"
+										width="100%"
+										p="16px 16px 0"
+										fontWeight="semibold"
+									>
+										Recent Transaction
+									</Text>
+								) : (
+									""
+								)}
+								{prepareCard()}
+							</Flex>
 
-					<Flex
-						align="center"
-						justifyContent="center"
-						w="100%"
-						h="94px"
-					>
-						<Flex
-							align="center"
-							justifyContent="center"
-							w="220px"
-							h="54px"
-							border="1px solid #11299E"
-							borderRadius="10px"
-							opacity="1"
-							cursor="pointer"
-						>
-							<IconButtons
-								variant="accent"
-								title="Show More"
-								hasBG={false}
-								iconPos="left"
-								iconName="refresh"
-								textStyle={{
-									fontSize: "18px",
-									fontWeight: "bold",
-								}}
-								iconStyle={{
-									height: "24px",
-									width: "24px",
-								}}
-							/>
-						</Flex>
-					</Flex>
-				</>
-			)}
+							<Flex
+								align="center"
+								justifyContent="center"
+								w="100%"
+								h="94px"
+							>
+								<Flex
+									align="center"
+									justifyContent="center"
+									w="220px"
+									h="54px"
+									border="1px solid #11299E"
+									borderRadius="10px"
+									opacity="1"
+									cursor="pointer"
+								>
+									<IconButtons
+										variant="accent"
+										title="Show More"
+										hasBG={false}
+										iconPos="left"
+										iconName="refresh"
+										textStyle={{
+											fontSize: "18px",
+											fontWeight: "bold",
+										}}
+										iconStyle={{
+											height: "24px",
+											width: "24px",
+										}}
+									/>
+								</Flex>
+							</Flex>
+						</>
+					)}
+				</Box>
+			) : null}
 		</Box>
 	);
 };

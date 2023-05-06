@@ -111,10 +111,6 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 					fontWeight: "semibold",
 					mb: { base: 2.5, "2xl": "0.8rem" },
 				}}
-				// inputContStyle={{
-				// 	h: { base: "3rem", "2xl": "4rem" },
-				// 	// pos: "relative",
-				// }}
 				onFocus={() => {
 					setInvalid(false);
 				}}
