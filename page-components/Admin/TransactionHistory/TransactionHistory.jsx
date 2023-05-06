@@ -33,12 +33,12 @@ const TransactionHistory = () => {
 			headers
 		);
 	}, [headers["tf-req-uri"]]);
-	const transactiondata = data?.data?.transaction_details ?? [];
+	const transactiondata = data?.data?.transaction_details || [];
 
 	return (
 		<>
 			<Headings title="Transaction History" hasIcon={false} />
-			<Box w="40%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
+			<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
 				<Flex gap="2">
 					<SearchBar
 						placeholder="Search by mobile number or user code"
