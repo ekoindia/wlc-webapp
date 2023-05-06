@@ -12,6 +12,7 @@ import { Button, Icon, Input } from "..";
 const SearchBar = ({
 	type,
 	setSearch,
+	setIsSearching,
 	minSearchLimit = 0,
 	maxSearchLimit = 10,
 	placeholder,
@@ -30,6 +31,7 @@ const SearchBar = ({
 				value.length >= minSearchLimit &&
 				value.length <= maxSearchLimit
 			) {
+				setIsSearching(true);
 				setSearch(value);
 				setInvalid(false);
 			} else {
@@ -44,6 +46,7 @@ const SearchBar = ({
 
 	const handleBtnClick = () => {
 		if (value.length >= minSearchLimit && value.length <= maxSearchLimit) {
+			setIsSearching(true);
 			setSearch(value);
 			setInvalid(false);
 		} else {
@@ -62,36 +65,32 @@ const SearchBar = ({
 	};
 
 	return (
-		<>
-			<Flex
-				w={{ base: "100%", md: "auto", xl: "600px" }}
-				align="flex-start"
-				gap={showButton ? "2" : null}
-				{...seachContStyle}
-			>
-				<Input
-					placeholder={
-						placeholder || "Search by name or mobile number"
-					}
-					inputLeftElement={<Icon name="search" width="18px" />}
-					inputLeftElementStyle={{ color: "light" }}
-					type={type}
-					radius={10}
-					maxLength={maxSearchLimit} //will work when type is text
-					value={value}
-					invalid={invalid}
-					errorMsg={errorMsg}
-					onChange={handleChange}
-					onKeyDown={handleKeyDown}
-					_placeholder={{ fontSize: "sm" }}
-				/>
-			</Flex>
+		<Flex
+			w={{ base: "100%", md: "auto", xl: "600px" }}
+			align="flex-start"
+			gap={showButton ? "2" : null}
+			{...seachContStyle}
+		>
+			<Input
+				placeholder={placeholder || "Search by name or mobile number"}
+				inputLeftElement={<Icon name="search" width="18px" />}
+				inputLeftElementStyle={{ color: "light" }}
+				type={type}
+				radius={10}
+				maxLength={maxSearchLimit} //will work when type is text
+				value={value}
+				invalid={invalid}
+				errorMsg={errorMsg}
+				onChange={handleChange}
+				onKeyDown={handleKeyDown}
+				_placeholder={{ fontSize: "sm" }}
+			/>
 			{showButton ? (
 				<Button size="lg" onClick={handleBtnClick} {...btnStyle}>
 					{btnTitle || "Search"}
 				</Button>
 			) : null}
-		</>
+		</Flex>
 	);
 };
 

@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Headings, SearchBar } from "components";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ import { TransactionHistoryTable } from ".";
 
 const TransactionHistory = () => {
 	const [search, setSearch] = useState(null);
+	const [isSearching, setIsSearching] = useState(false);
 
 	/* API CALLING */
 
@@ -33,29 +34,41 @@ const TransactionHistory = () => {
 			headers
 		);
 	}, [headers["tf-req-uri"]]);
+
 	const transactiondata = data?.data?.transaction_details || [];
 
 	return (
 		<>
 			<Headings title="Transaction History" hasIcon={false} />
-			<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
-				<Flex gap="2">
-					<SearchBar
-						placeholder="Search by mobile number or user code"
-						type="number"
-						value={search}
-						setSearch={setSearch}
-						minSearchLimit={5}
-						maxSearchLimit={10}
-						showButton={true}
-					/>
-				</Flex>
-				<Box>
-					<TransactionHistoryTable
-						transactiondata={transactiondata}
-					/>
-				</Box>
-			</Box>
+			<Flex
+				direction="column"
+				w="100%"
+				px={{ base: "16px", md: "initial" }}
+				pb={"20px"}
+			>
+				<SearchBar
+					placeholder="Search by mobile number or user code"
+					type="number"
+					value={search}
+					showButton={true}
+					minSearchLimit={5}
+					maxSearchLimit={10}
+					setSearch={setSearch}
+					setIsSearching={setIsSearching}
+				/>
+
+				{isSearching ? (
+					transactiondata.length ? (
+						<TransactionHistoryTable
+							transactiondata={transactiondata}
+						/>
+					) : (
+						<Flex justify="center" align="center" h="100px">
+							<Text textColor="light">No Data Found</Text>
+						</Flex>
+					)
+				) : null}
+			</Flex>
 		</>
 	);
 };
