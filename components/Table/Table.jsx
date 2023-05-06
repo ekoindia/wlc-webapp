@@ -195,7 +195,11 @@ const Table = (props) => {
 			case "Accordian":
 				return getAccordianIcon(expandedRow, index);
 			case "IconButton":
-				return getLocationStyle(item[column.name]);
+				return getLocationStyle(
+					item[column.name],
+					item?.address_details?.lattitude,
+					item?.address_details?.longitude
+				);
 			case "Avatar":
 				return getNameStyle(item[column.name]);
 			case "Arrow":
