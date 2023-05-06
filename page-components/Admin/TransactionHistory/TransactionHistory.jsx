@@ -64,7 +64,7 @@ const TransactionHistory = () => {
 						/>
 					) : (
 						<Flex justify="center" align="center" h="100px">
-							<Text textColor="light">No Data Found</Text>
+							<Text textColor="light">Nothing Found</Text>
 						</Flex>
 					)
 				) : null}
