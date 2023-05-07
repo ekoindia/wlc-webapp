@@ -12,40 +12,37 @@ import {
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { adminSidebarMenu, sidebarMenu } from "constants";
+import {
+	adminSidebarMenu,
+	Endpoints,
+	OtherMenuItems,
+	sidebarMenu,
+	TransactionIds,
+	UserType,
+} from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Icon, ProfileCard, StatusCard } from "..";
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.
- * @param {Object} router The router object from next/router.
- * @param {string} currPath The path to compare with the current route.
+ * @param {Object} routerUrl The current route URL.
+ * @param {string} path The path to compare with the current route.
  * @returns {boolean} True if the current route is the same as the route passed to it.
  **/
-function isCurrentRoute(router, currPath) {
-	// TODO: Fix: Inefficient code. Refactor this.
-	const path = router.asPath.split("?")[0];
-	if (path === currPath) return true;
+function isCurrentRoute(routerUrl, path) {
+	if (!routerUrl || !path) return false;
 
-	const splittedPath = path.split("/");
-	const splittedCurrPath = currPath.split("/");
-	let isSamePath = false;
+	const [routePath] = routerUrl.split("?");
 
-	for (let i = 1; i < splittedCurrPath.length; i++) {
-		if (
-			splittedPath[i] === splittedCurrPath[i] &&
-			splittedCurrPath[i] !== "admin"
-		) {
-			isSamePath = true;
-		} else {
-			isSamePath = false;
-		}
+	if (routePath === "/admin") {
+		return path === "/admin";
 	}
-	return isSamePath ? true : false;
+
+	return (path + "/").startsWith(routePath + "/");
 }
 
 //MAIN EXPORT
@@ -53,7 +50,7 @@ const SideBar = (props) => {
 	return (
 		<>
 			<Box display={{ base: "flex", lg: "none" }}>
-				<MenuBar {...props} />
+				<SmallScreenSideMenu {...props} />
 			</Box>
 			<Box display={{ base: "none", lg: "flex" }}>
 				<SideBarMenu />
@@ -70,12 +67,50 @@ const SideBarMenu = () => {
 	const { interactions } = useMenuContext();
 	const { interaction_list } = interactions;
 	const router = useRouter();
-	const onProfileClick = () => {
-		router.push("/profile");
-	};
+	const [trxnList, setTrxnList] = useState([]);
+	const [otherList, setOtherList] = useState([]);
 
-	const menuList =
-		userData?.is_org_admin === 1 ? adminSidebarMenu : sidebarMenu;
+	const is_admin = userData?.is_org_admin === 1 ? true : false;
+
+	const is_distributor =
+		[UserType.DISTRIBUTOR, UserType.SUPER_DISTRIBUTOR].indexOf(
+			userData?.userDetails?.user_type
+		) > -1;
+
+	const menuList = is_admin ? adminSidebarMenu : sidebarMenu;
+
+	// Split the transaction list into two lists:
+	// 1. trxnList: List of transactions/products
+	// 2. otherList: List of other menu items
+	useEffect(() => {
+		if (interaction_list && interaction_list.length > 0) {
+			const trxnList = [];
+			const otherList = [];
+
+			interaction_list.forEach((tx) => {
+				if (OtherMenuItems.indexOf(tx.id) > -1) {
+					otherList.push(tx);
+				} else {
+					trxnList.push(tx);
+				}
+			});
+
+			setTrxnList(trxnList);
+			setOtherList([
+				{
+					icon: "view-transaction-history",
+					label: "Transaction History",
+					link: Endpoints.HISTORY,
+				},
+				...otherList,
+				{
+					icon: "manage",
+					label: "Manage My Account",
+					id: TransactionIds.MANAGE_MY_ACCOUNT,
+				},
+			]);
+		}
+	}, [interaction_list]);
 
 	return (
 		<Box
@@ -94,52 +129,39 @@ const SideBarMenu = () => {
 		>
 			<Flex direction="column">
 				<Box borderRight="12px" height={"100%"} w={"100%"}>
-					{userData?.is_org_admin !== 1 && (
+					{/* Show user-profile card and wallet balance for agents (non-admin users) */}
+					{!is_admin && (
 						<>
-							<ProfileCard
-								key={"profileStatus"}
-								name={userData?.userDetails?.name}
-								mobileNumber={userData?.userDetails?.mobile}
-								img={userData?.userDetails?.pic}
-								onClick={onProfileClick}
-								cursor="pointer"
-							/>
+							<Link href={Endpoints.USER_PROFILE}>
+								<ProfileCard
+									name={userData?.userDetails?.name}
+									mobileNumber={userData?.userDetails?.mobile}
+									img={userData?.userDetails?.pic}
+									cursor="pointer"
+								/>
+							</Link>
 
-							<StatusCard key={"walletStatus"} />
+							<StatusCard />
 						</>
 					)}
 
-					{menuList?.map((menu, index) => {
-						switch (true) {
-							case menu.subLevel && menu.api:
-								return (
-									<CollapseMenu
-										key={menu.name}
-										menu={menu}
-										interaction_list={interaction_list}
-										role={userData?.role}
-									/>
-								);
-							case menu.subLevel && menu.subLevelObject != null:
-								return (
-									<CollapseMenu
-										key={menu.name}
-										menu={menu}
-										interaction_list={menu.subLevelObject}
-										role={userData?.role}
-									/>
-								);
-							default:
-								return (
-									<LinkMenu
-										key={menu.name}
-										menu={menu}
-										index={index}
-										role={userData?.role}
-									/>
-								);
-						}
-					})}
+					{/* Fixed menu items */}
+					{menuList?.map((menu, index) => (
+						<LinkMenuItem
+							key={menu.name}
+							menu={menu}
+							index={index}
+						/>
+					))}
+
+					{/* Dynamic menu items */}
+					<AccordionMenu
+						trxnList={trxnList}
+						otherList={otherList}
+						router={router}
+						isAdmin={is_admin}
+						isDistributor={is_distributor}
+					/>
 				</Box>
 				{/* {rest.children} */}
 			</Flex>
@@ -148,13 +170,15 @@ const SideBarMenu = () => {
 };
 
 //FOR MOBILE SCREENS
-const MenuBar = (props) => {
+const SmallScreenSideMenu = (props) => {
 	const { navOpen, setNavOpen } = props;
 	const router = useRouter();
 	const { /* isOpen, onOpen, */ onClose } = useDisclosure();
+
 	useEffect(() => {
 		setNavOpen(false);
-	}, [router.asPath]);
+	}, [router.asPath, setNavOpen]);
+
 	return (
 		<Drawer
 			autoFocus={false}
@@ -175,40 +199,168 @@ const MenuBar = (props) => {
 	);
 };
 
-const CollapseMenu = (props) => {
-	const { menu, interaction_list, /* currentRoute, */ role } = props;
-	const router = useRouter();
+/**
+ * Transaction Submenu Section for non-admin users
+ * @param {Array} trxnList - List of "transactions" submenu items
+ * @param {Array} otherList - List of "other" submenu items
+ * @param {Object} router - Next.js router object
+ * @param {Boolean} isAdmin - Flag to check if user is an admin
+ * @param {Boolean} isDistributor - Flag to check if user is a distributor
+ */
+const AccordionMenu = ({
+	trxnList = [],
+	otherList = [],
+	router,
+	isAdmin,
+	isDistributor,
+}) => {
+	const [openIndex, setOpenIndex] = useState(-1);
+
+	// Hide transaction sub-menus for admin...
+	if (isAdmin) return null;
+
+	// Hide if nothing to show...
+	if (!(trxnList?.length > 0 || otherList?.length > 0)) return null;
+
+	const defaultExpandIndex = isDistributor
+		? 1
+		: trxnList?.length > 0
+		? 0
+		: -1;
 
 	return (
-		<Flex textColor="white" justify="space-between">
-			<Accordion allowMultiple w="100%">
-				<AccordionItem borderBottom="br-sidebar" borderTop="none">
-					{({ isExpanded }) => (
-						<>
-							<AccordionButton
-								pl={{
-									base: "5",
-									md: "5",
-									lg: "4",
-									"2xl": "6",
+		<Accordion
+			allowToggle
+			w="100%"
+			textColor="white"
+			defaultIndex={defaultExpandIndex}
+			onChange={setOpenIndex}
+		>
+			{/* Start A Transaction... */}
+			{trxnList?.length > 0 && (
+				<AccordionSubMenuSection
+					title="Start a Transaction"
+					icon="transaction"
+					menuItems={trxnList}
+					router={router}
+					expanded={openIndex === 0}
+				/>
+			)}
+
+			{/* Others... */}
+			{otherList?.length > 0 && (
+				<AccordionSubMenuSection
+					title="Others"
+					icon="others"
+					menuItems={otherList}
+					router={router}
+					expanded={openIndex === 1}
+				/>
+			)}
+		</Accordion>
+	);
+};
+
+const AccordionSubMenuSection = ({
+	title,
+	icon,
+	menuItems,
+	router,
+	expanded,
+}) => {
+	return (
+		<AccordionItem borderBottom="br-sidebar" borderTop="none">
+			<h2>
+				<AccordionButton
+					pl={{
+						base: "5",
+						lg: "4",
+						"2xl": "6",
+					}}
+					py={{
+						base: "4",
+						md: "3",
+						xl: "3.5",
+						"2xl": "5",
+					}}
+				>
+					<Flex
+						align="center"
+						justify="space-between"
+						w="100%"
+						cursor="pointer"
+						padding="0px"
+					>
+						<Flex align="center" gap="13px" w={"full"}>
+							<Icon
+								name={icon}
+								w={{
+									base: "20px",
+									sm: "20px",
+									md: "18px",
+									lg: "18px",
+									xl: "18px",
+									"2xl": "27px",
 								}}
-								py={{
-									base: "4",
-									md: "3",
-									xl: "3.5",
-									"2xl": "5",
+							/>
+							<Text
+								fontSize={{
+									base: "14px",
+									sm: "14px",
+									md: "12px",
+									lg: "12px",
+									xl: "12px",
+									"2xl": "16px",
 								}}
+							>
+								{title}
+							</Text>
+						</Flex>
+						<Circle bg="sidebar.icon-bg" size="5">
+							<Icon
+								name={expanded ? "remove" : "expand-add"}
+								width="10px"
+							/>
+						</Circle>
+					</Flex>
+				</AccordionButton>
+			</h2>
+
+			<AccordionPanel padding={"0px"} border="none">
+				{menuItems?.map((tx) => {
+					const link = tx?.link || `/transaction/${tx?.id}`;
+					const isCurrent = isCurrentRoute(router.asPath, link);
+					return (
+						<Link key={link} href={link}>
+							<Box
+								w="100%"
+								padding="0px 14px 0px 40px"
+								bg={isCurrent ? "sidebar.active-bg" : ""}
+								borderLeft="8px"
+								borderLeftColor={
+									isCurrent
+										? "sidebar.active-border"
+										: "transparent"
+								}
+								outline={
+									isCurrent
+										? "var(--chakra-borders-br-sidebar)"
+										: ""
+								}
+								transitionProperty="border-left-color, background-color"
+								transitionDuration="0.3s"
+								transitionTimingFunction="ease-out"
 							>
 								<Flex
 									align="center"
 									justify="space-between"
-									w="100%"
-									cursor="pointer"
-									padding="0px"
+									padding="12px 0px 12px 0px"
+									borderTop="br-sidebar"
+									borderTopStyle="dashed"
 								>
-									<Flex align="center" gap="13px" w={"full"}>
+									<Flex align="center" columnGap="10px">
 										<Icon
-											name={menu.icon}
+											name={tx.icon}
 											w={{
 												base: "20px",
 												sm: "20px",
@@ -220,124 +372,40 @@ const CollapseMenu = (props) => {
 										/>
 										<Text
 											fontSize={{
-												base: "14px",
-												sm: "14px",
-												md: "12px",
-												lg: "12px",
-												xl: "12px",
-												"2xl": "16px",
+												base: "12px",
+												sm: "12px",
+												md: "11px",
+												lg: "11px",
+												xl: "11px",
+												"2xl": "14px",
 											}}
+											textColor={"white"}
 										>
-											{menu.name}
+											{tx.label}
 										</Text>
 									</Flex>
-									<Circle bg="sidebar.icon-bg" size="5">
-										{!isExpanded ? (
-											<Icon
-												name="expand-add"
-												width="10px"
-											/>
-										) : (
-											<Icon name="remove" width="12px" />
-										)}
-									</Circle>
+									<Icon
+										color={
+											isCurrent ? "#FE7D00" : "#556FEF"
+										}
+										name="chevron-right"
+										width="12px"
+										transition="color 0.3s ease-out"
+									/>
 								</Flex>
-							</AccordionButton>
-
-							<AccordionPanel padding={"0px"} border="none">
-								{interaction_list?.map((item, index) => {
-									const link =
-										item.link || `/transaction/${item?.id}`;
-									const isCurrent = isCurrentRoute(
-										router,
-										link,
-										role
-									);
-									return (
-										<Link key={item.label} href={link}>
-											<Box
-												w="100%"
-												padding="0px 14px 0px 40px"
-												bg={
-													isCurrent
-														? "sidebar.active-bg"
-														: ""
-												}
-												borderLeft="8px"
-												borderLeftColor={
-													isCurrent
-														? "sidebar.active-border"
-														: "transparent"
-												}
-												outline={
-													isCurrent
-														? "var(--chakra-borders-br-sidebar)"
-														: ""
-												}
-											>
-												<Flex
-													align="center"
-													justify="space-between"
-													padding="12px 0px 12px 0px"
-													borderTop="br-sidebar"
-													borderTopStyle="dashed"
-												>
-													<Flex
-														align="center"
-														columnGap="10px"
-													>
-														<Icon
-															name={item.icon}
-															w={{
-																base: "20px",
-																sm: "20px",
-																md: "18px",
-																lg: "18px",
-																xl: "18px",
-																"2xl": "27px",
-															}}
-														/>
-														<Text
-															fontSize={{
-																base: "12px",
-																sm: "12px",
-																md: "11px",
-																lg: "11px",
-																xl: "11px",
-																"2xl": "14px",
-															}}
-															textColor={"white"}
-														>
-															{item.label}
-														</Text>
-													</Flex>
-													<Icon
-														color={
-															isCurrent
-																? "#FE7D00"
-																: "#556FEF"
-														}
-														name="chevron-right"
-														width="12px"
-													/>
-												</Flex>
-											</Box>
-										</Link>
-									);
-								})}
-							</AccordionPanel>
-						</>
-					)}
-				</AccordionItem>
-			</Accordion>
-		</Flex>
+							</Box>
+						</Link>
+					);
+				})}
+			</AccordionPanel>
+		</AccordionItem>
 	);
 };
 
-const LinkMenu = (props) => {
-	const { menu, /* currentRoute, */ index, role } = props;
+const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
 	const router = useRouter();
-	const isCurrent = isCurrentRoute(router, menu.link, role);
+	const isCurrent = isCurrentRoute(router.asPath, menu.link);
+
 	return (
 		<Link href={menu.link} key={index}>
 			<Flex
@@ -374,6 +442,9 @@ const LinkMenu = (props) => {
 				borderLeftColor={
 					isCurrent ? "sidebar.active-border" : "transparent"
 				}
+				transitionProperty="border-left-color, background-color"
+				transitionDuration="0.3s"
+				transitionTimingFunction="ease-out"
 			>
 				<Icon
 					name={menu.icon}
