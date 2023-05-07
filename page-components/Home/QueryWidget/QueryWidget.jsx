@@ -69,14 +69,10 @@ const QueryWidget = () => {
 						pb={{ base: "0px", sm: "20px", md: "10px", lg: "25px" }}
 						direction={"row"}
 					>
-						<Text fontSize={"21px"} display={"inline"}>
+						<Text fontSize="21px" display="inline">
 							Have a
 						</Text>
-						<Text
-							fontSize={"30px"}
-							display={"inline"}
-							pl={{ base: "1px", md: "3px" }}
-						>
+						<Text fontSize="30px" display="inline" pl="0.3em">
 							QUERY?
 						</Text>
 					</Flex>
