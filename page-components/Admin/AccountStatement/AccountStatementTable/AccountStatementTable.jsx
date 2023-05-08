@@ -25,6 +25,7 @@ const AccountStatementTable = (props) => {
 		{
 			name: "description",
 			field: "Description",
+			show: "Description",
 		},
 
 		{ name: "amount", field: "Amount" },

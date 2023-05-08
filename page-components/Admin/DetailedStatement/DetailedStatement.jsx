@@ -23,6 +23,7 @@ const DetailedStatement = () => {
 	const router = useRouter();
 	const { cellnumber } = router.query;
 	const [search, setSearch] = useState("");
+	const [pageNumber, setPageNumber] = useState(1);
 	const [dateText, setDateText] = useState({
 		from: "",
 		to: "DD/MM/YYYY",
@@ -42,7 +43,7 @@ const DetailedStatement = () => {
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history/recent_transaction/account_statement?record_count=10&search_recent=${search}&search_value=${cellnumber}&transaction_date_from=${dateText.from}&transaction_date_to=${dateText.to}`,
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction/account_statement?page_number=${pageNumber}&record_count=10&search_recent=${search}&search_value=${cellnumber}&transaction_date_from=${dateText.from}&transaction_date_to=${dateText.to}`,
 		"tf-req-method": "GET",
 	};
 
@@ -62,6 +63,8 @@ const DetailedStatement = () => {
 	const detailTable = data?.data ?? [];
 	const agentname = detailTable?.agent_name ?? [];
 	const currentbalance = detailTable.saving_balance ?? [];
+	const totalRecords = data?.data?.totalRecords;
+	console.log("totalRecords", totalRecords);
 
 	const current = new Date();
 	const date = `${current.getDate()}/${
@@ -282,14 +285,8 @@ const DetailedStatement = () => {
 							placeholder="Search by transaction ID or amount"
 							value={search}
 							setSearch={setSearch}
-							inputContProps={{
-								h: { base: "3rem", md: "2.5rem", xl: "3rem" },
-								width: {
-									base: "100%",
-									md: "200px",
-									xl: "400px",
-									"2xl": "600px",
-								},
+							searchContStyle={{
+								w: { base: "auto", "2xl": "600px" },
 							}}
 						/>
 					</Flex>
@@ -391,7 +388,12 @@ const DetailedStatement = () => {
 				</Flex>
 
 				<Box>
-					<DetailedStatementTable detiledData={detiledData} />
+					<DetailedStatementTable
+						detiledData={detiledData}
+						setPageNumber={setPageNumber}
+						pageNumber={pageNumber}
+						totalRecords={totalRecords}
+					/>
 				</Box>
 			</Box>
 		</>

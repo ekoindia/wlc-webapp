@@ -9,7 +9,7 @@ import { Table } from "components";
  */
 
 const DetailedStatementTable = (props) => {
-	const { detiledData } = props;
+	const { detiledData, pageNumber, setPageNumber, totalRecords } = props;
 
 	const renderer = [
 		{
@@ -25,6 +25,7 @@ const DetailedStatementTable = (props) => {
 		{
 			name: "description",
 			field: "Description",
+			show: "Description",
 		},
 		{ name: "amount", field: "Amount", show: "debit_credit" },
 		{ name: "running_balance", field: "Running Balance" },
@@ -39,6 +40,9 @@ const DetailedStatementTable = (props) => {
 				data={detiledData}
 				variant="evenStriped"
 				tableName="Detailed"
+				totalRecords={totalRecords}
+				setPageNumber={setPageNumber}
+				pageNumber={pageNumber}
 			/>
 		</>
 	);
