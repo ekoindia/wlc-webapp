@@ -44,11 +44,11 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 		sendOtpRequest(orgDetail.org_id, number.original, toast, "resend");
 	};
 
-	const verifyOtpHandler = () => {
+	const verifyOtpHandler = (_otp) => {
 		submitLogin({
 			id_type: "Mobile",
 			mobile: number.original,
-			id_token: Otp,
+			id_token: _otp || Otp,
 			org_id: orgDetail.org_id,
 		});
 	};
@@ -118,6 +118,11 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 					}
 					length={4}
 					onChange={setOtp}
+					onEnter={() => verifyOtpHandler()}
+					onComplete={(otp) => {
+						verifyOtpHandler(otp);
+					}}
+					// onKeyDown={onkeyHandler}
 				/>
 			</Flex>
 
@@ -157,6 +162,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
 				disabled={loading}
+				loading={loading}
 				onClick={verifyOtpHandler}
 			>
 				Submit

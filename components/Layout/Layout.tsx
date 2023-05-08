@@ -1,4 +1,4 @@
-import { Box, Flex, Hide } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { useLayoutContext } from "contexts/LayoutContext";
 import { useState } from "react";
 import { NavBar, SideBar } from "..";
@@ -9,14 +9,20 @@ const Layout = ({ isLoggedIn, children }) => {
 
 	return isLoggedIn ? (
 		<Box w={"full"}>
-			<Hide breakpoint="print">
-				{!isNavHidden && <NavBar setNavOpen={setIsNavOpen} />}
-			</Hide>
+			{!isNavHidden && (
+				<Box
+					sx={{
+						"@media print": {
+							display: "none",
+						},
+					}}
+				>
+					<NavBar setNavOpen={setIsNavOpen} />
+				</Box>
+			)}
 
 			<Flex>
-				<Hide breakpoint="print">
-					<SideBar navOpen={isNavOpen} setNavOpen={setIsNavOpen} />
-				</Hide>
+				<SideBar navOpen={isNavOpen} setNavOpen={setIsNavOpen} />
 
 				{/* Main Content here */}
 

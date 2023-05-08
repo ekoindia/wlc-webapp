@@ -27,6 +27,7 @@ const LoginPanel = () => {
 			bg="bg"
 			position={{ base: "fixed", md: "none" }}
 		>
+			{/* TODO: Remove Grid. Not required */}
 			<Grid
 				// direction="column"
 				// justifyContent="center"
