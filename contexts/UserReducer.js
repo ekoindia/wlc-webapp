@@ -42,6 +42,15 @@ export const UserReducer = (state, { type, payload }) => {
 			break;
 		}
 
+		case "UPDATE_SHOP_DETAILS": {
+			Object.assign(state.shopDetails, payload);
+			break;
+		}
+		case "UPDATE_PERSONAL_DETAILS": {
+			Object.assign(state.personalDetails, payload);
+			break;
+		}
+
 		case "LOGIN": {
 			if (
 				!(

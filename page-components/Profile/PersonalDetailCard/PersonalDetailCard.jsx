@@ -1,6 +1,10 @@
-import { Flex, Text } from "@chakra-ui/react";
-import { IconButtons } from "components";
+import { Flex, Select, Text, useDisclosure, useToast } from "@chakra-ui/react";
+import { Calenders, IconButtons, Modal } from "components";
+import { Endpoints, TransactionIds } from "constants";
 import { useUser } from "contexts/UserContext";
+import { fetcher } from "helpers/apiHelper";
+import useRefreshToken from "hooks/useRefreshToken";
+import { useCallback, useState } from "react";
 
 /**
  * A <PersonalDetailCard> component
@@ -11,16 +15,85 @@ import { useUser } from "contexts/UserContext";
  * @example	`<PersonalDetailCard></PersonalDetailCard>` TODO: Fix example
  */
 const PersonalDetailCard = () => {
-	const { userData } = useUser();
+	const { userData, updatePersonalDetail } = useUser();
+	const toast = useToast();
+	const { isOpen, onOpen, onClose } = useDisclosure();
 	const data = userData.personalDetails;
+	const genderoOptions = ["Male", "Female", "Other"];
+	const qualificationOptions = [
+		"Below 10th",
+		"10th",
+		"12th",
+		"Graduate",
+		"Post-Graduate",
+		"Above Post-Graduate",
+	];
+	const martialStatusOptions = ["Single", "Married"];
+
 	const personalDetailObj = {
-		gender: "Gender",
-		dob: "Date of Birth",
-		qualification: "Qualification",
-		marital_status: "Marital Status",
+		gender: data ? data.gender : "Gender",
+		dob: data ? data.dob : "Date of Birth",
+		qualification: data ? data.qualification : "Qualification",
+		marital_status: data ? data.marital_status : "Marital Status",
+	};
+	const [formState, setFormState] = useState(personalDetailObj);
+	const { generateNewToken } = useRefreshToken();
+	const labelStyle = {
+		fontSize: { base: "md" },
+		color: "inputlabel",
+		pl: "0",
+		fontWeight: "600",
+	};
+	const inputConstStyle = {
+		h: { base: "2.5rem" },
+		w: "100%",
+		pos: "relative",
+		alignItems: "center",
+		mb: { base: 2, "2xl": "1rem" },
 	};
 	const onEditClick = () => {
-		console.log("clicked");
+		onOpen();
+	};
+	const hitQuery = useCallback(() => {
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				token: userData?.access_token,
+				body: {
+					interaction_type_id: TransactionIds.USER_PROFILE,
+					user_id: userData.userId,
+					section: "personal_detail",
+					...formState,
+				},
+				timeout: 30000,
+			},
+			generateNewToken
+		)
+			.then((data) => {
+				updatePersonalDetail(formState);
+				toast({
+					title: data.message,
+					status: "success",
+					duration: 2000,
+				});
+				onClose();
+			})
+			.catch((err) => {
+				toast({
+					title: data.message,
+					status: "error",
+					duration: 2000,
+				});
+				console.error("error: ", err);
+			});
+	});
+	const onSubmit = () => {
+		console.log(formState);
+		hitQuery();
+	};
+	const handleChange = (e) => {
+		console.log(e);
+		setFormState({ ...formState, [e.target.name]: e.target.value });
 	};
 	return (
 		<Flex
@@ -47,12 +120,76 @@ const PersonalDetailCard = () => {
 				{Object.entries(personalDetailObj).map(([key, value], index) =>
 					data[key] != "" ? (
 						<Flex key={index} direction="column">
-							<Text>{value}</Text>
+							<Text>{key}</Text>
 							<Text fontWeight="semibold">{data[key]}</Text>
 						</Flex>
 					) : null
 				)}
 			</Flex>
+			<Modal
+				isOpen={isOpen}
+				onClose={onClose}
+				title="Edit Personal Details"
+				submitText="Save now"
+				onSubmit={onSubmit}
+			>
+				<form>
+					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
+						Gender
+					</Text>
+					<Select
+						name="gender"
+						value={formState.gender}
+						onChange={handleChange}
+						labelStyle={labelStyle}
+						inputContStyle={inputConstStyle}
+					>
+						{genderoOptions.map((data, idx) => {
+							return (
+								<option key={`${data}_${idx}`}>{data}</option>
+							);
+						})}
+					</Select>
+					<Calenders
+						label="DOB"
+						value={formState.dob}
+						onChange={handleChange}
+						name="dob"
+					/>
+					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
+						Qualification
+					</Text>
+					<Select
+						name="qualification"
+						value={formState.qualification}
+						onChange={handleChange}
+						labelStyle={labelStyle}
+						inputContStyle={inputConstStyle}
+					>
+						{qualificationOptions.map((data, idx) => {
+							return (
+								<option key={`${data}_${idx}`}>{data}</option>
+							);
+						})}
+					</Select>
+					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
+						Martial Status
+					</Text>
+					<Select
+						name="marital_status"
+						value={formState.marital_status}
+						onChange={handleChange}
+						labelStyle={labelStyle}
+						inputContStyle={inputConstStyle}
+					>
+						{martialStatusOptions.map((data, idx) => {
+							return (
+								<option key={`${data}_${idx}`}>{data}</option>
+							);
+						})}
+					</Select>
+				</form>
+			</Modal>
 		</Flex>
 	);
 };
