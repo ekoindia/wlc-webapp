@@ -16,21 +16,8 @@ import { Cards, IconButtons } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<ContactPane></ContactPane>`
  */
-const ContactPane = ({ rowdata: contactdata }) => {
+const ContactPane = ({ rowData: contactdata }) => {
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
-	// useEffect(() => {
-	// 	window.addEventListener("resize", (e) => {
-	// 		console.log("inside useEffect", useDim);
-	// 		let innerWidth = e.currentTarget.innerWidth;
-	// 		if (innerWidth < 768) {
-	// 			console.log("innerWidth", innerWidth);
-	// 			setDim(innerWidth);
-	// 		}
-	// 	});
-	// 	return () => {
-	// 		window.removeEventListener("resize");
-	// 	};
-	// }, []);
 
 	return (
 		<Cards h={{ base: "auto", lg: "100%" }}>
