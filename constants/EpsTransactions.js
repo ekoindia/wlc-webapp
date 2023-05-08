@@ -34,4 +34,5 @@ export const TransactionIds = {
 	NEED_CASH: 148, // For sellers
 	QUERY_TRACKER: 49,
 	MY_TEAM: 242, // For Distributor
+	USER_PROFILE: 401,
 };

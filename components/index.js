@@ -18,6 +18,7 @@ import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
 import { Layout } from "./Layout";
 import { Menus } from "./Menus";
+import { Modal } from "./Modal";
 import { MultiSelect } from "./MultiSelect";
 import { NavBar } from "./NavBar";
 import { OtpInput } from "./OtpInput";
@@ -43,6 +44,7 @@ export {
 	IcoButton,
 	Button,
 	Select,
+	Modal,
 	MultiSelect,
 	StatusCard,
 	ProfileCard,

@@ -93,6 +93,19 @@ const UserProvider = ({ userMockData, children }) => {
 		dispatch({ type: "LOGOUT" });
 	};
 
+	const updateShopDetails = (data) => {
+		dispatch({
+			type: "UPDATE_SHOP_DETAILS",
+			payload: { ...data },
+		});
+	};
+	const updatePersonalDetail = (data) => {
+		dispatch({
+			type: "UPDATE_PERSONAL_DETAILS",
+			payload: { ...data },
+		});
+	};
+
 	const contextValue = useMemo(() => {
 		return {
 			userData: state,
@@ -103,6 +116,8 @@ const UserProvider = ({ userMockData, children }) => {
 			updateUserInfo,
 			setIsTokenUpdating,
 			isTokenUpdating,
+			updateShopDetails,
+			updatePersonalDetail,
 		};
 	}, [state, loading]);
 	// if (loading)

@@ -125,6 +125,7 @@ const Calenders = ({
 									w="1px"
 									type="date"
 									height="100%"
+									name={name}
 									min={minDate}
 									max={maxDate}
 									ref={calendarRef}
