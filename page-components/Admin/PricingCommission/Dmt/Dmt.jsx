@@ -44,7 +44,7 @@ const Dmt = () => {
 	const commisionFor = [
 		{ key: "1", label: "Individuals" },
 		{ key: "2", label: "Distributors" },
-		{ key: "3", label: "Products" },
+		// { key: "3", label: "Products" },
 	];
 	const getLabelFromKey = (key) => {
 		const radio = commisionFor.find((radio) => radio.key === key);
