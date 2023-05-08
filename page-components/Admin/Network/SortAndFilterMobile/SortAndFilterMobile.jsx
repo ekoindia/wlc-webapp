@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { NetworkFilter, NetworkSort } from "..";
+import { NetworkFilter } from "..";
 
 /**
  * A <SortAndFilterMobile> component
@@ -23,9 +23,9 @@ const SortAndFilterMobile = ({ setFilter, setSort }) => {
 				zIndex={"99"}
 				boxShadow={"0px -3px 10px #0000001A"}
 			>
-				<Box w={"50%"} h={"100%"} bg={"white"}>
+				{/* <Box w={"50%"} h={"100%"} bg={"white"}>
 					<NetworkSort setSort={setSort} />
-				</Box>
+				</Box> */}
 				<Box w={"50%"} h={"100%"}>
 					<NetworkFilter setFilter={setFilter} />
 				</Box>

@@ -11,7 +11,7 @@ import { openGoogleMap } from "helpers";
 import { Map } from "libs";
 import Router from "next/router";
 
-const AddressPane = ({ rowdata: addressdata }) => {
+const AddressPane = ({ rowData: addressdata }) => {
 	return (
 		<Cards>
 			<Heading
