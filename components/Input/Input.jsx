@@ -1,4 +1,11 @@
-import { Center, Flex, Input } from "@chakra-ui/react";
+import {
+	Flex,
+	Input as ChakraInput,
+	InputGroup,
+	InputLeftAddon,
+	InputLeftElement,
+	InputRightElement,
+} from "@chakra-ui/react";
 import { InputLabel, InputMsg } from "../";
 
 /**
@@ -6,8 +13,8 @@ import { InputLabel, InputMsg } from "../";
  * TODO: A reusable component for input (only text)
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Inputs></Inputs>`
- * @example	`<Inputs/>`
+ * @example	`<Input></Input>`
+ * @example	`<Input/>`
  */
 
 function formatNum(value, num) {
@@ -27,31 +34,34 @@ function formatNum(value, num) {
 	}
 }
 
-const Inputs = ({
+const Input = ({
 	label,
 	name,
 	placeholder,
 	description,
 	value,
 	type = "text",
+	leftAddon,
+	inputLeftElement,
+	inputLeftElementStyle,
+	inputRightElement,
+	inputRightElementStyle,
 	disabled = false,
 	hidden = false,
 	invalid = false,
 	errorMsg = "",
-	onChange,
 	isNumInput = false,
 	labelStyle,
 	errorStyle,
 	inputContStyle,
 	inputNumStyle,
-	inputProps,
+	radius,
 	required = false,
-	...props
+	onChange = () => {},
+	onKeyDown = () => {},
+	...rest
 }) => {
 	const onChangeHandler = (e) => {
-		// /^[6-9]\d{0,9}$/g.test(val)
-		// /^[6-9]\d{0,2}\s\d{0,3}\s\d{0,4}$/g
-		// [6-9]?(\d{0,2})?(\s\d{0,3})?(\s\d{0,4})
 		let val = e.target.value;
 		if (isNumInput) {
 			if (
@@ -66,14 +76,35 @@ const Inputs = ({
 	};
 
 	return (
-		<Flex direction="column" {...props}>
+		<Flex direction="column" w="100%" {...inputContStyle}>
 			{label ? (
 				<InputLabel required={required} {...labelStyle}>
 					{label}
 				</InputLabel>
 			) : null}
-			<Flex pos="relative" {...inputContStyle}>
-				<Input
+
+			<InputGroup size="lg">
+				{leftAddon ? (
+					<InputLeftAddon
+						pointerEvents="none"
+						bg="transparent"
+						borderLeftRadius={radius || "6px"}
+						borderColor={errorMsg && invalid ? "error" : "hint"}
+					>
+						{leftAddon}
+					</InputLeftAddon>
+				) : null}
+
+				{inputLeftElement ? (
+					<InputLeftElement
+						pointerEvents="none"
+						{...inputLeftElementStyle}
+					>
+						{inputLeftElement}
+					</InputLeftElement>
+				) : null}
+
+				<ChakraInput
 					name={name}
 					placeholder={placeholder}
 					type={type}
@@ -81,14 +112,13 @@ const Inputs = ({
 					hidden={hidden}
 					value={value}
 					required={required}
-					borderRadius={{ base: 10, "2xl": 10 }}
+					borderRadius={radius || "6px"}
 					borderColor={errorMsg && invalid ? "error" : "hint"}
 					bg={errorMsg && invalid ? "#fff7fa" : ""}
 					w="100%"
 					inputMode={isNumInput ? "numeric" : "text"}
 					onChange={(e) => onChangeHandler(e)}
-					pl={isNumInput ? { base: 17, "2xl": "7.6rem" } : ""}
-					height="100%"
+					onKeyDown={onKeyDown}
 					_hover={{
 						border: "",
 					}}
@@ -98,10 +128,19 @@ const Inputs = ({
 						borderColor: "hint",
 						transition: "box-shadow 0.3s ease-out",
 					}}
-					{...inputProps}
+					{...rest}
 				/>
 
-				{isNumInput && (
+				{inputRightElement ? (
+					<InputRightElement
+						pointerEvents="none"
+						{...inputRightElementStyle}
+					>
+						{inputRightElement}
+					</InputRightElement>
+				) : null}
+
+				{/* {isNumInput && (
 					<Center
 						pos="absolute"
 						top="0"
@@ -116,8 +155,8 @@ const Inputs = ({
 					>
 						+91
 					</Center>
-				)}
-			</Flex>
+				)} */}
+			</InputGroup>
 
 			{(invalid && errorMsg) || description ? (
 				<InputMsg error={invalid && errorMsg} {...errorStyle}>
@@ -128,8 +167,4 @@ const Inputs = ({
 	);
 };
 
-Inputs.defaultProps = {
-	onChange: () => {},
-};
-
-export default Inputs;
+export default Input;

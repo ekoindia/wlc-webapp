@@ -19,6 +19,11 @@ export const processTransactionData = (tmp_lst) => {
 		//   continue;
 		// }
 
+		// Skip if it's a duplicate
+		if (tmp_lst[i].id in role_tx_list) {
+			continue;
+		}
+
 		// Add trxn to global role list
 		role_tx_list[tmp_lst[i].id] = {
 			order: i,
@@ -115,6 +120,14 @@ export const processTransactionData = (tmp_lst) => {
 
 		// Hide Invisible interactions -----------------------------------
 		if (tmp_lst[i].is_visible == 0) {
+			continue;
+		}
+
+		// Remove duplicates...
+		if (
+			interaction_list.length > 1 &&
+			tmp_lst[i].id === interaction_list[interaction_list.length - 1].id
+		) {
 			continue;
 		}
 

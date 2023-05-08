@@ -1,2 +1,1 @@
-import Map from "./Map";
-export { Map };
+export { default as Map } from "./Map";

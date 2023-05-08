@@ -30,10 +30,7 @@ const CommonTrxnWidget = () => {
 
 	const showAllButton = useBreakpointValue({
 		base: interaction_list.length > 3 && !showAll,
-		sm: interaction_list.length > 3 && !showAll,
 		md: false,
-		lg: false,
-		xl: false,
 	});
 
 	const showTransactions = showAll
@@ -46,77 +43,29 @@ const CommonTrxnWidget = () => {
 	return (
 		<div>
 			<Flex
-				minH={{
-					base: "200px",
-					sm: "auto",
+				h={{
+					base: "auto",
 					md: "387px",
-					lg: "340px",
-					xl: "387px",
 				}}
-				maxH={{
-					base: "auto",
-					sm: "auto",
-					md: "387px",
-					lg: "400px",
-					xl: "387px",
-				}}
-				minW={{
-					base: "auto",
-					sm: "auto",
-					md: "380px",
-					lg: "360px",
-					xl: "350px",
-				}}
-				maxW={{
-					base: "auto",
-					sm: "auto",
-					md: "1000px",
-					lg: "400px",
-					xl: "580px",
-				}}
-				borderRadius={{
-					base: "10px 10px 10px 10px",
-					sm: "10px 10px 10px 10px",
-					md: "10px",
-				}}
-				background={"white"}
-				direction={"column"}
-				rowGap={{
-					base: "20px",
-					sm: "30px",
-					md: "50px",
-					lg: "20px",
-					xl: "10px",
-				}}
-				px={{
-					base: "20px",
-					sm: "40px",
-					md: "18px",
-					lg: "15px",
-					xl: "15px 10px",
-				}}
-				py={{
-					base: "12px",
-					sm: "30px",
-					md: "18px",
-					lg: "14px",
-					xl: "15px",
-				}}
-				m={{ base: "16px", sm: "10px", md: "0px" }}
+				direction="column"
+				background="white"
+				p="5"
+				borderRadius="10px"
+				m={{ base: "16px", md: "auto" }}
 			>
-				<Box p={{ base: "0px 20px 0px 0px", md: "0px 0px 0px 0px" }}>
+				<Box>
 					<Text as="b" fontSize={{ base: "sm", md: "md" }}>
 						Most common transactions
 					</Text>
 				</Box>
 				<SimpleGrid
-					columns={{ base: 3, sm: 3, md: 3 }}
-					spacing={{ md: "4", lg: "4", xl: "8" }}
+					columns="3"
+					spacing={{ base: "4", md: "12" }}
 					justifyContent="center"
-					alignItems="center"
 					textAlign="center"
+					alignItems="flex-start"
 				>
-					{showTransactions.map((transaction, index) => (
+					{showTransactions.slice(0, 6).map((transaction, index) => (
 						<>
 							<Box
 								key={index}
@@ -124,6 +73,7 @@ const CommonTrxnWidget = () => {
 								flexDirection="column"
 								alignItems="center"
 								justifyContent="center"
+								pt={{ base: "22px" }}
 								// borderRight={
 								// 	index !== 2 && (index + 1) % 3
 								// 		? "1px solid #E9EDF1"
@@ -132,11 +82,7 @@ const CommonTrxnWidget = () => {
 							>
 								<IcoButton
 									title={transaction.label}
-									iconName={
-										index < 5
-											? transaction.icon
-											: "more-horiz"
-									}
+									iconName={transaction.icon}
 									iconStyle={{
 										width: "30px",
 										height: "30px",
@@ -188,6 +134,7 @@ const CommonTrxnWidget = () => {
 						justifyContent="center"
 						alignItems="center"
 						textAlign="center"
+						pt={{ base: "24px", md: "0px" }}
 					>
 						<Button
 							onClick={() => setShowAll(true)}

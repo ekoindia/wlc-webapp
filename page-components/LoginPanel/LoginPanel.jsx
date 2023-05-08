@@ -32,7 +32,7 @@ const LoginPanel = () => {
 				// justifyContent="center"
 				// align="center"
 				justifyItems="center"
-				w={{ base: "100%", md: "30rem", "2xl": "43.75rem" }}
+				w={{ base: "100%", md: "28rem", "2xl": "43.75rem" }}
 				h={{ base: "100%", md: "initial" }}
 			>
 				{/* Logo */}
@@ -57,8 +57,8 @@ const LoginPanel = () => {
 						}
 						alt={orgDetail.app_name + " logo"}
 						pl={{ base: 4, md: "0" }}
-						w={{ base: "9rem", md: "14rem", "2xl": "19rem" }}
-						height={{ base: "2.2rem", md: "3.5rem", "2xl": "5rem" }}
+						mw={{ base: "9rem", md: "14rem", "2xl": "19rem" }}
+						height={{ base: "2.2rem", md: 16 }}
 					/>
 				</Box>
 
@@ -67,7 +67,7 @@ const LoginPanel = () => {
 					maxW={{ base: "90vw", sm: "30rem", lg: "none" }}
 					w={{
 						base: "90%",
-						md: "30rem",
+						md: "28rem",
 						"2xl": "43.75rem",
 					}}
 					h={{ base: "31rem", "2xl": "44.3rem" }}

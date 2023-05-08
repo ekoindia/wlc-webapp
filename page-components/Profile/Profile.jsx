@@ -21,7 +21,6 @@ const Profile = ({ prop1, ...rest }) => {
 				base: "repeat(auto-fit,minmax(280px,0.90fr))",
 				sm: "repeat(auto-fit,minmax(380px,0.90fr))",
 				md: "repeat(auto-fit,minmax(360px,1fr))",
-				// lg: "repeat(auto-fit,minmax(360px,1fr))",
 				xl: "repeat(auto-fit,minmax(440px,1fr))",
 			}}
 			justifyContent="center"
@@ -29,21 +28,21 @@ const Profile = ({ prop1, ...rest }) => {
 			gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 			{...rest}
 		>
-			<GridItem maxW="560px">
+			<GridItem>
 				<ProfileWidget />
 			</GridItem>
-			<GridItem maxW="560px">
+			<GridItem>
 				<ManageMyAccountCard />
 			</GridItem>
-			<GridItem maxW="560px">
+			<GridItem>
 				<ShopCard />
 			</GridItem>
-			<GridItem maxW="560px">
+			<GridItem>
 				<PersonalDetailCard />
 			</GridItem>
-			<GridItem>{/* <ProfileWidget /> */}</GridItem>
 		</Grid>
 	);
 };
+//TODO user type id 2,3 --> seller -- shop details
 
 export default Profile;

@@ -118,10 +118,10 @@ const ChangeRole = (props) => {
 							},
 						}}
 					>
-						<Tab>Transfer CSPs</Tab>
-						<Tab>Promote Csp To Scsp</Tab>
+						<Tab>Transfer Sellers</Tab>
+						<Tab>Promote Seller To Distributor</Tab>
 						<Tab>Demote Distributor</Tab>
-						<Tab>Upgrade Merchant To I-Merchant</Tab>
+						<Tab>Upgrade Seller To iSeller</Tab>
 					</TabList>
 
 					<TabPanels

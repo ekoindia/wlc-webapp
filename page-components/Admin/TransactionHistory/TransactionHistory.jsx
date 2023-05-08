@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Headings, SearchBar } from "components";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
@@ -12,51 +12,61 @@ import { TransactionHistoryTable } from ".";
  */
 
 const TransactionHistory = () => {
-	const [search, setSearch] = useState("");
+	const [search, setSearch] = useState(null);
+	const [isSearching, setIsSearching] = useState(false);
 
-	function onChangeHandler(e) {
-		setSearch(e);
-		//TODO re-check
-	}
 	/* API CALLING */
 
-	let headers = {
-		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=${search}`,
-		"tf-req-method": "GET",
-	};
-	const { data, error, isLoading, mutate } = useRequest({
+	const { data, mutate } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-		headers: { ...headers },
+		headers: {
+			"tf-req-uri-root-path": "/ekoicici/v1",
+			"tf-req-uri": `/network/agents/transaction_history?record_count=10&search_value=${search}`,
+			"tf-req-method": "GET",
+		},
 	});
 
 	useEffect(() => {
-		mutate(
-			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-			headers
-		);
-	}, [headers["tf-req-uri"]]);
-	const transactiondata = data?.data?.transaction_details ?? [];
+		if (!(search && search.length >= 8)) return;
+		// Search again
+		mutate();
+	}, [search]);
+
+	const transactiondata = data?.data?.transaction_details || [];
 
 	return (
 		<>
 			<Headings title="Transaction History" hasIcon={false} />
-			<Box w="100%" px={{ base: "16px", md: "initial" }} pb={"20px"}>
-				<Box>
-					<SearchBar
-						value={search}
-						setSearch={setSearch}
-						minSearchLimit={10}
-						maxSearchLimit={10}
-					/>
-				</Box>
-				<Box>
-					<TransactionHistoryTable
-						transactiondata={transactiondata}
-					/>
-				</Box>
-			</Box>
+			<Flex
+				direction="column"
+				w="100%"
+				px={{ base: "16px", md: "initial" }}
+				pb={"20px"}
+			>
+				<SearchBar
+					placeholder="Search by mobile number or user code"
+					type="number"
+					value={search}
+					showButton={true}
+					minSearchLimit={8}
+					maxSearchLimit={10}
+					setSearch={setSearch}
+					setIsSearching={setIsSearching}
+				/>
+
+				{isSearching ? (
+					transactiondata.length ? (
+						<TransactionHistoryTable
+							transactiondata={transactiondata}
+						/>
+					) : (
+						<Flex justify="center" align="center" h="100px">
+							<Text textColor="light">Nothing Found</Text>
+						</Flex>
+					)
+				) : null}
+			</Flex>
 		</>
 	);
 };

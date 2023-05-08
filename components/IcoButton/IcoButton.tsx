@@ -7,7 +7,6 @@ type Props = {
 	size: "lg" | "md" | "sm" | string;
 	iconStyle: Object;
 	theme?: "dark" | "light";
-	bg?: string;
 	rounded?: "full" | string | number;
 	title?: string;
 	onClick?: () => void;
@@ -20,7 +19,6 @@ type Props = {
  * @param {string} size - The size of the button. Can be "lg", "md", "sm", or a custom string.
  * @param {Object} iconStyle - The styles to apply to the icon (should contain width, height).
  * @param {string} theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
- * @param {string} bg - The background color of the button.
  * @param {string|number} rounded - The rounding of the button. Can be a string, a number, or "full".
  * @param {string} title - The title of the button.
  * @param {MouseEvent} onClick - The click event handler
@@ -39,7 +37,6 @@ const IcoButton = ({
 	size,
 	iconStyle,
 	theme = "light",
-	bg,
 	rounded = "10",
 	title = "Icon Button",
 	onClick,
@@ -80,13 +77,18 @@ const IcoButton = ({
 					color: "accent.DEFAULT",
 					border: "1px solid #E9EDF1",
 			  }
+			: theme === "gray"
+			? {
+					bg: "linear-gradient( #D2D2D2, #E9EDF1)",
+					color: "white",
+					border: "1px solid #E9EDF1",
+			  }
 			: null;
 
 	return (
 		<Center
 			as="button"
 			title={title}
-			bg={bg}
 			width={bgSize}
 			height={bgSize}
 			rounded={rounded}

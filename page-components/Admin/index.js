@@ -5,7 +5,7 @@ import { Dashboard } from "./Dashboard";
 import { DetailedStatement } from "./DetailedStatement";
 import { Network } from "./Network";
 import { PricingCommission } from "./PricingCommission";
-import { ProfilePanel } from "./Profile";
+import { ProfilePanel } from "./ProfilePanel";
 import { TransactionHistory } from "./TransactionHistory";
 import { UpdatePersonalInfo } from "./UpdatePersonalInfo";
 import { UpdateSellerAddress } from "./UpdateSellerAddress";

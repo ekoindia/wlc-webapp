@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, Layout } from "components";
+import { BreadcrumbsWrapper, Layout, PaddingBox } from "components";
 import { TransactionHistoryObject } from "constants";
 import Head from "next/head";
 import { TransactionHistory } from "page-components/Admin";
@@ -7,15 +7,17 @@ const TransactionHistoryPage = () => {
 	return (
 		<>
 			<Head>
-				<title>Transaction History | Eko API Marketplace</title>
+				<title>Transaction History</title>
 			</Head>
 
 			<Layout>
-				<BreadcrumbsWrapper
-					BreadcrumbsObject={TransactionHistoryObject}
-				>
-					<TransactionHistory />
-				</BreadcrumbsWrapper>
+				<PaddingBox>
+					<BreadcrumbsWrapper
+						BreadcrumbsObject={TransactionHistoryObject}
+					>
+						<TransactionHistory />
+					</BreadcrumbsWrapper>
+				</PaddingBox>
 			</Layout>
 		</>
 	);

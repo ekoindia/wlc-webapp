@@ -19,7 +19,7 @@ const OnboardingDashboardTable = ({ prop1, ...rest }) => {
 		},
 		{
 			name: "mobile_number",
-			field: "Eko Code",
+			field: "User Code",
 			sorting: true,
 		},
 		{ name: "type", field: "Ref. ID", sorting: true },

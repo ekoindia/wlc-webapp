@@ -42,10 +42,10 @@ const Network = () => {
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents?initiator_id=9911572989&user_code=99029899&org_id=1&source=WLC&record_count=10&client_ref_id=202301031354123456&page_number=${pageNumber}&${postData}`,
+		"tf-req-uri": `/network/agents?record_count=10&page_number=${pageNumber}&${postData}`,
 		"tf-req-method": "GET",
 	};
-	const { data, error, isLoading, mutate } = useRequest({
+	const { data, mutate } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },
@@ -60,36 +60,34 @@ const Network = () => {
 
 	const totalRecords = data?.data?.totalRecords;
 	const agentDetails = data?.data?.agent_details ?? [];
+	const dataLength = agentDetails.length;
 
-	// console.log("onfilterHandler", onfilterHandler);
 	return (
 		<>
 			<Headings title="My Network" hasIcon={false} />
 			<Box w={"100%"} px={{ base: "16px", md: "initial" }}>
-				<Box display={"flex"} justifyContent={"space-between"}>
-					<SearchBar
-						value={search}
-						setSearch={setSearch}
-						minSearchLimit={10}
-						maxSearchLimit={10}
-					/>
-					<Flex
-						display={{ base: "none", md: "flex" }}
-						gap={{ sm: "5px", md: "20px", lg: "50px" }}
-						align={"center"}
-						justifyContent={"space-between"}
-					>
-						<Box>
+				{dataLength > 0 ? (
+					<Flex justify="space-between">
+						<SearchBar
+							value={search}
+							setSearch={setSearch}
+							minSearchLimit={10}
+							maxSearchLimit={10}
+						/>
+						<Flex
+							display={{ base: "none", md: "flex" }}
+							gap={{ sm: "5px", md: "20px", lg: "50px" }}
+							align={"center"}
+							justifyContent={"space-between"}
+						>
 							<NetworkFilter
 								filter={filter}
 								setFilter={setFilter}
 							/>
-						</Box>
-						<Box>
 							<NetworkSort sort={sort} setSort={setSort} />
-						</Box>
+						</Flex>
 					</Flex>
-				</Box>
+				) : null}
 
 				<Box mt={{ base: "none", md: "20px" }}>
 					<NetworkTable
@@ -100,12 +98,14 @@ const Network = () => {
 						setPageNumber={setPageNumber}
 					/>
 				</Box>
-				<SortAndFilterMobile
-					filter={filter}
-					sort={sort}
-					setFilter={setFilter}
-					setSort={setSort}
-				/>
+				{dataLength > 0 ? (
+					<SortAndFilterMobile
+						filter={filter}
+						sort={sort}
+						setFilter={setFilter}
+						setSort={setSort}
+					/>
+				) : null}
 			</Box>
 		</>
 	);

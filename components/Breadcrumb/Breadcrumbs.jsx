@@ -6,18 +6,7 @@ import {
 } from "@chakra-ui/react";
 import { Icon } from "../";
 
-const Breadcrumbs = (props) => {
-	const {
-		// setNav,
-		// setHeadingObj,
-		// isNavVisible,
-		// isSmallerThan769,
-		// propComp,
-		hrefs = [],
-		labels = [],
-		handleOnClick,
-	} = props;
-
+const Breadcrumbs = ({ hrefs = [], labels = [], handleOnClick }) => {
 	return (
 		<>
 			<Box display={{ base: "none", lg: "flex" }}>

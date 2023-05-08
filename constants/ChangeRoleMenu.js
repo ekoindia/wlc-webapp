@@ -4,7 +4,7 @@ export const ChangeRoleMenu = [
 		path: "/admin/my-network/profile/change-role?tab=0",
 	},
 	{
-		item: "Promote Csp To Scsp",
+		item: "Promote Seller To Distributor",
 		path: "/admin/my-network/profile/change-role?tab=1",
 	},
 	{

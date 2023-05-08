@@ -37,11 +37,7 @@ export const getStatusStyle = (status, tableName) => {
 		</Flex>
 	) : null;
 };
-export const getLocationStyle = (
-	location,
-	lat = 23.1967657,
-	long = 77.4270079
-) => {
+export const getLocationStyle = (location, lat, long) => {
 	return (
 		<Flex alignItems={"center"}>
 			<Box>{location}</Box>
@@ -72,7 +68,6 @@ export const getArrowStyle = () => {
 	);
 };
 export const getModalStyle = (eko_code, account_status) => {
-	console.log("eko_code in tablehelpers", eko_code);
 	return (
 		<>
 			<NetworkMenuWrapper
@@ -129,7 +124,7 @@ export const getDescriptionStyle = (description) => {
 	);
 };
 
-export const openGoogleMap = ({ latitude, longitude }) => {
+export const openGoogleMap = (latitude, longitude) => {
 	const lat = parseFloat(latitude);
 	const lng = parseFloat(longitude);
 	window.open(`https://maps.google.com/?q=${lat},${lng}`, "_blank");

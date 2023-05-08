@@ -70,6 +70,7 @@ const GoogleButton = ({
 					width={48}
 					height={48}
 					loading="eager"
+					alt="Google Logo"
 				/>
 			</Center>
 			<Text ml={[10, 10, null]} variant="selectNone">

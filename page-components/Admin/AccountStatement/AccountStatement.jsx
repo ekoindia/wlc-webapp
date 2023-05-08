@@ -21,7 +21,7 @@ const AccountStatement = () => {
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history/recent_transaction?initiator_id=9911572989&user_code=99029899&client_ref_id=202301031354123456&org_id=1&source=WLC&record_count=10&search_value=${cellnumber}`,
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction?record_count=10&search_value=${cellnumber}`,
 		"tf-req-method": "GET",
 	};
 
@@ -39,12 +39,11 @@ const AccountStatement = () => {
 	}, [headers["tf-req-uri"]]);
 
 	const acctabledata = data?.data?.recent_transaction_details ?? [];
-	console.log("acctabledata", acctabledata);
 	const actable = data?.data ?? [];
 	const agentname = actable?.agent_name ?? [];
 	const saving_balance = actable?.saving_balance ?? [];
 	/*redirect to detiled statement*/
-	const handleClick = (e) => {
+	const handleClick = () => {
 		router.push({
 			pathname:
 				"/admin/transaction-history/account-statement/detailed-statement",

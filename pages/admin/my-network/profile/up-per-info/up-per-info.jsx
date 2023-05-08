@@ -1,14 +1,22 @@
-import { BreadcrumbsWrapper, Layout } from "components";
+import { BreadcrumbsWrapper, Layout, PaddingBox } from "components";
 import { NetworkObject } from "constants";
+import Head from "next/head";
 import { UpdatePersonalInfo } from "page-components/Admin";
 
 function updatePersonalInfo() {
 	return (
-		<Layout>
-			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
-				<UpdatePersonalInfo />
-			</BreadcrumbsWrapper>
-		</Layout>
+		<>
+			<Head>
+				<title>Update Personal Information</title>
+			</Head>
+			<Layout>
+				<PaddingBox>
+					<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+						<UpdatePersonalInfo />
+					</BreadcrumbsWrapper>
+				</PaddingBox>
+			</Layout>
+		</>
 	);
 }
 

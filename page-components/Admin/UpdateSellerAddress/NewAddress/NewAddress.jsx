@@ -100,12 +100,12 @@ const NewAddress = () => {
 								fontWeight: "600",
 								mb: { base: 2.5, "2xl": "0.8rem" },
 							}}
-							inputContStyle={{
-								h: { base: "3rem", "2xl": "3rem" },
-								w: "100%",
-								pos: "relative",
-								alignItems: "center",
-							}}
+							// inputContStyle={{
+							// 	h: { base: "3rem", "2xl": "3rem" },
+							// 	w: "100%",
+							// 	pos: "relative",
+							// 	alignItems: "center",
+							// }}
 						/>
 					</Box>
 					<Box
@@ -118,7 +118,7 @@ const NewAddress = () => {
 						}}
 					>
 						<Input
-							label=" Address Line 2"
+							label="Address Line 2"
 							defaultvalue={item.AddressLine2}
 							// invalid={true}
 							// errorMsg={"Please enter"}
@@ -131,12 +131,12 @@ const NewAddress = () => {
 								fontWeight: "600",
 								mb: { base: 2.5, "2xl": "0.8rem" },
 							}}
-							inputContStyle={{
-								h: { base: "3rem", "2xl": "3rem" },
-								w: "100%",
-								pos: "relative",
-								alignItems: "center",
-							}}
+							// inputContStyle={{
+							// 	h: { base: "3rem", "2xl": "3rem" },
+							// 	w: "100%",
+							// 	pos: "relative",
+							// 	alignItems: "center",
+							// }}
 						/>
 					</Box>
 				</Flex>
@@ -173,12 +173,12 @@ const NewAddress = () => {
 								fontWeight: "600",
 								mb: { base: 2.5, "2xl": "0.8rem" },
 							}}
-							inputContStyle={{
-								h: { base: "3rem", "2xl": "3rem" },
-								w: "100%",
-								pos: "relative",
-								alignItems: "center",
-							}}
+							// inputContStyle={{
+							// 	h: { base: "3rem", "2xl": "3rem" },
+							// 	w: "100%",
+							// 	pos: "relative",
+							// 	alignItems: "center",
+							// }}
 						/>
 					</Box>
 					<Box
@@ -191,7 +191,7 @@ const NewAddress = () => {
 						}}
 					>
 						<Input
-							label=" City"
+							label="City"
 							defaultvalue={item.City}
 							// invalid={true}
 							// errorMsg={"Please enter"}
@@ -204,12 +204,12 @@ const NewAddress = () => {
 								fontWeight: "600",
 								mb: { base: 2.5, "2xl": "0.8rem" },
 							}}
-							inputContStyle={{
-								h: { base: "3rem", "2xl": "3rem" },
-								w: "100%",
-								pos: "relative",
-								alignItems: "center",
-							}}
+							// inputContStyle={{
+							// 	h: { base: "3rem", "2xl": "3rem" },
+							// 	w: "100%",
+							// 	pos: "relative",
+							// 	alignItems: "center",
+							// }}
 						/>
 					</Box>
 				</Flex>
@@ -284,7 +284,7 @@ const NewAddress = () => {
 						}}
 					>
 						<Input
-							label=" Country"
+							label="Country"
 							required="true"
 							defaultvalue={item.Country}
 							// invalid={true}
@@ -298,12 +298,12 @@ const NewAddress = () => {
 								fontWeight: "600",
 								mb: { base: 2.5, "2xl": "0.8rem" },
 							}}
-							inputContStyle={{
-								h: { base: "3rem", "2xl": "3rem" },
-								w: "100%",
-								pos: "relative",
-								alignItems: "center",
-							}}
+							// inputContStyle={{
+							// 	h: { base: "3rem", "2xl": "3rem" },
+							// 	w: "100%",
+							// 	pos: "relative",
+							// 	alignItems: "center",
+							// }}
 						/>
 					</Box>
 				</Flex>

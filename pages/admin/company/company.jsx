@@ -4,7 +4,7 @@ const Company = () => {
 	return (
 		<>
 			<Head>
-				<title>Company | Eko API Marketplace</title>
+				<title>Company</title>
 			</Head>
 			<Layout>
 				<h1>Add Page Content Here</h1>

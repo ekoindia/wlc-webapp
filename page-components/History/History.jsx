@@ -39,9 +39,6 @@ const History = () => {
 	};
 	const limit = 25; // Page size
 	const body = {
-		client_ref_id: 551681714635439,
-		locale: "en",
-		user_id: 8888888888,
 		interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
 		start_index: currentPage * limit,
 		limit: limit,
@@ -110,18 +107,8 @@ const History = () => {
 						{/* <==========Search =========> */}
 						<Flex>
 							<SearchBar
-								inputContStyle={{
-									width: {
-										base: "282px",
-										md: "400px",
-										lg: "150px",
-										xl: "300px",
-										"2xl": "450px",
-									},
-									h: "36px",
-								}}
-								onChangeHandler={onChangeHandler}
 								value={searchValue}
+								onChangeHandler={onChangeHandler}
 							/>
 						</Flex>
 
@@ -215,7 +202,8 @@ const History = () => {
 												w="100%"
 												label="Amount"
 												type="number"
-												placeholder={"₹ Enter Amount"}
+												placeholder="Enter Amount"
+												leftAddon="₹"
 												// required="true"
 												// defaultvalue={item.Name}
 												// invalid={true}
@@ -235,9 +223,9 @@ const History = () => {
 														lg: "300px",
 														xl: "400px",
 													},
-													h: "42px",
-													pos: "relative",
-													borderRadius: "6px",
+													// h: "42px",
+													// pos: "relative",
+													// borderRadius: "6px",
 												}}
 											/>
 										</Flex>
@@ -265,9 +253,9 @@ const History = () => {
 														lg: "300px",
 														xl: "400px",
 													},
-													h: "42px",
-													pos: "relative",
-													borderRadius: "6px",
+													// h: "42px",
+													// pos: "relative",
+													// borderRadius: "6px",
 												}}
 											/>
 										</Flex>

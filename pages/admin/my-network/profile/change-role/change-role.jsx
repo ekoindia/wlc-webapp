@@ -1,15 +1,22 @@
-import { BreadcrumbsWrapper, Layout } from "components";
+import { BreadcrumbsWrapper, Layout, PaddingBox } from "components";
 import { NetworkObject } from "constants";
-
+import Head from "next/head";
 import { ChangeRole } from "page-components/Admin";
 
 const changeRole = () => {
 	return (
-		<Layout>
-			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
-				<ChangeRole />
-			</BreadcrumbsWrapper>
-		</Layout>
+		<>
+			<Head>
+				<title>Change Role</title>
+			</Head>
+			<Layout>
+				<PaddingBox>
+					<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+						<ChangeRole />
+					</BreadcrumbsWrapper>
+				</PaddingBox>
+			</Layout>
+		</>
 	);
 };
 

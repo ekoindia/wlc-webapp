@@ -69,6 +69,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 					case "google":
 						return (
 							<GoogleButton
+								key={key}
 								setStep={setStep}
 								setLoginType={setLoginType}
 								setNumber={setNumber}
@@ -91,15 +92,15 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			<Input
 				cursor="default"
 				label="Enter mobile number"
-				placeholder={"XXX XXX XXXX"}
+				placeholder="XXX XXX XXXX"
+				leftAddon="+91"
 				type="mobile_number"
 				value={value}
 				invalid={invalid}
 				errorMsg={errorMsg}
+				radius={10}
 				mb={{ base: 10, "2xl": "4.35rem" }}
 				maxW="100%"
-				isPrefixVisible={true}
-				prefixSymbol={"+91"}
 				onChange={onChangeHandler}
 				maxLength={12}
 				isNumInput={true}
@@ -109,10 +110,6 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 					pl: "0",
 					fontWeight: "semibold",
 					mb: { base: 2.5, "2xl": "0.8rem" },
-				}}
-				inputContStyle={{
-					h: { base: "3rem", "2xl": "4rem" },
-					pos: "relative",
 				}}
 				onFocus={() => {
 					setInvalid(false);

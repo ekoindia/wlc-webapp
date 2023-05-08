@@ -1,4 +1,4 @@
-import { Flex, GridItem, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Flex, GridItem, Text } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { useUser } from "contexts/UserContext";
 /**
@@ -12,55 +12,17 @@ import { useUser } from "contexts/UserContext";
 const QueryWidget = () => {
 	const { userData } = useUser();
 	const data = userData?.userDetails?.contacts ?? [];
-	const hoverBg = useBreakpointValue({
-		base: "white",
-		md: "transparent",
-	});
-
-	function handleContact() {
-		// Replace with the URL of your mailbox
-		const mailboxUrl = `mailto:${data[0].email}`;
-		window.location.href = mailboxUrl;
-	}
-
-	if (!(data && data.length > 0)) {
-		return null;
-	}
 
 	return (
 		<div>
 			<GridItem>
 				<Flex
-					minH={{
+					h={{
 						base: "auto",
-						sm: "200px",
 						md: "387px",
-						lg: "300px",
-						xl: "387px",
-					}}
-					maxH={{
-						base: "auto",
-						sm: "200px",
-						md: "387px",
-						lg: "400px",
-						xl: "387px",
-					}}
-					minW={{
-						base: "100%",
-						sm: "100%",
-						md: "380px",
-						lg: "360px",
-						xl: "350px",
-					}}
-					maxW={{
-						base: "100%",
-						sm: "100%",
-						md: "1000px",
-						lg: "400px",
-						xl: "580px",
 					}}
 					borderRadius={{
-						base: "0px 0px 0px 0px",
+						base: "0px",
 						sm: "0px 0px 2px 2px",
 						md: "10px",
 					}}
@@ -72,7 +34,6 @@ const QueryWidget = () => {
 					direction={"column"}
 					align={{
 						base: "flex-start",
-						sm: "flex-start",
 						md: "center",
 					}}
 					rowGap={{
@@ -108,14 +69,10 @@ const QueryWidget = () => {
 						pb={{ base: "0px", sm: "20px", md: "10px", lg: "25px" }}
 						direction={"row"}
 					>
-						<Text fontSize={"21px"} display={"inline"}>
+						<Text fontSize="21px" display="inline">
 							Have a
 						</Text>
-						<Text
-							fontSize={"30px"}
-							display={"inline"}
-							pl={{ base: "1px", md: "3px" }}
-						>
+						<Text fontSize="30px" display="inline" pl="0.3em">
 							QUERY?
 						</Text>
 					</Flex>
@@ -129,14 +86,19 @@ const QueryWidget = () => {
 					>
 						{data[0]?.cellnumber ? (
 							<Flex>
-								<Icon
-									h={{ base: "32px", md: "32px" }}
-									name="phone-circle-outline"
-									color="white"
-									display="flex"
-									mt={{ base: "2px", md: "23px" }}
-									mr={{ base: "4px", md: "8px" }}
-								/>
+								<a
+									href={`tel:${data[0].cellnumber}`}
+									target="_blank"
+								>
+									<Icon
+										h={{ base: "32px", md: "32px" }}
+										name="phone-circle-outline"
+										color="white"
+										display="flex"
+										mt={{ base: "2px", md: "23px" }}
+										mr={{ base: "4px", md: "8px" }}
+									/>
+								</a>
 								<Flex direction={"column"}>
 									<Text
 										color={"white"}
@@ -144,7 +106,7 @@ const QueryWidget = () => {
 											base: "0.700rem",
 											md: "18px",
 										}}
-										textAlign={{ base: "auto", md: "auto" }}
+										textAlign="auto"
 										paddingLeft={{
 											base: "0px",
 											md: "15px",
@@ -152,7 +114,10 @@ const QueryWidget = () => {
 									>
 										Call us on
 									</Text>
-									<a href={`tel:${data[0].cellnumber}`}>
+									<a
+										href={`tel:${data[0].cellnumber}`}
+										target="_blank"
+									>
 										<Text
 											as="b"
 											color={"white"}
@@ -180,39 +145,42 @@ const QueryWidget = () => {
 
 						{data[0]?.email ? (
 							<Flex direction={"column"}>
-								<Button
-									bg={"white"}
-									border={{ base: "", md: "1px solid white" }}
-									_hover={{ bg: hoverBg }}
-									onClick={handleContact}
-									icon={
-										<Icon
-											name="chat-outline"
-											h={{ base: "18px", md: "20px" }}
-											color="accent.DEFAULT"
-										/>
-									}
-									borderRadius={{ base: "5px", md: "10px" }}
-									h={{
-										base: "40px",
-										md: "48px",
-										lg: "44px",
-										xl: "48px",
-									}}
-									w={{
-										base: "120px",
-										md: "190px",
-										lg: "180px",
-										xl: "190px",
-									}}
+								<a
+									href={`mailto:${data[0].email}`}
+									target="_blank"
 								>
-									<Text
-										fontSize={{ base: "sm" }}
+									<Button
+										bg={"white"}
+										border="1px solid white"
 										color="accent.DEFAULT"
+										_hover={{
+											bg: "transparent",
+											color: "white",
+										}}
+										icon={
+											<Icon
+												name="chat-outline"
+												h={{ base: "18px", md: "20px" }}
+											/>
+										}
+										borderRadius={{
+											base: "5px",
+											md: "10px",
+										}}
+										h={{
+											base: "40px",
+											md: "48px",
+										}}
+										w={{
+											base: "120px",
+											md: "190px",
+										}}
 									>
-										Write to us
-									</Text>
-								</Button>
+										<Text fontSize={{ base: "sm" }}>
+											Write to us
+										</Text>
+									</Button>
+								</a>
 							</Flex>
 						) : null}
 					</Flex>

@@ -27,27 +27,49 @@ function useLogin(login, setStep, setEmail) {
 			.then((responseData) => {
 				console.log("LOGIN RESPONSE >>>> ", responseData);
 
-				if (!responseData.access_token) {
+				if (
+					!(
+						responseData &&
+						responseData.details &&
+						responseData.access_token &&
+						responseData.details.code &&
+						responseData.details.mobile &&
+						responseData.details.mobile.toString().length > 6
+					)
+				) {
+					if (responseData.otpFailed) {
+						toast({
+							title: "Wrong OTP. Please try again.",
+							status: "error",
+							duration: 5000,
+						});
+						return;
+					}
+
+					if (
+						responseData.details.user_type === -1 &&
+						data.id_type === "Google"
+					) {
+						console.log("Setting states");
+
+						setStep("SOCIAL_VERIFY");
+						setEmail(responseData.details.email);
+						return;
+					}
+
+					// TODO: Start Onboarding Process
+					// Login Failed
 					toast({
-						title: "Wrong OTP. Please try again. ",
+						title: "Login failed.",
 						status: "error",
 						duration: 5000,
 					});
+					setStep("LOGIN");
 					return;
 				}
 
-				if (
-					responseData.details.mobile.length < 7 &&
-					responseData.details.user_type === -1 &&
-					data.id_type === "Google"
-				) {
-					console.log("Setting states");
-
-					setStep("SOCIAL_VERIFY");
-					setEmail(responseData.details.email);
-				} else {
-					processLoginResponse(responseData);
-				}
+				// Login Success
+				processLoginResponse(responseData);
 			})
 			.catch((e) => {
 				console.error("Login Error: ", e);

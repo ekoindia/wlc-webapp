@@ -6,4 +6,6 @@ export const Endpoints = {
 	GENERATE_TOKEN: "/authentication/token",
 	TRANSACTION: "/transactions/do",
 	GET_ORG_FROM_DOMAIN: "/wlctransactions/wlcorgmeta",
+	USER_PROFILE: "/profile",
+	HISTORY: "/history",
 };

@@ -1,6 +1,6 @@
-export { BillPaymentCard } from "./BillPaymentCard";
+export { BillPaymentWidget } from "./BillPaymentWidget";
 export { CommonTrxnWidget } from "./CommonTrxnWidget";
 export { default as Home } from "./Home";
 export { KycWidget } from "./KycWidget";
 export { QueryWidget } from "./QueryWidget";
-export { RecentTrxnCard } from "./RecentTrxnCard";
+export { RecentTrxnWidget } from "./RecentTrxnWidget";

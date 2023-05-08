@@ -19,7 +19,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 	const [timer, setTimer] = useState(30);
 	const { login } = useUser();
 	const { orgDetail } = useOrgDetailContext();
-	const [loading, submitLogin] = useLogin(login);
+	const [loading, submitLogin] = useLogin(login, setStep);
 	const toast = useToast();
 
 	const timeOutCallback = useCallback(
@@ -104,31 +104,34 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 				</Flex>
 			</Flex>
 
-			<OtpInput
-				inputStyle={{
-					w: "95px",
-					h: { base: 12, "2xl": 16 },
-					fontSize: { base: "sm", "2xl": "2xl" },
-				}}
-				containerStyle={{
-					justifyContent: "space-between",
-				}}
-				onChange={setOtp}
-			/>
+			<Flex w="full" align="center" justify="center">
+				<OtpInput
+					inputStyle={{
+						w: { base: 12, md: "72px", "2xl": "96px" },
+						h: { base: 12, "2xl": 16 },
+						fontSize: { base: "sm", "2xl": "2xl" },
+					}}
+					containerStyle={
+						{
+							// justifyContent: "space-between",
+						}
+					}
+					length={4}
+					onChange={setOtp}
+				/>
+			</Flex>
 
 			<Flex
 				justify="center"
 				mt={{ base: 6, "2xl": "2.5rem" }}
 				fontSize={{ base: "sm", "2xl": "lg" }}
-				fontFamily="roboto_font"
-				fontWeight="normal"
 				gap="0px 10px"
 				userSelect="none"
 			>
 				{timer >= 1 ? (
 					<>
 						<Text as={"span"}>Resend otp in </Text>
-						<Flex color="error" columnGap="4px">
+						<Flex align="center" color="error" columnGap="4px">
 							<Icon name="timer" width="18px" />
 							00:{timer <= 9 ? "0" + timer : timer}
 						</Flex>
