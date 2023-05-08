@@ -299,8 +299,8 @@ export default History;
 const pillsData = [
 	{ id: "1", name: "All" },
 	{ id: "2", name: "Send Cash" },
-	{ id: "3", name: "AePS Transaction" },
-	{ id: "4", name: "Indo-Nepal Transaction" },
+	{ id: "3", name: "AePS" },
+	{ id: "4", name: "Indo-Nepal" },
 	{ id: "5", name: "Card Payment" },
 	{ id: "6", name: "UPI Payment" },
 	{ id: "7", name: "Bill Payment" },
