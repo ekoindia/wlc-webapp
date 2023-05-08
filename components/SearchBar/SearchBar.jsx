@@ -12,7 +12,7 @@ import { Button, Icon, Input } from "..";
 const SearchBar = ({
 	type,
 	setSearch,
-	setIsSearching,
+	setIsSearching = () => {},
 	minSearchLimit = 0,
 	maxSearchLimit = 10,
 	placeholder,

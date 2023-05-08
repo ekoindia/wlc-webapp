@@ -13,11 +13,15 @@ export const TransactionTypes = {
  * Eg: To open "Manage My Account" transaction page, open the "/transaction/536" route.
  */
 export const TransactionIds = {
+	LOAD_EVALUE: 491, // For Retailer + Distributor
+	REQUEST_EVALUE: 240, // For Distributor
+	TRANSFER_EVALUE: 241, // For Distributor
 	// For "Add Wallet Balance" Transaction.
 	LOAD_WALLET_TRXN_ID_LIST: [
 		491, // Retailers (Load E-value)
 		240, // Distributors (Request E-value)
 	],
+
 	MANAGE_MY_ACCOUNT: 536,
 	UPDATE_REGISTERED_MOBILE: 640,
 	VERIFY_MOBILE: 811,
@@ -27,4 +31,7 @@ export const TransactionIds = {
 	SET_PIN: 736,
 	EKOSTORE: 246,
 	BILL_PAYMENT: 244,
+	NEED_CASH: 148, // For sellers
+	QUERY_TRACKER: 49,
+	MY_TEAM: 242, // For Distributor
 };

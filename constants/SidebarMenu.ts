@@ -17,6 +17,21 @@ type adminSidebarMenuType = {
 	link: string;
 };
 
+/**
+ * List of transaction ids that (if available) are to be shown in the "Others" sub-menu.
+ */
+export const OtherMenuItems: number[] = [
+	TransactionIds.NEED_CASH,
+	TransactionIds.QUERY_TRACKER,
+	TransactionIds.LOAD_EVALUE,
+	TransactionIds.REQUEST_EVALUE,
+	TransactionIds.TRANSFER_EVALUE,
+	TransactionIds.MANAGE_MY_ACCOUNT,
+];
+
+/**
+ * Fixed menu items for admin left-menu.
+ */
 export const adminSidebarMenu: adminSidebarMenuType[] = [
 	{
 		icon: "dashboard",
@@ -50,6 +65,9 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 	// },
 ];
 
+/**
+ * Fixed menu items for agents left-menu.
+ */
 export const sidebarMenu: sidebarMenuType[] = [
 	{
 		icon: "menu-home",
@@ -61,27 +79,28 @@ export const sidebarMenu: sidebarMenuType[] = [
 	// 	name: "Select Plan",
 	// 	link: "/select-plan",
 	// },
-	{
-		icon: "transaction",
-		name: "Start A Transaction",
-		subLevel: true,
-		api: true,
-	},
-	{
-		icon: "others",
-		name: "Others",
-		subLevel: true,
-		subLevelObject: [
-			{
-				icon: "view-transaction-history",
-				label: "Transaction History",
-				link: "/history",
-			},
-			{
-				icon: "manage",
-				label: "Manage My Account",
-				link: "/transaction/" + TransactionIds.MANAGE_MY_ACCOUNT,
-			},
-		],
-	},
+
+	// {
+	// 	icon: "transaction",
+	// 	name: "Start A Transaction",
+	// 	subLevel: true,
+	// 	api: true,
+	// },
+	// {
+	// 	icon: "others",
+	// 	name: "Others",
+	// 	subLevel: true,
+	// 	subLevelObject: [
+	// 		{
+	// 			icon: "view-transaction-history",
+	// 			label: "Transaction History",
+	// 			link: "/history",
+	// 		},
+	// 		{
+	// 			icon: "manage",
+	// 			label: "Manage My Account",
+	// 			link: "/transaction/" + TransactionIds.MANAGE_MY_ACCOUNT,
+	// 		},
+	// 	],
+	// },
 ];
