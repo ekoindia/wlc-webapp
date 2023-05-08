@@ -64,7 +64,7 @@ const PricingCommissions = () => {
 							>
 								Aadhaar Pay
 							</Tab>
-							<Tab
+							{/* <Tab
 								fontSize={{ base: "sm", md: "sm", "2xl": "md" }}
 							>
 								Indo-Nepal Fund Transfer
@@ -73,7 +73,7 @@ const PricingCommissions = () => {
 								fontSize={{ base: "sm", md: "sm", "2xl": "md" }}
 							>
 								BBPS
-							</Tab>
+							</Tab> */}
 						</TabList>
 
 						<TabPanels
@@ -95,12 +95,12 @@ const PricingCommissions = () => {
 							<TabPanel>
 								<p>three!</p>
 							</TabPanel>
-							<TabPanel>
+							{/* <TabPanel>
 								<p>three!</p>
 							</TabPanel>
 							<TabPanel>
 								<p>four!</p>
-							</TabPanel>
+							</TabPanel> */}
 						</TabPanels>
 					</Tabs>
 				</Box>
