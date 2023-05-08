@@ -17,7 +17,7 @@ const TransactionHistory = () => {
 
 	/* API CALLING */
 
-	const { data, mutate } = useRequest({
+	const { data, mutate, isLoading } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: {
@@ -51,6 +51,7 @@ const TransactionHistory = () => {
 					showButton={true}
 					minSearchLimit={8}
 					maxSearchLimit={10}
+					loading={isLoading}
 					setSearch={setSearch}
 					setIsSearching={setIsSearching}
 				/>
