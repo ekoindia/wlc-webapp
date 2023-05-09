@@ -1,4 +1,4 @@
-import { IconNameType } from "components/Icon/Icon";
+import { IconNameType } from "constants/IconLibrary";
 import { TransactionIds } from ".";
 
 type sidebarMenuType = {
