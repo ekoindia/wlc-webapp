@@ -23,7 +23,7 @@ function Button(props, ref) {
 	return (
 		<ChakraButton
 			variant={variant}
-			disabled={disabled}
+			isDisabled={disabled}
 			size={size}
 			onClick={onClick}
 			iconSpacing={iconSpacing}

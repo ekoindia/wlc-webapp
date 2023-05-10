@@ -1,4 +1,12 @@
-import { Flex, Select, Text, useDisclosure, useToast } from "@chakra-ui/react";
+import {
+	Flex,
+	Grid,
+	GridItem,
+	Select,
+	Text,
+	useDisclosure,
+	useToast,
+} from "@chakra-ui/react";
 import { Calenders, IconButtons, Modal } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useUser } from "contexts/UserContext";
@@ -16,6 +24,7 @@ import { useCallback, useState } from "react";
  */
 const PersonalDetailCard = () => {
 	const { userData, updatePersonalDetail } = useUser();
+	const [disabled, setDisabled] = useState(false);
 	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const data = userData.personalDetails;
@@ -45,7 +54,7 @@ const PersonalDetailCard = () => {
 		fontWeight: "600",
 	};
 	const inputConstStyle = {
-		h: { base: "2.5rem" },
+		h: { base: "3rem" },
 		w: "100%",
 		pos: "relative",
 		alignItems: "center",
@@ -55,6 +64,7 @@ const PersonalDetailCard = () => {
 		onOpen();
 	};
 	const hitQuery = useCallback(() => {
+		setDisabled(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -70,6 +80,7 @@ const PersonalDetailCard = () => {
 			generateNewToken
 		)
 			.then((data) => {
+				setDisabled(false);
 				updatePersonalDetail(formState);
 				toast({
 					title: data.message,
@@ -79,6 +90,7 @@ const PersonalDetailCard = () => {
 				onClose();
 			})
 			.catch((err) => {
+				setDisabled(false);
 				toast({
 					title: data.message,
 					status: "error",
@@ -88,11 +100,9 @@ const PersonalDetailCard = () => {
 			});
 	});
 	const onSubmit = () => {
-		console.log(formState);
 		hitQuery();
 	};
 	const handleChange = (e) => {
-		console.log(e);
 		setFormState({ ...formState, [e.target.name]: e.target.value });
 	};
 	return (
@@ -116,22 +126,31 @@ const PersonalDetailCard = () => {
 					iconStyle={{ height: "12px", width: "12px" }}
 				/>
 			</Flex>
-			<Flex direction="column" mt="20px" rowGap="20px">
+			<Grid templateColumns="repeat(2, 1fr)" mt="20px" rowGap="20px">
 				{Object.entries(personalDetailObj).map(([key, value], index) =>
 					data[key] != "" ? (
-						<Flex key={index} direction="column">
-							<Text>{key}</Text>
-							<Text fontWeight="semibold">{data[key]}</Text>
-						</Flex>
+						<GridItem key={index} colSpan={1} rowSpan={1}>
+							<Flex key={index} direction="column">
+								<Text>
+									{key
+										.replace(/_/g, " ")
+										.replace(/\b\w/g, (c) =>
+											c.toUpperCase()
+										)}
+								</Text>
+								<Text fontWeight="semibold">{data[key]}</Text>
+							</Flex>
+						</GridItem>
 					) : null
 				)}
-			</Flex>
+			</Grid>
 			<Modal
 				isOpen={isOpen}
 				onClose={onClose}
 				title="Edit Personal Details"
 				submitText="Save now"
 				onSubmit={onSubmit}
+				disabled={disabled}
 			>
 				<form>
 					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
@@ -143,6 +162,8 @@ const PersonalDetailCard = () => {
 						onChange={handleChange}
 						labelStyle={labelStyle}
 						inputContStyle={inputConstStyle}
+						mb={{ base: 2, "2xl": "1rem" }}
+						h="3rem"
 					>
 						{genderoOptions.map((data, idx) => {
 							return (
@@ -152,9 +173,11 @@ const PersonalDetailCard = () => {
 					</Select>
 					<Calenders
 						label="DOB"
+						labelStyle={labelStyle}
 						value={formState.dob}
 						onChange={handleChange}
 						name="dob"
+						mb={{ base: 2, "2xl": "1rem" }}
 					/>
 					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
 						Qualification
@@ -165,6 +188,8 @@ const PersonalDetailCard = () => {
 						onChange={handleChange}
 						labelStyle={labelStyle}
 						inputContStyle={inputConstStyle}
+						mb={{ base: 2, "2xl": "1rem" }}
+						h="3rem"
 					>
 						{qualificationOptions.map((data, idx) => {
 							return (

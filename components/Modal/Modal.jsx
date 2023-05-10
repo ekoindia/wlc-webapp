@@ -6,6 +6,7 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
+	Spinner,
 } from "@chakra-ui/react";
 import { Button } from "components";
 
@@ -16,6 +17,7 @@ const CommonModal = ({
 	children,
 	onSubmit,
 	submitText,
+	disabled,
 }) => {
 	return (
 		<Modal isOpen={isOpen} onClose={onClose}>
@@ -25,8 +27,8 @@ const CommonModal = ({
 				<ModalCloseButton />
 				<ModalBody>{children}</ModalBody>
 				<ModalFooter>
-					<Button onClick={onSubmit} w="100%">
-						{submitText}
+					<Button onClick={onSubmit} isDisabled={disabled} w="100%">
+						{disabled ? <Spinner /> : submitText}
 					</Button>
 				</ModalFooter>
 			</ModalContent>
