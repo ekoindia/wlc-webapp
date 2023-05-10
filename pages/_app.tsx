@@ -5,6 +5,8 @@ import { OrgDetailProvider, UserProvider, WalletProvider } from "contexts";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
+import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
+import App from "next/app";
 import { Inter } from "next/font/google";
 import Head from "next/head";
 import Script from "next/script";
@@ -25,7 +27,48 @@ const toastDefaultOptions = {
 	isClosable: true,
 };
 
-export default function App({ Component, pageProps, router }) {
+export default function WlcApp({ Component, pageProps, router, org }) {
+	// if (colors) {
+	// 	sessionStorage.setItem("colors", JSON.stringify(colors));
+	// } else {
+	// 	colors = JSON.parse(sessionStorage.getItem("colors"));
+	// }
+
+	console.log(">>>>>>>>>> ############## ", {
+		org,
+		is_local: typeof window === "undefined" ? false : true,
+	});
+
+	if (typeof window !== "undefined" && !org) {
+		try {
+			org = JSON.parse(sessionStorage.getItem("org_detail"));
+			console.log(">>>>>>>>>>>> ##### _app.js from local 2: ", org);
+		} catch (err) {
+			console.error("Error parsing org_detail: ", err);
+		}
+	}
+
+	const colors = org?.colors;
+
+	const theme = {
+		...light,
+		colors: {
+			...light.colors,
+			accent: {
+				...light.colors.accent,
+				light: colors?.accent_light || light.colors.accent.light,
+				DEFAULT: colors?.accent || light.colors.accent.DEFAULT,
+				dark: colors?.accent_dark || light.colors.accent.dark,
+			},
+			primary: {
+				...light.colors.primary,
+				light: colors?.primary_light || light.colors.primary.light,
+				DEFAULT: colors?.primary || light.colors.primary.DEFAULT,
+				dark: colors?.primary_dark || light.colors.primary.dark,
+			},
+		},
+	};
+
 	return (
 		<>
 			<Head>
@@ -55,7 +98,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 				clientId={pageProps?.data?.login_types?.google?.client_id || ""}
 			>
 				<ChakraProvider
-					theme={light}
+					theme={theme}
 					toastOptions={{ defaultOptions: toastDefaultOptions }}
 				>
 					<OrgDetailProvider orgMockData={null}>
@@ -94,58 +137,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	);
 }
 
-// App.getInitialProps = async function({ Component, ctx }) {
-// 	console.log("getInitialProps Executed");
+WlcApp.getInitialProps = async function (appContext) {
+	const { ctx } = appContext;
 
-// 	let data = {}
-// 	if (typeof window === "undefined"){
-// 		if (process.env.NEXT_PUBLIC_ENV === "local"){
-// 			data = {
-// 					"subdomainDetails": {
-// 						"app_name": "EKO",
-// 						"support_contacts": {
-// 							"phone": "7689323333",
-// 							"email": "support@absprint.com"
-// 						},
-// 						"org_id": 1,
-// 						"logo": "https://files.eko.in/wlcorgs10000515connect.logo",
-// 						"theme": {
-// 							"secondary_color": "#8675656",
-// 							"primary_color": "#323233"
-// 						},
-// 						"org_name": "EKO",
-// 						"login_types": {
-// 							"google": {
-// 								"client_id": "476909327136-dirc650g1e8ri7de5o2anrgdg1o2s760.apps.googleusercontent.com"
-// 							}
-// 						}
-// 					}
-// 				}
-// 		}
-// 		else {
-// 			const domain = ctx.req.headers.host.split(".");
-// 			const subdomain = ctx.req.headers.host.split(".")[0];
-// 			data = await fetch(`https://sore-teal-codfish-tux.cyclic.app/logos/${subdomain}`)
-// 			.then((data) => data.json())
-// 			.then((res) => res)
-// 			.catch((e) => console.log(e));
-// 		}
-// 	}
-// 	else{
-// 		console.log("Else Executed");
+	const defaultProps = App.getInitialProps(appContext);
 
-// 	// 	data = sessionStorage.getItem('org_detail')
-// 	// 	if (!data){
-// 	// 		data = await fetch(
-// 	// 	`https://sore-teal-codfish-tux.cyclic.app/logos/${subdomain}`
-// 	// )
-// 	// 	.then((data) => data.json())
-// 	// 	.then((res) => res)
-// 	// 	.catch((e) => console.log(e));
-// 	// 	}
-// 	// 	}
+	console.log("!!!!!!#####");
 
-// 	}
+	if (typeof window !== "undefined") {
+		console.log("!!!!! ##### getInitialProps from local.");
 
-//   return { data: data }
-// }
+		return {
+			...defaultProps,
+			org: JSON.parse(window.sessionStorage.getItem("org_detail")),
+		};
+	}
+
+	console.log("getInitialProps Executed:: ", ctx.req.headers.host);
+
+	// Get org details (like, logo, name, etc) from server
+	const org_details = await fetchOrgDetails(ctx.req.headers.host);
+
+	return {
+		...defaultProps,
+		org: org_details.props.data,
+	};
+};
