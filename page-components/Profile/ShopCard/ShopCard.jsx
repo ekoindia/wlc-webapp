@@ -28,6 +28,7 @@ import { useCallback, useState } from "react";
  */
 const ShopCard = () => {
 	const { userData, updateShopDetails } = useUser();
+	const [disabled, setDisabled] = useState(false);
 	const [error, setError] = useState(false);
 	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -40,11 +41,9 @@ const ShopCard = () => {
 		fontWeight: "600",
 	};
 	const inputConstStyle = {
-		h: { base: "2.5rem" },
 		w: "100%",
 		pos: "relative",
 		br: "none",
-		alignItems: "center",
 		mb: { base: 2, "2xl": "1rem" },
 	};
 	const shopObj = {
@@ -97,6 +96,7 @@ const ShopCard = () => {
 		onOpen();
 	};
 	const hitQuery = useCallback(() => {
+		setDisabled(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -112,6 +112,7 @@ const ShopCard = () => {
 			generateNewToken
 		)
 			.then((data) => {
+				setDisabled(false);
 				updateShopDetails(formState);
 				toast({
 					title: data.message,
@@ -121,6 +122,7 @@ const ShopCard = () => {
 				onClose();
 			})
 			.catch((err) => {
+				setDisabled(false);
 				toast({
 					title: data.message,
 					status: "error",
@@ -173,7 +175,13 @@ const ShopCard = () => {
 					data[key] != "" ? (
 						<GridItem key={index} colSpan={1} rowSpan={1}>
 							<Flex direction="column">
-								<Text>{key}</Text>
+								<Text>
+									{key
+										.replace(/_/g, " ")
+										.replace(/\b\w/g, (c) =>
+											c.toUpperCase()
+										)}
+								</Text>
 								<Text fontWeight="semibold">{data[key]}</Text>
 							</Flex>
 						</GridItem>
@@ -186,6 +194,7 @@ const ShopCard = () => {
 				title="Edit My Shop"
 				submitText="Save now"
 				onSubmit={onSubmit}
+				disabled={disabled}
 			>
 				<form onSubmit={onSubmit}>
 					<Input
@@ -199,12 +208,15 @@ const ShopCard = () => {
 					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
 						Shop Type
 					</Text>
+
 					<Select
 						label="Shop Type"
 						name="shop_type"
 						value={formState.shop_type}
 						onChange={handleChange}
 						labelStyle={labelStyle}
+						mb={{ base: 2, "2xl": "1rem" }}
+						h="3rem"
 						inputContStyle={inputConstStyle}
 					>
 						{options.map((data, idx) => {
@@ -250,6 +262,7 @@ const ShopCard = () => {
 							<NumberInputField
 								name="pincode"
 								onChange={handleChange}
+								h="3rem"
 							/>
 						</NumberInput>
 						{error && (
@@ -258,7 +271,6 @@ const ShopCard = () => {
 							</FormErrorMessage>
 						)}
 					</FormControl>
-					{/* <Button type="submit">save me</Button> */}
 				</form>
 			</Modal>
 		</Flex>
