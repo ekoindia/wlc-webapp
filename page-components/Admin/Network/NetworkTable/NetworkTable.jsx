@@ -38,12 +38,11 @@ const NetworkTable = ({
 	];
 	const router = useRouter();
 	const onRowClick = (rowData) => {
-		const ekocode = rowData.eko_code;
-		console.log(rowData, "rowdata");
+		const cellnumber = rowData.agent_mobile;
 		localStorage.setItem("rowData", JSON.stringify(rowData));
 		router.push({
 			pathname: `/admin/my-network/profile`,
-			query: { ekocode },
+			query: { cellnumber },
 			// state: { rowData },
 		});
 	};

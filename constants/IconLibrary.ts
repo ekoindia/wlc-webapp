@@ -1,4 +1,204 @@
-export const IconLibrary = {
+export type IconNameType =
+	| "access-time"
+	| "account-balance"
+	| "account-balance-wallet"
+	| "account-circle"
+	| "add"
+	| "alarm"
+	| "alarm-off"
+	| "apps"
+	| "arrow-back"
+	| "arrow-downward"
+	| "arrow-drop-down"
+	| "arrow-forward"
+	| "arrow-upward"
+	| "arrow-increase"
+	| "arrow-decrease"
+	| "badge"
+	| "book"
+	| "business-center"
+	| "calender"
+	| "caret-up"
+	| "caret-down"
+	| "check"
+	| "check-box"
+	| "check-box-outline-blank"
+	| "chevron-left"
+	| "chevron-right"
+	| "clipboard-download"
+	| "close"
+	| "close-outline"
+	| "commission-percent"
+	| "contacts"
+	| "content-copy"
+	| "credit-card"
+	| "dashboard"
+	| "decrease"
+	| "delete"
+	| "description"
+	| "developer-board"
+	| "directions-bike"
+	| "directions-car"
+	| "directions-walk"
+	| "disc"
+	| "domain"
+	| "drag-handle"
+	| "drink"
+	| "emi"
+	| "error"
+	| "expand-less"
+	| "expand-more"
+	| "expand-add"
+	| "favorite"
+	| "feedback"
+	| "fast-forward"
+	| "file-download"
+	| "file-upload"
+	| "filter"
+	| "fingerprint"
+	| "flash-on"
+	| "flight"
+	| "folder-open"
+	| "format-quote"
+	| "forum"
+	| "fullscreen"
+	| "games"
+	| "handshake"
+	| "headset"
+	| "help-outline"
+	| "history"
+	| "home"
+	| "indeterminate-check-box"
+	| "increase"
+	| "info-outline"
+	| "invoice"
+	| "lightbulb-outline"
+	| "live-tv"
+	| "loan"
+	| "local-hospital"
+	| "local-offer"
+	| "location-off"
+	| "lock"
+	| "loyalty"
+	| "lpg"
+	| "logout"
+	| "mail"
+	| "menu"
+	| "minus"
+	| "mode-edit"
+	| "money"
+	| "money-note"
+	| "more-horiz"
+	| "more-vert"
+	| "my-location"
+	| "near-me"
+	| "nepal"
+	| "notifications"
+	| "notifications-none"
+	| "open-in-new"
+	| "operator"
+	| "password"
+	| "pause-circle-outline"
+	| "percent_bg"
+	| "people"
+	| "person"
+	| "person-add"
+	| "phone"
+	| "picture-in-picture-alt"
+	| "place"
+	| "plus"
+	| "play-circle-outline"
+	| "playlist-add-check"
+	| "pos"
+	| "power-settings-new"
+	| "print"
+	| "qrcode"
+	| "radio-button-checked"
+	| "radio-button-unchecked"
+	| "refer"
+	| "reload"
+	| "refresh"
+	| "remove"
+	| "replay"
+	| "reply"
+	| "rupee"
+	| "rupee_bg"
+	| "satellite-dish"
+	| "save"
+	| "school"
+	| "search"
+	| "send"
+	| "sentiment-dissatisfied"
+	| "sentiment-neutral"
+	| "sentiment-satisfied"
+	| "settings"
+	| "share"
+	| "shopping-cart"
+	| "signal-cellular-connected-no-internet-0-bar"
+	| "signal-cellular-connected-no-internet-1-bar"
+	| "smartphone"
+	| "split"
+	| "speaker-phone"
+	| "star"
+	| "store"
+	| "sort"
+	| "sort-by"
+	| "supervisor-account"
+	| "swap-horiz"
+	| "thumb-down"
+	| "thumb-up"
+	| "timer"
+	| "toc"
+	| "today"
+	| "triangle-up"
+	| "triangle-down"
+	| "tv"
+	| "undo"
+	| "unfold-more"
+	| "usbdongle"
+	| "user-card"
+	| "verified-user"
+	| "visibility"
+	| "vpn-key"
+	| "wallpaper"
+	| "warning"
+	| "wc"
+	| "web-asset"
+	| "whatsapp"
+	| "widgets"
+	| "zoom-in"
+	| "zoom-out"
+	| "upi"
+	| "cash"
+	| "camera"
+	| "money-deposit"
+	| "instant"
+	| "high-commission"
+	| "retry"
+	| "play-button"
+	| "tick-selected"
+	| "tick"
+	| "transaction"
+	| "others"
+	| "menu-home"
+	| "select-plan"
+	| "cashout"
+	| "manage"
+	| "view-transaction-history"
+	| "wallet-outline"
+	| "phone-circle-outline"
+	| "chat-outline";
+
+export interface IconType {
+	viewBox: string;
+	path: string;
+}
+
+export type IconLibraryType = {
+	[key in IconNameType]: IconType;
+};
+
+export const IconLibrary: IconLibraryType = {
 	"access-time": {
 		viewBox: "0 0 24 24",
 		path: `<path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>`,
@@ -459,7 +659,7 @@ export const IconLibrary = {
 	},
 	refer: {
 		viewBox: "0 0 27 26.993",
-		path: `<path d="M25.938,26.993c-1.96-.011-3.921-.01-5.881-.008H17.929c-.65,0-.947-.3-.944-.951a6.851,6.851,0,0,1,.154-1.987,4.008,4.008,0,0,1,1.574-2.171,4.5,4.5,0,0,0,6.558,0,3.973,3.973,0,0,1,1.673,2.593c.016.084.038.167.057.251v1.687a1.008,1.008,0,0,1-1.046.587ZM.82,26.984a.754.754,0,0,1-.8-.689A7.056,7.056,0,0,1,.17,24.02a3.977,3.977,0,0,1,1.573-2.139A4.5,4.5,0,0,0,8.3,21.872a3.949,3.949,0,0,1,1.719,3.095c.023.4.012.808,0,1.211a.781.781,0,0,1-.8.8q-2.1,0-4.2,0ZM19.2,19.572a.476.476,0,0,0-.377-.391c-1.075-.321-2.146-.657-3.216-1a.269.269,0,0,0-.335.09,2.344,2.344,0,0,1-3.534.009.271.271,0,0,0-.332-.1c-1.119.357-2.24.709-3.366,1.046-.185.055-.188.182-.222.311a2.9,2.9,0,1,1-.282-2.149c.051.09.1.182.16.293l1.209-.377c.67-.208,1.339-.418,2.011-.619a.271.271,0,0,0,.234-.259,2.354,2.354,0,0,1,1.41-1.9.284.284,0,0,0,.144-.2c.008-1.063,0-2.125,0-3.188,0-.015-.013-.03-.031-.071h-.272q-1.515,0-3.031,0a.8.8,0,0,1-.877-.885,7.011,7.011,0,0,1,.157-2.066,3.971,3.971,0,0,1,1.559-2.147,4.545,4.545,0,0,0,6.579,0A3.788,3.788,0,0,1,18.449,8.6a11.455,11.455,0,0,1,.055,1.734.771.771,0,0,1-.834.738c-1.019,0-2.038,0-3.057,0H14.3v.35c0,.949,0,1.9.006,2.845a.337.337,0,0,0,.136.258,2.367,2.367,0,0,1,1.417,1.895.274.274,0,0,0,.225.266c1.007.3,2.013.612,3.015.935.185.06.251.016.337-.148a2.887,2.887,0,0,1,3.376-1.436,2.9,2.9,0,0,1-.571,5.672q-.125.011-.249.011A2.893,2.893,0,0,1,19.2,19.572ZM10.648,3.358A2.888,2.888,0,0,1,12.99.049,1.017,1.017,0,0,0,13.136,0h.738c.159.042.32.079.478.127a2.9,2.9,0,0,1-.833,5.67h-.012A2.893,2.893,0,0,1,10.648,3.358Z"  
+		path: `<path d="M25.938,26.993c-1.96-.011-3.921-.01-5.881-.008H17.929c-.65,0-.947-.3-.944-.951a6.851,6.851,0,0,1,.154-1.987,4.008,4.008,0,0,1,1.574-2.171,4.5,4.5,0,0,0,6.558,0,3.973,3.973,0,0,1,1.673,2.593c.016.084.038.167.057.251v1.687a1.008,1.008,0,0,1-1.046.587ZM.82,26.984a.754.754,0,0,1-.8-.689A7.056,7.056,0,0,1,.17,24.02a3.977,3.977,0,0,1,1.573-2.139A4.5,4.5,0,0,0,8.3,21.872a3.949,3.949,0,0,1,1.719,3.095c.023.4.012.808,0,1.211a.781.781,0,0,1-.8.8q-2.1,0-4.2,0ZM19.2,19.572a.476.476,0,0,0-.377-.391c-1.075-.321-2.146-.657-3.216-1a.269.269,0,0,0-.335.09,2.344,2.344,0,0,1-3.534.009.271.271,0,0,0-.332-.1c-1.119.357-2.24.709-3.366,1.046-.185.055-.188.182-.222.311a2.9,2.9,0,1,1-.282-2.149c.051.09.1.182.16.293l1.209-.377c.67-.208,1.339-.418,2.011-.619a.271.271,0,0,0,.234-.259,2.354,2.354,0,0,1,1.41-1.9.284.284,0,0,0,.144-.2c.008-1.063,0-2.125,0-3.188,0-.015-.013-.03-.031-.071h-.272q-1.515,0-3.031,0a.8.8,0,0,1-.877-.885,7.011,7.011,0,0,1,.157-2.066,3.971,3.971,0,0,1,1.559-2.147,4.545,4.545,0,0,0,6.579,0A3.788,3.788,0,0,1,18.449,8.6a11.455,11.455,0,0,1,.055,1.734.771.771,0,0,1-.834.738c-1.019,0-2.038,0-3.057,0H14.3v.35c0,.949,0,1.9.006,2.845a.337.337,0,0,0,.136.258,2.367,2.367,0,0,1,1.417,1.895.274.274,0,0,0,.225.266c1.007.3,2.013.612,3.015.935.185.06.251.016.337-.148a2.887,2.887,0,0,1,3.376-1.436,2.9,2.9,0,0,1-.571,5.672q-.125.011-.249.011A2.893,2.893,0,0,1,19.2,19.572ZM10.648,3.358A2.888,2.888,0,0,1,12.99.049,1.017,1.017,0,0,0,13.136,0h.738c.159.042.32.079.478.127a2.9,2.9,0,0,1-.833,5.67h-.012A2.893,2.893,0,0,1,10.648,3.358Z"
 />`,
 	},
 	reload: {
@@ -585,7 +785,7 @@ export const IconLibrary = {
 	},
 	"thumb-up": {
 		viewBox: "0 0 24 24",
-		path: `<path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 
+		path: `<path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0
     1.1.9 2 2 2h9c.83 0 1.54 - .5 1.84 - 1.22l3.02 - 7.05c.09 - .23.14 - .47.14 - .73v - 1.91l - .01 - .01L23 10z"/>`,
 	},
 	timer: {
@@ -620,7 +820,7 @@ export const IconLibrary = {
 	},
 	"user-card": {
 		viewBox: "0 0 16 16",
-		path: `<path d="M15 3v10h-14v-10h14zM16 2h-16v12h16v-12z M8 5h6v1h-6v-1z M8 7h6v1h-6v-1z M8 9h3v1h-3v-1z M5.4 7h-0.4v-0.1c0.6-0.2 1-0.8 1-1.4 
+		path: `<path d="M15 3v10h-14v-10h14zM16 2h-16v12h16v-12z M8 5h6v1h-6v-1z M8 7h6v1h-6v-1z M8 9h3v1h-3v-1z M5.4 7h-0.4v-0.1c0.6-0.2 1-0.8 1-1.4
     0 - 0.8 - 0.7 - 1.5 - 1.5 - 1.5s - 1.5 0.7 - 1.5 1.5c0 0.7 0.4 1.2 1 1.4v0.1h - 0.4c - 0.9 0 - 1.6 0.7 - 1.6 1.6v2.4h5v - 2.4c0 - 0.9 - 0.7 - 1.6 - 1.6 - 1.6z"/>`,
 	},
 	"verified-user": {
@@ -653,7 +853,7 @@ export const IconLibrary = {
 	},
 	whatsapp: {
 		viewBox: "0 0 900 1024",
-		path: `<path d="M563 557c10 0 103 48 107 55l1 9c0 14-5 30-10 43-13 32-66 53-99 53-27 0-84-24-108-36a445 445 0 0 1-182-173c-22-32-41-71-41-111v-4c2-38 15-65 43-91 8-8 17-12 29-12l22 1c15 0 18 5 24 20 4 10 33 87 33 93 0 22-40 46-40 59l3 9a288 288 0 0 0 157 140c17 0 46-55 61-55zM447 859a359 
+		path: `<path d="M563 557c10 0 103 48 107 55l1 9c0 14-5 30-10 43-13 32-66 53-99 53-27 0-84-24-108-36a445 445 0 0 1-182-173c-22-32-41-71-41-111v-4c2-38 15-65 43-91 8-8 17-12 29-12l22 1c15 0 18 5 24 20 4 10 33 87 33 93 0 22-40 46-40 59l3 9a288 288 0 0 0 157 140c17 0 46-55 61-55zM447 859a359
     359 0 1 0 - 290 - 148l - 46 133 139 - 44c58 38 127 59 197 59zm0 - 789a431 431 0 1 1 - 209 808L0 954l78 - 231A431 431 0 0 1 447 70z"/>`,
 	},
 	widgets: {

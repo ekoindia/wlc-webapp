@@ -3,6 +3,7 @@ import { Headings, SearchBar } from "components";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import { TransactionHistoryTable } from ".";
+
 /**
  * A <TransactionHistory> component
  * TODO: Write more description here
@@ -10,14 +11,13 @@ import { TransactionHistoryTable } from ".";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<TransactionHistory></TransactionHistory>`
  */
-
 const TransactionHistory = () => {
 	const [search, setSearch] = useState(null);
 	const [isSearching, setIsSearching] = useState(false);
 
 	/* API CALLING */
 
-	const { data, mutate } = useRequest({
+	const { data, mutate, isLoading } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: {
@@ -51,6 +51,7 @@ const TransactionHistory = () => {
 					showButton={true}
 					minSearchLimit={8}
 					maxSearchLimit={10}
+					loading={isLoading}
 					setSearch={setSearch}
 					setIsSearching={setIsSearching}
 				/>

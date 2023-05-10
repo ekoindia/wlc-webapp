@@ -20,6 +20,6 @@ export const UserTypeLabel = {
 	6: "Sub-Seller",
 	7: "Super-Distributor",
 	8: "Payment Seller",
-	10: "Personal User", // Customer
+	10: "User", // Customer
 	23: "Enterprise Partner", // API Partner Dashboard
 };

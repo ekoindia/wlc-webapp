@@ -8,8 +8,8 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Button, Cards, Icon, IconButtons } from "components";
-import Router from "next/router";
+import { Cards, Icon, IconButtons } from "components";
+import { useRouter } from "next/router";
 /**
  * A <CompanyPane> component
  * TODO: Write more description here
@@ -17,10 +17,15 @@ import Router from "next/router";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<CompanyPane></CompanyPane>`
  */
-const CompanyPane = (props) => {
-	const compdata = props.rowdata;
-	// console.log(compdata, "Company pane data");
+const CompanyPane = ({ rowData: compdata, agent_name }) => {
+	const router = useRouter();
+	const { cellnumber } = router.query;
 	const [isSmallerThan440] = useMediaQuery("(max-width:440px)");
+	const handleclick = () => {
+		router.push(
+			`/admin/transaction-history/account-statement/detailed-statement?cellnumber=${cellnumber}`
+		);
+	};
 	return (
 		<Cards>
 			<Flex gap="5" align="center">
@@ -36,7 +41,7 @@ const CompanyPane = (props) => {
 						fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 						fontWeight="semibold"
 					>
-						{compdata.shop_name}
+						{agent_name}
 					</Heading>
 					<Flex
 						fontSize={{ base: 14, md: 12, lg: 14 }}
@@ -128,7 +133,7 @@ const CompanyPane = (props) => {
 				</Flex>
 			</Box>
 
-			<Box mt={{ base: "95", lg: "20", xl: "70" }}>
+			{/* <Box mt={{ base: "95", lg: "20", xl: "70" }}>
 				<Button
 					onClick={() =>
 						Router.push("/admin/my-network/profile/up-sell-info")
@@ -139,10 +144,10 @@ const CompanyPane = (props) => {
 				>
 					Update Information
 				</Button>
-			</Box>
+			</Box> */}
 
 			<Box
-				mt={{ base: "38", md: "50", xl: "70" }}
+				mt="auto"
 				p="20px"
 				h="160"
 				border="1px solid #D2D2D2"
@@ -174,7 +179,7 @@ const CompanyPane = (props) => {
 							</Box>
 						</Flex>
 					</Box>
-					<Box>
+					{/* <Box>
 						<Circle
 							size={isSmallerThan440 ? 10 : 12}
 							bg={"success"}
@@ -184,7 +189,7 @@ const CompanyPane = (props) => {
 						>
 							<Icon name="add" height="24px" width="24px" />
 						</Circle>
-					</Box>
+					</Box> */}
 				</Flex>
 				<Divider />
 				<Flex align="center" justify="center" mt="6">
@@ -196,6 +201,7 @@ const CompanyPane = (props) => {
 							width: "18px",
 							height: "15px",
 						}}
+						onClick={handleclick}
 					/>
 				</Flex>
 			</Box>

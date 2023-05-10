@@ -15,6 +15,7 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Icon } from "components";
+import { Fragment, useState } from "react";
 
 /**
  * A <NetworkSort> component
@@ -24,9 +25,28 @@ import { Icon } from "components";
  * @example	`<NetworkSort></NetworkSort>`
  */
 const NetworkSort = ({ setSort }) => {
+	const [selectedSortType, setSelectedSortType] = useState("Data Added");
 	const handleStatusClick = (value) => {
 		setSort(value);
+		console.log("setSort(value)", setSort(value));
+		setSelectedSortType(value);
 	};
+	const sortType = [
+		{
+			id: 1,
+			value: "recent",
+		},
+		{
+			id: 2,
+			value: "active",
+			status: "Status:",
+		},
+		{
+			id: 3,
+			value: "inactive",
+			status: "Status:",
+		},
+	];
 	return (
 		<>
 			<Box
@@ -125,8 +145,9 @@ const NetworkSort = ({ setSort }) => {
 								_hover={{
 									bg: "white",
 								}}
+								textTransform="capitalize"
 							>
-								{isOpen ? "Recently Added" : "Data Added"}
+								{selectedSortType}
 							</MenuButton>
 
 							<MenuList
@@ -149,53 +170,37 @@ const NetworkSort = ({ setSort }) => {
 								}}
 								border="card"
 							>
-								<MenuItem
-									fontWeight={"medium"}
-									color="dark"
-									_hover={{
-										bg: "white",
-									}}
-									pt="10px"
-									onClick={() => handleStatusClick("recent")}
-								>
-									Recently Added
-								</MenuItem>
-								<MenuDivider margin="auto" mx="10px" />
-								<MenuItem
-									color="light"
-									_hover={{
-										bg: "white",
-									}}
-									onClick={() => handleStatusClick("active")}
-								>
-									Status:
-									<Box
-										as="span"
-										color="dark"
-										fontWeight={"medium"}
-									>
-										&nbsp;Active
-									</Box>
-								</MenuItem>
-								<MenuDivider margin="auto" mx="10px" />
-								<MenuItem
-									color="light"
-									_hover={{
-										bg: "white",
-									}}
-									onClick={() =>
-										handleStatusClick("inactive")
-									}
-								>
-									Status:
-									<Box
-										as="span"
-										color="dark"
-										fontWeight={"medium"}
-									>
-										&nbsp;Inactive
-									</Box>
-								</MenuItem>
+								{sortType.map((item, index) => (
+									<Fragment key={item.id}>
+										<MenuItem
+											divider={
+												<StackDivider borderColor="gray.200" />
+											}
+											fontWeight={"medium"}
+											color="dark"
+											_hover={{
+												bg: "white",
+											}}
+											pt="10px"
+											onClick={() =>
+												handleStatusClick(item.value)
+											}
+										>
+											<Text color="light" pr="3px">
+												{item?.status}
+											</Text>
+											<Text textTransform="capitalize">
+												{item.value}
+											</Text>
+										</MenuItem>
+										{index !== sortType.length - 1 && (
+											<MenuDivider
+												margin="auto"
+												mx="10px"
+											/>
+										)}
+									</Fragment>
+								))}
 							</MenuList>
 						</Box>
 					)}
@@ -254,37 +259,41 @@ const NetworkSort = ({ setSort }) => {
 									direction="column"
 									fontWeight={"medium"}
 								>
-									<MenuItem p={"0px"} bgColor={"white"}>
-										<Radio value="1" size={"lg"}>
-											<Text fontSize="sm">
-												Recently Added
-											</Text>
-										</Radio>
-									</MenuItem>
-
-									<MenuItem p={"0px"} bgColor={"white"}>
-										<Radio value="2" size={"lg"}>
-											<Text
-												as={"span"}
-												fontWeight={"normal"}
-												fontSize="sm"
+									{sortType.map((item) => (
+										<MenuItem
+											p={"0px"}
+											bgColor={"white"}
+											key={item.id}
+										>
+											<Radio
+												value={item.value}
+												size="lg"
+												onChange={(event) =>
+													handleStatusClick(
+														event.target.value
+													)
+												}
 											>
-												Status: Active
-											</Text>
-										</Radio>
-									</MenuItem>
-
-									<MenuItem p={"0px"} bgColor={"white"}>
-										<Radio value="3" size={"lg"}>
-											<Text
-												as={"span"}
-												fontWeight={"normal"}
-												fontSize="sm"
-											>
-												Status: Inactive
-											</Text>
-										</Radio>
-									</MenuItem>
+												<Text
+													color="light"
+													pr="3px"
+													as="span"
+													fontWeight="normal"
+													fontSize="sm"
+												>
+													{item?.status}
+												</Text>
+												<Text
+													as="span"
+													fontWeight="normal"
+													fontSize="sm"
+													textTransform="capitalize"
+												>
+													{item.value}
+												</Text>
+											</Radio>
+										</MenuItem>
+									))}
 								</Stack>
 							</RadioGroup>
 						</MenuGroup>

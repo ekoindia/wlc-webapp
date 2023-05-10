@@ -59,6 +59,7 @@ const Input = ({
 	required = false,
 	onChange = () => {},
 	onKeyDown = () => {},
+	onEnter = () => {},
 	...rest
 }) => {
 	const onChangeHandler = (e) => {
@@ -118,7 +119,10 @@ const Input = ({
 					w="100%"
 					inputMode={isNumInput ? "numeric" : "text"}
 					onChange={(e) => onChangeHandler(e)}
-					onKeyDown={onKeyDown}
+					onKeyDown={(e) => {
+						if (e.code === "Enter" && onEnter) onEnter(value);
+						onKeyDown && onKeyDown(e);
+					}}
 					_hover={{
 						border: "",
 					}}

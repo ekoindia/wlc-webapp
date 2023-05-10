@@ -9,16 +9,20 @@ import { useRef, useState } from "react";
  * @param	{function}	    [prop.onChange] To get the otp value
  * @param	{Object}	[prop.containerStyle] Takes an object for conatiner style
  * @param	{number}	[prop.inputStyle] Takes an object for input field style
+ * @param 	{...*}	rest	Rest of the props passed to this component.
  * @example	`<OtpInput></OtpInput>`
  */
 const OtpInput = ({
 	value,
 	length = 6,
 	placeholder = "",
-	onChange = () => {},
 	containerStyle = {},
 	inputStyle = {},
-	...props
+	onChange = () => {},
+	onKeyDown = () => {},
+	onEnter = () => {},
+	onComplete,
+	...rest
 }) => {
 	const inputRef = useRef([]);
 	const [Otp, setOtp] = useState("");
@@ -39,7 +43,10 @@ const OtpInput = ({
 					setOtp(e);
 					onChange(e);
 				}}
-				{...props}
+				onComplete={(val) => {
+					onComplete && onComplete(val);
+				}}
+				{...rest}
 			>
 				{Array(length)
 					.fill(null)
@@ -63,9 +70,12 @@ const OtpInput = ({
 								} else e.target.style.background = inputfocusbg;
 							}}
 							onKeyDown={(e) => {
-								if (e.code === "Backspace") {
+								if (e.code === "Enter") {
+									onEnter && onEnter(Otp);
+								} else if (e.code === "Backspace") {
 									e.target.style.background = "#fff";
 								} else e.target.style.background = inputfocusbg;
+								onKeyDown && onKeyDown(e);
 							}}
 							{...inputStyle}
 						/>

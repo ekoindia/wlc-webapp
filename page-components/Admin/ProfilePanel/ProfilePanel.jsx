@@ -75,18 +75,35 @@ const ChangeRoleMobile = () => {
 const ProfilePanel = () => {
 	const storedData = localStorage.getItem("rowData");
 	const rowData = storedData ? JSON.parse(storedData) : null;
-	// console.log(rowData, "rowData");
-	const companypane = rowData.profile;
-	const addresspane = rowData.address_details;
-	const documentpane = rowData.document_details;
-	const personalpane = rowData.personal_information;
-	const contactpane = rowData.contact_information;
+	const agent_name = rowData.agent_name;
+	const data = [
+		{
+			id: 1,
+			comp: (
+				<CompanyPane
+					rowData={rowData.profile}
+					agent_name={agent_name}
+				/>
+			),
+		},
+		{
+			id: 2,
+			comp: <AddressPane rowData={rowData.address_details} />,
+		},
+		{
+			id: 3,
+			comp: <DocPane rowData={rowData.document_details} />,
+		},
+		{
+			id: 4,
+			comp: <PersonalPane rowData={rowData.personal_information} />,
+		},
+		{
+			id: 5,
+			comp: <ContactPane rowData={rowData.contact_information} />,
+		},
+	];
 
-	// console.log(companypane, "companyPane");
-	// console.log(addresspane, "addresspane");
-	// console.log(documentpane, "documentpane");
-	// console.log(personalpane, "personalpane");
-	// console.log(contactpane, "contactpane");
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const menuHandler = () => {
 		setIsMenuVisible((prev) => !prev);
@@ -108,27 +125,15 @@ const ProfilePanel = () => {
 						base: "repeat(auto-fit,minmax(280px,0.90fr))",
 						sm: "repeat(auto-fit,minmax(380px,0.90fr))",
 						md: "repeat(auto-fit,minmax(360px,1fr))",
-						lg: "repeat(auto-fit,minmax(490px,1fr))",
+						lg: "repeat(auto-fit,minmax(450px,1fr))",
 					}}
 					justifyContent="center"
 					py={{ base: "20px", md: "0px" }}
 					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 				>
-					<GridItem>
-						<CompanyPane rowdata={companypane} />
-					</GridItem>
-					<GridItem>
-						<AddressPane rowdata={addresspane} />
-					</GridItem>
-					<GridItem>
-						<DocPane rowdata={documentpane} />
-					</GridItem>
-					<GridItem>
-						<PersonalPane rowdata={personalpane} />
-					</GridItem>
-					<GridItem>
-						<ContactPane rowdata={contactpane} />
-					</GridItem>
+					{data.map((item) => (
+						<GridItem key={item.id}>{item.comp}</GridItem>
+					))}
 				</Grid>
 			)}
 		</>

@@ -16,7 +16,7 @@ const useRequest = ({
 	// console.log("headers in useRequest", headers["tf-req-uri"]);
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
-	const [isLoading, setIsLoading] = useState(true);
+	// const [isLoading, setIsLoading] = useState(true);
 	const { generateNewToken } = useRefreshToken();
 
 	const { userData } = useUser();
@@ -29,6 +29,7 @@ const useRequest = ({
 	const {
 		data: fetchedData,
 		error: fetchedError,
+		isLoading,
 		// revalidate,
 		mutate,
 	} = useSWR(
@@ -56,14 +57,14 @@ const useRequest = ({
 		if (!fetchedData) return;
 		setData(fetchedData);
 		setError(null);
-		setIsLoading(false);
+		// setIsLoading(false);
 	}, [fetchedData]);
 
 	useEffect(() => {
 		if (!fetchedError) return;
 		setError(fetchedError);
 		setData(null);
-		setIsLoading(false);
+		// setIsLoading(false);
 	}, [fetchedError]);
 
 	return { data, error, isLoading, mutate };

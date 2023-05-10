@@ -56,6 +56,10 @@ Ref : https://www.coffeeclass.io/articles/commit-better-code-with-husky-prettier
 
 ### postcss
 
+### Icon Library:
+- View available icons: `localhost:3000/icons_demo`
+- To add new icons, see the file: `constants/IconLibrary.ts`
+
 ### jest
 
 - npm install --save-dev jest jest-environment-jsdom @testing-library/react @testing-library/jest-dom

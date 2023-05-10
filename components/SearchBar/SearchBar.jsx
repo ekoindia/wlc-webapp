@@ -20,6 +20,7 @@ const SearchBar = ({
 	seachContStyle,
 	btnTitle,
 	btnStyle,
+	loading = false,
 }) => {
 	const [value, setValue] = useState("");
 	const [errorMsg, setErrorMsg] = useState(false);
@@ -86,7 +87,12 @@ const SearchBar = ({
 				_placeholder={{ fontSize: "sm" }}
 			/>
 			{showButton ? (
-				<Button size="lg" onClick={handleBtnClick} {...btnStyle}>
+				<Button
+					size="lg"
+					loading={loading}
+					onClick={handleBtnClick}
+					{...btnStyle}
+				>
 					{btnTitle || "Search"}
 				</Button>
 			) : null}

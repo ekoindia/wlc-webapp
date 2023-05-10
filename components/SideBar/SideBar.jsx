@@ -52,7 +52,14 @@ const SideBar = (props) => {
 			<Box display={{ base: "flex", lg: "none" }}>
 				<SmallScreenSideMenu {...props} />
 			</Box>
-			<Box display={{ base: "none", lg: "flex" }}>
+			<Box
+				display={{ base: "none", lg: "flex" }}
+				sx={{
+					"@media print": {
+						display: "none",
+					},
+				}}
+			>
 				<SideBarMenu />
 			</Box>
 		</>
@@ -296,20 +303,14 @@ const AccordionSubMenuSection = ({
 								name={icon}
 								w={{
 									base: "20px",
-									sm: "20px",
 									md: "18px",
-									lg: "18px",
-									xl: "18px",
 									"2xl": "27px",
 								}}
 							/>
 							<Text
 								fontSize={{
 									base: "14px",
-									sm: "14px",
 									md: "12px",
-									lg: "12px",
-									xl: "12px",
 									"2xl": "16px",
 								}}
 							>
@@ -412,10 +413,7 @@ const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
 				key={index}
 				fontSize={{
 					base: "14px",
-					sm: "14px",
 					md: "12px",
-					lg: "12px",
-					xl: "12px",
 					"2xl": "16px",
 				}}
 				color="white"
@@ -423,7 +421,6 @@ const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
 				gap="13px"
 				px={{
 					base: "3",
-					md: "3",
 					lg: "2",
 					"2xl": "4",
 				}}

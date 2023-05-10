@@ -1,5 +1,5 @@
 import { Center } from "@chakra-ui/react";
-import { IconNameType } from "components/Icon/Icon";
+import { IconNameType } from "constants/IconLibrary";
 import { Icon } from "..";
 
 type Props = {

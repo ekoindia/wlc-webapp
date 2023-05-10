@@ -8,6 +8,12 @@ export { oldIcons } from "./connectIcons";
 export { Endpoints } from "./EndPoints";
 export { TransactionIds, TransactionTypes } from "./EpsTransactions";
 export { FrontendUrls } from "./FrontendUrls";
+export {
+	IconLibrary,
+	IconLibraryType,
+	IconNameType,
+	IconType,
+} from "./IconLibrary";
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
 export { roles } from "./role";
 export { adminSidebarMenu, OtherMenuItems, sidebarMenu } from "./SidebarMenu";

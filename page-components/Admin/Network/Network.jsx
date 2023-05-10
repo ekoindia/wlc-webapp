@@ -2,12 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { Headings, SearchBar } from "components";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
-import {
-	NetworkFilter,
-	NetworkSort,
-	NetworkTable,
-	SortAndFilterMobile,
-} from ".";
+import { NetworkFilter, NetworkTable, SortAndFilterMobile } from ".";
 
 /**
  * A <Network> component
@@ -20,6 +15,7 @@ const Network = () => {
 	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState();
 	const [filter, setFilter] = useState({});
+	console.log("filter", filter);
 
 	const [pageNumber, setPageNumber] = useState(1);
 
@@ -84,20 +80,21 @@ const Network = () => {
 								filter={filter}
 								setFilter={setFilter}
 							/>
-							<NetworkSort sort={sort} setSort={setSort} />
+							{/* <NetworkSort sort={sort} setSort={setSort} /> */}
 						</Flex>
 					</Flex>
 				) : null}
-
-				<Box mt={{ base: "none", md: "20px" }}>
-					<NetworkTable
-						setFilter={setFilter}
-						pageNumber={pageNumber}
-						totalRecords={totalRecords}
-						agentDetails={agentDetails}
-						setPageNumber={setPageNumber}
-					/>
-				</Box>
+				{dataLength > 0 ? (
+					<Box mt={{ base: "none", md: "20px" }}>
+						<NetworkTable
+							setFilter={setFilter}
+							pageNumber={pageNumber}
+							totalRecords={totalRecords}
+							agentDetails={agentDetails}
+							setPageNumber={setPageNumber}
+						/>
+					</Box>
+				) : null}
 				{dataLength > 0 ? (
 					<SortAndFilterMobile
 						filter={filter}
