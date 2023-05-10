@@ -13,7 +13,7 @@ import { Icon } from "..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<StatusCard></StatusCard>`
  */
-const StatusCard = (bgColor) => {
+const StatusCard = () => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
 	const toast = useToast();
@@ -71,7 +71,7 @@ const StatusCard = (bgColor) => {
 			px="15px"
 			align="center"
 			justify="space-between"
-			bg={bgColor || "sidebar.card-bg-dark"}
+			bg="sidebar.card-bg-dark"
 			borderBottom="br-sidebar"
 		>
 			<Flex align="flex-start" gap="2.5">
