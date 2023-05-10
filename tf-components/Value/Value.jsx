@@ -18,9 +18,9 @@ const Value = ({
 	value_formatted,
 	parameter_type_id = ParamType.TEXT,
 	metadata = "",
-	format = "",
+	// format = "",
 	preserveFraction = false,
-	textCaseType = 0,
+	// textCaseType = 0,
 	...rest
 }) => {
 	switch (parameter_type_id) {

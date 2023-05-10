@@ -18,12 +18,10 @@ import { MoveAgents, TransferSeller } from ".";
 /**
  * A <ChangeRole> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<ChangeRole></ChangeRole>`
  */
 
-const ChangeRole = (props) => {
+const ChangeRole = () => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	console.log("isShowSelectAgent", isShowSelectAgent);
 	const tab = +useRouter().query.tab;

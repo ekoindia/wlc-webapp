@@ -18,8 +18,8 @@ import { Button, Cards, Icon, IconButtons } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<DocPane></DocPane>`
  */
-const DocPane = (props) => {
-	const docdata = props.rowdata;
+const DocPane = (/* props */) => {
+	// const docdata = props.rowdata;
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 
 	const docData = [
@@ -79,7 +79,8 @@ const DocPane = (props) => {
 							>
 								<Flex align={"center"}>
 									<Image
-										src="/images/seller_logo.jpg"
+										src="/images/seller_logo.jpg" // TODO: Replace with actual doc image
+										alt="Doc preview image"
 										h={42}
 										w={42}
 										borderRadius={"5"}

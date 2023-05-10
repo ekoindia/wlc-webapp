@@ -12,7 +12,7 @@ import { useState } from "react";
 const MoveAgents = ({
 	ShowSelectAgents,
 	options,
-	selectedEkocspids,
+	// selectedEkocspids,
 	onSelectedEkocspidsChange,
 	setSelectedEkocspidsCR,
 }) => {

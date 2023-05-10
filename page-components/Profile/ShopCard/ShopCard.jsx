@@ -103,7 +103,7 @@ const ShopCard = () => {
 				token: userData?.access_token,
 				body: {
 					interaction_type_id: TransactionIds.USER_PROFILE,
-					user_id: userData.userId,
+					user_id: userData?.userId,
 					section: "shop_detail",
 					...formState,
 				},
@@ -128,13 +128,15 @@ const ShopCard = () => {
 				});
 				console.error("error: ", err);
 			});
-	});
+	}, [formState, userData?.access_token, userData?.userId]);
+
 	const onSubmit = (e) => {
 		e.preventDefault();
 		if (!error) {
 			hitQuery();
 		}
 	};
+
 	const handleChange = (e) => {
 		if (e.target.name === "pincode") {
 			if (!(e.target.value.length == 6)) {
@@ -167,7 +169,7 @@ const ShopCard = () => {
 				/>
 			</Flex>
 			<Grid templateColumns="repeat(2, 1fr)" mt="20px" rowGap="20px">
-				{Object.entries(shopObj).map(([key, value], index) =>
+				{Object.entries(shopObj).map(([key], index) =>
 					data[key] != "" ? (
 						<GridItem key={index} colSpan={1} rowSpan={1}>
 							<Flex direction="column">

@@ -25,7 +25,7 @@ const AccountStatement = () => {
 		"tf-req-method": "GET",
 	};
 
-	const { data, error, isLoading, mutate } = useRequest({
+	const { data, mutate /* , error, isLoading */ } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },

@@ -10,7 +10,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { Button, Icon, MultiSelect, Select } from "components";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
+// import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import useRequest from "hooks/useRequest";
 import { useEffect, useRef, useState } from "react";
@@ -24,10 +24,10 @@ import { useEffect, useRef, useState } from "react";
 
 const Dmt = () => {
 	const { userData } = useUser();
-	const { orgDetail } = useOrgDetailContext();
+	// const { orgDetail } = useOrgDetailContext();
 	const [selected, setSelected] = useState("");
 	const [selectedArr, setSelectedArr] = useState([]);
-	const [iconValue, setIconValue] = useState("percent");
+	const [iconValue /*, setIconValue */] = useState("percent");
 	const [selectedValue, setSelectedValue] = useState("1");
 	const focusRef = useRef(null);
 	const [value, setValue] = useState("1");
@@ -79,7 +79,7 @@ const Dmt = () => {
 		"tf-req-uri": `/network/pricing_commissions/dmt`,
 		"tf-req-method": "POST",
 	};
-	const { data, error, isLoading, mutate } = useRequest({
+	const { data, mutate /* , error, isLoading */ } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },
@@ -100,7 +100,7 @@ const Dmt = () => {
 			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 			headers
 		);
-	}, [headers["tf-req-uri"], selectedCommissionFor, dmt]);
+	}, [selectedCommissionFor, dmt]);
 	const selectdata = data?.data?.allCspList ?? [];
 
 	const renderer = {

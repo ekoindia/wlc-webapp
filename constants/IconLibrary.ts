@@ -195,7 +195,7 @@ export interface IconType {
 }
 
 export type IconLibraryType = {
-	[key in IconNameType]: IconType;
+	[_key in IconNameType]: IconType;
 };
 
 export const IconLibrary: IconLibraryType = {

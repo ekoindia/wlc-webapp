@@ -1,13 +1,13 @@
 import { Avatar, Box, Circle, Flex, Select, Text } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
+// import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import { MoveAgents as FromAgents } from "..";
 
-const TransferSeller = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
+const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 	function handleSelectedEkocspids(newSelectedEkocspids) {
 		setSelectedEkocspids(newSelectedEkocspids);
 	}
@@ -20,7 +20,7 @@ const TransferSeller = ({ setIsShowSelectAgent, props, onScspFromChange }) => {
 	const [scspFrom, setScspFrom] = useState([]);
 	const [scspto, setScspTo] = useState([]);
 	const { userData } = useUser();
-	const { orgDetail } = useOrgDetailContext();
+	// const { orgDetail } = useOrgDetailContext();
 	const [fromSellerid, setFromSellerid] = useState([]);
 
 	const handleFromChange = (event) => {

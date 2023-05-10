@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Menus } from "components";
 import { Endpoints } from "constants/EndPoints";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
+// import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
@@ -28,7 +28,7 @@ import { useState } from "react";
 
 const NetworkMenuWrapper = (props) => {
 	const { userData } = useUser();
-	const { orgDetail } = useOrgDetailContext();
+	// const { orgDetail } = useOrgDetailContext();
 	const { eko_code, account_status } = props;
 	const { onOpen, onClose } = useDisclosure();
 	const [reason, setReason] = useState("");

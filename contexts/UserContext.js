@@ -119,7 +119,7 @@ const UserProvider = ({ userMockData, children }) => {
 			updateShopDetails,
 			updatePersonalDetail,
 		};
-	}, [state, loading]);
+	}, [state, loading, isTokenUpdating]);
 	// if (loading)
 	// 	return "loading..."
 

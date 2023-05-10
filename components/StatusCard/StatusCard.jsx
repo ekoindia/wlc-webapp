@@ -17,7 +17,7 @@ const StatusCard = (bgColor) => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
 	const toast = useToast();
-	const { refreshWallet, balance, loading } = useWallet();
+	const { refreshWallet, balance /* , loading */ } = useWallet();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 

@@ -26,7 +26,7 @@ const useFetchBalance = (setBalance) => {
 	const { generateNewToken } = useRefreshToken();
 
 	const fetchBalance = useCallback(() => {
-		console.log("::::fetchBalance::::");
+		// console.log("::::fetchBalance::::");
 		// setLoading(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -40,17 +40,18 @@ const useFetchBalance = (setBalance) => {
 			generateNewToken
 		)
 			.then((data) => {
-				console.log("useFetchBalance Balance: ", data);
+				console.log("[useFetchBalance] Balance: ", data);
 
 				if (data && data.data && "balance" in data.data) {
 					setBalance(+data?.data?.balance || 0);
 				}
 			})
 			.catch((err) => {
-				console.error("useFetchBalance error: ", err);
+				console.error("[useFetchBalance] error: ", err);
 			});
 		// .finally(() => setLoading(false));
-	});
+	}, [userData?.access_token]);
+
 	return { fetchBalance /* loading */ };
 };
 

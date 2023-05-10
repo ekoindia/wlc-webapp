@@ -8,7 +8,7 @@ import { NetworkFilter } from "..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<SortAndFilterMobile></SortAndFilterMobile>`
  */
-const SortAndFilterMobile = ({ setFilter, setSort }) => {
+const SortAndFilterMobile = ({ setFilter /*, setSort */ }) => {
 	return (
 		<Box
 			display={{ base: "flex", md: "none" }}

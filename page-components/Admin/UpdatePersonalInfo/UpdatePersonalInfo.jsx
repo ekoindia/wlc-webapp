@@ -42,7 +42,7 @@ const UpdatePersonalInfo = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [imageUrl, setImageUrl] = useState("");
 	// const [error, setError] = useState(null);
-	const [dragOver, setDragOver] = useState(false);
+	const [, /* dragOver */ setDragOver] = useState(false); // TODO: Remove this if not needed
 
 	const { userData } = useUser();
 
@@ -54,6 +54,7 @@ const UpdatePersonalInfo = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		setIsLoading(true);
 		fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			method: "POST",
 			headers: {
@@ -71,6 +72,9 @@ const UpdatePersonalInfo = () => {
 			})
 			.catch((error) => {
 				console.log(error);
+			})
+			.finally(() => {
+				setIsLoading(false);
 			});
 	};
 

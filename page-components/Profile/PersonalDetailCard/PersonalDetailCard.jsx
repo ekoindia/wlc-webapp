@@ -86,15 +86,18 @@ const PersonalDetailCard = () => {
 				});
 				console.error("error: ", err);
 			});
-	});
+	}, [formState, userData?.access_token, userData?.userId]);
+
 	const onSubmit = () => {
 		console.log(formState);
 		hitQuery();
 	};
+
 	const handleChange = (e) => {
 		console.log(e);
 		setFormState({ ...formState, [e.target.name]: e.target.value });
 	};
+
 	return (
 		<Flex
 			w="100%"
@@ -117,7 +120,7 @@ const PersonalDetailCard = () => {
 				/>
 			</Flex>
 			<Flex direction="column" mt="20px" rowGap="20px">
-				{Object.entries(personalDetailObj).map(([key, value], index) =>
+				{Object.entries(personalDetailObj).map(([key], index) =>
 					data[key] != "" ? (
 						<Flex key={index} direction="column">
 							<Text>{key}</Text>
