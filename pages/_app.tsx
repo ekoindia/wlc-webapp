@@ -1,7 +1,12 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, RouteProtecter } from "components";
-import { OrgDetailProvider, UserProvider, WalletProvider } from "contexts";
+import {
+	OrgDetailProvider,
+	OrgDetailSessionStorageKey,
+	UserProvider,
+	WalletProvider,
+} from "contexts";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
@@ -34,40 +39,52 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 	// 	colors = JSON.parse(sessionStorage.getItem("colors"));
 	// }
 
-	console.log(">>>>>>>>>> ############## ", {
+	console.log("[_app.tsx] WlcApp Started: ", {
 		org,
 		is_local: typeof window === "undefined" ? false : true,
 	});
 
+	// Fallback if org data not received from getInitialProps()
+	// Fix: this may not be required as we are loading org details
+	// 		from local storage within getInitialProps()
 	if (typeof window !== "undefined" && !org) {
 		try {
-			org = JSON.parse(sessionStorage.getItem("org_detail"));
-			console.log(">>>>>>>>>>>> ##### _app.js from local 2: ", org);
+			org = JSON.parse(
+				sessionStorage.getItem(OrgDetailSessionStorageKey)
+			);
+			console.log("[_app.tsx] loading org details from local: ", org);
 		} catch (err) {
-			console.error("Error parsing org_detail: ", err);
+			console.error("[_app.tsx] Error parsing org_detail: ", err);
 		}
 	}
 
+	// Setup custom theme...
 	const colors = org?.colors;
-
-	const theme = {
-		...light,
-		colors: {
-			...light.colors,
-			accent: {
-				...light.colors.accent,
-				light: colors?.accent_light || light.colors.accent.light,
-				DEFAULT: colors?.accent || light.colors.accent.DEFAULT,
-				dark: colors?.accent_dark || light.colors.accent.dark,
-			},
-			primary: {
-				...light.colors.primary,
-				light: colors?.primary_light || light.colors.primary.light,
-				DEFAULT: colors?.primary || light.colors.primary.DEFAULT,
-				dark: colors?.primary_dark || light.colors.primary.dark,
-			},
-		},
-	};
+	const theme = colors
+		? {
+				...light,
+				colors: {
+					...light.colors,
+					accent: {
+						...light.colors.accent,
+						light:
+							colors?.accent_light || light.colors.accent.light,
+						DEFAULT: colors?.accent || light.colors.accent.DEFAULT,
+						dark: colors?.accent_dark || light.colors.accent.dark,
+					},
+					primary: {
+						...light.colors.primary,
+						light:
+							colors?.primary_light || light.colors.primary.light,
+						DEFAULT:
+							colors?.primary || light.colors.primary.DEFAULT,
+						dark: colors?.primary_dark || light.colors.primary.dark,
+					},
+				},
+		  }
+		: {
+				...light,
+		  };
 
 	return (
 		<>
@@ -95,13 +112,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 			) : null}
 
 			<GoogleOAuthProvider
-				clientId={pageProps?.data?.login_types?.google?.client_id || ""}
+				clientId={org?.login_types?.google?.client_id || ""}
 			>
 				<ChakraProvider
 					theme={theme}
 					toastOptions={{ defaultOptions: toastDefaultOptions }}
 				>
-					<OrgDetailProvider orgMockData={null}>
+					<OrgDetailProvider initialData={org || null}>
 						<UserProvider userMockData={null}>
 							<LayoutProvider>
 								<MenuProvider>
@@ -142,21 +159,30 @@ WlcApp.getInitialProps = async function (appContext) {
 
 	const defaultProps = App.getInitialProps(appContext);
 
-	console.log("!!!!!!#####");
-
 	if (typeof window !== "undefined") {
-		console.log("!!!!! ##### getInitialProps from local.");
-
+		console.log("[_app.tsx] getInitialProps from SessionStorage.");
 		return {
 			...defaultProps,
-			org: JSON.parse(window.sessionStorage.getItem("org_detail")),
+			org: JSON.parse(
+				window.sessionStorage.getItem(OrgDetailSessionStorageKey)
+			),
 		};
 	}
 
-	console.log("getInitialProps Executed:: ", ctx.req.headers.host);
-
 	// Get org details (like, logo, name, etc) from server
 	const org_details = await fetchOrgDetails(ctx.req.headers.host);
+
+	console.debug(
+		"[_app.tsx] getInitialProps:: ",
+		JSON.stringify(
+			{
+				host: ctx.req.headers.host,
+				org: org_details.props.data,
+			},
+			null,
+			2
+		)
+	);
 
 	return {
 		...defaultProps,

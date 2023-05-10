@@ -19,7 +19,7 @@ const BaseProviders = ({ children }) => {
 			clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
 		>
 			<ChakraProvider theme={light}>
-				<OrgDetailProvider orgMockData={MockOrg}>
+				<OrgDetailProvider initialData={MockOrg}>
 					<LayoutProvider>
 						<MenuProvider>
 							<Layout>{children}</Layout>
