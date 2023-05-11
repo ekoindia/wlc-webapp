@@ -148,7 +148,7 @@ const NetworkFilter = ({ filter, setFilter }) => {
 				</Button>
 			</Box>
 
-			<Box display={{ base: "initial", md: "none" }}>
+			<Box display={{ base: "initial", md: "none" }} w="100%">
 				<Button
 					display={"flex"}
 					gap={"4px"}

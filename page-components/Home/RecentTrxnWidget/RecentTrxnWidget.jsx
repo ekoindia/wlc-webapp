@@ -46,11 +46,6 @@ const RecentTrxnWidget = () => {
 				};
 			});
 			setData(tx_list);
-			console.log(
-				"DATA::::::: ",
-				data?.data?.transaction_list ?? [],
-				tx_list
-			);
 		});
 	}, []);
 
@@ -58,11 +53,16 @@ const RecentTrxnWidget = () => {
 		router.push("/history" + (id ? `?search=${id}` : ""));
 	};
 
+	if (!data.length) {
+		return null;
+	}
+
 	return (
 		<Flex
 			direction="column"
 			background="white"
 			h={{ base: "auto", md: "350px" }}
+			w={{ base: "90%", md: "100%" }}
 			p="5"
 			borderRadius="10px"
 			m={{ base: "16px", md: "auto" }}
@@ -127,7 +127,7 @@ const RecentTrxnWidget = () => {
 
 								<Flex
 									alignItems="baseline"
-									fontSize={{ base: "xs", xl: "xs" }}
+									fontSize={{ base: "xs" }}
 								>
 									<Text
 										fontWeight="normal"

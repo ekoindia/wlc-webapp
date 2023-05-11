@@ -29,7 +29,7 @@ const CommonTrxnWidget = () => {
 	});
 
 	const showAllButton = useBreakpointValue({
-		base: interaction_list.length > 3 && !showAll,
+		base: interaction_list.length > 3 /* && !showAll */,
 		md: false,
 	});
 
@@ -40,93 +40,96 @@ const CommonTrxnWidget = () => {
 	const handleIconClick = (id) => {
 		router.push(`transaction/${id}`);
 	};
+
+	if (!showTransactions.length) {
+		return null;
+	}
+
 	return (
-		<div>
-			<Flex
-				h={{
-					base: "auto",
-					md: "350px",
-				}}
-				direction="column"
-				background="white"
-				p="5"
-				borderRadius="10px"
-				m={{ base: "16px", md: "auto" }}
+		<Flex
+			w={{ base: "90%", md: "100%" }}
+			h={{
+				base: "auto",
+				md: "350px",
+			}}
+			direction="column"
+			background="white"
+			p="5"
+			borderRadius="10px"
+			m={{ base: "16px", md: "auto" }}
+		>
+			<Box mb="5">
+				<Text as="b" fontSize={{ base: "sm", md: "md" }}>
+					Most common transactions
+				</Text>
+			</Box>
+			<SimpleGrid
+				columns="3"
+				spacing={{ base: "4", md: "10", "2xl": "16" }}
+				justifyContent="center"
+				textAlign="center"
+				alignItems="flex-start"
 			>
-				<Box mb="5">
-					<Text as="b" fontSize={{ base: "sm", md: "md" }}>
-						Most common transactions
-					</Text>
-				</Box>
-				<SimpleGrid
-					columns="3"
-					spacing={{ base: "4", md: "10", "2xl": "16" }}
-					justifyContent="center"
-					textAlign="center"
-					alignItems="flex-start"
-				>
-					{showTransactions.slice(0, 6).map((transaction, index) => (
-						<>
-							<Box
-								key={index}
-								display="flex"
-								flexDirection="column"
+				{showTransactions.slice(0, 6).map((transaction, index) => (
+					<>
+						<Box
+							key={index}
+							display="flex"
+							flexDirection="column"
+							alignItems="center"
+							justifyContent="center"
+							// pt={{ base: "22px" }}
+							// borderRight={
+							// 	index !== 2 && (index + 1) % 3
+							// 		? "1px solid #E9EDF1"
+							// 		: "none"
+							// }
+						>
+							<IcoButton
+								title={transaction.label}
+								iconName={transaction.icon}
+								size="md"
+								// size={{
+								// 	base: "sm",
+								// 	// md: "md",
+								// 	// xl: "lg",
+								// }}
+								// iconStyle={{
+								// 	width: {
+								// 		base: "20px",
+								// 		md: "24px",
+								// 		xl: "30px",
+								// 	},
+								// 	height: {
+								// 		base: "20px",
+								// 		md: "24px",
+								// 		xl: "30px",
+								// 	},
+								// }}
+								// size={{
+								// 	base: "48px",
+								// 	xl: "56px",
+								// 	"2xl": "64px",
+								// }}
+								theme="light"
+								rounded="full"
+								onClick={() => handleIconClick(transaction.id)}
+								alignContent="center"
 								alignItems="center"
-								justifyContent="center"
-								// pt={{ base: "22px" }}
-								// borderRight={
-								// 	index !== 2 && (index + 1) % 3
-								// 		? "1px solid #E9EDF1"
-								// 		: "none"
-								// }
+							></IcoButton>
+							<Text
+								fontSize={{
+									base: "xs",
+									"2xl": "sm",
+								}}
+								color="accent.DEFAULT"
+								pt="10px"
+								noOfLines={2}
 							>
-								<IcoButton
-									title={transaction.label}
-									iconName={transaction.icon}
-									size="md"
-									// size={{
-									// 	base: "sm",
-									// 	// md: "md",
-									// 	// xl: "lg",
-									// }}
-									// iconStyle={{
-									// 	width: {
-									// 		base: "20px",
-									// 		md: "24px",
-									// 		xl: "30px",
-									// 	},
-									// 	height: {
-									// 		base: "20px",
-									// 		md: "24px",
-									// 		xl: "30px",
-									// 	},
-									// }}
-									// size={{
-									// 	base: "48px",
-									// 	xl: "56px",
-									// 	"2xl": "64px",
-									// }}
-									theme="light"
-									rounded="full"
-									onClick={() =>
-										handleIconClick(transaction.id)
-									}
-									alignContent="center"
-									alignItems="center"
-								></IcoButton>
-								<Text
-									fontSize={{
-										base: "xs",
-										"2xl": "sm",
-									}}
-									color="accent.DEFAULT"
-									pt="10px"
-									noOfLines={2}
-								>
-									{transaction.label}
-								</Text>
-								{/*commision data not there*/}
-								{/* <Text
+								{transaction.label}
+							</Text>
+							{/*commision data not there*/}
+							{/* <Text
 									fontSize={{
 										base: "11px",
 										lg: "xs",
@@ -138,27 +141,26 @@ const CommonTrxnWidget = () => {
 								>
 									{transaction.commission}% Commission
 								</Text> */}
-							</Box>
-						</>
-					))}
-				</SimpleGrid>
-				{showAllButton && (
-					<Flex
+						</Box>
+					</>
+				))}
+			</SimpleGrid>
+			{showAllButton && (
+				<Flex
+					justifyContent="center"
+					alignItems="center"
+					textAlign="center"
+					pt={{ base: "24px", md: "0px" }}
+				>
+					<Button
+						onClick={() => setShowAll((showAll) => !showAll)}
 						justifyContent="center"
-						alignItems="center"
-						textAlign="center"
-						pt={{ base: "24px", md: "0px" }}
 					>
-						<Button
-							onClick={() => setShowAll(true)}
-							justifyContent="center"
-						>
-							+ Show All
-						</Button>
-					</Flex>
-				)}
-			</Flex>
-		</div>
+						{showAll ? "- Show Less" : "+ Show All"}
+					</Button>
+				</Flex>
+			)}
+		</Flex>
 	);
 };
 

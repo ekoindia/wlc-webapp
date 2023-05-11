@@ -36,6 +36,7 @@ const NotificationWidget = () => {
 				direction="column"
 				background="white"
 				h={{ base: "auto", md: "350px" }}
+				w={{ base: "90%", md: "100%" }}
 				pb="2"
 				// p="5"
 				borderRadius="10px"

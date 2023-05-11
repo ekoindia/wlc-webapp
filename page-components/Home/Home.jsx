@@ -30,23 +30,21 @@ const Home = () => {
 	];
 
 	return (
-		<>
-			<Grid
-				templateColumns={{
-					base: "repeat(auto-fit,minmax(280px,1fr))",
-					md: "repeat(auto-fit,minmax(340px,1fr))",
-					// xl: "repeat(auto-fit,minmax(440px,1fr))",
-				}}
-				justifyContent="center"
-				py={{ base: "20px", md: "0px" }}
-				gap={{ base: (2, 2), md: (4, 2), lg: (4, 6) }}
-				width={"100%"}
-			>
-				{widgets.map(({ id, component: Component }) => (
-					<Component key={id} />
-				))}
-			</Grid>
-		</>
+		<Grid
+			templateColumns={{
+				base: "repeat(auto-fit,minmax(280px,1fr))",
+				md: "repeat(auto-fit,minmax(340px,1fr))",
+				// xl: "repeat(auto-fit,minmax(440px,1fr))",
+			}}
+			justifyContent="center"
+			py={{ base: "20px", md: "0px" }}
+			gap={{ base: (2, 2), md: (4, 2), lg: (4, 6) }}
+			width={"100%"}
+		>
+			{widgets.map(({ id, component: Component }) => (
+				<Component key={id} />
+			))}
+		</Grid>
 	);
 };
 
