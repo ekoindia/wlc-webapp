@@ -67,7 +67,7 @@ const RecentTrxnWidget = () => {
 			borderRadius="10px"
 			m={{ base: "16px", md: "auto" }}
 		>
-			<Box top="0" zIndex="1">
+			<Box mb="5">
 				<Flex justifyContent="space-between">
 					<Text as="b">Recent transactions</Text>
 					<Text
@@ -99,7 +99,6 @@ const RecentTrxnWidget = () => {
 				}}
 				overflowY={{ base: "none", md: "scroll" }}
 				rowGap={{ base: "19px", md: "10px" }}
-				mt="20px"
 			>
 				{data.map((tx) => (
 					<Flex key={tx.tid}>
