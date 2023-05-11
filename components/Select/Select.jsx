@@ -9,16 +9,14 @@ import { Icon, InputLabel } from "..";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Select></Select>`
  */
-const Select = (props) => {
-	const {
-		label,
-		required = false,
-		// labelStyle,
-		inputContStyle,
-		data,
-		setSelected,
-	} = props;
-
+const Select = ({
+	label,
+	placeholder,
+	required = false,
+	inputContStyle,
+	data,
+	setSelected,
+}) => {
 	const [selectedValue, setSelectedValue] = useState({});
 
 	const handleSelectChange = (event) => {
@@ -29,52 +27,42 @@ const Select = (props) => {
 	};
 
 	return (
-		<Flex direction={"column"} w="100%">
-			<Flex>
-				<InputLabel
-					required={required}
-					fontSize="md"
-					color="inputlabel"
-					fontWeight="600"
-					mb={{ base: 2.5, "2xl": "0.8rem" }}
-				>
-					{label}
-				</InputLabel>
-			</Flex>
-
-			<Flex
-				justifyContent={{ base: "center", sm: "flex-start" }}
-				w={{
-					base: "100%",
-					sm: "72%",
-					md: "380px",
-					xl: "400px",
-					"2xl": "500px",
+		<Flex direction="column" w="100%">
+			{label ? (
+				<Flex>
+					<InputLabel
+						required={required}
+						fontSize="md"
+						color="inputlabel"
+						fontWeight="600"
+						mb={{ base: 2.5, "2xl": "0.8rem" }}
+					>
+						{label}
+					</InputLabel>
+				</Flex>
+			) : null}
+			<ChakraSelect
+				placeholder={placeholder || "-- Select --"}
+				// w="100%"
+				h="3rem"
+				fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
+				focusBorderColor="#D2D2D2"
+				_focus={{
+					border: "1px solid #D2D2D2",
+					boxShadow: "none",
 				}}
+				borderRadius="10px"
+				icon={<Icon name="caret-down" w="14px" h="10px" />}
+				onChange={handleSelectChange}
+				value={selectedValue.key || ""}
+				{...inputContStyle}
 			>
-				<ChakraSelect
-					placeholder="-- Select --"
-					w="100%"
-					h="3rem"
-					fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
-					focusBorderColor={"#D2D2D2"}
-					_focus={{
-						border: "1px solid #D2D2D2",
-						boxShadow: "none",
-					}}
-					borderRadius="10px"
-					icon={<Icon name="caret-down" w="14px" h="10px" />}
-					onChange={handleSelectChange}
-					value={selectedValue.key || ""}
-					{...inputContStyle}
-				>
-					{data?.map((value) => (
-						<option value={value.key} key={value.key}>
-							{value.minSlabAmount} - {value.maxSlabAmount}
-						</option>
-					))}
-				</ChakraSelect>
-			</Flex>
+				{data?.map((value) => (
+					<option value={value.key} key={value.key}>
+						{value.minSlabAmount} - {value.maxSlabAmount}
+					</option>
+				))}
+			</ChakraSelect>
 		</Flex>
 	);
 };

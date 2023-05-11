@@ -1,13 +1,14 @@
 import { PricingForm } from "..";
+
 /**
- * A <Dmt> component
+ * A <Aeps> component
  * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<Dmt></Dmt>` TODO: Fix example
+ * @example	`<Aeps></Aeps>` TODO: Fix example
  */
-const Dmt = ({ prop1, ...rest }) => {
+const Aeps = ({ prop1, ...rest }) => {
 	const commissionForObj = {
 		1: "Individuals",
 		2: "Distributors",
@@ -21,12 +22,11 @@ const Dmt = ({ prop1, ...rest }) => {
 	return (
 		<div {...rest}>
 			<PricingForm
-				product="dmt"
+				product="aeps"
 				commissionForObj={commissionForObj}
 				commissionTypeObj={commissionTypeObj}
 			/>
 		</div>
 	);
 };
-
-export default Dmt;
+export default Aeps;
