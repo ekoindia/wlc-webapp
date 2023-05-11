@@ -2,6 +2,7 @@ import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, RouteProtecter } from "components";
 import {
+	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
 	UserProvider,
@@ -86,6 +87,51 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 				...light,
 		  };
 
+	const AppCompArray = (
+		<ChakraProvider
+			theme={theme}
+			toastOptions={{ defaultOptions: toastDefaultOptions }}
+		>
+			<OrgDetailProvider initialData={org || null}>
+				<UserProvider userMockData={null}>
+					<LayoutProvider>
+						<MenuProvider>
+							<WalletProvider>
+								<RouteProtecter router={router}>
+									<SWRConfig
+										value={{
+											provider: localStorageProvider,
+										}}
+									>
+										<NotificationProvider>
+											<ErrorBoundary>
+												<main
+													className={inter.className}
+												>
+													<Component {...pageProps} />
+												</main>
+											</ErrorBoundary>
+										</NotificationProvider>
+									</SWRConfig>
+								</RouteProtecter>
+							</WalletProvider>
+						</MenuProvider>
+					</LayoutProvider>
+				</UserProvider>
+			</OrgDetailProvider>
+		</ChakraProvider>
+	);
+
+	const AppCompArrayWithSocialLogin = org?.login_types?.google?.client_id ? (
+		<GoogleOAuthProvider
+			clientId={org?.login_types?.google?.client_id || ""}
+		>
+			{AppCompArray}
+		</GoogleOAuthProvider>
+	) : (
+		AppCompArray
+	);
+
 	return (
 		<>
 			<Head>
@@ -111,45 +157,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 				</Script>
 			) : null}
 
-			<GoogleOAuthProvider
-				clientId={org?.login_types?.google?.client_id || ""}
-			>
-				<ChakraProvider
-					theme={theme}
-					toastOptions={{ defaultOptions: toastDefaultOptions }}
-				>
-					<OrgDetailProvider initialData={org || null}>
-						<UserProvider userMockData={null}>
-							<LayoutProvider>
-								<MenuProvider>
-									<WalletProvider>
-										<RouteProtecter router={router}>
-											<SWRConfig
-												value={{
-													provider:
-														localStorageProvider,
-												}}
-											>
-												<ErrorBoundary>
-													<main
-														className={
-															inter.className
-														}
-													>
-														<Component
-															{...pageProps}
-														/>
-													</main>
-												</ErrorBoundary>
-											</SWRConfig>
-										</RouteProtecter>
-									</WalletProvider>
-								</MenuProvider>
-							</LayoutProvider>
-						</UserProvider>
-					</OrgDetailProvider>
-				</ChakraProvider>
-			</GoogleOAuthProvider>
+			{AppCompArrayWithSocialLogin}
 		</>
 	);
 }
