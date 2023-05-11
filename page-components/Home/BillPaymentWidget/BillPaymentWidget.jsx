@@ -15,10 +15,8 @@ import { useEffect, useState } from "react";
  */
 const BillPaymentWidget = () => {
 	const router = useRouter();
-	const [isCardVisible, setIsCardVisible] = useState(false);
 	const [data, setData] = useState([]);
 	const [more, setMore] = useState(false);
-	console.log("data", data);
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 
@@ -43,7 +41,6 @@ const BillPaymentWidget = () => {
 			}
 		});
 		setData(bbps_tx_list); // set the new array to the data state
-		setIsCardVisible(bbps_tx_list.length > 0);
 	}, [role_tx_list]);
 
 	useEffect(() => {
@@ -59,9 +56,10 @@ const BillPaymentWidget = () => {
 		);
 	};
 	return (
-		<div>
-			{isCardVisible && (
+		<>
+			{data.length > 0 ? (
 				<Flex
+					w={{ base: "90%", md: "100%" }}
 					h={{
 						base: "auto",
 						md: "387px",
@@ -195,8 +193,8 @@ const BillPaymentWidget = () => {
 					/>
 				</Flex> */}
 				</Flex>
-			)}
-		</div>
+			) : null}
+		</>
 	);
 };
 

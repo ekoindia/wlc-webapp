@@ -1,4 +1,4 @@
-import { Flex, GridItem, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { useUser } from "contexts/UserContext";
 /**
@@ -14,9 +14,12 @@ const QueryWidget = () => {
 	const data = userData?.userDetails?.contacts ?? [];
 
 	return (
-		<div>
-			<GridItem>
+		<>
+			{data.length > 0 ? (
 				<Flex
+					w="100%"
+					minW="200px"
+					maxW="auto"
 					h={{
 						base: "auto",
 						md: "387px",
@@ -42,13 +45,13 @@ const QueryWidget = () => {
 						md: "50px",
 						lg: "30px",
 					}}
-					px={{
-						base: "20px",
-						sm: "40px",
-						md: "18px",
-						lg: "15px",
-						xl: "25px",
-					}}
+					// px={{
+					// 	base: "20px",
+					// 	sm: "40px",
+					// 	md: "18px",
+					// 	lg: "15px",
+					// 	xl: "25px",
+					// }}
 					py={{
 						base: "20px",
 						sm: "30px",
@@ -185,8 +188,8 @@ const QueryWidget = () => {
 						) : null}
 					</Flex>
 				</Flex>
-			</GridItem>
-		</div>
+			) : null}
+		</>
 	);
 };
 

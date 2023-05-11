@@ -66,6 +66,8 @@ const RecentTrxnWidget = () => {
 			p="5"
 			borderRadius="10px"
 			m={{ base: "16px", md: "auto" }}
+			minH="387px"
+			minW={{ base: "90%", md: "100%" }}
 		>
 			<Box top="0" zIndex="1">
 				<Flex justifyContent="space-between">
