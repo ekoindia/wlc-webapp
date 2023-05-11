@@ -39,7 +39,7 @@ const NotificationWidget = () => {
 				pb="2"
 				// p="5"
 				borderRadius="10px"
-				// m={{ base: "16px", md: "auto" }}
+				m={{ base: "16px", md: "auto" }}
 			>
 				<Box top="0" zIndex="1" p="5">
 					<Flex justifyContent="space-between">
