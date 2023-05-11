@@ -1,4 +1,4 @@
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 import { useUser } from "contexts";
 import {
 	BillPaymentWidget,
@@ -21,6 +21,14 @@ const Home = () => {
 
 	if (!isLoggedIn) return null;
 
+	const widgets = [
+		{ id: 1, component: CommonTrxnWidget },
+		{ id: 2, component: BillPaymentWidget },
+		{ id: 3, component: NotificationWidget },
+		{ id: 4, component: RecentTrxnWidget },
+		{ id: 5, component: QueryWidget },
+	];
+
 	return (
 		<>
 			<Grid
@@ -34,25 +42,9 @@ const Home = () => {
 				gap={{ base: (2, 2), md: (4, 2), lg: (4, 6) }}
 				width={"100%"}
 			>
-				<GridItem>
-					<CommonTrxnWidget />
-				</GridItem>
-
-				{/*<KycWidget />*/}
-
-				<GridItem>
-					<BillPaymentWidget />
-				</GridItem>
-
-				<NotificationWidget />
-
-				<GridItem>
-					<RecentTrxnWidget />
-				</GridItem>
-
-				<GridItem>
-					<QueryWidget />
-				</GridItem>
+				{widgets.map(({ id, component: Component }) => (
+					<Component key={id} />
+				))}
 			</Grid>
 		</>
 	);
