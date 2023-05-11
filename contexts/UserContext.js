@@ -108,6 +108,9 @@ const UserProvider = ({ userMockData, children }) => {
 
 	const contextValue = useMemo(() => {
 		return {
+			isLoggedIn:
+				state.loggedIn && state.access_token && state.userId > 1,
+			userId: state.userId,
 			userData: state,
 			login,
 			logout,
