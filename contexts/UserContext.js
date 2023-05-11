@@ -110,6 +110,7 @@ const UserProvider = ({ userMockData, children }) => {
 		return {
 			isLoggedIn:
 				state.loggedIn && state.access_token && state.userId > 1,
+			isAdmin: state.is_org_admin,
 			userId: state.userId,
 			userData: state,
 			login,
