@@ -53,66 +53,70 @@ const Menus = (props) => {
 			onClick={onClick}
 		>
 			<Menu autoSelect={false}>
-				{({ isOpen }) => (
-					<>
-						<MenuButton
-							cursor="pointer"
-							as={as}
-							minW={minW}
-							minH={minH}
-							width={width}
-							height={height}
-							{...iconWPos}
-							{...buttonStyle}
-							{...pseudoStyles}
-							{...props}
-						>
-							{title}
-						</MenuButton>
-						<MenuList py="0px" minW="120px" {...listStyles}>
-							{menulist
-								? menulist.map((item, index) => {
-										return (
-											<>
-												<MenuItem
-													color="dark"
-													key={index}
-													onClick={() => {
-														if (item.handleClick) {
-															item.handleClick();
-														} else {
-															router.push(
-																item.path
-															);
-														}
-													}}
-													p="8px 10px"
-													fontSize={{
-														base: "10px",
-														sm: "xs",
-													}}
-													fontWeight="medium"
-													_hover={{
-														bg: "white",
-													}}
-													{...itemStyles}
-												>
-													{item.item}
-												</MenuItem>
-												{index !==
-													menulist.length - 1 && (
-													<MenuDivider
-														margin="auto"
-														w="90%"
-													/>
-												)}
-											</>
-										);
-								  })
-								: null}
-						</MenuList>
-					</>
-				)}
+				{
+					(/* { isOpen } */) => (
+						<>
+							<MenuButton
+								cursor="pointer"
+								as={as}
+								minW={minW}
+								minH={minH}
+								width={width}
+								height={height}
+								{...iconWPos}
+								{...buttonStyle}
+								{...pseudoStyles}
+								{...props}
+							>
+								{title}
+							</MenuButton>
+							<MenuList py="0px" minW="120px" {...listStyles}>
+								{menulist
+									? menulist.map((item, index) => {
+											return (
+												<>
+													<MenuItem
+														color="dark"
+														key={index}
+														onClick={() => {
+															if (
+																item.handleClick
+															) {
+																item.handleClick();
+															} else {
+																router.push(
+																	item.path
+																);
+															}
+														}}
+														p="8px 10px"
+														fontSize={{
+															base: "10px",
+															sm: "xs",
+														}}
+														fontWeight="medium"
+														_hover={{
+															bg: "white",
+														}}
+														{...itemStyles}
+													>
+														{item.item}
+													</MenuItem>
+													{index !==
+														menulist.length - 1 && (
+														<MenuDivider
+															margin="auto"
+															w="90%"
+														/>
+													)}
+												</>
+											);
+									  })
+									: null}
+							</MenuList>
+						</>
+					)
+				}
 			</Menu>
 		</Box>
 	);

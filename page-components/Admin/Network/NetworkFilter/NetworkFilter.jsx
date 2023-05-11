@@ -51,7 +51,7 @@ const NetworkFilter = ({ filter, setFilter }) => {
 	];
 
 	const handleInputChange = (event) => {
-		const { name, type, checked, value } = event.target;
+		const { name, value /*, type, checked */ } = event.target;
 		setFilterValues((prevState) => ({
 			...prevState,
 			[name]: value,

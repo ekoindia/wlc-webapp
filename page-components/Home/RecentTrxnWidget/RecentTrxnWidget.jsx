@@ -62,7 +62,7 @@ const RecentTrxnWidget = () => {
 		<Flex
 			direction="column"
 			background="white"
-			h={{ base: "auto", md: "387px" }}
+			h={{ base: "auto", md: "350px" }}
 			p="5"
 			borderRadius="10px"
 			m={{ base: "16px", md: "auto" }}
@@ -103,20 +103,18 @@ const RecentTrxnWidget = () => {
 			>
 				{data.map((tx) => (
 					<Flex key={tx.tid}>
-						<Flex>
-							<Avatar
-								h={{ base: "42px", md: "56px" }}
-								w={{ base: "42px", md: "56px" }}
-								border="2px solid #D2D2D2"
-								name={tx.name}
-							/>
-						</Flex>
+						<Avatar
+							h={{ base: "42px", md: "48px" }}
+							w={{ base: "42px", md: "48px" }}
+							border="2px solid #D2D2D2"
+							name={tx.name}
+						/>
 						<Flex
 							alignItems="center"
 							justifyContent="space-between"
 							w="100%"
 							borderBottom="1px solid #F5F6F8"
-							ml={{ base: "20px", md: "15px" }}
+							ml="10px"
 						>
 							<Flex direction="column">
 								<Text

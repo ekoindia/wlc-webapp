@@ -51,6 +51,7 @@ const OnboardingDashboardTable = ({ prop1, ...rest }) => {
 				variant="evenStripedClickableRow"
 				tableName="Onboarding"
 				isScrollrequired={true}
+				{...rest}
 			/>
 		</>
 	);

@@ -10,7 +10,6 @@ const Pagination = (props) => {
 		siblingCount = 1,
 		currentPage,
 		pageSize,
-		className = "pagination",
 	} = props;
 	const [currPageNumber, setCurrPageNumber] = useState(1);
 

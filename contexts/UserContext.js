@@ -108,6 +108,10 @@ const UserProvider = ({ userMockData, children }) => {
 
 	const contextValue = useMemo(() => {
 		return {
+			isLoggedIn:
+				state.loggedIn && state.access_token && state.userId > 1,
+			isAdmin: state.is_org_admin,
+			userId: state.userId,
 			userData: state,
 			login,
 			logout,
@@ -119,7 +123,7 @@ const UserProvider = ({ userMockData, children }) => {
 			updateShopDetails,
 			updatePersonalDetail,
 		};
-	}, [state, loading]);
+	}, [state, loading, isTokenUpdating]);
 	// if (loading)
 	// 	return "loading..."
 

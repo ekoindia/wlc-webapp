@@ -6,6 +6,7 @@ export const TransactionTypes = {
 	GET_PINTWIN_KEY: 241,
 	GET_TRANSACTION_HISTORY: 154,
 	GET_WALLET_BALANCE: 9,
+	GET_NOTIFICATIONS: 10010,
 };
 
 /**

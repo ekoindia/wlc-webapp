@@ -45,7 +45,7 @@ const CommonTrxnWidget = () => {
 			<Flex
 				h={{
 					base: "auto",
-					md: "387px",
+					md: "350px",
 				}}
 				direction="column"
 				background="white"
@@ -53,14 +53,14 @@ const CommonTrxnWidget = () => {
 				borderRadius="10px"
 				m={{ base: "16px", md: "auto" }}
 			>
-				<Box>
+				<Box mb="5">
 					<Text as="b" fontSize={{ base: "sm", md: "md" }}>
 						Most common transactions
 					</Text>
 				</Box>
 				<SimpleGrid
 					columns="3"
-					spacing={{ base: "4", md: "12" }}
+					spacing={{ base: "4", md: "10", "2xl": "16" }}
 					justifyContent="center"
 					textAlign="center"
 					alignItems="flex-start"
@@ -73,7 +73,7 @@ const CommonTrxnWidget = () => {
 								flexDirection="column"
 								alignItems="center"
 								justifyContent="center"
-								pt={{ base: "22px" }}
+								// pt={{ base: "22px" }}
 								// borderRight={
 								// 	index !== 2 && (index + 1) % 3
 								// 		? "1px solid #E9EDF1"
@@ -83,15 +83,29 @@ const CommonTrxnWidget = () => {
 								<IcoButton
 									title={transaction.label}
 									iconName={transaction.icon}
-									iconStyle={{
-										width: "30px",
-										height: "30px",
-									}}
-									size={{
-										base: "48px",
-										lg: "56px",
-										xl: "64px",
-									}}
+									size="md"
+									// size={{
+									// 	base: "sm",
+									// 	// md: "md",
+									// 	// xl: "lg",
+									// }}
+									// iconStyle={{
+									// 	width: {
+									// 		base: "20px",
+									// 		md: "24px",
+									// 		xl: "30px",
+									// 	},
+									// 	height: {
+									// 		base: "20px",
+									// 		md: "24px",
+									// 		xl: "30px",
+									// 	},
+									// }}
+									// size={{
+									// 	base: "48px",
+									// 	xl: "56px",
+									// 	"2xl": "64px",
+									// }}
 									theme="light"
 									rounded="full"
 									onClick={() =>
@@ -102,13 +116,12 @@ const CommonTrxnWidget = () => {
 								></IcoButton>
 								<Text
 									fontSize={{
-										base: "11px",
-										lg: "sm",
-										xl: "sm",
-										"2xl": "md",
+										base: "xs",
+										"2xl": "sm",
 									}}
 									color="accent.DEFAULT"
-									pt={{ base: "10px" }}
+									pt="10px"
+									noOfLines={2}
 								>
 									{transaction.label}
 								</Text>

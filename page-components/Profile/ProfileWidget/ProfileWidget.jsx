@@ -19,22 +19,22 @@ const ProfileWidget = () => {
 	//to calculate percentage completion of profile 👇
 	const shopData = userData.shopDetails;
 	const personalData = userData.personalDetails;
-	const percentageData = { ...shopData, ...personalData };
-	const parameterList = [
-		"shop_name",
-		"shop_type",
-		"shop_address",
-		"city",
-		"state",
-		"pincode",
-		"gender",
-		"dob",
-		"qualification",
-		"marital_status",
-	];
 
 	useEffect(() => {
 		let count = 0;
+		const percentageData = { ...shopData, ...personalData };
+		const parameterList = [
+			"shop_name",
+			"shop_type",
+			"shop_address",
+			"city",
+			"state",
+			"pincode",
+			"gender",
+			"dob",
+			"qualification",
+			"marital_status",
+		];
 		parameterList.forEach((item) => {
 			if (percentageData[item] !== "") {
 				count += 1;
@@ -42,7 +42,7 @@ const ProfileWidget = () => {
 		});
 		const percentage = Math.floor((count / parameterList.length) * 100);
 		setPercent(percentage);
-	}, [percentageData, parameterList]);
+	}, [shopData, personalData]);
 
 	const thresholds = [40, 60];
 	const styleObj = {

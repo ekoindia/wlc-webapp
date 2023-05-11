@@ -36,7 +36,7 @@ const Network = () => {
 
 	/* API CALLING */
 
-	let headers = {
+	const headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
 		"tf-req-uri": `/network/agents?record_count=10&page_number=${pageNumber}&${postData}`,
 		"tf-req-method": "GET",
@@ -52,7 +52,7 @@ const Network = () => {
 			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 			headers
 		);
-	}, [pageNumber, headers["tf-req-uri"]]);
+	}, [pageNumber, postData]);
 
 	const totalRecords = data?.data?.totalRecords;
 	const agentDetails = data?.data?.agent_details ?? [];

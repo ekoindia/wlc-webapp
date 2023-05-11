@@ -17,7 +17,7 @@ export default function Map(props) {
 function GMap({ width = "100%", height = "100%", zoom = 12, lat, lng }) {
 	const center = useMemo(
 		() => ({ lat: parseFloat(lat), lng: parseFloat(lng) }),
-		[]
+		[lat, lng]
 	);
 
 	return (

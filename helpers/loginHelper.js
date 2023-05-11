@@ -152,11 +152,13 @@ function getSessions() {
  * Clears all the auth tokens from the session storage.
  */
 function clearAuthTokens() {
-	sessionStorage.removeItem("access_token");
-	sessionStorage.removeItem("refresh_token");
-	sessionStorage.removeItem("access_token_lite");
-	sessionStorage.removeItem("access_token_crm");
-	sessionStorage.clear();
+	for (var i = 0; i < sessionStorage.length; i++) {
+		var key = sessionStorage.key(i);
+		if (key !== "org_detail") {
+			sessionStorage.removeItem(key);
+		}
+	}
+	// sessionStorage.clear();
 }
 
 /**

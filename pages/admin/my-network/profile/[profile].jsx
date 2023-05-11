@@ -6,7 +6,7 @@ import { ProfilePanel } from "page-components/Admin";
 import { useState } from "react";
 
 const Profile = () => {
-	const [comp, setComp] = useState();
+	const [/* comp, */ setComp] = useState(); // TODO: remove if not needed
 	return (
 		<>
 			<Head>

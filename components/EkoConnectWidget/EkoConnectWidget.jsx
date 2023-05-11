@@ -32,7 +32,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	console.log("[EkoConnectWidget] Transaction id to load: ", start_id, paths);
 
 	const router = useRouter();
-	const { userData } = useUser();
+	const { userData, isLoggedIn } = useUser();
 	const { orgDetail } = useOrgDetailContext();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
@@ -79,7 +79,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 						trxntypeid: start_id,
 						subpath_list: paths,
 					})}
-					logged_in={userData.loggedIn}
+					logged_in={isLoggedIn}
 					user_id={userData.userId}
 					login_id={userData.userDetails.login_id}
 					role_trxn_list={JSON.stringify(role_tx_list)}

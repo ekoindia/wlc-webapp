@@ -64,7 +64,7 @@ const BillPaymentWidget = () => {
 				<Flex
 					h={{
 						base: "auto",
-						md: "387px",
+						md: "350px",
 					}}
 					direction="column"
 					background="white"
@@ -72,12 +72,12 @@ const BillPaymentWidget = () => {
 					borderRadius="10px"
 					m={{ base: "16px", md: "auto" }}
 				>
-					<Box fontSize={{ base: "sm", md: "md" }}>
+					<Box mb="5" fontSize={{ base: "sm", md: "md" }}>
 						<Text as="b">Recharge & bill payments</Text>
 					</Box>
 					<SimpleGrid
 						columns="4"
-						spacing={{ base: "4", md: "12" }}
+						spacing={{ base: "4", md: "10", "2xl": "16" }}
 						alignItems="flex-start"
 						justifyContent="center"
 					>
@@ -88,20 +88,21 @@ const BillPaymentWidget = () => {
 								flexDirection="column"
 								alignItems="center"
 								justifyContent="center"
-								pt={{ base: "22px" }}
+								// pt={{ base: "22px" }}
 							>
 								<IcoButton
 									title={transaction.label}
 									iconName={transaction.icon}
-									iconStyle={{
-										width: "30px",
-										height: "30px",
-									}}
-									size={{
-										base: "48px",
-										lg: "56px",
-										xl: "64px",
-									}}
+									size="md"
+									// iconStyle={{
+									// 	width: "30px",
+									// 	height: "30px",
+									// }}
+									// size={{
+									// 	base: "48px",
+									// 	lg: "56px",
+									// 	xl: "64px",
+									// }}
 									theme="dark"
 									rounded="full"
 									onClick={() =>
@@ -109,19 +110,15 @@ const BillPaymentWidget = () => {
 									}
 								/>
 								<Text
-									size={{ base: "sm", md: "lg" }}
-									pt={{ base: "5px" }}
+									pt={{ base: "10px" }}
 									fontSize={{
-										base: "10px",
-										md: "sm",
-										lg: "16px/18px",
-										xl: "16px/18px",
+										base: "xs",
+										"2xl": "md",
 									}}
+									noOfLines={2}
 									textAlign="center"
 								>
-									{transaction.label.length > 17
-										? `${transaction.label.slice(0, 17)}...`
-										: transaction.label}
+									{transaction.label}
 								</Text>
 							</Box>
 						))}
@@ -131,32 +128,30 @@ const BillPaymentWidget = () => {
 								flexDirection="column"
 								alignItems="center"
 								justifyContent="center"
-								pt={{ base: "22px" }}
+								// pt={{ base: "22px" }}
 							>
 								<IcoButton
 									title="more"
 									iconName="more-horiz"
-									iconStyle={{
-										width: "30px",
-										height: "30px",
-									}}
-									size={{
-										base: "48px",
-										lg: "56px",
-										xl: "64px",
-									}}
+									size="md"
+									// iconStyle={{
+									// 	width: "30px",
+									// 	height: "30px",
+									// }}
+									// size={{
+									// 	base: "48px",
+									// 	lg: "56px",
+									// 	xl: "64px",
+									// }}
 									theme="gray"
 									rounded="full"
 									onClick={() => handleIconClick()}
 								/>
 								<Text
-									size={{ base: "sm", md: "lg" }}
 									pt={{ base: "5px" }}
 									fontSize={{
-										base: "10px",
-										md: "sm",
-										lg: "16px/18px",
-										xl: "16px/18px",
+										base: "xs",
+										"2xl": "md",
 									}}
 									textAlign="center"
 								>
