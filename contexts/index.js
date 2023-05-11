@@ -1,5 +1,6 @@
 export { LayoutProvider, useLayoutContext } from "./LayoutContext";
 export { MenuProvider, useMenuContext } from "./MenuContext";
+export { NotificationProvider, useNotification } from "./NotificationContext";
 export {
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
