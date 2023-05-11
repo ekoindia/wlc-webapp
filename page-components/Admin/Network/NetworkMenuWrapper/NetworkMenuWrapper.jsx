@@ -33,10 +33,10 @@ const NetworkMenuWrapper = (props) => {
 	const { onOpen, onClose } = useDisclosure();
 	const [reason, setReason] = useState("");
 	const menuList = [
-		{
-			item: "Proceed",
-			path: `/admin/my-network/profile?ekocode=${eko_code}`,
-		},
+		// {
+		// 	item: "Proceed",
+		// 	path: `/admin/my-network/profile?ekocode=${eko_code}`,
+		// },
 		{
 			item: "Mark Inactive",
 			handleClick: () => {

@@ -12,7 +12,7 @@ const SortAndFilterMobile = ({ setFilter /*, setSort */ }) => {
 	return (
 		<Box
 			display={{ base: "flex", md: "none" }}
-			pb={{ base: "20vw", sm: "15vw", md: "0px" }}
+			pb={{ base: "20vw", sm: "15vw" }}
 		>
 			<Flex
 				position={"fixed"}
@@ -23,12 +23,12 @@ const SortAndFilterMobile = ({ setFilter /*, setSort */ }) => {
 				zIndex={"99"}
 				boxShadow={"0px -3px 10px #0000001A"}
 			>
-				{/* <Box w={"50%"} h={"100%"} bg={"white"}>
+				{/* <Flex  h={"100%"} bg={"white"} w="100%">
 					<NetworkSort setSort={setSort} />
-				</Box> */}
-				<Box w={"50%"} h={"100%"}>
+				</Flex> */}
+				<Flex h={"100%"} w="100%">
 					<NetworkFilter setFilter={setFilter} />
-				</Box>
+				</Flex>
 			</Flex>
 		</Box>
 	);

@@ -1,8 +1,10 @@
 import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { Button, Headings, Icon, Menus } from "components";
 import { ChangeRoleMenu } from "constants/ChangeRoleMenu";
+import useRequest from "hooks/useRequest";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import {
 	AddressPane,
 	CompanyPane,
@@ -73,37 +75,56 @@ const ChangeRoleMobile = () => {
 };
 
 const ProfilePanel = () => {
-	const storedData = localStorage.getItem("rowData");
-	const rowData = storedData ? JSON.parse(storedData) : null;
-	const agent_name = rowData.agent_name;
-	const data = [
-		{
-			id: 1,
-			comp: (
-				<CompanyPane
-					rowData={rowData.profile}
-					agent_name={agent_name}
-				/>
-			),
-		},
-		{
-			id: 2,
-			comp: <AddressPane rowData={rowData.address_details} />,
-		},
-		{
-			id: 3,
-			comp: <DocPane rowData={rowData.document_details} />,
-		},
-		{
-			id: 4,
-			comp: <PersonalPane rowData={rowData.personal_information} />,
-		},
-		{
-			id: 5,
-			comp: <ContactPane rowData={rowData.contact_information} />,
-		},
-	];
+	const router = useRouter();
+	const [rowData, setRowData] = useState([]);
+	const { cellnumber } = router.query;
+	// let rowData;
+	// const agent_name = rowData?.agent_name || "";
+	window.addEventListener("beforeunload", () => {
+		localStorage.removeItem("rowData");
+	});
+	const headers = {
+		"tf-req-uri-root-path": "/ekoicici/v1",
+		"tf-req-uri": `/network/agents?record_count=10&search_value=${cellnumber}`,
+		"tf-req-method": "GET",
+	};
+	const { data, mutate } = useRequest({
+		method: "POST",
+		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+		headers: { ...headers },
+	});
 
+	// useEffect(() => {
+	// 	mutate();
+	// }, [cellnumber]);
+
+	useEffect(() => {
+		const storedData = localStorage.getItem("rowData");
+		console.log("storedData", storedData);
+		if (storedData) {
+			setRowData(JSON.parse(storedData));
+		} else {
+			mutate();
+		}
+	}, []);
+
+	useEffect(() => {
+		setRowData(data?.data?.agent_details[0]);
+	}, [data]);
+
+	console.log("rowData", rowData);
+	const panes = {
+		0: (
+			<CompanyPane
+				rowData={rowData?.profile || {}}
+				// agent_name={agent_name}
+			/>
+		),
+		1: <AddressPane rowData={rowData?.address_details || {}} />,
+		2: <DocPane rowData={rowData?.document_details || {}} />,
+		3: <PersonalPane rowData={rowData?.personal_information || {}} />,
+		4: <ContactPane rowData={rowData?.contact_information || {}} />,
+	};
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const menuHandler = () => {
 		setIsMenuVisible((prev) => !prev);
@@ -131,8 +152,8 @@ const ProfilePanel = () => {
 					py={{ base: "20px", md: "0px" }}
 					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 				>
-					{data.map((item) => (
-						<GridItem key={item.id}>{item.comp}</GridItem>
+					{Object.entries(panes).map(([key, value]) => (
+						<GridItem key={key}>{value}</GridItem>
 					))}
 				</Grid>
 			)}
