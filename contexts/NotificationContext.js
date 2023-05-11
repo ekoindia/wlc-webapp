@@ -2,7 +2,13 @@ import { useToast } from "@chakra-ui/react";
 import { TransactionTypes } from "constants";
 import { useUser } from "contexts";
 import { fetcher } from "helpers";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 
 // Create the NotificationContext
 const NotificationContext = createContext();
@@ -51,7 +57,7 @@ const useNotifications = () => {
 	const { userData, isLoggedIn, userId } = useUser();
 	const toast = useToast();
 
-	const fetchNotifications = async () => {
+	const fetchNotifications = useCallback(async () => {
 		setIsLoading(true);
 		try {
 			const resp = await fetcher(
@@ -69,7 +75,7 @@ const useNotifications = () => {
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, [userData.access_token]);
 
 	const handleNotificationsResponse = (response) => {
 		const data_list = response?.data?.notifications;
@@ -124,8 +130,10 @@ const useNotifications = () => {
 			} */
 		});
 
-		setNotifications(sanitizeList(_notif_list));
-		setAds(sanitizeList(_ad_list));
+		setNotifications(
+			sanitizeList(_notif_list, NOTIF_TYPE_META[NOTIF_TYPE.NORMAL].limit)
+		);
+		setAds(sanitizeList(_ad_list, NOTIF_TYPE_META[NOTIF_TYPE.AD].limit));
 		setUnreadNotificationCount(_unread_notif);
 
 		// TODO: Remove expired notifications & ads

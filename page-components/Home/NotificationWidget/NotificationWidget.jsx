@@ -170,10 +170,7 @@ const NotificationWidget = () => {
 							{("" + selectedNotification.desc)
 								.split("\n")
 								.map((line, index) => (
-									<>
-										<Text key={index}>{line}</Text>
-										{/* <br /> */}
-									</>
+									<Text key={index}>{line}</Text>
 								))}
 
 							{selectedNotification.image ? (
