@@ -21,7 +21,7 @@ import { useState } from "react";
  */
 const NotificationWidget = () => {
 	// Get notifications from context
-	const { notifications } = useNotification();
+	const { notifications, markAsRead } = useNotification();
 	const [selectedNotification, setSelectedNotification] = useState(null);
 
 	console.log("NOTIFICATIONS: ", notifications);
@@ -29,6 +29,12 @@ const NotificationWidget = () => {
 	if (!notifications.length) {
 		return null;
 	}
+
+	// Open/expand a notification to show details
+	const openNotification = (notif) => {
+		setSelectedNotification(notif);
+		markAsRead(notif.id);
+	};
 
 	return (
 		<>
@@ -42,7 +48,7 @@ const NotificationWidget = () => {
 				borderRadius="10px"
 				m={{ base: "16px", md: "auto" }}
 			>
-				<Box top="0" zIndex="1" p="5">
+				<Box p="5" pb="3">
 					<Flex justifyContent="space-between">
 						<Text as="b">Notifications</Text>
 						{/* <Text
@@ -83,7 +89,7 @@ const NotificationWidget = () => {
 							cursor="pointer"
 							_hover={{ bg: "darkShade" }}
 							borderBottom="1px solid #F5F6F8"
-							onClick={() => setSelectedNotification(notif)}
+							onClick={() => openNotification(notif)}
 						>
 							<Flex>
 								<Avatar
