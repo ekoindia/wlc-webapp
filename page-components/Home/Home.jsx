@@ -1,7 +1,9 @@
 import { Grid, GridItem } from "@chakra-ui/react";
+import { useUser } from "contexts";
 import {
 	BillPaymentWidget,
 	CommonTrxnWidget,
+	NotificationWidget,
 	QueryWidget,
 	RecentTrxnWidget,
 } from ".";
@@ -15,12 +17,16 @@ import {
  * @example	`<Home></Home>` TODO: Fix example
  */
 const Home = () => {
+	const { isLoggedIn } = useUser();
+
+	if (!isLoggedIn) return null;
+
 	return (
 		<>
 			<Grid
 				templateColumns={{
 					base: "repeat(auto-fit,minmax(280px,1fr))",
-					md: "repeat(auto-fit,minmax(360px,1fr))",
+					md: "repeat(auto-fit,minmax(340px,1fr))",
 					// xl: "repeat(auto-fit,minmax(440px,1fr))",
 				}}
 				justifyContent="center"
@@ -37,6 +43,8 @@ const Home = () => {
 				<GridItem>
 					<BillPaymentWidget />
 				</GridItem>
+
+				<NotificationWidget />
 
 				<GridItem>
 					<RecentTrxnWidget />
