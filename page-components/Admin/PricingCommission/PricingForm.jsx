@@ -23,8 +23,8 @@ import { useEffect, useRef, useState } from "react";
  */
 const PricingForm = ({
 	product,
-	commissionForObj = commissionForObjDummy,
-	commissionTypeObj = commissionTypeObjDummy,
+	commissionForObj = radioDummy,
+	commissionTypeObj = radioDummy,
 }) => {
 	const [commission, setCommission] = useState(2.5);
 	const [commissionFor, setCommissionFor] = useState("1");
@@ -111,7 +111,7 @@ const PricingForm = ({
 					</Flex>
 				</RadioGroup>
 			</Flex>
-			<Flex direction="column" gap="2">
+			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
 				<Text fontWeight="semibold">
 					Select {commissionForObj[commissionFor]}
 				</Text>
@@ -121,7 +121,7 @@ const PricingForm = ({
 					setData={setFromMultiSelect}
 				/>
 			</Flex>
-			<Flex direction="column" gap="2">
+			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
 				<Text fontWeight="semibold">Select Slab</Text>
 				<Select data={slabs.AEPS} setSelected={setFromSelect} />
 			</Flex>
@@ -153,7 +153,7 @@ const PricingForm = ({
 					<Flex
 						direction="column"
 						gap="60px"
-						w={{ base: "100%", md: "405px" }}
+						w={{ base: "100%", md: "500px" }}
 					>
 						<Input
 							inputRightElement={
@@ -280,12 +280,7 @@ const PricingForm = ({
 };
 export default PricingForm;
 
-const commissionForObjDummy = {
-	0: "Radio 1",
-	1: "Radio 2",
-};
-
-const commissionTypeObjDummy = {
+const radioDummy = {
 	0: "Radio 1",
 	1: "Radio 2",
 };
