@@ -52,9 +52,9 @@ const PricingForm = ({
 			},
 			body: {
 				operation_type: commissionFor, //commissionFor
-				csplist: fromMultiSelect.map((num) => Number(num)), //select
-				min_slab_amount: fromSelect[0],
-				max_slab_amount: fromSelect[1],
+				csplist: fromMultiSelect.map((num) => Number(num)), //multiselect
+				min_slab_amount: fromSelect[0], //select
+				max_slab_amount: fromSelect[1], //select
 				pricing_type: commissionType, //commissionType
 				actual_pricing: commission, //default input
 				operation: op, //need to send this when submitting to update to new pricing
@@ -70,7 +70,7 @@ const PricingForm = ({
 						? data?.data?.allScspList
 						: [];
 				setData(selectdata);
-				setOp(0);
+				setOp(0); //need updation
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
