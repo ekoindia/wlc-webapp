@@ -55,6 +55,7 @@ const Select = ({
 				onChange={handleSelectChange}
 				value={selectedValue}
 				{...inputContStyle}
+				// isDisabled={data.length === 1} //TODO add default select functionality
 			>
 				{data?.map((value, index) => (
 					<option value={[value.min, value.max]} key={index}>

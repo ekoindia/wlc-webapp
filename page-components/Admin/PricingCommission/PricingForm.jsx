@@ -7,10 +7,9 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Button, Currency, Icon, Input, MultiSelect, Select } from "components";
-import { Endpoints, slabs } from "constants";
-import { fetcher } from "helpers/apiHelper";
-// import { useRequest } from "hooks";
+import { Endpoints } from "constants";
 import { useUser } from "contexts/UserContext";
+import { fetcher } from "helpers/apiHelper";
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -23,6 +22,7 @@ import { useEffect, useRef, useState } from "react";
  */
 const PricingForm = ({
 	product,
+	slabs,
 	commissionForObj = radioDummy,
 	commissionTypeObj = radioDummy,
 }) => {
@@ -31,7 +31,7 @@ const PricingForm = ({
 	const [commissionType, setCommissionType] = useState("0");
 	const [fromMultiSelect, setFromMultiSelect] = useState([]);
 	const [fromSelect, setFromSelect] = useState([]);
-	const [op, setOp] = useState(0); //operation: 0 -> fetch, 1 -> submit
+	console.log("fromSelect", fromSelect);
 	const [data, setData] = useState([]);
 	const focusRef = useRef(null);
 	const { userData } = useUser();
@@ -43,7 +43,13 @@ const PricingForm = ({
 		"Your Earnings": 3.28,
 	};
 
-	useEffect(() => {
+	// operation
+	const OP = {
+		SUBMIT: 1,
+		FETCH: 0,
+	};
+
+	const fetch = (op) => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -57,7 +63,7 @@ const PricingForm = ({
 				max_slab_amount: fromSelect[1], //select
 				pricing_type: commissionType, //commissionType
 				actual_pricing: commission, //default input
-				operation: op, //need to send this when submitting to update to new pricing
+				operation: op,
 				OrgId: 1, //TODO remove this
 			},
 			token: userData.access_token,
@@ -70,19 +76,22 @@ const PricingForm = ({
 						? data?.data?.allScspList
 						: [];
 				setData(selectdata);
-				setOp(0); //need updation
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
 			});
-	}, [product, commissionFor, op]);
+	};
+
+	useEffect(() => {
+		fetch(OP.FETCH);
+	}, [product, commissionFor]);
+
+	const handleSubmit = () => {
+		fetch(OP.SUBMIT);
+	};
 
 	const handlePopUp = (focused) => {
 		focusRef.current.style.display = focused ? "block" : "none";
-	};
-
-	const handleSubmit = () => {
-		setOp(1);
 	};
 
 	const multiSelectRenderer = {
@@ -123,7 +132,7 @@ const PricingForm = ({
 			</Flex>
 			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
 				<Text fontWeight="semibold">Select Slab</Text>
-				<Select data={slabs.AEPS} setSelected={setFromSelect} />
+				<Select data={slabs} setSelected={setFromSelect} />
 			</Flex>
 
 			<Flex direction="column" gap="2">

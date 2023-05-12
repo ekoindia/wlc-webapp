@@ -1,6 +1,6 @@
 /* Slab Details */
 export const slabs = {
-	DMT: { min: 100, max: 5000 },
+	DMT: [{ min: 100, max: 5000 }],
 	AEPS: [
 		{ min: 100, max: 100 },
 		{ min: 101, max: 499 },
@@ -11,5 +11,5 @@ export const slabs = {
 		{ min: 7000, max: 9999 },
 		{ min: 10000, max: 10000 },
 	],
-	AADHAARPAY: { min: 1, max: 10000 },
+	AADHAARPAY: [{ min: 1, max: 10000 }],
 };

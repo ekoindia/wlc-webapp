@@ -1,5 +1,5 @@
+import { slabs } from "constants";
 import { PricingForm } from "..";
-
 /**
  * A <Aeps> component
  * TODO: Write more description here
@@ -23,6 +23,7 @@ const Aeps = ({ prop1, ...rest }) => {
 		<div {...rest}>
 			<PricingForm
 				product="aeps"
+				slabs={slabs.AEPS}
 				commissionForObj={commissionForObj}
 				commissionTypeObj={commissionTypeObj}
 			/>
