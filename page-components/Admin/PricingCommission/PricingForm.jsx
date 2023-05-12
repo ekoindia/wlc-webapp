@@ -49,7 +49,7 @@ const PricingForm = ({
 		FETCH: 0,
 	};
 
-	const fetch = (op) => {
+	const handleApiCall = (op) => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -64,7 +64,6 @@ const PricingForm = ({
 				pricing_type: commissionType, //commissionType
 				actual_pricing: commission, //default input
 				operation: op,
-				OrgId: 1, //TODO remove this
 			},
 			token: userData.access_token,
 		})
@@ -83,11 +82,11 @@ const PricingForm = ({
 	};
 
 	useEffect(() => {
-		fetch(OP.FETCH);
+		handleApiCall(OP.FETCH);
 	}, [product, commissionFor]);
 
 	const handleSubmit = () => {
-		fetch(OP.SUBMIT);
+		handleApiCall(OP.SUBMIT);
 	};
 
 	const handlePopUp = (focused) => {
