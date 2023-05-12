@@ -1,26 +1,7 @@
 import { extendTheme, theme } from "@chakra-ui/react";
-// import { Inter, Roboto } from "@next/font/google";
-import { tabsTheme } from "./theme_system/theme/components/tab";
-
+import { globalStyles } from "./globals";
 import { buttonTheme } from "./theme_system/theme/components/button";
-// console.log('theme', theme)
-
-// const inter = Inter({
-// 	weight: ["400", "500", "600", "700", "800"],
-// 	style: ["normal"],
-// 	fallback: ["system-ui", "sans-serif"],
-// 	subsets: ["latin"],
-// });
-// const roboto = Roboto({
-// 	weight: ["400", "500", "700"],
-// 	style: ["normal"],
-// 	fallback: ["system-ui", "sans-serif"],
-// 	subsets: ["latin"],
-// });
-
-// console.log(theme.components.Tabs.baseStyle);
-// console.log(tabsTheme);
-// console.log(theme)
+import { tabsTheme } from "./theme_system/theme/components/tab";
 
 export const light = extendTheme({
 	breakpoints: {
@@ -30,6 +11,55 @@ export const light = extendTheme({
 		lg: "1024px",
 		xl: "1200px",
 		"2xl": "1800px",
+	},
+	styles: {
+		global: globalStyles,
+	},
+	colors: {
+		primary: {
+			light: "#ffad23",
+			DEFAULT: "#FE9F00",
+			dark: "#f38300",
+		},
+		accent: {
+			light: "#1d3ac9",
+			DEFAULT: "#11299E",
+			dark: "#0d2289",
+		},
+		secondary: {
+			light: "#2d6cbf",
+			DEFAULT: "#1F5AA7",
+			dark: "#164d94",
+		},
+		shadow: {
+			primary: "#FE9F008C",
+			accent: "#11299e96",
+			success: "#009B34",
+			error: "#CA1B56",
+		},
+		"google-btn-bg": "#4185F4",
+		success: "#00C341",
+		error: "#FF4081",
+		divider: "#E9EDF1",
+		hint: "#D2D2D2",
+		dark: "#0F0F0F",
+		light: "#555555",
+		focusbg: "#FFFBF3",
+		white: "#FFFFFF",
+		shade: "#F2F2F2",
+		darkShade: "#e6e6e6",
+		highlight: "#FFD93B",
+		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
+		inputlabel: "#0C243B",
+		overlayBg: "#e9edf1b3",
+		sidebar: {
+			"icon-bg": "#1F3ABC",
+			"active-border": "#FE7D00",
+			"active-bg": "#081E89",
+			"card-bg": "#102174",
+			"card-bg-dark": "#091968",
+			font: "#556FEF",
+		},
 	},
 	components: {
 		Table: {
@@ -114,55 +144,6 @@ export const light = extendTheme({
 				},
 			},
 		},
-	},
-	colors: {
-		primary: {
-			light: "#ffad23",
-			DEFAULT: "#FE9F00",
-			dark: "#f38300",
-		},
-		accent: {
-			light: "#1d3ac9",
-			DEFAULT: "#11299E",
-			dark: "#0d2289",
-		},
-		secondary: {
-			light: "#2d6cbf",
-			DEFAULT: "#1F5AA7",
-			dark: "#164d94",
-		},
-		shadow: {
-			primary: "#FE9F008C",
-			accent: "#11299e96",
-			success: "#009B34",
-			error: "#CA1B56",
-		},
-		"google-btn-bg": "#4185F4",
-		success: "#00C341",
-		error: "#FF4081",
-		divider: "#E9EDF1",
-		hint: "#D2D2D2",
-		dark: "#0F0F0F",
-		light: "#555555",
-		focusbg: "#FFFBF3",
-		white: "#FFFFFF",
-		shade: "#F2F2F2",
-		darkShade: "#e6e6e6",
-		highlight: "#FFD93B",
-		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
-		inputlabel: "#0C243B",
-		overlayBg: "#e9edf1b3",
-		sidebar: {
-			"icon-bg": "#1F3ABC",
-			"active-border": "#FE7D00",
-			"active-bg": "#081E89",
-			"card-bg": "#102174",
-			"card-bg-dark": "#091968",
-			font: "#556FEF",
-		},
-	},
-	styles: {
-		global: {},
 	},
 	borders: {
 		none: 0,
@@ -259,11 +240,11 @@ export const light = extendTheme({
 		80: "20rem",
 		96: "24rem",
 	},
-	fonts: {
-		// body: `${inter.style.fontFamily}`,
-		// heading: `${inter.style.fontFamily}`,
-		// roboto_font: `${roboto.style.fontFamily}`,
-	},
+	// fonts: {
+	// 	// body: `${inter.style.fontFamily}`,
+	// 	// heading: `${inter.style.fontFamily}`,
+	// 	// roboto_font: `${roboto.style.fontFamily}`,
+	// },
 	fontSizes: {
 		vxs: "0.5rem",
 		xs: "0.75rem", // 12px
