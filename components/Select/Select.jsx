@@ -21,9 +21,9 @@ const Select = ({
 
 	const handleSelectChange = (event) => {
 		const value = event.target.value;
-		const selectedObject = data.find((obj) => obj.key === parseInt(value));
-		setSelectedValue(selectedObject);
-		setSelected(selectedObject);
+		const selectedValues = value.split(",").map((num) => Number(num));
+		setSelectedValue(selectedValues);
+		setSelected(selectedValues);
 	};
 
 	return (
@@ -43,10 +43,9 @@ const Select = ({
 			) : null}
 			<ChakraSelect
 				placeholder={placeholder || "-- Select --"}
-				// w="100%"
 				h="3rem"
 				fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
-				focusBorderColor="#D2D2D2"
+				focusBorderColor="hint"
 				_focus={{
 					border: "1px solid #D2D2D2",
 					boxShadow: "none",
@@ -54,12 +53,14 @@ const Select = ({
 				borderRadius="10px"
 				icon={<Icon name="caret-down" w="14px" h="10px" />}
 				onChange={handleSelectChange}
-				value={selectedValue.key || ""}
+				value={selectedValue}
 				{...inputContStyle}
 			>
-				{data?.map((value) => (
-					<option value={value.key} key={value.key}>
-						{value.minSlabAmount} - {value.maxSlabAmount}
+				{data?.map((value, index) => (
+					<option value={[value.min, value.max]} key={index}>
+						{value.min == value.max
+							? value.max
+							: `${value.min} - ${value.max}`}
 					</option>
 				))}
 			</ChakraSelect>

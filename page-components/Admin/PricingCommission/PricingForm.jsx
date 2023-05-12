@@ -7,8 +7,10 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Button, Currency, Icon, Input, MultiSelect, Select } from "components";
-import { slabs } from "constants";
-import { useRequest } from "hooks";
+import { Endpoints, slabs } from "constants";
+import { fetcher } from "helpers/apiHelper";
+// import { useRequest } from "hooks";
+import { useUser } from "contexts/UserContext";
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -27,7 +29,12 @@ const PricingForm = ({
 	const [commission, setCommission] = useState(2.5);
 	const [commissionFor, setCommissionFor] = useState("1");
 	const [commissionType, setCommissionType] = useState("0");
+	const [fromMultiSelect, setFromMultiSelect] = useState([]);
+	const [fromSelect, setFromSelect] = useState([]);
+	const [op, setOp] = useState(0); //operation
+	const [data, setData] = useState([]);
 	const focusRef = useRef(null);
+	const { userData } = useUser();
 
 	const charges = {
 		"Fixed Charges": 1.8,
@@ -36,34 +43,52 @@ const PricingForm = ({
 		"Your Earnings": 3.28,
 	};
 
-	let headers = {
-		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/pricing_commissions/${product}`,
-		"tf-req-method": "POST",
-	};
-
-	const { data, error, isLoading, mutate } = useRequest({
-		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-		headers: { ...headers },
-		body: {
-			operation_type: 2, //commissionFor
-			csplist: [5644, 5649], //select
-			min_slab_amount: 100,
-			max_slab_amount: 1000,
-			pricing_type: 1, //commissionType
-			actual_pricing: 10, //default input
-			operation: 1, //need to send this when submitting to update to new pricing
-		},
-	});
 	useEffect(() => {
-		mutate();
-	}, []);
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/pricing_commissions/${product}`,
+				"tf-req-method": "POST",
+			},
+			body: {
+				operation_type: commissionFor, //commissionFor
+				csplist: fromMultiSelect.map((num) => Number(num)), //select
+				min_slab_amount: fromSelect[0],
+				max_slab_amount: fromSelect[1],
+				pricing_type: commissionType, //commissionType
+				actual_pricing: commission, //default input
+				operation: op, //need to send this when submitting to update to new pricing
+				OrgId: 1, //TODO remove this
+			},
+			token: userData.access_token,
+		})
+			.then((data) => {
+				const selectdata =
+					commissionFor == 1
+						? data?.data?.allCspList
+						: commissionFor == 2
+						? data?.data?.allScspList
+						: [];
+				setData(selectdata);
+				setOp(0);
+			})
+			.catch((error) => {
+				console.error("📡 Fetch Error:", error);
+			});
+	}, [product, commissionFor, op]);
 
 	const handlePopUp = (focused) => {
 		focusRef.current.style.display = focused ? "block" : "none";
 	};
 
+	const handleSubmit = () => {
+		setOp(1);
+	};
+
+	const multiSelectRenderer = {
+		value: "ekocspid",
+		label: "DisplayName",
+	};
 	return (
 		<Flex direction="column" gap="10">
 			<Flex direction="column" gap="2">
@@ -90,14 +115,15 @@ const PricingForm = ({
 				<Text fontWeight="semibold">
 					Select {commissionForObj[commissionFor]}
 				</Text>
-				<MultiSelect />
+				<MultiSelect
+					options={data}
+					renderer={multiSelectRenderer}
+					setData={setFromMultiSelect}
+				/>
 			</Flex>
 			<Flex direction="column" gap="2">
 				<Text fontWeight="semibold">Select Slab</Text>
-				<Select
-					data={slabs.AEPS}
-					// setSelected={setSelected}
-				/>
+				<Select data={slabs.AEPS} setSelected={setFromSelect} />
 			</Flex>
 
 			<Flex direction="column" gap="2">
@@ -167,6 +193,7 @@ const PricingForm = ({
 										md: "64px",
 									}}
 									fontWeight="bold"
+									onClick={handleSubmit}
 								>
 									Save Commissions
 								</Button>
@@ -200,6 +227,7 @@ const PricingForm = ({
 									w="100%"
 									h="64px"
 									borderRadius="none"
+									onClick={handleSubmit}
 								>
 									Save Commission
 								</Button>
