@@ -1,9 +1,10 @@
-import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, SimpleGrid, Text } from "@chakra-ui/react";
 import { IcoButton } from "components";
 import { TransactionIds } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { WidgetBase } from "..";
 
 /**
  * A <BillPaymentWidget> component
@@ -61,24 +62,11 @@ const BillPaymentWidget = () => {
 	}
 
 	return (
-		<Flex
-			w={{ base: "90%", md: "100%" }}
-			h={{
-				base: "auto",
-				md: "350px",
-			}}
-			direction="column"
-			background="white"
-			p="5"
-			borderRadius="10px"
-			m={{ base: "16px", md: "auto" }}
-		>
-			<Box mb="5" fontSize={{ base: "sm", md: "md" }}>
-				<Text as="b">Recharge & bill payments</Text>
-			</Box>
+		<WidgetBase title="Recharge & bill payments" noPadding>
 			<SimpleGrid
 				columns="4"
-				spacing={{ base: "4", md: "10", "2xl": "16" }}
+				mx="8px"
+				rowGap={{ base: "4", md: "10", "2xl": "16" }}
 				alignItems="flex-start"
 				justifyContent="center"
 			>
@@ -188,7 +176,7 @@ const BillPaymentWidget = () => {
 						color="primary.DEFAULT"
 					/>
 				</Flex> */}
-		</Flex>
+		</WidgetBase>
 	);
 };
 

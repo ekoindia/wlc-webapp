@@ -61,7 +61,7 @@ const RecentTrxnWidget = () => {
 	return (
 		<WidgetBase
 			title="Recent transactions"
-			link="Show All"
+			linkLabel="Show All"
 			linkOnClick={handleShowHistory}
 			linkProps={{ display: { base: "none", md: "block" } }}
 			noPadding

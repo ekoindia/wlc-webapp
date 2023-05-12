@@ -9,6 +9,7 @@ import { Button, IcoButton } from "components";
 import { useMenuContext } from "contexts/MenuContext";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { WidgetBase } from "..";
 /**
  * A CommonTransaction component
  * Is a set of icon which have most common transaction done on platform
@@ -46,26 +47,10 @@ const CommonTrxnWidget = () => {
 	}
 
 	return (
-		<Flex
-			w={{ base: "90%", md: "100%" }}
-			h={{
-				base: "auto",
-				md: "350px",
-			}}
-			direction="column"
-			background="white"
-			p="5"
-			borderRadius="10px"
-			m={{ base: "16px", md: "auto" }}
-		>
-			<Box mb="5">
-				<Text as="b" fontSize={{ base: "sm", md: "md" }}>
-					Most common transactions
-				</Text>
-			</Box>
+		<WidgetBase title="Most common transactions">
 			<SimpleGrid
 				columns="3"
-				spacing={{ base: "4", md: "10", "2xl": "16" }}
+				rowGap={{ base: "4", md: "10", "2xl": "16" }}
 				justifyContent="center"
 				textAlign="center"
 				alignItems="flex-start"
@@ -158,7 +143,7 @@ const CommonTrxnWidget = () => {
 					</Button>
 				</Flex>
 			)}
-		</Flex>
+		</WidgetBase>
 	);
 };
 
