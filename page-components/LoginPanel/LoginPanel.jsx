@@ -1,4 +1,5 @@
-import { Box, Flex, Grid, Image, SlideFade } from "@chakra-ui/react";
+import { Box, Flex, Grid, SlideFade } from "@chakra-ui/react";
+import { OrgLogo } from "components";
 import { useOrgDetailContext } from "contexts";
 import { useState } from "react";
 import { Login, SocialVerify, VerifyOtp } from ".";
@@ -51,15 +52,10 @@ const LoginPanel = () => {
 						md: "none",
 					}}
 				>
-					<Image
-						src={
-							orgDetail.logo ||
-							"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56'%3E%3Crect fill='%23bbb' width='200' height='56' rx='6' ry='6'/%3E%3C/svg%3E"
-						}
-						alt={orgDetail.app_name + " logo"}
-						pl={{ base: 4, md: "0" }}
-						mw={{ base: "9rem", md: "14rem", "2xl": "19rem" }}
-						height={{ base: "2.2rem", md: 16 }}
+					<OrgLogo
+						orgDetail={orgDetail}
+						size="lg"
+						ml={{ base: 4, md: "0" }}
 					/>
 				</Box>
 

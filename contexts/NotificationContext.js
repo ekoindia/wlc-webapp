@@ -2,7 +2,13 @@ import { useToast } from "@chakra-ui/react";
 import { TransactionTypes } from "constants";
 import { useUser } from "contexts";
 import { fetcher } from "helpers";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 
 // Create the NotificationContext
 const NotificationContext = createContext();
@@ -51,7 +57,7 @@ const useNotifications = () => {
 	const { userData, isLoggedIn, userId } = useUser();
 	const toast = useToast();
 
-	const fetchNotifications = async () => {
+	const fetchNotifications = useCallback(async () => {
 		setIsLoading(true);
 		try {
 			const resp = await fetcher(
@@ -69,7 +75,7 @@ const useNotifications = () => {
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}, [userData.access_token]);
 
 	const handleNotificationsResponse = (response) => {
 		const data_list = response?.data?.notifications;
@@ -101,14 +107,13 @@ const useNotifications = () => {
 			// 	_customer_ad_list.push(_notif);
 			// }
 
-			// TODO: Mark as delivered via Pull...
-			/*
+			// Mark as delivered via Pull...
 			if ("delivery_status" in _notif && _notif.delivery_status == 0) {
-				_updateEMS(
-					"interaction_type_id=10023&delivery_status=2" + // PULL
-						"&notification_id=" +
-						window.encodeURIComponent(_notif.id)
-				);
+				updateEMS({
+					interaction_type_id: 10023,
+					notification_id: _notif.id,
+					delivery_status: 2, // PULL
+				});
 
 				// Google Analytics
 				// fire("iron-signal", {
@@ -121,11 +126,13 @@ const useNotifications = () => {
 				// 		label: _notif.id + "|" + (_notif.title || ""),
 				// 	},
 				// });
-			} */
+			}
 		});
 
-		setNotifications(sanitizeList(_notif_list));
-		setAds(sanitizeList(_ad_list));
+		setNotifications(
+			sanitizeList(_notif_list, NOTIF_TYPE_META[NOTIF_TYPE.NORMAL].limit)
+		);
+		setAds(sanitizeList(_ad_list, NOTIF_TYPE_META[NOTIF_TYPE.AD].limit));
 		setUnreadNotificationCount(_unread_notif);
 
 		// TODO: Remove expired notifications & ads
@@ -240,30 +247,55 @@ const useNotifications = () => {
 		return _list.slice(0, limit);
 	};
 
+	const updateEMS = (body) => {
+		// TODO: USE BEACON...
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
+			body: body,
+			token: userData.access_token,
+		});
+	};
+
+	const updateNotifStatus = (notificationId, status) => {
+		if (!notificationId) {
+			return;
+		}
+
+		updateEMS({
+			interaction_type_id: 10012,
+			notification_id: notificationId,
+			notification_status: status,
+		});
+	};
+
 	// Mark a notification as read
 	const markAsRead = async (notificationId) => {
-		try {
-			await fetcher(
-				`https://api.example.com/notifications/${notificationId}`,
-				{
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ read: true }),
-				}
-			);
+		setNotifications(
+			notifications.map((notification) =>
+				notification.id === notificationId
+					? { ...notification, read: 1 }
+					: notification
+			)
+		);
 
-			setNotifications(
-				notifications.map((notification) =>
-					notification.id === notificationId
-						? { ...notification, read: true }
-						: notification
-				)
-			);
-		} catch (error) {
-			console.error("Failed to mark notification as read:", error);
-		}
+		updateNotifStatus(notificationId, NOTIF_STATUS_UPDATE.READ);
+
+		// Remove system notification (if any)
+		// if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+		// 	navigator.serviceWorker.controller.postMessage({
+		// 		action: "hide-notification",
+		// 		id: notificationId,
+		// 	});
+		// }
+
+		// Google Analytics
+		// this.fire("iron-signal", {
+		// 	name: "track-event",
+		// 	data: {
+		// 		category: "notification",
+		// 		action: "read",
+		// 		label: this.data[notification_index].title || "",
+		// 	},
+		// });
 	};
 
 	// Refetch notifications every 10 minutes

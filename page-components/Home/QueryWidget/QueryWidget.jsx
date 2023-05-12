@@ -1,6 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { useUser } from "contexts/UserContext";
+import { useOrgDetailContext } from "contexts";
 /**
  * Contact widget in home page
  * Contact widget on home page
@@ -10,8 +10,14 @@ import { useUser } from "contexts/UserContext";
  * @example	`<QueryWidget></QueryWidget>` TODO: Fix example
  */
 const QueryWidget = () => {
-	const { userData } = useUser();
-	const data = userData?.userDetails?.contacts ?? [];
+	const { orgDetail } = useOrgDetailContext();
+	const { support_contacts } = orgDetail || {};
+	const { phone, email } = support_contacts || {};
+
+	// If both cellnumber & email are not available, hide the widget
+	if (!phone && !email) {
+		return null;
+	}
 
 	return (
 		<Flex
@@ -39,13 +45,6 @@ const QueryWidget = () => {
 				sm: "30px",
 				md: "50px",
 				lg: "30px",
-			}}
-			px={{
-				base: "20px",
-				sm: "40px",
-				md: "18px",
-				lg: "15px",
-				xl: "25px",
 			}}
 			py={{
 				base: "20px",
@@ -82,9 +81,9 @@ const QueryWidget = () => {
 				rowGap="30px"
 				justifyContent="space-between"
 			>
-				{data[0]?.cellnumber ? (
+				{phone ? (
 					<Flex>
-						<a href={`tel:${data[0].cellnumber}`} target="_blank">
+						<a href={`tel:${phone}`} target="_blank">
 							<Icon
 								h={{ base: "32px", md: "32px" }}
 								name="phone-circle-outline"
@@ -109,10 +108,7 @@ const QueryWidget = () => {
 							>
 								Call us on
 							</Text>
-							<a
-								href={`tel:${data[0].cellnumber}`}
-								target="_blank"
-							>
+							<a href={`tel:${phone}`} target="_blank">
 								<Text
 									as="b"
 									color={"white"}
@@ -121,14 +117,14 @@ const QueryWidget = () => {
 										md: "lg",
 									}}
 								>
-									+91 {data[0].cellnumber}
+									+91 {phone}
 								</Text>
 							</a>
 						</Flex>
 					</Flex>
 				) : null}
 
-				{data[0]?.cellnumber && data[0]?.email ? (
+				{phone && email ? (
 					<Text
 						color={"white"}
 						display={{ base: "none", md: "block" }}
@@ -138,9 +134,9 @@ const QueryWidget = () => {
 					</Text>
 				) : null}
 
-				{data[0]?.email ? (
+				{email ? (
 					<Flex direction={"column"}>
-						<a href={`mailto:${data[0].email}`} target="_blank">
+						<a href={`mailto:${email}`} target="_blank">
 							<Button
 								bg={"white"}
 								border="1px solid white"

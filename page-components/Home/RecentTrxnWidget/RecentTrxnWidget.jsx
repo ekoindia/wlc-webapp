@@ -1,10 +1,11 @@
-import { Avatar, Box, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Avatar, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { TransactionTypes } from "constants";
 import { useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { WidgetBase } from "..";
 
 /**
  * A <RecentTrxnWidget> component
@@ -46,11 +47,6 @@ const RecentTrxnWidget = () => {
 				};
 			});
 			setData(tx_list);
-			console.log(
-				"DATA::::::: ",
-				data?.data?.transaction_list ?? [],
-				tx_list
-			);
 		});
 	}, []);
 
@@ -58,54 +54,35 @@ const RecentTrxnWidget = () => {
 		router.push("/history" + (id ? `?search=${id}` : ""));
 	};
 
+	if (!data.length) {
+		return null;
+	}
+
 	return (
-		<Flex
-			direction="column"
-			background="white"
-			h={{ base: "auto", md: "350px" }}
-			p="5"
-			borderRadius="10px"
-			m={{ base: "16px", md: "auto" }}
+		<WidgetBase
+			title="Recent transactions"
+			linkLabel="Show All"
+			linkOnClick={handleShowHistory}
+			linkProps={{ display: { base: "none", md: "block" } }}
+			noPadding
 		>
-			<Box top="0" zIndex="1">
-				<Flex justifyContent="space-between">
-					<Text as="b">Recent transactions</Text>
-					<Text
-						as="b"
-						color="primary.DEFAULT"
-						onClick={() => handleShowHistory()}
-						cursor="pointer"
-						display={{ base: "none", md: "block" }}
-					>
-						Show All
-					</Text>
-				</Flex>
-			</Box>
 			<Flex
 				direction="column"
-				css={{
-					"&::-webkit-scrollbar": {
-						width: "2px",
-						height: "2px",
-						display: "none",
-					},
-					"&::-webkit-scrollbar-thumb": {
-						background: "#cbd5e0",
-						borderRadius: "2px",
-					},
-					"&:hover::-webkit-scrollbar": {
-						display: "block",
-					},
-				}}
+				className="customScrollbars"
 				overflowY={{ base: "none", md: "scroll" }}
 				rowGap={{ base: "19px", md: "10px" }}
-				mt="20px"
 			>
 				{data.map((tx) => (
-					<Flex key={tx.tid}>
+					<Flex
+						key={tx.tid}
+						p="8px 2px 8px 16px"
+						align="center"
+						justify="center"
+						borderBottom="1px solid #F5F6F8"
+					>
 						<Avatar
-							h={{ base: "42px", md: "48px" }}
-							w={{ base: "42px", md: "48px" }}
+							h={{ base: "38px", md: "42px" }}
+							w={{ base: "38px", md: "42px" }}
 							border="2px solid #D2D2D2"
 							name={tx.name}
 						/>
@@ -113,7 +90,6 @@ const RecentTrxnWidget = () => {
 							alignItems="center"
 							justifyContent="space-between"
 							w="100%"
-							borderBottom="1px solid #F5F6F8"
 							ml="10px"
 						>
 							<Flex direction="column">
@@ -127,14 +103,14 @@ const RecentTrxnWidget = () => {
 
 								<Flex
 									alignItems="baseline"
-									fontSize={{ base: "xs", xl: "xs" }}
+									fontSize={{ base: "xs" }}
 								>
 									<Text
 										fontWeight="normal"
 										color="light"
 										noOfLines={1}
 									>
-										Transaction ID:
+										TID:
 									</Text>
 									<Text ml="1">{tx.tid}</Text>
 								</Flex>
@@ -142,7 +118,7 @@ const RecentTrxnWidget = () => {
 							<Flex
 								justifyContent="space-between"
 								alignItems="center"
-								ml={1}
+								ml={2}
 								onClick={() => handleShowHistory(tx.tid)}
 								cursor="pointer"
 							>
@@ -179,7 +155,7 @@ const RecentTrxnWidget = () => {
 					+ Show All
 				</Button>
 			</Flex>
-		</Flex>
+		</WidgetBase>
 	);
 };
 

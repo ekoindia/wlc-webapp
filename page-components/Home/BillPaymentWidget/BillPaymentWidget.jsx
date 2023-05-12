@@ -1,9 +1,10 @@
-import { Box, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Box, SimpleGrid, Text } from "@chakra-ui/react";
 import { IcoButton } from "components";
 import { TransactionIds } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { WidgetBase } from "..";
 
 /**
  * A <BillPaymentWidget> component
@@ -15,10 +16,8 @@ import { useEffect, useState } from "react";
  */
 const BillPaymentWidget = () => {
 	const router = useRouter();
-	const [isCardVisible, setIsCardVisible] = useState(false);
 	const [data, setData] = useState([]);
 	const [more, setMore] = useState(false);
-	console.log("data", data);
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 
@@ -43,7 +42,6 @@ const BillPaymentWidget = () => {
 			}
 		});
 		setData(bbps_tx_list); // set the new array to the data state
-		setIsCardVisible(bbps_tx_list.length > 0);
 	}, [role_tx_list]);
 
 	useEffect(() => {
@@ -58,110 +56,99 @@ const BillPaymentWidget = () => {
 			`transaction/${TransactionIds.BILL_PAYMENT}/` + (id ? `${id}` : "")
 		);
 	};
+
+	if (!data.length) {
+		return null;
+	}
+
 	return (
-		<div>
-			{isCardVisible && (
-				<Flex
-					h={{
-						base: "auto",
-						md: "350px",
-					}}
-					direction="column"
-					background="white"
-					p="5"
-					borderRadius="10px"
-					m={{ base: "16px", md: "auto" }}
-				>
-					<Box mb="5" fontSize={{ base: "sm", md: "md" }}>
-						<Text as="b">Recharge & bill payments</Text>
-					</Box>
-					<SimpleGrid
-						columns="4"
-						spacing={{ base: "4", md: "10", "2xl": "16" }}
-						alignItems="flex-start"
+		<WidgetBase title="Recharge & bill payments" noPadding>
+			<SimpleGrid
+				columns="4"
+				mx="8px"
+				rowGap={{ base: "4", md: "10", "2xl": "16" }}
+				alignItems="flex-start"
+				justifyContent="center"
+			>
+				{data.map((transaction, index) => (
+					<Box
+						key={index}
+						display="flex"
+						flexDirection="column"
+						alignItems="center"
 						justifyContent="center"
+						// pt={{ base: "22px" }}
 					>
-						{data.map((transaction, index) => (
-							<Box
-								key={index}
-								display="flex"
-								flexDirection="column"
-								alignItems="center"
-								justifyContent="center"
-								// pt={{ base: "22px" }}
-							>
-								<IcoButton
-									title={transaction.label}
-									iconName={transaction.icon}
-									size="md"
-									// iconStyle={{
-									// 	width: "30px",
-									// 	height: "30px",
-									// }}
-									// size={{
-									// 	base: "48px",
-									// 	lg: "56px",
-									// 	xl: "64px",
-									// }}
-									theme="dark"
-									rounded="full"
-									onClick={() =>
-										handleIconClick(transaction.id)
-									}
-								/>
-								<Text
-									pt={{ base: "10px" }}
-									fontSize={{
-										base: "xs",
-										"2xl": "md",
-									}}
-									noOfLines={2}
-									textAlign="center"
-								>
-									{transaction.label}
-								</Text>
-							</Box>
-						))}
-						{more ? (
-							<Box
-								display="flex"
-								flexDirection="column"
-								alignItems="center"
-								justifyContent="center"
-								// pt={{ base: "22px" }}
-							>
-								<IcoButton
-									title="more"
-									iconName="more-horiz"
-									size="md"
-									// iconStyle={{
-									// 	width: "30px",
-									// 	height: "30px",
-									// }}
-									// size={{
-									// 	base: "48px",
-									// 	lg: "56px",
-									// 	xl: "64px",
-									// }}
-									theme="gray"
-									rounded="full"
-									onClick={() => handleIconClick()}
-								/>
-								<Text
-									pt={{ base: "5px" }}
-									fontSize={{
-										base: "xs",
-										"2xl": "md",
-									}}
-									textAlign="center"
-								>
-									More
-								</Text>
-							</Box>
-						) : null}
-					</SimpleGrid>
-					{/* Once data is there for offers,show this row*/}
-					{/* <Flex
+						<IcoButton
+							title={transaction.label}
+							iconName={transaction.icon}
+							size="md"
+							// iconStyle={{
+							// 	width: "30px",
+							// 	height: "30px",
+							// }}
+							// size={{
+							// 	base: "48px",
+							// 	lg: "56px",
+							// 	xl: "64px",
+							// }}
+							theme="dark"
+							rounded="full"
+							onClick={() => handleIconClick(transaction.id)}
+						/>
+						<Text
+							pt={{ base: "10px" }}
+							fontSize={{
+								base: "xs",
+								"2xl": "md",
+							}}
+							noOfLines={2}
+							textAlign="center"
+						>
+							{transaction.label}
+						</Text>
+					</Box>
+				))}
+				{more ? (
+					<Box
+						display="flex"
+						flexDirection="column"
+						alignItems="center"
+						justifyContent="center"
+						// pt={{ base: "22px" }}
+					>
+						<IcoButton
+							title="more"
+							iconName="more-horiz"
+							size="md"
+							// iconStyle={{
+							// 	width: "30px",
+							// 	height: "30px",
+							// }}
+							// size={{
+							// 	base: "48px",
+							// 	lg: "56px",
+							// 	xl: "64px",
+							// }}
+							theme="gray"
+							rounded="full"
+							onClick={() => handleIconClick()}
+						/>
+						<Text
+							pt={{ base: "5px" }}
+							fontSize={{
+								base: "xs",
+								"2xl": "md",
+							}}
+							textAlign="center"
+						>
+							More
+						</Text>
+					</Box>
+				) : null}
+			</SimpleGrid>
+			{/* Once data is there for offers,show this row*/}
+			{/* <Flex
 					justifyContent="space-between"
 					bg="#F9F7F0"
 					h={{ base: "30px", md: "50px" }}
@@ -189,9 +176,7 @@ const BillPaymentWidget = () => {
 						color="primary.DEFAULT"
 					/>
 				</Flex> */}
-				</Flex>
-			)}
-		</div>
+		</WidgetBase>
 	);
 };
 

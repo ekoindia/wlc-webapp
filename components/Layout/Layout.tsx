@@ -39,23 +39,7 @@ const Layout = ({ isLoggedIn, children }) => {
 					bg={"bg"}
 					overflow={"hidden"}
 				>
-					<Box
-						overflowY={"auto"}
-						css={{
-							"&::-webkit-scrollbar": {
-								width: "0.6vw",
-							},
-							"&::-webkit-scrollbar-track": {
-								width: "0.6vw",
-							},
-							"&::-webkit-scrollbar-thumb": {
-								background: "#D2D2D2",
-								borderRadius: "5px",
-							},
-						}}
-					>
-						{children}
-					</Box>
+					{children}
 				</Box>
 			</Flex>
 		</Box>

@@ -26,9 +26,9 @@ const SortAndFilterMobile = ({ setFilter /*, setSort */ }) => {
 				{/* <Box w={"50%"} h={"100%"} bg={"white"}>
 					<NetworkSort setSort={setSort} />
 				</Box> */}
-				<Box w={"50%"} h={"100%"}>
+				<Flex h={"100%"} w="100%">
 					<NetworkFilter setFilter={setFilter} />
-				</Box>
+				</Flex>
 			</Flex>
 		</Box>
 	);

@@ -25,30 +25,28 @@ import { useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
-
-const NetworkMenuWrapper = (props) => {
+const NetworkMenuWrapper = ({ eko_code, account_status }) => {
 	const { userData } = useUser();
 	// const { orgDetail } = useOrgDetailContext();
-	const { eko_code, account_status } = props;
 	const { onOpen, onClose } = useDisclosure();
 	const [reason, setReason] = useState("");
 	const menuList = [
-		{
-			item: "Proceed",
-			path: `/admin/my-network/profile?ekocode=${eko_code}`,
-		},
+		// {
+		// 	item: "Proceed",
+		// 	path: `/admin/my-network/profile?ekocode=${eko_code}`,
+		// },
 		{
 			item: "Mark Inactive",
 			handleClick: () => {
 				setOpen(true);
 			},
 		},
-		{
-			item: "Mark Pending",
-			handleClick: () => {
-				setOpen(true);
-			},
-		},
+		// {
+		// 	item: "Mark Pending",
+		// 	handleClick: () => {
+		// 		setOpen(true);
+		// 	},
+		// },
 		{
 			item: "Change Role",
 			path: "/admin/my-network/profile/change-role",
@@ -62,6 +60,9 @@ const NetworkMenuWrapper = (props) => {
 			user_code: userData.accountDetails.code,
 			// org_id: orgDetail.org_id,
 		};
+		// status_id:17		Close
+		// status_id:18		Inactive
+		// status_id:16		Active
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"Content-Type": "application/json",
@@ -79,6 +80,7 @@ const NetworkMenuWrapper = (props) => {
 				console.error("📡 Fetch Error:", error);
 			});
 	};
+
 	return (
 		<div>
 			<Menus

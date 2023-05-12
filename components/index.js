@@ -21,6 +21,7 @@ import { Menus } from "./Menus";
 import { Modal } from "./Modal";
 import { MultiSelect } from "./MultiSelect";
 import { NavBar } from "./NavBar";
+import { OrgLogo } from "./OrgLogo";
 import { OtpInput } from "./OtpInput";
 import { PaddingBox } from "./PaddingBox";
 import { Pagination } from "./Pagination";
@@ -36,6 +37,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	OrgLogo,
 	DateView,
 	EkoConnectWidget,
 	ErrorBoundary,

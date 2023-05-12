@@ -5,7 +5,6 @@ import {
 	Flex,
 	HStack,
 	IconButton,
-	Image,
 	Menu,
 	MenuButton,
 	MenuList,
@@ -16,7 +15,7 @@ import { adminProfileMenu, profileMenu } from "constants";
 import { useOrgDetailContext, useUser } from "contexts";
 import Link from "next/link";
 import { Fragment, useState } from "react";
-import { Button, Icon, IconButtons } from "..";
+import { Button, Icon, IconButtons, OrgLogo } from "..";
 
 const NavBar = ({ setNavOpen }) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
@@ -110,21 +109,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						variant="none"
 					/>
 
-					<Image
-						src={
-							orgDetail.logo ||
-							"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56'%3E%3Crect fill='%23bbb' width='200' height='56' rx='6' ry='6'/%3E%3C/svg%3E"
-						}
-						alt={orgDetail.app_name + " logo"}
-						maxH={{
-							base: "35px",
-							sm: "34px",
-							md: "30px",
-							lg: "34px",
-							xl: "30px",
-							"2xl": "46px",
-						}}
-					/>
+					<OrgLogo orgDetail={orgDetail} size="md" />
 				</Box>
 				<Box display={{ base: "flex", md: "flex" }}>
 					<Menu>

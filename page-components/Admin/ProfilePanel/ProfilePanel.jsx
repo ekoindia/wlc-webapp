@@ -1,8 +1,10 @@
 import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { Button, Headings, Icon, Menus } from "components";
 import { ChangeRoleMenu } from "constants/ChangeRoleMenu";
+import useRequest from "hooks/useRequest";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import {
 	AddressPane,
 	CompanyPane,
@@ -50,6 +52,7 @@ const ChangeRoleDesktop = ({ menuHandler }) => {
 		</Box>
 	);
 };
+
 const ChangeRoleMobile = () => {
 	return (
 		<Box bg="shade" w="100%" h="100vh" px="4" pt="12px">
@@ -73,16 +76,51 @@ const ChangeRoleMobile = () => {
 };
 
 const ProfilePanel = () => {
-	const storedData = localStorage.getItem("rowData");
-	const rowData = storedData ? JSON.parse(storedData) : null;
-	const agent_name = rowData.agent_name;
-	const data = [
+	const router = useRouter();
+	const [rowData, setRowData] = useState([]);
+	const { cellnumber } = router.query;
+	// let rowData;
+	// const agent_name = rowData?.agent_name || "";
+	window.addEventListener("beforeunload", () => {
+		localStorage.removeItem("rowData");
+	});
+	const headers = {
+		"tf-req-uri-root-path": "/ekoicici/v1",
+		"tf-req-uri": `/network/agents?record_count=1&search_value=${cellnumber}`,
+		"tf-req-method": "GET",
+	};
+
+	const { data, mutate } = useRequest({
+		method: "POST",
+		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+		headers: { ...headers },
+	});
+
+	useEffect(() => {
+		setRowData(data?.data?.agent_details[0]);
+	}, [data]);
+
+	// useEffect(() => {
+	// 	mutate();
+	// }, [cellnumber]);
+	useEffect(() => {
+		const storedData = localStorage.getItem("rowData");
+		if (storedData) {
+			setRowData(JSON.parse(storedData));
+		} else {
+			mutate();
+		}
+	}, []);
+
+	// const agent_name = rowData.agent_name;
+
+	const panes = [
 		{
 			id: 1,
 			comp: (
 				<CompanyPane
 					rowData={rowData.profile}
-					agent_name={agent_name}
+					// agent_name={agent_name}
 				/>
 			),
 		},
@@ -131,7 +169,7 @@ const ProfilePanel = () => {
 					py={{ base: "20px", md: "0px" }}
 					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 				>
-					{data.map((item) => (
+					{panes.map((item) => (
 						<GridItem key={item.id}>{item.comp}</GridItem>
 					))}
 				</Grid>

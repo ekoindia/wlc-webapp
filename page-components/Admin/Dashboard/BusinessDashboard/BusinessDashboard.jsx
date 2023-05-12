@@ -157,6 +157,10 @@ const BusinessDashboard = () => {
 		setActiveIndex(index);
 	};
 
+	// TODO: INTEGARTE APIs....
+	const [temp] = useState(true);
+	if (temp) return <Text fontSize="lg">Coming soon...</Text>;
+
 	const EarningData = [
 		{
 			title: "GTV",
@@ -213,7 +217,25 @@ const BusinessDashboard = () => {
 			{/* {console.log("cardData", cardData)} */}
 
 			{/* CARD */}
-			<Grid templateColumns="repeat(4, 4fr)" gap={5} overflowX="auto">
+			<Grid
+				templateColumns="repeat(4, 4fr)"
+				gap={5}
+				overflowX="auto"
+				css={{
+					"&::-webkit-scrollbar": {
+						width: "2px",
+						height: "2px",
+						// display: "none",
+					},
+					"&::-webkit-scrollbar-thumb": {
+						background: "#cbd5e0",
+						borderRadius: "2px",
+					},
+					// "&:hover::-webkit-scrollbar": {
+					// 	display: "block",
+					// },
+				}}
+			>
 				{cardData.map((card) => (
 					<GridItem key={card.id} colSpan={1}>
 						<Card
