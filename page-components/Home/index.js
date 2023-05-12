@@ -5,3 +5,4 @@ export { KycWidget } from "./KycWidget";
 export { NotificationWidget } from "./NotificationWidget";
 export { QueryWidget } from "./QueryWidget";
 export { RecentTrxnWidget } from "./RecentTrxnWidget";
+export { WidgetBase } from "./WidgetBase";

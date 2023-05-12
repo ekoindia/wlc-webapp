@@ -1,6 +1,5 @@
 import {
-	Avatar,
-	Box,
+	Center,
 	Flex,
 	Image,
 	Modal,
@@ -12,9 +11,10 @@ import {
 	ModalOverlay,
 	Text,
 } from "@chakra-ui/react";
-import { Button } from "components";
+import { Button, Icon } from "components";
 import { useNotification } from "contexts";
 import { useState } from "react";
+import { WidgetBase } from "..";
 
 /**
  * Homepage widget to show a list of notifications.
@@ -38,46 +38,10 @@ const NotificationWidget = () => {
 
 	return (
 		<>
-			<Flex
-				direction="column"
-				background="white"
-				h={{ base: "auto", md: "350px" }}
-				w={{ base: "90%", md: "100%" }}
-				pb="2"
-				// p="5"
-				borderRadius="10px"
-				m={{ base: "16px", md: "auto" }}
-			>
-				<Box p="5" pb="3">
-					<Flex justifyContent="space-between">
-						<Text as="b">Notifications</Text>
-						{/* <Text
-						as="b"
-						color="primary.DEFAULT"
-						onClick={() => handleShowHistory()}
-						cursor="pointer"
-						display={{ base: "none", md: "block" }}
-					>
-						Show All
-					</Text> */}
-					</Flex>
-				</Box>
+			<WidgetBase title="Notifications" noPadding>
 				<Flex
 					direction="column"
-					css={{
-						"&::-webkit-scrollbar": {
-							width: "2px",
-							height: "2px",
-							display: "none",
-						},
-						"&::-webkit-scrollbar-thumb": {
-							background: "#cbd5e0",
-							borderRadius: "2px",
-						},
-						"&:hover::-webkit-scrollbar": {
-							display: "block",
-						},
-					}}
+					className="customScrollbars"
 					overflowY={{ base: "none", md: "scroll" }}
 					// rowGap={{ base: "19px", md: "10px" }}
 					// mt="20px"
@@ -92,12 +56,45 @@ const NotificationWidget = () => {
 							onClick={() => openNotification(notif)}
 						>
 							<Flex>
-								<Avatar
+								{/* <Avatar
 									h={{ base: "38px", md: "42px" }}
 									w={{ base: "38px", md: "42px" }}
 									border="2px solid #D2D2D2"
 									name={`${index + 1}`}
-								/>
+								/> */}
+								{notif.image ? (
+									<Image
+										fit="fill"
+										loading="lazy"
+										overflow="hidden"
+										h={{ base: "38px", md: "42px" }}
+										w={{ base: "38px", md: "42px" }}
+										minW={{ base: "38px", md: "42px" }}
+										borderRadius="10px"
+										src={notif.image}
+										alt="Notification Poster"
+									/>
+								) : (
+									<Center
+										h={{
+											base: "38px",
+											md: "42px",
+										}}
+										w={{
+											base: "38px",
+											md: "42px",
+										}}
+										borderRadius="10px"
+										bg="gray.300"
+									>
+										<Icon
+											width="22px"
+											height="22px"
+											name="notifications"
+											color="gray.400"
+										/>
+									</Center>
+								)}
 							</Flex>
 							<Flex
 								alignItems="center"
@@ -117,47 +114,11 @@ const NotificationWidget = () => {
 										{notif.desc}
 									</Text>
 								</Flex>
-								{/* <Flex
-								justifyContent="space-between"
-								alignItems="center"
-								ml={1}
-								onClick={() => handleShowHistory(notif.tid)}
-								cursor="pointer"
-							>
-								<Text
-									color="primary.DEFAULT"
-									paddingRight="6px"
-									display={{ base: "none", md: "block" }}
-									fontSize="sm"
-								>
-									Details
-								</Text>
-								<Icon
-									w="12px"
-									name="arrow-forward"
-									color="primary.DEFAULT"
-								/>
-							</Flex> */}
 							</Flex>
 						</Flex>
 					))}
 				</Flex>
-				{/* <Flex
-					display={{ base: "block", md: "none" }}
-					justifyContent="center"
-					alignItems="center"
-					textAlign="center"
-					py="15px"
-				>
-					<Button
-						onClick={() => handleShowHistory()}
-						justifyContent="center"
-						size="md"
-					>
-						+ Show All
-					</Button>
-				</Flex> */}
-			</Flex>
+			</WidgetBase>
 
 			{/* Show Chakra Model with notification details id selectedNotification is not null: */}
 			{selectedNotification && (
