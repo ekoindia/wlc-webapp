@@ -94,7 +94,7 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 					});
 				});
 
-				const err = new Error("Login timed out. Please try again.");
+				const err = new Error("API Error");
 				err.response = res;
 				err.status = res.status;
 				if (res.status === 401) {
