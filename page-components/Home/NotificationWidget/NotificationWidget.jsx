@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { useNotification } from "contexts";
+import { useAppLink } from "hooks";
 import { useState } from "react";
 import { WidgetBase } from "..";
 
@@ -23,6 +24,7 @@ const NotificationWidget = () => {
 	// Get notifications from context
 	const { notifications, markAsRead } = useNotification();
 	const [selectedNotification, setSelectedNotification] = useState(null);
+	const { openUrl } = useAppLink();
 
 	console.log("NOTIFICATIONS: ", notifications);
 
@@ -139,6 +141,20 @@ const NotificationWidget = () => {
 								.map((line, index) => (
 									<Text key={index}>{line}</Text>
 								))}
+
+							{selectedNotification.link ? (
+								<Button
+									mt={2}
+									fontSize="lg"
+									variant="link"
+									color="accent.DEFAULT"
+									onClick={() => {
+										openUrl(selectedNotification.link);
+									}}
+								>
+									Open Link
+								</Button>
+							) : null}
 
 							{selectedNotification.image ? (
 								<Image
