@@ -5,17 +5,26 @@ import { useRouter } from "next/router";
  */
 const useAppLink = () => {
 	const router = useRouter();
+	const regRemoveConnectUrl = new RegExp(
+		"^(" +
+			window.location.origin +
+			"|(https?://)?connect.eko.in|ekoconnect://)",
+		"i"
+	);
 
 	const openUrl = (url) => {
 		if (!url) return;
 
-		// Remove the (sub)domain or 'https://connect.eko.in/' from internal links...
-		const re = new RegExp(
-			"^(" + window.location.origin + "|(https?://)?connect.eko.in)",
-			"i"
-		);
+		// Remove the following from internal links:
+		// - current domain
+		// - or, https://connect.eko.in/	(old Connect app URL)
+		// - or, ekoconnect://				(old Connect custom URL scheme)
+		url = url.trim().replace(regRemoveConnectUrl, "");
 
-		url = url.trim().replace(re, "");
+		// remove HashBang, if present (used for old Polymer based Connect app)
+		if (url.startsWith("/#!")) {
+			url = url.substring(3);
+		}
 
 		if (false === /^(?:[-_a-z]+:|[a-z]+\.)/i.test(url)) {
 			// Open Internal Page (eg:  "/transaction/64")
