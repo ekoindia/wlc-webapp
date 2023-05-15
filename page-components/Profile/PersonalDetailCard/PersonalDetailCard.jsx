@@ -7,11 +7,12 @@ import {
 	useDisclosure,
 	useToast,
 } from "@chakra-ui/react";
-import { Calenders, IconButtons, Modal } from "components";
+import { Calenders, Modal } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
+import { WidgetBase } from "page-components/Home";
 import { useCallback, useState } from "react";
 
 /**
@@ -109,27 +110,18 @@ const PersonalDetailCard = () => {
 	};
 
 	return (
-		<Flex
-			w="100%"
-			h={{ base: "400px" }}
-			bg="white"
-			direction="column"
-			borderRadius="10px"
-			border="1px solid #D2D2D2"
-			boxShadow="0px 5px 15px #0000000D"
-			p="5"
+		<WidgetBase
+			title="My Shop"
+			iconName="mode-edit"
+			linkOnClick={onEditClick}
+			iconStyle={{ w: "12px", color: "white" }}
+			icoBtnProps={{
+				size: "sm",
+				bg: "primary.light",
+				_hover: { bg: "primary.DEFAULT" },
+			}}
 		>
-			<Flex justify="space-between">
-				<Text fontWeight="semibold" fontSize={{ base: "18px" }}>
-					Personal Details
-				</Text>
-				<IconButtons
-					onClick={onEditClick}
-					iconName="mode-edit"
-					iconStyle={{ height: "12px", width: "12px" }}
-				/>
-			</Flex>
-			<Grid templateColumns="repeat(2, 1fr)" mt="20px" rowGap="20px">
+			<Grid templateColumns="repeat(2, 1fr)" rowGap="20px">
 				{Object.entries(personalDetailObj).map(([key], index) =>
 					data[key] != "" ? (
 						<GridItem key={index} colSpan={1} rowSpan={1}>
@@ -147,6 +139,8 @@ const PersonalDetailCard = () => {
 					) : null
 				)}
 			</Grid>
+
+			{/* Show Chakra Modal to edit Personal details */}
 			<Modal
 				isOpen={isOpen}
 				onClose={onClose}
@@ -218,7 +212,8 @@ const PersonalDetailCard = () => {
 					</Select>
 				</form>
 			</Modal>
-		</Flex>
+			{/* </Flex> */}
+		</WidgetBase>
 	);
 };
 

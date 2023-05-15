@@ -1,8 +1,9 @@
-import { Divider, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components/Icon";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useMenuContext } from "contexts/MenuContext";
 import { useRouter } from "next/router";
+import { WidgetBase } from "page-components/Home";
 import { Fragment, useEffect, useState } from "react";
 
 /**
@@ -29,10 +30,9 @@ const ManageMyAccountCard = () => {
 			role_tx_list[TransactionIds.MANAGE_MY_ACCOUNT]
 				.group_interaction_ids;
 
-		// str to array
 		group_interaction_ids = group_interaction_ids.split(",").map(Number);
 
-		const mma_tx_list = []; // storing transaction list
+		const mma_tx_list = [];
 
 		group_interaction_ids.forEach((id) => {
 			if (id in role_tx_list) {
@@ -40,7 +40,7 @@ const ManageMyAccountCard = () => {
 			}
 		});
 
-		setData(mma_tx_list); // set the new array to the data state
+		setData(mma_tx_list);
 	}, [role_tx_list]);
 
 	const OnClick = (id) => {
@@ -48,36 +48,30 @@ const ManageMyAccountCard = () => {
 	};
 
 	return (
-		<Flex
-			w="100%"
-			h={{ base: "400px" }}
-			bg="white"
-			direction="column"
-			borderRadius="10px"
-			border="1px solid #D2D2D2"
-			boxShadow="0px 5px 15px #0000000D"
-			p="5"
-		>
-			<Text fontWeight="semibold" fontSize={{ base: "18px" }}>
-				Manage My Account
-			</Text>
-
-			<Flex direction="column" mt="20px" rowGap="10px" overflow="auto">
-				{data.map((tx, idx) => (
+		<WidgetBase title="Manage My Account" noPadding>
+			<Flex
+				direction="column"
+				className="customScrollbars"
+				overflowY={{ base: "none", md: "scroll" }}
+			>
+				{data.map((tx) => (
 					<Fragment key={tx.id}>
 						<Flex
 							align="center"
 							justify="space-between"
+							p="8px 16px"
+							cursor="pointer"
+							_hover={{ bg: "darkShade" }}
+							borderBottom="1px solid #F5F6F8"
 							onClick={OnClick}
 						>
 							<Text fontSize={{ base: "16px" }}>{tx.label}</Text>
 							<Icon name="chevron-right" w="8px" />
 						</Flex>
-						{dataLength > idx + 1 ? <Divider /> : null}
 					</Fragment>
 				))}
 			</Flex>
-		</Flex>
+		</WidgetBase>
 	);
 };
 

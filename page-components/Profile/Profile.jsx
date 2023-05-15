@@ -1,4 +1,4 @@
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Grid } from "@chakra-ui/react";
 import {
 	ManageMyAccountCard,
 	PersonalDetailCard,
@@ -15,31 +15,28 @@ import {
  * @example	`<Profile></Profile>` TODO: Fix example
  */
 const Profile = ({ prop1, ...rest }) => {
+	const widgets = [
+		{ id: 1, component: ProfileWidget },
+		{ id: 2, component: ManageMyAccountCard },
+		{ id: 3, component: ShopCard },
+		{ id: 4, component: PersonalDetailCard },
+	];
+
 	return (
 		<Grid
 			templateColumns={{
-				base: "repeat(auto-fit,minmax(280px,0.90fr))",
-				sm: "repeat(auto-fit,minmax(380px,0.90fr))",
-				md: "repeat(auto-fit,minmax(360px,1fr))",
-				xl: "repeat(auto-fit,minmax(440px,1fr))",
+				base: "repeat(auto-fit,minmax(280px,1fr))",
+				md: "repeat(auto-fit,minmax(340px,1fr))",
+				// xl: "repeat(auto-fit,minmax(440px,1fr))",
 			}}
 			justifyContent="center"
 			py={{ base: "20px", md: "0px" }}
-			gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
-			{...rest}
+			gap={{ base: (2, 2), md: (4, 2), lg: (4, 6) }}
+			width={"100%"}
 		>
-			<GridItem>
-				<ProfileWidget />
-			</GridItem>
-			<GridItem>
-				<ManageMyAccountCard />
-			</GridItem>
-			<GridItem>
-				<ShopCard />
-			</GridItem>
-			<GridItem>
-				<PersonalDetailCard />
-			</GridItem>
+			{widgets.map(({ id, component: Component }) => (
+				<Component key={id} />
+			))}
 		</Grid>
 	);
 };
