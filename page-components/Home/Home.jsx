@@ -38,7 +38,7 @@ const Home = () => {
 			}}
 			justifyContent="center"
 			py={{ base: "20px", md: "0px" }}
-			gap={{ base: (2, 2), md: (4, 2), lg: (4, 6) }}
+			gap={{ base: 4, lg: 5, "2xl": 8 }}
 			width={"100%"}
 		>
 			{widgets.map(({ id, component: Component }) => (

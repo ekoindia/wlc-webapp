@@ -75,14 +75,14 @@ const RecentTrxnWidget = () => {
 				{data.map((tx) => (
 					<Flex
 						key={tx.tid}
-						p="8px 2px 8px 16px"
+						p="8px 8px 8px 16px"
+						pr={{ base: "8px", md: "4px" }}
 						align="center"
 						justify="center"
 						borderBottom="1px solid #F5F6F8"
 					>
 						<Avatar
-							h={{ base: "38px", md: "42px" }}
-							w={{ base: "38px", md: "42px" }}
+							size={{ base: "sm", md: "md" }}
 							border="2px solid #D2D2D2"
 							name={tx.name}
 						/>

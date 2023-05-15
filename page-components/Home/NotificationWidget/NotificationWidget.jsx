@@ -172,7 +172,6 @@ const NotificationWidget = () => {
 							>
 								Close
 							</Button>
-							{/* <Button variant="ghost">Secondary Action</Button> */}
 						</ModalFooter>
 					</ModalContent>
 				</Modal>
