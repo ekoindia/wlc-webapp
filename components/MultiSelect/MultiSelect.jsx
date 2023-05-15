@@ -12,9 +12,9 @@ import { Icon } from "..";
  * @example	`<MultiSelect options={options}	renderer={renderer} placeholder = "Please Select Something"/>`
  */
 const MultiSelect = ({
-	options = multiSelectDummy,
+	options,
 	placeholder = "-- Select --",
-	renderer = rendererDummy,
+	renderer,
 	setData = () => {}, //ToDo:need to be pass selected data when dropdown is closed
 	label,
 }) => {
@@ -410,16 +410,3 @@ const getSelectedStyle = (name, index, onDeleteHandler) => {
 		</Flex>
 	);
 };
-
-const rendererDummy = {
-	label: "label",
-	value: "value",
-};
-
-const multiSelectDummy = [
-	{ value: "d1", label: "Data 1" },
-	{ value: "d2", label: "Data 2" },
-	{ value: "d3", label: "Data 3" },
-	{ value: "d4", label: "Data 4" },
-	{ value: "d5", label: "Data 5" },
-];
