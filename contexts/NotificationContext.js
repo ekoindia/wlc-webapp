@@ -52,7 +52,7 @@ const useNotifications = () => {
 	});
 
 	// Id for Notification setInterval(): fetching every 10-minutes.
-	const [interval, setInterval] = useState(null);
+	const [intervalId, setIntervalId] = useState(null);
 
 	const { userData, isLoggedIn, userId } = useUser();
 	const toast = useToast();
@@ -305,13 +305,18 @@ const useNotifications = () => {
 		if (isLoggedIn) {
 			// user logged in
 			fetchNotifications();
-			_interval = setInterval(() => {
-				fetchNotifications();
-			}, 600000); // 10 minutes in milliseconds
-			setInterval(_interval);
+			if (!intervalId) {
+				_interval = setInterval(() => {
+					fetchNotifications();
+				}, 600000); // 10 minutes in milliseconds
+				setIntervalId(_interval);
+			}
 		} else {
 			// user not logged in
-			if (interval) clearInterval(_interval);
+			if (intervalId) {
+				clearInterval(intervalId);
+				setIntervalId(null);
+			}
 			setNotifications([]);
 		}
 

@@ -14,15 +14,16 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 					md: "36px",
 					"2xl": "46px",
 			  };
-	const logoFontSize = size === "lg" ? "2xl" : "xl";
+	const logoFontSize =
+		size === "lg" ? { base: "xl", md: "2xl" } : { base: "md", md: "xl" };
 
 	if (!(orgDetail && orgDetail.logo) && orgDetail.app_name) {
 		return (
 			<Center
-				maxW={{ base: "10rem", md: "20rem", "2xl": "30rem" }}
+				maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
 				height={logoHeight}
 				bg="accent.dark"
-				px="1.5rem"
+				px={{ base: "0.6rem", md: "1.2rem" }}
 				borderRadius="6px"
 			>
 				<Text

@@ -7,9 +7,9 @@ import {
 	useUser,
 	useWallet,
 } from "contexts";
+import { useAppLink } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
@@ -31,7 +31,7 @@ import { useEffect, useState } from "react";
 const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	console.log("[EkoConnectWidget] Transaction id to load: ", start_id, paths);
 
-	const router = useRouter();
+	const { openUrl, router } = useAppLink();
 	const { userData, isLoggedIn } = useUser();
 	const { orgDetail } = useOrgDetailContext();
 	const { interactions } = useMenuContext();
@@ -44,7 +44,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		role_tx_list
 	);
 
-	const { widgetLoading } = useSetupWidgetEventListeners(router);
+	const { widgetLoading } = useSetupWidgetEventListeners(router, openUrl);
 
 	return (
 		<PaddingBox noSpacing={true} {...rest}>
@@ -130,6 +130,7 @@ const setupWidgetEventListeners = ({
 	generateNewToken,
 	setBalance,
 	router,
+	openUrl,
 }) => {
 	/**
 	 * Event called when the user session expires
@@ -147,34 +148,13 @@ const setupWidgetEventListeners = ({
 	};
 
 	const onOpenUrl = (e) => {
-		console.log("🎬 >>> onOpenUrl:: ", e);
+		console.log("[EkoConnectWidget] >>> onOpenUrl:: ", e);
 
 		if (!e?.detail) {
 			return;
 		}
 
-		let uri = e.detail.trim();
-
-		// Remove the (sub)domain or 'https://connect.eko.in/' from internal links...
-		const re = new RegExp(
-			"^(" + window.location.origin + "|(https?://)?connect.eko.in)",
-			"i"
-		);
-		uri = uri.replace(re, "");
-
-		if (false === /^(?:[-_a-z]+:|[a-z]+\.)/i.test(uri)) {
-			// Open Internal Page (eg:  "/transaction/64")
-
-			// Ensure '/' at beginning of URL
-			uri = (uri.startsWith("/") ? "" : "/") + uri;
-
-			// Open URL internally (same browser tab/window)
-			router.push(uri);
-		} else {
-			// Open External Link (new browser tab/window)...
-			console.log("[EkoConnectWidget] Opening External Link: ", uri);
-			window.open(uri, "_blank");
-		}
+		openUrl(e.detail);
 	};
 
 	const onGotoTrxn = ({ trxnid }) => {
@@ -193,7 +173,7 @@ const setupWidgetEventListeners = ({
 	};
 
 	const setWalletBalance = (balance) => {
-		console.log("🎬 >>> setWalletBalance:: ", balance);
+		console.log("[EkoConnectWidget] setWalletBalance:: ", balance);
 
 		if (balance === null || balance === undefined || balance === "") {
 			return;
@@ -287,10 +267,11 @@ const configurePolymer = () => {
 
 /**
  * Custom hook to setup event listeners for the Connect widget.
- * @param {*} router - The React Router instance
+ * @param {Object} router - The React Router instance
+ * @param {Function} openUrl - The useAppLink function to open internal or external URLs.
  * @returns	{Object} - The widgetLoading state
  */
-const useSetupWidgetEventListeners = (router) => {
+const useSetupWidgetEventListeners = (router, openUrl) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
 
@@ -306,6 +287,7 @@ const useSetupWidgetEventListeners = (router) => {
 			generateNewToken,
 			setBalance,
 			router,
+			openUrl,
 		});
 		configurePolymer();
 

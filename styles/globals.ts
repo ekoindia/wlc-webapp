@@ -9,6 +9,10 @@ export const globalStyles = {
 	"*": {
 		boxSizing: "border-box",
 	},
+	"img, svg, video, canvas, audio, iframe, embed, object": {
+		maxWidth: "100%",
+		display: "block",
+	},
 	".customScrollbars::-webkit-scrollbar-track": {
 		WebkitBoxShadow: "inset 0 0 1px rgba(0,0,0,0)",
 	},
