@@ -1,4 +1,4 @@
-import { slabs } from "constants";
+import { ProductSlabs } from "constants";
 import { PricingForm } from "..";
 /**
  * A <Aeps> component
@@ -23,7 +23,7 @@ const Aeps = ({ prop1, ...rest }) => {
 		<div {...rest}>
 			<PricingForm
 				product="aeps"
-				slabs={slabs.AEPS}
+				ProductSlabs={ProductSlabs.AEPS}
 				commissionForObj={commissionForObj}
 				commissionTypeObj={commissionTypeObj}
 			/>

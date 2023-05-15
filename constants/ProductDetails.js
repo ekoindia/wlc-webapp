@@ -1,5 +1,5 @@
 /* Slab Details */
-export const slabs = {
+export const ProductSlabs = {
 	DMT: [{ min: 100, max: 5000 }],
 	AEPS: [
 		{ min: 100, max: 100 },

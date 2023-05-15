@@ -22,7 +22,7 @@ import { useEffect, useRef, useState } from "react";
  */
 const PricingForm = ({
 	product,
-	slabs,
+	ProductSlabs,
 	commissionForObj = radioDummy,
 	commissionTypeObj = radioDummy,
 }) => {
@@ -131,7 +131,7 @@ const PricingForm = ({
 			</Flex>
 			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
 				<Text fontWeight="semibold">Select Slab</Text>
-				<Select data={slabs} setSelected={setFromSelect} />
+				<Select data={ProductSlabs} setSelected={setFromSelect} />
 			</Flex>
 
 			<Flex direction="column" gap="2">
