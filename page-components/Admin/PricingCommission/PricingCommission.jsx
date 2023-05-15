@@ -1,6 +1,6 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { Headings } from "components/Headings";
-import { Dmt } from "./Dmt";
+import { AadhaarPay, Aeps, Dmt } from ".";
 /**
  * A <PricingCommission> component
  * TODO: Write more description here
@@ -9,30 +9,35 @@ import { Dmt } from "./Dmt";
  * @example	`<PricingCommission></PricingCommission>`
  */
 const PricingCommissions = () => {
+	const tabs = {
+		DMT: <Dmt />,
+		AEPS: <Aeps />,
+		"Aadhaar Pay": <AadhaarPay />,
+		// "Indo-Nepal Fund Transfer": "",
+		// BBPS: "",
+	};
+
 	return (
 		<>
 			<Headings title="Pricing & Commissions" hasIcon={false} />
 			<Box px={{ base: "16px", md: "initial" }}>
 				<Box
-					w={"100%"}
-					minH={"80%"}
-					bg={"white"}
-					// mt={{ base: "15px", "2xl": "25px" }}
+					w="100%"
+					minH="80%"
+					bg="white"
 					borderRadius={{ base: "8px", md: "10px" }}
-					border={"card"}
-					boxShadow={" 0px 5px 15px #0000000D"}
+					border="card"
+					boxShadow="0px 5px 15px #0000000D"
 					mb={{ base: "26px", md: "10px" }}
-					// mx={{ base: "16px", md: "none" }}
 				>
 					<Tabs
 						position="relative"
 						defaultIndex={0}
 						variant="colorful"
 						bg={{ base: "#FFFFFF", md: "transparent" }}
-						// px={{ base: "0", sm: "3", md: "7.5" }}
 						pt={{ base: "3", md: "4", "2xl": "7" }}
 						w={{ base: "100%", md: "100%" }}
-						borderRadius={"10px"}
+						borderRadius="10px"
 					>
 						<TabList
 							color="light"
@@ -49,31 +54,17 @@ const PricingCommissions = () => {
 								},
 							}}
 						>
-							<Tab
-								fontSize={{ base: "sm", md: "sm", "2xl": "md" }}
-							>
-								DMT
-							</Tab>
-							<Tab
-								fontSize={{ base: "sm", md: "sm", "2xl": "md" }}
-							>
-								AEPS
-							</Tab>
-							<Tab
-								fontSize={{ base: "sm", md: "sm", "2xl": "md" }}
-							>
-								Aadhaar Pay
-							</Tab>
-							{/* <Tab
-								fontSize={{ base: "sm", md: "sm", "2xl": "md" }}
-							>
-								Indo-Nepal Fund Transfer
-							</Tab>
-							<Tab
-								fontSize={{ base: "sm", md: "sm", "2xl": "md" }}
-							>
-								BBPS
-							</Tab> */}
+							{Object.entries(tabs).map(([key]) => (
+								<Tab
+									key={key}
+									fontSize={{
+										base: "sm",
+										"2xl": "md",
+									}}
+								>
+									{key}
+								</Tab>
+							))}
 						</TabList>
 
 						<TabPanels
@@ -84,23 +75,11 @@ const PricingCommissions = () => {
 								lg: "25px",
 								"2xl": "38px",
 							}}
-							pb={"20px"}
+							pb="20px"
 						>
-							<TabPanel>
-								<Dmt />
-							</TabPanel>
-							<TabPanel>
-								<p>two!</p>
-							</TabPanel>
-							<TabPanel>
-								<p>three!</p>
-							</TabPanel>
-							{/* <TabPanel>
-								<p>three!</p>
-							</TabPanel>
-							<TabPanel>
-								<p>four!</p>
-							</TabPanel> */}
+							{Object.entries(tabs).map(([key, value]) => (
+								<TabPanel key={key}>{value}</TabPanel>
+							))}
 						</TabPanels>
 					</Tabs>
 				</Box>
