@@ -20,6 +20,13 @@ import { Button, Icon, IconButtons, OrgLogo } from "..";
 const NavBar = ({ setNavOpen }) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
 
+	const NavHeight = {
+		base: "56px",
+		md: "50px",
+		lg: "60px",
+		"2xl": "90px",
+	};
+
 	return (
 		<>
 			{isCardOpen && (
@@ -39,10 +46,8 @@ const NavBar = ({ setNavOpen }) => {
 				w={"full"}
 				h={{
 					base: "56px",
-					sm: "56px",
 					md: "50px",
 					lg: "60px",
-					xl: "50px",
 					"2xl": "90px",
 				}}
 			></Box>
@@ -234,14 +239,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 };
 
 const MyAccountCard = ({ setIsCardOpen }) => {
-	const { logout, userData } = useUser();
+	const { isAdmin, logout, userData } = useUser();
 	const { userDetails } = userData;
-	const menulist =
-		userData?.is_org_admin === 1 ? adminProfileMenu : profileMenu;
-	const logoutHandler = () => {
-		// router.push("/");
-		logout();
-	};
+	const menulist = isAdmin ? adminProfileMenu : profileMenu;
 
 	return (
 		<Box
@@ -276,9 +276,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					<Icon
 						name="close"
 						width="	16px"
-						onClick={() => {
-							setIsCardOpen(false);
-						}}
+						onClick={() => setIsCardOpen(false)}
 					/>
 				</Flex>
 				<Box
@@ -320,9 +318,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							fontSize={{
 								base: "16px",
 								sm: "12px",
-								md: "12px",
 								lg: "14px",
-								"2xl": "14px",
 							}}
 							color={"highlight"}
 							textTransform="capitalize"
@@ -338,10 +334,6 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							fontSize={{
 								base: "12px",
 								sm: "10px",
-								md: "8px",
-								lg: "8px",
-								xl: "10px",
-								"2xl": "10px",
 							}}
 							w={"fit-content"}
 							color={"white"}
@@ -359,10 +351,6 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							fontSize={{
 								base: "12px",
 								sm: "10px",
-								md: "8px",
-								lg: "8px",
-								xl: "10px",
-								"2xl": "10px",
 							}}
 							w={"fit-content"}
 							color={"white"}
@@ -383,9 +371,6 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									fontSize={{
 										base: "12px",
 										sm: "10px",
-										md: "8px",
-										lg: "10px",
-										"2xl": "10px",
 									}}
 									color={"white"}
 								>
@@ -417,16 +402,12 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								w={{
 									base: "140px",
 									sm: "90px",
-									md: "90px",
 									lg: "100px",
-									xl: "100px",
 									"2xl": "108px",
 								}}
 								h={{
 									base: "48px",
 									sm: "30px",
-									md: "30px",
-									lg: "30px",
 									xl: "34px",
 									"2xl": "36px",
 								}}
@@ -442,9 +423,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									fontSize={{
 										base: "14px",
 										sm: "8px",
-										md: "8px",
 										lg: "10px",
-										xl: "10px",
 										"2xl": "12px",
 									}}
 								>
@@ -482,9 +461,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									fontSize={{
 										base: "14px",
 										sm: "10px",
-										md: "10px",
 										lg: "12px",
-										xl: "12px",
 										"2xl": "14px",
 									}}
 								>
@@ -506,7 +483,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					justifyContent={"flex-start"}
 					cursor={"pointer"}
 					py={"0.6vw"}
-					onClick={logoutHandler}
+					onClick={logout}
 				>
 					<Icon
 						name="logout"
@@ -518,9 +495,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						fontSize={{
 							base: "14px",
 							sm: "10px",
-							md: "10px",
 							lg: "12px",
-							xl: "12px",
 							"2xl": "14px",
 						}}
 						color={"error"}

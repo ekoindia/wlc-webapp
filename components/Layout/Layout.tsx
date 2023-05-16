@@ -30,10 +30,8 @@ const Layout = ({ children }) => {
 				<Box
 					minH={{
 						base: "calc(100vh - 56px)",
-						sm: "calc(100vh - 56px)",
 						md: "calc(100vh - 50px)",
 						lg: "calc(100vh - 60px)",
-						xl: "calc(100vh - 50px)",
 						"2xl": "calc(100vh - 90px)",
 					}}
 					w={"full"}
