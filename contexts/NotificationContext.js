@@ -1,6 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { TransactionTypes } from "constants";
-import { useUser } from "contexts";
+import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import {
 	createContext,
@@ -54,7 +54,7 @@ const useNotifications = () => {
 	// Id for Notification setInterval(): fetching every 10-minutes.
 	const [intervalId, setIntervalId] = useState(null);
 
-	const { userData, isLoggedIn, userId } = useUser();
+	const { isLoggedIn, userId, accessToken } = useSession();
 	const toast = useToast();
 
 	const fetchNotifications = useCallback(async () => {
@@ -66,7 +66,7 @@ const useNotifications = () => {
 					body: {
 						interaction_type_id: TransactionTypes.GET_NOTIFICATIONS,
 					},
-					token: userData.access_token,
+					token: accessToken,
 				}
 			);
 			handleNotificationsResponse(resp);
@@ -75,7 +75,7 @@ const useNotifications = () => {
 		} finally {
 			setIsLoading(false);
 		}
-	}, [userData.access_token]);
+	}, [accessToken]);
 
 	const handleNotificationsResponse = (response) => {
 		const data_list = response?.data?.notifications;
@@ -251,7 +251,7 @@ const useNotifications = () => {
 		// TODO: USE BEACON...
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
 			body: body,
-			token: userData.access_token,
+			token: accessToken,
 		});
 	};
 
@@ -321,7 +321,7 @@ const useNotifications = () => {
 		}
 
 		return () => clearInterval(_interval);
-	}, [isLoggedIn, userData.userId]);
+	}, [isLoggedIn, userId]);
 
 	return {
 		notifications,
