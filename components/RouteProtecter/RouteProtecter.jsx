@@ -97,7 +97,7 @@ const RouteProtecter = (props) => {
 	return (
 		<>
 			{isLoggedIn && authorized ? (
-				<Layout isisLoggedIn={true}>{children}</Layout>
+				<Layout isLoggedIn={true}>{children}</Layout>
 			) : (
 				children
 			)}
