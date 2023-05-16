@@ -15,7 +15,8 @@ export const MockUser = {
 	loggedIn: true,
 	is_org_admin: 0,
 	userId: "6333331126",
-	sessionKey: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ...",
+	user_type: "2",
+	access_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ...",
 	userDetails: {
 		name: "Kumar Abhishek",
 		login_id: "12345678912",
@@ -53,4 +54,5 @@ export const MockUser = {
 export const MockAdminUser = {
 	...MockUser,
 	is_org_admin: 1,
+	user_type: "22",
 };

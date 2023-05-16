@@ -17,7 +17,7 @@ import { Inter } from "next/font/google";
 import Head from "next/head";
 import Script from "next/script";
 import { SWRConfig } from "swr";
-
+import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import { light } from "../styles/themes";
 
 const inter = Inter({
@@ -87,13 +87,25 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 				...light,
 		  };
 
+	// Mock login for local testing...
+	let mockUser = null;
+	if (process.env.NEXT_PUBLIC_ENV === "development") {
+		if (process.env.NEXT_PUBLIC_MOCK_LOGIN === "agent") {
+			mockUser = MockUser;
+		} else if (process.env.NEXT_PUBLIC_MOCK_LOGIN === "admin") {
+			mockUser = MockAdminUser;
+		}
+
+		console.log("[_app.tsx] !! Mock User: ", mockUser);
+	}
+
 	const AppCompArray = (
 		<ChakraProvider
 			theme={theme}
 			toastOptions={{ defaultOptions: toastDefaultOptions }}
 		>
 			<OrgDetailProvider initialData={org || null}>
-				<UserProvider userMockData={null}>
+				<UserProvider userMockData={mockUser}>
 					<LayoutProvider>
 						<MenuProvider>
 							<WalletProvider>
