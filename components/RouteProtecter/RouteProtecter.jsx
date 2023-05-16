@@ -2,7 +2,6 @@ import { Center, Spinner } from "@chakra-ui/react";
 import { baseRoute, initialRoute, publicLinks } from "constants";
 import { useSession } from "contexts/UserContext";
 import { useEffect, useState } from "react";
-import { Layout } from "..";
 
 /**
  * A <RouteProtecter> component
@@ -94,15 +93,7 @@ const RouteProtecter = (props) => {
 	}
 
 	console.log("%cRoute-Protecter: End", "color:green");
-	return (
-		<>
-			{isLoggedIn && authorized ? (
-				<Layout isLoggedIn={true}>{children}</Layout>
-			) : (
-				children
-			)}
-		</>
-	);
+	return <>{children}</>;
 };
 
 export default RouteProtecter;

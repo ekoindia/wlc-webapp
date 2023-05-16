@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, Layout, PaddingBox } from "components";
+import { BreadcrumbsWrapper, PaddingBox } from "components";
 import { NetworkObject } from "constants";
 
 import Head from "next/head";
@@ -12,13 +12,11 @@ const Profile = () => {
 			<Head>
 				<title>Seller Details</title>
 			</Head>
-			<Layout /* propComp={comp} */>
-				<PaddingBox>
-					<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
-						<ProfilePanel setComp={setComp} />
-					</BreadcrumbsWrapper>
-				</PaddingBox>
-			</Layout>
+			<PaddingBox>
+				<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+					<ProfilePanel setComp={setComp} />
+				</BreadcrumbsWrapper>
+			</PaddingBox>
 		</>
 	);
 };

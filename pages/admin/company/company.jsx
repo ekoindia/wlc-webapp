@@ -1,4 +1,3 @@
-import { Layout } from "components";
 import Head from "next/head";
 const Company = () => {
 	return (
@@ -6,9 +5,7 @@ const Company = () => {
 			<Head>
 				<title>Company</title>
 			</Head>
-			<Layout>
-				<h1>Add Page Content Here</h1>
-			</Layout>
+			<h1>Add Page Content Here</h1>
 		</>
 	);
 };

@@ -1,6 +1,6 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { ErrorBoundary, RouteProtecter } from "components";
+import { ErrorBoundary, Layout, RouteProtecter } from "components";
 import {
 	NotificationProvider,
 	OrgDetailProvider,
@@ -99,6 +99,11 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		console.log("[_app.tsx] !! Mock User: ", mockUser);
 	}
 
+	// Get standard or custom Layout for the page...
+	// For custom layout, define the getLayout function in the page Component.
+	const getLayout =
+		Component.getLayout || ((page) => <Layout>{page}</Layout>);
+
 	const AppCompArray = (
 		<ChakraProvider
 			theme={theme}
@@ -117,11 +122,17 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 									>
 										<NotificationProvider>
 											<ErrorBoundary>
-												<main
-													className={inter.className}
-												>
-													<Component {...pageProps} />
-												</main>
+												{getLayout(
+													<main
+														className={
+															inter.className
+														}
+													>
+														<Component
+															{...pageProps}
+														/>
+													</main>
+												)}
 											</ErrorBoundary>
 										</NotificationProvider>
 									</SWRConfig>

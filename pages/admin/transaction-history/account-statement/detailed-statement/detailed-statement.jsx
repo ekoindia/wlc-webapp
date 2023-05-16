@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, Layout, PaddingBox } from "components";
+import { BreadcrumbsWrapper, PaddingBox } from "components";
 import { TransactionHistoryObject } from "constants";
 import Head from "next/head";
 import { DetailedStatement } from "page-components/Admin";
@@ -9,15 +9,13 @@ const DetailedStatementPage = () => {
 			<Head>
 				<title>Detailed Statement</title>
 			</Head>
-			<Layout>
-				<PaddingBox>
-					<BreadcrumbsWrapper
-						BreadcrumbsObject={TransactionHistoryObject}
-					>
-						<DetailedStatement />
-					</BreadcrumbsWrapper>
-				</PaddingBox>
-			</Layout>
+			<PaddingBox>
+				<BreadcrumbsWrapper
+					BreadcrumbsObject={TransactionHistoryObject}
+				>
+					<DetailedStatement />
+				</BreadcrumbsWrapper>
+			</PaddingBox>
 		</>
 	);
 };

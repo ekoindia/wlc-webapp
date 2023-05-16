@@ -1,11 +1,12 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { useLayoutContext } from "contexts/LayoutContext";
+import { useLayoutContext, useSession } from "contexts";
 import { useState } from "react";
 import { NavBar, SideBar } from "..";
 
-const Layout = ({ isLoggedIn, children }) => {
+const Layout = ({ children }) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const { isNavHidden } = useLayoutContext();
+	const { isLoggedIn } = useSession();
 
 	return isLoggedIn ? (
 		<Box w={"full"}>
