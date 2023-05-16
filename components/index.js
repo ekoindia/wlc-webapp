@@ -35,7 +35,6 @@ import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
 import { Tags } from "./Tags";
-import { Value } from "./Value";
 
 export {
 	OrgLogo,
@@ -45,7 +44,6 @@ export {
 	PaddingBox,
 	IcoButton,
 	Currency,
-	Value,
 	Button,
 	Select,
 	Modal,
