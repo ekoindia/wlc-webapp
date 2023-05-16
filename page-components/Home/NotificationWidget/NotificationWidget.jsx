@@ -48,7 +48,7 @@ const NotificationWidget = () => {
 					// rowGap={{ base: "19px", md: "10px" }}
 					// mt="20px"
 				>
-					{notifications.map((notif, index) => (
+					{notifications.map((notif) => (
 						<Flex
 							key={notif.id}
 							p="8px 16px"
