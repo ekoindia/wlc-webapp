@@ -1,12 +1,15 @@
-import { useToast } from "@chakra-ui/react";
+import { CloseButton, Flex, Image, Text, useToast } from "@chakra-ui/react";
+import { Icon } from "components";
 import { TransactionTypes } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useLocalStorage } from "hooks";
 import {
 	createContext,
 	useCallback,
 	useContext,
 	useEffect,
+	useRef,
 	useState,
 } from "react";
 
@@ -44,19 +47,71 @@ const useNotifications = () => {
 	// const [customerNotifications, setCustomerNotifications] = useState([]);
 	const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
+	const [openedNotification, setOpenedNotification] = useState(null);
 
-	// Notification settings. TODO: useLocalStorage()
-	const [notifSettings, setNotifSettings] = useState({
-		userId: 0,
-		last_notif_id: 0,
-	});
+	// Notification settings.
+	const [notifSettings, setNotifSettings] = useLocalStorage(
+		"wlcNotifSettings",
+		{
+			userId: 0,
+			last_notif_id: 0,
+		}
+	);
 
 	// Id for Notification setInterval(): fetching every 10-minutes.
 	const [intervalId, setIntervalId] = useState(null);
 
 	const { isLoggedIn, userId, accessToken } = useSession();
 	const toast = useToast();
+	const toastIdRef = useRef();
 
+	// Process latest notification...
+	useEffect(() => {
+		if (notifications.length > 0) {
+			processLatestNotification(notifications[0]);
+		}
+	}, [notifications]);
+
+	/**
+	 * Find a notification by ID
+	 * @param {number} notificationId Notification ID
+	 * @returns {object} Notification data
+	 */
+	const findNotificationById = (notificationId) => {
+		console.log("findNotificationById:", notificationId, notifications);
+		return notifications.find(
+			(notification) => notification.id == notificationId
+		);
+	};
+
+	/**
+	 * Open a notification
+	 * @param {number} notificationId
+	 */
+	const openNotification = (notificationId) => {
+		console.log("openNotification:", notificationId);
+
+		// Find the notification matching the notificationId and set it as opened
+		const notification = findNotificationById(notificationId);
+		if (notification) {
+			console.log("Setting opened Notification: ", notification);
+			setOpenedNotification(notification);
+
+			// Mark the notification as read, if opened and unread
+			if (notification.read !== 1) markAsRead(notification.id);
+		}
+	};
+
+	/**
+	 * Close any opened notification
+	 */
+	const closeNotification = () => {
+		setOpenedNotification(null);
+	};
+
+	/**
+	 * Fetch notifications from server
+	 */
 	const fetchNotifications = useCallback(async () => {
 		setIsLoading(true);
 		try {
@@ -77,6 +132,10 @@ const useNotifications = () => {
 		}
 	}, [accessToken]);
 
+	/**
+	 * Process the notifications response from server
+	 * @param {object} response Response from server
+	 */
 	const handleNotificationsResponse = (response) => {
 		const data_list = response?.data?.notifications;
 
@@ -136,15 +195,13 @@ const useNotifications = () => {
 		setUnreadNotificationCount(_unread_notif);
 
 		// TODO: Remove expired notifications & ads
-
-		if (_notif_list?.length > 0) {
-			// Show toast message, etc...
-			processLatestNotification(_notif_list[0], _unread_notif);
-		}
 	};
 
-	// Process a single notification data.
-	// Set proper defaults for type & process polls.
+	/**
+	 * Process a single notification data.
+	 * Set proper defaults for type & process polls.
+	 * @param {object} notif Notification data
+	 */
 	const processNotification = (notif) => {
 		// Process notification type...
 		notif.notification_type = notif.notification_type || NOTIF_TYPE.NORMAL;
@@ -164,7 +221,12 @@ const useNotifications = () => {
 		return notif;
 	};
 
-	const processLatestNotification = (notif, unread_count) => {
+	/**
+	 * Process the latest notification. Show toast, etc.
+	 * @param {object} notif	Notification data
+	 * @param {number} unread_count	Unread notifications count
+	 */
+	const processLatestNotification = (notif /*, unread_count */) => {
 		// Show Notification Toast...
 		if (
 			(notifSettings.userId != userId ||
@@ -172,20 +234,83 @@ const useNotifications = () => {
 			notif.read == 0
 		) {
 			if (!toast.isActive(notif.id)) {
-				toast({
+				toastIdRef.current = toast({
 					id: notif.id,
 					title: notif.title,
-					description:
-						notif.desc + unread_count > 1
-							? ` (+ ${unread_count - 1} more...)`
-							: "",
+					description: notif.desc,
+					// + (unread_count > 1
+					// 	? ` (+ ${unread_count - 1} more...)`
+					// 	: ""),
 					status: "info",
-					duration: 9000,
+					duration: notif.priority >= 3 ? 3600_000 : 9000, // One hour for high priority, 9 seconds for others
 					position: "top-right",
 					isClosable: true,
 					containerStyle: {
 						marginTop: "4rem",
 					},
+					render: () => (
+						<Flex
+							position="relative"
+							direction="row"
+							borderRadius={10}
+							color="white"
+							p={{ base: "10px", md: "20px" }}
+							bg="gray.700"
+							boxShadow="dark-lg"
+							maxW={{ base: "95%", md: "500px" }}
+						>
+							<Flex
+								direction="row"
+								cursor="pointer"
+								onClick={() => {
+									if (toastIdRef.current) {
+										toast.close(toastIdRef.current);
+									}
+									openNotification(notif.id);
+								}}
+							>
+								{notif.image ? (
+									<Image
+										src={notif.image}
+										alt="Notification poster"
+										fit="cover"
+										loading="lazy"
+										h={{ base: "56px", md: "82px" }}
+										w={{ base: "56px", md: "82px" }}
+										minW={{ base: "38px", md: "42px" }}
+										borderRadius="10px"
+									/>
+								) : (
+									<Icon
+										color="white"
+										bg="info"
+										name="notifications"
+									/>
+								)}
+								<Flex direction="column" ml={3} mr="30px">
+									<Text as="b" noOfLines={2}>
+										{notif.title}
+									</Text>
+									<Text mt={1} noOfLines={2}>
+										{notif.desc}
+									</Text>
+								</Flex>
+							</Flex>
+							<CloseButton
+								position="absolute"
+								right="0"
+								top="0"
+								p="6px"
+								w="40px"
+								h="40px"
+								onClick={() => {
+									if (toastIdRef.current) {
+										toast.close(toastIdRef.current);
+									}
+								}}
+							/>
+						</Flex>
+					),
 				});
 			}
 
@@ -247,6 +372,10 @@ const useNotifications = () => {
 		return _list.slice(0, limit);
 	};
 
+	/**
+	 * Update the notification metadata on server.
+	 * @param {Object} body	Notification status update data
+	 */
 	const updateEMS = (body) => {
 		// TODO: USE BEACON...
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
@@ -255,6 +384,12 @@ const useNotifications = () => {
 		});
 	};
 
+	/**
+	 * Update the notification status on server.
+	 * @param {Number} notificationId	Notification ID
+	 * @param {Number} status	Notification status
+	 * @returns
+	 */
 	const updateNotifStatus = (notificationId, status) => {
 		if (!notificationId) {
 			return;
@@ -267,7 +402,10 @@ const useNotifications = () => {
 		});
 	};
 
-	// Mark a notification as read
+	/**
+	 * Mark a notification as read.
+	 * @param {Number} notificationId	Notification ID
+	 */
 	const markAsRead = async (notificationId) => {
 		setNotifications(
 			notifications.map((notification) =>
@@ -328,8 +466,12 @@ const useNotifications = () => {
 		ads,
 		unreadNotificationCount,
 		isLoading,
+		openedNotification,
 		fetchNotifications,
 		markAsRead,
+		findNotificationById,
+		openNotification,
+		closeNotification,
 	};
 };
 

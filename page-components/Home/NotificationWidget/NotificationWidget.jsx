@@ -15,7 +15,6 @@ import {
 import { Button, Icon } from "components";
 import { useNotification } from "contexts";
 import { useAppLink } from "hooks";
-import { useState } from "react";
 import { formatDateTime } from "utils";
 import { WidgetBase } from "..";
 
@@ -24,8 +23,12 @@ import { WidgetBase } from "..";
  */
 const NotificationWidget = () => {
 	// Get notifications from context
-	const { notifications, markAsRead } = useNotification();
-	const [selectedNotification, setSelectedNotification] = useState(null);
+	const {
+		notifications,
+		openedNotification,
+		openNotification,
+		closeNotification,
+	} = useNotification();
 	const { openUrl } = useAppLink();
 
 	console.log("NOTIFICATIONS: ", notifications);
@@ -33,12 +36,6 @@ const NotificationWidget = () => {
 	if (!notifications.length) {
 		return null;
 	}
-
-	// Open/expand a notification to show details
-	const openNotification = (notif) => {
-		setSelectedNotification(notif);
-		markAsRead(notif.id);
-	};
 
 	return (
 		<>
@@ -57,7 +54,7 @@ const NotificationWidget = () => {
 							cursor="pointer"
 							_hover={{ bg: "darkShade" }}
 							borderBottom="1px solid #F5F6F8"
-							onClick={() => openNotification(notif)}
+							onClick={() => openNotification(notif.id)}
 						>
 							<Flex>
 								{/* <Avatar
@@ -124,43 +121,43 @@ const NotificationWidget = () => {
 				</Flex>
 			</WidgetBase>
 
-			{/* Show Chakra Model with notification details id selectedNotification is not null: */}
-			{selectedNotification && (
+			{/* Show Chakra Model with notification details if openedNotification is not null: */}
+			{openedNotification && openedNotification.id ? (
 				<Modal
 					isOpen={true}
 					size="md"
-					onClose={() =>
-						setSelectedNotification(null)
+					onClose={
+						closeNotification
 					} /* isOpen={isOpen} onClose={onClose} */
 				>
 					<ModalOverlay bg="blackAlpha.600" backdropBlur="10px" />
 					<ModalContent>
-						<ModalHeader>{selectedNotification.title}</ModalHeader>
+						<ModalHeader>{openedNotification.title}</ModalHeader>
 						<ModalCloseButton />
 						<ModalBody>
-							{("" + selectedNotification.desc)
+							{("" + openedNotification.desc)
 								.split("\n")
 								.map((line, index) => (
 									<Text key={index}>{line}</Text>
 								))}
 
-							{selectedNotification.link ? (
+							{openedNotification.link ? (
 								<Button
 									mt={2}
 									fontSize="lg"
 									variant="link"
 									color="accent.DEFAULT"
 									onClick={() => {
-										openUrl(selectedNotification.link);
+										openUrl(openedNotification.link);
 									}}
 								>
 									Open Link
 								</Button>
 							) : null}
 
-							{selectedNotification.image ? (
+							{openedNotification.image ? (
 								<Image
-									src={selectedNotification.image}
+									src={openedNotification.image}
 									alt="notification poster"
 									mt="4"
 								/>
@@ -170,21 +167,18 @@ const NotificationWidget = () => {
 						<ModalFooter>
 							<Text fontSize="xs">
 								{formatDateTime(
-									selectedNotification.notify_time,
+									openedNotification.notify_time,
 									"dd/MM/yyyy, hh:mm AA"
 								)}
 							</Text>
 							<Spacer />
-							<Button
-								mr={3}
-								onClick={() => setSelectedNotification(null)}
-							>
+							<Button mr={3} onClick={closeNotification}>
 								Close
 							</Button>
 						</ModalFooter>
 					</ModalContent>
 				</Modal>
-			)}
+			) : null}
 		</>
 	);
 };
