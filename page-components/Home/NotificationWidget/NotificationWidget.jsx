@@ -9,12 +9,14 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
+	Spacer,
 	Text,
 } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { useNotification } from "contexts";
 import { useAppLink } from "hooks";
 import { useState } from "react";
+import { formatDateTime } from "utils";
 import { WidgetBase } from "..";
 
 /**
@@ -66,7 +68,7 @@ const NotificationWidget = () => {
 								/> */}
 								{notif.image ? (
 									<Image
-										fit="fill"
+										fit="cover"
 										loading="lazy"
 										overflow="hidden"
 										h={{ base: "38px", md: "42px" }}
@@ -166,6 +168,13 @@ const NotificationWidget = () => {
 						</ModalBody>
 
 						<ModalFooter>
+							<Text fontSize="xs">
+								{formatDateTime(
+									selectedNotification.notify_time,
+									"dd/MM/yyyy, hh:mm AA"
+								)}
+							</Text>
+							<Spacer />
 							<Button
 								mr={3}
 								onClick={() => setSelectedNotification(null)}
