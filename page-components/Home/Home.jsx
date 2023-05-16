@@ -1,5 +1,5 @@
 import { Grid } from "@chakra-ui/react";
-import { useUser } from "contexts";
+import { useSession } from "contexts";
 import {
 	BillPaymentWidget,
 	CommonTrxnWidget,
@@ -17,7 +17,7 @@ import {
  * @example	`<Home></Home>` TODO: Fix example
  */
 const Home = () => {
-	const { isLoggedIn } = useUser();
+	const { isLoggedIn } = useSession();
 
 	if (!isLoggedIn) return null;
 

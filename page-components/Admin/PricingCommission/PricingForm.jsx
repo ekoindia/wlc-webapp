@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Currency, Icon, Input, MultiSelect, Select } from "components";
 import { Endpoints } from "constants";
-import { useUser } from "contexts/UserContext";
+import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useRef, useState } from "react";
 
@@ -34,7 +34,7 @@ const PricingForm = ({
 	console.log("fromSelect", fromSelect);
 	const [data, setData] = useState([]);
 	const focusRef = useRef(null);
-	const { userData } = useUser();
+	const { accessToken } = useSession();
 
 	const charges = {
 		"Fixed Charges": 1.8,
@@ -65,7 +65,7 @@ const PricingForm = ({
 				actual_pricing: commission, //default input
 				operation: op,
 			},
-			token: userData.access_token,
+			token: accessToken,
 		})
 			.then((data) => {
 				const selectdata =

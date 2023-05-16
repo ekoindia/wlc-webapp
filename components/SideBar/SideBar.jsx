@@ -70,21 +70,18 @@ export default SideBar;
 
 //FOR LAPTOP SCREENS
 const SideBarMenu = () => {
-	const { userData } = useUser();
+	const { userData, isAdmin, userType } = useUser();
 	const { interactions } = useMenuContext();
 	const { interaction_list } = interactions;
 	const router = useRouter();
 	const [trxnList, setTrxnList] = useState([]);
 	const [otherList, setOtherList] = useState([]);
 
-	const is_admin = userData?.is_org_admin === 1 ? true : false;
-
 	const is_distributor =
-		[UserType.DISTRIBUTOR, UserType.SUPER_DISTRIBUTOR].indexOf(
-			userData?.userDetails?.user_type
-		) > -1;
+		[UserType.DISTRIBUTOR, UserType.SUPER_DISTRIBUTOR].indexOf(userType) >
+		-1;
 
-	const menuList = is_admin ? adminSidebarMenu : sidebarMenu;
+	const menuList = isAdmin ? adminSidebarMenu : sidebarMenu;
 
 	// Split the transaction list into two lists:
 	// 1. trxnList: List of transactions/products
@@ -137,7 +134,7 @@ const SideBarMenu = () => {
 			<Flex direction="column">
 				<Box borderRight="12px" height={"100%"} w={"100%"}>
 					{/* Show user-profile card and wallet balance for agents (non-admin users) */}
-					{!is_admin && (
+					{!isAdmin && (
 						<>
 							<Link href={Endpoints.USER_PROFILE}>
 								<ProfileCard
@@ -166,7 +163,7 @@ const SideBarMenu = () => {
 						trxnList={trxnList}
 						otherList={otherList}
 						router={router}
-						isAdmin={is_admin}
+						isAdmin={isAdmin}
 						isDistributor={is_distributor}
 					/>
 				</Box>

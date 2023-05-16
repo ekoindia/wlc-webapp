@@ -121,6 +121,10 @@ function setandUpdateAuthTokens(data) {
 	}
 }
 
+/**
+ * Get the auth tokens from the session storage.
+ * @returns {object} The auth tokens
+ */
 function getAuthTokens() {
 	const tokenData = {
 		access_token: sessionStorage.getItem("access_token"),
@@ -136,6 +140,10 @@ function ParseJson(data) {
 	return data !== "undefined" ? JSON.parse(data) : "";
 }
 
+/**
+ * Get stored session from sessionStorage
+ * @returns {object} The stored session data (user details, auth tokens, etc.)
+ */
 function getSessions() {
 	const userData = {
 		...getAuthTokens(),

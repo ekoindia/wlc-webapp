@@ -2,7 +2,7 @@ import { Avatar, Box, Circle, Flex, Select, Text } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
 // import { useOrgDetailContext } from "contexts/OrgDetailContext";
-import { useUser } from "contexts/UserContext";
+import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import { MoveAgents as FromAgents } from "..";
@@ -19,7 +19,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 	const [distributor, setDistributor] = useState([]);
 	const [scspFrom, setScspFrom] = useState([]);
 	const [scspto, setScspTo] = useState([]);
-	const { userData } = useUser();
+	const { accessToken } = useSession();
 	// const { orgDetail } = useOrgDetailContext();
 	const [fromSellerid, setFromSellerid] = useState([]);
 
@@ -49,7 +49,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 				"tf-req-method": "PUT",
 			},
 			body: body,
-			token: userData.access_token,
+			token: accessToken,
 		})
 			.then((data) => {
 				const distributor = data?.data?.allScspList ?? [];

@@ -1,4 +1,4 @@
-import { useUser } from "contexts/UserContext";
+import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
@@ -19,9 +19,8 @@ const useRequest = ({
 	// const [isLoading, setIsLoading] = useState(true);
 	const { generateNewToken } = useRefreshToken();
 
-	const { userData } = useUser();
+	const { accessToken } = useSession();
 
-	// console.log("userData", userData);
 	// console.log("method", method);
 	// console.log("baseUrl", baseUrl);
 	// const fetcher = (...args) => fetch(...args).then((res) => res.json());
@@ -40,7 +39,7 @@ const useRequest = ({
 				{
 					method,
 					headers,
-					token: userData.access_token,
+					token: accessToken,
 					body,
 				},
 				generateNewToken

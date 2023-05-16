@@ -1,7 +1,7 @@
 import { Avatar, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { TransactionTypes } from "constants";
-import { useUser } from "contexts";
+import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ import { WidgetBase } from "..";
  */
 const RecentTrxnWidget = () => {
 	const router = useRouter();
-	const { userData } = useUser();
+	const { accessToken } = useSession();
 	const [data, setData] = useState([]);
 	const limit = useBreakpointValue({
 		base: 5,
@@ -31,7 +31,7 @@ const RecentTrxnWidget = () => {
 				start_index: 0,
 				limit: limit,
 			},
-			token: userData.access_token,
+			token: accessToken,
 		}).then((data) => {
 			const tx_list = (data?.data?.transaction_list ?? []).map((tx) => {
 				const amt = tx.amount_dr || tx.amount_cr || 0;
