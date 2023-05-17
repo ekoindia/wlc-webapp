@@ -57,25 +57,25 @@ const UserProvider = ({ userMockData, children }) => {
 
 	// useEffect(() => {
 	// 	console.log("User Context : UseEffect", {
-	// 		logged: state.loggedIn,
+	// 		logged: state?.loggedIn,
 	// 		path: Router.asPath,
 	// 	});
 
-	// 	if (state.loggedIn) {
+	// 	if (state?.loggedIn) {
 	// 		// setLoading(false)
-	// 		console.log("User Context : ", state.loggedIn, Router.asPath);
+	// 		console.log("User Context : ", state?.loggedIn, Router.asPath);
 
 	// 		if (Router.pathname === '/404') return true
 	// 		else if (Router.pathname.includes("/admin")) Router.push(Router.asPath);
 	// 		else Router.replace("/admin/my-network");
 
 	// 		// the above condition is for when user refrehes the poge
-	// 		// if (!Router.pathname.includes(roleRoutes[state.role])) {
+	// 		// if (!Router.pathname.includes(roleRoutes[state?.role])) {
 	// 		// 	console.log("Redirect");
-	// 		// 	Router.replace(roleInitialRoute[state.role]);
+	// 		// 	Router.replace(roleInitialRoute[state?.role]);
 	// 		// }
 	// 	}
-	// }, [state.loggedIn]);
+	// }, [state?.loggedIn]);
 
 	const updateUserInfo = (data) => {
 		dispatch({
@@ -107,16 +107,17 @@ const UserProvider = ({ userMockData, children }) => {
 		});
 	};
 
-	const isLoggedIn = state.loggedIn && state.access_token && state.userId > 1;
+	const isLoggedIn =
+		state?.loggedIn && state?.access_token && state?.userId > 1;
 
 	const userContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
-			isAdmin: state.is_org_admin,
-			userId: state.userId,
-			userType: state.user_type,
-			accessToken: state.access_token,
-			userData: state,
+			isAdmin: state?.is_org_admin ? true : false,
+			userId: state?.userId || 0,
+			userType: state?.user_type || 0,
+			accessToken: state?.access_token || "",
+			userData: state || {},
 			login,
 			logout,
 			loading,
@@ -132,19 +133,19 @@ const UserProvider = ({ userMockData, children }) => {
 	const sessionContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
-			isAdmin: state.is_org_admin,
-			userId: state.userId,
-			userType: state.user_type,
-			accessToken: state.access_token,
+			isAdmin: state?.is_org_admin ? true : false,
+			userId: state?.userId || 0,
+			userType: state?.user_type || 0,
+			accessToken: state?.access_token || "",
 			loading,
 			setLoading,
 		};
 	}, [
 		isLoggedIn,
-		state.is_org_admin,
-		state.userId,
-		state.user_type,
-		state.access_token,
+		state?.is_org_admin,
+		state?.userId,
+		state?.user_type,
+		state?.access_token,
 		loading,
 	]);
 
