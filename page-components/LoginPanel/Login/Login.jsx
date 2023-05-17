@@ -22,7 +22,19 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
-	let login_types = Object.keys(orgDetail?.login_types || {});
+
+	// Get valid login types...
+	let login_types = Object.keys(orgDetail?.login_types || {}).filter(
+		(key) => {
+			switch (key) {
+				case "google":
+					// Show Google Login Button only when client_id is present
+					return orgDetail?.login_types[key].client_id ? true : false;
+				default:
+					return false;
+			}
+		}
+	);
 
 	const onChangeHandler = (val) => {
 		setValue(val);
@@ -67,6 +79,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			{login_types.map((key) => {
 				switch (key) {
 					case "google":
+						// Show Google Login Button only when client_id is present
 						return (
 							<GoogleButton
 								key={key}
