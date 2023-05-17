@@ -1,3 +1,5 @@
+import { TransactionIds } from "./EpsTransactions";
+
 export const adminProfileMenu = [
 	// {
 	// 	title: "Business Contact",
@@ -20,6 +22,6 @@ export const adminProfileMenu = [
 export const profileMenu = [
 	{
 		title: "Settings",
-		link: "",
+		link: "/transaction/" + TransactionIds.MANAGE_MY_ACCOUNT,
 	},
 ];
