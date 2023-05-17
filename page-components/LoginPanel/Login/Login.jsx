@@ -23,18 +23,8 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
 
-	// Get valid login types...
-	let login_types = Object.keys(orgDetail?.login_types || {}).filter(
-		(key) => {
-			switch (key) {
-				case "google":
-					// Show Google Login Button only when client_id is present
-					return orgDetail?.login_types[key].client_id ? true : false;
-				default:
-					return false;
-			}
-		}
-	);
+	// Is Google Login available?
+	const showGoogle = orgDetail?.login_types?.google?.client_id ? true : false;
 
 	const onChangeHandler = (val) => {
 		setValue(val);
@@ -76,24 +66,16 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				Login
 			</Heading>
 
-			{login_types.map((key) => {
-				switch (key) {
-					case "google":
-						// Show Google Login Button only when client_id is present
-						return (
-							<GoogleButton
-								key={key}
-								setStep={setStep}
-								setLoginType={setLoginType}
-								setNumber={setNumber}
-								setEmail={setEmail}
-							/>
-						);
-					default:
-						return null;
-				}
-			})}
-			{login_types.length ? (
+			{showGoogle && (
+				<GoogleButton
+					setStep={setStep}
+					setLoginType={setLoginType}
+					setNumber={setNumber}
+					setEmail={setEmail}
+				/>
+			)}
+
+			{showGoogle ? (
 				<Divider
 					title="Or login with mobile number"
 					cursor="default"
