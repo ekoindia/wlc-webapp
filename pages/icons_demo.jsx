@@ -17,18 +17,33 @@ const connecticon = () => {
 				columnGap="11px"
 				padding={"20px"}
 			>
-				{icons.map((ele) => (
-					<Center
-						key={ele}
-						width={"103px"}
-						h="55px"
-						bg="blackAlpha.300"
-						flexDir="column"
-					>
-						<Icon name={ele} height="24px" />
-						<Text fontSize=".5rem">{ele}</Text>
-					</Center>
-				))}
+				{icons.map((ele) => {
+					return IconLibrary[ele]?.link ? (
+						<Center
+							key={ele}
+							width={"103px"}
+							h="55px"
+							bg="#99000050"
+							flexDir="column"
+						>
+							<Icon name={ele} height="24px" />
+							<Text fontSize=".5rem">
+								{ele + "  (→  " + IconLibrary[ele]?.link + ")"}
+							</Text>
+						</Center>
+					) : (
+						<Center
+							key={ele}
+							width={"103px"}
+							h="55px"
+							bg="blackAlpha.300"
+							flexDir="column"
+						>
+							<Icon name={ele} height="24px" />
+							<Text fontSize=".5rem">{ele}</Text>
+						</Center>
+					);
+				})}
 			</Flex>
 		</>
 	);
