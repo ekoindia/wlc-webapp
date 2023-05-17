@@ -6,10 +6,12 @@ import {
 	useBreakpointValue,
 } from "@chakra-ui/react";
 import { Button, IcoButton } from "components";
+import { OtherMenuItems } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { WidgetBase } from "..";
+
 /**
  * A CommonTransaction component
  * Is a set of icon which have most common transaction done on platform
@@ -21,8 +23,13 @@ import { WidgetBase } from "..";
 const CommonTrxnWidget = () => {
 	const router = useRouter();
 	const { interactions } = useMenuContext();
-	const { interaction_list } = interactions;
+	let { interaction_list } = interactions;
 	const [showAll, setShowAll] = useState(false);
+
+	// Remove "other..." entries from the list
+	interaction_list = interaction_list.filter(
+		(tx) => OtherMenuItems.indexOf(tx.id) === -1
+	);
 
 	const breakpointValue = useBreakpointValue({
 		base: 3,

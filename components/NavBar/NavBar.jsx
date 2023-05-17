@@ -11,7 +11,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { adminProfileMenu, profileMenu } from "constants";
+import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
 import Link from "next/link";
 import { Fragment, useState } from "react";
