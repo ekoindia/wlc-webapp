@@ -190,12 +190,17 @@ export type IconNameType =
 	| "chat-outline";
 
 export interface IconType {
-	viewBox: string;
-	path: string;
+	viewBox?: string;
+	path?: string;
+	link?: IconNameType;
 }
 
 export const getIconSvg = (iconName: IconNameType): IconType => {
-	return IconLibrary[iconName];
+	const icon = IconLibrary[iconName];
+	if (icon?.link) {
+		return IconLibrary[icon?.link];
+	}
+	return icon;
 };
 
 export type IconLibraryType = {
@@ -546,8 +551,7 @@ export const IconLibrary: IconLibraryType = {
 		path: `<path d="M102.813,12.413l-3.377.681.648-3.318,8.622-8.682,2.729,2.637Zm-.345-.316-2.057-1.987-.269,1.381.9.865Z" transform="translate(-99.435 -1.094)" />`,
 	},
 	money: {
-		viewBox: "0 0 512 512",
-		path: `<path d="M0 431.5h448v-288H0v288zm32-192c35.3 0 64-28.7 64-64h256c0 35.3 28.7 64 64 64v96c-35.3 0-64 28.7-64 64H96c0-35.3-28.7-64-64-64v-96zm112 48c0-44.2 35.8-80 80-80s80 35.8 80 80-35.8 80-80 80-80-35.8-80-80zm368-208v320h-32v-288H32v-32h480z"/>`,
+		link: "cash",
 	},
 	"money-note": {
 		viewBox: "0 0 512 512",
