@@ -114,12 +114,6 @@ const PersonalDetailCard = () => {
 			title="Personal Details"
 			iconName="mode-edit"
 			linkOnClick={onEditClick}
-			iconStyle={{ w: "12px", color: "white" }}
-			icoBtnProps={{
-				size: "sm",
-				bg: "primary.light",
-				_hover: { bg: "primary.DEFAULT" },
-			}}
 		>
 			<Grid
 				templateColumns="repeat(2, 1fr)"

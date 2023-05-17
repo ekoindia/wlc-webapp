@@ -20,10 +20,15 @@ const EarningSummary = ({ prop1, ...rest }) => {
 	const [data, setData] = useState({});
 	console.log("data", data);
 
-	const compare = (x, y) => {
-		if (y !== 0) {
-			const value = ((x - y) / y) * 100;
-			return value;
+	/**
+	 * Return the percentage change between current and last value
+	 * @param {number} currentValue
+	 * @param {number} lastValue
+	 * @returns {number} Percentage change
+	 */
+	const compare = (currentValue, lastValue) => {
+		if (lastValue !== 0) {
+			return ((currentValue - lastValue) / lastValue) * 100;
 		}
 		return 0;
 	};
@@ -103,7 +108,7 @@ const EarningSummary = ({ prop1, ...rest }) => {
 										) : null}
 									</Text>
 								</Flex>
-								{item.comparision !== undefined ? (
+								{item.comparision ? (
 									<Flex gap="1">
 										<Icon
 											name={
@@ -124,7 +129,7 @@ const EarningSummary = ({ prop1, ...rest }) => {
 										/>
 										<Flex direction="column">
 											<Text fontWeight="semibold">
-												{item.comparision}%
+												{Math.round(item.comparision)}%
 											</Text>
 											<Text fontSize="12px">
 												{item.trailLabel}
