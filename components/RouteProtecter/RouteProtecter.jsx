@@ -1,8 +1,7 @@
 import { Center, Spinner } from "@chakra-ui/react";
 import { baseRoute, initialRoute, publicLinks } from "constants";
-import { useUser } from "contexts/UserContext";
+import { useSession } from "contexts/UserContext";
 import { useEffect, useState } from "react";
-import { Layout } from "..";
 
 /**
  * A <RouteProtecter> component
@@ -17,15 +16,14 @@ const isBrowser = typeof window !== "undefined";
 
 const RouteProtecter = (props) => {
 	const { router, children } = props; //TODO : Getting Error in _app.tsx
-	const { userData, loading, setLoading } = useUser();
-	const { loggedIn, is_org_admin } = userData;
+	const { isLoggedIn, isAdmin, loading, setLoading } = useSession();
 	const [authorized, setAuthorized] = useState(false);
 	// const [is404, setIs404] = useState(false);
 
-	const role = is_org_admin === 1 ? "admin" : "non-admin";
+	const role = isAdmin ? "admin" : "non-admin";
 
 	console.log("%cRoute-Protecter: Start\n", "color:green", {
-		loggedIn: loggedIn,
+		isLoggedIn: isLoggedIn,
 		authorized: authorized,
 		loading: loading,
 	});
@@ -35,13 +33,12 @@ const RouteProtecter = (props) => {
 		console.log("Path", path);
 
 		if (path === "/404") {
-			console.log("Enter in 404", path);
 			setLoading(false);
 			// setIs404(true);
 		}
-		// when the user is loggedIn and loading is false
-		else if (!loggedIn && !loading) {
-			console.log("::::Enter in nonLogged::::");
+		// when the user is isLoggedIn and loading is false
+		else if (!isLoggedIn && !loading) {
+			console.log("::::nonLogged user::::");
 			console.log("condition 1 :", !publicLinks.includes(path));
 			// This condition will redirect to initial path if the route is inaccessible
 			if (!publicLinks.includes(path)) {
@@ -50,11 +47,11 @@ const RouteProtecter = (props) => {
 				return;
 			}
 			if (authorized) setAuthorized(false);
-		} else if (loggedIn && role === "admin") {
+		} else if (isLoggedIn && role === "admin") {
 			console.log("::::Enter in Admin::::");
 			console.log("condition 1 :", !path.includes(baseRoute[role]));
 			console.log("condition 2 :", publicLinks.includes(path));
-			// This condition will redirect to initial path if the route is inaccessible after loggedIn
+			// This condition will redirect to initial path if the route is inaccessible after isLoggedIn
 			if (publicLinks.includes(path) || !path.includes(baseRoute[role])) {
 				console.log("Enter in admin : if");
 				router.replace(initialRoute[role]);
@@ -62,7 +59,7 @@ const RouteProtecter = (props) => {
 			}
 			setLoading(false);
 			setAuthorized(true);
-		} else if (loggedIn && role === "non-admin") {
+		} else if (isLoggedIn && role === "non-admin") {
 			console.log("::::Enter in nonAdmin::::");
 			console.log("condition 1 :", path.includes(baseRoute[role]));
 			console.log("condition 2 :", publicLinks.includes(path));
@@ -75,7 +72,7 @@ const RouteProtecter = (props) => {
 			setLoading(false);
 			setAuthorized(true);
 		}
-	}, [router.asPath, loading, loggedIn]);
+	}, [router.asPath, loading, isLoggedIn]);
 
 	/**
 	 * Remove the flash of private pages when user is not nonLogged
@@ -85,7 +82,7 @@ const RouteProtecter = (props) => {
 		(isBrowser &&
 			router.pathname !== "/404" &&
 			!publicLinks.includes(router.pathname) &&
-			!loggedIn) ||
+			!isLoggedIn) ||
 		loading
 	) {
 		return (
@@ -96,15 +93,7 @@ const RouteProtecter = (props) => {
 	}
 
 	console.log("%cRoute-Protecter: End", "color:green");
-	return (
-		<>
-			{loggedIn && authorized ? (
-				<Layout isLoggedIn={true}>{children}</Layout>
-			) : (
-				children
-			)}
-		</>
-	);
+	return <>{children}</>;
 };
 
 export default RouteProtecter;

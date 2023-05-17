@@ -46,6 +46,7 @@ const QueryWidget = () => {
 				md: "50px",
 				lg: "30px",
 			}}
+			px={4}
 			py={{
 				base: "20px",
 				sm: "30px",

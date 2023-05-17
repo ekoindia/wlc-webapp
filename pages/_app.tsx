@@ -1,6 +1,6 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { ErrorBoundary, RouteProtecter } from "components";
+import { ErrorBoundary, Layout, RouteProtecter } from "components";
 import {
 	NotificationProvider,
 	OrgDetailProvider,
@@ -17,7 +17,7 @@ import { Inter } from "next/font/google";
 import Head from "next/head";
 import Script from "next/script";
 import { SWRConfig } from "swr";
-
+import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import { light } from "../styles/themes";
 
 const inter = Inter({
@@ -87,13 +87,30 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 				...light,
 		  };
 
+	// Mock login for local testing...
+	let mockUser = null;
+	if (process.env.NEXT_PUBLIC_ENV === "development") {
+		if (process.env.NEXT_PUBLIC_MOCK_LOGIN === "agent") {
+			mockUser = MockUser;
+		} else if (process.env.NEXT_PUBLIC_MOCK_LOGIN === "admin") {
+			mockUser = MockAdminUser;
+		}
+
+		console.log("[_app.tsx] !! Mock User: ", mockUser);
+	}
+
+	// Get standard or custom Layout for the page...
+	// For custom layout, define the getLayout function in the page Component.
+	const getLayout =
+		Component.getLayout || ((page) => <Layout>{page}</Layout>);
+
 	const AppCompArray = (
 		<ChakraProvider
 			theme={theme}
 			toastOptions={{ defaultOptions: toastDefaultOptions }}
 		>
 			<OrgDetailProvider initialData={org || null}>
-				<UserProvider userMockData={null}>
+				<UserProvider userMockData={mockUser}>
 					<LayoutProvider>
 						<MenuProvider>
 							<WalletProvider>
@@ -105,11 +122,17 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 									>
 										<NotificationProvider>
 											<ErrorBoundary>
-												<main
-													className={inter.className}
-												>
-													<Component {...pageProps} />
-												</main>
+												{getLayout(
+													<main
+														className={
+															inter.className
+														}
+													>
+														<Component
+															{...pageProps}
+														/>
+													</main>
+												)}
 											</ErrorBoundary>
 										</NotificationProvider>
 									</SWRConfig>

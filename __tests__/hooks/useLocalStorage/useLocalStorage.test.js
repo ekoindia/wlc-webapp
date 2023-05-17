@@ -1,9 +1,9 @@
-import { useSessionStorage } from "hooks";
+import { useLocalStorage } from "hooks";
 import { act, renderHook } from "test-utils";
 
-test("useSessionStorage", () => {
+test("useLocalStorage", () => {
 	const { result } = renderHook(() =>
-		useSessionStorage("value", "initialValue")
+		useLocalStorage("value", "initialValue")
 	);
 	expect(result.current[0]).toBe("initialValue");
 

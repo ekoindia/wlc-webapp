@@ -1,7 +1,7 @@
 import { Avatar, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { TransactionTypes } from "constants";
-import { useUser } from "contexts";
+import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -17,7 +17,7 @@ import { WidgetBase } from "..";
  */
 const RecentTrxnWidget = () => {
 	const router = useRouter();
-	const { userData } = useUser();
+	const { accessToken } = useSession();
 	const [data, setData] = useState([]);
 	const limit = useBreakpointValue({
 		base: 5,
@@ -31,7 +31,7 @@ const RecentTrxnWidget = () => {
 				start_index: 0,
 				limit: limit,
 			},
-			token: userData.access_token,
+			token: accessToken,
 		}).then((data) => {
 			const tx_list = (data?.data?.transaction_list ?? []).map((tx) => {
 				const amt = tx.amount_dr || tx.amount_cr || 0;
@@ -75,14 +75,14 @@ const RecentTrxnWidget = () => {
 				{data.map((tx) => (
 					<Flex
 						key={tx.tid}
-						p="8px 2px 8px 16px"
+						p="8px 8px 8px 16px"
+						pr={{ base: "8px", md: "4px" }}
 						align="center"
 						justify="center"
 						borderBottom="1px solid #F5F6F8"
 					>
 						<Avatar
-							h={{ base: "38px", md: "42px" }}
-							w={{ base: "38px", md: "42px" }}
+							size={{ base: "sm", md: "md" }}
 							border="2px solid #D2D2D2"
 							name={tx.name}
 						/>

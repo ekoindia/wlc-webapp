@@ -90,6 +90,7 @@ const Table = (props) => {
 			);
 		});
 	};
+
 	const getTr = () => {
 		return data?.map((item, index) => {
 			return (

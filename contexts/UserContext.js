@@ -10,6 +10,7 @@ import {
 import { defaultUserState, UserReducer } from "./UserReducer";
 
 const UserContext = createContext();
+const SessionContext = createContext();
 
 const UserProvider = ({ userMockData, children }) => {
 	const [state, dispatch] = useReducer(UserReducer, defaultUserState);
@@ -27,6 +28,7 @@ const UserProvider = ({ userMockData, children }) => {
 			return;
 		}
 
+		// Get the session data (user-data, tokens) from sessionStorage
 		const Session = getSessions();
 		if (
 			!(
@@ -50,7 +52,6 @@ const UserProvider = ({ userMockData, children }) => {
 				type: "INIT_USER_STORE",
 				payload: sessionState,
 			});
-			// setLoading(false);
 		}
 	}, []);
 
@@ -106,34 +107,77 @@ const UserProvider = ({ userMockData, children }) => {
 		});
 	};
 
-	const contextValue = useMemo(() => {
+	const isLoggedIn = state.loggedIn && state.access_token && state.userId > 1;
+
+	const userContextValue = useMemo(() => {
 		return {
-			isLoggedIn:
-				state.loggedIn && state.access_token && state.userId > 1,
+			isLoggedIn: isLoggedIn,
 			isAdmin: state.is_org_admin,
 			userId: state.userId,
+			userType: state.user_type,
+			accessToken: state.access_token,
 			userData: state,
 			login,
 			logout,
 			loading,
 			setLoading,
 			updateUserInfo,
-			setIsTokenUpdating,
 			isTokenUpdating,
+			setIsTokenUpdating,
 			updateShopDetails,
 			updatePersonalDetail,
 		};
-	}, [state, loading, isTokenUpdating]);
-	// if (loading)
-	// 	return "loading..."
+	}, [state, isLoggedIn, loading, isTokenUpdating]);
+
+	const sessionContextValue = useMemo(() => {
+		return {
+			isLoggedIn: isLoggedIn,
+			isAdmin: state.is_org_admin,
+			userId: state.userId,
+			userType: state.user_type,
+			accessToken: state.access_token,
+			loading,
+			setLoading,
+		};
+	}, [
+		isLoggedIn,
+		state.is_org_admin,
+		state.userId,
+		state.user_type,
+		state.access_token,
+		loading,
+	]);
 
 	return (
-		<UserContext.Provider value={contextValue}>
-			{children}
+		<UserContext.Provider value={userContextValue}>
+			<SessionContext.Provider value={sessionContextValue}>
+				{children}
+			</SessionContext.Provider>
 		</UserContext.Provider>
 	);
 };
 
+/**
+ * Get user profile details.
+ * @returns {Object} An object with the following properties:
+ * @property {boolean} isLoggedIn - If true, user is logged in
+ * @property {boolean} isAdmin - If true, user is an admin
+ * @property {number} userId - User ID
+ * @property {string} userType - User type
+ * @property {string} accessToken - Access token
+ * @property {Object} userData - Detailed user profile data object
+ * @property {function} login - Login function
+ * @property {function} logout - Logout function
+ * @property {boolean} loading - If true, user data is being loaded
+ * @property {function} setLoading - Set loading state (used by RouteProtector)
+ * @property {function} updateUserInfo - Update user info
+ * @property {boolean} isTokenUpdating - If true, token is being updated
+ * @property {function} setIsTokenUpdating - Set token updating state
+ * @property {function} updateShopDetails - Update shop details
+ * @property {function} updatePersonalDetail - Update personal details
+ * @example
+ * const { userData, loading } = useUser();
+ */
 const useUser = () => {
 	const context = useContext(UserContext);
 	if (!context) {
@@ -142,4 +186,25 @@ const useUser = () => {
 	return context;
 };
 
-export { UserProvider, useUser };
+/**
+ * Get user session details.
+ * @returns {Object} An object with the following properties:
+ * @property {boolean} isLoggedIn - If true, user is logged in
+ * @property {boolean} isAdmin - If true, user is an admin
+ * @property {number} userId - User ID
+ * @property {string} userType - User type
+ * @property {string} accessToken - Access token
+ * @property {boolean} loading - If true, user data is being loaded
+ * @property {function} setLoading - Set loading state (used by RouteProtector)
+ * @example
+ * const { isLoggedIn, isAdmin, userId } = useSession();
+ */
+const useSession = () => {
+	const context = useContext(SessionContext);
+	if (!context) {
+		throw new Error("useSession must be used within a <UserProvider>");
+	}
+	return context;
+};
+
+export { UserProvider, useSession, useUser };

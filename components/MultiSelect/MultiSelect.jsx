@@ -15,7 +15,7 @@ const MultiSelect = ({
 	options,
 	placeholder = "-- Select --",
 	renderer,
-	setData, //ToDo:need to be pass selected data when dropdown is closed
+	setData = () => {}, //ToDo:need to be pass selected data when dropdown is closed
 	label,
 }) => {
 	const inputRef = useRef();
@@ -201,13 +201,15 @@ const MultiSelect = ({
 
 	return (
 		<Flex direction="column" rowGap="2">
-			<Box w={"100%"}>
-				<Text fontSize={"md"} fontWeight={"semibold"}>
-					{label ? label : ""}
-				</Text>
-			</Box>
+			{label ? (
+				<Box w="100%">
+					<Text fontSize="md" fontWeight="semibold">
+						{label}
+					</Text>
+				</Box>
+			) : null}
 			<Flex
-				w="500px"
+				w="100%"
 				cursor="pointer"
 				direction="column"
 				onClick={() => inputRef.current.focus()}
@@ -215,7 +217,7 @@ const MultiSelect = ({
 				<Flex
 					minH="48px"
 					w="100%"
-					px="20px"
+					p="0px 10px 0px 20px"
 					align="center"
 					position="relative"
 					transition="all 100ms ease 0s"
@@ -225,6 +227,7 @@ const MultiSelect = ({
 				>
 					<Flex
 						w="auto"
+						minW="fit-content"
 						gap="5px"
 						overflowX="scroll"
 						css={{
@@ -376,36 +379,34 @@ export default MultiSelect;
 
 const getSelectedStyle = (name, index, onDeleteHandler) => {
 	return (
-		<>
+		<Flex
+			gap={4}
+			key={index}
+			bg="#EEF1FF"
+			maxW={{ base: "140px" }}
+			h={{ base: "30px" }}
+			align="center"
+			justify="center"
+			px="12px"
+		>
 			<Flex
-				gap={4}
-				key={index}
-				bg="#EEF1FF"
-				maxW={{ base: "140px" }}
-				h={{ base: "30px" }}
-				align="center"
-				justify="center"
-				px="12px"
+				fontSize={{ base: "12px" }}
+				textColor="light"
+				maxW={{ base: "90px" }}
 			>
-				<Flex
-					fontSize={{ base: "12px" }}
-					textColor="light"
-					maxW={{ base: "90px" }}
-				>
-					{name}
-				</Flex>
-				<Flex>
-					<Icon
-						name="close"
-						width="8px"
-						color="accent.DEFAULT"
-						onClick={(e) => {
-							onDeleteHandler(name);
-							e.stopPropagation();
-						}}
-					/>
-				</Flex>
+				{name}
 			</Flex>
-		</>
+			<Flex>
+				<Icon
+					name="close"
+					width="8px"
+					color="accent.DEFAULT"
+					onClick={(e) => {
+						onDeleteHandler(name);
+						e.stopPropagation();
+					}}
+				/>
+			</Flex>
+		</Flex>
 	);
 };

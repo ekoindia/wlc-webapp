@@ -22,7 +22,7 @@ import {
 	Input,
 } from "components";
 import { Endpoints } from "constants/EndPoints";
-import { useUser } from "contexts/UserContext";
+import { useSession } from "contexts/UserContext";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -44,7 +44,7 @@ const UpdatePersonalInfo = () => {
 	// const [error, setError] = useState(null);
 	const [, /* dragOver */ setDragOver] = useState(false); // TODO: Remove this if not needed
 
-	const { userData } = useUser();
+	const { accessToken } = useSession();
 
 	const onChangeHandler = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -63,7 +63,7 @@ const UpdatePersonalInfo = () => {
 				"tf-req-uri": "/network/agents/profile/personalInfo/update",
 				"tf-req-method": "PUT",
 
-				authorization: `Bearer ${userData.access_token}`,
+				authorization: `Bearer ${accessToken}`,
 			},
 			body: JSON.stringify({ ...data, ...formData }),
 		})

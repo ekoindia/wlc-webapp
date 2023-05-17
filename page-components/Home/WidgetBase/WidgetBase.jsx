@@ -34,7 +34,6 @@ const WidgetBase = ({
 }) => {
 	return (
 		<Flex
-			w={{ base: "90%", md: "100%" }}
 			h={{
 				base: "auto",
 				md: "350px",
@@ -44,7 +43,7 @@ const WidgetBase = ({
 			p={!noPadding && "5"}
 			pb={noPadding && "2"}
 			borderRadius="10px"
-			// m={{ base: "16px", md: "auto" }}
+			mx={{ base: 3, md: "0" }}
 			{...rest}
 		>
 			{title || linkLabel ? (

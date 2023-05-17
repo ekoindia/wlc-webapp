@@ -14,6 +14,7 @@ export {
 	IconNameType,
 	IconType,
 } from "./IconLibrary";
+export { ProductSlabs } from "./ProductDetails";
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
 export { roles } from "./role";
 export { adminSidebarMenu, OtherMenuItems, sidebarMenu } from "./SidebarMenu";

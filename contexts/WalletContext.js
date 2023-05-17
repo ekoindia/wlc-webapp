@@ -8,7 +8,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { useUser } from "./UserContext";
+import { useSession } from "./UserContext";
 
 // Created a Wallet Context
 const WalletContext = createContext();
@@ -20,9 +20,10 @@ const WalletContext = createContext();
  * @param {function} setBalance - This is a function used to set the balance value.
  * @returns {function} fetchBalance - This function is used to fetch wallet balance.
  * */
-const useFetchBalance = (setBalance) => {
-	const { userData } = useUser();
+const useFetchBalance = (setBalance, accessToken) => {
 	// const [loading, setLoading] = useState(false);
+
+	// GenerateNewAccessToken function to be used in fetcher, if the current accessToken is expired
 	const { generateNewToken } = useRefreshToken();
 
 	const fetchBalance = useCallback(() => {
@@ -31,7 +32,7 @@ const useFetchBalance = (setBalance) => {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
-				token: userData?.access_token,
+				token: accessToken,
 				body: {
 					interaction_type_id: TransactionTypes.GET_WALLET_BALANCE,
 				},
@@ -50,7 +51,7 @@ const useFetchBalance = (setBalance) => {
 				console.error("[useFetchBalance] error: ", err);
 			});
 		// .finally(() => setLoading(false));
-	}, [userData?.access_token]);
+	}, [accessToken]);
 
 	return { fetchBalance /* loading */ };
 };
@@ -65,17 +66,14 @@ const useFetchBalance = (setBalance) => {
  */
 const WalletProvider = ({ children }) => {
 	const [balance, setBalance] = useState(null);
-	const { fetchBalance } = useFetchBalance(setBalance);
-	const { userData } = useUser();
+	const { isLoggedIn, isAdmin, accessToken } = useSession();
+	const { fetchBalance } = useFetchBalance(setBalance, accessToken);
 
 	useEffect(() => {
-		// console.log("userData::", userData);
-		if (userData?.loggedIn && userData?.userId > 1) {
-			if (userData?.is_org_admin !== 1) {
-				fetchBalance();
-			}
+		if (isLoggedIn && !isAdmin) {
+			fetchBalance();
 		}
-	}, [userData?.loggedIn, userData?.userId, userData?.is_org_admin]);
+	}, [isLoggedIn, isAdmin]);
 
 	return (
 		<WalletContext.Provider

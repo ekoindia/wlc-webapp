@@ -1,11 +1,12 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { useLayoutContext } from "contexts/LayoutContext";
+import { useLayoutContext, useSession } from "contexts";
 import { useState } from "react";
 import { NavBar, SideBar } from "..";
 
-const Layout = ({ isLoggedIn, children }) => {
+const Layout = ({ children }) => {
 	const [isNavOpen, setIsNavOpen] = useState(false);
 	const { isNavHidden } = useLayoutContext();
+	const { isLoggedIn } = useSession();
 
 	return isLoggedIn ? (
 		<Box w={"full"}>
@@ -29,10 +30,8 @@ const Layout = ({ isLoggedIn, children }) => {
 				<Box
 					minH={{
 						base: "calc(100vh - 56px)",
-						sm: "calc(100vh - 56px)",
 						md: "calc(100vh - 50px)",
 						lg: "calc(100vh - 60px)",
-						xl: "calc(100vh - 50px)",
 						"2xl": "calc(100vh - 90px)",
 					}}
 					w={"full"}

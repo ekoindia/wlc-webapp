@@ -1,12 +1,12 @@
 import { processTransactionData } from "helpers";
 import { fetcher } from "helpers/apiHelper";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useUser } from "./UserContext";
+import { useSession } from "./UserContext";
 
 const MenuContext = createContext();
 
 const MenuProvider = ({ children }) => {
-	const { userData } = useUser();
+	const { isLoggedIn, isAdmin, accessToken } = useSession();
 	const [interactions, setInteractions] = useState({
 		interaction_list: [],
 		role_tx_list: {},
@@ -14,10 +14,8 @@ const MenuProvider = ({ children }) => {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		console.log("userData::", userData);
-
-		if (userData?.loggedIn && userData?.userId > 1) {
-			if (userData?.is_org_admin !== 1) {
+		if (isLoggedIn) {
+			if (!isAdmin) {
 				// load menu & role data only if user is not an admin
 				setLoading(true);
 
@@ -41,7 +39,7 @@ const MenuProvider = ({ children }) => {
 					setInteractions(context_data);
 					setLoading(false);
 					console.log(
-						"[MenuProvider]: data loaded from cache: ",
+						"[MenuContext]: data loaded from cache: ",
 						context_data
 					);
 					return;
@@ -51,7 +49,7 @@ const MenuProvider = ({ children }) => {
 				fetcher(
 					process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/wlc",
 					{
-						token: userData?.access_token,
+						token: accessToken,
 						// body: { org_id: -1 },
 					}
 				)
@@ -71,7 +69,7 @@ const MenuProvider = ({ children }) => {
 							);
 
 							console.log(
-								"[MenuProvider]: data loaded from API: ",
+								"[MenuContext]: data loaded from API: ",
 								processedData
 							);
 						}
@@ -80,18 +78,7 @@ const MenuProvider = ({ children }) => {
 					.finally(() => setLoading(false));
 			}
 		}
-		// Commentted this beacuse there is no mean of this.
-		// else {
-		//     // Not logged in...reset roles & menu...
-		//     setLoading(false);
-		//     setInteractions({
-		//         role_tx_list: {},
-		//         interaction_list: [],
-		//     });
-		//     sessionStorage.setItem("interaction_list", "[]");
-		//     sessionStorage.setItem("role_tx_list", "{}");
-		// }
-	}, [userData?.loggedIn, userData?.userId, userData?.is_org_admin]);
+	}, [isLoggedIn, isAdmin, accessToken]);
 
 	return (
 		<MenuContext.Provider value={{ interactions, loading }}>

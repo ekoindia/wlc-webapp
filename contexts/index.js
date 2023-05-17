@@ -6,5 +6,5 @@ export {
 	OrgDetailSessionStorageKey,
 	useOrgDetailContext,
 } from "./OrgDetailContext";
-export { UserProvider, useUser } from "./UserContext";
+export { UserProvider, useSession, useUser } from "./UserContext";
 export { useWallet, WalletProvider } from "./WalletContext";
