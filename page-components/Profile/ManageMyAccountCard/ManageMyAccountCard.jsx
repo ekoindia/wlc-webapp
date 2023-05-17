@@ -43,8 +43,11 @@ const ManageMyAccountCard = () => {
 		setData(mma_tx_list);
 	}, [role_tx_list]);
 
-	const OnClick = (id) => {
-		router.push(`transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${id}`);
+	const onClick = (id) => {
+		router.push(
+			`transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/` +
+				(id ? `${id}` : "")
+		);
 	};
 
 	return (
@@ -63,7 +66,7 @@ const ManageMyAccountCard = () => {
 							cursor="pointer"
 							_hover={{ bg: "darkShade" }}
 							borderBottom="1px solid #F5F6F8"
-							onClick={OnClick}
+							onClick={() => onClick(tx.id)}
 						>
 							<Text fontSize={{ base: "14px" }}>{tx.label}</Text>
 							<Icon name="chevron-right" w="8px" />
