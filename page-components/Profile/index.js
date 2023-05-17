@@ -1,3 +1,4 @@
+export { EarningSummary } from "./EarningSummary";
 export { ManageMyAccountCard } from "./ManageMyAccountCard";
 export { PersonalDetailCard } from "./PersonalDetailCard";
 export { default as Profile } from "./Profile";

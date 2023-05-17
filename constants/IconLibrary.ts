@@ -194,6 +194,10 @@ export interface IconType {
 	path: string;
 }
 
+export const getIconSvg = (iconName: IconNameType): IconType => {
+	return IconLibrary[iconName];
+};
+
 export type IconLibraryType = {
 	[_key in IconNameType]: IconType;
 };
