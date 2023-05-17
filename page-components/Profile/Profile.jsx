@@ -1,5 +1,6 @@
 import { Grid } from "@chakra-ui/react";
 import {
+	EarningSummary,
 	ManageMyAccountCard,
 	PersonalDetailCard,
 	ProfileWidget,
@@ -18,8 +19,9 @@ const Profile = ({ prop1, ...rest }) => {
 	const widgets = [
 		{ id: 1, component: ProfileWidget },
 		{ id: 2, component: ManageMyAccountCard },
-		{ id: 3, component: ShopCard },
-		{ id: 4, component: PersonalDetailCard },
+		{ id: 3, component: EarningSummary },
+		{ id: 4, component: ShopCard },
+		{ id: 5, component: PersonalDetailCard },
 	];
 
 	return (

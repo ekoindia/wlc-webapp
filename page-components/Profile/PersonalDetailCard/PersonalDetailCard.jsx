@@ -111,7 +111,7 @@ const PersonalDetailCard = () => {
 
 	return (
 		<WidgetBase
-			title="My Shop"
+			title="Personal Details"
 			iconName="mode-edit"
 			linkOnClick={onEditClick}
 			iconStyle={{ w: "12px", color: "white" }}
@@ -121,7 +121,11 @@ const PersonalDetailCard = () => {
 				_hover: { bg: "primary.DEFAULT" },
 			}}
 		>
-			<Grid templateColumns="repeat(2, 1fr)" rowGap="20px">
+			<Grid
+				templateColumns="repeat(2, 1fr)"
+				rowGap="20px"
+				fontSize={{ base: "14px" }}
+			>
 				{Object.entries(personalDetailObj).map(([key], index) =>
 					data[key] != "" ? (
 						<GridItem key={index} colSpan={1} rowSpan={1}>

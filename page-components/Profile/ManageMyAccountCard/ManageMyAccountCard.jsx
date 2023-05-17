@@ -65,7 +65,7 @@ const ManageMyAccountCard = () => {
 							borderBottom="1px solid #F5F6F8"
 							onClick={OnClick}
 						>
-							<Text fontSize={{ base: "16px" }}>{tx.label}</Text>
+							<Text fontSize={{ base: "14px" }}>{tx.label}</Text>
 							<Icon name="chevron-right" w="8px" />
 						</Flex>
 					</Fragment>

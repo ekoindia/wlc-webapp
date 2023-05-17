@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { IconLibrary, IconNameType } from "constants/IconLibrary";
+import { getIconSvg, IconNameType } from "constants/IconLibrary";
 
 import React from "react";
 
@@ -22,9 +22,9 @@ export type IconProps = {
  */
 
 const Icon = ({ name, style, w, h, width, height, ...rest }: IconProps) => {
-	// const transform = IconLibrary[name]?.transform;
-	const viewBox = IconLibrary[name]?.viewBox;
-	const path = IconLibrary[name]?.path;
+	const icon = getIconSvg(name);
+	const viewBox = icon?.viewBox;
+	const path = icon?.path;
 
 	let sizeX = "24px";
 	let sizeY = "24px";
