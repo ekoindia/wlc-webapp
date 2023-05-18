@@ -22,9 +22,9 @@ const ProfileCard = ({ name = "", mobileNumber, img, onClick, ...rest }) => {
 			padding={{
 				base: "15px 10px 19px 15px",
 			}}
+			mb="2px"
 			align="center"
 			bg="sidebar.card-bg"
-			borderBottom="br-sidebar"
 			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
 			onClick={onClick}
 			{...rest}

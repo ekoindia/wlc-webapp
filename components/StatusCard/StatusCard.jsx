@@ -4,6 +4,7 @@ import { useMenuContext } from "contexts";
 import { useWallet } from "contexts/WalletContext";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { formatCurrency } from "utils/numberFormat";
 import { Icon } from "..";
 
 /**
@@ -101,17 +102,17 @@ const StatusCard = () => {
 								base: "12px",
 								/* md: "12px", */ "2xl": "13px",
 							}}
+							mr="0.2em"
 						/>
 
 						<Text
 							fontSize={{
 								base: "14px",
-								md: "12px",
 								"2xl": "16px",
 							}}
 							fontWeight="medium"
 						>
-							&#8201;{balance}
+							{formatCurrency(balance, "INR", true, true)}
 						</Text>
 					</Flex>
 				</Flex>
