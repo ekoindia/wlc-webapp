@@ -8,15 +8,15 @@ export default {
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
 	argTypes: {
-		title: {
-			type: { name: "string", required: false },
-			description: "Title for the button",
-			defaultValue: "Button",
-			control: "text",
-		},
 		variant: {
 			type: { name: "string", required: false },
 			description: "Variant for the button",
+			defaultValue: "primary",
+			// control: "text",
+		},
+		shape: {
+			type: { name: "string", required: false },
+			description: "Shape for the button",
 			defaultValue: "primary",
 			// control: "text",
 		},
@@ -35,12 +35,21 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <Button {...args} />;
+const Template = (args) => <Button {...args}>Click Me</Button>;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Default.args = {
-	title: "button",
-	variant: "primary",
 	disabled: false,
+};
+
+export const Accent = Template.bind({});
+Accent.args = {
+	theme: "red",
+};
+
+export const Rounded = Template.bind({});
+Rounded.args = {
+	theme: "accent",
+	shape: "rounded",
 };
