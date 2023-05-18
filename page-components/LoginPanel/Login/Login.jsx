@@ -94,7 +94,6 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				invalid={invalid}
 				errorMsg={errorMsg}
 				radius={10}
-				mb={{ base: 10, "2xl": "4.35rem" }}
 				maxW="100%"
 				onChange={onChangeHandler}
 				maxLength={12}
@@ -115,6 +114,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			<Button
 				h={{ base: 16, "2xl": "4.5rem" }}
 				fontSize={{ base: "lg", "2xl": "xl" }}
+				mt={{ base: 10, "2xl": "4.35rem" }}
 				onClick={SendOtp}
 				ref={EnterRef}
 			>
