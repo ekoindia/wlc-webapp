@@ -81,6 +81,7 @@ module.exports = {
 			"../contexts"
 		);
 		config.resolve.alias["utils"] = path.resolve(__dirname, "../utils");
+		config.resolve.alias["libs"] = path.resolve(__dirname, "../libs");
 		config.module.rules.push({
 			test: /\.mjs$/,
 			include: /node_modules/,
