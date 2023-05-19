@@ -113,7 +113,7 @@ const ProfileWidget = () => {
 					<Flex align="center" gap="2" mt="2">
 						<Icon
 							name="phone-circle-outline"
-							w="30px"
+							size="30px"
 							color="highlight"
 						/>
 						<Text>
@@ -128,7 +128,7 @@ const ProfileWidget = () => {
 					<IconButtons
 						onClick={onEditClick}
 						iconName="mode-edit"
-						iconStyle={{ height: "12px", width: "12px" }}
+						iconStyle={{ size: "12px" }}
 					/>
 				</Flex>
 			</Flex>

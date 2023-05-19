@@ -66,7 +66,7 @@ const ProfileCard = ({ name = "", mobileNumber, img, onClick, ...rest }) => {
 					columnGap="5px"
 					color="white"
 				>
-					<Icon name="phone-circle-outline" w="18px" h="18px" />
+					<Icon name="phone-circle-outline" size="16px" />
 					{formatNumber(mobileNumber)}
 				</Flex>
 			</Flex>

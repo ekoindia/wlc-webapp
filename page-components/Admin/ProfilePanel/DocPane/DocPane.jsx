@@ -119,8 +119,7 @@ const DocPane = (/* props */) => {
 											: "file-upload"
 									}
 									iconStyle={{
-										width: "14px",
-										height: "14px",
+										size: "14px",
 									}}
 									textStyle={{
 										fontSize: "16px",
@@ -135,7 +134,7 @@ const DocPane = (/* props */) => {
 				<Button
 					w={{ base: "100%", md: "215px" }}
 					h="60px"
-					icon={<Icon name="file-download" width="18px" />}
+					icon={<Icon name="file-download" size="18px" />}
 				>
 					Download All
 				</Button>

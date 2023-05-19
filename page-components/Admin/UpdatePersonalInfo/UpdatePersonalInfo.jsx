@@ -337,8 +337,8 @@ const UpdatePersonalInfo = () => {
 										}
 										iconName="camera"
 										iconStyle={{
-											h: "12.53px",
-											width: "14px",
+											// h: "12.53px",
+											size: "14px",
 										}}
 									/>
 								</Box>
@@ -596,7 +596,7 @@ const UpdatePersonalInfo = () => {
 										icon={
 											<Icon
 												name="caret-down"
-												width="17px"
+												size="17px"
 											/>
 										}
 									>
@@ -700,7 +700,7 @@ const UpdatePersonalInfo = () => {
 											icon={
 												<Icon
 													name="caret-down"
-													width="17px"
+													size="17px"
 												/>
 											}
 										>

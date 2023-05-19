@@ -189,7 +189,7 @@ const HistoryToolbar = ({
 						_hover={{ bg: "accent.DEFAULT" }}
 						onClick={onOpen}
 					>
-						<Icon name="filter" width="18px" />
+						<Icon name="filter" size="18px" />
 						&nbsp;
 						<Text display={{ base: "none", md: "flex" }}>
 							Filter

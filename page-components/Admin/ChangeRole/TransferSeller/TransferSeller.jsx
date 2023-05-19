@@ -106,8 +106,8 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 						icon={
 							<Icon
 								name="caret-down"
-								w="14px"
-								h="10px"
+								size="14px"
+								// h="10px"
 								color="light"
 							/>
 						}
@@ -139,8 +139,8 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 						icon={
 							<Icon
 								name="caret-down"
-								w="14px"
-								h="10px"
+								size="14px"
+								// h="10px"
 								color="light"
 							/>
 						}
@@ -194,7 +194,11 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 						h="82px"
 						color="divider"
 					>
-						<Icon name="fast-forward" width="34px" height="36px" />
+						<Icon
+							name="fast-forward"
+							// width="34px"
+							size="36px"
+						/>
 					</Circle>
 				</Flex>
 				<Box w="500px">

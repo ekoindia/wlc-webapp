@@ -43,7 +43,11 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 			{/* Heading with Icon */}
 			<Flex align="center">
 				<Box onClick={() => setStep("LOGIN")} cursor="pointer">
-					<Icon name="arrow-back" w="18px" h="15px" />
+					<Icon
+						name="arrow-back"
+						size="18px"
+						// h="15px"
+					/>
 				</Box>
 				<Heading
 					variant="selectNone"
@@ -78,7 +82,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 								});
 							}}
 							iconName="mode-edit"
-							iconStyle={{ height: "12px", width: "12px" }}
+							iconStyle={{ size: "12px" }}
 						/>
 					</Center>
 				</Flex>

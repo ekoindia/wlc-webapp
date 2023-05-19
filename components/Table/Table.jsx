@@ -82,9 +82,7 @@ const Table = (props) => {
 				>
 					<Flex gap={2} align="center">
 						{item.field}
-						{item.sorting && (
-							<Icon name="sort" width="6px" height="13px" />
-						)}
+						{item.sorting && <Icon name="sort" size="8px" />}
 					</Flex>
 				</Th>
 			);
@@ -480,8 +478,7 @@ const Table = (props) => {
 									fontWeight: "bold",
 								}}
 								iconStyle={{
-									height: "24px",
-									width: "24px",
+									size: "24px",
 								}}
 							/>
 						</Flex>

@@ -1,4 +1,4 @@
-import { Center, Flex, Text } from "@chakra-ui/react";
+import { Center, Circle, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { IconLibrary } from "constants/IconLibrary";
 
@@ -18,29 +18,29 @@ const connecticon = () => {
 				padding={"20px"}
 			>
 				{icons.map((ele) => {
-					return IconLibrary[ele]?.link ? (
+					return (
 						<Center
 							key={ele}
 							width={"103px"}
-							h="55px"
-							bg="#99000050"
+							h="65px"
+							bg={
+								IconLibrary[ele]?.link
+									? "#99000050"
+									: "blackAlpha.300"
+							}
 							flexDir="column"
 						>
-							<Icon name={ele} height="24px" />
+							<Circle p="2" m="1" bg="white" borderRadius="50%">
+								<Icon name={ele} size="20px" />
+							</Circle>
 							<Text fontSize=".5rem">
-								{ele + "  (→  " + IconLibrary[ele]?.link + ")"}
+								{ele +
+									(IconLibrary[ele]?.link
+										? "  (→  " +
+										  IconLibrary[ele]?.link +
+										  ")"
+										: "")}
 							</Text>
-						</Center>
-					) : (
-						<Center
-							key={ele}
-							width={"103px"}
-							h="55px"
-							bg="blackAlpha.300"
-							flexDir="column"
-						>
-							<Icon name={ele} height="24px" />
-							<Text fontSize=".5rem">{ele}</Text>
 						</Center>
 					);
 				})}

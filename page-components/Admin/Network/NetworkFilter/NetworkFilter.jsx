@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import {
 	Box,
-	Center,
 	Checkbox,
 	Drawer,
 	DrawerBody,
@@ -133,14 +132,14 @@ const NetworkFilter = ({ filter, setFilter }) => {
 					icon={
 						<Icon
 							name="filter"
-							width={{
-								md: "20px",
+							size={{
+								base: "20px",
 								xl: "24px",
 							}}
-							height={{
-								md: "14px",
-								xl: "16px",
-							}}
+							// height={{
+							// 	md: "14px",
+							// 	xl: "16px",
+							// }}
 						/>
 					}
 				>
@@ -158,7 +157,7 @@ const NetworkFilter = ({ filter, setFilter }) => {
 					h={"100%"}
 					borderRadius={"0px"}
 					boxShadow=" 0px 3px 10px #11299E1A"
-					leftIcon={<Icon name="filter" w="25px" color="white" />}
+					leftIcon={<Icon name="filter" size="25px" color="white" />}
 					color="white"
 					fontSize={"18px"}
 					lineHeight={"0"}
@@ -215,17 +214,14 @@ const NetworkFilter = ({ filter, setFilter }) => {
 								gap={"10px"}
 								fontWeight={"semibold"}
 							>
-								<Center
-									w={{
+								<Icon
+									name="filter"
+									size={{
 										base: "15px",
-										sm: "15px",
 										md: "20px",
-
 										"2xl": "25px",
 									}}
-								>
-									<Icon name="filter" width="100%" />
-								</Center>
+								/>
 								<Text
 									fontSize={{
 										base: "md",
@@ -250,25 +246,18 @@ const NetworkFilter = ({ filter, setFilter }) => {
 								color={"light"}
 								lineHeight="0px"
 							>
-								<Center
-									w={{
+								<Icon
+									name="close-outline"
+									size={{
 										base: "15px",
-										sm: "15px",
 										md: "20px",
-
-										xl: "16px",
 										"2xl": "25px",
 									}}
-								>
-									<Icon name="close-outline" width="100%" />
-								</Center>
+								/>
 								<Text
 									fontSize={{
 										base: "sm",
-										sm: "xs",
-										md: "sm",
-
-										"2xl": "xl",
+										"2xl": "md",
 									}}
 								>
 									Close

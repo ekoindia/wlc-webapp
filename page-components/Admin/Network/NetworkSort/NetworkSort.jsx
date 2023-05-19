@@ -134,7 +134,7 @@ const NetworkSort = ({ setSort }) => {
 									>
 										<Icon
 											name="caret-down"
-											width="16px"
+											size="16px"
 											color="light"
 										/>
 									</Center>
@@ -239,7 +239,11 @@ const NetworkSort = ({ setSort }) => {
 							alignItems={"center"}
 							gap={"10px"}
 						>
-							<Icon name="sort-by" width="24px" height="21px" />
+							<Icon
+								name="sort-by"
+								size="24px"
+								// height="21px"
+							/>
 							Sort by
 						</Text>
 					</MenuButton>

@@ -74,7 +74,7 @@ const SearchBar = ({
 		>
 			<Input
 				placeholder={placeholder || "Search by name or mobile number"}
-				inputLeftElement={<Icon name="search" width="18px" />}
+				inputLeftElement={<Icon name="search" size="18px" />}
 				inputLeftElementStyle={{ color: "light" }}
 				type={type}
 				radius={10}

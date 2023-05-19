@@ -45,8 +45,7 @@ export const getLocationStyle = (location, lat, long) => {
 				iconSize={"xs"}
 				iconName="near-me"
 				iconStyle={{
-					width: "16px",
-					height: "16px",
+					size: "16px",
 				}}
 				onClick={(e) => {
 					openGoogleMap(lat, long);
@@ -58,13 +57,11 @@ export const getLocationStyle = (location, lat, long) => {
 };
 export const getArrowStyle = () => {
 	return (
-		<Box
+		<Icon
+			name="arrow-forward"
 			color="hint"
-			width={{ md: "16px", lg: "20px", "2xl": "24px" }}
-			height={{ md: "16px", lg: "20px", "2xl": "24px" }}
-		>
-			<Icon name="arrow-forward" width="100%" />
-		</Box>
+			size={{ md: "16px", lg: "20px", "2xl": "24px" }}
+		/>
 	);
 };
 export const getModalStyle = (eko_code, account_status) => {
@@ -83,7 +80,7 @@ export const getAccordianIcon = (expandedRow, index) => {
 			<Circle bg="primary.DEFAULT" size="24px" cursor="pointer">
 				<Icon
 					name={expandedRow === index ? "remove" : "expand-add"}
-					width="12px"
+					size="12px"
 					color="white"
 				/>
 			</Circle>
@@ -96,7 +93,7 @@ export const getAmountStyle = (amount, trx_type) => {
 		amount !== undefined && (
 			<Flex align="center" gap="2">
 				<Flex align="center" gap="1">
-					<Icon name="rupee" h="12px" w="9px" />
+					<Icon name="rupee" size="12px" />
 					<Text>{amount}</Text>
 				</Flex>
 				{trx_type && (
@@ -106,8 +103,7 @@ export const getAmountStyle = (amount, trx_type) => {
 								? "arrow-increase"
 								: "arrow-decrease"
 						}
-						h="16px"
-						w="14px"
+						size="16px"
 						color={trx_type === "debit" ? "error" : "success"}
 					/>
 				)}
@@ -141,8 +137,8 @@ export const getStatus = (debit_credit) => {
 				name={
 					debit_credit == "DR" ? "arrow-increase" : "arrow-decrease"
 				}
-				width="14px"
-				h="8px"
+				size="14px"
+				// h="8px"
 			/>
 		</Flex>
 	);

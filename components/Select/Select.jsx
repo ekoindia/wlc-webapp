@@ -51,7 +51,8 @@ const Select = ({
 					boxShadow: "none",
 				}}
 				borderRadius="10px"
-				icon={<Icon name="caret-down" w="14px" h="10px" />}
+				icon={<Icon name="caret-down" />}
+				iconSize="sm"
 				onChange={handleSelectChange}
 				value={selectedValue}
 				{...inputContStyle}

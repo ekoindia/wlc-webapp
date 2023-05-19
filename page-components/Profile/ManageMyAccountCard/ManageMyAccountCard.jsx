@@ -69,7 +69,7 @@ const ManageMyAccountCard = () => {
 							onClick={() => onClick(tx.id)}
 						>
 							<Text fontSize={{ base: "14px" }}>{tx.label}</Text>
-							<Icon name="chevron-right" w="8px" />
+							<Icon name="chevron-right" size="8px" />
 						</Flex>
 					</Fragment>
 				))}

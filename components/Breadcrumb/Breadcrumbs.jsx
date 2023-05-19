@@ -12,28 +12,22 @@ const Breadcrumbs = ({ hrefs = [], labels = [], handleOnClick }) => {
 			<Box display={{ base: "none", lg: "flex" }}>
 				<Breadcrumb
 					separator={
-						<Icon
-							width="9px"
-							height="9px"
-							name="chevron-right"
-							color={"light"}
-						/>
+						<Icon size="9px" name="chevron-right" color={"light"} />
 					}
 				>
 					<BreadcrumbItem>
 						<BreadcrumbLink
 							fontSize="xs"
 							display={"flex"}
+							alignItems={"center"}
 							color={"accent.DEFAULT"}
 							_hover={{ textDecoration: "none" }}
 						>
-							<Box
+							<Icon
+								name="home"
+								size={{ base: "16px", md: "14px" }}
 								mr="1"
-								width={{ base: "16px", md: "14px" }}
-								height={{ base: "16px", md: "14px" }}
-							>
-								<Icon name="home" width="100%" height="100%" />
-							</Box>
+							/>
 							Home
 						</BreadcrumbLink>
 					</BreadcrumbItem>

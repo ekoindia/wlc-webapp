@@ -125,7 +125,7 @@ const EarningSummary = ({ prop1, ...rest }) => {
 													? "error"
 													: null
 											}
-											w="16px"
+											size="16px"
 										/>
 										<Flex direction="column">
 											<Text fontWeight="semibold">

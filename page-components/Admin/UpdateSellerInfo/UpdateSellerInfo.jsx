@@ -110,6 +110,7 @@ const UpdateSellerInfo = () => {
 									xl: "500px",
 								}}
 							>
+								{/* TODO: Use our own custom <Select> component */}
 								<Select
 									placeholder="--Select--"
 									w="100%"
@@ -156,6 +157,7 @@ const UpdateSellerInfo = () => {
 									xl: "500px",
 								}}
 							>
+								{/* TODO: Use our own custom <Select> component */}
 								<Select
 									placeholder="--Select--"
 									w="100%"

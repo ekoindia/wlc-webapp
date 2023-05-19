@@ -70,8 +70,7 @@ const PersonalPane = ({ rowData: personalpane }) => {
 					iconPos={isSmallerThan769 ? "" : "left"}
 					iconName="mode-edit"
 					iconStyle={{
-						width: "12px",
-						height: "12px",
+						size: "12px",
 					}}
 				></IconButtons>
 			</Box>

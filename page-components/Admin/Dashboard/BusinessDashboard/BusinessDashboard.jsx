@@ -89,8 +89,8 @@ function Card({ title, description, icon, statu, percentage }) {
 										? "increase"
 										: "decrease"
 								}
-								width="14px"
-								h="8px"
+								size="12px"
+								// h="8px"
 							/>
 						</Flex>
 						<Flex>
@@ -128,7 +128,7 @@ function Card({ title, description, icon, statu, percentage }) {
 						alignItems="center"
 						justifyContent="center"
 					>
-						<Icon name={icon} color="white" width="27px" h="26px" />{" "}
+						<Icon name={icon} color="white" size="26px" />{" "}
 					</Flex>
 				</Box>
 			</Flex>
@@ -158,8 +158,8 @@ const BusinessDashboard = () => {
 	};
 
 	// TODO: INTEGARTE APIs....
-	const [temp] = useState(true);
-	if (temp) return <Text fontSize="lg">Coming soon...</Text>;
+	// const [temp] = useState(true);
+	// if (temp) return <Text fontSize="lg">Coming soon...</Text>;
 
 	const EarningData = [
 		{
@@ -419,43 +419,34 @@ const BusinessDashboard = () => {
 										gap="7px"
 										mt={2}
 									>
-										<Box
-											w="100%"
-											h="100%"
+										<Icon
 											color={
 												item.stat === "Increase"
 													? "success"
 													: "error"
 											}
+											name={
+												item.stat == "Increase"
+													? "arrow-increase"
+													: "arrow-decrease"
+											}
+											size="12px"
+											// h="8px"
+										/>
+										<Text
+											color={
+												item.stat === "Increase"
+													? "success"
+													: "error"
+											}
+											fontSize="xs"
 										>
-											<Icon
-												name={
-													item.stat == "Increase"
-														? "arrow-increase"
-														: "arrow-decrease"
-												}
-												width="14px"
-												h="8px"
-											/>
-										</Box>
-										<Box>
-											<Text
-												color={
-													item.stat === "Increase"
-														? "success"
-														: "error"
-												}
-												fontSize="xs"
-											>
-												{item.percentage}
-											</Text>
-										</Box>
+											{item.percentage}
+										</Text>
 
-										<Box>
-											<Text color="light" fontSize="xs">
-												{item.stat}
-											</Text>
-										</Box>
+										<Text color="light" fontSize="xs">
+											{item.stat}
+										</Text>
 									</Flex>
 								</Flex>
 							</Flex>
@@ -468,8 +459,7 @@ const BusinessDashboard = () => {
 							iconPos="left"
 							title="Download Reports"
 							iconStyle={{
-								width: "14px",
-								height: "14px",
+								size: "14px",
 							}}
 							textStyle={{
 								fontSize: "16px",
@@ -627,8 +617,7 @@ const BusinessDashboard = () => {
 						iconPos="left"
 						title="Download Reports"
 						iconStyle={{
-							width: "14px",
-							height: "14px",
+							size: "14px",
 						}}
 						textStyle={{
 							fontSize: "16px",

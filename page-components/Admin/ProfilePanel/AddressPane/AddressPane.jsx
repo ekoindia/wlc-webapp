@@ -80,8 +80,7 @@ const AddressPane = ({ rowData: addressdata }) => {
 								iconName="near-me"
 								iconPos="left"
 								iconStyle={{
-									width: "16px",
-									height: "16px",
+									size: "16px",
 								}}
 								onClick={() =>
 									openGoogleMap(

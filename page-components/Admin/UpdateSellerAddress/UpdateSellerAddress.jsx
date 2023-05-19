@@ -386,6 +386,7 @@ const UpdateSellerAddress = () => {
 									</Flex>
 
 									<Box>
+										{/* TODO: Use our own custom <Select> component */}
 										<Select
 											placeholder="Uttarpradesh"
 											w={{
@@ -399,8 +400,8 @@ const UpdateSellerAddress = () => {
 											icon={
 												<Icon
 													name="caret-down"
-													w="14px"
-													h="10px"
+													size="14px"
+													// h="10px"
 												/>
 											}
 										>
@@ -490,6 +491,7 @@ const UpdateSellerAddress = () => {
 										"2xl": "500px",
 									}}
 								>
+									{/* TODO: Use our own custom <Select> component */}
 									<Select
 										placeholder="Permanent"
 										w={{
@@ -504,8 +506,8 @@ const UpdateSellerAddress = () => {
 										icon={
 											<Icon
 												name="caret-down"
-												w="14px"
-												h="10px"
+												size="14px"
+												// h="10px"
 											/>
 										}
 									>

@@ -171,8 +171,8 @@ const PricingForm = ({
 											? "percent_bg"
 											: "rupee_bg"
 									}
-									w="23px"
-									h="20px"
+									size="23px"
+									// h="20px"
 									color="accent.DEFAULT"
 								/>
 							}

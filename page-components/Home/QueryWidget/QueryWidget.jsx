@@ -86,7 +86,7 @@ const QueryWidget = () => {
 					<Flex>
 						<a href={`tel:${phone}`} target="_blank">
 							<Icon
-								h={{ base: "32px", md: "32px" }}
+								size="32px"
 								name="phone-circle-outline"
 								color="white"
 								display="flex"
@@ -149,7 +149,7 @@ const QueryWidget = () => {
 								icon={
 									<Icon
 										name="chat-outline"
-										h={{ base: "18px", md: "20px" }}
+										size={{ base: "18px", md: "20px" }}
 									/>
 								}
 								borderRadius={{
