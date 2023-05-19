@@ -63,7 +63,7 @@ const WidgetBase = ({
 										iconName={iconName}
 										onClick={linkOnClick}
 										iconStyle={{
-											w: "12px",
+											size: "12px",
 											color: "white",
 											...iconStyle,
 										}}
