@@ -74,8 +74,9 @@ const SearchBar = ({
 		>
 			<Input
 				placeholder={placeholder || "Search by name or mobile number"}
-				inputLeftElement={<Icon name="search" width="18px" />}
-				inputLeftElementStyle={{ color: "light" }}
+				inputLeftElement={
+					<Icon name="search" width="18px" color="light" />
+				}
 				type={type}
 				radius={10}
 				maxLength={maxSearchLimit} //will work when type is text
