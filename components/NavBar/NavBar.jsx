@@ -156,7 +156,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 										direction={"column"}
 										display={{ base: "none", md: "flex" }}
 										lineHeight={{
-											md: "15px",
+											base: "15px",
 											lg: "16px",
 											xl: "18px",
 											"2xl": "22px",
@@ -168,7 +168,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 										>
 											<Text
 												fontSize={{
-													md: "12px",
+													base: "12px",
 													lg: "14px",
 													xl: "12px",
 													"2xl": "18px",
@@ -187,9 +187,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 										</Box>
 										<Text
 											fontSize={{
-												md: "10px",
-												lg: "10px",
-												xl: "10px",
+												base: "10px",
 												"2xl": "14px",
 											}}
 											color={"secondary.DEFAULT"}
@@ -204,7 +202,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 
 						<MenuList
 							w={{
-								sm: "270px",
+								base: "270px",
 								md: "280px",
 								lg: "290px",
 								xl: "320px",
@@ -300,8 +298,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							sm: "initial",
 						}}
 						gap={{
-							sm: "25px",
-							xl: "20px",
+							base: "20px",
 							"2xl": "25px",
 						}}
 						lineHeight="normal"

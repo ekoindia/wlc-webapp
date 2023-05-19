@@ -77,8 +77,8 @@ const Table = (props) => {
 			return (
 				<Th
 					key={index}
-					p={{ md: ".5em", xl: "1em" }}
-					fontSize={{ md: "10px", xl: "11px", "2xl": "16px" }}
+					p={{ base: ".5em", xl: "1em" }}
+					fontSize={{ base: "10px", xl: "11px", "2xl": "16px" }}
 				>
 					<Flex gap={2} align="center">
 						{item.field}
@@ -95,7 +95,7 @@ const Table = (props) => {
 				<>
 					<Tr
 						onClick={() => onRowClick(data[index])}
-						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
+						fontSize={{ base: "10px", xl: "12px", "2xl": "16px" }}
 						style={{
 							backgroundColor:
 								accordian &&
@@ -106,7 +106,7 @@ const Table = (props) => {
 							return (
 								<Td
 									onClick={() => handleRowClick(index)}
-									p={{ md: ".5em", xl: "1em" }}
+									p={{ base: ".5em", xl: "1em" }}
 									key={rIndex}
 								>
 									{prepareCol(
@@ -134,7 +134,7 @@ const Table = (props) => {
 								colSpan={renderer.length}
 								pr="16px"
 								pl={{
-									md: "42px",
+									base: "42px",
 									// lg: "42px",
 									xl: "60px",
 									"2xl": "100px",
@@ -143,11 +143,15 @@ const Table = (props) => {
 								<Flex justify={"space-between"}>
 									<Flex
 										w="88%"
-										gap={{ md: "6", xl: "8", "2xl": "10" }}
+										gap={{
+											base: "6",
+											xl: "8",
+											"2xl": "10",
+										}}
 										wrap="wrap"
 										key={index}
 										fontSize={{
-											md: "10px",
+											base: "10px",
 											xl: "12px",
 											"2xl": "16px",
 										}}
@@ -156,17 +160,17 @@ const Table = (props) => {
 									</Flex>
 									<Button
 										w={{
-											md: "120px",
+											base: "120px",
 											xl: "150px",
 											"2xl": "170px",
 										}}
 										h={{
-											md: "36px",
+											base: "36px",
 											xl: "42px",
 											"2xl": "48px",
 										}}
 										fontSize={{
-											md: "10px",
+											base: "10px",
 											xl: "12px",
 											"2xl": "14px",
 										}}

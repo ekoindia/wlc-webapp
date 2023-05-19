@@ -115,7 +115,7 @@ const NetworkFilter = ({ filter, setFilter }) => {
 						"2xl": "7vw",
 					}}
 					fontSize={{
-						sm: "md",
+						base: "md",
 						xl: "lg",
 					}}
 					bg="white"

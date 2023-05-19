@@ -72,7 +72,7 @@ const Network = () => {
 						/>
 						<Flex
 							display={{ base: "none", md: "flex" }}
-							gap={{ sm: "5px", md: "20px", lg: "50px" }}
+							gap={{ base: "5px", md: "20px", lg: "50px" }}
 							align={"center"}
 							justifyContent={"space-between"}
 						>

@@ -27,7 +27,7 @@ const LoginPanel = () => {
 			w="full"
 			// h="100vh"
 			h={{ base: "100%", md: "100vh" }}
-			alignItems={{ sm: "normal", md: "center" }}
+			alignItems={{ base: "normal", md: "center" }}
 			justifyContent="center"
 			bg="bg"
 			position={{ base: "fixed", md: "none" }}

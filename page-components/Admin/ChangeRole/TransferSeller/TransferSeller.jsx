@@ -211,7 +211,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 						<Text
 							as="span"
 							color="light"
-							display={{ md: "block", lg: "inline-block" }}
+							display={{ base: "block", lg: "inline-block" }}
 						>
 							Move Sellers To:
 						</Text>{" "}
