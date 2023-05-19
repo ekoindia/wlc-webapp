@@ -87,8 +87,8 @@ const DetailedStatementCard = ({ item }) => {
 										? "arrow-increase"
 										: "arrow-decrease"
 								}
-								width="14px"
-								h="10px"
+								size="14px"
+								// h="10px"
 							/>
 						</Box>
 					</Flex>

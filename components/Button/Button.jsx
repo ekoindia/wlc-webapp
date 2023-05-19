@@ -1,4 +1,5 @@
-import { Button as ChakraButton, position } from "@chakra-ui/react";
+import { Button as ChakraButton } from "@chakra-ui/react";
+import { Icon } from "components";
 import { forwardRef } from "react";
 
 /**
@@ -29,6 +30,8 @@ function Button(props, ref) {
 		...rest
 	} = props;
 
+	const IconComp = icon ? <Icon name={icon} size={size} /> : null;
+
 	return (
 		<ChakraButton
 			variant={variant}
@@ -36,9 +39,9 @@ function Button(props, ref) {
 			isLoading={loading}
 			size={size}
 			onClick={onClick}
-			iconSpacing={iconSpacing}
-			leftIcon={iconPosition === "left" ? icon : null}
-			rightIcon={position === "right" ? icon : null}
+			iconSpacing={children ? iconSpacing : null}
+			leftIcon={icon && iconPosition === "left" ? IconComp : null}
+			rightIcon={icon && iconPosition === "right" ? IconComp : null}
 			ref={ref}
 			{...rest}
 		>
@@ -46,5 +49,46 @@ function Button(props, ref) {
 		</ChakraButton>
 	);
 }
+
+// function Button(
+// 	{
+// 		variant = "solid", // solid, ghost, outline, or link
+// 		shape = "default", // default, or rounded
+// 		theme = "primary", // "primary" | "accent" | "danger" | "success"
+// 		raised = false,
+// 		size,
+// 		disabled = false,
+// 		loading = false,
+// 		icon,
+// 		iconPosition = "left",
+// 		href,
+// 		onClick,
+// 		children,
+// 		...rest
+// 	},
+// 	ref
+// ) {
+// 	const IconComp = icon ? <Icon name={icon} size={size} /> : null;
+
+// 	return (
+// 		<ChakraButton
+// 			variant={variant}
+// 			borderRadius={shape === "rounded" ? "full" : "md"}
+// 			boxShadow={raised ? "md" : "none"}
+// 			_hover={{ boxShadow: raised ? "lg" : "none" }}
+// 			isDisabled={disabled || loading}
+// 			isLoading={loading}
+// 			size={size}
+// 			colorScheme={theme}
+// 			onClick={onClick}
+// 			leftIcon={icon && iconPosition === "left" ? icon : null}
+// 			rightIcon={icon && position === "right" ? icon : null}
+// 			ref={ref}
+// 			{...rest}
+// 		>
+// 			{children}
+// 		</ChakraButton>
+// 	);
+// }
 
 export default forwardRef(Button);

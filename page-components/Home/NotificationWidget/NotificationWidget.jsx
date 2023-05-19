@@ -89,8 +89,7 @@ const NotificationWidget = () => {
 										bg="gray.300"
 									>
 										<Icon
-											width="22px"
-											height="22px"
+											size="22px"
 											name="notifications"
 											color="gray.400"
 										/>

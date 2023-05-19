@@ -11,7 +11,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { adminProfileMenu, profileMenu } from "constants";
+import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
 import Link from "next/link";
 import { Fragment, useState } from "react";
@@ -68,7 +68,6 @@ const NavBar = ({ setNavOpen }) => {
 						sm: "56px",
 						md: "50px",
 						lg: "60px",
-						xl: "50px",
 						"2xl": "90px",
 					}}
 				>
@@ -182,15 +181,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 
 											<Icon
 												name="arrow-drop-down"
-												width={{
-													md: "1vw",
-													lg: "0.75vw",
-												}}
-												height={{
-													md: "1vw",
-													lg: "0.70vw",
-												}}
-												pt="2px"
+												size="xs"
+												mt="2px"
 											/>
 										</Box>
 										<Text
@@ -275,7 +267,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				>
 					<Icon
 						name="close"
-						width="	16px"
+						size="16px"
 						onClick={() => setIsCardOpen(false)}
 					/>
 				</Flex>
@@ -287,7 +279,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					top="-19%"
 					right="2%"
 				>
-					<Icon name="arrow-drop-down" width="16px" height="16px" />
+					<Icon name="arrow-drop-down" size="16px" />
 				</Box>
 
 				<Box
@@ -388,8 +380,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 
 										iconName="mode-edit"
 										iconStyle={{
-											width: "10px",
-											height: "10px",
+											size: "10px",
 										}}
 									/>
 								</Box>
@@ -468,11 +459,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									{ele.title}
 								</Text>
 							</Link>
-							<Icon
-								name="chevron-right"
-								width="8px"
-								height="8px"
-							/>
+							<Icon name="chevron-right" size="8px" />
 						</HStack>
 						<Divider w={"90%"} />
 					</Fragment>
@@ -485,12 +472,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					py={"0.6vw"}
 					onClick={logout}
 				>
-					<Icon
-						name="logout"
-						color="#FF4081"
-						width="18px"
-						height="18px"
-					/>
+					<Icon name="logout" color="error" size="18px" />
 					<Text
 						fontSize={{
 							base: "14px",

@@ -296,18 +296,10 @@ const AccordionSubMenuSection = ({
 						padding="0px"
 					>
 						<Flex align="center" gap="13px" w={"full"}>
-							<Icon
-								name={icon}
-								w={{
-									base: "20px",
-									md: "18px",
-									"2xl": "27px",
-								}}
-							/>
+							<Icon name={icon} size="sm" />
 							<Text
 								fontSize={{
 									base: "14px",
-									md: "12px",
 									"2xl": "16px",
 								}}
 							>
@@ -316,8 +308,8 @@ const AccordionSubMenuSection = ({
 						</Flex>
 						<Circle bg="sidebar.icon-bg" size="5">
 							<Icon
+								size="10px"
 								name={expanded ? "remove" : "expand-add"}
-								width="10px"
 							/>
 						</Circle>
 					</Flex>
@@ -357,27 +349,12 @@ const AccordionSubMenuSection = ({
 									borderTopStyle="dashed"
 								>
 									<Flex align="center" columnGap="10px">
-										<Icon
-											name={tx.icon}
-											w={{
-												base: "20px",
-												sm: "20px",
-												md: "18px",
-												lg: "18px",
-												xl: "18px",
-												"2xl": "27px",
-											}}
-										/>
+										<Icon name={tx.icon} size="sm" />
 										<Text
 											fontSize={{
 												base: "12px",
-												sm: "12px",
-												md: "11px",
-												lg: "11px",
-												xl: "11px",
 												"2xl": "14px",
 											}}
-											textColor={"white"}
 										>
 											{tx.label}
 										</Text>
@@ -387,8 +364,8 @@ const AccordionSubMenuSection = ({
 											isCurrent ? "#FE7D00" : "#556FEF"
 										}
 										name="chevron-right"
-										width="12px"
-										transition="color 0.3s ease-out"
+										size="xs"
+										// transition="color 0.3s ease-out"
 									/>
 								</Flex>
 							</Box>
@@ -410,7 +387,6 @@ const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
 				key={index}
 				fontSize={{
 					base: "14px",
-					md: "12px",
 					"2xl": "16px",
 				}}
 				color="white"
@@ -440,17 +416,7 @@ const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
 				transitionDuration="0.3s"
 				transitionTimingFunction="ease-out"
 			>
-				<Icon
-					name={menu.icon}
-					w={{
-						base: "20px",
-						sm: "20px",
-						md: "18px",
-						lg: "18px",
-						xl: "18px",
-						"2xl": "27px",
-					}}
-				/>
+				<Icon name={menu.icon} size="sm" />
 				{menu.name}
 			</Flex>
 		</Link>

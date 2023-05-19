@@ -38,8 +38,7 @@ const ContactPane = ({ rowData: contactdata }) => {
 					iconPos={isSmallerThan769 ? "" : "left"}
 					iconName="mode-edit"
 					iconStyle={{
-						width: "12px",
-						height: "12px",
+						size: "12px",
 					}}
 				/>
 			</Box>
@@ -62,8 +61,7 @@ const ContactPane = ({ rowData: contactdata }) => {
 							variant="success"
 							iconName="phone"
 							iconStyle={{
-								width: "12px",
-								height: "12px",
+								size: "12px",
 							}}
 						/>
 					) : (
@@ -83,8 +81,7 @@ const ContactPane = ({ rowData: contactdata }) => {
 						hasIcon={isSmallerThan769 ? true : false}
 						iconName="mail"
 						iconStyle={{
-							width: "12px",
-							height: "12px",
+							size: "12px",
 						}}
 					/>
 				</Flex>

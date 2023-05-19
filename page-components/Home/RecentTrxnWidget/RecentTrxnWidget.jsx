@@ -131,7 +131,7 @@ const RecentTrxnWidget = () => {
 									Details
 								</Text>
 								<Icon
-									w="12px"
+									size="12px"
 									name="arrow-forward"
 									color="primary.DEFAULT"
 								/>

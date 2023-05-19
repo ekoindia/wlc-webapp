@@ -82,14 +82,8 @@ const Headings = ({
 							>
 								<Icon
 									name="arrow-back"
-									width={{
-										base: "15px",
-										sm: "16px",
-										"2xl": "18px",
-									}}
-									height={{
-										base: "15px",
-										sm: "16px",
+									size={{
+										base: "16px",
 										"2xl": "18px",
 									}}
 								/>

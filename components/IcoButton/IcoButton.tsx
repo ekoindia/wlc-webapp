@@ -97,7 +97,7 @@ const IcoButton = ({
 			{...btnTheme}
 			{...rest}
 		>
-			<Icon name={iconName} w={iconSize} {...iconStyle} />
+			<Icon name={iconName} size={iconSize} {...iconStyle} />
 		</Center>
 	);
 };

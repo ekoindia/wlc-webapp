@@ -270,8 +270,7 @@ const MultiSelect = ({
 					<Flex ml="auto">
 						<Icon
 							name={open ? "caret-up" : "caret-down"}
-							width="14px"
-							height="10px"
+							size="14px"
 						/>
 					</Flex>
 				</Flex>
@@ -399,7 +398,7 @@ const getSelectedStyle = (name, index, onDeleteHandler) => {
 			<Flex>
 				<Icon
 					name="close"
-					width="8px"
+					size="8px"
 					color="accent.DEFAULT"
 					onClick={(e) => {
 						onDeleteHandler(name);

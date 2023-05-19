@@ -1,4 +1,4 @@
-import { Center, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 
 /**
@@ -25,13 +25,11 @@ const HistoryPagination = ({ hasNext, currentPage, setCurrentPage }) => {
 					);
 				}}
 			>
-				<Center
-					height="100%"
-					width={{ md: "15px", "2xl": "20px" }}
+				<Icon
+					name="chevron-left"
+					size={{ md: "15px", "2xl": "20px" }}
 					color={currentPage + 1 === 1 ? "hint" : "dark"}
-				>
-					<Icon name="chevron-left" width="100%" />
-				</Center>
+				/>
 			</Flex>
 			<Text userSelect="none">{currentPage + 1}</Text>
 			<Flex
@@ -40,13 +38,11 @@ const HistoryPagination = ({ hasNext, currentPage, setCurrentPage }) => {
 					setCurrentPage(hasNext ? currentPage + 1 : currentPage);
 				}}
 			>
-				<Center
-					height="100%"
+				<Icon
+					name="chevron-right"
 					width={{ md: "15px", "2xl": "20px" }}
 					color={hasNext ? "dark" : "hint"}
-				>
-					<Icon name="chevron-right" width="100%" />
-				</Center>
+				/>
 			</Flex>
 		</Flex>
 	);

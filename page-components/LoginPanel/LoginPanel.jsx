@@ -1,6 +1,6 @@
 import { Box, Flex, Grid, SlideFade } from "@chakra-ui/react";
 import { OrgLogo } from "components";
-import { useOrgDetailContext } from "contexts";
+import { useOrgDetailContext, useSession } from "contexts";
 import { useState } from "react";
 import { Login, SocialVerify, VerifyOtp } from ".";
 
@@ -17,6 +17,10 @@ const LoginPanel = () => {
 	});
 	const [loginType, setLoginType] = useState("Mobile");
 	const { orgDetail } = useOrgDetailContext();
+	const { isLoggedIn } = useSession();
+
+	// Hide login panel if user is already logged in
+	if (isLoggedIn) return null;
 
 	return (
 		<Flex

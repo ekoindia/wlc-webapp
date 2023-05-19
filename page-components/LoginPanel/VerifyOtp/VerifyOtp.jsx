@@ -64,7 +64,11 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 					}
 					cursor="pointer"
 				>
-					<Icon name="arrow-back" w="18px" h="15px" />
+					<Icon
+						name="arrow-back"
+						size="18px"
+						// h="15px"
+					/>
 				</Box>
 				<Heading
 					as="h3"
@@ -98,7 +102,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 								)
 							}
 							iconName="mode-edit"
-							iconStyle={{ height: "12px", width: "12px" }}
+							iconStyle={{ size: "12px" }}
 						/>
 					</Center>
 				</Flex>
@@ -137,7 +141,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 					<>
 						<Text as={"span"}>Resend otp in </Text>
 						<Flex align="center" color="error" columnGap="4px">
-							<Icon name="timer" width="18px" />
+							<Icon name="timer" size="18px" />
 							00:{timer <= 9 ? "0" + timer : timer}
 						</Flex>
 					</>

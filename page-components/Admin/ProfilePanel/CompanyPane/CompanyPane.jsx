@@ -160,8 +160,8 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 							<Circle size={14} bg={"divider"}>
 								<Icon
 									name="account-balance-wallet"
-									width="24px"
-									height="21px"
+									size="24px"
+									// height="21px"
 								/>
 							</Circle>
 							<Box>
@@ -187,7 +187,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 							boxShadow="0px 3px 6px #00000029"
 							border="2px solid #FFFFFF"
 						>
-							<Icon name="add" height="24px" width="24px" />
+							<Icon name="add" />
 						</Circle>
 					</Box> */}
 				</Flex>
@@ -198,8 +198,8 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 						iconName="arrow-forward"
 						hasBG={false}
 						iconStyle={{
-							width: "18px",
-							height: "15px",
+							size: "18px",
+							// height: "15px",
 						}}
 						onClick={handleclick}
 					/>

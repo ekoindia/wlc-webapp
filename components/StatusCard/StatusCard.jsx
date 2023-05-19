@@ -4,6 +4,7 @@ import { useMenuContext } from "contexts";
 import { useWallet } from "contexts/WalletContext";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { formatCurrency } from "utils/numberFormat";
 import { Icon } from "..";
 
 /**
@@ -79,8 +80,7 @@ const StatusCard = () => {
 					name="wallet-outline"
 					color={"sidebar.font"}
 					cursor={"pointer"}
-					w={{ base: "24px", md: "24px", "2xl": "32px" }}
-					h={{ base: "22px", md: "22px", "2xl": "30px" }}
+					size={{ base: "24px", "2xl": "32px" }}
 				/>
 				<Flex direction="column">
 					<Text
@@ -96,22 +96,18 @@ const StatusCard = () => {
 					<Flex color="#FFD93B" align="center" gap="0.25">
 						<Icon
 							name="rupee"
-							w={{ base: "9px", /*  md: "9px", */ "2xl": "10px" }}
-							h={{
-								base: "12px",
-								/* md: "12px", */ "2xl": "13px",
-							}}
+							size={{ base: "12px", "2xl": "14px" }}
+							mr="0.2em"
 						/>
 
 						<Text
 							fontSize={{
 								base: "14px",
-								md: "12px",
 								"2xl": "16px",
 							}}
 							fontWeight="medium"
 						>
-							&#8201;{balance}
+							{formatCurrency(balance, "INR", true, true)}
 						</Text>
 					</Flex>
 				</Flex>
@@ -126,7 +122,7 @@ const StatusCard = () => {
 					>
 						<Icon
 							name="refresh"
-							width={{ base: "12px", "2xl": "16px" }}
+							size={{ base: "12px", "2xl": "16px" }}
 							color="sidebar.card-bg-dark"
 						/>
 					</Circle>
@@ -147,7 +143,7 @@ const StatusCard = () => {
 					>
 						<Icon
 							name="add"
-							width={{ base: "12px", "2xl": "16px" }}
+							size={{ base: "12px", "2xl": "16px" }}
 						/>
 					</Circle>
 				</Tooltip>

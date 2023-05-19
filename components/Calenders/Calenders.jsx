@@ -144,12 +144,7 @@ const Calenders = ({
 								alignItems="center"
 								justifyContent="center"
 							> */}
-							<Icon
-								color="dark"
-								name="calender"
-								width="23px"
-								h="24px"
-							/>
+							<Icon color="dark" name="calender" size="24px" />
 							{/* </Flex> */}
 						</Flex>
 					</Flex>

@@ -241,17 +241,11 @@ const DetailedStatement = () => {
 									>
 										<Icon
 											name="rupee"
-											w={{
+											size={{
 												base: "10px",
-												md: "8px",
-												lg: "9.5px",
+												// md: "8px",
+												// lg: "9.5px",
 												"2xl": "12px",
-											}}
-											h={{
-												base: "12px",
-												md: "10px",
-												lg: "11px",
-												"2xl": "15px",
 											}}
 										/>
 										<Text
