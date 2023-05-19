@@ -130,6 +130,7 @@ const SideBarMenu = () => {
 			}}
 			bgColor={"accent.DEFAULT"}
 			height={"100%"}
+			overflowY="auto"
 		>
 			<Flex direction="column">
 				<Box borderRight="12px" height={"100%"} w={"100%"}>
@@ -179,6 +180,7 @@ const SmallScreenSideMenu = (props) => {
 	const router = useRouter();
 	const { /* isOpen, onOpen, */ onClose } = useDisclosure();
 
+	// Close navigation drawer on page change
 	useEffect(() => {
 		setNavOpen(false);
 	}, [router.asPath, setNavOpen]);
