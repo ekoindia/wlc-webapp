@@ -36,7 +36,7 @@ const WidgetBase = ({
 		<Flex
 			h={{
 				base: "auto",
-				md: "350px",
+				md: "320px",
 			}}
 			direction="column"
 			background="white"
