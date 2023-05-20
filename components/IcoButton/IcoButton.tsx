@@ -26,7 +26,7 @@ type Props = {
  * @example
  * //Example usage:
  * <IcoButton
- *    iconName="view-transaction-history"
+ *    iconName="transaction-history"
  *    size="lg"
  *    iconStyle={{ w: "30px", h: "30px"}}
  *    theme="light"

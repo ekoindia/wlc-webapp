@@ -102,7 +102,7 @@ const SideBarMenu = () => {
 			setTrxnList(trxnList);
 			setOtherList([
 				{
-					icon: "view-transaction-history",
+					icon: "transaction-history",
 					label: "Transaction History",
 					link: Endpoints.HISTORY,
 				},
