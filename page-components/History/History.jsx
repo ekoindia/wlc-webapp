@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Button, Calenders, Headings, Icon, Input, Modal } from "components";
 import { Endpoints, TransactionTypes } from "constants";
 import { useUser } from "contexts";
@@ -36,10 +36,6 @@ const History = () => {
 	const router = useRouter();
 
 	const { search } = router.query;
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-	};
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -204,6 +200,7 @@ const pillsData = [
 	{ id: "8", name: "Deposit" },
 ];
 
+/*
 function Pill({ name, activePillIndex, index }) {
 	return (
 		<Box
@@ -227,13 +224,14 @@ function Pill({ name, activePillIndex, index }) {
 		</Box>
 	);
 }
+*/
 
 const HistoryToolbar = ({
-	activePillIndex,
-	pillsData,
-	handlePillClick,
-	searchValue,
-	onChangeHandler,
+	// activePillIndex,
+	// pillsData,
+	// handlePillClick,
+	// searchValue,
+	// onChangeHandler,
 	clear,
 	handleChange,
 	formState,

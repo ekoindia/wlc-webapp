@@ -41,16 +41,7 @@ const NavBar = ({ setNavOpen }) => {
 				</Box>
 			)}
 
-			<Box
-				as="nav"
-				w={"full"}
-				h={{
-					base: "56px",
-					md: "50px",
-					lg: "60px",
-					"2xl": "90px",
-				}}
-			></Box>
+			<Box as="nav" w={"full"} h={NavHeight}></Box>
 			<Box
 				top={"0%"}
 				w={"full"}
@@ -59,18 +50,7 @@ const NavBar = ({ setNavOpen }) => {
 				as="section"
 				boxShadow={"0px 3px 10px #0000001A"}
 			>
-				<Box
-					position={"sticky"}
-					as="nav"
-					w={"full"}
-					h={{
-						base: "56px",
-						sm: "56px",
-						md: "50px",
-						lg: "60px",
-						"2xl": "90px",
-					}}
-				>
+				<Box position={"sticky"} as="nav" w={"full"} h={NavHeight}>
 					<NavContent
 						setNavOpen={setNavOpen}
 						setIsCardOpen={setIsCardOpen}
