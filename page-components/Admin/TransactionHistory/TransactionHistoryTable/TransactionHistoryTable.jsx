@@ -1,5 +1,6 @@
 import { Table } from "components";
 import { useRouter } from "next/router";
+import { TransactionHistoryCard } from "..";
 /**
 //  * A <TransactionHistoryTable> component
  * TODO: This is transaction history table with clickable rows
@@ -59,6 +60,7 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 				variant="evenStripedClickableRow"
 				tableName="Transaction"
 				ispagintationrequire={false}
+				ResponsiveCard={TransactionHistoryCard}
 			/>
 		</>
 	);

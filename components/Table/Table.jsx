@@ -23,33 +23,29 @@ import {
 	getStatusStyle,
 } from "helpers";
 import { useRouter } from "next/router";
-import { AccountStatementCard } from "page-components/Admin/AccountStatement";
-import { BusinessDashboardCard } from "page-components/Admin/Dashboard/BusinessDashboard";
-import { OnboardingDashboardCard } from "page-components/Admin/Dashboard/OnboardingDashboard";
-import { DetailedStatementCard } from "page-components/Admin/DetailedStatement";
-import { NetworkCard } from "page-components/Admin/Network";
-import { TransactionHistoryCard } from "page-components/Admin/TransactionHistory";
-import { HistoryCard } from "page-components/History";
 import { useEffect, useState } from "react";
-import { Button, Cards, Icon, IconButtons, Pagination } from "..";
+import { Button, Icon, IconButtons, Pagination } from "..";
 
-const Table = (props) => {
-	const {
-		pageLimit: PageSize = 10,
-		data,
-		totalRecords,
-		pageNumber,
-		setPageNumber,
-		renderer,
-		rendererExpandedRow,
-		variant,
-		tableName,
-		isScrollrequired = false,
-		accordian = false,
-		onRowClick = () => {},
-		isPaginationRequired = true,
-		// isOnclickRequire = true,
-	} = props;
+/**
+ * A Table component that renders a table with a header and rows.
+ */
+const Table = ({
+	pageLimit: PageSize = 10,
+	data,
+	totalRecords,
+	pageNumber,
+	setPageNumber,
+	renderer,
+	rendererExpandedRow,
+	variant,
+	tableName,
+	isScrollrequired = false,
+	accordian = false,
+	onRowClick = () => {},
+	isPaginationRequired = true,
+	ResponsiveCard,
+	defaultCardStyle = true,
+}) => {
 	const router = useRouter();
 	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
 
@@ -73,114 +69,105 @@ const Table = (props) => {
 	}, [router.query.page]);
 
 	const getTh = () => {
-		return renderer.map((item, index) => {
-			return (
-				<Th
-					key={index}
-					p={{ md: ".5em", xl: "1em" }}
-					fontSize={{ md: "10px", xl: "11px", "2xl": "16px" }}
-				>
-					<Flex gap={2} align="center">
-						{item.field}
-						{item.sorting && <Icon name="sort" size="8px" />}
-					</Flex>
-				</Th>
-			);
-		});
+		return renderer.map((item, index) => (
+			<Th
+				key={index}
+				p={{ md: ".5em", xl: "1em" }}
+				fontSize={{ md: "10px", xl: "11px", "2xl": "16px" }}
+			>
+				<Flex gap={2} align="center">
+					{item.field}
+					{item.sorting && <Icon name="sort" size="8px" />}
+				</Flex>
+			</Th>
+		));
 	};
 
 	const getTr = () => {
-		return data?.map((item, index) => {
-			return (
-				<>
+		return data?.map((item, index) => (
+			<>
+				<Tr
+					onClick={() => onRowClick(data[index])}
+					fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
+					style={{
+						backgroundColor:
+							accordian &&
+							(index % 2 === 0 ? "#F6F6F6" : "#F5F6FF"),
+					}}
+				>
+					{renderer.map((r, rIndex) => (
+						<Td
+							onClick={() => handleRowClick(index)}
+							p={{ md: ".5em", xl: "1em" }}
+							key={rIndex}
+						>
+							{prepareCol(
+								item,
+								r,
+								index,
+								index + pageNumber * PageSize - (PageSize - 1)
+							)}
+						</Td>
+					))}
+				</Tr>
+				{/* For Expanded Row */}
+				{accordian && expandedRow === index && (
 					<Tr
-						onClick={() => onRowClick(data[index])}
-						fontSize={{ md: "10px", xl: "12px", "2xl": "16px" }}
 						style={{
 							backgroundColor:
 								accordian &&
 								(index % 2 === 0 ? "#F6F6F6" : "#F5F6FF"),
 						}}
 					>
-						{renderer.map((r, rIndex) => {
-							return (
-								<Td
-									onClick={() => handleRowClick(index)}
-									p={{ md: ".5em", xl: "1em" }}
-									key={rIndex}
-								>
-									{prepareCol(
-										item,
-										r,
-										index,
-										index +
-											pageNumber * PageSize -
-											(PageSize - 1)
-									)}
-								</Td>
-							);
-						})}
-					</Tr>
-					{/* For Expanded Row */}
-					{accordian && expandedRow === index && (
-						<Tr
-							style={{
-								backgroundColor:
-									accordian &&
-									(index % 2 === 0 ? "#F6F6F6" : "#F5F6FF"),
+						<Td
+							colSpan={renderer.length}
+							pr="16px"
+							pl={{
+								md: "42px",
+								xl: "60px",
+								"2xl": "100px",
 							}}
 						>
-							<Td
-								colSpan={renderer.length}
-								pr="16px"
-								pl={{
-									md: "42px",
-									// lg: "42px",
-									xl: "60px",
-									"2xl": "100px",
-								}}
-							>
-								<Flex justify={"space-between"}>
-									<Flex
-										w="88%"
-										gap={{ md: "6", xl: "8", "2xl": "10" }}
-										wrap="wrap"
-										key={index}
-										fontSize={{
-											md: "10px",
-											xl: "12px",
-											"2xl": "16px",
-										}}
-									>
-										{prepareExpandedRow(item)}
-									</Flex>
-									<Button
-										w={{
-											md: "120px",
-											xl: "150px",
-											"2xl": "170px",
-										}}
-										h={{
-											md: "36px",
-											xl: "42px",
-											"2xl": "48px",
-										}}
-										fontSize={{
-											md: "10px",
-											xl: "12px",
-											"2xl": "14px",
-										}}
-										disabled
-									>
-										Repeat Transaction
-									</Button>
+							<Flex justify="space-between">
+								<Flex
+									w="88%"
+									gap={{ md: "6", xl: "8", "2xl": "10" }}
+									wrap="wrap"
+									key={index}
+									fontSize={{
+										md: "10px",
+										xl: "12px",
+										"2xl": "16px",
+									}}
+								>
+									{prepareExpandedRow(item)}
 								</Flex>
-							</Td>
-						</Tr>
-					)}
-				</>
-			);
-		});
+								<Button
+									w={{
+										md: "120px",
+										xl: "150px",
+										"2xl": "170px",
+									}}
+									h={{
+										md: "36px",
+										xl: "42px",
+										"2xl": "48px",
+									}}
+									fontSize={{
+										md: "10px",
+										xl: "12px",
+										"2xl": "14px",
+									}}
+									disabled
+								>
+									Repeat Transaction
+								</Button>
+							</Flex>
+						</Td>
+					</Tr>
+				)}
+			</>
+		));
 	};
 
 	const prepareCol = (item, column, index, serialNo) => {
@@ -221,121 +208,23 @@ const Table = (props) => {
 		}
 	};
 
-	/* For Responsive */
 	const prepareCard = () => {
-		return data.map((item, index) => {
-			if (tableName === "Network") {
-				return (
-					<Cards
-						key={index}
-						w="100%"
-						h="auto"
-						p="16px"
-						onClick={() => onRowClick(data[index])}
-					>
-						<NetworkCard item={item} />
-					</Cards>
-				);
-			} else if (tableName === "Transaction") {
-				return (
-					<Cards
-						key={index}
-						w="100%"
-						h="auto"
-						p="15px"
-						onClick={onRowClick}
-					>
-						<TransactionHistoryCard item={item} />
-					</Cards>
-				);
-			} else if (tableName === "Account") {
-				return (
-					<>
-						<Box
-							bg="white"
-							key={index}
-							width="100%"
-							height="auto"
-							p="20px 16px"
-						>
-							<AccountStatementCard item={item} />
-						</Box>
-						{index !== data.length - 1 && (
-							<Divider border="1px solid #D2D2D2" />
-						)}
-					</>
-				);
-			} else if (tableName === "Detailed") {
-				return (
-					<>
-						<Box
-							bg="white"
-							key={index}
-							width="100%"
-							height="auto"
-							p="20px 16px"
-						>
-							<DetailedStatementCard item={item} />
-						</Box>
-						{index !== data.length - 1 && (
-							<Divider border="1px solid #D2D2D2" />
-						)}
-					</>
-				);
-			} else if (tableName === "Business") {
-				return (
-					<>
-						<Box
-							bg="white"
-							key={index}
-							width="100%"
-							height="auto"
-							p="0px"
-						>
-							<BusinessDashboardCard item={item} />
-						</Box>
-						{index !== data.length - 1 && (
-							<Divider border="1px solid #D2D2D2" />
-						)}
-					</>
-				);
-			} else if (tableName === "Onboarding") {
-				return (
-					<>
-						<Box
-							bg="white"
-							key={index}
-							width="100%"
-							height="auto"
-							p="0px"
-						>
-							<OnboardingDashboardCard item={item} />
-						</Box>
-						{index !== data.length - 1 && (
-							<Divider border="1px solid #D2D2D2" />
-						)}
-					</>
-				);
-			} else if (tableName === "History") {
-				return (
-					<>
-						<Box
-							bg="white"
-							key={index}
-							width="100%"
-							height="auto"
-							p="16px"
-							borderRadius=" 10px"
-						>
-							<HistoryCard
-								item={item}
-								rendererExpandedRow={rendererExpandedRow}
-							/>
-						</Box>
-					</>
-				);
-			}
-		});
+		return data.map((item, index) => (
+			<Box
+				bg="white"
+				width="100%"
+				height="auto"
+				p={defaultCardStyle ? "16px" : "20px 16px"}
+				borderRadius={defaultCardStyle ? "10px" : null}
+				onClick={onRowClick}
+				key={index}
+			>
+				<ResponsiveCard item={item} />
+				{!defaultCardStyle && index !== data.length - 1 && (
+					<Divider border="1px solid #D2D2D2" />
+				)}
+			</Box>
+		));
 	};
 
 	/* For Expanded Colomn */
@@ -392,7 +281,7 @@ const Table = (props) => {
 					</TableContainer>
 					{/* Pagination */}
 					{isPaginationRequired && (
-						<Flex justify={"flex-end"}>
+						<Flex justify="flex-end">
 							<Pagination
 								className="pagination-bar"
 								currentPage={pageNumber}
@@ -401,7 +290,6 @@ const Table = (props) => {
 								onPageChange={(page) => {
 									router.query.page = page;
 									router.replace(router);
-									// setCurrentPage(page);
 									setPageNumber(page);
 								}}
 							/>
@@ -412,31 +300,17 @@ const Table = (props) => {
 				<>
 					<Flex
 						direction="column"
-						alignItems="center"
+						align="center"
 						borderRadius="10px 10px 0 0"
 						mt="16px"
 						boxShadow={
-							tableName === "Account" || tableName === "Detailed"
-								? "0px 5px 15px #0000000D"
-								: ""
+							!defaultCardStyle ? "0px 5px 15px #0000000D" : null
 						}
-						border={
-							tableName === "Account" || tableName === "Detailed"
-								? "1px solid #D2D2D2"
-								: ""
-						}
-						gap={
-							tableName === "Account" || tableName === "Detailed"
-								? 0
-								: 4
-						}
-						bg={
-							tableName === "Account" || tableName === "Detailed"
-								? "white"
-								: ""
-						}
+						border={!defaultCardStyle ? "1px solid #D2D2D2" : null}
+						bg={!defaultCardStyle ? "white" : null}
+						gap={defaultCardStyle ? 4 : null}
 					>
-						{tableName === "Account" || tableName === "Detailed" ? (
+						{!defaultCardStyle ? (
 							<Text
 								color="light"
 								width="100%"
@@ -445,12 +319,11 @@ const Table = (props) => {
 							>
 								Recent Transaction
 							</Text>
-						) : (
-							""
-						)}
+						) : null}
 						{prepareCard()}
 					</Flex>
 
+					{/* Show More */}
 					<Flex
 						align="center"
 						justifyContent="center"

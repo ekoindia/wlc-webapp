@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { DetailedStatementCard } from "..";
 
 /**
  * A <DetailedStatementTable> component
@@ -43,6 +44,8 @@ const DetailedStatementTable = (props) => {
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}
 				pageNumber={pageNumber}
+				ResponsiveCard={DetailedStatementCard}
+				defaultCardStyle={false}
 			/>
 		</>
 	);

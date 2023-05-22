@@ -1,5 +1,6 @@
 import { Table } from "components";
 import { useRouter } from "next/router";
+import { NetworkCard } from "..";
 /**
  * A <NetworkTable> component
  * TODO: This is my network table with clickable rows
@@ -59,6 +60,7 @@ const NetworkTable = ({
 				setPageNumber={setPageNumber}
 				pageNumber={pageNumber}
 				data={agentDetails}
+				ResponsiveCard={NetworkCard}
 			/>
 		</>
 	);

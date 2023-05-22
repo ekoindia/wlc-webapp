@@ -1,5 +1,6 @@
 import { Table } from "components";
 import { table_data_mock } from "constants/table_data_mock";
+import { BusinessDashboardCard } from "..";
 
 /**
  * A <BusinessDashboardTable> component
@@ -45,6 +46,7 @@ const BusinessDashboardTable = () => {
 				isScrollrequired={true}
 				border="none"
 				scrollCSS={{}}
+				ResponsiveCard={BusinessDashboardCard}
 			/>
 		</>
 	);

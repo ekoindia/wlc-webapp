@@ -1,5 +1,6 @@
 import { Table } from "components";
 import { table_data_mock } from "constants/table_data_mock";
+import { OnboardingDashboardCard } from "..";
 /**
  * A <OnboardingDashboardTable> component
  * TODO: Write more description here
@@ -51,6 +52,7 @@ const OnboardingDashboardTable = ({ prop1, ...rest }) => {
 				variant="evenStripedClickableRow"
 				tableName="Onboarding"
 				isScrollrequired={true}
+				ResponsiveCard={OnboardingDashboardCard}
 				{...rest}
 			/>
 		</>

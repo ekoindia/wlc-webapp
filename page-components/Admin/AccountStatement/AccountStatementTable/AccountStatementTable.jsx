@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { AccountStatementCard } from "..";
 
 /**
  * A <AccountStatementTable> component
@@ -31,13 +32,6 @@ const AccountStatementTable = (props) => {
 		{ name: "amount", field: "Amount" },
 	];
 
-	// <=======================API CALL===============================>
-
-	// const Accountapicall = apisHelper("Account");
-	// const AccountStatementData =
-	// Accountapicall?.data?.data?.recent_transaction_details ?? [];
-
-	// console.log(AccountStatementData, "AccountStatementData");
 	return (
 		<>
 			<Table
@@ -48,6 +42,8 @@ const AccountStatementTable = (props) => {
 				variant="evenStriped"
 				tableName="Account"
 				ispagintationrequire={false}
+				ResponsiveCard={AccountStatementCard}
+				defaultCardStyle={false}
 			/>
 		</>
 	);
