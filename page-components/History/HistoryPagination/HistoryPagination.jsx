@@ -15,7 +15,7 @@ const HistoryPagination = ({ hasNext, currentPage, setCurrentPage }) => {
 			gap={6}
 			mt="20px"
 			mb={{ base: "30px", "2xl": "0px" }}
-			fontSize={{ md: "14px", "2xl": "18px" }}
+			fontSize={{ base: "14px", "2xl": "18px" }}
 		>
 			<Flex
 				cursor="pointer"
@@ -27,7 +27,7 @@ const HistoryPagination = ({ hasNext, currentPage, setCurrentPage }) => {
 			>
 				<Icon
 					name="chevron-left"
-					size={{ md: "15px", "2xl": "20px" }}
+					size={{ base: "15px", "2xl": "20px" }}
 					color={currentPage + 1 === 1 ? "hint" : "dark"}
 				/>
 			</Flex>
@@ -40,7 +40,7 @@ const HistoryPagination = ({ hasNext, currentPage, setCurrentPage }) => {
 			>
 				<Icon
 					name="chevron-right"
-					width={{ md: "15px", "2xl": "20px" }}
+					width={{ base: "15px", "2xl": "20px" }}
 					color={hasNext ? "dark" : "hint"}
 				/>
 			</Flex>

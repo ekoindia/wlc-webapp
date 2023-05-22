@@ -56,10 +56,6 @@ const Icon = ({ name, size, w, h, width, height, ...rest }: IconProps) => {
 			_size = size || w || width || h || height || "24px";
 	}
 
-	if (name == "rupee") {
-		console.log(">>>>>>>>>>>>>> ", name, size, w, h, width, height, _size);
-	}
-
 	// let sizeX = "24px";
 	// let sizeY = "24px";
 	// if ((w && h) || (width && height)) {
@@ -71,9 +67,6 @@ const Icon = ({ name, size, w, h, width, height, ...rest }: IconProps) => {
 	// } else if (h || height) {
 	// 	sizeY = h || height;
 	// 	sizeX = sizeY;
-	// }
-	// if (name == "smartphone") {
-	// 	console.log(">>>>>>>>>>>>>> ", name, w, h, width, height, sizeX, sizeY);
 	// }
 
 	return (

@@ -107,6 +107,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 	const AppCompArray = (
 		<ChakraProvider
 			theme={theme}
+			resetCSS={true}
 			toastOptions={{ defaultOptions: toastDefaultOptions }}
 		>
 			<OrgDetailProvider initialData={org || null}>
@@ -167,6 +168,11 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 					type="image/png"
 					href="/favicon-32x32.png"
 					sizes="32x32"
+				/>
+				<link
+					rel="icon"
+					type="image/svg+xml"
+					href="/assets/images/favicon.svg"
 				/>
 			</Head>
 

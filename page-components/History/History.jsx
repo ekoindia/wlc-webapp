@@ -1,8 +1,9 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Button, Calenders, Headings, Icon, Input, Modal } from "components";
 import { Endpoints, TransactionTypes } from "constants";
 import { useUser } from "contexts";
 import useRequest from "hooks/useRequest";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { HistoryPagination, HistoryTable } from ".";
 
@@ -32,9 +33,9 @@ const History = () => {
 	const { accountDetails } = userData;
 	const { account_list } = accountDetails;
 
-	const handleSubmit = (event) => {
-		event.preventDefault();
-	};
+	const router = useRouter();
+
+	const { search } = router.query;
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -55,11 +56,22 @@ const History = () => {
 		body.account_id = account_list[0].id;
 	}
 
-	const { data, mutate } = useRequest({
+	const { data, mutate, controller } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 		body: { ...body },
 	});
+
+	// Search for a transaction based on the parameter query "search".
+	// The query can be a transaction-id, account, amount,
+	// or, a mobile number.
+	useEffect(() => {
+		if (search) {
+			console.log(">>>> ABORTING CONTROLLER");
+			quickSearch(search);
+			onApply();
+		}
+	}, [search]);
 
 	useEffect(() => {
 		mutate();
@@ -72,6 +84,7 @@ const History = () => {
 	}, [clear]);
 
 	const onApply = () => {
+		controller.abort();
 		mutate();
 		onClose();
 		setClear(true);
@@ -89,6 +102,35 @@ const History = () => {
 			[name]: value,
 		}));
 	};
+
+	/**
+	 * Search for a transaction based on the query. The query can be a transaction-id, account, amount, or, a mobile number.
+	 * @param {*} query
+	 */
+	const quickSearch = (query) => {
+		if (!query) return;
+
+		if (/^[0-9]+$/.test(query) !== true) {
+			// Not a number
+			return;
+		}
+
+		// Detect type of query
+		let type = "account";
+		if (/^[6-9][0-9]{9}$/.test(query)) {
+			type = "customer_mobile";
+		} else if (query.length >= 7 && query.length <= 10) {
+			type = "tid";
+		} else if (query.length < 7) {
+			type = "amount";
+		}
+
+		setFormState((prevFormState) => ({
+			...prevFormState,
+			[type]: query,
+		}));
+	};
+
 	const transactionList = data?.data?.transaction_list ?? [];
 	const listLength = transactionList.length;
 	const hasNext = listLength >= limit;
@@ -158,6 +200,7 @@ const pillsData = [
 	{ id: "8", name: "Deposit" },
 ];
 
+/*
 function Pill({ name, activePillIndex, index }) {
 	return (
 		<Box
@@ -181,13 +224,14 @@ function Pill({ name, activePillIndex, index }) {
 		</Box>
 	);
 }
+*/
 
 const HistoryToolbar = ({
-	activePillIndex,
-	pillsData,
-	handlePillClick,
-	searchValue,
-	onChangeHandler,
+	// activePillIndex,
+	// pillsData,
+	// handlePillClick,
+	// searchValue,
+	// onChangeHandler,
 	clear,
 	handleChange,
 	formState,

@@ -19,7 +19,7 @@ const ManageMyAccountCard = () => {
 	const router = useRouter();
 	const [data, setData] = useState([]);
 	const { role_tx_list } = interactions;
-	const dataLength = data.length;
+	// const dataLength = data.length;
 
 	useEffect(() => {
 		if (!role_tx_list[TransactionIds.MANAGE_MY_ACCOUNT]) {

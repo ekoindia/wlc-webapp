@@ -36,7 +36,7 @@ const WidgetBase = ({
 		<Flex
 			h={{
 				base: "auto",
-				md: "350px",
+				md: "320px",
 			}}
 			direction="column"
 			background="white"
@@ -63,7 +63,7 @@ const WidgetBase = ({
 										iconName={iconName}
 										onClick={linkOnClick}
 										iconStyle={{
-											w: "12px",
+											size: "12px",
 											color: "white",
 											...iconStyle,
 										}}

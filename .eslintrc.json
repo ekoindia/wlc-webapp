@@ -34,7 +34,7 @@
 		"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
 		"semi": ["error", "always", { "omitLastInOneLineBlock": true }],
 		"no-unused-vars": [
-			"warn",
+			"error",
 			{
 				"vars": "all",
 				"args": "after-used",

@@ -1,3 +1,5 @@
+/* eslint-disable  no-unused-vars */
+
 /**
  * Parameter types to parameter_type_id mapping.
  * Make sure the IDs are in sync with INTERACTION-FRAMEWORK database.

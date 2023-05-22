@@ -68,7 +68,7 @@ const MoveAgents = ({
 					<Text
 						color="light"
 						as="span"
-						display={{ md: "block", lg: "inline-block" }}
+						display={{ base: "block", lg: "inline-block" }}
 					>
 						Select Sellers From:
 					</Text>{" "}

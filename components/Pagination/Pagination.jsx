@@ -37,7 +37,7 @@ const Pagination = (props) => {
 			mb={{ base: "30px", "2xl": "0px" }}
 			justifyContent="space-between"
 			w="100%"
-			fontSize={{ md: "12px", "2xl": "16px" }}
+			fontSize={{ base: "12px", "2xl": "16px" }}
 		>
 			<Flex gap={2} color="light">
 				<Box as="span">Results</Box>
@@ -70,10 +70,10 @@ const Pagination = (props) => {
 				>
 					<Icon
 						name="chevron-left"
-						size={{ md: "15px", "2xl": "20px" }}
+						size={{ base: "15px", "2xl": "20px" }}
 					/>
 				</Flex>
-				<Flex gap={{ md: "4", "2xl": "6" }}>
+				<Flex gap={{ base: "4", "2xl": "6" }}>
 					{paginationRange.map((pageNumber, index) => {
 						if (pageNumber === DOTS) {
 							return (
@@ -128,7 +128,7 @@ const Pagination = (props) => {
 					{/* <Icon name="chevron-right" width="20px" /> */}
 					<Icon
 						name="chevron-right"
-						size={{ md: "15px", "2xl": "20px" }}
+						size={{ base: "15px", "2xl": "20px" }}
 					/>
 				</Flex>
 			</Flex>

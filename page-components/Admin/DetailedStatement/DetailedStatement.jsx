@@ -295,7 +295,7 @@ const DetailedStatement = () => {
 							<Text
 								fontWeight={"semibold"}
 								fontSize={{
-									md: "10px",
+									base: "10px",
 									lg: "12px",
 									xl: "16px",
 								}}

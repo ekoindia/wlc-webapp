@@ -23,10 +23,9 @@ const QueryWidget = () => {
 		<Flex
 			h={{
 				base: "auto",
-				md: "350px",
+				md: "320px",
 			}}
 			borderRadius={{
-				base: "0px",
 				sm: "0px 0px 2px 2px",
 				md: "10px",
 			}}
@@ -42,16 +41,10 @@ const QueryWidget = () => {
 			}}
 			rowGap={{
 				base: "20px",
-				sm: "30px",
-				md: "50px",
-				lg: "30px",
 			}}
 			px={4}
 			py={{
 				base: "20px",
-				sm: "30px",
-				md: "18px",
-				lg: "20px",
 				xl: "25px",
 			}}
 			backgroundPosition="center"
@@ -63,8 +56,8 @@ const QueryWidget = () => {
 				alignItems="baseline"
 				color={"white"}
 				as="b"
-				pt={{ base: "0px", sm: "20px", md: "40px", lg: "18px" }}
-				pb={{ base: "0px", sm: "20px", md: "10px", lg: "25px" }}
+				pt={{ base: "10px" }}
+				pb={{ base: "10px" }}
 				direction={"row"}
 			>
 				<Text fontSize="21px" display="inline">
@@ -79,7 +72,7 @@ const QueryWidget = () => {
 				alignContent={{ base: "left", md: "center" }}
 				w={{ base: "100%", md: "auto" }}
 				direction={{ base: "row", md: "column" }}
-				rowGap="30px"
+				rowGap="20px"
 				justifyContent="space-between"
 			>
 				{phone ? (

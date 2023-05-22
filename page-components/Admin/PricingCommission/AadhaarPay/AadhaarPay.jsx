@@ -21,12 +21,12 @@ const AadhaarPay = ({ prop1, ...rest }) => {
 		1: "Fixed",
 	};
 
-	const charges = {
-		"Fixed Charges": 1.8,
-		Taxes: 0.8,
-		"Network Earnings": 4.12,
-		"Your Earnings": 3.28,
-	};
+	// const charges = {
+	// 	"Fixed Charges": 1.8,
+	// 	Taxes: 0.8,
+	// 	"Network Earnings": 4.12,
+	// 	"Your Earnings": 3.28,
+	// };
 	return (
 		<div {...rest}>
 			<PricingForm

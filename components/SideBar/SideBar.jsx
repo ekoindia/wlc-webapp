@@ -102,7 +102,7 @@ const SideBarMenu = () => {
 			setTrxnList(trxnList);
 			setOtherList([
 				{
-					icon: "view-transaction-history",
+					icon: "transaction-history",
 					label: "Transaction History",
 					link: Endpoints.HISTORY,
 				},
@@ -130,6 +130,7 @@ const SideBarMenu = () => {
 			}}
 			bgColor={"accent.DEFAULT"}
 			height={"100%"}
+			overflowY="auto"
 		>
 			<Flex direction="column">
 				<Box borderRight="12px" height={"100%"} w={"100%"}>
@@ -174,14 +175,14 @@ const SideBarMenu = () => {
 };
 
 //FOR MOBILE SCREENS
-const SmallScreenSideMenu = (props) => {
-	const { navOpen, setNavOpen } = props;
+const SmallScreenSideMenu = ({ navOpen, setNavClose }) => {
 	const router = useRouter();
 	const { /* isOpen, onOpen, */ onClose } = useDisclosure();
 
+	// Close navigation drawer on page change
 	useEffect(() => {
-		setNavOpen(false);
-	}, [router.asPath, setNavOpen]);
+		setNavClose();
+	}, [router.asPath, setNavClose]);
 
 	return (
 		<Drawer
@@ -190,14 +191,13 @@ const SmallScreenSideMenu = (props) => {
 			placement="left"
 			onClose={onClose}
 			returnFocusOnClose={false}
-			onOverlayClick={() => {
-				setNavOpen(false);
-			}}
+			onOverlayClick={setNavClose}
 			size="full"
 		>
 			<DrawerOverlay />
 			<DrawerContent maxW="250px" boxShadow={"none"}>
-				<SideBarMenu setNavOpen={setNavOpen} />
+				<SideBarMenu />
+				{/* setNavClose={setNavClose} */}
 			</DrawerContent>
 		</Drawer>
 	);

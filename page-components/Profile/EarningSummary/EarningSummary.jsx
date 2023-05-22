@@ -87,7 +87,7 @@ const EarningSummary = ({ prop1, ...rest }) => {
 	}, []);
 
 	return (
-		<WidgetBase title="Earning Summary">
+		<WidgetBase title="Earning Summary" {...rest}>
 			<Box fontSize="14px">
 				<Text fontSize="12px" color="secondary.DEFAULT" mt="-16px">
 					as of {data.asof}

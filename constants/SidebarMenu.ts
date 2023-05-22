@@ -92,7 +92,7 @@ export const sidebarMenu: sidebarMenuType[] = [
 	// 	subLevel: true,
 	// 	subLevelObject: [
 	// 		{
-	// 			icon: "view-transaction-history",
+	// 			icon: "transaction-history",
 	// 			label: "Transaction History",
 	// 			link: "/history",
 	// 		},

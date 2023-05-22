@@ -75,7 +75,7 @@ const StatusCard = () => {
 			bg="sidebar.card-bg-dark"
 			borderBottom="br-sidebar"
 		>
-			<Flex align="flex-start" gap="2.5">
+			<Flex align="center" gap="2.5">
 				<Icon
 					name="wallet-outline"
 					color={"sidebar.font"}

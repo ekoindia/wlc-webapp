@@ -1,12 +1,11 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useDisclosure } from "@chakra-ui/react";
 import { useLayoutContext, useSession } from "contexts";
-import { useState } from "react";
 import { NavBar, SideBar } from "..";
 
 const Layout = ({ children }) => {
-	const [isNavOpen, setIsNavOpen] = useState(false);
 	const { isNavHidden } = useLayoutContext();
 	const { isLoggedIn } = useSession();
+	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
 
 	return isLoggedIn ? (
 		<Box w={"full"}>
@@ -18,12 +17,12 @@ const Layout = ({ children }) => {
 						},
 					}}
 				>
-					<NavBar setNavOpen={setIsNavOpen} />
+					<NavBar setNavOpen={onOpen} />
 				</Box>
 			)}
 
 			<Flex>
-				<SideBar navOpen={isNavOpen} setNavOpen={setIsNavOpen} />
+				<SideBar navOpen={isOpen} setNavClose={onClose} />
 
 				{/* Main Content here */}
 

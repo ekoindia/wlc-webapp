@@ -21,6 +21,8 @@ const useRequest = ({
 
 	const { accessToken } = useSession();
 
+	const controller = new AbortController();
+
 	// console.log("method", method);
 	// console.log("baseUrl", baseUrl);
 	// const fetcher = (...args) => fetch(...args).then((res) => res.json());
@@ -41,6 +43,7 @@ const useRequest = ({
 					headers,
 					token: accessToken,
 					body,
+					controller,
 				},
 				generateNewToken
 			),
@@ -66,7 +69,7 @@ const useRequest = ({
 		// setIsLoading(false);
 	}, [fetchedError]);
 
-	return { data, error, isLoading, mutate };
+	return { data, error, isLoading, mutate, controller };
 };
 
 export default useRequest;

@@ -60,7 +60,7 @@ export const getArrowStyle = () => {
 		<Icon
 			name="arrow-forward"
 			color="hint"
-			size={{ md: "16px", lg: "20px", "2xl": "24px" }}
+			size={{ base: "16px", lg: "20px", "2xl": "24px" }}
 		/>
 	);
 };
@@ -80,7 +80,7 @@ export const getAccordianIcon = (expandedRow, index) => {
 			<Circle bg="primary.DEFAULT" size="24px" cursor="pointer">
 				<Icon
 					name={expandedRow === index ? "remove" : "expand-add"}
-					size="12px"
+					size="10px"
 					color="white"
 				/>
 			</Circle>
