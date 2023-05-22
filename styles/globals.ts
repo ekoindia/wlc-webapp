@@ -3,6 +3,13 @@
  * These CSS styles are applied globally.
  */
 export const globalStyles = {
+	body: {
+		// margin: 0,
+		// padding: 0,
+		// width: "100vw",
+		// height: "100vh",
+		"overscroll-behavior-y": "none",
+	},
 	"[hidden], [hideempty]:empty": {
 		display: "none !important",
 	},
