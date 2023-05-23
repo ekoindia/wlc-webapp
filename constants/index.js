@@ -2,6 +2,7 @@ export { allowedCategories } from "./allowedCategories";
 export {
 	NetworkObject,
 	PricingCommissionObject,
+	QueryObject,
 	TransactionHistoryObject,
 } from "./BreadcrumbsData";
 export { oldIcons } from "./connectIcons";

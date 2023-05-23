@@ -63,6 +63,11 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 	// 	name: "Company profile",
 	// 	link: "/admin/company",
 	// },
+	{
+		icon: "feedback",
+		name: "Query Center",
+		link: "/admin/query",
+	},
 ];
 
 /**

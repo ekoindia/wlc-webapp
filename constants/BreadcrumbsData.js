@@ -19,3 +19,7 @@ export const TransactionHistoryObject = {
 export const PricingCommissionObject = {
 	"/admin/pricing": "Pricing & Commissions",
 };
+
+export const QueryObject = {
+	"/admin/query": "Query Center",
+};

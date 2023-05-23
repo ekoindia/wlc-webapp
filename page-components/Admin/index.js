@@ -11,6 +11,7 @@ import { UpdatePersonalInfo } from "./UpdatePersonalInfo";
 import { UpdateSellerAddress } from "./UpdateSellerAddress";
 import { UpdateSellerInfo } from "./UpdateSellerInfo";
 
+export { QueryCenter } from "./QueryCenter";
 export {
 	Dashboard,
 	UpdatePersonalInfo,
