@@ -16,7 +16,8 @@ const isBrowser = typeof window !== "undefined";
 
 const RouteProtecter = (props) => {
 	const { router, children } = props; //TODO : Getting Error in _app.tsx
-	const { isLoggedIn, isAdmin, userId, loading, setLoading } = useSession();
+	const { isLoggedIn, isAdmin, userId, isOnboarding, loading, setLoading } =
+		useSession();
 	const [authorized, setAuthorized] = useState(false);
 
 	const role = isAdmin ? "admin" : "non-admin";
@@ -45,7 +46,7 @@ const RouteProtecter = (props) => {
 				return;
 			}
 			if (authorized) setAuthorized(false);
-		} else if (isLoggedIn && userId === "1") {
+		} else if (isLoggedIn && (userId === "1" || isOnboarding === true)) {
 			console.log("::::Enter in Onboarding::::", path, userId);
 			if (path !== "/signup") {
 				// Goto onboarding page if user is not on onboarding page

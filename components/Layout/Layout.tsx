@@ -11,7 +11,7 @@ import { NavBar, SideBar } from "..";
  * @param {String} pageMeta.title - The page title. This will be displayed in the browser titlebar.
  */
 const Layout = ({ appName, pageMeta, children }) => {
-	const { isSubPage, title } = pageMeta;
+	const { isSubPage, title, hideMenu } = pageMeta;
 
 	// const { isNavHidden } = useLayoutContext();
 	const { isLoggedIn } = useSession();
@@ -45,25 +45,29 @@ const Layout = ({ appName, pageMeta, children }) => {
 						</Box>
 					)}
 
-					<Flex>
-						<SideBar navOpen={isOpen} setNavClose={onClose} />
+					{hideMenu ? (
+						<>{children}</>
+					) : (
+						<Flex>
+							<SideBar navOpen={isOpen} setNavClose={onClose} />
 
-						{/* Main Content here */}
+							{/* Main Content here */}
 
-						<Box
-							minH={{
-								base: "calc(100vh - 56px)",
-								md: "calc(100vh - 50px)",
-								lg: "calc(100vh - 60px)",
-								"2xl": "calc(100vh - 90px)",
-							}}
-							w={"full"}
-							bg={"bg"}
-							overflow={"hidden"}
-						>
-							{children}
-						</Box>
-					</Flex>
+							<Box
+								minH={{
+									base: "calc(100vh - 56px)",
+									md: "calc(100vh - 50px)",
+									lg: "calc(100vh - 60px)",
+									"2xl": "calc(100vh - 90px)",
+								}}
+								w={"full"}
+								bg={"bg"}
+								overflow={"hidden"}
+							>
+								{children}
+							</Box>
+						</Flex>
+					)}
 				</Box>
 			) : (
 				<>{children}</>

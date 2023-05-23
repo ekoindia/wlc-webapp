@@ -136,6 +136,7 @@ const UserProvider = ({ userMockData, children }) => {
 			userId: state?.userId || 0,
 			userType: state?.user_type || 0,
 			accessToken: state?.access_token || "",
+			isOnboarding: state?.onboarding == 1 ? true : false,
 			loading,
 			setLoading,
 		};
