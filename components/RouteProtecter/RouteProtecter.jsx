@@ -24,6 +24,8 @@ const RouteProtecter = (props) => {
 
 	console.log("%cRoute-Protecter: Start\n", "color:green", {
 		isLoggedIn: isLoggedIn,
+		isAdmin: isAdmin,
+		userId: userId,
 		authorized: authorized,
 		loading: loading,
 	});
@@ -72,7 +74,7 @@ const RouteProtecter = (props) => {
 			setLoading(false);
 			setAuthorized(true);
 		}
-	}, [router.asPath, loading, isLoggedIn]);
+	}, [router.asPath, loading, isLoggedIn, userId]);
 
 	/**
 	 * Remove the flash of private pages when user is not nonLogged
