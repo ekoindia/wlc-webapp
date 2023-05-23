@@ -25,13 +25,13 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 				bg="accent.dark"
 				px={{ base: "0.6rem", md: "1.2rem" }}
 				borderRadius="6px"
+				{...rest}
 			>
 				<Text
 					as="b"
 					color="gray.100"
 					noOfLines={1}
 					fontSize={logoFontSize}
-					{...rest}
 				>
 					{orgDetail.app_name}
 				</Text>

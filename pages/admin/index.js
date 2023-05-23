@@ -1,13 +1,9 @@
 import { PaddingBox } from "components";
-import Head from "next/head";
 import { Dashboard } from "page-components/Admin";
 
-const Dashboards = () => {
+const DashboardPage = () => {
 	return (
 		<>
-			<Head>
-				<title>Dashboard</title>
-			</Head>
 			<PaddingBox>
 				<Dashboard />
 			</PaddingBox>
@@ -15,4 +11,9 @@ const Dashboards = () => {
 	);
 };
 
-export default Dashboards;
+DashboardPage.pageMeta = {
+	title: "Dashboard | Admin",
+	isSubPage: true,
+};
+
+export default DashboardPage;

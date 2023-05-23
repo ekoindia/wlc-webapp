@@ -1,16 +1,16 @@
 import { PaddingBox } from "components";
-import Head from "next/head";
 import { Home } from "page-components";
 
-const home = () => {
+const HomePage = () => {
 	return (
 		<PaddingBox>
-			<Head>
-				<title>Home</title>
-			</Head>
 			<Home />
 		</PaddingBox>
 	);
 };
 
-export default home;
+HomePage.pageMeta = {
+	title: "Home",
+};
+
+export default HomePage;

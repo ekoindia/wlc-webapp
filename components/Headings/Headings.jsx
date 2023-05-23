@@ -1,5 +1,5 @@
-import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
-import { useLayoutContext } from "contexts/LayoutContext";
+import { Box, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
+import { NavHeight } from "components/NavBar";
 import { useRouter } from "next/router";
 import { Icon } from "..";
 /**
@@ -24,35 +24,31 @@ const Headings = ({
 		router.back();
 	};
 
-	const { isNavHidden, setNavHidden } = useLayoutContext();
-	const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
+	// const { isNavHidden, setNavHidden } = useLayoutContext();
+	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
-	if (hasIcon) {
-		if (isSmallerThan768) {
-			setNavHidden(true);
-		} else {
-			setNavHidden(false);
-		}
-	} else {
-		setNavHidden(false);
-	}
+	const isNavHidden = hasIcon && isSmallScreen ? true : false;
+
+	// if (hasIcon) {
+	// 	if (isSmallScreen) {
+	// 		setNavHidden(true);
+	// 	} else {
+	// 		setNavHidden(false);
+	// 	}
+	// } else {
+	// 	setNavHidden(false);
+	// }
 
 	const styles = isNavHidden && {
-		h: {
-			base: "56px",
-			sm: "56px",
-			md: "50px",
-			lg: "60px",
-			xl: "50px",
-			"2xl": "90px",
-		},
+		h: NavHeight,
 		top: "0%",
 		w: "full",
 		position: "fixed",
 		zIndex: "99",
 		as: "section",
 		boxShadow: "0px 3px 10px #0000001A",
-		bg: "white",
+		bg: "accent.DEFAULT",
+		color: "white",
 		justifyContent: "space-between",
 	};
 
@@ -106,18 +102,7 @@ const Headings = ({
 				{isCompVisible && propComp}
 			</Flex>
 			{isNavHidden && (
-				<Box
-					as="nav"
-					w={"full"}
-					h={{
-						base: "56px",
-						sm: "56px",
-						md: "50px",
-						lg: "60px",
-						xl: "50px",
-						"2xl": "90px",
-					}}
-				></Box>
+				<Box as="nav" w={"full"} mb="10px" h={NavHeight}></Box>
 			)}
 		</>
 	);

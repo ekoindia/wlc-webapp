@@ -17,15 +17,15 @@ import Link from "next/link";
 import { Fragment, useState } from "react";
 import { Button, Icon, IconButtons, OrgLogo } from "..";
 
+export const NavHeight = {
+	base: "56px",
+	md: "50px",
+	lg: "60px",
+	"2xl": "90px",
+};
+
 const NavBar = ({ setNavOpen }) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
-
-	const NavHeight = {
-		base: "56px",
-		md: "50px",
-		lg: "60px",
-		"2xl": "90px",
-	};
 
 	return (
 		<>
@@ -93,7 +93,11 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						variant="none"
 					/>
 
-					<OrgLogo orgDetail={orgDetail} size="md" />
+					<OrgLogo
+						orgDetail={orgDetail}
+						size="md"
+						ml={{ base: 1, lg: 0 }}
+					/>
 				</Box>
 				<Box display={{ base: "flex", md: "flex" }}>
 					<Menu>

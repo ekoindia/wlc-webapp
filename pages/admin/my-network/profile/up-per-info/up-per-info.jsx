@@ -1,21 +1,20 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
 import { NetworkObject } from "constants";
-import Head from "next/head";
 import { UpdatePersonalInfo } from "page-components/Admin";
 
-function updatePersonalInfo() {
+function UpdatePersonalInfoPage() {
 	return (
-		<>
-			<Head>
-				<title>Update Personal Information</title>
-			</Head>
-			<PaddingBox>
-				<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
-					<UpdatePersonalInfo />
-				</BreadcrumbsWrapper>
-			</PaddingBox>
-		</>
+		<PaddingBox>
+			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+				<UpdatePersonalInfo />
+			</BreadcrumbsWrapper>
+		</PaddingBox>
 	);
 }
 
-export default updatePersonalInfo;
+UpdatePersonalInfoPage.pageMeta = {
+	title: "My Network > Update Personal Info | Admin",
+	isSubPage: true,
+};
+
+export default UpdatePersonalInfoPage;
