@@ -2,14 +2,12 @@ import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 function useLogin(login, setStep, setEmail) {
 	const { login: processLoginResponse } = useUser();
 	const [busy, setBusy] = useState(false);
 	const toast = useToast();
-	const router = useRouter();
 
 	function submitLogin(data) {
 		setBusy(true);
@@ -31,12 +29,14 @@ function useLogin(login, setStep, setEmail) {
 
 				if (
 					!(
-						responseData &&
-						responseData.details &&
-						responseData.access_token &&
-						responseData.details.code &&
-						responseData.details.mobile &&
-						responseData.details.mobile.toString().length > 6
+						(
+							responseData &&
+							responseData.details &&
+							responseData.access_token
+						) // &&
+						// responseData.details.code &&
+						// responseData.details.mobile &&
+						// responseData.details.mobile.toString().length > 6
 					)
 				) {
 					if (responseData.otpFailed) {
@@ -59,12 +59,11 @@ function useLogin(login, setStep, setEmail) {
 						return;
 					}
 
-					if (responseData.details.mobile === "1") {
-						processLoginResponse(responseData);
-
-						router.push("/signup");
-						return;
-					}
+					// if (responseData.details.mobile === "1") {
+					// 	processLoginResponse(responseData);
+					// 	router.push("/signup");
+					// 	return;
+					// }
 					// TODO: Start Onboarding Process
 					// Login Failed
 					toast({

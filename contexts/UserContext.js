@@ -107,8 +107,7 @@ const UserProvider = ({ userMockData, children }) => {
 		});
 	};
 
-	const isLoggedIn =
-		state?.loggedIn && state?.access_token && state?.userId > 1;
+	const isLoggedIn = state?.loggedIn && state?.access_token; // && state?.userId > 1;
 
 	const userContextValue = useMemo(() => {
 		return {

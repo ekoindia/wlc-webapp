@@ -54,12 +54,10 @@ export const UserReducer = (state, { type, payload }) => {
 		case "LOGIN": {
 			if (
 				!(
-					payload &&
-					payload.details &&
-					payload.access_token &&
-					payload.details.code &&
-					payload.details.mobile &&
-					payload.details.mobile.toString().length > 5
+					(payload && payload.details && payload.access_token) // &&
+					// payload.details.code &&
+					// payload.details.mobile &&
+					// payload.details.mobile.toString().length > 5
 				)
 			) {
 				console.log("login Failed");
