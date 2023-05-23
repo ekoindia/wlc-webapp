@@ -220,24 +220,22 @@ const AccordionMenu = ({
 }) => {
 	const [openIndex, setOpenIndex] = useState(-1);
 
+	useEffect(() => {
+		setOpenIndex(isDistributor ? 1 : trxnList?.length > 0 ? 0 : -1);
+	}, [isDistributor, trxnList?.length]);
+
 	// Hide transaction sub-menus for admin...
 	if (isAdmin) return null;
 
 	// Hide if nothing to show...
 	if (!(trxnList?.length > 0 || otherList?.length > 0)) return null;
 
-	const defaultExpandIndex = isDistributor
-		? 1
-		: trxnList?.length > 0
-		? 0
-		: -1;
-
 	return (
 		<Accordion
 			allowToggle
 			w="100%"
 			textColor="white"
-			defaultIndex={defaultExpandIndex}
+			index={openIndex}
 			onChange={setOpenIndex}
 		>
 			{/* Start A Transaction... */}
