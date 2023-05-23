@@ -10,17 +10,6 @@ import { Icon } from "components";
  */
 
 const DetailedStatementCard = ({ item }) => {
-	// const item = {
-	// 	transactionId: 3027555195,
-	// 	datetime: "29/11/2022, 09:58:48 AM",
-	// 	activity: "DMT Commission",
-	// 	description:
-	// 		"Saurabh Mullick, 9654110669 A/C:20082437069 STATE BANK OF INDIA",
-	// 	amount: "20",
-	// 	debit_credit: "DR",
-	// 	type: "credit",
-	// 	balance: "15,893.00",
-	// };
 	return (
 		<>
 			<Flex direction="column" fontSize="12px" rowGap="2">
@@ -29,8 +18,7 @@ const DetailedStatementCard = ({ item }) => {
 						Transaction ID:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
-						{/* {item.agent_mobile} */}
-						{/* {item.transaction_id} */}
+						{item.transaction_id}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -38,7 +26,6 @@ const DetailedStatementCard = ({ item }) => {
 						Date & Time:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
-						{/* {item.agent_mobile} */}
 						{item.date_time}
 					</Box>
 				</Flex>
@@ -47,7 +34,6 @@ const DetailedStatementCard = ({ item }) => {
 						Activity:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
-						{/* {item.agent_mobile} */}
 						{item.activity}
 					</Box>
 				</Flex>
@@ -56,13 +42,11 @@ const DetailedStatementCard = ({ item }) => {
 						Description:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
-						{/* {item.agent_mobile} */}
 						{item.description}
 					</Box>
 				</Flex>
 			</Flex>
 			<Flex justifyContent="space-between" mt="14px">
-				{" "}
 				<Flex direction={"column"}>
 					<Box as="span" color="light" fontSize="12px">
 						Amount
@@ -98,7 +82,6 @@ const DetailedStatementCard = ({ item }) => {
 						Running Balance
 					</Box>
 					<Box fontSize="16px" fontWeight="medium">
-						{" "}
 						&#x20B9;{item.running_balance}
 					</Box>
 				</Flex>

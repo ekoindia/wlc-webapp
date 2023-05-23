@@ -1,5 +1,6 @@
 import { Table } from "components";
 import { getHistoryTableProcessedData } from ".";
+import { HistoryCard } from "..";
 
 /**
  * A <HistoryTable> component
@@ -40,8 +41,6 @@ const HistoryTable = ({ transactionList }) => {
 	];
 
 	const rendererExpandedRow = [
-		// { name: "date", field: "Date" },
-		// { name: "time", field: "Time" },
 		{ name: "customerMobile", field: "Customer Mobile" },
 		{ name: "balance", field: "Balance Amount", show: "Amount" },
 		{ name: "commissionEarned", field: "Commission Earned" },
@@ -53,7 +52,6 @@ const HistoryTable = ({ transactionList }) => {
 	return (
 		<>
 			<Table
-				// pageLimit={10}
 				renderer={renderer}
 				rendererExpandedRow={rendererExpandedRow}
 				data={processedData}
@@ -62,6 +60,7 @@ const HistoryTable = ({ transactionList }) => {
 				accordian={true}
 				isPaginationRequired={false}
 				isOnclickRequire={false}
+				ResponsiveCard={HistoryCard}
 			/>
 		</>
 	);
