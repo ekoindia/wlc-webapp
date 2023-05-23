@@ -1,21 +1,20 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
 import { NetworkObject } from "constants";
-import Head from "next/head";
 import { UpdateSellerAddress } from "page-components/Admin";
 
-function upSellAdd() {
+function UpdateSellerAddressPage() {
 	return (
-		<>
-			<Head>
-				<title>Update Seller Address</title>
-			</Head>
-			<PaddingBox>
-				<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
-					<UpdateSellerAddress />
-				</BreadcrumbsWrapper>
-			</PaddingBox>
-		</>
+		<PaddingBox>
+			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+				<UpdateSellerAddress />
+			</BreadcrumbsWrapper>
+		</PaddingBox>
 	);
 }
 
-export default upSellAdd;
+UpdateSellerAddressPage.pageMeta = {
+	title: "My Network > Update Seller Address | Admin",
+	isSubPage: true,
+};
+
+export default UpdateSellerAddressPage;

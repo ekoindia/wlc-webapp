@@ -100,9 +100,18 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 	}
 
 	// Get standard or custom Layout for the page...
-	// For custom layout, define the getLayout function in the page Component.
+	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx).
+	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
 	const getLayout =
-		Component.getLayout || ((page) => <Layout>{page}</Layout>);
+		Component.getLayout ||
+		((page) => (
+			<Layout
+				appName={org?.app_name}
+				pageMeta={Component?.pageMeta || {}}
+			>
+				{page}
+			</Layout>
+		));
 
 	const AppCompArray = (
 		<ChakraProvider

@@ -131,11 +131,7 @@ const Table = ({
 							<Flex justify="space-between">
 								<Flex
 									w="88%"
-									gap={{
-										base: "6",
-										xl: "8",
-										"2xl": "10",
-									}}
+									gap={{ base: "6", xl: "8", "2xl": "10" }}
 									wrap="wrap"
 									key={index}
 									fontSize={{

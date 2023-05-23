@@ -1,18 +1,17 @@
 import { PaddingBox } from "components";
-import Head from "next/head";
 import { Profile } from "page-components";
 
 const ProfilePage = () => {
 	return (
-		<>
-			<PaddingBox>
-				<Head>
-					<title>Profile</title>
-				</Head>
-				<Profile />
-			</PaddingBox>
-		</>
+		<PaddingBox>
+			<Profile />
+		</PaddingBox>
 	);
+};
+
+ProfilePage.pageMeta = {
+	title: "My Profile",
+	isSubPage: true,
 };
 
 export default ProfilePage;

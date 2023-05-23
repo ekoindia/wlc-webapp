@@ -32,20 +32,24 @@ const IconsDemo = () => {
 		});
 
 		let _size = 0;
+		let _count = 0;
 		const _icons = Object.keys(IconLibrary).map((ico) => {
-			const icoSize =
-				(IconLibrary[ico].path?.length || 0) +
-				(IconLibrary[ico].viewBox?.length || 0);
+			const i = IconLibrary[ico];
+			const icoSize = JSON.stringify(i).length - 2 + ico.length;
+			// (i.path ? i.path?.length || 0) +
+			// (i.viewBox?.length || 0) +
+			// (i.link?.length || 0);
 			_size += icoSize;
+			_count += i.link ? 0 : 1;
 			return {
 				name: ico,
 				size: icoSize,
 				category: ico in _cat ? _cat[ico] : "Uncategorized",
-				...IconLibrary[ico],
+				...i,
 			};
 		});
 		setIcons(_icons);
-		setIconCount(_icons.length);
+		setIconCount(_count);
 		setIconsSize(_size);
 	}, [IconLibrary]);
 
@@ -68,7 +72,7 @@ const IconsDemo = () => {
 							? aLink.localeCompare(bLink)
 							: a.category.localeCompare(b.category);
 					}
-					return (a.path?.length || 0) - (b.path?.length || 0);
+					return (a.size || 0) - (b.size || 0);
 			  })
 			: icons;
 		setSortedIcons(_sortedIcons);
@@ -81,8 +85,8 @@ const IconsDemo = () => {
 					Icon Library
 				</Text>
 				<Text>
-					Count: {iconCount}, Total Size:{" "}
-					{Math.trunc(iconsSize / 1024)} KB
+					{iconCount} Icons{" "}
+					<small>({Math.trunc(iconsSize / 1024)} KB bundle)</small>
 				</Text>
 				<br />
 

@@ -18,7 +18,6 @@ const RouteProtecter = (props) => {
 	const { router, children } = props; //TODO : Getting Error in _app.tsx
 	const { isLoggedIn, isAdmin, loading, setLoading } = useSession();
 	const [authorized, setAuthorized] = useState(false);
-	// const [is404, setIs404] = useState(false);
 
 	const role = isAdmin ? "admin" : "non-admin";
 
@@ -34,38 +33,29 @@ const RouteProtecter = (props) => {
 
 		if (path === "/404") {
 			setLoading(false);
-			// setIs404(true);
 		}
 		// when the user is isLoggedIn and loading is false
 		else if (!isLoggedIn && !loading) {
 			console.log("::::nonLogged user::::");
-			console.log("condition 1 :", !publicLinks.includes(path));
 			// This condition will redirect to initial path if the route is inaccessible
 			if (!publicLinks.includes(path)) {
-				console.log("Enter in nonLogged : if");
 				router.push("/");
 				return;
 			}
 			if (authorized) setAuthorized(false);
 		} else if (isLoggedIn && role === "admin") {
-			console.log("::::Enter in Admin::::");
-			console.log("condition 1 :", !path.includes(baseRoute[role]));
-			console.log("condition 2 :", publicLinks.includes(path));
+			console.log("::::Enter in Admin::::", path);
 			// This condition will redirect to initial path if the route is inaccessible after isLoggedIn
 			if (publicLinks.includes(path) || !path.includes(baseRoute[role])) {
-				console.log("Enter in admin : if");
 				router.replace(initialRoute[role]);
 				return;
 			}
 			setLoading(false);
 			setAuthorized(true);
 		} else if (isLoggedIn && role === "non-admin") {
-			console.log("::::Enter in nonAdmin::::");
-			console.log("condition 1 :", path.includes(baseRoute[role]));
-			console.log("condition 2 :", publicLinks.includes(path));
+			console.log("::::Enter in nonAdmin::::", path);
 			// Above condition will check, publicLink contain path or path contain "/admin"
 			if (publicLinks.includes(path) || path.includes("/admin")) {
-				console.log("Enter in nonAdmin : if");
 				router.replace(initialRoute[role]);
 				return;
 			}
@@ -93,6 +83,7 @@ const RouteProtecter = (props) => {
 	}
 
 	console.log("%cRoute-Protecter: End", "color:green");
+
 	return <>{children}</>;
 };
 

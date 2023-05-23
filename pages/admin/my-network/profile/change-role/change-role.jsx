@@ -1,21 +1,20 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
 import { NetworkObject } from "constants";
-import Head from "next/head";
 import { ChangeRole } from "page-components/Admin";
 
-const changeRole = () => {
+const ChangeRolePage = () => {
 	return (
-		<>
-			<Head>
-				<title>Change Role</title>
-			</Head>
-			<PaddingBox>
-				<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
-					<ChangeRole />
-				</BreadcrumbsWrapper>
-			</PaddingBox>
-		</>
+		<PaddingBox>
+			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+				<ChangeRole />
+			</BreadcrumbsWrapper>
+		</PaddingBox>
 	);
 };
 
-export default changeRole;
+ChangeRolePage.pageMeta = {
+	title: "My Network > Change Role | Admin",
+	isSubPage: true,
+};
+
+export default ChangeRolePage;
