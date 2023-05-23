@@ -2,12 +2,14 @@ import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 function useLogin(login, setStep, setEmail) {
 	const { login: processLoginResponse } = useUser();
 	const [busy, setBusy] = useState(false);
 	const toast = useToast();
+	const router = useRouter();
 
 	function submitLogin(data) {
 		setBusy(true);
