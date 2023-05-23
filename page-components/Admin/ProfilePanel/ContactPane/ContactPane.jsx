@@ -53,7 +53,7 @@ const ContactPane = ({ rowData: contactdata }) => {
 					<Flex as="span" align="center">
 						<Text color="light">Mobile number:</Text>
 						<Text fontWeight={"medium"}>
-							&nbsp; {contactdata.mobile_number}
+							&nbsp; {contactdata?.mobile_number}
 						</Text>
 					</Flex>
 					{isSmallerThan769 ? (
@@ -72,7 +72,7 @@ const ContactPane = ({ rowData: contactdata }) => {
 					<Flex as="span" align="center">
 						<Text color="light">Email:</Text>
 						<Text fontWeight={"medium"}>
-							&nbsp; {contactdata.email}
+							&nbsp; {contactdata?.email}
 						</Text>
 					</Flex>
 					<IconButtons

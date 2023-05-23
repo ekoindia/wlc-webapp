@@ -49,7 +49,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 					>
 						<Text>User Code:</Text>
 						<Text color={"primary.DEFAULT"}>
-							<span>&nbsp;</span> {compdata.eko_code}
+							<span>&nbsp;</span> {compdata?.eko_code}
 						</Text>
 					</Flex>
 				</Box>
@@ -75,7 +75,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 							fontSize={{ base: 16, md: 13, lg: 16 }}
 							fontWeight="medium"
 						>
-							{compdata.account_type}
+							{compdata?.account_type}
 						</Text>
 					</Box>
 					{isSmallerThan440 ? (
@@ -101,7 +101,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 							fontSize={{ base: 16, md: 13, lg: 16 }}
 							fontWeight="medium"
 						>
-							{compdata.plan_name}
+							{compdata?.plan_name}
 						</Text>
 					</Box>
 					{isSmallerThan440 ? (
@@ -174,7 +174,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 									fontSize={20}
 								>
 									<span>&#x20B9; </span>
-									{compdata.wallet_balance}
+									{compdata?.wallet_balance}
 								</Text>
 							</Box>
 						</Flex>

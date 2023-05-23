@@ -31,7 +31,7 @@ const AddressPane = ({ rowData: addressdata }) => {
 					mb={{ base: 26, md: 3, xl: 26 }}
 					fontSize={{ base: 16, md: 14, lg: 16 }}
 				>
-					<Text>{addressdata.address}</Text>
+					<Text>{addressdata?.address}</Text>
 				</Box>
 				<Box>
 					<Box mt={{ base: 26, md: 2, xl: 26 }}>
@@ -46,13 +46,13 @@ const AddressPane = ({ rowData: addressdata }) => {
 							fontSize={{ base: 16, md: 14, lg: 16 }}
 							fontWeight="medium"
 						>
-							{addressdata.ownership_type}
+							{addressdata?.ownership_type}
 						</Text>
 					</Box>
 					<Box mt={{ base: 8, lg: 5, xl: 8 }} mb={5} height="200px">
 						<Map
-							lat={addressdata.lattitude}
-							lng={addressdata.longitude}
+							lat={addressdata?.lattitude}
+							lng={addressdata?.longitude}
 						/>
 					</Box>
 					<Flex
@@ -84,8 +84,8 @@ const AddressPane = ({ rowData: addressdata }) => {
 								}}
 								onClick={() =>
 									openGoogleMap(
-										addressdata.lattitude,
-										addressdata.longitude
+										addressdata?.lattitude,
+										addressdata?.longitude
 									)
 								}
 							/>

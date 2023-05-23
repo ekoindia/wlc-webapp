@@ -23,28 +23,28 @@ const PersonalPane = ({ rowData: personalpane }) => {
 		{
 			name: "date_of_birth",
 			label: "Date of birth",
-			value: personalpane.date_of_birth,
+			value: personalpane?.date_of_birth,
 		},
-		{ name: "gender", label: "Gender", value: personalpane.gender },
+		{ name: "gender", label: "Gender", value: personalpane?.gender },
 		{
 			name: "shop_name",
 			label: "Shop name",
-			value: personalpane.shop_name,
+			value: personalpane?.shop_name,
 		},
 		{
 			name: "marital_status",
 			label: "Marital Status",
-			value: personalpane.marital_status,
+			value: personalpane?.marital_status,
 		},
 		{
 			name: "monthly_income",
 			label: "Monthly Income",
-			value: personalpane.monthly_income,
+			value: personalpane?.monthly_income,
 		},
 		{
 			name: "shop_type",
 			label: "Shop Type",
-			value: personalpane.shop_type,
+			value: personalpane?.shop_type,
 		},
 	];
 
