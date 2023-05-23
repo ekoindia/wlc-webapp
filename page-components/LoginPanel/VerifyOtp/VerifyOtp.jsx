@@ -167,7 +167,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 				fontSize={{ base: "lg", "2xl": "xl" }}
 				disabled={loading}
 				loading={loading}
-				onClick={verifyOtpHandler}
+				onClick={() => verifyOtpHandler()}
 			>
 				Submit
 			</Button>
