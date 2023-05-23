@@ -8,7 +8,7 @@ export const globalStyles = {
 		// padding: 0,
 		// width: "100vw",
 		// height: "100vh",
-		"overscroll-behavior-y": "none",
+		overscrollBehaviorY: "none",
 	},
 	"[hidden], [hideempty]:empty": {
 		display: "none !important",
@@ -19,6 +19,10 @@ export const globalStyles = {
 	"img, svg, video, canvas, audio, iframe, embed, object": {
 		maxWidth: "100%",
 		display: "block",
+	},
+	"[no-select]": {
+		PointerEvents: "none",
+		userSelect: "none",
 	},
 	".customScrollbars::-webkit-scrollbar-track": {
 		WebkitBoxShadow: "inset 0 0 1px rgba(0,0,0,0)",
