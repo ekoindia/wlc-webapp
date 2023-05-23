@@ -4,6 +4,7 @@ export {
 	NetworkObject,
 	NotificationsBreadcrumbData,
 	PricingCommissionObject,
+	QueryObject,
 	TransactionHistoryObject,
 } from "./BreadcrumbsData";
 export { oldIcons } from "./connectIcons";

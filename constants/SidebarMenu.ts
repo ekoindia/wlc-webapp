@@ -82,6 +82,11 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 		icon: "person-add",
 		link: "/admin/bulk-onboarding",
 	},
+	{
+		icon: "feedback",
+		name: "Query Center",
+		link: "/admin/query",
+	},
 ];
 
 /**
