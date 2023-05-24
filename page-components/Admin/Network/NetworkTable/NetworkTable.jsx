@@ -40,7 +40,7 @@ const NetworkTable = ({
 	const router = useRouter();
 	const onRowClick = (rowData) => {
 		const cellnumber = rowData?.agent_mobile;
-		localStorage.setItem("rowData", JSON.stringify(rowData));
+		localStorage.setItem("network_seller_details", JSON.stringify(rowData));
 		router.push({
 			pathname: `/admin/my-network/profile`,
 			query: { cellnumber },

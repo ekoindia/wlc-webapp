@@ -67,6 +67,7 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 	});
 
 	const fetchPromise = fetch(url, {
+		signal: _controller ? _controller.signal : undefined,
 		method: method || DEFAULT_METHOD,
 		headers: {
 			...DEFAULT_HEADERS,

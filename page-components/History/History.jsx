@@ -1,11 +1,13 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Button, Calenders, Headings, Icon, Input, Modal } from "components";
 import { Endpoints, TransactionTypes } from "constants";
-import { useUser } from "contexts";
-import useRequest from "hooks/useRequest";
+import { useSession, useUser } from "contexts";
+import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { HistoryPagination, HistoryTable } from ".";
+
+const limit = 25; // Page size
 
 /**
  * A History component shows transaction history
@@ -24,6 +26,7 @@ const History = () => {
 		amount: "",
 		rr_no: "",
 	};
+	const [data, setData] = useState();
 	const [activePillIndex, setActivePillIndex] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
@@ -32,10 +35,19 @@ const History = () => {
 	const { userData } = useUser();
 	const { accountDetails } = userData;
 	const { account_list } = accountDetails;
-
+	const { accessToken } = useSession();
 	const router = useRouter();
+	const [finalFormState, setFinalFormState] = useState({});
 
-	const { search } = router.query;
+	// Search for a transaction based on the parameter query "search".
+	// The query can be a transaction-id, account, amount,
+	// or, a mobile number.
+	useEffect(() => {
+		const { search } = router.query;
+		if (search) {
+			quickSearch(search);
+		}
+	}, [router.query]);
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -43,58 +55,82 @@ const History = () => {
 	const handlePillClick = (index) => {
 		setActivePillIndex(index);
 	};
-	const limit = 25; // Page size
 
-	const body = {
-		interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
-		start_index: currentPage * limit,
-		limit: limit,
-		...formState,
+	const hitQuery = (abortController, key) => {
+		console.log("[History] fetch started...", key);
+
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
+				start_index: currentPage * limit,
+				limit: limit,
+				account_id:
+					account_list &&
+					account_list.length > 0 &&
+					account_list[0].id
+						? account_list[0]?.id
+						: null,
+				...finalFormState,
+			},
+			controller: abortController,
+			token: accessToken,
+		})
+			.then((data) => {
+				const tx_list = data?.data?.transaction_list ?? [];
+				setData(tx_list);
+				console.log("[History] fetch result...", key, tx_list);
+			})
+			.catch((err) => {
+				console.error("[History] error: ", err);
+			});
 	};
 
-	if (account_list && account_list.length > 0 && account_list[0].id) {
-		body.account_id = account_list[0].id;
-	}
-
-	const { data, mutate, controller } = useRequest({
-		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-		body: { ...body },
-	});
-
-	// Search for a transaction based on the parameter query "search".
-	// The query can be a transaction-id, account, amount,
-	// or, a mobile number.
+	// Fetch transaction history when the following change: currentPage, finalFormState
 	useEffect(() => {
-		if (search) {
-			console.log(">>>> ABORTING CONTROLLER");
-			quickSearch(search);
-			onApply();
-		}
-	}, [search]);
+		console.log("[History] fetch init", currentPage, finalFormState);
 
-	useEffect(() => {
-		mutate();
-	}, [currentPage]);
+		const controller = new AbortController();
+		hitQuery(
+			controller,
+			`${currentPage}-${JSON.stringify(finalFormState)}`
+		);
 
-	useEffect(() => {
-		if (!clear) {
-			mutate();
-		}
-	}, [clear]);
+		return () => {
+			console.log(
+				"[History] fetch aborted... ",
+				currentPage,
+				JSON.stringify(finalFormState),
+				controller
+			);
+			controller.abort();
+		};
+	}, [currentPage, finalFormState]);
 
-	const onApply = () => {
-		controller.abort();
-		mutate();
+	const onFilterSubmit = () => {
+		console.log("hitQuery inside onFilterSubmit");
+		// Get all non-empty values from formState and set in finalFormState
+		const _finalFormState = {};
+		Object.keys(formState).forEach((key) => {
+			if (formState[key]) {
+				_finalFormState[key] = formState[key];
+			}
+		});
+		setFinalFormState(_finalFormState);
+
 		onClose();
 		setClear(true);
 	};
 
-	const onClear = () => {
+	const onFilterClear = () => {
 		setFormState({ ...formElements });
+		setFinalFormState({});
 		setClear(false);
 	};
 
+	/**
+	 * Update formState with user inputs
+	 * @param {*} event
+	 */
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormState((prevFormState) => ({
@@ -108,13 +144,13 @@ const History = () => {
 	 * @param {*} query
 	 */
 	const quickSearch = (query) => {
+		console.log("query inside quickSearch", query);
 		if (!query) return;
 
 		if (/^[0-9]+$/.test(query) !== true) {
 			// Not a number
 			return;
 		}
-
 		// Detect type of query
 		let type = "account";
 		if (/^[6-9][0-9]{9}$/.test(query)) {
@@ -125,14 +161,20 @@ const History = () => {
 			type = "amount";
 		}
 
-		setFormState((prevFormState) => ({
-			...prevFormState,
+		// Set Filter form for searching...
+		setFormState({
+			...formElements,
 			[type]: query,
-		}));
+		});
+		setFinalFormState({
+			[type]: query,
+		});
+		onClose();
+		setClear(true);
 	};
 
-	const transactionList = data?.data?.transaction_list ?? [];
-	const listLength = transactionList.length;
+	const transactionList = data;
+	const listLength = transactionList?.length;
 	const hasNext = listLength >= limit;
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -166,11 +208,10 @@ const History = () => {
 						isOpen,
 						onOpen,
 						onClose,
-						onApply,
-						onClear,
+						onFilterSubmit,
+						onFilterClear,
 					}}
 				/>
-
 				{/* <=============================Transaction Table & Card ===============================> */}
 				{/* // TODO add condition: if pageLimit is a multiple of totalRecords then show "no items" or "no more items" accordingly */}
 				<HistoryTable transactionList={transactionList} />
@@ -238,8 +279,8 @@ const HistoryToolbar = ({
 	isOpen,
 	onOpen,
 	onClose,
-	onApply,
-	onClear,
+	onFilterSubmit,
+	onFilterClear,
 }) => {
 	const labelStyle = {
 		fontSize: { base: "sm" },
@@ -276,7 +317,7 @@ const HistoryToolbar = ({
 					<Button
 						size="xs"
 						variant="link"
-						onClick={onClear}
+						onClick={onFilterClear}
 						_hover={{ TextDecoration: "none" }}
 					>
 						Clear Filter
@@ -299,7 +340,7 @@ const HistoryToolbar = ({
 					title="Filter"
 					submitText="Apply Now"
 					isCentered={{ base: "none", lg: "true" }}
-					onSubmit={onApply}
+					onSubmit={onFilterSubmit}
 					motionPreset="slideInBottom"
 					scrollBehavior="inside"
 				>

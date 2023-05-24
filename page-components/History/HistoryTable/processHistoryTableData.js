@@ -1,6 +1,6 @@
 export const getHistoryTableProcessedData = (data) => {
 	const processedData = [];
-	data.map((row) => {
+	data?.map((row) => {
 		const temp = {};
 		if (row) {
 			// temp["description"] = getNarrationText(dummyRowData);

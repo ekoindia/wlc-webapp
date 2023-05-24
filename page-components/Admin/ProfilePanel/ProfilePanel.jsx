@@ -101,7 +101,9 @@ const ProfilePanel = () => {
 	};
 
 	useEffect(() => {
-		const storedData = JSON.parse(localStorage.getItem("rowData"));
+		const storedData = JSON.parse(
+			localStorage.getItem("network_seller_details")
+		);
 		if (storedData?.agent_mobile === cellnumber) {
 			setRowData(storedData);
 		} else {
