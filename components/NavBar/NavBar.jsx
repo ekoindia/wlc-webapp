@@ -14,8 +14,9 @@ import {
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
-import { Button, Icon, IconButtons, OrgLogo } from "..";
+import { Button, Icon, IconButtons, Input, OrgLogo } from "..";
 
 export const NavHeight = {
 	base: "56px",
@@ -67,6 +68,13 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	const { userData } = useUser();
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
+	const router = useRouter();
+
+	const handleSearchKeyDown = (e) => {
+		if (e?.key === "Enter" && e?.target?.value) {
+			router.push(`/history?search=${e.target.value}`);
+		}
+	};
 
 	return (
 		<>
@@ -77,28 +85,68 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				px={{ base: "4", sm: "4", md: "4", xl: "6" }}
 			>
 				<Box display={"flex"} alignItems={"center"}>
-					<IconButton
-						display={{ lg: "none" }}
-						onClick={() => {
-							setNavOpen(true);
-						}}
-						aria-label="open menu"
-						icon={<Icon name="menu" />}
-						size={"sm"}
-						mr={{
-							base: "1vw",
-							sm: "2vw",
-							md: "1vw",
-						}}
-						variant="none"
-					/>
+					<Flex align="center" minW={{ base: "auto", md: "250px" }}>
+						<IconButton
+							display={{ lg: "none" }}
+							onClick={() => {
+								setNavOpen(true);
+							}}
+							aria-label="open menu"
+							icon={<Icon name="menu" />}
+							size={"sm"}
+							mr={{
+								base: "1vw",
+								sm: "2vw",
+								md: "1vw",
+							}}
+							variant="none"
+						/>
+						<OrgLogo
+							orgDetail={orgDetail}
+							size="md"
+							ml={{ base: 1, lg: 0 }}
+						/>
+					</Flex>
 
-					<OrgLogo
-						orgDetail={orgDetail}
-						size="md"
-						ml={{ base: 1, lg: 0 }}
+					<Input
+						placeholder="Search by Transaction ID, Mobile, Account, etc"
+						inputLeftElement={
+							<Icon
+								display={{ base: "none", md: "flex" }}
+								name="search"
+								size="sm"
+								color="light"
+							/>
+						}
+						inputLeftElementStyle={{
+							h: "36px",
+						}}
+						ml={1}
+						display={{ base: "none", md: "flex" }}
+						w={{
+							base: "auto",
+							md: "280px",
+							lg: "400px",
+							xl: "500px",
+						}}
+						h="36px"
+						bg="darkShade"
+						borderWidth="0"
+						type="number"
+						radius={6}
+						maxLength={15}
+						// value={searchValue}
+						// onChange={(e) => setSearchValue(e.target.value)}
+						onKeyDown={handleSearchKeyDown}
+						_placeholder={{ fontSize: "sm" }}
+						_focus={{
+							bg: "bg",
+							boxShadow: "none",
+							transition: "background 0.3s ease-out",
+						}}
 					/>
 				</Box>
+
 				<Box display={{ base: "flex", md: "flex" }}>
 					<Menu>
 						<MenuButton

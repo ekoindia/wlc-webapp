@@ -77,7 +77,7 @@ const Input = ({
 	};
 
 	return (
-		<Flex direction="column" w="100%" {...inputContStyle}>
+		<Flex direction="column" align="center" w="100%" {...inputContStyle}>
 			{label ? (
 				<InputLabel required={required} {...labelStyle}>
 					{label}
