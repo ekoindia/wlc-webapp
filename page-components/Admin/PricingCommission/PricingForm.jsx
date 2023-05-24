@@ -12,6 +12,11 @@ import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useRef, useState } from "react";
 
+const OPERATION = {
+	SUBMIT: 1,
+	FETCH: 0,
+};
+
 /**
  * A <PricingForm> component
  * TODO: Write more description here
@@ -31,7 +36,6 @@ const PricingForm = ({
 	const [commissionType, setCommissionType] = useState("0");
 	const [fromMultiSelect, setFromMultiSelect] = useState([]);
 	const [fromSelect, setFromSelect] = useState([]);
-	console.log("fromSelect", fromSelect);
 	const [data, setData] = useState([]);
 	const focusRef = useRef(null);
 	const { accessToken } = useSession();
@@ -43,13 +47,7 @@ const PricingForm = ({
 		"Your Earnings": 3.28,
 	};
 
-	// operation
-	const OP = {
-		SUBMIT: 1,
-		FETCH: 0,
-	};
-
-	const handleApiCall = (op) => {
+	const hitQuery = (op) => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -70,9 +68,9 @@ const PricingForm = ({
 			.then((data) => {
 				const selectdata =
 					commissionFor == 1
-						? data?.data?.allCspList
+						? data?.data?.allCspList ?? []
 						: commissionFor == 2
-						? data?.data?.allScspList
+						? data?.data?.allScspList ?? []
 						: [];
 				setData(selectdata);
 			})
@@ -82,11 +80,14 @@ const PricingForm = ({
 	};
 
 	useEffect(() => {
-		handleApiCall(OP.FETCH);
+		if (commissionFor !== "3") {
+			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
+			hitQuery(OPERATION.FETCH);
+		}
 	}, [product, commissionFor]);
 
 	const handleSubmit = () => {
-		handleApiCall(OP.SUBMIT);
+		hitQuery(OPERATION.SUBMIT);
 	};
 
 	const handlePopUp = (focused) => {
@@ -119,16 +120,23 @@ const PricingForm = ({
 					</Flex>
 				</RadioGroup>
 			</Flex>
-			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
-				<Text fontWeight="semibold">
-					Select {commissionForObj[commissionFor]}
-				</Text>
-				<MultiSelect
-					options={data}
-					renderer={multiSelectRenderer}
-					setData={setFromMultiSelect}
-				/>
-			</Flex>
+			{commissionFor !== "3" ? (
+				/* no need of multiselect when user clicked on product radio option in select_commission_for field */
+				<Flex
+					direction="column"
+					gap="2"
+					w={{ base: "100%", md: "500px" }}
+				>
+					<Text fontWeight="semibold">
+						Select {commissionForObj[commissionFor]}
+					</Text>
+					<MultiSelect
+						options={data}
+						renderer={multiSelectRenderer}
+						setData={setFromMultiSelect}
+					/>
+				</Flex>
+			) : null}
 			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
 				<Text fontWeight="semibold">Select Slab</Text>
 				<Select data={ProductSlabs} setSelected={setFromSelect} />

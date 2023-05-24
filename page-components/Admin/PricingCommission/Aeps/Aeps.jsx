@@ -12,7 +12,7 @@ const Aeps = ({ prop1, ...rest }) => {
 	const commissionForObj = {
 		1: "Individuals",
 		2: "Distributors",
-		// 3: "Products",
+		3: "Products",
 	};
 
 	const commissionTypeObj = {

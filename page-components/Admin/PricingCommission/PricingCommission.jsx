@@ -31,6 +31,7 @@ const PricingCommissions = () => {
 					mb={{ base: "26px", md: "10px" }}
 				>
 					<Tabs
+						isLazy
 						position="relative"
 						defaultIndex={0}
 						variant="colorful"
@@ -54,7 +55,7 @@ const PricingCommissions = () => {
 								},
 							}}
 						>
-							{Object.entries(tabs).map(([key]) => (
+							{Object.keys(tabs).map((key) => (
 								<Tab
 									key={key}
 									fontSize={{
