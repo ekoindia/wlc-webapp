@@ -1,11 +1,13 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Button, Calenders, Headings, Icon, Input, Modal } from "components";
 import { Endpoints, TransactionTypes } from "constants";
-import { useUser } from "contexts";
-import useRequest from "hooks/useRequest";
+import { useSession, useUser } from "contexts";
+import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { HistoryPagination, HistoryTable } from ".";
+
+const limit = 25; // Page size
 
 /**
  * A History component shows transaction history
@@ -24,6 +26,7 @@ const History = () => {
 		amount: "",
 		rr_no: "",
 	};
+	const [data, setData] = useState();
 	const [activePillIndex, setActivePillIndex] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
 	const [currentPage, setCurrentPage] = useState(0);
@@ -32,9 +35,14 @@ const History = () => {
 	const { userData } = useUser();
 	const { accountDetails } = userData;
 	const { account_list } = accountDetails;
-
+	const { accessToken } = useSession();
 	const router = useRouter();
+	// const [abort] = useState(() => new AbortController());
+	// const [finalFormState, setFinalFormState] = useState({});
 
+	// Search for a transaction based on the parameter query "search".
+	// The query can be a transaction-id, account, amount,
+	// or, a mobile number.
 	const { search } = router.query;
 
 	function onChangeHandler(e) {
@@ -43,49 +51,51 @@ const History = () => {
 	const handlePillClick = (index) => {
 		setActivePillIndex(index);
 	};
-	const limit = 25; // Page size
 
-	const body = {
-		interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
-		start_index: currentPage * limit,
-		limit: limit,
-		...formState,
+	const hitQuery = () => {
+		// abort.abort();
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
+				start_index: currentPage * limit,
+				limit: limit,
+				account_id:
+					account_list &&
+					account_list.length > 0 &&
+					account_list[0].id
+						? account_list[0]?.id
+						: null,
+				...formState,
+			},
+			// controller: abort,
+			token: accessToken,
+		})
+			.then((data) => {
+				const tx_list = data?.data?.transaction_list ?? [];
+				setData(tx_list);
+				console.log("tx_list", tx_list);
+			})
+			.catch((err) => {
+				console.error("error: ", err);
+			});
 	};
 
-	if (account_list && account_list.length > 0 && account_list[0].id) {
-		body.account_id = account_list[0].id;
-	}
-
-	const { data, mutate, controller } = useRequest({
-		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-		body: { ...body },
-	});
-
-	// Search for a transaction based on the parameter query "search".
-	// The query can be a transaction-id, account, amount,
-	// or, a mobile number.
 	useEffect(() => {
 		if (search) {
-			console.log(">>>> ABORTING CONTROLLER");
 			quickSearch(search);
-			onApply();
+			onFilterSubmit();
 		}
-	}, [search]);
+		hitQuery();
+	}, [currentPage, search]);
 
-	useEffect(() => {
-		mutate();
-	}, [currentPage]);
+	// useEffect(() => {}, [search]);
 
-	useEffect(() => {
-		if (!clear) {
-			mutate();
-		}
-	}, [clear]);
+	//TODO add pagination, formstate non-mt values
+	// const updateFinalForm = () => {};
 
-	const onApply = () => {
-		controller.abort();
-		mutate();
+	const onFilterSubmit = () => {
+		// controller.abort();
+		console.log("hitQuery inside onFilterSubmit");
 		onClose();
 		setClear(true);
 	};
@@ -95,6 +105,10 @@ const History = () => {
 		setClear(false);
 	};
 
+	/**
+	 * Update formState with user inputs
+	 * @param {*} event
+	 */
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormState((prevFormState) => ({
@@ -108,13 +122,13 @@ const History = () => {
 	 * @param {*} query
 	 */
 	const quickSearch = (query) => {
+		console.log("query inside quickSearch", query);
 		if (!query) return;
 
 		if (/^[0-9]+$/.test(query) !== true) {
 			// Not a number
 			return;
 		}
-
 		// Detect type of query
 		let type = "account";
 		if (/^[6-9][0-9]{9}$/.test(query)) {
@@ -131,8 +145,8 @@ const History = () => {
 		}));
 	};
 
-	const transactionList = data?.data?.transaction_list ?? [];
-	const listLength = transactionList.length;
+	const transactionList = data;
+	const listLength = transactionList?.length;
 	const hasNext = listLength >= limit;
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -166,11 +180,10 @@ const History = () => {
 						isOpen,
 						onOpen,
 						onClose,
-						onApply,
+						onFilterSubmit,
 						onClear,
 					}}
 				/>
-
 				{/* <=============================Transaction Table & Card ===============================> */}
 				{/* // TODO add condition: if pageLimit is a multiple of totalRecords then show "no items" or "no more items" accordingly */}
 				<HistoryTable transactionList={transactionList} />
@@ -238,7 +251,7 @@ const HistoryToolbar = ({
 	isOpen,
 	onOpen,
 	onClose,
-	onApply,
+	onFilterSubmit,
 	onClear,
 }) => {
 	const labelStyle = {
@@ -299,7 +312,7 @@ const HistoryToolbar = ({
 					title="Filter"
 					submitText="Apply Now"
 					isCentered={{ base: "none", lg: "true" }}
-					onSubmit={onApply}
+					onSubmit={onFilterSubmit}
 					motionPreset="slideInBottom"
 					scrollBehavior="inside"
 				>
