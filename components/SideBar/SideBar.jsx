@@ -46,40 +46,14 @@ function isCurrentRoute(routerUrl, path) {
 }
 
 //MAIN EXPORT
-const SideBar = (props) => {
-	return (
-		<>
-			<Box display={{ base: "flex", lg: "none" }}>
-				<SmallScreenSideMenu {...props} />
-			</Box>
-			<Box
-				display={{ base: "none", lg: "flex" }}
-				sx={{
-					"@media print": {
-						display: "none",
-					},
-				}}
-			>
-				<SideBarMenu />
-			</Box>
-		</>
-	);
-};
-
-export default SideBar;
-
-//FOR LAPTOP SCREENS
-const SideBarMenu = () => {
+const SideBar = ({ navOpen, setNavClose }) => {
 	const { userData, isAdmin, userType } = useUser();
 	const { interactions } = useMenuContext();
 	const { interaction_list } = interactions;
 	const router = useRouter();
 	const [trxnList, setTrxnList] = useState([]);
 	const [otherList, setOtherList] = useState([]);
-
-	const is_distributor =
-		[UserType.DISTRIBUTOR, UserType.SUPER_DISTRIBUTOR].indexOf(userType) >
-		-1;
+	const [openIndex, setOpenIndex] = useState(-1);
 
 	const menuList = isAdmin ? adminSidebarMenu : sidebarMenu;
 
@@ -116,6 +90,64 @@ const SideBarMenu = () => {
 		}
 	}, [interaction_list]);
 
+	// Set the sub-menu (accordian) index that should be open by default
+	// For Distributors, open the "Other" submenu (index = 1)
+	// For Agents, open the "Start a Transaction" submenu (index = 0)
+	useEffect(() => {
+		const isDistributor =
+			[UserType.DISTRIBUTOR, UserType.SUPER_DISTRIBUTOR].indexOf(
+				userType
+			) > -1;
+		setOpenIndex(isDistributor ? 1 : trxnList?.length > 0 ? 0 : -1);
+	}, [userType, trxnList?.length]);
+
+	const otherProps = {
+		userData,
+		menuList,
+		trxnList,
+		otherList,
+		router,
+		isAdmin,
+		openIndex,
+		setOpenIndex,
+	};
+
+	return (
+		<>
+			<Box display={{ base: "flex", lg: "none" }}>
+				<SmallScreenSideMenu
+					{...otherProps}
+					navOpen={navOpen}
+					setNavClose={setNavClose}
+				/>
+			</Box>
+			<Box
+				display={{ base: "none", lg: "flex" }}
+				sx={{
+					"@media print": {
+						display: "none",
+					},
+				}}
+			>
+				<SideBarMenu {...otherProps} />
+			</Box>
+		</>
+	);
+};
+
+export default SideBar;
+
+//FOR LAPTOP SCREENS
+const SideBarMenu = ({
+	userData,
+	menuList,
+	trxnList,
+	otherList,
+	router,
+	isAdmin,
+	openIndex,
+	setOpenIndex,
+}) => {
 	return (
 		<Box
 			className="sidebar"
@@ -165,7 +197,8 @@ const SideBarMenu = () => {
 						otherList={otherList}
 						router={router}
 						isAdmin={isAdmin}
-						isDistributor={is_distributor}
+						openIndex={openIndex}
+						setOpenIndex={setOpenIndex}
 					/>
 				</Box>
 				{/* {rest.children} */}
@@ -175,7 +208,7 @@ const SideBarMenu = () => {
 };
 
 //FOR MOBILE SCREENS
-const SmallScreenSideMenu = ({ navOpen, setNavClose }) => {
+const SmallScreenSideMenu = ({ navOpen, setNavClose, ...rest }) => {
 	const router = useRouter();
 	const { /* isOpen, onOpen, */ onClose } = useDisclosure();
 
@@ -196,7 +229,7 @@ const SmallScreenSideMenu = ({ navOpen, setNavClose }) => {
 		>
 			<DrawerOverlay />
 			<DrawerContent maxW="250px" boxShadow={"none"}>
-				<SideBarMenu />
+				<SideBarMenu {...rest} />
 				{/* setNavClose={setNavClose} */}
 			</DrawerContent>
 		</Drawer>
@@ -209,35 +242,27 @@ const SmallScreenSideMenu = ({ navOpen, setNavClose }) => {
  * @param {Array} otherList - List of "other" submenu items
  * @param {Object} router - Next.js router object
  * @param {Boolean} isAdmin - Flag to check if user is an admin
- * @param {Boolean} isDistributor - Flag to check if user is a distributor
  */
 const AccordionMenu = ({
 	trxnList = [],
 	otherList = [],
 	router,
 	isAdmin,
-	isDistributor,
+	openIndex,
+	setOpenIndex,
 }) => {
-	const [openIndex, setOpenIndex] = useState(-1);
-
 	// Hide transaction sub-menus for admin...
 	if (isAdmin) return null;
 
 	// Hide if nothing to show...
 	if (!(trxnList?.length > 0 || otherList?.length > 0)) return null;
 
-	const defaultExpandIndex = isDistributor
-		? 1
-		: trxnList?.length > 0
-		? 0
-		: -1;
-
 	return (
 		<Accordion
 			allowToggle
 			w="100%"
 			textColor="white"
-			defaultIndex={defaultExpandIndex}
+			index={openIndex}
 			onChange={setOpenIndex}
 		>
 			{/* Start A Transaction... */}
