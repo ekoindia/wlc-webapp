@@ -1,5 +1,13 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Button, Calenders, Headings, Icon, Input, Modal } from "components";
+import {
+	Button,
+	Calenders,
+	Headings,
+	Icon,
+	Input,
+	Modal,
+	SearchBar,
+} from "components";
 import { Endpoints, TransactionTypes } from "constants";
 import { useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
@@ -49,8 +57,12 @@ const History = () => {
 		}
 	}, [router.query]);
 
-	function onChangeHandler(e) {
+	function onSearchSubmit(e) {
 		setSearchValue(e);
+		if (e) {
+			quickSearch(e);
+		}
+		console.log("search value", e);
 	}
 	const handlePillClick = (index) => {
 		setActivePillIndex(index);
@@ -124,6 +136,7 @@ const History = () => {
 	const onFilterClear = () => {
 		setFormState({ ...formElements });
 		setFinalFormState({});
+		setSearchValue("");
 		setClear(false);
 	};
 
@@ -201,7 +214,7 @@ const History = () => {
 						pillsData,
 						handlePillClick,
 						searchValue,
-						onChangeHandler,
+						onSearchSubmit,
 						handleChange,
 						clear,
 						formState,
@@ -271,8 +284,8 @@ const HistoryToolbar = ({
 	// activePillIndex,
 	// pillsData,
 	// handlePillClick,
-	// searchValue,
-	// onChangeHandler,
+	searchValue,
+	onSearchSubmit,
 	clear,
 	handleChange,
 	formState,
@@ -305,14 +318,7 @@ const HistoryToolbar = ({
                             ))}
                         </Flex> */}
 			<Flex w="100%" gap="2" justify="flex-end" align="center">
-				{/* <==========Search =========> */}
-				{/* <SearchBar
-                                value={searchValue}
-                                onChangeHandler={onChangeHandler}
-                /> */}
-
-				{/* <==========Filter Button =========> */}
-
+				{/* <==========Clear Filter Button =========> */}
 				{clear && (
 					<Button
 						size="xs"
@@ -323,6 +329,17 @@ const HistoryToolbar = ({
 						Clear Filter
 					</Button>
 				)}
+
+				{/* <==========Search =========> */}
+				<SearchBar
+					type="number"
+					placeholder="Search by Transaction ID, Mobile, Account, etc"
+					value={searchValue}
+					setSearch={onSearchSubmit}
+					minSearchLimit={2}
+				/>
+
+				{/* <==========Filter Button =========> */}
 				<Button
 					size="lg"
 					_hover={{ bg: "accent.DEFAULT" }}
