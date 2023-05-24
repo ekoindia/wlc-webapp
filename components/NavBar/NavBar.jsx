@@ -71,7 +71,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	const router = useRouter();
 
 	const handleSearchKeyDown = (e) => {
-		if (e?.key === "Enter" && e?.target?.value) {
+		if (e?.key === "Enter" && e?.target?.value?.length > 1) {
 			router.push(`/history?search=${e.target.value}`);
 		}
 	};
