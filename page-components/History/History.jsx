@@ -37,13 +37,17 @@ const History = () => {
 	const { account_list } = accountDetails;
 	const { accessToken } = useSession();
 	const router = useRouter();
-	// const [abort] = useState(() => new AbortController());
-	// const [finalFormState, setFinalFormState] = useState({});
+	const [finalFormState, setFinalFormState] = useState({});
 
 	// Search for a transaction based on the parameter query "search".
 	// The query can be a transaction-id, account, amount,
 	// or, a mobile number.
-	const { search } = router.query;
+	useEffect(() => {
+		const { search } = router.query;
+		if (search) {
+			quickSearch(search);
+		}
+	}, [router.query]);
 
 	function onChangeHandler(e) {
 		setSearchValue(e);
@@ -52,8 +56,9 @@ const History = () => {
 		setActivePillIndex(index);
 	};
 
-	const hitQuery = () => {
-		// abort.abort();
+	const hitQuery = (abortController, key) => {
+		console.log("[History] fetch started...", key);
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
@@ -65,43 +70,60 @@ const History = () => {
 					account_list[0].id
 						? account_list[0]?.id
 						: null,
-				...formState,
+				...finalFormState,
 			},
-			// controller: abort,
+			controller: abortController,
 			token: accessToken,
 		})
 			.then((data) => {
 				const tx_list = data?.data?.transaction_list ?? [];
 				setData(tx_list);
-				console.log("tx_list", tx_list);
+				console.log("[History] fetch result...", key, tx_list);
 			})
 			.catch((err) => {
-				console.error("error: ", err);
+				console.error("[History] error: ", err);
 			});
 	};
 
+	// Fetch transaction history when the following change: currentPage, finalFormState
 	useEffect(() => {
-		if (search) {
-			quickSearch(search);
-			onFilterSubmit();
-		}
-		hitQuery();
-	}, [currentPage, search]);
+		console.log("[History] fetch init", currentPage, finalFormState);
 
-	// useEffect(() => {}, [search]);
+		const controller = new AbortController();
+		hitQuery(
+			controller,
+			`${currentPage}-${JSON.stringify(finalFormState)}`
+		);
 
-	//TODO add pagination, formstate non-mt values
-	// const updateFinalForm = () => {};
+		return () => {
+			console.log(
+				"[History] fetch aborted... ",
+				currentPage,
+				JSON.stringify(finalFormState),
+				controller
+			);
+			controller.abort();
+		};
+	}, [currentPage, finalFormState]);
 
 	const onFilterSubmit = () => {
-		// controller.abort();
 		console.log("hitQuery inside onFilterSubmit");
+		// Get all non-empty values from formState and set in finalFormState
+		const _finalFormState = {};
+		Object.keys(formState).forEach((key) => {
+			if (formState[key]) {
+				_finalFormState[key] = formState[key];
+			}
+		});
+		setFinalFormState(_finalFormState);
+
 		onClose();
 		setClear(true);
 	};
 
-	const onClear = () => {
+	const onFilterClear = () => {
 		setFormState({ ...formElements });
+		setFinalFormState({});
 		setClear(false);
 	};
 
@@ -139,10 +161,16 @@ const History = () => {
 			type = "amount";
 		}
 
-		setFormState((prevFormState) => ({
-			...prevFormState,
+		// Set Filter form for searching...
+		setFormState({
+			...formElements,
 			[type]: query,
-		}));
+		});
+		setFinalFormState({
+			[type]: query,
+		});
+		onClose();
+		setClear(true);
 	};
 
 	const transactionList = data;
@@ -181,7 +209,7 @@ const History = () => {
 						onOpen,
 						onClose,
 						onFilterSubmit,
-						onClear,
+						onFilterClear,
 					}}
 				/>
 				{/* <=============================Transaction Table & Card ===============================> */}
@@ -252,7 +280,7 @@ const HistoryToolbar = ({
 	onOpen,
 	onClose,
 	onFilterSubmit,
-	onClear,
+	onFilterClear,
 }) => {
 	const labelStyle = {
 		fontSize: { base: "sm" },
@@ -289,7 +317,7 @@ const HistoryToolbar = ({
 					<Button
 						size="xs"
 						variant="link"
-						onClick={onClear}
+						onClick={onFilterClear}
 						_hover={{ TextDecoration: "none" }}
 					>
 						Clear Filter
