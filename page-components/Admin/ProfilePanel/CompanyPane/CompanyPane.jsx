@@ -1,14 +1,5 @@
-import {
-	Avatar,
-	Box,
-	Circle,
-	Divider,
-	Flex,
-	Heading,
-	Text,
-	useMediaQuery,
-} from "@chakra-ui/react";
-import { Cards, Icon, IconButtons } from "components";
+import { Avatar, Box, Divider, Flex, Heading, Text } from "@chakra-ui/react";
+import { Button, Cards, Currency, IcoButton, Icon } from "components";
 import { useRouter } from "next/router";
 /**
  * A <CompanyPane> component
@@ -20,22 +11,32 @@ import { useRouter } from "next/router";
 const CompanyPane = ({ rowData: compdata, agent_name }) => {
 	const router = useRouter();
 	const { cellnumber } = router.query;
-	const [isSmallerThan440] = useMediaQuery("(max-width:440px)");
 	const handleclick = () => {
 		router.push(
 			`/admin/transaction-history/account-statement/detailed-statement?cellnumber=${cellnumber}`
 		);
 	};
+
+	const companyDataList = [
+		{ label: "Account Type", value: compdata?.account_type },
+		{ label: "Plan name", value: compdata?.plan_name },
+		// { label: "KYC status", value: "KYC Compliant" },
+	];
+
+	const companyDataListLength = companyDataList?.length;
+
 	return (
 		<Cards>
 			<Flex gap="5" align="center">
-				<Circle bg="divider" size={{ base: 20, lg: 20, xl: 28 }}>
-					<Avatar
-						w={{ base: 16, lg: 59, xl: 90 }}
-						h={{ base: 16, lg: 59, xl: 90 }}
-						src="/images/seller_logo.jpg"
-					/>
-				</Circle>
+				{/* <Circle bg="divider" size={{ base: 20, lg: 20, xl: 28 }}> */}
+				<Avatar
+					w={{ base: 16, lg: 59, xl: 90 }}
+					h={{ base: 16, lg: 59, xl: 90 }}
+					icon={<Icon name="person" />}
+					src={compdata?.src}
+					showBorder={true}
+				/>
+				{/* </Circle> */}
 				<Box>
 					<Heading
 						fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
@@ -49,160 +50,91 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 					>
 						<Text>User Code:</Text>
 						<Text color={"primary.DEFAULT"}>
-							<span>&nbsp;</span> {compdata?.eko_code}
+							&nbsp; {compdata?.eko_code}
 						</Text>
 					</Flex>
 				</Box>
 			</Flex>
 
-			<Box mt={{ base: "38", lg: "39", xl: "70" }}>
-				<Flex justify="space-between" h="42px" wrap={"wrap"}>
-					<Box
-						display="flex"
-						flexDirection={isSmallerThan440 ? "row" : "column"}
-						alignItems={{ base: "center", sm: "flex-start" }}
-						gap={isSmallerThan440 ? 2 : 0}
-					>
-						<Text
-							color="light"
-							fontSize={{ base: 14, md: 12, lg: 14 }}
+			<Flex
+				direction={{ base: "column", md: "row" }}
+				gap={{ base: "2", md: "3" }}
+				mt={{ base: "24px", xl: "48px" }}
+				mb={{ base: "24px", md: "none" }}
+			>
+				{companyDataList.map((item, index) => (
+					<>
+						<Flex
+							align={{ base: "center", md: "flex-start" }}
+							direction={{ base: "row", md: "column" }}
 						>
-							Account type
-							{isSmallerThan440 ? <Text as="span">:</Text> : ""}
-						</Text>
-						<Text
-							color="dark"
-							fontSize={{ base: 16, md: 13, lg: 16 }}
-							fontWeight="medium"
-						>
-							{compdata?.account_type}
-						</Text>
-					</Box>
-					{isSmallerThan440 ? (
-						<Divider orientation="horizontal" my={2} />
-					) : (
-						<Divider orientation="vertical" />
-					)}
-					<Box
-						display="flex"
-						flexDirection={isSmallerThan440 ? "row" : "column"}
-						alignItems={{ base: "center", sm: "flex-start" }}
-						gap={isSmallerThan440 ? 2 : 0}
-					>
-						<Text
-							color="light"
-							fontSize={{ base: 14, md: 12, lg: 14 }}
-						>
-							Plan name
-							{isSmallerThan440 ? <Text as="span">:</Text> : ""}
-						</Text>
-						<Text
-							color="dark"
-							fontSize={{ base: 16, md: 13, lg: 16 }}
-							fontWeight="medium"
-						>
-							{compdata?.plan_name}
-						</Text>
-					</Box>
-					{isSmallerThan440 ? (
-						<Divider orientation="horizontal" my={2} />
-					) : (
-						<Divider orientation="vertical" />
-					)}
-					<Box
-						display="flex"
-						flexDirection={isSmallerThan440 ? "row" : "column"}
-						alignItems={{ base: "center", sm: "flex-start" }}
-						gap={isSmallerThan440 ? 2 : 0}
-					>
-						<Text
-							color="light"
-							fontSize={{ base: 14, md: 12, lg: 14 }}
-						>
-							KYC status
-							{isSmallerThan440 ? <Text as="span">:</Text> : ""}
-						</Text>
-						<Text
-							color="dark"
-							fontSize={{ base: 16, md: 13, lg: 16 }}
-							fontWeight="medium"
-						>
-							KYC Compliant
-						</Text>
-					</Box>
-				</Flex>
-			</Box>
+							<Text color="light" fontSize={{ base: "xs" }}>
+								{item.label}
+								<Box
+									as="span"
+									display={{ base: "inital", md: "none" }}
+								>
+									&#58;&nbsp;
+								</Box>
+							</Text>
 
-			{/* <Box mt={{ base: "95", lg: "20", xl: "70" }}>
-				<Button
-					onClick={() =>
-						Router.push("/admin/my-network/profile/up-sell-info")
-					}
-					w={{ base: "100%", lg: "205px", xl: "215px" }}
-					h="60px"
-					disabled={true}
-				>
-					Update Information
-				</Button>
-			</Box> */}
+							<Text
+								color="dark"
+								fontSize={{ base: "sm" }}
+								fontWeight="medium"
+							>
+								{item.value}
+							</Text>
+						</Flex>
+						{index !== companyDataListLength - 1 ? (
+							<Divider orientation="vertical" />
+						) : null}
+					</>
+				))}
+			</Flex>
 
 			<Box
 				mt="auto"
 				p="20px"
-				h="160"
+				h="160px"
 				border="1px solid #D2D2D2"
 				borderRadius="15px"
 				bg="#FAFDFF"
 			>
 				<Flex justify="space-between" align="center" mb={4}>
-					<Box alignItems="center">
-						<Flex gap={4} align="center" justify="center">
-							<Circle size={14} bg={"divider"}>
-								<Icon
-									name="account-balance-wallet"
-									size="24px"
-									// height="21px"
-								/>
-							</Circle>
-							<Box>
-								<Text color={"light"} fontSize={14}>
-									Wallet Balance
-								</Text>
-								<Text
-									color={"accent.DEFAULT"}
-									fontWeight="medium"
-									fontSize={20}
-								>
-									<span>&#x20B9; </span>
-									{compdata?.wallet_balance}
-								</Text>
-							</Box>
-						</Flex>
-					</Box>
-					{/* <Box>
-						<Circle
-							size={isSmallerThan440 ? 10 : 12}
-							bg={"success"}
-							color="white"
-							boxShadow="0px 3px 6px #00000029"
-							border="2px solid #FFFFFF"
-						>
-							<Icon name="add" />
-						</Circle>
-					</Box> */}
+					<Flex gap={4} align="center" justify="center">
+						<IcoButton
+							iconName="account-balance-wallet"
+							color="dark"
+							size="md"
+							rounded="full"
+						/>
+						<Box>
+							<Text color={"light"} fontSize={14}>
+								Wallet Balance
+							</Text>
+							<Currency
+								amount={compdata?.wallet_balance}
+								fontSize="20px"
+								fontWeight="medium"
+								color="accent.DEFAULT"
+							/>
+						</Box>
+					</Flex>
 				</Flex>
 				<Divider />
 				<Flex align="center" justify="center" mt="6">
-					<IconButtons
-						title="View All Transactions"
-						iconName="arrow-forward"
-						hasBG={false}
-						iconStyle={{
-							size: "18px",
-							// height: "15px",
-						}}
+					<Button
+						variant="link"
+						fontSize="sm"
+						color="primary.DEFAULT"
+						gap="1"
+						_hover={{ textDecoration: "none" }}
 						onClick={handleclick}
-					/>
+					>
+						View All Transactions
+						<Icon name="arrow-forward" size="16px" />
+					</Button>
 				</Flex>
 			</Box>
 		</Cards>
