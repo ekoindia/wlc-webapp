@@ -1,12 +1,4 @@
-import {
-	Avatar,
-	Box,
-	Circle,
-	Divider,
-	Flex,
-	Heading,
-	Text,
-} from "@chakra-ui/react";
+import { Avatar, Box, Divider, Flex, Heading, Text } from "@chakra-ui/react";
 import { Button, Cards, Currency, IcoButton, Icon } from "components";
 import { useRouter } from "next/router";
 /**
@@ -36,13 +28,15 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 	return (
 		<Cards>
 			<Flex gap="5" align="center">
-				<Circle bg="divider" size={{ base: 20, lg: 20, xl: 28 }}>
-					<Avatar
-						w={{ base: 16, lg: 59, xl: 90 }}
-						h={{ base: 16, lg: 59, xl: 90 }}
-						src="/images/seller_logo.jpg"
-					/>
-				</Circle>
+				{/* <Circle bg="divider" size={{ base: 20, lg: 20, xl: 28 }}> */}
+				<Avatar
+					w={{ base: 16, lg: 59, xl: 90 }}
+					h={{ base: 16, lg: 59, xl: 90 }}
+					icon={<Icon name="person" />}
+					src={compdata?.src}
+					showBorder={true}
+				/>
+				{/* </Circle> */}
 				<Box>
 					<Heading
 						fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
