@@ -24,7 +24,7 @@ import {
 } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button, Icon, IconButtons, Pagination } from "..";
+import { Button, Icon, Pagination } from "..";
 
 /**
  * A Table component that renders a table with a header and rows.
@@ -324,7 +324,7 @@ const Table = ({
 					</Flex>
 
 					{/* Show More */}
-					<Flex
+					{/* <Flex
 						align="center"
 						justifyContent="center"
 						w="100%"
@@ -355,7 +355,7 @@ const Table = ({
 								}}
 							/>
 						</Flex>
-					</Flex>
+					</Flex> */}
 				</>
 			)}
 		</Box>

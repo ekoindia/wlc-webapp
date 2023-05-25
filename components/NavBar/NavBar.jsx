@@ -84,6 +84,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				justifyContent={"space-between"}
 				px={{ base: "4", sm: "4", md: "4", xl: "6" }}
 			>
+				{/* Left-side items of navbar */}
 				<Box display={"flex"} alignItems={"center"}>
 					<Flex align="center" minW={{ base: "auto", md: "250px" }}>
 						<IconButton
@@ -147,6 +148,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 					/>
 				</Box>
 
+				{/* Right-side items of navbar */}
 				<Box display={{ base: "flex", md: "flex" }}>
 					<Menu>
 						<MenuButton
