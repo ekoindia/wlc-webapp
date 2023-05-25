@@ -29,12 +29,14 @@ function useLogin(login, setStep, setEmail) {
 
 				if (
 					!(
-						responseData &&
-						responseData.details &&
-						responseData.access_token &&
-						responseData.details.code &&
-						responseData.details.mobile &&
-						responseData.details.mobile.toString().length > 6
+						(
+							responseData &&
+							responseData.details &&
+							responseData.access_token
+						) // &&
+						// responseData.details.code &&
+						// responseData.details.mobile &&
+						// responseData.details.mobile.toString().length > 6
 					)
 				) {
 					if (responseData.otpFailed) {
@@ -57,6 +59,11 @@ function useLogin(login, setStep, setEmail) {
 						return;
 					}
 
+					// if (responseData.details.mobile === "1") {
+					// 	processLoginResponse(responseData);
+					// 	router.push("/signup");
+					// 	return;
+					// }
 					// TODO: Start Onboarding Process
 					// Login Failed
 					toast({

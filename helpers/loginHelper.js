@@ -65,8 +65,9 @@ function getTokenExpiryTime(data) {
  * createUserState(data) is used to create userState.
  */
 function createUserState(data) {
+	console.log("::::Received userState::::", data);
 	let tokenTimeout = getTokenExpiryTime(data);
-	console.log("tokenTimeout", tokenTimeout);
+	console.log("tokenTimeout =1", tokenTimeout);
 	const state = {
 		loggedIn: true,
 		is_org_admin: data?.details?.is_org_admin || 0,
@@ -81,6 +82,10 @@ function createUserState(data) {
 		personalDetails: data?.personal_details,
 		shopDetails: data?.shop_details,
 		accountDetails: data?.account_details,
+		onboarding: data?.details?.onboarding,
+		onboarding_steps: data?.details?.onboarding_steps,
+		role_list: data?.details?.role_list,
+		agreementId: data?.details?.agreement_id,
 	};
 
 	return state;
