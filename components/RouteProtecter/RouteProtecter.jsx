@@ -32,7 +32,7 @@ const RouteProtecter = (props) => {
 
 	useEffect(() => {
 		const path = router.pathname;
-		console.log("Path", path);
+		console.log("Path", path, isLoggedIn);
 
 		if (path === "/404") {
 			setLoading(false);
