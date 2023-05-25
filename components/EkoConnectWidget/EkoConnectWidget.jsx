@@ -1,5 +1,5 @@
-import { Flex, Spinner } from "@chakra-ui/react";
-import { ErrorBoundary, PaddingBox } from "components";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Button, ErrorBoundary, PaddingBox } from "components";
 import { TransactionIds } from "constants";
 import {
 	useMenuContext,
@@ -7,10 +7,9 @@ import {
 	useUser,
 	useWallet,
 } from "contexts";
-import { useAppLink } from "hooks";
+import { useAppLink, useExternalResource } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
 import Head from "next/head";
-import Script from "next/script";
 import { useEffect, useState } from "react";
 
 /**
@@ -37,6 +36,18 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 	const { balance } = useWallet();
+
+	const [widgetLoadState /*, reloadWidget */] = useExternalResource(
+		process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
+			"/elements/tf-eko-connect-widget/tf-wlc-widget.html",
+		"link",
+		"import"
+	);
+	const [scriptLoadState /*, reloadScript */] = useExternalResource(
+		"https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js",
+		"script"
+	);
+
 	console.log(
 		"[EkoConnectWidget] >>> ORG + USER DATA:: ",
 		orgDetail,
@@ -44,23 +55,66 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		role_tx_list
 	);
 
-	const { widgetLoading } = useSetupWidgetEventListeners(router, openUrl);
+	// const { widgetLoading } =
+	useSetupWidgetEventListeners(router, openUrl);
+
+	// Handle widget load error
+	if (widgetLoadState === "error" || scriptLoadState === "error") {
+		return (
+			<Flex
+				direction="column"
+				w="100%"
+				p={2}
+				align="center"
+				justify="center"
+			>
+				<Text my={5} color="error" fontWeight="bold">
+					Load failed. Please check your internet connection and try
+					again.
+				</Text>
+				<Button
+					onClick={() => {
+						location.reload();
+						// if (widgetLoadState === "error") reloadWidget();
+						// if (scriptLoadState === "error") reloadScript();
+					}}
+				>
+					Retry
+				</Button>
+			</Flex>
+		);
+	}
+
+	// Show a spinner while the widget is loading
+	if (widgetLoadState === "loading" || scriptLoadState === "loading") {
+		return (
+			<Flex w="100%" p={2} align="center" justify="center">
+				<Spinner
+					thickness="4px"
+					speed="0.65s"
+					emptyColor="gray.200"
+					color="primary.DEFAULT"
+					size="xl"
+				/>
+			</Flex>
+		);
+	}
 
 	return (
 		<PaddingBox noSpacing={true} {...rest}>
 			<Head>
 				<title>Transaction</title>
-				<link
+				{/* <link
 					rel="import"
 					href={
 						process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
 						"/elements/tf-eko-connect-widget/tf-wlc-widget.html"
 					}
-				/>
+				/> */}
 			</Head>
-			<Script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js" />
+			{/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js" /> */}
 
-			{widgetLoading && (
+			{/* {widgetLoadState === "loading" && (
 				<Flex w="100%" p={2} align="center" justify="center">
 					<Spinner
 						thickness="4px"
@@ -70,7 +124,23 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 						size="xl"
 					/>
 				</Flex>
-			)}
+			)} */}
+
+			{/* {widgetLoadState === "error" && (
+				<Flex
+					direction="column"
+					w="100%"
+					p={2}
+					align="center"
+					justify="center"
+				>
+					<Text my={5} color="error" fontWeight="bold">
+						Load failed. Please check your internet connection and
+						try again.
+					</Text>
+					<Button onClick={() => location.reload()}>Retry</Button>
+				</Flex>
+			)} */}
 
 			<ErrorBoundary ignoreError={true}>
 				<tf-wlc-widget
