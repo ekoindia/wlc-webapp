@@ -47,6 +47,7 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 		timeout,
 		token,
 		controller,
+		isMultipart,
 		...restOptions
 	} = options;
 
@@ -65,18 +66,25 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 		url,
 		options,
 	});
+	const headersData = {
+		...DEFAULT_HEADERS,
+		Authorization: token ? `Bearer ${token}` : undefined,
+		...headers,
+	};
+	const bodyData = {
+		...DEFAULT_DATA,
+		...body,
+	};
+	if (isMultipart) {
+		// delete headersData["Content-Type"];
+		delete bodyData.client_ref_id;
+		delete bodyData.source;
+	}
 
 	const fetchPromise = fetch(url, {
 		method: method || DEFAULT_METHOD,
-		headers: {
-			...DEFAULT_HEADERS,
-			Authorization: token ? `Bearer ${token}` : undefined,
-			...headers,
-		},
-		body: JSON.stringify({
-			...DEFAULT_DATA,
-			...body,
-		}),
+		headers: headersData,
+		body: JSON.stringify(bodyData),
 		...restOptions,
 	})
 		.then((res) => {
