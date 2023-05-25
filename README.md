@@ -11,3 +11,8 @@ Guide - [https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your
 - View available icons (open in incognito window where user is not logged-in): `localhost:3000/icons_demo`
 - To add new icons, see the file: `constants/IconLibrary.ts`
 - There are duplicate icon-names as well, same icons with different names (for backward compatibility). Such icons are shown in red background with the pointer to the actual icon name.
+
+## Features:
+- Top Navbar - [components/NavBar/NavBar.jsx](components/NavBar/NavBar.jsx)
+- Left Sidebar - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
+  - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
