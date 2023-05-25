@@ -12,7 +12,12 @@
 		"jest": true
 	},
 	"plugins": ["prettier"],
-	"ignorePatterns": ["**/*.BAK.*", "**/*.stories.*", "**/*.mocks.*"],
+	"ignorePatterns": [
+		"**/*.BAK.*",
+		"**/*.stories.*",
+		"**/*.mocks.*",
+		"**/*.min.*"
+	],
 	"globals": {
 		"React": "readonly",
 		"describe": "readonly",
