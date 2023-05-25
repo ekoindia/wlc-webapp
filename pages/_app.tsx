@@ -12,6 +12,7 @@ import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
+import { KBarProvider } from "kbar";
 import App from "next/app";
 import { Inter } from "next/font/google";
 import Head from "next/head";
@@ -99,6 +100,42 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		console.log("[_app.tsx] !! Mock User: ", mockUser);
 	}
 
+	// Setup K-Bar options...
+	const kbarActions = [
+		{
+			id: "blog",
+			name: "Blog",
+			shortcut: ["b"],
+			keywords: "writing words",
+			section: "Navigation",
+			perform: () => (window.location.pathname = "blog"),
+		},
+		{
+			id: "blog2",
+			name: "Blog 2",
+			// shortcut: ["b"],
+			keywords: "writing words",
+			section: "Navigation",
+			perform: () => (window.location.pathname = "blog"),
+		},
+		{
+			id: "blog3",
+			name: "Blog 3",
+			// shortcut: ["b"],
+			keywords: "writing words",
+			section: "Navigation",
+			perform: () => (window.location.pathname = "blog"),
+		},
+		{
+			id: "contact",
+			name: "Contact",
+			shortcut: ["c"],
+			keywords: "email",
+			section: "Others",
+			perform: () => (window.location.pathname = "contact"),
+		},
+	];
+
 	// Get standard or custom Layout for the page...
 	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx).
 	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
@@ -131,19 +168,26 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 										}}
 									>
 										<NotificationProvider>
-											<ErrorBoundary>
-												{getLayout(
-													<main
-														className={
-															inter.className
-														}
-													>
-														<Component
-															{...pageProps}
-														/>
-													</main>
-												)}
-											</ErrorBoundary>
+											<KBarProvider
+												actions={kbarActions}
+												options={{
+													enableHistory: true,
+												}}
+											>
+												<ErrorBoundary>
+													{getLayout(
+														<main
+															className={
+																inter.className
+															}
+														>
+															<Component
+																{...pageProps}
+															/>
+														</main>
+													)}
+												</ErrorBoundary>
+											</KBarProvider>
 										</NotificationProvider>
 									</SWRConfig>
 								</RouteProtecter>

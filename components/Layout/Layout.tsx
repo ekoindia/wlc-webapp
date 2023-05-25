@@ -1,7 +1,23 @@
-import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
+import {
+	Box,
+	chakra,
+	Flex,
+	Text,
+	useBreakpointValue,
+	useDisclosure,
+} from "@chakra-ui/react";
+// import { GlobalSearchPane } from "components";
 import { useSession } from "contexts";
+import {
+	KBarAnimator,
+	KBarPortal,
+	KBarPositioner,
+	KBarResults,
+	KBarSearch,
+	useMatches,
+} from "kbar";
 import Head from "next/head";
-import { NavBar, SideBar } from "..";
+import { Icon, NavBar, SideBar } from "..";
 
 /**
  * The default page layout component
@@ -18,6 +34,12 @@ const Layout = ({ appName, pageMeta, children }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+
+	// Chakra wrapper for KBar components
+	const ChakraKBarPositioner = chakra(KBarPositioner);
+	const ChakraKBarAnimator = chakra(KBarAnimator);
+	const ChakraKBarPortal = chakra(KBarPortal);
+	const ChakraKBarSearch = chakra(KBarSearch);
 
 	return (
 		<>
@@ -72,8 +94,129 @@ const Layout = ({ appName, pageMeta, children }) => {
 			) : (
 				<>{children}</>
 			)}
+
+			{/* <GlobalSearchPane /> */}
+			{isLoggedIn ? (
+				<ChakraKBarPortal>
+					<ChakraKBarPositioner
+						w="full"
+						zIndex={99999}
+						p="2em"
+						bg="whiteAlpha.300"
+						backdropFilter="auto"
+						backdropBlur="2px"
+					>
+						<ChakraKBarAnimator
+							w="full"
+							// bg="#1e293b"
+							bg="white"
+							p="0"
+							borderRadius={6}
+							maxW={{ base: "full", md: "2xl" }}
+						>
+							<Box
+								overflow="hidden"
+								shadow="2xl"
+								borderRadius="2xl"
+								pb="4px"
+								border="1px solid #f1f5f9"
+								bg="#f8fafc"
+							>
+								<Flex
+									alignItems="center"
+									gap="4px"
+									p="4px"
+									borderBottom="1px solid #f1f5f9"
+								>
+									<Icon
+										name="search"
+										size="md"
+										color="#475569"
+									/>
+									<ChakraKBarSearch
+										placeholder="Search anything..."
+										w="full"
+										bg="transparent"
+										_focus={{ outline: "none" }}
+										py="1.5px"
+										_placeholder={{ color: "#94a3b8" }}
+									/>
+								</Flex>
+							</Box>
+							<RenderResults />
+						</ChakraKBarAnimator>
+					</ChakraKBarPositioner>
+				</ChakraKBarPortal>
+			) : null}
 		</>
 	);
 };
 
 export default Layout;
+
+function RenderResults() {
+	const { results } = useMatches();
+
+	// Chakra wrapper for KBarResults
+	const ChakraKBarResults = chakra(KBarResults);
+
+	if (results.length) {
+		return (
+			<ChakraKBarResults
+				items={results}
+				onRender={({ item, active }) =>
+					typeof item === "string" ? (
+						<Text
+							fontSize="sm"
+							px="4px"
+							pt="6px"
+							pb="3px"
+							color="#0f172a"
+						>
+							{item}
+						</Text>
+					) : (
+						<Flex
+							alignItems="center"
+							cursor="pointer"
+							gap="3px"
+							// mx="4px"
+							p="10px 15px"
+							borderRadius="md"
+							bg={active ? "divider" : null}
+						>
+							{item.icon && (
+								<Box
+									fontSize="lg"
+									color={active ? "#0f172a" : "#334155"}
+								>
+									{item.icon}
+								</Box>
+							)}
+							<Box overflow="hidden">
+								<Text color={active ? "#f1f5f9" : "#334155"}>
+									{item.name}
+								</Text>
+								{item.subtitle && (
+									<Text
+										fontSize="xs"
+										isTruncated={true}
+										color={active ? "#475569" : "white"}
+									>
+										{item.subtitle}
+									</Text>
+								)}
+							</Box>
+						</Flex>
+					)
+				}
+			/>
+		);
+	} else {
+		return (
+			<Text px="4" py="6" textAlign="center" color="#475569">
+				Nothing found...
+			</Text>
+		);
+	}
+}
