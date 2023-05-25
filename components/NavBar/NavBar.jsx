@@ -13,10 +13,11 @@ import {
 } from "@chakra-ui/react";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
-import { Button, GlobalSearch, Icon, IconButtons, OrgLogo } from "..";
+import { Button, Icon, IconButtons, OrgLogo } from "..";
 
 export const NavHeight = {
 	base: "56px",
@@ -69,6 +70,24 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
 	const router = useRouter();
+
+	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
+		ssr: false,
+		loading: () => (
+			<Box
+				ml={1}
+				w={{
+					base: "auto",
+					md: "280px",
+					lg: "400px",
+					xl: "500px",
+				}}
+				h="36px"
+				radius={6}
+				bg="shade"
+			/>
+		),
+	});
 
 	const handleSearchKeyDown = (e) => {
 		if (e?.key === "Enter" && e?.target?.value?.length > 1) {
