@@ -6,7 +6,7 @@ import {
 	MenuList,
 	Text,
 } from "@chakra-ui/react";
-import { DateView, IcoButton, Icon } from "components";
+import { Icon } from "components";
 
 /**
  * A DashboardHeading
@@ -40,7 +40,7 @@ const DashboardHeading = ({ heading, headingList, handleHeadingClick }) => {
 						))}
 					</MenuList>
 				</Menu>
-				<Flex>
+				{/* <Flex>
 					<DateView
 						date="2017-01-13T16:14:24+05:30"
 						format="dd-MM-yyyy"
@@ -50,9 +50,9 @@ const DashboardHeading = ({ heading, headingList, handleHeadingClick }) => {
 						date="2017-07-13T16:14:24+05:30"
 						format="dd-MM-yyyy"
 					/>
-				</Flex>
+				</Flex> */}
 			</Flex>
-			<Flex
+			{/* <Flex
 				align="center"
 				justify="space-between"
 				w={{ base: "40%", xl: "25%" }}
@@ -66,7 +66,7 @@ const DashboardHeading = ({ heading, headingList, handleHeadingClick }) => {
 					bg="primary.DEFAULT"
 					color="white"
 				/>
-			</Flex>
+			</Flex> */}
 		</Flex>
 	);
 };
