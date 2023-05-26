@@ -23,11 +23,15 @@ const GlobalSearch = ({ onSearchKeyDown, ...rest }) => {
 				h: "36px",
 			}}
 			inputRightElement={
-				<Flex align="center" color="dark">
-					<Kbd display={{ base: "none", md: "flex" }} mr={1}>
+				<Flex
+					align="center"
+					color="dark"
+					display={{ base: "none", md: "flex" }}
+				>
+					<Kbd mr={1} fontFamily="sans">
 						⌘
 					</Kbd>
-					<Kbd display={{ base: "none", md: "flex" }}>K</Kbd>
+					<Kbd>K</Kbd>
 				</Flex>
 			}
 			inputRightElementStyle={{

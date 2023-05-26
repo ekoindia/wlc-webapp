@@ -2,6 +2,7 @@ import {
 	Box,
 	chakra,
 	Flex,
+	Kbd,
 	Text,
 	useBreakpointValue,
 	useDisclosure,
@@ -118,17 +119,14 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 							<Box
 								className={fontClassName}
 								overflow="hidden"
-								shadow="2xl"
-								borderRadius="2xl"
+								shadow="md"
+								borderTop="2xl"
 								pb="4px"
 								border="1px solid #f1f5f9"
 								bg="#f8fafc"
+								borderBottom="1px solid #f1f5f9"
 							>
-								<Flex
-									alignItems="center"
-									p="6px 12px"
-									borderBottom="1px solid #f1f5f9"
-								>
+								<Flex alignItems="center" p="6px 12px">
 									<Icon
 										name="search"
 										size="md"
@@ -143,6 +141,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 										ml="1em"
 										_placeholder={{ color: "#94a3b8" }}
 									/>
+									<Box>
+										<Kbd>Esc</Kbd>
+									</Box>
 								</Flex>
 							</Box>
 							<RenderResults className={fontClassName} />
@@ -158,6 +159,8 @@ export default Layout;
 
 function RenderResults({ className }) {
 	const { results } = useMatches();
+
+	console.log("kbar results", results);
 
 	// Chakra wrapper for KBarResults
 	const ChakraKBarResults = chakra(KBarResults);
@@ -203,7 +206,7 @@ function RenderResults({ className }) {
 									{item.icon}
 								</Box>
 							)}
-							<Box overflow="hidden">
+							<Box overflow="hidden" flexGrow={1}>
 								<Text color={active ? "#0f172a" : "#334155"}>
 									{item.name}
 								</Text>
@@ -217,6 +220,19 @@ function RenderResults({ className }) {
 									</Text>
 								)}
 							</Box>
+							{item?.shortcut?.map((shortcut, index) => (
+								<Kbd
+									key={shortcut + index}
+									variant="dark"
+									textTransform={
+										shortcut?.length === 1
+											? "uppercase"
+											: undefined
+									}
+								>
+									{shortcut}
+								</Kbd>
+							))}
 						</Flex>
 					)
 				}
