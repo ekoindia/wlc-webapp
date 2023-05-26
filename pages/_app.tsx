@@ -131,6 +131,30 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 			perform: () => (window.location.pathname = "blog"),
 		},
 		{
+			id: "reloadapp",
+			name: "Reload App",
+			subtitle: "Reset cache and reload the app if you facing any issues",
+			icon: <Icon name="reload" size="sm" />,
+			shortcut: ["Meta+F5"],
+			keywords: "reset cache reload",
+			section: "System",
+			priority: Priority.LOW,
+			perform: () => {
+				// Clear session storage (except org_detail)
+				Object.keys(window.sessionStorage).forEach((key) => {
+					if (key !== OrgDetailSessionStorageKey) {
+						window.sessionStorage.removeItem(key);
+					}
+				});
+
+				// Reset All LocalStorage (Trxn/Menu/etc) Cache
+				window.localStorage.clear();
+
+				// Reload
+				window.location.reload();
+			},
+		},
+		{
 			id: "logout",
 			name: "Logout",
 			icon: <Icon name="logout" size="sm" />,

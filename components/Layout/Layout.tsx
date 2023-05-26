@@ -169,19 +169,25 @@ function RenderResults({ className }) {
 		return (
 			<ChakraKBarResults
 				items={results}
-				onRender={({ item, active }) =>
-					typeof item === "string" ? (
-						<Text
-							className={className}
-							fontSize="sm"
-							px="4px"
-							pt="6px"
-							pb="3px"
-							color="#0f172a"
-						>
-							{item}
-						</Text>
-					) : (
+				onRender={({ item, active }) => {
+					if (typeof item === "string") {
+						// Render a section header
+						return (
+							<Text
+								className={className}
+								fontSize="sm"
+								px="4px"
+								pt="6px"
+								pb="3px"
+								color="#64748b"
+							>
+								{item}
+							</Text>
+						);
+					}
+
+					// Render a search result
+					return (
 						<Flex
 							className={className}
 							alignItems="center"
@@ -200,8 +206,8 @@ function RenderResults({ className }) {
 							{item.icon && (
 								<Box
 									fontSize="lg"
-									color={active ? "#0f172a" : "#334155"}
-									mr="10px"
+									// color={active ? "#0f172a" : "#334155"}
+									mr="15px"
 								>
 									{item.icon}
 								</Box>
@@ -234,8 +240,8 @@ function RenderResults({ className }) {
 								</Kbd>
 							))}
 						</Flex>
-					)
-				}
+					);
+				}}
 			/>
 		);
 	} else {
