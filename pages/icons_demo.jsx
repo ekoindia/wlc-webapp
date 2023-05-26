@@ -51,7 +51,7 @@ const IconsDemo = () => {
 		setIcons(_icons);
 		setIconCount(_count);
 		setIconsSize(_size);
-	}, [IconLibrary]);
+	}, []);
 
 	// Get sorted icons array
 	useEffect(() => {
