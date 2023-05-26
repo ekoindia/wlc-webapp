@@ -1,12 +1,9 @@
-import { PaddingBox } from "components";
 import { Dashboard } from "page-components/Admin";
 
 const DashboardPage = () => {
 	return (
 		<>
-			<PaddingBox>
-				<Dashboard />
-			</PaddingBox>
+			<Dashboard />
 		</>
 	);
 };
