@@ -21,7 +21,11 @@ const useRefreshToken = () => {
 	// Extract refresh_token & token_timeout from userdata
 	const { refresh_token, token_timeout } = userData;
 
-	// Here, using useCallback to memorize the generateNewAccessToken so that it cannot create in pre-renders
+	/**
+	 * @name generateNewToken
+	 * @description Function to generate new token access-token, only when the current access-token is expired, and the refresh-token is valid.
+	 * @returns {boolean} Returns true if the token is expired and is updated, else false.
+	 */
 	const generateNewToken = useCallback(() => {
 		if (
 			refresh_token &&
@@ -30,7 +34,7 @@ const useRefreshToken = () => {
 			token_timeout <= Date.now()
 		) {
 			// Fetch new access-token using the refresh-token...
-			generateNewAccessToken(
+			return generateNewAccessToken(
 				refresh_token,
 				updateUserInfo,
 				isTokenUpdating,
@@ -38,9 +42,10 @@ const useRefreshToken = () => {
 				logout
 			);
 		}
+		return false;
 	}, [refresh_token, token_timeout, isTokenUpdating]);
 
-	// generateNewToken function is used to generate new token access token
+	// generateNewToken function is used to generate new access-token
 	return { generateNewToken };
 };
 
