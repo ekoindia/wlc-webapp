@@ -31,7 +31,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	console.log("[EkoConnectWidget] Transaction id to load: ", start_id, paths);
 
 	const { openUrl, router } = useAppLink();
-	const { userData, isLoggedIn } = useUser();
+	const { userData, isLoggedIn, refreshUser } = useUser();
 	const { orgDetail } = useOrgDetailContext();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
@@ -56,7 +56,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	);
 
 	// const { widgetLoading } =
-	useSetupWidgetEventListeners(router, openUrl);
+	useSetupWidgetEventListeners(router, openUrl, refreshUser);
 
 	// Handle widget load error
 	if (widgetLoadState === "error" || scriptLoadState === "error") {
@@ -198,6 +198,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 const setupWidgetEventListeners = ({
 	setWidgetLoading,
 	generateNewToken,
+	refreshUser,
 	setBalance,
 	router,
 	openUrl,
@@ -209,7 +210,11 @@ const setupWidgetEventListeners = ({
 	const onLoginAgain = () => {
 		console.log("🎬 >>> onLoginAgain");
 		// Login again (refresh access-token) when the session expires
-		generateNewToken();
+		const newTokenGenerated = generateNewToken();
+		if (!newTokenGenerated) {
+			// If the token re-generation fails because the token was not yet expired, try to refresh the user data.
+			refreshUser();
+		}
 	};
 
 	const onTrxnBusyChanged = (e) => {
@@ -339,9 +344,10 @@ const configurePolymer = () => {
  * Custom hook to setup event listeners for the Connect widget.
  * @param {Object} router - The React Router instance
  * @param {Function} openUrl - The useAppLink function to open internal or external URLs.
+ * @param {Function} refreshUser - Function to refresh the user profile data.
  * @returns	{Object} - The widgetLoading state
  */
-const useSetupWidgetEventListeners = (router, openUrl) => {
+const useSetupWidgetEventListeners = (router, openUrl, refreshUser) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
 
@@ -355,6 +361,7 @@ const useSetupWidgetEventListeners = (router, openUrl) => {
 		const cleanup = setupWidgetEventListeners({
 			setWidgetLoading,
 			generateNewToken,
+			refreshUser,
 			setBalance,
 			router,
 			openUrl,
