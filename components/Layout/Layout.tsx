@@ -26,7 +26,7 @@ import { Icon, NavBar, SideBar } from "..";
  * @param {Boolean} pageMeta.isSubPage - If the page is a sub page, then the layout will not render the top navbar (Header) on small screens.
  * @param {String} pageMeta.title - The page title. This will be displayed in the browser titlebar.
  */
-const Layout = ({ appName, pageMeta, children }) => {
+const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	const { isSubPage, title, hideMenu } = pageMeta;
 
 	// const { isNavHidden } = useLayoutContext();
@@ -53,7 +53,7 @@ const Layout = ({ appName, pageMeta, children }) => {
 			) : null}
 
 			{isLoggedIn ? (
-				<Box w={"full"}>
+				<Box w={"full"} className={fontClassName}>
 					{/* Hide top navbar on small screen if this is a sub-page (shows it's own back button in the top header) */}
 					{isSmallScreen && isSubPage ? null : (
 						<Box
@@ -102,7 +102,7 @@ const Layout = ({ appName, pageMeta, children }) => {
 						w="full"
 						zIndex={99999}
 						p="2em"
-						bg="whiteAlpha.300"
+						bg="blackAlpha.500"
 						backdropFilter="auto"
 						backdropBlur="2px"
 					>
@@ -112,9 +112,11 @@ const Layout = ({ appName, pageMeta, children }) => {
 							bg="white"
 							p="0"
 							borderRadius={6}
+							overflow="hidden"
 							maxW={{ base: "full", md: "2xl" }}
 						>
 							<Box
+								className={fontClassName}
 								overflow="hidden"
 								shadow="2xl"
 								borderRadius="2xl"
@@ -124,8 +126,7 @@ const Layout = ({ appName, pageMeta, children }) => {
 							>
 								<Flex
 									alignItems="center"
-									gap="4px"
-									p="4px"
+									p="6px 12px"
 									borderBottom="1px solid #f1f5f9"
 								>
 									<Icon
@@ -138,12 +139,13 @@ const Layout = ({ appName, pageMeta, children }) => {
 										w="full"
 										bg="transparent"
 										_focus={{ outline: "none" }}
-										py="1.5px"
+										py="5px"
+										ml="1em"
 										_placeholder={{ color: "#94a3b8" }}
 									/>
 								</Flex>
 							</Box>
-							<RenderResults />
+							<RenderResults className={fontClassName} />
 						</ChakraKBarAnimator>
 					</ChakraKBarPositioner>
 				</ChakraKBarPortal>
@@ -154,7 +156,7 @@ const Layout = ({ appName, pageMeta, children }) => {
 
 export default Layout;
 
-function RenderResults() {
+function RenderResults({ className }) {
 	const { results } = useMatches();
 
 	// Chakra wrapper for KBarResults
@@ -167,6 +169,7 @@ function RenderResults() {
 				onRender={({ item, active }) =>
 					typeof item === "string" ? (
 						<Text
+							className={className}
 							fontSize="sm"
 							px="4px"
 							pt="6px"
@@ -177,31 +180,38 @@ function RenderResults() {
 						</Text>
 					) : (
 						<Flex
+							className={className}
 							alignItems="center"
 							cursor="pointer"
 							gap="3px"
 							// mx="4px"
-							p="10px 15px"
-							borderRadius="md"
+							p="8px 15px"
+							minH="62px"
+							// borderRadius="md"
+							borderLeft="4px solid"
+							borderColor={
+								active ? "primary.dark" : "transparent"
+							}
 							bg={active ? "divider" : null}
 						>
 							{item.icon && (
 								<Box
 									fontSize="lg"
 									color={active ? "#0f172a" : "#334155"}
+									mr="10px"
 								>
 									{item.icon}
 								</Box>
 							)}
 							<Box overflow="hidden">
-								<Text color={active ? "#f1f5f9" : "#334155"}>
+								<Text color={active ? "#0f172a" : "#334155"}>
 									{item.name}
 								</Text>
 								{item.subtitle && (
 									<Text
 										fontSize="xs"
 										isTruncated={true}
-										color={active ? "#475569" : "white"}
+										color={active ? "#475569" : "#64748b"}
 									>
 										{item.subtitle}
 									</Text>

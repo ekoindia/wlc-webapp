@@ -1,6 +1,6 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { ErrorBoundary, Layout, RouteProtecter } from "components";
+import { ErrorBoundary, Icon, Layout, RouteProtecter } from "components";
 import {
 	NotificationProvider,
 	OrgDetailProvider,
@@ -12,7 +12,7 @@ import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
-import { KBarProvider } from "kbar";
+import { KBarProvider, Priority } from "kbar";
 import App from "next/app";
 import { Inter } from "next/font/google";
 import Head from "next/head";
@@ -105,14 +105,17 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		{
 			id: "blog",
 			name: "Blog",
+			subtitle: "Writing words",
 			shortcut: ["b"],
 			keywords: "writing words",
 			section: "Navigation",
+			icon: <Icon name="alarm" />,
 			perform: () => (window.location.pathname = "blog"),
 		},
 		{
 			id: "blog2",
 			name: "Blog 2",
+			icon: "🤯",
 			// shortcut: ["b"],
 			keywords: "writing words",
 			section: "Navigation",
@@ -121,17 +124,20 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		{
 			id: "blog3",
 			name: "Blog 3",
+			icon: "🏫",
 			// shortcut: ["b"],
 			keywords: "writing words",
 			section: "Navigation",
 			perform: () => (window.location.pathname = "blog"),
 		},
 		{
-			id: "contact",
-			name: "Contact",
-			shortcut: ["c"],
-			keywords: "email",
-			section: "Others",
+			id: "logout",
+			name: "Logout",
+			icon: <Icon name="logout" size="sm" />,
+			// shortcut: ["c"],
+			keywords: "signout quit close",
+			section: "System",
+			priority: Priority.LOW,
 			perform: () => (window.location.pathname = "contact"),
 		},
 	];
@@ -143,6 +149,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		Component.getLayout ||
 		((page) => (
 			<Layout
+				fontClassName={inter.className}
 				appName={org?.app_name}
 				pageMeta={Component?.pageMeta || {}}
 			>

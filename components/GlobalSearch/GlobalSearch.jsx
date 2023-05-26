@@ -1,3 +1,4 @@
+import { Flex, Kbd } from "@chakra-ui/react";
 import { Icon, Input } from "components";
 
 /**
@@ -20,6 +21,18 @@ const GlobalSearch = ({ onSearchKeyDown, ...rest }) => {
 			}
 			inputLeftElementStyle={{
 				h: "36px",
+			}}
+			inputRightElement={
+				<Flex align="center" color="dark">
+					<Kbd display={{ base: "none", md: "flex" }} mr={1}>
+						⌘
+					</Kbd>
+					<Kbd display={{ base: "none", md: "flex" }}>K</Kbd>
+				</Flex>
+			}
+			inputRightElementStyle={{
+				h: "36px",
+				right: 3,
 			}}
 			ml={1}
 			display={{ base: "none", md: "flex" }}
