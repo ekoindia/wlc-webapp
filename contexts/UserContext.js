@@ -1,6 +1,9 @@
+import { Endpoints } from "constants";
+import { fetcher } from "helpers/apiHelper";
 import { createUserState, getSessions } from "helpers/loginHelper";
 import {
 	createContext,
+	useCallback,
 	useContext,
 	useEffect,
 	useMemo,
@@ -77,12 +80,43 @@ const UserProvider = ({ userMockData, children }) => {
 	// 	}
 	// }, [state?.loggedIn]);
 
+	/**
+	 * Fetch the user profile data again and update the userState.
+	 */
+	const refreshUser = useCallback(() => {
+		console.log("inside mainfunction");
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE,
+			{
+				body: {
+					// TODO: Confirm if `last_refresh_token` is required and is being used by EPS.
+					last_refresh_token: state?.access_token,
+				},
+				token: state?.access_token,
+			}
+		)
+			.then((res) => {
+				updateUserInfo(res);
+			})
+			.catch((err) => console.error("[refreshUser] Error:", err));
+	}, [state?.access_token]);
+
+	/**
+	 * Update userState.
+	 * @param {*} data - User data to be updated.
+	 */
 	const updateUserInfo = (data) => {
+		console.log("updateUserInfo:", data);
 		dispatch({
 			type: "UPDATE_USER_STORE",
 			payload: { ...data },
 		});
 	};
+
+	/**
+	 * Mark the user as logged in in the userState.
+	 * @param {Object} sessionData - User data to be updated.
+	 */
 	const login = (sessionData) => {
 		dispatch({
 			type: "LOGIN",
@@ -90,16 +124,28 @@ const UserProvider = ({ userMockData, children }) => {
 		});
 	};
 
+	/**
+	 * Mark the user as logged out in the userState.
+	 */
 	const logout = () => {
 		dispatch({ type: "LOGOUT" });
 	};
 
+	/**
+	 * Update shop details in the userState.
+	 * @param {*} data - Shop details to be updated.
+	 */
 	const updateShopDetails = (data) => {
 		dispatch({
 			type: "UPDATE_SHOP_DETAILS",
 			payload: { ...data },
 		});
 	};
+
+	/**
+	 * Update personal details in the userState.
+	 * @param {*} data - Personal details to be updated.
+	 */
 	const updatePersonalDetail = (data) => {
 		dispatch({
 			type: "UPDATE_PERSONAL_DETAILS",
@@ -107,7 +153,14 @@ const UserProvider = ({ userMockData, children }) => {
 		});
 	};
 
+	/**
+	 * Check if the user is logged in.
+	 */
 	const isLoggedIn = state?.loggedIn && state?.access_token ? true : false; // && state?.userId > 1;
+
+	/**
+	 * Check if the user is an admin.
+	 */
 	const isAdmin = state?.is_org_admin ? true : false;
 
 	const userContextValue = useMemo(() => {
@@ -122,13 +175,14 @@ const UserProvider = ({ userMockData, children }) => {
 			logout,
 			loading,
 			setLoading,
+			refreshUser,
 			updateUserInfo,
 			isTokenUpdating,
 			setIsTokenUpdating,
 			updateShopDetails,
 			updatePersonalDetail,
 		};
-	}, [state, isLoggedIn, loading, isTokenUpdating]);
+	}, [state, isLoggedIn, loading, isTokenUpdating, isAdmin, refreshUser]);
 
 	const sessionContextValue = useMemo(() => {
 		return {
@@ -140,14 +194,17 @@ const UserProvider = ({ userMockData, children }) => {
 			isOnboarding: state?.onboarding == 1 ? true : false,
 			loading,
 			setLoading,
+			refreshUser,
 		};
 	}, [
 		isLoggedIn,
-		state?.is_org_admin,
 		state?.userId,
 		state?.user_type,
 		state?.access_token,
+		state?.onboarding,
 		loading,
+		isAdmin,
+		refreshUser,
 	]);
 
 	return (
@@ -172,6 +229,7 @@ const UserProvider = ({ userMockData, children }) => {
  * @property {function} logout - Logout function
  * @property {boolean} loading - If true, user data is being loaded
  * @property {function} setLoading - Set loading state (used by RouteProtector)
+ * @property {function} refreshUser - Fetch fresh user profile data from the server
  * @property {function} updateUserInfo - Update user info
  * @property {boolean} isTokenUpdating - If true, token is being updated
  * @property {function} setIsTokenUpdating - Set token updating state
@@ -198,6 +256,7 @@ const useUser = () => {
  * @property {string} accessToken - Access token
  * @property {boolean} loading - If true, user data is being loaded
  * @property {function} setLoading - Set loading state (used by RouteProtector)
+ * @property {function} refreshUser - Fetch fresh user profile data from the server
  * @example
  * const { isLoggedIn, isAdmin, userId } = useSession();
  */
