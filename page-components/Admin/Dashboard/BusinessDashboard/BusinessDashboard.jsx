@@ -8,142 +8,25 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Icon, IconButtons } from "components";
+import { BusinessDashboardTable, BusinessDashboardTopPanel } from ".";
+
+import { IconButtons } from "components";
 import { useState } from "react";
-import { BusinessDashboardTable } from "./BusinessDashboardTable";
 
-const cardData = [
-	{
-		id: 1,
-		icon: "refer",
-		title: "Total Distributors",
-		description: "317",
-		percentage: "25%",
-		statu: "Increase",
-	},
-	{
-		id: 2,
-		icon: "people",
-		title: "Active Distributors",
-		description: "220",
-		percentage: "-11%",
-		statu: "Decrese",
-	},
-	{
-		id: 3,
-		icon: "rupee_bg",
-		title: "GTV",
-		percentage: "2.2%",
-		description: "148",
-		statu: "Increase",
-	},
-	{
-		id: 4,
-		icon: "commission-percent",
-		title: "Total RA Cases",
-		percentage: "-1.9%",
-		description: "07",
-		statu: "Decrese",
-	},
-];
-
-function Card({ title, description, icon, statu, percentage }) {
-	return (
-		<Flex
-			borderRadius="10px"
-			border="1px solid #E9EDF1"
-			overflow="hidden"
-			p={{ base: "10px", md: "20px 25px 20px 25px" }}
-			bg="white"
-			justifyContent={"space-between"}
-			alignItems="center"
-			minH="95px"
-			minW="260"
-		>
-			{/* <Image src={""} alt={title} /> */}
-			<Flex direction={"column"}>
-				<Text fontWeight="medium" fontSize={"14px"} mt={2}>
-					{title}
-				</Text>
-
-				<Flex alignItems={"center"} gap="15px">
-					<Flex>
-						<Text
-							color="secondary.DEFAULT"
-							fontSize="lg"
-							fontWeight={"bold"}
-							mt={2}
-						>
-							{description}
-						</Text>
-					</Flex>
-					<Flex alignItems={"center"} gap="5px" mt={2}>
-						<Flex
-							w="100%"
-							h="100%"
-							color={statu === "Increase" ? "success" : "error"}
-						>
-							<Icon
-								name={
-									statu == "Increase"
-										? "increase"
-										: "decrease"
-								}
-								size="12px"
-								// h="8px"
-							/>
-						</Flex>
-						<Flex>
-							<Text
-								color={
-									statu === "Increase" ? "success" : "error"
-								}
-								fontSize="xs"
-							>
-								{percentage}
-							</Text>
-						</Flex>
-
-						<Flex>
-							<Text color="light" fontSize="xs">
-								{statu}
-							</Text>
-						</Flex>
-					</Flex>
-				</Flex>
-			</Flex>
-			<Flex>
-				<Box
-					bg="transparent linear-gradient(180deg, #1F5AA7 0%, #11299E 100%) 0% 0% no-repeat padding-box"
-					h="50px"
-					w="50px"
-					borderRadius={"10px"}
-					alignItems="center"
-					justifyContent="center"
-				>
-					{" "}
-					<Flex
-						w="100%"
-						h="100%"
-						alignItems="center"
-						justifyContent="center"
-					>
-						<Icon name={icon} color="white" size="26px" />{" "}
-					</Flex>
-				</Box>
-			</Flex>
-		</Flex>
-	);
-}
-
-const BusinessDashboard = () => {
-	const successRateData = [
-		{ name: "DMT", value: "24%" },
-		{ name: "BBPS", value: "18%" },
-		{ name: "AePS cashout", value: "38%" },
-		{ name: "AePS mini statement", value: "11%" },
-		{ name: "Account Verification", value: "9%" },
-	];
+/**
+ * A <BusinessDashboard> component
+ * TODO: Write more description here
+ * @arg 	{Object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @example	`<BusinessDashboard></BusinessDashboard>`
+ */
+const BusinessDashboard = ({ data }) => {
+	console.log("[BusinessDashboard] data", data);
+	const { topPanel, earningOverview, topMerchants, successRate } = data;
+	console.log("successRate", successRate);
+	console.log("topMerchants", topMerchants);
+	console.log("earningOverview", earningOverview);
+	console.log("topPanel", topPanel);
 
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [activeGtv, setActiveGtv] = useState(3);
@@ -157,98 +40,13 @@ const BusinessDashboard = () => {
 		setActiveIndex(index);
 	};
 
-	// TODO: INTEGARTE APIs....
-	const [temp] = useState(true);
-	if (temp) return <Text fontSize="lg">Coming soon...</Text>;
-
-	const EarningData = [
-		{
-			title: "GTV",
-			count: "12 Cr",
-			lastPeriod: "9 cr.",
-			icon: "increase",
-			percentage: "25%",
-			stat: "Increase",
-		},
-		{
-			title: "Transaction",
-			count: "117 cr.",
-			lastPeriod: "11.8",
-			icon: "increase",
-			percentage: "8%",
-			stat: "Increase",
-		},
-		{
-			title: "Active Agents",
-			count: "1317",
-			lastPeriod: "1319",
-			icon: "decrease",
-			percentage: "-1.8%",
-			stat: "Decrease",
-		},
-		{
-			title: "Inactive Agents",
-			count: "18",
-			lastPeriod: "17",
-			icon: "increase",
-			percentage: "2.2%",
-			stat: "Increase",
-		},
-		{
-			title: "Onboarded Agents",
-			count: "6",
-			lastPeriod: "5",
-			icon: "increase",
-			percentage: "0.2%",
-			stat: "Increase",
-		},
-		{
-			title: "RA Cases",
-			count: "3",
-			lastPeriod: "4",
-			icon: "decrease",
-			percentage: "-1.8%",
-			stat: "Decrease	",
-		},
-	];
+	// // TODO: INTEGARTE APIs....
+	// const [temp] = useState(true);
+	// if (temp) return <Text fontSize="lg">Coming soon...</Text>;
 
 	return (
-		<Flex direction={"column"} px={{ base: "20px", md: "0px" }}>
-			{/* {console.log("cardData", cardData)} */}
-
-			{/* CARD */}
-			<Grid
-				templateColumns="repeat(4, 4fr)"
-				gap={5}
-				overflowX="auto"
-				css={{
-					"&::-webkit-scrollbar": {
-						width: "2px",
-						height: "2px",
-						// display: "none",
-					},
-					"&::-webkit-scrollbar-thumb": {
-						background: "#cbd5e0",
-						borderRadius: "2px",
-					},
-					// "&:hover::-webkit-scrollbar": {
-					// 	display: "block",
-					// },
-				}}
-			>
-				{cardData.map((card) => (
-					<GridItem key={card.id} colSpan={1}>
-						<Card
-							title={card.title}
-							description={card.description}
-							percentage={card.percentage}
-							statu={card.statu}
-							icon={card.icon}
-							// imageUrl={card.imageUrl}
-						/>
-					</GridItem>
-				))}
-			</Grid>
+		<Flex direction="column">
+			<BusinessDashboardTopPanel data={topPanel} />
 
 			{/* CENTER ITEM */}
 			<Grid
@@ -373,7 +171,7 @@ const BusinessDashboard = () => {
 						}}
 						wrap="wrap	"
 					>
-						{EarningData.map((item, index) => (
+						{/* {EarningData.map((item, index) => (
 							<Flex
 								key={index}
 								direction={{ base: "row", xl: "column" }}
@@ -450,7 +248,7 @@ const BusinessDashboard = () => {
 									</Flex>
 								</Flex>
 							</Flex>
-						))}
+						))} */}
 					</Stack>
 
 					<Flex justifyContent={"center"} mt="40px">
@@ -491,7 +289,7 @@ const BusinessDashboard = () => {
 							w="100%"
 							gap="8px"
 						>
-							{successRateData.map((item, index) => (
+							{/* {successRateData.map((item, index) => (
 								<Flex
 									key={index}
 									justifyContent="space-between"
@@ -511,7 +309,7 @@ const BusinessDashboard = () => {
 										</Text>
 									</Flex>
 								</Flex>
-							))}
+							))} */}
 						</Stack>
 					</Flex>
 				</GridItem>
