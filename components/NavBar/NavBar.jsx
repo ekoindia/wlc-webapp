@@ -66,7 +66,7 @@ const NavBar = ({ setNavOpen }) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
-	const { userData } = useUser();
+	const { userData, isAdmin, isLoggedIn } = useUser();
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
 	const router = useRouter();
@@ -128,7 +128,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						/>
 					</Flex>
 
-					<GlobalSearch onSearchKeyDown={handleSearchKeyDown} />
+					{isLoggedIn === true && isAdmin !== true && (
+						<GlobalSearch onSearchKeyDown={handleSearchKeyDown} />
+					)}
 				</Box>
 
 				{/* Right-side items of navbar */}
@@ -193,7 +195,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												fontWeight={"semibold"}
 												mr={"1.6vw"}
 											>
-												{userDetails?.name}
+												{userDetails?.name || ""}
 											</Text>
 
 											<Icon
@@ -320,123 +322,134 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						}}
 						lineHeight="normal"
 					>
-						<Text
-							fontSize={{
-								base: "16px",
-								sm: "12px",
-								lg: "14px",
-							}}
-							color={"highlight"}
-							textTransform="capitalize"
-							whiteSpace="nowrap"
-							overflow="hidden"
-							textOverflow="ellipsis"
-							width="40%"
-							title={userDetails?.name}
-						>
-							{userDetails?.name?.toLowerCase()}
-						</Text>
-						<Text
-							fontSize={{
-								base: "12px",
-								sm: "10px",
-							}}
-							w={"fit-content"}
-							color={"white"}
-							mb="3px"
-						>
-							(User Code:{" "}
-							<Text as={"span"} fontWeight={"medium"}>
-								{userDetails?.code}
-							</Text>
-							)
-						</Text>
-					</Flex>
-					<Flex w={"full"} py={".3vw"}>
-						<Text
-							fontSize={{
-								base: "12px",
-								sm: "10px",
-							}}
-							w={"fit-content"}
-							color={"white"}
-						>
-							{userDetails?.email}
-						</Text>
-					</Flex>
-					<Flex
-						w={"full"}
-						pb={".3vw"}
-						justifyContent={"space-between"}
-						mt={{ base: "8px", sm: "initial" }}
-						wrap="wrap"
-					>
-						<Flex justifyContent={"space-between"} mt={".4vw"}>
-							<Box display={"flex"} alignItems={"center"}>
-								<Text
-									fontSize={{
-										base: "12px",
-										sm: "10px",
-									}}
-									color={"white"}
-								>
-									+91{" "}
-									{userDetails?.mobile.slice(0, 5) +
-										" " +
-										userDetails?.mobile.slice(5)}
-								</Text>
-								<Box ml={{ base: "15px", sm: "initial" }}>
-									<IconButtons
-										iconSize={"xs"}
-										// onClick={() =>
-										// 	Router.push("/admin/my-network/profile/up-per-info")
-										// }
-
-										iconName="mode-edit"
-										iconStyle={{
-											size: "10px",
-										}}
-									/>
-								</Box>
-							</Box>
-						</Flex>
-
-						<Flex>
-							<Button
-								fontSize={"0.6vw"}
-								w={{
-									base: "140px",
-									sm: "90px",
-									lg: "100px",
-									"2xl": "108px",
+						{userDetails?.name ? (
+							<Text
+								fontSize={{
+									base: "16px",
+									sm: "12px",
+									lg: "14px",
 								}}
-								h={{
-									base: "48px",
-									sm: "30px",
-									xl: "34px",
-									"2xl": "36px",
-								}}
-								fontWeight={"medium"}
-								borderRadius={{
-									base: "10px",
-									lg: "6px",
-									"2xl": "5px",
-								}}
+								color={"highlight"}
+								textTransform="capitalize"
+								whiteSpace="nowrap"
+								overflow="hidden"
+								textOverflow="ellipsis"
+								width="40%"
+								title={userDetails?.name || ""}
 							>
-								<Text
-									mr={".2vw"}
-									fontSize={{
-										base: "14px",
-										sm: "8px",
-										lg: "10px",
-										"2xl": "12px",
+								{userDetails?.name?.toLowerCase()}
+							</Text>
+						) : null}
+
+						{userDetails?.code && userDetails?.code > 1 ? (
+							<Text
+								fontSize={{
+									base: "12px",
+									sm: "10px",
+								}}
+								w={"fit-content"}
+								color={"white"}
+								mb="3px"
+							>
+								(User Code:{" "}
+								<Text as={"span"} fontWeight={"medium"}>
+									{userDetails?.code}
+								</Text>
+								)
+							</Text>
+						) : null}
+					</Flex>
+
+					{userDetails?.email ? (
+						<Flex w={"full"} py={".3vw"}>
+							<Text
+								fontSize={{
+									base: "12px",
+									sm: "10px",
+								}}
+								w={"fit-content"}
+								color={"white"}
+							>
+								{userDetails?.email}
+							</Text>
+						</Flex>
+					) : null}
+
+					{userDetails?.mobile && userDetails?.mobile > 1 ? (
+						<Flex
+							w={"full"}
+							pb={".3vw"}
+							justifyContent={"space-between"}
+							mt={{ base: "8px", sm: "initial" }}
+							wrap="wrap"
+						>
+							<Flex justifyContent={"space-between"} mt={".4vw"}>
+								<Box display={"flex"} alignItems={"center"}>
+									<Text
+										fontSize={{
+											base: "12px",
+											sm: "10px",
+										}}
+										color={"white"}
+									>
+										+91{" "}
+										{userDetails?.mobile.slice(0, 5) +
+											" " +
+											userDetails?.mobile.slice(5)}
+									</Text>
+									<Box ml={{ base: "15px", sm: "initial" }}>
+										<IconButtons
+											iconSize={"xs"}
+											// onClick={() =>
+											// 	Router.push("/admin/my-network/profile/up-per-info")
+											// }
+
+											iconName="mode-edit"
+											iconStyle={{
+												size: "10px",
+											}}
+										/>
+									</Box>
+								</Box>
+							</Flex>
+
+							<Flex>
+								<Button
+									fontSize={"0.6vw"}
+									w={{
+										base: "140px",
+										sm: "90px",
+										lg: "100px",
+										"2xl": "108px",
+									}}
+									h={{
+										base: "48px",
+										sm: "30px",
+										xl: "34px",
+										"2xl": "36px",
+									}}
+									fontWeight={"medium"}
+									borderRadius={{
+										base: "10px",
+										lg: "6px",
+										"2xl": "5px",
 									}}
 								>
-									View Profile &gt;
-								</Text>
-							</Button>
+									<Text
+										mr={".2vw"}
+										fontSize={{
+											base: "14px",
+											sm: "8px",
+											lg: "10px",
+											"2xl": "12px",
+										}}
+									>
+										View Profile &gt;
+									</Text>
+								</Button>
+							</Flex>
 						</Flex>
-					</Flex>
+					) : null}
 				</Box>
 			</VStack>
 
