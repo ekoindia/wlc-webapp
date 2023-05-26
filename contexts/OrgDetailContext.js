@@ -18,11 +18,13 @@ const OrgDetailProvider = ({ initialData, children }) => {
 
 	useEffect(() => {
 		if (sessionStorage.getItem(OrgDetailSessionStorageKey)) {
+			console.log("[OrgDetailContext] got from session:", orgDetail);
 			setOrgDetail(
 				JSON.parse(sessionStorage.getItem(OrgDetailSessionStorageKey))
 			);
 		} else {
 			if (orgDetail?.app_name) {
+				console.log("[OrgDetailContext] set into session:", orgDetail);
 				sessionStorage.setItem(
 					OrgDetailSessionStorageKey,
 					JSON.stringify(orgDetail)
