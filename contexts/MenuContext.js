@@ -19,16 +19,19 @@ const MenuProvider = ({ children }) => {
 				// load menu & role data only if user is not an admin
 				setLoading(true);
 
-				// TODO: use SWR with caching
-				let local_interaction_list =
+				// TODO: useSWR with caching
+				const local_interaction_list =
 					sessionStorage.getItem("interaction_list") || "[]";
-				let local_role_tx_list =
+				const local_role_tx_list =
 					sessionStorage.getItem("role_tx_list") || "{}";
+				const cache_access_token =
+					sessionStorage.getItem("cache_access_token") || "-";
 
 				// Data cached? Use it...
 				if (
 					local_interaction_list &&
 					local_role_tx_list &&
+					cache_access_token === accessToken &&
 					local_interaction_list !== "[]" &&
 					local_role_tx_list !== "{}"
 				) {
@@ -66,6 +69,10 @@ const MenuProvider = ({ children }) => {
 							sessionStorage.setItem(
 								"role_tx_list",
 								JSON.stringify(processedData.role_tx_list)
+							);
+							sessionStorage.setItem(
+								"cache_access_token",
+								accessToken
 							);
 
 							console.log(
