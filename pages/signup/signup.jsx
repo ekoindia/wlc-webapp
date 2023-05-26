@@ -314,6 +314,7 @@ const SignupPage = () => {
 			})
 			.catch((err) => console.log("inside initial api error", err));
 	};
+
 	const getSHopTypes = () => {
 		console.log("inside mainfunction");
 		fetcher(
