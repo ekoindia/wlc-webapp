@@ -107,12 +107,13 @@ const UserProvider = ({ userMockData, children }) => {
 		});
 	};
 
-	const isLoggedIn = state?.loggedIn && state?.access_token; // && state?.userId > 1;
+	const isLoggedIn = state?.loggedIn && state?.access_token ? true : false; // && state?.userId > 1;
+	const isAdmin = state?.is_org_admin ? true : false;
 
 	const userContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
-			isAdmin: state?.is_org_admin ? true : false,
+			isAdmin: isAdmin,
 			userId: state?.userId || 0,
 			userType: state?.user_type || 0,
 			accessToken: state?.access_token || "",
@@ -132,7 +133,7 @@ const UserProvider = ({ userMockData, children }) => {
 	const sessionContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
-			isAdmin: state?.is_org_admin ? true : false,
+			isAdmin: isAdmin,
 			userId: state?.userId || 0,
 			userType: state?.user_type || 0,
 			accessToken: state?.access_token || "",
