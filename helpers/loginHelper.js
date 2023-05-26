@@ -207,12 +207,12 @@ function generateNewAccessToken(
 
 	if (!(refresh_token && refresh_token.length > 1)) {
 		console.warn("Please provide valid refresh token.");
-		return;
+		return false;
 	}
 
 	if (isTokenUpdating) {
 		console.warn("Already refreshing token.");
-		return;
+		return false;
 	}
 
 	setIsTokenUpdating(true);
@@ -224,11 +224,17 @@ function generateNewAccessToken(
 		timeout: 60000,
 	})
 		.then((data) => {
+			console.log(
+				"New access token generated. Updating user info:",
+				data
+			);
 			updateUserInfo(data);
+			return true;
 		})
 		.catch((err) => {
 			console.error("Error refreshing token: ", err);
 			logout && logout();
+			return false;
 		})
 		.finally(setIsTokenUpdating(false));
 }
