@@ -17,6 +17,7 @@ import { IconButtons } from "./IconButtons";
 import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
+import { Kbd } from "./Kbd";
 import { Layout } from "./Layout";
 import { Menus } from "./Menus";
 import { Modal } from "./Modal";
@@ -38,6 +39,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	Kbd,
 	GlobalSearch,
 	GlobalSearchPane,
 	OrgLogo,
