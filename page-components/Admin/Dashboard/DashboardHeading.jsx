@@ -22,7 +22,7 @@ const DashboardHeading = ({ heading, headingList, handleHeadingClick }) => {
 				<Menu isLazy>
 					<MenuButton>
 						<Flex gap="4" align="center">
-							<Text fontWeight="semibold" fontSize="xl">
+							<Text fontWeight="semibold" fontSize="2xl">
 								{headingList[heading]}
 							</Text>
 							<Icon name="caret-down" size="16px" />

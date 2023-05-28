@@ -125,6 +125,10 @@ const OnboardingDashboard = (/* props */) => {
 		setActiveCardIndex(index);
 	};
 
+	// TODO: INTEGARTE APIs....
+	const [temp] = useState(true);
+	if (temp) return <Text fontSize="lg">Coming soon...</Text>;
+
 	return (
 		<Flex direction={"column"}>
 			<Flex
