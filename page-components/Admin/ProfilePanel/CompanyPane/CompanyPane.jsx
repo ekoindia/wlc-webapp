@@ -60,7 +60,6 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 					</Flex>
 				</Box>
 			</Flex>
-
 			<Stack
 				direction={{ base: "column", md: "row" }}
 				divider={<StackDivider />}
@@ -85,7 +84,6 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 										&#58;&nbsp;
 									</Box>
 								</Text>
-
 								<Text
 									color="dark"
 									fontSize={{ base: "sm" }}
@@ -97,7 +95,6 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 						)
 				)}
 			</Stack>
-
 			<Box
 				mt="auto"
 				p="20px"
