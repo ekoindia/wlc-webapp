@@ -1,4 +1,13 @@
-import { Avatar, Box, Divider, Flex, Heading, Text } from "@chakra-ui/react";
+import {
+	Avatar,
+	Box,
+	Divider,
+	Flex,
+	Heading,
+	Stack,
+	StackDivider,
+	Text,
+} from "@chakra-ui/react";
 import { Button, Cards, Currency, IcoButton, Icon } from "components";
 import { useRouter } from "next/router";
 /**
@@ -18,17 +27,14 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 	};
 
 	const companyDataList = [
-		{ label: "Account Type", value: compdata?.account_type },
-		{ label: "Plan name", value: compdata?.plan_name },
-		// { label: "KYC status", value: "KYC Compliant" },
+		{ id: 1, label: "Account Type", value: compdata?.account_type },
+		{ id: 2, label: "Plan name", value: compdata?.plan_name },
+		// { id: 3, label: "KYC status", value: "KYC Compliant" },
 	];
-
-	const companyDataListLength = companyDataList?.length;
 
 	return (
 		<Cards>
 			<Flex gap="5" align="center">
-				{/* <Circle bg="divider" size={{ base: 20, lg: 20, xl: 28 }}> */}
 				<Avatar
 					w={{ base: 16, lg: 59, xl: 90 }}
 					h={{ base: 16, lg: 59, xl: 90 }}
@@ -36,7 +42,6 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 					src={compdata?.src}
 					showBorder={true}
 				/>
-				{/* </Circle> */}
 				<Box>
 					<Heading
 						fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
@@ -56,42 +61,42 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 				</Box>
 			</Flex>
 
-			<Flex
+			<Stack
 				direction={{ base: "column", md: "row" }}
+				divider={<StackDivider />}
 				gap={{ base: "2", md: "3" }}
 				mt={{ base: "24px", xl: "48px" }}
 				mb={{ base: "24px", md: "none" }}
 			>
-				{companyDataList.map((item, index) => (
-					<>
-						<Flex
-							align={{ base: "center", md: "flex-start" }}
-							direction={{ base: "row", md: "column" }}
-						>
-							<Text color="light" fontSize={{ base: "xs" }}>
-								{item.label}
-								<Box
-									as="span"
-									display={{ base: "inital", md: "none" }}
-								>
-									&#58;&nbsp;
-								</Box>
-							</Text>
-
-							<Text
-								color="dark"
-								fontSize={{ base: "sm" }}
-								fontWeight="medium"
+				{companyDataList.map(
+					(item) =>
+						item.value && (
+							<Flex
+								key={item.id}
+								align={{ base: "center", md: "flex-start" }}
+								direction={{ base: "row", md: "column" }}
 							>
-								{item.value}
-							</Text>
-						</Flex>
-						{index !== companyDataListLength - 1 ? (
-							<Divider orientation="vertical" />
-						) : null}
-					</>
-				))}
-			</Flex>
+								<Text color="light" fontSize={{ base: "xs" }}>
+									{item.label}
+									<Box
+										as="span"
+										display={{ base: "inital", md: "none" }}
+									>
+										&#58;&nbsp;
+									</Box>
+								</Text>
+
+								<Text
+									color="dark"
+									fontSize={{ base: "sm" }}
+									fontWeight="medium"
+								>
+									{item.value}
+								</Text>
+							</Flex>
+						)
+				)}
+			</Stack>
 
 			<Box
 				mt="auto"
