@@ -36,7 +36,6 @@ const TopMerchants = ({ data }) => {
 			sorting: true,
 		},
 		{ name: "onboardingDate", field: "Onboarding Date", sorting: true },
-
 		{
 			name: "distributorMapped",
 			field: "Distributor Mapped",
