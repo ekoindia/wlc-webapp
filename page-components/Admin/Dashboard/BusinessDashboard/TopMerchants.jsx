@@ -51,7 +51,6 @@ const TopMerchants = ({ data }) => {
 			bg="white"
 			borderRadius="10"
 			border="basic"
-			gap="2"
 		>
 			<Flex
 				direction={{ base: "column", md: "row" }}
