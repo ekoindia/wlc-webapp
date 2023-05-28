@@ -160,8 +160,8 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 									</Box>
 								</Flex>
 							</Box>
-							<RenderResults className={fontClassName} />
 							<DynamicSearchQueryController />
+							<RenderResults className={fontClassName} />
 						</ChakraKBarAnimator>
 					</ChakraKBarPositioner>
 				</ChakraKBarPortal>
@@ -267,7 +267,7 @@ function DynamicSearchQueryController() {
 				validQueryFound = true;
 			}
 
-			if (len >= 7 && len <= 10) {
+			if (len === 10) {
 				// TID
 				results.push(
 					getKBarAction({
@@ -310,7 +310,7 @@ function DynamicSearchQueryController() {
 					id: "historySearch",
 					name: "View Transaction History",
 					subtitle:
-						"Start typing TID, mobile, amount, etc to search in History...",
+						"Start typing TID, mobile, amount, etc., to search in History...",
 					keywords: "",
 					icon: "", // "tid"
 					priority: Priority.HIGH,
