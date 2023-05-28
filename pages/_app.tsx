@@ -101,41 +101,13 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 	}
 
 	// Setup K-Bar options...
-	const kbarActions = [
-		{
-			id: "blog",
-			name: "Blog",
-			subtitle: "Writing words",
-			shortcut: ["b"],
-			keywords: "writing words",
-			section: "Navigation",
-			icon: <Icon name="alarm" />,
-			perform: () => (window.location.pathname = "blog"),
-		},
-		{
-			id: "blog2",
-			name: "Blog 2",
-			icon: "🤯",
-			// shortcut: ["b"],
-			keywords: "writing words",
-			section: "Navigation",
-			perform: () => (window.location.pathname = "blog"),
-		},
-		{
-			id: "blog3",
-			name: "Blog 3",
-			icon: "🏫",
-			// shortcut: ["b"],
-			keywords: "writing words",
-			section: "Navigation",
-			perform: () => (window.location.pathname = "blog"),
-		},
+	const kbarDefaultActions = [
 		{
 			id: "reloadapp",
 			name: "Reload App",
 			subtitle: "Reset cache and reload the app if you facing any issues",
-			icon: <Icon name="reload" size="sm" />,
-			shortcut: ["Meta+F5"],
+			icon: <Icon name="reload" size="sm" color="error" />,
+			shortcut: ["$mod+F5"],
 			keywords: "reset cache reload",
 			section: "System",
 			priority: Priority.LOW,
@@ -157,7 +129,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		{
 			id: "logout",
 			name: "Logout",
-			icon: <Icon name="logout" size="sm" />,
+			icon: <Icon name="logout" size="sm" color="error" />,
 			// shortcut: ["c"],
 			keywords: "signout quit close",
 			section: "System",
@@ -188,23 +160,24 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 			toastOptions={{ defaultOptions: toastDefaultOptions }}
 		>
 			<OrgDetailProvider initialData={org || null}>
-				<UserProvider userMockData={mockUser}>
-					<LayoutProvider>
-						<MenuProvider>
-							<WalletProvider>
-								<RouteProtecter router={router}>
-									<SWRConfig
-										value={{
-											provider: localStorageProvider,
-										}}
-									>
-										<NotificationProvider>
-											<KBarProvider
-												actions={kbarActions}
-												options={{
-													enableHistory: true,
-												}}
-											>
+				<KBarProvider
+					actions={kbarDefaultActions}
+					options={{
+						enableHistory: false,
+						disableScrollbarManagement: true,
+					}}
+				>
+					<UserProvider userMockData={mockUser}>
+						<LayoutProvider>
+							<MenuProvider>
+								<WalletProvider>
+									<RouteProtecter router={router}>
+										<SWRConfig
+											value={{
+												provider: localStorageProvider,
+											}}
+										>
+											<NotificationProvider>
 												<ErrorBoundary>
 													{getLayout(
 														<main
@@ -218,14 +191,14 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 														</main>
 													)}
 												</ErrorBoundary>
-											</KBarProvider>
-										</NotificationProvider>
-									</SWRConfig>
-								</RouteProtecter>
-							</WalletProvider>
-						</MenuProvider>
-					</LayoutProvider>
-				</UserProvider>
+											</NotificationProvider>
+										</SWRConfig>
+									</RouteProtecter>
+								</WalletProvider>
+							</MenuProvider>
+						</LayoutProvider>
+					</UserProvider>
+				</KBarProvider>
 			</OrgDetailProvider>
 		</ChakraProvider>
 	);

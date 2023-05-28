@@ -1,5 +1,6 @@
-import { Flex, Kbd } from "@chakra-ui/react";
-import { Icon, Input } from "components";
+import { Flex } from "@chakra-ui/react";
+import { Icon, Input, Kbd } from "components";
+import { useKBar } from "kbar";
 
 /**
  * The Global Search Bar.
@@ -8,6 +9,8 @@ import { Icon, Input } from "components";
  * @example	`<GlobalSearch />`
  */
 const GlobalSearch = ({ onSearchKeyDown, ...rest }) => {
+	const { query } = useKBar();
+
 	return (
 		<Input
 			placeholder="Search by Transaction ID, Mobile, Account, etc"
@@ -47,6 +50,8 @@ const GlobalSearch = ({ onSearchKeyDown, ...rest }) => {
 				xl: "500px",
 			}}
 			h="36px"
+			pb="3px"
+			pr="70px"
 			bg="darkShade"
 			borderWidth="0"
 			type="number"
@@ -54,8 +59,11 @@ const GlobalSearch = ({ onSearchKeyDown, ...rest }) => {
 			maxLength={15}
 			// value={searchValue}
 			// onChange={(e) => setSearchValue(e.target.value)}
+			onClick={() => query.toggle()}
 			onKeyDown={onSearchKeyDown}
-			_placeholder={{ fontSize: "sm" }}
+			_placeholder={{
+				fontSize: { base: "xs", xl: "sm" },
+			}}
 			_focus={{
 				bg: "bg",
 				boxShadow: "none",

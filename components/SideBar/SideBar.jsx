@@ -22,6 +22,7 @@ import {
 } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
+import { useRegisterActions } from "kbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -33,7 +34,7 @@ import { Icon, ProfileCard, StatusCard } from "..";
  * @param {string} path The path to compare with the current route.
  * @returns {boolean} True if the current route is the same as the route passed to it.
  **/
-function isCurrentRoute(routerUrl, path) {
+const isCurrentRoute = (routerUrl, path) => {
 	if (!routerUrl || !path) return false;
 
 	const [routePath] = routerUrl.split("?");
@@ -43,17 +44,127 @@ function isCurrentRoute(routerUrl, path) {
 	}
 
 	return (path + "/").startsWith(routePath + "/");
-}
+};
+
+/**
+ * Component to show icon or first letter of the name
+ */
+const ActionIcon = ({ name, icon, size = "sm", color = "#64748b" }) => {
+	return (
+		<Circle
+			size={size === "sm" ? "10" : "12"}
+			bg={color}
+			color="white"
+			fontSize={size === "sm" ? "md" : "lg"}
+			fontWeight="500"
+		>
+			{icon ? <Icon name={icon} size={size} /> : name[0]}
+		</Circle>
+	);
+};
+
+/**
+ * A helper function to create the KBar actions array from all the visible transactions from transaction_list which are part of role_transaction_list.
+ * @param {Array} interaction_list - List of all transactions
+ * @param {Object} role_tx_list - All transaction_ids that are allowed to the user (mapped to the trxn details)
+ * @returns {Array} Array of KBar actions
+ */
+const generateTransactionActions = (
+	interaction_list,
+	role_tx_list,
+	Icon,
+	router
+) => {
+	const getTxAction = (tx, parent_id, is_group) => {
+		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
+
+		return {
+			id: "tx/" + _id,
+			name: tx.label,
+			subtitle: tx.description || "",
+			keywords: "transaction " + (tx.category || ""),
+			icon: <ActionIcon icon={tx.icon} name={tx.label} />,
+			section: "Services",
+			perform: is_group ? null : () => router.push("/transaction/" + _id),
+			parent: parent_id ? "tx/" + parent_id : "start-a-tx",
+		};
+	};
+
+	const trxnList = [
+		{
+			id: "start-a-tx",
+			name: "Start a Transaction...",
+			// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
+			icon: <Icon name="transaction" size="sm" color="#334155" />,
+			shortcut: ["$mod+/"],
+			section: "Services",
+		},
+	];
+
+	// Cache for transactions that contain sub-transactions
+	const trxnGroups = [];
+
+	// Process main transactions
+	interaction_list.forEach((tx) => {
+		if (tx.id in role_tx_list) {
+			let is_group = false;
+			// Is this a transaction group (Grid) (i.e, contains sub-transactions)?
+			if (tx.behavior == 7 && tx?.group_interaction_ids?.length) {
+				is_group = true;
+				trxnGroups.push({
+					tx: tx,
+					parent: "" + tx.id,
+				});
+			}
+			trxnList.push(getTxAction(tx, null, is_group));
+		}
+	});
+
+	// Recusrively process transaction groups...
+	while (trxnGroups.length > 0) {
+		const group = trxnGroups.shift();
+		const { tx, parent } = group;
+		const group_interaction_ids = tx.group_interaction_ids.split(",");
+		group_interaction_ids.forEach((id) => {
+			const subTx = role_tx_list[id];
+			if (subTx) {
+				const thisTx = {
+					id: id,
+					...subTx,
+				};
+				let is_group = false;
+				// Is this a transaction group (i.e, contains sub-transactions)?
+				if (
+					subTx.behavior == 7 &&
+					subTx?.group_interaction_ids?.length > 0
+				) {
+					is_group = true;
+					trxnGroups.push({
+						tx: thisTx,
+						parent: "" + (parent ? `${parent}/` : "") + id,
+					});
+				}
+				trxnList.push(getTxAction(thisTx, parent, is_group));
+			}
+		});
+	}
+
+	return trxnList;
+};
 
 //MAIN EXPORT
 const SideBar = ({ navOpen, setNavClose }) => {
 	const { userData, isAdmin, userType } = useUser();
 	const { interactions } = useMenuContext();
-	const { interaction_list } = interactions;
+	const { interaction_list, role_tx_list } = interactions;
 	const router = useRouter();
 	const [trxnList, setTrxnList] = useState([]);
 	const [otherList, setOtherList] = useState([]);
 	const [openIndex, setOpenIndex] = useState(-1);
+	const [trxnActions, setTrxnActions] = useState([]);
+	const [otherActions, setOtherActions] = useState([]);
+
+	// const [trxnActionsWorker] = useWorker(generateTransactionActions);
 
 	const menuList = isAdmin ? adminSidebarMenu : sidebarMenu;
 
@@ -87,8 +198,47 @@ const SideBar = ({ navOpen, setNavClose }) => {
 					id: TransactionIds.MANAGE_MY_ACCOUNT,
 				},
 			]);
+
+			// Generate KBar actions...
+			setTrxnActions(
+				generateTransactionActions(trxnList, role_tx_list, Icon, router)
+			);
+			setOtherActions([
+				...otherList.map((tx) => ({
+					id: "txother" + tx.id,
+					name: tx.label,
+					subtitle: tx.description || "",
+					keywords: "transaction " + tx.category,
+					icon: <Icon name={tx.icon} size="sm" color="#334155" />,
+					// priority: Priority.HIGH,
+					section: "Services",
+					perform: () => router.push(`/transaction/${tx.id}`),
+				})),
+				{
+					id: "manage-my-acc",
+					name: "Manage My Account",
+					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
+					icon: <Icon name="manage" size="sm" color="#334155" />,
+					section: "Services",
+				},
+			]);
 		}
 	}, [interaction_list]);
+
+	// useEffect(() => {
+	// 	if (interaction_list && interaction_list.length > 0) {
+	// 		const _trxnActions = generateTransactionActions(
+	// 			interaction_list,
+	// 			role_tx_list,
+	// 			Icon,
+	// 			router
+	// 		);
+	// 		setTrxnActions(_trxnActions);
+	// 	}
+	// }, [interaction_list, role_tx_list]);
+
+	useRegisterActions(trxnActions, [trxnActions]);
+	useRegisterActions(otherActions, [otherActions]);
 
 	// Set the sub-menu (accordian) index that should be open by default
 	// For Distributors, open the "Other" submenu (index = 1)

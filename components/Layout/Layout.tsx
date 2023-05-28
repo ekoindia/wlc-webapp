@@ -2,7 +2,6 @@ import {
 	Box,
 	chakra,
 	Flex,
-	Kbd,
 	Text,
 	useBreakpointValue,
 	useDisclosure,
@@ -15,10 +14,15 @@ import {
 	KBarPositioner,
 	KBarResults,
 	KBarSearch,
+	Priority,
+	useKBar,
 	useMatches,
+	useRegisterActions,
 } from "kbar";
 import Head from "next/head";
-import { Icon, NavBar, SideBar } from "..";
+import { useRouter } from "next/router";
+import { useMemo } from "react";
+import { Icon, Kbd, NavBar, SideBar } from "..";
 
 /**
  * The default page layout component
@@ -100,10 +104,11 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 			{isLoggedIn ? (
 				<ChakraKBarPortal>
 					<ChakraKBarPositioner
+						className="customScrollbars"
 						w="full"
 						zIndex={99999}
 						p="2em"
-						bg="blackAlpha.500"
+						bg="blackAlpha.600"
 						backdropFilter="auto"
 						backdropBlur="2px"
 					>
@@ -133,13 +138,22 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 										color="#475569"
 									/>
 									<ChakraKBarSearch
-										placeholder="Search anything..."
+										// defaultPlaceholder="Search anything..."
 										w="full"
+										h="40px"
 										bg="transparent"
 										_focus={{ outline: "none" }}
 										py="5px"
 										ml="1em"
-										_placeholder={{ color: "#94a3b8" }}
+										fontSize={{
+											base: "md",
+											md: "lg",
+											lg: "xl",
+										}}
+										_placeholder={{
+											color: "#94a3b8",
+											fontSize: { base: "sm", md: "md" },
+										}}
 									/>
 									<Box>
 										<Kbd>Esc</Kbd>
@@ -147,6 +161,7 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 								</Flex>
 							</Box>
 							<RenderResults className={fontClassName} />
+							<AutoHistorySearchController />
 						</ChakraKBarAnimator>
 					</ChakraKBarPositioner>
 				</ChakraKBarPortal>
@@ -157,10 +172,79 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 
 export default Layout;
 
+/**
+ * Helper component to dynamically update the search results based on the query value
+ * @returns {null}
+ */
+function AutoHistorySearchController() {
+	const { queryValue } = useKBar((state) => ({
+		queryValue: state.searchQuery,
+	}));
+
+	const numQueryVal = useMemo(() => Number(queryValue), [queryValue]);
+
+	const router = useRouter();
+
+	const historySearch = useMemo(() => {
+		const len = queryValue.length;
+		const isValidNumQuery =
+			numQueryVal &&
+			Number.isFinite(numQueryVal) &&
+			len >= 2 &&
+			len <= 20;
+		let type;
+		if (isValidNumQuery) {
+			type =
+				len === 10 && /^[6-9]/.test(queryValue)
+					? "mobile"
+					: len <= 5
+					? "Amount"
+					: len > 6 && len <= 10
+					? "TID"
+					: "Account Number";
+		}
+
+		return [
+			{
+				id: "historySearch",
+				name: isValidNumQuery
+					? "Search Transaction History"
+					: "View Transaction History",
+				subtitle: isValidNumQuery
+					? `${type} = ${type === "Amount" ? "₹" : ""}${queryValue}`
+					: "Start typing TID, mobile, amount, etc to search in History...",
+				keywords: isValidNumQuery ? queryValue : "",
+				icon: (
+					<Icon
+						name="transaction-history"
+						size="sm"
+						color="#334155"
+					/>
+				),
+				priority: Priority.HIGH,
+				// section: "History",
+				perform: () =>
+					router.push(
+						isValidNumQuery
+							? `/history?search=${queryValue}`
+							: "/history"
+					),
+			},
+		];
+	}, [numQueryVal, router]);
+
+	useRegisterActions(historySearch, [historySearch]);
+
+	return null;
+}
+
+/**
+ * Component to render KBar results
+ */
 function RenderResults({ className }) {
 	const { results } = useMatches();
 
-	console.log("kbar results", results);
+	console.log("⌘ K Bar results:", results);
 
 	// Chakra wrapper for KBarResults
 	const ChakraKBarResults = chakra(KBarResults);
@@ -175,10 +259,12 @@ function RenderResults({ className }) {
 						return (
 							<Text
 								className={className}
-								fontSize="sm"
+								textTransform="uppercase"
+								fontSize="xs"
+								letterSpacing="2px"
 								px="4px"
 								pt="6px"
-								pb="3px"
+								pb="2px"
 								color="#64748b"
 							>
 								{item}
@@ -213,7 +299,11 @@ function RenderResults({ className }) {
 								</Box>
 							)}
 							<Box overflow="hidden" flexGrow={1}>
-								<Text color={active ? "#0f172a" : "#334155"}>
+								<Text
+									noOfLines={2}
+									color={active ? "#0f172a" : "#334155"}
+									fontWeight="450"
+								>
 									{item.name}
 								</Text>
 								{item.subtitle && (
@@ -236,9 +326,17 @@ function RenderResults({ className }) {
 											: undefined
 									}
 								>
-									{shortcut}
+									{shortcut.replace(/\$mod\+/, "⌘ ")}
 								</Kbd>
 							))}
+							{item.children?.length > 0 && (
+								<Icon
+									name="chevron-right"
+									size="sm"
+									color="#64748b"
+									ml={{ base: 0, md: 2 }}
+								/>
+							)}
 						</Flex>
 					);
 				}}
