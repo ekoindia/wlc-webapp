@@ -7,7 +7,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 // import { GlobalSearchPane } from "components";
-import { useSession } from "contexts";
+import { useNote, useSession } from "contexts";
 import {
 	KBarAnimator,
 	KBarPortal,
@@ -210,6 +210,8 @@ function DynamicSearchController() {
 		queryValue: state.searchQuery,
 	}));
 
+	const { /* note, */ setNote } = useNote();
+
 	const router = useRouter();
 
 	const historySearch = useMemo(() => {
@@ -311,6 +313,20 @@ function DynamicSearchController() {
 					perform: () => router.push("/history"),
 				})
 			);
+		}
+
+		// Add notes action
+		if (queryValue?.length > 2) {
+			results.push({
+				id: "note/add",
+				name: "Save this as a Quick Note",
+				subtitle: `✍️ "${queryValue}"`,
+				keywords: queryValue,
+				icon: <Icon name="book" size="lg" color="#334155" />,
+				section: "Tools",
+				priority: Priority.LOW,
+				perform: () => setNote(queryValue),
+			});
 		}
 
 		return results;

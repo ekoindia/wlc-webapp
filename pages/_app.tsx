@@ -2,6 +2,7 @@ import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Icon, Layout, RouteProtecter } from "components";
 import {
+	NoteProvider,
 	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
@@ -178,19 +179,21 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 											}}
 										>
 											<NotificationProvider>
-												<ErrorBoundary>
-													{getLayout(
-														<main
-															className={
-																inter.className
-															}
-														>
-															<Component
-																{...pageProps}
-															/>
-														</main>
-													)}
-												</ErrorBoundary>
+												<NoteProvider>
+													<ErrorBoundary>
+														{getLayout(
+															<main
+																className={
+																	inter.className
+																}
+															>
+																<Component
+																	{...pageProps}
+																/>
+															</main>
+														)}
+													</ErrorBoundary>
+												</NoteProvider>
 											</NotificationProvider>
 										</SWRConfig>
 									</RouteProtecter>
