@@ -161,7 +161,7 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 								</Flex>
 							</Box>
 							<RenderResults className={fontClassName} />
-							<AutoHistorySearchController />
+							<DynamicSearchQueryController />
 						</ChakraKBarAnimator>
 					</ChakraKBarPositioner>
 				</ChakraKBarPortal>
@@ -173,65 +173,155 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 export default Layout;
 
 /**
- * Helper component to dynamically update the search results based on the query value
- * @returns {null}
+ * Returns a KBar action object
  */
-function AutoHistorySearchController() {
+function getKBarAction({
+	id,
+	name,
+	subtitle,
+	icon,
+	keywords,
+	priority,
+	perform,
+}) {
+	return {
+		id: id,
+		name: name,
+		subtitle: subtitle,
+		keywords: keywords,
+		icon: (
+			<Icon
+				name={icon || "transaction-history"}
+				size="sm"
+				color="#334155"
+			/>
+		),
+		priority: priority || Priority.HIGH,
+		// section: "History",
+		perform: perform,
+	};
+}
+
+/**
+ * Helper component to dynamically update the search results based on the query value
+ * @returns {null} Does not render any UI. Just updates the search results.
+ */
+function DynamicSearchQueryController() {
 	const { queryValue } = useKBar((state) => ({
 		queryValue: state.searchQuery,
 	}));
-
-	const numQueryVal = useMemo(() => Number(queryValue), [queryValue]);
 
 	const router = useRouter();
 
 	const historySearch = useMemo(() => {
 		const len = queryValue.length;
+
+		const numQueryVal = Number(queryValue);
+
+		// Check if the query is a valid number
 		const isValidNumQuery =
 			numQueryVal &&
 			Number.isFinite(numQueryVal) &&
 			len >= 2 &&
-			len <= 20;
-		let type;
+			len <= 18;
+
+		const results = [];
+		let validQueryFound = false;
+
 		if (isValidNumQuery) {
-			type =
-				len === 10 && /^[6-9]/.test(queryValue)
-					? "mobile"
-					: len <= 5
-					? "Amount"
-					: len > 6 && len <= 10
-					? "TID"
-					: "Account Number";
+			if (len === 10 && /^[6-9]/.test(queryValue)) {
+				// Mobile number
+				results.push(
+					getKBarAction({
+						id: "historySearch/mobile",
+						name: "Search Transaction History by Mobile",
+						subtitle: `Customer's Mobile = ${queryValue}`,
+						keywords: queryValue,
+						icon: "", // "mobile"
+						priority: Priority.HIGH,
+						// section: "History",
+						perform: () =>
+							router.push(
+								`/history?customer_mobile=${queryValue}`
+							),
+					})
+				);
+				validQueryFound = true;
+			}
+
+			if (len <= 5) {
+				// Amount
+				results.push(
+					getKBarAction({
+						id: "historySearch/amount",
+						name: "Search Transaction History by Amount",
+						subtitle: `Amount = ₹${queryValue}`,
+						keywords: queryValue,
+						icon: "", // "amount"
+						priority: Priority.HIGH,
+						// section: "History",
+						perform: () =>
+							router.push(`/history?amount=${queryValue}`),
+					})
+				);
+				validQueryFound = true;
+			}
+
+			if (len >= 7 && len <= 10) {
+				// TID
+				results.push(
+					getKBarAction({
+						id: "historySearch/tid",
+						name: "Search Transaction History by TID",
+						subtitle: `Transaction ID = ${queryValue}`,
+						keywords: queryValue,
+						icon: "", // "tid"
+						priority: Priority.HIGH,
+						// section: "History",
+						perform: () =>
+							router.push(`/history?tid=${queryValue}`),
+					})
+				);
+				validQueryFound = true;
+			}
+
+			if (len >= 9 && len <= 18) {
+				// Account Number
+				results.push(
+					getKBarAction({
+						id: "historySearch/account",
+						name: "Search Transaction History by Account Number",
+						subtitle: `Account Number = ${queryValue}`,
+						keywords: queryValue,
+						icon: "", // "tid"
+						priority: Priority.HIGH,
+						// section: "History",
+						perform: () =>
+							router.push(`/history?account=${queryValue}`),
+					})
+				);
+				validQueryFound = true;
+			}
 		}
 
-		return [
-			{
-				id: "historySearch",
-				name: isValidNumQuery
-					? "Search Transaction History"
-					: "View Transaction History",
-				subtitle: isValidNumQuery
-					? `${type} = ${type === "Amount" ? "₹" : ""}${queryValue}`
-					: "Start typing TID, mobile, amount, etc to search in History...",
-				keywords: isValidNumQuery ? queryValue : "",
-				icon: (
-					<Icon
-						name="transaction-history"
-						size="sm"
-						color="#334155"
-					/>
-				),
-				priority: Priority.HIGH,
-				// section: "History",
-				perform: () =>
-					router.push(
-						isValidNumQuery
-							? `/history?search=${queryValue}`
-							: "/history"
-					),
-			},
-		];
-	}, [numQueryVal, router]);
+		if (!validQueryFound) {
+			results.push(
+				getKBarAction({
+					id: "historySearch",
+					name: "View Transaction History",
+					subtitle:
+						"Start typing TID, mobile, amount, etc to search in History...",
+					keywords: "",
+					icon: "", // "tid"
+					priority: Priority.HIGH,
+					// section: "History",
+					perform: () => router.push("/history"),
+				})
+			);
+		}
+
+		return results;
+	}, [queryValue, router]);
 
 	useRegisterActions(historySearch, [historySearch]);
 
@@ -244,7 +334,7 @@ function AutoHistorySearchController() {
 function RenderResults({ className }) {
 	const { results } = useMatches();
 
-	console.log("⌘ K Bar results:", results);
+	// console.log("⌘ K Bar results:", results);
 
 	// Chakra wrapper for KBarResults
 	const ChakraKBarResults = chakra(KBarResults);

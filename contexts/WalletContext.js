@@ -2,7 +2,7 @@ import { Icon } from "components";
 import { Endpoints, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
-import { useRegisterActions } from "kbar";
+import { Priority, useRegisterActions } from "kbar";
 import {
 	createContext,
 	useCallback,
@@ -93,6 +93,7 @@ const WalletProvider = ({ children }) => {
 								color="#334155"
 							/>
 						),
+						priority: Priority.LOW,
 						perform: () => {},
 					},
 			  ]

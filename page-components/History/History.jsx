@@ -51,9 +51,9 @@ const History = () => {
 	// The query can be a transaction-id, account, amount,
 	// or, a mobile number.
 	useEffect(() => {
-		const { search } = router.query;
-		if (search) {
-			quickSearch(search);
+		const { search, ...others } = router.query;
+		if (search || others) {
+			quickSearch(search, others);
 		}
 	}, [router.query]);
 
@@ -154,33 +154,51 @@ const History = () => {
 
 	/**
 	 * Search for a transaction based on the query. The query can be a transaction-id, account, amount, or, a mobile number.
-	 * @param {*} query
+	 * @param {*} search
 	 */
-	const quickSearch = (query) => {
-		console.log("query inside quickSearch", query);
-		if (!query) return;
+	const quickSearch = (search, otherQueries) => {
+		console.log("Search inside quickSearch", search, otherQueries);
+		if (!(search || otherQueries)) return;
 
-		if (/^[0-9]+$/.test(query) !== true) {
+		// Perform specific search, if available...
+		if (otherQueries && Object.keys(otherQueries).length > 0) {
+			const { tid, account, customer_mobile, amount } = otherQueries;
+			// Set Filter form for searching...
+			setFormState({
+				...formElements,
+				...{ tid, account, customer_mobile, amount },
+			});
+			setFinalFormState({
+				...{ tid, account, customer_mobile, amount },
+			});
+			onClose();
+			setClear(true);
+			return;
+		}
+
+		// Perform generic search...
+		// Check if search is a number
+		if (/^[0-9]+$/.test(search) !== true) {
 			// Not a number
 			return;
 		}
-		// Detect type of query
+		// Detect type of search
 		let type = "account";
-		if (/^[6-9][0-9]{9}$/.test(query)) {
+		if (/^[6-9][0-9]{9}$/.test(search)) {
 			type = "customer_mobile";
-		} else if (query.length >= 7 && query.length <= 10) {
+		} else if (search.length >= 7 && search.length <= 10) {
 			type = "tid";
-		} else if (query.length < 7) {
+		} else if (search.length < 7) {
 			type = "amount";
 		}
 
 		// Set Filter form for searching...
 		setFormState({
 			...formElements,
-			[type]: query,
+			[type]: search,
 		});
 		setFinalFormState({
-			[type]: query,
+			[type]: search,
 		});
 		onClose();
 		setClear(true);
