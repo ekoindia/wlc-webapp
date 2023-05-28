@@ -2,13 +2,13 @@ import { Flex, Grid, Text } from "@chakra-ui/react";
 import { Currency, IcoButton, Icon } from "components";
 
 /**
- * A BusinessDashboardTopPanel page-component
+ * A TopPanel page-component
  * TODO: Write more description here
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<BusinessDashboardTopPanel></BusinessDashboardTopPanel>`
+ * @example	`<TopPanel></TopPanel>`
  */
-const BusinessDashboardTopPanel = ({ data }) => {
+const TopPanel = ({ data }) => {
 	const topPanelList = [
 		{
 			key: "totalDistributers",
@@ -48,7 +48,6 @@ const BusinessDashboardTopPanel = ({ data }) => {
 	return (
 		<Grid
 			templateColumns="repeat(4, 4fr)"
-			// gap="5"
 			overflowX="auto"
 			css={{
 				"&::-webkit-scrollbar": {
@@ -87,11 +86,11 @@ const BusinessDashboardTopPanel = ({ data }) => {
 								{item.type === "amount" ? (
 									<Currency amount={item.value} />
 								) : (
-									<span> {item.value}</span>
+									<span>{item.value}</span>
 								)}
 							</Flex>
 							<Flex gap="1">
-								{item.variation !== 0 ? (
+								{item.variation ? (
 									<>
 										<Icon
 											name={
@@ -143,4 +142,4 @@ const BusinessDashboardTopPanel = ({ data }) => {
 	);
 };
 
-export default BusinessDashboardTopPanel;
+export default TopPanel;
