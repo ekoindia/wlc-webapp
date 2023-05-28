@@ -27,7 +27,7 @@ const BusinessDashboard = ({ data }) => {
 					<SuccessRate data={successRate} />
 				</Flex>
 			</Flex>
-			<Flex p="20px">
+			<Flex p="0px 20px 20px 20px">
 				<TopMerchants data={topMerchants} />
 			</Flex>
 		</Flex>
