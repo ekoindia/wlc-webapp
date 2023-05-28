@@ -160,7 +160,7 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 									</Box>
 								</Flex>
 							</Box>
-							<DynamicSearchQueryController />
+							<DynamicSearchController />
 							<RenderResults className={fontClassName} />
 						</ChakraKBarAnimator>
 					</ChakraKBarPositioner>
@@ -181,7 +181,7 @@ function getKBarAction({
 	subtitle,
 	icon,
 	keywords,
-	priority,
+	priority = Priority.HIGH,
 	perform,
 }) {
 	return {
@@ -196,17 +196,16 @@ function getKBarAction({
 				color="#334155"
 			/>
 		),
-		priority: priority || Priority.HIGH,
+		priority: priority,
 		// section: "History",
 		perform: perform,
 	};
 }
 
 /**
- * Helper component to dynamically update the search results based on the query value
- * @returns {null} Does not render any UI. Just updates the search results.
+ * Helper component to dynamically update the search results based on the query value.
  */
-function DynamicSearchQueryController() {
+function DynamicSearchController() {
 	const { queryValue } = useKBar((state) => ({
 		queryValue: state.searchQuery,
 	}));
@@ -238,8 +237,6 @@ function DynamicSearchQueryController() {
 						subtitle: `Customer's Mobile = ${queryValue}`,
 						keywords: queryValue,
 						icon: "", // "mobile"
-						priority: Priority.HIGH,
-						// section: "History",
 						perform: () =>
 							router.push(
 								`/history?customer_mobile=${queryValue}`
@@ -258,7 +255,6 @@ function DynamicSearchQueryController() {
 						subtitle: `Amount = ₹${queryValue}`,
 						keywords: queryValue,
 						icon: "", // "amount"
-						priority: Priority.HIGH,
 						// section: "History",
 						perform: () =>
 							router.push(`/history?amount=${queryValue}`),
@@ -276,7 +272,6 @@ function DynamicSearchQueryController() {
 						subtitle: `Transaction ID = ${queryValue}`,
 						keywords: queryValue,
 						icon: "", // "tid"
-						priority: Priority.HIGH,
 						// section: "History",
 						perform: () =>
 							router.push(`/history?tid=${queryValue}`),
@@ -294,7 +289,6 @@ function DynamicSearchQueryController() {
 						subtitle: `Account Number = ${queryValue}`,
 						keywords: queryValue,
 						icon: "", // "tid"
-						priority: Priority.HIGH,
 						// section: "History",
 						perform: () =>
 							router.push(`/history?account=${queryValue}`),
@@ -313,7 +307,6 @@ function DynamicSearchQueryController() {
 						"Start typing TID, mobile, amount, etc., to search in History...",
 					keywords: "",
 					icon: "", // "tid"
-					priority: Priority.HIGH,
 					// section: "History",
 					perform: () => router.push("/history"),
 				})
@@ -325,6 +318,7 @@ function DynamicSearchQueryController() {
 
 	useRegisterActions(historySearch, [historySearch]);
 
+	// Don't render anything.
 	return null;
 }
 
@@ -341,96 +335,101 @@ function RenderResults({ className }) {
 
 	if (results.length) {
 		return (
-			<ChakraKBarResults
-				items={results}
-				onRender={({ item, active }) => {
-					if (typeof item === "string") {
-						// Render a section header
-						return (
-							<Text
-								className={className}
-								textTransform="uppercase"
-								fontSize="xs"
-								letterSpacing="2px"
-								px="4px"
-								pt="6px"
-								pb="2px"
-								color="#64748b"
-							>
-								{item}
-							</Text>
-						);
-					}
-
-					// Render a search result
-					return (
-						<Flex
-							className={className}
-							alignItems="center"
-							cursor="pointer"
-							gap="3px"
-							// mx="4px"
-							p="8px 15px"
-							minH="62px"
-							// borderRadius="md"
-							borderLeft="4px solid"
-							borderColor={
-								active ? "primary.dark" : "transparent"
-							}
-							bg={active ? "divider" : null}
-						>
-							{item.icon && (
-								<Box
-									fontSize="lg"
-									// color={active ? "#0f172a" : "#334155"}
-									mr="15px"
-								>
-									{item.icon}
-								</Box>
-							)}
-							<Box overflow="hidden" flexGrow={1}>
+			<>
+				<BackButton />
+				<ChakraKBarResults
+					items={results}
+					onRender={({ item, active }) => {
+						if (typeof item === "string") {
+							// Render a section header
+							return (
 								<Text
-									noOfLines={2}
-									color={active ? "#0f172a" : "#334155"}
-									fontWeight="450"
-								>
-									{item.name}
-								</Text>
-								{item.subtitle && (
-									<Text
-										fontSize="xs"
-										isTruncated={true}
-										color={active ? "#475569" : "#64748b"}
-									>
-										{item.subtitle}
-									</Text>
-								)}
-							</Box>
-							{item?.shortcut?.map((shortcut, index) => (
-								<Kbd
-									key={shortcut + index}
-									variant="dark"
-									textTransform={
-										shortcut?.length === 1
-											? "uppercase"
-											: undefined
-									}
-								>
-									{shortcut.replace(/\$mod\+/, "⌘ ")}
-								</Kbd>
-							))}
-							{item.children?.length > 0 && (
-								<Icon
-									name="chevron-right"
-									size="sm"
+									className={className}
+									textTransform="uppercase"
+									fontSize="xs"
+									letterSpacing="2px"
+									px="4px"
+									pt="6px"
+									pb="2px"
 									color="#64748b"
-									ml={{ base: 0, md: 2 }}
-								/>
-							)}
-						</Flex>
-					);
-				}}
-			/>
+								>
+									{item}
+								</Text>
+							);
+						}
+
+						// Render a search result
+						return (
+							<Flex
+								className={className}
+								alignItems="center"
+								cursor="pointer"
+								gap="3px"
+								// mx="4px"
+								p="8px 15px"
+								minH="62px"
+								// borderRadius="md"
+								borderLeft="4px solid"
+								borderColor={
+									active ? "primary.dark" : "transparent"
+								}
+								bg={active ? "divider" : null}
+							>
+								{item.icon && (
+									<Box
+										fontSize="lg"
+										// color={active ? "#0f172a" : "#334155"}
+										mr="15px"
+									>
+										{item.icon}
+									</Box>
+								)}
+								<Box overflow="hidden" flexGrow={1}>
+									<Text
+										noOfLines={2}
+										color={active ? "#0f172a" : "#334155"}
+										fontWeight="450"
+									>
+										{item.name}
+									</Text>
+									{item.subtitle && (
+										<Text
+											fontSize="xs"
+											isTruncated={true}
+											color={
+												active ? "#475569" : "#64748b"
+											}
+										>
+											{item.subtitle}
+										</Text>
+									)}
+								</Box>
+								{item?.shortcut?.map((shortcut, index) => (
+									<Kbd
+										key={shortcut + index}
+										variant="dark"
+										textTransform={
+											shortcut?.length === 1
+												? "uppercase"
+												: undefined
+										}
+									>
+										{shortcut.replace(/\$mod\+/, "⌘ ")}
+									</Kbd>
+								))}
+								{item.children?.length > 0 && (
+									<Icon
+										name="chevron-right"
+										size="sm"
+										color="#64748b"
+										ml={{ base: 0, md: 2 }}
+									/>
+								)}
+							</Flex>
+						);
+					}}
+				/>
+			</>
 		);
 	} else {
 		return (
@@ -439,4 +438,35 @@ function RenderResults({ className }) {
 			</Text>
 		);
 	}
+}
+
+/**
+ * Back button for the search results
+ */
+function BackButton() {
+	const { query, current, parentId, parentName } = useKBar((state) => ({
+		current: state.currentRootActionId,
+		parentId: state.actions[state.currentRootActionId]?.parent,
+		parentName: state.actions[state.currentRootActionId]?.name,
+	}));
+
+	if (!(parentId || current)) {
+		return null;
+	}
+
+	return (
+		<Flex
+			align="center"
+			p={2}
+			cursor="pointer"
+			_hover={{ bg: "#e2e8f0" }}
+			color="#64748b"
+			onClick={() => query.setCurrentRootAction(parentId)}
+		>
+			<Icon name="arrow-back" size="xs" />
+			<Text ml={3} size="sm" fontWeight="450">
+				{parentName || "Back"}
+			</Text>
+		</Flex>
+	);
 }

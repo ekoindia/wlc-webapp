@@ -9,6 +9,7 @@ import {
 	DrawerContent,
 	DrawerOverlay,
 	Flex,
+	Image,
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
@@ -49,16 +50,36 @@ const isCurrentRoute = (routerUrl, path) => {
 /**
  * Component to show icon or first letter of the name
  */
-const ActionIcon = ({ name, icon, size = "sm", color = "#64748b" }) => {
+const ActionIcon = ({
+	name,
+	icon,
+	ext_icon,
+	size = "sm",
+	color = "#64748b",
+}) => {
 	return (
 		<Circle
 			size={size === "sm" ? "10" : "12"}
-			bg={color}
+			bg={ext_icon ? "white" : color}
+			borderRadius={ext_icon ? 0 : "full"}
 			color="white"
 			fontSize={size === "sm" ? "md" : "lg"}
 			fontWeight="500"
+			overflow="hidden"
 		>
-			{icon ? <Icon name={icon} size={size} /> : name[0]}
+			{ext_icon ? (
+				<Image
+					src={ext_icon}
+					alt={name}
+					w="full"
+					h="full"
+					objectFit="contain"
+				/>
+			) : icon && !ext_icon ? (
+				<Icon name={icon} size={size} />
+			) : (
+				name[0]
+			)}
 		</Circle>
 	);
 };
@@ -73,7 +94,8 @@ const generateTransactionActions = (
 	interaction_list,
 	role_tx_list,
 	Icon,
-	router
+	router,
+	is_other_list = false
 ) => {
 	const getTxAction = (tx, parent_id, is_group) => {
 		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
@@ -81,25 +103,37 @@ const generateTransactionActions = (
 		return {
 			id: "tx/" + _id,
 			name: tx.label,
-			subtitle: tx.description || "",
+			subtitle: tx.description || tx.desc || "",
 			keywords: "transaction " + (tx.category || ""),
-			icon: <ActionIcon icon={tx.icon} name={tx.label} />,
+			icon: (
+				<ActionIcon
+					icon={tx.icon}
+					ext_icon={tx.ext_icon}
+					name={tx.label}
+				/>
+			),
 			section: "Services",
 			perform: is_group ? null : () => router.push("/transaction/" + _id),
-			parent: parent_id ? "tx/" + parent_id : "start-a-tx",
+			parent: parent_id
+				? "tx/" + parent_id
+				: is_other_list
+				? null
+				: "start-a-tx",
 		};
 	};
 
-	const trxnList = [
-		{
-			id: "start-a-tx",
-			name: "Start a Transaction...",
-			// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
-			icon: <Icon name="transaction" size="sm" color="#334155" />,
-			shortcut: ["$mod+/"],
-			section: "Services",
-		},
-	];
+	const trxnList = is_other_list
+		? []
+		: [
+				{
+					id: "start-a-tx",
+					name: "Start a Transaction...",
+					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
+					icon: <Icon name="transaction" size="sm" color="#334155" />,
+					shortcut: ["$mod+/"],
+					section: "Services",
+				},
+		  ];
 
 	// Cache for transactions that contain sub-transactions
 	const trxnGroups = [];
@@ -184,6 +218,16 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				}
 			});
 
+			// Add manage-my-account to the otherList
+			let manageMyAccount = {
+				id: TransactionIds.MANAGE_MY_ACCOUNT,
+				...role_tx_list[TransactionIds.MANAGE_MY_ACCOUNT],
+			};
+			// Remove, if already present in the list
+			if (manageMyAccount?.is_visible === 1) {
+				manageMyAccount = null;
+			}
+
 			setTrxnList(trxnList);
 			setOtherList([
 				{
@@ -192,36 +236,24 @@ const SideBar = ({ navOpen, setNavClose }) => {
 					link: Endpoints.HISTORY,
 				},
 				...otherList,
-				{
-					icon: "manage",
-					label: "Manage My Account",
-					id: TransactionIds.MANAGE_MY_ACCOUNT,
-				},
+				manageMyAccount,
 			]);
+
+			console.log("⌘ K Bar ------------- ", role_tx_list[268]);
 
 			// Generate KBar actions...
 			setTrxnActions(
 				generateTransactionActions(trxnList, role_tx_list, Icon, router)
 			);
-			setOtherActions([
-				...otherList.map((tx) => ({
-					id: "txother" + tx.id,
-					name: tx.label,
-					subtitle: tx.description || "",
-					keywords: "transaction " + tx.category,
-					icon: <Icon name={tx.icon} size="sm" color="#334155" />,
-					// priority: Priority.HIGH,
-					section: "Services",
-					perform: () => router.push(`/transaction/${tx.id}`),
-				})),
-				{
-					id: "manage-my-acc",
-					name: "Manage My Account",
-					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
-					icon: <Icon name="manage" size="sm" color="#334155" />,
-					section: "Services",
-				},
-			]);
+			setOtherActions(
+				generateTransactionActions(
+					[...otherList, manageMyAccount],
+					role_tx_list,
+					Icon,
+					router,
+					true // is-other-list
+				)
+			);
 		}
 	}, [interaction_list]);
 
