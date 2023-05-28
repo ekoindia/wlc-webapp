@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { EarningOverview, SuccessRate, TopPanel } from ".";
+import { EarningOverview, SuccessRate, TopMerchants, TopPanel } from ".";
 
 /**
  * A <BusinessDashboard> component
@@ -26,6 +26,9 @@ const BusinessDashboard = ({ data }) => {
 				<Flex flex="1">
 					<SuccessRate data={successRate} />
 				</Flex>
+			</Flex>
+			<Flex p="20px">
+				<TopMerchants data={topMerchants} />
 			</Flex>
 		</Flex>
 	);

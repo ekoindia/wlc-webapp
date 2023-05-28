@@ -1,5 +1,5 @@
 import { Avatar, Box, Circle, Flex, Text } from "@chakra-ui/react";
-import { Icon, IconButtons, Tags } from "components";
+import { Currency, Icon, IconButtons, Tags } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 
 export const getNameStyle = (name) => {
@@ -92,10 +92,7 @@ export const getAmountStyle = (amount, trx_type) => {
 	return (
 		amount !== undefined && (
 			<Flex align="center" gap="2">
-				<Flex align="center" gap="1">
-					<Icon name="rupee" size="12px" />
-					<Text>{amount}</Text>
-				</Flex>
+				<Currency amount={amount} />
 				{trx_type && (
 					<Icon
 						name={
