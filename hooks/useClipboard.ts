@@ -1,10 +1,10 @@
-import React from "react";
+import { useState } from "react";
 type CopyState = "READY" | "SUCCESS" | Error;
 
 const useClipboard = ({ delay = 2500 } = {}) => {
-	const [state, setState] = React.useState<CopyState>("READY");
+	const [state, setState] = useState<CopyState>("READY");
 	const [copyTimeout, setCopyTimeout] =
-		React.useState<ReturnType<typeof setTimeout>>();
+		useState<ReturnType<typeof setTimeout>>();
 
 	function handleCopyResult(result: CopyState) {
 		setState(result);
@@ -21,11 +21,7 @@ const useClipboard = ({ delay = 2500 } = {}) => {
 					(error) => error instanceof Error && handleCopyResult(error)
 				);
 		} else {
-			handleCopyResult(
-				new Error(
-					"`useClipboard`: Navigation Clipboard is not supported"
-				)
-			);
+			handleCopyResult(new Error("Clipboard is not supported"));
 		}
 	}
 

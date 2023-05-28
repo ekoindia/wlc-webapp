@@ -1,5 +1,6 @@
 /* PLOP_INJECT_EXPORT */
 export { default as useAppLink } from "./useAppLink";
+export { default as useClipboard } from "./useClipboard";
 export { default as useExternalResource } from "./useExternalResource";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLogin } from "./useLogin";
