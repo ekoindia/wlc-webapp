@@ -11,7 +11,7 @@ import { BusinessDashboardCard } from ".";
  */
 const TopMerchants = ({ data }) => {
 	const renderer = [
-		{ name: "", field: "Sr. No." },
+		{ field: "Sr. No.", show: "#" },
 		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
 		{
 			name: "gtv",
