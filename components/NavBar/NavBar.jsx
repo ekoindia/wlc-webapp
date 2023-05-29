@@ -13,10 +13,11 @@ import {
 } from "@chakra-ui/react";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
-import { Button, Icon, IconButtons, Input, OrgLogo } from "..";
+import { Button, Icon, IconButtons, OrgLogo } from "..";
 
 export const NavHeight = {
 	base: "56px",
@@ -65,10 +66,28 @@ const NavBar = ({ setNavOpen }) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
-	const { userData } = useUser();
+	const { userData, isAdmin, isLoggedIn } = useUser();
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
 	const router = useRouter();
+
+	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
+		ssr: false,
+		loading: () => (
+			<Box
+				ml={1}
+				w={{
+					base: "auto",
+					md: "280px",
+					lg: "400px",
+					xl: "500px",
+				}}
+				h="36px"
+				radius={6}
+				bg="shade"
+			/>
+		),
+	});
 
 	const handleSearchKeyDown = (e) => {
 		if (e?.key === "Enter" && e?.target?.value?.length > 1) {
@@ -109,43 +128,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						/>
 					</Flex>
 
-					<Input
-						placeholder="Search by Transaction ID, Mobile, Account, etc"
-						inputLeftElement={
-							<Icon
-								display={{ base: "none", md: "flex" }}
-								name="search"
-								size="sm"
-								color="light"
-							/>
-						}
-						inputLeftElementStyle={{
-							h: "36px",
-						}}
-						ml={1}
-						display={{ base: "none", md: "flex" }}
-						w={{
-							base: "auto",
-							md: "280px",
-							lg: "400px",
-							xl: "500px",
-						}}
-						h="36px"
-						bg="darkShade"
-						borderWidth="0"
-						type="number"
-						radius={6}
-						maxLength={15}
-						// value={searchValue}
-						// onChange={(e) => setSearchValue(e.target.value)}
-						onKeyDown={handleSearchKeyDown}
-						_placeholder={{ fontSize: "sm" }}
-						_focus={{
-							bg: "bg",
-							boxShadow: "none",
-							transition: "background 0.3s ease-out",
-						}}
-					/>
+					{isLoggedIn === true && isAdmin !== true && (
+						<GlobalSearch onSearchKeyDown={handleSearchKeyDown} />
+					)}
 				</Box>
 
 				{/* Right-side items of navbar */}
@@ -210,7 +195,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												fontWeight={"semibold"}
 												mr={"1.6vw"}
 											>
-												{userDetails?.name}
+												{userDetails?.name || ""}
 											</Text>
 
 											<Icon
@@ -337,123 +322,134 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						}}
 						lineHeight="normal"
 					>
-						<Text
-							fontSize={{
-								base: "16px",
-								sm: "12px",
-								lg: "14px",
-							}}
-							color={"highlight"}
-							textTransform="capitalize"
-							whiteSpace="nowrap"
-							overflow="hidden"
-							textOverflow="ellipsis"
-							width="40%"
-							title={userDetails?.name}
-						>
-							{userDetails?.name?.toLowerCase()}
-						</Text>
-						<Text
-							fontSize={{
-								base: "12px",
-								sm: "10px",
-							}}
-							w={"fit-content"}
-							color={"white"}
-							mb="3px"
-						>
-							(User Code:{" "}
-							<Text as={"span"} fontWeight={"medium"}>
-								{userDetails?.code}
-							</Text>
-							)
-						</Text>
-					</Flex>
-					<Flex w={"full"} py={".3vw"}>
-						<Text
-							fontSize={{
-								base: "12px",
-								sm: "10px",
-							}}
-							w={"fit-content"}
-							color={"white"}
-						>
-							{userDetails?.email}
-						</Text>
-					</Flex>
-					<Flex
-						w={"full"}
-						pb={".3vw"}
-						justifyContent={"space-between"}
-						mt={{ base: "8px", sm: "initial" }}
-						wrap="wrap"
-					>
-						<Flex justifyContent={"space-between"} mt={".4vw"}>
-							<Box display={"flex"} alignItems={"center"}>
-								<Text
-									fontSize={{
-										base: "12px",
-										sm: "10px",
-									}}
-									color={"white"}
-								>
-									+91{" "}
-									{userDetails?.mobile.slice(0, 5) +
-										" " +
-										userDetails?.mobile.slice(5)}
-								</Text>
-								<Box ml={{ base: "15px", sm: "initial" }}>
-									<IconButtons
-										iconSize={"xs"}
-										// onClick={() =>
-										// 	Router.push("/admin/my-network/profile/up-per-info")
-										// }
-
-										iconName="mode-edit"
-										iconStyle={{
-											size: "10px",
-										}}
-									/>
-								</Box>
-							</Box>
-						</Flex>
-
-						<Flex>
-							<Button
-								fontSize={"0.6vw"}
-								w={{
-									base: "140px",
-									sm: "90px",
-									lg: "100px",
-									"2xl": "108px",
+						{userDetails?.name ? (
+							<Text
+								fontSize={{
+									base: "16px",
+									sm: "12px",
+									lg: "14px",
 								}}
-								h={{
-									base: "48px",
-									sm: "30px",
-									xl: "34px",
-									"2xl": "36px",
-								}}
-								fontWeight={"medium"}
-								borderRadius={{
-									base: "10px",
-									lg: "6px",
-									"2xl": "5px",
-								}}
+								color={"highlight"}
+								textTransform="capitalize"
+								whiteSpace="nowrap"
+								overflow="hidden"
+								textOverflow="ellipsis"
+								width="40%"
+								title={userDetails?.name || ""}
 							>
-								<Text
-									mr={".2vw"}
-									fontSize={{
-										base: "14px",
-										sm: "8px",
-										lg: "10px",
-										"2xl": "12px",
+								{userDetails?.name?.toLowerCase()}
+							</Text>
+						) : null}
+
+						{userDetails?.code && userDetails?.code > 1 ? (
+							<Text
+								fontSize={{
+									base: "12px",
+									sm: "10px",
+								}}
+								w={"fit-content"}
+								color={"white"}
+								mb="3px"
+							>
+								(User Code:{" "}
+								<Text as={"span"} fontWeight={"medium"}>
+									{userDetails?.code}
+								</Text>
+								)
+							</Text>
+						) : null}
+					</Flex>
+
+					{userDetails?.email ? (
+						<Flex w={"full"} py={".3vw"}>
+							<Text
+								fontSize={{
+									base: "12px",
+									sm: "10px",
+								}}
+								w={"fit-content"}
+								color={"white"}
+							>
+								{userDetails?.email}
+							</Text>
+						</Flex>
+					) : null}
+
+					{userDetails?.mobile && userDetails?.mobile > 1 ? (
+						<Flex
+							w={"full"}
+							pb={".3vw"}
+							justifyContent={"space-between"}
+							mt={{ base: "8px", sm: "initial" }}
+							wrap="wrap"
+						>
+							<Flex justifyContent={"space-between"} mt={".4vw"}>
+								<Box display={"flex"} alignItems={"center"}>
+									<Text
+										fontSize={{
+											base: "12px",
+											sm: "10px",
+										}}
+										color={"white"}
+									>
+										+91{" "}
+										{userDetails?.mobile.slice(0, 5) +
+											" " +
+											userDetails?.mobile.slice(5)}
+									</Text>
+									<Box ml={{ base: "15px", sm: "initial" }}>
+										<IconButtons
+											iconSize={"xs"}
+											// onClick={() =>
+											// 	Router.push("/admin/my-network/profile/up-per-info")
+											// }
+
+											iconName="mode-edit"
+											iconStyle={{
+												size: "10px",
+											}}
+										/>
+									</Box>
+								</Box>
+							</Flex>
+
+							<Flex>
+								<Button
+									fontSize={"0.6vw"}
+									w={{
+										base: "140px",
+										sm: "90px",
+										lg: "100px",
+										"2xl": "108px",
+									}}
+									h={{
+										base: "48px",
+										sm: "30px",
+										xl: "34px",
+										"2xl": "36px",
+									}}
+									fontWeight={"medium"}
+									borderRadius={{
+										base: "10px",
+										lg: "6px",
+										"2xl": "5px",
 									}}
 								>
-									View Profile &gt;
-								</Text>
-							</Button>
+									<Text
+										mr={".2vw"}
+										fontSize={{
+											base: "14px",
+											sm: "8px",
+											lg: "10px",
+											"2xl": "12px",
+										}}
+									>
+										View Profile &gt;
+									</Text>
+								</Button>
+							</Flex>
 						</Flex>
-					</Flex>
+					) : null}
 				</Box>
 			</VStack>
 

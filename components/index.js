@@ -9,6 +9,7 @@ import { DateView } from "./DateView";
 import { Divider } from "./Divider";
 import { EkoConnectWidget } from "./EkoConnectWidget";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { GlobalSearch } from "./GlobalSearch";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
 import { Icon } from "./Icon";
@@ -37,6 +38,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	GlobalSearch,
 	OrgLogo,
 	DateView,
 	EkoConnectWidget,

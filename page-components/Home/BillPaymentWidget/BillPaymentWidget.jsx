@@ -41,15 +41,14 @@ const BillPaymentWidget = () => {
 				});
 			}
 		});
-		setData(bbps_tx_list); // set the new array to the data state
-	}, [role_tx_list]);
-
-	useEffect(() => {
-		if (data.length > 8) {
-			setData(data.slice(0, 7));
+		if (bbps_tx_list?.length > 8) {
+			setData(bbps_tx_list.slice(0, 7));
 			setMore(true);
+		} else {
+			setData(bbps_tx_list);
+			setMore(false);
 		}
-	}, [data]);
+	}, [role_tx_list]);
 
 	const handleIconClick = (id) => {
 		router.push(
