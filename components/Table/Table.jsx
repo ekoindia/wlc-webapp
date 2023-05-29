@@ -209,7 +209,7 @@ const Table = ({
 	};
 
 	const prepareCard = () => {
-		return data.map((item, index) => (
+		return data?.map((item, index) => (
 			<Box
 				bg="white"
 				width="100%"

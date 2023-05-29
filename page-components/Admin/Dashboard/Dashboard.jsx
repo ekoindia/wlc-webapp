@@ -1,3 +1,4 @@
+import { Flex } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
@@ -80,9 +81,14 @@ const Dashboard = ({ className = "", ...props }) => {
 
 	return (
 		<div className={`${className}`} {...props}>
-			<DashboardHeading
-				{...{ headingList, heading, handleHeadingClick }}
-			/>
+			<Flex
+				bg={{ base: "white", md: "none" }}
+				mb={{ base: "20px", md: "0px" }}
+			>
+				<DashboardHeading
+					{...{ headingList, heading, handleHeadingClick }}
+				/>
+			</Flex>
 			{heading === 0 ? (
 				<BusinessDashboard data={data} />
 			) : heading === 1 ? (
