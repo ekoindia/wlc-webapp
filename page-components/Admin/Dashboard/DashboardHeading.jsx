@@ -15,7 +15,7 @@ import { Icon } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<DashboardHeading></DashboardHeading>`
  */
-const DashboardHeading = ({ heading, headingList, handleHeadingClick }) => {
+const DashboardHeading = ({ pageId, headingList, handleHeadingClick }) => {
 	return (
 		<Flex justify="space-between" fontSize="sm" m="20px">
 			<Flex direction="column">
@@ -23,7 +23,7 @@ const DashboardHeading = ({ heading, headingList, handleHeadingClick }) => {
 					<MenuButton>
 						<Flex gap="4" align="center">
 							<Text fontWeight="semibold" fontSize="2xl">
-								{headingList[heading]}
+								{headingList[pageId]}
 							</Text>
 							<Icon name="caret-down" size="16px" />
 						</Flex>
