@@ -76,9 +76,7 @@ const Dashboard = ({ className = "", ...props }) => {
 		};
 	}, [heading]);
 
-	const handleHeadingClick = (item) => {
-		setHeading(item);
-	};
+	const handleHeadingClick = (item) => setHeading(item);
 
 	return (
 		<div className={`${className}`} {...props}>
