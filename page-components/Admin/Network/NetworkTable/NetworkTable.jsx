@@ -16,7 +16,7 @@ const NetworkTable = ({
 	agentDetails,
 }) => {
 	const renderer = [
-		{ name: "", field: "Sr. No." },
+		{ field: "Sr. No.", show: "#" },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
 		{ name: "agent_mobile", field: "Mobile Number", sorting: true },
 		{ name: "agent_type", field: "Type", sorting: true },
