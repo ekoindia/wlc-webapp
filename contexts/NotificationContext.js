@@ -121,13 +121,13 @@ const useNotifications = () => {
 			{
 				id: "notifications",
 				name: unread_count
-					? " You have unread notifications..."
+					? `You have ${unread_count} unread notifications...`
 					: "View Notifications",
-				subtitle: unread_count
-					? unread_count +
-					  " unread out of total " +
-					  notifications.length
-					: "",
+				// subtitle: unread_count
+				// 	? unread_count +
+				// 	  " unread out of total " +
+				// 	  notifications.length
+				// 	: "",
 				// section: "Notifications",
 				keywords: "inbox mail notice",
 				priority: unread_count ? Priority.HIGH : Priority.NORMAL,

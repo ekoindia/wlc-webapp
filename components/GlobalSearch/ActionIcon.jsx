@@ -37,9 +37,11 @@ const ActionIcon = ({
 					alt={name}
 					w="full"
 					h="full"
+					borderRadius="6px"
+					overflow="hidden"
 					objectFit="contain"
 				/>
-			) : icon && !ext_icon ? (
+			) : icon ? (
 				<Icon name={icon} size={size} />
 			) : (
 				name[0]
