@@ -150,6 +150,7 @@ export const light = extendTheme({
 		"1px": "1px solid",
 		"2px": "0.125rem solid",
 		"10px": "0.625rem solid",
+		basic: "1px solid #E9EDF1",
 		card: "1px solid #D2D2D2",
 		"br-sidebar": "1px solid #1F3ABC",
 		"br-popupcard": "1px solid #FE9F00",

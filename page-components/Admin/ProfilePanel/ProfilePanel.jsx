@@ -85,8 +85,6 @@ const ProfilePanel = () => {
 	const { accessToken } = useSession();
 	const { cellnumber } = router.query;
 
-	// const headers = {};
-
 	const hitQuery = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {

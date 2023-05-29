@@ -30,11 +30,11 @@ import { Button, Icon, Pagination } from "..";
  * A Table component that renders a table with a header and rows.
  */
 const Table = ({
-	pageLimit: PageSize = 10,
+	pageLimit = 10,
 	data,
 	totalRecords,
-	pageNumber,
-	setPageNumber,
+	pageNumber = 1,
+	setPageNumber = () => {},
 	renderer,
 	rendererExpandedRow,
 	variant,
@@ -105,7 +105,7 @@ const Table = ({
 								item,
 								r,
 								index,
-								index + pageNumber * PageSize - (PageSize - 1)
+								index + pageNumber * pageLimit - (pageLimit - 1)
 							)}
 						</Td>
 					))}
@@ -174,6 +174,8 @@ const Table = ({
 		const account_status = item?.account_status;
 		const eko_code = item?.profile?.eko_code ?? [];
 		switch (column?.show) {
+			case "#":
+				return serialNo;
 			case "Tag":
 				return getStatusStyle(item[column.name], tableName);
 			case "Modal":
@@ -195,21 +197,17 @@ const Table = ({
 			case "Description":
 				return getDescriptionStyle(item[column.name]);
 			default:
-				if (column?.field === "Sr. No.") {
-					return serialNo;
-				} else {
-					return item[column.name];
-					// return (
-					// 	<Text whiteSpace="normal" overflowWrap="break-word">
-					// 		{item[column.name]}
-					// 	</Text>
-					// );
-				}
+				return item[column.name];
+			// return (
+			// 	<Text whiteSpace="normal" overflowWrap="break-word">
+			// 		{item[column.name]}
+			// 	</Text>
+			// );
 		}
 	};
 
 	const prepareCard = () => {
-		return data.map((item, index) => (
+		return data?.map((item, index) => (
 			<Box
 				bg="white"
 				width="100%"
@@ -286,7 +284,7 @@ const Table = ({
 								className="pagination-bar"
 								currentPage={pageNumber}
 								totalCount={totalRecords || 10}
-								pageSize={PageSize}
+								pageSize={pageLimit}
 								onPageChange={(page) => {
 									router.query.page = page;
 									router.replace(router);
