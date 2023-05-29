@@ -45,6 +45,9 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 	};
 
 	const verifyOtpHandler = (_otp) => {
+		if (loading) return;
+		if (!(_otp || Otp)) return;
+
 		submitLogin({
 			id_type: "Mobile",
 			mobile: number.original,
