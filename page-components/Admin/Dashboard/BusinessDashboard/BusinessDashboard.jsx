@@ -10,12 +10,7 @@ import { EarningOverview, SuccessRate, TopMerchants, TopPanel } from ".";
  */
 const BusinessDashboard = ({ data }) => {
 	console.log("[BusinessDashboard] data", data);
-	const { topPanel, earningOverview, topMerchants, successRate } = data;
-	console.log("successRate", successRate);
-	console.log("topMerchants", topMerchants);
-	console.log("earningOverview", earningOverview);
-	console.log("topPanel", topPanel);
-
+	const { topPanel, earningOverview, topMerchants, successRate } = data || {};
 	return (
 		<Flex direction="column">
 			<TopPanel data={topPanel} />

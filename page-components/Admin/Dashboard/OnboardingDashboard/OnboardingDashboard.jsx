@@ -127,7 +127,12 @@ const OnboardingDashboard = (/* props */) => {
 
 	// TODO: INTEGARTE APIs....
 	const [temp] = useState(true);
-	if (temp) return <Text fontSize="lg">Coming soon...</Text>;
+	if (temp)
+		return (
+			<Text fontSize="lg" px="20px">
+				Coming soon...
+			</Text>
+		);
 
 	return (
 		<Flex direction={"column"}>
