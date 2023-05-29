@@ -9,7 +9,6 @@ import {
 	DrawerContent,
 	DrawerOverlay,
 	Flex,
-	Image,
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
@@ -28,6 +27,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Icon, ProfileCard, StatusCard } from "..";
+import { ActionIcon } from "../GlobalSearch";
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.
@@ -45,43 +45,6 @@ const isCurrentRoute = (routerUrl, path) => {
 	}
 
 	return (path + "/").startsWith(routePath + "/");
-};
-
-/**
- * Component to show icon or first letter of the name
- */
-const ActionIcon = ({
-	name,
-	icon,
-	ext_icon,
-	size = "sm",
-	color = "#64748b",
-}) => {
-	return (
-		<Circle
-			size={size === "sm" ? "10" : "12"}
-			bg={ext_icon ? "white" : color}
-			borderRadius={ext_icon ? 0 : "full"}
-			color="white"
-			fontSize={size === "sm" ? "md" : "lg"}
-			fontWeight="500"
-			overflow="hidden"
-		>
-			{ext_icon ? (
-				<Image
-					src={ext_icon}
-					alt={name}
-					w="full"
-					h="full"
-					objectFit="contain"
-				/>
-			) : icon && !ext_icon ? (
-				<Icon name={icon} size={size} />
-			) : (
-				name[0]
-			)}
-		</Circle>
-	);
 };
 
 /**
@@ -238,8 +201,6 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				...otherList,
 				manageMyAccount,
 			]);
-
-			console.log("⌘ K Bar ------------- ", role_tx_list[268]);
 
 			// Generate KBar actions...
 			setTrxnActions(
