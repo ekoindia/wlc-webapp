@@ -5,7 +5,7 @@ import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import { BusinessDashboard, DashboardHeading, OnboardingDashboard } from ".";
 
-/* heading list for DashboardHeading component */
+/* pageId list for DashboardHeading component */
 const headingList = ["Business Dashboard", "Onboarding Dashboard"];
 
 /* api uri */
@@ -20,19 +20,19 @@ const apiUri = ["businessdashboard", "onboardingDashboard"];
  */
 const Dashboard = ({ className = "", ...props }) => {
 	const [data, setData] = useState([]);
-	const [heading, setHeading] = useState(0);
+	const [pageId, setPageId] = useState(0);
 	const { accessToken } = useSession();
 
 	const hitQuery = (abortController, key) => {
 		console.log(
-			`[Dashboard] - ${headingList[heading]} fetch started...`,
+			`[Dashboard] - ${headingList[pageId]} fetch started...`,
 			key
 		);
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents/${apiUri[heading]}`,
+				"tf-req-uri": `/network/agents/${apiUri[pageId]}`,
 				"tf-req-method": "GET",
 			},
 			controller: abortController,
@@ -40,44 +40,44 @@ const Dashboard = ({ className = "", ...props }) => {
 		})
 			.then((data) => {
 				console.log(
-					`[Dashboard] - ${headingList[heading]} fetch result...`,
+					`[Dashboard] - ${headingList[pageId]} fetch result...`,
 					key,
 					data
 				);
 				const _data =
-					heading === 0
+					pageId === 0
 						? data?.data?.dashboard_details[0]
-						: heading === 1
+						: pageId === 1
 						? data?.data?.onboarding_dashboard_details[0]
 						: [];
 				setData(_data);
 			})
 			.catch((err) => {
 				console.error(
-					`[Dashboard]  - ${headingList[heading]} error: `,
+					`[Dashboard]  - ${headingList[pageId]} error: `,
 					err
 				);
 			});
 	};
 
 	useEffect(() => {
-		console.log("[Dashboard] fetch init...", heading, headingList[heading]);
+		console.log("[Dashboard] fetch init...", pageId, headingList[pageId]);
 
 		const controller = new AbortController();
-		hitQuery(controller, `${heading}-${headingList[heading]}`);
+		hitQuery(controller, `${pageId}-${headingList[pageId]}`);
 
 		return () => {
 			console.log(
 				"[Dashboard] fetch aborted...",
-				heading,
-				headingList[heading],
+				pageId,
+				headingList[pageId],
 				controller
 			);
 			controller.abort();
 		};
-	}, [heading]);
+	}, [pageId]);
 
-	const handleHeadingClick = (item) => setHeading(item);
+	const handleHeadingClick = (item) => setPageId(item);
 
 	return (
 		<div className={`${className}`} {...props}>
@@ -86,12 +86,12 @@ const Dashboard = ({ className = "", ...props }) => {
 				mb={{ base: "20px", md: "0px" }}
 			>
 				<DashboardHeading
-					{...{ headingList, heading, handleHeadingClick }}
+					{...{ headingList, pageId, handleHeadingClick }}
 				/>
 			</Flex>
-			{heading === 0 ? (
+			{pageId === 0 ? (
 				<BusinessDashboard data={data} />
-			) : heading === 1 ? (
+			) : pageId === 1 ? (
 				<OnboardingDashboard data={data} />
 			) : null}
 		</div>
