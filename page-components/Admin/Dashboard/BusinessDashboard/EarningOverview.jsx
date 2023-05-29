@@ -1,4 +1,4 @@
-import { Divider, Flex, Stack, StackDivider, Text } from "@chakra-ui/react";
+import { Divider, Flex, Grid, Text } from "@chakra-ui/react";
 import { Currency, Icon } from "components";
 
 /**
@@ -81,9 +81,11 @@ const EarningOverview = ({ data }) => {
 			</Flex>
 			<Divider display={{ base: "none", md: "block" }} />
 			<Flex h="100%" w="100%" align="center">
-				<Stack
-					direction={{ base: "column", md: "row" }}
-					divider={<StackDivider />}
+				<Grid
+					templateColumns={{
+						base: "1fr",
+						md: "repeat(auto-fit,minmax(100px,1fr))",
+					}}
 					gap={{ base: "2", md: "8" }}
 					w="100%"
 				>
@@ -92,7 +94,10 @@ const EarningOverview = ({ data }) => {
 							item.value && (
 								<Flex
 									key={item.key}
-									direction={{ base: "row", md: "column" }}
+									direction={{
+										base: "row",
+										md: "column",
+									}}
 									justify={{
 										base: "space-between",
 										md: "center",
@@ -192,7 +197,7 @@ const EarningOverview = ({ data }) => {
 								</Flex>
 							)
 					)}
-				</Stack>
+				</Grid>
 			</Flex>
 			{/*TODO: Need IcoButton -- Download Reports */}
 		</Flex>
