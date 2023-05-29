@@ -6,7 +6,8 @@ import { Home, SelectionScreen } from "eko-oaas-package";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { createPintwinFormat } from "../../utils/pintwinFormat";
 
 const selectionStepData = {
 	id: 0,
@@ -37,7 +38,7 @@ const selectionStepData = {
 				description:
 					"I have a network of seller and i want to serve them",
 				icon: "../assets/icons/user_distributor.png",
-				isVisible: false,
+				isVisible: true,
 			},
 			{
 				id: 3,
@@ -67,6 +68,8 @@ const SignupPage = () => {
 	const [shopTypesData, setShopTypesData] = useState();
 	const [stateTypesData, setStateTypesData] = useState();
 	const [signUrlData, setSignUrlData] = useState();
+	const [bookletNumber, setBookletNumber] = useState();
+	const [bookletKeys, setBookletKeys] = useState([]);
 	const toast = useToast();
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
 	const handleStepDataSubmit = (data) => {
@@ -89,13 +92,13 @@ const SignupPage = () => {
 						role.merchant_type ===
 						parseInt(data.form_data.merchant_type)
 				)?.applicant_type;
-				console.log("applicantType", applicantData, userData);
 				bodyData.form_data.applicant_type = applicantData;
-				bodyData.form_data.csp_id = userData.userDetails.signup_mobile;
+				bodyData.form_data.csp_id =
+					userData.userDetails.signup_mobile ||
+					userData.userDetails.mobile;
 				interaction_type_id = TransactionIds.USER_ONBOARDING_ROLE;
 			} else if (data?.id === 5) {
-				bodyData.form_data.company_name =
-					userData.userDetails.signup_mobile;
+				bodyData.form_data.company_name = userData.userDetails.mobile;
 				bodyData.form_data.latlong = latLong;
 				interaction_type_id = TransactionIds.USER_AADHAR_CONSENT;
 			} else if (data?.id === 6 || data?.id === 7) {
@@ -113,7 +116,29 @@ const SignupPage = () => {
 					bodyData.form_data.aadhar = aadhar;
 				}
 			} else if (data?.id === 9) {
+				console.log("bodyData inside 1", bodyData);
 				interaction_type_id = TransactionIds.USER_ONBOARDING_BUSINESS;
+				bodyData.form_data.latlong = latLong;
+				bodyData.form_data.csp_id = userData.userDetails.mobile;
+				bodyData.form_data.communication = 1;
+			} else if (data?.id === 10) {
+				// Object.keys(data.form_data) {}
+				console.log("pintwin 1", data.form_data, bookletKeys);
+				bodyData.form_data.first_okekey = createPintwinFormat(
+					data?.form_data?.first_okekey,
+					bookletKeys[bookletKeys?.length - 1]
+				);
+				bodyData.form_data.second_okekey = createPintwinFormat(
+					data?.form_data?.second_okekey,
+					bookletKeys[bookletKeys?.length - 2]
+				);
+				bodyData.form_data.is_pintwin_user =
+					bookletNumber?.is_pintwin_user;
+				bodyData.form_data.booklet_serial_number =
+					bookletNumber?.booklet_serial_number;
+				bodyData.form_data.latlong = latLong;
+
+				interaction_type_id = TransactionIds.USER_ONBOARDING_SECRET_PIN;
 			} else if (data?.id === 12) {
 				interaction_type_id =
 					TransactionIds.USER_ONBOARDING_SUBMIT_SIGN_AGREEMENT;
@@ -244,12 +269,13 @@ const SignupPage = () => {
 	};
 
 	const updateOnboarding = (bodyData) => {
+		console.log("bodyData inside 2", bodyData);
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			token: userData?.access_token,
 			body: {
 				interaction_type_id: interaction_type_id,
 				user_id: userData?.userId,
-				...bodyData?.form_data,
+				...bodyData.form_data,
 			},
 			timeout: 30000,
 		})
@@ -307,7 +333,11 @@ const SignupPage = () => {
 			.then((res) => {
 				setUserLoginData(res);
 				updateUserInfo(res);
-				if (res?.details?.onboarding !== 1) {
+				if (
+					res?.details?.onboarding !== 1 &&
+					res?.details?.onboarding !== undefined &&
+					res?.details?.onboarding !== null
+				) {
 					router.push("/home");
 				}
 				console.log("inside initial api response", res);
@@ -399,27 +429,34 @@ const SignupPage = () => {
 		}
 	};
 
-	const handleStepCallBack = useCallback(
-		(callType) => {
-			console.log("stepcallback", callType, latLong, userLoginData);
-			if (callType.type === 12) {
-				if (callType.method === "getSignUrl") {
-					getSignUrl(userLoginData?.details?.agreement_id);
-				}
-				if (callType.method === "legalityOpen") {
-					console.log("inside legal");
-					// eslint-disable-next-line no-undef
-					const leegality = new Leegality({
-						callback: handleLeegalityCallback.bind(this),
-						logo: "/images/logoimage.png",
-					});
-					leegality.init();
-					leegality.esign(signUrlData?.short_url);
-				}
+	const handleStepCallBack = (callType) => {
+		console.log("stepcallback", callType, latLong, userLoginData);
+		if (callType.type === 12) {
+			if (callType.method === "getSignUrl") {
+				getSignUrl(userLoginData?.details?.agreement_id);
 			}
-		},
-		[userLoginData?.details.agreement_id]
-	);
+			if (callType.method === "legalityOpen") {
+				console.log("inside legal");
+				// eslint-disable-next-line no-undef
+				const leegality = new Leegality({
+					callback: handleLeegalityCallback.bind(this),
+					logo: "/images/logoimage.png",
+				});
+				leegality.init();
+				leegality.esign(signUrlData?.short_url);
+			}
+		} else if (callType.type === 10) {
+			if (callType.method === "getBookletNumber") {
+				console.log("inside getBookletNumber");
+				getBookletNumber();
+			}
+			if (callType.method === "getBookletKey") {
+				console.log("inside getBookletKey");
+				getBookletKey();
+			}
+		}
+	};
+
 	const getSignUrl = () => {
 		console.log("inside mainfunction");
 		// if (agreementId) {
@@ -449,15 +486,67 @@ const SignupPage = () => {
 		// }
 	};
 
-	useEffect(() => {
-		console.log("In ueffect ins", userLoginData);
-		if (!userLoginData) {
-			refreshApiCall();
-			getSHopTypes();
-			getStateType();
-			getPincodeType();
-		}
-	}, []);
+	const getBookletNumber = () => {
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				token: userData?.access_token,
+				body: {
+					interaction_type_id: TransactionIds?.GET_BOOKLET_NUMBER,
+					document_id: "",
+					latlong: latLong || "27.176670,78.008075,7787",
+					user_id: userData?.userDetails.signup_mobile,
+					locale: "en",
+				},
+			},
+			generateNewToken
+		)
+			.then((res) => {
+				console.log(
+					"inside initial api response getBookletNumber",
+					res
+				);
+				if (res.response_status_id === 0) {
+					setBookletNumber(res.data);
+					// setSignUrlData(res.data);
+				}
+			})
+			.catch((err) =>
+				console.log("inside initial api error getBookletNumber", err)
+			);
+		// }
+	};
+
+	const getBookletKey = () => {
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				token: userData?.access_token,
+				body: {
+					interaction_type_id: TransactionIds?.GET_PINTWIN_KEY,
+					document_id: "",
+					latlong: latLong || "27.176670,78.008075,7787",
+					user_id: userData?.userDetails.signup_mobile,
+					locale: "en",
+				},
+			},
+			generateNewToken
+		)
+			.then((res) => {
+				console.log(
+					"inside initial api response getBookletNumber",
+					res
+				);
+				if (res.response_status_id === 0) {
+					setBookletKeys([...bookletKeys, res.data]);
+					// setSignUrlData(res.data);
+				}
+			})
+			.catch((err) =>
+				console.log("inside initial api error getBookletNumber", err)
+			);
+		// }
+	};
 
 	useEffect(() => {
 		console.log("inside script");
@@ -469,6 +558,12 @@ const SignupPage = () => {
 		script.onload = () => {
 			console.log("script loaded", script);
 		};
+		if (!userLoginData) {
+			refreshApiCall();
+			getSHopTypes();
+			getStateType();
+			getPincodeType();
+		}
 		// setLeegalityLoaded(true);
 	});
 
@@ -478,6 +573,12 @@ const SignupPage = () => {
 		}
 	}, [userLoginData?.details?.agreement_id]);
 
+	useEffect(() => {
+		if (bookletNumber) {
+			getBookletKey();
+			getBookletKey();
+		}
+	}, [bookletNumber]);
 	console.log("userData", userData);
 	return (
 		<div
@@ -501,8 +602,8 @@ const SignupPage = () => {
 				/>
 			) : (
 				<Home
-					// defaultStep={"12800"}
-					defaultStep={userLoginData?.details?.role_list || "12400"}
+					// defaultStep="12600"
+					defaultStep={userData?.details?.role_list || "12400"}
 					isBranding={false}
 					handleSubmit={handleStepDataSubmit}
 					stepResponse={lastStepResponse}
