@@ -1,5 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Table } from "components/Table";
+import { Table } from "components";
 import { BusinessDashboardCard } from ".";
 
 /**
