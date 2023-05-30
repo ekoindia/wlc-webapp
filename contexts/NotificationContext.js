@@ -107,7 +107,7 @@ const useNotifications = () => {
 					<ActionIcon
 						icon="notifications"
 						ext_icon={notif.image}
-						color="#c026d3"
+						color="#e879f9"
 					/>
 				),
 				parent: "notifications",
