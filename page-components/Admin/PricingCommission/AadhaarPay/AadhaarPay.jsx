@@ -1,4 +1,4 @@
-import { ProductSlabs } from "constants";
+import { ProductPricingType, ProductSlabs } from "constants";
 import { PricingForm } from "..";
 
 /**
@@ -31,6 +31,7 @@ const AadhaarPay = ({ prop1, ...rest }) => {
 		<div {...rest}>
 			<PricingForm
 				product="aadharpay"
+				ProductPricingType={ProductPricingType.AADHAARPAY}
 				ProductSlabs={ProductSlabs.AADHAARPAY}
 				commissionForObj={commissionForObj}
 				commissionTypeObj={commissionTypeObj}
