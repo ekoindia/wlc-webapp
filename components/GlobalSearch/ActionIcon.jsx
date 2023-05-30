@@ -21,6 +21,7 @@ const ActionIcon = ({
 	ext_icon = "",
 	name = "",
 	size = "sm",
+	iconSize,
 	color = "#64748b",
 	style = "default", // filled, outline, or default
 	badgeColor = "",
@@ -70,7 +71,7 @@ const ActionIcon = ({
 					objectFit="contain"
 				/>
 			) : icon ? (
-				<Icon name={icon} size={size} />
+				<Icon name={icon} size={iconSize || size} />
 			) : (
 				name[0]
 			)}
