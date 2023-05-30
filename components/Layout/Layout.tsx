@@ -323,7 +323,7 @@ function DynamicSearchController() {
 				name: "Save this as a Quick Note",
 				subtitle: `Note will be saved to your home page`,
 				keywords: queryValue,
-				icon: <ActionIcon icon="book" iconSize="md" color="#334155" />,
+				icon: <ActionIcon icon="book" iconSize="lg" color="#9333ea" />,
 				section: "Tools",
 				priority: Priority.LOW,
 				perform: () => setNote(queryValue),

@@ -64,8 +64,6 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 			return [];
 		}
 
-		console.log("!!!!!!!!!! ", start_trxn);
-
 		return [
 			{
 				id: "trxnpage/" + start_id,
