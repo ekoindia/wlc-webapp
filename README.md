@@ -16,3 +16,7 @@ Guide - [https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your
 - Top Navbar - [components/NavBar/NavBar.jsx](components/NavBar/NavBar.jsx)
 - Left Sidebar - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
   - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
+
+## Admin
+- Dashboard
+  - _Business Dashboard_: Divided into 4 part i.e. TopPanel, EarningOverview, SuccessRate & TopMerchants with there config in there respective file - [page-components/Admin/Dashboard/BusinessDashboard](page-components/Admin/Dashboard/BusinessDashboard)
