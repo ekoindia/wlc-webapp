@@ -191,7 +191,11 @@ function getKBarAction({
 		subtitle: subtitle,
 		keywords: keywords,
 		icon: (
-			<ActionIcon icon={icon || "transaction-history"} color="#334155" />
+			<ActionIcon
+				icon={icon || "transaction-history"}
+				iconSize="md"
+				color="#334155"
+			/>
 		),
 		priority: priority,
 		// section: "History",
@@ -317,9 +321,9 @@ function DynamicSearchController() {
 			results.push({
 				id: "note/add",
 				name: "Save this as a Quick Note",
-				subtitle: `✍️ "${queryValue}"`,
+				subtitle: `Note will be saved to your home page`,
 				keywords: queryValue,
-				icon: <ActionIcon icon="book" size="lg" color="#334155" />,
+				icon: <ActionIcon icon="book" iconSize="md" color="#334155" />,
 				section: "Tools",
 				priority: Priority.LOW,
 				perform: () => setNote(queryValue),

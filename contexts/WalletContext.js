@@ -89,7 +89,7 @@ const WalletProvider = ({ children }) => {
 						icon: (
 							<ActionIcon
 								icon="wallet-outline"
-								size="sm"
+								iconSize="md"
 								color="#334155"
 							/>
 						),
