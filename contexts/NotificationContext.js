@@ -307,7 +307,7 @@ const useNotifications = () => {
 					// 	? ` (+ ${unread_count - 1} more...)`
 					// 	: ""),
 					status: "info",
-					duration: notif.priority >= 3 ? 3600_000 : 9000, // One hour for high priority, 9 seconds for others
+					duration: notif.priority >= 3 ? 3600_000 : 8000, // One hour for high priority, 8 seconds for others
 					position: "top-right",
 					isClosable: true,
 					containerStyle: {
