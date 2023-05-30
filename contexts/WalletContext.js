@@ -1,4 +1,4 @@
-import { Icon } from "components";
+import { ActionIcon } from "components/GlobalSearch";
 import { Endpoints, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
@@ -87,8 +87,8 @@ const WalletProvider = ({ children }) => {
 						name: `My Wallet Balance: ${formatCurrency(balance)}`,
 						keywords: "e-value fund",
 						icon: (
-							<Icon
-								name="wallet-outline"
+							<ActionIcon
+								icon="wallet-outline"
 								size="sm"
 								color="#334155"
 							/>

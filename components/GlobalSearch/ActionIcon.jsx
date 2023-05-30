@@ -13,23 +13,51 @@ import { Icon } from "components";
  * @param	{string}	prop.ext_icon	URL of the external image to show.
  * @param	{string}	prop.size	Size of the icon (sm or lg).
  * @param	{string}	prop.color	Color of the icon.
+ * @param	{string}	prop.style	Style of the icon (filled, outline, or default).
+ * @param	{string}	prop.badgeColor	Color of the badge. Badge is hidden, if the color is not provided.
  */
 const ActionIcon = ({
-	name,
-	icon,
-	ext_icon,
+	icon = "",
+	ext_icon = "",
+	name = "",
 	size = "sm",
 	color = "#64748b",
+	style = "default", // filled, outline, or default
+	badgeColor = "",
 }) => {
+	let bgColor, borderColor, borderWidth, icoColor;
+
+	if (ext_icon) {
+		bgColor = "white";
+		borderWidth = "0";
+	} else if (style === "filled") {
+		bgColor = color;
+		borderWidth = "0";
+		icoColor = "white";
+	} else if (style === "outline") {
+		bgColor = "transparent";
+		borderColor = color;
+		borderWidth = "1px";
+		icoColor = color;
+	} else {
+		// default
+		bgColor = "transparent";
+		borderWidth = "0";
+		icoColor = color;
+	}
+
 	return (
 		<Circle
+			position="relative"
 			size={size === "sm" ? "10" : "12"}
-			bg={ext_icon ? "white" : color}
+			bg={bgColor}
 			borderRadius={ext_icon ? 0 : "full"}
-			color="white"
+			borderWidth={borderWidth}
+			borderColor={borderColor}
+			color={icoColor}
 			fontSize={size === "sm" ? "md" : "lg"}
 			fontWeight="500"
-			overflow="hidden"
+			overflow={ext_icon ? "hidden" : "visible"}
 		>
 			{ext_icon ? (
 				<Image
@@ -46,6 +74,18 @@ const ActionIcon = ({
 			) : (
 				name[0]
 			)}
+
+			{badgeColor ? (
+				<Circle
+					position="absolute"
+					top="-2px"
+					right="-2px"
+					size={size === "sm" ? "4" : "5"}
+					bg={badgeColor}
+					borderWidth="2px"
+					borderColor="white"
+				/>
+			) : null}
 		</Circle>
 	);
 };

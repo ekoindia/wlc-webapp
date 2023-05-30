@@ -73,6 +73,7 @@ const generateTransactionActions = (
 					icon={tx.icon}
 					ext_icon={tx.ext_icon}
 					name={tx.label}
+					style="filled"
 				/>
 			),
 			section: "Services",
@@ -92,7 +93,13 @@ const generateTransactionActions = (
 					id: "start-a-tx",
 					name: "Start a Transaction...",
 					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
-					icon: <Icon name="transaction" size="sm" color="#334155" />,
+					icon: (
+						<ActionIcon
+							icon="transaction"
+							color="accent.light"
+							style="filled"
+						/>
+					),
 					shortcut: ["$mod+/"],
 					section: "Services",
 				},

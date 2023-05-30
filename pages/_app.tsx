@@ -1,6 +1,7 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { ErrorBoundary, Icon, Layout, RouteProtecter } from "components";
+import { ErrorBoundary, Layout, RouteProtecter } from "components";
+import { ActionIcon } from "components/GlobalSearch";
 import {
 	NoteProvider,
 	NotificationProvider,
@@ -107,7 +108,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 			id: "reloadapp",
 			name: "Reload App",
 			subtitle: "Reset cache and reload the app if you facing any issues",
-			icon: <Icon name="reload" size="sm" color="error" />,
+			icon: <ActionIcon icon="reload" size="sm" color="error" />,
 			shortcut: ["$mod+F5"],
 			keywords: "reset cache reload",
 			section: "System",
@@ -130,7 +131,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		{
 			id: "logout",
 			name: "Logout",
-			icon: <Icon name="logout" size="sm" color="error" />,
+			icon: <ActionIcon icon="logout" size="sm" color="error" />,
 			// shortcut: ["c"],
 			keywords: "signout quit close",
 			section: "System",

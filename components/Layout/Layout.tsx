@@ -7,6 +7,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 // import { GlobalSearchPane } from "components";
+import { ActionIcon } from "components/GlobalSearch";
 import { useNote, useSession } from "contexts";
 import {
 	KBarAnimator,
@@ -190,11 +191,7 @@ function getKBarAction({
 		subtitle: subtitle,
 		keywords: keywords,
 		icon: (
-			<Icon
-				name={icon || "transaction-history"}
-				size="sm"
-				color="#334155"
-			/>
+			<ActionIcon icon={icon || "transaction-history"} color="#334155" />
 		),
 		priority: priority,
 		// section: "History",
@@ -322,7 +319,7 @@ function DynamicSearchController() {
 				name: "Save this as a Quick Note",
 				subtitle: `✍️ "${queryValue}"`,
 				keywords: queryValue,
-				icon: <Icon name="book" size="lg" color="#334155" />,
+				icon: <ActionIcon icon="book" size="lg" color="#334155" />,
 				section: "Tools",
 				priority: Priority.LOW,
 				perform: () => setNote(queryValue),

@@ -131,7 +131,13 @@ const useNotifications = () => {
 				// section: "Notifications",
 				keywords: "inbox mail notice",
 				priority: unread_count ? Priority.HIGH : Priority.NORMAL,
-				icon: <Icon name="notifications" />,
+				icon: (
+					<ActionIcon
+						icon="notifications"
+						style="outline"
+						badgeColor="#db2777"
+					/>
+				),
 			},
 			..._notifActions,
 		]);
