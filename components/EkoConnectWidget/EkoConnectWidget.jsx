@@ -67,7 +67,8 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		return [
 			{
 				id: "trxnpage/" + start_id,
-				name: `Need help with ${start_trxn.label}?`,
+				name: `Need help with ${start_trxn.label} transaction?`,
+				subtitle: "Submit your query and we'll get back to you.",
 				icon: (
 					<ActionIcon
 						icon="operator"
