@@ -5,6 +5,7 @@ import {
 	Text,
 	useBreakpointValue,
 	useDisclosure,
+	useToast,
 } from "@chakra-ui/react";
 // import { GlobalSearchPane } from "components";
 import { ActionIcon } from "components/GlobalSearch";
@@ -23,6 +24,9 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
+// import { Parser } from "utils/mathParser";
+import { useClipboard } from "hooks";
+import { parse } from "utils/exprParser";
 import { Icon, Kbd, NavBar, SideBar } from "..";
 
 /**
@@ -212,6 +216,8 @@ function DynamicSearchController() {
 	}));
 
 	const { /* note, */ setNote } = useNote();
+	const { copy } = useClipboard();
+	const toast = useToast();
 
 	const router = useRouter();
 
@@ -328,6 +334,31 @@ function DynamicSearchController() {
 				priority: Priority.LOW,
 				perform: () => setNote(queryValue),
 			});
+
+			// Math parser...
+			if (queryValue.charAt(0) === "=") {
+				// const mathParser = new Parser();
+				// const result = mathParser.parse(queryValue.slice(1));
+				const result = parse(queryValue.slice(1));
+
+				if (result) {
+					results.push({
+						id: "math/parse",
+						name: `Result: ${result}`,
+						subtitle: `Select to copy result`,
+						keywords: queryValue,
+						icon: <ActionIcon name="=" style="filled" />,
+						perform: () => {
+							result && copy(result.toString());
+							toast({
+								title: "Copied: " + result,
+								status: "success",
+								duration: 2000,
+							});
+						},
+					});
+				}
+			}
 		}
 
 		return results;
