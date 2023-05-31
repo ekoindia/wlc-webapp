@@ -25,6 +25,7 @@ const ActionIcon = ({
 	color = "#64748b",
 	style = "default", // filled, outline, or default
 	badgeColor = "",
+	fontSize,
 }) => {
 	let bgColor, borderColor, borderWidth, icoColor;
 
@@ -56,7 +57,7 @@ const ActionIcon = ({
 			borderWidth={borderWidth}
 			borderColor={borderColor}
 			color={icoColor}
-			fontSize={size === "sm" ? "md" : "lg"}
+			fontSize={fontSize ? fontSize : size === "sm" ? "md" : "lg"}
 			fontWeight="500"
 			overflow={ext_icon ? "hidden" : "visible"}
 		>
