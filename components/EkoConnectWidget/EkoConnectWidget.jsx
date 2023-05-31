@@ -1,9 +1,9 @@
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, ErrorBoundary, PaddingBox } from "components";
-import { ActionIcon } from "components/GlobalSearch";
+// import { ActionIcon } from "components/GlobalSearch";
 import { TransactionIds } from "constants";
 import {
-	useGlobalSearch,
+	// useGlobalSearch,
 	useMenuContext,
 	useOrgDetailContext,
 	useUser,
@@ -11,9 +11,9 @@ import {
 } from "contexts";
 import { useAppLink, useExternalResource } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
-import { Priority, useRegisterActions } from "kbar";
+// import { Priority, useRegisterActions } from "kbar";
 import Head from "next/head";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * The <EkoConnectWidget> component loads the Eko Connect widget (built using Google Polmer v1 library).
@@ -39,7 +39,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 	const { balance } = useWallet();
-	const { setSearchTitle } = useGlobalSearch();
+	// const { setSearchTitle } = useGlobalSearch();
 
 	const [widgetLoadState /*, reloadWidget */] = useExternalResource(
 		process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
@@ -60,43 +60,43 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	);
 
 	// Setup KBar search actions related to the open transaction
-	const trxnActions = useMemo(() => {
-		const start_trxn = role_tx_list[start_id];
-		if (!start_trxn) {
-			return [];
-		}
+	// const trxnActions = useMemo(() => {
+	// 	const start_trxn = role_tx_list[start_id];
+	// 	if (!start_trxn) {
+	// 		return [];
+	// 	}
 
-		return [
-			{
-				id: "trxnpage/" + start_id,
-				name: `Need help with ${start_trxn.label} transaction?`,
-				subtitle: "Submit your query and we'll get back to you.",
-				icon: (
-					<ActionIcon
-						icon="operator"
-						style="filled"
-						iconSize="md"
-						color="#f43f5e"
-					/>
-				),
-				priority: Priority.HIGH,
-				shortcut: ["$mod+?"],
-			},
-		];
-	}, [start_id, role_tx_list]);
+	// 	return [
+	// 		{
+	// 			id: "trxnpage/" + start_id,
+	// 			name: `Need help with ${start_trxn.label} transaction?`,
+	// 			subtitle: "Submit your query and we'll get back to you.",
+	// 			icon: (
+	// 				<ActionIcon
+	// 					icon="operator"
+	// 					style="filled"
+	// 					iconSize="md"
+	// 					color="#f43f5e"
+	// 				/>
+	// 			),
+	// 			priority: Priority.HIGH,
+	// 			shortcut: ["$mod+?"],
+	// 		},
+	// 	];
+	// }, [start_id, role_tx_list]);
 
-	useEffect(() => {
-		const start_trxn = role_tx_list[start_id];
-		if (!start_trxn) {
-			return;
-		}
-		setSearchTitle(`Need help with ${start_trxn.label}?`);
-		return () => {
-			setSearchTitle("");
-		};
-	}, [start_id, role_tx_list]);
+	// useEffect(() => {
+	// 	const start_trxn = role_tx_list[start_id];
+	// 	if (!start_trxn) {
+	// 		return;
+	// 	}
+	// 	setSearchTitle(`Need help with ${start_trxn.label}?`);
+	// 	return () => {
+	// 		setSearchTitle("");
+	// 	};
+	// }, [start_id, role_tx_list]);
 
-	useRegisterActions(trxnActions, [trxnActions]);
+	// useRegisterActions(trxnActions, [trxnActions]);
 
 	// const { widgetLoading } =
 	useSetupWidgetEventListeners(router, openUrl, refreshUser);
