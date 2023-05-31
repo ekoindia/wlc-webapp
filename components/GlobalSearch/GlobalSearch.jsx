@@ -15,9 +15,7 @@ const GlobalSearch = ({ onSearchKeyDown, ...rest }) => {
 
 	return (
 		<Input
-			placeholder={
-				title || "Search by Transaction ID, Mobile, Account, etc"
-			}
+			placeholder={title || "Search anything..."}
 			inputLeftElement={
 				<Icon
 					display={{ base: "none", md: "flex" }}

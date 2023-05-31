@@ -9,7 +9,7 @@ import {
 	SearchBar,
 } from "components";
 import { Endpoints, TransactionTypes } from "constants";
-import { useSession, useUser } from "contexts";
+import { useGlobalSearch, useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -46,6 +46,15 @@ const History = () => {
 	const { accessToken } = useSession();
 	const router = useRouter();
 	const [finalFormState, setFinalFormState] = useState({});
+	const { setSearchTitle } = useGlobalSearch();
+
+	// Set GlobalSearch title
+	useEffect(() => {
+		setSearchTitle("Search by Transaction ID, Mobile, Account, etc");
+		return () => {
+			setSearchTitle("");
+		};
+	}, []);
 
 	// Search for a transaction based on the parameter query "search".
 	// The query can be a transaction-id, account, amount,
