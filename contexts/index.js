@@ -1,3 +1,4 @@
+export { GlobalSearchProvider, useGlobalSearch } from "./GlobalSearchContext";
 export { LayoutProvider, useLayoutContext } from "./LayoutContext";
 export { MenuProvider, useMenuContext } from "./MenuContext";
 export { NoteProvider, useNote } from "./NoteContext";

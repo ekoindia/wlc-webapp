@@ -3,6 +3,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
 import { ActionIcon } from "components/GlobalSearch";
 import {
+	GlobalSearchProvider,
 	NoteProvider,
 	NotificationProvider,
 	OrgDetailProvider,
@@ -180,21 +181,23 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 											}}
 										>
 											<NotificationProvider>
-												<NoteProvider>
-													<ErrorBoundary>
-														{getLayout(
-															<main
-																className={
-																	inter.className
-																}
-															>
-																<Component
-																	{...pageProps}
-																/>
-															</main>
-														)}
-													</ErrorBoundary>
-												</NoteProvider>
+												<GlobalSearchProvider>
+													<NoteProvider>
+														<ErrorBoundary>
+															{getLayout(
+																<main
+																	className={
+																		inter.className
+																	}
+																>
+																	<Component
+																		{...pageProps}
+																	/>
+																</main>
+															)}
+														</ErrorBoundary>
+													</NoteProvider>
+												</GlobalSearchProvider>
 											</NotificationProvider>
 										</SWRConfig>
 									</RouteProtecter>

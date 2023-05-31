@@ -3,6 +3,7 @@ import { Button, ErrorBoundary, PaddingBox } from "components";
 import { ActionIcon } from "components/GlobalSearch";
 import { TransactionIds } from "constants";
 import {
+	useGlobalSearch,
 	useMenuContext,
 	useOrgDetailContext,
 	useUser,
@@ -38,6 +39,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 	const { balance } = useWallet();
+	const { setSearchTitle } = useGlobalSearch();
 
 	const [widgetLoadState /*, reloadWidget */] = useExternalResource(
 		process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
@@ -81,6 +83,17 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 				shortcut: ["$mod+?"],
 			},
 		];
+	}, [start_id, role_tx_list]);
+
+	useEffect(() => {
+		const start_trxn = role_tx_list[start_id];
+		if (!start_trxn) {
+			return;
+		}
+		setSearchTitle(`Need help with ${start_trxn.label}?`);
+		return () => {
+			setSearchTitle("");
+		};
 	}, [start_id, role_tx_list]);
 
 	useRegisterActions(trxnActions, [trxnActions]);

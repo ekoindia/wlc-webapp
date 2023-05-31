@@ -1,5 +1,6 @@
 import { Flex } from "@chakra-ui/react";
 import { Icon, Input, Kbd } from "components";
+import { useGlobalSearch } from "contexts";
 import { useKBar } from "kbar";
 
 /**
@@ -10,10 +11,13 @@ import { useKBar } from "kbar";
  */
 const GlobalSearch = ({ onSearchKeyDown, ...rest }) => {
 	const { query } = useKBar();
+	const { title } = useGlobalSearch();
 
 	return (
 		<Input
-			placeholder="Search by Transaction ID, Mobile, Account, etc"
+			placeholder={
+				title || "Search by Transaction ID, Mobile, Account, etc"
+			}
 			inputLeftElement={
 				<Icon
 					display={{ base: "none", md: "flex" }}
