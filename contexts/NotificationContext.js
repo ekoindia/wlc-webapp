@@ -131,7 +131,7 @@ const useNotifications = () => {
 				// section: "Notifications",
 				// shortcut: ["$mod+n"],
 				keywords: "inbox mail notice",
-				priority: unread_count ? Priority.HIGH : Priority.NORMAL,
+				priority: unread_count ? Priority.HIGH : Priority.LOW,
 				icon: (
 					<ActionIcon
 						icon="notifications"
