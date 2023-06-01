@@ -109,7 +109,14 @@ const Tr = ({
 												fontWeight="semibold"
 												fontSize="xs"
 											>
-												{item[column.name]}
+												{prepareTableCell(
+													item,
+													column,
+													index
+													// serialNumber,
+													// tableName,
+													// expandedRow
+												)}
 											</Text>
 										</Flex>
 									</>
