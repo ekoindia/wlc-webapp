@@ -1,13 +1,17 @@
+import { ActionIcon } from "components/GlobalSearch";
 import { Endpoints, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
+import { Priority, useRegisterActions } from "kbar";
 import {
 	createContext,
 	useCallback,
 	useContext,
 	useEffect,
+	useMemo,
 	useState,
 } from "react";
+import { formatCurrency } from "utils/numberFormat";
 import { useSession } from "./UserContext";
 
 // Created a Wallet Context
@@ -74,6 +78,29 @@ const WalletProvider = ({ children }) => {
 			fetchBalance();
 		}
 	}, [isLoggedIn, isAdmin]);
+
+	const walletAction = useMemo(() => {
+		return balance
+			? [
+					{
+						id: "show-wallet-balance",
+						name: `My Wallet Balance: ${formatCurrency(balance)}`,
+						keywords: "e-value fund",
+						icon: (
+							<ActionIcon
+								icon="wallet-outline"
+								iconSize="md"
+								color="#334155"
+							/>
+						),
+						priority: Priority.NORMAL,
+						perform: () => {},
+					},
+			  ]
+			: [];
+	}, [balance]);
+
+	useRegisterActions(walletAction, [walletAction]);
 
 	return (
 		<WalletContext.Provider
