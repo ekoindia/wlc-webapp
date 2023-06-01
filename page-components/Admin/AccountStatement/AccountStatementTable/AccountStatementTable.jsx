@@ -21,6 +21,7 @@ const AccountStatementTable = (props) => {
 			name: "date_time",
 			field: "Date & Time",
 			sorting: true,
+			show: "DateView",
 		},
 		{ name: "activity", field: "Activity" },
 		{
@@ -29,13 +30,12 @@ const AccountStatementTable = (props) => {
 			show: "Description",
 		},
 
-		{ name: "amount", field: "Amount" },
+		{ name: "amount", field: "Amount", show: "Amount" },
 	];
 
 	return (
 		<>
 			<Table
-				isOnclickRequire={false}
 				pageLimit={15}
 				renderer={renderer}
 				data={acctabledata}

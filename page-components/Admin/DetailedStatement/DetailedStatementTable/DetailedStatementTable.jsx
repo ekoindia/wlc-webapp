@@ -21,6 +21,7 @@ const DetailedStatementTable = (props) => {
 			name: "date_time",
 			field: "Date & Time",
 			sorting: true,
+			show: "DateView",
 		},
 		{ name: "activity", field: "Activity" },
 		{
@@ -28,8 +29,8 @@ const DetailedStatementTable = (props) => {
 			field: "Description",
 			show: "Description",
 		},
-		{ name: "amount", field: "Amount", show: "debit_credit" },
-		{ name: "running_balance", field: "Running Balance" },
+		{ name: "amount", field: "Amount", show: "Payment" },
+		{ name: "running_balance", field: "Running Balance", show: "Amount" },
 	];
 
 	return (

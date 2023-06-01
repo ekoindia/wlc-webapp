@@ -14,7 +14,6 @@ const MyNetwork = () => {
 
 MyNetwork.pageMeta = {
 	title: "My Network | Admin",
-	isSubPage: true,
 };
 
 export default MyNetwork;

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { BusinessDashboard, DashboardHeading, OnboardingDashboard } from ".";
 
 /* pageId list for DashboardHeading component */
-const headingList = ["Business Dashboard", "Onboarding Dashboard"];
+const headingList = ["Business", "Onboarding"];
 
 /* api uri */
 const apiUri = ["businessdashboard", "onboardingDashboard"];
@@ -35,6 +35,9 @@ const Dashboard = ({ className = "", ...props }) => {
 				"tf-req-uri": `/network/agents/${apiUri[pageId]}`,
 				"tf-req-method": "GET",
 			},
+			body: {
+				record_count: 10,
+			},
 			controller: abortController,
 			token: accessToken,
 		})
@@ -48,7 +51,7 @@ const Dashboard = ({ className = "", ...props }) => {
 					pageId === 0
 						? data?.data?.dashboard_details[0]
 						: pageId === 1
-						? data?.data?.onboarding_dashboard_details[0]
+						? data?.data?.onboarding_dashboard_details
 						: [];
 				setData(_data);
 			})
