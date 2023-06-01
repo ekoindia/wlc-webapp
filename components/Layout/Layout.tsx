@@ -45,6 +45,8 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
+	const { query } = useKBar();
+
 	// Chakra wrapper for KBar components
 	const ChakraKBarPositioner = chakra(KBarPositioner);
 	const ChakraKBarAnimator = chakra(KBarAnimator);
@@ -160,8 +162,15 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 											fontSize: { base: "sm", md: "md" },
 										}}
 									/>
-									<Box>
-										<Kbd>Esc</Kbd>
+									<Box
+										cursor="pointer"
+										onClick={() => query.toggle()}
+									>
+										{isSmallScreen ? (
+											<Icon name="close" size="sm" />
+										) : (
+											<Kbd>Esc</Kbd>
+										)}
 									</Box>
 								</Flex>
 							</Box>
