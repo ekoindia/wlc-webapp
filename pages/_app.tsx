@@ -106,6 +106,16 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 	// Setup K-Bar options...
 	const kbarDefaultActions = [
 		{
+			id: "systemsettings",
+			name: "System",
+			subtitle: "Clear cache or logout",
+			icon: <ActionIcon icon="logout" size="sm" color="error" />,
+			// shortcut: ["c"],
+			// keywords: "signout quit close",
+			// section: "System",
+			priority: Priority.LOW,
+		},
+		{
 			id: "reloadapp",
 			name: "Reload App",
 			subtitle: "Reset cache and reload the app if you facing any issues",
@@ -114,6 +124,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 			keywords: "reset cache reload",
 			section: "System",
 			priority: Priority.LOW,
+			parent: "systemsettings",
 			perform: () => {
 				// Clear session storage (except org_detail)
 				Object.keys(window.sessionStorage).forEach((key) => {
@@ -137,6 +148,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 			keywords: "signout quit close",
 			section: "System",
 			priority: Priority.LOW,
+			parent: "systemsettings",
 			perform: () => (window.location.pathname = "contact"),
 		},
 	];
