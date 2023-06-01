@@ -1,6 +1,18 @@
 import { Circle, Image } from "@chakra-ui/react";
 import { Icon } from "components";
 
+interface ActionIconProps {
+	icon?: string;
+	ext_icon?: string;
+	name?: string;
+	size?: string;
+	iconSize?: string;
+	color?: string;
+	style?: string;
+	badgeColor?: string;
+	fontSize?: string;
+}
+
 /**
  * Component to show an icon in the KBar Search Action.
  * It shows the icon, an external image or first letter of the name, whichever is available first in the following order:
@@ -16,7 +28,7 @@ import { Icon } from "components";
  * @param	{string}	prop.style	Style of the icon (filled, outline, or default).
  * @param	{string}	prop.badgeColor	Color of the badge. Badge is hidden, if the color is not provided.
  */
-const ActionIcon = ({
+const ActionIcon: React.FC<ActionIconProps> = ({
 	icon = "",
 	ext_icon = "",
 	name = "",

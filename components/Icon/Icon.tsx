@@ -2,13 +2,14 @@ import { Box, chakra } from "@chakra-ui/react";
 import { getIconSvg, IconNameType } from "constants/IconLibrary";
 
 export type IconProps = {
-	name: IconNameType;
+	name: string; //IconNameType
 	color?: string;
+	size?: string;
 	width?: any;
 	height?: any;
 	w?: any;
 	h?: any;
-	size?: string;
+	[rest: string]: any;
 	// style?: React.CSSProperties;
 };
 /**
@@ -20,7 +21,7 @@ export type IconProps = {
  */
 
 const Icon = ({ name, size, w, h, width, height, ...rest }: IconProps) => {
-	const icon = getIconSvg(name);
+	const icon = getIconSvg(name as IconNameType);
 	const viewBox = icon?.viewBox;
 	const path = icon?.path;
 
