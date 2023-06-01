@@ -1,6 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { Icon, Input, Kbd } from "components";
 import { useGlobalSearch } from "contexts";
+import { usePlatform } from "hooks";
 import { useKBar } from "kbar";
 
 /**
@@ -12,6 +13,8 @@ import { useKBar } from "kbar";
 const GlobalSearch = ({ onSearchKeyDown, ...rest }) => {
 	const { query } = useKBar();
 	const { title } = useGlobalSearch();
+
+	const { isMac } = usePlatform();
 
 	return (
 		<Input
@@ -34,7 +37,7 @@ const GlobalSearch = ({ onSearchKeyDown, ...rest }) => {
 					display={{ base: "none", md: "flex" }}
 				>
 					<Kbd mr={1} fontFamily="sans">
-						⌘
+						{isMac ? "⌘" : "Ctrl"}
 					</Kbd>
 					<Kbd>K</Kbd>
 				</Flex>

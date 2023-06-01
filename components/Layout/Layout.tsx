@@ -25,7 +25,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 // import { Parser } from "utils/mathParser";
-import { useClipboard, useDebouncedState } from "hooks";
+import { useClipboard, useDebouncedState, usePlatform } from "hooks";
 import { parse } from "utils";
 import { Icon, Kbd, NavBar, SideBar } from "..";
 
@@ -216,9 +216,9 @@ function DynamicSearchController() {
 	}));
 
 	const [queryValueDebounced, setQueryValueDebounced] = useDebouncedState(
-		queryValue,
+		"",
 		100,
-		1000
+		2000
 	);
 
 	useEffect(() => {
@@ -341,10 +341,10 @@ function DynamicSearchController() {
 			results.push({
 				id: "note/add",
 				name: "Save this as a Quick Note",
-				subtitle: `Note will be saved to your home page`,
+				subtitle: `Note will be saved to home page`,
 				keywords: queryValueDebounced,
 				icon: <ActionIcon icon="book" iconSize="lg" color="#9333ea" />,
-				section: "Tools",
+				// section: "Tools",
 				priority: Priority.LOW,
 				perform: () => setNote(queryValueDebounced),
 			});
@@ -389,6 +389,7 @@ function DynamicSearchController() {
  */
 function RenderResults({ className }) {
 	const { results } = useMatches();
+	const { isMac } = usePlatform();
 
 	// console.log("⌘ K Bar results:", results);
 
@@ -401,6 +402,7 @@ function RenderResults({ className }) {
 				<BackButton />
 				<ChakraKBarResults
 					items={results}
+					maxHeight={500}
 					onRender={({ item, active }) => {
 						if (typeof item === "string") {
 							// Render a section header
@@ -475,8 +477,21 @@ function RenderResults({ className }) {
 												? "uppercase"
 												: undefined
 										}
+										display={{
+											base: "none",
+											md: "inline-flex",
+										}}
 									>
-										{shortcut.replace(/\$mod\+/, "⌘ ")}
+										{shortcut
+											.replace(
+												/\$mod/,
+												isMac ? "⌘" : "Ctrl"
+											)
+											.replace(/Alt/, isMac ? "⌥" : "Alt")
+											.replace(/Shift/, "⇧")
+
+											.replace(/Enter/, "⏎")
+											.replace(/\+/g, " + ")}
 									</Kbd>
 								))}
 								{item.children?.length > 0 && (
