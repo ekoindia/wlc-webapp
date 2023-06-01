@@ -1,4 +1,4 @@
-import { Box, Flex, Grid } from "@chakra-ui/react";
+import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { IcoButton, Icon } from "components";
 import { useSession, useTodos } from "contexts";
 import { useClipboard } from "hooks";
@@ -30,7 +30,6 @@ const Home = () => {
 		{ id: 2, component: BillPaymentWidget },
 		{ id: 3, component: NotificationWidget },
 		{ id: 4, component: RecentTrxnWidget },
-		{ id: 5, component: QueryWidget },
 	];
 
 	if (todos && todos.length > 0) {
@@ -41,6 +40,8 @@ const Home = () => {
 			),
 		});
 	}
+
+	widgets.push({ id: 5, component: QueryWidget });
 
 	return (
 		<Grid
@@ -91,7 +92,7 @@ const StickyNote = ({ todos, onDeleteTodo, ...rest }) => {
 			boxShadow="md"
 			position="relative"
 			overflowY="auto"
-			fontSize={{ base: "md", md: "lg" }}
+			// fontSize={{ base: "md", md: "lg" }}
 			color="yellow.900"
 			_before={{
 				content: '""',
@@ -159,9 +160,10 @@ const StickyNote = ({ todos, onDeleteTodo, ...rest }) => {
 							mx="5px"
 							onClick={() => markDone(index)}
 						/>
-						<Box
+						<Text
 							as="span"
 							flexGrow={1}
+							textAlign="middle"
 							ml="5px"
 							noOfLines={1}
 							textDecoration={
@@ -169,7 +171,7 @@ const StickyNote = ({ todos, onDeleteTodo, ...rest }) => {
 							}
 						>
 							{todo}
-						</Box>
+						</Text>
 						<IcoBtn
 							opacity="0"
 							mr="5px"
@@ -183,39 +185,8 @@ const StickyNote = ({ todos, onDeleteTodo, ...rest }) => {
 							onClick={() => copy(todo)}
 						/>
 					</Flex>
-					{/* <IcoBtn
-						title="Delete todo"
-						iconName="delete"
-						bg="error"
-						ml="10px"
-						onClick={() => onDeleteTodo && onDeleteTodo(index)}
-					/> */}
 				</Flex>
 			))}
-			{/* <Flex
-				direction="row"
-				align="flex-end"
-				position="absolute"
-				bottom="0"
-				left="0"
-				w="full"
-				p={{ base: "5px", md: "10px" }}
-				fontSize="xs"
-				color="yellow.900"
-			>
-				<IcoBtn
-					title="Copy note"
-					iconName={state === "SUCCESS" ? "check" : "content-copy"}
-					bg="yellow.600"
-					onClick={() => copy(note)}
-				/>
-				<IcoBtn
-					title="Delete note"
-					iconName="delete"
-					bg="error"
-					onClick={onDeleteNote}
-				/>
-			</Flex> */}
 		</Box>
 	);
 };
