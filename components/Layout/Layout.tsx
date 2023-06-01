@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 // import { GlobalSearchPane } from "components";
 import { ActionIcon } from "components/GlobalSearch";
-import { useNote, useSession } from "contexts";
+import { useSession, useTodos } from "contexts";
 import {
 	KBarAnimator,
 	KBarPortal,
@@ -234,7 +234,7 @@ function DynamicSearchController() {
 		setQueryValueDebounced(queryValue);
 	}, [queryValue, setQueryValueDebounced]);
 
-	const { /* note, */ setNote } = useNote();
+	const { /* note, */ addTodo } = useTodos();
 	const { copy } = useClipboard();
 	const toast = useToast();
 
@@ -355,7 +355,7 @@ function DynamicSearchController() {
 				icon: <ActionIcon icon="book" iconSize="lg" color="#9333ea" />,
 				// section: "Tools",
 				priority: Priority.LOW,
-				perform: () => setNote(queryValueDebounced),
+				perform: () => addTodo(queryValueDebounced),
 			});
 
 			// Math parser...

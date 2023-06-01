@@ -1,8 +1,8 @@
-import { Box, Flex, Grid, Text } from "@chakra-ui/react";
-import { IcoButton } from "components";
-import { useNote, useSession } from "contexts";
+import { Box, Flex, Grid } from "@chakra-ui/react";
+import { IcoButton, Icon } from "components";
+import { useSession, useTodos } from "contexts";
 import { useClipboard } from "hooks";
-import { formatDateTime } from "utils";
+import { useState } from "react";
 import {
 	BillPaymentWidget,
 	CommonTrxnWidget,
@@ -21,7 +21,7 @@ import {
  */
 const Home = () => {
 	const { isLoggedIn } = useSession();
-	const { note, updatedAt, deleteNote } = useNote();
+	const { todos, deleteTodo } = useTodos();
 
 	if (!isLoggedIn) return null;
 
@@ -33,15 +33,11 @@ const Home = () => {
 		{ id: 5, component: QueryWidget },
 	];
 
-	if (note) {
+	if (todos && todos.length > 0) {
 		widgets.push({
 			id: 6,
 			component: () => (
-				<StickyNote
-					note={note}
-					updatedAt={updatedAt}
-					onDeleteNote={deleteNote}
-				/>
+				<StickyNote todos={todos} onDeleteTodo={deleteTodo} />
 			),
 		});
 	}
@@ -67,15 +63,29 @@ const Home = () => {
 
 export default Home;
 
-const StickyNote = ({ note, updatedAt, onDeleteNote, ...rest }) => {
+const StickyNote = ({ todos, onDeleteTodo, ...rest }) => {
 	const { copy, state } = useClipboard();
+	const [markedDone, setMarkedDone] = useState(-1);
 	// const { query } = useKBar();
+
+	const markDone = (index) => {
+		setMarkedDone(index);
+		setTimeout(() => {
+			onDeleteTodo(index);
+		}, 500);
+	};
+
 	return (
 		<Box
 			boxSizing="border-box"
 			minH="200px"
-			p="20px"
-			py="50px"
+			maxH={{
+				base: "auto",
+				md: "320px",
+			}}
+			// p="20px"
+			pt="35px"
+			pb="10px"
 			mx={{ base: 3, md: "0" }}
 			backgroundColor="yellow.200"
 			boxShadow="md"
@@ -106,8 +116,83 @@ const StickyNote = ({ note, updatedAt, onDeleteNote, ...rest }) => {
 			// }}
 			{...rest}
 		>
-			{note}
-			<Flex
+			{todos.map((todo, index) => (
+				<Flex
+					key={todo.id}
+					direction="row"
+					align="center"
+					justify="space-between"
+					py="5px"
+					position="relative"
+					_hover={{
+						bg: "yellow.300",
+					}}
+					_before={{
+						content: '""',
+						position: "absolute",
+						bottom: 0,
+						left: 0,
+						h: "1px",
+						w: "full",
+						bg: "blackAlpha.400",
+					}}
+				>
+					<Flex
+						direction="row"
+						align="center"
+						justify="flex-start"
+						w="full"
+						ml="5px"
+						role="group"
+					>
+						<Icon
+							title="Mark as done"
+							name={
+								markedDone === index
+									? "check-box"
+									: "check-box-outline-blank"
+							}
+							cursor="pointer"
+							// bg="yellow.600"
+							color="yellow.600"
+							size="md"
+							mx="5px"
+							onClick={() => markDone(index)}
+						/>
+						<Box
+							as="span"
+							flexGrow={1}
+							ml="5px"
+							noOfLines={1}
+							textDecoration={
+								markedDone === index ? "line-through" : "none"
+							}
+						>
+							{todo}
+						</Box>
+						<IcoBtn
+							opacity="0"
+							mr="5px"
+							_groupHover={{ opacity: 1 }}
+							transition="opacity 0.3s ease-out"
+							title="Copy note"
+							iconName={
+								state === "SUCCESS" ? "check" : "content-copy"
+							}
+							bg="yellow.600"
+							onClick={() => copy(todo)}
+						/>
+					</Flex>
+					{/* <IcoBtn
+						title="Delete todo"
+						iconName="delete"
+						bg="error"
+						ml="10px"
+						onClick={() => onDeleteTodo && onDeleteTodo(index)}
+					/> */}
+				</Flex>
+			))}
+			{/* <Flex
 				direction="row"
 				align="flex-end"
 				position="absolute"
@@ -118,18 +203,6 @@ const StickyNote = ({ note, updatedAt, onDeleteNote, ...rest }) => {
 				fontSize="xs"
 				color="yellow.900"
 			>
-				<Text flexGrow={1} opacity={0.5}>
-					{formatDateTime(updatedAt, "dd/MM/yyyy, hh:mm AA")}
-				</Text>
-				{/* <IcoBtn
-					title="Search note"
-					iconName="search"
-					bg="accent.light"
-					onClick={() => {
-						query.setSearch(note);
-						query.toggle();
-					}}
-				/> */}
 				<IcoBtn
 					title="Copy note"
 					iconName={state === "SUCCESS" ? "check" : "content-copy"}
@@ -142,7 +215,7 @@ const StickyNote = ({ note, updatedAt, onDeleteNote, ...rest }) => {
 					bg="error"
 					onClick={onDeleteNote}
 				/>
-			</Flex>
+			</Flex> */}
 		</Box>
 	);
 };
@@ -154,7 +227,7 @@ const IcoBtn = ({ iconName, title = "Button", bg, onClick, ...rest }) => {
 			iconName={iconName}
 			theme="dark"
 			size="sm"
-			ml={{ base: "15px", xl: "20px" }}
+			// ml={{ base: "15px", xl: "20px" }}
 			rounded="full"
 			opacity="0.7"
 			bg={bg}

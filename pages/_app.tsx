@@ -4,10 +4,10 @@ import { ErrorBoundary, Layout, RouteProtecter } from "components";
 import { ActionIcon } from "components/GlobalSearch";
 import {
 	GlobalSearchProvider,
-	NoteProvider,
 	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
+	TodoProvider,
 	UserProvider,
 	WalletProvider,
 } from "contexts";
@@ -128,7 +128,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 			perform: () => {
 				// Clear session storage (except org_detail)
 				Object.keys(window.sessionStorage).forEach((key) => {
-					if (key !== OrgDetailSessionStorageKey) {
+					if (key !== OrgDetailSessionStorageKey && key !== "todos") {
 						window.sessionStorage.removeItem(key);
 					}
 				});
@@ -194,7 +194,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 										>
 											<NotificationProvider>
 												<GlobalSearchProvider>
-													<NoteProvider>
+													<TodoProvider>
 														<ErrorBoundary>
 															{getLayout(
 																<main
@@ -208,7 +208,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 																</main>
 															)}
 														</ErrorBoundary>
-													</NoteProvider>
+													</TodoProvider>
 												</GlobalSearchProvider>
 											</NotificationProvider>
 										</SWRConfig>

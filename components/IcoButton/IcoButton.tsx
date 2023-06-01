@@ -91,6 +91,7 @@ const IcoButton = ({
 			title={title}
 			width={bgSize}
 			height={bgSize}
+			minW={bgSize}
 			rounded={rounded}
 			cursor={clickable ? "auto" : "pointer"}
 			onClick={onClick}
