@@ -1,6 +1,6 @@
 import { useToast } from "@chakra-ui/react";
 import { Endpoints, TransactionIds } from "constants";
-import { useSession } from "contexts";
+import { useOrgDetailContext, useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { Home, SelectionScreen } from "eko-oaas-package";
 import { fetcher } from "helpers/apiHelper";
@@ -56,6 +56,7 @@ const selectionStepData = {
 
 const SignupPage = () => {
 	const { userData, updateUserInfo } = useUser();
+	const { orgDetail } = useOrgDetailContext();
 	const { accessToken } = useSession();
 	const router = useRouter();
 	// const [onboardingData, setOnboardingData] = useState();
@@ -440,7 +441,7 @@ const SignupPage = () => {
 				// eslint-disable-next-line no-undef
 				const leegality = new Leegality({
 					callback: handleLeegalityCallback.bind(this),
-					logo: "/images/logoimage.png",
+					logo: orgDetail.logo,
 				});
 				leegality.init();
 				leegality.esign(signUrlData?.short_url);
@@ -602,8 +603,8 @@ const SignupPage = () => {
 				/>
 			) : (
 				<Home
-					// defaultStep="12600"
-					defaultStep={userData?.details?.role_list || "12400"}
+					defaultStep="13300"
+					// defaultStep={userData?.details?.role_list || "12400"}
 					isBranding={false}
 					handleSubmit={handleStepDataSubmit}
 					stepResponse={lastStepResponse}
