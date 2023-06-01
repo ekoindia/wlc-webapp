@@ -23,10 +23,10 @@ import {
 } from "kbar";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 // import { Parser } from "utils/mathParser";
-import { useClipboard } from "hooks";
-import { parse } from "utils/exprParser";
+import { useClipboard, useDebouncedState } from "hooks";
+import { parse } from "utils";
 import { Icon, Kbd, NavBar, SideBar } from "..";
 
 /**
@@ -215,6 +215,16 @@ function DynamicSearchController() {
 		queryValue: state.searchQuery,
 	}));
 
+	const [queryValueDebounced, setQueryValueDebounced] = useDebouncedState(
+		queryValue,
+		100,
+		1000
+	);
+
+	useEffect(() => {
+		setQueryValueDebounced(queryValue);
+	}, [queryValue, setQueryValueDebounced]);
+
 	const { /* note, */ setNote } = useNote();
 	const { copy } = useClipboard();
 	const toast = useToast();
@@ -222,9 +232,9 @@ function DynamicSearchController() {
 	const router = useRouter();
 
 	const historySearch = useMemo(() => {
-		const len = queryValue.length;
+		const len = queryValueDebounced.length;
 
-		const numQueryVal = Number(queryValue);
+		const numQueryVal = Number(queryValueDebounced);
 
 		// Check if the query is a valid number
 		const isValidNumQuery =
@@ -237,18 +247,18 @@ function DynamicSearchController() {
 		let validQueryFound = false;
 
 		if (isValidNumQuery) {
-			if (len === 10 && /^[6-9]/.test(queryValue)) {
+			if (len === 10 && /^[6-9]/.test(queryValueDebounced)) {
 				// Mobile number
 				results.push(
 					getKBarAction({
 						id: "historySearch/mobile",
 						name: "Search Transaction History by Mobile",
-						subtitle: `Customer's Mobile = ${queryValue}`,
-						keywords: queryValue,
+						subtitle: `Customer's Mobile = ${queryValueDebounced}`,
+						keywords: queryValueDebounced,
 						icon: "", // "mobile"
 						perform: () =>
 							router.push(
-								`/history?customer_mobile=${queryValue}`
+								`/history?customer_mobile=${queryValueDebounced}`
 							),
 					})
 				);
@@ -261,12 +271,14 @@ function DynamicSearchController() {
 					getKBarAction({
 						id: "historySearch/amount",
 						name: "Search Transaction History by Amount",
-						subtitle: `Amount = ₹${queryValue}`,
-						keywords: queryValue,
+						subtitle: `Amount = ₹${queryValueDebounced}`,
+						keywords: queryValueDebounced,
 						icon: "", // "amount"
 						// section: "History",
 						perform: () =>
-							router.push(`/history?amount=${queryValue}`),
+							router.push(
+								`/history?amount=${queryValueDebounced}`
+							),
 					})
 				);
 				validQueryFound = true;
@@ -278,12 +290,12 @@ function DynamicSearchController() {
 					getKBarAction({
 						id: "historySearch/tid",
 						name: "Search Transaction History by TID",
-						subtitle: `Transaction ID = ${queryValue}`,
-						keywords: queryValue,
+						subtitle: `Transaction ID = ${queryValueDebounced}`,
+						keywords: queryValueDebounced,
 						icon: "", // "tid"
 						// section: "History",
 						perform: () =>
-							router.push(`/history?tid=${queryValue}`),
+							router.push(`/history?tid=${queryValueDebounced}`),
 					})
 				);
 				validQueryFound = true;
@@ -295,12 +307,14 @@ function DynamicSearchController() {
 					getKBarAction({
 						id: "historySearch/account",
 						name: "Search Transaction History by Account Number",
-						subtitle: `Account Number = ${queryValue}`,
-						keywords: queryValue,
+						subtitle: `Account Number = ${queryValueDebounced}`,
+						keywords: queryValueDebounced,
 						icon: "", // "tid"
 						// section: "History",
 						perform: () =>
-							router.push(`/history?account=${queryValue}`),
+							router.push(
+								`/history?account=${queryValueDebounced}`
+							),
 					})
 				);
 				validQueryFound = true;
@@ -323,30 +337,30 @@ function DynamicSearchController() {
 		}
 
 		// Add notes action
-		if (queryValue?.length > 2) {
+		if (queryValueDebounced?.length > 2) {
 			results.push({
 				id: "note/add",
 				name: "Save this as a Quick Note",
 				subtitle: `Note will be saved to your home page`,
-				keywords: queryValue,
+				keywords: queryValueDebounced,
 				icon: <ActionIcon icon="book" iconSize="lg" color="#9333ea" />,
 				section: "Tools",
 				priority: Priority.LOW,
-				perform: () => setNote(queryValue),
+				perform: () => setNote(queryValueDebounced),
 			});
 
 			// Math parser...
-			if (queryValue.charAt(0) === "=") {
+			if (queryValueDebounced.charAt(0) === "=") {
 				// const mathParser = new Parser();
-				// const result = mathParser.parse(queryValue.slice(1));
-				const result = parse(queryValue.slice(1));
+				// const result = mathParser.parse(queryValueDebounced.slice(1));
+				const result = parse(queryValueDebounced.slice(1));
 
 				if (result) {
 					results.push({
 						id: "math/parse",
 						name: `Result: ${result}`,
 						subtitle: `Select to copy result`,
-						keywords: queryValue,
+						keywords: queryValueDebounced,
 						icon: <ActionIcon name="=" style="filled" />,
 						perform: () => {
 							result && copy(result.toString());
@@ -362,7 +376,7 @@ function DynamicSearchController() {
 		}
 
 		return results;
-	}, [queryValue, router]);
+	}, [queryValueDebounced, router]);
 
 	useRegisterActions(historySearch, [historySearch]);
 
