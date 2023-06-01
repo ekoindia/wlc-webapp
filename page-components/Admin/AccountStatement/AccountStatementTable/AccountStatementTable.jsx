@@ -29,13 +29,12 @@ const AccountStatementTable = (props) => {
 			show: "Description",
 		},
 
-		{ name: "amount", field: "Amount" },
+		{ name: "amount", field: "Amount", show: "Amount" },
 	];
 
 	return (
 		<>
 			<Table
-				isOnclickRequire={false}
 				pageLimit={15}
 				renderer={renderer}
 				data={acctabledata}

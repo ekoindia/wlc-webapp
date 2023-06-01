@@ -32,7 +32,7 @@ const TopMerchants = ({ data }) => {
 		},
 		{
 			name: "raCases",
-			field: "RA Cases",
+			field: "Pending Transactions",
 			sorting: true,
 		},
 		{ name: "onboardingDate", field: "Onboarding Date", sorting: true },
@@ -64,8 +64,6 @@ const TopMerchants = ({ data }) => {
 				renderer={renderer}
 				data={data}
 				variant="evenStriped"
-				isScrollrequired={true}
-				border="none"
 				ResponsiveCard={BusinessDashboardCard}
 			/>
 		</Flex>

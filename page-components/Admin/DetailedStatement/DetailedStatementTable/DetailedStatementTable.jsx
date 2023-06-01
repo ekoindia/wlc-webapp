@@ -29,7 +29,7 @@ const DetailedStatementTable = (props) => {
 			show: "Description",
 		},
 		{ name: "amount", field: "Amount", show: "debit_credit" },
-		{ name: "running_balance", field: "Running Balance" },
+		{ name: "running_balance", field: "Running Balance", show: "Amount" },
 	];
 
 	return (

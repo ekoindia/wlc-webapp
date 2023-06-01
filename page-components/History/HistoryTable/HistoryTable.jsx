@@ -13,7 +13,6 @@ import { HistoryCard } from "..";
 const HistoryTable = ({ transactionList }) => {
 	const processedData = getHistoryTableProcessedData(transactionList);
 	const renderer = [
-		{ name: "", field: "", show: "Accordian" },
 		{
 			name: "trx_name",
 			field: "Transaction Type",
@@ -32,15 +31,12 @@ const HistoryTable = ({ transactionList }) => {
 			show: "Amount",
 			sorting: true,
 		},
-		{ name: "date", field: "Date", sorting: true },
+		{ name: "date", field: "Date", sorting: true }, //TODO date & time fix
 		{ name: "time", field: "Time", sorting: true },
 		{
 			name: "status",
 			show: "Tag",
 		},
-	];
-
-	const rendererExpandedRow = [
 		{ name: "customerMobile", field: "Customer Mobile" },
 		{ name: "balance", field: "Balance Amount", show: "Amount" },
 		{ name: "commissionEarned", field: "Commission Earned" },
@@ -53,11 +49,10 @@ const HistoryTable = ({ transactionList }) => {
 		<>
 			<Table
 				renderer={renderer}
-				rendererExpandedRow={rendererExpandedRow}
+				visibleColumns={7}
 				data={processedData}
-				variant="darkStriped"
+				variant="evenStripedExpandableRow"
 				tableName="History"
-				accordian={true}
 				isPaginationRequired={false}
 				isOnclickRequire={false}
 				ResponsiveCard={HistoryCard}

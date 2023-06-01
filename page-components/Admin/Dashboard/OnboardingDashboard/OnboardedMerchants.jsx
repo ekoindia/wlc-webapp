@@ -11,9 +11,8 @@ import { OnboardingDashboardCard } from "./OnboardingDashboardCard";
  */
 const OnboardedMerchants = ({ data }) => {
 	console.log("[OnboardedMerchants] data", data.onboardedMerchants);
-	const _data = data?.onboardedMerchants || [];
+	const onboardedMerchantsTableData = data?.onboardedMerchants || [];
 	const renderer = [
-		{ field: "", show: "Accordian" },
 		{
 			name: "merchantName",
 			field: "Merchant's Name",
@@ -24,13 +23,12 @@ const OnboardedMerchants = ({ data }) => {
 			name: "ekoCode",
 			field: "User Code",
 			sorting: true,
-			show: "Amount",
 		},
-		// {
-		// 	name: "refId",
-		// 	field: "Ref. ID", //TODO check
-		// 	sorting: true,
-		// },
+		{
+			name: "refId",
+			field: "Ref. ID", //TODO check
+			sorting: true,
+		},
 		{
 			name: "location",
 			field: "Location",
@@ -41,7 +39,15 @@ const OnboardedMerchants = ({ data }) => {
 			field: "Business Type",
 			sorting: true,
 		},
-		{ name: "onboardedOn", field: "Onboarded on", sorting: true },
+		{ name: "onboardedOn", field: "Onboarded on" },
+		{ name: "businessDetailsCaptured", field: "Business Detail Captured" },
+		{ name: "businessName", field: "Business Name" },
+		{ name: "daysinFunnel", field: "Onboarding Funnel" },
+		{ name: "panCaptured", field: "PAN Captured" },
+		{ name: "aadhaarCaptured", field: "Aadhaar Captured" },
+		{ name: "agreementSigned", field: "Agreement Signed" },
+		{ name: "onboarded", field: "Onboarded" },
+		{ name: "transacting", field: "Non Transacting Live" },
 	];
 	return (
 		<Flex
@@ -57,10 +63,9 @@ const OnboardedMerchants = ({ data }) => {
 			</Text>
 			<Table
 				renderer={renderer}
-				data={_data}
-				variant="evenStriped"
-				isScrollrequired={true}
-				border="none"
+				visibleColumns={6}
+				data={onboardedMerchantsTableData}
+				variant="evenStripedExpandableRow"
 				ResponsiveCard={OnboardingDashboardCard}
 			/>
 		</Flex>
