@@ -1,5 +1,12 @@
 import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
-import { Currency, IcoButton, Icon, IconButtons, Tags } from "components";
+import {
+	Currency,
+	DateView,
+	IcoButton,
+	Icon,
+	IconButtons,
+	Tags,
+} from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 
 export const getNameStyle = (name) => {
@@ -90,20 +97,24 @@ export const getExpandIcoButton = (expandedRow, index) => {
 	);
 };
 
-export const getAmountStyle = (amount, trx_type) => {
+export const getAmountStyle = (amount) => {
+	return <Currency amount={amount} preserveFraction={true} />;
+};
+
+export const getPaymentStyle = (amount, trx_type) => {
 	return (
 		amount !== undefined && (
 			<Flex align="center" gap="2">
-				<Currency amount={amount} />
+				<Currency amount={amount} preserveFraction={true} />
 				{trx_type && (
 					<Icon
 						name={
-							trx_type === "debit"
+							trx_type === "DR"
 								? "arrow-increase"
 								: "arrow-decrease"
 						}
 						size="16px"
-						color={trx_type === "debit" ? "error" : "success"}
+						color={trx_type === "DR" ? "error" : "success"}
 					/>
 				)}
 			</Flex>
@@ -141,4 +152,8 @@ export const getStatus = (debit_credit) => {
 			/>
 		</Flex>
 	);
+};
+
+export const getDateView = (dateTime) => {
+	return <DateView date={dateTime} />;
 };

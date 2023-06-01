@@ -1,11 +1,13 @@
 import {
 	getAmountStyle,
 	getArrowStyle,
+	getDateView,
 	getDescriptionStyle,
 	getExpandIcoButton,
 	getLocationStyle,
 	getModalStyle,
 	getNameStyle,
+	getPaymentStyle,
 	getStatusStyle,
 } from "helpers";
 
@@ -28,6 +30,7 @@ export const prepareTableCell = (
 ) => {
 	const account_status = item?.account_status;
 	const eko_code = item?.profile?.eko_code ?? [];
+	const trx_type = item?.debit_credit || item?.trx_type;
 	switch (column?.show) {
 		case "#":
 			return serialNo;
@@ -48,9 +51,13 @@ export const prepareTableCell = (
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":
-			return getAmountStyle(item[column.name], item.trx_type);
+			return getAmountStyle(item[column.name]);
+		case "Payment":
+			return getPaymentStyle(item[column.name], trx_type);
 		case "Description":
 			return getDescriptionStyle(item[column.name]);
+		case "DateView":
+			return getDateView(item[column.name]);
 		default:
 			return item[column.name];
 	}

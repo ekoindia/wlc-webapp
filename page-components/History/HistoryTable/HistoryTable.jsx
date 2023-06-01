@@ -28,11 +28,15 @@ const HistoryTable = ({ transactionList }) => {
 		{
 			name: "amount",
 			field: "Amount",
-			show: "Amount",
 			sorting: true,
+			show: "Payment",
 		},
-		{ name: "date", field: "Date", sorting: true }, //TODO date & time fix
-		{ name: "time", field: "Time", sorting: true },
+		{
+			name: "dateTime",
+			field: "Date & Time",
+			sorting: true,
+			show: "DateView",
+		},
 		{
 			name: "status",
 			show: "Tag",
@@ -49,7 +53,7 @@ const HistoryTable = ({ transactionList }) => {
 		<>
 			<Table
 				renderer={renderer}
-				visibleColumns={7}
+				visibleColumns={6}
 				data={processedData}
 				variant="evenStripedExpandableRow"
 				tableName="History"

@@ -8,11 +8,13 @@ export { processTransactionData } from "./processTransactionData";
 export {
 	getAmountStyle,
 	getArrowStyle,
+	getDateView,
 	getDescriptionStyle,
 	getExpandIcoButton,
 	getLocationStyle,
 	getModalStyle,
 	getNameStyle,
+	getPaymentStyle,
 	getStatusStyle,
 	openGoogleMap,
 } from "./TableHelpers";

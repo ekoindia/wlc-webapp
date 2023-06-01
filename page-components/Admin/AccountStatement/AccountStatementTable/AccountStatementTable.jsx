@@ -21,6 +21,7 @@ const AccountStatementTable = (props) => {
 			name: "date_time",
 			field: "Date & Time",
 			sorting: true,
+			show: "DateView",
 		},
 		{ name: "activity", field: "Activity" },
 		{
