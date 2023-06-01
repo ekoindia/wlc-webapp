@@ -93,7 +93,7 @@ const WalletProvider = ({ children }) => {
 								color="#334155"
 							/>
 						),
-						priority: Priority.LOW,
+						priority: Priority.NORMAL,
 						perform: () => {},
 					},
 			  ]
