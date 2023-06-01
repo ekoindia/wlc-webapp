@@ -72,10 +72,11 @@ const StickyNote = ({ note, updatedAt, onDeleteNote, ...rest }) => {
 	// const { query } = useKBar();
 	return (
 		<Box
-			w="full"
+			boxSizing="border-box"
 			minH="200px"
 			p="20px"
 			py="50px"
+			mx={{ base: 3, md: "0" }}
 			backgroundColor="yellow.200"
 			boxShadow="md"
 			position="relative"
@@ -153,7 +154,7 @@ const IcoBtn = ({ iconName, title = "Button", bg, onClick, ...rest }) => {
 			iconName={iconName}
 			theme="dark"
 			size="sm"
-			ml={{ base: "5px", md: "10px", lg: "15px", xl: "20px" }}
+			ml={{ base: "15px", xl: "20px" }}
 			rounded="full"
 			opacity="0.7"
 			bg={bg}
