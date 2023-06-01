@@ -6,5 +6,6 @@ export { default as useExternalResource } from "./useExternalResource";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLogin } from "./useLogin";
 export { default as usePagination, DOTS } from "./usePagination";
+export { default as usePlatform } from "./usePlatform";
 export { default as useRequest } from "./useRequest";
 export { default as useSessionStorage } from "./useSessionStorage";
