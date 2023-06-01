@@ -14,7 +14,6 @@ const TransactionHistoryPage = () => {
 
 TransactionHistoryPage.pageMeta = {
 	title: "Transaction History | Admin",
-	isSubPage: true,
 };
 
 export default TransactionHistoryPage;

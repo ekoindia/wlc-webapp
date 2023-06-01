@@ -14,7 +14,6 @@ const Pricing = () => {
 
 Pricing.pageMeta = {
 	title: "Pricing & Commission | Admin",
-	isSubPage: true,
 };
 
 export default Pricing;
