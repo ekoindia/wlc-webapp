@@ -70,7 +70,6 @@ export const light = extendTheme({
 							background: "shade",
 						},
 						_hover: {
-							// bg: "#fea1000d",
 							bg: "#e6e6e6",
 							transition: "background 200ms ease-in",
 							cursor: "pointer",
@@ -94,16 +93,17 @@ export const light = extendTheme({
 						transition: "none",
 					},
 				},
-				nonAdmin: {
+				evenStripedExpandableRow: {
+					tr: {
+						cursor: "pointer",
+						_even: {
+							background: "shade",
+						},
+					},
 					th: {
 						textTransform: "Capitalize",
-						bg: "divider",
+						bg: "hint",
 						transition: "none",
-					},
-					tr: {
-						_even: {
-							background: "bg",
-						},
 					},
 				},
 			},

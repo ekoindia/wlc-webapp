@@ -1,5 +1,5 @@
-import { Avatar, Box, Circle, Flex, Text } from "@chakra-ui/react";
-import { Currency, Icon, IconButtons, Tags } from "components";
+import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import { Currency, IcoButton, Icon, IconButtons, Tags } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 
 export const getNameStyle = (name) => {
@@ -74,17 +74,19 @@ export const getModalStyle = (eko_code, account_status) => {
 		</>
 	);
 };
-export const getAccordianIcon = (expandedRow, index) => {
+export const getExpandIcoButton = (expandedRow, index) => {
 	return (
-		<Flex justify="center" align="center">
-			<Circle bg="primary.DEFAULT" size="24px" cursor="pointer">
-				<Icon
-					name={expandedRow === index ? "remove" : "expand-add"}
-					size="10px"
-					color="white"
-				/>
-			</Circle>
-		</Flex>
+		<IcoButton
+			iconName={expandedRow === index ? "remove" : "expand-add"}
+			bg="white"
+			size="24px"
+			iconStyle={{ size: "12px", color: "primary.DEFAULT" }}
+			rounded="full"
+			border="2px solid #FE9F00"
+			boxShadow="0px 3px 6px #00000029"
+			title={expandedRow === index ? "Shrink" : "Expand"}
+			cursor="pointer"
+		/>
 	);
 };
 
