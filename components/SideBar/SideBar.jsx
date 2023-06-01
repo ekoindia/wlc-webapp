@@ -22,7 +22,7 @@ import {
 } from "constants";
 import { useMenuContext } from "contexts/MenuContext";
 import { useUser } from "contexts/UserContext";
-import { useRegisterActions } from "kbar";
+import { Priority, useRegisterActions } from "kbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -56,18 +56,21 @@ const isCurrentRoute = (routerUrl, path) => {
 const generateTransactionActions = (
 	interaction_list,
 	role_tx_list,
-	Icon,
 	router,
 	is_other_list = false
 ) => {
 	const getTxAction = (tx, parent_id, is_group) => {
 		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
+		const desc = tx.description || tx.desc || "";
+		if (desc.length > 50) {
+			tx.description = desc.slice(0, 80) + "…";
+		}
 
 		return {
 			id: "tx/" + _id,
 			name: tx.label,
-			subtitle: tx.description || tx.desc || "",
-			keywords: "transaction " + (tx.category || ""),
+			subtitle: desc,
+			// keywords: tx.label + " " + (tx.desc || "") + (tx.category || ""),
 			icon: (
 				<ActionIcon
 					icon={tx.icon}
@@ -76,7 +79,8 @@ const generateTransactionActions = (
 					style="filled"
 				/>
 			),
-			section: "Services",
+			priority: parent_id ? Priority.HIGH : Priority.NORMAL,
+			// section: "Services",
 			perform: is_group ? null : () => router.push("/transaction/" + _id),
 			parent: parent_id
 				? "tx/" + parent_id
@@ -101,17 +105,21 @@ const generateTransactionActions = (
 						/>
 					),
 					shortcut: ["$mod+/"],
-					section: "Services",
+					// section: "Services",
 				},
 		  ];
 
 	// Cache for transactions that contain sub-transactions
 	const trxnGroups = [];
 
+	// Cache of all trxn-ids already processed
+	const processedTrxns = {};
+
 	// Process main transactions
 	interaction_list.forEach((tx) => {
-		if (tx.id in role_tx_list) {
+		if (tx.id in role_tx_list && !(tx.id in processedTrxns)) {
 			let is_group = false;
+			processedTrxns[tx.id] = true;
 			// Is this a transaction group (Grid) (i.e, contains sub-transactions)?
 			if (tx.behavior == 7 && tx?.group_interaction_ids?.length) {
 				is_group = true;
@@ -131,11 +139,12 @@ const generateTransactionActions = (
 		const group_interaction_ids = tx.group_interaction_ids.split(",");
 		group_interaction_ids.forEach((id) => {
 			const subTx = role_tx_list[id];
-			if (subTx) {
+			if (subTx && !(id in processedTrxns)) {
 				const thisTx = {
 					id: id,
 					...subTx,
 				};
+				processedTrxns[id] = true;
 				let is_group = false;
 				// Is this a transaction group (i.e, contains sub-transactions)?
 				if (
@@ -143,10 +152,25 @@ const generateTransactionActions = (
 					subTx?.group_interaction_ids?.length > 0
 				) {
 					is_group = true;
-					trxnGroups.push({
-						tx: thisTx,
-						parent: "" + (parent ? `${parent}/` : "") + id,
+
+					// Check if this group has all child transactions already processed
+					const group_tx_ids =
+						thisTx.group_interaction_ids.split(",");
+					let all_processed = true;
+					group_tx_ids.forEach((tx_id) => {
+						if (!(tx_id in processedTrxns)) {
+							all_processed = false;
+						}
 					});
+
+					if (all_processed) {
+						is_group = false;
+					} else {
+						trxnGroups.push({
+							tx: thisTx,
+							parent: "" + (parent ? `${parent}/` : "") + id,
+						});
+					}
 				}
 				trxnList.push(getTxAction(thisTx, parent, is_group));
 			}
@@ -211,13 +235,12 @@ const SideBar = ({ navOpen, setNavClose }) => {
 
 			// Generate KBar actions...
 			setTrxnActions(
-				generateTransactionActions(trxnList, role_tx_list, Icon, router)
+				generateTransactionActions(trxnList, role_tx_list, router)
 			);
 			setOtherActions(
 				generateTransactionActions(
 					[...otherList, manageMyAccount],
 					role_tx_list,
-					Icon,
 					router,
 					true // is-other-list
 				)
@@ -237,8 +260,11 @@ const SideBar = ({ navOpen, setNavClose }) => {
 	// 	}
 	// }, [interaction_list, role_tx_list]);
 
-	useRegisterActions(trxnActions, [trxnActions]);
-	useRegisterActions(otherActions, [otherActions]);
+	useRegisterActions(
+		[...trxnActions, ...otherActions],
+		[[...trxnActions, ...otherActions]]
+	);
+	// useRegisterActions(otherActions, [otherActions]);
 
 	// Set the sub-menu (accordian) index that should be open by default
 	// For Distributors, open the "Other" submenu (index = 1)
