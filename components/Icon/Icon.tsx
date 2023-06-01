@@ -74,6 +74,7 @@ const Icon = ({ name, size, w, h, width, height, ...rest }: IconProps) => {
 		<Box
 			w={_size}
 			h={_size}
+			minW={_size}
 			{...rest}
 			transition="color 0.3s ease-out, background 0.3s ease-out"
 		>
