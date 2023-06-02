@@ -9,11 +9,12 @@ import { Flex, Text } from "@chakra-ui/react";
  */
 const DashboardHeading = ({ pageId, headingList, handleHeadingClick }) => {
 	return (
-		<Flex m="20px" fontSize="sm" justify="space-between">
+		<Flex m="20px" fontSize="sm" justify="space-between" w="100%">
 			<Flex
 				direction={{ base: "column", md: "row" }}
 				align={{ base: "flex-start", md: "center" }}
 				gap={{ base: "2", md: "8" }}
+				w="100%"
 			>
 				<Text fontWeight="semibold" fontSize="2xl">
 					Dashboard
@@ -21,9 +22,11 @@ const DashboardHeading = ({ pageId, headingList, handleHeadingClick }) => {
 				<Flex
 					p="0.5"
 					gap="4"
+					w={{ base: "100%" }}
 					h={{ base: "36px", md: "40px" }}
 					bg={{ base: "divider", md: "inherit" }}
 					borderRadius={{ base: "80px", md: "0px" }}
+					justify={{ base: "space-between", md: "flex-start" }}
 				>
 					{headingList?.map((item, index) => {
 						const isActive = index === pageId;
@@ -32,7 +35,7 @@ const DashboardHeading = ({ pageId, headingList, handleHeadingClick }) => {
 								key={item}
 								justify="center"
 								align="center"
-								w={{ base: "156px", md: "120px" }}
+								w={{ base: "50%", md: "120px" }}
 								fontSize={{ base: "xs", md: "sm" }}
 								bg={{
 									base: isActive
