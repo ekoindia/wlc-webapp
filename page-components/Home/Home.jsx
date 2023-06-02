@@ -119,7 +119,7 @@ const StickyNote = ({ todos, onDeleteTodo, ...rest }) => {
 		>
 			{todos.map((todo, index) => (
 				<Flex
-					key={todo.id}
+					key={todo + index}
 					direction="row"
 					align="center"
 					justify="space-between"
