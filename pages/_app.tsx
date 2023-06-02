@@ -1,10 +1,13 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
+import { ActionIcon } from "components/GlobalSearch";
 import {
+	GlobalSearchProvider,
 	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
+	TodoProvider,
 	UserProvider,
 	WalletProvider,
 } from "contexts";
@@ -12,6 +15,7 @@ import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
+import { KBarProvider, Priority } from "kbar";
 import App from "next/app";
 import { Inter } from "next/font/google";
 import Head from "next/head";
@@ -99,6 +103,56 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		console.log("[_app.tsx] !! Mock User: ", mockUser);
 	}
 
+	// Setup K-Bar options...
+	const kbarDefaultActions = [
+		{
+			id: "systemsettings",
+			name: "System",
+			subtitle: "Clear cache or logout",
+			icon: <ActionIcon icon="logout" size="sm" color="error" />,
+			// shortcut: ["c"],
+			// keywords: "signout quit close",
+			// section: "System",
+			priority: Priority.LOW,
+		},
+		{
+			id: "reloadapp",
+			name: "Reload App",
+			subtitle: "Reset cache and reload the app if you facing any issues",
+			icon: <ActionIcon icon="reload" size="sm" color="error" />,
+			shortcut: ["$mod+F5"],
+			keywords: "reset cache reload",
+			section: "System",
+			priority: Priority.LOW,
+			parent: "systemsettings",
+			perform: () => {
+				// Clear session storage (except org_detail)
+				Object.keys(window.sessionStorage).forEach((key) => {
+					if (key !== OrgDetailSessionStorageKey && key !== "todos") {
+						window.sessionStorage.removeItem(key);
+					}
+				});
+
+				// Reset All LocalStorage (Trxn/Menu/etc) Cache
+				window.localStorage.clear();
+
+				// Reload
+				window.location.reload();
+			},
+		},
+		{
+			id: "logout",
+			name: "Logout",
+			icon: <ActionIcon icon="logout" size="sm" color="error" />,
+			// shortcut: ["c"],
+			keywords: "signout quit close",
+			section: "System",
+			priority: Priority.LOW,
+			parent: "systemsettings",
+			perform: () => (window.location.pathname = "contact"),
+		},
+	];
+
 	// Get standard or custom Layout for the page...
 	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx).
 	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
@@ -106,6 +160,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		Component.getLayout ||
 		((page) => (
 			<Layout
+				fontClassName={inter.className}
 				appName={org?.app_name}
 				pageMeta={Component?.pageMeta || {}}
 			>
@@ -120,37 +175,49 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 			toastOptions={{ defaultOptions: toastDefaultOptions }}
 		>
 			<OrgDetailProvider initialData={org || null}>
-				<UserProvider userMockData={mockUser}>
-					<LayoutProvider>
-						<MenuProvider>
-							<WalletProvider>
-								<RouteProtecter router={router}>
-									<SWRConfig
-										value={{
-											provider: localStorageProvider,
-										}}
-									>
-										<NotificationProvider>
-											<ErrorBoundary>
-												{getLayout(
-													<main
-														className={
-															inter.className
-														}
-													>
-														<Component
-															{...pageProps}
-														/>
-													</main>
-												)}
-											</ErrorBoundary>
-										</NotificationProvider>
-									</SWRConfig>
-								</RouteProtecter>
-							</WalletProvider>
-						</MenuProvider>
-					</LayoutProvider>
-				</UserProvider>
+				<KBarProvider
+					actions={kbarDefaultActions}
+					options={{
+						enableHistory: false,
+						disableScrollbarManagement: true,
+					}}
+				>
+					<UserProvider userMockData={mockUser}>
+						<LayoutProvider>
+							<MenuProvider>
+								<WalletProvider>
+									<RouteProtecter router={router}>
+										<SWRConfig
+											value={{
+												provider: localStorageProvider,
+											}}
+										>
+											<NotificationProvider>
+												<GlobalSearchProvider>
+													<TodoProvider>
+														<ErrorBoundary>
+															{getLayout(
+																<main
+																	className={
+																		inter.className
+																	}
+																>
+																	<Component
+																		{...pageProps}
+																	/>
+																</main>
+															)}
+														</ErrorBoundary>
+													</TodoProvider>
+												</GlobalSearchProvider>
+											</NotificationProvider>
+										</SWRConfig>
+									</RouteProtecter>
+								</WalletProvider>
+							</MenuProvider>
+						</LayoutProvider>
+					</UserProvider>
+				</KBarProvider>
 			</OrgDetailProvider>
 		</ChakraProvider>
 	);
