@@ -9,13 +9,13 @@ import {
 	MenuButton,
 	MenuList,
 	Text,
+	useBreakpointValue,
 	VStack,
 } from "@chakra-ui/react";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 import { Button, Icon, IconButtons, OrgLogo } from "..";
 
@@ -69,7 +69,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	const { userData, isAdmin, isLoggedIn } = useUser();
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
-	const router = useRouter();
+	// const router = useRouter();
+	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
 	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
 		ssr: false,
@@ -89,11 +90,11 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 		),
 	});
 
-	const handleSearchKeyDown = (e) => {
-		if (e?.key === "Enter" && e?.target?.value?.length > 1) {
-			router.push(`/history?search=${e.target.value}`);
-		}
-	};
+	// const handleSearchKeyDown = (e) => {
+	// 	if (e?.key === "Enter" && e?.target?.value?.length > 1) {
+	// 		router.push(`/history?search=${e.target.value}`);
+	// 	}
+	// };
 
 	return (
 		<>
@@ -104,7 +105,11 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				px={{ base: "4", sm: "4", md: "4", xl: "6" }}
 			>
 				{/* Left-side items of navbar */}
-				<Box display={"flex"} alignItems={"center"}>
+				<Box
+					display={"flex"}
+					alignItems={"center"}
+					flexGrow={isSmallScreen ? 1 : 0}
+				>
 					<Flex align="center" minW={{ base: "auto", md: "250px" }}>
 						<IconButton
 							display={{ lg: "none" }}
@@ -129,7 +134,13 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 					</Flex>
 
 					{isLoggedIn === true && isAdmin !== true && (
-						<GlobalSearch onSearchKeyDown={handleSearchKeyDown} />
+						<Flex
+							flexGrow={isSmallScreen ? 1 : 0}
+							justify={isSmallScreen ? "flex-end" : "flex-start"}
+							pr={isSmallScreen ? 2 : 0}
+						>
+							<GlobalSearch />
+						</Flex>
 					)}
 				</Box>
 
