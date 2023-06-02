@@ -70,7 +70,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
 	// const router = useRouter();
-	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+	const isMobile = useBreakpointValue({ base: true, md: false });
 
 	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
 		ssr: false,
@@ -108,7 +108,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				<Box
 					display={"flex"}
 					alignItems={"center"}
-					flexGrow={isSmallScreen ? 1 : 0}
+					flexGrow={isMobile ? 1 : 0}
 				>
 					<Flex align="center" minW={{ base: "auto", md: "250px" }}>
 						<IconButton
@@ -135,9 +135,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 
 					{isLoggedIn === true && isAdmin !== true && (
 						<Flex
-							flexGrow={isSmallScreen ? 1 : 0}
-							justify={isSmallScreen ? "flex-end" : "flex-start"}
-							pr={isSmallScreen ? 2 : 0}
+							flexGrow={isMobile ? 1 : 0}
+							justify={isMobile ? "flex-end" : "flex-start"}
+							pr={isMobile ? 2 : 0}
 						>
 							<GlobalSearch />
 						</Flex>
