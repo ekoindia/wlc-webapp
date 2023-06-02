@@ -20,8 +20,17 @@ const apiUri = ["businessdashboard", "onboardingDashboard"];
  */
 const Dashboard = ({ className = "", ...props }) => {
 	const [data, setData] = useState([]);
-	const [pageId, setPageId] = useState(0);
+	const [pageId, setPageId] = useState(0); //to find whether user is on business or onboarding dashboard
+	const [filterStatus, setFilterStatus] = useState([51]); //filters for onboarding dashboard with default value 51
+	const [pageNumber, setPageNumber] = useState(1); //page number for onboarding table
+	const [totalRecords, setTotalRecords] = useState();
 	const { accessToken } = useSession();
+
+	const onboardingBody = {
+		record_count: 10,
+		filterStage: filterStatus,
+		page_number: pageNumber,
+	};
 
 	const hitQuery = (abortController, key) => {
 		console.log(
@@ -35,9 +44,7 @@ const Dashboard = ({ className = "", ...props }) => {
 				"tf-req-uri": `/network/agents/${apiUri[pageId]}`,
 				"tf-req-method": "GET",
 			},
-			body: {
-				record_count: 10,
-			},
+			body: pageId === 1 ? { ...onboardingBody } : {},
 			controller: abortController,
 			token: accessToken,
 		})
@@ -53,7 +60,10 @@ const Dashboard = ({ className = "", ...props }) => {
 						: pageId === 1
 						? data?.data?.onboarding_dashboard_details
 						: [];
+				const _totalRecords =
+					pageId === 1 ? data?.data?.totalRecords : null;
 				setData(_data);
+				setTotalRecords(_totalRecords);
 			})
 			.catch((err) => {
 				console.error(
@@ -78,7 +88,7 @@ const Dashboard = ({ className = "", ...props }) => {
 			);
 			controller.abort();
 		};
-	}, [pageId]);
+	}, [pageId, filterStatus, pageNumber]);
 
 	const handleHeadingClick = (item) => setPageId(item);
 
@@ -86,16 +96,26 @@ const Dashboard = ({ className = "", ...props }) => {
 		<div className={`${className}`} {...props}>
 			<Flex
 				bg={{ base: "white", md: "none" }}
-				mb={{ base: "20px", md: "0px" }}
+				pb={{ base: pageId === 0 ? "0px" : "10px", md: "0px" }}
+				borderRadius={pageId === 0 ? "0px" : "0px 0px 20px 20px"}
 			>
 				<DashboardHeading
 					{...{ headingList, pageId, handleHeadingClick }}
 				/>
 			</Flex>
 			{pageId === 0 ? (
-				<BusinessDashboard data={data} />
+				<BusinessDashboard {...{ data }} />
 			) : pageId === 1 ? (
-				<OnboardingDashboard data={data} />
+				<OnboardingDashboard
+					{...{
+						data,
+						setFilterStatus,
+						filterStatus,
+						totalRecords,
+						pageNumber,
+						setPageNumber,
+					}}
+				/>
 			) : null}
 		</div>
 	);

@@ -13,7 +13,13 @@ const BusinessDashboard = ({ data }) => {
 	const { topPanel, earningOverview, topMerchants, successRate } = data || {};
 	return (
 		<Flex direction="column">
-			<TopPanel data={topPanel} />
+			<Flex
+				bg={{ base: "white", md: "initial" }}
+				p={{ base: "10px 0px 30px 0px", md: "0px" }}
+				borderRadius="0px 0px 20px 20px"
+			>
+				<TopPanel data={topPanel} />
+			</Flex>
 			<Flex p="20px" gap="4" wrap="wrap">
 				<Flex flex="2">
 					<EarningOverview data={earningOverview} />

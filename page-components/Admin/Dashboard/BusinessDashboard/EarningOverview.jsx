@@ -42,24 +42,23 @@ const EarningOverview = ({ data }) => {
 			type: "number",
 			variation: data?.onboardedAgents?.increaseOrDecrease,
 		},
-		{
-			key: "pendingTransactions",
-			label: "Pending Transactions",
-			lastPeriod: data?.pendingTransactions?.lastPeriod,
-			value: data?.pendingTransactions?.pendingTransactions,
-			type: "number",
-			variation: data?.pendingTransactions?.increaseOrDecrease,
-		},
+		// {
+		// 	key: "pendingTransactions",
+		// 	label: "Pending Transactions",
+		// 	lastPeriod: data?.pendingTransactions?.lastPeriod,
+		// 	value: data?.pendingTransactions?.pendingTransactions,
+		// 	type: "number",
+		// 	variation: data?.pendingTransactions?.increaseOrDecrease,
+		// },
 		{
 			key: "raCases",
-			label: "DMT RA Cases",
+			label: "Pending transactions",
 			lastPeriod: data?.raCases?.lastPeriod,
 			value: data?.raCases?.raCases,
 			type: "number",
 			variantion: data?.raCases?.increaseOrDecrease,
 		},
 	];
-	//TODO: clarify for pendingTransactions and raCases !important;
 	return (
 		<Flex
 			direction="column"

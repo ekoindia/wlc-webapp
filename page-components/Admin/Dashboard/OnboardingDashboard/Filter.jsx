@@ -1,6 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { useState } from "react";
 
 /**
  * A Filter page-component
@@ -9,52 +8,59 @@ import { useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Filter></Filter>`
  */
-const Filter = ({ data }) => {
-	console.log("[Filter] data", data);
-	const [filterStatus, setFilterStatus] = useState("partialAccount");
-	const _data = data?.topPanel ?? {};
+const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
+	console.log("[Filter] data", filterData);
+	const _data = filterData?.topPanel ?? {};
 	const filterList = [
 		{
-			key: "partialAccount",
+			key: 51,
 			label: "Partial Account",
 			value: _data?.partialAccount,
 		},
 		{
-			key: "onboardingFunnel",
+			key: null,
 			label: "Onboarding Funnel",
-			value: _data?.onboardingFunnel, //TODO: Check
+			value: _data?.onboardingFunnel, //all except 16
 		},
 		{
-			key: "businessDetailsCaptured",
+			key: 52,
 			label: "Business Detail Captured",
 			value: _data?.businessDetailsCaptured,
 		},
 		{
-			key: "aadhaarCaptured",
+			key: 54,
 			label: "Aadhaar Captured",
 			value: _data?.aadhaarCaptured,
 		},
 		{
-			key: "panCaptured",
+			key: 53,
 			label: "PAN Captured",
 			value: _data?.panCaptured,
 		},
 		{
-			key: "agreementSigned",
+			key: 48,
 			label: "Agreement Signed",
 			value: _data?.agreementSigned,
 		},
 		{
-			key: "onboarded",
+			key: 16,
 			label: "Onboarded",
 			value: _data?.onboarded,
 		},
 		{
-			key: "nonTransactiingLive",
+			key: null,
 			label: "Non Transacting Live",
-			value: _data?.nonTransactiingLive,
+			value: _data?.nonTransactiingLive, // no financial trx
 		},
 	];
+
+	const handleFilterStatusClick = (key) => {
+		if (filterStatus.includes(key)) {
+			setFilterStatus((prev) => prev.filter((item) => item !== key));
+		} else {
+			setFilterStatus((prev) => [...prev, key]);
+		}
+	};
 
 	const filterListLength = filterList.length;
 
@@ -65,7 +71,7 @@ const Filter = ({ data }) => {
 			bg={{ base: "none", md: "white" }}
 			borderRadius="10px"
 		>
-			<Flex gap="2" p={{ base: "0px 20px 20px", md: "20px" }}>
+			<Flex gap="2" p="20px">
 				<Icon name="filter" size="23px" />
 				<Text fontSize="md" fontWeight="semibold">
 					Filter using onboarding status
@@ -87,7 +93,7 @@ const Filter = ({ data }) => {
 				pb="20px"
 			>
 				{filterList?.map((item, index) => {
-					const isActive = filterStatus === item.key;
+					const isActive = filterStatus.includes(item.key);
 					return (
 						item.value && (
 							<Flex
@@ -112,7 +118,9 @@ const Filter = ({ data }) => {
 										: null
 								}
 								_hover={{ boxShadow: "0px 3px 10px #0000000D" }}
-								onClick={() => setFilterStatus(item.key)}
+								onClick={() =>
+									handleFilterStatusClick(item.key)
+								}
 								cursor="pointer"
 							>
 								<Text fontSize="sm">{item.label}</Text>
