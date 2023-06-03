@@ -1,9 +1,9 @@
-import OnboardingDashboardTable from "./OnboardingDashboardTable";
+import Kbd from "./Kbd";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "PageComponent/Admin/Dashboard/OnboardingDashboard/OnboardingDashboardTable",
-	component: OnboardingDashboardTable,
+	title: "Component/Kbd",
+	component: Kbd,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +46,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <OnboardingDashboardTable {...args} />;
+const Template = (args) => <Kbd {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

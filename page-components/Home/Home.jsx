@@ -1,11 +1,12 @@
 import { Grid } from "@chakra-ui/react";
-import { useSession } from "contexts";
+import { useSession, useTodos } from "contexts";
 import {
 	BillPaymentWidget,
 	CommonTrxnWidget,
 	NotificationWidget,
 	QueryWidget,
 	RecentTrxnWidget,
+	TodoWidget,
 } from ".";
 
 /**
@@ -18,6 +19,7 @@ import {
  */
 const Home = () => {
 	const { isLoggedIn } = useSession();
+	const { todos, deleteTodo } = useTodos();
 
 	if (!isLoggedIn) return null;
 
@@ -26,8 +28,18 @@ const Home = () => {
 		{ id: 2, component: BillPaymentWidget },
 		{ id: 3, component: NotificationWidget },
 		{ id: 4, component: RecentTrxnWidget },
-		{ id: 5, component: QueryWidget },
 	];
+
+	if (todos && todos.length > 0) {
+		widgets.push({
+			id: 5,
+			component: () => (
+				<TodoWidget todos={todos} onDeleteTodo={deleteTodo} />
+			),
+		});
+	}
+
+	widgets.push({ id: 6, component: QueryWidget });
 
 	return (
 		<Grid

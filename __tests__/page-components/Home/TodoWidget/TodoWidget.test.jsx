@@ -1,4 +1,4 @@
-import { OnboardingDashboardTable } from "components/OnboardingDashboardTable";
+import { TodoWidget } from "components/TodoWidget";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("OnboardingDashboardTable", () => {
+describe("TodoWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<OnboardingDashboardTable />);
+		const { container } = render(<TodoWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("OnboardingDashboardTable", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for OnboardingDashboardTable in __tests__/components/OnboardingDashboardTable/OnboardingDashboardTable.test.jsx"
+		"TODO: add proper test cases for TodoWidget in __tests__/components/TodoWidget/TodoWidget.test.jsx"
 	);
 });

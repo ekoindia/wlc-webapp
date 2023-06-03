@@ -10,7 +10,6 @@ const DashboardPage = () => {
 
 DashboardPage.pageMeta = {
 	title: "Dashboard | Admin",
-	isSubPage: true,
 };
 
 export default DashboardPage;

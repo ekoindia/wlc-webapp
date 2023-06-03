@@ -1,5 +1,12 @@
-import { Avatar, Box, Circle, Flex, Text } from "@chakra-ui/react";
-import { Currency, Icon, IconButtons, Tags } from "components";
+import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import {
+	Currency,
+	DateView,
+	IcoButton,
+	Icon,
+	IconButtons,
+	Tags,
+} from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 
 export const getNameStyle = (name) => {
@@ -74,34 +81,40 @@ export const getModalStyle = (eko_code, account_status) => {
 		</>
 	);
 };
-export const getAccordianIcon = (expandedRow, index) => {
+export const getExpandIcoButton = (expandedRow, index) => {
 	return (
-		<Flex justify="center" align="center">
-			<Circle bg="primary.DEFAULT" size="24px" cursor="pointer">
-				<Icon
-					name={expandedRow === index ? "remove" : "expand-add"}
-					size="10px"
-					color="white"
-				/>
-			</Circle>
-		</Flex>
+		<IcoButton
+			iconName={expandedRow === index ? "remove" : "expand-add"}
+			bg="white"
+			size="24px"
+			iconStyle={{ size: "12px", color: "primary.DEFAULT" }}
+			rounded="full"
+			border="2px solid #FE9F00"
+			boxShadow="0px 3px 6px #00000029"
+			title={expandedRow === index ? "Shrink" : "Expand"}
+			cursor="pointer"
+		/>
 	);
 };
 
-export const getAmountStyle = (amount, trx_type) => {
+export const getAmountStyle = (amount) => {
+	return <Currency amount={amount} preserveFraction={true} />;
+};
+
+export const getPaymentStyle = (amount, trx_type) => {
 	return (
 		amount !== undefined && (
 			<Flex align="center" gap="2">
-				<Currency amount={amount} />
+				<Currency amount={amount} preserveFraction={true} />
 				{trx_type && (
 					<Icon
 						name={
-							trx_type === "debit"
+							trx_type === "DR"
 								? "arrow-increase"
 								: "arrow-decrease"
 						}
 						size="16px"
-						color={trx_type === "debit" ? "error" : "success"}
+						color={trx_type === "DR" ? "error" : "success"}
 					/>
 				)}
 			</Flex>
@@ -139,4 +152,8 @@ export const getStatus = (debit_credit) => {
 			/>
 		</Flex>
 	);
+};
+
+export const getDateView = (dateTime) => {
+	return <DateView date={dateTime} />;
 };

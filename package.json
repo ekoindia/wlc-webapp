@@ -55,6 +55,7 @@
 		"eko-oaas-package": "^1.0.7",
 		"framer-motion": "^8.5.5",
 		"jsonwebtoken": "^9.0.0",
+		"kbar": "^0.1.0-beta.40",
 		"lint": "^0.8.19",
 		"next": "13.3.1",
 		"react": "18.2.0",
