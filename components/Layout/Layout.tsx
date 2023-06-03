@@ -357,7 +357,7 @@ function DynamicSearchController() {
 		if (queryValueDebounced?.length > 2 && !isAdmin) {
 			results.push({
 				id: "note/add",
-				name: "Save this as a Quick Reminder",
+				name: "Save this note as a Quick Reminder",
 				subtitle: `Saved notes will appear on your homepage`,
 				keywords: queryValueDebounced,
 				icon: <ActionIcon icon="book" iconSize="lg" color="#9333ea" />,
