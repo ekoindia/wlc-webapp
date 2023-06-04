@@ -95,6 +95,7 @@ const IcoButton = ({
 			rounded={rounded}
 			cursor={clickable ? "auto" : "pointer"}
 			onClick={onClick}
+			overflow="hidden"
 			{...btnTheme}
 			{...rest}
 		>

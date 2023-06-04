@@ -1,4 +1,4 @@
-import { useToast } from "@chakra-ui/react";
+import { Center, Spinner, useToast } from "@chakra-ui/react";
 import { Endpoints, TransactionIds } from "constants";
 import { useOrgDetailContext, useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
@@ -64,15 +64,17 @@ const SignupPage = () => {
 	const { generateNewToken } = useRefreshToken();
 	const [lastStepResponse, setLastStepResponse] = useState();
 	const [latLong, setLatLong] = useState();
-	const [aadhar, setAadhar] = useState();
+	const [aadhaar, setAadhaar] = useState();
 	const [userLoginData, setUserLoginData] = useState();
 	const [shopTypesData, setShopTypesData] = useState();
 	const [stateTypesData, setStateTypesData] = useState();
 	const [signUrlData, setSignUrlData] = useState();
 	const [bookletNumber, setBookletNumber] = useState();
 	const [bookletKeys, setBookletKeys] = useState([]);
+	const [isSpinner, setisSpinner] = useState(true);
 	const toast = useToast();
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
+	console.log("selected role", selectedRole, typeof selectedRole);
 	const handleStepDataSubmit = (data) => {
 		console.log("HandleWlcStepData", data);
 		if (data?.id === 3) {
@@ -108,13 +110,13 @@ const SignupPage = () => {
 				bodyData.form_data.access_key =
 					lastStepResponse?.data?.access_key;
 				if (data?.id === 6) {
-					setAadhar(bodyData.form_data.aadhar);
+					setAadhaar(bodyData.form_data.aadhaar);
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_NUMBER_CONFIRM;
 				} else {
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_OTP_CONFIRM;
-					bodyData.form_data.aadhar = aadhar;
+					bodyData.form_data.aadhaar = aadhaar;
 				}
 			} else if (data?.id === 9) {
 				console.log("bodyData inside 1", bodyData);
@@ -169,8 +171,8 @@ const SignupPage = () => {
 			},
 		};
 		if (data.id === 4) {
-			bodyData.file1 = data?.form_data?.aadharImages?.front?.fileData;
-			bodyData.file2 = data?.form_data?.aadharImages?.back?.fileData;
+			bodyData.file1 = data?.form_data?.aadhaarImages?.front?.fileData;
+			bodyData.file2 = data?.form_data?.aadhaarImages?.back?.fileData;
 			bodyData.formdata.file1 = "";
 			bodyData.formdata.file2 = "";
 			formData.append("file1", bodyData.file1);
@@ -180,6 +182,7 @@ const SignupPage = () => {
 				new URLSearchParams(bodyData["formdata"])
 			);
 		} else if (data.id === 8) {
+			console.log("pan data", data);
 			bodyData.file1 = data?.form_data?.panImage?.fileData;
 			bodyData.formdata.file1 = "";
 			bodyData.formdata.doc_type = 2;
@@ -263,8 +266,8 @@ const SignupPage = () => {
 				status: "success",
 				duration: 2000,
 			});
+			setLastStepResponse(uploadResponse);
 		}
-		setLastStepResponse(uploadResponse);
 
 		console.log("uploadResponse", uploadResponse);
 	};
@@ -321,6 +324,7 @@ const SignupPage = () => {
 
 	const refreshApiCall = () => {
 		console.log("inside mainfunction");
+		// setisSpinner(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE,
 			{
@@ -334,6 +338,8 @@ const SignupPage = () => {
 			.then((res) => {
 				setUserLoginData(res);
 				updateUserInfo(res);
+				setisSpinner(false);
+
 				if (
 					res?.details?.onboarding !== 1 &&
 					res?.details?.onboarding !== undefined &&
@@ -343,7 +349,11 @@ const SignupPage = () => {
 				}
 				console.log("inside initial api response", res);
 			})
-			.catch((err) => console.log("inside initial api error", err));
+			.catch((err) => {
+				setisSpinner(false);
+
+				console.log("inside initial api error", err);
+			});
 	};
 
 	const getSHopTypes = () => {
@@ -582,39 +592,51 @@ const SignupPage = () => {
 	}, [bookletNumber]);
 	console.log("userData", userData);
 	return (
-		<div
-			style={
-				selectedRole === null
-					? {
-							background: "#FFF",
-							display: "flex",
-							justifyContent: "center",
-					  }
-					: {}
-			}
-		>
-			{selectedRole === null && userData?.details?.mobile === "1" ? (
-				<SelectionScreen
-					stepData={selectionStepData}
-					handleSubmit={(data) => {
-						// setSelectedRole(data.form_data.value);
-						handleStepDataSubmit(data);
-					}}
-				/>
+		<>
+			{isSpinner ? (
+				<Center height={"100vh"}>
+					<Spinner />
+				</Center>
 			) : (
-				<Home
-					// defaultStep="13300"
-					defaultStep={userData?.details?.role_list || "12400"}
-					isBranding={false}
-					handleSubmit={handleStepDataSubmit}
-					stepResponse={lastStepResponse}
-					selectedMerchantType={selectedRole}
-					shopTypes={shopTypesData}
-					stateTypes={stateTypesData}
-					handleStepCallBack={handleStepCallBack}
-				/>
+				<div
+					style={
+						selectedRole === null
+							? {
+									background: "#FFF",
+									display: "flex",
+									justifyContent: "center",
+							  }
+							: {}
+					}
+				>
+					{selectedRole === null &&
+					userData?.details?.mobile === "1" ? (
+						<SelectionScreen
+							stepData={selectionStepData}
+							handleSubmit={(data) => {
+								// setSelectedRole(data.form_data.value);
+								handleStepDataSubmit(data);
+							}}
+						/>
+					) : (
+						<Home
+							// defaultStep="13300"
+							defaultStep={
+								userData?.details?.role_list || "12400"
+							}
+							isBranding={false}
+							userData={userData}
+							handleSubmit={handleStepDataSubmit}
+							stepResponse={lastStepResponse}
+							selectedMerchantType={selectedRole}
+							shopTypes={shopTypesData}
+							stateTypes={stateTypesData}
+							handleStepCallBack={handleStepCallBack}
+						/>
+					)}
+				</div>
 			)}
-		</div>
+		</>
 	);
 };
 SignupPage.pageMeta = {

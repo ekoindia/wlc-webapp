@@ -180,6 +180,29 @@ const generateTransactionActions = (
 	return trxnList;
 };
 
+/**
+ * A helper function to create the KBar actions array from all the visible left-menu links.
+ * @param {Array} menu_list - List of all Menu items with a label and a link.
+ * @param {Object} router - Next.js router object
+ * @returns {Array} Array of KBar actions
+ */
+const generateMenuLinkActions = (menu_list, router) => {
+	const menuLinkActions = [];
+	menu_list.forEach((menu) => {
+		menuLinkActions.push({
+			id: "menulnk/" + menu.name,
+			name: menu.name,
+			icon: (
+				<ActionIcon icon={menu.icon} name={menu.name} style="filled" />
+			),
+			// section: "Services",
+			perform: () => router.push(menu.link),
+		});
+	});
+	console.log("menuLinkActions", menuLinkActions, menu_list);
+	return menuLinkActions;
+};
+
 //MAIN EXPORT
 const SideBar = ({ navOpen, setNavClose }) => {
 	const { userData, isAdmin, userType } = useUser();
@@ -200,10 +223,10 @@ const SideBar = ({ navOpen, setNavClose }) => {
 	// 1. trxnList: List of transactions/products
 	// 2. otherList: List of other menu items
 	useEffect(() => {
+		const trxnList = [];
+		const otherList = [];
+		let _otherActions = [];
 		if (interaction_list && interaction_list.length > 0) {
-			const trxnList = [];
-			const otherList = [];
-
 			interaction_list.forEach((tx) => {
 				if (OtherMenuItems.indexOf(tx.id) > -1) {
 					otherList.push(tx);
@@ -233,20 +256,30 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				manageMyAccount,
 			]);
 
-			// Generate KBar actions...
-			setTrxnActions(
-				generateTransactionActions(trxnList, role_tx_list, router)
-			);
-			setOtherActions(
-				generateTransactionActions(
+			if (!isAdmin) {
+				_otherActions = generateTransactionActions(
 					[...otherList, manageMyAccount],
 					role_tx_list,
 					router,
 					true // is-other-list
-				)
+				);
+			}
+
+			// Generate KBar actions...
+			setTrxnActions(
+				isAdmin
+					? []
+					: generateTransactionActions(trxnList, role_tx_list, router)
 			);
 		}
-	}, [interaction_list]);
+		_otherActions = [
+			..._otherActions,
+			...generateMenuLinkActions(menuList, router),
+		];
+
+		console.log("otherActions", _otherActions);
+		setOtherActions(_otherActions);
+	}, [interaction_list, menuList, role_tx_list, router]);
 
 	// useEffect(() => {
 	// 	if (interaction_list && interaction_list.length > 0) {
@@ -259,6 +292,8 @@ const SideBar = ({ navOpen, setNavClose }) => {
 	// 		setTrxnActions(_trxnActions);
 	// 	}
 	// }, [interaction_list, role_tx_list]);
+
+	console.log("trxnActions", trxnActions, otherActions);
 
 	useRegisterActions(
 		[...trxnActions, ...otherActions],

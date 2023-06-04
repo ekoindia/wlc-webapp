@@ -234,13 +234,18 @@ function DynamicSearchController() {
 		setQueryValueDebounced(queryValue);
 	}, [queryValue, setQueryValueDebounced]);
 
-	const { /* note, */ addTodo } = useTodos();
+	const { addTodo } = useTodos();
 	const { copy } = useClipboard();
 	const toast = useToast();
+	const { isLoggedIn, isAdmin } = useSession();
 
 	const router = useRouter();
 
 	const historySearch = useMemo(() => {
+		if (!isLoggedIn) {
+			return [];
+		}
+
 		const len = queryValueDebounced.length;
 
 		const numQueryVal = Number(queryValueDebounced);
@@ -255,7 +260,9 @@ function DynamicSearchController() {
 		const results = [];
 		let validQueryFound = false;
 
-		if (isValidNumQuery) {
+		if (isValidNumQuery && !isAdmin) {
+			// Show Transaction History Search Actions for Non-Admin users only
+
 			if (len === 10 && /^[6-9]/.test(queryValueDebounced)) {
 				// Mobile number
 				results.push(
@@ -330,7 +337,8 @@ function DynamicSearchController() {
 			}
 		}
 
-		if (!validQueryFound) {
+		if (!validQueryFound && !isAdmin) {
+			// Show Genric Transaction History Search Action for Non-Admin users only
 			results.push(
 				getKBarAction({
 					id: "historySearch",
@@ -346,11 +354,11 @@ function DynamicSearchController() {
 		}
 
 		// Add notes action
-		if (queryValueDebounced?.length > 2) {
+		if (queryValueDebounced?.length > 2 && !isAdmin) {
 			results.push({
 				id: "note/add",
-				name: "Save this as a Quick Note",
-				subtitle: `Note will be saved to home page`,
+				name: "Save this note as a Quick Reminder",
+				subtitle: `Saved notes will appear on your homepage`,
 				keywords: queryValueDebounced,
 				icon: <ActionIcon icon="book" iconSize="lg" color="#9333ea" />,
 				// section: "Tools",
