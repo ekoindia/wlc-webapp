@@ -73,8 +73,9 @@ const SignupPage = () => {
 	const [bookletKeys, setBookletKeys] = useState([]);
 	const [isSpinner, setisSpinner] = useState(true);
 	const toast = useToast();
+	const user_id =
+		userData?.details?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
-	console.log("selected role", selectedRole, typeof selectedRole);
 	const handleStepDataSubmit = (data) => {
 		console.log("HandleWlcStepData", data);
 		if (data?.id === 3) {
@@ -95,6 +96,7 @@ const SignupPage = () => {
 						role.merchant_type ===
 						parseInt(data.form_data.merchant_type)
 				)?.applicant_type;
+				setSelectedRole(data.form_data.merchant_type);
 				bodyData.form_data.applicant_type = applicantData;
 				bodyData.form_data.csp_id =
 					userData.userDetails.signup_mobile ||
@@ -114,9 +116,10 @@ const SignupPage = () => {
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_NUMBER_CONFIRM;
 				} else {
+					console.log("AAdhar wlc", aadhaar);
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_OTP_CONFIRM;
-					bodyData.form_data.aadhaar = aadhaar;
+					bodyData.form_data.aadhar = aadhaar;
 				}
 			} else if (data?.id === 9) {
 				console.log("bodyData inside 1", bodyData);
@@ -161,7 +164,7 @@ const SignupPage = () => {
 			formdata: {
 				client_ref_id:
 					Date.now() + "" + Math.floor(Math.random() * 1000),
-				user_id: userData?.userDetails.signup_mobile,
+				user_id,
 				interaction_type_id: TransactionIds.USER_ONBOARDING_AADHAR,
 				intent_id: 3,
 				locale: "en",
@@ -278,7 +281,7 @@ const SignupPage = () => {
 			token: userData?.access_token,
 			body: {
 				interaction_type_id: interaction_type_id,
-				user_id: userData?.userId,
+				user_id,
 				...bodyData.form_data,
 			},
 			timeout: 30000,
@@ -291,11 +294,11 @@ const SignupPage = () => {
 						status: "success",
 						duration: 2000,
 					});
-					if (bodyData?.id === 0) {
-						setSelectedRole(data);
-					} else {
-						setLastStepResponse(data);
-					}
+					// if (bodyData?.id === 0) {
+					// 	setSelectedRole(data);
+					// } else {
+					setLastStepResponse(data);
+					// }
 					refreshApiCall();
 				} else {
 					toast({
@@ -481,7 +484,7 @@ const SignupPage = () => {
 					document_id: "",
 					agreement_id: userLoginData?.details?.agreement_id || 5,
 					latlong: latLong || "27.176670,78.008075,7787",
-					user_id: userData?.userDetails.signup_mobile,
+					user_id,
 					locale: "en",
 				},
 			},
@@ -506,7 +509,7 @@ const SignupPage = () => {
 					interaction_type_id: TransactionIds?.GET_BOOKLET_NUMBER,
 					document_id: "",
 					latlong: latLong || "27.176670,78.008075,7787",
-					user_id: userData?.userDetails.signup_mobile,
+					user_id,
 					locale: "en",
 				},
 			},
@@ -537,7 +540,7 @@ const SignupPage = () => {
 					interaction_type_id: TransactionIds?.GET_PINTWIN_KEY,
 					document_id: "",
 					latlong: latLong || "27.176670,78.008075,7787",
-					user_id: userData?.userDetails.signup_mobile,
+					user_id,
 					locale: "en",
 				},
 			},
