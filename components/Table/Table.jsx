@@ -38,13 +38,13 @@ const Table = ({
 	defaultCardStyle = true,
 }) => {
 	const router = useRouter();
-	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
+	const [isSmallScreen] = useMediaQuery("(max-width: 860px)");
+	// const isSmallScreen = useBreakpointValue({ base: true, lg: false });
+	console.log("isSmallScreen", isSmallScreen);
 
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== pageNumber) {
-			// setCurrentPage(+router.query.page);
 			setPageNumber(+router.query.page);
-			// console.log("router.query.page", router.query.page);
 		}
 	}, [router.query.page]);
 
@@ -69,7 +69,7 @@ const Table = ({
 
 	return (
 		<Box w="100%">
-			{!isSmallerThan860 ? (
+			{!isSmallScreen ? (
 				<>
 					<TableContainer
 						borderRadius="10px 10px 0 0"
@@ -106,22 +106,6 @@ const Table = ({
 							</Tbody>
 						</ChakraTable>
 					</TableContainer>
-					{/* Pagination */}
-					{isPaginationRequired && (
-						<Flex justify="flex-end">
-							<Pagination
-								className="pagination-bar"
-								currentPage={pageNumber}
-								totalCount={totalRecords || 10}
-								pageSize={pageLimit}
-								onPageChange={(page) => {
-									router.query.page = page;
-									router.replace(router);
-									setPageNumber(page);
-								}}
-							/>
-						</Flex>
-					)}
 				</>
 			) : (
 				<>
@@ -150,6 +134,21 @@ const Table = ({
 						{prepareCard()}
 					</Flex>
 				</>
+			)}
+			{/* Pagination */}
+			{isPaginationRequired && (
+				<Pagination
+					className="pagination-bar"
+					currentPage={pageNumber}
+					totalCount={totalRecords || 10}
+					pageSize={pageLimit}
+					onPageChange={(page) => {
+						router.query.page = page;
+						router.replace(router);
+						setPageNumber(page);
+					}}
+					isSmallScreen={isSmallScreen}
+				/>
 			)}
 		</Box>
 	);
