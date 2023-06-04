@@ -95,7 +95,7 @@ const Tr = ({
 							}}
 							gap="8"
 						>
-							{extra?.map((column, rendererIndex) =>
+							{extra?.map((column /* rendererIndex */) =>
 								item[column.name] ? (
 									<>
 										<Flex direction="column">
@@ -119,12 +119,6 @@ const Tr = ({
 												)}
 											</Text>
 										</Flex>
-										{rendererIndex < extra.length - 1 && (
-											<Divider
-												orientation="vertical"
-												h="auto"
-											/>
-										)}
 									</>
 								) : null
 							)}
