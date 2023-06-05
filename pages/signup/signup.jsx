@@ -65,6 +65,7 @@ const SignupPage = () => {
 	const [lastStepResponse, setLastStepResponse] = useState();
 	const [latLong, setLatLong] = useState();
 	const [aadhaar, setAadhaar] = useState();
+	const [accesskey, setAccessKey] = useState();
 	const [userLoginData, setUserLoginData] = useState();
 	const [shopTypesData, setShopTypesData] = useState();
 	const [stateTypesData, setStateTypesData] = useState();
@@ -107,12 +108,12 @@ const SignupPage = () => {
 				bodyData.form_data.latlong = latLong;
 				interaction_type_id = TransactionIds.USER_AADHAR_CONSENT;
 			} else if (data?.id === 6 || data?.id === 7) {
+				console.log("Data", data, lastStepResponse);
 				bodyData.form_data.caseId = lastStepResponse?.data?.user_code;
 				bodyData.form_data.hold_timeout = "";
-				bodyData.form_data.access_key =
-					lastStepResponse?.data?.access_key;
+				bodyData.form_data.access_key = accesskey;
 				if (data?.id === 6) {
-					setAadhaar(bodyData.form_data.aadhaar);
+					setAadhaar(bodyData.form_data.aadhar);
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_NUMBER_CONFIRM;
 				} else {
@@ -120,6 +121,7 @@ const SignupPage = () => {
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_OTP_CONFIRM;
 					bodyData.form_data.aadhar = aadhaar;
+					// bodyData.form_data.accessKey = lastStepResponse?.data?.access_key
 				}
 			} else if (data?.id === 9) {
 				console.log("bodyData inside 1", bodyData);
@@ -294,7 +296,9 @@ const SignupPage = () => {
 						status: "success",
 						duration: 2000,
 					});
-					// if (bodyData?.id === 0) {
+					if (bodyData?.id === 5) {
+						setAccessKey(data?.data?.access_key);
+					}
 					// 	setSelectedRole(data);
 					// } else {
 					setLastStepResponse(data);
@@ -623,10 +627,10 @@ const SignupPage = () => {
 						/>
 					) : (
 						<Home
-							// defaultStep="13300"
-							defaultStep={
-								userData?.details?.role_list || "12400"
-							}
+							defaultStep="12600"
+							// defaultStep={
+							// 	userData?.details?.role_list || "12400"
+							// }
 							isBranding={false}
 							userData={userData}
 							handleSubmit={handleStepDataSubmit}

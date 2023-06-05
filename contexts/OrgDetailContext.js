@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const OrgDetailSessionStorageKey = "org_detail";
 
@@ -33,8 +33,15 @@ const OrgDetailProvider = ({ initialData, children }) => {
 		}
 	}, [orgDetail?.app_name]);
 
+	const value = useMemo(() => {
+		return {
+			orgDetail,
+			setOrgDetail,
+		};
+	}, [orgDetail]);
+
 	return (
-		<OrgDetailContext.Provider value={{ orgDetail, setOrgDetail }}>
+		<OrgDetailContext.Provider value={value}>
 			{children}
 		</OrgDetailContext.Provider>
 	);
