@@ -1,6 +1,6 @@
 {
 	"name": "eko-wlc-webapp",
-	"version": "1.5.2",
+	"version": "1.5.3",
 	"private": true,
 	"description": "Eko's white-labelled financial platform service",
 	"keywords": [
