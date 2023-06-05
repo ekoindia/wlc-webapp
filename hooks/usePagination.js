@@ -1,10 +1,5 @@
 import { useMemo } from "react";
 
-/**
- * Hook for Pagination
- * @param {string} defaultValue
- */
-
 export const DOTS = "...";
 
 const range = (start, end) => {
@@ -12,22 +7,41 @@ const range = (start, end) => {
 	return Array.from({ length }, (_, idx) => idx + start);
 };
 
+/**
+ * A custom hook for pagination
+ * @param {string} defaultValue
+ */
 const usePagination = ({
 	totalCount,
 	pageSize,
 	siblingCount = 1,
 	currentPage,
+	tableDataListLength,
+	tablePageLimit,
+	setHasNoMoreItems,
 }) => {
-	const paginationRange = useMemo(() => {
+	let hasNextPage = undefined;
+
+	if (totalCount === undefined) {
+		//TODO handling when totalCount is undefined
+		hasNextPage = tableDataListLength >= tablePageLimit;
+
+		if (tableDataListLength === 0 && hasNextPage === false) {
+			setHasNoMoreItems(true);
+		}
+	}
+	let paginationRange = undefined;
+
+	paginationRange = useMemo(() => {
 		const totalPageCount = Math.ceil(totalCount / pageSize);
 
 		// Pages count is determined as siblingCount + firstPage + lastPage + currentPage + 2*DOTS
 		const totalPageNumbers = siblingCount + 5;
 
 		/*
-      If the number of pages is less than the page numbers we want to show in our
-      paginationComponent, we return the range [1..totalPageCount]
-    */
+          If the number of pages is less than the page numbers we want to show in our
+          paginationComponent, we return the range [1..totalPageCount]
+        */
 		if (totalPageNumbers >= totalPageCount) {
 			return range(1, totalPageCount);
 		}
@@ -39,10 +53,9 @@ const usePagination = ({
 		);
 
 		/*
-      We do not want to show dots if there is only one position left 
-      after/before the left/right page count as that would lead to a change if our Pagination
-      component size which we do not want
-    */
+          We do not want to show dots if there is only one position left 
+          after/before the left/right page count as that would lead to a change if our Pagination component size which we do not want
+        */
 		const shouldShowLeftDots = leftSiblingIndex > 2;
 		const shouldShowRightDots = rightSiblingIndex < totalPageCount - 2;
 
@@ -71,7 +84,7 @@ const usePagination = ({
 		}
 	}, [totalCount, pageSize, siblingCount, currentPage]);
 
-	return paginationRange;
+	return { paginationRange, hasNextPage };
 };
 
 export default usePagination;

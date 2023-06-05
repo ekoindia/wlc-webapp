@@ -10,8 +10,15 @@ import { HistoryCard } from "..";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<HistoryTable></HistoryTable>` TODO: Fix example
  */
-const HistoryTable = ({ transactionList }) => {
+const HistoryTable = ({
+	pageNumber,
+	setPageNumber,
+	tablePageLimit,
+	transactionList,
+}) => {
 	const processedData = getHistoryTableProcessedData(transactionList);
+	const tableDataListLength = processedData?.length;
+	console.log("tableDataListLength", tableDataListLength);
 	const renderer = [
 		{
 			name: "trx_name",
@@ -57,9 +64,11 @@ const HistoryTable = ({ transactionList }) => {
 				data={processedData}
 				variant="evenStripedExpandableRow"
 				tableName="History"
-				isPaginationRequired={false}
-				isOnclickRequire={false}
 				ResponsiveCard={HistoryCard}
+				tableDataListLength={tableDataListLength}
+				tablePageLimit={tablePageLimit}
+				setPageNumber={setPageNumber}
+				pageNumber={pageNumber}
 			/>
 		</>
 	);
