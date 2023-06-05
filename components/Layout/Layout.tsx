@@ -25,7 +25,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
 // import { Parser } from "utils/mathParser";
-import { useClipboard, useDebouncedState, usePlatform } from "hooks";
+import { useClipboard, useDebouncedState, useHotkey, usePlatform } from "hooks";
 import { parse } from "utils";
 import { Icon, Kbd, NavBar, SideBar } from "..";
 
@@ -39,13 +39,30 @@ import { Icon, Kbd, NavBar, SideBar } from "..";
 const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	const { isSubPage, title, hideMenu } = pageMeta;
 
-	// const { isNavHidden } = useLayoutContext();
 	const { isLoggedIn } = useSession();
 	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
 	const { query } = useKBar();
+
+	// Add additional hotkey (Alt+K) to toggle the KBar
+	// with selected text as search input
+	useHotkey({
+		"Alt+KeyK": (e) => {
+			console.log("Alt+K pressed");
+			e.preventDefault();
+			e.stopPropagation();
+			// Get selected text from the screen
+			const selectedText = window.getSelection().toString();
+			query.toggle();
+			if (selectedText) {
+				setTimeout(() => {
+					query.setSearch(selectedText);
+				}, 100);
+			}
+		},
+	});
 
 	// Chakra wrapper for KBar components
 	const ChakraKBarPositioner = chakra(KBarPositioner);
@@ -246,9 +263,13 @@ function DynamicSearchController() {
 			return [];
 		}
 
-		const len = queryValueDebounced.length;
+		const unformattedNumberQuery = queryValueDebounced.replace(
+			/[^0-9a-zA-Z]/g,
+			""
+		);
+		const len = unformattedNumberQuery.length;
 
-		const numQueryVal = Number(queryValueDebounced);
+		const numQueryVal = Number(unformattedNumberQuery);
 
 		// Check if the query is a valid number
 		const isValidNumQuery =
@@ -403,6 +424,7 @@ function DynamicSearchController() {
 
 /**
  * Component to render KBar results
+ * @param {String} className - The class name to be applied to the rendered results.
  */
 function RenderResults({ className }) {
 	const { results } = useMatches();
