@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { tableRowLimit, tableVariant } from "constants";
 import { AccountStatementCard } from "..";
 
 /**
@@ -36,10 +37,10 @@ const AccountStatementTable = (props) => {
 	return (
 		<>
 			<Table
-				pageLimit={15}
+				tableRowLimit={tableRowLimit?.LARGE}
 				renderer={renderer}
 				data={acctabledata}
-				variant="evenStriped"
+				variant={tableVariant?.DEFAULT}
 				tableName="Account"
 				ispagintationrequire={false}
 				ResponsiveCard={AccountStatementCard}

@@ -22,6 +22,7 @@ export {
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
 export { roles } from "./role";
 export { adminSidebarMenu, OtherMenuItems, sidebarMenu } from "./SidebarMenu";
+export { tableRowLimit, tableVariant } from "./tableConfig";
 export { table_data_mock } from "./table_data_mock";
 export { transactions_mock } from "./transactions_mock";
 export { transaction_history_mock } from "./transaction_history_mock";

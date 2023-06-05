@@ -22,7 +22,7 @@ const Tr = ({
 	renderer,
 	onRowClick,
 	pageNumber,
-	pageLimit,
+	tableRowLimit,
 	tableName,
 	visibleColumns,
 }) => {
@@ -45,7 +45,8 @@ const Tr = ({
 	};
 
 	return data?.map((item, index) => {
-		const serialNumber = index + pageNumber * pageLimit - (pageLimit - 1);
+		const serialNumber =
+			index + pageNumber * tableRowLimit - (tableRowLimit - 1);
 		return (
 			<>
 				<ChakraTr

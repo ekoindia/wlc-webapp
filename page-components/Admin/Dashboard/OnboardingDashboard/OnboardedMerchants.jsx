@@ -1,6 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
-import { OnboardingDashboardCard } from "./OnboardingDashboardCard";
+import { tableRowLimit, tableVariant } from "constants";
+import { OnboardingDashboardCard } from ".";
 
 /**
  * A OnboardedMerchants page-component
@@ -64,8 +65,9 @@ const OnboardedMerchants = ({ data }) => {
 			<Table
 				renderer={renderer}
 				visibleColumns={6}
+				tableRowLimit={tableRowLimit?.DEFAULT}
 				data={onboardedMerchantsTableData}
-				variant="evenStripedExpandableRow"
+				variant={tableVariant?.EXPAND}
 				ResponsiveCard={OnboardingDashboardCard}
 			/>
 		</Flex>

@@ -8,14 +8,14 @@ import {
 	Modal,
 	SearchBar,
 } from "components";
-import { Endpoints, TransactionTypes } from "constants";
+import { Endpoints, tableRowLimit, TransactionTypes } from "constants";
 import { useGlobalSearch, useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { HistoryTable } from ".";
 
-const limit = 25; // Page size
+const limit = tableRowLimit?.XLARGE; // Page size
 
 /**
  * A History component shows transaction history
@@ -215,8 +215,6 @@ const History = () => {
 	};
 
 	const transactionList = data;
-	// const listLength = transactionList?.length;
-	// const hasNext = listLength >= limit;
 	const [isOpen, setIsOpen] = useState(false);
 
 	const onClose = () => setIsOpen(false);
@@ -253,21 +251,12 @@ const History = () => {
 						onFilterClear,
 					}}
 				/>
-				{/* <=============================Transaction Table & Card ===============================> */}
-				{/* // TODO add condition: if pageLimit is a multiple of totalRecords then show "no items" or "no more items" accordingly */}
 				<HistoryTable
 					pageNumber={currentPage}
 					setPageNumber={setCurrentPage}
 					transactionList={transactionList}
-					tablePageLimit={limit}
+					tableRowLimit={limit}
 				/>
-				{/* <Flex justify="flex-end">
-					<HistoryPagination
-						hasNext={hasNext}
-						currentPage={currentPage}
-						setCurrentPage={setCurrentPage}
-					/>
-				</Flex> */}
 			</Flex>
 		</>
 	);

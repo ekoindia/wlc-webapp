@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { tableRowLimit, tableVariant } from "constants";
 import { DetailedStatementCard } from "..";
 
 /**
@@ -37,10 +38,10 @@ const DetailedStatementTable = (props) => {
 		<>
 			<Table
 				isOnclickRequire={false}
-				pageLimit={10}
+				tableRowLimit={tableRowLimit?.DEFAULT}
 				renderer={renderer}
 				data={detiledData}
-				variant="evenStriped"
+				variant={tableVariant?.DEFAULT}
 				tableName="Detailed"
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}

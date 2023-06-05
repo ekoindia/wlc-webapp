@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { tableVariant } from "constants";
 import { getHistoryTableProcessedData } from ".";
 import { HistoryCard } from "..";
 
@@ -13,12 +14,10 @@ import { HistoryCard } from "..";
 const HistoryTable = ({
 	pageNumber,
 	setPageNumber,
-	tablePageLimit,
+	tableRowLimit,
 	transactionList,
 }) => {
 	const processedData = getHistoryTableProcessedData(transactionList);
-	const tableDataListLength = processedData?.length;
-	console.log("tableDataListLength", tableDataListLength);
 	const renderer = [
 		{
 			name: "trx_name",
@@ -66,11 +65,10 @@ const HistoryTable = ({
 				renderer={renderer}
 				visibleColumns={6}
 				data={processedData}
-				variant="evenStripedExpandableRow"
+				variant={tableVariant?.EXPAND}
 				tableName="History"
 				ResponsiveCard={HistoryCard}
-				tableDataListLength={tableDataListLength}
-				tablePageLimit={tablePageLimit}
+				tableRowLimit={tableRowLimit}
 				setPageNumber={setPageNumber}
 				pageNumber={pageNumber}
 			/>

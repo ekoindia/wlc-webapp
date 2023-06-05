@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { tableRowLimit, tableVariant } from "constants";
 import { useRouter } from "next/router";
 import { NetworkCard } from "..";
 /**
@@ -52,9 +53,9 @@ const NetworkTable = ({
 		<>
 			<Table
 				onRowClick={onRowClick}
-				pageLimit="10"
+				tableRowLimit={tableRowLimit?.DEFAULT}
 				renderer={renderer}
-				variant="evenStripedClickableRow"
+				variant={tableVariant?.REDIRECT}
 				tableName="Network"
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}
