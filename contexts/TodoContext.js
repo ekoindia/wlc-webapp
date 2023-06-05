@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+	createContext,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 
 /**
  * @typedef {Object} TodoValue
@@ -66,11 +72,13 @@ export const TodoProvider = ({ children }) => {
 	 * The value provided to the todo context.
 	 * @type {TodoValue}
 	 */
-	const value = {
-		todos,
-		addTodo,
-		deleteTodo,
-	};
+	const value = useMemo(() => {
+		return {
+			todos,
+			addTodo,
+			deleteTodo,
+		};
+	}, [todos]);
 
 	return (
 		<TodoContext.Provider value={value}>{children}</TodoContext.Provider>

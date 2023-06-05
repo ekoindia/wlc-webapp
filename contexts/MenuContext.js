@@ -1,6 +1,6 @@
 import { processTransactionData } from "helpers";
 import { fetcher } from "helpers/apiHelper";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useSession } from "./UserContext";
 
 const MenuContext = createContext();
@@ -87,10 +87,15 @@ const MenuProvider = ({ children }) => {
 		}
 	}, [isLoggedIn, isAdmin, accessToken]);
 
+	const value = useMemo(() => {
+		return {
+			interactions,
+			loading,
+		};
+	}, [interactions, loading]);
+
 	return (
-		<MenuContext.Provider value={{ interactions, loading }}>
-			{children}
-		</MenuContext.Provider>
+		<MenuContext.Provider value={value}>{children}</MenuContext.Provider>
 	);
 };
 
