@@ -11,6 +11,7 @@ import {
 	useCallback,
 	useContext,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from "react";
@@ -533,18 +534,26 @@ const useNotifications = () => {
 		return () => clearInterval(_interval);
 	}, [isLoggedIn, userId]);
 
-	return {
+	return useMemo(() => {
+		return {
+			notifications,
+			ads,
+			unreadNotificationCount,
+			isLoading,
+			openedNotification,
+			fetchNotifications,
+			markAsRead,
+			findNotificationById,
+			openNotification,
+			closeNotification,
+		};
+	}, [
 		notifications,
 		ads,
 		unreadNotificationCount,
 		isLoading,
 		openedNotification,
-		fetchNotifications,
-		markAsRead,
-		findNotificationById,
-		openNotification,
-		closeNotification,
-	};
+	]);
 };
 
 // NotificationProvider Component

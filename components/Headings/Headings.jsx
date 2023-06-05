@@ -24,7 +24,6 @@ const Headings = ({
 		router.back();
 	};
 
-	// const { isNavHidden, setNavHidden } = useLayoutContext();
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
 	const isNavHidden = hasIcon && isSmallScreen ? true : false;

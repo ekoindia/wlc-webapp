@@ -43,9 +43,13 @@ const HistoryTable = ({ transactionList }) => {
 		},
 		{ name: "customerMobile", field: "Customer Mobile" },
 		{ name: "balance", field: "Balance Amount", show: "Amount" },
-		{ name: "commissionEarned", field: "Commission Earned" },
-		{ name: "Fee", field: "fee" },
-		{ name: "TID", field: "tid" },
+		{
+			name: "commissionEarned",
+			field: "Commission Earned",
+			show: "Amount",
+		},
+		{ name: "fee", field: "Fee", show: "Amount" },
+		{ name: "tid", field: "TID" },
 		{ name: "trackingNumber", field: "Tracking Number" },
 	];
 

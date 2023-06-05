@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 
 /**
  * @typedef {Object} GlobalSearchValue
@@ -9,7 +9,6 @@ import React, { createContext, useContext, useState } from "react";
 
 /**
  * The globalSearch context.
- * @type {React.Context<globalSearchValue>}
  */
 const GlobalSearchContext = createContext();
 
@@ -24,8 +23,6 @@ export const useGlobalSearch = () => {
 /**
  * Provider component for the globalSearch context.
  * @param {Object} props - The props.
- * @param {React.ReactNode} props.children - The child components.
- * @returns {React.ReactElement} The provider element.
  */
 export const GlobalSearchProvider = ({ children }) => {
 	const [globalSearchTitle, setGlobalSearchTitle] = useState("");
@@ -46,11 +43,13 @@ export const GlobalSearchProvider = ({ children }) => {
 	 * The value provided to the GlobalSearch context.
 	 * @type {GlobalSearchValue}
 	 */
-	const value = {
-		title: globalSearchTitle,
-		setSearchTitle,
-		resetSearchTitle,
-	};
+	const value = useMemo(() => {
+		return {
+			title: globalSearchTitle,
+			setSearchTitle,
+			resetSearchTitle,
+		};
+	}, [globalSearchTitle]);
 
 	return (
 		<GlobalSearchContext.Provider value={value}>
