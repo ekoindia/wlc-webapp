@@ -1,6 +1,6 @@
 import { Box, Flex, Square } from "@chakra-ui/react";
 import { DOTS, usePagination } from "hooks";
-import { Button, Icon } from "..";
+import { Icon } from "..";
 
 /**
  * A Pagination component
@@ -18,27 +18,25 @@ const Pagination = ({
 	pageSize,
 	isSmallScreen,
 	tableDataListLength,
-	tablePageLimit,
+	tableRowLimit,
 	setHasNoMoreItems,
 }) => {
-	console.log("[Pagination] isSmallScreen", isSmallScreen);
-
+	// console.log("[Pagination] isSmallScreen", isSmallScreen);
 	let { paginationRange, hasNextPage } = usePagination({
 		currentPage,
 		totalCount,
 		siblingCount,
 		pageSize,
 		tableDataListLength,
-		tablePageLimit,
+		tableRowLimit,
 		setHasNoMoreItems,
 	});
 
 	// if (currentPage === 0 || paginationRange?.length < 2) {
 	// 	return null;
-	// } //TODO: Check this
+	// } //? Check this
 
 	let lastPage = paginationRange?.[paginationRange?.length - 1];
-	console.log("[Pagination] lastPage", lastPage);
 
 	return (
 		<Flex
@@ -47,7 +45,7 @@ const Pagination = ({
 				!isSmallScreen && totalCount ? "space-between" : "flex-end"
 			}
 			w="100%"
-			fontSize="xs"
+			fontSize={isSmallScreen ? "md" : "xs"}
 		>
 			{!isSmallScreen && totalCount && (
 				<Flex gap="1.5" color="light">
@@ -63,37 +61,19 @@ const Pagination = ({
 				</Flex>
 			)}
 
-			<Flex align="center" gap="4">
-				{!isSmallScreen && totalCount ? (
-					<Icon
-						name="chevron-left"
-						color={currentPage !== 1 ? "light" : "hint"}
-						size="xs"
-						cursor="pointer"
-						onClick={() =>
-							onPageChange(
-								currentPage !== 1
-									? currentPage - 1
-									: currentPage
-							)
-						}
-					/>
-				) : (
-					<Button
-						size="sm"
-						cursor="pointer"
-						onClick={() =>
-							onPageChange(
-								currentPage !== 1
-									? currentPage - 1
-									: currentPage
-							)
-						}
-						disabled={currentPage === 1}
-					>
-						Prev
-					</Button>
-				)}
+			<Flex align="center" gap={isSmallScreen ? "8" : "4"}>
+				<Icon
+					name="chevron-left"
+					color={currentPage !== 1 ? "light" : "hint"}
+					size={isSmallScreen ? "sm" : "xs"}
+					cursor="pointer"
+					onClick={() =>
+						onPageChange(
+							currentPage !== 1 ? currentPage - 1 : currentPage
+						)
+					}
+				/>
+
 				<Flex gap="4" h="100%">
 					{!isSmallScreen && totalCount ? (
 						paginationRange?.map((pageNumber, index) => {
@@ -123,51 +103,27 @@ const Pagination = ({
 							);
 						})
 					) : (
-						<Flex
-							bg="white"
-							px="20px"
-							h="100%"
-							align="center"
-							borderRadius="10px"
-							boxShadow="0px 5px 15px #0000000D"
-							userSelect="none"
-						>
-							{currentPage}
-						</Flex>
+						<span>{currentPage}</span>
 					)}
 				</Flex>
-				{!isSmallScreen && totalCount ? (
-					<Icon
-						name="chevron-right"
-						size="xs"
-						color={currentPage !== lastPage ? "light" : "hint"}
-						cursor="pointer"
-						onClick={() =>
-							onPageChange(
-								currentPage !== lastPage
-									? currentPage + 1
-									: currentPage
-							)
+				<Icon
+					name="chevron-right"
+					size={isSmallScreen ? "sm" : "xs"}
+					color={
+						(totalCount && currentPage !== lastPage) ||
+						(!totalCount && hasNextPage)
+							? "light"
+							: "hint"
+					}
+					cursor="pointer"
+					onClick={() => {
+						if (totalCount && currentPage !== lastPage) {
+							onPageChange(currentPage + 1);
+						} else if (!totalCount && hasNextPage) {
+							onPageChange(currentPage + 1);
 						}
-					/>
-				) : (
-					<Button
-						size="sm"
-						cursor="pointer"
-						onClick={() => {
-							if (totalCount && currentPage !== lastPage) {
-								onPageChange(currentPage + 1);
-							} else if (!totalCount && hasNextPage) {
-								onPageChange(currentPage + 1);
-							}
-						}}
-						disabled={
-							currentPage === lastPage || hasNextPage === false
-						}
-					>
-						Next
-					</Button>
-				)}
+					}}
+				/>
 			</Flex>
 		</Flex>
 	);
