@@ -60,7 +60,7 @@ const SignupPage = () => {
 	const { accessToken } = useSession();
 	const router = useRouter();
 	// const [onboardingData, setOnboardingData] = useState();
-	const [selectedRole, setSelectedRole] = useState(3);
+	const [selectedRole, setSelectedRole] = useState(null);
 	const { generateNewToken } = useRefreshToken();
 	const [lastStepResponse, setLastStepResponse] = useState();
 	const [latLong, setLatLong] = useState();
