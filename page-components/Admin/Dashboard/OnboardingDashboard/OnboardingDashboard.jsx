@@ -23,7 +23,13 @@ const OnboardingDashboard = ({
 	return (
 		<Flex direction="column">
 			<Flex px={{ base: "0px", md: "20px" }}>
-				<Filter {...{ filterData, filterStatus, setFilterStatus }} />
+				<Filter
+					{...{
+						filterData,
+						filterStatus,
+						setFilterStatus,
+					}}
+				/>
 			</Flex>
 			<Flex p="20px">
 				<OnboardedMerchants
