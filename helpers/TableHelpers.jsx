@@ -157,3 +157,7 @@ export const getStatus = (debit_credit) => {
 export const getDateView = (dateTime) => {
 	return <DateView date={dateTime} />;
 };
+
+export const getDateTimeView = (dateTime) => {
+	return <DateView date={dateTime} format="dd/MM/yyyy hh:mm AA" />;
+};

@@ -48,7 +48,7 @@ const OnboardedMerchants = ({
 			field: "Business Type",
 			sorting: true,
 		},
-		{ name: "onboardedOn", field: "Onboarded on" },
+		{ name: "onboardedOn", field: "Onboarded on", show: "Date" },
 		{ name: "businessDetailsCaptured", field: "Business Detail Captured" },
 		{ name: "businessName", field: "Business Name" },
 		{ name: "daysinFunnel", field: "Onboarding Funnel" },

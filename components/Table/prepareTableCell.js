@@ -1,6 +1,7 @@
 import {
 	getAmountStyle,
 	getArrowStyle,
+	getDateTimeView,
 	getDateView,
 	getDescriptionStyle,
 	getExpandIcoButton,
@@ -56,8 +57,10 @@ export const prepareTableCell = (
 			return getPaymentStyle(item[column.name], trx_type);
 		case "Description":
 			return getDescriptionStyle(item[column.name]);
-		case "DateView":
+		case "Date":
 			return getDateView(item[column.name]);
+		case "DateTime":
+			return getDateTimeView(item[column.name]);
 		default:
 			return item[column.name];
 	}
