@@ -241,17 +241,13 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 					name="viewport"
 					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
 				/>
-				<link
+				{/* <link
 					rel="icon"
 					type="image/png"
 					href="/favicon-32x32.png"
 					sizes="32x32"
-				/>
-				<link
-					rel="icon"
-					type="image/svg+xml"
-					href="/assets/images/favicon.svg"
-				/>
+				/> */}
+				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 			</Head>
 
 			{process.env.NEXT_PUBLIC_GTM_ID ? (
