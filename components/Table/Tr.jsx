@@ -7,6 +7,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { prepareTableCell } from ".";
+import { Button } from "..";
 
 /**
  * A Tr component
@@ -84,43 +85,55 @@ const Tr = ({
 						>
 							Other Details
 						</Text>
-						<Flex
-							key={index}
-							justify="flex-start"
-							w="100%"
-							wrap="wrap"
-							fontSize={{
-								base: "10px",
-								xl: "12px",
-							}}
-							gap="8"
-						>
-							{extra?.map((column /* rendererIndex */) =>
-								item[column.name] ? (
-									<>
-										<Flex direction="column">
-											<Text
-												textColor="light"
-												fontSize="xxs"
-											>
-												{column.field}
-											</Text>
-											<Text
-												fontWeight="semibold"
-												fontSize="xs"
-											>
-												{prepareTableCell(
-													item,
-													column,
-													index
-													// serialNumber,
-													// tableName,
-													// expandedRow
-												)}
-											</Text>
-										</Flex>
-									</>
-								) : null
+						<Flex w="100%" justify="space-between" gap="3">
+							<Flex
+								key={index}
+								justify="flex-start"
+								w="100%"
+								wrap="wrap"
+								fontSize={{
+									base: "10px",
+									xl: "12px",
+								}}
+								gap="6"
+							>
+								{extra?.map((column, rendererIndex) =>
+									item[column.name] ? (
+										<>
+											<Flex direction="column">
+												<Text
+													textColor="light"
+													fontSize="xxs"
+												>
+													{column.field}
+												</Text>
+												<Text
+													fontWeight="semibold"
+													fontSize="xs"
+												>
+													{prepareTableCell(
+														item,
+														column,
+														index
+													)}
+												</Text>
+											</Flex>
+											{rendererIndex <
+												extra.length - 1 && (
+												<Divider
+													orientation="vertical"
+													h="auto"
+												/>
+											)}
+										</>
+									) : null
+								)}
+							</Flex>
+							{/* "Repeat Transaction" button for History table only, need to update logic in future */}
+							{tableName === "History" && (
+								<Button fontSize="xs" size="md" disabled>
+									Repeat Transaction
+								</Button>
 							)}
 						</Flex>
 					</ChakraTd>

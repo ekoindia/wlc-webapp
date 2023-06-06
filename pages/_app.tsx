@@ -1,7 +1,7 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
-import { ActionIcon } from "components/GlobalSearch";
+import { ActionIcon } from "components/CommandBar";
 import {
 	GlobalSearchProvider,
 	NotificationProvider,
@@ -11,7 +11,6 @@ import {
 	UserProvider,
 	WalletProvider,
 } from "contexts";
-import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
@@ -180,42 +179,45 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 					options={{
 						enableHistory: false,
 						disableScrollbarManagement: true,
+						// callbacks: {
+						// 	onOpen: () => {
+						// 		console.log("[KBar] onOpen");
+						// 	},
+						// },
 					}}
 				>
 					<UserProvider userMockData={mockUser}>
-						<LayoutProvider>
-							<MenuProvider>
-								<WalletProvider>
-									<RouteProtecter router={router}>
-										<SWRConfig
-											value={{
-												provider: localStorageProvider,
-											}}
-										>
-											<NotificationProvider>
-												<GlobalSearchProvider>
-													<TodoProvider>
-														<ErrorBoundary>
-															{getLayout(
-																<main
-																	className={
-																		inter.className
-																	}
-																>
-																	<Component
-																		{...pageProps}
-																	/>
-																</main>
-															)}
-														</ErrorBoundary>
-													</TodoProvider>
-												</GlobalSearchProvider>
-											</NotificationProvider>
-										</SWRConfig>
-									</RouteProtecter>
-								</WalletProvider>
-							</MenuProvider>
-						</LayoutProvider>
+						<MenuProvider>
+							<WalletProvider>
+								<RouteProtecter router={router}>
+									<SWRConfig
+										value={{
+											provider: localStorageProvider,
+										}}
+									>
+										<NotificationProvider>
+											<GlobalSearchProvider>
+												<TodoProvider>
+													<ErrorBoundary>
+														{getLayout(
+															<main
+																className={
+																	inter.className
+																}
+															>
+																<Component
+																	{...pageProps}
+																/>
+															</main>
+														)}
+													</ErrorBoundary>
+												</TodoProvider>
+											</GlobalSearchProvider>
+										</NotificationProvider>
+									</SWRConfig>
+								</RouteProtecter>
+							</WalletProvider>
+						</MenuProvider>
 					</UserProvider>
 				</KBarProvider>
 			</OrgDetailProvider>
