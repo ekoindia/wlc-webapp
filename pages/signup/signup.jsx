@@ -60,18 +60,20 @@ const SignupPage = () => {
 	const { accessToken } = useSession();
 	const router = useRouter();
 	// const [onboardingData, setOnboardingData] = useState();
-	const [selectedRole, setSelectedRole] = useState(null);
+	const [selectedRole, setSelectedRole] = useState(3);
 	const { generateNewToken } = useRefreshToken();
 	const [lastStepResponse, setLastStepResponse] = useState();
 	const [latLong, setLatLong] = useState();
 	const [aadhaar, setAadhaar] = useState();
 	const [accesskey, setAccessKey] = useState();
+	const [userCode, setUserCode] = useState();
+
 	const [userLoginData, setUserLoginData] = useState();
 	const [shopTypesData, setShopTypesData] = useState();
 	const [stateTypesData, setStateTypesData] = useState();
 	const [signUrlData, setSignUrlData] = useState();
 	const [bookletNumber, setBookletNumber] = useState();
-	const [bookletKeys, setBookletKeys] = useState([]);
+	let bookletKeys = [];
 	const [isSpinner, setisSpinner] = useState(true);
 	const toast = useToast();
 	const user_id =
@@ -97,7 +99,6 @@ const SignupPage = () => {
 						role.merchant_type ===
 						parseInt(data.form_data.merchant_type)
 				)?.applicant_type;
-				setSelectedRole(data.form_data.merchant_type);
 				bodyData.form_data.applicant_type = applicantData;
 				bodyData.form_data.csp_id =
 					userData.userDetails.signup_mobile ||
@@ -109,7 +110,7 @@ const SignupPage = () => {
 				interaction_type_id = TransactionIds.USER_AADHAR_CONSENT;
 			} else if (data?.id === 6 || data?.id === 7) {
 				console.log("Data", data, lastStepResponse);
-				bodyData.form_data.caseId = lastStepResponse?.data?.user_code;
+				bodyData.form_data.caseId = userCode;
 				bodyData.form_data.hold_timeout = "";
 				bodyData.form_data.access_key = accesskey;
 				if (data?.id === 6) {
@@ -131,15 +132,25 @@ const SignupPage = () => {
 				bodyData.form_data.communication = 1;
 			} else if (data?.id === 10) {
 				// Object.keys(data.form_data) {}
-				console.log("pintwin 1", data.form_data, bookletKeys);
-				bodyData.form_data.first_okekey = createPintwinFormat(
-					data?.form_data?.first_okekey,
+				console.log("pintwin 1", data?.form_data, bookletKeys);
+				if (
+					data?.form_data?.first_okekey &&
 					bookletKeys[bookletKeys?.length - 1]
-				);
-				bodyData.form_data.second_okekey = createPintwinFormat(
-					data?.form_data?.second_okekey,
+				) {
+					bodyData.form_data.first_okekey = createPintwinFormat(
+						data.form_data.first_okekey,
+						bookletKeys[bookletKeys.length - 1]
+					);
+				}
+				if (
+					data?.form_data?.second_okekey &&
 					bookletKeys[bookletKeys?.length - 2]
-				);
+				) {
+					bodyData.form_data.second_okekey = createPintwinFormat(
+						data?.form_data?.second_okekey,
+						bookletKeys[bookletKeys.length - 2]
+					);
+				}
 				bodyData.form_data.is_pintwin_user =
 					bookletNumber?.is_pintwin_user;
 				bodyData.form_data.booklet_serial_number =
@@ -279,6 +290,7 @@ const SignupPage = () => {
 
 	const updateOnboarding = (bodyData) => {
 		console.log("bodyData inside 2", bodyData);
+		// setisSpinner(true);
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			token: userData?.access_token,
 			body: {
@@ -298,12 +310,14 @@ const SignupPage = () => {
 					});
 					if (bodyData?.id === 5) {
 						setAccessKey(data?.data?.access_key);
+						setUserCode(data?.data?.user_code);
 					}
-					// 	setSelectedRole(data);
-					// } else {
+					if (bodyData?.id == 2) {
+						setSelectedRole(bodyData?.form_data?.merchant_type);
+					}
 					setLastStepResponse(data);
-					// }
 					refreshApiCall();
+					// setisSpinner(false);
 				} else {
 					toast({
 						title: data.message,
@@ -311,6 +325,7 @@ const SignupPage = () => {
 						duration: 2000,
 					});
 					setLastStepResponse(data);
+					// setisSpinner(false);
 				}
 				// onClose();
 			})
@@ -404,26 +419,26 @@ const SignupPage = () => {
 			})
 			.catch((err) => console.log("inside initial api error", err));
 	};
-	const getPincodeType = () => {
-		console.log("inside mainfunction");
-		fetcher(
-			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-			{
-				token: userData?.access_token,
-				body: {
-					interaction_type_id: TransactionIds?.PINCODE_TYPE,
-				},
-			},
-			generateNewToken
-		)
-			.then((res) => {
-				// if (res.status === 0) {
-				// 	setStateTypesData(res?.param_attributes.list_elements);
-				// }
-				console.log("inside initial api response pincode", res);
-			})
-			.catch((err) => console.log("inside initial api error", err));
-	};
+	// const getPincodeType = () => {
+	// 	console.log("inside mainfunction");
+	// 	fetcher(
+	// 		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+	// 		{
+	// 			token: userData?.access_token,
+	// 			body: {
+	// 				interaction_type_id: TransactionIds?.PINCODE_TYPE,
+	// 			},
+	// 		},
+	// 		generateNewToken
+	// 	)
+	// 		.then((res) => {
+	// 			// if (res.status === 0) {
+	// 			// 	setStateTypesData(res?.param_attributes.list_elements);
+	// 			// }
+	// 			console.log("inside initial api response pincode", res);
+	// 		})
+	// 		.catch((err) => console.log("inside initial api error", err));
+	// };
 
 	const handleLeegalityCallback = (res) => {
 		console.log("callback response", res);
@@ -471,6 +486,16 @@ const SignupPage = () => {
 			if (callType.method === "getBookletKey") {
 				console.log("inside getBookletKey");
 				getBookletKey();
+			}
+		} else if (callType.type === 7) {
+			if (callType.method === "resendOtp") {
+				handleStepDataSubmit({
+					id: 6,
+					form_data: {
+						aadhar: aadhaar,
+						is_consent: "Y",
+					},
+				});
 			}
 		}
 	};
@@ -553,10 +578,11 @@ const SignupPage = () => {
 			.then((res) => {
 				console.log(
 					"inside initial api response getBookletNumber",
-					res
+					res,
+					bookletKeys
 				);
 				if (res.response_status_id === 0) {
-					setBookletKeys([...bookletKeys, res.data]);
+					bookletKeys = [...bookletKeys, res.data];
 					// setSignUrlData(res.data);
 				}
 			})
@@ -580,16 +606,16 @@ const SignupPage = () => {
 			refreshApiCall();
 			getSHopTypes();
 			getStateType();
-			getPincodeType();
+			// getPincodeType();
 		}
 		// setLeegalityLoaded(true);
 	});
 
-	useEffect(() => {
-		if (userLoginData?.details?.agreement_id) {
-			getSignUrl();
-		}
-	}, [userLoginData?.details?.agreement_id]);
+	// useEffect(() => {
+	// 	if (userLoginData?.details?.agreement_id) {
+	// 		getSignUrl();
+	// 	}
+	// }, [userLoginData?.details?.agreement_id]);
 
 	useEffect(() => {
 		if (bookletNumber) {
@@ -627,10 +653,10 @@ const SignupPage = () => {
 						/>
 					) : (
 						<Home
-							defaultStep="12600"
-							// defaultStep={
-							// 	userData?.details?.role_list || "12400"
-							// }
+							// defaultStep="24001"
+							defaultStep={
+								userData?.details?.role_list || "12400"
+							}
 							isBranding={false}
 							userData={userData}
 							handleSubmit={handleStepDataSubmit}
