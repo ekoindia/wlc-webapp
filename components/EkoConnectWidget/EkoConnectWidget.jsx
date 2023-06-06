@@ -1,6 +1,6 @@
 import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { Button, ErrorBoundary, PaddingBox } from "components";
-// import { ActionIcon } from "components/GlobalSearch";
+// import { ActionIcon } from "components/CommandBar";
 import { TransactionIds } from "constants";
 import {
 	// useGlobalSearch,
