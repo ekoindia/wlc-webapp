@@ -21,15 +21,35 @@ const apiUri = ["businessdashboard", "onboardingDashboard"];
 const Dashboard = ({ className = "", ...props }) => {
 	const [data, setData] = useState([]);
 	const [pageId, setPageId] = useState(0); //to find whether user is on business or onboarding dashboard
-	const [filterStatus, setFilterStatus] = useState([51]); //filters for onboarding dashboard with default value 51
+
+	const [dateRange, setDateRange] = useState(7); // date range for business dashboard
+	const [prevDate, setPrevDate] = useState("");
+	const [currDate, setCurrDate] = useState("");
+
+	const [filterStatus, setFilterStatus] = useState([]); //filters for onboarding dashboard
 	const [pageNumber, setPageNumber] = useState(1); //page number for onboarding table
 	const [totalRecords, setTotalRecords] = useState();
 	const { accessToken } = useSession();
+
+	useEffect(() => {
+		let currentDate = new Date();
+		let previousDate = new Date(
+			currentDate.getTime() - dateRange * 24 * 60 * 60 * 1000
+		);
+		setCurrDate(currentDate.toISOString());
+		setPrevDate(previousDate.toISOString());
+	}, [dateRange]);
 
 	const onboardingBody = {
 		record_count: 10,
 		filterStage: filterStatus,
 		page_number: pageNumber,
+	};
+
+	const businessBody = {
+		dateFrom: prevDate.slice(0, 10),
+		dateTo: currDate.slice(0, 10),
+		dateRange: dateRange,
 	};
 
 	const hitQuery = (abortController, key) => {
@@ -44,7 +64,12 @@ const Dashboard = ({ className = "", ...props }) => {
 				"tf-req-uri": `/network/agents/${apiUri[pageId]}`,
 				"tf-req-method": "GET",
 			},
-			body: pageId === 1 ? { ...onboardingBody } : {},
+			body:
+				pageId === 0
+					? businessBody
+					: pageId === 1
+					? onboardingBody
+					: {},
 			controller: abortController,
 			token: accessToken,
 		})
@@ -88,7 +113,7 @@ const Dashboard = ({ className = "", ...props }) => {
 			);
 			controller.abort();
 		};
-	}, [pageId, filterStatus, pageNumber]);
+	}, [pageId, filterStatus, pageNumber, currDate, prevDate]);
 
 	const handleHeadingClick = (item) => setPageId(item);
 
@@ -104,7 +129,17 @@ const Dashboard = ({ className = "", ...props }) => {
 				/>
 			</Flex>
 			{pageId === 0 ? (
-				<BusinessDashboard {...{ data }} />
+				<BusinessDashboard
+					{...{
+						data,
+						currDate,
+						setCurrDate,
+						prevDate,
+						setPrevDate,
+						dateRange,
+						setDateRange,
+					}}
+				/>
 			) : pageId === 1 ? (
 				<OnboardingDashboard
 					{...{
