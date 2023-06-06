@@ -1,5 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
+import { useState } from "react";
 
 /**
  * A Filter page-component
@@ -9,60 +10,105 @@ import { Icon } from "components";
  * @example	`<Filter></Filter>`
  */
 const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
+	const [inFunnel, setInFunnel] = useState(false);
 	console.log("[Filter] data", filterData);
 	const _data = filterData?.topPanel ?? {};
+
+	const funnelKeyList = [48, 51, 52, 53, 54];
+
+	const listToCalcFunnelValue = [
+		_data?.partialAccount,
+		_data?.businessDetailsCaptured,
+		_data?.aadhaarCaptured,
+		_data?.panCaptured,
+		_data?.agreementSigned,
+	];
+
+	const _onboardingFunnelValue =
+		listToCalcFunnelValue?.reduce(
+			(acc, curr) => (acc += Number(curr)),
+			0
+		) || null;
+
 	const filterList = [
 		{
+			id: 0,
+			key: [...funnelKeyList],
+			label: "Onboarding Funnel",
+			value: _onboardingFunnelValue, //all except 16
+		},
+		{
+			id: 1,
 			key: 51,
 			label: "Partial Account",
 			value: _data?.partialAccount,
 		},
 		{
-			key: null,
-			label: "Onboarding Funnel",
-			value: _data?.onboardingFunnel, //all except 16
-		},
-		{
+			id: 2,
 			key: 52,
 			label: "Business Detail Captured",
 			value: _data?.businessDetailsCaptured,
 		},
 		{
+			id: 3,
 			key: 54,
 			label: "Aadhaar Captured",
 			value: _data?.aadhaarCaptured,
 		},
 		{
+			id: 4,
 			key: 53,
 			label: "PAN Captured",
 			value: _data?.panCaptured,
 		},
 		{
+			id: 5,
 			key: 48,
 			label: "Agreement Signed",
 			value: _data?.agreementSigned,
 		},
 		{
+			id: 6,
 			key: 16,
 			label: "Onboarded",
 			value: _data?.onboarded,
 		},
 		{
-			key: null,
+			id: 7,
+			key: 16,
 			label: "Non Transacting Live",
-			value: _data?.nonTransactiingLive, // no financial trx
+			value: _data?.nonTransactiingLive, //onboarded but no financial trx
 		},
 	];
 
-	const handleFilterStatusClick = (key) => {
-		if (filterStatus.includes(key)) {
-			setFilterStatus((prev) => prev.filter((item) => item !== key));
+	const handleFilterStatusClick = (id, key) => {
+		if (id === 0) {
+			if (!inFunnel) {
+				setFilterStatus((prev) => {
+					const _filterStatus = new Set([...prev, ...key]);
+					return [..._filterStatus];
+				});
+				setInFunnel(true);
+			} else {
+				setFilterStatus((prev) =>
+					prev.filter((item) => !funnelKeyList.includes(item))
+				);
+				setInFunnel(false);
+			}
 		} else {
-			setFilterStatus((prev) => [...prev, key]);
+			const filterStatusUpdated = filterStatus.includes(key)
+				? filterStatus.filter((item) => item !== key)
+				: [...filterStatus, key];
+
+			const isAllItemsIncluded = funnelKeyList.every((item) =>
+				filterStatusUpdated.includes(item)
+			);
+			setInFunnel(isAllItemsIncluded);
+			setFilterStatus(filterStatusUpdated);
 		}
 	};
 
-	const filterListLength = filterList.length;
+	const filterListLength = filterList?.length;
 
 	return (
 		<Flex
@@ -93,11 +139,14 @@ const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
 				pb="20px"
 			>
 				{filterList?.map((item, index) => {
-					const isActive = filterStatus.includes(item.key);
+					const isActive =
+						item.id === 0 && inFunnel
+							? true
+							: filterStatus.includes(item.key);
 					return (
 						item.value && (
 							<Flex
-								key={item.key}
+								key={item.id}
 								direction="column"
 								justify="space-between"
 								bg="white"
@@ -118,9 +167,9 @@ const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
 										: null
 								}
 								_hover={{ boxShadow: "0px 3px 10px #0000000D" }}
-								onClick={() =>
-									handleFilterStatusClick(item.key)
-								}
+								onClick={() => {
+									handleFilterStatusClick(item.id, item.key);
+								}}
 								cursor="pointer"
 							>
 								<Text fontSize="sm">{item.label}</Text>
