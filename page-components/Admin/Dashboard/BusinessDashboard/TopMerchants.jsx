@@ -1,6 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
-import { tableRowLimit, tableVariant } from "constants";
 
 import { BusinessDashboardCard } from ".";
 
@@ -65,8 +64,6 @@ const TopMerchants = ({ data }) => {
 			<Table
 				renderer={renderer}
 				data={data}
-				tableRowLimit={tableRowLimit?.DEFAULT}
-				variant={tableVariant?.DEFAULT}
 				ResponsiveCard={BusinessDashboardCard}
 			/>
 		</Flex>

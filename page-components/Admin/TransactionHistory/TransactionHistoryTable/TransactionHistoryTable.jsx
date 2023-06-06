@@ -1,5 +1,5 @@
 import { Table } from "components";
-import { tableRowLimit, tableVariant } from "constants";
+import { tableVariant } from "constants";
 import { useRouter } from "next/router";
 import { TransactionHistoryCard } from "..";
 /**
@@ -55,12 +55,10 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 		<>
 			<Table
 				onRowClick={onRowClick}
-				tableRowLimit={tableRowLimit?.DEFAULT}
 				variant={tableVariant?.REDIRECT}
 				renderer={renderer}
 				data={transactiondata}
 				tableName="Transaction"
-				ispagintationrequire={false}
 				ResponsiveCard={TransactionHistoryCard}
 			/>
 		</>

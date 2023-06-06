@@ -9,6 +9,7 @@ import {
 	Thead,
 	useMediaQuery,
 } from "@chakra-ui/react";
+import { tableRowLimit as trl, tableVariant } from "constants";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Th, Tr } from ".";
@@ -23,28 +24,26 @@ import { Pagination } from "..";
  * @example	`<Table></Table>` TODO: Fix example
  */
 const Table = ({
-	pageLimit = 1,
+	renderer,
 	data,
 	totalRecords,
 	pageNumber = 1,
 	setPageNumber = () => {},
 	visibleColumns,
-	renderer,
-	variant,
 	tableName,
 	onRowClick,
-	// isPaginationRequired = true,
 	ResponsiveCard,
 	defaultCardStyle = true,
-	tableDataListLength,
-	tablePageLimit,
+	variant = tableVariant?.DEFAULT,
+	tableRowLimit = trl?.DEFAULT,
 }) => {
 	const [hasNoMoreItems, setHasNoMoreItems] = useState(false);
 	console.log("hasNoMoreItems", hasNoMoreItems);
 	const router = useRouter();
 	const [isSmallScreen] = useMediaQuery("(max-width: 860px)");
 	// const isSmallScreen = useBreakpointValue({ base: true, lg: false });
-	console.log("isSmallScreen", isSmallScreen);
+
+	const tableDataListLength = data?.length;
 
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== pageNumber) {
@@ -101,7 +100,7 @@ const Table = ({
 									renderer,
 									onRowClick,
 									pageNumber,
-									pageLimit,
+									tableRowLimit,
 									tableName,
 									visibleColumns,
 								}}
@@ -135,24 +134,25 @@ const Table = ({
 					{prepareCard()}
 				</Flex>
 			)}
+
 			{/* Pagination */}
-			{/* {isPaginationRequired && ( */}
-			<Pagination
-				className="pagination-bar"
-				currentPage={pageNumber}
-				totalCount={totalRecords}
-				pageSize={pageLimit}
-				onPageChange={(page) => {
-					router.query.page = page;
-					router.replace(router);
-					setPageNumber(page);
-				}}
-				isSmallScreen={isSmallScreen}
-				tableDataListLength={tableDataListLength}
-				tablePageLimit={tablePageLimit}
-				setHasNoMoreItems={setHasNoMoreItems}
-			/>
-			{/* )} */}
+			{!(tableDataListLength < tableRowLimit && pageNumber === 1) && (
+				<Pagination
+					className="pagination-bar"
+					currentPage={pageNumber}
+					totalCount={totalRecords}
+					pageSize={tableRowLimit}
+					onPageChange={(page) => {
+						router.query.page = page;
+						router.replace(router);
+						setPageNumber(page);
+					}}
+					isSmallScreen={isSmallScreen}
+					tableDataListLength={tableDataListLength}
+					tableRowLimit={tableRowLimit}
+					setHasNoMoreItems={setHasNoMoreItems}
+				/>
+			)}
 		</Box>
 	);
 };

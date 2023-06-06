@@ -1,5 +1,5 @@
 import { Table } from "components";
-import { tableRowLimit, tableVariant } from "constants";
+import { tableVariant } from "constants";
 import { useRouter } from "next/router";
 import { NetworkCard } from "..";
 /**
@@ -53,7 +53,6 @@ const NetworkTable = ({
 		<>
 			<Table
 				onRowClick={onRowClick}
-				tableRowLimit={tableRowLimit?.DEFAULT}
 				renderer={renderer}
 				variant={tableVariant?.REDIRECT}
 				tableName="Network"
