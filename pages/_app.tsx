@@ -1,7 +1,7 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
-import { ActionIcon } from "components/GlobalSearch";
+import { ActionIcon } from "components/CommandBar";
 import {
 	GlobalSearchProvider,
 	NotificationProvider,

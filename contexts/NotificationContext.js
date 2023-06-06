@@ -1,6 +1,6 @@
 import { CloseButton, Flex, Image, Text, useToast } from "@chakra-ui/react";
 import { Icon } from "components";
-import { ActionIcon } from "components/GlobalSearch";
+import { ActionIcon } from "components/CommandBar";
 import { TransactionTypes } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";

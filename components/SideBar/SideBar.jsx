@@ -27,7 +27,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Icon, ProfileCard, StatusCard } from "..";
-import { ActionIcon } from "../GlobalSearch";
+import { ActionIcon } from "../CommandBar";
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.

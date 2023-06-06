@@ -1,4 +1,4 @@
-import { ActionIcon } from "components/GlobalSearch";
+import { ActionIcon } from "components/CommandBar";
 import { Endpoints, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
