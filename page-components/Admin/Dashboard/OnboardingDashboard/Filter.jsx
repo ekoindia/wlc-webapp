@@ -142,7 +142,7 @@ const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
 					const isActive =
 						item.id === 0 && inFunnel
 							? true
-							: filterStatus.includes(item.key);
+							: filterStatus?.includes(item.key);
 					return (
 						item.value && (
 							<Flex

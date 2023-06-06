@@ -99,7 +99,7 @@ const EarningOverview = ({ data }) => {
 									}}
 									justify={{
 										base: "space-between",
-										md: "center",
+										md: "flex-start",
 									}}
 									w="100%"
 									gap="1"
@@ -126,73 +126,81 @@ const EarningOverview = ({ data }) => {
 											)}
 										</Flex>
 									</Flex>
-									<Flex
-										direction="column"
-										align={{
-											base: "flex-start",
-											md: "center",
-										}}
-										gap="1"
-									>
+									{item.lastPeriod && (
 										<Flex
-											fontSize="xs"
-											whiteSpace="nowrap"
+											direction="column"
+											align={{
+												base: "flex-end",
+												md: "center",
+											}}
 											gap="1"
 										>
-											<span>Last Period:</span>
-											<Flex fontWeight="semibold">
-												{item.type === "amount" ? (
-													<Currency
-														amount={item.lastPeriod}
-													/>
-												) : (
-													<span>
-														{item.lastPeriod}
-													</span>
-												)}
+											<Flex
+												fontSize="xs"
+												whiteSpace="nowrap"
+												gap="1"
+											>
+												<span>Last Period:</span>
+												<Flex fontWeight="semibold">
+													{item.type === "amount" ? (
+														<Currency
+															amount={
+																item.lastPeriod
+															}
+														/>
+													) : (
+														<span>
+															{item.lastPeriod}
+														</span>
+													)}
+												</Flex>
 											</Flex>
-										</Flex>
-										<Flex gap="1">
-											{item.variation ? (
-												<>
-													<Icon
-														name={
-															item.variation > 0
-																? "arrow-increase"
-																: "arrow-decrease"
-														}
-														color={
-															item.variation > 0
-																? "success"
-																: "error"
-														}
-														width="14px"
-													/>
-													<Flex
-														fontSize="10px"
-														wrap="nowrap"
-														gap="1"
-													>
-														<Text
+											<Flex gap="1">
+												{item.variation ? (
+													<>
+														<Icon
+															name={
+																item.variation >
+																0
+																	? "arrow-increase"
+																	: "arrow-decrease"
+															}
 															color={
 																item.variation >
 																0
 																	? "success"
 																	: "error"
 															}
+															width="14px"
+														/>
+														<Flex
+															fontSize="10px"
+															wrap="nowrap"
+															gap="1"
 														>
-															{item.variation}%
-														</Text>
-														<Text>
-															{item.variation > 0
-																? "Increase"
-																: "Decrease"}
-														</Text>
-													</Flex>
-												</>
-											) : null}
+															<Text
+																color={
+																	item.variation >
+																	0
+																		? "success"
+																		: "error"
+																}
+															>
+																{item.variation}
+																%
+															</Text>
+															<Text>
+																{item.variation >
+																0
+																	? "Increase"
+																	: "Decrease"}
+															</Text>
+														</Flex>
+													</>
+												) : null}
+											</Flex>
 										</Flex>
-									</Flex>
+									)}
 								</Flex>
 							)
 					)}
