@@ -64,13 +64,11 @@ const WidgetBase = ({
 										onClick={linkOnClick}
 										iconStyle={{
 											size: "12px",
-											color: "white",
 											...iconStyle,
 										}}
-										rounded="full"
+										shape="circle"
 										size="sm"
-										bg="primary.light"
-										_hover={{ bg: "primary.DEFAULT" }}
+										theme="primary"
 										{...icoBtnProps}
 									/>
 								)}

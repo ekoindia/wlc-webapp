@@ -103,7 +103,7 @@ const CommonTrxnWidget = () => {
 							// 	"2xl": "64px",
 							// }}
 							theme="light"
-							rounded="full"
+							shape="circle"
 							onClick={() => handleIconClick(transaction.id)}
 							alignContent="center"
 							alignItems="center"

@@ -6,8 +6,8 @@ type Props = {
 	iconName: IconNameType;
 	size: "lg" | "md" | "sm" | string;
 	iconStyle: Object;
-	theme?: "dark" | "light";
-	rounded?: "full" | string | number;
+	theme?: "primary" | "dark" | "light" | "gray";
+	shape?: "default" | "circle";
 	title?: string;
 	onClick?: () => void;
 	[key: string]: any;
@@ -19,7 +19,7 @@ type Props = {
  * @param {string} size - The size of the button. Can be "lg", "md", "sm", or a custom string.
  * @param {Object} iconStyle - The styles to apply to the icon (should contain width, height).
  * @param {string} theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
- * @param {string|number} rounded - The rounding of the button. Can be a string, a number, or "full".
+ * @param {string} shape - The shape of the button. Can be "round" or "circle"
  * @param {string} title - The title of the button.
  * @param {MouseEvent} onClick - The click event handler
  * @param {...Object} rest - A catch-all prop that allows any other prop to be passed in.
@@ -37,16 +37,17 @@ const IcoButton = ({
 	size,
 	iconStyle,
 	theme = "light",
-	rounded = "10",
+	shape = "default",
 	title = "Icon Button",
 	onClick,
 	...rest
 }: Props): JSX.Element => {
 	const clickable: boolean = onClick === undefined;
 
-	// const roundness: string = rounded === "full" ? "full" : `${rounded || 10}`;
+	const roundness =
+		shape === "default" ? 10 : shape === "circle" ? "full" : null;
 
-	const bgSize: string =
+	const bgSize =
 		size === "lg"
 			? "64px"
 			: size === "md"
@@ -55,7 +56,7 @@ const IcoButton = ({
 			? "32px"
 			: size;
 
-	const iconSize: string =
+	const iconSize =
 		size === "lg"
 			? "32px"
 			: size === "md"
@@ -83,6 +84,20 @@ const IcoButton = ({
 					color: "white",
 					border: "1px solid #E9EDF1",
 			  }
+			: theme === "primary"
+			? {
+					bg: "primary.light",
+					color: "white",
+					boxShadow: "0px 3px 10px #FE9F0040;",
+					_hover: { bg: "primary.DEFAULT" },
+			  }
+			: theme === "accent"
+			? {
+					bg: "accent.light",
+					color: "white",
+					boxShadow: "0px 3px 10px #11299040;",
+					_hover: { bg: "accent.DEFAULT" },
+			  }
 			: null;
 
 	return (
@@ -92,7 +107,7 @@ const IcoButton = ({
 			width={bgSize}
 			height={bgSize}
 			minW={bgSize}
-			rounded={rounded}
+			rounded={roundness}
 			cursor={clickable ? "auto" : "pointer"}
 			onClick={onClick}
 			overflow="hidden"

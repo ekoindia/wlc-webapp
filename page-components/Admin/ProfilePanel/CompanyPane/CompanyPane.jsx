@@ -109,7 +109,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 							iconName="account-balance-wallet"
 							color="dark"
 							size="md"
-							rounded="full"
+							shape="circle"
 						/>
 						<Box>
 							<Text color={"light"} fontSize={14}>

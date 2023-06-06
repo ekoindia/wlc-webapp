@@ -92,7 +92,7 @@ const BillPaymentWidget = () => {
 							// 	xl: "64px",
 							// }}
 							theme="dark"
-							rounded="full"
+							shape="circle"
 							onClick={() => handleIconClick(transaction.id)}
 						/>
 						<Text

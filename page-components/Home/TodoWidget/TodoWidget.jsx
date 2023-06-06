@@ -145,7 +145,7 @@ const IcoBtn = ({ iconName, title = "Button", bg, onClick, ...rest }) => {
 			theme="dark"
 			size="sm"
 			// ml={{ base: "15px", xl: "20px" }}
-			rounded="full"
+			shape="circle"
 			opacity="0.7"
 			bg={bg}
 			_hover={{ opacity: 0.9 }}
