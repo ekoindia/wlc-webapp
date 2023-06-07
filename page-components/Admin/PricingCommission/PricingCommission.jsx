@@ -87,7 +87,7 @@ const PricingCommissions = () => {
 							))}
 						</TabList>
 
-						<TabPanels p="10px 20px ">
+						<TabPanels p="10px 20px">
 							{Object.entries(tabs).map(([key, value]) => (
 								<TabPanel key={key}>{value}</TabPanel>
 							))}
