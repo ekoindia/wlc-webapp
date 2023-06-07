@@ -128,10 +128,10 @@ const ProfileWidget = () => {
 					<IcoButton
 						onClick={onEditClick}
 						iconName="mode-edit"
-						iconStyle={{ size: "12px" }}
-						shape="circle"
+						// iconStyle={{ size: "12px" }}
 						size="sm"
 						theme="primary"
+						_hover={{ bg: "primary.dark" }}
 					/>
 				</Flex>
 			</Flex>
