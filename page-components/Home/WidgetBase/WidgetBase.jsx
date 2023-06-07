@@ -66,7 +66,6 @@ const WidgetBase = ({
 											size: "12px",
 											...iconStyle,
 										}}
-										shape="circle"
 										size="sm"
 										theme="primary"
 										{...icoBtnProps}

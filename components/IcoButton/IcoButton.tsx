@@ -4,10 +4,11 @@ import { Icon } from "..";
 
 type Props = {
 	iconName: IconNameType;
-	size: "lg" | "md" | "sm" | string;
-	iconStyle: Object;
-	theme?: "primary" | "dark" | "light" | "gray";
-	shape?: "default" | "circle";
+	size: "lg" | "md" | "sm" | "xs" | string;
+	iconSize?: string;
+	iconStyle?: Object;
+	theme?: "dark" | "light" | "gray" | "primary" | "accent";
+	rounded?: "full" | string | number;
 	title?: string;
 	onClick?: () => void;
 	[key: string]: any;
@@ -17,9 +18,10 @@ type Props = {
  * A IcoButton component to show Icons
  * @param {IconNameType} iconName - The name of the icon to display.
  * @param {string} size - The size of the button. Can be "lg", "md", "sm", or a custom string.
+ * @param {string|number} iconSize - An optional custom size for the icon.
  * @param {Object} iconStyle - The styles to apply to the icon (should contain width, height).
  * @param {string} theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
- * @param {string} shape - The shape of the button. Can be "round" or "circle"
+ * @param {string|number} rounded - The rounding of the button. Can be a number, or "full" (default).
  * @param {string} title - The title of the button.
  * @param {MouseEvent} onClick - The click event handler
  * @param {...Object} rest - A catch-all prop that allows any other prop to be passed in.
@@ -35,35 +37,38 @@ type Props = {
 const IcoButton = ({
 	iconName,
 	size,
+	iconSize,
 	iconStyle,
 	theme = "light",
-	shape = "default",
+	rounded = "full",
 	title = "Icon Button",
 	onClick,
 	...rest
 }: Props): JSX.Element => {
 	const clickable: boolean = onClick === undefined;
 
-	const roundness =
-		shape === "default" ? 10 : shape === "circle" ? "full" : null;
-
-	const bgSize =
+	const bgSize: string =
 		size === "lg"
 			? "64px"
 			: size === "md"
 			? "48px"
 			: size === "sm"
 			? "32px"
+			: size === "xs"
+			? "24px"
 			: size;
 
-	const iconSize =
-		size === "lg"
-			? "32px"
-			: size === "md"
-			? "24px"
-			: size === "sm"
-			? "16px"
-			: null;
+	const _iconSize: string = iconSize
+		? iconSize
+		: size === "lg"
+		? "32px"
+		: size === "md"
+		? "24px"
+		: size === "sm"
+		? "14px"
+		: size === "xs"
+		? "11px"
+		: "80%";
 
 	const btnTheme: Object =
 		theme === "dark"
@@ -86,17 +91,13 @@ const IcoButton = ({
 			  }
 			: theme === "primary"
 			? {
-					bg: "primary.light",
+					bg: "primary.DEFAULT",
 					color: "white",
-					boxShadow: "0px 3px 10px #FE9F0040;",
-					_hover: { bg: "primary.DEFAULT" },
 			  }
 			: theme === "accent"
 			? {
-					bg: "accent.light",
+					bg: "accent.DEFAULT",
 					color: "white",
-					boxShadow: "0px 3px 10px #11299040;",
-					_hover: { bg: "accent.DEFAULT" },
 			  }
 			: null;
 
@@ -107,14 +108,14 @@ const IcoButton = ({
 			width={bgSize}
 			height={bgSize}
 			minW={bgSize}
-			rounded={roundness}
+			rounded={rounded}
 			cursor={clickable ? "auto" : "pointer"}
 			onClick={onClick}
 			overflow="hidden"
 			{...btnTheme}
 			{...rest}
 		>
-			<Icon name={iconName} size={iconSize} {...iconStyle} />
+			<Icon name={iconName} size={_iconSize} {...iconStyle} />
 		</Center>
 	);
 };
