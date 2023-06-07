@@ -93,7 +93,7 @@ const PricingForm = ({
 		label: "DisplayName",
 	};
 	return (
-		<Flex direction="column" gap="10">
+		<Flex direction="column" gap="10" fontSize="md">
 			<Flex direction="column" gap="2">
 				<Text fontWeight="semibold">{`Select ${ProductPricingType} For`}</Text>
 				<RadioGroup
@@ -101,13 +101,14 @@ const PricingForm = ({
 					value={commissionFor}
 					onChange={(value) => setCommissionFor(value)}
 				>
-					<Flex gap="16">
+					<Flex
+						direction={{ base: "column", sm: "row" }}
+						gap={{ base: "4", md: "16" }}
+					>
 						{Object.entries(commissionForObj).map(
 							([key, value]) => (
 								<Radio size="lg" key={key} value={key}>
-									<Text fontSize={{ base: "sm", sm: "md" }}>
-										{value}
-									</Text>
+									<Text fontSize="sm">{value}</Text>
 								</Radio>
 							)
 						)}
@@ -143,7 +144,10 @@ const PricingForm = ({
 					value={commissionType}
 					onChange={(value) => setCommissionType(value)}
 				>
-					<Flex gap="16">
+					<Flex
+						direction={{ base: "column", sm: "row" }}
+						gap={{ base: "4", md: "16" }}
+					>
 						{Object.entries(commissionTypeObj).map(
 							([key, value]) => (
 								<Radio size="lg" key={key} value={key}>
