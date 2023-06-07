@@ -17,7 +17,7 @@ import { useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Fragment, useState } from "react";
-import { Button, Icon, IconButtons, OrgLogo } from "..";
+import { Button, IcoButton, Icon, OrgLogo } from "..";
 
 export const NavHeight = {
 	base: "56px",
@@ -409,16 +409,18 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 											userDetails?.mobile.slice(5)}
 									</Text>
 									<Box ml={{ base: "15px", sm: "initial" }}>
-										<IconButtons
-											iconSize={"xs"}
+										<IcoButton
+											size={"xs"}
+											theme="primary"
+											ml="2"
 											// onClick={() =>
 											// 	Router.push("/admin/my-network/profile/up-per-info")
 											// }
 
 											iconName="mode-edit"
-											iconStyle={{
-												size: "10px",
-											}}
+											// iconStyle={{
+											// 	size: "10px",
+											// }}
 										/>
 									</Box>
 								</Box>

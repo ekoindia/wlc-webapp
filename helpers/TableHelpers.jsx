@@ -88,7 +88,6 @@ export const getExpandIcoButton = (expandedRow, index) => {
 			bg="white"
 			size="24px"
 			iconStyle={{ size: "12px", color: "primary.DEFAULT" }}
-			rounded="full"
 			border="2px solid #FE9F00"
 			boxShadow="0px 3px 6px #00000029"
 			title={expandedRow === index ? "Shrink" : "Expand"}

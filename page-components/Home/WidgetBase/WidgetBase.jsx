@@ -67,7 +67,6 @@ const WidgetBase = ({
 											color: "white",
 											...iconStyle,
 										}}
-										rounded="full"
 										size="sm"
 										bg="primary.light"
 										_hover={{ bg: "primary.DEFAULT" }}

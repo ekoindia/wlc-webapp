@@ -4,7 +4,7 @@ import { Icon } from "..";
 
 type Props = {
 	iconName: IconNameType;
-	size: "lg" | "md" | "sm" | string;
+	size: "lg" | "md" | "sm" | "xs" | string;
 	iconStyle: Object;
 	theme?: "dark" | "light";
 	rounded?: "full" | string | number;
@@ -19,7 +19,7 @@ type Props = {
  * @param {string} size - The size of the button. Can be "lg", "md", "sm", or a custom string.
  * @param {Object} iconStyle - The styles to apply to the icon (should contain width, height).
  * @param {string} theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
- * @param {string|number} rounded - The rounding of the button. Can be a string, a number, or "full".
+ * @param {string|number} rounded - The rounding of the button. Can be a number, or "full" (default).
  * @param {string} title - The title of the button.
  * @param {MouseEvent} onClick - The click event handler
  * @param {...Object} rest - A catch-all prop that allows any other prop to be passed in.
@@ -37,7 +37,7 @@ const IcoButton = ({
 	size,
 	iconStyle,
 	theme = "light",
-	rounded = "10",
+	rounded = "full",
 	title = "Icon Button",
 	onClick,
 	...rest
@@ -53,6 +53,8 @@ const IcoButton = ({
 			? "48px"
 			: size === "sm"
 			? "32px"
+			: size === "xs"
+			? "24px"
 			: size;
 
 	const iconSize: string =
@@ -61,7 +63,9 @@ const IcoButton = ({
 			: size === "md"
 			? "24px"
 			: size === "sm"
-			? "16px"
+			? "12px"
+			: size === "xs"
+			? "10px"
 			: null;
 
 	const btnTheme: Object =
@@ -82,6 +86,16 @@ const IcoButton = ({
 					bg: "linear-gradient( #D2D2D2, #E9EDF1)",
 					color: "white",
 					border: "1px solid #E9EDF1",
+			  }
+			: theme === "primary"
+			? {
+					bg: "primary.DEFAULT",
+					color: "white",
+			  }
+			: theme === "accent"
+			? {
+					bg: "accent.DEFAULT",
+					color: "white",
 			  }
 			: null;
 
