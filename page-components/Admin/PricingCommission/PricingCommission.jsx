@@ -1,6 +1,6 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { Headings } from "components/Headings";
-import { AadhaarPay, Aeps, Dmt } from ".";
+import { AadhaarPay, Aeps, Dmt, IndoNepal } from ".";
 /**
  * A <PricingCommission> component
  * TODO: Write more description here
@@ -13,7 +13,7 @@ const PricingCommissions = () => {
 		DMT: <Dmt />,
 		AEPS: <Aeps />,
 		"Aadhaar Pay": <AadhaarPay />,
-		// "Indo-Nepal Fund Transfer": "",
+		"Indo-Nepal Fund Transfer": <IndoNepal />,
 		// BBPS: "",
 	};
 
@@ -23,12 +23,12 @@ const PricingCommissions = () => {
 			<Box px={{ base: "16px", md: "initial" }}>
 				<Box
 					w="100%"
-					minH="80%"
+					// minH="80%"
 					bg="white"
-					borderRadius={{ base: "8px", md: "10px" }}
+					borderRadius="10px"
 					border="card"
 					boxShadow="0px 5px 15px #0000000D"
-					mb={{ base: "26px", md: "10px" }}
+					// mb={{ base: "26px", md: "10px" }}
 				>
 					<Tabs
 						isLazy
@@ -36,7 +36,7 @@ const PricingCommissions = () => {
 						defaultIndex={0}
 						variant="colorful"
 						bg={{ base: "#FFFFFF", md: "transparent" }}
-						pt={{ base: "3", md: "4", "2xl": "7" }}
+						py="3"
 						w={{ base: "100%", md: "100%" }}
 						borderRadius="10px"
 					>
@@ -68,16 +68,7 @@ const PricingCommissions = () => {
 							))}
 						</TabList>
 
-						<TabPanels
-							px={{ base: "17px", md: "15px", lg: "20px" }}
-							mt={{
-								base: "23px",
-								md: "25px",
-								lg: "25px",
-								"2xl": "38px",
-							}}
-							pb="20px"
-						>
+						<TabPanels p="10px 20px ">
 							{Object.entries(tabs).map(([key, value]) => (
 								<TabPanel key={key}>{value}</TabPanel>
 							))}
