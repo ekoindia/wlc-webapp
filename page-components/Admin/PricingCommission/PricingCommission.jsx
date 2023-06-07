@@ -38,8 +38,8 @@ const PricingCommissions = () => {
 					>
 						Note:
 					</span>
-					&nbsp; The revised cost structure will come into effect
-					after 12:00 AM today.
+					&nbsp; The revised cost structure will come into effect from
+					tomorrow (12:00 AM midnight).
 				</Text>
 				<Box
 					w="100%"
