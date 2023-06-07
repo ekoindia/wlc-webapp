@@ -5,8 +5,9 @@ import { Icon } from "..";
 type Props = {
 	iconName: IconNameType;
 	size: "lg" | "md" | "sm" | "xs" | string;
-	iconStyle: Object;
-	theme?: "dark" | "light";
+	iconSize?: string;
+	iconStyle?: Object;
+	theme?: "dark" | "light" | "gray" | "primary" | "accent";
 	rounded?: "full" | string | number;
 	title?: string;
 	onClick?: () => void;
@@ -17,6 +18,7 @@ type Props = {
  * A IcoButton component to show Icons
  * @param {IconNameType} iconName - The name of the icon to display.
  * @param {string} size - The size of the button. Can be "lg", "md", "sm", or a custom string.
+ * @param {string|number} iconSize - An optional custom size for the icon.
  * @param {Object} iconStyle - The styles to apply to the icon (should contain width, height).
  * @param {string} theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
  * @param {string|number} rounded - The rounding of the button. Can be a number, or "full" (default).
@@ -35,6 +37,7 @@ type Props = {
 const IcoButton = ({
 	iconName,
 	size,
+	iconSize,
 	iconStyle,
 	theme = "light",
 	rounded = "full",
@@ -57,16 +60,17 @@ const IcoButton = ({
 			? "24px"
 			: size;
 
-	const iconSize: string =
-		size === "lg"
-			? "32px"
-			: size === "md"
-			? "24px"
-			: size === "sm"
-			? "12px"
-			: size === "xs"
-			? "10px"
-			: null;
+	const _iconSize: string = iconSize
+		? iconSize
+		: size === "lg"
+		? "32px"
+		: size === "md"
+		? "24px"
+		: size === "sm"
+		? "14px"
+		: size === "xs"
+		? "11px"
+		: "80%";
 
 	const btnTheme: Object =
 		theme === "dark"
@@ -113,7 +117,7 @@ const IcoButton = ({
 			{...btnTheme}
 			{...rest}
 		>
-			<Icon name={iconName} size={iconSize} {...iconStyle} />
+			<Icon name={iconName} size={_iconSize} {...iconStyle} />
 		</Center>
 	);
 };

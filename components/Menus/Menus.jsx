@@ -25,6 +25,7 @@ const Menus = (props) => {
 		iconStyles,
 		itemStyles,
 		listStyles,
+		rounded = "4px",
 		onClick,
 		menulist,
 	} = props;
@@ -59,6 +60,7 @@ const Menus = (props) => {
 							<MenuButton
 								cursor="pointer"
 								as={as}
+								rounded={rounded}
 								minW={minW}
 								minH={minH}
 								width={width}
