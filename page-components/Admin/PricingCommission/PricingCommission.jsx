@@ -1,6 +1,14 @@
-import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
+import {
+	Box,
+	Tab,
+	TabList,
+	TabPanel,
+	TabPanels,
+	Tabs,
+	Text,
+} from "@chakra-ui/react";
 import { Headings } from "components/Headings";
-import { AadhaarPay, Aeps, Dmt, IndoNepal } from ".";
+import { AadhaarPay, Aeps, Dmt } from ".";
 /**
  * A <PricingCommission> component
  * TODO: Write more description here
@@ -13,7 +21,7 @@ const PricingCommissions = () => {
 		DMT: <Dmt />,
 		AEPS: <Aeps />,
 		"Aadhaar Pay": <AadhaarPay />,
-		"Indo-Nepal Fund Transfer": <IndoNepal />,
+		// "Indo-Nepal Fund Transfer": <IndoNepal />,
 		// BBPS: "",
 	};
 
@@ -21,6 +29,18 @@ const PricingCommissions = () => {
 		<>
 			<Headings title="Pricing & Commissions" hasIcon={false} />
 			<Box px={{ base: "16px", md: "initial" }}>
+				<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>
+					<span
+						style={{
+							backgroundColor: "#FFD93B",
+							fontWeight: "700",
+						}}
+					>
+						Note:
+					</span>
+					&nbsp; The revised cost structure will come into effect
+					after 12:00 AM today.
+				</Text>
 				<Box
 					w="100%"
 					// minH="80%"
