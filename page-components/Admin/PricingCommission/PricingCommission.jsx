@@ -48,7 +48,6 @@ const PricingCommissions = () => {
 					borderRadius="10px"
 					border="card"
 					boxShadow="0px 5px 15px #0000000D"
-					// mb={{ base: "26px", md: "10px" }}
 				>
 					<Tabs
 						isLazy
