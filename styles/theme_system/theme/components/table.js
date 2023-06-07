@@ -1,6 +1,6 @@
 import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
 
-const striped = defineStyle({
+const stripedActionNone = defineStyle({
 	tr: {
 		_even: {
 			background: "shade",
@@ -33,9 +33,11 @@ const stripedActionRedirect = defineStyle({
 
 const stripedActionExpand = defineStyle({
 	tr: {
-		cursor: "pointer",
 		_even: {
 			background: "shade",
+		},
+		_hover: {
+			cursor: "pointer",
 		},
 	},
 	th: {
@@ -47,7 +49,7 @@ const stripedActionExpand = defineStyle({
 
 export const tableTheme = defineStyleConfig({
 	variants: {
-		striped,
+		stripedActionNone,
 		stripedActionRedirect,
 		stripedActionExpand,
 	},
