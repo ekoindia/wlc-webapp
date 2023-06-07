@@ -34,7 +34,7 @@ const Table = ({
 	onRowClick,
 	ResponsiveCard,
 	defaultCardStyle = true,
-	variant = "striped",
+	variant = "stripedActionNone",
 	tableRowLimit = trl?.DEFAULT,
 }) => {
 	const [hasNoMoreItems, setHasNoMoreItems] = useState(false);
@@ -90,7 +90,7 @@ const Table = ({
 					}}
 				>
 					<ChakraTable variant={variant} bg="white">
-						<Thead bg="hint">
+						<Thead>
 							<Th {...{ renderer, visibleColumns }} />
 						</Thead>
 						<Tbody>
