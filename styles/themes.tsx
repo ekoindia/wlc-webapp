@@ -1,7 +1,10 @@
 import { extendTheme, theme } from "@chakra-ui/react";
 import { globalStyles } from "./globals";
-import { buttonTheme } from "./theme_system/theme/components/button";
-import { tabsTheme } from "./theme_system/theme/components/tab";
+import {
+	buttonTheme,
+	tableTheme,
+	tabsTheme,
+} from "./theme_system/theme/components";
 
 export const light = extendTheme({
 	breakpoints: {
@@ -62,52 +65,7 @@ export const light = extendTheme({
 		},
 	},
 	components: {
-		Table: {
-			variants: {
-				evenStripedClickableRow: {
-					tr: {
-						_even: {
-							background: "shade",
-						},
-						_hover: {
-							bg: "#e6e6e6",
-							transition: "background 200ms ease-in",
-							cursor: "pointer",
-						},
-					},
-					th: {
-						textTransform: "Capitalize",
-						bg: "hint",
-						transition: "none",
-					},
-				},
-				evenStriped: {
-					tr: {
-						_even: {
-							background: "shade",
-						},
-					},
-					th: {
-						textTransform: "Capitalize",
-						bg: "hint",
-						transition: "none",
-					},
-				},
-				evenStripedExpandableRow: {
-					tr: {
-						cursor: "pointer",
-						_even: {
-							background: "shade",
-						},
-					},
-					th: {
-						textTransform: "Capitalize",
-						bg: "hint",
-						transition: "none",
-					},
-				},
-			},
-		},
+		Table: tableTheme,
 		Button: buttonTheme,
 		Checkbox: {
 			variants: {

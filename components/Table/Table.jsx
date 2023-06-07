@@ -9,8 +9,9 @@ import {
 	Thead,
 	useMediaQuery,
 } from "@chakra-ui/react";
+import { tableRowLimit as trl } from "constants";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Th, Tr } from ".";
 import { Pagination } from "..";
 
@@ -23,28 +24,30 @@ import { Pagination } from "..";
  * @example	`<Table></Table>` TODO: Fix example
  */
 const Table = ({
-	pageLimit = 10,
+	renderer,
 	data,
 	totalRecords,
 	pageNumber = 1,
 	setPageNumber = () => {},
 	visibleColumns,
-	renderer,
-	variant,
 	tableName,
 	onRowClick,
-	isPaginationRequired = true,
 	ResponsiveCard,
 	defaultCardStyle = true,
+	variant = "striped",
+	tableRowLimit = trl?.DEFAULT,
 }) => {
+	const [hasNoMoreItems, setHasNoMoreItems] = useState(false);
+	console.log("hasNoMoreItems", hasNoMoreItems);
 	const router = useRouter();
-	const [isSmallerThan860] = useMediaQuery("(max-width: 860px)");
+	const [isSmallScreen] = useMediaQuery("(max-width: 860px)");
+	// const isSmallScreen = useBreakpointValue({ base: true, lg: false });
+
+	const tableDataListLength = data?.length;
 
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== pageNumber) {
-			// setCurrentPage(+router.query.page);
 			setPageNumber(+router.query.page);
-			// console.log("router.query.page", router.query.page);
 		}
 	}, [router.query.page]);
 
@@ -69,87 +72,86 @@ const Table = ({
 
 	return (
 		<Box w="100%">
-			{!isSmallerThan860 ? (
-				<>
-					<TableContainer
-						borderRadius="10px 10px 0 0"
-						mt={{ base: "20px", "2xl": "10px" }}
-						border="1px solid #E9EDF1"
-						css={{
-							"&::-webkit-scrollbar": {
-								height: "2px",
-								width: "7px",
-							},
+			{!isSmallScreen ? (
+				<TableContainer
+					borderRadius="10px 10px 0 0"
+					mt={{ base: "20px", "2xl": "10px" }}
+					border="1px solid #E9EDF1"
+					css={{
+						"&::-webkit-scrollbar": {
+							height: "2px",
+							width: "7px",
+						},
 
-							"&::-webkit-scrollbar-thumb": {
-								background: "#555555",
-								border: "1px solid #707070",
-							},
-						}}
-					>
-						<ChakraTable variant={variant} bg="white">
-							<Thead bg="hint">
-								<Th {...{ renderer, visibleColumns }} />
-							</Thead>
-							<Tbody>
-								<Tr
-									{...{
-										data,
-										renderer,
-										onRowClick,
-										pageNumber,
-										pageLimit,
-										tableName,
-										visibleColumns,
-									}}
-								/>
-							</Tbody>
-						</ChakraTable>
-					</TableContainer>
-					{/* Pagination */}
-					{isPaginationRequired && (
-						<Flex justify="flex-end">
-							<Pagination
-								className="pagination-bar"
-								currentPage={pageNumber}
-								totalCount={totalRecords || 10}
-								pageSize={pageLimit}
-								onPageChange={(page) => {
-									router.query.page = page;
-									router.replace(router);
-									setPageNumber(page);
+						"&::-webkit-scrollbar-thumb": {
+							background: "#555555",
+							border: "1px solid #707070",
+						},
+					}}
+				>
+					<ChakraTable variant={variant} bg="white">
+						<Thead bg="hint">
+							<Th {...{ renderer, visibleColumns }} />
+						</Thead>
+						<Tbody>
+							<Tr
+								{...{
+									data,
+									renderer,
+									onRowClick,
+									pageNumber,
+									tableRowLimit,
+									tableName,
+									visibleColumns,
 								}}
 							/>
-						</Flex>
-					)}
-				</>
+						</Tbody>
+					</ChakraTable>
+				</TableContainer>
 			) : (
-				<>
-					<Flex
-						direction="column"
-						align="center"
-						borderRadius="10px 10px 0 0"
-						mt="16px"
-						boxShadow={
-							!defaultCardStyle ? "0px 5px 15px #0000000D" : null
-						}
-						border={!defaultCardStyle ? "1px solid #D2D2D2" : null}
-						bg={!defaultCardStyle ? "white" : null}
-						gap={defaultCardStyle ? 4 : null}
-					>
-						{!defaultCardStyle ? (
-							<Text
-								color="light"
-								width="100%"
-								p="16px 16px 0"
-								fontWeight="semibold"
-							>
-								Recent Transaction
-							</Text>
-						) : null}
-						{prepareCard()}
-					</Flex>
-				</>
+				<Flex
+					direction="column"
+					align="center"
+					borderRadius="10px 10px 0 0"
+					mt="16px"
+					boxShadow={
+						!defaultCardStyle ? "0px 5px 15px #0000000D" : null
+					}
+					border={!defaultCardStyle ? "1px solid #D2D2D2" : null}
+					bg={!defaultCardStyle ? "white" : null}
+					gap={defaultCardStyle ? 4 : null}
+				>
+					{!defaultCardStyle ? (
+						<Text
+							color="light"
+							width="100%"
+							p="16px 16px 0"
+							fontWeight="semibold"
+						>
+							Recent Transaction
+						</Text>
+					) : null}
+					{prepareCard()}
+				</Flex>
+			)}
+
+			{/* Pagination */}
+			{!(tableDataListLength < tableRowLimit && pageNumber === 1) && (
+				<Pagination
+					className="pagination-bar"
+					currentPage={pageNumber}
+					totalCount={totalRecords}
+					pageSize={tableRowLimit}
+					onPageChange={(page) => {
+						router.query.page = page;
+						router.replace(router);
+						setPageNumber(page);
+					}}
+					isSmallScreen={isSmallScreen}
+					tableDataListLength={tableDataListLength}
+					tableRowLimit={tableRowLimit}
+					setHasNoMoreItems={setHasNoMoreItems}
+				/>
 			)}
 		</Box>
 	);

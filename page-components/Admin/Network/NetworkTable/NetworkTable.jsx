@@ -57,9 +57,8 @@ const NetworkTable = ({
 		<>
 			<Table
 				onRowClick={onRowClick}
-				pageLimit="10"
 				renderer={renderer}
-				variant="evenStripedClickableRow"
+				variant="stripedActionRedirect"
 				tableName="Network"
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}

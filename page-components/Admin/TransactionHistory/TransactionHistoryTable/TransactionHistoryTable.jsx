@@ -54,12 +54,10 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 		<>
 			<Table
 				onRowClick={onRowClick}
-				pageLimit={10}
+				variant="stripedActionRedirect"
 				renderer={renderer}
 				data={transactiondata}
-				variant="evenStripedClickableRow"
 				tableName="Transaction"
-				ispagintationrequire={false}
 				ResponsiveCard={TransactionHistoryCard}
 			/>
 		</>

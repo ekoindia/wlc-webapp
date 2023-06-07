@@ -1,6 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
-import { OnboardingDashboardCard } from "./OnboardingDashboardCard";
+import { OnboardingDashboardCard } from ".";
 
 /**
  * A OnboardedMerchants page-component
@@ -74,7 +74,7 @@ const OnboardedMerchants = ({
 				renderer={renderer}
 				visibleColumns={6}
 				data={onboardedMerchantsTableData}
-				variant="evenStripedExpandableRow"
+				variant="stripedActionExpand"
 				ResponsiveCard={OnboardingDashboardCard}
 				totalRecords={totalRecords}
 				pageNumber={pageNumber}

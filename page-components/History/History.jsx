@@ -8,14 +8,14 @@ import {
 	Modal,
 	SearchBar,
 } from "components";
-import { Endpoints, TransactionTypes } from "constants";
+import { Endpoints, tableRowLimit, TransactionTypes } from "constants";
 import { useGlobalSearch, useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { HistoryPagination, HistoryTable } from ".";
+import { HistoryTable } from ".";
 
-const limit = 25; // Page size
+const limit = tableRowLimit?.XLARGE; // Page size
 
 /**
  * A History component shows transaction history
@@ -37,7 +37,7 @@ const History = () => {
 	const [data, setData] = useState();
 	const [activePillIndex, setActivePillIndex] = useState(0);
 	const [searchValue, setSearchValue] = useState("");
-	const [currentPage, setCurrentPage] = useState(0);
+	const [currentPage, setCurrentPage] = useState(1);
 	const [formState, setFormState] = useState({ ...formElements });
 	const [clear, setClear] = useState(false);
 	const { userData } = useUser();
@@ -61,6 +61,7 @@ const History = () => {
 	// or, a mobile number.
 	useEffect(() => {
 		const { search, ...others } = router.query;
+		console.log("others", others);
 		if (search || others) {
 			quickSearch(search, others);
 		}
@@ -83,7 +84,7 @@ const History = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
-				start_index: currentPage * limit,
+				start_index: (currentPage - 1) * limit,
 				limit: limit,
 				account_id:
 					account_list &&
@@ -214,8 +215,6 @@ const History = () => {
 	};
 
 	const transactionList = data;
-	const listLength = transactionList?.length;
-	const hasNext = listLength >= limit;
 	const [isOpen, setIsOpen] = useState(false);
 
 	const onClose = () => setIsOpen(false);
@@ -252,16 +251,12 @@ const History = () => {
 						onFilterClear,
 					}}
 				/>
-				{/* <=============================Transaction Table & Card ===============================> */}
-				{/* // TODO add condition: if pageLimit is a multiple of totalRecords then show "no items" or "no more items" accordingly */}
-				<HistoryTable transactionList={transactionList} />
-				<Flex justify="flex-end">
-					<HistoryPagination
-						hasNext={hasNext}
-						currentPage={currentPage}
-						setCurrentPage={setCurrentPage}
-					/>
-				</Flex>
+				<HistoryTable
+					pageNumber={currentPage}
+					setPageNumber={setCurrentPage}
+					transactionList={transactionList}
+					tableRowLimit={limit}
+				/>
 			</Flex>
 		</>
 	);

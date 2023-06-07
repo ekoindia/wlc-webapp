@@ -36,11 +36,8 @@ const DetailedStatementTable = (props) => {
 	return (
 		<>
 			<Table
-				isOnclickRequire={false}
-				pageLimit={10}
 				renderer={renderer}
 				data={detiledData}
-				variant="evenStriped"
 				tableName="Detailed"
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}
