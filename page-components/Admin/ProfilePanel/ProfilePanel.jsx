@@ -28,14 +28,13 @@ const ChangeRoleDesktop = ({ menuHandler }) => {
 					iconPos="right"
 					iconName="caret-down"
 					iconStyles={{ height: "10px", width: "14px" }}
+					rounded="10px"
 					buttonStyle={{
-						height: { md: "48px", lg: "64px" },
-						width: { md: "180px", lg: "250px" },
+						height: { base: "48px", lg: "52px" },
+						minW: { base: "150px", lg: "220px" },
 						border: "1px solid #FE9F00",
 						boxShadow: "0px 3px 10px #FE9F0040",
-						fontSize: { md: "16px", lg: "20px" },
 						textAlign: "left",
-						borderRadius: "10px",
 					}}
 					listStyles={{
 						height: "150px",

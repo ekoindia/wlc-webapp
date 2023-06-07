@@ -247,11 +247,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 					href="/favicon-32x32.png"
 					sizes="32x32"
 				/>
-				<link
-					rel="icon"
-					type="image/svg+xml"
-					href="/assets/images/favicon.svg"
-				/>
+				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 			</Head>
 
 			{process.env.NEXT_PUBLIC_GTM_ID ? (

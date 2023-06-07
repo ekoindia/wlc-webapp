@@ -79,7 +79,6 @@ const DashboardHeading = ({ pageId, headingList, handleHeadingClick }) => {
 				<IcoButton
 					iconName="calender"
 					size="md"
-					rounded="full"
 					bg="primary.DEFAULT"
 					color="white"
 				/>

@@ -1,12 +1,5 @@
 import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
-import {
-	Currency,
-	DateView,
-	IcoButton,
-	Icon,
-	IconButtons,
-	Tags,
-} from "components";
+import { Currency, DateView, IcoButton, Icon, Tags } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 
 export const getNameStyle = (name) => {
@@ -48,12 +41,11 @@ export const getLocationStyle = (location, lat, long) => {
 	return (
 		<Flex alignItems={"center"}>
 			<Box>{location}</Box>
-			<IconButtons
-				iconSize={"xs"}
+			<IcoButton
+				size="xs"
 				iconName="near-me"
-				iconStyle={{
-					size: "16px",
-				}}
+				theme="primary"
+				ml={1}
 				onClick={(e) => {
 					openGoogleMap(lat, long);
 					e.stopPropagation();
@@ -86,9 +78,8 @@ export const getExpandIcoButton = (expandedRow, index) => {
 		<IcoButton
 			iconName={expandedRow === index ? "remove" : "expand-add"}
 			bg="white"
-			size="24px"
-			iconStyle={{ size: "12px", color: "primary.DEFAULT" }}
-			rounded="full"
+			size="xs"
+			iconStyle={{ color: "primary.DEFAULT" }}
 			border="2px solid #FE9F00"
 			boxShadow="0px 3px 6px #00000029"
 			title={expandedRow === index ? "Shrink" : "Expand"}

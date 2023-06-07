@@ -21,7 +21,6 @@ const GlobalSearch = ({ ...rest }) => {
 			iconName="search"
 			size="sm"
 			color="light"
-			rounded="full"
 			onClick={() => query.toggle()}
 		/>
 	) : (
