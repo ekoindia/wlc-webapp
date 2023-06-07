@@ -46,8 +46,8 @@ const Headings = ({
 		zIndex: "99",
 		as: "section",
 		boxShadow: "0px 3px 10px #0000001A",
-		bg: "accent.DEFAULT",
-		color: "white",
+		bg: "white",
+		color: "dark",
 		justifyContent: "space-between",
 	};
 

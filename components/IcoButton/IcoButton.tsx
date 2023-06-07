@@ -47,8 +47,6 @@ const IcoButton = ({
 }: Props): JSX.Element => {
 	const clickable: boolean = onClick === undefined;
 
-	// const roundness: string = rounded === "full" ? "full" : `${rounded || 10}`;
-
 	const bgSize: string =
 		size === "lg"
 			? "64px"

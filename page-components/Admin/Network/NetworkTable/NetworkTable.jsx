@@ -20,7 +20,12 @@ const NetworkTable = ({
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
 		{ name: "agent_mobile", field: "Mobile Number", sorting: true },
 		{ name: "agent_type", field: "Type", sorting: true },
-		{ name: "onboarded_on", field: "Onboarded On", sorting: true },
+		{
+			name: "onboarded_on",
+			field: "Onboarded On",
+			sorting: true,
+			show: "Date",
+		},
 		{
 			name: "account_status",
 			field: "Account Status",

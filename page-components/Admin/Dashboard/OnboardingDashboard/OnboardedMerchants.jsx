@@ -9,9 +9,18 @@ import { OnboardingDashboardCard } from ".";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<OnboardedMerchants></OnboardedMerchants>`
  */
-const OnboardedMerchants = ({ data }) => {
-	console.log("[OnboardedMerchants] data", data.onboardedMerchants);
-	const onboardedMerchantsTableData = data?.onboardedMerchants || [];
+const OnboardedMerchants = ({
+	onboardingMerchantData,
+	totalRecords,
+	pageNumber,
+	setPageNumber,
+}) => {
+	console.log(
+		"[OnboardedMerchants] data",
+		onboardingMerchantData?.onboardedMerchants
+	);
+	const onboardedMerchantsTableData =
+		onboardingMerchantData?.onboardedMerchants || [];
 	const renderer = [
 		{
 			name: "merchantName",
@@ -39,7 +48,7 @@ const OnboardedMerchants = ({ data }) => {
 			field: "Business Type",
 			sorting: true,
 		},
-		{ name: "onboardedOn", field: "Onboarded on" },
+		{ name: "onboardedOn", field: "Onboarded on", show: "Date" },
 		{ name: "businessDetailsCaptured", field: "Business Detail Captured" },
 		{ name: "businessName", field: "Business Name" },
 		{ name: "daysinFunnel", field: "Onboarding Funnel" },
@@ -67,6 +76,9 @@ const OnboardedMerchants = ({ data }) => {
 				data={onboardedMerchantsTableData}
 				variant="stripedActionExpand"
 				ResponsiveCard={OnboardingDashboardCard}
+				totalRecords={totalRecords}
+				pageNumber={pageNumber}
+				setPageNumber={setPageNumber}
 			/>
 		</Flex>
 	);

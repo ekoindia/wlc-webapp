@@ -47,6 +47,7 @@ const TopPanel = ({ data }) => {
 	const topPanelListLength = topPanelList.length;
 	return (
 		<Grid
+			w="100%"
 			templateColumns="repeat(4, 4fr)"
 			overflowX="auto"
 			css={{

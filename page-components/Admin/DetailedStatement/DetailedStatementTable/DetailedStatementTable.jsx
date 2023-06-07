@@ -21,7 +21,7 @@ const DetailedStatementTable = (props) => {
 			name: "date_time",
 			field: "Date & Time",
 			sorting: true,
-			show: "DateView",
+			show: "DateTime",
 		},
 		{ name: "activity", field: "Activity" },
 		{

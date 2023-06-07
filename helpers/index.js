@@ -8,6 +8,7 @@ export { processTransactionData } from "./processTransactionData";
 export {
 	getAmountStyle,
 	getArrowStyle,
+	getDateTimeView,
 	getDateView,
 	getDescriptionStyle,
 	getExpandIcoButton,

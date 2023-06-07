@@ -40,7 +40,7 @@ const HistoryTable = ({
 			name: "dateTime",
 			field: "Date & Time",
 			sorting: true,
-			show: "DateView",
+			show: "DateTime",
 		},
 		{
 			name: "status",

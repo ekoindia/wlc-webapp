@@ -15,8 +15,6 @@ const Network = () => {
 	const [search, setSearch] = useState("");
 	const [sort, setSort] = useState();
 	const [filter, setFilter] = useState({});
-	console.log("filter", filter);
-
 	const [pageNumber, setPageNumber] = useState(1);
 
 	/* Filter */

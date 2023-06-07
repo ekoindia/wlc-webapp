@@ -11,7 +11,6 @@ const ProfilePage = () => {
 
 ProfilePage.pageMeta = {
 	title: "My Profile",
-	isSubPage: true,
 };
 
 export default ProfilePage;

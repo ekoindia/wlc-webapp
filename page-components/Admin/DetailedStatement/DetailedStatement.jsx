@@ -3,8 +3,8 @@ import {
 	Button,
 	Calenders,
 	Cards,
+	Currency,
 	Headings,
-	Icon,
 	SearchBar,
 } from "components";
 import useRequest from "hooks/useRequest";
@@ -235,31 +235,11 @@ const DetailedStatement = () => {
 										Current Balance
 									</Text>
 									<Flex
-										align={"center"}
-										color={"accent.DEFAULT"}
-										gap={"5px"}
+										fontWeight="semibold"
+										color="accent.DEFAULT"
+										gap="5px"
 									>
-										<Icon
-											name="rupee"
-											size={{
-												base: "10px",
-												// md: "8px",
-												// lg: "9.5px",
-												"2xl": "12px",
-											}}
-										/>
-										<Text
-											fontSize={{
-												base: "16px",
-												md: "12px",
-												lg: "14px",
-												"2xl": "20px",
-											}}
-											color={"accent.DEFAULT"}
-											fontWeight={"bold"}
-										>
-											{currentbalance}
-										</Text>
+										<Currency amount={currentbalance} />
 									</Flex>
 								</Flex>
 							</Flex>

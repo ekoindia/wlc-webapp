@@ -1,5 +1,5 @@
 import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
-import { Button, Cards, Headings, Icon } from "components";
+import { Button, Cards, Currency, Headings } from "components";
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -180,29 +180,11 @@ const AccountStatement = () => {
 											Current Balance
 										</Text>
 										<Flex
-											align={"center"}
-											color={"accent.DEFAULT"}
-											gap={"5px"}
+											fontWeight="semibold"
+											color="accent.DEFAULT"
+											gap="5px"
 										>
-											<Icon
-												name="rupee"
-												size={{
-													base: "11px",
-													"2xl": "15px",
-												}}
-											/>
-											<Text
-												fontSize={{
-													base: "16px",
-													md: "12px",
-													lg: "14px",
-													"2xl": "20px",
-												}}
-												color={"accent.DEFAULT"}
-												fontWeight={"bold"}
-											>
-												{saving_balance}
-											</Text>
+											<Currency amount={saving_balance} />
 										</Flex>
 									</Flex>
 

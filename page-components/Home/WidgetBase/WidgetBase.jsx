@@ -63,13 +63,11 @@ const WidgetBase = ({
 										iconName={iconName}
 										onClick={linkOnClick}
 										iconStyle={{
-											size: "12px",
-											color: "white",
 											...iconStyle,
 										}}
 										size="sm"
-										bg="primary.light"
-										_hover={{ bg: "primary.DEFAULT" }}
+										theme="primary"
+										_hover={{ bg: "primary.dark" }}
 										{...icoBtnProps}
 									/>
 								)}

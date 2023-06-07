@@ -9,54 +9,106 @@ import { useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Filter></Filter>`
  */
-const Filter = ({ data }) => {
-	console.log("[Filter] data", data);
-	const [filterStatus, setFilterStatus] = useState("partialAccount");
-	const _data = data?.topPanel ?? {};
+const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
+	const [inFunnel, setInFunnel] = useState(false);
+	console.log("[Filter] data", filterData);
+	const _data = filterData?.topPanel ?? {};
+
+	const funnelKeyList = [48, 51, 52, 53, 54];
+
+	const listToCalcFunnelValue = [
+		_data?.partialAccount,
+		_data?.businessDetailsCaptured,
+		_data?.aadhaarCaptured,
+		_data?.panCaptured,
+		_data?.agreementSigned,
+	];
+
+	const _onboardingFunnelValue =
+		listToCalcFunnelValue?.reduce(
+			(acc, curr) => (acc += Number(curr)),
+			0
+		) || null;
+
 	const filterList = [
 		{
-			key: "partialAccount",
+			id: 0,
+			key: [...funnelKeyList],
+			label: "Onboarding Funnel",
+			value: _onboardingFunnelValue, //all except 16
+		},
+		{
+			id: 1,
+			key: 51,
 			label: "Partial Account",
 			value: _data?.partialAccount,
 		},
 		{
-			key: "onboardingFunnel",
-			label: "Onboarding Funnel",
-			value: _data?.onboardingFunnel, //TODO: Check
-		},
-		{
-			key: "businessDetailsCaptured",
+			id: 2,
+			key: 52,
 			label: "Business Detail Captured",
 			value: _data?.businessDetailsCaptured,
 		},
 		{
-			key: "aadhaarCaptured",
+			id: 3,
+			key: 54,
 			label: "Aadhaar Captured",
 			value: _data?.aadhaarCaptured,
 		},
 		{
-			key: "panCaptured",
+			id: 4,
+			key: 53,
 			label: "PAN Captured",
 			value: _data?.panCaptured,
 		},
 		{
-			key: "agreementSigned",
+			id: 5,
+			key: 48,
 			label: "Agreement Signed",
 			value: _data?.agreementSigned,
 		},
 		{
-			key: "onboarded",
+			id: 6,
+			key: 16,
 			label: "Onboarded",
 			value: _data?.onboarded,
 		},
 		{
-			key: "nonTransactiingLive",
+			id: 7,
+			key: 16,
 			label: "Non Transacting Live",
-			value: _data?.nonTransactiingLive,
+			value: _data?.nonTransactiingLive, //onboarded but no financial trx
 		},
 	];
 
-	const filterListLength = filterList.length;
+	const handleFilterStatusClick = (id, key) => {
+		if (id === 0) {
+			if (!inFunnel) {
+				setFilterStatus((prev) => {
+					const _filterStatus = new Set([...prev, ...key]);
+					return [..._filterStatus];
+				});
+				setInFunnel(true);
+			} else {
+				setFilterStatus((prev) =>
+					prev.filter((item) => !funnelKeyList.includes(item))
+				);
+				setInFunnel(false);
+			}
+		} else {
+			const filterStatusUpdated = filterStatus.includes(key)
+				? filterStatus.filter((item) => item !== key)
+				: [...filterStatus, key];
+
+			const isAllItemsIncluded = funnelKeyList.every((item) =>
+				filterStatusUpdated.includes(item)
+			);
+			setInFunnel(isAllItemsIncluded);
+			setFilterStatus(filterStatusUpdated);
+		}
+	};
+
+	const filterListLength = filterList?.length;
 
 	return (
 		<Flex
@@ -65,7 +117,7 @@ const Filter = ({ data }) => {
 			bg={{ base: "none", md: "white" }}
 			borderRadius="10px"
 		>
-			<Flex gap="2" p={{ base: "0px 20px 20px", md: "20px" }}>
+			<Flex gap="2" p="20px">
 				<Icon name="filter" size="23px" />
 				<Text fontSize="md" fontWeight="semibold">
 					Filter using onboarding status
@@ -87,11 +139,14 @@ const Filter = ({ data }) => {
 				pb="20px"
 			>
 				{filterList?.map((item, index) => {
-					const isActive = filterStatus === item.key;
+					const isActive =
+						item.id === 0 && inFunnel
+							? true
+							: filterStatus?.includes(item.key);
 					return (
 						item.value && (
 							<Flex
-								key={item.key}
+								key={item.id}
 								direction="column"
 								justify="space-between"
 								bg="white"
@@ -112,7 +167,9 @@ const Filter = ({ data }) => {
 										: null
 								}
 								_hover={{ boxShadow: "0px 3px 10px #0000000D" }}
-								onClick={() => setFilterStatus(item.key)}
+								onClick={() => {
+									handleFilterStatusClick(item.id, item.key);
+								}}
 								cursor="pointer"
 							>
 								<Text fontSize="sm">{item.label}</Text>

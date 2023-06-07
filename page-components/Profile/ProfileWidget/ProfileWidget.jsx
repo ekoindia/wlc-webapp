@@ -1,5 +1,5 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
-import { Icon, IconButtons } from "components";
+import { IcoButton, Icon } from "components";
 import { UserTypeLabel } from "constants";
 import { useUser } from "contexts/UserContext";
 import { useEffect, useState } from "react";
@@ -125,10 +125,13 @@ const ProfileWidget = () => {
 					</Flex>
 				</Flex>
 				<Flex align="flex-start" height="full">
-					<IconButtons
+					<IcoButton
 						onClick={onEditClick}
 						iconName="mode-edit"
-						iconStyle={{ size: "12px" }}
+						// iconStyle={{ size: "12px" }}
+						size="sm"
+						theme="primary"
+						_hover={{ bg: "primary.dark" }}
 					/>
 				</Flex>
 			</Flex>
