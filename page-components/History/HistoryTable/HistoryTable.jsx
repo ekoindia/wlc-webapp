@@ -1,5 +1,4 @@
 import { Table } from "components";
-import { tableVariant } from "constants";
 import { getHistoryTableProcessedData } from ".";
 import { HistoryCard } from "..";
 
@@ -65,7 +64,7 @@ const HistoryTable = ({
 				renderer={renderer}
 				visibleColumns={6}
 				data={processedData}
-				variant={tableVariant?.EXPAND}
+				variant="stripedActionExpand"
 				tableName="History"
 				ResponsiveCard={HistoryCard}
 				tableRowLimit={tableRowLimit}

@@ -1,6 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
-import { tableVariant } from "constants";
 import { OnboardingDashboardCard } from ".";
 
 /**
@@ -66,7 +65,7 @@ const OnboardedMerchants = ({ data }) => {
 				renderer={renderer}
 				visibleColumns={6}
 				data={onboardedMerchantsTableData}
-				variant={tableVariant?.EXPAND}
+				variant="stripedActionExpand"
 				ResponsiveCard={OnboardingDashboardCard}
 			/>
 		</Flex>

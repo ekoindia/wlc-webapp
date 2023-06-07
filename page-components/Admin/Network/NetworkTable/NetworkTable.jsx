@@ -1,5 +1,4 @@
 import { Table } from "components";
-import { tableVariant } from "constants";
 import { useRouter } from "next/router";
 import { NetworkCard } from "..";
 /**
@@ -54,7 +53,7 @@ const NetworkTable = ({
 			<Table
 				onRowClick={onRowClick}
 				renderer={renderer}
-				variant={tableVariant?.REDIRECT}
+				variant="stripedActionRedirect"
 				tableName="Network"
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}

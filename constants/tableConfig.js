@@ -6,12 +6,3 @@ export const tableRowLimit = {
 	LARGE: 15,
 	XLARGE: 25,
 };
-
-/**
- * Variants for table component
- */
-export const tableVariant = {
-	DEFAULT: "evenStriped",
-	REDIRECT: "evenStripedClickableRow",
-	EXPAND: "evenStripedExpandableRow",
-};

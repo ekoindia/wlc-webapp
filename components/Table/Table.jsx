@@ -9,7 +9,7 @@ import {
 	Thead,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { tableRowLimit as trl, tableVariant } from "constants";
+import { tableRowLimit as trl } from "constants";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Th, Tr } from ".";
@@ -34,7 +34,7 @@ const Table = ({
 	onRowClick,
 	ResponsiveCard,
 	defaultCardStyle = true,
-	variant = tableVariant?.DEFAULT,
+	variant = "striped",
 	tableRowLimit = trl?.DEFAULT,
 }) => {
 	const [hasNoMoreItems, setHasNoMoreItems] = useState(false);
