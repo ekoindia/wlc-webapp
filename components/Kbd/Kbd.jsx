@@ -6,7 +6,13 @@ import { Kbd as ChakraKbd } from "@chakra-ui/react";
  */
 const Kbd = ({ children, ...rest }) => {
 	return (
-		<ChakraKbd borderColor="hint" {...rest}>
+		<ChakraKbd
+			display="inline-flex"
+			alignItems="center"
+			justifyContent="center"
+			borderColor="hint"
+			{...rest}
+		>
 			{children}
 		</ChakraKbd>
 	);
