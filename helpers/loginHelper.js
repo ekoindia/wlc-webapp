@@ -1,4 +1,5 @@
 import { Endpoints } from "constants/EndPoints";
+import { buildUserObjectState } from "utils/userObjectBuilder";
 import { fetcher } from "./apiHelper";
 
 function sendOtpRequest(org_id, number, toast, sendState) {
@@ -68,25 +69,7 @@ function createUserState(data) {
 	console.log("::::Received userState::::", data);
 	let tokenTimeout = getTokenExpiryTime(data);
 	console.log("tokenTimeout =1", tokenTimeout);
-	const state = {
-		loggedIn: true,
-		is_org_admin: data?.details?.is_org_admin || 0,
-		access_token: data.access_token,
-		refresh_token: data.refresh_token,
-		token_timeout: tokenTimeout,
-		userId: data?.details?.mobile,
-		uid: data.details?.uid,
-		userDetails: {
-			...data.details,
-		},
-		personalDetails: data?.personal_details,
-		shopDetails: data?.shop_details,
-		accountDetails: data?.account_details,
-		onboarding: data?.details?.onboarding,
-		onboarding_steps: data?.details?.onboarding_steps,
-		role_list: data?.details?.role_list,
-		agreementId: data?.details?.agreement_id,
-	};
+	const state = buildUserObjectState({ ...data, tokenTimeout: tokenTimeout });
 
 	return state;
 }

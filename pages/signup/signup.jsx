@@ -83,7 +83,7 @@ const SignupPage = () => {
 	const [isSpinner, setisSpinner] = useState(true);
 	const toast = useToast();
 	const user_id =
-		userData?.details?.mobile || userData?.userDetails.signup_mobile;
+		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
 	const handleStepDataSubmit = (data) => {
 		console.log("HandleWlcStepData", data);
@@ -463,7 +463,7 @@ const SignupPage = () => {
 				id: 12,
 				form_data: {
 					document_id: res.documentId,
-					agreement_id: userData?.details?.agreement_id,
+					agreement_id: userData?.userDetails?.agreement_id,
 				},
 			});
 		}
@@ -650,7 +650,7 @@ const SignupPage = () => {
 					}
 				>
 					{selectedRole === null &&
-					userData?.details?.mobile === "1" ? (
+					userData?.userDetails?.mobile === "1" ? (
 						<SelectionScreen
 							stepData={selectionStepData}
 							handleSubmit={(data) => {
@@ -662,7 +662,7 @@ const SignupPage = () => {
 						<Home
 							// defaultStep="12600"
 							defaultStep={
-								userData?.details?.role_list || "12400"
+								userData?.userDetails?.role_list || "12400"
 							}
 							isBranding={false}
 							userData={userData}
