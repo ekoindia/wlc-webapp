@@ -1,7 +1,7 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
-import { useSession } from "contexts";
+import { usePubSub, useSession } from "contexts";
 import Head from "next/head";
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import { NavBar, SideBar } from "..";
 
 // Lazy-load the CommandBarBox component
@@ -21,6 +21,24 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+
+	const { publish, TOPICS } = usePubSub();
+
+	// Setup Android Listener...
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			// Android action response listener
+			window["callFromAndroid"] = (action, data) => {
+				console.log(
+					"[_app.tsx] callFromAndroid:: ",
+					action,
+					JSON.stringify(data)
+				);
+
+				publish(TOPICS.ANDROID_RESPONSE, { action, data });
+			};
+		}
+	}, []);
 
 	return (
 		<>

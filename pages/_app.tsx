@@ -7,6 +7,7 @@ import {
 	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
+	PubSubProvider,
 	TodoProvider,
 	UserProvider,
 	WalletProvider,
@@ -193,19 +194,21 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 										<NotificationProvider>
 											<GlobalSearchProvider>
 												<TodoProvider>
-													<ErrorBoundary>
-														{getLayout(
-															<main
-																className={
-																	inter.className
-																}
-															>
-																<Component
-																	{...pageProps}
-																/>
-															</main>
-														)}
-													</ErrorBoundary>
+													<PubSubProvider>
+														<ErrorBoundary>
+															{getLayout(
+																<main
+																	className={
+																		inter.className
+																	}
+																>
+																	<Component
+																		{...pageProps}
+																	/>
+																</main>
+															)}
+														</ErrorBoundary>
+													</PubSubProvider>
 												</TodoProvider>
 											</GlobalSearchProvider>
 										</NotificationProvider>
