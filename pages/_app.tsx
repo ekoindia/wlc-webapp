@@ -3,6 +3,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
 import { ActionIcon } from "components/CommandBar";
 import {
+	EarningSummaryProvider,
 	GlobalSearchProvider,
 	NotificationProvider,
 	OrgDetailProvider,
@@ -193,23 +194,25 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 									>
 										<NotificationProvider>
 											<GlobalSearchProvider>
-												<TodoProvider>
-													<PubSubProvider>
-														<ErrorBoundary>
-															{getLayout(
-																<main
-																	className={
-																		inter.className
-																	}
-																>
-																	<Component
-																		{...pageProps}
-																	/>
-																</main>
-															)}
-														</ErrorBoundary>
-													</PubSubProvider>
-												</TodoProvider>
+												<EarningSummaryProvider>
+													<TodoProvider>
+														<PubSubProvider>
+															<ErrorBoundary>
+																{getLayout(
+																	<main
+																		className={
+																			inter.className
+																		}
+																	>
+																		<Component
+																			{...pageProps}
+																		/>
+																	</main>
+																)}
+															</ErrorBoundary>
+														</PubSubProvider>
+													</TodoProvider>
+												</EarningSummaryProvider>
 											</GlobalSearchProvider>
 										</NotificationProvider>
 									</SWRConfig>
