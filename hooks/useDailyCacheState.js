@@ -1,4 +1,4 @@
-import { useLocalStorage } from "hooks/useLocalStorage";
+import { useLocalStorage } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 
 /**
@@ -35,7 +35,7 @@ const useDailyCacheState = (key, initialValue) => {
 
 	// If the cached value is from today, it is valid.
 	return [
-		cachedValue,
+		cachedValue.data,
 		setValue,
 		cachedValue?.cachedAt === today ? true : false,
 	];
