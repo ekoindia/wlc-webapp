@@ -29,6 +29,10 @@ const selectionStepData = {
 				description: "I serve customers from my shop",
 				icon: "../assets/icons/user_merchant.png",
 				isVisible: true,
+				user_type: [
+					{ key: 3, name: "I Merchant" },
+					{ key: 2, name: "Merchant" },
+				],
 			},
 			{
 				id: 2,
@@ -39,6 +43,7 @@ const selectionStepData = {
 					"I have a network of seller and i want to serve them",
 				icon: "../assets/icons/user_distributor.png",
 				isVisible: true,
+				user_type: [{ key: 1, name: "Distributor" }],
 			},
 			{
 				id: 3,
@@ -49,6 +54,7 @@ const selectionStepData = {
 					"I want to use API and other solution to make my own service",
 				icon: "../assets/icons/user_enterprise.png",
 				isVisible: false,
+				user_type: [{ key: 23, name: "Partner" }],
 			},
 		],
 	},
@@ -135,20 +141,20 @@ const SignupPage = () => {
 				console.log("pintwin 1", data?.form_data, bookletKeys);
 				if (
 					data?.form_data?.first_okekey &&
-					bookletKeys[bookletKeys?.length - 1]
+					bookletKeys[bookletKeys?.length - 2]
 				) {
 					bodyData.form_data.first_okekey = createPintwinFormat(
 						data.form_data.first_okekey,
-						bookletKeys[bookletKeys.length - 1]
+						bookletKeys[bookletKeys.length - 2]
 					);
 				}
 				if (
 					data?.form_data?.second_okekey &&
-					bookletKeys[bookletKeys?.length - 2]
+					bookletKeys[bookletKeys?.length - 1]
 				) {
 					bodyData.form_data.second_okekey = createPintwinFormat(
 						data?.form_data?.second_okekey,
-						bookletKeys[bookletKeys.length - 2]
+						bookletKeys[bookletKeys.length - 1]
 					);
 				}
 				bodyData.form_data.is_pintwin_user =
@@ -268,7 +274,7 @@ const SignupPage = () => {
 				console.error("error in update onboarding: ", err);
 				return err;
 			});
-		if (uploadResponse.status !== 0) {
+		if (uploadResponse.response_status_id !== 0) {
 			toast({
 				title:
 					uploadResponse.message ||
@@ -283,6 +289,7 @@ const SignupPage = () => {
 				duration: 2000,
 			});
 			setLastStepResponse(uploadResponse);
+			refreshApiCall();
 		}
 
 		console.log("uploadResponse", uploadResponse);
@@ -653,7 +660,7 @@ const SignupPage = () => {
 						/>
 					) : (
 						<Home
-							// defaultStep="24001"
+							// defaultStep="12600"
 							defaultStep={
 								userData?.details?.role_list || "12400"
 							}
