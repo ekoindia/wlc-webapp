@@ -23,6 +23,7 @@ import { SWRConfig } from "swr";
 import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import { light } from "../styles/themes";
 
+// Variable Font
 const inter = Inter({
 	weight: "variable",
 	subsets: ["latin"],
@@ -36,14 +37,8 @@ const toastDefaultOptions = {
 	isClosable: true,
 };
 
-export default function WlcApp({ Component, pageProps, router, org }) {
-	// if (colors) {
-	// 	sessionStorage.setItem("colors", JSON.stringify(colors));
-	// } else {
-	// 	colors = JSON.parse(sessionStorage.getItem("colors"));
-	// }
-
-	console.log("[_app.tsx] WlcApp Started: ", {
+export default function InfinityApp({ Component, pageProps, router, org }) {
+	console.log("[_app.tsx] InfinityApp (web) Started: ", {
 		org,
 		is_local: typeof window === "undefined" ? false : true,
 	});
@@ -265,7 +260,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	);
 }
 
-WlcApp.getInitialProps = async function (appContext) {
+InfinityApp.getInitialProps = async function (appContext) {
 	const { ctx } = appContext;
 
 	const defaultProps = App.getInitialProps(appContext);
