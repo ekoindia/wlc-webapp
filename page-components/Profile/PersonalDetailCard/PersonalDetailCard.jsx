@@ -13,7 +13,8 @@ import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { WidgetBase } from "page-components/Home";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { formatDateTime } from "utils/dateFormat";
 
 /**
  * A <PersonalDetailCard> component
@@ -24,11 +25,14 @@ import { useCallback, useState } from "react";
  * @example	`<PersonalDetailCard></PersonalDetailCard>` TODO: Fix example
  */
 const PersonalDetailCard = () => {
-	const { userData, updatePersonalDetail } = useUser();
+	const { userData, refreshUser } = useUser();
 	const [disabled, setDisabled] = useState(false);
 	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const data = userData.personalDetails;
+	const data = useMemo(
+		() => userData.personalDetails,
+		[userData.personalDetails]
+	);
 	const genderoOptions = ["Male", "Female", "Other"];
 	const qualificationOptions = [
 		"Below 10th",
@@ -75,6 +79,9 @@ const PersonalDetailCard = () => {
 					user_id: userData.userId,
 					section: "personal_detail",
 					...formState,
+					dob: parseInt(
+						formatDateTime(new Date(formState.dob), "ddMMyyyy")
+					),
 				},
 				timeout: 30000,
 			},
@@ -82,7 +89,7 @@ const PersonalDetailCard = () => {
 		)
 			.then((data) => {
 				setDisabled(false);
-				updatePersonalDetail(formState);
+				refreshUser();
 				toast({
 					title: data.message,
 					status: "success",
@@ -108,6 +115,7 @@ const PersonalDetailCard = () => {
 	const handleChange = (e) => {
 		setFormState({ ...formState, [e.target.name]: e.target.value });
 	};
+	console.log("data, personalDetailObj", data, personalDetailObj);
 
 	return (
 		<WidgetBase
@@ -120,22 +128,25 @@ const PersonalDetailCard = () => {
 				rowGap="20px"
 				fontSize={{ base: "14px" }}
 			>
-				{Object.entries(personalDetailObj).map(([key], index) =>
-					data[key] != "" ? (
-						<GridItem key={index} colSpan={1} rowSpan={1}>
-							<Flex key={index} direction="column">
-								<Text>
-									{key
-										.replace(/_/g, " ")
-										.replace(/\b\w/g, (c) =>
-											c.toUpperCase()
-										)}
-								</Text>
-								<Text fontWeight="semibold">{data[key]}</Text>
-							</Flex>
-						</GridItem>
-					) : null
-				)}
+				{data &&
+					Object.entries(personalDetailObj).map(([key], index) =>
+						data[key] != "" ? (
+							<GridItem key={index} colSpan={1} rowSpan={1}>
+								<Flex key={index} direction="column">
+									<Text>
+										{key
+											.replace(/_/g, " ")
+											.replace(/\b\w/g, (c) =>
+												c.toUpperCase()
+											)}
+									</Text>
+									<Text fontWeight="semibold">
+										{data[key]}
+									</Text>
+								</Flex>
+							</GridItem>
+						) : null
+					)}
 			</Grid>
 
 			{/* Show Chakra Modal to edit Personal details */}
