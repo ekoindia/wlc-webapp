@@ -19,10 +19,6 @@ export const TOPICS = {
 export const PubSubProvider = (props) => {
 	const [_subscribers, setSubscribers] = useState({});
 
-	// useEffect(() => {
-	// 	console.log("[PubSub] subscribers", subscribers);
-	// }, [subscribers]);
-
 	const subscribe = useCallback((topic, callback) => {
 		const id = uuid.v4();
 		// console.log("[PubSub] subscribe", topic, id);
