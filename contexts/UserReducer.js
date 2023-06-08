@@ -32,10 +32,14 @@ export const UserReducer = (state, { type, payload }) => {
 				const newState = {
 					...state,
 					...payload,
+					personalDetails: payload?.personal_details,
+					shopDetails: payload?.shop_details,
 					token_timeout: tokenTimeout || state.token_timeout, // Persist the old token_timeout if the new one is not available
 				};
 				console.log("newUserState", newState);
 				setandUpdateAuthTokens(payload);
+				setUserDetails(newState);
+
 				sessionStorage.setItem("token_timeout", tokenTimeout);
 				return newState;
 			}
