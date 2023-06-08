@@ -117,7 +117,7 @@ export default function CommandBarBox({ fontClassName }) {
 								{isSmallScreen ? (
 									<Icon name="close" size="sm" />
 								) : (
-									<Kbd>Esc</Kbd>
+									<Kbd minH="24px">Esc</Kbd>
 								)}
 							</Box>
 						</Flex>
@@ -133,8 +133,12 @@ export default function CommandBarBox({ fontClassName }) {
 	);
 }
 
-function Key({ children }) {
-	return <Kbd bg="white">{children}</Kbd>;
+function Key({ children, ...rest }) {
+	return (
+		<Kbd bg="white" fontFamily="sans" minH="22px" minW="22px" {...rest}>
+			{children}
+		</Kbd>
+	);
 }
 
 /**
@@ -460,32 +464,69 @@ function RenderResults({ className, isSmallScreen }) {
 										</Text>
 									)}
 								</Box>
-								{item?.shortcut?.map((shortcut, index) => (
-									<Kbd
-										key={shortcut + index}
-										variant="dark"
-										textTransform={
-											shortcut?.length === 1
-												? "uppercase"
-												: undefined
-										}
-										display={{
-											base: "none",
-											md: "inline-flex",
-										}}
-									>
-										{shortcut
-											.replace(
-												/\$mod/,
-												isMac ? "⌘" : "Ctrl"
-											)
-											.replace(/Alt/, isMac ? "⌥" : "Alt")
-											.replace(/Shift/, "⇧")
-
-											.replace(/Enter/, "⏎")
-											.replace(/\+/g, " + ")}
-									</Kbd>
-								))}
+								{item?.shortcut?.map((shortcut, index) => {
+									const keys = shortcut.split("+");
+									return (
+										<>
+											{index > 0 ? (
+												<Text
+													fontFamily="mono"
+													color="gray.500"
+													mx={1}
+												>
+													→
+												</Text>
+											) : null}
+											{keys.map((key, i2) => (
+												<Kbd
+													minH="24px"
+													minW="24px"
+													key={key + index + i2}
+													variant="dark"
+													fontFamily={
+														key === "$mod"
+															? "sans"
+															: null
+													}
+													textTransform={
+														shortcut?.length === 1
+															? "uppercase"
+															: undefined
+													}
+													display={{
+														base: "none",
+														md: "inline-flex",
+													}}
+												>
+													{
+														key
+															.replace(
+																/\$mod/,
+																isMac
+																	? "⌘"
+																	: "Ctrl"
+															)
+															.replace(
+																/Alt/,
+																isMac
+																	? "⌥"
+																	: "Alt"
+															)
+															.replace(
+																/Shift/,
+																"⇧"
+															)
+															.replace(
+																/Enter/,
+																"⏎"
+															)
+														// .replace(/\+/g, " + ")
+													}
+												</Kbd>
+											))}
+										</>
+									);
+								})}
 								{item.children?.length > 0 && (
 									<Icon
 										name="chevron-right"
@@ -510,8 +551,9 @@ function RenderResults({ className, isSmallScreen }) {
 						color="#64748b"
 					>
 						<Key>↑</Key>&nbsp;
-						<Key>↓</Key>&nbsp;navigate&nbsp;&nbsp;&nbsp;&nbsp;
-						<Key>⏎</Key>&nbsp;open&nbsp;&nbsp;&nbsp;&nbsp;
+						<Key>↓</Key>&nbsp;select&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<Key>⏎</Key>
+						&nbsp;open&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						<Key>=</Key>&nbsp;calculator
 					</Flex>
 				)}
