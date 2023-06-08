@@ -83,12 +83,12 @@ export default function CommandBarBox({ fontClassName }) {
 					<Box
 						className={fontClassName}
 						overflow="hidden"
-						shadow="md"
+						// shadow="md"
 						borderTop="2xl"
 						pb="4px"
 						border="1px solid #f1f5f9"
 						bg="#f8fafc"
-						borderBottom="1px solid #f1f5f9"
+						borderBottomColor="#cbd5e1"
 					>
 						<Flex alignItems="center" p="6px 12px">
 							<Icon name="search" size="md" color="#475569" />
@@ -123,11 +123,18 @@ export default function CommandBarBox({ fontClassName }) {
 						</Flex>
 					</Box>
 					<DynamicSearchController />
-					<RenderResults className={fontClassName} />
+					<RenderResults
+						className={fontClassName}
+						isSmallScreen={isSmallScreen}
+					/>
 				</ChakraKBarAnimator>
 			</ChakraKBarPositioner>
 		</ChakraKBarPortal>
 	);
+}
+
+function Key({ children }) {
+	return <Kbd bg="white">{children}</Kbd>;
 }
 
 /**
@@ -190,153 +197,168 @@ function DynamicSearchController() {
 			return [];
 		}
 
-		const unformattedNumberQuery = queryValueDebounced.replace(
-			/[^0-9a-zA-Z]/g,
-			""
-		);
-		const len = unformattedNumberQuery.length;
-
-		const numQueryVal = Number(unformattedNumberQuery);
-
-		// Check if the query is a valid number
-		const isValidNumQuery =
-			numQueryVal &&
-			Number.isFinite(numQueryVal) &&
-			len >= 2 &&
-			len <= 18;
-
 		const results = [];
-		let validQueryFound = false;
 
-		if (isValidNumQuery && !isAdmin) {
-			// Show Transaction History Search Actions for Non-Admin users only
+		// Math parser...
+		if (queryValueDebounced.charAt(0) === "=") {
+			// const mathParser = new Parser();
+			// const result = mathParser.parse(queryValueDebounced.slice(1));
+			const result = parse(queryValueDebounced.slice(1));
 
-			if (len === 10 && /^[6-9]/.test(queryValueDebounced)) {
-				// Mobile number
-				results.push(
-					getKBarAction({
-						id: "historySearch/mobile",
-						name: "Search Transaction History by Mobile",
-						subtitle: `Customer's Mobile = ${queryValueDebounced}`,
-						keywords: queryValueDebounced,
-						icon: "", // "mobile"
-						perform: () =>
-							router.push(
-								`/history?customer_mobile=${queryValueDebounced}`
-							),
-					})
-				);
-				validQueryFound = true;
-			}
-
-			if (len <= 5) {
-				// Amount
-				results.push(
-					getKBarAction({
-						id: "historySearch/amount",
-						name: "Search Transaction History by Amount",
-						subtitle: `Amount = ₹${queryValueDebounced}`,
-						keywords: queryValueDebounced,
-						icon: "", // "amount"
-						// section: "History",
-						perform: () =>
-							router.push(
-								`/history?amount=${queryValueDebounced}`
-							),
-					})
-				);
-				validQueryFound = true;
-			}
-
-			if (len === 10) {
-				// TID
-				results.push(
-					getKBarAction({
-						id: "historySearch/tid",
-						name: "Search Transaction History by TID",
-						subtitle: `Transaction ID = ${queryValueDebounced}`,
-						keywords: queryValueDebounced,
-						icon: "", // "tid"
-						// section: "History",
-						perform: () =>
-							router.push(`/history?tid=${queryValueDebounced}`),
-					})
-				);
-				validQueryFound = true;
-			}
-
-			if (len >= 9 && len <= 18) {
-				// Account Number
-				results.push(
-					getKBarAction({
-						id: "historySearch/account",
-						name: "Search Transaction History by Account Number",
-						subtitle: `Account Number = ${queryValueDebounced}`,
-						keywords: queryValueDebounced,
-						icon: "", // "tid"
-						// section: "History",
-						perform: () =>
-							router.push(
-								`/history?account=${queryValueDebounced}`
-							),
-					})
-				);
-				validQueryFound = true;
-			}
-		}
-
-		if (!validQueryFound && !isAdmin) {
-			// Show Genric Transaction History Search Action for Non-Admin users only
-			results.push(
-				getKBarAction({
-					id: "historySearch",
-					name: "View Transaction History",
-					subtitle:
-						"Start typing TID, mobile, amount, etc., to search in History...",
-					keywords: "",
-					icon: "", // "tid"
-					// section: "History",
-					perform: () => router.push("/history"),
-				})
-			);
-		}
-
-		// Add notes action
-		if (queryValueDebounced?.length > 2 && !isAdmin) {
+			// if (result) {
 			results.push({
-				id: "note/add",
-				name: "Save this note as a Quick Reminder",
-				subtitle: `Saved notes will appear on your homepage`,
+				id: "math/parse",
+				name: result ? `${result}` : "Calculator",
+				subtitle: result
+					? `Result of ${queryValueDebounced.slice(1)}  (⏎ to copy)`
+					: "Start typing an expression to calculate... (eg: =2+2)",
 				keywords: queryValueDebounced,
-				icon: <ActionIcon icon="book" iconSize="lg" color="#9333ea" />,
-				// section: "Tools",
-				priority: Priority.LOW,
-				perform: () => addTodo(queryValueDebounced),
-			});
-
-			// Math parser...
-			if (queryValueDebounced.charAt(0) === "=") {
-				// const mathParser = new Parser();
-				// const result = mathParser.parse(queryValueDebounced.slice(1));
-				const result = parse(queryValueDebounced.slice(1));
-
-				if (result) {
-					results.push({
-						id: "math/parse",
-						name: `Result: ${result}`,
-						subtitle: `Select to copy result`,
-						keywords: queryValueDebounced,
-						icon: <ActionIcon name="=" style="filled" />,
-						perform: () => {
-							result && copy(result.toString());
-							toast({
-								title: "Copied: " + result,
-								status: "success",
-								duration: 2000,
-							});
-						},
+				icon: (
+					<ActionIcon
+						icon="calculator"
+						style=""
+						size="lg"
+						color="#7c3aed"
+					/>
+				),
+				perform: () => {
+					result && copy(result.toString());
+					toast({
+						title: "Copied: " + result,
+						status: "success",
+						duration: 2000,
 					});
+				},
+			});
+			// }
+		} else {
+			// Remove formatters (commas and spaces) from the number query
+			const unformattedNumberQuery = queryValueDebounced.replace(
+				/(?<=[0-9])[ ,]/g,
+				""
+			);
+			const len = unformattedNumberQuery.length;
+			const isDecimal = unformattedNumberQuery.includes(".");
+
+			const numQueryVal = Number(unformattedNumberQuery);
+
+			// Check if the query is a valid number
+			const isValidNumQuery =
+				numQueryVal &&
+				queryValueDebounced.charAt(0) !== "=" &&
+				Number.isFinite(numQueryVal) &&
+				len >= 2 &&
+				len <= 18;
+
+			let validQueryFound = false;
+
+			if (isValidNumQuery && !isAdmin) {
+				// Show Transaction History Search Actions for Non-Admin users only
+
+				if (
+					len === 10 &&
+					/^[6-9]/.test(queryValueDebounced) &&
+					!isDecimal
+				) {
+					// Mobile number
+					results.push(
+						getKBarAction({
+							id: "historySearch/mobile",
+							name: "Search Transaction History by Mobile",
+							subtitle: `Customer's Mobile = ${numQueryVal}`,
+							keywords: queryValueDebounced,
+							icon: "", // "mobile"
+							perform: () =>
+								router.push(
+									`/history?customer_mobile=${numQueryVal}`
+								),
+						})
+					);
+					validQueryFound = true;
 				}
+
+				if (len <= 7) {
+					// Amount
+					results.push(
+						getKBarAction({
+							id: "historySearch/amount",
+							name: "Search Transaction History by Amount",
+							subtitle: `Amount = ₹${numQueryVal}`,
+							keywords: queryValueDebounced,
+							icon: "", // "amount"
+							// section: "History",
+							perform: () =>
+								router.push(`/history?amount=${numQueryVal}`),
+						})
+					);
+					validQueryFound = true;
+				}
+
+				if (len === 10 && !isDecimal) {
+					// TID
+					results.push(
+						getKBarAction({
+							id: "historySearch/tid",
+							name: "Search Transaction History by TID",
+							subtitle: `Transaction ID = ${numQueryVal}`,
+							keywords: queryValueDebounced,
+							icon: "", // "tid"
+							// section: "History",
+							perform: () =>
+								router.push(`/history?tid=${numQueryVal}`),
+						})
+					);
+					validQueryFound = true;
+				}
+
+				if (len >= 9 && len <= 18 && !isDecimal) {
+					// Account Number
+					results.push(
+						getKBarAction({
+							id: "historySearch/account",
+							name: "Search Transaction History by Account Number",
+							subtitle: `Account Number = ${numQueryVal}`,
+							keywords: queryValueDebounced,
+							icon: "", // "tid"
+							// section: "History",
+							perform: () =>
+								router.push(`/history?account=${numQueryVal}`),
+						})
+					);
+					validQueryFound = true;
+				}
+			}
+
+			if (!validQueryFound && !isAdmin) {
+				// Show Genric Transaction History Search Action for Non-Admin users only
+				results.push(
+					getKBarAction({
+						id: "historySearch",
+						name: "View Transaction History",
+						subtitle:
+							"Start typing TID, mobile, amount, etc., to search in History...",
+						keywords: "",
+						icon: "", // "tid"
+						// section: "History",
+						perform: () => router.push("/history"),
+					})
+				);
+			}
+
+			// Add notes action
+			if (queryValueDebounced?.length > 2 && !isAdmin) {
+				results.push({
+					id: "note/add",
+					name: "Save this note as a Quick Reminder",
+					subtitle: `Saved notes will appear on your homepage`,
+					keywords: queryValueDebounced,
+					icon: (
+						<ActionIcon icon="book" iconSize="lg" color="#9333ea" />
+					),
+					// section: "Tools",
+					priority: Priority.LOW,
+					perform: () => addTodo(queryValueDebounced),
+				});
 			}
 		}
 
@@ -353,11 +375,15 @@ function DynamicSearchController() {
  * Component to render KBar results
  * @param {String} className - The class name to be applied to the rendered results.
  */
-function RenderResults({ className }) {
+function RenderResults({ className, isSmallScreen }) {
 	const { results } = useMatches();
 	const { isMac } = usePlatform();
+	const { queryValue, current } = useKBar((state) => ({
+		current: state.currentRootActionId,
+		queryValue: state.searchQuery,
+	}));
 
-	// console.log("⌘ K Bar results:", results);
+	// console.log("⌘ K Bar results:", current);
 
 	// Chakra wrapper for KBarResults
 	const ChakraKBarResults = chakra(KBarResults);
@@ -365,10 +391,10 @@ function RenderResults({ className }) {
 	if (results.length) {
 		return (
 			<>
-				<BackButton />
+				<BackButton className={className} />
 				<ChakraKBarResults
 					items={results}
-					maxHeight={500}
+					// maxHeight={500}
 					onRender={({ item, active }) => {
 						if (typeof item === "string") {
 							// Render a section header
@@ -472,6 +498,23 @@ function RenderResults({ className }) {
 						);
 					}}
 				/>
+				{current || isSmallScreen || queryValue?.length ? null : (
+					<Flex
+						className={className}
+						h="42px"
+						p="4px 8px"
+						bg="#e2e8f0"
+						align="center"
+						borderTop="1px solid #cbd5e1"
+						fontSize="0.9em"
+						color="#64748b"
+					>
+						<Key>↑</Key>&nbsp;
+						<Key>↓</Key>&nbsp;navigate&nbsp;&nbsp;&nbsp;&nbsp;
+						<Key>⏎</Key>&nbsp;open&nbsp;&nbsp;&nbsp;&nbsp;
+						<Key>=</Key>&nbsp;calculator
+					</Flex>
+				)}
 			</>
 		);
 	} else {
@@ -486,7 +529,7 @@ function RenderResults({ className }) {
 /**
  * Back button for the search results
  */
-function BackButton() {
+function BackButton({ className }) {
 	const { query, current, parentId, parentName } = useKBar((state) => ({
 		current: state.currentRootActionId,
 		parentId: state.actions[state.currentRootActionId]?.parent,
@@ -499,9 +542,12 @@ function BackButton() {
 
 	return (
 		<Flex
+			className={className}
+			fontSize="0.9em"
 			align="center"
-			p={2}
+			p="6px 12px"
 			cursor="pointer"
+			borderBottom="1px solid #f1f5f9"
 			_hover={{ bg: "#e2e8f0" }}
 			color="#64748b"
 			onClick={() => query.setCurrentRootAction(parentId)}
