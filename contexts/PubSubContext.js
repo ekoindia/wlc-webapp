@@ -17,7 +17,7 @@ export const TOPICS = {
 
 // Create a provider for components to consume and subscribe to changes
 export const PubSubProvider = (props) => {
-	const [/* subscribers, */ setSubscribers] = useState({});
+	const [_subscribers, setSubscribers] = useState({});
 
 	// useEffect(() => {
 	// 	console.log("[PubSub] subscribers", subscribers);
