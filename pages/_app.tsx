@@ -102,6 +102,24 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	// Setup K-Bar options...
 	const kbarDefaultActions = [
 		{
+			id: "my-business",
+			name: "My Business Details…",
+			// subtitle: "",
+			icon: (
+				<ActionIcon
+					icon="business-center"
+					size="sm"
+					style="filled"
+					iconSize="24px"
+					// color="#10b981"
+				/>
+			),
+			shortcut: ["$mod+b"],
+			// keywords: "signout quit close",
+			// section: "System",
+			priority: Priority.LOW,
+		},
+		{
 			id: "systemsettings",
 			name: "System",
 			subtitle: "Clear cache or logout",
