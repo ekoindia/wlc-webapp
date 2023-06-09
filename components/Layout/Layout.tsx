@@ -1,11 +1,14 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
 import { usePubSub, useSession } from "contexts";
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import { lazy, useEffect } from "react";
+import { useEffect } from "react";
 import { NavBar, SideBar } from "..";
 
 // Lazy-load the CommandBarBox component
-const CommandBarBox = lazy(() => import("../CommandBar/CommandBarBox"));
+const CommandBarBox = dynamic(() => import("../CommandBar/CommandBarBox"), {
+	ssr: false,
+});
 
 /**
  * The default page layout component
