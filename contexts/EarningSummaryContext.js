@@ -1,8 +1,11 @@
+import { ActionIcon } from "components/CommandBar";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useDailyCacheState } from "hooks";
-import { createContext, useContext, useEffect } from "react";
+import { Priority, useRegisterActions } from "kbar";
+import { createContext, useContext, useEffect, useMemo } from "react";
+import { formatCurrency } from "utils/numberFormat";
 
 /**
  * @typedef {Object} EarningSummaryValue
@@ -96,6 +99,41 @@ export const EarningSummaryProvider = ({ children }) => {
 			2000
 		);
 	}, [isLoggedIn, isAdmin, isOnboarding, accessToken, userId, isValid]);
+
+	// Register the Earning Summary action for Command Bar.
+	const earningSummaryAction = useMemo(() => {
+		const hasIncreased =
+			userEarnings?.this_month_till_yesterday >
+			userEarnings?.last_month_till_yesterday
+				? true
+				: false;
+		return userEarnings?.userId
+			? [
+					{
+						id: "earn-sumry",
+						name: `My Earnings (this month till yesterday): ${formatCurrency(
+							userEarnings.this_month_till_yesterday
+						)}`,
+						subtitle: `Last month earning (till yesterday): ${formatCurrency(
+							userEarnings.last_month_till_yesterday
+						)}`,
+						keywords: "business commission",
+						icon: (
+							<ActionIcon
+								icon={hasIncreased ? "increase" : "decrease"}
+								iconSize="md"
+								color={hasIncreased ? "success" : "error"}
+							/>
+						),
+						priority: Priority.HIGH,
+						parent: "my-business",
+						perform: () => {},
+					},
+			  ]
+			: [];
+	}, [userEarnings]);
+
+	useRegisterActions(earningSummaryAction, [earningSummaryAction]);
 
 	return (
 		<EarningSummaryContext.Provider value={userEarnings}>
