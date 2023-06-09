@@ -489,7 +489,7 @@ function RenderResults({ className, isSmallScreen }) {
 															: null
 													}
 													textTransform={
-														shortcut?.length === 1
+														key?.length === 1
 															? "uppercase"
 															: undefined
 													}
