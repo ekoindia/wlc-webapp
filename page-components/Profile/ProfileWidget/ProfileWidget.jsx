@@ -84,11 +84,12 @@ const ProfileWidget = () => {
 		<Flex
 			direction="column"
 			color="white"
-			w={{ base: "90%", md: "100%" }}
+			// w={{ base: "90%", md: "100%" }}
 			h={{
 				base: "auto",
 				md: "320px",
 			}}
+			mx={{ base: 3, md: "0" }}
 			border="1px solid grey"
 			borderRadius="10px"
 			background="url('./bg.svg'), linear-gradient(to bottom, #11299e, #09154f)"
