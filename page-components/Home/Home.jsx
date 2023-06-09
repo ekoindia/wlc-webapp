@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import {
 	BillPaymentWidget,
 	CommonTrxnWidget,
+	KnowYourCommision,
 	NotificationWidget,
 	QueryWidget,
 	RecentTrxnWidget,
@@ -46,6 +47,7 @@ const Home = () => {
 		{ id: 2, component: BillPaymentWidget },
 		{ id: 3, component: NotificationWidget },
 		{ id: 4, component: RecentTrxnWidget },
+		{ id: 4, component: KnowYourCommision },
 	];
 
 	if (todos && todos.length > 0) {
