@@ -87,7 +87,7 @@ const ProfileWidget = () => {
 			w={{ base: "90%", md: "100%" }}
 			h={{
 				base: "auto",
-				md: "350px",
+				md: "320px",
 			}}
 			border="1px solid grey"
 			borderRadius="10px"
@@ -99,21 +99,32 @@ const ProfileWidget = () => {
 			boxShadow="0px 5px 15px #0000000D"
 			rowGap="14"
 		>
-			<Flex justify="space-between" align="center">
-				<Avatar size="xl" name={data.name[0]} src={data.pic} />
+			<Flex justify="space-between" align="flex-start" gap={2}>
+				<Avatar
+					size={{ base: "md", md: "lg" }}
+					name={data.name[0]}
+					src={data.pic}
+				/>
 				<Flex direction="column" rowGap="1">
-					<Text fontSize={{ base: "24px" }} color="highlight">
+					<Text
+						fontSize={{ base: "18px", md: "22px" }}
+						color="highlight"
+						noOfLines={2}
+					>
 						{data.name}
 					</Text>
-					<Flex gap="2">
+					<Flex gap="2" fontSize="14px">
 						<Text>{UserTypeLabel[data.user_type]}</Text>
-						<Text>&#124;</Text>
-						<Text>User Code: {data.code}</Text>
+						<Text opacity={0.5}>&#124;</Text>
+						<Text>
+							User Code:
+							<strong> {data.code}</strong>
+						</Text>
 					</Flex>
 					<Flex align="center" gap="2" mt="2">
 						<Icon
 							name="phone-circle-outline"
-							size="30px"
+							size="24px"
 							color="highlight"
 						/>
 						<Text>
