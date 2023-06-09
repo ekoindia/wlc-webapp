@@ -85,13 +85,28 @@ const generateTransactionActions = (
 			parent: parent_id
 				? "tx/" + parent_id
 				: is_other_list
-				? null
+				? "others"
 				: "start-a-tx",
 		};
 	};
 
 	const trxnList = is_other_list
-		? []
+		? [
+				{
+					id: "others",
+					name: "Others...",
+					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
+					icon: (
+						<ActionIcon
+							icon="others"
+							// color="gray.500"
+							style="filled"
+						/>
+					),
+					// shortcut: ["$mod+/"],
+					// section: "Services",
+				},
+		  ]
 		: [
 				{
 					id: "start-a-tx",
@@ -188,16 +203,26 @@ const generateTransactionActions = (
  */
 const generateMenuLinkActions = (menu_list, router) => {
 	const menuLinkActions = [];
+
+	// get current route path from Nextjs router
+	const currentRoute = router.pathname;
+
 	menu_list.forEach((menu) => {
-		menuLinkActions.push({
-			id: "menulnk/" + menu.name,
-			name: menu.name,
-			icon: (
-				<ActionIcon icon={menu.icon} name={menu.name} style="filled" />
-			),
-			// section: "Services",
-			perform: () => router.push(menu.link),
-		});
+		if (menu.link != currentRoute) {
+			menuLinkActions.push({
+				id: "menulnk/" + menu.name,
+				name: menu.name,
+				icon: (
+					<ActionIcon
+						icon={menu.icon}
+						name={menu.name}
+						style="filled"
+					/>
+				),
+				// section: "Services",
+				perform: () => router.push(menu.link),
+			});
+		}
 	});
 	console.log("menuLinkActions", menuLinkActions, menu_list);
 	return menuLinkActions;
