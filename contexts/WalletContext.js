@@ -25,14 +25,14 @@ const WalletContext = createContext();
  * @returns {function} fetchBalance - This function is used to fetch wallet balance.
  * */
 const useFetchBalance = (setBalance, accessToken) => {
-	// const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	// GenerateNewAccessToken function to be used in fetcher, if the current accessToken is expired
 	const { generateNewToken } = useRefreshToken();
 
 	const fetchBalance = useCallback(() => {
 		// console.log("::::fetchBalance::::");
-		// setLoading(true);
+		setLoading(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -53,11 +53,11 @@ const useFetchBalance = (setBalance, accessToken) => {
 			})
 			.catch((err) => {
 				console.error("[useFetchBalance] error: ", err);
-			});
-		// .finally(() => setLoading(false));
+			})
+			.finally(() => setLoading(false));
 	}, [accessToken]);
 
-	return { fetchBalance /* loading */ };
+	return { fetchBalance, loading };
 };
 
 /**
@@ -71,7 +71,7 @@ const useFetchBalance = (setBalance, accessToken) => {
 const WalletProvider = ({ children }) => {
 	const [balance, setBalance] = useState(null);
 	const { isLoggedIn, isAdmin, accessToken } = useSession();
-	const { fetchBalance } = useFetchBalance(setBalance, accessToken);
+	const { fetchBalance, loading } = useFetchBalance(setBalance, accessToken);
 
 	useEffect(() => {
 		if (isLoggedIn && !isAdmin) {
@@ -79,6 +79,7 @@ const WalletProvider = ({ children }) => {
 		}
 	}, [isLoggedIn, isAdmin]);
 
+	// Registering the wallet action in KBar
 	const walletAction = useMemo(() => {
 		return balance
 			? [
@@ -100,17 +101,21 @@ const WalletProvider = ({ children }) => {
 			  ]
 			: [];
 	}, [balance]);
-
 	useRegisterActions(walletAction, [walletAction]);
 
+	// Cache the context values
+	const contextValues = useMemo(
+		() => ({
+			balance,
+			refreshWallet: fetchBalance,
+			setBalance,
+			loading,
+		}),
+		[balance, loading, fetchBalance, setBalance]
+	);
+
 	return (
-		<WalletContext.Provider
-			value={{
-				refreshWallet: fetchBalance,
-				setBalance,
-				balance,
-			}}
-		>
+		<WalletContext.Provider value={contextValues}>
 			{children}
 		</WalletContext.Provider>
 	);
