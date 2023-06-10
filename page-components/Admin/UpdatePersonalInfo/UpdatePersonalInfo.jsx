@@ -232,8 +232,6 @@ const UpdatePersonalInfo = () => {
 							<Flex
 								w={{
 									base: "100%",
-									md: "100%vw",
-
 									xl: "66vw",
 									"2xl": "1020px",
 								}}

@@ -17,7 +17,7 @@ const IndoNepal = ({ prop1, ...rest }) => {
 	};
 
 	const commissionTypeObj = {
-		0: "Percentage (%)",
+		// 0: "Percentage (%)", //TODO remove this (only require fixed value in IndoNepal)
 		1: "Fixed",
 	};
 	return (
@@ -25,7 +25,7 @@ const IndoNepal = ({ prop1, ...rest }) => {
 			<PricingForm
 				product="indonepal"
 				ProductPricingType={ProductPricingType.INDONEPAL}
-				ProductSlabs={ProductSlabs.AEPS}
+				ProductSlabs={ProductSlabs.INDONEPAL}
 				commissionForObj={commissionForObj}
 				commissionTypeObj={commissionTypeObj}
 			/>
