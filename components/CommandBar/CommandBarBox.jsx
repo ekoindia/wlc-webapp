@@ -197,6 +197,7 @@ function DynamicSearchController() {
 
 	const router = useRouter();
 
+	// Prepare the Command Bar actions for History search, Calculator, Notes, etc.
 	const historySearch = useMemo(() => {
 		if (!isLoggedIn) {
 			return [];
