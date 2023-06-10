@@ -2,7 +2,6 @@ import { ActionIcon } from "components/CommandBar";
 import { Endpoints, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
-import { Priority, useRegisterActions } from "kbar";
 import {
 	createContext,
 	useCallback,
@@ -12,6 +11,7 @@ import {
 	useState,
 } from "react";
 import { formatCurrency } from "utils/numberFormat";
+import { useBusinessSearchActions } from "./GlobalSearchContext";
 import { useSession } from "./UserContext";
 
 // Created a Wallet Context
@@ -73,6 +73,9 @@ const WalletProvider = ({ children }) => {
 	const { isLoggedIn, isAdmin, accessToken } = useSession();
 	const { fetchBalance, loading } = useFetchBalance(setBalance, accessToken);
 
+	// const gsdata = useGlobalSearch();
+	// console.log("gsdata", gsdata);
+
 	useEffect(() => {
 		if (isLoggedIn && !isAdmin) {
 			fetchBalance();
@@ -94,14 +97,12 @@ const WalletProvider = ({ children }) => {
 								color="#334155"
 							/>
 						),
-						priority: Priority.LOW,
-						parent: "my-business",
-						perform: () => {},
+						// priority: -1,
 					},
 			  ]
 			: [];
 	}, [balance]);
-	useRegisterActions(walletAction, [walletAction]);
+	useBusinessSearchActions(walletAction, [walletAction]);
 
 	// Cache the context values
 	const contextValues = useMemo(
