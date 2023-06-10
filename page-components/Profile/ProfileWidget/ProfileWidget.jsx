@@ -88,6 +88,7 @@ const ProfileWidget = () => {
 			h={{
 				base: "auto",
 				md: "320px",
+				"2xl": "360px",
 			}}
 			mx={{ base: 3, md: "0" }}
 			border="1px solid grey"

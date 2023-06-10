@@ -24,6 +24,7 @@ const QueryWidget = () => {
 			h={{
 				base: "auto",
 				md: "320px",
+				"2xl": "360px",
 			}}
 			borderRadius={{
 				sm: "0px 0px 2px 2px",

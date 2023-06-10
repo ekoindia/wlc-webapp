@@ -37,9 +37,10 @@ const WidgetBase = ({
 			h={{
 				base: "auto",
 				md: "320px",
+				"2xl": "360px",
 			}}
 			direction="column"
-			background="white"
+			bg="white"
 			p={!noPadding && "5"}
 			pb={noPadding && "2"}
 			borderRadius="10px"
