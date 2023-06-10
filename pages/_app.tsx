@@ -102,24 +102,6 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	// Setup K-Bar options...
 	const kbarDefaultActions = [
 		{
-			id: "my-business",
-			name: "My Business Details…",
-			// subtitle: "",
-			icon: (
-				<ActionIcon
-					icon="business-center"
-					size="sm"
-					style="filled"
-					iconSize="24px"
-					// color="#10b981"
-				/>
-			),
-			shortcut: ["$mod+b"],
-			// keywords: "signout quit close",
-			// section: "System",
-			priority: Priority.LOW,
-		},
-		{
 			id: "systemsettings",
 			name: "System",
 			subtitle: "Clear cache or logout",
@@ -127,7 +109,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 			// shortcut: ["c"],
 			// keywords: "signout quit close",
 			// section: "System",
-			priority: Priority.LOW,
+			priority: -999,
 		},
 		{
 			id: "reloadapp",
@@ -201,17 +183,17 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 						// },
 					}}
 				>
-					<UserProvider userMockData={mockUser}>
-						<MenuProvider>
-							<WalletProvider>
-								<RouteProtecter router={router}>
-									<SWRConfig
-										value={{
-											provider: localStorageProvider,
-										}}
-									>
-										<NotificationProvider>
-											<GlobalSearchProvider>
+					<GlobalSearchProvider>
+						<UserProvider userMockData={mockUser}>
+							<MenuProvider>
+								<WalletProvider>
+									<RouteProtecter router={router}>
+										<SWRConfig
+											value={{
+												provider: localStorageProvider,
+											}}
+										>
+											<NotificationProvider>
 												<EarningSummaryProvider>
 													<TodoProvider>
 														<PubSubProvider>
@@ -231,13 +213,13 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 														</PubSubProvider>
 													</TodoProvider>
 												</EarningSummaryProvider>
-											</GlobalSearchProvider>
-										</NotificationProvider>
-									</SWRConfig>
-								</RouteProtecter>
-							</WalletProvider>
-						</MenuProvider>
-					</UserProvider>
+											</NotificationProvider>
+										</SWRConfig>
+									</RouteProtecter>
+								</WalletProvider>
+							</MenuProvider>
+						</UserProvider>
+					</GlobalSearchProvider>
 				</KBarProvider>
 			</OrgDetailProvider>
 		</ChakraProvider>

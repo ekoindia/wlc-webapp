@@ -1,8 +1,10 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
-import { usePubSub, useSession } from "contexts";
+import { ActionIcon } from "components/CommandBar";
+import { useGlobalSearch, usePubSub, useSession } from "contexts";
+import { Priority, useRegisterActions } from "kbar";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { NavBar, SideBar } from "..";
 
 // Lazy-load the CommandBarBox component
@@ -27,6 +29,8 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 
 	const { publish, TOPICS } = usePubSub();
 
+	const { businessActions } = useGlobalSearch(); // Get registered "My Business" actions for the Command bar
+
 	// Setup Android Listener...
 	useEffect(() => {
 		if (typeof window !== "undefined") {
@@ -42,6 +46,39 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 			};
 		}
 	}, []);
+
+	// Add Business section of Command bar...
+	// TODO: Move this to a wrapper component for KBar
+	// Prepare the Command Bar actions for "My Business" section
+	const businessSearch = useMemo(() => {
+		console.log(
+			"[DynamicSearchController] Preparing to register businessActions: ",
+			businessActions
+		);
+		return [
+			{
+				id: "my-business",
+				name: "My Business Details…",
+				// subtitle: "",
+				icon: (
+					<ActionIcon
+						icon="business-center"
+						size="sm"
+						style="filled"
+						iconSize="24px"
+						// color="#10b981"
+					/>
+				),
+				shortcut: ["$mod+b"],
+				// keywords: "signout quit close",
+				// section: "System",
+				priority: Priority.LOW,
+			},
+			...businessActions,
+		];
+	}, [businessActions]);
+
+	useRegisterActions(businessSearch, [businessSearch]);
 
 	return (
 		<>
