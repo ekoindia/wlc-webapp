@@ -18,7 +18,7 @@ const StatusCard = () => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
 	const toast = useToast();
-	const { refreshWallet, balance /* , loading */ } = useWallet();
+	const { refreshWallet, balance, loading } = useWallet();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 
@@ -59,16 +59,15 @@ const StatusCard = () => {
 		}
 	};
 
-	let isBalanceFetching = balance > 0 || balance === 0 ? false : true;
 	const disableRefreshBtn = {
-		opacity: disabled || isBalanceFetching ? 0.3 : 1,
-		cursor: disabled || isBalanceFetching ? "not-allowed" : "pointer",
+		opacity: disabled || loading ? 0.3 : 1,
+		cursor: disabled || loading ? "not-allowed" : "pointer",
 	};
 
 	return (
 		<Flex
 			w="100%"
-			h={{ base: "64px", md: "54px", xl: "58px", "2xl": "78px" }}
+			h={{ base: "54px", xl: "58px", "2xl": "78px" }}
 			px="15px"
 			align="center"
 			justify="space-between"
@@ -79,7 +78,6 @@ const StatusCard = () => {
 				<Icon
 					name="wallet-outline"
 					color={"sidebar.font"}
-					cursor={"pointer"}
 					size={{ base: "24px", "2xl": "32px" }}
 				/>
 				<Flex direction="column">
@@ -90,6 +88,7 @@ const StatusCard = () => {
 							md: "8px",
 							"2xl": "12px",
 						}}
+						pointerEvents="none"
 					>
 						Wallet Balance
 					</Text>
@@ -138,8 +137,8 @@ const StatusCard = () => {
 						boxShadow="0px 3px 6px #00000029"
 						border="2px solid #FFFFFF"
 						onClick={handleAddClick}
-						opacity={isBalanceFetching ? 0.3 : 1}
-						cursor={isBalanceFetching ? "not-allowed" : "pointer"}
+						opacity={loading ? 0.3 : 1}
+						cursor={loading ? "not-allowed" : "pointer"}
 					>
 						<Icon
 							name="add"
