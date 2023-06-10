@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import { useUser } from "contexts/UserContext";
 import { generateNewAccessToken } from "helpers/loginHelper";
 import { useCallback } from "react";
@@ -16,6 +17,8 @@ const useRefreshToken = () => {
 		setIsTokenUpdating,
 		logout,
 	} = useUser();
+
+	const toast = useToast();
 
 	// console.log('userData ::=> ', userData)
 	// Extract refresh_token & token_timeout from userdata
@@ -52,6 +55,11 @@ const useRefreshToken = () => {
 					"[generateNewToken] Token update failed. Logging out user..."
 				);
 				logout();
+				toast({
+					title: "Session Expired. Please login again.",
+					status: "warning",
+					duration: 2000,
+				});
 			}
 
 			return status;
