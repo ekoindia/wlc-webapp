@@ -24,26 +24,40 @@ const useRefreshToken = () => {
 	/**
 	 * @name generateNewToken
 	 * @description Function to generate new token access-token, only when the current access-token is expired, and the refresh-token is valid.
+	 * @param {boolean} logout_on_failure If true, then logout the user if the token is expired and is not updated.
 	 * @returns {boolean} Returns true if the token is expired and is updated, else false.
 	 */
-	const generateNewToken = useCallback(() => {
-		if (
-			refresh_token &&
-			token_timeout &&
-			isTokenUpdating !== true &&
-			token_timeout <= Date.now()
-		) {
-			// Fetch new access-token using the refresh-token...
-			return generateNewAccessToken(
-				refresh_token,
-				updateUserInfo,
-				isTokenUpdating,
-				setIsTokenUpdating,
-				logout
-			);
-		}
-		return false;
-	}, [refresh_token, token_timeout, isTokenUpdating]);
+	const generateNewToken = useCallback(
+		(logout_on_failure) => {
+			let status = false;
+			if (
+				refresh_token &&
+				token_timeout &&
+				isTokenUpdating !== true &&
+				token_timeout <= Date.now()
+			) {
+				// Fetch new access-token using the refresh-token...
+				status = generateNewAccessToken(
+					refresh_token,
+					updateUserInfo,
+					isTokenUpdating,
+					setIsTokenUpdating,
+					logout
+				);
+			}
+
+			if (logout_on_failure && status !== true) {
+				// Logout user
+				console.log(
+					"[generateNewToken] Token update failed. Logging out user..."
+				);
+				logout();
+			}
+
+			return status;
+		},
+		[refresh_token, token_timeout, isTokenUpdating]
+	);
 
 	// generateNewToken function is used to generate new access-token
 	return { generateNewToken };
