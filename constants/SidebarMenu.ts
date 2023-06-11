@@ -30,6 +30,15 @@ export const OtherMenuItems: number[] = [
 ];
 
 /**
+ * List of transaction ids that (if available) are to be shown in the "Others" sub-menu for Admins.
+ */
+export const AdminMenuItems: number[] = [
+	TransactionIds.LOAD_EVALUE,
+	TransactionIds.REQUEST_EVALUE,
+	TransactionIds.TRANSFER_EVALUE,
+];
+
+/**
  * Fixed menu items for admin left-menu.
  */
 export const adminSidebarMenu: adminSidebarMenuType[] = [

@@ -70,17 +70,17 @@ const useFetchBalance = (setBalance, accessToken) => {
  */
 const WalletProvider = ({ children }) => {
 	const [balance, setBalance] = useState(null);
-	const { isLoggedIn, isAdmin, accessToken } = useSession();
+	const { isLoggedIn, userId, accessToken } = useSession();
 	const { fetchBalance, loading } = useFetchBalance(setBalance, accessToken);
 
 	// const gsdata = useGlobalSearch();
 	// console.log("gsdata", gsdata);
 
 	useEffect(() => {
-		if (isLoggedIn && !isAdmin) {
+		if (isLoggedIn) {
 			fetchBalance();
 		}
-	}, [isLoggedIn, isAdmin]);
+	}, [isLoggedIn, userId]);
 
 	// Registering the wallet action in KBar
 	const walletAction = useMemo(() => {

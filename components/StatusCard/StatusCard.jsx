@@ -1,6 +1,6 @@
 import { Circle, Flex, Text, Tooltip, useToast } from "@chakra-ui/react";
 import { TransactionIds } from "constants";
-import { useMenuContext } from "contexts";
+import { useMenuContext, useSession } from "contexts";
 import { useWallet } from "contexts/WalletContext";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -22,6 +22,10 @@ const StatusCard = () => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 
+	const { isLoggedIn, isOnboarding, isAdmin } = useSession();
+
+	if (isOnboarding || isLoggedIn !== true) return null;
+
 	const handleAddClick = () => {
 		let id;
 		for (
@@ -38,7 +42,7 @@ const StatusCard = () => {
 
 		if (!id) {
 			toast({
-				title: "No role found to add balance",
+				title: "Add Balance not allowed! Please contact support.",
 				status: "error",
 				duration: 2000,
 			});
@@ -46,7 +50,7 @@ const StatusCard = () => {
 			return;
 		}
 
-		router.push(id ? `/transaction/${id}` : "");
+		router.push(`${isAdmin ? "/admin" : ""}/transaction/${id}`);
 	};
 
 	const onRefreshHandler = () => {
