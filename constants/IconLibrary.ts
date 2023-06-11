@@ -217,6 +217,17 @@ export interface IconCategoriesType {
 [];
 
 export const IconCategories: IconCategoriesType = {
+	App: [
+		"menu",
+		"menu-home",
+		"home",
+		"manage",
+		"settings",
+		"notifications",
+		"notifications-none",
+		"logout",
+		"print",
+	],
 	Actions: [
 		"add",
 		"remove",
@@ -319,6 +330,7 @@ export const IconCategories: IconCategoriesType = {
 	],
 	Transactions: [
 		"transaction",
+		"others",
 		"money-deposit",
 		"cash",
 		"money",
@@ -351,6 +363,28 @@ export const IconCategories: IconCategoriesType = {
 		"select-plan",
 		"tick",
 		"verified-user",
+	],
+	"⚠️ Old Connect": [
+		"picture-in-picture-alt",
+		"tv",
+		"live-tv",
+		"visibility",
+		"developer-board",
+		"favorite",
+		"directions-bike",
+		"directions-car",
+		"directions-walk",
+		"flight",
+		"fullscreen",
+		"games",
+		"flash-on",
+		"signal-cellular-connected-no-internet-0-bar",
+		"signal-cellular-connected-no-internet-1-bar",
+		"speaker-phone",
+		"web-asset",
+		"widgets",
+		"wc",
+		"power-settings-new",
 	],
 };
 
