@@ -1,6 +1,7 @@
 export { allowedCategories } from "./allowedCategories";
 export {
 	NetworkObject,
+	NotificationsBreadcrumbData,
 	PricingCommissionObject,
 	TransactionHistoryObject,
 } from "./BreadcrumbsData";

@@ -63,6 +63,11 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 	// 	name: "Company profile",
 	// 	link: "/admin/company",
 	// },
+	{
+		icon: "notifications-none",
+		name: "Send Notifications",
+		link: "/admin/notifications",
+	},
 ];
 
 /**
