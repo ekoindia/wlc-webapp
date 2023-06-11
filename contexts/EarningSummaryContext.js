@@ -107,7 +107,7 @@ export const EarningSummaryProvider = ({ children }) => {
 			userEarnings?.last_month_till_yesterday
 				? true
 				: false;
-		return userEarnings?.userId
+		return userEarnings?.userId && userEarnings?.userId === userId
 			? [
 					{
 						id: "earn-sumry",
