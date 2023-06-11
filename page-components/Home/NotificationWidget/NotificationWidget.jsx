@@ -15,7 +15,7 @@ import {
 import { Button, Icon } from "components";
 import { useNotification } from "contexts";
 import { useAppLink } from "hooks";
-import { formatDateTime } from "utils";
+import { formatDateTime } from "libs";
 import { WidgetBase } from "..";
 
 /**

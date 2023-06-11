@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { formatDate } from "utils/dateFormat";
+import { formatDate } from "libs";
 
 /**
  * Show a formatted date/time value inside a <span>.

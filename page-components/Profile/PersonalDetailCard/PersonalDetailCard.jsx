@@ -12,9 +12,9 @@ import { Endpoints, TransactionIds } from "constants";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
+import { formatDateTime } from "libs";
 import { WidgetBase } from "page-components/Home";
 import { useCallback, useMemo, useState } from "react";
-import { formatDateTime } from "utils/dateFormat";
 
 /**
  * A <PersonalDetailCard> component
