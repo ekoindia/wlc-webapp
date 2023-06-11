@@ -508,6 +508,10 @@ const AccordionMenu = ({
 	// Hide if nothing to show...
 	if (!(trxnList?.length > 0 || otherList?.length > 0)) return null;
 
+	const showTrxnSubMenu = trxnList?.length > 0;
+	const showOtherSubMenu = otherList?.length > 0;
+	const otherMenuIndex = showTrxnSubMenu ? 1 : 0;
+
 	return (
 		<Accordion
 			allowToggle
@@ -517,7 +521,7 @@ const AccordionMenu = ({
 			onChange={setOpenIndex}
 		>
 			{/* Start A Transaction... */}
-			{isAdmin !== true && trxnList?.length > 0 && (
+			{showTrxnSubMenu && (
 				<AccordionSubMenuSection
 					title="Start a Transaction"
 					icon="transaction"
@@ -529,13 +533,13 @@ const AccordionMenu = ({
 			)}
 
 			{/* Others... */}
-			{otherList?.length > 0 && (
+			{showOtherSubMenu && (
 				<AccordionSubMenuSection
 					title="Others"
 					icon="others"
 					menuItems={otherList}
 					router={router}
-					expanded={openIndex === 1}
+					expanded={openIndex === otherMenuIndex}
 					isAdmin={isAdmin}
 				/>
 			)}
