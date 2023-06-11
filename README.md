@@ -1,6 +1,5 @@
-# Nextjs Setup Project
-
-Guide - [https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7](https://dev.to/alexeagleson/how-to-build-scalable-architecture-for-your-nextjs-project-2pb7)
+# Eko Infinity Web App
+A white-labelled SaaS platform to run your business like agent-banking, micro-finance, etc.
 
 ## Setup Development Envoirnment:
 - One-time Setup:
