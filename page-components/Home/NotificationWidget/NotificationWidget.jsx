@@ -167,7 +167,7 @@ const NotificationWidget = () => {
 							<Text fontSize="xs">
 								{formatDateTime(
 									openedNotification.notify_time,
-									"dd/MM/yyyy, hh:mm AA"
+									"dd MMM yyyy, hh:mm a"
 								)}
 							</Text>
 							<Spacer />
