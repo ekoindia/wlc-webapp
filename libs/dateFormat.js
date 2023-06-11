@@ -20,6 +20,10 @@ export const formatDate = (dateString, formatString = "dd/MM/yyyy") => {
 	if (isNaN(dateObj)) {
 		return dateString;
 	}
+
+	// Fix basic format issues
+	formatString = formatString.replace(/ AA/, " a");
+
 	return format(dateObj, formatString);
 };
 
@@ -34,3 +38,33 @@ export const formatDateTime = (
 	dateString,
 	formatString = "dd/MM/yyyy hh:mm a"
 ) => formatDate(dateString, formatString);
+
+/**
+ * Get the "when" string for the given Date object. Eg: "Today", "Yesterday", "Tomorrow".
+ * @param {Date} date - The Date object
+ * @returns {string} - The "when" string
+ * @example
+ * getWhenString(new Date()); // "Today"
+ * getWhenString(new Date(Date.now() - 24 * 60 * 60 * 1000)); // "Yesterday"
+ * getWhenString(new Date(Date.now() + 24 * 60 * 60 * 1000)); // "Tomorrow"
+ */
+export const getWhenString = (date) => {
+	if (!date) return "";
+
+	const today = new Date();
+	if (date.toDateString() === today.toDateString()) {
+		return "Today";
+	}
+
+	const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+	if (date.toDateString() === yesterday.toDateString()) {
+		return "Yesterday";
+	}
+
+	const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+	if (date.toDateString() === tomorrow.toDateString()) {
+		return "Tomorrow";
+	}
+
+	return "";
+};
