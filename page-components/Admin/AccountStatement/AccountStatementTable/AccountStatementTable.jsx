@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { tableRowLimit } from "constants";
 import { AccountStatementCard } from "..";
 
 /**
@@ -21,6 +22,7 @@ const AccountStatementTable = (props) => {
 			name: "date_time",
 			field: "Date & Time",
 			sorting: true,
+			show: "DateTime",
 		},
 		{ name: "activity", field: "Activity" },
 		{
@@ -29,19 +31,16 @@ const AccountStatementTable = (props) => {
 			show: "Description",
 		},
 
-		{ name: "amount", field: "Amount" },
+		{ name: "amount", field: "Amount", show: "Amount" },
 	];
 
 	return (
 		<>
 			<Table
-				isOnclickRequire={false}
-				pageLimit={15}
+				tableRowLimit={tableRowLimit?.XLARGE}
 				renderer={renderer}
 				data={acctabledata}
-				variant="evenStriped"
 				tableName="Account"
-				ispagintationrequire={false}
 				ResponsiveCard={AccountStatementCard}
 				defaultCardStyle={false}
 			/>

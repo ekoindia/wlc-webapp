@@ -1,17 +1,22 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
+import { ActionIcon } from "components/CommandBar";
 import {
+	EarningSummaryProvider,
+	GlobalSearchProvider,
 	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
+	PubSubProvider,
+	TodoProvider,
 	UserProvider,
 	WalletProvider,
 } from "contexts";
-import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
+import { KBarProvider, Priority } from "kbar";
 import App from "next/app";
 import { Inter } from "next/font/google";
 import Head from "next/head";
@@ -20,6 +25,7 @@ import { SWRConfig } from "swr";
 import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import { light } from "../styles/themes";
 
+// Variable Font
 const inter = Inter({
 	weight: "variable",
 	subsets: ["latin"],
@@ -33,14 +39,8 @@ const toastDefaultOptions = {
 	isClosable: true,
 };
 
-export default function WlcApp({ Component, pageProps, router, org }) {
-	// if (colors) {
-	// 	sessionStorage.setItem("colors", JSON.stringify(colors));
-	// } else {
-	// 	colors = JSON.parse(sessionStorage.getItem("colors"));
-	// }
-
-	console.log("[_app.tsx] WlcApp Started: ", {
+export default function InfinityApp({ Component, pageProps, router, org }) {
+	console.log("[_app.tsx] InfinityApp (web) Started: ", {
 		org,
 		is_local: typeof window === "undefined" ? false : true,
 	});
@@ -99,6 +99,56 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		console.log("[_app.tsx] !! Mock User: ", mockUser);
 	}
 
+	// Setup K-Bar options...
+	const kbarDefaultActions = [
+		{
+			id: "systemsettings",
+			name: "System",
+			subtitle: "Clear cache or logout",
+			icon: <ActionIcon icon="logout" size="sm" color="error" />,
+			// shortcut: ["c"],
+			// keywords: "signout quit close",
+			// section: "System",
+			priority: -999,
+		},
+		{
+			id: "reloadapp",
+			name: "Reload App",
+			subtitle: "Reset cache and reload the app if you facing any issues",
+			icon: <ActionIcon icon="reload" size="sm" color="error" />,
+			shortcut: ["$mod+F5"],
+			keywords: "reset cache reload",
+			section: "System",
+			priority: Priority.LOW,
+			parent: "systemsettings",
+			perform: () => {
+				// Clear session storage (except org_detail)
+				Object.keys(window.sessionStorage).forEach((key) => {
+					if (key !== OrgDetailSessionStorageKey && key !== "todos") {
+						window.sessionStorage.removeItem(key);
+					}
+				});
+
+				// Reset All LocalStorage (Trxn/Menu/etc) Cache
+				window.localStorage.clear();
+
+				// Reload
+				window.location.reload();
+			},
+		},
+		{
+			id: "logout",
+			name: "Logout",
+			icon: <ActionIcon icon="logout" size="sm" color="error" />,
+			// shortcut: ["c"],
+			keywords: "signout quit close",
+			section: "System",
+			priority: Priority.LOW,
+			parent: "systemsettings",
+			perform: () => (window.location.pathname = "contact"),
+		},
+	];
+
 	// Get standard or custom Layout for the page...
 	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx).
 	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
@@ -106,6 +156,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 		Component.getLayout ||
 		((page) => (
 			<Layout
+				fontClassName={inter.className}
 				appName={org?.app_name}
 				pageMeta={Component?.pageMeta || {}}
 			>
@@ -120,37 +171,56 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 			toastOptions={{ defaultOptions: toastDefaultOptions }}
 		>
 			<OrgDetailProvider initialData={org || null}>
-				<UserProvider userMockData={mockUser}>
-					<LayoutProvider>
-						<MenuProvider>
-							<WalletProvider>
-								<RouteProtecter router={router}>
-									<SWRConfig
-										value={{
-											provider: localStorageProvider,
-										}}
-									>
-										<NotificationProvider>
-											<ErrorBoundary>
-												{getLayout(
-													<main
-														className={
-															inter.className
-														}
-													>
-														<Component
-															{...pageProps}
-														/>
-													</main>
-												)}
-											</ErrorBoundary>
-										</NotificationProvider>
-									</SWRConfig>
-								</RouteProtecter>
-							</WalletProvider>
-						</MenuProvider>
-					</LayoutProvider>
-				</UserProvider>
+				<KBarProvider
+					actions={kbarDefaultActions}
+					options={{
+						enableHistory: false,
+						disableScrollbarManagement: true,
+						// callbacks: {
+						// 	onOpen: () => {
+						// 		console.log("[KBar] onOpen");
+						// 	},
+						// },
+					}}
+				>
+					<GlobalSearchProvider>
+						<UserProvider userMockData={mockUser}>
+							<MenuProvider>
+								<WalletProvider>
+									<RouteProtecter router={router}>
+										<SWRConfig
+											value={{
+												provider: localStorageProvider,
+											}}
+										>
+											<NotificationProvider>
+												<EarningSummaryProvider>
+													<TodoProvider>
+														<PubSubProvider>
+															<ErrorBoundary>
+																{getLayout(
+																	<main
+																		className={
+																			inter.className
+																		}
+																	>
+																		<Component
+																			{...pageProps}
+																		/>
+																	</main>
+																)}
+															</ErrorBoundary>
+														</PubSubProvider>
+													</TodoProvider>
+												</EarningSummaryProvider>
+											</NotificationProvider>
+										</SWRConfig>
+									</RouteProtecter>
+								</WalletProvider>
+							</MenuProvider>
+						</UserProvider>
+					</GlobalSearchProvider>
+				</KBarProvider>
 			</OrgDetailProvider>
 		</ChakraProvider>
 	);
@@ -178,11 +248,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 					href="/favicon-32x32.png"
 					sizes="32x32"
 				/>
-				<link
-					rel="icon"
-					type="image/svg+xml"
-					href="/assets/images/favicon.svg"
-				/>
+				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 			</Head>
 
 			{process.env.NEXT_PUBLIC_GTM_ID ? (
@@ -200,7 +266,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	);
 }
 
-WlcApp.getInitialProps = async function (appContext) {
+InfinityApp.getInitialProps = async function (appContext) {
 	const { ctx } = appContext;
 
 	const defaultProps = App.getInitialProps(appContext);

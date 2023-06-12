@@ -1,3 +1,4 @@
+import { useToast } from "@chakra-ui/react";
 import { useUser } from "contexts/UserContext";
 import { generateNewAccessToken } from "helpers/loginHelper";
 import { useCallback } from "react";
@@ -17,30 +18,56 @@ const useRefreshToken = () => {
 		logout,
 	} = useUser();
 
+	const toast = useToast();
+
 	// console.log('userData ::=> ', userData)
 	// Extract refresh_token & token_timeout from userdata
 	const { refresh_token, token_timeout } = userData;
 
-	// Here, using useCallback to memorize the generateNewAccessToken so that it cannot create in pre-renders
-	const generateNewToken = useCallback(() => {
-		if (
-			refresh_token &&
-			token_timeout &&
-			isTokenUpdating !== true &&
-			token_timeout <= Date.now()
-		) {
-			// Fetch new access-token using the refresh-token...
-			generateNewAccessToken(
-				refresh_token,
-				updateUserInfo,
-				isTokenUpdating,
-				setIsTokenUpdating,
-				logout
-			);
-		}
-	}, [refresh_token, token_timeout, isTokenUpdating]);
+	/**
+	 * @name generateNewToken
+	 * @description Function to generate new token access-token, only when the current access-token is expired, and the refresh-token is valid.
+	 * @param {boolean} logout_on_failure If true, then logout the user if the token is expired and is not updated.
+	 * @returns {boolean} Returns true if the token is expired and is updated, else false.
+	 */
+	const generateNewToken = useCallback(
+		(logout_on_failure) => {
+			let status = false;
+			if (
+				refresh_token &&
+				token_timeout &&
+				isTokenUpdating !== true &&
+				token_timeout <= Date.now()
+			) {
+				// Fetch new access-token using the refresh-token...
+				status = generateNewAccessToken(
+					refresh_token,
+					updateUserInfo,
+					isTokenUpdating,
+					setIsTokenUpdating,
+					logout
+				);
+			}
 
-	// generateNewToken function is used to generate new token access token
+			if (logout_on_failure && status !== true) {
+				// Logout user
+				console.log(
+					"[generateNewToken] Token update failed. Logging out user..."
+				);
+				logout();
+				toast({
+					title: "Session Expired. Please login again.",
+					status: "warning",
+					duration: 2000,
+				});
+			}
+
+			return status;
+		},
+		[refresh_token, token_timeout, isTokenUpdating]
+	);
+
+	// generateNewToken function is used to generate new access-token
 	return { generateNewToken };
 };
 

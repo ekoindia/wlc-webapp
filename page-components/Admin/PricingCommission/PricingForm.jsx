@@ -1,16 +1,14 @@
-import {
-	Box,
-	Flex,
-	Radio,
-	RadioGroup,
-	SimpleGrid,
-	Text,
-} from "@chakra-ui/react";
-import { Button, Currency, Icon, Input, MultiSelect, Select } from "components";
+import { Box, Flex, Radio, RadioGroup, Text } from "@chakra-ui/react";
+import { Button, Icon, Input, MultiSelect, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+
+const OPERATION = {
+	SUBMIT: 1,
+	FETCH: 0,
+};
 
 /**
  * A <PricingForm> component
@@ -23,6 +21,7 @@ import { useEffect, useRef, useState } from "react";
 const PricingForm = ({
 	product,
 	ProductSlabs,
+	ProductPricingType,
 	commissionForObj = radioDummy,
 	commissionTypeObj = radioDummy,
 }) => {
@@ -31,25 +30,18 @@ const PricingForm = ({
 	const [commissionType, setCommissionType] = useState("0");
 	const [fromMultiSelect, setFromMultiSelect] = useState([]);
 	const [fromSelect, setFromSelect] = useState([]);
-	console.log("fromSelect", fromSelect);
 	const [data, setData] = useState([]);
-	const focusRef = useRef(null);
+	// const focusRef = useRef(null);
 	const { accessToken } = useSession();
 
-	const charges = {
-		"Fixed Charges": 1.8,
-		Taxes: 0.8,
-		"Network Earnings": 4.12,
-		"Your Earnings": 3.28,
-	};
+	// const charges = {
+	// 	"Fixed Charges": 1.8,
+	// 	Taxes: 0.8,
+	// 	"Network Earnings": 4.12,
+	// 	"Your Earnings": 3.28,
+	// };
 
-	// operation
-	const OP = {
-		SUBMIT: 1,
-		FETCH: 0,
-	};
-
-	const handleApiCall = (op) => {
+	const hitQuery = (op) => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -70,9 +62,9 @@ const PricingForm = ({
 			.then((data) => {
 				const selectdata =
 					commissionFor == 1
-						? data?.data?.allCspList
+						? data?.data?.allCspList ?? []
 						: commissionFor == 2
-						? data?.data?.allScspList
+						? data?.data?.allScspList ?? []
 						: [];
 				setData(selectdata);
 			})
@@ -82,66 +74,80 @@ const PricingForm = ({
 	};
 
 	useEffect(() => {
-		handleApiCall(OP.FETCH);
+		if (commissionFor !== "3") {
+			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
+			hitQuery(OPERATION.FETCH);
+		}
 	}, [product, commissionFor]);
 
 	const handleSubmit = () => {
-		handleApiCall(OP.SUBMIT);
+		hitQuery(OPERATION.SUBMIT);
 	};
 
-	const handlePopUp = (focused) => {
-		focusRef.current.style.display = focused ? "block" : "none";
-	};
+	// const handlePopUp = (focused) => {
+	// 	focusRef.current.style.display = focused ? "block" : "none";
+	// };
 
 	const multiSelectRenderer = {
 		value: "ekocspid",
 		label: "DisplayName",
 	};
 	return (
-		<Flex direction="column" gap="10">
+		<Flex direction="column" gap="10" fontSize="md">
 			<Flex direction="column" gap="2">
-				<Text fontWeight="semibold">Select commissions for</Text>
+				<Text fontWeight="semibold">{`Select ${ProductPricingType} For`}</Text>
 				<RadioGroup
 					defaultValue="0"
 					value={commissionFor}
 					onChange={(value) => setCommissionFor(value)}
 				>
-					<Flex gap="16">
+					<Flex
+						direction={{ base: "column", sm: "row" }}
+						gap={{ base: "4", md: "16" }}
+					>
 						{Object.entries(commissionForObj).map(
 							([key, value]) => (
 								<Radio size="lg" key={key} value={key}>
-									<Text fontSize={{ base: "sm", sm: "md" }}>
-										{value}
-									</Text>
+									<Text fontSize="sm">{value}</Text>
 								</Radio>
 							)
 						)}
 					</Flex>
 				</RadioGroup>
 			</Flex>
-			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
-				<Text fontWeight="semibold">
-					Select {commissionForObj[commissionFor]}
-				</Text>
-				<MultiSelect
-					options={data}
-					renderer={multiSelectRenderer}
-					setData={setFromMultiSelect}
-				/>
-			</Flex>
+			{commissionFor !== "3" ? (
+				/* no need of multiselect when user clicked on product radio option in select_commission_for field */
+				<Flex
+					direction="column"
+					gap="2"
+					w={{ base: "100%", md: "500px" }}
+				>
+					<Text fontWeight="semibold">
+						Select {commissionForObj[commissionFor]}
+					</Text>
+					<MultiSelect
+						options={data}
+						renderer={multiSelectRenderer}
+						setData={setFromMultiSelect}
+					/>
+				</Flex>
+			) : null}
 			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
 				<Text fontWeight="semibold">Select Slab</Text>
 				<Select data={ProductSlabs} setSelected={setFromSelect} />
 			</Flex>
 
 			<Flex direction="column" gap="2">
-				<Text fontWeight="semibold">Select commissions Type</Text>
+				<Text fontWeight="semibold">{`Select ${ProductPricingType} Type`}</Text>
 				<RadioGroup
 					defaultValue="0"
 					value={commissionType}
 					onChange={(value) => setCommissionType(value)}
 				>
-					<Flex gap="16">
+					<Flex
+						direction={{ base: "column", sm: "row" }}
+						gap={{ base: "4", md: "16" }}
+					>
 						{Object.entries(commissionTypeObj).map(
 							([key, value]) => (
 								<Radio size="lg" key={key} value={key}>
@@ -156,7 +162,7 @@ const PricingForm = ({
 			</Flex>
 
 			<Flex direction="column" gap="2">
-				<Text fontWeight="semibold">Define Commission</Text>
+				<Text fontWeight="semibold">{`Define ${ProductPricingType}`}</Text>
 				<Flex gap="6" direction={{ base: "column", md: "row" }}>
 					<Flex
 						direction="column"
@@ -179,8 +185,8 @@ const PricingForm = ({
 							type="number"
 							defaultValue={commission}
 							onChange={(e) => setCommission(e.target.value)}
-							onClick={() => handlePopUp(true)}
-							onBlur={() => handlePopUp(false)}
+							// onClick={() => handlePopUp(true)}
+							// onBlur={() => handlePopUp(false)}
 						/>
 
 						<Flex
@@ -243,7 +249,7 @@ const PricingForm = ({
 						</Flex>
 					</Flex>
 
-					<Flex
+					{/* <Flex
 						w={{ base: "auto", md: "405px" }}
 						h="fit-content"
 						p="10px"
@@ -280,7 +286,7 @@ const PricingForm = ({
 								</Flex>
 							))}
 						</SimpleGrid>
-					</Flex>
+					</Flex> */}
 				</Flex>
 			</Flex>
 		</Flex>

@@ -17,6 +17,7 @@ export type IconNameType =
 	| "badge"
 	| "book"
 	| "business-center"
+	| "calculator"
 	| "calender"
 	| "caret-up"
 	| "caret-down"
@@ -216,6 +217,17 @@ export interface IconCategoriesType {
 [];
 
 export const IconCategories: IconCategoriesType = {
+	App: [
+		"menu",
+		"menu-home",
+		"home",
+		"manage",
+		"settings",
+		"notifications",
+		"notifications-none",
+		"logout",
+		"print",
+	],
 	Actions: [
 		"add",
 		"remove",
@@ -318,6 +330,7 @@ export const IconCategories: IconCategoriesType = {
 	],
 	Transactions: [
 		"transaction",
+		"others",
 		"money-deposit",
 		"cash",
 		"money",
@@ -350,6 +363,28 @@ export const IconCategories: IconCategoriesType = {
 		"select-plan",
 		"tick",
 		"verified-user",
+	],
+	"⚠️ Old Connect": [
+		"picture-in-picture-alt",
+		"tv",
+		"live-tv",
+		"visibility",
+		"developer-board",
+		"favorite",
+		"directions-bike",
+		"directions-car",
+		"directions-walk",
+		"flight",
+		"fullscreen",
+		"games",
+		"flash-on",
+		"signal-cellular-connected-no-internet-0-bar",
+		"signal-cellular-connected-no-internet-1-bar",
+		"speaker-phone",
+		"web-asset",
+		"widgets",
+		"wc",
+		"power-settings-new",
 	],
 };
 
@@ -429,6 +464,10 @@ export const IconLibrary: IconLibraryType = {
 	"business-center": {
 		viewBox: "0 0 24 24",
 		path: `<path d="M10 16v-1H3.01L3 19c0 1.11.89 2 2 2h14c1.11 0 2-.89 2-2v-4h-7v1h-4zm10-9h-4.01V5l-2-2h-4l-2 2v2H4c-1.1 0-2 .9-2 2v3c0 1.11.89 2 2 2h6v-2h4v2h6c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-6 0h-4V5h4v2z"/>`,
+	},
+	calculator: {
+		viewBox: "0 0 32 32",
+		path: `<path d="M12 2h-10c-1.1 0-2 0.9-2 2v10c0 1.1 0.9 2 2 2h10c1.1 0 2-0.9 2-2v-10c0-1.1-0.9-2-2-2zM12 10h-10v-2h10v2zM28 2h-10c-1.1 0-2 0.9-2 2v26c0 1.1 0.9 2 2 2h10c1.1 0 2-0.9 2-2v-26c0-1.1-0.9-2-2-2zM28 20h-10v-2h10v2zM28 14h-10v-2h10v2zM12 18h-10c-1.1 0-2 0.9-2 2v10c0 1.1 0.9 2 2 2h10c1.1 0 2-0.9 2-2v-10c0-1.1-0.9-2-2-2zM12 26h-4v4h-2v-4h-4v-2h4v-4h2v4h4v2z"/>`,
 	},
 	calender: {
 		viewBox: "0 0 23 24",

@@ -1,7 +1,16 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
-import { useSession } from "contexts";
+import { ActionIcon } from "components/CommandBar";
+import { useGlobalSearch, usePubSub, useSession } from "contexts";
+import { Priority, useRegisterActions } from "kbar";
+import dynamic from "next/dynamic";
 import Head from "next/head";
+import { useEffect, useMemo } from "react";
 import { NavBar, SideBar } from "..";
+
+// Lazy-load the CommandBarBox component
+const CommandBarBox = dynamic(() => import("../CommandBar/CommandBarBox"), {
+	ssr: false,
+});
 
 /**
  * The default page layout component
@@ -10,14 +19,66 @@ import { NavBar, SideBar } from "..";
  * @param {Boolean} pageMeta.isSubPage - If the page is a sub page, then the layout will not render the top navbar (Header) on small screens.
  * @param {String} pageMeta.title - The page title. This will be displayed in the browser titlebar.
  */
-const Layout = ({ appName, pageMeta, children }) => {
-	const { isSubPage, title } = pageMeta;
+const Layout = ({ appName, pageMeta, fontClassName, children }) => {
+	const { isSubPage, title, hideMenu } = pageMeta;
 
-	// const { isNavHidden } = useLayoutContext();
 	const { isLoggedIn } = useSession();
 	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+
+	const { publish, TOPICS } = usePubSub();
+
+	const { businessActions } = useGlobalSearch(); // Get registered "My Business" actions for the Command bar
+
+	// Setup Android Listener...
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			// Android action response listener
+			window["callFromAndroid"] = (action, data) => {
+				console.log(
+					"[_app.tsx] callFromAndroid:: ",
+					action,
+					JSON.stringify(data)
+				);
+
+				publish(TOPICS.ANDROID_RESPONSE, { action, data });
+			};
+		}
+	}, []);
+
+	// Add Business section of Command bar...
+	// TODO: Move this to a wrapper component for KBar
+	// Prepare the Command Bar actions for "My Business" section
+	const businessSearch = useMemo(() => {
+		console.log(
+			"[DynamicSearchController] Preparing to register businessActions: ",
+			businessActions
+		);
+		return [
+			{
+				id: "my-business",
+				name: "My Business Details…",
+				// subtitle: "",
+				icon: (
+					<ActionIcon
+						icon="business-center"
+						size="sm"
+						style="filled"
+						iconSize="24px"
+						// color="#10b981"
+					/>
+				),
+				shortcut: ["$mod+b"],
+				// keywords: "signout quit close",
+				// section: "System",
+				priority: Priority.LOW,
+			},
+			...businessActions,
+		];
+	}, [businessActions]);
+
+	useRegisterActions(businessSearch, [businessSearch]);
 
 	return (
 		<>
@@ -31,7 +92,7 @@ const Layout = ({ appName, pageMeta, children }) => {
 			) : null}
 
 			{isLoggedIn ? (
-				<Box w={"full"}>
+				<Box w={"full"} className={fontClassName}>
 					{/* Hide top navbar on small screen if this is a sub-page (shows it's own back button in the top header) */}
 					{isSmallScreen && isSubPage ? null : (
 						<Box
@@ -45,29 +106,37 @@ const Layout = ({ appName, pageMeta, children }) => {
 						</Box>
 					)}
 
-					<Flex>
-						<SideBar navOpen={isOpen} setNavClose={onClose} />
+					{hideMenu ? (
+						<>{children}</>
+					) : (
+						<Flex>
+							<SideBar navOpen={isOpen} setNavClose={onClose} />
 
-						{/* Main Content here */}
+							{/* Main Content here */}
 
-						<Box
-							minH={{
-								base: "calc(100vh - 56px)",
-								md: "calc(100vh - 50px)",
-								lg: "calc(100vh - 60px)",
-								"2xl": "calc(100vh - 90px)",
-							}}
-							w={"full"}
-							bg={"bg"}
-							overflow={"hidden"}
-						>
-							{children}
-						</Box>
-					</Flex>
+							<Box
+								minH={{
+									base: "calc(100vh - 56px)",
+									md: "calc(100vh - 50px)",
+									lg: "calc(100vh - 60px)",
+									"2xl": "calc(100vh - 90px)",
+								}}
+								w={"full"}
+								bg={"bg"}
+								overflow={"hidden"}
+							>
+								{children}
+							</Box>
+						</Flex>
+					)}
 				</Box>
 			) : (
 				<>{children}</>
 			)}
+
+			{isLoggedIn ? (
+				<CommandBarBox fontClassName={fontClassName} />
+			) : null}
 		</>
 	);
 };

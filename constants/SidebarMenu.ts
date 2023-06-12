@@ -30,37 +30,46 @@ export const OtherMenuItems: number[] = [
 ];
 
 /**
+ * List of transaction ids that (if available) are to be shown in the "Others" sub-menu for Admins.
+ */
+export const AdminMenuItems: number[] = [
+	TransactionIds.LOAD_EVALUE,
+	TransactionIds.REQUEST_EVALUE,
+	TransactionIds.TRANSFER_EVALUE,
+];
+
+/**
  * Fixed menu items for admin left-menu.
  */
 export const adminSidebarMenu: adminSidebarMenuType[] = [
 	{
-		icon: "dashboard",
 		name: "Dashboard",
+		icon: "dashboard",
 		link: "/admin",
 	},
 	{
-		icon: "refer",
 		name: "My Network",
+		icon: "refer",
 		link: "/admin/my-network",
 	},
 	{
-		icon: "swap-horiz",
 		name: "Transaction History",
+		icon: "swap-horiz",
 		link: "/admin/transaction-history",
 	},
 	// {
-	// 	icon: "invoice",
 	// 	name: "Invoicing",
+	// 	icon: "invoice",
 	// 	link: "/admin/invoicing",
 	// },
 	{
-		icon: "commission-percent",
 		name: "Pricing & Comission",
+		icon: "commission-percent",
 		link: "/admin/pricing",
 	},
 	// {
+	// 	name: "Company Profile",
 	// 	icon: "person",
-	// 	name: "Company profile",
 	// 	link: "/admin/company",
 	// },
 	{
@@ -68,6 +77,11 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 		name: "Query Center",
 		link: "/admin/query",
 	},
+	// {
+	// 	name: "Send Notifications",
+	// 	icon: "notifications-none",
+	// 	link: "/admin/notifications",
+	// },
 ];
 
 /**
@@ -75,35 +89,35 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
  */
 export const sidebarMenu: sidebarMenuType[] = [
 	{
-		icon: "menu-home",
 		name: "Home",
+		icon: "menu-home",
 		link: "/home",
 	},
 	// {
-	// 	icon: "select-plan",
 	// 	name: "Select Plan",
+	// 	icon: "select-plan",
 	// 	link: "/select-plan",
 	// },
 
 	// {
-	// 	icon: "transaction",
 	// 	name: "Start A Transaction",
+	// 	icon: "transaction",
 	// 	subLevel: true,
 	// 	api: true,
 	// },
 	// {
-	// 	icon: "others",
 	// 	name: "Others",
+	// 	icon: "others",
 	// 	subLevel: true,
 	// 	subLevelObject: [
 	// 		{
-	// 			icon: "transaction-history",
 	// 			label: "Transaction History",
+	// 			icon: "transaction-history",
 	// 			link: "/history",
 	// 		},
 	// 		{
-	// 			icon: "manage",
 	// 			label: "Manage My Account",
+	// 			icon: "manage",
 	// 			link: "/transaction/" + TransactionIds.MANAGE_MY_ACCOUNT,
 	// 		},
 	// 	],

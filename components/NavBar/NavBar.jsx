@@ -9,13 +9,15 @@ import {
 	MenuButton,
 	MenuList,
 	Text,
+	useBreakpointValue,
 	VStack,
 } from "@chakra-ui/react";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Fragment, useState } from "react";
-import { Button, Icon, IconButtons, OrgLogo } from "..";
+import { Button, IcoButton, Icon, OrgLogo } from "..";
 
 export const NavHeight = {
 	base: "56px",
@@ -64,9 +66,35 @@ const NavBar = ({ setNavOpen }) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
-	const { userData } = useUser();
+	const { userData, isAdmin, isLoggedIn } = useUser();
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
+	// const router = useRouter();
+	const isMobile = useBreakpointValue({ base: true, md: false });
+
+	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
+		ssr: false,
+		loading: () => (
+			<Box
+				ml={1}
+				w={{
+					base: "auto",
+					md: "280px",
+					lg: "400px",
+					xl: "500px",
+				}}
+				h="36px"
+				radius={6}
+				bg="shade"
+			/>
+		),
+	});
+
+	// const handleSearchKeyDown = (e) => {
+	// 	if (e?.key === "Enter" && e?.target?.value?.length > 1) {
+	// 		router.push(`/history?search=${e.target.value}`);
+	// 	}
+	// };
 
 	return (
 		<>
@@ -76,29 +104,47 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				justifyContent={"space-between"}
 				px={{ base: "4", sm: "4", md: "4", xl: "6" }}
 			>
-				<Box display={"flex"} alignItems={"center"}>
-					<IconButton
-						display={{ lg: "none" }}
-						onClick={() => {
-							setNavOpen(true);
-						}}
-						aria-label="open menu"
-						icon={<Icon name="menu" />}
-						size={"sm"}
-						mr={{
-							base: "1vw",
-							sm: "2vw",
-							md: "1vw",
-						}}
-						variant="none"
-					/>
+				{/* Left-side items of navbar */}
+				<Box
+					display={"flex"}
+					alignItems={"center"}
+					flexGrow={isMobile ? 1 : 0}
+				>
+					<Flex align="center" minW={{ base: "auto", md: "250px" }}>
+						<IconButton
+							display={{ lg: "none" }}
+							onClick={() => {
+								setNavOpen(true);
+							}}
+							aria-label="open menu"
+							icon={<Icon name="menu" />}
+							size={"sm"}
+							mr={{
+								base: "1vw",
+								sm: "2vw",
+								md: "1vw",
+							}}
+							variant="none"
+						/>
+						<OrgLogo
+							orgDetail={orgDetail}
+							size="md"
+							ml={{ base: 1, lg: 0 }}
+						/>
+					</Flex>
 
-					<OrgLogo
-						orgDetail={orgDetail}
-						size="md"
-						ml={{ base: 1, lg: 0 }}
-					/>
+					{isLoggedIn === true && isAdmin !== true && (
+						<Flex
+							flexGrow={isMobile ? 1 : 0}
+							justify={isMobile ? "flex-end" : "flex-start"}
+							pr={isMobile ? 2 : 0}
+						>
+							<GlobalSearch />
+						</Flex>
+					)}
 				</Box>
+
+				{/* Right-side items of navbar */}
 				<Box display={{ base: "flex", md: "flex" }}>
 					<Menu>
 						<MenuButton
@@ -160,7 +206,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												fontWeight={"semibold"}
 												mr={"1.6vw"}
 											>
-												{userDetails?.name}
+												{userDetails?.name || ""}
 											</Text>
 
 											<Icon
@@ -287,123 +333,136 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						}}
 						lineHeight="normal"
 					>
-						<Text
-							fontSize={{
-								base: "16px",
-								sm: "12px",
-								lg: "14px",
-							}}
-							color={"highlight"}
-							textTransform="capitalize"
-							whiteSpace="nowrap"
-							overflow="hidden"
-							textOverflow="ellipsis"
-							width="40%"
-							title={userDetails?.name}
-						>
-							{userDetails?.name?.toLowerCase()}
-						</Text>
-						<Text
-							fontSize={{
-								base: "12px",
-								sm: "10px",
-							}}
-							w={"fit-content"}
-							color={"white"}
-							mb="3px"
-						>
-							(User Code:{" "}
-							<Text as={"span"} fontWeight={"medium"}>
-								{userDetails?.code}
-							</Text>
-							)
-						</Text>
-					</Flex>
-					<Flex w={"full"} py={".3vw"}>
-						<Text
-							fontSize={{
-								base: "12px",
-								sm: "10px",
-							}}
-							w={"fit-content"}
-							color={"white"}
-						>
-							{userDetails?.email}
-						</Text>
-					</Flex>
-					<Flex
-						w={"full"}
-						pb={".3vw"}
-						justifyContent={"space-between"}
-						mt={{ base: "8px", sm: "initial" }}
-						wrap="wrap"
-					>
-						<Flex justifyContent={"space-between"} mt={".4vw"}>
-							<Box display={"flex"} alignItems={"center"}>
-								<Text
-									fontSize={{
-										base: "12px",
-										sm: "10px",
-									}}
-									color={"white"}
-								>
-									+91{" "}
-									{userDetails?.mobile.slice(0, 5) +
-										" " +
-										userDetails?.mobile.slice(5)}
-								</Text>
-								<Box ml={{ base: "15px", sm: "initial" }}>
-									<IconButtons
-										iconSize={"xs"}
-										// onClick={() =>
-										// 	Router.push("/admin/my-network/profile/up-per-info")
-										// }
-
-										iconName="mode-edit"
-										iconStyle={{
-											size: "10px",
-										}}
-									/>
-								</Box>
-							</Box>
-						</Flex>
-
-						<Flex>
-							<Button
-								fontSize={"0.6vw"}
-								w={{
-									base: "140px",
-									sm: "90px",
-									lg: "100px",
-									"2xl": "108px",
+						{userDetails?.name ? (
+							<Text
+								fontSize={{
+									base: "16px",
+									sm: "12px",
+									lg: "14px",
 								}}
-								h={{
-									base: "48px",
-									sm: "30px",
-									xl: "34px",
-									"2xl": "36px",
-								}}
-								fontWeight={"medium"}
-								borderRadius={{
-									base: "10px",
-									lg: "6px",
-									"2xl": "5px",
-								}}
+								color={"highlight"}
+								textTransform="capitalize"
+								whiteSpace="nowrap"
+								overflow="hidden"
+								textOverflow="ellipsis"
+								width="40%"
+								title={userDetails?.name || ""}
 							>
-								<Text
-									mr={".2vw"}
-									fontSize={{
-										base: "14px",
-										sm: "8px",
-										lg: "10px",
-										"2xl": "12px",
+								{userDetails?.name?.toLowerCase()}
+							</Text>
+						) : null}
+
+						{userDetails?.code && userDetails?.code > 1 ? (
+							<Text
+								fontSize={{
+									base: "12px",
+									sm: "10px",
+								}}
+								w={"fit-content"}
+								color={"white"}
+								mb="3px"
+							>
+								(User Code:{" "}
+								<Text as={"span"} fontWeight={"medium"}>
+									{userDetails?.code}
+								</Text>
+								)
+							</Text>
+						) : null}
+					</Flex>
+
+					{userDetails?.email ? (
+						<Flex w={"full"} py={".3vw"}>
+							<Text
+								fontSize={{
+									base: "12px",
+									sm: "10px",
+								}}
+								w={"fit-content"}
+								color={"white"}
+							>
+								{userDetails?.email}
+							</Text>
+						</Flex>
+					) : null}
+
+					{userDetails?.mobile && userDetails?.mobile > 1 ? (
+						<Flex
+							w={"full"}
+							pb={".3vw"}
+							justifyContent={"space-between"}
+							mt={{ base: "8px", sm: "initial" }}
+							wrap="wrap"
+						>
+							<Flex justifyContent={"space-between"} mt={".4vw"}>
+								<Box display={"flex"} alignItems={"center"}>
+									<Text
+										fontSize={{
+											base: "12px",
+											sm: "10px",
+										}}
+										color={"white"}
+									>
+										+91{" "}
+										{userDetails?.mobile.slice(0, 5) +
+											" " +
+											userDetails?.mobile.slice(5)}
+									</Text>
+									<Box ml={{ base: "15px", sm: "initial" }}>
+										<IcoButton
+											size={"xs"}
+											theme="primary"
+											ml="2"
+											// onClick={() =>
+											// 	Router.push("/admin/my-network/profile/up-per-info")
+											// }
+
+											iconName="mode-edit"
+											// iconStyle={{
+											// 	size: "10px",
+											// }}
+										/>
+									</Box>
+								</Box>
+							</Flex>
+
+							<Flex>
+								<Button
+									fontSize={"0.6vw"}
+									w={{
+										base: "140px",
+										sm: "90px",
+										lg: "100px",
+										"2xl": "108px",
+									}}
+									h={{
+										base: "48px",
+										sm: "30px",
+										xl: "34px",
+										"2xl": "36px",
+									}}
+									fontWeight={"medium"}
+									borderRadius={{
+										base: "10px",
+										lg: "6px",
+										"2xl": "5px",
 									}}
 								>
-									View Profile &gt;
-								</Text>
-							</Button>
+									<Text
+										mr={".2vw"}
+										fontSize={{
+											base: "14px",
+											sm: "8px",
+											lg: "10px",
+											"2xl": "12px",
+										}}
+									>
+										View Profile &gt;
+									</Text>
+								</Button>
+							</Flex>
 						</Flex>
-					</Flex>
+					) : null}
 				</Box>
 			</VStack>
 

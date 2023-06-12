@@ -29,6 +29,7 @@ const customJestConfig = {
 		"^@/pages/(.*)$": "<rootDir>/pages/$1",
 	},
 	testEnvironment: "jest-environment-jsdom",
+	fakeTimers: { enableGlobally: true },
 	collectCoverage: true,
 	coverageThreshold: {
 		global: {

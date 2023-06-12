@@ -4,6 +4,7 @@ import { ChangeRole } from "./ChangeRole";
 import { Dashboard } from "./Dashboard";
 import { DetailedStatement } from "./DetailedStatement";
 import { Network } from "./Network";
+import { NotificationCreator } from "./NotificationCreator";
 import { PricingCommission } from "./PricingCommission";
 import { ProfilePanel } from "./ProfilePanel";
 import { TransactionHistory } from "./TransactionHistory";
@@ -24,5 +25,6 @@ export {
 	ChangeRole,
 	PricingCommission,
 	ProfilePanel,
+	NotificationCreator,
 	/* PLOP_INJECT_EXPORT */
 };

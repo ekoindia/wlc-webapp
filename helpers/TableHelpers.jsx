@@ -1,5 +1,5 @@
-import { Avatar, Box, Circle, Flex, Text } from "@chakra-ui/react";
-import { Icon, IconButtons, Tags } from "components";
+import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import { Currency, DateView, IcoButton, Icon, Tags } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 
 export const getNameStyle = (name) => {
@@ -41,12 +41,11 @@ export const getLocationStyle = (location, lat, long) => {
 	return (
 		<Flex alignItems={"center"}>
 			<Box>{location}</Box>
-			<IconButtons
-				iconSize={"xs"}
+			<IcoButton
+				size="xs"
 				iconName="near-me"
-				iconStyle={{
-					size: "16px",
-				}}
+				theme="primary"
+				ml={1}
 				onClick={(e) => {
 					openGoogleMap(lat, long);
 					e.stopPropagation();
@@ -74,37 +73,39 @@ export const getModalStyle = (eko_code, account_status) => {
 		</>
 	);
 };
-export const getAccordianIcon = (expandedRow, index) => {
+export const getExpandIcoButton = (expandedRow, index) => {
 	return (
-		<Flex justify="center" align="center">
-			<Circle bg="primary.DEFAULT" size="24px" cursor="pointer">
-				<Icon
-					name={expandedRow === index ? "remove" : "expand-add"}
-					size="10px"
-					color="white"
-				/>
-			</Circle>
-		</Flex>
+		<IcoButton
+			iconName={expandedRow === index ? "remove" : "expand-add"}
+			bg="white"
+			size="xs"
+			iconStyle={{ color: "primary.DEFAULT" }}
+			border="2px solid #FE9F00"
+			boxShadow="0px 3px 6px #00000029"
+			title={expandedRow === index ? "Shrink" : "Expand"}
+			cursor="pointer"
+		/>
 	);
 };
 
-export const getAmountStyle = (amount, trx_type) => {
+export const getAmountStyle = (amount) => {
+	return <Currency amount={amount} preserveFraction={true} />;
+};
+
+export const getPaymentStyle = (amount, trx_type) => {
 	return (
 		amount !== undefined && (
 			<Flex align="center" gap="2">
-				<Flex align="center" gap="1">
-					<Icon name="rupee" size="12px" />
-					<Text>{amount}</Text>
-				</Flex>
+				<Currency amount={amount} preserveFraction={true} />
 				{trx_type && (
 					<Icon
 						name={
-							trx_type === "debit"
+							trx_type === "DR"
 								? "arrow-increase"
 								: "arrow-decrease"
 						}
 						size="16px"
-						color={trx_type === "debit" ? "error" : "success"}
+						color={trx_type === "DR" ? "error" : "success"}
 					/>
 				)}
 			</Flex>
@@ -142,4 +143,12 @@ export const getStatus = (debit_credit) => {
 			/>
 		</Flex>
 	);
+};
+
+export const getDateView = (dateTime) => {
+	return <DateView date={dateTime} />;
+};
+
+export const getDateTimeView = (dateTime) => {
+	return <DateView date={dateTime} format="dd/MM/yyyy hh:mm a" />;
 };

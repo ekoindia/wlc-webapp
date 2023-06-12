@@ -16,20 +16,23 @@ const isBrowser = typeof window !== "undefined";
 
 const RouteProtecter = (props) => {
 	const { router, children } = props; //TODO : Getting Error in _app.tsx
-	const { isLoggedIn, isAdmin, loading, setLoading } = useSession();
+	const { isLoggedIn, isAdmin, userId, isOnboarding, loading, setLoading } =
+		useSession();
 	const [authorized, setAuthorized] = useState(false);
 
 	const role = isAdmin ? "admin" : "non-admin";
 
 	console.log("%cRoute-Protecter: Start\n", "color:green", {
 		isLoggedIn: isLoggedIn,
+		isAdmin: isAdmin,
+		userId: userId,
 		authorized: authorized,
 		loading: loading,
 	});
 
 	useEffect(() => {
 		const path = router.pathname;
-		console.log("Path", path);
+		console.log("Path", path, isLoggedIn);
 
 		if (path === "/404") {
 			setLoading(false);
@@ -43,6 +46,15 @@ const RouteProtecter = (props) => {
 				return;
 			}
 			if (authorized) setAuthorized(false);
+		} else if (isLoggedIn && (userId === "1" || isOnboarding === true)) {
+			console.log("::::Enter in Onboarding::::", path, userId);
+			if (path !== "/signup") {
+				// Goto onboarding page if user is not on onboarding page
+				router.replace("/signup");
+				return;
+			}
+			setLoading(false);
+			setAuthorized(true);
 		} else if (isLoggedIn && role === "admin") {
 			console.log("::::Enter in Admin::::", path);
 			// This condition will redirect to initial path if the route is inaccessible after isLoggedIn
@@ -62,7 +74,7 @@ const RouteProtecter = (props) => {
 			setLoading(false);
 			setAuthorized(true);
 		}
-	}, [router.asPath, loading, isLoggedIn]);
+	}, [router.asPath, loading, isLoggedIn, userId]);
 
 	/**
 	 * Remove the flash of private pages when user is not nonLogged

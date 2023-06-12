@@ -1,14 +1,17 @@
 import { CloseButton, Flex, Image, Text, useToast } from "@chakra-ui/react";
 import { Icon } from "components";
+import { ActionIcon } from "components/CommandBar";
 import { TransactionTypes } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useLocalStorage } from "hooks";
+import { Priority, useRegisterActions } from "kbar";
 import {
 	createContext,
 	useCallback,
 	useContext,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from "react";
@@ -65,12 +68,82 @@ const useNotifications = () => {
 	const toast = useToast();
 	const toastIdRef = useRef();
 
+	// Register notification actions with KBar Search
+	const [notifActions, setNotifActions] = useState([]);
+	useRegisterActions(notifActions, [notifActions]);
+
 	// Process latest notification...
 	useEffect(() => {
 		if (notifications.length > 0) {
 			processLatestNotification(notifications[0]);
 		}
+		setupKbarNotificationActions(notifications);
 	}, [notifications]);
+
+	/**
+	 * Register notification actions with KBar Search
+	 * @param {Array} notifications List of all notifications
+	 */
+	const setupKbarNotificationActions = (notifications) => {
+		console.log("setupKbarNotificationActions:", notifications);
+		if (!notifications?.length) {
+			setNotifActions([]);
+			return;
+		}
+
+		let unread_count = 0;
+
+		const _notifActions = notifications.map((notif) => {
+			if (notif.read === 0) {
+				unread_count++;
+			}
+			return {
+				id: "notification/" + notif.id,
+				name: notif.title,
+				subtitle: notif.desc,
+				priority: notif.read === 1 ? Priority.LOW : Priority.NORMAL,
+				section: "Notifications",
+				// keywords: notif.title,
+				icon: (
+					<ActionIcon
+						icon="notifications"
+						ext_icon={notif.image}
+						color="#e879f9"
+					/>
+				),
+				parent: "notifications",
+				perform: () => {
+					openNotification(notif.id);
+				},
+			};
+		});
+
+		setNotifActions([
+			{
+				id: "notifications",
+				name: unread_count
+					? `You have ${unread_count} unread notifications...`
+					: "View Notifications",
+				// subtitle: unread_count
+				// 	? unread_count +
+				// 	  " unread out of total " +
+				// 	  notifications.length
+				// 	: "",
+				// section: "Notifications",
+				// shortcut: ["$mod+n"],
+				keywords: "inbox mail notice",
+				priority: unread_count ? Priority.HIGH : Priority.LOW,
+				icon: (
+					<ActionIcon
+						icon="notifications"
+						style="outline"
+						badgeColor="#db2777"
+					/>
+				),
+			},
+			..._notifActions,
+		]);
+	};
 
 	/**
 	 * Find a notification by ID
@@ -242,7 +315,7 @@ const useNotifications = () => {
 					// 	? ` (+ ${unread_count - 1} more...)`
 					// 	: ""),
 					status: "info",
-					duration: notif.priority >= 3 ? 3600_000 : 9000, // One hour for high priority, 9 seconds for others
+					duration: notif.priority >= 3 ? 3600_000 : 8000, // One hour for high priority, 8 seconds for others
 					position: "top-right",
 					isClosable: true,
 					containerStyle: {
@@ -461,18 +534,26 @@ const useNotifications = () => {
 		return () => clearInterval(_interval);
 	}, [isLoggedIn, userId]);
 
-	return {
+	return useMemo(() => {
+		return {
+			notifications,
+			ads,
+			unreadNotificationCount,
+			isLoading,
+			openedNotification,
+			fetchNotifications,
+			markAsRead,
+			findNotificationById,
+			openNotification,
+			closeNotification,
+		};
+	}, [
 		notifications,
 		ads,
 		unreadNotificationCount,
 		isLoading,
 		openedNotification,
-		fetchNotifications,
-		markAsRead,
-		findNotificationById,
-		openNotification,
-		closeNotification,
-	};
+	]);
 };
 
 // NotificationProvider Component

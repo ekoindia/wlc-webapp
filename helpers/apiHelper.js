@@ -47,6 +47,7 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 		timeout,
 		token,
 		controller,
+		isMultipart,
 		...restOptions
 	} = options;
 
@@ -65,18 +66,26 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 		url,
 		options,
 	});
+	const headersData = {
+		...DEFAULT_HEADERS,
+		Authorization: token ? `Bearer ${token}` : undefined,
+		...headers,
+	};
+	const bodyData = {
+		...DEFAULT_DATA,
+		...body,
+	};
+	if (isMultipart) {
+		// delete headersData["Content-Type"];
+		delete bodyData.client_ref_id;
+		delete bodyData.source;
+	}
 
 	const fetchPromise = fetch(url, {
+		signal: _controller ? _controller.signal : undefined,
 		method: method || DEFAULT_METHOD,
-		headers: {
-			...DEFAULT_HEADERS,
-			Authorization: token ? `Bearer ${token}` : undefined,
-			...headers,
-		},
-		body: JSON.stringify({
-			...DEFAULT_DATA,
-			...body,
-		}),
+		headers: headersData,
+		body: JSON.stringify(bodyData),
 		...restOptions,
 	})
 		.then((res) => {
@@ -101,8 +110,18 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 				err.response = res;
 				err.status = res.status;
 				if (res.status === 401) {
+					// Unauthorized User. Access-token has expired.
+					// Generate new access-token or logout user
 					err.name = "Unauthorized";
-					// TODO: Handle unauthorized error by refreshing token
+					console.warn(
+						"📡 Session expired. Trying to refresh token."
+					);
+					if (typeof generateNewToken === "function") {
+						generateNewToken(true);
+						return;
+					} else {
+						console.error("📡 No function to refresh token.");
+					}
 				}
 				throw err;
 			}

@@ -10,10 +10,14 @@ import { HistoryCard } from "..";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<HistoryTable></HistoryTable>` TODO: Fix example
  */
-const HistoryTable = ({ transactionList }) => {
+const HistoryTable = ({
+	pageNumber,
+	setPageNumber,
+	tableRowLimit,
+	transactionList,
+}) => {
 	const processedData = getHistoryTableProcessedData(transactionList);
 	const renderer = [
-		{ name: "", field: "", show: "Accordian" },
 		{
 			name: "trx_name",
 			field: "Transaction Type",
@@ -29,23 +33,28 @@ const HistoryTable = ({ transactionList }) => {
 		{
 			name: "amount",
 			field: "Amount",
-			show: "Amount",
 			sorting: true,
+			show: "Payment",
 		},
-		{ name: "date", field: "Date", sorting: true },
-		{ name: "time", field: "Time", sorting: true },
+		{
+			name: "dateTime",
+			field: "Date & Time",
+			sorting: true,
+			show: "DateTime",
+		},
 		{
 			name: "status",
 			show: "Tag",
 		},
-	];
-
-	const rendererExpandedRow = [
 		{ name: "customerMobile", field: "Customer Mobile" },
 		{ name: "balance", field: "Balance Amount", show: "Amount" },
-		{ name: "commissionEarned", field: "Commission Earned" },
-		{ name: "Fee", field: "fee" },
-		{ name: "TID", field: "tid" },
+		{
+			name: "commissionEarned",
+			field: "Commission Earned",
+			show: "Amount",
+		},
+		{ name: "fee", field: "Fee", show: "Amount" },
+		{ name: "tid", field: "TID" },
 		{ name: "trackingNumber", field: "Tracking Number" },
 	];
 
@@ -53,14 +62,14 @@ const HistoryTable = ({ transactionList }) => {
 		<>
 			<Table
 				renderer={renderer}
-				rendererExpandedRow={rendererExpandedRow}
+				visibleColumns={6}
 				data={processedData}
-				variant="darkStriped"
+				variant="stripedActionExpand"
 				tableName="History"
-				accordian={true}
-				isPaginationRequired={false}
-				isOnclickRequire={false}
 				ResponsiveCard={HistoryCard}
+				tableRowLimit={tableRowLimit}
+				setPageNumber={setPageNumber}
+				pageNumber={pageNumber}
 			/>
 		</>
 	);

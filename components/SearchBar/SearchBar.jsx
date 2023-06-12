@@ -73,7 +73,7 @@ const SearchBar = ({
 			{...seachContStyle}
 		>
 			<Input
-				placeholder={placeholder || "Search by name or mobile number"}
+				placeholder={placeholder || ""}
 				inputLeftElement={
 					<Icon name="search" size="18px" color="light" />
 				}
@@ -85,7 +85,7 @@ const SearchBar = ({
 				errorMsg={errorMsg}
 				onChange={handleChange}
 				onKeyDown={handleKeyDown}
-				_placeholder={{ fontSize: "sm" }}
+				_placeholder={{ fontSize: "xs" }}
 			/>
 			{showButton ? (
 				<Button

@@ -39,7 +39,7 @@ describe("Table", () => {
 	it("renders without error with no attributes", () => {
 		const { container } = pageRender(
 			<Table
-				pageLimit={10}
+				tableRowLimit={10}
 				renderer={renderer}
 				data={mockData}
 				variant="evenStriped"

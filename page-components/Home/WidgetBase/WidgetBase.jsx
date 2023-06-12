@@ -37,9 +37,10 @@ const WidgetBase = ({
 			h={{
 				base: "auto",
 				md: "320px",
+				"2xl": "360px",
 			}}
 			direction="column"
-			background="white"
+			bg="white"
 			p={!noPadding && "5"}
 			pb={noPadding && "2"}
 			borderRadius="10px"
@@ -63,14 +64,11 @@ const WidgetBase = ({
 										iconName={iconName}
 										onClick={linkOnClick}
 										iconStyle={{
-											size: "12px",
-											color: "white",
 											...iconStyle,
 										}}
-										rounded="full"
 										size="sm"
-										bg="primary.light"
-										_hover={{ bg: "primary.DEFAULT" }}
+										theme="primary"
+										_hover={{ bg: "primary.dark" }}
 										{...icoBtnProps}
 									/>
 								)}

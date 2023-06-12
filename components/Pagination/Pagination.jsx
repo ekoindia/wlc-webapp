@@ -1,136 +1,129 @@
 import { Box, Flex, Square } from "@chakra-ui/react";
 import { DOTS, usePagination } from "hooks";
-import { useEffect, useState } from "react";
 import { Icon } from "..";
 
-const Pagination = (props) => {
-	const {
-		onPageChange,
-		totalCount,
-		siblingCount = 1,
-		currentPage,
-		pageSize,
-	} = props;
-	const [currPageNumber, setCurrPageNumber] = useState(1);
-
-	useEffect(() => {
-		// console.log("Use Effect", currentPage);
-		setCurrPageNumber(currentPage);
-	}, [currentPage]);
-
-	const paginationRange = usePagination({
+/**
+ * A Pagination component
+ * TODO: Write more description here
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	prop.prop1	TODO: Property description.
+ * @param	{...*}	rest	Rest of the props passed to this component.
+ * @example	`<Pagination></Pagination>` TODO: Fix example
+ */
+const Pagination = ({
+	onPageChange,
+	totalCount,
+	siblingCount = 1,
+	currentPage,
+	pageSize,
+	isSmallScreen,
+	tableDataListLength,
+	tableRowLimit,
+	setHasNoMoreItems,
+}) => {
+	// console.log("[Pagination] isSmallScreen", isSmallScreen);
+	let { paginationRange, hasNextPage } = usePagination({
 		currentPage,
 		totalCount,
 		siblingCount,
 		pageSize,
+		tableDataListLength,
+		tableRowLimit,
+		setHasNoMoreItems,
 	});
 
-	if (currentPage === 0 || paginationRange.length < 2) {
-		return null;
-	}
+	// if (currentPage === 0 || paginationRange?.length < 2) {
+	// 	return null;
+	// } //? Check this
 
-	let lastPage = paginationRange[paginationRange.length - 1];
+	let lastPage = paginationRange?.[paginationRange?.length - 1];
 
 	return (
 		<Flex
-			mt="20px"
-			mb={{ base: "30px", "2xl": "0px" }}
-			justifyContent="space-between"
+			my="20px"
+			justifyContent={
+				!isSmallScreen && totalCount ? "space-between" : "flex-end"
+			}
 			w="100%"
-			fontSize={{ base: "12px", "2xl": "16px" }}
+			fontSize={isSmallScreen ? "md" : "xs"}
 		>
-			<Flex gap={2} color="light">
-				<Box as="span">Results</Box>
-				<Box
-					as="span"
-					color="dark"
-					fontWeight={"medium"}
-					fontFamily={"roboto"}
-				>
-					{currentPage * pageSize - (pageSize - 1)} -{" "}
-					{currentPage * pageSize > totalCount
-						? totalCount
-						: currentPage * pageSize}
-				</Box>
-				<Box as="span">of</Box>
-				<Box as="span">{totalCount}</Box>
-			</Flex>
-			<Flex gap={6}>
-				<Flex
+			{!isSmallScreen && totalCount && (
+				<Flex gap="1.5" color="light">
+					<span>Results</span>
+					<Box as="span" color="dark">
+						{currentPage * pageSize - (pageSize - 1)}-
+						{currentPage * pageSize > totalCount
+							? totalCount
+							: currentPage * pageSize}
+					</Box>
+					<span>of</span>
+					<span>{totalCount}</span>
+				</Flex>
+			)}
+
+			<Flex align="center" gap={isSmallScreen ? "8" : "4"}>
+				<Icon
+					name="chevron-left"
 					color={currentPage !== 1 ? "light" : "hint"}
-					onClick={() => {
+					size={isSmallScreen ? "sm" : "xs"}
+					cursor="pointer"
+					onClick={() =>
 						onPageChange(
 							currentPage !== 1 ? currentPage - 1 : currentPage
-						);
-						setCurrPageNumber(
-							currentPage !== 1 ? currentPage - 1 : currentPage
-						);
-					}}
-					cursor="pointer"
-				>
-					<Icon
-						name="chevron-left"
-						size={{ base: "15px", "2xl": "20px" }}
-					/>
-				</Flex>
-				<Flex gap={{ base: "4", "2xl": "6" }}>
-					{paginationRange.map((pageNumber, index) => {
-						if (pageNumber === DOTS) {
+						)
+					}
+				/>
+
+				<Flex gap="4" h="100%">
+					{!isSmallScreen && totalCount ? (
+						paginationRange?.map((pageNumber, index) => {
+							if (pageNumber === DOTS) {
+								return <span key={index}>{DOTS}</span>;
+							}
 							return (
-								<Box as="span" key={index}>
-									&#8230;
-								</Box>
+								<Square
+									px="7px"
+									borderRadius="6px"
+									key={index}
+									cursor="pointer"
+									bg={
+										currentPage === pageNumber
+											? "accent.DEFAULT"
+											: null
+									}
+									color={
+										currentPage === pageNumber
+											? "white"
+											: "light"
+									}
+									onClick={() => onPageChange(pageNumber)}
+								>
+									<span>{pageNumber}</span>
+								</Square>
 							);
-						}
-						return (
-							<Square
-								size="auto"
-								px="7px"
-								borderRadius="6px"
-								key={index}
-								cursor="pointer"
-								bg={
-									currPageNumber === pageNumber
-										? "accent.DEFAULT"
-										: ""
-								}
-								color={
-									currPageNumber === pageNumber
-										? "white"
-										: "light"
-								}
-								onClick={() => {
-									onPageChange(pageNumber);
-									setCurrPageNumber(pageNumber);
-								}}
-							>
-								<Box>{pageNumber}</Box>
-							</Square>
-						);
-					})}
+						})
+					) : (
+						<span>{currentPage}</span>
+					)}
 				</Flex>
-				<Flex
-					color={currentPage !== lastPage ? "light" : "hint"}
+				<Icon
+					name="chevron-right"
+					size={isSmallScreen ? "sm" : "xs"}
+					color={
+						(totalCount && currentPage !== lastPage) ||
+						(!totalCount && hasNextPage)
+							? "light"
+							: "hint"
+					}
 					cursor="pointer"
 					onClick={() => {
-						onPageChange(
-							currentPage !== lastPage
-								? currentPage + 1
-								: currentPage
-						);
-						setCurrPageNumber(
-							currentPage !== lastPage
-								? currentPage + 1
-								: currentPage
-						);
+						if (totalCount && currentPage !== lastPage) {
+							onPageChange(currentPage + 1);
+						} else if (!totalCount && hasNextPage) {
+							onPageChange(currentPage + 1);
+						}
 					}}
-				>
-					{/* <Icon name="chevron-right" width="20px" /> */}
-					<Icon
-						name="chevron-right"
-						size={{ base: "15px", "2xl": "20px" }}
-					/>
-				</Flex>
+				/>
 			</Flex>
 		</Flex>
 	);

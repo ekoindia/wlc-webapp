@@ -6,6 +6,7 @@ import {
 	setandUpdateAuthTokens,
 	setUserDetails,
 } from "helpers/loginHelper";
+import { buildUserObjectState } from "utils/userObjectBuilder";
 
 export const defaultUserState = {
 	loggedIn: false,
@@ -29,13 +30,15 @@ export const UserReducer = (state, { type, payload }) => {
 				console.log("Updated userStore");
 				delete payload["long_session"]; // FIX: Why remove long_session???
 				let tokenTimeout = getTokenExpiryTime(payload);
-				const newState = {
-					...state,
+				const newState = buildUserObjectState({
 					...payload,
-					token_timeout: tokenTimeout || state.token_timeout, // Persist the old token_timeout if the new one is not available
-				};
+					token_timeout: tokenTimeout || state.token_timeout,
+				});
+
 				console.log("newUserState", newState);
 				setandUpdateAuthTokens(payload);
+				setUserDetails(newState);
+
 				sessionStorage.setItem("token_timeout", tokenTimeout);
 				return newState;
 			}
@@ -54,12 +57,10 @@ export const UserReducer = (state, { type, payload }) => {
 		case "LOGIN": {
 			if (
 				!(
-					payload &&
-					payload.details &&
-					payload.access_token &&
-					payload.details.code &&
-					payload.details.mobile &&
-					payload.details.mobile.toString().length > 5
+					(payload && payload.details && payload.access_token) // &&
+					// payload.details.code &&
+					// payload.details.mobile &&
+					// payload.details.mobile.toString().length > 5
 				)
 			) {
 				console.log("login Failed");

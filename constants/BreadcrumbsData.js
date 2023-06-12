@@ -23,3 +23,7 @@ export const PricingCommissionObject = {
 export const QueryObject = {
 	"/admin/query": "Query Center",
 };
+
+export const NotificationsBreadcrumbData = {
+	"/admin/notifications": "Send Notifications",
+};

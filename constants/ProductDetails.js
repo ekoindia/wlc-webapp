@@ -13,3 +13,16 @@ export const ProductSlabs = {
 	],
 	AADHAARPAY: [{ min: 1, max: 10000 }],
 };
+
+export const ProductPricingTextConfig = {
+	PRICING: "Pricing",
+	COMMISSION: "Commission",
+};
+
+export const ProductPricingType = {
+	DMT: ProductPricingTextConfig.PRICING,
+	AEPS: ProductPricingTextConfig.COMMISSION,
+	AADHAARPAY: ProductPricingTextConfig.PRICING,
+	INDONEPAL: ProductPricingTextConfig.COMMISSION,
+	// BBPS: ProductPricingTextConfig.COMMISSION,
+};

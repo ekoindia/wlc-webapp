@@ -1,7 +1,10 @@
 import { extendTheme, theme } from "@chakra-ui/react";
 import { globalStyles } from "./globals";
-import { buttonTheme } from "./theme_system/theme/components/button";
-import { tabsTheme } from "./theme_system/theme/components/tab";
+import {
+	buttonTheme,
+	tableTheme,
+	tabsTheme,
+} from "./theme_system/theme/components";
 
 export const light = extendTheme({
 	breakpoints: {
@@ -62,52 +65,7 @@ export const light = extendTheme({
 		},
 	},
 	components: {
-		Table: {
-			variants: {
-				evenStripedClickableRow: {
-					tr: {
-						_even: {
-							background: "shade",
-						},
-						_hover: {
-							// bg: "#fea1000d",
-							bg: "#e6e6e6",
-							transition: "background 200ms ease-in",
-							cursor: "pointer",
-						},
-					},
-					th: {
-						textTransform: "Capitalize",
-						bg: "hint",
-						transition: "none",
-					},
-				},
-				evenStriped: {
-					tr: {
-						_even: {
-							background: "shade",
-						},
-					},
-					th: {
-						textTransform: "Capitalize",
-						bg: "hint",
-						transition: "none",
-					},
-				},
-				nonAdmin: {
-					th: {
-						textTransform: "Capitalize",
-						bg: "divider",
-						transition: "none",
-					},
-					tr: {
-						_even: {
-							background: "bg",
-						},
-					},
-				},
-			},
-		},
+		Table: tableTheme,
 		Button: buttonTheme,
 		Checkbox: {
 			variants: {
@@ -150,6 +108,7 @@ export const light = extendTheme({
 		"1px": "1px solid",
 		"2px": "0.125rem solid",
 		"10px": "0.625rem solid",
+		basic: "1px solid #E9EDF1",
 		card: "1px solid #D2D2D2",
 		"br-sidebar": "1px solid #1F3ABC",
 		"br-popupcard": "1px solid #FE9F00",

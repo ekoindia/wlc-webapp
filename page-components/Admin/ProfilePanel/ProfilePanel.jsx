@@ -1,10 +1,13 @@
 import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { Button, Headings, Icon, Menus } from "components";
 import { ChangeRoleMenu } from "constants/ChangeRoleMenu";
-import useRequest from "hooks/useRequest";
+import { Endpoints } from "constants/EndPoints";
+import { useSession } from "contexts/UserContext";
+import { fetcher } from "helpers/apiHelper";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+
 import {
 	AddressPane,
 	CompanyPane,
@@ -25,14 +28,13 @@ const ChangeRoleDesktop = ({ menuHandler }) => {
 					iconPos="right"
 					iconName="caret-down"
 					iconStyles={{ height: "10px", width: "14px" }}
+					rounded="10px"
 					buttonStyle={{
-						height: { md: "48px", lg: "64px" },
-						width: { md: "180px", lg: "250px" },
+						height: { base: "48px", lg: "52px" },
+						minW: { base: "150px", lg: "220px" },
 						border: "1px solid #FE9F00",
 						boxShadow: "0px 3px 10px #FE9F0040",
-						fontSize: { md: "16px", lg: "20px" },
 						textAlign: "left",
-						borderRadius: "10px",
 					}}
 					listStyles={{
 						height: "150px",
@@ -78,67 +80,59 @@ const ChangeRoleMobile = () => {
 const ProfilePanel = () => {
 	const router = useRouter();
 	const [rowData, setRowData] = useState([]);
+
+	const { accessToken } = useSession();
 	const { cellnumber } = router.query;
-	// let rowData;
-	// const agent_name = rowData?.agent_name || "";
-	window.addEventListener("beforeunload", () => {
-		localStorage.removeItem("rowData");
-	});
-	const headers = {
-		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents?record_count=1&search_value=${cellnumber}`,
-		"tf-req-method": "GET",
+
+	const hitQuery = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/agents?record_count=1&search_value=${cellnumber}`,
+				"tf-req-method": "GET",
+			},
+			token: accessToken,
+		}).then((data) => {
+			setRowData(data?.data?.agent_details[0]);
+		});
 	};
 
-	const { data, mutate } = useRequest({
-		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-		headers: { ...headers },
-	});
-
 	useEffect(() => {
-		setRowData(data?.data?.agent_details[0]);
-	}, [data]);
-
-	// useEffect(() => {
-	// 	mutate();
-	// }, [cellnumber]);
-	useEffect(() => {
-		const storedData = localStorage.getItem("rowData");
-		if (storedData) {
-			setRowData(JSON.parse(storedData));
+		const storedData = JSON.parse(
+			localStorage.getItem("network_seller_details")
+		);
+		if (storedData?.agent_mobile === cellnumber) {
+			setRowData(storedData);
 		} else {
-			mutate();
+			hitQuery();
 		}
-	}, []);
-
-	// const agent_name = rowData.agent_name;
+	}, [cellnumber]);
 
 	const panes = [
 		{
 			id: 1,
 			comp: (
 				<CompanyPane
-					rowData={rowData.profile}
-					// agent_name={agent_name}
+					rowData={rowData?.profile}
+					agent_name={rowData?.agent_name}
 				/>
 			),
 		},
 		{
 			id: 2,
-			comp: <AddressPane rowData={rowData.address_details} />,
+			comp: <AddressPane rowData={rowData?.address_details} />,
 		},
 		{
 			id: 3,
-			comp: <DocPane rowData={rowData.document_details} />,
+			comp: <DocPane rowData={rowData?.document_details} />,
 		},
 		{
 			id: 4,
-			comp: <PersonalPane rowData={rowData.personal_information} />,
+			comp: <PersonalPane rowData={rowData?.personal_information} />,
 		},
 		{
 			id: 5,
-			comp: <ContactPane rowData={rowData.contact_information} />,
+			comp: <ContactPane rowData={rowData?.contact_information} />,
 		},
 	];
 

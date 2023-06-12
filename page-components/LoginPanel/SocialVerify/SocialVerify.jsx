@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
-import { Button, Icon, IconButtons, Input } from "components";
+import { Button, IcoButton, Icon, Input } from "components";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useState } from "react";
@@ -73,7 +73,11 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 					<Text>Sent on&nbsp;</Text>
 					<Center as="b">
 						{email}
-						<IconButtons
+						<IcoButton
+							iconName="mode-edit"
+							size="sm"
+							theme="primary"
+							ml={2}
 							onClick={() => {
 								setStep("LOGIN");
 								setNumber({
@@ -81,8 +85,6 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 									formatted: "",
 								});
 							}}
-							iconName="mode-edit"
-							iconStyle={{ size: "12px" }}
 						/>
 					</Center>
 				</Flex>

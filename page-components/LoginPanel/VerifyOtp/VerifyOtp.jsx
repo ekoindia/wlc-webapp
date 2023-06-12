@@ -1,5 +1,5 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
-import { Button, Icon, IconButtons, OtpInput } from "components";
+import { Button, IcoButton, Icon, OtpInput } from "components";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { sendOtpRequest } from "helpers";
@@ -45,6 +45,9 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 	};
 
 	const verifyOtpHandler = (_otp) => {
+		if (loading) return;
+		if (!(_otp || Otp)) return;
+
 		submitLogin({
 			id_type: "Mobile",
 			mobile: number.original,
@@ -93,7 +96,11 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 					<Text>Sent on&nbsp;</Text>
 					<Center as="b">
 						+91 {number.formatted}
-						<IconButtons
+						<IcoButton
+							iconName="mode-edit"
+							size="sm"
+							theme="primary"
+							ml={2}
 							onClick={() =>
 								setStep(
 									loginType === "Mobile"
@@ -101,8 +108,6 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 										: "GOOGLE_VERIFY"
 								)
 							}
-							iconName="mode-edit"
-							iconStyle={{ size: "12px" }}
 						/>
 					</Center>
 				</Flex>
@@ -167,7 +172,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 				fontSize={{ base: "lg", "2xl": "xl" }}
 				disabled={loading}
 				loading={loading}
-				onClick={verifyOtpHandler}
+				onClick={() => verifyOtpHandler()}
 			>
 				Submit
 			</Button>

@@ -1,0 +1,36 @@
+import { ProductPricingType, ProductSlabs } from "constants";
+import { PricingForm } from "..";
+
+/**
+ * A <IndoNepal> component
+ * TODO: Write more description here
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	prop.prop1	TODO: Property description.
+ * @param	{...*}	rest	Rest of the props passed to this component.
+ * @example	`<IndoNepal></IndoNepal>` TODO: Fix example
+ */
+const IndoNepal = ({ prop1, ...rest }) => {
+	const commissionForObj = {
+		1: "Individuals",
+		2: "Distributors",
+		3: "Products",
+	};
+
+	const commissionTypeObj = {
+		0: "Percentage (%)",
+		1: "Fixed",
+	};
+	return (
+		<div {...rest}>
+			<PricingForm
+				product="indonepal"
+				ProductPricingType={ProductPricingType.INDONEPAL}
+				ProductSlabs={ProductSlabs.AEPS}
+				commissionForObj={commissionForObj}
+				commissionTypeObj={commissionTypeObj}
+			/>
+		</div>
+	);
+};
+
+export default IndoNepal;

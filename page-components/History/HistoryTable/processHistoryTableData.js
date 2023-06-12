@@ -1,6 +1,6 @@
 export const getHistoryTableProcessedData = (data) => {
 	const processedData = [];
-	data.map((row) => {
+	data?.map((row) => {
 		const temp = {};
 		if (row) {
 			// temp["description"] = getNarrationText(dummyRowData);
@@ -13,17 +13,18 @@ export const getHistoryTableProcessedData = (data) => {
 			temp["trx_id"] = row.tid;
 		}
 		if (row.datetime) {
-			const { date, time } = getFormattedDateAndTime(row.datetime);
-			temp["date"] = date;
-			temp["time"] = time;
+			// const { date, time } = getFormattedDateAndTime(row.datetime);
+			// temp["date"] = date;
+			// temp["time"] = time;
+			temp["dateTime"] = row.datetime;
 		}
 		if (row.amount_dr) {
 			temp["amount"] = row.amount_dr;
-			temp["trx_type"] = "debit";
+			temp["trx_type"] = "DR";
 		}
 		if (row.amount_cr) {
 			temp["amount"] = row.amount_cr;
-			temp["trx_type"] = "credit";
+			temp["trx_type"] = "CR";
 		}
 		if (row.status) {
 			// temp["status_id"] = row.status_id;

@@ -12,7 +12,7 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 	const router = useRouter();
 
 	const renderer = [
-		{ name: "", field: "Sr. No." },
+		{ field: "Sr. No.", show: "#" },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
 		{
 			name: "agent_mobile",
@@ -54,12 +54,10 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 		<>
 			<Table
 				onRowClick={onRowClick}
-				pageLimit={10}
+				variant="stripedActionRedirect"
 				renderer={renderer}
 				data={transactiondata}
-				variant="evenStripedClickableRow"
 				tableName="Transaction"
-				ispagintationrequire={false}
 				ResponsiveCard={TransactionHistoryCard}
 			/>
 		</>

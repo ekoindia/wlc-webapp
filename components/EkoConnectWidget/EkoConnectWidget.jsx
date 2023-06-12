@@ -1,17 +1,20 @@
-import { Flex, Spinner } from "@chakra-ui/react";
-import { ErrorBoundary, PaddingBox } from "components";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Button, ErrorBoundary, PaddingBox } from "components";
+// import { ActionIcon } from "components/CommandBar";
 import { TransactionIds } from "constants";
 import {
+	// useGlobalSearch,
 	useMenuContext,
 	useOrgDetailContext,
+	usePubSub,
 	useUser,
 	useWallet,
 } from "contexts";
-import { useAppLink } from "hooks";
+import { useAppLink, useExternalResource } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
+// import { Priority, useRegisterActions } from "kbar";
 import Head from "next/head";
-import Script from "next/script";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * The <EkoConnectWidget> component loads the Eko Connect widget (built using Google Polmer v1 library).
@@ -32,11 +35,28 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	console.log("[EkoConnectWidget] Transaction id to load: ", start_id, paths);
 
 	const { openUrl, router } = useAppLink();
-	const { userData, isLoggedIn } = useUser();
+	const { userData, isLoggedIn, refreshUser } = useUser();
 	const { orgDetail } = useOrgDetailContext();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 	const { balance } = useWallet();
+	const { subscribe, TOPICS } = usePubSub();
+	// const { setSearchTitle } = useGlobalSearch();
+
+	// Create a reference for the Widget component
+	const widgetRef = useRef(null);
+
+	const [widgetLoadState /*, reloadWidget */] = useExternalResource(
+		process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
+			"/elements/tf-eko-connect-widget/tf-wlc-widget.html",
+		"link",
+		"import"
+	);
+	const [scriptLoadState /*, reloadScript */] = useExternalResource(
+		"https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js",
+		"script"
+	);
+
 	console.log(
 		"[EkoConnectWidget] >>> ORG + USER DATA:: ",
 		orgDetail,
@@ -44,23 +64,120 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		role_tx_list
 	);
 
-	const { widgetLoading } = useSetupWidgetEventListeners(router, openUrl);
+	// Subscribe to the Android responses
+	useEffect(() => {
+		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
+			console.log(
+				"[EkoConnectWidget] [PubSub] >>> android-response:: ",
+				data
+			);
+			if (data?.action) {
+				widgetRef?.current?.callFromAndroid(data.action, data.data);
+			}
+		});
+
+		return unsubscribe;
+	}, []);
+
+	// Setup KBar search actions related to the open transaction
+	// const trxnActions = useMemo(() => {
+	// 	const start_trxn = role_tx_list[start_id];
+	// 	if (!start_trxn) {
+	// 		return [];
+	// 	}
+
+	// 	return [
+	// 		{
+	// 			id: "trxnpage/" + start_id,
+	// 			name: `Need help with ${start_trxn.label} transaction?`,
+	// 			subtitle: "Submit your query and we'll get back to you.",
+	// 			icon: (
+	// 				<ActionIcon
+	// 					icon="operator"
+	// 					style="filled"
+	// 					iconSize="md"
+	// 					color="#f43f5e"
+	// 				/>
+	// 			),
+	// 			priority: Priority.HIGH,
+	// 			shortcut: ["$mod+?"],
+	// 		},
+	// 	];
+	// }, [start_id, role_tx_list]);
+
+	// useEffect(() => {
+	// 	const start_trxn = role_tx_list[start_id];
+	// 	if (!start_trxn) {
+	// 		return;
+	// 	}
+	// 	setSearchTitle(`Need help with ${start_trxn.label}?`);
+	// 	return () => {
+	// 		setSearchTitle("");
+	// 	};
+	// }, [start_id, role_tx_list]);
+
+	// useRegisterActions(trxnActions, [trxnActions]);
+
+	// const { widgetLoading } =
+	useSetupWidgetEventListeners(router, openUrl, refreshUser);
+
+	// Handle widget load error
+	if (widgetLoadState === "error" || scriptLoadState === "error") {
+		return (
+			<Flex
+				direction="column"
+				w="100%"
+				p={2}
+				align="center"
+				justify="center"
+			>
+				<Text my={5} color="error" fontWeight="bold">
+					Load failed. Please check your internet connection and try
+					again.
+				</Text>
+				<Button
+					onClick={() => {
+						location.reload();
+						// if (widgetLoadState === "error") reloadWidget();
+						// if (scriptLoadState === "error") reloadScript();
+					}}
+				>
+					Retry
+				</Button>
+			</Flex>
+		);
+	}
+
+	// Show a spinner while the widget is loading
+	if (widgetLoadState === "loading" || scriptLoadState === "loading") {
+		return (
+			<Flex w="100%" p={2} align="center" justify="center">
+				<Spinner
+					thickness="4px"
+					speed="0.65s"
+					emptyColor="gray.200"
+					color="primary.DEFAULT"
+					size="xl"
+				/>
+			</Flex>
+		);
+	}
 
 	return (
 		<PaddingBox noSpacing={true} {...rest}>
 			<Head>
 				<title>Transaction</title>
-				<link
+				{/* <link
 					rel="import"
 					href={
 						process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
 						"/elements/tf-eko-connect-widget/tf-wlc-widget.html"
 					}
-				/>
+				/> */}
 			</Head>
-			<Script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js" />
+			{/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js" /> */}
 
-			{widgetLoading && (
+			{/* {widgetLoadState === "loading" && (
 				<Flex w="100%" p={2} align="center" justify="center">
 					<Spinner
 						thickness="4px"
@@ -70,10 +187,27 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 						size="xl"
 					/>
 				</Flex>
-			)}
+			)} */}
+
+			{/* {widgetLoadState === "error" && (
+				<Flex
+					direction="column"
+					w="100%"
+					p={2}
+					align="center"
+					justify="center"
+				>
+					<Text my={5} color="error" fontWeight="bold">
+						Load failed. Please check your internet connection and
+						try again.
+					</Text>
+					<Button onClick={() => location.reload()}>Retry</Button>
+				</Flex>
+			)} */}
 
 			<ErrorBoundary ignoreError={true}>
 				<tf-wlc-widget
+					ref={widgetRef}
 					interaction_id={start_id}
 					route_params={JSON.stringify({
 						trxntypeid: start_id,
@@ -128,6 +262,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 const setupWidgetEventListeners = ({
 	setWidgetLoading,
 	generateNewToken,
+	refreshUser,
 	setBalance,
 	router,
 	openUrl,
@@ -139,7 +274,11 @@ const setupWidgetEventListeners = ({
 	const onLoginAgain = () => {
 		console.log("🎬 >>> onLoginAgain");
 		// Login again (refresh access-token) when the session expires
-		generateNewToken();
+		const newTokenGenerated = generateNewToken();
+		if (!newTokenGenerated) {
+			// If the token re-generation fails because the token was not yet expired, try to refresh the user data.
+			refreshUser();
+		}
 	};
 
 	const onTrxnBusyChanged = (e) => {
@@ -269,9 +408,10 @@ const configurePolymer = () => {
  * Custom hook to setup event listeners for the Connect widget.
  * @param {Object} router - The React Router instance
  * @param {Function} openUrl - The useAppLink function to open internal or external URLs.
+ * @param {Function} refreshUser - Function to refresh the user profile data.
  * @returns	{Object} - The widgetLoading state
  */
-const useSetupWidgetEventListeners = (router, openUrl) => {
+const useSetupWidgetEventListeners = (router, openUrl, refreshUser) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
 
@@ -285,6 +425,7 @@ const useSetupWidgetEventListeners = (router, openUrl) => {
 		const cleanup = setupWidgetEventListeners({
 			setWidgetLoading,
 			generateNewToken,
+			refreshUser,
 			setBalance,
 			router,
 			openUrl,

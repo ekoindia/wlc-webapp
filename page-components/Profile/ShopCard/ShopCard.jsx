@@ -28,7 +28,7 @@ import { useCallback, useState } from "react";
  * @example	`<ShopCard></ShopCard>` TODO: Fix example
  */
 const ShopCard = () => {
-	const { userData, updateShopDetails } = useUser();
+	const { userData, refreshUser } = useUser();
 	const [disabled, setDisabled] = useState(false);
 	const [error, setError] = useState(false);
 	const toast = useToast();
@@ -114,7 +114,8 @@ const ShopCard = () => {
 		)
 			.then((data) => {
 				setDisabled(false);
-				updateShopDetails(formState);
+				refreshUser();
+				// updateShopDetails(formState);
 				toast({
 					title: data.message,
 					status: "success",
@@ -161,22 +162,25 @@ const ShopCard = () => {
 				rowGap="20px"
 				fontSize={{ base: "14px" }}
 			>
-				{Object.entries(shopObj).map(([key], index) =>
-					data[key] != "" ? (
-						<GridItem key={index} colSpan={1} rowSpan={1}>
-							<Flex direction="column">
-								<Text>
-									{key
-										.replace(/_/g, " ")
-										.replace(/\b\w/g, (c) =>
-											c.toUpperCase()
-										)}
-								</Text>
-								<Text fontWeight="semibold">{data[key]}</Text>
-							</Flex>
-						</GridItem>
-					) : null
-				)}
+				{data &&
+					Object.entries(shopObj).map(([key], index) =>
+						data[key] != "" ? (
+							<GridItem key={index} colSpan={1} rowSpan={1}>
+								<Flex direction="column">
+									<Text>
+										{key
+											.replace(/_/g, " ")
+											.replace(/\b\w/g, (c) =>
+												c.toUpperCase()
+											)}
+									</Text>
+									<Text fontWeight="semibold">
+										{data[key]}
+									</Text>
+								</Flex>
+							</GridItem>
+						) : null
+					)}
 			</Grid>
 
 			{/* Show Chakra Modal to edit Shop details */}

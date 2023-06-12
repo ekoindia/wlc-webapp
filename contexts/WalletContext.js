@@ -1,3 +1,4 @@
+import { ActionIcon } from "components/CommandBar";
 import { Endpoints, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
@@ -6,8 +7,11 @@ import {
 	useCallback,
 	useContext,
 	useEffect,
+	useMemo,
 	useState,
 } from "react";
+import { formatCurrency } from "utils/numberFormat";
+import { useBusinessSearchActions } from "./GlobalSearchContext";
 import { useSession } from "./UserContext";
 
 // Created a Wallet Context
@@ -21,14 +25,14 @@ const WalletContext = createContext();
  * @returns {function} fetchBalance - This function is used to fetch wallet balance.
  * */
 const useFetchBalance = (setBalance, accessToken) => {
-	// const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	// GenerateNewAccessToken function to be used in fetcher, if the current accessToken is expired
 	const { generateNewToken } = useRefreshToken();
 
 	const fetchBalance = useCallback(() => {
 		// console.log("::::fetchBalance::::");
-		// setLoading(true);
+		setLoading(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -49,11 +53,11 @@ const useFetchBalance = (setBalance, accessToken) => {
 			})
 			.catch((err) => {
 				console.error("[useFetchBalance] error: ", err);
-			});
-		// .finally(() => setLoading(false));
+			})
+			.finally(() => setLoading(false));
 	}, [accessToken]);
 
-	return { fetchBalance /* loading */ };
+	return { fetchBalance, loading };
 };
 
 /**
@@ -66,23 +70,53 @@ const useFetchBalance = (setBalance, accessToken) => {
  */
 const WalletProvider = ({ children }) => {
 	const [balance, setBalance] = useState(null);
-	const { isLoggedIn, isAdmin, accessToken } = useSession();
-	const { fetchBalance } = useFetchBalance(setBalance, accessToken);
+	const { isLoggedIn, userId, accessToken } = useSession();
+	const { fetchBalance, loading } = useFetchBalance(setBalance, accessToken);
+
+	// const gsdata = useGlobalSearch();
+	// console.log("gsdata", gsdata);
 
 	useEffect(() => {
-		if (isLoggedIn && !isAdmin) {
+		if (isLoggedIn) {
 			fetchBalance();
 		}
-	}, [isLoggedIn, isAdmin]);
+	}, [isLoggedIn, userId]);
+
+	// Registering the wallet action in KBar
+	const walletAction = useMemo(() => {
+		return balance
+			? [
+					{
+						id: "show-wallet-balance",
+						name: `My Wallet Balance: ${formatCurrency(balance)}`,
+						keywords: "e-value fund",
+						icon: (
+							<ActionIcon
+								icon="wallet-outline"
+								iconSize="md"
+								color="#334155"
+							/>
+						),
+						// priority: -1,
+					},
+			  ]
+			: [];
+	}, [balance]);
+	useBusinessSearchActions(walletAction, [walletAction]);
+
+	// Cache the context values
+	const contextValues = useMemo(
+		() => ({
+			balance,
+			refreshWallet: fetchBalance,
+			setBalance,
+			loading,
+		}),
+		[balance, loading, fetchBalance, setBalance]
+	);
 
 	return (
-		<WalletContext.Provider
-			value={{
-				refreshWallet: fetchBalance,
-				setBalance,
-				balance,
-			}}
-		>
+		<WalletContext.Provider value={contextValues}>
 			{children}
 		</WalletContext.Provider>
 	);

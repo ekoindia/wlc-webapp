@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { formatDateTime } from "utils/dateFormat";
+import { formatDate } from "libs";
 
 /**
  * Show a formatted date/time value inside a <span>.
@@ -11,7 +11,7 @@ import { formatDateTime } from "utils/dateFormat";
 const DateView = ({ date, format, ...rest }) => {
 	return date ? (
 		<Box as="span" {...rest}>
-			{formatDateTime(date, format)}
+			{formatDate(date, format)}
 		</Box>
 	) : null;
 };

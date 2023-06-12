@@ -16,11 +16,16 @@ const NetworkTable = ({
 	agentDetails,
 }) => {
 	const renderer = [
-		{ name: "", field: "Sr. No." },
+		{ field: "Sr. No.", show: "#" },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
 		{ name: "agent_mobile", field: "Mobile Number", sorting: true },
 		{ name: "agent_type", field: "Type", sorting: true },
-		{ name: "onboarded_on", field: "Onboarded On", sorting: true },
+		{
+			name: "onboarded_on",
+			field: "Onboarded On",
+			sorting: true,
+			show: "Date",
+		},
 		{
 			name: "account_status",
 			field: "Account Status",
@@ -39,8 +44,8 @@ const NetworkTable = ({
 	];
 	const router = useRouter();
 	const onRowClick = (rowData) => {
-		const cellnumber = rowData.agent_mobile;
-		localStorage.setItem("rowData", JSON.stringify(rowData));
+		const cellnumber = rowData?.agent_mobile;
+		localStorage.setItem("network_seller_details", JSON.stringify(rowData));
 		router.push({
 			pathname: `/admin/my-network/profile`,
 			query: { cellnumber },
@@ -52,9 +57,8 @@ const NetworkTable = ({
 		<>
 			<Table
 				onRowClick={onRowClick}
-				pageLimit="10"
 				renderer={renderer}
-				variant="evenStripedClickableRow"
+				variant="stripedActionRedirect"
 				tableName="Network"
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}
