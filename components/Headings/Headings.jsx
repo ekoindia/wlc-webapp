@@ -15,6 +15,7 @@ import { Icon } from "..";
 const Headings = ({
 	hasIcon = true,
 	title,
+	subtitle,
 	redirectHandler,
 	propComp,
 	isCompVisible = true,
@@ -74,18 +75,27 @@ const Headings = ({
 								/>
 							</Box>
 						)}
-						<Text
-							fontSize={{
-								base: "18px",
-								sm: "18px",
-								md: "20px",
-								lg: "25px",
-								"2xl": "30px",
-							}}
-							fontWeight="semibold"
+						<Flex
+							direction="column"
+							cursor="default"
+							userSelect="none"
 						>
-							{title}
-						</Text>
+							<Text
+								fontSize={{
+									base: "18px",
+									sm: "18px",
+									md: "20px",
+									lg: "25px",
+									"2xl": "30px",
+								}}
+								fontWeight="semibold"
+							>
+								{title}
+							</Text>
+							<Text fontSize="sm" color="gray.600">
+								{subtitle}
+							</Text>
+						</Flex>
 					</Flex>
 				</Box>
 				{isCompVisible && propComp}

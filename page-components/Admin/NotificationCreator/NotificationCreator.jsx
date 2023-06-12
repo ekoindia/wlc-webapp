@@ -1,14 +1,20 @@
 import {
 	Box,
 	FormControl,
+	FormErrorMessage,
+	FormHelperText,
 	FormLabel,
 	Image,
-	Input,
+	Select,
 	Textarea,
 	useToast,
 } from "@chakra-ui/react";
-import { Button, Headings } from "components";
-import { useState } from "react";
+import { Button, Headings, Input } from "components";
+import { Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers/apiHelper";
+import useRefreshToken from "hooks/useRefreshToken";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 /**
@@ -34,6 +40,41 @@ const NotificationCreator = () => {
 	const toast = useToast();
 
 	const [previewImage, setPreviewImage] = useState(null);
+	const [_networkList, setNetworkList] = useState([]);
+	const [ready, setReady] = useState(false);
+
+	const { isLoggedIn, isAdmin, accessToken } = useSession();
+	const { generateNewToken } = useRefreshToken();
+
+	// Download the list of agents in the network for sending notification
+	// This list is to be passed to the final API call for sending notification.
+	useEffect(() => {
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				headers: {
+					"Content-Type": "application/json",
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": "/network/agents/ids",
+					"tf-req-method": "GET",
+				},
+				token: accessToken,
+			},
+			generateNewToken
+		).then((data) => {
+			if (data.status === 0 && data?.data?.csp_list?.length > 0) {
+				const networkList = data?.data?.csp_list ?? [];
+				console.log("[Send Notifications] networkList: ", networkList);
+				setNetworkList(networkList);
+				setReady(true);
+			}
+		});
+	}, [accessToken, isLoggedIn, isAdmin]);
+
+	// Check if the user is logged in and is an admin, before showing the page
+	if (!isLoggedIn || !isAdmin) {
+		return null;
+	}
 
 	const onSubmit = (data) => {
 		// Here we would make our API request or whatever needs to be done with the form data
@@ -75,39 +116,72 @@ const NotificationCreator = () => {
 
 	return (
 		<>
-			<Headings title="Send Notification" hasIcon={false} />
+			<Headings
+				title="Send Notification"
+				subtitle="Send notifications to your entire network"
+				hasIcon={false}
+			/>
 
 			<Box p={{ base: "1em", md: "2em" }} bg="white" borderRadius={8}>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<FormControl id="name" mb={6} isInvalid={errors.name}>
-						<FormLabel>Name</FormLabel>
+					<FormControl
+						id="name"
+						isRequired
+						mb={6}
+						isInvalid={errors.name}
+					>
+						<FormLabel>Notification Name/Purpose</FormLabel>
 						<Input
 							type="text"
+							maxLength="30"
+							invalid={errors.name ? true : false}
+							errorMsg={errors.name}
+							description="Describe the purpose for this notification. This is for internal use only."
+							maxW={{ base: "auto", lg: "400px" }}
 							{...register("name", {
 								required: true,
-								maxLength: 50,
+								maxLength: 30,
 							})}
 						/>
 					</FormControl>
 
-					<FormControl id="title" mb={6} isInvalid={errors.title}>
+					<FormControl
+						id="title"
+						isRequired
+						mb={6}
+						maxW={{ base: "auto", lg: "400px" }}
+						isInvalid={errors.title}
+					>
 						<FormLabel>Title</FormLabel>
 						<Input
 							type="text"
+							maxLength="100"
 							{...register("title", {
 								required: true,
-								maxLength: 50,
+								maxLength: 100,
 							})}
 						/>
 					</FormControl>
 
 					<FormControl
 						id="description"
+						isRequired
 						mb={6}
+						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.description}
 					>
 						<FormLabel>Description</FormLabel>
 						<Textarea
+							maxLength="500"
+							// theme="primary"
+							borderRadius="6px"
+							borderColor="hint"
+							_focus={{
+								bg: "focusbg",
+								boxShadow: "0px 3px 6px #0000001A",
+								borderColor: "hint",
+								transition: "box-shadow 0.3s ease-out",
+							}}
 							{...register("description", {
 								required: true,
 								maxLength: 500,
@@ -115,7 +189,12 @@ const NotificationCreator = () => {
 						/>
 					</FormControl>
 
-					<FormControl id="image" mb={6} isInvalid={errors.image}>
+					<FormControl
+						id="image"
+						mb={6}
+						maxW={{ base: "auto", lg: "400px" }}
+						isInvalid={errors.image}
+					>
 						<FormLabel>Image</FormLabel>
 						<Input
 							type="file"
@@ -123,44 +202,78 @@ const NotificationCreator = () => {
 							onChange={handleImageChange}
 							// {...register("image")}
 						/>
-						{previewImage && <Image src={previewImage} />}
+						{previewImage ? (
+							<Image src={previewImage} />
+						) : errors.image ? (
+							<FormErrorMessage>{errors.image}</FormErrorMessage>
+						) : (
+							<FormHelperText>
+								Add an image to your notification (optional)
+							</FormHelperText>
+						)}
 					</FormControl>
 
 					<FormControl
 						id="priority"
 						mb={6}
+						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.priority}
 					>
 						<FormLabel>Priority</FormLabel>
-						<select {...register("priority", { required: true })}>
+						<Select {...register("priority", { required: true })}>
 							<option value="1">Normal</option>
 							<option value="2">Low</option>
 							<option value="3">High</option>
-						</select>
+						</Select>
 					</FormControl>
 
-					<FormControl id="status" mb={6} isInvalid={errors.status}>
+					<FormControl
+						id="status"
+						mb={6}
+						maxW={{ base: "auto", lg: "400px" }}
+						isInvalid={errors.status}
+					>
 						<FormLabel>Status</FormLabel>
-						<select {...register("status", { required: true })}>
+						<Select {...register("status", { required: true })}>
 							<option value="1">Info</option>
 							<option value="2">Success</option>
 							<option value="3">Error</option>
 							<option value="4">Warning</option>
-						</select>
+						</Select>
 					</FormControl>
 
-					<FormControl id="link" mb={6} isInvalid={errors.link}>
+					<FormControl
+						id="link"
+						mb={6}
+						maxW={{ base: "auto", lg: "400px" }}
+						isInvalid={errors.link}
+					>
 						<FormLabel>Link</FormLabel>
-						<Input type="url" {...register("link")} />
+						<Input
+							type="url"
+							maxLength="100"
+							placeholder="https://..."
+							{...register("link")}
+						/>
 					</FormControl>
 
-					<FormControl id="linklabel" mb={6} isInvalid={errors.link}>
+					<FormControl
+						id="linklabel"
+						mb={6}
+						maxW={{ base: "auto", lg: "400px" }}
+						isInvalid={errors.link}
+					>
 						<FormLabel>Link Label</FormLabel>
-						<Input type="text" {...register("linklabel")} />
+						<Input
+							type="text"
+							maxLength="25"
+							placeholder="eg: Click To Know More"
+							{...register("linklabel")}
+						/>
 					</FormControl>
 
-					<Button mt={4} type="submit" size="lg">
-						Submit
+					<Button loading={!ready} mt={4} type="submit" size="lg">
+						{ready ? "Submit" : "Loading..."}
 					</Button>
 				</form>
 			</Box>
