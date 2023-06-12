@@ -1,6 +1,7 @@
 export { allowedCategories } from "./allowedCategories";
 export {
 	NetworkObject,
+	NotificationsBreadcrumbData,
 	PricingCommissionObject,
 	TransactionHistoryObject,
 } from "./BreadcrumbsData";
@@ -21,7 +22,12 @@ export {
 } from "./ProductDetails";
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
 export { roles } from "./role";
-export { adminSidebarMenu, OtherMenuItems, sidebarMenu } from "./SidebarMenu";
+export {
+	AdminMenuItems,
+	adminSidebarMenu,
+	OtherMenuItems,
+	sidebarMenu,
+} from "./SidebarMenu";
 export { tableRowLimit, tableVariant } from "./tableConfig";
 export { table_data_mock } from "./table_data_mock";
 export { transactions_mock } from "./transactions_mock";

@@ -15,7 +15,7 @@ import {
 import { Button, Icon } from "components";
 import { useNotification } from "contexts";
 import { useAppLink } from "hooks";
-import { formatDateTime } from "utils";
+import { formatDateTime } from "libs";
 import { WidgetBase } from "..";
 
 /**
@@ -167,7 +167,7 @@ const NotificationWidget = () => {
 							<Text fontSize="xs">
 								{formatDateTime(
 									openedNotification.notify_time,
-									"dd/MM/yyyy, hh:mm AA"
+									"dd MMM yyyy, hh:mm a"
 								)}
 							</Text>
 							<Spacer />

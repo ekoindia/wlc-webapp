@@ -6,6 +6,7 @@ import {
 	// useGlobalSearch,
 	useMenuContext,
 	useOrgDetailContext,
+	usePubSub,
 	useUser,
 	useWallet,
 } from "contexts";
@@ -13,7 +14,7 @@ import { useAppLink, useExternalResource } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
 // import { Priority, useRegisterActions } from "kbar";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * The <EkoConnectWidget> component loads the Eko Connect widget (built using Google Polmer v1 library).
@@ -39,7 +40,11 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 	const { balance } = useWallet();
+	const { subscribe, TOPICS } = usePubSub();
 	// const { setSearchTitle } = useGlobalSearch();
+
+	// Create a reference for the Widget component
+	const widgetRef = useRef(null);
 
 	const [widgetLoadState /*, reloadWidget */] = useExternalResource(
 		process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
@@ -58,6 +63,21 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		userData,
 		role_tx_list
 	);
+
+	// Subscribe to the Android responses
+	useEffect(() => {
+		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
+			console.log(
+				"[EkoConnectWidget] [PubSub] >>> android-response:: ",
+				data
+			);
+			if (data?.action) {
+				widgetRef?.current?.callFromAndroid(data.action, data.data);
+			}
+		});
+
+		return unsubscribe;
+	}, []);
 
 	// Setup KBar search actions related to the open transaction
 	// const trxnActions = useMemo(() => {
@@ -187,6 +207,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 			<ErrorBoundary ignoreError={true}>
 				<tf-wlc-widget
+					ref={widgetRef}
 					interaction_id={start_id}
 					route_params={JSON.stringify({
 						trxntypeid: start_id,

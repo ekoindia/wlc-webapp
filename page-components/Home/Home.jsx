@@ -1,6 +1,8 @@
 import { Grid } from "@chakra-ui/react";
 import { useSession, useTodos } from "contexts";
+import dynamic from "next/dynamic";
 import Head from "next/head";
+import { EarningSummary } from "page-components/Profile";
 import { useMemo } from "react";
 import {
 	BillPaymentWidget,
@@ -8,8 +10,15 @@ import {
 	NotificationWidget,
 	QueryWidget,
 	RecentTrxnWidget,
-	TodoWidget,
 } from ".";
+
+// Lazy-load the Todo Widget
+const TodoWidget = dynamic(
+	() => import("./TodoWidget").then((pkg) => pkg.TodoWidget),
+	{
+		ssr: false,
+	}
+);
 
 /**
  * A <Home> component
@@ -45,12 +54,13 @@ const Home = () => {
 		{ id: 1, component: CommonTrxnWidget },
 		{ id: 2, component: BillPaymentWidget },
 		{ id: 3, component: NotificationWidget },
-		{ id: 4, component: RecentTrxnWidget },
+		{ id: 4, component: EarningSummary },
+		{ id: 5, component: RecentTrxnWidget },
 	];
 
 	if (todos && todos.length > 0) {
 		widgets.push({
-			id: 5,
+			id: 91,
 			component: () => (
 				<TodoWidget todos={todos} onDeleteTodo={deleteTodo} />
 			),

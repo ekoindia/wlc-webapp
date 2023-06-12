@@ -58,8 +58,17 @@ const BusinessDashboard = ({
 			>
 				<span>
 					Showing stats from{" "}
-					<DateView date={prevDate} fontWeight="medium" /> to{" "}
-					<DateView date={currDate} fontWeight="medium" />
+					<DateView
+						date={prevDate}
+						format="dd MMM, yyyy"
+						fontWeight="medium"
+					/>{" "}
+					to{" "}
+					<DateView
+						date={currDate}
+						format="dd MMM, yyyy"
+						fontWeight="medium"
+					/>
 				</span>
 				<Flex align="center" gap="4">
 					{calendarDataList?.map((item) => {

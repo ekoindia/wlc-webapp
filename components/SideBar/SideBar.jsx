@@ -13,6 +13,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import {
+	AdminMenuItems,
 	adminSidebarMenu,
 	Endpoints,
 	OtherMenuItems,
@@ -85,13 +86,28 @@ const generateTransactionActions = (
 			parent: parent_id
 				? "tx/" + parent_id
 				: is_other_list
-				? null
+				? "others"
 				: "start-a-tx",
 		};
 	};
 
 	const trxnList = is_other_list
-		? []
+		? [
+				{
+					id: "others",
+					name: "Others...",
+					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
+					icon: (
+						<ActionIcon
+							icon="others"
+							// color="gray.500"
+							style="filled"
+						/>
+					),
+					// shortcut: ["$mod+/"],
+					// section: "Services",
+				},
+		  ]
 		: [
 				{
 					id: "start-a-tx",
@@ -188,16 +204,26 @@ const generateTransactionActions = (
  */
 const generateMenuLinkActions = (menu_list, router) => {
 	const menuLinkActions = [];
+
+	// get current route path from Nextjs router
+	const currentRoute = router.pathname;
+
 	menu_list.forEach((menu) => {
-		menuLinkActions.push({
-			id: "menulnk/" + menu.name,
-			name: menu.name,
-			icon: (
-				<ActionIcon icon={menu.icon} name={menu.name} style="filled" />
-			),
-			// section: "Services",
-			perform: () => router.push(menu.link),
-		});
+		if (menu.link != currentRoute) {
+			menuLinkActions.push({
+				id: "menulnk/" + menu.name,
+				name: menu.name,
+				icon: (
+					<ActionIcon
+						icon={menu.icon}
+						name={menu.name}
+						style="filled"
+					/>
+				),
+				// section: "Services",
+				perform: () => router.push(menu.link),
+			});
+		}
 	});
 	console.log("menuLinkActions", menuLinkActions, menu_list);
 	return menuLinkActions;
@@ -226,12 +252,19 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		const trxnList = [];
 		const otherList = [];
 		let _otherActions = [];
+
 		if (interaction_list && interaction_list.length > 0) {
 			interaction_list.forEach((tx) => {
-				if (OtherMenuItems.indexOf(tx.id) > -1) {
-					otherList.push(tx);
+				if (isAdmin) {
+					if (AdminMenuItems.indexOf(tx.id) > -1) {
+						otherList.push(tx);
+					}
 				} else {
-					trxnList.push(tx);
+					if (OtherMenuItems.indexOf(tx.id) > -1) {
+						otherList.push(tx);
+					} else {
+						trxnList.push(tx);
+					}
 				}
 			});
 
@@ -240,20 +273,28 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				id: TransactionIds.MANAGE_MY_ACCOUNT,
 				...role_tx_list[TransactionIds.MANAGE_MY_ACCOUNT],
 			};
-			// Remove, if already present in the list
+			// Remove "Manage My Account", if already present in the list
 			if (manageMyAccount?.is_visible === 1) {
+				manageMyAccount = null;
+			}
+			// Remove "Manage My Account" for Admins
+			if (isAdmin) {
 				manageMyAccount = null;
 			}
 
 			setTrxnList(trxnList);
 			setOtherList([
-				{
-					icon: "transaction-history",
-					label: "Transaction History",
-					link: Endpoints.HISTORY,
-				},
+				...(isAdmin
+					? []
+					: [
+							{
+								icon: "transaction-history",
+								label: "Transaction History",
+								link: Endpoints.HISTORY,
+							},
+					  ]),
 				...otherList,
-				manageMyAccount,
+				...(manageMyAccount ? [manageMyAccount] : []),
 			]);
 
 			if (!isAdmin) {
@@ -388,10 +429,9 @@ const SideBarMenu = ({
 									cursor="pointer"
 								/>
 							</Link>
-
-							<StatusCard />
 						</>
 					)}
+					<StatusCard />
 
 					{/* Fixed menu items */}
 					{menuList?.map((menu, index) => (
@@ -463,10 +503,14 @@ const AccordionMenu = ({
 	setOpenIndex,
 }) => {
 	// Hide transaction sub-menus for admin...
-	if (isAdmin) return null;
+	// if (isAdmin) return null;
 
 	// Hide if nothing to show...
 	if (!(trxnList?.length > 0 || otherList?.length > 0)) return null;
+
+	const showTrxnSubMenu = trxnList?.length > 0;
+	const showOtherSubMenu = otherList?.length > 0;
+	const otherMenuIndex = showTrxnSubMenu ? 1 : 0;
 
 	return (
 		<Accordion
@@ -477,24 +521,26 @@ const AccordionMenu = ({
 			onChange={setOpenIndex}
 		>
 			{/* Start A Transaction... */}
-			{trxnList?.length > 0 && (
+			{showTrxnSubMenu && (
 				<AccordionSubMenuSection
 					title="Start a Transaction"
 					icon="transaction"
 					menuItems={trxnList}
 					router={router}
 					expanded={openIndex === 0}
+					isAdmin={isAdmin}
 				/>
 			)}
 
 			{/* Others... */}
-			{otherList?.length > 0 && (
+			{showOtherSubMenu && (
 				<AccordionSubMenuSection
 					title="Others"
 					icon="others"
 					menuItems={otherList}
 					router={router}
-					expanded={openIndex === 1}
+					expanded={openIndex === otherMenuIndex}
+					isAdmin={isAdmin}
 				/>
 			)}
 		</Accordion>
@@ -507,6 +553,7 @@ const AccordionSubMenuSection = ({
 	menuItems,
 	router,
 	expanded,
+	isAdmin,
 }) => {
 	return (
 		<AccordionItem borderBottom="br-sidebar" borderTop="none">
@@ -554,7 +601,9 @@ const AccordionSubMenuSection = ({
 
 			<AccordionPanel padding={"0px"} border="none">
 				{menuItems?.map((tx) => {
-					const link = tx?.link || `/transaction/${tx?.id}`;
+					const link =
+						tx?.link ||
+						`${isAdmin ? "/admin" : ""}/transaction/${tx?.id}`;
 					const isCurrent = isCurrentRoute(router.asPath, link);
 					return (
 						<Link key={link} href={link}>

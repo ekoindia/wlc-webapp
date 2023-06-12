@@ -12,9 +12,9 @@ import { Endpoints, TransactionIds } from "constants";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
+import { formatDate } from "libs";
 import { WidgetBase } from "page-components/Home";
 import { useCallback, useMemo, useState } from "react";
-import { formatDateTime } from "utils/dateFormat";
 
 /**
  * A <PersonalDetailCard> component
@@ -79,9 +79,7 @@ const PersonalDetailCard = () => {
 					user_id: userData.userId,
 					section: "personal_detail",
 					...formState,
-					dob: parseInt(
-						formatDateTime(new Date(formState.dob), "ddMMyyyy")
-					),
+					dob: parseInt(formatDate(formState.dob, "ddMMyyyy")),
 				},
 				timeout: 30000,
 			},
