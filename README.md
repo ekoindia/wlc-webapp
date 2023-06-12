@@ -14,6 +14,7 @@ A white-labelled SaaS platform to run your business like agent-banking, micro-fi
 - View available icons (open in incognito window where user is not logged-in): `localhost:3000/icons_demo`
 - To add new icons, see the file: `constants/IconLibrary.ts`
 - There are duplicate icon-names as well, same icons with different names (for backward compatibility). Such icons are shown in red background with the pointer to the actual icon name.
+- For optimizing individual SVG icons, use: [SVGOMG - SVGO's Missing GUI](https://jakearchibald.github.io/svgomg/)
 
 ## UI Features:
 - Top Navbar - [components/NavBar/NavBar.jsx](components/NavBar/NavBar.jsx)

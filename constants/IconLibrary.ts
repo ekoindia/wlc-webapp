@@ -1,3 +1,7 @@
+/**
+ * For optimizing individual SVG icons, use: [SVGOMG - SVGO's Missing GUI](https://jakearchibald.github.io/svgomg/)
+ */
+
 export type IconNameType =
 	| "access-time"
 	| "account-balance"
@@ -122,6 +126,7 @@ export type IconNameType =
 	| "power-settings-new"
 	| "print"
 	| "qrcode"
+	| "query"
 	| "radio-button-checked"
 	| "radio-button-unchecked"
 	| "refer"
@@ -859,6 +864,10 @@ export const IconLibrary: IconLibraryType = {
 	qrcode: {
 		viewBox: "0 0 16 16",
 		path: `<path d="M6 0h-6v6h6v-6zM5 5h-4v-4h4v4z M2 2h2v2h-2v-2z M0 16h6v-6h-6v6zM1 11h4v4h-4v-4z M2 12h2v2h-2v-2z M10 0v6h6v-6h-6zM15 5h-4v-4h4v4z M12 2h2v2h-2v-2z M2 7h-2v2h3v-1h-1z M7 9h2v2h-2v-2z M3 7h2v1h-2v-1z M9 12h-2v1h1v1h1v-1z M6 7v1h-1v1h2v-2z M8 4h1v2h-1v-2z M9 8v1h2v-2h-3v1z M7 6h1v1h-1v-1z M9 14h2v2h-2v-2z M7 14h1v2h-1v-2z M9 11h1v1h-1v-1z M9 3v-2h-1v-1h-1v4h1v-1z M12 14h1v2h-1v-2z M12 12h2v1h-2v-1z M11 13h1v1h-1v-1z M10 12h1v1h-1v-1z M14 10v1h1v1h1v-2h-1z M15 13h-1v3h2v-2h-1z M10 10v1h3v-2h-2v1z M12 7v1h2v1h2v-2h-2z"/>`,
+	},
+	query: {
+		viewBox: "0 0 27 22.5",
+		path: `<path d="M26.57 1.75A3.27 3.27 0 0 0 23.66.01c-.34-.02-.69 0-1.03 0L3.47 0a3.37 3.37 0 0 0-3.4 2.67 3.53 3.53 0 0 0-.08.75v11.52a3.36 3.36 0 0 0 3.15 3.41 6 6 0 0 0 .55.02c2.67-.03 2.6-.14 2.57 2.6v1a.5.5 0 0 0 .88.4l4.28-3.64a1.45 1.45 0 0 1 1-.37h11.02a3.4 3.4 0 0 0 3.31-2.16c.1-.27.16-.55.24-.83V2.96a7.63 7.63 0 0 0-.44-1.2m-12.9 12.91a1.2 1.2 0 1 1 1.19-1.18 1.19 1.19 0 0 1-1.19 1.18m3.16-7.58a4.98 4.98 0 0 1-1.3 1.5c-.14.1-.28.22-.4.34a1.66 1.66 0 0 0-.55 1.2v.4a.58.58 0 0 1-.54.64 2.26 2.26 0 0 1-.57.03.6.6 0 0 1-.63-.62 2.96 2.96 0 0 1 1.1-2.84c.28-.2.55-.42.8-.66a1.36 1.36 0 0 0 .48-.98.92.92 0 0 0-.53-.89 1.76 1.76 0 0 0-2.27.55c-.33.47-.64.57-1.09.36A.88.88 0 0 1 10.87 5a2.3 2.3 0 0 1 1.4-1.44 3.69 3.69 0 0 1 1.4-.3 4.55 4.55 0 0 1 2.02.38 2.38 2.38 0 0 1 1.13 3.45"/>`,
 	},
 	"radio-button-checked": {
 		viewBox: "0 0 24 24",
