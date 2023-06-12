@@ -17,16 +17,15 @@ const Currency = ({
 	...rest
 }) => {
 	return (
-		<Flex display="inline-flex" justify="center" {...rest}>
+		<Flex as="span" display="inline-flex" justify="center" {...rest}>
 			{!(
 				typeof amount === "undefined" ||
 				amount === null ||
 				amount === ""
 			) && (
 				<>
-					<span hidden$="[[_isHidden(amount)]]" mr="0.2em">
-						{getCurrencySymbol(currencyCode)}
-					</span>
+					{/* <span hidden={_isHidden(amount)} */}
+					<span mr="0.2em">{getCurrencySymbol(currencyCode)}</span>
 					<span>
 						{formatCurrency(
 							amount,

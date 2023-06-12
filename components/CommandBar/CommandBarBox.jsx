@@ -21,10 +21,8 @@ import {
 	useRegisterActions,
 } from "kbar";
 import { useRouter } from "next/router";
-import { useEffect, useMemo } from "react";
-import { parse } from "utils";
+import { useEffect, useMemo, useState } from "react";
 import { Icon, Kbd } from "..";
-// import { Parser } from "utils/mathParser";
 
 /**
  * KBar Portal Box to show the search bar and results
@@ -179,6 +177,9 @@ function DynamicSearchController() {
 		queryValue: state.searchQuery,
 	}));
 
+	const [parse, setParse] = useState(null);
+	const [parseLoadState, setParseLoadState] = useState("");
+
 	const [queryValueDebounced, setQueryValueDebounced] = useDebouncedState(
 		"",
 		100,
@@ -196,25 +197,48 @@ function DynamicSearchController() {
 
 	const router = useRouter();
 
+	// Prepare the Command Bar actions for History search, Calculator, Notes, etc.
 	const historySearch = useMemo(() => {
 		if (!isLoggedIn) {
 			return [];
 		}
 
 		const results = [];
+		const expr = queryValueDebounced.slice(1);
 
 		// Math parser...
 		if (queryValueDebounced.charAt(0) === "=") {
-			// const mathParser = new Parser();
-			// const result = mathParser.parse(queryValueDebounced.slice(1));
-			const result = parse(queryValueDebounced.slice(1));
+			let result;
 
-			// if (result) {
+			// Lazy load the math parser
+			if (parseLoadState === "") {
+				setParseLoadState("loading");
+				import("/utils/exprParser.js")
+					.then((exprParser) => {
+						// Update context values once exprParser is loaded
+						setParse(() => exprParser.parse);
+						setParseLoadState("loaded");
+					})
+					.catch((error) => {
+						console.error("Error loading exprParser:", error);
+						setParseLoadState("error");
+					});
+			}
+
+			// Parse the expression if the parser is loaded
+			if (expr && parse && parseLoadState === "loaded") {
+				result = parse(expr);
+			}
+
 			results.push({
 				id: "math/parse",
 				name: result ? `${result}` : "Calculator",
 				subtitle: result
 					? `Result of ${queryValueDebounced.slice(1)}  (⏎ to copy)`
+					: parseLoadState === "loading"
+					? "Loading calculator..."
+					: parseLoadState === "error"
+					? "Error loading calculator!"
 					: "Start typing an expression to calculate... (eg: =2+2)",
 				keywords: queryValueDebounced,
 				icon: (
@@ -226,16 +250,20 @@ function DynamicSearchController() {
 					/>
 				),
 				perform: () => {
-					result && copy(result.toString());
-					toast({
-						title: "Copied: " + result,
-						status: "success",
-						duration: 2000,
-					});
+					if (result) {
+						copy(result.toString());
+						toast({
+							title: "Copied: " + result,
+							status: "success",
+							duration: 2000,
+						});
+					}
 				},
 			});
-			// }
 		} else {
+			// Not a calculator prompt.
+			// Show other actions based on numeric search...
+
 			// Remove formatters (commas and spaces) from the number query
 			const unformattedNumberQuery = queryValueDebounced.replace(
 				/(?<=[0-9])[ ,]/g,
@@ -367,7 +395,7 @@ function DynamicSearchController() {
 		}
 
 		return results;
-	}, [queryValueDebounced, router]);
+	}, [queryValueDebounced, router, parse, parseLoadState]);
 
 	useRegisterActions(historySearch, [historySearch]);
 
@@ -430,7 +458,7 @@ function RenderResults({ className, isSmallScreen }) {
 								minH="62px"
 								// borderRadius="md"
 								borderLeft="4px solid"
-								borderColor={
+								borderLeftColor={
 									active ? "primary.dark" : "transparent"
 								}
 								bg={active ? "divider" : null}

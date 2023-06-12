@@ -47,7 +47,12 @@ const EarningSummary = ({ ...rest }) => {
 	return (
 		<WidgetBase title="Earning Summary" {...rest}>
 			<Box fontSize="14px">
-				<Text fontSize="12px" color="secondary.DEFAULT" mt="-16px">
+				<Text
+					fontSize="12px"
+					color="secondary.DEFAULT"
+					mt="-16px"
+					mb="32px"
+				>
 					as of {data.asof}
 				</Text>
 				{summary.map((item, index) =>

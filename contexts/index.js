@@ -2,7 +2,11 @@ export {
 	EarningSummaryProvider,
 	useEarningSummary,
 } from "./EarningSummaryContext";
-export { GlobalSearchProvider, useGlobalSearch } from "./GlobalSearchContext";
+export {
+	GlobalSearchProvider,
+	useBusinessSearchActions,
+	useGlobalSearch,
+} from "./GlobalSearchContext";
 export { MenuProvider, useMenuContext } from "./MenuContext";
 export { NotificationProvider, useNotification } from "./NotificationContext";
 export {

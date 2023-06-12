@@ -28,16 +28,6 @@ const Headings = ({
 
 	const isNavHidden = hasIcon && isSmallScreen ? true : false;
 
-	// if (hasIcon) {
-	// 	if (isSmallScreen) {
-	// 		setNavHidden(true);
-	// 	} else {
-	// 		setNavHidden(false);
-	// 	}
-	// } else {
-	// 	setNavHidden(false);
-	// }
-
 	const styles = isNavHidden && {
 		h: NavHeight,
 		top: "0%",

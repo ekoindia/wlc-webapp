@@ -3,9 +3,9 @@ import { TransactionTypes } from "constants/EpsTransactions";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useDailyCacheState } from "hooks";
-import { Priority, useRegisterActions } from "kbar";
 import { createContext, useContext, useEffect, useMemo } from "react";
 import { formatCurrency } from "utils/numberFormat";
+import { useBusinessSearchActions } from "./GlobalSearchContext";
 
 /**
  * @typedef {Object} EarningSummaryValue
@@ -107,7 +107,7 @@ export const EarningSummaryProvider = ({ children }) => {
 			userEarnings?.last_month_till_yesterday
 				? true
 				: false;
-		return userEarnings?.userId
+		return userEarnings?.userId && userEarnings?.userId === userId
 			? [
 					{
 						id: "earn-sumry",
@@ -125,15 +125,12 @@ export const EarningSummaryProvider = ({ children }) => {
 								color={hasIncreased ? "success" : "error"}
 							/>
 						),
-						priority: Priority.HIGH,
-						parent: "my-business",
-						perform: () => {},
 					},
 			  ]
 			: [];
 	}, [userEarnings]);
 
-	useRegisterActions(earningSummaryAction, [earningSummaryAction]);
+	useBusinessSearchActions(earningSummaryAction, [earningSummaryAction]);
 
 	return (
 		<EarningSummaryContext.Provider value={userEarnings}>
