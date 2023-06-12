@@ -1,5 +1,4 @@
 import { Table } from "components";
-import { useRouter } from "next/router";
 
 /**
  * A <QueryCenterTable> component
@@ -12,20 +11,9 @@ import { useRouter } from "next/router";
 const QueryCenterTable = ({
 	pageNumber,
 	setPageNumber,
-	totalRecords,
-	agentDetails,
+	// totalRecords,
+	queryData,
 }) => {
-	const router = useRouter();
-	const onRowClick = (rowData) => {
-		const cellnumber = rowData.agent_mobile;
-		localStorage.setItem("rowData", JSON.stringify(rowData));
-		router.push({
-			pathname: `/admin/my-network/profile`,
-			query: { cellnumber },
-			// state: { rowData },
-		});
-	};
-
 	const renderer = [
 		{ name: "ticketNumber", field: "Ticket ID" },
 		{ name: "subject", field: "Subject" },
@@ -45,15 +33,13 @@ const QueryCenterTable = ({
 
 	return (
 		<Table
-			onRowClick={onRowClick}
-			pageLimit="10"
 			renderer={renderer}
-			variant="evenStripedClickableRow"
-			tableName="Network"
-			totalRecords={totalRecords}
+			variant="stripedActionNone"
+			tableName="Query"
+			// totalRecords={totalRecords}
 			setPageNumber={setPageNumber}
 			pageNumber={pageNumber}
-			data={agentDetails}
+			data={queryData}
 		/>
 	);
 };
