@@ -1,14 +1,4 @@
-import {
-	Accordion,
-	AccordionButton,
-	AccordionItem,
-	AccordionPanel,
-	Box,
-	Flex,
-	Text,
-} from "@chakra-ui/react";
-import { Button } from "components";
-import { getNameStyle, getStatusStyle } from "helpers/TableHelpers";
+import { Box, Flex } from "@chakra-ui/react";
 
 /**
  * A <CommissionsCard> component
@@ -18,115 +8,34 @@ import { getNameStyle, getStatusStyle } from "helpers/TableHelpers";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<CommissionsCard></CommissionsCard>` TODO: Fix example
  */
-const CommissionsCard = ({ item, rendererExpandedRow }) => {
+const CommissionsCard = ({ item }) => {
 	return (
-		<>
-			<Flex justifyContent="space-between">
-				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-					{item && getNameStyle(item.trx_name)}
+		<Flex direction="column" fontSize={{ base: "sm" }} pl="42px">
+			<Flex gap="2">
+				<Box as="span" color="light">
+					Transaction value:
 				</Box>
-				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-					{item && getStatusStyle(item.status)}
+				<Box as="span" color="dark">
+					{item && item.transaction_value}
 				</Box>
 			</Flex>
-			<Flex direction="column" fontSize={{ base: "sm" }} pl="42px">
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Transaction ID:
-					</Box>
-					<Box as="span" color="dark">
-						{item && item.trx_id}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Date:
-					</Box>
-					<Box as="span" color="dark">
-						{item && item.date}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Time:
-					</Box>
-					<Box as="span" color="dark">
-						{item && item.time}
-					</Box>
-				</Flex>
+			<Flex gap="2">
+				<Box as="span" color="light">
+					Commission:
+				</Box>
+				<Box as="span" color="dark">
+					{item && item.commission}
+				</Box>
 			</Flex>
-			<Flex w="100%">
-				<Accordion allowMultiple w="100%">
-					<AccordionItem
-						fontSize={{ base: "sm" }}
-						border="none"
-						pl="42px"
-					>
-						{({ isExpanded }) => (
-							<>
-								{!isExpanded && (
-									<AccordionButton px="0">
-										<Text
-											fontWeight="semibold"
-											textColor="primary.DEFAULT"
-											fontSize={{ base: "sm" }}
-										>
-											...Show More
-										</Text>
-									</AccordionButton>
-								)}
-								<AccordionPanel p="0">
-									<Flex direction="column">
-										{rendererExpandedRow?.map(
-											(ele) =>
-												item[ele.name] && (
-													<>
-														<Flex gap={2}>
-															<Text color="light">
-																{ele.field}:
-															</Text>
-															<Text color="dark">
-																{item[ele.name]}
-															</Text>
-														</Flex>
-													</>
-												)
-										)}
-									</Flex>
-									<Flex justify="space-between">
-										{isExpanded && (
-											<AccordionButton px="0">
-												<Text
-													fontWeight="semibold"
-													textColor="primary.DEFAULT"
-													fontSize={{ base: "sm" }}
-												>
-													...Show Less
-												</Text>
-											</AccordionButton>
-										)}
-										<Button
-											w={{
-												base: "80px",
-											}}
-											h={{
-												base: "32px",
-											}}
-											fontSize={{
-												base: "sm",
-											}}
-											disabled
-										>
-											Repeat
-										</Button>
-									</Flex>
-								</AccordionPanel>
-							</>
-						)}
-					</AccordionItem>
-				</Accordion>
+			<Flex gap="2">
+				<Box as="span" color="light">
+					Biller Name:
+				</Box>
+				<Box as="span" color="dark">
+					{item && item.biller_name}
+				</Box>
 			</Flex>
-		</>
+		</Flex>
 	);
 };
 

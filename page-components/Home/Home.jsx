@@ -1,5 +1,6 @@
 import { Grid } from "@chakra-ui/react";
 import { useSession, useTodos } from "contexts";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { EarningSummary } from "page-components/Profile";
 import { useMemo } from "react";
@@ -10,8 +11,16 @@ import {
 	NotificationWidget,
 	QueryWidget,
 	RecentTrxnWidget,
-	TodoWidget,
 } from ".";
+
+// Lazy-load the Todo Widget
+const TodoWidget = dynamic(
+	() => import("./TodoWidget").then((pkg) => pkg.TodoWidget),
+	{
+		ssr: false,
+	}
+);
+
 /**
  * A <Home> component
  * TODO: Write more description here

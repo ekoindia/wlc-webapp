@@ -1,71 +1,72 @@
 import { Flex } from "@chakra-ui/react";
 import { Headings, Tags } from "components";
-import { Endpoints, tableRowLimit, TransactionTypes } from "constants";
-import { useCommisionSummary, useSession, useUser } from "contexts";
-import { fetcher } from "helpers/apiHelper";
+import { tableRowLimit } from "constants";
+import { useCommisionSummary } from "contexts";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { formatCurrency } from "utils/numberFormat";
 import { CommissionsTable } from ".";
 
 const limit = tableRowLimit?.XLARGE; // Page size
 
-const Commissions = (id) => {
-	const [data, setData] = useState();
+const Commissions = () => {
+	const [tableData, setTableData] = useState();
 	const [currentPage, setCurrentPage] = useState(1);
 	const [tagValue, setTagValue] = useState("");
-	const { userData } = useUser();
-	const { accountDetails } = userData;
-	const { account_list } = accountDetails;
-	const { accessToken } = useSession();
+	const { query } = useRouter();
 
 	const commisionData = useCommisionSummary();
-	console.log("IDVALUE:", id);
-	const hitQuery = (abortController, key) => {
-		console.log("[Commissions] fetch started...", key);
-
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: {
-				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
-				start_index: (currentPage - 1) * limit,
-				limit: limit,
-				account_id: account_list?.[0]?.id || null,
-				...tagValue,
-			},
-			controller: abortController,
-			token: accessToken,
-		})
-			.then((data) => {
-				const tx_list = data?.data?.transaction_list ?? [];
-				setData(tx_list);
-				console.log("[Commissions] fetch result...", key, tx_list);
-			})
-			.catch((err) => {
-				console.error("[Commissions] error: ", err);
-			});
-	};
-
-	useEffect(() => {
-		console.log("[Commissions] fetch init", currentPage, tagValue);
-
-		const controller = new AbortController();
-		hitQuery(controller, `${currentPage}-${JSON.stringify(tagValue)}`);
-
-		return () => {
-			console.log(
-				"[Commissions] fetch aborted... ",
-				currentPage,
-				JSON.stringify(tagValue),
-				controller
-			);
-			controller.abort();
-		};
-	}, [currentPage, tagValue]);
-
-	const transactionList = data;
 
 	const handleTagClick = (status) => {
-		setTagValue(status);
-		console.log("THISISID", id, tagValue, status);
+		setTagValue(status?.toLowerCase());
 	};
+	useEffect(() => {
+		if (query?.id) {
+			setTagValue(query?.id?.toLowerCase());
+		}
+	}, [query]);
+
+	useEffect(() => {
+		if (tagValue && commisionData) {
+			const tagData = commisionData?.pricing_commission_data?.filter(
+				({ product }) => product.toLowerCase() === tagValue
+			);
+			if (tagData?.length > 0) {
+				setTableData(
+					tagData.map(
+						({
+							slab_from,
+							slab_to,
+							value,
+							biller_name,
+							calc_type,
+							min_value,
+							max_value,
+						}) => ({
+							transaction_value: `₹ ${slab_from || 0} - ₹ ${
+								slab_to || 0
+							}`,
+							commission:
+								calc_type === 1
+									? `${value}% (min: ${formatCurrency(
+											min_value,
+											"INR",
+											false,
+											true
+									  )}, max: ${formatCurrency(
+											max_value,
+											"INR",
+											false,
+											true
+									  )})`
+									: value,
+							biller_name,
+						})
+					)
+				);
+			}
+		}
+	}, [tagValue, commisionData]);
 
 	return (
 		<Flex
@@ -79,10 +80,11 @@ const Commissions = (id) => {
 			bg="white"
 			px="16px"
 		>
-			<Headings title="Know your commissions121" />
+			<Headings title="Know Your Commissions" />
 			<Flex w="full" h="auto" direction="row" py="1px">
-				{commisionData?.data?.pricing_commission_data.map((tx) => (
+				{commisionData?.pricing_commission_data?.map((tx) => (
 					<Tags
+						key={tx.status}
 						w="fit-content"
 						h="32px"
 						margin="0 10px 12px 0"
@@ -91,12 +93,16 @@ const Commissions = (id) => {
 						status={tx.product}
 						borderRadius="16"
 						fontSize="12"
-						bg={tx.product === id.id ? "#11299E" : "#E9EDF1"}
-						color={tx.product === id.id ? "white" : "#555"}
-						// _hover={{
-						// 	bg: "#E9EDF1" ? "#616161" : "#11299E",
-						// 	color: "#555" ? "white" : "#555",
-						// }}
+						bg={
+							tx.product.toLowerCase() === tagValue
+								? "#11299E"
+								: "#E9EDF1"
+						}
+						color={
+							tx.product.toLowerCase() === tagValue
+								? "white"
+								: "#555"
+						}
 						_hover={{ bg: "#11299E", color: "white" }}
 						onClick={() => handleTagClick(tx.product)}
 					/>
@@ -105,9 +111,9 @@ const Commissions = (id) => {
 			<CommissionsTable
 				pageNumber={currentPage}
 				setPageNumber={setCurrentPage}
-				transactionList={transactionList}
 				tableRowLimit={limit}
 				tagClicked={tagValue}
+				commisionData={tableData}
 			/>
 		</Flex>
 	);

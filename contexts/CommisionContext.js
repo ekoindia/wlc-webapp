@@ -1,12 +1,12 @@
-import { ActionIcon } from "components/CommandBar";
-import { TransactionTypes } from "constants/EpsTransactions";
+// import { ActionIcon } from "components/CommandBar";
+import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useDailyCacheState } from "hooks";
-import { createContext, useContext, useEffect, useMemo } from "react";
-import { formatCurrency } from "utils/numberFormat";
-import { useBusinessSearchActions } from "./GlobalSearchContext";
-
+import { createContext, useContext, useEffect } from "react";
+import { validateResp } from "utils/validateResponse";
+// import { useBusinessSearchActions } from "./GlobalSearchContext";
+// 1% (min: $10, max: $20)
 const response = {
 	response_status_id: 0,
 	data: {
@@ -53,12 +53,9 @@ export const useCommisionSummary = () => {
 
 export const CommisionSummaryProvider = ({ children }) => {
 	const [userCommision, setUserCommision, isValid] = useDailyCacheState(
-		"inf-earnsummary",
+		"inf-commission",
 		{
-			this_month_till_yesterday: 0,
-			last_month_till_yesterday: 0,
-			last_month_total: 0,
-			asof: "",
+			pricing_commission_data: [],
 			userId: "",
 		}
 	);
@@ -66,96 +63,78 @@ export const CommisionSummaryProvider = ({ children }) => {
 		useSession();
 
 	useEffect(() => {
-		// if (!isLoggedIn || !accessToken || isOnboarding || isAdmin) return;
+		if (!isLoggedIn || !accessToken || isOnboarding || isAdmin) return;
 
-		// if (
-		// 	isValid &&
-		// 	userCommision?.userId &&
-		// 	userCommision?.userId === userId
-		// )
-		// return;
+		if (
+			isValid &&
+			userCommision?.userId &&
+			userCommision?.userId === userId
+		)
+			return;
 
 		setTimeout(
 			() =>
 				fetcher(
 					process.env.NEXT_PUBLIC_API_BASE_URL +
-						"/agent/pricing_commission?initiator_id=9911572989&user_code=99012699&org_id=1&source=WLC&client_ref_id=202306110030123456",
+						Endpoints.TRANSACTION,
 					{
-						body: {
-							interaction_type_id:
-								TransactionTypes.GET_EARNING_SUMMARY,
+						headers: {
+							"Content-Type": "application/json",
+							"tf-req-uri-root-path": "/ekoicici/v1",
+							"tf-req-uri": "/network/agent/pricing_commission",
+							"tf-req-method": "GET",
 						},
 						token: accessToken,
 					}
 				)
 					.then((data) => {
-						setUserCommision(response);
-						// if (
-						// 	data.data &&
-						// 	"this_month" in data.data &&
-						// 	data.data.this_month >= 0
-						// ) {
-						// 	let yesterday = new Date();
-						// 	yesterday.setDate(yesterday.getDate() - 1);
-
-						// 	const asofDate = yesterday.toLocaleString("en-IN", {
-						// 		day: "numeric",
-						// 		month: "short",
-						// 	});
-						// 	const dayOfWeek = yesterday.toLocaleString("en-IN", {
-						// 		weekday: "short",
-						// 	});
-
-						// 	const commision = {
-						// 		this_month_till_yesterday: data.data.this_month,
-						// 		last_month_till_yesterday:
-						// 			data.data.last_month || 0,
-						// 		last_month_total: data.data.prev_month || 0,
-						// 		asof: `${asofDate} (${dayOfWeek})`,
-						// 		userId: userId,
-						// 	};
-						// 	setUserCommision(commision);
-						// }
+						console.log("Data", data);
+						if (validateResp(response)) {
+							setUserCommision({
+								pricing_commission_data:
+									response.data?.pricing_commission_data,
+								userId: userId,
+							});
+						}
 					})
 					.catch((error) => {
 						// Handle any errors that occurred during the fetch
-						// console.error("ErrorMSG:", error);
-						setUserCommision(response);
+						console.error("ErrorMSG:", error);
+						setUserCommision({
+							pricing_commission_data:
+								response.data?.pricing_commission_data,
+							userId: userId,
+						});
 					}),
 			2000
 		);
-	}, [isLoggedIn, isAdmin, isOnboarding, accessToken, userId, isValid]);
+	}, [
+		isLoggedIn,
+		isAdmin,
+		isOnboarding,
+		accessToken,
+		isValid,
+		setUserCommision,
+		userCommision?.userId,
+		userId,
+	]);
 
-	const CommisionAction = useMemo(() => {
-		const hasIncreased =
-			userCommision?.this_month_till_yesterday >
-			userCommision?.last_month_till_yesterday
-				? true
-				: false;
-		return userCommision?.userId && userCommision?.userId === userId
-			? [
-					{
-						id: "earn-sumry",
-						name: `My Earnings (this month till yesterday): ${formatCurrency(
-							userCommision.this_month_till_yesterday
-						)}`,
-						subtitle: `Last month earning (till yesterday): ${formatCurrency(
-							userCommision.last_month_till_yesterday
-						)}`,
-						keywords: "business commission",
-						icon: (
-							<ActionIcon
-								icon={hasIncreased ? "increase" : "decrease"}
-								iconSize="md"
-								color={hasIncreased ? "success" : "error"}
-							/>
-						),
-					},
-			  ]
-			: [];
-	}, [userCommision]);
+	// const CommisionAction = useMemo(() => {
+	// 	const actionData = userCommision?.pricing_commission_data?.map(
+	// 		({ product }) => ({
+	// 			id: `know-your-commission-${product}`,
+	// 			name: product,
+	// 			subtitle: `${product} commissions`,
+	// 			keywords: `business commission ${product}`,
+	// 			icon: <ActionIcon iconSize="md" color={"success"} />,
+	// 		})
+	// 	);
+	// 	return userCommision?.userId && userCommision?.userId === userId
+	// 		? actionData
+	// 		: [];
+	// }, [userCommision]);
 
-	useBusinessSearchActions(CommisionAction, [CommisionAction]);
+	// useBusinessSearchActions(CommisionAction, [CommisionAction]);
 
 	return (
 		<CommisionContext.Provider value={userCommision}>
