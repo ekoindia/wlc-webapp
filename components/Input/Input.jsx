@@ -60,8 +60,8 @@ const Input = forwardRef(
 			inputNumStyle,
 			radius,
 			required = false,
-			minlength,
-			maxlength = "100",
+			minLength,
+			maxLength = "100",
 			// register = () => {},
 			onChange = () => {},
 			onKeyDown = () => {},
@@ -149,12 +149,12 @@ const Input = forwardRef(
 							borderColor: "hint",
 							transition: "box-shadow 0.3s ease-out",
 						}}
-						minlength={minlength}
-						maxlength={maxlength}
+						minLength={minLength}
+						maxLength={maxLength}
 						// {...register(name, {
 						// 	required: required,
-						// 	minLength: minlength || 0,
-						// 	maxLength: maxlength || undefined,
+						// 	minLength: minLength || 0,
+						// 	maxLength: maxLength || undefined,
 						// })}
 						{...rest}
 					/>
