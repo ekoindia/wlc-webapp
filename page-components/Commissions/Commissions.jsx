@@ -68,6 +68,11 @@ const Commissions = () => {
 		}
 	}, [tagValue, commisionData]);
 
+	const uniqueCommisionData = commisionData?.pricing_commission_data.filter(
+		(value, index, self) =>
+			index === self.findIndex((item) => item.product === value.product)
+	);
+
 	return (
 		<Flex
 			w="full"
@@ -82,7 +87,7 @@ const Commissions = () => {
 		>
 			<Headings title="Know Your Commissions" />
 			<Flex w="full" h="auto" direction="row" py="1px">
-				{commisionData?.pricing_commission_data?.map((tx) => (
+				{uniqueCommisionData?.map((tx) => (
 					<Tags
 						key={tx.status}
 						w="fit-content"

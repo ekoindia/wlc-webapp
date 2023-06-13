@@ -16,6 +16,11 @@ const KnowYourCommision = () => {
 
 	const commisionData = useCommisionSummary();
 
+	const uniqueCommisionData = commisionData?.pricing_commission_data.filter(
+		(value, index, self) =>
+			index === self.findIndex((item) => item.product === value.product)
+	);
+
 	const handleShowDetail = (id) => {
 		if (id) {
 			router.push(`/commissions/${id.toLowerCase()}`);
@@ -30,9 +35,9 @@ const KnowYourCommision = () => {
 				overflowY={{ base: "none", md: "scroll" }}
 				rowGap={{ base: "19px", md: "10px" }}
 			>
-				{commisionData?.pricing_commission_data.map((tx) => (
+				{uniqueCommisionData?.map((tx) => (
 					<Flex
-						key={tx.tid}
+						key={tx.id}
 						p="8px 8px 8px 0px"
 						pr={{ base: "8px", md: "4px" }}
 						align="center"
