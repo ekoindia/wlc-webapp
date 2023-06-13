@@ -59,8 +59,8 @@ const Home = () => {
 		{ id: 1, component: CommonTrxnWidget },
 		{ id: 2, component: BillPaymentWidget },
 		{ id: 3, component: NotificationWidget },
-		{ id: 4, component: KnowYourCommision },
-		{ id: 5, component: EarningSummary },
+		{ id: 4, component: EarningSummary },
+		{ id: 5, component: KnowYourCommision },
 		{ id: 6, component: RecentTrxnWidget },
 	];
 
@@ -73,7 +73,7 @@ const Home = () => {
 		});
 	}
 
-	widgets.push({ id: 6, component: QueryWidget });
+	widgets.push({ id: 99, component: QueryWidget });
 
 	return (
 		<>
