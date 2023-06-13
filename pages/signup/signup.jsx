@@ -661,10 +661,10 @@ const SignupPage = () => {
 						/>
 					) : (
 						<Home
-							defaultStep="12500"
-							// defaultStep={
-							// 	userData?.userDetails?.role_list || "12400"
-							// }
+							// defaultStep="12500"
+							defaultStep={
+								userData?.userDetails?.role_list || "12400"
+							}
 							isBranding={false}
 							userData={userData}
 							handleSubmit={handleStepDataSubmit}
