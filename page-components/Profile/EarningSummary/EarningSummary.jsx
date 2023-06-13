@@ -1,24 +1,18 @@
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
-import { Currency } from "components/Currency";
-import { Icon } from "components/Icon";
-import { TransactionTypes } from "constants/EpsTransactions";
-import { useUser } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
+import { Currency, Icon } from "components";
+import { useEarningSummary } from "contexts";
 import { WidgetBase } from "page-components/Home";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment } from "react";
 
 /**
- * A <EarningSummary> component
- * TODO: Write more description here
+ * An <EarningSummary> widget
  * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<EarningSummary></EarningSummary>` TODO: Fix example
  */
-const EarningSummary = ({ prop1, ...rest }) => {
-	const { userData } = useUser();
-	const [data, setData] = useState({});
-	console.log("data", data);
+const EarningSummary = ({ ...rest }) => {
+	const data = useEarningSummary();
+	// console.log("DataAtEarn", data);
 
 	/**
 	 * Return the percentage change between current and last value
@@ -51,45 +45,15 @@ const EarningSummary = ({ prop1, ...rest }) => {
 		},
 	];
 
-	useEffect(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
-			body: {
-				interaction_type_id: TransactionTypes.GET_EARNING_SUMMARY,
-			},
-			token: userData.access_token,
-		}).then((data) => {
-			if (
-				data.data &&
-				"this_month" in data.data &&
-				data.data.this_month >= 0
-			) {
-				let yesterday = new Date();
-				yesterday.setDate(yesterday.getDate() - 1);
-
-				const asofDate = yesterday.toLocaleString("en-IN", {
-					day: "numeric",
-					month: "short",
-				});
-				const dayOfWeek = yesterday.toLocaleString("en-IN", {
-					weekday: "short",
-				});
-
-				const earnings = {
-					this_month_till_yesterday: data.data.this_month,
-					last_month_till_yesterday: data.data.last_month || 0,
-					last_month_total: data.data.prev_month || 0,
-					asof: `${asofDate} (${dayOfWeek})`,
-					user_code: data.data.user_code,
-				};
-				setData(earnings);
-			}
-		});
-	}, []);
-
 	return (
 		<WidgetBase title="Earning Summary" {...rest}>
 			<Box fontSize="14px">
-				<Text fontSize="12px" color="secondary.DEFAULT" mt="-16px">
+				<Text
+					fontSize="12px"
+					color="secondary.DEFAULT"
+					mt="-16px"
+					mb="32px"
+				>
 					as of {data.asof}
 				</Text>
 				{summary.map((item, index) =>

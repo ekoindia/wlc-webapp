@@ -15,23 +15,25 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 					"2xl": "46px",
 			  };
 	const logoFontSize =
-		size === "lg" ? { base: "xl", md: "2xl" } : { base: "md", md: "xl" };
+		size === "lg" ? { base: "xl", md: "3xl" } : { base: "lg", md: "xl" };
 
 	if (!(orgDetail && orgDetail.logo) && orgDetail.app_name) {
 		return (
 			<Center
 				maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
-				height={logoHeight}
-				bg="accent.dark"
-				px={{ base: "0.6rem", md: "1.2rem" }}
-				borderRadius="6px"
+				// height={logoHeight}
+				// bg="accent.PRIMARY"
+				// px={{ base: "0.6rem", md: "1.2rem" }}
+				// borderRadius="6px"
 				{...rest}
 			>
 				<Text
 					as="b"
-					color="gray.100"
+					color="gray.800"
 					noOfLines={1}
 					fontSize={logoFontSize}
+					fontWeight="600"
+					textShadow="0px 3px 10px #29292933"
 				>
 					{orgDetail.app_name}
 				</Text>

@@ -51,7 +51,7 @@ const ActionIcon: React.FC<ActionIconProps> = ({
 	} else if (style === "outline") {
 		bgColor = "transparent";
 		borderColor = color;
-		borderWidth = "1px";
+		borderWidth = "2px";
 		icoColor = color;
 	} else {
 		// default

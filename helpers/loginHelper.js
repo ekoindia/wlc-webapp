@@ -1,4 +1,5 @@
 import { Endpoints } from "constants/EndPoints";
+import { buildUserObjectState } from "utils/userObjectBuilder";
 import { fetcher } from "./apiHelper";
 
 function sendOtpRequest(org_id, number, toast, sendState) {
@@ -65,29 +66,11 @@ function getTokenExpiryTime(data) {
  * createUserState(data) is used to create userState.
  */
 function createUserState(data) {
-	console.log("::::Received userState::::", data);
 	let tokenTimeout = getTokenExpiryTime(data);
-	console.log("tokenTimeout =1", tokenTimeout);
-	const state = {
-		loggedIn: true,
-		is_org_admin: data?.details?.is_org_admin || 0,
-		access_token: data.access_token,
-		refresh_token: data.refresh_token,
-		token_timeout: tokenTimeout,
-		userId: data?.details?.mobile,
-		uid: data.details?.uid,
-		userDetails: {
-			...data.details,
-		},
-		personalDetails: data?.personal_details,
-		shopDetails: data?.shop_details,
-		accountDetails: data?.account_details,
-		onboarding: data?.details?.onboarding,
-		onboarding_steps: data?.details?.onboarding_steps,
-		role_list: data?.details?.role_list,
-		agreementId: data?.details?.agreement_id,
-	};
 
+	console.log("[createUserState]", { data, tokenTimeout });
+
+	const state = buildUserObjectState({ ...data, tokenTimeout: tokenTimeout });
 	return state;
 }
 
@@ -180,7 +163,7 @@ function clearAuthTokens() {
  */
 function revokeSession(user_id) {
 	if (user_id === 1) {
-		console.log("REFRESH TOKEN ALREADY REVOKED");
+		console.log("Refresh token already revoked");
 		return;
 	}
 
@@ -193,7 +176,7 @@ function revokeSession(user_id) {
 		timeout: 5000,
 	})
 		// .then((data) => console.log("REFRESH TOKEN REVOKED: ", data))
-		.catch((err) => console.log("REFRESH TOKEN REVOKE ERROR: ", err));
+		.catch((err) => console.log("Refresh Token Revoke Error: ", err));
 }
 
 function generateNewAccessToken(
@@ -203,15 +186,15 @@ function generateNewAccessToken(
 	setIsTokenUpdating,
 	logout
 ) {
-	console.log("refresh_token", refresh_token);
+	console.log("[generateNewAccessToken] refresh_token:", refresh_token);
 
 	if (!(refresh_token && refresh_token.length > 1)) {
-		console.warn("Please provide valid refresh token.");
+		console.warn("[generateNewAccessToken] Invalid refresh token.");
 		return false;
 	}
 
 	if (isTokenUpdating) {
-		console.warn("Already refreshing token.");
+		console.warn("[generateNewAccessToken] Already refreshing token.");
 		return false;
 	}
 
@@ -225,14 +208,17 @@ function generateNewAccessToken(
 	})
 		.then((data) => {
 			console.log(
-				"New access token generated. Updating user info:",
+				"[generateNewAccessToken] token generated. Updating user info:",
 				data
 			);
 			updateUserInfo(data);
 			return true;
 		})
 		.catch((err) => {
-			console.error("Error refreshing token: ", err);
+			console.error(
+				"[generateNewAccessToken] Error refreshing token: ",
+				err
+			);
 			logout && logout();
 			return false;
 		})

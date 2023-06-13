@@ -1,11 +1,15 @@
+// pages/commissions/[id].js
 import { PaddingBox } from "components";
-// import Head from "next/head";
+import { useRouter } from "next/router";
 import { Commissions } from "page-components";
 
 const CommissionsPage = () => {
+	const router = useRouter();
+	const { id } = router.query;
+
 	return (
 		<PaddingBox>
-			<Commissions />
+			<Commissions id={id} />
 		</PaddingBox>
 	);
 };

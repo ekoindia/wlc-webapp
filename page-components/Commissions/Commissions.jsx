@@ -1,14 +1,14 @@
 import { Flex } from "@chakra-ui/react";
 import { Headings, Tags } from "components";
 import { Endpoints, tableRowLimit, TransactionTypes } from "constants";
-import { useSession, useUser } from "contexts";
+import { useCommisionSummary, useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import { CommissionsTable } from ".";
 
 const limit = tableRowLimit?.XLARGE; // Page size
 
-const Commissions = () => {
+const Commissions = (id) => {
 	const [data, setData] = useState();
 	const [currentPage, setCurrentPage] = useState(1);
 	const [tagValue, setTagValue] = useState("");
@@ -17,6 +17,8 @@ const Commissions = () => {
 	const { account_list } = accountDetails;
 	const { accessToken } = useSession();
 
+	const commisionData = useCommisionSummary();
+	console.log("IDVALUE:", id);
 	const hitQuery = (abortController, key) => {
 		console.log("[Commissions] fetch started...", key);
 
@@ -62,6 +64,7 @@ const Commissions = () => {
 
 	const handleTagClick = (status) => {
 		setTagValue(status);
+		console.log("THISISID", id, tagValue, status);
 	};
 
 	return (
@@ -76,91 +79,28 @@ const Commissions = () => {
 			bg="white"
 			px="16px"
 		>
-			<Headings title="Know your commissions" />
+			<Headings title="Know your commissions121" />
 			<Flex w="full" h="auto" direction="row" py="1px">
-				<Tags
-					w="fit-content"
-					h="32px"
-					margin="0 10px 12px 0"
-					size="lg"
-					px="10px"
-					status="DMT (Send Cash)"
-					borderRadius="16"
-					bg="#11299E"
-					fontSize="12"
-					color="white"
-					_hover={{ bg: "#11299E" }}
-					onClick={() => handleTagClick("DMT (Send Cash)")}
-				/>
-				<Tags
-					w="fit-content"
-					h="32px"
-					margin="0 10px 12px 0"
-					size="lg"
-					px="10px"
-					status="AePS Cashout"
-					borderRadius="16"
-					bg="#11299E"
-					fontSize="12"
-					color="white"
-					_hover={{ bg: "#11299E" }}
-					onClick={() => handleTagClick("AePS Cashout")}
-				/>
-				<Tags
-					w="fit-content"
-					h="32px"
-					margin="0 10px 12px 0"
-					size="lg"
-					px="10px"
-					status="Bharat Bill Pay"
-					borderRadius="16"
-					bg="#11299E"
-					fontSize="12"
-					color="white"
-					_hover={{ bg: "#11299E" }}
-					onClick={() => handleTagClick("Bharat Bill Pay")}
-				/>
-				<Tags
-					w="fit-content"
-					h="32px"
-					margin="0 10px 12px 0"
-					size="lg"
-					px="10px"
-					status="Indo-Nepal"
-					borderRadius="16"
-					bg="#11299E"
-					fontSize="12"
-					color="white"
-					_hover={{ bg: "#11299E" }}
-					onClick={() => handleTagClick("Indo-Nepal")}
-				/>
-				<Tags
-					w="fit-content"
-					h="32px"
-					margin="0 10px 12px 0"
-					size="lg"
-					px="10px"
-					status="Edelweiss Insurance"
-					borderRadius="16"
-					bg="#11299E"
-					fontSize="12"
-					color="white"
-					_hover={{ bg: "#11299E" }}
-					onClick={() => handleTagClick("Edelweiss Insurance")}
-				/>
-				<Tags
-					w="fit-content"
-					h="32px"
-					margin="0 10px 12px 0"
-					px="10px"
-					status="CMS"
-					borderRadius="16"
-					bg="#11299E"
-					fontSize="12"
-					color="white"
-					_hover={{ bg: "#11299E" }}
-					onClick={() => handleTagClick("CMS")}
-				/>
+				{commisionData?.data?.pricing_commission_data.map((tx) => (
+					<Tags
+						w="fit-content"
+						h="32px"
+						margin="0 10px 12px 0"
+						size="lg"
+						px="10px"
+						status={tx.product}
+						borderRadius="16"
+						fontSize="12"
+						bg={tx.product === id.id ? "#11299E" : "#E9EDF1"}
+						color={tx.product === id.id ? "white" : "#555"}
+						// _hover={{
+						// 	bg: "#E9EDF1" ? "#616161" : "#11299E",
+						// 	color: "#555" ? "white" : "#555",
+						// }}
+						_hover={{ bg: "#11299E", color: "white" }}
+						onClick={() => handleTagClick(tx.product)}
+					/>
+				))}
 			</Flex>
 			<CommissionsTable
 				pageNumber={currentPage}

@@ -21,10 +21,8 @@ import {
 	useRegisterActions,
 } from "kbar";
 import { useRouter } from "next/router";
-import { useEffect, useMemo } from "react";
-import { parse } from "utils";
+import { useEffect, useMemo, useState } from "react";
 import { Icon, Kbd } from "..";
-// import { Parser } from "utils/mathParser";
 
 /**
  * KBar Portal Box to show the search bar and results
@@ -117,7 +115,7 @@ export default function CommandBarBox({ fontClassName }) {
 								{isSmallScreen ? (
 									<Icon name="close" size="sm" />
 								) : (
-									<Kbd>Esc</Kbd>
+									<Kbd minH="24px">Esc</Kbd>
 								)}
 							</Box>
 						</Flex>
@@ -133,8 +131,12 @@ export default function CommandBarBox({ fontClassName }) {
 	);
 }
 
-function Key({ children }) {
-	return <Kbd bg="white">{children}</Kbd>;
+function Key({ children, ...rest }) {
+	return (
+		<Kbd bg="white" fontFamily="sans" minH="22px" minW="22px" {...rest}>
+			{children}
+		</Kbd>
+	);
 }
 
 /**
@@ -175,6 +177,9 @@ function DynamicSearchController() {
 		queryValue: state.searchQuery,
 	}));
 
+	const [parse, setParse] = useState(null);
+	const [parseLoadState, setParseLoadState] = useState("");
+
 	const [queryValueDebounced, setQueryValueDebounced] = useDebouncedState(
 		"",
 		100,
@@ -192,25 +197,48 @@ function DynamicSearchController() {
 
 	const router = useRouter();
 
+	// Prepare the Command Bar actions for History search, Calculator, Notes, etc.
 	const historySearch = useMemo(() => {
 		if (!isLoggedIn) {
 			return [];
 		}
 
 		const results = [];
+		const expr = queryValueDebounced.slice(1);
 
 		// Math parser...
 		if (queryValueDebounced.charAt(0) === "=") {
-			// const mathParser = new Parser();
-			// const result = mathParser.parse(queryValueDebounced.slice(1));
-			const result = parse(queryValueDebounced.slice(1));
+			let result;
 
-			// if (result) {
+			// Lazy load the math parser
+			if (parseLoadState === "") {
+				setParseLoadState("loading");
+				import("/utils/exprParser.js")
+					.then((exprParser) => {
+						// Update context values once exprParser is loaded
+						setParse(() => exprParser.parse);
+						setParseLoadState("loaded");
+					})
+					.catch((error) => {
+						console.error("Error loading exprParser:", error);
+						setParseLoadState("error");
+					});
+			}
+
+			// Parse the expression if the parser is loaded
+			if (expr && parse && parseLoadState === "loaded") {
+				result = parse(expr);
+			}
+
 			results.push({
 				id: "math/parse",
 				name: result ? `${result}` : "Calculator",
 				subtitle: result
 					? `Result of ${queryValueDebounced.slice(1)}  (⏎ to copy)`
+					: parseLoadState === "loading"
+					? "Loading calculator..."
+					: parseLoadState === "error"
+					? "Error loading calculator!"
 					: "Start typing an expression to calculate... (eg: =2+2)",
 				keywords: queryValueDebounced,
 				icon: (
@@ -222,16 +250,20 @@ function DynamicSearchController() {
 					/>
 				),
 				perform: () => {
-					result && copy(result.toString());
-					toast({
-						title: "Copied: " + result,
-						status: "success",
-						duration: 2000,
-					});
+					if (result) {
+						copy(result.toString());
+						toast({
+							title: "Copied: " + result,
+							status: "success",
+							duration: 2000,
+						});
+					}
 				},
 			});
-			// }
 		} else {
+			// Not a calculator prompt.
+			// Show other actions based on numeric search...
+
 			// Remove formatters (commas and spaces) from the number query
 			const unformattedNumberQuery = queryValueDebounced.replace(
 				/(?<=[0-9])[ ,]/g,
@@ -363,7 +395,7 @@ function DynamicSearchController() {
 		}
 
 		return results;
-	}, [queryValueDebounced, router]);
+	}, [queryValueDebounced, router, parse, parseLoadState]);
 
 	useRegisterActions(historySearch, [historySearch]);
 
@@ -426,7 +458,7 @@ function RenderResults({ className, isSmallScreen }) {
 								minH="62px"
 								// borderRadius="md"
 								borderLeft="4px solid"
-								borderColor={
+								borderLeftColor={
 									active ? "primary.dark" : "transparent"
 								}
 								bg={active ? "divider" : null}
@@ -460,32 +492,69 @@ function RenderResults({ className, isSmallScreen }) {
 										</Text>
 									)}
 								</Box>
-								{item?.shortcut?.map((shortcut, index) => (
-									<Kbd
-										key={shortcut + index}
-										variant="dark"
-										textTransform={
-											shortcut?.length === 1
-												? "uppercase"
-												: undefined
-										}
-										display={{
-											base: "none",
-											md: "inline-flex",
-										}}
-									>
-										{shortcut
-											.replace(
-												/\$mod/,
-												isMac ? "⌘" : "Ctrl"
-											)
-											.replace(/Alt/, isMac ? "⌥" : "Alt")
-											.replace(/Shift/, "⇧")
-
-											.replace(/Enter/, "⏎")
-											.replace(/\+/g, " + ")}
-									</Kbd>
-								))}
+								{item?.shortcut?.map((shortcut, index) => {
+									const keys = shortcut.split("+");
+									return (
+										<>
+											{index > 0 ? (
+												<Text
+													fontFamily="mono"
+													color="gray.500"
+													mx={1}
+												>
+													→
+												</Text>
+											) : null}
+											{keys.map((key, i2) => (
+												<Kbd
+													minH="24px"
+													minW="24px"
+													key={key + index + i2}
+													variant="dark"
+													fontFamily={
+														key === "$mod"
+															? "sans"
+															: null
+													}
+													textTransform={
+														key?.length === 1
+															? "uppercase"
+															: undefined
+													}
+													display={{
+														base: "none",
+														md: "inline-flex",
+													}}
+												>
+													{
+														key
+															.replace(
+																/\$mod/,
+																isMac
+																	? "⌘"
+																	: "Ctrl"
+															)
+															.replace(
+																/Alt/,
+																isMac
+																	? "⌥"
+																	: "Alt"
+															)
+															.replace(
+																/Shift/,
+																"⇧"
+															)
+															.replace(
+																/Enter/,
+																"⏎"
+															)
+														// .replace(/\+/g, " + ")
+													}
+												</Kbd>
+											))}
+										</>
+									);
+								})}
 								{item.children?.length > 0 && (
 									<Icon
 										name="chevron-right"
@@ -510,8 +579,9 @@ function RenderResults({ className, isSmallScreen }) {
 						color="#64748b"
 					>
 						<Key>↑</Key>&nbsp;
-						<Key>↓</Key>&nbsp;navigate&nbsp;&nbsp;&nbsp;&nbsp;
-						<Key>⏎</Key>&nbsp;open&nbsp;&nbsp;&nbsp;&nbsp;
+						<Key>↓</Key>&nbsp;select&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<Key>⏎</Key>
+						&nbsp;open&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						<Key>=</Key>&nbsp;calculator
 					</Flex>
 				)}

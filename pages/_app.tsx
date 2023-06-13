@@ -3,10 +3,13 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
 import { ActionIcon } from "components/CommandBar";
 import {
+	CommisionSummaryProvider,
+	EarningSummaryProvider,
 	GlobalSearchProvider,
 	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
+	PubSubProvider,
 	TodoProvider,
 	UserProvider,
 	WalletProvider,
@@ -23,6 +26,7 @@ import { SWRConfig } from "swr";
 import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import { light } from "../styles/themes";
 
+// Variable Font
 const inter = Inter({
 	weight: "variable",
 	subsets: ["latin"],
@@ -36,14 +40,8 @@ const toastDefaultOptions = {
 	isClosable: true,
 };
 
-export default function WlcApp({ Component, pageProps, router, org }) {
-	// if (colors) {
-	// 	sessionStorage.setItem("colors", JSON.stringify(colors));
-	// } else {
-	// 	colors = JSON.parse(sessionStorage.getItem("colors"));
-	// }
-
-	console.log("[_app.tsx] WlcApp Started: ", {
+export default function InfinityApp({ Component, pageProps, router, org }) {
+	console.log("[_app.tsx] InfinityApp (web) Started: ", {
 		org,
 		is_local: typeof window === "undefined" ? false : true,
 	});
@@ -112,7 +110,7 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 			// shortcut: ["c"],
 			// keywords: "signout quit close",
 			// section: "System",
-			priority: Priority.LOW,
+			priority: -999,
 		},
 		{
 			id: "reloadapp",
@@ -186,39 +184,45 @@ export default function WlcApp({ Component, pageProps, router, org }) {
 						// },
 					}}
 				>
-					<UserProvider userMockData={mockUser}>
-						<MenuProvider>
-							<WalletProvider>
-								<RouteProtecter router={router}>
-									<SWRConfig
-										value={{
-											provider: localStorageProvider,
-										}}
-									>
-										<NotificationProvider>
-											<GlobalSearchProvider>
-												<TodoProvider>
-													<ErrorBoundary>
-														{getLayout(
-															<main
-																className={
-																	inter.className
-																}
-															>
-																<Component
-																	{...pageProps}
-																/>
-															</main>
-														)}
-													</ErrorBoundary>
-												</TodoProvider>
-											</GlobalSearchProvider>
-										</NotificationProvider>
-									</SWRConfig>
-								</RouteProtecter>
-							</WalletProvider>
-						</MenuProvider>
-					</UserProvider>
+					<GlobalSearchProvider>
+						<UserProvider userMockData={mockUser}>
+							<MenuProvider>
+								<WalletProvider>
+									<RouteProtecter router={router}>
+										<SWRConfig
+											value={{
+												provider: localStorageProvider,
+											}}
+										>
+											<NotificationProvider>
+												<EarningSummaryProvider>
+													<CommisionSummaryProvider>
+														<TodoProvider>
+															<PubSubProvider>
+																<ErrorBoundary>
+																	{getLayout(
+																		<main
+																			className={
+																				inter.className
+																			}
+																		>
+																			<Component
+																				{...pageProps}
+																			/>
+																		</main>
+																	)}
+																</ErrorBoundary>
+															</PubSubProvider>
+														</TodoProvider>
+													</CommisionSummaryProvider>
+												</EarningSummaryProvider>
+											</NotificationProvider>
+										</SWRConfig>
+									</RouteProtecter>
+								</WalletProvider>
+							</MenuProvider>
+						</UserProvider>
+					</GlobalSearchProvider>
 				</KBarProvider>
 			</OrgDetailProvider>
 		</ChakraProvider>
@@ -265,7 +269,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	);
 }
 
-WlcApp.getInitialProps = async function (appContext) {
+InfinityApp.getInitialProps = async function (appContext) {
 	const { ctx } = appContext;
 
 	const defaultProps = App.getInitialProps(appContext);

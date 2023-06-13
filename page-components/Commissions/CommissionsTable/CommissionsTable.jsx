@@ -17,8 +17,8 @@ const CommissionsTable = ({
 	tagClicked,
 }) => {
 	const processedData = getCommissionsTableProcessedData(transactionList);
-
-	let renderer;
+	console.log("tagclickedhere", tagClicked);
+	let renderer = [];
 	switch (tagClicked) {
 		case "DMT (Send Cash)":
 			renderer = [
@@ -106,19 +106,7 @@ const CommissionsTable = ({
 			];
 			break;
 		default:
-			renderer = [
-				{
-					name: "packs",
-					field: "Packs",
-					sorting: false,
-					show: "Packs",
-				},
-				{
-					name: "commission",
-					field: "Commission",
-					show: "Commission",
-				},
-			];
+			console.log("Unknown tagClicked value:", tagClicked);
 			break;
 	}
 

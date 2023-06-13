@@ -1,12 +1,8 @@
 import { Avatar, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
-import { Button, Icon } from "components";
-import { TransactionTypes } from "constants";
-import { useSession } from "contexts";
-import { fetcher } from "helpers/apiHelper";
+import { Icon } from "components";
+import { useCommisionSummary, useSession } from "contexts";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { WidgetBase } from "..";
-
 /**
  * A <KnowYourCommision> component
  * TODO: Write more description here
@@ -18,45 +14,57 @@ import { WidgetBase } from "..";
 const KnowYourCommision = () => {
 	const router = useRouter();
 	const { accessToken } = useSession();
-	const [data, setData] = useState([]);
+	// const [data, setData] = useState([]);
 	const limit = useBreakpointValue({
 		base: 5,
 		md: 10,
 	});
 
-	useEffect(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
-			body: {
-				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
-				start_index: 0,
-				limit: limit,
-			},
-			token: accessToken,
-		}).then((data) => {
-			const tx_list = (data?.data?.transaction_list ?? []).map((tx) => {
-				const amt = tx.amount_dr || tx.amount_cr || 0;
-				return {
-					tid: tx.tid,
-					name: tx.tx_name,
-					desc:
-						tx.tx_name +
-						(amt ? ` of ₹${amt}` : "") +
-						(tx.customer_mobile
-							? ` for ${tx.customer_mobile}`
-							: ""),
-				};
-			});
-			setData(tx_list);
-		});
-	}, []);
+	const commisionData = useCommisionSummary();
+	console.log("DATAAtCOMM", commisionData);
+	// {
+	// 	commisionData.map = (userData) => {
+	// 		console.log("DataATCommision", userData);
+	// 	};
+	// }
+
+	// useEffect(() => {
+	// fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
+	// 	body: {
+	// 		interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
+	// 		start_index: 0,
+	// 		limit: limit,
+	// 	},
+	// 	token: accessToken,
+	// }).then((data) => {
+	// 	const tx_list = (data?.data?.transaction_list ?? []).map((tx) => {
+	// 		const amt = tx.amount_dr || tx.amount_cr || 0;
+	// 		return {
+	// 			tid: tx.tid,
+	// 			name: tx.tx_name,
+	// 			desc:
+	// 				tx.tx_name +
+	// 				(amt ? ` of ₹${amt}` : "") +
+	// 				(tx.customer_mobile
+	// 					? ` for ${tx.customer_mobile}`
+	// 					: ""),
+	// 		};
+	// 	});
+	// 	setData(tx_list);
+	// });
+
+	// }, []);
 
 	const handleShowHistory = (id) => {
-		router.push("/commissions/dmt" + (id ? `?search=${id}` : ""));
+		// router.push("/commissions/" + id);
+		// router.push("/commissions/[id]", `/commissions/${id}`);
+		router.push(`/commissions/${id}`);
+		console.log("valueATCommisoin", id);
 	};
 
-	if (!data.length) {
-		return null;
-	}
+	// if (!data.length) {
+	// 	return null;
+	// }
 
 	return (
 		<WidgetBase title="Know Your Commissions">
@@ -66,7 +74,7 @@ const KnowYourCommision = () => {
 				overflowY={{ base: "none", md: "scroll" }}
 				rowGap={{ base: "19px", md: "10px" }}
 			>
-				{data.map((tx) => (
+				{commisionData?.data?.pricing_commission_data.map((tx) => (
 					<Flex
 						key={tx.tid}
 						p="8px 8px 8px 0px"
@@ -78,7 +86,7 @@ const KnowYourCommision = () => {
 						<Avatar
 							size={{ base: "sm", md: "md" }}
 							border="2px solid #D2D2D2"
-							name={tx.name}
+							name={tx.product}
 						/>
 						<Flex
 							alignItems="center"
@@ -88,32 +96,21 @@ const KnowYourCommision = () => {
 						>
 							<Flex direction="column">
 								<Text
-									fontSize={{ base: "xs", md: "sm" }}
+									fontSize={{
+										base: "xs",
+										md: "sm",
+									}}
 									fontWeight="medium"
 									noOfLines={1}
 								>
-									{tx.desc}
+									{tx.product}
 								</Text>
-
-								<Flex
-									alignItems="baseline"
-									fontSize={{ base: "xs" }}
-								>
-									<Text
-										fontWeight="normal"
-										color="light"
-										noOfLines={1}
-									>
-										TID:
-									</Text>
-									<Text ml="1">{tx.tid}</Text>
-								</Flex>
 							</Flex>
 							<Flex
 								justifyContent="space-between"
 								alignItems="center"
 								ml={2}
-								onClick={() => handleShowHistory(tx.tid)}
+								onClick={() => handleShowHistory(tx.product)}
 								cursor="pointer"
 							>
 								<Icon
@@ -125,21 +122,6 @@ const KnowYourCommision = () => {
 						</Flex>
 					</Flex>
 				))}
-			</Flex>
-			<Flex
-				display={{ base: "block", md: "none" }}
-				justifyContent="center"
-				alignItems="center"
-				textAlign="center"
-				py="15px"
-			>
-				<Button
-					onClick={() => handleShowHistory()}
-					justifyContent="center"
-					size="md"
-				>
-					+ Show All
-				</Button>
 			</Flex>
 		</WidgetBase>
 	);

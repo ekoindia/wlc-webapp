@@ -1,6 +1,7 @@
 import { Grid } from "@chakra-ui/react";
 import { useSession, useTodos } from "contexts";
 import Head from "next/head";
+import { EarningSummary } from "page-components/Profile";
 import { useMemo } from "react";
 import {
 	BillPaymentWidget,
@@ -11,7 +12,6 @@ import {
 	RecentTrxnWidget,
 	TodoWidget,
 } from ".";
-
 /**
  * A <Home> component
  * TODO: Write more description here
@@ -42,17 +42,22 @@ const Home = () => {
 
 	if (!isLoggedIn) return null;
 
+	// <CommisionContext>
+	// 	<KnowYourCommision />
+	// </CommisionContext>;
+
 	const widgets = [
 		{ id: 1, component: CommonTrxnWidget },
 		{ id: 2, component: BillPaymentWidget },
 		{ id: 3, component: NotificationWidget },
-		{ id: 4, component: RecentTrxnWidget },
 		{ id: 4, component: KnowYourCommision },
+		{ id: 5, component: EarningSummary },
+		{ id: 6, component: RecentTrxnWidget },
 	];
 
 	if (todos && todos.length > 0) {
 		widgets.push({
-			id: 5,
+			id: 91,
 			component: () => (
 				<TodoWidget todos={todos} onDeleteTodo={deleteTodo} />
 			),
