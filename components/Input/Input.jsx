@@ -6,6 +6,7 @@ import {
 	InputLeftElement,
 	InputRightElement,
 } from "@chakra-ui/react";
+import { forwardRef } from "react";
 import { InputLabel, InputMsg } from "../";
 
 /**
@@ -34,123 +35,140 @@ function formatNum(value, num) {
 	}
 }
 
-const Input = ({
-	label,
-	name,
-	placeholder,
-	description,
-	value,
-	type = "text",
-	leftAddon,
-	inputLeftElement,
-	inputLeftElementStyle,
-	inputRightElement,
-	inputRightElementStyle,
-	disabled = false,
-	hidden = false,
-	invalid = false,
-	errorMsg = "",
-	isNumInput = false,
-	labelStyle,
-	errorStyle,
-	inputContStyle,
-	inputNumStyle,
-	radius,
-	required = false,
-	onChange = () => {},
-	onKeyDown = () => {},
-	onEnter = () => {},
-	...rest
-}) => {
-	const onChangeHandler = (e) => {
-		let val = e.target.value;
-		if (isNumInput) {
-			if (
-				val == "" ||
-				/^[6-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(val)
-			) {
-				let formatted = formatNum(value, val);
-				onChange(formatted);
-				// setNumber(formatted);
-			}
-		} else onChange(e);
-	};
+const Input = forwardRef(
+	(
+		{
+			label,
+			name,
+			placeholder,
+			description,
+			value,
+			type = "text",
+			leftAddon,
+			inputLeftElement,
+			inputLeftElementStyle,
+			inputRightElement,
+			inputRightElementStyle,
+			disabled = false,
+			hidden = false,
+			invalid = false,
+			errorMsg = "",
+			isNumInput = false,
+			labelStyle,
+			errorStyle,
+			inputContStyle,
+			inputNumStyle,
+			radius,
+			required = false,
+			minlength,
+			maxlength = "100",
+			// register = () => {},
+			onChange = () => {},
+			onKeyDown = () => {},
+			onEnter = () => {},
+			...rest
+		},
+		ref
+	) => {
+		const onChangeHandler = (e) => {
+			let val = e.target.value;
+			if (isNumInput) {
+				if (
+					val == "" ||
+					/^[6-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(
+						val
+					)
+				) {
+					let formatted = formatNum(value, val);
+					onChange(formatted);
+					// setNumber(formatted);
+				}
+			} else onChange(e);
+		};
 
-	return (
-		<Flex
-			direction="column"
-			align="center"
-			justify="flex-start"
-			w="100%"
-			{...inputContStyle}
-		>
-			{label ? (
-				<InputLabel required={required} {...labelStyle}>
-					{label}
-				</InputLabel>
-			) : null}
+		return (
+			<Flex
+				direction="column"
+				align="center"
+				justify="flex-start"
+				w="100%"
+				{...inputContStyle}
+			>
+				{label ? (
+					<InputLabel required={required} {...labelStyle}>
+						{label}
+					</InputLabel>
+				) : null}
 
-			<InputGroup size="lg">
-				{leftAddon ? (
-					<InputLeftAddon
-						pointerEvents="none"
-						bg="transparent"
-						borderLeftRadius={radius || "6px"}
+				<InputGroup size="lg">
+					{leftAddon ? (
+						<InputLeftAddon
+							pointerEvents="none"
+							bg="transparent"
+							borderLeftRadius={radius || "6px"}
+							borderColor={errorMsg && invalid ? "error" : "hint"}
+						>
+							{leftAddon}
+						</InputLeftAddon>
+					) : null}
+
+					{inputLeftElement ? (
+						<InputLeftElement
+							pointerEvents="none"
+							{...inputLeftElementStyle}
+						>
+							{inputLeftElement}
+						</InputLeftElement>
+					) : null}
+
+					<ChakraInput
+						ref={ref}
+						name={name}
+						placeholder={placeholder}
+						type={type}
+						disabled={disabled}
+						hidden={hidden}
+						value={value}
+						required={required}
+						borderRadius={radius || "6px"}
 						borderColor={errorMsg && invalid ? "error" : "hint"}
-					>
-						{leftAddon}
-					</InputLeftAddon>
-				) : null}
+						bg={errorMsg && invalid ? "#fff7fa" : ""}
+						w="100%"
+						inputMode={isNumInput ? "numeric" : "text"}
+						onChange={(e) => onChangeHandler(e)}
+						onKeyDown={(e) => {
+							if (e.code === "Enter" && onEnter) onEnter(value);
+							onKeyDown && onKeyDown(e);
+						}}
+						_hover={{
+							border: "",
+						}}
+						_focus={{
+							bg: "focusbg",
+							boxShadow: "0px 3px 6px #0000001A",
+							borderColor: "hint",
+							transition: "box-shadow 0.3s ease-out",
+						}}
+						minlength={minlength}
+						maxlength={maxlength}
+						// {...register(name, {
+						// 	required: required,
+						// 	minLength: minlength || 0,
+						// 	maxLength: maxlength || undefined,
+						// })}
+						{...rest}
+					/>
 
-				{inputLeftElement ? (
-					<InputLeftElement
-						pointerEvents="none"
-						{...inputLeftElementStyle}
-					>
-						{inputLeftElement}
-					</InputLeftElement>
-				) : null}
+					{inputRightElement ? (
+						<InputRightElement
+							pointerEvents="none"
+							{...inputRightElementStyle}
+						>
+							{inputRightElement}
+						</InputRightElement>
+					) : null}
 
-				<ChakraInput
-					name={name}
-					placeholder={placeholder}
-					type={type}
-					disabled={disabled}
-					hidden={hidden}
-					value={value}
-					required={required}
-					borderRadius={radius || "6px"}
-					borderColor={errorMsg && invalid ? "error" : "hint"}
-					bg={errorMsg && invalid ? "#fff7fa" : ""}
-					w="100%"
-					inputMode={isNumInput ? "numeric" : "text"}
-					onChange={(e) => onChangeHandler(e)}
-					onKeyDown={(e) => {
-						if (e.code === "Enter" && onEnter) onEnter(value);
-						onKeyDown && onKeyDown(e);
-					}}
-					_hover={{
-						border: "",
-					}}
-					_focus={{
-						bg: "focusbg",
-						boxShadow: "0px 3px 6px #0000001A",
-						borderColor: "hint",
-						transition: "box-shadow 0.3s ease-out",
-					}}
-					{...rest}
-				/>
-
-				{inputRightElement ? (
-					<InputRightElement
-						pointerEvents="none"
-						{...inputRightElementStyle}
-					>
-						{inputRightElement}
-					</InputRightElement>
-				) : null}
-
-				{/* {isNumInput && (
+					{/* {isNumInput && (
 					<Center
 						pos="absolute"
 						top="0"
@@ -166,15 +184,18 @@ const Input = ({
 						+91
 					</Center>
 				)} */}
-			</InputGroup>
+				</InputGroup>
 
-			{(invalid && errorMsg) || description ? (
-				<InputMsg error={invalid && errorMsg} {...errorStyle}>
-					{invalid && errorMsg ? errorMsg : description}
-				</InputMsg>
-			) : null}
-		</Flex>
-	);
-};
+				{(invalid && errorMsg) || description ? (
+					<InputMsg error={invalid && errorMsg} {...errorStyle}>
+						{invalid && errorMsg ? errorMsg : description}
+					</InputMsg>
+				) : null}
+			</Flex>
+		);
+	}
+);
+
+Input.displayName = "Input";
 
 export default Input;
