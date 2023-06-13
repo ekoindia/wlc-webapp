@@ -22,14 +22,14 @@ const CommissionsTable = ({
 			show: "Transaction Value",
 		},
 		{
-			name: "commission",
-			field: "Commission",
-			show: "Commission",
-		},
-		{
 			name: "biller_name",
 			field: "Biller Name",
 			show: "Biller Name",
+		},
+		{
+			name: "commission",
+			field: "Commission",
+			show: "Commission",
 		},
 	];
 

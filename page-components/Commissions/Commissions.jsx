@@ -43,9 +43,11 @@ const Commissions = () => {
 							min_value,
 							max_value,
 						}) => ({
-							transaction_value: `₹ ${slab_from || 0} - ₹ ${
-								slab_to || 0
-							}`,
+							transaction_value: !(slab_from || slab_to)
+								? "Any"
+								: `${slab_from ? `₹ ${slab_from}` : "Any"} - ${
+										slab_to ? `₹ ${slab_to || 0}` : "Any"
+								  }`,
 							commission:
 								calc_type === 1
 									? `${value}% (min: ${formatCurrency(
@@ -60,7 +62,7 @@ const Commissions = () => {
 											true
 									  )})`
 									: value,
-							biller_name,
+							biller_name: biller_name || "-",
 						})
 					)
 				);
