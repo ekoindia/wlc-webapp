@@ -5,6 +5,7 @@ import {
 	FormHelperText,
 	FormLabel,
 	Image,
+	Input as ChakraInput,
 	Select,
 	Textarea,
 	useToast,
@@ -29,7 +30,7 @@ const NotificationCreator = () => {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, isSubmitting },
 		setValue,
 	} = useForm({
 		defaultValues: {
@@ -37,6 +38,7 @@ const NotificationCreator = () => {
 			status: 1,
 		},
 	});
+
 	const toast = useToast();
 
 	const [previewImage, setPreviewImage] = useState(null);
@@ -125,46 +127,54 @@ const NotificationCreator = () => {
 			<Box p={{ base: "1em", md: "2em" }} bg="white" borderRadius={8}>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<FormControl
-						id="name"
 						isRequired
 						mb={6}
-						isInvalid={errors.name}
+						isInvalid={errors.name ? true : false}
 					>
 						<FormLabel>Notification Name/Purpose</FormLabel>
 						<Input
+							id="name"
 							type="text"
 							maxLength="30"
+							required
 							invalid={errors.name ? true : false}
-							errorMsg={errors.name}
+							errorMsg={errors?.name?.message}
 							description="Describe the purpose for this notification. This is for internal use only."
 							maxW={{ base: "auto", lg: "400px" }}
 							{...register("name", {
 								required: true,
-								maxLength: 30,
+								minLength: {
+									value: 4,
+									message: "Minimum length should be 4",
+								},
+								maxLength: {
+									value: 30,
+									message: "Maximum length should be 30",
+								},
 							})}
 						/>
 					</FormControl>
 
 					<FormControl
-						id="title"
 						isRequired
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.title}
 					>
 						<FormLabel>Title</FormLabel>
-						<Input
+						<ChakraInput
+							id="title"
 							type="text"
 							maxLength="100"
 							{...register("title", {
 								required: true,
+								minLength: 6,
 								maxLength: 100,
 							})}
 						/>
 					</FormControl>
 
 					<FormControl
-						id="description"
 						isRequired
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
@@ -172,10 +182,12 @@ const NotificationCreator = () => {
 					>
 						<FormLabel>Description</FormLabel>
 						<Textarea
+							id="description"
 							maxLength="500"
 							// theme="primary"
 							borderRadius="6px"
 							borderColor="hint"
+							isRequired={true}
 							_focus={{
 								bg: "focusbg",
 								boxShadow: "0px 3px 6px #0000001A",
@@ -190,13 +202,13 @@ const NotificationCreator = () => {
 					</FormControl>
 
 					<FormControl
-						id="image"
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.image}
 					>
 						<FormLabel>Image</FormLabel>
 						<Input
+							id="image"
 							type="file"
 							accept="image/png, image/jpeg"
 							onChange={handleImageChange}
@@ -214,13 +226,15 @@ const NotificationCreator = () => {
 					</FormControl>
 
 					<FormControl
-						id="priority"
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.priority}
 					>
 						<FormLabel>Priority</FormLabel>
-						<Select {...register("priority", { required: true })}>
+						<Select
+							id="priority"
+							{...register("priority", { required: true })}
+						>
 							<option value="1">Normal</option>
 							<option value="2">Low</option>
 							<option value="3">High</option>
@@ -228,13 +242,15 @@ const NotificationCreator = () => {
 					</FormControl>
 
 					<FormControl
-						id="status"
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.status}
 					>
 						<FormLabel>Status</FormLabel>
-						<Select {...register("status", { required: true })}>
+						<Select
+							id="status"
+							{...register("status", { required: true })}
+						>
 							<option value="1">Info</option>
 							<option value="2">Success</option>
 							<option value="3">Error</option>
@@ -243,13 +259,13 @@ const NotificationCreator = () => {
 					</FormControl>
 
 					<FormControl
-						id="link"
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.link}
 					>
 						<FormLabel>Link</FormLabel>
 						<Input
+							id="link"
 							type="url"
 							maxLength="100"
 							placeholder="https://..."
@@ -258,13 +274,13 @@ const NotificationCreator = () => {
 					</FormControl>
 
 					<FormControl
-						id="linklabel"
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.link}
 					>
 						<FormLabel>Link Label</FormLabel>
 						<Input
+							id="linklabel"
 							type="text"
 							maxLength="25"
 							placeholder="eg: Click To Know More"
@@ -272,7 +288,12 @@ const NotificationCreator = () => {
 						/>
 					</FormControl>
 
-					<Button loading={!ready} mt={4} type="submit" size="lg">
+					<Button
+						loading={isSubmitting || !ready}
+						mt={4}
+						type="submit"
+						size="lg"
+					>
 						{ready ? "Submit" : "Loading..."}
 					</Button>
 				</form>
