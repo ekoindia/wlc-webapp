@@ -239,6 +239,8 @@ function DynamicSearchController() {
 					? "Loading calculator..."
 					: parseLoadState === "error"
 					? "Error loading calculator!"
+					: expr
+					? "Error: Invalid expression!"
 					: "Start typing an expression to calculate... (eg: =2+2)",
 				keywords: queryValueDebounced,
 				icon: (
