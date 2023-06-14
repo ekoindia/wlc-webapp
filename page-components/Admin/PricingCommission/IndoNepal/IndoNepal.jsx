@@ -17,17 +17,24 @@ const IndoNepal = ({ prop1, ...rest }) => {
 	};
 
 	const commissionTypeObj = {
-		0: "Percentage (%)",
+		// 0: "Percentage (%)", //TODO remove this (only require fixed value in IndoNepal)
 		1: "Fixed",
 	};
+
+	const paymentModeObj = {
+		1: "Cash to Cash",
+		2: "Cash to Account",
+	};
+
 	return (
 		<div {...rest}>
 			<PricingForm
 				product="indonepal"
 				ProductPricingType={ProductPricingType.INDONEPAL}
-				ProductSlabs={ProductSlabs.AEPS}
+				ProductSlabs={ProductSlabs.INDONEPAL}
 				commissionForObj={commissionForObj}
 				commissionTypeObj={commissionTypeObj}
+				paymentModeObj={paymentModeObj}
 			/>
 		</div>
 	);

@@ -52,7 +52,7 @@ const Select = ({
 				}}
 				borderRadius="10px"
 				icon={<Icon name="caret-down" />}
-				iconSize="sm"
+				iconSize="10px"
 				onChange={handleSelectChange}
 				value={selectedValue}
 				{...inputContStyle}

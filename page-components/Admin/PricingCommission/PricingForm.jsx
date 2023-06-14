@@ -3,7 +3,8 @@ import { Button, Icon, Input, MultiSelect, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
+import { INITIAL_FORM_STATE, pricingFormReducer } from "./pricingFormReducer";
 
 const OPERATION = {
 	SUBMIT: 1,
@@ -22,17 +23,54 @@ const PricingForm = ({
 	product,
 	ProductSlabs,
 	ProductPricingType,
-	commissionForObj = radioDummy,
-	commissionTypeObj = radioDummy,
+	commissionForObj,
+	commissionTypeObj,
+	paymentModeObj,
 }) => {
-	const [commission, setCommission] = useState(2.5);
-	const [commissionFor, setCommissionFor] = useState("1");
-	const [commissionType, setCommissionType] = useState("0");
-	const [fromMultiSelect, setFromMultiSelect] = useState([]);
-	const [fromSelect, setFromSelect] = useState([]);
-	const [data, setData] = useState([]);
 	// const focusRef = useRef(null);
+	const [state, dispatch] = useReducer(
+		pricingFormReducer,
+		INITIAL_FORM_STATE
+	);
+	const {
+		commission,
+		commissionFor,
+		commissionType,
+		paymentMode,
+		// fromMultiSelect,
+		// fromSelect,
+		data, //to show in multiselect
+		finalData,
+	} = state;
 	const { accessToken } = useSession();
+
+	const handleCommissionChange = (event) => {
+		dispatch({ type: "SET_COMMISSION", payload: event.target.value });
+	};
+
+	const handleCommissionForChange = (_value) => {
+		dispatch({ type: "SET_COMMISSION_FOR", payload: _value });
+	};
+
+	const handleCommissionTypeChange = (_value) => {
+		dispatch({ type: "SET_COMMISSION_TYPE", payload: _value });
+	};
+
+	const handlePaymentModeChange = (_value) => {
+		dispatch({ type: "SET_PAYMENT_MODE", payload: _value });
+	};
+
+	const handleMultiSelectData = (_data) => {
+		dispatch({ type: "SET_FROM_MULTI_SELECT", payload: _data });
+	};
+
+	const handleSelectData = (_data) => {
+		dispatch({ type: "SET_FROM_SLAB_SELECT", payload: _data });
+	};
+
+	const handleReset = () => {
+		dispatch({ type: "RESET" });
+	};
 
 	// const charges = {
 	// 	"Fixed Charges": 1.8,
@@ -50,25 +88,17 @@ const PricingForm = ({
 			},
 			body: {
 				operation_type: commissionFor, //commissionFor
-				csplist: fromMultiSelect.map((num) => Number(num)), //multiselect
-				min_slab_amount: fromSelect[0], //select
-				max_slab_amount: fromSelect[1], //select
-				pricing_type: commissionType, //commissionType
-				actual_pricing: commission, //default input
 				operation: op,
+				...finalData,
 			},
 			token: accessToken,
 		})
 			.then((data) => {
-				const selectdata = data?.data?.allScspList ?? [];
-				// FIX: As per Saurabh, the returned list is always in allScspList parameter
-				// commissionFor == 1 // CSP
-				// 	? data?.data?.allCspList ?? []
-				// 	: commissionFor == 2 // SCSP
-				// 	? data?.data?.allScspList ?? []
-				// 	: [];
-				setData(selectdata);
-				console.log(">>> [MS] Data Found:: ", data, selectdata);
+				dispatch({
+					type: "SET_DATA",
+					payload: data?.data,
+					for: commissionFor,
+				});
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
@@ -96,27 +126,14 @@ const PricingForm = ({
 	};
 	return (
 		<Flex direction="column" gap="10" fontSize="md">
-			<Flex direction="column" gap="2">
-				<Text fontWeight="semibold">{`Select ${ProductPricingType} For`}</Text>
-				<RadioGroup
-					defaultValue="0"
-					value={commissionFor}
-					onChange={(value) => setCommissionFor(value)}
-				>
-					<Flex
-						direction={{ base: "column", sm: "row" }}
-						gap={{ base: "4", md: "16" }}
-					>
-						{Object.entries(commissionForObj).map(
-							([key, value]) => (
-								<Radio size="lg" key={key} value={key}>
-									<Text fontSize="sm">{value}</Text>
-								</Radio>
-							)
-						)}
-					</Flex>
-				</RadioGroup>
-			</Flex>
+			<RadioInput
+				label={`Select ${ProductPricingType} For`}
+				defaultValue="0"
+				value={commissionFor}
+				onChange={handleCommissionForChange}
+				radioGroupObj={commissionForObj}
+			/>
+
 			{commissionFor !== "3" ? (
 				/* no need of multiselect when user clicked on product radio option in select_commission_for field */
 				<Flex
@@ -130,38 +147,33 @@ const PricingForm = ({
 					<MultiSelect
 						options={data}
 						renderer={multiSelectRenderer}
-						setData={setFromMultiSelect}
+						setData={handleMultiSelectData}
 					/>
 				</Flex>
 			) : null}
+
 			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
 				<Text fontWeight="semibold">Select Slab</Text>
-				<Select data={ProductSlabs} setSelected={setFromSelect} />
+				<Select data={ProductSlabs} setSelected={handleSelectData} />
 			</Flex>
 
-			<Flex direction="column" gap="2">
-				<Text fontWeight="semibold">{`Select ${ProductPricingType} Type`}</Text>
-				<RadioGroup
-					defaultValue="0"
-					value={commissionType}
-					onChange={(value) => setCommissionType(value)}
-				>
-					<Flex
-						direction={{ base: "column", sm: "row" }}
-						gap={{ base: "4", md: "16" }}
-					>
-						{Object.entries(commissionTypeObj).map(
-							([key, value]) => (
-								<Radio size="lg" key={key} value={key}>
-									<Text fontSize={{ base: "sm", sm: "md" }}>
-										{value}
-									</Text>
-								</Radio>
-							)
-						)}
-					</Flex>
-				</RadioGroup>
-			</Flex>
+			<RadioInput
+				label={`Select ${ProductPricingType} Type`}
+				defaultValue="0"
+				value={commissionType}
+				onChange={handleCommissionTypeChange}
+				radioGroupObj={commissionTypeObj}
+			/>
+
+			{paymentModeObj ? (
+				<RadioInput
+					label="Select Payment Mode"
+					defaultValue="1"
+					value={paymentMode}
+					onChange={handlePaymentModeChange}
+					radioGroupObj={paymentModeObj}
+				/>
+			) : null}
 
 			<Flex direction="column" gap="2">
 				<Text fontWeight="semibold">{`Define ${ProductPricingType}`}</Text>
@@ -185,8 +197,9 @@ const PricingForm = ({
 								/>
 							}
 							type="number"
+							fontSize="sm"
 							defaultValue={commission}
-							onChange={(e) => setCommission(e.target.value)}
+							onChange={handleCommissionChange}
 							// onClick={() => handlePopUp(true)}
 							// onBlur={() => handlePopUp(false)}
 						/>
@@ -219,6 +232,7 @@ const PricingForm = ({
 									fontWeight="bold"
 									color="accent.DEFAULT"
 									_hover={{ textDecoration: "none" }}
+									onClick={handleReset}
 								>
 									Cancel
 								</Button>
@@ -235,6 +249,7 @@ const PricingForm = ({
 									_hover={{ bg: "white" }}
 									w="100%"
 									h="64px"
+									onClick={handleReset}
 								>
 									Cancel
 								</Button>
@@ -296,7 +311,37 @@ const PricingForm = ({
 };
 export default PricingForm;
 
-const radioDummy = {
-	0: "Radio 1",
-	1: "Radio 2",
+/**
+ * Component to show radio button, label
+ * @param {*} param0
+ * @returns
+ */
+const RadioInput = ({
+	label,
+	defaultValue,
+	value,
+	onChange,
+	radioGroupObj,
+}) => {
+	return (
+		<Flex direction="column" gap="2">
+			<Text fontWeight="semibold">{label}</Text>
+			<RadioGroup
+				defaultValue={defaultValue}
+				value={value}
+				onChange={onChange}
+			>
+				<Flex
+					direction={{ base: "column", sm: "row" }}
+					gap={{ base: "4", md: "16" }}
+				>
+					{Object.entries(radioGroupObj)?.map(([key, value]) => (
+						<Radio size="lg" key={key} value={key}>
+							<Text fontSize="sm">{value}</Text>
+						</Radio>
+					))}
+				</Flex>
+			</RadioGroup>
+		</Flex>
+	);
 };
