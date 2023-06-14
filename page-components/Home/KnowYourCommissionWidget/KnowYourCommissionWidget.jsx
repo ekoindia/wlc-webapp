@@ -1,22 +1,22 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { useCommisionSummary } from "contexts";
+import { useCommissionSummary } from "contexts";
 import { useRouter } from "next/router";
 import { WidgetBase } from "..";
 /**
- * A <KnowYourCommision> component
+ * A <KnowYourCommission> component
  * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<KnowYourCommision></KnowYourCommision>` TODO: Fix example
+ * @example	`<KnowYourCommission></KnowYourCommission>` TODO: Fix example
  */
-const KnowYourCommision = () => {
+const KnowYourCommission = () => {
 	const router = useRouter();
 
-	const commisionData = useCommisionSummary();
+	const commissionData = useCommissionSummary();
 
-	const uniqueCommisionData = commisionData?.pricing_commission_data.filter(
+	const uniqueCommissionData = commissionData?.pricing_commission_data.filter(
 		(value, index, self) =>
 			index === self.findIndex((item) => item.product === value.product)
 	);
@@ -35,7 +35,7 @@ const KnowYourCommision = () => {
 				overflowY={{ base: "none", md: "scroll" }}
 				rowGap={{ base: "19px", md: "10px" }}
 			>
-				{uniqueCommisionData?.map((tx) => (
+				{uniqueCommissionData?.map((tx) => (
 					<Flex
 						key={tx.id}
 						p="8px 8px 8px 0px"
@@ -88,4 +88,4 @@ const KnowYourCommision = () => {
 	);
 };
 
-export default KnowYourCommision;
+export default KnowYourCommission;

@@ -1,7 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { Headings, Tags } from "components";
 import { tableRowLimit } from "constants";
-import { useCommisionSummary } from "contexts";
+import { useCommissionSummary } from "contexts";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "utils/numberFormat";
@@ -15,7 +15,7 @@ const Commissions = () => {
 	const [tagValue, setTagValue] = useState("");
 	const { query } = useRouter();
 
-	const commisionData = useCommisionSummary();
+	const commissionData = useCommissionSummary();
 
 	const handleTagClick = (status) => {
 		setTagValue(status?.toLowerCase());
@@ -27,8 +27,8 @@ const Commissions = () => {
 	}, [query]);
 
 	useEffect(() => {
-		if (tagValue && commisionData) {
-			const tagData = commisionData?.pricing_commission_data?.filter(
+		if (tagValue && commissionData) {
+			const tagData = commissionData?.pricing_commission_data?.filter(
 				({ product }) => product.toLowerCase() === tagValue
 			);
 			if (tagData?.length > 0) {
@@ -68,9 +68,9 @@ const Commissions = () => {
 				);
 			}
 		}
-	}, [tagValue, commisionData]);
+	}, [tagValue, commissionData]);
 
-	const uniqueCommisionData = commisionData?.pricing_commission_data.filter(
+	const uniqueCommissionData = commissionData?.pricing_commission_data.filter(
 		(value, index, self) =>
 			index === self.findIndex((item) => item.product === value.product)
 	);
@@ -89,7 +89,7 @@ const Commissions = () => {
 		>
 			<Headings title="Know Your Commissions" />
 			<Flex w="full" h="auto" direction="row" py="1px">
-				{uniqueCommisionData?.map((tx) => (
+				{uniqueCommissionData?.map((tx) => (
 					<Tags
 						key={tx.status}
 						w="fit-content"
@@ -120,7 +120,7 @@ const Commissions = () => {
 				setPageNumber={setCurrentPage}
 				tableRowLimit={limit}
 				tagClicked={tagValue}
-				commisionData={tableData}
+				commissionData={tableData}
 			/>
 		</Flex>
 	);

@@ -7,14 +7,14 @@ import { createContext, useContext, useEffect } from "react";
 import { validateResp } from "utils/validateResponse";
 // import { useBusinessSearchActions } from "./GlobalSearchContext";
 
-const CommisionContext = createContext();
+const CommissionContext = createContext();
 
-export const useCommisionSummary = () => {
-	return useContext(CommisionContext);
+export const useCommissionSummary = () => {
+	return useContext(CommissionContext);
 };
 
-export const CommisionSummaryProvider = ({ children }) => {
-	const [userCommision, setUserCommision, isValid] = useDailyCacheState(
+export const CommissionSummaryProvider = ({ children }) => {
+	const [userCommission, setUserCommission, isValid] = useDailyCacheState(
 		"inf-commission",
 		{
 			pricing_commission_data: [],
@@ -29,8 +29,8 @@ export const CommisionSummaryProvider = ({ children }) => {
 
 		if (
 			isValid &&
-			userCommision?.userId &&
-			userCommision?.userId === userId
+			userCommission?.userId &&
+			userCommission?.userId === userId
 		)
 			return;
 
@@ -51,7 +51,7 @@ export const CommisionSummaryProvider = ({ children }) => {
 				)
 					.then((response) => {
 						if (validateResp(response)) {
-							setUserCommision({
+							setUserCommission({
 								pricing_commission_data:
 									response.data?.pricing_commission_data,
 								userId: userId,
@@ -60,7 +60,7 @@ export const CommisionSummaryProvider = ({ children }) => {
 					})
 					.catch((error) => {
 						// Handle any errors that occurred during the fetch
-						console.error("ErrorMSG:", error);
+						console.error("[Commission] Error:", error);
 					}),
 			2000
 		);
@@ -70,13 +70,13 @@ export const CommisionSummaryProvider = ({ children }) => {
 		isOnboarding,
 		accessToken,
 		isValid,
-		setUserCommision,
-		userCommision?.userId,
+		setUserCommission,
+		userCommission?.userId,
 		userId,
 	]);
 
-	// const CommisionAction = useMemo(() => {
-	// 	const actionData = userCommision?.pricing_commission_data?.map(
+	// const CommissionAction = useMemo(() => {
+	// 	const actionData = userCommission?.pricing_commission_data?.map(
 	// 		({ product }) => ({
 	// 			id: `know-your-commission-${product}`,
 	// 			name: product,
@@ -85,16 +85,16 @@ export const CommisionSummaryProvider = ({ children }) => {
 	// 			icon: <ActionIcon iconSize="md" color={"success"} />,
 	// 		})
 	// 	);
-	// 	return userCommision?.userId && userCommision?.userId === userId
+	// 	return userCommission?.userId && userCommission?.userId === userId
 	// 		? actionData
 	// 		: [];
-	// }, [userCommision]);
+	// }, [userCommission]);
 
-	// useBusinessSearchActions(CommisionAction, [CommisionAction]);
+	// useBusinessSearchActions(CommissionAction, [CommissionAction]);
 
 	return (
-		<CommisionContext.Provider value={userCommision}>
+		<CommissionContext.Provider value={userCommission}>
 			{children}
-		</CommisionContext.Provider>
+		</CommissionContext.Provider>
 	);
 };

@@ -12,7 +12,7 @@ const CommissionsTable = ({
 	pageNumber,
 	setPageNumber,
 	tableRowLimit,
-	commisionData,
+	commissionData,
 	// tagClicked,
 }) => {
 	let renderer = [
@@ -38,7 +38,7 @@ const CommissionsTable = ({
 			<Table
 				renderer={renderer}
 				visibleColumns={0}
-				data={commisionData}
+				data={commissionData}
 				variant="stripedActionNone"
 				tableName="Commissions"
 				ResponsiveCard={CommissionsCard}

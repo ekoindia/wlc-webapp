@@ -118,7 +118,7 @@ const CommonTrxnWidget = () => {
 						>
 							{transaction.label}
 						</Text>
-						{/*commision data not there*/}
+						{/*commission data not there*/}
 						{/* <Text
 									fontSize={{
 										base: "11px",

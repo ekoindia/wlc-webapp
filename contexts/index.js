@@ -1,7 +1,7 @@
 export {
-	CommisionSummaryProvider,
-	useCommisionSummary,
-} from "./CommisionContext";
+	CommissionSummaryProvider,
+	useCommissionSummary,
+} from "./CommissionContext";
 export {
 	EarningSummaryProvider,
 	useEarningSummary,

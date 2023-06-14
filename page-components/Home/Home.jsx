@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import {
 	BillPaymentWidget,
 	CommonTrxnWidget,
-	KnowYourCommision,
+	KnowYourCommission,
 	NotificationWidget,
 	QueryWidget,
 	RecentTrxnWidget,
@@ -51,16 +51,12 @@ const Home = () => {
 
 	if (!isLoggedIn) return null;
 
-	// <CommisionContext>
-	// 	<KnowYourCommision />
-	// </CommisionContext>;
-
 	const widgets = [
 		{ id: 1, component: CommonTrxnWidget },
 		{ id: 2, component: BillPaymentWidget },
 		{ id: 3, component: NotificationWidget },
 		{ id: 4, component: EarningSummary },
-		{ id: 5, component: KnowYourCommision },
+		{ id: 5, component: KnowYourCommission },
 		{ id: 6, component: RecentTrxnWidget },
 	];
 

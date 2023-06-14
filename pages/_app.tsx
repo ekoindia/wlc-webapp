@@ -3,7 +3,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
 import { ActionIcon } from "components/CommandBar";
 import {
-	CommisionSummaryProvider,
+	CommissionSummaryProvider,
 	EarningSummaryProvider,
 	GlobalSearchProvider,
 	NotificationProvider,
@@ -196,7 +196,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 										>
 											<NotificationProvider>
 												<EarningSummaryProvider>
-													<CommisionSummaryProvider>
+													<CommissionSummaryProvider>
 														<TodoProvider>
 															<PubSubProvider>
 																<ErrorBoundary>
@@ -214,7 +214,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 																</ErrorBoundary>
 															</PubSubProvider>
 														</TodoProvider>
-													</CommisionSummaryProvider>
+													</CommissionSummaryProvider>
 												</EarningSummaryProvider>
 											</NotificationProvider>
 										</SWRConfig>
