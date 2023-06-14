@@ -49,18 +49,19 @@ const NotificationCreator = () => {
 
 	const Fieldset = chakra("fieldset", {
 		baseStyle: {
-			border: "1px solid",
+			borderWidth: "1px",
 			borderColor: "bg",
+			borderStyle: "dashed",
 			borderRadius: "md",
-			padding: "1em",
+			padding: "1em 1.2em",
 		},
 	});
 
 	const Legend = chakra("legend", {
 		baseStyle: {
-			marginLeft: "0.5em",
-			paddingX: "0.2em",
-			fontSize: "md",
+			// marginLeft: "0.2em",
+			// paddingX: "0.2em",
+			fontSize: { base: "sm", "2xl": "lg" },
 			fontWeight: "semibold",
 			color: "inputlabel",
 		},
@@ -144,29 +145,26 @@ const NotificationCreator = () => {
 
 			<Box p={{ base: "1em", md: "2em" }} bg="white" borderRadius={8}>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<FormControl mb={6} isInvalid={errors.name ? true : false}>
-						<Input
-							id="name"
-							label="Notification Name/Purpose"
-							maxLength="30"
-							required
-							invalid={errors.name ? true : false}
-							errorMsg={errors?.name?.message}
-							description="Describe the purpose for this notification. This is for internal use only."
-							maxW={{ base: "auto", lg: "400px" }}
-							{...register("name", {
-								required: true,
-								minLength: {
-									value: 4,
-									message: "Minimum length should be 4",
-								},
-								maxLength: {
-									value: 30,
-									message: "Maximum length should be 30",
-								},
-							})}
-						/>
-					</FormControl>
+					{/* <FormControl> */}
+					<Input
+						id="name"
+						label="Notification Name/Purpose"
+						maxLength="30"
+						required
+						invalid={errors.name ? true : false}
+						errorMsg={errors?.name?.message}
+						description="Describe the purpose for this notification. This is for internal use only."
+						maxW={{ base: "auto", lg: "400px" }}
+						mb={6}
+						{...register("name", {
+							required: true,
+							minLength: {
+								value: 4,
+								message: "Minimum 4 characters required",
+							},
+						})}
+					/>
+					{/* </FormControl> */}
 
 					<FormControl mb={6} maxW={{ base: "auto", lg: "400px" }}>
 						<Input
@@ -215,25 +213,6 @@ const NotificationCreator = () => {
 						) : null}
 					</FormControl>
 
-					<FormControl mb={6} maxW={{ base: "auto", lg: "400px" }}>
-						<Input
-							id="image"
-							type="file"
-							label="Image"
-							description={
-								previewImage
-									? ""
-									: "Add an image to your notification"
-							}
-							accept="image/png, image/jpeg"
-							invalid={errors.image ? true : false}
-							errorMsg={errors?.image?.message}
-							onChange={handleImageChange}
-							// {...register("image")}
-						/>
-						{previewImage ? <Image src={previewImage} /> : null}
-					</FormControl>
-
 					<FormControl
 						id="priority"
 						mb={6}
@@ -273,11 +252,30 @@ const NotificationCreator = () => {
 						) : null}
 					</FormControl>
 
-					<Fieldset>
+					<FormControl mb={6} maxW={{ base: "auto", lg: "400px" }}>
+						<Input
+							id="image"
+							type="file"
+							label="Add an Image"
+							description={
+								previewImage
+									? ""
+									: "Add an image to your notification"
+							}
+							accept="image/png, image/jpeg"
+							invalid={errors.image ? true : false}
+							errorMsg={errors?.image?.message}
+							onChange={handleImageChange}
+							// {...register("image")}
+						/>
+						{previewImage ? <Image src={previewImage} /> : null}
+					</FormControl>
+
+					<Fieldset maxW={{ base: "auto", lg: "400px" }}>
 						<Legend>Add a Link</Legend>
 						<FormControl
-							mb={6}
-							maxW={{ base: "auto", lg: "400px" }}
+
+						// maxW={{ base: "auto", lg: "400px" }}
 						>
 							<Input
 								id="link"
@@ -287,13 +285,14 @@ const NotificationCreator = () => {
 								errorMsg={errors?.link?.message}
 								maxLength="100"
 								placeholder="https://..."
+								mb={6}
 								{...register("link")}
 							/>
 						</FormControl>
 
 						<FormControl
 							mb={6}
-							maxW={{ base: "auto", lg: "400px" }}
+							// maxW={{ base: "auto", lg: "400px" }}
 							isInvalid={errors.link}
 						>
 							<Input
@@ -309,7 +308,7 @@ const NotificationCreator = () => {
 					</Fieldset>
 
 					<Button
-						loading={isSubmitting || !ready}
+						loading2={isSubmitting || !ready}
 						mt={4}
 						type="submit"
 						size="lg"

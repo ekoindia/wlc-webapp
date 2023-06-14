@@ -45,25 +45,31 @@ const Input = forwardRef(
 			description,
 			value,
 			type = "text",
+			isNumInput = false,
+			min,
+			max,
+			minLength,
+			maxLength = "100",
 			leftAddon,
 			inputLeftElement,
 			inputLeftElementStyle,
 			inputRightElement,
 			inputRightElementStyle,
+			required = false,
 			disabled = false,
 			hidden = false,
 			invalid = false,
 			errorMsg = "",
-			isNumInput = false,
+			radius,
 			labelStyle,
 			errorStyle,
 			inputContStyle,
-			inputNumStyle,
-			radius,
-			required = false,
-			minLength,
-			maxLength = "100",
-			// register = () => {},
+			inputAttributes,
+			m,
+			mt,
+			mr,
+			mb,
+			ml,
 			onChange = () => {},
 			onKeyDown = () => {},
 			onEnter = () => {},
@@ -84,7 +90,6 @@ const Input = forwardRef(
 				) {
 					let formatted = formatNum(value, val);
 					onChange(formatted);
-					// setNumber(formatted);
 				}
 			} else onChange(e);
 		};
@@ -94,6 +99,11 @@ const Input = forwardRef(
 				direction="column"
 				align="flex-start"
 				w="100%"
+				m={m}
+				mt={mt}
+				mr={mr}
+				mb={mb}
+				ml={ml}
 				{...inputContStyle}
 			>
 				{label ? (
@@ -156,13 +166,11 @@ const Input = forwardRef(
 							borderColor: "hint",
 							transition: "box-shadow 0.3s ease-out",
 						}}
+						min={min}
+						max={max}
 						minLength={minLength}
 						maxLength={maxLength}
-						// {...register(name, {
-						// 	required: required,
-						// 	minLength: minLength || 0,
-						// 	maxLength: maxLength || undefined,
-						// })}
+						{...inputAttributes}
 						{...rest}
 					/>
 
@@ -174,23 +182,6 @@ const Input = forwardRef(
 							{inputRightElement}
 						</InputRightElement>
 					) : null}
-
-					{/* {isNumInput && (
-					<Center
-						pos="absolute"
-						top="0"
-						left="0"
-						height="100%"
-						w={{ base: 14, "2xl": "5.6rem" }}
-						borderRight="1px solid"
-						borderColor={invalid && errorMsg ? "error" : "hint"}
-						zIndex="1100"
-						userSelect="none"
-						{...inputNumStyle}
-					>
-						+91
-					</Center>
-				)} */}
 				</InputGroup>
 
 				{(invalid && errorMsg) || description ? (
