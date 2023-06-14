@@ -129,31 +129,30 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 						}}
 					/>
 
-					{previewImage ? (
-						<Flex p="2.5">
+					<Flex p="2.5">
+						{previewImage ? (
 							<Image src={previewImage} borderRadius="10px" />
-						</Flex>
-					) : (
-						<Text
-							w="100%"
-							fontSize="xs"
-							textOverflow="ellipsis"
-							whiteSpace="nowrap"
-							overflow="hidden"
-							align="center"
-							title={file.name}
-							style={{
-								cursor: "default",
-								":hover": {
-									whiteSpace: "normal",
-									overflow: "visible",
-								},
-							}}
-							p="2.5"
-						>
-							{file.name}
-						</Text>
-					)}
+						) : (
+							<Text
+								w="100%"
+								fontSize="xs"
+								textOverflow="ellipsis"
+								whiteSpace="nowrap"
+								overflow="hidden"
+								align="center"
+								title={file.name}
+								style={{
+									cursor: "default",
+									":hover": {
+										whiteSpace: "normal",
+										overflow: "visible",
+									},
+								}}
+							>
+								{file.name}
+							</Text>
+						)}
+					</Flex>
 				</Flex>
 			)}
 		</Flex>
