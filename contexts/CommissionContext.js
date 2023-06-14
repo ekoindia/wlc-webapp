@@ -9,8 +9,47 @@ import { validateResp } from "utils/validateResponse";
 
 const CommissionContext = createContext();
 
+/**
+ * Hook to get the commission details for the user
+ */
 export const useCommissionSummary = () => {
 	return useContext(CommissionContext);
+};
+
+/**
+ * Format the commission data to be used in the UI
+ * @param {Object} data - Commission data
+ */
+const formatCommissionData = (data) => {
+	const newData = {};
+	if (!data) {
+		return newData;
+	}
+
+	data.forEach((item) => {
+		if (!item.product_id) {
+			return;
+		}
+
+		const slug = item.product
+			? item.product
+					.trim()
+					.toLowerCase()
+					.replace(/[^a-z0-9]+/, "_")
+			: item.product_id;
+
+		if (!newData[slug]) {
+			newData[slug] = {
+				id: item.product_id,
+				label: item.product || `Prod-${item.product_id}`,
+				slabs: [],
+			};
+		}
+
+		newData[slug].slabs.push(item);
+	});
+
+	return newData;
 };
 
 export const CommissionSummaryProvider = ({ children }) => {
@@ -25,15 +64,19 @@ export const CommissionSummaryProvider = ({ children }) => {
 		useSession();
 
 	useEffect(() => {
-		if (!isLoggedIn || !accessToken || isOnboarding || isAdmin) return;
+		if (!isLoggedIn || !accessToken || isOnboarding || isAdmin) {
+			return;
+		}
 
 		if (
 			isValid &&
 			userCommission?.userId &&
 			userCommission?.userId === userId
-		)
+		) {
 			return;
+		}
 
+		// Fetch the commissions data from the API after a delay of 2 seconds
 		setTimeout(
 			() =>
 				fetcher(
@@ -50,10 +93,14 @@ export const CommissionSummaryProvider = ({ children }) => {
 					}
 				)
 					.then((response) => {
-						if (validateResp(response)) {
+						if (
+							validateResp(response) &&
+							response.data?.pricing_commission_data
+						) {
 							setUserCommission({
-								pricing_commission_data:
-									response.data?.pricing_commission_data,
+								data: formatCommissionData(
+									response.data?.pricing_commission_data
+								),
 								userId: userId,
 							});
 						}

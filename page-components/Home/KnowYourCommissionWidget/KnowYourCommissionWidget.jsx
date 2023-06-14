@@ -16,14 +16,18 @@ const KnowYourCommission = () => {
 
 	const commissionData = useCommissionSummary();
 
-	const uniqueCommissionData = commissionData?.pricing_commission_data.filter(
-		(value, index, self) =>
-			index === self.findIndex((item) => item.product === value.product)
-	);
+	const commissionProductIds = Object.keys(commissionData?.data || {});
+
+	if (!commissionProductIds.length) return null;
+
+	// const uniqueCommissionData = commissionData?.data.filter(
+	// 	(value, index, self) =>
+	// 		index === self.findIndex((item) => item.product === value.product)
+	// );
 
 	const handleShowDetail = (id) => {
 		if (id) {
-			router.push(`/commissions/${id.toLowerCase()}`);
+			router.push(`/commissions/${id}`);
 		}
 	};
 
@@ -33,56 +37,66 @@ const KnowYourCommission = () => {
 				direction="column"
 				className="customScrollbars"
 				overflowY={{ base: "none", md: "scroll" }}
-				rowGap={{ base: "19px", md: "10px" }}
 			>
-				{uniqueCommissionData?.map((tx) => (
-					<Flex
-						key={tx.id}
-						p="8px 8px 8px 0px"
-						pr={{ base: "8px", md: "4px" }}
-						align="center"
-						justify="center"
-						borderBottom="1px solid #F5F6F8"
-					>
-						<Avatar
-							size={{ base: "sm", md: "md" }}
-							border="2px solid #D2D2D2"
-							name={tx.product}
-						/>
+				{commissionProductIds?.map((id) => {
+					const prod = commissionData?.data[id];
+					return (
 						<Flex
-							alignItems="center"
-							justifyContent="space-between"
-							w="100%"
-							ml="10px"
+							key={id}
+							p="10px 10px 10px 0px"
+							pr={{ base: "8px", md: "4px" }}
+							align="center"
+							justify="center"
+							borderBottom="1px solid #F5F6F8"
 						>
-							<Flex direction="column">
-								<Text
-									fontSize={{
-										base: "xs",
-										md: "sm",
-									}}
-									fontWeight="medium"
-									noOfLines={1}
-								>
-									{tx.product}
-								</Text>
-							</Flex>
+							<Avatar
+								size={{ base: "sm", "2xl": "md" }}
+								border="2px solid #D2D2D2"
+								name={prod.label}
+							/>
 							<Flex
-								justifyContent="space-between"
 								alignItems="center"
-								ml={2}
-								onClick={() => handleShowDetail(tx.product)}
-								cursor="pointer"
+								justifyContent="space-between"
+								w="100%"
+								ml="10px"
 							>
-								<Icon
-									size="12px"
-									name="arrow-forward"
-									color="primary.DEFAULT"
-								/>
+								<Flex direction="column">
+									<Text
+										fontSize={{
+											base: "xs",
+											md: "sm",
+										}}
+										fontWeight="medium"
+										noOfLines={1}
+									>
+										{prod.label}
+									</Text>
+								</Flex>
+								<Flex
+									justifyContent="space-between"
+									alignItems="center"
+									ml={2}
+									onClick={() => handleShowDetail(id)}
+									cursor="pointer"
+								>
+									<Text
+										color="primary.DEFAULT"
+										pr="6px"
+										display={{ base: "none", md: "block" }}
+										fontSize="sm"
+									>
+										Details
+									</Text>
+									<Icon
+										size="12px"
+										name="arrow-forward"
+										color="primary.DEFAULT"
+									/>
+								</Flex>
 							</Flex>
 						</Flex>
-					</Flex>
-				))}
+					);
+				})}
 			</Flex>
 		</WidgetBase>
 	);

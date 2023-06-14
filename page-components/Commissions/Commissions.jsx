@@ -2,78 +2,79 @@ import { Flex } from "@chakra-ui/react";
 import { Headings, Tags } from "components";
 import { tableRowLimit } from "constants";
 import { useCommissionSummary } from "contexts";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "utils/numberFormat";
 import { CommissionsTable } from ".";
 
 const limit = tableRowLimit?.XLARGE; // Page size
 
-const Commissions = () => {
+const Commissions = ({ prod_id }) => {
 	const [tableData, setTableData] = useState();
 	const [currentPage, setCurrentPage] = useState(1);
 	const [tagValue, setTagValue] = useState("");
-	const { query } = useRouter();
 
 	const commissionData = useCommissionSummary();
 
-	const handleTagClick = (status) => {
-		setTagValue(status?.toLowerCase());
+	const handleTagClick = (id) => {
+		setTagValue(id);
 	};
 	useEffect(() => {
-		if (query?.id) {
-			setTagValue(query?.id?.toLowerCase());
+		if (prod_id) {
+			setTagValue(prod_id);
 		}
-	}, [query]);
+	}, [prod_id]);
 
 	useEffect(() => {
-		if (tagValue && commissionData) {
-			const tagData = commissionData?.pricing_commission_data?.filter(
-				({ product }) => product.toLowerCase() === tagValue
+		if (!tagValue || !commissionData) return;
+
+		const tagData = commissionData?.data[tagValue].slabs;
+
+		if (tagData?.length > 0) {
+			setTableData(
+				tagData.map(
+					({
+						slab_from,
+						slab_to,
+						value,
+						biller_name,
+						calc_type,
+						min_value,
+						max_value,
+					}) => ({
+						transaction_value: !(slab_from || slab_to)
+							? "Any"
+							: `${slab_from ? `₹ ${slab_from}` : "Any"} - ${
+									slab_to ? `₹ ${slab_to || 0}` : "Any"
+							  }`,
+						commission:
+							calc_type === 1
+								? `${value}% (min: ${formatCurrency(
+										min_value,
+										"INR",
+										false,
+										true
+								  )}, max: ${formatCurrency(
+										max_value,
+										"INR",
+										false,
+										true
+								  )})`
+								: value,
+						biller_name: biller_name || "-",
+					})
+				)
 			);
-			if (tagData?.length > 0) {
-				setTableData(
-					tagData.map(
-						({
-							slab_from,
-							slab_to,
-							value,
-							biller_name,
-							calc_type,
-							min_value,
-							max_value,
-						}) => ({
-							transaction_value: !(slab_from || slab_to)
-								? "Any"
-								: `${slab_from ? `₹ ${slab_from}` : "Any"} - ${
-										slab_to ? `₹ ${slab_to || 0}` : "Any"
-								  }`,
-							commission:
-								calc_type === 1
-									? `${value}% (min: ${formatCurrency(
-											min_value,
-											"INR",
-											false,
-											true
-									  )}, max: ${formatCurrency(
-											max_value,
-											"INR",
-											false,
-											true
-									  )})`
-									: value,
-							biller_name: biller_name || "-",
-						})
-					)
-				);
-			}
 		}
 	}, [tagValue, commissionData]);
 
-	const uniqueCommissionData = commissionData?.pricing_commission_data.filter(
-		(value, index, self) =>
-			index === self.findIndex((item) => item.product === value.product)
+	const commissionProducts = Object.keys(commissionData?.data || {}).map(
+		(id) => ({
+			id,
+			label: commissionData?.data[id].label || id,
+		})
 	);
+
+	if (!commissionProducts?.length) return null;
 
 	return (
 		<Flex
@@ -89,29 +90,21 @@ const Commissions = () => {
 		>
 			<Headings title="Know Your Commissions" />
 			<Flex w="full" h="auto" direction="row" py="1px">
-				{uniqueCommissionData?.map((tx) => (
+				{commissionProducts?.map((tx) => (
 					<Tags
-						key={tx.status}
+						key={tx?.id}
+						status={tx?.label}
 						w="fit-content"
 						h="32px"
 						margin="0 10px 12px 0"
 						size="lg"
 						px="10px"
-						status={tx.product}
 						borderRadius="16"
 						fontSize="12"
-						bg={
-							tx.product.toLowerCase() === tagValue
-								? "#11299E"
-								: "#E9EDF1"
-						}
-						color={
-							tx.product.toLowerCase() === tagValue
-								? "white"
-								: "#555"
-						}
-						_hover={{ bg: "#11299E", color: "white" }}
-						onClick={() => handleTagClick(tx.product)}
+						bg={tx?.id === tagValue ? "accent.DEFAULT" : "divider"}
+						color={tx?.id === tagValue ? "white" : "#555"}
+						_hover={{ bg: "accent.DEFAULT", color: "white" }}
+						onClick={() => handleTagClick(tx.id)}
 					/>
 				))}
 			</Flex>
