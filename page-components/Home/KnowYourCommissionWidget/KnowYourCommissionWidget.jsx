@@ -43,14 +43,14 @@ const KnowYourCommission = () => {
 					return (
 						<Flex
 							key={id}
-							p="10px 10px 10px 0px"
+							p="6px 6px 6px 0px"
 							pr={{ base: "8px", md: "4px" }}
 							align="center"
 							justify="center"
 							borderBottom="1px solid #F5F6F8"
 						>
 							<Avatar
-								size={{ base: "sm", "2xl": "md" }}
+								size={{ base: "sm", lg: "md" }}
 								border="2px solid #D2D2D2"
 								name={prod.label}
 							/>
