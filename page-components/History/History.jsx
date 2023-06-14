@@ -319,7 +319,7 @@ const HistoryToolbar = ({
 }) => {
 	const labelStyle = {
 		fontSize: { base: "sm" },
-		color: "inputlabel",
+		// color: "inputlabel",
 	};
 	return (
 		<Flex

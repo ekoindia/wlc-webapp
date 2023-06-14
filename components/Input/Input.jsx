@@ -89,8 +89,7 @@ const Input = forwardRef(
 		return (
 			<Flex
 				direction="column"
-				align="center"
-				justify="flex-start"
+				align="flex-start"
 				w="100%"
 				{...inputContStyle}
 			>

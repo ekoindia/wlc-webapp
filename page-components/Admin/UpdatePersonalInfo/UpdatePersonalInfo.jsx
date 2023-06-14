@@ -370,30 +370,11 @@ const UpdatePersonalInfo = () => {
 											name="first_name"
 											// placeholder={"Saurabh"}
 											required="true"
+											onChange={onChangeHandler}
 											// value={formData.firstName}
 											// invalid={true}
 											// errorMsg={"Please enter"}
 											// mb={{ base: 10, "2xl": "4.35rem" }}
-											onChange={onChangeHandler}
-											labelStyle={{
-												fontSize: "md",
-												color: "inputlabel",
-												pl: "0",
-												fontWeight: "600",
-												mb: {
-													base: 2.5,
-													"2xl": "0.3rem",
-												},
-											}}
-											// inputContStyle={{
-											// 	h: {
-											// 		base: "3rem",
-											// 		"2xl": "3rem",
-											// 	},
-											// 	w: "100%",
-											// 	pos: "relative",
-											// 	alignItems: "center",
-											// }}
 										/>
 									</Box>
 									<Box
@@ -408,27 +389,12 @@ const UpdatePersonalInfo = () => {
 										<Input
 											label="Middle Name"
 											name="middle_name"
+											onChange={onChangeHandler}
 											// value={formData.middleName}
 											// placeholder={""}
 											// invalid={invalid}
 											// errorMsg={errorMsg}
 											// mb={{ base: 10, "2xl": "4.35rem" }}
-											onChange={onChangeHandler}
-											labelStyle={{
-												fontSize: "md",
-												color: "inputlabel",
-												pl: "0",
-												fontWeight: "600",
-												mb: {
-													base: 2.5,
-													"2xl": "0.3rem",
-												},
-											}}
-											// inputContStyle={{
-											// 	h: "3rem",
-											// 	w: "100%",
-											// 	pos: "relative",
-											// }}
 										/>
 									</Box>
 									<Box
@@ -443,31 +409,13 @@ const UpdatePersonalInfo = () => {
 										<Input
 											label="Last Name"
 											name="last_name"
+											onChange={onChangeHandler}
 											// value={formData.lastName}
 											// placeholder={"Mullick"}
 											// defaultvalue={item.LastName}
 											// invalid={invalid}
 											// errorMsg={errorMsg}
-											// mb={{	 base: 10, "2xl": "4.35rem" }}
-											onChange={onChangeHandler}
-											labelStyle={{
-												fontSize: "md",
-												color: "inputlabel",
-												pl: "0",
-												fontWeight: "600",
-												mb: {
-													base: 2.5,
-													"2xl": "0.3rem",
-												},
-											}}
-											// inputContStyle={{
-											// 	h: {
-											// 		base: "3rem",
-											// 		"2xl": "3rem",
-											// 	},
-											// 	w: "100%",
-											// 	pos: "relative",
-											// }}
+											// mb={{ base: 10, "2xl": "4.35rem" }}
 										/>
 									</Box>
 								</Flex>
@@ -630,26 +578,11 @@ const UpdatePersonalInfo = () => {
 											label="Shop Name"
 											// placeholder={"Alam Store"}
 											name="shop_name"
+											onChange={onChangeHandler}
 											// value={formData.shopName}
 											// invalid={invalid}
 											// errorMsg={errorMsg}
-											// mb={{	 base: 10, "2xl": "4.35rem" }}
-											onChange={onChangeHandler}
-											labelStyle={{
-												fontSize: { base: "16px" },
-												color: "inputlabel",
-												pl: "0",
-												fontWeight: "600",
-												mb: {
-													base: 2.5,
-													"2xl": "0.3rem",
-												},
-											}}
-											// inputContStyle={{
-											// 	h: "3rem",
-											// 	w: "100%",
-											// 	pos: "relative",
-											// }}
+											// mb={{ base: 10, "2xl": "4.35rem" }}
 										/>
 									</Box>
 									<Box

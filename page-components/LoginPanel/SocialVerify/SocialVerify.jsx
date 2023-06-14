@@ -100,10 +100,6 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 				radius={10}
 				labelStyle={{
 					color: "light",
-					pl: "0",
-					mb: { base: 2.5, "2xl": "0.8rem" },
-					fontSize: { base: "sm", "2xl": "lg" },
-					fontWeight: "semibold",
 				}}
 				// inputContStyle={{
 				// 	h: { base: "3rem", "2xl": "4rem" },

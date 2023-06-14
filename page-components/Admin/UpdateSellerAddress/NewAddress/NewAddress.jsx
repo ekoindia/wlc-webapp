@@ -93,19 +93,6 @@ const NewAddress = () => {
 							// mb={{ base: 10, "2xl": "4.35rem" }}
 							// onChange={onChangeHandler}
 							required="true"
-							labelStyle={{
-								fontSize: { base: "md" },
-								color: "inputlabel",
-								pl: "0",
-								fontWeight: "600",
-								mb: { base: 2.5, "2xl": "0.8rem" },
-							}}
-							// inputContStyle={{
-							// 	h: { base: "3rem", "2xl": "3rem" },
-							// 	w: "100%",
-							// 	pos: "relative",
-							// 	alignItems: "center",
-							// }}
 						/>
 					</Box>
 					<Box
@@ -124,19 +111,6 @@ const NewAddress = () => {
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
 							// onChange={onChangeHandler}
-							labelStyle={{
-								fontSize: { base: "md" },
-								color: "inputlabel",
-								pl: "0",
-								fontWeight: "600",
-								mb: { base: 2.5, "2xl": "0.8rem" },
-							}}
-							// inputContStyle={{
-							// 	h: { base: "3rem", "2xl": "3rem" },
-							// 	w: "100%",
-							// 	pos: "relative",
-							// 	alignItems: "center",
-							// }}
 						/>
 					</Box>
 				</Flex>
@@ -166,19 +140,6 @@ const NewAddress = () => {
 							// mb={{ base: 10, "2xl": "4.35rem" }}
 							// onChange={onChangeHandler}
 							required="true"
-							labelStyle={{
-								fontSize: { base: "md" },
-								color: "inputlabel",
-								pl: "0",
-								fontWeight: "600",
-								mb: { base: 2.5, "2xl": "0.8rem" },
-							}}
-							// inputContStyle={{
-							// 	h: { base: "3rem", "2xl": "3rem" },
-							// 	w: "100%",
-							// 	pos: "relative",
-							// 	alignItems: "center",
-							// }}
 						/>
 					</Box>
 					<Box
@@ -197,19 +158,6 @@ const NewAddress = () => {
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
 							// onChange={onChangeHandler}
-							labelStyle={{
-								fontSize: { base: "md" },
-								color: "inputlabel",
-								pl: "0",
-								fontWeight: "600",
-								mb: { base: 2.5, "2xl": "0.8rem" },
-							}}
-							// inputContStyle={{
-							// 	h: { base: "3rem", "2xl": "3rem" },
-							// 	w: "100%",
-							// 	pos: "relative",
-							// 	alignItems: "center",
-							// }}
 						/>
 					</Box>
 				</Flex>
@@ -291,19 +239,6 @@ const NewAddress = () => {
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
 							// onChange={onChangeHandler}
-							labelStyle={{
-								fontSize: { base: "md" },
-								color: "inputlabel",
-								pl: "0",
-								fontWeight: "600",
-								mb: { base: 2.5, "2xl": "0.8rem" },
-							}}
-							// inputContStyle={{
-							// 	h: { base: "3rem", "2xl": "3rem" },
-							// 	w: "100%",
-							// 	pos: "relative",
-							// 	alignItems: "center",
-							// }}
 						/>
 					</Box>
 				</Flex>

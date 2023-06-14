@@ -35,12 +35,6 @@ const ShopCard = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const data = userData.shopDetails;
 	const { generateNewToken } = useRefreshToken();
-	const labelStyle = {
-		fontSize: { base: "md" },
-		color: "inputlabel",
-		pl: "0",
-		fontWeight: "600",
-	};
 	const inputConstStyle = {
 		w: "100%",
 		pos: "relative",
@@ -198,7 +192,6 @@ const ShopCard = () => {
 						name="shop_name"
 						value={formState.shop_name}
 						onChange={handleChange}
-						labelStyle={labelStyle}
 						inputContStyle={inputConstStyle}
 					/>
 					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
@@ -210,7 +203,6 @@ const ShopCard = () => {
 						name="shop_type"
 						value={formState.shop_type}
 						onChange={handleChange}
-						labelStyle={labelStyle}
 						mb={{ base: 2, "2xl": "1rem" }}
 						h="3rem"
 						inputContStyle={inputConstStyle}
@@ -231,7 +223,6 @@ const ShopCard = () => {
 						name="shop_address"
 						value={formState.shop_address}
 						onChange={handleChange}
-						labelStyle={labelStyle}
 						inputContStyle={inputConstStyle}
 					/>
 					<Input
@@ -239,7 +230,6 @@ const ShopCard = () => {
 						name="city"
 						value={formState.city}
 						onChange={handleChange}
-						labelStyle={labelStyle}
 						inputContStyle={inputConstStyle}
 					/>
 					<Input
@@ -247,7 +237,6 @@ const ShopCard = () => {
 						name="state"
 						value={formState.state}
 						onChange={handleChange}
-						labelStyle={labelStyle}
 						inputContStyle={inputConstStyle}
 					/>
 					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
