@@ -2,7 +2,7 @@ import { Flex, Image, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { Button, IcoButton, Input } from "..";
 
-// const MIMETYPES = {
+// const EXCEL_MIME_TYPES = {
 // 	"application/vnd.ms-excel": true,
 // 	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": true,
 // 	"application/vnd.ms-excel.sheet.macroEnabled.12": true,
@@ -12,6 +12,13 @@ import { Button, IcoButton, Input } from "..";
 // 	"application/vnd.openxmlformats-officedocument.spreadsheetml.template": true,
 // 	"application/vnd.ms-excel.addin.macroEnabled.12": true,
 // };
+
+const IMAGE_MIME_TYPES = {
+	"image/jpeg": true,
+	"image/png": true,
+	"image/svg+xml": true,
+	"image/webp": true,
+};
 
 /**
  * A Dropzone component to upload file either by selecting or by drag n drop
@@ -30,9 +37,11 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 		console.log("[Dropzone] _file", _file);
 		setFile(_file);
 
-		convertImage(_file); //TODO condition based
+		if (IMAGE_MIME_TYPES[_file.type]) {
+			convertImage(_file);
+		}
 
-		// if (MIMETYPES[_file.type]) {
+		// if (EXCEL_MIME_TYPES[_file.type]) {
 		// 	// const _fileUrl = URL.createObjectURL(_file);
 		// 	// setFile(_fileUrl);
 		// 	setFile(_file);
@@ -129,16 +138,17 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 						}}
 					/>
 
-					<Flex p="2.5">
+					<Flex p="2.5" w="100%" h="100%">
 						{previewImage ? (
 							<Image src={previewImage} borderRadius="10px" />
 						) : (
 							<Text
 								w="100%"
 								fontSize="xs"
-								textOverflow="ellipsis"
-								whiteSpace="nowrap"
-								overflow="hidden"
+								noOfLines={1}
+								// textOverflow="ellipsis"
+								// whiteSpace="nowrap"
+								// overflow="hidden"
 								align="center"
 								title={file.name}
 								style={{
