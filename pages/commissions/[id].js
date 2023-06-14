@@ -13,7 +13,7 @@ const CommissionsPage = () => {
 // if subPage property is set, then this page will hide the top app header in mobile view.
 // Pages can show their own header bar with back button.
 CommissionsPage.pageMeta = {
-	title: "Know your commissions",
+	title: "Know Your Commissions",
 	isSubPage: true,
 };
 
