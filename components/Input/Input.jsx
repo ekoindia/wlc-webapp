@@ -6,7 +6,7 @@ import {
 	InputLeftElement,
 	InputRightElement,
 } from "@chakra-ui/react";
-import { forwardRef } from "react";
+import { forwardRef, useId } from "react";
 import { InputLabel, InputMsg } from "../";
 
 /**
@@ -38,8 +38,9 @@ function formatNum(value, num) {
 const Input = forwardRef(
 	(
 		{
-			label,
+			id,
 			name,
+			label,
 			placeholder,
 			description,
 			value,
@@ -70,6 +71,8 @@ const Input = forwardRef(
 		},
 		ref
 	) => {
+		const _id = useId();
+
 		const onChangeHandler = (e) => {
 			let val = e.target.value;
 			if (isNumInput) {
@@ -94,7 +97,11 @@ const Input = forwardRef(
 				{...inputContStyle}
 			>
 				{label ? (
-					<InputLabel required={required} {...labelStyle}>
+					<InputLabel
+						htmlFor={id ?? _id}
+						required={required}
+						{...labelStyle}
+					>
 						{label}
 					</InputLabel>
 				) : null}
@@ -122,6 +129,7 @@ const Input = forwardRef(
 
 					<ChakraInput
 						ref={ref}
+						id={id ?? _id}
 						name={name}
 						placeholder={placeholder}
 						type={type}
