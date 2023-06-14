@@ -1,11 +1,10 @@
 import {
 	Box,
+	chakra,
 	FormControl,
 	FormErrorMessage,
-	FormHelperText,
 	FormLabel,
 	Image,
-	Input as ChakraInput,
 	Select,
 	Textarea,
 	useToast,
@@ -47,6 +46,25 @@ const NotificationCreator = () => {
 
 	const { isLoggedIn, isAdmin, accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
+
+	const Fieldset = chakra("fieldset", {
+		baseStyle: {
+			border: "1px solid",
+			borderColor: "bg",
+			borderRadius: "md",
+			padding: "1em",
+		},
+	});
+
+	const Legend = chakra("legend", {
+		baseStyle: {
+			marginLeft: "0.5em",
+			paddingX: "0.2em",
+			fontSize: "md",
+			fontWeight: "semibold",
+			color: "inputlabel",
+		},
+	});
 
 	// Download the list of agents in the network for sending notification
 	// This list is to be passed to the final API call for sending notification.
@@ -126,15 +144,10 @@ const NotificationCreator = () => {
 
 			<Box p={{ base: "1em", md: "2em" }} bg="white" borderRadius={8}>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<FormControl
-						isRequired
-						mb={6}
-						isInvalid={errors.name ? true : false}
-					>
-						<FormLabel>Notification Name/Purpose</FormLabel>
+					<FormControl mb={6} isInvalid={errors.name ? true : false}>
 						<Input
 							id="name"
-							type="text"
+							label="Notification Name/Purpose"
 							maxLength="30"
 							required
 							invalid={errors.name ? true : false}
@@ -155,16 +168,13 @@ const NotificationCreator = () => {
 						/>
 					</FormControl>
 
-					<FormControl
-						isRequired
-						mb={6}
-						maxW={{ base: "auto", lg: "400px" }}
-						isInvalid={errors.title}
-					>
-						<FormLabel>Title</FormLabel>
-						<ChakraInput
+					<FormControl mb={6} maxW={{ base: "auto", lg: "400px" }}>
+						<Input
 							id="title"
-							type="text"
+							required
+							label="Notification Title"
+							invalid={errors.title ? true : false}
+							errorMsg={errors?.title?.message}
 							maxLength="100"
 							{...register("title", {
 								required: true,
@@ -175,14 +185,13 @@ const NotificationCreator = () => {
 					</FormControl>
 
 					<FormControl
-						isRequired
+						id="description"
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.description}
 					>
 						<FormLabel>Description</FormLabel>
 						<Textarea
-							id="description"
 							maxLength="500"
 							// theme="primary"
 							borderRadius="6px"
@@ -199,94 +208,105 @@ const NotificationCreator = () => {
 								maxLength: 500,
 							})}
 						/>
+						{errors.description ? (
+							<FormErrorMessage>
+								{errors?.description?.message}
+							</FormErrorMessage>
+						) : null}
 					</FormControl>
 
-					<FormControl
-						mb={6}
-						maxW={{ base: "auto", lg: "400px" }}
-						isInvalid={errors.image}
-					>
-						<FormLabel>Image</FormLabel>
+					<FormControl mb={6} maxW={{ base: "auto", lg: "400px" }}>
 						<Input
 							id="image"
 							type="file"
+							label="Image"
+							description={
+								previewImage
+									? ""
+									: "Add an image to your notification"
+							}
 							accept="image/png, image/jpeg"
+							invalid={errors.image ? true : false}
+							errorMsg={errors?.image?.message}
 							onChange={handleImageChange}
 							// {...register("image")}
 						/>
-						{previewImage ? (
-							<Image src={previewImage} />
-						) : errors.image ? (
-							<FormErrorMessage>{errors.image}</FormErrorMessage>
-						) : (
-							<FormHelperText>
-								Add an image to your notification (optional)
-							</FormHelperText>
-						)}
+						{previewImage ? <Image src={previewImage} /> : null}
 					</FormControl>
 
 					<FormControl
+						id="priority"
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.priority}
 					>
 						<FormLabel>Priority</FormLabel>
-						<Select
-							id="priority"
-							{...register("priority", { required: true })}
-						>
+						<Select {...register("priority", { required: true })}>
 							<option value="1">Normal</option>
 							<option value="2">Low</option>
 							<option value="3">High</option>
 						</Select>
+						{errors.priority ? (
+							<FormErrorMessage>
+								{errors?.priority?.message}
+							</FormErrorMessage>
+						) : null}
 					</FormControl>
 
 					<FormControl
+						id="status"
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.status}
 					>
 						<FormLabel>Status</FormLabel>
-						<Select
-							id="status"
-							{...register("status", { required: true })}
-						>
+						<Select {...register("status", { required: true })}>
 							<option value="1">Info</option>
 							<option value="2">Success</option>
 							<option value="3">Error</option>
 							<option value="4">Warning</option>
 						</Select>
+						{errors.status ? (
+							<FormErrorMessage>
+								{errors?.status?.message}
+							</FormErrorMessage>
+						) : null}
 					</FormControl>
 
-					<FormControl
-						mb={6}
-						maxW={{ base: "auto", lg: "400px" }}
-						isInvalid={errors.link}
-					>
-						<FormLabel>Link</FormLabel>
-						<Input
-							id="link"
-							type="url"
-							maxLength="100"
-							placeholder="https://..."
-							{...register("link")}
-						/>
-					</FormControl>
+					<Fieldset>
+						<Legend>Add a Link</Legend>
+						<FormControl
+							mb={6}
+							maxW={{ base: "auto", lg: "400px" }}
+						>
+							<Input
+								id="link"
+								type="url"
+								label="Link URL"
+								invalid={errors.link ? true : false}
+								errorMsg={errors?.link?.message}
+								maxLength="100"
+								placeholder="https://..."
+								{...register("link")}
+							/>
+						</FormControl>
 
-					<FormControl
-						mb={6}
-						maxW={{ base: "auto", lg: "400px" }}
-						isInvalid={errors.link}
-					>
-						<FormLabel>Link Label</FormLabel>
-						<Input
-							id="linklabel"
-							type="text"
-							maxLength="25"
-							placeholder="eg: Click To Know More"
-							{...register("linklabel")}
-						/>
-					</FormControl>
+						<FormControl
+							mb={6}
+							maxW={{ base: "auto", lg: "400px" }}
+							isInvalid={errors.link}
+						>
+							<Input
+								id="linklabel"
+								label="Link Label"
+								invalid={errors.linklabel ? true : false}
+								errorMsg={errors?.linklabel?.message}
+								maxLength="25"
+								placeholder="eg: Click To Know More"
+								{...register("linklabel")}
+							/>
+						</FormControl>
+					</Fieldset>
 
 					<Button
 						loading={isSubmitting || !ready}
