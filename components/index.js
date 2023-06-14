@@ -7,6 +7,7 @@ import { Cards } from "./Cards";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
 import { Divider } from "./Divider";
+import { Dropzone } from "./Dropzone";
 import { EkoConnectWidget } from "./EkoConnectWidget";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { GlobalSearch } from "./GlobalSearch";
@@ -39,6 +40,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	Dropzone,
 	Kbd,
 	GlobalSearch,
 	OrgLogo,
