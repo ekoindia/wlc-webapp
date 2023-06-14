@@ -92,7 +92,7 @@ const NewAddress = () => {
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
 							// onChange={onChangeHandler}
-							required="true"
+							required
 						/>
 					</Box>
 					<Box
@@ -139,7 +139,7 @@ const NewAddress = () => {
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
 							// onChange={onChangeHandler}
-							required="true"
+							required
 						/>
 					</Box>
 					<Box
@@ -233,7 +233,7 @@ const NewAddress = () => {
 					>
 						<Input
 							label="Country"
-							required="true"
+							required
 							defaultvalue={item.Country}
 							// invalid={true}
 							// errorMsg={"Please enter"}

@@ -369,7 +369,7 @@ const UpdatePersonalInfo = () => {
 											label="First Name"
 											name="first_name"
 											// placeholder={"Saurabh"}
-											required="true"
+											required
 											onChange={onChangeHandler}
 											// value={formData.firstName}
 											// invalid={true}

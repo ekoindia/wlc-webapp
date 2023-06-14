@@ -377,7 +377,7 @@ const UpdateSellerAddress = () => {
 									<Input
 										label="Country"
 										name="Country"
-										required="true"
+										required
 										value={formData.Country}
 										onChange={handleInputChange}
 										// invalid={true}

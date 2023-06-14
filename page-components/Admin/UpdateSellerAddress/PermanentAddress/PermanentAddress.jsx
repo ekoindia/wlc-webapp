@@ -57,7 +57,7 @@ const PermanentAddress = (/* props */) => {
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
 							// onChange={onChangeHandler}
-							required="true"
+							required
 							// isNumInput={true}
 							// inputProps={{ maxLength: 12 }}
 							// onFocus={() => {
@@ -120,7 +120,7 @@ const PermanentAddress = (/* props */) => {
 							// invalid={true}
 							// errorMsg={"Please enter"}
 							// mb={{ base: 10, "2xl": "4.35rem" }}
-							required="true"
+							required
 						/>
 					</Box>
 					<Box
@@ -218,7 +218,7 @@ const PermanentAddress = (/* props */) => {
 						<Input
 							label="Country"
 							name="Country"
-							// required="true"
+							// required
 							// value={formData.Country}
 							// onChange={handleInputChange}
 							// invalid={true}
