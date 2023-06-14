@@ -83,8 +83,6 @@ export const pricingFormReducer = (state, action) => {
 
 // Calculate the finalData object based on the current state
 const calculateFinalData = (_finalData) => {
-	// Add your logic here to calculate the finalData object based on the state values
-	// Example:
 	const {
 		commission,
 		// commissionFor,
