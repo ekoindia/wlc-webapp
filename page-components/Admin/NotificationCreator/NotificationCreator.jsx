@@ -1,8 +1,8 @@
 import {
 	Box,
+	chakra,
 	FormControl,
 	FormErrorMessage,
-	FormHelperText,
 	FormLabel,
 	Image,
 	Select,
@@ -29,7 +29,7 @@ const NotificationCreator = () => {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, isSubmitting },
 		setValue,
 	} = useForm({
 		defaultValues: {
@@ -37,6 +37,7 @@ const NotificationCreator = () => {
 			status: 1,
 		},
 	});
+
 	const toast = useToast();
 
 	const [previewImage, setPreviewImage] = useState(null);
@@ -45,6 +46,26 @@ const NotificationCreator = () => {
 
 	const { isLoggedIn, isAdmin, accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
+
+	const Fieldset = chakra("fieldset", {
+		baseStyle: {
+			borderWidth: "1px",
+			borderColor: "bg",
+			borderStyle: "dashed",
+			borderRadius: "md",
+			padding: "1em 1.2em",
+		},
+	});
+
+	const Legend = chakra("legend", {
+		baseStyle: {
+			// marginLeft: "0.2em",
+			// paddingX: "0.2em",
+			fontSize: { base: "sm", "2xl": "lg" },
+			fontWeight: "semibold",
+			color: "inputlabel",
+		},
+	});
 
 	// Download the list of agents in the network for sending notification
 	// This list is to be passed to the final API call for sending notification.
@@ -124,40 +145,38 @@ const NotificationCreator = () => {
 
 			<Box p={{ base: "1em", md: "2em" }} bg="white" borderRadius={8}>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<FormControl
+					{/* <FormControl> */}
+					<Input
 						id="name"
-						isRequired
-						mb={6}
-						isInvalid={errors.name}
-					>
-						<FormLabel>Notification Name/Purpose</FormLabel>
-						<Input
-							type="text"
-							maxLength="30"
-							invalid={errors.name ? true : false}
-							errorMsg={errors.name}
-							description="Describe the purpose for this notification. This is for internal use only."
-							maxW={{ base: "auto", lg: "400px" }}
-							{...register("name", {
-								required: true,
-								maxLength: 30,
-							})}
-						/>
-					</FormControl>
-
-					<FormControl
-						id="title"
-						isRequired
-						mb={6}
+						label="Notification Name/Purpose"
+						maxLength="30"
+						required
+						invalid={errors.name ? true : false}
+						errorMsg={errors?.name?.message}
+						description="Describe the purpose for this notification. This is for internal use only."
 						maxW={{ base: "auto", lg: "400px" }}
-						isInvalid={errors.title}
-					>
-						<FormLabel>Title</FormLabel>
+						mb={6}
+						{...register("name", {
+							required: true,
+							minLength: {
+								value: 4,
+								message: "Minimum 4 characters required",
+							},
+						})}
+					/>
+					{/* </FormControl> */}
+
+					<FormControl mb={6} maxW={{ base: "auto", lg: "400px" }}>
 						<Input
-							type="text"
+							id="title"
+							required
+							label="Notification Title"
+							invalid={errors.title ? true : false}
+							errorMsg={errors?.title?.message}
 							maxLength="100"
 							{...register("title", {
 								required: true,
+								minLength: 6,
 								maxLength: 100,
 							})}
 						/>
@@ -165,7 +184,6 @@ const NotificationCreator = () => {
 
 					<FormControl
 						id="description"
-						isRequired
 						mb={6}
 						maxW={{ base: "auto", lg: "400px" }}
 						isInvalid={errors.description}
@@ -176,6 +194,7 @@ const NotificationCreator = () => {
 							// theme="primary"
 							borderRadius="6px"
 							borderColor="hint"
+							isRequired={true}
 							_focus={{
 								bg: "focusbg",
 								boxShadow: "0px 3px 6px #0000001A",
@@ -187,30 +206,11 @@ const NotificationCreator = () => {
 								maxLength: 500,
 							})}
 						/>
-					</FormControl>
-
-					<FormControl
-						id="image"
-						mb={6}
-						maxW={{ base: "auto", lg: "400px" }}
-						isInvalid={errors.image}
-					>
-						<FormLabel>Image</FormLabel>
-						<Input
-							type="file"
-							accept="image/png, image/jpeg"
-							onChange={handleImageChange}
-							// {...register("image")}
-						/>
-						{previewImage ? (
-							<Image src={previewImage} />
-						) : errors.image ? (
-							<FormErrorMessage>{errors.image}</FormErrorMessage>
-						) : (
-							<FormHelperText>
-								Add an image to your notification (optional)
-							</FormHelperText>
-						)}
+						{errors.description ? (
+							<FormErrorMessage>
+								{errors?.description?.message}
+							</FormErrorMessage>
+						) : null}
 					</FormControl>
 
 					<FormControl
@@ -225,6 +225,11 @@ const NotificationCreator = () => {
 							<option value="2">Low</option>
 							<option value="3">High</option>
 						</Select>
+						{errors.priority ? (
+							<FormErrorMessage>
+								{errors?.priority?.message}
+							</FormErrorMessage>
+						) : null}
 					</FormControl>
 
 					<FormControl
@@ -240,39 +245,74 @@ const NotificationCreator = () => {
 							<option value="3">Error</option>
 							<option value="4">Warning</option>
 						</Select>
+						{errors.status ? (
+							<FormErrorMessage>
+								{errors?.status?.message}
+							</FormErrorMessage>
+						) : null}
 					</FormControl>
 
-					<FormControl
-						id="link"
-						mb={6}
-						maxW={{ base: "auto", lg: "400px" }}
-						isInvalid={errors.link}
-					>
-						<FormLabel>Link</FormLabel>
+					<FormControl mb={6} maxW={{ base: "auto", lg: "400px" }}>
 						<Input
-							type="url"
-							maxLength="100"
-							placeholder="https://..."
-							{...register("link")}
+							id="image"
+							type="file"
+							label="Add an Image"
+							description={
+								previewImage
+									? ""
+									: "Add an image to your notification"
+							}
+							accept="image/png, image/jpeg"
+							invalid={errors.image ? true : false}
+							errorMsg={errors?.image?.message}
+							onChange={handleImageChange}
+							// {...register("image")}
 						/>
+						{previewImage ? <Image src={previewImage} /> : null}
 					</FormControl>
 
-					<FormControl
-						id="linklabel"
-						mb={6}
-						maxW={{ base: "auto", lg: "400px" }}
-						isInvalid={errors.link}
+					<Fieldset maxW={{ base: "auto", lg: "400px" }}>
+						<Legend>Add a Link</Legend>
+						<FormControl
+
+						// maxW={{ base: "auto", lg: "400px" }}
+						>
+							<Input
+								id="link"
+								type="url"
+								label="Link URL"
+								invalid={errors.link ? true : false}
+								errorMsg={errors?.link?.message}
+								maxLength="100"
+								placeholder="https://..."
+								mb={6}
+								{...register("link")}
+							/>
+						</FormControl>
+
+						<FormControl
+							mb={6}
+							// maxW={{ base: "auto", lg: "400px" }}
+							isInvalid={errors.link}
+						>
+							<Input
+								id="linklabel"
+								label="Link Label"
+								invalid={errors.linklabel ? true : false}
+								errorMsg={errors?.linklabel?.message}
+								maxLength="25"
+								placeholder="eg: Click To Know More"
+								{...register("linklabel")}
+							/>
+						</FormControl>
+					</Fieldset>
+
+					<Button
+						loading2={isSubmitting || !ready}
+						mt={4}
+						type="submit"
+						size="lg"
 					>
-						<FormLabel>Link Label</FormLabel>
-						<Input
-							type="text"
-							maxLength="25"
-							placeholder="eg: Click To Know More"
-							{...register("linklabel")}
-						/>
-					</FormControl>
-
-					<Button loading={!ready} mt={4} type="submit" size="lg">
 						{ready ? "Submit" : "Loading..."}
 					</Button>
 				</form>

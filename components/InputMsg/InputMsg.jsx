@@ -15,7 +15,6 @@ const InputMsg = ({ error = false, children, ...props }) => {
 			mt="4px"
 			fontSize="xs"
 			color={error ? "error" : "accent.light"}
-			width="100%"
 			textAlign="left"
 			{...props}
 			variant="selectNone"

@@ -196,24 +196,11 @@ const UpdateSellerAddress = () => {
 										name="address1"
 										value={formData.address1}
 										onChange={handleInputChange}
+										required={true}
 										// invalid={true}
 										// errorMsg={"Please enter"}
 										// mb={{ base: 10, "2xl": "4.35rem" }}
 										// onChange={onChangeHandler}
-										required="true"
-										labelStyle={{
-											fontSize: { base: "md" },
-											color: "inputlabel",
-											pl: "0",
-											fontWeight: "600",
-											mb: { base: 2.5, "2xl": "0.8rem" },
-										}}
-										// inputContStyle={{
-										// 	h: { base: "3rem" },
-										// 	w: "100%",
-										// 	pos: "relative",
-										// 	alignItems: "center",
-										// }}
 										// isNumInput={true}
 										// inputProps={{ maxLength: 12 }}
 										// onFocus={() => {
@@ -241,19 +228,6 @@ const UpdateSellerAddress = () => {
 										onChange={handleInputChange}
 										// invalid={true}
 										// errorMsg={"Please enter"}
-										labelStyle={{
-											fontSize: { base: "md" },
-											color: "inputlabel",
-											pl: "0",
-											fontWeight: "600",
-											mb: { base: 2.5, "2xl": "0.8rem" },
-										}}
-										// inputContStyle={{
-										// 	h: { base: "3rem", "2xl": "3rem" },
-										// 	w: "100%",
-										// 	pos: "relative",
-										// 	alignItems: "center",
-										// }}
 										// isNumInput={true}
 										// inputProps={{ maxLength: 12 }}
 										// onFocus={() => {
@@ -286,24 +260,10 @@ const UpdateSellerAddress = () => {
 										name="PostalCode"
 										value={formData.PostalCode}
 										onChange={handleInputChange}
+										required={true}
 										// invalid={true}
 										// errorMsg={"Please enter"}
 										// mb={{ base: 10, "2xl": "4.35rem" }}
-
-										required="true"
-										labelStyle={{
-											fontSize: { base: "md" },
-											color: "inputlabel",
-											pl: "0",
-											fontWeight: "600",
-											mb: { base: 2.5, "2xl": "0.8rem" },
-										}}
-										// inputContStyle={{
-										// 	h: { base: "3rem", "2xl": "3rem" },
-										// 	w: "100%",
-										// 	pos: "relative",
-										// 	alignItems: "center",
-										// }}
 									/>
 								</Box>
 								<Box
@@ -328,20 +288,6 @@ const UpdateSellerAddress = () => {
 										// errorMsg={"Please enter"}
 										// mb={{ base: 10, "2xl": "4.35rem" }}
 										// onChange={onChangeHandler}
-										labelStyle={{
-											fontSize: { base: "md" },
-											color: "inputlabel",
-											pl: "0",
-											fontWeight: "600",
-											mb: { base: 2.5, "2xl": "0.8rem" },
-										}}
-										// inputContStyle={{
-										// 	h: { base: "3rem", "2xl": "3rem" },
-
-										// 	w: "100%",
-										// 	pos: "relative",
-										// 	alignItems: "center",
-										// }}
 									/>
 								</Box>
 							</Flex>
@@ -431,27 +377,13 @@ const UpdateSellerAddress = () => {
 									<Input
 										label="Country"
 										name="Country"
-										required="true"
+										required
 										value={formData.Country}
 										onChange={handleInputChange}
 										// invalid={true}
 										// errorMsg={"Please enter"}
 										// mb={{ base: 10, "2xl": "4.35rem" }}
 										// onChange={onChangeHandler}
-										labelStyle={{
-											fontSize: { base: "md" },
-											color: "inputlabel",
-											pl: "0",
-											fontWeight: "600",
-											mb: { base: 2.5, "2xl": "0.8rem" },
-										}}
-										// inputContStyle={{
-										// 	h: { base: "3rem", "2xl": "3rem" },
-										// 	w: "100%",
-
-										// 	pos: "relative",
-										// 	alignItems: "center",
-										// }}
 									/>
 								</Box>
 							</Flex>

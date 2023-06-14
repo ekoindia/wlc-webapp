@@ -61,7 +61,7 @@ const NetworkSort = ({ setSort }) => {
 					"2xl": "2.2vw",
 				}}
 			>
-				<Menu autoSelect={false} matchWidth={"false"}>
+				<Menu autoSelect={false} matchWidth={false}>
 					{({ isOpen }) => (
 						<Box
 							display="flex"
@@ -213,7 +213,7 @@ const NetworkSort = ({ setSort }) => {
 				overflow={"hidden"}
 				h={"100%"}
 			>
-				<Menu autoSelect={false} matchWidth={"false"} flip={"true"}>
+				<Menu autoSelect={false} matchWidth={false} flip={true}>
 					<MenuButton
 						as={Button}
 						aria-label="Options"

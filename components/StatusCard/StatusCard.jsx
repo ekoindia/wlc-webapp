@@ -116,7 +116,7 @@ const StatusCard = () => {
 				</Flex>
 			</Flex>
 			<Flex columnGap="12px" align="center">
-				<Tooltip label="Refresh" /* hasArrow="true" */ placement="top">
+				<Tooltip label="Refresh" /* hasArrow={true} */ placement="top">
 					<Circle
 						size={{ base: "6", "2xl": "8" }}
 						bg="white"
@@ -132,7 +132,7 @@ const StatusCard = () => {
 				</Tooltip>
 				<Tooltip
 					label="Load Balance"
-					/* hasArrow="true" */ placement="top"
+					/* hasArrow={true} */ placement="top"
 				>
 					<Circle
 						size={{ base: "6", "2xl": "8" }}

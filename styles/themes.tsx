@@ -67,6 +67,15 @@ export const light = extendTheme({
 	components: {
 		Table: tableTheme,
 		Button: buttonTheme,
+		FormLabel: {
+			baseStyle: {
+				fontSize: { base: "sm", "2xl": "lg" },
+				fontWeight: "semibold",
+				pl: "0",
+				mb: { base: 2, "2xl": "0.8rem" },
+				color: "inputlabel",
+			},
+		},
 		Checkbox: {
 			variants: {
 				rounded: {

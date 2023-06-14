@@ -3,6 +3,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
 import { ActionIcon } from "components/CommandBar";
 import {
+	CommisionSummaryProvider,
 	EarningSummaryProvider,
 	GlobalSearchProvider,
 	NotificationProvider,
@@ -195,23 +196,25 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 										>
 											<NotificationProvider>
 												<EarningSummaryProvider>
-													<TodoProvider>
-														<PubSubProvider>
-															<ErrorBoundary>
-																{getLayout(
-																	<main
-																		className={
-																			inter.className
-																		}
-																	>
-																		<Component
-																			{...pageProps}
-																		/>
-																	</main>
-																)}
-															</ErrorBoundary>
-														</PubSubProvider>
-													</TodoProvider>
+													<CommisionSummaryProvider>
+														<TodoProvider>
+															<PubSubProvider>
+																<ErrorBoundary>
+																	{getLayout(
+																		<main
+																			className={
+																				inter.className
+																			}
+																		>
+																			<Component
+																				{...pageProps}
+																			/>
+																		</main>
+																	)}
+																</ErrorBoundary>
+															</PubSubProvider>
+														</TodoProvider>
+													</CommisionSummaryProvider>
 												</EarningSummaryProvider>
 											</NotificationProvider>
 										</SWRConfig>
@@ -268,6 +271,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 InfinityApp.getInitialProps = async function (appContext) {
 	const { ctx } = appContext;
+	const { res } = ctx;
 
 	const defaultProps = App.getInitialProps(appContext);
 
@@ -284,20 +288,38 @@ InfinityApp.getInitialProps = async function (appContext) {
 	// Get org details (like, logo, name, etc) from server
 	const org_details = await fetchOrgDetails(ctx.req.headers.host);
 
+	console.log("\n\n\n>>>>>>> org_details: ", org_details);
+
 	console.debug(
 		"[_app.tsx] getInitialProps:: ",
 		JSON.stringify(
 			{
-				host: ctx.req.headers.host,
-				org: org_details.props.data,
+				host: ctx?.req?.headers?.host,
+				org: org_details?.props?.data,
 			},
 			null,
 			2
 		)
 	);
 
+	if (!org_details?.props?.data) {
+		console.error(
+			"[_app.tsx] getInitialProps:: Org details not found. Redirecting to 404"
+		);
+		// TODO: Redirect to marketing landing page...
+		// res.writeHead(302, { Location: "https://eko.in" });
+		// res.end();
+		res.statusCode = 404;
+		res.end();
+		return {
+			err: {
+				statusCode: 404,
+			},
+		};
+	}
+
 	return {
 		...defaultProps,
-		org: org_details.props.data,
+		org: org_details?.props?.data,
 	};
 };
