@@ -60,13 +60,15 @@ const PricingForm = ({
 			token: accessToken,
 		})
 			.then((data) => {
-				const selectdata =
-					commissionFor == 1
-						? data?.data?.allCspList ?? []
-						: commissionFor == 2
-						? data?.data?.allScspList ?? []
-						: [];
+				const selectdata = data?.data?.allScspList ?? [];
+				// FIX: As per Saurabh, the returned list is always in allScspList parameter
+				// commissionFor == 1 // CSP
+				// 	? data?.data?.allCspList ?? []
+				// 	: commissionFor == 2 // SCSP
+				// 	? data?.data?.allScspList ?? []
+				// 	: [];
 				setData(selectdata);
+				console.log(">>> [MS] Data Found:: ", data, selectdata);
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
