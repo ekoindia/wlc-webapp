@@ -54,7 +54,7 @@ const WidgetBase = ({
 					pb={noPadding && "3"}
 				>
 					<Flex justifyContent="space-between" {...headerProps}>
-						<Text as="b" {...titleProps}>
+						<Text as="b" textTransform="capitalize" {...titleProps}>
 							{title}
 						</Text>
 						{linkOnClick ? (
