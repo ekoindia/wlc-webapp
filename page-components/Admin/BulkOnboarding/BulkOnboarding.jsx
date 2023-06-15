@@ -1,4 +1,4 @@
-import { Flex, Radio, RadioGroup, Text } from "@chakra-ui/react";
+import { Flex, Link, Radio, RadioGroup, Text } from "@chakra-ui/react";
 import { Button, Dropzone, Headings } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
@@ -35,6 +35,12 @@ import { BulkOnboardingResponse } from ".";
 // 	message: "Files processed successfully",
 // 	status: 0,
 // };
+
+const SAMPLE_DOWNLOAD_LINK = {
+	SELLER: "https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
+	DISTRIBUTOR:
+		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Distributor_Onboarding.xlsx",
+};
 
 /**
  * A <BulkOnboarding> component
@@ -77,8 +83,6 @@ const BulkOnboarding = () => {
 			}
 		)
 			.then((data) => {
-				//data ops
-				console.log("data", data);
 				setData(data);
 			})
 			.catch((err) => {
@@ -136,7 +140,18 @@ const BulkOnboarding = () => {
 								</Flex>
 							</RadioGroup>
 						</Flex>
-
+						<Link
+							href={
+								applicationType == 0
+									? SAMPLE_DOWNLOAD_LINK.SELLER
+									: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
+							}
+							w="fit-content"
+							fontWeight="semibold"
+							isExternal
+						>
+							Download sample list
+						</Link>
 						<Flex
 							direction="column"
 							gap="2"
