@@ -1,8 +1,9 @@
 import { Avatar, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { TransactionTypes } from "constants";
-import { useSession } from "contexts";
+import { useMenuContext, useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
+import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { WidgetBase } from "..";
@@ -23,6 +24,8 @@ const RecentTrxnWidget = () => {
 		base: 5,
 		md: 10,
 	});
+	const { interactions } = useMenuContext();
+	const { trxn_type_prod_map } = interactions;
 
 	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
@@ -33,11 +36,13 @@ const RecentTrxnWidget = () => {
 			},
 			token: accessToken,
 		}).then((data) => {
+			console.log("RecentTrxnWidget -> data", data);
 			const tx_list = (data?.data?.transaction_list ?? []).map((tx) => {
 				const amt = tx.amount_dr || tx.amount_cr || 0;
 				return {
 					tid: tx.tid,
 					name: tx.tx_name,
+					icon: trxn_type_prod_map[tx.tx_typeid]?.icon || null,
 					desc:
 						tx.tx_name +
 						(amt ? ` of ₹${amt}` : "") +
@@ -46,6 +51,8 @@ const RecentTrxnWidget = () => {
 							: ""),
 				};
 			});
+
+			console.log("RecentTrxnWidget -> tx_list", tx_list);
 			setData(tx_list);
 		});
 	}, []);
@@ -73,71 +80,11 @@ const RecentTrxnWidget = () => {
 				rowGap={{ base: "19px", md: "10px" }}
 			>
 				{data.map((tx) => (
-					<Flex
+					<Tr
 						key={tx.tid}
-						p="8px 8px 8px 16px"
-						pr={{ base: "8px", md: "4px" }}
-						align="center"
-						justify="center"
-						borderBottom="1px solid #F5F6F8"
-					>
-						<Avatar
-							size={{ base: "sm", md: "md" }}
-							border="2px solid #D2D2D2"
-							name={tx.name}
-						/>
-						<Flex
-							alignItems="center"
-							justifyContent="space-between"
-							w="100%"
-							ml="10px"
-						>
-							<Flex direction="column">
-								<Text
-									fontSize={{ base: "xs", md: "sm" }}
-									fontWeight="medium"
-									noOfLines={1}
-								>
-									{tx.desc}
-								</Text>
-
-								<Flex
-									alignItems="baseline"
-									fontSize={{ base: "xs" }}
-								>
-									<Text
-										fontWeight="normal"
-										color="light"
-										noOfLines={1}
-									>
-										TID:
-									</Text>
-									<Text ml="1">{tx.tid}</Text>
-								</Flex>
-							</Flex>
-							<Flex
-								justifyContent="space-between"
-								alignItems="center"
-								ml={2}
-								onClick={() => handleShowHistory(tx.tid)}
-								cursor="pointer"
-							>
-								<Text
-									color="primary.DEFAULT"
-									paddingRight="6px"
-									display={{ base: "none", md: "block" }}
-									fontSize="sm"
-								>
-									Details
-								</Text>
-								<Icon
-									size="12px"
-									name="arrow-forward"
-									color="primary.DEFAULT"
-								/>
-							</Flex>
-						</Flex>
-					</Flex>
+						tx={tx}
+						handleShowHistory={handleShowHistory}
+					/>
 				))}
 			</Flex>
 			<Flex
@@ -156,6 +103,81 @@ const RecentTrxnWidget = () => {
 				</Button>
 			</Flex>
 		</WidgetBase>
+	);
+};
+
+const Tr = ({ tx, handleShowHistory }) => {
+	const { h } = useHslColor(tx.name);
+
+	console.log("Tr -> h", h);
+
+	return (
+		<Flex
+			p="8px 8px 8px 16px"
+			pr={{ base: "8px", md: "4px" }}
+			align="center"
+			justify="center"
+			borderBottom="1px solid #F5F6F8"
+		>
+			<Avatar
+				size={{ base: "sm", md: "md" }}
+				name={tx.icon ? null : tx.name}
+				border={`2px solid hsl(${h},80%,90%)`}
+				bg={`hsl(${h},80%,95%)`}
+				color={`hsl(${h},80%,30%)`}
+				icon={
+					<Icon
+						size="md"
+						name={tx.icon}
+						color={`hsl(${h},80%,30%)`}
+					/>
+				}
+			/>
+			<Flex
+				alignItems="center"
+				justifyContent="space-between"
+				w="100%"
+				ml="10px"
+			>
+				<Flex direction="column">
+					<Text
+						fontSize={{ base: "xs", md: "sm" }}
+						fontWeight="medium"
+						noOfLines={1}
+					>
+						{tx.desc}
+					</Text>
+
+					<Flex alignItems="baseline" fontSize={{ base: "xs" }}>
+						<Text fontWeight="normal" color="light" noOfLines={1}>
+							TID:
+						</Text>
+						<Text ml="1">{tx.tid}</Text>
+					</Flex>
+				</Flex>
+				<Flex
+					justifyContent="space-between"
+					alignItems="center"
+					ml={2}
+					onClick={() => handleShowHistory(tx.tid)}
+					cursor="pointer"
+				>
+					<Text
+						color="primary.DEFAULT"
+						paddingRight="6px"
+						display={{ base: "none", md: "block" }}
+						fontSize="sm"
+					>
+						Details
+					</Text>
+					<Icon
+						size="12px"
+						name="arrow-forward"
+						color="primary.DEFAULT"
+					/>
+				</Flex>
+			</Flex>
+		</Flex>
 	);
 };
 
