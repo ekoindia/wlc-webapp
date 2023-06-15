@@ -75,7 +75,7 @@ const Table = ({
 			{!isSmallScreen ? (
 				<TableContainer
 					borderRadius="10px 10px 0 0"
-					mt={{ base: "20px", "2xl": "10px" }}
+					mt={{ base: "20px", "2xl": "10px" }} //TODO remove this
 					border="1px solid #E9EDF1"
 					css={{
 						"&::-webkit-scrollbar": {
