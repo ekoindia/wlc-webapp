@@ -1,3 +1,5 @@
+import { Headings } from "components";
+import { TransactionTypes } from "constants";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers";
@@ -14,6 +16,7 @@ import { QueryCenterTable } from ".";
  */
 const QueryCenter = ({ prop1, ...rest }) => {
 	const [pageNumber, setPageNumber] = useState(1);
+	const [data, setData] = useState(null);
 	const { accessToken } = useSession();
 
 	useEffect(() => {
@@ -22,10 +25,10 @@ const QueryCenter = ({ prop1, ...rest }) => {
 			// 	"tf-req-uri-root-path": "/ekoicici/v2",
 			// 	"tf-req-uri": "/request",
 			// 	"tf-req-method": "GET",
-			// 	// "Content-Type": "application/x-www-form-urlencoded",
+			// 	"Content-Type": "application/x-www-form-urlencoded",
 			// },
 			body: {
-				interaction_type_id: 692,
+				interaction_type_id: TransactionTypes.GET_QUERY,
 				// initiator_id: 7337628689,
 				// customer_id: 7337628689,
 				// user_code: 99013036,
@@ -33,7 +36,8 @@ const QueryCenter = ({ prop1, ...rest }) => {
 			},
 			token: accessToken,
 		}).then((data) => {
-			console.log("data", data);
+			const _data = data?.data?.csp_list ?? [];
+			setData(_data);
 		});
 	}, []);
 
@@ -51,10 +55,12 @@ const QueryCenter = ({ prop1, ...rest }) => {
 
 	return (
 		<div {...rest}>
+			<Headings title="Query Center" hasIcon={false} />
 			<QueryCenterTable
 				totalRecords={200}
 				pageNumber={pageNumber}
 				setPageNumber={setPageNumber}
+				data={data}
 			/>
 		</div>
 	);
