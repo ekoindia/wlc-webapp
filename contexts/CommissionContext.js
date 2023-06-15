@@ -1,6 +1,6 @@
 import { ActionIcon } from "components/CommandBar";
 import { Endpoints } from "constants/EndPoints";
-import { useSession } from "contexts/UserContext";
+import { useMenuContext, useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useDailyCacheState } from "hooks";
 import { useRouter } from "next/router";
@@ -21,12 +21,15 @@ export const useCommissionSummary = () => {
 /**
  * Format the commission data to be used in the UI
  * @param {Object} data - Commission data
+ * @param {Object} trxn_type_prod_map - Transaction type product map (to get product icon, etc)
  */
-const formatCommissionData = (data) => {
+const formatCommissionData = (data, trxn_type_prod_map) => {
 	const newData = {};
 	if (!data) {
 		return newData;
 	}
+
+	console.log("Formatting Commission data", data);
 
 	data.forEach((item) => {
 		if (!item.product_id) {
@@ -43,18 +46,34 @@ const formatCommissionData = (data) => {
 		if (!newData[slug]) {
 			newData[slug] = {
 				id: item.product_id,
+				tx_type_id: item.tx_type_id,
 				label: item.product || `Prod-${item.product_id}`,
+				icon: trxn_type_prod_map?.[item.tx_type_id]?.icon || "",
 				slabs: [],
 			};
 		}
 
+		const slab_from = formatCurrency(
+			(parseFloat(item.slab_from || 1) || 0).toFixed(2),
+			"INR",
+			false,
+			true
+		);
+		const slab_to = formatCurrency(
+			(parseFloat(item.slab_to) || 0).toFixed(2),
+			"INR",
+			false,
+			true
+		);
+
 		const tx_value = !(item.slab_from || item.slab_to)
-			? "Any"
-			: `₹${item.slab_from || 0} - ₹${item.slab_to || "Any"}`;
+			? "Any Value"
+			: `${slab_from} - ${slab_to}`;
 
 		let commission;
+		const comm_val = (parseFloat(item.value) || 0).toFixed(2);
 		if (item.calc_type === 1) {
-			commission = `${item.value || 0}%`;
+			commission = `${comm_val || 0}%`;
 			if (item.min_value || item.max_value) {
 				commission += " (";
 				if (item.min_value) {
@@ -79,7 +98,12 @@ const formatCommissionData = (data) => {
 				commission += ")";
 			}
 		} else {
-			commission = item.value;
+			commission = formatCurrency(
+				parseFloat(comm_val),
+				"INR",
+				false,
+				true
+			);
 		}
 
 		newData[slug].slabs.push({
@@ -94,6 +118,8 @@ const formatCommissionData = (data) => {
 
 export const CommissionSummaryProvider = ({ children }) => {
 	const router = useRouter();
+	const { interactions } = useMenuContext();
+	const { trxn_type_prod_map } = interactions;
 
 	const [userCommission, setUserCommission, isValid] = useDailyCacheState(
 		"inf-commission",
@@ -141,7 +167,8 @@ export const CommissionSummaryProvider = ({ children }) => {
 						) {
 							setUserCommission({
 								data: formatCommissionData(
-									response.data?.pricing_commission_data
+									response.data?.pricing_commission_data,
+									trxn_type_prod_map
 								),
 								userId: userId,
 							});
@@ -196,7 +223,7 @@ export const CommissionSummaryProvider = ({ children }) => {
 		// }));
 
 		commissionProdIds.forEach((id) => {
-			const prod = userCommission?.data[id];
+			const prod = userCommission?.data?.[id];
 			if (!prod) {
 				return;
 			}
@@ -219,7 +246,7 @@ export const CommissionSummaryProvider = ({ children }) => {
 			actionList.push({
 				id: `know-your-commission-${id}`,
 				name: "View " + prod.label + " Commissions",
-				subtitle: prodSlabs,
+				subtitle: "Earn " + prodSlabs,
 				keywords: `${prod.label} commission earning pricing`,
 				icon: (
 					<ActionIcon
