@@ -31,6 +31,7 @@ const LoginPanel = () => {
 			justifyContent="center"
 			bg="bg"
 			position={{ base: "fixed", md: "none" }}
+			overflowY="auto"
 		>
 			{/* TODO: Remove Grid. Not required */}
 			<Grid
