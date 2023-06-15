@@ -31,9 +31,9 @@ export const MockOrgDetails = {
 	app_name: process.env.WLC_APP_NAME || "Wlc",
 	org_name: process.env.WLC_ORG_NAME || "Wlc",
 	logo: process.env.WLC_LOGO,
-	support_contacts: {
-		phone: process.env.WLC_SUPPORT_CONTACTS_PHONE || 1234567890,
-		email: process.env.WLC_SUPPORT_CONTACTS_EMAIL || "xyz@gmail.com",
+	metadata: {
+		support_contacts: { email: "xyz@com", phone: "0123456789" },
+		theme: { primary_color: "#323233", secondary_color: "#8675656" },
 	},
 	login_types: {
 		google: {
@@ -125,6 +125,16 @@ export const fetchOrgDetails = async (host) => {
 		orgDetails = await fetchOrgDetailsfromApi(domain, subdomain);
 
 		console.log("Fetched Org details::: ", orgDetails);
+
+		// Process metadata...
+		if (typeof orgDetails?.metadata?.support_contacts === "string") {
+			orgDetails.metadata.support_contacts = JSON.parse(
+				orgDetails.metadata.support_contacts
+			);
+		}
+		if (typeof orgDetails?.metadata?.theme === "string") {
+			orgDetails.metadata.theme = JSON.parse(orgDetails.metadata.theme);
+		}
 
 		// Cache the org details
 		if (orgDetails?.org_id) {

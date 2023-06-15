@@ -27,6 +27,8 @@ const MenuProvider = ({ children }) => {
 				sessionStorage.getItem("role_tx_list") || "{}";
 			const cache_access_token =
 				sessionStorage.getItem("cache_access_token") || "-";
+			const trxn_type_prod_map =
+				sessionStorage.getItem("trxn_type_prod_map") || "{}";
 
 			// Data cached? Use it...
 			if (
@@ -39,6 +41,7 @@ const MenuProvider = ({ children }) => {
 				const context_data = {
 					interaction_list: JSON.parse(local_interaction_list),
 					role_tx_list: JSON.parse(local_role_tx_list),
+					trxn_type_prod_map: JSON.parse(trxn_type_prod_map || {}),
 				};
 				setInteractions(context_data);
 				setLoading(false);
@@ -70,6 +73,10 @@ const MenuProvider = ({ children }) => {
 						sessionStorage.setItem(
 							"role_tx_list",
 							JSON.stringify(processedData.role_tx_list)
+						);
+						sessionStorage.setItem(
+							"trxn_type_prod_map",
+							JSON.stringify(processedData.trxn_type_prod_map)
 						);
 						sessionStorage.setItem(
 							"cache_access_token",
