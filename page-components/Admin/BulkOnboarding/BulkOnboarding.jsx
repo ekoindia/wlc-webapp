@@ -1,11 +1,11 @@
-import { Flex, Radio, RadioGroup, Text } from "@chakra-ui/react";
+import { Box, Flex, Link, Radio, RadioGroup, Text } from "@chakra-ui/react";
 import { Button, Dropzone, Headings } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { useState } from "react";
 import { BulkOnboardingResponse } from ".";
 
-//const DUMMY = {
+// const DUMMY = {
 // 	response_status_id: 0,
 // 	response_type_id: 1900,
 // 	totalRecords: 5,
@@ -34,6 +34,12 @@ import { BulkOnboardingResponse } from ".";
 // 	message: "Files processed successfully",
 // 	status: 0,
 // };
+
+const SAMPLE_DOWNLOAD_LINK = {
+	SELLER: "https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
+	DISTRIBUTOR:
+		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Distributor_Onboarding.xlsx",
+};
 
 /**
  * A <BulkOnboarding> component
@@ -81,7 +87,6 @@ const BulkOnboarding = () => {
 		)
 			.then((res) => res.json())
 			.then((data) => {
-				//data ops
 				console.log("[BulkOnboarding] data:", data);
 				setData(data);
 			})
@@ -89,10 +94,6 @@ const BulkOnboarding = () => {
 				console.error("err", err);
 			});
 	};
-
-	// useEffect(() => {
-	// 	handleFileUpload();
-	// }, [file]);
 
 	const applicationTypeObj = {
 		0: "Seller",
@@ -140,7 +141,18 @@ const BulkOnboarding = () => {
 								</Flex>
 							</RadioGroup>
 						</Flex>
-
+						<Link
+							href={
+								applicationType == 0
+									? SAMPLE_DOWNLOAD_LINK.SELLER
+									: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
+							}
+							w="fit-content"
+							fontWeight="semibold"
+							isExternal
+						>
+							Download sample list
+						</Link>
 						<Flex
 							direction="column"
 							gap="2"
@@ -152,7 +164,7 @@ const BulkOnboarding = () => {
 							<Dropzone
 								file={file}
 								setFile={setFile}
-								accept=".xls,.xlsx,.xlsm,.xlsb,.csv,.xlt,.xltx,.xlam"
+								accept=".xls,.xlsx"
 							/>
 						</Flex>
 						{file && (
@@ -168,11 +180,43 @@ const BulkOnboarding = () => {
 					</>
 				) : (
 					<Flex direction="column" gap="2">
-						{/* <Text fontWeight="semibold">Result</Text> */}
+						<Flex fontSize="sm" direction="column" gap="1">
+							<span>{data?.message}!!</span>
+							{data?.data?.processed_records > 0 && (
+								<Flex gap="1">
+									<Box as="span" fontWeight="semibold">
+										Accepted:
+									</Box>
+									<span>{data?.data?.processed_records}</span>
+									<span>
+										{data?.data?.processed_records === 1
+											? "record"
+											: "records"}
+									</span>
+								</Flex>
+							)}
+							{data?.data?.failed_count > 0 && (
+								<Flex gap="1">
+									<Box as="span" fontWeight="semibold">
+										Rejected:
+									</Box>
+									<span>{data?.data?.failed_count}</span>
+									<span>
+										{data?.data?.failed_count === 1
+											? "record"
+											: "records"}
+									</span>
+								</Flex>
+							)}
+						</Flex>
 
-						<BulkOnboardingResponse
-							bulkOnboardingResponseList={data?.list}
-						/>
+						{data?.data?.csp_list.length > 0 && (
+							<BulkOnboardingResponse
+								bulkOnboardingResponseList={
+									data?.data?.csp_list
+								}
+							/>
+						)}
 					</Flex>
 				)}
 			</Flex>
