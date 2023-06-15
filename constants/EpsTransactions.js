@@ -8,6 +8,7 @@ export const TransactionTypes = {
 	GET_WALLET_BALANCE: 9,
 	GET_NOTIFICATIONS: 10010,
 	GET_EARNING_SUMMARY: 623,
+	GET_QUERY: 629,
 };
 
 /**
