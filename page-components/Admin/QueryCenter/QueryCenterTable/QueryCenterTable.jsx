@@ -12,22 +12,28 @@ const QueryCenterTable = ({
 	pageNumber,
 	setPageNumber,
 	// totalRecords,
-	queryData,
+	data,
 }) => {
 	const renderer = [
 		{ name: "ticketNumber", field: "Ticket ID" },
-		{ name: "subject", field: "Subject" },
+		{ name: "subject", field: "Subject", show: "Description" },
 		{ name: "statusType", field: "Status", show: "Tag" },
 		{ name: "contactName", field: "Agent Name" },
 		{
 			name: "eko_code",
 			field: "Agent Code",
 		},
-		{ name: "createdTime", field: "Time Created", sorting: true },
+		{
+			name: "createdTime",
+			field: "Time Created",
+			sorting: true,
+			show: "DateTime",
+		},
 		{
 			name: "modifiedTime",
 			field: "Last Updated",
 			sorting: true,
+			show: "DateTime",
 		},
 	];
 
@@ -39,7 +45,7 @@ const QueryCenterTable = ({
 			// totalRecords={totalRecords}
 			setPageNumber={setPageNumber}
 			pageNumber={pageNumber}
-			data={queryData}
+			data={data}
 		/>
 	);
 };
