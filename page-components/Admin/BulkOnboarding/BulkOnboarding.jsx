@@ -87,7 +87,6 @@ const BulkOnboarding = () => {
 		)
 			.then((res) => res.json())
 			.then((data) => {
-				//data ops
 				console.log("[BulkOnboarding] data:", data);
 				setData(data);
 			})
@@ -95,10 +94,6 @@ const BulkOnboarding = () => {
 				console.error("err", err);
 			});
 	};
-
-	// useEffect(() => {
-	// 	handleFileUpload();
-	// }, [file]);
 
 	const applicationTypeObj = {
 		0: "Seller",
