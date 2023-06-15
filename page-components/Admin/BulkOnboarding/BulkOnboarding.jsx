@@ -1,6 +1,41 @@
-import { Flex, Text } from "@chakra-ui/react";
-import { Dropzone, Headings } from "components";
+import { Flex, Radio, RadioGroup, Text } from "@chakra-ui/react";
+import { Button, Dropzone, Headings } from "components";
+import { Endpoints } from "constants/EndPoints";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useState } from "react";
+import { BulkOnboardingResponse } from ".";
+
+//const DUMMY = {
+// 	response_status_id: 0,
+// 	response_type_id: 1900,
+// 	totalRecords: 5,
+// 	processed_records: 4,
+// 	failed_records: 1,
+// 	list: [
+// 		{
+// 			name: "Vishal Kumar",
+// 			mobile: "0123456789",
+// 			status: "Failed",
+// 			reason: "Duplicate Mobile",
+// 		},
+// 		{
+// 			name: "Vishal Kumar",
+// 			mobile: "0123456789",
+// 			status: "Failed",
+// 			reason: "Duplicate Mobile",
+// 		},
+// 		{
+// 			name: "Vishal Kumar",
+// 			mobile: "0123456789",
+// 			status: "Failed",
+// 			reason: "Duplicate Mobile",
+// 		},
+// 	],
+// 	message: "Files processed successfully",
+// 	status: 0,
+// };
+
 /**
  * A <BulkOnboarding> component
  * TODO: Write more description here
@@ -11,6 +46,55 @@ import { useState } from "react";
  */
 const BulkOnboarding = () => {
 	const [file, setFile] = useState(null);
+	const [data, setData] = useState(null);
+	// const [loading, setLoading] = useState(false);
+	const [applicationType, setApplicationType] = useState("0");
+	const { accessToken /* , userId, userCode */ } = useSession();
+
+	const handleFileUpload = () => {
+		const formDataObj = {
+			client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
+			// initiator_id: userId,
+			// user_code: userCode,
+			// org_id: org_id,
+			application_type: applicationType,
+		};
+
+		const formData = new FormData();
+		formData.append("form-data", new URLSearchParams(formDataObj));
+		formData.append("file_name", file);
+
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD_CUSTOM_URL,
+			{
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": "/network/agent/bulk_onboarding",
+					"tf-req-method": "POST",
+				},
+				body: formData,
+				token: accessToken,
+			}
+		)
+			.then((data) => {
+				//data ops
+				console.log("data", data);
+				setData(data);
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
+	};
+
+	// useEffect(() => {
+	// 	handleFileUpload();
+	// }, [file]);
+
+	const applicationTypeObj = {
+		0: "Seller",
+		2: "Distributer",
+	};
+
 	return (
 		<>
 			<Headings title="Bulk Onboarding" hasIcon={false} />
@@ -21,23 +105,72 @@ const BulkOnboarding = () => {
 				bg="white"
 				borderRadius={8}
 				fontSize="md"
+				gap="6"
 			>
-				<Flex
-					direction="column"
-					gap="2"
-					w={{ base: "100%", md: "500px" }}
-				>
-					<Text fontWeight="semibold">Upload your network list</Text>
-					<Dropzone
-						file={file}
-						setFile={setFile}
-						// accept=".xls,.xlsx,.xlsm,.xlsb,.csv,.xlt,.xltx,.xlam"
-					/>
-				</Flex>
-				{/* <Flex direction="column" gap="2">
-					<Text fontWeight="semibold">Result</Text>
-					<BulkOnboardingResponse />
-				</Flex> */}
+				{data === null ? (
+					<>
+						<Flex direction="column" gap="2">
+							<Text fontWeight="semibold">Select User Type</Text>
+							<RadioGroup
+								defaultValue="0"
+								value={applicationType}
+								onChange={(value) => setApplicationType(value)}
+							>
+								<Flex
+									direction={{ base: "column", sm: "row" }}
+									gap={{ base: "4", md: "16" }}
+								>
+									{Object.entries(applicationTypeObj).map(
+										([key, value]) => (
+											<Radio
+												size="lg"
+												key={key}
+												value={key}
+											>
+												<Text fontSize="sm">
+													{value}
+												</Text>
+											</Radio>
+										)
+									)}
+								</Flex>
+							</RadioGroup>
+						</Flex>
+
+						<Flex
+							direction="column"
+							gap="2"
+							w={{ base: "100%", md: "500px" }}
+						>
+							<Text fontWeight="semibold">
+								Upload the list of users to onboard
+							</Text>
+							<Dropzone
+								file={file}
+								setFile={setFile}
+								accept=".xls,.xlsx,.xlsm,.xlsb,.csv,.xlt,.xltx,.xlam"
+							/>
+						</Flex>
+						{file && (
+							<Button
+								onClick={handleFileUpload}
+								size="lg"
+								h="64px"
+								w="215px"
+							>
+								Upload
+							</Button>
+						)}
+					</>
+				) : (
+					<Flex direction="column" gap="2">
+						{/* <Text fontWeight="semibold">Result</Text> */}
+
+						<BulkOnboardingResponse
+							bulkOnboardingResponseList={data?.list}
+						/>
+					</Flex>
+				)}
 			</Flex>
 		</>
 	);

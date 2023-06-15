@@ -7,20 +7,25 @@ import { Table } from "components";
  * @example	`<BulkOnboardingResponse></BulkOnboardingResponse>`
  */
 const BulkOnboardingResponse = ({
-	totalRecords,
-	pageNumber,
-	setPageNumber,
-	bulkOnboardingResponseData,
+	// totalRecords,
+	// pageNumber,
+	// setPageNumber,
+	bulkOnboardingResponseList,
 }) => {
 	const renderer = [
 		{ field: "Sr. No.", show: "#" },
-		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
-		{ name: "agent_mobile", field: "Mobile Number", sorting: true },
+		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
+		{ name: "mobile", field: "Mobile Number", sorting: true },
 		{
-			name: "account_status",
+			name: "status",
 			field: "Status",
 			sorting: true,
 			show: "Tag",
+		},
+		{
+			name: "reason",
+			field: "Reason",
+			show: "Description",
 		},
 	];
 	return (
@@ -28,11 +33,12 @@ const BulkOnboardingResponse = ({
 			tableName="BulkOnboarding"
 			variant="stripedActionNone"
 			renderer={renderer}
-			totalRecords={totalRecords}
-			pageNumber={pageNumber}
-			setPageNumber={setPageNumber}
-			data={bulkOnboardingResponseData}
+			// totalRecords={totalRecords}
+			// pageNumber={pageNumber}
+			// setPageNumber={setPageNumber}
+			data={bulkOnboardingResponseList}
 		/>
+		//TODO table responsive card
 	);
 };
 
