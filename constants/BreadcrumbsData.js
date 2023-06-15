@@ -23,3 +23,7 @@ export const PricingCommissionObject = {
 export const NotificationsBreadcrumbData = {
 	"/admin/notifications": "Send Notifications",
 };
+
+export const BulkOnboardingBreadcrumbData = {
+	"/admin/bulk-onboarding": "Bulk Onboarding",
+};
