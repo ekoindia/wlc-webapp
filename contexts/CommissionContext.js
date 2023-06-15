@@ -29,8 +29,6 @@ const formatCommissionData = (data, trxn_type_prod_map) => {
 		return newData;
 	}
 
-	console.log("Formatting Commission data", data);
-
 	data.forEach((item) => {
 		if (!item.product_id) {
 			return;
@@ -276,8 +274,6 @@ export const CommissionSummaryProvider = ({ children }) => {
 		// return userCommission?.userId && userCommission?.userId === userId
 		// 	? actionData
 		// 	: [];
-
-		console.log("actionList:::: ", actionList);
 
 		return actionList;
 	}, [userCommission]);

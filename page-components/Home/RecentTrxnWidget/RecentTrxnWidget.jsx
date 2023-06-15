@@ -42,7 +42,7 @@ const RecentTrxnWidget = () => {
 				return {
 					tid: tx.tid,
 					name: tx.tx_name,
-					icon: trxn_type_prod_map[tx.tx_typeid]?.icon || null,
+					icon: trxn_type_prod_map?.[tx.tx_typeid]?.icon || null,
 					desc:
 						tx.tx_name +
 						(amt ? ` of ₹${amt}` : "") +
@@ -52,7 +52,6 @@ const RecentTrxnWidget = () => {
 				};
 			});
 
-			console.log("RecentTrxnWidget -> tx_list", tx_list);
 			setData(tx_list);
 		});
 	}, []);
@@ -108,8 +107,6 @@ const RecentTrxnWidget = () => {
 
 const Tr = ({ tx, handleShowHistory }) => {
 	const { h } = useHslColor(tx.name);
-
-	console.log("Tr -> h", h);
 
 	return (
 		<Flex

@@ -39,7 +39,7 @@ const KnowYourCommission = () => {
 				overflowY={{ base: "none", md: "scroll" }}
 			>
 				{commissionProductIds?.map((id) => {
-					const prod = commissionData?.data[id];
+					const prod = commissionData?.data?.[id];
 					return (
 						<Flex
 							key={id}
