@@ -288,7 +288,11 @@ InfinityApp.getInitialProps = async function (appContext) {
 	// Get org details (like, logo, name, etc) from server
 	const org_details = await fetchOrgDetails(ctx.req.headers.host);
 
-	console.log("\n\n\n>>>>>>> org_details: ", org_details);
+	console.log(
+		"\n\n\n>>>>>>> org_details: ",
+		ctx.req.headers.host,
+		org_details
+	);
 
 	console.debug(
 		"[_app.tsx] getInitialProps:: ",
