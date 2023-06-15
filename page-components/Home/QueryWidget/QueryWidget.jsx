@@ -11,7 +11,7 @@ import { useOrgDetailContext } from "contexts";
  */
 const QueryWidget = () => {
 	const { orgDetail } = useOrgDetailContext();
-	const { support_contacts } = orgDetail || {};
+	const { support_contacts } = orgDetail?.metadata || {};
 	const { phone, email } = support_contacts || {};
 
 	// If both cellnumber & email are not available, hide the widget
