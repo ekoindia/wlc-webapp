@@ -277,10 +277,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 			<VStack
 				px={{ base: "3", sm: "2", md: "2", lg: "4" }}
 				py={{ base: "2", sm: "2", md: "1", lg: "" }}
-				w={"full"}
-				minH={"6vw"}
-				bg={"accent.DEFAULT"}
-				position={"relative"}
+				w="full"
+				// minH={"6vw"}
+				bg="accent.DEFAULT"
+				position="relative"
 				borderTopRadius={{
 					base: "0.3rem",
 					lg: "0.4rem",
@@ -304,21 +304,13 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					color="accent.DEFAULT"
 					transform="rotate(180deg)"
 					position="absolute"
-					top="-19%"
-					right="2%"
+					top="-12px"
+					right="14px"
 				>
 					<Icon name="arrow-drop-down" size="16px" />
 				</Box>
 
-				<Box
-					w={"full"}
-					px={{
-						base: "vw",
-						md: "0.2vw",
-					}}
-					py={{ base: "10px", sm: "0px" }}
-					userSelect="none"
-				>
+				<Box w={"full"} py="10px" userSelect="none">
 					<Flex
 						w={"full"}
 						align={"flex-end"}
@@ -481,7 +473,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				{menulist.map((ele) => (
 					<Fragment key={"mnu-" + ele.title + ele.link}>
 						<HStack
-							h={{ base: "1.65", sm: "1.65vw" }}
+							h="2em"
 							w={"90%"}
 							justifyContent={"space-between"}
 							cursor={"pointer"}
