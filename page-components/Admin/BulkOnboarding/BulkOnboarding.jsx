@@ -2,7 +2,6 @@ import { Flex, Radio, RadioGroup, Text } from "@chakra-ui/react";
 import { Button, Dropzone, Headings } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
-import { fetcher } from "helpers";
 import { useState } from "react";
 import { BulkOnboardingResponse } from ".";
 
@@ -58,27 +57,32 @@ const BulkOnboarding = () => {
 			// user_code: userCode,
 			// org_id: org_id,
 			application_type: applicationType,
+			source: "WLC",
 		};
 
 		const formData = new FormData();
-		formData.append("form-data", new URLSearchParams(formDataObj));
+		formData.append("formdata", new URLSearchParams(formDataObj));
 		formData.append("file_name", file);
 
-		fetcher(
+		fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD_CUSTOM_URL,
 			{
+				method: "POST",
 				headers: {
+					Authorization: `Bearer ${accessToken}`,
+					// "Content-Type": "multipart/form-data",
 					"tf-req-uri-root-path": "/ekoicici/v1",
 					"tf-req-uri": "/network/agent/bulk_onboarding",
 					"tf-req-method": "POST",
 				},
 				body: formData,
-				token: accessToken,
+				// token: accessToken,
 			}
 		)
+			.then((res) => res.json())
 			.then((data) => {
 				//data ops
-				console.log("data", data);
+				console.log("[BulkOnboarding] data:", data);
 				setData(data);
 			})
 			.catch((err) => {
