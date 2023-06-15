@@ -1,11 +1,11 @@
-import { Flex, Link, Radio, RadioGroup, Text } from "@chakra-ui/react";
+import { Box, Flex, Link, Radio, RadioGroup, Text } from "@chakra-ui/react";
 import { Button, Dropzone, Headings } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { useState } from "react";
 import { BulkOnboardingResponse } from ".";
 
-//const DUMMY = {
+// const DUMMY = {
 // 	response_status_id: 0,
 // 	response_type_id: 1900,
 // 	totalRecords: 5,
@@ -164,7 +164,7 @@ const BulkOnboarding = () => {
 							<Dropzone
 								file={file}
 								setFile={setFile}
-								accept=".xls,.xlsx,.xlsm,.xlsb,.csv,.xlt,.xltx,.xlam"
+								accept=".xls,.xlsx"
 							/>
 						</Flex>
 						{file && (
@@ -180,11 +180,43 @@ const BulkOnboarding = () => {
 					</>
 				) : (
 					<Flex direction="column" gap="2">
-						{/* <Text fontWeight="semibold">Result</Text> */}
+						<Flex fontSize="sm" direction="column" gap="1">
+							<span>{data?.message}!!</span>
+							{data?.data?.processed_records > 0 && (
+								<Flex gap="1">
+									<Box as="span" fontWeight="semibold">
+										Accepted:
+									</Box>
+									<span>{data?.data?.processed_records}</span>
+									<span>
+										{data?.data?.processed_records === 1
+											? "record"
+											: "records"}
+									</span>
+								</Flex>
+							)}
+							{data?.data?.failed_count > 0 && (
+								<Flex gap="1">
+									<Box as="span" fontWeight="semibold">
+										Rejected:
+									</Box>
+									<span>{data?.data?.failed_count}</span>
+									<span>
+										{data?.data?.failed_count === 1
+											? "record"
+											: "records"}
+									</span>
+								</Flex>
+							)}
+						</Flex>
 
-						<BulkOnboardingResponse
-							bulkOnboardingResponseList={data?.list}
-						/>
+						{data?.data?.csp_list.length > 0 && (
+							<BulkOnboardingResponse
+								bulkOnboardingResponseList={
+									data?.data?.csp_list
+								}
+							/>
+						)}
 					</Flex>
 				)}
 			</Flex>
