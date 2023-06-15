@@ -1,14 +1,14 @@
 import { Table } from "components";
 import { useRouter } from "next/router";
 import { NetworkCard } from "..";
+
 /**
- * A <NetworkTable> component
- * TODO: This is my network table with clickable rows
+ * A NetworkTable page-component
+ * TODO: This is my network table which will redirect to seller details on row click
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkTable></NetworkTable>`
  */
-
 const NetworkTable = ({
 	pageNumber,
 	setPageNumber,
