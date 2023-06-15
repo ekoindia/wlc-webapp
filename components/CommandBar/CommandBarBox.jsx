@@ -21,7 +21,7 @@ import {
 	useRegisterActions,
 } from "kbar";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Icon, Kbd } from "..";
 
 /**
@@ -239,6 +239,8 @@ function DynamicSearchController() {
 					? "Loading calculator..."
 					: parseLoadState === "error"
 					? "Error loading calculator!"
+					: expr
+					? "Error: Invalid expression!"
 					: "Start typing an expression to calculate... (eg: =2+2)",
 				keywords: queryValueDebounced,
 				icon: (
@@ -432,6 +434,7 @@ function RenderResults({ className, isSmallScreen }) {
 							// Render a section header
 							return (
 								<Text
+									key={"section" + item.id}
 									className={className}
 									textTransform="uppercase"
 									fontSize="xs"
@@ -449,6 +452,7 @@ function RenderResults({ className, isSmallScreen }) {
 						// Render a search result
 						return (
 							<Flex
+								key={"itm" + item.id}
 								className={className}
 								alignItems="center"
 								cursor="pointer"
@@ -495,7 +499,7 @@ function RenderResults({ className, isSmallScreen }) {
 								{item?.shortcut?.map((shortcut, index) => {
 									const keys = shortcut.split("+");
 									return (
-										<>
+										<Fragment key={"sk" + shortcut + index}>
 											{index > 0 ? (
 												<Text
 													fontFamily="mono"
@@ -507,9 +511,9 @@ function RenderResults({ className, isSmallScreen }) {
 											) : null}
 											{keys.map((key, i2) => (
 												<Kbd
+													key={key + index + i2}
 													minH="24px"
 													minW="24px"
-													key={key + index + i2}
 													variant="dark"
 													fontFamily={
 														key === "$mod"
@@ -552,7 +556,7 @@ function RenderResults({ className, isSmallScreen }) {
 													}
 												</Kbd>
 											))}
-										</>
+										</Fragment>
 									);
 								})}
 								{item.children?.length > 0 && (

@@ -1,16 +1,25 @@
 import { Grid } from "@chakra-ui/react";
 import { useSession, useTodos } from "contexts";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import { EarningSummary } from "page-components/Profile";
 import { useMemo } from "react";
 import {
 	BillPaymentWidget,
 	CommonTrxnWidget,
+	KnowYourCommission,
 	NotificationWidget,
 	QueryWidget,
 	RecentTrxnWidget,
-	TodoWidget,
 } from ".";
+
+// Lazy-load the Todo Widget
+const TodoWidget = dynamic(
+	() => import("./TodoWidget").then((pkg) => pkg.TodoWidget),
+	{
+		ssr: false,
+	}
+);
 
 /**
  * A <Home> component
@@ -47,7 +56,8 @@ const Home = () => {
 		{ id: 2, component: BillPaymentWidget },
 		{ id: 3, component: NotificationWidget },
 		{ id: 4, component: EarningSummary },
-		{ id: 5, component: RecentTrxnWidget },
+		{ id: 5, component: KnowYourCommission },
+		{ id: 6, component: RecentTrxnWidget },
 	];
 
 	if (todos && todos.length > 0) {
@@ -59,7 +69,7 @@ const Home = () => {
 		});
 	}
 
-	widgets.push({ id: 6, component: QueryWidget });
+	widgets.push({ id: 99, component: QueryWidget });
 
 	return (
 		<>

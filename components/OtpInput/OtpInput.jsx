@@ -38,7 +38,7 @@ const OtpInput = ({
 				otp
 				value={value}
 				placeholder={placeholder}
-				manageFocus="true"
+				manageFocus={true}
 				onChange={(e) => {
 					setOtp(e);
 					onChange(e);

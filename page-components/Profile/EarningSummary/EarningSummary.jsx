@@ -12,6 +12,7 @@ import { Fragment } from "react";
  */
 const EarningSummary = ({ ...rest }) => {
 	const data = useEarningSummary();
+	// console.log("DataAtEarn", data);
 
 	/**
 	 * Return the percentage change between current and last value

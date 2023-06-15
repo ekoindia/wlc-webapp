@@ -35,7 +35,7 @@ const MultiSelect = ({
 
 	useEffect(() => {
 		let keys = Object.keys(selectedOptions);
-		if (keys?.length === filteredOptions.length) {
+		if (keys?.length === filteredOptions?.length) {
 			setSelectAllChecked(true);
 		} else {
 			setSelectAllChecked(false);
@@ -63,7 +63,7 @@ const MultiSelect = ({
 	/* this is checking whether */
 	const setSelectAll = (options, selectedOptions) => {
 		let isSelectAll = true;
-		options.forEach((ele) => {
+		options?.forEach((ele) => {
 			if (!selectedOptions[ele[renderer.value]]) isSelectAll = false;
 			// if (!selectedOptions[ele.value]) isSelectAll = false;
 		});
@@ -296,7 +296,7 @@ const MultiSelect = ({
 							}}
 						>
 							{/* Show select all options */}
-							{filteredOptions.length > 0 && (
+							{filteredOptions?.length > 0 && (
 								<Flex
 									key={selectObject.value}
 									h="50px"
@@ -320,7 +320,7 @@ const MultiSelect = ({
 									</Checkbox>
 								</Flex>
 							)}
-							{filteredOptions.map((row, index) => {
+							{filteredOptions?.map((row, index) => {
 								return (
 									<Flex
 										key={index}

@@ -85,9 +85,9 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			) : null}
 
 			<Input
-				cursor="default"
 				label="Enter mobile number"
 				placeholder="XXX XXX XXXX"
+				required
 				leftAddon="+91"
 				type="mobile_number"
 				value={value}
@@ -99,11 +99,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				maxLength={12}
 				isNumInput={true}
 				labelStyle={{
-					fontSize: { base: "sm", "2xl": "lg" },
 					color: "light",
-					pl: "0",
-					fontWeight: "semibold",
-					mb: { base: 2.5, "2xl": "0.8rem" },
 				}}
 				onFocus={() => {
 					setInvalid(false);

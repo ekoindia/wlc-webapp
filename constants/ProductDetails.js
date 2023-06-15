@@ -12,6 +12,10 @@ export const ProductSlabs = {
 		{ min: 10000, max: 10000 },
 	],
 	AADHAARPAY: [{ min: 1, max: 10000 }],
+	INDONEPAL: [
+		{ min: 100, max: 5000 },
+		{ min: 5001, max: 49800 },
+	],
 };
 
 export const ProductPricingTextConfig = {

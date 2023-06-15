@@ -319,7 +319,7 @@ const HistoryToolbar = ({
 }) => {
 	const labelStyle = {
 		fontSize: { base: "sm" },
-		color: "inputlabel",
+		// color: "inputlabel",
 	};
 	return (
 		<Flex
@@ -378,7 +378,7 @@ const HistoryToolbar = ({
 					onClose={onClose}
 					title="Filter"
 					submitText="Apply Now"
-					isCentered={{ base: "none", lg: "true" }}
+					isCentered={{ base: false, lg: true }}
 					onSubmit={onFilterSubmit}
 					motionPreset="slideInBottom"
 					scrollBehavior="inside"

@@ -71,9 +71,13 @@ export const GlobalSearchProvider = ({ children }) => {
 				// Set default values for the action
 				const newAction = {
 					parent: "my-business",
-					perform: () => {},
+					// perform: action?.perform === null ? undefined : () => {},
 					...action,
 				};
+
+				if (!newAction.perform && action?.perform !== false) {
+					newAction.perform = () => {};
+				}
 
 				if (index === -1) {
 					// New action
