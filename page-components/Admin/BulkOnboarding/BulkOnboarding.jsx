@@ -62,7 +62,7 @@ const BulkOnboarding = () => {
 			// initiator_id: userId,
 			// user_code: userCode,
 			// org_id: org_id,
-			application_type: applicationType,
+			applicant_type: applicationType,
 			source: "WLC",
 		};
 
