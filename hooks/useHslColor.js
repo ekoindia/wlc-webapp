@@ -26,7 +26,7 @@ const useHslColor = (str) => {
 
 	// useDebugValue(`hsl(${hslColor.h},${hslColor.s},${hslColor.l})`);
 
-	return [hslColor];
+	return hslColor;
 };
 
 export default useHslColor;
