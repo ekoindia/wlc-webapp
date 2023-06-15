@@ -13,13 +13,13 @@ const PaddingBox = ({ children, noSpacing = false, ...rest }) => {
 			p={
 				!noSpacing
 					? {
-							base: "0px",
-							md: "2vw",
-							"2xl": "1.5vw",
+							base: "0px", //TODO change to 10px, manage full width component seperately on small screen
+							md: "30px",
+							"2xl": "40px",
 					  }
 					: null
 			}
-			pb={!noSpacing ? { base: "20px", md: "30px", "2xl": "30px" } : null}
+			pb={!noSpacing ? { base: "20px", md: "30px" } : null}
 			{...rest}
 		>
 			{children}
