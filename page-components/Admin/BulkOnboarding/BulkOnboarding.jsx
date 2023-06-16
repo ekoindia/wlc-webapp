@@ -1,5 +1,5 @@
 import { Box, Flex, Link, Radio, RadioGroup, Text } from "@chakra-ui/react";
-import { Button, Dropzone, Headings } from "components";
+import { Button, Dropzone, Headings, Icon } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { useState } from "react";
@@ -53,7 +53,7 @@ const BulkOnboarding = () => {
 	const [file, setFile] = useState(null);
 	const [data, setData] = useState(null);
 	// const [loading, setLoading] = useState(false);
-	const [applicationType, setApplicationType] = useState("0");
+	const [applicantType, setApplicantType] = useState("0");
 	const { accessToken /* , userId, userCode */ } = useSession();
 
 	const handleFileUpload = () => {
@@ -62,7 +62,7 @@ const BulkOnboarding = () => {
 			// initiator_id: userId,
 			// user_code: userCode,
 			// org_id: org_id,
-			applicant_type: applicationType,
+			applicant_type: applicantType,
 			source: "WLC",
 		};
 
@@ -95,9 +95,9 @@ const BulkOnboarding = () => {
 			});
 	};
 
-	const applicationTypeObj = {
+	const applicantTypeObj = {
 		0: "Seller",
-		2: "Distributer",
+		2: "Distributor",
 	};
 
 	return (
@@ -113,19 +113,23 @@ const BulkOnboarding = () => {
 				gap="6"
 			>
 				{data === null ? (
-					<>
+					<Flex
+						direction="column"
+						gap="10"
+						w={{ base: "100%", md: "500px" }}
+					>
 						<Flex direction="column" gap="2">
 							<Text fontWeight="semibold">Select User Type</Text>
 							<RadioGroup
 								defaultValue="0"
-								value={applicationType}
-								onChange={(value) => setApplicationType(value)}
+								value={applicantType}
+								onChange={(value) => setApplicantType(value)}
 							>
 								<Flex
 									direction={{ base: "column", sm: "row" }}
 									gap={{ base: "4", md: "16" }}
 								>
-									{Object.entries(applicationTypeObj).map(
+									{Object.entries(applicantTypeObj).map(
 										([key, value]) => (
 											<Radio
 												size="lg"
@@ -141,23 +145,31 @@ const BulkOnboarding = () => {
 								</Flex>
 							</RadioGroup>
 						</Flex>
-						<Link
-							href={
-								applicationType == 0
-									? SAMPLE_DOWNLOAD_LINK.SELLER
-									: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
-							}
-							w="fit-content"
-							fontWeight="semibold"
-							isExternal
-						>
-							Download sample list
-						</Link>
-						<Flex
-							direction="column"
-							gap="2"
-							w={{ base: "100%", md: "500px" }}
-						>
+						<Flex direction="column" gap="2">
+							<Text fontWeight="semibold">
+								Download Sample File &thinsp;
+								<Box as="span" textTransform="lowercase">
+									(for {applicantTypeObj[applicantType]})
+								</Box>
+							</Text>
+							<Link
+								href={
+									applicantType == 0
+										? SAMPLE_DOWNLOAD_LINK.SELLER
+										: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
+								}
+								w="fit-content"
+								fontWeight="semibold"
+								isExternal
+							>
+								<Button>
+									<Icon name="file-download" size="sm" />
+									&nbsp; Download
+								</Button>
+							</Link>
+						</Flex>
+
+						<Flex direction="column" gap="2">
 							<Text fontWeight="semibold">
 								Upload the list of users to onboard
 							</Text>
@@ -177,7 +189,7 @@ const BulkOnboarding = () => {
 								Upload
 							</Button>
 						)}
-					</>
+					</Flex>
 				) : (
 					<Flex direction="column" gap="2">
 						<Flex fontSize="sm" direction="column" gap="1">
