@@ -119,7 +119,8 @@ const BulkOnboarding = () => {
 							<Text fontWeight="semibold">
 								Download Sample File &thinsp;
 								<Box as="span" textTransform="lowercase">
-									(for {applicantTypeObj[applicantType]})
+									(for onboarding{" "}
+									{applicantTypeObj[applicantType]}s)
 								</Box>
 							</Text>
 							<Link
