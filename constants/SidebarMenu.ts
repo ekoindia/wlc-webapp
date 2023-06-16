@@ -87,6 +87,11 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 		icon: "person-add",
 		link: "/admin/bulk-onboarding",
 	},
+	// {
+	// 	icon: "query",
+	// 	name: "Query Center",
+	// 	link: "/admin/query",
+	// },
 ];
 
 /**

@@ -36,15 +36,8 @@ const RecentTrxnWidget = () => {
 			},
 			token: accessToken,
 		}).then((data) => {
-			console.log("RecentTrxnWidget -> data", data);
 			const tx_list = (data?.data?.transaction_list ?? []).map((tx) => {
 				const amt = tx.amount_dr || tx.amount_cr || 0;
-				// console.log(
-				// 	"RecentTrxnWidget -> icon",
-				// 	trxn_type_prod_map?.[tx.tx_typeid]?.icon,
-				// 	tx.tx_typeid,
-				// 	trxn_type_prod_map
-				// );
 				return {
 					tid: tx.tid,
 					name: tx.tx_name,
