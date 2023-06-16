@@ -17,6 +17,7 @@ const Commissions = ({ prod_id }) => {
 	const handleTagClick = (id) => {
 		setTagValue(id);
 	};
+
 	useEffect(() => {
 		if (prod_id) {
 			setTagValue(prod_id);
@@ -24,47 +25,18 @@ const Commissions = ({ prod_id }) => {
 	}, [prod_id]);
 
 	useEffect(() => {
-		if (!tagValue || !commissionData || !(tagValue in commissionData.data))
+		if (
+			!tagValue ||
+			!commissionData?.data ||
+			!(tagValue in commissionData.data)
+		) {
 			return;
+		}
 
-		const tagData = commissionData?.data[tagValue].slabs;
+		const tagData = commissionData?.data?.[tagValue]?.slabs;
 
 		if (tagData?.length > 0) {
-			setTableData(
-				tagData
-				// .map(
-				// 	({
-				// 		slab_from,
-				// 		slab_to,
-				// 		value,
-				// 		biller_name,
-				// 		calc_type,
-				// 		min_value,
-				// 		max_value,
-				// 	}) => ({
-				// 		transaction_value: !(slab_from || slab_to)
-				// 			? "Any"
-				// 			: `${slab_from ? `₹ ${slab_from}` : "Any"} - ${
-				// 					slab_to ? `₹ ${slab_to || 0}` : "Any"
-				// 			  }`,
-				// 		commission:
-				// 			calc_type === 1
-				// 				? `${value}% (min: ${formatCurrency(
-				// 						min_value,
-				// 						"INR",
-				// 						false,
-				// 						true
-				// 				  )}, max: ${formatCurrency(
-				// 						max_value,
-				// 						"INR",
-				// 						false,
-				// 						true
-				// 				  )})`
-				// 				: value,
-				// 		biller_name: biller_name || "-",
-				// 	})
-				// )
-			);
+			setTableData(tagData);
 		}
 	}, [tagValue, commissionData]);
 

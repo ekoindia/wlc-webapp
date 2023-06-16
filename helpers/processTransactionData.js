@@ -1,10 +1,11 @@
 /* This function process transaction data and returns an object which contains role_tx_list and interaction_list. */
 export const processTransactionData = (tmp_lst) => {
 	//This function intends to process transaction data
-	let _tx_to_show_in_hist = [];
-	let interaction_list = [];
-	let role_tx_list = {};
-	let len = tmp_lst ? tmp_lst.length : 0;
+	const interaction_list = [];
+	const role_tx_list = {};
+	const trxn_type_prod_map = {};
+
+	const len = tmp_lst ? tmp_lst.length : 0;
 	let last_category = "";
 	// let lastCategory;
 	// let category_list;
@@ -111,11 +112,12 @@ export const processTransactionData = (tmp_lst) => {
 			tmp_lst[i].history_label.length > 0 &&
 			tmp_lst[i].interaction_type_id > 0
 		) {
-			_tx_to_show_in_hist.push({
+			trxn_type_prod_map[tmp_lst[i].interaction_type_id] = {
 				id: tmp_lst[i].id,
-				type_id: tmp_lst[i].interaction_type_id,
+				// type_id: tmp_lst[i].interaction_type_id,
 				hist_label: tmp_lst[i].history_label,
-			});
+				icon: tmp_lst[i].icon || undefined,
+			};
 		}
 
 		// Hide Invisible interactions -----------------------------------
@@ -208,5 +210,6 @@ export const processTransactionData = (tmp_lst) => {
 	return {
 		role_tx_list,
 		interaction_list,
+		trxn_type_prod_map,
 	};
 };

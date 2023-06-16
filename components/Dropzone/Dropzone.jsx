@@ -22,7 +22,6 @@ const IMAGE_MIME_TYPES = {
 
 /**
  * A Dropzone component to upload file either by selecting or by drag n drop
- * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
@@ -32,9 +31,11 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 	const [inDropZone, setInDropZone] = useState(false);
 	const [previewImage, setPreviewImage] = useState(null);
 
+	// console.log("[Dropzone] file", file);
+	// console.log("[Dropzone] previewImage", previewImage);
+
 	const handleFileUploadInputChange = (e) => {
 		const _file = e.target.files[0];
-		console.log("[Dropzone] _file", _file);
 		setFile(_file);
 
 		if (IMAGE_MIME_TYPES[_file.type]) {
@@ -79,7 +80,7 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 	return (
 		<Flex
 			bg={inDropZone ? "overlayBg" : "initial"}
-			w={{ base: "100%", md: "500px" }}
+			w="100%"
 			align="center"
 			justify="center"
 			onDragOver={handleDragOver}
@@ -113,7 +114,7 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 			) : (
 				<Flex
 					w="40%"
-					h="60%"
+					minH="60%"
 					align="center"
 					direction="column"
 					bg="overlayBg"
@@ -138,26 +139,18 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 						}}
 					/>
 
-					<Flex p="2.5" w="100%" h="100%">
+					<Flex p="10px" w="100%" h="100%">
 						{previewImage ? (
 							<Image src={previewImage} borderRadius="10px" />
 						) : (
 							<Text
 								w="100%"
+								h="100%"
 								fontSize="xs"
 								noOfLines={1}
-								// textOverflow="ellipsis"
-								// whiteSpace="nowrap"
-								// overflow="hidden"
 								align="center"
+								cursor="default"
 								title={file.name}
-								style={{
-									cursor: "default",
-									":hover": {
-										whiteSpace: "normal",
-										overflow: "visible",
-									},
-								}}
 							>
 								{file.name}
 							</Text>

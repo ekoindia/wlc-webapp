@@ -82,6 +82,11 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 	// 	icon: "notifications-none",
 	// 	link: "/admin/notifications",
 	// },
+	{
+		name: "Bulk Onboarding",
+		icon: "person-add",
+		link: "/admin/bulk-onboarding",
+	},
 ];
 
 /**

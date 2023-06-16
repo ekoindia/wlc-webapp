@@ -1,5 +1,6 @@
 export { allowedCategories } from "./allowedCategories";
 export {
+	BulkOnboardingBreadcrumbData,
 	NetworkObject,
 	NotificationsBreadcrumbData,
 	PricingCommissionObject,

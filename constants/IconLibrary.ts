@@ -197,6 +197,7 @@ export type IconNameType =
 	| "cashout"
 	| "manage"
 	| "transaction-history"
+	| "wallet"
 	| "wallet-outline"
 	| "water"
 	| "phone-circle-outline"
@@ -303,6 +304,7 @@ export const IconCategories: IconCategoriesType = {
 	"Business, Finance & Wallet": [
 		"account-balance",
 		"account-balance-wallet",
+		"wallet",
 		"account-circle",
 		"business-center",
 		"commission-percent",
@@ -1156,6 +1158,9 @@ export const IconLibrary: IconLibraryType = {
 	"transaction-history": {
 		viewBox: "0 0 21.5 24",
 		path: `<path d="M5.7 0a3.3 3.3 0 0 0-3.3 3.3V5H0v1.8h2.4V11H0v1.8h2.4V17H0v1.7h2.4v2A3.3 3.3 0 0 0 5.7 24h12.5a3.3 3.3 0 0 0 3.2-3.3V3.3A3.3 3.3 0 0 0 18.2 0ZM4.2 3.3a1.5 1.5 0 0 1 1.5-1.5h12.5a1.5 1.5 0 0 1 1.5 1.5v17.4a1.5 1.5 0 0 1-1.5 1.5H5.7a1.5 1.5 0 0 1-1.5-1.5ZM14.8 6H13a3.2 3.2 0 0 1 .3.9h2.2l-.7 1.3h-1.4a3.1 3.1 0 0 1-2.9 2.3l3.5 3.7h-2l-3.3-3.5V9.2c2 .2 2.6-.3 2.8-.9H8.3L9 7h2.6a1.5 1.5 0 0 0-1.3-1h-2L9 4.8h6.5ZM8.3 19h7.2v-1.8H8.3Z"/>`,
+	},
+	wallet: {
+		link: "account-balance-wallet",
 	},
 	"wallet-outline": {
 		viewBox: "0 0 24.6 22",
