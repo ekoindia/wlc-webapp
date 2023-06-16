@@ -5,36 +5,6 @@ import { useSession } from "contexts";
 import { useState } from "react";
 import { BulkOnboardingResponse } from ".";
 
-// const DUMMY = {
-// 	response_status_id: 0,
-// 	response_type_id: 1900,
-// 	totalRecords: 5,
-// 	processed_records: 4,
-// 	failed_records: 1,
-// 	list: [
-// 		{
-// 			name: "Vishal Kumar",
-// 			mobile: "0123456789",
-// 			status: "Failed",
-// 			reason: "Duplicate Mobile",
-// 		},
-// 		{
-// 			name: "Vishal Kumar",
-// 			mobile: "0123456789",
-// 			status: "Failed",
-// 			reason: "Duplicate Mobile",
-// 		},
-// 		{
-// 			name: "Vishal Kumar",
-// 			mobile: "0123456789",
-// 			status: "Failed",
-// 			reason: "Duplicate Mobile",
-// 		},
-// 	],
-// 	message: "Files processed successfully",
-// 	status: 0,
-// };
-
 const SAMPLE_DOWNLOAD_LINK = {
 	SELLER: "https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
 	DISTRIBUTOR:
