@@ -1,3 +1,4 @@
+import { Text } from "@chakra-ui/react";
 import { Headings } from "components";
 import { TransactionTypes } from "constants";
 import { Endpoints } from "constants/EndPoints";
@@ -34,12 +35,15 @@ const QueryCenter = ({ prop1, ...rest }) => {
 	return (
 		<div {...rest}>
 			<Headings title="Query Center" hasIcon={false} />
-			<QueryCenterTable
-				// totalRecords={200}
-				pageNumber={pageNumber}
-				setPageNumber={setPageNumber}
-				data={data}
-			/>
+			{data?.length > 0 ? (
+				<QueryCenterTable
+					pageNumber={pageNumber}
+					setPageNumber={setPageNumber}
+					data={data}
+				/>
+			) : (
+				<Text fontSize="sm">Nothing Found</Text>
+			)}
 		</div>
 	);
 };
