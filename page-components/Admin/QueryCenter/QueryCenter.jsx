@@ -31,23 +31,11 @@ const QueryCenter = ({ prop1, ...rest }) => {
 		});
 	}, []);
 
-	// tf-req-uri-root-path: /ekoicici/v2
-	// tf-req-uri:/request
-	// tf-req-method: GET
-
-	//     curl --location 'http://dev.simplibank.eko.in:25008/ekoicici/v2/request' \
-	// > --header 'Content-Type: application/x-www-form-urlencoded' \
-	// > --data-urlencode 'customer_id=7337628689' \
-	// > --data-urlencode 'user_code=99013036' \
-	// > --data-urlencode 'locale=en' \
-	// > --data-urlencode 'initiator_id=7337628689' \
-	// > --data-urlencode 'interaction_type_id=692'
-
 	return (
 		<div {...rest}>
 			<Headings title="Query Center" hasIcon={false} />
 			<QueryCenterTable
-				totalRecords={200}
+				// totalRecords={200}
 				pageNumber={pageNumber}
 				setPageNumber={setPageNumber}
 				data={data}
