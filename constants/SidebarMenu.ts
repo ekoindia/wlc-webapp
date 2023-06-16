@@ -72,11 +72,6 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 	// 	icon: "person",
 	// 	link: "/admin/company",
 	// },
-	{
-		icon: "query",
-		name: "Query Center",
-		link: "/admin/query",
-	},
 	// {
 	// 	name: "Send Notifications",
 	// 	icon: "notifications-none",
