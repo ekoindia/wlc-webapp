@@ -22,7 +22,6 @@ const IMAGE_MIME_TYPES = {
 
 /**
  * A Dropzone component to upload file either by selecting or by drag n drop
- * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
@@ -32,12 +31,11 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 	const [inDropZone, setInDropZone] = useState(false);
 	const [previewImage, setPreviewImage] = useState(null);
 
-	console.log("[Dropzone] file", file);
-	console.log("[Dropzone] previewImage", previewImage);
+	// console.log("[Dropzone] file", file);
+	// console.log("[Dropzone] previewImage", previewImage);
 
 	const handleFileUploadInputChange = (e) => {
 		const _file = e.target.files[0];
-		console.log("[Dropzone] _file", _file);
 		setFile(_file);
 
 		if (IMAGE_MIME_TYPES[_file.type]) {
