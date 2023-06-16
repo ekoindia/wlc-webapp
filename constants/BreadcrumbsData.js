@@ -31,7 +31,3 @@ export const NotificationsBreadcrumbData = {
 export const BulkOnboardingBreadcrumbData = {
 	"/admin/bulk-onboarding": "Bulk Onboarding",
 };
-
-export const QueryObject = {
-	"/admin/query": "Query Center",
-};
