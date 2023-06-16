@@ -20,19 +20,9 @@ const QueryCenter = ({ prop1, ...rest }) => {
 	const { accessToken } = useSession();
 
 	useEffect(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL, Endpoints.TRANSACTION, {
-			// headers: {
-			// 	"tf-req-uri-root-path": "/ekoicici/v2",
-			// 	"tf-req-uri": "/request",
-			// 	"tf-req-method": "GET",
-			// 	"Content-Type": "application/x-www-form-urlencoded",
-			// },
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
-				interaction_type_id: TransactionTypes.GET_QUERY,
-				// initiator_id: 7337628689,
-				// customer_id: 7337628689,
-				// user_code: 99013036,
-				// locale: "en",
+				interaction_type_id: TransactionTypes.GET_ALL_QUERIES_FOR_ORG,
 			},
 			token: accessToken,
 		}).then((data) => {
