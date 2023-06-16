@@ -7,6 +7,7 @@ export { Network } from "./Network";
 export { NotificationCreator } from "./NotificationCreator";
 export { PricingCommission } from "./PricingCommission";
 export { ProfilePanel } from "./ProfilePanel";
+export { QueryCenter } from "./QueryCenter";
 export { TransactionHistory } from "./TransactionHistory";
 export { UpdatePersonalInfo } from "./UpdatePersonalInfo";
 export { UpdateSellerAddress } from "./UpdateSellerAddress";
