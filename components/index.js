@@ -27,6 +27,7 @@ import { NavBar } from "./NavBar";
 import { OrgLogo } from "./OrgLogo";
 import { OtpInput } from "./OtpInput";
 import { PaddingBox } from "./PaddingBox";
+import { PageLoader } from "./PageLoader";
 import { Pagination } from "./Pagination";
 import { ProfileCard } from "./ProfileCard";
 import { RouteProtecter } from "./RouteProtecter";
@@ -40,6 +41,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	PageLoader,
 	Dropzone,
 	Kbd,
 	GlobalSearch,

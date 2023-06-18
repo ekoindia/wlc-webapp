@@ -4,8 +4,9 @@ import { useGlobalSearch, usePubSub, useSession } from "contexts";
 import { Priority, useRegisterActions } from "kbar";
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useEffect, useMemo } from "react";
-import { NavBar, SideBar } from "..";
+import Router from "next/router";
+import { useEffect, useMemo, useState } from "react";
+import { NavBar, PageLoader, SideBar } from "..";
 
 // Lazy-load the CommandBarBox component
 const CommandBarBox = dynamic(() => import("../CommandBar/CommandBarBox"), {
@@ -30,6 +31,11 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	const { publish, TOPICS } = usePubSub();
 
 	const { businessActions } = useGlobalSearch(); // Get registered "My Business" actions for the Command bar
+
+	const [isPageLoading, setIsPageLoading] = useState(false);
+	Router.events.on("routeChangeStart", () => setIsPageLoading(true));
+	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
+	Router.events.on("routeChangeError", () => setIsPageLoading(false));
 
 	// Setup Android Listener...
 	useEffect(() => {
@@ -90,6 +96,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 					</title>
 				</Head>
 			) : null}
+
+			{/* Show page-loading animation */}
+			{isPageLoading && <PageLoader />}
 
 			{isLoggedIn ? (
 				<Box w={"full"} className={fontClassName}>
