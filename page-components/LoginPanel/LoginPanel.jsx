@@ -2,7 +2,7 @@ import { Box, Flex, Grid, SlideFade } from "@chakra-ui/react";
 import { OrgLogo } from "components";
 import { useOrgDetailContext, useSession } from "contexts";
 import { useState } from "react";
-import { Login, SocialVerify, VerifyOtp } from ".";
+import { Login, SocialVerify, VerifyOtp } from "./children";
 
 /**
  * This is the main component where all the Login related component rendered.
