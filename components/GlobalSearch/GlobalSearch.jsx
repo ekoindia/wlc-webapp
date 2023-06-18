@@ -43,7 +43,7 @@ const GlobalSearch = ({ ...rest }) => {
 					color="dark"
 					display={{ base: "none", md: "flex" }}
 				>
-					<Kbd mr={1} fontFamily="sans">
+					<Kbd mr={1} fontFamily={isMac ? "sans" : null}>
 						{isMac ? "⌘" : "Ctrl"}
 					</Kbd>
 					<Kbd>K</Kbd>
