@@ -327,3 +327,8 @@ InfinityApp.getInitialProps = async function (appContext) {
 		org: org_details?.props?.data,
 	};
 };
+
+// TODO: Remove from production...
+// export function reportWebVitals(metric) {
+// 	console.log("📈 WebVitals: ", metric.name + "=" + metric.value, metric);
+// }
