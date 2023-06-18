@@ -10,6 +10,7 @@ const removeConsoleOptions = isProd ? { exclude: excludeLogTypes } : false;
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({
 	enabled: process.env.ANALYZE === "true",
+	openAnalyzer: true,
 });
 
 /**
