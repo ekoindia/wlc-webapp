@@ -1,5 +1,5 @@
-import { Flex, useBreakpointValue } from "@chakra-ui/react";
-import { IcoButton, Icon, Input, Kbd } from "components";
+import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
+import { IcoButton, Icon, Kbd } from "components";
 import { useGlobalSearch } from "contexts";
 import { usePlatform } from "hooks";
 import { useKBar } from "kbar";
@@ -24,37 +24,12 @@ const GlobalSearch = ({ ...rest }) => {
 			onClick={() => query.toggle()}
 		/>
 	) : (
-		<Input
-			placeholder={title || "Search anything..."}
-			inputLeftElement={
-				<Icon
-					display={{ base: "none", md: "flex" }}
-					name="search"
-					size="sm"
-					color="light"
-				/>
-			}
-			inputLeftElementStyle={{
-				h: "36px",
-			}}
-			inputRightElement={
-				<Flex
-					align="center"
-					color="dark"
-					display={{ base: "none", md: "flex" }}
-				>
-					<Kbd mr={1} fontFamily={isMac ? "sans" : null}>
-						{isMac ? "⌘" : "Ctrl"}
-					</Kbd>
-					<Kbd>K</Kbd>
-				</Flex>
-			}
-			inputRightElementStyle={{
-				h: "36px",
-				right: 3,
-			}}
+		<Flex
+			align="center"
 			ml={1}
+			px="15px"
 			display={{ base: "none", md: "flex" }}
+			cursor="text"
 			w={{
 				base: "auto",
 				md: "280px",
@@ -62,28 +37,58 @@ const GlobalSearch = ({ ...rest }) => {
 				xl: "500px",
 			}}
 			h="36px"
-			pb="3px"
-			pr="70px"
 			bg="darkShade"
 			borderWidth="0"
-			type="number"
+			borderRadius="6px"
 			radius={6}
-			maxLength={15}
-			// value={searchValue}
-			// onChange={(e) => setSearchValue(e.target.value)}
 			onClick={() => query.toggle()}
-			onKeyDown={() => query.toggle()}
-			_placeholder={{
-				fontSize: { base: "xs", xl: "sm" },
-			}}
-			_focus={{
-				bg: "bg",
-				boxShadow: "none",
-				transition: "background 0.3s ease-out",
-			}}
 			{...rest}
-		/>
+		>
+			<Icon
+				display={{ base: "none", md: "flex" }}
+				name="search"
+				size="sm"
+				color="light"
+			/>
+			<Text
+				flexGrow={1}
+				fontSize={{ base: "xs", xl: "sm" }}
+				opacity={0.6}
+				px="12px"
+				noOfLines={1}
+			>
+				{title || "Search anything..."}
+			</Text>
+			<Flex
+				align="center"
+				color="dark"
+				display={{ base: "none", md: "flex" }}
+			>
+				<Key fontFamily={isMac ? "sans" : null}>
+					{isMac ? "⌘" : "Ctrl"}
+				</Key>
+				<Key>K</Key>
+			</Flex>
+		</Flex>
 	);
 };
+
+function Key({ children, ...rest }) {
+	return (
+		<Kbd
+			display="inline-flex"
+			alignItems="center"
+			justifyContent="center"
+			pt="1px"
+			px="4px"
+			ml={1}
+			minH="24px"
+			minW="26px"
+			{...rest}
+		>
+			{children}
+		</Kbd>
+	);
+}
 
 export default GlobalSearch;
