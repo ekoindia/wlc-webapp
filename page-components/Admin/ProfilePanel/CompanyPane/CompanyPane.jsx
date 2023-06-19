@@ -112,7 +112,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 						/>
 						<Box>
 							<Text color={"light"} fontSize={14}>
-								Wallet Balance
+								E-value Balance
 							</Text>
 							<Currency
 								amount={compdata?.wallet_balance}

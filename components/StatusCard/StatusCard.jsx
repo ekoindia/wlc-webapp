@@ -94,7 +94,7 @@ const StatusCard = () => {
 						}}
 						pointerEvents="none"
 					>
-						Wallet Balance
+						E-value Balance
 					</Text>
 					<Flex color="#FFD93B" align="center" gap="0.25">
 						<Icon

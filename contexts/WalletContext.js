@@ -88,8 +88,8 @@ const WalletProvider = ({ children }) => {
 			? [
 					{
 						id: "show-wallet-balance",
-						name: `My Wallet Balance: ${formatCurrency(balance)}`,
-						keywords: "e-value fund",
+						name: `My E-value Balance: ${formatCurrency(balance)}`,
+						keywords: "e-value wallet fund",
 						icon: (
 							<ActionIcon
 								icon="wallet-outline"
