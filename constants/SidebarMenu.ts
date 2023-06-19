@@ -63,7 +63,7 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 	// 	link: "/admin/invoicing",
 	// },
 	{
-		name: "Pricing & Comission",
+		name: "Pricing & Commissions",
 		icon: "commission-percent",
 		link: "/admin/pricing",
 	},
