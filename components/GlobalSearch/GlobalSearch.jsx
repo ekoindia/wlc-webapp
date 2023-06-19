@@ -84,6 +84,7 @@ function Key({ children, ...rest }) {
 			ml={1}
 			minH="24px"
 			minW="26px"
+			color="light"
 			{...rest}
 		>
 			{children}
