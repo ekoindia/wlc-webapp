@@ -6,7 +6,7 @@ import {
 	InputLeftElement,
 	InputRightElement,
 } from "@chakra-ui/react";
-import { forwardRef, useId } from "react";
+import { forwardRef, useCallback, useId } from "react";
 import { InputLabel, InputMsg } from "../";
 
 /**
@@ -17,24 +17,6 @@ import { InputLabel, InputMsg } from "../";
  * @example	`<Input></Input>`
  * @example	`<Input/>`
  */
-
-function formatNum(value, num) {
-	let formatted_num = "";
-	// This is for space removal when user removes the input
-	if (value.slice(0, value.length - 1) === num && num !== "") {
-		return num;
-	} else {
-		for (let i in num) {
-			if (num[i] !== " ") {
-				if (i === "2" || i === "6") {
-					formatted_num += num[i] + " ";
-				} else formatted_num += num[i];
-			}
-		}
-		return formatted_num;
-	}
-}
-
 const Input = forwardRef(
 	(
 		{
@@ -79,20 +61,23 @@ const Input = forwardRef(
 	) => {
 		const _id = useId();
 
-		const onChangeHandler = (e) => {
-			let val = e.target.value;
-			if (isNumInput) {
-				if (
-					val == "" ||
-					/^[6-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(
-						val
-					)
-				) {
-					let formatted = formatNum(value, val);
-					onChange(formatted);
-				}
-			} else onChange(e);
-		};
+		const onChangeHandler = useCallback(
+			(e) => {
+				let val = e.target.value;
+				if (isNumInput) {
+					if (
+						val == "" ||
+						/^[6-9]((\d{0,2})?\s?)?((\d{0,3})?\s?)?((\d{0,4})?)$/g.test(
+							val
+						)
+					) {
+						let formatted = formatNum(value, val);
+						onChange(formatted);
+					}
+				} else onChange(e);
+			},
+			[isNumInput, onChange]
+		);
 
 		return (
 			<Flex
@@ -170,6 +155,8 @@ const Input = forwardRef(
 						max={max}
 						minLength={minLength}
 						maxLength={maxLength}
+						focusBorderColor="accent.light"
+						errorBorderColor="error"
 						{...inputAttributes}
 						{...rest}
 					/>
@@ -197,3 +184,26 @@ const Input = forwardRef(
 Input.displayName = "Input";
 
 export default Input;
+
+/**
+ * Format the number to add space after every 3 digits
+ * @param {*} value
+ * @param {*} num
+ * @returns
+ */
+function formatNum(value, num) {
+	let formatted_num = "";
+	// This is for space removal when user removes the input
+	if (value.slice(0, value.length - 1) === num && num !== "") {
+		return num;
+	} else {
+		for (let i in num) {
+			if (num[i] !== " ") {
+				if (i === "2" || i === "6") {
+					formatted_num += num[i] + " ";
+				} else formatted_num += num[i];
+			}
+		}
+		return formatted_num;
+	}
+}
