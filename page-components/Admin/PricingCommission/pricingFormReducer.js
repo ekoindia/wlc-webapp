@@ -1,5 +1,5 @@
 export const INITIAL_FORM_STATE = {
-	commission: 2.5,
+	// commission: 2.5,
 	commissionFor: "1",
 	commissionType: "0",
 	// paymentMode: "1",
@@ -67,7 +67,7 @@ export const pricingFormReducer = (state, action) => {
 				}),
 			};
 		case "SET_DATA":
-			_data = action.payload.allScspList ?? [];
+			_data = action?.payload?.allScspList ?? [];
 			// action.for == 1
 			// 	? action.payload.allCspList ?? []
 			// 	: action.for == 2
