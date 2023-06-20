@@ -33,7 +33,7 @@ const PricingForm = ({
 		INITIAL_FORM_STATE
 	);
 	const {
-		commission,
+		// commission,
 		commissionFor,
 		commissionType,
 		paymentMode,
@@ -198,7 +198,8 @@ const PricingForm = ({
 							}
 							type="number"
 							fontSize="sm"
-							defaultValue={commission}
+							// defaultValue={commission}
+							placeholder="2.5"
 							onChange={handleCommissionChange}
 							// onClick={() => handlePopUp(true)}
 							// onBlur={() => handlePopUp(false)}
