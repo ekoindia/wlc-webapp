@@ -1,6 +1,15 @@
 import { Flex } from "@chakra-ui/react";
-import { DateView } from "components/DateView";
-import { EarningOverview, SuccessRate, TopMerchants, TopPanel } from ".";
+import { Endpoints } from "constants/EndPoints";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
+import { useEffect, useState } from "react";
+import {
+	BusinessDashboardFilters,
+	EarningOverview,
+	SuccessRate,
+	TopMerchants,
+	TopPanel,
+} from ".";
 
 /**
  * A <BusinessDashboard> component
@@ -9,35 +18,64 @@ import { EarningOverview, SuccessRate, TopMerchants, TopPanel } from ".";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<BusinessDashboard></BusinessDashboard>`
  */
-const BusinessDashboard = ({
-	data,
-	currDate,
-	// setCurrDate,
-	prevDate,
-	// setPrevDate,
-	dateRange,
-	setDateRange,
-}) => {
+const BusinessDashboard = () => {
+	const [data, setData] = useState();
+	const [isLoading, setIsLoading] = useState(true);
+	console.log("isLoading", isLoading);
+	const { accessToken } = useSession();
+
+	const [dateRange, setDateRange] = useState(7);
+	const [prevDate, setPrevDate] = useState("");
+	const [currDate, setCurrDate] = useState("");
+
+	useEffect(() => {
+		let currentDate = new Date();
+		let previousDate = new Date(
+			currentDate.getTime() - dateRange * 24 * 60 * 60 * 1000
+		);
+		setCurrDate(currentDate.toISOString());
+		setPrevDate(previousDate.toISOString());
+	}, [dateRange]);
+
+	useEffect(() => {
+		console.log("[BusinessDashboard] fetch init...");
+
+		const controller = new AbortController();
+
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": "/network/agents/businessdashboard",
+				"tf-req-method": "GET",
+			},
+			body: {
+				dateFrom: prevDate.slice(0, 10),
+				dateTo: currDate.slice(0, 10),
+				dateRange: dateRange,
+			},
+			controller: controller,
+			token: accessToken,
+		})
+			.then((data) => {
+				console.log("[BusinessDashboard] - fetch result...", data);
+				const _data = data?.data?.dashboard_details[0] || [];
+				setData(_data);
+				setIsLoading(false);
+			})
+			.catch((err) => {
+				console.error(`[BusinessDashboard] error: `, err);
+			});
+
+		return () => {
+			console.log("[BusinessDashboard] fetch aborted...", controller);
+			setIsLoading(true);
+			controller.abort();
+		};
+	}, [currDate, prevDate]);
+
 	console.log("[BusinessDashboard] data", data);
 
 	const { topPanel, earningOverview, topMerchants, successRate } = data || {};
-
-	const handleDateRangeClick = (/* id, */ value) => {
-		setDateRange(value);
-	};
-
-	const calendarDataList = [
-		{
-			id: 0,
-			value: 7,
-			label: "Last 7 Days",
-		},
-		{
-			id: 1,
-			value: 30,
-			label: "Last 30 Days",
-		},
-	];
 
 	return (
 		<Flex direction="column">
@@ -48,50 +86,10 @@ const BusinessDashboard = ({
 			>
 				<TopPanel data={topPanel} />
 			</Flex>
-			<Flex
-				p="20px 20px 0px"
-				align="center"
-				justify="space-between"
-				direction={{ base: "column-reverse", md: "row" }}
-				fontSize="sm"
-				gap={{ base: "2", md: "0" }}
-			>
-				<span>
-					Showing stats from{" "}
-					<DateView
-						date={prevDate}
-						format="dd MMM, yyyy"
-						fontWeight="medium"
-					/>{" "}
-					to{" "}
-					<DateView
-						date={currDate}
-						format="dd MMM, yyyy"
-						fontWeight="medium"
-					/>
-				</span>
-				<Flex align="center" gap="4">
-					{calendarDataList?.map((item) => {
-						const isActive = dateRange === item.value;
-						return (
-							<Flex
-								key={item.id}
-								bg={isActive ? "white" : "initial"}
-								p="6px 8px"
-								borderRadius={isActive ? "10px" : "0px"}
-								border={isActive ? "card" : "none"}
-								onClick={() =>
-									handleDateRangeClick(
-										/* item.id, */ item.value
-									)
-								}
-								cursor="pointer"
-							>
-								{item.label}
-							</Flex>
-						);
-					})}
-				</Flex>
+			<Flex p="20px 20px 0px">
+				<BusinessDashboardFilters
+					{...{ prevDate, currDate, dateRange, setDateRange }}
+				/>
 			</Flex>
 			<Flex p="20px" gap="4" wrap="wrap">
 				<Flex flex="2">

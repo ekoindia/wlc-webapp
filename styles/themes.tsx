@@ -67,6 +67,11 @@ export const light = extendTheme({
 	components: {
 		Table: tableTheme,
 		Button: buttonTheme,
+		Skeleton: {
+			baseStyle: {
+				borderRadius: "4px",
+			},
+		},
 		FormLabel: {
 			baseStyle: {
 				fontSize: { base: "sm", "2xl": "lg" },

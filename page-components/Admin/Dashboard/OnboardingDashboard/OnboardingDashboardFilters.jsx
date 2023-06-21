@@ -1,18 +1,20 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useState } from "react";
-
 /**
- * A Filter page-component
+ * A Onboarding Dashboard Filter page-component
  * TODO: Write more description here
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Filter></Filter>`
+ * @example	`<OnboardingDashboardFilters></OnboardingDashboardFilters>`
  */
-const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
+const OnboardingDashboardFilters = ({
+	filterLoading,
+	filterData: _data,
+	filterStatus,
+	setFilterStatus,
+}) => {
 	const [inFunnel, setInFunnel] = useState(false);
-	console.log("[Filter] data", filterData);
-	const _data = filterData?.topPanel ?? {};
 
 	const funnelKeyList = [48, 51, 52, 53, 54];
 
@@ -124,6 +126,7 @@ const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
 				</Text>
 			</Flex>
 			<Flex
+				className="skeleton_filter_parent"
 				justify={{ base: "space-between", xl: "flex-start" }}
 				overflowX="auto"
 				css={{
@@ -139,40 +142,41 @@ const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
 				pb="20px"
 			>
 				{filterList?.map((item, index) => {
+					console.log("item", item.value);
+
 					const isActive =
 						item.id === 0 && inFunnel
 							? true
 							: filterStatus?.includes(item.key);
 					return (
-						item.value && (
-							<Flex
-								key={item.id}
-								direction="column"
-								justify="space-between"
-								bg="white"
-								p="10px 15px"
-								border={
-									isActive ? "1px solid #1F5AA7" : "basic"
-								}
-								boxShadow={
-									isActive ? "0px 3px 10px #1F5AA733" : null
-								}
-								borderRadius="10px"
-								minW={{ base: "135px", sm: "160px" }}
-								maxW="160px"
-								ml="20px"
-								mr={
-									index === filterListLength - 1
-										? "20px"
-										: null
-								}
-								_hover={{ boxShadow: "0px 3px 10px #0000000D" }}
-								onClick={() => {
-									handleFilterStatusClick(item.id, item.key);
-								}}
-								cursor="pointer"
+						<Flex
+							key={item.id}
+							direction="column"
+							justify="space-between"
+							bg="white"
+							p="10px 15px"
+							border={isActive ? "1px solid #1F5AA7" : "basic"}
+							boxShadow={
+								isActive ? "0px 3px 10px #1F5AA733" : null
+							}
+							borderRadius="10px"
+							minW={{ base: "135px", sm: "160px" }}
+							maxW="160px"
+							ml="20px"
+							mr={index === filterListLength - 1 ? "20px" : null}
+							_hover={{ boxShadow: "0px 3px 10px #0000000D" }}
+							onClick={() => {
+								handleFilterStatusClick(item.id, item.key);
+							}}
+							cursor="pointer"
+							gap="2"
+						>
+							<Text fontSize="sm">{item.label}</Text>
+							<Skeleton
+								isLoaded={!filterLoading}
+								w="40%"
+								minH="1em"
 							>
-								<Text fontSize="sm">{item.label}</Text>
 								<Text
 									fontWeight="semibold"
 									color="secondary.DEFAULT"
@@ -180,8 +184,8 @@ const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
 								>
 									<span>{item.value}</span>
 								</Text>
-							</Flex>
-						)
+							</Skeleton>
+						</Flex>
 					);
 				})}
 			</Flex>
@@ -189,4 +193,4 @@ const Filter = ({ filterData, filterStatus, setFilterStatus }) => {
 	);
 };
 
-export default Filter;
+export default OnboardingDashboardFilters;

@@ -14,13 +14,11 @@ const OnboardedMerchants = ({
 	totalRecords,
 	pageNumber,
 	setPageNumber,
+	isLoading,
 }) => {
-	console.log(
-		"[OnboardedMerchants] data",
-		onboardingMerchantData?.onboardedMerchants
-	);
-	const onboardedMerchantsTableData =
-		onboardingMerchantData?.onboardedMerchants || [];
+	// console.log("[OnboardedMerchants] isLoading", isLoading);
+	// console.log("[OnboardedMerchants] data", onboardingMerchantData);
+
 	const renderer = [
 		{
 			name: "merchantName",
@@ -31,11 +29,6 @@ const OnboardedMerchants = ({
 		{
 			name: "ekoCode",
 			field: "User Code",
-			sorting: true,
-		},
-		{
-			name: "refId",
-			field: "Ref. ID", //TODO check
 			sorting: true,
 		},
 		{
@@ -72,13 +65,14 @@ const OnboardedMerchants = ({
 			</Text>
 			<Table
 				renderer={renderer}
-				visibleColumns={6}
-				data={onboardedMerchantsTableData}
+				visibleColumns={5}
+				data={onboardingMerchantData}
 				variant="stripedActionExpand"
 				ResponsiveCard={OnboardingDashboardCard}
 				totalRecords={totalRecords}
 				pageNumber={pageNumber}
 				setPageNumber={setPageNumber}
+				isLoading={isLoading}
 			/>
 		</Flex>
 	);

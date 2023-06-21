@@ -1,6 +1,7 @@
 import {
 	Divider,
 	Flex,
+	Skeleton,
 	Td as ChakraTd,
 	Text,
 	Tr as ChakraTr,
@@ -25,15 +26,19 @@ const Tr = ({
 	tableRowLimit,
 	tableName,
 	visibleColumns,
+	isLoading,
 }) => {
 	const [expandedRow, setExpandedRow] = useState(null);
+
 	const visible = visibleColumns > 0;
+
 	const main = visible
 		? [
 				{ field: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
 		  ]
 		: renderer;
+
 	const extra = visible ? renderer?.slice(visibleColumns) : [];
 
 	const handleRowClick = (index) => {
@@ -44,104 +49,125 @@ const Tr = ({
 		}
 	};
 
-	return data?.map((item, index) => {
-		const serialNumber =
-			index + pageNumber * tableRowLimit - (tableRowLimit - 1);
-		return (
-			<>
-				<ChakraTr
-					onClick={() => handleRowClick(index)}
-					fontSize={{ base: "10px", xl: "12px", "2xl": "16px" }}
-				>
-					{main?.map((column, rendererIndex) => {
-						return (
-							<ChakraTd
-								p={{ base: ".5em", xl: "1em" }}
-								key={`${rendererIndex}-${column.field}-${serialNumber}`}
-							>
-								{prepareTableCell(
-									item,
-									column,
-									index,
-									serialNumber,
-									tableName,
-									expandedRow
-								)}
-							</ChakraTd>
-						);
-					})}
-				</ChakraTr>
-				{/* For Expanded Row */}
-				{visible && expandedRow === index && (
-					<ChakraTd
-						colSpan={main.length}
-						bg={index % 2 ? "shade" : "initial"}
+	if (!isLoading) {
+		return data?.map((item, index) => {
+			const serialNumber =
+				index + pageNumber * tableRowLimit - (tableRowLimit - 1);
+			return (
+				<>
+					<ChakraTr
+						onClick={() => handleRowClick(index)}
+						fontSize={{ base: "10px", xl: "12px", "2xl": "16px" }}
 					>
-						<Divider />
-						<Text
-							fontWeight="medium"
-							fontSize="xs"
-							textColor="light"
-							my="2"
+						{main?.map((column, rendererIndex) => {
+							return (
+								<ChakraTd
+									p={{ base: ".5em", xl: "1em" }}
+									key={`${rendererIndex}-${column.field}-${serialNumber}`}
+								>
+									{prepareTableCell(
+										item,
+										column,
+										index,
+										serialNumber,
+										tableName,
+										expandedRow
+									)}
+								</ChakraTd>
+							);
+						})}
+					</ChakraTr>
+					{/* For Expanded Row */}
+					{visible && expandedRow === index && (
+						<ChakraTd
+							colSpan={main.length}
+							bg={index % 2 ? "shade" : "initial"}
 						>
-							Other Details
-						</Text>
-						<Flex w="100%" justify="space-between" gap="3">
-							<Flex
-								key={index}
-								justify="flex-start"
-								w="100%"
-								wrap="wrap"
-								fontSize={{
-									base: "10px",
-									xl: "12px",
-								}}
-								gap="6"
+							<Divider />
+							<Text
+								fontWeight="medium"
+								fontSize="xs"
+								textColor="light"
+								my="2"
 							>
-								{extra?.map((column, rendererIndex) =>
-									item[column.name] ? (
-										<>
-											<Flex direction="column">
-												<Text
-													textColor="light"
-													fontSize="xxs"
-												>
-													{column.field}
-												</Text>
-												<Text
-													fontWeight="semibold"
-													fontSize="xs"
-												>
-													{prepareTableCell(
-														item,
-														column,
-														index
-													)}
-												</Text>
-											</Flex>
-											{rendererIndex <
-												extra.length - 1 && (
-												<Divider
-													orientation="vertical"
-													h="auto"
-												/>
-											)}
-										</>
-									) : null
+								Other Details
+							</Text>
+							<Flex w="100%" justify="space-between" gap="3">
+								<Flex
+									key={index}
+									justify="flex-start"
+									w="100%"
+									wrap="wrap"
+									fontSize={{
+										base: "10px",
+										xl: "12px",
+									}}
+									gap="6"
+								>
+									{extra?.map((column, rendererIndex) =>
+										item[column.name] ? (
+											<>
+												<Flex direction="column">
+													<Text
+														textColor="light"
+														fontSize="xxs"
+													>
+														{column.field}
+													</Text>
+													<Text
+														fontWeight="semibold"
+														fontSize="xs"
+													>
+														{prepareTableCell(
+															item,
+															column,
+															index
+														)}
+													</Text>
+												</Flex>
+												{rendererIndex <
+													extra.length - 1 && (
+													<Divider
+														orientation="vertical"
+														h="auto"
+													/>
+												)}
+											</>
+										) : null
+									)}
+								</Flex>
+								{/* "Repeat Transaction" button for History table only, need to update logic in future */}
+								{tableName === "History" && (
+									<Button fontSize="xs" size="md" disabled>
+										Repeat Transaction
+									</Button>
 								)}
 							</Flex>
-							{/* "Repeat Transaction" button for History table only, need to update logic in future */}
-							{tableName === "History" && (
-								<Button fontSize="xs" size="md" disabled>
-									Repeat Transaction
-								</Button>
-							)}
-						</Flex>
-					</ChakraTd>
-				)}
-			</>
-		);
-	});
+						</ChakraTd>
+					)}
+				</>
+			);
+		});
+	} else {
+		return Array(5)
+			.fill(Math.random())
+			.map((item, index) => (
+				<ChakraTr key={`${item}-${index}`}>
+					{main?.map((column, index) => (
+						<ChakraTd
+							p={{ base: ".5em", xl: "1em" }}
+							key={`${column.field}-${index}`}
+						>
+							<Skeleton
+								h="1em"
+								// w={`${Math.floor(Math.random() * 100)}%`}
+								w="60%"
+							/>
+						</ChakraTd>
+					))}
+				</ChakraTr>
+			));
+	}
 };
 
 export default Tr;
