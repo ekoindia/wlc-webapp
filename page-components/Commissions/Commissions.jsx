@@ -84,7 +84,7 @@ const Commissions = () => {
 			border="card"
 			borderRadius="10"
 			boxShadow="0px 5px 15px #0000000D"
-			bg="white"
+			bg="bg"
 			px="16px"
 		>
 			<Headings title="Know Your Commissions" />
@@ -102,15 +102,20 @@ const Commissions = () => {
 						fontSize="12"
 						bg={
 							tx.product.toLowerCase() === tagValue
-								? "#11299E"
-								: "#E9EDF1"
+								? "accent.DEFAULT"
+								: "bg"
 						}
 						color={
 							tx.product.toLowerCase() === tagValue
-								? "white"
-								: "#555"
+								? "focusbg"
+								: "dark"
 						}
-						_hover={{ bg: "#11299E", color: "white" }}
+						_hover={
+							tx.product.toLowerCase() === tagValue
+								? { bg: "accent.DEFAULT", color: "bg" }
+								: { bg: "darkShade", color: "dark" }
+						}
+						// _hover={{ bg: "#11299E", color: "white" }}
 						onClick={() => handleTagClick(tx.product)}
 					/>
 				))}
