@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useMemo, useState } from "react";
+import { ANDROID_ACTION, doAndroidAction } from "utils";
 import { NavBar, PageLoader, SideBar } from "..";
 
 // Lazy-load the CommandBarBox component
@@ -40,13 +41,12 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	// Setup Android Listener...
 	useEffect(() => {
 		if (typeof window !== "undefined") {
+			// Inform Android wrapper app that the page has loaded...
+			doAndroidAction(ANDROID_ACTION.WEBAPP_READY);
+
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
-				console.log(
-					"[_app.tsx] callFromAndroid:: ",
-					action,
-					JSON.stringify(data)
-				);
+				console.log("[_app.tsx] callFromAndroid:: ", action, data);
 
 				publish(TOPICS.ANDROID_RESPONSE, { action, data });
 			};
