@@ -1,4 +1,4 @@
-import { Box, Flex, Radio, RadioGroup, Text } from "@chakra-ui/react";
+import { Box, Flex, Radio, RadioGroup, Text, useToast } from "@chakra-ui/react";
 import { Button, Icon, Input, MultiSelect, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts/UserContext";
@@ -28,17 +28,15 @@ const PricingForm = ({
 	paymentModeObj,
 }) => {
 	// const focusRef = useRef(null);
+	const toast = useToast();
 	const [state, dispatch] = useReducer(
 		pricingFormReducer,
 		INITIAL_FORM_STATE
 	);
 	const {
-		// commission,
 		commissionFor,
 		commissionType,
 		paymentMode,
-		// fromMultiSelect,
-		// fromSelect,
 		data, //to show in multiselect
 		finalData,
 	} = state;
@@ -72,14 +70,7 @@ const PricingForm = ({
 		dispatch({ type: "RESET" });
 	};
 
-	// const charges = {
-	// 	"Fixed Charges": 1.8,
-	// 	Taxes: 0.8,
-	// 	"Network Earnings": 4.12,
-	// 	"Your Earnings": 3.28,
-	// };
-
-	const hitQuery = (op) => {
+	const hitQuery = (operation, callback) => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -88,17 +79,13 @@ const PricingForm = ({
 			},
 			body: {
 				operation_type: commissionFor, //commissionFor
-				operation: op,
+				operation: operation,
 				...finalData,
 			},
 			token: accessToken,
 		})
 			.then((data) => {
-				dispatch({
-					type: "SET_DATA",
-					payload: data?.data,
-					for: commissionFor,
-				});
+				callback(data);
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
@@ -108,13 +95,54 @@ const PricingForm = ({
 	useEffect(() => {
 		if (commissionFor !== "3") {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
-			hitQuery(OPERATION.FETCH);
+			hitQuery(OPERATION.FETCH, (data) => {
+				if (data.status === 0) {
+					dispatch({
+						type: "SET_DATA",
+						payload: data?.data,
+						for: commissionFor,
+					});
+				} else {
+					toast({
+						title: data.message,
+						status: getStatus(data.status),
+						duration: 5000,
+						isClosable: true,
+					});
+				}
+			});
 		}
 	}, [product, commissionFor]);
 
 	const handleSubmit = () => {
-		hitQuery(OPERATION.SUBMIT);
+		hitQuery(OPERATION.SUBMIT, (data) => {
+			toast({
+				title: data.message,
+				status: getStatus(data.status),
+				duration: 5000,
+				isClosable: true,
+			});
+			handleReset();
+		});
 	};
+
+	const getStatus = (status) => {
+		switch (status) {
+			case 0:
+				return "success";
+			case 1:
+				return "error";
+			default:
+				return "info";
+		}
+	};
+
+	// const charges = {
+	// 	"Fixed Charges": 1.8,
+	// 	Taxes: 0.8,
+	// 	"Network Earnings": 4.12,
+	// 	"Your Earnings": 3.28,
+	// };
 
 	// const handlePopUp = (focused) => {
 	// 	focusRef.current.style.display = focused ? "block" : "none";

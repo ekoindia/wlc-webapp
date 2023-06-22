@@ -1,12 +1,6 @@
 export const INITIAL_FORM_STATE = {
-	// commission: 2.5,
 	commissionFor: "1",
 	commissionType: "0",
-	// paymentMode: "1",
-	// fromMultiSelect: [],
-	// fromSelect: [],
-	// data: [],
-	// finalData: {},
 };
 
 export const pricingFormReducer = (state, action) => {
@@ -123,7 +117,7 @@ const calculateFinalData = (_finalData) => {
 		};
 	}
 
-	if (fromMultiSelect.length > 0) {
+	if (fromMultiSelect?.length > 0) {
 		finalData = {
 			...finalData,
 			csplist: fromMultiSelect.map((num) => Number(num)), //multiselect
