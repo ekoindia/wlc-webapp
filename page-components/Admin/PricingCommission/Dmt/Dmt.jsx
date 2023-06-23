@@ -1,4 +1,4 @@
-import { ProductPricingType, ProductSlabs } from "constants";
+import { productPricingType, products } from "constants";
 import { PricingForm } from "..";
 
 /**
@@ -24,8 +24,8 @@ const Dmt = ({ prop1, ...rest }) => {
 		<div {...rest}>
 			<PricingForm
 				product="dmt"
-				ProductPricingType={ProductPricingType.DMT}
-				ProductSlabs={ProductSlabs.DMT}
+				productPricingType={productPricingType.DMT}
+				productSlabs={products.DMT.slabs}
 				commissionForObj={commissionForObj}
 				commissionTypeObj={commissionTypeObj}
 			/>

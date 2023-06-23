@@ -18,9 +18,9 @@ export {
 	IconType,
 } from "./IconLibrary";
 export {
-	ProductPricingTextConfig,
-	ProductPricingType,
-	ProductSlabs,
+	productPricingTextConfig,
+	productPricingType,
+	products,
 } from "./ProductDetails";
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
 export { roles } from "./role";

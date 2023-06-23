@@ -1,7 +1,6 @@
 import { Flex, Select as ChakraSelect } from "@chakra-ui/react";
 import { useState } from "react";
 import { Icon, InputLabel } from "..";
-
 /**
  * A <Select> component
  * TODO: Write more description here
@@ -16,6 +15,7 @@ const Select = ({
 	inputContStyle,
 	data,
 	setSelected,
+	disabled = false,
 }) => {
 	const [selectedValue, setSelectedValue] = useState({});
 
@@ -42,6 +42,7 @@ const Select = ({
 				</Flex>
 			) : null}
 			<ChakraSelect
+				disabled={disabled}
 				placeholder={placeholder || "-- Select --"}
 				h="3rem"
 				fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
@@ -56,7 +57,6 @@ const Select = ({
 				onChange={handleSelectChange}
 				value={selectedValue}
 				{...inputContStyle}
-				// isDisabled={data.length === 1} //TODO add default select functionality
 			>
 				{data?.map((value, index) => (
 					<option value={[value.min, value.max]} key={index}>

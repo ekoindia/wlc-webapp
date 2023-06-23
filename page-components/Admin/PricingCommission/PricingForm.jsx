@@ -21,8 +21,8 @@ const OPERATION = {
  */
 const PricingForm = ({
 	product,
-	ProductSlabs,
-	ProductPricingType,
+	productSlabs,
+	productPricingType,
 	commissionForObj,
 	commissionTypeObj,
 	paymentModeObj,
@@ -42,6 +42,22 @@ const PricingForm = ({
 	} = state;
 	const { accessToken } = useSession();
 
+	/*handling single slab */
+	const _disabled = productSlabs?.length === 1;
+	const _placeholder = _disabled
+		? productSlabs[0].min == productSlabs[0].max
+			? productSlabs[0].max
+			: `${productSlabs[0].min} - ${productSlabs[0].max}`
+		: undefined;
+
+	useEffect(() => {
+		if (_disabled) {
+			const _data = [productSlabs[0].min, productSlabs[0].max];
+			handleSelectData(_data);
+		}
+	}, []);
+
+	/* Handlers */
 	const handleCommissionChange = (event) => {
 		dispatch({ type: "SET_COMMISSION", payload: event.target.value });
 	};
@@ -155,7 +171,7 @@ const PricingForm = ({
 	return (
 		<Flex direction="column" gap="10" fontSize="md">
 			<RadioInput
-				label={`Select ${ProductPricingType} For`}
+				label={`Select ${productPricingType} For`}
 				defaultValue="0"
 				value={commissionFor}
 				onChange={handleCommissionForChange}
@@ -182,11 +198,16 @@ const PricingForm = ({
 
 			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
 				<Text fontWeight="semibold">Select Slab</Text>
-				<Select data={ProductSlabs} setSelected={handleSelectData} />
+				<Select
+					data={productSlabs}
+					setSelected={handleSelectData}
+					disabled={_disabled}
+					placeholder={_placeholder}
+				/>
 			</Flex>
 
 			<RadioInput
-				label={`Select ${ProductPricingType} Type`}
+				label={`Select ${productPricingType} Type`}
 				defaultValue="0"
 				value={commissionType}
 				onChange={handleCommissionTypeChange}
@@ -204,7 +225,7 @@ const PricingForm = ({
 			) : null}
 
 			<Flex direction="column" gap="2">
-				<Text fontWeight="semibold">{`Define ${ProductPricingType}`}</Text>
+				<Text fontWeight="semibold">{`Define ${productPricingType}`}</Text>
 				<Flex gap="6" direction={{ base: "column", md: "row" }}>
 					<Flex
 						direction="column"
