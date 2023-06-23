@@ -3,7 +3,7 @@
  * The following functions are available:
  * - isAndroidApp: Checks if the web-app is running inside the Android wrapper app.
  * - doAndroidAction: Sends a message to the Android app.
- * - listenToAndroidMessages: This functionality is implemented in the Layout component.
+ * - The functionality to "listen to Android Messages" is implemented in the Layout component.
  */
 
 /**

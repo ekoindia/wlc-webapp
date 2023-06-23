@@ -26,6 +26,7 @@ import { Pagination } from "..";
 const Table = ({
 	renderer,
 	data,
+	isLoading,
 	totalRecords,
 	pageNumber = 1,
 	setPageNumber = () => {},
@@ -103,6 +104,7 @@ const Table = ({
 									tableRowLimit,
 									tableName,
 									visibleColumns,
+									isLoading,
 								}}
 							/>
 						</Tbody>

@@ -133,13 +133,13 @@ const ChangeRole = () => {
 							/>
 						</TabPanel>
 						<TabPanel>
-							<p>two!</p>
+							<p>Coming Soon...</p>
 						</TabPanel>
 						<TabPanel>
-							<p>three!</p>
+							<p>Coming Soon...</p>
 						</TabPanel>
 						<TabPanel>
-							<p>three!</p>
+							<p>Coming Soon...</p>
 						</TabPanel>
 					</TabPanels>
 				</Tabs>
