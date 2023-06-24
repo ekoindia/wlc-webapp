@@ -3,12 +3,16 @@ import {
 	AccordionButton,
 	AccordionItem,
 	AccordionPanel,
+	Avatar,
 	Box,
 	Flex,
 	Text,
 } from "@chakra-ui/react";
-import { Button } from "components";
-import { getNameStyle, getStatusStyle } from "helpers/TableHelpers";
+import { Button, Icon } from "components";
+import { useMenuContext } from "contexts";
+import { getStatusStyle } from "helpers/TableHelpers";
+import useHslColor from "hooks/useHslColor";
+import { formatDateTime } from "libs";
 
 /**
  * A <HistoryCard> component
@@ -19,14 +23,43 @@ import { getNameStyle, getStatusStyle } from "helpers/TableHelpers";
  * @example	`<HistoryCard></HistoryCard>` TODO: Fix example
  */
 const HistoryCard = ({ item, rendererExpandedRow }) => {
+	const { interactions } = useMenuContext();
+	const { trxn_type_prod_map } = interactions;
+	const txicon = trxn_type_prod_map?.[item.tx_typeid]?.icon || null;
+	const { h } = useHslColor(item.tx_name);
+
 	return (
 		<>
-			<Flex justifyContent="space-between">
+			<Flex align="center">
+				<Avatar
+					size="sm"
+					name={txicon ? null : item.tx_name}
+					mr="8px"
+					border={`2px solid hsl(${h},80%,90%)`}
+					bg={`hsl(${h},80%,95%)`}
+					color={`hsl(${h},80%,30%)`}
+					icon={
+						<Icon
+							size="sm"
+							name={txicon}
+							// color={`hsl(${h},80%,30%)`}
+						/>
+					}
+				/>
+				<Flex direction="column" flexGrow={1}>
+					<Box fontSize="xs" color="light">
+						{formatDateTime(item.datetime)}
+					</Box>
+					<Box
+						color="accent.DEFAULT"
+						fontWeight="semibold"
+						fontSize="sm"
+					>
+						{item.tx_name}
+					</Box>
+				</Flex>
 				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-					{getNameStyle(item.trx_name)}
-				</Box>
-				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
-					{getStatusStyle(item.status)}
+					{getStatusStyle(item.status, "History")}
 				</Box>
 			</Flex>
 			<Flex direction="column" fontSize={{ base: "sm" }} pl="42px">
@@ -35,23 +68,7 @@ const HistoryCard = ({ item, rendererExpandedRow }) => {
 						Transaction ID:
 					</Box>
 					<Box as="span" color="dark">
-						{item.trx_id}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Date:
-					</Box>
-					<Box as="span" color="dark">
-						{item.date}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Time:
-					</Box>
-					<Box as="span" color="dark">
-						{item.time}
+						{item.tid}
 					</Box>
 				</Flex>
 			</Flex>

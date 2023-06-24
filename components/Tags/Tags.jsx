@@ -6,13 +6,15 @@ const statusChecker = {
 	Inactive: "error",
 	Cancel: "error",
 	Failed: "error",
-	Pending: "primary.DEFAULT",
+	Fail: "error",
+	Pending: "orange.500",
 	Other: "light",
 };
 
 const Tags = ({
-	status = "Active",
+	status = "Other",
 	px = { base: "16px", md: "18px", xl: "22px" },
+	size = "md",
 	styles,
 	...props
 }) => {
@@ -25,7 +27,7 @@ const Tags = ({
 			colorScheme={sts}
 			color={sts}
 			bg="white"
-			size={"md"}
+			size={size}
 			fontWeight={"regular"}
 			px={px}
 			{...styles}

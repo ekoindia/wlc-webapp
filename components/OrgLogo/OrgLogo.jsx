@@ -49,6 +49,11 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 			alt={orgDetail.app_name + " logo"}
 			maxW={{ base: "10rem", md: "20rem", "2xl": "30rem" }}
 			height={logoHeight}
+			sx={{
+				"@media print and (max-width:5in)": {
+					height: "32px",
+				},
+			}}
 			{...rest}
 		/>
 	);

@@ -6,9 +6,36 @@ import {
 	Text,
 	Tr as ChakraTr,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { DisplayMedia } from "constants";
+import { Fragment, useState } from "react";
 import { prepareTableCell } from ".";
 import { Button } from "..";
+
+/**
+ * Show the column on screen?
+ * @param {number} display_media_id
+ * @returns
+ */
+const showOnScreen = (display_media_id) => {
+	display_media_id = display_media_id ?? DisplayMedia.BOTH;
+	return (
+		display_media_id === DisplayMedia.SCREEN ||
+		display_media_id === DisplayMedia.BOTH
+	);
+};
+
+/**
+ * Show the column in print?
+ * @param {number} display_media_id
+ * @returns
+ */
+const showInPrint = (display_media_id) => {
+	display_media_id = display_media_id ?? DisplayMedia.BOTH;
+	return (
+		display_media_id === DisplayMedia.PRINT ||
+		display_media_id === DisplayMedia.BOTH
+	);
+};
 
 /**
  * A Tr component
@@ -27,6 +54,7 @@ const Tr = ({
 	tableName,
 	visibleColumns,
 	isLoading,
+	printExpansion = false,
 }) => {
 	const [expandedRow, setExpandedRow] = useState(null);
 
@@ -40,6 +68,12 @@ const Tr = ({
 		: renderer;
 
 	const extra = visible ? renderer?.slice(visibleColumns) : [];
+	// const printExtras =
+	// 	tableName === "History"
+	// 		? [{ name: "trx_name", field: "Transaction" }]
+	// 		: [];
+
+	console.log("visibleColumns", extra);
 
 	const handleRowClick = (index) => {
 		if (visible) {
@@ -54,16 +88,24 @@ const Tr = ({
 			const serialNumber =
 				index + pageNumber * tableRowLimit - (tableRowLimit - 1);
 			return (
-				<>
+				<Fragment key={`tr${serialNumber}`}>
 					<ChakraTr
 						onClick={() => handleRowClick(index)}
 						fontSize={{ base: "10px", xl: "12px", "2xl": "16px" }}
+						sx={{
+							"@media print": {
+								display:
+									printExpansion === true
+										? "none !important"
+										: null,
+							},
+						}}
 					>
 						{main?.map((column, rendererIndex) => {
 							return (
 								<ChakraTd
 									p={{ base: ".5em", xl: "1em" }}
-									key={`${rendererIndex}-${column.field}-${serialNumber}`}
+									key={`td-${rendererIndex}-${column.field}-${serialNumber}`}
 								>
 									{prepareTableCell(
 										item,
@@ -82,13 +124,30 @@ const Tr = ({
 						<ChakraTd
 							colSpan={main.length}
 							bg={index % 2 ? "shade" : "initial"}
+							pl={{ base: 0, lg: "60px" }}
+							sx={{
+								"@media print": {
+									bg: "initial",
+								},
+							}}
 						>
-							<Divider />
+							<Divider
+								sx={{
+									"@media print": {
+										display: "none !important",
+									},
+								}}
+							/>
 							<Text
-								fontWeight="medium"
+								fontWeight="semibold"
 								fontSize="xs"
 								textColor="light"
 								my="2"
+								sx={{
+									"@media print": {
+										display: "none !important",
+									},
+								}}
 							>
 								Other Details
 							</Text>
@@ -106,8 +165,29 @@ const Tr = ({
 								>
 									{extra?.map((column, rendererIndex) =>
 										item[column.name] ? (
-											<>
-												<Flex direction="column">
+											<Fragment
+												key={`tdexp-${rendererIndex}-${column.field}-${serialNumber}`}
+											>
+												<Flex
+													direction="column"
+													display={
+														showOnScreen(
+															column.display_media_id
+														)
+															? "inline-flex"
+															: "none !important"
+													}
+													sx={{
+														"@media print": {
+															display:
+																showInPrint(
+																	column.display_media_id
+																)
+																	? "inline-flex"
+																	: "none !important",
+														},
+													}}
+												>
 													<Text
 														textColor="light"
 														fontSize="xxs"
@@ -132,20 +212,29 @@ const Tr = ({
 														h="auto"
 													/>
 												)}
-											</>
+											</Fragment>
 										) : null
 									)}
 								</Flex>
 								{/* "Repeat Transaction" button for History table only, need to update logic in future */}
 								{tableName === "History" && (
-									<Button fontSize="xs" size="md" disabled>
+									<Button
+										fontSize="xs"
+										size="md"
+										disabled
+										sx={{
+											"@media print": {
+												display: "none !important",
+											},
+										}}
+									>
 										Repeat Transaction
 									</Button>
 								)}
 							</Flex>
 						</ChakraTd>
 					)}
-				</>
+				</Fragment>
 			);
 		});
 	} else {

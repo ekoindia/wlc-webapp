@@ -6,6 +6,7 @@ import {
 	Icon,
 	Input,
 	Modal,
+	PrintReceipt,
 	SearchBar,
 } from "components";
 import { Endpoints, tableRowLimit, TransactionTypes } from "constants";
@@ -233,6 +234,12 @@ const History = () => {
 				boxShadow={{ base: "none", md: "0px 5px 15px #0000000D;" }}
 				bg={{ base: "none", md: "white" }}
 				px="16px"
+				sx={{
+					"@media print": {
+						padding: "0 !important",
+						bg: "none !important",
+					},
+				}}
 			>
 				<HistoryToolbar
 					{...{
@@ -251,12 +258,14 @@ const History = () => {
 						onFilterClear,
 					}}
 				/>
-				<HistoryTable
-					pageNumber={currentPage}
-					setPageNumber={setCurrentPage}
-					transactionList={transactionList}
-					tableRowLimit={limit}
-				/>
+				<PrintReceipt heading="Transaction Receipt (copy)">
+					<HistoryTable
+						pageNumber={currentPage}
+						setPageNumber={setCurrentPage}
+						transactionList={transactionList}
+						tableRowLimit={limit}
+					/>
+				</PrintReceipt>
 			</Flex>
 		</>
 	);
@@ -326,6 +335,11 @@ const HistoryToolbar = ({
 			justifyContent={"space-between"}
 			direction={{ base: "column-reverse", lg: "row" }}
 			alignItems={{ base: "none", lg: "center" }}
+			sx={{
+				"@media print": {
+					display: "none !important",
+				},
+			}}
 		>
 			{/* <===========================Toggles Button ===============================> */}
 			{/* <Flex gap="8px" overflowX="auto" mt={{ base: "40px", lg: "0px" }}>

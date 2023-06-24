@@ -1,67 +1,49 @@
 export const getHistoryTableProcessedData = (data) => {
-	const processedData = [];
-	data?.map((row) => {
-		const temp = {};
-		if (row) {
-			// temp["description"] = getNarrationText(dummyRowData);
-			temp["description"] = getNarrationText(row);
-		}
-		if (row.tx_name) {
-			temp["trx_name"] = row.tx_name;
-		}
-		if (row.tid) {
-			temp["trx_id"] = row.tid;
-		}
-		if (row.datetime) {
-			// const { date, time } = getFormattedDateAndTime(row.datetime);
-			// temp["date"] = date;
-			// temp["time"] = time;
-			temp["dateTime"] = row.datetime;
-		}
+	const processedData = data?.map((row) => {
+		row.description = getNarrationText(row);
 		if (row.amount_dr) {
-			temp["amount"] = row.amount_dr;
-			temp["trx_type"] = "DR";
+			row.amount = row.amount_dr;
+			row.trx_type = "DR";
+		} else if (row.amount_cr) {
+			row.amount = row.amount_cr;
+			row.trx_type = "CR";
 		}
-		if (row.amount_cr) {
-			temp["amount"] = row.amount_cr;
-			temp["trx_type"] = "CR";
-		}
-		if (row.status) {
-			// temp["status_id"] = row.status_id;
-			// temp["status"] =
-			// 	row.status_id === 0
-			// 		? row.status
-			// 		: row.status_id === 1
-			// 		? row.status
-			// 		: "";
-			temp["status"] = row.status;
-		}
-		if (row.r_bal) {
-			temp["balance"] = row.r_bal;
-		}
+		return row;
 
-		if (row.trackingnumber) {
-			temp["trackingNumber"] = row.trackingnumber;
-		}
-
-		if (row.customer_mobile) {
-			temp["customerMobile"] = row.customer_mobile;
-		}
-
-		if (row.commission_earned) {
-			temp["commissionEarned"] = row.commission_earned;
-		}
-		if (row.tid) {
-			temp["tid"] = row.tid;
-		}
-		if (row.client_ref_id) {
-			temp["clientRefID"] = row.client_ref_id;
-		}
-		if (row.fee) {
-			temp["fee"] = row.fee;
-		}
-
-		processedData.push(temp);
+		// if (row.tx_name) {
+		// 	temp["trx_name"] = row.tx_name;
+		// }
+		// if (row.tid) {
+		// 	temp["trx_id"] = row.tid;
+		// }
+		// if (row.datetime) {
+		// 	temp["dateTime"] = row.datetime;
+		// }
+		// if (row.status) {
+		// 	temp["status"] = row.status;
+		// }
+		// if (row.r_bal) {
+		// 	temp["balance"] = row.r_bal;
+		// }
+		// if (row.trackingnumber) {
+		// 	temp["trackingNumber"] = row.trackingnumber;
+		// }
+		// if (row.customer_mobile) {
+		// 	temp["customerMobile"] = row.customer_mobile;
+		// }
+		// if (row.commission_earned) {
+		// 	temp["commissionEarned"] = row.commission_earned;
+		// }
+		// if (row.tid) {
+		// 	temp["tid"] = row.tid;
+		// }
+		// if (row.client_ref_id) {
+		// 	temp["clientRefID"] = row.client_ref_id;
+		// }
+		// if (row.fee) {
+		// 	temp["fee"] = row.fee;
+		// }
+		// return temp;
 	});
 
 	return processedData;

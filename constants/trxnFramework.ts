@@ -1,6 +1,15 @@
 /* eslint-disable  no-unused-vars */
 
 /**
+ * Constants used in Transaction Framework.
+ * Make sure the IDs are in sync with INTERACTION-FRAMEWORK database.
+ * The following constants are used in the following places:
+ * - ParamType: Parameter types to parameter_type_id mapping.
+ * - ParamMeta: Metadata for the parameter types.
+ * - DisplayMedia: Mapping of media_type_ids.
+ */
+
+/**
  * Parameter types to parameter_type_id mapping.
  * Make sure the IDs are in sync with INTERACTION-FRAMEWORK database.
  */
@@ -727,4 +736,14 @@ export const ParamMeta: ParamMetaType = {
 		visible: true,
 		auto_chain: false,
 	},
+};
+
+/**
+ * Show a field in a particular display media (screen/print/both/none).
+ */
+export const DisplayMedia = {
+	BOTH: 0, // Default - show in both screen & print
+	SCREEN: 1, // Show only in screen
+	PRINT: 2, // Show only in print
+	NONE: 3, // Hide
 };

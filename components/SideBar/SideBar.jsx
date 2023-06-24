@@ -225,7 +225,7 @@ const generateMenuLinkActions = (menu_list, router) => {
 			});
 		}
 	});
-	console.log("menuLinkActions", menuLinkActions, menu_list);
+	// console.log("menuLinkActions", menuLinkActions, menu_list);
 	return menuLinkActions;
 };
 
@@ -318,7 +318,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 			...generateMenuLinkActions(menuList, router),
 		];
 
-		console.log("otherActions", _otherActions);
+		// console.log("otherActions", _otherActions);
 		setOtherActions(_otherActions);
 	}, [interaction_list, menuList, role_tx_list, router]);
 
@@ -334,7 +334,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 	// 	}
 	// }, [interaction_list, role_tx_list]);
 
-	console.log("trxnActions", trxnActions, otherActions);
+	// console.log("trxnActions", trxnActions, otherActions);
 
 	useRegisterActions(
 		[...trxnActions, ...otherActions],

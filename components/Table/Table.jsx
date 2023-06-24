@@ -19,8 +19,6 @@ import { Pagination } from "..";
  * A Table component
  * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Table></Table>` TODO: Fix example
  */
 const Table = ({
@@ -37,6 +35,7 @@ const Table = ({
 	defaultCardStyle = true,
 	variant = "stripedActionNone",
 	tableRowLimit = trl?.DEFAULT,
+	printExpansion = false,
 }) => {
 	const [hasNoMoreItems, setHasNoMoreItems] = useState(false);
 	console.log("hasNoMoreItems", hasNoMoreItems);
@@ -74,6 +73,7 @@ const Table = ({
 	return (
 		<Box w="100%">
 			{!isSmallScreen ? (
+				// Large screen
 				<TableContainer
 					borderRadius="10px 10px 0 0"
 					mt={{ base: "20px", "2xl": "10px" }} //TODO remove this
@@ -89,9 +89,23 @@ const Table = ({
 							border: "1px solid #707070",
 						},
 					}}
+					sx={{
+						"@media print": {
+							borderRadius: 0,
+							borderWidth: 0,
+						},
+					}}
 				>
 					<ChakraTable variant={variant} bg="white">
-						<Thead>
+						<Thead
+							sx={{
+								"@media print": printExpansion
+									? {
+											display: "none !important",
+									  }
+									: null,
+							}}
+						>
 							<Th {...{ renderer, visibleColumns }} />
 						</Thead>
 						<Tbody>
@@ -105,12 +119,14 @@ const Table = ({
 									tableName,
 									visibleColumns,
 									isLoading,
+									printExpansion,
 								}}
 							/>
 						</Tbody>
 					</ChakraTable>
 				</TableContainer>
 			) : (
+				// Small screen
 				<Flex
 					direction="column"
 					align="center"
