@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { OrgLogo } from "components";
 import { useOrgDetailContext, useUser } from "contexts";
 
@@ -71,17 +71,18 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 					</Flex>
 				</Flex>
 				{heading ? (
-					<Box
+					<Text
 						as="div"
+						fontSize="xs"
 						noOfLines={1}
 						py="5px"
 						my="10px"
-						border="1px solid #999"
+						border="1px solid #ccc"
 						borderX={0}
 						textAlign="center"
 					>
 						{heading}
-					</Box>
+					</Text>
 				) : null}
 			</Flex>
 			{children}
