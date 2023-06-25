@@ -40,7 +40,7 @@ const Table = ({
 	const [hasNoMoreItems, setHasNoMoreItems] = useState(false);
 	console.log("hasNoMoreItems", hasNoMoreItems);
 	const router = useRouter();
-	const [isSmallScreen] = useMediaQuery("(max-width: 860px)");
+	const [isSmallScreen] = useMediaQuery("only screen and (max-width: 860px)");
 	// const isSmallScreen = useBreakpointValue({ base: true, lg: false });
 
 	const tableDataListLength = data?.length;

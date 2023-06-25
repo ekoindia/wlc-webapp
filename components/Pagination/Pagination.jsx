@@ -46,6 +46,11 @@ const Pagination = ({
 			}
 			w="100%"
 			fontSize={isSmallScreen ? "md" : "xs"}
+			sx={{
+				"@media print": {
+					display: "none !important",
+				},
+			}}
 		>
 			{!isSmallScreen && totalCount && (
 				<Flex gap="1.5" color="light">
