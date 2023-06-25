@@ -1,6 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { IcoButton, Icon } from "components";
 import { useClipboard } from "hooks";
+import { useKBar } from "kbar";
 import { useState } from "react";
 
 /**
@@ -14,6 +15,7 @@ import { useState } from "react";
 const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 	const { copy, state } = useClipboard();
 	const [markedDone, setMarkedDone] = useState(-1);
+	const { query } = useKBar();
 
 	const markDone = (index) => {
 		setMarkedDone(index);
@@ -85,12 +87,14 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 					}}
 				>
 					<Flex
+						position="relative"
 						direction="row"
 						align="center"
 						justify="flex-start"
 						w="full"
 						ml="5px"
 						role="group"
+						overflow="hidden"
 					>
 						<Icon
 							title="Mark as done"
@@ -118,18 +122,36 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 						>
 							{todo}
 						</Text>
-						<IcoBtn
-							opacity="0"
-							mr="5px"
-							_groupHover={{ opacity: 1 }}
-							transition="opacity 0.3s ease-out"
-							title="Copy note"
-							iconName={
-								state === "SUCCESS" ? "check" : "content-copy"
-							}
-							bg="yellow.600"
-							onClick={() => copy(todo)}
-						/>
+						<Flex
+							align="center"
+							// position="absolute"
+							// top={0}
+							// bottom={0}
+							// right="0"
+							width={{ base: "80px", md: "0" }}
+							transition="width 0.1s ease-out"
+							_groupHover={{ width: "80px" }}
+						>
+							<IcoBtn
+								title="Search with this note"
+								iconName="search"
+								onClick={() => {
+									query.toggle();
+									setTimeout(() => {
+										query.setSearch(todo);
+									}, 100);
+								}}
+							/>
+							<IcoBtn
+								title="Copy note"
+								iconName={
+									state === "SUCCESS"
+										? "check"
+										: "content-copy"
+								}
+								onClick={() => copy(todo)}
+							/>
+						</Flex>
 					</Flex>
 				</Flex>
 			))}
@@ -145,8 +167,9 @@ const IcoBtn = ({ iconName, title = "Button", bg, onClick, ...rest }) => {
 			theme="dark"
 			size="sm"
 			// ml={{ base: "15px", xl: "20px" }}
-			opacity="0.7"
-			bg={bg}
+			mr="8px"
+			bg={bg || "yellow.600"}
+			transition="opacity 0.3s ease-out"
 			_hover={{ opacity: 0.9 }}
 			onClick={onClick}
 			{...rest}
