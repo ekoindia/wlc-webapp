@@ -1,4 +1,5 @@
 import {
+	Box,
 	Divider,
 	Flex,
 	Skeleton,
@@ -124,10 +125,12 @@ const Tr = ({
 						<ChakraTd
 							colSpan={main.length}
 							bg={index % 2 ? "shade" : "initial"}
-							pl={{ base: 0, lg: "60px" }}
+							pl={{ base: 0, md: "40px" }}
+							pr="10px"
 							sx={{
 								"@media print": {
 									bg: "initial",
+									p: 0,
 								},
 							}}
 						>
@@ -161,60 +164,92 @@ const Tr = ({
 										base: "10px",
 										xl: "12px",
 									}}
-									gap="6"
+									gap="24px"
+									overflow="hidden"
+									sx={{
+										"@media print": {
+											mb: "12px",
+										},
+									}}
 								>
-									{extra?.map((column, rendererIndex) =>
-										item[column.name] ? (
-											<Fragment
+									{extra?.map((column, rendererIndex) => {
+										// Show the value on screen?
+										const dispScreen = showOnScreen(
+											column.display_media_id
+										)
+											? "inline-flex"
+											: "none";
+
+										// Show the value in print?
+										const dispPrint = showInPrint(
+											column.display_media_id
+										)
+											? "inline-flex"
+											: "none";
+
+										// <Fragment
+										// 	key={`tdexp-${rendererIndex}-${column.field}-${serialNumber}`}
+										// >
+
+										return item[column.name] ? (
+											<Flex
 												key={`tdexp-${rendererIndex}-${column.field}-${serialNumber}`}
+												position="relative"
+												direction="column"
+												display={dispScreen}
+												sx={{
+													"@media print": {
+														display: dispPrint,
+													},
+												}}
+												overflow="visible"
 											>
-												<Flex
-													direction="column"
-													display={
-														showOnScreen(
-															column.display_media_id
-														)
-															? "inline-flex"
-															: "none !important"
-													}
+												<Box
+													position="absolute"
+													display="block"
+													height="100%"
+													width="1px"
+													backgroundColor="gray.300"
+													// left="-12px"
+													left="-12px"
+													top="0"
+													bottom="0"
+													zIndex="999"
+												></Box>
+												<Text
+													textColor="light"
+													fontSize="xxs"
+												>
+													{column.field}
+												</Text>
+												<Text
+													fontWeight="semibold"
+													fontSize="xs"
+												>
+													{prepareTableCell(
+														item,
+														column,
+														index
+													)}
+												</Text>
+											</Flex>
+										) : null;
+
+										/* {rendererIndex <
+												extra.length - 1 && (
+												<Divider
+													orientation="vertical"
+													h="auto"
+													display={dispScreen}
 													sx={{
 														"@media print": {
 															display:
-																showInPrint(
-																	column.display_media_id
-																)
-																	? "inline-flex"
-																	: "none !important",
+																dispPrint,
 														},
 													}}
-												>
-													<Text
-														textColor="light"
-														fontSize="xxs"
-													>
-														{column.field}
-													</Text>
-													<Text
-														fontWeight="semibold"
-														fontSize="xs"
-													>
-														{prepareTableCell(
-															item,
-															column,
-															index
-														)}
-													</Text>
-												</Flex>
-												{rendererIndex <
-													extra.length - 1 && (
-													<Divider
-														orientation="vertical"
-														h="auto"
-													/>
-												)}
-											</Fragment>
-										) : null
-									)}
+												/>
+											)} */
+									})}
 								</Flex>
 								{/* "Repeat Transaction" button for History table only, need to update logic in future */}
 								{tableName === "History" && (
