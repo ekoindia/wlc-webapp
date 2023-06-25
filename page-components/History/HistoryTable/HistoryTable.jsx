@@ -81,13 +81,34 @@ const HistoryTable = ({
 			display_media_id: DisplayMedia.SCREEN,
 		},
 
-		// Below are the extra fields shown upon expanding a row...
-
+		/* ------------------------------------------------------------
+			Below are the extra fields shown upon expanding a row...
+		------------------------------------------------------------- */
+		{
+			name: "tx_name",
+			field: "Transaction",
+			parameter_type_id: 12,
+			display_media_id: DisplayMedia.PRINT,
+		},
 		{
 			name: "status",
 			field: "Status",
 			parameter_type_id: 12,
 			display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "amount",
+			field: "Amount",
+			show: getViewComponent(9),
+			parameter_type_id: 9,
+			display_media_id: DisplayMedia.PRINT,
+		},
+		{
+			name: "tid",
+			field: "Transaction ID",
+			parameter_type_id: 11,
+			pattern_format: "#### #### #",
+			display_media_id: DisplayMedia.PRINT,
 		},
 		{
 			name: "fee",
@@ -151,9 +172,74 @@ const HistoryTable = ({
 		}, // For Enterprise
 
 		{
+			name: "customer_name",
+			field: "Customer",
+			parameter_type_id: 12,
+			case_id: 3,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
 			name: "customer_mobile",
-			field: "Customer Mobile",
+			field: "Customer's Mobile",
 			parameter_type_id: 15,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "rrn",
+			field: "RRN",
+			parameter_type_id: 12,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "recipient_name",
+			field: "Recipient",
+			parameter_type_id: 12,
+			case_id: 3,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "recipient_mobile",
+			field: "Recipient's Mobile",
+			parameter_type_id: 15,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "account",
+			field: "Recipient Account #",
+			parameter_type_id: 11,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "bank",
+			field: "Bank",
+			parameter_type_id: 12,
+			case_id: 3,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "channel",
+			field: "Via",
+			parameter_type_id: 12,
+			case_id: 1,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "operator",
+			field: "Service Provider",
+			parameter_type_id: 12,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "utility_account",
+			field: "Utility Account",
+			parameter_type_id: 11,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "refund_tid",
+			field: "Refund TID",
+			parameter_type_id: 11,
+			pattern_format: "### ### ### #",
 			// display_media_id: DisplayMedia.BOTH,
 		},
 		{
@@ -161,6 +247,143 @@ const HistoryTable = ({
 			field: "Tracking Number",
 			parameter_type_id: 11,
 			// display_media_id: DisplayMedia.BOTH,
+		},
+		// {
+		// 	name: "client_ref_id",
+		// 	field: "Client Ref. ID",
+		// 	parameter_type_id: 11,
+		// 	display_media_id: DisplayMedia.SCREEN,
+		// },
+		{
+			name: "batch_id",
+			field: "Batch ID",
+			parameter_type_id: 11,
+			pattern_format: "#### #### #",
+			display_media_id: DisplayMedia.SCREEN,
+		},
+		{
+			name: "pinNo",
+			field: "Pin#",
+			parameter_type_id: 11,
+			pattern_format: "### ### ### #",
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "vpa",
+			field: "Customer VPA",
+			parameter_type_id: 12,
+			display_media_id: DisplayMedia.SCREEN,
+		},
+		{
+			name: "user_name",
+			field: "User Name",
+			parameter_type_id: 12,
+			display_media_id: DisplayMedia.SCREEN,
+		},
+		{
+			name: "user_pan",
+			field: "User Pan",
+			parameter_type_id: 12,
+			display_media_id: DisplayMedia.SCREEN,
+		},
+		{
+			name: "reversal_narration",
+			field: "Narration",
+			parameter_type_id: 12,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		// {
+		// 	name: "merchant_name",
+		// 	field: "Seller Name",
+		// 	parameter_type_id: 12,
+		// 	// display_media_id: DisplayMedia.BOTH,
+		// },
+		// {
+		// 	name: "merchant_mobile",
+		// 	field: "Seller Mobile",
+		// 	parameter_type_id: 15,
+		// 	// display_media_id: DisplayMedia.BOTH,
+		// },
+		{
+			name: "gst",
+			field: "GST",
+			parameter_type_id: 10,
+			display_media_id: DisplayMedia.SCREEN,
+		},
+		{
+			name: "loan_id",
+			field: "Loan ID",
+			parameter_type_id: 12,
+			display_media_id: DisplayMedia.SCREEN,
+		},
+		{
+			name: "order_id",
+			field: "Order ID",
+			parameter_type_id: 12,
+			display_media_id: DisplayMedia.SCREEN,
+		},
+		{
+			name: "partner_name",
+			field: "Partner Name",
+			parameter_type_id: 12,
+			display_media_id: DisplayMedia.SCREEN,
+		},
+
+		// For DMT Transaction Insurance (IMPS): Insurance ID, Amount & Policy Link
+		{
+			name: "insurance_acquired",
+			field: "Transaction Assured",
+			parameter_type_id: 12,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "insurance_amount",
+			field: "Assurance Amount",
+			parameter_type_id: 10,
+			show: getViewComponent(10),
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "policy_number",
+			field: "Policy Number",
+			parameter_type_id: 12,
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "policy",
+			field: "Download Policy",
+			parameter_type_id: 31,
+			// show: getViewComponent(31),
+			// display_media_id: DisplayMedia.BOTH,
+		},
+		{
+			name: "refund_amount",
+			field: "Refunded Amount",
+			parameter_type_id: 10,
+			show: getViewComponent(10),
+			display_media_id: DisplayMedia.SCREEN,
+		},
+		{
+			name: "plan_name",
+			field: "Plan Name",
+			parameter_type_id: 12,
+			display_media_id: DisplayMedia.SCREEN,
+		},
+
+		//  Transaction + Updated DateTime: Should remain at the end...
+		{
+			name: "datetime",
+			field: "Transaction Time",
+			show: getViewComponent(14),
+			parameter_type_id: 14,
+			display_media_id: DisplayMedia.PRINT,
+		},
+		{
+			name: "updated_datetime",
+			field: "Updated Time",
+			show: getViewComponent(14),
+			parameter_type_id: 14,
+			display_media_id: DisplayMedia.SCREEN,
 		},
 	];
 
