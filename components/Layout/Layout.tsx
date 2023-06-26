@@ -133,6 +133,11 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 								w={"full"}
 								bg={"bg"}
 								overflow={"hidden"}
+								sx={{
+									"@media print": {
+										bg: "none",
+									},
+								}}
 							>
 								{children}
 							</Box>

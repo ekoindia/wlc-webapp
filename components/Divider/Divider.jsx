@@ -1,8 +1,8 @@
 import { Box, Text } from "@chakra-ui/react";
 
-const Divider = ({ title, titleStyle, ...props }) => {
+const Divider = ({ title, titleStyle, ...rest }) => {
 	return (
-		<Box textAlign="center" maxW="100%" {...props}>
+		<Box textAlign="center" maxW="100%" {...rest}>
 			<Text
 				as="h2"
 				// textAlign='center'

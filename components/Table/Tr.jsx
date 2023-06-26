@@ -1,4 +1,5 @@
 import {
+	Box,
 	Divider,
 	Flex,
 	Skeleton,
@@ -6,9 +7,36 @@ import {
 	Text,
 	Tr as ChakraTr,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { DisplayMedia } from "constants";
+import { Fragment, useState } from "react";
 import { prepareTableCell } from ".";
 import { Button } from "..";
+
+/**
+ * Show the column on screen?
+ * @param {number} display_media_id
+ * @returns
+ */
+const showOnScreen = (display_media_id) => {
+	display_media_id = display_media_id ?? DisplayMedia.BOTH;
+	return (
+		display_media_id === DisplayMedia.SCREEN ||
+		display_media_id === DisplayMedia.BOTH
+	);
+};
+
+/**
+ * Show the column in print?
+ * @param {number} display_media_id
+ * @returns
+ */
+const showInPrint = (display_media_id) => {
+	display_media_id = display_media_id ?? DisplayMedia.BOTH;
+	return (
+		display_media_id === DisplayMedia.PRINT ||
+		display_media_id === DisplayMedia.BOTH
+	);
+};
 
 /**
  * A Tr component
@@ -27,6 +55,7 @@ const Tr = ({
 	tableName,
 	visibleColumns,
 	isLoading,
+	printExpansion = false,
 }) => {
 	const [expandedRow, setExpandedRow] = useState(null);
 
@@ -40,6 +69,12 @@ const Tr = ({
 		: renderer;
 
 	const extra = visible ? renderer?.slice(visibleColumns) : [];
+	// const printExtras =
+	// 	tableName === "History"
+	// 		? [{ name: "trx_name", field: "Transaction" }]
+	// 		: [];
+
+	console.log("visibleColumns", extra);
 
 	const handleRowClick = (index) => {
 		if (visible) {
@@ -54,16 +89,24 @@ const Tr = ({
 			const serialNumber =
 				index + pageNumber * tableRowLimit - (tableRowLimit - 1);
 			return (
-				<>
+				<Fragment key={`tr${serialNumber}`}>
 					<ChakraTr
 						onClick={() => handleRowClick(index)}
 						fontSize={{ base: "10px", xl: "12px", "2xl": "16px" }}
+						sx={{
+							"@media print": {
+								display:
+									printExpansion === true
+										? "none !important"
+										: null,
+							},
+						}}
 					>
 						{main?.map((column, rendererIndex) => {
 							return (
 								<ChakraTd
 									p={{ base: ".5em", xl: "1em" }}
-									key={`${rendererIndex}-${column.field}-${serialNumber}`}
+									key={`td-${rendererIndex}-${column.field}-${serialNumber}`}
 								>
 									{prepareTableCell(
 										item,
@@ -82,13 +125,32 @@ const Tr = ({
 						<ChakraTd
 							colSpan={main.length}
 							bg={index % 2 ? "shade" : "initial"}
+							pl={{ base: 0, md: "40px" }}
+							pr="10px"
+							sx={{
+								"@media print": {
+									bg: "initial",
+									p: 0,
+								},
+							}}
 						>
-							<Divider />
+							<Divider
+								sx={{
+									"@media print": {
+										display: "none !important",
+									},
+								}}
+							/>
 							<Text
-								fontWeight="medium"
+								fontWeight="semibold"
 								fontSize="xs"
 								textColor="light"
 								my="2"
+								sx={{
+									"@media print": {
+										display: "none !important",
+									},
+								}}
 							>
 								Other Details
 							</Text>
@@ -102,50 +164,94 @@ const Tr = ({
 										base: "10px",
 										xl: "12px",
 									}}
-									gap="6"
+									gap="24px"
+									overflow="hidden"
+									sx={{
+										"@media print": {
+											mb: "12px",
+										},
+									}}
 								>
-									{extra?.map((column, rendererIndex) =>
-										item[column.name] ? (
-											<>
-												<Flex direction="column">
-													<Text
-														textColor="light"
-														fontSize="xxs"
-													>
-														{column.field}
-													</Text>
-													<Text
-														fontWeight="semibold"
-														fontSize="xs"
-													>
-														{prepareTableCell(
-															item,
-															column,
-															index
-														)}
-													</Text>
-												</Flex>
-												{rendererIndex <
-													extra.length - 1 && (
-													<Divider
-														orientation="vertical"
-														h="auto"
-													/>
-												)}
-											</>
-										) : null
-									)}
+									{extra?.map((column, rendererIndex) => {
+										// Show the value on screen?
+										const dispScreen = showOnScreen(
+											column.display_media_id
+										)
+											? "inline-flex"
+											: "none";
+
+										// Show the value in print?
+										const dispPrint = showInPrint(
+											column.display_media_id
+										)
+											? "inline-flex"
+											: "none";
+
+										return item[column.name] ? (
+											<Flex
+												key={`tdexp-${rendererIndex}-${column.field}-${serialNumber}`}
+												position="relative"
+												direction="column"
+												display={dispScreen}
+												sx={{
+													"@media print": {
+														display: dispPrint,
+													},
+												}}
+												overflow="visible"
+											>
+												<Box
+													position="absolute"
+													display="block"
+													height="100%"
+													width="1px"
+													backgroundColor="gray.300"
+													// left="-12px"
+													left="-12px"
+													top="0"
+													bottom="0"
+													zIndex="999"
+												></Box>
+												<Text
+													textColor="light"
+													fontSize="xxs"
+												>
+													{column.field}
+												</Text>
+												<Text
+													fontWeight="semibold"
+													fontSize="xs"
+												>
+													{prepareTableCell(
+														item,
+														column,
+														index
+													)}
+												</Text>
+											</Flex>
+										) : null;
+									})}
 								</Flex>
+
 								{/* "Repeat Transaction" button for History table only, need to update logic in future */}
 								{tableName === "History" && (
-									<Button fontSize="xs" size="md" disabled>
+									<Button
+										fontSize="xs"
+										size="md"
+										disabled
+										sx={{
+											"@media print": {
+												display: "none !important",
+											},
+										}}
+									>
 										Repeat Transaction
 									</Button>
 								)}
 							</Flex>
 						</ChakraTd>
 					)}
-				</>
+				</Fragment>
 			);
 		});
 	} else {

@@ -20,6 +20,11 @@ const PaddingBox = ({ children, noSpacing = false, ...rest }) => {
 					: null
 			}
 			pb={!noSpacing ? { base: "20px", md: "30px" } : null}
+			sx={{
+				"@media print": {
+					padding: "0 !important",
+				},
+			}}
 			{...rest}
 		>
 			{children}

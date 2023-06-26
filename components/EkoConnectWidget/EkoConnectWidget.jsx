@@ -1,5 +1,5 @@
 import { Flex, Spinner, Text } from "@chakra-ui/react";
-import { Button, ErrorBoundary, PaddingBox } from "components";
+import { Button, ErrorBoundary, PaddingBox, PrintReceipt } from "components";
 // import { ActionIcon } from "components/CommandBar";
 import { TransactionIds } from "constants";
 import {
@@ -206,51 +206,61 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 			)} */}
 
 			<ErrorBoundary ignoreError={true}>
-				<tf-wlc-widget
-					ref={widgetRef}
-					interaction_id={start_id}
-					route_params={JSON.stringify({
-						trxntypeid: start_id,
-						subpath_list: paths,
-					})}
-					logged_in={isLoggedIn}
-					user_id={userData.userId}
-					login_id={userData.userDetails.login_id}
-					role_trxn_list={JSON.stringify(role_tx_list)}
-					save_trxn_enabled={userData.userDetails.save_trxn_enabled}
-					save_threshold_amount={
-						userData.userDetails.save_threshold_amount
-					}
-					user_balance={balance}
-					language="en"
-					enable-print={true}
-					user_details={JSON.stringify(userData.userDetails)}
-					account_details={JSON.stringify(userData.accountDetails)}
-					personal_details={JSON.stringify(userData.personalDetails)}
-					shop_details={JSON.stringify(userData.shopDetails)}
-					session_details={JSON.stringify(userData.sessionDetails)}
-					show_set_pin={showSetPIN(
-						TransactionIds.SET_PIN,
-						role_tx_list,
-						userData?.userDetails?.is_pin_not_set
-					)}
-					receipt-title={
-						orgDetail.app_name || orgDetail.org_name || ""
-					}
-					receipt-subtitle={
-						orgDetail.app_name === orgDetail.org_name
-							? ""
-							: orgDetail.org_name || ""
-					}
-					receipt-logo={orgDetail.logo || ""}
-					analytics-partner-tracking-id={
-						process.env.NEXT_PUBLIC_WIDGET_GA_ID || ""
-					}
-					analytics-partner-user-id={
-						userData.accountDetails.code || ""
-					}
-				></tf-wlc-widget>
-				{/* dark-theme={true} autolink_params={autolinkParams} zoho_id={userData.userDetails.zoho_id} */}
+				<PrintReceipt heading="Transaction Receipt">
+					<tf-wlc-widget
+						ref={widgetRef}
+						interaction_id={start_id}
+						route_params={JSON.stringify({
+							trxntypeid: start_id,
+							subpath_list: paths,
+						})}
+						logged_in={isLoggedIn}
+						user_id={userData.userId}
+						login_id={userData.userDetails.login_id}
+						role_trxn_list={JSON.stringify(role_tx_list)}
+						save_trxn_enabled={
+							userData.userDetails.save_trxn_enabled
+						}
+						save_threshold_amount={
+							userData.userDetails.save_threshold_amount
+						}
+						user_balance={balance}
+						language="en"
+						enable-print={true}
+						user_details={JSON.stringify(userData.userDetails)}
+						account_details={JSON.stringify(
+							userData.accountDetails
+						)}
+						personal_details={JSON.stringify(
+							userData.personalDetails
+						)}
+						shop_details={JSON.stringify(userData.shopDetails)}
+						session_details={JSON.stringify(
+							userData.sessionDetails
+						)}
+						show_set_pin={showSetPIN(
+							TransactionIds.SET_PIN,
+							role_tx_list,
+							userData?.userDetails?.is_pin_not_set
+						)}
+						// receipt-title={
+						// 	orgDetail.app_name || orgDetail.org_name || ""
+						// }
+						// receipt-subtitle={
+						// 	orgDetail.app_name === orgDetail.org_name
+						// 		? ""
+						// 		: orgDetail.org_name || ""
+						// }
+						// receipt-logo={orgDetail.logo || ""}
+						analytics-partner-tracking-id={
+							process.env.NEXT_PUBLIC_WIDGET_GA_ID || ""
+						}
+						analytics-partner-user-id={
+							userData.accountDetails.code || ""
+						}
+					></tf-wlc-widget>
+					{/* dark-theme={true} autolink_params={autolinkParams} zoho_id={userData.userDetails.zoho_id} */}
+				</PrintReceipt>
 			</ErrorBoundary>
 		</PaddingBox>
 	);

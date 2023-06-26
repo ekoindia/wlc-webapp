@@ -58,6 +58,11 @@ const Headings = ({
 				justify="space-between"
 				align="center"
 				{...styles}
+				sx={{
+					"@media print": {
+						display: "none !important",
+					},
+				}}
 			>
 				<Box>
 					<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>

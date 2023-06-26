@@ -11,32 +11,52 @@ export const getNameStyle = (name) => {
 				size={{ base: "sm", sm: "sm", md: "xs", lg: "sm" }}
 				name={(name || "").charAt(0)}
 				// src={item.link}
+				sx={{
+					"@media print": {
+						display: "none !important",
+					},
+				}}
 			/>
 			<Box as="span">{name}</Box>
 		</Flex>
 	);
 };
-export const getStatusStyle = (status, tableName) => {
-	return tableName === "History" && status === "Failed" ? (
-		<Flex justify="end">
-			<Tags
-				size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
-				px="10px"
-				borderRadius="10"
-				status={status}
-			/>
-		</Flex>
-	) : tableName !== "History" ? (
+export const getStatusStyle = (status = "", tableName) => {
+	if (tableName === "History") {
+		if (status?.toLowerCase() !== "success") {
+			return (
+				<Flex justify="end">
+					<Tags
+						size={{ base: "xs", "2xl": "sm" }}
+						px="8px"
+						borderRadius="4px"
+						status={status}
+						sx={{
+							"@media print": {
+								borderWidth: 0,
+								padding: "0 !important",
+								background: "transparent !important",
+							},
+						}}
+					/>
+				</Flex>
+			);
+		}
+		return null;
+	}
+
+	return (
 		<Flex>
 			<Tags
 				size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
 				px="10px"
-				borderRadius="28"
+				borderRadius="full"
 				status={status}
 			/>
 		</Flex>
-	) : null;
+	);
 };
+
 export const getLocationStyle = (location, lat, long) => {
 	return (
 		<Flex alignItems={"center"}>
@@ -50,19 +70,31 @@ export const getLocationStyle = (location, lat, long) => {
 					openGoogleMap(lat, long);
 					e.stopPropagation();
 				}}
+				sx={{
+					"@media print": {
+						display: "none !important",
+					},
+				}}
 			/>
 		</Flex>
 	);
 };
+
 export const getArrowStyle = () => {
 	return (
 		<Icon
 			name="arrow-forward"
 			color="hint"
 			size={{ base: "16px", lg: "20px", "2xl": "24px" }}
+			sx={{
+				"@media print": {
+					display: "none !important",
+				},
+			}}
 		/>
 	);
 };
+
 export const getModalStyle = (eko_code, account_status) => {
 	return (
 		<>
@@ -73,6 +105,7 @@ export const getModalStyle = (eko_code, account_status) => {
 		</>
 	);
 };
+
 export const getExpandIcoButton = (expandedRow, index) => {
 	return (
 		<IcoButton
@@ -84,6 +117,11 @@ export const getExpandIcoButton = (expandedRow, index) => {
 			boxShadow="0px 3px 6px #00000029"
 			title={expandedRow === index ? "Shrink" : "Expand"}
 			cursor="pointer"
+			sx={{
+				"@media print": {
+					display: "none !important",
+				},
+			}}
 		/>
 	);
 };
@@ -106,6 +144,11 @@ export const getPaymentStyle = (amount, trx_type) => {
 						}
 						size="16px"
 						color={trx_type === "DR" ? "error" : "success"}
+						sx={{
+							"@media print": {
+								display: "none !important",
+							},
+						}}
 					/>
 				)}
 			</Flex>
@@ -140,6 +183,11 @@ export const getStatus = (debit_credit) => {
 				}
 				size="14px"
 				// h="8px"
+				sx={{
+					"@media print": {
+						display: "none !important",
+					},
+				}}
 			/>
 		</Flex>
 	);

@@ -29,6 +29,7 @@ import { OtpInput } from "./OtpInput";
 import { PaddingBox } from "./PaddingBox";
 import { PageLoader } from "./PageLoader";
 import { Pagination } from "./Pagination";
+import { PrintReceipt } from "./PrintReceipt";
 import { ProfileCard } from "./ProfileCard";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
@@ -41,6 +42,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	PrintReceipt,
 	PageLoader,
 	Dropzone,
 	Kbd,
