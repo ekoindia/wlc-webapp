@@ -14,7 +14,7 @@ const getViewComponent = (parameter_type_id) => {
 		case 9:
 			return "Amount";
 		case 12:
-			return "Avatar";
+			return null; // return "Avatar";
 		case 14:
 			return "DateTime";
 		case 15:
@@ -36,7 +36,7 @@ const HistoryTable = ({
 	transactionList,
 }) => {
 	const processedData = getHistoryTableProcessedData(transactionList);
-	const renderer = [
+	const historyParametersMetadata = [
 		{
 			name: "tx_name",
 			field: "Transaction Type",
@@ -390,7 +390,7 @@ const HistoryTable = ({
 	return (
 		<>
 			<Table
-				renderer={renderer}
+				renderer={historyParametersMetadata}
 				visibleColumns={6}
 				data={processedData}
 				variant="stripedActionExpand"

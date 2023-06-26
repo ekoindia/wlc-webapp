@@ -67,15 +67,15 @@ export const getCommissionsTableProcessedData = (data) => {
 	return processedData;
 };
 
-export const getFormattedDateAndTime = (datetimeStr) => {
-	const datetime = new Date(datetimeStr);
-	const formattedDate = String(datetime).slice(4, 15);
-	const formattedTime = String(datetime).slice(16, 24);
-	return {
-		date: formattedDate,
-		time: formattedTime,
-	};
-};
+// export const getFormattedDateAndTime = (datetimeStr) => {
+// 	const datetime = new Date(datetimeStr);
+// 	const formattedDate = String(datetime).slice(4, 15);
+// 	const formattedTime = String(datetime).slice(16, 24);
+// 	return {
+// 		date: formattedDate,
+// 		time: formattedTime,
+// 	};
+// };
 
 export const limitNarrationText = (txt, limit) => {
 	return txt.length > limit ? txt.substr(0, limit - 1) + "…" : txt;

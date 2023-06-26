@@ -1,3 +1,8 @@
+/**
+ * Prepare each row of the Transaction History table data (for sellers & distributors) by adding new generated columns like description, amount, trx_type, etc.
+ * @param {Array} data the data array of the Transaction History table
+ * @returns the processed data array
+ */
 export const getHistoryTableProcessedData = (data) => {
 	const processedData = data?.map((row) => {
 		row.description = getNarrationText(row);
@@ -9,55 +14,20 @@ export const getHistoryTableProcessedData = (data) => {
 			row.trx_type = "CR";
 		}
 		return row;
-
-		// if (row.tx_name) {
-		// 	temp["trx_name"] = row.tx_name;
-		// }
-		// if (row.tid) {
-		// 	temp["trx_id"] = row.tid;
-		// }
-		// if (row.datetime) {
-		// 	temp["dateTime"] = row.datetime;
-		// }
-		// if (row.status) {
-		// 	temp["status"] = row.status;
-		// }
-		// if (row.r_bal) {
-		// 	temp["balance"] = row.r_bal;
-		// }
-		// if (row.trackingnumber) {
-		// 	temp["trackingNumber"] = row.trackingnumber;
-		// }
-		// if (row.customer_mobile) {
-		// 	temp["customerMobile"] = row.customer_mobile;
-		// }
-		// if (row.commission_earned) {
-		// 	temp["commissionEarned"] = row.commission_earned;
-		// }
-		// if (row.tid) {
-		// 	temp["tid"] = row.tid;
-		// }
-		// if (row.client_ref_id) {
-		// 	temp["clientRefID"] = row.client_ref_id;
-		// }
-		// if (row.fee) {
-		// 	temp["fee"] = row.fee;
-		// }
-		// return temp;
 	});
 
 	return processedData;
 };
 
-export const getFormattedDateAndTime = (datetimeStr) => {
-	const datetime = new Date(datetimeStr);
-	const formattedDate = String(datetime).slice(4, 15);
-	const formattedTime = String(datetime).slice(16, 24);
-	return {
-		date: formattedDate,
-		time: formattedTime,
-	};
-};
+// export const getFormattedDateAndTime = (datetimeStr) => {
+// 	const datetime = new Date(datetimeStr);
+// 	const formattedDate = String(datetime).slice(4, 15);
+// 	const formattedTime = String(datetime).slice(16, 24);
+// 	return {
+// 		date: formattedDate,
+// 		time: formattedTime,
+// 	};
+// };
 
 export const limitNarrationText = (txt, limit) => {
 	return txt.length > limit ? txt.substr(0, limit - 1) + "…" : txt;

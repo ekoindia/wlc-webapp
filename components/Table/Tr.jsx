@@ -187,10 +187,6 @@ const Tr = ({
 											? "inline-flex"
 											: "none";
 
-										// <Fragment
-										// 	key={`tdexp-${rendererIndex}-${column.field}-${serialNumber}`}
-										// >
-
 										return item[column.name] ? (
 											<Flex
 												key={`tdexp-${rendererIndex}-${column.field}-${serialNumber}`}
@@ -234,23 +230,9 @@ const Tr = ({
 												</Text>
 											</Flex>
 										) : null;
-
-										/* {rendererIndex <
-												extra.length - 1 && (
-												<Divider
-													orientation="vertical"
-													h="auto"
-													display={dispScreen}
-													sx={{
-														"@media print": {
-															display:
-																dispPrint,
-														},
-													}}
-												/>
-											)} */
 									})}
 								</Flex>
+
 								{/* "Repeat Transaction" button for History table only, need to update logic in future */}
 								{tableName === "History" && (
 									<Button
