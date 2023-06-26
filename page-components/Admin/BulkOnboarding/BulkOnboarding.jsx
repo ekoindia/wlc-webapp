@@ -164,7 +164,9 @@ const BulkOnboarding = () => {
 				) : (
 					<Flex direction="column" gap="2">
 						<Flex fontSize="sm" direction="column" gap="1">
-							<span>{data?.message}!!</span>
+							<span>
+								{data?.message || "Something went wrong"}!!
+							</span>
 							{data?.data?.processed_records > 0 && (
 								<Flex gap="1">
 									<Box as="span" fontWeight="semibold">
