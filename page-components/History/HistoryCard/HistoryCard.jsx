@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { useMenuContext } from "contexts";
-import { getStatusStyle } from "helpers/TableHelpers";
+import { getPaymentStyle, getStatusStyle } from "helpers/TableHelpers";
 import useHslColor from "hooks/useHslColor";
 import { formatDateTime } from "libs";
 
@@ -47,7 +47,7 @@ const HistoryCard = ({ item, rendererExpandedRow }) => {
 					}
 				/>
 				<Flex direction="column" flexGrow={1}>
-					<Box fontSize="xs" color="light">
+					<Box fontSize="0.6em" color="light">
 						{formatDateTime(item.datetime)}
 					</Box>
 					<Box
@@ -57,15 +57,18 @@ const HistoryCard = ({ item, rendererExpandedRow }) => {
 					>
 						{item.tx_name}
 					</Box>
+					<Box fontWeight="medium" fontSize="xs">
+						{getPaymentStyle(item.amount, item.trx_type, "right")}
+					</Box>
 				</Flex>
-				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
+				<Box color="accent.DEFAULT" fontSize={{ base: "md" }}>
 					{getStatusStyle(item.status, "History")}
 				</Box>
 			</Flex>
-			<Flex direction="column" fontSize={{ base: "sm" }} pl="42px">
+			<Flex direction="column" fontSize={{ base: "xs" }} pl="42px">
 				<Flex gap="2">
 					<Box as="span" color="light">
-						Transaction ID:
+						TID:
 					</Box>
 					<Box as="span" color="dark">
 						{item.tid}
