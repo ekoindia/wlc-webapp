@@ -53,7 +53,7 @@ const HistoryTable = ({
 		},
 		{
 			name: "tid",
-			field: "Transaction ID",
+			field: "TID",
 			sorting: true,
 			parameter_type_id: 11,
 			pattern_format: "#### #### #",
@@ -105,18 +105,19 @@ const HistoryTable = ({
 		},
 		{
 			name: "tid",
-			field: "Transaction ID",
+			field: "TID",
 			parameter_type_id: 11,
 			pattern_format: "#### #### #",
 			display_media_id: DisplayMedia.PRINT,
 		},
-		{
-			name: "fee",
-			field: "Customer Charges",
-			show: getViewComponent(9),
-			parameter_type_id: 9,
-			display_media_id: DisplayMedia.SCREEN,
-		},
+		// Only shown to customer as "1% (min. Rs. 10)"; maybe for DMT only. Is it required as per regulations?
+		// {
+		// 	name: "fee",
+		// 	field: "Customer Charges",
+		// 	show: getViewComponent(9),
+		// 	parameter_type_id: 9,
+		// 	display_media_id: DisplayMedia.SCREEN,
+		// },
 		{
 			name: "commission_earned",
 			field: "Commission Earned",
@@ -254,13 +255,13 @@ const HistoryTable = ({
 		// 	parameter_type_id: 11,
 		// 	display_media_id: DisplayMedia.SCREEN,
 		// },
-		{
-			name: "batch_id",
-			field: "Batch ID",
-			parameter_type_id: 11,
-			pattern_format: "#### #### #",
-			display_media_id: DisplayMedia.SCREEN,
-		},
+		// {
+		// 	name: "batch_id",
+		// 	field: "Batch ID",
+		// 	parameter_type_id: 11,
+		// 	pattern_format: "#### #### #",
+		// 	display_media_id: DisplayMedia.SCREEN,
+		// },
 		{
 			name: "pinNo",
 			field: "Pin#",
@@ -269,6 +270,7 @@ const HistoryTable = ({
 			// display_media_id: DisplayMedia.BOTH,
 		},
 		{
+			// For UPI
 			name: "vpa",
 			field: "Customer VPA",
 			parameter_type_id: 12,
@@ -363,12 +365,12 @@ const HistoryTable = ({
 			show: getViewComponent(10),
 			display_media_id: DisplayMedia.SCREEN,
 		},
-		{
-			name: "plan_name",
-			field: "Plan Name",
-			parameter_type_id: 12,
-			display_media_id: DisplayMedia.SCREEN,
-		},
+		// {
+		// 	name: "plan_name",
+		// 	field: "Plan Name",
+		// 	parameter_type_id: 12,
+		// 	display_media_id: DisplayMedia.SCREEN,
+		// },
 
 		//  Transaction + Updated DateTime: Should remain at the end...
 		{
