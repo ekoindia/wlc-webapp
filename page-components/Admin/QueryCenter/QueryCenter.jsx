@@ -26,10 +26,15 @@ const QueryCenter = ({ prop1, ...rest }) => {
 				interaction_type_id: TransactionTypes.GET_ALL_QUERIES_FOR_ORG,
 			},
 			token: accessToken,
-		}).then((data) => {
-			const _data = data?.data?.csp_list ?? [];
-			setData(_data);
-		});
+		})
+			.then((data) => {
+				const _data = data?.data?.csp_list ?? [];
+				setData(_data);
+			})
+			.catch((error) => {
+				// Handle any errors that occurred during the fetch
+				console.error("[QueryCenter] Get All Queries Error:", error);
+			});
 	}, []);
 
 	return (

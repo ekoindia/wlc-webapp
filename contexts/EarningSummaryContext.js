@@ -68,34 +68,42 @@ export const EarningSummaryProvider = ({ children }) => {
 						},
 						token: accessToken,
 					}
-				).then((data) => {
-					if (
-						data.data &&
-						"this_month" in data.data &&
-						data.data.this_month >= 0
-					) {
-						let yesterday = new Date();
-						yesterday.setDate(yesterday.getDate() - 1);
+				)
+					.then((data) => {
+						if (
+							data.data &&
+							"this_month" in data.data &&
+							data.data.this_month >= 0
+						) {
+							let yesterday = new Date();
+							yesterday.setDate(yesterday.getDate() - 1);
 
-						const asofDate = yesterday.toLocaleString("en-IN", {
-							day: "numeric",
-							month: "short",
-						});
-						const dayOfWeek = yesterday.toLocaleString("en-IN", {
-							weekday: "short",
-						});
+							const asofDate = yesterday.toLocaleString("en-IN", {
+								day: "numeric",
+								month: "short",
+							});
+							const dayOfWeek = yesterday.toLocaleString(
+								"en-IN",
+								{
+									weekday: "short",
+								}
+							);
 
-						const earnings = {
-							this_month_till_yesterday: data.data.this_month,
-							last_month_till_yesterday:
-								data.data.last_month || 0,
-							last_month_total: data.data.prev_month || 0,
-							asof: `${asofDate} (${dayOfWeek})`,
-							userId: userId,
-						};
-						setUserEarnings(earnings);
-					}
-				}),
+							const earnings = {
+								this_month_till_yesterday: data.data.this_month,
+								last_month_till_yesterday:
+									data.data.last_month || 0,
+								last_month_total: data.data.prev_month || 0,
+								asof: `${asofDate} (${dayOfWeek})`,
+								userId: userId,
+							};
+							setUserEarnings(earnings);
+						}
+					})
+					.catch((error) => {
+						// Handle any errors that occurred during the fetch
+						console.error("[EarningSummaryContext] Error:", error);
+					}),
 			2000
 		);
 	}, [isLoggedIn, isAdmin, isOnboarding, accessToken, userId, isValid]);

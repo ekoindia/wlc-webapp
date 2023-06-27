@@ -92,9 +92,14 @@ const ProfilePanel = () => {
 				"tf-req-method": "GET",
 			},
 			token: accessToken,
-		}).then((data) => {
-			setRowData(data?.data?.agent_details[0]);
-		});
+		})
+			.then((data) => {
+				setRowData(data?.data?.agent_details[0]);
+			})
+			.catch((error) => {
+				// Handle any errors that occurred during the fetch
+				console.error("[ProfilePanel] Get Agent Detail Error:", error);
+			});
 	};
 
 	useEffect(() => {
