@@ -334,7 +334,7 @@ function DynamicSearchController() {
 						getKBarAction({
 							id: "historySearch/tid",
 							name: "Search Transaction History by TID",
-							subtitle: `Transaction ID = ${numQueryVal}`,
+							subtitle: `TID = ${numQueryVal}`,
 							keywords: queryValueDebounced,
 							icon: "", // "tid"
 							// section: "History",
