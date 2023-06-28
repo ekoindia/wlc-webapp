@@ -16,7 +16,7 @@ const AccountStatementTable = (props) => {
 	const renderer = [
 		{
 			name: "transaction_id",
-			field: "Transaction ID",
+			field: "TID",
 		},
 		{
 			name: "date_time",

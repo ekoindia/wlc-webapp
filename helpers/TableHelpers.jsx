@@ -60,12 +60,11 @@ export const getStatusStyle = (status = "", tableName) => {
 export const getLocationStyle = (location, lat, long) => {
 	return (
 		<Flex alignItems={"center"}>
-			<Box>{location}</Box>
 			<IcoButton
 				size="xs"
 				iconName="near-me"
 				theme="primary"
-				ml={1}
+				mr={1}
 				onClick={(e) => {
 					openGoogleMap(lat, long);
 					e.stopPropagation();
@@ -76,6 +75,7 @@ export const getLocationStyle = (location, lat, long) => {
 					},
 				}}
 			/>
+			<Box>{location}</Box>
 		</Flex>
 	);
 };
@@ -130,11 +130,16 @@ export const getAmountStyle = (amount) => {
 	return <Currency amount={amount} preserveFraction={true} />;
 };
 
-export const getPaymentStyle = (amount, trx_type) => {
+export const getPaymentStyle = (amount, trx_type, side = "left") => {
 	return (
 		amount !== undefined && (
-			<Flex align="center" gap="2">
-				<Currency amount={amount} preserveFraction={true} />
+			<Flex
+				align="center"
+				gap="2"
+				flexDirection={side === "right" ? "row-reverse" : "row"}
+				textAlign="left"
+				width="min-content"
+			>
 				{trx_type && (
 					<Icon
 						name={
@@ -142,7 +147,7 @@ export const getPaymentStyle = (amount, trx_type) => {
 								? "arrow-increase"
 								: "arrow-decrease"
 						}
-						size="16px"
+						size="12px"
 						color={trx_type === "DR" ? "error" : "success"}
 						sx={{
 							"@media print": {
@@ -151,6 +156,7 @@ export const getPaymentStyle = (amount, trx_type) => {
 						}}
 					/>
 				)}
+				<Currency amount={amount} preserveFraction={true} />
 			</Flex>
 		)
 	);

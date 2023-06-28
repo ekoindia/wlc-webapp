@@ -454,6 +454,9 @@ const useNotifications = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
 			body: body,
 			token: accessToken,
+		}).catch((error) => {
+			// Handle any errors that occurred during the fetch
+			console.error("[UpdateEMS] Error:", error);
 		});
 	};
 

@@ -51,7 +51,7 @@ const History = () => {
 
 	// Set GlobalSearch title
 	useEffect(() => {
-		setSearchTitle("Search by Transaction ID, Mobile, Account, etc");
+		setSearchTitle("Search by TID, Mobile, Account, etc");
 		return () => {
 			setSearchTitle("");
 		};
@@ -369,7 +369,7 @@ const HistoryToolbar = ({
 				{/* <==========Search =========> */}
 				<SearchBar
 					type="number"
-					placeholder="Search by Transaction ID, Mobile, Account, etc"
+					placeholder="Search by TID, Mobile, Account, etc"
 					value={searchValue}
 					setSearch={onSearchSubmit}
 					minSearchLimit={2}
@@ -400,7 +400,7 @@ const HistoryToolbar = ({
 					<form>
 						<Flex direction="column" gap="1">
 							<Input
-								label="Transaction ID"
+								label="TID"
 								name="tid"
 								type="number"
 								labelStyle={labelStyle}

@@ -82,14 +82,25 @@ const NotificationCreator = () => {
 				token: accessToken,
 			},
 			generateNewToken
-		).then((data) => {
-			if (data.status === 0 && data?.data?.csp_list?.length > 0) {
-				const networkList = data?.data?.csp_list ?? [];
-				console.log("[Send Notifications] networkList: ", networkList);
-				setNetworkList(networkList);
-				setReady(true);
-			}
-		});
+		)
+			.then((data) => {
+				if (data.status === 0 && data?.data?.csp_list?.length > 0) {
+					const networkList = data?.data?.csp_list ?? [];
+					console.log(
+						"[Send Notifications] networkList: ",
+						networkList
+					);
+					setNetworkList(networkList);
+					setReady(true);
+				}
+			})
+			.catch((error) => {
+				// Handle any errors that occurred during the fetch
+				console.error(
+					"[Send Notifications] Failed to get network list:",
+					error
+				);
+			});
 	}, [accessToken, isLoggedIn, isAdmin]);
 
 	// Check if the user is logged in and is an admin, before showing the page
