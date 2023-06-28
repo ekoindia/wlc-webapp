@@ -1,10 +1,20 @@
-import { Box, Flex, Radio, RadioGroup, Text, useToast } from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	FormControl,
+	FormLabel,
+	Radio,
+	RadioGroup,
+	Text,
+	useToast,
+} from "@chakra-ui/react";
 import { Button, Icon, Input, MultiSelect, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
-import { useEffect, useReducer } from "react";
-import { INITIAL_FORM_STATE, pricingFormReducer } from "./pricingFormReducer";
+import useRefreshToken from "hooks/useRefreshToken";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 const OPERATION = {
 	SUBMIT: 1,
@@ -20,85 +30,48 @@ const OPERATION = {
  * @example	`<PricingForm></PricingForm>` TODO: Fix example
  */
 const PricingForm = ({
-	product,
-	productSlabs,
+	productDetails,
 	productPricingType,
-	commissionForObj,
-	commissionTypeObj,
-	paymentModeObj,
+	operationTypeList,
+	pricingTypeList,
+	paymentModeList,
 }) => {
+	const { uriSegment, slabs, DEFAULT } = productDetails;
 	// const focusRef = useRef(null);
 	const toast = useToast();
-	const [state, dispatch] = useReducer(
-		pricingFormReducer,
-		INITIAL_FORM_STATE
-	);
-	const {
-		commissionFor,
-		commissionType,
-		paymentMode,
-		data, //to show in multiselect
-		finalData,
-	} = state;
+	const { generateNewToken } = useRefreshToken();
+	const [data, setData] = useState();
+	const [options, setOptions] = useState();
+	const [multiSelectLabel, setMultiSelectLabel] = useState();
+
 	const { accessToken } = useSession();
+	const {
+		handleSubmit,
+		register,
+		watch,
+		formState: { errors /* isSubmitting */ },
+		control,
+		setValue,
+	} = useForm();
 
-	/*handling single slab */
-	const _disabled = productSlabs?.length === 1;
-	const _placeholder = _disabled
-		? productSlabs[0].min == productSlabs[0].max
-			? productSlabs[0].max
-			: `${productSlabs[0].min} - ${productSlabs[0].max}`
-		: undefined;
+	const watchOperationType = watch("operation_type", DEFAULT.operation_type);
+	const watchPricingType = watch("pricing_type", DEFAULT.pricing_type);
+	const _disabled = slabs.length === 1;
 
-	useEffect(() => {
-		if (_disabled) {
-			const _data = [productSlabs[0].min, productSlabs[0].max];
-			handleSelectData(_data);
-		}
-	}, []);
-
-	/* Handlers */
-	const handleCommissionChange = (event) => {
-		dispatch({ type: "SET_COMMISSION", payload: event.target.value });
-	};
-
-	const handleCommissionForChange = (_value) => {
-		dispatch({ type: "SET_COMMISSION_FOR", payload: _value });
-	};
-
-	const handleCommissionTypeChange = (_value) => {
-		dispatch({ type: "SET_COMMISSION_TYPE", payload: _value });
-	};
-
-	const handlePaymentModeChange = (_value) => {
-		dispatch({ type: "SET_PAYMENT_MODE", payload: _value });
-	};
-
-	const handleMultiSelectData = (_data) => {
-		dispatch({ type: "SET_FROM_MULTI_SELECT", payload: _data });
-	};
-
-	const handleSelectData = (_data) => {
-		dispatch({ type: "SET_FROM_SLAB_SELECT", payload: _data });
-	};
-
-	const handleReset = () => {
-		dispatch({ type: "RESET" });
-	};
-
-	const hitQuery = (operation, callback) => {
+	const hitQuery = (operation, callback, finalData = {}) => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/pricing_commissions/${product}`,
+				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
 				"tf-req-method": "POST",
 			},
 			body: {
-				operation_type: commissionFor, //commissionFor
+				operation_type: watchOperationType,
 				operation: operation,
 				...finalData,
 			},
 			token: accessToken,
+			generateNewToken,
 		})
 			.then((data) => {
 				callback(data);
@@ -109,47 +82,93 @@ const PricingForm = ({
 	};
 
 	useEffect(() => {
-		if (commissionFor !== "3") {
+		if (watchOperationType != 3) {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
-			hitQuery(OPERATION.FETCH, (data) => {
-				if (data.status === 0) {
-					dispatch({
-						type: "SET_DATA",
-						payload: data?.data,
-						for: commissionFor,
-					});
+			hitQuery(OPERATION.FETCH, (_data) => {
+				if (_data.status === 0) {
+					setData(_data?.data?.allScspList);
 				} else {
 					toast({
-						title: data.message,
-						status: getStatus(data.status),
+						title: _data.message,
+						status: getStatus(_data.status),
 						duration: 5000,
 						isClosable: true,
 					});
 				}
 			});
-		}
-	}, [product, commissionFor]);
 
-	const handleSubmit = () => {
-		hitQuery(OPERATION.SUBMIT, (data) => {
-			toast({
-				title: data.message,
-				status: getStatus(data.status),
-				duration: 5000,
-				isClosable: true,
-			});
-			handleReset();
+			let _operationTypeList = operationTypeList.filter(
+				(item) => item.value == watchOperationType
+			);
+			let _label =
+				_operationTypeList.length > 0 && _operationTypeList[0].label;
+
+			setMultiSelectLabel(_label);
+		}
+	}, [uriSegment, watchOperationType]);
+
+	useEffect(() => {
+		const list = [];
+		const len = slabs.length;
+
+		slabs.map((item, index) => {
+			const temp = { value: index };
+
+			const label =
+				item.min == item.max
+					? `₹${item.min}`
+					: `₹${item.min} - ₹${item.max}`;
+
+			const selected = len === 1;
+			if (len === 1) {
+				setValue("select", 0);
+			}
+			list.push({ ...temp, label, selected });
 		});
+
+		setOptions(list);
+	}, [slabs]);
+
+	const handleFormSubmit = (data) => {
+		const _finalData = { ...data };
+
+		_finalData.actual_pricing = +data.actual_pricing;
+
+		const { min, max } = slabs[data?.select] || {};
+		_finalData.min_slab_amount = min;
+		_finalData.max_slab_amount = max;
+
+		const csplist = data?.multiselect?.map((num) => +num);
+		if (watchOperationType != 3) {
+			_finalData.csplist = csplist;
+		}
+
+		delete _finalData.select;
+		delete _finalData.multiselect;
+
+		// console.log("_finalData", _finalData);
+
+		hitQuery(
+			OPERATION.SUBMIT,
+			(data) => {
+				toast({
+					title: data.message,
+					status: getStatus(data.status),
+					duration: 6000,
+					isClosable: true,
+				});
+				// handleReset();
+			},
+			_finalData
+		);
 	};
 
 	const getStatus = (status) => {
 		switch (status) {
 			case 0:
 				return "success";
-			case 1:
-				return "error";
 			default:
-				return "info";
+				return "error";
 		}
 	};
 
@@ -168,155 +187,168 @@ const PricingForm = ({
 		value: "ekocspid",
 		label: "DisplayName",
 	};
+
 	return (
-		<Flex direction="column" gap="10" fontSize="md">
-			<RadioInput
-				label={`Select ${productPricingType} For`}
-				defaultValue="0"
-				value={commissionFor}
-				onChange={handleCommissionForChange}
-				radioGroupObj={commissionForObj}
-			/>
-
-			{commissionFor !== "3" ? (
-				/* no need of multiselect when user clicked on product radio option in select_commission_for field */
-				<Flex
-					direction="column"
-					gap="2"
-					w={{ base: "100%", md: "500px" }}
-				>
-					<Text fontWeight="semibold">
-						Select {commissionForObj[commissionFor]}
-					</Text>
-					<MultiSelect
-						options={data}
-						renderer={multiSelectRenderer}
-						setData={handleMultiSelectData}
-					/>
-				</Flex>
-			) : null}
-
-			<Flex direction="column" gap="2" w={{ base: "100%", md: "500px" }}>
-				<Text fontWeight="semibold">Select Slab</Text>
-				<Select
-					data={productSlabs}
-					setSelected={handleSelectData}
-					disabled={_disabled}
-					placeholder={_placeholder}
-				/>
-			</Flex>
-
-			<RadioInput
-				label={`Select ${productPricingType} Type`}
-				defaultValue="0"
-				value={commissionType}
-				onChange={handleCommissionTypeChange}
-				radioGroupObj={commissionTypeObj}
-			/>
-
-			{paymentModeObj ? (
+		<form onSubmit={handleSubmit(handleFormSubmit)}>
+			<Flex direction="column" gap="10" fontSize="md">
+				{/* Pricing/Commission For || operation_type */}
 				<RadioInput
-					label="Select Payment Mode"
-					defaultValue="1"
-					value={paymentMode}
-					onChange={handlePaymentModeChange}
-					radioGroupObj={paymentModeObj}
+					name="operation_type"
+					label={`Select ${productPricingType} For`}
+					defaultValue={DEFAULT.operation_type}
+					radioGroupList={operationTypeList}
+					control={control}
 				/>
-			) : null}
 
-			<Flex direction="column" gap="2">
-				<Text fontWeight="semibold">{`Define ${productPricingType}`}</Text>
-				<Flex gap="6" direction={{ base: "column", md: "row" }}>
-					<Flex
-						direction="column"
-						gap="60px"
+				{/* no need of multiselect when user clicked on product radio option in select_commission_for field */}
+				{watchOperationType != 3 && (
+					<FormControl
+						id="multiselect"
 						w={{ base: "100%", md: "500px" }}
 					>
-						<Input
-							inputRightElement={
-								<Icon
-									name={
-										commissionType == 0
-											? "percent_bg"
-											: "rupee_bg"
-									}
-									size="23px"
-									// h="20px"
-									color="accent.DEFAULT"
+						<FormLabel>Select {multiSelectLabel}</FormLabel>
+						<Controller
+							name="multiselect"
+							control={control}
+							render={({ field: { onChange } }) => (
+								<MultiSelect
+									options={data}
+									renderer={multiSelectRenderer}
+									setData={onChange}
 								/>
-							}
-							type="number"
-							fontSize="sm"
-							// defaultValue={commission}
-							placeholder="2.5"
-							onChange={handleCommissionChange}
-							// onClick={() => handlePopUp(true)}
-							// onBlur={() => handlePopUp(false)}
+							)}
 						/>
+					</FormControl>
+				)}
 
-						<Flex
-							position={{ base: "fixed", md: "initial" }}
-							w="100%"
-							bottom="0"
-							left="0"
+				{/* Select */}
+				<FormControl
+					id="select"
+					w={{ base: "100%", md: "500px" }}
+					isInvalid={errors.priority}
+				>
+					<FormLabel>Select Slab</FormLabel>
+					<Controller
+						name="select"
+						control={control}
+						render={({ field: { onChange } }) => {
+							return (
+								<Select
+									options={options}
+									// value={watchSelect}
+									// defaultValue={_defaultVal}
+									onChange={onChange}
+									disabled={_disabled}
+								/>
+							);
+						}}
+					/>
+				</FormControl>
+
+				{/* Pricing/Commission Type */}
+				<RadioInput
+					name="pricing_type"
+					label={`Select ${productPricingType} Type`}
+					defaultValue={DEFAULT.pricing_type}
+					radioGroupList={pricingTypeList}
+					control={control}
+				/>
+
+				{/* Payment Mode */}
+				{DEFAULT.payment_mode !== undefined ? (
+					<RadioInput
+						name="payment_mode"
+						label="Select Payment Mode"
+						defaultValue={DEFAULT.payment_mode}
+						radioGroupList={paymentModeList}
+						control={control}
+					/>
+				) : null}
+
+				{/* input to define new commission */}
+				<FormControl
+					w={{ base: "100%", md: "500px" }}
+					isInvalid={errors?.pricing}
+				>
+					<Input
+						id="actual_pricing"
+						required
+						label={`Define ${productPricingType}`}
+						inputRightElement={
+							<Icon
+								name={
+									watchPricingType == 0
+										? "percent_bg"
+										: "rupee_bg"
+								}
+								size="23px"
+								color="accent.DEFAULT"
+							/>
+						}
+						type="number"
+						fontSize="sm"
+						placeholder="2.5"
+						invalid={errors.pricing}
+						errorMsg={errors?.title?.message}
+						{...register("actual_pricing")}
+					/>
+				</FormControl>
+
+				{/* Submit Button and Cancel Button */}
+				<Flex
+					position={{ base: "fixed", md: "initial" }}
+					w="100%"
+					bottom="0"
+					left="0"
+				>
+					<Box
+						display={{ base: "none", md: "flex" }}
+						gap="16"
+						align="center"
+					>
+						<Button
+							type="submit"
+							size="lg"
+							h="64px"
+							fontWeight="bold"
 						>
-							<Box
-								display={{ base: "none", md: "flex" }}
-								gap="16"
-								align="center"
-							>
-								<Button
-									size="lg"
-									h={{
-										base: "40px",
-										md: "64px",
-									}}
-									fontWeight="bold"
-									onClick={handleSubmit}
-								>
-									Save Commissions
-								</Button>
+							Save Commissions
+						</Button>
 
-								<Button
-									variant="link"
-									fontWeight="bold"
-									color="accent.DEFAULT"
-									_hover={{ textDecoration: "none" }}
-									onClick={handleReset}
-								>
-									Cancel
-								</Button>
-							</Box>
-							<Box
-								display={{ base: "flex", md: "none" }}
-								w="100%"
-							>
-								<Button
-									bg="white"
-									fontWeight="bold"
-									borderRadius="none"
-									color="accent.DEFAULT"
-									_hover={{ bg: "white" }}
-									w="100%"
-									h="64px"
-									onClick={handleReset}
-								>
-									Cancel
-								</Button>
-								<Button
-									variant="primary"
-									w="100%"
-									h="64px"
-									borderRadius="none"
-									onClick={handleSubmit}
-								>
-									Save Commission
-								</Button>
-							</Box>
-						</Flex>
-					</Flex>
-
-					{/* <Flex
+						<Button
+							h="64px"
+							variant="link"
+							fontWeight="bold"
+							color="accent.DEFAULT"
+							_hover={{ textDecoration: "none" }}
+						>
+							Cancel
+						</Button>
+					</Box>
+					<Box display={{ base: "flex", md: "none" }} w="100%">
+						<Button
+							bg="white"
+							fontWeight="bold"
+							borderRadius="none"
+							color="accent.DEFAULT"
+							_hover={{ bg: "white" }}
+							w="100%"
+							h="64px"
+						>
+							Cancel
+						</Button>
+						<Button
+							type="submit"
+							w="100%"
+							h="64px"
+							borderRadius="none"
+						>
+							Save Commission
+						</Button>
+					</Box>
+				</Flex>
+				{/* Temporary commented (uncomment after separate api for calculating pricing) */}
+				{/* <Flex
 						w={{ base: "auto", md: "405px" }}
 						h="fit-content"
 						p="10px"
@@ -354,9 +386,8 @@ const PricingForm = ({
 							))}
 						</SimpleGrid>
 					</Flex> */}
-				</Flex>
 			</Flex>
-		</Flex>
+		</form>
 	);
 };
 export default PricingForm;
@@ -366,32 +397,33 @@ export default PricingForm;
  * @param {*} param0
  * @returns
  */
-const RadioInput = ({
-	label,
-	defaultValue,
-	value,
-	onChange,
-	radioGroupObj,
-}) => {
+const RadioInput = ({ name, label, defaultValue, radioGroupList, control }) => {
 	return (
-		<Flex direction="column" gap="2">
-			<Text fontWeight="semibold">{label}</Text>
-			<RadioGroup
+		<FormControl id={name} w={{ base: "100%", md: "500px" }}>
+			<FormLabel>{label}</FormLabel>
+			<Controller
+				name={name}
+				control={control}
 				defaultValue={defaultValue}
-				value={value}
-				onChange={onChange}
-			>
-				<Flex
-					direction={{ base: "column", sm: "row" }}
-					gap={{ base: "4", md: "16" }}
-				>
-					{Object.entries(radioGroupObj)?.map(([key, value]) => (
-						<Radio size="lg" key={key} value={key}>
-							<Text fontSize="sm">{value}</Text>
-						</Radio>
-					))}
-				</Flex>
-			</RadioGroup>
-		</Flex>
+				render={({ field: { onChange, value } }) => (
+					<RadioGroup onChange={onChange} value={value}>
+						<Flex
+							direction={{ base: "column", sm: "row" }}
+							gap={{ base: "4", md: "16" }}
+						>
+							{radioGroupList.map((item) => (
+								<Radio
+									size="lg"
+									key={item.value}
+									value={item.value}
+								>
+									<Text fontSize="sm">{item.label}</Text>
+								</Radio>
+							))}
+						</Flex>
+					</RadioGroup>
+				)}
+			/>
+		</FormControl>
 	);
 };
