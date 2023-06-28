@@ -1,5 +1,4 @@
 import { Flex, Select as ChakraSelect } from "@chakra-ui/react";
-import { useState } from "react";
 import { Icon, InputLabel } from "..";
 /**
  * A <Select> component
@@ -13,19 +12,12 @@ const Select = ({
 	placeholder,
 	required = false,
 	inputContStyle,
-	data,
-	setSelected,
+	options,
+	onChange,
+	// defaultValue,
+	// value,
 	disabled = false,
 }) => {
-	const [selectedValue, setSelectedValue] = useState({});
-
-	const handleSelectChange = (event) => {
-		const value = event.target.value;
-		const selectedValues = value.split(",").map((num) => Number(num));
-		setSelectedValue(selectedValues);
-		setSelected(selectedValues);
-	};
-
 	return (
 		<Flex direction="column" w="100%">
 			{label ? (
@@ -54,15 +46,14 @@ const Select = ({
 				borderRadius="10px"
 				icon={<Icon name="caret-down" />}
 				iconSize="10px"
-				onChange={handleSelectChange}
-				value={selectedValue}
+				onChange={onChange}
+				// value={value}
+				// defaultValue={defaultValue}
 				{...inputContStyle}
 			>
-				{data?.map((value, index) => (
-					<option value={[value.min, value.max]} key={index}>
-						{value.min == value.max
-							? value.max
-							: `${value.min} - ${value.max}`}
+				{options?.map(({ value, label, selected }) => (
+					<option value={value} key={label} selected={selected}>
+						{label}
 					</option>
 				))}
 			</ChakraSelect>
