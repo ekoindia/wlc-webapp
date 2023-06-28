@@ -18,7 +18,7 @@ const Dmt = ({ prop1, ...rest }) => {
 
 	const pricingTypeList = [
 		{ value: "0", label: "Percentage (%)" },
-		{ value: "1", label: "Fixed" },
+		{ value: "1", label: "Fixed (₹)" },
 	];
 	return (
 		<div {...rest}>

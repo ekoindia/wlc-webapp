@@ -18,14 +18,14 @@ const AadhaarPay = ({ prop1, ...rest }) => {
 
 	const pricingTypeList = [
 		{ value: "0", label: "Percentage (%)" },
-		{ value: "1", label: "Fixed" },
+		{ value: "1", label: "Fixed (₹)" },
 	];
 
 	return (
 		<div {...rest}>
 			<PricingForm
-				productDetails={products.AADHAARPAY}
-				productPricingType={productPricingType.AADHAARPAY}
+				productDetails={products.AADHAAR_PAY}
+				productPricingType={productPricingType.AADHAAR_PAY}
 				operationTypeList={operationTypeList}
 				pricingTypeList={pricingTypeList}
 			/>
