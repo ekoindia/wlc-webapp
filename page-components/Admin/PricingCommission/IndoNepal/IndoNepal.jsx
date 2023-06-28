@@ -16,7 +16,7 @@ const IndoNepal = ({ prop1, ...rest }) => {
 		{ value: "1", label: "Individuals" },
 	];
 
-	const pricingTypeList = [{ value: "1", label: "Fixed" }];
+	const pricingTypeList = [{ value: "1", label: "Fixed (₹)" }];
 
 	const paymentModeList = [
 		{ value: "1", label: "Cash to Cash" },
@@ -26,8 +26,8 @@ const IndoNepal = ({ prop1, ...rest }) => {
 	return (
 		<div {...rest}>
 			<PricingForm
-				productDetails={products.INDONEPAL}
-				productPricingType={productPricingType.INDONEPAL}
+				productDetails={products.INDO_NEPAL_FUND_TRANSFER}
+				productPricingType={productPricingType.INDO_NEPAL_FUND_TRANSFER}
 				operationTypeList={operationTypeList}
 				pricingTypeList={pricingTypeList}
 				paymentModeList={paymentModeList}
