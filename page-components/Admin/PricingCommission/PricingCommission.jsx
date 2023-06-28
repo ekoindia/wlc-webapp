@@ -8,7 +8,7 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Headings } from "components/Headings";
-import { AadhaarPay, Aeps, Dmt, IndoNepal } from ".";
+import { AadhaarPay, Aeps, CreditCardBillPayment, Dmt, IndoNepal } from ".";
 /**
  * A <PricingCommission> component
  * TODO: Write more description here
@@ -24,6 +24,7 @@ const PricingCommissions = () => {
 		"Indo-Nepal Fund Transfer": <IndoNepal />,
 		// BBPS: <Bbps />,
 		// "Airtel CMS": <AirtelCms />,
+		"Credit Card Bill Payment": <CreditCardBillPayment />,
 	};
 
 	return (
