@@ -10,24 +10,23 @@ import { PricingForm } from "..";
  * @example	`<Dmt></Dmt>` TODO: Fix example
  */
 const Dmt = ({ prop1, ...rest }) => {
-	const commissionForObj = {
-		1: "Individuals",
-		2: "Distributors",
-		3: "Products",
-	};
+	const operationTypeList = [
+		{ value: "3", label: "Product" },
+		{ value: "2", label: "Distributors" },
+		{ value: "1", label: "Individuals" },
+	];
 
-	const commissionTypeObj = {
-		0: "Percentage (%)",
-		1: "Fixed",
-	};
+	const pricingTypeList = [
+		{ value: "0", label: "Percentage (%)" },
+		{ value: "1", label: "Fixed" },
+	];
 	return (
 		<div {...rest}>
 			<PricingForm
-				product="dmt"
+				productDetails={products.DMT}
 				productPricingType={productPricingType.DMT}
-				productSlabs={products.DMT.slabs}
-				commissionForObj={commissionForObj}
-				commissionTypeObj={commissionTypeObj}
+				operationTypeList={operationTypeList}
+				pricingTypeList={pricingTypeList}
 			/>
 		</div>
 	);

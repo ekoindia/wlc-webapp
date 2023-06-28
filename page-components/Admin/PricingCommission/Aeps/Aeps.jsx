@@ -9,24 +9,23 @@ import { PricingForm } from "..";
  * @example	`<Aeps></Aeps>` TODO: Fix example
  */
 const Aeps = ({ prop1, ...rest }) => {
-	const commissionForObj = {
-		1: "Individuals",
-		2: "Distributors",
-		3: "Products",
-	};
+	const operationTypeList = [
+		{ value: "3", label: "Product" },
+		{ value: "2", label: "Distributors" },
+		{ value: "1", label: "Individuals" },
+	];
 
-	const commissionTypeObj = {
-		0: "Percentage (%)",
-		1: "Fixed",
-	};
+	const pricingTypeList = [
+		{ value: "0", label: "Percentage (%)" },
+		{ value: "1", label: "Fixed" },
+	];
 	return (
 		<div {...rest}>
 			<PricingForm
-				product="aeps"
+				productDetails={products.AEPS}
 				productPricingType={productPricingType.AEPS}
-				productSlabs={products.AEPS.slabs}
-				commissionForObj={commissionForObj}
-				commissionTypeObj={commissionTypeObj}
+				operationTypeList={operationTypeList}
+				pricingTypeList={pricingTypeList}
 			/>
 		</div>
 	);
