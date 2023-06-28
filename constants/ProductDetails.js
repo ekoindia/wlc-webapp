@@ -27,7 +27,7 @@ export const products = {
 			pricing_type: "0",
 		},
 	},
-	AADHAARPAY: {
+	AADHAAR_PAY: {
 		uriSegment: "aadharpay",
 		slabs: [{ min: 1, max: 10000 }],
 		DEFAULT: {
@@ -35,7 +35,7 @@ export const products = {
 			pricing_type: "0",
 		},
 	},
-	INDONEPAL: {
+	INDO_NEPAL_FUND_TRANSFER: {
 		uriSegment: "indonepal",
 		slabs: [
 			{ min: 100, max: 5000 },
@@ -45,6 +45,14 @@ export const products = {
 			operation_type: "3",
 			pricing_type: "1",
 			payment_mode: "1",
+		},
+	},
+	CREDIT_CARD_BILL_PAYMENT: {
+		uriSegment: "",
+		slabs: [{ min: 100, max: 5000 }],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
 		},
 	},
 };
@@ -57,7 +65,8 @@ export const productPricingTextConfig = {
 export const productPricingType = {
 	DMT: productPricingTextConfig.PRICING,
 	AEPS: productPricingTextConfig.COMMISSION,
-	AADHAARPAY: productPricingTextConfig.PRICING,
-	INDONEPAL: productPricingTextConfig.COMMISSION,
+	AADHAAR_PAY: productPricingTextConfig.PRICING,
+	INDO_NEPAL_FUND_TRANSFER: productPricingTextConfig.COMMISSION,
 	// BBPS: productPricingTextConfig.COMMISSION,
+	CREDIT_CARD_BILL_PAYMENT: productPricingTextConfig.PRICING,
 };
