@@ -138,9 +138,9 @@ const PricingForm = ({
 		_finalData.min_slab_amount = min;
 		_finalData.max_slab_amount = max;
 
-		const csplist = data?.multiselect?.map((num) => +num);
+		const CspList = data?.multiselect?.map((num) => +num);
 		if (watchOperationType != 3) {
-			_finalData.csplist = csplist;
+			_finalData.CspList = `${CspList}`;
 		}
 
 		delete _finalData.select;
