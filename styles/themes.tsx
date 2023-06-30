@@ -2,6 +2,7 @@ import { extendTheme, theme } from "@chakra-ui/react";
 import { globalStyles } from "./globals";
 import {
 	buttonTheme,
+	radioTheme,
 	tableTheme,
 	tabsTheme,
 } from "./theme_system/theme/components";
@@ -67,6 +68,7 @@ export const light = extendTheme({
 	components: {
 		Table: tableTheme,
 		Button: buttonTheme,
+		Radio: radioTheme,
 		Skeleton: {
 			baseStyle: {
 				borderRadius: "4px",
