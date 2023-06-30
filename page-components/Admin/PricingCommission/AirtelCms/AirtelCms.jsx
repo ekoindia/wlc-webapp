@@ -149,11 +149,11 @@ const AirtelCms = () => {
 						)}
 					</Flex>
 
-					{data?.data?.csp_list?.length > 0 && (
+					{/* {data?.data?.csp_list?.length > 0 && (
 						<AirtelCmsResponse
 							airtelCmsResponseList={data?.data?.csp_list}
 						/>
-					)}
+					)} */}
 				</Flex>
 			)}
 		</>
