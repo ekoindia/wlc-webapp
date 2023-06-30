@@ -33,9 +33,9 @@ const AirtelCms = () => {
 		})
 			.then((data) => {
 				const _blob = data?.file?.blob;
-				const _filename = data?.file?.name;
+				const _filename = data?.file?.name || "file";
 				const _type = data?.file["content-type"];
-				const _b64 = _type ? true : false;
+				const _b64 = true;
 				saveDataToFile(_blob, _filename, _type, _b64);
 			})
 			.catch((err) => {
