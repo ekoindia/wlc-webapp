@@ -2,35 +2,63 @@ import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
 import { Currency, DateView, IcoButton, Icon, Tags } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 
-export const getNameStyle = (name) => {
+// convert status to color
+const statusChecker = {
+	Active: "success",
+	Success: "success",
+	Inactive: "error",
+	Cancel: "error",
+	Failed: "error",
+	Fail: "error",
+	Pending: "orange.500",
+	Initiated: "orange.300",
+	"Refund pending": "purple.500",
+	Other: "light",
+};
+
+export const getNameStyle = (name, icon, hue) => {
 	return (
 		<Flex align={"center"} gap="0.625rem">
 			<Avatar
-				bg="accent.DEFAULT"
-				color="divider"
 				size={{ base: "sm" }}
-				name={(name || "").charAt(0)}
-				// src={item.link}
+				name={icon ? null : name}
+				bg={hue ? `hsl(${hue},80%,95%)` : "accent.DEFAULT"}
+				color={hue ? `hsl(${hue},80%,25%)` : "divider"}
+				border={hue ? `1px solid hsl(${hue},80%,85%)` : null}
+				icon={icon ? <Icon size="16px" name={icon} /> : null}
 				sx={{
 					"@media print": {
 						display: "none !important",
 					},
 				}}
 			/>
-			<Box as="span">{name}</Box>
+			<Box as="span" fontWeight="500">
+				{name}
+			</Box>
 		</Flex>
 	);
 };
 export const getStatusStyle = (status = "", tableName) => {
 	if (tableName === "History") {
+		const clr = statusChecker[status] || "light";
 		if (status?.toLowerCase() !== "success") {
 			return (
-				<Flex justify="end">
-					<Tags
-						size={{ base: "xs", "2xl": "sm" }}
-						px="8px"
+				<Flex justify="flex-end">
+					<Flex
+						align="center"
+						justify="center"
+						textAlign="center"
+						width="min-content"
+						px="6px"
+						py="4px"
+						border="1px"
 						borderRadius="4px"
-						status={status}
+						borderColor={clr}
+						color={clr}
+						noOfLines={2}
+						whiteSpace="pre-line"
+						fontSize="10px"
+						lineHeight="1"
 						sx={{
 							"@media print": {
 								borderWidth: 0,
@@ -38,7 +66,15 @@ export const getStatusStyle = (status = "", tableName) => {
 								background: "transparent !important",
 							},
 						}}
-					/>
+					>
+						{status}
+						{/* <Tags
+						size={{ base: "xs", "2xl": "sm" }}
+						px="8px"
+						borderRadius="4px"
+						status={status}
+					/> */}
+					</Flex>
 				</Flex>
 			);
 		}
@@ -110,11 +146,12 @@ export const getExpandIcoButton = (expandedRow, index) => {
 	return (
 		<IcoButton
 			iconName={expandedRow === index ? "remove" : "expand-add"}
-			bg="white"
+			color="white"
+			bg="primary.DEFAULT"
 			size="xxs"
-			iconStyle={{ color: "primary.DEFAULT" }}
-			border="2px solid #FE9F00"
-			boxShadow="0px 3px 6px #00000029"
+			// iconStyle={{ color: "primary.DEFAULT" }}
+			// border="2px solid #FE9F00"
+			// boxShadow="0px 3px 6px #00000029"
 			title={expandedRow === index ? "Shrink" : "Expand"}
 			cursor="pointer"
 			sx={{

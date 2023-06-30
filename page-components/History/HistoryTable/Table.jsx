@@ -3,7 +3,7 @@ import {
 	Flex,
 	Table as ChakraTable,
 	TableContainer,
-	Tbody,
+	Tbody as ChakraTbody,
 	Thead,
 	useMediaQuery,
 } from "@chakra-ui/react";
@@ -11,7 +11,7 @@ import { Pagination } from "components";
 import { tableRowLimit as trl } from "constants";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Th, Tr } from ".";
+import { Tbody, Th } from ".";
 
 /**
  * A Table component
@@ -119,8 +119,8 @@ const Table = ({
 						>
 							<Th {...{ renderer, visibleColumns }} />
 						</Thead>
-						<Tbody>
-							<Tr
+						<ChakraTbody>
+							<Tbody
 								{...{
 									data,
 									renderer,
@@ -134,7 +134,7 @@ const Table = ({
 									setExpandedRow,
 								}}
 							/>
-						</Tbody>
+						</ChakraTbody>
 					</ChakraTable>
 				</TableContainer>
 			) : (
