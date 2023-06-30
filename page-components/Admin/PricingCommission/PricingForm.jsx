@@ -286,6 +286,7 @@ const PricingForm = ({
 							/>
 						}
 						type="number"
+						step="any"
 						fontSize="sm"
 						placeholder="2.5"
 						invalid={errors.pricing}
