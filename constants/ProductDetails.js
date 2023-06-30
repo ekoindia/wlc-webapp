@@ -4,7 +4,13 @@
 export const products = {
 	DMT: {
 		uriSegment: "dmt",
-		slabs: [{ min: 100, max: 5000 }],
+		slabs: [
+			{ min: 100, max: 1000 },
+			{ min: 1001, max: 2000 },
+			{ min: 2001, max: 3000 },
+			{ min: 3001, max: 4000 },
+			{ min: 4001, max: 5000 },
+		],
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "0",
@@ -48,8 +54,8 @@ export const products = {
 		},
 	},
 	CREDIT_CARD_BILL_PAYMENT: {
-		uriSegment: "",
-		slabs: [{ min: 100, max: 5000 }],
+		uriSegment: "cc_bill_pay",
+		slabs: [{ min: 100, max: 199999 }],
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "0",
