@@ -36,7 +36,7 @@ const Bbps = () => {
 		};
 
 		const formData = new FormData();
-		formData.append("form-data", new URLSearchParams(formDataObj));
+		formData.append("formdata", new URLSearchParams(formDataObj));
 		formData.append("file", file);
 
 		console.log("formData", formData);
@@ -49,7 +49,7 @@ const Bbps = () => {
 					Authorization: `Bearer ${accessToken}`,
 					"tf-req-uri-root-path": "/ekoicici/v1",
 					"tf-req-uri": `/network/pricing_commissions/${uriSegment[mode]}`,
-					"tf-req-method": "POST",
+					"tf-req-method": "PUT",
 				},
 				body: formData,
 			}

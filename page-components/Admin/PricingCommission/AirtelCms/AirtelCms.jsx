@@ -50,7 +50,7 @@ const AirtelCms = () => {
 		};
 
 		const formData = new FormData();
-		formData.append("form-data", new URLSearchParams(formDataObj));
+		formData.append("formdata", new URLSearchParams(formDataObj));
 		formData.append("file", file);
 
 		console.log("formData", formData);
@@ -63,7 +63,7 @@ const AirtelCms = () => {
 					Authorization: `Bearer ${accessToken}`,
 					"tf-req-uri-root-path": "/ekoicici/v1",
 					"tf-req-uri": `/network/pricing_commissions/airtel_cms_bulk_update_commercial`,
-					"tf-req-method": "POST",
+					"tf-req-method": "PUT",
 				},
 				body: formData,
 			}
@@ -149,7 +149,7 @@ const AirtelCms = () => {
 						)}
 					</Flex>
 
-					{data?.data?.csp_list.length > 0 && (
+					{data?.data?.csp_list?.length > 0 && (
 						<AirtelCmsResponse
 							airtelCmsResponseList={data?.data?.csp_list}
 						/>
