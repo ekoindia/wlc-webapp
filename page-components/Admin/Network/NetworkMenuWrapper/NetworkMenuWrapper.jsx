@@ -1,4 +1,6 @@
 import {
+	Box,
+	Flex,
 	IconButton,
 	Modal,
 	ModalBody,
@@ -7,12 +9,11 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
-	Text,
 	Textarea,
 	useDisclosure,
 	useToast,
 } from "@chakra-ui/react";
-import { Button, Menus } from "components";
+import { Button, InputLabel, Menus, Select } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
@@ -24,6 +25,15 @@ const statusObj = {
 	// Close: 17,
 	Inactive: 18,
 };
+
+const reasons = [
+	{ value: "0", label: "Not Transacting anymore" },
+	{ value: "1", label: "Wants to create a new account" },
+	{ value: "2", label: "Management Request" },
+	{ value: "3", label: "Requested by the person himself/herself" },
+	{ value: "4", label: "Suspected Fraud" },
+	{ value: "999", label: "Other" },
+];
 
 const generateMenuList = (list, id, extra) => {
 	let _list = [];
@@ -48,6 +58,15 @@ const getStatus = (status) => {
 	}
 };
 
+const getReason = (list, value) => {
+	for (let item of list) {
+		if (item.value === value) {
+			return item.label;
+		}
+	}
+	return null;
+};
+
 /**
  * A NetworkMenuWrapper component
  * @arg 	{Object}	prop	Properties passed to the component
@@ -58,7 +77,8 @@ const NetworkMenuWrapper = ({ eko_code, account_status }) => {
 	const [isOpen, setOpen] = useState(false);
 	const { onOpen } = useDisclosure();
 	const [clickedVal, setClickedVal] = useState();
-	const [reason, setReason] = useState("");
+	const [reasonSelect, setReasonSelect] = useState(null);
+	const [reasonInput, setReasonInput] = useState(null);
 	const { accessToken } = useSession();
 	const router = useRouter();
 	const toast = useToast();
@@ -99,12 +119,19 @@ const NetworkMenuWrapper = ({ eko_code, account_status }) => {
 	);
 
 	const handleSubmit = () => {
+		const _reason =
+			reasonSelect !== "999"
+				? getReason(reasons, reasonSelect)
+				: reasonInput;
+
 		setOpen(false);
+		setReasonSelect(null);
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"Content-Type": "application/json",
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:${statusObj[clickedVal]}/descrip_note:${reason}`,
+				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:${statusObj[clickedVal]}/descrip_note:${_reason}`,
 				"tf-req-method": "PUT",
 			},
 			body: {
@@ -123,6 +150,14 @@ const NetworkMenuWrapper = ({ eko_code, account_status }) => {
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
 			});
+	};
+
+	const handleSelect = (event) => {
+		setReasonSelect(event.target.value);
+	};
+
+	const handleReasonInput = (event) => {
+		setReasonInput(event.target.value);
 	};
 
 	return (
@@ -158,19 +193,44 @@ const NetworkMenuWrapper = ({ eko_code, account_status }) => {
 					</ModalHeader>
 					<ModalCloseButton color="hint" size="md" />
 					<ModalBody>
-						<Text fontWeight="medium">
-							Reason for marking {clickedVal?.toLowerCase()}
-						</Text>
-
-						<Textarea
-							h={{ base: "200px", md: "250px" }}
-							width="100%"
-							resize="none"
-							maxLength={400}
-							onChange={(e) => setReason(e.target.value)}
-						/>
+						<Flex direction="column" gap="8">
+							<Box>
+								<InputLabel
+									htmlFor="status-reason-select"
+									fontWeight="medium"
+									required
+								>
+									Reason for marking{" "}
+									{clickedVal?.toLowerCase()}
+								</InputLabel>
+								<Select
+									id="status-reason-select"
+									options={reasons}
+									onChange={handleSelect}
+								></Select>
+							</Box>
+							{reasonSelect === "999" && (
+								<Box>
+									<InputLabel
+										htmlFor="status-textarea"
+										fontWeight="medium"
+										required
+									>
+										Additional Details
+									</InputLabel>
+									<Textarea
+										id="status-textarea"
+										width="100%"
+										resize="none"
+										noOfLines={2}
+										maxLength={100}
+										onChange={handleReasonInput}
+									/>
+								</Box>
+							)}
+						</Flex>
 					</ModalBody>
-					<ModalFooter py={{ base: 4, md: 8 }}>
+					<ModalFooter py="8">
 						<Button
 							size="lg"
 							width="100%"

@@ -17,6 +17,7 @@ const Select = ({
 	// defaultValue,
 	// value,
 	disabled = false,
+	...rest
 }) => {
 	return (
 		<Flex direction="column" w="100%">
@@ -50,6 +51,7 @@ const Select = ({
 				// value={value}
 				// defaultValue={defaultValue}
 				{...inputContStyle}
+				{...rest}
 			>
 				{options?.map(({ value, label, selected }) => (
 					<option value={value} key={label} selected={selected}>
