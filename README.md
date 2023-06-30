@@ -17,9 +17,13 @@ A white-labelled SaaS platform to run your business like agent-banking, micro-fi
 - For optimizing individual SVG icons, use: [SVGOMG - SVGO's Missing GUI](https://jakearchibald.github.io/svgomg/)
 
 ## UI Features:
-- Top Navbar - [components/NavBar/NavBar.jsx](components/NavBar/NavBar.jsx)
-- Left Sidebar - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
+- **Top Navbar** - [components/NavBar/NavBar.jsx](components/NavBar/NavBar.jsx)
+- **Left Sidebar** - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
   - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
+- **Transaction History** (for sellers & distributors) - [page-components/History/History.jsx](page-components/History/History.jsx)
+  - History Table metadata: [page-components/History/HistoryTable/historyParametersMetadata.js](page-components/History/HistoryTable/historyParametersMetadata.js)
+	- To add a new data-point in the history table, add a new entry in the `historyParametersMetadata` array.
+  - History Table component: [page-components/History/HistoryTable/HistoryTable.jsx](page-components/History/HistoryTable/HistoryTable.jsx)
 
 ## Admin
 - Dashboard
