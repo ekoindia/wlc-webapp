@@ -106,7 +106,17 @@ const Headings = ({
 				{isCompVisible && propComp}
 			</Flex>
 			{isNavHidden && (
-				<Box as="nav" w={"full"} mb="10px" h={NavHeight}></Box>
+				<Box
+					as="nav"
+					w={"full"}
+					mb="10px"
+					h={NavHeight}
+					sx={{
+						"@media print": {
+							display: "none !important",
+						},
+					}}
+				></Box>
 			)}
 		</>
 	);

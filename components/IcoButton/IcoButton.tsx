@@ -56,6 +56,8 @@ const IcoButton = ({
 			? "32px"
 			: size === "xs"
 			? "24px"
+			: size === "xxs"
+			? "18px"
 			: size;
 
 	const _iconSize: string = iconSize
@@ -68,6 +70,8 @@ const IcoButton = ({
 		? "14px"
 		: size === "xs"
 		? "11px"
+		: size === "xxs"
+		? "8px"
 		: "80%";
 
 	const btnTheme: Object =

@@ -29,7 +29,7 @@ export const OtherMenuItems: number[] = [
  */
 export const AdminMenuItems: number[] = [
 	TransactionIds.LOAD_EVALUE,
-	TransactionIds.REQUEST_EVALUE,
+	// TransactionIds.REQUEST_EVALUE,
 	TransactionIds.TRANSFER_EVALUE,
 	// TransactionIds.INVOICE_DOWNLOAD,
 ];
