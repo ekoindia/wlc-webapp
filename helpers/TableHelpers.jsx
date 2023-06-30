@@ -241,5 +241,5 @@ export const getDateView = (dateTime) => {
 };
 
 export const getDateTimeView = (dateTime) => {
-	return <DateView date={dateTime} format="dd/MM/yyyy hh:mm a" />;
+	return <DateView date={dateTime} format="dd MMM yyyy hh:mm a" />;
 };

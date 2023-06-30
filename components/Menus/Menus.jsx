@@ -6,31 +6,29 @@ import {
 	MenuItem,
 	MenuList,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { Icon } from "..";
 
-const Menus = (props) => {
-	const router = useRouter();
-	const {
-		minH,
-		minW,
-		width,
-		height,
-		type = "inverted",
-		as = "IconButton",
-		iconPos,
-		title,
-		iconName,
-		buttonStyle,
-		iconStyles,
-		itemStyles,
-		listStyles,
-		rounded = "4px",
-		onClick,
-		menulist,
-	} = props;
-
+const Menus = ({
+	minH,
+	minW,
+	width,
+	height,
+	type = "inverted",
+	as = "IconButton",
+	iconPos,
+	title,
+	iconName,
+	buttonStyle,
+	iconStyles,
+	itemStyles,
+	listStyles,
+	rounded = "4px",
+	onClick,
+	menulist,
+	...rest
+}) => {
 	const pseudoStyles = {
+		color: type === "inverted" ? "primary.DEFAULT" : "white",
 		bg: type === "inverted" ? "white" : "primary.DEFAULT",
 		_hover: {
 			color: type === "inverted" ? "primary.dark" : "white",
@@ -68,41 +66,38 @@ const Menus = (props) => {
 								{...iconWPos}
 								{...buttonStyle}
 								{...pseudoStyles}
-								{...props}
+								{...rest}
 							>
 								{title}
 							</MenuButton>
-							<MenuList py="0px" minW="120px" {...listStyles}>
+							<MenuList
+								py="0px"
+								minW="fit-content"
+								{...listStyles}
+							>
 								{menulist
 									? menulist.map((item, index) => {
 											return (
 												<>
 													<MenuItem
+														key={
+															item.id ||
+															`${index}-${item.label}`
+														}
+														value={item.value}
 														color="dark"
-														key={index}
-														onClick={() => {
-															if (
-																item.handleClick
-															) {
-																item.handleClick();
-															} else {
-																router.push(
-																	item.path
-																);
-															}
-														}}
-														p="8px 10px"
-														fontSize={{
-															base: "10px",
-															sm: "xs",
-														}}
-														fontWeight="medium"
+														onClick={() =>
+															item.onClick(
+																item.value
+															)
+														}
+														fontSize="xs"
 														_hover={{
-															bg: "white",
+															bg: "divider",
 														}}
 														{...itemStyles}
 													>
-														{item.item}
+														{item.label}
 													</MenuItem>
 													{index !==
 														menulist.length - 1 && (
