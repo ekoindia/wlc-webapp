@@ -12,7 +12,6 @@ import {
 	AadhaarPay,
 	Aeps,
 	AirtelCms,
-	Bbps,
 	CreditCardBillPayment,
 	Dmt,
 	IndoNepal,
@@ -30,7 +29,7 @@ const PricingCommissions = () => {
 		AEPS: <Aeps />,
 		"Aadhaar Pay": <AadhaarPay />,
 		"Indo-Nepal Fund Transfer": <IndoNepal />,
-		BBPS: <Bbps />,
+		// BBPS: <Bbps />,
 		"Airtel CMS": <AirtelCms />,
 		"Credit Card Bill Payment": <CreditCardBillPayment />,
 	};
