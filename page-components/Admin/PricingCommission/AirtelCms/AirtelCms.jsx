@@ -1,5 +1,5 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { Button, Dropzone, Icon } from "components";
+import { Button, Dropzone, Icon, Table } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
@@ -149,11 +149,11 @@ const AirtelCms = () => {
 						)}
 					</Flex>
 
-					{/* {data?.data?.csp_list.length > 0 && (
+					{data?.data?.csp_list?.length > 0 && (
 						<AirtelCmsResponse
 							airtelCmsResponseList={data?.data?.csp_list}
 						/>
-					)} */}
+					)}
 				</Flex>
 			)}
 		</>
@@ -162,38 +162,38 @@ const AirtelCms = () => {
 
 export default AirtelCms;
 
-// const AirtelCmsResponse = ({
-// 	// totalRecords,
-// 	// pageNumber,
-// 	// setPageNumber,
-// 	airtelCmsResponseList,
-// }) => {
-// 	const renderer = [
-// 		{ field: "Sr. No.", show: "#" },
-// 		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
-// 		{ name: "mobile", field: "Mobile Number", sorting: true },
-// 		{
-// 			name: "status",
-// 			field: "Status",
-// 			sorting: true,
-// 			show: "Tag",
-// 		},
-// 		{
-// 			name: "reason",
-// 			field: "Reason",
-// 			show: "Description",
-// 		},
-// 	];
-// 	return (
-// 		<Table
-// 			tableName="BulkOnboarding"
-// 			variant="stripedActionNone"
-// 			renderer={renderer}
-// 			// totalRecords={totalRecords}
-// 			// pageNumber={pageNumber}
-// 			// setPageNumber={setPageNumber}
-// 			data={airtelCmsResponseList}
-// 		/>
-// 		//TODO table responsive card
-// 	);
-// };
+const AirtelCmsResponse = ({
+	// totalRecords,
+	// pageNumber,
+	// setPageNumber,
+	airtelCmsResponseList,
+}) => {
+	const renderer = [
+		{ field: "Sr. No.", show: "#" },
+		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
+		{ name: "mobile", field: "Mobile Number", sorting: true },
+		{
+			name: "status",
+			field: "Status",
+			sorting: true,
+			show: "Tag",
+		},
+		{
+			name: "reason",
+			field: "Reason",
+			show: "Description",
+		},
+	];
+	return (
+		<Table
+			tableName="BulkOnboarding"
+			variant="stripedActionNone"
+			renderer={renderer}
+			// totalRecords={totalRecords}
+			// pageNumber={pageNumber}
+			// setPageNumber={setPageNumber}
+			data={airtelCmsResponseList}
+		/>
+		//TODO table responsive card
+	);
+};

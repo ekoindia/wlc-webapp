@@ -195,7 +195,7 @@ const BulkOnboarding = () => {
 							)}
 						</Flex>
 
-						{data?.data?.csp_list.length > 0 && (
+						{data?.data?.csp_list?.length > 0 && (
 							<BulkOnboardingResponse
 								bulkOnboardingResponseList={
 									data?.data?.csp_list
