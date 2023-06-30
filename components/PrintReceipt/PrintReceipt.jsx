@@ -64,7 +64,7 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 						</Text>
 						<Text
 							fontSize={{ base: "0.65em", lg: "0.7em" }}
-							noOfLines={1}
+							noOfLines={2}
 						>
 							{userData?.userDetails?.shopaddress}
 						</Text>

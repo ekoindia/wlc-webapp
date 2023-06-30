@@ -48,6 +48,7 @@ const History = () => {
 	const router = useRouter();
 	const [finalFormState, setFinalFormState] = useState({});
 	const { setSearchTitle } = useGlobalSearch();
+	const [loading, setLoading] = useState(false);
 
 	// Set GlobalSearch title
 	useEffect(() => {
@@ -82,6 +83,8 @@ const History = () => {
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
 
+		setLoading(true);
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
@@ -105,6 +108,9 @@ const History = () => {
 			})
 			.catch((err) => {
 				console.error("[History] error: ", err);
+			})
+			.finally(() => {
+				setLoading(false);
 			});
 	};
 
@@ -264,6 +270,7 @@ const History = () => {
 						setPageNumber={setCurrentPage}
 						transactionList={transactionList}
 						tableRowLimit={limit}
+						loading={loading}
 					/>
 				</PrintReceipt>
 			</Flex>

@@ -8,7 +8,7 @@ export const getNameStyle = (name) => {
 			<Avatar
 				bg="accent.DEFAULT"
 				color="divider"
-				size={{ base: "sm", sm: "sm", md: "xs", lg: "sm" }}
+				size={{ base: "sm" }}
 				name={(name || "").charAt(0)}
 				// src={item.link}
 				sx={{
@@ -111,7 +111,7 @@ export const getExpandIcoButton = (expandedRow, index) => {
 		<IcoButton
 			iconName={expandedRow === index ? "remove" : "expand-add"}
 			bg="white"
-			size="xs"
+			size="xxs"
 			iconStyle={{ color: "primary.DEFAULT" }}
 			border="2px solid #FE9F00"
 			boxShadow="0px 3px 6px #00000029"
