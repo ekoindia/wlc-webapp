@@ -27,7 +27,9 @@ export const prepareTableCell = (
 	column,
 	index,
 	serialNo,
-	expandedRow
+	expandedRow,
+	icon,
+	hue
 ) => {
 	const account_status = item?.account_status;
 	const eko_code = item?.profile?.eko_code ?? [];
@@ -48,7 +50,8 @@ export const prepareTableCell = (
 				item?.address_details?.longitude
 			);
 		case "Avatar":
-			return getNameStyle(item[column.name]);
+			// Name with avatar
+			return getNameStyle(item[column.name], icon, hue);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":
