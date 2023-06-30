@@ -1,5 +1,7 @@
-import { Flex, Text } from "@chakra-ui/react";
-import { Button, Dropzone } from "components";
+import { Flex, Link, Text } from "@chakra-ui/react";
+import { Button, Dropzone, Icon } from "components";
+import { Endpoints } from "constants/EndPoints";
+import { useSession } from "contexts/UserContext";
 import { useState } from "react";
 
 /**
@@ -12,29 +14,44 @@ import { useState } from "react";
  */
 const AirtelCms = () => {
 	const [file, setFile] = useState(null);
+	const [data, setData] = useState();
+	console.log("data", data);
 
-	const handleFileUpload = async (event) => {
-		event.preventDefault();
+	const { accessToken } = useSession();
 
-		try {
-			if (!file) return;
-			const formData = new FormData();
-			formData.append("file", file);
+	const handleFileUpload = () => {
+		const formDataObj = {
+			client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
+			source: "WLC",
+		};
 
-			// hitQuery()
-			// // const response = await fetch("/api/upload", {
-			// // 	method: "POST",
-			// // 	body: formData,
-			// // });
+		const formData = new FormData();
+		formData.append("form-data", new URLSearchParams(formDataObj));
+		formData.append("file", file);
 
-			// if (response.ok) {
-			// 	console.log("File uploaded successfully");
-			// } else {
-			// 	console.error("Error uploading file");
-			// }
-		} catch (error) {
-			console.error(error);
-		}
+		console.log("formData", formData);
+
+		fetch(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD_CUSTOM_URL,
+			{
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": `/network/pricing_commissions/airtel_cms_bulk_update_commercial`,
+					"tf-req-method": "POST",
+				},
+				body: formData,
+			}
+		)
+			.then((res) => res.json())
+			.then((data) => {
+				console.log("[AirtelCms] data:", data);
+				setData(data);
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
 	};
 
 	return (
@@ -45,8 +62,27 @@ const AirtelCms = () => {
 			w={{ base: "100%", md: "500px" }}
 		>
 			<Flex direction="column" gap="2">
-				<Text fontWeight="semibold">Download your current pricing</Text>
-				{/* <Button variant="link">Download</Button> */}
+				<Text fontWeight="semibold">
+					Download Sample File &thinsp;
+					{/* <Box as="span" textTransform="lowercase">
+						(for onboarding {applicantTypeObj[applicantType]}s)
+					</Box> */}
+				</Text>
+				<Link
+					// href={
+					// 	applicantType == 0
+					// 		? SAMPLE_DOWNLOAD_LINK.SELLER
+					// 		: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
+					// }
+					w="fit-content"
+					fontWeight="semibold"
+					isExternal
+				>
+					<Button>
+						<Icon name="file-download" size="sm" />
+						&nbsp; Download
+					</Button>
+				</Link>
 			</Flex>
 			<Flex direction="column" gap="2">
 				<Text fontWeight="semibold">Upload your pricing</Text>
