@@ -10,71 +10,115 @@ import {
 	Text,
 	Textarea,
 	useDisclosure,
+	useToast,
 } from "@chakra-ui/react";
 import { Button, Menus } from "components";
 import { Endpoints } from "constants/EndPoints";
-// import { useOrgDetailContext } from "contexts/OrgDetailContext";
-import { useUser } from "contexts/UserContext";
+import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
+const statusObj = {
+	Active: 16,
+	// Close: 17,
+	Inactive: 18,
+};
+
+const generateMenuList = (list, id, extra) => {
+	let _list = [];
+
+	for (const listItem of list) {
+		if (id !== undefined && listItem.id !== id) {
+			_list.push(listItem);
+		}
+	}
+
+	_list = [..._list, extra];
+
+	return _list;
+};
+
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
+
 /**
- * A <NetworkMenuWrapper> component
- * TODO: Write more description here
+ * A NetworkMenuWrapper component
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
 const NetworkMenuWrapper = ({ eko_code, account_status }) => {
-	const { userData } = useUser();
-	// const { orgDetail } = useOrgDetailContext();
-	const { onOpen, onClose } = useDisclosure();
+	const [isOpen, setOpen] = useState(false);
+	const { onOpen } = useDisclosure();
+	const [clickedVal, setClickedVal] = useState();
 	const [reason, setReason] = useState("");
+	const { accessToken } = useSession();
+	const router = useRouter();
+	const toast = useToast();
+
 	const menuList = [
-		// {
-		// 	item: "Proceed",
-		// 	path: `/admin/my-network/profile?ekocode=${eko_code}`,
-		// },
 		{
-			item: "Mark Inactive",
-			handleClick: () => {
+			id: 16,
+			value: "Active",
+			label: "Mark Active",
+			onClick: (value) => {
 				setOpen(true);
+				setClickedVal(value);
 			},
 		},
-		// {
-		// 	item: "Mark Pending",
-		// 	handleClick: () => {
-		// 		setOpen(true);
-		// 	},
-		// },
 		{
-			item: "Change Role",
-			path: "/admin/my-network/profile/change-role",
+			id: 17,
+			value: "Inactive",
+			label: "Mark Inactive",
+			onClick: (value) => {
+				setOpen(true);
+				setClickedVal(value);
+			},
 		},
 	];
-	const [isOpen, setOpen] = useState(false);
-	const handleSave = () => {
-		// API call
-		const body = {
-			// initiator_id: userData.accountDetails.mobile,
-			user_code: userData.accountDetails.code,
-			// org_id: orgDetail.org_id,
-		};
-		// status_id:17		Close
-		// status_id:18		Inactive
-		// status_id:16		Active
+
+	const extraMenuListItem = {
+		label: "Change Role",
+		onClick: () => {
+			router.push("/admin/my-network/profile/change-role");
+		},
+	};
+
+	const currId = statusObj[account_status];
+	const _finalMenuList = generateMenuList(
+		menuList,
+		currId,
+		extraMenuListItem
+	);
+
+	const handleSubmit = () => {
+		setOpen(false);
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"Content-Type": "application/json",
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:17/descrip_note:${reason}`,
+				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:${statusObj[clickedVal]}/descrip_note:${reason}`,
 				"tf-req-method": "PUT",
 			},
-			body: body,
-			token: userData.access_token,
+			body: {
+				user_code: eko_code,
+			},
+			token: accessToken,
 		})
-			.then(() => {
-				onClose();
+			.then((data) => {
+				toast({
+					title: data.message,
+					status: getStatus(data.status),
+					duration: 6000,
+					isClosable: true,
+				});
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
@@ -85,15 +129,14 @@ const NetworkMenuWrapper = ({ eko_code, account_status }) => {
 		<div>
 			<Menus
 				onOpen={onOpen}
-				menulist={menuList}
+				menulist={_finalMenuList}
 				type="everted"
 				as={IconButton}
 				iconName="more-vert"
-				minH={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				height={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				// iconStyles={{ height: "15px", width: "4px" }}
+				minH={{ base: "25px", "2xl": "30px" }}
+				minW={{ base: "25px", "2xl": "30px" }}
+				width={{ base: "25px", "2xl": "30px" }}
+				height={{ base: "25px", "2xl": "30px" }}
 				onClick={(e) => {
 					e.stopPropagation();
 				}}
@@ -108,34 +151,33 @@ const NetworkMenuWrapper = ({ eko_code, account_status }) => {
 				<ModalContent
 					width={{ base: "100%", md: "465px" }}
 					height="auto"
+					fontSize="sm"
 				>
-					<ModalHeader>Mark {account_status}</ModalHeader>
-					<ModalCloseButton color="#D2D2D2" size="lg" />
+					<ModalHeader fontSize="lg" fontWeight="semibold">
+						<span>Mark {clickedVal}</span>
+					</ModalHeader>
+					<ModalCloseButton color="hint" size="md" />
 					<ModalBody>
-						<Text>
-							Reason for marking {account_status?.toLowerCase()}
+						<Text fontWeight="medium">
+							Reason for marking {clickedVal?.toLowerCase()}
 						</Text>
+
 						<Textarea
-							width="100%"
 							h={{ base: "200px", md: "250px" }}
-							borderRadius={20}
+							width="100%"
 							resize="none"
 							maxLength={400}
-							fontSize={{ base: "14px", md: "16px" }}
 							onChange={(e) => setReason(e.target.value)}
 						/>
 					</ModalBody>
-					<ModalFooter
-						justifyContent="center"
-						paddingBottom={{ base: 4, md: 8 }}
-					>
+					<ModalFooter py={{ base: 4, md: 8 }}>
 						<Button
-							h={{ base: "44px", md: "56px" }}
+							size="lg"
 							width="100%"
-							fontSize={{ base: "14px", md: "16px" }}
-							onClick={handleSave}
+							fontSize="lg"
+							onClick={handleSubmit}
 						>
-							Save
+							Save now
 						</Button>
 					</ModalFooter>
 				</ModalContent>
