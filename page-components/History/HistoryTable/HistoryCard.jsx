@@ -49,16 +49,10 @@ const HistoryCard = ({
 					size="sm"
 					name={txicon ? null : item.tx_name}
 					mr="8px"
-					border={`2px solid hsl(${h},80%,90%)`}
+					border={`1px solid hsl(${h},80%,85%)`}
 					bg={`hsl(${h},80%,95%)`}
-					color={`hsl(${h},80%,30%)`}
-					icon={
-						<Icon
-							size="sm"
-							name={txicon}
-							// color={`hsl(${h},80%,30%)`}
-						/>
-					}
+					color={`hsl(${h},80%,25%)`}
+					icon={<Icon size="16px" name={txicon} />}
 				/>
 				<Flex direction="column" flexGrow={1}>
 					<Box fontSize="0.6em" color="light">
