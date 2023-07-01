@@ -8,14 +8,14 @@ import { Icon } from "..";
  * @param	{Array}	[prop.options]	options (array of objects) from which multiselect component will populate data and let user select.
  * @param	{string}	[prop.placeholder]	placeholder to show when nothing is selected.
  * @param	{object}	[prop.renderer]	object which contains label & value, which will let multiselect component know what is going to be the label and value from particular data.
- * @param	{string}	[prop.setData]	setter which parent component will pass to multiselect to get the data/values/options which is selected by the user.
+ * @param	{string}	[prop.onChange]	setter which parent component will pass to multiselect to get the data/values/options which is selected by the user.
  * @example	`<MultiSelect options={options}	renderer={renderer} placeholder = "Please Select Something"/>`
  */
 const MultiSelect = ({
 	options,
 	placeholder = "-- Select --",
 	renderer,
-	setData = () => {}, //ToDo:need to be pass selected data when dropdown is closed
+	onChange = () => {},
 	label,
 }) => {
 	const inputRef = useRef();
@@ -42,7 +42,7 @@ const MultiSelect = ({
 		}
 		setSelectAll(filteredOptions, selectedOptions);
 		setSelectedOptionsArr(keys);
-		setData(keys);
+		onChange(keys);
 	}, [selectedOptions]);
 
 	const handleSelectBoxClick = () => {

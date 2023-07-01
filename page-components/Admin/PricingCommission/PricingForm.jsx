@@ -214,7 +214,7 @@ const PricingForm = ({
 								<MultiSelect
 									options={data}
 									renderer={multiSelectRenderer}
-									setData={onChange}
+									onChange={onChange}
 								/>
 							)}
 						/>
