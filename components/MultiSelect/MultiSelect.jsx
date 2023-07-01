@@ -26,8 +26,9 @@ const MultiSelect = ({
 	const [highlightedIndex, setHighlightedIndex] = useState(-1);
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 	const [filteredOptions, setFilteredOptions] = useState(options);
+
 	/* needed for select all option */
-	const selectObject = { value: "*", label: "Select All" };
+	const selectAllObj = { value: "*", label: "Select All" };
 
 	useEffect(() => {
 		setFilteredOptions(options);
@@ -49,28 +50,31 @@ const MultiSelect = ({
 		setOpen(!open);
 	};
 
-	const handleSearch = (event) => {
+	const handleSearch = (searchedTerm) => {
 		//  Search
-		let tempOptions = options.filter((option) =>
+		let _filteredOptions = options.filter((option) =>
 			option[renderer.label]
-				// option.label
 				.toLowerCase()
-				.includes(event.target.value.toLowerCase())
+				.includes(searchedTerm.toLowerCase())
 		);
-		return tempOptions;
+		return _filteredOptions;
 	};
 
-	/* this is checking whether */
+	/* this is checking whether options and selectedOptions are same so that it can mark selectAll accordingly */
 	const setSelectAll = (options, selectedOptions) => {
-		let isSelectAll = true;
-		options?.forEach((ele) => {
-			if (!selectedOptions[ele[renderer.value]]) isSelectAll = false;
-			// if (!selectedOptions[ele.value]) isSelectAll = false;
-		});
-		if (isSelectAll) {
-			setSelectAllChecked(true);
-		} else {
-			setSelectAllChecked(false);
+		if (options?.length > 0) {
+			let isSelectAll = true;
+			for (const obj of options) {
+				if (!selectedOptions[obj[renderer.value]]) {
+					isSelectAll = false;
+					break;
+				}
+			}
+			if (isSelectAll) {
+				setSelectAllChecked(true);
+			} else {
+				setSelectAllChecked(false);
+			}
 		}
 	};
 
@@ -126,11 +130,12 @@ const MultiSelect = ({
 		if (!open) {
 			setOpen(true);
 		}
-		setSearchTerm(event.target.value);
-		const updatedOptions = handleSearch(event);
-		setFilteredOptions(updatedOptions);
+		const _searchedTerm = event.target.value;
+		setSearchTerm(_searchedTerm);
+		const filteredOptions = handleSearch(_searchedTerm);
+		setFilteredOptions(filteredOptions);
 		// Check for select all
-		setSelectAll(updatedOptions, selectedOptions);
+		setSelectAll(filteredOptions, selectedOptions);
 	};
 
 	/* handle when user click on option */
@@ -298,7 +303,7 @@ const MultiSelect = ({
 							{/* Show select all options */}
 							{filteredOptions?.length > 0 && (
 								<Flex
-									key={selectObject.value}
+									key={selectAllObj.value}
 									h="50px"
 									w="100%"
 									direction="column"
@@ -312,11 +317,11 @@ const MultiSelect = ({
 										onChange={(event) => {
 											handleClick(
 												event.target.checked,
-												selectObject.value
+												selectAllObj.value
 											);
 										}}
 									>
-										{selectObject.label}
+										{selectAllObj.label}
 									</Checkbox>
 								</Flex>
 							)}
