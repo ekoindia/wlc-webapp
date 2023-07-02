@@ -391,7 +391,7 @@ const getSelectedStyle = (value, label, onDeleteHandler) => {
 				<Icon
 					name="close"
 					size="8px"
-					color="accent.DEFAULT"
+					color="accent.dark"
 					onClick={(e) => {
 						onDeleteHandler(value);
 						e.stopPropagation();
