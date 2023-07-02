@@ -35,15 +35,14 @@ const MultiSelect = ({
 	}, [options]);
 
 	useEffect(() => {
-		let keys = Object.keys(selectedOptions);
-		if (keys?.length === filteredOptions?.length) {
+		let _keys = Object.keys(selectedOptions);
+		if (_keys?.length === filteredOptions?.length) {
 			setSelectAllChecked(true);
 		} else {
 			setSelectAllChecked(false);
 		}
-		setSelectAll(filteredOptions, selectedOptions);
-		setSelectedOptionsArr(keys);
-		onChange(keys);
+		setSelectedOptionsArr(_keys);
+		onChange(_keys);
 	}, [selectedOptions]);
 
 	const handleSelectBoxClick = () => {
@@ -61,26 +60,21 @@ const MultiSelect = ({
 	};
 
 	/* this is checking whether options and selectedOptions are same so that it can mark selectAll accordingly */
-	const setSelectAll = (options, selectedOptions) => {
-		if (options?.length > 0) {
-			let isSelectAll = true;
-			for (const obj of options) {
-				if (!selectedOptions[obj[renderer.value]]) {
-					isSelectAll = false;
-					break;
-				}
-			}
-			if (isSelectAll) {
-				setSelectAllChecked(true);
-			} else {
-				setSelectAllChecked(false);
-			}
+	const checkAndSetSelectAll = (options, selectedOptions) => {
+		if (options && options.length === Object.keys(selectedOptions).length) {
+			setSelectAllChecked(true);
+		} else {
+			setSelectAllChecked(false);
 		}
 	};
 
 	// key press handling
 	const handleInputKeyDown = (event) => {
-		if (event.keyCode === 8 && searchTerm === "") {
+		if (
+			event.keyCode === 8 &&
+			searchTerm === "" &&
+			Object.keys(selectedOptions).length > 0
+		) {
 			//BACKSPACE
 			setSelectedOptions((prev) => {
 				let temp = { ...prev };
@@ -135,7 +129,7 @@ const MultiSelect = ({
 		const filteredOptions = handleSearch(_searchedTerm);
 		setFilteredOptions(filteredOptions);
 		// Check for select all
-		setSelectAll(filteredOptions, selectedOptions);
+		checkAndSetSelectAll(filteredOptions, selectedOptions);
 	};
 
 	/* handle when user click on option */
@@ -160,7 +154,7 @@ const MultiSelect = ({
 			setSelectAllChecked((prev) => !prev);
 		} else {
 			let temp = { ...selectedOptions, [optionValue]: true };
-			setSelectAll(filteredOptions, temp);
+			checkAndSetSelectAll(filteredOptions, temp);
 			setSelectedOptions((prevState) => ({
 				...prevState,
 				[optionValue]: true,
