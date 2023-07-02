@@ -298,7 +298,7 @@ const MultiSelect = ({
 						{filteredOptions?.length > 0 && (
 							<Flex
 								key={selectAllObj.label}
-								h="16"
+								h="50px"
 								w="100%"
 								direction="column"
 								px="5"
@@ -324,7 +324,7 @@ const MultiSelect = ({
 							return (
 								<Flex
 									key={`${row.ekocspid}-${row.CellNumber}`}
-									h="16"
+									h="50px"
 									w="100%"
 									direction="column"
 									px="5"
