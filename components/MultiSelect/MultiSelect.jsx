@@ -22,7 +22,6 @@ const MultiSelect = ({
 	const [open, setOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedOptions, setSelectedOptions] = useState({});
-	console.log("selectedOptions", selectedOptions);
 	const [highlightedIndex, setHighlightedIndex] = useState(-1);
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 	const [filteredOptions, setFilteredOptions] = useState(options);
@@ -225,7 +224,6 @@ const MultiSelect = ({
 				>
 					<Flex
 						w="auto"
-						minW="fit-content"
 						gap="5px"
 						overflowX="scroll"
 						css={{
@@ -253,10 +251,9 @@ const MultiSelect = ({
 					</Flex>
 					<Flex w="auto" align="center">
 						<Input
-							w="100%"
 							minW="2px"
 							type="text"
-							padding="2px 8px"
+							px="8px"
 							outline="none"
 							border="none"
 							value={searchTerm}
@@ -380,11 +377,10 @@ const getSelectedStyle = (value, label, onDeleteHandler) => {
 			gap={4}
 			key={value}
 			bg="#EEF1FF"
-			maxW={{ base: "140px" }}
-			h={{ base: "30px" }}
+			maxW="fit-content"
 			align="center"
 			justify="center"
-			px="12px"
+			p="4px 12px"
 		>
 			<Flex fontSize="xs" textColor="light" whiteSpace="nowrap">
 				{label}
