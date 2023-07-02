@@ -319,7 +319,7 @@ const PricingForm = ({
 					<Button
 						h={{ base: "64px", md: "auto" }}
 						w={{ base: "100%", md: "initial" }}
-						bg="white"
+						bg={{ base: "white", md: "none" }}
 						variant="link"
 						fontWeight="bold"
 						color="accent.DEFAULT"
