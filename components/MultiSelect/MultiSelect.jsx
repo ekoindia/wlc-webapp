@@ -298,15 +298,15 @@ const MultiSelect = ({
 						{filteredOptions?.length > 0 && (
 							<Flex
 								key={selectAllObj.label}
+								direction="column"
+								justify="center"
+								bg="divider"
 								h="50px"
 								w="100%"
-								direction="column"
 								px="5"
 								py={{ base: "2.5", md: "3" }}
-								bg="divider"
 							>
 								<Checkbox
-									variant="rounded"
 									isChecked={selectAllChecked}
 									onChange={(event) => {
 										handleClick(
@@ -316,7 +316,9 @@ const MultiSelect = ({
 										);
 									}}
 								>
-									{selectAllObj.label}
+									<Text fontSize="sm">
+										{selectAllObj.label}
+									</Text>
 								</Checkbox>
 							</Flex>
 						)}
@@ -324,9 +326,10 @@ const MultiSelect = ({
 							return (
 								<Flex
 									key={`${row.index}-${row.label}`}
+									direction="column"
+									justify="center"
 									h="50px"
 									w="100%"
-									direction="column"
 									px="5"
 									py={{ base: "2.5", md: "3" }}
 									_odd={{
@@ -340,7 +343,6 @@ const MultiSelect = ({
 									onKeyDown={handleInputKeyDown}
 								>
 									<Checkbox
-										variant="rounded"
 										isChecked={
 											selectAllChecked ||
 											selectedOptions[
@@ -355,7 +357,9 @@ const MultiSelect = ({
 											);
 										}}
 									>
-										{row[renderer.label]}
+										<Text fontSize="sm">
+											{row[renderer.label]}
+										</Text>
 									</Checkbox>
 								</Flex>
 							);
