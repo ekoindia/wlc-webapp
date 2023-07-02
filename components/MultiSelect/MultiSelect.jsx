@@ -323,7 +323,7 @@ const MultiSelect = ({
 						{filteredOptions?.map((row, index) => {
 							return (
 								<Flex
-									key={`${row.ekocspid}-${row.CellNumber}`}
+									key={`${row.index}-${row.label}`}
 									h="50px"
 									w="100%"
 									direction="column"
