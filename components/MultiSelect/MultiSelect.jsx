@@ -209,6 +209,7 @@ const MultiSelect = ({
 				w="100%"
 				cursor="pointer"
 				direction="column"
+				position="relative"
 				onClick={() => inputRef.current.focus()}
 			>
 				<Flex
@@ -219,7 +220,8 @@ const MultiSelect = ({
 					position="relative"
 					transition="all 100ms ease 0s"
 					border="card"
-					borderRadius="10px"
+					borderRadius="6px"
+					mb="1"
 					onClick={handleSelectBoxClick}
 				>
 					<Flex
@@ -246,7 +248,9 @@ const MultiSelect = ({
 									)
 							)
 						) : searchTerm === "" ? (
-							<Text>{placeholder}</Text>
+							<Text fontSize="sm" whiteSpace="nowrap">
+								{placeholder}
+							</Text>
 						) : null}
 					</Flex>
 					<Flex w="auto" align="center">
@@ -274,96 +278,90 @@ const MultiSelect = ({
 						/>
 					</Flex>
 				</Flex>
-				<Flex w="100%">
-					{open && (
-						<Flex
-							w="100%"
-							direction="column"
-							maxH={{ base: "380px" }}
-							overflowY="auto"
-							css={{
-								"&::-webkit-scrollbar": {
-									width: "7px",
-								},
-								"&::-webkit-scrollbar-track": {
-									width: "7px",
-								},
-								"&::-webkit-scrollbar-thumb": {
-									background: "#555555",
-									borderRadius: "5px",
-									border: "1px solid #707070",
-								},
-							}}
-						>
-							{/* Show select all options */}
-							{filteredOptions?.length > 0 && (
+
+				{open && (
+					<Flex
+						className="customScrollbars"
+						position="absolute"
+						top="100%"
+						zIndex="999"
+						bg="white"
+						w="100%"
+						borderRadius="6px"
+						direction="column"
+						maxH={{ base: "240px", md: "360px" }}
+						overflowY="auto"
+						border="card"
+						boxShadow="0px 5px 15px #0000000D"
+					>
+						{/* Show select all options */}
+						{filteredOptions?.length > 0 && (
+							<Flex
+								key={selectAllObj.label}
+								h="16"
+								w="100%"
+								direction="column"
+								px="5"
+								py={{ base: "2.5", md: "3" }}
+								bg="divider"
+							>
+								<Checkbox
+									variant="rounded"
+									isChecked={selectAllChecked}
+									onChange={(event) => {
+										handleClick(
+											event.target.checked,
+											selectAllObj.value,
+											selectAllObj.label
+										);
+									}}
+								>
+									{selectAllObj.label}
+								</Checkbox>
+							</Flex>
+						)}
+						{filteredOptions?.map((row, index) => {
+							return (
 								<Flex
-									key={selectAllObj.value}
-									h="50px"
+									key={`${row.ekocspid}-${row.CellNumber}`}
+									h="16"
 									w="100%"
 									direction="column"
 									px="5"
 									py={{ base: "2.5", md: "3" }}
-									bg="divider"
+									_odd={{
+										backgroundColor: "shade",
+									}}
+									style={{
+										backgroundColor:
+											highlightedIndex === index &&
+											"#e6e6e6",
+									}}
+									onKeyDown={handleInputKeyDown}
 								>
 									<Checkbox
 										variant="rounded"
-										isChecked={selectAllChecked}
+										isChecked={
+											selectAllChecked ||
+											selectedOptions[
+												row[renderer.value]
+											] !== undefined
+										}
 										onChange={(event) => {
 											handleClick(
 												event.target.checked,
-												selectAllObj.value,
-												selectAllObj.label
+												row[renderer.value],
+												row[renderer.label]
 											);
 										}}
 									>
-										{selectAllObj.label}
+										{row[renderer.label]}
 									</Checkbox>
 								</Flex>
-							)}
-							{filteredOptions?.map((row, index) => {
-								return (
-									<Flex
-										key={`${row.ekocspid}-${row.CellNumber}`}
-										h="50px"
-										w="100%"
-										direction="column"
-										px="5"
-										py={{ base: "2.5", md: "3" }}
-										_odd={{
-											backgroundColor: "shade",
-										}}
-										style={{
-											backgroundColor:
-												highlightedIndex === index &&
-												"#e6e6e6",
-										}}
-										onKeyDown={handleInputKeyDown}
-									>
-										<Checkbox
-											variant="rounded"
-											isChecked={
-												selectAllChecked ||
-												selectedOptions[
-													row[renderer.value]
-												] !== undefined
-											}
-											onChange={(event) => {
-												handleClick(
-													event.target.checked,
-													row[renderer.value],
-													row[renderer.label]
-												);
-											}}
-										>
-											{row[renderer.label]}
-										</Checkbox>
-									</Flex>
-								);
-							})}
-						</Flex>
-					)}
-				</Flex>
+							);
+						})}
+					</Flex>
+				)}
 			</Flex>
 		</Flex>
 	);
