@@ -130,8 +130,8 @@ export const light = extendTheme({
 		20: "20px",
 	},
 	shadows: {
+		basic: "0px 5px 15px #0000000D",
 		"sh-otpfocus": "0px 3px 6px #0000001A",
-		"sh-header": "0px 3px 6px #0000001A",
 		"sh-card": "0px 3px 20px #00000005",
 		"sh-googlebtn": "0px 3px 10px #4185F433",
 	},

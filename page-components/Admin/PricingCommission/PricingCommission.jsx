@@ -56,7 +56,7 @@ const PricingCommissions = () => {
 					bg="white"
 					borderRadius="10px"
 					border="card"
-					boxShadow="0px 5px 15px #0000000D"
+					boxShadow="basic"
 				>
 					<Tabs
 						isLazy

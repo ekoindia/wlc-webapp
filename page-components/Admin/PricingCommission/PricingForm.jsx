@@ -190,8 +190,8 @@ const PricingForm = ({
 
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
-			<Flex direction="column" gap="10" fontSize="md">
-				{/* Pricing/Commission For || operation_type */}
+			<Flex direction="column" gap="10">
+				{/* operation_type */}
 				<RadioInput
 					name="operation_type"
 					label={`Select ${productPricingType} For`}
@@ -245,7 +245,7 @@ const PricingForm = ({
 					/>
 				</FormControl>
 
-				{/* Pricing/Commission Type */}
+				{/* pricing_type */}
 				<RadioInput
 					name="pricing_type"
 					label={`Select ${productPricingType} Type`}
@@ -287,6 +287,7 @@ const PricingForm = ({
 						}
 						type="number"
 						step=".01"
+						min="0"
 						fontSize="sm"
 						placeholder="2.5"
 						invalid={errors.pricing}

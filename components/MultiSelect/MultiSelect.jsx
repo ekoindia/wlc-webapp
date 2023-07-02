@@ -1,6 +1,11 @@
-import { Box, Checkbox, Flex, Input, Text } from "@chakra-ui/react";
+import { Box, Checkbox, Flex, Input, keyframes, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "..";
+
+const animSlideDown = keyframes`
+	from {opacity: 0; transform: scaleY(0); transform-origin:top;}
+	to {opacity: 1; transform: none; transform-origin:top;}
+`;
 
 /**
  * A <MultiSelect> select component
@@ -292,7 +297,8 @@ const MultiSelect = ({
 						maxH={{ base: "240px", md: "360px" }}
 						overflowY="auto"
 						border="card"
-						boxShadow="0px 5px 15px #0000000D"
+						boxShadow="basic"
+						animation={`${animSlideDown} ease-out 0.1s forwards`}
 					>
 						{/* Show select all options */}
 						{filteredOptions?.length > 0 && (
@@ -383,21 +389,20 @@ const getSelectedStyle = (value, label, onDeleteHandler) => {
 			align="center"
 			justify="center"
 			p="4px 12px"
+			borderRadius="5px"
 		>
-			<Flex fontSize="xs" textColor="light" whiteSpace="nowrap">
+			<Text fontSize="xs" textColor="light" whiteSpace="nowrap">
 				{label}
-			</Flex>
-			<Flex>
-				<Icon
-					name="close"
-					size="8px"
-					color="accent.dark"
-					onClick={(e) => {
-						onDeleteHandler(value);
-						e.stopPropagation();
-					}}
-				/>
-			</Flex>
+			</Text>
+			<Icon
+				name="close"
+				size="8px"
+				color="accent.dark"
+				onClick={(e) => {
+					onDeleteHandler(value);
+					e.stopPropagation();
+				}}
+			/>
 		</Flex>
 	);
 };

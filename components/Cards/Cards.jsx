@@ -14,7 +14,7 @@ const Cards = ({ className = "", children, ...rest }) => {
 		<Card
 			className={`${className}`}
 			borderRadius="10px"
-			boxShadow="0px 5px 15px #0000000D"
+			boxShadow="basic"
 			border="1px solid #D2D2D2"
 			p="5"
 			h={{ base: "auto", md: "600px", xl: "620px" }}
