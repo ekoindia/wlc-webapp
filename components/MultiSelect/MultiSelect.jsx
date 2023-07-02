@@ -331,7 +331,7 @@ const MultiSelect = ({
 						{filteredOptions?.map((row, index) => {
 							return (
 								<Flex
-									key={`${row.index}-${row.label}`}
+									key={`${index}-${row.DisplayName}`}
 									direction="column"
 									justify="center"
 									h="50px"
