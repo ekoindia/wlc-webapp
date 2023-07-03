@@ -1,4 +1,4 @@
-import { Box, chakra } from "@chakra-ui/react";
+import { Box, chakra, useBreakpointValue } from "@chakra-ui/react";
 import { getIconSvg, IconNameType } from "constants/IconLibrary";
 
 export type IconProps = {
@@ -20,15 +20,28 @@ export type IconProps = {
  * @example	`<Icon name="home" size="lg" />`
  */
 
-const Icon = ({ name, size, w, h, width, height, ...rest }: IconProps) => {
+const Icon = ({
+	name,
+	size = "md",
+	w,
+	h,
+	width,
+	height,
+	...rest
+}: IconProps) => {
 	const icon = getIconSvg(name as IconNameType);
 	const viewBox = icon?.viewBox;
 	const path = icon?.path;
 
+	const responsiveSize = useBreakpointValue(
+		typeof size === "string" ? { base: size } : size,
+		{ fallback: "md" }
+	);
+
 	if (!path) return null;
 
 	let _size;
-	switch (size) {
+	switch (responsiveSize) {
 		case "xxs":
 			_size = "8px";
 			break;
@@ -54,7 +67,7 @@ const Icon = ({ name, size, w, h, width, height, ...rest }: IconProps) => {
 			_size = "96px";
 			break;
 		default:
-			_size = size || w || width || h || height || "24px";
+			_size = responsiveSize || w || width || h || height || "24px";
 	}
 
 	// let sizeX = "24px";

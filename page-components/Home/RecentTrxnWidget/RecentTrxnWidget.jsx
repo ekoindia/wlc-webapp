@@ -135,7 +135,7 @@ const Tr = ({ tx, handleShowHistory }) => {
 				color={`hsl(${h},80%,30%)`}
 				icon={
 					<Icon
-						size="md"
+						size={{ base: "sm", md: "md" }}
 						name={tx.icon}
 						color={`hsl(${h},80%,30%)`}
 					/>
