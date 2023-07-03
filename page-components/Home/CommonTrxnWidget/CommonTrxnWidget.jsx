@@ -31,19 +31,22 @@ const CommonTrxnWidget = () => {
 		(tx) => OtherMenuItems.indexOf(tx.id) === -1
 	);
 
-	const breakpointValue = useBreakpointValue({
+	const limit = useBreakpointValue({
 		base: 3,
 		md: interaction_list.length,
 	});
 
-	const showAllButton = useBreakpointValue({
-		base: interaction_list.length > 3 /* && !showAll */,
-		md: false,
-	});
+	const showAllButton = useBreakpointValue(
+		{
+			base: interaction_list.length > 3 /* && !showAll */,
+			md: false,
+		},
+		{ fallback: false }
+	);
 
 	const showTransactions = showAll
 		? interaction_list
-		: interaction_list.slice(0, breakpointValue);
+		: interaction_list.slice(0, limit);
 
 	const handleIconClick = (id) => {
 		router.push(`transaction/${id}`);
