@@ -69,7 +69,7 @@ const MultiSelect = ({
 		if (selectedOptionsLength > 0) {
 			let found = true;
 			for (const item of _filteredOptions) {
-				if (_selectedOptions[item.value] === undefined) {
+				if (_selectedOptions[item[renderer.value]] === undefined) {
 					found = false;
 					break;
 				}
