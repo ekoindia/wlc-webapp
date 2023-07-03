@@ -16,7 +16,7 @@ import { forwardRef } from "react";
  * @param	{string}	[prop.children]	Children elements of the button
  * @example	`<Button>Click Me</Button>`
  */
-function Button(props, ref) {
+const Button = forwardRef((props, ref) => {
 	const {
 		variant = "primary",
 		disabled = false,
@@ -48,7 +48,7 @@ function Button(props, ref) {
 			{children}
 		</ChakraButton>
 	);
-}
+});
 
 // function Button(
 // 	{
@@ -91,4 +91,6 @@ function Button(props, ref) {
 // 	);
 // }
 
-export default forwardRef(Button);
+Button.displayName = "Button";
+
+export default Button;
