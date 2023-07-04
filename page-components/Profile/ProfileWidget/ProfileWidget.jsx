@@ -98,7 +98,7 @@ const ProfileWidget = () => {
 			backgroundSize="cover"
 			backgroundPosition="bottom"
 			p="5"
-			boxShadow="0px 5px 15px #0000000D"
+			boxShadow="basic"
 			rowGap="14"
 		>
 			<Flex justify="space-between" align="flex-start" gap={2}>

@@ -57,7 +57,7 @@ const Commissions = ({ prod_id }) => {
 			direction="column"
 			border="card"
 			borderRadius="10"
-			boxShadow="0px 5px 15px #0000000D"
+			boxShadow="basic"
 			bg="white"
 			px="16px"
 		>

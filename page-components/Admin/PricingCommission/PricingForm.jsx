@@ -1,5 +1,4 @@
 import {
-	Box,
 	Flex,
 	FormControl,
 	FormLabel,
@@ -190,8 +189,8 @@ const PricingForm = ({
 
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
-			<Flex direction="column" gap="10" fontSize="md">
-				{/* Pricing/Commission For || operation_type */}
+			<Flex direction="column" gap="10">
+				{/* operation_type */}
 				<RadioInput
 					name="operation_type"
 					label={`Select ${productPricingType} For`}
@@ -214,7 +213,7 @@ const PricingForm = ({
 								<MultiSelect
 									options={data}
 									renderer={multiSelectRenderer}
-									setData={onChange}
+									onChange={onChange}
 								/>
 							)}
 						/>
@@ -245,7 +244,7 @@ const PricingForm = ({
 					/>
 				</FormControl>
 
-				{/* Pricing/Commission Type */}
+				{/* pricing_type */}
 				<RadioInput
 					name="pricing_type"
 					label={`Select ${productPricingType} Type`}
@@ -287,6 +286,7 @@ const PricingForm = ({
 						}
 						type="number"
 						step=".01"
+						min="0"
 						fontSize="sm"
 						placeholder="2.5"
 						invalid={errors.pricing}
@@ -297,57 +297,39 @@ const PricingForm = ({
 
 				{/* Submit Button and Cancel Button */}
 				<Flex
+					direction={{ base: "row-reverse", md: "row" }}
+					w={{ base: "100%", md: "500px" }}
 					position={{ base: "fixed", md: "initial" }}
-					w="100%"
+					gap={{ base: "0", md: "16" }}
+					align="center"
 					bottom="0"
 					left="0"
 				>
-					<Box
-						display={{ base: "none", md: "flex" }}
-						gap="16"
-						align="center"
+					<Button
+						type="submit"
+						size="lg"
+						h="64px"
+						w={{ base: "100%", md: "250px" }}
+						fontWeight="bold"
+						borderRadius={{ base: "none", md: "10" }}
 					>
-						<Button
-							type="submit"
-							size="lg"
-							h="64px"
-							fontWeight="bold"
-						>
-							Save Commissions
-						</Button>
+						Save Commissions
+					</Button>
 
-						<Button
-							h="64px"
-							variant="link"
-							fontWeight="bold"
-							color="accent.DEFAULT"
-							_hover={{ textDecoration: "none" }}
-						>
-							Cancel
-						</Button>
-					</Box>
-					<Box display={{ base: "flex", md: "none" }} w="100%">
-						<Button
-							bg="white"
-							fontWeight="bold"
-							borderRadius="none"
-							color="accent.DEFAULT"
-							_hover={{ bg: "white" }}
-							w="100%"
-							h="64px"
-						>
-							Cancel
-						</Button>
-						<Button
-							type="submit"
-							w="100%"
-							h="64px"
-							borderRadius="none"
-						>
-							Save Commission
-						</Button>
-					</Box>
+					<Button
+						h={{ base: "64px", md: "auto" }}
+						w={{ base: "100%", md: "initial" }}
+						bg={{ base: "white", md: "none" }}
+						variant="link"
+						fontWeight="bold"
+						color="accent.DEFAULT"
+						_hover={{ textDecoration: "none" }}
+						borderRadius={{ base: "none", md: "10" }}
+					>
+						Cancel
+					</Button>
 				</Flex>
+
 				{/* Temporary commented (uncomment after separate api for calculating pricing) */}
 				{/* <Flex
 						w={{ base: "auto", md: "405px" }}

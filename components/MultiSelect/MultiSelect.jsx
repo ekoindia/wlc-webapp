@@ -1,82 +1,90 @@
-import { Box, Checkbox, Flex, Input, Text } from "@chakra-ui/react";
+import { Box, Checkbox, Flex, Input, keyframes, Text } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
+import { Tag } from ".";
 import { Icon } from "..";
 
+const animSlideDown = keyframes`
+	from {opacity: 0; transform: scaleY(0); transform-origin:top;}
+	to {opacity: 1; transform: none; transform-origin:top;}
+`;
+
 /**
- * A <MultiSelect> select component
+ * A MultiSelect component
  * with multiselect, search, checkbox functionality
  * @param	{Array}	[prop.options]	options (array of objects) from which multiselect component will populate data and let user select.
  * @param	{string}	[prop.placeholder]	placeholder to show when nothing is selected.
  * @param	{object}	[prop.renderer]	object which contains label & value, which will let multiselect component know what is going to be the label and value from particular data.
- * @param	{string}	[prop.setData]	setter which parent component will pass to multiselect to get the data/values/options which is selected by the user.
+ * @param	{string}	[prop.onChange]	setter which parent component will pass to multiselect to get the data/values/options which is selected by the user.
  * @example	`<MultiSelect options={options}	renderer={renderer} placeholder = "Please Select Something"/>`
  */
 const MultiSelect = ({
 	options,
 	placeholder = "-- Select --",
 	renderer,
-	setData = () => {}, //ToDo:need to be pass selected data when dropdown is closed
+	onChange = () => {},
 	label,
 }) => {
 	const inputRef = useRef();
 	const [open, setOpen] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedOptions, setSelectedOptions] = useState({});
-	const [selectedOptionsArr, setSelectedOptionsArr] = useState([]);
 	const [highlightedIndex, setHighlightedIndex] = useState(-1);
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 	const [filteredOptions, setFilteredOptions] = useState(options);
+	const selectedOptionsLength = Object.keys(selectedOptions)?.length || 0;
+
 	/* needed for select all option */
-	const selectObject = { value: "*", label: "Select All" };
+	const selectAllObj = { value: "*", label: "Select All" };
 
 	useEffect(() => {
 		setFilteredOptions(options);
 	}, [options]);
 
 	useEffect(() => {
-		let keys = Object.keys(selectedOptions);
-		if (keys?.length === filteredOptions?.length) {
-			setSelectAllChecked(true);
-		} else {
-			setSelectAllChecked(false);
-		}
-		setSelectAll(filteredOptions, selectedOptions);
-		setSelectedOptionsArr(keys);
-		setData(keys);
+		let _keys = Object.keys(selectedOptions);
+		checkAndSetSelectAll(filteredOptions, selectedOptions);
+		onChange(_keys);
 	}, [selectedOptions]);
 
 	const handleSelectBoxClick = () => {
 		setOpen(!open);
 	};
 
-	const handleSearch = (event) => {
+	const handleSearch = (searchedTerm) => {
 		//  Search
-		let tempOptions = options.filter((option) =>
+		let _filteredOptions = options.filter((option) =>
 			option[renderer.label]
-				// option.label
 				.toLowerCase()
-				.includes(event.target.value.toLowerCase())
+				.includes(searchedTerm.toLowerCase())
 		);
-		return tempOptions;
+		return _filteredOptions;
 	};
 
-	/* this is checking whether */
-	const setSelectAll = (options, selectedOptions) => {
-		let isSelectAll = true;
-		options?.forEach((ele) => {
-			if (!selectedOptions[ele[renderer.value]]) isSelectAll = false;
-			// if (!selectedOptions[ele.value]) isSelectAll = false;
-		});
-		if (isSelectAll) {
-			setSelectAllChecked(true);
-		} else {
-			setSelectAllChecked(false);
+	/**
+	 * Checking whether select all should be enabled or not
+	 * @param {Array} _filteredOptions
+	 * @param {Object} _selectedOptions
+	 */
+	const checkAndSetSelectAll = (_filteredOptions, _selectedOptions) => {
+		if (selectedOptionsLength > 0) {
+			let found = true;
+			for (const item of _filteredOptions) {
+				if (_selectedOptions[item[renderer.value]] === undefined) {
+					found = false;
+					break;
+				}
+			}
+			setSelectAllChecked(found);
 		}
 	};
 
 	// key press handling
 	const handleInputKeyDown = (event) => {
-		if (event.keyCode === 8 && searchTerm === "") {
+		if (
+			event.keyCode === 8 &&
+			searchTerm === "" &&
+			Object.keys(selectedOptions).length > 0
+		) {
 			//BACKSPACE
 			setSelectedOptions((prev) => {
 				let temp = { ...prev };
@@ -102,19 +110,17 @@ const MultiSelect = ({
 		} else if (event.keyCode === 13) {
 			//ENTER
 			if (highlightedIndex !== -1) {
-				let valObj = filteredOptions[highlightedIndex];
-				if (!selectedOptions[valObj[renderer.value]]) {
-					// if (!selectedOptions[valObj.value]) {
+				let highlightedObj = filteredOptions[highlightedIndex];
+				if (!selectedOptions[highlightedObj[renderer.value]]) {
 					setSelectedOptions((prev) => ({
 						...prev,
-						[valObj[renderer.value]]: true,
-						// [valObj.value]: true,
+						[highlightedObj[renderer.value]]:
+							highlightedObj[renderer.label],
 					}));
 				} else {
 					setSelectedOptions((prev) => {
 						let temp = { ...prev };
-						delete temp[valObj[renderer.value]];
-						// delete temp[valObj.value];
+						delete temp[highlightedObj[renderer.value]];
 						return temp;
 					});
 				}
@@ -126,44 +132,49 @@ const MultiSelect = ({
 		if (!open) {
 			setOpen(true);
 		}
-		setSearchTerm(event.target.value);
-		const updatedOptions = handleSearch(event);
-		setFilteredOptions(updatedOptions);
+		const _searchedTerm = event.target.value;
+		setSearchTerm(_searchedTerm);
+		const _filteredOptions = handleSearch(_searchedTerm);
+		setFilteredOptions(_filteredOptions);
 		// Check for select all
-		setSelectAll(updatedOptions, selectedOptions);
+		checkAndSetSelectAll(_filteredOptions, selectedOptions);
 	};
 
 	/* handle when user click on option */
-	const handleClick = (checked, value) => {
+	const handleClick = (checked, value, label) => {
 		if (checked) {
-			handleOptionMultiSelect(value);
+			handleOptionMultiSelect(value, label);
 		} else {
 			handleOptionMultiDeselect(value);
 		}
 	};
 
 	/* handle when user select a option */
-	const handleOptionMultiSelect = (optionValue) => {
+	const handleOptionMultiSelect = (optionValue, optionLabel) => {
 		if (optionValue === "*") {
 			// select all
 			let allOptions = {};
 			filteredOptions.forEach((option) => {
-				allOptions[option[renderer.value]] = true;
-				// allOptions[option.value] = true;
+				allOptions[option[renderer.value]] = option[renderer.label];
 			});
 			setSelectedOptions((prev) => ({ ...prev, ...allOptions }));
 			setSelectAllChecked((prev) => !prev);
 		} else {
-			let temp = { ...selectedOptions, [optionValue]: true };
-			setSelectAll(filteredOptions, temp);
+			let _selectedOptions = {
+				...selectedOptions,
+				[optionValue]: optionLabel,
+			};
+			checkAndSetSelectAll(filteredOptions, _selectedOptions);
 			setSelectedOptions((prevState) => ({
 				...prevState,
-				[optionValue]: true,
+				..._selectedOptions,
 			}));
 		}
 	};
+
 	/* handle when user de-select a option */
 	const handleOptionMultiDeselect = (optionValue) => {
+		console.log("optionValue", optionValue);
 		if (optionValue === "*") {
 			// deselect all
 			setSelectAllChecked(false);
@@ -172,7 +183,6 @@ const MultiSelect = ({
 					let temp = { ...prev };
 					filteredOptions.forEach((option) => {
 						delete temp[option[renderer.value]];
-						// delete temp[option.value];
 					});
 					return temp;
 				});
@@ -180,6 +190,7 @@ const MultiSelect = ({
 		} else {
 			setSelectedOptions((prev) => {
 				let temp = { ...prev };
+				console.log("temp", temp);
 				delete temp[optionValue];
 				return temp;
 			});
@@ -188,10 +199,10 @@ const MultiSelect = ({
 	};
 
 	/* handle when users click cross on tags */
-	const onDeleteHandler = (key) => {
+	const onDelete = (value) => {
 		setSelectedOptions((prev) => {
 			let temp = { ...prev };
-			delete temp[key];
+			delete temp[value];
 			return temp;
 		});
 		if (selectAllChecked) {
@@ -212,6 +223,7 @@ const MultiSelect = ({
 				w="100%"
 				cursor="pointer"
 				direction="column"
+				position="relative"
 				onClick={() => inputRef.current.focus()}
 			>
 				<Flex
@@ -222,12 +234,12 @@ const MultiSelect = ({
 					position="relative"
 					transition="all 100ms ease 0s"
 					border="card"
-					borderRadius="10px"
+					borderRadius="6px"
+					mb="1"
 					onClick={handleSelectBoxClick}
 				>
 					<Flex
 						w="auto"
-						minW="fit-content"
 						gap="5px"
 						overflowX="scroll"
 						css={{
@@ -240,20 +252,30 @@ const MultiSelect = ({
 						}}
 					>
 						{/* {placeholder} */}
-						{selectedOptionsArr.length > 0 ? (
-							selectedOptionsArr.map((name, index) =>
-								getSelectedStyle(name, index, onDeleteHandler)
+						{selectedOptionsLength > 0 ? (
+							Object.entries(selectedOptions)?.map(
+								([value, label]) => (
+									<Tag
+										key={value}
+										{...{
+											value,
+											label,
+											onDelete,
+										}}
+									/>
+								)
 							)
 						) : searchTerm === "" ? (
-							<Text>{placeholder}</Text>
+							<Text fontSize="sm" whiteSpace="nowrap">
+								{placeholder}
+							</Text>
 						) : null}
 					</Flex>
 					<Flex w="auto" align="center">
 						<Input
-							w="100%"
 							minW="2px"
 							type="text"
-							padding="2px 8px"
+							px="8px"
 							outline="none"
 							border="none"
 							value={searchTerm}
@@ -274,138 +296,98 @@ const MultiSelect = ({
 						/>
 					</Flex>
 				</Flex>
-				<Flex w="100%">
-					{open && (
-						<Flex
-							w="100%"
-							direction="column"
-							maxH={{ base: "380px" }}
-							overflowY="auto"
-							css={{
-								"&::-webkit-scrollbar": {
-									width: "7px",
-								},
-								"&::-webkit-scrollbar-track": {
-									width: "7px",
-								},
-								"&::-webkit-scrollbar-thumb": {
-									background: "#555555",
-									borderRadius: "5px",
-									border: "1px solid #707070",
-								},
-							}}
-						>
-							{/* Show select all options */}
-							{filteredOptions?.length > 0 && (
+
+				{open && (
+					<Flex
+						className="customScrollbars"
+						position="absolute"
+						top="100%"
+						zIndex="1"
+						bg="white"
+						w="100%"
+						borderRadius="6px"
+						direction="column"
+						maxH={{ base: "240px", md: "360px" }}
+						overflowY="auto"
+						border="card"
+						boxShadow="basic"
+						animation={`${animSlideDown} ease-out 0.1s forwards`}
+					>
+						{/* Show select all options */}
+						{filteredOptions?.length > 0 && (
+							<Flex
+								key={selectAllObj.label}
+								direction="column"
+								justify="center"
+								bg="divider"
+								h="50px"
+								w="100%"
+								px="5"
+								py={{ base: "2.5", md: "3" }}
+							>
+								<Checkbox
+									isChecked={selectAllChecked}
+									onChange={(event) => {
+										handleClick(
+											event.target.checked,
+											selectAllObj.value,
+											selectAllObj.label
+										);
+									}}
+								>
+									<Text fontSize="sm">
+										{selectAllObj.label}
+									</Text>
+								</Checkbox>
+							</Flex>
+						)}
+						{filteredOptions?.map((row, index) => {
+							return (
 								<Flex
-									key={selectObject.value}
+									key={`${index}-${row.DisplayName}`}
+									direction="column"
+									justify="center"
 									h="50px"
 									w="100%"
-									direction="column"
 									px="5"
 									py={{ base: "2.5", md: "3" }}
-									bg="divider"
+									_odd={{
+										backgroundColor: "shade",
+									}}
+									style={{
+										backgroundColor:
+											highlightedIndex === index &&
+											"#e6e6e6",
+									}}
+									onKeyDown={handleInputKeyDown}
 								>
 									<Checkbox
-										variant="rounded"
-										isChecked={selectAllChecked}
+										isChecked={
+											selectAllChecked ||
+											selectedOptions[
+												row[renderer.value]
+											] !== undefined
+										}
 										onChange={(event) => {
 											handleClick(
 												event.target.checked,
-												selectObject.value
+												row[renderer.value],
+												row[renderer.label]
 											);
 										}}
 									>
-										{selectObject.label}
+										<Text fontSize="sm">
+											{row[renderer.label]}
+										</Text>
 									</Checkbox>
 								</Flex>
-							)}
-							{filteredOptions?.map((row, index) => {
-								return (
-									<Flex
-										key={index}
-										h="50px"
-										w="100%"
-										direction="column"
-										px="5"
-										py={{ base: "2.5", md: "3" }}
-										_odd={{
-											backgroundColor: "shade",
-										}}
-										style={{
-											backgroundColor:
-												highlightedIndex === index &&
-												"#e6e6e6",
-										}}
-										onKeyDown={handleInputKeyDown}
-									>
-										<Checkbox
-											variant="rounded"
-											isChecked={
-												selectAllChecked ||
-												selectedOptions[
-													row[renderer.value]
-												] !== undefined
-											}
-											// isChecked={
-											// 	selectAllChecked ||
-											// 	selectedOptions[row.value] !==
-											// 		undefined
-											// }
-											onChange={(event) => {
-												handleClick(
-													event.target.checked,
-													row[renderer.value]
-													// row.value
-												);
-											}}
-										>
-											{row[renderer.label]}
-											{/* {row.label} */}
-										</Checkbox>
-									</Flex>
-								);
-							})}
-						</Flex>
-					)}
-				</Flex>
+							);
+						})}
+					</Flex>
+				)}
 			</Flex>
 		</Flex>
 	);
 };
 
 export default MultiSelect;
-
-const getSelectedStyle = (name, index, onDeleteHandler) => {
-	return (
-		<Flex
-			gap={4}
-			key={index}
-			bg="#EEF1FF"
-			maxW={{ base: "140px" }}
-			h={{ base: "30px" }}
-			align="center"
-			justify="center"
-			px="12px"
-		>
-			<Flex
-				fontSize={{ base: "12px" }}
-				textColor="light"
-				maxW={{ base: "90px" }}
-			>
-				{name}
-			</Flex>
-			<Flex>
-				<Icon
-					name="close"
-					size="8px"
-					color="accent.DEFAULT"
-					onClick={(e) => {
-						onDeleteHandler(name);
-						e.stopPropagation();
-					}}
-				/>
-			</Flex>
-		</Flex>
-	);
-};
