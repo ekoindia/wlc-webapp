@@ -1,33 +1,35 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import {
 	Button,
 	Calenders,
-	Cards,
 	Currency,
+	DateView,
 	Headings,
+	InputLabel,
 	SearchBar,
 } from "components";
 import useRequest from "hooks/useRequest";
+import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { DetailedStatementTable } from ".";
+
 /**
- * A <DetailedStatement> component
- * TODO: Write more description here
+ * A DetailedStatement page-component
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<DetailedStatement></DetailedStatement>`
  */
-
 const DetailedStatement = () => {
-	const router = useRouter();
-	const { cellnumber } = router.query;
 	const [search, setSearch] = useState("");
 	const [pageNumber, setPageNumber] = useState(1);
 	const [dateText, setDateText] = useState({
 		from: "",
 		to: "DD/MM/YYYY",
 	});
+
+	const router = useRouter();
+	const { cellnumber } = router.query;
 
 	const handleApply = () => {
 		if (dateText.to === "YYYY/MM/DD" && dateText.from === "YYYY/MM/DD") {
@@ -39,7 +41,6 @@ const DetailedStatement = () => {
 			);
 		}
 	};
-	/* API CALLING */
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
@@ -47,7 +48,7 @@ const DetailedStatement = () => {
 		"tf-req-method": "GET",
 	};
 
-	const { data, mutate /* , error, isLoading */ } = useRequest({
+	const { data, mutate } = useRequest({
 		method: "POST",
 		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 		headers: { ...headers },
@@ -58,19 +59,19 @@ const DetailedStatement = () => {
 			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
 			headers
 		);
-	}, [search]);
-	const detiledData = data?.data?.account_statement_details ?? [];
-	const detailTable = data?.data ?? [];
-	const agentname = detailTable?.agent_name ?? [];
-	const currentbalance = detailTable.saving_balance ?? [];
-	const totalRecords = data?.data?.totalRecords;
-	console.log("totalRecords", totalRecords);
+	}, [search, pageNumber]);
 
-	const current = new Date();
-	const date = `${current.getDate()}/${
-		current.getMonth() + 1
-	}/${current.getFullYear()}`;
-	/*calander */
+	const detailedStatementData = data?.data?.account_statement_details ?? [];
+	const detailTable = data?.data ?? [];
+	const agentName = detailTable?.agent_name ?? [];
+	const currBalance = detailTable.saving_balance ?? [];
+	const totalRecords = data?.data?.totalRecords;
+
+	const currentDate = new Date();
+	currentDate.setDate(currentDate.getDate() - 1);
+
+	const oneYearAgoDate = new Date(currentDate);
+	oneYearAgoDate.setFullYear(currentDate.getFullYear() - 1);
 
 	const onDateChange = (e, type) => {
 		if (type === "from") {
@@ -109,267 +110,180 @@ const DetailedStatement = () => {
 	return (
 		<>
 			<Headings title="Detailed Statement" />
-			<Box
-				px={{ base: "16px", md: "initial" }}
-				marginTop={{ base: "26px", md: "0px" }}
-			>
-				<Box
-					display={{ base: "none", md: "flex" }}
-					w={{ base: "90%", md: "100%" }}
-					maxH={{
-						base: "120vh",
-						md: "20vw",
-						lg: "12vw",
-						"2xl": "10vw",
-					}}
-					margin={"auto"}
-				>
-					<Cards
-						// marginTop={{
-						// 	base: "1rem",
-						// 	md: "1.5rem",
-						// 	"2xl": "0.8rem",
-						// }}
-						w={"100%"}
-						h={"100%"}
-					>
-						<Flex
-							flexDirection={"column"}
-							justifyContent={"center"}
-							h={"100%"}
-							gap={{
-								base: "10px",
-								md: "6px",
-								lg: "5px",
-								"2xl": "15px",
-							}}
-							px={{ base: "3vw", md: "0" }}
-						>
-							<Flex
-								justifyContent={"space-between"}
-								direction={{ base: "column", md: "row" }}
-							>
-								<Text
-									fontWeight={"semibold"}
-									color={"light"}
-									fontSize={{
-										base: "16px",
-										md: "11px",
-										lg: "11px",
-										"2xl": "18px",
-									}}
-								>
-									Account information
-								</Text>
-								<Text
-									color={"accent.DEFAULT"}
-									fontSize={{
-										base: "14px",
-										md: "10px",
-										lg: "9px",
-										"2xl": "16px",
-									}}
-								>
-									as on {date}
-								</Text>
-							</Flex>
-
-							<Flex
-								w={"100%"}
-								align={{ base: "flex-start", md: "center" }}
-								justifyContent={"space-between"}
-								direction={{ base: "column", md: "row" }}
-								gap={{ base: "15px", sm: "0px" }}
-							>
-								<Flex
-									direction={"column"}
-									gap={{
-										base: "5px",
-										md: "0px",
-										"2xl": "5px",
-									}}
-								>
-									<Text
-										fontSize={{
-											base: "14px",
-											md: "10px",
-											lg: "12px",
-											"2xl": "16px",
-										}}
-										color={"light"}
-									>
-										Account Holder
-									</Text>
-									<Text
-										fontSize={{
-											base: "16px",
-											md: "11px",
-											lg: "13px",
-											"2xl": "18px",
-										}}
-										color={"black"}
-										fontWeight={"medium"}
-									>
-										{" "}
-										{agentname}
-									</Text>
-								</Flex>
-
-								<Flex
-									direction={"column"}
-									gap={{
-										base: "5px",
-										md: "0px",
-										"2xl": "5px",
-									}}
-								>
-									<Text
-										fontSize={{
-											base: "14px",
-											md: "9px",
-											lg: "12px",
-											"2xl": "14px",
-										}}
-										color={"light"}
-									>
-										Current Balance
-									</Text>
-									<Flex
-										fontWeight="semibold"
-										color="accent.DEFAULT"
-										gap="5px"
-									>
-										<Currency amount={currentbalance} />
-									</Flex>
-								</Flex>
-							</Flex>
-						</Flex>
-					</Cards>
-				</Box>
+			<Flex direction="column" px={{ base: "20px", md: "0px" }}>
 				<Flex
-					paddingTop={{ md: "24px" }}
-					justifyContent={{ base: "", md: "space-between" }}
-					direction={{ base: "column", md: "row" }}
+					w="100%"
+					direction="column"
+					bg="white"
+					display={{ base: "none", md: "flex" }}
+					p="30px"
+					borderRadius="10px"
+					mb="24px"
 				>
-					<Flex>
-						<SearchBar
-							numbersOnly={true}
-							minSearchLimit={2}
-							maxSearchLimit={10}
-							placeholder="Search by transaction ID or amount"
-							value={search}
-							setSearch={setSearch}
-							searchContStyle={{
-								w: { base: "auto", "2xl": "600px" },
-							}}
-						/>
+					<Flex
+						w="100%"
+						justifyContent={"space-between"}
+						direction={{ base: "column", md: "row" }}
+					>
+						<Text fontWeight="semibold" color="light" fontSize="xs">
+							Account information
+						</Text>
+						<Text color="accent.DEFAULT" fontSize="sm">
+							as on &thinsp;
+							<span>
+								<DateView date={currentDate} />
+							</span>
+						</Text>
 					</Flex>
 
-					<Flex
-						alignItems={{ base: "initial", md: "center" }}
-						direction={{ base: "column", md: "row" }}
-						gap={{ base: "20px", md: "0" }}
-						mt={{ base: "30px", md: "0px" }}
-					>
-						<Box pr={{ md: "5px", xl: "10px" }}>
-							<Text
-								fontWeight={"semibold"}
-								fontSize={{
-									base: "10px",
-									lg: "12px",
-									xl: "16px",
-								}}
-							>
-								Filter by date:
+					<Flex w="100%" justifyContent="space-between">
+						<Flex direction="column">
+							<Text fontSize="xs" color="light">
+								Account Holder
 							</Text>
-						</Box>
-						<Flex>
-							<Calenders
-								// label="Filter by activation date range"
-								minDate={"2016-01-20"}
-								maxDate={"2020-01-20"}
-								w="100%"
-								placeholder="From"
-								inputContStyle={{
-									w: {
-										base: "100%",
-										md: "190px",
-										xl: "200px",
-										"2xl": "274px",
-									},
-									borderRadius: {
-										base: "10px",
-										md: "10px 0px 0px 10px",
-									},
-									borderRight: { base: "flex", md: "none" },
-									h: {
-										base: "3rem",
-										md: "2.5rem",
-										xl: "3rem",
-									},
-								}}
-								onChange={(e) => onDateChange(e, "from")}
-								value={dateText.from}
-							/>
-						</Flex>
-						<Flex>
-							<Calenders
-								// label="Filter by activation date range"
-								minDate={"2016-01-20"}
-								maxDate={"2020-01-20"}
-								placeholder="To"
-								w="100%"
-								inputContStyle={{
-									w: {
-										base: "100%",
-										md: "180px",
-										xl: "200px",
-										"2xl": "274px",
-									},
-
-									borderRadius: {
-										base: "10px",
-										md: "0px 10px 10px 0px",
-									},
-									h: {
-										base: "3rem",
-										md: "2.5rem",
-										xl: "3rem",
-									},
-								}}
-								onChange={(e) => onDateChange(e, "to")}
-								value={dateText.to}
-							/>
-						</Flex>
-						<Flex pl={{ md: "5px", xl: "10px" }}>
-							<Button
-								h={{ base: "3rem", md: "2.5em", xl: "3rem" }}
-								fontSize={{ base: "", lg: "15px", xl: "20px" }}
-								fontWeight="bold"
-								w={{
-									base: "100%",
-									sm: "10rem",
-									md: "5rem",
-									xl: "6.5rem",
-									"2xl": "7.375rem",
-								}}
-								onClick={handleApply}
+							<Text
+								fontSize="sm"
+								color="dark"
+								fontWeight="medium"
 							>
-								Apply
-							</Button>
+								{agentName}
+							</Text>
+						</Flex>
+
+						<Flex direction="column">
+							<Text fontSize="xs" color="light">
+								Current Balance
+							</Text>
+							<Flex
+								fontSize="sm"
+								color="accent.DEFAULT"
+								fontWeight="semibold"
+							>
+								<Currency amount={currBalance} />
+							</Flex>
 						</Flex>
 					</Flex>
 				</Flex>
 
-				<Box>
-					<DetailedStatementTable
-						detiledData={detiledData}
-						setPageNumber={setPageNumber}
-						pageNumber={pageNumber}
-						totalRecords={totalRecords}
+				<Flex
+					direction={{ base: "column", md: "row" }}
+					justify="space-between"
+					gap={{ base: "0", md: "2" }}
+				>
+					<SearchBar
+						numbersOnly={true}
+						minSearchLimit={2}
+						maxSearchLimit={10}
+						placeholder="Search by transaction ID or amount"
+						value={search}
+						setSearch={setSearch}
 					/>
-				</Box>
-			</Box>
+
+					<Flex
+						direction={{ base: "column", md: "row" }}
+						align={{ base: "flex-start", md: "center" }}
+						mt={{ base: "24px", md: "0px" }}
+					>
+						<InputLabel
+							htmlFor="calendar-flex"
+							whiteSpace="nowrap"
+							mb="0px"
+							required
+						>
+							Filter by date:&thinsp;
+						</InputLabel>
+						<Flex
+							w="100%"
+							direction={{ base: "column", md: "row" }}
+							gap={{ base: "6", md: "2" }}
+						>
+							<Flex
+								id="calendar-flex"
+								direction={{ base: "column", md: "row" }}
+								gap={{ base: "4", md: "0" }}
+							>
+								<Calenders
+									minDate={formatDate(
+										oneYearAgoDate,
+										"yyyy-MM-dd"
+									)}
+									maxDate={formatDate(
+										currentDate,
+										"yyyy-MM-dd"
+									)}
+									w="100%"
+									placeholder="From"
+									inputContStyle={{
+										w: {
+											base: "100%",
+											md: "190px",
+											xl: "200px",
+											"2xl": "274px",
+										},
+										borderRadius: {
+											base: "10px",
+											md: "10px 0px 0px 10px",
+										},
+										borderRight: {
+											base: "flex",
+											md: "none",
+										},
+										h: "48px",
+									}}
+									onChange={(e) => onDateChange(e, "from")}
+									value={dateText.from}
+									required
+								/>
+								<Calenders
+									minDate={formatDate(
+										oneYearAgoDate,
+										"yyyy-MM-dd"
+									)}
+									maxDate={formatDate(
+										currentDate,
+										"yyyy-MM-dd"
+									)}
+									placeholder="To"
+									w="100%"
+									inputContStyle={{
+										w: {
+											base: "100%",
+											md: "180px",
+											xl: "200px",
+											"2xl": "274px",
+										},
+
+										borderRadius: {
+											base: "10px",
+											md: "0px 10px 10px 0px",
+										},
+										h: "48px",
+									}}
+									onChange={(e) => onDateChange(e, "to")}
+									value={dateText.to}
+									required
+								/>
+							</Flex>
+							<Button
+								w={{
+									base: "100%",
+									md: "130px",
+								}}
+								h="48px"
+								onClick={handleApply}
+							>
+								Filter
+							</Button>
+						</Flex>
+					</Flex>
+				</Flex>
+				<DetailedStatementTable
+					detailedStatementData={detailedStatementData}
+					setPageNumber={setPageNumber}
+					pageNumber={pageNumber}
+					totalRecords={totalRecords}
+				/>
+			</Flex>
 		</>
 	);
 };
