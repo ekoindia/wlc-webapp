@@ -8,13 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import {
-	AddressPane,
-	CompanyPane,
-	ContactPane,
-	DocPane,
-	PersonalPane,
-} from ".";
+import { AddressPane, CompanyPane, ContactPane, PersonalPane } from ".";
 
 const ChangeRoleDesktop = ({ menuHandler }) => {
 	return (
@@ -127,10 +121,10 @@ const ProfilePanel = () => {
 			id: 2,
 			comp: <AddressPane rowData={rowData?.address_details} />,
 		},
-		{
-			id: 3,
-			comp: <DocPane rowData={rowData?.document_details} />,
-		},
+		// {
+		// 	id: 3,
+		// 	comp: <DocPane rowData={rowData?.document_details} />,
+		// },
 		{
 			id: 4,
 			comp: <PersonalPane rowData={rowData?.personal_information} />,
