@@ -187,6 +187,7 @@ const DetailedStatement = () => {
 						<InputLabel
 							htmlFor="calendar-flex"
 							whiteSpace="nowrap"
+							mb="0px"
 							required
 						>
 							Filter by date:&thinsp;
