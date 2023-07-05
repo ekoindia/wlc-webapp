@@ -1,6 +1,6 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
 import { ActionIcon } from "components/CommandBar";
-import { useGlobalSearch, usePubSub, useSession } from "contexts";
+import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
 import { Priority, useRegisterActions } from "kbar";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -33,6 +33,8 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 
 	const { businessActions } = useGlobalSearch(); // Get registered "My Business" actions for the Command bar
 
+	const { isAndroid, setNativeVersion } = useAppSource();
+
 	const [isPageLoading, setIsPageLoading] = useState(false);
 	Router.events.on("routeChangeStart", () => setIsPageLoading(true));
 	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
@@ -40,13 +42,19 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 
 	// Setup Android Listener...
 	useEffect(() => {
-		if (typeof window !== "undefined") {
+		if (typeof window !== "undefined" && isAndroid) {
 			// Inform Android wrapper app that the page has loaded...
 			doAndroidAction(ANDROID_ACTION.WEBAPP_READY);
 
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
 				console.log("[_app.tsx] callFromAndroid:: ", action, data);
+
+				// Set the Android app version
+				if (action === ANDROID_ACTION.SET_NATIVE_VERSION) {
+					setNativeVersion(parseInt(data));
+					return;
+				}
 
 				publish(TOPICS.ANDROID_RESPONSE, { action, data });
 			};
