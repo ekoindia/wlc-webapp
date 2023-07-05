@@ -3,6 +3,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
 import { ActionIcon } from "components/CommandBar";
 import {
+	AppSourceProvider,
 	CommissionSummaryProvider,
 	EarningSummaryProvider,
 	GlobalSearchProvider,
@@ -46,17 +47,23 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		is_local: typeof window === "undefined" ? false : true,
 	});
 
-	// Fallback if org data not received from getInitialProps()
-	// Fix: this may not be required as we are loading org details
-	// 		from local storage within getInitialProps()
-	if (typeof window !== "undefined" && !org) {
-		try {
-			org = JSON.parse(
-				sessionStorage.getItem(OrgDetailSessionStorageKey)
-			);
-			console.log("[_app.tsx] loading org details from local: ", org);
-		} catch (err) {
-			console.error("[_app.tsx] Error parsing org_detail: ", err);
+	// Read initial data from SessionStorage (if available)
+	if (typeof window !== "undefined") {
+		// Fallback if org data not received from getInitialProps()
+		// Fix: this may not be required as we are loading org details
+		// 		from local storage within getInitialProps()
+		if (!org) {
+			try {
+				org = JSON.parse(
+					sessionStorage.getItem(OrgDetailSessionStorageKey)
+				);
+				console.log("[_app.tsx] loading org details from local: ", org);
+			} catch (err) {
+				console.error(
+					"[_app.tsx] Error reading initial org data from SessionStorage: ",
+					err
+				);
+			}
 		}
 	}
 
@@ -171,60 +178,63 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 			resetCSS={true}
 			toastOptions={{ defaultOptions: toastDefaultOptions }}
 		>
-			<OrgDetailProvider initialData={org || null}>
-				<KBarProvider
-					actions={kbarDefaultActions}
-					options={{
-						enableHistory: false,
-						disableScrollbarManagement: true,
-						// callbacks: {
-						// 	onOpen: () => {
-						// 		console.log("[KBar] onOpen");
-						// 	},
-						// },
-					}}
-				>
-					<GlobalSearchProvider>
-						<UserProvider userMockData={mockUser}>
-							<MenuProvider>
-								<WalletProvider>
-									<RouteProtecter router={router}>
-										<SWRConfig
-											value={{
-												provider: localStorageProvider,
-											}}
-										>
-											<NotificationProvider>
-												<EarningSummaryProvider>
-													<CommissionSummaryProvider>
-														<TodoProvider>
-															<PubSubProvider>
-																<ErrorBoundary>
-																	{getLayout(
-																		<main
-																			className={
-																				inter.className
-																			}
-																		>
-																			<Component
-																				{...pageProps}
-																			/>
-																		</main>
-																	)}
-																</ErrorBoundary>
-															</PubSubProvider>
-														</TodoProvider>
-													</CommissionSummaryProvider>
-												</EarningSummaryProvider>
-											</NotificationProvider>
-										</SWRConfig>
-									</RouteProtecter>
-								</WalletProvider>
-							</MenuProvider>
-						</UserProvider>
-					</GlobalSearchProvider>
-				</KBarProvider>
-			</OrgDetailProvider>
+			<AppSourceProvider>
+				<OrgDetailProvider initialData={org || null}>
+					<KBarProvider
+						actions={kbarDefaultActions}
+						options={{
+							enableHistory: false,
+							disableScrollbarManagement: true,
+							// callbacks: {
+							// 	onOpen: () => {
+							// 		console.log("[KBar] onOpen");
+							// 	},
+							// },
+						}}
+					>
+						<GlobalSearchProvider>
+							<UserProvider userMockData={mockUser}>
+								<MenuProvider>
+									<WalletProvider>
+										<RouteProtecter router={router}>
+											<SWRConfig
+												value={{
+													provider:
+														localStorageProvider,
+												}}
+											>
+												<NotificationProvider>
+													<EarningSummaryProvider>
+														<CommissionSummaryProvider>
+															<TodoProvider>
+																<PubSubProvider>
+																	<ErrorBoundary>
+																		{getLayout(
+																			<main
+																				className={
+																					inter.className
+																				}
+																			>
+																				<Component
+																					{...pageProps}
+																				/>
+																			</main>
+																		)}
+																	</ErrorBoundary>
+																</PubSubProvider>
+															</TodoProvider>
+														</CommissionSummaryProvider>
+													</EarningSummaryProvider>
+												</NotificationProvider>
+											</SWRConfig>
+										</RouteProtecter>
+									</WalletProvider>
+								</MenuProvider>
+							</UserProvider>
+						</GlobalSearchProvider>
+					</KBarProvider>
+				</OrgDetailProvider>
+			</AppSourceProvider>
 		</ChakraProvider>
 	);
 
