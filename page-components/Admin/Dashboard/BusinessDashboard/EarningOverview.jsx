@@ -155,7 +155,7 @@ const EarningOverview = ({ data }) => {
 													)}
 												</Flex>
 											</Flex>
-											<Flex gap="1">
+											<Flex gap="1" align="center">
 												{item.variation ? (
 													<>
 														<Icon
@@ -171,7 +171,7 @@ const EarningOverview = ({ data }) => {
 																	? "success"
 																	: "error"
 															}
-															width="14px"
+															size="xs"
 														/>
 														<Flex
 															fontSize="10px"
