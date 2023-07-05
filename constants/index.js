@@ -1,3 +1,4 @@
+export { ChangeRoleMenuList } from "./AdminChangeRole";
 export { allowedCategories } from "./allowedCategories";
 export {
 	BulkOnboardingBreadcrumbData,
