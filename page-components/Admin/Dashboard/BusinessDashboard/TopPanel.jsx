@@ -90,7 +90,7 @@ const TopPanel = ({ data }) => {
 									<span>{item.value}</span>
 								)}
 							</Flex>
-							<Flex gap="1">
+							<Flex gap="1" align="center">
 								{item.variation ? (
 									<>
 										<Icon
@@ -104,7 +104,7 @@ const TopPanel = ({ data }) => {
 													? "success"
 													: "error"
 											}
-											width="14px"
+											size="xs"
 										/>
 										<Flex
 											fontSize="10px"
