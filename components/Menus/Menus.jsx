@@ -81,7 +81,7 @@ const Menus = ({
 												<>
 													<MenuItem
 														key={
-															item.id ||
+															item.id ??
 															`${index}-${item.label}`
 														}
 														value={item.value}

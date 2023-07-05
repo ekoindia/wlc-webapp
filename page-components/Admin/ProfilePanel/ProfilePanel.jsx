@@ -1,22 +1,14 @@
 import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { Button, Headings, Icon, Menus } from "components";
-import { ChangeRoleMenu } from "constants/ChangeRoleMenu";
+import { ChangeRoleMenuList } from "constants";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { AddressPane, CompanyPane, ContactPane, PersonalPane } from ".";
 
-import {
-	AddressPane,
-	CompanyPane,
-	ContactPane,
-	DocPane,
-	PersonalPane,
-} from ".";
-
-const ChangeRoleDesktop = ({ menuHandler }) => {
+const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
 	return (
 		<Box>
 			<Box display={{ base: "none", md: "block" }}>
@@ -24,7 +16,7 @@ const ChangeRoleDesktop = ({ menuHandler }) => {
 					as={Button}
 					type="everted"
 					title="Change Role"
-					menulist={ChangeRoleMenu}
+					menulist={changeRoleMenuList}
 					iconPos="right"
 					iconName="caret-down"
 					iconStyles={{ height: "10px", width: "14px" }}
@@ -37,7 +29,6 @@ const ChangeRoleDesktop = ({ menuHandler }) => {
 						textAlign: "left",
 					}}
 					listStyles={{
-						height: "150px",
 						width: "250px",
 					}}
 				/>
@@ -55,23 +46,23 @@ const ChangeRoleDesktop = ({ menuHandler }) => {
 	);
 };
 
-const ChangeRoleMobile = () => {
+const ChangeRoleMobile = ({ changeRoleMenuList }) => {
 	return (
 		<Box bg="shade" w="100%" h="100vh" px="4" pt="12px">
-			{ChangeRoleMenu.map((ele, idx) => (
-				<Link href={ele.path} key={ele.item}>
-					<Flex
-						w="100%"
-						justify="space-between"
-						py="6"
-						borderBottom={
-							idx === ChangeRoleMenu.length - 1 ? null : "card"
-						}
-					>
-						<Text fontSize="1rem">{ele.item}</Text>
-						<Icon name="chevron-right" color="light" />
-					</Flex>
-				</Link>
+			{changeRoleMenuList.map((ele, idx) => (
+				<Flex
+					w="100%"
+					justify="space-between"
+					key={ele.label}
+					py="6"
+					borderBottom={
+						idx === changeRoleMenuList.length - 1 ? null : "card"
+					}
+					onClick={() => ele.onClick()}
+				>
+					<Text fontSize="1rem">{ele.label}</Text>
+					<Icon name="chevron-right" color="light" />
+				</Flex>
 			))}
 		</Box>
 	);
@@ -80,7 +71,8 @@ const ChangeRoleMobile = () => {
 const ProfilePanel = () => {
 	const router = useRouter();
 	const [rowData, setRowData] = useState([]);
-
+	const [isMenuVisible, setIsMenuVisible] = useState(false);
+	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
 	const { accessToken } = useSession();
 	const { cellnumber } = router.query;
 
@@ -101,6 +93,19 @@ const ProfilePanel = () => {
 				console.error("[ProfilePanel] Get Agent Detail Error:", error);
 			});
 	};
+
+	useEffect(() => {
+		let _changeRoleMenuList = [];
+		ChangeRoleMenuList.map(({ label, path }) => {
+			let _listItem = {};
+			_listItem.label = label;
+			_listItem.onClick = () => {
+				router.push(path);
+			};
+			_changeRoleMenuList.push(_listItem);
+		});
+		setChangeRoleMenuList(_changeRoleMenuList);
+	}, []);
 
 	useEffect(() => {
 		const storedData = JSON.parse(
@@ -127,10 +132,10 @@ const ProfilePanel = () => {
 			id: 2,
 			comp: <AddressPane rowData={rowData?.address_details} />,
 		},
-		{
-			id: 3,
-			comp: <DocPane rowData={rowData?.document_details} />,
-		},
+		// {
+		// 	id: 3,
+		// 	comp: <DocPane rowData={rowData?.document_details} />,
+		// },
 		{
 			id: 4,
 			comp: <PersonalPane rowData={rowData?.personal_information} />,
@@ -141,7 +146,6 @@ const ProfilePanel = () => {
 		},
 	];
 
-	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const menuHandler = () => {
 		setIsMenuVisible((prev) => !prev);
 	};
@@ -150,12 +154,17 @@ const ProfilePanel = () => {
 		<>
 			<Headings
 				title={isMenuVisible ? "Change Role" : "Seller Details"}
-				propComp={<ChangeRoleDesktop menuHandler={menuHandler} />}
+				propComp={
+					<ChangeRoleDesktop
+						changeRoleMenuList={changeRoleMenuList}
+						menuHandler={menuHandler}
+					/>
+				}
 				redirectHandler={isMenuVisible ? menuHandler : null}
 				isCompVisible={!isMenuVisible}
 			/>
 			{isMenuVisible ? (
-				<ChangeRoleMobile />
+				<ChangeRoleMobile changeRoleMenuList={changeRoleMenuList} />
 			) : (
 				<Grid
 					templateColumns={{
