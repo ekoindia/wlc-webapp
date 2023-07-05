@@ -2,12 +2,14 @@ import { Center, Spinner, useToast } from "@chakra-ui/react";
 import { Endpoints, TransactionIds } from "constants";
 import { useOrgDetailContext, useSession } from "contexts";
 import { useUser } from "contexts/UserContext";
+// import { Home, SelectionScreen } from "eko-oaas-package";
 import { Home, SelectionScreen } from "eko-oaas-package";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
+import { distributorStepsData } from "./distributorStepsData";
 
 const selectionStepData = {
 	id: 0,
@@ -79,8 +81,81 @@ const SignupPage = () => {
 	const [stateTypesData, setStateTypesData] = useState();
 	const [signUrlData, setSignUrlData] = useState();
 	const [bookletNumber, setBookletNumber] = useState();
-	let bookletKeys = [];
 	const [isSpinner, setisSpinner] = useState(true);
+	const [stepperData, setStepperData] = useState([
+		{
+			id: 1,
+			name: "Welcome",
+			label: "Welcome",
+			isSkipable: false,
+			isRequired: false,
+			isVisible: false,
+			stepStatus: 0,
+			primaryCTAText: "Start Onboarding",
+			description: "",
+			form_data: {},
+		},
+		{
+			id: 2,
+			name: "RoleCapture",
+			label: "Tell us who you are?",
+			isSkipable: false,
+			isRequired: false,
+			isVisible: false,
+			stepStatus: 0,
+			primaryCTAText: "Continue",
+			description: "",
+			form_data: {
+				roles: [
+					{
+						id: 1,
+						merchant_type: 1,
+						applicant_type: 0,
+						label: "I'm a seller",
+						description: "I serve customers from my shop",
+						icon: "../assets/icons/user_merchant.png",
+						isVisible: true,
+					},
+					{
+						id: 2,
+						merchant_type: 3,
+						applicant_type: 2,
+						label: "I'm a distributor",
+						description:
+							"I have a network of seller and i want to serve them",
+						icon: "../assets/icons/user_distributor.png",
+						isVisible: true,
+					},
+					{
+						id: 3,
+						merchant_type: 2,
+						applicant_type: 1,
+						label: "I'm a Enterprise",
+						description:
+							"I want to use API and other solution to make my own service",
+						icon: "../assets/icons/user_enterprise.png",
+						isVisible: false,
+					},
+				],
+			},
+		},
+	]);
+	const initialStepSetter = (userData) => {
+		const currentStepData = [];
+		function stepSetter() {
+			userData?.details?.onboarding_steps?.forEach((step) => {
+				let currentData = distributorStepsData?.filter(
+					(singleStep) => singleStep.role === step.role
+				);
+				currentStepData.push(...currentData);
+			});
+		}
+		stepSetter();
+		setStepperData([...stepperData, ...currentStepData]);
+	};
+
+	let bookletKeys = [];
+
 	const toast = useToast();
 	const user_id =
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
@@ -115,7 +190,6 @@ const SignupPage = () => {
 				bodyData.form_data.latlong = latLong;
 				interaction_type_id = TransactionIds.USER_AADHAR_CONSENT;
 			} else if (data?.id === 6 || data?.id === 7) {
-				console.log("Data", data, lastStepResponse);
 				bodyData.form_data.caseId = userCode;
 				bodyData.form_data.hold_timeout = "";
 				bodyData.form_data.access_key = accesskey;
@@ -124,21 +198,18 @@ const SignupPage = () => {
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_NUMBER_CONFIRM;
 				} else {
-					console.log("AAdhar wlc", aadhaar);
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_OTP_CONFIRM;
 					bodyData.form_data.aadhar = aadhaar;
 					// bodyData.form_data.accessKey = lastStepResponse?.data?.access_key
 				}
 			} else if (data?.id === 9) {
-				console.log("bodyData inside 1", bodyData);
 				interaction_type_id = TransactionIds.USER_ONBOARDING_BUSINESS;
 				bodyData.form_data.latlong = latLong;
 				bodyData.form_data.csp_id = userData.userDetails.mobile;
 				bodyData.form_data.communication = 1;
 			} else if (data?.id === 10) {
 				// Object.keys(data.form_data) {}
-				console.log("pintwin 1", data?.form_data, bookletKeys);
 				if (
 					data?.form_data?.first_okekey &&
 					bookletKeys[bookletKeys?.length - 2]
@@ -297,7 +368,6 @@ const SignupPage = () => {
 	};
 
 	const updateOnboarding = (bodyData) => {
-		console.log("bodyData inside 2", bodyData);
 		// setisSpinner(true);
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			token: userData?.access_token,
@@ -309,7 +379,6 @@ const SignupPage = () => {
 			timeout: 30000,
 		})
 			.then((data) => {
-				console.log("data update", data);
 				if (data?.status === 0) {
 					toast({
 						title: bodyData.success_message || "Success",
@@ -324,7 +393,12 @@ const SignupPage = () => {
 						setSelectedRole(bodyData?.form_data?.merchant_type);
 					}
 					setLastStepResponse(data);
-					refreshApiCall();
+					refreshApiCall().then((res) => {
+						if (bodyData?.id === 0) {
+							initialStepSetter(res);
+						}
+					});
+
 					// setisSpinner(false);
 				} else {
 					toast({
@@ -347,43 +421,40 @@ const SignupPage = () => {
 					duration: 2000,
 				});
 				setLastStepResponse(err);
-
-				console.error("error in update onboarding: ", err);
 			});
 	};
 
-	const refreshApiCall = () => {
-		console.log("inside mainfunction");
+	const refreshApiCall = async () => {
 		// setisSpinner(true);
-		fetcher(
-			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE,
-			{
-				token: userData?.access_token,
-				body: {
-					last_refresh_token: userData?.access_token,
+		try {
+			const res = await fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL +
+					Endpoints.REFRESH_PROFILE,
+				{
+					token: userData?.access_token,
+					body: {
+						last_refresh_token: userData?.access_token,
+					},
 				},
-			},
-			generateNewToken
-		)
-			.then((res) => {
-				setUserLoginData(res);
-				updateUserInfo(res);
-				setisSpinner(false);
+				generateNewToken
+			);
+			setUserLoginData(res);
+			updateUserInfo(res);
+			setisSpinner(false);
 
-				if (
-					res?.details?.onboarding !== 1 &&
-					res?.details?.onboarding !== undefined &&
-					res?.details?.onboarding !== null
-				) {
-					router.push("/home");
-				}
-				console.log("inside initial api response", res);
-			})
-			.catch((err) => {
-				setisSpinner(false);
+			if (
+				res?.details?.onboarding !== 1 &&
+				res?.details?.onboarding !== undefined &&
+				res?.details?.onboarding !== null
+			) {
+				router.push("/home");
+			}
+			return res;
+		} catch (error) {
+			setisSpinner(false);
 
-				console.log("inside initial api error", err);
-			});
+			console.log("inside initial api error", error);
+		}
 	};
 
 	const getSHopTypes = () => {
@@ -402,13 +473,11 @@ const SignupPage = () => {
 				if (res.status === 0) {
 					setShopTypesData(res?.param_attributes.list_elements);
 				}
-				console.log("inside initial api response shopTypes", res);
 			})
 			.catch((err) => console.log("inside initial api error", err));
 	};
 
 	const getStateType = () => {
-		console.log("inside mainfunction");
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -601,7 +670,6 @@ const SignupPage = () => {
 	};
 
 	useEffect(() => {
-		console.log("inside script");
 		const script = document.createElement("script");
 		script.src = "/scripts/leegalityv5.min.js";
 		// script.src = '../scripts/leegalityv5.min.js';
@@ -631,7 +699,6 @@ const SignupPage = () => {
 			getBookletKey();
 		}
 	}, [bookletNumber, getBookletKey]);
-	console.log("userData", userData);
 	return (
 		<>
 			{isSpinner ? (
@@ -661,10 +728,10 @@ const SignupPage = () => {
 						/>
 					) : (
 						<Home
-							// defaultStep="12500"
-							defaultStep={
-								userData?.userDetails?.role_list || "12400"
-							}
+							defaultStep="12500"
+							// defaultStep={
+							// 	userData?.userDetails?.role_list || "12400"
+							// }
 							isBranding={false}
 							userData={userData}
 							handleSubmit={handleStepDataSubmit}
@@ -672,6 +739,7 @@ const SignupPage = () => {
 							selectedMerchantType={selectedRole}
 							shopTypes={shopTypesData}
 							stateTypes={stateTypesData}
+							stepsData={stepperData}
 							handleStepCallBack={handleStepCallBack}
 						/>
 					)}
