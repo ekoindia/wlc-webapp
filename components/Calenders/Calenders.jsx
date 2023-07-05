@@ -72,7 +72,7 @@ const Calenders = ({
 					alignItems={"center"}
 				>
 					{/* From To */}
-					<Flex alignItems={"center"}>
+					<Flex align="center">
 						<Flex
 							onClick={handleClickForInput}
 							align={"center"}
@@ -87,6 +87,7 @@ const Calenders = ({
 										md: "12px",
 										xl: "14px",
 									}}
+									mb="0px"
 								>
 									{placeholder}:&nbsp;
 								</InputLabel>
