@@ -1,18 +1,18 @@
-export const ChangeRoleMenu = [
+export const ChangeRoleMenuList = [
 	{
-		item: "Transfer Merchants",
+		label: "Transfer Merchants",
 		path: "/admin/my-network/profile/change-role?tab=0",
 	},
 	{
-		item: "Promote Seller To Distributor",
+		label: "Promote Seller To Distributor",
 		path: "/admin/my-network/profile/change-role?tab=1",
 	},
 	{
-		item: "Demote Distributor",
+		label: "Demote Distributor",
 		path: "/admin/my-network/profile/change-role?tab=2",
 	},
 	{
-		item: "Upgrade Merchant To I-Merchant",
+		label: "Upgrade Merchant To I-Merchant",
 		path: "/admin/my-network/profile/change-role?tab=3",
 	},
 ];
