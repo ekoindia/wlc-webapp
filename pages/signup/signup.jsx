@@ -474,7 +474,7 @@ const SignupPage = () => {
 					setShopTypesData(res?.param_attributes.list_elements);
 				}
 			})
-			.catch((err) => console.log("inside initial api error", err));
+			.catch((err) => console.log("[GetShopTypes] Error", err));
 	};
 
 	const getStateType = () => {
@@ -492,9 +492,9 @@ const SignupPage = () => {
 				if (res.status === 0) {
 					setStateTypesData(res?.param_attributes.list_elements);
 				}
-				console.log("inside initial api response stateTypes", res);
+				console.log("[getStateType] resp:", res);
 			})
-			.catch((err) => console.log("inside initial api error", err));
+			.catch((err) => console.log("[getStateType] Error:", err));
 	};
 	// const getPincodeType = () => {
 	// 	console.log("inside mainfunction");
@@ -597,12 +597,12 @@ const SignupPage = () => {
 			generateNewToken
 		)
 			.then((res) => {
-				console.log("inside initial api response stepcallback", res);
+				// console.log("[getSignUrl] resp:", res);
 				if (res.response_status_id === 0) {
 					setSignUrlData(res.data);
 				}
 			})
-			.catch((err) => console.log("inside initial api error", err));
+			.catch((err) => console.log("[getSignUrl] Error:", err));
 		// }
 	};
 
@@ -622,18 +622,13 @@ const SignupPage = () => {
 			generateNewToken
 		)
 			.then((res) => {
-				console.log(
-					"inside initial api response getBookletNumber",
-					res
-				);
+				// console.log("[getBookletNumber] resp:", res);
 				if (res.response_status_id === 0) {
 					setBookletNumber(res.data);
 					// setSignUrlData(res.data);
 				}
 			})
-			.catch((err) =>
-				console.log("inside initial api error getBookletNumber", err)
-			);
+			.catch((err) => console.log("[getBookletNumber] Error:", err));
 		// }
 	};
 
@@ -653,19 +648,13 @@ const SignupPage = () => {
 			generateNewToken
 		)
 			.then((res) => {
-				console.log(
-					"inside initial api response getBookletNumber",
-					res,
-					bookletKeys
-				);
+				// console.log("[getBookletKey] resp: ", res, bookletKeys);
 				if (res.response_status_id === 0) {
 					bookletKeys = [...bookletKeys, res.data];
 					// setSignUrlData(res.data);
 				}
 			})
-			.catch((err) =>
-				console.log("inside initial api error getBookletNumber", err)
-			);
+			.catch((err) => console.log("[getBookletKey] Error: ", err));
 		// }
 	};
 

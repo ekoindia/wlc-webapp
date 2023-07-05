@@ -2,6 +2,8 @@ import { extendTheme, theme } from "@chakra-ui/react";
 import { globalStyles } from "./globals";
 import {
 	buttonTheme,
+	checkboxTheme,
+	radioTheme,
 	tableTheme,
 	tabsTheme,
 } from "./theme_system/theme/components";
@@ -65,8 +67,11 @@ export const light = extendTheme({
 		},
 	},
 	components: {
-		Table: tableTheme,
 		Button: buttonTheme,
+		Checkbox: checkboxTheme,
+		Radio: radioTheme,
+		Table: tableTheme,
+		Tabs: tabsTheme,
 		Skeleton: {
 			baseStyle: {
 				borderRadius: "4px",
@@ -81,26 +86,7 @@ export const light = extendTheme({
 				color: "inputlabel",
 			},
 		},
-		Checkbox: {
-			variants: {
-				rounded: {
-					control: {
-						w: "15px",
-						h: "15px",
-						border: "1px solid #11299E",
-						borderColor: "#11299E",
-						borderRadius: "3px",
-						_checked: {
-							bg: "#11299E",
-						},
-						_focus: {
-							boxShadow: "none",
-						},
-					},
-				},
-			},
-		},
-		Tabs: tabsTheme,
+
 		Heading: {
 			variants: {
 				selectNone: {
@@ -144,8 +130,8 @@ export const light = extendTheme({
 		20: "20px",
 	},
 	shadows: {
+		basic: "0px 5px 15px #0000000D",
 		"sh-otpfocus": "0px 3px 6px #0000001A",
-		"sh-header": "0px 3px 6px #0000001A",
 		"sh-card": "0px 3px 20px #00000005",
 		"sh-googlebtn": "0px 3px 10px #4185F433",
 	},

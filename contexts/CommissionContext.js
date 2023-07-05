@@ -195,7 +195,7 @@ export const CommissionSummaryProvider = ({ children }) => {
 			{
 				id: "know-your-commissions",
 				name: "Know Your Commissions",
-				subtitle: "Get product-wise commission details",
+				subtitle: "Get commission details for every product",
 				keywords: `earning pricing`,
 				icon: (
 					<ActionIcon

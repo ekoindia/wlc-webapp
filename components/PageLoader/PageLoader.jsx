@@ -1,6 +1,6 @@
 import { Box, keyframes } from "@chakra-ui/react";
 
-const indeterminateProgress = keyframes`
+const animIndeterminateProgress = keyframes`
 	from {transform: translateX(-120%); opacity: 0.5}
 	to {transform: translateX(100%); opacity: 1}
 `;
@@ -25,7 +25,7 @@ const PageLoader = () => {
 				h="full"
 				w="full"
 				rounded="full"
-				animation={`${indeterminateProgress} infinite 2s linear`}
+				animation={`${animIndeterminateProgress} infinite 2s linear`}
 			></Box>
 		</Box>
 	);

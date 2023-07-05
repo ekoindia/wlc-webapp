@@ -48,10 +48,11 @@ const History = () => {
 	const router = useRouter();
 	const [finalFormState, setFinalFormState] = useState({});
 	const { setSearchTitle } = useGlobalSearch();
+	const [loading, setLoading] = useState(false);
 
 	// Set GlobalSearch title
 	useEffect(() => {
-		setSearchTitle("Search by Transaction ID, Mobile, Account, etc");
+		setSearchTitle("Search by TID, Mobile, Account, etc");
 		return () => {
 			setSearchTitle("");
 		};
@@ -82,6 +83,8 @@ const History = () => {
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
 
+		setLoading(true);
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
@@ -105,6 +108,9 @@ const History = () => {
 			})
 			.catch((err) => {
 				console.error("[History] error: ", err);
+			})
+			.finally(() => {
+				setLoading(false);
 			});
 	};
 
@@ -264,6 +270,7 @@ const History = () => {
 						setPageNumber={setCurrentPage}
 						transactionList={transactionList}
 						tableRowLimit={limit}
+						loading={loading}
 					/>
 				</PrintReceipt>
 			</Flex>
@@ -369,7 +376,7 @@ const HistoryToolbar = ({
 				{/* <==========Search =========> */}
 				<SearchBar
 					type="number"
-					placeholder="Search by Transaction ID, Mobile, Account, etc"
+					placeholder="Search by TID, Mobile, Account, etc"
 					value={searchValue}
 					setSearch={onSearchSubmit}
 					minSearchLimit={2}
@@ -400,7 +407,7 @@ const HistoryToolbar = ({
 					<form>
 						<Flex direction="column" gap="1">
 							<Input
-								label="Transaction ID"
+								label="TID"
 								name="tid"
 								type="number"
 								labelStyle={labelStyle}

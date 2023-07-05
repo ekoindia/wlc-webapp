@@ -65,9 +65,13 @@ const SearchBar = ({
 		}
 	};
 
+	const width = showButton
+		? { base: "100%", md: "450px", xl: "500px", "2xl": "600px" }
+		: { base: "100%", md: "350px", xl: "400px", "2xl": "500px" };
+
 	return (
 		<Flex
-			w={{ base: "100%", md: "auto", xl: "600px" }}
+			w={width}
 			align="flex-start"
 			gap={showButton ? "2" : null}
 			{...seachContStyle}

@@ -8,7 +8,14 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Headings } from "components/Headings";
-import { AadhaarPay, Aeps, Dmt, IndoNepal } from ".";
+import {
+	AadhaarPay,
+	Aeps,
+	AirtelCms,
+	CreditCardBillPayment,
+	Dmt,
+	IndoNepal,
+} from ".";
 /**
  * A <PricingCommission> component
  * TODO: Write more description here
@@ -23,7 +30,8 @@ const PricingCommissions = () => {
 		"Aadhaar Pay": <AadhaarPay />,
 		"Indo-Nepal Fund Transfer": <IndoNepal />,
 		// BBPS: <Bbps />,
-		// "Airtel CMS": <AirtelCms />,
+		"Airtel CMS": <AirtelCms />,
+		"Credit Card Bill Payment": <CreditCardBillPayment />,
 	};
 
 	return (
@@ -48,7 +56,7 @@ const PricingCommissions = () => {
 					bg="white"
 					borderRadius="10px"
 					border="card"
-					boxShadow="0px 5px 15px #0000000D"
+					boxShadow="basic"
 				>
 					<Tabs
 						isLazy

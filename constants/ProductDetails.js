@@ -1,7 +1,23 @@
-/* Slab Details */
+/**
+ * Product Details
+ */
 export const products = {
-	DMT: { slabs: [{ min: 100, max: 5000 }] },
+	DMT: {
+		uriSegment: "dmt",
+		slabs: [
+			{ min: 100, max: 1000 },
+			{ min: 1001, max: 2000 },
+			{ min: 2001, max: 3000 },
+			{ min: 3001, max: 4000 },
+			{ min: 4001, max: 5000 },
+		],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
+	},
 	AEPS: {
+		uriSegment: "aeps",
 		slabs: [
 			{ min: 100, max: 100 },
 			{ min: 101, max: 499 },
@@ -12,13 +28,38 @@ export const products = {
 			{ min: 7000, max: 9999 },
 			{ min: 10000, max: 10000 },
 		],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
 	},
-	AADHAARPAY: { slabs: [{ min: 1, max: 10000 }] },
-	INDONEPAL: {
+	AADHAAR_PAY: {
+		uriSegment: "aadharpay",
+		slabs: [{ min: 1, max: 10000 }],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
+	},
+	INDO_NEPAL_FUND_TRANSFER: {
+		uriSegment: "indonepal",
 		slabs: [
 			{ min: 100, max: 5000 },
 			{ min: 5001, max: 49800 },
 		],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "1",
+			payment_mode: "1",
+		},
+	},
+	CREDIT_CARD_BILL_PAYMENT: {
+		uriSegment: "cc_bill_pay",
+		slabs: [{ min: 100, max: 199999 }],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
 	},
 };
 
@@ -30,7 +71,8 @@ export const productPricingTextConfig = {
 export const productPricingType = {
 	DMT: productPricingTextConfig.PRICING,
 	AEPS: productPricingTextConfig.COMMISSION,
-	AADHAARPAY: productPricingTextConfig.PRICING,
-	INDONEPAL: productPricingTextConfig.COMMISSION,
+	AADHAAR_PAY: productPricingTextConfig.PRICING,
+	INDO_NEPAL_FUND_TRANSFER: productPricingTextConfig.COMMISSION,
 	// BBPS: productPricingTextConfig.COMMISSION,
+	CREDIT_CARD_BILL_PAYMENT: productPricingTextConfig.PRICING,
 };

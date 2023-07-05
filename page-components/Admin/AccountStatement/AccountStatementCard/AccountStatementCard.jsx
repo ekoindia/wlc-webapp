@@ -13,7 +13,7 @@ const AccountStatementCard = ({ item }) => {
 		<Flex direction="column" fontSize="12px" rowGap="2">
 			<Flex gap="2">
 				<Box as="span" color="light">
-					Transaction ID:
+					TID:
 				</Box>
 				<Box as="span" color="dark" fontWeight="medium">
 					{item.transaction_id}

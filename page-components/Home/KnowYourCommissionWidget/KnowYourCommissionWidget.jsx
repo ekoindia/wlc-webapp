@@ -50,13 +50,13 @@ const KnowYourCommission = () => {
 							borderBottom="1px solid #F5F6F8"
 						>
 							<Avatar
-								size={{ base: "sm", lg: "md" }}
+								size={{ base: "sm", md: "md" }}
 								border={prod.icon ? null : "2px solid #D2D2D2"}
 								name={prod.icon ? null : prod.label}
 								bg={prod.icon ? "gray.200" : null}
 								icon={
 									<Icon
-										size="md"
+										size={{ base: "sm", md: "md" }}
 										name={prod.icon}
 										color="accent.DEFAULT"
 									/>

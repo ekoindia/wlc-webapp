@@ -10,31 +10,24 @@ import { PricingForm } from "..";
  * @example	`<AadhaarPay></AadhaarPay>` TODO: Fix example
  */
 const AadhaarPay = ({ prop1, ...rest }) => {
-	const commissionForObj = {
-		1: "Individuals",
-		2: "Distributors",
-		3: "Products",
-	};
+	const operationTypeList = [
+		{ value: "3", label: "Product" },
+		{ value: "2", label: "Distributors" },
+		{ value: "1", label: "Individuals" },
+	];
 
-	const commissionTypeObj = {
-		0: "Percentage (%)",
-		1: "Fixed",
-	};
+	const pricingTypeList = [
+		{ value: "0", label: "Percentage (%)" },
+		{ value: "1", label: "Fixed (₹)" },
+	];
 
-	// const charges = {
-	// 	"Fixed Charges": 1.8,
-	// 	Taxes: 0.8,
-	// 	"Network Earnings": 4.12,
-	// 	"Your Earnings": 3.28,
-	// };
 	return (
 		<div {...rest}>
 			<PricingForm
-				product="aadharpay"
-				productPricingType={productPricingType.AADHAARPAY}
-				productSlabs={products.AADHAARPAY.slabs}
-				commissionForObj={commissionForObj}
-				commissionTypeObj={commissionTypeObj}
+				productDetails={products.AADHAAR_PAY}
+				productPricingType={productPricingType.AADHAAR_PAY}
+				operationTypeList={operationTypeList}
+				pricingTypeList={pricingTypeList}
 			/>
 		</div>
 	);

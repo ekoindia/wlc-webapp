@@ -164,7 +164,9 @@ const BulkOnboarding = () => {
 				) : (
 					<Flex direction="column" gap="2">
 						<Flex fontSize="sm" direction="column" gap="1">
-							<span>{data?.message}!!</span>
+							<span>
+								{data?.message || "Something went wrong"}!!
+							</span>
 							{data?.data?.processed_records > 0 && (
 								<Flex gap="1">
 									<Box as="span" fontWeight="semibold">
@@ -193,7 +195,7 @@ const BulkOnboarding = () => {
 							)}
 						</Flex>
 
-						{data?.data?.csp_list.length > 0 && (
+						{data?.data?.csp_list?.length > 0 && (
 							<BulkOnboardingResponse
 								bulkOnboardingResponseList={
 									data?.data?.csp_list

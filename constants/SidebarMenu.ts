@@ -3,18 +3,13 @@ import { TransactionIds } from ".";
 
 type sidebarMenuType = {
 	icon?: IconNameType;
-	comp?: boolean;
 	name?: string;
 	link?: string;
-	api?: boolean;
-	subLevel?: boolean;
-	subLevelObject?: any;
-};
-
-type adminSidebarMenuType = {
-	icon: IconNameType;
-	name: string;
-	link: string;
+	trxn_id?: number; // Transaction Id to link to. Converts to "/transaction/<trxn_id>" links after checking if it is allowed as per user's roles.
+	// comp?: boolean;
+	// api?: boolean;
+	// subLevel?: boolean;
+	// subLevelObject?: any;
 };
 
 /**
@@ -34,14 +29,15 @@ export const OtherMenuItems: number[] = [
  */
 export const AdminMenuItems: number[] = [
 	TransactionIds.LOAD_EVALUE,
-	TransactionIds.REQUEST_EVALUE,
+	// TransactionIds.REQUEST_EVALUE,
 	TransactionIds.TRANSFER_EVALUE,
+	// TransactionIds.INVOICE_DOWNLOAD,
 ];
 
 /**
  * Fixed menu items for admin left-menu.
  */
-export const adminSidebarMenu: adminSidebarMenuType[] = [
+export const adminSidebarMenu: sidebarMenuType[] = [
 	{
 		name: "Dashboard",
 		icon: "dashboard",
@@ -86,6 +82,12 @@ export const adminSidebarMenu: adminSidebarMenuType[] = [
 		icon: "query",
 		name: "Query Center",
 		link: "/admin/query",
+	},
+	{
+		icon: "description",
+		name: "Invoice",
+		link: "/admin/transaction/" + TransactionIds.INVOICE_DOWNLOAD,
+		trxn_id: TransactionIds.INVOICE_DOWNLOAD,
 	},
 ];
 

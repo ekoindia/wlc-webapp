@@ -3,6 +3,7 @@ import { Button, ErrorBoundary, PaddingBox, PrintReceipt } from "components";
 // import { ActionIcon } from "components/CommandBar";
 import { TransactionIds } from "constants";
 import {
+	useAppSource,
 	// useGlobalSearch,
 	useMenuContext,
 	useOrgDetailContext,
@@ -41,6 +42,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	const { role_tx_list } = interactions;
 	const { balance } = useWallet();
 	const { subscribe, TOPICS } = usePubSub();
+	const { appSource } = useAppSource();
 	// const { setSearchTitle } = useGlobalSearch();
 
 	// Create a reference for the Widget component
@@ -243,6 +245,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 							role_tx_list,
 							userData?.userDetails?.is_pin_not_set
 						)}
+						appsource={appSource}
 						// receipt-title={
 						// 	orgDetail.app_name || orgDetail.org_name || ""
 						// }

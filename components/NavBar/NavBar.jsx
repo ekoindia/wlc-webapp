@@ -12,6 +12,7 @@ import {
 	useBreakpointValue,
 	VStack,
 } from "@chakra-ui/react";
+import { Endpoints } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
@@ -176,9 +177,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 									}}
 									name={userDetails?.name[0]}
 									lineHeight="3px"
-									src={userData?.userDetails?.pic}
+									src={userDetails?.pic}
 								/>
-								{userData?.is_org_admin === 1 ? (
+								{isAdmin ? (
 									<Flex
 										ml={"0.5vw"}
 										h={"2.3vw"}
@@ -418,41 +419,22 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								</Box>
 							</Flex>
 
-							<Flex>
-								<Button
-									fontSize={"0.6vw"}
-									w={{
-										base: "140px",
-										sm: "90px",
-										lg: "100px",
-										"2xl": "108px",
-									}}
-									h={{
-										base: "48px",
-										sm: "30px",
-										xl: "34px",
-										"2xl": "36px",
-									}}
-									fontWeight={"medium"}
-									borderRadius={{
-										base: "10px",
-										lg: "6px",
-										"2xl": "5px",
-									}}
-								>
-									<Text
-										mr={".2vw"}
-										fontSize={{
-											base: "14px",
-											sm: "8px",
-											lg: "10px",
-											"2xl": "12px",
-										}}
+							{!isAdmin && (
+								<Link href={Endpoints.USER_PROFILE}>
+									<Button
+										size="xs"
+										icon="chevron-right"
+										iconPosition="right"
+										iconSpacing="2px"
+										h="36px"
+										fontWeight="semibold"
+										borderRadius="6px"
+										fontSize="12px"
 									>
-										View Profile &gt;
-									</Text>
-								</Button>
-							</Flex>
+										View Profile
+									</Button>
+								</Link>
+							)}
 						</Flex>
 					) : null}
 				</Box>

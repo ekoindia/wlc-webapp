@@ -1,4 +1,6 @@
 import {
+	Box,
+	Flex,
 	IconButton,
 	Modal,
 	ModalBody,
@@ -7,93 +9,169 @@ import {
 	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
-	Text,
 	Textarea,
 	useDisclosure,
+	useToast,
 } from "@chakra-ui/react";
-import { Button, Menus } from "components";
+import { Button, InputLabel, Menus, Select } from "components";
 import { Endpoints } from "constants/EndPoints";
-// import { useOrgDetailContext } from "contexts/OrgDetailContext";
-import { useUser } from "contexts/UserContext";
+import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
+const statusObj = {
+	Active: 16,
+	// Close: 17,
+	Inactive: 18,
+};
+
+const reasons = [
+	{ value: "0", label: "Not Transacting anymore" },
+	{ value: "1", label: "Wants to create a new account" },
+	{ value: "2", label: "Management Request" },
+	{ value: "3", label: "Requested by the person himself/herself" },
+	{ value: "4", label: "Suspected Fraud" },
+	{ value: "999", label: "Other" },
+];
+
+const generateMenuList = (list, id, extra) => {
+	let _list = [];
+
+	for (const listItem of list) {
+		if (id !== undefined && listItem.id !== id) {
+			_list.push(listItem);
+		}
+	}
+
+	_list = [..._list, extra];
+
+	return _list;
+};
+
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
+
+const getReason = (list, value) => {
+	for (let item of list) {
+		if (item.value === value) {
+			return item.label;
+		}
+	}
+	return null;
+};
+
 /**
- * A <NetworkMenuWrapper> component
- * TODO: Write more description here
+ * A NetworkMenuWrapper component
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
 const NetworkMenuWrapper = ({ eko_code, account_status }) => {
-	const { userData } = useUser();
-	// const { orgDetail } = useOrgDetailContext();
-	const { onOpen, onClose } = useDisclosure();
-	const [reason, setReason] = useState("");
+	const [isOpen, setOpen] = useState(false);
+	const { onOpen } = useDisclosure();
+	const [clickedVal, setClickedVal] = useState();
+	const [reasonSelect, setReasonSelect] = useState(null);
+	const [reasonInput, setReasonInput] = useState(null);
+	const { accessToken } = useSession();
+	const router = useRouter();
+	const toast = useToast();
+
 	const menuList = [
-		// {
-		// 	item: "Proceed",
-		// 	path: `/admin/my-network/profile?ekocode=${eko_code}`,
-		// },
 		{
-			item: "Mark Inactive",
-			handleClick: () => {
+			id: 16,
+			value: "Active",
+			label: "Mark Active",
+			onClick: (value) => {
 				setOpen(true);
+				setClickedVal(value);
 			},
 		},
-		// {
-		// 	item: "Mark Pending",
-		// 	handleClick: () => {
-		// 		setOpen(true);
-		// 	},
-		// },
 		{
-			item: "Change Role",
-			path: "/admin/my-network/profile/change-role",
+			id: 17,
+			value: "Inactive",
+			label: "Mark Inactive",
+			onClick: (value) => {
+				setOpen(true);
+				setClickedVal(value);
+			},
 		},
 	];
-	const [isOpen, setOpen] = useState(false);
-	const handleSave = () => {
-		// API call
-		const body = {
-			// initiator_id: userData.accountDetails.mobile,
-			user_code: userData.accountDetails.code,
-			// org_id: orgDetail.org_id,
-		};
-		// status_id:17		Close
-		// status_id:18		Inactive
-		// status_id:16		Active
+
+	const extraMenuListItem = {
+		label: "Change Role",
+		onClick: () => {
+			router.push("/admin/my-network/profile/change-role");
+		},
+	};
+
+	const currId = statusObj[account_status];
+	const _finalMenuList = generateMenuList(
+		menuList,
+		currId,
+		extraMenuListItem
+	);
+
+	const handleSubmit = () => {
+		const _reason =
+			reasonSelect !== "999"
+				? getReason(reasons, reasonSelect)
+				: reasonInput;
+
+		setOpen(false);
+		setReasonSelect(null);
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"Content-Type": "application/json",
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:17/descrip_note:${reason}`,
+				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:${statusObj[clickedVal]}/descrip_note:${_reason}`,
 				"tf-req-method": "PUT",
 			},
-			body: body,
-			token: userData.access_token,
+			body: {
+				user_code: eko_code,
+			},
+			token: accessToken,
 		})
-			.then(() => {
-				onClose();
+			.then((data) => {
+				toast({
+					title: data.message,
+					status: getStatus(data.status),
+					duration: 6000,
+					isClosable: true,
+				});
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
 			});
 	};
 
+	const handleSelect = (event) => {
+		setReasonSelect(event.target.value);
+	};
+
+	const handleReasonInput = (event) => {
+		setReasonInput(event.target.value);
+	};
+
 	return (
 		<div>
 			<Menus
 				onOpen={onOpen}
-				menulist={menuList}
+				menulist={_finalMenuList}
 				type="everted"
 				as={IconButton}
 				iconName="more-vert"
-				minH={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				minW={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				width={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				height={{ base: "25px", xl: "25px", "2xl": "30px" }}
-				// iconStyles={{ height: "15px", width: "4px" }}
+				minH={{ base: "25px", "2xl": "30px" }}
+				minW={{ base: "25px", "2xl": "30px" }}
+				width={{ base: "25px", "2xl": "30px" }}
+				height={{ base: "25px", "2xl": "30px" }}
 				onClick={(e) => {
 					e.stopPropagation();
 				}}
@@ -108,34 +186,58 @@ const NetworkMenuWrapper = ({ eko_code, account_status }) => {
 				<ModalContent
 					width={{ base: "100%", md: "465px" }}
 					height="auto"
+					fontSize="sm"
 				>
-					<ModalHeader>Mark {account_status}</ModalHeader>
-					<ModalCloseButton color="#D2D2D2" size="lg" />
+					<ModalHeader fontSize="lg" fontWeight="semibold">
+						<span>Mark {clickedVal}</span>
+					</ModalHeader>
+					<ModalCloseButton color="hint" size="md" />
 					<ModalBody>
-						<Text>
-							Reason for marking {account_status?.toLowerCase()}
-						</Text>
-						<Textarea
-							width="100%"
-							h={{ base: "200px", md: "250px" }}
-							borderRadius={20}
-							resize="none"
-							maxLength={400}
-							fontSize={{ base: "14px", md: "16px" }}
-							onChange={(e) => setReason(e.target.value)}
-						/>
+						<Flex direction="column" gap="8">
+							<Box>
+								<InputLabel
+									htmlFor="status-reason-select"
+									fontWeight="medium"
+									required
+								>
+									Reason for marking{" "}
+									{clickedVal?.toLowerCase()}
+								</InputLabel>
+								<Select
+									id="status-reason-select"
+									options={reasons}
+									onChange={handleSelect}
+								></Select>
+							</Box>
+							{reasonSelect === "999" && (
+								<Box>
+									<InputLabel
+										htmlFor="status-textarea"
+										fontWeight="medium"
+										required
+									>
+										Additional Details
+									</InputLabel>
+									<Textarea
+										id="status-textarea"
+										width="100%"
+										resize="none"
+										noOfLines={2}
+										maxLength={100}
+										onChange={handleReasonInput}
+									/>
+								</Box>
+							)}
+						</Flex>
 					</ModalBody>
-					<ModalFooter
-						justifyContent="center"
-						paddingBottom={{ base: 4, md: 8 }}
-					>
+					<ModalFooter py="8">
 						<Button
-							h={{ base: "44px", md: "56px" }}
+							size="lg"
 							width="100%"
-							fontSize={{ base: "14px", md: "16px" }}
-							onClick={handleSave}
+							fontSize="lg"
+							onClick={handleSubmit}
 						>
-							Save
+							Save now
 						</Button>
 					</ModalFooter>
 				</ModalContent>

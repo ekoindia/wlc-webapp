@@ -10,31 +10,27 @@ import { PricingForm } from "..";
  * @example	`<IndoNepal></IndoNepal>` TODO: Fix example
  */
 const IndoNepal = ({ prop1, ...rest }) => {
-	const commissionForObj = {
-		1: "Individuals",
-		2: "Distributors",
-		3: "Products",
-	};
+	const operationTypeList = [
+		{ value: "3", label: "Product" },
+		{ value: "2", label: "Distributors" },
+		{ value: "1", label: "Individuals" },
+	];
 
-	const commissionTypeObj = {
-		// 0: "Percentage (%)", //TODO remove this (only require fixed value in IndoNepal)
-		1: "Fixed",
-	};
+	const pricingTypeList = [{ value: "1", label: "Fixed (₹)" }];
 
-	const paymentModeObj = {
-		1: "Cash to Cash",
-		2: "Cash to Account",
-	};
+	const paymentModeList = [
+		{ value: "1", label: "Cash to Cash" },
+		{ value: "2", label: "Cash to Account" },
+	];
 
 	return (
 		<div {...rest}>
 			<PricingForm
-				product="indonepal"
-				productPricingType={productPricingType.INDONEPAL}
-				productSlabs={products.INDONEPAL.slabs}
-				commissionForObj={commissionForObj}
-				commissionTypeObj={commissionTypeObj}
-				paymentModeObj={paymentModeObj}
+				productDetails={products.INDO_NEPAL_FUND_TRANSFER}
+				productPricingType={productPricingType.INDO_NEPAL_FUND_TRANSFER}
+				operationTypeList={operationTypeList}
+				pricingTypeList={pricingTypeList}
+				paymentModeList={paymentModeList}
 			/>
 		</div>
 	);

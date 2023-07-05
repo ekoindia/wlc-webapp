@@ -9,13 +9,16 @@ import { DetailedStatementCard } from "..";
  * @example	`<DetailedStatementTable></DetailedStatementTable>`
  */
 
-const DetailedStatementTable = (props) => {
-	const { detiledData, pageNumber, setPageNumber, totalRecords } = props;
-
+const DetailedStatementTable = ({
+	detailedStatementData,
+	pageNumber,
+	setPageNumber,
+	totalRecords,
+}) => {
 	const renderer = [
 		{
 			name: "transaction_id",
-			field: "Transaction ID",
+			field: "TID",
 		},
 		{
 			name: "date_time",
@@ -37,7 +40,7 @@ const DetailedStatementTable = (props) => {
 		<>
 			<Table
 				renderer={renderer}
-				data={detiledData}
+				data={detailedStatementData}
 				tableName="Detailed"
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}

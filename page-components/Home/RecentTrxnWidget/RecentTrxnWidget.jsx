@@ -35,24 +35,33 @@ const RecentTrxnWidget = () => {
 				limit: limit,
 			},
 			token: accessToken,
-		}).then((data) => {
-			const tx_list = (data?.data?.transaction_list ?? []).map((tx) => {
-				const amt = tx.amount_dr || tx.amount_cr || 0;
-				return {
-					tid: tx.tid,
-					name: tx.tx_name,
-					icon: trxn_type_prod_map?.[tx.tx_typeid]?.icon || null,
-					desc:
-						tx.tx_name +
-						(amt ? ` of ₹${amt}` : "") +
-						(tx.customer_mobile
-							? ` for ${tx.customer_mobile}`
-							: ""),
-				};
-			});
+		})
+			.then((data) => {
+				const tx_list = (data?.data?.transaction_list ?? []).map(
+					(tx) => {
+						const amt = tx.amount_dr || tx.amount_cr || 0;
+						return {
+							tid: tx.tid,
+							name: tx.tx_name,
+							icon:
+								trxn_type_prod_map?.[tx.tx_typeid]?.icon ||
+								null,
+							desc:
+								tx.tx_name +
+								(amt ? ` of ₹${amt}` : "") +
+								(tx.customer_mobile
+									? ` for ${tx.customer_mobile}`
+									: ""),
+						};
+					}
+				);
 
-			setData(tx_list);
-		});
+				setData(tx_list);
+			})
+			.catch((error) => {
+				// Handle any errors that occurred during the fetch
+				console.error("[Recent Transactions] Error:", error);
+			});
 	}, []);
 
 	const handleShowHistory = (id) => {
@@ -126,7 +135,7 @@ const Tr = ({ tx, handleShowHistory }) => {
 				color={`hsl(${h},80%,30%)`}
 				icon={
 					<Icon
-						size="md"
+						size={{ base: "sm", md: "md" }}
 						name={tx.icon}
 						color={`hsl(${h},80%,30%)`}
 					/>

@@ -57,7 +57,7 @@ const Commissions = ({ prod_id }) => {
 			direction="column"
 			border="card"
 			borderRadius="10"
-			boxShadow="0px 5px 15px #0000000D"
+			boxShadow="basic"
 			bg="white"
 			px="16px"
 		>
@@ -75,7 +75,7 @@ const Commissions = ({ prod_id }) => {
 						borderRadius="16"
 						fontSize="12"
 						bg={tx?.id === tagValue ? "accent.DEFAULT" : "divider"}
-						color={tx?.id === tagValue ? "white" : "#555"}
+						color={tx?.id === tagValue ? "focusbg" : "dark"}
 						_hover={{ bg: "accent.DEFAULT", color: "white" }}
 						onClick={() => handleTagClick(tx.id)}
 					/>
