@@ -44,18 +44,38 @@ const AppSourceProvider = ({ children }) => {
 			NativeVersionSessionStorageKey
 		);
 
+		console.log(
+			"[AppSourceContext] initializing with URL: ",
+			window.location.href
+		);
+
 		if (_appSource) {
 			console.log("[AppSourceContext] got from session: ", _appSource);
 			setAppSourceState(_appSource);
 		} else {
 			// Not found in session-storage, derive from user-agent
-			const userAgent = navigator.userAgent.toLowerCase();
-			if (userAgent.includes("ekoconnectandroidwebview")) {
-				setAppSourceState("androidwebview");
-				sessionStorage.setItem(
-					AppSourceSessionStorageKey,
-					"androidwebview"
+			let _source = "";
+			if (
+				navigator?.userAgent
+					?.toLowerCase()
+					?.includes("ekoconnectandroidwebview")
+			) {
+				_source = "androidwebview";
+			} else if (
+				window?.location?.href?.endsWith("/source/androidwebview")
+			) {
+				_source = "androidwebview";
+			} else if (window?.location?.href?.endsWith("/source/pwa")) {
+				_source = "pwa";
+			}
+
+			if (_source) {
+				console.log(
+					"[AppSourceContext] app-source derived from user-agent/URL: ",
+					_source
 				);
+				setAppSourceState(_source);
+				sessionStorage.setItem(AppSourceSessionStorageKey, _source);
 			}
 		}
 
@@ -71,6 +91,7 @@ const AppSourceProvider = ({ children }) => {
 			nativeVersion,
 			setNativeVersion,
 			isAndroid: appSource === "androidwebview",
+			isPWA: appSource === "pwa",
 		};
 	}, [appSource, nativeVersion]);
 
