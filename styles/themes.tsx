@@ -9,6 +9,8 @@ import {
 } from "./theme_system/theme/components";
 
 export const light = extendTheme({
+	initialColorMode: "light",
+	useSystemColorMode: false,
 	breakpoints: {
 		base: "0",
 		sm: "440px",
