@@ -40,19 +40,19 @@ export const historyParametersMetadata = [
 		parameter_type_id: 12,
 	},
 	{
-		name: "tid",
-		field: "TID",
-		sorting: true,
-		parameter_type_id: 11,
-		pattern_format: "#### #### #",
-		display_media_id: DisplayMedia.SCREEN,
-	},
-	{
 		name: "amount",
 		field: "Amount",
 		sorting: true,
 		show: "Payment",
 		parameter_type_id: 9,
+		display_media_id: DisplayMedia.SCREEN,
+	},
+	{
+		name: "tid",
+		field: "TID",
+		sorting: true,
+		parameter_type_id: 11,
+		pattern_format: "#### #### #",
 		display_media_id: DisplayMedia.SCREEN,
 	},
 	{
@@ -90,6 +90,13 @@ export const historyParametersMetadata = [
 		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.PRINT,
+	},
+	{
+		name: "fee",
+		field: "Charges",
+		show: getViewComponent(9),
+		parameter_type_id: 9,
+		display_media_id: DisplayMedia.SCREEN,
 	},
 	{
 		name: "tid",
