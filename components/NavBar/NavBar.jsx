@@ -134,17 +134,15 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						/>
 					</Flex>
 
-					{isLoggedIn === true &&
-						isAdmin !== true &&
-						isOnboarding !== true && (
-							<Flex
-								flexGrow={isMobile ? 1 : 0}
-								justify={isMobile ? "flex-end" : "flex-start"}
-								pr={isMobile ? 2 : 0}
-							>
-								<GlobalSearch />
-							</Flex>
-						)}
+					{isLoggedIn === true && isOnboarding !== true && (
+						<Flex
+							flexGrow={isMobile ? 1 : 0}
+							justify={isMobile ? "flex-end" : "flex-start"}
+							pr={isMobile ? 2 : 0}
+						>
+							<GlobalSearch />
+						</Flex>
+					)}
 				</Box>
 
 				{/* Right-side items of navbar */}

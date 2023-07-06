@@ -23,6 +23,7 @@ A white-labelled SaaS platform to run your business like agent-banking, micro-fi
 - **Transaction History** (for sellers & distributors) - [page-components/History/History.jsx](page-components/History/History.jsx)
   - History Table metadata: [page-components/History/HistoryTable/historyParametersMetadata.js](page-components/History/HistoryTable/historyParametersMetadata.js)
 	- To add a new data-point in the history table, add a new entry in the `historyParametersMetadata` array.
+  - History API response is parsed into the required format in [page-components/History/HistoryTable/processHistoryTableData.js](page-components/History/HistoryTable/processHistoryTableData.js)
   - History Table component: [page-components/History/HistoryTable/HistoryTable.jsx](page-components/History/HistoryTable/HistoryTable.jsx)
 
 ## Admin

@@ -66,13 +66,13 @@ const BulkOnboarding = () => {
 	};
 
 	const applicantTypeObj = {
-		0: "Seller",
-		2: "Distributor",
+		0: "Sellers",
+		2: "Distributors",
 	};
 
 	return (
 		<>
-			<Headings title="Bulk Onboarding" hasIcon={false} />
+			<Headings title="Onboard Sellers & Distributors" hasIcon={false} />
 			<Flex
 				direction="column"
 				w="100%"
@@ -89,7 +89,7 @@ const BulkOnboarding = () => {
 						w={{ base: "100%", md: "500px" }}
 					>
 						<Flex direction="column" gap="2">
-							<Text fontWeight="semibold">Select User Type</Text>
+							{/* <Text fontWeight="semibold">Select User Type</Text> */}
 							<RadioGroup
 								defaultValue="0"
 								value={applicantType}
@@ -107,6 +107,7 @@ const BulkOnboarding = () => {
 												value={key}
 											>
 												<Text fontSize="sm">
+													{"Onboard "}
 													{value}
 												</Text>
 											</Radio>
@@ -117,11 +118,8 @@ const BulkOnboarding = () => {
 						</Flex>
 						<Flex direction="column" gap="2">
 							<Text fontWeight="semibold">
-								Download Sample File &thinsp;
-								<Box as="span" textTransform="lowercase">
-									(for onboarding{" "}
-									{applicantTypeObj[applicantType]}s)
-								</Box>
+								Download Sample File (for Onboarding{" "}
+								{applicantTypeObj[applicantType]})
 							</Text>
 							<Link
 								href={
@@ -142,7 +140,8 @@ const BulkOnboarding = () => {
 
 						<Flex direction="column" gap="2">
 							<Text fontWeight="semibold">
-								Upload the list of users to onboard
+								Upload the List of{" "}
+								{applicantTypeObj[applicantType]} to Onboard
 							</Text>
 							<Dropzone
 								file={file}

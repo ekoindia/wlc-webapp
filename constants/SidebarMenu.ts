@@ -27,7 +27,7 @@ export const OtherMenuItems: number[] = [
 /**
  * List of transaction ids that (if available) are to be shown in the "Others" sub-menu for Admins.
  */
-export const AdminMenuItems: number[] = [
+export const AdminOtherMenuItems: number[] = [
 	TransactionIds.LOAD_EVALUE,
 	// TransactionIds.REQUEST_EVALUE,
 	TransactionIds.TRANSFER_EVALUE,
@@ -49,7 +49,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		link: "/admin/my-network",
 	},
 	{
-		name: "Transaction History",
+		name: "Network Transactions",
 		icon: "swap-horiz",
 		link: "/admin/transaction-history",
 	},
@@ -74,7 +74,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	// 	link: "/admin/notifications",
 	// },
 	{
-		name: "Bulk Onboarding",
+		name: "Onboard Agents",
 		icon: "person-add",
 		link: "/admin/bulk-onboarding",
 	},
