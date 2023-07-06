@@ -205,14 +205,14 @@ const getDynamicActions = ({
 		// Add History Search actions...
 		const historyActions = getHistorySearchActions({
 			queryValue,
-			isAdmin,
 			router,
 		});
 		preActions.push(...historyActions);
 
 		// Add Notes/Todo action...
-		postActions.push(...getNotesAction({ queryValue, addTodo, toast }));
-		// }
+		if (!isAdmin) {
+			postActions.push(...getNotesAction({ queryValue, addTodo, toast }));
+		}
 	}
 
 	return [preActions, postActions];
