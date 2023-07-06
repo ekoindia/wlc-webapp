@@ -29,5 +29,5 @@ export const NotificationsBreadcrumbData = {
 };
 
 export const BulkOnboardingBreadcrumbData = {
-	"/admin/bulk-onboarding": "Bulk Onboarding",
+	"/admin/bulk-onboarding": "Onboard Agents",
 };
