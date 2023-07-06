@@ -200,8 +200,6 @@ const getDynamicActions = ({
 	} else {
 		// Other actions...
 
-		// Add notes action
-		// if (queryValue?.length > 2) {
 		// Add History Search actions...
 		const historyActions = getHistorySearchActions({
 			queryValue,
