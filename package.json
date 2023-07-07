@@ -1,6 +1,6 @@
 {
 	"name": "eko-infinity-webapp",
-	"version": "3.1.0",
+	"version": "3.1.1",
 	"private": true,
 	"description": "Eko's white-labelled financial platform service",
 	"keywords": [
