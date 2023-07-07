@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
 	Box,
@@ -16,6 +16,13 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { Button, Calenders, Icon } from "components";
+import { formatDate } from "libs/dateFormat";
+
+const currentDate = new Date();
+currentDate.setDate(currentDate.getDate() - 1); //as of now currentDate is having yesterday's date
+
+const oneYearAgoDate = new Date(currentDate);
+oneYearAgoDate.setFullYear(currentDate.getFullYear() - 1);
 
 /**
  * A NetworkFilter component
@@ -24,11 +31,18 @@ import { Button, Calenders, Icon } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkFilter></NetworkFilter>`
  */
-const NetworkFilter = ({ filter, setFilter }) => {
+const NetworkFilter = ({ /* filter, */ setFilter }) => {
 	const [filterValues, setFilterValues] = useState();
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [fromDate, setFromDate] = useState("");
+	const [toDate, setToDate] = useState("");
+	const [minDate, setMinDate] = useState(
+		formatDate(oneYearAgoDate, "yyyy-MM-dd")
+	);
+	const [maxDate, setMaxDate] = useState(
+		formatDate(currentDate, "yyyy-MM-dd")
+	);
 	const btnRef = React.useRef();
-	console.log("filter", filter);
 	const filterOptions = [
 		{
 			title: "Filter by profile type",
@@ -58,47 +72,23 @@ const NetworkFilter = ({ filter, setFilter }) => {
 	};
 
 	const handleApply = () => {
-		setFilter({ ...filterValues, ...dateText });
+		setFilter({
+			...filterValues,
+			["onBoardingDateFrom"]: fromDate,
+			["onBoardingDateTo"]: toDate,
+		});
 		onClose();
 	};
-	const [dateText, setDateText] = useState({
-		onBoardingDateFrom: "",
-		onBoardingDateTo: "",
-	});
 
-	const onDateChange = (e, type) => {
-		if (type === "onBoardingDateFrom") {
-			if (!e.target.value)
-				setDateText((prev) => {
-					return {
-						...prev,
-						onBoardingDateFrom: "DD/MM/YYYY",
-					};
-				});
-			else
-				setDateText((prev) => {
-					return {
-						...prev,
-						onBoardingDateFrom: e.target.value,
-					};
-				});
-		} else {
-			if (!e.target.value)
-				setDateText((prev) => {
-					return {
-						...prev,
-						onBoardingDateTo: "DD/MM/YYYY",
-					};
-				});
-			else
-				setDateText((prev) => {
-					return {
-						...prev,
-						onBoardingDateTo: e.target.value,
-					};
-				});
+	useEffect(() => {
+		if (fromDate) {
+			setMinDate(fromDate);
 		}
-	};
+		if (toDate) {
+			setMaxDate(toDate);
+		}
+	}, [fromDate, toDate]);
+
 	return (
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
@@ -399,8 +389,11 @@ const NetworkFilter = ({ filter, setFilter }) => {
 									>
 										<Flex w="100%">
 											<Calenders
-												minDate={"2016-01-20"}
-												maxDate={"2020-01-20"}
+												minDate={formatDate(
+													oneYearAgoDate,
+													"yyyy-MM-dd"
+												)}
+												maxDate={maxDate}
 												// label="Filter by activation date range"
 												w="100%"
 												placeholder="From"
@@ -421,21 +414,22 @@ const NetworkFilter = ({ filter, setFilter }) => {
 														md: "none",
 													},
 												}}
-												onChange={(e) =>
-													onDateChange(
-														e,
-														"onBoardingDateFrom"
+												onChange={(event) =>
+													setFromDate(
+														event.target.value
 													)
 												}
-												value={
-													dateText.onBoardingDateFrom
-												}
+												value={fromDate}
+												required
 											/>
 										</Flex>
 										<Flex w="100%">
 											<Calenders
-												minDate={"2016-01-20"}
-												maxDate={"2020-01-20"}
+												minDate={minDate}
+												maxDate={formatDate(
+													currentDate,
+													"yyyy-MM-dd"
+												)}
 												w="100%"
 												placeholder="To"
 												labelStyle={{
@@ -451,15 +445,13 @@ const NetworkFilter = ({ filter, setFilter }) => {
 														md: "0px 10px 10px 0px",
 													},
 												}}
-												onChange={(e) =>
-													onDateChange(
-														e,
-														"onBoardingDateTo"
+												onChange={(event) =>
+													setToDate(
+														event.target.value
 													)
 												}
-												value={
-													dateText.onBoardingDateTo
-												}
+												value={toDate}
+												required
 											/>
 										</Flex>
 									</Flex>
