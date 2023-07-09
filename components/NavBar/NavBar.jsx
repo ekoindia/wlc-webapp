@@ -18,6 +18,7 @@ import { useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Fragment, useState } from "react";
+import { limitText } from "utils";
 import { Button, IcoButton, Icon, OrgLogo } from "..";
 
 export const NavHeight = {
@@ -198,6 +199,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 											alignItems={"center"}
 										>
 											<Text
+												as="span"
 												fontSize={{
 													base: "12px",
 													lg: "14px",
@@ -207,7 +209,10 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												fontWeight={"semibold"}
 												mr={"1.6vw"}
 											>
-												{userDetails?.name || ""}
+												{limitText(
+													userDetails?.name || "",
+													12
+												)}
 											</Text>
 
 											<Icon
