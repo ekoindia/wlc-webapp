@@ -39,7 +39,6 @@ const UpdatePersonalInfo = () => {
 	const [inPreviewMode, setInPreviewMode] = useState(false);
 	const [previewDataList, setPreviewDataList] = useState();
 	const [finalData, setFinalData] = useState();
-	console.log("finalData", finalData);
 	const { accessToken } = useSession();
 
 	const {
