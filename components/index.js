@@ -3,6 +3,7 @@ import { Breadcrumbs } from "./Breadcrumb";
 import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
+import { Card } from "./Card";
 import { Cards } from "./Cards";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
@@ -42,6 +43,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	Card,
 	PrintReceipt,
 	PageLoader,
 	Dropzone,
