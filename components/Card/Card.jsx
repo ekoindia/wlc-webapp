@@ -12,8 +12,8 @@ import { IcoButton } from "components";
  * @param 	{object}	iconName	Icon name for IcoButton
  * @param 	{object}	iconStyle	Icon style for IcoButton
  * @param 	{object}	icoBtnProps	Props for IcoButton
- * @param 	{boolean}	noPadding	Whether to remove padding from the widget body
- * @param 	{object}	children	Child elements for the widget body
+ * @param 	{boolean}	noPadding	Whether to remove padding from the card body
+ * @param 	{object}	children	Child elements for the card body
  * @param	{...*}	rest	Rest of the props passed to this component
  * @example	`<Card></Card>` TODO: Fix example
  */
