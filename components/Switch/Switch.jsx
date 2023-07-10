@@ -41,7 +41,9 @@ const Switch = ({ initialValue, onChange = () => {} }) => {
 					bg="white"
 					size="23px"
 					boxShadow={
-						switched ? "0px 3px 6px #009B34" : "0px 3px 6px #CA1B56"
+						switched
+							? "0px 3px 6px var(--chakra-colors-success)"
+							: "0px 3px 6px var(--chakra-colors-error)"
 					}
 				/>
 			</Flex>
