@@ -8,15 +8,8 @@ import { getKBarAction } from ".";
  * @param {boolean} Options.isAdmin - Whether the user is an admin
  * @param {object} Options.router - The router object
  */
-export const getHistorySearchActions = ({
-	queryValue = "",
-	isAdmin,
-	router,
-}) => {
+export const getHistorySearchActions = ({ queryValue = "", router }) => {
 	// Show other actions based on numeric search...
-
-	// Not available for Admins
-	if (isAdmin) return [];
 
 	// Show Genric Transaction History Search Action if no query is entered
 	if (queryValue?.length === 0) {

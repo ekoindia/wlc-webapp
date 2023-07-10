@@ -1,3 +1,5 @@
+import { getFirstWord, limitText } from "utils";
+
 /**
  * Prepare each row of the Transaction History table data (for sellers & distributors) by adding new generated columns like description, amount, trx_type, etc.
  * @param {Array} data the data array of the Transaction History table
@@ -29,28 +31,64 @@ export const getHistoryTableProcessedData = (data) => {
 // 	};
 // };
 
-export const limitNarrationText = (txt, limit) => {
-	return txt.length > limit ? txt.substr(0, limit - 1) + "…" : txt;
-};
-
 export const filterNarrationText = (txt) => {
-	return txt ? txt.replace(/[0-9]+/g, "") : "";
+	return txt ? txt.replace(/[0-9]+/g, "").trim() : "";
 };
 
+/**
+ * Get the narration text for a transaction for the Transaction History table
+ * @param {object} row A single transaction object
+ * @returns
+ */
 export const getNarrationText = (row) => {
-	return (
-		limitNarrationText(filterNarrationText(row.customer_name), 20) + // Cust Name
-		(row.customer_mobile ? " +91" + row.customer_mobile : "") + // Mobile
-		(row.account || row.utility_account
-			? " A/c:" + (row.account || row.utility_account)
-			: "") + // Acc
-		(row.bank
-			? " " + limitNarrationText(filterNarrationText(row.bank), 30)
-			: "") + // Bank
-		(row.operator
-			? " " + limitNarrationText(filterNarrationText(row.operator), 25)
-			: "") + // Operator
-		(row.client_ref_id ? " Cl.ID:" + row.client_ref_id : "") + // ClientRefID
-		(row.reversal_narration ? " " + row.reversal_narration : "")
-	); // Rev. Narration
+	let narration = "";
+
+	// Add customer's first name
+	if (row.customer_name) {
+		narration += limitText(
+			getFirstWord(filterNarrationText(row.customer_name)),
+			15
+		);
+	}
+
+	// Add customer's mobile number
+	if (row.customer_mobile) {
+		narration += " +91" + row.customer_mobile;
+	}
+
+	// Add customer's bank name
+	if (row.bank) {
+		narration += " " + limitText(filterNarrationText(row.bank), 30);
+	}
+
+	// Add customer's operator name
+	if (row.operator) {
+		narration += " " + limitText(filterNarrationText(row.operator), 20);
+	}
+
+	// Add customer's reversal-narration (only if previous info not available)
+	if (row.reversal_narration && !narration) {
+		narration += " " + limitText(row.reversal_narration, 50);
+	}
+
+	return narration;
+
+	// return (
+	// 	limitText(
+	// 		getFirstWord(filterNarrationText(row.customer_name)),
+	// 		20
+	// 	) + // Cust Name
+	// 	(row.customer_mobile ? " +91" + row.customer_mobile : "") + // Mobile
+	// 	(row.account || row.utility_account
+	// 		? " A/c:" + (row.account || row.utility_account)
+	// 		: "") + // Acc
+	// 	(row.bank
+	// 		? " " + limitText(filterNarrationText(row.bank), 30)
+	// 		: "") + // Bank
+	// 	(row.operator
+	// 		? " " + limitText(filterNarrationText(row.operator), 25)
+	// 		: "") + // Operator
+	// 	(row.client_ref_id ? " Cl.ID:" + row.client_ref_id : "") + // ClientRefID
+	// 	(row.reversal_narration ? " " + row.reversal_narration : "") // Rev. Narration
+	// );
 };

@@ -18,6 +18,7 @@ import { useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Fragment, useState } from "react";
+import { limitText } from "utils";
 import { Button, IcoButton, Icon, OrgLogo } from "..";
 
 export const NavHeight = {
@@ -67,7 +68,7 @@ const NavBar = ({ setNavOpen }) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
-	const { userData, isAdmin, isLoggedIn } = useUser();
+	const { userData, isAdmin, isOnboarding, isLoggedIn } = useUser();
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
 	// const router = useRouter();
@@ -134,7 +135,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						/>
 					</Flex>
 
-					{isLoggedIn === true && isAdmin !== true && (
+					{isLoggedIn === true && isOnboarding !== true && (
 						<Flex
 							flexGrow={isMobile ? 1 : 0}
 							justify={isMobile ? "flex-end" : "flex-start"}
@@ -198,6 +199,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 											alignItems={"center"}
 										>
 											<Text
+												as="span"
 												fontSize={{
 													base: "12px",
 													lg: "14px",
@@ -207,7 +209,10 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												fontWeight={"semibold"}
 												mr={"1.6vw"}
 											>
-												{userDetails?.name || ""}
+												{limitText(
+													userDetails?.name || "",
+													12
+												)}
 											</Text>
 
 											<Icon
@@ -260,7 +265,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 };
 
 const MyAccountCard = ({ setIsCardOpen }) => {
-	const { isAdmin, logout, userData } = useUser();
+	const { isAdmin, logout, isOnboarding, userData } = useUser();
 	const { userDetails } = userData;
 	const menulist = isAdmin ? adminProfileMenu : profileMenu;
 
@@ -419,7 +424,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								</Box>
 							</Flex>
 
-							{!isAdmin && (
+							{isAdmin !== true && isOnboarding !== true && (
 								<Link href={Endpoints.USER_PROFILE}>
 									<Button
 										size="xs"
@@ -452,32 +457,34 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				}}
 				gap={{ base: "15px", sm: "initial" }}
 			>
-				{menulist.map((ele) => (
-					<Fragment key={"mnu-" + ele.title + ele.link}>
-						<HStack
-							h="2em"
-							w={"90%"}
-							justifyContent={"space-between"}
-							cursor={"pointer"}
-							mt={{ base: "15px", sm: "initial" }}
-						>
-							<Link href={ele.link}>
-								<Text
-									fontSize={{
-										base: "14px",
-										sm: "10px",
-										lg: "12px",
-										"2xl": "14px",
-									}}
+				{isOnboarding !== true
+					? menulist.map((ele) => (
+							<Fragment key={"mnu-" + ele.title + ele.link}>
+								<HStack
+									h="2em"
+									w={"90%"}
+									justifyContent={"space-between"}
+									cursor={"pointer"}
+									mt={{ base: "15px", sm: "initial" }}
 								>
-									{ele.title}
-								</Text>
-							</Link>
-							<Icon name="chevron-right" size="8px" />
-						</HStack>
-						<Divider w={"90%"} />
-					</Fragment>
-				))}
+									<Link href={ele.link}>
+										<Text
+											fontSize={{
+												base: "14px",
+												sm: "10px",
+												lg: "12px",
+												"2xl": "14px",
+											}}
+										>
+											{ele.title}
+										</Text>
+									</Link>
+									<Icon name="chevron-right" size="8px" />
+								</HStack>
+								<Divider w={"90%"} />
+							</Fragment>
+					  ))
+					: null}
 				<HStack
 					minH={"2vw"}
 					w={"90%"}

@@ -13,7 +13,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import {
-	AdminMenuItems,
+	AdminOtherMenuItems,
 	adminSidebarMenu,
 	Endpoints,
 	OtherMenuItems,
@@ -133,6 +133,9 @@ const generateTransactionActions = (
 
 	// Process main transactions
 	interaction_list.forEach((tx) => {
+		if (!tx) {
+			return;
+		}
 		if (tx.id in role_tx_list && !(tx.id in processedTrxns)) {
 			let is_group = false;
 			processedTrxns[tx.id] = true;
@@ -256,7 +259,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		if (interaction_list && interaction_list.length > 0) {
 			interaction_list.forEach((tx) => {
 				if (isAdmin) {
-					if (AdminMenuItems.indexOf(tx.id) > -1) {
+					if (AdminOtherMenuItems.indexOf(tx.id) > -1) {
 						otherList.push(tx);
 					}
 				} else {
@@ -284,27 +287,23 @@ const SideBar = ({ navOpen, setNavClose }) => {
 
 			setTrxnList(trxnList);
 			setOtherList([
-				...(isAdmin
-					? []
-					: [
-							{
-								icon: "transaction-history",
-								label: "Transaction History",
-								link: Endpoints.HISTORY,
-							},
-					  ]),
+				...[
+					{
+						icon: "transaction-history",
+						label: "Transaction History",
+						link: (isAdmin ? "/admin" : "") + Endpoints.HISTORY,
+					},
+				],
 				...otherList,
 				...(manageMyAccount ? [manageMyAccount] : []),
 			]);
 
-			if (!isAdmin) {
-				_otherActions = generateTransactionActions(
-					[...otherList, manageMyAccount],
-					role_tx_list,
-					router,
-					true // is-other-list
-				);
-			}
+			_otherActions = generateTransactionActions(
+				[...otherList, manageMyAccount],
+				role_tx_list,
+				router,
+				true // is-other-list
+			);
 
 			// Generate KBar actions...
 			setTrxnActions(

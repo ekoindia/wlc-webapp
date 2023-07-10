@@ -1,4 +1,9 @@
 import { Center, Image, Text } from "@chakra-ui/react";
+import { useState } from "react";
+
+const fallbackLogo =
+	"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56'%3E%3Crect fill='%23bbb' width='200' height='56' rx='6' ry='6'/%3E%3C/svg%3E";
+
 /**
  * Show the organization Logo. If logo is not available, show the app name as logo
  * @param 	{object}	orgDetail	Organization Details, specially `logo` & `app_name`
@@ -6,6 +11,8 @@ import { Center, Image, Text } from "@chakra-ui/react";
  * @example	`<OrgLogo></OrgLogo>` TODO: Fix example
  */
 const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
+	const [imageState, setImageState] = useState("loading");
+
 	const logoHeight =
 		size === "lg"
 			? { base: "2.2rem", md: 16 }
@@ -17,7 +24,11 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 	const logoFontSize =
 		size === "lg" ? { base: "xl", md: "3xl" } : { base: "lg", md: "xl" };
 
-	if (!(orgDetail && orgDetail.logo) && orgDetail.app_name) {
+	// Text Logo...
+	if (
+		(!(orgDetail && orgDetail.logo) || imageState === "failed") &&
+		orgDetail.app_name
+	) {
 		return (
 			<Center
 				maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
@@ -40,12 +51,12 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 			</Center>
 		);
 	}
+
+	// Image Logo...
 	return (
 		<Image
-			src={
-				orgDetail.logo ||
-				"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 56'%3E%3Crect fill='%23bbb' width='200' height='56' rx='6' ry='6'/%3E%3C/svg%3E"
-			}
+			src={orgDetail.logo || fallbackLogo}
+			// fallbackSrc={fallbackLogo}
 			alt={orgDetail.app_name + " logo"}
 			maxW={{ base: "10rem", md: "20rem", "2xl": "30rem" }}
 			height={logoHeight}
@@ -54,6 +65,11 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 					height: "32px",
 				},
 			}}
+			transition="opacity 1s ease-out"
+			opacity={imageState === "loaded" ? 1 : 0}
+			loading="eager"
+			onLoad={() => setImageState("loaded")}
+			onError={() => setImageState("failed")}
 			{...rest}
 		/>
 	);

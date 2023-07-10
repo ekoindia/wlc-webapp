@@ -8,11 +8,18 @@ import {
 	InputLabel,
 	SearchBar,
 } from "components";
+import { Endpoints } from "constants/EndPoints";
 import useRequest from "hooks/useRequest";
 import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { DetailedStatementTable } from ".";
+
+const currentDate = new Date();
+currentDate.setDate(currentDate.getDate() - 1); //as of now currentDate is having yesterday's date
+
+const oneYearAgoDate = new Date(currentDate);
+oneYearAgoDate.setFullYear(currentDate.getFullYear() - 1); // one year ago date from yesterday's date
 
 /**
  * A DetailedStatement page-component
@@ -23,89 +30,52 @@ import { DetailedStatementTable } from ".";
 const DetailedStatement = () => {
 	const [search, setSearch] = useState("");
 	const [pageNumber, setPageNumber] = useState(1);
-	const [dateText, setDateText] = useState({
-		from: "",
-		to: "DD/MM/YYYY",
-	});
+	const [fromDate, setFromDate] = useState("");
+	const [toDate, setToDate] = useState("");
+	const [minDate, setMinDate] = useState(
+		formatDate(oneYearAgoDate, "yyyy-MM-dd")
+	);
+	const [maxDate, setMaxDate] = useState(
+		formatDate(currentDate, "yyyy-MM-dd")
+	);
 
 	const router = useRouter();
 	const { cellnumber } = router.query;
 
-	const handleApply = () => {
-		if (dateText.to === "YYYY/MM/DD" && dateText.from === "YYYY/MM/DD") {
-			console.log("No date selected");
-		} else {
-			mutate(
-				process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-				headers
-			);
-		}
-	};
-
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history/recent_transaction/account_statement?page_number=${pageNumber}&record_count=10&search_recent=${search}&search_value=${cellnumber}&transaction_date_from=${dateText.from}&transaction_date_to=${dateText.to}`,
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction/account_statement?page_number=${pageNumber}&record_count=10&search_recent=${search}&search_value=${cellnumber}&transaction_date_from=${fromDate}&transaction_date_to=${toDate}`,
 		"tf-req-method": "GET",
 	};
 
 	const { data, mutate } = useRequest({
 		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 		headers: { ...headers },
 	});
 
 	useEffect(() => {
-		mutate(
-			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-			headers
-		);
+		mutate();
 	}, [search, pageNumber]);
+
+	useEffect(() => {
+		if (fromDate) {
+			setMinDate(fromDate);
+		}
+		if (toDate) {
+			setMaxDate(toDate);
+		}
+	}, [fromDate, toDate]);
+
+	const handleApply = () => {
+		mutate();
+	};
 
 	const detailedStatementData = data?.data?.account_statement_details ?? [];
 	const detailTable = data?.data ?? [];
 	const agentName = detailTable?.agent_name ?? [];
 	const currBalance = detailTable.saving_balance ?? [];
 	const totalRecords = data?.data?.totalRecords;
-
-	const currentDate = new Date();
-	currentDate.setDate(currentDate.getDate() - 1);
-
-	const oneYearAgoDate = new Date(currentDate);
-	oneYearAgoDate.setFullYear(currentDate.getFullYear() - 1);
-
-	const onDateChange = (e, type) => {
-		if (type === "from") {
-			if (!e.target.value)
-				setDateText((prev) => {
-					return {
-						...prev,
-						from: "DD/MM/YYYY",
-					};
-				});
-			else
-				setDateText((prev) => {
-					return {
-						...prev,
-						from: e.target.value,
-					};
-				});
-		} else {
-			if (!e.target.value)
-				setDateText((prev) => {
-					return {
-						...prev,
-						to: "DD/MM/YYYY",
-					};
-				});
-			else
-				setDateText((prev) => {
-					return {
-						...prev,
-						to: e.target.value,
-					};
-				});
-		}
-	};
 
 	return (
 		<>
@@ -174,7 +144,7 @@ const DetailedStatement = () => {
 						numbersOnly={true}
 						minSearchLimit={2}
 						maxSearchLimit={10}
-						placeholder="Search by transaction ID or amount"
+						placeholder="Search by Transaction ID "
 						value={search}
 						setSearch={setSearch}
 					/>
@@ -207,10 +177,7 @@ const DetailedStatement = () => {
 										oneYearAgoDate,
 										"yyyy-MM-dd"
 									)}
-									maxDate={formatDate(
-										currentDate,
-										"yyyy-MM-dd"
-									)}
+									maxDate={maxDate}
 									w="100%"
 									placeholder="From"
 									inputContStyle={{
@@ -230,15 +197,14 @@ const DetailedStatement = () => {
 										},
 										h: "48px",
 									}}
-									onChange={(e) => onDateChange(e, "from")}
-									value={dateText.from}
+									onChange={(event) =>
+										setFromDate(event.target.value)
+									}
+									value={fromDate}
 									required
 								/>
 								<Calenders
-									minDate={formatDate(
-										oneYearAgoDate,
-										"yyyy-MM-dd"
-									)}
+									minDate={minDate}
 									maxDate={formatDate(
 										currentDate,
 										"yyyy-MM-dd"
@@ -259,8 +225,10 @@ const DetailedStatement = () => {
 										},
 										h: "48px",
 									}}
-									onChange={(e) => onDateChange(e, "to")}
-									value={dateText.to}
+									onChange={(event) =>
+										setToDate(event.target.value)
+									}
+									value={toDate}
 									required
 								/>
 							</Flex>

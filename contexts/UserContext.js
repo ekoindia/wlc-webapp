@@ -163,6 +163,12 @@ const UserProvider = ({ userMockData, children }) => {
 	 */
 	const isAdmin = state?.is_org_admin ? true : false;
 
+	/**
+	 * Check if the user is in onboarding/signup stage
+	 */
+	const isOnboarding =
+		state?.onboarding == 1 || state?.userId == "1" ? true : false;
+
 	const userContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
@@ -170,7 +176,7 @@ const UserProvider = ({ userMockData, children }) => {
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
 			accessToken: state?.access_token || "",
-			isOnboarding: state?.onboarding == 1 ? true : false,
+			isOnboarding: isOnboarding,
 			userData: state || {},
 			login,
 			logout,
@@ -192,7 +198,7 @@ const UserProvider = ({ userMockData, children }) => {
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
 			accessToken: state?.access_token || "",
-			isOnboarding: state?.onboarding == 1 ? true : false,
+			isOnboarding: isOnboarding,
 			loading,
 			setLoading,
 			refreshUser,
