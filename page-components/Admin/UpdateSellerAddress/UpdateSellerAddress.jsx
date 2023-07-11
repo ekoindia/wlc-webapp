@@ -7,7 +7,7 @@ import {
 	Select,
 	Switch,
 } from "components";
-import { Endpoints, TransactionIds } from "constants";
+import { Endpoints, ParamType, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
@@ -118,33 +118,38 @@ const UpdateSellerAddress = () => {
 			id: "address_line1",
 			label: "Address Line 1",
 			required: true,
-			parameter_type_id: 12,
+			parameter_type_id: ParamType.TEXT,
 		},
 		{
 			id: "address_line2",
 			label: "Address Line 2",
 			required: false,
-			parameter_type_id: 12,
+			parameter_type_id: ParamType.TEXT,
 		},
 		{
 			id: "pincode",
 			label: "Postel Code",
 			required: true,
-			parameter_type_id: 11,
+			parameter_type_id: ParamType.NUMERIC,
 		},
-		{ id: "city", label: "City", required: true, parameter_type_id: 12 },
+		{
+			id: "city",
+			label: "City",
+			required: true,
+			parameter_type_id: ParamType.TEXT,
+		},
 		{
 			id: "country_state",
 			label: "State",
 			required: true,
-			parameter_type_id: 3,
+			parameter_type_id: ParamType.LIST,
 			list_elements: statesList,
 		},
 		{
 			id: "country",
 			label: "Country",
 			required: true,
-			parameter_type_id: 12,
+			parameter_type_id: ParamType.TEXT,
 			disabled: true,
 			value: "India",
 		},
@@ -152,7 +157,7 @@ const UpdateSellerAddress = () => {
 			id: "shop_ownership_type",
 			label: "Ownership Type",
 			required: true,
-			parameter_type_id: 3,
+			parameter_type_id: ParamType.LIST,
 			list_elements: ownershipList,
 		},
 	];
@@ -162,38 +167,38 @@ const UpdateSellerAddress = () => {
 			id: "permanent_address_line1",
 			label: "Address Line 1",
 			required: true,
-			parameter_type_id: 12,
+			parameter_type_id: ParamType.TEXT,
 		},
 		{
 			id: "permanent_address_line2",
 			label: "Address Line 2",
 			required: false,
-			parameter_type_id: 12,
+			parameter_type_id: ParamType.TEXT,
 		},
 		{
 			id: "permanent_address_pincode",
 			label: "Postel Code",
 			required: true,
-			parameter_type_id: 11,
+			parameter_type_id: ParamType.NUMERIC,
 		},
 		{
 			id: "permanent_address_city",
 			label: "City",
 			required: true,
-			parameter_type_id: 12,
+			parameter_type_id: ParamType.TEXT,
 		},
 		{
 			id: "permanent_address_state",
 			label: "State",
 			required: true,
-			parameter_type_id: 3,
+			parameter_type_id: ParamType.LIST,
 			list_elements: statesList,
 		},
 		{
 			id: "permanent_address_country",
 			label: "Country",
 			required: true,
-			parameter_type_id: 12,
+			parameter_type_id: ParamType.TEXT,
 			disabled: true,
 			value: "India",
 		},
@@ -201,7 +206,7 @@ const UpdateSellerAddress = () => {
 			id: "permanent_address_shop_ownership_type",
 			label: "Ownership Type",
 			required: true,
-			parameter_type_id: 3,
+			parameter_type_id: ParamType.LIST,
 			list_elements: ownershipList,
 		},
 	];
@@ -340,7 +345,7 @@ const Form = ({
 							parameter_type_id,
 						}) => {
 							switch (parameter_type_id) {
-								case 3:
+								case ParamType.LIST:
 									return (
 										<FormControl
 											id={id}
@@ -367,8 +372,8 @@ const Form = ({
 											/>
 										</FormControl>
 									);
-								case 11:
-								case 12:
+								case ParamType.NUMERIC:
+								case ParamType.TEXT:
 									return (
 										<FormControl
 											key={id}
@@ -384,7 +389,8 @@ const Form = ({
 												value={value}
 												defaultValue={defaultValue}
 												type={
-													parameter_type_id === 11
+													parameter_type_id ===
+													ParamType.NUMERIC
 														? "number"
 														: "text"
 												}
