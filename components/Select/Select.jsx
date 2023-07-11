@@ -38,7 +38,7 @@ const Select = ({
 				disabled={disabled}
 				placeholder={placeholder || "-- Select --"}
 				h="3rem"
-				fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
+				fontSize="sm"
 				focusBorderColor="hint"
 				_focus={{
 					border: "1px solid #D2D2D2",

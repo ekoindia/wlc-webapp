@@ -220,6 +220,7 @@ const UpdatePersonalInfo = () => {
 													id={id}
 													label={label}
 													required={required}
+													fontSize="sm"
 													{...register(id)}
 												/>
 											</FormControl>
@@ -310,6 +311,7 @@ const UpdatePersonalInfo = () => {
 										<Input
 											id="shop_name"
 											label="Shop Name"
+											fontSize="sm"
 											required
 											{...register("shop_name")}
 										/>
