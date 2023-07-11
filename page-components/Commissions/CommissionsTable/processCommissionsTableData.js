@@ -1,3 +1,5 @@
+import { limitText } from "utils";
+
 export const getCommissionsTableProcessedData = (data) => {
 	const processedData = [];
 	data?.map((row) => {
@@ -77,28 +79,22 @@ export const getCommissionsTableProcessedData = (data) => {
 // 	};
 // };
 
-export const limitNarrationText = (txt, limit) => {
-	return txt.length > limit ? txt.substr(0, limit - 1) + "…" : txt;
-};
-
 export const filterNarrationText = (txt) => {
 	return txt ? txt.replace(/[0-9]+/g, "") : "";
 };
 
 export const getNarrationText = (row) => {
 	return (
-		limitNarrationText(filterNarrationText(row.customer_name), 20) + // Cust Name
+		limitText(filterNarrationText(row.customer_name), 20) + // Cust Name
 		(row.customer_mobile ? " +91" + row.customer_mobile : "") + // Mobile
 		(row.account || row.utility_account
 			? " A/c:" + (row.account || row.utility_account)
 			: "") + // Acc
-		(row.bank
-			? " " + limitNarrationText(filterNarrationText(row.bank), 30)
-			: "") + // Bank
+		(row.bank ? " " + limitText(filterNarrationText(row.bank), 30) : "") + // Bank
 		(row.operator
-			? " " + limitNarrationText(filterNarrationText(row.operator), 25)
+			? " " + limitText(filterNarrationText(row.operator), 25)
 			: "") + // Operator
-		(row.client_ref_id ? " Cl.ID:" + row.client_ref_id : "") + // ClientRefID
+		// (row.client_ref_id ? " Cl.ID:" + row.client_ref_id : "") + // ClientRefID
 		(row.reversal_narration ? " " + row.reversal_narration : "")
 	); // Rev. Narration
 };

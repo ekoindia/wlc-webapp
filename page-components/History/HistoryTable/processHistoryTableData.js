@@ -1,3 +1,5 @@
+import { getFirstWord, limitText } from "utils";
+
 /**
  * Prepare each row of the Transaction History table data (for sellers & distributors) by adding new generated columns like description, amount, trx_type, etc.
  * @param {Array} data the data array of the Transaction History table
@@ -29,16 +31,8 @@ export const getHistoryTableProcessedData = (data) => {
 // 	};
 // };
 
-export const limitNarrationText = (txt, limit) => {
-	return txt.length > limit ? txt.substr(0, limit - 1) + "…" : txt;
-};
-
 export const filterNarrationText = (txt) => {
 	return txt ? txt.replace(/[0-9]+/g, "").trim() : "";
-};
-
-const getFirstWord = (txt) => {
-	return txt ? txt.split(" ")[0] : "";
 };
 
 /**
@@ -51,7 +45,7 @@ export const getNarrationText = (row) => {
 
 	// Add customer's first name
 	if (row.customer_name) {
-		narration += limitNarrationText(
+		narration += limitText(
 			getFirstWord(filterNarrationText(row.customer_name)),
 			15
 		);
@@ -64,25 +58,23 @@ export const getNarrationText = (row) => {
 
 	// Add customer's bank name
 	if (row.bank) {
-		narration +=
-			" " + limitNarrationText(filterNarrationText(row.bank), 30);
+		narration += " " + limitText(filterNarrationText(row.bank), 30);
 	}
 
 	// Add customer's operator name
 	if (row.operator) {
-		narration +=
-			" " + limitNarrationText(filterNarrationText(row.operator), 20);
+		narration += " " + limitText(filterNarrationText(row.operator), 20);
 	}
 
 	// Add customer's reversal-narration (only if previous info not available)
 	if (row.reversal_narration && !narration) {
-		narration += " " + limitNarrationText(row.reversal_narration, 50);
+		narration += " " + limitText(row.reversal_narration, 50);
 	}
 
 	return narration;
 
 	// return (
-	// 	limitNarrationText(
+	// 	limitText(
 	// 		getFirstWord(filterNarrationText(row.customer_name)),
 	// 		20
 	// 	) + // Cust Name
@@ -91,10 +83,10 @@ export const getNarrationText = (row) => {
 	// 		? " A/c:" + (row.account || row.utility_account)
 	// 		: "") + // Acc
 	// 	(row.bank
-	// 		? " " + limitNarrationText(filterNarrationText(row.bank), 30)
+	// 		? " " + limitText(filterNarrationText(row.bank), 30)
 	// 		: "") + // Bank
 	// 	(row.operator
-	// 		? " " + limitNarrationText(filterNarrationText(row.operator), 25)
+	// 		? " " + limitText(filterNarrationText(row.operator), 25)
 	// 		: "") + // Operator
 	// 	(row.client_ref_id ? " Cl.ID:" + row.client_ref_id : "") + // ClientRefID
 	// 	(row.reversal_narration ? " " + row.reversal_narration : "") // Rev. Narration
