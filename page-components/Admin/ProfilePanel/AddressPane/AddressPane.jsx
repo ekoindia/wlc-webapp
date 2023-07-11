@@ -6,14 +6,14 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Button, Cards, IconButtons } from "components";
+import { Button, Card, IconButtons } from "components";
 import { openGoogleMap } from "helpers";
 import { Map } from "libs";
 import Router from "next/router";
 
 const AddressPane = ({ rowData: addressdata }) => {
 	return (
-		<Cards>
+		<Card>
 			<Heading
 				fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 				fontWeight="semibold"
@@ -93,7 +93,7 @@ const AddressPane = ({ rowData: addressdata }) => {
 					</Flex>
 				</Box>
 			</Stack>
-		</Cards>
+		</Card>
 	);
 };
 

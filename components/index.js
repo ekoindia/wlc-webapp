@@ -4,7 +4,6 @@ import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
 import { Card } from "./Card";
-import { Cards } from "./Cards";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
 import { Divider } from "./Divider";
@@ -82,7 +81,6 @@ export {
 	InputLabel,
 	Input,
 	Layout,
-	Cards,
 	SearchBar,
 	Breadcrumbs,
 	/* PLOP_INJECT_EXPORT */

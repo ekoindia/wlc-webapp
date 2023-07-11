@@ -1,92 +1,26 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { IcoButton } from "components";
+import { Flex } from "@chakra-ui/react";
 
 /**
  * A base card
- * @param 	{string}	title	Card title
- * @param 	{object}	titleProps	Props for the title
- * @param 	{string}	linkLabel	Link label to be shown in the header (eg: "Show All")
- * @param 	{function}	linkOnClick	Link onClick handler
- * @param 	{object}	linkProps	Props for the link
- * @param 	{object}	headerProps	Props for the header
- * @param 	{object}	iconName	Icon name for IcoButton
- * @param 	{object}	iconStyle	Icon style for IcoButton
- * @param 	{object}	icoBtnProps	Props for IcoButton
- * @param 	{boolean}	noPadding	Whether to remove padding from the card body
  * @param 	{object}	children	Child elements for the card body
+ * @param 	{function}	onClick 	onClick function
  * @param	{...*}	rest	Rest of the props passed to this component
  * @example	`<Card></Card>` TODO: Fix example
  */
-const Card = ({
-	title,
-	titleProps,
-	linkLabel,
-	linkOnClick,
-	linkProps,
-	headerProps,
-	iconName,
-	iconStyle,
-	icoBtnProps,
-	noPadding = false,
-	children,
-	...rest
-}) => {
+const Card = ({ className = "", children, onClick, ...rest }) => {
 	return (
 		<Flex
-			h={{
-				base: "auto",
-				md: "320px",
-				"2xl": "360px",
-			}}
+			className={`${className}`}
 			direction="column"
-			bg="white"
-			p={!noPadding && "5"}
-			pb={noPadding && "2"}
 			borderRadius="10px"
-			mx={{ base: 3, md: "0" }}
+			boxShadow="basic"
+			border="1px solid var(--chakra-colors-hint)"
+			p="5"
+			h={{ base: "auto", md: "600px" /* , xl: "620px"  */ }}
+			bg="white"
+			onClick={onClick}
 			{...rest}
 		>
-			{title || linkLabel ? (
-				<Box
-					mb={!noPadding && "5"}
-					p={noPadding && "5"}
-					pb={noPadding && "3"}
-				>
-					<Flex justifyContent="space-between" {...headerProps}>
-						<Text as="b" textTransform="capitalize" {...titleProps}>
-							{title}
-						</Text>
-						{linkOnClick ? (
-							<Flex align="center">
-								{iconName && (
-									<IcoButton
-										iconName={iconName}
-										onClick={linkOnClick}
-										iconStyle={{
-											...iconStyle,
-										}}
-										size="sm"
-										theme="primary"
-										_hover={{ bg: "primary.dark" }}
-										{...icoBtnProps}
-									/>
-								)}
-								{linkLabel && (
-									<Text
-										as="b"
-										color="primary.DEFAULT"
-										onClick={() => linkOnClick()}
-										cursor="pointer"
-										{...linkProps}
-									>
-										{linkLabel}
-									</Text>
-								)}
-							</Flex>
-						) : null}
-					</Flex>
-				</Box>
-			) : null}
 			{children}
 		</Flex>
 	);
