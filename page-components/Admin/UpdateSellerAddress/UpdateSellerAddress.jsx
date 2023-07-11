@@ -7,12 +7,16 @@ import {
 	Select,
 	Switch,
 } from "components";
-import { Endpoints } from "constants";
-import { TransactionIds } from "constants/EpsTransactions";
+import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+
+const ownershipList = [
+	{ label: "Owned", value: "Owned" },
+	{ label: "Rented", value: "Rented" },
+];
 
 /**
  * A UpdateSellerAddress page-component
@@ -80,8 +84,17 @@ const UpdateSellerAddress = () => {
 		}
 	}, []);
 
-	const handleFormSubmit = (data) => {
-		console.log("data", data);
+	const handleFormSubmit = (submittedData) => {
+		const finalData = Object.entries(submittedData).reduce(
+			(acc, [key, value]) => {
+				if (value !== undefined && value !== "") {
+					acc[key] = value;
+				}
+				return acc;
+			},
+			{}
+		);
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"Content-type": "application/json",
@@ -89,7 +102,7 @@ const UpdateSellerAddress = () => {
 				"tf-req-uri": "/network/agents/profile/address/update",
 				"tf-req-method": "PUT",
 			},
-			body: data,
+			body: finalData,
 			token: accessToken,
 		})
 			.then((response) => {
@@ -99,6 +112,99 @@ const UpdateSellerAddress = () => {
 				console.log(error);
 			});
 	};
+
+	const currentAddressFormFields = [
+		{
+			id: "address_line1",
+			label: "Address Line 1",
+			required: true,
+			parameter_type_id: 12,
+		},
+		{
+			id: "address_line2",
+			label: "Address Line 2",
+			required: false,
+			parameter_type_id: 12,
+		},
+		{
+			id: "pincode",
+			label: "Postel Code",
+			required: true,
+			parameter_type_id: 11,
+		},
+		{ id: "city", label: "City", required: true, parameter_type_id: 12 },
+		{
+			id: "country_state",
+			label: "State",
+			required: true,
+			parameter_type_id: 3,
+			list_elements: statesList,
+		},
+		{
+			id: "country",
+			label: "Country",
+			required: true,
+			parameter_type_id: 12,
+			disabled: true,
+			value: "India",
+		},
+		{
+			id: "shop_ownership_type",
+			label: "Ownership Type",
+			required: true,
+			parameter_type_id: 3,
+			list_elements: ownershipList,
+		},
+	];
+
+	const permanentAddressFormFields = [
+		{
+			id: "permanent_address_line1",
+			label: "Address Line 1",
+			required: true,
+			parameter_type_id: 12,
+		},
+		{
+			id: "permanent_address_line2",
+			label: "Address Line 2",
+			required: false,
+			parameter_type_id: 12,
+		},
+		{
+			id: "permanent_address_pincode",
+			label: "Postel Code",
+			required: true,
+			parameter_type_id: 11,
+		},
+		{
+			id: "permanent_address_city",
+			label: "City",
+			required: true,
+			parameter_type_id: 12,
+		},
+		{
+			id: "permanent_address_state",
+			label: "State",
+			required: true,
+			parameter_type_id: 3,
+			list_elements: statesList,
+		},
+		{
+			id: "permanent_address_country",
+			label: "Country",
+			required: true,
+			parameter_type_id: 12,
+			disabled: true,
+			value: "India",
+		},
+		{
+			id: "permanent_address_shop_ownership_type",
+			label: "Ownership Type",
+			required: true,
+			parameter_type_id: 3,
+			list_elements: ownershipList,
+		},
+	];
 
 	return (
 		<>
@@ -141,17 +247,18 @@ const UpdateSellerAddress = () => {
 				>
 					<form onSubmit={handleSubmit(handleFormSubmit)}>
 						<Flex direction="column" gap="8">
-							<AddressForm
+							<Form
 								{...{
 									statesList,
 									register,
 									formState: { errors /* isSubmitting */ },
 									control,
+									renderer: currentAddressFormFields,
 								}}
 							/>
 
 							<Flex align="center" gap="8">
-								<Text fontWeight="semibold">
+								<Text fontSize="sm" fontWeight="semibold">
 									Is your permanent address is same as above ?
 								</Text>
 								<Switch
@@ -161,7 +268,7 @@ const UpdateSellerAddress = () => {
 							</Flex>
 
 							{!isPermanentAddress && (
-								<AddressForm
+								<Form
 									{...{
 										statesList,
 										addressFormLabel: "Permanent Address",
@@ -170,6 +277,7 @@ const UpdateSellerAddress = () => {
 											errors /* isSubmitting */,
 										},
 										control,
+										renderer: permanentAddressFormFields,
 									}}
 								/>
 							)}
@@ -206,97 +314,91 @@ const UpdateSellerAddress = () => {
 
 export default UpdateSellerAddress;
 
-const AddressForm = ({
-	statesList,
+const Form = ({
 	addressFormLabel = "Current Address",
+	renderer,
 	register,
 	formState: { errors /* isSubmitting */ },
 	control,
 }) => {
-	const formAddressInputList = [
-		{ id: "address_line1", label: "Address Line 1", required: true },
-		{ id: "address_line2", label: "Address Line 2", required: false },
-		// { id: "address_line3", label: "Address Line 3", required: false },
-		{ id: "pincode", label: "Postel Code", required: true },
-		{ id: "city", label: "City", required: true },
-	];
 	return (
-		<>
-			<Flex w="100%" justify="space-between" align="baseline">
-				<InputLabel fontSize="lg" fontWeight="medium" mb="0" required>
-					{addressFormLabel}
-				</InputLabel>
-				{/* <Text fontSize="lg" fontWeight="medium">
-					Current Address
-				</Text> */}
-				{/* <Text fontSize="sm" color="error">
-					* Mandatory
-				</Text> */}
-			</Flex>
+		<Flex direction="column" gap="4">
+			<InputLabel fontSize="md" fontWeight="medium" mb="0" required>
+				{addressFormLabel}
+			</InputLabel>
 			<Flex direction="column" gap="8">
 				<Flex gap="8" wrap="wrap" maxW="1200px">
-					{formAddressInputList.map(
-						({ id, label, required, value, disabled }) => (
-							<FormControl
-								key={id}
-								w={{
-									base: "100%",
-									md: "500px",
-								}}
-							>
-								<Input
-									id={id}
-									label={label}
-									required={required}
-									value={value}
-									disabled={disabled}
-									{...register(id)}
-								/>
-							</FormControl>
-						)
+					{renderer?.map(
+						({
+							id,
+							label,
+							required,
+							value,
+							defaultValue,
+							disabled,
+							list_elements,
+							parameter_type_id,
+						}) => {
+							switch (parameter_type_id) {
+								case 3:
+									return (
+										<FormControl
+											id={id}
+											w={{ base: "100%", md: "500px" }}
+											isInvalid={errors.priority}
+										>
+											<FormLabel>{label}</FormLabel>
+											<Controller
+												name={id}
+												control={control}
+												render={({
+													field: { onChange, value },
+												}) => {
+													return (
+														<Select
+															value={value}
+															options={
+																list_elements
+															}
+															onChange={onChange}
+														/>
+													);
+												}}
+											/>
+										</FormControl>
+									);
+								case 11:
+								case 12:
+									return (
+										<FormControl
+											key={id}
+											w={{
+												base: "100%",
+												md: "500px",
+											}}
+										>
+											<Input
+												id={id}
+												label={label}
+												required={required}
+												value={value}
+												defaultValue={defaultValue}
+												type={
+													parameter_type_id === 11
+														? "number"
+														: "text"
+												}
+												fontSize="sm"
+												disabled={disabled}
+												{...register(id)}
+											/>
+										</FormControl>
+									);
+							}
+						}
 					)}
 				</Flex>
-				<FormControl
-					id="country_state"
-					w={{ base: "100%", md: "500px" }}
-					isInvalid={errors.priority}
-				>
-					<FormLabel>State</FormLabel>
-					<Controller
-						name="country_state"
-						control={control}
-						render={({ field: { onChange, value } }) => {
-							return (
-								<Select
-									value={value}
-									options={statesList}
-									onChange={onChange}
-								/>
-							);
-						}}
-					/>
-				</FormControl>
-				<FormControl
-					id="shop_ownership_type"
-					w={{ base: "100%", md: "500px" }}
-					isInvalid={errors.priority}
-				>
-					<FormLabel>Ownership Type</FormLabel>
-					<Controller
-						name="shop_ownership_type"
-						control={control}
-						render={({ field: { onChange, value } }) => {
-							return (
-								<Select
-									value={value}
-									options={statesList}
-									onChange={onChange}
-								/>
-							);
-						}}
-					/>
-				</FormControl>
 			</Flex>
-		</>
+		</Flex>
 	);
 };
