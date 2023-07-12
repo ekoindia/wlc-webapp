@@ -15,18 +15,7 @@ import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-const finalDataList = [
-	{ key: "first_name", label: "First Name" },
-	{ key: "middle_name", label: "Middle Name" },
-	{ key: "last_name", label: "Last Name" },
-	{ key: "dob", label: "Date of birth" },
-	{ key: "gender", label: "Gender" },
-	{ key: "marital_status", label: "Marital Status" },
-	{ key: "shop_name", label: "Shop Name" },
-	{ key: "shop_type", label: "Shop Type" },
-];
-
-const splitNames = (name) => {
+const nameSplitter = (name) => {
 	let nameList = name.split(" ");
 	let nameListLength = nameList.length;
 
@@ -46,6 +35,17 @@ const splitNames = (name) => {
 		last_name: lastName,
 	};
 };
+
+const finalDataList = [
+	{ key: "first_name", label: "First Name" },
+	{ key: "middle_name", label: "Middle Name" },
+	{ key: "last_name", label: "Last Name" },
+	{ key: "dob", label: "Date of birth" },
+	{ key: "gender", label: "Gender" },
+	{ key: "marital_status", label: "Marital Status" },
+	{ key: "shop_name", label: "Shop Name" },
+	{ key: "shop_type", label: "Shop Type" },
+];
 
 /**
  * A UpdatePersonalInformation page-component
@@ -84,7 +84,7 @@ const UpdatePersonalInfo = () => {
 	useEffect(() => {
 		if (agentData !== undefined) {
 			let defaultValues = {};
-			const agentName = splitNames(agentData.agent_name);
+			const agentName = nameSplitter(agentData.agent_name);
 			defaultValues.first_name = agentName?.first_name;
 			defaultValues.middle_name = agentName?.middle_name;
 			defaultValues.last_name = agentName?.last_name;
