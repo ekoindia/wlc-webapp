@@ -26,7 +26,6 @@ const ownershipList = [
  */
 const UpdateSellerAddress = () => {
 	const [agentData, setAgentData] = useState();
-	// const [finalData, setFinalData] = useState();
 	const [statesList, setStatesList] = useState();
 	const [isPermanentAddress, setIsPermanentAddress] = useState(true);
 	const { accessToken } = useSession();
@@ -36,6 +35,7 @@ const UpdateSellerAddress = () => {
 		register,
 		formState: { errors /* isSubmitting */ },
 		control,
+		reset,
 	} = useForm();
 
 	const fetchStatesList = () => {
@@ -77,12 +77,28 @@ const UpdateSellerAddress = () => {
 		const storedData = JSON.parse(
 			localStorage.getItem("network_seller_details")
 		);
-		if (storedData) {
+		if (storedData !== undefined) {
 			setAgentData(storedData);
 		} else {
 			fetchAgentDataViaCellNumber();
 		}
 	}, []);
+
+	useEffect(() => {
+		let defaultValues = {};
+		defaultValues.address_line1 = agentData?.line_1;
+		defaultValues.address_line2 = agentData?.line_2;
+		defaultValues.pincode = agentData?.zip;
+		defaultValues.city = agentData?.city;
+		defaultValues.country_state =
+			agentData?.state == "Delhi"
+				? "National Capital Territory of Delhi (UT)"
+				: agentData?.state;
+		defaultValues.shop_ownership_type =
+			agentData?.address_details?.ownership_type;
+
+		reset({ ...defaultValues });
+	}, [agentData]);
 
 	const handleFormSubmit = (submittedData) => {
 		const finalData = Object.entries(submittedData).reduce(
@@ -211,6 +227,10 @@ const UpdateSellerAddress = () => {
 		},
 	];
 
+	// if (agentData == undefined) {
+	// 	return <div>Loading...</div>;
+	// }
+
 	return (
 		<>
 			<Headings title="Update Seller Address" />
@@ -328,7 +348,7 @@ const Form = ({
 }) => {
 	return (
 		<Flex direction="column" gap="4">
-			<InputLabel fontSize="md" fontWeight="medium" mb="0" required>
+			<InputLabel fontSize="lg" fontWeight="medium" mb="0" required>
 				{addressFormLabel}
 			</InputLabel>
 			<Flex direction="column" gap="8">
@@ -339,7 +359,6 @@ const Form = ({
 							label,
 							required,
 							value,
-							defaultValue,
 							disabled,
 							list_elements,
 							parameter_type_id,
@@ -387,7 +406,6 @@ const Form = ({
 												label={label}
 												required={required}
 												value={value}
-												defaultValue={defaultValue}
 												type={
 													parameter_type_id ===
 													ParamType.NUMERIC

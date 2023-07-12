@@ -32,7 +32,7 @@ const OnboardingDashboard = () => {
 			},
 			body: {
 				record_count: 10,
-				filterStage: filterStatus,
+				filterStage: `${filterStatus}`,
 				page_number: pageNumber,
 			},
 			controller: controller,

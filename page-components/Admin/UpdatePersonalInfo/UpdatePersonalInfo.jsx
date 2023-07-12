@@ -26,6 +26,27 @@ const finalDataList = [
 	{ key: "shop_type", label: "Shop Type" },
 ];
 
+const splitNames = (name) => {
+	let nameList = name.split(" ");
+	let nameListLength = nameList.length;
+
+	let firstName = nameList[0];
+	let lastName = nameListLength > 1 ? nameList[nameListLength - 1] : "";
+	let middleName = "";
+
+	if (nameListLength === 3) {
+		middleName = nameList[1];
+	} else if (nameListLength > 3) {
+		middleName = nameList.slice(1, nameListLength - 1).join(" ");
+	}
+
+	return {
+		first_name: firstName,
+		middle_name: middleName,
+		last_name: lastName,
+	};
+};
+
 /**
  * A UpdatePersonalInformation page-component
  * @arg 	{Object}	prop	Properties passed to the component
@@ -35,7 +56,6 @@ const finalDataList = [
 const UpdatePersonalInfo = () => {
 	const [agentData, setAgentData] = useState();
 	const [shopTypesData, setShopTypesData] = useState();
-	// console.log("shopTypesData", shopTypesData);
 	const [inPreviewMode, setInPreviewMode] = useState(false);
 	const [previewDataList, setPreviewDataList] = useState();
 	const [finalData, setFinalData] = useState();
@@ -46,6 +66,7 @@ const UpdatePersonalInfo = () => {
 		register,
 		formState: { errors /* isSubmitting */ },
 		control,
+		reset,
 	} = useForm();
 
 	useEffect(() => {
@@ -60,8 +81,25 @@ const UpdatePersonalInfo = () => {
 		}
 	}, []);
 
+	useEffect(() => {
+		if (agentData !== undefined) {
+			let defaultValues = {};
+			const agentName = splitNames(agentData.agent_name);
+			defaultValues.first_name = agentName?.first_name;
+			defaultValues.middle_name = agentName?.middle_name;
+			defaultValues.last_name = agentName?.last_name;
+			defaultValues.dob = agentData?.personal_information?.date_of_birth;
+			defaultValues.marital_status =
+				agentData?.personal_information?.marital_status;
+			defaultValues.shop_name = agentData?.profile?.shop_name;
+			defaultValues.shop_type = agentData?.profile?.shop_type;
+			defaultValues.gender = agentData?.personal_information?.gender;
+
+			reset({ ...defaultValues });
+		}
+	}, [agentData]);
+
 	const handleFormPreview = (previewData) => {
-		console.log("previewData", previewData);
 		let _previewData = [];
 		setFinalData(previewData);
 		setInPreviewMode(!inPreviewMode);
@@ -137,7 +175,12 @@ const UpdatePersonalInfo = () => {
 	};
 
 	const formNameInputList = [
-		{ id: "first_name", label: "First Name", required: true },
+		{
+			id: "first_name",
+			label: "First Name",
+			required: true,
+			defaultValue: agentData?.agent_name,
+		},
 		{ id: "middle_name", label: "Middle Name", required: false },
 		{ id: "last_name", label: "Last Name", required: false },
 	];
@@ -208,7 +251,13 @@ const UpdatePersonalInfo = () => {
 								{/* Name */}
 								<Flex wrap="wrap" gap="8">
 									{formNameInputList.map(
-										({ id, label, required }) => (
+										({
+											id,
+											label,
+											required,
+											value,
+											defaultValue,
+										}) => (
 											<FormControl
 												key={id}
 												w={{
@@ -220,6 +269,8 @@ const UpdatePersonalInfo = () => {
 													id={id}
 													label={label}
 													required={required}
+													value={value}
+													defaultValue={defaultValue}
 													fontSize="sm"
 													{...register(id)}
 												/>
