@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="svg275"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs279" />
+  <path
+     fill="#95a5a6"
+     d="M0 22h24l-4-6H4l-4 6"
+     id="path203" />
+  <path
+     fill="#f1c40f"
+     d="M2 4h20v17H2z"
+     id="path205" />
+  <path
+     fill="#ecf0f1"
+     d="M4 11h9v9H4zm10 1h6v9h-6z"
+     id="path207" />
+  <path
+     fill="#f39c12"
+     d="M2 9h20v4H2z"
+     id="path209" />
+  <path
+     fill="#bdc3c7"
+     d="M14 11h6v1h-6zM4 11h9v2H4z"
+     id="path211" />
+  <g
+     id="g5974"
+     style="fill:#c0392b;fill-opacity:1">
+    <path
+       fill="#c0392b"
+       d="m 0,12.401672 v 1.5 c 0,0.8 0.7,1.5 1.5,1.5 0.8,0 1.5,-0.7 1.5,-1.5 v -1.5 z"
+       id="path213"
+       style="fill:#c0392b;fill-opacity:1" />
+    <rect
+       style="fill:#c0392b;stroke-width:1.25457;fill-opacity:1"
+       id="rect1782"
+       width="3"
+       height="4.4016719"
+       x="0"
+       y="8" />
+  </g>
+  <path
+     fill="#ecf0f1"
+     d="M10 4h2v4H9z"
+     id="path229" />
+  <path
+     fill="#e74c3c"
+     d="M12 4h2l1 4h-3z"
+     id="path231"
+     style="fill:#e74c3c;fill-opacity:1" />
+  <path
+     fill="#ecf0f1"
+     d="M5 4h3L6 8H3z"
+     id="path233" />
+  <path
+     fill="#e74c3c"
+     d="M8 4h2L9 8H6z"
+     id="path235"
+     style="fill:#e74c3c;fill-opacity:1" />
+  <path
+     fill="#ecf0f1"
+     d="M16 4h-2l1 4h3z"
+     id="path237" />
+  <path
+     fill="#e74c3c"
+     d="M19 4h-3l2 4h3zM2 4h3L3 8H0z"
+     id="path239"
+     style="fill:#e74c3c;fill-opacity:1" />
+  <path
+     fill="#ecf0f1"
+     d="M22 4h-3l2 4h3z"
+     id="path241" />
+  <path
+     fill="#3498db"
+     d="M15 13h4v8h-4z"
+     id="path243"
+     style="fill:#999999" />
+  <path
+     fill="#ecf0f1"
+     d="M14 16h5v1h-5z"
+     id="path245" />
+  <path
+     fill="#bdc3c7"
+     d="M19 12h1v1h-1z"
+     id="path247" />
+  <path
+     fill="#2980b9"
+     d="M15 12h4v1h-4z"
+     id="path249"
+     style="fill:#666666" />
+  <path
+     fill="#bdc3c7"
+     d="M14 12h1v1h-1z"
+     id="path251" />
+  <path
+     fill="#3498db"
+     d="M5 12h7v7H5z"
+     id="path253"
+     style="fill:#999999" />
+  <g
+     fill="#ecf0f1"
+     id="g259">
+    <path
+       d="M4 15h9v1H4z"
+       id="path255" />
+    <path
+       d="M8 12h1v7H8zM1 4h22l-3.7-2H4.7L1 4"
+       id="path257" />
+  </g>
+  <path
+     fill="#bdc3c7"
+     d="M8 12h1v1H8zM1 3h22l-3.7-2H4.7L1 3"
+     id="path261" />
+  <path
+     fill="#7f8c8d"
+     d="M1 3h22v1H1z"
+     id="path263" />
+  <path
+     fill="#2980b9"
+     d="M15 18h4v3h-4z"
+     id="path265"
+     style="fill:#666666" />
+  <path
+     fill="#7f8c8d"
+     d="M0 22h24v1H0z"
+     id="path267" />
+  <path
+     fill="#2980b9"
+     d="M5 12v1h3v-1H5zm4 0v1h3v-1H9zm-4 6v1h3v-1H5zm4 0v1h3v-1H9z"
+     id="path269"
+     style="fill:#666666" />
+  <path
+     fill="#c0392b"
+     d="m2 4-.5 1h3L5 4H2zm5 0-.3 1h3l.3-1H7zm5 0v1h2.3L14 4h-2zm4 0 .5 1h3L19 4h-3z"
+     id="path271"
+     style="fill:#c0392b;fill-opacity:1" />
+  <path
+     fill="#bdc3c7"
+     d="m5 4-.5 1h3L8 4zm5 0-.3 1H12V4zm4 0 .3 1h2.2L16 4zm5 0 .5 1h3L22 4z"
+     id="path273" />
+  <g
+     id="g5978">
+    <path
+       fill="#bdc3c7"
+       d="m 3,12.401672 v 1.5 c 0,0.8 0.7,1.5 1.5,1.5 0.8,0 1.5,-0.7 1.5,-1.5 v -1.5 z"
+       id="path1026" />
+    <rect
+       style="fill:#bdc3c7;fill-opacity:1;stroke-width:1.25457"
+       id="rect2103"
+       width="3"
+       height="4.4016719"
+       x="3"
+       y="8" />
+  </g>
+  <g
+     id="g5984"
+     transform="translate(6)"
+     style="fill:#c0392b;fill-opacity:1">
+    <path
+       fill="#c0392b"
+       d="m 0,12.401672 v 1.5 c 0,0.8 0.7,1.5 1.5,1.5 0.8,0 1.5,-0.7 1.5,-1.5 v -1.5 z"
+       id="path5980"
+       style="fill:#c0392b;fill-opacity:1" />
+    <rect
+       style="fill:#c0392b;stroke-width:1.25457;fill-opacity:1"
+       id="rect5982"
+       width="3"
+       height="4.4016719"
+       x="0"
+       y="8" />
+  </g>
+  <g
+     id="g6158"
+     transform="translate(12)"
+     style="fill:#c0392b;fill-opacity:1">
+    <path
+       fill="#c0392b"
+       d="m 0,12.401672 v 1.5 c 0,0.8 0.7,1.5 1.5,1.5 0.8,0 1.5,-0.7 1.5,-1.5 v -1.5 z"
+       id="path6154"
+       style="fill:#c0392b;fill-opacity:1" />
+    <rect
+       style="fill:#c0392b;stroke-width:1.25457;fill-opacity:1"
+       id="rect6156"
+       width="3"
+       height="4.4016719"
+       x="0"
+       y="8" />
+  </g>
+  <g
+     id="g6244"
+     transform="translate(18)"
+     style="fill:#c0392b;fill-opacity:1">
+    <path
+       fill="#c0392b"
+       d="m 0,12.401672 v 1.5 c 0,0.8 0.7,1.5 1.5,1.5 0.8,0 1.5,-0.7 1.5,-1.5 v -1.5 z"
+       id="path6240"
+       style="fill:#c0392b;fill-opacity:1" />
+    <rect
+       style="fill:#c0392b;stroke-width:1.25457;fill-opacity:1"
+       id="rect6242"
+       width="3"
+       height="4.4016719"
+       x="0"
+       y="8" />
+  </g>
+  <g
+     id="g6330"
+     transform="translate(6)">
+    <path
+       fill="#bdc3c7"
+       d="m 3,12.401672 v 1.5 c 0,0.8 0.7,1.5 1.5,1.5 0.8,0 1.5,-0.7 1.5,-1.5 v -1.5 z"
+       id="path6326" />
+    <rect
+       style="fill:#bdc3c7;fill-opacity:1;stroke-width:1.25457"
+       id="rect6328"
+       width="3"
+       height="4.4016719"
+       x="3"
+       y="8" />
+  </g>
+  <g
+     id="g6416"
+     transform="translate(12)">
+    <path
+       fill="#bdc3c7"
+       d="m 3,12.401672 v 1.5 c 0,0.8 0.7,1.5 1.5,1.5 0.8,0 1.5,-0.7 1.5,-1.5 v -1.5 z"
+       id="path6412" />
+    <rect
+       style="fill:#bdc3c7;fill-opacity:1;stroke-width:1.25457"
+       id="rect6414"
+       width="3"
+       height="4.4016719"
+       x="3"
+       y="8" />
+  </g>
+  <g
+     id="g6502"
+     transform="translate(18)">
+    <path
+       fill="#bdc3c7"
+       d="m 3,12.401672 v 1.5 c 0,0.8 0.7,1.5 1.5,1.5 0.8,0 1.5,-0.7 1.5,-1.5 v -1.5 z"
+       id="path6498" />
+    <rect
+       style="fill:#bdc3c7;fill-opacity:1;stroke-width:1.25457"
+       id="rect6500"
+       width="3"
+       height="4.4016719"
+       x="3"
+       y="8" />
+  </g>
+</svg>
