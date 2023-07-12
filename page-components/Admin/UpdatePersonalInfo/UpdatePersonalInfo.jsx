@@ -204,11 +204,11 @@ const UpdatePersonalInfo = () => {
 				borderRadius={{ base: "0", md: "10px 10px 0 0" }}
 				w="100%"
 				bg="white"
-				p={{ base: "30px", md: "30px 30px 20px" }}
+				p={{ base: "16px", md: "30px 30px 20px" }}
 				gap="4"
 				fontSize="sm"
 			>
-				<div>
+				<Flex direction="column" gap="2">
 					<Text
 						fontSize="2xl"
 						color="accent.DEFAULT"
@@ -221,7 +221,7 @@ const UpdatePersonalInfo = () => {
 						return to Client HomePage without submitting
 						information.
 					</span>
-				</div>
+				</Flex>
 				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
 			<form onSubmit={handleSubmit(handleFormPreview)}>
