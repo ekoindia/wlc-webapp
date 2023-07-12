@@ -23,127 +23,105 @@ import { MoveAgents, TransferSeller } from ".";
 
 const ChangeRole = () => {
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
-	console.log("isShowSelectAgent", isShowSelectAgent);
-	const tab = +useRouter().query.tab;
 	const [scspFromValue, setScspFromValue] = useState("");
-	console.log("scspFromValue", scspFromValue);
 	const [selectedEkocspidsCR, setSelectedEkocspidsCR] = useState([]);
 	console.log("selectedEkocspidsCR", selectedEkocspidsCR);
+	const tab = +useRouter().query.tab;
 
 	const handleScspFromChange = (value) => {
 		setScspFromValue(value);
 	};
 
+	const tabs = [
+		{
+			id: 1,
+			label: "Transfer Sellers",
+			comp: (
+				<TransferSeller
+					setIsShowSelectAgent={setIsShowSelectAgent}
+					onScspFromChange={handleScspFromChange}
+				/>
+			),
+		},
+		{
+			id: 2,
+			label: "Promote Seller To Distributor",
+			comp: "Coming Soon...",
+		},
+		{
+			id: 3,
+			label: "Demote Distributor",
+			comp: "Coming Soon...",
+		},
+		{
+			id: 4,
+			label: "Upgrade Seller To iSeller",
+			comp: "Coming Soon...",
+		},
+	];
+
 	return !isShowSelectAgent ? (
 		<>
 			<Headings title="Change Role" />
 			<Flex
-				align={{ base: "center", md: "flex-start" }}
-				pb={{ base: "0", md: "40px" }}
-				bg={{ base: "none", md: "white" }}
 				direction="column"
-				rowGap={{ base: "10px", md: "0" }}
-				border={{ base: "", md: "card" }}
-				borderRadius={{ base: "0", md: "10" }}
-				boxShadow={{ base: "", md: "0px 5px 15px #0000000D;" }}
-				overflow={"hidden"}
+				borderRadius={{ base: "0", md: "10px 10px 0 0" }}
+				w="100%"
+				bg="white"
+				p={{ base: "16px", md: "30px 30px 20px" }}
+				gap="4"
+				fontSize="sm"
 			>
-				<Flex
-					w="100%"
-					pt="3.5"
-					px={{ base: "4", md: "7.5" }}
-					pb={{ base: "3.5", md: "5" }}
-					bg="white"
-					borderTopLeftRadius={{ base: "0", md: "10" }}
-					borderTopRightRadius={{ base: "0", md: "10" }}
-					borderBottom={{ base: "card", md: "0" }}
-					direction="column"
-					rowGap={{ base: "10px", md: "0" }}
-					borderRadius={{ base: "0px", md: "none" }}
-					border={{ base: "1px solid #D2D2D2", md: "none" }}
-					borderTop="none"
-				>
+				<Flex direction="column" gap="2">
 					<Text
-						as="h1"
+						fontSize="2xl"
 						color="accent.DEFAULT"
-						fontWeight="bold"
-						fontSize={{ base: "lg", md: "2xl" }}
+						fontWeight="semibold"
 					>
-						Angel Tech Private Limited
+						{/* {agentData?.agent_name} */} Cool Name
 					</Text>
-					<Text fontSize={{ base: "xs", md: "md" }}>
-						Edit the fields below and click Preview.
-						<Text
-							as="span"
-							display={{ base: "block", md: "inline" }}
-						>
-							Click Cancel to return to Client HomePage without
-							submitting information.
-						</Text>
-					</Text>
+					<span>
+						Click Cancel to return to Client HomePage without
+						submitting information.
+					</span>
 				</Flex>
-
-				<Divider
-					w={{ base: "0", md: "calc(100% - 60px)" }}
-					mx="auto"
-					color="divider"
-				/>
-
-				<Tabs
-					position="relative"
-					defaultIndex={tab || 0}
-					variant="colorful"
-					//Responsive style
-					bg={{ base: "#FFFFFF", md: "transparent" }}
-					border={{ base: "card", md: "none" }}
-					px={{ base: "0", md: "7.5" }}
-					pt={{ base: "3", md: "10.5" }}
-					w={{ base: "92%", md: "100%" }}
-					boxShadow={{ base: "0px 5px 15px #0000000D", md: "none" }}
-					borderRadius={{ base: "10px", md: "none" }}
-				>
-					<TabList
-						color="light"
-						css={{
-							"&::-webkit-scrollbar": {
-								display: "none",
-							},
-							"&::-moz-scrollbar": {
-								display: "none",
-							},
-							"&::scrollbar": {
-								display: "none",
-							},
-						}}
-					>
-						<Tab>Transfer Sellers</Tab>
-						<Tab>Promote Seller To Distributor</Tab>
-						<Tab>Demote Distributor</Tab>
-						<Tab>Upgrade Seller To iSeller</Tab>
-					</TabList>
-
-					<TabPanels
-						px={{ base: "18px", md: "0" }}
-						mt={{ base: "23px", md: "32px", lg: "46px" }}
-					>
-						<TabPanel>
-							<TransferSeller
-								setIsShowSelectAgent={setIsShowSelectAgent}
-								onScspFromChange={handleScspFromChange}
-							/>
-						</TabPanel>
-						<TabPanel>
-							<p>Coming Soon...</p>
-						</TabPanel>
-						<TabPanel>
-							<p>Coming Soon...</p>
-						</TabPanel>
-						<TabPanel>
-							<p>Coming Soon...</p>
-						</TabPanel>
-					</TabPanels>
-				</Tabs>
+				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
+			<Tabs
+				defaultIndex={tab || 0}
+				borderRadius={{ base: "10px", md: "0 0 10px 10px" }}
+				p={{ base: "20px", md: "0 30px 30px" }}
+				mt={{ base: "20px", md: "0" }}
+				w="100%"
+				bg="white"
+				fontSize="sm"
+				isLazy
+			>
+				<TabList
+					color="light"
+					css={{
+						"&::-webkit-scrollbar": {
+							display: "none",
+						},
+						"&::-moz-scrollbar": {
+							display: "none",
+						},
+						"&::scrollbar": {
+							display: "none",
+						},
+					}}
+				>
+					{tabs.map(({ id, label }) => (
+						<Tab key={id}>{label}</Tab>
+					))}
+				</TabList>
+
+				<TabPanels mt="5">
+					{tabs.map(({ id, comp }) => (
+						<TabPanel key={id}>{comp}</TabPanel>
+					))}
+				</TabPanels>
+			</Tabs>
 		</>
 	) : (
 		<Box>
@@ -153,7 +131,6 @@ const ChangeRole = () => {
 				setSelectedEkocspidsCR={setSelectedEkocspidsCR}
 			/>
 			<Flex
-				Flex
 				display={{ base: "flex", md: "none" }}
 				position={"fixed"}
 				w={"100%"}
