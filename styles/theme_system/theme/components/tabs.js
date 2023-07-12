@@ -4,8 +4,7 @@ import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 const { definePartsStyle, defineMultiStyleConfig } =
 	createMultiStyleConfigHelpers(tabsAnatomy.keys);
 
-// define a custom variant
-const colorfulVariant = definePartsStyle({
+const baseStyle = definePartsStyle({
 	root: {
 		p: { base: "0", md: "none" },
 	},
@@ -21,6 +20,7 @@ const colorfulVariant = definePartsStyle({
 		whiteSpace: "nowrap",
 		_selected: {
 			color: "dark",
+			bg: "transparent",
 			opacity: "1",
 			_after: {
 				display: "block",
@@ -47,9 +47,4 @@ const colorfulVariant = definePartsStyle({
 	},
 });
 
-const variants = {
-	colorful: colorfulVariant,
-};
-
-// export the component theme
-export const tabsTheme = defineMultiStyleConfig({ variants });
+export const tabsTheme = defineMultiStyleConfig({ baseStyle });

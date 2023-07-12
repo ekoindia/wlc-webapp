@@ -62,8 +62,7 @@ const PricingCommissions = () => {
 						isLazy
 						position="relative"
 						defaultIndex={0}
-						variant="colorful"
-						bg={{ base: "#FFFFFF", md: "transparent" }}
+						bg={{ base: "white", md: "transparent" }}
 						py="3"
 						w={{ base: "100%", md: "100%" }}
 						borderRadius="10px"
