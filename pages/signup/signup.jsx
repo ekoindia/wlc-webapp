@@ -27,7 +27,7 @@ const selectionStepData = {
 				id: 1,
 				merchant_type: 1,
 				applicant_type: 0,
-				label: "I'm a seller",
+				label: "I'm a retailer",
 				description: "I serve customers from my shop",
 				icon: "../assets/icons/user_merchant.png",
 				isVisible: true,
@@ -42,7 +42,7 @@ const selectionStepData = {
 				applicant_type: 2,
 				label: "I'm a distributor",
 				description:
-					"I have a network of seller and i want to serve them",
+					"I have a network of retailer and i want to serve them",
 				icon: "../assets/icons/user_distributor.png",
 				isVisible: true,
 				user_type: [{ key: 1, name: "Distributor" }],
@@ -91,7 +91,7 @@ const distributorStepsData = [
 					id: 1,
 					merchant_type: 1,
 					applicant_type: 0,
-					label: "I'm a seller",
+					label: "I'm a retailer",
 					description: "I serve customers from my shop",
 					icon: "../assets/icons/user_merchant.png",
 					isVisible: true,
@@ -102,7 +102,7 @@ const distributorStepsData = [
 					applicant_type: 2,
 					label: "I'm a distributor",
 					description:
-						"I have a network of seller and i want to serve them",
+						"I have a network of retailer and i want to serve them",
 					icon: "../assets/icons/user_distributor.png",
 					isVisible: true,
 				},
@@ -351,7 +351,7 @@ const SignupPage = () => {
 						id: 1,
 						merchant_type: 1,
 						applicant_type: 0,
-						label: "I'm a seller",
+						label: "I'm a retailer",
 						description: "I serve customers from my shop",
 						icon: "../assets/icons/user_merchant.png",
 						isVisible: true,
@@ -362,7 +362,7 @@ const SignupPage = () => {
 						applicant_type: 2,
 						label: "I'm a distributor",
 						description:
-							"I have a network of seller and i want to serve them",
+							"I have a network of retailer and i want to serve them",
 						icon: "../assets/icons/user_distributor.png",
 						isVisible: true,
 					},
@@ -957,10 +957,10 @@ const SignupPage = () => {
 						/>
 					) : (
 						<Home
-							// defaultStep="12500"
-							defaultStep={
-								userData?.userDetails?.role_list || "12400"
-							}
+							defaultStep="12800"
+							// defaultStep={
+							// 	userData?.userDetails?.role_list || "12400"
+							// }
 							isBranding={false}
 							userData={userData}
 							handleSubmit={handleStepDataSubmit}

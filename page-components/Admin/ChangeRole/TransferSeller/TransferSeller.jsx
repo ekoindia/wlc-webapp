@@ -213,7 +213,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 							color="light"
 							display={{ base: "block", lg: "inline-block" }}
 						>
-							Move Sellers To:
+							Move Retailers To:
 						</Text>{" "}
 						AngelTech Private Limited
 					</Text>
@@ -238,7 +238,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 							},
 						}}
 					>
-						{/* Move Sellerr To */}
+						{/* Move Retailer To */}
 						{scspto.length
 							? scspto.map((ele, idx) => {
 									return (

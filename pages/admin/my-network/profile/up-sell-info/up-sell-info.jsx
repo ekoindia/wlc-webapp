@@ -13,7 +13,7 @@ function UpdateSellerInfoPage() {
 }
 
 UpdateSellerInfoPage.pageMeta = {
-	title: "My Network > Update Seller Info | Admin",
+	title: "My Network > Update Retailer Info | Admin",
 	isSubPage: true,
 };
 

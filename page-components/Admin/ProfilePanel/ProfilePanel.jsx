@@ -153,7 +153,7 @@ const ProfilePanel = () => {
 	return (
 		<>
 			<Headings
-				title={isMenuVisible ? "Change Role" : "Seller Details"}
+				title={isMenuVisible ? "Change Role" : "Retailer Details"}
 				propComp={
 					<ChangeRoleDesktop
 						changeRoleMenuList={changeRoleMenuList}

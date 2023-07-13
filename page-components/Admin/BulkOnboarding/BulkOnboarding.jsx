@@ -6,7 +6,8 @@ import { useState } from "react";
 import { BulkOnboardingResponse } from ".";
 
 const SAMPLE_DOWNLOAD_LINK = {
-	SELLER: "https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
+	RETAILER:
+		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
 	DISTRIBUTOR:
 		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Distributor_Onboarding.xlsx",
 };
@@ -66,13 +67,16 @@ const BulkOnboarding = () => {
 	};
 
 	const applicantTypeObj = {
-		0: "Sellers",
+		0: "Retailers",
 		2: "Distributors",
 	};
 
 	return (
 		<>
-			<Headings title="Onboard Sellers & Distributors" hasIcon={false} />
+			<Headings
+				title="Onboard Retailers & Distributors"
+				hasIcon={false}
+			/>
 			<Flex
 				direction="column"
 				w="100%"
@@ -124,7 +128,7 @@ const BulkOnboarding = () => {
 							<Link
 								href={
 									applicantType == 0
-										? SAMPLE_DOWNLOAD_LINK.SELLER
+										? SAMPLE_DOWNLOAD_LINK.RETAILER
 										: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
 								}
 								w="fit-content"
