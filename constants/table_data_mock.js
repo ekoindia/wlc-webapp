@@ -12,7 +12,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Other",
 		ekocsp_code: "10167082",
@@ -21,7 +21,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -30,7 +30,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -39,7 +39,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -57,7 +57,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -66,7 +66,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -75,7 +75,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -84,7 +84,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -102,7 +102,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -111,7 +111,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -120,7 +120,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -129,7 +129,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -147,7 +147,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -156,7 +156,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -165,7 +165,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -174,7 +174,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -192,7 +192,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -201,7 +201,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -210,7 +210,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -219,7 +219,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -237,7 +237,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -246,7 +246,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -255,7 +255,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -264,7 +264,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -282,7 +282,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -291,7 +291,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -300,7 +300,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -309,7 +309,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -327,7 +327,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -336,7 +336,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -345,7 +345,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -354,7 +354,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -372,7 +372,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -381,7 +381,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -390,7 +390,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -399,7 +399,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -417,7 +417,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -426,7 +426,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -435,7 +435,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -444,7 +444,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -462,7 +462,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -471,7 +471,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -480,7 +480,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -489,7 +489,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -507,7 +507,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -516,7 +516,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -525,7 +525,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -534,7 +534,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -552,7 +552,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -561,7 +561,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -570,7 +570,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -579,7 +579,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -597,7 +597,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -606,7 +606,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -615,7 +615,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -624,7 +624,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -642,7 +642,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -651,7 +651,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -660,7 +660,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -669,7 +669,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -687,7 +687,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -696,7 +696,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -705,7 +705,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -714,7 +714,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -732,7 +732,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -741,7 +741,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -750,7 +750,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -759,7 +759,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -777,7 +777,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -786,7 +786,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -795,7 +795,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -804,7 +804,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -822,7 +822,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -831,7 +831,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -840,7 +840,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -849,7 +849,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -867,7 +867,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -876,7 +876,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -885,7 +885,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -894,7 +894,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -912,7 +912,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -921,7 +921,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -930,7 +930,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -939,7 +939,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -957,7 +957,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -966,7 +966,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -975,7 +975,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -984,7 +984,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1002,7 +1002,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1011,7 +1011,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1020,7 +1020,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1029,7 +1029,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1047,7 +1047,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1056,7 +1056,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1065,7 +1065,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1074,7 +1074,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1092,7 +1092,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1101,7 +1101,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1110,7 +1110,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1119,7 +1119,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1137,7 +1137,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1146,7 +1146,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1155,7 +1155,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1164,7 +1164,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1182,7 +1182,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1191,7 +1191,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1200,7 +1200,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1209,7 +1209,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1227,7 +1227,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1236,7 +1236,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1245,7 +1245,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1254,7 +1254,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1272,7 +1272,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1281,7 +1281,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1290,7 +1290,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1299,7 +1299,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1317,7 +1317,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1326,7 +1326,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1335,7 +1335,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1344,7 +1344,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1362,7 +1362,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1371,7 +1371,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1380,7 +1380,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1389,7 +1389,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1407,7 +1407,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1416,7 +1416,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1425,7 +1425,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1434,7 +1434,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1452,7 +1452,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1461,7 +1461,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1470,7 +1470,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1479,7 +1479,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1497,7 +1497,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1506,7 +1506,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1515,7 +1515,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1524,7 +1524,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1542,7 +1542,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1551,7 +1551,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1560,7 +1560,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1569,7 +1569,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1587,7 +1587,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1596,7 +1596,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1605,7 +1605,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1614,7 +1614,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1632,7 +1632,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1641,7 +1641,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1650,7 +1650,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1659,7 +1659,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1677,7 +1677,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1686,7 +1686,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1695,7 +1695,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1704,7 +1704,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1722,7 +1722,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1731,7 +1731,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1740,7 +1740,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1749,7 +1749,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1767,7 +1767,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1776,7 +1776,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1785,7 +1785,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1794,7 +1794,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1812,7 +1812,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1821,7 +1821,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1830,7 +1830,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1839,7 +1839,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1857,7 +1857,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1866,7 +1866,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1875,7 +1875,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1884,7 +1884,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1902,7 +1902,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1911,7 +1911,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1920,7 +1920,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1929,7 +1929,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1947,7 +1947,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -1956,7 +1956,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -1965,7 +1965,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1974,7 +1974,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -1992,7 +1992,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2001,7 +2001,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2010,7 +2010,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2019,7 +2019,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2037,7 +2037,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2046,7 +2046,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2055,7 +2055,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2064,7 +2064,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2082,7 +2082,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2091,7 +2091,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2100,7 +2100,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2109,7 +2109,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2127,7 +2127,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2136,7 +2136,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2145,7 +2145,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2154,7 +2154,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2172,7 +2172,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2181,7 +2181,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2190,7 +2190,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2199,7 +2199,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2217,7 +2217,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2226,7 +2226,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2235,7 +2235,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2244,7 +2244,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2262,7 +2262,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2271,7 +2271,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2280,7 +2280,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2289,7 +2289,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2307,7 +2307,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2316,7 +2316,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2325,7 +2325,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2334,7 +2334,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2352,7 +2352,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2361,7 +2361,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2370,7 +2370,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2379,7 +2379,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2397,7 +2397,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2406,7 +2406,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2415,7 +2415,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2424,7 +2424,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2442,7 +2442,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2451,7 +2451,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2460,7 +2460,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2469,7 +2469,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2487,7 +2487,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2496,7 +2496,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2505,7 +2505,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2514,7 +2514,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2532,7 +2532,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2541,7 +2541,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2550,7 +2550,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2559,7 +2559,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2577,7 +2577,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2586,7 +2586,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2595,7 +2595,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2604,7 +2604,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2622,7 +2622,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2631,7 +2631,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2640,7 +2640,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2649,7 +2649,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2667,7 +2667,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2676,7 +2676,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2685,7 +2685,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2694,7 +2694,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2712,7 +2712,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2721,7 +2721,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2730,7 +2730,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2739,7 +2739,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2757,7 +2757,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2766,7 +2766,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2775,7 +2775,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2784,7 +2784,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2802,7 +2802,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2811,7 +2811,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2820,7 +2820,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2829,7 +2829,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2847,7 +2847,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2856,7 +2856,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2865,7 +2865,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2874,7 +2874,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2892,7 +2892,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2901,7 +2901,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2910,7 +2910,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2919,7 +2919,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2937,7 +2937,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2946,7 +2946,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -2955,7 +2955,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2964,7 +2964,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -2982,7 +2982,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -2991,7 +2991,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3000,7 +3000,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3009,7 +3009,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3027,7 +3027,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3036,7 +3036,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3045,7 +3045,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3054,7 +3054,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3072,7 +3072,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3081,7 +3081,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3090,7 +3090,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3099,7 +3099,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3117,7 +3117,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3126,7 +3126,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3135,7 +3135,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3144,7 +3144,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3162,7 +3162,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3171,7 +3171,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3180,7 +3180,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3189,7 +3189,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3207,7 +3207,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3216,7 +3216,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3225,7 +3225,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3234,7 +3234,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3252,7 +3252,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3261,7 +3261,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3270,7 +3270,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3279,7 +3279,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3297,7 +3297,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3306,7 +3306,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3315,7 +3315,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3324,7 +3324,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3342,7 +3342,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3351,7 +3351,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3360,7 +3360,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3369,7 +3369,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3387,7 +3387,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3396,7 +3396,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3405,7 +3405,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3414,7 +3414,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3432,7 +3432,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3441,7 +3441,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3450,7 +3450,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3459,7 +3459,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3477,7 +3477,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3486,7 +3486,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3495,7 +3495,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3504,7 +3504,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3522,7 +3522,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3531,7 +3531,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3540,7 +3540,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3549,7 +3549,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3567,7 +3567,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3576,7 +3576,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3585,7 +3585,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3594,7 +3594,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3612,7 +3612,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3621,7 +3621,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3630,7 +3630,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3639,7 +3639,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3657,7 +3657,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3666,7 +3666,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3675,7 +3675,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3684,7 +3684,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3702,7 +3702,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3711,7 +3711,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3720,7 +3720,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3729,7 +3729,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3747,7 +3747,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3756,7 +3756,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3765,7 +3765,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3774,7 +3774,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3792,7 +3792,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3801,7 +3801,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3810,7 +3810,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3819,7 +3819,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3837,7 +3837,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3846,7 +3846,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3855,7 +3855,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3864,7 +3864,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3882,7 +3882,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3891,7 +3891,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3900,7 +3900,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3909,7 +3909,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3927,7 +3927,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3936,7 +3936,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3945,7 +3945,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3954,7 +3954,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3972,7 +3972,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -3981,7 +3981,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -3990,7 +3990,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -3999,7 +3999,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4017,7 +4017,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4026,7 +4026,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4035,7 +4035,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4044,7 +4044,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4062,7 +4062,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4071,7 +4071,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4080,7 +4080,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4089,7 +4089,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4107,7 +4107,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4116,7 +4116,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4125,7 +4125,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4134,7 +4134,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4152,7 +4152,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4161,7 +4161,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4170,7 +4170,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4179,7 +4179,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4197,7 +4197,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4206,7 +4206,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4215,7 +4215,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4224,7 +4224,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4242,7 +4242,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4251,7 +4251,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4260,7 +4260,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4269,7 +4269,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4287,7 +4287,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4296,7 +4296,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4305,7 +4305,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4314,7 +4314,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4332,7 +4332,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4341,7 +4341,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4350,7 +4350,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4359,7 +4359,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4377,7 +4377,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4386,7 +4386,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4395,7 +4395,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4404,7 +4404,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4422,7 +4422,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4431,7 +4431,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4440,7 +4440,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4449,7 +4449,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4467,7 +4467,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4476,7 +4476,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4485,7 +4485,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4494,7 +4494,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4512,7 +4512,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4521,7 +4521,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4530,7 +4530,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4539,7 +4539,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4557,7 +4557,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4566,7 +4566,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4575,7 +4575,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4584,7 +4584,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4602,7 +4602,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4611,7 +4611,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4620,7 +4620,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4629,7 +4629,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4647,7 +4647,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4656,7 +4656,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4665,7 +4665,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4674,7 +4674,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4692,7 +4692,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4701,7 +4701,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4710,7 +4710,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4719,7 +4719,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4737,7 +4737,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4746,7 +4746,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4755,7 +4755,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4764,7 +4764,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4782,7 +4782,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4791,7 +4791,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4800,7 +4800,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4809,7 +4809,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4827,7 +4827,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4836,7 +4836,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4845,7 +4845,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4854,7 +4854,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4872,7 +4872,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4881,7 +4881,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4890,7 +4890,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4899,7 +4899,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4917,7 +4917,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4926,7 +4926,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4935,7 +4935,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4944,7 +4944,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4962,7 +4962,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -4971,7 +4971,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -4980,7 +4980,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -4989,7 +4989,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5007,7 +5007,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5016,7 +5016,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5025,7 +5025,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5034,7 +5034,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5052,7 +5052,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5061,7 +5061,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5070,7 +5070,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5079,7 +5079,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5097,7 +5097,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5106,7 +5106,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5115,7 +5115,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5124,7 +5124,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5142,7 +5142,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5151,7 +5151,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5160,7 +5160,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5169,7 +5169,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5187,7 +5187,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5196,7 +5196,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5205,7 +5205,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5214,7 +5214,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5232,7 +5232,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5241,7 +5241,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5250,7 +5250,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5259,7 +5259,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5277,7 +5277,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5286,7 +5286,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5295,7 +5295,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5304,7 +5304,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5322,7 +5322,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5331,7 +5331,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5340,7 +5340,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5349,7 +5349,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5367,7 +5367,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5376,7 +5376,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5385,7 +5385,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5394,7 +5394,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5412,7 +5412,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5421,7 +5421,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5430,7 +5430,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5439,7 +5439,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5457,7 +5457,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5466,7 +5466,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5475,7 +5475,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5484,7 +5484,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5502,7 +5502,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5511,7 +5511,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5520,7 +5520,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5529,7 +5529,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5547,7 +5547,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5556,7 +5556,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5565,7 +5565,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5574,7 +5574,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5592,7 +5592,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5601,7 +5601,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5610,7 +5610,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5619,7 +5619,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5637,7 +5637,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5646,7 +5646,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5655,7 +5655,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5664,7 +5664,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5682,7 +5682,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5691,7 +5691,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5700,7 +5700,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5709,7 +5709,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5727,7 +5727,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5736,7 +5736,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5745,7 +5745,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5754,7 +5754,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5772,7 +5772,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5781,7 +5781,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5790,7 +5790,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5799,7 +5799,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5817,7 +5817,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5826,7 +5826,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5835,7 +5835,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5844,7 +5844,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5862,7 +5862,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5871,7 +5871,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5880,7 +5880,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5889,7 +5889,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5907,7 +5907,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5916,7 +5916,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5925,7 +5925,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5934,7 +5934,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5952,7 +5952,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -5961,7 +5961,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -5970,7 +5970,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5979,7 +5979,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -5997,7 +5997,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -6006,7 +6006,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -6015,7 +6015,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -6024,7 +6024,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -6042,7 +6042,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -6051,7 +6051,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -6060,7 +6060,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -6069,7 +6069,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -6087,7 +6087,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -6096,7 +6096,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -6105,7 +6105,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -6114,7 +6114,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -6132,7 +6132,7 @@ export const table_data_mock = [
 	{
 		name: "Aarkay Finance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Inactive",
 		ekocsp_code: "10167082",
@@ -6141,7 +6141,7 @@ export const table_data_mock = [
 	{
 		name: "Deepu Phinance",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Pending",
 		ekocsp_code: "10167082",
@@ -6150,7 +6150,7 @@ export const table_data_mock = [
 	{
 		name: "Divu Tech",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",
@@ -6159,7 +6159,7 @@ export const table_data_mock = [
 	{
 		name: "Aaru Pharma",
 		mobile_number: "+91 95999 13099",
-		type: "Seller",
+		type: "Retailer",
 		createdAt: "12/10/2012",
 		account_status: "Active",
 		ekocsp_code: "10167082",

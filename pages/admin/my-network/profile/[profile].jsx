@@ -14,7 +14,7 @@ const Profile = () => {
 };
 
 Profile.pageMeta = {
-	title: "My Network > Seller Details | Admin",
+	title: "My Network > Retailer Details | Admin",
 	isSubPage: true,
 };
 

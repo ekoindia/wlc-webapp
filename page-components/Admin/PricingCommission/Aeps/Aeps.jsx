@@ -10,9 +10,9 @@ import { PricingForm } from "..";
  */
 const Aeps = ({ prop1, ...rest }) => {
 	const operationTypeList = [
-		{ value: "3", label: "Product" },
-		{ value: "2", label: "Distributors" },
-		{ value: "1", label: "Individuals" },
+		{ value: "3", label: "Whole Network" },
+		{ value: "2", label: "Distributors Network" },
+		{ value: "1", label: "Individual Distributor/Retailer" },
 	];
 
 	const pricingTypeList = [
