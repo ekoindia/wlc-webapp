@@ -4,6 +4,7 @@ export {
 	BulkOnboardingBreadcrumbData,
 	NetworkObject,
 	NotificationsBreadcrumbData,
+	OnboardingBreadcrumbData,
 	PricingCommissionObject,
 	QueryObject,
 	TransactionHistoryObject,
