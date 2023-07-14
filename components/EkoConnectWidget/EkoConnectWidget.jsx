@@ -1,4 +1,4 @@
-import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Flex, Spinner, Text, useToken } from "@chakra-ui/react";
 import { Button, ErrorBoundary, PaddingBox, PrintReceipt } from "components";
 import { ActionIcon } from "components/CommandBar";
 import { TransactionIds } from "constants";
@@ -67,6 +67,40 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		"https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents-lite.min.js",
 		"script"
 	);
+
+	// Get theme values
+	const [
+		primary,
+		primary_light,
+		primary_dark,
+		accent,
+		accent_light,
+		accent_dark,
+	] = useToken("colors", [
+		"primary.DEFAULT",
+		"primary.light",
+		"primary.dark",
+		"accent.DEFAULT",
+		"accent.light",
+		"accent.dark",
+	]);
+
+	const theme_colors = {
+		"--primary-color": accent,
+		"--light-primary-color": accent_light,
+		"--dark-primary-color": accent_dark,
+		"--accented-text-color": accent_light,
+		// "--menu-selected-background-color": accent,
+		// "--light-menu-selected-background-color": accent_light,
+		// "--dark-menu-selected-background-color": accent_dark,
+		"--secondary-button-color": accent,
+		"--light-secondary-button-color": accent_light,
+		"--dark-secondary-button-color": accent_dark,
+		"--primary-button-color": primary,
+		"--accent-color": primary,
+		"--light-accent-color": primary_light,
+		"--bright-accent-color": primary_dark,
+	};
 
 	// Subscribe to the Android responses
 	useEffect(() => {
@@ -308,6 +342,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 						analytics-partner-user-id={
 							userData.accountDetails.code || ""
 						}
+						theme-colors={JSON.stringify(theme_colors)}
 					></tf-wlc-widget>
 					{/* dark-theme={true} autolink_params={autolinkParams} zoho_id={userData.userDetails.zoho_id} */}
 				</PrintReceipt>

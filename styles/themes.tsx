@@ -29,9 +29,9 @@ export const light = extendTheme({
 			dark: "#f38300",
 		},
 		accent: {
-			light: "#1d3ac9",
+			light: "#1F3ABC", // ORIG_THEME: #1d3ac9
 			DEFAULT: "#11299E",
-			dark: "#0d2289",
+			dark: "#091968", // ORIG_THEME: #0d2289
 		},
 		secondary: {
 			light: "#2d6cbf",
@@ -60,7 +60,7 @@ export const light = extendTheme({
 		inputlabel: "#0C243B",
 		overlayBg: "#e9edf1b3",
 		sidebar: {
-			"icon-bg": "#1F3ABC",
+			"icon-bg": "#1F3ABC", // accent.light
 			"active-border": "#FE7D00",
 			"active-bg": "#081E89",
 			"card-bg": "#102174",

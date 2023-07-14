@@ -33,7 +33,14 @@ export const MockOrgDetails = {
 	logo: process.env.WLC_LOGO,
 	metadata: {
 		support_contacts: { email: "xyz@com", phone: "0123456789" },
-		theme: { primary_color: "#323233", secondary_color: "#8675656" },
+		theme: {
+			primary: process.env.THEME_PRIMARY || "",
+			primary_dark: process.env.THEME_PRIMARY_DARK || "",
+			primary_light: process.env.THEME_PRIMARY_LIGHT || "",
+			accent: process.env.THEME_ACCENT || "",
+			accent_dark: process.env.THEME_ACCENT_DARK || "",
+			accent_light: process.env.THEME_ACCENT_LIGHT || "",
+		},
 	},
 	login_types: {
 		google: {
