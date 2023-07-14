@@ -6,7 +6,7 @@ import { useState } from "react";
 import { BulkOnboardingResponse } from ".";
 
 const SAMPLE_DOWNLOAD_LINK = {
-	RETAILER:
+	MERCHANT:
 		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
 	DISTRIBUTOR:
 		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Distributor_Onboarding.xlsx",
@@ -128,7 +128,7 @@ const BulkOnboarding = () => {
 							<Link
 								href={
 									applicantType == 0
-										? SAMPLE_DOWNLOAD_LINK.RETAILER
+										? SAMPLE_DOWNLOAD_LINK.MERCHANT
 										: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
 								}
 								w="fit-content"

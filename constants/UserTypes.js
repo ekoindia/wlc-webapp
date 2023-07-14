@@ -14,7 +14,7 @@ export const UserType = {
 export const UserTypeLabel = {
 	1: "Distributor",
 	2: "Retailer",
-	3: "iSeller",
+	3: "Retailer", // I-Merchant
 	4: "Cash Executive", // FOS / CCE / Cash Executive / EkoStar?
 	5: "Sales Executive",
 	6: "Sub-Seller",
