@@ -13,7 +13,7 @@ import Router from "next/router";
 const PreviewSellerInfo = () => {
 	return (
 		<>
-			<Headings title="Preview Seller Information" />
+			<Headings title="Preview Agent Information" />
 			<Flex
 				direction={"column"}
 				w="full"

@@ -291,13 +291,13 @@ export const historyParametersMetadata = [
 	},
 	// {
 	// 	name: "merchant_name",
-	// 	field: "Seller Name",
+	// 	field: "Retailer Name",
 	// 	parameter_type_id: 12,
 	// 	// display_media_id: DisplayMedia.BOTH,
 	// },
 	// {
 	// 	name: "merchant_mobile",
-	// 	field: "Seller Mobile",
+	// 	field: "Retailer Mobile",
 	// 	parameter_type_id: 15,
 	// 	// display_media_id: DisplayMedia.BOTH,
 	// },
