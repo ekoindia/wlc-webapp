@@ -1,556 +1,428 @@
-import { Box, Divider, Flex, HStack, Select, Text } from "@chakra-ui/react";
-import { Button, Headings, Icon, Input, Switch } from "components";
-import { useRouter } from "next/router";
+import { Divider, Flex, FormControl, FormLabel, Text } from "@chakra-ui/react";
+import {
+	Button,
+	Headings,
+	Input,
+	InputLabel,
+	Select,
+	Switch,
+} from "components";
+import { Endpoints, ParamType, TransactionIds } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
-import { NewAddress, PermanentAddress } from ".";
+import { Controller, useForm } from "react-hook-form";
+
+const ownershipList = [
+	{ label: "Owned", value: "Owned" },
+	{ label: "Rented", value: "Rented" },
+];
 
 /**
- * A <UpdateSellerAddress> component
- * TODO: Write more description here
+ * A UpdateSellerAddress page-component
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<UpdateSellerAddress></UpdateSellerAddress>`
  */
-
 const UpdateSellerAddress = () => {
-	const router = useRouter();
-	const test = true;
-	const [visible, setVisible] = useState(test);
-	const [formCount, setFormCount] = useState(0);
-	const [formData, setFormData] = useState({
-		AddressLine1: "",
-		AddressLine2: "",
-		PostalCode: "",
-		City: "",
-		State: "",
-		Country: "",
-		OwnershipType: "",
-	});
+	const [agentData, setAgentData] = useState();
+	const [statesList, setStatesList] = useState();
+	const [isPermanentAddress, setIsPermanentAddress] = useState(true);
+	const { accessToken } = useSession();
+
+	const {
+		handleSubmit,
+		register,
+		formState: { errors /* isSubmitting */ },
+		control,
+		reset,
+	} = useForm();
+
+	const fetchStatesList = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: TransactionIds.STATE_TYPE,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				if (res.status === 0) {
+					setStatesList(res?.param_attributes.list_elements);
+				}
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
+	};
+
+	const fetchAgentDataViaCellNumber = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				// "tf-req-uri": `/network/agents?record_count=1&search_value=${cellnumber}`,
+				"tf-req-method": "GET",
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				setAgentData(res?.data?.agent_details[0]);
+			})
+			.catch((error) => {
+				console.error("[ProfilePanel] Get Agent Detail Error:", error);
+			});
+	};
 
 	useEffect(() => {
-		setFormData({
-			address1: "B-373 Second Floor Sector",
-			address2: "B-373 Second Floor Sector - 20",
-			PostalCode: 201301,
-			City: "Noida",
-			State: "Uttarpradesh",
-			Country: "India",
-			OwnershipType: "123123",
-		});
-
-		// TODO: Add your useEffect code here and update dependencies as required
+		fetchStatesList();
+		const storedData = JSON.parse(
+			localStorage.getItem("network_seller_details")
+		);
+		if (storedData !== undefined) {
+			setAgentData(storedData);
+		} else {
+			fetchAgentDataViaCellNumber();
+		}
 	}, []);
 
-	function handleAddNewAddress() {
-		setFormCount((prevCount) => prevCount + 1);
-	}
+	useEffect(() => {
+		let defaultValues = {};
+		defaultValues.address_line1 = agentData?.line_1;
+		defaultValues.address_line2 = agentData?.line_2;
+		defaultValues.pincode = agentData?.zip;
+		defaultValues.city = agentData?.city;
+		defaultValues.country_state =
+			agentData?.state == "Delhi"
+				? "National Capital Territory of Delhi (UT)"
+				: agentData?.state;
+		defaultValues.shop_ownership_type =
+			agentData?.address_details?.ownership_type;
 
-	//  Add new Address form render
-	function renderForms() {
-		const forms = [];
+		reset({ ...defaultValues });
+	}, [agentData]);
 
-		for (let i = 1; i <= formCount; i++) {
-			forms.push(
-				<div key={i}>
-					<Box>
-						<Text
-							fontSize={"20px"}
-							fontWeight="semibold"
-							mt="4.688rem"
-						>
-							New Address {i === 1 ? "" : i}
-						</Text>
-					</Box>
+	const handleFormSubmit = (submittedData) => {
+		const finalData = Object.entries(submittedData).reduce(
+			(acc, [key, value]) => {
+				if (value !== undefined && value !== "") {
+					acc[key] = value;
+				}
+				return acc;
+			},
+			{}
+		);
 
-					<NewAddress />
-				</div>
-			);
-		}
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"Content-type": "application/json",
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": "/network/agents/profile/address/update",
+				"tf-req-method": "PUT",
+			},
+			body: finalData,
+			token: accessToken,
+		})
+			.then((response) => {
+				console.log(response);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
 
-		return forms;
-	}
+	const currentAddressFormFields = [
+		{
+			id: "address_line1",
+			label: "Address Line 1",
+			required: true,
+			parameter_type_id: ParamType.TEXT,
+		},
+		{
+			id: "address_line2",
+			label: "Address Line 2",
+			required: false,
+			parameter_type_id: ParamType.TEXT,
+		},
+		{
+			id: "pincode",
+			label: "Postel Code",
+			required: true,
+			parameter_type_id: ParamType.NUMERIC,
+		},
+		{
+			id: "city",
+			label: "City",
+			required: true,
+			parameter_type_id: ParamType.TEXT,
+		},
+		{
+			id: "country_state",
+			label: "State",
+			required: true,
+			parameter_type_id: ParamType.LIST,
+			list_elements: statesList,
+		},
+		{
+			id: "country",
+			label: "Country",
+			required: true,
+			parameter_type_id: ParamType.TEXT,
+			disabled: true,
+			value: "India",
+		},
+		{
+			id: "shop_ownership_type",
+			label: "Ownership Type",
+			required: true,
+			parameter_type_id: ParamType.LIST,
+			list_elements: ownershipList,
+		},
+	];
 
-	//  Edit Input value
-	function handleInputChange(event) {
-		const { name, value } = event.target;
-		setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
-	}
+	const permanentAddressFormFields = [
+		{
+			id: "permanent_address_line1",
+			label: "Address Line 1",
+			required: true,
+			parameter_type_id: ParamType.TEXT,
+		},
+		{
+			id: "permanent_address_line2",
+			label: "Address Line 2",
+			required: false,
+			parameter_type_id: ParamType.TEXT,
+		},
+		{
+			id: "permanent_address_pincode",
+			label: "Postel Code",
+			required: true,
+			parameter_type_id: ParamType.NUMERIC,
+		},
+		{
+			id: "permanent_address_city",
+			label: "City",
+			required: true,
+			parameter_type_id: ParamType.TEXT,
+		},
+		{
+			id: "permanent_address_state",
+			label: "State",
+			required: true,
+			parameter_type_id: ParamType.LIST,
+			list_elements: statesList,
+		},
+		{
+			id: "permanent_address_country",
+			label: "Country",
+			required: true,
+			parameter_type_id: ParamType.TEXT,
+			disabled: true,
+			value: "India",
+		},
+		{
+			id: "permanent_address_shop_ownership_type",
+			label: "Ownership Type",
+			required: true,
+			parameter_type_id: ParamType.LIST,
+			list_elements: ownershipList,
+		},
+	];
+
+	// if (agentData == undefined) {
+	// 	return <div>Loading...</div>;
+	// }
 
 	return (
 		<>
 			<Headings title="Update Seller Address" />
 			<Flex
-				w="full"
-				h="auto"
-				p={{ base: "0px", md: "20px", "2xl": "14px 30px 30px 30px" }}
-				direction={"column"}
-				border={{ base: "", md: "card" }}
-				borderRadius={{ base: "0", md: "10" }}
-				boxShadow={{ base: "none", md: "0px 5px 15px #0000000D;" }}
-				bg={{ base: "none", md: "white" }}
+				direction="column"
+				borderRadius={{ base: "0", md: "10px 10px 0 0" }}
+				w="100%"
+				bg="white"
+				p={{ base: "16px", md: "30px 30px 20px" }}
+				gap="4"
+				fontSize="sm"
 			>
-				<Flex direction={"column"}>
-					<Box
-						bg={{ base: "white", "2xl": "none" }}
-						alignItems={{ base: "center", "2xl": "none" }}
-						borderBottom={{ base: "1px solid #D2D2D2", md: "none" }}
+				<Flex direction="column" gap="2">
+					<Text
+						fontSize="2xl"
+						color="accent.DEFAULT"
+						fontWeight="semibold"
 					>
-						<Flex
-							direction={"column"}
-							p={{ base: "12px", md: "0px" }}
-							boxShadow={{
-								base: "0px 5px 15px #0000000D",
-								md: "none",
-							}}
-							gap={{ base: "5px", md: "0px" }}
-						>
-							<Text
-								as="h1"
-								color="accent.DEFAULT"
-								fontWeight="bold"
-								fontSize={{ base: "lg", md: "2xl" }}
-							>
-								Angel Tech Private Limited
-							</Text>
-							<Text fontSize={{ base: "xs", md: "md" }}>
-								Edit the fields below and click Preview.
-								<Text
-									as="span"
-									display={{ base: "block", md: "inline" }}
-								>
-									{" "}
-									Click Cancel to return to Client HomePage
-									without submitting information.
-								</Text>
-							</Text>
-						</Flex>
-					</Box>
-					<Flex display={{ base: "none", md: "flex" }}>
-						<Divider color="hint" mt="15px" />
-					</Flex>
+						{agentData?.agent_name}
+					</Text>
+					<span>
+						Edit the fields below and click Preview. Click Cancel to
+						return to Client HomePage without submitting
+						information.
+					</span>
 				</Flex>
+				<Divider display={{ base: "none", md: "block" }} />
+			</Flex>
 
+			<Flex direction="column" px={{ base: "20px", md: "0" }}>
 				<Flex
-					direction={"column"}
-					bg={"white"}
-					w={{ base: "93%", md: "100%" }}
-					mt={{ base: "18px", md: "0px" }}
-					mb={"20px"}
-					mx={{ base: "16px", md: "0px" }}
-					borderRadius={{ base: "10px", md: "0", "2xl": "none" }}
-					border={{ base: "1px solid #D2D2D2", md: "0" }}
-					boxShadow={{ base: "0px 5px 15px #0000000D", md: "none" }}
+					direction="column"
+					w="100%"
+					bg="white"
+					borderRadius={{ base: "10px", md: "0 0 10px 10px" }}
+					p={{ base: "20px", md: "0 30px 30px" }}
+					marginTop={{ base: "20px", md: "0" }}
+					gap="2"
 				>
-					{/* Current Address */}
-					<Flex
-						direction={"column"}
-						p={{ base: "15px", md: "px" }}
-						mt={{ base: "0rem", md: "1rem", "2xl": "2.8rem" }}
-					>
-						<HStack
-							justifyContent={"space-between"}
-							// w={{ base: "100%", xl: "73%", "2xl": "66%" }}
-							w={{
-								base: "100%",
-								lg: "736px",
-								xl: "824px",
-								"2xl": "1020px",
-							}}
-						>
-							<Text
-								fontSize={{ base: "md", md: "xl" }}
-								fontWeight="semibold"
-							>
-								Current Address
-							</Text>
-							<Text color="error">* Mandatory</Text>
-						</HStack>
-
-						<Flex
-							rowGap={{ base: "2.8rem", sm: "2.5rem" }}
-							direction="column"
-						>
-							<Flex
-								wrap={"wrap"}
-								gap={{
-									md: "1.7rem",
-									lg: "2rem",
-									xl: "1.5rem",
-									"2xl": "1.2rem",
+					<form onSubmit={handleSubmit(handleFormSubmit)}>
+						<Flex direction="column" gap="8">
+							<Form
+								{...{
+									statesList,
+									register,
+									formState: { errors /* isSubmitting */ },
+									control,
+									renderer: currentAddressFormFields,
 								}}
-								mt={{ base: "2.25rem", md: "1.2rem" }}
-								direction={"row"}
-							>
-								<Box
-									w={{
-										base: "100%",
-										md: "48%",
-										lg: "350px",
-										xl: "400px",
-										"2xl": "500px",
-									}}
-								>
-									<Input
-										label="Address Line 1"
-										// defaultvalue={item.AddressLine1}
-										name="address1"
-										value={formData.address1}
-										onChange={handleInputChange}
-										required={true}
-										// invalid={true}
-										// errorMsg={"Please enter"}
-										// mb={{ base: 10, "2xl": "4.35rem" }}
-										// onChange={onChangeHandler}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
-									/>
-								</Box>
-								<Box
-									mt={{
-										base: "2.8rem",
-										md: "0",
-									}}
-									w={{
-										base: "100%",
-										md: "48%",
-										lg: "350px",
-										xl: "400px",
-										"2xl": "500px",
-									}}
-								>
-									<Input
-										label="Address Line 2"
-										value={formData.address2}
-										onChange={handleInputChange}
-										// invalid={true}
-										// errorMsg={"Please enter"}
-										// isNumInput={true}
-										// inputProps={{ maxLength: 12 }}
-										// onFocus={() => {
-										// 	setInvalid(false);
-										// }}
-										// onKeyDown={onkeyHandler}
-									/>
-								</Box>
-							</Flex>
-							<Flex
-								wrap={"wrap"}
-								gap={{
-									md: "1.7rem",
-									lg: "2rem",
-									xl: "1.5rem",
-									"2xl": "1.2rem",
-								}}
-							>
-								<Box
-									w={{
-										base: "100%",
-										md: "48%",
-										lg: "350px",
-										xl: "400px",
-										"2xl": "500px",
-									}}
-								>
-									<Input
-										label="Postal Code"
-										name="PostalCode"
-										value={formData.PostalCode}
-										onChange={handleInputChange}
-										required={true}
-										// invalid={true}
-										// errorMsg={"Please enter"}
-										// mb={{ base: 10, "2xl": "4.35rem" }}
-									/>
-								</Box>
-								<Box
-									w={{
-										base: "100%",
-										md: "48%",
-										lg: "350px",
-										xl: "400px",
-										"2xl": "500px",
-									}}
-									mt={{
-										base: "2.8rem",
-										md: "0",
-									}}
-								>
-									<Input
-										label="City"
-										value={formData.City}
-										name="City"
-										onChange={handleInputChange}
-										// invalid={true}
-										// errorMsg={"Please enter"}
-										// mb={{ base: 10, "2xl": "4.35rem" }}
-										// onChange={onChangeHandler}
-									/>
-								</Box>
-							</Flex>
-							<Flex
-								gap={{
-									md: "1.7rem",
-									lg: "2rem",
-									xl: "1.5rem",
-									"2xl": "1.2rem",
-								}}
-								wrap={"wrap"}
-								alignContent="center"
-							>
-								<Box
-									w={{
-										base: "100%",
-										md: "48%",
-										lg: "350px",
-										xl: "400px",
-										"2xl": "500px",
-									}}
-								>
-									<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
-										<Text as="span" color="error">
-											*
-										</Text>
-										&nbsp;{" "}
-										<Text
-											as="b"
-											style={{
-												fontSize: {
-													base: "sm",
-													"2xl": "lg",
-												},
-												color: "inputlabe",
-												pl: "0",
-												fontWeight: "600",
-											}}
-										>
-											State
-										</Text>
-									</Flex>
+							/>
 
-									<Box>
-										{/* TODO: Use our own custom <Select> component */}
-										<Select
-											placeholder="Uttarpradesh"
-											w={{
-												base: "100%",
-												// lg: "34vw",
-												// xl: "28vw",
-												// "2xl": "25vw",
-											}}
-											h={"3rem"}
-											borderRadius="10px"
-											icon={
-												<Icon
-													name="caret-down"
-													size="14px"
-													// h="10px"
-												/>
-											}
-										>
-											<option value="option1">
-												Delhi
-											</option>
-											<option value="option2">
-												Punjab
-											</option>
-										</Select>
-									</Box>
-								</Box>
-
-								<Box
-									mt={{
-										base: "2.8rem",
-										md: "0",
-									}}
-									w={{
-										base: "100%",
-										md: "48%",
-										lg: "350px",
-										xl: "400px",
-										"2xl": "500px",
-									}}
-								>
-									<Input
-										label="Country"
-										name="Country"
-										required
-										value={formData.Country}
-										onChange={handleInputChange}
-										// invalid={true}
-										// errorMsg={"Please enter"}
-										// mb={{ base: 10, "2xl": "4.35rem" }}
-										// onChange={onChangeHandler}
-									/>
-								</Box>
-							</Flex>
-
-							<Box
-								w={{
-									base: "100%",
-									md: "48%",
-									lg: "350px",
-									xl: "400px",
-									"2xl": "500px",
-								}}
-							>
-								<Flex mb={{ base: 2.5, "2xl": "0.8rem" }}>
-									<Text
-										as="b"
-										style={{
-											fontSize: {
-												base: "sm",
-												"2xl": "lg",
-											},
-											color: "inputlabe",
-											pl: "0",
-											fontWeight: "600",
-										}}
-									>
-										Ownership Type
-									</Text>
-								</Flex>
-
-								<Box
-									w={{
-										base: "100%",
-										// md: "48%",
-										lg: "350px",
-										xl: "400px",
-										"2xl": "500px",
-									}}
-								>
-									{/* TODO: Use our own custom <Select> component */}
-									<Select
-										placeholder="Permanent"
-										w={{
-											base: "100%",
-											// 		xl: "25vw",
-											// 		lg: "350px",
-											// xl: "400px",
-											// "2xl": "500px",
-										}}
-										h={"3rem"}
-										borderRadius="10px"
-										icon={
-											<Icon
-												name="caret-down"
-												size="14px"
-												// h="10px"
-											/>
-										}
-									>
-										<option value="Permanent"></option>
-									</Select>
-								</Box>
-							</Box>
-						</Flex>
-						{/* switch */}
-						<Flex
-							mt={{ base: "2.8rem", md: "3rem", "2xl": "3rem" }}
-							gap={{ base: "1rem", md: "4rem", "2xl": "2rem" }}
-							p={{ base: "5px", md: "0px" }}
-						>
-							<Box>
-								<Text
-									fontSize={{ base: "14px", md: "16px" }}
-									fontWeight="semibold"
-								>
+							<Flex align="center" gap="8">
+								<Text fontSize="sm" fontWeight="semibold">
 									Is your permanent address is same as above ?
 								</Text>
-							</Box>
-							<Box>
 								<Switch
-									setVisible={setVisible}
-									initialValue={test}
+									initialValue={true}
+									onChange={setIsPermanentAddress}
 								/>
-							</Box>
-						</Flex>
-					</Flex>
+							</Flex>
 
-					{/* Permanent Address */}
+							{!isPermanentAddress && (
+								<Form
+									{...{
+										statesList,
+										addressFormLabel: "Permanent Address",
+										register,
+										formState: {
+											errors /* isSubmitting */,
+										},
+										control,
+										renderer: permanentAddressFormFields,
+									}}
+								/>
+							)}
 
-					<Flex
-						display={{ base: "flex", md: "flex" }}
-						direction="column"
-					>
-						{!visible ? <PermanentAddress /> : ""}
-					</Flex>
-
-					{/* New Address */}
-					<Flex
-						display={{ base: "none", md: "flex" }}
-						direction="column"
-					>
-						{renderForms()}
-					</Flex>
-
-					<Flex
-						gap={{ md: "70px" }}
-						mt="30px"
-						p={{ base: "20px", md: "0px" }}
-						direction="column"
-					>
-						<Flex display={{ base: "none", md: "flex" }}>
-							<Button
-								w="15rem"
-								h="3.5rem"
-								bg="white"
-								_hover="none"
-								border="1px solid #11299E"
-								boxShadow="0px 3px 10px #11299E33"
-								onClick={handleAddNewAddress}
+							<Flex
+								direction={{ base: "column", md: "row" }}
+								gap={{ base: "4", md: "16" }}
 							>
-								<Text
-									color={"accent.DEFAULT"}
-									fontSize="20px"
-									fontWeight={"bold"}
+								<Button
+									h="64px"
+									fontWeight="bold"
+									w={{ base: "100%", md: "140px" }}
+									type="submit"
 								>
-									+&nbsp; Add New Address
-								</Text>
-							</Button>
+									Save Changes
+								</Button>
+								<Button
+									h="64px"
+									variant="link"
+									color="accent.DEFAULT"
+									fontWeight="bold"
+									_hover={{ textDecoration: "none" }}
+								>
+									Cancel
+								</Button>
+							</Flex>
 						</Flex>
-						<Flex
-							direction={{ base: "column", sm: "row" }}
-							alignItems="center"
-							gap={{
-								base: "2.1rem",
-								md: "4.8rem",
-								"2xl": "4.8rem",
-							}}
-							h="3.5rem"
-						>
-							<Button
-								h="100%"
-								fontSize="20px"
-								fontWeight="bold"
-								w={{
-									base: "100%",
-									sm: "10rem",
-									md: "12.2rem",
-								}}
-							>
-								Save Changes
-							</Button>
-
-							<Button
-								h="100%"
-								color={"accent.DEFAULT"}
-								fontSize={"20px"}
-								fontWeight="bold"
-								variant="ghost"
-								onClick={() => router.back()}
-							>
-								Cancel
-							</Button>
-						</Flex>
-					</Flex>
+					</form>
 				</Flex>
 			</Flex>
 		</>
 	);
 };
+
 export default UpdateSellerAddress;
+
+const Form = ({
+	addressFormLabel = "Current Address",
+	renderer,
+	register,
+	formState: { errors /* isSubmitting */ },
+	control,
+}) => {
+	return (
+		<Flex direction="column" gap="4">
+			<InputLabel fontSize="lg" fontWeight="medium" mb="0" required>
+				{addressFormLabel}
+			</InputLabel>
+			<Flex direction="column" gap="8">
+				<Flex gap="8" wrap="wrap" maxW="1200px">
+					{renderer?.map(
+						({
+							id,
+							label,
+							required,
+							value,
+							disabled,
+							list_elements,
+							parameter_type_id,
+						}) => {
+							switch (parameter_type_id) {
+								case ParamType.LIST:
+									return (
+										<FormControl
+											id={id}
+											w={{ base: "100%", md: "500px" }}
+											isInvalid={errors.priority}
+										>
+											<FormLabel>{label}</FormLabel>
+											<Controller
+												name={id}
+												control={control}
+												render={({
+													field: { onChange, value },
+												}) => {
+													return (
+														<Select
+															value={value}
+															options={
+																list_elements
+															}
+															onChange={onChange}
+														/>
+													);
+												}}
+											/>
+										</FormControl>
+									);
+								case ParamType.NUMERIC:
+								case ParamType.TEXT:
+									return (
+										<FormControl
+											key={id}
+											w={{
+												base: "100%",
+												md: "500px",
+											}}
+										>
+											<Input
+												id={id}
+												label={label}
+												required={required}
+												value={value}
+												type={
+													parameter_type_id ===
+													ParamType.NUMERIC
+														? "number"
+														: "text"
+												}
+												fontSize="sm"
+												disabled={disabled}
+												{...register(id)}
+											/>
+										</FormControl>
+									);
+							}
+						}
+					)}
+				</Flex>
+			</Flex>
+		</Flex>
+	);
+};

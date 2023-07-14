@@ -1,4 +1,4 @@
-import Cards from "components/Cards/Cards";
+import { Card } from "components/Card";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Cards", () => {
+describe("Card", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Cards />);
+		const { container } = render(<Card />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Cards", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Cards in __tests__/components/Cards/Cards.test.jsx"
+		"TODO: add proper test cases for Card in __tests__/components/Card/Card.test.jsx"
 	);
 });

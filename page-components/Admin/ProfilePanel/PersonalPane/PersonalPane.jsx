@@ -6,7 +6,7 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Cards, IconButtons } from "components";
+import { Card, IconButtons } from "components";
 import Router from "next/router";
 
 /**
@@ -49,7 +49,7 @@ const PersonalPane = ({ rowData: personalpane }) => {
 	];
 
 	return (
-		<Cards h="auto">
+		<Card h="auto">
 			<Box
 				display="flex"
 				alignItems={"center"}
@@ -87,7 +87,7 @@ const PersonalPane = ({ rowData: personalpane }) => {
 					</Box>
 				))}
 			</Stack>
-		</Cards>
+		</Card>
 	);
 };
 

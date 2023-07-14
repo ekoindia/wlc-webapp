@@ -1,6 +1,6 @@
 export const NetworkObject = {
 	"/admin/my-network": "My Network",
-	"/admin/my-network/profile": "Seller Details",
+	"/admin/my-network/profile": "Agent Details",
 	"/admin/my-network/profile/up-sell-info": "Update Seller Information",
 	"/admin/my-network/profile/up-sell-add": "Update Seller Address",
 	"/admin/my-network/profile/up-per-info": "Update Personal Information",

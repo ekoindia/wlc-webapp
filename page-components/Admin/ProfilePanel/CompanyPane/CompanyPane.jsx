@@ -8,7 +8,7 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Button, Cards, Currency, IcoButton, Icon } from "components";
+import { Button, Card, Currency, IcoButton, Icon } from "components";
 import { useRouter } from "next/router";
 /**
  * A <CompanyPane> component
@@ -33,7 +33,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 	];
 
 	return (
-		<Cards>
+		<Card>
 			<Flex gap="5" align="center">
 				<Avatar
 					w={{ base: 16, lg: 59, xl: 90 }}
@@ -138,7 +138,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 					</Button>
 				</Flex>
 			</Box>
-		</Cards>
+		</Card>
 	);
 };
 

@@ -3,7 +3,7 @@ import { Breadcrumbs } from "./Breadcrumb";
 import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
-import { Cards } from "./Cards";
+import { Card } from "./Card";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
 import { Divider } from "./Divider";
@@ -42,6 +42,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	Card,
 	PrintReceipt,
 	PageLoader,
 	Dropzone,
@@ -80,7 +81,6 @@ export {
 	InputLabel,
 	Input,
 	Layout,
-	Cards,
 	SearchBar,
 	Breadcrumbs,
 	/* PLOP_INJECT_EXPORT */

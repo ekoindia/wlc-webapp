@@ -1,5 +1,5 @@
 import { Box, Flex, Text, useMediaQuery } from "@chakra-ui/react";
-import { Button, Cards, Currency, Headings } from "components";
+import { Button, Card, Currency, Headings } from "components";
 import useRequest from "hooks/useRequest";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -73,7 +73,7 @@ const AccountStatement = () => {
 					}}
 					margin={"auto"}
 				>
-					<Cards w={"100%"} h={"100%"}>
+					<Card w={"100%"} h={"100%"}>
 						<Flex
 							flexDirection={"column"}
 							justifyContent={"center"}
@@ -230,7 +230,7 @@ const AccountStatement = () => {
 								</Flex>
 							</Flex>
 						</Flex>
-					</Cards>
+					</Card>
 				</Box>
 				<Box marginTop={{ base: "20px", lg: "0rem" }}>
 					<AccountStatementTable acctabledata={acctabledata} />

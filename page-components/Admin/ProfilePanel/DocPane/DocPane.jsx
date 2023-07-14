@@ -9,7 +9,7 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Button, Cards, Icon, IconButtons } from "components";
+import { Button, Card, Icon, IconButtons } from "components";
 
 /**
  * A <DocPane> component
@@ -56,7 +56,7 @@ const DocPane = (/* props */) => {
 	];
 
 	return (
-		<Cards>
+		<Card>
 			<Heading
 				fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 				fontWeight="semibold"
@@ -139,7 +139,7 @@ const DocPane = (/* props */) => {
 					Download All
 				</Button>
 			</Flex>
-		</Cards>
+		</Card>
 	);
 };
 

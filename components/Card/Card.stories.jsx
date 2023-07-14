@@ -1,9 +1,9 @@
-import PermanentAddress from "./PermanentAddress";
+import Card from "./Card";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "PageComponent/Admin/UpdateSellerAddress/PermanentAddress",
-	component: PermanentAddress,
+	title: "Component/Card",
+	component: Card,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +46,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <PermanentAddress {...args} />;
+const Template = (args) => <Card {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

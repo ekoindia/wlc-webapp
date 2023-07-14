@@ -7,7 +7,7 @@ import {
 	Text,
 	useMediaQuery,
 } from "@chakra-ui/react";
-import { Cards, IconButtons } from "components";
+import { Card, IconButtons } from "components";
 
 /**
  * A <ContactPane> component
@@ -20,7 +20,7 @@ const ContactPane = ({ rowData: contactdata }) => {
 	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
 
 	return (
-		<Cards h={{ base: "auto", lg: "100%" }}>
+		<Card h="auto">
 			<Box
 				display="flex"
 				alignItems="center"
@@ -86,7 +86,7 @@ const ContactPane = ({ rowData: contactdata }) => {
 					/>
 				</Flex>
 			</Stack>
-		</Cards>
+		</Card>
 	);
 };
 
