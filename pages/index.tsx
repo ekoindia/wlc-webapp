@@ -19,7 +19,7 @@ export default function Index(/* { data } */) {
 					type="image/svg+xml"
 					href="/favicon.closed.svg"
 				/> */}
-				<title>Login!</title>
+				<title>Login</title>
 			</Head>
 			<LoginPanel />
 		</>
