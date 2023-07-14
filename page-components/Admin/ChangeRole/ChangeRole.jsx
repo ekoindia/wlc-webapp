@@ -116,10 +116,10 @@ const ChangeRole = () => {
 							},
 						}}
 					>
-						<Tab>Transfer Sellers</Tab>
-						<Tab>Promote Seller To Distributor</Tab>
+						<Tab>Transfer Retailers</Tab>
+						<Tab>Promote Retailer To Distributor</Tab>
 						<Tab>Demote Distributor</Tab>
-						<Tab>Upgrade Seller To iSeller</Tab>
+						<Tab>Upgrade Retailer To iRetailer</Tab>
 					</TabList>
 
 					<TabPanels

@@ -233,7 +233,7 @@ const UpdateSellerAddress = () => {
 
 	return (
 		<>
-			<Headings title="Update Seller Address" />
+			<Headings title="Update Agent Address" />
 			<Flex
 				direction="column"
 				borderRadius={{ base: "0", md: "10px 10px 0 0" }}

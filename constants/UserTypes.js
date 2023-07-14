@@ -17,9 +17,9 @@ export const UserTypeLabel = {
 	3: "Retailer", // I-Merchant
 	4: "Cash Executive", // FOS / CCE / Cash Executive / EkoStar?
 	5: "Sales Executive",
-	6: "Sub-Seller",
+	6: "Sub-Retailer",
 	7: "Super-Distributor",
-	8: "Payment Seller",
+	8: "Payment Retailer",
 	10: "User", // Customer
 	23: "Enterprise Partner", // API Partner Dashboard
 };

@@ -17,7 +17,7 @@ const UpdateSellerInfo = () => {
 
 	return (
 		<>
-			<Headings title="Update Seller Information" />
+			<Headings title="Update Agent Information" />
 			<Flex
 				pb={{ base: "0", md: "40px" }}
 				bg={{ base: "none", md: "white" }}
