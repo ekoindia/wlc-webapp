@@ -13,7 +13,7 @@ function PreviewSellerInfoPage() {
 }
 
 PreviewSellerInfoPage.pageMeta = {
-	title: "My Network > Preview Seller Info | Admin",
+	title: "My Network > Preview Retailer Info | Admin",
 	isSubPage: true,
 };
 

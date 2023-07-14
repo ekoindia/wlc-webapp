@@ -70,7 +70,7 @@ const MoveAgents = ({
 						as="span"
 						display={{ base: "block", lg: "inline-block" }}
 					>
-						Select Sellers From:
+						Select Retailers From:
 					</Text>{" "}
 					AngelTech Private Limited
 				</Text>
@@ -109,7 +109,7 @@ const MoveAgents = ({
 						},
 					}}
 				>
-					{/* Select Sellers From */}
+					{/* Select Retailers From */}
 					{options &&
 						options.map((ele, idx) => {
 							return (
