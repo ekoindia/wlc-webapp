@@ -16,7 +16,7 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 	const tnc =
 		receiptTnc ??
 		orgDetail?.metadata?.tnc ??
-		`${orgDetail.app_name} at no such point of time has any right, title or interest over the contract for sale of any of the products or services between the Seller and the Buyer nor shall ${orgDetail.app_name} have any obligation or liabilities in respect of such contract.`;
+		`${orgDetail.app_name} at no such point of time has any right, title or interest over the contract for sale of any of the products or services between the Retailer and the Buyer nor shall ${orgDetail.app_name} have any obligation or liabilities in respect of such contract.`;
 
 	if (!isLoggedIn) {
 		return <>{children}</>;

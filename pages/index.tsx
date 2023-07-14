@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { LoginPanel } from "page-components";
 
 /**
@@ -10,7 +11,19 @@ export default function Index(/* { data } */) {
 	// 	setOrgDetail(data);
 	// }, [data]);
 
-	return <LoginPanel />;
+	return (
+		<>
+			<Head>
+				{/* <link
+					rel="icon"
+					type="image/svg+xml"
+					href="/favicon.closed.svg"
+				/> */}
+				<title>Login</title>
+			</Head>
+			<LoginPanel />
+		</>
+	);
 }
 
 // export async function getServerSideProps({ req }) {

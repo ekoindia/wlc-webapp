@@ -400,7 +400,13 @@ const RadioInput = ({ name, label, defaultValue, radioGroupList, control }) => {
 									key={item.value}
 									value={item.value}
 								>
-									<Text fontSize="sm">{item.label}</Text>
+									<Text
+										fontSize="sm"
+										whiteSpace="nowrap"
+										maxWidth="200px"
+									>
+										{item.label}
+									</Text>
 								</Radio>
 							))}
 						</Flex>

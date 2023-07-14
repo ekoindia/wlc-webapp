@@ -4,7 +4,7 @@ import { NetworkCard } from "..";
 
 /**
  * A NetworkTable page-component
- * TODO: This is my network table which will redirect to seller details on row click
+ * TODO: This is my network table which will redirect to Retailer details on row click
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkTable></NetworkTable>`

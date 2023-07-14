@@ -95,6 +95,13 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 				...light,
 		  };
 
+	// Setup default toast options for small screen...
+	if (typeof window !== "undefined") {
+		if (window.innerWidth < 768) {
+			toastDefaultOptions.position = "top-right" as ToastPosition;
+		}
+	}
+
 	// Mock login for local testing...
 	let mockUser = null;
 	if (process.env.NEXT_PUBLIC_ENV === "development") {

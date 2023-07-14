@@ -96,14 +96,23 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 
 	return (
 		<>
-			{title ? (
-				<Head>
+			<Head>
+				{title ? (
 					<title>
 						{title}
 						{appName ? ` | ${appName}` : ""}
 					</title>
-				</Head>
-			) : null}
+				) : null}
+				{isLoggedIn ? (
+					<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+				) : (
+					<link
+						rel="icon"
+						type="image/svg+xml"
+						href="/favicon.closed.svg"
+					/>
+				)}
+			</Head>
 
 			{/* Show page-loading animation */}
 			{isPageLoading && <PageLoader />}

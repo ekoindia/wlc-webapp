@@ -4,7 +4,7 @@ export const ChangeRoleMenuList = [
 		path: "/admin/my-network/profile/change-role?tab=0",
 	},
 	{
-		label: "Promote Seller To Distributor",
+		label: "Promote Retailer To Distributor",
 		path: "/admin/my-network/profile/change-role?tab=1",
 	},
 	{
