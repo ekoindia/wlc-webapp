@@ -12,6 +12,7 @@ import { useState } from "react";
 const MoveAgents = ({
 	ShowSelectAgents,
 	options,
+	label,
 	// selectedEkocspids,
 	onSelectedEkocspidsChange,
 	setSelectedEkocspidsCR,
@@ -57,23 +58,17 @@ const MoveAgents = ({
 	//   onSelectedEkocspidsChange(uniqueEkocspids);
 	// }, [checked]);
 	return (
-		<Box w={{ base: "100%", md: "500px" }} bg="white">
+		<Flex
+			direction="column"
+			w={{ base: "100%", md: "500px" }}
+			bg="white"
+			gap="3"
+		>
 			{!ShowSelectAgents ? (
-				<Text
-					color="inputlabel"
-					fontSize="md"
-					fontWeight="semibold"
-					mb="15px"
-				>
-					<Text
-						color="light"
-						as="span"
-						display={{ base: "block", lg: "inline-block" }}
-					>
-						Select Retailers From:
-					</Text>{" "}
-					AngelTech Private Limited
-				</Text>
+				<Flex fontWeight="semibold" gap="1">
+					<Text color="light"> Move Retailers To:</Text>
+					<Text>{label}</Text>
+				</Flex>
 			) : (
 				""
 			)}
@@ -133,20 +128,20 @@ const MoveAgents = ({
 										onChange={() => OnCheckHandler(idx)}
 									/>
 									<Avatar
-										name={ele.DisplayName[0]}
+										name={ele.name[0]}
 										bg="accent.DEFAULT"
 										w="36px"
 										h="36px"
 									/>
 									<Text ml="-5px" fontSize="sm">
-										{ele.DisplayName}
+										{ele.name}
 									</Text>
 								</Flex>
 							);
 						})}
 				</Box>
 			</Flex>
-		</Box>
+		</Flex>
 	);
 };
 

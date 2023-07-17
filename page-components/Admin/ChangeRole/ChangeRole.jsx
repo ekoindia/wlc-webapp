@@ -13,7 +13,12 @@ import { Button, Headings } from "components";
 import { useRouter } from "next/router";
 
 import { useState } from "react";
-import { MoveAgents, TransferSeller } from ".";
+import {
+	MoveAgents,
+	PromoteSellerToDistributor,
+	TransferSeller,
+	UpgradeSellerToIseller,
+} from ".";
 
 /**
  * A <ChangeRole> component
@@ -46,17 +51,17 @@ const ChangeRole = () => {
 		{
 			id: 2,
 			label: "Promote Seller To Distributor",
-			comp: "Coming Soon...",
+			comp: <PromoteSellerToDistributor />,
 		},
-		{
-			id: 3,
-			label: "Demote Distributor",
-			comp: "Coming Soon...",
-		},
+		// {
+		// 	id: 3,
+		// 	label: "Demote Distributor",
+		// 	comp: "Coming Soon...",
+		// },
 		{
 			id: 4,
 			label: "Upgrade Seller To iSeller",
-			comp: "Coming Soon...",
+			comp: <UpgradeSellerToIseller />,
 		},
 	];
 

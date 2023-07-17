@@ -1,80 +1,135 @@
-import { Avatar, Box, Circle, Flex, Select, Text } from "@chakra-ui/react";
-import { Button, Icon } from "components";
-import { Endpoints } from "constants/EndPoints";
-// import { useOrgDetailContext } from "contexts/OrgDetailContext";
-import { useSession } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
+import {
+	Avatar,
+	Circle,
+	Flex,
+	FormControl,
+	FormLabel,
+	Text,
+} from "@chakra-ui/react";
+import { Button, Icon, Select } from "components";
+import { Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
-import { MoveAgents as FromAgents } from "..";
+import { MoveAgents } from "..";
 
-const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
-	function handleSelectedEkocspids(newSelectedEkocspids) {
-		setSelectedEkocspids(newSelectedEkocspids);
-	}
-
-	const [selectedEkocspids, setSelectedEkocspids] = useState([]);
-
-	const [fromValue, setFromValue] = useState("");
-	const [toValue, setToValue] = useState("");
-	const [distributor, setDistributor] = useState([]);
+const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
+	const [transferAgentsFrom, setTransferAgentsFrom] = useState({
+		value: "",
+		label: "",
+	});
+	const [transferAgentsTo, setTransferAgentsTo] = useState({
+		value: "",
+		label: "",
+	});
+	const [distributors, setDistributors] = useState([]);
+	const [filteredDistributors, setFilteredDistributors] = useState([]);
 	const [scspFrom, setScspFrom] = useState([]);
 	const [scspto, setScspTo] = useState([]);
+	const [selectedEkocspids, setSelectedEkocspids] = useState([]);
+	// const [fromSellerid, setFromSellerid] = useState([]);
 	const { accessToken } = useSession();
-	// const { orgDetail } = useOrgDetailContext();
-	const [fromSellerid, setFromSellerid] = useState([]);
 
-	const handleFromChange = (event) => {
-		setFromValue(event.target.value);
-	};
-	function handleToChange(event) {
-		setToValue(event.target.value);
-	}
+	// const handleMoveagent = () => {
+	// 	setFromSellerid(selectedEkocspids);
+	// };
 
-	const handleMoveagent = () => {
-		setFromSellerid(selectedEkocspids);
+	const handleSelectedEkocspids = (newSelectedEkocspids) => {
+		setSelectedEkocspids(newSelectedEkocspids);
 	};
 
-	const body = {
-		scspFrom: fromValue,
-		scspTo: toValue,
-		selectedTransferredCSPList: fromSellerid,
+	const fetchList = (headers, cb) => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: headers,
+			token: accessToken,
+		}).then((res) => {
+			cb(res);
+		});
 	};
+
+	const handleTransferAgentsSelectChange = (event, type) => {
+		const selectedValue = event.target.value;
+		const selectedLabel =
+			event.target.options[event.target.selectedIndex].text;
+
+		if (type === "FROM") {
+			setTransferAgentsFrom({
+				value: selectedValue,
+				label: selectedLabel,
+			});
+		} else {
+			setTransferAgentsTo({ value: selectedValue, label: selectedLabel });
+		}
+	};
+
+	// const body = {
+	// 	scspFrom: transferAgentsFrom,
+	// 	scspTo: transferAgentsTo,
+	// 	selectedTransferredCSPList: fromSellerid,
+	// };
 
 	useEffect(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"Content-Type": "application/json",
+		fetchList(
+			{
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agents/profile/changeRole/transfercsps",
-				"tf-req-method": "PUT",
+				"tf-req-uri": "/network/agent-list?usertype=1",
+				"tf-req-method": "GET",
 			},
-			body: body,
-			token: accessToken,
-		})
-			.then((data) => {
-				const distributor = data?.data?.allScspList ?? [];
-				console.log("distributor", distributor);
-				setDistributor(distributor);
+			(res) => {
+				const _distributor = res?.data?.csp_list;
+				setDistributors(_distributor);
+			}
+		);
+	}, []);
 
-				const scspFrom = data?.data?.allCspListOfScspFrom ?? [];
-				console.log("scspFrom", scspFrom);
-				setScspFrom(scspFrom);
-
-				const scspTo = data?.data?.allCspListOfScspTo ?? [];
-				console.log("scsp", scspTo);
-				setScspTo(scspTo);
-
-				// Call the onScspFromChange function with the scspFrom values
-				onScspFromChange(scspFrom);
-			})
-			.catch((error) => {
-				console.error("📡 Fetch Error:", error);
+	useEffect(() => {
+		if (transferAgentsFrom.value == "") {
+			setTransferAgentsTo({
+				value: "",
+				label: "",
 			});
-	}, [fromValue, toValue, fromSellerid]);
+		}
+
+		if (transferAgentsFrom.value != "") {
+			fetchList(
+				{
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": `/network/agent-list?usertype=2&user_id=${transferAgentsFrom.value}`,
+					"tf-req-method": "GET",
+				},
+				(res) => {
+					const _seller = res?.data?.csp_list ?? [];
+					const _filteredDistributor = distributors?.filter(
+						(item) =>
+							item[renderer.value] !== transferAgentsFrom.value
+					);
+					setScspFrom(_seller);
+					setFilteredDistributors(_filteredDistributor);
+				}
+			);
+		}
+		if (transferAgentsTo.value != "") {
+			fetchList(
+				{
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": `/network/agent-list?usertype=2&user_id=${transferAgentsTo.value}`,
+					"tf-req-method": "GET",
+				},
+				(res) => {
+					const _seller = res?.data?.csp_list ?? [];
+					setScspTo(_seller);
+				}
+			);
+		}
+	}, [transferAgentsFrom, transferAgentsTo]);
+
+	const renderer = {
+		label: "name",
+		value: "user_code",
+	};
 
 	return (
-		<Box>
-			{/* Select  */}
+		<div>
 			<Flex
 				px="0"
 				columnGap={{
@@ -86,73 +141,118 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 				rowGap={{ base: "40px", md: "30px" }}
 				flexWrap="wrap"
 			>
-				<Box w={{ base: "100%", xl: "460px", "2xl": "500px" }}>
-					<Text
-						color="#0C243B"
-						fontSize={{ base: "sm", md: "md" }}
-						fontWeight="semibold"
-						mb="2.5"
-					>
+				<FormControl w={{ base: "100%", xl: "500px" }}>
+					<FormLabel>
 						Select distributor to transfer agents from
-					</Text>
-
+					</FormLabel>
 					<Select
 						id="from-select"
-						value={fromValue}
-						onChange={handleFromChange}
-						w="100%"
-						placeholder="--Select--"
-						h="12"
-						icon={
-							<Icon
-								name="caret-down"
-								size="14px"
-								// h="10px"
-								color="light"
-							/>
+						value={transferAgentsFrom.value}
+						onChange={(event) =>
+							handleTransferAgentsSelectChange(event, "FROM")
 						}
-						distributor={distributor}
-					>
-						{distributor?.map((option) => (
-							<option key={option.value} value={option.ekocspid}>
-								{option.DisplayName}
-							</option>
-						))}
-					</Select>
-				</Box>
-				<Box w={{ base: "100%", xl: "460px", "2xl": "500px" }}>
-					<Text
-						color="#0C243B"
-						fontSize={{ base: "sm", md: "md" }}
-						fontWeight="semibold"
-						mb="2.5"
-					>
+						renderer={renderer}
+						options={distributors}
+					/>
+				</FormControl>
+				<FormControl w={{ base: "100%", xl: "500px" }}>
+					<FormLabel>
 						Select distributor to transfer agents to
-					</Text>
+					</FormLabel>
 					<Select
 						id="to-select"
-						value={toValue}
-						onChange={handleToChange}
-						w="100%"
-						placeholder="--Select--"
-						h="12"
-						icon={
-							<Icon
-								name="caret-down"
-								size="14px"
-								// h="10px"
-								color="light"
-							/>
+						value={transferAgentsTo.value}
+						onChange={(event) =>
+							handleTransferAgentsSelectChange(event, "TO")
 						}
-					>
-						{distributor.map((option) => (
-							<option key={option.value} value={option.ekocspid}>
-								{option.DisplayName}
-							</option>
-						))}
-					</Select>
-				</Box>
+						renderer={renderer}
+						options={filteredDistributors}
+						disabled={!transferAgentsFrom.value}
+					/>
+				</FormControl>
 			</Flex>
+
+			{/* Select for Move */}
+			{transferAgentsFrom.value && transferAgentsTo.value ? (
+				<Flex mt="10.5" h="auto" display={{ base: "none", md: "flex" }}>
+					<MoveAgents
+						options={scspFrom}
+						selectedEkocspids={selectedEkocspids}
+						onSelectedEkocspidsChange={handleSelectedEkocspids}
+						label={transferAgentsFrom.label}
+					/>
+					<Flex width="180px" align="center" justify="center">
+						<Circle
+							bg="secondary.DEFAULT"
+							w="82px"
+							h="82px"
+							color="divider"
+						>
+							<Icon
+								name="fast-forward"
+								// width="34px"
+								size="36px"
+							/>
+						</Circle>
+					</Flex>
+					<Flex w="500px" direction="column" gap="3">
+						<Flex fontWeight="semibold" gap="1">
+							<Text color="light"> Move Retailers To:</Text>
+							<Text display="block">
+								{transferAgentsTo.label}
+							</Text>
+						</Flex>
+						<Flex
+							w="100%"
+							direction="column"
+							border="card"
+							borderRadius="10"
+							h="635px"
+							overflow="auto"
+							css={{
+								"&::-webkit-scrollbar": {
+									width: "7px",
+								},
+								"&::-webkit-scrollbar-track": {
+									width: "7px",
+								},
+								"&::-webkit-scrollbar-thumb": {
+									background: "#555555",
+									borderRadius: "5px",
+									border: "1px solid #707070",
+								},
+							}}
+						>
+							{/* Move Retailer To */}
+							{scspto?.map((ele, idx) => {
+								return (
+									<Flex
+										px="5"
+										py="4"
+										bg="inherit"
+										key={idx}
+										_even={{
+											bg: "shade",
+										}}
+										color="accent.DEFAULT"
+										fontSize="sm"
+										columnGap="15px"
+										align="center"
+									>
+										<Avatar
+											name={ele.name[0]}
+											bg="accent.DEFAULT"
+											w="36px"
+											h="36px"
+										/>
+										{ele.name}
+									</Flex>
+								);
+							})}
+						</Flex>
+					</Flex>
+				</Flex>
+			) : null}
 
 			{/* Button for mobile responsive */}
 			<Flex
@@ -179,98 +279,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 					Cancel
 				</Button>
 			</Flex>
-
-			{/* Select for Move */}
-			<Flex mt="10.5" h="auto" display={{ base: "none", md: "flex" }}>
-				<FromAgents
-					options={scspFrom}
-					selectedEkocspids={selectedEkocspids}
-					onSelectedEkocspidsChange={handleSelectedEkocspids}
-				/>{" "}
-				<Flex width="180px" align="center" justify="center">
-					<Circle
-						bg="secondary.DEFAULT"
-						w="82px"
-						h="82px"
-						color="divider"
-					>
-						<Icon
-							name="fast-forward"
-							// width="34px"
-							size="36px"
-						/>
-					</Circle>
-				</Flex>
-				<Box w="500px">
-					<Text
-						color="#0C243B"
-						fontSize={"md"}
-						fontWeight="semibold"
-						mb="15px"
-					>
-						<Text
-							as="span"
-							color="light"
-							display={{ base: "block", lg: "inline-block" }}
-						>
-							Move Retailers To:
-						</Text>{" "}
-						AngelTech Private Limited
-					</Text>
-					<Flex
-						w="100%"
-						direction="column"
-						border="card"
-						borderRadius="10"
-						h="635px"
-						overflow="auto"
-						css={{
-							"&::-webkit-scrollbar": {
-								width: "7px",
-							},
-							"&::-webkit-scrollbar-track": {
-								width: "7px",
-							},
-							"&::-webkit-scrollbar-thumb": {
-								background: "#555555",
-								borderRadius: "5px",
-								border: "1px solid #707070",
-							},
-						}}
-					>
-						{/* Move Retailer To */}
-						{scspto.length
-							? scspto.map((ele, idx) => {
-									return (
-										<Flex
-											px="5"
-											py="4"
-											bg="inherit"
-											key={idx}
-											_even={{
-												bg: "shade",
-											}}
-											color="accent.DEFAULT"
-											fontSize="sm"
-											columnGap="15px"
-											align="center"
-										>
-											<Avatar
-												name={ele.DisplayName[0]}
-												bg="accent.DEFAULT"
-												w="36px"
-												h="36px"
-											/>
-											{ele.DisplayName}
-										</Flex>
-									);
-							  })
-							: null}
-					</Flex>
-				</Box>
-			</Flex>
-
-			{/* Buttons */}
+			{/* Buttons for desktop */}
 			<Flex
 				mt="70px"
 				columnGap="36px"
@@ -282,7 +291,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 					w="164px"
 					h="100%"
 					fontSize={"xl"}
-					onClick={handleMoveagent}
+					// onClick={handleMoveagent}
 				>
 					Move Now
 				</Button>
@@ -295,7 +304,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 					Cancel
 				</Button>
 			</Flex>
-		</Box>
+		</div>
 	);
 };
 
