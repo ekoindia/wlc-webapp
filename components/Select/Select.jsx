@@ -14,9 +14,9 @@ const Select = ({
 	inputContStyle,
 	options,
 	onChange,
-	// defaultValue,
-	// value,
+	value,
 	disabled = false,
+	renderer = { label: "label", value: "value" },
 	...rest
 }) => {
 	return (
@@ -48,14 +48,17 @@ const Select = ({
 				icon={<Icon name="caret-down" />}
 				iconSize="10px"
 				onChange={onChange}
-				// value={value}
-				// defaultValue={defaultValue}
+				value={value}
 				{...inputContStyle}
 				{...rest}
 			>
-				{options?.map(({ value, label, selected }) => (
-					<option value={value} key={label} selected={selected}>
-						{label}
+				{options?.map((item, index) => (
+					<option
+						key={`${item[renderer.label]}-${index}`}
+						value={item[renderer.value]}
+						selected={item.selected}
+					>
+						{item[renderer.label]}
 					</option>
 				))}
 			</ChakraSelect>
