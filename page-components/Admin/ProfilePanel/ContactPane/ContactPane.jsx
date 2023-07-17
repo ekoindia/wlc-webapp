@@ -33,14 +33,14 @@ const ContactPane = ({ rowData: contactdata }) => {
 				>
 					Contact information
 				</Heading>
-				<IconButtons
+				{/* <IconButtons
 					title={isSmallerThan769 ? "" : "Edit Details"}
 					iconPos={isSmallerThan769 ? "" : "left"}
 					iconName="mode-edit"
 					iconStyle={{
 						size: "12px",
 					}}
-				/>
+				/> */}
 			</Box>
 
 			<Stack

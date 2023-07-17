@@ -19,7 +19,7 @@ const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
 					menulist={changeRoleMenuList}
 					iconPos="right"
 					iconName="caret-down"
-					iconStyles={{ height: "10px", width: "14px" }}
+					iconStyles={{ size: "xs" }}
 					rounded="10px"
 					buttonStyle={{
 						height: { base: "48px", lg: "52px" },
