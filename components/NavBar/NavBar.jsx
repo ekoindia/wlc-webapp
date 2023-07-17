@@ -101,8 +101,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	return (
 		<>
 			<HStack
-				bg={"white"}
-				h={"full"}
+				bg="navbar.bg"
+				h="full"
 				justifyContent={"space-between"}
 				px={{ base: "4", sm: "4", md: "4", xl: "6" }}
 			>
@@ -150,6 +150,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				<Box display={{ base: "flex", md: "flex" }}>
 					<Menu>
 						<MenuButton
+							bg="navbar.bgAlt"
+							padding="2px"
+							borderRadius="50%"
 							onClick={() => {
 								setIsCardOpen(true);
 							}}
@@ -161,20 +164,14 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 							>
 								<Avatar
 									w={{
-										base: "35px",
-										sm: "34px",
-										md: "30px",
-										lg: "34px",
-										xl: "30px",
-										"2xl": "46px",
+										base: "34px",
+										xl: "38px",
+										"2xl": "42px",
 									}}
 									h={{
-										base: "35px",
-										sm: "34px",
-										md: "30px",
-										lg: "34px",
-										xl: "30px",
-										"2xl": "46px",
+										base: "34px",
+										xl: "38px",
+										"2xl": "42px",
 									}}
 									name={userDetails?.name[0]}
 									lineHeight="3px"

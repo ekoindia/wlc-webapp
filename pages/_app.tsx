@@ -68,7 +68,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	}
 
 	// Setup custom theme...
-	const colors = org?.colors;
+	const colors = org?.metadata?.theme;
 	const theme = colors
 		? {
 				...light,
@@ -94,6 +94,39 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		: {
 				...light,
 		  };
+
+	// Add NavBar style colors (light or default dark)...
+	const lightNav = colors?.navstyle === "light";
+	theme.colors = {
+		...theme.colors,
+		navbar: {
+			...light.colors.navbar,
+			bg: lightNav ? theme.colors.accent.DEFAULT : "#FFF",
+			bgAlt: lightNav ? "#FFFFFF30" : "#00000020",
+			text: lightNav ? "#FFFFFFEE" : "#000000DD",
+			textLight: lightNav ? "#FFFFFF70" : "#00000070",
+		},
+		sidebar: {
+			...light.colors.sidebar,
+			bg: lightNav ? "#FFF" : theme.colors.accent.DEFAULT,
+			text: lightNav ? "#333" : "#FFF",
+			sel: lightNav
+				? theme.colors.accent.DEFAULT // theme.colors.accent.DEFAULT + "40"
+				: theme.colors.accent.dark, // Selection color
+			divider: lightNav
+				? theme.colors.accent.light + "40"
+				: theme.colors.accent.light,
+		},
+		status: {
+			...light.colors.status,
+			bg: lightNav ? theme.colors.accent.DEFAULT + "30" : "#00000050",
+			bgLight: lightNav ? "#FFF" : "#00000030",
+			text: lightNav ? "#111" : "#FFF",
+			wm: lightNav ? "#00000050" : "#FFFFFF50", // Watermark color
+			wmLight: lightNav ? "#00000030" : "#FFFFFF25",
+			title: lightNav ? theme.colors.accent.dark : "#FFD93B",
+		},
+	};
 
 	// Setup default toast options for small screen...
 	if (typeof window !== "undefined") {

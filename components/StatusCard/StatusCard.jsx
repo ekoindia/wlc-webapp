@@ -75,18 +75,19 @@ const StatusCard = () => {
 			px="15px"
 			align="center"
 			justify="space-between"
-			bg="sidebar.card-bg-dark"
-			borderBottom="br-sidebar"
+			bg="status.bg" // ORIG_THEME: bgColor || sidebar.card-bg-dark
+			borderBottom="1px solid" // ORIG_THEME: br-sidebar
+			borderBottomColor="accent.light"
 		>
 			<Flex align="center" gap="2.5">
 				<Icon
 					name="wallet-outline"
-					color={"sidebar.font"}
+					color="status.wm" // ORIG_THEME: sidebar.font
 					size={{ base: "24px", "2xl": "32px" }}
 				/>
 				<Flex direction="column">
 					<Text
-						textColor="white"
+						color="status.text"
 						fontSize={{
 							base: "10px",
 							md: "8px",
@@ -96,7 +97,11 @@ const StatusCard = () => {
 					>
 						E-value Balance
 					</Text>
-					<Flex color="#FFD93B" align="center" gap="0.25">
+					<Flex
+						color="status.title" // ORIG_THEME: #FFD93B
+						align="center"
+						gap="0.25"
+					>
 						<Icon
 							name="rupee"
 							size={{ base: "12px", "2xl": "14px" }}
@@ -126,7 +131,7 @@ const StatusCard = () => {
 						<Icon
 							name="refresh"
 							size={{ base: "12px", "2xl": "16px" }}
-							color="sidebar.card-bg-dark"
+							color="accent.dark" // ORIG_THEME: sidebar.card-bg-dark
 						/>
 					</Circle>
 				</Tooltip>

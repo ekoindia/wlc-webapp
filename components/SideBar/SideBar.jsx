@@ -10,6 +10,7 @@ import {
 	DrawerOverlay,
 	Flex,
 	Text,
+	useBreakpointValue,
 	useDisclosure,
 } from "@chakra-ui/react";
 import {
@@ -234,7 +235,7 @@ const generateMenuLinkActions = (menu_list, router) => {
 
 //MAIN EXPORT
 const SideBar = ({ navOpen, setNavClose }) => {
-	const { userData, isAdmin, userType } = useUser();
+	const { isLoggedIn, isOnboarding, userData, isAdmin, userType } = useUser();
 	const { interactions } = useMenuContext();
 	const { interaction_list, role_tx_list } = interactions;
 	const router = useRouter();
@@ -243,6 +244,12 @@ const SideBar = ({ navOpen, setNavClose }) => {
 	const [openIndex, setOpenIndex] = useState(-1);
 	const [trxnActions, setTrxnActions] = useState([]);
 	const [otherActions, setOtherActions] = useState([]);
+
+	// Check if screen is smaller than "lg" to show a mobile sidebar with drawer
+	const isSmallScreen = useBreakpointValue(
+		{ base: true, lg: false },
+		{ ssr: false }
+	);
 
 	// const [trxnActionsWorker] = useWorker(generateTransactionActions);
 
@@ -363,27 +370,59 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		setOpenIndex,
 	};
 
-	return (
-		<>
-			<Box display={{ base: "flex", lg: "none" }}>
-				<SmallScreenSideMenu
-					{...otherProps}
-					navOpen={navOpen}
-					setNavClose={setNavClose}
-				/>
-			</Box>
-			<Box
-				display={{ base: "none", lg: "flex" }}
-				sx={{
-					"@media print": {
-						display: "none",
-					},
-				}}
-			>
-				<SideBarMenu {...otherProps} />
-			</Box>
-		</>
+	// If not logged-in or onboarding, don't show the sidebar
+	if (isLoggedIn !== true || isOnboarding) {
+		return null;
+	}
+
+	return isSmallScreen ? ( // Mobile sidebar with drawer
+		<Box
+			sx={{
+				"@media print": {
+					display: "none",
+				},
+			}}
+		>
+			<SmallScreenSideMenu
+				{...otherProps}
+				navOpen={navOpen}
+				setNavClose={setNavClose}
+			/>
+		</Box>
+	) : (
+		// Desktop sidebar
+		<Box
+			sx={{
+				"@media print": {
+					display: "none",
+				},
+			}}
+		>
+			<SideBarMenu {...otherProps} />
+		</Box>
 	);
+
+	// return (
+	// 	<>
+	// 		<Box display={{ base: "flex", lg: "none" }}>
+	// 			<SmallScreenSideMenu
+	// 				{...otherProps}
+	// 				navOpen={navOpen}
+	// 				setNavClose={setNavClose}
+	// 			/>
+	// 		</Box>
+	// 		<Box
+	// 			display={{ base: "none", lg: "flex" }}
+	// 			sx={{
+	// 				"@media print": {
+	// 					display: "none",
+	// 				},
+	// 			}}
+	// 		>
+	// 			<SideBarMenu {...otherProps} />
+	// 		</Box>
+	// 	</>
+	// );
 };
 
 export default SideBar;
@@ -411,7 +450,8 @@ const SideBarMenu = ({
 				// "2xl": "250px",
 				base: "250px",
 			}}
-			bgColor={"accent.DEFAULT"}
+			bg="sidebar.bg" // ORIG_THEME: accent.DEFAULT
+			color="sidebar.text" // ORIG_THEME: "white"
 			height={"100%"}
 			overflowY="auto"
 		>
@@ -515,7 +555,7 @@ const AccordionMenu = ({
 		<Accordion
 			allowToggle
 			w="100%"
-			textColor="white"
+			// textColor="white"
 			index={openIndex}
 			onChange={setOpenIndex}
 		>
@@ -555,7 +595,11 @@ const AccordionSubMenuSection = ({
 	isAdmin,
 }) => {
 	return (
-		<AccordionItem borderBottom="br-sidebar" borderTop="none">
+		<AccordionItem
+			borderBottom="1px solid" // ORIG_THEME: "br-sidebar"
+			borderBottomColor="sidebar.divider" // ORIG_THEME: accent.light
+			borderTop="none"
+		>
 			<h2>
 				<AccordionButton
 					pl={{
@@ -588,7 +632,10 @@ const AccordionSubMenuSection = ({
 								{title}
 							</Text>
 						</Flex>
-						<Circle bg="sidebar.icon-bg" size="5">
+						<Circle
+							bg="sidebar.divider" // ORIG_THEME: sidebar.icon-bg
+							size="5"
+						>
 							<Icon
 								size="10px"
 								name={expanded ? "remove" : "expand-add"}
@@ -609,16 +656,20 @@ const AccordionSubMenuSection = ({
 							<Box
 								w="100%"
 								padding="0px 14px 0px 40px"
-								bg={isCurrent ? "sidebar.active-bg" : ""}
+								bg={
+									isCurrent
+										? "sidebar.sel" // ORIG_THEME: sidebar.active-bg
+										: ""
+								}
 								borderLeft="8px"
 								borderLeftColor={
 									isCurrent
-										? "sidebar.active-border"
+										? "primary.DEFAULT" // ORIG_THEME: sidebar.active-border
 										: "transparent"
 								}
 								outline={
 									isCurrent
-										? "var(--chakra-borders-br-sidebar)"
+										? "primary.light" // ORIG_THEME: "var(--chakra-borders-br-sidebar)"
 										: ""
 								}
 								transitionProperty="border-left-color, background-color"
@@ -629,10 +680,17 @@ const AccordionSubMenuSection = ({
 									align="center"
 									justify="space-between"
 									padding="12px 0px 12px 0px"
-									borderTop="br-sidebar"
+									borderTop="1px solid" // ORIG_THEME: "br-sidebar"
+									borderTopColor="sidebar.divider" // ORIG_THEME: accent.light
 									borderTopStyle="dashed"
 								>
-									<Flex align="center" columnGap="10px">
+									<Flex
+										align="center"
+										columnGap="10px"
+										color={
+											isCurrent ? "#FFF" : "sidebar.text"
+										}
+									>
 										<Icon name={tx.icon} size="sm" />
 										<Text
 											fontSize={{
@@ -645,8 +703,10 @@ const AccordionSubMenuSection = ({
 									</Flex>
 									<Icon
 										color={
-											isCurrent ? "#FE7D00" : "#556FEF"
-										}
+											isCurrent
+												? "primary.DEFAULT"
+												: "accent.light"
+										} // ORIG_THEME: "#FE7D00" : "#556FEF"
 										name="chevron-right"
 										size="xs"
 										// transition="color 0.3s ease-out"
@@ -673,7 +733,7 @@ const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
 					base: "14px",
 					"2xl": "16px",
 				}}
-				color="white"
+				color={isCurrent ? "white" : "sidebar.text"}
 				align="center"
 				gap="13px"
 				px={{
@@ -687,14 +747,15 @@ const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
 					xl: "3.5",
 					"2xl": "5",
 				}}
-				w={"full"}
+				w="full"
 				role="group"
 				cursor="pointer"
-				borderBottom="br-sidebar"
-				bg={isCurrent ? "sidebar.active-bg" : ""}
+				borderBottom="1px solid" // ORIG_THEME: br-sidebar
+				borderBottomColor="sidebar.divider" // ORIG_THEME: accent.light
+				bg={isCurrent ? "sidebar.sel" : ""} //ORIG_THEME: sidebar.active-bg
 				borderLeft="8px"
 				borderLeftColor={
-					isCurrent ? "sidebar.active-border" : "transparent"
+					isCurrent ? "primary.dark" : "transparent" // ORIG_THEME: sidebar.active-border
 				}
 				transitionProperty="border-left-color, background-color"
 				transitionDuration="0.3s"
