@@ -150,9 +150,6 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				<Box display={{ base: "flex", md: "flex" }}>
 					<Menu>
 						<MenuButton
-							bg="navbar.bgAlt"
-							padding="2px"
-							borderRadius="50%"
 							onClick={() => {
 								setIsCardOpen(true);
 							}}
@@ -162,21 +159,27 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 								cursor={"pointer"}
 								zIndex={"10"}
 							>
-								<Avatar
-									w={{
-										base: "34px",
-										xl: "38px",
-										"2xl": "42px",
-									}}
-									h={{
-										base: "34px",
-										xl: "38px",
-										"2xl": "42px",
-									}}
-									name={userDetails?.name[0]}
-									lineHeight="3px"
-									src={userDetails?.pic}
-								/>
+								<Box
+									bg="navbar.bgAlt"
+									padding="2px"
+									borderRadius="50%"
+								>
+									<Avatar
+										w={{
+											base: "34px",
+											xl: "38px",
+											"2xl": "42px",
+										}}
+										h={{
+											base: "34px",
+											xl: "38px",
+											"2xl": "42px",
+										}}
+										name={userDetails?.name[0]}
+										lineHeight="3px"
+										src={userDetails?.pic}
+									/>
+								</Box>
 								{isAdmin ? (
 									<Flex
 										ml={"0.5vw"}
@@ -199,12 +202,11 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												as="span"
 												fontSize={{
 													base: "12px",
-													lg: "14px",
-													xl: "12px",
-													"2xl": "18px",
+													"2xl": "16px",
 												}}
-												fontWeight={"semibold"}
-												mr={"1.6vw"}
+												fontWeight="semibold"
+												mr="1.6vw"
+												color="navbar.text"
 											>
 												{limitText(
 													userDetails?.name || "",
@@ -216,6 +218,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												name="arrow-drop-down"
 												size="xs"
 												mt="2px"
+												color="navbar.text"
 											/>
 										</Box>
 										<Text
@@ -223,7 +226,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												base: "10px",
 												"2xl": "14px",
 											}}
-											color={"secondary.DEFAULT"}
+											color={"navbar.textLight"}
 											textAlign={"start"}
 										>
 											Logged in as admin
