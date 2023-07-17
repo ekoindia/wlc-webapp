@@ -34,6 +34,7 @@ export const MockOrgDetails = {
 	metadata: {
 		support_contacts: { email: "xyz@com", phone: "0123456789" },
 		theme: {
+			navstyle: process.env.THEME_NAVSTYLE || "", // light or dark (default)
 			primary: process.env.THEME_PRIMARY || "",
 			primary_dark: process.env.THEME_PRIMARY_DARK || "",
 			primary_light: process.env.THEME_PRIMARY_LIGHT || "",

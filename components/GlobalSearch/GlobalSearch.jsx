@@ -37,7 +37,7 @@ const GlobalSearch = ({ ...rest }) => {
 				xl: "500px",
 			}}
 			h="36px"
-			bg="darkShade"
+			bg="navbar.bgAlt" // ORIG_THEME: darkShade
 			borderWidth="0"
 			borderRadius="6px"
 			radius={6}
@@ -48,7 +48,7 @@ const GlobalSearch = ({ ...rest }) => {
 				display={{ base: "none", md: "flex" }}
 				name="search"
 				size="sm"
-				color="light"
+				color="navbar.textLight"
 			/>
 			<Text
 				flexGrow={1}
@@ -56,6 +56,7 @@ const GlobalSearch = ({ ...rest }) => {
 				opacity={0.6}
 				px="12px"
 				noOfLines={1}
+				color="navbar.text"
 			>
 				{title || "Search anything..."}
 			</Text>

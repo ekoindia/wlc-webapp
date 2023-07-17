@@ -32,7 +32,7 @@ export const UserReducer = (state, { type, payload }) => {
 				let tokenTimeout = getTokenExpiryTime(payload);
 				const newState = buildUserObjectState({
 					...payload,
-					token_timeout: tokenTimeout || state.token_timeout,
+					token_timeout: tokenTimeout || state?.token_timeout,
 				});
 
 				console.log("newUserState", newState);
@@ -46,11 +46,11 @@ export const UserReducer = (state, { type, payload }) => {
 		}
 
 		case "UPDATE_SHOP_DETAILS": {
-			Object.assign(state.shopDetails, payload);
+			Object.assign(state?.shopDetails, payload);
 			break;
 		}
 		case "UPDATE_PERSONAL_DETAILS": {
-			Object.assign(state.personalDetails, payload);
+			Object.assign(state?.personalDetails, payload);
 			break;
 		}
 
@@ -94,7 +94,7 @@ export const UserReducer = (state, { type, payload }) => {
 		}
 
 		case "LOGOUT": {
-			revokeSession(state.userId || 1);
+			revokeSession(state?.userId || 1);
 			clearAuthTokens();
 			return defaultUserState;
 		}

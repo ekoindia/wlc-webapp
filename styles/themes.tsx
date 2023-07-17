@@ -59,14 +59,14 @@ export const light = extendTheme({
 		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
 		inputlabel: "#0C243B",
 		overlayBg: "#e9edf1b3",
-		sidebar: {
-			"icon-bg": "#1F3ABC", // accent.light
-			"active-border": "#FE7D00",
-			"active-bg": "#081E89",
-			"card-bg": "#102174",
-			"card-bg-dark": "#091968",
-			font: "#556FEF",
-		},
+		// sidebar: {
+		// 	"icon-bg": "#1F3ABC", // accent.light
+		// 	"active-border": "#FE7D00",
+		// 	"active-bg": "#081E89",
+		// 	"card-bg": "#102174",
+		// 	"card-bg-dark": "#091968",
+		// 	font: "#556FEF",
+		// },
 	},
 	components: {
 		Button: buttonTheme,
