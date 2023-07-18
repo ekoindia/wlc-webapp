@@ -10,7 +10,6 @@ import {
 import { DisplayMedia } from "constants";
 import { Fragment, useState } from "react";
 import { prepareTableCell } from ".";
-import { Button } from "..";
 
 /**
  * Show the column on screen?
@@ -232,22 +231,6 @@ const Tr = ({
 										) : null;
 									})}
 								</Flex>
-
-								{/* "Repeat Transaction" button for History table only, need to update logic in future */}
-								{tableName === "History" && (
-									<Button
-										fontSize="xs"
-										size="md"
-										disabled
-										sx={{
-											"@media print": {
-												display: "none !important",
-											},
-										}}
-									>
-										Repeat Transaction
-									</Button>
-								)}
 							</Flex>
 						</ChakraTd>
 					)}
