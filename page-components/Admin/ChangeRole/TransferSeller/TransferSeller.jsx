@@ -13,6 +13,16 @@ import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
 import { MoveAgents } from "..";
 
+const renderer = {
+	label: "name",
+	value: "user_code",
+};
+
+/**
+ * A TransferSeller Tab inside ChangeRole page-component
+ * TODO: Write more description here
+ * @example	`<TransferSeller></TransferSeller>`
+ */
 const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState({
 		value: "",
@@ -24,18 +34,16 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 	});
 	const [distributors, setDistributors] = useState([]);
 	const [filteredDistributors, setFilteredDistributors] = useState([]);
-	const [scspFrom, setScspFrom] = useState([]);
-	const [scspto, setScspTo] = useState([]);
-	const [selectedEkocspids, setSelectedEkocspids] = useState([]);
-	// const [fromSellerid, setFromSellerid] = useState([]);
+	const [agentListToTransferAgentsFrom, setAgentListToTransferAgentsFrom] =
+		useState([]);
+	const [agentListToTransferAgentsTo, setAgentListToTransferAgentsTo] =
+		useState([]);
+
+	const [selectedAgentsToTransfer, setSelectedAgentsToTransfer] = useState();
 	const { accessToken } = useSession();
 
-	// const handleMoveagent = () => {
-	// 	setFromSellerid(selectedEkocspids);
-	// };
-
-	const handleSelectedEkocspids = (newSelectedEkocspids) => {
-		setSelectedEkocspids(newSelectedEkocspids);
+	const handleSelectedAgents = (_agents) => {
+		setSelectedAgentsToTransfer(_agents);
 	};
 
 	const fetchList = (headers, cb) => {
@@ -44,6 +52,26 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 			token: accessToken,
 		}).then((res) => {
 			cb(res);
+		});
+	};
+
+	const body = {
+		scspFrom: transferAgentsFrom.value,
+		scspTo: transferAgentsTo.value,
+		selectedTransferredCSPsList: selectedAgentsToTransfer,
+	};
+
+	const handleMoveAgent = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/agents/profile/changeRole/transfercsps`,
+				"tf-req-method": "PUT",
+			},
+			body: body,
+			token: accessToken,
+		}).then((res) => {
+			console.log("res", res);
 		});
 	};
 
@@ -62,17 +90,11 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 		}
 	};
 
-	// const body = {
-	// 	scspFrom: transferAgentsFrom,
-	// 	scspTo: transferAgentsTo,
-	// 	selectedTransferredCSPList: fromSellerid,
-	// };
-
 	useEffect(() => {
 		fetchList(
 			{
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agent-list?usertype=1",
+				"tf-req-uri": `/network/agent-list?usertype=1`,
 				"tf-req-method": "GET",
 			},
 			(res) => {
@@ -89,7 +111,9 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 				label: "",
 			});
 		}
+	}, [transferAgentsFrom.value]);
 
+	useEffect(() => {
 		if (transferAgentsFrom.value != "") {
 			fetchList(
 				{
@@ -98,12 +122,12 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 					"tf-req-method": "GET",
 				},
 				(res) => {
-					const _seller = res?.data?.csp_list ?? [];
+					const _agentList = res?.data?.csp_list ?? [];
 					const _filteredDistributor = distributors?.filter(
 						(item) =>
 							item[renderer.value] !== transferAgentsFrom.value
 					);
-					setScspFrom(_seller);
+					setAgentListToTransferAgentsFrom(_agentList);
 					setFilteredDistributors(_filteredDistributor);
 				}
 			);
@@ -116,17 +140,12 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 					"tf-req-method": "GET",
 				},
 				(res) => {
-					const _seller = res?.data?.csp_list ?? [];
-					setScspTo(_seller);
+					const _agentList = res?.data?.csp_list ?? [];
+					setAgentListToTransferAgentsTo(_agentList);
 				}
 			);
 		}
-	}, [transferAgentsFrom, transferAgentsTo]);
-
-	const renderer = {
-		label: "name",
-		value: "user_code",
-	};
+	}, [transferAgentsFrom.value, transferAgentsTo.value]);
 
 	return (
 		<div>
@@ -176,10 +195,9 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 			{transferAgentsFrom.value && transferAgentsTo.value ? (
 				<Flex mt="10.5" h="auto" display={{ base: "none", md: "flex" }}>
 					<MoveAgents
-						options={scspFrom}
-						selectedEkocspids={selectedEkocspids}
-						onSelectedEkocspidsChange={handleSelectedEkocspids}
+						options={agentListToTransferAgentsFrom}
 						label={transferAgentsFrom.label}
+						onChange={handleSelectedAgents}
 					/>
 					<Flex width="180px" align="center" justify="center">
 						<Circle
@@ -224,7 +242,7 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 							}}
 						>
 							{/* Move Retailer To */}
-							{scspto?.map((ele, idx) => {
+							{agentListToTransferAgentsTo?.map((ele, idx) => {
 								return (
 									<Flex
 										px="5"
@@ -291,7 +309,7 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 					w="164px"
 					h="100%"
 					fontSize={"xl"}
-					// onClick={handleMoveagent}
+					onClick={handleMoveAgent}
 				>
 					Move Now
 				</Button>

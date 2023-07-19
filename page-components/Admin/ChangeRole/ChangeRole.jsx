@@ -10,9 +10,11 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Button, Headings } from "components";
+import { ChangeRoleMenuList, Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useRouter } from "next/router";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	MoveAgents,
 	PromoteSellerToDistributor,
@@ -21,79 +23,114 @@ import {
 } from ".";
 
 /**
- * A <ChangeRole> component
+ * A ChangeRole page-component
  * TODO: Write more description here
  * @example	`<ChangeRole></ChangeRole>`
  */
-
 const ChangeRole = () => {
+	const [agentData, setAgentData] = useState();
 	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
 	const [scspFromValue, setScspFromValue] = useState("");
 	const [selectedEkocspidsCR, setSelectedEkocspidsCR] = useState([]);
+	const { accessToken } = useSession();
+	const [showOrgChangeRoleView, setShowOrgChangeRoleView] = useState(false);
 	console.log("selectedEkocspidsCR", selectedEkocspidsCR);
-	const tab = +useRouter().query.tab;
+	const router = useRouter();
+	const { mobile, tab } = router.query;
 
 	const handleScspFromChange = (value) => {
 		setScspFromValue(value);
 	};
 
-	const tabs = [
-		{
-			id: 1,
-			label: "Transfer Sellers",
-			comp: (
-				<TransferSeller
-					setIsShowSelectAgent={setIsShowSelectAgent}
-					onScspFromChange={handleScspFromChange}
-				/>
-			),
-		},
-		{
-			id: 2,
-			label: "Promote Seller To Distributor",
-			comp: <PromoteSellerToDistributor />,
-		},
-		// {
-		// 	id: 3,
-		// 	label: "Demote Distributor",
-		// 	comp: "Coming Soon...",
-		// },
-		{
-			id: 4,
-			label: "Upgrade Seller To iSeller",
-			comp: <UpgradeSellerToIseller />,
-		},
-	];
+	useEffect(() => {
+		const storedData = JSON.parse(
+			localStorage.getItem("network_seller_details")
+		);
+		if (mobile) {
+			if (storedData?.agent_mobile === mobile) {
+				setAgentData(storedData);
+			} else {
+				fetchAgentDataViaCellNumber(mobile);
+			}
+		} else {
+			setShowOrgChangeRoleView(true);
+		}
+	}, [mobile]);
+
+	const fetchAgentDataViaCellNumber = (mobile) => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
+				"tf-req-method": "GET",
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				let _agentDetails = res?.data?.agent_details[0];
+				if (_agentDetails) {
+					setAgentData(_agentDetails);
+					localStorage.setItem(
+						"network_seller_details",
+						JSON.stringify(_agentDetails)
+					);
+				} else {
+					setShowOrgChangeRoleView(true);
+				}
+			})
+			.catch((error) => {
+				console.error("[ChangeRole] Get Agent Detail Error:", error);
+			});
+	};
+
+	/**
+	 * Maps slugs to the corresponding components for the ChangeRole tabs.
+	 */
+	const slugTabMapping = {
+		"transfer-retailer": (
+			<TransferSeller
+				setIsShowSelectAgent={setIsShowSelectAgent}
+				onScspFromChange={handleScspFromChange}
+			/>
+		),
+		"retailer-to-distributor": <PromoteSellerToDistributor />,
+		"retailer-to-imerchant": <UpgradeSellerToIseller />,
+	};
 
 	return !isShowSelectAgent ? (
 		<>
 			<Headings title="Change Role" />
+
 			<Flex
 				direction="column"
 				borderRadius={{ base: "0", md: "10px 10px 0 0" }}
 				w="100%"
 				bg="white"
-				p={{ base: "16px", md: "30px 30px 20px" }}
+				p={{
+					base: "16px",
+					md: !showOrgChangeRoleView ? "30px 30px 20px" : "16px",
+				}}
 				gap="4"
 				fontSize="sm"
 			>
-				<Flex direction="column" gap="2">
-					<Text
-						fontSize="2xl"
-						color="accent.DEFAULT"
-						fontWeight="semibold"
-					>
-						{/* {agentData?.agent_name} */} Cool Name
-					</Text>
-					<span>
-						Click Cancel to return to Client HomePage without
-						submitting information.
-					</span>
-				</Flex>
-				<Divider display={{ base: "none", md: "block" }} />
+				{!showOrgChangeRoleView && (
+					<>
+						<Flex direction="column" gap="2">
+							<Text
+								fontSize="2xl"
+								color="accent.DEFAULT"
+								fontWeight="semibold"
+							>
+								{agentData?.agent_name}
+							</Text>
+							<span>{agentData?.agent_type}</span>
+						</Flex>
+						<Divider display={{ base: "none", md: "block" }} />
+					</>
+				)}
 			</Flex>
 			<Tabs
-				defaultIndex={tab || 0}
+				defaultIndex={+tab || 0}
 				borderRadius={{ base: "10px", md: "0 0 10px 10px" }}
 				p={{ base: "20px", md: "0 30px 30px" }}
 				mt={{ base: "20px", md: "0" }}
@@ -116,14 +153,17 @@ const ChangeRole = () => {
 						},
 					}}
 				>
-					{tabs.map(({ id, label }) => (
-						<Tab key={id}>{label}</Tab>
-					))}
+					{ChangeRoleMenuList?.map(
+						({ slug, label }) =>
+							slugTabMapping[slug] && (
+								<Tab key={slug}>{label}</Tab>
+							)
+					)}
 				</TabList>
 
 				<TabPanels mt="5">
-					{tabs.map(({ id, comp }) => (
-						<TabPanel key={id}>{comp}</TabPanel>
+					{ChangeRoleMenuList?.map(({ slug }) => (
+						<TabPanel key={slug}>{slugTabMapping[slug]}</TabPanel>
 					))}
 				</TabPanels>
 			</Tabs>
