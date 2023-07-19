@@ -14,14 +14,14 @@ import { AccountStatementTable } from ".";
 
 const AccountStatement = () => {
 	const router = useRouter();
-	const { cellnumber } = router.query;
+	const { mobile } = router.query;
 	const [isMobileScreen] = useMediaQuery("(max-width: 767px)");
 
 	/* API CALLING */
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history/recent_transaction?record_count=10&search_value=${cellnumber}`,
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction?record_count=10&search_value=${mobile}`,
 		"tf-req-method": "GET",
 	};
 
@@ -47,7 +47,7 @@ const AccountStatement = () => {
 		router.push({
 			pathname:
 				"/admin/transaction-history/account-statement/detailed-statement",
-			query: { cellnumber },
+			query: { mobile },
 		});
 	};
 	/*current date*/

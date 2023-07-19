@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
  */
 const PromoteSellerToDistributor = () => {
 	const [sellerList, setSellerList] = useState();
-	console.log("sellerList", sellerList);
 	const [selectedSeller, setSelectedSeller] = useState();
 	const { accessToken } = useSession();
 

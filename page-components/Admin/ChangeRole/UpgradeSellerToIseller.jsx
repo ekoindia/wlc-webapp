@@ -24,7 +24,8 @@ const UpgradeSellerToIseller = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agent-list?usertype=2`,
+				"tf-req-uri": "/network/agent-list?usertype=2",
+				// "tf-req-uri": `/network/agent-list?usertype=2&user_id=${agentCode}`,
 				"tf-req-method": "GET",
 			},
 			token: accessToken,

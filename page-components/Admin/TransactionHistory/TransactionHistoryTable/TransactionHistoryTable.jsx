@@ -42,11 +42,11 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 			show: "Arrow",
 		},
 	];
-	const cellnumber = transactiondata[0]?.agent_mobile ?? [];
+	const mobile = transactiondata[0]?.agent_mobile ?? [];
 	function onRowClick() {
 		router.push({
 			pathname: "/admin/transaction-history/account-statement",
-			query: { cellnumber },
+			query: { mobile },
 		});
 	}
 

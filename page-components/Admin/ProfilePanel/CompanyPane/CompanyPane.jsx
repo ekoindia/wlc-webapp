@@ -19,10 +19,10 @@ import { useRouter } from "next/router";
  */
 const CompanyPane = ({ rowData: compdata, agent_name }) => {
 	const router = useRouter();
-	const { cellnumber } = router.query;
+	const { mobile } = router.query;
 	const handleclick = () => {
 		router.push(
-			`/admin/transaction-history/account-statement/detailed-statement?cellnumber=${cellnumber}`
+			`/admin/transaction-history/account-statement/detailed-statement?mobile=${mobile}`
 		);
 	};
 

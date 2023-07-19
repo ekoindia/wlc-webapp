@@ -44,11 +44,11 @@ const NetworkTable = ({
 	];
 	const router = useRouter();
 	const onRowClick = (rowData) => {
-		const cellnumber = rowData?.agent_mobile;
+		const mobile = rowData?.agent_mobile;
 		localStorage.setItem("network_seller_details", JSON.stringify(rowData));
 		router.push({
 			pathname: `/admin/my-network/profile`,
-			query: { cellnumber },
+			query: { mobile },
 			// state: { rowData },
 		});
 	};

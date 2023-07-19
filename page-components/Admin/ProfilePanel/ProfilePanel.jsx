@@ -74,13 +74,13 @@ const ProfilePanel = () => {
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
 	const { accessToken } = useSession();
-	const { cellnumber } = router.query;
+	const { mobile } = router.query;
 
 	const hitQuery = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents?record_count=1&search_value=${cellnumber}`,
+				"tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
 				"tf-req-method": "GET",
 			},
 			token: accessToken,
@@ -96,11 +96,11 @@ const ProfilePanel = () => {
 
 	useEffect(() => {
 		let _changeRoleMenuList = [];
-		ChangeRoleMenuList.map(({ label, path }) => {
+		ChangeRoleMenuList.map(({ label, path }, index) => {
 			let _listItem = {};
 			_listItem.label = label;
 			_listItem.onClick = () => {
-				router.push(path);
+				router.push(`${path}?mobile=${mobile}&tab=${index}`);
 			};
 			_changeRoleMenuList.push(_listItem);
 		});
@@ -111,12 +111,12 @@ const ProfilePanel = () => {
 		const storedData = JSON.parse(
 			localStorage.getItem("network_seller_details")
 		);
-		if (storedData?.agent_mobile === cellnumber) {
+		if (storedData?.agent_mobile === mobile) {
 			setRowData(storedData);
 		} else {
 			hitQuery();
 		}
-	}, [cellnumber]);
+	}, [mobile]);
 
 	const panes = [
 		{
