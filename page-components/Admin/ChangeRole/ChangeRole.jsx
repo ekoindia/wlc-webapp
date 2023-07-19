@@ -94,7 +94,7 @@ const ChangeRole = () => {
 			/>
 		),
 		"retailer-to-distributor": <PromoteSellerToDistributor />,
-		"retailer-to-imerchant": <UpgradeSellerToIseller />,
+		"retailer-to-iretailer": <UpgradeSellerToIseller />,
 	};
 
 	return !isShowSelectAgent ? (

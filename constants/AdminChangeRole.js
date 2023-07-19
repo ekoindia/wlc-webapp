@@ -28,7 +28,7 @@ export const ChangeRoleMenuList = [
 	// 	path: "/admin/my-network/profile/change-role",
 	// },
 	{
-		slug: "retailer-to-imerchant",
+		slug: "retailer-to-iretailer",
 		label: "Upgrade Retailer To iRetailer",
 		path: "/admin/my-network/profile/change-role",
 	},
