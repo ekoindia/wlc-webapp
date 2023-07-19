@@ -30,6 +30,7 @@ export const prepareTableCell = (
 	expandedRow
 ) => {
 	const account_status = item?.account_status;
+	const mobile_number = item?.agent_mobile;
 	const eko_code = item?.profile?.eko_code ?? [];
 	const trx_type = item?.debit_credit || item?.trx_type;
 	switch (column?.show) {
@@ -38,7 +39,7 @@ export const prepareTableCell = (
 		case "Tag":
 			return getStatusStyle(item[column.name], tableName);
 		case "Modal":
-			return getModalStyle(eko_code, account_status);
+			return getModalStyle(mobile_number, eko_code, account_status);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
 		case "IconButton":
