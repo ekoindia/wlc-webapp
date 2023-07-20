@@ -87,8 +87,12 @@ const MoveAgents = ({ options, label, onChange = () => {} }) => {
 			gap="3"
 		>
 			<Flex fontWeight="semibold" gap="1">
-				<Text color="light"> Move Retailers To:</Text>
-				<Text>{label}</Text>
+				<Text color="light">
+					Move Retailers From: &thinsp;
+					<Text as="span" color="dark">
+						{label}
+					</Text>
+				</Text>
 			</Flex>
 
 			<Flex

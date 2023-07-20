@@ -68,7 +68,15 @@ const UpgradeSellerToIseller = () => {
 				direction={{ base: "column", md: "row" }}
 				gap={{ base: "6", md: "12" }}
 			>
-				<Button onClick={handleUpgradeButtonClick}>Upgrade</Button>
+				<Button
+					size="lg"
+					h="54px"
+					w={{ base: "100%", md: "164px" }}
+					fontWeight="bold"
+					onClick={handleUpgradeButtonClick}
+				>
+					Upgrade
+				</Button>
 				<Button
 					bg="none"
 					variant="link"
