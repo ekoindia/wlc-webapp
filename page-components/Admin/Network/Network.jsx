@@ -75,25 +75,16 @@ const Network = () => {
 			/>
 			<Box w={"100%"} px={{ base: "16px", md: "initial" }}>
 				{dataLength > 0 ? (
-					<Flex justify="space-between">
+					<Flex justify="space-between" align="center">
 						<SearchBar
 							value={search}
 							setSearch={setSearch}
 							minSearchLimit={10}
 							maxSearchLimit={10}
 						/>
-						<Flex
-							display={{ base: "none", md: "flex" }}
-							gap={{ base: "5px", md: "20px", lg: "50px" }}
-							align={"center"}
-							justifyContent={"space-between"}
-						>
-							<NetworkFilter
-								filter={filter}
-								setFilter={setFilter}
-							/>
-							{/* <NetworkSort sort={sort} setSort={setSort} /> */}
-						</Flex>
+
+						<NetworkFilter filter={filter} setFilter={setFilter} />
+						{/* <NetworkSort sort={sort} setSort={setSort} /> */}
 					</Flex>
 				) : null}
 				{dataLength > 0 ? (

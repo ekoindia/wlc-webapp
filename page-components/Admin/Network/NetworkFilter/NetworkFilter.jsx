@@ -93,24 +93,16 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 		<>
 			<Box display={{ base: "none", md: "initial" }}>
 				<Button
-					display={"flex"}
 					gap="2px"
-					// justifyContent={"space-evenly"}
-					// alignItems={"center"}
 					ref={btnRef}
 					onClick={onOpen}
-					h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
-					w={{
-						md: "110px",
-						"2xl": "7vw",
-					}}
-					fontSize={{
-						base: "md",
-						xl: "lg",
-					}}
+					// h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
+					fontSize="md"
 					bg="white"
 					color="accent.DEFAULT"
-					border="1px solid #11299E"
+					borderColor="accent.DEFAULT"
+					borderWidth="1px"
+					borderStyle="solid"
 					boxShadow=" 0px 3px 10px #11299E1A"
 					_hover={{
 						bg: "white",
@@ -119,18 +111,8 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 						bg: "white",
 					}}
 					lineHeight="normal"
-					icon={
-						<Icon
-							name="filter"
-							size={{
-								base: "20px",
-								xl: "24px",
-							}}
-							// height={{
-							// 	md: "14px",
-							// 	xl: "16px",
-							// }}
-						/>
+					leftIcon={
+						<Icon name="filter" size="sm" color="accent.DEFAULT" />
 					}
 				>
 					Filter
