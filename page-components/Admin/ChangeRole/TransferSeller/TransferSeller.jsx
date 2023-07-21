@@ -18,7 +18,6 @@ const renderer = {
 
 /**
  * A TransferSeller Tab inside ChangeRole page-component
- * TODO: Write more description here
  * @example	`<TransferSeller></TransferSeller>`
  */
 const TransferSeller = () => {
@@ -158,7 +157,6 @@ const TransferSeller = () => {
 				direction={{ base: "column", md: "row" }}
 				gap={{ base: "8", md: "28", xl: "36" }}
 			>
-				{/* TODO FIX */}
 				<FormControl w={{ base: "100%", md: "500px" }}>
 					<FormLabel>
 						Select distributor to transfer agents from

@@ -14,7 +14,6 @@ const selectAllObj = { value: "*", label: "Select All" };
 
 /**
  * A MoveAgents page-component
- * TODO: Write more description here
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<MoveAgents></MoveAgents>`

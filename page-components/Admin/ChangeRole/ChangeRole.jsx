@@ -22,7 +22,6 @@ import {
 
 /**
  * A ChangeRole page-component
- * TODO: Write more description here
  * @example	`<ChangeRole></ChangeRole>`
  */
 const ChangeRole = () => {
