@@ -1,13 +1,19 @@
-import { Center, Spinner, useToast } from "@chakra-ui/react";
+import { Center, Spinner, useToast, useToken } from "@chakra-ui/react";
 import { Endpoints, TransactionIds } from "constants";
-import { useOrgDetailContext, useSession } from "contexts";
+import {
+	useAppSource,
+	useOrgDetailContext,
+	usePubSub,
+	useSession,
+} from "contexts";
 import { useUser } from "contexts/UserContext";
 // import { Home, SelectionScreen } from "eko-oaas-package";
-import { Home, SelectionScreen } from "eko-oaas-package";
+import { OnboardingWidget, SelectionScreen } from "@ekoindia/oaas-widget";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ANDROID_ACTION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
 // import { distributorStepsData } from "./distributorStepsData";
 
@@ -380,10 +386,43 @@ const SignupPage = () => {
 			},
 		},
 	]);
+
+	const widgetRef = useRef(null);
+	const { isAndroid } = useAppSource();
+	const { subscribe, TOPICS } = usePubSub();
+
+	// Subscribe to the Android responses
+	useEffect(() => {
+		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
+			console.log("[signup] [PubSub] >>> android-response:: ", data);
+			if (data?.action === "") {
+				handleStepDataSubmit({
+					id: 12,
+					form_data: {
+						// document_id: res.documentId,
+						agreement_id: userData?.userDetails?.agreement_id,
+					},
+				});
+			}
+		});
+
+		return unsubscribe;
+	}, []);
+
 	const initialStepSetter = (userData) => {
 		const currentStepData = [];
 		function stepSetter() {
+			// console.log(
+			// 	"[oaas] > Setup Steps #1: ",
+			// 	userData,
+			// 	userData?.details?.onboarding_steps
+			// );
 			userData?.details?.onboarding_steps?.forEach((step) => {
+				// console.log(
+				// 	"[oaas] > Setup Steps #2: ",
+				// 	step,
+				// 	distributorStepsData
+				// );
 				let currentData = distributorStepsData?.filter(
 					(singleStep) => singleStep.role === step.role
 				);
@@ -391,8 +430,13 @@ const SignupPage = () => {
 			});
 		}
 		stepSetter();
-		setStepperData([...stepperData, ...currentStepData]);
+		setStepperData([/* ...stepperData, */ ...currentStepData]); // FIX: by Kr.Abhishek (duplicate data)
 	};
+
+	// FIX: HACK: ADDED BY KR.ABHISHEK FOR TESTING...INITIAL STEP LIST NOT GETTING POPULATED...
+	useEffect(() => {
+		initialStepSetter({ details: userData });
+	}, [userData]);
 
 	let bookletKeys = [];
 
@@ -400,11 +444,14 @@ const SignupPage = () => {
 	const user_id =
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
+
 	const handleStepDataSubmit = (data) => {
 		console.log("HandleWlcStepData", data);
 		if (data?.id === 3) {
 			setLatLong(data?.form_data?.latlong);
 		}
+
+		// If the form does not require file-upload...
 		if (
 			data?.id !== 1 &&
 			data?.id !== 4 &&
@@ -585,7 +632,20 @@ const SignupPage = () => {
 				console.error("error in update onboarding: ", err);
 				return err;
 			});
-		if (uploadResponse.response_status_id !== 0) {
+
+		const success =
+			uploadResponse?.status == 0 && // Status is successful
+			!(Object.keys(uploadResponse?.invalid_params || {}).length > 0); // No "invalid-params" present
+
+		if (success) {
+			toast({
+				title: uploadResponse.message,
+				status: "success",
+				duration: 2000,
+			});
+			setLastStepResponse(uploadResponse);
+			refreshApiCall();
+		} else {
 			toast({
 				title:
 					uploadResponse.message ||
@@ -594,14 +654,6 @@ const SignupPage = () => {
 				duration: 2000,
 			});
 			setLastStepResponse(uploadResponse);
-		} else {
-			toast({
-				title: uploadResponse.message,
-				status: "success",
-				duration: 2000,
-			});
-			setLastStepResponse(uploadResponse);
-			refreshApiCall();
 		}
 
 		console.log("uploadResponse", uploadResponse);
@@ -619,7 +671,10 @@ const SignupPage = () => {
 			timeout: 30000,
 		})
 			.then((data) => {
-				if (data?.status === 0) {
+				const success =
+					data?.status == 0 && !data?.invalid_params?.length;
+
+				if (success) {
 					toast({
 						title: bodyData.success_message || "Success",
 						status: "success",
@@ -782,18 +837,31 @@ const SignupPage = () => {
 	const handleStepCallBack = (callType) => {
 		console.log("stepcallback", callType, latLong, userLoginData);
 		if (callType.type === 12) {
+			// Leegality Esign
 			if (callType.method === "getSignUrl") {
 				getSignUrl(userLoginData?.details?.agreement_id);
 			}
 			if (callType.method === "legalityOpen") {
-				console.log("inside legal");
-				// eslint-disable-next-line no-undef
-				const leegality = new Leegality({
-					callback: handleLeegalityCallback.bind(this),
-					logo: orgDetail.logo,
-				});
-				leegality.init();
-				leegality.esign(signUrlData?.short_url);
+				// console.log(
+				// 	"Opening Leegality Popup: ",
+				// 	orgDetail.logo,
+				// 	signUrlData,
+				// 	isAndroid ? "Android" : "Web"
+				// );
+				if (isAndroid) {
+					doAndroidAction(ANDROID_ACTION.LEEGALITY_ESIGN_OPEN, {
+						signing_url: signUrlData?.short_url,
+						// logo: orgDetail.logo,
+					});
+				} else {
+					// eslint-disable-next-line no-undef
+					const leegality = new Leegality({
+						callback: handleLeegalityCallback.bind(this),
+						logo: orgDetail.logo,
+					});
+					leegality.init();
+					leegality.esign(signUrlData?.short_url);
+				}
 			}
 		} else if (callType.type === 10) {
 			if (callType.method === "getBookletNumber") {
@@ -818,7 +886,7 @@ const SignupPage = () => {
 	};
 
 	const getSignUrl = () => {
-		console.log("inside mainfunction");
+		console.log("Getting Signed URL for Leegality...");
 		// if (agreementId) {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -838,11 +906,29 @@ const SignupPage = () => {
 		)
 			.then((res) => {
 				// console.log("[getSignUrl] resp:", res);
+				// console.log("Get Signed URL for Leegality Response: ", res);
 				if (res.response_status_id === 0) {
 					setSignUrlData(res.data);
+					// Inform the OaaS Widget that Leegality is ready
+					widgetRef?.current?.postMessage({
+						type: "esign:ready",
+					});
+				} else {
+					toast({
+						title:
+							res?.message ||
+							"E-sign initialization failed, please reload page to try again.",
+						status: "error",
+						duration: 3000,
+					});
+					console.error(
+						"[getSignUrl] Error: E-sign initialization failed"
+					);
 				}
 			})
-			.catch((err) => console.log("[getSignUrl] Error:", err));
+			.catch((err) =>
+				console.error("[getSignUrl for Leegality] Error:", err)
+			);
 		// }
 	};
 
@@ -914,7 +1000,7 @@ const SignupPage = () => {
 			// getPincodeType();
 		}
 		// setLeegalityLoaded(true);
-	});
+	}, [userLoginData]);
 
 	// useEffect(() => {
 	// 	if (userLoginData?.details?.agreement_id) {
@@ -928,6 +1014,16 @@ const SignupPage = () => {
 			getBookletKey();
 		}
 	}, [bookletNumber, getBookletKey]);
+
+	// Get theme primary color
+	const [accent] = useToken("colors", ["accent.DEFAULT"]);
+
+	// console.log("[wlc>oaas] Loading Widget: ", {
+	// 	selectedRole,
+	// 	selectionStepData,
+	// 	userData,
+	// });
+
 	return (
 		<>
 			{isSpinner ? (
@@ -954,13 +1050,15 @@ const SignupPage = () => {
 								// setSelectedRole(data.form_data.value);
 								handleStepDataSubmit(data);
 							}}
+							primaryColor={accent}
 						/>
 					) : (
-						<Home
-							defaultStep="12800"
-							// defaultStep={
-							// 	userData?.userDetails?.role_list || "12400"
-							// }
+						<OnboardingWidget
+							ref={widgetRef}
+							// defaultStep="12800"
+							defaultStep={
+								userData?.userDetails?.role_list || "12400"
+							}
 							isBranding={false}
 							userData={userData}
 							handleSubmit={handleStepDataSubmit}
@@ -970,6 +1068,7 @@ const SignupPage = () => {
 							stateTypes={stateTypesData}
 							stepsData={stepperData}
 							handleStepCallBack={handleStepCallBack}
+							primaryColor={accent}
 						/>
 					)}
 				</div>
@@ -981,4 +1080,5 @@ SignupPage.pageMeta = {
 	title: "Signup",
 	hideMenu: true,
 };
+
 export default SignupPage;
