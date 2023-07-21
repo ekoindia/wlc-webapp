@@ -9,7 +9,7 @@ import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
-import { MoveAgents } from "..";
+import { MoveAgents } from ".";
 
 const renderer = {
 	label: "name",
