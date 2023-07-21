@@ -84,7 +84,9 @@ const ChangeRole = () => {
 
 	return (
 		<>
-			<Headings title="Change Role" />
+			<Headings
+				title={showOrgChangeRoleView ? "Change Roles" : "Change Role"}
+			/>
 
 			<Flex
 				direction="column"

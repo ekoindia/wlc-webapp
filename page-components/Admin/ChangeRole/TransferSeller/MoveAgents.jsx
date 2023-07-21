@@ -49,7 +49,7 @@ const MoveAgents = ({
 
 	/* handle when user click on option */
 	const handleClick = (checked, value) => {
-		if (checked) {
+		if (checked === true) {
 			handleOptionMultiSelect(value);
 		} else {
 			handleOptionMultiDeselect(value);
@@ -81,9 +81,8 @@ const MoveAgents = ({
 		}
 	};
 
+	/* checking whether select all should be enabled or not */
 	const checkAndSetSelectAll = (_options, _selectedOptions) => {
-		console.log("_selectedOptions", _selectedOptions);
-		console.log("_options", _options);
 		if (selectedOptionsLength > 0) {
 			const _optionsSet = new Set(_options);
 			const _selectedOptionsSet = new Set(_selectedOptions);
@@ -94,6 +93,7 @@ const MoveAgents = ({
 		}
 	};
 
+	/* api call */
 	const body = {
 		scspFrom: transferAgentsFrom.value,
 		scspTo: transferAgentsTo.value,
@@ -192,12 +192,6 @@ const MoveAgents = ({
 										}}
 										color="accent.DEFAULT"
 										fontSize="sm"
-										onClick={(event) => {
-											handleClick(
-												event.target.checked,
-												row[renderer.value]
-											);
-										}}
 									>
 										<Checkbox
 											isChecked={
@@ -207,6 +201,7 @@ const MoveAgents = ({
 												)
 											}
 											onChange={(event) => {
+												event.stopPropagation();
 												handleClick(
 													event.target.checked,
 													row[renderer.value]
