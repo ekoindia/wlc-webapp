@@ -1,5 +1,4 @@
 import {
-	Box,
 	Divider,
 	Flex,
 	Tab,
@@ -9,14 +8,13 @@ import {
 	Tabs,
 	Text,
 } from "@chakra-ui/react";
-import { Button, Headings } from "components";
+import { Headings } from "components";
 import { ChangeRoleMenuList, Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
-	MoveAgents,
 	PromoteSellerToDistributor,
 	TransferSeller,
 	UpgradeSellerToIseller,
@@ -29,18 +27,10 @@ import {
  */
 const ChangeRole = () => {
 	const [agentData, setAgentData] = useState();
-	const [isShowSelectAgent, setIsShowSelectAgent] = useState(false);
-	const [scspFromValue, setScspFromValue] = useState("");
-	const [selectedEkocspidsCR, setSelectedEkocspidsCR] = useState([]);
 	const { accessToken } = useSession();
 	const [showOrgChangeRoleView, setShowOrgChangeRoleView] = useState(false);
-	console.log("selectedEkocspidsCR", selectedEkocspidsCR);
 	const router = useRouter();
 	const { mobile, tab } = router.query;
-
-	const handleScspFromChange = (value) => {
-		setScspFromValue(value);
-	};
 
 	useEffect(() => {
 		const storedData = JSON.parse(
@@ -87,17 +77,12 @@ const ChangeRole = () => {
 	 * Maps slugs to the corresponding components for the ChangeRole tabs.
 	 */
 	const slugTabMapping = {
-		"transfer-retailer": (
-			<TransferSeller
-				setIsShowSelectAgent={setIsShowSelectAgent}
-				onScspFromChange={handleScspFromChange}
-			/>
-		),
+		"transfer-retailer": <TransferSeller />,
 		"retailer-to-distributor": <PromoteSellerToDistributor />,
 		"retailer-to-iretailer": <UpgradeSellerToIseller />,
 	};
 
-	return !isShowSelectAgent ? (
+	return (
 		<>
 			<Headings title="Change Role" />
 
@@ -107,7 +92,7 @@ const ChangeRole = () => {
 				w="100%"
 				bg="white"
 				p={{
-					base: "16px",
+					base: !showOrgChangeRoleView ? "16px" : "0px",
 					md: !showOrgChangeRoleView ? "30px 30px 20px" : "16px",
 				}}
 				gap="4"
@@ -168,45 +153,6 @@ const ChangeRole = () => {
 				</TabPanels>
 			</Tabs>
 		</>
-	) : (
-		<Box>
-			{/* Move button for mobile responsive */}
-			<MoveAgents
-				options={scspFromValue}
-				setSelectedEkocspidsCR={setSelectedEkocspidsCR}
-			/>
-			<Flex
-				display={{ base: "flex", md: "none" }}
-				position={"fixed"}
-				w={"100%"}
-				h={"15vw"}
-				maxH={"80px"}
-				bottom={"0%"}
-				left={"0%"}
-				zIndex={"99"}
-				boxShadow={"0px -3px 10px #0000001A"}
-			>
-				<Button
-					variant="ghost"
-					w={"50%"}
-					h={"100%"}
-					bg={"white"}
-					fontSize="18px"
-					color="accent.DEFAULT"
-					onClick={() => setIsShowSelectAgent(false)}
-				>
-					Go Back
-				</Button>
-				<Button
-					w={"50%"}
-					h={"100%"}
-					fontSize="18px"
-					borderRadius="none"
-				>
-					Move Now
-				</Button>
-			</Flex>
-		</Box>
 	);
 };
 

@@ -1,12 +1,10 @@
 import {
-	Avatar,
-	Circle,
 	Flex,
 	FormControl,
 	FormLabel,
-	Text,
+	useBreakpointValue,
 } from "@chakra-ui/react";
-import { Button, Icon, Select } from "components";
+import { Button, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -23,7 +21,8 @@ const renderer = {
  * TODO: Write more description here
  * @example	`<TransferSeller></TransferSeller>`
  */
-const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
+const TransferSeller = () => {
+	const [showSelectAgent, setShowSelectAgent] = useState(false);
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState({
 		value: "",
 		label: "",
@@ -41,6 +40,8 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 
 	const [selectedAgentsToTransfer, setSelectedAgentsToTransfer] = useState();
 	const { accessToken } = useSession();
+
+	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
 	const handleSelectedAgents = (_agents) => {
 		setSelectedAgentsToTransfer(_agents);
@@ -87,6 +88,10 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 			});
 		} else {
 			setTransferAgentsTo({ value: selectedValue, label: selectedLabel });
+		}
+
+		if (!isSmallScreen) {
+			setShowSelectAgent(true);
 		}
 	};
 
@@ -186,46 +191,30 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 			</Flex>
 
 			{/* Select for Move */}
-			{transferAgentsFrom.value && transferAgentsTo.value ? (
-				<Flex
-					display={{ base: "none", md: "flex" }}
-					align="center"
-					gap="8"
-				>
-					<MoveAgents
-						options={agentListToTransferAgentsFrom}
-						label={transferAgentsFrom.label}
-						onChange={handleSelectedAgents}
-					/>
-
-					<Circle
-						size={{ base: "12", xl: "20" }}
-						color="divider"
-						bg="secondary.DEFAULT"
-					>
-						<Icon
-							name="fast-forward"
-							size={{ base: "sm", xl: "lg" }}
-						/>
-					</Circle>
-
-					<TransferAgentsToBox
-						agentList={agentListToTransferAgentsTo}
-						transferAgentsTo={transferAgentsTo}
-					/>
-				</Flex>
+			{showSelectAgent &&
+			transferAgentsFrom.value &&
+			transferAgentsTo.value ? (
+				<MoveAgents
+					options={agentListToTransferAgentsFrom}
+					onChange={handleSelectedAgents}
+					setShowSelectAgent={setShowSelectAgent}
+					agentList={agentListToTransferAgentsTo}
+					transferAgentsTo={transferAgentsTo}
+					transferAgentsFrom={transferAgentsFrom}
+					selectedAgentsToTransfer={selectedAgentsToTransfer}
+				/>
 			) : null}
 
 			{/* Button for mobile responsive */}
 			<Flex
 				display={{ base: "flex", md: "none" }}
-				direction={{ base: "column", sm: "row" }} //TODO fix this
+				direction={{ base: "column", sm: "row" }} //Refactor this
 				gap={{ base: "6", md: "12" }}
 			>
 				<Button
 					h="54px"
 					fontSize="md"
-					onClick={() => setIsShowSelectAgent(true)}
+					onClick={() => setShowSelectAgent(true)}
 				>
 					Select Agents
 				</Button>
@@ -268,63 +257,3 @@ const TransferSeller = ({ setIsShowSelectAgent /* , onScspFromChange */ }) => {
 };
 
 export default TransferSeller;
-
-const TransferAgentsToBox = ({ agentList, transferAgentsTo }) => {
-	return (
-		<Flex w="500px" direction="column" gap="3">
-			<Flex fontWeight="semibold" gap="1">
-				<Text color="light">
-					Move Retailers To: &thinsp;
-					<Text as="span" color="dark">
-						{transferAgentsTo.label}
-					</Text>
-				</Text>
-			</Flex>
-			<Flex
-				w="100%"
-				direction="column"
-				border="card"
-				borderRadius="10"
-				h="635px"
-				overflow="auto"
-				css={{
-					"&::-webkit-scrollbar": {
-						width: "7px",
-					},
-					"&::-webkit-scrollbar-track": {
-						width: "7px",
-					},
-					"&::-webkit-scrollbar-thumb": {
-						background: "#555555",
-						borderRadius: "5px",
-						border: "1px solid #707070",
-					},
-				}}
-			>
-				{agentList?.map((row, index) => (
-					<Flex
-						px="5"
-						py="4"
-						bg="inherit"
-						key={index}
-						_even={{
-							bg: "shade",
-						}}
-						color="accent.DEFAULT"
-						fontSize="sm"
-						columnGap="15px"
-						align="center"
-					>
-						<Avatar
-							name={row.name[0]}
-							bg="accent.DEFAULT"
-							w="36px"
-							h="36px"
-						/>
-						{row.name}
-					</Flex>
-				))}
-			</Flex>
-		</Flex>
-	);
-};
