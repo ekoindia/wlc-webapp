@@ -82,9 +82,18 @@ const Network = () => {
 							minSearchLimit={10}
 							maxSearchLimit={10}
 						/>
-
-						<NetworkFilter filter={filter} setFilter={setFilter} />
-						{/* <NetworkSort sort={sort} setSort={setSort} /> */}
+						<Flex
+							display={{ base: "none", md: "flex" }}
+							gap={{ base: "5px", md: "20px", lg: "50px" }}
+							align="center"
+							justifyContent="space-between"
+						>
+							<NetworkFilter
+								filter={filter}
+								setFilter={setFilter}
+							/>
+							{/* <NetworkSort sort={sort} setSort={setSort} /> */}
+						</Flex>
 					</Flex>
 				) : null}
 				{dataLength > 0 ? (
