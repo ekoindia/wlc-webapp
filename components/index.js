@@ -4,6 +4,7 @@ import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
 import { Card } from "./Card";
+import { ColorPair } from "./ColorPair";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
 import { Divider } from "./Divider";
@@ -42,6 +43,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	ColorPair,
 	Card,
 	PrintReceipt,
 	PageLoader,
