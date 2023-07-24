@@ -848,6 +848,16 @@ const SignupPage = () => {
 				// 	signUrlData,
 				// 	isAndroid ? "Android" : "Web"
 				// );
+
+				if (!signUrlData?.short_url) {
+					console.error("[oaas Leegality] Didn't receive short-url");
+					toast({
+						title: "Error starting eSign session. Please reload and try again later.",
+						status: "error",
+						duration: 2000,
+					});
+				}
+
 				if (isAndroid) {
 					doAndroidAction(ANDROID_ACTION.LEEGALITY_ESIGN_OPEN, {
 						signing_url: signUrlData?.short_url,
