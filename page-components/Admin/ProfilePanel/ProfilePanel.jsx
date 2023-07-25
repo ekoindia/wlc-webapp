@@ -70,7 +70,7 @@ const ChangeRoleMobile = ({ changeRoleMenuList }) => {
 
 const ProfilePanel = () => {
 	const router = useRouter();
-	const [rowData, setRowData] = useState([]);
+	const [agentData, setAgentData] = useState([]);
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
 	const { accessToken } = useSession();
@@ -86,7 +86,7 @@ const ProfilePanel = () => {
 			token: accessToken,
 		})
 			.then((data) => {
-				setRowData(data?.data?.agent_details[0]);
+				setAgentData(data?.data?.agent_details[0]);
 			})
 			.catch((error) => {
 				// Handle any errors that occurred during the fetch
@@ -96,23 +96,29 @@ const ProfilePanel = () => {
 
 	useEffect(() => {
 		let _changeRoleMenuList = [];
-		ChangeRoleMenuList.map(({ label, path }, index) => {
-			let _listItem = {};
-			_listItem.label = label;
-			_listItem.onClick = () => {
-				router.push(`${path}?mobile=${mobile}&tab=${index}`);
-			};
-			_changeRoleMenuList.push(_listItem);
+		// let tabIndex = -1;
+		ChangeRoleMenuList.map(({ label, path, visibleString }) => {
+			if (visibleString.includes(agentData?.agent_type)) {
+				// tabIndex = tabIndex + 1;
+				// console.log("tabIndex", tabIndex);
+				let _listItem = {};
+				_listItem.label = label;
+				_listItem.onClick = () => {
+					router.push(`${path}?mobile=${mobile}`);
+					//&tab=${tabIndex}
+				};
+				_changeRoleMenuList.push(_listItem);
+			}
 		});
 		setChangeRoleMenuList(_changeRoleMenuList);
-	}, []);
+	}, [agentData?.agent_type, mobile]);
 
 	useEffect(() => {
 		const storedData = JSON.parse(
 			localStorage.getItem("network_seller_details")
 		);
 		if (storedData?.agent_mobile === mobile) {
-			setRowData(storedData);
+			setAgentData(storedData);
 		} else {
 			hitQuery();
 		}
@@ -123,26 +129,26 @@ const ProfilePanel = () => {
 			id: 1,
 			comp: (
 				<CompanyPane
-					rowData={rowData?.profile}
-					agent_name={rowData?.agent_name}
+					rowData={agentData?.profile}
+					agent_name={agentData?.agent_name}
 				/>
 			),
 		},
 		{
 			id: 2,
-			comp: <AddressPane rowData={rowData?.address_details} />,
+			comp: <AddressPane rowData={agentData?.address_details} />,
 		},
 		// {
 		// 	id: 3,
-		// 	comp: <DocPane rowData={rowData?.document_details} />,
+		// 	comp: <DocPane rowData={agentData?.document_details} />,
 		// },
 		{
 			id: 4,
-			comp: <PersonalPane rowData={rowData?.personal_information} />,
+			comp: <PersonalPane rowData={agentData?.personal_information} />,
 		},
 		{
 			id: 5,
-			comp: <ContactPane rowData={rowData?.contact_information} />,
+			comp: <ContactPane rowData={agentData?.contact_information} />,
 		},
 	];
 
