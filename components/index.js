@@ -35,6 +35,7 @@ import { ProfileCard } from "./ProfileCard";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
 import { Select } from "./Select";
+import { ShowcaseCircle } from "./ShowcaseCircle";
 import { SideBar } from "./SideBar";
 import { StatusCard } from "./StatusCard";
 import { SvgIcon } from "./SvgIcon";
@@ -43,6 +44,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	ShowcaseCircle,
 	ColorPair,
 	Card,
 	PrintReceipt,
