@@ -1,9 +1,8 @@
 import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { Button, Headings, Icon, Menus } from "components";
-import { ChangeRoleMenuList } from "constants";
-import { Endpoints } from "constants/EndPoints";
-import { useSession } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
+import { ChangeRoleMenuList, Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AddressPane, CompanyPane, ContactPane, PersonalPane } from ".";
@@ -96,18 +95,19 @@ const ProfilePanel = () => {
 
 	useEffect(() => {
 		let _changeRoleMenuList = [];
-		// let tabIndex = -1;
+		let tabIndex = 0;
 		ChangeRoleMenuList.map(({ label, path, visibleString }) => {
 			if (visibleString.includes(agentData?.agent_type)) {
-				// tabIndex = tabIndex + 1;
-				// console.log("tabIndex", tabIndex);
 				let _listItem = {};
 				_listItem.label = label;
-				_listItem.onClick = () => {
-					router.push(`${path}?mobile=${mobile}`);
-					//&tab=${tabIndex}
-				};
+				_listItem.onClick = (() => {
+					const index = tabIndex;
+					return () => {
+						router.push(`${path}?mobile=${mobile}&tab=${index}`);
+					};
+				})();
 				_changeRoleMenuList.push(_listItem);
+				tabIndex = tabIndex + 1;
 			}
 		});
 		setChangeRoleMenuList(_changeRoleMenuList);
