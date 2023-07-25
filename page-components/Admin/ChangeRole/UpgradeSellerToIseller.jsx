@@ -4,21 +4,28 @@ import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+
+const renderer = {
+	label: "name",
+	value: "mobile",
+};
 
 /**
  * UpgradeSellerToIseller page-component
  * @returns
  */
-const UpgradeSellerToIseller = () => {
+const UpgradeSellerToIseller = ({ agentData }) => {
 	const [sellerList, setSellerList] = useState();
-	const [selectedSeller, setSelectedSeller] = useState();
-	console.log("selectedSeller", selectedSeller);
 	const { accessToken } = useSession();
+	const [disabled, setDisabled] = useState(false);
 
-	const renderer = {
-		label: "name",
-		value: "mobile",
-	};
+	const {
+		handleSubmit,
+		// formState: { errors /* isSubmitting */ },
+		control,
+		reset,
+	} = useForm();
 
 	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -35,7 +42,17 @@ const UpgradeSellerToIseller = () => {
 		});
 	}, []);
 
-	const handleUpgradeButtonClick = () => {
+	useEffect(() => {
+		if (agentData !== undefined) {
+			let defaultValues = {};
+			defaultValues.mobile = agentData?.agent_mobile;
+			reset({ ...defaultValues });
+			setDisabled(true);
+		}
+	}, [agentData]);
+
+	const onSubmit = (data) => {
+		const { mobile } = data;
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -44,7 +61,7 @@ const UpgradeSellerToIseller = () => {
 				"tf-req-method": "PUT",
 			},
 			body: {
-				agent_mobile: selectedSeller,
+				agent_mobile: mobile,
 			},
 			token: accessToken,
 		}).then((res) => {
@@ -54,40 +71,52 @@ const UpgradeSellerToIseller = () => {
 	};
 
 	return (
-		<Flex direction="column" gap="8">
-			<FormControl w={{ base: "100%", md: "500px" }}>
-				<FormLabel>Select Seller</FormLabel>
-				<Select
-					value={selectedSeller}
-					onChange={(event) => setSelectedSeller(event.target.value)}
-					options={sellerList}
-					renderer={renderer}
-				/>
-			</FormControl>
-			<Flex
-				direction={{ base: "column", md: "row" }}
-				gap={{ base: "6", md: "12" }}
-			>
-				<Button
-					size="lg"
-					h="54px"
-					w={{ base: "100%", md: "164px" }}
-					fontWeight="bold"
-					onClick={handleUpgradeButtonClick}
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<Flex direction="column" gap="8">
+				<FormControl w={{ base: "100%", md: "500px" }}>
+					<FormLabel>Select Retailer</FormLabel>
+
+					<Controller
+						name="mobile"
+						control={control}
+						render={({ field: { onChange, value } }) => {
+							return (
+								<Select
+									options={sellerList}
+									renderer={renderer}
+									onChange={onChange}
+									value={value}
+									disabled={disabled}
+								/>
+							);
+						}}
+					/>
+				</FormControl>
+				<Flex
+					direction={{ base: "column", md: "row" }}
+					gap={{ base: "6", md: "12" }}
 				>
-					Upgrade
-				</Button>
-				<Button
-					bg="none"
-					variant="link"
-					fontWeight="bold"
-					color="accent.DEFAULT"
-					_hover={{ textDecoration: "none" }}
-				>
-					Cancel
-				</Button>
+					<Button
+						size="lg"
+						h="54px"
+						w={{ base: "100%", md: "164px" }}
+						fontWeight="bold"
+						type="submit"
+					>
+						Upgrade
+					</Button>
+					<Button
+						bg="none"
+						variant="link"
+						fontWeight="bold"
+						color="accent.DEFAULT"
+						_hover={{ textDecoration: "none" }}
+					>
+						Cancel
+					</Button>
+				</Flex>
 			</Flex>
-		</Flex>
+		</form>
 	);
 };
 
