@@ -15,6 +15,7 @@ import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
+	DemoteDistributor,
 	PromoteSellerToDistributor,
 	TransferSeller,
 	UpgradeSellerToIseller,
@@ -76,9 +77,12 @@ const ChangeRole = () => {
 	 * Maps slugs to the corresponding components for the ChangeRole tabs.
 	 */
 	const slugTabMapping = {
-		"transfer-retailer": <TransferSeller />,
-		"retailer-to-distributor": <PromoteSellerToDistributor />,
-		"retailer-to-iretailer": <UpgradeSellerToIseller />,
+		"transfer-retailer": <TransferSeller {...{ agentData }} />,
+		"retailer-to-distributor": (
+			<PromoteSellerToDistributor {...{ agentData }} />
+		),
+		"retailer-to-iretailer": <UpgradeSellerToIseller {...{ agentData }} />,
+		"demote-distributor": <DemoteDistributor {...{ agentData }} />,
 	};
 
 	return (
@@ -93,8 +97,8 @@ const ChangeRole = () => {
 				w="100%"
 				bg="white"
 				p={{
-					base: !showOrgChangeRoleView ? "16px" : "0px",
-					md: !showOrgChangeRoleView ? "30px 30px 20px" : "16px",
+					base: showOrgChangeRoleView ? "0px" : "16px",
+					md: showOrgChangeRoleView ? "16px" : "30px 30px 20px",
 				}}
 				gap="4"
 				fontSize="sm"
@@ -139,18 +143,25 @@ const ChangeRole = () => {
 						},
 					}}
 				>
-					{ChangeRoleMenuList?.map(
-						({ slug, label }) =>
-							slugTabMapping[slug] && (
-								<Tab key={slug}>{label}</Tab>
-							)
+					{ChangeRoleMenuList?.map(({ slug, label, visibleString }) =>
+						slugTabMapping[slug] &&
+						(showOrgChangeRoleView ||
+							visibleString.includes(agentData?.agent_type)) ? (
+							<Tab key={slug}>{label}</Tab>
+						) : null
 					)}
 				</TabList>
 
 				<TabPanels mt="5">
-					{ChangeRoleMenuList?.map(({ slug }) => (
-						<TabPanel key={slug}>{slugTabMapping[slug]}</TabPanel>
-					))}
+					{ChangeRoleMenuList?.map(({ slug, visibleString }) =>
+						slugTabMapping[slug] &&
+						(showOrgChangeRoleView ||
+							visibleString.includes(agentData?.agent_type)) ? (
+							<TabPanel key={slug}>
+								{slugTabMapping[slug]}
+							</TabPanel>
+						) : null
+					)}
 				</TabPanels>
 			</Tabs>
 		</>
