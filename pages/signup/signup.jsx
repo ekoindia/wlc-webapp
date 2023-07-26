@@ -860,7 +860,7 @@ const SignupPage = () => {
 
 				if (isAndroid) {
 					doAndroidAction(ANDROID_ACTION.LEEGALITY_ESIGN_OPEN, {
-						signing_url: signUrlData?.short_url,
+						signing_url: signUrlData, //	signUrlData?.short_url,
 						// logo: orgDetail.logo,
 					});
 				} else {
@@ -870,7 +870,7 @@ const SignupPage = () => {
 						logo: orgDetail.logo,
 					});
 					leegality.init();
-					leegality.esign(signUrlData?.short_url);
+					leegality.esign(signUrlData); // signUrlData?.short_url
 				}
 			}
 		} else if (callType.type === 10) {
@@ -1026,7 +1026,7 @@ const SignupPage = () => {
 	}, [bookletNumber, getBookletKey]);
 
 	// Get theme primary color
-	const [accent] = useToken("colors", ["accent.DEFAULT"]);
+	const [primaryColor] = useToken("colors", ["primary.DEFAULT"]);
 
 	// console.log("[wlc>oaas] Loading Widget: ", {
 	// 	selectedRole,
@@ -1060,7 +1060,7 @@ const SignupPage = () => {
 								// setSelectedRole(data.form_data.value);
 								handleStepDataSubmit(data);
 							}}
-							primaryColor={accent}
+							primaryColor={primaryColor}
 						/>
 					) : (
 						<OnboardingWidget
@@ -1078,7 +1078,7 @@ const SignupPage = () => {
 							stateTypes={stateTypesData}
 							stepsData={stepperData}
 							handleStepCallBack={handleStepCallBack}
-							primaryColor={accent}
+							primaryColor={primaryColor}
 						/>
 					)}
 				</div>
