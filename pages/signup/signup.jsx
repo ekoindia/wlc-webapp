@@ -13,7 +13,7 @@ import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { ANDROID_ACTION, doAndroidAction } from "utils";
+import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
 // import { distributorStepsData } from "./distributorStepsData";
 
@@ -891,6 +891,14 @@ const SignupPage = () => {
 						is_consent: "Y",
 					},
 				});
+			}
+		} else if (callType.type === 3) {
+			console.log("Entered into callType 3 ");
+			if (isAndroid) {
+				doAndroidAction(
+					ANDROID_ACTION.GRANT_PERMISSION,
+					ANDROID_PERMISSION.LOCATION
+				);
 			}
 		}
 	};
