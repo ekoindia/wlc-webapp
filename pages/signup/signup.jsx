@@ -13,7 +13,7 @@ import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { ANDROID_ACTION, doAndroidAction } from "utils";
+import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
 // import { distributorStepsData } from "./distributorStepsData";
 
@@ -850,7 +850,7 @@ const SignupPage = () => {
 				// );
 				if (isAndroid) {
 					doAndroidAction(ANDROID_ACTION.LEEGALITY_ESIGN_OPEN, {
-						signing_url: signUrlData?.short_url,
+						signing_url: signUrlData,
 						// logo: orgDetail.logo,
 					});
 				} else {
@@ -860,7 +860,7 @@ const SignupPage = () => {
 						logo: orgDetail.logo,
 					});
 					leegality.init();
-					leegality.esign(signUrlData?.short_url);
+					leegality.esign(signUrlData);
 				}
 			}
 		} else if (callType.type === 10) {
@@ -881,6 +881,14 @@ const SignupPage = () => {
 						is_consent: "Y",
 					},
 				});
+			}
+		} else if (callType.type === 3) {
+			console.log("Entered into callType 3 ");
+			if (isAndroid) {
+				doAndroidAction(
+					ANDROID_ACTION.GRANT_PERMISSION,
+					ANDROID_PERMISSION.LOCATION
+				);
 			}
 		}
 	};
@@ -909,10 +917,11 @@ const SignupPage = () => {
 				// console.log("Get Signed URL for Leegality Response: ", res);
 				if (res.response_status_id === 0) {
 					setSignUrlData(res.data);
-					// Inform the OaaS Widget that Leegality is ready
-					widgetRef?.current?.postMessage({
-						type: "esign:ready",
-					});
+					"esign:ready",
+						// Inform the OaaS Widget that Leegality is ready
+						widgetRef?.current?.postMessage({
+							type: "esign:ready",
+						});
 				} else {
 					toast({
 						title:
