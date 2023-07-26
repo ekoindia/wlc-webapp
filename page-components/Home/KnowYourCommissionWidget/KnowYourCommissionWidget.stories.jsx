@@ -1,9 +1,9 @@
-import KnowYourCommision from "./KnowYourCommision";
+import KnowYourCommission from "./KnowYourCommissionWidget";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/KnowYourCommision",
-	component: KnowYourCommision,
+	title: "PageComponent/Home/KnowYourCommissionWidget",
+	component: KnowYourCommission,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls

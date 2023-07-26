@@ -2,7 +2,7 @@ import Aeps from "./Aeps";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Aeps",
+	title: "PageComponent/Admin/PricingCommission/Aeps",
 	component: Aeps,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

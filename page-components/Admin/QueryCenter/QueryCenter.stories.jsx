@@ -2,7 +2,7 @@ import QueryCenter from "./QueryCenter";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "PageComponent/QueryCenter",
+	title: "PageComponent/Admin/QueryCenter",
 	component: QueryCenter,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
