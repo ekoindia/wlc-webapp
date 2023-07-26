@@ -107,7 +107,7 @@ const PromoteSellerToDistributor = ({ agentData }) => {
 						bg="none"
 						variant="link"
 						fontWeight="bold"
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						_hover={{ textDecoration: "none" }}
 					>
 						Cancel

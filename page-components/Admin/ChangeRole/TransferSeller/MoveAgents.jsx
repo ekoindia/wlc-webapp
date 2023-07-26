@@ -189,7 +189,7 @@ const MoveAgents = ({
 										_even={{
 											backgroundColor: "shade",
 										}}
-										color="accent.DEFAULT"
+										color="primary.DEFAULT"
 										fontSize="sm"
 									>
 										<Checkbox
@@ -209,7 +209,7 @@ const MoveAgents = ({
 										/>
 										<Avatar
 											name={row.name[0]}
-											bg="accent.DEFAULT"
+											bg="primary.DEFAULT"
 											w="36px"
 											h="36px"
 										/>
@@ -249,7 +249,7 @@ const MoveAgents = ({
 					h={"100%"}
 					bg={"white"}
 					fontSize="18px"
-					color="accent.DEFAULT"
+					color="primary.DEFAULT"
 					onClick={() => setShowSelectAgent(false)}
 				>
 					Go Back
