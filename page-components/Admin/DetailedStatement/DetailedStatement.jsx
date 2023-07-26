@@ -98,7 +98,7 @@ const DetailedStatement = () => {
 						<Text fontWeight="semibold" color="light" fontSize="xs">
 							Account information
 						</Text>
-						<Text color="accent.DEFAULT" fontSize="sm">
+						<Text color="primary.DEFAULT" fontSize="sm">
 							as on &thinsp;
 							<span>
 								<DateView date={currentDate} />
@@ -126,7 +126,7 @@ const DetailedStatement = () => {
 							</Text>
 							<Flex
 								fontSize="sm"
-								color="accent.DEFAULT"
+								color="primary.DEFAULT"
 								fontWeight="semibold"
 							>
 								<Currency amount={currBalance} />

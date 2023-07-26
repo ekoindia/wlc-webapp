@@ -65,7 +65,7 @@ const EarningSummary = ({ ...rest }) => {
 									<Text
 										fontSize="18px"
 										fontWeight="semibold"
-										color="accent.DEFAULT"
+										color="primary.DEFAULT"
 									>
 										{item.dataType == "amount" ? (
 											<Currency amount={item.data} />

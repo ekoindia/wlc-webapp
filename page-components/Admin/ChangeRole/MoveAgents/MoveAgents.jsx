@@ -123,7 +123,7 @@ const MoveAgents = ({
 									_even={{
 										backgroundColor: "shade",
 									}}
-									color="accent.DEFAULT"
+									color="primary.DEFAULT"
 									fontSize="sm"
 									onClick={() => OnCheckHandler(idx)}
 								>
@@ -134,7 +134,7 @@ const MoveAgents = ({
 									/>
 									<Avatar
 										name={ele.DisplayName[0]}
-										bg="accent.DEFAULT"
+										bg="primary.DEFAULT"
 										w="36px"
 										h="36px"
 									/>

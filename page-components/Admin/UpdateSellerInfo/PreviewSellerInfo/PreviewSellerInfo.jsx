@@ -63,7 +63,7 @@ const PreviewSellerInfo = () => {
 					>
 						<Text
 							as="h1"
-							color="accent.DEFAULT"
+							color="primary.DEFAULT"
 							fontWeight="bold"
 							fontSize={{ base: "lg", md: "2xl" }}
 						>
@@ -229,7 +229,7 @@ const PreviewSellerInfo = () => {
 									"/admin/my-network/profile/up-sell-info/preview-sell-info"
 								)
 							}
-							color={"accent.DEFAULT"}
+							color={"primary.DEFAULT"}
 							fontSize={"20px"}
 							fontWeight="bold"
 							bg="white"

@@ -67,15 +67,15 @@ const WidgetBase = ({
 											...iconStyle,
 										}}
 										size="sm"
-										theme="primary"
-										_hover={{ bg: "primary.dark" }}
+										theme="accent"
+										_hover={{ bg: "accent.dark" }}
 										{...icoBtnProps}
 									/>
 								)}
 								{linkLabel && (
 									<Text
 										as="b"
-										color="primary.DEFAULT"
+										color="accent.DEFAULT"
 										onClick={() => linkOnClick()}
 										cursor="pointer"
 										{...linkProps}

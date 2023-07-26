@@ -171,7 +171,7 @@ const Tr = ({ tx, handleShowHistory }) => {
 					cursor="pointer"
 				>
 					<Text
-						color="primary.DEFAULT"
+						color="accent.DEFAULT"
 						paddingRight="6px"
 						display={{ base: "none", md: "block" }}
 						fontSize="sm"
@@ -181,7 +181,7 @@ const Tr = ({ tx, handleShowHistory }) => {
 					<Icon
 						size="12px"
 						name="arrow-forward"
-						color="primary.DEFAULT"
+						color="accent.DEFAULT"
 					/>
 				</Flex>
 			</Flex>

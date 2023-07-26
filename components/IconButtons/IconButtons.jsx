@@ -7,7 +7,7 @@ const IconButtons = (props) => {
 		title,
 		iconName,
 		iconPos = "right",
-		variant = "primary",
+		variant = "accent",
 		isRound = true,
 		hasBG = true,
 		hasIcon = true,

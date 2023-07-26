@@ -18,7 +18,7 @@ import { forwardRef } from "react";
  */
 const Button = forwardRef((props, ref) => {
 	const {
-		variant = "primary",
+		variant = "accent",
 		disabled = false,
 		loading = false,
 		size,

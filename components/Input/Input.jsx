@@ -155,7 +155,7 @@ const Input = forwardRef(
 						max={max}
 						minLength={minLength}
 						maxLength={maxLength}
-						focusBorderColor="accent.light"
+						focusBorderColor="primary.light"
 						errorBorderColor="error"
 						{...inputAttributes}
 						{...rest}

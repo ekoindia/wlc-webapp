@@ -65,7 +65,7 @@ const ChangeRole = () => {
 				>
 					<Text
 						as="h1"
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						fontWeight="bold"
 						fontSize={{ base: "lg", md: "2xl" }}
 					>
@@ -170,7 +170,7 @@ const ChangeRole = () => {
 					h={"100%"}
 					bg={"white"}
 					fontSize="18px"
-					color="accent.DEFAULT"
+					color="primary.DEFAULT"
 					onClick={() => setIsShowSelectAgent(false)}
 				>
 					Go Back

@@ -202,7 +202,7 @@ const NotificationCreator = () => {
 						<FormLabel>Description</FormLabel>
 						<Textarea
 							maxLength="500"
-							// theme="primary"
+							// theme="accent"
 							borderRadius="6px"
 							borderColor="hint"
 							isRequired={true}

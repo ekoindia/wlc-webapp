@@ -21,7 +21,7 @@ const OnboardingDashboardCard = () => {
 	return (
 		<>
 			<Flex justifyContent="space-between">
-				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
+				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
 					{getNameStyle(item.name)}
 				</Box>
 			</Flex>

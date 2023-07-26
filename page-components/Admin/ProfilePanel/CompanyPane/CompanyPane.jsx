@@ -54,7 +54,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 						fontWeight="medium"
 					>
 						<Text>User Code:</Text>
-						<Text color={"primary.DEFAULT"}>
+						<Text color={"accent.DEFAULT"}>
 							&nbsp; {compdata?.eko_code}
 						</Text>
 					</Flex>
@@ -118,7 +118,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 								amount={compdata?.wallet_balance}
 								fontSize="20px"
 								fontWeight="medium"
-								color="accent.DEFAULT"
+								color="primary.DEFAULT"
 							/>
 						</Box>
 					</Flex>
@@ -128,7 +128,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 					<Button
 						variant="link"
 						fontSize="sm"
-						color="primary.DEFAULT"
+						color="accent.DEFAULT"
 						gap="1"
 						_hover={{ textDecoration: "none" }}
 						onClick={handleclick}

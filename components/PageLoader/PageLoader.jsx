@@ -21,7 +21,7 @@ const PageLoader = () => {
 			zIndex={999999}
 		>
 			<Box
-				bg="accent.light"
+				bg="primary.light"
 				h="full"
 				w="full"
 				rounded="full"

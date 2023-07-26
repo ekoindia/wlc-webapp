@@ -24,14 +24,14 @@ export const light = extendTheme({
 	},
 	colors: {
 		primary: {
-			light: "#ffad23",
-			DEFAULT: "#FE9F00",
-			dark: "#f38300",
-		},
-		accent: {
 			light: "#1F3ABC", // ORIG_THEME: #1d3ac9
 			DEFAULT: "#11299E",
 			dark: "#091968", // ORIG_THEME: #0d2289
+		},
+		accent: {
+			light: "#ffad23",
+			DEFAULT: "#FE9F00",
+			dark: "#f38300",
 		},
 		secondary: {
 			light: "#2d6cbf",
@@ -60,7 +60,7 @@ export const light = extendTheme({
 		inputlabel: "#0C243B",
 		overlayBg: "#e9edf1b3",
 		// sidebar: {
-		// 	"icon-bg": "#1F3ABC", // accent.light
+		// 	"icon-bg": "#1F3ABC", // primary.light
 		// 	"active-border": "#FE7D00",
 		// 	"active-bg": "#081E89",
 		// 	"card-bg": "#102174",

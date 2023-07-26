@@ -303,9 +303,9 @@ function Pill({ name, activePillIndex, index }) {
 			px="10px"
 			border="1px solid #D2D2D2"
 			borderRadius="30px"
-			bg={activePillIndex === index ? "accent.DEFAULT" : "white"}
+			bg={activePillIndex === index ? "primary.DEFAULT" : "white"}
 			color={activePillIndex === index ? "white" : "light"}
-			_hover={{ bg: "accent.DEFAULT", color: "white" }}
+			_hover={{ bg: "primary.DEFAULT", color: "white" }}
 			display={"flex"}
 			justifyContent={"center"}
 			alignItems="center"
@@ -385,7 +385,7 @@ const HistoryToolbar = ({
 				{/* <==========Filter Button =========> */}
 				<Button
 					size="lg"
-					_hover={{ bg: "accent.DEFAULT" }}
+					_hover={{ bg: "primary.DEFAULT" }}
 					onClick={onOpen}
 				>
 					<Icon name="filter" width="18px" />

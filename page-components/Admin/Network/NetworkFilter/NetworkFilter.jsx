@@ -109,7 +109,7 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 						xl: "lg",
 					}}
 					bg="white"
-					color="accent.DEFAULT"
+					color="primary.DEFAULT"
 					border="1px solid #11299E"
 					boxShadow=" 0px 3px 10px #11299E1A"
 					_hover={{
@@ -471,7 +471,7 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 								}}
 							>
 								<Button
-									color={"accent.DEFAULT"}
+									color={"primary.DEFAULT"}
 									fontSize={"20px"}
 									fontWeight="bold"
 									// _focus={{

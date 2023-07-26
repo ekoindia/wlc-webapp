@@ -37,7 +37,7 @@ const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
 				display={{ base: "block", md: "none" }}
 				onClick={menuHandler}
 				variant="ghost"
-				color="primary.DEFAULT"
+				color="accent.DEFAULT"
 				px="none"
 			>
 				Change Role

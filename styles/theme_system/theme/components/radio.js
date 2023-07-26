@@ -6,16 +6,16 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 const baseStyle = definePartsStyle({
 	control: {
-		borderColor: "accent.DEFAULT",
+		borderColor: "primary.DEFAULT",
 		borderWidth: "1px",
 		borderStyle: "solid",
 
 		_checked: {
-			bg: "accent.DEFAULT",
-			borderColor: "accent.DEFAULT",
+			bg: "primary.DEFAULT",
+			borderColor: "primary.DEFAULT",
 			_hover: {
-				bg: "accent.dark",
-				borderColor: "accent.dark",
+				bg: "primary.dark",
+				borderColor: "primary.dark",
 			},
 		},
 

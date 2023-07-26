@@ -22,7 +22,7 @@ export const getNameStyle = (name, icon, hue) => {
 			<Avatar
 				size={{ base: "sm" }}
 				name={icon ? null : name}
-				bg={hue ? `hsl(${hue},80%,95%)` : "accent.DEFAULT"}
+				bg={hue ? `hsl(${hue},80%,95%)` : "primary.DEFAULT"}
 				color={hue ? `hsl(${hue},80%,25%)` : "divider"}
 				border={hue ? `1px solid hsl(${hue},80%,85%)` : null}
 				icon={icon ? <Icon size="16px" name={icon} /> : null}
@@ -99,7 +99,7 @@ export const getLocationStyle = (location, lat, long) => {
 			<IcoButton
 				size="xs"
 				iconName="near-me"
-				theme="primary"
+				theme="accent"
 				mr={1}
 				onClick={(e) => {
 					openGoogleMap(lat, long);
@@ -147,9 +147,9 @@ export const getExpandIcoButton = (expandedRow, index) => {
 		<IcoButton
 			iconName={expandedRow === index ? "remove" : "expand-add"}
 			color="white"
-			bg="primary.DEFAULT"
+			bg="accent.DEFAULT"
 			size="xxs"
-			// iconStyle={{ color: "primary.DEFAULT" }}
+			// iconStyle={{ color: "accent.DEFAULT" }}
 			// border="2px solid #FE9F00"
 			// boxShadow="0px 3px 6px #00000029"
 			title={expandedRow === index ? "Shrink" : "Expand"}

@@ -221,7 +221,7 @@ const NetworkSort = ({ setSort }) => {
 						bg="white"
 						h={"100%"}
 						borderRadius={"0px"}
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						_active={{
 							bg: "white",
 						}}
@@ -230,7 +230,7 @@ const NetworkSort = ({ setSort }) => {
 						}}
 					>
 						<Text
-							color="accent.DEFAULT"
+							color="primary.DEFAULT"
 							fontSize={"18px"}
 							lineHeight={"0"}
 							fontWeight={"semibold"}

@@ -40,8 +40,8 @@ const DashboardHeading = ({ pageId, headingList, handleHeadingClick }) => {
 							w={{ base: "50%", md: "120px" }}
 							fontSize={{ base: "xs", md: "sm" }}
 							bg={{
-								base: isActive ? "accent.DEFAULT" : "inherit",
-								md: isActive ? "accent.DEFAULT" : "white",
+								base: isActive ? "primary.DEFAULT" : "inherit",
+								md: isActive ? "primary.DEFAULT" : "white",
 							}}
 							boxShadow={
 								isActive ? "0px 3px 6px #11299E33" : null

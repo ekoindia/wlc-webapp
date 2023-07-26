@@ -211,7 +211,7 @@ const UpdatePersonalInfo = () => {
 				<Flex direction="column" gap="2">
 					<Text
 						fontSize="2xl"
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						fontWeight="semibold"
 					>
 						{agentData?.agent_name}
@@ -406,7 +406,7 @@ const UpdatePersonalInfo = () => {
 									<Button
 										h="64px"
 										variant="link"
-										color="accent.DEFAULT"
+										color="primary.DEFAULT"
 										fontWeight="bold"
 										_hover={{ textDecoration: "none" }}
 									>
@@ -457,7 +457,7 @@ const UpdatePersonalInfo = () => {
 									<Button
 										h="64px"
 										variant="link"
-										color="accent.DEFAULT"
+										color="primary.DEFAULT"
 										fontWeight="bold"
 										_hover={{ textDecoration: "none" }}
 										onClick={() =>

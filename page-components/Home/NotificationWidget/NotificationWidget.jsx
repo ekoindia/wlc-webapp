@@ -145,7 +145,7 @@ const NotificationWidget = () => {
 									mt={2}
 									fontSize="lg"
 									variant="link"
-									color="accent.DEFAULT"
+									color="primary.DEFAULT"
 									onClick={() => {
 										openUrl(openedNotification.link);
 									}}

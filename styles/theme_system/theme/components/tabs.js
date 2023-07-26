@@ -29,7 +29,7 @@ const colorfulVariant = definePartsStyle({
 		_after: {
 			display: "none",
 			content: '""',
-			bg: "primary.DEFAULT",
+			bg: "accent.DEFAULT",
 			width: "100%",
 			position: "absolute",
 			height: "5px",

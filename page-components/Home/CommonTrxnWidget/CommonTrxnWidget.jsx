@@ -115,7 +115,7 @@ const CommonTrxnWidget = () => {
 								base: "xs",
 								"2xl": "sm",
 							}}
-							color="accent.DEFAULT"
+							color="primary.DEFAULT"
 							pt="10px"
 							noOfLines={2}
 						>

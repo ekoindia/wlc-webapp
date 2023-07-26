@@ -26,7 +26,7 @@ const ResultItem = forwardRef(({ className, item, active }, ref) => {
 			minH="62px"
 			// borderRadius="md"
 			borderLeft="4px solid"
-			borderLeftColor={active ? "primary.dark" : "transparent"}
+			borderLeftColor={active ? "accent.dark" : "transparent"}
 			bg={active ? "divider" : null}
 		>
 			{item.icon && (

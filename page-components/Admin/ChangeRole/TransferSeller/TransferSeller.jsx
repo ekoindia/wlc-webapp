@@ -173,7 +173,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 				<Button
 					h="54px"
 					variant="ghost"
-					color="accent.DEFAULT"
+					color="primary.DEFAULT"
 					fontSize="md"
 				>
 					Cancel
@@ -250,14 +250,14 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 											_even={{
 												bg: "shade",
 											}}
-											color="accent.DEFAULT"
+											color="primary.DEFAULT"
 											fontSize="sm"
 											columnGap="15px"
 											align="center"
 										>
 											<Avatar
 												name={ele.DisplayName[0]}
-												bg="accent.DEFAULT"
+												bg="primary.DEFAULT"
 												w="36px"
 												h="36px"
 											/>
@@ -288,7 +288,7 @@ const TransferSeller = ({ setIsShowSelectAgent, onScspFromChange }) => {
 				</Button>
 				<Button
 					variant="ghost"
-					color="accent.DEFAULT"
+					color="primary.DEFAULT"
 					fontSize={"xl"}
 					h="100%"
 				>

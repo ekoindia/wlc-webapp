@@ -285,7 +285,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				py={{ base: "2", sm: "2", md: "1", lg: "" }}
 				w="full"
 				// minH={"6vw"}
-				bg="accent.DEFAULT"
+				bg="primary.DEFAULT"
 				position="relative"
 				borderTopRadius={{
 					base: "0.3rem",
@@ -307,7 +307,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				</Flex>
 				<Box
 					display={{ base: "none", sm: "initial" }}
-					color="accent.DEFAULT"
+					color="primary.DEFAULT"
 					transform="rotate(180deg)"
 					position="absolute"
 					top="-12px"
@@ -409,7 +409,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									<Box ml={{ base: "15px", sm: "initial" }}>
 										<IcoButton
 											size={"xs"}
-											theme="primary"
+											theme="accent"
 											ml="2"
 											// onClick={() =>
 											// 	Router.push("/admin/my-network/profile/up-per-info")

@@ -76,7 +76,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 						<IcoButton
 							iconName="mode-edit"
 							size="sm"
-							theme="primary"
+							theme="accent"
 							ml={2}
 							onClick={() => {
 								setStep("LOGIN");

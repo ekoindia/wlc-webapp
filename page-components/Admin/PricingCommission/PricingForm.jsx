@@ -281,7 +281,7 @@ const PricingForm = ({
 										: "rupee_bg"
 								}
 								size="23px"
-								color="accent.DEFAULT"
+								color="primary.DEFAULT"
 							/>
 						}
 						type="number"
@@ -322,7 +322,7 @@ const PricingForm = ({
 						bg={{ base: "white", md: "none" }}
 						variant="link"
 						fontWeight="bold"
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						_hover={{ textDecoration: "none" }}
 						borderRadius={{ base: "none", md: "10" }}
 					>
@@ -346,7 +346,7 @@ const PricingForm = ({
 							color="white"
 							fontSize="xs"
 							p="8px 15px"
-							bg="primary.DEFAULT"
+							bg="accent.DEFAULT"
 							justify="space-between"
 							borderRadius="6px"
 						>

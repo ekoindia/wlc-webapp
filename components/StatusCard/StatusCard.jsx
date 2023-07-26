@@ -77,7 +77,7 @@ const StatusCard = () => {
 			justify="space-between"
 			bg="status.bg" // ORIG_THEME: bgColor || sidebar.card-bg-dark
 			borderBottom="1px solid" // ORIG_THEME: br-sidebar
-			borderBottomColor="accent.light"
+			borderBottomColor="primary.light"
 		>
 			<Flex align="center" gap="2.5">
 				<Icon
@@ -131,7 +131,7 @@ const StatusCard = () => {
 						<Icon
 							name="refresh"
 							size={{ base: "12px", "2xl": "16px" }}
-							color="accent.dark" // ORIG_THEME: sidebar.card-bg-dark
+							color="primary.dark" // ORIG_THEME: sidebar.card-bg-dark
 						/>
 					</Circle>
 				</Tooltip>
