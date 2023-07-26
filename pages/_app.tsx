@@ -278,9 +278,20 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		</ChakraProvider>
 	);
 
-	const AppCompArrayWithSocialLogin = org?.login_types?.google?.client_id ? (
+	const useDefaultGoogleLogin = org?.login_types?.google?.default
+		? true
+		: false;
+
+	const showGoogleLogin =
+		useDefaultGoogleLogin || org?.login_types?.google?.client_id;
+
+	const AppCompArrayWithSocialLogin = showGoogleLogin ? (
 		<GoogleOAuthProvider
-			clientId={org?.login_types?.google?.client_id || ""}
+			clientId={
+				useDefaultGoogleLogin
+					? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""
+					: org?.login_types?.google?.client_id
+			}
 		>
 			{AppCompArray}
 		</GoogleOAuthProvider>

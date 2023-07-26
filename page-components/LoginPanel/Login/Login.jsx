@@ -24,7 +24,11 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const [invalid, setInvalid] = useState("");
 
 	// Is Google Login available?
-	const showGoogle = orgDetail?.login_types?.google?.client_id ? true : false;
+	const showGoogle =
+		orgDetail?.login_types?.google?.default ||
+		orgDetail?.login_types?.google?.client_id
+			? true
+			: false;
 
 	const onChangeHandler = (val) => {
 		setValue(val);
