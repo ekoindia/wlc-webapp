@@ -883,7 +883,6 @@ const SignupPage = () => {
 				});
 			}
 		} else if (callType.type === 3) {
-			console.log("Entered into callType 3 ");
 			if (isAndroid) {
 				doAndroidAction(
 					ANDROID_ACTION.GRANT_PERMISSION,
