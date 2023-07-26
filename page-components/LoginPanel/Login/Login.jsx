@@ -1,5 +1,5 @@
-import { Flex, Heading, useToast } from "@chakra-ui/react";
-import { Button, Divider, Input } from "components";
+import { Box, Flex, Text, useToast } from "@chakra-ui/react";
+import { Button, Divider, Input, OrgLogo } from "components";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useRef, useState } from "react";
@@ -53,36 +53,74 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	};
 
 	return (
-		<Flex direction="column">
-			<Heading
+		<Flex direction="column" height="100%">
+			<Box
+				display={{ base: "block", md: "none" }}
+				position="absolute"
+				top="0"
+				left="0"
+				right="0"
+				h="10px"
+				bg="primary.DEFAULT"
+			></Box>
+			<Flex mb={{ base: 10, lg: 14 }}>
+				<OrgLogo
+					orgDetail={orgDetail}
+					size="lg"
+					// ml={{ base: 4, md: "0" }}
+				/>
+			</Flex>
+
+			{/* <Heading
 				variant="selectNone"
 				as="h3"
 				fontSize={{ base: "xl", "2xl": "3xl" }}
+				color="light"
 				mb={{
 					base: 4,
 					"2xl": "4.35rem",
 				}}
 			>
 				Login
-			</Heading>
-
-			{showGoogle && (
-				<GoogleButton
-					setStep={setStep}
-					setLoginType={setLoginType}
-					setNumber={setNumber}
-					setEmail={setEmail}
-				/>
-			)}
+			</Heading> */}
 
 			{showGoogle ? (
-				<Divider
-					title="Or login with mobile number"
-					cursor="default"
-					py={{ base: "4rem", "2xl": "5.62rem" }}
-					fontSize={{ base: "xs", "2xl": "md" }}
-				/>
-			) : null}
+				<>
+					<Box flex="1" />
+					<GoogleButton
+						setStep={setStep}
+						setLoginType={setLoginType}
+						setNumber={setNumber}
+						setEmail={setEmail}
+					/>
+					<Box flex="1" />
+					<Divider
+						title="Or, login with mobile number"
+						cursor="default"
+						py={{ base: "2rem", lg: "3rem", "2xl": "4rem" }}
+						fontSize={{ base: "xs" }}
+						titleStyle={{
+							display: "inline-block",
+							color: "light",
+							opacity: "0.8",
+							fontSize: "xs",
+							border: "1px solid",
+							borderColor: "hint",
+							borderRadius: "10px",
+							py: "2px",
+						}}
+						lineStyle={{
+							borderColor: "hint",
+						}}
+					/>
+				</>
+			) : (
+				<Text fontWeight="bold" fontSize="1.2em" color="light">
+					Login with your mobile...
+				</Text>
+			)}
+
+			<Box flex="1" />
 
 			<Input
 				label="Enter mobile number"
@@ -108,14 +146,18 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			/>
 
 			<Button
-				h={{ base: 16, "2xl": "4.5rem" }}
-				fontSize={{ base: "lg", "2xl": "xl" }}
-				mt={{ base: 10, "2xl": "4.35rem" }}
+				h={{ base: "56px" }}
+				borderRadius="8px"
+				fontSize={{ base: "lg" }}
+				mt={{ base: 8 }}
 				onClick={SendOtp}
 				ref={EnterRef}
+				// disabled={value.length < 12}
 			>
 				Verify
 			</Button>
+
+			<Box flex="1" />
 		</Flex>
 	);
 };

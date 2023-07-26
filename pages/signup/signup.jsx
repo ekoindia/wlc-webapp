@@ -13,7 +13,7 @@ import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { ANDROID_ACTION, doAndroidAction } from "utils";
+import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
 // import { distributorStepsData } from "./distributorStepsData";
 
@@ -848,9 +848,19 @@ const SignupPage = () => {
 				// 	signUrlData,
 				// 	isAndroid ? "Android" : "Web"
 				// );
+
+				if (!signUrlData?.short_url) {
+					console.error("[oaas Leegality] Didn't receive short-url");
+					toast({
+						title: "Error starting eSign session. Please reload and try again later.",
+						status: "error",
+						duration: 2000,
+					});
+				}
+
 				if (isAndroid) {
 					doAndroidAction(ANDROID_ACTION.LEEGALITY_ESIGN_OPEN, {
-						signing_url: signUrlData?.short_url,
+						signing_url: signUrlData, //	signUrlData?.short_url,
 						// logo: orgDetail.logo,
 					});
 				} else {
@@ -860,7 +870,7 @@ const SignupPage = () => {
 						logo: orgDetail.logo,
 					});
 					leegality.init();
-					leegality.esign(signUrlData?.short_url);
+					leegality.esign(signUrlData); // signUrlData?.short_url
 				}
 			}
 		} else if (callType.type === 10) {
@@ -881,6 +891,13 @@ const SignupPage = () => {
 						is_consent: "Y",
 					},
 				});
+			}
+		} else if (callType.type === 3) {
+			if (isAndroid) {
+				doAndroidAction(
+					ANDROID_ACTION.GRANT_PERMISSION,
+					ANDROID_PERMISSION.LOCATION
+				);
 			}
 		}
 	};
@@ -1016,7 +1033,7 @@ const SignupPage = () => {
 	}, [bookletNumber, getBookletKey]);
 
 	// Get theme primary color
-	const [accent] = useToken("colors", ["accent.DEFAULT"]);
+	const [primaryColor] = useToken("colors", ["primary.DEFAULT"]);
 
 	// console.log("[wlc>oaas] Loading Widget: ", {
 	// 	selectedRole,
@@ -1050,7 +1067,7 @@ const SignupPage = () => {
 								// setSelectedRole(data.form_data.value);
 								handleStepDataSubmit(data);
 							}}
-							primaryColor={accent}
+							primaryColor={primaryColor}
 						/>
 					) : (
 						<OnboardingWidget
@@ -1068,7 +1085,7 @@ const SignupPage = () => {
 							stateTypes={stateTypesData}
 							stepsData={stepperData}
 							handleStepCallBack={handleStepCallBack}
-							primaryColor={accent}
+							primaryColor={primaryColor}
 						/>
 					)}
 				</div>

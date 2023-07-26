@@ -8,17 +8,17 @@ const baseStyle = definePartsStyle({
 	control: {
 		w: "5",
 		h: "5",
-		borderColor: "accent.DEFAULT",
+		borderColor: "primary.DEFAULT",
 		borderWidth: "1px",
 		borderStyle: "solid",
 		borderRadius: "4",
 
 		_checked: {
-			bg: "accent.DEFAULT",
-			borderColor: "accent.DEFAULT",
+			bg: "primary.DEFAULT",
+			borderColor: "primary.DEFAULT",
 			_hover: {
-				bg: "accent.dark",
-				borderColor: "accent.dark",
+				bg: "primary.dark",
+				borderColor: "primary.dark",
 			},
 		},
 

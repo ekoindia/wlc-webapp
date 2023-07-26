@@ -111,7 +111,7 @@ const DocPane = (/* props */) => {
 									}
 									iconPos="left"
 									variant={
-										item.available ? "primary" : "accent"
+										item.available ? "accent" : "primary"
 									}
 									iconName={
 										item.available

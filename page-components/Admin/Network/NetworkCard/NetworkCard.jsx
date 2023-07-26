@@ -16,7 +16,7 @@ const NetworkCard = (props) => {
 	return (
 		<>
 			<Flex justifyContent="space-between">
-				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
+				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
 					{getNameStyle(item.agent_name)}
 				</Box>
 				<Menus

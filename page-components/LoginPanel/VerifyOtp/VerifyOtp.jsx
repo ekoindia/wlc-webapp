@@ -116,9 +116,9 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 			<Flex w="full" align="center" justify="center">
 				<OtpInput
 					inputStyle={{
-						w: { base: 12, md: "72px", "2xl": "96px" },
-						h: { base: 12, "2xl": 16 },
-						fontSize: { base: "sm", "2xl": "2xl" },
+						w: { base: 12, md: "68px" },
+						h: { base: 12 },
+						fontSize: { base: "sm" },
 					}}
 					containerStyle={
 						{
@@ -156,7 +156,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 						<Text
 							cursor="pointer"
 							as="span"
-							color="accent.DEFAULT"
+							color="primary.DEFAULT"
 							onClick={resendOtpHandler}
 							fontWeight="medium"
 						>

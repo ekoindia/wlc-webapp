@@ -453,7 +453,7 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 								}}
 							>
 								<Button
-									color={"accent.DEFAULT"}
+									color={"primary.DEFAULT"}
 									fontSize={"20px"}
 									fontWeight="bold"
 									// _focus={{

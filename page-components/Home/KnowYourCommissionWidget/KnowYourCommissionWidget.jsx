@@ -58,7 +58,7 @@ const KnowYourCommission = () => {
 									<Icon
 										size={{ base: "sm", md: "md" }}
 										name={prod.icon}
-										color="accent.DEFAULT"
+										color="primary.DEFAULT"
 									/>
 								}
 							/>
@@ -88,7 +88,7 @@ const KnowYourCommission = () => {
 									cursor="pointer"
 								>
 									<Text
-										color="primary.DEFAULT"
+										color="accent.DEFAULT"
 										pr="6px"
 										display={{ base: "none", md: "block" }}
 										fontSize="sm"
@@ -98,7 +98,7 @@ const KnowYourCommission = () => {
 									<Icon
 										size="12px"
 										name="arrow-forward"
-										color="primary.DEFAULT"
+										color="accent.DEFAULT"
 									/>
 								</Flex>
 							</Flex>

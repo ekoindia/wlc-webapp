@@ -103,7 +103,7 @@ const AccountStatement = () => {
 									Account information
 								</Text>
 								<Text
-									color={"accent.DEFAULT"}
+									color={"primary.DEFAULT"}
 									fontSize={{
 										base: "14px",
 										md: "10px",
@@ -181,7 +181,7 @@ const AccountStatement = () => {
 										</Text>
 										<Flex
 											fontWeight="semibold"
-											color="accent.DEFAULT"
+											color="primary.DEFAULT"
 											gap="5px"
 										>
 											<Currency amount={saving_balance} />
@@ -194,7 +194,7 @@ const AccountStatement = () => {
 												as={"Button"}
 												cursor={"pointer"}
 												fontSize={"18px"}
-												color={"primary.DEFAULT"}
+												color={"accent.DEFAULT"}
 												fontWeight={"bold"}
 											>
 												+ Show More

@@ -135,7 +135,7 @@ const QueryWidget = () => {
 							<Button
 								bg={"white"}
 								border="1px solid white"
-								color="accent.DEFAULT"
+								color="primary.DEFAULT"
 								_hover={{
 									bg: "transparent",
 									color: "white",

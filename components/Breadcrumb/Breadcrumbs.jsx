@@ -20,7 +20,7 @@ const Breadcrumbs = ({ hrefs = [], labels = [], handleOnClick }) => {
 							fontSize="xs"
 							display={"flex"}
 							alignItems={"center"}
-							color={"accent.DEFAULT"}
+							color={"primary.DEFAULT"}
 							_hover={{ textDecoration: "none" }}
 						>
 							<Icon
@@ -46,7 +46,7 @@ const Breadcrumbs = ({ hrefs = [], labels = [], handleOnClick }) => {
 									color={
 										index === hrefs.length - 1
 											? "light"
-											: "accent.DEFAULT"
+											: "primary.DEFAULT"
 									}
 									cursor={
 										index === hrefs.length - 1

@@ -46,13 +46,13 @@ const link = defineStyle({
 });
 const primary_outline = defineStyle({
 	border: "1px solid",
-	borderColor: "primary.dark",
-	color: "primary.dark",
+	borderColor: "accent.dark",
+	color: "accent.dark",
 });
 const accent_outline = defineStyle({
 	border: "1px solid",
-	borderColor: "accent.dark",
-	color: "accent.dark",
+	borderColor: "primary.dark",
+	color: "primary.dark",
 });
 
 export const buttonTheme = defineStyleConfig({

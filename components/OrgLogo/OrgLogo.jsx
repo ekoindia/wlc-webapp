@@ -15,7 +15,7 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 
 	const logoHeight =
 		size === "lg"
-			? { base: "2.2rem", md: 16 }
+			? { base: "4.2rem", md: 16 }
 			: {
 					base: "30px",
 					md: "36px",
@@ -33,7 +33,7 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 			<Center
 				maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
 				// height={logoHeight}
-				// bg="accent.PRIMARY"
+				// bg="primary.DEFAULT"
 				// px={{ base: "0.6rem", md: "1.2rem" }}
 				// borderRadius="6px"
 				{...rest}
@@ -54,24 +54,28 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 
 	// Image Logo...
 	return (
-		<Image
-			src={orgDetail.logo || fallbackLogo}
-			// fallbackSrc={fallbackLogo}
-			alt={orgDetail.app_name + " logo"}
-			maxW={{ base: "10rem", md: "20rem", "2xl": "30rem" }}
-			height={logoHeight}
-			sx={{
-				"@media print and (max-width:5in)": {
-					height: "32px",
-				},
-			}}
-			transition="opacity 1s ease-out"
-			opacity={imageState === "loaded" ? 1 : 0}
-			loading="eager"
-			onLoad={() => setImageState("loaded")}
-			onError={() => setImageState("failed")}
-			{...rest}
-		/>
+		<Center h={logoHeight}>
+			<Image
+				src={orgDetail.logo || fallbackLogo}
+				// fallbackSrc={fallbackLogo}
+				alt={orgDetail.app_name + " logo"}
+				maxW={{ base: "10rem", md: "20rem", "2xl": "30rem" }}
+				maxH={logoHeight}
+				w="auto"
+				h="auto"
+				sx={{
+					"@media print and (max-width:5in)": {
+						maxHeight: "32px",
+					},
+				}}
+				transition="opacity 1s ease-out"
+				opacity={imageState === "loaded" ? 1 : 0}
+				loading="eager"
+				onLoad={() => setImageState("loaded")}
+				onError={() => setImageState("failed")}
+				{...rest}
+			/>
+		</Center>
 	);
 };
 

@@ -24,7 +24,7 @@ const Tag = ({ key, value, label, onDelete }) => {
 			<Icon
 				name="close"
 				size="8px"
-				color="accent.dark"
+				color="primary.dark"
 				onClick={(event) => {
 					onDelete(value);
 					event.stopPropagation();

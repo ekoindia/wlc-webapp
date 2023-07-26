@@ -43,7 +43,7 @@ const UpdateSellerInfo = () => {
 					{" "}
 					<Text
 						as="h1"
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						fontWeight="bold"
 						fontSize={{ base: "lg", md: "2xl" }}
 					>

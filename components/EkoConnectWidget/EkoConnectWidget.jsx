@@ -86,20 +86,20 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	]);
 
 	const theme_colors = {
-		"--primary-color": accent,
-		"--light-primary-color": accent_light,
-		"--dark-primary-color": accent_dark,
-		"--accented-text-color": accent_light,
-		"--menu-selected-background-color": accent + "40",
-		"--light-menu-selected-background-color": accent_light + "30",
-		"--dark-menu-selected-background-color": accent_dark + "40",
-		"--secondary-button-color": accent,
-		"--light-secondary-button-color": accent_light,
-		"--dark-secondary-button-color": accent_dark,
-		"--primary-button-color": primary,
-		"--accent-color": primary,
-		"--light-accent-color": primary_light,
-		"--bright-accent-color": primary_dark,
+		"--primary-color": primary,
+		"--light-primary-color": primary_light,
+		"--dark-primary-color": primary_dark,
+		"--accented-text-color": primary_light,
+		"--menu-selected-background-color": primary + "40",
+		"--light-menu-selected-background-color": primary_light + "30",
+		"--dark-menu-selected-background-color": primary_dark + "40",
+		"--secondary-button-color": primary,
+		"--light-secondary-button-color": primary_light,
+		"--dark-secondary-button-color": primary_dark,
+		"--primary-button-color": accent,
+		"--accent-color": accent,
+		"--light-accent-color": accent_light,
+		"--bright-accent-color": accent_dark,
 	};
 
 	// Subscribe to the Android responses
@@ -239,7 +239,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 					thickness="4px"
 					speed="0.65s"
 					emptyColor="gray.200"
-					color="primary.DEFAULT"
+					color="accent.DEFAULT"
 					size="xl"
 				/>
 			</Flex>
@@ -266,7 +266,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 						thickness="4px"
 						speed="0.65s"
 						emptyColor="gray.200"
-						color="primary.DEFAULT"
+						color="accent.DEFAULT"
 						size="xl"
 					/>
 				</Flex>

@@ -246,7 +246,7 @@ const UpdateSellerAddress = () => {
 				<Flex direction="column" gap="2">
 					<Text
 						fontSize="2xl"
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						fontWeight="semibold"
 					>
 						{agentData?.agent_name}
@@ -322,7 +322,7 @@ const UpdateSellerAddress = () => {
 								<Button
 									h="64px"
 									variant="link"
-									color="accent.DEFAULT"
+									color="primary.DEFAULT"
 									fontWeight="bold"
 									_hover={{ textDecoration: "none" }}
 								>

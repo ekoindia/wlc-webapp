@@ -59,7 +59,7 @@ const HistoryCard = ({
 						{formatDateTime(item.datetime)}
 					</Box>
 					<Box
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						fontWeight="semibold"
 						fontSize="sm"
 					>
@@ -69,7 +69,7 @@ const HistoryCard = ({
 						{getPaymentStyle(item.amount, item.trx_type, "right")}
 					</Box>
 				</Flex>
-				<Box color="accent.DEFAULT" fontSize={{ base: "md" }}>
+				<Box color="primary.DEFAULT" fontSize={{ base: "md" }}>
 					{getStatusStyle(item.status, "History")}
 				</Box>
 			</Flex>
@@ -203,7 +203,7 @@ const HistoryCard = ({
 							fontSize="xs"
 							size="md"
 							icon="print"
-							color="primary.DEFAULT"
+							color="accent.DEFAULT"
 							onClick={() => {
 								printPage("Receipt (copy)");
 							}}
@@ -216,7 +216,7 @@ const HistoryCard = ({
 			<Flex pl="42px" direction="row">
 				<Text
 					fontWeight="semibold"
-					textColor="primary.DEFAULT"
+					textColor="accent.DEFAULT"
 					fontSize={{ base: "sm" }}
 					mt="10px"
 					sx={{

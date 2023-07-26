@@ -84,7 +84,7 @@ const IcoButton = ({
 			: theme === "light"
 			? {
 					bg: "divider",
-					color: "accent.DEFAULT",
+					color: "primary.DEFAULT",
 					border: "1px solid #E9EDF1",
 			  }
 			: theme === "gray"

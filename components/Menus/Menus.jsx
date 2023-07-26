@@ -28,15 +28,15 @@ const Menus = ({
 	...rest
 }) => {
 	const pseudoStyles = {
-		color: type === "inverted" ? "primary.DEFAULT" : "white",
-		bg: type === "inverted" ? "white" : "primary.DEFAULT",
+		color: type === "inverted" ? "accent.DEFAULT" : "white",
+		bg: type === "inverted" ? "white" : "accent.DEFAULT",
 		_hover: {
-			color: type === "inverted" ? "primary.dark" : "white",
-			bg: type === "inverted" ? "white" : "primary.dark",
+			color: type === "inverted" ? "accent.dark" : "white",
+			bg: type === "inverted" ? "white" : "accent.dark",
 		},
 		_active: {
-			color: type === "inverted" ? "primary.dark" : "white",
-			bg: type === "inverted" ? "white" : "primary.dark",
+			color: type === "inverted" ? "accent.dark" : "white",
+			bg: type === "inverted" ? "white" : "accent.dark",
 		},
 	};
 	const iconWPos =
@@ -48,7 +48,7 @@ const Menus = ({
 
 	return (
 		<Box
-			color={type === "inverted" ? "primary.DEFAULT" : "white"}
+			color={type === "inverted" ? "accent.DEFAULT" : "white"}
 			onClick={onClick}
 		>
 			<Menu autoSelect={false}>

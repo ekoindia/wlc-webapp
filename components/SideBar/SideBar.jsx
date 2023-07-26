@@ -117,7 +117,7 @@ const generateTransactionActions = (
 					icon: (
 						<ActionIcon
 							icon="transaction"
-							color="accent.light"
+							color="primary.light"
 							style="filled"
 						/>
 					),
@@ -450,7 +450,7 @@ const SideBarMenu = ({
 				// "2xl": "250px",
 				base: "250px",
 			}}
-			bg="sidebar.bg" // ORIG_THEME: accent.DEFAULT
+			bg="sidebar.bg" // ORIG_THEME: primary.DEFAULT
 			color="sidebar.text" // ORIG_THEME: "white"
 			height={"100%"}
 			overflowY="auto"
@@ -597,7 +597,7 @@ const AccordionSubMenuSection = ({
 	return (
 		<AccordionItem
 			borderBottom="1px solid" // ORIG_THEME: "br-sidebar"
-			borderBottomColor="sidebar.divider" // ORIG_THEME: accent.light
+			borderBottomColor="sidebar.divider" // ORIG_THEME: primary.light
 			borderTop="none"
 		>
 			<h2>
@@ -664,12 +664,12 @@ const AccordionSubMenuSection = ({
 								borderLeft="8px"
 								borderLeftColor={
 									isCurrent
-										? "primary.DEFAULT" // ORIG_THEME: sidebar.active-border
+										? "accent.DEFAULT" // ORIG_THEME: sidebar.active-border
 										: "transparent"
 								}
 								outline={
 									isCurrent
-										? "primary.light" // ORIG_THEME: "var(--chakra-borders-br-sidebar)"
+										? "accent.light" // ORIG_THEME: "var(--chakra-borders-br-sidebar)"
 										: ""
 								}
 								transitionProperty="border-left-color, background-color"
@@ -681,7 +681,7 @@ const AccordionSubMenuSection = ({
 									justify="space-between"
 									padding="12px 0px 12px 0px"
 									borderTop="1px solid" // ORIG_THEME: "br-sidebar"
-									borderTopColor="sidebar.divider" // ORIG_THEME: accent.light
+									borderTopColor="sidebar.divider" // ORIG_THEME: primary.light
 									borderTopStyle="dashed"
 								>
 									<Flex
@@ -704,8 +704,8 @@ const AccordionSubMenuSection = ({
 									<Icon
 										color={
 											isCurrent
-												? "primary.DEFAULT"
-												: "accent.light"
+												? "accent.DEFAULT"
+												: "primary.light"
 										} // ORIG_THEME: "#FE7D00" : "#556FEF"
 										name="chevron-right"
 										size="xs"
@@ -751,11 +751,11 @@ const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
 				role="group"
 				cursor="pointer"
 				borderBottom="1px solid" // ORIG_THEME: br-sidebar
-				borderBottomColor="sidebar.divider" // ORIG_THEME: accent.light
+				borderBottomColor="sidebar.divider" // ORIG_THEME: primary.light
 				bg={isCurrent ? "sidebar.sel" : ""} //ORIG_THEME: sidebar.active-bg
 				borderLeft="8px"
 				borderLeftColor={
-					isCurrent ? "primary.dark" : "transparent" // ORIG_THEME: sidebar.active-border
+					isCurrent ? "accent.dark" : "transparent" // ORIG_THEME: sidebar.active-border
 				}
 				transitionProperty="border-left-color, background-color"
 				transitionDuration="0.3s"

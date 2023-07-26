@@ -143,8 +143,8 @@ const ProfileWidget = () => {
 						iconName="mode-edit"
 						// iconStyle={{ size: "12px" }}
 						size="sm"
-						theme="primary"
-						_hover={{ bg: "primary.dark" }}
+						theme="accent"
+						_hover={{ bg: "accent.dark" }}
 					/>
 				</Flex>
 			</Flex>

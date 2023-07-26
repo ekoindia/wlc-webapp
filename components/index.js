@@ -4,6 +4,7 @@ import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
 import { Card } from "./Card";
+import { ColorPair } from "./ColorPair";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
 import { Divider } from "./Divider";
@@ -34,6 +35,7 @@ import { ProfileCard } from "./ProfileCard";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
 import { Select } from "./Select";
+import { ShowcaseCircle } from "./ShowcaseCircle";
 import { SideBar } from "./SideBar";
 import { StatusCard } from "./StatusCard";
 import { SvgIcon } from "./SvgIcon";
@@ -42,6 +44,8 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	ShowcaseCircle,
+	ColorPair,
 	Card,
 	PrintReceipt,
 	PageLoader,
