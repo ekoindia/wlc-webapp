@@ -74,13 +74,6 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 				...light,
 				colors: {
 					...light.colors,
-					accent: {
-						...light.colors.accent,
-						light:
-							colors?.accent_light || light.colors.accent.light,
-						DEFAULT: colors?.accent || light.colors.accent.DEFAULT,
-						dark: colors?.accent_dark || light.colors.accent.dark,
-					},
 					primary: {
 						...light.colors.primary,
 						light:
@@ -88,6 +81,13 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 						DEFAULT:
 							colors?.primary || light.colors.primary.DEFAULT,
 						dark: colors?.primary_dark || light.colors.primary.dark,
+					},
+					accent: {
+						...light.colors.accent,
+						light:
+							colors?.accent_light || light.colors.accent.light,
+						DEFAULT: colors?.accent || light.colors.accent.DEFAULT,
+						dark: colors?.accent_dark || light.colors.accent.dark,
 					},
 				},
 		  }
@@ -101,30 +101,30 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		...theme.colors,
 		navbar: {
 			...light.colors.navbar,
-			bg: lightNav ? theme.colors.accent.DEFAULT : "#FFF",
+			bg: lightNav ? theme.colors.primary.DEFAULT : "#FFF",
 			bgAlt: lightNav ? "#FFFFFF30" : "#00000020",
 			text: lightNav ? "#FFFFFFEE" : "#000000DD",
 			textLight: lightNav ? "#FFFFFF70" : "#00000070",
 		},
 		sidebar: {
 			...light.colors.sidebar,
-			bg: lightNav ? "#FFF" : theme.colors.accent.DEFAULT,
+			bg: lightNav ? "#FFF" : theme.colors.primary.DEFAULT,
 			text: lightNav ? "#333" : "#FFF",
 			sel: lightNav
-				? theme.colors.accent.DEFAULT // theme.colors.accent.DEFAULT + "40"
-				: theme.colors.accent.dark, // Selection color
+				? theme.colors.primary.DEFAULT // theme.colors.primary.DEFAULT + "40"
+				: theme.colors.primary.dark, // Selection color
 			divider: lightNav
-				? theme.colors.accent.light + "40"
-				: theme.colors.accent.light,
+				? theme.colors.primary.light + "40"
+				: theme.colors.primary.light,
 		},
 		status: {
 			...light.colors.status,
-			bg: lightNav ? theme.colors.accent.DEFAULT + "30" : "#00000050",
+			bg: lightNav ? theme.colors.primary.DEFAULT + "30" : "#00000050",
 			bgLight: lightNav ? "#FFF" : "#00000030",
 			text: lightNav ? "#111" : "#FFF",
 			wm: lightNav ? "#00000050" : "#FFFFFF50", // Watermark color
 			wmLight: lightNav ? "#00000030" : "#FFFFFF25",
-			title: lightNav ? theme.colors.accent.dark : "#FFD93B",
+			title: lightNav ? theme.colors.primary.dark : "#FFD93B",
 		},
 	};
 

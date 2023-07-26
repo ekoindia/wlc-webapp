@@ -1,6 +1,8 @@
 import { Center, Text } from "@chakra-ui/react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { Button } from "components/Button";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
+import { useUser } from "contexts/UserContext";
 import { useLogin } from "hooks";
 import Image from "next/image";
 
@@ -19,15 +21,18 @@ const GoogleButton = ({
 	setEmail,
 	...rest
 }) => {
-	const [/* busy, */ googleHandler] = useLogin(setStep, setEmail);
+	const { login } = useUser();
+	const [_busy, submitLogin] = useLogin(login, setStep, setEmail);
+	const { orgDetail } = useOrgDetailContext();
 
 	const googleLoginHandler = useGoogleLogin({
 		onSuccess: async (response) => {
 			const postData = {
 				id_type: "Google",
-				id_token: response.code,
+				id_token: response?.code,
+				org_id: orgDetail?.org_id,
 			};
-			googleHandler(postData);
+			submitLogin(postData);
 			setLoginType("Google");
 			setNumber({
 				original: "",
@@ -43,33 +48,35 @@ const GoogleButton = ({
 			variant="nostyle"
 			bg="google-btn-bg"
 			h={{
-				base: 16,
-				"2xl": "4.5rem",
+				base: "56px",
+				// "2xl": "62px",
 			}}
-			fontSize={{ base: "lg", "2xl": "2xl" }}
+			fontSize={{ base: "lg" }}
 			color="white"
 			fontWeight="medium"
-			borderRadius="10px"
+			borderRadius="8px"
 			position="relative"
-			boxShadow="0px 3px 10px #4185F433;"
+			boxShadow="2px 3px 10px #4185F433"
 			px="0"
 			onClick={googleLoginHandler}
 			{...rest}
 		>
 			<Center
 				bg="white"
-				p={{ base: "9px", "2xl": "13px" }}
-				borderRadius="10px"
+				// p={{ base: "9px" }}
+				borderRadius="8px"
 				position="absolute"
 				left="2px"
-				h="calc(100% - 4px)"
-				w={{ base: "60px", "2xl": "68px" }}
+				top="2px"
+				bottom="2px"
+				// h="calc(100% - 4px)"
+				w={{ base: "54px" }}
 			>
 				<Image
 					src="./icons/google.svg"
-					width={48}
-					height={48}
-					loading="eager"
+					width={38}
+					height={38}
+					loading="lazy"
 					alt="Google Logo"
 				/>
 			</Center>
