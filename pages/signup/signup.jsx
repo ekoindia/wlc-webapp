@@ -850,7 +850,7 @@ const SignupPage = () => {
 				// );
 				if (isAndroid) {
 					doAndroidAction(ANDROID_ACTION.LEEGALITY_ESIGN_OPEN, {
-						signing_url: signUrlData,
+						signing_url: signUrlData?.short_url,
 						// logo: orgDetail.logo,
 					});
 				} else {
@@ -860,7 +860,7 @@ const SignupPage = () => {
 						logo: orgDetail.logo,
 					});
 					leegality.init();
-					leegality.esign(signUrlData);
+					leegality.esign(signUrlData?.short_url);
 				}
 			}
 		} else if (callType.type === 10) {
@@ -883,11 +883,13 @@ const SignupPage = () => {
 				});
 			}
 		} else if (callType.type === 3) {
-			if (isAndroid) {
-				doAndroidAction(
-					ANDROID_ACTION.GRANT_PERMISSION,
-					ANDROID_PERMISSION.LOCATION
-				);
+			if (callType.method === "grantPermission") {
+				if (isAndroid) {
+					doAndroidAction(
+						ANDROID_ACTION.GRANT_PERMISSION,
+						ANDROID_PERMISSION.LOCATION
+					);
+				}
 			}
 		}
 	};
@@ -913,7 +915,7 @@ const SignupPage = () => {
 		)
 			.then((res) => {
 				// console.log("[getSignUrl] resp:", res);
-				// console.log("Get Signed URL for Leegality Response: ", res);
+				console.log("Get Signed URL for Leegality Response: ", res);
 				if (res.response_status_id === 0) {
 					setSignUrlData(res.data);
 					"esign:ready",
