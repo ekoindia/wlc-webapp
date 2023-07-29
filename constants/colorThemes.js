@@ -2,16 +2,16 @@
  * A list of predefined color-themes for the app
  */
 export const colorThemes = [
-	{
-		name: "Eko",
-		navstyle: "dark",
-		primary_light: "#1F3ABC",
-		primary: "#11299E",
-		primary_dark: "#091968",
-		accent_light: "#ffad23",
-		accent: "#FE9F00",
-		accent_dark: "#f38300",
-	},
+	// {
+	// 	name: "Eko",
+	// 	navstyle: "dark", // light / dark (default)
+	// 	primary_light: "#1F3ABC",
+	// 	primary: "#11299E",
+	// 	primary_dark: "#091968",
+	// 	accent_light: "#ffad23",
+	// 	accent: "#FE9F00",
+	// 	accent_dark: "#f38300",
+	// },
 	{
 		name: "Persian Blue",
 		primary_light: "#0167a1",
