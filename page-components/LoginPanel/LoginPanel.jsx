@@ -156,6 +156,7 @@ const DescCard = ({ logo, header, features = [] }) => {
 					width="80px"
 					height="80px"
 					loading="lazy"
+					style={{ pointerEvents: "none" }}
 				/>
 			</ShowcaseCircle>
 
