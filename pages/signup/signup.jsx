@@ -893,11 +893,13 @@ const SignupPage = () => {
 				});
 			}
 		} else if (callType.type === 3) {
-			if (isAndroid) {
-				doAndroidAction(
-					ANDROID_ACTION.GRANT_PERMISSION,
-					ANDROID_PERMISSION.LOCATION
-				);
+			if (callType.method === "grantPermission") {
+				if (isAndroid) {
+					doAndroidAction(
+						ANDROID_ACTION.GRANT_PERMISSION,
+						ANDROID_PERMISSION.LOCATION
+					);
+				}
 			}
 		}
 	};
