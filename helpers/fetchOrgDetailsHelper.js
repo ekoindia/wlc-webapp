@@ -46,7 +46,7 @@ export const MockOrgDetails = {
 	login_types: {
 		google: {
 			default: process.env.USE_DEFAULT_GOOGLE_LOGIN === "true",
-			client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+			client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || undefined,
 		},
 	},
 };

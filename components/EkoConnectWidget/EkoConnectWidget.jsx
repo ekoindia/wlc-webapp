@@ -1,6 +1,6 @@
 import { Flex, Spinner, Text, useToken } from "@chakra-ui/react";
 import { Button, ErrorBoundary, PaddingBox, PrintReceipt } from "components";
-import { ActionIcon } from "components/CommandBar";
+import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { TransactionIds } from "constants";
 import {
 	useAppSource,
@@ -56,6 +56,9 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 	// Create a reference for the Widget component
 	const widgetRef = useRef(null);
+
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
 
 	const [widgetLoadState /*, reloadWidget */] = useExternalResource(
 		process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
@@ -126,6 +129,10 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 	// Setup KBar search actions related to the open transaction
 	const trxnActions = useMemo(() => {
+		if (!ready) {
+			return [];
+		}
+
 		const start_trxn = role_tx_list[start_id];
 		if (!start_trxn) {
 			return [];
@@ -181,7 +188,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 				},
 			},
 		];
-	}, [start_id, role_tx_list, transactionFlow]);
+	}, [start_id, role_tx_list, transactionFlow, ready]);
 
 	useEffect(() => {
 		const start_trxn = role_tx_list[start_id];

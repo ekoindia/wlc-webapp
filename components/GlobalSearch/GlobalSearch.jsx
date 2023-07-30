@@ -1,5 +1,6 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { IcoButton, Icon, Kbd } from "components";
+import { useKBarReady } from "components/CommandBar";
 import { useGlobalSearch } from "contexts";
 import { usePlatform } from "hooks";
 import { useKBar } from "kbar";
@@ -16,12 +17,17 @@ const GlobalSearch = ({ ...rest }) => {
 	const { isMac } = usePlatform();
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
+
+	if (!ready) return null;
+
 	return isSmallScreen ? (
 		<IcoButton
 			iconName="search"
 			size="sm"
 			color="light"
-			onClick={() => query.toggle()}
+			onClick={() => ready && query.toggle()}
 		/>
 	) : (
 		<Flex

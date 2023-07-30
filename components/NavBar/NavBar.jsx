@@ -12,6 +12,7 @@ import {
 	useBreakpointValue,
 	VStack,
 } from "@chakra-ui/react";
+import { useKBarReady } from "components/CommandBar";
 import { Endpoints } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
@@ -74,6 +75,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	// const router = useRouter();
 	const isMobile = useBreakpointValue({ base: true, md: false });
 
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
+
 	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
 		ssr: false,
 		loading: () => (
@@ -135,7 +139,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						/>
 					</Flex>
 
-					{isLoggedIn === true && isOnboarding !== true && (
+					{ready && isLoggedIn === true && isOnboarding !== true && (
 						<Flex
 							flexGrow={isMobile ? 1 : 0}
 							justify={isMobile ? "flex-end" : "flex-start"}
