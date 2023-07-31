@@ -49,7 +49,7 @@ const SuccessRate = ({ data }) => {
 								<Text whiteSpace="nowrap">{item.label}</Text>
 								<Text
 									fontWeight="semibold"
-									color="secondary.DEFAULT"
+									color="primary.DEFAULT"
 								>
 									{item.value}%
 								</Text>

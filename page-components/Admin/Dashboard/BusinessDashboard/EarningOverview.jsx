@@ -117,7 +117,7 @@ const EarningOverview = ({ data }) => {
 										</Text>
 										<Flex
 											fontWeight="semibold"
-											color="secondary.DEFAULT"
+											color="primary.DEFAULT"
 										>
 											{item.type === "amount" ? (
 												<Currency amount={item.value} />
