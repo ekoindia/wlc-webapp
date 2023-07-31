@@ -1,38 +1,49 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
+import { PillTab } from "components";
 import { useState } from "react";
-import { BusinessDashboard, DashboardHeading, OnboardingDashboard } from ".";
-
-/* pageId list for DashboardHeading component */
-const headingList = ["Business", "Onboarding"];
+import { BusinessDashboard, OnboardingDashboard } from ".";
 
 /**
  * A Dashboard page component
- * TODO: Write more description here
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Dashboard></Dashboard>`
  */
 const Dashboard = () => {
-	const [pageId, setPageId] = useState(0); //to find whether user is on business or onboarding dashboard
+	const [currTab, setCurrTab] = useState(0);
 
-	const handleHeadingClick = (item) => setPageId(item);
+	const list = [
+		{ label: "Business", component: <BusinessDashboard /> },
+		{ label: "Onboarding", component: <OnboardingDashboard /> },
+	];
+
+	const onClick = (idx) => setCurrTab(idx);
+
+	const getComp = (idx) => list[idx].component;
 
 	return (
 		<div>
 			<Flex
 				bg={{ base: "white", md: "none" }}
-				pb={{ base: pageId === 0 ? "0px" : "10px", md: "0px" }}
-				borderRadius={pageId === 0 ? "0px" : "0px 0px 20px 20px"}
+				pb={{ base: currTab === 0 ? "0px" : "10px", md: "0px" }}
+				borderRadius={currTab === 0 ? "0px" : "0px 0px 20px 20px"}
 			>
-				<DashboardHeading
-					{...{ headingList, pageId, handleHeadingClick }}
-				/>
+				<Flex
+					direction={{ base: "column", md: "row" }}
+					align={{ base: "flex-start", md: "center" }}
+					gap={{ base: "2", md: "8" }}
+					w="100%"
+					m="20px"
+					fontSize="sm"
+					justify="space-between"
+				>
+					<Text fontWeight="semibold" fontSize="2xl">
+						Dashboard
+					</Text>
+					<PillTab {...{ list, onClick, currTab }} />
+				</Flex>
 			</Flex>
-			{pageId === 0 ? (
-				<BusinessDashboard />
-			) : pageId === 1 ? (
-				<OnboardingDashboard />
-			) : null}
+			{getComp(currTab)}
 		</div>
 	);
 };
