@@ -11,104 +11,110 @@ import { Button } from "components";
 const KycWidget = () => {
 	return (
 		<GridItem>
-			<Flex
-				h={{ base: "240px", sm: "350px", md: "387px", lg: "400px" }}
-				w={{ base: "100%", sm: "100%", md: "450px", lg: "480px" }}
-				border="1px solid grey"
-				borderRadius={{
-					base: "0px 0px 20px 20px",
-					sm: "0px 0px 2px 2px",
-					md: "20px",
-				}}
-				background="url('./bg.svg'), linear-gradient(to bottom, #11299e, #09154f)"
-				backgroundRepeat="no-repeat"
-				backgroundSize="cover"
-				direction={{ base: "row", md: "column" }}
-				p={{ base: "25px 10px 25px 10px" }}
+			<Box
+				border="1px solid var(--chakra-colors-hint)"
+				borderRadius="10px"
+				bgGradient="linear(to-b, primary.light, primary.dark)"
 			>
 				<Flex
-					width={{ base: "200px", md: "100%" }}
-					p={{ base: "0px 10px 0px 0px", md: "0px" }}
+					h={{ base: "240px", sm: "350px", md: "387px", lg: "400px" }}
+					// w={{ base: "100%", sm: "100%", md: "450px", lg: "480px" }}
+					border="1px solid grey"
+					borderRadius="10px"
+					background="url('./bg.svg')"
+					backgroundRepeat="no-repeat"
+					backgroundSize="cover"
+					direction={{ base: "row", md: "column" }}
+					p={{ base: "25px 10px 25px 10px" }}
 				>
-					<Image
-						mx="auto"
-						src="/images/EmptyState.png"
-						alt="logo"
-						h={{
-							base: "60.13px",
-							sm: "54.13px",
-							md: "54.13px",
-							lg: "54.13px",
-							xl: "95.76px",
-							"2xl": "96px",
-						}}
-						w={{
-							base: "60.13px",
-							sm: "54.13px",
-							md: "54.13px",
-							lg: "54.13px",
-							xl: "95.76px",
-							"2xl": "96px",
-						}}
-					/>
-				</Flex>
-				<Flex direction={{ base: "column" }}>
-					<Box
-						textAlign={{
-							base: "left",
-							md: "center",
-						}}
+					<Flex
+						width={{ base: "200px", md: "100%" }}
+						p={{ base: "0px 10px 0px 0px", md: "0px" }}
 					>
-						<Text
-							fontSize={{
-								base: "4vw",
-								md: "1.6783216783216783vw",
+						<Image
+							mx="auto"
+							src="/images/EmptyState.png"
+							alt="logo"
+							h={{
+								base: "60.13px",
+								sm: "54.13px",
+								md: "54.13px",
+								lg: "54.13px",
+								xl: "95.76px",
+								"2xl": "96px",
 							}}
-							color="#FFD93B"
-							fontWeight="semibold"
-							fontFamily="Inter"
+							w={{
+								base: "60.13px",
+								sm: "54.13px",
+								md: "54.13px",
+								lg: "54.13px",
+								xl: "95.76px",
+								"2xl": "96px",
+							}}
+						/>
+					</Flex>
+					<Flex direction={{ base: "column" }}>
+						<Box
+							textAlign={{
+								base: "left",
+								md: "center",
+							}}
 						>
-							Your eKYC is not completed!
-						</Text>
-
-						<Text
-							fontSize={{ base: "10px", md: "16px" }}
-							lineHeight={{ base: "16px", md: "27px" }}
-							color="#FFFFFF"
-						>
-							You have pending Aadahar verification, Address proof
-							verification. Please complete the same to get going.
-						</Text>
-					</Box>
-					<Box textAlign={"center"} mt={{ base: "0px", md: "40px" }}>
-						<Text
-							fontSize="16px"
-							color="white"
-							display={{ base: "none", sm: "block" }}
-						>
-							Profile Score is{" "}
-							<Text display={"inline"} color="#FFD93B">
-								62%
+							<Text
+								fontSize={{
+									base: "4vw",
+									md: "1.6783216783216783vw",
+								}}
+								color="#FFD93B"
+								fontWeight="semibold"
+								fontFamily="Inter"
+							>
+								Your eKYC is not completed!
 							</Text>
-						</Text>
-					</Box>
-					<Box
-						pt={{ base: "20px", md: "50px" }}
-						display={"flex"}
-						justifyContent={{ base: "left", md: "center" }}
-					>
-						<Button
-							fontWeight={"medium"}
-							borderRadius="6px"
-							bg="transparent"
-							_hover={{ bg: "transparent" }}
-							border="2px solid white"
+
+							<Text
+								fontSize={{ base: "10px", md: "16px" }}
+								lineHeight={{ base: "16px", md: "27px" }}
+								color="#FFFFFF"
+							>
+								You have pending Aadahar verification, Address
+								proof verification. Please complete the same to
+								get going.
+							</Text>
+						</Box>
+						<Box
+							textAlign={"center"}
+							mt={{ base: "0px", md: "40px" }}
 						>
-							Proceed &gt;
-						</Button>
-					</Box>
+							<Text
+								fontSize="16px"
+								color="white"
+								display={{ base: "none", sm: "block" }}
+							>
+								Profile Score is{" "}
+								<Text display={"inline"} color="#FFD93B">
+									62%
+								</Text>
+							</Text>
+						</Box>
+						<Box
+							pt={{ base: "20px", md: "50px" }}
+							display={"flex"}
+							justifyContent={{ base: "left", md: "center" }}
+						>
+							<Button
+								fontWeight={"medium"}
+								borderRadius="6px"
+								bg="transparent"
+								_hover={{ bg: "transparent" }}
+								border="2px solid white"
+							>
+								Proceed &gt;
+							</Button>
+						</Box>
+					</Flex>
 				</Flex>
-			</Flex>
+			</Box>
 		</GridItem>
 	);
 };

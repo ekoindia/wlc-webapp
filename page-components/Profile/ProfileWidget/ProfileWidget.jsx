@@ -1,4 +1,4 @@
-import { Avatar, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
 import { IcoButton, Icon } from "components";
 import { UserTypeLabel } from "constants";
 import { useUser } from "contexts/UserContext";
@@ -81,96 +81,103 @@ const ProfileWidget = () => {
 	// };
 
 	return (
-		<Flex
-			direction="column"
-			color="white"
-			// w={{ base: "90%", md: "100%" }}
-			h={{
-				base: "auto",
-				md: "320px",
-				"2xl": "360px",
-			}}
-			mx={{ base: 3, md: "0" }}
-			border="1px solid grey"
+		<Box
+			border="1px solid var(--chakra-colors-hint)"
 			borderRadius="10px"
-			background="url('./bg.svg'), linear-gradient(to bottom, #11299e, #09154f)"
-			backgroundRepeat="no-repeat"
-			backgroundSize="cover"
-			backgroundPosition="bottom"
-			p="5"
-			boxShadow="basic"
-			rowGap="14"
+			bgGradient="linear(to-b, primary.light, primary.dark)"
 		>
-			<Flex justify="space-between" align="flex-start" gap={2}>
-				<Avatar
-					size={{ base: "md", md: "lg" }}
-					name={data.name[0]}
-					src={data.pic}
-				/>
-				<Flex direction="column" rowGap="1">
-					<Text
-						fontSize={{ base: "18px", md: "22px" }}
-						color="highlight"
-						noOfLines={2}
-					>
-						{data.name}
-					</Text>
-					<Flex gap="2" fontSize="14px">
-						<Text>{UserTypeLabel[data.user_type]}</Text>
-						<Text opacity={0.5}>&#124;</Text>
-						<Text>
-							User Code:
-							<strong> {data.code}</strong>
-						</Text>
-					</Flex>
-					<Flex align="center" gap="2" mt="2">
-						<Icon
-							name="phone-circle-outline"
-							size="24px"
-							color="highlight"
-						/>
-						<Text>
-							{data?.mobile}
-							{data?.alternate_mobiles?.length > 0
-								? ", " + data.alternate_mobiles.join(", ")
-								: null}
-						</Text>
-					</Flex>
-				</Flex>
-				<Flex align="flex-start" height="full">
-					<IcoButton
-						onClick={onEditClick}
-						iconName="mode-edit"
-						// iconStyle={{ size: "12px" }}
-						size="sm"
-						theme="accent"
-						_hover={{ bg: "accent.dark" }}
+			<Flex
+				direction="column"
+				color="white"
+				h={{
+					base: "auto",
+					md: "320px",
+					"2xl": "360px",
+				}}
+				mx={{ base: 3, md: "0" }}
+				borderRadius="10px"
+				background="url('./bg.svg')"
+				// background="url('./bg.svg'), linear-gradient(to bottom, #11299e, #09154f)"
+				backgroundRepeat="no-repeat"
+				backgroundSize="cover"
+				backgroundPosition="bottom"
+				p="5"
+				boxShadow="basic"
+				rowGap="14"
+			>
+				<Flex justify="space-between" align="flex-start" gap={2}>
+					<Avatar
+						size={{ base: "md", md: "lg" }}
+						name={data.name[0]}
+						src={data.pic}
 					/>
-				</Flex>
-			</Flex>
-			<Flex direction="column">
-				<Text color="divider">Profile Completeness</Text>
-				<Flex align="center" gap="1">
-					<Flex
-						w="100%"
-						bg="white"
-						borderRadius="30px"
-						h={{ base: "3px" }}
-					>
-						<Flex
-							w={`${percent}%`}
-							h="100%"
-							bg={styleObj.bg}
-							borderRadius="30px"
-							boxShadow={styleObj.boxShadow}
-						></Flex>
+					<Flex direction="column" rowGap="1">
+						<Text
+							fontSize={{ base: "18px", md: "22px" }}
+							color="highlight"
+							noOfLines={2}
+						>
+							{data.name}
+						</Text>
+						<Flex gap="2" fontSize="14px">
+							<Text>{UserTypeLabel[data.user_type]}</Text>
+							<Text opacity={0.5}>&#124;</Text>
+							<Text>
+								User Code:
+								<strong> {data.code}</strong>
+							</Text>
+						</Flex>
+						<Flex align="center" gap="2" mt="2">
+							<Icon
+								name="phone-circle-outline"
+								size="24px"
+								color="highlight"
+							/>
+							<Text>
+								{data?.mobile}
+								{data?.alternate_mobiles?.length > 0
+									? ", " + data.alternate_mobiles.join(", ")
+									: null}
+							</Text>
+						</Flex>
 					</Flex>
-					<Text color={styleObj.color} fontSize={{ base: "16px" }}>
-						{percent}&#37;
-					</Text>
+					<Flex align="flex-start" height="full">
+						<IcoButton
+							onClick={onEditClick}
+							iconName="mode-edit"
+							// iconStyle={{ size: "12px" }}
+							size="sm"
+							theme="accent"
+							_hover={{ bg: "accent.dark" }}
+						/>
+					</Flex>
 				</Flex>
-			</Flex>
-			{/* <Flex
+				<Flex direction="column">
+					<Text color="divider">Profile Completeness</Text>
+					<Flex align="center" gap="1">
+						<Flex
+							w="100%"
+							bg="white"
+							borderRadius="30px"
+							h={{ base: "3px" }}
+						>
+							<Flex
+								w={`${percent}%`}
+								h="100%"
+								bg={styleObj.bg}
+								borderRadius="30px"
+								boxShadow={styleObj.boxShadow}
+							></Flex>
+						</Flex>
+						<Text
+							color={styleObj.color}
+							fontSize={{ base: "16px" }}
+						>
+							{percent}&#37;
+						</Text>
+					</Flex>
+				</Flex>
+				{/* <Flex
 				bg="#FFFFFFCC"
 				justify="space-between"
 				align="center"
@@ -187,7 +194,8 @@ const ProfileWidget = () => {
 				</Text>
 				<Button onClick={onChangeBtnClick}>Change</Button>
 			</Flex> */}
-		</Flex>
+			</Flex>
+		</Box>
 	);
 };
 
