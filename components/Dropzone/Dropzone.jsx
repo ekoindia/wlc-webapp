@@ -101,7 +101,7 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 						accept={accept}
 					/>
 					<Button
-						variant="primary"
+						variant="accent"
 						size="md"
 						onClick={() =>
 							document.getElementById("fileUploadInput").click()

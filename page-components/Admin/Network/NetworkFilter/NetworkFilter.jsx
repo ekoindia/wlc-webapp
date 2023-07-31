@@ -99,8 +99,8 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 					// h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
 					fontSize="md"
 					bg="white"
-					color="accent.DEFAULT"
-					borderColor="accent.DEFAULT"
+					color="primary.DEFAULT"
+					borderColor="primary.DEFAULT"
 					borderWidth="1px"
 					borderStyle="solid"
 					boxShadow=" 0px 3px 10px #11299E1A"
@@ -112,7 +112,7 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 					}}
 					lineHeight="normal"
 					leftIcon={
-						<Icon name="filter" size="sm" color="accent.DEFAULT" />
+						<Icon name="filter" size="sm" color="primary.DEFAULT" />
 					}
 				>
 					Filter
