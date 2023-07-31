@@ -85,13 +85,13 @@ const IcoButton = ({
 			? {
 					bg: "divider",
 					color: "primary.DEFAULT",
-					border: "1px solid #E9EDF1",
+					border: "1px solid var(--chakra-colors-divider)",
 			  }
 			: theme === "gray"
 			? {
-					bg: "linear-gradient( #D2D2D2, #E9EDF1)",
+					bgGradient: "linear(to-b, divider, hint)",
 					color: "white",
-					border: "1px solid #E9EDF1",
+					border: "1px solid var(--chakra-colors-divider)",
 			  }
 			: theme === "primary"
 			? {

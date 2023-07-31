@@ -136,7 +136,7 @@ const TopPanel = ({ data }) => {
 						color="white"
 						iconName={item.icon}
 						rounded={10}
-						bg="transparent linear-gradient(180deg, #1F5AA7 0%, #11299E 100%) 0% 0% no-repeat padding-box"
+						bgGradient="linear(to-b, primary.light, primary.dark)"
 					/>
 				</Flex>
 			))}
