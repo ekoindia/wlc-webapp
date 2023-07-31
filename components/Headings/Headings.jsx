@@ -19,6 +19,7 @@ const Headings = ({
 	redirectHandler,
 	propComp,
 	isCompVisible = true,
+	...rest
 }) => {
 	const router = useRouter();
 	const redirectTo = () => {
@@ -46,13 +47,17 @@ const Headings = ({
 		<>
 			<Flex
 				my={{
-					base: isNavHidden ? "0px" : "10px",
-					sm: isNavHidden ? "0px" : "8px",
-					md: isNavHidden ? "0px" : "12px",
-					lg: "16px",
-					xl: "18px",
-					"2xl": "20px",
+					base: isNavHidden ? "0" : "3",
+					md: isNavHidden ? "0" : "5",
 				}}
+				// my={{
+				// 	base: isNavHidden ? "0px" : "10px",
+				// 	sm: isNavHidden ? "0px" : "8px",
+				// 	md: isNavHidden ? "0px" : "12px",
+				// 	lg: "16px",
+				// 	xl: "18px",
+				// 	"2xl": "20px",
+				// }}
 				width="100%"
 				px={{ base: "16px", md: "0px" }}
 				justify="space-between"
@@ -63,46 +68,41 @@ const Headings = ({
 						display: "none !important",
 					},
 				}}
+				{...rest}
 			>
-				<Box>
-					<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>
-						{hasIcon && (
-							<Box
-								onClick={redirectHandler || redirectTo}
-								cursor="pointer"
-							>
-								<Icon
-									name="arrow-back"
-									size={{
-										base: "16px",
-										"2xl": "18px",
-									}}
-								/>
-							</Box>
-						)}
-						<Flex
-							direction="column"
-							cursor="default"
-							userSelect="none"
+				<Flex alignItems="center" gap={{ base: "2", lg: "4" }}>
+					{hasIcon && (
+						<Box
+							onClick={redirectHandler || redirectTo}
+							cursor="pointer"
 						>
-							<Text
-								fontSize={{
-									base: "18px",
-									sm: "18px",
-									md: "20px",
-									lg: "25px",
-									"2xl": "30px",
+							<Icon
+								name="arrow-back"
+								size={{
+									base: "16px",
+									"2xl": "18px",
 								}}
-								fontWeight="semibold"
-							>
-								{title}
-							</Text>
-							<Text fontSize="sm" color="gray.600">
-								{subtitle}
-							</Text>
-						</Flex>
+							/>
+						</Box>
+					)}
+					<Flex direction="column" cursor="default" userSelect="none">
+						<Text
+							fontSize={{
+								base: "18px",
+								sm: "18px",
+								md: "20px",
+								lg: "25px",
+								"2xl": "30px",
+							}}
+							fontWeight="semibold"
+						>
+							{title}
+						</Text>
+						<Text fontSize="sm" color="gray.600">
+							{subtitle}
+						</Text>
 					</Flex>
-				</Box>
+				</Flex>
 				{isCompVisible && propComp}
 			</Flex>
 			{isNavHidden && (
