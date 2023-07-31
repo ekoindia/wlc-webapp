@@ -80,10 +80,7 @@ const TopPanel = ({ data }) => {
 							align={{ base: "flex-start", sm: "center" }}
 							gap={{ base: "1", sm: "6" }}
 						>
-							<Flex
-								fontWeight="semibold"
-								color="secondary.DEFAULT"
-							>
+							<Flex fontWeight="semibold" color="primary.DEFAULT">
 								{item.type === "amount" ? (
 									<Currency amount={item.value} />
 								) : (
