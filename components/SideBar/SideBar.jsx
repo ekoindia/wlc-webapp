@@ -28,8 +28,9 @@ import { Priority, useRegisterActions } from "kbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { limitText } from "utils";
 import { Icon, ProfileCard, StatusCard } from "..";
-import { ActionIcon } from "../CommandBar";
+import { ActionIcon, useKBarReady } from "../CommandBar";
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.
@@ -64,14 +65,11 @@ const generateTransactionActions = (
 	const getTxAction = (tx, parent_id, is_group) => {
 		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
 		const desc = tx.description || tx.desc || "";
-		if (desc.length > 50) {
-			tx.description = desc.slice(0, 80) + "…";
-		}
 
 		return {
 			id: "tx/" + _id,
 			name: tx.label,
-			subtitle: desc,
+			subtitle: limitText(desc, 60),
 			// keywords: tx.label + " " + (tx.desc || "") + (tx.category || ""),
 			icon: (
 				<ActionIcon
@@ -251,6 +249,9 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		{ ssr: false }
 	);
 
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
+
 	// const [trxnActionsWorker] = useWorker(generateTransactionActions);
 
 	const menuList = isAdmin ? adminSidebarMenu : sidebarMenu;
@@ -305,28 +306,37 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				...(manageMyAccount ? [manageMyAccount] : []),
 			]);
 
-			_otherActions = generateTransactionActions(
-				[...otherList, manageMyAccount],
-				role_tx_list,
-				router,
-				true // is-other-list
-			);
+			if (ready) {
+				_otherActions = generateTransactionActions(
+					[...otherList, manageMyAccount],
+					role_tx_list,
+					router,
+					true // is-other-list
+				);
 
-			// Generate KBar actions...
-			setTrxnActions(
-				isAdmin
-					? []
-					: generateTransactionActions(trxnList, role_tx_list, router)
-			);
+				// Generate KBar actions...
+				setTrxnActions(
+					isAdmin
+						? []
+						: generateTransactionActions(
+								trxnList,
+								role_tx_list,
+								router
+						  )
+				);
+			}
 		}
-		_otherActions = [
-			..._otherActions,
-			...generateMenuLinkActions(menuList, router),
-		];
 
-		// console.log("otherActions", _otherActions);
-		setOtherActions(_otherActions);
-	}, [interaction_list, menuList, role_tx_list, router]);
+		if (ready) {
+			_otherActions = [
+				..._otherActions,
+				...generateMenuLinkActions(menuList, router),
+			];
+
+			// console.log("otherActions", _otherActions);
+			setOtherActions(_otherActions);
+		}
+	}, [interaction_list, menuList, role_tx_list, router, ready]);
 
 	// useEffect(() => {
 	// 	if (interaction_list && interaction_list.length > 0) {
@@ -753,6 +763,9 @@ const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
 				borderBottom="1px solid" // ORIG_THEME: br-sidebar
 				borderBottomColor="sidebar.divider" // ORIG_THEME: primary.light
 				bg={isCurrent ? "sidebar.sel" : ""} //ORIG_THEME: sidebar.active-bg
+				_hover={{
+					background: "sidebar.sel",
+				}}
 				borderLeft="8px"
 				borderLeftColor={
 					isCurrent ? "accent.dark" : "transparent" // ORIG_THEME: sidebar.active-border

@@ -1,6 +1,6 @@
 import { CloseButton, Flex, Image, Text, useToast } from "@chakra-ui/react";
 import { Icon } from "components";
-import { ActionIcon } from "components/CommandBar";
+import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { TransactionTypes } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -68,6 +68,9 @@ const useNotifications = () => {
 	const toast = useToast();
 	const toastIdRef = useRef();
 
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
+
 	// Register notification actions with KBar Search
 	const [notifActions, setNotifActions] = useState([]);
 	useRegisterActions(notifActions, [notifActions]);
@@ -77,8 +80,9 @@ const useNotifications = () => {
 		if (notifications.length > 0) {
 			processLatestNotification(notifications[0]);
 		}
-		setupKbarNotificationActions(notifications);
-	}, [notifications]);
+
+		if (ready) setupKbarNotificationActions(notifications);
+	}, [notifications, ready]);
 
 	/**
 	 * Register notification actions with KBar Search

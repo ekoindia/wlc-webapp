@@ -893,11 +893,13 @@ const SignupPage = () => {
 				});
 			}
 		} else if (callType.type === 3) {
-			if (isAndroid) {
-				doAndroidAction(
-					ANDROID_ACTION.GRANT_PERMISSION,
-					ANDROID_PERMISSION.LOCATION
-				);
+			if (callType.method === "grantPermission") {
+				if (isAndroid) {
+					doAndroidAction(
+						ANDROID_ACTION.GRANT_PERMISSION,
+						ANDROID_PERMISSION.LOCATION
+					);
+				}
 			}
 		}
 	};
@@ -924,7 +926,7 @@ const SignupPage = () => {
 			.then((res) => {
 				// console.log("[getSignUrl] resp:", res);
 				// console.log("Get Signed URL for Leegality Response: ", res);
-				if (res.response_status_id === 0) {
+				if (res?.data?.short_url) {
 					setSignUrlData(res.data);
 					// Inform the OaaS Widget that Leegality is ready
 					widgetRef?.current?.postMessage({

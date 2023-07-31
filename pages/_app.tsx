@@ -1,7 +1,6 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
-import { ActionIcon } from "components/CommandBar";
+import { KBarLazyProvider } from "components/CommandBar";
 import {
 	AppSourceProvider,
 	CommissionSummaryProvider,
@@ -18,7 +17,6 @@ import {
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
-import { KBarProvider, Priority } from "kbar";
 import App from "next/app";
 import { Inter } from "next/font/google";
 import Head from "next/head";
@@ -45,6 +43,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	console.log("[_app.tsx] InfinityApp (web) Started: ", {
 		org,
 		is_local: typeof window === "undefined" ? false : true,
+		path: router.pathname,
 	});
 
 	// Read initial data from SessionStorage (if available)
@@ -147,56 +146,6 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		console.log("[_app.tsx] !! Mock User: ", mockUser);
 	}
 
-	// Setup K-Bar options...
-	const kbarDefaultActions = [
-		{
-			id: "systemsettings",
-			name: "System",
-			subtitle: "Clear cache or logout",
-			icon: <ActionIcon icon="logout" size="sm" color="error" />,
-			// shortcut: ["c"],
-			// keywords: "signout quit close",
-			// section: "System",
-			priority: -999,
-		},
-		{
-			id: "reloadapp",
-			name: "Reload App",
-			subtitle: "Reset cache and reload the app if you facing any issues",
-			icon: <ActionIcon icon="reload" size="sm" color="error" />,
-			shortcut: ["$mod+F5"],
-			keywords: "reset cache reload",
-			section: "System",
-			priority: Priority.LOW,
-			parent: "systemsettings",
-			perform: () => {
-				// Clear session storage (except org_detail)
-				Object.keys(window.sessionStorage).forEach((key) => {
-					if (key !== OrgDetailSessionStorageKey && key !== "todos") {
-						window.sessionStorage.removeItem(key);
-					}
-				});
-
-				// Reset All LocalStorage (Trxn/Menu/etc) Cache
-				window.localStorage.clear();
-
-				// Reload
-				window.location.reload();
-			},
-		},
-		{
-			id: "logout",
-			name: "Logout",
-			icon: <ActionIcon icon="logout" size="sm" color="error" />,
-			// shortcut: ["c"],
-			keywords: "signout quit close",
-			section: "System",
-			priority: Priority.LOW,
-			parent: "systemsettings",
-			perform: () => (window.location.pathname = "contact"),
-		},
-	];
-
 	// Get standard or custom Layout for the page...
 	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx).
 	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
@@ -212,6 +161,10 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 			</Layout>
 		));
 
+	// Is this a login page? This should help decide if features like CommandBar should be loaded.
+	const isLoginPage =
+		router.pathname === "/" || router.pathname === "/signup" ? true : false;
+
 	const AppCompArray = (
 		<ChakraProvider
 			theme={theme}
@@ -220,18 +173,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		>
 			<AppSourceProvider>
 				<OrgDetailProvider initialData={org || null}>
-					<KBarProvider
-						actions={kbarDefaultActions}
-						options={{
-							enableHistory: false,
-							disableScrollbarManagement: true,
-							// callbacks: {
-							// 	onOpen: () => {
-							// 		console.log("[KBar] onOpen");
-							// 	},
-							// },
-						}}
-					>
+					<KBarLazyProvider load={!isLoginPage}>
 						<GlobalSearchProvider>
 							<UserProvider userMockData={mockUser}>
 								<MenuProvider>
@@ -272,21 +214,30 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 								</MenuProvider>
 							</UserProvider>
 						</GlobalSearchProvider>
-					</KBarProvider>
+					</KBarLazyProvider>
 				</OrgDetailProvider>
 			</AppSourceProvider>
 		</ChakraProvider>
 	);
 
-	const AppCompArrayWithSocialLogin = org?.login_types?.google?.client_id ? (
-		<GoogleOAuthProvider
-			clientId={org?.login_types?.google?.client_id || ""}
-		>
-			{AppCompArray}
-		</GoogleOAuthProvider>
-	) : (
-		AppCompArray
-	);
+	// const useDefaultGoogleLogin = org?.login_types?.google?.default
+	// 	? true
+	// 	: false;
+	// const showGoogleLogin =
+	// 	useDefaultGoogleLogin || org?.login_types?.google?.client_id;
+	// const AppCompArrayWithSocialLogin = showGoogleLogin && false ? (
+	// 	<GoogleOAuthProvider
+	// 		clientId={
+	// 			useDefaultGoogleLogin
+	// 				? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""
+	// 				: org?.login_types?.google?.client_id
+	// 		}
+	// 	>
+	// 		{AppCompArray}
+	// 	</GoogleOAuthProvider>
+	// ) : (
+	// 	AppCompArray
+	// );
 
 	return (
 		<>
@@ -314,7 +265,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 				</Script>
 			) : null}
 
-			{AppCompArrayWithSocialLogin}
+			{/* {AppCompArrayWithSocialLogin} */}
+			{AppCompArray}
 		</>
 	);
 }

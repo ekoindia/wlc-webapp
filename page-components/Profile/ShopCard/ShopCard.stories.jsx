@@ -2,7 +2,7 @@ import ShopCard from "./ShopCard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/ShopCard",
+	title: "PageComponent/Profile/ShopCard",
 	component: ShopCard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

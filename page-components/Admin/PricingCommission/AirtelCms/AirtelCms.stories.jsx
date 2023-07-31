@@ -2,7 +2,7 @@ import AirtelCms from "./AirtelCms";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/AirtelCms",
+	title: "PageComponent/Admin/PricingCommission/AirtelCms",
 	component: AirtelCms,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

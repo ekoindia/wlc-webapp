@@ -72,6 +72,7 @@ const WalletProvider = ({ children }) => {
 	const [balance, setBalance] = useState(null);
 	const { isLoggedIn, userId, accessToken } = useSession();
 	const { fetchBalance, loading } = useFetchBalance(setBalance, accessToken);
+	// const router = useRouter();
 
 	// const gsdata = useGlobalSearch();
 	// console.log("gsdata", gsdata);
@@ -89,6 +90,7 @@ const WalletProvider = ({ children }) => {
 					{
 						id: "show-wallet-balance",
 						name: `My E-value Balance: ${formatCurrency(balance)}`,
+						// subtitle: "Select to load balance in your E-value",
 						keywords: "e-value wallet fund",
 						icon: (
 							<ActionIcon
@@ -97,6 +99,7 @@ const WalletProvider = ({ children }) => {
 								color="#334155"
 							/>
 						),
+						// perform: () => router.push("/commissions/" + id),
 						// priority: -1,
 					},
 			  ]

@@ -1,6 +1,8 @@
 export { default as ActionIcon } from "./ActionIcon";
 export { getCalculatorAction } from "./calculatorPlugin";
 export { default as CommandBarBox } from "./CommandBarBox";
+export { KBarLazyProvider, useKBarReady } from "./CommandBarContextLoader";
+export { defaultActions } from "./defaultActions";
 export { getHistorySearchActions } from "./historySearchPlugin";
 export { getKBarAction } from "./kbarAction";
 export { getNotesAction } from "./notesPlugin";

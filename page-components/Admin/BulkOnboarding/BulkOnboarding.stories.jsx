@@ -2,7 +2,7 @@ import BulkOnboarding from "./BulkOnboarding";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/BulkOnboarding",
+	title: "PageComponent/Admin/BulkOnboarding",
 	component: BulkOnboarding,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

@@ -1,5 +1,5 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
-import { ActionIcon } from "components/CommandBar";
+import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
 import { Priority, useRegisterActions } from "kbar";
 import dynamic from "next/dynamic";
@@ -40,6 +40,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
 	Router.events.on("routeChangeError", () => setIsPageLoading(false));
 
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
+
 	// Setup Android Listener...
 	useEffect(() => {
 		if (typeof window !== "undefined" && isAndroid) {
@@ -69,6 +72,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 			"[DynamicSearchController] Preparing to register businessActions: ",
 			businessActions
 		);
+
+		if (!ready) return [];
+
 		return [
 			{
 				id: "my-business",
@@ -90,7 +96,7 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 			},
 			...businessActions,
 		];
-	}, [businessActions]);
+	}, [businessActions, ready]);
 
 	useRegisterActions(businessSearch, [businessSearch]);
 
@@ -165,7 +171,7 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 				<>{children}</>
 			)}
 
-			{isLoggedIn ? (
+			{isLoggedIn && ready ? (
 				<CommandBarBox fontClassName={fontClassName} />
 			) : null}
 		</>

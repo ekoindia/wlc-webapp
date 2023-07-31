@@ -1,10 +1,10 @@
-import { Center, Text } from "@chakra-ui/react";
-import { useGoogleLogin } from "@react-oauth/google";
-import { Button } from "components/Button";
+import { Box } from "@chakra-ui/react";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+// import { Button } from "components/Button";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 import { useLogin } from "hooks";
-import Image from "next/image";
+// import Image from "next/image";
 
 /**
  * A custom Google login button
@@ -14,7 +14,8 @@ import Image from "next/image";
  * @param	{function}	[prop.setEmail]	Function to set the email
  * @example	`<GoogleButton></GoogleButton>`
  */
-const GoogleButton = ({
+const GoogleButtonContent = ({
+	org_id,
 	setStep,
 	setLoginType,
 	setNumber,
@@ -23,67 +24,121 @@ const GoogleButton = ({
 }) => {
 	const { login } = useUser();
 	const [_busy, submitLogin] = useLogin(login, setStep, setEmail);
-	const { orgDetail } = useOrgDetailContext();
+	// const { orgDetail } = useOrgDetailContext();
 
-	const googleLoginHandler = useGoogleLogin({
-		onSuccess: async (response) => {
-			const postData = {
-				id_type: "Google",
-				id_token: response?.code,
-				org_id: orgDetail?.org_id,
-			};
-			submitLogin(postData);
-			setLoginType("Google");
-			setNumber({
-				original: "",
-				formatted: "",
-			});
-		},
-		onError: (err) => console.log("Google Error => ", err),
-		flow: "auth-code",
-	});
+	const onGoogleLoginSuccess = (response) => {
+		console.log("Google Login Response => ", response);
+		const postData = {
+			id_type: "Google",
+			id_token: response?.credential || response?.code,
+			org_id: org_id, // orgDetail?.org_id,
+			google_token_type: response?.credential ? "credential" : "code",
+		};
+		submitLogin(postData);
+		setLoginType("Google");
+		setNumber({
+			original: "",
+			formatted: "",
+		});
+	};
+
+	const onGoogleLoginError = (err) => {
+		console.error("Google Login Error => ", err);
+	};
+
+	// const googleLoginHandler = useGoogleLogin({
+	// 	onSuccess: async (response) => onGoogleLoginSuccess,
+	// 	onError: (err) => onGoogleLoginError,
+	// 	scope: "email",
+	// 	flow: "auth-code",
+	// });
 
 	return (
-		<Button
-			variant="nostyle"
-			bg="google-btn-bg"
-			h={{
-				base: "56px",
-				// "2xl": "62px",
-			}}
-			fontSize={{ base: "lg" }}
-			color="white"
-			fontWeight="medium"
-			borderRadius="8px"
-			position="relative"
-			boxShadow="2px 3px 10px #4185F433"
-			px="0"
-			onClick={googleLoginHandler}
-			{...rest}
-		>
-			<Center
-				bg="white"
-				// p={{ base: "9px" }}
-				borderRadius="8px"
-				position="absolute"
-				left="2px"
-				top="2px"
-				bottom="2px"
-				// h="calc(100% - 4px)"
-				w={{ base: "54px" }}
-			>
-				<Image
-					src="./icons/google.svg"
-					width={38}
-					height={38}
-					loading="lazy"
-					alt="Google Logo"
+		<>
+			<Box w="54px" marginRight="-10px" {...rest}>
+				<GoogleLogin
+					type="icon" // standard or icon
+					shape="circle" // icon or pill or circle
+					theme="filled_blue"
+					text="continue_with"
+					size="large"
+					logoAlignment="left"
+					style={{
+						height: "44px",
+						width: "54px",
+						marginRight: "-10px",
+					}}
+					onSuccess={onGoogleLoginSuccess}
+					onFailure={onGoogleLoginError}
 				/>
-			</Center>
-			<Text ml={[10, 10, null]} variant="selectNone">
-				Login with Google
-			</Text>
-		</Button>
+			</Box>
+			{/* <Button
+				variant="nostyle"
+				bg="google-btn-bg"
+				h={{
+					base: "56px",
+					// "2xl": "62px",
+				}}
+				fontSize={{ base: "lg" }}
+				color="white"
+				fontWeight="medium"
+				borderRadius="8px"
+				position="relative"
+				boxShadow="2px 3px 10px #4185F433"
+				px="0"
+				onClick={googleLoginHandler}
+				{...rest}
+			>
+				<Center
+					bg="white"
+					// p={{ base: "9px" }}
+					borderRadius="8px"
+					position="absolute"
+					left="2px"
+					top="2px"
+					bottom="2px"
+					// h="calc(100% - 4px)"
+					w={{ base: "54px" }}
+				>
+					<Image
+						src="./icons/google.svg"
+						width={38}
+						height={38}
+						loading="lazy"
+						alt="Google Logo"
+					/>
+				</Center>
+				<Text ml={[10, 10, null]} variant="selectNone">
+					Login with Google
+				</Text>
+			</Button> */}
+		</>
+	);
+};
+
+const GoogleButton = (args) => {
+	const { orgDetail } = useOrgDetailContext();
+	const org_id = orgDetail?.org_id;
+
+	const useDefaultGoogleLogin = orgDetail?.login_types?.google?.default
+		? true
+		: false;
+
+	const showGoogleLogin =
+		useDefaultGoogleLogin || orgDetail?.login_types?.google?.client_id;
+
+	if (!showGoogleLogin) return null;
+
+	return (
+		<GoogleOAuthProvider
+			clientId={
+				useDefaultGoogleLogin
+					? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""
+					: orgDetail?.login_types?.google?.client_id
+			}
+		>
+			<GoogleButtonContent org_id={org_id} {...args} />
+		</GoogleOAuthProvider>
 	);
 };
 

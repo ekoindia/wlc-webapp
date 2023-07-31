@@ -14,8 +14,7 @@ import { useEffect, useState } from "react";
 
 const isBrowser = typeof window !== "undefined";
 
-const RouteProtecter = (props) => {
-	const { router, children } = props; //TODO : Getting Error in _app.tsx
+const RouteProtecter = ({ router, children }) => {
 	const { isLoggedIn, isAdmin, userId, isOnboarding, loading, setLoading } =
 		useSession();
 	const [authorized, setAuthorized] = useState(false);

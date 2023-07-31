@@ -156,6 +156,7 @@ const DescCard = ({ logo, header, features = [] }) => {
 					width="80px"
 					height="80px"
 					loading="lazy"
+					style={{ pointerEvents: "none" }}
 				/>
 			</ShowcaseCircle>
 
@@ -166,6 +167,7 @@ const DescCard = ({ logo, header, features = [] }) => {
 				maxW="400px"
 				my={{ base: "1em", md: "1.5em", lg: "2em" }}
 				opacity="0.8"
+				sx={{ textWrap: "balance" }}
 			>
 				{header}
 			</Text>
@@ -177,6 +179,7 @@ const DescCard = ({ logo, header, features = [] }) => {
 				opacity="0.9"
 				fontSize="0.9em"
 				maxW="400px"
+				// sx={{ textWrap: "balance" }}
 			>
 				{features.map((feature, i) => (
 					<Flex key={i} align="center" py="5px">
@@ -188,9 +191,7 @@ const DescCard = ({ logo, header, features = [] }) => {
 							borderRadius="50%"
 							padding="2px"
 						/>
-						<Text textAlign="start" textWrap="balance">
-							{feature}
-						</Text>
+						<Text textAlign="start">{feature}</Text>
 					</Flex>
 				))}
 			</Flex>
