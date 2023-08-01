@@ -147,7 +147,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	}
 
 	// Get standard or custom Layout for the page...
-	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx).
+	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx). Eg: See the login page (pages/index.tsx)
 	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
 	const getLayout =
 		Component.getLayout ||
@@ -200,7 +200,8 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 																				<Component
 																					{...pageProps}
 																				/>
-																			</main>
+																			</main>,
+																			org
 																		)}
 																	</ErrorBoundary>
 																</PubSubProvider>
