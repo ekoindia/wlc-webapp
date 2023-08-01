@@ -54,10 +54,11 @@ export const MockOrgDetails = {
 /**
  * Fetch org details from API (using cache)
  * This is used on server-side only
- * @param {*} host	Hostname of the request
+ * @param {string} host	Hostname of the request
+ * @param {boolean} force	Force fetch from API (after clearing the cache)
  * @returns {object} org details or {notFound: true} if org not found
  */
-export const fetchOrgDetails = async (host) => {
+export const fetchOrgDetails = async (host, force) => {
 	if (process.env.NEXT_PUBLIC_ENV === "development") {
 		if (process.env.WLC_MOCK_HOST) {
 			// Mock hostname to get details from server
@@ -107,7 +108,11 @@ export const fetchOrgDetails = async (host) => {
 	let orgDetails = ORG_CACHE[domain || subdomain];
 
 	// Check cache for invalid (sub)domain
-	if (!orgDetails && INVALID_DOMAIN_CACHE.has(domain || subdomain)) {
+	if (
+		force !== true &&
+		!orgDetails &&
+		INVALID_DOMAIN_CACHE.has(domain || subdomain)
+	) {
 		// Bust the cache for invalid domains every 24 hours
 		// Also bust the cache if the cache size is more than 1000
 		if (
@@ -129,11 +134,15 @@ export const fetchOrgDetails = async (host) => {
 	}
 
 	// If org details not found in cache, or the cache is expired, fetch from API
-	if (!orgDetails || orgDetails?.cache_expires < Date.now()) {
+	if (
+		force == true ||
+		!orgDetails ||
+		orgDetails?.cache_expires < Date.now()
+	) {
 		// Fetch org details from API
 		orgDetails = await fetchOrgDetailsfromApi(domain, subdomain);
 
-		console.log("Fetched Org details::: ", orgDetails);
+		console.log("Fetched Org details::: ", orgDetails, force);
 
 		// Process metadata...
 		if (typeof orgDetails?.metadata?.support_contacts === "string") {
