@@ -66,11 +66,11 @@ function getTokenExpiryTime(data) {
  * createUserState(data) is used to create userState.
  */
 function createUserState(data) {
-	let tokenTimeout = getTokenExpiryTime(data);
-
-	console.log("[createUserState]", { data, tokenTimeout });
-
-	const state = buildUserObjectState({ ...data, tokenTimeout: tokenTimeout });
+	let token_timeout = getTokenExpiryTime(data);
+	const state = buildUserObjectState({
+		...data,
+		token_timeout: token_timeout,
+	});
 	return state;
 }
 
