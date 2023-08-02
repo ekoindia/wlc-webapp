@@ -342,7 +342,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 						// 		? ""
 						// 		: orgDetail.org_name || ""
 						// }
-						// receipt-logo={orgDetail.logo || ""}
+						receipt-logo={orgDetail.logo || ""}
 						analytics-partner-tracking-id={
 							process.env.NEXT_PUBLIC_WIDGET_GA_ID || ""
 						}
