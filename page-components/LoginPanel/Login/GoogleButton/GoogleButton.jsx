@@ -1,9 +1,8 @@
 import { Box } from "@chakra-ui/react";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-// import { Button } from "components/Button";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
-import { useUser } from "contexts/UserContext";
+import { useOrgDetailContext, useUser } from "contexts";
 import { useLogin } from "hooks";
+// import { Button } from "components";
 // import Image from "next/image";
 
 /**
@@ -34,7 +33,12 @@ const GoogleButtonContent = ({
 			org_id: org_id, // orgDetail?.org_id,
 			google_token_type: response?.credential ? "credential" : "code",
 		};
-		submitLogin(postData);
+
+		// Set login-type for current session...
+		sessionStorage.setItem("login_type", "Google");
+
+		// Submit login request...
+		submitLogin(postData, "Google");
 		setLoginType("Google");
 		setNumber({
 			original: "",

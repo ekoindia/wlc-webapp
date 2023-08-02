@@ -3,7 +3,7 @@ import { Button, Input, OrgLogo } from "components";
 import { useAppSource, useOrgDetailContext } from "contexts";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 // import { GoogleButton } from "./GoogleButton";
 
 const DynamicGoogleButton = dynamic(
@@ -32,6 +32,25 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
+	const [userName, setUserName] = useState(""); // Last logged-in user's first name
+
+	// Get last login mobile number from localstorage and set it as default value
+	useEffect(() => {
+		if (value.length > 0) return;
+
+		const lastLogin = JSON.parse(localStorage.getItem("inf-last-login"));
+		if (lastLogin?.type !== "Google" && lastLogin?.mobile) {
+			// Format mobile number in the following format: +91 123 456 7890
+			// TODO: Fix Input component so that this is not required
+			const formatted_mobile = lastLogin.mobile
+				.toString()
+				.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
+			setValue(formatted_mobile);
+		}
+		if (lastLogin?.name) {
+			setUserName(lastLogin.name.split(" ")[0]);
+		}
+	}, []);
 
 	// Is Google Login available?
 	const showGoogle =
@@ -60,6 +79,9 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				"send",
 				isAndroid
 			);
+
+			// Set login-type for current session...
+			sessionStorage.setItem("login_type", "Mobile");
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);
@@ -83,7 +105,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				h="10px"
 				bg="primary.DEFAULT"
 			></Box>
-			<Flex mb={{ base: 10, lg: 14 }}>
+			<Flex mb={userName ? "5" : { base: 10, lg: 14 }}>
 				<OrgLogo
 					orgDetail={orgDetail}
 					size="lg"
@@ -91,18 +113,20 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				/>
 			</Flex>
 
-			{/* <Heading
-				variant="selectNone"
-				as="h3"
-				fontSize={{ base: "xl", "2xl": "3xl" }}
-				color="light"
-				mb={{
-					base: 4,
-					"2xl": "4.35rem",
-				}}
-			>
-				Login
-			</Heading> */}
+			{userName ? (
+				<Text
+					variant="selectNone"
+					as="h3"
+					fontSize={{ base: "xl", "2xl": "3xl" }}
+					color="primary.light"
+					mb={{
+						base: 5,
+						"2xl": "7",
+					}}
+				>
+					Welcome back, {userName}
+				</Text>
+			) : null}
 
 			{/* {showGoogle ? (
 				<>

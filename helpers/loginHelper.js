@@ -119,8 +119,14 @@ function setUserDetails(data) {
 			JSON.stringify(data.accountDetails)
 		);
 
-		// Cache the original login-type (Google / Mobile) and user details
-		// const local_role_tx_list = sessionStorage.getItem("login_type") || "";
+		// Cache the original login-type (Google / Mobile) and user details in LocalStorage after a sucessful login
+		const user_login_type = sessionStorage.getItem("login_type") || "";
+		const lastLogin = {
+			type: user_login_type,
+			name: data.userDetails.name,
+			mobile: data.userDetails.mobile,
+		};
+		localStorage.setItem("inf-last-login", JSON.stringify(lastLogin));
 	} catch (err) {
 		console.warn("Updating to session-storage failed: ", err);
 	}
