@@ -43,22 +43,6 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 	const logoFontSize =
 		size === "lg" ? { base: "xl", md: "3xl" } : { base: "lg", md: "xl" };
 
-	// Text logo
-	const TextLogo = ({ color = "gray.800", ...restTextLogoAttrs }) => (
-		<Text
-			as="b"
-			color={color}
-			noOfLines={1}
-			maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
-			fontSize={logoFontSize}
-			fontWeight="600"
-			textShadow="0px 3px 10px #29292933"
-			{...restTextLogoAttrs}
-		>
-			{orgDetail.app_name}
-		</Text>
-	);
-
 	// Show only Text Logo...
 	if (
 		(!(orgDetail && orgDetail.logo) || imageState === "failed") &&
@@ -73,14 +57,21 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 				// borderRadius="6px"
 				{...rest}
 			>
-				<TextLogo />
+				<TextLogo
+					app_name={orgDetail.app_name}
+					logoFontSize={logoFontSize}
+				/>
 			</Center>
 		);
 	}
 
 	// Image Logo...
 	return (
-		<Center h={logoHeight}>
+		<Center
+			h={logoHeight}
+			transition="opacity 1s ease-out"
+			opacity={imageState === "loaded" ? 1 : 0}
+		>
 			<Image
 				src={orgDetail.logo || fallbackLogo}
 				// fallbackSrc={fallbackLogo}
@@ -94,18 +85,51 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 						maxHeight: "32px",
 					},
 				}}
-				transition="opacity 1s ease-out"
-				opacity={imageState === "loaded" ? 1 : 0}
 				loading="eager"
 				onLoad={(e) => onLoad(true, e)}
 				onError={() => onLoad(false)}
 				{...rest}
 			/>
-			{imageState === "loaded" && isSmallLogo ? (
-				<TextLogo color="primary.dark" ml={2} />
+			{isSmallLogo &&
+			(imageState === "loaded" || imageState === "failed") ? (
+				<TextLogo
+					app_name={orgDetail.app_name}
+					logoFontSize={logoFontSize}
+					color="primary.dark"
+					ml={imageState === "loaded" ? 2 : 0}
+				/>
 			) : null}
 		</Center>
 	);
 };
+
+/**
+ * The app-name as organization logo
+ * @param {object} props
+ * @param {string} props.color	Color of the text logo
+ * @param {string} props.app_name	App name to show as logo
+ * @param {string} props.logoFontSize	Font size of the logo
+ * @param {object} restTextLogoAttrs	Rest of the props passed to this component.
+ * @returns
+ */
+const TextLogo = ({
+	app_name,
+	logoFontSize,
+	color = "gray.800",
+	...restTextLogoAttrs
+}) => (
+	<Text
+		as="b"
+		color={color}
+		noOfLines={1}
+		maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
+		fontSize={logoFontSize}
+		fontWeight="600"
+		textShadow="0px 3px 10px #29292933"
+		{...restTextLogoAttrs}
+	>
+		{app_name}
+	</Text>
+);
 
 export default OrgLogo;
