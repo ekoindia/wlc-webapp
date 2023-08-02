@@ -1,5 +1,9 @@
 /**
  * @desc Chakra UI common animation keyframes
+ * @example
+ * import { fadeIn } from "libs/chakraKeyframes";
+ *
+ * <Box animation={`${fadeIn} 0.5s ease-out`}>Fading In</Box>
  */
 
 import { keyframes } from "@chakra-ui/react";
