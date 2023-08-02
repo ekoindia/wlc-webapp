@@ -1,4 +1,5 @@
 import { Box, Flex, keyframes } from "@chakra-ui/react";
+import { fadeIn } from "libs/chakraKeyframes";
 
 const animStar = keyframes`
 	from {opacity: 0; transform: scale(1.1) rotate(10deg); }
@@ -10,10 +11,10 @@ const animCircle = keyframes`
 	to {opacity: 1; transform: none; borderWidth: 25px; }
 `;
 
-const animFadeIn = keyframes`
-	from {opacity: 0;}
-	to {opacity: 1;}
-`;
+// const animFadeIn = keyframes`
+// 	from {opacity: 0;}
+// 	to {opacity: 1;}
+// `;
 
 /**
  * A component to show content inside a translucent circular design with optional small stars and patterns
@@ -81,7 +82,7 @@ const ShowcaseCircle = ({
 				align="center"
 				justify="center"
 				borderRadius="50%"
-				animation={`${animFadeIn} ease-out 1.5s`}
+				animation={`${fadeIn} ease-out 1.5s`}
 			>
 				{children}
 			</Flex>
