@@ -395,14 +395,17 @@ const SignupPage = () => {
 	useEffect(() => {
 		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
 			console.log("[signup] [PubSub] >>> android-response:: ", data);
-			if (data?.action === "") {
-				handleStepDataSubmit({
-					id: 12,
-					form_data: {
-						// document_id: res.documentId,
-						agreement_id: userData?.userDetails?.agreement_id,
-					},
-				});
+
+			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
+				if (data?.data === "success") {
+					router.push("/home");
+				} else {
+					toast({
+						title: "Something went wrong, please try again later!",
+						status: "error",
+						duration: 2000,
+					});
+				}
 			}
 		});
 
@@ -859,10 +862,13 @@ const SignupPage = () => {
 				}
 
 				if (isAndroid) {
-					doAndroidAction(ANDROID_ACTION.LEEGALITY_ESIGN_OPEN, {
-						signing_url: signUrlData, //	signUrlData?.short_url,
-						// logo: orgDetail.logo,
-					});
+					doAndroidAction(
+						ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
+						JSON.stringify({
+							signing_url: signUrlData?.short_url, //	signUrlData?.short_url,
+							// logo: orgDetail.logo,
+						})
+					);
 				} else {
 					// eslint-disable-next-line no-undef
 					const leegality = new Leegality({
@@ -870,7 +876,7 @@ const SignupPage = () => {
 						logo: orgDetail.logo,
 					});
 					leegality.init();
-					leegality.esign(signUrlData); // signUrlData?.short_url
+					leegality.esign(signUrlData?.short_url); // signUrlData?.short_url
 				}
 			}
 		} else if (callType.type === 10) {
@@ -1074,7 +1080,7 @@ const SignupPage = () => {
 					) : (
 						<OnboardingWidget
 							ref={widgetRef}
-							// defaultStep="12800"
+							//defaultStep="12800"
 							defaultStep={
 								userData?.userDetails?.role_list || "12400"
 							}
