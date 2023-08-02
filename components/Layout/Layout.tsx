@@ -20,6 +20,7 @@ const CommandBarBox = dynamic(() => import("../CommandBar/CommandBarBox"), {
  * @param {Object} pageMeta - The page meta data.
  * @param {Boolean} pageMeta.isSubPage - If the page is a sub page, then the layout will not render the top navbar (Header) on small screens.
  * @param {String} pageMeta.title - The page title. This will be displayed in the browser titlebar.
+ * @param {Boolean} pageMeta.hideMenu - If true, then the layout will not render the left navigation drawer.
  */
 const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	const { isSubPage, title, hideMenu } = pageMeta;

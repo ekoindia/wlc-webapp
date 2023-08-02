@@ -1095,6 +1095,7 @@ const SignupPage = () => {
 		</>
 	);
 };
+
 SignupPage.pageMeta = {
 	title: "Signup",
 	hideMenu: true,
