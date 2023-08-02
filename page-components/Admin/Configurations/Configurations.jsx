@@ -1,20 +1,17 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
 import { useState } from "react";
-import { BusinessDashboard, OnboardingDashboard } from ".";
+import { GeneralConfig, ThemeConfig } from ".";
 
 /**
- * A Dashboard page component
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Dashboard></Dashboard>`
+ * A Configurations page-component
  */
-const Dashboard = () => {
+const Configurations = () => {
 	const [currTab, setCurrTab] = useState(0);
 
 	const list = [
-		{ label: "Business", component: <BusinessDashboard /> },
-		{ label: "Onboarding", component: <OnboardingDashboard /> },
+		{ label: "General", component: <GeneralConfig /> },
+		{ label: "Theme", component: <ThemeConfig /> },
 	];
 
 	const onClick = (idx) => setCurrTab(idx);
@@ -25,22 +22,25 @@ const Dashboard = () => {
 		<div>
 			<Flex
 				bg={{ base: "white", md: "none" }}
-				pb={{ base: currTab === 0 ? "0px" : "10px", md: "0px" }}
-				borderRadius={currTab === 0 ? "0px" : "0px 0px 20px 20px"}
+				borderRadius="0px 0px 20px 20px"
+				my={{
+					base: "0",
+					md: "5",
+				}}
 			>
 				<Flex
 					direction={{ base: "column", md: "row" }}
 					align={{ base: "flex-start", md: "center" }}
 					gap={{ base: "2", md: "8" }}
 					w="100%"
-					m="20px"
+					m={{ base: "20px", md: "0" }}
 					fontSize="sm"
 					justify="space-between"
 				>
 					<Text fontWeight="semibold" fontSize="2xl">
-						Dashboard
+						Configurations
 					</Text>
-					<PillTab {...{ list, onClick, currTab }} />
+					<PillTab {...{ list, currTab, onClick }} />
 				</Flex>
 			</Flex>
 			{getComp(currTab)}
@@ -48,4 +48,4 @@ const Dashboard = () => {
 	);
 };
 
-export default Dashboard;
+export default Configurations;

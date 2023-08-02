@@ -226,7 +226,7 @@ const MoveAgents = ({
 					display={{ base: "none", md: "flex" }}
 					size={{ base: "12", xl: "20" }}
 					color="divider"
-					bg="secondary.DEFAULT"
+					bg="primary.dark"
 				>
 					<Icon name="fast-forward" size={{ base: "sm", xl: "lg" }} />
 				</Circle>

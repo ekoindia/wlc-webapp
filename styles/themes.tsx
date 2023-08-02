@@ -33,17 +33,17 @@ export const light = extendTheme({
 			DEFAULT: "#FE9F00",
 			dark: "#f38300",
 		},
-		secondary: {
-			light: "#2d6cbf",
-			DEFAULT: "#1F5AA7",
-			dark: "#164d94",
-		},
-		shadow: {
-			primary: "#FE9F008C",
-			accent: "#11299e96",
-			success: "#009B34",
-			error: "#CA1B56",
-		},
+		// secondary: {
+		// 	light: "#2d6cbf",
+		// 	DEFAULT: "#1F5AA7",
+		// 	dark: "#164d94",
+		// },
+		// shadow: {
+		// 	primary: "#FE9F008C",
+		// 	accent: "#11299e96",
+		// 	success: "#009B34",
+		// 	error: "#CA1B56",
+		// },
 		"google-btn-bg": "#4185F4",
 		success: "#00C341",
 		error: "#FF4081",

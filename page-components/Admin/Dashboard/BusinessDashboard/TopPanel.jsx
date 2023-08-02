@@ -80,10 +80,7 @@ const TopPanel = ({ data }) => {
 							align={{ base: "flex-start", sm: "center" }}
 							gap={{ base: "1", sm: "6" }}
 						>
-							<Flex
-								fontWeight="semibold"
-								color="secondary.DEFAULT"
-							>
+							<Flex fontWeight="semibold" color="primary.DEFAULT">
 								{item.type === "amount" ? (
 									<Currency amount={item.value} />
 								) : (
@@ -136,7 +133,7 @@ const TopPanel = ({ data }) => {
 						color="white"
 						iconName={item.icon}
 						rounded={10}
-						bg="transparent linear-gradient(180deg, #1F5AA7 0%, #11299E 100%) 0% 0% no-repeat padding-box"
+						bgGradient="linear(to-b, primary.light, primary.dark)"
 					/>
 				</Flex>
 			))}

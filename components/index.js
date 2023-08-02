@@ -30,6 +30,7 @@ import { OtpInput } from "./OtpInput";
 import { PaddingBox } from "./PaddingBox";
 import { PageLoader } from "./PageLoader";
 import { Pagination } from "./Pagination";
+import { PillTab } from "./PillTab";
 import { PrintReceipt } from "./PrintReceipt";
 import { ProfileCard } from "./ProfileCard";
 import { RouteProtecter } from "./RouteProtecter";
@@ -38,14 +39,17 @@ import { Select } from "./Select";
 import { ShowcaseCircle } from "./ShowcaseCircle";
 import { SideBar } from "./SideBar";
 import { StatusCard } from "./StatusCard";
+import { StatusDisplay } from "./StatusDisplay";
 import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	PillTab,
 	ShowcaseCircle,
 	ColorPair,
+	StatusDisplay,
 	Card,
 	PrintReceipt,
 	PageLoader,

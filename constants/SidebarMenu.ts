@@ -89,6 +89,11 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		link: "/admin/transaction/" + TransactionIds.INVOICE_DOWNLOAD,
 		trxn_id: TransactionIds.INVOICE_DOWNLOAD,
 	},
+	// {
+	// 	icon: "manage",
+	// 	name: "Configurations",
+	// 	link: "/admin/configurations",
+	// },
 ];
 
 /**

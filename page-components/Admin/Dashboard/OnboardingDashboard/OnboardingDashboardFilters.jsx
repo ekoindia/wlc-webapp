@@ -179,7 +179,7 @@ const OnboardingDashboardFilters = ({
 							>
 								<Text
 									fontWeight="semibold"
-									color="secondary.DEFAULT"
+									color="primary.DEFAULT"
 									fontSize="lg"
 								>
 									<span>{item.value}</span>
