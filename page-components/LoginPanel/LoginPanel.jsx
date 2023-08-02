@@ -1,6 +1,7 @@
 import { Box, Flex, SlideFade, Text } from "@chakra-ui/react";
 import { Icon, ShowcaseCircle } from "components";
 import { useOrgDetailContext, useSession } from "contexts";
+import { fadeIn } from "libs/chakraKeyframes";
 import { useState } from "react";
 import { Login, SocialVerify, VerifyOtp } from "./children";
 
@@ -46,9 +47,11 @@ const LoginPanel = () => {
 				direction={{ base: "column-reverse", md: "row" }}
 				w={{ base: "100%", md: "80%" }}
 				h={{ base: "100vh", lg: "auto" }}
+				maxW="1000px"
 				overflow="hidden"
 				borderRadius={{ base: 0, md: "15px" }}
 				boxShadow="xl"
+				animation={`${fadeIn} ease-out 1s`}
 			>
 				{/* Description Box */}
 				<Flex
@@ -56,18 +59,9 @@ const LoginPanel = () => {
 					align="center"
 					flex={2}
 					display={{ base: "none", md: "flex" }}
-					// maxW={{ base: "95vw", sm: "30rem", lg: "none" }}
-					// w={{
-					// 	base: "95%",
-					// 	md: "26rem",
-					// 	"2xl": "43.75rem",
-					// }}
-					// h={{ base: "31rem", "2xl": "44.3rem" }}
 					px={{ base: 5, "2xl": 7 }}
 					py={{ base: 7, "2xl": 10 }}
-					// my={{ base: "auto", md: "0" }}
 					boxShadow="0px 3px 20px #00000005"
-					// borderRadius={{ base: 15, "2xl": 20 }}
 					// bg="primary.DEFAULT"
 					bgGradient="linear(to-b, primary.light, primary.dark)"
 					color="white"
@@ -88,18 +82,10 @@ const LoginPanel = () => {
 					flex={1}
 					minW={{ base: "300px", lg: "350px" }}
 					h={{ base: "100vh", lg: "auto" }}
-					// maxW={{ base: "95vw", sm: "30rem", lg: "none" }}
-					// w={{
-					// 	base: "95%",
-					// 	md: "26rem",
-					// 	"2xl": "43.75rem",
-					// }}
-					// h={{ base: "31rem", "2xl": "44.3rem" }}
 					px={{ base: 5, "2xl": 7 }}
 					py={{ base: 7, "2xl": 10 }}
 					// my={{ base: "auto", md: "0" }}
 					boxShadow="0px 3px 20px #00000005"
-					// borderRadius={{ base: 15, "2xl": 20 }}
 					bg="white"
 				>
 					{step === "LOGIN" && (
@@ -168,6 +154,7 @@ const DescCard = ({ logo, header, features = [] }) => {
 				my={{ base: "1em", md: "1.5em", lg: "2em" }}
 				opacity="0.8"
 				sx={{ textWrap: "balance" }}
+				animation={`${fadeIn} ease-out 2s`}
 			>
 				{header}
 			</Text>
@@ -182,7 +169,12 @@ const DescCard = ({ logo, header, features = [] }) => {
 				// sx={{ textWrap: "balance" }}
 			>
 				{features.map((feature, i) => (
-					<Flex key={i} align="center" py="5px">
+					<Flex
+						key={i}
+						align="center"
+						py="5px"
+						animation={`${fadeIn} ease-out 2s`}
+					>
 						<Icon
 							name="check"
 							size="18px"
