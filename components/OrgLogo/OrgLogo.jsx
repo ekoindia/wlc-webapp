@@ -12,6 +12,25 @@ const fallbackLogo =
  */
 const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 	const [imageState, setImageState] = useState("loading");
+	const [isSmallLogo, setIsSmallLogo] = useState(false); // Is it a circular/squarish logo?
+
+	const onLoad = (success, e) => {
+		if (success) {
+			// Set image as loaded
+			setImageState("loaded");
+
+			// Check if the logo is small (circular/squarish)
+			if (e?.target?.width) {
+				if (e.target.width / e.target.height < 1.2) {
+					setIsSmallLogo(true);
+				}
+			}
+		} else {
+			// Set image loading as failed
+			setImageState("failed");
+		}
+		console.log("LOGO loaded: ", success, e);
+	};
 
 	const logoHeight =
 		size === "lg"
@@ -24,7 +43,23 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 	const logoFontSize =
 		size === "lg" ? { base: "xl", md: "3xl" } : { base: "lg", md: "xl" };
 
-	// Text Logo...
+	// Text logo
+	const TextLogo = ({ color = "gray.800", ...restTextLogoAttrs }) => (
+		<Text
+			as="b"
+			color={color}
+			noOfLines={1}
+			maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
+			fontSize={logoFontSize}
+			fontWeight="600"
+			textShadow="0px 3px 10px #29292933"
+			{...restTextLogoAttrs}
+		>
+			{orgDetail.app_name}
+		</Text>
+	);
+
+	// Show only Text Logo...
 	if (
 		(!(orgDetail && orgDetail.logo) || imageState === "failed") &&
 		orgDetail.app_name
@@ -38,16 +73,7 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 				// borderRadius="6px"
 				{...rest}
 			>
-				<Text
-					as="b"
-					color="gray.800"
-					noOfLines={1}
-					fontSize={logoFontSize}
-					fontWeight="600"
-					textShadow="0px 3px 10px #29292933"
-				>
-					{orgDetail.app_name}
-				</Text>
+				<TextLogo />
 			</Center>
 		);
 	}
@@ -71,10 +97,13 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 				transition="opacity 1s ease-out"
 				opacity={imageState === "loaded" ? 1 : 0}
 				loading="eager"
-				onLoad={() => setImageState("loaded")}
-				onError={() => setImageState("failed")}
+				onLoad={(e) => onLoad(true, e)}
+				onError={() => onLoad(false)}
 				{...rest}
 			/>
+			{imageState === "loaded" && isSmallLogo ? (
+				<TextLogo color="primary.dark" ml={2} />
+			) : null}
 		</Center>
 	);
 };

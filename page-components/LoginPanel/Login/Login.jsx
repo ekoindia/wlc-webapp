@@ -105,7 +105,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				h="10px"
 				bg="primary.DEFAULT"
 			></Box>
-			<Flex mb={userName ? "5" : { base: 10, lg: 14 }}>
+			<Flex mb={userName ? "6" : { base: 10, lg: 14 }}>
 				<OrgLogo
 					orgDetail={orgDetail}
 					size="lg"
@@ -120,8 +120,8 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 					fontSize={{ base: "xl", "2xl": "3xl" }}
 					color="primary.light"
 					mb={{
-						base: 5,
-						"2xl": "7",
+						base: 6,
+						"2xl": "8",
 					}}
 				>
 					Welcome back, {userName}
