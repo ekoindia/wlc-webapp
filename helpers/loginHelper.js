@@ -1,13 +1,27 @@
 import { Endpoints } from "constants/EndPoints";
-import { buildUserObjectState } from "utils/userObjectBuilder";
+import { ANDROID_ACTION, buildUserObjectState, doAndroidAction } from "utils";
 import { fetcher } from "./apiHelper";
 
-function sendOtpRequest(org_id, number, toast, sendState) {
+/**
+ * Verify OTP and get user details to login the user.
+ * @param {number} org_id	Organization ID
+ * @param {number} number	User's mobile number
+ * @param {function} toast		Function to show toast messages
+ * @param {string} sendState	"send" or "resend" for showing proper toast message
+ * @param {boolean} isAndroid	Is the user using the Android wrapper app?
+ */
+function sendOtpRequest(
+	org_id,
+	number,
+	toast,
+	sendState = "send",
+	isAndroid = false
+) {
 	const PostData = {
-		platfom: "web",
+		platfom: isAndroid ? "android" : "web",
 		mobile: number,
 		// client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
-		app: "Connect",
+		app: "Eloka",
 		org_id: org_id,
 	};
 
@@ -17,7 +31,7 @@ function sendOtpRequest(org_id, number, toast, sendState) {
 	})
 		.then((data) => {
 			// Show otp hint in the toast only in development environments
-			if (process.env.NEXT_PUBLIC_ENV !== "production") {
+			if (process.env.NEXT_PUBLIC_ENV !== "production" && toast) {
 				toast({
 					title: `${
 						sendState === "resend" ? "Resent" : "Sent"
@@ -30,6 +44,7 @@ function sendOtpRequest(org_id, number, toast, sendState) {
 		})
 		.catch(
 			() =>
+				toast &&
 				toast({
 					title: `${
 						sendState === "resend" ? "Resend" : "Send"
@@ -40,6 +55,7 @@ function sendOtpRequest(org_id, number, toast, sendState) {
 		);
 }
 
+// TODO: Use proper Input component that returns only unformatted input and make this redundent
 function RemoveFormatted(number) {
 	return number.replace(/\D/g, "");
 }
@@ -62,8 +78,8 @@ function getTokenExpiryTime(data) {
 	return 0;
 }
 
-/*
- * createUserState(data) is used to create userState.
+/**
+ * Create userState
  */
 function createUserState(data) {
 	let tokenTimeout = getTokenExpiryTime(data);
@@ -74,6 +90,15 @@ function createUserState(data) {
 	return state;
 }
 
+/**
+ * Set user details in the session storage after a successful login.
+ * @param {object} data
+ * @param {object} data.userDetails	User details
+ * @param {object} data.personalDetails	Personal details
+ * @param {object} data.shopDetails	Shop details
+ * @param {object} data.accountDetails	Account details
+ * @param {number} data.token_timeout	Expiry time of the token in milliseconds
+ */
 function setUserDetails(data) {
 	try {
 		sessionStorage.setItem("token_timeout", data.token_timeout);
@@ -93,12 +118,26 @@ function setUserDetails(data) {
 			"account_details",
 			JSON.stringify(data.accountDetails)
 		);
+
+		// Cache the original login-type (Google / Mobile) and user details
+		// const local_role_tx_list = sessionStorage.getItem("login_type") || "";
 	} catch (err) {
 		console.warn("Updating to session-storage failed: ", err);
 	}
 }
 
-function setandUpdateAuthTokens(data) {
+/**
+ * Set the auth tokens in the session storage.
+ * If running under Android wrapper app, send details to the app for caching.
+ * @param {object} data	The object with auth tokens
+ * @param {string} data.access_token	The full access token used to get transactions for the user based on assigned roles
+ * @param {string} data.refresh_token	The refresh token
+ * @param {string} data.access_token_lite	The light-weight access token for authenticating regular transactions
+ * @param {string} data.access_token_crm	The access token for the CRM API
+ * @param {boolean} isAndroid	Is the user using the Android wrapper app?
+ * @param {boolean} isNewLogin	Is this a new login?
+ */
+function setandUpdateAuthTokens(data, isAndroid, isNewLogin = false) {
 	try {
 		sessionStorage.setItem("access_token", data?.access_token);
 		sessionStorage.setItem("refresh_token", data?.refresh_token);
@@ -106,6 +145,14 @@ function setandUpdateAuthTokens(data) {
 		sessionStorage.setItem("access_token_crm", data?.access_token_crm);
 	} catch (err) {
 		console.warn("Updating to session-storage failed: ", err);
+	}
+
+	if (isAndroid) {
+		doAndroidAction(ANDROID_ACTION.SAVE_REFRESH_TOKEN, {
+			refresh_token: data?.refresh_token,
+			long_session: data?.long_session,
+			new_login: isNewLogin,
+		});
 	}
 }
 
@@ -179,6 +226,15 @@ function revokeSession(user_id) {
 		.catch((err) => console.log("Refresh Token Revoke Error: ", err));
 }
 
+/**
+ * Generate a new access token using the refresh token.
+ * @param {string} refresh_token	The refresh token
+ * @param {function} updateUserInfo	Function to update the userState
+ * @param {boolean} isTokenUpdating	Is the token already being updated?
+ * @param {function} setIsTokenUpdating	Function to set the token update status
+ * @param {function} logout	Function to logout the user
+ * @returns
+ */
 function generateNewAccessToken(
 	refresh_token,
 	updateUserInfo,

@@ -1,6 +1,6 @@
 import { Box, Flex, Text, useToast } from "@chakra-ui/react";
 import { Button, Input, OrgLogo } from "components";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
+import { useAppSource, useOrgDetailContext } from "contexts";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
@@ -27,6 +27,8 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
 	const { orgDetail } = useOrgDetailContext();
+	const { isAndroid } = useAppSource();
+
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
@@ -42,7 +44,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 		setValue(val);
 	};
 
-	const SendOtp = () => {
+	const sendOtp = () => {
 		if (value.length === 12) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({
@@ -51,7 +53,13 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			});
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
-			sendOtpRequest(orgDetail.org_id, originalNum, toast);
+			sendOtpRequest(
+				orgDetail.org_id,
+				originalNum,
+				toast,
+				"send",
+				isAndroid
+			);
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);
@@ -162,7 +170,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				borderRadius="8px"
 				fontSize={{ base: "lg" }}
 				mt={{ base: 8 }}
-				onClick={SendOtp}
+				onClick={sendOtp}
 				ref={EnterRef}
 				// disabled={value.length < 12}
 			>

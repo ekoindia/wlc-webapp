@@ -7,6 +7,7 @@ import {
 	setUserDetails,
 } from "helpers/loginHelper";
 import { buildUserObjectState } from "utils/userObjectBuilder";
+import { useAppSource } from ".";
 
 export const defaultUserState = {
 	loggedIn: false,
@@ -20,6 +21,8 @@ export const defaultUserState = {
 };
 
 export const UserReducer = (state, { type, payload }) => {
+	const { isAndroid } = useAppSource();
+
 	switch (type) {
 		case "INIT_USER_STORE": {
 			return payload;
@@ -36,7 +39,7 @@ export const UserReducer = (state, { type, payload }) => {
 				});
 
 				console.log("newUserState", newState);
-				setandUpdateAuthTokens(payload);
+				setandUpdateAuthTokens(payload, isAndroid, false);
 				setUserDetails(newState);
 
 				sessionStorage.setItem("token_timeout", tokenTimeout);
@@ -87,7 +90,7 @@ export const UserReducer = (state, { type, payload }) => {
 			// 	accountDetails: payload?.account_details,
 			// }
 
-			setandUpdateAuthTokens(payload);
+			setandUpdateAuthTokens(payload, isAndroid, true);
 			setUserDetails(newState);
 
 			return newState;
