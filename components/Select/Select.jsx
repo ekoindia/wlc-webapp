@@ -41,12 +41,12 @@ const Select = ({
 				fontSize="sm"
 				focusBorderColor="hint"
 				_focus={{
-					border: "1px solid #D2D2D2",
+					border: "1px solid var(--chakra-colors-hint)",
 					boxShadow: "none",
 				}}
 				borderRadius="10px"
 				icon={<Icon name="caret-down" />}
-				iconSize="10px"
+				iconSize="8px"
 				onChange={onChange}
 				value={value}
 				{...inputContStyle}
