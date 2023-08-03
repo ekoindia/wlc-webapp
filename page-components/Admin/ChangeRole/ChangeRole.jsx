@@ -105,10 +105,10 @@ const ChangeRole = () => {
 			>
 				{!showOrgChangeRoleView && (
 					<>
-						<Flex direction="column" gap="2">
+						<Flex direction="column">
 							<Text
 								fontSize="2xl"
-								color="accent.DEFAULT"
+								color="primary.DEFAULT"
 								fontWeight="semibold"
 							>
 								{agentData?.agent_name}

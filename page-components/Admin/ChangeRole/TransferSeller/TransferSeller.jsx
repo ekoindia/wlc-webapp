@@ -58,7 +58,7 @@ const TransferSeller = () => {
 	const body = {
 		scspFrom: transferAgentsFrom.value,
 		scspTo: transferAgentsTo.value,
-		selectedTransferredCSPsList: selectedAgentsToTransfer,
+		selectedTransferredCSPsList: `${selectedAgentsToTransfer}`,
 	};
 
 	const handleMoveAgent = () => {
