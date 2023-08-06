@@ -59,6 +59,7 @@ const PromoteSellerToDistributor = ({ agentData }) => {
 				"tf-req-method": "PUT",
 			},
 			body: {
+				operation_type: 1,
 				agent_mobile: mobile,
 			},
 			token: accessToken,
