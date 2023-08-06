@@ -20,7 +20,7 @@ const renderer = {
  * A TransferSeller Tab inside ChangeRole page-component
  * @example	`<TransferSeller></TransferSeller>`
  */
-const TransferSeller = () => {
+const TransferSeller = ({ /* agentData, */ setResDetails }) => {
 	const [showSelectAgent, setShowSelectAgent] = useState(false);
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState({
 		value: "",
@@ -72,6 +72,7 @@ const TransferSeller = () => {
 			token: accessToken,
 		}).then((res) => {
 			console.log("res", res);
+			setResDetails({ status: res.status, message: res.message });
 		});
 	};
 
