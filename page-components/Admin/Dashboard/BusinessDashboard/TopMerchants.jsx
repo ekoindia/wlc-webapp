@@ -1,8 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
 
-import { BusinessDashboardCard } from ".";
-
 /**
  * A TopMerchants page-component
  * TODO: Write more description here
@@ -69,7 +67,7 @@ const TopMerchants = ({ data }) => {
 			<Table
 				renderer={renderer}
 				data={data}
-				ResponsiveCard={BusinessDashboardCard}
+				// ResponsiveCard={BusinessDashboardCard}
 			/>
 		</Flex>
 	);

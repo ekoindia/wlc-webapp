@@ -9,8 +9,7 @@ import { TransactionHistoryCard } from "..";
  * @example	`<TransactionHistoryTable></TransactionHistoryTable>`
  */
 const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
-	const router = useRouter();
-
+	console.log("transactiondata", transactiondata);
 	const renderer = [
 		{ field: "Sr. No.", show: "#" },
 		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
@@ -42,13 +41,16 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 			show: "Arrow",
 		},
 	];
-	const mobile = transactiondata[0]?.agent_mobile ?? [];
-	function onRowClick() {
+
+	const router = useRouter();
+
+	const onRowClick = () => {
+		const mobile = transactiondata[0]?.agent_mobile ?? "";
 		router.push({
 			pathname: "/admin/transaction-history/account-statement",
 			query: { mobile },
 		});
-	}
+	};
 
 	return (
 		<>

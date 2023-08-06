@@ -29,6 +29,7 @@ const getStatus = (status) => {
 	}
 };
 
+//TODO change name of comp (stub)
 /**
  * A StatusDisplay component to display status of transaction.
  * @param	{Number}	status  status code of the transaction
