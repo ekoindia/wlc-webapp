@@ -20,6 +20,15 @@ const OPERATION = {
 	FETCH: 0,
 };
 
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
+
 /**
  * A <PricingForm> component
  * TODO: Write more description here
@@ -160,15 +169,6 @@ const PricingForm = ({
 			},
 			_finalData
 		);
-	};
-
-	const getStatus = (status) => {
-		switch (status) {
-			case 0:
-				return "success";
-			default:
-				return "error";
-		}
 	};
 
 	// const charges = {
