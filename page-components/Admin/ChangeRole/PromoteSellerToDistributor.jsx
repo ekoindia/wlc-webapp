@@ -16,7 +16,7 @@ const renderer = {
  * PromoteSellerToDistributor page-component
  * @returns
  */
-const PromoteSellerToDistributor = ({ agentData }) => {
+const PromoteSellerToDistributor = ({ agentData, setResponseDetails }) => {
 	const [sellerList, setSellerList] = useState();
 	const { accessToken } = useSession();
 	// const [disabled, setDisabled] = useState(false);
@@ -68,12 +68,12 @@ const PromoteSellerToDistributor = ({ agentData }) => {
 				"tf-req-method": "PUT",
 			},
 			body: {
+				operation_type: 1,
 				agent_mobile: default_agent_mobile ?? mobile,
 			},
 			token: accessToken,
 		}).then((res) => {
-			console.log("res", res);
-			//TODO show toast
+			setResponseDetails({ status: res.status, message: res.message });
 		});
 	};
 
