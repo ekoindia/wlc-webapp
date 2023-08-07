@@ -161,10 +161,12 @@ const ProfilePanel = () => {
 			<Headings
 				title={isMenuVisible ? "Change Role" : "Agent Details"}
 				propComp={
-					<ChangeRoleDesktop
-						changeRoleMenuList={changeRoleMenuList}
-						menuHandler={menuHandler}
-					/>
+					changeRoleMenuList.length > 0 && (
+						<ChangeRoleDesktop
+							changeRoleMenuList={changeRoleMenuList}
+							menuHandler={menuHandler}
+						/>
+					)
 				}
 				redirectHandler={isMenuVisible ? menuHandler : null}
 				isCompVisible={!isMenuVisible}

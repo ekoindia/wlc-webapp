@@ -27,13 +27,13 @@ export const ChangeRoleMenuList = [
 		visible: [2, 3],
 		visibleString: ["Retailer", "I-CSP"],
 	},
-	{
-		slug: "demote-distributor",
-		label: "Demote Distributor",
-		path: "/admin/my-network/profile/change-role",
-		visible: [1],
-		visibleString: ["Distributor"],
-	},
+	// {
+	// 	slug: "demote-distributor",
+	// 	label: "Demote Distributor",
+	// 	path: "/admin/my-network/profile/change-role",
+	// 	visible: [1],
+	// 	visibleString: ["Distributor"],
+	// },
 	{
 		slug: "retailer-to-iretailer",
 		label: "Upgrade Retailer To iRetailer",
