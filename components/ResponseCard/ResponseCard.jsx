@@ -37,7 +37,7 @@ const getStatus = (status) => {
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<ResponseCard></ResponseCard>` TODO: Fix example
  */
-const ResponseCard = ({ status = 0, details, message, onClick, ...rest }) => {
+const ResponseCard = ({ status, details, message, onClick, ...rest }) => {
 	const { color, image } = getStatus(status);
 
 	return (
