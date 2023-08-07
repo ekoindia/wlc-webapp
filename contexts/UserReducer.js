@@ -98,7 +98,7 @@ export const UserReducer = (state, { type, payload }) => {
 
 		case "LOGOUT": {
 			revokeSession(state?.userId || 1);
-			clearAuthTokens();
+			clearAuthTokens(isAndroid);
 			return defaultUserState;
 		}
 
