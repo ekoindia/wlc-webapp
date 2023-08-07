@@ -3,6 +3,7 @@ import { Button, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -15,7 +16,7 @@ const renderer = {
  * DemoteDistributor page-component
  * @returns
  */
-const DemoteDistributor = ({ agentData, setResDetails }) => {
+const DemoteDistributor = ({ agentData /* , setResDetails  */ }) => {
 	const {
 		handleSubmit,
 		// formState: { errors /* isSubmitting */ },
@@ -31,6 +32,8 @@ const DemoteDistributor = ({ agentData, setResDetails }) => {
 	const [sellerList, setSellerList] = useState();
 	const { accessToken } = useSession();
 	const [disabled, setDisabled] = useState(false);
+
+	const router = useRouter();
 
 	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -69,7 +72,7 @@ const DemoteDistributor = ({ agentData, setResDetails }) => {
 			token: accessToken,
 		}).then((res) => {
 			console.log("res", res);
-			setResDetails({ status: res.status, message: res.message });
+			// setResDetails({ status: res.status, message: res.message });
 		});
 	};
 
@@ -113,6 +116,7 @@ const DemoteDistributor = ({ agentData, setResDetails }) => {
 						fontWeight="bold"
 						color="primary.DEFAULT"
 						_hover={{ textDecoration: "none" }}
+						onClick={() => router.back()}
 					>
 						Cancel
 					</Button>

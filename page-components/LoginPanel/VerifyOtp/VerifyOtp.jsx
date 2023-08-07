@@ -124,15 +124,15 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 			<Flex w="full" align="center" justify="center">
 				<OtpInput
 					inputStyle={{
-						w: { base: 12, md: "68px" },
+						w: { base: 12, sm: 14 },
 						h: { base: 12 },
-						fontSize: { base: "sm" },
+						fontSize: "sm",
 					}}
-					containerStyle={
-						{
-							// justifyContent: "space-between",
-						}
-					}
+					// containerStyle={
+					// 	{
+					// 		// justifyContent: "space-between",
+					// 	}
+					// }
 					length={4}
 					onChange={setOtp}
 					onEnter={() => verifyOtpHandler()}
@@ -152,7 +152,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 			>
 				{timer >= 1 ? (
 					<>
-						<Text as={"span"}>Resend otp in </Text>
+						<Text as={"span"}>Resend OTP in </Text>
 						<Flex align="center" color="error" columnGap="4px">
 							<Icon name="timer" size="18px" />
 							00:{timer <= 9 ? "0" + timer : timer}

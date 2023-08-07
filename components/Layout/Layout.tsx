@@ -47,9 +47,6 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	// Setup Android Listener...
 	useEffect(() => {
 		if (typeof window !== "undefined" && isAndroid) {
-			// Inform Android wrapper app that the page has loaded...
-			doAndroidAction(ANDROID_ACTION.WEBAPP_READY);
-
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
 				console.log("[_app.tsx] callFromAndroid:: ", action, data);
@@ -62,6 +59,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 
 				publish(TOPICS.ANDROID_RESPONSE, { action, data });
 			};
+
+			// Inform Android wrapper app that the page has loaded and is ready to listen to messages from Android...
+			doAndroidAction(ANDROID_ACTION.WEBAPP_READY);
 		}
 	}, []);
 

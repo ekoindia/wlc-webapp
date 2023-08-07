@@ -24,9 +24,6 @@ const LayoutLogin = ({ appName, children }) => {
 	// TODO: Duplicate code from the default Layout component...Breakout into a separate component/hook?
 	useEffect(() => {
 		if (typeof window !== "undefined" && isAndroid) {
-			// Inform Android wrapper app that the page has loaded...
-			doAndroidAction(ANDROID_ACTION.WEBAPP_READY);
-
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
 				console.log("[_app.tsx] callFromAndroid:: ", action, data);
@@ -41,6 +38,9 @@ const LayoutLogin = ({ appName, children }) => {
 					publish(TOPICS.ANDROID_RESPONSE, { action, data });
 				}
 			};
+
+			// Inform Android wrapper app that the page has loaded and is ready to listen to messages from Android...
+			doAndroidAction(ANDROID_ACTION.WEBAPP_READY);
 		}
 	}, []);
 
