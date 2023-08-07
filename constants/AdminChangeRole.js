@@ -15,10 +15,27 @@
 export const ChangeRoleMenuList = [
 	{
 		slug: "transfer-retailer",
-		label: "Transfer Retailers",
+		label: "Assign Distributor",
 		path: "/admin/my-network/profile/change-role",
 		visible: [2, 3],
-		visibleString: ["Retailer", "I-CSP"],
+		visibleString: ["I-CSP"],
+		global: true,
+	},
+	{
+		slug: "transfer-retailer",
+		label: "Change Distributor",
+		path: "/admin/my-network/profile/change-role",
+		visible: [2, 3],
+		visibleString: ["Retailer"],
+		global: false,
+	},
+	{
+		slug: "retailer-to-iretailer",
+		label: "Unassign Distributor",
+		path: "/admin/my-network/profile/change-role",
+		visible: [2],
+		visibleString: ["Retailer"],
+		global: true,
 	},
 	{
 		slug: "retailer-to-distributor",
@@ -26,19 +43,14 @@ export const ChangeRoleMenuList = [
 		path: "/admin/my-network/profile/change-role",
 		visible: [2, 3],
 		visibleString: ["Retailer", "I-CSP"],
+		global: true,
 	},
-	{
-		slug: "demote-distributor",
-		label: "Demote Distributor",
-		path: "/admin/my-network/profile/change-role",
-		visible: [1],
-		visibleString: ["Distributor"],
-	},
-	{
-		slug: "retailer-to-iretailer",
-		label: "Upgrade Retailer To iRetailer",
-		path: "/admin/my-network/profile/change-role",
-		visible: [2],
-		visibleString: ["Retailer", "I-CSP"],
-	},
+	// {
+	// 	slug: "demote-distributor",
+	// 	label: "Demote Distributor to Retailer",
+	// 	path: "/admin/my-network/profile/change-role",
+	// 	visible: [1],
+	// 	visibleString: ["Distributor"],
+	//	global: true,
+	// },
 ];

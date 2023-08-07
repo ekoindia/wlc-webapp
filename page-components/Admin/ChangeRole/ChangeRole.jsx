@@ -26,7 +26,7 @@ import {
  * @example	`<ChangeRole></ChangeRole>`
  */
 const ChangeRole = () => {
-	const [agentData, setAgentData] = useState();
+	const [agentData, setAgentData] = useState(null);
 	const { accessToken } = useSession();
 	const [showOrgChangeRoleView, setShowOrgChangeRoleView] = useState(false);
 	const router = useRouter();
@@ -143,24 +143,30 @@ const ChangeRole = () => {
 						},
 					}}
 				>
-					{ChangeRoleMenuList?.map(({ slug, label, visibleString }) =>
-						slugTabMapping[slug] &&
-						(showOrgChangeRoleView ||
-							visibleString.includes(agentData?.agent_type)) ? (
-							<Tab key={slug}>{label}</Tab>
-						) : null
+					{ChangeRoleMenuList?.map(
+						({ slug, label, visibleString, global }) =>
+							slugTabMapping[slug] &&
+							((showOrgChangeRoleView && global) ||
+								visibleString.includes(
+									agentData?.agent_type
+								)) ? (
+								<Tab key={slug}>{label}</Tab>
+							) : null
 					)}
 				</TabList>
 
 				<TabPanels mt="5">
-					{ChangeRoleMenuList?.map(({ slug, visibleString }) =>
-						slugTabMapping[slug] &&
-						(showOrgChangeRoleView ||
-							visibleString.includes(agentData?.agent_type)) ? (
-							<TabPanel key={slug}>
-								{slugTabMapping[slug]}
-							</TabPanel>
-						) : null
+					{ChangeRoleMenuList?.map(
+						({ slug, visibleString, global }) =>
+							slugTabMapping[slug] &&
+							((showOrgChangeRoleView && global) ||
+								visibleString.includes(
+									agentData?.agent_type
+								)) ? (
+								<TabPanel key={slug}>
+									{slugTabMapping[slug]}
+								</TabPanel>
+							) : null
 					)}
 				</TabPanels>
 			</Tabs>

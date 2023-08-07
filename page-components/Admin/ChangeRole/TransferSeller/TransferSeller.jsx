@@ -8,6 +8,7 @@ import { Button, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { MoveAgents } from ".";
 
@@ -20,12 +21,17 @@ const renderer = {
  * A TransferSeller Tab inside ChangeRole page-component
  * @example	`<TransferSeller></TransferSeller>`
  */
-const TransferSeller = () => {
+const TransferSeller = ({ agentData }) => {
 	const [showSelectAgent, setShowSelectAgent] = useState(false);
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState({
 		value: "",
 		label: "",
 	});
+
+	const router = useRouter();
+
+	const default_agent_code = agentData?.eko_code;
+
 	const [transferAgentsTo, setTransferAgentsTo] = useState({
 		value: "",
 		label: "",
@@ -55,12 +61,6 @@ const TransferSeller = () => {
 		});
 	};
 
-	const body = {
-		scspFrom: transferAgentsFrom.value,
-		scspTo: transferAgentsTo.value,
-		selectedTransferredCSPsList: selectedAgentsToTransfer,
-	};
-
 	const handleMoveAgent = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
@@ -68,7 +68,12 @@ const TransferSeller = () => {
 				"tf-req-uri": `/network/agents/profile/changeRole/transfercsps`,
 				"tf-req-method": "PUT",
 			},
-			body: body,
+			body: {
+				// scspFrom: transferAgentsFrom.value,
+				scspTo: transferAgentsTo.value,
+				selectedTransferredCSPsList:
+					default_agent_code ?? selectedAgentsToTransfer,
+			},
 			token: accessToken,
 		}).then((res) => {
 			console.log("res", res);
@@ -157,20 +162,24 @@ const TransferSeller = () => {
 				direction={{ base: "column", md: "row" }}
 				gap={{ base: "8", md: "28", xl: "36" }}
 			>
-				<FormControl w={{ base: "100%", md: "500px" }}>
-					<FormLabel>
-						Select distributor to transfer agents from
-					</FormLabel>
-					<Select
-						id="from-select"
-						value={transferAgentsFrom.value}
-						onChange={(event) =>
-							handleTransferAgentsSelectChange(event, "FROM")
-						}
-						renderer={renderer}
-						options={distributors}
-					/>
-				</FormControl>
+				{/* Hide when an agent is already selected */}
+				{default_agent_code ? null : (
+					<FormControl w={{ base: "100%", md: "500px" }}>
+						<FormLabel>
+							Select distributor to transfer agents from
+						</FormLabel>
+						<Select
+							id="from-select"
+							value={transferAgentsFrom.value}
+							onChange={(event) =>
+								handleTransferAgentsSelectChange(event, "FROM")
+							}
+							renderer={renderer}
+							options={distributors}
+						/>
+					</FormControl>
+				)}
+
 				<FormControl w={{ base: "100%", md: "500px" }}>
 					<FormLabel>
 						Select distributor to transfer agents to
@@ -182,8 +191,14 @@ const TransferSeller = () => {
 							handleTransferAgentsSelectChange(event, "TO")
 						}
 						renderer={renderer}
-						options={filteredDistributors}
-						disabled={!transferAgentsFrom.value}
+						options={
+							filteredDistributors.length
+								? filteredDistributors
+								: distributors
+						}
+						disabled={
+							!default_agent_code && !transferAgentsFrom.value
+						}
 					/>
 				</FormControl>
 			</Flex>
@@ -222,6 +237,7 @@ const TransferSeller = () => {
 					fontWeight="bold"
 					color="primary.DEFAULT"
 					_hover={{ textDecoration: "none" }}
+					onClick={() => router.back()}
 				>
 					Cancel
 				</Button>
@@ -246,6 +262,7 @@ const TransferSeller = () => {
 					fontWeight="bold"
 					color="primary.DEFAULT"
 					_hover={{ textDecoration: "none" }}
+					onClick={() => router.back()}
 				>
 					Cancel
 				</Button>

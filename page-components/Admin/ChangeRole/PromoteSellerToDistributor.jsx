@@ -3,6 +3,7 @@ import { Button, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -18,16 +19,24 @@ const renderer = {
 const PromoteSellerToDistributor = ({ agentData }) => {
 	const [sellerList, setSellerList] = useState();
 	const { accessToken } = useSession();
-	const [disabled, setDisabled] = useState(false);
+	// const [disabled, setDisabled] = useState(false);
+
+	const router = useRouter();
+
+	const default_agent_mobile = agentData?.agent_mobile;
 
 	const {
 		handleSubmit,
 		// formState: { errors /* isSubmitting */ },
 		control,
-		reset,
+		// reset,
 	} = useForm();
 
 	useEffect(() => {
+		if (default_agent_mobile) {
+			return;
+		}
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -39,16 +48,16 @@ const PromoteSellerToDistributor = ({ agentData }) => {
 			const _seller = res?.data?.csp_list ?? [];
 			setSellerList(_seller);
 		});
-	}, []);
+	}, [default_agent_mobile]);
 
-	useEffect(() => {
-		if (agentData !== undefined) {
-			let defaultValues = {};
-			defaultValues.mobile = agentData?.agent_mobile;
-			reset({ ...defaultValues });
-			setDisabled(true);
-		}
-	}, [agentData]);
+	// useEffect(() => {
+	// 	if (agentData !== undefined) {
+	// 		let defaultValues = {};
+	// 		defaultValues.mobile = agentData?.agent_mobile;
+	// 		reset({ ...defaultValues });
+	// 		setDisabled(true);
+	// 	}
+	// }, [agentData]);
 
 	const onSubmit = (data) => {
 		const { mobile } = data;
@@ -59,7 +68,7 @@ const PromoteSellerToDistributor = ({ agentData }) => {
 				"tf-req-method": "PUT",
 			},
 			body: {
-				agent_mobile: mobile,
+				agent_mobile: default_agent_mobile ?? mobile,
 			},
 			token: accessToken,
 		}).then((res) => {
@@ -71,25 +80,27 @@ const PromoteSellerToDistributor = ({ agentData }) => {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<Flex direction="column" gap="8">
-				<FormControl w={{ base: "100%", md: "500px" }}>
-					<FormLabel>Select Retailer</FormLabel>
+				{default_agent_mobile ? null : (
+					<FormControl w={{ base: "100%", md: "500px" }}>
+						<FormLabel>Select Retailer</FormLabel>
 
-					<Controller
-						name="mobile"
-						control={control}
-						render={({ field: { onChange, value } }) => {
-							return (
-								<Select
-									options={sellerList}
-									renderer={renderer}
-									onChange={onChange}
-									value={value}
-									disabled={disabled}
-								/>
-							);
-						}}
-					/>
-				</FormControl>
+						<Controller
+							name="mobile"
+							control={control}
+							render={({ field: { onChange, value } }) => {
+								return (
+									<Select
+										options={sellerList}
+										renderer={renderer}
+										onChange={onChange}
+										value={value}
+										// disabled={disabled}
+									/>
+								);
+							}}
+						/>
+					</FormControl>
+				)}
 				<Flex
 					direction={{ base: "column", md: "row" }}
 					gap={{ base: "6", md: "12" }}
@@ -109,6 +120,7 @@ const PromoteSellerToDistributor = ({ agentData }) => {
 						fontWeight="bold"
 						color="primary.DEFAULT"
 						_hover={{ textDecoration: "none" }}
+						onClick={() => router.back()}
 					>
 						Cancel
 					</Button>
