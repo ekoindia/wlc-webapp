@@ -254,6 +254,11 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 					sizes="32x32"
 				/>
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+				<link
+					rel="manifest"
+					href="/manifest.json"
+					crossOrigin="anonymous"
+				/>
 			</Head>
 
 			{process.env.NEXT_PUBLIC_GTM_ID ? (

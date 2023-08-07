@@ -10,6 +10,7 @@ import {
 	DrawerOverlay,
 	Flex,
 	Text,
+	Tooltip,
 	useBreakpointValue,
 	useDisclosure,
 } from "@chakra-ui/react";
@@ -299,6 +300,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 					{
 						icon: "transaction-history",
 						label: "Transaction History",
+						description: "Statement of your previous transactions",
 						link: (isAdmin ? "/admin" : "") + Endpoints.HISTORY,
 					},
 				],
@@ -686,42 +688,56 @@ const AccordionSubMenuSection = ({
 								transitionDuration="0.3s"
 								transitionTimingFunction="ease-out"
 							>
-								<Flex
-									align="center"
-									justify="space-between"
-									padding="12px 0px 12px 0px"
-									borderTop="1px solid" // ORIG_THEME: "br-sidebar"
-									borderTopColor="sidebar.divider" // ORIG_THEME: primary.light
-									borderTopStyle="dashed"
+								<Tooltip
+									label={tx.description}
+									hasArrow
+									placement="right"
+									openDelay={500}
+									closeOnScroll
+									gutter={20}
+									// isDisabled={{ base: true, lg: false }}
 								>
 									<Flex
 										align="center"
-										columnGap="10px"
-										color={
-											isCurrent ? "#FFF" : "sidebar.text"
-										}
+										justify="space-between"
+										padding="12px 0px 12px 0px"
+										borderTop="1px solid" // ORIG_THEME: "br-sidebar"
+										borderTopColor="sidebar.divider" // ORIG_THEME: primary.light
+										borderTopStyle="dashed"
+										// tooltip={tx.description}
+										// tooltip-config="right"
 									>
-										<Icon name={tx.icon} size="sm" />
-										<Text
-											fontSize={{
-												base: "12px",
-												"2xl": "14px",
-											}}
+										<Flex
+											align="center"
+											columnGap="10px"
+											color={
+												isCurrent
+													? "#FFF"
+													: "sidebar.text"
+											}
 										>
-											{tx.label}
-										</Text>
+											<Icon name={tx.icon} size="sm" />
+											<Text
+												fontSize={{
+													base: "12px",
+													"2xl": "14px",
+												}}
+											>
+												{tx.label}
+											</Text>
+										</Flex>
+										<Icon
+											color={
+												isCurrent
+													? "accent.DEFAULT"
+													: "primary.light"
+											} // ORIG_THEME: "#FE7D00" : "#556FEF"
+											name="chevron-right"
+											size="xs"
+											// transition="color 0.3s ease-out"
+										/>
 									</Flex>
-									<Icon
-										color={
-											isCurrent
-												? "accent.DEFAULT"
-												: "primary.light"
-										} // ORIG_THEME: "#FE7D00" : "#556FEF"
-										name="chevron-right"
-										size="xs"
-										// transition="color 0.3s ease-out"
-									/>
-								</Flex>
+								</Tooltip>
 							</Box>
 						</Link>
 					);

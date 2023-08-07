@@ -161,8 +161,8 @@ export const fetchOrgDetails = async (host, force) => {
 				...orgDetails,
 				cache_expires: Date.now() + CACHE_EXPIRY_TIME,
 			};
-		} else {
-			// Cache the invalid domain
+		} else if (orgDetails?.not_found === true) {
+			// Domain details not available. Cache the invalid domain.
 			INVALID_DOMAIN_CACHE.add(domain || subdomain);
 		}
 	}
@@ -227,9 +227,11 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 
 		const data = await res.json();
 
-		if (data && data.data && data.data.org_id) {
+		if (data?.data?.org_id) {
+			// Org details found
 			return data.data;
-		} else {
+		} else if (data?.response_type_id == 1829) {
+			// Org details not found
 			console.debug(
 				"Org details not found on server: ",
 				JSON.stringify(
@@ -247,6 +249,15 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 				)
 			);
 
+			return {
+				not_found: true,
+			};
+		} else {
+			// Some other server error
+			console.error(
+				"Org detail fetch ERROR: ",
+				data?.data?.message || data?.message || "Unknown error"
+			);
 			return null;
 		}
 	} catch (e) {

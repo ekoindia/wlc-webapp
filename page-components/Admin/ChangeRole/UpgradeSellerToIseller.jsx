@@ -15,7 +15,7 @@ const renderer = {
  * UpgradeSellerToIseller page-component
  * @returns
  */
-const UpgradeSellerToIseller = ({ agentData }) => {
+const UpgradeSellerToIseller = ({ agentData, setResDetails }) => {
 	const [sellerList, setSellerList] = useState();
 	const { accessToken } = useSession();
 	const [disabled, setDisabled] = useState(false);
@@ -66,7 +66,7 @@ const UpgradeSellerToIseller = ({ agentData }) => {
 			token: accessToken,
 		}).then((res) => {
 			console.log("res", res);
-			//TODO show toast
+			setResDetails({ status: res.status, message: res.message });
 		});
 	};
 

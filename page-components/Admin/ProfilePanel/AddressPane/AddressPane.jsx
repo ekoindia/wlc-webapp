@@ -8,12 +8,12 @@ import {
 } from "@chakra-ui/react";
 import { Button, Card, IconButtons } from "components";
 import { openGoogleMap } from "helpers";
-import { Map } from "libs";
+import { MapView } from "libs";
 import Router from "next/router";
 
 const AddressPane = ({ rowData: addressdata }) => {
 	return (
-		<Card>
+		<Card h={{ base: "auto", md: "560px" }}>
 			<Heading
 				fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 				fontWeight="semibold"
@@ -50,7 +50,9 @@ const AddressPane = ({ rowData: addressdata }) => {
 						</Text>
 					</Box>
 					<Box mt={{ base: 8, lg: 5, xl: 8 }} mb={5} height="200px">
-						<Map
+						<MapView
+							h="200"
+							w="350"
 							lat={addressdata?.lattitude}
 							lng={addressdata?.longitude}
 						/>

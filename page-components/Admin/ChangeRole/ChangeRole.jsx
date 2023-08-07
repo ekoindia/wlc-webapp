@@ -8,7 +8,7 @@ import {
 	Tabs,
 	Text,
 } from "@chakra-ui/react";
-import { Headings } from "components";
+import { Headings, StatusDisplay } from "components";
 import { ChangeRoleMenuList, Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -27,8 +27,9 @@ import {
  */
 const ChangeRole = () => {
 	const [agentData, setAgentData] = useState();
-	const { accessToken } = useSession();
 	const [showOrgChangeRoleView, setShowOrgChangeRoleView] = useState(false);
+	const [resDetails, setResDetails] = useState();
+	const { accessToken } = useSession();
 	const router = useRouter();
 	const { mobile, tab } = router.query;
 
@@ -77,12 +78,18 @@ const ChangeRole = () => {
 	 * Maps slugs to the corresponding components for the ChangeRole tabs.
 	 */
 	const slugTabMapping = {
-		"transfer-retailer": <TransferSeller {...{ agentData }} />,
-		"retailer-to-distributor": (
-			<PromoteSellerToDistributor {...{ agentData }} />
+		"transfer-retailer": (
+			<TransferSeller {...{ agentData, setResDetails }} />
 		),
-		"retailer-to-iretailer": <UpgradeSellerToIseller {...{ agentData }} />,
-		"demote-distributor": <DemoteDistributor {...{ agentData }} />,
+		"retailer-to-distributor": (
+			<PromoteSellerToDistributor {...{ agentData, setResDetails }} />
+		),
+		"retailer-to-iretailer": (
+			<UpgradeSellerToIseller {...{ agentData, setResDetails }} />
+		),
+		"demote-distributor": (
+			<DemoteDistributor {...{ agentData, setResDetails }} />
+		),
 	};
 
 	return (
@@ -91,79 +98,95 @@ const ChangeRole = () => {
 				title={showOrgChangeRoleView ? "Change Roles" : "Change Role"}
 			/>
 
-			<Flex
-				direction="column"
-				borderRadius={{ base: "0", md: "10px 10px 0 0" }}
-				w="100%"
-				bg="white"
-				p={{
-					base: showOrgChangeRoleView ? "0px" : "16px",
-					md: showOrgChangeRoleView ? "16px" : "30px 30px 20px",
-				}}
-				gap="4"
-				fontSize="sm"
-			>
-				{!showOrgChangeRoleView && (
-					<>
-						<Flex direction="column">
-							<Text
-								fontSize="2xl"
-								color="primary.DEFAULT"
-								fontWeight="semibold"
-							>
-								{agentData?.agent_name}
-							</Text>
-							<span>{agentData?.agent_type}</span>
-						</Flex>
-						<Divider display={{ base: "none", md: "block" }} />
-					</>
-				)}
-			</Flex>
-			<Tabs
-				defaultIndex={+tab || 0}
-				borderRadius={{ base: "10px", md: "0 0 10px 10px" }}
-				p={{ base: "20px", md: "0 30px 30px" }}
-				mt={{ base: "20px", md: "0" }}
-				w="100%"
-				bg="white"
-				fontSize="sm"
-				isLazy
-			>
-				<TabList
-					color="light"
-					css={{
-						"&::-webkit-scrollbar": {
-							display: "none",
-						},
-						"&::-moz-scrollbar": {
-							display: "none",
-						},
-						"&::scrollbar": {
-							display: "none",
-						},
-					}}
-				>
-					{ChangeRoleMenuList?.map(({ slug, label, visibleString }) =>
-						slugTabMapping[slug] &&
-						(showOrgChangeRoleView ||
-							visibleString.includes(agentData?.agent_type)) ? (
-							<Tab key={slug}>{label}</Tab>
-						) : null
-					)}
-				</TabList>
+			{resDetails?.status == undefined ? (
+				<>
+					<Flex
+						direction="column"
+						borderRadius={{ base: "0", md: "10px 10px 0 0" }}
+						w="100%"
+						bg="white"
+						p={{
+							base: showOrgChangeRoleView ? "0px" : "16px",
+							md: showOrgChangeRoleView
+								? "16px"
+								: "30px 30px 20px",
+						}}
+						fontSize="sm"
+						gap="4"
+					>
+						{!showOrgChangeRoleView && (
+							<>
+								<Flex direction="column" gap="2">
+									<Text
+										fontSize="2xl"
+										color="primary.DEFAULT"
+										fontWeight="semibold"
+									>
+										{agentData?.agent_name}
+									</Text>
+									<span>{agentData?.agent_type}</span>
+								</Flex>
+								<Divider
+									display={{ base: "none", md: "block" }}
+								/>
+							</>
+						)}
+					</Flex>
+					<Tabs
+						defaultIndex={+tab || 0}
+						borderRadius={{ base: "10px", md: "0 0 10px 10px" }}
+						p={{ base: "20px", md: "0 30px 30px" }}
+						mt={{ base: "20px", md: "0" }}
+						w="100%"
+						bg="white"
+						fontSize="sm"
+						isLazy
+					>
+						<TabList
+							color="light"
+							css={{
+								"&::-webkit-scrollbar": {
+									display: "none",
+								},
+								"&::-moz-scrollbar": {
+									display: "none",
+								},
+								"&::scrollbar": {
+									display: "none",
+								},
+							}}
+						>
+							{ChangeRoleMenuList?.map(
+								({ slug, label, visibleString }) =>
+									slugTabMapping[slug] &&
+									(showOrgChangeRoleView ||
+										visibleString.includes(
+											agentData?.agent_type
+										)) ? (
+										<Tab key={slug}>{label}</Tab>
+									) : null
+							)}
+						</TabList>
 
-				<TabPanels mt="5">
-					{ChangeRoleMenuList?.map(({ slug, visibleString }) =>
-						slugTabMapping[slug] &&
-						(showOrgChangeRoleView ||
-							visibleString.includes(agentData?.agent_type)) ? (
-							<TabPanel key={slug}>
-								{slugTabMapping[slug]}
-							</TabPanel>
-						) : null
-					)}
-				</TabPanels>
-			</Tabs>
+						<TabPanels mt="5">
+							{ChangeRoleMenuList?.map(
+								({ slug, visibleString }) =>
+									slugTabMapping[slug] &&
+									(showOrgChangeRoleView ||
+										visibleString.includes(
+											agentData?.agent_type
+										)) ? (
+										<TabPanel key={slug}>
+											{slugTabMapping[slug]}
+										</TabPanel>
+									) : null
+							)}
+						</TabPanels>
+					</Tabs>
+				</>
+			) : (
+				<StatusDisplay {...{ ...resDetails }} />
+			)}
 		</>
 	);
 };

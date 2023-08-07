@@ -23,8 +23,8 @@ const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
 					buttonStyle={{
 						height: { base: "48px", lg: "52px" },
 						minW: { base: "150px", lg: "220px" },
-						border: "1px solid #FE9F00",
-						boxShadow: "0px 3px 10px #FE9F0040",
+						// border: "1px solid #FE9F00",
+						// boxShadow: "0px 3px 10px #FE9F0040",
 						textAlign: "left",
 					}}
 					listStyles={{
@@ -176,10 +176,10 @@ const ProfilePanel = () => {
 			) : (
 				<Grid
 					templateColumns={{
-						base: "repeat(auto-fit,minmax(280px,0.90fr))",
-						sm: "repeat(auto-fit,minmax(380px,0.90fr))",
+						base: "repeat(auto-fit,minmax(300px,0.90fr))",
+						// sm: "repeat(auto-fit,minmax(380px,0.90fr))",
 						md: "repeat(auto-fit,minmax(360px,1fr))",
-						lg: "repeat(auto-fit,minmax(450px,1fr))",
+						"2xl": "repeat(auto-fit,minmax(450px,1fr))",
 					}}
 					justifyContent="center"
 					py={{ base: "20px", md: "0px" }}
