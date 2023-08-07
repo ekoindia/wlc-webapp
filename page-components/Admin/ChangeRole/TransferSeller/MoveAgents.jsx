@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 const renderer = {
 	label: "name",
-	value: "mobile",
+	value: "user_code",
 };
 
 const selectAllObj = { value: "*", label: "Select All" };
@@ -316,14 +316,14 @@ const TransferAgentsToBox = ({ agentList, transferAgentsTo }) => {
 						_even={{
 							bg: "shade",
 						}}
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						fontSize="sm"
 						columnGap="15px"
 						align="center"
 					>
 						<Avatar
 							name={row.name[0]}
-							bg="accent.DEFAULT"
+							bg="primary.DEFAULT"
 							w="36px"
 							h="36px"
 						/>
