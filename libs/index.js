@@ -1,2 +1,3 @@
 export { formatDate, formatDateTime } from "./dateFormat";
-export { default as Map } from "./Map";
+export { default as GoogleMap } from "./GoogleMap";
+export { default as MapView } from "./MapView";

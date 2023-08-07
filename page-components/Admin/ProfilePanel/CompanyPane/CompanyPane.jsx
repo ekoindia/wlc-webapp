@@ -33,7 +33,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 	];
 
 	return (
-		<Card>
+		<Card h={{ base: "auto", md: "560px" }}>
 			<Flex gap="5" align="center">
 				<Avatar
 					w={{ base: 16, lg: 59, xl: 90 }}
@@ -96,7 +96,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 				)}
 			</Stack>
 			<Box
-				mt="auto"
+				my="auto"
 				p="20px"
 				h="160px"
 				border="1px solid #D2D2D2"
