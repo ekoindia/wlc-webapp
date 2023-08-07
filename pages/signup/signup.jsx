@@ -397,20 +397,31 @@ const SignupPage = () => {
 			console.log("[signup] [PubSub] >>> android-response:: ", data);
 
 			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
-				if (data?.data === "success") {
-					router.push("/home");
-				} else {
-					toast({
-						title: "Something went wrong, please try again later!",
-						status: "error",
-						duration: 2000,
-					});
-				}
+				androidleegalityResponseHandler(data?.data);
 			}
 		});
 
 		return unsubscribe;
 	}, []);
+
+	const androidleegalityResponseHandler = (res) => {
+		let value = JSON.parse(res);
+		if (value.agreement_status === "success") {
+			handleStepDataSubmit({
+				id: 12,
+				form_data: {
+					agreement_id: userData?.userDetails?.agreement_id,
+					document_id: value.document_id,
+				},
+			});
+		} else {
+			toast({
+				title: "Something went wrong, please try again later!",
+				status: "error",
+				duration: 2000,
+			});
+		}
+	};
 
 	const initialStepSetter = (userData) => {
 		const currentStepData = [];
@@ -865,7 +876,9 @@ const SignupPage = () => {
 					doAndroidAction(
 						ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
 						JSON.stringify({
-							signing_url: signUrlData?.short_url, //	signUrlData?.short_url,
+							signing_url: signUrlData?.short_url,
+							document_id: signUrlData?.document_id,
+							//	signUrlData?.short_url,
 							// logo: orgDetail.logo,
 						})
 					);

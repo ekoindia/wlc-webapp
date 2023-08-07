@@ -17,6 +17,9 @@ function sendOtpRequest(
 	sendState = "send",
 	isAndroid = false
 ) {
+	if (isAndroid) {
+		doAndroidAction(ANDROID_ACTION.OTP_FETCH_REQUEST);
+	}
 	const PostData = {
 		platfom: isAndroid ? "android" : "web",
 		mobile: number,
@@ -154,11 +157,14 @@ function setandUpdateAuthTokens(data, isAndroid, isNewLogin = false) {
 	}
 
 	if (isAndroid) {
-		doAndroidAction(ANDROID_ACTION.SAVE_REFRESH_TOKEN, {
-			refresh_token: data?.refresh_token,
-			long_session: data?.long_session,
-			new_login: isNewLogin,
-		});
+		doAndroidAction(
+			ANDROID_ACTION.SAVE_REFRESH_TOKEN,
+			JSON.stringify({
+				refresh_token: data?.refresh_token,
+				long_session: data?.long_session,
+				new_login: isNewLogin,
+			})
+		);
 	}
 }
 
@@ -200,12 +206,16 @@ function getSessions() {
 /**
  * Clears all the auth tokens from the session storage.
  */
-function clearAuthTokens() {
+function clearAuthTokens(isAndroid) {
 	for (var i = 0; i < sessionStorage.length; i++) {
 		var key = sessionStorage.key(i);
 		if (key !== "org_detail") {
 			sessionStorage.removeItem(key);
 		}
+	}
+
+	if (isAndroid) {
+		doAndroidAction(ANDROID_ACTION.CLEAR_REFRESH_TOKEN);
 	}
 	// sessionStorage.clear();
 }
