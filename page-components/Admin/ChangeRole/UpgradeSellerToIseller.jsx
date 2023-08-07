@@ -16,7 +16,7 @@ const renderer = {
  * UpgradeSellerToIseller page-component
  * @returns
  */
-const UpgradeSellerToIseller = ({ agentData /* , setResDetails */ }) => {
+const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 	const [sellerList, setSellerList] = useState();
 	const { accessToken } = useSession();
 	// const [disabled, setDisabled] = useState(false);
@@ -74,8 +74,7 @@ const UpgradeSellerToIseller = ({ agentData /* , setResDetails */ }) => {
 			},
 			token: accessToken,
 		}).then((res) => {
-			console.log("res", res);
-			// setResDetails({ status: res.status, message: res.message });
+			setResponseDetails({ status: res.status, message: res.message });
 		});
 	};
 

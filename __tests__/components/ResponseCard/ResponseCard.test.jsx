@@ -1,4 +1,4 @@
-import { StatusDisplay } from "components/StatusDisplay";
+import { ResponseCard } from "components/ResponseCard";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("StatusDisplay", () => {
+describe("ResponseCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<StatusDisplay />);
+		const { container } = render(<ResponseCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("StatusDisplay", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for StatusDisplay in __tests__/components/StatusDisplay/StatusDisplay.test.jsx"
+		"TODO: add proper test cases for ResponseCard in __tests__/components/ResponseCard/ResponseCard.test.jsx"
 	);
 });
