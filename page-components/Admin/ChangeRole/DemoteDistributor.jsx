@@ -16,7 +16,7 @@ const renderer = {
  * DemoteDistributor page-component
  * @returns
  */
-const DemoteDistributor = ({ agentData /* , setResDetails  */ }) => {
+const DemoteDistributor = ({ agentData /* , setResponseDetails */ }) => {
 	const {
 		handleSubmit,
 		// formState: { errors /* isSubmitting */ },
@@ -72,7 +72,7 @@ const DemoteDistributor = ({ agentData /* , setResDetails  */ }) => {
 			token: accessToken,
 		}).then((res) => {
 			console.log("res", res);
-			// setResDetails({ status: res.status, message: res.message });
+			// setResponseDetails({ status: res.status, message: res.message });
 		});
 	};
 
