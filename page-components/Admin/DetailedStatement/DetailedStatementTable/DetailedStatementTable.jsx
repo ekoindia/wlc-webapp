@@ -46,7 +46,7 @@ const DetailedStatementTable = ({
 				setPageNumber={setPageNumber}
 				pageNumber={pageNumber}
 				ResponsiveCard={DetailedStatementCard}
-				defaultCardStyle={false}
+				isReceipt={true}
 			/>
 		</>
 	);

@@ -16,7 +16,7 @@ const DetailedStatementCard = ({ item }) => {
 			bg="white"
 			fontSize="xs"
 			p="20px"
-			borderRadius="10px"
+			borderTop="1px solid var(--chakra-colors-divider)"
 		>
 			<Flex direction="column" fontSize="12px" rowGap="2">
 				<Flex gap="2">

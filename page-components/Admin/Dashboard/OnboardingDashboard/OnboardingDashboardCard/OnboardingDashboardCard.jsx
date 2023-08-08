@@ -8,41 +8,20 @@ import { getNameStyle } from "helpers";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<OnboardingDashboardCard></OnboardingDashboardCard>`
  */
-const OnboardingDashboardCard = () => {
-	const item = {
-		ekocode: 10167076,
-		refiD: 1277000,
-		name: "Rajesh Gupta",
-		Location: "Gurugram, Sector 45, Haryana",
-		businesstype: "Money Transfer",
-		Onboardedon: "3 Days ago",
-	};
-
+const OnboardingDashboardCard = ({ item }) => {
 	return (
-		<>
+		<Flex direction="column" bg="white" p="10px">
 			<Flex justifyContent="space-between">
-				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
-					{getNameStyle(item.name)}
-				</Box>
+				{getNameStyle(item.merchantName)}
 			</Flex>
 
-			<Flex direction="column" fontSize="12px" rowGap="2" pl="42px">
+			<Flex direction="column" fontSize="xs" gap="2">
 				<Flex gap="2">
 					<Box as="span" color="light">
 						User Code:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
-						{/* {item.agent_mobile} */}
-						&#x20B9;{item.ekocode}
-					</Box>
-				</Flex>
-				<Flex gap="2">
-					<Box as="span" color="light">
-						Ref.ID:
-					</Box>
-					<Box as="span" color="dark" fontWeight={"medium"}>
-						{/* {item.agent_mobile} */}
-						{item.refiD}
+						{item.ekoCode}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -50,8 +29,7 @@ const OnboardingDashboardCard = () => {
 						Location:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
-						{/* {item.agent_mobile} */}
-						{item.Location}
+						{item.location}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -59,21 +37,19 @@ const OnboardingDashboardCard = () => {
 						Business Type:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
-						{/* {item.agent_mobile} */}
-						{item.businesstype}
+						{item.businessType}
 					</Box>
 				</Flex>
 				<Flex gap="2">
 					<Box as="span" color="dark">
 						Onoarded on:
-						{/* {item.agent_mobile} */}
 						<Box as="span" color="dark" fontWeight={"medium"}>
-							{item.Onboardedon}
+							{item.onboardedOn}
 						</Box>
 					</Box>
 				</Flex>
 			</Flex>
-		</>
+		</Flex>
 	);
 };
 

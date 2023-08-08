@@ -14,8 +14,11 @@ const MobileView = ({
 	isLoading,
 	onRowClick,
 	ResponsiveCard,
+	isReceipt,
 }) => {
 	const _hasOnClickEvent = typeof onRowClick === "function";
+
+	const _dataLength = data?.length ?? 0;
 
 	const handleMobileViewCardClick = (index) => {
 		if (_hasOnClickEvent) {
@@ -23,12 +26,31 @@ const MobileView = ({
 		}
 	};
 
+	const _title =
+		_dataLength === 0
+			? "No Transactions"
+			: _dataLength === 1
+			? "Recent Transaction"
+			: "Recent Transactions";
+
 	if (isLoading) {
-		console.log("isLoading, show skeleton");
+		console.log("loading");
 	}
 
 	return (
-		<Flex direction="column" mx="2" /* gap="4" */>
+		<Flex direction="column" mx="2" gap={isReceipt ? "0" : "4"}>
+			{isReceipt && (
+				<Text
+					bg="white"
+					p="20px"
+					borderRadius={_dataLength > 1 ? "10px 10px 0 0" : "10px"}
+					color="light"
+					fontSize="md"
+					fontWeight="semibold"
+				>
+					{_title}
+				</Text>
+			)}
 			{data?.map((item, index) =>
 				ResponsiveCard !== undefined ? (
 					<Box

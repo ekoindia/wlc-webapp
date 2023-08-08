@@ -15,7 +15,7 @@ const AccountStatementCard = ({ item }) => {
 			bg="white"
 			fontSize="xs"
 			p="20px"
-			borderRadius="10px"
+			borderTop="1px solid var(--chakra-colors-divider)"
 		>
 			<Flex gap="2">
 				<Box as="span" color="light">

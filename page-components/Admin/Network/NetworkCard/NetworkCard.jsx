@@ -12,13 +12,7 @@ import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
 
 const NetworkCard = ({ item }) => {
 	return (
-		<Flex
-			direction="column"
-			bg="white"
-			borderRadius="10px"
-			p="20px"
-			my="2.5"
-		>
+		<Flex direction="column" bg="white" borderRadius="10px" p="20px">
 			<Flex justifyContent="space-between">
 				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
 					{getNameStyle(item.agent_name)}

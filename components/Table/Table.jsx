@@ -28,7 +28,7 @@ const Table = ({
 	tableName,
 	onRowClick,
 	ResponsiveCard,
-	// defaultCardStyle = true,
+	isReceipt = false,
 	variant = "stripedActionNone",
 	tableRowLimit = trl?.DEFAULT,
 	printExpansion = false,
@@ -112,6 +112,7 @@ const Table = ({
 						isLoading,
 						ResponsiveCard,
 						onRowClick,
+						isReceipt,
 					}}
 				/>
 			)}

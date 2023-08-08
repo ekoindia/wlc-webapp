@@ -42,7 +42,7 @@ const AccountStatementTable = (props) => {
 				data={acctabledata}
 				tableName="Account"
 				ResponsiveCard={AccountStatementCard}
-				defaultCardStyle={false}
+				isReceipt={true}
 			/>
 		</>
 	);

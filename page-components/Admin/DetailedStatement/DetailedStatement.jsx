@@ -153,6 +153,10 @@ const DetailedStatement = () => {
 						direction={{ base: "column", md: "row" }}
 						align={{ base: "flex-start", md: "center" }}
 						mt={{ base: "24px", md: "0px" }}
+						mb={{
+							base: "24px",
+							md: "0px",
+						}}
 					>
 						<InputLabel
 							htmlFor="calendar-flex"
