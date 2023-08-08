@@ -73,7 +73,7 @@ const Tr = ({
 	// 		? [{ name: "trx_name", field: "Transaction" }]
 	// 		: [];
 
-	console.log("visibleColumns", extra);
+	// console.log("visibleColumns", extra);
 
 	const handleRowClick = (index) => {
 		if (visible) {

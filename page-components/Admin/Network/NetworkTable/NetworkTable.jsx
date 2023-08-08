@@ -49,7 +49,6 @@ const NetworkTable = ({
 		router.push({
 			pathname: `/admin/my-network/profile`,
 			query: { mobile },
-			// state: { rowData },
 		});
 	};
 

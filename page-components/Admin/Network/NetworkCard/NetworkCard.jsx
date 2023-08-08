@@ -10,11 +10,15 @@ import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
  * @example	`<NetworkCard></NetworkCard>`
  */
 
-const NetworkCard = (props) => {
-	const { item } = props;
-
+const NetworkCard = ({ item }) => {
 	return (
-		<>
+		<Flex
+			direction="column"
+			bg="white"
+			borderRadius="10px"
+			p="20px"
+			my="2.5"
+		>
 			<Flex justifyContent="space-between">
 				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
 					{getNameStyle(item.agent_name)}
@@ -59,7 +63,7 @@ const NetworkCard = (props) => {
 					{getLocationStyle(item.location)}
 				</Flex>
 			</Flex>
-		</>
+		</Flex>
 	);
 };
 
