@@ -1,13 +1,6 @@
-import {
-	Box,
-	Flex,
-	Heading,
-	Stack,
-	StackDivider,
-	Text,
-	useMediaQuery,
-} from "@chakra-ui/react";
-import { Card, IconButtons } from "components";
+import { Flex, Stack, StackDivider, Text } from "@chakra-ui/react";
+import { Card, IcoButton } from "components";
+import { useRouter } from "next/router";
 
 /**
  * A <ContactPane> component
@@ -16,75 +9,63 @@ import { Card, IconButtons } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<ContactPane></ContactPane>`
  */
-const ContactPane = ({ rowData: contactdata }) => {
-	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
+const ContactPane = ({ rowData: contactData, mobile }) => {
+	const router = useRouter();
+
+	const contactDataList = [
+		{
+			label: "Mobile number",
+			value: contactData?.mobile_number || mobile,
+			iconName: "phone",
+			onClick: () => {
+				router.push(`tel:${contactData?.mobile_number}`);
+			},
+		},
+		{
+			label: "Email",
+			value: contactData?.email,
+			iconName: "mail",
+			onClick: () => {
+				router.push(`mailto:${contactData?.mobile_number}`);
+			},
+		},
+	];
 
 	return (
 		<Card h="auto">
-			<Box
-				display="flex"
-				alignItems="center"
-				justifyContent="space-between"
-			>
-				<Heading
-					fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
-					fontWeight="semibold"
-					color={"light"}
-				>
-					Contact information
-				</Heading>
-				{/* <IconButtons
-					title={isSmallerThan769 ? "" : "Edit Details"}
-					iconPos={isSmallerThan769 ? "" : "left"}
-					iconName="mode-edit"
-					iconStyle={{
-						size: "12px",
-					}}
-				/> */}
-			</Box>
+			<Text as="b" color="light">
+				Contact information
+			</Text>
 
 			<Stack
 				direction="column"
 				divider={<StackDivider />}
-				mt="5"
-				fontSize={{ base: 14, md: 12, lg: 14 }}
+				mt="4"
+				fontSize="sm"
 			>
-				<Flex justifyContent={"space-between"}>
-					<Flex as="span" align="center">
-						<Text color="light">Mobile number:</Text>
-						<Text fontWeight={"medium"}>
-							&nbsp; {contactdata?.mobile_number}
-						</Text>
-					</Flex>
-					{isSmallerThan769 ? (
-						<IconButtons
-							variant="success"
-							iconName="phone"
-							iconStyle={{
-								size: "12px",
-							}}
-						/>
-					) : (
-						""
-					)}
-				</Flex>
-				<Flex justifyContent={"space-between"}>
-					<Flex as="span" align="center">
-						<Text color="light">Email:</Text>
-						<Text fontWeight={"medium"}>
-							&nbsp; {contactdata?.email}
-						</Text>
-					</Flex>
-					<IconButtons
-						title={isSmallerThan769 ? "" : "Email Now"}
-						variant="accent"
-						hasIcon={isSmallerThan769 ? true : false}
-						iconName="mail"
-						iconStyle={{
-							size: "12px",
-						}}
-					/>
-				</Flex>
+				{contactDataList.map(
+					({ label, value, iconName, onClick }) =>
+						value && (
+							<Flex
+								key={label}
+								justify="space-between"
+								align="center"
+							>
+								<Flex gap="1" color="light">
+									{label}:
+									<Text fontWeight="medium" color="dark">
+										{value}
+									</Text>
+								</Flex>
+								<IcoButton
+									size="sm"
+									theme="accent"
+									iconName={iconName}
+									onClick={onClick}
+								/>
+							</Flex>
+						)
+				)}
 			</Stack>
 		</Card>
 	);

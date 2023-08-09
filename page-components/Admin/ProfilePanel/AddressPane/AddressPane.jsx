@@ -1,100 +1,85 @@
-import {
-	Box,
-	Flex,
-	Heading,
-	Stack,
-	StackDivider,
-	Text,
-} from "@chakra-ui/react";
-import { Button, Card, IconButtons } from "components";
+import { Divider, Flex, Text } from "@chakra-ui/react";
+import { Button, Card, IcoButton } from "components";
 import { openGoogleMap } from "helpers";
 import { MapView } from "libs";
-import Router from "next/router";
+import { useRouter } from "next/router";
 
 const AddressPane = ({ rowData: addressdata }) => {
+	const router = useRouter();
 	return (
 		<Card h={{ base: "auto", md: "560px" }}>
-			<Heading
-				fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
-				fontWeight="semibold"
-				color={"light"}
-				mt="5px"
+			<Flex
+				direction="column"
+				gap={{ base: "8", lg: "12" }}
+				fontSize="sm"
+				h="100%"
 			>
-				Address Details
-			</Heading>
-			<Stack
-				direction={"column"}
-				divider={<StackDivider />}
-				mt={{ base: 5, md: 5, xl: 5 }}
-			>
-				<Box
-					mb={{ base: 26, md: 3, xl: 26 }}
-					fontSize={{ base: 16, md: 14, lg: 16 }}
-				>
-					<Text>{addressdata?.address}</Text>
-				</Box>
-				<Box>
-					<Box mt={{ base: 26, md: 2, xl: 26 }}>
-						<Text
-							color="light"
-							fontSize={{ base: 14, md: 12, lg: 14 }}
-						>
-							Ownership type
-						</Text>
-						<Text
-							color="dark"
-							fontSize={{ base: 16, md: 14, lg: 16 }}
-							fontWeight="medium"
-						>
+				<Flex direction="column" gap="4" fontSize="sm">
+					<Text as="b" color="light">
+						Address Details
+					</Text>
+
+					<Text fontSize="md">{addressdata?.address}</Text>
+
+					<Divider />
+
+					<Flex direction="column" color="light">
+						Ownership type
+						<Text fontWeight="medium" color="dark">
 							{addressdata?.ownership_type}
 						</Text>
-					</Box>
-					<Box mt={{ base: 8, lg: 5, xl: 8 }} mb={5} height="200px">
-						<MapView
-							h="200"
-							w="350"
-							lat={addressdata?.lattitude}
-							lng={addressdata?.longitude}
-						/>
-					</Box>
-					<Flex
-						mt={9}
-						justify="space-between"
-						align="center"
-						direction={{ base: "column", lg: "row" }}
-						rowGap="16px"
-					>
-						<Button
-							onClick={() =>
-								Router.push(
-									"/admin/my-network/profile/up-sell-add"
-								)
-							}
-							w={{ base: "100%", lg: "45%", xl: "189px" }}
-							h="60px"
-						>
-							Update Address
-						</Button>
-						<Box>
-							<IconButtons
-								title="View on Google Maps"
-								variant="accent"
-								iconName="near-me"
-								iconPos="left"
-								iconStyle={{
-									size: "16px",
-								}}
-								onClick={() =>
-									openGoogleMap(
-										addressdata?.lattitude,
-										addressdata?.longitude
-									)
-								}
-							/>
-						</Box>
 					</Flex>
-				</Box>
-			</Stack>
+				</Flex>
+
+				<Flex justify="center" w="100%" h="200px">
+					<MapView
+						h="200"
+						w="560"
+						lat={addressdata?.lattitude}
+						lng={addressdata?.longitude}
+					/>
+				</Flex>
+
+				<Flex
+					direction={{ base: "column", lg: "row" }}
+					justify="space-between"
+					align="center"
+					gap="6"
+				>
+					<Button
+						onClick={() =>
+							router.push("/admin/my-network/profile/up-sell-add")
+						}
+						w={{ base: "100%", lg: "240px" }}
+						h="60px"
+					>
+						Update Address
+					</Button>
+					<Flex
+						gap="2"
+						align="center"
+						color="primary.DEFAULT"
+						onClick={() =>
+							openGoogleMap(
+								addressdata?.lattitude,
+								addressdata?.longitude
+							)
+						}
+						cursor="pointer"
+					>
+						<IcoButton
+							title="View on Google Maps"
+							theme="primary"
+							iconName="near-me"
+							cursor="pointer"
+							size="sm"
+						/>
+						<Text fontWeight="semibold" whiteSpace="nowrap">
+							View on Google Maps
+						</Text>
+					</Flex>
+				</Flex>
+			</Flex>
 		</Card>
 	);
 };
