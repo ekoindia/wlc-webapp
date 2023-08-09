@@ -15,7 +15,6 @@ import { GlobalSearch } from "./GlobalSearch";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
 import { Icon } from "./Icon";
-import { IconButtons } from "./IconButtons";
 import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
@@ -62,7 +61,6 @@ export {
 	Headings,
 	IcoButton,
 	Icon,
-	IconButtons,
 	Input,
 	InputLabel,
 	InputMsg,
