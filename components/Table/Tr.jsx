@@ -55,19 +55,18 @@ const Tr = ({
 	visibleColumns,
 	isLoading,
 	printExpansion = false,
+	rowExpansion,
 }) => {
 	const [expandedRow, setExpandedRow] = useState(null);
 
-	const visible = visibleColumns > 0;
-
-	const main = visible
+	const main = rowExpansion
 		? [
 				{ field: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
 		  ]
 		: renderer;
 
-	const extra = visible ? renderer?.slice(visibleColumns) : [];
+	const extra = rowExpansion ? renderer?.slice(visibleColumns) : [];
 	// const printExtras =
 	// 	tableName === "History"
 	// 		? [{ name: "trx_name", field: "Transaction" }]
@@ -76,7 +75,7 @@ const Tr = ({
 	// console.log("visibleColumns", extra);
 
 	const handleRowClick = (index) => {
-		if (visible) {
+		if (rowExpansion) {
 			setExpandedRow(index === expandedRow ? null : index);
 		} else if (onRowClick !== undefined) {
 			onRowClick(data[index]);
@@ -120,7 +119,7 @@ const Tr = ({
 						})}
 					</ChakraTr>
 					{/* For Expanded Row */}
-					{visible && expandedRow === index && (
+					{rowExpansion && expandedRow === index && (
 						<ChakraTd
 							colSpan={main.length}
 							bg={index % 2 ? "shade" : "initial"}

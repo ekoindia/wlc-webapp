@@ -9,9 +9,8 @@ import { Icon } from "..";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Th></Th>` TODO: Fix example
  */
-const Th = ({ renderer, visibleColumns }) => {
-	const visible = visibleColumns > 0;
-	const main = visible
+const Th = ({ renderer, visibleColumns, rowExpansion }) => {
+	const main = rowExpansion
 		? [
 				{ field: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),

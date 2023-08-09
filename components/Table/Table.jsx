@@ -37,6 +37,8 @@ const Table = ({
 	console.log("hasNoMoreItems", hasNoMoreItems);
 	const router = useRouter();
 	const [isSmallScreen] = useMediaQuery("only screen and (max-width: 860px)");
+	const rowExpansion =
+		visibleColumns > 0 && renderer?.length > visibleColumns;
 	// const isSmallScreen = useBreakpointValue({ base: true, lg: false });
 
 	const tableDataListLength = data?.length;
@@ -84,7 +86,9 @@ const Table = ({
 									: null,
 							}}
 						>
-							<Th {...{ renderer, visibleColumns }} />
+							<Th
+								{...{ renderer, visibleColumns, rowExpansion }}
+							/>
 						</Thead>
 						<Tbody>
 							<Tr
@@ -98,6 +102,7 @@ const Table = ({
 									visibleColumns,
 									isLoading,
 									printExpansion,
+									rowExpansion,
 								}}
 							/>
 						</Tbody>
