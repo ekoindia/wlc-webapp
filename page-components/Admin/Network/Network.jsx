@@ -97,7 +97,7 @@ const Network = () => {
 					</Flex>
 				) : null}
 				{dataLength > 0 ? (
-					<Box mt={{ base: "none", md: "20px" }}>
+					<Box mt="20px">
 						<NetworkTable
 							setFilter={setFilter}
 							pageNumber={pageNumber}
