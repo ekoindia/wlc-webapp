@@ -1,6 +1,6 @@
 import { Center } from "@chakra-ui/react";
 
-const getColor = {
+const statusColorMapping = {
 	Active: "success",
 	Success: "success",
 	Inactive: "error",
@@ -12,7 +12,7 @@ const getColor = {
 };
 
 const Tags = ({ status = "Other", ...rest }) => {
-	const clr = getColor[status];
+	const clr = statusColorMapping[status];
 	return (
 		<Center
 			border="1px"
