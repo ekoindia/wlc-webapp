@@ -1,6 +1,6 @@
-import { Button } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
 
-const statusChecker = {
+const getColor = {
 	Active: "success",
 	Success: "success",
 	Inactive: "error",
@@ -11,30 +11,22 @@ const statusChecker = {
 	Other: "light",
 };
 
-const Tags = ({
-	status = "Other",
-	px = { base: "16px", md: "18px", xl: "22px" },
-	size = "md",
-	styles,
-	...props
-}) => {
-	const sts = statusChecker[status];
+const Tags = ({ status = "Other", ...rest }) => {
+	const clr = getColor[status];
 	return (
-		<Button
-			variant={"outline"}
-			border={"1px"}
-			borderRadius={"28"}
-			colorScheme={sts}
-			color={sts}
+		<Center
+			border="1px"
+			borderColor={clr}
+			color={clr}
+			textAlign="center"
+			fontSize="sm"
 			bg="white"
-			size={size}
-			fontWeight={"regular"}
-			px={px}
-			{...styles}
-			{...props}
+			px="2.5"
+			py={{ base: "0.75", md: "1" }}
+			{...rest}
 		>
 			{status}
-		</Button>
+		</Center>
 	);
 };
 
