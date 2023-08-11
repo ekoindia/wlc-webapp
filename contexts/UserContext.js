@@ -10,6 +10,7 @@ import {
 	useReducer,
 	useState,
 } from "react";
+import { useAppSource } from ".";
 import { defaultUserState, UserReducer } from "./UserReducer";
 
 const UserContext = createContext();
@@ -19,6 +20,8 @@ const UserProvider = ({ userMockData, children }) => {
 	const [state, dispatch] = useReducer(UserReducer, defaultUserState);
 	const [isTokenUpdating, setIsTokenUpdating] = useState(false);
 	const [loading, setLoading] = useState(true);
+
+	const { isAndroid } = useAppSource();
 
 	// Get default session from browser's sessionStorage
 	useEffect(() => {
@@ -110,6 +113,7 @@ const UserProvider = ({ userMockData, children }) => {
 		dispatch({
 			type: "UPDATE_USER_STORE",
 			payload: { ...data },
+			meta: { isAndroid: isAndroid },
 		});
 	};
 
@@ -121,6 +125,7 @@ const UserProvider = ({ userMockData, children }) => {
 		dispatch({
 			type: "LOGIN",
 			payload: { ...sessionData },
+			meta: { isAndroid: isAndroid },
 		});
 	};
 
@@ -128,7 +133,7 @@ const UserProvider = ({ userMockData, children }) => {
 	 * Mark the user as logged out in the userState.
 	 */
 	const logout = () => {
-		dispatch({ type: "LOGOUT" });
+		dispatch({ type: "LOGOUT", meta: { isAndroid: isAndroid } });
 	};
 
 	/**
