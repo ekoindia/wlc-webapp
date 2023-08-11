@@ -3,13 +3,8 @@ import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
-import {
-	BusinessDashboardFilters,
-	EarningOverview,
-	SuccessRate,
-	TopMerchants,
-	TopPanel,
-} from ".";
+import { EarningOverview, SuccessRate, TopMerchants, TopPanel } from ".";
+import { DashboardDateFilter } from "..";
 
 /**
  * A <BusinessDashboard> component
@@ -87,7 +82,7 @@ const BusinessDashboard = () => {
 				<TopPanel data={topPanel} />
 			</Flex>
 			<Flex p="20px 20px 0px">
-				<BusinessDashboardFilters
+				<DashboardDateFilter
 					{...{ prevDate, currDate, dateRange, setDateRange }}
 				/>
 			</Flex>
