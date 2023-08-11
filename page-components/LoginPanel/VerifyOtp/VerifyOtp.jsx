@@ -41,15 +41,19 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 		}
 	};
 
-	const resendOtpHandler = () => {
+	const resendOtpHandler = async () => {
 		resetTimer();
-		sendOtpRequest(
+		const otp_sent = await sendOtpRequest(
 			orgDetail.org_id,
 			number.original,
 			toast,
 			"resend",
 			isAndroid
 		);
+		if (!otp_sent) {
+			// OTP failed..back to previous screen
+			setStep(loginType === "Mobile" ? "LOGIN" : "GOOGLE_VERIFY");
+		}
 	};
 
 	const verifyOtpHandler = (_otp) => {
