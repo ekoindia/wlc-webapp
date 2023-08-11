@@ -12,7 +12,7 @@ const OnboardingDashboardCard = ({ item }) => {
 	return (
 		<Flex direction="column" bg="white" p="10px">
 			<Flex justifyContent="space-between">
-				{getNameStyle(item.merchantName)}
+				{getNameStyle(item.name)}
 			</Flex>
 
 			<Flex direction="column" fontSize="xs" gap="2">
@@ -21,7 +21,7 @@ const OnboardingDashboardCard = ({ item }) => {
 						User Code:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
-						{item.ekoCode}
+						{item.user_code}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -37,12 +37,12 @@ const OnboardingDashboardCard = ({ item }) => {
 						Business Type:
 					</Box>
 					<Box as="span" color="dark" fontWeight={"medium"}>
-						{item.businessType}
+						{item.business_type}
 					</Box>
 				</Flex>
 				<Flex gap="2">
 					<Box as="span" color="dark">
-						Onoarded on:
+						Onboarded on:
 						<Box as="span" color="dark" fontWeight={"medium"}>
 							{item.onboardedOn}
 						</Box>

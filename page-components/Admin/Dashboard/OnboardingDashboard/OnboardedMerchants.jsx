@@ -11,23 +11,19 @@ import { OnboardingDashboardCard } from ".";
  */
 const OnboardedMerchants = ({
 	onboardingMerchantData,
-	totalRecords,
 	pageNumber,
 	setPageNumber,
 	isLoading,
 }) => {
-	// console.log("[OnboardedMerchants] isLoading", isLoading);
-	// console.log("[OnboardedMerchants] data", onboardingMerchantData);
-
 	const renderer = [
 		{
-			name: "merchantName",
+			name: "name",
 			field: "Merchant's Name",
 			sorting: true,
 			show: "Avatar",
 		},
 		{
-			name: "ekoCode",
+			name: "user_code",
 			field: "User Code",
 			sorting: true,
 		},
@@ -37,19 +33,19 @@ const OnboardedMerchants = ({
 			sorting: true,
 		},
 		{
-			name: "businessType",
+			name: "business_type",
 			field: "Business Type",
 			sorting: true,
 		},
 		{ name: "onboardedOn", field: "Onboarded on", show: "Date" },
-		{ name: "businessDetailsCaptured", field: "Business Detail Captured" },
-		{ name: "businessName", field: "Business Name" },
-		{ name: "daysinFunnel", field: "Onboarding Funnel" },
-		{ name: "panCaptured", field: "PAN Captured" },
-		{ name: "aadhaarCaptured", field: "Aadhaar Captured" },
-		{ name: "agreementSigned", field: "Agreement Signed" },
-		{ name: "onboarded", field: "Onboarded" },
-		{ name: "transacting", field: "Non Transacting Live" },
+		// { name: "businessDetailsCaptured", field: "Business Detail Captured" },
+		// { name: "businessName", field: "Business Name" },
+		// { name: "daysinFunnel", field: "Onboarding Funnel" },
+		// { name: "panCaptured", field: "PAN Captured" },
+		// { name: "aadhaarCaptured", field: "Aadhaar Captured" },
+		// { name: "agreementSigned", field: "Agreement Signed" },
+		// { name: "onboarded", field: "Onboarded" },
+		// { name: "transacting", field: "Non Transacting Live" },
 	];
 	return (
 		<Flex
@@ -66,10 +62,10 @@ const OnboardedMerchants = ({
 			<Table
 				renderer={renderer}
 				visibleColumns={5}
-				data={onboardingMerchantData}
-				variant="stripedActionExpand"
+				data={onboardingMerchantData?.tableData}
+				variant="stripedActionNone"
 				ResponsiveCard={OnboardingDashboardCard}
-				totalRecords={totalRecords}
+				totalRecords={onboardingMerchantData?.totalRecords}
 				pageNumber={pageNumber}
 				setPageNumber={setPageNumber}
 				isLoading={isLoading}
