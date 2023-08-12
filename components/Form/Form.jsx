@@ -1,15 +1,7 @@
-import {
-	Flex,
-	FormControl,
-	FormLabel,
-	Grid,
-	Radio,
-	RadioGroup,
-	Text,
-} from "@chakra-ui/react";
+import { FormControl, FormLabel, Grid } from "@chakra-ui/react";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
-import { Input, MultiSelect, Select } from "..";
+import { Input, MultiSelect, Radio, Select } from "..";
 
 /**
  * A <Form> component
@@ -40,7 +32,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 					defaultValue,
 					parameter_type_id,
 					is_multi_select,
-					is_radio_input,
+					is_radio,
 					multiSelectRenderer,
 				}) => {
 					switch (parameter_type_id) {
@@ -97,7 +89,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 											/>
 										</FormControl>
 									);
-								} else if (is_radio_input) {
+								} else if (is_radio) {
 									return (
 										<FormControl
 											id={id}
@@ -111,45 +103,11 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 												render={({
 													field: { onChange, value },
 												}) => (
-													<RadioGroup
+													<Radio
+														options={list_elements}
 														onChange={onChange}
 														value={value}
-													>
-														<Flex
-															direction={{
-																base: "column",
-																sm: "row",
-															}}
-															gap={{
-																base: "4",
-																md: "16",
-															}}
-														>
-															{list_elements.map(
-																(item) => (
-																	<Radio
-																		size="lg"
-																		key={
-																			item.value
-																		}
-																		value={
-																			item.value
-																		}
-																	>
-																		<Text
-																			fontSize="sm"
-																			whiteSpace="nowrap"
-																			maxWidth="200px"
-																		>
-																			{
-																				item.label
-																			}
-																		</Text>
-																	</Radio>
-																)
-															)}
-														</Flex>
-													</RadioGroup>
+													/>
 												)}
 											/>
 										</FormControl>
