@@ -1,17 +1,10 @@
-import { Divider, Flex, FormControl, FormLabel, Text } from "@chakra-ui/react";
-import {
-	Button,
-	Headings,
-	Input,
-	InputLabel,
-	Select,
-	Switch,
-} from "components";
+import { Divider, Flex, Text } from "@chakra-ui/react";
+import { Button, Form, Headings, Switch } from "components";
 import { Endpoints, ParamType, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 const ownershipList = [
 	{ label: "Owned", value: "Owned" },
@@ -175,6 +168,7 @@ const UpdateSellerAddress = () => {
 			required: true,
 			parameter_type_id: ParamType.LIST,
 			list_elements: ownershipList,
+			is_radio: true,
 		},
 	];
 
@@ -274,11 +268,10 @@ const UpdateSellerAddress = () => {
 						<Flex direction="column" gap="8">
 							<Form
 								{...{
-									statesList,
 									register,
 									formState: { errors /* isSubmitting */ },
 									control,
-									renderer: currentAddressFormFields,
+									list_parameters: currentAddressFormFields,
 								}}
 							/>
 
@@ -295,14 +288,15 @@ const UpdateSellerAddress = () => {
 							{!isPermanentAddress && (
 								<Form
 									{...{
-										statesList,
+										list_elements: statesList,
 										addressFormLabel: "Permanent Address",
 										register,
 										formState: {
 											errors /* isSubmitting */,
 										},
 										control,
-										renderer: permanentAddressFormFields,
+										list_parameters:
+											permanentAddressFormFields,
 									}}
 								/>
 							)}
@@ -338,91 +332,3 @@ const UpdateSellerAddress = () => {
 };
 
 export default UpdateSellerAddress;
-
-const Form = ({
-	addressFormLabel = "Current Address",
-	renderer,
-	register,
-	formState: { errors /* isSubmitting */ },
-	control,
-}) => {
-	return (
-		<Flex direction="column" gap="4">
-			<InputLabel fontSize="lg" fontWeight="medium" mb="0" required>
-				{addressFormLabel}
-			</InputLabel>
-			<Flex direction="column" gap="8">
-				<Flex gap="8" wrap="wrap" maxW="1200px">
-					{renderer?.map(
-						({
-							id,
-							label,
-							required,
-							value,
-							disabled,
-							list_elements,
-							parameter_type_id,
-						}) => {
-							switch (parameter_type_id) {
-								case ParamType.LIST:
-									return (
-										<FormControl
-											id={id}
-											w={{ base: "100%", md: "500px" }}
-											isInvalid={errors.priority}
-										>
-											<FormLabel>{label}</FormLabel>
-											<Controller
-												name={id}
-												control={control}
-												render={({
-													field: { onChange, value },
-												}) => {
-													return (
-														<Select
-															value={value}
-															options={
-																list_elements
-															}
-															onChange={onChange}
-														/>
-													);
-												}}
-											/>
-										</FormControl>
-									);
-								case ParamType.NUMERIC:
-								case ParamType.TEXT:
-									return (
-										<FormControl
-											key={id}
-											w={{
-												base: "100%",
-												md: "500px",
-											}}
-										>
-											<Input
-												id={id}
-												label={label}
-												required={required}
-												value={value}
-												type={
-													parameter_type_id ===
-													ParamType.NUMERIC
-														? "number"
-														: "text"
-												}
-												fontSize="sm"
-												disabled={disabled}
-												{...register(id)}
-											/>
-										</FormControl>
-									);
-							}
-						}
-					)}
-				</Flex>
-			</Flex>
-		</Flex>
-	);
-};
