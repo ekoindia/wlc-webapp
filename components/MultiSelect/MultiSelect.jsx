@@ -20,7 +20,7 @@ const animSlideDown = keyframes`
 const MultiSelect = ({
 	options,
 	placeholder = "-- Select --",
-	renderer,
+	renderer = { label: "label", value: "value" },
 	onChange = () => {},
 	label,
 }) => {
