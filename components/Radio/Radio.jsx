@@ -1,0 +1,54 @@
+import { Flex, Radio as ChakraRadio, RadioGroup, Text } from "@chakra-ui/react";
+
+/**
+ * A Radio component
+ * @param 	{Array}	options     options to show
+ * @param 	{Object}	renderer	mapping object for label & value
+ * @param 	{String}	value	value
+ * @param 	{Function}	onChange	function
+ * @param	{string}	prop.prop1	TODO: Property description.
+ * @param	{...*}	rest	Rest of the props passed to this component.
+ * @example	`<Radio></Radio>` TODO: Fix example
+ */
+const Radio = ({
+	value,
+	options,
+	onChange,
+	renderer = { label: "label", value: "value" },
+	...rest
+}) => {
+	return (
+		<RadioGroup onChange={onChange} value={value}>
+			<Flex
+				direction={{
+					base: "column",
+					sm: "row",
+				}}
+				gap={{
+					base: "4",
+					sm: "16",
+				}}
+				wrap="wrap"
+				{...rest}
+			>
+				{options?.map((item) => (
+					<ChakraRadio
+						size="lg"
+						key={item[renderer.value]}
+						value={item[renderer.value]}
+					>
+						<Text
+							fontSize="sm"
+							whiteSpace="nowrap"
+							maxWidth="200px"
+						>
+							{item[renderer.label]}
+						</Text>
+					</ChakraRadio>
+				))}
+			</Flex>
+		</RadioGroup>
+	);
+};
+
+export default Radio;
