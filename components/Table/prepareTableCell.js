@@ -49,7 +49,11 @@ export const prepareTableCell = (
 				item?.address_details?.longitude
 			);
 		case "Avatar":
-			return getNameStyle(item[column.name]);
+			if (item[column.name]) {
+				return getNameStyle(item[column.name]);
+			} else {
+				return getNameStyle(mobile_number);
+			}
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":
