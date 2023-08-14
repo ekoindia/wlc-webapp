@@ -11,7 +11,13 @@ import { Icon } from "components";
 
 const DetailedStatementCard = ({ item }) => {
 	return (
-		<>
+		<Flex
+			direction="column"
+			bg="white"
+			fontSize="xs"
+			p="20px"
+			borderTop="1px solid var(--chakra-colors-divider)"
+		>
 			<Flex direction="column" fontSize="12px" rowGap="2">
 				<Flex gap="2">
 					<Box as="span" color="light">
@@ -86,7 +92,7 @@ const DetailedStatementCard = ({ item }) => {
 					</Box>
 				</Flex>
 			</Flex>
-		</>
+		</Flex>
 	);
 };
 

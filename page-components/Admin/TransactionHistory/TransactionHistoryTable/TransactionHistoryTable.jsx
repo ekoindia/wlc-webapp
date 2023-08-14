@@ -9,46 +9,48 @@ import { TransactionHistoryCard } from "..";
  * @example	`<TransactionHistoryTable></TransactionHistoryTable>`
  */
 const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
-	const router = useRouter();
-
+	// console.log("transactiondata", transactiondata);
 	const renderer = [
-		{ field: "Sr. No.", show: "#" },
-		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
+		{ label: "Sr. No.", show: "#" },
+		{ name: "agent_name", label: "Name", sorting: true, show: "Avatar" },
 		{
 			name: "agent_mobile",
-			field: "Mobile Number",
+			label: "Mobile Number",
 			sorting: true,
 		},
-		{ name: "agent_type", field: "Type", sorting: true },
+		{ name: "agent_type", label: "Type", sorting: true },
 		// {
 		// 	name: "createdAt",
-		// 	field: "Account Number",
+		// 	label: "Account Number",
 		// 	sorting: true,
 		// },
 		{
 			name: "account_status",
-			field: "Account Status",
+			label: "Account Status",
 			sorting: true,
 		},
 		{
 			name: "location",
-			field: "Location",
+			label: "Location",
 			sorting: true,
 			show: "IconButton",
 		},
 		{
 			name: "",
-			field: "",
+			label: "",
 			show: "Arrow",
 		},
 	];
-	const mobile = transactiondata[0]?.agent_mobile ?? [];
-	function onRowClick() {
+
+	const router = useRouter();
+
+	const onRowClick = () => {
+		const mobile = transactiondata[0]?.agent_mobile ?? "";
 		router.push({
 			pathname: "/admin/transaction-history/account-statement",
 			query: { mobile },
 		});
-	}
+	};
 
 	return (
 		<>

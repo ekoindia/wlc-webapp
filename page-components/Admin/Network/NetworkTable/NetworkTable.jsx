@@ -16,31 +16,31 @@ const NetworkTable = ({
 	agentDetails,
 }) => {
 	const renderer = [
-		{ field: "Sr. No.", show: "#" },
-		{ name: "agent_name", field: "Name", sorting: true, show: "Avatar" },
-		{ name: "agent_mobile", field: "Mobile Number", sorting: true },
-		{ name: "agent_type", field: "Type", sorting: true },
+		{ label: "Sr. No.", show: "#" },
+		{ name: "agent_name", label: "Name", sorting: true, show: "Avatar" },
+		{ name: "agent_mobile", label: "Mobile Number", sorting: true },
+		{ name: "agent_type", label: "Type", sorting: true },
 		{
 			name: "onboarded_on",
-			field: "Onboarded On",
+			label: "Onboarded On",
 			sorting: true,
 			show: "Date",
 		},
 		{
 			name: "account_status",
-			field: "Account Status",
+			label: "Account Status",
 			sorting: true,
 			show: "Tag",
 		},
-		{ name: "eko_code", field: "User Code", sorting: true },
+		{ name: "eko_code", label: "User Code", sorting: true },
 		{
 			name: "location",
-			field: "Location",
+			label: "Location",
 			sorting: true,
 			show: "IconButton",
 		},
-		{ name: "", field: "", show: "Modal" },
-		{ name: "", field: "", show: "Arrow" },
+		{ name: "", label: "", show: "Modal" },
+		{ name: "", label: "", show: "Arrow" },
 	];
 	const router = useRouter();
 	const onRowClick = (rowData) => {
@@ -49,7 +49,6 @@ const NetworkTable = ({
 		router.push({
 			pathname: `/admin/my-network/profile`,
 			query: { mobile },
-			// state: { rowData },
 		});
 	};
 

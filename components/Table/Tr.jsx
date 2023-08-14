@@ -55,28 +55,27 @@ const Tr = ({
 	visibleColumns,
 	isLoading,
 	printExpansion = false,
+	rowExpansion,
 }) => {
 	const [expandedRow, setExpandedRow] = useState(null);
 
-	const visible = visibleColumns > 0;
-
-	const main = visible
+	const main = rowExpansion
 		? [
-				{ field: "", show: "ExpandButton" },
+				{ label: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
 		  ]
 		: renderer;
 
-	const extra = visible ? renderer?.slice(visibleColumns) : [];
+	const extra = rowExpansion ? renderer?.slice(visibleColumns) : [];
 	// const printExtras =
 	// 	tableName === "History"
-	// 		? [{ name: "trx_name", field: "Transaction" }]
+	// 		? [{ name: "trx_name", label: "Transaction" }]
 	// 		: [];
 
-	console.log("visibleColumns", extra);
+	// console.log("visibleColumns", extra);
 
 	const handleRowClick = (index) => {
-		if (visible) {
+		if (rowExpansion) {
 			setExpandedRow(index === expandedRow ? null : index);
 		} else if (onRowClick !== undefined) {
 			onRowClick(data[index]);
@@ -105,7 +104,7 @@ const Tr = ({
 							return (
 								<ChakraTd
 									p={{ base: ".5em", xl: "1em" }}
-									key={`td-${rendererIndex}-${column.field}-${serialNumber}`}
+									key={`td-${rendererIndex}-${column.label}-${serialNumber}`}
 								>
 									{prepareTableCell(
 										item,
@@ -120,7 +119,7 @@ const Tr = ({
 						})}
 					</ChakraTr>
 					{/* For Expanded Row */}
-					{visible && expandedRow === index && (
+					{rowExpansion && expandedRow === index && (
 						<ChakraTd
 							colSpan={main.length}
 							bg={index % 2 ? "shade" : "initial"}
@@ -188,7 +187,7 @@ const Tr = ({
 
 										return item[column.name] ? (
 											<Flex
-												key={`tdexp-${rendererIndex}-${column.field}-${serialNumber}`}
+												key={`tdexp-${rendererIndex}-${column.label}-${serialNumber}`}
 												position="relative"
 												direction="column"
 												display={dispScreen}
@@ -215,7 +214,7 @@ const Tr = ({
 													textColor="light"
 													fontSize="xxs"
 												>
-													{column.field}
+													{column.label}
 												</Text>
 												<Text
 													fontWeight="semibold"
@@ -245,7 +244,7 @@ const Tr = ({
 					{main?.map((column, index) => (
 						<ChakraTd
 							p={{ base: ".5em", xl: "1em" }}
-							key={`${column.field}-${index}`}
+							key={`${column.label}-${index}`}
 						>
 							<Skeleton
 								h="1em"

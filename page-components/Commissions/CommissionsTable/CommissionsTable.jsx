@@ -18,17 +18,17 @@ const CommissionsTable = ({
 	let renderer = [
 		{
 			name: "transaction_value",
-			field: "Transaction Value",
+			label: "Transaction Value",
 			show: "Transaction Value",
 		},
 		{
 			name: "biller_name",
-			field: "Biller Name",
+			label: "Biller Name",
 			show: "Biller Name",
 		},
 		{
 			name: "commission",
-			field: "Commission",
+			label: "Commission",
 			show: "Commission",
 		},
 	];

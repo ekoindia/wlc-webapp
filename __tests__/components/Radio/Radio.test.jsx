@@ -1,4 +1,4 @@
-import { IconButtons } from "components/IconButtons";
+import { Radio } from "components/Radio";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("IconButtons", () => {
+describe("Radio", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<IconButtons />);
+		const { container } = render(<Radio />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("IconButtons", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for IconButtons in __tests__/components/IconButtons/IconButtons.test.jsx"
+		"TODO: add proper test cases for Radio in __tests__/components/Radio/Radio.test.jsx"
 	);
 });

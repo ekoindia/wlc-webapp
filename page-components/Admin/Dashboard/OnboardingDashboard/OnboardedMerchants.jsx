@@ -11,45 +11,41 @@ import { OnboardingDashboardCard } from ".";
  */
 const OnboardedMerchants = ({
 	onboardingMerchantData,
-	totalRecords,
 	pageNumber,
 	setPageNumber,
 	isLoading,
 }) => {
-	// console.log("[OnboardedMerchants] isLoading", isLoading);
-	// console.log("[OnboardedMerchants] data", onboardingMerchantData);
-
 	const renderer = [
 		{
-			name: "merchantName",
-			field: "Merchant's Name",
+			name: "name",
+			label: "Merchant's Name",
 			sorting: true,
 			show: "Avatar",
 		},
 		{
-			name: "ekoCode",
-			field: "User Code",
+			name: "user_code",
+			label: "User Code",
 			sorting: true,
 		},
 		{
 			name: "location",
-			field: "Location",
+			label: "Location",
 			sorting: true,
 		},
 		{
-			name: "businessType",
-			field: "Business Type",
+			name: "business_type",
+			label: "Business Type",
 			sorting: true,
 		},
-		{ name: "onboardedOn", field: "Onboarded on", show: "Date" },
-		{ name: "businessDetailsCaptured", field: "Business Detail Captured" },
-		{ name: "businessName", field: "Business Name" },
-		{ name: "daysinFunnel", field: "Onboarding Funnel" },
-		{ name: "panCaptured", field: "PAN Captured" },
-		{ name: "aadhaarCaptured", field: "Aadhaar Captured" },
-		{ name: "agreementSigned", field: "Agreement Signed" },
-		{ name: "onboarded", field: "Onboarded" },
-		{ name: "transacting", field: "Non Transacting Live" },
+		{ name: "onboardedOn", label: "Onboarded on", show: "Date" },
+		// { name: "businessDetailsCaptured", label: "Business Detail Captured" },
+		// { name: "businessName", label: "Business Name" },
+		// { name: "daysinFunnel", label: "Onboarding Funnel" },
+		// { name: "panCaptured", label: "PAN Captured" },
+		// { name: "aadhaarCaptured", label: "Aadhaar Captured" },
+		// { name: "agreementSigned", label: "Agreement Signed" },
+		// { name: "onboarded", label: "Onboarded" },
+		// { name: "transacting", label: "Non Transacting Live" },
 	];
 	return (
 		<Flex
@@ -66,10 +62,10 @@ const OnboardedMerchants = ({
 			<Table
 				renderer={renderer}
 				visibleColumns={5}
-				data={onboardingMerchantData}
-				variant="stripedActionExpand"
+				data={onboardingMerchantData?.tableData}
+				variant="stripedActionNone"
 				ResponsiveCard={OnboardingDashboardCard}
-				totalRecords={totalRecords}
+				totalRecords={onboardingMerchantData?.totalRecords}
 				pageNumber={pageNumber}
 				setPageNumber={setPageNumber}
 				isLoading={isLoading}

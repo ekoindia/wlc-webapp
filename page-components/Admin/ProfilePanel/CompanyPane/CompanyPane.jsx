@@ -3,7 +3,6 @@ import {
 	Box,
 	Divider,
 	Flex,
-	Heading,
 	Stack,
 	StackDivider,
 	Text,
@@ -33,101 +32,106 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 	];
 
 	return (
-		<Card h={{ base: "auto", md: "560px" }}>
-			<Flex gap="5" align="center">
-				<Avatar
-					w={{ base: 16, lg: 59, xl: 90 }}
-					h={{ base: 16, lg: 59, xl: 90 }}
-					icon={<Icon name="person" />}
-					src={compdata?.src}
-					showBorder={true}
-				/>
-				<Box>
-					<Heading
-						fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
-						fontWeight="semibold"
-					>
-						{agent_name}
-					</Heading>
-					<Flex
-						fontSize={{ base: 14, md: 12, lg: 14 }}
-						fontWeight="medium"
-					>
-						<Text>User Code:</Text>
-						<Text color={"accent.DEFAULT"}>
-							&nbsp; {compdata?.eko_code}
+		<Card h={{ base: "auto", md: "560px" }} gap="8">
+			<Flex direction="column" gap="8">
+				<Flex gap="5" align="center">
+					<Avatar
+						size={{ base: "lg", md: "xl" }}
+						icon={<Icon name="person" />}
+						src={compdata?.src}
+						showBorder={true}
+						borderColor="divider"
+					/>
+					<div>
+						<Text as="b" fontSize="xl">
+							{agent_name}
 						</Text>
-					</Flex>
-				</Box>
-			</Flex>
-			<Stack
-				direction={{ base: "column", md: "row" }}
-				divider={<StackDivider />}
-				gap={{ base: "2", md: "3" }}
-				mt={{ base: "24px", xl: "48px" }}
-				mb={{ base: "24px", md: "none" }}
-			>
-				{companyDataList.map(
-					(item) =>
-						item.value && (
-							<Flex
-								key={item.id}
-								align={{ base: "center", md: "flex-start" }}
-								direction={{ base: "row", md: "column" }}
-							>
-								<Text color="light" fontSize={{ base: "xs" }}>
-									{item.label}
-									<Box
-										as="span"
-										display={{ base: "inital", md: "none" }}
-									>
-										&#58;&nbsp;
-									</Box>
-								</Text>
-								<Text
-									color="dark"
-									fontSize={{ base: "sm" }}
-									fontWeight="medium"
+						<Flex gap="1" color="light" fontSize="sm">
+							User Code:
+							<Text fontWeight="medium" color="accent.DEFAULT">
+								{compdata?.eko_code}
+							</Text>
+						</Flex>
+					</div>
+				</Flex>
+				<Stack
+					direction={{ base: "column", md: "row" }}
+					divider={<StackDivider />}
+					gap="2"
+				>
+					{companyDataList.map(
+						(item) =>
+							item.value && (
+								<Flex
+									key={item.id}
+									align={{
+										base: "center",
+										md: "flex-start",
+									}}
+									direction={{
+										base: "row",
+										md: "column",
+									}}
 								>
-									{item.value}
-								</Text>
-							</Flex>
-						)
-				)}
-			</Stack>
-			<Box
-				my="auto"
+									<Text
+										color="light"
+										fontSize={{ base: "xs" }}
+									>
+										{item.label}
+										<Box
+											as="span"
+											display={{
+												base: "inital",
+												md: "none",
+											}}
+										>
+											&#58;&nbsp;
+										</Box>
+									</Text>
+									<Text
+										color="dark"
+										fontSize="sm"
+										fontWeight="medium"
+									>
+										{item.value}
+									</Text>
+								</Flex>
+							)
+					)}
+				</Stack>
+			</Flex>
+			<Flex
+				direction="column"
 				p="20px"
-				h="160px"
-				border="1px solid #D2D2D2"
-				borderRadius="15px"
+				border="1px solid var(--chakra-colors-hint)"
+				borderRadius="10px"
 				bg="#FAFDFF"
+				gap="4"
+				fontSize="sm"
+				mt="auto"
 			>
-				<Flex justify="space-between" align="center" mb={4}>
-					<Flex gap={4} align="center" justify="center">
+				<Flex justify="space-between" align="center" py="2">
+					<Flex gap="4" align="center" justify="center">
 						<IcoButton
 							iconName="account-balance-wallet"
 							color="dark"
 							size="md"
 						/>
-						<Box>
-							<Text color={"light"} fontSize={14}>
-								E-value Balance
-							</Text>
+						<div>
+							<Text color="light">E-value Balance</Text>
 							<Currency
 								amount={compdata?.wallet_balance}
-								fontSize="20px"
+								fontSize="xl"
 								fontWeight="medium"
 								color="primary.DEFAULT"
 							/>
-						</Box>
+						</div>
 					</Flex>
 				</Flex>
 				<Divider />
-				<Flex align="center" justify="center" mt="6">
+				<Flex align="center" justify="center">
 					<Button
 						variant="link"
-						fontSize="sm"
 						color="accent.DEFAULT"
 						gap="1"
 						_hover={{ textDecoration: "none" }}
@@ -137,7 +141,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 						<Icon name="arrow-forward" size="16px" />
 					</Button>
 				</Flex>
-			</Box>
+			</Flex>
 		</Card>
 	);
 };

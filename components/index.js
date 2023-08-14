@@ -15,7 +15,6 @@ import { GlobalSearch } from "./GlobalSearch";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
 import { Icon } from "./Icon";
-import { IconButtons } from "./IconButtons";
 import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
@@ -33,6 +32,7 @@ import { Pagination } from "./Pagination";
 import { PillTab } from "./PillTab";
 import { PrintReceipt } from "./PrintReceipt";
 import { ProfileCard } from "./ProfileCard";
+import { Radio } from "./Radio";
 import { ResponseCard } from "./ResponseCard";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
@@ -46,6 +46,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	Radio,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
 	Button,
@@ -62,7 +63,6 @@ export {
 	Headings,
 	IcoButton,
 	Icon,
-	IconButtons,
 	Input,
 	InputLabel,
 	InputMsg,

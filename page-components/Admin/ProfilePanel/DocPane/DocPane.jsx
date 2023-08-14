@@ -7,9 +7,8 @@ import {
 	Stack,
 	StackDivider,
 	Text,
-	useMediaQuery,
 } from "@chakra-ui/react";
-import { Button, Card, Icon, IconButtons } from "components";
+import { Button, Card, IcoButton } from "components";
 
 /**
  * A <DocPane> component
@@ -18,10 +17,7 @@ import { Button, Card, Icon, IconButtons } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<DocPane></DocPane>`
  */
-const DocPane = (/* props */) => {
-	// const docdata = props.rowdata;
-	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
-
+const DocPane = () => {
 	const docData = [
 		{
 			image: "/images/seller_logo.jpg",
@@ -101,16 +97,11 @@ const DocPane = (/* props */) => {
 										)}
 									</Box>
 								</Flex>
-								<IconButtons
+								<IcoButton
 									title={
-										isSmallerThan769
-											? ""
-											: item.available
-											? "Download"
-											: "Upload"
+										item.available ? "Download" : "Upload"
 									}
-									iconPos="left"
-									variant={
+									theme={
 										item.available ? "accent" : "primary"
 									}
 									iconName={
@@ -118,12 +109,7 @@ const DocPane = (/* props */) => {
 											? "file-download"
 											: "file-upload"
 									}
-									iconStyle={{
-										size: "14px",
-									}}
-									textStyle={{
-										fontSize: "16px",
-									}}
+									size="sm"
 								/>
 							</Box>
 						))}
@@ -131,11 +117,7 @@ const DocPane = (/* props */) => {
 					<Divider mt="10px" />
 				</Box>
 
-				<Button
-					w={{ base: "100%", md: "215px" }}
-					h="60px"
-					icon={<Icon name="file-download" size="18px" />}
-				>
+				<Button w={{ base: "100%", md: "215px" }} h="60px">
 					Download All
 				</Button>
 			</Flex>

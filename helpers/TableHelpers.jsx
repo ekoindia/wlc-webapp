@@ -45,8 +45,8 @@ export const getStatusStyle = (status = "", tableName) => {
 			return (
 				<Flex justify="flex-end">
 					<Flex
-						align="center"
-						justify="center"
+						// align="center"
+						// justify="center"
 						textAlign="center"
 						width="min-content"
 						px="6px"
@@ -83,12 +83,7 @@ export const getStatusStyle = (status = "", tableName) => {
 
 	return (
 		<Flex>
-			<Tags
-				size={{ base: "sm", md: "xs", lg: "xs", "2xl": "md" }}
-				px="10px"
-				borderRadius="full"
-				status={status}
-			/>
+			<Tags borderRadius="full" status={status} />
 		</Flex>
 	);
 };

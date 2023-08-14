@@ -1,6 +1,38 @@
 import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useState } from "react";
+
+/**
+ * To modify filter list, will add id to each list item & Onboarding Funnel item
+ * @param {Object} data contains onboardingFunnelTotal and filterList
+ * @returns {Object} containing funnelKeyList, filterList, & filterListLength
+ */
+const getModifiedFilterList = (data) => {
+	let filterList = [
+		{
+			id: 0,
+			label: "Onboarding Funnel",
+			value: data?.onboardingFunnelTotal,
+		},
+	];
+
+	let funnelKeyList = [];
+
+	const _filterList = data?.filterList;
+
+	_filterList?.forEach((ele, index) => {
+		let _filter = { id: index + 1, ...ele };
+		filterList.push(_filter);
+		funnelKeyList.push(ele?.status_ids);
+	});
+
+	filterList[0]["status_ids"] = [...funnelKeyList];
+
+	const filterListLength = filterList?.length;
+
+	return { funnelKeyList, filterList, filterListLength };
+};
+
 /**
  * A Onboarding Dashboard Filter page-component
  * TODO: Write more description here
@@ -10,78 +42,14 @@ import { useState } from "react";
  */
 const OnboardingDashboardFilters = ({
 	filterLoading,
-	filterData: _data,
+	filterData,
 	filterStatus,
 	setFilterStatus,
 }) => {
 	const [inFunnel, setInFunnel] = useState(false);
 
-	const funnelKeyList = [48, 51, 52, 53, 54];
-
-	const listToCalcFunnelValue = [
-		_data?.partialAccount,
-		_data?.businessDetailsCaptured,
-		_data?.aadhaarCaptured,
-		_data?.panCaptured,
-		_data?.agreementSigned,
-	];
-
-	const _onboardingFunnelValue =
-		listToCalcFunnelValue?.reduce(
-			(acc, curr) => (acc += Number(curr)),
-			0
-		) || null;
-
-	const filterList = [
-		{
-			id: 0,
-			key: [...funnelKeyList],
-			label: "Onboarding Funnel",
-			value: _onboardingFunnelValue, //all except 16
-		},
-		{
-			id: 1,
-			key: 51,
-			label: "Partial Account",
-			value: _data?.partialAccount,
-		},
-		{
-			id: 2,
-			key: 52,
-			label: "Business Detail Captured",
-			value: _data?.businessDetailsCaptured,
-		},
-		{
-			id: 3,
-			key: 54,
-			label: "Aadhaar Captured",
-			value: _data?.aadhaarCaptured,
-		},
-		{
-			id: 4,
-			key: 53,
-			label: "PAN Captured",
-			value: _data?.panCaptured,
-		},
-		{
-			id: 5,
-			key: 48,
-			label: "Agreement Signed",
-			value: _data?.agreementSigned,
-		},
-		{
-			id: 6,
-			key: 16,
-			label: "Onboarded",
-			value: _data?.onboarded,
-		},
-		{
-			id: 7,
-			key: 16,
-			label: "Non Transacting Live",
-			value: _data?.nonTransactiingLive, //onboarded but no financial trx
-		},
-	];
+	const { funnelKeyList, filterList, filterListLength } =
+		getModifiedFilterList(filterData);
 
 	const handleFilterStatusClick = (id, key) => {
 		if (id === 0) {
@@ -109,8 +77,6 @@ const OnboardingDashboardFilters = ({
 			setFilterStatus(filterStatusUpdated);
 		}
 	};
-
-	const filterListLength = filterList?.length;
 
 	return (
 		<Flex
@@ -142,12 +108,10 @@ const OnboardingDashboardFilters = ({
 				pb="20px"
 			>
 				{filterList?.map((item, index) => {
-					console.log("item", item.value);
-
 					const isActive =
 						item.id === 0 && inFunnel
 							? true
-							: filterStatus?.includes(item.key);
+							: filterStatus?.includes(item.status_ids);
 					return (
 						<Flex
 							key={item.id}
@@ -155,7 +119,8 @@ const OnboardingDashboardFilters = ({
 							justify="space-between"
 							bg="white"
 							p="10px 15px"
-							border={isActive ? "1px solid #1F5AA7" : "basic"}
+							border={isActive ? "1px" : "basic"}
+							borderColor={isActive && "primary.light"}
 							boxShadow={
 								isActive ? "0px 3px 10px #1F5AA733" : null
 							}
@@ -164,9 +129,12 @@ const OnboardingDashboardFilters = ({
 							maxW="160px"
 							ml="20px"
 							mr={index === filterListLength - 1 ? "20px" : null}
-							_hover={{ boxShadow: "0px 3px 10px #0000000D" }}
+							_hover={{ boxShadow: "basic" }}
 							onClick={() => {
-								handleFilterStatusClick(item.id, item.key);
+								handleFilterStatusClick(
+									item.id,
+									item.status_ids
+								);
 							}}
 							cursor="pointer"
 							gap="2"

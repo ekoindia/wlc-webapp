@@ -18,22 +18,22 @@ const DetailedStatementTable = ({
 	const renderer = [
 		{
 			name: "transaction_id",
-			field: "TID",
+			label: "TID",
 		},
 		{
 			name: "date_time",
-			field: "Date & Time",
+			label: "Date & Time",
 			sorting: true,
 			show: "DateTime",
 		},
-		{ name: "activity", field: "Activity" },
+		{ name: "activity", label: "Activity" },
 		{
 			name: "description",
-			field: "Description",
+			label: "Description",
 			show: "Description",
 		},
-		{ name: "amount", field: "Amount", show: "Payment" },
-		{ name: "running_balance", field: "Running Balance", show: "Amount" },
+		{ name: "amount", label: "Amount", show: "Payment" },
+		{ name: "running_balance", label: "Running Balance", show: "Amount" },
 	];
 
 	return (
@@ -46,7 +46,7 @@ const DetailedStatementTable = ({
 				setPageNumber={setPageNumber}
 				pageNumber={pageNumber}
 				ResponsiveCard={DetailedStatementCard}
-				defaultCardStyle={false}
+				isReceipt={true}
 			/>
 		</>
 	);

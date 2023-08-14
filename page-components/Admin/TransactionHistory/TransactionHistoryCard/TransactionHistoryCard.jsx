@@ -1,23 +1,21 @@
-import { Box, Flex, IconButton } from "@chakra-ui/react";
-import { Menus } from "components";
+import { Box, Flex } from "@chakra-ui/react";
 import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
 
 /**
- * A <TransactionHistoryCard> component
+ * A TransactionHistoryCard page-component
  * TODO: Write more description here
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<TransactionHistoryCard></TransactionHistoryCard>`
  */
-const TransactionHistoryCard = (props) => {
-	const { item } = props;
+const TransactionHistoryCard = ({ item }) => {
 	return (
-		<>
+		<Flex direction="column" bg="white" borderRadius="10px" p="20px">
 			<Flex justifyContent="space-between">
 				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
 					{getNameStyle(item.agent_name)}
 				</Box>
-				<Menus
+				{/* <Menus
 					iconName="more-vert"
 					as={IconButton}
 					iconStyles={{ width: "4px", height: "18px" }}
@@ -25,7 +23,7 @@ const TransactionHistoryCard = (props) => {
 					onClick={(e) => {
 						e.stopPropagation();
 					}}
-				/>
+				/> */}
 			</Flex>
 			<Flex direction="column" fontSize={{ base: "sm" }} pl="42px">
 				<Flex gap="2">
@@ -33,8 +31,7 @@ const TransactionHistoryCard = (props) => {
 						Mobile Number:
 					</Box>
 					<Box as="span" color="dark">
-						{/* {item.agent_mobile} */}
-						{item.mobile_number}
+						{item.agent_mobile}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -42,34 +39,31 @@ const TransactionHistoryCard = (props) => {
 						Type:
 					</Box>
 					<Box as="span" color="dark">
-						{/* {item.agent_type} */}
-						{item.type}
+						{item.agent_type}
 					</Box>
 				</Flex>
-				<Flex gap="2">
+				{/* <Flex gap="2">
 					<Box as="span" color="light">
 						Account Number:
 					</Box>
 					<Box as="span" color="dark">
-						{/* {item.onboarded_on} */}
-						{item.createdAt}
+						{item.onboarded_on}
 					</Box>
-				</Flex>
-				<Flex gap="2">
+				</Flex> */}
+				{/* <Flex gap="2">
 					<Box as="span" color="light">
 						User Code:
 					</Box>
 					<Box as="span" color="dark">
-						{/* {item.eko_code}  */}
-						{item.ekocsp_code}
+						{item.eko_code} 
 					</Box>
-				</Flex>
+				</Flex> */}
 				<Flex justifyContent="space-between" mt="10px" py="10px">
 					{getStatusStyle(item.account_status)}
 					{getLocationStyle(item.location)}
 				</Flex>
 			</Flex>
-		</>
+		</Flex>
 	);
 };
 

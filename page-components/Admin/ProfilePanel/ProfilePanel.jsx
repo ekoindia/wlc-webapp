@@ -148,7 +148,12 @@ const ProfilePanel = () => {
 		},
 		{
 			id: 5,
-			comp: <ContactPane rowData={agentData?.contact_information} />,
+			comp: (
+				<ContactPane
+					rowData={agentData?.contact_information}
+					mobile={agentData?.agent_mobile}
+				/>
+			),
 		},
 	];
 
