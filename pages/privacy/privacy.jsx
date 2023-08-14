@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Link, Text } from "@chakra-ui/react";
 import { useOrgDetailContext } from "contexts";
 
 const PrivacyPage = () => {
@@ -21,14 +21,14 @@ const PrivacyPage = () => {
 				py="10"
 				mx="auto"
 			>
-				<H1>{app_name} Privacy Policy</H1>
+				<H1 color="primary.dark">{app_name} Privacy Policy</H1>
 				<P>
 					Eko India Financial Services Pvt. Ltd. built the {org_name}{" "}
 					app as a Commercial app. This SERVICE is provided by{" "}
 					{org_name} and is intended for use as is.
 				</P>
 				<P>
-					This page is used to inform website visitors regarding our
+					This page is used to inform the app users regarding our
 					policies with the collection, use, and disclosure of
 					Personal Information if anyone decided to use our Service.
 				</P>
@@ -40,11 +40,11 @@ const PrivacyPage = () => {
 					share your information with anyone except as described in
 					this Privacy Policy.
 				</P>
-				<P>
+				{/* <P>
 					The terms used in this Privacy Policy have the same meanings
 					as in our Terms and Conditions, which is accessible at
 					Connect unless otherwise defined in this Privacy Policy.
-				</P>
+				</P> */}
 				<H2>Information Collection and Use</H2>
 				<P>
 					For a better experience, while using our Service, we may
@@ -55,7 +55,7 @@ const PrivacyPage = () => {
 					policy. We do not share these information with any third
 					party.
 				</P>
-				<P>
+				<P pl={8}>
 					<ol>
 						<li>
 							<strong>Email:</strong> we store and use your
@@ -84,15 +84,16 @@ const PrivacyPage = () => {
 					Link to privacy policy of third party service providers used
 					by the app:
 				</P>
-				<P>
+				<P pl={8}>
 					<ul>
 						<li>
-							<a
+							<Link
+								color="accent.DEFAULT"
 								href="https://www.google.com/policies/privacy/"
 								target="_blank"
 							>
 								Google
-							</a>
+							</Link>
 						</li>
 					</ul>
 				</P>
@@ -128,7 +129,7 @@ const PrivacyPage = () => {
 					We may employ third-party companies and individuals due to
 					the following reasons:
 				</P>
-				<P>
+				<P pl={8}>
 					<ul>
 						<li>To facilitate our Service</li>
 						<li>To provide the Service on our behalf</li>
@@ -190,7 +191,8 @@ const PrivacyPage = () => {
 						<P>
 							If you have any questions or suggestions about our
 							Privacy Policy, do not hesitate to contact us at{" "}
-							<a
+							<Link
+								color="accent.DEFAULT"
 								href={
 									"mailto:" +
 									metadata?.support_contacts?.email
@@ -198,7 +200,7 @@ const PrivacyPage = () => {
 								target="_blank"
 							>
 								{metadata?.support_contacts?.email}
-							</a>
+							</Link>
 						</P>
 					</>
 				) : null}
@@ -212,7 +214,7 @@ const PrivacyPage = () => {
  */
 const P = ({ mb = 5, children, ...rest }) => {
 	return (
-		<Text mb={mb} {...rest}>
+		<Text mb={mb} textAlign="justify" {...rest}>
 			{children}
 		</Text>
 	);
