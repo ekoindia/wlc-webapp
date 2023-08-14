@@ -39,7 +39,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 		if (value.length > 0) return;
 
 		const lastLogin = JSON.parse(localStorage.getItem("inf-last-login"));
-		if (lastLogin?.type !== "Google" && lastLogin?.mobile) {
+		if (lastLogin?.type !== "Google" && lastLogin?.mobile > 1) {
 			// Format mobile number in the following format: +91 123 456 7890
 			// TODO: Fix Input component so that this is not required
 			const formatted_mobile = lastLogin.mobile
@@ -63,7 +63,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 		setValue(val);
 	};
 
-	const sendOtp = () => {
+	const sendOtp = async () => {
 		if (value.length === 12) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({
@@ -72,7 +72,8 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			});
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
-			sendOtpRequest(
+
+			const otp_sent = await sendOtpRequest(
 				orgDetail.org_id,
 				originalNum,
 				toast,
@@ -80,8 +81,13 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				isAndroid
 			);
 
-			// Set login-type for current session...
-			sessionStorage.setItem("login_type", "Mobile");
+			if (otp_sent) {
+				// Set login-type for current session...
+				sessionStorage.setItem("login_type", "Mobile");
+			} else {
+				// OTP failed..back to previous screen
+				setStep("LOGIN");
+			}
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);

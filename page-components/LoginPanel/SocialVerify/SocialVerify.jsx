@@ -24,7 +24,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 		setValue(val);
 	};
 
-	const onVerifyOtp = () => {
+	const onVerifyOtp = async () => {
 		if (value.length === 12) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({
@@ -33,13 +33,18 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 			});
 
 			setStep("VERIFY_OTP");
-			sendOtpRequest(
+			const otp_sent = await sendOtpRequest(
 				orgDetail.org_id,
 				originalNum,
 				toast,
 				"send",
 				isAndroid
 			);
+
+			if (!otp_sent) {
+				// OTP failed..back to previous screen
+				setStep("LOGIN");
+			}
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);

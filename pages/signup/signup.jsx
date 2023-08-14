@@ -12,7 +12,7 @@ import { OnboardingWidget, SelectionScreen } from "@ekoindia/oaas-widget";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
 // import { distributorStepsData } from "./distributorStepsData";
@@ -33,7 +33,7 @@ const selectionStepData = {
 				id: 1,
 				merchant_type: 1,
 				applicant_type: 0,
-				label: "I'm a retailer",
+				label: "I'm a Retailer",
 				description: "I serve customers from my shop",
 				icon: "../assets/icons/user_merchant.png",
 				isVisible: true,
@@ -46,7 +46,7 @@ const selectionStepData = {
 				id: 2,
 				merchant_type: 3,
 				applicant_type: 2,
-				label: "I'm a distributor",
+				label: "I'm a Distributor",
 				description:
 					"I have a network of retailer and i want to serve them",
 				icon: "../assets/icons/user_distributor.png",
@@ -57,9 +57,9 @@ const selectionStepData = {
 				id: 3,
 				merchant_type: 2,
 				applicant_type: 1,
-				label: "I'm a Enterprise",
+				label: "I'm an Enterprise",
 				description:
-					"I want to use API and other solution to make my own service",
+					"I want to use API and other solutions to make my own service",
 				icon: "../assets/icons/user_enterprise.png",
 				isVisible: false,
 				user_type: [{ key: 23, name: "Partner" }],
@@ -68,6 +68,13 @@ const selectionStepData = {
 	},
 };
 
+/**
+ * Onboarding steps data for both sellers & distributor.
+ * Based on user-type (seller or distributor), the oaas-widget will manually remove a few steps for the distributor (hard-coded in the oaas-widget file `src/components/Common/Sidebar/Sidebar.tsx`).
+ * Currently, only "Business Details" & "Secret PIN" steps are removed from the Distributor onboarding.
+ *
+ * Some steps are disabled by marking `isVisible` as `false`.
+ */
 const distributorStepsData = [
 	{
 		id: 1,
@@ -328,6 +335,8 @@ const SignupPage = () => {
 	const [signUrlData, setSignUrlData] = useState();
 	const [bookletNumber, setBookletNumber] = useState();
 	const [isSpinner, setisSpinner] = useState(true);
+	const [apiInProgress, setApiInProgress] = useState(false);
+	const [esignStatus, setEsignStatus] = useState(0); // 0: loading, 1: ready, 2: failed
 	const [stepperData, setStepperData] = useState([
 		{
 			id: 1,
@@ -387,7 +396,7 @@ const SignupPage = () => {
 		},
 	]);
 
-	const widgetRef = useRef(null);
+	// const widgetRef = useRef(null);
 	const { isAndroid } = useAppSource();
 	const { subscribe, TOPICS } = usePubSub();
 
@@ -549,8 +558,9 @@ const SignupPage = () => {
 	// Method only for file upload data
 	const handleFileUploadOnboarding = async (data) => {
 		// Handle all file upload API's here only
-		const formData = new FormData();
 
+		setApiInProgress(true);
+		const formData = new FormData();
 		const bodyData = {
 			formdata: {
 				client_ref_id:
@@ -599,8 +609,7 @@ const SignupPage = () => {
 			);
 		}
 
-		console.log("inside handle file upload ", bodyData);
-		console.log("inside handle file upload formData", formData);
+		console.log("inside handle file upload ", bodyData, formData);
 
 		const uploadResponse = await fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD,
@@ -670,11 +679,14 @@ const SignupPage = () => {
 			setLastStepResponse(uploadResponse);
 		}
 
+		setApiInProgress(false);
+
 		console.log("uploadResponse", uploadResponse);
 	};
 
 	const updateOnboarding = (bodyData) => {
 		// setisSpinner(true);
+		setApiInProgress(true);
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			token: userData?.access_token,
 			body: {
@@ -730,11 +742,15 @@ const SignupPage = () => {
 					duration: 2000,
 				});
 				setLastStepResponse(err);
+			})
+			.finally(() => {
+				setApiInProgress(false);
 			});
 	};
 
 	const refreshApiCall = async () => {
 		// setisSpinner(true);
+		setApiInProgress(true);
 		try {
 			const res = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL +
@@ -758,9 +774,12 @@ const SignupPage = () => {
 			) {
 				router.push("/home");
 			}
+
+			setApiInProgress(false);
 			return res;
 		} catch (error) {
 			setisSpinner(false);
+			setApiInProgress(false);
 
 			console.log("inside initial api error", error);
 		}
@@ -948,20 +967,26 @@ const SignupPage = () => {
 				if (res?.data?.short_url) {
 					setSignUrlData(res.data);
 					// Inform the OaaS Widget that Leegality is ready
-					widgetRef?.current?.postMessage({
-						type: "esign:ready",
-					});
+					setEsignStatus(1);
+					// widgetRef?.current?.postMessage({
+					// 	type: "esign:ready",
+					// });
 				} else {
 					toast({
 						title:
 							res?.message ||
-							"E-sign initialization failed, please reload page to try again.",
+							"E-sign initialization failed, please try again.",
 						status: "error",
-						duration: 3000,
+						duration: 5000,
 					});
 					console.error(
-						"[getSignUrl] Error: E-sign initialization failed"
+						"[getSignUrl] Error: E-sign initialization failed: " +
+							res?.message
 					);
+					setEsignStatus(2);
+					// widgetRef?.current?.postMessage({
+					// 	type: "esign:failed",
+					// });
 				}
 			})
 			.catch((err) =>
@@ -1088,12 +1113,13 @@ const SignupPage = () => {
 								// setSelectedRole(data.form_data.value);
 								handleStepDataSubmit(data);
 							}}
+							isDisabledCTA={apiInProgress}
 							primaryColor={primaryColor}
 						/>
 					) : (
 						<OnboardingWidget
-							ref={widgetRef}
-							//defaultStep="12800"
+							// ref={widgetRef}
+							// defaultStep="12800"
 							defaultStep={
 								userData?.userDetails?.role_list || "12400"
 							}
@@ -1106,6 +1132,7 @@ const SignupPage = () => {
 							stateTypes={stateTypesData}
 							stepsData={stepperData}
 							handleStepCallBack={handleStepCallBack}
+							esignStatus={esignStatus}
 							primaryColor={primaryColor}
 						/>
 					)}
