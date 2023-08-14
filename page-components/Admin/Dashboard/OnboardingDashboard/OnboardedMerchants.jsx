@@ -18,34 +18,34 @@ const OnboardedMerchants = ({
 	const renderer = [
 		{
 			name: "name",
-			field: "Merchant's Name",
+			label: "Merchant's Name",
 			sorting: true,
 			show: "Avatar",
 		},
 		{
 			name: "user_code",
-			field: "User Code",
+			label: "User Code",
 			sorting: true,
 		},
 		{
 			name: "location",
-			field: "Location",
+			label: "Location",
 			sorting: true,
 		},
 		{
 			name: "business_type",
-			field: "Business Type",
+			label: "Business Type",
 			sorting: true,
 		},
-		{ name: "onboardedOn", field: "Onboarded on", show: "Date" },
-		// { name: "businessDetailsCaptured", field: "Business Detail Captured" },
-		// { name: "businessName", field: "Business Name" },
-		// { name: "daysinFunnel", field: "Onboarding Funnel" },
-		// { name: "panCaptured", field: "PAN Captured" },
-		// { name: "aadhaarCaptured", field: "Aadhaar Captured" },
-		// { name: "agreementSigned", field: "Agreement Signed" },
-		// { name: "onboarded", field: "Onboarded" },
-		// { name: "transacting", field: "Non Transacting Live" },
+		{ name: "onboardedOn", label: "Onboarded on", show: "Date" },
+		// { name: "businessDetailsCaptured", label: "Business Detail Captured" },
+		// { name: "businessName", label: "Business Name" },
+		// { name: "daysinFunnel", label: "Onboarding Funnel" },
+		// { name: "panCaptured", label: "PAN Captured" },
+		// { name: "aadhaarCaptured", label: "Aadhaar Captured" },
+		// { name: "agreementSigned", label: "Agreement Signed" },
+		// { name: "onboarded", label: "Onboarded" },
+		// { name: "transacting", label: "Non Transacting Live" },
 	];
 	return (
 		<Flex

@@ -61,7 +61,7 @@ const Tr = ({
 
 	const main = rowExpansion
 		? [
-				{ field: "", show: "ExpandButton" },
+				{ label: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
 		  ]
 		: renderer;
@@ -69,7 +69,7 @@ const Tr = ({
 	const extra = rowExpansion ? renderer?.slice(visibleColumns) : [];
 	// const printExtras =
 	// 	tableName === "History"
-	// 		? [{ name: "trx_name", field: "Transaction" }]
+	// 		? [{ name: "trx_name", label: "Transaction" }]
 	// 		: [];
 
 	// console.log("visibleColumns", extra);
@@ -104,7 +104,7 @@ const Tr = ({
 							return (
 								<ChakraTd
 									p={{ base: ".5em", xl: "1em" }}
-									key={`td-${rendererIndex}-${column.field}-${serialNumber}`}
+									key={`td-${rendererIndex}-${column.label}-${serialNumber}`}
 								>
 									{prepareTableCell(
 										item,
@@ -187,7 +187,7 @@ const Tr = ({
 
 										return item[column.name] ? (
 											<Flex
-												key={`tdexp-${rendererIndex}-${column.field}-${serialNumber}`}
+												key={`tdexp-${rendererIndex}-${column.label}-${serialNumber}`}
 												position="relative"
 												direction="column"
 												display={dispScreen}
@@ -214,7 +214,7 @@ const Tr = ({
 													textColor="light"
 													fontSize="xxs"
 												>
-													{column.field}
+													{column.label}
 												</Text>
 												<Text
 													fontWeight="semibold"
@@ -244,7 +244,7 @@ const Tr = ({
 					{main?.map((column, index) => (
 						<ChakraTd
 							p={{ base: ".5em", xl: "1em" }}
-							key={`${column.field}-${index}`}
+							key={`${column.label}-${index}`}
 						>
 							<Skeleton
 								h="1em"

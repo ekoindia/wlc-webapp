@@ -71,7 +71,7 @@ const MobileView = ({
 					>
 						{renderer?.map((ele, rIndex) => (
 							<Flex
-								key={`${rIndex}-${ele.field}-${index}`}
+								key={`${rIndex}-${ele.label}-${index}`}
 								fontSize="xs"
 								align="center"
 								color="light"
@@ -80,7 +80,7 @@ const MobileView = ({
 									_hasOnClickEvent ? "pointer" : "default"
 								}
 							>
-								{`${ele.field}:`}
+								{`${ele.label}:`}
 								<Text
 									as="span"
 									color="dark"
