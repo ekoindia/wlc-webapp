@@ -215,7 +215,7 @@ const distributorStepsData = [
 		role: 12500,
 		primaryCTAText: "Next",
 		description:
-			"Thanks for completing your personal and address verification. Take a selfie of 5-10 seconds to complete eKYC process.",
+			"Thanks for completing your personal and address verification. Take a clear selfie to complete the eKYC process.",
 		form_data: {},
 		success_message: "KYC completed.",
 	},
@@ -586,7 +586,7 @@ const SignupPage = () => {
 				new URLSearchParams(bodyData["formdata"])
 			);
 		} else if (data.id === 8) {
-			console.log("pan data", data);
+			console.log("PAN data", data);
 			bodyData.file1 = data?.form_data?.panImage?.fileData;
 			bodyData.formdata.file1 = "";
 			bodyData.formdata.doc_type = 2;
@@ -639,7 +639,8 @@ const SignupPage = () => {
 					err.status = res.status;
 					if (res.status === 401) {
 						err.name = "Unauthorized";
-						// TODO: Handle unauthorized error by refreshing token
+						generateNewToken(true);
+						return;
 					}
 					throw err;
 				}
@@ -687,15 +688,19 @@ const SignupPage = () => {
 	const updateOnboarding = (bodyData) => {
 		// setisSpinner(true);
 		setApiInProgress(true);
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			token: userData?.access_token,
-			body: {
-				interaction_type_id: interaction_type_id,
-				user_id,
-				...bodyData.form_data,
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				token: userData?.access_token,
+				body: {
+					interaction_type_id: interaction_type_id,
+					user_id,
+					...bodyData.form_data,
+				},
+				timeout: 30000,
 			},
-			timeout: 30000,
-		})
+			generateNewToken
+		)
 			.then((data) => {
 				const success =
 					data?.status == 0 && !data?.invalid_params?.length;
@@ -786,7 +791,6 @@ const SignupPage = () => {
 	};
 
 	const getSHopTypes = () => {
-		console.log("inside mainfunction");
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -802,7 +806,7 @@ const SignupPage = () => {
 					setShopTypesData(res?.param_attributes.list_elements);
 				}
 			})
-			.catch((err) => console.log("[GetShopTypes] Error", err));
+			.catch((err) => console.error("[GetShopTypes] Error", err));
 	};
 
 	const getStateType = () => {
@@ -822,7 +826,7 @@ const SignupPage = () => {
 				}
 				console.log("[getStateType] resp:", res);
 			})
-			.catch((err) => console.log("[getStateType] Error:", err));
+			.catch((err) => console.error("[getStateType] Error:", err));
 	};
 	// const getPincodeType = () => {
 	// 	console.log("inside mainfunction");
@@ -846,9 +850,9 @@ const SignupPage = () => {
 	// };
 
 	const handleLeegalityCallback = (res) => {
-		console.log("callback response", res);
+		console.log("Leegality callback response", res);
 		if (res.error) {
-			console.log("res.error leegalityCallBack", res.error);
+			console.error("LeegalityCallBack Error", res.error);
 			toast({
 				title:
 					res?.error ||
@@ -868,7 +872,7 @@ const SignupPage = () => {
 	};
 
 	const handleStepCallBack = (callType) => {
-		console.log("stepcallback", callType, latLong, userLoginData);
+		console.log("[stepcallback]", callType, latLong, userLoginData);
 		if (callType.type === 12) {
 			// Leegality Esign
 			if (callType.method === "getSignUrl") {
@@ -913,11 +917,9 @@ const SignupPage = () => {
 			}
 		} else if (callType.type === 10) {
 			if (callType.method === "getBookletNumber") {
-				console.log("inside getBookletNumber");
 				getBookletNumber();
 			}
 			if (callType.method === "getBookletKey") {
-				console.log("inside getBookletKey");
 				getBookletKey();
 			}
 		} else if (callType.type === 7) {
@@ -1017,7 +1019,7 @@ const SignupPage = () => {
 					// setSignUrlData(res.data);
 				}
 			})
-			.catch((err) => console.log("[getBookletNumber] Error:", err));
+			.catch((err) => console.error("[getBookletNumber] Error:", err));
 		// }
 	};
 
@@ -1043,10 +1045,11 @@ const SignupPage = () => {
 					// setSignUrlData(res.data);
 				}
 			})
-			.catch((err) => console.log("[getBookletKey] Error: ", err));
+			.catch((err) => console.error("[getBookletKey] Error: ", err));
 		// }
 	};
 
+	// TODO: Load leegality script only when E-sign step is reached...track script status indipendently
 	useEffect(() => {
 		const script = document.createElement("script");
 		script.src = "/scripts/leegalityv5.min.js";
@@ -1054,7 +1057,18 @@ const SignupPage = () => {
 		script.id = "legality";
 		document.body.appendChild(script);
 		script.onload = () => {
-			console.log("script loaded", script);
+			console.log("Leegality script loaded", script);
+		};
+		script.onerror = () => {
+			console.error("Failed to load Leegality script");
+			toast({
+				title: "Failed to initialize eSign",
+				description:
+					"Please check your network connection & try again.",
+				status: "error",
+				duration: 2000,
+			});
+			setEsignStatus(2); // Set E-sign load status to failed
 		};
 		if (!userLoginData) {
 			refreshApiCall();
@@ -1119,7 +1133,7 @@ const SignupPage = () => {
 					) : (
 						<OnboardingWidget
 							// ref={widgetRef}
-							// defaultStep="12800"
+							// defaultStep="24000"
 							defaultStep={
 								userData?.userDetails?.role_list || "12400"
 							}
@@ -1134,6 +1148,7 @@ const SignupPage = () => {
 							handleStepCallBack={handleStepCallBack}
 							esignStatus={esignStatus}
 							primaryColor={primaryColor}
+							orgDetail={orgDetail}
 						/>
 					)}
 				</div>
