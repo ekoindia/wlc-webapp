@@ -1,11 +1,10 @@
 import { FormControl, FormLabel, Grid } from "@chakra-ui/react";
+import { Input, MultiSelect, Radio, Select } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
-import { Input, MultiSelect, Radio, Select } from "..";
 
 /**
- * A <Form> component
- * TODO: Write more description here
+ * A Form component
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
@@ -35,7 +34,11 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 					is_multi_select,
 					is_radio,
 					multiSelectRenderer,
+					validations,
+					// dependent,
 				}) => {
+					//handle dependent
+
 					switch (parameter_type_id) {
 						case ParamType.NUMERIC:
 						case ParamType.TEXT:
@@ -54,7 +57,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 										}
 										fontSize="sm"
 										disabled={disabled}
-										{...register(id)}
+										{...register(id, { ...validations })}
 									/>
 								</FormControl>
 							);
@@ -78,6 +81,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 														onChange={onChange}
 													/>
 												)}
+												rules={{ ...validations }}
 											/>
 										</FormControl>
 									);
@@ -98,6 +102,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 														value={value}
 													/>
 												)}
+												rules={{ ...validations }}
 											/>
 										</FormControl>
 									);
@@ -124,6 +129,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 														/>
 													);
 												}}
+												rules={{ ...validations }}
 											/>
 										</FormControl>
 									);

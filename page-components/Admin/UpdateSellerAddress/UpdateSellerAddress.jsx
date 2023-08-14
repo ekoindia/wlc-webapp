@@ -1,10 +1,11 @@
 import { Divider, Flex, Text } from "@chakra-ui/react";
-import { Button, Form, Headings, Switch } from "components";
+import { Button, Headings, Switch } from "components";
 import { Endpoints, ParamType, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Form } from "tf-components";
 
 const ownershipList = [
 	{ label: "Owned", value: "Owned" },

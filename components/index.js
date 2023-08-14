@@ -11,7 +11,6 @@ import { Divider } from "./Divider";
 import { Dropzone } from "./Dropzone";
 import { EkoConnectWidget } from "./EkoConnectWidget";
 import { ErrorBoundary } from "./ErrorBoundary";
-import { Form } from "./Form";
 import { GlobalSearch } from "./GlobalSearch";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
@@ -47,8 +46,6 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
-	Radio,
-	Form,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
 	Button,
@@ -82,6 +79,7 @@ export {
 	PillTab,
 	PrintReceipt,
 	ProfileCard,
+	Radio,
 	ResponseCard,
 	RouteProtecter,
 	SearchBar,
