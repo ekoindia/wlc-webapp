@@ -16,9 +16,10 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 		<Grid
 			templateColumns={{
 				base: "repeat(1,1fr)",
-				md: "repeat(auto-fit,minmax(500px,1fr))",
+				md: "repeat(auto-fit,minmax(400px,1fr))",
 			}}
 			gap="8"
+			maxW={{ base: "100%", md: "1000px" }}
 			{...rest}
 		>
 			{list_parameters?.map(
@@ -39,13 +40,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 						case ParamType.NUMERIC:
 						case ParamType.TEXT:
 							return (
-								<FormControl
-									key={id}
-									// w={{
-									// 	base: "100%",
-									// 	md: "500px",
-									// }}
-								>
+								<FormControl key={id}>
 									<Input
 										id={id}
 										label={label}
@@ -67,10 +62,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 							if (list_elements) {
 								if (is_multi_select) {
 									return (
-										<FormControl
-											id={id}
-											// w={{ base: "100%", md: "500px" }}
-										>
+										<FormControl id={id}>
 											<FormLabel>{label}</FormLabel>
 											<Controller
 												name={id}
@@ -91,10 +83,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 									);
 								} else if (is_radio) {
 									return (
-										<FormControl
-											id={id}
-											// w={{ base: "100%", md: "500px" }}
-										>
+										<FormControl id={id}>
 											<FormLabel>{label}</FormLabel>
 											<Controller
 												name={id}
@@ -116,7 +105,6 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 									return (
 										<FormControl
 											id={id}
-											// w={{ base: "100%", md: "500px" }}
 											// isInvalid={errors.priority}
 										>
 											<FormLabel>{label}</FormLabel>

@@ -168,7 +168,6 @@ const UpdateSellerAddress = () => {
 			required: true,
 			parameter_type_id: ParamType.LIST,
 			list_elements: ownershipList,
-			is_radio: true,
 		},
 	];
 
