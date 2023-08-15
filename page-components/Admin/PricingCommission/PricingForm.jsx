@@ -1,13 +1,5 @@
-import {
-	Flex,
-	FormControl,
-	FormLabel,
-	Radio,
-	RadioGroup,
-	Text,
-	useToast,
-} from "@chakra-ui/react";
-import { Button, Icon, Input, MultiSelect, Select } from "components";
+import { Flex, FormControl, FormLabel, useToast } from "@chakra-ui/react";
+import { Button, Icon, Input, MultiSelect, Radio, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
@@ -382,35 +374,18 @@ export default PricingForm;
  */
 const RadioInput = ({ name, label, defaultValue, radioGroupList, control }) => {
 	return (
-		<FormControl id={name} w={{ base: "100%", md: "500px" }}>
+		<FormControl id={name}>
 			<FormLabel>{label}</FormLabel>
 			<Controller
 				name={name}
 				control={control}
 				defaultValue={defaultValue}
 				render={({ field: { onChange, value } }) => (
-					<RadioGroup onChange={onChange} value={value}>
-						<Flex
-							direction={{ base: "column", sm: "row" }}
-							gap={{ base: "4", md: "16" }}
-						>
-							{radioGroupList.map((item) => (
-								<Radio
-									size="lg"
-									key={item.value}
-									value={item.value}
-								>
-									<Text
-										fontSize="sm"
-										whiteSpace="nowrap"
-										maxWidth="200px"
-									>
-										{item.label}
-									</Text>
-								</Radio>
-							))}
-						</Flex>
-					</RadioGroup>
+					<Radio
+						options={radioGroupList}
+						value={value}
+						onChange={onChange}
+					/>
 				)}
 			/>
 		</FormControl>
