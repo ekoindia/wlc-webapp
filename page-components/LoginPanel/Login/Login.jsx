@@ -23,7 +23,15 @@ const DynamicGoogleButton = dynamic(
  * @params 	{Function}	setLoginType	Function to set the login type
  * @example	`<Login></Login>`
  */
-const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
+const Login = ({
+	setStep,
+	setNumber,
+	number,
+	setEmail,
+	setLoginType,
+	lastUserName,
+	lastMobileFormatted,
+}) => {
 	const EnterRef = useRef();
 	const toast = useToast();
 	const { orgDetail } = useOrgDetailContext();
@@ -32,25 +40,14 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
-	const [userName, setUserName] = useState(""); // Last logged-in user's first name
 
-	// Get last login mobile number from localstorage and set it as default value
 	useEffect(() => {
-		if (value.length > 0) return;
-
-		const lastLogin = JSON.parse(localStorage.getItem("inf-last-login"));
-		if (lastLogin?.type !== "Google" && lastLogin?.mobile > 1) {
-			// Format mobile number in the following format: +91 123 456 7890
-			// TODO: Fix Input component so that this is not required
-			const formatted_mobile = lastLogin.mobile
-				.toString()
-				.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
-			setValue(formatted_mobile);
+		if (lastMobileFormatted && !value) {
+			setValue(lastMobileFormatted);
 		}
-		if (lastLogin?.name) {
-			setUserName(lastLogin.name.split(" ")[0]);
-		}
-	}, []);
+		// WARNING: Do not add "value" as a dependency here (as it will always auto-fill the last number whenever the user deletes the filled number & therefore the value becomes empty)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lastMobileFormatted]);
 
 	// Is Google Login available?
 	const showGoogle =
@@ -111,7 +108,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				h="10px"
 				bg="primary.DEFAULT"
 			></Box>
-			<Flex mb={userName ? "6" : { base: 10, lg: 14 }}>
+			<Flex mb={lastUserName ? "6" : { base: 10, lg: 14 }}>
 				<OrgLogo
 					orgDetail={orgDetail}
 					size="lg"
@@ -119,7 +116,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 				/>
 			</Flex>
 
-			{userName ? (
+			{lastUserName ? (
 				<Text
 					variant="selectNone"
 					as="h3"
@@ -130,7 +127,7 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 						"2xl": "8",
 					}}
 				>
-					Welcome back, {userName}
+					Welcome back, {lastUserName}
 				</Text>
 			) : null}
 

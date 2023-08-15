@@ -22,6 +22,9 @@ const RouteProtecter = ({ router, children }) => {
 	const role = isAdmin ? "admin" : "non-admin";
 
 	console.log("%cRoute-Protecter: Start\n", "color:green", {
+		// pathname: router.pathname,
+		asPath: router.asPath,
+		// query: router.query,
 		isLoggedIn: isLoggedIn,
 		isAdmin: isAdmin,
 		userId: userId,
@@ -31,10 +34,21 @@ const RouteProtecter = ({ router, children }) => {
 
 	useEffect(() => {
 		const path = router.pathname;
-		console.log("Path", path, isLoggedIn);
+		let isAuthorized = authorized;
+
+		console.log("%cRoute-Protecter: ROUTE UPDATED:\n", "color:green", {
+			asPath: router.asPath,
+			path: path,
+			isLoggedIn: isLoggedIn,
+			isAdmin: isAdmin,
+			userId: userId,
+			authorized: authorized,
+			loading: loading,
+		});
 
 		if (path === "/404") {
 			setLoading(false);
+			isAuthorized = false;
 		}
 		// when the user is isLoggedIn and loading is false
 		else if (!isLoggedIn && !loading) {
@@ -45,6 +59,7 @@ const RouteProtecter = ({ router, children }) => {
 				return;
 			}
 			if (authorized) setAuthorized(false);
+			isAuthorized = false;
 		} else if (isLoggedIn && (userId === "1" || isOnboarding === true)) {
 			console.log("::::Enter in Onboarding::::", path, userId);
 			if (path !== "/signup") {
@@ -54,6 +69,7 @@ const RouteProtecter = ({ router, children }) => {
 			}
 			setLoading(false);
 			setAuthorized(true);
+			isAuthorized = true;
 		} else if (isLoggedIn && role === "admin") {
 			console.log("::::Enter in Admin::::", path);
 			// This condition will redirect to initial path if the route is inaccessible after isLoggedIn
@@ -63,6 +79,7 @@ const RouteProtecter = ({ router, children }) => {
 			}
 			setLoading(false);
 			setAuthorized(true);
+			isAuthorized = true;
 		} else if (isLoggedIn && role === "non-admin") {
 			console.log("::::Enter in nonAdmin::::", path);
 			// Above condition will check, publicLink contain path or path contain "/admin"
@@ -72,6 +89,19 @@ const RouteProtecter = ({ router, children }) => {
 			}
 			setLoading(false);
 			setAuthorized(true);
+			isAuthorized = true;
+		}
+
+		// Cache the last route (if it is not the Login route)...
+		if (isAuthorized && path !== "/") {
+			localStorage.setItem(
+				"inf-last-route",
+				JSON.stringify({
+					path: path,
+					meta: router.query,
+					at: Date.now(),
+				})
+			);
 		}
 	}, [router.asPath, loading, isLoggedIn, userId]);
 

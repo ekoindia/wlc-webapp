@@ -81,7 +81,7 @@ const WalletProvider = ({ children }) => {
 		if (isLoggedIn) {
 			fetchBalance();
 		}
-	}, [isLoggedIn, userId]);
+	}, [isLoggedIn, userId, fetchBalance]);
 
 	// Registering the wallet action in KBar
 	const walletAction = useMemo(() => {
