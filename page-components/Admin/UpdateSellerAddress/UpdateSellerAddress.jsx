@@ -271,7 +271,7 @@ const UpdateSellerAddress = () => {
 									register,
 									formState: { errors /* isSubmitting */ },
 									control,
-									parameters_list: currentAddressFormFields,
+									parameter_list: currentAddressFormFields,
 								}}
 							/>
 
@@ -295,7 +295,7 @@ const UpdateSellerAddress = () => {
 											errors /* isSubmitting */,
 										},
 										control,
-										parameters_list:
+										parameter_list:
 											permanentAddressFormFields,
 									}}
 								/>

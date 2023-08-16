@@ -10,7 +10,7 @@ import { Controller } from "react-hook-form";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Form></Form>` TODO: Fix example
  */
-const Form = ({ parameters_list, register, control, ...rest }) => {
+const Form = ({ parameter_list, register, control, ...rest }) => {
 	return (
 		<Grid
 			templateColumns={{
@@ -21,7 +21,7 @@ const Form = ({ parameters_list, register, control, ...rest }) => {
 			maxW={{ base: "100%", md: "1000px" }}
 			{...rest}
 		>
-			{parameters_list?.map(
+			{parameter_list?.map(
 				({
 					name,
 					label,
