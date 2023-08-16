@@ -37,6 +37,10 @@ const MultiSelect = ({
 	const selectAllObj = { value: "*", label: "Select All" };
 
 	useEffect(() => {
+		setSearchTerm("");
+		setSelectedOptions({});
+		setHighlightedIndex(-1);
+		setSelectAllChecked(false);
 		setFilteredOptions(options);
 	}, [options]);
 
