@@ -26,13 +26,13 @@ const Switch = ({ initialValue, onChange = () => {} }) => {
 			justify="center"
 			cursor="pointer"
 			userSelect="none"
-			p="1"
 		>
 			<Flex
 				direction={switched ? "row" : "row-reverse"}
 				justify="space-between"
 				align="center"
 				w="100%"
+				p="1"
 			>
 				<Text color="white" fontSize="xs" p="2">
 					{switched ? "Yes" : "No"}
