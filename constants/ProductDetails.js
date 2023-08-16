@@ -61,6 +61,12 @@ export const products = {
 			pricing_type: "0",
 		},
 	},
+	ACCOUNT_VERIFICATION: {
+		DEFAULT: {
+			pricing_type: "1",
+			min_pricing_value: "1.7",
+		},
+	},
 };
 
 export const productPricingTextConfig = {
@@ -75,4 +81,5 @@ export const productPricingType = {
 	INDO_NEPAL_FUND_TRANSFER: productPricingTextConfig.COMMISSION,
 	// BBPS: productPricingTextConfig.COMMISSION,
 	CREDIT_CARD_BILL_PAYMENT: productPricingTextConfig.PRICING,
+	ACCOUNT_VERIFICATION: productPricingTextConfig.COMMISSION,
 };
