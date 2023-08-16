@@ -67,8 +67,8 @@ function useLogin(login, setStep, setEmail) {
 					}
 
 					if (
-						responseData.details.user_type === -1 &&
-						data.id_type === "Google"
+						responseData?.details?.user_type === -1 &&
+						data?.id_type === "Google"
 					) {
 						console.log("Setting states");
 

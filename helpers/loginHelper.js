@@ -9,53 +9,74 @@ import { fetcher } from "./apiHelper";
  * @param {function} toast		Function to show toast messages
  * @param {string} sendState	"send" or "resend" for showing proper toast message
  * @param {boolean} isAndroid	Is the user using the Android wrapper app?
+ * @returns {boolean} Is SEND-OTP request successful?
  */
-function sendOtpRequest(
+async function sendOtpRequest(
 	org_id,
 	number,
 	toast,
 	sendState = "send",
 	isAndroid = false
 ) {
+	let success = false;
+	let errMsg = "";
+	let _otp = ""; // Only for UAT
+
 	if (isAndroid) {
 		doAndroidAction(ANDROID_ACTION.OTP_FETCH_REQUEST);
 	}
+
 	const PostData = {
-		platfom: isAndroid ? "android" : "web",
+		platform: isAndroid ? "android" : "web",
 		mobile: number,
 		// client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
 		app: "Eloka",
 		org_id: org_id,
 	};
 
-	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.SENDOTP, {
-		body: PostData,
-		timeout: 30000,
-	})
-		.then((data) => {
-			// Show otp hint in the toast only in development environments
-			if (process.env.NEXT_PUBLIC_ENV !== "production" && toast) {
-				toast({
-					title: `${
-						sendState === "resend" ? "Resent" : "Sent"
-					} Otp Successfully: ${data.data.otp}`,
-					status: "success",
-					duration: 3000,
-					position: "top-right",
-				});
+	try {
+		const data = await fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.SENDOTP,
+			{
+				body: PostData,
+				timeout: 30000,
 			}
-		})
-		.catch(
-			() =>
-				toast &&
-				toast({
-					title: `${
-						sendState === "resend" ? "Resend" : "Send"
-					} Otp failed. Please try again.`,
-					status: "error",
-					duration: 2000,
-				}) // TODO: Go back to submit mobile screen
 		);
+		if (data?.status == 0) {
+			success = true;
+			_otp = data?.data?.otp; // Only for UAT
+		} else {
+			errMsg = data?.message || data?.invalid_params?.csp_id;
+		}
+	} catch (err) {
+		success = false;
+		console.error("[ERROR] sendOtpRequest: ", err);
+	}
+
+	if (success) {
+		// Success toast on UAT only
+		if (process.env.NEXT_PUBLIC_ENV !== "production" && toast) {
+			toast({
+				title: `Demo OTP Sent: ${_otp}`,
+				status: "success",
+				duration: 5000,
+				position: "top-right",
+			});
+		}
+	} else {
+		// Failure toast
+		toast &&
+			toast({
+				title:
+					`Failed to ${
+						sendState === "resend" ? "resend" : "send"
+					} OTP. ` + (errMsg ? errMsg : "Please try again."),
+				status: "error",
+				duration: 6000,
+			});
+	}
+
+	return success;
 }
 
 // TODO: Use proper Input component that returns only unformatted input and make this redundent
@@ -123,13 +144,18 @@ function setUserDetails(data) {
 		);
 
 		// Cache the original login-type (Google / Mobile) and user details in LocalStorage after a sucessful login
-		const user_login_type = sessionStorage.getItem("login_type") || "";
-		const lastLogin = {
-			type: user_login_type,
-			name: data.userDetails.name,
-			mobile: data.userDetails.mobile,
-		};
-		localStorage.setItem("inf-last-login", JSON.stringify(lastLogin));
+		if (
+			data?.userDetails?.mobile &&
+			data.userDetails.mobile.toString().length > 8
+		) {
+			const user_login_type = sessionStorage.getItem("login_type") || "";
+			const lastLogin = {
+				type: user_login_type,
+				name: data.userDetails.name,
+				mobile: data.userDetails.mobile,
+			};
+			localStorage.setItem("inf-last-login", JSON.stringify(lastLogin));
+		}
 	} catch (err) {
 		console.warn("Updating to session-storage failed: ", err);
 	}

@@ -14,19 +14,24 @@ const Radio = ({
 	value,
 	options,
 	onChange,
+	defaultValue,
 	renderer = { label: "label", value: "value" },
 	...rest
 }) => {
 	return (
-		<RadioGroup onChange={onChange} value={value}>
+		<RadioGroup
+			defaultValue={defaultValue}
+			onChange={onChange}
+			value={value}
+		>
 			<Flex
 				direction={{
 					base: "column",
-					sm: "row",
+					md: "row",
 				}}
 				gap={{
 					base: "4",
-					sm: "16",
+					md: "16",
 				}}
 				wrap="wrap"
 				{...rest}

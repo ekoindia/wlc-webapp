@@ -3,12 +3,10 @@ import {
 	Flex,
 	FormControl,
 	FormLabel,
-	Radio,
-	RadioGroup,
 	SimpleGrid,
 	Text,
 } from "@chakra-ui/react";
-import { Button, Calenders, Headings, Input, Select } from "components";
+import { Button, Calenders, Headings, Input, Radio, Select } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
@@ -305,26 +303,11 @@ const UpdatePersonalInfo = () => {
 										render={({
 											field: { onChange, value },
 										}) => (
-											<RadioGroup
-												onChange={onChange}
+											<Radio
+												options={formGenderRadioList}
 												value={value}
-											>
-												<Flex gap="16">
-													{formGenderRadioList.map(
-														({ value, label }) => (
-															<Radio
-																size="lg"
-																key={value}
-																value={value}
-															>
-																<Text fontSize="sm">
-																	{label}
-																</Text>
-															</Radio>
-														)
-													)}
-												</Flex>
-											</RadioGroup>
+												onChange={onChange}
+											/>
 										)}
 									/>
 								</FormControl>

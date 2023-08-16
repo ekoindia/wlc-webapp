@@ -12,7 +12,7 @@ import { Icon } from "..";
 const Th = ({ renderer, visibleColumns, rowExpansion }) => {
 	const main = rowExpansion
 		? [
-				{ field: "", show: "ExpandButton" },
+				{ label: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
 		  ]
 		: renderer;
@@ -24,7 +24,7 @@ const Th = ({ renderer, visibleColumns, rowExpansion }) => {
 			fontSize={{ base: "10px", xl: "11px", "2xl": "16px" }}
 		>
 			<Flex gap="2" align="center">
-				{item.field}
+				{item.label}
 				{item.sorting && <Icon name="sort" size="8px" />}
 			</Flex>
 		</ChakraTh>

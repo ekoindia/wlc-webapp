@@ -140,7 +140,7 @@ const HistoryCard = ({
 									direction="column"
 									position="relative"
 									align="flex-start"
-									key={`tdexpsm-${rendererIndex}-${column.field}`}
+									key={`tdexpsm-${rendererIndex}-${column.label}`}
 									// gap={2}
 									// py="6px"
 									display={dispScreen}
@@ -164,7 +164,7 @@ const HistoryCard = ({
 										zIndex="999"
 									></Box>
 									<Text color="light" fontSize="10px">
-										{column.field}
+										{column.label}
 									</Text>
 									<Text
 										color="dark"
