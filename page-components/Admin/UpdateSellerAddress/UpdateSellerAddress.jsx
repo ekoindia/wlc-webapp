@@ -245,11 +245,11 @@ const UpdateSellerAddress = () => {
 					>
 						{agentData?.agent_name}
 					</Text>
-					<span>
+					{/* <span>
 						Edit the fields below and click Preview. Click Cancel to
 						return to Client HomePage without submitting
 						information.
-					</span>
+					</span> */}
 				</Flex>
 				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
