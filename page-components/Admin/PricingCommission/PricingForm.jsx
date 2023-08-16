@@ -4,6 +4,7 @@ import { Endpoints } from "constants";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
@@ -43,6 +44,8 @@ const PricingForm = ({
 	const [data, setData] = useState();
 	const [options, setOptions] = useState();
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
+
+	const router = useRouter();
 
 	const { accessToken } = useSession();
 	const {
@@ -317,6 +320,7 @@ const PricingForm = ({
 						color="primary.DEFAULT"
 						_hover={{ textDecoration: "none" }}
 						borderRadius={{ base: "none", md: "10" }}
+						onClick={() => router.back()}
 					>
 						Cancel
 					</Button>
