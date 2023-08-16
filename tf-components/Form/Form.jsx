@@ -10,7 +10,7 @@ import { Controller } from "react-hook-form";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Form></Form>` TODO: Fix example
  */
-const Form = ({ list_parameters, register, control, ...rest }) => {
+const Form = ({ parameters_list, register, control, ...rest }) => {
 	return (
 		<Grid
 			templateColumns={{
@@ -21,9 +21,9 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 			maxW={{ base: "100%", md: "1000px" }}
 			{...rest}
 		>
-			{list_parameters?.map(
+			{parameters_list?.map(
 				({
-					id,
+					name,
 					label,
 					required,
 					value,
@@ -43,9 +43,9 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 						case ParamType.NUMERIC:
 						case ParamType.TEXT:
 							return (
-								<FormControl key={id}>
+								<FormControl key={name}>
 									<Input
-										id={id}
+										id={name}
 										label={label}
 										required={required}
 										value={value}
@@ -57,7 +57,7 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 										}
 										fontSize="sm"
 										disabled={disabled}
-										{...register(id, { ...validations })}
+										{...register(name, { ...validations })}
 									/>
 								</FormControl>
 							);
@@ -65,10 +65,10 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 							if (list_elements) {
 								if (is_multi_select) {
 									return (
-										<FormControl id={id}>
+										<FormControl id={name}>
 											<FormLabel>{label}</FormLabel>
 											<Controller
-												name={id}
+												name={name}
 												control={control}
 												render={({
 													field: { onChange },
@@ -87,10 +87,10 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 									);
 								} else if (is_radio) {
 									return (
-										<FormControl id={id}>
+										<FormControl id={name}>
 											<FormLabel>{label}</FormLabel>
 											<Controller
-												name={id}
+												// name={name}
 												control={control}
 												defaultValue={defaultValue}
 												render={({
@@ -109,12 +109,12 @@ const Form = ({ list_parameters, register, control, ...rest }) => {
 								} else {
 									return (
 										<FormControl
-											id={id}
+											id={name}
 											// isInvalid={errors.priority}
 										>
 											<FormLabel>{label}</FormLabel>
 											<Controller
-												name={id}
+												name={name}
 												control={control}
 												render={({
 													field: { onChange, value },

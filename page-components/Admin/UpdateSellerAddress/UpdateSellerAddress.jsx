@@ -125,38 +125,38 @@ const UpdateSellerAddress = () => {
 
 	const currentAddressFormFields = [
 		{
-			id: "address_line1",
+			name: "address_line1",
 			label: "Address Line 1",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "address_line2",
+			name: "address_line2",
 			label: "Address Line 2",
 			required: false,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "pincode",
+			name: "pincode",
 			label: "Postel Code",
 			required: true,
 			parameter_type_id: ParamType.NUMERIC,
 		},
 		{
-			id: "city",
+			name: "city",
 			label: "City",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "country_state",
+			name: "country_state",
 			label: "State",
 			required: true,
 			parameter_type_id: ParamType.LIST,
 			list_elements: statesList,
 		},
 		{
-			id: "country",
+			name: "country",
 			label: "Country",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
@@ -164,7 +164,7 @@ const UpdateSellerAddress = () => {
 			value: "India",
 		},
 		{
-			id: "shop_ownership_type",
+			name: "shop_ownership_type",
 			label: "Ownership Type",
 			required: true,
 			parameter_type_id: ParamType.LIST,
@@ -174,38 +174,38 @@ const UpdateSellerAddress = () => {
 
 	const permanentAddressFormFields = [
 		{
-			id: "permanent_address_line1",
+			name: "permanent_address_line1",
 			label: "Address Line 1",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "permanent_address_line2",
+			name: "permanent_address_line2",
 			label: "Address Line 2",
 			required: false,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "permanent_address_pincode",
+			name: "permanent_address_pincode",
 			label: "Postel Code",
 			required: true,
 			parameter_type_id: ParamType.NUMERIC,
 		},
 		{
-			id: "permanent_address_city",
+			name: "permanent_address_city",
 			label: "City",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "permanent_address_state",
+			name: "permanent_address_state",
 			label: "State",
 			required: true,
 			parameter_type_id: ParamType.LIST,
 			list_elements: statesList,
 		},
 		{
-			id: "permanent_address_country",
+			name: "permanent_address_country",
 			label: "Country",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
@@ -213,7 +213,7 @@ const UpdateSellerAddress = () => {
 			value: "India",
 		},
 		{
-			id: "permanent_address_shop_ownership_type",
+			name: "permanent_address_shop_ownership_type",
 			label: "Ownership Type",
 			required: true,
 			parameter_type_id: ParamType.LIST,
@@ -271,7 +271,7 @@ const UpdateSellerAddress = () => {
 									register,
 									formState: { errors /* isSubmitting */ },
 									control,
-									list_parameters: currentAddressFormFields,
+									parameters_list: currentAddressFormFields,
 								}}
 							/>
 
@@ -295,7 +295,7 @@ const UpdateSellerAddress = () => {
 											errors /* isSubmitting */,
 										},
 										control,
-										list_parameters:
+										parameters_list:
 											permanentAddressFormFields,
 									}}
 								/>
