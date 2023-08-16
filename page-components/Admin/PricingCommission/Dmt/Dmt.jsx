@@ -24,7 +24,7 @@ const Dmt = ({ prop1, ...rest }) => {
 	//request structure
 	// const dmtFields = [
 	// 	{
-	// 		id: "operation_type",
+	// 		name: "operation_type",
 	// 		label: `Select ${productPricingType.DMT} For`,
 	// 		required: true,
 	// 		parameter_type_id: ParamType.LIST,
@@ -32,7 +32,7 @@ const Dmt = ({ prop1, ...rest }) => {
 	// 		list_parameters: operationTypeList,
 	// 	},
 	// 	{
-	// 		id: "CspList",
+	// 		name: "CspList",
 	// 		label: "dependent",
 	// 		required: true,
 	// 		parameter_type_id: ParamType.LIST,
@@ -50,14 +50,14 @@ const Dmt = ({ prop1, ...rest }) => {
 	// 		],
 	// 	},
 	// 	{
-	// 		id: "select",
+	// 		name: "select",
 	// 		label: "Select Slab",
 	// 		required: true,
 	// 		parameter_type_id: ParamType.LIST,
 	// 		list_parameters: "dependent",
 	// 	},
 	// 	{
-	// 		id: "pricing_type",
+	// 		name: "pricing_type",
 	// 		label: `Select ${productPricingType.DMT} Type`,
 	// 		required: true,
 	// 		defaultValue: products.DMT.DEFAULT.pricing_type,
@@ -66,7 +66,7 @@ const Dmt = ({ prop1, ...rest }) => {
 	// 		is_radio: true,
 	// 	},
 	// 	{
-	// 		id: "actual_pricing",
+	// 		name: "actual_pricing",
 	// 		label: `Define ${productPricingType.DMT}`,
 	// 		required: true,
 	// 		parameter_type_id: ParamType.NUMERIC,
