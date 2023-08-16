@@ -49,6 +49,7 @@ const Table = ({
 		if (router.query.page && +router.query.page !== pageNumber) {
 			setPageNumber(+router.query.page);
 		}
+		setExpandedRow(null);
 	}, [router.query.page]);
 
 	const prepareMobileCards = () => {
