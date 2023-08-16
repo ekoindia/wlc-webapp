@@ -30,14 +30,18 @@ const AccountVerification = () => {
 		formState: { errors /* isSubmitting */ },
 		control,
 		// setValue,
-	} = useForm();
+	} = useForm({
+		defaultValues: {
+			account_verification: "0",
+		},
+	});
 
 	const watchAccountVerification = watch("account_verification");
 
 	const router = useRouter();
 
-	const handleFormSubmit = () => {
-		console.log("API call");
+	const handleFormSubmit = (data) => {
+		console.log("Submit Data", data);
 	};
 
 	const pricingTypeList = [{ value: "1", label: "Fixed (₹)" }];
@@ -55,7 +59,6 @@ const AccountVerification = () => {
 					<Controller
 						name="account_verification"
 						control={control}
-						defaultValue="0"
 						render={({ field: { onChange, value } }) => (
 							<Radio
 								options={radioOptions}
