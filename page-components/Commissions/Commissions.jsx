@@ -76,6 +76,7 @@ const Commissions = ({ prod_id }) => {
 						fontSize="12"
 						bg={tx?.id === tagValue ? "primary.DEFAULT" : "divider"}
 						color={tx?.id === tagValue ? "focusbg" : "dark"}
+						cursor="pointer"
 						_hover={{ bg: "primary.DEFAULT", color: "white" }}
 						onClick={() => handleTagClick(tx.id)}
 					/>
