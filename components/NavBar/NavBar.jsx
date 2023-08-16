@@ -135,6 +135,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						<OrgLogo
 							orgDetail={orgDetail}
 							size="md"
+							dark={
+								orgDetail?.metadata?.theme?.navstyle === "light"
+							}
 							ml={{ base: 1, lg: 0 }}
 						/>
 					</Flex>
