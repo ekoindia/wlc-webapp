@@ -59,7 +59,6 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 				variant="stripedActionRedirect"
 				renderer={renderer}
 				data={transactiondata}
-				tableName="Transaction"
 				ResponsiveCard={TransactionHistoryCard}
 			/>
 		</>

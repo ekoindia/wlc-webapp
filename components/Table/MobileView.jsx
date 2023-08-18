@@ -38,7 +38,7 @@ const MobileView = ({
 	}
 
 	return (
-		<Flex direction="column" mx="2" gap={isReceipt ? "0" : "4"}>
+		<Flex direction="column" gap={isReceipt ? "0" : "4"}>
 			{isReceipt && (
 				<Text
 					bg="white"

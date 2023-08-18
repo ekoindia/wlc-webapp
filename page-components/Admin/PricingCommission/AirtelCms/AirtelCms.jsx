@@ -186,7 +186,6 @@ export default AirtelCms;
 // 	];
 // 	return (
 // 		<Table
-// 			tableName="BulkOnboarding"
 // 			variant="stripedActionNone"
 // 			renderer={renderer}
 // 			// totalRecords={totalRecords}
@@ -194,6 +193,5 @@ export default AirtelCms;
 // 			// setPageNumber={setPageNumber}
 // 			data={airtelCmsResponseList}
 // 		/>
-// 		//TODO table responsive card
 // 	);
 // };
