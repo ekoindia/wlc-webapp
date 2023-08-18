@@ -40,7 +40,6 @@ const AccountStatementTable = (props) => {
 				tableRowLimit={tableRowLimit?.XLARGE}
 				renderer={renderer}
 				data={acctabledata}
-				tableName="Account"
 				ResponsiveCard={AccountStatementCard}
 				isReceipt={true}
 			/>

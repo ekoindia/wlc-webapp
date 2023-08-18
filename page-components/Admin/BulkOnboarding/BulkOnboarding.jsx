@@ -72,19 +72,30 @@ const BulkOnboarding = () => {
 	};
 
 	return (
-		<>
+		<div>
 			<Headings
 				title="Onboard Retailers & Distributors"
 				hasIcon={false}
 			/>
 			<Flex
 				direction="column"
-				w="100%"
 				p={{ base: "1em", md: "2em" }}
-				bg="white"
-				borderRadius={8}
+				bg={
+					data?.data?.csp_list?.length > 0
+						? {
+								base: "none",
+								md: "white",
+						  }
+						: "white"
+				}
+				borderRadius="10"
 				fontSize="md"
-				gap="6"
+				gap="4"
+				mx={
+					data?.data?.csp_list?.length > 0
+						? "0"
+						: { base: "4", md: "0" }
+				}
 			>
 				{data === null ? (
 					<Flex
@@ -100,7 +111,7 @@ const BulkOnboarding = () => {
 								onChange={(value) => setApplicantType(value)}
 							>
 								<Flex
-									direction={{ base: "column", sm: "row" }}
+									direction={{ base: "column", md: "row" }}
 									gap={{ base: "4", md: "16" }}
 								>
 									{Object.entries(applicantTypeObj).map(
@@ -165,7 +176,7 @@ const BulkOnboarding = () => {
 						)}
 					</Flex>
 				) : (
-					<Flex direction="column" gap="2">
+					<Flex direction="column" gap="4">
 						<Flex fontSize="sm" direction="column" gap="1">
 							<span>
 								{data?.message || "Something went wrong"}!!
@@ -208,7 +219,7 @@ const BulkOnboarding = () => {
 					</Flex>
 				)}
 			</Flex>
-		</>
+		</div>
 	);
 };
 

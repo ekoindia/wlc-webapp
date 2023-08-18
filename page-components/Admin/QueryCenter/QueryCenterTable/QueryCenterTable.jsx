@@ -40,8 +40,6 @@ const QueryCenterTable = ({
 	return (
 		<Table
 			renderer={renderer}
-			variant="stripedActionNone"
-			tableName="Query"
 			// totalRecords={totalRecords}
 			setPageNumber={setPageNumber}
 			pageNumber={pageNumber}
