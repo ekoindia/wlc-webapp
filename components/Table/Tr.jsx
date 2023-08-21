@@ -67,12 +67,6 @@ const Tr = ({
 		: renderer;
 
 	const extra = rowExpansion ? renderer?.slice(visibleColumns) : [];
-	// const printExtras =
-	// 	tableName === "History"
-	// 		? [{ name: "trx_name", label: "Transaction" }]
-	// 		: [];
-
-	// console.log("visibleColumns", extra);
 
 	const handleRowClick = (index) => {
 		if (rowExpansion) {

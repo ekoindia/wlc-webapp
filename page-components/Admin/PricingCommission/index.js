@@ -1,4 +1,5 @@
 export { AadhaarPay } from "./AadhaarPay";
+export { default as AccountVerification } from "./AccountVerification";
 export { Aeps } from "./Aeps";
 export { AirtelCms } from "./AirtelCms";
 export { Bbps } from "./Bbps";

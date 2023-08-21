@@ -30,7 +30,6 @@ const BulkOnboardingResponse = ({
 	];
 	return (
 		<Table
-			tableName="BulkOnboarding"
 			variant="stripedActionNone"
 			renderer={renderer}
 			// totalRecords={totalRecords}
@@ -38,7 +37,6 @@ const BulkOnboardingResponse = ({
 			// setPageNumber={setPageNumber}
 			data={bulkOnboardingResponseList}
 		/>
-		//TODO table responsive card
 	);
 };
 

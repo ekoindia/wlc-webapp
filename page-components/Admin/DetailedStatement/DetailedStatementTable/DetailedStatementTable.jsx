@@ -41,7 +41,6 @@ const DetailedStatementTable = ({
 			<Table
 				renderer={renderer}
 				data={detailedStatementData}
-				tableName="Detailed"
 				totalRecords={totalRecords}
 				setPageNumber={setPageNumber}
 				pageNumber={pageNumber}

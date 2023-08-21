@@ -31,15 +31,16 @@ const Switch = ({ initialValue, onChange = () => {} }) => {
 				direction={switched ? "row" : "row-reverse"}
 				justify="space-between"
 				align="center"
-				w="90%"
+				w="100%"
+				p="1"
 			>
-				<Text color="white" fontSize="xs" px="8px">
+				<Text color="white" fontSize="xs" p="2">
 					{switched ? "Yes" : "No"}
 				</Text>
 
 				<Circle
 					bg="white"
-					size="23px"
+					size="24px"
 					boxShadow={
 						switched
 							? "0px 3px 6px var(--chakra-colors-success)"

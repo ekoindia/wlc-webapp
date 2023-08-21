@@ -3,6 +3,7 @@ import {
 	TableContainer,
 	Tbody,
 	Thead,
+	Tr as ChakraTr,
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { tableRowLimit as trl } from "constants";
@@ -77,18 +78,24 @@ const Table = ({
 					}}
 				>
 					<ChakraTable variant={variant} bg="white">
-						<Thead
-							sx={{
-								"@media print": printExpansion
-									? {
-											display: "none !important",
-									  }
-									: null,
-							}}
-						>
-							<Th
-								{...{ renderer, visibleColumns, rowExpansion }}
-							/>
+						<Thead>
+							<ChakraTr
+								sx={{
+									"@media print": printExpansion
+										? {
+												display: "none !important",
+										  }
+										: null,
+								}}
+							>
+								<Th
+									{...{
+										renderer,
+										visibleColumns,
+										rowExpansion,
+									}}
+								/>
+							</ChakraTr>
 						</Thead>
 						<Tbody>
 							<Tr

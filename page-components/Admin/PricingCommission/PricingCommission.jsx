@@ -10,6 +10,7 @@ import {
 import { Headings } from "components";
 import {
 	AadhaarPay,
+	//AccountVerification,
 	Aeps,
 	AirtelCms,
 	CreditCardBillPayment,
@@ -31,6 +32,7 @@ const PricingCommissions = () => {
 		{ label: "Indo-Nepal Fund Transfer", comp: <IndoNepal /> },
 		{ label: "Airtel CMS", comp: <AirtelCms /> },
 		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
+		//{ label: "Account Verification", comp: <AccountVerification /> },
 	];
 
 	return (
