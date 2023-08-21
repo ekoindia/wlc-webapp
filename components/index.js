@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { Breadcrumbs } from "./Breadcrumb";
 import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { Button } from "./Button";
@@ -46,6 +47,7 @@ import { Table } from "./Table";
 import { Tags } from "./Tags";
 
 export {
+	AdminViewToggleCard,
 	Radio,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
