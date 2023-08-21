@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { DetailedStatementTable } from ".";
 
 const currentDate = new Date();
-currentDate.setDate(currentDate.getDate() - 1); //as of now currentDate is having yesterday's date
+// currentDate.setDate(currentDate.getDate() - 1); //as of now currentDate is having yesterday's date
 
 const oneYearAgoDate = new Date(currentDate);
 oneYearAgoDate.setFullYear(currentDate.getFullYear() - 1); // one year ago date from yesterday's date
@@ -80,15 +80,14 @@ const DetailedStatement = () => {
 	return (
 		<>
 			<Headings title="Detailed Statement" />
-			<Flex direction="column" px={{ base: "20px", md: "0px" }}>
+			<Flex direction="column" px={{ base: "20px", md: "0px" }} gap="4">
 				<Flex
+					display={{ base: "none", md: "flex" }}
 					w="100%"
 					direction="column"
 					bg="white"
-					display={{ base: "none", md: "flex" }}
 					p="30px"
 					borderRadius="10px"
-					mb="24px"
 				>
 					<Flex
 						w="100%"
