@@ -15,8 +15,15 @@ import { useEffect, useState } from "react";
 const isBrowser = typeof window !== "undefined";
 
 const RouteProtecter = ({ router, children }) => {
-	const { isLoggedIn, isAdmin, userId, isOnboarding, loading, setLoading } =
-		useSession();
+	const {
+		isLoggedIn,
+		isAdmin,
+		isAdminAgentMode,
+		userId,
+		isOnboarding,
+		loading,
+		setLoading,
+	} = useSession();
 	const [authorized, setAuthorized] = useState(false);
 
 	const role = isAdmin ? "admin" : "non-admin";
@@ -27,6 +34,7 @@ const RouteProtecter = ({ router, children }) => {
 		// query: router.query,
 		isLoggedIn: isLoggedIn,
 		isAdmin: isAdmin,
+		isAdminAgentMode: isAdminAgentMode,
 		userId: userId,
 		authorized: authorized,
 		loading: loading,
@@ -71,12 +79,26 @@ const RouteProtecter = ({ router, children }) => {
 			setAuthorized(true);
 			isAuthorized = true;
 		} else if (isLoggedIn && role === "admin") {
-			console.log("::::Enter in Admin::::", path);
+			console.log("::::Enter in Admin::::", path, isAdminAgentMode);
 			// This condition will redirect to initial path if the route is inaccessible after isLoggedIn
 			if (publicLinks.includes(path) || !path.includes(baseRoute[role])) {
 				router.replace(initialRoute[role]);
 				return;
 			}
+
+			// Handle Agent-View for admins...update homepage to the correct view
+			if (isAdminAgentMode) {
+				if (path === "/admin") {
+					router.replace("/admin/home");
+					return;
+				}
+			} else {
+				if (path === "/admin/home") {
+					router.replace("/admin");
+					return;
+				}
+			}
+
 			setLoading(false);
 			setAuthorized(true);
 			isAuthorized = true;
@@ -103,7 +125,7 @@ const RouteProtecter = ({ router, children }) => {
 				})
 			);
 		}
-	}, [router.asPath, loading, isLoggedIn, userId]);
+	}, [router.asPath, loading, isLoggedIn, userId, role, isAdminAgentMode]);
 
 	/**
 	 * Remove the flash of private pages when user is not nonLogged

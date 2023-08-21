@@ -1,4 +1,5 @@
 import { Box, Link, Text } from "@chakra-ui/react";
+import { LayoutLogin } from "components/Layout";
 import { useOrgDetailContext } from "contexts";
 
 const PrivacyPage = () => {
@@ -245,5 +246,8 @@ const H2 = ({ mb = 2, children, ...rest }) => {
 PrivacyPage.pageMeta = {
 	title: "Privacy Policy",
 };
+
+// Custom simple layout...
+PrivacyPage.getLayout = (page) => <LayoutLogin>{page}</LayoutLogin>;
 
 export default PrivacyPage;

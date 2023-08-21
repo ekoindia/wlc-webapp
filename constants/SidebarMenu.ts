@@ -6,6 +6,7 @@ type sidebarMenuType = {
 	name?: string;
 	link?: string;
 	trxn_id?: number; // Transaction Id to link to. Converts to "/transaction/<trxn_id>" links after checking if it is allowed as per user's roles.
+	dynamicAdminView?: boolean; // If true, then the menu item will be shown to Admins in the "Agent-View". The link should be prepended with "/admin" in this case.
 	// comp?: boolean;
 	// api?: boolean;
 	// subLevel?: boolean;
@@ -104,6 +105,7 @@ export const sidebarMenu: sidebarMenuType[] = [
 		name: "Home",
 		icon: "menu-home",
 		link: "/home",
+		dynamicAdminView: true,
 	},
 	// {
 	// 	name: "Select Plan",

@@ -7,10 +7,12 @@ const fallbackLogo =
 /**
  * Show the organization Logo. If logo is not available, show the app name as logo
  * @param 	{object}	orgDetail	Organization Details, specially `logo` & `app_name`
+ * @param	{string}	size	Size of the logo. `lg` for large, `md` for medium
+ * @param	{boolean}	dark	Show logo on dark background
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<OrgLogo></OrgLogo>` TODO: Fix example
  */
-const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
+const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 	const [imageState, setImageState] = useState("loading");
 	const [isSmallLogo, setIsSmallLogo] = useState(false); // Is it a circular/squarish logo?
 
@@ -60,6 +62,7 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 				<TextLogo
 					app_name={orgDetail.app_name}
 					logoFontSize={logoFontSize}
+					dark={dark}
 				/>
 			</Center>
 		);
@@ -95,6 +98,7 @@ const OrgLogo = ({ orgDetail, size = "md", ...rest }) => {
 				<TextLogo
 					app_name={orgDetail.app_name}
 					logoFontSize={logoFontSize}
+					dark={dark}
 					color="primary.dark"
 					ml={imageState === "loaded" ? 2 : 0}
 				/>
@@ -116,11 +120,12 @@ const TextLogo = ({
 	app_name,
 	logoFontSize,
 	color = "gray.800",
+	dark = false,
 	...restTextLogoAttrs
 }) => (
 	<Text
 		as="b"
-		color={color}
+		color={dark ? "white" : color}
 		noOfLines={1}
 		maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
 		fontSize={logoFontSize}

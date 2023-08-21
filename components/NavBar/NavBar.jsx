@@ -69,7 +69,8 @@ const NavBar = ({ setNavOpen }) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
-	const { userData, isAdmin, isOnboarding, isLoggedIn } = useUser();
+	const { userData, isAdmin, isAdminAgentMode, isOnboarding, isLoggedIn } =
+		useUser();
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
 	// const router = useRouter();
@@ -135,6 +136,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						<OrgLogo
 							orgDetail={orgDetail}
 							size="md"
+							dark={
+								orgDetail?.metadata?.theme?.navstyle === "light"
+							}
 							ml={{ base: 1, lg: 0 }}
 						/>
 					</Flex>
@@ -233,7 +237,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 											color={"navbar.textLight"}
 											textAlign={"start"}
 										>
-											Logged in as admin
+											{isAdminAgentMode
+												? "Viewing as Agent"
+												: "Logged in as Admin"}
 										</Text>
 									</Flex>
 								) : null}

@@ -87,7 +87,6 @@ const UserProvider = ({ userMockData, children }) => {
 	 * Fetch the user profile data again and update the userState.
 	 */
 	const refreshUser = useCallback(() => {
-		console.log("inside mainfunction");
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE,
 			{
@@ -159,6 +158,17 @@ const UserProvider = ({ userMockData, children }) => {
 	};
 
 	/**
+	 * Set "Agent Mode" for the Admin. When active, the organization admin sees the app as an agent.
+	 * @param {boolean} agent_mode - If true, agent mode is active.
+	 */
+	const setAdminAgentMode = (agent_mode = false) => {
+		dispatch({
+			type: "SET_ADMIN_AGENT_MODE",
+			payload: agent_mode,
+		});
+	};
+
+	/**
 	 * Check if the user is logged in.
 	 */
 	const isLoggedIn = state?.loggedIn && state?.access_token ? true : false; // && state?.userId > 1;
@@ -178,6 +188,7 @@ const UserProvider = ({ userMockData, children }) => {
 		return {
 			isLoggedIn: isLoggedIn,
 			isAdmin: isAdmin,
+			isAdminAgentMode: isAdmin ? state?.isAdminAgentMode : false,
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
 			accessToken: state?.access_token || "",
@@ -193,6 +204,7 @@ const UserProvider = ({ userMockData, children }) => {
 			setIsTokenUpdating,
 			updateShopDetails,
 			updatePersonalDetail,
+			setAdminAgentMode,
 		};
 	}, [state, isLoggedIn, loading, isTokenUpdating, isAdmin, refreshUser]);
 
@@ -200,6 +212,7 @@ const UserProvider = ({ userMockData, children }) => {
 		return {
 			isLoggedIn: isLoggedIn,
 			isAdmin: isAdmin,
+			isAdminAgentMode: isAdmin ? state?.isAdminAgentMode : false,
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
 			accessToken: state?.access_token || "",
@@ -214,6 +227,7 @@ const UserProvider = ({ userMockData, children }) => {
 		state?.user_type,
 		state?.access_token,
 		state?.onboarding,
+		state?.isAdminAgentMode,
 		loading,
 		isAdmin,
 		refreshUser,

@@ -103,6 +103,13 @@ export const UserReducer = (state, { type, payload, meta }) => {
 			return defaultUserState;
 		}
 
+		case "SET_ADMIN_AGENT_MODE": {
+			return {
+				...state,
+				isAdminAgentMode: payload,
+			};
+		}
+
 		default:
 			throw new Error(`Unknown action type: ${type}`);
 	}
