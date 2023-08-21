@@ -10,25 +10,20 @@ import { NetworkFilter } from "..";
  */
 const SortAndFilterMobile = ({ setFilter /*, setSort */ }) => {
 	return (
-		<Box
-			display={{ base: "flex", md: "none" }}
-			pb={{ base: "20vw", sm: "15vw", md: "0px" }}
-		>
+		<Box display={{ base: "flex", md: "none" }} mt="8">
 			<Flex
-				position={"fixed"}
-				w={"100%"}
-				h={"15vw"}
-				bottom={"0%"}
-				left={"0%"}
-				zIndex={"99"}
-				boxShadow={"0px -3px 10px #0000001A"}
+				position="fixed"
+				w="100%"
+				h="15vw"
+				bottom="0"
+				left="0"
+				zIndex="99"
+				boxShadow="0px -3px 10px #0000001A"
 			>
 				{/* <Box w={"50%"} h={"100%"} bg={"white"}>
 					<NetworkSort setSort={setSort} />
 				</Box> */}
-				<Flex h={"100%"} w="100%">
-					<NetworkFilter setFilter={setFilter} />
-				</Flex>
+				<NetworkFilter setFilter={setFilter} />
 			</Flex>
 		</Box>
 	);
