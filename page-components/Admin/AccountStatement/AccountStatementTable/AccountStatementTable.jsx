@@ -1,49 +1,61 @@
+import { Text } from "@chakra-ui/react";
 import { Table } from "components";
 import { tableRowLimit } from "constants";
 import { AccountStatementCard } from "..";
 
 /**
- * A <AccountStatementTable> component
- * TODO: This is account statement table with not clickable rows
+ * Parameter list for account statement table
+ */
+const accountStatementTableParameterList = [
+	{
+		name: "transaction_id",
+		label: "TID",
+	},
+	{
+		name: "date_time",
+		label: "Date & Time",
+		sorting: true,
+		show: "DateTime",
+	},
+	{ name: "activity", label: "Activity" },
+	{
+		name: "description",
+		label: "Description",
+		show: "Description",
+	},
+
+	{ name: "amount", label: "Amount", show: "Amount" },
+];
+
+/**
+ * A AccountStatementTable page-component
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<AccountStatementTable></AccountStatementTable>`
  */
 
-const AccountStatementTable = (props) => {
-	const { acctabledata } = props;
+const AccountStatementTable = ({ isLoading, accountStatementTableData }) => {
+	const accountTableDataSize = accountStatementTableData?.length ?? 0;
 
-	const renderer = [
-		{
-			name: "transaction_id",
-			label: "TID",
-		},
-		{
-			name: "date_time",
-			label: "Date & Time",
-			sorting: true,
-			show: "DateTime",
-		},
-		{ name: "activity", label: "Activity" },
-		{
-			name: "description",
-			label: "Description",
-			show: "Description",
-		},
-
-		{ name: "amount", label: "Amount", show: "Amount" },
-	];
+	if (!isLoading && accountTableDataSize < 1) {
+		return (
+			<Text textAlign="center" color="light">
+				Nothing Found
+			</Text>
+		);
+	}
 
 	return (
-		<>
-			<Table
-				tableRowLimit={tableRowLimit?.XLARGE}
-				renderer={renderer}
-				data={acctabledata}
-				ResponsiveCard={AccountStatementCard}
-				isReceipt={true}
-			/>
-		</>
+		<Table
+			{...{
+				isLoading,
+				isReceipt: true,
+				data: accountStatementTableData,
+				tableRowLimit: tableRowLimit?.XLARGE,
+				ResponsiveCard: AccountStatementCard,
+				renderer: accountStatementTableParameterList,
+			}}
+		/>
 	);
 };
 
