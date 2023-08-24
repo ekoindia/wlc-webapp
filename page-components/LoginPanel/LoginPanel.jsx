@@ -3,6 +3,7 @@ import { Icon, ShowcaseCircle } from "components";
 import { useOrgDetailContext, useSession } from "contexts";
 import { fadeIn } from "libs/chakraKeyframes";
 import { useEffect, useState } from "react";
+import { svgBgDotted } from "utils/svgPatterns";
 import { Login, SocialVerify, VerifyOtp } from "./children";
 
 /**
@@ -118,8 +119,6 @@ const LoginPanel = () => {
 					align="center"
 					flex={2}
 					display={{ base: "none", md: "flex" }}
-					px={{ base: 5, "2xl": 7 }}
-					py={{ base: 7, "2xl": 10 }}
 					boxShadow="0px 3px 20px #00000005"
 					// bg="primary.DEFAULT"
 					bgGradient="linear(to-b, primary.light, primary.dark)"
@@ -191,9 +190,12 @@ const DescCard = ({ logo, header, features = [] }) => {
 		<Flex
 			w="100%"
 			h="100%"
+			px={{ base: 5, "2xl": 7 }}
+			py={{ base: 7, "2xl": 10 }}
 			direction="column"
 			align="center"
 			justify="space-around"
+			backgroundImage={svgBgDotted()}
 		>
 			{/* Top image box with circles and stars */}
 			<ShowcaseCircle>

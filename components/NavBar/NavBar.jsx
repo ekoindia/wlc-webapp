@@ -10,6 +10,7 @@ import {
 	MenuList,
 	Text,
 	useBreakpointValue,
+	useToken,
 	VStack,
 } from "@chakra-ui/react";
 import { useKBarReady } from "components/CommandBar";
@@ -20,6 +21,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Fragment, useState } from "react";
 import { limitText } from "utils";
+import { svgBgDotted } from "utils/svgPatterns";
 import { Button, IcoButton, Icon, OrgLogo } from "..";
 
 export const NavHeight = {
@@ -79,6 +81,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
 
+	// Get theme color values
+	const [contrast_color] = useToken("colors", ["navbar.dark"]);
+
 	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
 		ssr: false,
 		loading: () => (
@@ -110,6 +115,10 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				h="full"
 				justifyContent={"space-between"}
 				px={{ base: "4", sm: "4", md: "4", xl: "6" }}
+				backgroundImage={svgBgDotted({
+					fill: contrast_color,
+					opacity: 0.04,
+				})}
 			>
 				{/* Left-side items of navbar */}
 				<Box
