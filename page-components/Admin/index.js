@@ -1,9 +1,4 @@
-export {
-	AccountStatement,
-	SingleOnboarding,
-	TestOnboard,
-} from "./AccountStatement";
-//export { BulkOnboarding } from "./Onboarding/BulkOnboarding";
+export { AccountStatement } from "./AccountStatement";
 export { ChangeRole } from "./ChangeRole";
 export { Configurations } from "./Configurations";
 export { Dashboard } from "./Dashboard";

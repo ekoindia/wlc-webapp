@@ -1,5 +1,5 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
-import { Headings } from "components/Headings";
+import { Headings } from "components";
 import { BulkOnboarding, SingleOnboarding } from ".";
 
 /**
