@@ -17,7 +17,7 @@ const UpdateSellerInfo = () => {
 
 	return (
 		<>
-			<Headings title="Update Seller Information" />
+			<Headings title="Update Agent Information" />
 			<Flex
 				pb={{ base: "0", md: "40px" }}
 				bg={{ base: "none", md: "white" }}
@@ -43,7 +43,7 @@ const UpdateSellerInfo = () => {
 					{" "}
 					<Text
 						as="h1"
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						fontWeight="bold"
 						fontSize={{ base: "lg", md: "2xl" }}
 					>

@@ -2,6 +2,7 @@ export { ChangeRoleMenuList } from "./AdminChangeRole";
 export { allowedCategories } from "./allowedCategories";
 export {
 	BulkOnboardingBreadcrumbData,
+	ConfigurationsBreadcrumbData,
 	NetworkObject,
 	NotificationsBreadcrumbData,
 	OnboardingBreadcrumbData,
@@ -9,6 +10,7 @@ export {
 	QueryObject,
 	TransactionHistoryObject,
 } from "./BreadcrumbsData";
+export { colorThemes } from "./colorThemes";
 export { oldIcons } from "./connectIcons";
 export { Endpoints } from "./EndPoints";
 export { TransactionIds, TransactionTypes } from "./EpsTransactions";

@@ -1,4 +1,4 @@
-import { Circle, Flex } from "@chakra-ui/react";
+import { Circle, Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
 /**
@@ -8,15 +8,14 @@ import { useState } from "react";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Switch></Switch>`
  */
-const Switch = (props) => {
-	const { initialValue, setVisible } = props;
-
+const Switch = ({ initialValue, onChange = () => {} }) => {
 	const [switched, setSwitched] = useState(initialValue);
 
 	const handleSwitch = () => {
 		setSwitched(!switched);
-		setVisible(!switched);
+		onChange(!switched);
 	};
+
 	return (
 		<Flex
 			bg={switched ? "success" : "error"}
@@ -24,7 +23,6 @@ const Switch = (props) => {
 			w="70px"
 			borderRadius="100px"
 			onClick={handleSwitch}
-			align="center"
 			justify="center"
 			cursor="pointer"
 			userSelect="none"
@@ -33,23 +31,22 @@ const Switch = (props) => {
 				direction={switched ? "row" : "row-reverse"}
 				justify="space-between"
 				align="center"
-				w="90%"
-				h="23px"
+				w="100%"
+				p="1"
 			>
-				<Flex color="white" fontSize="12px" px="8px">
+				<Text color="white" fontSize="xs" p="2">
 					{switched ? "Yes" : "No"}
-				</Flex>
-				<Flex>
-					<Circle
-						bg="white"
-						size="23px"
-						boxShadow={
-							switched
-								? "0px 3px 6px #009B34"
-								: "0px 3px 6px #CA1B56"
-						}
-					/>
-				</Flex>
+				</Text>
+
+				<Circle
+					bg="white"
+					size="24px"
+					boxShadow={
+						switched
+							? "0px 3px 6px var(--chakra-colors-success)"
+							: "0px 3px 6px var(--chakra-colors-error)"
+					}
+				/>
 			</Flex>
 		</Flex>
 	);

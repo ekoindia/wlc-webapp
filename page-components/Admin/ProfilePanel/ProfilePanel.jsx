@@ -1,9 +1,8 @@
 import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
 import { Button, Headings, Icon, Menus } from "components";
-import { ChangeRoleMenuList } from "constants";
-import { Endpoints } from "constants/EndPoints";
-import { useSession } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
+import { ChangeRoleMenuList, Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AddressPane, CompanyPane, ContactPane, PersonalPane } from ".";
@@ -19,13 +18,13 @@ const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
 					menulist={changeRoleMenuList}
 					iconPos="right"
 					iconName="caret-down"
-					iconStyles={{ height: "10px", width: "14px" }}
+					iconStyles={{ size: "xs" }}
 					rounded="10px"
 					buttonStyle={{
 						height: { base: "48px", lg: "52px" },
 						minW: { base: "150px", lg: "220px" },
-						border: "1px solid #FE9F00",
-						boxShadow: "0px 3px 10px #FE9F0040",
+						// border: "1px solid #FE9F00",
+						// boxShadow: "0px 3px 10px #FE9F0040",
 						textAlign: "left",
 					}}
 					listStyles={{
@@ -37,7 +36,7 @@ const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
 				display={{ base: "block", md: "none" }}
 				onClick={menuHandler}
 				variant="ghost"
-				color="primary.DEFAULT"
+				color="accent.DEFAULT"
 				px="none"
 			>
 				Change Role
@@ -70,23 +69,23 @@ const ChangeRoleMobile = ({ changeRoleMenuList }) => {
 
 const ProfilePanel = () => {
 	const router = useRouter();
-	const [rowData, setRowData] = useState([]);
+	const [agentData, setAgentData] = useState([]);
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
 	const { accessToken } = useSession();
-	const { cellnumber } = router.query;
+	const { mobile } = router.query;
 
 	const hitQuery = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents?record_count=1&search_value=${cellnumber}`,
+				"tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
 				"tf-req-method": "GET",
 			},
 			token: accessToken,
 		})
 			.then((data) => {
-				setRowData(data?.data?.agent_details[0]);
+				setAgentData(data?.data?.agent_details[0]);
 			})
 			.catch((error) => {
 				// Handle any errors that occurred during the fetch
@@ -96,53 +95,65 @@ const ProfilePanel = () => {
 
 	useEffect(() => {
 		let _changeRoleMenuList = [];
-		ChangeRoleMenuList.map(({ label, path }) => {
-			let _listItem = {};
-			_listItem.label = label;
-			_listItem.onClick = () => {
-				router.push(path);
-			};
-			_changeRoleMenuList.push(_listItem);
+		let tabIndex = 0;
+		ChangeRoleMenuList.map(({ label, path, visibleString }) => {
+			if (visibleString.includes(agentData?.agent_type)) {
+				let _listItem = {};
+				_listItem.label = label;
+				_listItem.onClick = (() => {
+					const index = tabIndex;
+					return () => {
+						router.push(`${path}?mobile=${mobile}&tab=${index}`);
+					};
+				})();
+				_changeRoleMenuList.push(_listItem);
+				tabIndex = tabIndex + 1;
+			}
 		});
 		setChangeRoleMenuList(_changeRoleMenuList);
-	}, []);
+	}, [agentData?.agent_type, mobile]);
 
 	useEffect(() => {
 		const storedData = JSON.parse(
 			localStorage.getItem("network_seller_details")
 		);
-		if (storedData?.agent_mobile === cellnumber) {
-			setRowData(storedData);
+		if (storedData?.agent_mobile === mobile) {
+			setAgentData(storedData);
 		} else {
 			hitQuery();
 		}
-	}, [cellnumber]);
+	}, [mobile]);
 
 	const panes = [
 		{
 			id: 1,
 			comp: (
 				<CompanyPane
-					rowData={rowData?.profile}
-					agent_name={rowData?.agent_name}
+					rowData={agentData?.profile}
+					agent_name={agentData?.agent_name}
 				/>
 			),
 		},
 		{
 			id: 2,
-			comp: <AddressPane rowData={rowData?.address_details} />,
+			comp: <AddressPane rowData={agentData?.address_details} />,
 		},
 		// {
 		// 	id: 3,
-		// 	comp: <DocPane rowData={rowData?.document_details} />,
+		// 	comp: <DocPane rowData={agentData?.document_details} />,
 		// },
 		{
 			id: 4,
-			comp: <PersonalPane rowData={rowData?.personal_information} />,
+			comp: <PersonalPane rowData={agentData?.personal_information} />,
 		},
 		{
 			id: 5,
-			comp: <ContactPane rowData={rowData?.contact_information} />,
+			comp: (
+				<ContactPane
+					rowData={agentData?.contact_information}
+					mobile={agentData?.agent_mobile}
+				/>
+			),
 		},
 	];
 
@@ -153,12 +164,14 @@ const ProfilePanel = () => {
 	return (
 		<>
 			<Headings
-				title={isMenuVisible ? "Change Role" : "Seller Details"}
+				title={isMenuVisible ? "Change Role" : "Agent Details"}
 				propComp={
-					<ChangeRoleDesktop
-						changeRoleMenuList={changeRoleMenuList}
-						menuHandler={menuHandler}
-					/>
+					changeRoleMenuList.length > 0 && (
+						<ChangeRoleDesktop
+							changeRoleMenuList={changeRoleMenuList}
+							menuHandler={menuHandler}
+						/>
+					)
 				}
 				redirectHandler={isMenuVisible ? menuHandler : null}
 				isCompVisible={!isMenuVisible}
@@ -168,10 +181,10 @@ const ProfilePanel = () => {
 			) : (
 				<Grid
 					templateColumns={{
-						base: "repeat(auto-fit,minmax(280px,0.90fr))",
-						sm: "repeat(auto-fit,minmax(380px,0.90fr))",
+						base: "repeat(auto-fit,minmax(300px,0.90fr))",
+						// sm: "repeat(auto-fit,minmax(380px,0.90fr))",
 						md: "repeat(auto-fit,minmax(360px,1fr))",
-						lg: "repeat(auto-fit,minmax(450px,1fr))",
+						"2xl": "repeat(auto-fit,minmax(450px,1fr))",
 					}}
 					justifyContent="center"
 					py={{ base: "20px", md: "0px" }}

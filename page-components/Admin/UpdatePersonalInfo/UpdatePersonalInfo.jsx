@@ -3,17 +3,36 @@ import {
 	Flex,
 	FormControl,
 	FormLabel,
-	Radio,
-	RadioGroup,
 	SimpleGrid,
 	Text,
 } from "@chakra-ui/react";
-import { Button, Calenders, Headings, Input, Select } from "components";
+import { Button, Calenders, Headings, Input, Radio, Select } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+
+const nameSplitter = (name) => {
+	let nameList = name.split(" ");
+	let nameListLength = nameList.length;
+
+	let firstName = nameList[0];
+	let lastName = nameListLength > 1 ? nameList[nameListLength - 1] : "";
+	let middleName = "";
+
+	if (nameListLength === 3) {
+		middleName = nameList[1];
+	} else if (nameListLength > 3) {
+		middleName = nameList.slice(1, nameListLength - 1).join(" ");
+	}
+
+	return {
+		first_name: firstName,
+		middle_name: middleName,
+		last_name: lastName,
+	};
+};
 
 const finalDataList = [
 	{ key: "first_name", label: "First Name" },
@@ -35,11 +54,9 @@ const finalDataList = [
 const UpdatePersonalInfo = () => {
 	const [agentData, setAgentData] = useState();
 	const [shopTypesData, setShopTypesData] = useState();
-	// console.log("shopTypesData", shopTypesData);
 	const [inPreviewMode, setInPreviewMode] = useState(false);
 	const [previewDataList, setPreviewDataList] = useState();
 	const [finalData, setFinalData] = useState();
-	console.log("finalData", finalData);
 	const { accessToken } = useSession();
 
 	const {
@@ -47,6 +64,7 @@ const UpdatePersonalInfo = () => {
 		register,
 		formState: { errors /* isSubmitting */ },
 		control,
+		reset,
 	} = useForm();
 
 	useEffect(() => {
@@ -61,8 +79,25 @@ const UpdatePersonalInfo = () => {
 		}
 	}, []);
 
+	useEffect(() => {
+		if (agentData !== undefined) {
+			let defaultValues = {};
+			const agentName = nameSplitter(agentData.agent_name);
+			defaultValues.first_name = agentName?.first_name;
+			defaultValues.middle_name = agentName?.middle_name;
+			defaultValues.last_name = agentName?.last_name;
+			defaultValues.dob = agentData?.personal_information?.date_of_birth;
+			defaultValues.marital_status =
+				agentData?.personal_information?.marital_status;
+			defaultValues.shop_name = agentData?.profile?.shop_name;
+			defaultValues.shop_type = agentData?.profile?.shop_type;
+			defaultValues.gender = agentData?.personal_information?.gender;
+
+			reset({ ...defaultValues });
+		}
+	}, [agentData]);
+
 	const handleFormPreview = (previewData) => {
-		console.log("previewData", previewData);
 		let _previewData = [];
 		setFinalData(previewData);
 		setInPreviewMode(!inPreviewMode);
@@ -124,7 +159,7 @@ const UpdatePersonalInfo = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				// "tf-req-uri": `/network/agents?record_count=1&search_value=${cellnumber}`,
+				// "tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
 				"tf-req-method": "GET",
 			},
 			token: accessToken,
@@ -138,7 +173,12 @@ const UpdatePersonalInfo = () => {
 	};
 
 	const formNameInputList = [
-		{ id: "first_name", label: "First Name", required: true },
+		{
+			id: "first_name",
+			label: "First Name",
+			required: true,
+			defaultValue: agentData?.agent_name,
+		},
 		{ id: "middle_name", label: "Middle Name", required: false },
 		{ id: "last_name", label: "Last Name", required: false },
 	];
@@ -162,24 +202,24 @@ const UpdatePersonalInfo = () => {
 				borderRadius={{ base: "0", md: "10px 10px 0 0" }}
 				w="100%"
 				bg="white"
-				p={{ base: "30px", md: "30px 30px 20px" }}
+				p={{ base: "16px", md: "30px 30px 20px" }}
 				gap="4"
 				fontSize="sm"
 			>
-				<div>
+				<Flex direction="column" gap="2">
 					<Text
 						fontSize="2xl"
-						color="accent.DEFAULT"
+						color="primary.DEFAULT"
 						fontWeight="semibold"
 					>
 						{agentData?.agent_name}
 					</Text>
-					<span>
+					{/* <span>
 						Edit the fields below and click Preview. Click Cancel to
 						return to Client HomePage without submitting
 						information.
-					</span>
-				</div>
+					</span> */}
+				</Flex>
 				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
 			<form onSubmit={handleSubmit(handleFormPreview)}>
@@ -209,7 +249,13 @@ const UpdatePersonalInfo = () => {
 								{/* Name */}
 								<Flex wrap="wrap" gap="8">
 									{formNameInputList.map(
-										({ id, label, required }) => (
+										({
+											id,
+											label,
+											required,
+											value,
+											defaultValue,
+										}) => (
 											<FormControl
 												key={id}
 												w={{
@@ -221,6 +267,9 @@ const UpdatePersonalInfo = () => {
 													id={id}
 													label={label}
 													required={required}
+													value={value}
+													defaultValue={defaultValue}
+													fontSize="sm"
 													{...register(id)}
 												/>
 											</FormControl>
@@ -254,26 +303,11 @@ const UpdatePersonalInfo = () => {
 										render={({
 											field: { onChange, value },
 										}) => (
-											<RadioGroup
-												onChange={onChange}
+											<Radio
+												options={formGenderRadioList}
 												value={value}
-											>
-												<Flex gap="16">
-													{formGenderRadioList.map(
-														({ value, label }) => (
-															<Radio
-																size="lg"
-																key={value}
-																value={value}
-															>
-																<Text fontSize="sm">
-																	{label}
-																</Text>
-															</Radio>
-														)
-													)}
-												</Flex>
-											</RadioGroup>
+												onChange={onChange}
+											/>
 										)}
 									/>
 								</FormControl>
@@ -311,6 +345,7 @@ const UpdatePersonalInfo = () => {
 										<Input
 											id="shop_name"
 											label="Shop Name"
+											fontSize="sm"
 											required
 											{...register("shop_name")}
 										/>
@@ -354,7 +389,7 @@ const UpdatePersonalInfo = () => {
 									<Button
 										h="64px"
 										variant="link"
-										color="accent.DEFAULT"
+										color="primary.DEFAULT"
 										fontWeight="bold"
 										_hover={{ textDecoration: "none" }}
 									>
@@ -405,7 +440,7 @@ const UpdatePersonalInfo = () => {
 									<Button
 										h="64px"
 										variant="link"
-										color="accent.DEFAULT"
+										color="primary.DEFAULT"
 										fontWeight="bold"
 										_hover={{ textDecoration: "none" }}
 										onClick={() =>

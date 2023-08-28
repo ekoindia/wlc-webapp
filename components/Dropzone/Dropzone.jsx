@@ -101,7 +101,7 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 						accept={accept}
 					/>
 					<Button
-						variant="primary"
+						variant="accent"
 						size="md"
 						onClick={() =>
 							document.getElementById("fileUploadInput").click()
@@ -125,9 +125,9 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 						iconName="close"
 						title="Discard"
 						size="xs"
-						theme="accent"
+						theme="primary"
 						// boxShadow="0px 3px 10px #11299E1A"
-						_hover={{ bg: "accent.dark" }}
+						_hover={{ bg: "primary.dark" }}
 						position="absolute"
 						top="-10px"
 						right="-10px"

@@ -24,6 +24,7 @@ import {
 	getHistorySearchActions,
 	getNotesAction,
 	ResultItem,
+	useKBarReady,
 } from ".";
 import { Icon, Kbd } from "..";
 
@@ -40,6 +41,9 @@ export default function CommandBarBox({ fontClassName }) {
 		{ ssr: false }
 	);
 
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
+
 	// Chakra wrapper for KBar components
 	const ChakraKBarPositioner = chakra(KBarPositioner);
 	const ChakraKBarAnimator = chakra(KBarAnimator);
@@ -48,21 +52,29 @@ export default function CommandBarBox({ fontClassName }) {
 
 	// Add additional hotkey (Alt+K) to toggle the KBar
 	// with selected text as search input
-	useHotkey({
-		"Alt+KeyK": (e) => {
-			console.log("Alt+K pressed");
-			e.preventDefault();
-			e.stopPropagation();
-			// Get selected text from the screen
-			const selectedText = window.getSelection().toString();
-			query.toggle();
-			if (selectedText) {
-				setTimeout(() => {
-					query.setSearch(selectedText);
-				}, 100);
-			}
-		},
-	});
+	useHotkey(
+		ready
+			? {
+					"Alt+KeyK": (e) => {
+						console.log("Alt+K pressed");
+						e.preventDefault();
+						e.stopPropagation();
+						// Get selected text from the screen
+						const selectedText = window.getSelection().toString();
+						query.toggle();
+						if (selectedText) {
+							setTimeout(() => {
+								query.setSearch(selectedText);
+							}, 100);
+						}
+					},
+			  }
+			: {}
+	);
+
+	if (!ready) {
+		return null;
+	}
 
 	return (
 		<ChakraKBarPortal>

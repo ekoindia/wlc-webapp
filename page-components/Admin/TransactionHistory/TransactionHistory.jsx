@@ -42,7 +42,8 @@ const TransactionHistory = () => {
 				direction="column"
 				w="100%"
 				px={{ base: "16px", md: "initial" }}
-				pb={"20px"}
+				pb="20px"
+				gap="4"
 			>
 				<SearchBar
 					placeholder="Search by mobile number or user code"

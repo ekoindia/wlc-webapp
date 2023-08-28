@@ -19,7 +19,7 @@ export const defaultUserState = {
 	accountDetails: {},
 };
 
-export const UserReducer = (state, { type, payload }) => {
+export const UserReducer = (state, { type, payload, meta }) => {
 	switch (type) {
 		case "INIT_USER_STORE": {
 			return payload;
@@ -32,11 +32,15 @@ export const UserReducer = (state, { type, payload }) => {
 				let tokenTimeout = getTokenExpiryTime(payload);
 				const newState = buildUserObjectState({
 					...payload,
-					token_timeout: tokenTimeout || state.token_timeout,
+					token_timeout: tokenTimeout || state?.token_timeout,
 				});
 
 				console.log("newUserState", newState);
-				setandUpdateAuthTokens(payload);
+				setandUpdateAuthTokens(
+					payload,
+					meta?.isAndroid || false,
+					false
+				);
 				setUserDetails(newState);
 
 				sessionStorage.setItem("token_timeout", tokenTimeout);
@@ -46,11 +50,11 @@ export const UserReducer = (state, { type, payload }) => {
 		}
 
 		case "UPDATE_SHOP_DETAILS": {
-			Object.assign(state.shopDetails, payload);
+			Object.assign(state?.shopDetails, payload);
 			break;
 		}
 		case "UPDATE_PERSONAL_DETAILS": {
-			Object.assign(state.personalDetails, payload);
+			Object.assign(state?.personalDetails, payload);
 			break;
 		}
 
@@ -87,16 +91,23 @@ export const UserReducer = (state, { type, payload }) => {
 			// 	accountDetails: payload?.account_details,
 			// }
 
-			setandUpdateAuthTokens(payload);
+			setandUpdateAuthTokens(payload, meta?.isAndroid || false, true);
 			setUserDetails(newState);
 
 			return newState;
 		}
 
 		case "LOGOUT": {
-			revokeSession(state.userId || 1);
-			clearAuthTokens();
+			revokeSession(state?.userId || 1);
+			clearAuthTokens(meta?.isAndroid || false);
 			return defaultUserState;
+		}
+
+		case "SET_ADMIN_AGENT_MODE": {
+			return {
+				...state,
+				isAdminAgentMode: payload,
+			};
 		}
 
 		default:

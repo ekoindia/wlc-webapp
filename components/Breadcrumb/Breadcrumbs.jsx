@@ -4,9 +4,17 @@ import {
 	BreadcrumbItem,
 	BreadcrumbLink,
 } from "@chakra-ui/react";
+import { useSession } from "contexts";
+import { useRouter } from "next/router";
 import { Icon } from "../";
 
 const Breadcrumbs = ({ hrefs = [], labels = [], handleOnClick }) => {
+	const { isAdmin } = useSession();
+	const router = useRouter();
+	const onHomeClick = () => {
+		const _redirect = isAdmin ? "/admin" : "/home";
+		router.push(_redirect);
+	};
 	return (
 		<>
 			<Box display={{ base: "none", lg: "flex" }}>
@@ -20,8 +28,9 @@ const Breadcrumbs = ({ hrefs = [], labels = [], handleOnClick }) => {
 							fontSize="xs"
 							display={"flex"}
 							alignItems={"center"}
-							color={"accent.DEFAULT"}
+							color={"primary.DEFAULT"}
 							_hover={{ textDecoration: "none" }}
+							onClick={onHomeClick}
 						>
 							<Icon
 								name="home"
@@ -46,7 +55,7 @@ const Breadcrumbs = ({ hrefs = [], labels = [], handleOnClick }) => {
 									color={
 										index === hrefs.length - 1
 											? "light"
-											: "accent.DEFAULT"
+											: "primary.DEFAULT"
 									}
 									cursor={
 										index === hrefs.length - 1

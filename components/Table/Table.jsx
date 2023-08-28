@@ -1,18 +1,15 @@
 import {
-	Box,
-	Divider,
-	Flex,
 	Table as ChakraTable,
 	TableContainer,
 	Tbody,
-	Text,
 	Thead,
+	Tr as ChakraTr,
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { tableRowLimit as trl } from "constants";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Th, Tr } from ".";
+import { MobileView, Th, Tr } from ".";
 import { Pagination } from "..";
 
 /**
@@ -32,7 +29,7 @@ const Table = ({
 	tableName,
 	onRowClick,
 	ResponsiveCard,
-	defaultCardStyle = true,
+	isReceipt = false,
 	variant = "stripedActionNone",
 	tableRowLimit = trl?.DEFAULT,
 	printExpansion = false,
@@ -41,6 +38,8 @@ const Table = ({
 	console.log("hasNoMoreItems", hasNoMoreItems);
 	const router = useRouter();
 	const [isSmallScreen] = useMediaQuery("only screen and (max-width: 860px)");
+	const rowExpansion =
+		visibleColumns > 0 && renderer?.length > visibleColumns;
 	// const isSmallScreen = useBreakpointValue({ base: true, lg: false });
 
 	const tableDataListLength = data?.length;
@@ -51,33 +50,15 @@ const Table = ({
 		}
 	}, [router.query.page]);
 
-	const prepareCard = () => {
-		return data?.map((item, index) => (
-			<Box
-				bg="white"
-				width="100%"
-				height="auto"
-				p={defaultCardStyle ? "16px" : "20px 16px"}
-				borderRadius={defaultCardStyle ? "10px" : null}
-				onClick={onRowClick}
-				key={index}
-			>
-				<ResponsiveCard item={item} />
-				{!defaultCardStyle && index !== data.length - 1 && (
-					<Divider border="1px solid #D2D2D2" />
-				)}
-			</Box>
-		));
-	};
-
 	return (
-		<Box w="100%">
+		<div>
 			{!isSmallScreen ? (
 				// Large screen
 				<TableContainer
+					// className="customScrollbars"
 					borderRadius="10px 10px 0 0"
 					mt={{ base: "20px", "2xl": "10px" }} //TODO remove this
-					border="1px solid #E9EDF1"
+					border="1px solid var(--chakra-colors-divider)"
 					css={{
 						"&::-webkit-scrollbar": {
 							height: "2px",
@@ -97,16 +78,24 @@ const Table = ({
 					}}
 				>
 					<ChakraTable variant={variant} bg="white">
-						<Thead
-							sx={{
-								"@media print": printExpansion
-									? {
-											display: "none !important",
-									  }
-									: null,
-							}}
-						>
-							<Th {...{ renderer, visibleColumns }} />
+						<Thead>
+							<ChakraTr
+								sx={{
+									"@media print": printExpansion
+										? {
+												display: "none !important",
+										  }
+										: null,
+								}}
+							>
+								<Th
+									{...{
+										renderer,
+										visibleColumns,
+										rowExpansion,
+									}}
+								/>
+							</ChakraTr>
 						</Thead>
 						<Tbody>
 							<Tr
@@ -120,6 +109,7 @@ const Table = ({
 									visibleColumns,
 									isLoading,
 									printExpansion,
+									rowExpansion,
 								}}
 							/>
 						</Tbody>
@@ -127,30 +117,16 @@ const Table = ({
 				</TableContainer>
 			) : (
 				// Small screen
-				<Flex
-					direction="column"
-					align="center"
-					borderRadius="10px 10px 0 0"
-					mt="16px"
-					boxShadow={
-						!defaultCardStyle ? "0px 5px 15px #0000000D" : null
-					}
-					border={!defaultCardStyle ? "1px solid #D2D2D2" : null}
-					bg={!defaultCardStyle ? "white" : null}
-					gap={defaultCardStyle ? 4 : null}
-				>
-					{!defaultCardStyle ? (
-						<Text
-							color="light"
-							width="100%"
-							p="16px 16px 0"
-							fontWeight="semibold"
-						>
-							Recent Transaction
-						</Text>
-					) : null}
-					{prepareCard()}
-				</Flex>
+				<MobileView
+					{...{
+						data,
+						renderer,
+						isLoading,
+						ResponsiveCard,
+						onRowClick,
+						isReceipt,
+					}}
+				/>
 			)}
 
 			{/* Pagination */}
@@ -171,7 +147,7 @@ const Table = ({
 					setHasNoMoreItems={setHasNoMoreItems}
 				/>
 			)}
-		</Box>
+		</div>
 	);
 };
 

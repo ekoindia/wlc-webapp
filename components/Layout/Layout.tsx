@@ -1,5 +1,5 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
-import { ActionIcon } from "components/CommandBar";
+import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
 import { Priority, useRegisterActions } from "kbar";
 import dynamic from "next/dynamic";
@@ -20,6 +20,7 @@ const CommandBarBox = dynamic(() => import("../CommandBar/CommandBarBox"), {
  * @param {Object} pageMeta - The page meta data.
  * @param {Boolean} pageMeta.isSubPage - If the page is a sub page, then the layout will not render the top navbar (Header) on small screens.
  * @param {String} pageMeta.title - The page title. This will be displayed in the browser titlebar.
+ * @param {Boolean} pageMeta.hideMenu - If true, then the layout will not render the left navigation drawer.
  */
 const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	const { isSubPage, title, hideMenu } = pageMeta;
@@ -40,12 +41,12 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
 	Router.events.on("routeChangeError", () => setIsPageLoading(false));
 
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
+
 	// Setup Android Listener...
 	useEffect(() => {
 		if (typeof window !== "undefined" && isAndroid) {
-			// Inform Android wrapper app that the page has loaded...
-			doAndroidAction(ANDROID_ACTION.WEBAPP_READY);
-
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
 				console.log("[_app.tsx] callFromAndroid:: ", action, data);
@@ -58,6 +59,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 
 				publish(TOPICS.ANDROID_RESPONSE, { action, data });
 			};
+
+			// Inform Android wrapper app that the page has loaded and is ready to listen to messages from Android...
+			doAndroidAction(ANDROID_ACTION.WEBAPP_READY);
 		}
 	}, []);
 
@@ -69,6 +73,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 			"[DynamicSearchController] Preparing to register businessActions: ",
 			businessActions
 		);
+
+		if (!ready) return [];
+
 		return [
 			{
 				id: "my-business",
@@ -90,20 +97,29 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 			},
 			...businessActions,
 		];
-	}, [businessActions]);
+	}, [businessActions, ready]);
 
 	useRegisterActions(businessSearch, [businessSearch]);
 
 	return (
 		<>
-			{title ? (
-				<Head>
+			<Head>
+				{title ? (
 					<title>
 						{title}
 						{appName ? ` | ${appName}` : ""}
 					</title>
-				</Head>
-			) : null}
+				) : null}
+				{isLoggedIn ? (
+					<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+				) : (
+					<link
+						rel="icon"
+						type="image/svg+xml"
+						href="/favicon.closed.svg"
+					/>
+				)}
+			</Head>
 
 			{/* Show page-loading animation */}
 			{isPageLoading && <PageLoader />}
@@ -156,7 +172,7 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 				<>{children}</>
 			)}
 
-			{isLoggedIn ? (
+			{isLoggedIn && ready ? (
 				<CommandBarBox fontClassName={fontClassName} />
 			) : null}
 		</>

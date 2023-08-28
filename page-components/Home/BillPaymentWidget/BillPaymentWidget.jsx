@@ -160,7 +160,7 @@ const BillPaymentWidget = () => {
 					</Text>
 					<Text
 						marginLeft="auto"
-						color="primary.DEFAULT"
+						color="accent.DEFAULT"
 						display="inline-block"
 						fontSize={{ base: "10px", md: "md" }}
 					>
@@ -170,7 +170,7 @@ const BillPaymentWidget = () => {
 						marginLeft="10px"
 						display="inline-block"
 						name="arrow-forward"
-						color="primary.DEFAULT"
+						color="accent.DEFAULT"
 					/>
 				</Flex> */}
 		</WidgetBase>

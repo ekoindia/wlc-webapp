@@ -16,22 +16,22 @@ const AccountStatementTable = (props) => {
 	const renderer = [
 		{
 			name: "transaction_id",
-			field: "TID",
+			label: "TID",
 		},
 		{
 			name: "date_time",
-			field: "Date & Time",
+			label: "Date & Time",
 			sorting: true,
 			show: "DateTime",
 		},
-		{ name: "activity", field: "Activity" },
+		{ name: "activity", label: "Activity" },
 		{
 			name: "description",
-			field: "Description",
+			label: "Description",
 			show: "Description",
 		},
 
-		{ name: "amount", field: "Amount", show: "Amount" },
+		{ name: "amount", label: "Amount", show: "Amount" },
 	];
 
 	return (
@@ -40,9 +40,8 @@ const AccountStatementTable = (props) => {
 				tableRowLimit={tableRowLimit?.XLARGE}
 				renderer={renderer}
 				data={acctabledata}
-				tableName="Account"
 				ResponsiveCard={AccountStatementCard}
-				defaultCardStyle={false}
+				isReceipt={true}
 			/>
 		</>
 	);

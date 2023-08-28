@@ -1,6 +1,6 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Button, IcoButton, Icon, OtpInput } from "components";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
+import { useAppSource, useOrgDetailContext } from "contexts";
 import { useUser } from "contexts/UserContext";
 import { sendOtpRequest } from "helpers";
 import { useLogin } from "hooks";
@@ -15,12 +15,14 @@ import { useCallback, useEffect, useState } from "react";
  */
 
 const VerifyOtp = ({ loginType, number, setStep }) => {
-	const [Otp, setOtp] = useState("");
-	const [timer, setTimer] = useState(30);
 	const { login } = useUser();
 	const { orgDetail } = useOrgDetailContext();
 	const [loading, submitLogin] = useLogin(login, setStep);
 	const toast = useToast();
+	const { isAndroid } = useAppSource();
+
+	const [Otp, setOtp] = useState("");
+	const [timer, setTimer] = useState(30);
 
 	const timeOutCallback = useCallback(
 		() => setTimer((currTimer) => currTimer - 1),
@@ -39,9 +41,19 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 		}
 	};
 
-	const resendOtpHandler = () => {
+	const resendOtpHandler = async () => {
 		resetTimer();
-		sendOtpRequest(orgDetail.org_id, number.original, toast, "resend");
+		const otp_sent = await sendOtpRequest(
+			orgDetail.org_id,
+			number.original,
+			toast,
+			"resend",
+			isAndroid
+		);
+		if (!otp_sent) {
+			// OTP failed..back to previous screen
+			setStep(loginType === "Mobile" ? "LOGIN" : "GOOGLE_VERIFY");
+		}
 	};
 
 	const verifyOtpHandler = (_otp) => {
@@ -116,15 +128,15 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 			<Flex w="full" align="center" justify="center">
 				<OtpInput
 					inputStyle={{
-						w: { base: 12, md: "72px", "2xl": "96px" },
-						h: { base: 12, "2xl": 16 },
-						fontSize: { base: "sm", "2xl": "2xl" },
+						w: { base: 12, sm: 14 },
+						h: { base: 12 },
+						fontSize: "sm",
 					}}
-					containerStyle={
-						{
-							// justifyContent: "space-between",
-						}
-					}
+					// containerStyle={
+					// 	{
+					// 		// justifyContent: "space-between",
+					// 	}
+					// }
 					length={4}
 					onChange={setOtp}
 					onEnter={() => verifyOtpHandler()}
@@ -144,7 +156,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 			>
 				{timer >= 1 ? (
 					<>
-						<Text as={"span"}>Resend otp in </Text>
+						<Text as={"span"}>Resend OTP in </Text>
 						<Flex align="center" color="error" columnGap="4px">
 							<Icon name="timer" size="18px" />
 							00:{timer <= 9 ? "0" + timer : timer}
@@ -156,7 +168,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 						<Text
 							cursor="pointer"
 							as="span"
-							color="accent.DEFAULT"
+							color="primary.DEFAULT"
 							onClick={resendOtpHandler}
 							fontWeight="medium"
 						>

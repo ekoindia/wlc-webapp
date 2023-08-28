@@ -1,6 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { Headings, SearchBar } from "components";
+import { Button, Headings, SearchBar } from "components";
 import useRequest from "hooks/useRequest";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { NetworkFilter, NetworkTable, SortAndFilterMobile } from ".";
 
@@ -16,6 +17,7 @@ const Network = () => {
 	const [sort, setSort] = useState();
 	const [filter, setFilter] = useState({});
 	const [pageNumber, setPageNumber] = useState(1);
+	const router = useRouter();
 
 	/* Filter */
 	let postData = "";
@@ -58,10 +60,22 @@ const Network = () => {
 
 	return (
 		<>
-			<Headings title="My Network" hasIcon={false} />
+			<Headings
+				title="My Network"
+				hasIcon={false}
+				propComp={
+					<Button
+						onClick={() =>
+							router.push("/admin/my-network/profile/change-role")
+						}
+					>
+						Change Roles
+					</Button>
+				}
+			/>
 			<Box w={"100%"} px={{ base: "16px", md: "initial" }}>
 				{dataLength > 0 ? (
-					<Flex justify="space-between">
+					<Flex justify="space-between" align="center">
 						<SearchBar
 							value={search}
 							setSearch={setSearch}
@@ -71,8 +85,8 @@ const Network = () => {
 						<Flex
 							display={{ base: "none", md: "flex" }}
 							gap={{ base: "5px", md: "20px", lg: "50px" }}
-							align={"center"}
-							justifyContent={"space-between"}
+							align="center"
+							justifyContent="space-between"
 						>
 							<NetworkFilter
 								filter={filter}
@@ -83,7 +97,7 @@ const Network = () => {
 					</Flex>
 				) : null}
 				{dataLength > 0 ? (
-					<Box mt={{ base: "none", md: "20px" }}>
+					<Box mt="20px">
 						<NetworkTable
 							setFilter={setFilter}
 							pageNumber={pageNumber}

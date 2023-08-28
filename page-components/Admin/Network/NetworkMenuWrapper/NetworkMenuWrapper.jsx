@@ -73,7 +73,7 @@ const getReason = (list, value) => {
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
-const NetworkMenuWrapper = ({ eko_code, account_status }) => {
+const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 	const [isOpen, setOpen] = useState(false);
 	const { onOpen } = useDisclosure();
 	const [clickedVal, setClickedVal] = useState();
@@ -107,7 +107,9 @@ const NetworkMenuWrapper = ({ eko_code, account_status }) => {
 	const extraMenuListItem = {
 		label: "Change Role",
 		onClick: () => {
-			router.push("/admin/my-network/profile/change-role");
+			router.push(
+				`/admin/my-network/profile/change-role?mobile=${mobile_number}`
+			);
 		},
 	};
 

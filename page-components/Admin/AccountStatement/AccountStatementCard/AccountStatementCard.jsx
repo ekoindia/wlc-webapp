@@ -10,7 +10,13 @@ import { Box, Flex } from "@chakra-ui/react";
 
 const AccountStatementCard = ({ item }) => {
 	return (
-		<Flex direction="column" fontSize="12px" rowGap="2">
+		<Flex
+			direction="column"
+			bg="white"
+			fontSize="xs"
+			p="20px"
+			borderTop="1px solid var(--chakra-colors-divider)"
+		>
 			<Flex gap="2">
 				<Box as="span" color="light">
 					TID:

@@ -1,8 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
 
-import { BusinessDashboardCard } from ".";
-
 /**
  * A TopMerchants page-component
  * TODO: Write more description here
@@ -12,39 +10,39 @@ import { BusinessDashboardCard } from ".";
  */
 const TopMerchants = ({ data }) => {
 	const renderer = [
-		{ field: "Sr. No.", show: "#" },
-		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
+		{ label: "Sr. No.", show: "#" },
+		{ name: "name", label: "Name", sorting: true, show: "Avatar" },
 		{
 			name: "gtv",
-			field: "GTV",
+			label: "GTV",
 			sorting: true,
 			show: "Amount",
 		},
 		{
 			name: "totalTransactions",
-			field: "Total Transaction",
+			label: "Total Transaction",
 			sorting: true,
 		},
 		{
 			name: "status",
-			field: "Status",
+			label: "Status",
 			show: "Tag",
 			sorting: true,
 		},
 		{
 			name: "raCases",
-			field: "Pending Transactions",
+			label: "Pending Transactions",
 			sorting: true,
 		},
 		{
 			name: "onboardingDate",
-			field: "Onboarding Date",
+			label: "Onboarding Date",
 			sorting: true,
 			show: "Date",
 		},
 		{
 			name: "distributorMapped",
-			field: "Distributor Mapped",
+			label: "Distributor Mapped",
 			sorting: true,
 		},
 	];
@@ -69,7 +67,7 @@ const TopMerchants = ({ data }) => {
 			<Table
 				renderer={renderer}
 				data={data}
-				ResponsiveCard={BusinessDashboardCard}
+				// ResponsiveCard={BusinessDashboardCard}
 			/>
 		</Flex>
 	);

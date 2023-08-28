@@ -19,20 +19,20 @@ import { pageRender } from "test-utils";
 const renderer = [
 	{
 		name: "mobile_number",
-		field: "Transaction ID",
+		label: "Transaction ID",
 	},
 	{
 		name: "createdAt",
-		field: "Date & Time",
+		label: "Date & Time",
 		sorting: true,
 	},
-	{ name: "type", field: "Activity" },
+	{ name: "type", label: "Activity" },
 	{
 		name: "type",
-		field: "Description",
+		label: "Description",
 	},
 
-	{ name: "ekocsp_code", field: "Amount" },
+	{ name: "ekocsp_code", label: "Amount" },
 ];
 
 describe("Table", () => {
@@ -43,7 +43,6 @@ describe("Table", () => {
 				renderer={renderer}
 				data={mockData}
 				variant="evenStriped"
-				tableName="Account"
 			/>
 		);
 		expect(container).not.toBeEmptyDOMElement();

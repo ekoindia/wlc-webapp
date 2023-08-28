@@ -24,7 +24,7 @@ const ProfileCard = ({ name = "", mobileNumber, img, onClick, ...rest }) => {
 			}}
 			mb="2px"
 			align="center"
-			bg="sidebar.card-bg"
+			bg="status.bgLight" // ORIG_THEME: sidebar.card-bg
 			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
 			onClick={onClick}
 			{...rest}
@@ -35,7 +35,7 @@ const ProfileCard = ({ name = "", mobileNumber, img, onClick, ...rest }) => {
 				src={img}
 				name={name.charAt(0)}
 				outline="3px solid"
-				outlineColor="sidebar.icon-bg"
+				outlineColor="status.wmLight" // ORIG_THEME: sidebar.icon-bg
 			/>
 
 			<Flex
@@ -46,10 +46,11 @@ const ProfileCard = ({ name = "", mobileNumber, img, onClick, ...rest }) => {
 				w="100%"
 				lineHeight="18px"
 			>
-				<Text as="span" fontSize="12px" color="sidebar.font">
+				<Text as="span" fontSize="12px" color="status.wm">
+					{/* ORIG_THEME: sidebar.font */}
 					Welcome
 					<Text
-						color="highlight"
+						color="status.title" // ORIG_THEME: highlight
 						fontSize="14px"
 						textTransform="capitalize"
 						whiteSpace="nowrap"
@@ -64,7 +65,7 @@ const ProfileCard = ({ name = "", mobileNumber, img, onClick, ...rest }) => {
 					align="center"
 					fontSize="12px"
 					columnGap="5px"
-					color="white"
+					color="status.text" // ORIG_THEME: white
 				>
 					<Icon name="phone-circle-outline" size="16px" />
 					{formatNumber(mobileNumber)}

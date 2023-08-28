@@ -26,9 +26,11 @@ export const ANDROID_PERMISSION = {
  * Set of actions supported by the Android wrapper app.
  */
 export const ANDROID_ACTION = {
-	WEBAPP_READY: "connect_ready",
+	WEBAPP_READY: "connect_ready", // Webapp is ready to receive messages from the Android app
 
-	SET_NATIVE_VERSION: "set_native_version",
+	NOT_SUPPORTED: "not_supported", // Action is not supported by the Android app
+
+	SET_NATIVE_VERSION: "set_native_version", // Set the native version of the Android app SDK
 
 	// Safetynet process
 	// # Android to Webapp
@@ -112,6 +114,20 @@ export const isAndroidApp = () => {
  */
 export const doAndroidAction = (action: String, data?: any) => {
 	if (isAndroidApp()) {
-		window[ANDROID_INTERFACE_NAME].doAction(action, data);
+		let data_str = data;
+
+		if (typeof data === "object") {
+			try {
+				data_str =
+					typeof data === "object" ? JSON.stringify(data) : data;
+			} catch (e) {
+				console.error(
+					"[doAndroidAction] Error while stringifying data:",
+					e
+				);
+			}
+		}
+
+		window[ANDROID_INTERFACE_NAME].doAction(action, data_str);
 	}
 };

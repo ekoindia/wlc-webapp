@@ -1,6 +1,6 @@
-import { Box, Flex, IconButton } from "@chakra-ui/react";
-import { Menus } from "components";
+import { Box, Flex } from "@chakra-ui/react";
 import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
+import { NetworkMenuWrapper } from "..";
 
 /**
  * A <NetworkCard> component
@@ -10,22 +10,28 @@ import { getLocationStyle, getNameStyle, getStatusStyle } from "helpers";
  * @example	`<NetworkCard></NetworkCard>`
  */
 
-const NetworkCard = (props) => {
-	const { item } = props;
-
+const NetworkCard = ({ item }) => {
+	const { agent_mobile, eko_code, account_status } = item;
 	return (
-		<>
+		<Flex direction="column" bg="white" borderRadius="10px" p="20px">
 			<Flex justifyContent="space-between">
-				<Box color="accent.DEFAULT" fontSize={{ base: "md " }}>
+				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
 					{getNameStyle(item.agent_name)}
 				</Box>
-				<Menus
+				{/* <Menus
 					iconName="more-vert"
 					as={IconButton}
 					// iconStyles={{ width: "24px", height: "24px" }}
 					type="inverted"
 					onClick={(e) => {
 						e.stopPropagation();
+					}}
+				/> */}
+				<NetworkMenuWrapper
+					{...{
+						mobile_number: agent_mobile,
+						eko_code,
+						account_status,
 					}}
 				/>
 			</Flex>
@@ -59,7 +65,7 @@ const NetworkCard = (props) => {
 					{getLocationStyle(item.location)}
 				</Flex>
 			</Flex>
-		</>
+		</Flex>
 	);
 };
 

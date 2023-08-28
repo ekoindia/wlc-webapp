@@ -14,17 +14,27 @@ import { useEffect, useState } from "react";
 
 const isBrowser = typeof window !== "undefined";
 
-const RouteProtecter = (props) => {
-	const { router, children } = props; //TODO : Getting Error in _app.tsx
-	const { isLoggedIn, isAdmin, userId, isOnboarding, loading, setLoading } =
-		useSession();
+const RouteProtecter = ({ router, children }) => {
+	const {
+		isLoggedIn,
+		isAdmin,
+		isAdminAgentMode,
+		userId,
+		isOnboarding,
+		loading,
+		setLoading,
+	} = useSession();
 	const [authorized, setAuthorized] = useState(false);
 
 	const role = isAdmin ? "admin" : "non-admin";
 
 	console.log("%cRoute-Protecter: Start\n", "color:green", {
+		// pathname: router.pathname,
+		asPath: router.asPath,
+		// query: router.query,
 		isLoggedIn: isLoggedIn,
 		isAdmin: isAdmin,
+		isAdminAgentMode: isAdminAgentMode,
 		userId: userId,
 		authorized: authorized,
 		loading: loading,
@@ -32,10 +42,21 @@ const RouteProtecter = (props) => {
 
 	useEffect(() => {
 		const path = router.pathname;
-		console.log("Path", path, isLoggedIn);
+		let isAuthorized = authorized;
+
+		console.log("%cRoute-Protecter: ROUTE UPDATED:\n", "color:green", {
+			asPath: router.asPath,
+			path: path,
+			isLoggedIn: isLoggedIn,
+			isAdmin: isAdmin,
+			userId: userId,
+			authorized: authorized,
+			loading: loading,
+		});
 
 		if (path === "/404") {
 			setLoading(false);
+			isAuthorized = false;
 		}
 		// when the user is isLoggedIn and loading is false
 		else if (!isLoggedIn && !loading) {
@@ -46,6 +67,7 @@ const RouteProtecter = (props) => {
 				return;
 			}
 			if (authorized) setAuthorized(false);
+			isAuthorized = false;
 		} else if (isLoggedIn && (userId === "1" || isOnboarding === true)) {
 			console.log("::::Enter in Onboarding::::", path, userId);
 			if (path !== "/signup") {
@@ -55,15 +77,31 @@ const RouteProtecter = (props) => {
 			}
 			setLoading(false);
 			setAuthorized(true);
+			isAuthorized = true;
 		} else if (isLoggedIn && role === "admin") {
-			console.log("::::Enter in Admin::::", path);
+			console.log("::::Enter in Admin::::", path, isAdminAgentMode);
 			// This condition will redirect to initial path if the route is inaccessible after isLoggedIn
 			if (publicLinks.includes(path) || !path.includes(baseRoute[role])) {
 				router.replace(initialRoute[role]);
 				return;
 			}
+
+			// Handle Agent-View for admins...update homepage to the correct view
+			if (isAdminAgentMode) {
+				if (path === "/admin") {
+					router.replace("/admin/home");
+					return;
+				}
+			} else {
+				if (path === "/admin/home") {
+					router.replace("/admin");
+					return;
+				}
+			}
+
 			setLoading(false);
 			setAuthorized(true);
+			isAuthorized = true;
 		} else if (isLoggedIn && role === "non-admin") {
 			console.log("::::Enter in nonAdmin::::", path);
 			// Above condition will check, publicLink contain path or path contain "/admin"
@@ -73,8 +111,21 @@ const RouteProtecter = (props) => {
 			}
 			setLoading(false);
 			setAuthorized(true);
+			isAuthorized = true;
 		}
-	}, [router.asPath, loading, isLoggedIn, userId]);
+
+		// Cache the last route (if it is not the Login route)...
+		if (isAuthorized && path !== "/") {
+			localStorage.setItem(
+				"inf-last-route",
+				JSON.stringify({
+					path: path,
+					meta: router.query,
+					at: Date.now(),
+				})
+			);
+		}
+	}, [router.asPath, loading, isLoggedIn, userId, role, isAdminAgentMode]);
 
 	/**
 	 * Remove the flash of private pages when user is not nonLogged

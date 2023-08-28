@@ -15,7 +15,7 @@ const BulkOnboardingPage = () => {
 };
 
 BulkOnboardingPage.pageMeta = {
-	title: "Onboard Sellers & Distributors | Admin",
+	title: "Onboard Retailers & Distributors | Admin",
 };
 
 export default BulkOnboardingPage;

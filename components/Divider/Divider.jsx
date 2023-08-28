@@ -1,6 +1,6 @@
 import { Box, Text } from "@chakra-ui/react";
 
-const Divider = ({ title, titleStyle, ...rest }) => {
+const Divider = ({ title, titleStyle, lineStyle, ...rest }) => {
 	return (
 		<Box textAlign="center" maxW="100%" {...rest}>
 			<Text
@@ -24,6 +24,7 @@ const Divider = ({ title, titleStyle, ...rest }) => {
 						content: "''",
 						right: "100%",
 						borderColor: "#707070",
+						...lineStyle,
 					}}
 					_after={{
 						position: "absolute",
@@ -33,6 +34,7 @@ const Divider = ({ title, titleStyle, ...rest }) => {
 						content: "''",
 						left: "100%",
 						borderColor: "#707070",
+						...lineStyle,
 					}}
 					{...titleStyle}
 				>

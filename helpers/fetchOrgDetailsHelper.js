@@ -33,11 +33,20 @@ export const MockOrgDetails = {
 	logo: process.env.WLC_LOGO,
 	metadata: {
 		support_contacts: { email: "xyz@com", phone: "0123456789" },
-		theme: { primary_color: "#323233", secondary_color: "#8675656" },
+		theme: {
+			navstyle: process.env.THEME_NAVSTYLE || "", // light or dark (default)
+			primary: process.env.THEME_PRIMARY || "",
+			primary_dark: process.env.THEME_PRIMARY_DARK || "",
+			primary_light: process.env.THEME_PRIMARY_LIGHT || "",
+			accent: process.env.THEME_ACCENT || "",
+			accent_dark: process.env.THEME_ACCENT_DARK || "",
+			accent_light: process.env.THEME_ACCENT_LIGHT || "",
+		},
 	},
 	login_types: {
 		google: {
-			client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+			default: process.env.USE_DEFAULT_GOOGLE_LOGIN === "true",
+			client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || undefined,
 		},
 	},
 };
@@ -45,10 +54,11 @@ export const MockOrgDetails = {
 /**
  * Fetch org details from API (using cache)
  * This is used on server-side only
- * @param {*} host	Hostname of the request
+ * @param {string} host	Hostname of the request
+ * @param {boolean} force	Force fetch from API (after clearing the cache)
  * @returns {object} org details or {notFound: true} if org not found
  */
-export const fetchOrgDetails = async (host) => {
+export const fetchOrgDetails = async (host, force) => {
 	if (process.env.NEXT_PUBLIC_ENV === "development") {
 		if (process.env.WLC_MOCK_HOST) {
 			// Mock hostname to get details from server
@@ -98,7 +108,11 @@ export const fetchOrgDetails = async (host) => {
 	let orgDetails = ORG_CACHE[domain || subdomain];
 
 	// Check cache for invalid (sub)domain
-	if (!orgDetails && INVALID_DOMAIN_CACHE.has(domain || subdomain)) {
+	if (
+		force !== true &&
+		!orgDetails &&
+		INVALID_DOMAIN_CACHE.has(domain || subdomain)
+	) {
 		// Bust the cache for invalid domains every 24 hours
 		// Also bust the cache if the cache size is more than 1000
 		if (
@@ -120,11 +134,15 @@ export const fetchOrgDetails = async (host) => {
 	}
 
 	// If org details not found in cache, or the cache is expired, fetch from API
-	if (!orgDetails || orgDetails?.cache_expires < Date.now()) {
+	if (
+		force == true ||
+		!orgDetails ||
+		orgDetails?.cache_expires < Date.now()
+	) {
 		// Fetch org details from API
 		orgDetails = await fetchOrgDetailsfromApi(domain, subdomain);
 
-		console.log("Fetched Org details::: ", orgDetails);
+		console.log("Fetched Org details::: ", orgDetails, force);
 
 		// Process metadata...
 		if (typeof orgDetails?.metadata?.support_contacts === "string") {
@@ -143,8 +161,8 @@ export const fetchOrgDetails = async (host) => {
 				...orgDetails,
 				cache_expires: Date.now() + CACHE_EXPIRY_TIME,
 			};
-		} else {
-			// Cache the invalid domain
+		} else if (orgDetails?.not_found === true) {
+			// Domain details not available. Cache the invalid domain.
 			INVALID_DOMAIN_CACHE.add(domain || subdomain);
 		}
 	}
@@ -209,9 +227,11 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 
 		const data = await res.json();
 
-		if (data && data.data && data.data.org_id) {
+		if (data?.data?.org_id) {
+			// Org details found
 			return data.data;
-		} else {
+		} else if (data?.response_type_id == 1829) {
+			// Org details not found
 			console.debug(
 				"Org details not found on server: ",
 				JSON.stringify(
@@ -229,6 +249,15 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 				)
 			);
 
+			return {
+				not_found: true,
+			};
+		} else {
+			// Some other server error
+			console.error(
+				"Org detail fetch ERROR: ",
+				data?.data?.message || data?.message || "Unknown error"
+			);
 			return null;
 		}
 	} catch (e) {

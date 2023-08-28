@@ -5,6 +5,7 @@ export {
 } from "./AccountStatement";
 //export { BulkOnboarding } from "./Onboarding/BulkOnboarding";
 export { ChangeRole } from "./ChangeRole";
+export { Configurations } from "./Configurations";
 export { Dashboard } from "./Dashboard";
 export { DetailedStatement } from "./DetailedStatement";
 export { Network } from "./Network";

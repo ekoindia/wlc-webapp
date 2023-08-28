@@ -39,6 +39,6 @@ const Profile = () => {
 		</Grid>
 	);
 };
-//TODO user type id 2,3 --> seller -- shop details
+//TODO user type id 2,3 --> Retailer -- shop details
 
 export default Profile;

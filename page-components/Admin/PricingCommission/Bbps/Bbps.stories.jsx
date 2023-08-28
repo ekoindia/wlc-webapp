@@ -2,7 +2,7 @@ import Bbps from "./Bbps";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Bbps",
+	title: "PageComponent/Admin/PricingCommission/Bbps",
 	component: Bbps,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

@@ -15,23 +15,23 @@ const QueryCenterTable = ({
 	data,
 }) => {
 	const renderer = [
-		{ name: "ticketNumber", field: "Ticket ID" },
-		{ name: "subject", field: "Subject", show: "Description" },
-		{ name: "statusType", field: "Status", show: "Tag" },
-		{ name: "contactName", field: "Agent Name" },
+		{ name: "ticketNumber", label: "Ticket ID" },
+		{ name: "subject", label: "Subject", show: "Description" },
+		{ name: "statusType", label: "Status", show: "Tag" },
+		{ name: "contactName", label: "Agent Name" },
 		{
 			name: "eko_code",
-			field: "Agent Code",
+			label: "Agent Code",
 		},
 		{
 			name: "createdTime",
-			field: "Time Created",
+			label: "Time Created",
 			sorting: true,
 			show: "DateTime",
 		},
 		{
 			name: "modifiedTime",
-			field: "Last Updated",
+			label: "Last Updated",
 			sorting: true,
 			show: "DateTime",
 		},
@@ -40,8 +40,6 @@ const QueryCenterTable = ({
 	return (
 		<Table
 			renderer={renderer}
-			variant="stripedActionNone"
-			tableName="Query"
 			// totalRecords={totalRecords}
 			setPageNumber={setPageNumber}
 			pageNumber={pageNumber}

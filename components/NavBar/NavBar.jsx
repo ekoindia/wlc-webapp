@@ -10,8 +10,10 @@ import {
 	MenuList,
 	Text,
 	useBreakpointValue,
+	useToken,
 	VStack,
 } from "@chakra-ui/react";
+import { useKBarReady } from "components/CommandBar";
 import { Endpoints } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
@@ -19,6 +21,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Fragment, useState } from "react";
 import { limitText } from "utils";
+import { svgBgDotted } from "utils/svgPatterns";
 import { Button, IcoButton, Icon, OrgLogo } from "..";
 
 export const NavHeight = {
@@ -68,11 +71,18 @@ const NavBar = ({ setNavOpen }) => {
 export default NavBar;
 
 const NavContent = ({ setNavOpen, setIsCardOpen }) => {
-	const { userData, isAdmin, isOnboarding, isLoggedIn } = useUser();
+	const { userData, isAdmin, isAdminAgentMode, isOnboarding, isLoggedIn } =
+		useUser();
 	const { userDetails } = userData;
 	const { orgDetail } = useOrgDetailContext();
 	// const router = useRouter();
 	const isMobile = useBreakpointValue({ base: true, md: false });
+
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
+
+	// Get theme color values
+	const [contrast_color] = useToken("colors", ["navbar.dark"]);
 
 	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
 		ssr: false,
@@ -101,10 +111,14 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	return (
 		<>
 			<HStack
-				bg={"white"}
-				h={"full"}
+				bg="navbar.bg"
+				h="full"
 				justifyContent={"space-between"}
 				px={{ base: "4", sm: "4", md: "4", xl: "6" }}
+				backgroundImage={svgBgDotted({
+					fill: contrast_color,
+					opacity: 0.04,
+				})}
 			>
 				{/* Left-side items of navbar */}
 				<Box
@@ -131,11 +145,14 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						<OrgLogo
 							orgDetail={orgDetail}
 							size="md"
+							dark={
+								orgDetail?.metadata?.theme?.navstyle === "light"
+							}
 							ml={{ base: 1, lg: 0 }}
 						/>
 					</Flex>
 
-					{isLoggedIn === true && isOnboarding !== true && (
+					{ready && isLoggedIn === true && isOnboarding !== true && (
 						<Flex
 							flexGrow={isMobile ? 1 : 0}
 							justify={isMobile ? "flex-end" : "flex-start"}
@@ -159,27 +176,27 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 								cursor={"pointer"}
 								zIndex={"10"}
 							>
-								<Avatar
-									w={{
-										base: "35px",
-										sm: "34px",
-										md: "30px",
-										lg: "34px",
-										xl: "30px",
-										"2xl": "46px",
-									}}
-									h={{
-										base: "35px",
-										sm: "34px",
-										md: "30px",
-										lg: "34px",
-										xl: "30px",
-										"2xl": "46px",
-									}}
-									name={userDetails?.name[0]}
-									lineHeight="3px"
-									src={userDetails?.pic}
-								/>
+								<Box
+									bg="navbar.bgAlt"
+									padding="2px"
+									borderRadius="50%"
+								>
+									<Avatar
+										w={{
+											base: "34px",
+											xl: "38px",
+											"2xl": "42px",
+										}}
+										h={{
+											base: "34px",
+											xl: "38px",
+											"2xl": "42px",
+										}}
+										name={userDetails?.name[0]}
+										lineHeight="3px"
+										src={userDetails?.pic}
+									/>
+								</Box>
 								{isAdmin ? (
 									<Flex
 										ml={"0.5vw"}
@@ -202,12 +219,11 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												as="span"
 												fontSize={{
 													base: "12px",
-													lg: "14px",
-													xl: "12px",
-													"2xl": "18px",
+													"2xl": "16px",
 												}}
-												fontWeight={"semibold"}
-												mr={"1.6vw"}
+												fontWeight="semibold"
+												mr="1.6vw"
+												color="navbar.text"
 											>
 												{limitText(
 													userDetails?.name || "",
@@ -219,6 +235,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												name="arrow-drop-down"
 												size="xs"
 												mt="2px"
+												color="navbar.text"
 											/>
 										</Box>
 										<Text
@@ -226,10 +243,12 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												base: "10px",
 												"2xl": "14px",
 											}}
-											color={"secondary.DEFAULT"}
+											color={"navbar.textLight"}
 											textAlign={"start"}
 										>
-											Logged in as admin
+											{isAdminAgentMode
+												? "Viewing as Agent"
+												: "Logged in as Admin"}
 										</Text>
 									</Flex>
 								) : null}
@@ -285,7 +304,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				py={{ base: "2", sm: "2", md: "1", lg: "" }}
 				w="full"
 				// minH={"6vw"}
-				bg="accent.DEFAULT"
+				bg="primary.DEFAULT"
 				position="relative"
 				borderTopRadius={{
 					base: "0.3rem",
@@ -307,7 +326,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				</Flex>
 				<Box
 					display={{ base: "none", sm: "initial" }}
-					color="accent.DEFAULT"
+					color="primary.DEFAULT"
 					transform="rotate(180deg)"
 					position="absolute"
 					top="-12px"
@@ -409,7 +428,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									<Box ml={{ base: "15px", sm: "initial" }}>
 										<IcoButton
 											size={"xs"}
-											theme="primary"
+											theme="accent"
 											ml="2"
 											// onClick={() =>
 											// 	Router.push("/admin/my-network/profile/up-per-info")

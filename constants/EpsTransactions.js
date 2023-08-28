@@ -35,7 +35,7 @@ export const TransactionIds = {
 	SET_PIN: 736,
 	EKOSTORE: 246,
 	BILL_PAYMENT: 244,
-	NEED_CASH: 148, // For sellers
+	NEED_CASH: 148, // For Retailer
 	QUERY_TRACKER: 49,
 	MY_TEAM: 242, // For Distributor
 	USER_PROFILE: 401,

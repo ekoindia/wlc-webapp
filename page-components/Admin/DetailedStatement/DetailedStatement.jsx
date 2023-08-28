@@ -40,11 +40,11 @@ const DetailedStatement = () => {
 	);
 
 	const router = useRouter();
-	const { cellnumber } = router.query;
+	const { mobile } = router.query;
 
 	let headers = {
 		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history/recent_transaction/account_statement?page_number=${pageNumber}&record_count=10&search_recent=${search}&search_value=${cellnumber}&transaction_date_from=${fromDate}&transaction_date_to=${toDate}`,
+		"tf-req-uri": `/network/agents/transaction_history/recent_transaction/account_statement?page_number=${pageNumber}&record_count=10&search_recent=${search}&search_value=${mobile}&transaction_date_from=${fromDate}&transaction_date_to=${toDate}`,
 		"tf-req-method": "GET",
 	};
 
@@ -98,7 +98,7 @@ const DetailedStatement = () => {
 						<Text fontWeight="semibold" color="light" fontSize="xs">
 							Account information
 						</Text>
-						<Text color="accent.DEFAULT" fontSize="sm">
+						<Text color="primary.DEFAULT" fontSize="sm">
 							as on &thinsp;
 							<span>
 								<DateView date={currentDate} />
@@ -126,7 +126,7 @@ const DetailedStatement = () => {
 							</Text>
 							<Flex
 								fontSize="sm"
-								color="accent.DEFAULT"
+								color="primary.DEFAULT"
 								fontWeight="semibold"
 							>
 								<Currency amount={currBalance} />
@@ -153,6 +153,10 @@ const DetailedStatement = () => {
 						direction={{ base: "column", md: "row" }}
 						align={{ base: "flex-start", md: "center" }}
 						mt={{ base: "24px", md: "0px" }}
+						mb={{
+							base: "24px",
+							md: "0px",
+						}}
 					>
 						<InputLabel
 							htmlFor="calendar-flex"

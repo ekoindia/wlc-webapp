@@ -1,7 +1,6 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ErrorBoundary, Layout, RouteProtecter } from "components";
-import { ActionIcon } from "components/CommandBar";
+import { KBarLazyProvider } from "components/CommandBar";
 import {
 	AppSourceProvider,
 	CommissionSummaryProvider,
@@ -18,7 +17,6 @@ import {
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
-import { KBarProvider, Priority } from "kbar";
 import App from "next/app";
 import { Inter } from "next/font/google";
 import Head from "next/head";
@@ -45,6 +43,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	console.log("[_app.tsx] InfinityApp (web) Started: ", {
 		org,
 		is_local: typeof window === "undefined" ? false : true,
+		path: router.pathname,
 	});
 
 	// Read initial data from SessionStorage (if available)
@@ -68,19 +67,12 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	}
 
 	// Setup custom theme...
-	const colors = org?.colors;
+	const colors = org?.metadata?.theme;
 	const theme = colors
 		? {
 				...light,
 				colors: {
 					...light.colors,
-					accent: {
-						...light.colors.accent,
-						light:
-							colors?.accent_light || light.colors.accent.light,
-						DEFAULT: colors?.accent || light.colors.accent.DEFAULT,
-						dark: colors?.accent_dark || light.colors.accent.dark,
-					},
 					primary: {
 						...light.colors.primary,
 						light:
@@ -89,11 +81,60 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 							colors?.primary || light.colors.primary.DEFAULT,
 						dark: colors?.primary_dark || light.colors.primary.dark,
 					},
+					accent: {
+						...light.colors.accent,
+						light:
+							colors?.accent_light || light.colors.accent.light,
+						DEFAULT: colors?.accent || light.colors.accent.DEFAULT,
+						dark: colors?.accent_dark || light.colors.accent.dark,
+					},
 				},
 		  }
 		: {
 				...light,
 		  };
+
+	// Add NavBar style colors (light or default dark)...
+	const lightNav = colors?.navstyle === "light";
+	theme.colors = {
+		...theme.colors,
+		navbar: {
+			...light.colors.navbar,
+			bg: lightNav ? theme.colors.primary.DEFAULT : "#FFF",
+			bgAlt: lightNav ? "#FFFFFF30" : "#00000020",
+			text: lightNav ? "#FFFFFFEE" : "#000000DD",
+			textLight: lightNav ? "#FFFFFF70" : "#00000070",
+			dark: lightNav ? "#FFFFFF" : "#000000",
+		},
+		sidebar: {
+			...light.colors.sidebar,
+			bg: lightNav ? "#FFF" : theme.colors.primary.DEFAULT,
+			text: lightNav ? "#333" : "#FFF",
+			dark: lightNav ? "#000000" : "#FFFFFF",
+			sel: lightNav
+				? theme.colors.primary.DEFAULT // theme.colors.primary.DEFAULT + "40"
+				: theme.colors.primary.dark, // Selection color
+			divider: lightNav
+				? theme.colors.primary.light + "40"
+				: theme.colors.primary.light,
+		},
+		status: {
+			...light.colors.status,
+			bg: lightNav ? theme.colors.primary.DEFAULT + "30" : "#00000050",
+			bgLight: lightNav ? "#FFF" : "#00000030",
+			text: lightNav ? "#111" : "#FFF",
+			wm: lightNav ? "#00000050" : "#FFFFFF50", // Watermark color
+			wmLight: lightNav ? "#00000030" : "#FFFFFF25",
+			title: lightNav ? theme.colors.primary.dark : "#FFD93B",
+		},
+	};
+
+	// Setup default toast options for small screen...
+	if (typeof window !== "undefined") {
+		if (window.innerWidth < 768) {
+			toastDefaultOptions.position = "top-right" as ToastPosition;
+		}
+	}
 
 	// Mock login for local testing...
 	let mockUser = null;
@@ -107,58 +148,8 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		console.log("[_app.tsx] !! Mock User: ", mockUser);
 	}
 
-	// Setup K-Bar options...
-	const kbarDefaultActions = [
-		{
-			id: "systemsettings",
-			name: "System",
-			subtitle: "Clear cache or logout",
-			icon: <ActionIcon icon="logout" size="sm" color="error" />,
-			// shortcut: ["c"],
-			// keywords: "signout quit close",
-			// section: "System",
-			priority: -999,
-		},
-		{
-			id: "reloadapp",
-			name: "Reload App",
-			subtitle: "Reset cache and reload the app if you facing any issues",
-			icon: <ActionIcon icon="reload" size="sm" color="error" />,
-			shortcut: ["$mod+F5"],
-			keywords: "reset cache reload",
-			section: "System",
-			priority: Priority.LOW,
-			parent: "systemsettings",
-			perform: () => {
-				// Clear session storage (except org_detail)
-				Object.keys(window.sessionStorage).forEach((key) => {
-					if (key !== OrgDetailSessionStorageKey && key !== "todos") {
-						window.sessionStorage.removeItem(key);
-					}
-				});
-
-				// Reset All LocalStorage (Trxn/Menu/etc) Cache
-				window.localStorage.clear();
-
-				// Reload
-				window.location.reload();
-			},
-		},
-		{
-			id: "logout",
-			name: "Logout",
-			icon: <ActionIcon icon="logout" size="sm" color="error" />,
-			// shortcut: ["c"],
-			keywords: "signout quit close",
-			section: "System",
-			priority: Priority.LOW,
-			parent: "systemsettings",
-			perform: () => (window.location.pathname = "contact"),
-		},
-	];
-
 	// Get standard or custom Layout for the page...
-	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx).
+	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx). Eg: See the login page (pages/index.tsx)
 	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
 	const getLayout =
 		Component.getLayout ||
@@ -172,6 +163,10 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 			</Layout>
 		));
 
+	// Is this a login page? This should help decide if features like CommandBar should be loaded.
+	const isLoginPage =
+		router.pathname === "/" || router.pathname === "/signup" ? true : false;
+
 	const AppCompArray = (
 		<ChakraProvider
 			theme={theme}
@@ -180,18 +175,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		>
 			<AppSourceProvider>
 				<OrgDetailProvider initialData={org || null}>
-					<KBarProvider
-						actions={kbarDefaultActions}
-						options={{
-							enableHistory: false,
-							disableScrollbarManagement: true,
-							// callbacks: {
-							// 	onOpen: () => {
-							// 		console.log("[KBar] onOpen");
-							// 	},
-							// },
-						}}
-					>
+					<KBarLazyProvider load={!isLoginPage}>
 						<GlobalSearchProvider>
 							<UserProvider userMockData={mockUser}>
 								<MenuProvider>
@@ -218,7 +202,8 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 																				<Component
 																					{...pageProps}
 																				/>
-																			</main>
+																			</main>,
+																			org
 																		)}
 																	</ErrorBoundary>
 																</PubSubProvider>
@@ -232,21 +217,30 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 								</MenuProvider>
 							</UserProvider>
 						</GlobalSearchProvider>
-					</KBarProvider>
+					</KBarLazyProvider>
 				</OrgDetailProvider>
 			</AppSourceProvider>
 		</ChakraProvider>
 	);
 
-	const AppCompArrayWithSocialLogin = org?.login_types?.google?.client_id ? (
-		<GoogleOAuthProvider
-			clientId={org?.login_types?.google?.client_id || ""}
-		>
-			{AppCompArray}
-		</GoogleOAuthProvider>
-	) : (
-		AppCompArray
-	);
+	// const useDefaultGoogleLogin = org?.login_types?.google?.default
+	// 	? true
+	// 	: false;
+	// const showGoogleLogin =
+	// 	useDefaultGoogleLogin || org?.login_types?.google?.client_id;
+	// const AppCompArrayWithSocialLogin = showGoogleLogin && false ? (
+	// 	<GoogleOAuthProvider
+	// 		clientId={
+	// 			useDefaultGoogleLogin
+	// 				? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""
+	// 				: org?.login_types?.google?.client_id
+	// 		}
+	// 	>
+	// 		{AppCompArray}
+	// 	</GoogleOAuthProvider>
+	// ) : (
+	// 	AppCompArray
+	// );
 
 	return (
 		<>
@@ -262,6 +256,11 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 					sizes="32x32"
 				/>
 				<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+				<link
+					rel="manifest"
+					href="/manifest.json"
+					crossOrigin="anonymous"
+				/>
 			</Head>
 
 			{process.env.NEXT_PUBLIC_GTM_ID ? (
@@ -274,7 +273,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 				</Script>
 			) : null}
 
-			{AppCompArrayWithSocialLogin}
+			{/* {AppCompArrayWithSocialLogin} */}
+			{AppCompArray}
 		</>
 	);
 }
@@ -296,7 +296,7 @@ InfinityApp.getInitialProps = async function (appContext) {
 	}
 
 	// Get org details (like, logo, name, etc) from server
-	const org_details = await fetchOrgDetails(ctx.req.headers.host);
+	const org_details = await fetchOrgDetails(ctx.req.headers.host, false);
 
 	console.log(
 		"\n\n\n>>>>>>> org_details: ",

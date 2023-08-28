@@ -2,7 +2,7 @@ import BillPaymentWidget from "./BillPaymentWidget";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/BillPaymentWidget",
+	title: "PageComponent/Home/BillPaymentWidget",
 	component: BillPaymentWidget,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

@@ -2,7 +2,7 @@ import PersonalDetailCard from "./PersonalDetailCard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/PersonalDetailCard",
+	title: "PageComponent/Profile/PersonalDetailCard",
 	component: PersonalDetailCard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

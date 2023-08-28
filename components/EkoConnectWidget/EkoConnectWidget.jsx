@@ -1,10 +1,10 @@
-import { Flex, Spinner, Text } from "@chakra-ui/react";
+import { Flex, Spinner, Text, useToken } from "@chakra-ui/react";
 import { Button, ErrorBoundary, PaddingBox, PrintReceipt } from "components";
-// import { ActionIcon } from "components/CommandBar";
+import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { TransactionIds } from "constants";
 import {
 	useAppSource,
-	// useGlobalSearch,
+	useGlobalSearch,
 	useMenuContext,
 	useOrgDetailContext,
 	usePubSub,
@@ -13,9 +13,9 @@ import {
 } from "contexts";
 import { useAppLink, useExternalResource } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
-// import { Priority, useRegisterActions } from "kbar";
+import { Priority, useRegisterActions } from "kbar";
 import Head from "next/head";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 /**
  * The <EkoConnectWidget> component loads the Eko Connect widget (built using Google Polmer v1 library).
@@ -43,10 +43,22 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	const { balance } = useWallet();
 	const { subscribe, TOPICS } = usePubSub();
 	const { appSource } = useAppSource();
-	// const { setSearchTitle } = useGlobalSearch();
+	const { setSearchTitle } = useGlobalSearch();
+
+	// The current state of the transaction flow
+	const [transactionFlow, setTransactionFlow] = useState({
+		breadcrumb: null,
+		path: null,
+		latest: null,
+		cardType: null, // request | response
+		response: null,
+	});
 
 	// Create a reference for the Widget component
 	const widgetRef = useRef(null);
+
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
 
 	const [widgetLoadState /*, reloadWidget */] = useExternalResource(
 		process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL +
@@ -59,12 +71,39 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		"script"
 	);
 
-	console.log(
-		"[EkoConnectWidget] >>> ORG + USER DATA:: ",
-		orgDetail,
-		userData,
-		role_tx_list
-	);
+	// Get theme values
+	const [
+		primary,
+		primary_light,
+		primary_dark,
+		accent,
+		accent_light,
+		accent_dark,
+	] = useToken("colors", [
+		"primary.DEFAULT",
+		"primary.light",
+		"primary.dark",
+		"accent.DEFAULT",
+		"accent.light",
+		"accent.dark",
+	]);
+
+	const theme_colors = {
+		"--primary-color": primary,
+		"--light-primary-color": primary_light,
+		"--dark-primary-color": primary_dark,
+		"--accented-text-color": primary_light,
+		"--menu-selected-background-color": primary + "40",
+		"--light-menu-selected-background-color": primary_light + "30",
+		"--dark-menu-selected-background-color": primary_dark + "40",
+		"--secondary-button-color": primary,
+		"--light-secondary-button-color": primary_light,
+		"--dark-secondary-button-color": primary_dark,
+		"--primary-button-color": accent,
+		"--accent-color": accent,
+		"--light-accent-color": accent_light,
+		"--bright-accent-color": accent_dark,
+	};
 
 	// Subscribe to the Android responses
 	useEffect(() => {
@@ -78,50 +117,99 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 			}
 		});
 
+		console.log(
+			"[EkoConnectWidget] >>> ORG + USER DATA:: ",
+			orgDetail,
+			userData,
+			role_tx_list
+		);
+
 		return unsubscribe;
 	}, []);
 
 	// Setup KBar search actions related to the open transaction
-	// const trxnActions = useMemo(() => {
-	// 	const start_trxn = role_tx_list[start_id];
-	// 	if (!start_trxn) {
-	// 		return [];
-	// 	}
+	const trxnActions = useMemo(() => {
+		if (!ready) {
+			return [];
+		}
 
-	// 	return [
-	// 		{
-	// 			id: "trxnpage/" + start_id,
-	// 			name: `Need help with ${start_trxn.label} transaction?`,
-	// 			subtitle: "Submit your query and we'll get back to you.",
-	// 			icon: (
-	// 				<ActionIcon
-	// 					icon="operator"
-	// 					style="filled"
-	// 					iconSize="md"
-	// 					color="#f43f5e"
-	// 				/>
-	// 			),
-	// 			priority: Priority.HIGH,
-	// 			shortcut: ["$mod+?"],
-	// 		},
-	// 	];
-	// }, [start_id, role_tx_list]);
+		const start_trxn = role_tx_list[start_id];
+		if (!start_trxn) {
+			return [];
+		}
 
-	// useEffect(() => {
-	// 	const start_trxn = role_tx_list[start_id];
-	// 	if (!start_trxn) {
-	// 		return;
-	// 	}
-	// 	setSearchTitle(`Need help with ${start_trxn.label}?`);
-	// 	return () => {
-	// 		setSearchTitle("");
-	// 	};
-	// }, [start_id, role_tx_list]);
+		const isResp = transactionFlow?.cardType === "response";
+		const resp = isResp ? transactionFlow?.response : null;
+		const metadata = {
+			breadcrumb: transactionFlow?.breadcrumb,
+		};
+		if (isResp) {
+			metadata.transaction_detail = {
+				...resp?.response,
+				tx_typeid: resp?.interaction_type_id,
+			};
+			// metadata.parameters_formatted = resp?.response?.parameters_formatted;
+			// metadata.pre_msg_ = resp?.response?.pre_msg_template || "";
+		}
 
-	// useRegisterActions(trxnActions, [trxnActions]);
+		return [
+			{
+				id: "trxnpagehlp/" + start_id,
+				name: `Need help with ${start_trxn.label}?`,
+				subtitle: "Submit your query and we'll get back to you.",
+				icon: (
+					<ActionIcon
+						icon="operator"
+						style="filled"
+						iconSize="md"
+						color="#f43f5e"
+					/>
+				),
+				priority: Priority.HIGH,
+				// shortcut: ["$mod+shift+/"],
+				perform: () => {
+					widgetRef?.current?._onFeedbackDialogEvent({
+						detail: {
+							open_feedback_dlg: true,
+							feedback_origin: isResp
+								? "Response"
+								: "command-bar",
+							tid: resp?.response?.data?.tid ?? -1,
+							status:
+								resp?.response?.data?.tx_status?.toString() ??
+								"-1",
+							extra_metadata: metadata,
+							customIssueType:
+								isResp && resp?.response?.data?.tid
+									? undefined
+									: "Need help with " + start_trxn.label,
+						},
+					});
+				},
+			},
+		];
+	}, [start_id, role_tx_list, transactionFlow, ready]);
+
+	useEffect(() => {
+		const start_trxn = role_tx_list[start_id];
+		if (!start_trxn) {
+			return;
+		}
+		setSearchTitle(`Need help with ${start_trxn.label}?`);
+		return () => {
+			setSearchTitle("");
+		};
+	}, [start_id, role_tx_list]);
+
+	useRegisterActions(trxnActions, [trxnActions]);
 
 	// const { widgetLoading } =
-	useSetupWidgetEventListeners(router, openUrl, refreshUser);
+	useSetupWidgetEventListeners(
+		router,
+		openUrl,
+		refreshUser,
+		setTransactionFlow
+	);
 
 	// Handle widget load error
 	if (widgetLoadState === "error" || scriptLoadState === "error") {
@@ -158,7 +246,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 					thickness="4px"
 					speed="0.65s"
 					emptyColor="gray.200"
-					color="primary.DEFAULT"
+					color="accent.DEFAULT"
 					size="xl"
 				/>
 			</Flex>
@@ -185,7 +273,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 						thickness="4px"
 						speed="0.65s"
 						emptyColor="gray.200"
-						color="primary.DEFAULT"
+						color="accent.DEFAULT"
 						size="xl"
 					/>
 				</Flex>
@@ -254,13 +342,14 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 						// 		? ""
 						// 		: orgDetail.org_name || ""
 						// }
-						// receipt-logo={orgDetail.logo || ""}
+						receipt-logo={orgDetail.logo || ""}
 						analytics-partner-tracking-id={
 							process.env.NEXT_PUBLIC_WIDGET_GA_ID || ""
 						}
 						analytics-partner-user-id={
 							userData.accountDetails.code || ""
 						}
+						theme-colors={JSON.stringify(theme_colors)}
 					></tf-wlc-widget>
 					{/* dark-theme={true} autolink_params={autolinkParams} zoho_id={userData.userDetails.zoho_id} */}
 				</PrintReceipt>
@@ -279,6 +368,7 @@ const setupWidgetEventListeners = ({
 	setBalance,
 	router,
 	openUrl,
+	setTransactionFlow,
 }) => {
 	/**
 	 * Event called when the user session expires
@@ -334,6 +424,20 @@ const setupWidgetEventListeners = ({
 		setBalance(balance);
 	};
 
+	const onWlcWidgetLoad = () => {
+		setWidgetLoading(false);
+	};
+
+	const onEkoResponse = ({ detail }) => {
+		// console.log(">>> TRACK EVENT:: onEkoResponse:: ", detail);
+		const isResp = "invalid_params" in detail ? false : true;
+		setTransactionFlow((prev) => ({
+			...prev,
+			cardType: isResp ? "response" : "request",
+			response: detail,
+		}));
+	};
+
 	/**
 	 * Common events listener for the custom global events dispatched by the Connect widget.
 	 * Supports the following events (identified by the "name" property in the event detail object):
@@ -348,12 +452,6 @@ const setupWidgetEventListeners = ({
 	 */
 	const onIronSignal = (e) => {
 		console.log("🎬 >>> onIronSignal:: ", e?.detail);
-		// update-status
-		// track-event
-		// capture-location
-		// login-again", onLoginAgain
-		// goto-transaction", onGotoTrxn
-		// goto-history", onGotoHist
 
 		if (!e?.detail?.name) {
 			return;
@@ -378,23 +476,66 @@ const setupWidgetEventListeners = ({
 				// Open the transaction page
 				onGotoHist(e?.detail);
 				break;
-		}
-	};
+			case "track-event":
+				// Track Google Analytics events (from widget)
+				// console.log(">>> TRACK EVENT:: ", e?.detail?.data);
+				switch (e?.detail?.data?.category) {
+					case "Transaction":
+						if (e?.detail?.data?.action === "Page Change") {
+							// Track transaction page changes
+							const breadcrumb = e?.detail?.data?.label;
+							if (!breadcrumb) {
+								break;
+							}
+							const path = breadcrumb.split(" > ");
+							setTransactionFlow((prev) => ({
+								...prev,
+								breadcrumb,
+								path: path,
+								latest: path.pop(),
+								cardType: "request",
+								response: null,
+							}));
+							// Note: the "response" event is handled separately by "eko-response" & "eko-network-error" events.
+						}
+						break;
+				}
+				break;
 
-	const onWlcWidgetLoad = () => {
-		setWidgetLoading(false);
+			// TODO: Add these Event listeners as well:
+			// case "show-toast":
+			// capture-location
+			// iron-signal-profile-reloaded
+			// on-iron-signal-capture-location
+		}
 	};
 
 	window.addEventListener("iron-signal", onIronSignal);
 	window.addEventListener("trxn-busy-change", onTrxnBusyChanged);
 	window.addEventListener("open-url", onOpenUrl);
 	window.addEventListener("wlc-widget-loaded", onWlcWidgetLoad);
+	window.addEventListener("eko-response", onEkoResponse);
+	// TODO: iron-signal / show-toast
+	// TODO: iron-signal / track-event
+	// TODO: profile-update   		(es-interaction.html #1716)
+	// TODO: ask-to-reload-connect    (es-interaction.html #3265)		// cache-busting
+	// TODO: eko-response   		(es-interaction.html #4275)
+	// TODO: eko-network-error   	(es-interaction.html #4419)
+	/*
+		this.fire('iron-signal', { name: 'track-event', data: {
+				category: "Transaction",
+				action: "Page Change",
+				label: this.transaction_flow_breadcrumb_label
+			}
+		});
 
-	// TODO: Add these Event listeners as well:
-	// iron-signal-profile-reloaded
-	// [DONE] on-iron-signal-goto-transaction
-	// [DONE] on-iron-signal-goto-history
-	// on-iron-signal-capture-location
+		// Update global profile data
+		this.fire('profile-update', { section: _profile_sec, updated_profile_params: [{
+				name: _profile_key,
+				value: this.chain_request.chain.chain_metadata.set_profile[_key]
+			}]
+		});
+	*/
 
 	// Cleanup...
 	return () => {
@@ -403,6 +544,7 @@ const setupWidgetEventListeners = ({
 		window.removeEventListener("trxn-busy-change", onTrxnBusyChanged);
 		window.removeEventListener("open-url", onOpenUrl);
 		window.removeEventListener("wlc-widget-loaded", onWlcWidgetLoad);
+		window.removeEventListener("eko-response", onEkoResponse);
 	};
 };
 
@@ -422,9 +564,15 @@ const configurePolymer = () => {
  * @param {Object} router - The React Router instance
  * @param {Function} openUrl - The useAppLink function to open internal or external URLs.
  * @param {Function} refreshUser - Function to refresh the user profile data.
+ * @param {Function} setTransactionFlow - Function to set the current transaction flow state.
  * @returns	{Object} - The widgetLoading state
  */
-const useSetupWidgetEventListeners = (router, openUrl, refreshUser) => {
+const useSetupWidgetEventListeners = (
+	router,
+	openUrl,
+	refreshUser,
+	setTransactionFlow
+) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
 
@@ -442,6 +590,7 @@ const useSetupWidgetEventListeners = (router, openUrl, refreshUser) => {
 			setBalance,
 			router,
 			openUrl,
+			setTransactionFlow,
 		});
 		configurePolymer();
 

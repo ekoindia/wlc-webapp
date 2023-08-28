@@ -48,6 +48,15 @@ const nextConfig = withBundleAnalyzer({
 			},
 		],
 	},
+	async rewrites() {
+		return [
+			{
+				// Dynamic manifest.json for each organization
+				source: "/manifest.json",
+				destination: "/api/manifest-proxy",
+			},
+		];
+	},
 });
 
 module.exports = nextConfig;

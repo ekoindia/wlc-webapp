@@ -1,13 +1,6 @@
-import {
-	Box,
-	Heading,
-	Stack,
-	StackDivider,
-	Text,
-	useMediaQuery,
-} from "@chakra-ui/react";
-import { Cards, IconButtons } from "components";
-import Router from "next/router";
+import { Flex, Stack, StackDivider, Text } from "@chakra-ui/react";
+import { Card, IcoButton } from "components";
+import { useRouter } from "next/router";
 
 /**
  * A <PersonalPane> component
@@ -16,78 +9,65 @@ import Router from "next/router";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<PersonalPane></PersonalPane>`
  */
-const PersonalPane = ({ rowData: personalpane }) => {
-	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
+const PersonalPane = ({ rowData: personalPane }) => {
+	const router = useRouter();
 
-	const personalData = [
+	const personalDataList = [
 		{
-			name: "date_of_birth",
 			label: "Date of birth",
-			value: personalpane?.date_of_birth,
+			value: personalPane?.date_of_birth,
 		},
-		{ name: "gender", label: "Gender", value: personalpane?.gender },
+		{ label: "Gender", value: personalPane?.gender },
 		{
-			name: "shop_name",
 			label: "Shop name",
-			value: personalpane?.shop_name,
+			value: personalPane?.shop_name,
 		},
 		{
-			name: "marital_status",
 			label: "Marital Status",
-			value: personalpane?.marital_status,
+			value: personalPane?.marital_status,
 		},
+		// {
+		// 	label: "Monthly Income",
+		// 	value: personalPane?.monthly_income,
+		// },
 		{
-			name: "monthly_income",
-			label: "Monthly Income",
-			value: personalpane?.monthly_income,
-		},
-		{
-			name: "shop_type",
 			label: "Shop Type",
-			value: personalpane?.shop_type,
+			value: personalPane?.shop_type,
 		},
 	];
 
 	return (
-		<Cards h="auto">
-			<Box
-				display="flex"
-				alignItems={"center"}
-				justifyContent="space-between"
-			>
-				<Heading
-					fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
-					fontWeight="semibold"
-					color={"light"}
-				>
+		<Card h="auto">
+			<Flex justify="space-between">
+				<Text as="b" color="light">
 					Personal information
-				</Heading>
-				<IconButtons
+				</Text>
+				<IcoButton
 					onClick={() =>
-						Router.push("/admin/my-network/profile/up-per-info")
+						router.push("/admin/my-network/profile/up-per-info")
 					}
-					title={isSmallerThan769 ? "" : "Edit Details"}
-					iconPos={isSmallerThan769 ? "" : "left"}
+					theme="accent"
+					title="Edit Detail"
 					iconName="mode-edit"
-					iconStyle={{
-						size: "12px",
-					}}
-				></IconButtons>
-			</Box>
+					size="sm"
+				/>
+			</Flex>
 			<Stack
-				direction={"column"}
+				direction="column"
 				divider={<StackDivider />}
-				mt={"5"}
-				fontSize={{ base: 14, md: 12, lg: 14 }}
+				mt="4"
+				fontSize="sm"
 			>
-				{personalData.map((item, index) => (
-					<Box display={"flex"} key={index}>
-						<Text color="light">{item.label}:</Text>
-						<Text fontWeight={"medium"}>&nbsp; {item.value}</Text>
-					</Box>
+				{personalDataList.map(({ label, value }) => (
+					<Flex gap="1" color="light" key={label}>
+						{label}:
+						<Text fontWeight="medium" color="dark">
+							{value}
+						</Text>
+					</Flex>
 				))}
 			</Stack>
-		</Cards>
+		</Card>
 	);
 };
 

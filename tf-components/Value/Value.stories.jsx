@@ -2,7 +2,7 @@ import Value from "./Value";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Value",
+	title: "tf-component/Value",
 	component: Value,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

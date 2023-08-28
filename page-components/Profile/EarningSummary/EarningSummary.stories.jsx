@@ -2,7 +2,7 @@ import EarningSummary from "./EarningSummary";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/EarningSummary",
+	title: "PageComponent/Profile/EarningSummary",
 	component: EarningSummary,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

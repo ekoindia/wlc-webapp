@@ -1,7 +1,9 @@
-import { Box, Flex, Grid, SlideFade } from "@chakra-ui/react";
-import { OrgLogo } from "components";
+import { Box, Flex, SlideFade, Text } from "@chakra-ui/react";
+import { Icon, ShowcaseCircle } from "components";
 import { useOrgDetailContext, useSession } from "contexts";
-import { useState } from "react";
+import { fadeIn } from "libs/chakraKeyframes";
+import { useEffect, useState } from "react";
+import { svgBgDotted } from "utils/svgPatterns";
 import { Login, SocialVerify, VerifyOtp } from "./children";
 
 /**
@@ -16,67 +18,132 @@ const LoginPanel = () => {
 		formatted: "",
 	});
 	const [loginType, setLoginType] = useState("Mobile");
+	const [lastMobileFormatted, setLastMobileFormatted] = useState("");
+	const [lastUserName, setLastUserName] = useState("");
+
 	const { orgDetail } = useOrgDetailContext();
 	const { isLoggedIn } = useSession();
+
+	// Get last login mobile number from localstorage and set it as default value
+	useEffect(() => {
+		if (number?.formatted?.length > 0) return;
+
+		const lastLogin = JSON.parse(localStorage.getItem("inf-last-login"));
+		const lastRoute = JSON.parse(localStorage.getItem("inf-last-route"));
+
+		if (
+			lastRoute?.path === "/" &&
+			lastRoute?.meta?.step === "VERIFY_OTP" &&
+			lastRoute?.meta?.type === "Mobile" &&
+			lastRoute?.meta?.mobile?.formatted &&
+			lastRoute?.at > Date.now() - 240000
+		) {
+			// Was the user on enter-OTP screen in the last 4 mins?
+			// Take them back there without resending OTP...
+			setNumber(lastRoute.meta.mobile);
+			setLastMobileFormatted(lastRoute.meta.mobile.formatted);
+			setLoginType("Mobile");
+			setStep("VERIFY_OTP");
+		} else if (lastLogin?.type !== "Google" && lastLogin?.mobile > 1) {
+			// Format mobile number in the following format: +91 123 456 7890
+			// TODO: Fix Input component so that this is not required
+			const formatted_mobile = lastLogin.mobile
+				.toString()
+				.replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
+
+			setNumber({
+				original: lastLogin.mobile,
+				formatted: formatted_mobile,
+			});
+			setLastMobileFormatted(formatted_mobile);
+		}
+
+		// Check if lastLogin.name exists and is not a mobile number
+		if (lastLogin?.name && lastLogin.name.match(/^[a-zA-Z]/)) {
+			setLastUserName(lastLogin.name.split(" ")[0]);
+		}
+	}, []);
+
+	// Cache current OTP-Verification step in localstorage,
+	// so that OTP Verification can be continued when app is closed on mobile.
+	useEffect(() => {
+		if (step === "VERIFY_OTP") {
+			localStorage.setItem(
+				"inf-last-route",
+				JSON.stringify({
+					path: "/",
+					meta: { step: step, type: loginType, mobile: number },
+					at: Date.now(),
+				})
+			);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [step]);
 
 	// Hide login panel if user is already logged in
 	if (isLoggedIn) return null;
 
 	return (
 		<Flex
+			// direction={{ base: "column-reverse", md: "row" }}
 			w="full"
-			// h="100vh"
-			h={{ base: "100%", md: "100vh" }}
-			alignItems={{ base: "normal", md: "center" }}
-			justifyContent="center"
-			bg="bg"
-			position={{ base: "fixed", md: "none" }}
+			h="100vh"
+			// h={{ base: "100%", md: "100vh" }}
+			align="center"
+			justify="center"
+			bg="accent.light"
+			// bgGradient="linear(to-b, primary.light, primary.dark)"
+			bgImage={{
+				base: "none",
+				lg: "url('/login_bg_2.opt.svg')",
+			}}
+			backgroundRepeat="no-repeat"
+			backgroundPosition="center center"
+			backgroundSize="cover"
+			// position={{ base: "fixed", md: "none" }}
 			overflowY="auto"
 		>
-			{/* TODO: Remove Grid. Not required */}
-			<Grid
-				// direction="column"
-				// justifyContent="center"
-				// align="center"
-				justifyItems="center"
-				w={{ base: "100%", md: "28rem", "2xl": "43.75rem" }}
-				h={{ base: "100%", md: "initial" }}
+			<Flex
+				direction={{ base: "column-reverse", md: "row" }}
+				w={{ base: "100%", md: "80%" }}
+				h={{ base: "100vh", lg: "auto" }}
+				maxW="1000px"
+				overflow="hidden"
+				borderRadius={{ base: 0, md: "15px" }}
+				boxShadow="xl"
+				animation={`${fadeIn} ease-out 1s`}
 			>
-				{/* Logo */}
-				<Box
-					justifySelf="flex-start"
-					display="flex"
-					alignItems="center"
-					w="full"
-					minH={{ base: "3.5rem", "2xl": "auto" }}
-					h={{ base: "10vw", md: "3.5rem", "2xl": "auto" }}
-					bg={{ base: "white", md: "transparent" }}
-					mb={{ base: "0", md: 8, "2xl": "3.8rem" }}
-					boxShadow={{
-						base: "0px 3px 15px #0000001A",
-						md: "none",
-					}}
+				{/* Description Box */}
+				<Flex
+					direction="column"
+					align="center"
+					flex={2}
+					display={{ base: "none", md: "flex" }}
+					boxShadow="0px 3px 20px #00000005"
+					// bg="primary.DEFAULT"
+					bgGradient="linear(to-b, primary.light, primary.dark)"
+					color="white"
+					opacity="0.9"
 				>
-					<OrgLogo
-						orgDetail={orgDetail}
-						size="lg"
-						ml={{ base: 4, md: "0" }}
+					<DescCard
+						logo="/favicon.svg"
+						header={`Welcome to ${orgDetail.app_name}`}
+						features={[
+							"Your business partner for services like Money Transfer, AePS Cash-Out & more",
+							"Build your own network and start earning today!",
+						]}
 					/>
-				</Box>
+				</Flex>
 
-				{/* Login Card */}
+				{/* Login Box */}
 				<Box
-					maxW={{ base: "90vw", sm: "30rem", lg: "none" }}
-					w={{
-						base: "90%",
-						md: "28rem",
-						"2xl": "43.75rem",
-					}}
-					h={{ base: "31rem", "2xl": "44.3rem" }}
+					flex={1}
+					minW={{ base: "300px", lg: "350px" }}
+					h={{ base: "100vh", lg: "auto" }}
 					px={{ base: 5, "2xl": 7 }}
 					py={{ base: 7, "2xl": 10 }}
+					// my={{ base: "auto", md: "0" }}
 					boxShadow="0px 3px 20px #00000005"
-					borderRadius={{ base: 15, "2xl": 20 }}
 					bg="white"
 				>
 					{step === "LOGIN" && (
@@ -86,6 +153,8 @@ const LoginPanel = () => {
 							setNumber={setNumber}
 							setEmail={setEmail}
 							setLoginType={setLoginType}
+							lastUserName={lastUserName}
+							lastMobileFormatted={lastMobileFormatted}
 						/>
 					)}
 					{step === "VERIFY_OTP" && (
@@ -108,7 +177,79 @@ const LoginPanel = () => {
 						</SlideFade>
 					)}
 				</Box>
-			</Grid>
+			</Flex>
+		</Flex>
+	);
+};
+
+/**
+ * A Description card with a logo, title and a list of features
+ */
+const DescCard = ({ logo, header, features = [] }) => {
+	return (
+		<Flex
+			w="100%"
+			h="100%"
+			px={{ base: 5, "2xl": 7 }}
+			py={{ base: 7, "2xl": 10 }}
+			direction="column"
+			align="center"
+			justify="space-around"
+			backgroundImage={svgBgDotted()}
+		>
+			{/* Top image box with circles and stars */}
+			<ShowcaseCircle>
+				<img
+					src={logo}
+					alt="store"
+					width="80px"
+					height="80px"
+					loading="lazy"
+					style={{ pointerEvents: "none" }}
+				/>
+			</ShowcaseCircle>
+
+			{/* Title */}
+			<Text
+				fontWeight="bold"
+				fontSize="1.4em"
+				maxW="400px"
+				my={{ base: "1em", md: "1.5em", lg: "2em" }}
+				opacity="0.8"
+				sx={{ textWrap: "balance" }}
+				animation={`${fadeIn} ease-out 2s`}
+			>
+				{header}
+			</Text>
+
+			{/* Feature List */}
+			<Flex
+				direction="column"
+				// align="center"
+				opacity="0.9"
+				fontSize="0.9em"
+				maxW="400px"
+				// sx={{ textWrap: "balance" }}
+			>
+				{features.map((feature, i) => (
+					<Flex
+						key={i}
+						align="center"
+						py="5px"
+						animation={`${fadeIn} ease-out 2s`}
+					>
+						<Icon
+							name="check"
+							size="18px"
+							mr="0.5em"
+							border="1px solid #FFF"
+							borderRadius="50%"
+							padding="2px"
+						/>
+						<Text textAlign="start">{feature}</Text>
+					</Flex>
+				))}
+			</Flex>
 		</Flex>
 	);
 };

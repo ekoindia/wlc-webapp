@@ -1,6 +1,6 @@
 import { Box, Center, Flex, Heading, Text, useToast } from "@chakra-ui/react";
 import { Button, IcoButton, Icon, Input } from "components";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
+import { useAppSource, useOrgDetailContext } from "contexts";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useState } from "react";
 
@@ -14,6 +14,8 @@ import { useState } from "react";
 const SocialVerify = ({ email, number, setNumber, setStep }) => {
 	const toast = useToast();
 	const [value, setValue] = useState(number.formatted);
+	const { isAndroid } = useAppSource();
+
 	const [invalid, setInvalid] = useState("");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const { orgDetail } = useOrgDetailContext();
@@ -22,7 +24,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 		setValue(val);
 	};
 
-	const onVerifyOtp = () => {
+	const onVerifyOtp = async () => {
 		if (value.length === 12) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({
@@ -31,7 +33,18 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 			});
 
 			setStep("VERIFY_OTP");
-			sendOtpRequest(orgDetail.org_id, originalNum, toast);
+			const otp_sent = await sendOtpRequest(
+				orgDetail.org_id,
+				originalNum,
+				toast,
+				"send",
+				isAndroid
+			);
+
+			if (!otp_sent) {
+				// OTP failed..back to previous screen
+				setStep("LOGIN");
+			}
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);
@@ -76,7 +89,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 						<IcoButton
 							iconName="mode-edit"
 							size="sm"
-							theme="primary"
+							theme="accent"
 							ml={2}
 							onClick={() => {
 								setStep("LOGIN");

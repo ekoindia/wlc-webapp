@@ -18,18 +18,15 @@ const CommissionsTable = ({
 	let renderer = [
 		{
 			name: "transaction_value",
-			field: "Transaction Value",
-			show: "Transaction Value",
+			label: "Transaction Value",
 		},
 		{
 			name: "biller_name",
-			field: "Biller Name",
-			show: "Biller Name",
+			label: "Biller Name",
 		},
 		{
 			name: "commission",
-			field: "Commission",
-			show: "Commission",
+			label: "Commission",
 		},
 	];
 
@@ -40,7 +37,6 @@ const CommissionsTable = ({
 				visibleColumns={0}
 				data={commissionData}
 				variant="stripedActionNone"
-				tableName="Commissions"
 				ResponsiveCard={CommissionsCard}
 				tableRowLimit={tableRowLimit}
 				setPageNumber={setPageNumber}

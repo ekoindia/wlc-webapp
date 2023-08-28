@@ -7,9 +7,8 @@ import {
 	Stack,
 	StackDivider,
 	Text,
-	useMediaQuery,
 } from "@chakra-ui/react";
-import { Button, Cards, Icon, IconButtons } from "components";
+import { Button, Card, IcoButton } from "components";
 
 /**
  * A <DocPane> component
@@ -18,10 +17,7 @@ import { Button, Cards, Icon, IconButtons } from "components";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<DocPane></DocPane>`
  */
-const DocPane = (/* props */) => {
-	// const docdata = props.rowdata;
-	const [isSmallerThan769] = useMediaQuery("(max-width:769px)");
-
+const DocPane = () => {
 	const docData = [
 		{
 			image: "/images/seller_logo.jpg",
@@ -56,7 +52,7 @@ const DocPane = (/* props */) => {
 	];
 
 	return (
-		<Cards>
+		<Card>
 			<Heading
 				fontSize={{ base: 20, md: 15, lg: 17, xl: 18 }}
 				fontWeight="semibold"
@@ -101,29 +97,19 @@ const DocPane = (/* props */) => {
 										)}
 									</Box>
 								</Flex>
-								<IconButtons
+								<IcoButton
 									title={
-										isSmallerThan769
-											? ""
-											: item.available
-											? "Download"
-											: "Upload"
+										item.available ? "Download" : "Upload"
 									}
-									iconPos="left"
-									variant={
-										item.available ? "primary" : "accent"
+									theme={
+										item.available ? "accent" : "primary"
 									}
 									iconName={
 										item.available
 											? "file-download"
 											: "file-upload"
 									}
-									iconStyle={{
-										size: "14px",
-									}}
-									textStyle={{
-										fontSize: "16px",
-									}}
+									size="sm"
 								/>
 							</Box>
 						))}
@@ -131,15 +117,11 @@ const DocPane = (/* props */) => {
 					<Divider mt="10px" />
 				</Box>
 
-				<Button
-					w={{ base: "100%", md: "215px" }}
-					h="60px"
-					icon={<Icon name="file-download" size="18px" />}
-				>
+				<Button w={{ base: "100%", md: "215px" }} h="60px">
 					Download All
 				</Button>
 			</Flex>
-		</Cards>
+		</Card>
 	);
 };
 

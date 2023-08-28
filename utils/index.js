@@ -4,6 +4,7 @@ export {
 	doAndroidAction,
 	isAndroidApp,
 } from "./AndroidUtils";
+export { default as CombineProviders } from "./CombineProviders";
 export { debounce } from "./debounce";
 export { parse } from "./exprParser";
 export { b64toByteArrays, saveDataToFile } from "./FileSave";

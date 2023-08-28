@@ -13,24 +13,23 @@ const BulkOnboardingResponse = ({
 	bulkOnboardingResponseList,
 }) => {
 	const renderer = [
-		{ field: "Sr. No.", show: "#" },
-		{ name: "name", field: "Name", sorting: true, show: "Avatar" },
-		{ name: "mobile", field: "Mobile Number", sorting: true },
+		{ label: "Sr. No.", show: "#" },
+		{ name: "name", label: "Name", sorting: true, show: "Avatar" },
+		{ name: "mobile", label: "Mobile Number", sorting: true },
 		{
 			name: "status",
-			field: "Status",
+			label: "Status",
 			sorting: true,
 			show: "Tag",
 		},
 		{
 			name: "reason",
-			field: "Reason",
+			label: "Reason",
 			show: "Description",
 		},
 	];
 	return (
 		<Table
-			tableName="BulkOnboarding"
 			variant="stripedActionNone"
 			renderer={renderer}
 			// totalRecords={totalRecords}
@@ -38,7 +37,6 @@ const BulkOnboardingResponse = ({
 			// setPageNumber={setPageNumber}
 			data={bulkOnboardingResponseList}
 		/>
-		//TODO table responsive card
 	);
 };
 

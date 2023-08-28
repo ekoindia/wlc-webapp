@@ -2,7 +2,7 @@ import ManageMyAccountCard from "./ManageMyAccountCard";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/ManageMyAccountCard",
+	title: "PageComponent/Profile/ManageMyAccountCard",
 	component: ManageMyAccountCard,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes

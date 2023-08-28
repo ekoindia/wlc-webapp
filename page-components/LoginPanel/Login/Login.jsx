@@ -1,9 +1,18 @@
-import { Flex, Heading, useToast } from "@chakra-ui/react";
-import { Button, Divider, Input } from "components";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
+import { Box, Flex, Text, useToast } from "@chakra-ui/react";
+import { Button, Input, OrgLogo } from "components";
+import { useAppSource, useOrgDetailContext } from "contexts";
 import { RemoveFormatted, sendOtpRequest } from "helpers";
-import { useRef, useState } from "react";
-import { GoogleButton } from "./GoogleButton";
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+// import { GoogleButton } from "./GoogleButton";
+
+const DynamicGoogleButton = dynamic(
+	() => import("./GoogleButton/GoogleButton"),
+	{
+		ssr: false,
+		// loading: () => <p>Loading...</p>,
+	}
+);
 
 /**
  * A <Login> component
@@ -15,22 +24,44 @@ import { GoogleButton } from "./GoogleButton";
  * @params 	{Function}	setLoginType	Function to set the login type
  * @example	`<Login></Login>`
  */
-const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
+const Login = ({
+	setStep,
+	setNumber,
+	number,
+	setEmail,
+	setLoginType,
+	lastUserName,
+	lastMobileFormatted,
+}) => {
 	const EnterRef = useRef();
 	const toast = useToast();
 	const { orgDetail } = useOrgDetailContext();
+	const { isAndroid } = useAppSource();
+
 	const [value, setValue] = useState(number.formatted || "");
 	const [errorMsg, setErrorMsg] = useState(false);
 	const [invalid, setInvalid] = useState("");
 
+	useEffect(() => {
+		if (lastMobileFormatted && !value) {
+			setValue(lastMobileFormatted);
+		}
+		// WARNING: Do not add "value" as a dependency here (as it will always auto-fill the last number whenever the user deletes the filled number & therefore the value becomes empty)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [lastMobileFormatted]);
+
 	// Is Google Login available?
-	const showGoogle = orgDetail?.login_types?.google?.client_id ? true : false;
+	const showGoogle =
+		orgDetail?.login_types?.google?.default ||
+		orgDetail?.login_types?.google?.client_id
+			? true
+			: false;
 
 	const onChangeHandler = (val) => {
 		setValue(val);
 	};
 
-	const SendOtp = () => {
+	const sendOtp = async () => {
 		if (value.length === 12) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({
@@ -39,7 +70,22 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			});
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
-			sendOtpRequest(orgDetail.org_id, originalNum, toast);
+
+			const otp_sent = await sendOtpRequest(
+				orgDetail.org_id,
+				originalNum,
+				toast,
+				"send",
+				isAndroid
+			);
+
+			if (otp_sent) {
+				// Set login-type for current session...
+				sessionStorage.setItem("login_type", "Mobile");
+			} else {
+				// OTP failed..back to previous screen
+				setStep("LOGIN");
+			}
 		} else {
 			setErrorMsg("Required");
 			setInvalid(true);
@@ -53,39 +99,79 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 	};
 
 	return (
-		<Flex direction="column">
-			<Heading
-				variant="selectNone"
-				as="h3"
-				fontSize={{ base: "xl", "2xl": "3xl" }}
-				mb={{
-					base: 4,
-					"2xl": "4.35rem",
-				}}
-			>
-				Login
-			</Heading>
-
-			{showGoogle && (
-				<GoogleButton
-					setStep={setStep}
-					setLoginType={setLoginType}
-					setNumber={setNumber}
-					setEmail={setEmail}
+		<Flex direction="column" height="100%">
+			<Box
+				display={{ base: "block", md: "none" }}
+				position="absolute"
+				top="0"
+				left="0"
+				right="0"
+				h="10px"
+				bg="primary.DEFAULT"
+			></Box>
+			<Flex mb={lastUserName ? "6" : { base: 10, lg: 14 }}>
+				<OrgLogo
+					orgDetail={orgDetail}
+					size="lg"
+					// ml={{ base: 4, md: "0" }}
 				/>
-			)}
+			</Flex>
 
-			{showGoogle ? (
-				<Divider
-					title="Or login with mobile number"
-					cursor="default"
-					py={{ base: "4rem", "2xl": "5.62rem" }}
-					fontSize={{ base: "xs", "2xl": "md" }}
-				/>
+			{lastUserName ? (
+				<Text
+					variant="selectNone"
+					as="h3"
+					fontSize={{ base: "xl", "2xl": "3xl" }}
+					color="primary.light"
+					mb={{
+						base: 6,
+						"2xl": "8",
+					}}
+				>
+					Welcome back, {lastUserName}
+				</Text>
 			) : null}
 
+			{/* {showGoogle ? (
+				<>
+					<Box flex="1" />
+					<GoogleButton
+						setStep={setStep}
+						setLoginType={setLoginType}
+						setNumber={setNumber}
+						setEmail={setEmail}
+					/>
+					<Box flex="1" />
+					<Divider
+						title="Or, login with mobile number"
+						cursor="default"
+						py={{ base: "2rem", lg: "3rem", "2xl": "4rem" }}
+						fontSize={{ base: "xs" }}
+						titleStyle={{
+							display: "inline-block",
+							color: "light",
+							opacity: "0.8",
+							fontSize: "xs",
+							border: "1px solid",
+							borderColor: "hint",
+							borderRadius: "10px",
+							py: "2px",
+						}}
+						lineStyle={{
+							borderColor: "hint",
+						}}
+					/>
+				</>
+			) : (
+				<Text fontWeight="bold" fontSize="1.2em" color="light">
+					Login with your mobile...
+				</Text>
+			)} */}
+
+			<Box flex="0.5" />
+
 			<Input
-				label="Enter mobile number"
+				label="Login with your mobile number" // "Enter mobile number"
 				placeholder="XXX XXX XXXX"
 				required
 				leftAddon="+91"
@@ -108,14 +194,85 @@ const Login = ({ setStep, setNumber, number, setEmail, setLoginType }) => {
 			/>
 
 			<Button
-				h={{ base: 16, "2xl": "4.5rem" }}
-				fontSize={{ base: "lg", "2xl": "xl" }}
-				mt={{ base: 10, "2xl": "4.35rem" }}
-				onClick={SendOtp}
+				h={{ base: "56px" }}
+				borderRadius="8px"
+				fontSize={{ base: "lg" }}
+				mt={{ base: 8 }}
+				onClick={sendOtp}
 				ref={EnterRef}
+				// disabled={value.length < 12}
 			>
 				Verify
 			</Button>
+
+			{/* <Box flex="1" /> */}
+
+			{showGoogle ? (
+				<>
+					<Box flex="2" />
+
+					<Flex direction="row" align="center" w="100%">
+						<Text
+							display="inline-block"
+							color="light"
+							opacity="0.8"
+							fontSize="xs"
+							border="1px solid"
+							borderColor="hint"
+							borderRadius="10px"
+							cursor="default"
+							px="1em"
+							py="2px"
+							my={{ base: "2rem", lg: "3rem", "2xl": "4rem" }}
+						>
+							Or, login with
+						</Text>
+						<Box
+							flex="1"
+							position="relative"
+							_after={{
+								position: "absolute",
+								top: "50%",
+								left: "0",
+								right: "0",
+								borderTop: "1px solid",
+								content: "''",
+								borderColor: "hint",
+							}}
+						/>
+						<DynamicGoogleButton
+							setStep={setStep}
+							setLoginType={setLoginType}
+							setNumber={setNumber}
+							setEmail={setEmail}
+							transform="scale(120%)"
+						/>
+					</Flex>
+
+					{/* <Box flex="1" /> */}
+					{/* <Divider
+						title="Or, login with mobile number"
+						cursor="default"
+						py={{ base: "2rem", lg: "3rem", "2xl": "4rem" }}
+						fontSize={{ base: "xs" }}
+						titleStyle={{
+							display: "inline-block",
+							color: "light",
+							opacity: "0.8",
+							fontSize: "xs",
+							border: "1px solid",
+							borderColor: "hint",
+							borderRadius: "10px",
+							py: "2px",
+						}}
+						lineStyle={{
+							borderColor: "hint",
+						}}
+					/> */}
+				</>
+			) : null}
+
+			<Box flex="1" />
 		</Flex>
 	);
 };

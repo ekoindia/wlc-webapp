@@ -1,5 +1,6 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { IcoButton, Icon, Kbd } from "components";
+import { useKBarReady } from "components/CommandBar";
 import { useGlobalSearch } from "contexts";
 import { usePlatform } from "hooks";
 import { useKBar } from "kbar";
@@ -16,12 +17,17 @@ const GlobalSearch = ({ ...rest }) => {
 	const { isMac } = usePlatform();
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
+
+	if (!ready) return null;
+
 	return isSmallScreen ? (
 		<IcoButton
 			iconName="search"
 			size="sm"
 			color="light"
-			onClick={() => query.toggle()}
+			onClick={() => ready && query.toggle()}
 		/>
 	) : (
 		<Flex
@@ -37,7 +43,7 @@ const GlobalSearch = ({ ...rest }) => {
 				xl: "500px",
 			}}
 			h="36px"
-			bg="darkShade"
+			bg="navbar.bgAlt" // ORIG_THEME: darkShade
 			borderWidth="0"
 			borderRadius="6px"
 			radius={6}
@@ -48,7 +54,7 @@ const GlobalSearch = ({ ...rest }) => {
 				display={{ base: "none", md: "flex" }}
 				name="search"
 				size="sm"
-				color="light"
+				color="navbar.textLight"
 			/>
 			<Text
 				flexGrow={1}
@@ -56,6 +62,7 @@ const GlobalSearch = ({ ...rest }) => {
 				opacity={0.6}
 				px="12px"
 				noOfLines={1}
+				color="navbar.text"
 			>
 				{title || "Search anything..."}
 			</Text>

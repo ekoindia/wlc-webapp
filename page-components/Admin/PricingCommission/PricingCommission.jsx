@@ -7,9 +7,10 @@ import {
 	Tabs,
 	Text,
 } from "@chakra-ui/react";
-import { Headings } from "components/Headings";
+import { Headings } from "components";
 import {
 	AadhaarPay,
+	//AccountVerification,
 	Aeps,
 	AirtelCms,
 	CreditCardBillPayment,
@@ -24,15 +25,15 @@ import {
  * @example	`<PricingCommission></PricingCommission>`
  */
 const PricingCommissions = () => {
-	const tabs = {
-		DMT: <Dmt />,
-		AEPS: <Aeps />,
-		"Aadhaar Pay": <AadhaarPay />,
-		"Indo-Nepal Fund Transfer": <IndoNepal />,
-		// BBPS: <Bbps />,
-		"Airtel CMS": <AirtelCms />,
-		"Credit Card Bill Payment": <CreditCardBillPayment />,
-	};
+	const tabList = [
+		{ label: "DMT", comp: <Dmt /> },
+		{ label: "AEPS", comp: <Aeps /> },
+		{ label: "Aadhaar Pay", comp: <AadhaarPay /> },
+		{ label: "Indo-Nepal Fund Transfer", comp: <IndoNepal /> },
+		{ label: "Airtel CMS", comp: <AirtelCms /> },
+		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
+		//{ label: "Account Verification", comp: <AccountVerification /> },
+	];
 
 	return (
 		<>
@@ -62,8 +63,7 @@ const PricingCommissions = () => {
 						isLazy
 						position="relative"
 						defaultIndex={0}
-						variant="colorful"
-						bg={{ base: "#FFFFFF", md: "transparent" }}
+						bg={{ base: "white", md: "transparent" }}
 						py="3"
 						w={{ base: "100%", md: "100%" }}
 						borderRadius="10px"
@@ -83,22 +83,22 @@ const PricingCommissions = () => {
 								},
 							}}
 						>
-							{Object.keys(tabs).map((key) => (
+							{tabList.map(({ label }) => (
 								<Tab
-									key={key}
+									key={label}
 									fontSize={{
 										base: "sm",
 										"2xl": "md",
 									}}
 								>
-									{key}
+									{label}
 								</Tab>
 							))}
 						</TabList>
 
 						<TabPanels p="10px 20px">
-							{Object.entries(tabs).map(([key, value]) => (
-								<TabPanel key={key}>{value}</TabPanel>
+							{tabList.map(({ label, comp }) => (
+								<TabPanel key={label}>{comp}</TabPanel>
 							))}
 						</TabPanels>
 					</Tabs>

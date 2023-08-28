@@ -1,5 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { IcoButton, Icon } from "components";
+import { useKBarReady } from "components/CommandBar";
 import { useClipboard } from "hooks";
 import { useKBar } from "kbar";
 import { useState } from "react";
@@ -16,6 +17,9 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 	const { copy, state } = useClipboard();
 	const [markedDone, setMarkedDone] = useState(-1);
 	const { query } = useKBar();
+
+	// Check if CommandBar is loaded...
+	const { ready } = useKBarReady();
 
 	const markDone = (index) => {
 		setMarkedDone(index);
@@ -132,16 +136,18 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 							transition="width 0.1s ease-out"
 							_groupHover={{ width: "80px" }}
 						>
-							<IcoBtn
-								title="Search with this note"
-								iconName="search"
-								onClick={() => {
-									query.toggle();
-									setTimeout(() => {
-										query.setSearch(todo);
-									}, 100);
-								}}
-							/>
+							{ready && (
+								<IcoBtn
+									title="Search with this note"
+									iconName="search"
+									onClick={() => {
+										query.toggle();
+										setTimeout(() => {
+											query.setSearch(todo);
+										}, 100);
+									}}
+								/>
+							)}
 							<IcoBtn
 								title="Copy note"
 								iconName={

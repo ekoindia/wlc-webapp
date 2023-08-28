@@ -1,11 +1,7 @@
 import { Dashboard } from "page-components/Admin";
 
 const DashboardPage = () => {
-	return (
-		<>
-			<Dashboard />
-		</>
-	);
+	return <Dashboard />;
 };
 
 DashboardPage.pageMeta = {

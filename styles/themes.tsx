@@ -24,26 +24,26 @@ export const light = extendTheme({
 	},
 	colors: {
 		primary: {
+			light: "#1F3ABC", // ORIG_THEME: #1d3ac9
+			DEFAULT: "#11299E",
+			dark: "#091968", // ORIG_THEME: #0d2289
+		},
+		accent: {
 			light: "#ffad23",
 			DEFAULT: "#FE9F00",
 			dark: "#f38300",
 		},
-		accent: {
-			light: "#1d3ac9",
-			DEFAULT: "#11299E",
-			dark: "#0d2289",
-		},
-		secondary: {
-			light: "#2d6cbf",
-			DEFAULT: "#1F5AA7",
-			dark: "#164d94",
-		},
-		shadow: {
-			primary: "#FE9F008C",
-			accent: "#11299e96",
-			success: "#009B34",
-			error: "#CA1B56",
-		},
+		// secondary: {
+		// 	light: "#2d6cbf",
+		// 	DEFAULT: "#1F5AA7",
+		// 	dark: "#164d94",
+		// },
+		// shadow: {
+		// 	primary: "#FE9F008C",
+		// 	accent: "#11299e96",
+		// 	success: "#009B34",
+		// 	error: "#CA1B56",
+		// },
 		"google-btn-bg": "#4185F4",
 		success: "#00C341",
 		error: "#FF4081",
@@ -59,14 +59,14 @@ export const light = extendTheme({
 		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
 		inputlabel: "#0C243B",
 		overlayBg: "#e9edf1b3",
-		sidebar: {
-			"icon-bg": "#1F3ABC",
-			"active-border": "#FE7D00",
-			"active-bg": "#081E89",
-			"card-bg": "#102174",
-			"card-bg-dark": "#091968",
-			font: "#556FEF",
-		},
+		// sidebar: {
+		// 	"icon-bg": "#1F3ABC", // primary.light
+		// 	"active-border": "#FE7D00",
+		// 	"active-bg": "#081E89",
+		// 	"card-bg": "#102174",
+		// 	"card-bg-dark": "#091968",
+		// 	font: "#556FEF",
+		// },
 	},
 	components: {
 		Button: buttonTheme,

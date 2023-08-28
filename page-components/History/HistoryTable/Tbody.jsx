@@ -39,13 +39,13 @@ const Tbody = ({
 
 	const mainColumns = visible
 		? [
-				{ field: "", show: "ExpandButton" },
+				{ label: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
 		  ]
 		: renderer;
 
 	const extraColumns = visible ? renderer?.slice(visibleColumns) : [];
-	// const printExtras = [{ name: "trx_name", field: "Transaction" }]
+	// const printExtras = [{ name: "trx_name", label: "Transaction" }]
 
 	const handleRowClick = (index) => {
 		if (visible) {
@@ -64,7 +64,7 @@ const Tbody = ({
 					{mainColumns?.map((column, index) => (
 						<ChakraTd
 							p={{ base: ".5em", xl: "1em" }}
-							key={`${column.field}-${index}`}
+							key={`${column.label}-${index}`}
 						>
 							<Skeleton
 								h="1em"
@@ -138,7 +138,7 @@ const Trow = ({
 					return (
 						<ChakraTd
 							p={{ base: ".5em", xl: "1em" }}
-							key={`td-${rendererIndex}-${column.field}-${serialNumber}`}
+							key={`td-${rendererIndex}-${column.label}-${serialNumber}`}
 						>
 							{prepareTableCell(
 								item,
@@ -223,7 +223,7 @@ const Trow = ({
 
 								return item[column.name] ? (
 									<Flex
-										key={`tdexp-${rendererIndex}-${column.field}-${serialNumber}`}
+										key={`tdexp-${rendererIndex}-${column.label}-${serialNumber}`}
 										position="relative"
 										direction="column"
 										display={dispScreen}
@@ -247,7 +247,7 @@ const Trow = ({
 											zIndex="999"
 										></Box>
 										<Text color="light" fontSize="10px">
-											{column.field}
+											{column.label}
 										</Text>
 										<Text
 											fontWeight="semibold"
@@ -283,7 +283,7 @@ const Trow = ({
 								size="md"
 								icon="print"
 								pt="10px"
-								color="primary.DEFAULT"
+								color="accent.DEFAULT"
 								onClick={() => {
 									printPage("Receipt (copy)");
 								}}

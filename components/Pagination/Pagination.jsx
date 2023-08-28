@@ -93,7 +93,7 @@ const Pagination = ({
 									cursor="pointer"
 									bg={
 										currentPage === pageNumber
-											? "accent.DEFAULT"
+											? "primary.DEFAULT"
 											: null
 									}
 									color={

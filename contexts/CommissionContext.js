@@ -4,7 +4,7 @@ import { useMenuContext, useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useDailyCacheState } from "hooks";
 import { useRouter } from "next/router";
-import { createContext, useContext, useEffect, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { formatCurrency } from "utils";
 import { validateResp } from "utils/validateResponse";
 import { useBusinessSearchActions } from "./GlobalSearchContext";
@@ -119,6 +119,8 @@ export const CommissionSummaryProvider = ({ children }) => {
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions;
 
+	const [fetchAttempted, setFetchAttempted] = useState(false);
+
 	const [userCommission, setUserCommission, isValid] = useDailyCacheState(
 		"inf-commission",
 		{
@@ -130,7 +132,13 @@ export const CommissionSummaryProvider = ({ children }) => {
 		useSession();
 
 	useEffect(() => {
-		if (!isLoggedIn || !accessToken || isOnboarding || isAdmin) {
+		if (
+			!isLoggedIn ||
+			!accessToken ||
+			isOnboarding ||
+			isAdmin ||
+			fetchAttempted
+		) {
 			return;
 		}
 
@@ -142,12 +150,15 @@ export const CommissionSummaryProvider = ({ children }) => {
 			return;
 		}
 
+		setFetchAttempted(true);
+
 		// Fetch the commissions data from the API after a delay of 2 seconds
 		setTimeout(
 			() =>
 				fetcher(
 					process.env.NEXT_PUBLIC_API_BASE_URL +
-						Endpoints.TRANSACTION,
+						Endpoints.TRANSACTION +
+						"?type=pricing_commission",
 					{
 						headers: {
 							"Content-Type": "application/json",
@@ -187,6 +198,7 @@ export const CommissionSummaryProvider = ({ children }) => {
 		setUserCommission,
 		userCommission?.userId,
 		userId,
+		fetchAttempted,
 	]);
 
 	// Generate search actions for CommandBar

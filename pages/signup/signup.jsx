@@ -1,15 +1,21 @@
-import { Center, Spinner, useToast } from "@chakra-ui/react";
+import { Center, Spinner, useToast, useToken } from "@chakra-ui/react";
 import { Endpoints, TransactionIds } from "constants";
-import { useOrgDetailContext, useSession } from "contexts";
+import {
+	useAppSource,
+	useOrgDetailContext,
+	usePubSub,
+	useSession,
+} from "contexts";
 import { useUser } from "contexts/UserContext";
 // import { Home, SelectionScreen } from "eko-oaas-package";
-import { Home, SelectionScreen } from "eko-oaas-package";
+import { OnboardingWidget, SelectionScreen } from "@ekoindia/oaas-widget";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
-import { distributorStepsData } from "./distributorStepsData";
+// import { distributorStepsData } from "./distributorStepsData";
 
 const selectionStepData = {
 	id: 0,
@@ -27,7 +33,7 @@ const selectionStepData = {
 				id: 1,
 				merchant_type: 1,
 				applicant_type: 0,
-				label: "I'm a seller",
+				label: "I'm a Retailer",
 				description: "I serve customers from my shop",
 				icon: "../assets/icons/user_merchant.png",
 				isVisible: true,
@@ -40,9 +46,9 @@ const selectionStepData = {
 				id: 2,
 				merchant_type: 3,
 				applicant_type: 2,
-				label: "I'm a distributor",
+				label: "I'm a Distributor",
 				description:
-					"I have a network of seller and i want to serve them",
+					"I have a network of retailer and i want to serve them",
 				icon: "../assets/icons/user_distributor.png",
 				isVisible: true,
 				user_type: [{ key: 1, name: "Distributor" }],
@@ -51,9 +57,9 @@ const selectionStepData = {
 				id: 3,
 				merchant_type: 2,
 				applicant_type: 1,
-				label: "I'm a Enterprise",
+				label: "I'm an Enterprise",
 				description:
-					"I want to use API and other solution to make my own service",
+					"I want to use API and other solutions to make my own service",
 				icon: "../assets/icons/user_enterprise.png",
 				isVisible: false,
 				user_type: [{ key: 23, name: "Partner" }],
@@ -61,6 +67,253 @@ const selectionStepData = {
 		],
 	},
 };
+
+/**
+ * Onboarding steps data for both sellers & distributor.
+ * Based on user-type (seller or distributor), the oaas-widget will manually remove a few steps for the distributor (hard-coded in the oaas-widget file `src/components/Common/Sidebar/Sidebar.tsx`).
+ * Currently, only "Business Details" & "Secret PIN" steps are removed from the Distributor onboarding.
+ *
+ * Some steps are disabled by marking `isVisible` as `false`.
+ */
+const distributorStepsData = [
+	{
+		id: 1,
+		name: "Welcome",
+		label: "Welcome",
+		isSkipable: false,
+		isRequired: false,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Start Onboarding",
+		description: "",
+		form_data: {},
+	},
+	{
+		id: 2,
+		name: "RoleCapture",
+		label: "Tell us who you are?",
+		isSkipable: false,
+		isRequired: false,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Continue",
+		description: "",
+		form_data: {
+			roles: [
+				{
+					id: 1,
+					merchant_type: 1,
+					applicant_type: 0,
+					label: "I'm a retailer",
+					description: "I serve customers from my shop",
+					icon: "../assets/icons/user_merchant.png",
+					isVisible: true,
+				},
+				{
+					id: 2,
+					merchant_type: 3,
+					applicant_type: 2,
+					label: "I'm a distributor",
+					description:
+						"I have a network of retailer and i want to serve them",
+					icon: "../assets/icons/user_distributor.png",
+					isVisible: true,
+				},
+				{
+					id: 3,
+					merchant_type: 2,
+					applicant_type: 1,
+					label: "I'm a Enterprise",
+					description:
+						"I want to use API and other solution to make my own service",
+					icon: "../assets/icons/user_enterprise.png",
+					isVisible: false,
+				},
+			],
+		},
+	},
+	{
+		id: 3,
+		name: "LocationCapture",
+		label: "Location Capturing",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12400,
+		primaryCTAText: "Start Location Capture",
+		description: "",
+		form_data: {},
+		success_message: "Location captured successfully.",
+	},
+	{
+		id: 4,
+		name: "AadhaarVerification",
+		label: "Aadhaar Verification",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12400,
+		primaryCTAText: "Verify Aadhaar",
+		description:
+			"Upload your Aadhaar Copy front and back to verify yourself. Accepted formats are",
+		form_data: {},
+		success_message: "Aadhaar uploaded successfully.",
+	},
+	{
+		id: 5,
+		name: "Aadhaar Consent",
+		label: "Aadhaar Consent",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 24000,
+		primaryCTAText: "Verify Consent",
+		description: "",
+		form_data: {},
+		success_message: "Aadhaar consent taken.",
+	},
+	{
+		id: 6,
+		name: "Confirm Aadhaar Number",
+		label: "Confirm Aadhaar Number",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 24000,
+		primaryCTAText: "Proceed",
+		description: "",
+		form_data: {},
+		success_message: "Aadhaar number confirmed.",
+	},
+
+	{
+		id: 7,
+		name: "ConfirmAadhaarOTP",
+		label: "Confirm Aadhaar OTP",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 24000,
+		primaryCTAText: "Confirm",
+		description: "",
+		form_data: {},
+		success_message: "Aadhaar confirmed successfully.",
+	},
+	{
+		id: 11,
+		name: "SelfieKYC",
+		label: "Selfie KYC",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12500,
+		primaryCTAText: "Next",
+		description:
+			"Thanks for completing your personal and address verification. Take a clear selfie to complete the eKYC process.",
+		form_data: {},
+		success_message: "KYC completed.",
+	},
+	{
+		id: 9,
+		name: "BusinessDetails",
+		label: "Business Details",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 13300,
+		primaryCTAText: "Next",
+		description: "",
+		form_data: {},
+	},
+	{
+		id: 10,
+		name: "SecretPin",
+		label: "Secret Pin",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12600,
+		primaryCTAText: "Next",
+		description: "Set Your 4-Digit Secret Pin",
+		form_data: {},
+	},
+	{
+		id: 12,
+		name: "Sign Agreement",
+		label: "Sign Agreement",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12800,
+		primaryCTAText: "Sign Agreement",
+		description: "",
+		form_data: {},
+		success_message: "Agreement signed successfully.",
+	},
+	{
+		id: 8,
+		name: "PanVerification",
+		label: "Pan Verification",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12300,
+		primaryCTAText: "Verify PAN",
+		description:
+			"Upload your PAN copy to verify your business. Accepted formats are",
+		form_data: {},
+		success_message: "PAN verified successfully.",
+	},
+
+	{
+		id: 13,
+		name: "Activation Plans",
+		label: "Activation Plans",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: false,
+		stepStatus: 0,
+		role: 13400,
+		primaryCTAText: "Sign Agreement",
+		description: "Select Plans To See Details",
+		form_data: {},
+		success_message: "Agreement signed successfully.",
+	},
+	{
+		id: 14,
+		name: "OnboardingStatus",
+		label: "Onboarding Status",
+		isSkipable: false,
+		isRequired: false,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Submit",
+		description: "",
+		form_data: {},
+	},
+	{
+		id: 15,
+		name: "PANAadhaarMatching",
+		label: "PAN - Aadhaar Matching",
+		isSkipable: false,
+		isRequired: false,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Start Matching",
+		description: "",
+		form_data: {},
+	},
+];
 
 const SignupPage = () => {
 	const { userData, updateUserInfo } = useUser();
@@ -82,6 +335,8 @@ const SignupPage = () => {
 	const [signUrlData, setSignUrlData] = useState();
 	const [bookletNumber, setBookletNumber] = useState();
 	const [isSpinner, setisSpinner] = useState(true);
+	const [apiInProgress, setApiInProgress] = useState(false);
+	const [esignStatus, setEsignStatus] = useState(0); // 0: loading, 1: ready, 2: failed
 	const [stepperData, setStepperData] = useState([
 		{
 			id: 1,
@@ -111,7 +366,7 @@ const SignupPage = () => {
 						id: 1,
 						merchant_type: 1,
 						applicant_type: 0,
-						label: "I'm a seller",
+						label: "I'm a retailer",
 						description: "I serve customers from my shop",
 						icon: "../assets/icons/user_merchant.png",
 						isVisible: true,
@@ -122,7 +377,7 @@ const SignupPage = () => {
 						applicant_type: 2,
 						label: "I'm a distributor",
 						description:
-							"I have a network of seller and i want to serve them",
+							"I have a network of retailer and i want to serve them",
 						icon: "../assets/icons/user_distributor.png",
 						isVisible: true,
 					},
@@ -140,10 +395,57 @@ const SignupPage = () => {
 			},
 		},
 	]);
+
+	// const widgetRef = useRef(null);
+	const { isAndroid } = useAppSource();
+	const { subscribe, TOPICS } = usePubSub();
+
+	// Subscribe to the Android responses
+	useEffect(() => {
+		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
+			console.log("[signup] [PubSub] >>> android-response:: ", data);
+
+			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
+				androidleegalityResponseHandler(data?.data);
+			}
+		});
+
+		return unsubscribe;
+	}, []);
+
+	const androidleegalityResponseHandler = (res) => {
+		let value = JSON.parse(res);
+		if (value.agreement_status === "success") {
+			handleStepDataSubmit({
+				id: 12,
+				form_data: {
+					agreement_id: userData?.userDetails?.agreement_id,
+					document_id: value.document_id,
+				},
+			});
+		} else {
+			toast({
+				title: "Something went wrong, please try again later!",
+				status: "error",
+				duration: 2000,
+			});
+		}
+	};
+
 	const initialStepSetter = (userData) => {
 		const currentStepData = [];
 		function stepSetter() {
+			// console.log(
+			// 	"[oaas] > Setup Steps #1: ",
+			// 	userData,
+			// 	userData?.details?.onboarding_steps
+			// );
 			userData?.details?.onboarding_steps?.forEach((step) => {
+				// console.log(
+				// 	"[oaas] > Setup Steps #2: ",
+				// 	step,
+				// 	distributorStepsData
+				// );
 				let currentData = distributorStepsData?.filter(
 					(singleStep) => singleStep.role === step.role
 				);
@@ -151,8 +453,13 @@ const SignupPage = () => {
 			});
 		}
 		stepSetter();
-		setStepperData([...stepperData, ...currentStepData]);
+		setStepperData([/* ...stepperData, */ ...currentStepData]); // FIX: by Kr.Abhishek (duplicate data)
 	};
+
+	// FIX: HACK: ADDED BY KR.ABHISHEK FOR TESTING...INITIAL STEP LIST NOT GETTING POPULATED...
+	useEffect(() => {
+		initialStepSetter({ details: userData });
+	}, [userData]);
 
 	let bookletKeys = [];
 
@@ -160,11 +467,14 @@ const SignupPage = () => {
 	const user_id =
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
+
 	const handleStepDataSubmit = (data) => {
 		console.log("HandleWlcStepData", data);
 		if (data?.id === 3) {
 			setLatLong(data?.form_data?.latlong);
 		}
+
+		// If the form does not require file-upload...
 		if (
 			data?.id !== 1 &&
 			data?.id !== 4 &&
@@ -248,8 +558,9 @@ const SignupPage = () => {
 	// Method only for file upload data
 	const handleFileUploadOnboarding = async (data) => {
 		// Handle all file upload API's here only
-		const formData = new FormData();
 
+		setApiInProgress(true);
+		const formData = new FormData();
 		const bodyData = {
 			formdata: {
 				client_ref_id:
@@ -275,7 +586,7 @@ const SignupPage = () => {
 				new URLSearchParams(bodyData["formdata"])
 			);
 		} else if (data.id === 8) {
-			console.log("pan data", data);
+			console.log("PAN data", data);
 			bodyData.file1 = data?.form_data?.panImage?.fileData;
 			bodyData.formdata.file1 = "";
 			bodyData.formdata.doc_type = 2;
@@ -298,8 +609,7 @@ const SignupPage = () => {
 			);
 		}
 
-		console.log("inside handle file upload ", bodyData);
-		console.log("inside handle file upload formData", formData);
+		console.log("inside handle file upload ", bodyData, formData);
 
 		const uploadResponse = await fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD,
@@ -329,7 +639,8 @@ const SignupPage = () => {
 					err.status = res.status;
 					if (res.status === 401) {
 						err.name = "Unauthorized";
-						// TODO: Handle unauthorized error by refreshing token
+						generateNewToken(true);
+						return;
 					}
 					throw err;
 				}
@@ -345,7 +656,20 @@ const SignupPage = () => {
 				console.error("error in update onboarding: ", err);
 				return err;
 			});
-		if (uploadResponse.response_status_id !== 0) {
+
+		const success =
+			uploadResponse?.status == 0 && // Status is successful
+			!(Object.keys(uploadResponse?.invalid_params || {}).length > 0); // No "invalid-params" present
+
+		if (success) {
+			toast({
+				title: uploadResponse.message,
+				status: "success",
+				duration: 2000,
+			});
+			setLastStepResponse(uploadResponse);
+			refreshApiCall();
+		} else {
 			toast({
 				title:
 					uploadResponse.message ||
@@ -354,32 +678,34 @@ const SignupPage = () => {
 				duration: 2000,
 			});
 			setLastStepResponse(uploadResponse);
-		} else {
-			toast({
-				title: uploadResponse.message,
-				status: "success",
-				duration: 2000,
-			});
-			setLastStepResponse(uploadResponse);
-			refreshApiCall();
 		}
+
+		setApiInProgress(false);
 
 		console.log("uploadResponse", uploadResponse);
 	};
 
 	const updateOnboarding = (bodyData) => {
 		// setisSpinner(true);
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			token: userData?.access_token,
-			body: {
-				interaction_type_id: interaction_type_id,
-				user_id,
-				...bodyData.form_data,
+		setApiInProgress(true);
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				token: userData?.access_token,
+				body: {
+					interaction_type_id: interaction_type_id,
+					user_id,
+					...bodyData.form_data,
+				},
+				timeout: 30000,
 			},
-			timeout: 30000,
-		})
+			generateNewToken
+		)
 			.then((data) => {
-				if (data?.status === 0) {
+				const success =
+					data?.status == 0 && !data?.invalid_params?.length;
+
+				if (success) {
 					toast({
 						title: bodyData.success_message || "Success",
 						status: "success",
@@ -421,11 +747,15 @@ const SignupPage = () => {
 					duration: 2000,
 				});
 				setLastStepResponse(err);
+			})
+			.finally(() => {
+				setApiInProgress(false);
 			});
 	};
 
 	const refreshApiCall = async () => {
 		// setisSpinner(true);
+		setApiInProgress(true);
 		try {
 			const res = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL +
@@ -449,16 +779,18 @@ const SignupPage = () => {
 			) {
 				router.push("/home");
 			}
+
+			setApiInProgress(false);
 			return res;
 		} catch (error) {
 			setisSpinner(false);
+			setApiInProgress(false);
 
 			console.log("inside initial api error", error);
 		}
 	};
 
 	const getSHopTypes = () => {
-		console.log("inside mainfunction");
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -474,7 +806,7 @@ const SignupPage = () => {
 					setShopTypesData(res?.param_attributes.list_elements);
 				}
 			})
-			.catch((err) => console.log("[GetShopTypes] Error", err));
+			.catch((err) => console.error("[GetShopTypes] Error", err));
 	};
 
 	const getStateType = () => {
@@ -494,7 +826,7 @@ const SignupPage = () => {
 				}
 				console.log("[getStateType] resp:", res);
 			})
-			.catch((err) => console.log("[getStateType] Error:", err));
+			.catch((err) => console.error("[getStateType] Error:", err));
 	};
 	// const getPincodeType = () => {
 	// 	console.log("inside mainfunction");
@@ -518,9 +850,9 @@ const SignupPage = () => {
 	// };
 
 	const handleLeegalityCallback = (res) => {
-		console.log("callback response", res);
+		console.log("Leegality callback response", res);
 		if (res.error) {
-			console.log("res.error leegalityCallBack", res.error);
+			console.error("LeegalityCallBack Error", res.error);
 			toast({
 				title:
 					res?.error ||
@@ -540,28 +872,54 @@ const SignupPage = () => {
 	};
 
 	const handleStepCallBack = (callType) => {
-		console.log("stepcallback", callType, latLong, userLoginData);
+		console.log("[stepcallback]", callType, latLong, userLoginData);
 		if (callType.type === 12) {
+			// Leegality Esign
 			if (callType.method === "getSignUrl") {
 				getSignUrl(userLoginData?.details?.agreement_id);
 			}
 			if (callType.method === "legalityOpen") {
-				console.log("inside legal");
-				// eslint-disable-next-line no-undef
-				const leegality = new Leegality({
-					callback: handleLeegalityCallback.bind(this),
-					logo: orgDetail.logo,
-				});
-				leegality.init();
-				leegality.esign(signUrlData?.short_url);
+				// console.log(
+				// 	"Opening Leegality Popup: ",
+				// 	orgDetail.logo,
+				// 	signUrlData,
+				// 	isAndroid ? "Android" : "Web"
+				// );
+
+				if (!signUrlData?.short_url) {
+					console.error("[oaas Leegality] Didn't receive short-url");
+					toast({
+						title: "Error starting eSign session. Please reload and try again later.",
+						status: "error",
+						duration: 2000,
+					});
+				}
+
+				if (isAndroid) {
+					doAndroidAction(
+						ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
+						JSON.stringify({
+							signing_url: signUrlData?.short_url,
+							document_id: signUrlData?.document_id,
+							//	signUrlData?.short_url,
+							// logo: orgDetail.logo,
+						})
+					);
+				} else {
+					// eslint-disable-next-line no-undef
+					const leegality = new Leegality({
+						callback: handleLeegalityCallback.bind(this),
+						logo: orgDetail.logo,
+					});
+					leegality.init();
+					leegality.esign(signUrlData?.short_url); // signUrlData?.short_url
+				}
 			}
 		} else if (callType.type === 10) {
 			if (callType.method === "getBookletNumber") {
-				console.log("inside getBookletNumber");
 				getBookletNumber();
 			}
 			if (callType.method === "getBookletKey") {
-				console.log("inside getBookletKey");
 				getBookletKey();
 			}
 		} else if (callType.type === 7) {
@@ -574,11 +932,20 @@ const SignupPage = () => {
 					},
 				});
 			}
+		} else if (callType.type === 3) {
+			if (callType.method === "grantPermission") {
+				if (isAndroid) {
+					doAndroidAction(
+						ANDROID_ACTION.GRANT_PERMISSION,
+						ANDROID_PERMISSION.LOCATION
+					);
+				}
+			}
 		}
 	};
 
 	const getSignUrl = () => {
-		console.log("inside mainfunction");
+		console.log("Getting Signed URL for Leegality...");
 		// if (agreementId) {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -598,11 +965,35 @@ const SignupPage = () => {
 		)
 			.then((res) => {
 				// console.log("[getSignUrl] resp:", res);
-				if (res.response_status_id === 0) {
+				// console.log("Get Signed URL for Leegality Response: ", res);
+				if (res?.data?.short_url) {
 					setSignUrlData(res.data);
+					// Inform the OaaS Widget that Leegality is ready
+					setEsignStatus(1);
+					// widgetRef?.current?.postMessage({
+					// 	type: "esign:ready",
+					// });
+				} else {
+					toast({
+						title:
+							res?.message ||
+							"E-sign initialization failed, please try again.",
+						status: "error",
+						duration: 5000,
+					});
+					console.error(
+						"[getSignUrl] Error: E-sign initialization failed: " +
+							res?.message
+					);
+					setEsignStatus(2);
+					// widgetRef?.current?.postMessage({
+					// 	type: "esign:failed",
+					// });
 				}
 			})
-			.catch((err) => console.log("[getSignUrl] Error:", err));
+			.catch((err) =>
+				console.error("[getSignUrl for Leegality] Error:", err)
+			);
 		// }
 	};
 
@@ -628,7 +1019,7 @@ const SignupPage = () => {
 					// setSignUrlData(res.data);
 				}
 			})
-			.catch((err) => console.log("[getBookletNumber] Error:", err));
+			.catch((err) => console.error("[getBookletNumber] Error:", err));
 		// }
 	};
 
@@ -654,10 +1045,11 @@ const SignupPage = () => {
 					// setSignUrlData(res.data);
 				}
 			})
-			.catch((err) => console.log("[getBookletKey] Error: ", err));
+			.catch((err) => console.error("[getBookletKey] Error: ", err));
 		// }
 	};
 
+	// TODO: Load leegality script only when E-sign step is reached...track script status indipendently
 	useEffect(() => {
 		const script = document.createElement("script");
 		script.src = "/scripts/leegalityv5.min.js";
@@ -665,7 +1057,18 @@ const SignupPage = () => {
 		script.id = "legality";
 		document.body.appendChild(script);
 		script.onload = () => {
-			console.log("script loaded", script);
+			console.log("Leegality script loaded", script);
+		};
+		script.onerror = () => {
+			console.error("Failed to load Leegality script");
+			toast({
+				title: "Failed to initialize eSign",
+				description:
+					"Please check your network connection & try again.",
+				status: "error",
+				duration: 2000,
+			});
+			setEsignStatus(2); // Set E-sign load status to failed
 		};
 		if (!userLoginData) {
 			refreshApiCall();
@@ -674,7 +1077,7 @@ const SignupPage = () => {
 			// getPincodeType();
 		}
 		// setLeegalityLoaded(true);
-	});
+	}, [userLoginData]);
 
 	// useEffect(() => {
 	// 	if (userLoginData?.details?.agreement_id) {
@@ -688,6 +1091,16 @@ const SignupPage = () => {
 			getBookletKey();
 		}
 	}, [bookletNumber, getBookletKey]);
+
+	// Get theme primary color
+	const [primaryColor] = useToken("colors", ["primary.DEFAULT"]);
+
+	// console.log("[wlc>oaas] Loading Widget: ", {
+	// 	selectedRole,
+	// 	selectionStepData,
+	// 	userData,
+	// });
+
 	return (
 		<>
 			{isSpinner ? (
@@ -714,10 +1127,13 @@ const SignupPage = () => {
 								// setSelectedRole(data.form_data.value);
 								handleStepDataSubmit(data);
 							}}
+							isDisabledCTA={apiInProgress}
+							primaryColor={primaryColor}
 						/>
 					) : (
-						<Home
-							// defaultStep="12500"
+						<OnboardingWidget
+							// ref={widgetRef}
+							// defaultStep="24000"
 							defaultStep={
 								userData?.userDetails?.role_list || "12400"
 							}
@@ -730,6 +1146,9 @@ const SignupPage = () => {
 							stateTypes={stateTypesData}
 							stepsData={stepperData}
 							handleStepCallBack={handleStepCallBack}
+							esignStatus={esignStatus}
+							primaryColor={primaryColor}
+							orgDetail={orgDetail}
 						/>
 					)}
 				</div>
@@ -737,8 +1156,10 @@ const SignupPage = () => {
 		</>
 	);
 };
+
 SignupPage.pageMeta = {
 	title: "Signup",
 	hideMenu: true,
 };
+
 export default SignupPage;

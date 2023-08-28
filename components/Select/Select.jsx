@@ -14,9 +14,9 @@ const Select = ({
 	inputContStyle,
 	options,
 	onChange,
-	// defaultValue,
-	// value,
+	value,
 	disabled = false,
+	renderer = { label: "label", value: "value" },
 	...rest
 }) => {
 	return (
@@ -38,24 +38,27 @@ const Select = ({
 				disabled={disabled}
 				placeholder={placeholder || "-- Select --"}
 				h="3rem"
-				fontSize={{ base: "sm", md: "sm", "2xl": "lg" }}
+				fontSize="sm"
 				focusBorderColor="hint"
 				_focus={{
-					border: "1px solid #D2D2D2",
+					border: "1px solid var(--chakra-colors-hint)",
 					boxShadow: "none",
 				}}
 				borderRadius="10px"
 				icon={<Icon name="caret-down" />}
-				iconSize="10px"
+				iconSize="8px"
 				onChange={onChange}
-				// value={value}
-				// defaultValue={defaultValue}
+				value={value}
 				{...inputContStyle}
 				{...rest}
 			>
-				{options?.map(({ value, label, selected }) => (
-					<option value={value} key={label} selected={selected}>
-						{label}
+				{options?.map((item, index) => (
+					<option
+						key={`${item[renderer.label]}-${index}`}
+						value={item[renderer.value]}
+						selected={item.selected}
+					>
+						{item[renderer.label]}
 					</option>
 				))}
 			</ChakraSelect>

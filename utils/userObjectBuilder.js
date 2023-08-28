@@ -7,6 +7,7 @@ export const buildUserObjectState = (data) => {
 	return {
 		loggedIn: true,
 		is_org_admin: data?.details?.is_org_admin || 0,
+		isAdminAgentMode: false,
 		access_token: data.access_token,
 		refresh_token: data.refresh_token,
 		token_timeout: data?.token_timeout,
