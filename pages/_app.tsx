@@ -104,11 +104,13 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 			bgAlt: lightNav ? "#FFFFFF30" : "#00000020",
 			text: lightNav ? "#FFFFFFEE" : "#000000DD",
 			textLight: lightNav ? "#FFFFFF70" : "#00000070",
+			dark: lightNav ? "#FFFFFF" : "#000000",
 		},
 		sidebar: {
 			...light.colors.sidebar,
 			bg: lightNav ? "#FFF" : theme.colors.primary.DEFAULT,
 			text: lightNav ? "#333" : "#FFF",
+			dark: lightNav ? "#000000" : "#FFFFFF",
 			sel: lightNav
 				? theme.colors.primary.DEFAULT // theme.colors.primary.DEFAULT + "40"
 				: theme.colors.primary.dark, // Selection color

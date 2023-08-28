@@ -13,6 +13,7 @@ import {
 	// Tooltip,
 	useBreakpointValue,
 	useDisclosure,
+	useToken,
 } from "@chakra-ui/react";
 import {
 	AdminOtherMenuItems,
@@ -30,6 +31,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { limitText } from "utils";
+import { svgBgDotted } from "utils/svgPatterns";
 import { Icon, ProfileCard, StatusCard } from "..";
 import { ActionIcon, useKBarReady } from "../CommandBar";
 
@@ -474,6 +476,9 @@ const SideBarMenu = ({
 	openIndex,
 	setOpenIndex,
 }) => {
+	// Get theme color values
+	const [contrast_color] = useToken("colors", ["sidebar.dark"]);
+
 	return (
 		<Box
 			className="sidebar"
@@ -489,6 +494,9 @@ const SideBarMenu = ({
 			bg="sidebar.bg" // ORIG_THEME: primary.DEFAULT
 			color="sidebar.text" // ORIG_THEME: "white"
 			height={"100%"}
+			backgroundImage={svgBgDotted({
+				fill: contrast_color,
+			})}
 			overflowY="auto"
 		>
 			<Flex direction="column">
