@@ -34,10 +34,12 @@ const AccountStatement = () => {
 			.then((res) => {
 				let _accountStatementData = res?.data ?? {};
 				setAccountStatementData(_accountStatementData);
-				setIsLoading(false);
 			})
 			.catch((err) => {
 				console.log("[Account Statement] error", err);
+			})
+			.finally(() => {
+				setIsLoading(false);
 			});
 
 		return () => {

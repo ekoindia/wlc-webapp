@@ -50,10 +50,12 @@ const Network = () => {
 			.then((res) => {
 				let _networkData = res?.data;
 				setNetworkData(_networkData);
-				setIsLoading(false);
 			})
 			.catch((err) => {
 				console.log("[Network] error", err);
+			})
+			.finally(() => {
+				setIsLoading(false);
 			});
 
 		return () => {
