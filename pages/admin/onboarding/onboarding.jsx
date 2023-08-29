@@ -13,7 +13,7 @@ const OnboardingPage = () => {
 };
 
 OnboardingPage.pageMeta = {
-	title: "Onboard Sellers & Distributors | Admin",
+	title: "Onboard Agents | Admin",
 };
 
 export default OnboardingPage;
