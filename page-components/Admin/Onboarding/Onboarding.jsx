@@ -3,37 +3,34 @@ import { Headings } from "components";
 import { BulkOnboarding, SingleOnboarding } from ".";
 
 /**
- * A <Onboarding> component
- * TODO: Write more description here
+ * A Onboarding page-component
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Onboarding></Onboarding>` TODO: Fix example
  */
 const Onboarding = () => {
-	const tabs = {
-		"Single Onboarding": <SingleOnboarding />,
-		"Multiple Onboarding": <BulkOnboarding />,
-	};
+	const tabList = [
+		{ label: "Single Onboarding", comp: <SingleOnboarding /> },
+		{ label: "Multiple Onboarding", comp: <BulkOnboarding /> },
+	];
 
 	return (
 		<>
-			<Headings title="Onboard Sellers & Distributors" hasIcon={false} />
+			<Headings title="Onboard Agents" hasIcon={false} />
 			<Box
-				w="100%"
 				bg="white"
 				borderRadius="10px"
 				border="card"
 				boxShadow="basic"
+				mx={{ base: "4", md: "0" }}
 			>
 				<Tabs
 					isLazy
 					position="relative"
 					defaultIndex={0}
-					variant="colorful"
-					bg={{ base: "#FFFFFF", md: "transparent" }}
 					py="3"
-					w={{ base: "100%", md: "100%" }}
+					w="100%"
 					borderRadius="10px"
 				>
 					<TabList
@@ -51,22 +48,22 @@ const Onboarding = () => {
 							},
 						}}
 					>
-						{Object.keys(tabs).map((key) => (
+						{tabList.map(({ label }) => (
 							<Tab
-								key={key}
+								key={label}
 								fontSize={{
 									base: "sm",
 									"2xl": "md",
 								}}
 							>
-								{key}
+								{label}
 							</Tab>
 						))}
 					</TabList>
 
 					<TabPanels p="10px 20px">
-						{Object.entries(tabs).map(([key, value]) => (
-							<TabPanel key={key}>{value}</TabPanel>
+						{tabList.map(({ label, comp }) => (
+							<TabPanel key={label}>{comp}</TabPanel>
 						))}
 					</TabPanels>
 				</Tabs>
