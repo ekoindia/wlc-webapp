@@ -1,8 +1,11 @@
+import { ANDROID_ACTION, doAndroidAction } from "utils";
+
 /**
  * Function to initiate printing of page / receipt / etc.
  */
 export const printPage = (
-	page_title
+	page_title,
+	isAndroid = false
 	// analytics_action,
 	// analytics_label
 ) => {
@@ -24,15 +27,15 @@ export const printPage = (
 		":" +
 		_dt.getSeconds();
 
-	// if (this.isWebview === true && this._androidAction) {
-	// 	this._androidAction(this.ANDROID_ACTION.PRINT_PAGE, title_print);
-	// } else {
-	document.title = title_print;
+	if (isAndroid) {
+		doAndroidAction(ANDROID_ACTION.PRINT_PAGE, title_print);
+	} else {
+		document.title = title_print;
 
-	window.print();
+		window.print();
 
-	document.title = title_original;
-	// }
+		document.title = title_original;
+	}
 
 	// Google Analytics
 	// this.fire("iron-signal", {
