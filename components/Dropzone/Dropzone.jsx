@@ -86,7 +86,9 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 			onDragOver={handleDragOver}
 			onDragLeave={handleDragLeave}
 			onDrop={handleDrop}
-			border="2px dashed #d7dbe3"
+			border="2px"
+			borderStyle="dashed"
+			borderColor="divider"
 			borderRadius="10px"
 			color="light"
 			p="5"
