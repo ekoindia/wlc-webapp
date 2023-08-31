@@ -1,4 +1,5 @@
 import { ActionIcon } from "components/CommandBar";
+import { Endpoints } from "constants";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
@@ -36,6 +37,7 @@ export const EarningSummaryProvider = ({ children }) => {
 	const [userEarnings, setUserEarnings, isValid] = useDailyCacheState(
 		"inf-earnsummary",
 		{
+			commission_due: 0,
 			this_month_till_yesterday: 0,
 			last_month_till_yesterday: 0,
 			last_month_total: 0,
@@ -60,7 +62,8 @@ export const EarningSummaryProvider = ({ children }) => {
 		setTimeout(
 			() =>
 				fetcher(
-					process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+					process.env.NEXT_PUBLIC_API_BASE_URL +
+						Endpoints.TRANSACTION,
 					{
 						body: {
 							interaction_type_id:
@@ -90,6 +93,7 @@ export const EarningSummaryProvider = ({ children }) => {
 							);
 
 							const earnings = {
+								commission_due: data?.data?.commission_due || 0,
 								this_month_till_yesterday: data.data.this_month,
 								last_month_till_yesterday:
 									data.data.last_month || 0,
