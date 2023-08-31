@@ -1,12 +1,13 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Button, Currency, Headings } from "components";
-import useRequest from "hooks/useRequest";
+import { Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AccountStatementTable } from ".";
 /**
- * A <AccountStatement> component
- * TODO: Write more description here
+ * A AccountStatement page-component
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<AccountStatement></AccountStatement>`
@@ -14,33 +15,44 @@ import { AccountStatementTable } from ".";
 
 const AccountStatement = () => {
 	const router = useRouter();
+	const [accountStatementData, setAccountStatementData] = useState({});
+	const [isLoading, setIsLoading] = useState(true);
+	const { accessToken } = useSession();
 	const { mobile } = router.query;
 
 	/* API CALLING */
 
-	let headers = {
-		"tf-req-uri-root-path": "/ekoicici/v1",
-		"tf-req-uri": `/network/agents/transaction_history/recent_transaction?record_count=10&search_value=${mobile}`,
-		"tf-req-method": "GET",
-	};
-
-	const { data, mutate /* , error, isLoading */ } = useRequest({
-		method: "POST",
-		baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-		headers: { ...headers },
-	});
-
 	useEffect(() => {
-		mutate(
-			process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
-			headers
-		);
-	}, [headers["tf-req-uri"]]);
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/agents/transaction_history/recent_transaction?record_count=10&search_value=${mobile}`,
+				"tf-req-method": "GET",
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				let _accountStatementData = res?.data ?? {};
+				setAccountStatementData(_accountStatementData);
+			})
+			.catch((err) => {
+				console.log("[Account Statement] error", err);
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
 
-	const acctabledata = data?.data?.recent_transaction_details ?? [];
-	const actable = data?.data ?? [];
-	const agentname = actable?.agent_name ?? [];
-	const saving_balance = actable?.saving_balance ?? [];
+		return () => {
+			setIsLoading(true);
+		};
+	}, [mobile]);
+
+	const {
+		recent_transaction_details: accountStatementTableData,
+		agent_name,
+		saving_balance,
+	} = accountStatementData;
+	console.log("accountStatementTableData", accountStatementTableData);
 
 	/*redirect to detiled statement*/
 	const handleClick = () => {
@@ -89,7 +101,7 @@ const AccountStatement = () => {
 					>
 						<div>
 							<Text color="light">Account Holder</Text>
-							<Text fontWeight="semibold">{agentname}</Text>
+							<Text fontWeight="semibold">{agent_name}</Text>
 						</div>
 
 						<Flex
@@ -113,7 +125,9 @@ const AccountStatement = () => {
 						</Flex>
 					</Flex>
 				</Flex>
-				<AccountStatementTable acctabledata={acctabledata} />
+				<AccountStatementTable
+					{...{ isLoading, accountStatementTableData }}
+				/>
 			</Flex>
 		</div>
 	);

@@ -207,7 +207,7 @@ export const light = extendTheme({
 	// 	// roboto_font: `${roboto.style.fontFamily}`,
 	// },
 	fontSizes: {
-		vxs: "0.5rem",
+		xxs: "0.625rem",
 		xs: "0.75rem", // 12px
 		sm: "0.875rem", // 14px
 		md: "1rem", // 16px

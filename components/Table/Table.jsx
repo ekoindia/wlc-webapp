@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { tableRowLimit as trl } from "constants";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { MobileView, Th, Tr } from ".";
 import { Pagination } from "..";
 
@@ -19,33 +19,43 @@ import { Pagination } from "..";
  * @example	`<Table></Table>` TODO: Fix example
  */
 const Table = ({
-	renderer,
 	data,
+	renderer,
 	isLoading,
-	totalRecords,
-	pageNumber = 1,
-	setPageNumber = () => {},
-	visibleColumns,
 	tableName,
 	onRowClick,
+	totalRecords,
+	pageNumber = 1,
+	visibleColumns,
 	ResponsiveCard,
 	isReceipt = false,
+	printExpansion = false,
+	setPageNumber = () => {},
 	variant = "stripedActionNone",
 	tableRowLimit = trl?.DEFAULT,
-	printExpansion = false,
 }) => {
-	const [hasNoMoreItems, setHasNoMoreItems] = useState(false);
-	console.log("hasNoMoreItems", hasNoMoreItems);
 	const router = useRouter();
 	const [isSmallScreen] = useMediaQuery("only screen and (max-width: 860px)");
 	const rowExpansion =
 		visibleColumns > 0 && renderer?.length > visibleColumns;
-	// const isSmallScreen = useBreakpointValue({ base: true, lg: false });
 
-	const tableDataListLength = data?.length;
+	const tableDataSize = data?.length;
+
+	const handlePageChange = (page) => {
+		router.query.page = page;
+		// router.replace(router);
+		router.replace({
+			pathname: router.pathname,
+			query: router.query,
+		});
+	};
 
 	useEffect(() => {
-		if (router.query.page && +router.query.page !== pageNumber) {
+		if (
+			router.query.page &&
+			+router.query.page > 0 &&
+			+router.query.page !== pageNumber
+		) {
 			setPageNumber(+router.query.page);
 		}
 	}, [router.query.page]);
@@ -55,9 +65,7 @@ const Table = ({
 			{!isSmallScreen ? (
 				// Large screen
 				<TableContainer
-					// className="customScrollbars"
 					borderRadius="10px 10px 0 0"
-					mt={{ base: "20px", "2xl": "10px" }} //TODO remove this
 					border="1px solid var(--chakra-colors-divider)"
 					css={{
 						"&::-webkit-scrollbar": {
@@ -130,21 +138,17 @@ const Table = ({
 			)}
 
 			{/* Pagination */}
-			{!(tableDataListLength < tableRowLimit && pageNumber === 1) && (
+			{!(tableDataSize < tableRowLimit && pageNumber === 1) && (
 				<Pagination
 					className="pagination-bar"
 					currentPage={pageNumber}
 					totalCount={totalRecords}
 					pageSize={tableRowLimit}
 					onPageChange={(page) => {
-						router.query.page = page;
-						router.replace(router);
-						setPageNumber(page);
+						handlePageChange(page);
 					}}
 					isSmallScreen={isSmallScreen}
-					tableDataListLength={tableDataListLength}
-					tableRowLimit={tableRowLimit}
-					setHasNoMoreItems={setHasNoMoreItems}
+					tableDataSize={tableDataSize}
 				/>
 			)}
 		</div>
