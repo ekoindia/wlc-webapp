@@ -30,7 +30,7 @@ const AGENT_TYPE = {
 
 const operationTypeList = [
 	{ value: "3", label: "Whole Network" },
-	{ value: "2", label: "Distributors Network" },
+	{ value: "2", label: "Distributor's Network" },
 	{ value: "1", label: "Individual Distributor/Retailer" },
 ];
 
@@ -154,7 +154,7 @@ const Dmt = () => {
 	return (
 		<Flex direction="column" gap="8">
 			<FormControl>
-				<FormLabel>Select</FormLabel>
+				<FormLabel>Select Agent Type</FormLabel>
 				<Controller
 					name="agentType"
 					control={control}

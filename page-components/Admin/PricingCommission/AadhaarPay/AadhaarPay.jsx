@@ -12,7 +12,7 @@ import { PricingForm } from "..";
 const AadhaarPay = ({ prop1, ...rest }) => {
 	const operationTypeList = [
 		{ value: "3", label: "Whole Network" },
-		{ value: "2", label: "Distributors Network" },
+		{ value: "2", label: "Distributor's Network" },
 		{ value: "1", label: "Individual Distributor/Retailer" },
 	];
 
