@@ -43,27 +43,32 @@ const EarningSummary = ({ ...rest }) => {
 			data: data.last_month_total,
 			dataType: "amount",
 		},
+		{
+			label: "Commission Due",
+			data: data.commission_due,
+			dataType: "amount",
+		},
 	];
 
 	return (
 		<WidgetBase title="Earning Summary" {...rest}>
-			<Box fontSize="14px">
+			<Box fontSize="sm">
 				<Text
-					fontSize="12px"
+					fontSize="xs"
 					color="primary.DEFAULT"
 					mt="-16px"
-					mb="32px"
+					// mb="32px"
 				>
 					as of {data.asof}
 				</Text>
 				{summary.map((item, index) =>
 					item.data !== undefined ? (
 						<Fragment key={item.label}>
-							<Flex justify="space-between" mt="20px">
+							<Flex justify="space-between" mt="14px">
 								<Flex direction="column">
 									<Text>{item.label}</Text>
 									<Text
-										fontSize="18px"
+										fontSize="md"
 										fontWeight="semibold"
 										color="primary.DEFAULT"
 									>
@@ -103,7 +108,7 @@ const EarningSummary = ({ ...rest }) => {
 								) : null}
 							</Flex>
 							{index < summary.length - 1 && (
-								<Divider my="20px" />
+								<Divider my="14px" />
 							)}
 						</Fragment>
 					) : null
