@@ -142,8 +142,8 @@ const Dmt = () => {
 		);
 	};
 	const agentType = [
-		{ value: AGENT_TYPE.RETAILERS, label: "For Retailers" },
-		{ value: AGENT_TYPE.DISTRIBUTOR, label: "For Distributors" },
+		{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
+		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
 	];
 
 	const multiSelectRenderer = {
@@ -154,7 +154,7 @@ const Dmt = () => {
 	return (
 		<Flex direction="column" gap="8">
 			<FormControl>
-				<FormLabel>Select Agent Type</FormLabel>
+				<FormLabel>Select Agent Type For</FormLabel>
 				<Controller
 					name="agentType"
 					control={control}
