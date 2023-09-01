@@ -32,7 +32,7 @@ const EarningSummary = ({ ...rest }) => {
 			label: "This month till yesterday",
 			data: data.this_month_till_yesterday,
 			dataType: "amount",
-			comparision: compare(
+			comparison: compare(
 				data.this_month_till_yesterday,
 				data.last_month_till_yesterday
 			),
@@ -64,6 +64,7 @@ const EarningSummary = ({ ...rest }) => {
 				{summary.map((item, index) =>
 					item.data !== undefined ? (
 						<Fragment key={item.label}>
+							{index > 0 && <Divider my="14px" />}
 							<Flex justify="space-between" mt="14px">
 								<Flex direction="column">
 									<Text>{item.label}</Text>
@@ -77,20 +78,20 @@ const EarningSummary = ({ ...rest }) => {
 										) : null}
 									</Text>
 								</Flex>
-								{item.comparision ? (
+								{item.comparison ? (
 									<Flex gap="1">
 										<Icon
 											name={
-												item.comparision > 0
+												item.comparison > 0
 													? "caret-up"
-													: item.comparision < 0
+													: item.comparison < 0
 													? "caret-down"
 													: null
 											}
 											color={
-												item.comparision > 0
+												item.comparison > 0
 													? "success"
-													: item.comparision < 0
+													: item.comparison < 0
 													? "error"
 													: null
 											}
@@ -98,7 +99,7 @@ const EarningSummary = ({ ...rest }) => {
 										/>
 										<Flex direction="column">
 											<Text fontWeight="semibold">
-												{Math.round(item.comparision)}%
+												{Math.round(item.comparison)}%
 											</Text>
 											<Text fontSize="12px">
 												{item.trailLabel}
@@ -107,9 +108,6 @@ const EarningSummary = ({ ...rest }) => {
 									</Flex>
 								) : null}
 							</Flex>
-							{index < summary.length - 1 && (
-								<Divider my="14px" />
-							)}
 						</Fragment>
 					) : null
 				)}
