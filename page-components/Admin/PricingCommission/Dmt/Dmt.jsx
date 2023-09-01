@@ -125,8 +125,6 @@ const Dmt = () => {
 		delete _finalData.multiselect;
 		delete _finalData.agentType;
 
-		console.log("_finalData", _finalData);
-
 		hitQuery(
 			OPERATION.SUBMIT,
 			(data) => {
@@ -141,10 +139,10 @@ const Dmt = () => {
 			_finalData
 		);
 	};
-	const agentType = [
-		{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
-		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
-	];
+	// const agentType = [
+	// 	{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
+	// 	{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
+	// ];
 
 	const multiSelectRenderer = {
 		value: "ekocspid",
@@ -153,7 +151,7 @@ const Dmt = () => {
 
 	return (
 		<Flex direction="column" gap="8">
-			<FormControl>
+			{/* <FormControl>
 				<FormLabel>Select Agent Type For</FormLabel>
 				<Controller
 					name="agentType"
@@ -166,7 +164,7 @@ const Dmt = () => {
 						/>
 					)}
 				/>
-			</FormControl>
+			</FormControl> */}
 			{watchAgentType === AGENT_TYPE.RETAILERS ? (
 				<PricingForm
 					productDetails={products.DMT}
