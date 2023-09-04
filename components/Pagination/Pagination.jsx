@@ -4,39 +4,34 @@ import { Icon } from "..";
 
 /**
  * A Pagination component
- * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Pagination></Pagination>` TODO: Fix example
  */
 const Pagination = ({
-	onPageChange,
-	totalCount,
-	siblingCount = 1,
-	currentPage,
 	pageSize,
+	totalCount,
+	currentPage,
+	onPageChange,
 	isSmallScreen,
-	tableDataListLength,
-	tableRowLimit,
-	setHasNoMoreItems,
+	tableDataSize,
+	siblingCount = 1,
 }) => {
-	// console.log("[Pagination] isSmallScreen", isSmallScreen);
-	let { paginationRange, hasNextPage } = usePagination({
+	let pagination = usePagination({
 		currentPage,
 		totalCount,
 		siblingCount,
 		pageSize,
-		tableDataListLength,
-		tableRowLimit,
-		setHasNoMoreItems,
+		tableDataSize,
 	});
 
-	// if (currentPage === 0 || paginationRange?.length < 2) {
-	// 	return null;
-	// } //? Check this
+	let lastPage = pagination?.[pagination?.length - 1];
+	let hasNextPage = false;
 
-	let lastPage = paginationRange?.[paginationRange?.length - 1];
+	if (totalCount === undefined) {
+		hasNextPage = pagination;
+	}
 
 	return (
 		<Flex
@@ -72,16 +67,16 @@ const Pagination = ({
 					color={currentPage !== 1 ? "light" : "hint"}
 					size={isSmallScreen ? "sm" : "xs"}
 					cursor="pointer"
-					onClick={() =>
-						onPageChange(
-							currentPage !== 1 ? currentPage - 1 : currentPage
-						)
-					}
+					onClick={() => {
+						if (currentPage > 1) {
+							onPageChange(currentPage - 1);
+						}
+					}}
 				/>
 
 				<Flex gap="4" h="100%">
 					{!isSmallScreen && totalCount ? (
-						paginationRange?.map((pageNumber, index) => {
+						pagination?.map((pageNumber, index) => {
 							if (pageNumber === DOTS) {
 								return <span key={index}>{DOTS}</span>;
 							}

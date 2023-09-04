@@ -43,7 +43,7 @@ const Table = ({
 		setExpandedRow(index === expandedRow ? null : index);
 	};
 
-	const tableDataListLength = data?.length;
+	const tableDataSize = data?.length;
 
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== pageNumber) {
@@ -152,7 +152,7 @@ const Table = ({
 			)}
 
 			{/* Pagination */}
-			{!(tableDataListLength < tableRowLimit && pageNumber === 1) && (
+			{!(tableDataSize < tableRowLimit && pageNumber === 1) && (
 				<Pagination
 					className="pagination-bar"
 					currentPage={pageNumber}
@@ -164,7 +164,7 @@ const Table = ({
 						setPageNumber(page);
 					}}
 					isSmallScreen={isSmallScreen}
-					tableDataListLength={tableDataListLength}
+					tableDataSize={tableDataSize}
 					tableRowLimit={tableRowLimit}
 					setHasNoMoreItems={setHasNoMoreItems}
 				/>

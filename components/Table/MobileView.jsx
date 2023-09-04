@@ -43,7 +43,7 @@ const MobileView = ({
 				<Text
 					bg="white"
 					p="20px"
-					borderRadius={_dataLength > 1 ? "10px 10px 0 0" : "10px"}
+					borderRadius={_dataLength > 0 ? "10px 10px 0 0" : "10px"}
 					color="light"
 					fontSize="md"
 					fontWeight="semibold"

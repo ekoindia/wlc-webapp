@@ -83,11 +83,14 @@ const OnboardingDashboard = () => {
 					tableData: _data,
 					totalRecords: _totalRecords,
 				});
-				setIsLoading(false);
+
 				if (filterLoading) setFilterLoading(false);
 			})
 			.catch((err) => {
 				console.error(`[OnboardingDashboard] error: `, err);
+			})
+			.finally(() => {
+				setIsLoading(false);
 			});
 
 		return () => {

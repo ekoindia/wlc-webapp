@@ -16,12 +16,12 @@ const Th = ({ renderer, visibleColumns, rowExpansion }) => {
 				...(renderer?.slice(0, visibleColumns) ?? []),
 		  ]
 		: renderer;
-	// const _extra = renderer?.slice(visibleColumns);
+
 	return main.map((item, index) => (
 		<ChakraTh
 			key={index}
 			p={{ base: ".5em", xl: "1em" }}
-			fontSize={{ base: "10px", xl: "11px", "2xl": "16px" }}
+			fontSize={{ base: "xxs", lg: "xs" }}
 		>
 			<Flex gap="2" align="center">
 				{item.label}
