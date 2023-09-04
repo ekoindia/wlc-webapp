@@ -1,10 +1,10 @@
-import { Flex, FormControl, FormLabel } from "@chakra-ui/react";
+import { Box, Flex, FormControl, FormLabel } from "@chakra-ui/react";
 import { Button, Input, Radio, Select } from "components";
 import { ParamType } from "constants";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 
 const AGENT_TYPE = {
-	RETAILERS: "0",
+	RETAILER: "0",
 	DISTRIBUTOR: "2",
 };
 
@@ -26,21 +26,19 @@ const SingleOnboarding = () => {
 		control,
 	} = useForm({
 		defaultValues: {
-			onboardAgentType: AGENT_TYPE.RETAILERS,
+			onboardAgentType: AGENT_TYPE.RETAILER,
+			// [formName]: [generateKeys(AGENT_REQUEST_STRUCTURE.RETAILER)],
 		},
 	});
 
-	const onboardAgentTypeList = [
-		{ value: AGENT_TYPE.RETAILERS, label: "Onboard Retailers" },
-		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Onboard Distributor" },
-	];
+	const formName = "onboardAgents";
 
-	const onboardAgentType = watch("onboardAgentType");
+	const { fields, append, remove } = useFieldArray({
+		name: formName,
+		control,
+	});
 
-	// const watchAll = watch();
-	// console.log("watchAll", watchAll);
-
-	const onboard_seller_request_structure = [
+	const onboard_retailer_request_structure = [
 		{
 			name: "mobile_number",
 			label: "Mobile Number",
@@ -60,6 +58,7 @@ const SingleOnboarding = () => {
 			parameter_type_id: ParamType.NUMERIC,
 		},
 	];
+
 	const onboard_distributor_request_structure = [
 		{
 			name: "mobile_number",
@@ -75,54 +74,101 @@ const SingleOnboarding = () => {
 		},
 	];
 
+	const onboardAgentType = watch("onboardAgentType");
+
+	const onboardAgentTypeList = [
+		{ value: AGENT_TYPE.RETAILER, label: "Onboard Retailers" },
+		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Onboard Distributor" },
+	];
+
 	const onSubmit = (data) => {
 		console.log("data", data);
 	};
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<Flex direction="column" gap="8">
-				<Controller
-					name="onboardAgentType"
-					control={control}
-					render={({ field: { onChange, value } }) => (
-						<Radio
-							value={value}
-							options={onboardAgentTypeList}
-							onChange={onChange}
-						/>
-					)}
-				/>
+		<div>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<Flex direction="column" gap="8">
+					<Controller
+						name="onboardAgentType"
+						control={control}
+						render={({ field: { onChange, value } }) => (
+							<Radio
+								{...{
+									value,
+									onChange,
+									options: onboardAgentTypeList,
+								}}
+							/>
+						)}
+					/>
+					{fields.map((item, index) => (
+						<Flex direction="column" gap="8" key={index}>
+							<Form
+								{...{
+									parameter_list:
+										onboardAgentType === AGENT_TYPE.RETAILER
+											? onboard_retailer_request_structure
+											: onboard_distributor_request_structure,
+									register,
+									item,
+									index,
+									formName,
+								}}
+							/>
+							<Button
+								type="button"
+								w={{ base: "100%", md: "160px" }}
+								h="48px"
+								onClick={() => remove(index)}
+							>
+								Remove
+							</Button>
+							<Box w="100%" h="2px" bg="divider"></Box>
+						</Flex>
+					))}
 
-				<Form
-					{...{
-						parameter_list:
-							onboardAgentType === AGENT_TYPE.RETAILERS
-								? onboard_seller_request_structure
-								: onboard_distributor_request_structure,
-						register,
-					}}
-				/>
+					<Button
+						type="button"
+						w={{ base: "100%", md: "160px" }}
+						h="48px"
+						onClick={() => {
+							let _appendList = { mobile_number: "", name: "" };
 
-				<Button
-					loading={isSubmitting}
-					w={{ base: "100%", md: "215px" }}
-					h="64px"
-					type="submit"
-					size="lg"
-				>
-					Submit
-				</Button>
-			</Flex>
-		</form>
+							if (onboardAgentType === AGENT_TYPE.RETAILER) {
+								_appendList = {
+									..._appendList,
+									scsp_mobile_number: "",
+								};
+							}
+							append({
+								..._appendList,
+							});
+						}}
+					>
+						Add New
+					</Button>
+
+					<Button
+						type="submit"
+						loading={isSubmitting}
+						w={{ base: "100%", md: "215px" }}
+						h="64px"
+						size="lg"
+					>
+						Submit
+					</Button>
+				</Flex>
+			</form>
+		</div>
 	);
 };
 
 export default SingleOnboarding;
 
-const Form = ({ parameter_list, register, control }) => {
+const Form = ({ parameter_list, register, control, item, index, formName }) => {
 	return (
-		<Flex direction="column" gap="8">
+		<Flex direction="column" gap="8" key={`${formName}.${item.id}`}>
 			{parameter_list?.map(
 				({
 					name,
@@ -137,13 +183,12 @@ const Form = ({ parameter_list, register, control }) => {
 						case ParamType.LIST:
 							return (
 								<FormControl
-									id={name}
+									key={`${formName}.${index}.${name}`}
 									w={{ base: "100%", md: "500px" }}
-									// isInvalid={errors.priority}
 								>
 									<FormLabel>{label}</FormLabel>
 									<Controller
-										name={name}
+										name={`${formName}.${index}.${name}`}
 										control={control}
 										render={({
 											field: { onChange, value },
@@ -163,14 +208,14 @@ const Form = ({ parameter_list, register, control }) => {
 						case ParamType.TEXT:
 							return (
 								<FormControl
-									key={name}
+									key={`${formName}.${index}.${name}`}
 									w={{
 										base: "100%",
 										md: "500px",
 									}}
 								>
 									<Input
-										id={name}
+										id={`${formName}.${index}.${name}`}
 										label={label}
 										required={required}
 										value={value}
@@ -182,7 +227,9 @@ const Form = ({ parameter_list, register, control }) => {
 										}
 										fontSize="sm"
 										disabled={disabled}
-										{...register(name)}
+										{...register(
+											`${formName}.${index}.${name}`
+										)}
 									/>
 								</FormControl>
 							);
