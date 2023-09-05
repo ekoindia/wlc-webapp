@@ -133,6 +133,7 @@ const SingleOnboarding = () => {
 									item,
 									index,
 									formName,
+									control,
 								}}
 							/>
 							<Button
