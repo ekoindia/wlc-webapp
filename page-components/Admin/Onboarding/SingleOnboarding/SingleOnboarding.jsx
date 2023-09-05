@@ -1,9 +1,8 @@
-import { Box, Flex, FormControl, FormLabel } from "@chakra-ui/react";
-import { Button, Input, Radio, Select } from "components";
+import { Box, Flex, FormControl, FormLabel, Text } from "@chakra-ui/react";
+import { Button, IcoButton, Input, Radio, Select } from "components";
 import { ParamType } from "constants";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
-
-import { useEffect, useState } from "react";
 
 const generateKeys = (fieldList) => {
 	let keys = {};
@@ -13,6 +12,16 @@ const generateKeys = (fieldList) => {
 	});
 
 	return keys;
+};
+
+const getLabels = (fieldList) => {
+	let labels = {};
+
+	fieldList.forEach((ele) => {
+		labels[ele.name] = ele.label;
+	});
+
+	return labels;
 };
 
 const AGENT_TYPE = {
@@ -29,9 +38,8 @@ const AGENT_TYPE = {
  */
 
 const SingleOnboarding = () => {
-	const [onboardAgentType, setOnboardAgentType] = useState(
-		AGENT_TYPE.RETAILER
-	);
+	const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILER);
+	const [isActive, setIsActive] = useState(0);
 
 	const {
 		register,
@@ -41,7 +49,7 @@ const SingleOnboarding = () => {
 		control,
 	} = useForm();
 
-	const formName = "onboardAgents";
+	const formName = "agents";
 
 	const { fields, append, remove } = useFieldArray({
 		name: formName,
@@ -50,24 +58,25 @@ const SingleOnboarding = () => {
 
 	const onboardAgentTypeList = [
 		{ value: AGENT_TYPE.RETAILER, label: "Onboard Retailers" },
-		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Onboard Distributor" },
+		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Onboard Distributors" },
 	];
 
 	const onboard_retailer_request_structure = [
 		{
-			name: "mobile_number",
-			label: "Mobile Number",
-			required: true,
-			parameter_type_id: ParamType.NUMERIC,
-		},
-		{
-			name: "name",
+			name: "agent_name",
 			label: "Name",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			name: "scsp_mobile_number",
+			name: "agent_mobile",
+			label: "Mobile Number",
+			required: true,
+			parameter_type_id: ParamType.NUMERIC,
+		},
+
+		{
+			name: "dist_mobile",
 			label: "Distributor's Mobile Number",
 			required: false,
 			parameter_type_id: ParamType.NUMERIC,
@@ -76,16 +85,16 @@ const SingleOnboarding = () => {
 
 	const onboard_distributor_request_structure = [
 		{
-			name: "mobile_number",
-			label: "Mobile Number",
-			required: true,
-			parameter_type_id: ParamType.NUMERIC,
-		},
-		{
-			name: "name",
+			name: "agent_name",
 			label: "Name",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
+		},
+		{
+			name: "agent_mobile",
+			label: "Mobile Number",
+			required: true,
+			parameter_type_id: ParamType.NUMERIC,
 		},
 	];
 
@@ -93,16 +102,26 @@ const SingleOnboarding = () => {
 		reset({
 			[formName]: [
 				generateKeys(
-					onboardAgentType === AGENT_TYPE.RETAILER
+					agentType === AGENT_TYPE.RETAILER
 						? onboard_retailer_request_structure
 						: onboard_distributor_request_structure
 				),
 			],
 		});
-	}, [onboardAgentType]);
+	}, [agentType]);
+
+	const labels = useMemo(
+		() =>
+			getLabels(
+				agentType === AGENT_TYPE.RETAILER
+					? onboard_retailer_request_structure
+					: onboard_distributor_request_structure
+			),
+		[agentType]
+	);
 
 	const onSubmit = (data) => {
-		const _data = { onboardAgentType, ...data };
+		const _data = { agentType, ...data };
 		console.log("_data", _data);
 	};
 
@@ -111,42 +130,110 @@ const SingleOnboarding = () => {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Flex direction="column" gap="8">
 					<Radio
-						value={onboardAgentType}
+						value={agentType}
 						options={onboardAgentTypeList}
-						onChange={() =>
-							setOnboardAgentType((prev) =>
-								prev === AGENT_TYPE.RETAILER
-									? AGENT_TYPE.DISTRIBUTOR
-									: AGENT_TYPE.RETAILER
-							)
-						}
+						onChange={(value) => setAgentType(value)}
 					/>
-					{fields.map((item, index) => (
-						<Flex direction="column" gap="8" key={index}>
-							<Form
-								{...{
-									parameter_list:
-										onboardAgentType === AGENT_TYPE.RETAILER
-											? onboard_retailer_request_structure
-											: onboard_distributor_request_structure,
-									register,
-									item,
-									index,
-									formName,
-									control,
-								}}
-							/>
-							<Button
-								type="button"
-								w={{ base: "100%", md: "160px" }}
-								h="48px"
-								onClick={() => remove(index)}
-							>
-								Remove
-							</Button>
-							<Box w="100%" h="2px" bg="divider"></Box>
-						</Flex>
-					))}
+					{fields.map((item, index) => {
+						let _fieldsLength = fields.length;
+						if (isActive != index) {
+							return (
+								<Flex
+									direction={{ base: "column", md: "row" }}
+									key={index}
+									fontSize="sm"
+									gap="4"
+									align="center"
+								>
+									{Object.entries(item).map(
+										([key, value]) => {
+											return (
+												key !== "id" && (
+													<Flex
+														gap="1"
+														color="light"
+														key={`${index}-${key}`}
+													>
+														{labels[key]}:
+														<Text
+															fontWeight="medium"
+															color="dark"
+														>
+															{value}
+														</Text>
+													</Flex>
+												)
+											);
+										}
+									)}
+
+									<Flex gap="4">
+										<IcoButton
+											type="button"
+											iconName="mode-edit"
+											size="sm"
+											theme="accent"
+											onClick={() => {
+												setIsActive(index);
+											}}
+										/>
+
+										<IcoButton
+											type="button"
+											iconName="delete"
+											size="sm"
+											theme="accent"
+											onClick={() => {
+												remove(index);
+												setIsActive(
+													(prev) =>
+														index ===
+															_fieldsLength - 1 &&
+														prev - 1
+												);
+											}}
+										/>
+									</Flex>
+								</Flex>
+							);
+						} else {
+							return (
+								<Flex direction="column" gap="8" key={index}>
+									<Form
+										{...{
+											parameter_list:
+												agentType ===
+												AGENT_TYPE.RETAILER
+													? onboard_retailer_request_structure
+													: onboard_distributor_request_structure,
+											register,
+											item,
+											index,
+											formName,
+											control,
+										}}
+									/>
+									<Button
+										type="button"
+										w={{ base: "100%", md: "160px" }}
+										h="48px"
+										onClick={() => {
+											remove(index);
+											setIsActive(
+												(prev) =>
+													index ===
+														_fieldsLength - 1 &&
+													prev - 1
+											);
+										}}
+									>
+										Remove
+									</Button>
+									<Box w="100%" h="2px" bg="divider"></Box>
+								</Flex>
+							);
+						}
+					})}
 
 					<Button
 						type="button"
@@ -154,11 +241,12 @@ const SingleOnboarding = () => {
 						h="48px"
 						onClick={() => {
 							const _keyList = generateKeys(
-								onboardAgentType === AGENT_TYPE.RETAILER
+								agentType === AGENT_TYPE.RETAILER
 									? onboard_retailer_request_structure
 									: onboard_distributor_request_structure
 							);
 							append(_keyList);
+							setIsActive((prev) => prev + 1);
 						}}
 					>
 						Add New
