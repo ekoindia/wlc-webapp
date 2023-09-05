@@ -1,5 +1,5 @@
-import { Box, Flex, Link, Radio, RadioGroup, Text } from "@chakra-ui/react";
-import { Button, Dropzone, Icon } from "components";
+import { Box, Flex, Link, Text } from "@chakra-ui/react";
+import { Button, Dropzone, Icon, Radio } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { useState } from "react";
@@ -11,9 +11,13 @@ const SAMPLE_DOWNLOAD_LINK = {
 		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Distributor_Onboarding.xlsx",
 };
 
+const AGENT_TYPE = {
+	RETAILER: "0",
+	DISTRIBUTOR: "2",
+};
+
 /**
- * A <BulkOnboarding> component
- * TODO: Write more description here
+ * A BulkOnboarding page-component
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
@@ -66,9 +70,14 @@ const BulkOnboarding = () => {
 	};
 
 	const applicantTypeObj = {
-		0: "Sellers",
+		0: "Retailers",
 		2: "Distributors",
 	};
+
+	const onboardAgentTypeList = [
+		{ value: AGENT_TYPE.RETAILER, label: "Onboard Retailers" },
+		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Onboard Distributors" },
+	];
 
 	return (
 		<>
@@ -83,37 +92,14 @@ const BulkOnboarding = () => {
 				{data === null ? (
 					<Flex
 						direction="column"
-						gap="10"
+						gap="8"
 						w={{ base: "100%", md: "500px" }}
 					>
-						<Flex direction="column" gap="2">
-							{/* <Text fontWeight="semibold">Select User Type</Text> */}
-							<RadioGroup
-								defaultValue="0"
-								value={applicantType}
-								onChange={(value) => setApplicantType(value)}
-							>
-								<Flex
-									direction={{ base: "column", sm: "row" }}
-									gap={{ base: "4", md: "16" }}
-								>
-									{Object.entries(applicantTypeObj).map(
-										([key, value]) => (
-											<Radio
-												size="lg"
-												key={key}
-												value={key}
-											>
-												<Text fontSize="sm">
-													{"Onboard "}
-													{value}
-												</Text>
-											</Radio>
-										)
-									)}
-								</Flex>
-							</RadioGroup>
-						</Flex>
+						<Radio
+							value={applicantType}
+							options={onboardAgentTypeList}
+							onChange={(value) => setApplicantType(value)}
+						/>
 						<Flex direction="column" gap="2">
 							<Text fontWeight="semibold">
 								Download Sample File (for Onboarding{" "}
@@ -147,16 +133,16 @@ const BulkOnboarding = () => {
 								accept=".xls,.xlsx"
 							/>
 						</Flex>
-						{file && (
-							<Button
-								onClick={handleFileUpload}
-								size="lg"
-								h="64px"
-								w="215px"
-							>
-								Upload
-							</Button>
-						)}
+
+						<Button
+							onClick={handleFileUpload}
+							size="lg"
+							h="64px"
+							w="215px"
+							disabled={file === null || file === undefined}
+						>
+							Upload
+						</Button>
 					</Flex>
 				) : (
 					<Flex direction="column" gap="2">
