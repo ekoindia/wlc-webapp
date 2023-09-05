@@ -3,6 +3,18 @@ import { Button, Input, Radio, Select } from "components";
 import { ParamType } from "constants";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
+import { useEffect, useState } from "react";
+
+const generateKeys = (fieldList) => {
+	let keys = {};
+
+	fieldList.forEach((ele) => {
+		keys[ele.name] = "";
+	});
+
+	return keys;
+};
+
 const AGENT_TYPE = {
 	RETAILER: "0",
 	DISTRIBUTOR: "2",
@@ -17,19 +29,17 @@ const AGENT_TYPE = {
  */
 
 const SingleOnboarding = () => {
+	const [onboardAgentType, setOnboardAgentType] = useState(
+		AGENT_TYPE.RETAILER
+	);
+
 	const {
 		register,
 		handleSubmit,
 		formState: { /*  errors, */ isSubmitting },
-		// reset,
-		watch,
+		reset,
 		control,
-	} = useForm({
-		defaultValues: {
-			onboardAgentType: AGENT_TYPE.RETAILER,
-			// [formName]: [generateKeys(AGENT_REQUEST_STRUCTURE.RETAILER)],
-		},
-	});
+	} = useForm();
 
 	const formName = "onboardAgents";
 
@@ -37,6 +47,11 @@ const SingleOnboarding = () => {
 		name: formName,
 		control,
 	});
+
+	const onboardAgentTypeList = [
+		{ value: AGENT_TYPE.RETAILER, label: "Onboard Retailers" },
+		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Onboard Distributor" },
+	];
 
 	const onboard_retailer_request_structure = [
 		{
@@ -74,33 +89,37 @@ const SingleOnboarding = () => {
 		},
 	];
 
-	const onboardAgentType = watch("onboardAgentType");
-
-	const onboardAgentTypeList = [
-		{ value: AGENT_TYPE.RETAILER, label: "Onboard Retailers" },
-		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Onboard Distributor" },
-	];
+	useEffect(() => {
+		reset({
+			[formName]: [
+				generateKeys(
+					onboardAgentType === AGENT_TYPE.RETAILER
+						? onboard_retailer_request_structure
+						: onboard_distributor_request_structure
+				),
+			],
+		});
+	}, [onboardAgentType]);
 
 	const onSubmit = (data) => {
-		console.log("data", data);
+		const _data = { onboardAgentType, ...data };
+		console.log("_data", _data);
 	};
 
 	return (
 		<div>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Flex direction="column" gap="8">
-					<Controller
-						name="onboardAgentType"
-						control={control}
-						render={({ field: { onChange, value } }) => (
-							<Radio
-								{...{
-									value,
-									onChange,
-									options: onboardAgentTypeList,
-								}}
-							/>
-						)}
+					<Radio
+						value={onboardAgentType}
+						options={onboardAgentTypeList}
+						onChange={() =>
+							setOnboardAgentType((prev) =>
+								prev === AGENT_TYPE.RETAILER
+									? AGENT_TYPE.DISTRIBUTOR
+									: AGENT_TYPE.RETAILER
+							)
+						}
 					/>
 					{fields.map((item, index) => (
 						<Flex direction="column" gap="8" key={index}>
@@ -133,17 +152,12 @@ const SingleOnboarding = () => {
 						w={{ base: "100%", md: "160px" }}
 						h="48px"
 						onClick={() => {
-							let _appendList = { mobile_number: "", name: "" };
-
-							if (onboardAgentType === AGENT_TYPE.RETAILER) {
-								_appendList = {
-									..._appendList,
-									scsp_mobile_number: "",
-								};
-							}
-							append({
-								..._appendList,
-							});
+							const _keyList = generateKeys(
+								onboardAgentType === AGENT_TYPE.RETAILER
+									? onboard_retailer_request_structure
+									: onboard_distributor_request_structure
+							);
+							append(_keyList);
 						}}
 					>
 						Add New
