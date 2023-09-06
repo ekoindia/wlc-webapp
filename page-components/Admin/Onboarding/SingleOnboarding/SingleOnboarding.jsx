@@ -258,6 +258,7 @@ const SingleOnboarding = () => {
 						w={{ base: "100%", md: "215px" }}
 						h="64px"
 						size="lg"
+						disabled={fields?.length < 1}
 					>
 						Submit
 					</Button>
