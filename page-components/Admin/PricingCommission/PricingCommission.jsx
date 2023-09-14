@@ -13,6 +13,7 @@ import {
 	//AccountVerification,
 	Aeps,
 	AirtelCms,
+	CommissionFrequency,
 	CreditCardBillPayment,
 	Dmt,
 	IndoNepal,
@@ -32,6 +33,10 @@ const PricingCommissions = () => {
 		{ label: "Indo-Nepal Fund Transfer", comp: <IndoNepal /> },
 		{ label: "Airtel CMS", comp: <AirtelCms /> },
 		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
+		{
+			label: "Commission Frequency",
+			comp: <CommissionFrequency />,
+		},
 		//{ label: "Account Verification", comp: <AccountVerification /> },
 	];
 

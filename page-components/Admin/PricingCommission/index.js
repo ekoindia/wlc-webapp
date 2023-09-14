@@ -3,6 +3,7 @@ export { default as AccountVerification } from "./AccountVerification";
 export { Aeps } from "./Aeps";
 export { AirtelCms } from "./AirtelCms";
 export { Bbps } from "./Bbps";
+export { default as CommissionFrequency } from "./CommissionFrequency";
 export { default as CreditCardBillPayment } from "./CreditCardBillPayment";
 export { Dmt } from "./Dmt";
 export { IndoNepal } from "./IndoNepal";

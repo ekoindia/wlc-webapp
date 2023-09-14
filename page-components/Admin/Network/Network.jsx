@@ -49,6 +49,23 @@ const Network = () => {
 		})
 			.then((res) => {
 				let _networkData = res?.data;
+
+				_networkData.agent_details.map((agent) => {
+					if (
+						agent.commission_duration !== undefined &&
+						agent.commission_duration === "1"
+					) {
+						agent.commission_type = "Monthly";
+					} else if (
+						agent.commission_duration !== undefined &&
+						agent.commission_duration === "2"
+					) {
+						agent.commission_type = "Daily";
+					} else {
+						agent.commission_type = "Instant";
+					}
+				});
+
 				setNetworkData(_networkData);
 			})
 			.catch((err) => {
@@ -66,6 +83,7 @@ const Network = () => {
 
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];
+	console.debug("Gopi Agent Details", agentDetails);
 
 	return (
 		<>

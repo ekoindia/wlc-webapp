@@ -25,6 +25,7 @@ const networkTableParameterList = [
 		show: "Tag",
 	},
 	{ name: "eko_code", label: "User Code", sorting: true },
+	{ name: "commission_type", label: "Commission Type", sorting: true },
 	{
 		name: "location",
 		label: "Location",
