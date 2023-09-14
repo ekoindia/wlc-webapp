@@ -36,7 +36,7 @@ const CommissionFrequency = () => {
 	const router = useRouter();
 
 	const multiSelectRenderer = {
-		value: "ekocspid",
+		value: "CSPCode",
 		label: "DisplayName",
 	};
 
@@ -83,6 +83,7 @@ const CommissionFrequency = () => {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
 			hitQuery(OPERATION.FETCH, (_data) => {
 				if (_data.status === 0) {
+					console.log("Gopi Kumar ", data);
 					setData(_data?.data?.allScspList);
 				} else {
 					toast({
@@ -185,7 +186,7 @@ const CommissionFrequency = () => {
 
 				<RadioInput
 					name="commission_type"
-					label="Select Commission Type"
+					label="Select Commission Frequency"
 					radioGroupList={commissionTypeList}
 					control={control}
 				/>
