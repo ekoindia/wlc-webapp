@@ -11,8 +11,8 @@ import { BulkOnboarding, SingleOnboarding } from ".";
  */
 const Onboarding = () => {
 	const tabList = [
-		{ label: "Single Onboarding", comp: <SingleOnboarding /> },
-		{ label: "Multiple Onboarding", comp: <BulkOnboarding /> },
+		{ label: "Single Onboarding", comp: <SingleOnboarding /> }, // form based onboarding
+		{ label: "Multiple Onboarding", comp: <BulkOnboarding /> }, // file based onboarding
 	];
 
 	return (

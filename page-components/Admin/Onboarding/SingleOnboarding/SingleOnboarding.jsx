@@ -1,6 +1,8 @@
 import { Box, Flex, FormControl, FormLabel, Text } from "@chakra-ui/react";
 import { Button, IcoButton, Input, Radio, Select } from "components";
-import { ParamType } from "constants";
+import { Endpoints, ParamType } from "constants";
+import { useSession } from "contexts/UserContext";
+import { fetcher } from "helpers/apiHelper";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 
@@ -40,6 +42,7 @@ const AGENT_TYPE = {
 const SingleOnboarding = () => {
 	const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILER);
 	const [isActive, setIsActive] = useState(0);
+	const { accessToken } = useSession();
 
 	const {
 		register,
@@ -121,8 +124,28 @@ const SingleOnboarding = () => {
 	);
 
 	const onSubmit = (data) => {
-		const _data = { agentType, ...data };
-		console.log("_data", _data);
+		//const _data = { agentType, ...data };
+
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"Content-Type": "application/json",
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": "/network/agent/multiple_onboarding",
+				"tf-req-method": "POST",
+			},
+			body: {
+				interaction_type_id: 734,
+				applicant_type: agentType,
+				CspList: data.agents,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				console.log("res", res);
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
 	};
 
 	return (
