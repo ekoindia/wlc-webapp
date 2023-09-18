@@ -5,6 +5,7 @@ import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { OnboardingResponse } from "..";
 
 const generateKeys = (fieldList) => {
 	let keys = {};
@@ -41,6 +42,7 @@ const AGENT_TYPE = {
 
 const SingleOnboarding = () => {
 	const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILER);
+	const [response, setResponse] = useState(null);
 	const [isActive, setIsActive] = useState(0);
 	const { accessToken } = useSession();
 
@@ -141,7 +143,7 @@ const SingleOnboarding = () => {
 			token: accessToken,
 		})
 			.then((res) => {
-				console.log("res", res);
+				setResponse(res);
 			})
 			.catch((err) => {
 				console.error("error", err);
@@ -150,62 +152,105 @@ const SingleOnboarding = () => {
 
 	return (
 		<div>
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<Flex direction="column" gap="8">
-					<Radio
-						value={agentType}
-						options={onboardAgentTypeList}
-						onChange={(value) => setAgentType(value)}
-					/>
-					{fields.map((item, index) => {
-						let _fieldsLength = fields.length;
-						if (isActive != index) {
-							return (
-								<Flex
-									direction={{ base: "column", md: "row" }}
-									key={index}
-									fontSize="sm"
-									gap="4"
-									align="center"
-								>
-									{Object.entries(item).map(
-										([key, value]) => {
-											return (
-												key !== "id" && (
-													<Flex
-														gap="1"
-														color="light"
-														key={`${index}-${key}`}
-													>
-														{labels[key]}:
-														<Text
-															fontWeight="medium"
-															color="dark"
+			{response === null ? (
+				<form onSubmit={handleSubmit(onSubmit)}>
+					<Flex direction="column" gap="8">
+						<Radio
+							value={agentType}
+							options={onboardAgentTypeList}
+							onChange={(value) => setAgentType(value)}
+						/>
+						{fields.map((item, index) => {
+							let _fieldsLength = fields.length;
+							if (isActive != index) {
+								return (
+									<Flex
+										direction={{
+											base: "column",
+											md: "row",
+										}}
+										key={index}
+										fontSize="sm"
+										gap="4"
+										align="center"
+									>
+										{Object.entries(item).map(
+											([key, value]) => {
+												return (
+													key !== "id" && (
+														<Flex
+															gap="1"
+															color="light"
+															key={`${index}-${key}`}
 														>
-															{value}
-														</Text>
-													</Flex>
-												)
-											);
-										}
-									)}
+															{labels[key]}:
+															<Text
+																fontWeight="medium"
+																color="dark"
+															>
+																{value}
+															</Text>
+														</Flex>
+													)
+												);
+											}
+										)}
 
-									<Flex gap="4">
-										<IcoButton
-											type="button"
-											iconName="mode-edit"
-											size="sm"
-											theme="accent"
-											onClick={() => {
-												setIsActive(index);
+										<Flex gap="4">
+											<IcoButton
+												type="button"
+												iconName="mode-edit"
+												size="sm"
+												theme="accent"
+												onClick={() => {
+													setIsActive(index);
+												}}
+											/>
+
+											<IcoButton
+												type="button"
+												iconName="delete"
+												size="sm"
+												theme="accent"
+												onClick={() => {
+													remove(index);
+													setIsActive(
+														(prev) =>
+															index ===
+																_fieldsLength -
+																	1 &&
+															prev - 1
+													);
+												}}
+											/>
+										</Flex>
+									</Flex>
+								);
+							} else {
+								return (
+									<Flex
+										direction="column"
+										gap="8"
+										key={index}
+									>
+										<Form
+											{...{
+												parameter_list:
+													agentType ===
+													AGENT_TYPE.RETAILER
+														? onboard_retailer_request_structure
+														: onboard_distributor_request_structure,
+												register,
+												item,
+												index,
+												formName,
+												control,
 											}}
 										/>
-
-										<IcoButton
+										<Button
 											type="button"
-											iconName="delete"
-											size="sm"
-											theme="accent"
+											w={{ base: "100%", md: "160px" }}
+											h="48px"
 											onClick={() => {
 												remove(index);
 												setIsActive(
@@ -215,78 +260,90 @@ const SingleOnboarding = () => {
 														prev - 1
 												);
 											}}
-										/>
+										>
+											Remove
+										</Button>
+										<Box
+											w="100%"
+											h="2px"
+											bg="divider"
+										></Box>
 									</Flex>
-								</Flex>
-							);
-						} else {
-							return (
-								<Flex direction="column" gap="8" key={index}>
-									<Form
-										{...{
-											parameter_list:
-												agentType ===
-												AGENT_TYPE.RETAILER
-													? onboard_retailer_request_structure
-													: onboard_distributor_request_structure,
-											register,
-											item,
-											index,
-											formName,
-											control,
-										}}
-									/>
-									<Button
-										type="button"
-										w={{ base: "100%", md: "160px" }}
-										h="48px"
-										onClick={() => {
-											remove(index);
-											setIsActive(
-												(prev) =>
-													index ===
-														_fieldsLength - 1 &&
-													prev - 1
-											);
-										}}
-									>
-										Remove
-									</Button>
-									<Box w="100%" h="2px" bg="divider"></Box>
-								</Flex>
-							);
-						}
-					})}
+								);
+							}
+						})}
 
-					<Button
-						type="button"
-						w={{ base: "100%", md: "160px" }}
-						h="48px"
-						onClick={() => {
-							const _keyList = generateKeys(
-								agentType === AGENT_TYPE.RETAILER
-									? onboard_retailer_request_structure
-									: onboard_distributor_request_structure
-							);
-							append(_keyList);
-							setIsActive((prev) => prev + 1);
-						}}
-					>
-						Add New
-					</Button>
+						<Button
+							type="button"
+							w={{ base: "100%", md: "160px" }}
+							h="48px"
+							onClick={() => {
+								const _keyList = generateKeys(
+									agentType === AGENT_TYPE.RETAILER
+										? onboard_retailer_request_structure
+										: onboard_distributor_request_structure
+								);
+								append(_keyList);
+								setIsActive((prev) => prev + 1);
+							}}
+						>
+							Add New
+						</Button>
 
-					<Button
-						type="submit"
-						loading={isSubmitting}
-						w={{ base: "100%", md: "215px" }}
-						h="64px"
-						size="lg"
-						disabled={fields?.length < 1}
-					>
-						Submit
-					</Button>
+						<Button
+							type="submit"
+							loading={isSubmitting}
+							w={{ base: "100%", md: "215px" }}
+							h="64px"
+							size="lg"
+							disabled={fields?.length < 1}
+						>
+							Submit
+						</Button>
+					</Flex>
+				</form>
+			) : (
+				<Flex direction="column" gap="2">
+					<Flex fontSize="sm" direction="column" gap="1">
+						<span>
+							{response?.message || "Something went wrong"}!!
+						</span>
+						{response?.data?.processed_records > 0 && (
+							<Flex gap="1">
+								<Box as="span" fontWeight="semibold">
+									Accepted:
+								</Box>
+								<span>{response?.data?.processed_records}</span>
+								<span>
+									{response?.data?.processed_records === 1
+										? "record"
+										: "records"}
+								</span>
+							</Flex>
+						)}
+						{response?.data?.failed_count > 0 && (
+							<Flex gap="1">
+								<Box as="span" fontWeight="semibold">
+									Rejected:
+								</Box>
+								<span>{response?.data?.failed_count}</span>
+								<span>
+									{response?.data?.failed_count === 1
+										? "record"
+										: "records"}
+								</span>
+							</Flex>
+						)}
+					</Flex>
+
+					{response?.data?.csp_list?.length > 0 && (
+						<OnboardingResponse
+							responseList={response?.data?.csp_list}
+							agentType={agentType}
+						/>
+					)}
 				</Flex>
-			</form>
+			)}
 		</div>
 	);
 };

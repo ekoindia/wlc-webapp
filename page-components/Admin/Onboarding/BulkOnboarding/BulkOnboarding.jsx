@@ -3,7 +3,7 @@ import { Button, Dropzone, Icon, Radio } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { useState } from "react";
-import { BulkOnboardingResponse } from ".";
+import { OnboardingResponse } from "..";
 
 const SAMPLE_DOWNLOAD_LINK = {
 	SELLER: "https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
@@ -179,10 +179,9 @@ const BulkOnboarding = () => {
 						</Flex>
 
 						{data?.data?.csp_list?.length > 0 && (
-							<BulkOnboardingResponse
-								bulkOnboardingResponseList={
-									data?.data?.csp_list
-								}
+							<OnboardingResponse
+								responseList={data?.data?.csp_list}
+								agentType={applicantType}
 							/>
 						)}
 					</Flex>
