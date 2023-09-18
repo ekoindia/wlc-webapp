@@ -1,6 +1,6 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { Headings } from "components";
-import { BulkOnboarding, SingleOnboarding } from ".";
+import { BulkOnboarding } from ".";
 
 /**
  * A Onboarding page-component
@@ -11,7 +11,7 @@ import { BulkOnboarding, SingleOnboarding } from ".";
  */
 const Onboarding = () => {
 	const tabList = [
-		{ label: "Onboard Agents", comp: <SingleOnboarding /> }, // form based onboarding
+		// { label: "Onboard Agents", comp: <SingleOnboarding /> }, // form based onboarding
 		{ label: "Bulk Onboarding (Using File)", comp: <BulkOnboarding /> }, // file based onboarding
 	];
 
