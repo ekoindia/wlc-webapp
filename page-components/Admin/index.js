@@ -1,11 +1,11 @@
 export { AccountStatement } from "./AccountStatement";
-export { BulkOnboarding } from "./BulkOnboarding";
 export { ChangeRole } from "./ChangeRole";
 export { Configurations } from "./Configurations";
 export { Dashboard } from "./Dashboard";
 export { DetailedStatement } from "./DetailedStatement";
 export { Network } from "./Network";
 export { NotificationCreator } from "./NotificationCreator";
+export { Onboarding } from "./Onboarding";
 export { PricingCommission } from "./PricingCommission";
 export { ProfilePanel } from "./ProfilePanel";
 export { QueryCenter } from "./QueryCenter";

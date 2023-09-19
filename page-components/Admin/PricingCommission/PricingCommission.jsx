@@ -68,9 +68,8 @@ const PricingCommissions = () => {
 						isLazy
 						position="relative"
 						defaultIndex={0}
-						bg={{ base: "white", md: "transparent" }}
 						py="3"
-						w={{ base: "100%", md: "100%" }}
+						w="100%"
 						borderRadius="10px"
 					>
 						<TabList

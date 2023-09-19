@@ -1,5 +1,5 @@
 import { Flex, FormControl, FormLabel, useToast } from "@chakra-ui/react";
-import { Button, Icon, Input, MultiSelect, Radio } from "components";
+import { Button, Icon, Input, MultiSelect, Radio, Select } from "components";
 import { Endpoints, productPricingType, products } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -40,16 +40,25 @@ const pricingTypeList = [
 ];
 
 const pricingTypeListForDistributor = [
-	{ value: "0", label: "Percentage (%)" },
+	{ value: "1", label: "Percentage (%)" },
 	// { value: "1", label: "Fixed (₹)" },
 ];
 
+const distributor_dmt_commission_slab = [
+	{ min: 100, max: 1000 },
+	{ min: 1001, max: 2000 },
+	{ min: 2001, max: 3000 },
+	{ min: 3001, max: 4000 },
+	{ min: 4001, max: 5000 },
+	{ min: 5001, max: 50000 },
+];
 /**
  * A Dmt tab page-component
  * @example	`<Dmt></Dmt>` TODO: Fix example
  */
 const Dmt = () => {
 	const [data, setData] = useState([]);
+	const [slabs, setSlabs] = useState([]);
 	const {
 		register,
 		handleSubmit,
@@ -72,43 +81,59 @@ const Dmt = () => {
 	const toast = useToast();
 	const { generateNewToken } = useRefreshToken();
 
-	const hitQuery = (operation, callback, finalData = {}) => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/pricing_commissions/dmt`,
-				"tf-req-method": "POST",
-			},
-			body: {
-				operation_type: "2",
-				operation: operation,
-				...finalData,
-			},
-			token: accessToken,
-			generateNewToken,
-		})
-			.then((data) => {
-				callback(data);
-			})
-			.catch((error) => {
-				console.error("📡 Fetch Error:", error);
-			});
-	};
-
 	useEffect(() => {
 		if (watchAgentType === AGENT_TYPE.DISTRIBUTOR) {
-			hitQuery(OPERATION.FETCH, (_data) => {
-				if (_data.status === 0) {
-					setData(_data?.data?.allScspList);
-				} else {
-					toast({
-						title: _data.message,
-						status: getStatus(_data.status),
-						duration: 5000,
-						isClosable: true,
-					});
+			fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `/network/pricing_commissions/dmt`,
+						"tf-req-method": "POST",
+					},
+					body: {
+						operation_type: AGENT_TYPE.DISTRIBUTOR,
+						operation: OPERATION.FETCH,
+					},
+					token: accessToken,
+					generateNewToken,
 				}
+			)
+				.then((res) => {
+					if (res.status === 0) {
+						setData(res?.data?.allScspList);
+					} else {
+						toast({
+							title: res.message,
+							status: getStatus(res.status),
+							duration: 5000,
+							isClosable: true,
+						});
+					}
+				})
+				.catch((err) => {
+					console.error("error", err);
+				});
+
+			//for slabs
+
+			const list = [];
+			const len = distributor_dmt_commission_slab.length;
+
+			distributor_dmt_commission_slab.map((item, index) => {
+				const temp = { value: index };
+
+				const label =
+					item.min == item.max
+						? `₹${item.min}`
+						: `₹${item.min} - ₹${item.max}`;
+
+				const selected = len === 1;
+
+				list.push({ ...temp, label, selected });
 			});
+
+			setSlabs(list);
 		}
 	}, [watchAgentType]);
 
@@ -117,41 +142,55 @@ const Dmt = () => {
 
 		_finalData.actual_pricing = +data.actual_pricing;
 
+		const { min, max } =
+			distributor_dmt_commission_slab[data?.select] || {};
+		_finalData.min_slab_amount = min;
+		_finalData.max_slab_amount = max;
+
 		const cspList = data?.multiselect?.map((num) => +num);
 
 		_finalData.CspList = `${cspList}`;
-		_finalData.communication = 1;
 
+		delete _finalData.select;
 		delete _finalData.multiselect;
 		delete _finalData.agentType;
 
-		hitQuery(
-			OPERATION.SUBMIT,
-			(data) => {
+		//submit
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: 726,
+				service_code: 721,
+				communication: 1,
+				..._finalData,
+			},
+			token: accessToken,
+			generateNewToken,
+		})
+			.then((res) => {
 				toast({
-					title: data.message,
-					status: getStatus(data.status),
+					title: res.message,
+					status: getStatus(res.status),
 					duration: 6000,
 					isClosable: true,
 				});
-				// handleReset();
-			},
-			_finalData
-		);
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
 	};
-	// const agentType = [
-	// 	{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
-	// 	{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
-	// ];
+	const agentType = [
+		{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
+		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
+	];
 
 	const multiSelectRenderer = {
-		value: "ekocspid",
+		value: "CSPCode",
 		label: "DisplayName",
 	};
 
 	return (
 		<Flex direction="column" gap="8">
-			{/* <FormControl>
+			<FormControl>
 				<FormLabel>Select Agent Type For</FormLabel>
 				<Controller
 					name="agentType"
@@ -164,7 +203,7 @@ const Dmt = () => {
 						/>
 					)}
 				/>
-			</FormControl> */}
+			</FormControl>
 			{watchAgentType === AGENT_TYPE.RETAILERS ? (
 				<PricingForm
 					productDetails={products.DMT}
@@ -195,12 +234,31 @@ const Dmt = () => {
 								)}
 							/>
 						</FormControl>
+						<FormControl
+							id="select"
+							w={{ base: "100%", md: "500px" }}
+						>
+							<FormLabel>Select Slab</FormLabel>
+							<Controller
+								name="select"
+								control={control}
+								render={({ field: { value, onChange } }) => {
+									return (
+										<Select
+											options={slabs}
+											value={value}
+											onChange={onChange}
+										/>
+									);
+								}}
+							/>
+						</FormControl>
 						<FormControl id="pricing_type">
 							<FormLabel>{`Select ${productPricingType.DMT} Type`}</FormLabel>
 							<Controller
 								name="pricing_type"
 								control={control}
-								defaultValue="0"
+								defaultValue="1"
 								render={({ field: { onChange, value } }) => (
 									<Radio
 										options={pricingTypeListForDistributor}

@@ -1,20 +1,23 @@
-import { Box, Flex, Link, Radio, RadioGroup, Text } from "@chakra-ui/react";
-import { Button, Dropzone, Headings, Icon } from "components";
+import { Box, Flex, Link, Text } from "@chakra-ui/react";
+import { Button, Dropzone, Icon, Radio } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { useSession } from "contexts";
 import { useState } from "react";
-import { BulkOnboardingResponse } from ".";
+import { OnboardingResponse } from "..";
 
 const SAMPLE_DOWNLOAD_LINK = {
-	MERCHANT:
-		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
+	SELLER: "https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
 	DISTRIBUTOR:
 		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Distributor_Onboarding.xlsx",
 };
 
+const AGENT_TYPE = {
+	RETAILER: "0",
+	DISTRIBUTOR: "2",
+};
+
 /**
- * A <BulkOnboarding> component
- * TODO: Write more description here
+ * A BulkOnboarding page-component
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
@@ -71,66 +74,32 @@ const BulkOnboarding = () => {
 		2: "Distributors",
 	};
 
+	const onboardAgentTypeList = [
+		{ value: AGENT_TYPE.RETAILER, label: "Onboard Retailers" },
+		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Onboard Distributors" },
+	];
+
 	return (
-		<div>
-			<Headings
-				title="Onboard Retailers & Distributors"
-				hasIcon={false}
-			/>
+		<>
 			<Flex
 				direction="column"
-				p={{ base: "1em", md: "2em" }}
-				bg={
-					data?.data?.csp_list?.length > 0
-						? {
-								base: "none",
-								md: "white",
-						  }
-						: "white"
-				}
-				borderRadius="10"
+				w="100%"
+				bg="white"
+				borderRadius={8}
 				fontSize="md"
-				gap="4"
-				mx={
-					data?.data?.csp_list?.length > 0
-						? "0"
-						: { base: "4", md: "0" }
-				}
+				gap="6"
 			>
 				{data === null ? (
 					<Flex
 						direction="column"
-						gap="10"
+						gap="8"
 						w={{ base: "100%", md: "500px" }}
 					>
-						<Flex direction="column" gap="2">
-							{/* <Text fontWeight="semibold">Select User Type</Text> */}
-							<RadioGroup
-								defaultValue="0"
-								value={applicantType}
-								onChange={(value) => setApplicantType(value)}
-							>
-								<Flex
-									direction={{ base: "column", md: "row" }}
-									gap={{ base: "4", md: "16" }}
-								>
-									{Object.entries(applicantTypeObj).map(
-										([key, value]) => (
-											<Radio
-												size="lg"
-												key={key}
-												value={key}
-											>
-												<Text fontSize="sm">
-													{"Onboard "}
-													{value}
-												</Text>
-											</Radio>
-										)
-									)}
-								</Flex>
-							</RadioGroup>
-						</Flex>
+						<Radio
+							value={applicantType}
+							options={onboardAgentTypeList}
+							onChange={(value) => setApplicantType(value)}
+						/>
 						<Flex direction="column" gap="2">
 							<Text fontWeight="semibold">
 								Download Sample File (for Onboarding{" "}
@@ -139,7 +108,7 @@ const BulkOnboarding = () => {
 							<Link
 								href={
 									applicantType == 0
-										? SAMPLE_DOWNLOAD_LINK.MERCHANT
+										? SAMPLE_DOWNLOAD_LINK.SELLER
 										: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
 								}
 								w="fit-content"
@@ -164,19 +133,19 @@ const BulkOnboarding = () => {
 								accept=".xls,.xlsx"
 							/>
 						</Flex>
-						{file && (
-							<Button
-								onClick={handleFileUpload}
-								size="lg"
-								h="64px"
-								w="215px"
-							>
-								Upload
-							</Button>
-						)}
+
+						<Button
+							onClick={handleFileUpload}
+							size="lg"
+							h="64px"
+							w="215px"
+							disabled={file === null || file === undefined}
+						>
+							Upload
+						</Button>
 					</Flex>
 				) : (
-					<Flex direction="column" gap="4">
+					<Flex direction="column" gap="2">
 						<Flex fontSize="sm" direction="column" gap="1">
 							<span>
 								{data?.message || "Something went wrong"}!!
@@ -210,16 +179,15 @@ const BulkOnboarding = () => {
 						</Flex>
 
 						{data?.data?.csp_list?.length > 0 && (
-							<BulkOnboardingResponse
-								bulkOnboardingResponseList={
-									data?.data?.csp_list
-								}
+							<OnboardingResponse
+								responseList={data?.data?.csp_list}
+								agentType={applicantType}
 							/>
 						)}
 					</Flex>
 				)}
 			</Flex>
-		</div>
+		</>
 	);
 };
 

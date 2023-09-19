@@ -17,27 +17,30 @@ const statusChecker = {
 };
 
 export const getNameStyle = (name, icon, hue) => {
-	return (
-		<Flex align={"center"} gap="0.625rem">
-			<Avatar
-				size={{ base: "sm" }}
-				name={icon ? null : name}
-				bg={hue ? `hsl(${hue},80%,95%)` : "primary.DEFAULT"}
-				color={hue ? `hsl(${hue},80%,25%)` : "divider"}
-				border={hue ? `1px solid hsl(${hue},80%,85%)` : null}
-				icon={icon ? <Icon size="16px" name={icon} /> : null}
-				sx={{
-					"@media print": {
-						display: "none !important",
-					},
-				}}
-			/>
-			<Box as="span" fontWeight="500">
-				{name}
-			</Box>
-		</Flex>
-	);
+	if (name?.length > 0) {
+		return (
+			<Flex align={"center"} gap="0.625rem">
+				<Avatar
+					size={{ base: "sm" }}
+					name={icon ? null : name}
+					bg={hue ? `hsl(${hue},80%,95%)` : "primary.DEFAULT"}
+					color={hue ? `hsl(${hue},80%,25%)` : "divider"}
+					border={hue ? `1px solid hsl(${hue},80%,85%)` : null}
+					icon={icon ? <Icon size="16px" name={icon} /> : null}
+					sx={{
+						"@media print": {
+							display: "none !important",
+						},
+					}}
+				/>
+				<Box as="span" fontWeight="500">
+					{name}
+				</Box>
+			</Flex>
+		);
+	}
 };
+
 export const getStatusStyle = (status = "", tableName) => {
 	if (tableName === "History") {
 		const clr = statusChecker[status] || "light";

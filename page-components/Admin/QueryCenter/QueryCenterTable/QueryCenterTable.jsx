@@ -19,10 +19,10 @@ const QueryCenterTable = ({
 		{ name: "subject", label: "Subject", show: "Description" },
 		{ name: "statusType", label: "Status", show: "Tag" },
 		{ name: "contactName", label: "Agent Name" },
-		{
-			name: "eko_code",
-			label: "Agent Code",
-		},
+		// {
+		// 	name: "eko_code",
+		// 	label: "Agent Code",
+		// },
 		{
 			name: "createdTime",
 			label: "Time Created",
