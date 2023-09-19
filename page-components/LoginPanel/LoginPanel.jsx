@@ -129,8 +129,8 @@ const LoginPanel = () => {
 						logo="/favicon.svg"
 						header={`Welcome to ${orgDetail.app_name}`}
 						features={[
-							"Your business partner for services like Money Transfer, AePS Cash-Out & more",
-							"Build your own network and start earning today!",
+							"Your business partner for services like Money Transfer, Bill Payments, AePS Cash-Out & more",
+							"Start earning today from your shop, office, home or anywhere",
 						]}
 					/>
 				</Flex>
