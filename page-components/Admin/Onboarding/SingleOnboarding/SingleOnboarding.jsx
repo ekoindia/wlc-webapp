@@ -138,7 +138,7 @@ const SingleOnboarding = () => {
 					"tf-req-method": "POST",
 				},
 				body: {
-					interaction_type_id: 734,
+					// interaction_type_id: 734,
 					applicant_type: agentType,
 					CspList: data.agents,
 				},
