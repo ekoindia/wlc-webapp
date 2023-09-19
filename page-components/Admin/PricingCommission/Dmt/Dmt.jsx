@@ -191,7 +191,7 @@ const Dmt = () => {
 	return (
 		<Flex direction="column" gap="8">
 			<FormControl>
-				<FormLabel>Select Agent Type For</FormLabel>
+				<FormLabel>Select Agent Type</FormLabel>
 				<Controller
 					name="agentType"
 					control={control}
