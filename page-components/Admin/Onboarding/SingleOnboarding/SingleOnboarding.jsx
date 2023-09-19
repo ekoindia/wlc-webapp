@@ -128,20 +128,23 @@ const SingleOnboarding = () => {
 	const onSubmit = (data) => {
 		//const _data = { agentType, ...data };
 
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"Content-Type": "application/json",
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agent/multiple_onboarding",
-				"tf-req-method": "POST",
-			},
-			body: {
-				interaction_type_id: 734,
-				applicant_type: agentType,
-				CspList: data.agents,
-			},
-			token: accessToken,
-		})
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
+			{
+				headers: {
+					"Content-Type": "application/json",
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": "/network/agent/multiple_onboarding",
+					"tf-req-method": "POST",
+				},
+				body: {
+					interaction_type_id: 734,
+					applicant_type: agentType,
+					CspList: data.agents,
+				},
+				token: accessToken,
+			}
+		)
 			.then((res) => {
 				setResponse(res);
 			})
