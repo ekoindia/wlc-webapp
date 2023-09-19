@@ -32,6 +32,8 @@ const AGENT_TYPE = {
 	DISTRIBUTOR: "2",
 };
 
+const MOBILE_NUMBER_REGEX = /^[6-9]{1}[0-9]{9}$/;
+
 /**
  * A SingleOnboarding page-component
  * @param 	{object}	prop	Properties passed to the component
@@ -49,7 +51,7 @@ const SingleOnboarding = () => {
 	const {
 		register,
 		handleSubmit,
-		formState: { /*  errors, */ isSubmitting },
+		formState: { errors, isSubmitting },
 		reset,
 		control,
 	} = useForm();
@@ -72,19 +74,34 @@ const SingleOnboarding = () => {
 			label: "Name",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
+			validation: {
+				required: true,
+			},
 		},
 		{
 			name: "agent_mobile",
 			label: "Mobile Number",
 			required: true,
-			parameter_type_id: ParamType.NUMERIC,
+			parameter_type_id: ParamType.MOBILE,
+			validation: {
+				required: true,
+				pattern: MOBILE_NUMBER_REGEX,
+				maxLength: 10,
+				minLength: 10,
+			},
 		},
 
 		{
 			name: "dist_mobile",
 			label: "Distributor's Mobile Number",
 			required: false,
-			parameter_type_id: ParamType.NUMERIC,
+			parameter_type_id: ParamType.MOBILE,
+			validation: {
+				required: false,
+				pattern: MOBILE_NUMBER_REGEX,
+				maxLength: 10,
+				minLength: 10,
+			},
 		},
 	];
 
@@ -94,12 +111,21 @@ const SingleOnboarding = () => {
 			label: "Name",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
+			validation: {
+				required: true,
+			},
 		},
 		{
 			name: "agent_mobile",
 			label: "Mobile Number",
 			required: true,
-			parameter_type_id: ParamType.NUMERIC,
+			parameter_type_id: ParamType.MOBILE,
+			validation: {
+				required: true,
+				pattern: MOBILE_NUMBER_REGEX,
+				maxLength: 10,
+				minLength: 10,
+			},
 		},
 	];
 
@@ -248,6 +274,7 @@ const SingleOnboarding = () => {
 												index,
 												formName,
 												control,
+												errors,
 											}}
 										/>
 										<Button
@@ -266,11 +293,11 @@ const SingleOnboarding = () => {
 										>
 											Remove
 										</Button>
-										<Box
+										{/* <Box
 											w="100%"
-											h="2px"
+											h="1px"
 											bg="divider"
-										></Box>
+										></Box> */}
 									</Flex>
 								);
 							}
@@ -278,6 +305,8 @@ const SingleOnboarding = () => {
 
 						<Button
 							type="button"
+							variant="outline"
+							color="primary.DEFAULT"
 							w={{ base: "100%", md: "160px" }}
 							h="48px"
 							onClick={() => {
@@ -353,7 +382,15 @@ const SingleOnboarding = () => {
 
 export default SingleOnboarding;
 
-const Form = ({ parameter_list, register, control, item, index, formName }) => {
+const Form = ({
+	parameter_list,
+	register,
+	control,
+	item,
+	index,
+	// errors,
+	formName,
+}) => {
 	return (
 		<Flex direction="column" gap="8" key={`${formName}.${item.id}`}>
 			{parameter_list?.map(
@@ -365,13 +402,16 @@ const Form = ({ parameter_list, register, control, item, index, formName }) => {
 					disabled,
 					list_elements,
 					parameter_type_id,
+					// validation,
 				}) => {
+					// const _name = errors[formName] || [];
 					switch (parameter_type_id) {
 						case ParamType.LIST:
 							return (
 								<FormControl
 									key={`${formName}.${index}.${name}`}
 									w={{ base: "100%", md: "500px" }}
+									// isInvalid={Boolean(errors._name)}
 								>
 									<FormLabel>{label}</FormLabel>
 									<Controller
@@ -388,7 +428,59 @@ const Form = ({ parameter_list, register, control, item, index, formName }) => {
 												/>
 											);
 										}}
+										// rules={{ ...validation }}
 									/>
+									{/* {_name[0]?.name?.type === "required" && (
+										<FormErrorMessage color="error">
+											Required
+										</FormErrorMessage>
+									)} */}
+								</FormControl>
+							);
+						case ParamType.MOBILE:
+							return (
+								<FormControl
+									key={`${formName}.${index}.${name}`}
+									w={{
+										base: "100%",
+										md: "500px",
+									}}
+									// isInvalid={Boolean(errors._name)}
+								>
+									<Input
+										id={`${formName}.${index}.${name}`}
+										label={label}
+										required={required}
+										value={value}
+										type="number"
+										maxLength={10}
+										fontSize="sm"
+										disabled={disabled}
+										{...register(
+											`${formName}.${index}.${name}`
+											// { ...validation }
+										)}
+									/>
+									{/* {_name[0]?.name?.type === "required" && (
+										<FormErrorMessage color="error">
+											Required
+										</FormErrorMessage>
+									)}
+									{_name[0]?.name?.type === "pattern" && (
+										<FormErrorMessage color="error">
+											Please enter correct value
+										</FormErrorMessage>
+									)}
+									{_name[0]?.name?.type === "maxLength" && (
+										<FormErrorMessage color="error">
+											Length exceeds
+										</FormErrorMessage>
+									)}
+									{_name[0]?.name?.type === "minLength" && (
+										<FormErrorMessage color="error">
+											Insufficient Characters
+										</FormErrorMessage>
+									)} */}
 								</FormControl>
 							);
 						case ParamType.NUMERIC:
@@ -400,6 +492,7 @@ const Form = ({ parameter_list, register, control, item, index, formName }) => {
 										base: "100%",
 										md: "500px",
 									}}
+									// isInvalid={Boolean(errors._name)}
 								>
 									<Input
 										id={`${formName}.${index}.${name}`}
@@ -416,8 +509,14 @@ const Form = ({ parameter_list, register, control, item, index, formName }) => {
 										disabled={disabled}
 										{...register(
 											`${formName}.${index}.${name}`
+											// { ...validation }
 										)}
 									/>
+									{/* {_name[0]?.name?.type === "required" && (
+										<FormErrorMessage color="error">
+											Required
+										</FormErrorMessage>
+									)} */}
 								</FormControl>
 							);
 					}
