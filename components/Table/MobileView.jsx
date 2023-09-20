@@ -38,12 +38,12 @@ const MobileView = ({
 	}
 
 	return (
-		<Flex direction="column" mx="2" gap={isReceipt ? "0" : "4"}>
+		<Flex direction="column" gap={isReceipt ? "0" : "4"}>
 			{isReceipt && (
 				<Text
 					bg="white"
 					p="20px"
-					borderRadius={_dataLength > 1 ? "10px 10px 0 0" : "10px"}
+					borderRadius={_dataLength > 0 ? "10px 10px 0 0" : "10px"}
 					color="light"
 					fontSize="md"
 					fontWeight="semibold"

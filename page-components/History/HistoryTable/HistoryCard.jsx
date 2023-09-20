@@ -1,6 +1,6 @@
 import { Avatar, Box, Flex, keyframes, Text } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { useMenuContext } from "contexts";
+import { useAppSource, useMenuContext } from "contexts";
 import { getPaymentStyle, getStatusStyle } from "helpers/TableHelpers";
 import useHslColor from "hooks/useHslColor";
 import { formatDateTime } from "libs";
@@ -31,6 +31,7 @@ const HistoryCard = ({
 	const { trxn_type_prod_map } = interactions;
 	const txicon = trxn_type_prod_map?.[item.tx_typeid]?.icon || null;
 	const { h } = useHslColor(item.tx_name);
+	const { isAndroid } = useAppSource();
 
 	const visible = visibleColumns > 0;
 	const extraColumns = visible ? renderer?.slice(visibleColumns) : [];
@@ -205,7 +206,7 @@ const HistoryCard = ({
 							icon="print"
 							color="accent.DEFAULT"
 							onClick={() => {
-								printPage("Receipt (copy)");
+								printPage("Receipt (copy)", isAndroid);
 							}}
 						>
 							Print

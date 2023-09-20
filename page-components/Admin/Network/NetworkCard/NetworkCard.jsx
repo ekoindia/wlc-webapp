@@ -60,6 +60,14 @@ const NetworkCard = ({ item }) => {
 						{item.onboarded_on}
 					</Box>
 				</Flex>
+				<Flex gap="2">
+					<Box as="span" color="light">
+						Commission Type:
+					</Box>
+					<Box as="span" color="dark">
+						{item.commission_type}
+					</Box>
+				</Flex>
 				<Flex justifyContent="space-between" mt="10px" py="10px">
 					{getStatusStyle(item.account_status)}
 					{getLocationStyle(item.location)}

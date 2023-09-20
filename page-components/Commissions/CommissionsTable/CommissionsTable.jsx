@@ -19,17 +19,14 @@ const CommissionsTable = ({
 		{
 			name: "transaction_value",
 			label: "Transaction Value",
-			show: "Transaction Value",
 		},
 		{
 			name: "biller_name",
 			label: "Biller Name",
-			show: "Biller Name",
 		},
 		{
 			name: "commission",
 			label: "Commission",
-			show: "Commission",
 		},
 	];
 
@@ -40,7 +37,6 @@ const CommissionsTable = ({
 				visibleColumns={0}
 				data={commissionData}
 				variant="stripedActionNone"
-				tableName="Commissions"
 				ResponsiveCard={CommissionsCard}
 				tableRowLimit={tableRowLimit}
 				setPageNumber={setPageNumber}

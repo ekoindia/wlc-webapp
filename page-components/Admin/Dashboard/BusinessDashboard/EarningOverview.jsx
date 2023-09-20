@@ -56,7 +56,15 @@ const EarningOverview = ({ data }) => {
 			lastPeriod: data?.raCases?.lastPeriod,
 			value: data?.raCases?.raCases,
 			type: "number",
-			variantion: data?.raCases?.increaseOrDecrease,
+			variation: data?.raCases?.increaseOrDecrease,
+		},
+		{
+			key: "commissionDue",
+			label: "Commission Due (only DMT)",
+			lastPeriod: data?.commissionDue?.lastPeriod,
+			value: data?.commissionDue?.commissionDue,
+			type: "amount",
+			variation: data?.commissionDue?.increaseOrDecrease,
 		},
 	];
 	return (

@@ -55,4 +55,5 @@ export const TransactionIds = {
 	SHOP_TYPE: 519,
 	STATE_TYPE: 387,
 	PINCODE_TYPE: 353,
+	COMMISSION_TYPE: 726,
 };

@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 const DynamicGoogleButton = dynamic(
 	() => import("./GoogleButton/GoogleButton"),
 	{
+		ssr: false,
 		// loading: () => <p>Loading...</p>,
 	}
 );

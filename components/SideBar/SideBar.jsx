@@ -13,6 +13,7 @@ import {
 	// Tooltip,
 	useBreakpointValue,
 	useDisclosure,
+	useToken,
 } from "@chakra-ui/react";
 import {
 	AdminOtherMenuItems,
@@ -30,6 +31,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { limitText } from "utils";
+import { svgBgDotted } from "utils/svgPatterns";
 import { Icon, ProfileCard, StatusCard } from "..";
 import { ActionIcon, useKBarReady } from "../CommandBar";
 
@@ -234,7 +236,14 @@ const generateMenuLinkActions = (menu_list, router) => {
 
 //MAIN EXPORT
 const SideBar = ({ navOpen, setNavClose }) => {
-	const { isLoggedIn, isOnboarding, userData, isAdmin, userType } = useUser();
+	const {
+		isLoggedIn,
+		isOnboarding,
+		userData,
+		isAdmin,
+		isAdminAgentMode,
+		userType,
+	} = useUser();
 	const { interactions } = useMenuContext();
 	const { interaction_list, role_tx_list } = interactions;
 	const router = useRouter();
@@ -255,7 +264,8 @@ const SideBar = ({ navOpen, setNavClose }) => {
 
 	// const [trxnActionsWorker] = useWorker(generateTransactionActions);
 
-	const menuList = isAdmin ? adminSidebarMenu : sidebarMenu;
+	const menuList =
+		isAdmin && isAdminAgentMode !== true ? adminSidebarMenu : sidebarMenu;
 
 	// Split the transaction list into two lists:
 	// 1. trxnList: List of transactions/products
@@ -270,6 +280,12 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				if (isAdmin) {
 					if (AdminOtherMenuItems.indexOf(tx.id) > -1) {
 						otherList.push(tx);
+					} else if (isAdminAgentMode) {
+						if (OtherMenuItems.indexOf(tx.id) > -1) {
+							otherList.push(tx);
+						} else {
+							trxnList.push(tx);
+						}
 					}
 				} else {
 					if (OtherMenuItems.indexOf(tx.id) > -1) {
@@ -318,7 +334,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 
 				// Generate KBar actions...
 				setTrxnActions(
-					isAdmin
+					isAdmin && isAdminAgentMode !== true
 						? []
 						: generateTransactionActions(
 								trxnList,
@@ -338,7 +354,15 @@ const SideBar = ({ navOpen, setNavClose }) => {
 			// console.log("otherActions", _otherActions);
 			setOtherActions(_otherActions);
 		}
-	}, [interaction_list, menuList, role_tx_list, router, ready]);
+	}, [
+		interaction_list,
+		menuList,
+		role_tx_list,
+		router,
+		ready,
+		isAdmin,
+		isAdminAgentMode,
+	]);
 
 	// useEffect(() => {
 	// 	if (interaction_list && interaction_list.length > 0) {
@@ -378,6 +402,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		otherList,
 		router,
 		isAdmin,
+		isAdminAgentMode,
 		openIndex,
 		setOpenIndex,
 	};
@@ -447,9 +472,13 @@ const SideBarMenu = ({
 	otherList,
 	router,
 	isAdmin,
+	isAdminAgentMode,
 	openIndex,
 	setOpenIndex,
 }) => {
+	// Get theme color values
+	const [contrast_color] = useToken("colors", ["sidebar.dark"]);
+
 	return (
 		<Box
 			className="sidebar"
@@ -465,23 +494,27 @@ const SideBarMenu = ({
 			bg="sidebar.bg" // ORIG_THEME: primary.DEFAULT
 			color="sidebar.text" // ORIG_THEME: "white"
 			height={"100%"}
+			backgroundImage={svgBgDotted({
+				fill: contrast_color,
+			})}
 			overflowY="auto"
 		>
 			<Flex direction="column">
 				<Box borderRight="12px" height={"100%"} w={"100%"}>
 					{/* Show user-profile card and wallet balance for agents (non-admin users) */}
 					{!isAdmin && (
-						<>
-							<Link href={Endpoints.USER_PROFILE}>
-								<ProfileCard
-									name={userData?.userDetails?.name}
-									mobileNumber={userData?.userDetails?.mobile}
-									img={userData?.userDetails?.pic}
-									cursor="pointer"
-								/>
-							</Link>
-						</>
+						<Link href={Endpoints.USER_PROFILE}>
+							<ProfileCard
+								name={userData?.userDetails?.name}
+								mobileNumber={userData?.userDetails?.mobile}
+								img={userData?.userDetails?.pic}
+								cursor="pointer"
+							/>
+						</Link>
 					)}
+
+					{/* {isAdmin && <AdminViewToggleCard />} */}
+
 					<StatusCard />
 
 					{/* Fixed menu items */}
@@ -490,6 +523,7 @@ const SideBarMenu = ({
 							key={menu.name}
 							menu={menu}
 							index={index}
+							isAdminAgentMode={isAdminAgentMode}
 						/>
 					))}
 
@@ -745,12 +779,17 @@ const AccordionSubMenuSection = ({
 	);
 };
 
-const LinkMenuItem = ({ menu, /* currentRoute, */ index }) => {
+const LinkMenuItem = ({
+	menu,
+	/* currentRoute, */ index,
+	isAdminAgentMode,
+}) => {
 	const router = useRouter();
-	const isCurrent = isCurrentRoute(router.asPath, menu.link);
+	const link = (isAdminAgentMode ? "/admin" : "") + menu.link;
+	const isCurrent = isCurrentRoute(router.asPath, link);
 
 	return (
-		<Link href={menu.link} key={index}>
+		<Link href={link} key={index}>
 			<Flex
 				key={index}
 				fontSize={{

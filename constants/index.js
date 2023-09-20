@@ -5,6 +5,7 @@ export {
 	ConfigurationsBreadcrumbData,
 	NetworkObject,
 	NotificationsBreadcrumbData,
+	OnboardingBreadcrumbData,
 	PricingCommissionObject,
 	QueryObject,
 	TransactionHistoryObject,

@@ -1,4 +1,5 @@
 import { ActionIcon } from "components/CommandBar";
+import { Endpoints, UserType } from "constants";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
@@ -36,6 +37,7 @@ export const EarningSummaryProvider = ({ children }) => {
 	const [userEarnings, setUserEarnings, isValid] = useDailyCacheState(
 		"inf-earnsummary",
 		{
+			// commission_due: 0,
 			this_month_till_yesterday: 0,
 			last_month_till_yesterday: 0,
 			last_month_total: 0,
@@ -45,7 +47,7 @@ export const EarningSummaryProvider = ({ children }) => {
 	); // User earnings
 
 	// Get the logged-in user's data from the UserContext.
-	const { isLoggedIn, isAdmin, isOnboarding, accessToken, userId } =
+	const { isLoggedIn, isAdmin, isOnboarding, accessToken, userId, userType } =
 		useSession();
 
 	useEffect(() => {
@@ -60,7 +62,8 @@ export const EarningSummaryProvider = ({ children }) => {
 		setTimeout(
 			() =>
 				fetcher(
-					process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
+					process.env.NEXT_PUBLIC_API_BASE_URL +
+						Endpoints.TRANSACTION,
 					{
 						body: {
 							interaction_type_id:
@@ -97,7 +100,16 @@ export const EarningSummaryProvider = ({ children }) => {
 								asof: `${asofDate} (${dayOfWeek})`,
 								userId: userId,
 							};
-							setUserEarnings(earnings);
+
+							const commission_due =
+								data?.data?.commission_due || 0;
+
+							const _earnings =
+								userType === UserType.DISTRIBUTOR
+									? { ...earnings, commission_due }
+									: earnings;
+
+							setUserEarnings(_earnings);
 						}
 					})
 					.catch((error) => {

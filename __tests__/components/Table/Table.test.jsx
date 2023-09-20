@@ -43,7 +43,6 @@ describe("Table", () => {
 				renderer={renderer}
 				data={mockData}
 				variant="evenStriped"
-				tableName="Account"
 			/>
 		);
 		expect(container).not.toBeEmptyDOMElement();

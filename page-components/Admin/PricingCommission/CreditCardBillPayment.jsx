@@ -12,7 +12,7 @@ import { PricingForm } from ".";
 const CreditCardBillPayment = () => {
 	const operationTypeList = [
 		{ value: "3", label: "Whole Network" },
-		{ value: "2", label: "Distributors Network" },
+		{ value: "2", label: "Distributor's Network" },
 		{ value: "1", label: "Individual Distributor/Retailer" },
 	];
 

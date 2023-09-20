@@ -13,6 +13,7 @@ import {
 	//AccountVerification,
 	Aeps,
 	AirtelCms,
+	CommissionFrequency,
 	CreditCardBillPayment,
 	Dmt,
 	IndoNepal,
@@ -32,6 +33,10 @@ const PricingCommissions = () => {
 		{ label: "Indo-Nepal Fund Transfer", comp: <IndoNepal /> },
 		{ label: "Airtel CMS", comp: <AirtelCms /> },
 		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
+		{
+			label: "Commission Frequency",
+			comp: <CommissionFrequency />,
+		},
 		//{ label: "Account Verification", comp: <AccountVerification /> },
 	];
 
@@ -63,9 +68,8 @@ const PricingCommissions = () => {
 						isLazy
 						position="relative"
 						defaultIndex={0}
-						bg={{ base: "white", md: "transparent" }}
 						py="3"
-						w={{ base: "100%", md: "100%" }}
+						w="100%"
 						borderRadius="10px"
 					>
 						<TabList

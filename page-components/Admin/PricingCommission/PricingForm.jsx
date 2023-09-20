@@ -188,7 +188,7 @@ const PricingForm = ({
 				{/* operation_type */}
 				<RadioInput
 					name="operation_type"
-					label={`Select ${productPricingType} For`}
+					label={`Set ${productPricingType} For`}
 					defaultValue={DEFAULT.operation_type}
 					radioGroupList={operationTypeList}
 					control={control}
