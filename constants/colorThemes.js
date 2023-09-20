@@ -48,13 +48,4 @@ export const colorThemes = [
 		accent: "#E97451",
 		accent_dark: "#FF896A",
 	},
-	{
-		name: "Royal Amber",
-		primary_light: "#3260b3",
-		primary: "#274a8b",
-		primary_dark: "#1c3564",
-		accent_light: "#e3b835",
-		accent: "#ca9e1c",
-		accent_dark: "#9d7b16",
-	},
 ];
