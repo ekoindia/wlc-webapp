@@ -1,19 +1,27 @@
 import { Flex, FormControl, FormLabel } from "@chakra-ui/react";
-import { Button, Icon, Input, Radio } from "components";
-import { productPricingType, products } from "constants";
+import { Button, Radio } from "components";
+import { Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-const radioOptions = [
+const accountVerificationOptions = [
 	{
 		label: "Yes",
-		value: "0",
+		otp_verification_token: "0",
 	},
 	{
 		label: "No",
-		value: "1",
+		otp_verification_token: "1",
 	},
 ];
+
+const accountVerificationRenderer = {
+	label: "label",
+	value: "otp_verification_token",
+};
 
 /**
  * A AccountVerification tab
@@ -25,26 +33,55 @@ const radioOptions = [
 const AccountVerification = () => {
 	const {
 		handleSubmit,
-		register,
-		watch,
-		formState: { errors /* isSubmitting */ },
+		// register,
+		// watch,
+		// formState: { errors /* isSubmitting */ },
 		control,
 		// setValue,
-	} = useForm({
-		defaultValues: {
-			account_verification: "0",
-		},
-	});
+	} = useForm();
 
-	const watchAccountVerification = watch("account_verification");
+	const { accessToken } = useSession();
+
+	// const watchAccountVerification = watch("account_verification");
 
 	const router = useRouter();
 
-	const handleFormSubmit = (data) => {
-		console.log("Submit Data", data);
-	};
+	// const pricingTypeList = [{ value: "1", label: "Fixed (₹)" }];
 
-	const pricingTypeList = [{ value: "1", label: "Fixed (₹)" }];
+	useEffect(() => {
+		console.log("RUNNING");
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: 737,
+				operation: 0,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				console.log("res", res);
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
+	}, []);
+
+	const handleFormSubmit = (data) => {
+		console.log("data", data);
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: 737,
+				operation: 1,
+				otp_verification_token: data?.account_verification,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				console.log("res", res);
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
+	};
 
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -61,15 +98,16 @@ const AccountVerification = () => {
 						control={control}
 						render={({ field: { onChange, value } }) => (
 							<Radio
-								options={radioOptions}
+								options={accountVerificationOptions}
 								onChange={onChange}
 								value={value}
+								renderer={accountVerificationRenderer}
 							/>
 						)}
 					/>
 				</FormControl>
 
-				{watchAccountVerification === "0" && (
+				{/* {watchAccountVerification === "0" && (
 					<>
 						<FormControl
 							id="payment_mode"
@@ -122,7 +160,7 @@ const AccountVerification = () => {
 							/>
 						</FormControl>
 					</>
-				)}
+				)} */}
 
 				<Flex
 					direction={{ base: "row-reverse", md: "row" }}
@@ -141,7 +179,7 @@ const AccountVerification = () => {
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
 					>
-						Save Commissions
+						Set
 					</Button>
 
 					<Button
