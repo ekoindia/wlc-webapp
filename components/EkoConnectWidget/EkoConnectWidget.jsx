@@ -13,7 +13,7 @@ import {
 } from "contexts";
 import { useAppLink, useExternalResource } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
-import { Priority, useRegisterActions } from "kbar";
+import { useRegisterActions } from "kbar";
 import Head from "next/head";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -165,7 +165,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 						color="#f43f5e"
 					/>
 				),
-				priority: Priority.HIGH,
+				priority: 99, // Show on top
 				// shortcut: ["$mod+shift+/"],
 				perform: () => {
 					widgetRef?.current?._onFeedbackDialogEvent({
