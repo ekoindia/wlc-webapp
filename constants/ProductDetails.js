@@ -42,7 +42,7 @@ export const products = {
 		},
 	},
 	INDO_NEPAL_FUND_TRANSFER: {
-		uriSegment: "indonepal",
+		uriSegment: "indoNepal",
 		slabs: [
 			{ min: 100, max: 5000 },
 			{ min: 5001, max: 49800 },
