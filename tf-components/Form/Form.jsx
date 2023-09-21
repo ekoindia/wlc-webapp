@@ -73,6 +73,7 @@ const Form = ({ parameter_list, register, control, ...rest }) => {
 											<Controller
 												name={name}
 												control={control}
+												defaultValue={defaultValue}
 												render={({
 													field: { onChange },
 												}) => (
@@ -122,6 +123,7 @@ const Form = ({ parameter_list, register, control, ...rest }) => {
 											<Controller
 												name={name}
 												control={control}
+												defaultValue={defaultValue}
 												render={({
 													field: { onChange, value },
 												}) => {
