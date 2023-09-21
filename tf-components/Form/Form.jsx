@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Grid } from "@chakra-ui/react";
+import { Flex, FormControl, FormLabel } from "@chakra-ui/react";
 import { Input, MultiSelect, Radio, Select } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
@@ -12,15 +12,7 @@ import { Controller } from "react-hook-form";
  */
 const Form = ({ parameter_list, register, control, ...rest }) => {
 	return (
-		<Grid
-			templateColumns={{
-				base: "repeat(1,1fr)",
-				md: "repeat(auto-fit,minmax(400px,1fr))",
-			}}
-			gap="8"
-			maxW={{ base: "100%", md: "1000px" }}
-			{...rest}
-		>
+		<Flex direction="column" gap="8" {...rest}>
 			{parameter_list?.map(
 				({
 					name,
@@ -43,7 +35,10 @@ const Form = ({ parameter_list, register, control, ...rest }) => {
 						case ParamType.NUMERIC:
 						case ParamType.TEXT:
 							return (
-								<FormControl key={name}>
+								<FormControl
+									id={name}
+									w={{ base: "auto", md: "500px" }}
+								>
 									<Input
 										id={name}
 										label={label}
@@ -57,7 +52,9 @@ const Form = ({ parameter_list, register, control, ...rest }) => {
 										}
 										fontSize="sm"
 										disabled={disabled}
-										{...register(name, { ...validations })}
+										{...register(name, {
+											...validations,
+										})}
 									/>
 								</FormControl>
 							);
@@ -65,7 +62,13 @@ const Form = ({ parameter_list, register, control, ...rest }) => {
 							if (list_elements) {
 								if (is_multi_select) {
 									return (
-										<FormControl id={name}>
+										<FormControl
+											id={name}
+											w={{
+												base: "auto",
+												md: "500px",
+											}}
+										>
 											<FormLabel>{label}</FormLabel>
 											<Controller
 												name={name}
@@ -90,7 +93,7 @@ const Form = ({ parameter_list, register, control, ...rest }) => {
 										<FormControl id={name}>
 											<FormLabel>{label}</FormLabel>
 											<Controller
-												// name={name}
+												name={name}
 												control={control}
 												defaultValue={defaultValue}
 												render={({
@@ -110,7 +113,10 @@ const Form = ({ parameter_list, register, control, ...rest }) => {
 									return (
 										<FormControl
 											id={name}
-											// isInvalid={errors.priority}
+											w={{
+												base: "auto",
+												md: "500px",
+											}}
 										>
 											<FormLabel>{label}</FormLabel>
 											<Controller
@@ -138,7 +144,7 @@ const Form = ({ parameter_list, register, control, ...rest }) => {
 					}
 				}
 			)}
-		</Grid>
+		</Flex>
 	);
 };
 
