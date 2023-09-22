@@ -10,14 +10,14 @@ import { Controller } from "react-hook-form";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Form></Form>` TODO: Fix example
  */
-const Form = ({ parameter_list, register, control, ...rest }) => {
+const Form = ({ parameter_list, register, formValues, control, ...rest }) => {
 	return (
 		<Flex direction="column" gap="8" {...rest}>
 			{parameter_list?.map(
 				({
 					name,
 					label,
-					required,
+					required = true,
 					value,
 					disabled,
 					list_elements,
@@ -27,9 +27,16 @@ const Form = ({ parameter_list, register, control, ...rest }) => {
 					is_radio,
 					multiSelectRenderer,
 					validations,
-					// dependent,
+					visible_on_param_name,
+					visible_on_param_value,
 				}) => {
-					//handle dependent
+					if (visible_on_param_name && visible_on_param_value) {
+						const _shouldBeVisible = visible_on_param_value.test(
+							formValues?.[visible_on_param_name]
+						);
+
+						if (!_shouldBeVisible) return;
+					}
 
 					switch (parameter_type_id) {
 						case ParamType.NUMERIC:
