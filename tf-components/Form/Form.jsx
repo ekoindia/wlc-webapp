@@ -129,6 +129,7 @@ const Form = ({
 																list_elements,
 															renderer:
 																multiSelectRenderer,
+															required,
 														}}
 														{...rest}
 													/>
@@ -170,12 +171,6 @@ const Form = ({
 														{...{
 															id: name,
 															label,
-															labelStyle: {
-																pb: {
-																	base: "0.5rem",
-																	md: "0.25rem",
-																},
-															},
 															value,
 															onChange,
 															options:
