@@ -1,12 +1,6 @@
-import { Box, Checkbox, Flex, Input, keyframes, Text } from "@chakra-ui/react";
-import { useEffect, useRef, useState } from "react";
-import { Tag } from ".";
+import { Flex, useTheme } from "@chakra-ui/react";
+import Select from "react-select";
 import { Icon } from "..";
-
-const animSlideDown = keyframes`
-	from {opacity: 0; transform: scaleY(0); transform-origin:top;}
-	to {opacity: 1; transform: none; transform-origin:top;}
-`;
 
 /**
  * A MultiSelect component
@@ -17,381 +11,182 @@ const animSlideDown = keyframes`
  * @param	{string}	[prop.onChange]	setter which parent component will pass to multiselect to get the data/values/options which is selected by the user.
  * @example	`<MultiSelect options={options}	renderer={renderer} placeholder = "Please Select Something"/>`
  */
-const MultiSelect = ({
-	options,
-	placeholder = "-- Select --",
-	renderer = { label: "label", value: "value" },
-	onChange = () => {},
-	label,
-}) => {
-	const inputRef = useRef();
-	const [open, setOpen] = useState(false);
-	const [searchTerm, setSearchTerm] = useState("");
-	const [selectedOptions, setSelectedOptions] = useState({});
-	const [highlightedIndex, setHighlightedIndex] = useState(-1);
-	const [selectAllChecked, setSelectAllChecked] = useState(false);
-	const [filteredOptions, setFilteredOptions] = useState(options);
-	const selectedOptionsLength = Object.keys(selectedOptions)?.length || 0;
+const MultiSelect = ({ placeholder = "--Select--", isMulti = true }) => {
+	const { colors, fontSizes } = useTheme();
 
-	/* needed for select all option */
-	const selectAllObj = { value: "*", label: "Select All" };
-
-	useEffect(() => {
-		setSearchTerm("");
-		setSelectedOptions({});
-		setHighlightedIndex(-1);
-		setSelectAllChecked(false);
-		setFilteredOptions(options);
-	}, [options]);
-
-	useEffect(() => {
-		let _keys = Object.keys(selectedOptions);
-		checkAndSetSelectAll(filteredOptions, selectedOptions);
-		onChange(_keys);
-	}, [selectedOptions]);
-
-	const handleSelectBoxClick = () => {
-		setOpen(!open);
-	};
-
-	const handleSearch = (searchedTerm) => {
-		//  Search
-		let _filteredOptions = options.filter((option) =>
-			option[renderer.label]
-				.toLowerCase()
-				.includes(searchedTerm.toLowerCase())
-		);
-		return _filteredOptions;
-	};
-
-	/**
-	 * Checking whether select all should be enabled or not
-	 * @param {Array} _filteredOptions
-	 * @param {Object} _selectedOptions
-	 */
-	const checkAndSetSelectAll = (_filteredOptions, _selectedOptions) => {
-		if (selectedOptionsLength > 0) {
-			let found = true;
-			for (const item of _filteredOptions) {
-				if (_selectedOptions[item[renderer.value]] === undefined) {
-					found = false;
-					break;
-				}
-			}
-			setSelectAllChecked(found);
-		}
-	};
-
-	// key press handling
-	const handleInputKeyDown = (event) => {
-		if (
-			event.keyCode === 8 &&
-			searchTerm === "" &&
-			Object.keys(selectedOptions).length > 0
-		) {
-			//BACKSPACE
-			setSelectedOptions((prev) => {
-				let temp = { ...prev };
-				let keyArr = Object.keys(temp);
-				delete temp[keyArr[keyArr.length - 1]];
-				return temp;
-			});
-		}
-		if (event.keyCode === 40) {
-			//DOWN
-			event.preventDefault();
-			setHighlightedIndex((prev) => {
-				const next = prev + 1;
-				return next >= filteredOptions.length ? 0 : next;
-			});
-		} else if (event.keyCode === 38) {
-			//UP
-			event.preventDefault();
-			setHighlightedIndex((prev) => {
-				const next = prev - 1;
-				return next < 0 ? filteredOptions.length - 1 : next;
-			});
-		} else if (event.keyCode === 13) {
-			//ENTER
-			if (highlightedIndex !== -1) {
-				let highlightedObj = filteredOptions[highlightedIndex];
-				if (!selectedOptions[highlightedObj[renderer.value]]) {
-					setSelectedOptions((prev) => ({
-						...prev,
-						[highlightedObj[renderer.value]]:
-							highlightedObj[renderer.label],
-					}));
-				} else {
-					setSelectedOptions((prev) => {
-						let temp = { ...prev };
-						delete temp[highlightedObj[renderer.value]];
-						return temp;
-					});
-				}
-			}
-		}
-	};
-
-	const handleInputChange = (event) => {
-		if (!open) {
-			setOpen(true);
-		}
-		const _searchedTerm = event.target.value;
-		setSearchTerm(_searchedTerm);
-		const _filteredOptions = handleSearch(_searchedTerm);
-		setFilteredOptions(_filteredOptions);
-		// Check for select all
-		checkAndSetSelectAll(_filteredOptions, selectedOptions);
-	};
-
-	/* handle when user click on option */
-	const handleClick = (checked, value, label) => {
-		if (checked) {
-			handleOptionMultiSelect(value, label);
-		} else {
-			handleOptionMultiDeselect(value);
-		}
-	};
-
-	/* handle when user select a option */
-	const handleOptionMultiSelect = (optionValue, optionLabel) => {
-		if (optionValue === "*") {
-			// select all
-			let allOptions = {};
-			filteredOptions.forEach((option) => {
-				allOptions[option[renderer.value]] = option[renderer.label];
-			});
-			setSelectedOptions((prev) => ({ ...prev, ...allOptions }));
-			setSelectAllChecked((prev) => !prev);
-		} else {
-			let _selectedOptions = {
-				...selectedOptions,
-				[optionValue]: optionLabel,
+	const colorStyles = {
+		control: (base, { isDisabled, isFocused, isSelected }) => {
+			return {
+				...base,
+				borderRadius: "0.5rem",
+				borderColor: isDisabled
+					? undefined
+					: isSelected
+					? colors.primary.dark
+					: isFocused
+					? colors.primary.dark
+					: undefined,
+				boxShadow: "none",
+				minHeight: "3rem",
 			};
-			checkAndSetSelectAll(filteredOptions, _selectedOptions);
-			setSelectedOptions((prevState) => ({
-				...prevState,
-				..._selectedOptions,
-			}));
-		}
-	};
-
-	/* handle when user de-select a option */
-	const handleOptionMultiDeselect = (optionValue) => {
-		console.log("optionValue", optionValue);
-		if (optionValue === "*") {
-			// deselect all
-			setSelectAllChecked(false);
-			if (searchTerm !== "") {
-				setSelectedOptions((prev) => {
-					let temp = { ...prev };
-					filteredOptions.forEach((option) => {
-						delete temp[option[renderer.value]];
-					});
-					return temp;
-				});
-			} else setSelectedOptions({});
-		} else {
-			setSelectedOptions((prev) => {
-				let temp = { ...prev };
-				console.log("temp", temp);
-				delete temp[optionValue];
-				return temp;
-			});
-			setSelectAllChecked(false);
-		}
-	};
-
-	/* handle when users click cross on tags */
-	const onDelete = (value) => {
-		setSelectedOptions((prev) => {
-			let temp = { ...prev };
-			delete temp[value];
-			return temp;
-		});
-		if (selectAllChecked) {
-			setSelectAllChecked(false);
-		}
+		},
+		option: (
+			base,
+			{ isDisabled, isFocused, isSelected /* , options, data */ }
+		) => {
+			return {
+				...base,
+				backgroundColor: isDisabled
+					? undefined
+					: isSelected
+					? colors.shade
+					: isFocused
+					? colors.shade
+					: undefined,
+				color: colors.dark,
+			};
+		},
+		placeholder: (base) => {
+			return {
+				...base,
+				color: colors.dark,
+				fontSize: fontSizes.sm,
+			};
+		},
 	};
 
 	return (
-		<Flex direction="column" rowGap="2">
-			{label ? (
-				<Box w="100%">
-					<Text fontSize="md" fontWeight="semibold">
-						{label}
-					</Text>
-				</Box>
-			) : null}
-			<Flex
-				w="100%"
-				cursor="pointer"
-				direction="column"
-				position="relative"
-				onClick={() => inputRef.current.focus()}
-			>
-				<Flex
-					minH="48px"
-					w="100%"
-					p="0px 10px 0px 20px"
-					align="center"
-					position="relative"
-					transition="all 100ms ease 0s"
-					border="card"
-					borderRadius="6px"
-					mb="1"
-					onClick={handleSelectBoxClick}
-				>
-					<Flex
-						w="auto"
-						gap="5px"
-						overflowX="scroll"
-						css={{
-							"&::-webkit-scrollbar": {
-								display: "none",
-							},
-							"&::-webkit-scrollbar-track": {
-								display: "none",
-							},
-						}}
-					>
-						{/* {placeholder} */}
-						{selectedOptionsLength > 0 ? (
-							Object.entries(selectedOptions)?.map(
-								([value, label]) => (
-									<Tag
-										key={value}
-										{...{
-											value,
-											label,
-											onDelete,
-										}}
-									/>
-								)
-							)
-						) : searchTerm === "" ? (
-							<Text fontSize="sm" whiteSpace="nowrap">
-								{placeholder}
-							</Text>
-						) : null}
-					</Flex>
-					<Flex w="auto" align="center">
-						<Input
-							minW="2px"
-							type="text"
-							px="8px"
-							outline="none"
-							border="none"
-							value={searchTerm}
-							onChange={handleInputChange}
-							onKeyDown={handleInputKeyDown}
-							ref={inputRef}
-							_focus={{
-								border: "none",
-								outline: "none",
-								boxShadow: "none",
-							}}
-						/>
-					</Flex>
-					<Flex ml="auto">
-						<Icon
-							name={open ? "caret-up" : "caret-down"}
-							size="14px"
-						/>
-					</Flex>
-				</Flex>
-
-				{open && (
-					<Flex
-						className="customScrollbars"
-						position="absolute"
-						top="100%"
-						zIndex="1"
-						bg="white"
-						w="100%"
-						borderRadius="6px"
-						direction="column"
-						maxH={{ base: "240px", md: "360px" }}
-						overflowY="auto"
-						border="card"
-						boxShadow="basic"
-						animation={`${animSlideDown} ease-out 0.1s forwards`}
-					>
-						{/* Show select all options */}
-						{filteredOptions?.length > 0 && (
-							<Flex
-								key={selectAllObj.label}
-								direction="column"
-								justify="center"
-								bg="divider"
-								h="50px"
-								w="100%"
-								px="5"
-								py={{ base: "2.5", md: "3" }}
-							>
-								<Checkbox
-									isChecked={selectAllChecked}
-									onChange={(event) => {
-										handleClick(
-											event.target.checked,
-											selectAllObj.value,
-											selectAllObj.label
-										);
-									}}
-								>
-									<Text fontSize="sm">
-										{selectAllObj.label}
-									</Text>
-								</Checkbox>
-							</Flex>
-						)}
-						{filteredOptions?.map((row, index) => {
-							return (
-								<Flex
-									key={`${index}-${row.DisplayName}`}
-									direction="column"
-									justify="center"
-									h="50px"
-									w="100%"
-									px="5"
-									py={{ base: "2.5", md: "3" }}
-									_odd={{
-										backgroundColor: "shade",
-									}}
-									style={{
-										backgroundColor:
-											highlightedIndex === index &&
-											"#e6e6e6",
-									}}
-									onKeyDown={handleInputKeyDown}
-								>
-									<Checkbox
-										isChecked={
-											selectAllChecked ||
-											selectedOptions[
-												row[renderer.value]
-											] !== undefined
-										}
-										onChange={(event) => {
-											handleClick(
-												event.target.checked,
-												row[renderer.value],
-												row[renderer.label]
-											);
-										}}
-									>
-										<Text fontSize="sm">
-											{row[renderer.label]}
-										</Text>
-									</Checkbox>
-								</Flex>
-							);
-						})}
-					</Flex>
-				)}
-			</Flex>
-		</Flex>
+		<Select
+			isMulti={isMulti}
+			styles={colorStyles}
+			options={options}
+			placeholder={placeholder}
+			closeMenuOnSelect={isMulti ? false : true}
+			hideSelectedOptions={false}
+			// menuIsOpen={true}
+			components={{
+				DropdownIndicator: DropdownIcon,
+				// IndicatorSeparator: null,
+			}}
+			theme={(theme) => ({
+				...theme,
+				borderRadius: 0,
+				colors: {
+					...theme.colors,
+					primary25: colors.shade, //option-hover
+					primary50: colors.shade,
+					primary75: colors.shade,
+					primary: colors.shade, //control-border
+					danger: colors.error, //cross
+					dangerLight: colors.shade, //cross-box
+					neutral10: colors.shade, //tag-text-box
+				},
+			})}
+		/>
 	);
 };
 
 export default MultiSelect;
+
+/**
+ * Dropdown Icon for React Select to show custom dropdown icon.
+ */
+const DropdownIcon = () => (
+	<Flex px="4">
+		<Icon name="caret-down" size="xs" />
+	</Flex>
+);
+
+const options = [
+	{ value: "chocolate", label: "Chocolate" },
+	{ value: "strawberry", label: "Strawberry" },
+	{ value: "vanilla", label: "Vanilla" },
+	{ value: "banana", label: "Banana" },
+	{ value: "blueberry", label: "Blueberry" },
+	{ value: "caramel", label: "Caramel" },
+	{ value: "cherry", label: "Cherry" },
+	{ value: "coconut", label: "Coconut" },
+	{ value: "lemon", label: "Lemon" },
+	{ value: "mint", label: "Mint" },
+	{ value: "orange", label: "Orange" },
+	{ value: "peach", label: "Peach" },
+	{ value: "peanut butter", label: "Peanut Butter" },
+	{ value: "pineapple", label: "Pineapple" },
+	{ value: "raspberry", label: "Raspberry" },
+	{ value: "watermelon", label: "Watermelon" },
+	{ value: "cinnamon", label: "Cinnamon" },
+	{ value: "hazelnut", label: "Hazelnut" },
+	{ value: "pistachio", label: "Pistachio" },
+	{ value: "butterscotch", label: "Butterscotch" },
+	{ value: "almond", label: "Almond" },
+	{ value: "blackberry", label: "Blackberry" },
+	{ value: "coffee", label: "Coffee" },
+	{ value: "stracciatella", label: "Stracciatella" },
+	{ value: "peppermint", label: "Peppermint" },
+	{ value: "maple", label: "Maple" },
+	{ value: "fig", label: "Fig" },
+	{ value: "kiwi", label: "Kiwi" },
+	{ value: "passion fruit", label: "Passion Fruit" },
+	{ value: "rocky road", label: "Rocky Road" },
+	{ value: "s'mores", label: "S'mores" },
+	{ value: "tiramisu", label: "Tiramisu" },
+	{ value: "red velvet", label: "Red Velvet" },
+	{ value: "pumpkin", label: "Pumpkin" },
+	{ value: "cheesecake", label: "Cheesecake" },
+	{ value: "toffee", label: "Toffee" },
+	{ value: "rum raisin", label: "Rum Raisin" },
+	{ value: "marshmallow", label: "Marshmallow" },
+	{ value: "gingerbread", label: "Gingerbread" },
+	{ value: "mango", label: "Mango" },
+	{ value: "pomegranate", label: "Pomegranate" },
+	{ value: "black currant", label: "Black Currant" },
+	{ value: "pistachio almond", label: "Pistachio Almond" },
+	{ value: "espresso", label: "Espresso" },
+	{ value: "honeycomb", label: "Honeycomb" },
+	{ value: "peanut brittle", label: "Peanut Brittle" },
+	{ value: "chocolate chip", label: "Chocolate Chip" },
+	{ value: "butter pecan", label: "Butter Pecan" },
+	{ value: "peanut caramel", label: "Peanut Caramel" },
+	{ value: "cookies and cream", label: "Cookies and Cream" },
+	{ value: "strawberry cheesecake", label: "Strawberry Cheesecake" },
+	{ value: "black cherry", label: "Black Cherry" },
+	{ value: "cotton candy", label: "Cotton Candy" },
+	{ value: "pistachio pistachio", label: "Pistachio Pistachio" },
+	{ value: "banana split", label: "Banana Split" },
+	{ value: "toasted coconut", label: "Toasted Coconut" },
+	{ value: "lemon sorbet", label: "Lemon Sorbet" },
+	{ value: "bubblegum", label: "Bubblegum" },
+	{ value: "cappuccino", label: "Cappuccino" },
+	{ value: "chocolate fudge", label: "Chocolate Fudge" },
+	{ value: "french vanilla", label: "French Vanilla" },
+	{ value: "green tea", label: "Green Tea" },
+	{ value: "pumpkin pie", label: "Pumpkin Pie" },
+	{ value: "rum raisin", label: "Rum Raisin" },
+	{ value: "mochaccino", label: "Mochaccino" },
+	{ value: "brownie", label: "Brownie" },
+	{ value: "caramel swirl", label: "Caramel Swirl" },
+	{ value: "rocky road", label: "Rocky Road" },
+	{ value: "peanut butter swirl", label: "Peanut Butter Swirl" },
+	{ value: "peanut butter cup", label: "Peanut Butter Cup" },
+	{ value: "caramel praline", label: "Caramel Praline" },
+	{ value: "cookie dough", label: "Cookie Dough" },
+	{ value: "cinnamon roll", label: "Cinnamon Roll" },
+	{ value: "pistachio almond fudge", label: "Pistachio Almond Fudge" },
+	{ value: "strawberry ripple", label: "Strawberry Ripple" },
+	{ value: "black raspberry", label: "Black Raspberry" },
+	{ value: "cherry almond", label: "Cherry Almond" },
+	{ value: "amaretto", label: "Amaretto" },
+	{ value: "praline pecan", label: "Praline Pecan" },
+	{ value: "coconut cream", label: "Coconut Cream" },
+	{ value: "maple walnut", label: "Maple Walnut" },
+	{ value: "mint chocolate chip", label: "Mint Chocolate Chip" },
+	{ value: "toffee caramel", label: "Toffee Caramel" },
+	{ value: "rocky mountain", label: "Rocky Mountain" },
+	{ value: "honey lavender", label: "Honey Lavender" },
+	{ value: "wild berry", label: "Wild Berry" },
+	{ value: "key lime", label: "Key Lime" },
+	{ value: "butter brickle", label: "Butter Brickle" },
+	{ value: "banana nut", label: "Banana Nut" },
+	{ value: "raspberry ripple", label: "Raspberry Ripple" },
+	{ value: "butter pecan praline", label: "Butter Pecan Praline" },
+];
