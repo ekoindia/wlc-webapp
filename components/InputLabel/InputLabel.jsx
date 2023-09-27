@@ -1,6 +1,6 @@
 import { chakra, Text } from "@chakra-ui/react";
 
-const InputLabel = ({ htmlFor, required, children, ...props }) => {
+const InputLabel = ({ htmlFor, required, children, ...rest }) => {
 	const Label = chakra("label");
 	return (
 		<Label
@@ -12,7 +12,7 @@ const InputLabel = ({ htmlFor, required, children, ...props }) => {
 			mb={{ base: 2, "2xl": "0.8rem" }}
 			color="inputlabel"
 			variant="selectNone"
-			{...props}
+			{...rest}
 		>
 			{children}
 			{required ? null : (
