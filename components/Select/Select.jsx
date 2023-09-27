@@ -1,4 +1,5 @@
 import { Flex, Select as ChakraSelect } from "@chakra-ui/react";
+import { useId } from "react";
 import { Icon, InputLabel } from "..";
 /**
  * A <Select> component
@@ -8,10 +9,12 @@ import { Icon, InputLabel } from "..";
  * @example	`<Select></Select>`
  */
 const Select = ({
+	id,
 	label,
 	placeholder,
-	required = false,
+	required = true,
 	inputContStyle,
+	labelStyle,
 	options,
 	onChange,
 	value,
@@ -19,22 +22,20 @@ const Select = ({
 	renderer = { label: "label", value: "value" },
 	...rest
 }) => {
+	const _id = useId();
 	return (
 		<Flex direction="column" w="100%">
 			{label ? (
-				<Flex>
-					<InputLabel
-						required={required}
-						fontSize="md"
-						color="inputlabel"
-						fontWeight="600"
-						mb={{ base: 2.5, "2xl": "0.8rem" }}
-					>
-						{label}
-					</InputLabel>
-				</Flex>
+				<InputLabel
+					htmlFor={id ?? _id}
+					required={required}
+					{...labelStyle}
+				>
+					{label}
+				</InputLabel>
 			) : null}
 			<ChakraSelect
+				id={id ?? _id}
 				disabled={disabled}
 				placeholder={placeholder || "-- Select --"}
 				h="3rem"

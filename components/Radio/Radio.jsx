@@ -1,4 +1,6 @@
 import { Flex, Radio as ChakraRadio, RadioGroup, Text } from "@chakra-ui/react";
+import { useId } from "react";
+import { InputLabel } from "..";
 
 /**
  * A Radio component
@@ -11,19 +13,33 @@ import { Flex, Radio as ChakraRadio, RadioGroup, Text } from "@chakra-ui/react";
  * @example	`<Radio></Radio>` TODO: Fix example
  */
 const Radio = ({
+	id,
 	value,
 	options,
 	onChange,
+	label,
+	labelStyle,
+	required = true,
 	defaultValue,
 	renderer = { label: "label", value: "value" },
 	...rest
 }) => {
+	const _id = useId();
 	return (
 		<RadioGroup
 			defaultValue={defaultValue}
 			onChange={onChange}
 			value={value}
 		>
+			{label ? (
+				<InputLabel
+					htmlFor={id ?? _id}
+					required={required}
+					{...labelStyle}
+				>
+					{label}
+				</InputLabel>
+			) : null}
 			<Flex
 				direction={{
 					base: "column",
