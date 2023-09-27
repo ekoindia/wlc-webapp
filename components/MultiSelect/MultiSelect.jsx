@@ -11,7 +11,12 @@ import { Icon } from "..";
  * @param	{string}	[prop.onChange]	setter which parent component will pass to multiselect to get the data/values/options which is selected by the user.
  * @example	`<MultiSelect options={options}	renderer={renderer} placeholder = "Please Select Something"/>`
  */
-const MultiSelect = ({ placeholder = "--Select--", isMulti = true }) => {
+const MultiSelect = ({
+	placeholder = "--Select--",
+	onChange,
+	// options = [],
+	isMulti = true,
+}) => {
 	const { colors, fontSizes } = useTheme();
 
 	const colorStyles = {
@@ -59,7 +64,8 @@ const MultiSelect = ({ placeholder = "--Select--", isMulti = true }) => {
 		<Select
 			isMulti={isMulti}
 			styles={colorStyles}
-			options={options}
+			options={dummyOptions}
+			onChange={onChange}
 			placeholder={placeholder}
 			closeMenuOnSelect={isMulti ? false : true}
 			hideSelectedOptions={false}
@@ -97,7 +103,7 @@ const DropdownIcon = () => (
 	</Flex>
 );
 
-const options = [
+const dummyOptions = [
 	{ value: "chocolate", label: "Chocolate" },
 	{ value: "strawberry", label: "Strawberry" },
 	{ value: "vanilla", label: "Vanilla" },
