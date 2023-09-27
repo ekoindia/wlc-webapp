@@ -215,7 +215,7 @@ const AccountVerification = () => {
 							watchAccountVerificationStatus
 						}
 					>
-						Set
+						Save
 					</Button>
 
 					<Button
