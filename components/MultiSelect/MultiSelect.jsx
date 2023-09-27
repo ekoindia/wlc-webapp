@@ -25,38 +25,60 @@ const MultiSelect = ({
 	labelStyle,
 }) => {
 	const _id = useId();
+
 	const { colors, fontSizes } = useTheme();
 
 	const colorStyles = {
-		control: (base, { isDisabled, isFocused, isSelected }) => {
+		control: (base, { menuIsOpen }) => {
 			return {
 				...base,
+				borderColor: menuIsOpen ? colors.primary.DEFAULT : colors.hint,
 				borderRadius: "0.5rem",
-				borderColor: isDisabled
-					? undefined
-					: isSelected
-					? colors.primary.dark
-					: isFocused
-					? colors.primary.dark
-					: undefined,
 				boxShadow: "none",
 				minHeight: "3rem",
+				":hover": {
+					borderColor: colors.primary.DEFAULT,
+				},
+
+				":active": {
+					borderColor: colors.primary.DEFAULT,
+				},
+
+				":focus": {
+					borderColor: colors.primary.DEFAULT,
+				},
 			};
 		},
-		option: (
-			base,
-			{ isDisabled, isFocused, isSelected /* , options, data */ }
-		) => {
+		option: (base, { isSelected }) => {
 			return {
 				...base,
-				backgroundColor: isDisabled
-					? undefined
-					: isSelected
-					? colors.shade
-					: isFocused
-					? colors.shade
-					: undefined,
 				color: colors.dark,
+
+				backgroundColor: isSelected ? colors.shade : "transparent",
+
+				":nth-of-type(odd)": {
+					backgroundColor: isSelected ? colors.shade : colors.divider,
+				},
+
+				":hover": {
+					backgroundColor: colors.shade,
+				},
+
+				":active": {
+					backgroundColor: colors.shade,
+				},
+
+				":focus": {
+					backgroundColor: colors.shade,
+				},
+
+				"::before": {
+					content: isSelected ? '"■"' : '"□"',
+					display: "inline-block",
+					fontSize: "1.5em",
+					"margin-right": "0.25em",
+					color: colors.primary.dark,
+				},
 			};
 		},
 		placeholder: (base) => {
@@ -64,6 +86,35 @@ const MultiSelect = ({
 				...base,
 				color: colors.dark,
 				fontSize: fontSizes.sm,
+			};
+		},
+		multiValue: (base) => {
+			return {
+				...base,
+				backgroundColor: colors.shade,
+			};
+		},
+		multiValueLabel: (base) => {
+			return {
+				...base,
+				color: colors.primary.DEFAULT,
+			};
+		},
+		multiValueRemove: (base) => {
+			return {
+				...base,
+				backgroundColor: colors.shade,
+				":hover": {
+					color: colors.accent.dark,
+				},
+			};
+		},
+		clearIndicator: (base) => {
+			return {
+				...base,
+				":hover": {
+					color: colors.accent.dark,
+				},
 			};
 		},
 	};
@@ -94,25 +145,11 @@ const MultiSelect = ({
 				getOptionLabel={getOptionLabel}
 				getOptionValue={getOptionValue}
 				hideSelectedOptions={false}
-				// menuIsOpen={true}
 				components={{
 					DropdownIndicator: DropdownIcon,
 					IndicatorSeparator: null,
 				}}
-				theme={(theme) => ({
-					...theme,
-					borderRadius: 0,
-					colors: {
-						...theme.colors,
-						primary25: colors.shade, //option-hover
-						primary50: colors.shade,
-						primary75: colors.shade,
-						primary: colors.shade, //control-border
-						danger: colors.error, //cross
-						dangerLight: colors.shade, //cross-box
-						neutral10: colors.shade, //tag-text-box
-					},
-				})}
+				// menuIsOpen={true}
 			/>
 		</Flex>
 	);
