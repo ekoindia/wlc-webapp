@@ -61,7 +61,6 @@ const Form = ({
 					switch (parameter_type_id) {
 						case ParamType.NUMERIC:
 						case ParamType.TEXT:
-							console.log("INPUT", label);
 							return (
 								<FormControl
 									key={`${name}-${label}-${index}`}
