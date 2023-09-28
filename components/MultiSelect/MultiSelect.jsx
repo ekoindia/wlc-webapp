@@ -120,7 +120,7 @@ const MultiSelect = ({
 				...base,
 				backgroundColor: colors.shade,
 				":hover": {
-					color: colors.accent.dark,
+					color: colors.primary.DEFAULT,
 				},
 			};
 		},
@@ -128,7 +128,7 @@ const MultiSelect = ({
 			return {
 				...base,
 				":hover": {
-					color: colors.accent.dark,
+					color: colors.primary.DEFAULT,
 				},
 			};
 		},
