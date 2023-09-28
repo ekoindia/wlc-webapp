@@ -90,7 +90,7 @@ const MultiSelect = ({
 				"::before": isMulti && {
 					content: isSelected ? '"■"' : '"□"',
 					display: "inline-block",
-					fontSize: fontSizes["2xl"],
+					fontSize: fontSizes.xl,
 					marginRight: "0.25em",
 					color: colors.primary.dark,
 				},
