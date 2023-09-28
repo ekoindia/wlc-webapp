@@ -112,7 +112,7 @@ const MultiSelect = ({
 		multiValueLabel: (base) => {
 			return {
 				...base,
-				color: colors.primary.DEFAULT,
+				color: colors.dark,
 			};
 		},
 		multiValueRemove: (base) => {
