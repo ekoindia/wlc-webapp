@@ -107,6 +107,7 @@ const MultiSelect = ({
 			return {
 				...base,
 				backgroundColor: colors.shade,
+				fontSize: fontSizes.sm,
 			};
 		},
 		multiValueLabel: (base) => {
