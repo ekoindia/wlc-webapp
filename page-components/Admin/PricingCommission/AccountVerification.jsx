@@ -1,19 +1,41 @@
-import { Flex, FormControl, FormLabel } from "@chakra-ui/react";
-import { Button, Icon, Input, Radio } from "components";
-import { productPricingType, products } from "constants";
+import { Flex, FormControl, FormLabel, useToast } from "@chakra-ui/react";
+import { Button, Radio } from "components";
+import { Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
-const radioOptions = [
+const OPERATION = {
+	SUBMIT: 1,
+	FETCH: 0,
+};
+
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
+
+const accountVerificationOptions = [
 	{
 		label: "Yes",
-		value: "0",
+		otp_verification_token: "0",
 	},
 	{
 		label: "No",
-		value: "1",
+		otp_verification_token: "1",
 	},
 ];
+
+const accountVerificationRenderer = {
+	label: "label",
+	value: "otp_verification_token",
+};
 
 /**
  * A AccountVerification tab
@@ -25,26 +47,73 @@ const radioOptions = [
 const AccountVerification = () => {
 	const {
 		handleSubmit,
-		register,
+		// register,
 		watch,
-		formState: { errors /* isSubmitting */ },
+		// formState: { errors /* isSubmitting */ },
 		control,
 		// setValue,
-	} = useForm({
-		defaultValues: {
-			account_verification: "0",
-		},
-	});
+		reset,
+	} = useForm();
 
-	const watchAccountVerification = watch("account_verification");
-
+	const toast = useToast();
+	const { accessToken } = useSession();
 	const router = useRouter();
+	const [accountVerificationStatus, setAccountVerificationStatus] =
+		useState(null);
+
+	const watchAccountVerificationStatus = watch("account_verification");
+
+	// const pricingTypeList = [{ value: "1", label: "Fixed (₹)" }];
+
+	useEffect(() => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: 737,
+				operation: OPERATION.FETCH,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				const _accountVerification = res?.data?.otp_verification_token;
+				setAccountVerificationStatus(_accountVerification);
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
+	}, []);
+
+	useEffect(() => {
+		if (accountVerificationStatus !== null) {
+			let defaultValues = {};
+			defaultValues.account_verification = accountVerificationStatus;
+			reset({ ...defaultValues });
+		}
+	}, [accountVerificationStatus]);
 
 	const handleFormSubmit = (data) => {
-		console.log("Submit Data", data);
+		const { account_verification } = data ?? {};
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: 737,
+				operation: OPERATION.SUBMIT,
+				otp_verification_token: account_verification,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				const _accountVerification = res?.data?.otp_verification_token;
+				setAccountVerificationStatus(_accountVerification);
+				toast({
+					title: res.message,
+					status: getStatus(res.status),
+					duration: 5000,
+					isClosable: true,
+				});
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
 	};
-
-	const pricingTypeList = [{ value: "1", label: "Fixed (₹)" }];
 
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -61,15 +130,16 @@ const AccountVerification = () => {
 						control={control}
 						render={({ field: { onChange, value } }) => (
 							<Radio
-								options={radioOptions}
+								options={accountVerificationOptions}
 								onChange={onChange}
 								value={value}
+								renderer={accountVerificationRenderer}
 							/>
 						)}
 					/>
 				</FormControl>
 
-				{watchAccountVerification === "0" && (
+				{/* {watchAccountVerification === "0" && (
 					<>
 						<FormControl
 							id="payment_mode"
@@ -122,7 +192,7 @@ const AccountVerification = () => {
 							/>
 						</FormControl>
 					</>
-				)}
+				)} */}
 
 				<Flex
 					direction={{ base: "row-reverse", md: "row" }}
@@ -140,8 +210,12 @@ const AccountVerification = () => {
 						w={{ base: "100%", md: "250px" }}
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
+						disabled={
+							accountVerificationStatus ===
+							watchAccountVerificationStatus
+						}
 					>
-						Save Commissions
+						Save
 					</Button>
 
 					<Button
