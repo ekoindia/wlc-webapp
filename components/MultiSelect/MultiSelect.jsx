@@ -176,8 +176,11 @@ export default MultiSelect;
 /**
  * Dropdown Icon for React Select to show custom dropdown icon.
  */
-const DropdownIcon = () => (
-	<Flex px="4">
-		<Icon name="caret-down" size="xs" />
-	</Flex>
-);
+const DropdownIcon = (base) => {
+	const _menuIsOpen = base?.selectProps?.menuIsOpen;
+	return (
+		<Flex px="4">
+			<Icon name={_menuIsOpen ? "caret-up" : "caret-down"} size="xs" />
+		</Flex>
+	);
+};
