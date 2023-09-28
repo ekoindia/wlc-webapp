@@ -26,14 +26,14 @@ const MultiSelect = ({
 }) => {
 	const _id = useId();
 
-	const { colors, fontSizes } = useTheme();
+	const { colors, fontSizes, radii, shadows, borders } = useTheme();
 
 	const colorStyles = {
 		control: (base, { menuIsOpen }) => {
 			return {
 				...base,
 				borderColor: menuIsOpen ? colors.primary.DEFAULT : colors.hint,
-				borderRadius: "0.5rem",
+				borderRadius: radii.lg,
 				boxShadow: "none",
 				minHeight: "3rem",
 				":hover": {
@@ -49,11 +49,26 @@ const MultiSelect = ({
 				},
 			};
 		},
+		menu: (base) => {
+			return {
+				...base,
+				borderRadius: radii.lg,
+				border: borders.card,
+				boxShadow: shadows.basic,
+			};
+		},
+		menuList: (base) => {
+			return {
+				...base,
+				paddingTop: "0",
+				paddingBottom: "0",
+			};
+		},
 		option: (base, { isSelected }) => {
 			return {
 				...base,
 				color: colors.dark,
-
+				fontSize: fontSizes.sm,
 				backgroundColor: isSelected ? colors.shade : "transparent",
 
 				":nth-of-type(odd)": {
@@ -72,11 +87,11 @@ const MultiSelect = ({
 					backgroundColor: colors.shade,
 				},
 
-				"::before": {
+				"::before": isMulti && {
 					content: isSelected ? '"■"' : '"□"',
 					display: "inline-block",
-					fontSize: "1.5em",
-					"margin-right": "0.25em",
+					fontSize: fontSizes["2xl"],
+					marginRight: "0.25em",
 					color: colors.primary.dark,
 				},
 			};
