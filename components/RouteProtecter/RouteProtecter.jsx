@@ -80,15 +80,21 @@ const RouteProtecter = ({ router, children }) => {
 			isAuthorized = true;
 		} else if (isLoggedIn && role === "admin") {
 			console.log("::::Enter in Admin::::", path, isAdminAgentMode);
-			// This condition will redirect to initial path if the route is inaccessible after isLoggedIn
+
+			// This condition will redirect to initial path if the route is inaccessible after login
 			if (publicLinks.includes(path) || !path.includes(baseRoute[role])) {
+				// if (!path.startsWith("/admin/")) {
+				// 	router.replace("/admin" + path);
+				// } else {
 				router.replace(initialRoute[role]);
+				// }
 				return;
 			}
 
 			// Handle Agent-View for admins...update homepage to the correct view
 			if (isAdminAgentMode) {
 				if (path === "/admin") {
+					// Re-route Admin to Agent Home Page
 					router.replace("/admin/home");
 					return;
 				}

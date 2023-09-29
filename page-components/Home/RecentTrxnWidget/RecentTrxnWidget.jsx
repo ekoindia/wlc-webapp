@@ -1,7 +1,7 @@
 import { Avatar, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import { TransactionTypes } from "constants";
-import { useMenuContext, useSession } from "contexts";
+import { useMenuContext, useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
@@ -20,6 +20,7 @@ const RecentTrxnWidget = () => {
 	const router = useRouter();
 	const { accessToken } = useSession();
 	const [data, setData] = useState([]);
+	const { isLoggedIn, isAdminAgentMode, isAdmin } = useUser();
 	const limit = useBreakpointValue({
 		base: 5,
 		md: 10,
@@ -65,8 +66,11 @@ const RecentTrxnWidget = () => {
 	}, []);
 
 	const handleShowHistory = (id) => {
-		router.push("/history" + (id ? `?search=${id}` : ""));
+		const prefix = isAdmin && isAdminAgentMode ? "/admin" : "";
+		router.push(prefix + "/history" + (id ? `?search=${id}` : ""));
 	};
+
+	if (!isLoggedIn) return null;
 
 	if (!data.length) {
 		return null;

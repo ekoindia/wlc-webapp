@@ -32,7 +32,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
-import { Icon, ProfileCard, StatusCard } from "..";
+import { /* AdminViewToggleCard, */ Icon, ProfileCard, StatusCard } from "..";
 import { ActionIcon, useKBarReady } from "../CommandBar";
 
 /**

@@ -45,12 +45,7 @@ const CommissionFrequency = () => {
 		watch,
 		control,
 		// setValue,
-	} = useForm({
-		defaultValues: {
-			operation_type: "1",
-			commission_type: "1",
-		},
-	});
+	} = useForm();
 
 	const watchOperationType = watch("operation_type");
 	const watchCommissionType = watch("commission_type");
@@ -83,7 +78,6 @@ const CommissionFrequency = () => {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
 			hitQuery(OPERATION.FETCH, (_data) => {
 				if (_data.status === 0) {
-					console.log("Gopi Kumar ", data);
 					setData(_data?.data?.allScspList);
 				} else {
 					toast({
@@ -157,7 +151,7 @@ const CommissionFrequency = () => {
 			<Flex direction="column" gap="10">
 				<RadioInput
 					name="operation_type"
-					label={`Select Commission For`}
+					label="Set Commission For"
 					radioGroupList={operationTypeList}
 					control={control}
 				/>
@@ -209,7 +203,7 @@ const CommissionFrequency = () => {
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
 					>
-						Set
+						Save
 					</Button>
 
 					<Button

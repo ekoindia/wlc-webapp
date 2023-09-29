@@ -10,7 +10,7 @@ import {
 import { Headings } from "components";
 import {
 	AadhaarPay,
-	//AccountVerification,
+	AccountVerification,
 	Aeps,
 	AirtelCms,
 	CommissionFrequency,
@@ -37,7 +37,7 @@ const PricingCommissions = () => {
 			label: "Commission Frequency",
 			comp: <CommissionFrequency />,
 		},
-		//{ label: "Account Verification", comp: <AccountVerification /> },
+		{ label: "Account Verification", comp: <AccountVerification /> },
 	];
 
 	return (
