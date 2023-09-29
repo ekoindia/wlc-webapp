@@ -15,6 +15,7 @@ export const products = {
 			operation_type: "3",
 			pricing_type: "0",
 		},
+		serviceCode: 721,
 	},
 	AEPS: {
 		uriSegment: "aeps",
@@ -32,6 +33,7 @@ export const products = {
 			operation_type: "3",
 			pricing_type: "0",
 		},
+		serviceCode: 424,
 	},
 	AADHAAR_PAY: {
 		uriSegment: "aadharpay",
@@ -42,7 +44,7 @@ export const products = {
 		},
 	},
 	INDO_NEPAL_FUND_TRANSFER: {
-		uriSegment: "indonepal",
+		uriSegment: "indoNepal",
 		slabs: [
 			{ min: 100, max: 5000 },
 			{ min: 5001, max: 49800 },
@@ -52,6 +54,7 @@ export const products = {
 			pricing_type: "1",
 			payment_mode: "1",
 		},
+		serviceCode: [198, 466], //['cash_to_cash','cash_to_account']
 	},
 	CREDIT_CARD_BILL_PAYMENT: {
 		uriSegment: "cc_bill_pay",
@@ -60,6 +63,7 @@ export const products = {
 			operation_type: "3",
 			pricing_type: "0",
 		},
+		serviceCode: 711,
 	},
 	ACCOUNT_VERIFICATION: {
 		DEFAULT: {
