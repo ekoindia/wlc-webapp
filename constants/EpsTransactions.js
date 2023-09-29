@@ -9,6 +9,7 @@ export const TransactionTypes = {
 	GET_NOTIFICATIONS: 10010,
 	GET_EARNING_SUMMARY: 623,
 	GET_ALL_QUERIES_FOR_ORG: 692,
+	SET_COMMISSION_FOR_DISTRIBUTORS: 726, //for various products
 };
 
 /**
