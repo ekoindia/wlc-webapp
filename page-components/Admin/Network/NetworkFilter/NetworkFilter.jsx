@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import {
 	Box,
-	Checkbox,
 	Drawer,
 	DrawerBody,
 	DrawerContent,
@@ -15,7 +14,7 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
-import { Button, Calenders, Icon } from "components";
+import { Button, Calenders, Icon, Radio } from "components";
 import { formatDate } from "libs/dateFormat";
 
 const currentDate = new Date();
@@ -30,15 +29,22 @@ oneYearAgoDate.setFullYear(currentDate.getFullYear() - 1);
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkFilter></NetworkFilter>`
+ *
+ * TODO
+ * Convert back to MultiSelect when API is ready
  */
-const NetworkFilter = ({ /* filter, */ setFilter }) => {
-	const [filterValues, setFilterValues] = useState();
+
+const NetworkFilter = ({ /*filter,*/ setFilter, setPageNumber }) => {
+	//const [filterValues, setFilterValues] = useState();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [fromDate, setFromDate] = useState("");
 	const [toDate, setToDate] = useState("");
 	const [minDate, setMinDate] = useState(
 		formatDate(oneYearAgoDate, "yyyy-MM-dd")
 	);
+	const [agentType, setAgentType] = useState("");
+	const [agentAccountStatus, setAgentAccountStatus] = useState("");
+
 	const [maxDate, setMaxDate] = useState(
 		formatDate(currentDate, "yyyy-MM-dd")
 	);
@@ -63,17 +69,21 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 		},
 	];
 
-	const handleInputChange = (event) => {
-		const { name, value /*, type, checked */ } = event.target;
-		setFilterValues((prevState) => ({
-			...prevState,
-			[name]: value,
-		}));
-	};
+	// const handleInputChange = (event) => {
+	// 	const { name, value, type, checked } = event.target;
+
+	// 	console.log("Gopi handleInputChange", name, value, type, checked);
+	// 	setFilterValues((prevState) => ({
+	// 		...prevState,
+	// 		[name]: value,
+	// 	}));
+	// };
 
 	const handleApply = () => {
+		setPageNumber(1);
 		setFilter({
-			...filterValues,
+			["agentType"]: agentType,
+			["agentAccountStatus"]: agentAccountStatus,
 			["onBoardingDateFrom"]: fromDate,
 			["onBoardingDateTo"]: toDate,
 		});
@@ -88,6 +98,13 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 			setMaxDate(toDate);
 		}
 	}, [fromDate, toDate]);
+
+	const handleClear = () => {
+		setAgentType("");
+		setAgentAccountStatus("");
+		setFromDate("");
+		setToDate("");
+	};
 
 	return (
 		<>
@@ -284,7 +301,7 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 									}}
 								>
 									{filterOptions.map(
-										({ title, options, name }, index) => (
+										({ title, options }, index) => (
 											<React.Fragment key={title}>
 												<Text
 													as={"span"}
@@ -301,6 +318,7 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 												>
 													{title}
 												</Text>
+
 												<HStack
 													w={"100%"}
 													gap={{
@@ -308,7 +326,25 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 														md: "10px",
 													}}
 												>
-													{options.map(
+													<Radio
+														value={
+															index == 0
+																? agentType
+																: agentAccountStatus
+														}
+														options={options}
+														onChange={(value) => {
+															if (index == 0)
+																setAgentType(
+																	value
+																);
+															else
+																setAgentAccountStatus(
+																	value
+																);
+														}}
+													/>
+													{/* {options.map(
 														({ label, value }) => (
 															<Box
 																key={value}
@@ -322,7 +358,6 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 																	onChange={
 																		handleInputChange
 																	}
-																	name={name}
 																	variant="rounded"
 																	spacing={
 																		"2"
@@ -340,7 +375,7 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 																</Checkbox>
 															</Box>
 														)
-													)}
+													)} */}
 												</HStack>
 											</React.Fragment>
 										)
@@ -456,6 +491,7 @@ const NetworkFilter = ({ /* filter, */ setFilter }) => {
 									color={"primary.DEFAULT"}
 									fontSize={"20px"}
 									fontWeight="bold"
+									onClick={handleClear}
 									// _focus={{
 									// 	bg: "white",
 									// }}
