@@ -19,10 +19,7 @@ import {
 	IndoNepal,
 } from ".";
 /**
- * A <PricingCommission> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * A PricingCommission page-component
  * @example	`<PricingCommission></PricingCommission>`
  */
 const PricingCommissions = () => {

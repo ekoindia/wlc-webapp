@@ -74,6 +74,7 @@ const Form = ({
 										label={label}
 										required={required}
 										value={value}
+										step="0.1"
 										type={
 											parameter_type_id ===
 											ParamType.NUMERIC
