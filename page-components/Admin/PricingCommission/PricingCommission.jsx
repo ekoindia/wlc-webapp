@@ -40,7 +40,10 @@ const PricingCommissions = () => {
 	return (
 		<>
 			<Headings title="Pricing & Commissions" hasIcon={false} />
-			<Box px={{ base: "16px", md: "initial" }}>
+			<Box
+				px={{ base: "16px", md: "initial" }}
+				mb={{ base: "8", md: "0" }}
+			>
 				<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>
 					<span
 						style={{
