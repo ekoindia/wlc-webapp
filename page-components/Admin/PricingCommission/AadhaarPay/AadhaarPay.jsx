@@ -1,9 +1,12 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { ParamType, productPricingType, products } from "constants";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
+import { useSession } from "contexts/";
+import { fetcher } from "helpers";
+import { useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
 const operation_type_list = [
@@ -22,123 +25,53 @@ const pricing_type_list = [
 	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
 ];
 
+const OPERATION = {
+	SUBMIT: 1,
+	FETCH: 0,
+};
+
+const _multiselectRenderer = {
+	value: "ekocspid",
+	label: "DisplayName",
+};
+
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
+
 /**
- * A AadhaarPay page-component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<AadhaarPay></AadhaarPay>` TODO: Fix example
+ * A AadhaarPay tab page-component
+ * @example	<AadhaarPay/>
  */
 const AadhaarPay = () => {
-	const router = useRouter();
+	const { uriSegment, slabs, DEFAULT } = products.AADHAAR_PAY;
 
 	const {
 		handleSubmit,
 		register,
 		control,
-		watch,
 		formState: { errors /* isSubmitting */ },
-	} = useForm();
+	} = useForm({
+		defaultValues: {
+			operation_type: DEFAULT.operation_type,
+			select: "0",
+			pricing_type: DEFAULT.pricing_type,
+		},
+	});
 
-	const watcher = watch();
-
+	const watcher = useWatch({ control });
+	const toast = useToast();
+	const router = useRouter();
+	const { accessToken } = useSession();
+	const { generateNewToken } = useRefreshToken();
 	const [slabOptions, setSlabOptions] = useState([]);
-
-	const { /* uriSegment, */ slabs, DEFAULT } = products.AADHAAR_PAY;
-
-	const dummyOptions = [
-		{ value: "chocolate", label: "Chocolate" },
-		{ value: "strawberry", label: "Strawberry" },
-		{ value: "vanilla", label: "Vanilla" },
-		{ value: "banana", label: "Banana" },
-		{ value: "blueberry", label: "Blueberry" },
-		{ value: "caramel", label: "Caramel" },
-		{ value: "cherry", label: "Cherry" },
-		{ value: "coconut", label: "Coconut" },
-		{ value: "lemon", label: "Lemon" },
-		{ value: "mint", label: "Mint" },
-		{ value: "orange", label: "Orange" },
-		{ value: "peach", label: "Peach" },
-		{ value: "peanut butter", label: "Peanut Butter" },
-		{ value: "pineapple", label: "Pineapple" },
-		{ value: "raspberry", label: "Raspberry" },
-		{ value: "watermelon", label: "Watermelon" },
-		{ value: "cinnamon", label: "Cinnamon" },
-		{ value: "hazelnut", label: "Hazelnut" },
-		{ value: "pistachio", label: "Pistachio" },
-		{ value: "butterscotch", label: "Butterscotch" },
-		{ value: "almond", label: "Almond" },
-		{ value: "blackberry", label: "Blackberry" },
-		{ value: "coffee", label: "Coffee" },
-		{ value: "stracciatella", label: "Stracciatella" },
-		{ value: "peppermint", label: "Peppermint" },
-		{ value: "maple", label: "Maple" },
-		{ value: "fig", label: "Fig" },
-		{ value: "kiwi", label: "Kiwi" },
-		{ value: "passion fruit", label: "Passion Fruit" },
-		{ value: "rocky road", label: "Rocky Road" },
-		{ value: "s'mores", label: "S'mores" },
-		{ value: "tiramisu", label: "Tiramisu" },
-		{ value: "red velvet", label: "Red Velvet" },
-		{ value: "pumpkin", label: "Pumpkin" },
-		{ value: "cheesecake", label: "Cheesecake" },
-		{ value: "toffee", label: "Toffee" },
-		{ value: "rum raisin", label: "Rum Raisin" },
-		{ value: "marshmallow", label: "Marshmallow" },
-		{ value: "gingerbread", label: "Gingerbread" },
-		{ value: "mango", label: "Mango" },
-		{ value: "pomegranate", label: "Pomegranate" },
-		{ value: "black currant", label: "Black Currant" },
-		{ value: "pistachio almond", label: "Pistachio Almond" },
-		{ value: "espresso", label: "Espresso" },
-		{ value: "honeycomb", label: "Honeycomb" },
-		{ value: "peanut brittle", label: "Peanut Brittle" },
-		{ value: "chocolate chip", label: "Chocolate Chip" },
-		{ value: "butter pecan", label: "Butter Pecan" },
-		{ value: "peanut caramel", label: "Peanut Caramel" },
-		{ value: "cookies and cream", label: "Cookies and Cream" },
-		{ value: "strawberry cheesecake", label: "Strawberry Cheesecake" },
-		{ value: "black cherry", label: "Black Cherry" },
-		{ value: "cotton candy", label: "Cotton Candy" },
-		{ value: "pistachio pistachio", label: "Pistachio Pistachio" },
-		{ value: "banana split", label: "Banana Split" },
-		{ value: "toasted coconut", label: "Toasted Coconut" },
-		{ value: "lemon sorbet", label: "Lemon Sorbet" },
-		{ value: "bubblegum", label: "Bubblegum" },
-		{ value: "cappuccino", label: "Cappuccino" },
-		{ value: "chocolate fudge", label: "Chocolate Fudge" },
-		{ value: "french vanilla", label: "French Vanilla" },
-		{ value: "green tea", label: "Green Tea" },
-		{ value: "pumpkin pie", label: "Pumpkin Pie" },
-		{ value: "rum raisin", label: "Rum Raisin" },
-		{ value: "mochaccino", label: "Mochaccino" },
-		{ value: "brownie", label: "Brownie" },
-		{ value: "caramel swirl", label: "Caramel Swirl" },
-		{ value: "rocky road", label: "Rocky Road" },
-		{ value: "peanut butter swirl", label: "Peanut Butter Swirl" },
-		{ value: "peanut butter cup", label: "Peanut Butter Cup" },
-		{ value: "caramel praline", label: "Caramel Praline" },
-		{ value: "cookie dough", label: "Cookie Dough" },
-		{ value: "cinnamon roll", label: "Cinnamon Roll" },
-		{ value: "pistachio almond fudge", label: "Pistachio Almond Fudge" },
-		{ value: "strawberry ripple", label: "Strawberry Ripple" },
-		{ value: "black raspberry", label: "Black Raspberry" },
-		{ value: "cherry almond", label: "Cherry Almond" },
-		{ value: "amaretto", label: "Amaretto" },
-		{ value: "praline pecan", label: "Praline Pecan" },
-		{ value: "coconut cream", label: "Coconut Cream" },
-		{ value: "maple walnut", label: "Maple Walnut" },
-		{ value: "mint chocolate chip", label: "Mint Chocolate Chip" },
-		{ value: "toffee caramel", label: "Toffee Caramel" },
-		{ value: "rocky mountain", label: "Rocky Mountain" },
-		{ value: "honey lavender", label: "Honey Lavender" },
-		{ value: "wild berry", label: "Wild Berry" },
-		{ value: "key lime", label: "Key Lime" },
-		{ value: "butter brickle", label: "Butter Brickle" },
-		{ value: "banana nut", label: "Banana Nut" },
-		{ value: "raspberry ripple", label: "Raspberry Ripple" },
-		{ value: "butter pecan praline", label: "Butter Pecan Praline" },
-	];
+	const [multiSelectLabel, setMultiSelectLabel] = useState();
+	const [multiSelectOptions, setMultiSelectOptions] = useState();
 
 	const aadhaar_pay_parameter_list = [
 		{
@@ -146,24 +79,24 @@ const AadhaarPay = () => {
 			label: `Set ${productPricingType.AADHAAR_PAY} for`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: operation_type_list,
-			defaultValue: DEFAULT.operation_type,
+			// defaultValue: DEFAULT.operation_type,
 		},
 		{
-			name: "cspList",
-			label: "Select Something",
+			name: "CspList",
+			label: `Select ${multiSelectLabel}`,
 			parameter_type_id: ParamType.LIST,
 			is_multi: true,
-			list_elements: dummyOptions,
+			list_elements: multiSelectOptions,
 			visible_on_param_name: "operation_type",
 			visible_on_param_value: /1|2/,
-			multiSelectRenderer: { label: "label", value: "value" },
+			multiSelectRenderer: _multiselectRenderer,
 		},
 		{
 			name: "select",
 			label: "Select Slab",
 			parameter_type_id: ParamType.LIST,
 			list_elements: slabOptions,
-			defaultValue: "0", // add condition, not hardcoded
+			// defaultValue: "0", // add condition, not hardcoded
 			meta: {
 				force_dropdown: true,
 			},
@@ -173,7 +106,7 @@ const AadhaarPay = () => {
 			label: `Select ${productPricingType.AADHAAR_PAY} Type`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: pricing_type_list,
-			defaultValue: DEFAULT.pricing_type,
+			// defaultValue: DEFAULT.pricing_type,
 		},
 		{
 			name: "actual_pricing",
@@ -201,6 +134,29 @@ const AadhaarPay = () => {
 		},
 	];
 
+	const hitQuery = (operation, callback, finalData = {}) => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
+				"tf-req-method": "POST",
+			},
+			body: {
+				operation_type: watcher.operation_type,
+				operation: operation,
+				...finalData,
+			},
+			token: accessToken,
+			generateNewToken,
+		})
+			.then((data) => {
+				callback(data);
+			})
+			.catch((error) => {
+				console.error("📡 Fetch Error:", error);
+			});
+	};
+
 	useEffect(() => {
 		const list = [];
 
@@ -218,8 +174,64 @@ const AadhaarPay = () => {
 		setSlabOptions(list);
 	}, [slabs]);
 
+	useEffect(() => {
+		if (watcher.operation_type != "3") {
+			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
+			hitQuery(OPERATION.FETCH, (_data) => {
+				if (_data.status === 0) {
+					setMultiSelectOptions(_data?.data?.allScspList);
+				} else {
+					toast({
+						title: _data.message,
+						status: getStatus(_data.status),
+						duration: 5000,
+						isClosable: true,
+					});
+				}
+			});
+
+			let _operationTypeList = operation_type_list.filter(
+				(item) => item.value == watcher.operation_type
+			);
+			let _label =
+				_operationTypeList.length > 0 && _operationTypeList[0].label;
+
+			setMultiSelectLabel(_label);
+		}
+	}, [watcher.operation_type]);
+
 	const handleFormSubmit = (data) => {
-		console.log("data", data);
+		const _finalData = { ...data };
+
+		_finalData.actual_pricing = +data.actual_pricing;
+
+		const { min, max } = slabs[data?.select] || {};
+		_finalData.min_slab_amount = min;
+		_finalData.max_slab_amount = max;
+
+		const _CspList = data?.CspList?.map(
+			(item) => item[_multiselectRenderer.value]
+		);
+
+		if (watcher.operation_type != 3) {
+			_finalData.CspList = `${_CspList}`;
+		}
+
+		delete _finalData.select;
+
+		hitQuery(
+			OPERATION.SUBMIT,
+			(data) => {
+				toast({
+					title: data.message,
+					status: getStatus(data.status),
+					duration: 6000,
+					isClosable: true,
+				});
+				// handleReset();
+			},
+			_finalData
+		);
 	};
 
 	return (

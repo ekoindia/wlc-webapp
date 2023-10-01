@@ -196,10 +196,9 @@ const DmtRetailer = () => {
 
 			setMultiSelectLabel(_label);
 		}
-	}, [uriSegment, watcher.operation_type]);
+	}, [watcher.operation_type]);
 
 	const handleFormSubmit = (data) => {
-		console.log("data", data);
 		const _finalData = { ...data };
 
 		_finalData.actual_pricing = +data.actual_pricing;
@@ -218,19 +217,19 @@ const DmtRetailer = () => {
 
 		delete _finalData.select;
 
-		// hitQuery(
-		// 	OPERATION.SUBMIT,
-		// 	(data) => {
-		// 		toast({
-		// 			title: data.message,
-		// 			status: getStatus(data.status),
-		// 			duration: 6000,
-		// 			isClosable: true,
-		// 		});
-		// 		// handleReset();
-		// 	},
-		// 	_finalData
-		// );
+		hitQuery(
+			OPERATION.SUBMIT,
+			(data) => {
+				toast({
+					title: data.message,
+					status: getStatus(data.status),
+					duration: 6000,
+					isClosable: true,
+				});
+				// handleReset();
+			},
+			_finalData
+		);
 	};
 
 	return (
