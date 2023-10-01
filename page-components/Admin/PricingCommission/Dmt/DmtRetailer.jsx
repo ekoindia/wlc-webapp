@@ -62,7 +62,6 @@ const DmtRetailer = () => {
 	const watcher = useWatch({
 		control,
 	});
-	console.log("watcher", watcher);
 
 	const toast = useToast();
 	const router = useRouter();
