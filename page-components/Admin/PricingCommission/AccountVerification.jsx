@@ -38,11 +38,8 @@ const accountVerificationRenderer = {
 };
 
 /**
- * A AccountVerification tab
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<Dmt></Dmt>` TODO: Fix example
+ * A AccountVerification tab page-component
+ * @example	<AccountVerification/>
  */
 const AccountVerification = () => {
 	const {

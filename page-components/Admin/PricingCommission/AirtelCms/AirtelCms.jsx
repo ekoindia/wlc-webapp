@@ -8,10 +8,7 @@ import { saveDataToFile } from "utils/FileSave";
 
 /**
  * A AirtelCms tab page-component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<AirtelCms></AirtelCms>` TODO: Fix example
+ * @example	<AirtelCms/>
  */
 const AirtelCms = () => {
 	const [file, setFile] = useState(null);
