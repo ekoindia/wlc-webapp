@@ -1,5 +1,5 @@
 import { Flex, FormControl, FormLabel, useToast } from "@chakra-ui/react";
-import { Button, MultiSelect, Radio } from "components";
+import { Button, Radio, Select } from "components";
 import { Endpoints } from "constants";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts/UserContext";
@@ -167,8 +167,9 @@ const CommissionFrequency = () => {
 							name="multiselect"
 							control={control}
 							render={({ field: { onChange } }) => (
-								<MultiSelect
+								<Select
 									required
+									isMulti={true}
 									options={data}
 									renderer={multiSelectRenderer}
 									onChange={onChange}

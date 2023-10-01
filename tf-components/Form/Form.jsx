@@ -4,7 +4,7 @@ import {
 	FormErrorMessage,
 	FormHelperText,
 } from "@chakra-ui/react";
-import { Input, MultiSelect, Radio, Select } from "components";
+import { Input, Radio, Select } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
 import { getFormErrorMessage } from "utils";
@@ -119,9 +119,9 @@ const Form = ({
 												render={({
 													field: { onChange },
 												}) => (
-													<MultiSelect
+													<Select
 														{...{
-															// value,
+															value,
 															id: name,
 															label,
 															onChange,
@@ -130,6 +130,7 @@ const Form = ({
 															renderer:
 																multiSelectRenderer,
 															required,
+															isMulti: true,
 														}}
 														{...rest}
 													/>
@@ -220,6 +221,7 @@ const Form = ({
 																label,
 																value,
 																onChange,
+																required,
 																options:
 																	list_elements,
 															}}
