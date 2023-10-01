@@ -1,6 +1,6 @@
 import { Flex, useTheme } from "@chakra-ui/react";
 import { useId } from "react";
-import Select from "react-select";
+import { default as ReactSelect } from "react-select";
 import { Icon, InputLabel } from "..";
 
 /**
@@ -26,7 +26,7 @@ const MultiSelect = ({
 }) => {
 	const _id = useId();
 
-	const { colors, fontSizes, radii, shadows, borders } = useTheme();
+	const { colors, fontSizes, radii, shadows, borders, space } = useTheme();
 
 	const colorStyles = {
 		control: (base, { menuIsOpen }) => {
@@ -36,6 +36,8 @@ const MultiSelect = ({
 				borderRadius: radii.lg,
 				boxShadow: "none",
 				minHeight: "3rem",
+				maxHeight: "6rem",
+				overflowY: "auto",
 				":hover": {
 					borderColor: colors.primary.DEFAULT,
 				},
@@ -67,32 +69,40 @@ const MultiSelect = ({
 		option: (base, { isSelected }) => {
 			return {
 				...base,
-				color: colors.dark,
+				height: "2.5rem",
+				lineHeight: "1",
 				fontSize: fontSizes.sm,
-				backgroundColor: isSelected ? colors.shade : "transparent",
+
+				":nth-of-type(even)": {
+					backgroundColor: isSelected
+						? colors.primary.DEFAULT
+						: colors.white,
+				},
 
 				":nth-of-type(odd)": {
-					backgroundColor: isSelected ? colors.shade : colors.divider,
-				},
-
-				":hover": {
-					backgroundColor: colors.shade,
-				},
-
-				":active": {
-					backgroundColor: colors.shade,
-				},
-
-				":focus": {
-					backgroundColor: colors.shade,
+					backgroundColor: isSelected
+						? colors.primary.DEFAULT
+						: colors.divider,
 				},
 
 				"::before": isMulti && {
-					content: isSelected ? '"■"' : '"□"',
+					content: isSelected ? '"✓"' : '"▢"', // ▣ ✓ ▢ □
 					display: "inline-block",
+					width: "1rem",
 					fontSize: fontSizes.xl,
-					marginRight: "0.25em",
-					color: colors.primary.dark,
+					marginRight: space[4],
+				},
+
+				":hover": {
+					cursor: "pointer",
+				},
+
+				":active": {
+					backgroundColor: colors.primary.DEFAULT,
+				},
+
+				":focus": {
+					backgroundColor: colors.primary.DEFAULT,
 				},
 			};
 		},
@@ -121,7 +131,7 @@ const MultiSelect = ({
 				...base,
 				backgroundColor: colors.shade,
 				":hover": {
-					color: colors.primary.DEFAULT,
+					color: colors.error,
 				},
 			};
 		},
@@ -129,7 +139,7 @@ const MultiSelect = ({
 			return {
 				...base,
 				":hover": {
-					color: colors.primary.DEFAULT,
+					color: colors.error,
 				},
 			};
 		},
@@ -150,7 +160,8 @@ const MultiSelect = ({
 					{label}
 				</InputLabel>
 			) : null}
-			<Select
+			<ReactSelect
+				required={required}
 				isMulti={isMulti}
 				styles={colorStyles}
 				options={options}
