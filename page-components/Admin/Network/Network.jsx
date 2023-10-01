@@ -33,7 +33,9 @@ const Network = () => {
 		let filterKeys = Object.keys(filter);
 		let filterQuery = "filter=true";
 		filterKeys.forEach((ele) => {
-			filterQuery += `&${ele}=${filter[ele]}`;
+			if (filter[ele].length > 0) {
+				filterQuery += `&${ele}=${filter[ele]}`;
+			}
 		});
 		postData += filterQuery;
 	}
@@ -83,7 +85,6 @@ const Network = () => {
 
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];
-	console.debug("Gopi Agent Details", agentDetails);
 
 	return (
 		<>
@@ -109,7 +110,9 @@ const Network = () => {
 						maxSearchLimit={10}
 					/>
 					<Box display={{ base: "none", md: "flex" }}>
-						<NetworkFilter {...{ filter, setFilter }} />
+						<NetworkFilter
+							{...{ filter, setFilter, setPageNumber }}
+						/>
 					</Box>
 				</Flex>
 				<NetworkTable
