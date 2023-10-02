@@ -1,13 +1,13 @@
-import { Flex, FormControl, FormLabel, useToast } from "@chakra-ui/react";
-import { Button, Radio, Select } from "components";
-import { Endpoints } from "constants";
-import { TransactionIds } from "constants/EpsTransactions";
+import { Flex, useToast } from "@chakra-ui/react";
+import { Button } from "components";
+import { Endpoints, ParamType, TransactionIds } from "constants";
 import { useSession } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components/Form";
 
 const OPERATION = {
 	SUBMIT: 1,
@@ -23,104 +23,105 @@ const getStatus = (status) => {
 	}
 };
 
+const _multiselectRenderer = {
+	value: "CSPCode",
+	label: "DisplayName",
+};
+
+const operation_type_list = [
+	{ value: "1", label: "Self" },
+	{ value: "2", label: "Distributor" },
+];
+
+const commission_type_list = [
+	{ value: "2", label: "Daily" },
+	{ value: "1", label: "Monthly" },
+];
+
 /**
- * Need to Refactor Below Forms Later
+ * Commission Frequency tab
  */
-
 const CommissionFrequency = () => {
-	const { accessToken } = useSession();
+	const [multiSelectOptions, setMultiSelectOptions] = useState();
+	// const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const toast = useToast();
-	const { generateNewToken } = useRefreshToken();
-	const [multiSelectLabel, setMultiSelectLabel] = useState();
-	const [data, setData] = useState();
 	const router = useRouter();
-
-	const multiSelectRenderer = {
-		value: "CSPCode",
-		label: "DisplayName",
-	};
+	const { accessToken } = useSession();
+	const { generateNewToken } = useRefreshToken();
 
 	const {
 		handleSubmit,
-		watch,
+		register,
 		control,
-		// setValue,
+		formState: { errors, isSubmitting },
 	} = useForm();
 
-	const watchOperationType = watch("operation_type");
-	const watchCommissionType = watch("commission_type");
-
-	const hitQuery = (operation, callback, finalData = {}) => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/pricing_commissions/`,
-				"tf-req-method": "POST",
-			},
-			body: {
-				operation_type: watchOperationType,
-				operation: operation,
-				...finalData,
-			},
-			token: accessToken,
-			generateNewToken,
-		})
-			.then((data) => {
-				callback(data);
-			})
-			.catch((error) => {
-				console.error("📡 Fetch Error:", error);
-			});
-	};
+	const watcher = useWatch({ control });
 
 	useEffect(() => {
-		if (watchOperationType == 2) {
-			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
-			hitQuery(OPERATION.FETCH, (_data) => {
-				if (_data.status === 0) {
-					setData(_data?.data?.allScspList);
-				} else {
-					toast({
-						title: _data.message,
-						status: getStatus(_data.status),
-						duration: 5000,
-						isClosable: true,
-					});
+		if (watcher.operation_type == 2) {
+			fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `/network/pricing_commissions/`,
+						"tf-req-method": "POST",
+					},
+					body: {
+						operation_type: watcher.operation_type,
+						operation: OPERATION.FETCH,
+					},
+					token: accessToken,
+					generateNewToken,
 				}
-			});
+			)
+				.then((res) => {
+					if (res.status === 0) {
+						setMultiSelectOptions(res?.data?.allScspList);
+					} else {
+						toast({
+							title: res.message,
+							status: getStatus(res.status),
+							duration: 5000,
+							isClosable: true,
+						});
+					}
+				})
+				.catch((error) => {
+					console.error("📡 Fetch Error:", error);
+				});
 
-			let _operationTypeList = operationTypeList.filter(
-				(item) => item.value == watchOperationType
-			);
+			// let _operationTypeList = operation_type_list.filter(
+			// 	(item) => item.value == watcher.operation_type
+			// );
 
-			let _label =
-				_operationTypeList.length > 0 && _operationTypeList[0].label;
+			// let _label =
+			// 	_operationTypeList.length > 0 && _operationTypeList[0].label;
 
-			setMultiSelectLabel(_label);
+			// setMultiSelectLabel(_label);
 		}
-	}, [watchOperationType]);
+	}, [watcher.operation_type]);
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
-		const cspList = data?.multiselect?.map((num) => +num);
-		_finalData.CspList = `${cspList}`;
+		const _CspList = data?.CspList?.map(
+			(item) => item[_multiselectRenderer.value]
+		);
 
-		delete _finalData.select;
-		delete _finalData.multiselect;
-
-		const finalData = {
-			source_flag: watchCommissionType,
-			interaction_type_id: TransactionIds.COMMISSION_TYPE,
-		};
-
-		if (watchOperationType == 2) {
-			finalData.communication = 2;
-			finalData.CspList = _finalData.CspList;
+		if (watcher.operation_type == 2) {
+			_finalData.CspList = `${_CspList}`;
+			_finalData.communication = 2;
 		}
 
+		delete _finalData.operation_type;
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: finalData,
+			body: {
+				interaction_type_id: TransactionIds.COMMISSION_TYPE,
+				..._finalData,
+			},
 			token: accessToken,
 		})
 			.then((response) => {
@@ -136,54 +137,41 @@ const CommissionFrequency = () => {
 			});
 	};
 
-	const operationTypeList = [
-		{ value: "1", label: "Self" },
-		{ value: "2", label: "Distributor" },
-	];
-
-	const commissionTypeList = [
-		{ value: "1", label: "Monthly" },
-		{ value: "2", label: "Daily" },
+	const commission_frequency_parameter_list = [
+		{
+			name: "operation_type",
+			label: `Set Commission For`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: operation_type_list,
+			// defaultValue: DEFAULT.operation_type,
+		},
+		{
+			name: "CspList",
+			label: `Select Distributor`,
+			parameter_type_id: ParamType.LIST,
+			is_multi: true,
+			list_elements: multiSelectOptions,
+			visible_on_param_name: "operation_type",
+			visible_on_param_value: /2/,
+			multiSelectRenderer: _multiselectRenderer,
+		},
+		{
+			name: "source_flag",
+			label: `Select Commission Frequency`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: commission_type_list,
+		},
 	];
 
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
-			<Flex direction="column" gap="10">
-				<RadioInput
-					name="operation_type"
-					label="Set Commission For"
-					radioGroupList={operationTypeList}
+			<Flex direction="column" gap="8">
+				<Form
+					parameter_list={commission_frequency_parameter_list}
+					register={register}
 					control={control}
-				/>
-
-				{/* no need of multiselect when user clicked on product radio option in select_commission_for field */}
-				{watchOperationType == 2 && (
-					<FormControl
-						id="multiselect"
-						w={{ base: "100%", md: "500px" }}
-					>
-						<FormLabel>Select {multiSelectLabel}</FormLabel>
-						<Controller
-							name="multiselect"
-							control={control}
-							render={({ field: { onChange } }) => (
-								<Select
-									required
-									isMulti={true}
-									options={data}
-									renderer={multiSelectRenderer}
-									onChange={onChange}
-								/>
-							)}
-						/>
-					</FormControl>
-				)}
-
-				<RadioInput
-					name="commission_type"
-					label="Select Commission Frequency"
-					radioGroupList={commissionTypeList}
-					control={control}
+					formValues={watcher}
+					errors={errors}
 				/>
 
 				{/* Submit Button and Cancel Button */}
@@ -203,6 +191,7 @@ const CommissionFrequency = () => {
 						w={{ base: "100%", md: "250px" }}
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
+						loading={isSubmitting}
 					>
 						Save
 					</Button>
@@ -227,28 +216,3 @@ const CommissionFrequency = () => {
 };
 
 export default CommissionFrequency;
-
-/**
- * Component to show radio button, label
- * @param {*} param0
- * @returns
- */
-const RadioInput = ({ name, label, defaultValue, radioGroupList, control }) => {
-	return (
-		<FormControl id={name}>
-			<FormLabel>{label}</FormLabel>
-			<Controller
-				name={name}
-				control={control}
-				defaultValue={defaultValue}
-				render={({ field: { onChange, value } }) => (
-					<Radio
-						options={radioGroupList}
-						value={value}
-						onChange={onChange}
-					/>
-				)}
-			/>
-		</FormControl>
-	);
-};
