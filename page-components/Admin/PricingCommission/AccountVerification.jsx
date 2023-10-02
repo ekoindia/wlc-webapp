@@ -46,9 +46,8 @@ const AccountVerification = () => {
 		handleSubmit,
 		// register,
 		watch,
-		// formState: { errors /* isSubmitting */ },
+		formState: { /*  errors , */ isSubmitting },
 		control,
-		// setValue,
 		reset,
 	} = useForm();
 
@@ -211,6 +210,7 @@ const AccountVerification = () => {
 							accountVerificationStatus ===
 							watchAccountVerificationStatus
 						}
+						loading={isSubmitting}
 					>
 						Save
 					</Button>

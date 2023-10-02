@@ -55,7 +55,7 @@ const AadhaarPay = () => {
 		handleSubmit,
 		register,
 		control,
-		formState: { errors /* isSubmitting */ },
+		formState: { errors, isSubmitting },
 	} = useForm({
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
@@ -261,6 +261,7 @@ const AadhaarPay = () => {
 						w={{ base: "100%", md: "250px" }}
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
+						loading={isSubmitting}
 					>
 						Save Commissions
 					</Button>
