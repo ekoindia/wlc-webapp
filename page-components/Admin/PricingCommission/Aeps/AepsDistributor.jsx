@@ -41,7 +41,7 @@ const getStatus = (status) => {
 
 const pricing_type_list = [
 	{ value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	// { value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
 ];
 
 const _multiselectRenderer = {
