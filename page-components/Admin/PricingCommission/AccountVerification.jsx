@@ -206,7 +206,7 @@ const AccountVerification = () => {
 		{
 			name: "actual_pricing",
 			label: `Define ${productPricingType.ACCOUNT_VERIFICATION}`,
-			helperText: "(Minimum: ₹1.71 - to avoid losses)",
+			helperText: "Minimum: ₹1.71",
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			validations: {
 				required: true,
