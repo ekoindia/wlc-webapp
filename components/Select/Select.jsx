@@ -17,7 +17,8 @@ const Select = ({
 	id,
 	required,
 	labelStyle,
-	rest,
+	helperText,
+	...rest
 }) => {
 	const _id = useId();
 
@@ -156,6 +157,7 @@ const Select = ({
 				<InputLabel
 					htmlFor={id ?? _id}
 					required={required}
+					helperText={helperText}
 					{...labelStyle}
 				>
 					{label}

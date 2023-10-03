@@ -21,6 +21,7 @@ const Radio = ({
 	labelStyle,
 	required = true,
 	defaultValue,
+	helperText,
 	renderer = { label: "label", value: "value" },
 	...rest
 }) => {
@@ -35,6 +36,7 @@ const Radio = ({
 				<InputLabel
 					htmlFor={id ?? _id}
 					required={required}
+					helperText={helperText}
 					{...labelStyle}
 				>
 					{label}
