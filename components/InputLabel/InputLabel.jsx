@@ -7,7 +7,7 @@ const InputLabel = ({ htmlFor, required, children, ...rest }) => {
 			htmlFor={htmlFor || undefined}
 			fontSize={{ base: "sm", "2xl": "lg" }}
 			fontWeight="semibold"
-			textTransform="capitalize"
+			// textTransform="capitalize"
 			pl="0"
 			mb={{ base: 2, "2xl": "0.8rem" }}
 			color="inputlabel"
