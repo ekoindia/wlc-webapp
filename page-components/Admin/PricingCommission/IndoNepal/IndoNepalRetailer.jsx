@@ -36,8 +36,8 @@ const OPERATION = {
 };
 
 const _multiselectRenderer = {
-	value: "ekocspid",
-	label: "DisplayName",
+	value: "customer_id",
+	label: "name",
 };
 
 const getStatus = (status) => {
@@ -143,29 +143,6 @@ const IndoNepalRetailer = () => {
 		},
 	];
 
-	const hitQuery = (operation, callback, finalData = {}) => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
-				"tf-req-method": "POST",
-			},
-			body: {
-				operation_type: watcher.operation_type,
-				operation: operation,
-				...finalData,
-			},
-			token: accessToken,
-			generateNewToken,
-		})
-			.then((data) => {
-				callback(data);
-			})
-			.catch((error) => {
-				console.error("📡 Fetch Error:", error);
-			});
-	};
-
 	useEffect(() => {
 		const list = [];
 
@@ -186,18 +163,30 @@ const IndoNepalRetailer = () => {
 	useEffect(() => {
 		if (watcher.operation_type != "3") {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
-			hitQuery(OPERATION.FETCH, (res) => {
-				if (res.status === 0) {
-					setMultiSelectOptions(res?.data?.allScspList);
-				} else {
-					toast({
-						title: res.message,
-						status: getStatus(res.status),
-						duration: 5000,
-						isClosable: true,
-					});
+			const _tf_req_uri =
+				watcher.operation_type === "2"
+					? "/network/agent-list?usertype=2"
+					: "/network/agent-list";
+
+			fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `${_tf_req_uri}`,
+						"tf-req-method": "GET",
+					},
+					token: accessToken,
+					generateNewToken,
 				}
-			});
+			)
+				.then((res) => {
+					const _agents = res?.data?.csp_list ?? [];
+					setMultiSelectOptions(_agents);
+				})
+				.catch((error) => {
+					console.error("📡Error:", error);
+				});
 
 			let _operationTypeList = operation_type_list.filter(
 				(item) => item.value == watcher.operation_type
@@ -207,7 +196,7 @@ const IndoNepalRetailer = () => {
 
 			setMultiSelectLabel(_label);
 		}
-	}, [uriSegment, watcher.operation_type]);
+	}, [watcher.operation_type]);
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
@@ -228,19 +217,32 @@ const IndoNepalRetailer = () => {
 
 		delete _finalData.select;
 
-		hitQuery(
-			OPERATION.SUBMIT,
-			(data) => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
+				"tf-req-method": "POST",
+			},
+			body: {
+				operation_type: watcher.operation_type,
+				operation: OPERATION.SUBMIT,
+				..._finalData,
+			},
+			token: accessToken,
+			generateNewToken,
+		})
+			.then((res) => {
 				toast({
-					title: data.message,
-					status: getStatus(data.status),
+					title: res.message,
+					status: getStatus(res.status),
 					duration: 6000,
 					isClosable: true,
 				});
 				// handleReset();
-			},
-			_finalData
-		);
+			})
+			.catch((error) => {
+				console.error("📡Error:", error);
+			});
 	};
 
 	return (
