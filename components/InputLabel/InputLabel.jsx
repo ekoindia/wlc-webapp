@@ -1,6 +1,6 @@
 import { chakra, Text } from "@chakra-ui/react";
 
-const InputLabel = ({ htmlFor, required, helperText, children, ...rest }) => {
+const InputLabel = ({ htmlFor, required, children, ...rest }) => {
 	const Label = chakra("label");
 	return (
 		<Label
@@ -18,11 +18,6 @@ const InputLabel = ({ htmlFor, required, helperText, children, ...rest }) => {
 			{required ? null : (
 				<Text as="span" color="light" fontWeight="medium" fontSize="xs">
 					{" (optional)"}
-				</Text>
-			)}
-			{helperText !== undefined && (
-				<Text as="span" color="error" fontWeight="medium" fontSize="xs">
-					{` ${helperText}`}
 				</Text>
 			)}
 		</Label>

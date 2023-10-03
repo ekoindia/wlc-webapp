@@ -52,7 +52,6 @@ const Input = forwardRef(
 			mr,
 			mb,
 			ml,
-			helperText,
 			onChange = () => {},
 			onKeyDown = () => {},
 			onEnter = () => {},
@@ -96,7 +95,6 @@ const Input = forwardRef(
 					<InputLabel
 						htmlFor={id ?? _id}
 						required={required}
-						helperText={helperText}
 						{...labelStyle}
 					>
 						{label}
