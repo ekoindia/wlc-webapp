@@ -125,7 +125,7 @@ const Form = ({
 												control={control}
 												defaultValue={defaultValue}
 												render={({
-													field: { onChange, value },
+													field: { onChange },
 												}) => (
 													<Select
 														{...{
