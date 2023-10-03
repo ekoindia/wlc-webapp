@@ -8,8 +8,8 @@ const errorTypeMessages = {
 	minLength: "Insufficient Characters",
 	email: "Please enter a valid email address",
 	url: "Please enter a valid URL",
-	min: "Value is low",
-	max: "Value is high",
+	min: "Please enter a higher value",
+	max: "Please enter a lower value",
 };
 
 /**
