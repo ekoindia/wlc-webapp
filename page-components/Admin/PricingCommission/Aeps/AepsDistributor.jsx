@@ -235,7 +235,7 @@ const AepsDistributor = () => {
 						borderRadius={{ base: "none", md: "10" }}
 						loading={isSubmitting}
 					>
-						Save Commissions
+						Save
 					</Button>
 
 					<Button
