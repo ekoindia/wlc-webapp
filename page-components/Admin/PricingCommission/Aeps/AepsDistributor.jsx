@@ -102,7 +102,7 @@ const AepsDistributor = () => {
 				max:
 					watcher["pricing_type"] == PRICING_TYPE.PERCENT
 						? 100
-						: 1000000,
+						: 13.65,
 			},
 			inputRightElement: (
 				<Icon
