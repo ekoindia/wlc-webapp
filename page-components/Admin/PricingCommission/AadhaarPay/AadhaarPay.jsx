@@ -59,7 +59,7 @@ const AadhaarPay = () => {
 	} = useForm({
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
-			select: "0",
+			select: { value: "0", label: "₹1 - ₹10000" }, //TODO: change this asap.
 			pricing_type: DEFAULT.pricing_type,
 		},
 	});
@@ -205,7 +205,7 @@ const AadhaarPay = () => {
 
 		_finalData.actual_pricing = +data.actual_pricing;
 
-		const { min, max } = slabs[data?.select] || {};
+		const { min, max } = slabs[data?.select?.value] || {};
 		_finalData.min_slab_amount = min;
 		_finalData.max_slab_amount = max;
 

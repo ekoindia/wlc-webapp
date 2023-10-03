@@ -55,7 +55,7 @@ const CreditCardBillPaymentRetailer = () => {
 	} = useForm({
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
-			select: "0",
+			select: { value: "0", label: "₹100 - ₹199999" }, //TODO: change this asap.
 			pricing_type: DEFAULT.pricing_type,
 		},
 	});

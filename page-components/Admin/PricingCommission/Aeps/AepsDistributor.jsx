@@ -164,7 +164,7 @@ const AepsDistributor = () => {
 
 		_finalData.actual_pricing = +data.actual_pricing;
 
-		const { min, max } = slabs[data?.select] || {};
+		const { min, max } = slabs[data?.select?.value] || {};
 		_finalData.min_slab_amount = min;
 		_finalData.max_slab_amount = max;
 
