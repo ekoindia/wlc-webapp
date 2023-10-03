@@ -60,7 +60,7 @@ const EarningOverview = ({ data }) => {
 		},
 		{
 			key: "commissionDue",
-			label: "Commission Due (only DMT)",
+			label: "Commission Due",
 			lastPeriod: data?.commissionDue?.lastPeriod,
 			value: data?.commissionDue?.commissionDue,
 			type: "amount",
