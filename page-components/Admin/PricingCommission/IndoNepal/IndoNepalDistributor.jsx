@@ -1,12 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import {
-	Endpoints,
-	ParamType,
-	productPricingType,
-	products,
-	TransactionTypes,
-} from "constants";
+import { Endpoints, ParamType, products, TransactionTypes } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -98,7 +92,7 @@ const IndoNepalDistributor = () => {
 		},
 		{
 			name: "pricing_type",
-			label: `Select ${productPricingType.INDO_NEPAL_FUND_TRANSFER} Type`,
+			label: `Select Commission Type`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: pricing_type_list,
 			// defaultValue: PRICING_TYPE.PERCENT,
@@ -111,7 +105,7 @@ const IndoNepalDistributor = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.INDO_NEPAL_FUND_TRANSFER}`,
+			label: `Define Commission`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			validations: {
 				required: true,
