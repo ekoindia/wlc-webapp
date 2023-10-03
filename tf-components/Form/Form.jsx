@@ -1,9 +1,4 @@
-import {
-	Flex,
-	FormControl,
-	FormErrorMessage,
-	FormHelperText,
-} from "@chakra-ui/react";
+import { Flex, FormControl, FormErrorMessage } from "@chakra-ui/react";
 import { Input, Radio, Select } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
@@ -72,6 +67,7 @@ const Form = ({
 									<Input
 										id={name}
 										label={label}
+										helperText={helperText}
 										required={required}
 										value={value}
 										step="0.1"
@@ -88,15 +84,15 @@ const Form = ({
 											...validations,
 										})}
 									/>
-									{errors[name] ? (
-										<FormErrorMessage>
+									{errors[name] && (
+										<FormErrorMessage
+											fontWeight="medium"
+											fontSize="xs"
+											color="error"
+										>
 											{getFormErrorMessage(name, errors)}
 										</FormErrorMessage>
-									) : helperText !== undefined ? (
-										<FormHelperText>
-											{helperText}
-										</FormHelperText>
-									) : null}
+									)}
 								</FormControl>
 							);
 						case ParamType.LIST:
@@ -131,24 +127,25 @@ const Form = ({
 																multiSelectRenderer,
 															required,
 															isMulti: true,
+															helperText,
 														}}
 														{...rest}
 													/>
 												)}
 												rules={{ ...validations }}
 											/>
-											{errors[name] ? (
-												<FormErrorMessage>
+											{errors[name] && (
+												<FormErrorMessage
+													fontWeight="medium"
+													fontSize="xs"
+													color="error"
+												>
 													{getFormErrorMessage(
 														name,
 														errors
 													)}
 												</FormErrorMessage>
-											) : helperText !== undefined ? (
-												<FormHelperText>
-													{helperText}
-												</FormHelperText>
-											) : null}
+											)}
 										</FormControl>
 									);
 								} else if (
@@ -176,24 +173,25 @@ const Form = ({
 															onChange,
 															options:
 																list_elements,
+															helperText,
 														}}
 														{...rest}
 													/>
 												)}
 												rules={{ ...validations }}
 											/>
-											{errors[name] ? (
-												<FormErrorMessage>
+											{errors[name] && (
+												<FormErrorMessage
+													fontWeight="medium"
+													fontSize="xs"
+													color="error"
+												>
 													{getFormErrorMessage(
 														name,
 														errors
 													)}
 												</FormErrorMessage>
-											) : helperText !== undefined ? (
-												<FormHelperText>
-													{helperText}
-												</FormHelperText>
-											) : null}
+											)}
 										</FormControl>
 									);
 								} else {
@@ -224,6 +222,7 @@ const Form = ({
 																required,
 																options:
 																	list_elements,
+																helperText,
 															}}
 															{...rest}
 														/>
@@ -231,18 +230,18 @@ const Form = ({
 												}}
 												rules={{ ...validations }}
 											/>
-											{errors[name] ? (
-												<FormErrorMessage>
+											{errors[name] && (
+												<FormErrorMessage
+													fontWeight="medium"
+													fontSize="xs"
+													color="error"
+												>
 													{getFormErrorMessage(
 														name,
 														errors
 													)}
 												</FormErrorMessage>
-											) : helperText !== undefined ? (
-												<FormHelperText>
-													{helperText}
-												</FormHelperText>
-											) : null}
+											)}
 										</FormControl>
 									);
 								}
