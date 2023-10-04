@@ -1,9 +1,4 @@
-import {
-	Flex,
-	FormControl,
-	FormErrorMessage,
-	FormHelperText,
-} from "@chakra-ui/react";
+import { Flex, FormControl, Text } from "@chakra-ui/react";
 import { Input, Radio, Select } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
@@ -88,23 +83,22 @@ const Form = ({
 											...validations,
 										})}
 									/>
-									{errors[name] ? (
-										<FormErrorMessage
-											fontWeight="medium"
-											fontSize="xs"
-											color="error"
-										>
-											{getFormErrorMessage(name, errors)}
-										</FormErrorMessage>
-									) : (
-										<FormHelperText
-											color="primary.dark"
-											fontWeight="medium"
-											fontSize="xs"
-										>
-											{helperText}
-										</FormHelperText>
-									)}
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+											  )}) ${helperText}`
+											: helperText || ""}
+									</Text>
 								</FormControl>
 							);
 						case ParamType.LIST:
@@ -145,26 +139,22 @@ const Form = ({
 												)}
 												rules={{ ...validations }}
 											/>
-											{errors[name] ? (
-												<FormErrorMessage
-													fontWeight="medium"
-													fontSize="xs"
-													color="error"
-												>
-													{getFormErrorMessage(
-														name,
-														errors
-													)}
-												</FormErrorMessage>
-											) : (
-												<FormHelperText
-													color="primary.dark"
-													fontWeight="medium"
-													fontSize="xs"
-												>
-													{helperText}
-												</FormHelperText>
-											)}
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color={
+													errors[name]
+														? "error"
+														: "primary.dark"
+												}
+											>
+												{errors[name]
+													? `⚠ (${getFormErrorMessage(
+															name,
+															errors
+													  )}) ${helperText}`
+													: helperText || ""}
+											</Text>
 										</FormControl>
 									);
 								} else if (
@@ -198,26 +188,22 @@ const Form = ({
 												)}
 												rules={{ ...validations }}
 											/>
-											{errors[name] ? (
-												<FormErrorMessage
-													fontWeight="medium"
-													fontSize="xs"
-													color="error"
-												>
-													{getFormErrorMessage(
-														name,
-														errors
-													)}
-												</FormErrorMessage>
-											) : (
-												<FormHelperText
-													color="primary.dark"
-													fontWeight="medium"
-													fontSize="xs"
-												>
-													{helperText}
-												</FormHelperText>
-											)}
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color={
+													errors[name]
+														? "error"
+														: "primary.dark"
+												}
+											>
+												{errors[name]
+													? `⚠ (${getFormErrorMessage(
+															name,
+															errors
+													  )}) ${helperText}`
+													: helperText || ""}
+											</Text>
 										</FormControl>
 									);
 								} else {
@@ -255,26 +241,22 @@ const Form = ({
 												}}
 												rules={{ ...validations }}
 											/>
-											{errors[name] ? (
-												<FormErrorMessage
-													fontWeight="medium"
-													fontSize="xs"
-													color="error"
-												>
-													{getFormErrorMessage(
-														name,
-														errors
-													)}
-												</FormErrorMessage>
-											) : (
-												<FormHelperText
-													color="primary.dark"
-													fontWeight="medium"
-													fontSize="xs"
-												>
-													{helperText}
-												</FormHelperText>
-											)}
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color={
+													errors[name]
+														? "error"
+														: "primary.dark"
+												}
+											>
+												{errors[name]
+													? `⚠ (${getFormErrorMessage(
+															name,
+															errors
+													  )}) ${helperText}`
+													: helperText || ""}
+											</Text>
 										</FormControl>
 									);
 								}
