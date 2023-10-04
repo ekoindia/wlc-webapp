@@ -1,6 +1,12 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { Endpoints, ParamType, productPricingType, products } from "constants";
+import {
+	Endpoints,
+	ParamType,
+	productPricingCommissionValidationConfig,
+	productPricingType,
+	products,
+} from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -51,6 +57,8 @@ const getStatus = (status) => {
 
 const IndoNepalRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.INDO_NEPAL_FUND_TRANSFER;
+	const { FIXED_CTC, FIXED_CTA } =
+		productPricingCommissionValidationConfig.INDO_NEPAL_FUND_TRANSFER;
 
 	const {
 		handleSubmit,
@@ -76,6 +84,12 @@ const IndoNepalRetailer = () => {
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+
+	const min = watcher["payment_mode"] == "1" ? FIXED_CTC.min : FIXED_CTA.min;
+
+	const max = watcher["payment_mode"] == "1" ? FIXED_CTC.max : FIXED_CTA.max;
+
+	const prefix = watcher["pricing_type"] === PRICING_TYPE.PERCENT ? "%" : "₹";
 
 	const indo_nepal_retailer_parameter_list = [
 		{
@@ -121,13 +135,11 @@ const IndoNepalRetailer = () => {
 			name: "actual_pricing",
 			label: `Define ${productPricingType.INDO_NEPAL_FUND_TRANSFER}`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
+			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
 			validations: {
 				required: true,
-				min: 0,
-				max:
-					watcher["pricing_type"] == PRICING_TYPE.PERCENT
-						? 100
-						: 1000000,
+				min: min,
+				max: max,
 			},
 			inputRightElement: (
 				<Icon

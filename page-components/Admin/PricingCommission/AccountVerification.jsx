@@ -1,6 +1,12 @@
 import { Flex, FormControl, useToast } from "@chakra-ui/react";
 import { Button, Icon, Radio } from "components";
-import { Endpoints, ParamType, productPricingType, products } from "constants";
+import {
+	Endpoints,
+	ParamType,
+	productPricingCommissionValidationConfig,
+	productPricingType,
+	products,
+} from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -61,6 +67,8 @@ const _multiselectRenderer = {
  */
 const AccountVerification = () => {
 	const { DEFAULT } = products.ACCOUNT_VERIFICATION;
+	const { FIXED } =
+		productPricingCommissionValidationConfig.ACCOUNT_VERIFICATION;
 	const {
 		handleSubmit,
 		register,
@@ -168,6 +176,12 @@ const AccountVerification = () => {
 			});
 	};
 
+	const min = FIXED.min;
+
+	const max = FIXED.max;
+
+	const prefix = "₹";
+
 	const account_verification_parameter_list = [
 		{
 			name: "operation_type",
@@ -196,15 +210,12 @@ const AccountVerification = () => {
 		{
 			name: "actual_pricing",
 			label: `Define ${productPricingType.ACCOUNT_VERIFICATION}`,
-			helperText: "Minimum: ₹1.71",
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
+			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
 			validations: {
 				required: true,
-				min: 1.71,
-				max:
-					watcher["pricing_type"] == PRICING_TYPE.PERCENT
-						? 100
-						: 1000000,
+				min: min,
+				max: max,
 			},
 			inputRightElement: (
 				<Icon

@@ -1,6 +1,12 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { Endpoints, ParamType, products, TransactionTypes } from "constants";
+import {
+	Endpoints,
+	ParamType,
+	productPricingCommissionValidationConfig,
+	products,
+	TransactionTypes,
+} from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -35,6 +41,8 @@ const _multiselectRenderer = {
 
 const CreditCardBillPaymentDistributor = () => {
 	const { slabs, serviceCode } = products.CREDIT_CARD_BILL_PAYMENT;
+	const { PERCENT, FIXED } =
+		productPricingCommissionValidationConfig.CREDIT_CARD_BILL_PAYMENT;
 
 	const {
 		handleSubmit,
@@ -55,6 +63,18 @@ const CreditCardBillPaymentDistributor = () => {
 	const { generateNewToken } = useRefreshToken();
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+
+	const min =
+		watcher["pricing_type"] === PRICING_TYPE.PERCENT
+			? PERCENT.min
+			: FIXED.min;
+
+	const max =
+		watcher["pricing_type"] === PRICING_TYPE.PERCENT
+			? PERCENT.max
+			: FIXED.max;
+
+	const prefix = watcher["pricing_type"] === PRICING_TYPE.PERCENT ? "%" : "₹";
 
 	const credit_card_bill_payment_distributor_parameter_list = [
 		{
@@ -85,13 +105,11 @@ const CreditCardBillPaymentDistributor = () => {
 			name: "actual_pricing",
 			label: `Define Commission`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
+			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
 			validations: {
 				required: true,
-				min: 0,
-				max:
-					watcher["pricing_type"] == PRICING_TYPE.PERCENT
-						? 100
-						: 1000000,
+				min: min,
+				max: max,
 			},
 			inputRightElement: (
 				<Icon

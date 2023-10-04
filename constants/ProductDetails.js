@@ -80,6 +80,7 @@ export const productPricingCommissionValidationConfig = {
 		FIXED: { min: 3.72, max: 35 },
 	},
 	AEPS: {
+		PERCENT: { min: 0, max: 0.45 },
 		FIXED: { min: 0, max: 13.65 },
 	},
 	AADHAAR_PAY: {
@@ -88,7 +89,7 @@ export const productPricingCommissionValidationConfig = {
 	},
 	INDO_NEPAL_FUND_TRANSFER: {
 		FIXED_CTC: { min: 0, max: 90 },
-		FIXED_CTA: { min: 3, max: 1.8 },
+		FIXED_CTA: { min: 0, max: 1.8 },
 	},
 	CREDIT_CARD_BILL_PAYMENT: {
 		PERCENT: { min: 0, max: 0.8 },

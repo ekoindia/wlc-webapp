@@ -1,6 +1,12 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { Endpoints, ParamType, products, TransactionTypes } from "constants";
+import {
+	Endpoints,
+	ParamType,
+	productPricingCommissionValidationConfig,
+	products,
+	TransactionTypes,
+} from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -40,6 +46,8 @@ const _multiselectRenderer = {
 
 const IndoNepalDistributor = () => {
 	const { slabs, serviceCode } = products.INDO_NEPAL_FUND_TRANSFER;
+	const { FIXED_CTC, FIXED_CTA } =
+		productPricingCommissionValidationConfig.INDO_NEPAL_FUND_TRANSFER;
 
 	const {
 		handleSubmit,
@@ -60,6 +68,12 @@ const IndoNepalDistributor = () => {
 	const { generateNewToken } = useRefreshToken();
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+
+	const min = watcher["payment_mode"] == "1" ? FIXED_CTC.min : FIXED_CTA.min;
+
+	const max = watcher["payment_mode"] == "1" ? FIXED_CTC.max : FIXED_CTA.max;
+
+	const prefix = watcher["pricing_type"] === PRICING_TYPE.PERCENT ? "%" : "₹";
 
 	const indo_nepal_distributor_parameter_list = [
 		{
@@ -96,13 +110,11 @@ const IndoNepalDistributor = () => {
 			name: "actual_pricing",
 			label: `Define Commission`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
+			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
 			validations: {
 				required: true,
-				min: 0,
-				max:
-					watcher["pricing_type"] == PRICING_TYPE.PERCENT
-						? 100
-						: 1000000,
+				min: min,
+				max: max,
 			},
 			inputRightElement: (
 				<Icon

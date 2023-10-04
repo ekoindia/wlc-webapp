@@ -1,6 +1,12 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { Endpoints, ParamType, productPricingType, products } from "constants";
+import {
+	Endpoints,
+	ParamType,
+	productPricingCommissionValidationConfig,
+	productPricingType,
+	products,
+} from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -46,6 +52,7 @@ const getStatus = (status) => {
 
 const DmtRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.DMT;
+	const { PERCENT, FIXED } = productPricingCommissionValidationConfig.DMT;
 
 	const {
 		handleSubmit,
@@ -70,6 +77,18 @@ const DmtRetailer = () => {
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+
+	const min =
+		watcher["pricing_type"] === PRICING_TYPE.PERCENT
+			? PERCENT.min
+			: FIXED.min;
+
+	const max =
+		watcher["pricing_type"] === PRICING_TYPE.PERCENT
+			? PERCENT.max
+			: FIXED.max;
+
+	const prefix = watcher["pricing_type"] === PRICING_TYPE.PERCENT ? "%" : "₹";
 
 	const dmt_retailer_parameter_list = [
 		{
@@ -109,13 +128,11 @@ const DmtRetailer = () => {
 			name: "actual_pricing",
 			label: `Define ${productPricingType.DMT}`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
+			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
 			validations: {
 				required: true,
-				min: 0,
-				max:
-					watcher["pricing_type"] == PRICING_TYPE.PERCENT
-						? 100
-						: 1000000,
+				min: min,
+				max: max,
 			},
 			inputRightElement: (
 				<Icon
