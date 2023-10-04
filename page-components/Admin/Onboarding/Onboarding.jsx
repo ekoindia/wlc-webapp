@@ -3,11 +3,7 @@ import { Headings } from "components";
 import { BulkOnboarding, SingleOnboarding } from ".";
 
 /**
- * A Onboarding page-component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<Onboarding></Onboarding>` TODO: Fix example
+ * Onboard Agents page-component
  */
 const Onboarding = () => {
 	const tabList = [

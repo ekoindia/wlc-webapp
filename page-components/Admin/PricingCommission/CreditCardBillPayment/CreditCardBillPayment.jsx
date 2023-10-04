@@ -1,5 +1,8 @@
 import { Flex } from "@chakra-ui/react";
-import { AepsRetailer } from ".";
+import {
+	// CreditCardBillPaymentDistributor,
+	CreditCardBillPaymentRetailer,
+} from ".";
 
 // const AGENT_TYPE = {
 // 	RETAILERS: "0",
@@ -12,10 +15,10 @@ import { AepsRetailer } from ".";
 // ];
 
 /**
- * A Aeps tab page-component
- * @example	<Aeps/>
+ * A CreditCardBillPayment tab page-component
+ * @example	<CreditCardBillPayment/>
  */
-const Aeps = () => {
+const CreditCardBillPayment = () => {
 	// const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILERS);
 
 	return (
@@ -30,11 +33,12 @@ const Aeps = () => {
 			/>
 
 			{agentType === AGENT_TYPE.RETAILERS ? ( */}
-			<AepsRetailer />
+			<CreditCardBillPaymentRetailer />
 			{/* ) : (
-				<AepsDistributor />
+				<CreditCardBillPaymentDistributor />
 			)} */}
 		</Flex>
 	);
 };
-export default Aeps;
+
+export default CreditCardBillPayment;

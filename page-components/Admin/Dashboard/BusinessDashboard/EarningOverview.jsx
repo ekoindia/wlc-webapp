@@ -52,7 +52,7 @@ const EarningOverview = ({ data }) => {
 		// },
 		{
 			key: "raCases",
-			label: "Pending transactions",
+			label: "Pending Transactions",
 			lastPeriod: data?.raCases?.lastPeriod,
 			value: data?.raCases?.raCases,
 			type: "number",
@@ -60,7 +60,7 @@ const EarningOverview = ({ data }) => {
 		},
 		{
 			key: "commissionDue",
-			label: "Commission Due (only DMT)",
+			label: "Commission Due",
 			lastPeriod: data?.commissionDue?.lastPeriod,
 			value: data?.commissionDue?.commissionDue,
 			type: "amount",
@@ -91,7 +91,7 @@ const EarningOverview = ({ data }) => {
 				<Grid
 					templateColumns={{
 						base: "1fr",
-						md: "repeat(auto-fit,minmax(100px,1fr))",
+						md: "repeat(auto-fit,minmax(160px,1fr))",
 					}}
 					gap={{ base: "2", md: "8" }}
 					w="100%"
@@ -120,7 +120,7 @@ const EarningOverview = ({ data }) => {
 										}}
 										gap="1"
 									>
-										<Text fontSize="sm" whiteSpace="nowrap">
+										<Text fontSize="sm" textAlign="center">
 											{item.label}
 										</Text>
 										<Flex

@@ -23,7 +23,6 @@ import { Kbd } from "./Kbd";
 import { Layout } from "./Layout";
 import { Menus } from "./Menus";
 import { Modal } from "./Modal";
-import { MultiSelect } from "./MultiSelect";
 import { NavBar } from "./NavBar";
 import { OrgLogo } from "./OrgLogo";
 import { OtpInput } from "./OtpInput";
@@ -48,7 +47,6 @@ import { Tags } from "./Tags";
 
 export {
 	AdminViewToggleCard,
-	Radio,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
 	Button,
@@ -72,7 +70,6 @@ export {
 	Layout,
 	Menus,
 	Modal,
-	MultiSelect,
 	NavBar,
 	OrgLogo,
 	OtpInput,
@@ -82,6 +79,7 @@ export {
 	PillTab,
 	PrintReceipt,
 	ProfileCard,
+	Radio,
 	ResponseCard,
 	RouteProtecter,
 	SearchBar,

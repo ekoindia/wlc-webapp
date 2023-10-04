@@ -22,7 +22,7 @@ const PRICING_TYPE = {
 
 const pricing_type_list = [
 	{ value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	// { value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
 ];
 
 const OPERATION = {
@@ -44,12 +44,8 @@ const getStatus = (status) => {
 	}
 };
 
-/**
- * A AadhaarPay tab page-component
- * @example	<AadhaarPay/>
- */
-const AadhaarPay = () => {
-	const { uriSegment, slabs, DEFAULT } = products.AADHAAR_PAY;
+const DmtRetailer = () => {
+	const { uriSegment, slabs, DEFAULT } = products.DMT;
 
 	const {
 		handleSubmit,
@@ -59,24 +55,26 @@ const AadhaarPay = () => {
 	} = useForm({
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
-			select: { value: "0", label: "₹1 - ₹10000" }, //TODO: change this asap.
 			pricing_type: DEFAULT.pricing_type,
 		},
 	});
 
-	const watcher = useWatch({ control });
+	const watcher = useWatch({
+		control,
+	});
+
 	const toast = useToast();
 	const router = useRouter();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
-	const [multiSelectOptions, setMultiSelectOptions] = useState();
+	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 
-	const aadhaar_pay_parameter_list = [
+	const dmt_retailer_parameter_list = [
 		{
 			name: "operation_type",
-			label: `Set ${productPricingType.AADHAAR_PAY} for`,
+			label: `Set ${productPricingType.DMT} for`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: operation_type_list,
 			// defaultValue: DEFAULT.operation_type,
@@ -96,21 +94,20 @@ const AadhaarPay = () => {
 			label: "Select Slab",
 			parameter_type_id: ParamType.LIST,
 			list_elements: slabOptions,
-			// defaultValue: "0", // add condition, not hardcoded
 			meta: {
 				force_dropdown: true,
 			},
 		},
 		{
 			name: "pricing_type",
-			label: `Select ${productPricingType.AADHAAR_PAY} Type`,
+			label: `Select ${productPricingType.DMT} Type`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: pricing_type_list,
 			// defaultValue: DEFAULT.pricing_type,
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.AADHAAR_PAY}`,
+			label: `Define ${productPricingType.DMT}`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			validations: {
 				required: true,
@@ -149,7 +146,7 @@ const AadhaarPay = () => {
 		});
 
 		setSlabOptions(list);
-	}, [slabs]);
+	}, []);
 
 	useEffect(() => {
 		if (watcher.operation_type != "3") {
@@ -240,7 +237,7 @@ const AadhaarPay = () => {
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
 				<Form
-					parameter_list={aadhaar_pay_parameter_list}
+					parameter_list={dmt_retailer_parameter_list}
 					register={register}
 					control={control}
 					formValues={watcher}
@@ -287,4 +284,4 @@ const AadhaarPay = () => {
 	);
 };
 
-export default AadhaarPay;
+export default DmtRetailer;

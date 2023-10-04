@@ -1,39 +1,38 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { Endpoints, ParamType, productPricingType, products } from "constants";
+import { Endpoints, ParamType, products, TransactionTypes } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { Form } from "tf-components";
-
-const operation_type_list = [
-	{ value: "3", label: "Whole Network" },
-	{ value: "2", label: "Distributor's Network" },
-	{ value: "1", label: "Individual Distributor/Retailer" },
-];
-
-const PRICING_TYPE = {
-	PERCENT: "0",
-	FIXED: "1",
-};
-
-const pricing_type_list = [
-	{ value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	// { value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
-];
+import { Form } from "tf-components/Form";
 
 const OPERATION = {
 	SUBMIT: 1,
 	FETCH: 0,
 };
 
-const _multiselectRenderer = {
-	value: "customer_id",
-	label: "name",
+const PRICING_TYPE = {
+	PERCENT: "1",
+	FIXED: "0",
 };
+
+const AGENT_TYPE = {
+	RETAILERS: "0",
+	DISTRIBUTOR: "2",
+};
+
+const payment_mode_list = [
+	{ value: "1", label: "Cash to Cash" },
+	{ value: "2", label: "Cash to Account" },
+];
+
+const pricing_type_list = [
+	// { value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
+	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+];
 
 const getStatus = (status) => {
 	switch (status) {
@@ -44,12 +43,14 @@ const getStatus = (status) => {
 	}
 };
 
-/**
- * A AadhaarPay tab page-component
- * @example	<AadhaarPay/>
- */
-const AadhaarPay = () => {
-	const { uriSegment, slabs, DEFAULT } = products.AADHAAR_PAY;
+const _multiselectRenderer = {
+	value: "CSPCode",
+	label: "DisplayName",
+};
+
+const IndoNepalDistributor = () => {
+	const { uriSegment, slabs, serviceCode } =
+		products.INDO_NEPAL_FUND_TRANSFER;
 
 	const {
 		handleSubmit,
@@ -58,9 +59,8 @@ const AadhaarPay = () => {
 		formState: { errors, isSubmitting },
 	} = useForm({
 		defaultValues: {
-			operation_type: DEFAULT.operation_type,
-			select: { value: "0", label: "₹1 - ₹10000" }, //TODO: change this asap.
-			pricing_type: DEFAULT.pricing_type,
+			pricing_type: "0", //check if product details can store this
+			payment_mode: "1",
 		},
 	});
 
@@ -70,25 +70,15 @@ const AadhaarPay = () => {
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const [slabOptions, setSlabOptions] = useState([]);
-	const [multiSelectLabel, setMultiSelectLabel] = useState();
-	const [multiSelectOptions, setMultiSelectOptions] = useState();
+	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 
-	const aadhaar_pay_parameter_list = [
-		{
-			name: "operation_type",
-			label: `Set ${productPricingType.AADHAAR_PAY} for`,
-			parameter_type_id: ParamType.LIST,
-			list_elements: operation_type_list,
-			// defaultValue: DEFAULT.operation_type,
-		},
+	const indo_nepal_distributor_parameter_list = [
 		{
 			name: "CspList",
-			label: `Select ${multiSelectLabel}`,
+			label: "Select Distributor",
 			parameter_type_id: ParamType.LIST,
 			is_multi: true,
 			list_elements: multiSelectOptions,
-			visible_on_param_name: "operation_type",
-			visible_on_param_value: /1|2/,
 			multiSelectRenderer: _multiselectRenderer,
 		},
 		{
@@ -96,21 +86,26 @@ const AadhaarPay = () => {
 			label: "Select Slab",
 			parameter_type_id: ParamType.LIST,
 			list_elements: slabOptions,
-			// defaultValue: "0", // add condition, not hardcoded
 			meta: {
 				force_dropdown: true,
 			},
 		},
 		{
 			name: "pricing_type",
-			label: `Select ${productPricingType.AADHAAR_PAY} Type`,
+			label: `Select Commission Type`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: pricing_type_list,
-			// defaultValue: DEFAULT.pricing_type,
+			// defaultValue: PRICING_TYPE.PERCENT,
+		},
+		{
+			name: "payment_mode",
+			label: "Select Payment Mode",
+			parameter_type_id: ParamType.LIST,
+			list_elements: payment_mode_list,
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.AADHAAR_PAY}`,
+			label: `Define Commission`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			validations: {
 				required: true,
@@ -149,45 +144,31 @@ const AadhaarPay = () => {
 		});
 
 		setSlabOptions(list);
-	}, [slabs]);
+	}, []);
 
 	useEffect(() => {
-		if (watcher.operation_type != "3") {
-			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
-			const _tf_req_uri =
-				watcher.operation_type === "2"
-					? "/network/agent-list?usertype=2"
-					: "/network/agent-list";
-
-			fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-				{
-					headers: {
-						"tf-req-uri-root-path": "/ekoicici/v1",
-						"tf-req-uri": `${_tf_req_uri}`,
-						"tf-req-method": "GET",
-					},
-					token: accessToken,
-					generateNewToken,
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
+				"tf-req-method": "POST",
+			},
+			body: {
+				operation_type: AGENT_TYPE.DISTRIBUTOR,
+				operation: OPERATION.FETCH,
+			},
+			token: accessToken,
+			generateNewToken,
+		})
+			.then((res) => {
+				if (res.status === 0) {
+					setMultiSelectOptions(res?.data?.allScspList);
 				}
-			)
-				.then((res) => {
-					const _agents = res?.data?.csp_list ?? [];
-					setMultiSelectOptions(_agents);
-				})
-				.catch((error) => {
-					console.error("📡Error:", error);
-				});
-
-			let _operationTypeList = operation_type_list.filter(
-				(item) => item.value == watcher.operation_type
-			);
-			let _label =
-				_operationTypeList.length > 0 && _operationTypeList[0].label;
-
-			setMultiSelectLabel(_label);
-		}
-	}, [watcher.operation_type]);
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
+	}, []);
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
@@ -209,14 +190,16 @@ const AadhaarPay = () => {
 		delete _finalData.select;
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
-				"tf-req-method": "POST",
-			},
 			body: {
-				operation_type: watcher.operation_type,
-				operation: OPERATION.SUBMIT,
+				interaction_type_id:
+					TransactionTypes.SET_COMMISSION_FOR_DISTRIBUTORS,
+				service_code:
+					watcher.payment_mode === "1"
+						? serviceCode[0]
+						: watcher.payment_mode === "2"
+						? serviceCode[1]
+						: null,
+				communication: 1,
 				..._finalData,
 			},
 			token: accessToken,
@@ -229,24 +212,21 @@ const AadhaarPay = () => {
 					duration: 6000,
 					isClosable: true,
 				});
-				// handleReset();
 			})
-			.catch((error) => {
-				console.error("📡Error:", error);
+			.catch((err) => {
+				console.error("error", err);
 			});
 	};
-
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
 				<Form
-					parameter_list={aadhaar_pay_parameter_list}
+					parameter_list={indo_nepal_distributor_parameter_list}
 					register={register}
 					control={control}
 					formValues={watcher}
 					errors={errors}
 				/>
-
 				<Flex
 					direction={{ base: "row-reverse", md: "row" }}
 					w={{ base: "100%", md: "500px" }}
@@ -287,4 +267,4 @@ const AadhaarPay = () => {
 	);
 };
 
-export default AadhaarPay;
+export default IndoNepalDistributor;

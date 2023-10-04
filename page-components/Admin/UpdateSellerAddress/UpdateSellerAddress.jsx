@@ -1,17 +1,11 @@
-import { Divider, Flex, FormControl, FormLabel, Text } from "@chakra-ui/react";
-import {
-	Button,
-	Headings,
-	Input,
-	InputLabel,
-	Select,
-	Switch,
-} from "components";
+import { Divider, Flex, Text } from "@chakra-ui/react";
+import { Button, Headings, Switch } from "components";
 import { Endpoints, ParamType, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { Form } from "tf-components";
 
 const ownershipList = [
 	{ label: "Owned", value: "Owned" },
@@ -131,38 +125,38 @@ const UpdateSellerAddress = () => {
 
 	const currentAddressFormFields = [
 		{
-			id: "address_line1",
+			name: "address_line1",
 			label: "Address Line 1",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "address_line2",
+			name: "address_line2",
 			label: "Address Line 2",
 			required: false,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "pincode",
+			name: "pincode",
 			label: "Postel Code",
 			required: true,
 			parameter_type_id: ParamType.NUMERIC,
 		},
 		{
-			id: "city",
+			name: "city",
 			label: "City",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "country_state",
+			name: "country_state",
 			label: "State",
 			required: true,
 			parameter_type_id: ParamType.LIST,
 			list_elements: statesList,
 		},
 		{
-			id: "country",
+			name: "country",
 			label: "Country",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
@@ -170,7 +164,7 @@ const UpdateSellerAddress = () => {
 			value: "India",
 		},
 		{
-			id: "shop_ownership_type",
+			name: "shop_ownership_type",
 			label: "Ownership Type",
 			required: true,
 			parameter_type_id: ParamType.LIST,
@@ -180,38 +174,38 @@ const UpdateSellerAddress = () => {
 
 	const permanentAddressFormFields = [
 		{
-			id: "permanent_address_line1",
+			name: "permanent_address_line1",
 			label: "Address Line 1",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "permanent_address_line2",
+			name: "permanent_address_line2",
 			label: "Address Line 2",
 			required: false,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "permanent_address_pincode",
+			name: "permanent_address_pincode",
 			label: "Postel Code",
 			required: true,
 			parameter_type_id: ParamType.NUMERIC,
 		},
 		{
-			id: "permanent_address_city",
+			name: "permanent_address_city",
 			label: "City",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
 		},
 		{
-			id: "permanent_address_state",
+			name: "permanent_address_state",
 			label: "State",
 			required: true,
 			parameter_type_id: ParamType.LIST,
 			list_elements: statesList,
 		},
 		{
-			id: "permanent_address_country",
+			name: "permanent_address_country",
 			label: "Country",
 			required: true,
 			parameter_type_id: ParamType.TEXT,
@@ -219,7 +213,7 @@ const UpdateSellerAddress = () => {
 			value: "India",
 		},
 		{
-			id: "permanent_address_shop_ownership_type",
+			name: "permanent_address_shop_ownership_type",
 			label: "Ownership Type",
 			required: true,
 			parameter_type_id: ParamType.LIST,
@@ -274,11 +268,10 @@ const UpdateSellerAddress = () => {
 						<Flex direction="column" gap="8">
 							<Form
 								{...{
-									statesList,
 									register,
 									formState: { errors /* isSubmitting */ },
 									control,
-									renderer: currentAddressFormFields,
+									parameter_list: currentAddressFormFields,
 								}}
 							/>
 
@@ -295,14 +288,15 @@ const UpdateSellerAddress = () => {
 							{!isPermanentAddress && (
 								<Form
 									{...{
-										statesList,
+										list_elements: statesList,
 										addressFormLabel: "Permanent Address",
 										register,
 										formState: {
 											errors /* isSubmitting */,
 										},
 										control,
-										renderer: permanentAddressFormFields,
+										parameter_list:
+											permanentAddressFormFields,
 									}}
 								/>
 							)}
@@ -338,91 +332,3 @@ const UpdateSellerAddress = () => {
 };
 
 export default UpdateSellerAddress;
-
-const Form = ({
-	addressFormLabel = "Current Address",
-	renderer,
-	register,
-	formState: { errors /* isSubmitting */ },
-	control,
-}) => {
-	return (
-		<Flex direction="column" gap="4">
-			<InputLabel fontSize="lg" fontWeight="medium" mb="0" required>
-				{addressFormLabel}
-			</InputLabel>
-			<Flex direction="column" gap="8">
-				<Flex gap="8" wrap="wrap" maxW="1200px">
-					{renderer?.map(
-						({
-							id,
-							label,
-							required,
-							value,
-							disabled,
-							list_elements,
-							parameter_type_id,
-						}) => {
-							switch (parameter_type_id) {
-								case ParamType.LIST:
-									return (
-										<FormControl
-											id={id}
-											w={{ base: "100%", md: "500px" }}
-											isInvalid={errors.priority}
-										>
-											<FormLabel>{label}</FormLabel>
-											<Controller
-												name={id}
-												control={control}
-												render={({
-													field: { onChange, value },
-												}) => {
-													return (
-														<Select
-															value={value}
-															options={
-																list_elements
-															}
-															onChange={onChange}
-														/>
-													);
-												}}
-											/>
-										</FormControl>
-									);
-								case ParamType.NUMERIC:
-								case ParamType.TEXT:
-									return (
-										<FormControl
-											key={id}
-											w={{
-												base: "100%",
-												md: "500px",
-											}}
-										>
-											<Input
-												id={id}
-												label={label}
-												required={required}
-												value={value}
-												type={
-													parameter_type_id ===
-													ParamType.NUMERIC
-														? "number"
-														: "text"
-												}
-												fontSize="sm"
-												disabled={disabled}
-												{...register(id)}
-											/>
-										</FormControl>
-									);
-							}
-						}
-					)}
-				</Flex>
-			</Flex>
-		</Flex>
-	);
-};

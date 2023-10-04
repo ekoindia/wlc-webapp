@@ -10,7 +10,7 @@ import {
 import { Headings } from "components";
 import {
 	AadhaarPay,
-	//AccountVerification,
+	// AccountVerification,
 	Aeps,
 	AirtelCms,
 	CommissionFrequency,
@@ -19,10 +19,7 @@ import {
 	IndoNepal,
 } from ".";
 /**
- * A <PricingCommission> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * A PricingCommission page-component
  * @example	`<PricingCommission></PricingCommission>`
  */
 const PricingCommissions = () => {
@@ -37,13 +34,16 @@ const PricingCommissions = () => {
 			label: "Commission Frequency",
 			comp: <CommissionFrequency />,
 		},
-		//{ label: "Account Verification", comp: <AccountVerification /> },
+		// { label: "Account Verification", comp: <AccountVerification /> },
 	];
 
 	return (
 		<>
 			<Headings title="Pricing & Commissions" hasIcon={false} />
-			<Box px={{ base: "16px", md: "initial" }}>
+			<Box
+				px={{ base: "16px", md: "initial" }}
+				mb={{ base: "8", md: "0" }}
+			>
 				<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>
 					<span
 						style={{

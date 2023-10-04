@@ -1,6 +1,6 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { useCommissionSummary } from "contexts";
+import { useCommissionSummary, useUser } from "contexts";
 import { useRouter } from "next/router";
 import { WidgetBase } from "..";
 /**
@@ -16,6 +16,8 @@ const KnowYourCommission = () => {
 
 	const commissionData = useCommissionSummary();
 
+	const { isLoggedIn, isAdminAgentMode, isAdmin } = useUser();
+
 	const commissionProductIds = Object.keys(commissionData?.data || {});
 
 	if (!commissionProductIds.length) return null;
@@ -27,9 +29,12 @@ const KnowYourCommission = () => {
 
 	const handleShowDetail = (id) => {
 		if (id) {
-			router.push(`/commissions/${id}`);
+			const prefix = isAdmin && isAdminAgentMode ? "/admin" : "";
+			router.push(`${prefix}/commissions/${id}`);
 		}
 	};
+
+	if (!isLoggedIn) return null;
 
 	return (
 		<WidgetBase title="Know Your Commissions">

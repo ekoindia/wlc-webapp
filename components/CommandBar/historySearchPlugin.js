@@ -15,6 +15,17 @@ export const getHistorySearchActions = ({ queryValue = "", router }) => {
 	if (queryValue?.length === 0) {
 		// Show Genric Transaction History Search Action for Non-Admin users only
 		return [
+			// getKBarAction({
+			// 	id: "chat",
+			// 	name: "Chat with AI",
+			// 	subtitle:
+			// 		"Ask anything about your business, transactions, etc.",
+			// 	keywords: "",
+			// 	icon: "chat-outline", // "tid"
+			// 	shortcut: ["Beta"],
+			// 	// section: "History",
+			// 	perform: () => router.push("/history"),
+			// }),
 			getKBarAction({
 				id: "historySearch",
 				name: "View Transaction History",

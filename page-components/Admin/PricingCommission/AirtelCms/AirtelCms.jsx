@@ -7,12 +7,8 @@ import { useState } from "react";
 import { saveDataToFile } from "utils/FileSave";
 
 /**
- * A AirtelCms page-component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<AirtelCms></AirtelCms>` TODO: Fix example
+ * A AirtelCms tab page-component
+ * @example	<AirtelCms/>
  */
 const AirtelCms = () => {
 	const [file, setFile] = useState(null);
@@ -113,6 +109,7 @@ const AirtelCms = () => {
 						size="lg"
 						h="64px"
 						w="215px"
+						disabled={file === null}
 					>
 						Upload
 					</Button>

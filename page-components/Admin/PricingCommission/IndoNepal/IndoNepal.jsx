@@ -1,38 +1,40 @@
-import { productPricingType, products } from "constants";
-import { PricingForm } from "..";
+import { Flex } from "@chakra-ui/react";
+import { IndoNepalRetailer } from ".";
+
+// const AGENT_TYPE = {
+// 	RETAILERS: "0",
+// 	DISTRIBUTOR: "2",
+// };
+
+// const agent_type_list = [
+// 	{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
+// 	{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
+// ];
 
 /**
- * A <IndoNepal> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<IndoNepal></IndoNepal>` TODO: Fix example
+ * A IndoNepal tab page-component
+ * @example	<IndoNepal/>
  */
-const IndoNepal = ({ prop1, ...rest }) => {
-	const operationTypeList = [
-		{ value: "3", label: "Whole Network" },
-		{ value: "2", label: "Distributor's Network" },
-		{ value: "1", label: "Individual Distributor/Retailer" },
-	];
-
-	const pricingTypeList = [{ value: "1", label: "Fixed (₹)" }];
-
-	const paymentModeList = [
-		{ value: "1", label: "Cash to Cash" },
-		{ value: "2", label: "Cash to Account" },
-	];
+const IndoNepal = () => {
+	// const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILERS);
 
 	return (
-		<div {...rest}>
-			<PricingForm
-				productDetails={products.INDO_NEPAL_FUND_TRANSFER}
-				productPricingType={productPricingType.INDO_NEPAL_FUND_TRANSFER}
-				operationTypeList={operationTypeList}
-				pricingTypeList={pricingTypeList}
-				paymentModeList={paymentModeList}
+		<Flex direction="column" gap="8">
+			{/* <Radio
+				label="Select Agent Type"
+				value={agentType}
+				options={agent_type_list}
+				onChange={(val) => {
+					setAgentType(val);
+				}}
 			/>
-		</div>
+
+			{agentType === AGENT_TYPE.RETAILERS ? ( */}
+			<IndoNepalRetailer />
+			{/* ) : (
+				<IndoNepalDistributor />
+			)} */}
+		</Flex>
 	);
 };
 

@@ -22,6 +22,7 @@ export const getKBarAction = ({
 	iconSize = "md",
 	iconColor = "#334155",
 	keywords,
+	shortcut,
 	priority = Priority.HIGH,
 	perform,
 }) => {
@@ -39,6 +40,7 @@ export const getKBarAction = ({
 				/>
 			),
 			priority: priority,
+			shortcut: shortcut ?? [],
 			// section: "History",
 			perform: perform,
 		},

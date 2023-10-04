@@ -1,67 +1,250 @@
-import { Flex, FormControl, FormLabel } from "@chakra-ui/react";
-import { Button, Icon, Input, Radio } from "components";
-import { productPricingType, products } from "constants";
+import { Flex, FormControl, useToast } from "@chakra-ui/react";
+import { Button, Icon, Radio } from "components";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useRouter } from "next/router";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components/Form";
 
-const radioOptions = [
+const OPERATION = {
+	SUBMIT: 1,
+	FETCH: 0,
+};
+
+const operation_type_list = [
+	{ value: "3", label: "Whole Network" },
+	{ value: "2", label: "Distributor's Network" },
+	{ value: "1", label: "Individual Distributor/Retailer" },
+];
+
+const PRICING_TYPE = {
+	PERCENT: "0",
+	FIXED: "1",
+};
+
+const pricing_type_list = [
+	// { value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
+	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+];
+
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
+
+const account_verification_operation = [
 	{
-		label: "Yes",
+		label: "On",
 		value: "0",
 	},
 	{
-		label: "No",
+		label: "Off",
 		value: "1",
 	},
 ];
 
+const _multiselectRenderer = {
+	value: "ekocspid",
+	label: "DisplayName",
+};
+
 /**
- * A AccountVerification tab
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<Dmt></Dmt>` TODO: Fix example
+ * A AccountVerification tab page-component
+ * @example	<AccountVerification/>
  */
 const AccountVerification = () => {
+	const { DEFAULT } = products.ACCOUNT_VERIFICATION;
 	const {
 		handleSubmit,
 		register,
-		watch,
-		formState: { errors /* isSubmitting */ },
+		formState: { errors, isSubmitting },
 		control,
-		// setValue,
+		// reset,
 	} = useForm({
 		defaultValues: {
-			account_verification: "0",
+			otp_verification_token: "0",
+			operation_type: DEFAULT.operation_type,
+			pricing_type: DEFAULT.pricing_type,
 		},
 	});
 
-	const watchAccountVerification = watch("account_verification");
-
+	const toast = useToast();
+	const { accessToken } = useSession();
 	const router = useRouter();
+	// const [accountVerificationStatus, setAccountVerificationStatus] =
+	// 	useState(null);
+
+	const [multiSelectLabel, setMultiSelectLabel] = useState();
+	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+
+	const watcher = useWatch({
+		control,
+	});
+
+	// useEffect(() => {
+	// 	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+	// 		body: {
+	// 			interaction_type_id: 737,
+	// 			operation: OPERATION.FETCH,
+	// 		},
+	// 		token: accessToken,
+	// 	})
+	// 		.then((res) => {
+	// 			const _accountVerification = res?.data?.otp_verification_token;
+	// 			console.log("_accountVerification", _accountVerification);
+	// 			setAccountVerificationStatus(_accountVerification);
+	// 		})
+	// 		.catch((err) => {
+	// 			console.error("error", err);
+	// 		});
+	// }, []);
+
+	useEffect(() => {
+		if (watcher.operation_type != "3") {
+			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
+
+			fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					body: {
+						interaction_type_id: 737,
+						operation: OPERATION.FETCH,
+					},
+					token: accessToken,
+				}
+			)
+				.then((res) => {
+					if (res.status === 0) {
+						setMultiSelectOptions(res?.data?.allScspList);
+					} else {
+						toast({
+							title: res.message,
+							status: getStatus(res.status),
+							duration: 5000,
+							isClosable: true,
+						});
+					}
+				})
+				.catch((err) => {
+					console.error("error", err);
+				});
+
+			let _operationTypeList = operation_type_list.filter(
+				(item) => item.value == watcher.operation_type
+			);
+			let _label =
+				_operationTypeList.length > 0 && _operationTypeList[0].label;
+
+			setMultiSelectLabel(_label);
+		}
+	}, [watcher.operation_type]);
+
+	// useEffect(() => {
+	// 	if (accountVerificationStatus !== null) {
+	// 		let defaultValues = {};
+	// 		defaultValues.otp_verification_token = accountVerificationStatus;
+	// 		reset({ ...defaultValues });
+	// 	}
+	// }, [accountVerificationStatus]);
 
 	const handleFormSubmit = (data) => {
-		console.log("Submit Data", data);
+		const { account_verification } = data ?? {};
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: 737,
+				operation: OPERATION.SUBMIT,
+				otp_verification_token: account_verification,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				// const _accountVerification = res?.data?.otp_verification_token;
+				// setAccountVerificationStatus(_accountVerification);
+				toast({
+					title: res.message,
+					status: getStatus(res.status),
+					duration: 5000,
+					isClosable: true,
+				});
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
 	};
 
-	const pricingTypeList = [{ value: "1", label: "Fixed (₹)" }];
+	const account_verification_parameter_list = [
+		{
+			name: "operation_type",
+			label: `Set Pricing For`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: operation_type_list,
+			defaultValue: DEFAULT.operation_type,
+		},
+		{
+			name: "CspList",
+			label: `Select ${multiSelectLabel}`,
+			parameter_type_id: ParamType.LIST,
+			is_multi: true,
+			list_elements: multiSelectOptions,
+			visible_on_param_name: "operation_type",
+			visible_on_param_value: /1|2/,
+			multiSelectRenderer: _multiselectRenderer,
+		},
+		{
+			name: "pricing_type",
+			label: `Select ${productPricingType.ACCOUNT_VERIFICATION} Type`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: pricing_type_list,
+			defaultValue: DEFAULT.pricing_type,
+		},
+		{
+			name: "actual_pricing",
+			label: `Define ${productPricingType.ACCOUNT_VERIFICATION}`,
+			helperText: "Minimum: ₹1.71",
+			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
+			validations: {
+				required: true,
+				min: 1.71,
+				max:
+					watcher["pricing_type"] == PRICING_TYPE.PERCENT
+						? 100
+						: 1000000,
+			},
+			inputRightElement: (
+				<Icon
+					name={
+						watcher["pricing_type"] == PRICING_TYPE.PERCENT
+							? "percent_bg"
+							: "rupee_bg"
+					}
+					size="23px"
+					color="primary.DEFAULT"
+				/>
+			),
+		},
+	];
 
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
+				{/* handling this separate as Form does not support two-layer/multi-layer visibility  */}
 				<FormControl
-					id="account_verification"
+					id="otp_verification_token"
 					w={{ base: "100%", md: "500px" }}
 				>
-					<FormLabel>
-						Do you want to enable account verification?
-					</FormLabel>
 					<Controller
-						name="account_verification"
+						name="otp_verification_token"
 						control={control}
 						render={({ field: { onChange, value } }) => (
 							<Radio
-								options={radioOptions}
+								label="Account Verification"
+								options={account_verification_operation}
 								onChange={onChange}
 								value={value}
 							/>
@@ -69,59 +252,14 @@ const AccountVerification = () => {
 					/>
 				</FormControl>
 
-				{watchAccountVerification === "0" && (
-					<>
-						<FormControl
-							id="payment_mode"
-							w={{ base: "100%", md: "500px" }}
-						>
-							<FormLabel>Select Pricing Type</FormLabel>
-							<Controller
-								name="payment_mode"
-								control={control}
-								defaultValue={
-									products.ACCOUNT_VERIFICATION.DEFAULT
-										.pricing_type
-								}
-								render={({ field: { onChange, value } }) => (
-									<Radio
-										options={pricingTypeList}
-										onChange={onChange}
-										value={value}
-									/>
-								)}
-							/>
-						</FormControl>
-
-						<FormControl
-							w={{ base: "100%", md: "500px" }}
-							isInvalid={errors?.pricing}
-						>
-							<Input
-								id="actual_pricing"
-								required
-								label={`Define ${productPricingType.ACCOUNT_VERIFICATION}`}
-								inputRightElement={
-									<Icon
-										name="rupee_bg"
-										size="23px"
-										color="primary.DEFAULT"
-									/>
-								}
-								type="number"
-								step=".01"
-								min={
-									products.ACCOUNT_VERIFICATION.DEFAULT
-										.min_pricing_value
-								}
-								fontSize="sm"
-								placeholder="2.5"
-								// invalid={errors.pricing}
-								// errorMsg={errors?.title?.message}
-								{...register("actual_pricing")}
-							/>
-						</FormControl>
-					</>
+				{watcher.otp_verification_token === "0" && (
+					<Form
+						parameter_list={account_verification_parameter_list}
+						register={register}
+						control={control}
+						formValues={watcher}
+						errors={errors}
+					/>
 				)}
 
 				<Flex
@@ -140,8 +278,13 @@ const AccountVerification = () => {
 						w={{ base: "100%", md: "250px" }}
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
+						// disabled={
+						// 	accountVerificationStatus ===
+						// 	watcher.otp_verification_token
+						// }
+						loading={isSubmitting}
 					>
-						Save Commissions
+						Save
 					</Button>
 
 					<Button

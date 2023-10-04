@@ -41,7 +41,7 @@ const IcoButton = ({
 	iconStyle,
 	theme = "light",
 	rounded = "full",
-	title = "Icon Button",
+	title,
 	onClick,
 	...rest
 }: Props): JSX.Element => {

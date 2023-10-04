@@ -1,4 +1,4 @@
-import { MultiSelect } from "components/MultiSelect";
+import { CreditCardBillPayment } from "components/CreditCardBillPayment";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("MultiSelect", () => {
+describe("CreditCardBillPayment", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<MultiSelect />);
+		const { container } = render(<CreditCardBillPayment />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("MultiSelect", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for MultiSelect in __tests__/components/MultiSelect/MultiSelect.test.jsx"
+		"TODO: add proper test cases for CreditCardBillPayment in __tests__/components/CreditCardBillPayment/CreditCardBillPayment.test.jsx"
 	);
 });
