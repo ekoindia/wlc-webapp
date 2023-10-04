@@ -165,6 +165,7 @@ const Select = ({
 				required={required}
 				isMulti={isMulti}
 				styles={colorStyles}
+				isSearchable={options.length > 15}
 				options={options}
 				onChange={onChange}
 				placeholder={placeholder}
