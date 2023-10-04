@@ -51,7 +51,7 @@ const account_verification_operation = [
 ];
 
 const _multiselectRenderer = {
-	value: "customer_id",
+	value: "user_code",
 	label: "name",
 };
 

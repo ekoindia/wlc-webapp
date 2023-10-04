@@ -31,7 +31,7 @@ const OPERATION = {
 };
 
 const _multiselectRenderer = {
-	value: "customer_id",
+	value: "user_code",
 	label: "name",
 };
 
