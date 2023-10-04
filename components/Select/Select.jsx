@@ -35,6 +35,7 @@ const Select = ({
 				overflowY: "auto",
 				":hover": {
 					borderColor: colors.primary.DEFAULT,
+					cursor: "pointer",
 				},
 
 				":active": {
