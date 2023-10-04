@@ -3,6 +3,7 @@ import { Button, Icon, Radio } from "components";
 import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -50,8 +51,8 @@ const account_verification_operation = [
 ];
 
 const _multiselectRenderer = {
-	value: "ekocspid",
-	label: "DisplayName",
+	value: "customer_id",
+	label: "name",
 };
 
 /**
@@ -65,7 +66,6 @@ const AccountVerification = () => {
 		register,
 		formState: { errors, isSubmitting },
 		control,
-		// reset,
 	} = useForm({
 		defaultValues: {
 			otp_verification_token: "0",
@@ -77,8 +77,7 @@ const AccountVerification = () => {
 	const toast = useToast();
 	const { accessToken } = useSession();
 	const router = useRouter();
-	// const [accountVerificationStatus, setAccountVerificationStatus] =
-	// 	useState(null);
+	const { generateNewToken } = useRefreshToken();
 
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
@@ -87,52 +86,33 @@ const AccountVerification = () => {
 		control,
 	});
 
-	// useEffect(() => {
-	// 	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-	// 		body: {
-	// 			interaction_type_id: 737,
-	// 			operation: OPERATION.FETCH,
-	// 		},
-	// 		token: accessToken,
-	// 	})
-	// 		.then((res) => {
-	// 			const _accountVerification = res?.data?.otp_verification_token;
-	// 			console.log("_accountVerification", _accountVerification);
-	// 			setAccountVerificationStatus(_accountVerification);
-	// 		})
-	// 		.catch((err) => {
-	// 			console.error("error", err);
-	// 		});
-	// }, []);
-
 	useEffect(() => {
 		if (watcher.operation_type != "3") {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
 
+			const _tf_req_uri =
+				watcher.operation_type === "2"
+					? "/network/agent-list?usertype=2"
+					: "/network/agent-list";
+
 			fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 				{
-					body: {
-						interaction_type_id: 737,
-						operation: OPERATION.FETCH,
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `${_tf_req_uri}`,
+						"tf-req-method": "GET",
 					},
 					token: accessToken,
+					generateNewToken,
 				}
 			)
 				.then((res) => {
-					if (res.status === 0) {
-						setMultiSelectOptions(res?.data?.allScspList);
-					} else {
-						toast({
-							title: res.message,
-							status: getStatus(res.status),
-							duration: 5000,
-							isClosable: true,
-						});
-					}
+					const _agents = res?.data?.csp_list ?? [];
+					setMultiSelectOptions(_agents);
 				})
-				.catch((err) => {
-					console.error("error", err);
+				.catch((error) => {
+					console.error("📡Error:", error);
 				});
 
 			let _operationTypeList = operation_type_list.filter(
@@ -145,27 +125,37 @@ const AccountVerification = () => {
 		}
 	}, [watcher.operation_type]);
 
-	// useEffect(() => {
-	// 	if (accountVerificationStatus !== null) {
-	// 		let defaultValues = {};
-	// 		defaultValues.otp_verification_token = accountVerificationStatus;
-	// 		reset({ ...defaultValues });
-	// 	}
-	// }, [accountVerificationStatus]);
-
 	const handleFormSubmit = (data) => {
-		const { account_verification } = data ?? {};
+		const _finalData = { ...data };
+
+		if (watcher.otp_verification_token == 0) {
+			//Enable Account Verification
+
+			const _CspList = data?.CspList?.map(
+				(item) => item[_multiselectRenderer.value]
+			);
+
+			if (watcher.operation_type == 3) {
+				delete _finalData.CspList;
+			} else {
+				_finalData.CspList = `${_CspList}`;
+			}
+		} else {
+			//disable
+			delete _finalData.actual_pricing;
+			delete _finalData.operation_type;
+			delete _finalData.pricing_type;
+		}
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: 737,
 				operation: OPERATION.SUBMIT,
-				otp_verification_token: account_verification,
+				..._finalData,
 			},
 			token: accessToken,
 		})
 			.then((res) => {
-				// const _accountVerification = res?.data?.otp_verification_token;
-				// setAccountVerificationStatus(_accountVerification);
 				toast({
 					title: res.message,
 					status: getStatus(res.status),
