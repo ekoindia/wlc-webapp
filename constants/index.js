@@ -22,6 +22,7 @@ export {
 	IconType,
 } from "./IconLibrary";
 export {
+	productPricingCommissionValidationConfig,
 	productPricingTextConfig,
 	productPricingType,
 	products,
