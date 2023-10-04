@@ -1,26 +1,28 @@
 import { Flex } from "@chakra-ui/react";
-import { IndoNepalRetailer } from ".";
+import { Radio } from "components";
+import { useState } from "react";
+import { IndoNepalDistributor, IndoNepalRetailer } from ".";
 
-// const AGENT_TYPE = {
-// 	RETAILERS: "0",
-// 	DISTRIBUTOR: "2",
-// };
+const AGENT_TYPE = {
+	RETAILERS: "0",
+	DISTRIBUTOR: "2",
+};
 
-// const agent_type_list = [
-// 	{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
-// 	{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
-// ];
+const agent_type_list = [
+	{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
+	{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
+];
 
 /**
  * A IndoNepal tab page-component
  * @example	<IndoNepal/>
  */
 const IndoNepal = () => {
-	// const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILERS);
+	const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILERS);
 
 	return (
 		<Flex direction="column" gap="8">
-			{/* <Radio
+			<Radio
 				label="Select Agent Type"
 				value={agentType}
 				options={agent_type_list}
@@ -29,11 +31,11 @@ const IndoNepal = () => {
 				}}
 			/>
 
-			{agentType === AGENT_TYPE.RETAILERS ? ( */}
-			<IndoNepalRetailer />
-			{/* ) : (
+			{agentType === AGENT_TYPE.RETAILERS ? (
+				<IndoNepalRetailer />
+			) : (
 				<IndoNepalDistributor />
-			)} */}
+			)}
 		</Flex>
 	);
 };

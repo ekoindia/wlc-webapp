@@ -9,19 +9,9 @@ import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
 
-const OPERATION = {
-	SUBMIT: 1,
-	FETCH: 0,
-};
-
 const PRICING_TYPE = {
 	PERCENT: "1",
 	FIXED: "0",
-};
-
-const AGENT_TYPE = {
-	RETAILERS: "0",
-	DISTRIBUTOR: "2",
 };
 
 const getStatus = (status) => {
@@ -39,12 +29,12 @@ const pricing_type_list = [
 ];
 
 const _multiselectRenderer = {
-	value: "CSPCode",
-	label: "DisplayName",
+	value: "user_code",
+	label: "name",
 };
 
 const AepsDistributor = () => {
-	const { uriSegment, slabs, serviceCode } = products.AEPS;
+	const { slabs, serviceCode } = products.AEPS;
 
 	const {
 		handleSubmit,
@@ -139,23 +129,18 @@ const AepsDistributor = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
-				"tf-req-method": "POST",
-			},
-			body: {
-				operation_type: AGENT_TYPE.DISTRIBUTOR,
-				operation: OPERATION.FETCH,
+				"tf-req-uri": "/network/agent-list?usertype=1",
+				"tf-req-method": "GET",
 			},
 			token: accessToken,
 			generateNewToken,
 		})
 			.then((res) => {
-				if (res.status === 0) {
-					setMultiSelectOptions(res?.data?.allScspList);
-				}
+				const _agents = res?.data?.csp_list ?? [];
+				setMultiSelectOptions(_agents);
 			})
-			.catch((err) => {
-				console.error("error", err);
+			.catch((error) => {
+				console.error("📡Error:", error);
 			});
 	}, []);
 
