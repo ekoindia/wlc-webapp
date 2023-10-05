@@ -91,7 +91,14 @@ const AadhaarPay = () => {
 			? PERCENT.max
 			: FIXED.max;
 
-	const prefix = watcher["pricing_type"] === PRICING_TYPE.PERCENT ? "%" : "₹";
+	let prefix = "";
+	let suffix = "";
+
+	if (watcher["pricing_type"] === PRICING_TYPE.PERCENT) {
+		suffix = "%";
+	} else {
+		prefix = "₹";
+	}
 
 	const aadhaar_pay_parameter_list = [
 		{
@@ -132,7 +139,7 @@ const AadhaarPay = () => {
 			name: "actual_pricing",
 			label: `Define ${productPricingType.AADHAAR_PAY}`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
+			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
 			validations: {
 				required: true,
 				min: min,
