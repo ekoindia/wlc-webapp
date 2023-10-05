@@ -26,11 +26,7 @@ const Radio = ({
 }) => {
 	const _id = useId();
 	return (
-		<RadioGroup
-			defaultValue={defaultValue}
-			onChange={onChange}
-			value={value}
-		>
+		<Flex direction="column" w="100%" {...rest}>
 			{label ? (
 				<InputLabel
 					htmlFor={id ?? _id}
@@ -40,35 +36,40 @@ const Radio = ({
 					{label}
 				</InputLabel>
 			) : null}
-			<Flex
-				direction={{
-					base: "column",
-					md: "row",
-				}}
-				gap={{
-					base: "4",
-					md: "16",
-				}}
-				wrap="wrap"
-				{...rest}
+			<RadioGroup
+				defaultValue={defaultValue}
+				onChange={onChange}
+				value={value}
 			>
-				{options?.map((item) => (
-					<ChakraRadio
-						size="lg"
-						key={item[renderer.value]}
-						value={item[renderer.value]}
-					>
-						<Text
-							fontSize="sm"
-							whiteSpace="nowrap"
-							maxWidth="200px"
+				<Flex
+					direction={{
+						base: "column",
+						md: "row",
+					}}
+					gap={{
+						base: "4",
+						md: "12",
+					}}
+					wrap="wrap"
+				>
+					{options?.map((item) => (
+						<ChakraRadio
+							size="lg"
+							key={item[renderer.value]}
+							value={item[renderer.value]}
 						>
-							{item[renderer.label]}
-						</Text>
-					</ChakraRadio>
-				))}
-			</Flex>
-		</RadioGroup>
+							<Text
+								fontSize="sm"
+								whiteSpace="nowrap"
+								maxWidth="200px"
+							>
+								{item[renderer.label]}
+							</Text>
+						</ChakraRadio>
+					))}
+				</Flex>
+			</RadioGroup>
+		</Flex>
 	);
 };
 
