@@ -100,7 +100,7 @@ const AccountVerification = () => {
 
 			const _tf_req_uri =
 				watcher.operation_type === "2"
-					? "/network/agent-list?usertype=2"
+					? "/network/agent-list?usertype=1"
 					: "/network/agent-list";
 
 			fetcher(

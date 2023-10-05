@@ -170,7 +170,7 @@ const DmtRetailer = () => {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
 			const _tf_req_uri =
 				watcher.operation_type === "2"
-					? "/network/agent-list?usertype=2"
+					? "/network/agent-list?usertype=1"
 					: "/network/agent-list";
 
 			fetcher(
