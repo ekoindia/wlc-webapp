@@ -9,11 +9,6 @@ import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
 
-const OPERATION = {
-	SUBMIT: 1,
-	FETCH: 0,
-};
-
 const getStatus = (status) => {
 	switch (status) {
 		case 0:
@@ -24,8 +19,8 @@ const getStatus = (status) => {
 };
 
 const _multiselectRenderer = {
-	value: "CSPCode",
-	label: "DisplayName",
+	value: "user_code",
+	label: "name",
 };
 
 const operation_type_list = [
@@ -42,7 +37,7 @@ const commission_type_list = [
  * Commission Frequency tab
  */
 const CommissionFrequency = () => {
-	const [multiSelectOptions, setMultiSelectOptions] = useState();
+	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 	// const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const toast = useToast();
 	const router = useRouter();
@@ -65,31 +60,19 @@ const CommissionFrequency = () => {
 				{
 					headers: {
 						"tf-req-uri-root-path": "/ekoicici/v1",
-						"tf-req-uri": `/network/pricing_commissions/`,
-						"tf-req-method": "POST",
-					},
-					body: {
-						operation_type: watcher.operation_type,
-						operation: OPERATION.FETCH,
+						"tf-req-uri": "/network/agent-list?usertype=1",
+						"tf-req-method": "GET",
 					},
 					token: accessToken,
 					generateNewToken,
 				}
 			)
 				.then((res) => {
-					if (res.status === 0) {
-						setMultiSelectOptions(res?.data?.allScspList);
-					} else {
-						toast({
-							title: res.message,
-							status: getStatus(res.status),
-							duration: 5000,
-							isClosable: true,
-						});
-					}
+					const _agents = res?.data?.csp_list ?? [];
+					setMultiSelectOptions(_agents);
 				})
 				.catch((error) => {
-					console.error("📡 Fetch Error:", error);
+					console.error("📡Error:", error);
 				});
 
 			// let _operationTypeList = operation_type_list.filter(

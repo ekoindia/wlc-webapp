@@ -79,7 +79,7 @@ const AadhaarPay = () => {
 	const { generateNewToken } = useRefreshToken();
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
-	const [multiSelectOptions, setMultiSelectOptions] = useState();
+	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 
 	const min =
 		watcher["pricing_type"] === PRICING_TYPE.PERCENT
