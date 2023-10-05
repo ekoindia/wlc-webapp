@@ -88,7 +88,14 @@ const AepsRetailer = () => {
 			? PERCENT.max
 			: FIXED.max;
 
-	const prefix = watcher["pricing_type"] === PRICING_TYPE.PERCENT ? "%" : "₹";
+	let prefix = "";
+	let suffix = "";
+
+	if (watcher["pricing_type"] === PRICING_TYPE.PERCENT) {
+		suffix = "%";
+	} else {
+		prefix = "₹";
+	}
 
 	const aeps_retailer_parameter_list = [
 		{
@@ -128,7 +135,7 @@ const AepsRetailer = () => {
 			name: "actual_pricing",
 			label: `Define ${productPricingType.DMT}`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
+			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
 			validations: {
 				required: true,
 				min: min,
@@ -170,7 +177,7 @@ const AepsRetailer = () => {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
 			const _tf_req_uri =
 				watcher.operation_type === "2"
-					? "/network/agent-list?usertype=2"
+					? "/network/agent-list?usertype=1"
 					: "/network/agent-list";
 
 			fetcher(

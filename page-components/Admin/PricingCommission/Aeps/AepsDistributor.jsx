@@ -74,7 +74,14 @@ const AepsDistributor = () => {
 			? PERCENT.max
 			: FIXED.max;
 
-	const prefix = watcher["pricing_type"] === PRICING_TYPE.PERCENT ? "%" : "₹";
+	let prefix = "";
+	let suffix = "";
+
+	if (watcher["pricing_type"] === PRICING_TYPE.PERCENT) {
+		suffix = "%";
+	} else {
+		prefix = "₹";
+	}
 
 	const aeps_distributor_parameter_list = [
 		{
@@ -105,7 +112,7 @@ const AepsDistributor = () => {
 			name: "actual_pricing",
 			label: `Define Commission`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
+			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
 			validations: {
 				required: true,
 				min: min,
