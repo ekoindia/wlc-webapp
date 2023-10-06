@@ -163,7 +163,7 @@ const Select = ({
 				</InputLabel>
 			) : null}
 			<ReactSelect
-				required={required}
+				// required={required}
 				isMulti={isMulti}
 				styles={colorStyles}
 				isSearchable={options?.length > 15}
