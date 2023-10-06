@@ -22,6 +22,10 @@ const baseStyle = definePartsStyle({
 		_focus: {
 			boxShadow: "none",
 		},
+
+		_invalid: {
+			borderColor: "error",
+		},
 	},
 });
 
