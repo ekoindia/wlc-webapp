@@ -5,6 +5,7 @@ import {
 	Headings,
 	Icon,
 	Input,
+	Menus,
 	Modal,
 	PrintReceipt,
 	SearchBar,
@@ -14,6 +15,8 @@ import { useGlobalSearch, useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { dateFormatting } from "utils/dateFormat";
+import { saveDataToFile } from "utils/FileSave";
 import { HistoryTable } from ".";
 
 const limit = tableRowLimit?.XLARGE; // Page size
@@ -221,6 +224,48 @@ const History = () => {
 		setClear(true);
 	};
 
+	const onReportDownload = (value) => {
+		setLoading(true);
+
+		const currentDate = new Date();
+		const formattedDate = dateFormatting(currentDate);
+
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-is-file-download": "1",
+			},
+			body: {
+				interaction_type_id:
+					TransactionTypes.DOWNLOAD_REPORT_TRANSACTION_REPORTS,
+				start_index: 1,
+				limit: 50000,
+				account_id:
+					account_list &&
+					account_list.length > 0 &&
+					account_list[0].id
+						? account_list[0]?.id
+						: null,
+				reporttype: value,
+				tx_date: formattedDate,
+			},
+			token: accessToken,
+		})
+			.then((data) => {
+				console.log(data);
+				const _blob = data?.file?.blob;
+				const _filename = data?.file?.name || "file";
+				const _type = data?.file["content-type"];
+				const _b64 = true;
+				saveDataToFile(_blob, _filename, _type, _b64);
+			})
+			.catch((err) => {
+				console.error("[History] error: ", err);
+			})
+			.finally(() => {
+				setLoading(false);
+			});
+	};
+
 	const transactionList = data;
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -262,6 +307,7 @@ const History = () => {
 						onClose,
 						onFilterSubmit,
 						onFilterClear,
+						onReportDownload,
 					}}
 				/>
 				<PrintReceipt heading="Transaction Receipt (copy)">
@@ -332,11 +378,34 @@ const HistoryToolbar = ({
 	onClose,
 	onFilterSubmit,
 	onFilterClear,
+	onReportDownload,
 }) => {
 	const labelStyle = {
 		fontSize: { base: "sm" },
 		// color: "inputlabel",
 	};
+
+	const menuList = [
+		{
+			id: 1,
+			value: "xlsx",
+			label: "Download Report(Excel)",
+			fontSize: "md",
+			onClick: (value) => {
+				onReportDownload(value);
+			},
+		},
+		{
+			id: 2,
+			value: "pdf",
+			label: "Download Report(Pdf)",
+			fontSize: "md",
+			onClick: (value) => {
+				onReportDownload(value);
+			},
+		},
+	];
+
 	return (
 		<Flex
 			justifyContent={"space-between"}
@@ -392,6 +461,24 @@ const HistoryToolbar = ({
 					&nbsp;
 					<Text display={{ base: "none", md: "flex" }}>Filter</Text>
 				</Button>
+
+				{/* <========== Export Reports =========> */}
+				<Menus
+					as={Button}
+					type="everted"
+					size="lg"
+					title="Export"
+					menulist={menuList}
+					iconPos="left"
+					iconName="file-download"
+					iconStyles={{ width: "18px" }}
+					rounded="10px"
+					_hover={{ bg: "primary.DEFAULT" }}
+					listStyles={{
+						width: "250px",
+						fontSize: "20px",
+					}}
+				/>
 
 				{/* <===================Filter Modal Code ==========================> */}
 				<Modal

@@ -5,6 +5,7 @@ import {
 	MenuDivider,
 	MenuItem,
 	MenuList,
+	Text,
 } from "@chakra-ui/react";
 import { Icon } from "..";
 
@@ -68,7 +69,9 @@ const Menus = ({
 								{...pseudoStyles}
 								{...rest}
 							>
-								{title}
+								<Text display={{ base: "none", md: "flex" }}>
+									{title}
+								</Text>
 							</MenuButton>
 							<MenuList
 								py="0px"
@@ -91,7 +94,10 @@ const Menus = ({
 																item.value
 															)
 														}
-														fontSize="xs"
+														fontSize={
+															item.fontSize ||
+															"xs"
+														}
 														_hover={{
 															bg: "divider",
 														}}
