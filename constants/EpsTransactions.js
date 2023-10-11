@@ -21,6 +21,7 @@ export const TransactionIds = {
 	LOAD_EVALUE: 491, // For Retailer + Distributor
 	REQUEST_EVALUE: 240, // For Distributor
 	TRANSFER_EVALUE: 241, // For Distributor
+	FUND_SETTLEMENT: 972, // For Admin
 	// For "Add Wallet Balance" Transaction.
 	LOAD_WALLET_TRXN_ID_LIST: [
 		491, // Retailers (Load E-value)
