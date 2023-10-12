@@ -306,9 +306,9 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				manageMyAccount = null;
 			}
 			// Remove "Manage My Account" for Admins
-			if (isAdmin) {
-				manageMyAccount = null;
-			}
+			// if (isAdmin) {
+			// 	manageMyAccount = null;
+			// }
 
 			setTrxnList(trxnList);
 			setOtherList([
