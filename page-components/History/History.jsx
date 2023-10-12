@@ -13,9 +13,9 @@ import {
 import { Endpoints, tableRowLimit, TransactionTypes } from "constants";
 import { useGlobalSearch, useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
+import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { dateFormatting } from "utils/dateFormat";
 import { saveDataToFile } from "utils/FileSave";
 import { HistoryTable } from ".";
 
@@ -228,7 +228,7 @@ const History = () => {
 		setLoading(true);
 
 		const currentDate = new Date();
-		const formattedDate = dateFormatting(currentDate);
+		const formattedDate = formatDate(currentDate, "yyyy-MM-dd");
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
