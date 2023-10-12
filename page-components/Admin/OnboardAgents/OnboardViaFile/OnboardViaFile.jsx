@@ -1,9 +1,9 @@
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import { Button, Dropzone, Icon, Radio } from "components";
-import { Endpoints } from "constants/EndPoints";
+import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { useState } from "react";
-import { OnboardingResponse } from "..";
+import { OnboardAgentResponse } from "..";
 
 const SAMPLE_DOWNLOAD_LINK = {
 	SELLER: "https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
@@ -17,13 +17,10 @@ const AGENT_TYPE = {
 };
 
 /**
- * A BulkOnboarding page-component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<BulkOnboarding></BulkOnboarding>` TODO: Fix example
+ * A OnboardViaFile component
+ * @example	`<OnboardViaFile></OnboardViaFile>` TODO: Fix example
  */
-const BulkOnboarding = () => {
+const OnboardViaFile = () => {
 	const [file, setFile] = useState(null);
 	const [data, setData] = useState(null);
 	// const [loading, setLoading] = useState(false);
@@ -179,9 +176,9 @@ const BulkOnboarding = () => {
 						</Flex>
 
 						{data?.data?.csp_list?.length > 0 && (
-							<OnboardingResponse
+							<OnboardAgentResponse
 								responseList={data?.data?.csp_list}
-								agentType={applicantType}
+								applicantType={applicantType}
 							/>
 						)}
 					</Flex>
@@ -191,4 +188,4 @@ const BulkOnboarding = () => {
 	);
 };
 
-export default BulkOnboarding;
+export default OnboardViaFile;

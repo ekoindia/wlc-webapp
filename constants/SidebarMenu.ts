@@ -77,8 +77,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	{
 		name: "Onboard Agents",
 		icon: "person-add",
-		link: "/admin/onboarding",
-		//link: "/admin/bulk-onboarding",
+		link: "/admin/onboard-agents",
 	},
 	{
 		icon: "query",

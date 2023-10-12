@@ -1,11 +1,10 @@
 export { ChangeRoleMenuList } from "./AdminChangeRole";
 export { allowedCategories } from "./allowedCategories";
 export {
-	BulkOnboardingBreadcrumbData,
 	ConfigurationsBreadcrumbData,
 	NetworkObject,
 	NotificationsBreadcrumbData,
-	OnboardingBreadcrumbData,
+	OnboardAgentObject,
 	PricingCommissionObject,
 	QueryObject,
 	TransactionHistoryObject,

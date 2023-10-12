@@ -9,7 +9,7 @@ const onboardRetailerRenderer = [
 	{ label: "Sr. No.", show: "#" },
 	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
 	{ name: "mobile", label: "Mobile Number", sorting: true },
-	{ name: "dist_mobile", label: "Distributor Mobile Number", sorting: true },
+	// { name: "dist_mobile", label: "Distributor Mobile Number", sorting: true },
 	{
 		name: "status",
 		label: "Status",
@@ -41,17 +41,17 @@ const onboardDistributorRenderer = [
 ];
 
 /**
- * A OnboardingResponse page-component, to show result after user uploaded list of users to be onboarded on platform
+ * A OnboardAgentResponse page-component, to show result after user uploaded list of users to be onboarded on platform
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<OnboardingResponse></OnboardingResponse>`
+ * @example	`<OnboardAgentResponse></OnboardAgentResponse>`
  */
-const OnboardingResponse = ({ agentType, responseList }) => {
+const OnboardAgentResponse = ({ applicantType, responseList }) => {
 	return (
 		<Table
 			variant="stripedActionNone"
 			renderer={
-				agentType === AGENT_TYPE.RETAILER
+				applicantType === AGENT_TYPE.RETAILER
 					? onboardRetailerRenderer
 					: onboardDistributorRenderer
 			}
@@ -60,4 +60,4 @@ const OnboardingResponse = ({ agentType, responseList }) => {
 	);
 };
 
-export default OnboardingResponse;
+export default OnboardAgentResponse;

@@ -1,4 +1,4 @@
-import { SingleOnboarding } from "components/SingleOnboarding";
+import { OnboardAgents } from "components/OnboardAgents";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("SingleOnboarding", () => {
+describe("OnboardAgents", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<SingleOnboarding />);
+		const { container } = render(<OnboardAgents />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("SingleOnboarding", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for SingleOnboarding in __tests__/components/SingleOnboarding/SingleOnboarding.test.jsx"
+		"TODO: add proper test cases for OnboardAgents in __tests__/components/OnboardAgents/OnboardAgents.test.jsx"
 	);
 });

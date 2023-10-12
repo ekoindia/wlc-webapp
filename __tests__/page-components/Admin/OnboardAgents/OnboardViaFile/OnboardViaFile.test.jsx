@@ -1,4 +1,4 @@
-import { BulkOnboarding } from "components/BulkOnboarding";
+import { OnboardViaFile } from "components/OnboardViaFile";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("BulkOnboarding", () => {
+describe("OnboardViaFile", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<BulkOnboarding />);
+		const { container } = render(<OnboardViaFile />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("BulkOnboarding", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for BulkOnboarding in __tests__/components/BulkOnboarding/BulkOnboarding.test.jsx"
+		"TODO: add proper test cases for OnboardViaFile in __tests__/components/OnboardViaFile/OnboardViaFile.test.jsx"
 	);
 });

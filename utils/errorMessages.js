@@ -5,7 +5,7 @@ const errorTypeMessages = {
 	required: "Required",
 	pattern: "Please enter the correct value",
 	maxLength: "Length exceeds",
-	minLength: "Insufficient Characters",
+	minLength: "Insufficient Characters", //"Input length is too short"
 	email: "Please enter a valid email address",
 	url: "Please enter a valid URL",
 	min: "Please enter a higher value",
