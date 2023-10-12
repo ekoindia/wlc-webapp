@@ -43,6 +43,10 @@ const Form = ({
 					},
 					index
 				) => {
+					const _validations = required
+						? { required: true, ...validations }
+						: { ...validations };
+
 					const { force_dropdown } = meta;
 
 					if (visible_on_param_name && visible_on_param_value) {
@@ -61,8 +65,6 @@ const Form = ({
 									key={`${name}-${label}-${index}`}
 									id={name}
 									w={{ base: "auto", md: "500px" }}
-									isRequired={required}
-									isInvalid={errors[name]}
 								>
 									<Input
 										id={name}
@@ -80,7 +82,7 @@ const Form = ({
 										disabled={disabled}
 										{...rest}
 										{...register(name, {
-											...validations,
+											..._validations,
 										})}
 									/>
 									<Text
@@ -112,12 +114,12 @@ const Form = ({
 												base: "auto",
 												md: "500px",
 											}}
-											isRequired={required}
 										>
 											<Controller
 												name={name}
 												control={control}
 												defaultValue={defaultValue}
+												rules={{ ..._validations }}
 												render={({
 													field: { onChange },
 												}) => (
@@ -137,7 +139,6 @@ const Form = ({
 														{...rest}
 													/>
 												)}
-												rules={{ ...validations }}
 											/>
 											<Text
 												fontSize="xs"
@@ -165,12 +166,12 @@ const Form = ({
 										<FormControl
 											key={`${name}-${label}-${index}`}
 											id={name}
-											isRequired={required}
 										>
 											<Controller
 												name={name}
 												control={control}
 												defaultValue={defaultValue}
+												rules={{ ..._validations }}
 												render={({
 													field: { onChange, value },
 												}) => (
@@ -186,7 +187,6 @@ const Form = ({
 														{...rest}
 													/>
 												)}
-												rules={{ ...validations }}
 											/>
 											<Text
 												fontSize="xs"
@@ -215,12 +215,12 @@ const Form = ({
 												base: "auto",
 												md: "500px",
 											}}
-											isRequired={required}
 										>
 											<Controller
 												name={name}
 												control={control}
 												defaultValue={defaultValue}
+												rules={{ ..._validations }}
 												render={({
 													field: { onChange, value },
 												}) => {
@@ -239,7 +239,6 @@ const Form = ({
 														/>
 													);
 												}}
-												rules={{ ...validations }}
 											/>
 											<Text
 												fontSize="xs"

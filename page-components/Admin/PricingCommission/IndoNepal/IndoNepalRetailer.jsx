@@ -137,7 +137,7 @@ const IndoNepalRetailer = () => {
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
 			validations: {
-				required: true,
+				// required: true,
 				min: min,
 				max: max,
 			},
