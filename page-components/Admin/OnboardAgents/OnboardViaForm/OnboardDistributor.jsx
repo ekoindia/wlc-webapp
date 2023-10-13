@@ -17,7 +17,7 @@ const OnboardDistributor = ({ applicantType, setResponse }) => {
 		handleSubmit,
 		register,
 		control,
-		trigger,
+		// trigger,
 		formState: { errors, isSubmitting },
 	} = useForm({
 		defaultValues: {
@@ -25,7 +25,7 @@ const OnboardDistributor = ({ applicantType, setResponse }) => {
 		},
 	});
 
-	const { fields, append /* remove */ } = useFieldArray({
+	const { fields /* append  remove */ } = useFieldArray({
 		control,
 		name: "agents",
 	});
@@ -151,7 +151,7 @@ const OnboardDistributor = ({ applicantType, setResponse }) => {
 						Save
 					</Button>
 
-					<Button
+					{/* <Button
 						h={{ base: "64px", md: "auto" }}
 						w={{ base: "100%", md: "initial" }}
 						bg={{ base: "white", md: "none" }}
@@ -171,7 +171,7 @@ const OnboardDistributor = ({ applicantType, setResponse }) => {
 						}}
 					>
 						+ Add New
-					</Button>
+					</Button> */}
 				</Flex>
 			</Flex>
 		</form>
