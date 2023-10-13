@@ -1,4 +1,4 @@
-import { Flex, FormControl, FormLabel } from "@chakra-ui/react";
+import { Flex, FormControl } from "@chakra-ui/react";
 import { Button, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
@@ -61,7 +61,7 @@ const PromoteSellerToDistributor = ({ agentData, setResponseDetails }) => {
 
 	// Handled API according to updated Select component
 	const onSubmit = (data) => {
-		const { csp } = data;
+		const { retailer } = data;
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -70,7 +70,7 @@ const PromoteSellerToDistributor = ({ agentData, setResponseDetails }) => {
 			},
 			body: {
 				operation_type: 1,
-				agent_mobile: default_agent_mobile ?? csp.mobile,
+				agent_mobile: default_agent_mobile ?? retailer[renderer.value],
 			},
 			token: accessToken,
 		}).then((res) => {
@@ -83,18 +83,18 @@ const PromoteSellerToDistributor = ({ agentData, setResponseDetails }) => {
 			<Flex direction="column" gap="8">
 				{default_agent_mobile ? null : (
 					<FormControl w={{ base: "100%", md: "500px" }}>
-						<FormLabel>Select Retailer</FormLabel>
-
 						<Controller
-							name="csp"
+							name="retailer"
 							control={control}
 							render={({ field: { onChange, value } }) => {
 								return (
 									<Select
+										label="Select Retailer"
 										options={sellerList}
 										renderer={renderer}
 										onChange={onChange}
 										value={value}
+										required={true}
 										// disabled={disabled}
 									/>
 								);
