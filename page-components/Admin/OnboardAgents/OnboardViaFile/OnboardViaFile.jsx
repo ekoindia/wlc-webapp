@@ -1,5 +1,5 @@
-import { Box, Flex, Link, Text } from "@chakra-ui/react";
-import { Button, Dropzone, Icon, Radio } from "components";
+import { Box, Flex, Link } from "@chakra-ui/react";
+import { Button, Dropzone, Icon, InputLabel, Radio } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { useState } from "react";
@@ -15,6 +15,16 @@ const AGENT_TYPE = {
 	RETAILER: "0",
 	DISTRIBUTOR: "2",
 };
+
+const applicantTypeObj = {
+	0: "Retailers",
+	2: "Distributors",
+};
+
+const onboardAgentTypeList = [
+	{ value: AGENT_TYPE.RETAILER, label: "Retailers" },
+	{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
+];
 
 /**
  * A OnboardViaFile component
@@ -66,125 +76,112 @@ const OnboardViaFile = () => {
 			});
 	};
 
-	const applicantTypeObj = {
-		0: "Retailers",
-		2: "Distributors",
-	};
-
-	const onboardAgentTypeList = [
-		{ value: AGENT_TYPE.RETAILER, label: "Onboard Retailers" },
-		{ value: AGENT_TYPE.DISTRIBUTOR, label: "Onboard Distributors" },
-	];
-
 	return (
-		<>
-			<Flex
-				direction="column"
-				w="100%"
-				bg="white"
-				borderRadius={8}
-				fontSize="md"
-				gap="6"
-			>
-				{data === null ? (
-					<Flex
-						direction="column"
-						gap="8"
-						w={{ base: "100%", md: "500px" }}
-					>
-						<Radio
-							value={applicantType}
-							options={onboardAgentTypeList}
-							onChange={(value) => setApplicantType(value)}
-						/>
-						<Flex direction="column" gap="2">
-							<Text fontWeight="semibold">
-								Download Sample File (for Onboarding{" "}
-								{applicantTypeObj[applicantType]})
-							</Text>
-							<Link
-								href={
-									applicantType == 0
-										? SAMPLE_DOWNLOAD_LINK.SELLER
-										: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
-								}
-								w="fit-content"
-								fontWeight="semibold"
-								isExternal
-							>
-								<Button>
-									<Icon name="file-download" size="sm" />
-									&nbsp; Download
-								</Button>
-							</Link>
-						</Flex>
-
-						<Flex direction="column" gap="2">
-							<Text fontWeight="semibold">
-								Upload the List of{" "}
-								{applicantTypeObj[applicantType]} to Onboard
-							</Text>
-							<Dropzone
-								file={file}
-								setFile={setFile}
-								accept=".xls,.xlsx"
-							/>
-						</Flex>
-
-						<Button
-							onClick={handleFileUpload}
-							size="lg"
-							h="64px"
-							w="215px"
-							disabled={file === null || file === undefined}
+		<Flex
+			direction="column"
+			w="100%"
+			bg="white"
+			borderRadius={8}
+			fontSize="md"
+			gap="8"
+		>
+			{data === null ? (
+				<Flex
+					direction="column"
+					gap="8"
+					w={{ base: "100%", md: "500px" }}
+				>
+					<Radio
+						value={applicantType}
+						label="Select Agent Type"
+						options={onboardAgentTypeList}
+						onChange={(value) => setApplicantType(value)}
+					/>
+					<Flex direction="column">
+						<InputLabel required={true}>
+							Download Sample File (for Onboarding{" "}
+							{applicantTypeObj[applicantType]})
+						</InputLabel>
+						<Link
+							href={
+								applicantType == 0
+									? SAMPLE_DOWNLOAD_LINK.SELLER
+									: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
+							}
+							w="fit-content"
+							fontWeight="semibold"
+							isExternal
 						>
-							Upload
-						</Button>
+							<Button>
+								<Icon name="file-download" size="sm" />
+								&nbsp; Download
+							</Button>
+						</Link>
 					</Flex>
-				) : (
-					<Flex direction="column" gap="2">
-						<Flex fontSize="sm" direction="column" gap="1">
-							<span>
-								{data?.message || "Something went wrong"}!!
-							</span>
-							{data?.data?.processed_records > 0 && (
-								<Flex gap="1">
-									<Box as="span" fontWeight="semibold">
-										Accepted:
-									</Box>
-									<span>{data?.data?.processed_records}</span>
-									<span>
-										{data?.data?.processed_records === 1
-											? "record"
-											: "records"}
-									</span>
-								</Flex>
-							)}
-							{data?.data?.failed_count > 0 && (
-								<Flex gap="1">
-									<Box as="span" fontWeight="semibold">
-										Rejected:
-									</Box>
-									<span>{data?.data?.failed_count}</span>
-									<span>
-										{data?.data?.failed_count === 1
-											? "record"
-											: "records"}
-									</span>
-								</Flex>
-							)}
-						</Flex>
 
-						{data?.data?.csp_list?.length > 0 && (
-							<OnboardAgentResponse
-								responseList={data?.data?.csp_list}
-								applicantType={applicantType}
-							/>
+					<Flex direction="column">
+						<InputLabel required={true}>
+							Upload the List of {applicantTypeObj[applicantType]}{" "}
+							to Onboard
+						</InputLabel>
+						<Dropzone
+							file={file}
+							setFile={setFile}
+							accept=".xls,.xlsx"
+						/>
+					</Flex>
+
+					<Button
+						onClick={handleFileUpload}
+						size="lg"
+						h="64px"
+						w="215px"
+						disabled={file === null || file === undefined}
+					>
+						Upload
+					</Button>
+				</Flex>
+			) : (
+				<Flex direction="column" gap="2">
+					<Flex fontSize="sm" direction="column" gap="1">
+						<span>{data?.message || "Something went wrong"}!!</span>
+						{data?.data?.processed_records > 0 && (
+							<Flex gap="1">
+								<Box as="span" fontWeight="semibold">
+									Accepted:
+								</Box>
+								<span>{data?.data?.processed_records}</span>
+								<span>
+									{data?.data?.processed_records === 1
+										? "record"
+										: "records"}
+								</span>
+							</Flex>
+						)}
+						{data?.data?.failed_count > 0 && (
+							<Flex gap="1">
+								<Box as="span" fontWeight="semibold">
+									Rejected:
+								</Box>
+								<span>{data?.data?.failed_count}</span>
+								<span>
+									{data?.data?.failed_count === 1
+										? "record"
+										: "records"}
+								</span>
+							</Flex>
 						)}
 					</Flex>
-				)}
-			</Flex>
-		</>
+
+					{data?.data?.csp_list?.length > 0 && (
+						<OnboardAgentResponse
+							responseList={data?.data?.csp_list}
+							applicantType={applicantType}
+						/>
+					)}
+				</Flex>
+			)}
+		</Flex>
 	);
 };
 
