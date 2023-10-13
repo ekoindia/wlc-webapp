@@ -225,8 +225,6 @@ const History = () => {
 	};
 
 	const onReportDownload = (value) => {
-		setLoading(true);
-
 		const currentDate = new Date();
 		const formattedDate = formatDate(currentDate, "yyyy-MM-dd");
 
@@ -236,7 +234,7 @@ const History = () => {
 			},
 			body: {
 				interaction_type_id:
-					TransactionTypes.DOWNLOAD_REPORT_TRANSACTION_REPORTS,
+					TransactionTypes.DOWNLOAD_TRXN_HISTORY_REPORT,
 				start_index: 1,
 				limit: 50000,
 				account_id:
@@ -260,9 +258,6 @@ const History = () => {
 			})
 			.catch((err) => {
 				console.error("[History] error: ", err);
-			})
-			.finally(() => {
-				setLoading(false);
 			});
 	};
 
@@ -390,7 +385,6 @@ const HistoryToolbar = ({
 			id: 1,
 			value: "xlsx",
 			label: "Download Report(Excel)",
-			fontSize: "md",
 			onClick: (value) => {
 				onReportDownload(value);
 			},
@@ -399,7 +393,6 @@ const HistoryToolbar = ({
 			id: 2,
 			value: "pdf",
 			label: "Download Report(Pdf)",
-			fontSize: "md",
 			onClick: (value) => {
 				onReportDownload(value);
 			},

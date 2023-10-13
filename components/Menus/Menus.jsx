@@ -94,10 +94,8 @@ const Menus = ({
 																item.value
 															)
 														}
-														fontSize={
-															item.fontSize ||
-															"xs"
-														}
+														minHeight="48px"
+														fontSize="md"
 														_hover={{
 															bg: "divider",
 														}}
