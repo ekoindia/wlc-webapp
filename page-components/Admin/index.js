@@ -5,7 +5,7 @@ export { Dashboard } from "./Dashboard";
 export { DetailedStatement } from "./DetailedStatement";
 export { Network } from "./Network";
 export { NotificationCreator } from "./NotificationCreator";
-export { Onboarding } from "./Onboarding";
+export { OnboardAgents } from "./OnboardAgents";
 export { PricingCommission } from "./PricingCommission";
 export { ProfilePanel } from "./ProfilePanel";
 export { QueryCenter } from "./QueryCenter";

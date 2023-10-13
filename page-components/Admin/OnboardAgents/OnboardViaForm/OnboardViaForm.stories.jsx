@@ -1,9 +1,9 @@
-import BulkOnboarding from "./BulkOnboarding";
+import OnboardViaForm from "./OnboardViaForm";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "PageComponent/Admin/BulkOnboarding",
-	component: BulkOnboarding,
+	title: "Component/OnboardViaForm",
+	component: OnboardViaForm,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +46,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <BulkOnboarding {...args} />;
+const Template = (args) => <OnboardViaForm {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

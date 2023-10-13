@@ -137,7 +137,7 @@ const DmtRetailer = () => {
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
 			validations: {
-				required: true,
+				// required: true,
 				min: min,
 				max: max,
 			},

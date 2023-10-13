@@ -1,4 +1,4 @@
-import { Onboarding } from "components/Onboarding";
+import { OnboardViaForm } from "components/OnboardViaForm";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Onboarding", () => {
+describe("OnboardViaForm", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Onboarding />);
+		const { container } = render(<OnboardViaForm />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Onboarding", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Onboarding in __tests__/components/Onboarding/Onboarding.test.jsx"
+		"TODO: add proper test cases for OnboardViaForm in __tests__/components/OnboardViaForm/OnboardViaForm.test.jsx"
 	);
 });

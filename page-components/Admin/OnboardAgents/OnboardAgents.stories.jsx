@@ -1,9 +1,9 @@
-import Onboarding from "./Onboarding";
+import OnboardAgents from "./OnboardAgents";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Onboarding",
-	component: Onboarding,
+	title: "Component/OnboardAgents",
+	component: OnboardAgents,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +46,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <Onboarding {...args} />;
+const Template = (args) => <OnboardAgents {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

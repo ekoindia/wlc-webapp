@@ -1,16 +1,16 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { Headings } from "components";
-import { BulkOnboarding, SingleOnboarding } from ".";
+import { OnboardViaFile, OnboardViaForm } from ".";
 
 /**
- * Onboard Agents page-component
+ * A OnboardAgents page-component
+ * @example	`<OnboardAgents></OnboardAgents>` TODO: Fix example
  */
-const Onboarding = () => {
+const OnboardAgents = () => {
 	const tabList = [
-		{ label: "Onboard Agents", comp: <SingleOnboarding /> }, // form based onboarding
-		{ label: "Bulk Onboarding (Using File)", comp: <BulkOnboarding /> }, // file based onboarding
+		{ label: "Onboard Agents", comp: <OnboardViaForm /> }, // form based onboarding
+		{ label: "Bulk Onboarding (Using File)", comp: <OnboardViaFile /> }, // file based onboarding
 	];
-
 	return (
 		<>
 			<Headings title="Onboard Agents" hasIcon={false} />
@@ -68,4 +68,4 @@ const Onboarding = () => {
 	);
 };
 
-export default Onboarding;
+export default OnboardAgents;
