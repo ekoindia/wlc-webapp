@@ -1,9 +1,4 @@
-import {
-	Flex,
-	FormControl,
-	FormLabel,
-	useBreakpointValue,
-} from "@chakra-ui/react";
+import { Flex, FormControl, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
@@ -23,19 +18,13 @@ const renderer = {
  */
 const TransferSeller = ({ agentData, setResponseDetails }) => {
 	const [showSelectAgent, setShowSelectAgent] = useState(false);
-	const [transferAgentsFrom, setTransferAgentsFrom] = useState({
-		value: "",
-		label: "",
-	});
+	const [transferAgentsFrom, setTransferAgentsFrom] = useState(null);
+	const [transferAgentsTo, setTransferAgentsTo] = useState(null);
 
 	const router = useRouter();
 
 	const default_agent_code = agentData?.eko_code;
 
-	const [transferAgentsTo, setTransferAgentsTo] = useState({
-		value: "",
-		label: "",
-	});
 	const [distributors, setDistributors] = useState([]);
 	const [filteredDistributors, setFilteredDistributors] = useState([]);
 	const [agentListToTransferAgentsFrom, setAgentListToTransferAgentsFrom] =
@@ -70,7 +59,7 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 			},
 			body: {
 				// scspFrom: transferAgentsFrom.value,
-				scspTo: transferAgentsTo.value,
+				scspTo: transferAgentsTo[renderer.value],
 				selectedTransferredCSPsList:
 					default_agent_code ?? selectedAgentsToTransfer,
 			},
@@ -80,18 +69,11 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 		});
 	};
 
-	const handleTransferAgentsSelectChange = (event, type) => {
-		const selectedValue = event.target.value;
-		const selectedLabel =
-			event.target.options[event.target.selectedIndex].text;
-
+	const handleTransferAgentsSelectChange = (value, type) => {
 		if (type === "FROM") {
-			setTransferAgentsFrom({
-				value: selectedValue,
-				label: selectedLabel,
-			});
+			setTransferAgentsFrom(value);
 		} else {
-			setTransferAgentsTo({ value: selectedValue, label: selectedLabel });
+			setTransferAgentsTo(value);
 		}
 
 		if (!isSmallScreen) {
@@ -114,38 +96,40 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 	}, []);
 
 	useEffect(() => {
-		if (transferAgentsFrom.value == "") {
-			setTransferAgentsTo({
-				value: "",
-				label: "",
-			});
+		if (transferAgentsFrom) {
+			setTransferAgentsTo(null);
 		}
-	}, [transferAgentsFrom.value]);
+	}, [transferAgentsFrom]);
 
 	useEffect(() => {
-		if (transferAgentsFrom.value != "") {
+		if (transferAgentsFrom) {
 			fetchList(
 				{
 					"tf-req-uri-root-path": "/ekoicici/v1",
-					"tf-req-uri": `/network/agent-list?usertype=2&user_id=${transferAgentsFrom.value}`,
+					"tf-req-uri": `/network/agent-list?usertype=2&user_id=${
+						transferAgentsFrom[renderer.value]
+					}`,
 					"tf-req-method": "GET",
 				},
 				(res) => {
 					const _agentList = res?.data?.csp_list ?? [];
 					const _filteredDistributor = distributors?.filter(
 						(item) =>
-							item[renderer.value] !== transferAgentsFrom.value
+							item[renderer.value] !==
+							transferAgentsFrom[renderer.value]
 					);
 					setAgentListToTransferAgentsFrom(_agentList);
 					setFilteredDistributors(_filteredDistributor);
 				}
 			);
 		}
-		if (transferAgentsTo.value != "") {
+		if (transferAgentsTo) {
 			fetchList(
 				{
 					"tf-req-uri-root-path": "/ekoicici/v1",
-					"tf-req-uri": `/network/agent-list?usertype=2&user_id=${transferAgentsTo.value}`,
+					"tf-req-uri": `/network/agent-list?usertype=2&user_id=${
+						transferAgentsTo[renderer.value]
+					}`,
 					"tf-req-method": "GET",
 				},
 				(res) => {
@@ -154,7 +138,7 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 				}
 			);
 		}
-	}, [transferAgentsFrom.value, transferAgentsTo.value]);
+	}, [transferAgentsFrom, transferAgentsTo]);
 
 	return (
 		<Flex direction="column" gap="8">
@@ -165,14 +149,13 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 				{/* Hide when an agent is already selected */}
 				{default_agent_code ? null : (
 					<FormControl w={{ base: "100%", md: "500px" }}>
-						<FormLabel>
-							Select distributor to transfer agents from
-						</FormLabel>
 						<Select
 							id="from-select"
-							value={transferAgentsFrom.value}
-							onChange={(event) =>
-								handleTransferAgentsSelectChange(event, "FROM")
+							label="Select distributor to transfer agents from"
+							required={true}
+							value={transferAgentsFrom}
+							onChange={(value) =>
+								handleTransferAgentsSelectChange(value, "FROM")
 							}
 							renderer={renderer}
 							options={distributors}
@@ -181,14 +164,13 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 				)}
 
 				<FormControl w={{ base: "100%", md: "500px" }}>
-					<FormLabel>
-						Select distributor to transfer agents to
-					</FormLabel>
 					<Select
 						id="to-select"
-						value={transferAgentsTo.value}
-						onChange={(event) =>
-							handleTransferAgentsSelectChange(event, "TO")
+						label="Select distributor to transfer agents to"
+						required={true}
+						value={transferAgentsTo}
+						onChange={(value) =>
+							handleTransferAgentsSelectChange(value, "TO")
 						}
 						renderer={renderer}
 						options={
@@ -196,17 +178,13 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 								? filteredDistributors
 								: distributors
 						}
-						disabled={
-							!default_agent_code && !transferAgentsFrom.value
-						}
+						disabled={!default_agent_code && !transferAgentsFrom}
 					/>
 				</FormControl>
 			</Flex>
 
 			{/* Select for Move */}
-			{showSelectAgent &&
-			transferAgentsFrom.value &&
-			transferAgentsTo.value ? (
+			{showSelectAgent && transferAgentsFrom && transferAgentsTo ? (
 				<MoveAgents
 					options={agentListToTransferAgentsFrom}
 					onChange={handleSelectedAgents}
@@ -215,6 +193,7 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 					transferAgentsTo={transferAgentsTo}
 					transferAgentsFrom={transferAgentsFrom}
 					selectedAgentsToTransfer={selectedAgentsToTransfer}
+					setResponseDetails={setResponseDetails}
 				/>
 			) : null}
 
