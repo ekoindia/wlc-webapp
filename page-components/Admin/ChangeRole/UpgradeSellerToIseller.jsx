@@ -61,7 +61,7 @@ const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 	// }, [agentData]);
 
 	const onSubmit = (data) => {
-		const { mobile } = data;
+		const { csp } = data;
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -70,7 +70,7 @@ const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 				"tf-req-method": "PUT",
 			},
 			body: {
-				agent_mobile: default_agent_mobile ?? mobile,
+				agent_mobile: default_agent_mobile ?? csp.mobile,
 			},
 			token: accessToken,
 		}).then((res) => {
@@ -86,7 +86,7 @@ const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 						<FormLabel>Select Retailer</FormLabel>
 
 						<Controller
-							name="mobile"
+							name="csp"
 							control={control}
 							render={({ field: { onChange, value } }) => {
 								return (
