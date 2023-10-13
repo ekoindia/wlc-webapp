@@ -25,6 +25,7 @@ const MoveAgents = ({
 	transferAgentsFrom,
 	transferAgentsTo,
 	selectedAgentsToTransfer,
+	setResponseDetails,
 	onChange = () => {},
 }) => {
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
@@ -94,8 +95,8 @@ const MoveAgents = ({
 
 	/* api call */
 	const body = {
-		scspFrom: transferAgentsFrom.value,
-		scspTo: transferAgentsTo.value,
+		// scspFrom: transferAgentsFrom.value,
+		scspTo: transferAgentsTo[renderer.value],
 		selectedTransferredCSPsList: selectedAgentsToTransfer,
 	};
 
@@ -109,8 +110,8 @@ const MoveAgents = ({
 			body: body,
 			token: accessToken,
 		}).then((res) => {
-			console.log("res", res);
 			setShowSelectAgent(false);
+			setResponseDetails({ status: res.status, message: res.message });
 		});
 	};
 
@@ -126,7 +127,7 @@ const MoveAgents = ({
 					position={{ base: "absolute", md: "initial" }}
 					bg="white"
 					gap="3"
-					zIndex="99"
+					zIndex={{ base: "99", md: "0" }}
 				>
 					<Flex
 						fontWeight="semibold"
@@ -136,7 +137,7 @@ const MoveAgents = ({
 						<Text color="light">
 							Move Retailers From: &thinsp;
 							<Text as="span" color="dark">
-								{transferAgentsFrom?.label}
+								{transferAgentsFrom[renderer.label]}
 							</Text>
 						</Text>
 					</Flex>
@@ -282,7 +283,7 @@ const TransferAgentsToBox = ({ agentList, transferAgentsTo }) => {
 				<Text color="light">
 					Move Retailers To: &thinsp;
 					<Text as="span" color="dark">
-						{transferAgentsTo.label}
+						{transferAgentsTo[renderer.label]}
 					</Text>
 				</Text>
 			</Flex>
