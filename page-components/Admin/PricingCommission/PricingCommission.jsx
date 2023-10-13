@@ -24,17 +24,17 @@ import {
  */
 const PricingCommissions = () => {
 	const tabList = [
-		{ label: "DMT", comp: <Dmt /> },
-		{ label: "AEPS", comp: <Aeps /> },
-		{ label: "Aadhaar Pay", comp: <AadhaarPay /> },
-		{ label: "Indo-Nepal Fund Transfer", comp: <IndoNepal /> },
-		{ label: "Airtel CMS", comp: <AirtelCms /> },
-		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
 		{
 			label: "Commission Frequency",
 			comp: <CommissionFrequency />,
 		},
+		{ label: "Money Transfer", comp: <Dmt /> },
+		{ label: "AePS", comp: <Aeps /> }, //insert card payments tab after this 👇
 		{ label: "Account Verification", comp: <AccountVerification /> },
+		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
+		{ label: "Aadhaar Pay", comp: <AadhaarPay /> },
+		{ label: "Indo-Nepal Fund Transfer", comp: <IndoNepal /> },
+		{ label: "Airtel CMS", comp: <AirtelCms /> },
 	];
 
 	return (
