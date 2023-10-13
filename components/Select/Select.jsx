@@ -15,6 +15,7 @@ const Select = ({
 	value,
 	label,
 	id,
+	disabled,
 	required,
 	labelStyle,
 	...rest
@@ -175,6 +176,7 @@ const Select = ({
 				getOptionLabel={getOptionLabel}
 				getOptionValue={getOptionValue}
 				hideSelectedOptions={false}
+				isDisabled={disabled}
 				components={{
 					DropdownIndicator: DropdownIcon,
 					IndicatorSeparator: null,
