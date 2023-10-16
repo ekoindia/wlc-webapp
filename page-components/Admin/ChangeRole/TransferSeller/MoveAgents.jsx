@@ -31,7 +31,6 @@ const MoveAgents = ({
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [optionsValueList, setOptionsValueList] = useState([]);
-	const selectedOptionsLength = selectedOptions?.length || 0;
 	const { accessToken } = useSession();
 
 	useEffect(() => {
@@ -83,7 +82,7 @@ const MoveAgents = ({
 
 	/* checking whether select all should be enabled or not */
 	const checkAndSetSelectAll = (_options, _selectedOptions) => {
-		if (selectedOptionsLength > 0) {
+		if (_selectedOptions?.length > 0) {
 			const _optionsSet = new Set(_options);
 			const _selectedOptionsSet = new Set(_selectedOptions);
 			const _shouldCheckSelectAll =
