@@ -135,7 +135,7 @@ const CreditCardBillPaymentRetailer = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.CREDIT_CARD_BILL_PAYMENT}`,
+			label: `Define ${productPricingType.CREDIT_CARD_BILL_PAYMENT} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
 			validations: {

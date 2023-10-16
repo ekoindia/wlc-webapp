@@ -135,7 +135,7 @@ const CardPaymentRetailer = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.CARD_PAYMENT}`,
+			label: `Define ${productPricingType.CARD_PAYMENT} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
 			validations: {

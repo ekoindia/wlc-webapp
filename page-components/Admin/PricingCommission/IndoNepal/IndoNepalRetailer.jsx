@@ -133,7 +133,7 @@ const IndoNepalRetailer = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.INDO_NEPAL_FUND_TRANSFER}`,
+			label: `Define ${productPricingType.INDO_NEPAL_FUND_TRANSFER} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
 			validations: {
