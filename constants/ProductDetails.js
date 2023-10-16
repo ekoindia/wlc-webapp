@@ -72,6 +72,15 @@ export const products = {
 			min_pricing_value: "1.71",
 		},
 	},
+	CARD_PAYMENT: {
+		uriSegment: "pg",
+		slabs: [{ min: 100, max: 25000 }],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
+		serviceCode: 721, // To be Edited
+	},
 };
 
 export const productPricingCommissionValidationConfig = {
@@ -98,6 +107,10 @@ export const productPricingCommissionValidationConfig = {
 	ACCOUNT_VERIFICATION: {
 		FIXED: { min: 1.84, max: 50 },
 	},
+	CARD_PAYMENT: {
+		PERCENT: { min: 0.9, max: 4 },
+		FIXED: { min: 1, max: 1000 },
+	},
 };
 
 export const productPricingTextConfig = {
@@ -113,4 +126,5 @@ export const productPricingType = {
 	// BBPS: productPricingTextConfig.COMMISSION,
 	CREDIT_CARD_BILL_PAYMENT: productPricingTextConfig.PRICING,
 	ACCOUNT_VERIFICATION: productPricingTextConfig.PRICING,
+	CARD_PAYMENT: productPricingTextConfig.PRICING,
 };

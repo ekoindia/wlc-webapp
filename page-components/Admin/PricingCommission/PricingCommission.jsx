@@ -13,6 +13,7 @@ import {
 	AccountVerification,
 	Aeps,
 	AirtelCms,
+	CardPayment,
 	CommissionFrequency,
 	CreditCardBillPayment,
 	Dmt,
@@ -29,7 +30,8 @@ const PricingCommissions = () => {
 			comp: <CommissionFrequency />,
 		},
 		{ label: "Money Transfer", comp: <Dmt /> },
-		{ label: "AePS", comp: <Aeps /> }, //insert card payments tab after this 👇
+		{ label: "AePS", comp: <Aeps /> },
+		{ label: "Card Payment", comp: <CardPayment /> },
 		{ label: "Account Verification", comp: <AccountVerification /> },
 		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
 		{ label: "Aadhaar Pay", comp: <AadhaarPay /> },
