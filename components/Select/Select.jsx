@@ -18,6 +18,8 @@ const Select = ({
 	disabled,
 	required,
 	labelStyle,
+	getOptionLabel,
+	getOptionValue,
 	...rest
 }) => {
 	const _id = useId();
@@ -148,9 +150,9 @@ const Select = ({
 		},
 	};
 
-	const getOptionLabel = (option) => option[renderer.label];
+	const _getOptionLabel = (option) => option[renderer.label];
 
-	const getOptionValue = (option) => option[renderer.value];
+	const _getOptionValue = (option) => option[renderer.value];
 
 	return (
 		<Flex direction="column" w="100%" {...rest}>
@@ -173,8 +175,8 @@ const Select = ({
 				placeholder={placeholder}
 				value={value}
 				closeMenuOnSelect={isMulti ? false : true}
-				getOptionLabel={getOptionLabel}
-				getOptionValue={getOptionValue}
+				getOptionLabel={getOptionLabel ?? _getOptionLabel}
+				getOptionValue={getOptionValue ?? _getOptionValue}
 				hideSelectedOptions={false}
 				isDisabled={disabled}
 				components={{
