@@ -228,6 +228,24 @@ const History = () => {
 		const currentDate = new Date();
 		const formattedDate = formatDate(currentDate, "yyyy-MM-dd");
 
+		const isNonEmpty = (value) => value !== "";
+
+		// Filter the keys in finalFormState based on non-empty values
+		const nonEmptyValues = Object.keys(finalFormState).filter((key) =>
+			isNonEmpty(finalFormState[key])
+		);
+
+		// Create a new object with the non-empty values
+		const filterParameter = {};
+		nonEmptyValues.forEach((key) => {
+			filterParameter[key] = finalFormState[key];
+		});
+
+		// Add current date if tx_date is not selected in filter by default
+		if (!filterParameter["tx_date"] !== undefined) {
+			filterParameter.tx_date = formattedDate;
+		}
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-is-file-download": "1",
@@ -244,7 +262,7 @@ const History = () => {
 						? account_list[0]?.id
 						: null,
 				reporttype: value,
-				tx_date: formattedDate,
+				...filterParameter,
 			},
 			token: accessToken,
 		})
