@@ -79,7 +79,6 @@ export const products = {
 			operation_type: "3",
 			pricing_type: "0",
 		},
-		serviceCode: 721, // To be Edited
 	},
 };
 

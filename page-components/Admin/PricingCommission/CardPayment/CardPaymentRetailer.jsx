@@ -261,11 +261,13 @@ const CardPaymentRetailer = () => {
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
 				<Form
-					parameter_list={card_payment_retailer_parameter_list}
-					register={register}
-					control={control}
-					formValues={watcher}
-					errors={errors}
+					{...{
+						parameter_list: card_payment_retailer_parameter_list,
+						register,
+						control,
+						formValues: watcher,
+						errors,
+					}}
 				/>
 
 				<Flex
