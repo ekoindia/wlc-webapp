@@ -15,7 +15,7 @@
 export const ChangeRoleMenuList = [
 	{
 		slug: "transfer-retailer",
-		label: "Assign Distributor",
+		label: "Change Distributor Mapping", //Assign Distributor
 		path: "/admin/my-network/profile/change-role",
 		visible: [2, 3],
 		visibleString: ["I-CSP"],
