@@ -232,37 +232,42 @@ const MoveAgents = ({
 				</Circle>
 				<TransferAgentsToBox {...{ agentList, transferAgentsTo }} />
 			</Flex>
+
 			<Flex
 				display={{ base: "flex", md: "none" }}
-				position={"fixed"}
-				w={"100%"}
-				h={"15vw"}
-				maxH={"80px"}
-				bottom={"0%"}
-				left={"0%"}
-				zIndex={"99"}
-				boxShadow={"0px -3px 10px #0000001A"}
+				direction="row-reverse"
+				w="100%"
+				position="fixed"
+				gap="0"
+				align="center"
+				bottom="0"
+				left="0"
+				zIndex="99"
 			>
 				<Button
-					variant="ghost"
-					w={"50%"}
-					h={"100%"}
-					bg={"white"}
-					fontSize="18px"
-					color="primary.DEFAULT"
-					onClick={() => setShowSelectAgent(false)}
-				>
-					Go Back
-				</Button>
-				<Button
-					w={"50%"}
-					h={"100%"}
-					fontSize="18px"
+					size="lg"
+					h="64px"
+					w="100%"
+					fontWeight="bold"
 					borderRadius="none"
 					onClick={handleMoveAgent}
 					disabled={!selectedAgentsToTransfer?.length > 0}
 				>
 					Move Now
+				</Button>
+
+				<Button
+					h="64px"
+					w="100%"
+					bg="white"
+					variant="link"
+					fontWeight="bold"
+					color="primary.DEFAULT"
+					_hover={{ textDecoration: "none" }}
+					borderRadius="none"
+					onClick={() => setShowSelectAgent(false)}
+				>
+					Go Back
 				</Button>
 			</Flex>
 		</>

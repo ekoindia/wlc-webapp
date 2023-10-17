@@ -235,10 +235,10 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 			{/* Button for mobile responsive */}
 			<Flex
 				display={{ base: "flex", md: "none" }}
-				direction={{ base: "row-reverse", md: "row" }}
-				w={{ base: "100%", md: "500px" }}
-				position={{ base: "fixed", md: "initial" }}
-				gap={{ base: "0", md: "16" }}
+				direction="row-reverse"
+				w="100%"
+				position="fixed"
+				gap="0"
 				align="center"
 				bottom="0"
 				left="0"
@@ -246,9 +246,9 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 				<Button
 					size="lg"
 					h="64px"
-					w={{ base: "100%", md: "250px" }}
+					w="100%"
 					fontWeight="bold"
-					borderRadius={{ base: "none", md: "10" }}
+					borderRadius="none"
 					onClick={() => setShowSelectAgent(true)}
 					disabled={
 						transferAgentsFrom == null ||
@@ -261,23 +261,23 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 				</Button>
 
 				<Button
-					h={{ base: "64px", md: "auto" }}
-					w={{ base: "100%", md: "initial" }}
-					bg={{ base: "white", md: "none" }}
+					h="64px"
+					w="100%"
+					bg="white"
 					variant="link"
 					fontWeight="bold"
 					color="primary.DEFAULT"
 					_hover={{ textDecoration: "none" }}
-					borderRadius={{ base: "none", md: "10" }}
+					borderRadius="none"
 					onClick={() => router.back()}
 				>
 					Cancel
 				</Button>
 			</Flex>
+
 			{/* Buttons for desktop */}
 			<Flex
 				display={{ base: "none", md: "flex" }}
-				direction={{ base: "row-reverse", md: "row" }}
 				w={{ base: "100%", md: "500px" }}
 				position={{ base: "fixed", md: "initial" }}
 				gap={{ base: "0", md: "16" }}
