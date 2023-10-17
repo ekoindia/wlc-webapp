@@ -33,6 +33,7 @@ export const AdminOtherMenuItems: number[] = [
 	TransactionIds.REQUEST_EVALUE,
 	TransactionIds.TRANSFER_EVALUE,
 	TransactionIds.FUND_SETTLEMENT,
+	TransactionIds.NEO_BANK,
 	// TransactionIds.INVOICE_DOWNLOAD,
 ];
 

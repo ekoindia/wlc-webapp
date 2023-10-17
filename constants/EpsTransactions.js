@@ -59,4 +59,5 @@ export const TransactionIds = {
 	STATE_TYPE: 387,
 	PINCODE_TYPE: 353,
 	COMMISSION_TYPE: 726,
+	NEO_BANK: 995,
 };
