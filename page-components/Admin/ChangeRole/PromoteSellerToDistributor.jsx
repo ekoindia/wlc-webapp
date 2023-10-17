@@ -127,25 +127,36 @@ const PromoteSellerToDistributor = ({ agentData, setResponseDetails }) => {
 						/>
 					</FormControl>
 				)}
+
 				<Flex
-					direction={{ base: "column", md: "row" }}
-					gap={{ base: "6", md: "12" }}
+					direction={{ base: "row-reverse", md: "row" }}
+					w={{ base: "100%", md: "500px" }}
+					position={{ base: "fixed", md: "initial" }}
+					gap={{ base: "0", md: "16" }}
+					align="center"
+					bottom="0"
+					left="0"
 				>
 					<Button
-						size="lg"
-						h="54px"
-						w={{ base: "100%", md: "164px" }}
-						fontWeight="bold"
 						type="submit"
+						size="lg"
+						h="64px"
+						w={{ base: "100%", md: "250px" }}
+						fontWeight="bold"
+						borderRadius={{ base: "none", md: "10" }}
 					>
 						Promote
 					</Button>
+
 					<Button
-						bg="none"
+						h={{ base: "64px", md: "auto" }}
+						w={{ base: "100%", md: "initial" }}
+						bg={{ base: "white", md: "none" }}
 						variant="link"
 						fontWeight="bold"
 						color="primary.DEFAULT"
 						_hover={{ textDecoration: "none" }}
+						borderRadius={{ base: "none", md: "10" }}
 						onClick={() => router.back()}
 					>
 						Cancel
