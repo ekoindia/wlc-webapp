@@ -200,9 +200,8 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 						getOptionLabel={(option) => {
 							return (
 								<Flex as="span" align="center" gap="2">
-									{option.name}
+									<Text noOfLines="1">{option.name}</Text>
 									<Flex
-										as="span"
 										color="light"
 										fontSize="xs"
 										align="center"
