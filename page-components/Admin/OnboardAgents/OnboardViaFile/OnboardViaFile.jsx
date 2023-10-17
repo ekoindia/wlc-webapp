@@ -130,16 +130,27 @@ const OnboardViaFile = () => {
 							accept=".xls,.xlsx"
 						/>
 					</Flex>
-
-					<Button
-						onClick={handleFileUpload}
-						size="lg"
-						h="64px"
-						w="215px"
-						disabled={file === null || file === undefined}
+					<Flex
+						direction={{ base: "row-reverse", md: "row" }}
+						w={{ base: "100%", md: "500px" }}
+						position={{ base: "fixed", md: "initial" }}
+						gap={{ base: "0", md: "16" }}
+						align="center"
+						bottom="0"
+						left="0"
 					>
-						Upload
-					</Button>
+						<Button
+							onClick={handleFileUpload}
+							size="lg"
+							h="64px"
+							w={{ base: "100%", md: "250px" }}
+							fontWeight="bold"
+							borderRadius={{ base: "none", md: "10" }}
+							disabled={file === null || file === undefined}
+						>
+							Upload
+						</Button>
+					</Flex>
 				</Flex>
 			) : (
 				<Flex direction="column" gap="2">
