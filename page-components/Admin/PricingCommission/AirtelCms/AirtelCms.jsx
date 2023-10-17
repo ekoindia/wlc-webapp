@@ -1,10 +1,10 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { Button, Dropzone, Icon } from "components";
-import { Endpoints } from "constants/EndPoints";
-import { useSession } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
+import { Box, Flex } from "@chakra-ui/react";
+import { Button, Dropzone, Icon, InputLabel } from "components";
+import { Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useState } from "react";
-import { saveDataToFile } from "utils/FileSave";
+import { saveDataToFile } from "utils";
 
 /**
  * A AirtelCms tab page-component
@@ -75,29 +75,26 @@ const AirtelCms = () => {
 	};
 
 	return (
-		<>
+		<Flex direction="column" gap="8">
 			{data === null ? (
 				<Flex
 					direction="column"
-					gap="10"
-					fontSize="md"
+					gap="8"
 					w={{ base: "100%", md: "500px" }}
 				>
-					<Flex direction="column" gap="2">
-						<Text fontWeight="semibold">
+					<Flex direction="column">
+						<InputLabel required={true}>
 							Download Sample File &thinsp;
-							{/* <Box as="span" textTransform="lowercase">
-						(for onboarding {applicantTypeObj[applicantType]}s)
-					</Box> */}
-						</Text>
-
+						</InputLabel>
 						<Button onClick={handleFileDownload} w="136px">
 							<Icon name="file-download" size="sm" />
 							&nbsp; Download
 						</Button>
 					</Flex>
-					<Flex direction="column" gap="2">
-						<Text fontWeight="semibold">Upload your pricing</Text>
+					<Flex direction="column">
+						<InputLabel required={true}>
+							Upload your pricing
+						</InputLabel>
 						<Dropzone
 							file={file}
 							setFile={setFile}
@@ -165,7 +162,7 @@ const AirtelCms = () => {
 					)} */}
 				</Flex>
 			)}
-		</>
+		</Flex>
 	);
 };
 
