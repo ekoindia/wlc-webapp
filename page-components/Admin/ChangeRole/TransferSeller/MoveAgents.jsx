@@ -260,6 +260,7 @@ const MoveAgents = ({
 					fontSize="18px"
 					borderRadius="none"
 					onClick={handleMoveAgent}
+					disabled={!selectedAgentsToTransfer?.length > 0}
 				>
 					Move Now
 				</Button>

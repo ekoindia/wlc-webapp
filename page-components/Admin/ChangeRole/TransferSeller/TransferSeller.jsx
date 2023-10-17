@@ -32,7 +32,9 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 	const [agentListToTransferAgentsTo, setAgentListToTransferAgentsTo] =
 		useState([]);
 
-	const [selectedAgentsToTransfer, setSelectedAgentsToTransfer] = useState();
+	const [selectedAgentsToTransfer, setSelectedAgentsToTransfer] = useState(
+		[]
+	);
 	const { accessToken } = useSession();
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
@@ -233,22 +235,40 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 			{/* Button for mobile responsive */}
 			<Flex
 				display={{ base: "flex", md: "none" }}
-				direction={{ base: "column", sm: "row" }} //Refactor this
-				gap={{ base: "6", md: "12" }}
+				direction={{ base: "row-reverse", md: "row" }}
+				w={{ base: "100%", md: "500px" }}
+				position={{ base: "fixed", md: "initial" }}
+				gap={{ base: "0", md: "16" }}
+				align="center"
+				bottom="0"
+				left="0"
 			>
 				<Button
-					h="54px"
-					fontSize="md"
+					size="lg"
+					h="64px"
+					w={{ base: "100%", md: "250px" }}
+					fontWeight="bold"
+					borderRadius={{ base: "none", md: "10" }}
 					onClick={() => setShowSelectAgent(true)}
+					disabled={
+						transferAgentsFrom == null ||
+						transferAgentsFrom == undefined ||
+						transferAgentsTo == null ||
+						transferAgentsTo == undefined
+					}
 				>
 					Select Agents
 				</Button>
+
 				<Button
-					bg="none"
+					h={{ base: "64px", md: "auto" }}
+					w={{ base: "100%", md: "initial" }}
+					bg={{ base: "white", md: "none" }}
 					variant="link"
 					fontWeight="bold"
 					color="primary.DEFAULT"
 					_hover={{ textDecoration: "none" }}
+					borderRadius={{ base: "none", md: "10" }}
 					onClick={() => router.back()}
 				>
 					Cancel
@@ -257,23 +277,35 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 			{/* Buttons for desktop */}
 			<Flex
 				display={{ base: "none", md: "flex" }}
-				gap={{ base: "6", md: "12" }}
+				direction={{ base: "row-reverse", md: "row" }}
+				w={{ base: "100%", md: "500px" }}
+				position={{ base: "fixed", md: "initial" }}
+				gap={{ base: "0", md: "16" }}
+				align="center"
+				bottom="0"
+				left="0"
 			>
 				<Button
 					size="lg"
-					h="54px"
-					w={{ base: "100%", md: "164px" }}
+					h="64px"
+					w={{ base: "100%", md: "250px" }}
 					fontWeight="bold"
+					borderRadius={{ base: "none", md: "10" }}
 					onClick={handleMoveAgent}
+					disabled={!selectedAgentsToTransfer?.length > 0}
 				>
 					Move Now
 				</Button>
+
 				<Button
-					bg="none"
+					h={{ base: "64px", md: "auto" }}
+					w={{ base: "100%", md: "initial" }}
+					bg={{ base: "white", md: "none" }}
 					variant="link"
 					fontWeight="bold"
 					color="primary.DEFAULT"
 					_hover={{ textDecoration: "none" }}
+					borderRadius={{ base: "none", md: "10" }}
 					onClick={() => router.back()}
 				>
 					Cancel
