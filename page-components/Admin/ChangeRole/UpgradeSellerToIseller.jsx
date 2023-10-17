@@ -1,5 +1,5 @@
-import { Flex, FormControl } from "@chakra-ui/react";
-import { Button, Select } from "components";
+import { Flex, FormControl, Text } from "@chakra-ui/react";
+import { Button, Icon, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -95,6 +95,31 @@ const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 										onChange={onChange}
 										value={value}
 										required={true}
+										getOptionLabel={(option) => {
+											return (
+												<Flex
+													as="span"
+													align="center"
+													gap="2"
+												>
+													<Text noOfLines="1">
+														{option.name}
+													</Text>
+													<Flex
+														color="light"
+														fontSize="xs"
+														align="center"
+														gap="1"
+													>
+														<Icon
+															name="phone"
+															size="xs"
+														/>
+														{option.mobile}
+													</Flex>
+												</Flex>
+											);
+										}}
 										// disabled={disabled}
 									/>
 								);

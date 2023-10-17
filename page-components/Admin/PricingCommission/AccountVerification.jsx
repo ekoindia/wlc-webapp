@@ -209,7 +209,7 @@ const AccountVerification = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.ACCOUNT_VERIFICATION}`,
+			label: `Define ${productPricingType.ACCOUNT_VERIFICATION} (GST Inclusive)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
 			validations: {

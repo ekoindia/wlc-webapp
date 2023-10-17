@@ -31,7 +31,7 @@ const PricingCommissions = () => {
 		},
 		{ label: "Money Transfer", comp: <Dmt /> },
 		{ label: "AePS", comp: <Aeps /> },
-		{ label: "Card Payment", comp: <CardPayment /> },
+		{ label: "Payment Gateway", comp: <CardPayment /> },
 		{ label: "Account Verification", comp: <AccountVerification /> },
 		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
 		{ label: "Aadhaar Pay", comp: <AadhaarPay /> },

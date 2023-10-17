@@ -104,7 +104,7 @@ export const productPricingCommissionValidationConfig = {
 		FIXED: { min: 3, max: 1500 },
 	},
 	ACCOUNT_VERIFICATION: {
-		FIXED: { min: 1.84, max: 50 },
+		FIXED: { min: 1.84, max: 5 },
 	},
 	CARD_PAYMENT: {
 		PERCENT: { min: 0.9, max: 4 },

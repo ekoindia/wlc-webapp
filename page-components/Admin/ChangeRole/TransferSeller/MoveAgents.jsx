@@ -96,7 +96,7 @@ const MoveAgents = ({
 	const body = {
 		// scspFrom: transferAgentsFrom.value,
 		scspTo: transferAgentsTo[renderer.value],
-		selectedTransferredCSPsList: selectedAgentsToTransfer,
+		selectedTransferredCSPsList: `${selectedAgentsToTransfer}`,
 	};
 
 	const handleMoveAgent = () => {

@@ -133,7 +133,7 @@ const AepsRetailer = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.DMT}`,
+			label: `Define ${productPricingType.DMT} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
 			validations: {

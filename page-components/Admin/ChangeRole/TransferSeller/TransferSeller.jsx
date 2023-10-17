@@ -1,5 +1,5 @@
-import { Flex, FormControl, useBreakpointValue } from "@chakra-ui/react";
-import { Button, Select } from "components";
+import { Flex, FormControl, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Button, Icon, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -61,7 +61,7 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 				// scspFrom: transferAgentsFrom.value,
 				scspTo: transferAgentsTo[renderer.value],
 				selectedTransferredCSPsList:
-					default_agent_code ?? selectedAgentsToTransfer,
+					`${default_agent_code}` ?? `${selectedAgentsToTransfer}`,
 			},
 			token: accessToken,
 		}).then((res) => {
@@ -159,6 +159,22 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 							}
 							renderer={renderer}
 							options={distributors}
+							getOptionLabel={(option) => {
+								return (
+									<Flex as="span" align="center" gap="2">
+										<Text noOfLines="1">{option.name}</Text>
+										<Flex
+											color="light"
+											fontSize="xs"
+											align="center"
+											gap="1"
+										>
+											<Icon name="phone" size="xs" />
+											{option.mobile}
+										</Flex>
+									</Flex>
+								);
+							}}
 						/>
 					</FormControl>
 				)}
@@ -179,6 +195,23 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 								: distributors
 						}
 						disabled={!default_agent_code && !transferAgentsFrom}
+						getOptionLabel={(option) => {
+							return (
+								<Flex as="span" align="center" gap="2">
+									{option.name}
+									<Flex
+										as="span"
+										color="light"
+										fontSize="xs"
+										align="center"
+										gap="1"
+									>
+										<Icon name="phone" size="xs" />
+										{option.mobile}
+									</Flex>
+								</Flex>
+							);
+						}}
 					/>
 				</FormControl>
 			</Flex>
