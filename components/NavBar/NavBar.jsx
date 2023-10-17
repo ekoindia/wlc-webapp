@@ -114,7 +114,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				bg="navbar.bg"
 				h="full"
 				justifyContent={"space-between"}
-				px={{ base: "4", sm: "4", md: "4", xl: "6" }}
+				px={{ base: "4", xl: "6" }}
 				backgroundImage={svgBgDotted({
 					fill: contrast_color,
 					opacity: 0.04,

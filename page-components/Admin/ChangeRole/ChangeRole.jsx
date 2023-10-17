@@ -118,6 +118,10 @@ const ChangeRole = () => {
 						}}
 						gap="4"
 						fontSize="sm"
+						mt={{
+							base: showOrgChangeRoleView ? "initial" : "-10px",
+							md: "initial",
+						}}
 					>
 						{!showOrgChangeRoleView && (
 							<>
@@ -137,60 +141,65 @@ const ChangeRole = () => {
 							</>
 						)}
 					</Flex>
-					<Tabs
-						defaultIndex={+tab || 0}
-						borderRadius={{ base: "10px", md: "0 0 10px 10px" }}
-						p={{ base: "20px", md: "0 30px 30px" }}
-						mt={{ base: "20px", md: "0" }}
-						w="100%"
-						bg="white"
-						fontSize="sm"
-						isLazy
-					>
-						<TabList
-							color="light"
-							css={{
-								"&::-webkit-scrollbar": {
-									display: "none",
-								},
-								"&::-moz-scrollbar": {
-									display: "none",
-								},
-								"&::scrollbar": {
-									display: "none",
-								},
-							}}
+					<Box px={{ base: "16px", md: "initial" }}>
+						<Tabs
+							defaultIndex={+tab || 0}
+							borderRadius={{ base: "10px", md: "0 0 10px 10px" }}
+							p={{ base: "20px", md: "0 30px 30px" }}
+							mt={{ base: "20px", md: "0" }}
+							w="100%"
+							bg="white"
+							fontSize="sm"
+							isLazy
 						>
-							{ChangeRoleMenuList?.map(
-								({ slug, label, visibleString, global }) =>
-									slugTabMapping[slug] &&
-									((showOrgChangeRoleView && global) ||
-										visibleString.includes(
-											agentData?.agent_type
-										)) ? (
-										<Tab key={slug}>{label}</Tab>
-									) : null
-							)}
-						</TabList>
+							<TabList
+								color="light"
+								css={{
+									"&::-webkit-scrollbar": {
+										display: "none",
+									},
+									"&::-moz-scrollbar": {
+										display: "none",
+									},
+									"&::scrollbar": {
+										display: "none",
+									},
+								}}
+							>
+								{ChangeRoleMenuList?.map(
+									({ slug, label, visibleString, global }) =>
+										slugTabMapping[slug] &&
+										((showOrgChangeRoleView && global) ||
+											visibleString.includes(
+												agentData?.agent_type
+											)) ? (
+											<Tab key={slug}>{label}</Tab>
+										) : null
+								)}
+							</TabList>
 
-						<TabPanels mt="5">
-							{ChangeRoleMenuList?.map(
-								({ slug, visibleString, global }) =>
-									slugTabMapping[slug] &&
-									((showOrgChangeRoleView && global) ||
-										visibleString.includes(
-											agentData?.agent_type
-										)) ? (
-										<TabPanel key={slug}>
-											{slugTabMapping[slug]}
-										</TabPanel>
-									) : null
-							)}
-						</TabPanels>
-					</Tabs>
+							<TabPanels mt="5">
+								{ChangeRoleMenuList?.map(
+									({ slug, visibleString, global }) =>
+										slugTabMapping[slug] &&
+										((showOrgChangeRoleView && global) ||
+											visibleString.includes(
+												agentData?.agent_type
+											)) ? (
+											<TabPanel key={slug}>
+												{slugTabMapping[slug]}
+											</TabPanel>
+										) : null
+								)}
+							</TabPanels>
+						</Tabs>
+					</Box>
 				</>
 			) : (
-				<Box mt={{ base: "8", md: "2.5" }} px={{ base: "8", md: "0" }}>
+				<Box
+					mt={{ base: "8", md: "2.5" }}
+					px={{ base: "16px", md: "initial" }}
+				>
 					<ResponseCard
 						status={responseDetails.status}
 						message={responseDetails.message}

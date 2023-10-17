@@ -47,7 +47,7 @@ const ChangeRoleDesktop = ({ changeRoleMenuList, menuHandler }) => {
 
 const ChangeRoleMobile = ({ changeRoleMenuList }) => {
 	return (
-		<Box bg="shade" w="100%" h="100vh" px="4" pt="12px">
+		<Box bg="shade" w="100%" h="100vh" px="4" mt="-10px">
 			{changeRoleMenuList.map((ele, idx) => (
 				<Flex
 					w="100%"
