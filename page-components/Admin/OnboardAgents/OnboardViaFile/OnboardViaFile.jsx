@@ -77,14 +77,7 @@ const OnboardViaFile = () => {
 	};
 
 	return (
-		<Flex
-			direction="column"
-			w="100%"
-			bg="white"
-			borderRadius={8}
-			fontSize="md"
-			gap="8"
-		>
+		<Flex direction="column" gap="8">
 			{data === null ? (
 				<Flex
 					direction="column"
