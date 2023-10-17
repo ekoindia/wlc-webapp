@@ -250,8 +250,6 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 					borderRadius="none"
 					onClick={() => setShowSelectAgent(true)}
 					disabled={
-						transferAgentsFrom == null ||
-						transferAgentsFrom == undefined ||
 						transferAgentsTo == null ||
 						transferAgentsTo == undefined
 					}

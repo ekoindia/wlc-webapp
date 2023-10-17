@@ -18,7 +18,7 @@ export const ChangeRoleMenuList = [
 		label: "Change Distributor Mapping", //Assign Distributor
 		path: "/admin/my-network/profile/change-role",
 		visible: [2, 3],
-		visibleString: ["I-CSP"],
+		visibleString: ["I-Retailer"], //this need to be in sync with what we are getting in network table
 		global: true,
 	},
 	{
@@ -42,7 +42,7 @@ export const ChangeRoleMenuList = [
 		label: "Promote Retailer To Distributor",
 		path: "/admin/my-network/profile/change-role",
 		visible: [2, 3],
-		visibleString: ["Retailer", "I-CSP"],
+		visibleString: ["Retailer", "I-Retailer"], //this need to be in sync with what we are getting in network table
 		global: true,
 	},
 	// {
