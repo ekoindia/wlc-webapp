@@ -164,31 +164,33 @@ export const getAmountStyle = (amount) => {
 	return <Currency amount={amount} preserveFraction={true} />;
 };
 
-export const getPaymentStyle = (amount, trx_type, side = "left") => {
+export const getPaymentStyle = (amount, trx_type /*side = "left"*/) => {
 	return (
 		amount !== undefined && (
 			<Flex
 				align="center"
 				gap="2"
-				flexDirection={side === "right" ? "row-reverse" : "row"}
+				//flexDirection={side === "right" ? "row-reverse" : "row"}
 				textAlign="left"
 				width="min-content"
 			>
-				{trx_type && (
+				{/* {trx_type && (
 					<Icon
-						name={
-							trx_type === "DR"
-								? "arrow-increase"
-								: "arrow-decrease"
-						}
-						size="12px"
-						color={trx_type === "DR" ? "error" : "success"}
+						name={trx_type === "DR" ? "expand-add" : "minus"}
+						size="xs"
+						//color={trx_type === "DR" ? "error" : "success"}
 						sx={{
 							"@media print": {
 								display: "none !important",
 							},
 						}}
 					/>
+				)} */}
+
+				{trx_type && (
+					<Text as="b" size="sm">
+						{trx_type === "DR" ? "-" : "+"}
+					</Text>
 				)}
 				<Currency amount={amount} preserveFraction={true} />
 			</Flex>
