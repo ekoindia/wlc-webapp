@@ -95,7 +95,7 @@ const Menus = ({
 															)
 														}
 														minHeight="48px"
-														fontSize="md"
+														fontSize="sm"
 														_hover={{
 															bg: "divider",
 														}}
