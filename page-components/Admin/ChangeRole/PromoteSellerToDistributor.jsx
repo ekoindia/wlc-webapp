@@ -47,9 +47,10 @@ const PromoteSellerToDistributor = ({
 
 	const {
 		handleSubmit,
-		formState: { errors /* isSubmitting */ },
+		formState: { errors, isSubmitting },
 		control,
 		register,
+		setValue,
 	} = useForm({
 		defaultValues: {
 			retailer_type: "3",
@@ -63,6 +64,8 @@ const PromoteSellerToDistributor = ({
 			return;
 		}
 
+		setValue("retailer", ""); //to reset value of retailer on retailer_type change, to prevent from using previously selected value
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -70,10 +73,14 @@ const PromoteSellerToDistributor = ({
 				"tf-req-method": "GET",
 			},
 			token: accessToken,
-		}).then((res) => {
-			const _seller = res?.data?.csp_list ?? [];
-			setSellerList(_seller);
-		});
+		})
+			.then((res) => {
+				const _seller = res?.data?.csp_list ?? [];
+				setSellerList(_seller);
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
 	}, [default_agent_mobile, watcher.retailer_type]);
 
 	const promote_retailer_parameter_list = [
@@ -87,7 +94,7 @@ const PromoteSellerToDistributor = ({
 			gap: "2",
 		},
 		{
-			name: "retailer_list",
+			name: "retailer",
 			label: `Select ${UserTypeLabel[watcher.retailer_type]}`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: sellerList,
@@ -149,6 +156,7 @@ const PromoteSellerToDistributor = ({
 						w={{ base: "100%", md: "250px" }}
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
+						loading={isSubmitting}
 					>
 						Promote
 					</Button>
