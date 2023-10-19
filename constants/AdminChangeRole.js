@@ -15,7 +15,7 @@
 export const ChangeRoleMenuList = [
 	{
 		slug: "transfer-retailer",
-		label: "Change Distributor Mapping", //Assign Distributor
+		label: "Assign Distributor",
 		path: "/admin/my-network/profile/change-role",
 		// visible: [2, 3],
 		visibleString: ["I-Retailer"], //this need to be in sync with what we are getting in network table
