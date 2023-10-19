@@ -1,25 +1,45 @@
-import { Flex, FormControl, Text } from "@chakra-ui/react";
-import { Button, Icon, Select } from "components";
-import { Endpoints } from "constants";
+import { Flex } from "@chakra-ui/react";
+import { Button } from "components";
+import { Endpoints, ParamType, UserTypeLabel } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components";
 
 const renderer = {
 	label: "name",
 	value: "mobile",
 };
 
+const AGENT_TYPE = {
+	RETAILER: "2",
+	INDEPENDENT_RETAILER: "3",
+};
+
+const retailer_type_list = [
+	{
+		value: AGENT_TYPE.INDEPENDENT_RETAILER,
+		label: "Retailer not mapped to any distributor",
+	},
+	{
+		value: AGENT_TYPE.RETAILER,
+		label: "Retailer already mapped to a distributor",
+	},
+];
+
 /**
  * PromoteSellerToDistributor page-component
  * @returns
  */
-const PromoteSellerToDistributor = ({ agentData, setResponseDetails }) => {
+const PromoteSellerToDistributor = ({
+	agentData,
+	setResponseDetails,
+	showOrgChangeRoleView,
+}) => {
 	const [sellerList, setSellerList] = useState();
 	const { accessToken } = useSession();
-	// const [disabled, setDisabled] = useState(false);
 
 	const router = useRouter();
 
@@ -27,20 +47,26 @@ const PromoteSellerToDistributor = ({ agentData, setResponseDetails }) => {
 
 	const {
 		handleSubmit,
-		// formState: { errors /* isSubmitting */ },
+		formState: { errors /* isSubmitting */ },
 		control,
-		// reset,
-	} = useForm();
+		register,
+	} = useForm({
+		defaultValues: {
+			retailer_type: "3",
+		},
+	});
+
+	const watcher = useWatch({ control });
 
 	useEffect(() => {
-		if (default_agent_mobile) {
+		if (!showOrgChangeRoleView && default_agent_mobile) {
 			return;
 		}
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agent-list?usertype=2",
+				"tf-req-uri": `/network/agent-list?usertype=${watcher.retailer_type}`,
 				"tf-req-method": "GET",
 			},
 			token: accessToken,
@@ -48,19 +74,35 @@ const PromoteSellerToDistributor = ({ agentData, setResponseDetails }) => {
 			const _seller = res?.data?.csp_list ?? [];
 			setSellerList(_seller);
 		});
-	}, [default_agent_mobile]);
+	}, [default_agent_mobile, watcher.retailer_type]);
 
-	// useEffect(() => {
-	// 	if (agentData !== undefined) {
-	// 		let defaultValues = {};
-	// 		defaultValues.mobile = agentData?.agent_mobile;
-	// 		reset({ ...defaultValues });
-	// 		setDisabled(true);
-	// 	}
-	// }, [agentData]);
+	const promote_retailer_parameter_list = [
+		{
+			name: "retailer_type",
+			label: `Select Retailer Type to Search`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: retailer_type_list,
+			is_inactive: !showOrgChangeRoleView && default_agent_mobile,
+			direction: "column",
+			gap: "2",
+		},
+		{
+			name: "retailer_list",
+			label: `Select ${UserTypeLabel[watcher.retailer_type]}`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: sellerList,
+			renderer: renderer,
+			getOptionLabel: (option) => `${option.name} ✆ ${option.mobile}`,
+			meta: {
+				force_dropdown: true,
+			},
+			is_inactive: !showOrgChangeRoleView && default_agent_mobile,
+		},
+	];
 
 	// Handled API according to updated Select component
 	const onSubmit = (data) => {
+		delete data.retailer_type;
 		const { retailer } = data;
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
@@ -81,52 +123,15 @@ const PromoteSellerToDistributor = ({ agentData, setResponseDetails }) => {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<Flex direction="column" gap="8">
-				{default_agent_mobile ? null : (
-					<FormControl w={{ base: "100%", md: "500px" }}>
-						<Controller
-							name="retailer"
-							control={control}
-							render={({ field: { onChange, value } }) => {
-								return (
-									<Select
-										label="Select Retailer"
-										options={sellerList}
-										renderer={renderer}
-										onChange={onChange}
-										value={value}
-										required={true}
-										getOptionLabel={(option) => {
-											return (
-												<Flex
-													as="span"
-													align="center"
-													gap="2"
-												>
-													<Text noOfLines="1">
-														{option.name}
-													</Text>
-													<Flex
-														color="light"
-														fontSize="xs"
-														align="center"
-														gap="1"
-													>
-														<Icon
-															name="phone"
-															size="xs"
-														/>
-														{option.mobile}
-													</Flex>
-												</Flex>
-											);
-										}}
-										// disabled={disabled}
-									/>
-								);
-							}}
-						/>
-					</FormControl>
-				)}
+				<Form
+					{...{
+						parameter_list: promote_retailer_parameter_list,
+						register,
+						control,
+						formValues: watcher,
+						errors,
+					}}
+				/>
 
 				<Flex
 					direction={{ base: "row-reverse", md: "row" }}
