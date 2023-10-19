@@ -214,8 +214,6 @@ const TransferSeller = ({
 			transferAgentsTo ? (
 				<MoveAgents
 					{...{
-						default_agent_code,
-						showOrgChangeRoleView,
 						setShowSelectAgent,
 						transferAgentsTo,
 						transferAgentsFrom,
