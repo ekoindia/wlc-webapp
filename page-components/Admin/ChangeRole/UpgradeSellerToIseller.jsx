@@ -1,11 +1,12 @@
-import { Flex, FormControl, Text } from "@chakra-ui/react";
-import { Button, Icon, Select } from "components";
-import { Endpoints } from "constants";
+import { Flex } from "@chakra-ui/react";
+import { Button } from "components";
+import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components";
 
 const renderer = {
 	label: "name",
@@ -16,10 +17,13 @@ const renderer = {
  * UpgradeSellerToIseller page-component
  * @returns
  */
-const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
-	const [sellerList, setSellerList] = useState();
+const UpgradeSellerToIseller = ({
+	agentData,
+	setResponseDetails,
+	showOrgChangeRoleView,
+}) => {
+	const [sellerList, setSellerList] = useState([]);
 	const { accessToken } = useSession();
-	// const [disabled, setDisabled] = useState(false);
 
 	const router = useRouter();
 
@@ -27,13 +31,15 @@ const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 
 	const {
 		handleSubmit,
-		// formState: { errors /* isSubmitting */ },
+		formState: { errors, isSubmitting },
 		control,
-		// reset,
+		register,
 	} = useForm();
 
+	const watcher = useWatch({ control });
+
 	useEffect(() => {
-		if (default_agent_mobile) {
+		if (!showOrgChangeRoleView && default_agent_mobile) {
 			return;
 		}
 
@@ -41,7 +47,6 @@ const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
 				"tf-req-uri": "/network/agent-list?usertype=2",
-				// "tf-req-uri": `/network/agent-list?usertype=2&user_id=${agentCode}`,
 				"tf-req-method": "GET",
 			},
 			token: accessToken,
@@ -51,14 +56,20 @@ const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 		});
 	}, [default_agent_mobile]);
 
-	// useEffect(() => {
-	// 	if (agentData !== undefined) {
-	// 		let defaultValues = {};
-	// 		defaultValues.mobile = agentData?.agent_mobile;
-	// 		reset({ ...defaultValues });
-	// 		setDisabled(true);
-	// 	}
-	// }, [agentData]);
+	const unassign_retailer_parameter_list = [
+		{
+			name: "retailer",
+			label: "Select Retailer",
+			parameter_type_id: ParamType.LIST,
+			list_elements: sellerList,
+			renderer: renderer,
+			getOptionLabel: (option) => `${option.name} ✆ ${option.mobile}`,
+			meta: {
+				force_dropdown: true,
+			},
+			is_inactive: !showOrgChangeRoleView && default_agent_mobile,
+		},
+	];
 
 	const onSubmit = (data) => {
 		const { retailer } = data;
@@ -81,52 +92,15 @@ const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)}>
 			<Flex direction="column" gap="8">
-				{default_agent_mobile ? null : (
-					<FormControl w={{ base: "100%", md: "500px" }}>
-						<Controller
-							name="retailer"
-							control={control}
-							render={({ field: { onChange, value } }) => {
-								return (
-									<Select
-										label="Select Retailer"
-										options={sellerList}
-										renderer={renderer}
-										onChange={onChange}
-										value={value}
-										required={true}
-										getOptionLabel={(option) => {
-											return (
-												<Flex
-													as="span"
-													align="center"
-													gap="2"
-												>
-													<Text noOfLines="1">
-														{option.name}
-													</Text>
-													<Flex
-														color="light"
-														fontSize="xs"
-														align="center"
-														gap="1"
-													>
-														<Icon
-															name="phone"
-															size="xs"
-														/>
-														{option.mobile}
-													</Flex>
-												</Flex>
-											);
-										}}
-										// disabled={disabled}
-									/>
-								);
-							}}
-						/>
-					</FormControl>
-				)}
+				<Form
+					{...{
+						parameter_list: unassign_retailer_parameter_list,
+						register,
+						control,
+						formValues: watcher,
+						errors,
+					}}
+				/>
 
 				<Flex
 					direction={{ base: "row-reverse", md: "row" }}
@@ -144,8 +118,9 @@ const UpgradeSellerToIseller = ({ agentData, setResponseDetails }) => {
 						w={{ base: "100%", md: "250px" }}
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
+						loading={isSubmitting}
 					>
-						Upgrade
+						Unassign
 					</Button>
 
 					<Button
