@@ -38,7 +38,7 @@ const PromoteSellerToDistributor = ({
 	setResponseDetails,
 	showOrgChangeRoleView,
 }) => {
-	const [sellerList, setSellerList] = useState();
+	const [sellerList, setSellerList] = useState([]);
 	const { accessToken } = useSession();
 
 	const router = useRouter();
