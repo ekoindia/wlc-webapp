@@ -1,5 +1,5 @@
-import { Flex, FormControl, Text, useBreakpointValue } from "@chakra-ui/react";
-import { Button, Icon, Select } from "components";
+import { Flex, FormControl, useBreakpointValue } from "@chakra-ui/react";
+import { Button, Select } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -12,18 +12,25 @@ const renderer = {
 	value: "user_code",
 };
 
+const independent_retailer_select_option = {
+	user_code: "3",
+	name: "No Distributor - Transfer Independent Retailers (Retailers not mapped to any distributor)",
+	mobile: "",
+	customer_id: "",
+};
+
 /**
  * A TransferSeller Tab inside ChangeRole page-component
  * @example	`<TransferSeller></TransferSeller>`
  */
-const TransferSeller = ({ agentData, setResponseDetails }) => {
+const TransferSeller = ({
+	agentData,
+	setResponseDetails,
+	showOrgChangeRoleView,
+}) => {
 	const [showSelectAgent, setShowSelectAgent] = useState(false);
 	const [transferAgentsFrom, setTransferAgentsFrom] = useState(null);
 	const [transferAgentsTo, setTransferAgentsTo] = useState(null);
-
-	const router = useRouter();
-
-	const default_agent_code = agentData?.eko_code;
 
 	const [distributors, setDistributors] = useState([]);
 	const [filteredDistributors, setFilteredDistributors] = useState([]);
@@ -31,13 +38,13 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 		useState([]);
 	const [agentListToTransferAgentsTo, setAgentListToTransferAgentsTo] =
 		useState([]);
-
 	const [selectedAgentsToTransfer, setSelectedAgentsToTransfer] = useState(
 		[]
 	);
+	const router = useRouter();
 	const { accessToken } = useSession();
-
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+	const default_agent_code = agentData?.eko_code;
 
 	const handleSelectedAgents = (_agents) => {
 		setSelectedAgentsToTransfer(_agents);
@@ -105,12 +112,17 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 
 	useEffect(() => {
 		if (transferAgentsFrom) {
+			const isIndependentRetailer = transferAgentsFrom.user_code === "3";
+			const _uri = isIndependentRetailer
+				? "/network/agent-list?usertype=3"
+				: `/network/agent-list?usertype=2&user_id=${
+						transferAgentsFrom[renderer.value]
+				  }`;
+
 			fetchList(
 				{
 					"tf-req-uri-root-path": "/ekoicici/v1",
-					"tf-req-uri": `/network/agent-list?usertype=2&user_id=${
-						transferAgentsFrom[renderer.value]
-					}`,
+					"tf-req-uri": _uri,
 					"tf-req-method": "GET",
 				},
 				(res) => {
@@ -125,6 +137,7 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 				}
 			);
 		}
+
 		if (transferAgentsTo) {
 			fetchList(
 				{
@@ -149,7 +162,7 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 				gap={{ base: "8", md: "28", xl: "36" }}
 			>
 				{/* Hide when an agent is already selected */}
-				{default_agent_code ? null : (
+				{!showOrgChangeRoleView && default_agent_code ? null : (
 					<FormControl w={{ base: "100%", md: "500px" }}>
 						<Select
 							id="from-select"
@@ -160,23 +173,13 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 								handleTransferAgentsSelectChange(value, "FROM")
 							}
 							renderer={renderer}
-							options={distributors}
-							getOptionLabel={(option) => {
-								return (
-									<Flex as="span" align="center" gap="2">
-										<Text noOfLines="1">{option.name}</Text>
-										<Flex
-											color="light"
-											fontSize="xs"
-											align="center"
-											gap="1"
-										>
-											<Icon name="phone" size="xs" />
-											{option.mobile}
-										</Flex>
-									</Flex>
-								);
-							}}
+							options={[
+								independent_retailer_select_option,
+								...distributors,
+							]}
+							getOptionLabel={(option) =>
+								`${option.name} ✆ ${option.mobile}`
+							}
 						/>
 					</FormControl>
 				)}
@@ -197,43 +200,41 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 								: distributors
 						}
 						disabled={!default_agent_code && !transferAgentsFrom}
-						getOptionLabel={(option) => {
-							return (
-								<Flex as="span" align="center" gap="2">
-									<Text noOfLines="1">{option.name}</Text>
-									<Flex
-										color="light"
-										fontSize="xs"
-										align="center"
-										gap="1"
-									>
-										<Icon name="phone" size="xs" />
-										{option.mobile}
-									</Flex>
-								</Flex>
-							);
-						}}
+						getOptionLabel={(option) =>
+							`${option.name} ✆ ${option.mobile}`
+						}
 					/>
 				</FormControl>
 			</Flex>
 
 			{/* Select for Move */}
-			{showSelectAgent && transferAgentsFrom && transferAgentsTo ? (
+			{showSelectAgent &&
+			showOrgChangeRoleView &&
+			transferAgentsFrom &&
+			transferAgentsTo ? (
 				<MoveAgents
-					options={agentListToTransferAgentsFrom}
-					onChange={handleSelectedAgents}
-					setShowSelectAgent={setShowSelectAgent}
-					agentList={agentListToTransferAgentsTo}
-					transferAgentsTo={transferAgentsTo}
-					transferAgentsFrom={transferAgentsFrom}
-					selectedAgentsToTransfer={selectedAgentsToTransfer}
-					setResponseDetails={setResponseDetails}
+					{...{
+						default_agent_code,
+						showOrgChangeRoleView,
+						setShowSelectAgent,
+						transferAgentsTo,
+						transferAgentsFrom,
+						selectedAgentsToTransfer,
+						setResponseDetails,
+						onChange: handleSelectedAgents,
+						options: agentListToTransferAgentsFrom,
+						agentList: agentListToTransferAgentsTo,
+					}}
 				/>
 			) : null}
 
 			{/* Button for mobile responsive */}
 			<Flex
-				display={{ base: "flex", md: "none" }}
+				display={
+					showOrgChangeRoleView
+						? { base: "flex", md: "none" }
+						: "none"
+				}
 				direction="row-reverse"
 				w="100%"
 				position="fixed"
@@ -249,10 +250,7 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 					fontWeight="bold"
 					borderRadius="none"
 					onClick={() => setShowSelectAgent(true)}
-					disabled={
-						transferAgentsTo == null ||
-						transferAgentsTo == undefined
-					}
+					disabled={!transferAgentsTo}
 				>
 					Select Agents
 				</Button>
@@ -272,9 +270,13 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 				</Button>
 			</Flex>
 
-			{/* Buttons for desktop */}
 			<Flex
-				display={{ base: "none", md: "flex" }}
+				display={
+					showOrgChangeRoleView
+						? { base: "none", md: "flex" }
+						: "flex"
+				}
+				direction={{ base: "row-reverse", md: "row" }}
 				w={{ base: "100%", md: "500px" }}
 				position={{ base: "fixed", md: "initial" }}
 				gap={{ base: "0", md: "16" }}
@@ -289,7 +291,11 @@ const TransferSeller = ({ agentData, setResponseDetails }) => {
 					fontWeight="bold"
 					borderRadius={{ base: "none", md: "10" }}
 					onClick={handleMoveAgent}
-					disabled={!selectedAgentsToTransfer?.length > 0}
+					disabled={
+						showOrgChangeRoleView
+							? !selectedAgentsToTransfer?.length > 0
+							: default_agent_code && !transferAgentsTo
+					}
 				>
 					Move Now
 				</Button>
