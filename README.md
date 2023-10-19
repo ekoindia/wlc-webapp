@@ -18,6 +18,7 @@ A white-labelled SaaS platform to run your business like agent-banking, micro-fi
 
 ## UI Features:
 - **Top Navbar** - [components/NavBar/NavBar.jsx](components/NavBar/NavBar.jsx)
+  - Menu items configuration: [constants/profileCardMenus.js](constants/profileCardMenus.js)
 - **Left Sidebar** - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
   - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
 - **Transaction History** (for sellers & distributors) - [page-components/History/History.jsx](page-components/History/History.jsx)
