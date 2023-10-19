@@ -19,7 +19,7 @@ const Select = ({
 	required,
 	labelStyle,
 	getOptionLabel,
-	getOptionValue,
+	getOptionValue, // Check if really required
 	...rest
 }) => {
 	const _id = useId();
@@ -68,7 +68,7 @@ const Select = ({
 		option: (base, { isSelected }) => {
 			return {
 				...base,
-				height: "2.5rem",
+				minHeight: "2.5rem",
 				lineHeight: isMulti ? "1" : null,
 				fontSize: fontSizes.sm,
 
@@ -166,7 +166,6 @@ const Select = ({
 				</InputLabel>
 			) : null}
 			<ReactSelect
-				// required={required}
 				isMulti={isMulti}
 				styles={colorStyles}
 				isSearchable={options?.length > 15}
