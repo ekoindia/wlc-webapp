@@ -22,7 +22,7 @@ import Link from "next/link";
 import { Fragment, useState } from "react";
 import { limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
-import { Button, IcoButton, Icon, OrgLogo } from "..";
+import { AdminViewToggleCard, Button, IcoButton, Icon, OrgLogo } from "..";
 
 export const NavHeight = {
 	base: "56px",
@@ -462,6 +462,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						</Flex>
 					) : null}
 				</Box>
+
+				{isOnboarding !== true && isAdmin === true ? (
+					<AdminViewToggleCard minimal />
+				) : null}
 			</VStack>
 
 			<VStack

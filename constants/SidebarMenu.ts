@@ -38,6 +38,19 @@ export const AdminOtherMenuItems: number[] = [
 ];
 
 /**
+ * List of transaction ids that must not be shown to the user/Admin.
+ * These are the info-card transactions which were meant only for API Partners.
+ */
+export const AdminBlacklistMenuItems: number[] = [
+	147, // Indo Nepal
+	157, // API Widget
+	158, // Cash Collection
+	159, // Bulk IMPS
+	262, // Lending API Stack
+	520, // AePS Cashout
+];
+
+/**
  * Fixed menu items for admin left-menu.
  */
 export const adminSidebarMenu: sidebarMenuType[] = [

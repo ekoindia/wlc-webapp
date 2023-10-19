@@ -16,6 +16,7 @@ import {
 	useToken,
 } from "@chakra-ui/react";
 import {
+	AdminBlacklistMenuItems,
 	AdminOtherMenuItems,
 	adminSidebarMenu,
 	Endpoints,
@@ -283,7 +284,8 @@ const SideBar = ({ navOpen, setNavClose }) => {
 					} else if (isAdminAgentMode) {
 						if (OtherMenuItems.indexOf(tx.id) > -1) {
 							otherList.push(tx);
-						} else {
+						} else if (AdminBlacklistMenuItems.indexOf(tx.id) < 0) {
+							// Add all other transactions to the trxnList (if not blacklisted)
 							trxnList.push(tx);
 						}
 					}

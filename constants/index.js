@@ -29,6 +29,7 @@ export {
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
 export { roles } from "./role";
 export {
+	AdminBlacklistMenuItems,
 	AdminOtherMenuItems,
 	adminSidebarMenu,
 	OtherMenuItems,

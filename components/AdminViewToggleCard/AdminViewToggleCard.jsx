@@ -7,7 +7,7 @@ import { useUser } from "contexts";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<AdminViewToggleCard></AdminViewToggleCard>` TODO: Fix example
  */
-const AdminViewToggleCard = ({ ...rest }) => {
+const AdminViewToggleCard = ({ minimal = false, ...rest }) => {
 	const {
 		isLoggedIn,
 		isAdminAgentMode,
@@ -22,14 +22,15 @@ const AdminViewToggleCard = ({ ...rest }) => {
 		<Flex
 			direction="row"
 			w="100%"
-			padding="16px 15px"
+			padding={minimal ? "16px 2px" : "16px 15px"}
 			mb="4px"
 			align="center"
-			bg="status.bgLight"
+			bg={minimal ? null : "status.bgLight"}
+			borderTop={minimal ? "1px solid #FFFFFF20" : null}
 			gap={{ base: "14px", lg: "10px", "2xl": "14px" }}
 			{...rest}
 		>
-			<Text fontSize="12px" color="status.wm">
+			<Text fontSize="12px" color="hint">
 				VIEW AS:
 			</Text>
 
@@ -37,7 +38,8 @@ const AdminViewToggleCard = ({ ...rest }) => {
 
 			<Text
 				color={isAdminAgentMode ? "white" : "status.title"}
-				fontSize="14px"
+				fontSize="15px"
+				fontWeight={isAdminAgentMode ? null : "bold"}
 				cursor={isAdminAgentMode ? "pointer" : "default"}
 				onClick={() => setAdminAgentMode(false)}
 			>
@@ -45,7 +47,7 @@ const AdminViewToggleCard = ({ ...rest }) => {
 			</Text>
 
 			<Switch
-				size="sm"
+				size="md"
 				colorScheme="whiteAlpha"
 				isChecked={isAdminAgentMode}
 				onChange={(e) => setAdminAgentMode(e.target.checked)}
@@ -53,7 +55,8 @@ const AdminViewToggleCard = ({ ...rest }) => {
 
 			<Text
 				color={isAdminAgentMode ? "status.title" : "white"}
-				fontSize="14px"
+				fontSize="15px"
+				fontWeight={isAdminAgentMode ? "bold" : null}
 				cursor={isAdminAgentMode ? "default" : "pointer"}
 				onClick={() => setAdminAgentMode(true)}
 			>
