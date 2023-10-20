@@ -41,9 +41,17 @@ export const ChangeRoleMenuList = [
 		slug: "retailer-to-distributor",
 		label: "Promote Retailer To Distributor",
 		path: "/admin/my-network/profile/change-role",
+		// visible: [],
+		visibleString: [], //this need to be in sync with what we are getting in network table
+		global: true,
+	},
+	{
+		slug: "retailer-to-distributor",
+		label: "Promote To Distributor",
+		path: "/admin/my-network/profile/change-role",
 		// visible: [2, 3],
 		visibleString: ["Retailer", "Independent Retailer"], //this need to be in sync with what we are getting in network table
-		global: true,
+		global: false,
 	},
 	// {
 	// 	slug: "demote-distributor",

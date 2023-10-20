@@ -304,7 +304,7 @@ const TransferSeller = ({
 							: default_agent_code && !transferAgentsTo
 					}
 				>
-					Move Now
+					Move
 				</Button>
 
 				<Button

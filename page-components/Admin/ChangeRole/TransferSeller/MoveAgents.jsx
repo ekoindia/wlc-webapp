@@ -253,7 +253,7 @@ const MoveAgents = ({
 					onClick={handleMoveAgent}
 					disabled={!selectedAgentsToTransfer?.length > 0}
 				>
-					Move Now
+					Move
 				</Button>
 
 				<Button
