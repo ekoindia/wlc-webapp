@@ -34,11 +34,11 @@ const reasons = [
 	{ value: "999", label: "Other" },
 ];
 
-const generateMenuList = (list, id, extra) => {
+const generateMenuList = (list, currId, extra) => {
 	let _list = [];
 
 	for (const listItem of list) {
-		if (id !== undefined && listItem.id !== id) {
+		if (currId != undefined && listItem.id != currId) {
 			_list.push(listItem);
 		}
 	}
@@ -93,7 +93,7 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 			},
 		},
 		{
-			id: 17,
+			id: 18,
 			value: "Inactive",
 			label: "Mark Inactive",
 			onClick: (value) => {
@@ -199,14 +199,16 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 					<ModalCloseButton color="hint" size="md" />
 					<ModalBody>
 						<Flex direction="column" gap="8">
-							<Select
-								label={`Reason for marking ${clickedVal?.toLowerCase()}`}
-								options={reasons}
-								onChange={handleSelect}
-								required
-							/>
+							{currId == 16 && (
+								<Select
+									label={`Reason for marking ${clickedVal?.toLowerCase()}`}
+									options={reasons}
+									onChange={handleSelect}
+									required
+								/>
+							)}
 
-							{reasonSelect === "999" && (
+							{(currId == 18 || reasonSelect === "999") && (
 								<Flex direction="column">
 									<InputLabel
 										htmlFor="status-textarea"
