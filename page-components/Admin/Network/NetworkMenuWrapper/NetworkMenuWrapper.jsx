@@ -140,13 +140,16 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 			},
 			token: accessToken,
 		})
-			.then((data) => {
+			.then((res) => {
 				toast({
-					title: data.message,
-					status: getStatus(data.status),
+					title: res.message,
+					status: getStatus(res.status),
 					duration: 6000,
 					isClosable: true,
 				});
+				if (res.status === 0) {
+					router.reload(window.location.pathname);
+				}
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
