@@ -140,7 +140,7 @@ const distributorStepsData = [
 		isRequired: true,
 		isVisible: true,
 		stepStatus: 0,
-		role: 12400,
+		role: 13000,
 		primaryCTAText: "Start Location Capture",
 		description: "",
 		form_data: {},
@@ -275,6 +275,248 @@ const distributorStepsData = [
 		success_message: "PAN verified successfully.",
 	},
 
+	{
+		id: 16,
+		name: "PanVerification",
+		label: "Pan Verification",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 13000,
+		primaryCTAText: "Verify PAN",
+		description:
+			"Upload your PAN copy to verify your business. Accepted formats are",
+		form_data: {},
+		success_message: "PAN verified successfully.",
+	},
+
+	{
+		id: 13,
+		name: "Activation Plans",
+		label: "Activation Plans",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: false,
+		stepStatus: 0,
+		role: 13400,
+		primaryCTAText: "Sign Agreement",
+		description: "Select Plans To See Details",
+		form_data: {},
+		success_message: "Agreement signed successfully.",
+	},
+	{
+		id: 14,
+		name: "OnboardingStatus",
+		label: "Onboarding Status",
+		isSkipable: false,
+		isRequired: false,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Submit",
+		description: "",
+		form_data: {},
+	},
+	{
+		id: 15,
+		name: "PANAadhaarMatching",
+		label: "PAN - Aadhaar Matching",
+		isSkipable: false,
+		isRequired: false,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Start Matching",
+		description: "",
+		form_data: {},
+	},
+];
+
+const retailerStepsData = [
+	{
+		id: 1,
+		name: "Welcome",
+		label: "Welcome",
+		isSkipable: false,
+		isRequired: false,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Start Onboarding",
+		description: "",
+		form_data: {},
+	},
+	{
+		id: 2,
+		name: "RoleCapture",
+		label: "Tell us who you are?",
+		isSkipable: false,
+		isRequired: false,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Continue",
+		description: "",
+		form_data: {
+			roles: [
+				{
+					id: 1,
+					merchant_type: 1,
+					applicant_type: 0,
+					label: "I'm a retailer",
+					description: "I serve customers from my shop",
+					icon: "../assets/icons/user_merchant.png",
+					isVisible: true,
+				},
+				{
+					id: 2,
+					merchant_type: 3,
+					applicant_type: 2,
+					label: "I'm a distributor",
+					description:
+						"I have a network of retailer and i want to serve them",
+					icon: "../assets/icons/user_distributor.png",
+					isVisible: true,
+				},
+				{
+					id: 3,
+					merchant_type: 2,
+					applicant_type: 1,
+					label: "I'm a Enterprise",
+					description:
+						"I want to use API and other solution to make my own service",
+					icon: "../assets/icons/user_enterprise.png",
+					isVisible: false,
+				},
+			],
+		},
+	},
+	{
+		id: 3,
+		name: "LocationCapture",
+		label: "Location Capturing",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12400,
+		primaryCTAText: "Start Location Capture",
+		description: "",
+		form_data: {},
+		success_message: "Location captured successfully.",
+	},
+	{
+		id: 4,
+		name: "AadhaarVerification",
+		label: "Aadhaar Verification",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12400,
+		primaryCTAText: "Verify Aadhaar",
+		description:
+			"Upload your Aadhaar Copy front and back to verify yourself. Accepted formats are",
+		form_data: {},
+		success_message: "Aadhaar uploaded successfully.",
+	},
+	{
+		id: 5,
+		name: "Aadhaar Consent",
+		label: "Aadhaar Consent",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 24000,
+		primaryCTAText: "Verify Consent",
+		description: "",
+		form_data: {},
+		success_message: "Aadhaar consent taken.",
+	},
+	{
+		id: 6,
+		name: "Confirm Aadhaar Number",
+		label: "Confirm Aadhaar Number",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 24000,
+		primaryCTAText: "Proceed",
+		description: "",
+		form_data: {},
+		success_message: "Aadhaar number confirmed.",
+	},
+
+	{
+		id: 7,
+		name: "ConfirmAadhaarOTP",
+		label: "Confirm Aadhaar OTP",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 24000,
+		primaryCTAText: "Confirm",
+		description: "",
+		form_data: {},
+		success_message: "Aadhaar confirmed successfully.",
+	},
+	{
+		id: 11,
+		name: "SelfieKYC",
+		label: "Selfie KYC",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12500,
+		primaryCTAText: "Next",
+		description:
+			"Thanks for completing your personal and address verification. Take a clear selfie to complete the eKYC process.",
+		form_data: {},
+		success_message: "KYC completed.",
+	},
+	{
+		id: 10,
+		name: "SecretPin",
+		label: "Secret Pin",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12600,
+		primaryCTAText: "Next",
+		description: "Set Your 4-Digit Secret Pin",
+		form_data: {},
+	},
+	{
+		id: 12,
+		name: "Sign Agreement",
+		label: "Sign Agreement",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12800,
+		primaryCTAText: "Sign Agreement",
+		description: "",
+		form_data: {},
+		success_message: "Agreement signed successfully.",
+	},
+	{
+		id: 8,
+		name: "PanVerification",
+		label: "Pan Verification",
+		isSkipable: false,
+		isRequired: true,
+		isVisible: true,
+		stepStatus: 0,
+		role: 12300,
+		primaryCTAText: "Verify PAN",
+		description:
+			"Upload your PAN copy to verify your business. Accepted formats are",
+		form_data: {},
+		success_message: "PAN verified successfully.",
+	},
 	{
 		id: 13,
 		name: "Activation Plans",
@@ -432,7 +674,7 @@ const SignupPage = () => {
 		}
 	};
 
-	const initialStepSetter = (userData) => {
+	const initialStepSetter = (user_data) => {
 		const currentStepData = [];
 		function stepSetter() {
 			// console.log(
@@ -440,13 +682,19 @@ const SignupPage = () => {
 			// 	userData,
 			// 	userData?.details?.onboarding_steps
 			// );
-			userData?.details?.onboarding_steps?.forEach((step) => {
-				// console.log(
-				// 	"[oaas] > Setup Steps #2: ",
-				// 	step,
-				// 	distributorStepsData
-				// );
-				let currentData = distributorStepsData?.filter(
+
+			var step_data = [];
+			// User_Type = 1 : Distributor
+			// User Type = 3 : Retailer
+			if (user_data?.details?.userDetails?.user_type == 1) {
+				step_data = distributorStepsData;
+			} else if (user_data?.details?.userDetails?.user_type == 3) {
+				step_data = retailerStepsData;
+			}
+
+			user_data?.details?.onboarding_steps?.forEach((step) => {
+				//console.log("[oaas] > Setup Steps #2: ", step, step_data);
+				let currentData = step_data?.filter(
 					(singleStep) => singleStep.role === step.role
 				);
 				currentStepData.push(...currentData);
@@ -548,6 +796,12 @@ const SignupPage = () => {
 			} else if (data?.id === 12) {
 				interaction_type_id =
 					TransactionIds.USER_ONBOARDING_SUBMIT_SIGN_AGREEMENT;
+			} else if (data?.id === 16) {
+				interaction_type_id =
+					TransactionIds.USER_ONBOARDING_PAN_VERIFICATION;
+				bodyData.form_data.csp_id =
+					userData.userDetails.signup_mobile ||
+					userData.userDetails.mobile;
 			}
 			updateOnboarding(bodyData);
 		} else {
@@ -703,7 +957,8 @@ const SignupPage = () => {
 		)
 			.then((data) => {
 				const success =
-					data?.status == 0 && !data?.invalid_params?.length;
+					data?.status == 0 && // Status is successful
+					!(Object.keys(data?.invalid_params || {}).length > 0); // No "invalid-params" present
 
 				if (success) {
 					toast({
