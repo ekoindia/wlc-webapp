@@ -1,6 +1,6 @@
 {
 	"name": "eko-infinity-webapp",
-	"version": "4.13.1",
+	"version": "4.13.2",
 	"private": true,
 	"description": "Eko's white-labelled financial platform service",
 	"keywords": [
@@ -45,7 +45,7 @@
 	"dependencies": {
 		"@chakra-ui/icons": "^2.0.16",
 		"@chakra-ui/react": "^2.6.0",
-		"@ekoindia/oaas-widget": "^2.4.1",
+		"@ekoindia/oaas-widget": "^2.5.0",
 		"@emotion/react": "^11.10.5",
 		"@emotion/styled": "^11.10.5",
 		"@react-google-maps/api": "^2.18.1",
