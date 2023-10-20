@@ -43,9 +43,11 @@ import { StatusCard } from "./StatusCard";
 import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
+import { Tabs } from "./Tabs";
 import { Tags } from "./Tags";
 
 export {
+	Tabs,
 	AdminViewToggleCard,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
