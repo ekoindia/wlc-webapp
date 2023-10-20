@@ -164,13 +164,13 @@ export const getAmountStyle = (amount) => {
 	return <Currency amount={amount} preserveFraction={true} />;
 };
 
-export const getPaymentStyle = (amount, trx_type /*side = "left"*/) => {
+export const getPaymentStyle = (amount, trx_type, side = "left") => {
 	return (
 		amount !== undefined && (
 			<Flex
 				align="center"
 				gap="1"
-				//flexDirection={side === "right" ? "row-reverse" : "row"}
+				flexDirection={side === "right" ? "row-reverse" : "row"}
 				textAlign="left"
 				width="min-content"
 			>
