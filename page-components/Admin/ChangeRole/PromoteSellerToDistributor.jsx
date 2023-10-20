@@ -21,11 +21,11 @@ const AGENT_TYPE = {
 const retailer_type_list = [
 	{
 		value: AGENT_TYPE.INDEPENDENT_RETAILER,
-		label: "Retailer not mapped to any distributor",
+		label: "Retailers not mapped to any distributor",
 	},
 	{
 		value: AGENT_TYPE.RETAILER,
-		label: "Retailer already mapped to a distributor",
+		label: "Retailers already mapped to a distributor",
 	},
 ];
 
@@ -95,7 +95,7 @@ const PromoteSellerToDistributor = ({
 		},
 		{
 			name: "retailer",
-			label: `Select ${UserTypeLabel[watcher.retailer_type]}`,
+			label: `Select ${UserTypeLabel[watcher.retailer_type]}`, //TODO: add an/a
 			parameter_type_id: ParamType.LIST,
 			list_elements: sellerList,
 			renderer: renderer,

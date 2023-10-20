@@ -14,7 +14,7 @@ const renderer = {
 
 const independent_retailer_select_option = {
 	user_code: "3",
-	name: "No Distributor - Transfer Independent Retailers (Retailers not mapped to any distributor)",
+	name: "No Distributor – Transfer Independent Retailers (Retailers not mapped to any distributor)",
 	mobile: "",
 	customer_id: "",
 };
@@ -45,6 +45,7 @@ const TransferSeller = ({
 	const { accessToken } = useSession();
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 	const default_agent_code = agentData?.eko_code;
+	const default_agent_type = agentData?.agent_type;
 
 	const handleSelectedAgents = (_agents) => {
 		setSelectedAgentsToTransfer(_agents);
@@ -189,7 +190,13 @@ const TransferSeller = ({
 				<FormControl w={{ base: "100%", md: "500px" }}>
 					<Select
 						id="to-select"
-						label="Select distributor to transfer agents to"
+						label={
+							!showOrgChangeRoleView && default_agent_code
+								? default_agent_type == "Retailer" // check if we can avoid this hardcode value
+									? "Select New Distributor"
+									: "Select Distributor"
+								: "Select distributor to transfer agents to"
+						}
 						required={true}
 						value={transferAgentsTo}
 						onChange={(value) =>
