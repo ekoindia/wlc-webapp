@@ -37,6 +37,7 @@ const Form = ({
 						multiSelectRenderer,
 						validations,
 						helperText,
+						is_inactive = false,
 						visible_on_param_name,
 						visible_on_param_value,
 						...rest
@@ -48,6 +49,8 @@ const Form = ({
 						: { ...validations };
 
 					const { force_dropdown } = meta;
+
+					if (is_inactive) return;
 
 					if (visible_on_param_name && visible_on_param_value) {
 						const _shouldBeVisible = visible_on_param_value.test(
