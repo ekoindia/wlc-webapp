@@ -169,7 +169,7 @@ export const getPaymentStyle = (amount, trx_type /*side = "left"*/) => {
 		amount !== undefined && (
 			<Flex
 				align="center"
-				gap="2"
+				gap="1"
 				//flexDirection={side === "right" ? "row-reverse" : "row"}
 				textAlign="left"
 				width="min-content"
@@ -189,7 +189,7 @@ export const getPaymentStyle = (amount, trx_type /*side = "left"*/) => {
 
 				{trx_type && (
 					<Text as="b" size="sm">
-						{trx_type === "DR" ? "-" : "+"}
+						{trx_type === "DR" ? "+" : "-"}
 					</Text>
 				)}
 				<Currency amount={amount} preserveFraction={true} />
