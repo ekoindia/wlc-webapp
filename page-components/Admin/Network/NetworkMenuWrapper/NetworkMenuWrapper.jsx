@@ -1,5 +1,4 @@
 import {
-	Box,
 	Flex,
 	IconButton,
 	Modal,
@@ -14,9 +13,9 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { Button, InputLabel, Menus, Select } from "components";
-import { Endpoints } from "constants/EndPoints";
-import { useSession } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
+import { Endpoints } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -154,8 +153,9 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 			});
 	};
 
-	const handleSelect = (event) => {
-		setReasonSelect(event.target.value);
+	const handleSelect = (_selectedObject) => {
+		const { value } = _selectedObject;
+		setReasonSelect(value);
 	};
 
 	const handleReasonInput = (event) => {
@@ -196,26 +196,17 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 					<ModalCloseButton color="hint" size="md" />
 					<ModalBody>
 						<Flex direction="column" gap="8">
-							<Box>
-								<InputLabel
-									htmlFor="status-reason-select"
-									fontWeight="medium"
-									required
-								>
-									Reason for marking{" "}
-									{clickedVal?.toLowerCase()}
-								</InputLabel>
-								<Select
-									id="status-reason-select"
-									options={reasons}
-									onChange={handleSelect}
-								></Select>
-							</Box>
+							<Select
+								label={`Reason for marking ${clickedVal?.toLowerCase()}`}
+								options={reasons}
+								onChange={handleSelect}
+								required
+							/>
+
 							{reasonSelect === "999" && (
-								<Box>
+								<Flex direction="column">
 									<InputLabel
 										htmlFor="status-textarea"
-										fontWeight="medium"
 										required
 									>
 										Additional Details
@@ -227,8 +218,23 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 										noOfLines={2}
 										maxLength={100}
 										onChange={handleReasonInput}
+										_hover={{
+											borderColor: "primary.DEFAULT",
+											borderWidth: "1px",
+											borderStyle: "solid",
+										}}
+										_active={{
+											borderColor: "primary.DEFAULT",
+											borderWidth: "1px",
+											borderStyle: "solid",
+										}}
+										_focusVisible={{
+											borderColor: "primary.DEFAULT",
+											borderWidth: "1px",
+											borderStyle: "solid",
+										}}
 									/>
-								</Box>
+								</Flex>
 							)}
 						</Flex>
 					</ModalBody>
