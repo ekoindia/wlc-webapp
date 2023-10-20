@@ -178,7 +178,9 @@ const TransferSeller = ({
 								...distributors,
 							]}
 							getOptionLabel={(option) =>
-								`${option.name} ✆ ${option.mobile}`
+								option.mobile
+									? `${option.name} ✆ ${option.mobile}`
+									: option.name
 							}
 						/>
 					</FormControl>
