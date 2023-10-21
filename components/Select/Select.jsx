@@ -166,6 +166,7 @@ const Select = ({
 				</InputLabel>
 			) : null}
 			<ReactSelect
+				id={id ?? _id}
 				isMulti={isMulti}
 				styles={colorStyles}
 				isSearchable={options?.length > 15}
