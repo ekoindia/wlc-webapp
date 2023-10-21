@@ -90,8 +90,8 @@ const PromoteSellerToDistributor = ({
 			parameter_type_id: ParamType.LIST,
 			list_elements: retailer_type_list,
 			is_inactive: !showOrgChangeRoleView && default_agent_mobile,
-			direction: "column",
-			gap: "2",
+
+			styles: { direction: "column", gap: "2" },
 		},
 		{
 			name: "retailer",
