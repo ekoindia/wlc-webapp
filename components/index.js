@@ -44,8 +44,10 @@ import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
 import { Tags } from "./Tags";
+import { Textarea } from "./Textarea";
 
 export {
+	Textarea,
 	AdminViewToggleCard,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
