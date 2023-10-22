@@ -52,7 +52,7 @@ const Menus = ({
 			color={type === "inverted" ? "accent.DEFAULT" : "white"}
 			onClick={onClick}
 		>
-			<Menu autoSelect={false}>
+			<Menu autoSelect={false} isLazy>
 				{
 					(/* { isOpen } */) => (
 						<>
