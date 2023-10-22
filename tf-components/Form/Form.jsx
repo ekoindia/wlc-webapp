@@ -1,5 +1,5 @@
 import { Flex, FormControl, Text } from "@chakra-ui/react";
-import { Input, Radio, Select } from "components";
+import { Input, Radio, Select, Textarea } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
 import { getFormErrorMessage } from "utils";
@@ -31,7 +31,7 @@ const Form = ({
 						disabled,
 						list_elements,
 						defaultValue,
-						parameter_type_id,
+						parameter_type_id = ParamType.TEXT,
 						is_multi,
 						meta = {},
 						multiSelectRenderer,
@@ -62,7 +62,6 @@ const Form = ({
 
 					switch (parameter_type_id) {
 						case ParamType.NUMERIC:
-						case ParamType.TEXT:
 							return (
 								<FormControl
 									key={`${name}-${label}-${index}`}
@@ -263,6 +262,55 @@ const Form = ({
 									);
 								}
 							}
+							break;
+						default:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									w={{ base: "auto", md: "500px" }}
+								>
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({
+											field: { onChange, value },
+										}) => {
+											return (
+												<Textarea
+													{...{
+														id: name,
+														label,
+														required,
+														value,
+														disabled,
+														onChange,
+													}}
+													{...rest}
+												/>
+											);
+										}}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+											  )}) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
+							);
 					}
 				}
 			)}
