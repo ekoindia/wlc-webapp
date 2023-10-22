@@ -129,9 +129,16 @@ export const getArrowStyle = () => {
 	);
 };
 
-export const getModalStyle = (mobile_number, eko_code, account_status) => {
+export const getModalStyle = (
+	mobile_number,
+	eko_code,
+	account_status,
+	agent_type
+) => {
 	return (
-		<NetworkMenuWrapper {...{ mobile_number, eko_code, account_status }} />
+		<NetworkMenuWrapper
+			{...{ mobile_number, eko_code, account_status, agent_type }}
+		/>
 	);
 };
 

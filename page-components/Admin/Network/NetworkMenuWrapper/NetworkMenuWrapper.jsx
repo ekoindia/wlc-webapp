@@ -11,7 +11,7 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { Button, Menus } from "components";
-import { Endpoints, ParamType } from "constants";
+import { ChangeRoleMenuList, Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -34,7 +34,7 @@ const reasons = [
 	{ value: "999", label: "Other" },
 ];
 
-const generateMenuList = (list, currId, extra) => {
+const generateMenuList = (list, currId, extra, includeExtra) => {
 	let _list = [];
 
 	for (const listItem of list) {
@@ -43,7 +43,9 @@ const generateMenuList = (list, currId, extra) => {
 		}
 	}
 
-	_list = [..._list, extra];
+	if (includeExtra) {
+		_list.push(extra);
+	}
 
 	return _list;
 };
@@ -63,7 +65,12 @@ const getStatus = (status) => {
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
-const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
+const NetworkMenuWrapper = ({
+	mobile_number,
+	eko_code,
+	account_status,
+	agent_type,
+}) => {
 	const { onOpen } = useDisclosure();
 	const [isOpen, setOpen] = useState(false);
 	const [clickedVal, setClickedVal] = useState();
@@ -101,7 +108,7 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 
 	const watcher = useWatch({ control });
 
-	const extraMenuListItem = {
+	const changeRoleMenuItem = {
 		label: "Change Role",
 		onClick: () => {
 			router.push(
@@ -111,10 +118,21 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 	};
 
 	const currId = statusObj[account_status];
+
+	let _includeChangeRole = false;
+
+	for (let { global, visibleString } of ChangeRoleMenuList) {
+		if (!global && visibleString.includes(agent_type)) {
+			_includeChangeRole = true;
+			break;
+		}
+	}
+
 	const _finalMenuList = generateMenuList(
 		menuList,
 		currId,
-		extraMenuListItem
+		changeRoleMenuItem,
+		_includeChangeRole
 	);
 
 	const parameter_list = [
@@ -149,7 +167,6 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 	];
 
 	const handleFormSubmit = (data) => {
-		console.log("data", data);
 		const { reason, reason_input } = data;
 
 		const _reason = reason?.value === "999" ? reason_input : reason?.label;
