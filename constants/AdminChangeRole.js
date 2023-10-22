@@ -42,7 +42,7 @@ export const ChangeRoleMenuList = [
 		label: "Promote Retailer To Distributor",
 		path: "/admin/my-network/profile/change-role",
 		// visible: [],
-		visibleString: [], //this need to be in sync with what we are getting in network table
+		visibleString: [],
 		global: true,
 	},
 	{
