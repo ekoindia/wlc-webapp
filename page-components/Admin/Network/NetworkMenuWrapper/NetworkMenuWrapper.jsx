@@ -5,19 +5,19 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	ModalContent,
-	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
-	Textarea,
 	useDisclosure,
 	useToast,
 } from "@chakra-ui/react";
-import { Button, InputLabel, Menus, Select } from "components";
-import { Endpoints } from "constants";
+import { Button, Menus } from "components";
+import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components";
 
 const statusObj = {
 	Active: 16,
@@ -29,7 +29,7 @@ const reasons = [
 	{ value: "0", label: "Not Transacting anymore" },
 	{ value: "1", label: "Wants to create a new account" },
 	{ value: "2", label: "Management Request" },
-	{ value: "3", label: "Requested by the person himself/herself" },
+	{ value: "3", label: "Requested by the person itself" },
 	{ value: "4", label: "Suspected Fraud" },
 	{ value: "999", label: "Other" },
 ];
@@ -57,15 +57,6 @@ const getStatus = (status) => {
 	}
 };
 
-const getReason = (list, value) => {
-	for (let item of list) {
-		if (item.value === value) {
-			return item.label;
-		}
-	}
-	return null;
-};
-
 /**
  * A NetworkMenuWrapper component
  * @arg 	{Object}	prop	Properties passed to the component
@@ -73,11 +64,9 @@ const getReason = (list, value) => {
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
 const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
-	const [isOpen, setOpen] = useState(false);
 	const { onOpen } = useDisclosure();
+	const [isOpen, setOpen] = useState(false);
 	const [clickedVal, setClickedVal] = useState();
-	const [reasonSelect, setReasonSelect] = useState(null);
-	const [reasonInput, setReasonInput] = useState(null);
 	const { accessToken } = useSession();
 	const router = useRouter();
 	const toast = useToast();
@@ -103,6 +92,15 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 		},
 	];
 
+	const {
+		handleSubmit,
+		register,
+		control,
+		formState: { errors, isSubmitting },
+	} = useForm();
+
+	const watcher = useWatch({ control });
+
 	const extraMenuListItem = {
 		label: "Change Role",
 		onClick: () => {
@@ -119,14 +117,42 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 		extraMenuListItem
 	);
 
-	const handleSubmit = () => {
-		const _reason =
-			reasonSelect !== "999"
-				? getReason(reasons, reasonSelect)
-				: reasonInput;
+	const parameter_list = [
+		{
+			name: "reason",
+			label: `Reason for marking ${clickedVal?.toLowerCase()}`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: reasons,
+			meta: {
+				force_dropdown: true,
+			},
+			is_inactive: currId == 18,
+			width: { base: "auto", md: "464px" },
+		},
+		{
+			name: "reason_input",
+			label: "Additional Details",
+			required: currId == 16 ? true : false,
+			// visible_on_param_name: "reason",
+			// visible_on_param_value: /999/, // Ideally this should be the code, need to fix select return value
+			validations: {
+				required: currId == 16 ? true : false,
+			},
+			is_inactive:
+				currId == 16
+					? watcher["reason"]?.value !== "999"
+					: currId == 18
+					? false
+					: true, // hack until I fix select
+			styles: { width: { base: "auto", md: "464px" } },
+		},
+	];
 
-		setOpen(false);
-		setReasonSelect(null);
+	const handleFormSubmit = (data) => {
+		console.log("data", data);
+		const { reason, reason_input } = data;
+
+		const _reason = reason?.value === "999" ? reason_input : reason?.label;
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
@@ -148,21 +174,13 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 					isClosable: true,
 				});
 				if (res.status === 0) {
+					setOpen(false);
 					router.reload(window.location.pathname);
 				}
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
 			});
-	};
-
-	const handleSelect = (_selectedObject) => {
-		const { value } = _selectedObject;
-		setReasonSelect(value);
-	};
-
-	const handleReasonInput = (event) => {
-		setReasonInput(event.target.value);
 	};
 
 	return (
@@ -184,75 +202,37 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 			<Modal
 				isOpen={isOpen}
 				onClose={() => setOpen(false)}
-				size="lg"
+				size={{ base: "sm", md: "lg" }}
 				isCentered={true}
 			>
 				<ModalOverlay />
-				<ModalContent
-					width={{ base: "100%", md: "465px" }}
-					height="auto"
-					fontSize="sm"
-				>
+				<ModalContent height="auto" fontSize="sm">
 					<ModalHeader fontSize="lg" fontWeight="semibold">
 						<span>Mark {clickedVal}</span>
 					</ModalHeader>
 					<ModalCloseButton color="hint" size="md" />
 					<ModalBody>
-						<Flex direction="column" gap="8">
-							{currId == 16 && (
-								<Select
-									label={`Reason for marking ${clickedVal?.toLowerCase()}`}
-									options={reasons}
-									onChange={handleSelect}
-									required
+						<form onSubmit={handleSubmit(handleFormSubmit)}>
+							<Flex direction="column" gap="8" pb="4">
+								<Form
+									parameter_list={parameter_list}
+									register={register}
+									control={control}
+									formValues={watcher}
+									errors={errors}
 								/>
-							)}
-
-							{(currId == 18 || reasonSelect === "999") && (
-								<Flex direction="column">
-									<InputLabel
-										htmlFor="status-textarea"
-										required
-									>
-										Additional Details
-									</InputLabel>
-									<Textarea
-										id="status-textarea"
-										width="100%"
-										resize="none"
-										noOfLines={2}
-										maxLength={100}
-										onChange={handleReasonInput}
-										_hover={{
-											borderColor: "primary.DEFAULT",
-											borderWidth: "1px",
-											borderStyle: "solid",
-										}}
-										_active={{
-											borderColor: "primary.DEFAULT",
-											borderWidth: "1px",
-											borderStyle: "solid",
-										}}
-										_focusVisible={{
-											borderColor: "primary.DEFAULT",
-											borderWidth: "1px",
-											borderStyle: "solid",
-										}}
-									/>
-								</Flex>
-							)}
-						</Flex>
+								<Button
+									type="submit"
+									size="lg"
+									width="100%"
+									fontSize="lg"
+									loading={isSubmitting}
+								>
+									Save now
+								</Button>
+							</Flex>
+						</form>
 					</ModalBody>
-					<ModalFooter py="8">
-						<Button
-							size="lg"
-							width="100%"
-							fontSize="lg"
-							onClick={handleSubmit}
-						>
-							Save now
-						</Button>
-					</ModalFooter>
 				</ModalContent>
 			</Modal>
 		</div>
