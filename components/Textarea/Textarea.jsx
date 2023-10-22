@@ -17,7 +17,7 @@ const Textarea = forwardRef(
 			required,
 			onChange,
 			noOfLines = 2,
-			maxLength = 10,
+			maxLength = 100,
 			resize = "none",
 			disabled,
 			isInvalid,
