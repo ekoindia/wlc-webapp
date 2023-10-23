@@ -29,7 +29,7 @@ const reasons = [
 	{ value: "0", label: "Not Transacting anymore" },
 	{ value: "1", label: "Wants to create a new account" },
 	{ value: "2", label: "Management Request" },
-	{ value: "3", label: "Requested by the person themselves" },
+	{ value: "3", label: "Requested by the person themself" },
 	{ value: "4", label: "Suspected Fraud" },
 	{ value: "999", label: "Other" },
 ];
