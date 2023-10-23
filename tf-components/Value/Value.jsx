@@ -2,7 +2,7 @@ import { Currency, DateView } from "components";
 import { ParamType } from "constants";
 
 /**
- * Shows formatted values based on the type of value and other formatting options.
+ * Data Output component: Shows formatted values based on the type of value and other formatting options.
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.value]	The value to display.
  * @param	{string}	[prop.value_formatted]	The formatted value to display.
