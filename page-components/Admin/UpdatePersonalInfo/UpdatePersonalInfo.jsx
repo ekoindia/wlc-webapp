@@ -5,13 +5,24 @@ import {
 	FormLabel,
 	SimpleGrid,
 	Text,
+	useToast,
 } from "@chakra-ui/react";
 import { Button, Calenders, Headings, Input, Radio, Select } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
 
 const nameSplitter = (name) => {
 	let nameList = name.split(" ");
@@ -58,6 +69,8 @@ const UpdatePersonalInfo = () => {
 	const [previewDataList, setPreviewDataList] = useState();
 	const [finalData, setFinalData] = useState();
 	const { accessToken } = useSession();
+	const toast = useToast();
+	const router = useRouter();
 
 	const {
 		handleSubmit,
@@ -98,6 +111,13 @@ const UpdatePersonalInfo = () => {
 	}, [agentData]);
 
 	const handleFormPreview = (previewData) => {
+		const keysToFlatten = ["shop_type", "marital_status"];
+		Object.entries(previewData).map(([key, value]) => {
+			if (keysToFlatten.includes(key)) {
+				previewData[key] = value?.value;
+			}
+		});
+
 		let _previewData = [];
 		setFinalData(previewData);
 		setInPreviewMode(!inPreviewMode);
@@ -139,7 +159,6 @@ const UpdatePersonalInfo = () => {
 	const handleFormSubmit = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
-				"Content-type": "application/json",
 				"tf-req-uri-root-path": "/ekoicici/v1",
 				"tf-req-uri": "/network/agents/profile/personalInfo/update",
 				"tf-req-method": "PUT",
@@ -148,7 +167,55 @@ const UpdatePersonalInfo = () => {
 			token: accessToken,
 		})
 			.then((response) => {
-				console.log(response);
+				toast({
+					title: response?.message,
+					status: getStatus(response?.status),
+					duration: 2000,
+					isClosable: true,
+				});
+
+				const storedData = JSON.parse(
+					localStorage.getItem("network_seller_details")
+				);
+
+				let personal_information = storedData.personal_information;
+
+				Object.entries(personal_information).map(([key]) => {
+					if (
+						personal_information[key] !== undefined &&
+						personal_information[key].length === 0
+					) {
+						personal_information[key] =
+							(finalData[key] !== undefined &&
+								finalData[key].length) > 0
+								? finalData[key]
+								: "";
+					}
+				});
+
+				personal_information["date_of_birth"] =
+					finalData["dob"] !== undefined &&
+					finalData["dob"].length > 0
+						? finalData["dob"]
+						: "";
+
+				previewDataList.map(({ key, value }) => {
+					if (key === "shop_type") {
+						personal_information["shop_type"] = value;
+					}
+				});
+
+				localStorage.setItem(
+					"network_seller_details",
+					JSON.stringify(storedData)
+				);
+
+				if (response?.status == 0) {
+					router.push(
+						"/admin/my-network/profile?mobile=" +
+							agentData.agent_mobile
+					);
+				}
 			})
 			.catch((error) => {
 				console.log(error);
@@ -281,15 +348,31 @@ const UpdatePersonalInfo = () => {
 									<Controller
 										name="dob"
 										control={control}
+										rules={{ required: "⚠ Required" }}
 										render={({
 											field: { onChange, value },
 										}) => (
-											<Calenders
-												label="Date of birth"
-												onChange={onChange}
-												value={value}
-												required
-											/>
+											<>
+												<Calenders
+													label="Date of birth"
+													onChange={onChange}
+													value={value}
+													required
+												/>
+												{errors.dob && (
+													<Text
+														fontSize="xs"
+														fontWeight="medium"
+														color={
+															errors.dob
+																? "error"
+																: "primary.dark"
+														}
+													>
+														{errors.dob.message}
+													</Text>
+												)}
+											</>
 										)}
 									/>
 								</FormControl>
@@ -300,14 +383,33 @@ const UpdatePersonalInfo = () => {
 									<Controller
 										name="gender"
 										control={control}
+										rules={{ required: "⚠ Required" }}
 										render={({
 											field: { onChange, value },
 										}) => (
-											<Radio
-												options={formGenderRadioList}
-												value={value}
-												onChange={onChange}
-											/>
+											<>
+												<Radio
+													options={
+														formGenderRadioList
+													}
+													value={value}
+													onChange={onChange}
+												/>
+
+												{errors.gender && (
+													<Text
+														fontSize="xs"
+														fontWeight="medium"
+														color={
+															errors.gender
+																? "error"
+																: "primary.dark"
+														}
+													>
+														{errors.gender.message}
+													</Text>
+												)}
+											</>
 										)}
 									/>
 								</FormControl>

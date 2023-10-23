@@ -72,7 +72,6 @@ const NetworkFilter = ({ /*filter,*/ setFilter, setPageNumber }) => {
 	// const handleInputChange = (event) => {
 	// 	const { name, value, type, checked } = event.target;
 
-	// 	console.log("Gopi handleInputChange", name, value, type, checked);
 	// 	setFilterValues((prevState) => ({
 	// 		...prevState,
 	// 		[name]: value,
