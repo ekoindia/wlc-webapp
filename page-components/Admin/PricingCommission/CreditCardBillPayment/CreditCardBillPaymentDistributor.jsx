@@ -42,7 +42,8 @@ const _multiselectRenderer = {
 const CreditCardBillPaymentDistributor = () => {
 	const { slabs, serviceCode } = products.CREDIT_CARD_BILL_PAYMENT;
 	const { PERCENT, FIXED } =
-		productPricingCommissionValidationConfig.CREDIT_CARD_BILL_PAYMENT;
+		productPricingCommissionValidationConfig.CREDIT_CARD_BILL_PAYMENT
+			.DISTRIBUTOR;
 
 	const {
 		handleSubmit,

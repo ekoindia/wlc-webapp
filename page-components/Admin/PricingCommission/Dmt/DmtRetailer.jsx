@@ -52,7 +52,8 @@ const getStatus = (status) => {
 
 const DmtRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.DMT;
-	const { PERCENT, FIXED } = productPricingCommissionValidationConfig.DMT;
+	const { PERCENT, FIXED } =
+		productPricingCommissionValidationConfig.DMT.RETAILER;
 
 	const {
 		handleSubmit,
