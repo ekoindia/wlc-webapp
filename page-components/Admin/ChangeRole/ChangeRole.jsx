@@ -82,18 +82,24 @@ const ChangeRole = () => {
 	 */
 	const slugTabMapping = {
 		"transfer-retailer": (
-			<TransferSeller {...{ agentData, setResponseDetails }} />
+			<TransferSeller
+				{...{ agentData, setResponseDetails, showOrgChangeRoleView }}
+			/>
 		),
 		"retailer-to-distributor": (
 			<PromoteSellerToDistributor
-				{...{ agentData, setResponseDetails }}
+				{...{ agentData, setResponseDetails, showOrgChangeRoleView }}
 			/>
 		),
 		"retailer-to-iretailer": (
-			<UpgradeSellerToIseller {...{ agentData, setResponseDetails }} />
+			<UpgradeSellerToIseller
+				{...{ agentData, setResponseDetails, showOrgChangeRoleView }}
+			/>
 		),
 		"demote-distributor": (
-			<DemoteDistributor {...{ agentData, setResponseDetails }} />
+			<DemoteDistributor
+				{...{ agentData, setResponseDetails, showOrgChangeRoleView }}
+			/>
 		),
 	};
 
@@ -178,7 +184,7 @@ const ChangeRole = () => {
 								)}
 							</TabList>
 
-							<TabPanels mt="5">
+							<TabPanels>
 								{ChangeRoleMenuList?.map(
 									({ slug, visibleString, global }) =>
 										slugTabMapping[slug] &&

@@ -53,7 +53,8 @@ const getStatus = (status) => {
 const CreditCardBillPaymentRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.CREDIT_CARD_BILL_PAYMENT;
 	const { PERCENT, FIXED } =
-		productPricingCommissionValidationConfig.CREDIT_CARD_BILL_PAYMENT;
+		productPricingCommissionValidationConfig.CREDIT_CARD_BILL_PAYMENT
+			.RETAILER;
 
 	const {
 		handleSubmit,

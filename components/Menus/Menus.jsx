@@ -52,7 +52,7 @@ const Menus = ({
 			color={type === "inverted" ? "accent.DEFAULT" : "white"}
 			onClick={onClick}
 		>
-			<Menu autoSelect={false}>
+			<Menu autoSelect={false} isLazy>
 				{
 					(/* { isOpen } */) => (
 						<>
@@ -95,7 +95,7 @@ const Menus = ({
 															)
 														}
 														minHeight="48px"
-														fontSize="md"
+														fontSize="sm"
 														_hover={{
 															bg: "divider",
 														}}

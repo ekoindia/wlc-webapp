@@ -42,7 +42,7 @@ const pricing_type_list = [
 const CardPaymentDistributor = () => {
 	const { slabs, serviceCode } = products.CARD_PAYMENT;
 	const { PERCENT, FIXED } =
-		productPricingCommissionValidationConfig.CARD_PAYMENT;
+		productPricingCommissionValidationConfig.CARD_PAYMENT.DISTRIBUTOR;
 
 	const {
 		handleSubmit,

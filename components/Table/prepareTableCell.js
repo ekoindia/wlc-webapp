@@ -29,6 +29,7 @@ export const prepareTableCell = (
 	tableName,
 	expandedRow
 ) => {
+	const agent_type = item?.agent_type;
 	const account_status = item?.account_status;
 	const mobile_number = item?.agent_mobile;
 	const eko_code = item?.profile?.eko_code ?? [];
@@ -39,7 +40,12 @@ export const prepareTableCell = (
 		case "Tag":
 			return getStatusStyle(item[column.name], tableName);
 		case "Modal":
-			return getModalStyle(mobile_number, eko_code, account_status);
+			return getModalStyle(
+				mobile_number,
+				eko_code,
+				account_status,
+				agent_type
+			);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
 		case "IconButton":

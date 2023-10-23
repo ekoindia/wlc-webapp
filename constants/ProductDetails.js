@@ -84,31 +84,61 @@ export const products = {
 
 export const productPricingCommissionValidationConfig = {
 	DMT: {
-		PERCENT: { min: 0.3, max: 0.7 },
-		FIXED: { min: 3.72, max: 35 },
+		RETAILER: {
+			PERCENT: { min: 0.3, max: 0.7 },
+			FIXED: { min: 3.72, max: 35 },
+		},
+		DISTRIBUTOR: {
+			PERCENT: { min: 0, max: 0.7 },
+			FIXED: { min: 0, max: 35 },
+		},
 	},
 	AEPS: {
-		PERCENT: { min: 0, max: 0.45 },
-		FIXED: { min: 0, max: 13.65 },
+		RETAILER: {
+			PERCENT: { min: 0, max: 0.45 },
+			FIXED: { min: 0, max: 13.65 },
+		},
+		DISTRIBUTOR: {
+			PERCENT: { min: 0, max: 0.45 },
+			FIXED: { min: 0, max: 13.65 },
+		},
 	},
 	AADHAAR_PAY: {
 		PERCENT: { min: 0.3, max: 1 },
 		FIXED: { min: 0.3, max: 100 },
 	},
 	INDO_NEPAL_FUND_TRANSFER: {
-		FIXED_CTC: { min: 0, max: 90 },
-		FIXED_CTA: { min: 0, max: 1.8 },
+		RETAILER: {
+			FIXED_CTC: { min: 0, max: 90 },
+			FIXED_CTA: { min: 0, max: 1.8 },
+		},
+		DISTRIBUTOR: {
+			FIXED_CTC: { min: 0, max: 90 },
+			FIXED_CTA: { min: 0, max: 1.8 },
+		},
 	},
 	CREDIT_CARD_BILL_PAYMENT: {
-		PERCENT: { min: 0, max: 0.8 },
-		FIXED: { min: 3, max: 1500 },
+		RETAILER: {
+			PERCENT: { min: 0, max: 0.8 },
+			FIXED: { min: 3, max: 1500 },
+		},
+		DISTRIBUTOR: {
+			PERCENT: { min: 0, max: 0.8 },
+			FIXED: { min: 0, max: 1500 },
+		},
 	},
 	ACCOUNT_VERIFICATION: {
 		FIXED: { min: 1.84, max: 5 },
 	},
 	CARD_PAYMENT: {
-		PERCENT: { min: 0.9, max: 4 },
-		FIXED: { min: 1, max: 1000 },
+		RETAILER: {
+			PERCENT: { min: 0.9, max: 4 },
+			FIXED: { min: 1, max: 1000 },
+		},
+		DISTRIBUTOR: {
+			PERCENT: { min: 0, max: 4 },
+			FIXED: { min: 0, max: 1000 },
+		},
 	},
 };
 

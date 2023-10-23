@@ -53,7 +53,7 @@ const getStatus = (status) => {
 const CardPaymentRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.CARD_PAYMENT;
 	const { PERCENT, FIXED } =
-		productPricingCommissionValidationConfig.CARD_PAYMENT;
+		productPricingCommissionValidationConfig.CARD_PAYMENT.RETAILER;
 
 	const {
 		handleSubmit,

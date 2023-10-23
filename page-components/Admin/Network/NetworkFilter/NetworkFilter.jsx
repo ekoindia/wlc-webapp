@@ -54,9 +54,9 @@ const NetworkFilter = ({ /*filter,*/ setFilter, setPageNumber }) => {
 			title: "Filter by profile type",
 			name: "agentType",
 			options: [
-				{ label: "Independent Retailer", value: "icsp" },
-				{ label: "Retailer", value: "csp" },
-				{ label: "Distributor", value: "scsp" },
+				{ label: "Independent Retailer", value: "3" },
+				{ label: "Retailer", value: "2" },
+				{ label: "Distributor", value: "1" },
 			],
 		},
 		{
