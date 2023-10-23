@@ -13,17 +13,17 @@ const TopPanel = ({ data }) => {
 		{
 			key: "totalDistributers",
 			label: "Distributors Onboarded",
-			value: data?.totalDistributers?.totalDistributers,
+			value: data?.totalDistributors?.totalDistributors,
 			type: "number",
-			variation: data?.totalDistributers?.increaseOrDecrease,
+			variation: data?.totalDistributors?.increaseOrDecrease,
 			icon: "refer",
 		},
 		{
 			key: "activeDistributers",
 			label: "Active Distributors",
-			value: data?.activeDistributers?.activeDistributers,
+			value: data?.activeDistributors?.activeDistributors,
 			type: "number",
-			variation: data?.activeDistributers?.increaseOrDecrease,
+			variation: data?.activeDistributors?.increaseOrDecrease,
 			icon: "people",
 		},
 		{
