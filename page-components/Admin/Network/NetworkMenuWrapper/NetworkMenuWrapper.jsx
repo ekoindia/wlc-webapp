@@ -29,7 +29,7 @@ const reasons = [
 	{ value: "0", label: "Not Transacting anymore" },
 	{ value: "1", label: "Wants to create a new account" },
 	{ value: "2", label: "Management Request" },
-	{ value: "3", label: "Requested by the person itself" },
+	{ value: "3", label: "Requested by the person themselves" },
 	{ value: "4", label: "Suspected Fraud" },
 	{ value: "999", label: "Other" },
 ];
@@ -169,11 +169,15 @@ const NetworkMenuWrapper = ({
 	const handleFormSubmit = (data) => {
 		const { reason, reason_input } = data;
 
-		const _reason = reason?.value === "999" ? reason_input : reason?.label;
+		const _reason =
+			currId == 18 && reason_input !== undefined
+				? reason_input
+				: currId == 16 && reason?.value === "999"
+				? reason_input
+				: reason?.label;
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
-				"Content-Type": "application/json",
 				"tf-req-uri-root-path": "/ekoicici/v1",
 				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:${statusObj[clickedVal]}/descrip_note:${_reason}`,
 				"tf-req-method": "PUT",
