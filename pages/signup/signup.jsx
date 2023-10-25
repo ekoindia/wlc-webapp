@@ -285,8 +285,7 @@ const distributorStepsData = [
 		stepStatus: 0,
 		role: 13000,
 		primaryCTAText: "Verify PAN",
-		description:
-			"Upload your PAN copy to verify your business. Accepted formats are",
+		description: "Enter your PAN Number to verify your business.",
 		form_data: {},
 		success_message: "PAN verified successfully.",
 	},
