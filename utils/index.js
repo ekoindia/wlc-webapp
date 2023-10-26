@@ -4,6 +4,12 @@ export {
 	doAndroidAction,
 	isAndroidApp,
 } from "./AndroidUtils";
+export {
+	clearCache,
+	clearCacheAndReload,
+	clearLocalStorage,
+	clearSessionStorage,
+} from "./cacheUtils";
 export { default as CombineProviders } from "./CombineProviders";
 export { debounce } from "./debounce";
 export { getFormErrorMessage } from "./errorMessages";

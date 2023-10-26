@@ -9,6 +9,7 @@ import {
 	MenuButton,
 	MenuList,
 	Text,
+	Tooltip,
 	useBreakpointValue,
 	useToken,
 	VStack,
@@ -20,7 +21,7 @@ import { useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Fragment, useState } from "react";
-import { limitText } from "utils";
+import { clearCacheAndReload, limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
 import { AdminViewToggleCard, Button, IcoButton, Icon, OrgLogo } from "..";
 
@@ -472,7 +473,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				w={"full"}
 				h={{ base: "100%", sm: "initial" }}
 				bg={"white"}
-				py={"3"}
+				// py={"3"}
 				borderBottomRadius={{
 					base: "0.3rem",
 					lg: "0.4rem",
@@ -489,6 +490,8 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									justifyContent={"space-between"}
 									cursor={"pointer"}
 									mt={{ base: "15px", sm: "initial" }}
+									// py="5"
+									minH="46px"
 								>
 									<Link href={ele.link}>
 										<Text
@@ -508,28 +511,53 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							</Fragment>
 					  ))
 					: null}
-				<HStack
-					minH={"2vw"}
+				<Flex
+					direction="row"
+					minH={"46px"}
 					w={"90%"}
 					justifyContent={"flex-start"}
 					cursor={"pointer"}
-					py={"0.6vw"}
-					onClick={logout}
+					align="center"
 				>
-					<Icon name="logout" color="error" size="18px" />
-					<Text
-						fontSize={{
-							base: "14px",
-							sm: "10px",
-							lg: "12px",
-							"2xl": "14px",
-						}}
-						color={"error"}
-						fontWeight={"medium"}
+					<HStack flex={1} py="3" onClick={logout}>
+						<Icon name="logout" color="error" size="18px" mr="2" />
+						<Text
+							fontSize={{
+								base: "14px",
+								sm: "10px",
+								lg: "12px",
+								"2xl": "14px",
+							}}
+							color={"error"}
+							fontWeight={"medium"}
+						>
+							Logout
+						</Text>
+					</HStack>
+					<Flex
+						ml="2"
+						px="3"
+						py="2"
+						borderLeft={"1px solid"}
+						borderColor={"divider"}
+						onClick={() => clearCacheAndReload(true)}
+						_hover={{ bg: "gray.100" }}
 					>
-						Logout
-					</Text>
-				</HStack>
+						<Tooltip
+							label="Clear Cache"
+							/* hasArrow={true} */ placement="left"
+						>
+							<Box>
+								<Icon
+									name="reload"
+									label="Clear Cache"
+									color="error"
+									size="14px"
+								/>
+							</Box>
+						</Tooltip>
+					</Flex>
+				</Flex>
 			</VStack>
 		</Box>
 	);
