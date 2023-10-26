@@ -21,6 +21,8 @@ A white-labelled SaaS platform to run your business like agent-banking, micro-fi
   - Menu items configuration: [constants/profileCardMenus.js](constants/profileCardMenus.js)
 - **Left Sidebar** - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
   - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
+  - Menu Context (data fetch after login): [contexts/MenuContext.tsx](contexts/MenuContext.tsx)
+  - Menu data filtering & transformation using: [helpers/processTransactionData.js](helpers/processTransactionData.js)
 - **Transaction History** (for sellers & distributors) - [page-components/History/History.jsx](page-components/History/History.jsx)
   - History Table metadata: [page-components/History/HistoryTable/historyParametersMetadata.js](page-components/History/HistoryTable/historyParametersMetadata.js)
 	- To add a new data-point in the history table, add a new entry in the `historyParametersMetadata` array.
