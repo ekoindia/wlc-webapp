@@ -71,7 +71,7 @@ const TransferSeller = ({
 				// scspFrom: transferAgentsFrom.value,
 				scspTo: transferAgentsTo[renderer.value],
 				selectedTransferredCSPsList:
-					`${default_agent_code}` ?? `${selectedAgentsToTransfer}`,
+					default_agent_code ?? `${selectedAgentsToTransfer}`,
 			},
 			token: accessToken,
 		}).then((res) => {
