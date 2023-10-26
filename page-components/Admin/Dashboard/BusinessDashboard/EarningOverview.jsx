@@ -82,7 +82,7 @@ const EarningOverview = ({ data }) => {
 				justify="space-between"
 			>
 				<Text fontSize="xl" fontWeight="semibold">
-					Earning Overview
+					Earning Overview (AePS)
 				</Text>
 				{/* TODO: Need Pills */}
 			</Flex>
