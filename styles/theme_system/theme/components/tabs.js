@@ -9,11 +9,11 @@ const baseStyle = definePartsStyle({
 		p: { base: "0", md: "none" },
 	},
 	tab: {
-		px: "2",
-		fontSize: { base: "sm", md: "lg" },
-		mr: "1.25vw",
-		pb: "4",
-		opacity: ".5",
+		// px: "2",
+		// fontSize: { base: "sm", md: "lg" },
+		// mr: "1.25vw",
+		// pb: "4",
+		opacity: ".7",
 		fontWeight: "semibold",
 		boxSizing: "border-box",
 		position: "relative",
@@ -32,18 +32,18 @@ const baseStyle = definePartsStyle({
 			bg: "accent.DEFAULT",
 			width: "100%",
 			position: "absolute",
-			height: "5px",
-			bottom: "-0.5px",
-			borderRadius: "30px",
+			height: "4px",
+			bottom: "0px",
+			borderRadius: "20px 20px 0px 0px",
 		},
 	},
-	tablist: {
-		borderBottom: "card",
-		overflow: "auto",
-		overflowY: "hidden",
-	},
-	tabpanel: {
-		px: "0",
+	// tablist: {
+	// 	borderBottom: "card",
+	// 	overflow: "auto",
+	// 	overflowY: "hidden",
+	// },
+	tabpanels: {
+		p: "10px 20px",
 	},
 });
 
