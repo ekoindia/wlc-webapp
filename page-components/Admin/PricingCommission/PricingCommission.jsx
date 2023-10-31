@@ -1,13 +1,5 @@
-import {
-	Box,
-	Tab,
-	TabList,
-	TabPanel,
-	TabPanels,
-	Tabs,
-	Text,
-} from "@chakra-ui/react";
-import { Headings } from "components";
+import { Box, Text } from "@chakra-ui/react";
+import { Headings, Tabs } from "components";
 import {
 	AadhaarPay,
 	AccountVerification,
@@ -66,47 +58,12 @@ const PricingCommissions = () => {
 					border="card"
 					boxShadow="basic"
 				>
-					<Tabs
-						isLazy
-						position="relative"
-						defaultIndex={0}
-						py="3"
-						w="100%"
-						borderRadius="10px"
-					>
-						<TabList
-							color="light"
-							pl={{ base: "10px", md: "20px" }}
-							css={{
-								"&::-webkit-scrollbar": {
-									display: "none",
-								},
-								"&::-moz-scrollbar": {
-									display: "none",
-								},
-								"&::scrollbar": {
-									display: "none",
-								},
-							}}
-						>
-							{tabList.map(({ label }) => (
-								<Tab
-									key={label}
-									fontSize={{
-										base: "sm",
-										"2xl": "md",
-									}}
-								>
-									{label}
-								</Tab>
-							))}
-						</TabList>
-
-						<TabPanels p="10px 20px">
-							{tabList.map(({ label, comp }) => (
-								<TabPanel key={label}>{comp}</TabPanel>
-							))}
-						</TabPanels>
+					<Tabs>
+						{tabList.map(({ label, comp }, index) => (
+							<div key={`${index}-${label}`} label={label}>
+								{comp}
+							</div>
+						))}
 					</Tabs>
 				</Box>
 			</Box>
