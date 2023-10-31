@@ -48,8 +48,6 @@ import { Tags } from "./Tags";
 import { Textarea } from "./Textarea";
 
 export {
-	Tabs,
-	Textarea,
 	AdminViewToggleCard,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
@@ -94,5 +92,7 @@ export {
 	SvgIcon,
 	Switch,
 	Table,
+	Tabs,
 	Tags,
+	Textarea,
 };
