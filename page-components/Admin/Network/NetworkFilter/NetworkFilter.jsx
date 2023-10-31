@@ -54,9 +54,9 @@ const NetworkFilter = ({ /*filter,*/ setFilter, setPageNumber }) => {
 			title: "Filter by profile type",
 			name: "agentType",
 			options: [
-				{ label: "Independent Retailer", value: "icsp" },
-				{ label: "Retailer", value: "csp" },
-				{ label: "Distributor", value: "scsp" },
+				{ label: "Independent Retailer", value: "3" },
+				{ label: "Retailer", value: "2" },
+				{ label: "Distributor", value: "1" },
 			],
 		},
 		{
@@ -72,7 +72,6 @@ const NetworkFilter = ({ /*filter,*/ setFilter, setPageNumber }) => {
 	// const handleInputChange = (event) => {
 	// 	const { name, value, type, checked } = event.target;
 
-	// 	console.log("Gopi handleInputChange", name, value, type, checked);
 	// 	setFilterValues((prevState) => ({
 	// 		...prevState,
 	// 		[name]: value,

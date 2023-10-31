@@ -41,7 +41,8 @@ const pricing_type_list = [
 
 const DmtDistributor = () => {
 	const { slabs, serviceCode } = products.DMT;
-	const { PERCENT, FIXED } = productPricingCommissionValidationConfig.DMT;
+	const { PERCENT, FIXED } =
+		productPricingCommissionValidationConfig.DMT.DISTRIBUTOR;
 
 	const {
 		handleSubmit,

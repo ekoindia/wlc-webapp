@@ -58,7 +58,8 @@ const getStatus = (status) => {
 const IndoNepalRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.INDO_NEPAL_FUND_TRANSFER;
 	const { FIXED_CTC, FIXED_CTA } =
-		productPricingCommissionValidationConfig.INDO_NEPAL_FUND_TRANSFER;
+		productPricingCommissionValidationConfig.INDO_NEPAL_FUND_TRANSFER
+			.RETAILER;
 
 	const {
 		handleSubmit,

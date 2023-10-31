@@ -67,7 +67,7 @@ const HistoryCard = ({
 						{item.tx_name}
 					</Box>
 					<Box fontWeight="medium" fontSize="xs">
-						{getPaymentStyle(item.amount, item.trx_type, "right")}
+						{getPaymentStyle(item.amount, item.trx_type)}
 					</Box>
 				</Flex>
 				<Box color="primary.DEFAULT" fontSize={{ base: "md" }}>

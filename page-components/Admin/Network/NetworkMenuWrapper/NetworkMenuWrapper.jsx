@@ -1,24 +1,23 @@
 import {
-	Box,
 	Flex,
 	IconButton,
 	Modal,
 	ModalBody,
 	ModalCloseButton,
 	ModalContent,
-	ModalFooter,
 	ModalHeader,
 	ModalOverlay,
-	Textarea,
 	useDisclosure,
 	useToast,
 } from "@chakra-ui/react";
-import { Button, InputLabel, Menus, Select } from "components";
-import { Endpoints } from "constants/EndPoints";
-import { useSession } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
+import { Button, Menus } from "components";
+import { ChangeRoleMenuList, Endpoints, ParamType } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components";
 
 const statusObj = {
 	Active: 16,
@@ -30,21 +29,23 @@ const reasons = [
 	{ value: "0", label: "Not Transacting anymore" },
 	{ value: "1", label: "Wants to create a new account" },
 	{ value: "2", label: "Management Request" },
-	{ value: "3", label: "Requested by the person himself/herself" },
+	{ value: "3", label: "Requested by the person themself" },
 	{ value: "4", label: "Suspected Fraud" },
 	{ value: "999", label: "Other" },
 ];
 
-const generateMenuList = (list, id, extra) => {
+const generateMenuList = (list, currId, extra, includeExtra) => {
 	let _list = [];
 
 	for (const listItem of list) {
-		if (id !== undefined && listItem.id !== id) {
+		if (currId != undefined && listItem.id != currId) {
 			_list.push(listItem);
 		}
 	}
 
-	_list = [..._list, extra];
+	if (includeExtra) {
+		_list.push(extra);
+	}
 
 	return _list;
 };
@@ -58,27 +59,21 @@ const getStatus = (status) => {
 	}
 };
 
-const getReason = (list, value) => {
-	for (let item of list) {
-		if (item.value === value) {
-			return item.label;
-		}
-	}
-	return null;
-};
-
 /**
  * A NetworkMenuWrapper component
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
-const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
-	const [isOpen, setOpen] = useState(false);
+const NetworkMenuWrapper = ({
+	mobile_number,
+	eko_code,
+	account_status,
+	agent_type,
+}) => {
 	const { onOpen } = useDisclosure();
+	const [isOpen, setOpen] = useState(false);
 	const [clickedVal, setClickedVal] = useState();
-	const [reasonSelect, setReasonSelect] = useState(null);
-	const [reasonInput, setReasonInput] = useState(null);
 	const { accessToken } = useSession();
 	const router = useRouter();
 	const toast = useToast();
@@ -94,7 +89,7 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 			},
 		},
 		{
-			id: 17,
+			id: 18,
 			value: "Inactive",
 			label: "Mark Inactive",
 			onClick: (value) => {
@@ -104,7 +99,16 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 		},
 	];
 
-	const extraMenuListItem = {
+	const {
+		handleSubmit,
+		register,
+		control,
+		formState: { errors, isSubmitting },
+	} = useForm();
+
+	const watcher = useWatch({ control });
+
+	const changeRoleMenuItem = {
 		label: "Change Role",
 		onClick: () => {
 			router.push(
@@ -114,24 +118,66 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 	};
 
 	const currId = statusObj[account_status];
+
+	let _includeChangeRole = false;
+
+	for (let { global, visibleString } of ChangeRoleMenuList) {
+		if (!global && visibleString.includes(agent_type)) {
+			_includeChangeRole = true;
+			break;
+		}
+	}
+
 	const _finalMenuList = generateMenuList(
 		menuList,
 		currId,
-		extraMenuListItem
+		changeRoleMenuItem,
+		_includeChangeRole
 	);
 
-	const handleSubmit = () => {
-		const _reason =
-			reasonSelect !== "999"
-				? getReason(reasons, reasonSelect)
-				: reasonInput;
+	const parameter_list = [
+		{
+			name: "reason",
+			label: `Reason for marking ${clickedVal?.toLowerCase()}`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: reasons,
+			meta: {
+				force_dropdown: true,
+			},
+			is_inactive: currId == 18,
+			width: { base: "auto", md: "464px" },
+		},
+		{
+			name: "reason_input",
+			label: "Additional Details",
+			required: currId == 16 ? true : false,
+			// visible_on_param_name: "reason",
+			// visible_on_param_value: /999/, // Ideally this should be the code, need to fix select return value
+			validations: {
+				required: currId == 16 ? true : false,
+			},
+			is_inactive:
+				currId == 16
+					? watcher["reason"]?.value !== "999"
+					: currId == 18
+					? false
+					: true, // hack until I fix select
+			styles: { width: { base: "auto", md: "464px" } },
+		},
+	];
 
-		setOpen(false);
-		setReasonSelect(null);
+	const handleFormSubmit = (data) => {
+		const { reason, reason_input } = data;
+
+		const _reason =
+			currId == 18 && reason_input !== undefined
+				? reason_input
+				: currId == 16 && reason?.value === "999"
+				? reason_input
+				: reason?.label;
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
-				"Content-Type": "application/json",
 				"tf-req-uri-root-path": "/ekoicici/v1",
 				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:${statusObj[clickedVal]}/descrip_note:${_reason}`,
 				"tf-req-method": "PUT",
@@ -141,25 +187,21 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 			},
 			token: accessToken,
 		})
-			.then((data) => {
+			.then((res) => {
 				toast({
-					title: data.message,
-					status: getStatus(data.status),
+					title: res.message,
+					status: getStatus(res.status),
 					duration: 6000,
 					isClosable: true,
 				});
+				if (res.status === 0) {
+					setOpen(false);
+					router.reload(window.location.pathname);
+				}
 			})
 			.catch((error) => {
 				console.error("📡 Fetch Error:", error);
 			});
-	};
-
-	const handleSelect = (event) => {
-		setReasonSelect(event.target.value);
-	};
-
-	const handleReasonInput = (event) => {
-		setReasonInput(event.target.value);
 	};
 
 	return (
@@ -181,67 +223,37 @@ const NetworkMenuWrapper = ({ mobile_number, eko_code, account_status }) => {
 			<Modal
 				isOpen={isOpen}
 				onClose={() => setOpen(false)}
-				size="lg"
+				size={{ base: "sm", md: "lg" }}
 				isCentered={true}
 			>
 				<ModalOverlay />
-				<ModalContent
-					width={{ base: "100%", md: "465px" }}
-					height="auto"
-					fontSize="sm"
-				>
+				<ModalContent height="auto" fontSize="sm">
 					<ModalHeader fontSize="lg" fontWeight="semibold">
 						<span>Mark {clickedVal}</span>
 					</ModalHeader>
 					<ModalCloseButton color="hint" size="md" />
 					<ModalBody>
-						<Flex direction="column" gap="8">
-							<Box>
-								<InputLabel
-									htmlFor="status-reason-select"
-									fontWeight="medium"
-									required
+						<form onSubmit={handleSubmit(handleFormSubmit)}>
+							<Flex direction="column" gap="8" pb="4">
+								<Form
+									parameter_list={parameter_list}
+									register={register}
+									control={control}
+									formValues={watcher}
+									errors={errors}
+								/>
+								<Button
+									type="submit"
+									size="lg"
+									width="100%"
+									fontSize="lg"
+									loading={isSubmitting}
 								>
-									Reason for marking{" "}
-									{clickedVal?.toLowerCase()}
-								</InputLabel>
-								<Select
-									id="status-reason-select"
-									options={reasons}
-									onChange={handleSelect}
-								></Select>
-							</Box>
-							{reasonSelect === "999" && (
-								<Box>
-									<InputLabel
-										htmlFor="status-textarea"
-										fontWeight="medium"
-										required
-									>
-										Additional Details
-									</InputLabel>
-									<Textarea
-										id="status-textarea"
-										width="100%"
-										resize="none"
-										noOfLines={2}
-										maxLength={100}
-										onChange={handleReasonInput}
-									/>
-								</Box>
-							)}
-						</Flex>
+									Save now
+								</Button>
+							</Flex>
+						</form>
 					</ModalBody>
-					<ModalFooter py="8">
-						<Button
-							size="lg"
-							width="100%"
-							fontSize="lg"
-							onClick={handleSubmit}
-						>
-							Save now
-						</Button>
-					</ModalFooter>
 				</ModalContent>
 			</Modal>
 		</div>

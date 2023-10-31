@@ -1,4 +1,4 @@
-import { OrgDetailSessionStorageKey } from "contexts";
+import { clearCacheAndReload } from "utils";
 import { ActionIcon } from ".";
 
 /**
@@ -25,20 +25,7 @@ export const defaultActions = [
 		section: "System",
 		priority: 0,
 		parent: "systemsettings",
-		perform: () => {
-			// Clear session storage (except org_detail)
-			Object.keys(window.sessionStorage).forEach((key) => {
-				if (key !== OrgDetailSessionStorageKey && key !== "todos") {
-					window.sessionStorage.removeItem(key);
-				}
-			});
-
-			// Reset All LocalStorage (Trxn/Menu/etc) Cache
-			window.localStorage.clear();
-
-			// Reload
-			window.location.reload();
-		},
+		perform: () => clearCacheAndReload(true),
 	},
 	{
 		id: "logout",

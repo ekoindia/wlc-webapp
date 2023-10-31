@@ -47,7 +47,8 @@ const _multiselectRenderer = {
 const IndoNepalDistributor = () => {
 	const { slabs, serviceCode } = products.INDO_NEPAL_FUND_TRANSFER;
 	const { FIXED_CTC, FIXED_CTA } =
-		productPricingCommissionValidationConfig.INDO_NEPAL_FUND_TRANSFER;
+		productPricingCommissionValidationConfig.INDO_NEPAL_FUND_TRANSFER
+			.DISTRIBUTOR;
 
 	const {
 		handleSubmit,

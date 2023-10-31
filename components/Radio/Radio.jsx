@@ -22,6 +22,7 @@ const Radio = ({
 	required = true,
 	defaultValue,
 	renderer = { label: "label", value: "value" },
+	styles,
 	...rest
 }) => {
 	const _id = useId();
@@ -37,6 +38,7 @@ const Radio = ({
 				</InputLabel>
 			) : null}
 			<RadioGroup
+				id={id ?? _id}
 				defaultValue={defaultValue}
 				onChange={onChange}
 				value={value}
@@ -51,6 +53,7 @@ const Radio = ({
 						md: "12",
 					}}
 					wrap="wrap"
+					{...styles}
 				>
 					{options?.map((item) => (
 						<ChakraRadio

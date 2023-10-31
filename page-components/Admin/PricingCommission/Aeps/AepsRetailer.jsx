@@ -52,7 +52,8 @@ const getStatus = (status) => {
 
 const AepsRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.AEPS;
-	const { PERCENT, FIXED } = productPricingCommissionValidationConfig.AEPS;
+	const { PERCENT, FIXED } =
+		productPricingCommissionValidationConfig.AEPS.RETAILER;
 
 	const {
 		handleSubmit,

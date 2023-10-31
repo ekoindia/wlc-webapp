@@ -41,7 +41,8 @@ const _multiselectRenderer = {
 
 const AepsDistributor = () => {
 	const { slabs, serviceCode } = products.AEPS;
-	const { PERCENT, FIXED } = productPricingCommissionValidationConfig.AEPS;
+	const { PERCENT, FIXED } =
+		productPricingCommissionValidationConfig.AEPS.DISTRIBUTOR;
 
 	const {
 		handleSubmit,
