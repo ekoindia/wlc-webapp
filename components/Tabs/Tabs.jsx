@@ -6,38 +6,37 @@ import {
 	TabPanels,
 	Tabs as ChakraTabs,
 } from "@chakra-ui/react";
-
+import { fadeIn } from "libs/chakraKeyframes";
+import { Children, useEffect, useRef, useState } from "react";
 import { IcoButton } from "..";
 
-import { useEffect, useRef, useState } from "react";
-
 /**
- * A <Tabs> component
+ * A Tabs component
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Tabs></Tabs>` TODO: Fix example
  */
-const Tabs = ({ prop1, ...rest }) => {
+const Tabs = ({ children, defaultIndex, ...rest }) => {
 	const tabListRef = useRef(null);
 
-	const [tabList] = useState(null);
-
-	const handleScroll = () => {
-		const _tabList = tabListRef.current;
-		if (_tabList) {
-			const showLeftButton = _tabList.scrollLeft > 0;
-			const showRightButton =
-				_tabList.clientWidth + _tabList.scrollLeft <
-				_tabList.scrollWidth;
-			setScrollButtonVisibility({ showLeftButton, showRightButton });
-		}
-	};
+	const arrayChildren = Children.toArray(children);
 
 	const [scrollButtonVisibility, setScrollButtonVisibility] = useState({
 		showLeftButton: false,
 		showRightButton: false,
 	});
+
+	const handleScroll = () => {
+		const _tabList = tabListRef.current;
+		if (_tabList) {
+			const showLeftButton = _tabList.scrollLeft > 10;
+			const showRightButton =
+				_tabList.clientWidth + _tabList.scrollLeft <
+				_tabList.scrollWidth - 10;
+			setScrollButtonVisibility({ showLeftButton, showRightButton });
+		}
+	};
 
 	useEffect(() => {
 		handleScroll();
@@ -47,7 +46,7 @@ const Tabs = ({ prop1, ...rest }) => {
 		<ChakraTabs
 			isLazy
 			position="relative"
-			defaultIndex={0}
+			defaultIndex={+defaultIndex || 0}
 			py="3"
 			maxW="100%"
 			onScroll={handleScroll}
@@ -58,9 +57,9 @@ const Tabs = ({ prop1, ...rest }) => {
 					<IcoButton
 						aria-label="Scroll left"
 						iconName="chevron-left"
-						// variant="ghost"
 						size="sm"
-						mr="2"
+						mx="2"
+						animation={`${fadeIn} 0.1s ease-out`}
 						onClick={() => {
 							const tabList = tabListRef.current;
 							if (tabList) {
@@ -89,34 +88,25 @@ const Tabs = ({ prop1, ...rest }) => {
 					overflowX="scroll"
 					onScroll={handleScroll}
 				>
-					<Tab>Tab 1</Tab>
-					<Tab>Tab 2</Tab>
-					<Tab>Tab 3</Tab>
-					<Tab>Tab 4</Tab>
-					<Tab>Tab 5</Tab>
-					<Tab>Tab 6</Tab>
-					<Tab>Tab 7</Tab>
-					<Tab>Tab 8</Tab>
-					<Tab>Tab 9</Tab>
-					<Tab>Tab 10</Tab>
-					<Tab>Tab 11</Tab>
-					<Tab>Tab 12</Tab>
-					<Tab>Tab 13</Tab>
-					<Tab>Tab 14</Tab>
-					<Tab>Tab 15</Tab>
-					<Tab>Tab 16</Tab>
-					<Tab>Tab 17</Tab>
-					<Tab>Tab 18</Tab>
-					<Tab>Tab 19</Tab>
-					<Tab>Tab 20</Tab>
+					{Children.map(arrayChildren, (child) => {
+						return (
+							<>
+								{child.props.label && (
+									<Tab fontSize="sm" variant="selectNone">
+										{child.props.label}
+									</Tab>
+								)}
+							</>
+						);
+					})}
 				</TabList>
 				{scrollButtonVisibility.showRightButton && (
 					<IcoButton
 						aria-label="Scroll right"
 						iconName="chevron-right"
-						variant="ghost"
 						size="sm"
-						ml="2"
+						mx="2"
+						animation={`${fadeIn} 0.1s ease-out`}
 						onClick={() => {
 							const _tabList = tabListRef.current;
 							if (_tabList) {
@@ -128,11 +118,16 @@ const Tabs = ({ prop1, ...rest }) => {
 				)}
 			</Flex>
 
-			<TabPanels p="10px 20px">
-				{tabList &&
-					tabList.map(({ label, comp }) => (
-						<TabPanel key={label}>{comp}</TabPanel>
-					))}
+			<TabPanels>
+				{Children.map(arrayChildren, (child) => {
+					return (
+						<>
+							{child.props.label && (
+								<TabPanel>{child.props.children}</TabPanel>
+							)}
+						</>
+					);
+				})}
 			</TabPanels>
 		</ChakraTabs>
 	);
