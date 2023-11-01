@@ -6,7 +6,7 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 const baseStyle = definePartsStyle({
 	root: {
-		p: { base: "0", md: "none" },
+		p: "0",
 	},
 	tab: {
 		// px: "2",
@@ -37,11 +37,12 @@ const baseStyle = definePartsStyle({
 			borderRadius: "20px 20px 0px 0px",
 		},
 	},
-	// tablist: {
-	// 	borderBottom: "card",
-	// 	overflow: "auto",
-	// 	overflowY: "hidden",
-	// },
+	tablist: {
+		w: "100%",
+		overflowX: "auto",
+		overflowY: "hidden",
+		// borderBottom: "card",
+	},
 	tabpanels: {
 		p: "10px 20px",
 	},
