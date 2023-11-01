@@ -51,12 +51,10 @@ const PricingCommissions = () => {
 					tomorrow (12:00 AM midnight).
 				</Text>
 				<Box
-					w="100%"
-					// minH="80%"
 					bg="white"
-					borderRadius="10px"
 					border="card"
 					boxShadow="basic"
+					borderRadius="10px"
 				>
 					<Tabs>
 						{tabList.map(({ label, comp }, index) => (
