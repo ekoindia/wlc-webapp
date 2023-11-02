@@ -26,6 +26,7 @@ const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 		showLeftButton: false,
 		showRightButton: false,
 	});
+
 	const [_defaultIndex, setDefaultIndex] = useState(defaultIndex);
 
 	const handleScroll = () => {
