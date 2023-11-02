@@ -26,6 +26,7 @@ const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 		showLeftButton: false,
 		showRightButton: false,
 	});
+	const [_defaultIndex, setDefaultIndex] = useState(defaultIndex);
 
 	const handleScroll = () => {
 		const _tabList = tabListRef.current;
@@ -46,7 +47,7 @@ const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 		<ChakraTabs
 			isLazy
 			position="relative"
-			defaultIndex={+defaultIndex}
+			defaultIndex={+_defaultIndex}
 			py="3"
 			maxW="100%"
 			onScroll={handleScroll}
@@ -88,11 +89,18 @@ const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 					overflowX="scroll"
 					onScroll={handleScroll}
 				>
-					{Children.map(arrayChildren, (child) => {
+					{Children.map(arrayChildren, (child, index) => {
+						if (child.props.disabled && _defaultIndex === index) {
+							setDefaultIndex((prev) => prev + 1);
+						}
 						return (
 							<>
 								{child.props.label && (
-									<Tab fontSize="sm" variant="selectNone">
+									<Tab
+										fontSize="sm"
+										variant="selectNone"
+										isDisabled={child.props.disabled}
+									>
 										{child.props.label}
 									</Tab>
 								)}

@@ -20,6 +20,7 @@ const PricingCommissions = () => {
 		{
 			label: "Commission Frequency",
 			comp: <CommissionFrequency />,
+			disabled: true,
 		},
 		{ label: "Money Transfer", comp: <Dmt /> },
 		{ label: "AePS", comp: <Aeps /> },
@@ -57,11 +58,17 @@ const PricingCommissions = () => {
 					borderRadius="10px"
 				>
 					<Tabs>
-						{tabList.map(({ label, comp }, index) => (
-							<div key={`${index}-${label}`} label={label}>
-								{comp}
-							</div>
-						))}
+						{tabList.map(
+							({ label, comp, disabled = false }, index) => (
+								<div
+									key={`${index}-${label}`}
+									label={label}
+									disabled={disabled}
+								>
+									{comp}
+								</div>
+							)
+						)}
 					</Tabs>
 				</Box>
 			</Box>
