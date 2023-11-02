@@ -17,7 +17,7 @@ import { IcoButton } from "..";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Tabs></Tabs>` TODO: Fix example
  */
-const Tabs = ({ children, defaultIndex, ...rest }) => {
+const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 	const tabListRef = useRef(null);
 
 	const arrayChildren = Children.toArray(children);
@@ -46,7 +46,7 @@ const Tabs = ({ children, defaultIndex, ...rest }) => {
 		<ChakraTabs
 			isLazy
 			position="relative"
-			defaultIndex={+defaultIndex || 0}
+			defaultIndex={+defaultIndex}
 			py="3"
 			maxW="100%"
 			onScroll={handleScroll}
