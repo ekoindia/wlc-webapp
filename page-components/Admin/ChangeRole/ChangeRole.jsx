@@ -158,13 +158,18 @@ const ChangeRole = () => {
 						}}
 						mx={{ base: "4", md: "0" }}
 					>
-						<Tabs defaultIndex={+tab || 0}>
-							{tabList?.map(({ label, comp }, index) => (
-								<div key={`${index}-${label}`} label={label}>
-									{comp}
-								</div>
-							))}
-						</Tabs>
+						{tabList?.length > 0 && (
+							<Tabs defaultIndex={+tab || 0}>
+								{tabList.map(({ label, comp }, index) => (
+									<div
+										key={`${index}-${label}`}
+										label={label}
+									>
+										{comp}
+									</div>
+								))}
+							</Tabs>
+						)}
 					</Box>
 				</Flex>
 			) : (
