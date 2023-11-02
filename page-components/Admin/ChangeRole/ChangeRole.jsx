@@ -120,7 +120,7 @@ const ChangeRole = () => {
 					gap={{ base: "4", md: "0" }}
 					fontSize="sm"
 					mt={{
-						base: showOrgChangeRoleView ? "initial" : "-10px",
+						base: showOrgChangeRoleView ? "8" : "-10px",
 						md: "initial",
 					}}
 				>
