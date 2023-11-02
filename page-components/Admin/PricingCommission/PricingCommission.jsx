@@ -20,7 +20,7 @@ const PricingCommissions = () => {
 		{
 			label: "Commission Frequency",
 			comp: <CommissionFrequency />,
-			disabled: true,
+			// disabled: true,
 		},
 		{ label: "Money Transfer", comp: <Dmt /> },
 		{ label: "AePS", comp: <Aeps /> },
