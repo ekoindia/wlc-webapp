@@ -11,27 +11,19 @@ import { NetworkMenuWrapper } from "..";
  */
 
 const NetworkCard = ({ item }) => {
-	const { agent_mobile, eko_code, account_status } = item;
+	const { agent_mobile, eko_code, account_status, agent_type } = item;
 	return (
 		<Flex direction="column" bg="white" borderRadius="10px" p="20px">
 			<Flex justifyContent="space-between">
 				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
 					{getNameStyle(item.agent_name)}
 				</Box>
-				{/* <Menus
-					iconName="more-vert"
-					as={IconButton}
-					// iconStyles={{ width: "24px", height: "24px" }}
-					type="inverted"
-					onClick={(e) => {
-						e.stopPropagation();
-					}}
-				/> */}
 				<NetworkMenuWrapper
 					{...{
 						mobile_number: agent_mobile,
 						eko_code,
 						account_status,
+						agent_type,
 					}}
 				/>
 			</Flex>
