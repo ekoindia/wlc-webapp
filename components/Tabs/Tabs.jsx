@@ -17,7 +17,7 @@ import { IcoButton } from "..";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Tabs></Tabs>` TODO: Fix example
  */
-const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
+const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 	const tabListRef = useRef(null);
 
 	const arrayChildren = Children.toArray(children);
@@ -51,6 +51,7 @@ const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 			defaultIndex={+_defaultIndex}
 			py="3"
 			maxW="100%"
+			variant={variant}
 			onScroll={handleScroll}
 			{...rest}
 		>
@@ -60,7 +61,7 @@ const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 						aria-label="Scroll left"
 						iconName="chevron-left"
 						size="sm"
-						mx="2"
+						//position="absolute"
 						animation={`${fadeIn} 0.4s ease-in`}
 						onClick={() => {
 							const tabList = tabListRef.current;
@@ -114,7 +115,7 @@ const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 						aria-label="Scroll right"
 						iconName="chevron-right"
 						size="sm"
-						mx="2"
+						// position="absolute"
 						animation={`${fadeIn} 0.4s ease-in`}
 						onClick={() => {
 							const _tabList = tabListRef.current;
