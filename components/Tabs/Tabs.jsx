@@ -61,7 +61,7 @@ const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 						iconName="chevron-left"
 						size="sm"
 						mx="2"
-						animation={`${fadeIn} 0.1s ease-out`}
+						animation={`${fadeIn} 0.4s ease-in`}
 						onClick={() => {
 							const tabList = tabListRef.current;
 							if (tabList) {
@@ -115,7 +115,7 @@ const Tabs = ({ children, defaultIndex = 0, ...rest }) => {
 						iconName="chevron-right"
 						size="sm"
 						mx="2"
-						animation={`${fadeIn} 0.1s ease-out`}
+						animation={`${fadeIn} 0.4s ease-in`}
 						onClick={() => {
 							const _tabList = tabListRef.current;
 							if (_tabList) {
