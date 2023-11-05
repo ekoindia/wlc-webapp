@@ -1,5 +1,4 @@
 import {
-	Flex,
 	Tab,
 	TabList,
 	TabPanel,
@@ -47,7 +46,7 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 	return (
 		<ChakraTabs
 			isLazy
-			position="relative"
+			pos="relative"
 			defaultIndex={+_defaultIndex}
 			py="3"
 			maxW="100%"
@@ -55,78 +54,79 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 			onScroll={handleScroll}
 			{...rest}
 		>
-			<Flex alignItems="center" justifyContent="space-between">
-				{scrollButtonVisibility.showLeftButton && (
-					<IcoButton
-						aria-label="Scroll left"
-						iconName="chevron-left"
-						size="sm"
-						//position="absolute"
-						animation={`${fadeIn} 0.4s ease-in`}
-						onClick={() => {
-							const tabList = tabListRef.current;
-							if (tabList) {
-								tabList.scrollLeft -= window.innerWidth * 0.6;
-							}
-							handleScroll();
-						}}
-					/>
-				)}
-				<TabList
-					color="light"
-					pl={{ base: "10px", md: "20px" }}
-					css={{
-						"&::-webkit-scrollbar": {
-							display: "none",
-						},
-						"&::-moz-scrollbar": {
-							display: "none",
-						},
-						"&::scrollbar": {
-							display: "none",
-						},
-					}}
-					ref={tabListRef}
-					maxW="100%"
-					overflowX="scroll"
-					onScroll={handleScroll}
-				>
-					{Children.map(arrayChildren, (child, index) => {
-						if (child.props.disabled && _defaultIndex === index) {
-							setDefaultIndex((prev) => prev + 1);
+			{scrollButtonVisibility.showLeftButton && (
+				<IcoButton
+					aria-label="Scroll left"
+					iconName="chevron-left"
+					pos="absolute"
+					size="sm"
+					top="10px"
+					animation={`${fadeIn} 0.4s ease-in`}
+					onClick={() => {
+						const tabList = tabListRef.current;
+						if (tabList) {
+							tabList.scrollLeft -= window.innerWidth * 0.6;
 						}
-						return (
-							<>
-								{child.props.label && (
-									<Tab
-										fontSize="sm"
-										variant="selectNone"
-										isDisabled={child.props.disabled}
-									>
-										{child.props.label}
-									</Tab>
-								)}
-							</>
-						);
-					})}
-				</TabList>
-				{scrollButtonVisibility.showRightButton && (
-					<IcoButton
-						aria-label="Scroll right"
-						iconName="chevron-right"
-						size="sm"
-						// position="absolute"
-						animation={`${fadeIn} 0.4s ease-in`}
-						onClick={() => {
-							const _tabList = tabListRef.current;
-							if (_tabList) {
-								_tabList.scrollLeft += window.innerWidth * 0.6;
-							}
-							handleScroll();
-						}}
-					/>
-				)}
-			</Flex>
+						handleScroll();
+					}}
+				/>
+			)}
+			<TabList
+				color="light"
+				pl={{ base: "10px", md: "20px" }}
+				css={{
+					"&::-webkit-scrollbar": {
+						display: "none",
+					},
+					"&::-moz-scrollbar": {
+						display: "none",
+					},
+					"&::scrollbar": {
+						display: "none",
+					},
+				}}
+				ref={tabListRef}
+				maxW="100%"
+				overflowX="scroll"
+				onScroll={handleScroll}
+			>
+				{Children.map(arrayChildren, (child, index) => {
+					if (child.props.disabled && _defaultIndex === index) {
+						setDefaultIndex((prev) => prev + 1);
+					}
+					return (
+						<>
+							{child.props.label && (
+								<Tab
+									fontSize="sm"
+									variant="selectNone"
+									isDisabled={child.props.disabled}
+								>
+									{child.props.label}
+								</Tab>
+							)}
+						</>
+					);
+				})}
+			</TabList>
+			{scrollButtonVisibility.showRightButton && (
+				<IcoButton
+					aria-label="Scroll right"
+					iconName="chevron-right"
+					size="sm"
+					right="0"
+					top="10px"
+					pos="absolute"
+					animation={`${fadeIn} 0.4s ease-in`}
+					onClick={() => {
+						const _tabList = tabListRef.current;
+						if (_tabList) {
+							_tabList.scrollLeft += window.innerWidth * 0.6;
+						}
+						handleScroll();
+					}}
+				/>
+			)}
 
 			<TabPanels>
 				{Children.map(arrayChildren, (child) => {
