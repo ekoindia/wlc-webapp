@@ -11,6 +11,7 @@ import { Button, Calenders, Headings, Input, Radio, Select } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
+import { formatDate } from "libs";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -56,6 +57,12 @@ const finalDataList = [
 	{ key: "shop_type", label: "Shop Type" },
 ];
 
+let currentDate = new Date();
+
+// Subtract 13 years from today's date
+let thirteenYearsAgo = new Date();
+thirteenYearsAgo.setFullYear(currentDate.getFullYear() - 13);
+
 /**
  * A UpdatePersonalInformation page-component
  * @arg 	{Object}	prop	Properties passed to the component
@@ -68,6 +75,7 @@ const UpdatePersonalInfo = () => {
 	const [inPreviewMode, setInPreviewMode] = useState(false);
 	const [previewDataList, setPreviewDataList] = useState();
 	const [finalData, setFinalData] = useState();
+	const [maxDate] = useState(formatDate(thirteenYearsAgo, "yyyy-MM-dd"));
 	const { accessToken } = useSession();
 	const toast = useToast();
 	const router = useRouter();
@@ -75,7 +83,7 @@ const UpdatePersonalInfo = () => {
 	const {
 		handleSubmit,
 		register,
-		formState: { errors /* isSubmitting */ },
+		formState: { errors, isSubmitting },
 		control,
 		reset,
 	} = useForm();
@@ -119,7 +127,7 @@ const UpdatePersonalInfo = () => {
 		});
 
 		let _previewData = [];
-		setFinalData(previewData);
+		setFinalData({ ...previewData, merchant_code: agentData?.eko_code });
 		setInPreviewMode(!inPreviewMode);
 		finalDataList.map(({ key }, index) => {
 			if (previewData[key]) {
@@ -157,15 +165,18 @@ const UpdatePersonalInfo = () => {
 	};
 
 	const handleFormSubmit = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agents/profile/personalInfo/update",
-				"tf-req-method": "PUT",
-			},
-			body: finalData,
-			token: accessToken,
-		})
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
+			{
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": "/network/agents/profile/personalInfo/update",
+					"tf-req-method": "POST",
+				},
+				body: finalData,
+				token: accessToken,
+			}
+		)
 			.then((response) => {
 				toast({
 					title: response?.message,
@@ -357,6 +368,7 @@ const UpdatePersonalInfo = () => {
 													label="Date of birth"
 													onChange={onChange}
 													value={value}
+													maxDate={maxDate}
 													required
 												/>
 												{errors.dob && (
@@ -536,6 +548,7 @@ const UpdatePersonalInfo = () => {
 										fontWeight="bold"
 										w={{ base: "100%", md: "140px" }}
 										onClick={handleFormSubmit}
+										loading={isSubmitting}
 									>
 										Submit
 									</Button>
