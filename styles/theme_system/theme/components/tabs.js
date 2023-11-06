@@ -7,18 +7,12 @@ const { definePartsStyle, defineMultiStyleConfig } =
 // Variants Base Style
 const baseStyle = definePartsStyle({
 	tab: {
-		opacity: ".7",
 		fontWeight: "semibold",
 		boxSizing: "border-box",
-		position: "relative",
 		whiteSpace: "nowrap",
 		_selected: {
 			color: "primary.DEFAULT",
 			bg: "shade",
-			opacity: "1",
-			_after: {
-				display: "block",
-			},
 		},
 	},
 	tabpanels: {
@@ -29,16 +23,20 @@ const baseStyle = definePartsStyle({
 //Base Variant
 const defaultVariant = definePartsStyle({
 	tab: {
+		pos: "relative",
 		_selected: {
 			color: "dark",
 			bg: "transparent",
+			_after: {
+				display: "block",
+			},
 		},
 		_after: {
 			display: "none",
 			content: '""',
 			bg: "accent.DEFAULT",
 			width: "100%",
-			position: "absolute",
+			pos: "absolute",
 			height: "4px",
 			bottom: "0px",
 			borderRadius: "20px 20px 0px 0px",
