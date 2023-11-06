@@ -129,7 +129,6 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 					}}
 				/>
 			)}
-
 			<TabPanels>
 				{Children.map(arrayChildren, (child) => {
 					return (
