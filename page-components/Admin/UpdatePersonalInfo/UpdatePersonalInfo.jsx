@@ -2,7 +2,6 @@ import {
 	Divider,
 	Flex,
 	FormControl,
-	FormLabel,
 	SimpleGrid,
 	Text,
 	useToast,
@@ -256,9 +255,15 @@ const UpdatePersonalInfo = () => {
 			label: "First Name",
 			required: true,
 			defaultValue: agentData?.agent_name,
+			validation: { required: "⚠ Required" },
 		},
 		{ id: "middle_name", label: "Middle Name", required: false },
-		{ id: "last_name", label: "Last Name", required: false },
+		{
+			id: "last_name",
+			label: "Last Name",
+			required: true,
+			validation: { required: "⚠ Required" },
+		},
 	];
 
 	const formGenderRadioList = [
@@ -292,11 +297,6 @@ const UpdatePersonalInfo = () => {
 					>
 						{agentData?.agent_name}
 					</Text>
-					{/* <span>
-						Edit the fields below and click Preview. Click Cancel to
-						return to Client HomePage without submitting
-						information.
-					</span> */}
 				</Flex>
 				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
@@ -333,6 +333,7 @@ const UpdatePersonalInfo = () => {
 											required,
 											value,
 											defaultValue,
+											validation,
 										}) => (
 											<FormControl
 												key={id}
@@ -348,8 +349,23 @@ const UpdatePersonalInfo = () => {
 													value={value}
 													defaultValue={defaultValue}
 													fontSize="sm"
-													{...register(id)}
+													{...register(id, {
+														...validation,
+													})}
 												/>
+												{errors[id] && (
+													<Text
+														fontSize="xs"
+														fontWeight="medium"
+														color={
+															errors[id]
+																? "error"
+																: "primary.dark"
+														}
+													>
+														{errors[id].message}
+													</Text>
+												)}
 											</FormControl>
 										)
 									)}
@@ -391,7 +407,6 @@ const UpdatePersonalInfo = () => {
 
 								{/* Gender */}
 								<FormControl>
-									<FormLabel>Gender</FormLabel>
 									<Controller
 										name="gender"
 										control={control}
@@ -401,11 +416,13 @@ const UpdatePersonalInfo = () => {
 										}) => (
 											<>
 												<Radio
+													label="Gender"
 													options={
 														formGenderRadioList
 													}
 													value={value}
 													onChange={onChange}
+													required
 												/>
 
 												{errors.gender && (
@@ -430,9 +447,7 @@ const UpdatePersonalInfo = () => {
 								<FormControl
 									id="select"
 									w={{ base: "100%", md: "500px" }}
-									isInvalid={errors.priority}
 								>
-									<FormLabel>Marital Status</FormLabel>
 									<Controller
 										name="marital_status"
 										control={control}
@@ -441,6 +456,7 @@ const UpdatePersonalInfo = () => {
 										}) => {
 											return (
 												<Select
+													label="Marital Status"
 													options={
 														formMaritalStatusSelectOptions
 													}
@@ -461,30 +477,59 @@ const UpdatePersonalInfo = () => {
 											label="Shop Name"
 											fontSize="sm"
 											required
-											{...register("shop_name")}
+											{...register("shop_name", {
+												required: "⚠ Required",
+											})}
 										/>
+										{errors.shop_name && (
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color={
+													errors.shop_name
+														? "error"
+														: "primary.dark"
+												}
+											>
+												{errors.shop_name.message}
+											</Text>
+										)}
 									</FormControl>
 									<FormControl
 										id="shop_type"
 										w={{ base: "100%", md: "315px" }}
-										isInvalid={errors.priority}
 									>
-										<FormLabel>Shop Type</FormLabel>
 										<Controller
 											name="shop_type"
 											control={control}
+											rules={{ required: "⚠ Required" }}
 											render={({
 												field: { onChange, value },
 											}) => {
 												return (
 													<Select
+														label="Shop Type"
 														value={value}
 														options={shopTypesData}
 														onChange={onChange}
+														required
 													/>
 												);
 											}}
 										/>
+										{errors.shop_type && (
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color={
+													errors.shop_type
+														? "error"
+														: "primary.dark"
+												}
+											>
+												{errors.shop_type.message}
+											</Text>
+										)}
 									</FormControl>
 								</Flex>
 
