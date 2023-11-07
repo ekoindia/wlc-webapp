@@ -9,30 +9,30 @@ import { useRouter } from "next/router";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<PersonalPane></PersonalPane>`
  */
-const PersonalPane = ({ rowData: personalPane }) => {
+const PersonalPane = ({ data }) => {
 	const router = useRouter();
 
 	const personalDataList = [
 		{
 			label: "Date of birth",
-			value: personalPane?.date_of_birth,
+			value: data?.date_of_birth,
 		},
-		{ label: "Gender", value: personalPane?.gender },
+		{ label: "Gender", value: data?.gender },
 		{
 			label: "Shop name",
-			value: personalPane?.shop_name,
+			value: data?.shop_name,
 		},
 		{
 			label: "Marital Status",
-			value: personalPane?.marital_status,
+			value: data?.marital_status,
 		},
 		// {
 		// 	label: "Monthly Income",
-		// 	value: personalPane?.monthly_income,
+		// 	value: data?.monthly_income,
 		// },
 		{
 			label: "Shop Type",
-			value: personalPane?.shop_type,
+			value: data?.shop_type,
 		},
 	];
 

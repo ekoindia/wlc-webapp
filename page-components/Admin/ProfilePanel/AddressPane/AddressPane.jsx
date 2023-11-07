@@ -4,7 +4,7 @@ import { openGoogleMap } from "helpers";
 import { MapView } from "libs";
 import { useRouter } from "next/router";
 
-const AddressPane = ({ rowData: addressdata }) => {
+const AddressPane = ({ data }) => {
 	const router = useRouter();
 	return (
 		<Card h={{ base: "auto", md: "560px" }}>
@@ -19,14 +19,14 @@ const AddressPane = ({ rowData: addressdata }) => {
 						Address Details
 					</Text>
 
-					<Text fontSize="md">{addressdata?.address}</Text>
+					<Text fontSize="md">{data?.address}</Text>
 
 					<Divider />
 
 					<Flex direction="column" color="light">
 						Ownership type
 						<Text fontWeight="medium" color="dark">
-							{addressdata?.ownership_type}
+							{data?.ownership_type}
 						</Text>
 					</Flex>
 				</Flex>
@@ -35,8 +35,8 @@ const AddressPane = ({ rowData: addressdata }) => {
 					<MapView
 						h="200"
 						w="560"
-						lat={addressdata?.lattitude}
-						lng={addressdata?.longitude}
+						lat={data?.lattitude}
+						lng={data?.longitude}
 					/>
 				</Flex>
 
@@ -60,10 +60,7 @@ const AddressPane = ({ rowData: addressdata }) => {
 						align="center"
 						color="primary.DEFAULT"
 						onClick={() =>
-							openGoogleMap(
-								addressdata?.lattitude,
-								addressdata?.longitude
-							)
+							openGoogleMap(data?.lattitude, data?.longitude)
 						}
 						cursor="pointer"
 					>
