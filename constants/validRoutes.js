@@ -1,7 +1,7 @@
 // TODO: add the routes in [constants/Routes.ts](constants/Routes.ts) with `isPrivate: false`.
 
 // If you want to use any route without login just add it in the publiclink array.
-const publicLinks = ["/", "/privacy", "/icons_demo"];
+const publicLinks = ["/", "/privacy", "/icons_demo", "/delete_my_account"];
 
 const baseRoute = {
 	admin: "/admin",
