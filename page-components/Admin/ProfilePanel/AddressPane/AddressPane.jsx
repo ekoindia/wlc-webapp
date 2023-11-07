@@ -10,11 +10,11 @@ const AddressPane = ({ data }) => {
 		<Card h={{ base: "auto", md: "560px" }}>
 			<Flex
 				direction="column"
-				gap={{ base: "8", lg: "12" }}
+				gap={{ base: "8", lg: "10" }}
 				fontSize="sm"
 				h="100%"
 			>
-				<Flex direction="column" gap="4" fontSize="sm">
+				<Flex direction="column" gap="4">
 					<Text as="b" color="light">
 						Address Details
 					</Text>
@@ -31,9 +31,9 @@ const AddressPane = ({ data }) => {
 					</Flex>
 				</Flex>
 
-				<Flex justify="center" w="100%" h="200px">
+				<Flex justify="center" w="100%" h="180px">
 					<MapView
-						h="200"
+						h="180"
 						w="560"
 						lat={data?.lattitude}
 						lng={data?.longitude}
