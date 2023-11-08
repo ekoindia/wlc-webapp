@@ -115,7 +115,7 @@ const ProfilePanel = () => {
 
 	useEffect(() => {
 		const storedData = JSON.parse(
-			localStorage.getItem("network_seller_details")
+			localStorage.getItem("oth_last_selected_agent")
 		);
 		if (storedData?.agent_mobile === mobile) {
 			setAgentData(storedData);
@@ -131,7 +131,7 @@ const ProfilePanel = () => {
 				<CompanyPane
 					data={{
 						...agentData?.profile,
-						agent_name: agentData.agent_name,
+						agent_name: agentData?.agent_name,
 					}}
 				/>
 			),
@@ -149,8 +149,8 @@ const ProfilePanel = () => {
 			comp: (
 				<PersonalPane
 					data={{
-						...agentData?.personal_information,
 						...agentData?.profile,
+						...agentData?.personal_information,
 					}}
 				/>
 			),

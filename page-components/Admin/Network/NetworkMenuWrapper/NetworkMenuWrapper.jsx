@@ -254,7 +254,7 @@ const NetworkMenuWrapper = ({
 									fontSize="lg"
 									loading={isSubmitting}
 								>
-									Save now
+									Save
 								</Button>
 							</Flex>
 						</form>

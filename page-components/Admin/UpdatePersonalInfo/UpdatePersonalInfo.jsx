@@ -9,7 +9,7 @@ import {
 import { Button, Calenders, Headings, Input, Radio, Select } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
-import { fetcher } from "helpers/apiHelper";
+import { fetcher } from "helpers";
 import { formatDate } from "libs";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -44,6 +44,24 @@ const nameSplitter = (name) => {
 		last_name: lastName,
 	};
 };
+
+const findObjectByValue = (arr, value) => {
+	console.log("value", value);
+	console.log("arr", arr);
+	console.log(arr.find((obj) => obj.value === value));
+	return arr.find((obj) => obj.value === value);
+};
+
+const gender_list = [
+	{ value: "Male", label: "Male" },
+	{ value: "Female", label: "Female" },
+	{ value: "Other", label: "Other" },
+];
+
+const marital_status_list = [
+	{ value: "Single", label: "Single" },
+	{ value: "Married", label: "Married" },
+];
 
 const finalDataList = [
 	{ key: "first_name", label: "First Name" },
@@ -88,9 +106,17 @@ const UpdatePersonalInfo = () => {
 	} = useForm();
 
 	useEffect(() => {
-		fetchShopTypes();
+		const _shopTypesData = JSON.parse(
+			localStorage.getItem("oth-shop-types")
+		);
+
+		if (_shopTypesData?.length > 0) {
+			setShopTypesData(_shopTypesData);
+		} else {
+			fetchShopTypes();
+		}
 		const storedData = JSON.parse(
-			localStorage.getItem("network_seller_details")
+			localStorage.getItem("oth_last_selected_agent")
 		);
 		if (storedData) {
 			setAgentData(storedData);
@@ -103,14 +129,23 @@ const UpdatePersonalInfo = () => {
 		if (agentData !== undefined) {
 			let defaultValues = {};
 			const agentName = nameSplitter(agentData.agent_name);
+			const marital_status = findObjectByValue(
+				marital_status_list,
+				agentData?.personal_information?.marital_status
+			);
+			const shop_type_value =
+				agentData?.personal_information?.shop_type ??
+				agentData?.profile?.shop_type;
+			const shop_type = findObjectByValue(shopTypesData, shop_type_value);
 			defaultValues.first_name = agentName?.first_name;
 			defaultValues.middle_name = agentName?.middle_name;
 			defaultValues.last_name = agentName?.last_name;
-			defaultValues.dob = agentData?.personal_information?.date_of_birth;
-			defaultValues.marital_status =
-				agentData?.personal_information?.marital_status;
-			defaultValues.shop_name = agentData?.profile?.shop_name;
-			defaultValues.shop_type = agentData?.profile?.shop_type;
+			defaultValues.dob = agentData?.personal_information?.dob;
+			defaultValues.marital_status = marital_status;
+			defaultValues.shop_name =
+				agentData?.personal_information?.shop_name ??
+				agentData?.profile?.shop_name;
+			defaultValues.shop_type = shop_type;
 			defaultValues.gender = agentData?.personal_information?.gender;
 
 			reset({ ...defaultValues });
@@ -184,40 +219,23 @@ const UpdatePersonalInfo = () => {
 					isClosable: true,
 				});
 
-				const storedData = JSON.parse(
-					localStorage.getItem("network_seller_details")
+				let storedData = JSON.parse(
+					localStorage.getItem("oth_last_selected_agent")
 				);
 
-				let personal_information = storedData.personal_information;
+				let personal_info = {
+					...storedData.personal_information,
+				};
 
-				Object.entries(personal_information).map(([key]) => {
-					if (
-						personal_information[key] !== undefined &&
-						personal_information[key].length === 0
-					) {
-						personal_information[key] =
-							(finalData[key] !== undefined &&
-								finalData[key].length) > 0
-								? finalData[key]
-								: "";
-					}
+				Object.entries(finalData).map(([key, value]) => {
+					personal_info[key] = value;
 				});
 
-				personal_information["date_of_birth"] =
-					finalData["dob"] !== undefined &&
-					finalData["dob"].length > 0
-						? finalData["dob"]
-						: "";
-
-				previewDataList.map(({ key, value }) => {
-					if (key === "shop_type") {
-						personal_information["shop_type"] = value;
-					}
-				});
+				storedData.personal_information = personal_info;
 
 				localStorage.setItem(
-					"network_seller_details",
-					JSON.stringify(storedData)
+					"oth_last_selected_agent",
+					JSON.stringify({ ...storedData })
 				);
 
 				if (response?.status == 0) {
@@ -264,17 +282,6 @@ const UpdatePersonalInfo = () => {
 			required: true,
 			validation: { required: "⚠ Required" },
 		},
-	];
-
-	const formGenderRadioList = [
-		{ value: "Male", label: "Male" },
-		{ value: "Female", label: "Female" },
-		{ value: "Other", label: "Other" },
-	];
-
-	const formMaritalStatusSelectOptions = [
-		{ value: "Single", label: "Single" },
-		{ value: "Married", label: "Married" },
 	];
 
 	return (
@@ -417,9 +424,7 @@ const UpdatePersonalInfo = () => {
 											<>
 												<Radio
 													label="Gender"
-													options={
-														formGenderRadioList
-													}
+													options={gender_list}
 													value={value}
 													onChange={onChange}
 													required
@@ -458,7 +463,7 @@ const UpdatePersonalInfo = () => {
 												<Select
 													label="Marital Status"
 													options={
-														formMaritalStatusSelectOptions
+														marital_status_list
 													}
 													value={value}
 													onChange={onChange}

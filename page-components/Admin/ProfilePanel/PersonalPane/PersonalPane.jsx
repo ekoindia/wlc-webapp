@@ -1,6 +1,20 @@
 import { Flex, Stack, StackDivider, Text } from "@chakra-ui/react";
 import { Card, IcoButton } from "components";
+import { Endpoints, TransactionIds } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
+import { useLocalStorage } from "hooks";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+const getLabel = (list, id) => {
+	for (let i = 0; i < list.length; i++) {
+		if (list[i].value == id) {
+			return list[i].label;
+		}
+	}
+	return null; // If the id is not found in the list
+};
 
 /**
  * A <PersonalPane> component
@@ -10,12 +24,39 @@ import { useRouter } from "next/router";
  * @example	`<PersonalPane></PersonalPane>`
  */
 const PersonalPane = ({ data }) => {
+	const [shopTypeLabel, setShopTypeLabel] = useState();
+	const [shopTypesData, setShopTypesData] = useLocalStorage("oth-shop-types");
 	const router = useRouter();
+	const { accessToken } = useSession();
+
+	useEffect(() => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: TransactionIds.SHOP_TYPE,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				if (res.status === 0) {
+					setShopTypesData(res?.param_attributes.list_elements);
+				}
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
+	}, []);
+
+	useEffect(() => {
+		if (shopTypesData?.length > 0) {
+			const _label = getLabel(shopTypesData, data?.shop_type);
+			setShopTypeLabel(_label);
+		}
+	}, [shopTypesData]);
 
 	const personalDataList = [
 		{
 			label: "Date of birth",
-			value: data?.date_of_birth,
+			value: data?.dob,
 		},
 		{ label: "Gender", value: data?.gender },
 		{
@@ -32,7 +73,7 @@ const PersonalPane = ({ data }) => {
 		// },
 		{
 			label: "Shop Type",
-			value: data?.shop_type,
+			value: shopTypeLabel,
 		},
 	];
 
