@@ -318,10 +318,7 @@ const UpdatePersonalInfo = () => {
 					>
 						<Flex w="100%" justify="space-between" align="baseline">
 							<Text fontSize="lg" fontWeight="medium">
-								Merchant Information
-							</Text>
-							<Text fontSize="sm" color="error">
-								* Mandatory
+								Retailer Information
 							</Text>
 						</Flex>
 
