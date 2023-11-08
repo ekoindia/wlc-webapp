@@ -45,12 +45,7 @@ const nameSplitter = (name) => {
 	};
 };
 
-const findObjectByValue = (arr, value) => {
-	console.log("value", value);
-	console.log("arr", arr);
-	console.log(arr.find((obj) => obj.value === value));
-	return arr.find((obj) => obj.value === value);
-};
+const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
 
 const gender_list = [
 	{ value: "Male", label: "Male" },
@@ -136,7 +131,10 @@ const UpdatePersonalInfo = () => {
 			const shop_type_value =
 				agentData?.personal_information?.shop_type ??
 				agentData?.profile?.shop_type;
+			console.log("shop_type_value", shop_type_value);
+			console.log("shopTypesData", shopTypesData);
 			const shop_type = findObjectByValue(shopTypesData, shop_type_value);
+			console.log("shop_type", shop_type);
 			defaultValues.first_name = agentName?.first_name;
 			defaultValues.middle_name = agentName?.middle_name;
 			defaultValues.last_name = agentName?.last_name;
@@ -556,6 +554,7 @@ const UpdatePersonalInfo = () => {
 										color="primary.DEFAULT"
 										fontWeight="bold"
 										_hover={{ textDecoration: "none" }}
+										onClick={() => router.back()}
 									>
 										Cancel
 									</Button>
