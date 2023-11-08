@@ -4,24 +4,29 @@ import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 const { definePartsStyle, defineMultiStyleConfig } =
 	createMultiStyleConfigHelpers(tabsAnatomy.keys);
 
+// Variants Base Style
 const baseStyle = definePartsStyle({
-	root: {
-		p: { base: "0", md: "none" },
-	},
 	tab: {
-		px: "2",
-		fontSize: { base: "sm", md: "lg" },
-		mr: "1.25vw",
-		pb: "4",
-		opacity: ".5",
 		fontWeight: "semibold",
 		boxSizing: "border-box",
-		position: "relative",
 		whiteSpace: "nowrap",
+		_selected: {
+			color: "primary.DEFAULT",
+			bg: "shade",
+		},
+	},
+	tabpanels: {
+		p: "10px 20px",
+	},
+});
+
+//Base Variant
+const defaultVariant = definePartsStyle({
+	tab: {
+		pos: "relative",
 		_selected: {
 			color: "dark",
 			bg: "transparent",
-			opacity: "1",
 			_after: {
 				display: "block",
 			},
@@ -31,20 +36,22 @@ const baseStyle = definePartsStyle({
 			content: '""',
 			bg: "accent.DEFAULT",
 			width: "100%",
-			position: "absolute",
-			height: "5px",
-			bottom: "-0.5px",
-			borderRadius: "30px",
+			pos: "absolute",
+			height: "4px",
+			bottom: "0px",
+			borderRadius: "20px 20px 0px 0px",
 		},
 	},
 	tablist: {
-		borderBottom: "card",
-		overflow: "auto",
+		w: "100%",
+		overflowX: "auto",
 		overflowY: "hidden",
-	},
-	tabpanel: {
-		px: "0",
+		borderBottom: "card",
 	},
 });
 
-export const tabsTheme = defineMultiStyleConfig({ baseStyle });
+const variants = {
+	default: defaultVariant,
+};
+
+export const tabsTheme = defineMultiStyleConfig({ baseStyle, variants });

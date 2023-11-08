@@ -198,7 +198,7 @@ const ProfilePanel = () => {
 						"2xl": "repeat(auto-fit,minmax(450px,1fr))",
 					}}
 					justifyContent="center"
-					py={{ base: "20px", md: "0px" }}
+					py={{ base: "4", md: "0px" }}
 					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 				>
 					{panes.map((item) => (

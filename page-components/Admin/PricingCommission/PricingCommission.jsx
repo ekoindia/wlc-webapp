@@ -1,13 +1,5 @@
-import {
-	Box,
-	Tab,
-	TabList,
-	TabPanel,
-	TabPanels,
-	Tabs,
-	Text,
-} from "@chakra-ui/react";
-import { Headings } from "components";
+import { Box, Text } from "@chakra-ui/react";
+import { Headings, Tabs } from "components";
 import {
 	AadhaarPay,
 	AccountVerification,
@@ -28,6 +20,7 @@ const PricingCommissions = () => {
 		{
 			label: "Commission Frequency",
 			comp: <CommissionFrequency />,
+			// disabled: true,
 		},
 		{ label: "Money Transfer", comp: <Dmt /> },
 		{ label: "AePS", comp: <Aeps /> },
@@ -59,54 +52,23 @@ const PricingCommissions = () => {
 					tomorrow (12:00 AM midnight).
 				</Text>
 				<Box
-					w="100%"
-					// minH="80%"
 					bg="white"
-					borderRadius="10px"
 					border="card"
 					boxShadow="basic"
+					borderRadius="10px"
 				>
-					<Tabs
-						isLazy
-						position="relative"
-						defaultIndex={0}
-						py="3"
-						w="100%"
-						borderRadius="10px"
-					>
-						<TabList
-							color="light"
-							pl={{ base: "10px", md: "20px" }}
-							css={{
-								"&::-webkit-scrollbar": {
-									display: "none",
-								},
-								"&::-moz-scrollbar": {
-									display: "none",
-								},
-								"&::scrollbar": {
-									display: "none",
-								},
-							}}
-						>
-							{tabList.map(({ label }) => (
-								<Tab
-									key={label}
-									fontSize={{
-										base: "sm",
-										"2xl": "md",
-									}}
+					<Tabs>
+						{tabList.map(
+							({ label, comp, disabled = false }, index) => (
+								<div
+									key={`${index}-${label}`}
+									label={label}
+									disabled={disabled}
 								>
-									{label}
-								</Tab>
-							))}
-						</TabList>
-
-						<TabPanels p="10px 20px">
-							{tabList.map(({ label, comp }) => (
-								<TabPanel key={label}>{comp}</TabPanel>
-							))}
-						</TabPanels>
+									{comp}
+								</div>
+							)
+						)}
 					</Tabs>
 				</Box>
 			</Box>
