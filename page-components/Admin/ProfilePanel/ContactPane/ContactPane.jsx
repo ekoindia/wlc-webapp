@@ -9,24 +9,24 @@ import { useRouter } from "next/router";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<ContactPane></ContactPane>`
  */
-const ContactPane = ({ rowData: contactData, mobile }) => {
+const ContactPane = ({ data }) => {
 	const router = useRouter();
 
 	const contactDataList = [
 		{
 			label: "Mobile number",
-			value: contactData?.mobile_number || mobile,
+			value: data?.agent_mobile,
 			iconName: "phone",
 			onClick: () => {
-				router.push(`tel:${contactData?.mobile_number}`);
+				router.push(`tel:${data?.agent_mobile}`);
 			},
 		},
 		{
 			label: "Email",
-			value: contactData?.email,
+			value: data?.email,
 			iconName: "mail",
 			onClick: () => {
-				router.push(`mailto:${contactData?.mobile_number}`);
+				router.push(`mailto:${data?.email}`);
 			},
 		},
 	];

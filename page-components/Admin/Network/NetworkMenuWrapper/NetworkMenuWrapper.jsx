@@ -150,11 +150,11 @@ const NetworkMenuWrapper = ({
 		{
 			name: "reason_input",
 			label: "Additional Details",
-			required: currId == 16 ? true : false,
+			required: true,
 			// visible_on_param_name: "reason",
 			// visible_on_param_value: /999/, // Ideally this should be the code, need to fix select return value
 			validations: {
-				required: currId == 16 ? true : false,
+				required: true,
 			},
 			is_inactive:
 				currId == 16
@@ -176,17 +176,22 @@ const NetworkMenuWrapper = ({
 				? reason_input
 				: reason?.label;
 
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/agents/updateStatus/eko_code:${eko_code}/status_id:${statusObj[clickedVal]}/descrip_note:${_reason}`,
-				"tf-req-method": "PUT",
-			},
-			body: {
-				user_code: eko_code,
-			},
-			token: accessToken,
-		})
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
+			{
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": `/network/agents/updateStatus`,
+					"tf-req-method": "POST",
+				},
+				body: {
+					csp_code: eko_code,
+					agentAccountStatus: statusObj[clickedVal],
+					updateStatusNote: _reason,
+				},
+				token: accessToken,
+			}
+		)
 			.then((res) => {
 				toast({
 					title: res.message,
@@ -249,7 +254,7 @@ const NetworkMenuWrapper = ({
 									fontSize="lg"
 									loading={isSubmitting}
 								>
-									Save now
+									Save
 								</Button>
 							</Flex>
 						</form>

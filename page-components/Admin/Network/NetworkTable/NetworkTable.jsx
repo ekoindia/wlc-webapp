@@ -60,7 +60,10 @@ const NetworkTable = ({
 	 */
 	const onRowClick = (rowData) => {
 		const mobile = rowData?.agent_mobile;
-		localStorage.setItem("network_seller_details", JSON.stringify(rowData));
+		localStorage.setItem(
+			"oth_last_selected_agent",
+			JSON.stringify(rowData)
+		);
 		router.push({
 			pathname: `/admin/my-network/profile`,
 			query: { mobile },

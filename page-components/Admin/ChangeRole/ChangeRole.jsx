@@ -27,7 +27,7 @@ const ChangeRole = () => {
 
 	useEffect(() => {
 		const storedData = JSON.parse(
-			localStorage.getItem("network_seller_details")
+			localStorage.getItem("oth_last_selected_agent")
 		);
 		if (mobile) {
 			if (storedData?.agent_mobile === mobile) {
@@ -67,7 +67,7 @@ const ChangeRole = () => {
 				if (_agentDetails) {
 					setAgentData(_agentDetails);
 					localStorage.setItem(
-						"network_seller_details",
+						"oth_last_selected_agent",
 						JSON.stringify(_agentDetails)
 					);
 				} else {

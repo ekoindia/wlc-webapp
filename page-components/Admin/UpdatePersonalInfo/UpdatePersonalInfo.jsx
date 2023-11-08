@@ -2,7 +2,6 @@ import {
 	Divider,
 	Flex,
 	FormControl,
-	FormLabel,
 	SimpleGrid,
 	Text,
 	useToast,
@@ -10,7 +9,8 @@ import {
 import { Button, Calenders, Headings, Input, Radio, Select } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
-import { fetcher } from "helpers/apiHelper";
+import { fetcher } from "helpers";
+import { formatDate } from "libs";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -45,6 +45,19 @@ const nameSplitter = (name) => {
 	};
 };
 
+const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
+
+const gender_list = [
+	{ value: "Male", label: "Male" },
+	{ value: "Female", label: "Female" },
+	{ value: "Other", label: "Other" },
+];
+
+const marital_status_list = [
+	{ value: "Single", label: "Single" },
+	{ value: "Married", label: "Married" },
+];
+
 const finalDataList = [
 	{ key: "first_name", label: "First Name" },
 	{ key: "middle_name", label: "Middle Name" },
@@ -55,6 +68,12 @@ const finalDataList = [
 	{ key: "shop_name", label: "Shop Name" },
 	{ key: "shop_type", label: "Shop Type" },
 ];
+
+let currentDate = new Date();
+
+// Subtract 13 years from today's date
+let thirteenYearsAgo = new Date();
+thirteenYearsAgo.setFullYear(currentDate.getFullYear() - 13);
 
 /**
  * A UpdatePersonalInformation page-component
@@ -68,6 +87,7 @@ const UpdatePersonalInfo = () => {
 	const [inPreviewMode, setInPreviewMode] = useState(false);
 	const [previewDataList, setPreviewDataList] = useState();
 	const [finalData, setFinalData] = useState();
+	const [maxDate] = useState(formatDate(thirteenYearsAgo, "yyyy-MM-dd"));
 	const { accessToken } = useSession();
 	const toast = useToast();
 	const router = useRouter();
@@ -75,15 +95,23 @@ const UpdatePersonalInfo = () => {
 	const {
 		handleSubmit,
 		register,
-		formState: { errors /* isSubmitting */ },
+		formState: { errors, isSubmitting },
 		control,
 		reset,
 	} = useForm();
 
 	useEffect(() => {
-		fetchShopTypes();
+		const _shopTypesData = JSON.parse(
+			localStorage.getItem("oth-shop-types")
+		);
+
+		if (_shopTypesData?.length > 0) {
+			setShopTypesData(_shopTypesData);
+		} else {
+			fetchShopTypes();
+		}
 		const storedData = JSON.parse(
-			localStorage.getItem("network_seller_details")
+			localStorage.getItem("oth_last_selected_agent")
 		);
 		if (storedData) {
 			setAgentData(storedData);
@@ -96,14 +124,26 @@ const UpdatePersonalInfo = () => {
 		if (agentData !== undefined) {
 			let defaultValues = {};
 			const agentName = nameSplitter(agentData.agent_name);
+			const marital_status = findObjectByValue(
+				marital_status_list,
+				agentData?.personal_information?.marital_status
+			);
+			const shop_type_value =
+				agentData?.personal_information?.shop_type ??
+				agentData?.profile?.shop_type;
+			console.log("shop_type_value", shop_type_value);
+			console.log("shopTypesData", shopTypesData);
+			const shop_type = findObjectByValue(shopTypesData, shop_type_value);
+			console.log("shop_type", shop_type);
 			defaultValues.first_name = agentName?.first_name;
 			defaultValues.middle_name = agentName?.middle_name;
 			defaultValues.last_name = agentName?.last_name;
-			defaultValues.dob = agentData?.personal_information?.date_of_birth;
-			defaultValues.marital_status =
-				agentData?.personal_information?.marital_status;
-			defaultValues.shop_name = agentData?.profile?.shop_name;
-			defaultValues.shop_type = agentData?.profile?.shop_type;
+			defaultValues.dob = agentData?.personal_information?.dob;
+			defaultValues.marital_status = marital_status;
+			defaultValues.shop_name =
+				agentData?.personal_information?.shop_name ??
+				agentData?.profile?.shop_name;
+			defaultValues.shop_type = shop_type;
 			defaultValues.gender = agentData?.personal_information?.gender;
 
 			reset({ ...defaultValues });
@@ -119,7 +159,7 @@ const UpdatePersonalInfo = () => {
 		});
 
 		let _previewData = [];
-		setFinalData(previewData);
+		setFinalData({ ...previewData, merchant_code: agentData?.eko_code });
 		setInPreviewMode(!inPreviewMode);
 		finalDataList.map(({ key }, index) => {
 			if (previewData[key]) {
@@ -157,15 +197,18 @@ const UpdatePersonalInfo = () => {
 	};
 
 	const handleFormSubmit = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agents/profile/personalInfo/update",
-				"tf-req-method": "PUT",
-			},
-			body: finalData,
-			token: accessToken,
-		})
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
+			{
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": "/network/agents/profile/personalInfo/update",
+					"tf-req-method": "POST",
+				},
+				body: finalData,
+				token: accessToken,
+			}
+		)
 			.then((response) => {
 				toast({
 					title: response?.message,
@@ -174,40 +217,23 @@ const UpdatePersonalInfo = () => {
 					isClosable: true,
 				});
 
-				const storedData = JSON.parse(
-					localStorage.getItem("network_seller_details")
+				let storedData = JSON.parse(
+					localStorage.getItem("oth_last_selected_agent")
 				);
 
-				let personal_information = storedData.personal_information;
+				let personal_info = {
+					...storedData.personal_information,
+				};
 
-				Object.entries(personal_information).map(([key]) => {
-					if (
-						personal_information[key] !== undefined &&
-						personal_information[key].length === 0
-					) {
-						personal_information[key] =
-							(finalData[key] !== undefined &&
-								finalData[key].length) > 0
-								? finalData[key]
-								: "";
-					}
+				Object.entries(finalData).map(([key, value]) => {
+					personal_info[key] = value;
 				});
 
-				personal_information["date_of_birth"] =
-					finalData["dob"] !== undefined &&
-					finalData["dob"].length > 0
-						? finalData["dob"]
-						: "";
-
-				previewDataList.map(({ key, value }) => {
-					if (key === "shop_type") {
-						personal_information["shop_type"] = value;
-					}
-				});
+				storedData.personal_information = personal_info;
 
 				localStorage.setItem(
-					"network_seller_details",
-					JSON.stringify(storedData)
+					"oth_last_selected_agent",
+					JSON.stringify({ ...storedData })
 				);
 
 				if (response?.status == 0) {
@@ -245,20 +271,15 @@ const UpdatePersonalInfo = () => {
 			label: "First Name",
 			required: true,
 			defaultValue: agentData?.agent_name,
+			validation: { required: "⚠ Required" },
 		},
 		{ id: "middle_name", label: "Middle Name", required: false },
-		{ id: "last_name", label: "Last Name", required: false },
-	];
-
-	const formGenderRadioList = [
-		{ value: "Male", label: "Male" },
-		{ value: "Female", label: "Female" },
-		{ value: "Other", label: "Other" },
-	];
-
-	const formMaritalStatusSelectOptions = [
-		{ value: "Single", label: "Single" },
-		{ value: "Married", label: "Married" },
+		{
+			id: "last_name",
+			label: "Last Name",
+			required: true,
+			validation: { required: "⚠ Required" },
+		},
 	];
 
 	return (
@@ -281,11 +302,6 @@ const UpdatePersonalInfo = () => {
 					>
 						{agentData?.agent_name}
 					</Text>
-					{/* <span>
-						Edit the fields below and click Preview. Click Cancel to
-						return to Client HomePage without submitting
-						information.
-					</span> */}
 				</Flex>
 				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
@@ -322,6 +338,7 @@ const UpdatePersonalInfo = () => {
 											required,
 											value,
 											defaultValue,
+											validation,
 										}) => (
 											<FormControl
 												key={id}
@@ -337,8 +354,23 @@ const UpdatePersonalInfo = () => {
 													value={value}
 													defaultValue={defaultValue}
 													fontSize="sm"
-													{...register(id)}
+													{...register(id, {
+														...validation,
+													})}
 												/>
+												{errors[id] && (
+													<Text
+														fontSize="xs"
+														fontWeight="medium"
+														color={
+															errors[id]
+																? "error"
+																: "primary.dark"
+														}
+													>
+														{errors[id].message}
+													</Text>
+												)}
 											</FormControl>
 										)
 									)}
@@ -357,6 +389,7 @@ const UpdatePersonalInfo = () => {
 													label="Date of birth"
 													onChange={onChange}
 													value={value}
+													maxDate={maxDate}
 													required
 												/>
 												{errors.dob && (
@@ -379,7 +412,6 @@ const UpdatePersonalInfo = () => {
 
 								{/* Gender */}
 								<FormControl>
-									<FormLabel>Gender</FormLabel>
 									<Controller
 										name="gender"
 										control={control}
@@ -389,11 +421,11 @@ const UpdatePersonalInfo = () => {
 										}) => (
 											<>
 												<Radio
-													options={
-														formGenderRadioList
-													}
+													label="Gender"
+													options={gender_list}
 													value={value}
 													onChange={onChange}
+													required
 												/>
 
 												{errors.gender && (
@@ -418,9 +450,7 @@ const UpdatePersonalInfo = () => {
 								<FormControl
 									id="select"
 									w={{ base: "100%", md: "500px" }}
-									isInvalid={errors.priority}
 								>
-									<FormLabel>Marital Status</FormLabel>
 									<Controller
 										name="marital_status"
 										control={control}
@@ -429,8 +459,9 @@ const UpdatePersonalInfo = () => {
 										}) => {
 											return (
 												<Select
+													label="Marital Status"
 													options={
-														formMaritalStatusSelectOptions
+														marital_status_list
 													}
 													value={value}
 													onChange={onChange}
@@ -449,30 +480,59 @@ const UpdatePersonalInfo = () => {
 											label="Shop Name"
 											fontSize="sm"
 											required
-											{...register("shop_name")}
+											{...register("shop_name", {
+												required: "⚠ Required",
+											})}
 										/>
+										{errors.shop_name && (
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color={
+													errors.shop_name
+														? "error"
+														: "primary.dark"
+												}
+											>
+												{errors.shop_name.message}
+											</Text>
+										)}
 									</FormControl>
 									<FormControl
 										id="shop_type"
 										w={{ base: "100%", md: "315px" }}
-										isInvalid={errors.priority}
 									>
-										<FormLabel>Shop Type</FormLabel>
 										<Controller
 											name="shop_type"
 											control={control}
+											rules={{ required: "⚠ Required" }}
 											render={({
 												field: { onChange, value },
 											}) => {
 												return (
 													<Select
+														label="Shop Type"
 														value={value}
 														options={shopTypesData}
 														onChange={onChange}
+														required
 													/>
 												);
 											}}
 										/>
+										{errors.shop_type && (
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color={
+													errors.shop_type
+														? "error"
+														: "primary.dark"
+												}
+											>
+												{errors.shop_type.message}
+											</Text>
+										)}
 									</FormControl>
 								</Flex>
 
@@ -494,6 +554,7 @@ const UpdatePersonalInfo = () => {
 										color="primary.DEFAULT"
 										fontWeight="bold"
 										_hover={{ textDecoration: "none" }}
+										onClick={() => router.back()}
 									>
 										Cancel
 									</Button>
@@ -536,6 +597,7 @@ const UpdatePersonalInfo = () => {
 										fontWeight="bold"
 										w={{ base: "100%", md: "140px" }}
 										onClick={handleFormSubmit}
+										loading={isSubmitting}
 									>
 										Submit
 									</Button>

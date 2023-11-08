@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<CompanyPane></CompanyPane>`
  */
-const CompanyPane = ({ rowData: compdata, agent_name }) => {
+const CompanyPane = ({ data }) => {
 	const router = useRouter();
 	const { mobile } = router.query;
 	const handleclick = () => {
@@ -26,8 +26,8 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 	};
 
 	const companyDataList = [
-		{ id: 1, label: "Account Type", value: compdata?.account_type },
-		{ id: 2, label: "Plan name", value: compdata?.plan_name },
+		{ id: 1, label: "Account Type", value: data?.account_type },
+		{ id: 2, label: "Plan name", value: data?.plan_name },
 		// { id: 3, label: "KYC status", value: "KYC Compliant" },
 	];
 
@@ -38,18 +38,18 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 					<Avatar
 						size={{ base: "lg", md: "xl" }}
 						icon={<Icon name="person" />}
-						src={compdata?.src}
+						src={data?.src}
 						showBorder={true}
 						borderColor="divider"
 					/>
 					<div>
 						<Text as="b" fontSize="xl">
-							{agent_name}
+							{data?.agent_name}
 						</Text>
 						<Flex gap="1" color="light" fontSize="sm">
 							User Code:
 							<Text fontWeight="medium" color="accent.DEFAULT">
-								{compdata?.eko_code}
+								{data?.eko_code}
 							</Text>
 						</Flex>
 					</div>
@@ -120,7 +120,7 @@ const CompanyPane = ({ rowData: compdata, agent_name }) => {
 						<div>
 							<Text color="light">E-value Balance</Text>
 							<Currency
-								amount={compdata?.wallet_balance}
+								amount={data?.wallet_balance}
 								fontSize="xl"
 								fontWeight="medium"
 								color="primary.DEFAULT"
