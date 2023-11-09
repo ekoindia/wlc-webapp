@@ -1,4 +1,5 @@
 import {
+	Box,
 	Divider,
 	Flex,
 	FormControl,
@@ -293,6 +294,7 @@ const UpdatePersonalInfo = () => {
 				p={{ base: "16px", md: "30px 30px 20px" }}
 				gap="4"
 				fontSize="sm"
+				mt={{ base: "-10px", md: "0" }}
 			>
 				<Flex direction="column" gap="2">
 					<Text
@@ -306,7 +308,7 @@ const UpdatePersonalInfo = () => {
 				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
 			<form onSubmit={handleSubmit(handleFormPreview)}>
-				<Flex direction="column" px={{ base: "20px", md: "0" }}>
+				<Box px={{ base: "20px", md: "0" }} mb="16">
 					<Flex
 						direction="column"
 						w="100%"
@@ -532,25 +534,44 @@ const UpdatePersonalInfo = () => {
 										)}
 									</FormControl>
 								</Flex>
-
 								<Flex
-									direction={{ base: "column", md: "row" }}
-									gap={{ base: "4", md: "16" }}
+									direction={{
+										base: "row-reverse",
+										md: "row",
+									}}
+									w={{ base: "100%", md: "500px" }}
+									position={{ base: "fixed", md: "initial" }}
+									gap={{ base: "0", md: "16" }}
+									align="center"
+									bottom="0"
+									left="0"
 								>
 									<Button
-										h="64px"
-										fontWeight="bold"
-										w={{ base: "100%", md: "140px" }}
 										type="submit"
+										size="lg"
+										h="64px"
+										w={{ base: "100%", md: "200px" }}
+										fontWeight="bold"
+										borderRadius={{
+											base: "none",
+											md: "10",
+										}}
 									>
 										Preview
 									</Button>
+
 									<Button
-										h="64px"
+										h={{ base: "64px", md: "auto" }}
+										w={{ base: "100%", md: "initial" }}
+										bg={{ base: "white", md: "none" }}
 										variant="link"
-										color="primary.DEFAULT"
 										fontWeight="bold"
+										color="primary.DEFAULT"
 										_hover={{ textDecoration: "none" }}
+										borderRadius={{
+											base: "none",
+											md: "10",
+										}}
 										onClick={() => router.back()}
 									>
 										Cancel
@@ -586,24 +607,45 @@ const UpdatePersonalInfo = () => {
 								</SimpleGrid>
 
 								<Flex
-									direction={{ base: "column", md: "row" }}
-									gap={{ base: "4", md: "16" }}
+									direction={{
+										base: "row-reverse",
+										md: "row",
+									}}
+									w={{ base: "100%", md: "500px" }}
+									position={{ base: "fixed", md: "initial" }}
+									gap={{ base: "0", md: "16" }}
+									align="center"
+									bottom="0"
+									left="0"
 								>
 									<Button
+										type="submit"
+										size="lg"
 										h="64px"
+										w={{ base: "100%", md: "200px" }}
 										fontWeight="bold"
-										w={{ base: "100%", md: "140px" }}
+										borderRadius={{
+											base: "none",
+											md: "10",
+										}}
 										onClick={handleFormSubmit}
 										loading={isSubmitting}
 									>
-										Submit
+										Save
 									</Button>
+
 									<Button
-										h="64px"
+										h={{ base: "64px", md: "auto" }}
+										w={{ base: "100%", md: "initial" }}
+										bg={{ base: "white", md: "none" }}
 										variant="link"
-										color="primary.DEFAULT"
 										fontWeight="bold"
+										color="primary.DEFAULT"
 										_hover={{ textDecoration: "none" }}
+										borderRadius={{
+											base: "none",
+											md: "10",
+										}}
 										onClick={() =>
 											setInPreviewMode(!inPreviewMode)
 										}
@@ -614,7 +656,7 @@ const UpdatePersonalInfo = () => {
 							</Flex>
 						)}
 					</Flex>
-				</Flex>
+				</Box>
 			</form>
 		</>
 	);
