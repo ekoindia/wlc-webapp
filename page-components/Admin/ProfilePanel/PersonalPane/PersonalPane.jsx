@@ -56,7 +56,7 @@ const PersonalPane = ({ data }) => {
 	const personalDataList = [
 		{
 			label: "Date of birth",
-			value: data?.dob,
+			value: data?.dob ?? data?.date_of_birth,
 		},
 		{ label: "Gender", value: data?.gender },
 		{
