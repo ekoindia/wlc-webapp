@@ -19,7 +19,9 @@ const AddressPane = ({ data }) => {
 						Address Details
 					</Text>
 
-					<Text fontSize="md">{data?.address}</Text>
+					<Text fontSize="md" textTransform="capitalize">
+						{data?.address}
+					</Text>
 
 					<Divider />
 

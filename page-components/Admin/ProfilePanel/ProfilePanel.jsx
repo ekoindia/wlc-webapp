@@ -74,6 +74,7 @@ const ProfilePanel = () => {
 	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
 	const { accessToken } = useSession();
 	const { mobile } = router.query;
+	const { line_1, line_2, location, status, zip } = agentData;
 
 	const hitQuery = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -138,7 +139,16 @@ const ProfilePanel = () => {
 		},
 		{
 			id: 2,
-			comp: <AddressPane data={agentData?.address_details} />,
+			comp: (
+				<AddressPane
+					data={{
+						...agentData?.address_details,
+						address: [line_1, line_2, location, status, zip]
+							.filter((value) => value)
+							.join(", "),
+					}}
+				/>
+			),
 		},
 		// {
 		// 	id: 3,
