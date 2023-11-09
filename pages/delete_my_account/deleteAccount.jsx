@@ -6,14 +6,15 @@ const DeleteAccount = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const { userData, isLoggedIn } = useUser();
 
-	const { user_type } = userData.userDetails;
+	const { user_type, mobile } = userData.userDetails;
 	const { app_name, org_id } = orgDetail;
 	const currentUrl = window.location.href;
 	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
 
-	let src_url_loggedIn = `https://forms.zohopublic.in/ekoindiafinancialservicespvtlt/form/DeleteMyAccountforLoggedInUser/formperma/4GiiXnxk9apjC7ws-hRTNIlcosXjlNHErNocfMRFCMA?name=${app_name}&org_url=${baseUrl}&org_id=${org_id}&agent_type=${UserTypeLabel[user_type]}`;
-	let src_url =
-		"https://forms.zohopublic.in/ekoindiafinancialservicespvtlt/form/DeleteAccount/formperma/iFg1L_aO6rkzx-qSpR07UaUAJLTngr5cbO4aJJqTKY8";
+	console.log("Gopi Kumar ", userData, mobile);
+
+	let src_url_loggedIn = `https://zfrmz.in/Ap36vU4GDK5eywKxdEA4?name=${app_name}&org_url=${baseUrl}&org_id=${org_id}&agent_type=${UserTypeLabel[user_type]}&mobile=${mobile}`;
+	let src_url = `https://zfrmz.in/qibBUJGotvHwFHLpV1pJ?name=${app_name}&org_url=${baseUrl}`;
 	return (
 		<>
 			<iframe

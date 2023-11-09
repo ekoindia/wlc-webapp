@@ -1,5 +1,10 @@
 import { Center, Spinner } from "@chakra-ui/react";
-import { baseRoute, initialRoute, publicLinks } from "constants";
+import {
+	baseRoute,
+	initialRoute,
+	publicLinks,
+	publicOnlyLinks,
+} from "constants";
 import { useSession } from "contexts/UserContext";
 import { useEffect, useState } from "react";
 
@@ -62,10 +67,14 @@ const RouteProtecter = ({ router, children }) => {
 		else if (!isLoggedIn && !loading) {
 			console.log("::::nonLogged user::::");
 			// This condition will redirect to initial path if the route is inaccessible
-			if (!publicLinks.includes(path)) {
+			if (
+				!(publicOnlyLinks.includes(path) || publicLinks.includes(path))
+			) {
 				router.push("/");
 				return;
 			}
+			//setLoading(false);
+			//setAuthorized(true);
 			if (authorized) setAuthorized(false);
 			isAuthorized = false;
 		} else if (isLoggedIn && (userId === "1" || isOnboarding === true)) {
@@ -82,7 +91,10 @@ const RouteProtecter = ({ router, children }) => {
 			console.log("::::Enter in Admin::::", path, isAdminAgentMode);
 
 			// This condition will redirect to initial path if the route is inaccessible after login
-			if (publicLinks.includes(path) || !path.includes(baseRoute[role])) {
+			if (
+				publicOnlyLinks.includes(path) ||
+				!path.includes(baseRoute[role])
+			) {
 				// if (!path.startsWith("/admin/")) {
 				// 	router.replace("/admin" + path);
 				// } else {
@@ -111,7 +123,7 @@ const RouteProtecter = ({ router, children }) => {
 		} else if (isLoggedIn && role === "non-admin") {
 			console.log("::::Enter in nonAdmin::::", path);
 			// Above condition will check, publicLink contain path or path contain "/admin"
-			if (publicLinks.includes(path) || path.includes("/admin")) {
+			if (publicOnlyLinks.includes(path) || path.includes("/admin")) {
 				router.replace(initialRoute[role]);
 				return;
 			}
@@ -141,6 +153,7 @@ const RouteProtecter = ({ router, children }) => {
 		(isBrowser &&
 			router.pathname !== "/404" &&
 			!publicLinks.includes(router.pathname) &&
+			!publicOnlyLinks.includes(router.pathname) &&
 			!isLoggedIn) ||
 		loading
 	) {
