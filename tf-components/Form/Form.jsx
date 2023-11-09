@@ -67,7 +67,7 @@ const Form = ({
 								<FormControl
 									key={`${name}-${label}-${index}`}
 									id={name}
-									w={{ base: "auto", md: "500px" }}
+									maxW="500px"
 								>
 									<Input
 										id={name}
@@ -75,12 +75,7 @@ const Form = ({
 										required={required}
 										value={value}
 										step="0.01"
-										type={
-											parameter_type_id ===
-											ParamType.NUMERIC
-												? "number"
-												: "text"
-										}
+										type="number"
 										fontSize="sm"
 										disabled={disabled}
 										{...rest}
@@ -113,10 +108,7 @@ const Form = ({
 										<FormControl
 											key={`${name}-${label}-${index}`}
 											id={name}
-											w={{
-												base: "auto",
-												md: "500px",
-											}}
+											maxW="500px"
 										>
 											<Controller
 												name={name}
@@ -214,10 +206,7 @@ const Form = ({
 										<FormControl
 											key={`${name}-${label}-${index}`}
 											id={name}
-											w={{
-												base: "auto",
-												md: "500px",
-											}}
+											maxW="500px"
 										>
 											<Controller
 												name={name}
@@ -270,7 +259,7 @@ const Form = ({
 									<FormControl
 										key={`${name}-${label}-${index}`}
 										id={name}
-										w={{ base: "auto", md: "500px" }}
+										maxW="500px"
 									>
 										<Controller
 											name={name}
@@ -318,7 +307,7 @@ const Form = ({
 									<FormControl
 										key={`${name}-${label}-${index}`}
 										id={name}
-										w={{ base: "auto", md: "500px" }}
+										maxW="500px"
 									>
 										<Input
 											id={name}
