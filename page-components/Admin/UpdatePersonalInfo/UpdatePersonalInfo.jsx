@@ -125,21 +125,26 @@ const UpdatePersonalInfo = () => {
 		if (agentData !== undefined) {
 			let defaultValues = {};
 			const agentName = nameSplitter(agentData.agent_name);
+
 			const marital_status = findObjectByValue(
 				marital_status_list,
 				agentData?.personal_information?.marital_status
 			);
+
 			const shop_type_value =
 				agentData?.personal_information?.shop_type ??
 				agentData?.profile?.shop_type;
-			console.log("shop_type_value", shop_type_value);
-			console.log("shopTypesData", shopTypesData);
+
 			const shop_type = findObjectByValue(shopTypesData, shop_type_value);
-			console.log("shop_type", shop_type);
+
+			const dob =
+				agentData?.personal_information?.dob ??
+				agentData?.personal_information?.date_of_birth;
+
 			defaultValues.first_name = agentName?.first_name;
 			defaultValues.middle_name = agentName?.middle_name;
 			defaultValues.last_name = agentName?.last_name;
-			defaultValues.dob = agentData?.personal_information?.dob;
+			defaultValues.dob = dob;
 			defaultValues.marital_status = marital_status;
 			defaultValues.shop_name =
 				agentData?.personal_information?.shop_name ??
