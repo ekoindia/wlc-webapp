@@ -145,7 +145,6 @@ const NetworkMenuWrapper = ({
 				force_dropdown: true,
 			},
 			is_inactive: currId == 18,
-			width: { base: "auto", md: "464px" },
 		},
 		{
 			name: "reason_input",
@@ -163,7 +162,6 @@ const NetworkMenuWrapper = ({
 					: currId == 18
 					? false
 					: true, // hack until I fix select
-			styles: { width: { base: "auto", md: "464px" } },
 		},
 	];
 
