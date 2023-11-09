@@ -62,6 +62,7 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 					size="sm"
 					top="10px"
 					zIndex="1"
+					boxShadow="0px 5px 10px 0px #00000033"
 					animation={`${fadeIn} 0.4s ease-in`}
 					onClick={() => {
 						const tabList = tabListRef.current;
@@ -119,6 +120,7 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 					top="10px"
 					zIndex="1"
 					pos="absolute"
+					boxShadow="0px 5px 10px 0px #00000033"
 					animation={`${fadeIn} 0.4s ease-in`}
 					onClick={() => {
 						const _tabList = tabListRef.current;
