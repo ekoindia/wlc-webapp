@@ -1,4 +1,4 @@
-import { Flex, FormControl, Text } from "@chakra-ui/react";
+import { FormControl, Grid, Text } from "@chakra-ui/react";
 import { Input, Radio, Select, Textarea } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
@@ -20,7 +20,7 @@ const Form = ({
 	...rest
 }) => {
 	return (
-		<Flex direction="column" gap="8" {...rest}>
+		<Grid gap="8" w="100%" {...rest}>
 			{parameter_list?.map(
 				(
 					{
@@ -38,6 +38,7 @@ const Form = ({
 						validations,
 						helperText,
 						is_inactive = false,
+						lines_min = 0,
 						visible_on_param_name,
 						visible_on_param_value,
 						...rest
@@ -264,57 +265,97 @@ const Form = ({
 							}
 							break;
 						default:
-							return (
-								<FormControl
-									key={`${name}-${label}-${index}`}
-									id={name}
-									w={{ base: "auto", md: "500px" }}
-								>
-									<Controller
-										name={name}
-										control={control}
-										defaultValue={defaultValue}
-										rules={{ ..._validations }}
-										render={({
-											field: { onChange, value },
-										}) => {
-											return (
-												<Textarea
-													{...{
-														id: name,
-														label,
-														required,
-														value,
-														disabled,
-														onChange,
-													}}
-													{...rest}
-												/>
-											);
-										}}
-									/>
-									<Text
-										fontSize="xs"
-										fontWeight="medium"
-										color={
-											errors[name]
-												? "error"
-												: "primary.dark"
-										}
+							if (lines_min > 1) {
+								return (
+									<FormControl
+										key={`${name}-${label}-${index}`}
+										id={name}
+										w={{ base: "auto", md: "500px" }}
 									>
-										{errors[name]
-											? `⚠ (${getFormErrorMessage(
-													name,
-													errors
-											  )}) ${helperText || ""}`
-											: helperText || ""}
-									</Text>
-								</FormControl>
-							);
+										<Controller
+											name={name}
+											control={control}
+											defaultValue={defaultValue}
+											rules={{ ..._validations }}
+											render={({
+												field: { onChange, value },
+											}) => {
+												return (
+													<Textarea
+														{...{
+															id: name,
+															label,
+															required,
+															value,
+															disabled,
+															onChange,
+														}}
+														{...rest}
+													/>
+												);
+											}}
+										/>
+										<Text
+											fontSize="xs"
+											fontWeight="medium"
+											color={
+												errors[name]
+													? "error"
+													: "primary.dark"
+											}
+										>
+											{errors[name]
+												? `⚠ (${getFormErrorMessage(
+														name,
+														errors
+												  )}) ${helperText || ""}`
+												: helperText || ""}
+										</Text>
+									</FormControl>
+								);
+							} else {
+								return (
+									<FormControl
+										key={`${name}-${label}-${index}`}
+										id={name}
+										w={{ base: "auto", md: "500px" }}
+									>
+										<Input
+											id={name}
+											label={label}
+											required={required}
+											value={value}
+											type="text"
+											fontSize="sm"
+											disabled={disabled}
+											{...rest}
+											{...register(name, {
+												..._validations,
+											})}
+										/>
+										<Text
+											fontSize="xs"
+											fontWeight="medium"
+											color={
+												errors[name]
+													? "error"
+													: "primary.dark"
+											}
+										>
+											{errors[name]
+												? `⚠ (${getFormErrorMessage(
+														name,
+														errors
+												  )}) ${helperText || ""}`
+												: helperText || ""}
+										</Text>
+									</FormControl>
+								);
+							}
 					}
 				}
 			)}
-		</Flex>
+		</Grid>
 	);
 };
 
