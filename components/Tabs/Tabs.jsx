@@ -5,7 +5,7 @@ import {
 	TabPanels,
 	Tabs as ChakraTabs,
 } from "@chakra-ui/react";
-import { fadeIn } from "libs/chakraKeyframes";
+import { slideInLeft, slideInRight } from "libs/chakraKeyframes";
 import { Children, useEffect, useRef, useState } from "react";
 import { IcoButton } from "..";
 
@@ -31,10 +31,10 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 	const handleScroll = () => {
 		const _tabList = tabListRef.current;
 		if (_tabList) {
-			const showLeftButton = _tabList.scrollLeft > 10;
+			const showLeftButton = _tabList.scrollLeft > 30;
 			const showRightButton =
 				_tabList.clientWidth + _tabList.scrollLeft <
-				_tabList.scrollWidth - 10;
+				_tabList.scrollWidth - 30;
 			setScrollButtonVisibility({ showLeftButton, showRightButton });
 		}
 	};
@@ -50,6 +50,7 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 			defaultIndex={+_defaultIndex}
 			py="3"
 			maxW="100%"
+			overflow="hidden"
 			variant={variant}
 			onScroll={handleScroll}
 			{...rest}
@@ -59,11 +60,17 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 					aria-label="Scroll left"
 					iconName="chevron-left"
 					pos="absolute"
+					bg="white"
+					color="primary.DEFAULT"
 					size="sm"
-					top="10px"
+					top="8px"
 					zIndex="1"
+					rounded="0"
+					h="40px"
+					w="40px"
+					borderRadius="0px 20px 20px 0px"
 					boxShadow="0px 5px 10px 0px #00000033"
-					animation={`${fadeIn} 0.4s ease-in`}
+					animation={`${slideInLeft} 0.2s ease-out`}
 					onClick={() => {
 						const tabList = tabListRef.current;
 						if (tabList) {
@@ -117,11 +124,17 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 					iconName="chevron-right"
 					size="sm"
 					right="0"
-					top="10px"
+					bg="white"
+					color="primary.DEFAULT"
+					top="8px"
 					zIndex="1"
 					pos="absolute"
+					rounded="0"
+					borderRadius="20px 0px 0px 20px"
 					boxShadow="0px 5px 10px 0px #00000033"
-					animation={`${fadeIn} 0.4s ease-in`}
+					h="40px"
+					w="40px"
+					animation={`${slideInRight} 0.4s ease-in`}
 					onClick={() => {
 						const _tabList = tabListRef.current;
 						if (_tabList) {
