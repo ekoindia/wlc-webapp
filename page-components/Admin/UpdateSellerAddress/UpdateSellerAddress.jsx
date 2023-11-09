@@ -1,16 +1,30 @@
-import { Divider, Flex, Text } from "@chakra-ui/react";
-import { Button, Headings, Switch } from "components";
+import { Box, Divider, Flex, Text, useToast } from "@chakra-ui/react";
+import { Button, Headings } from "components";
 import { Endpoints, ParamType, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
-const ownershipList = [
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
+
+const ownership_type_list = [
 	{ label: "Owned", value: "Owned" },
 	{ label: "Rented", value: "Rented" },
+	{ label: "Family Owned", value: "Family Owned" },
+	{ label: "Other", value: "Other" },
 ];
+
+const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
 
 /**
  * A UpdateSellerAddress page-component
@@ -20,17 +34,22 @@ const ownershipList = [
  */
 const UpdateSellerAddress = () => {
 	const [agentData, setAgentData] = useState();
-	const [statesList, setStatesList] = useState();
-	const [isPermanentAddress, setIsPermanentAddress] = useState(true);
+	const [statesList, setStatesList] = useState([]);
+	// const [isPermanentAddress, setIsPermanentAddress] = useState(true);
 	const { accessToken } = useSession();
+	const toast = useToast();
 
 	const {
 		handleSubmit,
 		register,
-		formState: { errors /* isSubmitting */ },
+		formState: { errors, isSubmitting },
 		control,
 		reset,
 	} = useForm();
+
+	const watcher = useWatch({ control });
+
+	const router = useRouter();
 
 	const fetchStatesList = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -69,7 +88,7 @@ const UpdateSellerAddress = () => {
 	useEffect(() => {
 		fetchStatesList();
 		const storedData = JSON.parse(
-			localStorage.getItem("network_seller_details")
+			localStorage.getItem("oth_last_selected_agent")
 		);
 		if (storedData !== undefined) {
 			setAgentData(storedData);
@@ -80,150 +99,160 @@ const UpdateSellerAddress = () => {
 
 	useEffect(() => {
 		let defaultValues = {};
+
+		const _state =
+			agentData?.state == "Delhi"
+				? "National Capital Territory of Delhi (UT)"
+				: agentData?.state;
+
+		const state = findObjectByValue(statesList, _state);
+
+		const ownership_type = findObjectByValue(
+			ownership_type_list,
+			agentData?.address_details?.ownership_type
+		);
+
 		defaultValues.address_line1 = agentData?.line_1;
 		defaultValues.address_line2 = agentData?.line_2;
 		defaultValues.pincode = agentData?.zip;
 		defaultValues.city = agentData?.city;
-		defaultValues.country_state =
-			agentData?.state == "Delhi"
-				? "National Capital Territory of Delhi (UT)"
-				: agentData?.state;
-		defaultValues.shop_ownership_type =
-			agentData?.address_details?.ownership_type;
+		defaultValues.country_state = state;
+		defaultValues.country = "India";
+		defaultValues.shop_ownership_type = ownership_type;
 
 		reset({ ...defaultValues });
-	}, [agentData]);
+	}, [agentData, statesList]);
 
 	const handleFormSubmit = (submittedData) => {
+		const keysToFlatten = ["country_state", "shop_ownership_type"];
+
 		const finalData = Object.entries(submittedData).reduce(
 			(acc, [key, value]) => {
-				if (value !== undefined && value !== "") {
-					acc[key] = value;
+				if (keysToFlatten.includes(key)) {
+					if (value?.value !== undefined && value?.value !== "") {
+						acc[key] = value.value;
+					}
+				} else {
+					if (value !== undefined && value !== "") {
+						acc[key] = value;
+					}
 				}
 				return acc;
 			},
 			{}
 		);
 
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"Content-type": "application/json",
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agents/profile/address/update",
-				"tf-req-method": "PUT",
-			},
-			body: finalData,
-			token: accessToken,
-		})
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
+			{
+				headers: {
+					"tf-req-uri-root-path": "/ekoicici/v1",
+					"tf-req-uri": "/network/agents/profile/address/update",
+					"tf-req-method": "POST",
+				},
+				body: { ...finalData, merchant_code: agentData?.eko_code },
+				token: accessToken,
+			}
+		)
 			.then((response) => {
-				console.log(response);
+				toast({
+					title: response?.message,
+					status: getStatus(response?.status),
+					duration: 2000,
+					isClosable: true,
+				});
+
+				if (response?.status == 0) {
+					router.push(
+						"/admin/my-network/profile?mobile=" +
+							agentData.agent_mobile
+					);
+				}
 			})
 			.catch((error) => {
 				console.log(error);
 			});
 	};
 
-	const currentAddressFormFields = [
+	const current_address_parameter_list = [
 		{
 			name: "address_line1",
 			label: "Address Line 1",
-			required: true,
-			parameter_type_id: ParamType.TEXT,
 		},
 		{
 			name: "address_line2",
 			label: "Address Line 2",
 			required: false,
-			parameter_type_id: ParamType.TEXT,
 		},
 		{
 			name: "pincode",
 			label: "Postel Code",
-			required: true,
 			parameter_type_id: ParamType.NUMERIC,
+			step: "1",
+			maxLength: 6,
 		},
 		{
 			name: "city",
 			label: "City",
-			required: true,
-			parameter_type_id: ParamType.TEXT,
 		},
 		{
 			name: "country_state",
 			label: "State",
-			required: true,
 			parameter_type_id: ParamType.LIST,
 			list_elements: statesList,
 		},
 		{
 			name: "country",
 			label: "Country",
-			required: true,
-			parameter_type_id: ParamType.TEXT,
 			disabled: true,
-			value: "India",
 		},
 		{
 			name: "shop_ownership_type",
 			label: "Ownership Type",
-			required: true,
 			parameter_type_id: ParamType.LIST,
-			list_elements: ownershipList,
+			list_elements: ownership_type_list,
 		},
 	];
 
-	const permanentAddressFormFields = [
-		{
-			name: "permanent_address_line1",
-			label: "Address Line 1",
-			required: true,
-			parameter_type_id: ParamType.TEXT,
-		},
-		{
-			name: "permanent_address_line2",
-			label: "Address Line 2",
-			required: false,
-			parameter_type_id: ParamType.TEXT,
-		},
-		{
-			name: "permanent_address_pincode",
-			label: "Postel Code",
-			required: true,
-			parameter_type_id: ParamType.NUMERIC,
-		},
-		{
-			name: "permanent_address_city",
-			label: "City",
-			required: true,
-			parameter_type_id: ParamType.TEXT,
-		},
-		{
-			name: "permanent_address_state",
-			label: "State",
-			required: true,
-			parameter_type_id: ParamType.LIST,
-			list_elements: statesList,
-		},
-		{
-			name: "permanent_address_country",
-			label: "Country",
-			required: true,
-			parameter_type_id: ParamType.TEXT,
-			disabled: true,
-			value: "India",
-		},
-		{
-			name: "permanent_address_shop_ownership_type",
-			label: "Ownership Type",
-			required: true,
-			parameter_type_id: ParamType.LIST,
-			list_elements: ownershipList,
-		},
-	];
-
-	// if (agentData == undefined) {
-	// 	return <div>Loading...</div>;
-	// }
+	// const permanentAddressFormFields = [
+	// 	{
+	// 		name: "permanent_address_line1",
+	// 		label: "Address Line 1",
+	// 	},
+	// 	{
+	// 		name: "permanent_address_line2",
+	// 		label: "Address Line 2",
+	// 		required: false,
+	// 	},
+	// 	{
+	// 		name: "permanent_address_pincode",
+	// 		label: "Postel Code",
+	// 		parameter_type_id: ParamType.NUMERIC,
+	// 		step: "1",
+	// 	},
+	// 	{
+	// 		name: "permanent_address_city",
+	// 		label: "City",
+	// 	},
+	// 	{
+	// 		name: "permanent_address_state",
+	// 		label: "State",
+	// 		parameter_type_id: ParamType.LIST,
+	// 		list_elements: statesList,
+	// 	},
+	// 	{
+	// 		name: "permanent_address_country",
+	// 		label: "Country",
+	// 		disabled: true,
+	// 		value: "India",
+	// 	},
+	// 	{
+	// 		name: "permanent_address_shop_ownership_type",
+	// 		label: "Ownership Type",
+	// 		parameter_type_id: ParamType.LIST,
+	// 		list_elements: ownership_type_list,
+	// 	},
+	// ];
 
 	return (
 		<>
@@ -236,6 +265,7 @@ const UpdateSellerAddress = () => {
 				p={{ base: "16px", md: "30px 30px 20px" }}
 				gap="4"
 				fontSize="sm"
+				mt={{ base: "-10px", md: "0" }}
 			>
 				<Flex direction="column" gap="2">
 					<Text
@@ -245,16 +275,11 @@ const UpdateSellerAddress = () => {
 					>
 						{agentData?.agent_name}
 					</Text>
-					{/* <span>
-						Edit the fields below and click Preview. Click Cancel to
-						return to Client HomePage without submitting
-						information.
-					</span> */}
 				</Flex>
 				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
 
-			<Flex direction="column" px={{ base: "20px", md: "0" }}>
+			<Box px={{ base: "20px", md: "0" }} mb="16">
 				<Flex
 					direction="column"
 					w="100%"
@@ -269,13 +294,24 @@ const UpdateSellerAddress = () => {
 							<Form
 								{...{
 									register,
-									formState: { errors /* isSubmitting */ },
 									control,
-									parameter_list: currentAddressFormFields,
+									formValues: watcher,
+									parameter_list:
+										current_address_parameter_list,
+									errors,
+									templateColumns: {
+										base: "1fr",
+										lg: "repeat(auto-fit,minmax(500px,1fr))",
+									},
+									columnGap: 2,
+									width: {
+										base: "100%",
+										lg: "90%",
+									},
 								}}
 							/>
 
-							<Flex align="center" gap="8">
+							{/* <Flex align="center" gap="8">
 								<Text fontSize="sm" fontWeight="semibold">
 									Is your permanent address is same as above ?
 								</Text>
@@ -292,33 +328,46 @@ const UpdateSellerAddress = () => {
 										addressFormLabel: "Permanent Address",
 										register,
 										formState: {
-											errors /* isSubmitting */,
+											errors,
 										},
 										control,
 										parameter_list:
 											permanentAddressFormFields,
 									}}
 								/>
-							)}
+							)} */}
 
 							<Flex
-								direction={{ base: "column", md: "row" }}
-								gap={{ base: "4", md: "16" }}
+								direction={{ base: "row-reverse", md: "row" }}
+								w={{ base: "100%", md: "500px" }}
+								position={{ base: "fixed", md: "initial" }}
+								gap={{ base: "0", md: "16" }}
+								align="center"
+								bottom="0"
+								left="0"
 							>
 								<Button
-									h="64px"
-									fontWeight="bold"
-									w={{ base: "100%", md: "140px" }}
 									type="submit"
-								>
-									Save Changes
-								</Button>
-								<Button
+									size="lg"
 									h="64px"
-									variant="link"
-									color="primary.DEFAULT"
+									w={{ base: "100%", md: "200px" }}
 									fontWeight="bold"
+									borderRadius={{ base: "none", md: "10" }}
+									loading={isSubmitting}
+								>
+									Save
+								</Button>
+
+								<Button
+									h={{ base: "64px", md: "auto" }}
+									w={{ base: "100%", md: "initial" }}
+									bg={{ base: "white", md: "none" }}
+									variant="link"
+									fontWeight="bold"
+									color="primary.DEFAULT"
 									_hover={{ textDecoration: "none" }}
+									borderRadius={{ base: "none", md: "10" }}
+									onClick={() => router.back()}
 								>
 									Cancel
 								</Button>
@@ -326,7 +375,7 @@ const UpdateSellerAddress = () => {
 						</Flex>
 					</form>
 				</Flex>
-			</Flex>
+			</Box>
 		</>
 	);
 };
