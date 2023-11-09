@@ -134,7 +134,7 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 					boxShadow="0px 5px 10px 0px #00000033"
 					h="40px"
 					w="40px"
-					animation={`${slideInRight} 0.4s ease-in`}
+					animation={`${slideInRight} 0.2s ease-out`}
 					onClick={() => {
 						const _tabList = tabListRef.current;
 						if (_tabList) {
