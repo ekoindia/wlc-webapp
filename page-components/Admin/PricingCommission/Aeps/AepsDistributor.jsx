@@ -232,7 +232,7 @@ const AepsDistributor = () => {
 						type="submit"
 						size="lg"
 						h="64px"
-						w={{ base: "100%", md: "250px" }}
+						w={{ base: "100%", md: "200px" }}
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
 						loading={isSubmitting}

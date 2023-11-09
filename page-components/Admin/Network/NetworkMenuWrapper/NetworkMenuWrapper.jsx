@@ -151,6 +151,7 @@ const NetworkMenuWrapper = ({
 			name: "reason_input",
 			label: "Additional Details",
 			required: true,
+			lines_min: 3,
 			// visible_on_param_name: "reason",
 			// visible_on_param_value: /999/, // Ideally this should be the code, need to fix select return value
 			validations: {
