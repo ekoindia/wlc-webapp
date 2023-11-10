@@ -41,4 +41,9 @@ export { transactions_mock } from "./transactions_mock";
 export { transaction_history_mock } from "./transaction_history_mock";
 export { DisplayMedia, ParamMeta, ParamType } from "./trxnFramework";
 export { UserType, UserTypeLabel } from "./UserTypes";
-export { baseRoute, initialRoute, publicLinks } from "./validRoutes";
+export {
+	baseRoute,
+	initialRoute,
+	publicLinks,
+	publicOnlyLinks,
+} from "./validRoutes";
