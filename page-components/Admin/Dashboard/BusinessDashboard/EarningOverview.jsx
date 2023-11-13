@@ -120,7 +120,11 @@ const EarningOverview = ({ data }) => {
 										}}
 										gap="1"
 									>
-										<Text fontSize="sm" textAlign="center">
+										<Text
+											fontSize="sm"
+											textAlign="center"
+											whiteSpace="nowrap"
+										>
 											{item.label}
 										</Text>
 										<Flex
