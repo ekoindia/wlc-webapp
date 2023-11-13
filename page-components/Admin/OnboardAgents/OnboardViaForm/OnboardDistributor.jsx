@@ -3,6 +3,7 @@ import { Button, Input } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useRouter } from "next/router";
 import { useFieldArray, useForm } from "react-hook-form";
 import { getFormErrorMessage } from "utils";
 
@@ -31,6 +32,7 @@ const OnboardDistributor = ({ applicantType, setResponse }) => {
 	});
 
 	const { accessToken } = useSession();
+	const router = useRouter();
 
 	const handleFormSubmit = (data) => {
 		fetcher(
@@ -149,6 +151,20 @@ const OnboardDistributor = ({ applicantType, setResponse }) => {
 						loading={isSubmitting}
 					>
 						Save
+					</Button>
+
+					<Button
+						h={{ base: "64px", md: "auto" }}
+						w={{ base: "100%", md: "initial" }}
+						bg={{ base: "white", md: "none" }}
+						variant="link"
+						fontWeight="bold"
+						color="primary.DEFAULT"
+						_hover={{ textDecoration: "none" }}
+						borderRadius={{ base: "none", md: "10" }}
+						onClick={() => router.back()}
+					>
+						Cancel
 					</Button>
 
 					{/* <Button

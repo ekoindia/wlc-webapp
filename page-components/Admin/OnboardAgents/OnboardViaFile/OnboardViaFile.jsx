@@ -2,6 +2,7 @@ import { Box, Flex, Link } from "@chakra-ui/react";
 import { Button, Dropzone, Icon, InputLabel, Radio } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { OnboardAgentResponse } from "..";
 
@@ -36,6 +37,7 @@ const OnboardViaFile = () => {
 	// const [loading, setLoading] = useState(false);
 	const [applicantType, setApplicantType] = useState("0");
 	const { accessToken /* , userId, userCode */ } = useSession();
+	const router = useRouter();
 
 	const handleFileUpload = () => {
 		const formDataObj = {
@@ -142,6 +144,19 @@ const OnboardViaFile = () => {
 							disabled={file === null || file === undefined}
 						>
 							Upload
+						</Button>
+						<Button
+							h={{ base: "64px", md: "auto" }}
+							w={{ base: "100%", md: "initial" }}
+							bg={{ base: "white", md: "none" }}
+							variant="link"
+							fontWeight="bold"
+							color="primary.DEFAULT"
+							_hover={{ textDecoration: "none" }}
+							borderRadius={{ base: "none", md: "10" }}
+							onClick={() => router.back()}
+						>
+							Cancel
 						</Button>
 					</Flex>
 				</Flex>
