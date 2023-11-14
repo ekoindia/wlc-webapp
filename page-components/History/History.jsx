@@ -1,23 +1,19 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
+import { Headings, Icon, PrintReceipt } from "components";
 import {
-	Button,
-	Calenders,
-	Headings,
-	Icon,
-	Input,
-	Menus,
-	Modal,
-	PrintReceipt,
-	SearchBar,
-} from "components";
-import { Endpoints, tableRowLimit, TransactionTypes } from "constants";
+	Endpoints,
+	ParamType,
+	tableRowLimit,
+	TransactionTypes,
+} from "constants";
 import { useGlobalSearch, useSession, useUser } from "contexts";
-import { fetcher } from "helpers/apiHelper";
+import { fetcher } from "helpers";
 import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { saveDataToFile } from "utils/FileSave";
-import { HistoryTable } from ".";
+import { HistoryTable, HistoryToolbar } from ".";
 
 const limit = tableRowLimit?.XLARGE; // Page size
 
@@ -29,6 +25,17 @@ const limit = tableRowLimit?.XLARGE; // Page size
  * @example	`<History></History>` TODO: Fix example
  */
 const History = () => {
+	const {
+		// handleSubmit,
+		register,
+		control,
+		formState: { errors, isSubmitting },
+	} = useForm();
+
+	const watcher = useWatch({
+		control,
+	});
+
 	const formElements = {
 		tid: "",
 		account: "",
@@ -172,6 +179,45 @@ const History = () => {
 		}));
 	};
 
+	const history_filter_parameter_list = [
+		{
+			name: "tid",
+			label: "TID",
+			parameter_type_id: ParamType.NUMERIC,
+		},
+		{
+			name: "account",
+			label: "Account Number",
+			parameter_type_id: ParamType.NUMERIC,
+		},
+		{
+			name: "customer_mobile",
+			label: "Customer Mobile No.",
+			parameter_type_id: ParamType.NUMERIC,
+		},
+		{
+			name: "start_date",
+			label: "From",
+			parameter_type_id: ParamType.NUMERIC,
+		},
+		{
+			name: "tx_date",
+			label: "To",
+			parameter_type_id: ParamType.NUMERIC,
+		},
+		{
+			name: "amount",
+			label: "Amount",
+			parameter_type_id: ParamType.NUMERIC,
+			inputLeftElement: <Icon name="rupee" size="sm" color="light" />,
+		},
+		{
+			name: "rr_no",
+			label: "Tracking Number",
+			parameter_type_id: ParamType.NUMERIC,
+		},
+	];
+
 	/**
 	 * Search for a transaction based on the query. The query can be a transaction-id, account, amount, or, a mobile number.
 	 * @param {*} search
@@ -307,6 +353,12 @@ const History = () => {
 			>
 				<HistoryToolbar
 					{...{
+						form_parameter_list: history_filter_parameter_list,
+						formValues: watcher,
+						register,
+						control,
+						errors,
+						isSubmitting,
 						activePillIndex,
 						pillsData,
 						handlePillClick,
@@ -376,202 +428,3 @@ function Pill({ name, activePillIndex, index }) {
 	);
 }
 */
-
-const HistoryToolbar = ({
-	// activePillIndex,
-	// pillsData,
-	// handlePillClick,
-	searchValue,
-	onSearchSubmit,
-	clear,
-	handleChange,
-	formState,
-	isOpen,
-	onOpen,
-	onClose,
-	onFilterSubmit,
-	onFilterClear,
-	onReportDownload,
-}) => {
-	const labelStyle = {
-		fontSize: { base: "sm" },
-		// color: "inputlabel",
-	};
-
-	const menuList = [
-		{
-			id: 1,
-			value: "xlsx",
-			label: "Download Report(Excel)",
-			onClick: (value) => {
-				onReportDownload(value);
-			},
-		},
-		{
-			id: 2,
-			value: "pdf",
-			label: "Download Report(Pdf)",
-			onClick: (value) => {
-				onReportDownload(value);
-			},
-		},
-	];
-
-	return (
-		<Flex
-			justifyContent={"space-between"}
-			direction={{ base: "column-reverse", lg: "row" }}
-			alignItems={{ base: "none", lg: "center" }}
-			sx={{
-				"@media print": {
-					display: "none !important",
-				},
-			}}
-		>
-			{/* <===========================Toggles Button ===============================> */}
-			{/* <Flex gap="8px" overflowX="auto" mt={{ base: "40px", lg: "0px" }}>
-                            {pillsData.map((pill, index) => (
-                                <Box key={index} onClick={() => handlePillClick(index)}>
-                                    <Pill
-                                        name={pill.name}
-                                        activePillIndex={activePillIndex}
-                                        index={index}
-                                    />
-                                </Box>
-                            ))}
-                        </Flex> */}
-			<Flex w="100%" gap="2" justify="flex-end" align="center">
-				{/* <==========Clear Filter Button =========> */}
-				{clear && (
-					<Button
-						size="xs"
-						variant="link"
-						onClick={onFilterClear}
-						_hover={{ TextDecoration: "none" }}
-					>
-						Clear Filter
-					</Button>
-				)}
-
-				{/* <==========Search =========> */}
-				<SearchBar
-					type="number"
-					placeholder="Search by TID, Mobile, Account, etc"
-					value={searchValue}
-					setSearch={onSearchSubmit}
-					minSearchLimit={2}
-				/>
-
-				{/* <==========Filter Button =========> */}
-				<Button
-					size="lg"
-					_hover={{ bg: "primary.DEFAULT" }}
-					onClick={onOpen}
-				>
-					<Icon name="filter" width="18px" />
-					&nbsp;
-					<Text display={{ base: "none", md: "flex" }}>Filter</Text>
-				</Button>
-
-				{/* <========== Export Reports =========> */}
-				<Menus
-					as={Button}
-					type="everted"
-					size="lg"
-					title="Export"
-					menulist={menuList}
-					iconPos="left"
-					iconName="file-download"
-					iconStyles={{ width: "18px" }}
-					rounded="10px"
-					_hover={{ bg: "primary.DEFAULT" }}
-					listStyles={{
-						width: "250px",
-						fontSize: "20px",
-					}}
-				/>
-
-				{/* <===================Filter Modal Code ==========================> */}
-				<Modal
-					isOpen={isOpen}
-					onClose={onClose}
-					title="Filter"
-					submitText="Apply Now"
-					isCentered={{ base: false, lg: true }}
-					onSubmit={onFilterSubmit}
-					motionPreset="slideInBottom"
-					scrollBehavior="inside"
-				>
-					<form>
-						<Flex direction="column" gap="1">
-							<Input
-								label="TID"
-								name="tid"
-								type="number"
-								labelStyle={labelStyle}
-								value={formState.tid}
-								onChange={handleChange}
-							/>
-
-							<Input
-								label="Account Number"
-								name="account"
-								type="number"
-								labelStyle={labelStyle}
-								value={formState.account}
-								onChange={handleChange}
-							/>
-							<Input
-								label="Customer Mobile No."
-								name="customer_mobile"
-								type="number"
-								labelStyle={labelStyle}
-								value={formState.customer_mobile}
-								onChange={handleChange}
-							/>
-							<Calenders
-								label="From"
-								name="start_date"
-								labelStyle={labelStyle}
-								value={formState.start_date}
-								onChange={handleChange}
-								mb={{ base: 2, "2xl": "1rem" }}
-							/>
-							<Calenders
-								label="To"
-								name="tx_date"
-								labelStyle={labelStyle}
-								value={formState.tx_date}
-								onChange={handleChange}
-								mb={{ base: 2, "2xl": "1rem" }}
-							/>
-							<Input
-								label="Amount"
-								name="amount"
-								type="number"
-								labelStyle={labelStyle}
-								value={formState.amount}
-								onChange={handleChange}
-								inputLeftElement={
-									<Icon
-										name="rupee"
-										height="14px"
-										color="light"
-									/>
-								}
-							/>
-							<Input
-								label="Tracking Number"
-								name="rr_no"
-								labelStyle={labelStyle}
-								value={formState.rr_no}
-								onChange={handleChange}
-								type="number"
-							/>
-						</Flex>
-					</form>
-				</Modal>
-			</Flex>
-		</Flex>
-	);
-};
