@@ -7,7 +7,6 @@ export const saveDataToFile = (data, filename, type, is_b64) => {
 		data = b64toByteArrays(data);
 	}
 	const file = new Blob(data, { type: type });
-	console.log("file", file);
 
 	if (window.navigator.msSaveOrOpenBlob) {
 		// IE10+
