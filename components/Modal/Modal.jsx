@@ -1,5 +1,5 @@
 import {
-	Modal,
+	Modal as ChakraModal,
 	ModalBody,
 	ModalCloseButton,
 	ModalContent,
@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Button } from "components";
 
-const CommonModal = ({
+const Modal = ({
 	isOpen,
 	onClose,
 	title,
@@ -20,20 +20,26 @@ const CommonModal = ({
 	disabled,
 }) => {
 	return (
-		<Modal isOpen={isOpen} onClose={onClose}>
+		<ChakraModal isOpen={isOpen} onClose={onClose}>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>{title}</ModalHeader>
 				<ModalCloseButton />
 				<ModalBody>{children}</ModalBody>
-				<ModalFooter>
-					<Button onClick={onSubmit} isDisabled={disabled} w="100%">
-						{disabled ? <Spinner /> : submitText}
-					</Button>
-				</ModalFooter>
+				{onSubmit && (
+					<ModalFooter>
+						<Button
+							onClick={onSubmit}
+							isDisabled={disabled}
+							w="100%"
+						>
+							{disabled ? <Spinner /> : submitText}
+						</Button>
+					</ModalFooter>
+				)}
 			</ModalContent>
-		</Modal>
+		</ChakraModal>
 	);
 };
 
-export default CommonModal;
+export default Modal;
