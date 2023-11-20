@@ -69,7 +69,6 @@ export const products = {
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "1",
-			min_pricing_value: "1.71",
 		},
 	},
 	CARD_PAYMENT: {
