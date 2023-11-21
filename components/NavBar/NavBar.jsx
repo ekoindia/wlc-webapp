@@ -430,6 +430,9 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 												router.push(
 													`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
 												);
+												if (setIsCardOpen) {
+													setIsCardOpen(false);
+												}
 											}}
 											iconName="mode-edit"
 										/>
