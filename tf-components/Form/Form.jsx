@@ -1,5 +1,5 @@
 import { FormControl, Grid, Text } from "@chakra-ui/react";
-import { Input, Radio, Select, Textarea } from "components";
+import { Calenders, Input, Radio, Select, Textarea } from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
 import { getFormErrorMessage } from "utils";
@@ -82,6 +82,104 @@ const Form = ({
 										{...register(name, {
 											..._validations,
 										})}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+											  )}) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
+							);
+						case ParamType.FROM_DATE:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({
+											field: { onChange, value },
+										}) => (
+											<Calenders
+												{...{
+													id: name,
+													label,
+													value,
+													onChange,
+													required,
+													disabled,
+												}}
+												{...rest}
+												{...register(name, {
+													..._validations,
+												})}
+											/>
+										)}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors[name]
+												? "error"
+												: "primary.dark"
+										}
+									>
+										{errors[name]
+											? `⚠ (${getFormErrorMessage(
+													name,
+													errors
+											  )}) ${helperText || ""}`
+											: helperText || ""}
+									</Text>
+								</FormControl>
+							);
+						case ParamType.TO_DATE:
+							return (
+								<FormControl
+									key={`${name}-${label}-${index}`}
+									id={name}
+									maxW="500px"
+								>
+									<Controller
+										name={name}
+										control={control}
+										defaultValue={defaultValue}
+										rules={{ ..._validations }}
+										render={({
+											field: { onChange, value },
+										}) => (
+											<Calenders
+												{...{
+													id: name,
+													label,
+													value,
+													onChange,
+													required,
+													disabled,
+												}}
+												{...rest}
+												{...register(name, {
+													..._validations,
+												})}
+											/>
+										)}
 									/>
 									<Text
 										fontSize="xs"
