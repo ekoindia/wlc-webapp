@@ -20,7 +20,7 @@ const baseStyle = definePartsStyle({
 	},
 });
 
-//Base Variant
+//Default Variant
 const defaultVariant = definePartsStyle({
 	tab: {
 		pos: "relative",
