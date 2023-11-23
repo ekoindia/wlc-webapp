@@ -8,6 +8,7 @@ import {
 } from "constants";
 import { useGlobalSearch, useSession, useUser } from "contexts";
 import { fetcher } from "helpers";
+import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -23,12 +24,12 @@ const action = {
 
 const export_type_options = [
 	{
-		value: "xlsx",
-		label: "Download Report(Excel)",
+		value: "pdf",
+		label: "PDF",
 	},
 	{
-		value: "pdf",
-		label: "Download Report(Pdf)",
+		value: "xlsx",
+		label: "Excel",
 	},
 ];
 
@@ -40,28 +41,6 @@ const export_type_options = [
  * @example	`<History></History>` TODO: Fix example
  */
 const History = () => {
-	const {
-		handleSubmit: handleSubmitFilter,
-		register: registerFilter,
-		control: controlFilter,
-		formState: { errors: errorsFilter, isSubmitting: isSubmittingFilter },
-	} = useForm();
-
-	const {
-		handleSubmit: handleSubmitExport,
-		register: registerExport,
-		control: controlExport,
-		formState: { errors: errorsExport, isSubmitting: isSubmittingExport },
-	} = useForm();
-
-	const watcherFilter = useWatch({
-		control: controlFilter,
-	});
-
-	const watcherExport = useWatch({
-		control: controlExport,
-	});
-
 	const formElements = {
 		tid: "",
 		account: "",
@@ -85,6 +64,42 @@ const History = () => {
 	const [clear, setClear] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
+
+	const [today] = useState(new Date());
+	const [yesterday] = useState(() => {
+		const _yesterday = new Date();
+		_yesterday.setDate(_yesterday.getDate() - 1);
+		return _yesterday;
+	});
+
+	const {
+		handleSubmit: handleSubmitFilter,
+		register: registerFilter,
+		control: controlFilter,
+		formState: { errors: errorsFilter, isSubmitting: isSubmittingFilter },
+	} = useForm();
+
+	const {
+		handleSubmit: handleSubmitExport,
+		register: registerExport,
+		control: controlExport,
+		formState: { errors: errorsExport, isSubmitting: isSubmittingExport },
+		reset: resetExport,
+	} = useForm({
+		defaultValues: {
+			reporttype: "pdf",
+			start_date: formatDate(yesterday, "yyyy-MM-dd"),
+			tx_date: formatDate(today, "yyyy-MM-dd"),
+		},
+	});
+
+	const watcherFilter = useWatch({
+		control: controlFilter,
+	});
+
+	const watcherExport = useWatch({
+		control: controlExport,
+	});
 
 	const history_filter_parameter_list = [
 		{
@@ -114,7 +129,7 @@ const History = () => {
 		{
 			name: "start_date",
 			label: "From",
-			parameter_type_id: ParamType.NUMERIC,
+			parameter_type_id: ParamType.FROM_DATE,
 			validations: {
 				required: false,
 			},
@@ -122,7 +137,7 @@ const History = () => {
 		{
 			name: "tx_date",
 			label: "To",
-			parameter_type_id: ParamType.NUMERIC,
+			parameter_type_id: ParamType.TO_DATE,
 			validations: {
 				required: false,
 			},
@@ -169,7 +184,7 @@ const History = () => {
 		if (e) {
 			quickSearch(e);
 		}
-		console.log("search value", e);
+		// console.log("search value", e);
 	}
 
 	const hitQuery = (abortController, key) => {
@@ -247,7 +262,6 @@ const History = () => {
 				...{ tid, account, customer_mobile, amount },
 			});
 
-			// onClose();
 			setOpenModalId(null);
 			setClear(true);
 			return;
@@ -278,14 +292,11 @@ const History = () => {
 			[type]: search,
 		});
 
-		// onClose();
 		setOpenModalId(null);
 		setClear(true);
 	};
 
 	const onFilterSubmit = (data) => {
-		console.log("hitQuery inside onFilterSubmit", data);
-
 		// Get all non-empty values from formState and set in finalFormState
 		const _finalFormState = {};
 		Object.keys(data).forEach((key) => {
@@ -295,7 +306,11 @@ const History = () => {
 		});
 		setFinalFormState(_finalFormState);
 
-		// onClose();
+		resetExport({
+			..._finalFormState,
+			reporttype: watcherExport.reporttype,
+		});
+
 		setOpenModalId(null);
 		setClear(true);
 	};
@@ -308,32 +323,7 @@ const History = () => {
 	};
 
 	const onReportDownload = (data) => {
-		console.log("inside onReportDownload data", data);
-
-		// onClose();
 		setOpenModalId(null);
-
-		// const currentDate = new Date();
-		// const formattedDate = formatDate(currentDate, "yyyy-MM-dd");
-
-		const isNonEmpty = (data) => data !== "";
-
-		// Filter the keys in finalFormState based on non-empty values
-		const nonEmptyValues = Object.keys(data).filter((key) =>
-			isNonEmpty(data[key])
-		);
-
-		// Create a new object with the non-empty values
-		const filterParameter = {};
-		nonEmptyValues.forEach((key) => {
-			filterParameter[key] = finalFormState[key];
-		});
-
-		// Add current date if tx_date is not selected in filter by default
-		// ? default one day if nothing
-		// if (!filterParameter["tx_date"] !== undefined) {
-		// 	filterParameter.tx_date = formattedDate;
-		// }
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
@@ -391,7 +381,7 @@ const History = () => {
 				...history_filter_parameter_list,
 				{
 					name: "reporttype",
-					label: "Export Type",
+					label: "Download Report as",
 					parameter_type_id: ParamType.LIST,
 					list_elements: export_type_options,
 				},
