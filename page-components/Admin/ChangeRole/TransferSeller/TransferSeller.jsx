@@ -99,7 +99,7 @@ const TransferSeller = ({
 				"tf-req-method": "GET",
 			},
 			(res) => {
-				const _distributor = res?.data?.csp_list;
+				const _distributor = res?.data?.csp_list ?? [];
 				setDistributors(_distributor);
 			}
 		);
