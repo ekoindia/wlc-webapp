@@ -41,6 +41,8 @@ const Form = ({
 						lines_min = 0,
 						visible_on_param_name,
 						visible_on_param_value,
+						minDate,
+						maxDate,
 						...rest
 					},
 					index
@@ -121,6 +123,8 @@ const Form = ({
 													id: name,
 													label,
 													value,
+													minDate,
+													maxDate,
 													onChange,
 													required,
 													disabled,
@@ -170,6 +174,8 @@ const Form = ({
 													id: name,
 													label,
 													value,
+													minDate,
+													maxDate,
 													onChange,
 													required,
 													disabled,
