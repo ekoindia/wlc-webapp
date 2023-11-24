@@ -71,9 +71,12 @@ const HistoryToolbar = ({
 									)
 								}
 							>
-								<Icon name={icon} width="sm" />
+								<Icon name={icon} size="sm" />
 								&nbsp;
-								<Text display={{ base: "none", md: "flex" }}>
+								<Text
+									display={{ base: "none", md: "flex" }}
+									fontSize="md"
+								>
 									{label}
 								</Text>
 							</Button>
