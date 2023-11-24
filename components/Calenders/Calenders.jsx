@@ -95,7 +95,6 @@ const Calenders = forwardRef(
 										md: "sm",
 									}}
 									w="100%"
-									color="light"
 									lineHeight="normal"
 								>
 									{value || "YYYY-MM-DD"}
