@@ -33,8 +33,7 @@ const Table = ({
 	tableRowLimit = trl?.DEFAULT,
 	printExpansion = true, // Print only the expanded card (when expanded), otherwise nothing
 }) => {
-	const [hasNoMoreItems, setHasNoMoreItems] = useState(false);
-	console.log("hasNoMoreItems", hasNoMoreItems);
+	const [, setHasNoMoreItems] = useState(false);
 	const router = useRouter();
 	const [isSmallScreen] = useMediaQuery("only screen and (max-width: 860px)");
 	// const isSmallScreen = useBreakpointValue({ base: true, lg: false });
