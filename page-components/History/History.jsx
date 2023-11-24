@@ -161,24 +161,6 @@ const History = () => {
 		},
 	];
 
-	// Set GlobalSearch title
-	useEffect(() => {
-		setSearchTitle("Search by TID, Mobile, Account, etc");
-		return () => {
-			setSearchTitle("");
-		};
-	}, []);
-
-	// Search for a transaction based on the parameter query "search".
-	// The query can be a transaction-id, account, amount,
-	// or, a mobile number.
-	useEffect(() => {
-		const { search, ...others } = router.query;
-		if (search || others) {
-			quickSearch(search, others);
-		}
-	}, [router.query]);
-
 	function onSearchSubmit(e) {
 		setSearchValue(e);
 		if (e) {
@@ -220,27 +202,6 @@ const History = () => {
 				setLoading(false);
 			});
 	};
-
-	// Fetch transaction history when the following change: currentPage, finalFormState
-	useEffect(() => {
-		console.log("[History] fetch init", currentPage, finalFormState);
-
-		const controller = new AbortController();
-		hitQuery(
-			controller,
-			`${currentPage}-${JSON.stringify(finalFormState)}`
-		);
-
-		return () => {
-			console.log(
-				"[History] fetch aborted... ",
-				currentPage,
-				JSON.stringify(finalFormState),
-				controller
-			);
-			controller.abort();
-		};
-	}, [currentPage, finalFormState]);
 
 	/**
 	 * Search for a transaction based on the query. The query can be a transaction-id, account, amount, or, a mobile number.
@@ -397,6 +358,45 @@ const History = () => {
 			submitButtonText: "Export",
 		},
 	];
+
+	// Set GlobalSearch title
+	useEffect(() => {
+		setSearchTitle("Search by TID, Mobile, Account, etc");
+		return () => {
+			setSearchTitle("");
+		};
+	}, []);
+
+	// Search for a transaction based on the parameter query "search".
+	// The query can be a transaction-id, account, amount,
+	// or, a mobile number.
+	useEffect(() => {
+		const { search, ...others } = router.query;
+		if (search || others) {
+			quickSearch(search, others);
+		}
+	}, [router.query]);
+
+	// Fetch transaction history when the following change: currentPage, finalFormState
+	useEffect(() => {
+		console.log("[History] fetch init", currentPage, finalFormState);
+
+		const controller = new AbortController();
+		hitQuery(
+			controller,
+			`${currentPage}-${JSON.stringify(finalFormState)}`
+		);
+
+		return () => {
+			console.log(
+				"[History] fetch aborted... ",
+				currentPage,
+				JSON.stringify(finalFormState),
+				controller
+			);
+			controller.abort();
+		};
+	}, [currentPage, finalFormState]);
 
 	return (
 		<>
