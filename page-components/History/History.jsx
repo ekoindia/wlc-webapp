@@ -64,12 +64,25 @@ const History = () => {
 	const [clear, setClear] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
+	const [minDateFilter, setMinDateFilter] = useState(null);
+	const [maxDateFilter, setMaxDateFilter] = useState(() => {
+		const _today = new Date();
+		return formatDate(_today, "yyyy-MM-dd");
+	});
+	const [minDateExport, setMinDateExport] = useState(null);
+	const [maxDateExport, setMaxDateExport] = useState(() => {
+		const _today = new Date();
+		return formatDate(_today, "yyyy-MM-dd");
+	});
 
-	const [today] = useState(new Date());
-	const [yesterday] = useState(() => {
-		const _yesterday = new Date();
-		_yesterday.setDate(_yesterday.getDate() - 1);
-		return _yesterday;
+	const [today] = useState(() => {
+		const _today = new Date();
+		return formatDate(_today, "yyyy-MM-dd");
+	});
+	const [oneWeekBefore] = useState(() => {
+		const _oneWeekBefore = new Date();
+		_oneWeekBefore.setDate(_oneWeekBefore.getDate() - 7);
+		return formatDate(_oneWeekBefore, "yyyy-MM-dd");
 	});
 
 	const {
@@ -88,8 +101,8 @@ const History = () => {
 	} = useForm({
 		defaultValues: {
 			reporttype: "pdf",
-			start_date: formatDate(yesterday, "yyyy-MM-dd"),
-			tx_date: formatDate(today, "yyyy-MM-dd"),
+			start_date: oneWeekBefore,
+			tx_date: today,
 		},
 	});
 
@@ -130,6 +143,12 @@ const History = () => {
 			name: "start_date",
 			label: "From",
 			parameter_type_id: ParamType.FROM_DATE,
+			maxDate:
+				openModalId == action.FILTER
+					? maxDateFilter
+					: openModalId == action.EXPORT
+					? maxDateExport
+					: null,
 			validations: {
 				required: false,
 			},
@@ -138,6 +157,18 @@ const History = () => {
 			name: "tx_date",
 			label: "To",
 			parameter_type_id: ParamType.TO_DATE,
+			minDate:
+				openModalId == action.FILTER
+					? minDateFilter
+					: openModalId == action.EXPORT
+					? minDateExport
+					: null,
+			maxDate:
+				openModalId == action.FILTER
+					? maxDateFilter
+					: openModalId == action.EXPORT
+					? maxDateExport
+					: null,
 			validations: {
 				required: false,
 			},
@@ -397,6 +428,26 @@ const History = () => {
 			controller.abort();
 		};
 	}, [currentPage, finalFormState]);
+
+	useEffect(() => {
+		if (openModalId == action.FILTER && watcherFilter.start_date) {
+			setMinDateFilter(watcherFilter.start_date);
+		}
+		if (openModalId == action.FILTER && watcherFilter.tx_date) {
+			setMaxDateFilter(watcherFilter.tx_date);
+		}
+		if (openModalId == action.EXPORT && watcherExport.start_date) {
+			setMinDateExport(watcherExport.start_date);
+		}
+		if (openModalId == action.EXPORT && watcherExport.tx_date) {
+			setMaxDateExport(watcherExport.tx_date);
+		}
+	}, [
+		watcherFilter.start_date,
+		watcherFilter.tx_date,
+		watcherExport.start_date,
+		watcherExport.tx_date,
+	]);
 
 	return (
 		<>
