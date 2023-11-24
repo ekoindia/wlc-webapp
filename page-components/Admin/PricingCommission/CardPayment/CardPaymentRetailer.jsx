@@ -64,7 +64,7 @@ const CardPaymentRetailer = () => {
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
 			pricing_type: DEFAULT.pricing_type,
-			select: { value: "0", label: "₹100 - ₹25000" },
+			select: { value: "0", label: "₹100 - ₹50000" },
 		},
 	});
 

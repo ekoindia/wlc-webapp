@@ -12,14 +12,13 @@ import {
 	Tooltip,
 	useBreakpointValue,
 	useToken,
-	VStack,
 } from "@chakra-ui/react";
 import { useKBarReady } from "components/CommandBar";
-import { Endpoints } from "constants";
+import { Endpoints, TransactionIds } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 import { clearCacheAndReload, limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
@@ -287,31 +286,24 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 const MyAccountCard = ({ setIsCardOpen }) => {
 	const { isAdmin, logout, isOnboarding, userData } = useUser();
 	const { userDetails } = userData;
+	const router = useRouter();
 	const menulist = isAdmin ? adminProfileMenu : profileMenu;
 
 	return (
 		<Box
 			border="card"
-			boxShadow={"0px 6px 10px #00000033"}
-			borderRadius={{
-				base: "0.3rem",
-				lg: "0.4rem",
-				"2xl": ".9rem",
-			}}
+			boxShadow="0px 6px 10px #00000033"
+			borderRadius="10px"
 			w={{ base: "100%", sm: "initial" }}
 		>
-			<VStack
+			<Flex
+				direction="column"
 				px={{ base: "3", sm: "2", md: "2", lg: "4" }}
 				py={{ base: "2", sm: "2", md: "1", lg: "" }}
 				w="full"
-				// minH={"6vw"}
 				bg="primary.DEFAULT"
 				position="relative"
-				borderTopRadius={{
-					base: "0.3rem",
-					lg: "0.4rem",
-					"2xl": ".9rem",
-				}}
+				borderTopRadius="10px"
 			>
 				<Flex
 					color="white"
@@ -333,7 +325,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					top="-12px"
 					right="14px"
 				>
-					<Icon name="arrow-drop-down" size="16px" />
+					<Icon name="arrow-drop-down" size="sm" />
 				</Box>
 
 				<Box w={"full"} py="10px" userSelect="none">
@@ -412,7 +404,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							mt={{ base: "8px", sm: "initial" }}
 							wrap="wrap"
 						>
-							<Flex justifyContent={"space-between"} mt={".4vw"}>
+							<Flex justifyContent="space-between" mt=".4vw">
 								<Box display={"flex"} alignItems={"center"}>
 									<Text
 										fontSize={{
@@ -428,37 +420,45 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									</Text>
 									<Box ml={{ base: "15px", sm: "initial" }}>
 										<IcoButton
-											size={"xs"}
+											size="xs"
 											theme="accent"
 											ml="2"
-											// onClick={() =>
-											// 	Router.push("/admin/my-network/profile/up-per-info")
-											// }
-
+											onClick={() => {
+												const prefix = isAdmin
+													? "/admin"
+													: "";
+												router.push(
+													`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
+												);
+												if (setIsCardOpen) {
+													setIsCardOpen(false);
+												}
+											}}
 											iconName="mode-edit"
-											// iconStyle={{
-											// 	size: "10px",
-											// }}
 										/>
 									</Box>
 								</Box>
 							</Flex>
 
 							{isAdmin !== true && isOnboarding !== true && (
-								<Link href={Endpoints.USER_PROFILE}>
-									<Button
-										size="xs"
-										icon="chevron-right"
-										iconPosition="right"
-										iconSpacing="2px"
-										h="36px"
-										fontWeight="semibold"
-										borderRadius="6px"
-										fontSize="12px"
-									>
-										View Profile
-									</Button>
-								</Link>
+								<Button
+									size="xs"
+									icon="chevron-right"
+									iconPosition="right"
+									iconSpacing="2px"
+									h="36px"
+									fontWeight="semibold"
+									borderRadius="6px"
+									fontSize="12px"
+									onClick={() => {
+										router.push(Endpoints.USER_PROFILE);
+										if (setIsCardOpen) {
+											setIsCardOpen(false);
+										}
+									}}
+								>
+									View Profile
+								</Button>
 							)}
 						</Flex>
 					) : null}
@@ -467,98 +467,73 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				{isOnboarding !== true && isAdmin === true ? (
 					<AdminViewToggleCard minimal />
 				) : null}
-			</VStack>
+			</Flex>
 
-			<VStack
-				w={"full"}
+			<Flex
+				direction="column"
+				px="4"
+				w="100%"
+				bg="white"
 				h={{ base: "100%", sm: "initial" }}
-				bg={"white"}
-				// py={"3"}
-				borderBottomRadius={{
-					base: "0.3rem",
-					lg: "0.4rem",
-					"2xl": ".9rem",
-				}}
-				gap={{ base: "15px", sm: "initial" }}
+				fontSize={{ base: "sm", md: "xs" }}
+				borderBottomRadius="10px"
 			>
 				{isOnboarding !== true
 					? menulist.map((ele) => (
 							<Fragment key={"mnu-" + ele.title + ele.link}>
-								<HStack
-									h="2em"
-									w={"90%"}
-									justifyContent={"space-between"}
-									cursor={"pointer"}
-									mt={{ base: "15px", sm: "initial" }}
-									// py="5"
-									minH="46px"
+								<Flex
+									w="100%"
+									h={{ base: "auto", md: "100%" }}
+									align="center"
+									justify="space-between"
+									cursor="pointer"
+									minH="50px"
+									onClick={() => {
+										router.push(ele.link);
+										if (setIsCardOpen) {
+											setIsCardOpen(false);
+										}
+									}}
 								>
-									<Link href={ele.link}>
-										<Text
-											fontSize={{
-												base: "14px",
-												sm: "10px",
-												lg: "12px",
-												"2xl": "14px",
-											}}
-										>
-											{ele.title}
-										</Text>
-									</Link>
-									<Icon name="chevron-right" size="8px" />
-								</HStack>
-								<Divider w={"90%"} />
+									<Text>{ele.title}</Text>
+									<Icon name="chevron-right" size="xxs" />
+								</Flex>
+								<Divider />
 							</Fragment>
 					  ))
 					: null}
 				<Flex
 					direction="row"
-					minH={"46px"}
-					w={"90%"}
-					justifyContent={"flex-start"}
-					cursor={"pointer"}
+					minH="50px"
+					w="100%"
+					justify="space-between"
+					cursor="pointer"
 					align="center"
+					color="error"
 				>
-					<HStack flex={1} py="3" onClick={logout}>
-						<Icon name="logout" color="error" size="18px" mr="2" />
-						<Text
-							fontSize={{
-								base: "14px",
-								sm: "10px",
-								lg: "12px",
-								"2xl": "14px",
-							}}
-							color={"error"}
-							fontWeight={"medium"}
-						>
-							Logout
-						</Text>
-					</HStack>
+					<Flex py="3" align="center" onClick={logout}>
+						<Icon name="logout" size="sm" mr="2" />
+						<Text fontWeight="medium">Logout</Text>
+					</Flex>
 					<Flex
 						ml="2"
 						px="3"
 						py="2"
-						borderLeft={"1px solid"}
-						borderColor={"divider"}
+						borderLeft="1px solid"
+						borderColor="divider"
 						onClick={() => clearCacheAndReload(true)}
 						_hover={{ bg: "gray.100" }}
 					>
-						<Tooltip
-							label="Clear Cache"
-							/* hasArrow={true} */ placement="left"
-						>
-							<Box>
-								<Icon
-									name="reload"
-									label="Clear Cache"
-									color="error"
-									size="14px"
-								/>
-							</Box>
+						<Tooltip label="Clear Cache" placement="left">
+							<Icon
+								name="reload"
+								label="Clear Cache"
+								size="14px"
+							/>
 						</Tooltip>
 					</Flex>
 				</Flex>
-			</VStack>
+			</Flex>
 		</Box>
 	);
 };

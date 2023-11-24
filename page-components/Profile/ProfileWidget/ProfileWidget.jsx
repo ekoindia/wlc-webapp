@@ -1,5 +1,5 @@
 import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
-import { IcoButton, Icon } from "components";
+import { Icon } from "components";
 import { UserTypeLabel } from "constants";
 import { useUser } from "contexts/UserContext";
 import { useEffect, useState } from "react";
@@ -72,9 +72,9 @@ const ProfileWidget = () => {
 				: null,
 	};
 
-	const onEditClick = () => {
-		console.log("clicked");
-	};
+	// const onEditClick = () => {
+	// 	console.log("clicked");
+	// };
 
 	// const onChangeBtnClick = () => {
 	// 	console.log("clicked");
@@ -85,6 +85,7 @@ const ProfileWidget = () => {
 			border="1px solid var(--chakra-colors-hint)"
 			borderRadius="10px"
 			bgGradient="linear(to-b, primary.light, primary.dark)"
+			mx={{ base: 3, md: "0" }}
 		>
 			<Flex
 				direction="column"
@@ -94,7 +95,6 @@ const ProfileWidget = () => {
 					md: "320px",
 					"2xl": "360px",
 				}}
-				mx={{ base: 3, md: "0" }}
 				borderRadius="10px"
 				background="url('./bg.svg')"
 				// background="url('./bg.svg'), linear-gradient(to bottom, #11299e, #09154f)"
@@ -141,7 +141,7 @@ const ProfileWidget = () => {
 							</Text>
 						</Flex>
 					</Flex>
-					<Flex align="flex-start" height="full">
+					{/* <Flex align="flex-start" height="full">
 						<IcoButton
 							onClick={onEditClick}
 							iconName="mode-edit"
@@ -150,7 +150,7 @@ const ProfileWidget = () => {
 							theme="accent"
 							_hover={{ bg: "accent.dark" }}
 						/>
-					</Flex>
+					</Flex> */}
 				</Flex>
 				<Flex direction="column">
 					<Text color="divider">Profile Completeness</Text>
