@@ -1,5 +1,4 @@
 import { Flex, Th as ChakraTh } from "@chakra-ui/react";
-import { Icon } from "components";
 
 /**
  * A Th component
@@ -26,7 +25,7 @@ const Th = ({ renderer, visibleColumns }) => {
 		>
 			<Flex gap="2" align="center">
 				{item.label}
-				{item.sorting && <Icon name="sort" size="8px" />}
+				{/* {item.sorting && <Icon name="sort" size="8px" />} */}
 			</Flex>
 		</ChakraTh>
 	));
