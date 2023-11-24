@@ -91,14 +91,14 @@ const Calenders = forwardRef(
 							<Flex w="100%">
 								<Text
 									fontSize={{
-										base: "14px",
-										md: "12px",
-										xl: "14px",
+										base: "xs",
+										md: "sm",
 									}}
 									w="100%"
+									color="light"
 									lineHeight="normal"
 								>
-									{value || "DD/MM/YYYY"}
+									{value || "YYYY-MM-DD"}
 								</Text>
 							</Flex>
 						</Flex>
