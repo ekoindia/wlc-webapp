@@ -22,6 +22,8 @@ const action = {
 	EXPORT: 1,
 };
 
+const DEFAULT_DAY_LIMIT = 7;
+
 const export_type_options = [
 	{
 		value: "pdf",
@@ -65,24 +67,19 @@ const History = () => {
 	const [loading, setLoading] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(null);
-	const [maxDateFilter, setMaxDateFilter] = useState(() => {
-		const _today = new Date();
-		return formatDate(_today, "yyyy-MM-dd");
+	const [minDateExport, setMinDateExport] = useState(() => {
+		const _previousDate = new Date();
+		_previousDate.setDate(_previousDate.getDate() - DEFAULT_DAY_LIMIT);
+		return formatDate(_previousDate, "yyyy-MM-dd");
 	});
-	const [minDateExport, setMinDateExport] = useState(null);
-	const [maxDateExport, setMaxDateExport] = useState(() => {
-		const _today = new Date();
-		return formatDate(_today, "yyyy-MM-dd");
-	});
-
 	const [today] = useState(() => {
 		const _today = new Date();
 		return formatDate(_today, "yyyy-MM-dd");
 	});
-	const [oneWeekBefore] = useState(() => {
-		const _oneWeekBefore = new Date();
-		_oneWeekBefore.setDate(_oneWeekBefore.getDate() - 7);
-		return formatDate(_oneWeekBefore, "yyyy-MM-dd");
+	const [previousDate] = useState(() => {
+		const _previousDate = new Date();
+		_previousDate.setDate(_previousDate.getDate() - DEFAULT_DAY_LIMIT);
+		return formatDate(_previousDate, "yyyy-MM-dd");
 	});
 
 	const {
@@ -90,6 +87,7 @@ const History = () => {
 		register: registerFilter,
 		control: controlFilter,
 		formState: { errors: errorsFilter, isSubmitting: isSubmittingFilter },
+		reset: resetFilter,
 	} = useForm();
 
 	const {
@@ -101,7 +99,7 @@ const History = () => {
 	} = useForm({
 		defaultValues: {
 			reporttype: "pdf",
-			start_date: oneWeekBefore,
+			start_date: previousDate,
 			tx_date: today,
 		},
 	});
@@ -143,12 +141,7 @@ const History = () => {
 			name: "start_date",
 			label: "From",
 			parameter_type_id: ParamType.FROM_DATE,
-			maxDate:
-				openModalId == action.FILTER
-					? maxDateFilter
-					: openModalId == action.EXPORT
-					? maxDateExport
-					: null,
+			maxDate: today,
 			validations: {
 				required: false,
 			},
@@ -163,12 +156,7 @@ const History = () => {
 					: openModalId == action.EXPORT
 					? minDateExport
 					: null,
-			maxDate:
-				openModalId == action.FILTER
-					? maxDateFilter
-					: openModalId == action.EXPORT
-					? maxDateExport
-					: null,
+			maxDate: today,
 			validations: {
 				required: false,
 			},
@@ -386,7 +374,7 @@ const History = () => {
 			isSubmitting: isSubmittingExport,
 			formValues: watcherExport,
 			handleFormSubmit: onReportDownload,
-			submitButtonText: "Export",
+			submitButtonText: "Download",
 		},
 	];
 
@@ -430,17 +418,34 @@ const History = () => {
 	}, [currentPage, finalFormState]);
 
 	useEffect(() => {
-		if (openModalId == action.FILTER && watcherFilter.start_date) {
-			setMinDateFilter(watcherFilter.start_date);
+		if (openModalId == action.FILTER) {
+			const _fromDateFilter = watcherFilter.start_date;
+			const _txDateFilter = watcherFilter.tx_date;
+			const _valuesFilter = watcherFilter;
+
+			if (_fromDateFilter) {
+				setMinDateFilter(_fromDateFilter);
+			}
+
+			if (_fromDateFilter > _txDateFilter) {
+				// reset filter form tx_date to from_date
+				resetFilter({ ..._valuesFilter, tx_date: _fromDateFilter });
+			}
 		}
-		if (openModalId == action.FILTER && watcherFilter.tx_date) {
-			setMaxDateFilter(watcherFilter.tx_date);
-		}
-		if (openModalId == action.EXPORT && watcherExport.start_date) {
-			setMinDateExport(watcherExport.start_date);
-		}
-		if (openModalId == action.EXPORT && watcherExport.tx_date) {
-			setMaxDateExport(watcherExport.tx_date);
+
+		if (openModalId == action.EXPORT) {
+			const _fromDateExport = watcherExport.start_date;
+			const _txDateExport = watcherExport.tx_date;
+			const _valuesExport = watcherExport;
+
+			if (_fromDateExport) {
+				setMinDateExport(_fromDateExport);
+			}
+
+			if (_fromDateExport > _txDateExport) {
+				// reset export form tx_date to from_date
+				resetExport({ ..._valuesExport, tx_date: _fromDateExport });
+			}
 		}
 	}, [
 		watcherFilter.start_date,
