@@ -348,8 +348,8 @@ const History = () => {
 						resetFilter({ ...formElements });
 						resetExport({
 							reporttype: "pdf",
-							start_date: today,
-							tx_date: previousDate,
+							start_date: previousDate,
+							tx_date: today,
 						});
 				  }
 				: () => setOpenModalId(null),
