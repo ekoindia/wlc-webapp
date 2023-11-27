@@ -243,7 +243,7 @@ const History = () => {
 			});
 
 			setOpenModalId(null);
-			setIsFiltered(true);
+			// setIsFiltered(true);
 			return;
 		}
 
@@ -273,7 +273,7 @@ const History = () => {
 		});
 
 		setOpenModalId(null);
-		setIsFiltered(true);
+		// setIsFiltered(true);
 	};
 
 	const onFilterSubmit = (data) => {
@@ -352,6 +352,18 @@ const History = () => {
 			formValues: watcherFilter,
 			handleFormSubmit: onFilterSubmit,
 			submitButtonText: "Apply",
+			styles: isFiltered
+				? {
+						bg: "primary.DEFAULT",
+						color: "white",
+						borderColor: "white",
+						boxShadow: "buttonShadow",
+						_hover: {
+							bg: "primary.dark",
+							boxShadow: "none",
+						},
+				  }
+				: null,
 		},
 		{
 			id: action.EXPORT,

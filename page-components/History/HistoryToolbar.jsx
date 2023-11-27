@@ -59,6 +59,7 @@ const HistoryToolbar = ({
 					formValues,
 					handleFormSubmit,
 					submitButtonText,
+					styles,
 				}) => (
 					<>
 						<Button
@@ -68,6 +69,7 @@ const HistoryToolbar = ({
 							onClick={() =>
 								setOpenModalId(id === openModalId ? null : id)
 							}
+							{...styles}
 						>
 							<Icon name={icon} size="sm" />
 							&nbsp;
