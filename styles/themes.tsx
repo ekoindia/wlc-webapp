@@ -136,6 +136,7 @@ export const light = extendTheme({
 		"sh-otpfocus": "0px 3px 6px #0000001A",
 		"sh-card": "0px 3px 20px #00000005",
 		"sh-googlebtn": "0px 3px 10px #4185F433",
+		buttonShadow: "0px 3px 10px #00000018",
 	},
 	sizes: {
 		max: "max-content",
