@@ -9,7 +9,7 @@ import { Form } from "tf-components";
 const HistoryToolbar = ({
 	searchValue,
 	onSearchSubmit,
-	clear,
+	isFiltered,
 	onFilterClear,
 	openModalId,
 	setOpenModalId,
@@ -17,107 +17,103 @@ const HistoryToolbar = ({
 }) => {
 	return (
 		<Flex
-			justifyContent={"space-between"}
-			direction={{ base: "column-reverse", lg: "row" }}
-			alignItems={{ base: "none", lg: "center" }}
+			gap="2"
+			w="100%"
+			justify="flex-end"
+			align="center"
 			sx={{
 				"@media print": {
 					display: "none !important",
 				},
 			}}
 		>
-			<Flex w="100%" gap="2" justify="flex-end" align="center">
-				{clear && (
-					<Button
-						size="xs"
-						variant="link"
-						onClick={onFilterClear}
-						_hover={{ TextDecoration: "none" }}
-					>
-						Clear Filter
-					</Button>
-				)}
+			<Button
+				size="xs"
+				display={isFiltered ? "block" : "none"}
+				variant="link"
+				onClick={onFilterClear}
+				_hover={{ textDecoration: "none" }}
+			>
+				Clear Filter
+			</Button>
 
-				<SearchBar
-					type="number"
-					placeholder="Search by TID, Mobile, Account, etc"
-					value={searchValue}
-					setSearch={onSearchSubmit}
-					minSearchLimit={2}
-				/>
+			<SearchBar
+				type="number"
+				placeholder="Search by TID, Mobile, Account, etc"
+				value={searchValue}
+				setSearch={onSearchSubmit}
+				minSearchLimit={2}
+			/>
 
-				{actionBtnConfig.map(
-					({
-						id,
-						label,
-						icon,
-						parameter_list,
-						handleSubmit,
-						register,
-						control,
-						errors,
-						isSubmitting,
-						formValues,
-						handleFormSubmit,
-						submitButtonText,
-					}) => (
-						<>
-							<Button
-								key={id}
-								size="lg"
-								variant="primary_outline"
-								onClick={() =>
-									setOpenModalId(
-										id === openModalId ? null : id
-									)
-								}
+			{actionBtnConfig.map(
+				({
+					id,
+					label,
+					icon,
+					parameter_list,
+					handleSubmit,
+					register,
+					control,
+					errors,
+					isSubmitting,
+					formValues,
+					handleFormSubmit,
+					submitButtonText,
+				}) => (
+					<>
+						<Button
+							key={id}
+							size="lg"
+							variant="primary_outline"
+							onClick={() =>
+								setOpenModalId(id === openModalId ? null : id)
+							}
+						>
+							<Icon name={icon} size="sm" />
+							&nbsp;
+							<Text
+								display={{ base: "none", md: "flex" }}
+								fontSize="md"
 							>
-								<Icon name={icon} size="sm" />
-								&nbsp;
-								<Text
-									display={{ base: "none", md: "flex" }}
-									fontSize="md"
+								{label}
+							</Text>
+						</Button>
+						<Modal
+							isOpen={openModalId === id}
+							onClose={() => setOpenModalId(null)}
+							title={label}
+						>
+							<form onSubmit={handleSubmit(handleFormSubmit)}>
+								<Flex
+									direction="column"
+									w="100%"
+									gap="8"
+									mb="4"
 								>
-									{label}
-								</Text>
-							</Button>
-							<Modal
-								isOpen={openModalId === id}
-								onClose={() => setOpenModalId(null)}
-								title={label}
-							>
-								<form onSubmit={handleSubmit(handleFormSubmit)}>
-									<Flex
-										direction="column"
+									<Form
+										{...{
+											parameter_list,
+											register,
+											control,
+											formValues,
+											errors,
+											gap: "2",
+										}}
+									/>
+									<Button
 										w="100%"
-										gap="8"
-										mb="4"
+										size="lg"
+										type="submit"
+										loading={isSubmitting}
 									>
-										<Form
-											{...{
-												parameter_list,
-												register,
-												control,
-												formValues,
-												errors,
-												gap: "2",
-											}}
-										/>
-										<Button
-											w="100%"
-											size="lg"
-											type="submit"
-											loading={isSubmitting}
-										>
-											{submitButtonText}
-										</Button>
-									</Flex>
-								</form>
-							</Modal>
-						</>
-					)
-				)}
-			</Flex>
+										{submitButtonText}
+									</Button>
+								</Flex>
+							</form>
+						</Modal>
+					</>
+				)
+			)}
 		</Flex>
 	);
 };

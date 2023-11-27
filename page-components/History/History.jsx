@@ -63,7 +63,7 @@ const History = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [, setFormState] = useState({ ...formElements });
 	const [finalFormState, setFinalFormState] = useState({});
-	const [clear, setClear] = useState(false);
+	const [isFiltered, setIsFiltered] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(null);
@@ -243,7 +243,7 @@ const History = () => {
 			});
 
 			setOpenModalId(null);
-			setClear(true);
+			setIsFiltered(true);
 			return;
 		}
 
@@ -273,7 +273,7 @@ const History = () => {
 		});
 
 		setOpenModalId(null);
-		setClear(true);
+		setIsFiltered(true);
 	};
 
 	const onFilterSubmit = (data) => {
@@ -292,14 +292,14 @@ const History = () => {
 		});
 
 		setOpenModalId(null);
-		setClear(true);
+		setIsFiltered(true);
 	};
 
 	const onFilterClear = () => {
 		setFormState({ ...formElements });
 		setFinalFormState({});
 		setSearchValue("");
-		setClear(false);
+		setIsFiltered(false);
 	};
 
 	const onReportDownload = (data) => {
@@ -478,7 +478,7 @@ const History = () => {
 					{...{
 						searchValue,
 						onSearchSubmit,
-						clear,
+						isFiltered,
 						onFilterClear,
 						openModalId,
 						setOpenModalId,
