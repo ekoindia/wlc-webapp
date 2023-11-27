@@ -356,10 +356,11 @@ const History = () => {
 				? {
 						bg: "primary.DEFAULT",
 						color: "white",
-						borderColor: "white",
+						borderColor: "primary.DEFAULT",
 						boxShadow: "buttonShadow",
 						_hover: {
 							bg: "primary.dark",
+							borderColor: "primary.dark",
 							boxShadow: "none",
 						},
 				  }
