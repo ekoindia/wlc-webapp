@@ -65,6 +65,7 @@ const HistoryToolbar = ({
 							<Button
 								key={id}
 								size="lg"
+								variant="primary_outline"
 								onClick={() =>
 									setOpenModalId(
 										id === openModalId ? null : id

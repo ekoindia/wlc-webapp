@@ -112,24 +112,9 @@ const NetworkFilter = ({ /*filter,*/ setFilter, setPageNumber }) => {
 					gap="2px"
 					ref={btnRef}
 					onClick={onOpen}
-					// h={{ base: "3rem", md: "2.5rem", "2xl": "3rem" }}
 					fontSize="md"
-					bg="white"
-					color="primary.DEFAULT"
-					borderColor="primary.DEFAULT"
-					borderWidth="1px"
-					borderStyle="solid"
-					boxShadow=" 0px 3px 10px #11299E1A"
-					_hover={{
-						bg: "white",
-					}}
-					_active={{
-						bg: "white",
-					}}
-					lineHeight="normal"
-					leftIcon={
-						<Icon name="filter" size="sm" color="primary.DEFAULT" />
-					}
+					variant="primary_outline"
+					leftIcon={<Icon name="filter" size="sm" />}
 				>
 					Filter
 				</Button>
@@ -491,11 +476,7 @@ const NetworkFilter = ({ /*filter,*/ setFilter, setPageNumber }) => {
 									fontSize={"20px"}
 									fontWeight="bold"
 									onClick={handleClear}
-									// _focus={{
-									// 	bg: "white",
-									// }}
-									// _hover="none"
-									variant="ghost"
+									variant="link"
 								>
 									Clear all
 								</Button>
