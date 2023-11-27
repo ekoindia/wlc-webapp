@@ -70,11 +70,6 @@ const primary_outline = defineStyle({
 		borderColor: "primary.dark",
 		boxShadow: "none",
 	},
-	// _active: {
-	// 	bg: "primary.DEFAULT",
-	// 	color: "white",
-	// 	borderColor: "white",
-	// },
 });
 
 const accent_outline = defineStyle({
@@ -88,11 +83,6 @@ const accent_outline = defineStyle({
 		borderColor: "accent.dark",
 		boxShadow: "none",
 	},
-	// _active: {
-	// 	bg: "accent.DEFAULT",
-	// 	color: "white",
-	// 	borderColor: "white",
-	// },
 });
 
 export const buttonTheme = defineStyleConfig({

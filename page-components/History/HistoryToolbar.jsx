@@ -59,6 +59,8 @@ const HistoryToolbar = ({
 					formValues,
 					handleFormSubmit,
 					submitButtonText,
+					secondaryButtonAction,
+					secondaryButtonText,
 					styles,
 				}) => (
 					<>
@@ -102,14 +104,25 @@ const HistoryToolbar = ({
 											gap: "2",
 										}}
 									/>
-									<Button
-										w="100%"
-										size="lg"
-										type="submit"
-										loading={isSubmitting}
-									>
-										{submitButtonText}
-									</Button>
+									<Flex gap="4">
+										<Button
+											w="100%"
+											size="lg"
+											variant="link"
+											color="primary.dark"
+											onClick={secondaryButtonAction}
+										>
+											{secondaryButtonText}
+										</Button>
+										<Button
+											w="100%"
+											size="lg"
+											type="submit"
+											loading={isSubmitting}
+										>
+											{submitButtonText}
+										</Button>
+									</Flex>
 								</Flex>
 							</form>
 						</Modal>

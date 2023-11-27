@@ -352,6 +352,19 @@ const History = () => {
 			formValues: watcherFilter,
 			handleFormSubmit: onFilterSubmit,
 			submitButtonText: "Apply",
+			secondaryButtonText: isFiltered ? "Clear All" : "Cancel",
+			secondaryButtonAction: isFiltered
+				? () => {
+						onFilterSubmit({ ...formElements });
+						setIsFiltered(false);
+						resetFilter({ ...formElements });
+						resetExport({
+							reporttype: "pdf",
+							start_date: today,
+							tx_date: previousDate,
+						});
+				  }
+				: () => setOpenModalId(null),
 			styles: isFiltered
 				? {
 						bg: "primary.DEFAULT",
@@ -388,6 +401,8 @@ const History = () => {
 			formValues: watcherExport,
 			handleFormSubmit: onReportDownload,
 			submitButtonText: "Download",
+			secondaryButtonText: "Cancel",
+			secondaryButtonAction: () => setOpenModalId(null),
 		},
 	];
 
