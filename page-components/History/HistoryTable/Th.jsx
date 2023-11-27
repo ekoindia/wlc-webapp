@@ -21,7 +21,7 @@ const Th = ({ renderer, visibleColumns }) => {
 		<ChakraTh
 			key={index}
 			p={{ base: ".5em", xl: "1em" }}
-			fontSize={{ base: "10px", xl: "11px", "2xl": "16px" }}
+			fontSize={{ base: "xxs", lg: "xs" }}
 		>
 			<Flex gap="2" align="center">
 				{item.label}
