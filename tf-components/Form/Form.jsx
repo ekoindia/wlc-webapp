@@ -130,9 +130,6 @@ const Form = ({
 													disabled,
 												}}
 												{...rest}
-												{...register(name, {
-													..._validations,
-												})}
 											/>
 										)}
 									/>
@@ -181,9 +178,6 @@ const Form = ({
 													disabled,
 												}}
 												{...rest}
-												{...register(name, {
-													..._validations,
-												})}
 											/>
 										)}
 									/>
