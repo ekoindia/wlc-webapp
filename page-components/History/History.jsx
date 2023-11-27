@@ -61,7 +61,6 @@ const History = () => {
 	const [data, setData] = useState();
 	const [searchValue, setSearchValue] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
-	const [, setFormState] = useState({ ...formElements });
 	const [finalFormState, setFinalFormState] = useState({});
 	const [isFiltered, setIsFiltered] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -234,16 +233,11 @@ const History = () => {
 		if (otherQueries && Object.keys(otherQueries).length > 0) {
 			const { tid, account, customer_mobile, amount } = otherQueries;
 			// Set Filter form for searching...
-			setFormState({
-				...formElements,
-				...{ tid, account, customer_mobile, amount },
-			});
 			setFinalFormState({
 				...{ tid, account, customer_mobile, amount },
 			});
 
 			setOpenModalId(null);
-			// setIsFiltered(true);
 			return;
 		}
 
@@ -264,16 +258,11 @@ const History = () => {
 		}
 
 		// Set Filter form for searching...
-		setFormState({
-			...formElements,
-			[type]: search,
-		});
 		setFinalFormState({
 			[type]: search,
 		});
 
 		setOpenModalId(null);
-		// setIsFiltered(true);
 	};
 
 	const onFilterSubmit = (data) => {
@@ -296,7 +285,6 @@ const History = () => {
 	};
 
 	const onFilterClear = () => {
-		setFormState({ ...formElements });
 		setFinalFormState({});
 		setSearchValue("");
 		setIsFiltered(false);
