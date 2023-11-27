@@ -14,6 +14,9 @@ const baseStyle = definePartsStyle({
 			color: "primary.DEFAULT",
 			bg: "shade",
 		},
+		_focusVisible: {
+			boxShadow: "none",
+		},
 	},
 	tabpanels: {
 		p: "10px 20px",
