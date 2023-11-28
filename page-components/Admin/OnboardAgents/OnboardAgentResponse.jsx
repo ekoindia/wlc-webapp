@@ -8,7 +8,7 @@ const AGENT_TYPE = {
 const onboardRetailerRenderer = [
 	{ label: "Sr. No.", show: "#" },
 	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
-	{ name: "mobile", label: "Mobile Number", sorting: true },
+	{ name: "mobile", label: "Mobile", sorting: true },
 	// { name: "dist_mobile", label: "Distributor Mobile Number", sorting: true },
 	{
 		name: "status",
@@ -26,7 +26,7 @@ const onboardRetailerRenderer = [
 const onboardDistributorRenderer = [
 	{ label: "Sr. No.", show: "#" },
 	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
-	{ name: "mobile", label: "Mobile Number", sorting: true },
+	{ name: "mobile", label: "Mobile", sorting: true },
 	{
 		name: "status",
 		label: "Status",

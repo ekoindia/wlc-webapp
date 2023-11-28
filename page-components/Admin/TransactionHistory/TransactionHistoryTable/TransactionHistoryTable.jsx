@@ -15,7 +15,7 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 		{ name: "agent_name", label: "Name", sorting: true, show: "Avatar" },
 		{
 			name: "agent_mobile",
-			label: "Mobile Number",
+			label: "Mobile",
 			sorting: true,
 		},
 		{ name: "agent_type", label: "Type", sorting: true },

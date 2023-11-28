@@ -192,7 +192,7 @@ export default AirtelCms;
 // 	const renderer = [
 // 		{ label: "Sr. No.", show: "#" },
 // 		{ name: "name", label: "Name", sorting: true, show: "Avatar" },
-// 		{ name: "mobile", label: "Mobile Number", sorting: true },
+// 		{ name: "mobile", label: "Mobile", sorting: true },
 // 		{
 // 			name: "status",
 // 			label: "Status",

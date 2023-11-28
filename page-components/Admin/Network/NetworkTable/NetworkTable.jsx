@@ -10,7 +10,7 @@ import { NetworkCard } from "..";
 const networkTableParameterList = [
 	{ label: "Sr. No.", show: "#" },
 	{ name: "agent_name", label: "Name", sorting: true, show: "Avatar" },
-	{ name: "agent_mobile", label: "Mobile Number", sorting: true },
+	{ name: "agent_mobile", label: "Mobile", sorting: true },
 	{ name: "agent_type", label: "Type", sorting: true },
 	{
 		name: "onboarded_on",

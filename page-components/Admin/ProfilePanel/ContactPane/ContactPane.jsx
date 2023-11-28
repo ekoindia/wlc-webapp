@@ -14,7 +14,7 @@ const ContactPane = ({ data }) => {
 
 	const contactDataList = [
 		{
-			label: "Mobile number",
+			label: "Mobile",
 			value: data?.agent_mobile,
 			iconName: "phone",
 			onClick: () => {
