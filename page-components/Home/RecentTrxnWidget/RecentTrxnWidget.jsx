@@ -88,7 +88,6 @@ const RecentTrxnWidget = () => {
 				direction="column"
 				className="customScrollbars"
 				overflowY={{ base: "none", md: "scroll" }}
-				rowGap={{ base: "19px", md: "10px" }}
 			>
 				{data.map((tx) => (
 					<Tr
