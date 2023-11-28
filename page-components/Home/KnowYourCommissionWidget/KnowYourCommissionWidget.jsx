@@ -37,7 +37,7 @@ const KnowYourCommission = () => {
 	if (!isLoggedIn) return null;
 
 	return (
-		<WidgetBase title="Know Your Commissions">
+		<WidgetBase title="Know Your Commissions" noPadding>
 			<Flex
 				direction="column"
 				className="customScrollbars"
@@ -48,7 +48,7 @@ const KnowYourCommission = () => {
 					return (
 						<Flex
 							key={id}
-							p="6px 6px 6px 0px"
+							p="8px 4px 8px 16px"
 							pr={{ base: "8px", md: "4px" }}
 							align="center"
 							justify="center"
