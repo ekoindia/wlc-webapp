@@ -227,7 +227,10 @@ const History = () => {
 	 */
 	const quickSearch = (search, otherQueries) => {
 		console.log("Search inside quickSearch", search, otherQueries);
+
 		if (!(search || otherQueries)) return;
+
+		if (otherQueries["page"] != undefined) return;
 
 		// Perform specific search, if available...
 		if (otherQueries && Object.keys(otherQueries).length > 0) {
