@@ -541,7 +541,7 @@ const History = () => {
 					display={isFiltered ? "flex" : "none"}
 					align="center"
 					gap="2"
-					mt="4"
+					mt="6"
 				>
 					<Flex color="light" fontSize="xs">
 						Filtering by &thinsp;

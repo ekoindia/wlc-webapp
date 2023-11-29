@@ -22,7 +22,7 @@ const HistoryTable = ({
 
 	if (!loading && processedData?.length < 1) {
 		return (
-			<Flex direction="column" align="center" gap="2" mt="6">
+			<Flex direction="column" align="center" gap="2" mt="8" mb="2">
 				<Text color="light">Nothing Found</Text>
 			</Flex>
 		);
