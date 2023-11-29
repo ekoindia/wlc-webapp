@@ -235,7 +235,7 @@ const NetworkMenuWrapper = ({
 					<ModalHeader fontSize="lg" fontWeight="semibold">
 						<span>Mark {clickedVal}</span>
 					</ModalHeader>
-					<ModalCloseButton color="hint" size="md" />
+					<ModalCloseButton _hover={{ color: "error" }} />
 					<ModalBody>
 						<form onSubmit={handleSubmit(handleFormSubmit)}>
 							<Flex direction="column" gap="8" pb="4">

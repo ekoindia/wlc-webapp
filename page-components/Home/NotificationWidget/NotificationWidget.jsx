@@ -132,7 +132,7 @@ const NotificationWidget = () => {
 					<ModalOverlay bg="blackAlpha.600" backdropBlur="10px" />
 					<ModalContent>
 						<ModalHeader>{openedNotification.title}</ModalHeader>
-						<ModalCloseButton />
+						<ModalCloseButton _hover={{ color: "error" }} />
 						<ModalBody>
 							{("" + openedNotification.desc)
 								.split("\n")

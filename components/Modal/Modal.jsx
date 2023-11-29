@@ -24,7 +24,7 @@ const Modal = ({
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>{title}</ModalHeader>
-				<ModalCloseButton />
+				<ModalCloseButton _hover={{ color: "error" }} />
 				<ModalBody>{children}</ModalBody>
 				{onSubmit && (
 					<ModalFooter>
