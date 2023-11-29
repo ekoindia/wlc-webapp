@@ -69,13 +69,11 @@ const Table = ({
 					border="1px solid var(--chakra-colors-divider)"
 					css={{
 						"&::-webkit-scrollbar": {
-							height: "2px",
-							width: "7px",
+							height: "10px",
 						},
 
 						"&::-webkit-scrollbar-thumb": {
-							background: "#555555",
-							border: "1px solid #707070",
+							background: "#AAA",
 						},
 					}}
 					sx={{
