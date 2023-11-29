@@ -56,6 +56,7 @@ const link = defineStyle({
 	},
 	_focusVisible: {
 		boxShadow: "none",
+		color: "dark",
 	},
 });
 
@@ -64,11 +65,9 @@ const primary_outline = defineStyle({
 	border: "1px solid",
 	borderColor: "primary.DEFAULT",
 	color: "primary.DEFAULT",
-	boxShadow: "buttonShadow",
 	_hover: {
 		color: "primary.dark",
 		borderColor: "primary.dark",
-		boxShadow: "none",
 	},
 });
 
@@ -77,11 +76,9 @@ const accent_outline = defineStyle({
 	border: "1px solid",
 	borderColor: "accent.DEFAULT",
 	color: "accent.DEFAULT",
-	boxShadow: "buttonShadow",
 	_hover: {
 		color: "accent.dark",
 		borderColor: "accent.dark",
-		boxShadow: "none",
 	},
 });
 
