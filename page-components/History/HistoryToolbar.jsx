@@ -10,7 +10,7 @@ const HistoryToolbar = ({
 	searchValue,
 	onSearchSubmit,
 	isFiltered,
-	onFilterClear,
+	clearFilter,
 	openModalId,
 	setOpenModalId,
 	actionBtnConfig,
@@ -29,9 +29,9 @@ const HistoryToolbar = ({
 		>
 			<Button
 				size="xs"
-				display={isFiltered ? "block" : "none"}
+				display={{ base: "none", md: isFiltered ? "block" : "none" }}
 				variant="link"
-				onClick={onFilterClear}
+				onClick={clearFilter}
 				_hover={{ textDecoration: "none" }}
 			>
 				Clear Filter

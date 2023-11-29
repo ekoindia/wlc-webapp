@@ -1,3 +1,4 @@
+import { Flex, Text } from "@chakra-ui/react";
 import {
 	getHistoryTableProcessedData,
 	HistoryCard,
@@ -18,6 +19,14 @@ const HistoryTable = ({
 	loading = false,
 }) => {
 	const processedData = getHistoryTableProcessedData(transactionList);
+
+	if (!loading && processedData?.length < 1) {
+		return (
+			<Flex direction="column" align="center" gap="2" mt="6">
+				<Text color="light">Nothing Found</Text>
+			</Flex>
+		);
+	}
 
 	return (
 		<Table

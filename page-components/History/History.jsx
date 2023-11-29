@@ -1,5 +1,5 @@
-import { Flex } from "@chakra-ui/react";
-import { Headings, Icon, PrintReceipt } from "components";
+import { Flex, Text } from "@chakra-ui/react";
+import { Button, Headings, Icon, PrintReceipt } from "components";
 import {
 	Endpoints,
 	ParamType,
@@ -10,7 +10,7 @@ import { useGlobalSearch, useSession, useUser } from "contexts";
 import { fetcher } from "helpers";
 import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { saveDataToFile } from "utils/FileSave";
 import { HistoryTable, HistoryToolbar } from ".";
@@ -164,7 +164,7 @@ const History = () => {
 			name: "amount",
 			label: "Amount",
 			parameter_type_id: ParamType.NUMERIC,
-			inputLeftElement: <Icon name="rupee" size="sm" color="light" />,
+			inputLeftElement: <Icon name="rupee" size="xs" color="light" />,
 			validations: {
 				required: false,
 			},
@@ -287,10 +287,38 @@ const History = () => {
 		setIsFiltered(true);
 	};
 
-	const onFilterClear = () => {
-		setFinalFormState({});
-		setSearchValue("");
+	const filteredItemLabels = useMemo(() => {
+		const _labels = [];
+		const labelsToReplace = {
+			From: "Date",
+			To: "Date",
+		};
+
+		Object.keys(finalFormState).forEach((key) => {
+			const matchedItem = history_filter_parameter_list.find(
+				(item) => item.name === key
+			);
+
+			if (matchedItem) {
+				const labelToAdd =
+					labelsToReplace[matchedItem.label] || matchedItem.label;
+				_labels.push(labelToAdd);
+			}
+		});
+
+		return [...new Set(_labels)];
+	}, [finalFormState]);
+
+	const clearFilter = () => {
+		// setSearchValue(""); //? check if needed
+		onFilterSubmit({ ...formElements });
 		setIsFiltered(false);
+		resetFilter({ ...formElements });
+		resetExport({
+			reporttype: "pdf",
+			start_date: previousDate,
+			tx_date: today,
+		});
 	};
 
 	const onReportDownload = (data) => {
@@ -303,7 +331,7 @@ const History = () => {
 			body: {
 				interaction_type_id:
 					TransactionTypes.DOWNLOAD_TRXN_HISTORY_REPORT,
-				start_index: 1,
+				start_index: 0,
 				limit: 50000,
 				account_id:
 					account_list &&
@@ -342,19 +370,10 @@ const History = () => {
 			isSubmitting: isSubmittingFilter,
 			formValues: watcherFilter,
 			handleFormSubmit: onFilterSubmit,
-			submitButtonText: "Apply",
+			submitButtonText: isFiltered ? "Update" : "Apply",
 			secondaryButtonText: isFiltered ? "Clear All" : "Cancel",
 			secondaryButtonAction: isFiltered
-				? () => {
-						onFilterSubmit({ ...formElements });
-						setIsFiltered(false);
-						resetFilter({ ...formElements });
-						resetExport({
-							reporttype: "pdf",
-							start_date: previousDate,
-							tx_date: today,
-						});
-				  }
+				? () => clearFilter()
 				: () => setOpenModalId(null),
 			styles: isFiltered
 				? {
@@ -484,6 +503,7 @@ const History = () => {
 				border={{ base: "", md: "card" }}
 				borderRadius={{ base: "0", md: "10" }}
 				boxShadow={{ base: "none", md: "0px 5px 15px #0000000D;" }}
+				align="center"
 				bg={{ base: "none", md: "white" }}
 				px="16px"
 				sx={{
@@ -498,12 +518,13 @@ const History = () => {
 						searchValue,
 						onSearchSubmit,
 						isFiltered,
-						onFilterClear,
+						clearFilter,
 						openModalId,
 						setOpenModalId,
 						actionBtnConfig,
 					}}
 				/>
+
 				<PrintReceipt heading="Transaction Receipt (copy)">
 					<HistoryTable
 						{...{
@@ -515,6 +536,34 @@ const History = () => {
 						}}
 					/>
 				</PrintReceipt>
+
+				<Flex
+					display={isFiltered ? "flex" : "none"}
+					align="center"
+					gap="2"
+					mt="4"
+				>
+					<Flex color="light" fontSize="xs">
+						Filtering by &thinsp;
+						{filteredItemLabels?.map((val, index) => (
+							<Text
+								key={index}
+								color="dark"
+								fontWeight="semibold"
+								whiteSpace="nowrap"
+							>
+								{`${val}${
+									index !== filteredItemLabels.length - 1
+										? ",\u{2009}"
+										: ""
+								}`}
+							</Text>
+						))}
+					</Flex>
+					<Button size="xs" onClick={() => clearFilter()}>
+						Show All
+					</Button>
+				</Flex>
 			</Flex>
 		</>
 	);
