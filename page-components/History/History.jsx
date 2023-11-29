@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Headings, Icon, PrintReceipt } from "components";
 import {
 	Endpoints,
@@ -79,6 +79,10 @@ const History = () => {
 		const _previousDate = new Date();
 		_previousDate.setDate(_previousDate.getDate() - DEFAULT_DAY_LIMIT);
 		return formatDate(_previousDate, "yyyy-MM-dd");
+	});
+	const filterItemLimit = useBreakpointValue({
+		base: 2,
+		md: 4,
 	});
 
 	const {
@@ -545,20 +549,31 @@ const History = () => {
 				>
 					<Flex color="light" fontSize="xs">
 						Filtering by &thinsp;
-						{filteredItemLabels?.map((val, index) => (
-							<Text
-								key={index}
-								color="dark"
-								fontWeight="semibold"
-								whiteSpace="nowrap"
-							>
-								{`${val}${
-									index !== filteredItemLabels.length - 1
-										? ",\u{2009}"
-										: ""
-								}`}
+						{filteredItemLabels
+							?.slice(0, filterItemLimit)
+							.map((val, index) => (
+								<Text
+									key={index}
+									color="dark"
+									fontWeight="semibold"
+									whiteSpace="nowrap"
+								>
+									{`${val}${
+										index !== filteredItemLabels.length - 1
+											? ",\u{2009}"
+											: ""
+									}`}
+								</Text>
+							))}
+						{(filteredItemLabels?.length || 0) - filterItemLimit >
+							0 && (
+							<Text color="dark" fontWeight="semibold">
+								{`and ${
+									(filteredItemLabels?.length || 0) -
+									filterItemLimit
+								} more`}
 							</Text>
-						))}
+						)}
 					</Flex>
 					<Button size="xs" onClick={() => clearFilter()}>
 						Show All
