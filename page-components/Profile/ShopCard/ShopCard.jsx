@@ -18,6 +18,7 @@ import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { WidgetBase } from "page-components/Home";
 import { useCallback, useState } from "react";
+import { capitalize } from "utils";
 
 /**
  * A <ShopCard> component
@@ -169,7 +170,7 @@ const ShopCard = () => {
 											)}
 									</Text>
 									<Text fontWeight="semibold">
-										{data[key]}
+										{capitalize(data[key])}
 									</Text>
 								</Flex>
 							</GridItem>

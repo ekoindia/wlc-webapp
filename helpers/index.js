@@ -18,5 +18,6 @@ export {
 	getNameStyle,
 	getPaymentStyle,
 	getStatusStyle,
+	getText,
 	openGoogleMap,
 } from "./TableHelpers";

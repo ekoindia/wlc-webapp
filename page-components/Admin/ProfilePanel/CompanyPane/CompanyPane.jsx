@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Card, Currency, IcoButton, Icon } from "components";
 import { useRouter } from "next/router";
+import { capitalize } from "utils/textFormat";
 /**
  * A <CompanyPane> component
  * TODO: Write more description here
@@ -44,7 +45,7 @@ const CompanyPane = ({ data }) => {
 					/>
 					<div>
 						<Text as="b" fontSize="xl">
-							{data?.agent_name}
+							{capitalize(data?.agent_name)}
 						</Text>
 						<Flex gap="1" color="light" fontSize="sm">
 							User Code:

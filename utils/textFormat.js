@@ -16,6 +16,24 @@ export const getFirstWord = (text) => {
 };
 
 /**
+ * Capitalizes first letters of words in string.
+ * @param {string} str String to be modified
+ * @param {boolean=false} lower Whether all other letters should be lowercased
+ * @return {string}
+ * @usage
+ *   capitalize('fix this string');     // -> 'Fix This String'
+ *   capitalize('javaSCrIPT');    // -> 'Javascript'
+ *   capitalize('javaSCrIPT', false);   // -> 'JavaSCrIPT'
+ */
+
+export const capitalize = (str = "", lower = true) => {
+	const regex = lower ? /(?:^|\s|[-"'([{])+\S/g : /(?:^|[-"'([{])+\S/g;
+	return (lower ? str.toLowerCase() : str).replace(regex, (match) =>
+		match.toUpperCase()
+	);
+};
+
+/**
  * Removes null from a given text
  * @param {*} text Text from which null needs to be removed
  * @returns

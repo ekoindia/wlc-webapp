@@ -10,6 +10,7 @@ import {
 	getModalStyle,
 	getPaymentStyle,
 	getStatusStyle,
+	getText,
 } from "helpers";
 
 /**
@@ -68,6 +69,6 @@ export const prepareTableCell = (
 		case "DateTime":
 			return getDateTimeView(item[column.name]);
 		default:
-			return item[column.name];
+			return getText(item[column.name]);
 	}
 };

@@ -1,7 +1,7 @@
 import { Avatar, Box, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { Currency, DateView, IcoButton, Icon } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
-import { limitText, nullRemover } from "utils";
+import { capitalize, limitText, nullRemover } from "utils";
 
 // convert status to color
 const statusChecker = {
@@ -15,6 +15,10 @@ const statusChecker = {
 	Initiated: "orange.300",
 	"Refund pending": "purple.500",
 	Other: "light",
+};
+
+export const getText = (text) => {
+	return capitalize(text);
 };
 
 export const getAvatar = (name, icon, hue) => {
@@ -53,7 +57,7 @@ export const getNameStyle = (name, icon, hue) => {
 					}}
 				/>
 				<Box as="span" fontWeight="500">
-					{name}
+					{capitalize(name)}
 				</Box>
 			</Flex>
 		);
@@ -144,6 +148,8 @@ export const getLocationStyle = (location, lat, long) => {
 		_limitedText = limitText(_nullRemovedText, 25);
 	}
 
+	const _finalText = _needToolTip ? _limitedText : _nullRemovedText;
+
 	return (
 		<Flex align="center">
 			{_showIcoButton && (
@@ -171,7 +177,7 @@ export const getLocationStyle = (location, lat, long) => {
 				bg="primary.DEFAULT"
 				color="white"
 			>
-				<Text>{_needToolTip ? _limitedText : _nullRemovedText}</Text>
+				<Text>{capitalize(_finalText)}</Text>
 			</Tooltip>
 		</Flex>
 	);
