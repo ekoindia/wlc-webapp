@@ -152,15 +152,20 @@ export const getStatusStyle = (status = "", tableName) => {
 
 export const getLocationStyle = (location, lat, long) => {
 	let _showIcoButton = false;
-	if (lat != null || long != null || lat != undefined || long != undefined) {
-		_showIcoButton = true;
-	}
 
-	const _nullRemovedText = nullRemover(location);
+	let _nullRemovedText = nullRemover(location);
 
 	const _needToolTip = _nullRemovedText?.length > 25;
 
 	let _limitedText = "";
+
+	if (lat != null || long != null || lat != undefined || long != undefined) {
+		_showIcoButton = true;
+
+		if (!_nullRemovedText) {
+			_nullRemovedText = "View on Map";
+		}
+	}
 
 	if (_needToolTip) {
 		_limitedText = limitText(_nullRemovedText, 25);
