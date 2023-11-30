@@ -34,7 +34,7 @@ const reasons = [
 	{ value: "999", label: "Other" },
 ];
 
-const generateMenuList = (list, currId, extra, includeExtra) => {
+const generateMenuList = (list, currId, extra, includeExtra, other) => {
 	let _list = [];
 
 	for (const listItem of list) {
@@ -47,7 +47,7 @@ const generateMenuList = (list, currId, extra, includeExtra) => {
 		_list.push(extra);
 	}
 
-	return _list;
+	return [..._list, other];
 };
 
 const getStatus = (status) => {
@@ -99,6 +99,13 @@ const NetworkMenuWrapper = ({
 		},
 	];
 
+	const others = {
+		label: "View Details",
+		onClick: () => {
+			router.push(`/admin/my-network/profile?mobile=${mobile_number}`);
+		},
+	};
+
 	const {
 		handleSubmit,
 		register,
@@ -132,7 +139,8 @@ const NetworkMenuWrapper = ({
 		menuList,
 		currId,
 		changeRoleMenuItem,
-		_includeChangeRole
+		_includeChangeRole,
+		others
 	);
 
 	const parameter_list = [
