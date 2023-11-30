@@ -26,7 +26,9 @@ export const getFirstWord = (text) => {
  *   capitalize('javaSCrIPT', false);   // -> 'JavaSCrIPT'
  */
 
-export const capitalize = (str = "", lower = true) => {
+export const capitalize = (str, lower = true) => {
+	if (!str) return;
+
 	const regex = /(?:^|\s|[-"'([{])+\S/g;
 	return (lower ? str.toLowerCase() : str).replace(regex, (match) =>
 		match.toUpperCase()
@@ -46,4 +48,15 @@ export const nullRemover = (text) => {
 	const res = _filteredText.join(", ");
 
 	return res;
+};
+
+/**
+ * Removes numbers from a given text
+ * @param {*} text Text from which numbers need to be removed
+ * @returns Text without numbers
+ */
+export const numberRemover = (text) => {
+	const regex = /\b\d+\b/g;
+	const withoutNumbers = text.replace(regex, "");
+	return withoutNumbers;
 };
