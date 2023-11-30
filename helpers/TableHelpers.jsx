@@ -7,8 +7,10 @@ import { capitalize, limitText, nullRemover } from "utils";
 const statusChecker = {
 	Active: "success",
 	Success: "success",
+	Open: "success",
 	Inactive: "error",
 	Cancel: "error",
+	Closed: "error",
 	Failed: "error",
 	Fail: "error",
 	Pending: "orange.500",
@@ -99,8 +101,7 @@ export const getStatusStyle = (status = "", tableName) => {
 		}
 		return null;
 	} else {
-		const _needToolTip = status?.length > 12;
-		const _status = limitText(status, 12);
+		const _needToolTip = status?.length > 25;
 
 		return (
 			<Tooltip
@@ -119,13 +120,13 @@ export const getStatusStyle = (status = "", tableName) => {
 					borderRadius="4px"
 					borderColor={clr}
 					color={clr}
-					noOfLines={2}
+					noOfLines={3}
 					whiteSpace="pre-line"
-					fontSize="xs"
+					fontSize="11px"
 					lineHeight="1"
 					bg="white"
 				>
-					{_status}
+					{status}
 				</Flex>
 			</Tooltip>
 		);
