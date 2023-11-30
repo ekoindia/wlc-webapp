@@ -5,7 +5,7 @@ import { TransactionHistoryCard } from "..";
 const trxnHistoryTableParameterList = [
 	{ label: "Sr. No.", show: "#" },
 	{ name: "agent_name", label: "", show: "Avatar" },
-	{ name: "agent_name", label: "Name", sorting: true },
+	{ name: "agent_name", label: "Name", sorting: true, show: "Name" },
 	{
 		name: "agent_mobile",
 		label: "Mobile",

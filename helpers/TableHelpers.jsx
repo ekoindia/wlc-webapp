@@ -1,7 +1,7 @@
 import { Avatar, Box, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { Currency, DateView, IcoButton, Icon } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
-import { capitalize, limitText, nullRemover } from "utils";
+import { capitalize, limitText, nullRemover, numberRemover } from "utils";
 
 // convert status to color
 const statusChecker = {
@@ -19,19 +19,31 @@ const statusChecker = {
 	Other: "light",
 };
 
-export const getText = (text) => {
-	return capitalize(text);
+export const getName = (name) => {
+	const _name = numberRemover(name);
+	return capitalize(_name);
 };
 
 export const getAvatar = (name, icon, hue) => {
+	const _name = numberRemover(name);
+
+	const needDefaultIcon = _name?.length < 1;
+
+	let _icon = icon;
+
+	if (needDefaultIcon && !icon) {
+		name = null;
+		_icon = "person";
+	}
+
 	return (
 		<Avatar
 			size={{ base: "sm" }}
-			name={icon ? null : name}
+			name={name}
 			bg={hue ? `hsl(${hue},80%,95%)` : "primary.DEFAULT"}
 			color={hue ? `hsl(${hue},80%,25%)` : "divider"}
 			border={hue ? `1px solid hsl(${hue},80%,85%)` : null}
-			icon={icon ? <Icon size="16px" name={icon} /> : null}
+			icon={_icon ? <Icon size="15px" name={_icon} /> : null}
 			sx={{
 				"@media print": {
 					display: "none !important",
@@ -42,28 +54,34 @@ export const getAvatar = (name, icon, hue) => {
 };
 
 export const getNameStyle = (name, icon, hue) => {
-	if (name?.length > 0) {
-		return (
-			<Flex align={"center"} gap="0.625rem">
-				<Avatar
-					size={{ base: "sm" }}
-					name={icon ? null : name}
-					bg={hue ? `hsl(${hue},80%,95%)` : "primary.DEFAULT"}
-					color={hue ? `hsl(${hue},80%,25%)` : "divider"}
-					border={hue ? `1px solid hsl(${hue},80%,85%)` : null}
-					icon={icon ? <Icon size="16px" name={icon} /> : null}
-					sx={{
-						"@media print": {
-							display: "none !important",
-						},
-					}}
-				/>
-				<Box as="span" fontWeight="500">
-					{capitalize(name)}
-				</Box>
-			</Flex>
-		);
+	const _name = numberRemover(name);
+
+	const needDefaultIcon = _name?.length < 1;
+
+	if (needDefaultIcon) {
+		icon = "person";
 	}
+
+	return (
+		<Flex align="center" gap="0.625rem">
+			<Avatar
+				size={{ base: "sm" }}
+				name={icon ? null : name}
+				bg={hue ? `hsl(${hue},80%,95%)` : "primary.DEFAULT"}
+				color={hue ? `hsl(${hue},80%,25%)` : "divider"}
+				border={hue ? `1px solid hsl(${hue},80%,85%)` : null}
+				icon={icon ? <Icon size="15px" name={icon} /> : null}
+				sx={{
+					"@media print": {
+						display: "none !important",
+					},
+				}}
+			/>
+			<Box as="span" fontWeight="500">
+				{capitalize(needDefaultIcon ? null : _name)}
+			</Box>
+		</Flex>
+	);
 };
 
 export const getStatusStyle = (status = "", tableName) => {

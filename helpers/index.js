@@ -15,9 +15,9 @@ export {
 	getExpandIcoButton,
 	getLocationStyle,
 	getModalStyle,
+	getName,
 	getNameStyle,
 	getPaymentStyle,
 	getStatusStyle,
-	getText,
 	openGoogleMap,
 } from "./TableHelpers";

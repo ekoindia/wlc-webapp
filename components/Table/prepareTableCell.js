@@ -8,9 +8,9 @@ import {
 	getExpandIcoButton,
 	getLocationStyle,
 	getModalStyle,
+	getName,
 	getPaymentStyle,
 	getStatusStyle,
-	getText,
 } from "helpers";
 
 /**
@@ -68,7 +68,9 @@ export const prepareTableCell = (
 			return getDateView(item[column.name]);
 		case "DateTime":
 			return getDateTimeView(item[column.name]);
+		case "Name":
+			return getName(item[column.name]);
 		default:
-			return getText(item[column.name]);
+			return item[column.name];
 	}
 };
