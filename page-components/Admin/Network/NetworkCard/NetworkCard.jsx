@@ -68,9 +68,14 @@ const NetworkCard = ({ item }) => {
 						{item.commission_type}
 					</Box>
 				</Flex>
-				<Flex justifyContent="space-between" mt="10px" py="10px">
-					{getStatusStyle(item.account_status)}
-					{getLocationStyle(address, lattitude, longitude)}
+				<Flex
+					justifyContent="space-between"
+					mt="10px"
+					py="10px"
+					gap="4"
+				>
+					<div>{getStatusStyle(item.account_status)}</div>
+					<div>{getLocationStyle(address, lattitude, longitude)}</div>
 				</Flex>
 			</Flex>
 		</Flex>

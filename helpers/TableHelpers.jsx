@@ -131,9 +131,8 @@ export const getStatusStyle = (status = "", tableName) => {
 			>
 				<Flex
 					textAlign="center"
-					width="min-content"
-					px="8px"
-					py="4px"
+					maxW="min-content"
+					p="4px 8px"
 					border="1px"
 					borderRadius="4px"
 					borderColor={clr}
