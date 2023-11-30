@@ -27,7 +27,7 @@ export const getFirstWord = (text) => {
  */
 
 export const capitalize = (str = "", lower = true) => {
-	const regex = lower ? /(?:^|\s|[-"'([{])+\S/g : /(?:^|[-"'([{])+\S/g;
+	const regex = /(?:^|\s|[-"'([{])+\S/g;
 	return (lower ? str.toLowerCase() : str).replace(regex, (match) =>
 		match.toUpperCase()
 	);
