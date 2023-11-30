@@ -12,6 +12,7 @@ import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
+import { calculateDateBefore } from "utils";
 import { saveDataToFile } from "utils/FileSave";
 import { HistoryTable, HistoryToolbar } from ".";
 
@@ -22,7 +23,7 @@ const action = {
 	EXPORT: 1,
 };
 
-const DEFAULT_DAY_LIMIT = 7;
+const calendar_min_date = calculateDateBefore(new Date(), 90, "yyyy-MM-dd");
 
 const export_type_options = [
 	{
@@ -65,21 +66,22 @@ const History = () => {
 	const [isFiltered, setIsFiltered] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
-	const [minDateFilter, setMinDateFilter] = useState(null);
-	const [minDateExport, setMinDateExport] = useState(() => {
-		const _previousDate = new Date();
-		_previousDate.setDate(_previousDate.getDate() - DEFAULT_DAY_LIMIT);
-		return formatDate(_previousDate, "yyyy-MM-dd");
-	});
+	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
+	const [minDateExport, setMinDateExport] = useState(calendar_min_date);
 	const [today] = useState(() => {
 		const _today = new Date();
 		return formatDate(_today, "yyyy-MM-dd");
 	});
-	const [previousDate] = useState(() => {
-		const _previousDate = new Date();
-		_previousDate.setDate(_previousDate.getDate() - DEFAULT_DAY_LIMIT);
-		return formatDate(_previousDate, "yyyy-MM-dd");
+	const [firstDateOfMonth] = useState(() => {
+		const _currentDate = new Date();
+		const _firstDateOfMonth = new Date(
+			_currentDate.getFullYear(),
+			_currentDate.getMonth(),
+			1
+		);
+		return formatDate(_firstDateOfMonth, "yyyy-MM-dd");
 	});
+
 	const filterItemLimit = useBreakpointValue({
 		base: 2,
 		md: 4,
@@ -102,7 +104,7 @@ const History = () => {
 	} = useForm({
 		defaultValues: {
 			reporttype: "pdf",
-			start_date: previousDate,
+			start_date: firstDateOfMonth,
 			tx_date: today,
 		},
 	});
@@ -144,6 +146,7 @@ const History = () => {
 			name: "start_date",
 			label: "From",
 			parameter_type_id: ParamType.FROM_DATE,
+			minDate: calendar_min_date,
 			maxDate: today,
 			validations: {
 				required: false,
@@ -284,6 +287,8 @@ const History = () => {
 
 		resetExport({
 			..._finalFormState,
+			start_date: watcherFilter.start_date ?? watcherExport.start_date,
+			tx_date: watcherFilter.tx_date ?? watcherExport.tx_date,
 			reporttype: watcherExport.reporttype,
 		});
 
@@ -320,7 +325,7 @@ const History = () => {
 		resetFilter({ ...formElements });
 		resetExport({
 			reporttype: "pdf",
-			start_date: previousDate,
+			start_date: firstDateOfMonth,
 			tx_date: today,
 		});
 	};
