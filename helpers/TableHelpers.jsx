@@ -19,11 +19,6 @@ const statusChecker = {
 	Other: "light",
 };
 
-export const getName = (name) => {
-	const _name = numberRemover(name);
-	return capitalize(_name);
-};
-
 export const getAvatar = (name, icon, hue) => {
 	const _name = numberRemover(name);
 

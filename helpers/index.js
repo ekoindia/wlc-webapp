@@ -15,7 +15,6 @@ export {
 	getExpandIcoButton,
 	getLocationStyle,
 	getModalStyle,
-	getName,
 	getNameStyle,
 	getPaymentStyle,
 	getStatusStyle,

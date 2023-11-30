@@ -33,13 +33,21 @@ const TransactionHistoryCard = ({ item }) => {
 						{item.agent_type}
 					</Box>
 				</Flex>
-				<Flex justifyContent="space-between" mt="10px" py="10px">
-					{getStatusStyle(item.account_status)}
-					{getLocationStyle(
-						item.location,
-						item.latitude,
-						item.longitude
-					)}
+				<Flex
+					justifyContent="space-between"
+					mt="10px"
+					py="10px"
+					gap="4"
+					align="center"
+				>
+					<div>{getStatusStyle(item.account_status)}</div>
+					<div>
+						{getLocationStyle(
+							item.location,
+							item.latitude,
+							item.longitude
+						)}
+					</div>
 				</Flex>
 			</Flex>
 		</Flex>

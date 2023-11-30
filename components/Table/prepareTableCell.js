@@ -1,14 +1,13 @@
 import {
 	getAmountStyle,
 	getArrowStyle,
-	getAvatar,
 	getDateTimeView,
 	getDateView,
 	getDescriptionStyle,
 	getExpandIcoButton,
 	getLocationStyle,
 	getModalStyle,
-	getName,
+	getNameStyle,
 	getPaymentStyle,
 	getStatusStyle,
 } from "helpers";
@@ -55,7 +54,7 @@ export const prepareTableCell = (
 		case "IconButton":
 			return getLocationStyle(item[column.name], lat, long);
 		case "Avatar":
-			return getAvatar(item[column.name]);
+			return getNameStyle(item[column.name]);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":
@@ -68,8 +67,6 @@ export const prepareTableCell = (
 			return getDateView(item[column.name]);
 		case "DateTime":
 			return getDateTimeView(item[column.name]);
-		case "Name":
-			return getName(item[column.name]);
 		default:
 			return item[column.name];
 	}

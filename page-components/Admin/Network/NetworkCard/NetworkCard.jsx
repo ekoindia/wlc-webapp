@@ -73,6 +73,7 @@ const NetworkCard = ({ item }) => {
 					mt="10px"
 					py="10px"
 					gap="4"
+					align="center"
 				>
 					<div>{getStatusStyle(item.account_status)}</div>
 					<div>{getLocationStyle(address, lattitude, longitude)}</div>
