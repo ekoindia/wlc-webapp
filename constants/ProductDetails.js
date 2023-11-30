@@ -73,7 +73,7 @@ export const products = {
 	},
 	CARD_PAYMENT: {
 		uriSegment: "pg",
-		slabs: [{ min: 100, max: 50000 }],
+		slabs: [{ min: 100, max: 49999 }],
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "0",
