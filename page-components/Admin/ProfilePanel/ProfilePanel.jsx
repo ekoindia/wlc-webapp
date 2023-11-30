@@ -133,6 +133,7 @@ const ProfilePanel = () => {
 					data={{
 						...agentData?.profile,
 						agent_name: agentData?.agent_name,
+						agent_type: agentData?.agent_type,
 					}}
 				/>
 			),

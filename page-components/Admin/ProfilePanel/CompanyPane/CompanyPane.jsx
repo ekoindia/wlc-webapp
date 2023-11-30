@@ -27,7 +27,7 @@ const CompanyPane = ({ data }) => {
 	};
 
 	const companyDataList = [
-		{ id: 1, label: "Account Type", value: data?.account_type },
+		{ id: 1, label: "Account Type", value: data?.agent_type },
 		{ id: 2, label: "Plan name", value: data?.plan_name },
 		// { id: 3, label: "KYC status", value: "KYC Compliant" },
 	];
