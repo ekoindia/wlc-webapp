@@ -11,6 +11,7 @@ export {
 	clearSessionStorage,
 } from "./cacheUtils";
 export { default as CombineProviders } from "./CombineProviders";
+export { calculateDateBefore } from "./dateUtils";
 export { debounce } from "./debounce";
 export { getFormErrorMessage } from "./errorMessages";
 export { parse } from "./exprParser";
