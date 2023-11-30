@@ -1,51 +1,47 @@
 import { Table } from "components";
 import { useRouter } from "next/router";
 import { TransactionHistoryCard } from "..";
+
+const trxnHistoryTableParameterList = [
+	{ label: "Sr. No.", show: "#" },
+	{ name: "agent_name", label: "", show: "Avatar" },
+	{ name: "agent_name", label: "Name", sorting: true },
+	{
+		name: "agent_mobile",
+		label: "Mobile",
+		sorting: true,
+	},
+	{ name: "agent_type", label: "Type", sorting: true },
+	{
+		name: "account_status",
+		label: "Status",
+		sorting: true,
+		show: "Tag",
+	},
+	{
+		name: "location",
+		label: "Location",
+		sorting: true,
+		show: "IconButton",
+	},
+	{
+		name: "",
+		label: "",
+		show: "Arrow",
+	},
+];
+
 /**
-//  * A <TransactionHistoryTable> component
- * TODO: This is transaction history table with clickable rows
+ * A TransactionHistoryTable component
  * @arg 	{Object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<TransactionHistoryTable></TransactionHistoryTable>`
  */
-const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
-	// console.log("transactiondata", transactiondata);
-	const renderer = [
-		{ label: "Sr. No.", show: "#" },
-		{ name: "agent_name", label: "Name", sorting: true, show: "Avatar" },
-		{
-			name: "agent_mobile",
-			label: "Mobile",
-			sorting: true,
-		},
-		{ name: "agent_type", label: "Type", sorting: true },
-		// {
-		// 	name: "createdAt",
-		// 	label: "Account Number",
-		// 	sorting: true,
-		// },
-		{
-			name: "account_status",
-			label: "Account Status",
-			sorting: true,
-		},
-		{
-			name: "location",
-			label: "Location",
-			sorting: true,
-			show: "IconButton",
-		},
-		{
-			name: "",
-			label: "",
-			show: "Arrow",
-		},
-	];
-
+const TransactionHistoryTable = ({ trxnData }) => {
 	const router = useRouter();
 
 	const onRowClick = () => {
-		const mobile = transactiondata[0]?.agent_mobile ?? "";
+		const mobile = trxnData[0]?.agent_mobile ?? "";
 		router.push({
 			pathname: "/admin/transaction-history/account-statement",
 			query: { mobile },
@@ -53,15 +49,13 @@ const TransactionHistoryTable = ({ /* searchValue, */ transactiondata }) => {
 	};
 
 	return (
-		<>
-			<Table
-				onRowClick={onRowClick}
-				variant="stripedActionRedirect"
-				renderer={renderer}
-				data={transactiondata}
-				ResponsiveCard={TransactionHistoryCard}
-			/>
-		</>
+		<Table
+			onRowClick={onRowClick}
+			variant="stripedActionRedirect"
+			renderer={trxnHistoryTableParameterList}
+			data={trxnData}
+			ResponsiveCard={TransactionHistoryCard}
+		/>
 	);
 };
 

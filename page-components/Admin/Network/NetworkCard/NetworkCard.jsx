@@ -11,7 +11,15 @@ import { NetworkMenuWrapper } from "..";
  */
 
 const NetworkCard = ({ item }) => {
-	const { agent_mobile, eko_code, account_status, agent_type } = item;
+	const {
+		agent_mobile,
+		eko_code,
+		account_status,
+		agent_type,
+		address_details,
+	} = item;
+
+	const { lattitude, longitude, address } = address_details;
 	return (
 		<Flex direction="column" bg="white" borderRadius="10px" p="20px">
 			<Flex justifyContent="space-between">
@@ -62,7 +70,7 @@ const NetworkCard = ({ item }) => {
 				</Flex>
 				<Flex justifyContent="space-between" mt="10px" py="10px">
 					{getStatusStyle(item.account_status)}
-					{getLocationStyle(item.location)}
+					{getLocationStyle(address, lattitude, longitude)}
 				</Flex>
 			</Flex>
 		</Flex>

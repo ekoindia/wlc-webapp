@@ -1,13 +1,13 @@
 import {
 	getAmountStyle,
 	getArrowStyle,
+	getAvatar,
 	getDateTimeView,
 	getDateView,
 	getDescriptionStyle,
 	getExpandIcoButton,
 	getLocationStyle,
 	getModalStyle,
-	getNameStyle,
 	getPaymentStyle,
 	getStatusStyle,
 } from "helpers";
@@ -34,6 +34,9 @@ export const prepareTableCell = (
 	const mobile_number = item?.agent_mobile;
 	const eko_code = item?.profile?.eko_code ?? [];
 	const trx_type = item?.debit_credit || item?.trx_type;
+	const lat = item?.latitude || item?.address_details?.lattitude;
+	const long = item?.longitude || item?.address_details?.longitude;
+
 	switch (column?.show) {
 		case "#":
 			return serialNo;
@@ -49,17 +52,9 @@ export const prepareTableCell = (
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
 		case "IconButton":
-			return getLocationStyle(
-				item[column.name],
-				item?.address_details?.lattitude,
-				item?.address_details?.longitude
-			);
+			return getLocationStyle(item[column.name], lat, long);
 		case "Avatar":
-			if (item[column.name]) {
-				return getNameStyle(item[column.name]);
-			} else {
-				return getNameStyle(mobile_number);
-			}
+			return getAvatar(item[column.name]);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":

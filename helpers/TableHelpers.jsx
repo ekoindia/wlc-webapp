@@ -1,6 +1,7 @@
-import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
-import { Currency, DateView, IcoButton, Icon, Tags } from "components";
+import { Avatar, Box, Flex, Text, Tooltip } from "@chakra-ui/react";
+import { Currency, DateView, IcoButton, Icon } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
+import { limitText, nullRemover } from "utils";
 
 // convert status to color
 const statusChecker = {
@@ -14,6 +15,24 @@ const statusChecker = {
 	Initiated: "orange.300",
 	"Refund pending": "purple.500",
 	Other: "light",
+};
+
+export const getAvatar = (name, icon, hue) => {
+	return (
+		<Avatar
+			size={{ base: "sm" }}
+			name={icon ? null : name}
+			bg={hue ? `hsl(${hue},80%,95%)` : "primary.DEFAULT"}
+			color={hue ? `hsl(${hue},80%,25%)` : "divider"}
+			border={hue ? `1px solid hsl(${hue},80%,85%)` : null}
+			icon={icon ? <Icon size="16px" name={icon} /> : null}
+			sx={{
+				"@media print": {
+					display: "none !important",
+				},
+			}}
+		/>
+	);
 };
 
 export const getNameStyle = (name, icon, hue) => {
@@ -42,14 +61,13 @@ export const getNameStyle = (name, icon, hue) => {
 };
 
 export const getStatusStyle = (status = "", tableName) => {
+	const clr = statusChecker[status] || "light";
 	if (tableName === "History") {
 		const clr = statusChecker[status] || "light";
 		if (status?.toLowerCase() !== "success") {
 			return (
 				<Flex justify="flex-end">
 					<Flex
-						// align="center"
-						// justify="center"
 						textAlign="center"
 						width="min-content"
 						px="6px"
@@ -71,45 +89,90 @@ export const getStatusStyle = (status = "", tableName) => {
 						}}
 					>
 						{status}
-						{/* <Tags
-						size={{ base: "xs", "2xl": "sm" }}
-						px="8px"
-						borderRadius="4px"
-						status={status}
-					/> */}
 					</Flex>
 				</Flex>
 			);
 		}
 		return null;
-	}
+	} else {
+		const _needToolTip = status?.length > 12;
+		const _status = limitText(status, 12);
 
-	return (
-		<Flex>
-			<Tags borderRadius="full" status={status} />
-		</Flex>
-	);
+		return (
+			<Tooltip
+				hasArrow
+				label={_needToolTip ? status : null}
+				fontSize="xs"
+				bg="primary.DEFAULT"
+				color="white"
+			>
+				<Flex
+					textAlign="center"
+					width="min-content"
+					px="8px"
+					py="4px"
+					border="1px"
+					borderRadius="4px"
+					borderColor={clr}
+					color={clr}
+					noOfLines={2}
+					whiteSpace="pre-line"
+					fontSize="xs"
+					lineHeight="1"
+					bg="white"
+				>
+					{_status}
+				</Flex>
+			</Tooltip>
+		);
+	}
 };
 
 export const getLocationStyle = (location, lat, long) => {
+	let _showIcoButton = false;
+	if (lat != null || long != null || lat != undefined || long != undefined) {
+		_showIcoButton = true;
+	}
+
+	const _nullRemovedText = nullRemover(location);
+
+	const _needToolTip = _nullRemovedText?.length > 25;
+
+	let _limitedText = "";
+
+	if (_needToolTip) {
+		_limitedText = limitText(_nullRemovedText, 25);
+	}
+
 	return (
-		<Flex alignItems={"center"}>
-			<IcoButton
-				size="xs"
-				iconName="near-me"
-				theme="accent"
-				mr={1}
-				onClick={(e) => {
-					openGoogleMap(lat, long);
-					e.stopPropagation();
-				}}
-				sx={{
-					"@media print": {
-						display: "none !important",
-					},
-				}}
-			/>
-			<Box>{location}</Box>
+		<Flex align="center">
+			{_showIcoButton && (
+				<IcoButton
+					size="xs"
+					iconName="near-me"
+					theme="accent"
+					mr={1}
+					onClick={(e) => {
+						openGoogleMap(lat, long);
+						e.stopPropagation();
+					}}
+					sx={{
+						"@media print": {
+							display: "none !important",
+						},
+					}}
+				/>
+			)}
+
+			<Tooltip
+				hasArrow
+				label={_needToolTip ? _nullRemovedText : null}
+				fontSize="xs"
+				bg="primary.DEFAULT"
+				color="white"
+			>
+				<Text>{_needToolTip ? _limitedText : _nullRemovedText}</Text>
+			</Tooltip>
 		</Flex>
 	);
 };
@@ -149,9 +212,6 @@ export const getExpandIcoButton = (expandedRow, index) => {
 			color="white"
 			bg="accent.DEFAULT"
 			size="xxs"
-			// iconStyle={{ color: "accent.DEFAULT" }}
-			// border="2px solid #FE9F00"
-			// boxShadow="0px 3px 6px #00000029"
 			title={expandedRow === index ? "Shrink" : "Expand"}
 			cursor="pointer"
 			sx={{

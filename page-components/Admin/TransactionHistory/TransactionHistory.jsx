@@ -33,7 +33,7 @@ const TransactionHistory = () => {
 		mutate();
 	}, [search]);
 
-	const transactiondata = data?.data?.transaction_details || [];
+	const trxnData = data?.data?.transaction_details || [];
 
 	return (
 		<>
@@ -58,10 +58,8 @@ const TransactionHistory = () => {
 				/>
 
 				{isSearching ? (
-					transactiondata.length ? (
-						<TransactionHistoryTable
-							transactiondata={transactiondata}
-						/>
+					trxnData.length ? (
+						<TransactionHistoryTable {...{ trxnData }} />
 					) : (
 						<Flex justify="center" align="center" h="100px">
 							<Text textColor="light">Nothing Found</Text>

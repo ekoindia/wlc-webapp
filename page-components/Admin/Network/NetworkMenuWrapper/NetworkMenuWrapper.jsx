@@ -208,6 +208,8 @@ const NetworkMenuWrapper = ({
 			});
 	};
 
+	if (_finalMenuList?.length < 1) return;
+
 	return (
 		<div>
 			<Menus

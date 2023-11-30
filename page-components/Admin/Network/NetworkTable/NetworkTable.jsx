@@ -9,7 +9,8 @@ import { NetworkCard } from "..";
  */
 const networkTableParameterList = [
 	{ label: "Sr. No.", show: "#" },
-	{ name: "agent_name", label: "Name", sorting: true, show: "Avatar" },
+	{ name: "agent_name", label: "", show: "Avatar" },
+	{ name: "agent_name", label: "Name", sorting: true },
 	{ name: "agent_mobile", label: "Mobile", sorting: true },
 	{ name: "agent_type", label: "Type", sorting: true },
 	{
@@ -20,12 +21,16 @@ const networkTableParameterList = [
 	},
 	{
 		name: "account_status",
-		label: "Account Status",
+		label: "Status",
 		sorting: true,
 		show: "Tag",
 	},
 	{ name: "eko_code", label: "User Code", sorting: true },
-	{ name: "commission_type", label: "Commission Frequency", sorting: true },
+	{
+		name: "commission_type",
+		label: "Commission Frequency",
+		sorting: true,
+	},
 	{
 		name: "location",
 		label: "Location",

@@ -15,15 +15,6 @@ const TransactionHistoryCard = ({ item }) => {
 				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
 					{getNameStyle(item.agent_name)}
 				</Box>
-				{/* <Menus
-					iconName="more-vert"
-					as={IconButton}
-					iconStyles={{ width: "4px", height: "18px" }}
-					type="inverted"
-					onClick={(e) => {
-						e.stopPropagation();
-					}}
-				/> */}
 			</Flex>
 			<Flex direction="column" fontSize={{ base: "sm" }} pl="42px">
 				<Flex gap="2">
@@ -42,25 +33,13 @@ const TransactionHistoryCard = ({ item }) => {
 						{item.agent_type}
 					</Box>
 				</Flex>
-				{/* <Flex gap="2">
-					<Box as="span" color="light">
-						Account Number:
-					</Box>
-					<Box as="span" color="dark">
-						{item.onboarded_on}
-					</Box>
-				</Flex> */}
-				{/* <Flex gap="2">
-					<Box as="span" color="light">
-						User Code:
-					</Box>
-					<Box as="span" color="dark">
-						{item.eko_code} 
-					</Box>
-				</Flex> */}
 				<Flex justifyContent="space-between" mt="10px" py="10px">
 					{getStatusStyle(item.account_status)}
-					{getLocationStyle(item.location)}
+					{getLocationStyle(
+						item.location,
+						item.latitude,
+						item.longitude
+					)}
 				</Flex>
 			</Flex>
 		</Flex>
