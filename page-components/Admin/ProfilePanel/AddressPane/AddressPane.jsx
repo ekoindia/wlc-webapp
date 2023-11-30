@@ -3,6 +3,7 @@ import { Button, Card, IcoButton } from "components";
 import { openGoogleMap } from "helpers";
 import { MapView } from "libs";
 import { useRouter } from "next/router";
+import { nullRemover } from "utils";
 
 const AddressPane = ({ data }) => {
 	const router = useRouter();
@@ -20,7 +21,7 @@ const AddressPane = ({ data }) => {
 					</Text>
 
 					<Text fontSize="md" textTransform="capitalize">
-						{data?.address}
+						{nullRemover(data?.address)}
 					</Text>
 
 					<Divider />
