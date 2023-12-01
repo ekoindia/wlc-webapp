@@ -54,7 +54,7 @@ const History = () => {
 		rr_no: "",
 	};
 	const router = useRouter();
-	const { userData } = useUser();
+	const { userData, isAdmin } = useUser();
 	const { accountDetails } = userData;
 	const { account_list } = accountDetails;
 	const { accessToken } = useSession();
@@ -64,6 +64,7 @@ const History = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [finalFormState, setFinalFormState] = useState({});
 	const [isFiltered, setIsFiltered] = useState(false);
+	const [isSearched, setIsSearched] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
@@ -186,14 +187,6 @@ const History = () => {
 		},
 	];
 
-	const onSearchSubmit = (searchedText) => {
-		const _validSearch = searchedText && !(searchedText == searchValue);
-		if (_validSearch) {
-			setSearchValue(searchedText);
-			quickSearch(searchedText);
-		}
-	};
-
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
 
@@ -241,11 +234,15 @@ const History = () => {
 
 		// Perform specific search, if available...
 		if (otherQueries && Object.keys(otherQueries).length > 0) {
-			const { tid, account, customer_mobile, amount } = otherQueries;
-			// Set Filter form for searching...
-			setFinalFormState({
-				...{ tid, account, customer_mobile, amount },
+			const _finalFormState = {};
+
+			Object.keys(otherQueries).forEach((key) => {
+				if (otherQueries[key]) {
+					_finalFormState[key] = otherQueries[key];
+				}
 			});
+			// Set Filter form for searching...
+			setFinalFormState(_finalFormState);
 
 			setOpenModalId(null);
 			return;
@@ -296,6 +293,30 @@ const History = () => {
 		setIsFiltered(true);
 	};
 
+	const clearFilter = () => {
+		onFilterSubmit({ ...formElements });
+		setIsFiltered(false);
+		resetFilter({ ...formElements });
+		resetExport({
+			reporttype: "pdf",
+			start_date: firstDateOfMonth,
+			tx_date: today,
+		});
+	};
+
+	const onSearchSubmit = (searchedText) => {
+		const _validSearch = searchedText && searchedText != searchValue;
+		if (_validSearch) {
+			setSearchValue(searchedText);
+			quickSearch(searchedText);
+			setIsSearched(true);
+			const prefix = isAdmin ? "/admin" : "";
+			router.push(`${prefix}/history?search=${searchedText}`, undefined, {
+				shallow: true,
+			});
+		}
+	};
+
 	const filteredItemLabels = useMemo(() => {
 		const _labels = [];
 		const labelsToReplace = {
@@ -317,18 +338,6 @@ const History = () => {
 
 		return [...new Set(_labels)];
 	}, [finalFormState]);
-
-	const clearFilter = () => {
-		// setSearchValue(""); //? check if needed
-		onFilterSubmit({ ...formElements });
-		setIsFiltered(false);
-		resetFilter({ ...formElements });
-		resetExport({
-			reporttype: "pdf",
-			start_date: firstDateOfMonth,
-			tx_date: today,
-		});
-	};
 
 	const onReportDownload = (data) => {
 		setOpenModalId(null);
@@ -438,8 +447,9 @@ const History = () => {
 	// or, a mobile number.
 	useEffect(() => {
 		const { search, ...others } = router.query;
-		if (search || others) {
+		if ((search || others) && search != searchValue) {
 			quickSearch(search, others);
+			setIsSearched(true);
 		}
 	}, [router.query]);
 
@@ -547,13 +557,18 @@ const History = () => {
 				</PrintReceipt>
 
 				<Flex
-					display={isFiltered ? "flex" : "none"}
+					display={isFiltered || isSearched ? "flex" : "none"}
 					align="center"
 					gap="2"
 					mt="6"
 				>
 					<Flex color="light" fontSize="xs">
-						Filtering by &thinsp;
+						{isFiltered
+							? "Filtering by"
+							: isSearched
+							? "Searching by"
+							: null}
+						&thinsp;
 						{filteredItemLabels
 							?.slice(0, filterItemLimit)
 							.map((val, index) => (
