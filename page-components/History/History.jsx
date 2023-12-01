@@ -64,7 +64,6 @@ const History = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [finalFormState, setFinalFormState] = useState({});
 	const [isFiltered, setIsFiltered] = useState(false);
-	const [isSearched, setIsSearched] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
@@ -243,6 +242,18 @@ const History = () => {
 			});
 			// Set Filter form for searching...
 			setFinalFormState(_finalFormState);
+			resetFilter({ ..._finalFormState });
+			resetExport({
+				..._finalFormState,
+				start_date: otherQueries["tid"]
+					? ""
+					: watcherFilter.start_date ?? watcherExport.start_date,
+				tx_date: otherQueries["tid"]
+					? ""
+					: watcherFilter.tx_date ?? watcherExport.tx_date,
+				reporttype: "pdf",
+			});
+			setIsFiltered(true);
 
 			setOpenModalId(null);
 			return;
@@ -268,6 +279,21 @@ const History = () => {
 		setFinalFormState({
 			[type]: search,
 		});
+		resetFilter({ [type]: search });
+		console.log("(quick search) type", type, type == "tid");
+		resetExport({
+			[type]: search,
+			start_date:
+				type == "tid"
+					? ""
+					: watcherFilter.start_date ?? watcherExport.start_date,
+			tx_date:
+				type == "tid"
+					? ""
+					: watcherFilter.tx_date ?? watcherExport.tx_date,
+			reporttype: "pdf",
+		});
+		setIsFiltered(true);
 
 		setOpenModalId(null);
 	};
@@ -294,6 +320,7 @@ const History = () => {
 	};
 
 	const clearFilter = () => {
+		setSearchValue("");
 		onFilterSubmit({ ...formElements });
 		setIsFiltered(false);
 		resetFilter({ ...formElements });
@@ -309,7 +336,6 @@ const History = () => {
 		if (_validSearch) {
 			setSearchValue(searchedText);
 			quickSearch(searchedText);
-			setIsSearched(true);
 			const prefix = isAdmin ? "/admin" : "";
 			router.push(`${prefix}/history?search=${searchedText}`, undefined, {
 				shallow: true,
@@ -449,7 +475,6 @@ const History = () => {
 		const { search, ...others } = router.query;
 		if ((search || others) && search != searchValue) {
 			quickSearch(search, others);
-			setIsSearched(true);
 		}
 	}, [router.query]);
 
@@ -557,18 +582,13 @@ const History = () => {
 				</PrintReceipt>
 
 				<Flex
-					display={isFiltered || isSearched ? "flex" : "none"}
+					display={isFiltered ? "flex" : "none"}
 					align="center"
 					gap="2"
 					mt="6"
 				>
 					<Flex color="light" fontSize="xs">
-						{isFiltered
-							? "Filtering by"
-							: isSearched
-							? "Searching by"
-							: null}
-						&thinsp;
+						Filtering by &thinsp;
 						{filteredItemLabels
 							?.slice(0, filterItemLimit)
 							.map((val, index) => (
