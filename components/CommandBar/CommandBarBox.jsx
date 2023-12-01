@@ -216,6 +216,7 @@ const getDynamicActions = ({
 		const historyActions = getHistorySearchActions({
 			queryValue,
 			router,
+			isAdmin,
 		});
 		preActions.push(...historyActions);
 
