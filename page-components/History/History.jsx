@@ -186,13 +186,13 @@ const History = () => {
 		},
 	];
 
-	function onSearchSubmit(e) {
-		setSearchValue(e);
-		if (e) {
-			quickSearch(e);
+	const onSearchSubmit = (searchedText) => {
+		const _validSearch = searchedText && !(searchedText == searchValue);
+		if (_validSearch) {
+			setSearchValue(searchedText);
+			quickSearch(searchedText);
 		}
-		// console.log("search value", e);
-	}
+	};
 
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
@@ -232,7 +232,7 @@ const History = () => {
 	 * Search for a transaction based on the query. The query can be a transaction-id, account, amount, or, a mobile number.
 	 * @param {*} search
 	 */
-	const quickSearch = (search, otherQueries) => {
+	const quickSearch = (search, otherQueries = {}) => {
 		console.log("Search inside quickSearch", search, otherQueries);
 
 		if (!(search || otherQueries)) return;
