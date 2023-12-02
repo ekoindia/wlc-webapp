@@ -54,17 +54,17 @@ const History = () => {
 		rr_no: "",
 	};
 	const router = useRouter();
-	const { userData } = useUser();
+	const { userData, isAdmin } = useUser();
 	const { accountDetails } = userData;
 	const { account_list } = accountDetails;
 	const { accessToken } = useSession();
 	const { setSearchTitle } = useGlobalSearch();
 	const [data, setData] = useState();
-	const [searchValue, setSearchValue] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
 	const [finalFormState, setFinalFormState] = useState({});
 	const [isFiltered, setIsFiltered] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [prevSearch, setPrevSearch] = useState("");
 	const [openModalId, setOpenModalId] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
 	const [minDateExport, setMinDateExport] = useState(calendar_min_date);
@@ -88,6 +88,14 @@ const History = () => {
 	});
 
 	const {
+		handleSubmit: handleSubmitSearch,
+		register: registerSearch,
+		control: controlSearch,
+		formState: { errors: errorsSearch },
+		reset: resetSearch,
+	} = useForm();
+
+	const {
 		handleSubmit: handleSubmitFilter,
 		register: registerFilter,
 		control: controlFilter,
@@ -109,6 +117,10 @@ const History = () => {
 		},
 	});
 
+	const watcherSearch = useWatch({
+		control: controlSearch,
+	});
+
 	const watcherFilter = useWatch({
 		control: controlFilter,
 	});
@@ -122,6 +134,7 @@ const History = () => {
 			name: "tid",
 			label: "TID",
 			parameter_type_id: ParamType.NUMERIC,
+			step: "1",
 			validations: {
 				required: false,
 			},
@@ -130,6 +143,7 @@ const History = () => {
 			name: "account",
 			label: "Account Number",
 			parameter_type_id: ParamType.NUMERIC,
+			step: "1",
 			validations: {
 				required: false,
 			},
@@ -137,6 +151,7 @@ const History = () => {
 		{
 			name: "customer_mobile",
 			label: "Customer Mobile No.",
+			step: "1",
 			parameter_type_id: ParamType.NUMERIC,
 			validations: {
 				required: false,
@@ -149,7 +164,12 @@ const History = () => {
 			minDate: calendar_min_date,
 			maxDate: today,
 			validations: {
-				required: false,
+				required:
+					openModalId == action.EXPORT
+						? watcherExport.tid
+							? false
+							: true
+						: false,
 			},
 		},
 		{
@@ -164,7 +184,12 @@ const History = () => {
 					: null,
 			maxDate: today,
 			validations: {
-				required: false,
+				required:
+					openModalId == action.EXPORT
+						? watcherExport.tid
+							? false
+							: true
+						: false,
 			},
 		},
 		{
@@ -179,20 +204,13 @@ const History = () => {
 		{
 			name: "rr_no",
 			label: "Tracking Number",
+			step: "1",
 			parameter_type_id: ParamType.NUMERIC,
 			validations: {
 				required: false,
 			},
 		},
 	];
-
-	function onSearchSubmit(e) {
-		setSearchValue(e);
-		if (e) {
-			quickSearch(e);
-		}
-		// console.log("search value", e);
-	}
 
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
@@ -232,7 +250,7 @@ const History = () => {
 	 * Search for a transaction based on the query. The query can be a transaction-id, account, amount, or, a mobile number.
 	 * @param {*} search
 	 */
-	const quickSearch = (search, otherQueries) => {
+	const quickSearch = (search, otherQueries = {}) => {
 		console.log("Search inside quickSearch", search, otherQueries);
 
 		if (!(search || otherQueries)) return;
@@ -241,37 +259,78 @@ const History = () => {
 
 		// Perform specific search, if available...
 		if (otherQueries && Object.keys(otherQueries).length > 0) {
-			const { tid, account, customer_mobile, amount } = otherQueries;
-			// Set Filter form for searching...
-			setFinalFormState({
-				...{ tid, account, customer_mobile, amount },
+			const _finalFormState = {};
+
+			Object.keys(otherQueries).forEach((key) => {
+				if (otherQueries[key]) {
+					_finalFormState[key] = otherQueries[key];
+				}
 			});
+			// Set Filter form for searching...
+			setFinalFormState(_finalFormState);
+			resetFilter({ ..._finalFormState });
+			resetExport({
+				..._finalFormState,
+				start_date: otherQueries["tid"]
+					? ""
+					: watcherFilter.start_date ??
+					  watcherExport.start_date ??
+					  firstDateOfMonth,
+				tx_date: otherQueries["tid"]
+					? ""
+					: watcherFilter.tx_date ?? watcherExport.tx_date ?? today,
+				reporttype: "pdf",
+			});
+			setIsFiltered(true);
 
 			setOpenModalId(null);
 			return;
 		}
 
-		// Perform generic search...
-		// Check if search is a number
-		if (/^[0-9]+$/.test(search) !== true) {
-			// Not a number
-			return;
-		}
+		// Remove formatters (commas and spaces) from the number query
+		const unformattedNumberQuery = search?.replace(/(?<=[0-9])[ ,]/g, "");
+		const len = unformattedNumberQuery?.length ?? 0;
+		const isDecimal = unformattedNumberQuery?.includes(".");
+		const numQueryVal = Number(unformattedNumberQuery);
+
+		// Check if the query is a valid number
+		const isValidNumQuery =
+			numQueryVal &&
+			Number.isFinite(numQueryVal) &&
+			len >= 1 &&
+			len <= 18;
+
+		if (!isValidNumQuery) return;
+
 		// Detect type of search
-		let type = "account";
-		if (/^[6-9][0-9]{9}$/.test(search)) {
+		let type;
+
+		if (len === 10 && /^[6-9]/.test(search) && !isDecimal)
 			type = "customer_mobile";
-		} else if (search.length >= 7 && search.length <= 10) {
-			type = "tid";
-		} else if (search.length < 7) {
-			type = "amount";
-		}
+		else if (len <= 7) type = "amount";
+		else if (len === 10 && !isDecimal) type = "tid";
+		else if (len >= 9 && len <= 18 && !isDecimal) type = "account";
 
 		// Set Filter form for searching...
 		setFinalFormState({
 			[type]: search,
 		});
-
+		resetFilter({ [type]: search });
+		resetExport({
+			[type]: search,
+			start_date:
+				type == "tid"
+					? ""
+					: watcherFilter.start_date ??
+					  watcherExport.start_date ??
+					  firstDateOfMonth,
+			tx_date:
+				type == "tid"
+					? ""
+					: watcherFilter.tx_date ?? watcherExport.tx_date ?? today,
+			reporttype: "pdf",
+		});
+		setIsFiltered(true);
 		setOpenModalId(null);
 	};
 
@@ -296,6 +355,35 @@ const History = () => {
 		setIsFiltered(true);
 	};
 
+	const clearFilter = () => {
+		onFilterSubmit({ ...formElements });
+		setPrevSearch("");
+		resetSearch({ search: "" });
+		resetFilter({ ...formElements });
+		resetExport({
+			reporttype: "pdf",
+			start_date: firstDateOfMonth,
+			tx_date: today,
+		});
+		setIsFiltered(false);
+		const prefix = isAdmin ? "/admin" : "";
+		router.push(`${prefix}/history`, undefined, {
+			shallow: true,
+		});
+	};
+
+	const onSearchSubmit = ({ search }) => {
+		const _validSearch = search && search != prevSearch;
+		if (_validSearch) {
+			quickSearch(search);
+			setPrevSearch(search);
+			const prefix = isAdmin ? "/admin" : "";
+			router.push(`${prefix}/history?search=${search}`, undefined, {
+				shallow: true,
+			});
+		}
+	};
+
 	const filteredItemLabels = useMemo(() => {
 		const _labels = [];
 		const labelsToReplace = {
@@ -317,18 +405,6 @@ const History = () => {
 
 		return [...new Set(_labels)];
 	}, [finalFormState]);
-
-	const clearFilter = () => {
-		// setSearchValue(""); //? check if needed
-		onFilterSubmit({ ...formElements });
-		setIsFiltered(false);
-		resetFilter({ ...formElements });
-		resetExport({
-			reporttype: "pdf",
-			start_date: firstDateOfMonth,
-			tx_date: today,
-		});
-	};
 
 	const onReportDownload = (data) => {
 		setOpenModalId(null);
@@ -365,6 +441,27 @@ const History = () => {
 	};
 
 	const transactionList = data;
+
+	const searchBarConfig = {
+		register: registerSearch,
+		control: controlSearch,
+		errors: errorsSearch,
+		formValue: watcherSearch,
+		parameter_list: [
+			{
+				name: "search",
+				parameter_type_id: ParamType.NUMERIC,
+				placeholder: "Search by TID, Mobile, Account, etc",
+				validations: {
+					required: false,
+				},
+				inputLeftElement: (
+					<Icon name="search" size="sm" color="light" />
+				),
+				onEnter: handleSubmitSearch(onSearchSubmit),
+			},
+		],
+	};
 
 	const actionBtnConfig = [
 		{
@@ -438,7 +535,8 @@ const History = () => {
 	// or, a mobile number.
 	useEffect(() => {
 		const { search, ...others } = router.query;
-		if (search || others) {
+		const _validSearch = search ? search != prevSearch : others;
+		if (_validSearch) {
 			quickSearch(search, others);
 		}
 	}, [router.query]);
@@ -524,12 +622,11 @@ const History = () => {
 			>
 				<HistoryToolbar
 					{...{
-						searchValue,
-						onSearchSubmit,
 						isFiltered,
 						clearFilter,
 						openModalId,
 						setOpenModalId,
+						searchBarConfig,
 						actionBtnConfig,
 					}}
 				/>

@@ -8,7 +8,11 @@ import { getKBarAction } from ".";
  * @param {boolean} Options.isAdmin - Whether the user is an admin
  * @param {object} Options.router - The router object
  */
-export const getHistorySearchActions = ({ queryValue = "", router }) => {
+export const getHistorySearchActions = ({
+	queryValue = "",
+	router,
+	isAdmin,
+}) => {
 	// Show other actions based on numeric search...
 
 	// Show Genric Transaction History Search Action if no query is entered
@@ -47,7 +51,7 @@ export const getHistorySearchActions = ({ queryValue = "", router }) => {
 
 	// Check if the query is a valid number
 	const isValidNumQuery =
-		numQueryVal && Number.isFinite(numQueryVal) && len >= 2 && len <= 18;
+		numQueryVal && Number.isFinite(numQueryVal) && len >= 1 && len <= 18;
 
 	const results = [];
 
@@ -65,7 +69,10 @@ export const getHistorySearchActions = ({ queryValue = "", router }) => {
 					icon: "", // "mobile"
 					perform: () => {
 						console.log("Mobile search clicked", router);
-						router.push(`/history?customer_mobile=${numQueryVal}`);
+						const prefix = isAdmin ? "/admin" : "";
+						router.push(
+							`${prefix}/history?customer_mobile=${numQueryVal}`
+						);
 					},
 				})
 			);
@@ -81,8 +88,10 @@ export const getHistorySearchActions = ({ queryValue = "", router }) => {
 					// keywords: queryValue,
 					icon: "", // "amount"
 					// section: "History",
-					perform: () =>
-						router.push(`/history?amount=${numQueryVal}`),
+					perform: () => {
+						const prefix = isAdmin ? "/admin" : "";
+						router.push(`${prefix}/history?amount=${numQueryVal}`);
+					},
 				})
 			);
 		}
@@ -97,7 +106,10 @@ export const getHistorySearchActions = ({ queryValue = "", router }) => {
 					// keywords: queryValue,
 					icon: "", // "tid"
 					// section: "History",
-					perform: () => router.push(`/history?tid=${numQueryVal}`),
+					perform: () => {
+						const prefix = isAdmin ? "/admin" : "";
+						router.push(`${prefix}/history?tid=${numQueryVal}`);
+					},
 				})
 			);
 		}
@@ -112,8 +124,10 @@ export const getHistorySearchActions = ({ queryValue = "", router }) => {
 					// keywords: queryValue,
 					icon: "", // "tid"
 					// section: "History",
-					perform: () =>
-						router.push(`/history?account=${numQueryVal}`),
+					perform: () => {
+						const prefix = isAdmin ? "/admin" : "";
+						router.push(`${prefix}/history?account=${numQueryVal}`);
+					},
 				})
 			);
 		}
