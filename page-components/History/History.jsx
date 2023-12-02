@@ -134,6 +134,7 @@ const History = () => {
 			name: "tid",
 			label: "TID",
 			parameter_type_id: ParamType.NUMERIC,
+			step: "1",
 			validations: {
 				required: false,
 			},
@@ -142,6 +143,7 @@ const History = () => {
 			name: "account",
 			label: "Account Number",
 			parameter_type_id: ParamType.NUMERIC,
+			step: "1",
 			validations: {
 				required: false,
 			},
@@ -149,6 +151,7 @@ const History = () => {
 		{
 			name: "customer_mobile",
 			label: "Customer Mobile No.",
+			step: "1",
 			parameter_type_id: ParamType.NUMERIC,
 			validations: {
 				required: false,
@@ -161,7 +164,12 @@ const History = () => {
 			minDate: calendar_min_date,
 			maxDate: today,
 			validations: {
-				required: false,
+				required:
+					openModalId == action.EXPORT
+						? watcherExport.tid
+							? false
+							: true
+						: false,
 			},
 		},
 		{
@@ -176,7 +184,12 @@ const History = () => {
 					: null,
 			maxDate: today,
 			validations: {
-				required: false,
+				required:
+					openModalId == action.EXPORT
+						? watcherExport.tid
+							? false
+							: true
+						: false,
 			},
 		},
 		{
@@ -191,6 +204,7 @@ const History = () => {
 		{
 			name: "rr_no",
 			label: "Tracking Number",
+			step: "1",
 			parameter_type_id: ParamType.NUMERIC,
 			validations: {
 				required: false,
@@ -259,10 +273,12 @@ const History = () => {
 				..._finalFormState,
 				start_date: otherQueries["tid"]
 					? ""
-					: watcherFilter.start_date ?? watcherExport.start_date,
+					: watcherFilter.start_date ??
+					  watcherExport.start_date ??
+					  firstDateOfMonth,
 				tx_date: otherQueries["tid"]
 					? ""
-					: watcherFilter.tx_date ?? watcherExport.tx_date,
+					: watcherFilter.tx_date ?? watcherExport.tx_date ?? today,
 				reporttype: "pdf",
 			});
 			setIsFiltered(true);
@@ -271,42 +287,50 @@ const History = () => {
 			return;
 		}
 
-		// Perform generic search...
-		// Check if search is a number
-		if (/^[0-9]+$/.test(search) !== true) {
-			// Not a number
-			return;
-		}
+		// Remove formatters (commas and spaces) from the number query
+		const unformattedNumberQuery = search?.replace(/(?<=[0-9])[ ,]/g, "");
+		const len = unformattedNumberQuery?.length ?? 0;
+		const isDecimal = unformattedNumberQuery?.includes(".");
+		const numQueryVal = Number(unformattedNumberQuery);
+
+		// Check if the query is a valid number
+		const isValidNumQuery =
+			numQueryVal &&
+			Number.isFinite(numQueryVal) &&
+			len >= 1 &&
+			len <= 18;
+
+		if (!isValidNumQuery) return;
+
 		// Detect type of search
-		let type = "account";
-		if (/^[6-9][0-9]{9}$/.test(search)) {
+		let type;
+
+		if (len === 10 && /^[6-9]/.test(search) && !isDecimal)
 			type = "customer_mobile";
-		} else if (search.length >= 7 && search.length <= 10) {
-			type = "tid";
-		} else if (search.length < 7) {
-			type = "amount";
-		}
+		else if (len <= 7) type = "amount";
+		else if (len === 10 && !isDecimal) type = "tid";
+		else if (len >= 9 && len <= 18 && !isDecimal) type = "account";
 
 		// Set Filter form for searching...
 		setFinalFormState({
 			[type]: search,
 		});
 		resetFilter({ [type]: search });
-		console.log("(quick search) type", type, type == "tid");
 		resetExport({
 			[type]: search,
 			start_date:
 				type == "tid"
 					? ""
-					: watcherFilter.start_date ?? watcherExport.start_date,
+					: watcherFilter.start_date ??
+					  watcherExport.start_date ??
+					  firstDateOfMonth,
 			tx_date:
 				type == "tid"
 					? ""
-					: watcherFilter.tx_date ?? watcherExport.tx_date,
+					: watcherFilter.tx_date ?? watcherExport.tx_date ?? today,
 			reporttype: "pdf",
 		});
 		setIsFiltered(true);
-
 		setOpenModalId(null);
 	};
 

@@ -51,7 +51,7 @@ export const getHistorySearchActions = ({
 
 	// Check if the query is a valid number
 	const isValidNumQuery =
-		numQueryVal && Number.isFinite(numQueryVal) && len >= 2 && len <= 18;
+		numQueryVal && Number.isFinite(numQueryVal) && len >= 1 && len <= 18;
 
 	const results = [];
 
