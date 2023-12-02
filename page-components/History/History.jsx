@@ -60,11 +60,11 @@ const History = () => {
 	const { accessToken } = useSession();
 	const { setSearchTitle } = useGlobalSearch();
 	const [data, setData] = useState();
-	const [searchValue, setSearchValue] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
 	const [finalFormState, setFinalFormState] = useState({});
 	const [isFiltered, setIsFiltered] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [prevSearch, setPrevSearch] = useState("");
 	const [openModalId, setOpenModalId] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
 	const [minDateExport, setMinDateExport] = useState(calendar_min_date);
@@ -88,6 +88,14 @@ const History = () => {
 	});
 
 	const {
+		handleSubmit: handleSubmitSearch,
+		register: registerSearch,
+		control: controlSearch,
+		formState: { errors: errorsSearch },
+		reset: resetSearch,
+	} = useForm();
+
+	const {
 		handleSubmit: handleSubmitFilter,
 		register: registerFilter,
 		control: controlFilter,
@@ -107,6 +115,10 @@ const History = () => {
 			start_date: firstDateOfMonth,
 			tx_date: today,
 		},
+	});
+
+	const watcherSearch = useWatch({
+		control: controlSearch,
 	});
 
 	const watcherFilter = useWatch({
@@ -320,24 +332,29 @@ const History = () => {
 	};
 
 	const clearFilter = () => {
-		setSearchValue("");
 		onFilterSubmit({ ...formElements });
-		setIsFiltered(false);
+		setPrevSearch("");
+		resetSearch({ search: "" });
 		resetFilter({ ...formElements });
 		resetExport({
 			reporttype: "pdf",
 			start_date: firstDateOfMonth,
 			tx_date: today,
 		});
+		setIsFiltered(false);
+		const prefix = isAdmin ? "/admin" : "";
+		router.push(`${prefix}/history`, undefined, {
+			shallow: true,
+		});
 	};
 
-	const onSearchSubmit = (searchedText) => {
-		const _validSearch = searchedText && searchedText != searchValue;
+	const onSearchSubmit = ({ search }) => {
+		const _validSearch = search && search != prevSearch;
 		if (_validSearch) {
-			setSearchValue(searchedText);
-			quickSearch(searchedText);
+			quickSearch(search);
+			setPrevSearch(search);
 			const prefix = isAdmin ? "/admin" : "";
-			router.push(`${prefix}/history?search=${searchedText}`, undefined, {
+			router.push(`${prefix}/history?search=${search}`, undefined, {
 				shallow: true,
 			});
 		}
@@ -400,6 +417,27 @@ const History = () => {
 	};
 
 	const transactionList = data;
+
+	const searchBarConfig = {
+		register: registerSearch,
+		control: controlSearch,
+		errors: errorsSearch,
+		formValue: watcherSearch,
+		parameter_list: [
+			{
+				name: "search",
+				parameter_type_id: ParamType.NUMERIC,
+				placeholder: "Search by TID, Mobile, Account, etc",
+				validations: {
+					required: false,
+				},
+				inputLeftElement: (
+					<Icon name="search" size="sm" color="light" />
+				),
+				onEnter: handleSubmitSearch(onSearchSubmit),
+			},
+		],
+	};
 
 	const actionBtnConfig = [
 		{
@@ -473,7 +511,8 @@ const History = () => {
 	// or, a mobile number.
 	useEffect(() => {
 		const { search, ...others } = router.query;
-		if ((search || others) && search != searchValue) {
+		const _validSearch = search ? search != prevSearch : others;
+		if (_validSearch) {
 			quickSearch(search, others);
 		}
 	}, [router.query]);
@@ -559,12 +598,11 @@ const History = () => {
 			>
 				<HistoryToolbar
 					{...{
-						searchValue,
-						onSearchSubmit,
 						isFiltered,
 						clearFilter,
 						openModalId,
 						setOpenModalId,
+						searchBarConfig,
 						actionBtnConfig,
 					}}
 				/>

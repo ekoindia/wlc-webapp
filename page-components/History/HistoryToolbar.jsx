@@ -1,5 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Button, Icon, Modal, SearchBar } from "components";
+import { Button, Icon, Modal } from "components";
 import { Form } from "tf-components";
 
 /**
@@ -7,12 +7,11 @@ import { Form } from "tf-components";
  * @example	`<HistoryToolbar></HistoryToolbar>` TODO: Fix example
  */
 const HistoryToolbar = ({
-	searchValue,
-	onSearchSubmit,
 	isFiltered,
 	clearFilter,
 	openModalId,
 	setOpenModalId,
+	searchBarConfig,
 	actionBtnConfig,
 }) => {
 	return (
@@ -37,13 +36,9 @@ const HistoryToolbar = ({
 				Clear Filter
 			</Button>
 
-			<SearchBar
-				type="number"
-				placeholder="Search by TID, Mobile, Account, etc"
-				value={searchValue}
-				setSearch={onSearchSubmit}
-				minSearchLimit={2}
-			/>
+			<div>
+				<Form {...searchBarConfig} />
+			</div>
 
 			{actionBtnConfig.map(
 				({
