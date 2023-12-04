@@ -47,6 +47,7 @@ const Th = ({ renderer, visibleColumns, rowExpansion }) => {
 					xl: isMultiLine ? "4px 1em" : "8px 1em",
 				}}
 				fontSize={{ base: "xxs", lg: "xs" }}
+				cursor="default"
 			>
 				<Flex gap="2" align="center">
 					{labelContent}
