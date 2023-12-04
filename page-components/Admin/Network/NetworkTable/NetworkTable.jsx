@@ -20,7 +20,7 @@ const networkTableParameterList = [
 	},
 	{
 		name: "account_status",
-		label: "Status",
+		label: "Account\nStatus",
 		sorting: true,
 		show: "Tag",
 	},

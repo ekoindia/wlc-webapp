@@ -13,7 +13,7 @@ const trxnHistoryTableParameterList = [
 	{ name: "agent_type", label: "Type", sorting: true },
 	{
 		name: "account_status",
-		label: "Status",
+		label: "Account Status",
 		sorting: true,
 		show: "Tag",
 	},
