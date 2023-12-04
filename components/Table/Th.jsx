@@ -1,4 +1,5 @@
 import { Flex, Th as ChakraTh } from "@chakra-ui/react";
+import { Fragment } from "react";
 
 /**
  * A Th component
@@ -16,18 +17,45 @@ const Th = ({ renderer, visibleColumns, rowExpansion }) => {
 		  ]
 		: renderer;
 
-	return main.map((item, index) => (
-		<ChakraTh
-			key={index}
-			p={{ base: ".5em", xl: "1em" }}
-			fontSize={{ base: "xxs", lg: "xs" }}
-		>
-			<Flex gap="2" align="center">
-				{item.label}
-				{/* {item.sorting && <Icon name="sort" size="8px" />} */}
-			</Flex>
-		</ChakraTh>
-	));
+	return main.map((item, index) => {
+		let labelContent = item.label;
+		const isMultiLine = /\n/.test(item.label);
+		if (isMultiLine) {
+			const parts = item.label.split("\n");
+			labelContent = (
+				<Flex textAlign="center">
+					{parts.map((part, index) => (
+						<Fragment key={index}>
+							{part}
+							{index !== parts.length - 1 ? (
+								index < 2 ? (
+									<br />
+								) : (
+									" "
+								)
+							) : null}
+						</Fragment>
+					))}
+				</Flex>
+			);
+		}
+		return (
+			<ChakraTh
+				key={index}
+				p={{
+					base: isMultiLine ? "2px .5em" : "4px .5em",
+					xl: isMultiLine ? "4px 1em" : "8px 1em",
+				}}
+				fontSize={{ base: "xxs", lg: "xs" }}
+			>
+				<Flex gap="2" align="center">
+					{labelContent}
+					{/* {item.label} */}
+					{/* {item.sorting && <Icon name="sort" size="8px" />} */}
+				</Flex>
+			</ChakraTh>
+		);
+	});
 };
 
 export default Th;
