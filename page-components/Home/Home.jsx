@@ -7,7 +7,6 @@ import { useMemo } from "react";
 import {
 	BillPaymentWidget,
 	CommonTrxnWidget,
-	KnowYourCommission,
 	NotificationWidget,
 	QueryWidget,
 	RecentTrxnWidget,
@@ -56,7 +55,7 @@ const Home = () => {
 		{ id: 2, component: BillPaymentWidget },
 		{ id: 3, component: NotificationWidget },
 		{ id: 4, component: EarningSummary },
-		{ id: 5, component: KnowYourCommission },
+		// { id: 5, component: KnowYourCommission },
 		{ id: 6, component: RecentTrxnWidget },
 	];
 
