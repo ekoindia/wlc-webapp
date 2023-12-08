@@ -2,6 +2,7 @@ import { IconNameType } from "constants/IconLibrary";
 import { TransactionIds } from ".";
 
 type sidebarMenuType = {
+	id: number;
 	icon?: IconNameType;
 	name?: string;
 	link?: string;
@@ -55,16 +56,19 @@ export const AdminBlacklistMenuItems: number[] = [
  */
 export const adminSidebarMenu: sidebarMenuType[] = [
 	{
+		id: 1,
 		name: "Dashboard",
 		icon: "dashboard",
 		link: "/admin",
 	},
 	{
+		id: 2,
 		name: "My Network",
 		icon: "refer",
 		link: "/admin/my-network",
 	},
 	{
+		id: 3,
 		name: "Network Transactions",
 		icon: "swap-horiz",
 		link: "/admin/transaction-history",
@@ -75,6 +79,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	// 	link: "/admin/invoicing",
 	// },
 	{
+		id: 4,
 		name: "Pricing & Commissions",
 		icon: "commission-percent",
 		link: "/admin/pricing",
@@ -90,16 +95,19 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	// 	link: "/admin/notifications",
 	// },
 	{
+		id: 5,
 		name: "Onboard Agents",
 		icon: "person-add",
 		link: "/admin/onboard-agents",
 	},
 	{
+		id: 6,
 		icon: "query",
 		name: "Query Center",
 		link: "/admin/query",
 	},
 	{
+		id: 7,
 		icon: "description",
 		name: "Invoice",
 		link: "/admin/transaction/" + TransactionIds.INVOICE_DOWNLOAD,
@@ -117,6 +125,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
  */
 export const sidebarMenu: sidebarMenuType[] = [
 	{
+		id: 8,
 		name: "Home",
 		icon: "menu-home",
 		link: "/home",
