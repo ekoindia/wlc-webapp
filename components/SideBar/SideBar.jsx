@@ -246,7 +246,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 	} = useUser();
 	const { orgDetail } = useOrgDetailContext();
 	const { metadata } = orgDetail;
-	const disabledFeature = metadata?.disabled_features;
+	const disabledFeatures = metadata?.disabled_features;
 	const { interactions } = useMenuContext();
 	const { interaction_list, role_tx_list } = interactions;
 	const router = useRouter();
@@ -285,9 +285,9 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				? adminSidebarMenu
 				: sidebarMenu;
 
-		if (disabledFeature) {
+		if (disabledFeatures) {
 			_menuList.forEach((item) => {
-				const _feat = JSON.parse(disabledFeature)?.features;
+				const _feat = JSON.parse(disabledFeatures)?.features;
 				if (!_feat.includes(item.id)) {
 					_filteredMenuList.push(item);
 				}
