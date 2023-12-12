@@ -1,5 +1,5 @@
-import { Flex, FormControl, useToast } from "@chakra-ui/react";
-import { Button, Icon, Radio } from "components";
+import { Flex, useToast } from "@chakra-ui/react";
+import { Button, Icon } from "components";
 import {
 	Endpoints,
 	ParamType,
@@ -12,7 +12,7 @@ import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
 
 const OPERATION = {
@@ -47,11 +47,11 @@ const getStatus = (status) => {
 
 const account_verification_operation = [
 	{
-		label: "On",
+		label: "Mandatory",
 		value: "0",
 	},
 	{
-		label: "Off",
+		label: "Optional",
 		value: "1",
 	},
 ];
@@ -136,23 +136,14 @@ const AccountVerification = () => {
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
-		if (watcher.otp_verification_token == 0) {
-			//Enable Account Verification
+		const _CspList = data?.CspList?.map(
+			(item) => item[_multiselectRenderer.value]
+		);
 
-			const _CspList = data?.CspList?.map(
-				(item) => item[_multiselectRenderer.value]
-			);
-
-			if (watcher.operation_type == 3) {
-				delete _finalData.CspList;
-			} else {
-				_finalData.CspList = `${_CspList}`;
-			}
+		if (watcher.operation_type == 3) {
+			delete _finalData.CspList;
 		} else {
-			//disable
-			delete _finalData.actual_pricing;
-			delete _finalData.operation_type;
-			delete _finalData.pricing_type;
+			_finalData.CspList = `${_CspList}`;
 		}
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -183,6 +174,13 @@ const AccountVerification = () => {
 	const prefix = "₹";
 
 	const account_verification_parameter_list = [
+		{
+			name: "otp_verification_token",
+			label: `Account Verification`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: account_verification_operation,
+			defaultValue: DEFAULT.operation_type,
+		},
 		{
 			name: "operation_type",
 			label: `Set Pricing For`,
@@ -234,34 +232,13 @@ const AccountVerification = () => {
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
-				{/* handling this separate as Form does not support two-layer/multi-layer visibility  */}
-				<FormControl
-					id="otp_verification_token"
-					w={{ base: "100%", md: "500px" }}
-				>
-					<Controller
-						name="otp_verification_token"
-						control={control}
-						render={({ field: { onChange, value } }) => (
-							<Radio
-								label="Account Verification"
-								options={account_verification_operation}
-								onChange={onChange}
-								value={value}
-							/>
-						)}
-					/>
-				</FormControl>
-
-				{watcher.otp_verification_token === "0" && (
-					<Form
-						parameter_list={account_verification_parameter_list}
-						register={register}
-						control={control}
-						formValues={watcher}
-						errors={errors}
-					/>
-				)}
+				<Form
+					parameter_list={account_verification_parameter_list}
+					register={register}
+					control={control}
+					formValues={watcher}
+					errors={errors}
+				/>
 
 				<Flex
 					direction={{ base: "row-reverse", md: "row" }}
