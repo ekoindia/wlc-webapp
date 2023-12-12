@@ -47,8 +47,8 @@ const defaultVariant = definePartsStyle({
 	},
 	tablist: {
 		w: "100%",
-		overflowX: "auto",
-		overflowY: "hidden",
+		// overflowX: "auto",
+		// overflowY: "hidden",
 		borderBottom: "card",
 	},
 });
