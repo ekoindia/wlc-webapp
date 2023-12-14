@@ -66,7 +66,6 @@ const DmtRetailer = () => {
 			isSubmitting,
 			isSubmitSuccessful,
 		},
-		getValues,
 		reset,
 		trigger,
 	} = useForm({
@@ -223,15 +222,12 @@ const DmtRetailer = () => {
 
 	useEffect(() => {
 		if (isSubmitSuccessful) {
-			reset(getValues());
+			reset(watcher);
 		}
-	}, [isSubmitSuccessful]);
-
-	useEffect(() => {
 		if (isDirty && !isValid) {
 			trigger();
 		}
-	}, [isValid]);
+	}, [isSubmitSuccessful, isValid]);
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
@@ -307,8 +303,8 @@ const DmtRetailer = () => {
 						w={{ base: "100%", md: "200px" }}
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
-						disabled={!isValid || !isDirty}
 						loading={isSubmitting}
+						disabled={!isValid || !isDirty}
 					>
 						Save
 					</Button>
