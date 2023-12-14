@@ -1,5 +1,5 @@
-import { Flex, FormControl, useToast } from "@chakra-ui/react";
-import { Button, Icon, Radio } from "components";
+import { Divider, Flex, Text, useToast } from "@chakra-ui/react";
+import { Button, Icon } from "components";
 import {
 	Endpoints,
 	ParamType,
@@ -12,10 +12,11 @@ import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components/Form";
 
 const OPERATION = {
+	VERIFICATION_SUBMIT: 2,
 	SUBMIT: 1,
 	FETCH: 0,
 };
@@ -47,11 +48,11 @@ const getStatus = (status) => {
 
 const account_verification_operation = [
 	{
-		label: "On",
+		label: "Mandatory",
 		value: "0",
 	},
 	{
-		label: "Off",
+		label: "Optional",
 		value: "1",
 	},
 ];
@@ -69,14 +70,22 @@ const AccountVerification = () => {
 	const { DEFAULT } = products.ACCOUNT_VERIFICATION;
 	const { FIXED } =
 		productPricingCommissionValidationConfig.ACCOUNT_VERIFICATION;
+
 	const {
 		handleSubmit,
 		register,
 		formState: { errors, isSubmitting },
 		control,
+		reset,
+	} = useForm();
+
+	const {
+		handleSubmit: handleSubmitPricing,
+		register: registerPricing,
+		formState: { errors: errorsPricing, isSubmitting: isSubmittingPricing },
+		control: controlPricing,
 	} = useForm({
 		defaultValues: {
-			otp_verification_token: "0",
 			operation_type: DEFAULT.operation_type,
 			pricing_type: DEFAULT.pricing_type,
 		},
@@ -89,17 +98,45 @@ const AccountVerification = () => {
 
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+	const [accountVerificationStatus, setAccountVerificationStatus] =
+		useState(null);
 
 	const watcher = useWatch({
 		control,
 	});
 
+	const watcherPricing = useWatch({
+		control: controlPricing,
+	});
+
 	useEffect(() => {
-		if (watcher.operation_type != "3") {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: 737,
+				operation: OPERATION.FETCH,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				const _otp_verification_token =
+					res?.data?.otp_verification_token;
+				reset({ otp_verification_token: _otp_verification_token });
+				setAccountVerificationStatus(_otp_verification_token);
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
+	}, []);
+
+	useEffect(() => {
+		if (
+			watcherPricing.operation_type &&
+			watcherPricing.operation_type != "3"
+		) {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
 
 			const _tf_req_uri =
-				watcher.operation_type === "2"
+				watcherPricing.operation_type === "2"
 					? "/network/agent-list?usertype=1"
 					: "/network/agent-list";
 
@@ -124,35 +161,53 @@ const AccountVerification = () => {
 				});
 
 			let _operationTypeList = operation_type_list.filter(
-				(item) => item.value == watcher.operation_type
+				(item) => item.value == watcherPricing.operation_type
 			);
 			let _label =
 				_operationTypeList.length > 0 && _operationTypeList[0].label;
 
 			setMultiSelectLabel(_label);
 		}
-	}, [watcher.operation_type]);
+	}, [watcherPricing.operation_type]);
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
-		if (watcher.otp_verification_token == 0) {
-			//Enable Account Verification
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: 737,
+				operation: OPERATION.VERIFICATION_SUBMIT,
+				..._finalData,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				const _otp_verification_token =
+					res?.data?.otp_verification_token;
+				setAccountVerificationStatus(_otp_verification_token);
+				toast({
+					title: res.message,
+					status: getStatus(res.status),
+					duration: 5000,
+					isClosable: true,
+				});
+			})
+			.catch((err) => {
+				console.error("error", err);
+			});
+	};
 
-			const _CspList = data?.CspList?.map(
-				(item) => item[_multiselectRenderer.value]
-			);
+	const handleFormSubmitPricing = (data) => {
+		const _finalData = { ...data };
 
-			if (watcher.operation_type == 3) {
-				delete _finalData.CspList;
-			} else {
-				_finalData.CspList = `${_CspList}`;
-			}
+		const _CspList = data?.CspList?.map(
+			(item) => item[_multiselectRenderer.value]
+		);
+
+		if (watcherPricing.operation_type == "3") {
+			delete _finalData.CspList;
 		} else {
-			//disable
-			delete _finalData.actual_pricing;
-			delete _finalData.operation_type;
-			delete _finalData.pricing_type;
+			_finalData.CspList = `${_CspList}`;
 		}
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -183,6 +238,16 @@ const AccountVerification = () => {
 	const prefix = "₹";
 
 	const account_verification_parameter_list = [
+		{
+			name: "otp_verification_token",
+			label: `Account Verification`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: account_verification_operation,
+			defaultValue: DEFAULT.operation_type,
+		},
+	];
+
+	const account_verification_pricing_parameter_list = [
 		{
 			name: "operation_type",
 			label: `Set Pricing For`,
@@ -232,28 +297,18 @@ const AccountVerification = () => {
 	];
 
 	return (
-		<form onSubmit={handleSubmit(handleFormSubmit)}>
-			<Flex direction="column" gap="8">
-				{/* handling this separate as Form does not support two-layer/multi-layer visibility  */}
-				<FormControl
-					id="otp_verification_token"
-					w={{ base: "100%", md: "500px" }}
-				>
-					<Controller
-						name="otp_verification_token"
-						control={control}
-						render={({ field: { onChange, value } }) => (
-							<Radio
-								label="Account Verification"
-								options={account_verification_operation}
-								onChange={onChange}
-								value={value}
-							/>
-						)}
-					/>
-				</FormControl>
-
-				{watcher.otp_verification_token === "0" && (
+		<Flex direction="column" gap="8">
+			<form onSubmit={handleSubmit(handleFormSubmit)}>
+				<Flex direction="column" gap="8">
+					<Text
+						as="h2"
+						fontSize={{ base: "md", md: "xl" }}
+						fontWeight="medium"
+						lineHeight={{ base: "1.2", md: "1" }}
+					>
+						Recipient Account Verification (Applicable for the
+						entire network)
+					</Text>
 					<Form
 						parameter_list={account_verification_parameter_list}
 						register={register}
@@ -261,49 +316,86 @@ const AccountVerification = () => {
 						formValues={watcher}
 						errors={errors}
 					/>
-				)}
 
-				<Flex
-					direction={{ base: "row-reverse", md: "row" }}
-					w={{ base: "100%", md: "500px" }}
-					position={{ base: "fixed", md: "initial" }}
-					gap={{ base: "0", md: "16" }}
-					align="center"
-					bottom="0"
-					left="0"
-				>
 					<Button
 						type="submit"
 						size="lg"
 						h="64px"
 						w={{ base: "100%", md: "200px" }}
 						fontWeight="bold"
-						borderRadius={{ base: "none", md: "10" }}
-						// disabled={
-						// 	accountVerificationStatus ===
-						// 	watcher.otp_verification_token
-						// }
+						disabled={
+							accountVerificationStatus &&
+							accountVerificationStatus ==
+								watcher.otp_verification_token
+						}
 						loading={isSubmitting}
 					>
 						Save
 					</Button>
-
-					<Button
-						h={{ base: "64px", md: "auto" }}
-						w={{ base: "100%", md: "initial" }}
-						bg={{ base: "white", md: "none" }}
-						variant="link"
-						fontWeight="bold"
-						color="primary.DEFAULT"
-						_hover={{ textDecoration: "none" }}
-						borderRadius={{ base: "none", md: "10" }}
-						onClick={() => router.back()}
-					>
-						Cancel
-					</Button>
 				</Flex>
-			</Flex>
-		</form>
+			</form>
+
+			<Divider />
+
+			<form onSubmit={handleSubmitPricing(handleFormSubmitPricing)}>
+				<Flex direction="column" gap="8">
+					<Text
+						as="h2"
+						fontSize={{ base: "md", md: "xl" }}
+						fontWeight="medium"
+						lineHeight={{ base: "1.2", md: "1" }}
+					>
+						Set Account Verification Pricing
+					</Text>
+
+					<Form
+						parameter_list={
+							account_verification_pricing_parameter_list
+						}
+						register={registerPricing}
+						control={controlPricing}
+						formValues={watcherPricing}
+						errors={errorsPricing}
+					/>
+
+					<Flex
+						direction={{ base: "column", md: "row" }}
+						w={{ base: "100%", md: "500px" }}
+						// position={{ base: "fixed", md: "initial" }}
+						gap={{ base: "4", md: "16" }}
+						align="center"
+						// bottom="0"
+						// left="0"
+					>
+						<Button
+							type="submit"
+							size="lg"
+							h="64px"
+							w={{ base: "100%", md: "200px" }}
+							fontWeight="bold"
+							// borderRadius={{ base: "none", md: "10" }}
+							loading={isSubmittingPricing}
+						>
+							Save
+						</Button>
+
+						<Button
+							h={{ base: "64px", md: "auto" }}
+							w={{ base: "100%", md: "initial" }}
+							bg={{ base: "white", md: "none" }}
+							variant="link"
+							fontWeight="bold"
+							color="primary.DEFAULT"
+							_hover={{ textDecoration: "none" }}
+							// borderRadius={{ base: "none", md: "10" }}
+							onClick={() => router.back()}
+						>
+							Cancel
+						</Button>
+					</Flex>
+				</Flex>
+			</form>
+		</Flex>
 	);
 };
 
