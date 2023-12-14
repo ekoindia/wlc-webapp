@@ -323,6 +323,58 @@ function generateNewAccessToken(
 		.finally(setIsTokenUpdating(false));
 }
 
+function loginUsingRefreshTokenAndroid(
+	refresh_token,
+	updateUserInfo,
+	login,
+	logout,
+	isAndroid
+) {
+	fetch(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GENERATE_TOKEN, {
+		method: "post",
+		headers: { "Content-type": "application/x-www-form-urlencoded" },
+		body: "refresh_token=" + refresh_token,
+	})
+		.then((res) => {
+			if (!res.ok) {
+				throw new Error("Network response was not ok");
+			}
+			return res.json();
+		})
+		.then((data) => {
+			setandUpdateAuthTokens(data);
+			refreshUserProfile(login, updateUserInfo);
+		})
+		.catch((err) => {
+			console.log([loginUsingRefreshTokenAndroid], err);
+			logout && logout();
+
+			if (isAndroid) {
+				doAndroidAction(ANDROID_ACTION.CLEAR_REFRESH_TOKEN);
+			}
+		});
+}
+
+const refreshUserProfile = (login, updateUserInfo, isAndroid = false) => {
+	const refresh_token = sessionStorage.getItem("refresh_token");
+	const access_token = sessionStorage.getItem("access_token");
+
+	let platform = isAndroid ? "android" : "web";
+	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.REFRESH_PROFILE, {
+		body: {
+			platform: platform,
+			last_refresh_token: refresh_token,
+		},
+		token: access_token,
+	})
+		.then((res) => {
+			console.log("refreshProfile", JSON.stringify(res));
+			updateUserInfo(res);
+			login(res);
+		})
+		.catch((err) => console.error("[refreshUser] Error:", err));
+};
+
 export {
 	sendOtpRequest,
 	RemoveFormatted,
@@ -335,4 +387,5 @@ export {
 	createUserState,
 	setUserDetails,
 	getTokenExpiryTime,
+	loginUsingRefreshTokenAndroid,
 };

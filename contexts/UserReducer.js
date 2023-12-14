@@ -28,7 +28,7 @@ export const UserReducer = (state, { type, payload, meta }) => {
 		case "UPDATE_USER_STORE": {
 			if (payload && payload.access_token && payload.refresh_token) {
 				console.log("Updated userStore");
-				delete payload["long_session"]; // FIX: Why remove long_session???
+				//delete payload["long_session"]; // FIX: Why remove long_session??? // Uncommented , require this variable for biometric login
 				let tokenTimeout = getTokenExpiryTime(payload);
 				const newState = buildUserObjectState({
 					...payload,
