@@ -82,9 +82,18 @@ const AccountVerification = () => {
 	const {
 		handleSubmit: handleSubmitPricing,
 		register: registerPricing,
-		formState: { errors: errorsPricing, isSubmitting: isSubmittingPricing },
+		formState: {
+			errors: errorsPricing,
+			isValid: isValidPricing,
+			isDirty: isDirtyPricing,
+			isSubmitting: isSubmittingPricing,
+			isSubmitSuccessful: isSubmitSuccessfulPricing,
+		},
 		control: controlPricing,
+		reset: resetPricing,
+		trigger: triggerPricing,
 	} = useForm({
+		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
 			pricing_type: DEFAULT.pricing_type,
@@ -169,6 +178,15 @@ const AccountVerification = () => {
 			setMultiSelectLabel(_label);
 		}
 	}, [watcherPricing.operation_type]);
+
+	useEffect(() => {
+		if (isSubmitSuccessfulPricing) {
+			resetPricing(watcherPricing);
+		}
+		if (isDirtyPricing && !isValidPricing) {
+			triggerPricing();
+		}
+	}, [isSubmitSuccessfulPricing, isValidPricing]);
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
@@ -304,12 +322,15 @@ const AccountVerification = () => {
 						Recipient Account Verification (Applicable for the
 						entire network)
 					</Title>
+
 					<Form
-						parameter_list={account_verification_parameter_list}
-						register={register}
-						control={control}
-						formValues={watcher}
-						errors={errors}
+						{...{
+							parameter_list: account_verification_parameter_list,
+							formValues: watcher,
+							control,
+							register,
+							errors,
+						}}
 					/>
 
 					<Button
@@ -363,6 +384,7 @@ const AccountVerification = () => {
 							fontWeight="bold"
 							// borderRadius={{ base: "none", md: "10" }}
 							loading={isSubmittingPricing}
+							disabled={!isValidPricing || !isDirtyPricing}
 						>
 							Save
 						</Button>
