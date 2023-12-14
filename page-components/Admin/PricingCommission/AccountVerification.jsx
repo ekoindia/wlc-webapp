@@ -305,7 +305,8 @@ const AccountVerification = () => {
 						fontWeight="semibold"
 						lineHeight={{ base: "1.2", md: "1" }}
 					>
-						Toggle Account Verification for your Network
+						Recipient Account Verification (Applicable for the
+						entire network)
 					</Text>
 					<Form
 						parameter_list={account_verification_parameter_list}
