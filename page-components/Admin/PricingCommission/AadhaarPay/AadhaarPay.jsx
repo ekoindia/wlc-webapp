@@ -63,8 +63,17 @@ const AadhaarPay = () => {
 		handleSubmit,
 		register,
 		control,
-		formState: { errors, isSubmitting },
+		formState: {
+			errors,
+			isValid,
+			isDirty,
+			isSubmitting,
+			isSubmitSuccessful,
+		},
+		reset,
+		trigger,
 	} = useForm({
+		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
 			select: { value: "0", label: "₹1 - ₹10000" }, //TODO: change this asap.
@@ -214,6 +223,15 @@ const AadhaarPay = () => {
 		}
 	}, [watcher.operation_type]);
 
+	useEffect(() => {
+		if (isSubmitSuccessful) {
+			reset(watcher);
+		}
+		if (isDirty && !isValid) {
+			trigger();
+		}
+	}, [isSubmitSuccessful, isValid]);
+
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
@@ -263,11 +281,13 @@ const AadhaarPay = () => {
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
 				<Form
-					parameter_list={aadhaar_pay_parameter_list}
-					register={register}
-					control={control}
-					formValues={watcher}
-					errors={errors}
+					{...{
+						parameter_list: aadhaar_pay_parameter_list,
+						formValues: watcher,
+						control,
+						register,
+						errors,
+					}}
 				/>
 
 				<Flex
@@ -287,6 +307,7 @@ const AadhaarPay = () => {
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
 						loading={isSubmitting}
+						disabled={!isValid || !isDirty}
 					>
 						Save
 					</Button>
