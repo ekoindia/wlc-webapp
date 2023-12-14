@@ -318,10 +318,10 @@ const AccountVerification = () => {
 		<Flex direction="column" gap="8">
 			<form onSubmit={handleSubmit(handleFormSubmit)}>
 				<Flex direction="column" gap="8">
-					<Title>
+					<SectionTitle>
 						Recipient Account Verification (Applicable for the
 						entire network)
-					</Title>
+					</SectionTitle>
 
 					<Form
 						{...{
@@ -355,7 +355,9 @@ const AccountVerification = () => {
 
 			<form onSubmit={handleSubmitPricing(handleFormSubmitPricing)}>
 				<Flex direction="column" gap="8">
-					<Title>Set Account Verification Pricing</Title>
+					<SectionTitle>
+						Set Account Verification Pricing
+					</SectionTitle>
 
 					<Form
 						parameter_list={
@@ -411,7 +413,7 @@ const AccountVerification = () => {
 
 export default AccountVerification;
 
-const Title = ({ children }) => {
+const SectionTitle = ({ children }) => {
 	return (
 		<Text
 			as="h2"
