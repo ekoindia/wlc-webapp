@@ -59,8 +59,18 @@ const DmtRetailer = () => {
 		handleSubmit,
 		register,
 		control,
-		formState: { errors, isSubmitting },
+		formState: {
+			errors,
+			isValid,
+			isDirty,
+			isSubmitting,
+			isSubmitSuccessful,
+		},
+		getValues,
+		reset,
+		trigger,
 	} = useForm({
+		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
 			pricing_type: DEFAULT.pricing_type,
@@ -211,6 +221,18 @@ const DmtRetailer = () => {
 		}
 	}, [watcher.operation_type]);
 
+	useEffect(() => {
+		if (isSubmitSuccessful) {
+			reset(getValues());
+		}
+	}, [isSubmitSuccessful]);
+
+	useEffect(() => {
+		if (isDirty && !isValid) {
+			trigger();
+		}
+	}, [isValid]);
+
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
@@ -260,11 +282,13 @@ const DmtRetailer = () => {
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
 				<Form
-					parameter_list={dmt_retailer_parameter_list}
-					register={register}
-					control={control}
-					formValues={watcher}
-					errors={errors}
+					{...{
+						parameter_list: dmt_retailer_parameter_list,
+						formValues: watcher,
+						control,
+						register,
+						errors,
+					}}
 				/>
 
 				<Flex
@@ -283,6 +307,7 @@ const DmtRetailer = () => {
 						w={{ base: "100%", md: "200px" }}
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
+						disabled={!isValid || !isDirty}
 						loading={isSubmitting}
 					>
 						Save
