@@ -59,8 +59,17 @@ const CardPaymentRetailer = () => {
 		handleSubmit,
 		register,
 		control,
-		formState: { errors, isSubmitting },
+		formState: {
+			errors,
+			isValid,
+			isDirty,
+			isSubmitting,
+			isSubmitSuccessful,
+		},
+		reset,
+		trigger,
 	} = useForm({
+		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
 			pricing_type: DEFAULT.pricing_type,
@@ -212,6 +221,15 @@ const CardPaymentRetailer = () => {
 		}
 	}, [watcher.operation_type]);
 
+	useEffect(() => {
+		if (isSubmitSuccessful) {
+			reset(watcher);
+		}
+		if (isDirty && !isValid) {
+			trigger();
+		}
+	}, [isSubmitSuccessful, isValid]);
+
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
@@ -287,6 +305,7 @@ const CardPaymentRetailer = () => {
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
 						loading={isSubmitting}
+						disabled={!isValid || !isDirty}
 					>
 						Save
 					</Button>
