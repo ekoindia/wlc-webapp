@@ -54,8 +54,17 @@ const IndoNepalDistributor = () => {
 		handleSubmit,
 		register,
 		control,
-		formState: { errors, isSubmitting },
+		formState: {
+			errors,
+			isValid,
+			isDirty,
+			isSubmitting,
+			isSubmitSuccessful,
+		},
+		reset,
+		trigger,
 	} = useForm({
+		mode: "onChange",
 		defaultValues: {
 			pricing_type: "0", //check if product details can store this
 			payment_mode: "1",
@@ -167,6 +176,15 @@ const IndoNepalDistributor = () => {
 			});
 	}, []);
 
+	useEffect(() => {
+		if (isSubmitSuccessful) {
+			reset(watcher);
+		}
+		if (isDirty && !isValid) {
+			trigger();
+		}
+	}, [isSubmitSuccessful, isValid]);
+
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
@@ -216,11 +234,13 @@ const IndoNepalDistributor = () => {
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
 				<Form
-					parameter_list={indo_nepal_distributor_parameter_list}
-					register={register}
-					control={control}
-					formValues={watcher}
-					errors={errors}
+					{...{
+						parameter_list: indo_nepal_distributor_parameter_list,
+						formValues: watcher,
+						control,
+						register,
+						errors,
+					}}
 				/>
 				<Flex
 					direction={{ base: "row-reverse", md: "row" }}
@@ -239,6 +259,7 @@ const IndoNepalDistributor = () => {
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
 						loading={isSubmitting}
+						disabled={!isValid || !isDirty}
 					>
 						Save
 					</Button>
