@@ -300,15 +300,10 @@ const AccountVerification = () => {
 		<Flex direction="column" gap="8">
 			<form onSubmit={handleSubmit(handleFormSubmit)}>
 				<Flex direction="column" gap="8">
-					<Text
-						as="h2"
-						fontSize={{ base: "md", md: "xl" }}
-						fontWeight="medium"
-						lineHeight={{ base: "1.2", md: "1" }}
-					>
+					<Title>
 						Recipient Account Verification (Applicable for the
 						entire network)
-					</Text>
+					</Title>
 					<Form
 						parameter_list={account_verification_parameter_list}
 						register={register}
@@ -339,14 +334,7 @@ const AccountVerification = () => {
 
 			<form onSubmit={handleSubmitPricing(handleFormSubmitPricing)}>
 				<Flex direction="column" gap="8">
-					<Text
-						as="h2"
-						fontSize={{ base: "md", md: "xl" }}
-						fontWeight="medium"
-						lineHeight={{ base: "1.2", md: "1" }}
-					>
-						Set Account Verification Pricing
-					</Text>
+					<Title>Set Account Verification Pricing</Title>
 
 					<Form
 						parameter_list={
@@ -400,3 +388,16 @@ const AccountVerification = () => {
 };
 
 export default AccountVerification;
+
+const Title = ({ children }) => {
+	return (
+		<Text
+			as="h2"
+			fontWeight="medium"
+			fontSize={{ base: "lg", md: "xl" }}
+			lineHeight={{ base: "1.2", md: "1" }}
+		>
+			{children}
+		</Text>
+	);
+};
