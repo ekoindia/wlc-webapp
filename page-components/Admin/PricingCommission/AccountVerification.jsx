@@ -302,7 +302,7 @@ const AccountVerification = () => {
 				<Flex direction="column" gap="8">
 					<Text
 						as="h2"
-						fontWeight="semibold"
+						fontWeight="medium"
 						lineHeight={{ base: "1.2", md: "1" }}
 					>
 						Recipient Account Verification (Applicable for the
@@ -340,7 +340,7 @@ const AccountVerification = () => {
 				<Flex direction="column" gap="8">
 					<Text
 						as="h2"
-						fontWeight="semibold"
+						fontWeight="medium"
 						lineHeight={{ base: "1.2", md: "1" }}
 					>
 						Set Account Verification Pricing
