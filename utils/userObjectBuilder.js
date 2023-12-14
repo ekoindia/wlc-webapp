@@ -11,6 +11,7 @@ export const buildUserObjectState = (data) => {
 		access_token: data.access_token,
 		refresh_token: data.refresh_token,
 		token_timeout: data?.token_timeout,
+		long_session: data?.long_session,
 		userId: data?.details?.mobile,
 		uid: data.details?.uid,
 		userDetails: {
