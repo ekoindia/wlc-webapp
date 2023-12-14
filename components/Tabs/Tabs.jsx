@@ -1,4 +1,5 @@
 import {
+	Flex,
 	Tab,
 	TabList,
 	TabPanel,
@@ -46,104 +47,104 @@ const Tabs = ({ children, variant = "default", defaultIndex = 0, ...rest }) => {
 	return (
 		<ChakraTabs
 			isLazy
-			pos="relative"
 			defaultIndex={+_defaultIndex}
-			py="3"
 			maxW="100%"
-			overflow="hidden"
+			pb="3"
 			variant={variant}
 			onScroll={handleScroll}
 			{...rest}
 		>
-			{scrollButtonVisibility.showLeftButton && (
-				<IcoButton
-					aria-label="Scroll left"
-					iconName="chevron-left"
-					pos="absolute"
-					bg="white"
-					color="primary.DEFAULT"
-					size="sm"
-					top="8px"
-					zIndex="1"
-					rounded="0"
-					h="40px"
-					w="40px"
-					borderRadius="0px 20px 20px 0px"
-					boxShadow="0px 5px 10px 0px #00000033"
-					animation={`${slideInLeft} 0.2s ease-out`}
-					onClick={() => {
-						const tabList = tabListRef.current;
-						if (tabList) {
-							tabList.scrollLeft -= window.innerWidth * 0.6;
-						}
-						handleScroll();
+			<Flex pos="relative" overflow="hidden" pt="3">
+				{scrollButtonVisibility.showLeftButton && (
+					<IcoButton
+						aria-label="Scroll left"
+						iconName="chevron-left"
+						pos="absolute"
+						bg="white"
+						color="primary.DEFAULT"
+						size="sm"
+						top="8px"
+						zIndex="1"
+						rounded="0"
+						h="40px"
+						w="40px"
+						borderRadius="0px 20px 20px 0px"
+						boxShadow="0px 5px 10px 0px #00000033"
+						animation={`${slideInLeft} 0.2s ease-out`}
+						onClick={() => {
+							const tabList = tabListRef.current;
+							if (tabList) {
+								tabList.scrollLeft -= window.innerWidth * 0.6;
+							}
+							handleScroll();
+						}}
+					/>
+				)}
+				<TabList
+					color="light"
+					pl={{ base: "10px", md: "20px" }}
+					css={{
+						"&::-webkit-scrollbar": {
+							display: "none",
+						},
+						"&::-moz-scrollbar": {
+							display: "none",
+						},
+						"&::scrollbar": {
+							display: "none",
+						},
 					}}
-				/>
-			)}
-			<TabList
-				color="light"
-				pl={{ base: "10px", md: "20px" }}
-				css={{
-					"&::-webkit-scrollbar": {
-						display: "none",
-					},
-					"&::-moz-scrollbar": {
-						display: "none",
-					},
-					"&::scrollbar": {
-						display: "none",
-					},
-				}}
-				ref={tabListRef}
-				maxW="100%"
-				overflowX="scroll"
-				onScroll={handleScroll}
-			>
-				{Children.map(arrayChildren, (child, index) => {
-					if (child.props.disabled && _defaultIndex === index) {
-						setDefaultIndex((prev) => prev + 1);
-					}
-					return (
-						<>
-							{child.props.label && (
-								<Tab
-									fontSize="sm"
-									variant="selectNone"
-									isDisabled={child.props.disabled}
-								>
-									{child.props.label}
-								</Tab>
-							)}
-						</>
-					);
-				})}
-			</TabList>
-			{scrollButtonVisibility.showRightButton && (
-				<IcoButton
-					aria-label="Scroll right"
-					iconName="chevron-right"
-					size="sm"
-					right="0"
-					bg="white"
-					color="primary.DEFAULT"
-					top="8px"
-					zIndex="1"
-					pos="absolute"
-					rounded="0"
-					borderRadius="20px 0px 0px 20px"
-					boxShadow="0px 5px 10px 0px #00000033"
-					h="40px"
-					w="40px"
-					animation={`${slideInRight} 0.2s ease-out`}
-					onClick={() => {
-						const _tabList = tabListRef.current;
-						if (_tabList) {
-							_tabList.scrollLeft += window.innerWidth * 0.6;
+					ref={tabListRef}
+					maxW="100%"
+					overflowX="scroll"
+					onScroll={handleScroll}
+				>
+					{Children.map(arrayChildren, (child, index) => {
+						if (child.props.disabled && _defaultIndex === index) {
+							setDefaultIndex((prev) => prev + 1);
 						}
-						handleScroll();
-					}}
-				/>
-			)}
+						return (
+							<>
+								{child.props.label && (
+									<Tab
+										fontSize="sm"
+										variant="selectNone"
+										isDisabled={child.props.disabled}
+									>
+										{child.props.label}
+									</Tab>
+								)}
+							</>
+						);
+					})}
+				</TabList>
+				{scrollButtonVisibility.showRightButton && (
+					<IcoButton
+						aria-label="Scroll right"
+						iconName="chevron-right"
+						size="sm"
+						right="0"
+						bg="white"
+						color="primary.DEFAULT"
+						top="8px"
+						zIndex="1"
+						pos="absolute"
+						rounded="0"
+						borderRadius="20px 0px 0px 20px"
+						boxShadow="0px 5px 10px 0px #00000033"
+						h="40px"
+						w="40px"
+						animation={`${slideInRight} 0.2s ease-out`}
+						onClick={() => {
+							const _tabList = tabListRef.current;
+							if (_tabList) {
+								_tabList.scrollLeft += window.innerWidth * 0.6;
+							}
+							handleScroll();
+						}}
+					/>
+				)}
+			</Flex>
 			<TabPanels>
 				{Children.map(arrayChildren, (child) => {
 					return (
