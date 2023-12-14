@@ -302,6 +302,7 @@ const AccountVerification = () => {
 				<Flex direction="column" gap="8">
 					<Text
 						as="h2"
+						fontSize={{ base: "md", md: "xl" }}
 						fontWeight="medium"
 						lineHeight={{ base: "1.2", md: "1" }}
 					>
@@ -340,6 +341,7 @@ const AccountVerification = () => {
 				<Flex direction="column" gap="8">
 					<Text
 						as="h2"
+						fontSize={{ base: "md", md: "xl" }}
 						fontWeight="medium"
 						lineHeight={{ base: "1.2", md: "1" }}
 					>
