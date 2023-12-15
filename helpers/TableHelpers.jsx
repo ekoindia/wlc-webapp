@@ -48,7 +48,7 @@ export const getAvatar = (name, icon, hue) => {
 	);
 };
 
-export const getNameStyle = (name, icon, hue) => {
+export const getNameStyle = (name = "", icon, hue) => {
 	const _name = numberRemover(name);
 
 	const needDefaultIcon = _name?.length < 1;

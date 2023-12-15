@@ -1,4 +1,5 @@
-import { useAppSource, usePubSub } from "contexts";
+import { useAppSource, usePubSub, useUser } from "contexts";
+import { loginUsingRefreshTokenAndroid } from "helpers/loginHelper";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useState } from "react";
@@ -20,6 +21,8 @@ const LayoutLogin = ({ appName, children }) => {
 	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
 	Router.events.on("routeChangeError", () => setIsPageLoading(false));
 
+	const { updateUserInfo, logout, login } = useUser();
+
 	// Setup Android Listener...
 	// TODO: Duplicate code from the default Layout component...Breakout into a separate component/hook?
 	useEffect(() => {
@@ -32,6 +35,14 @@ const LayoutLogin = ({ appName, children }) => {
 				if (action === ANDROID_ACTION.SET_NATIVE_VERSION) {
 					setNativeVersion(parseInt(data));
 					return;
+				} else if (action === ANDROID_ACTION.CACHED_REFRESH_TOKEN) {
+					loginUsingRefreshTokenAndroid(
+						data,
+						updateUserInfo,
+						login,
+						logout,
+						isAndroid
+					);
 				} else {
 					// Any other action? Publish it to the PubSub so that
 					// other components can listen to it...

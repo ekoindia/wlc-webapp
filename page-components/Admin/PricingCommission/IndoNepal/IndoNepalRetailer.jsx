@@ -65,8 +65,18 @@ const IndoNepalRetailer = () => {
 		handleSubmit,
 		register,
 		control,
-		formState: { errors, isSubmitting },
+		formState: {
+			errors,
+			isValid,
+			isDirty,
+			isSubmitting,
+			isSubmitSuccessful,
+		},
+
+		reset,
+		trigger,
 	} = useForm({
+		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
 			pricing_type: DEFAULT.pricing_type,
@@ -211,6 +221,15 @@ const IndoNepalRetailer = () => {
 		}
 	}, [watcher.operation_type]);
 
+	useEffect(() => {
+		if (isSubmitSuccessful) {
+			reset(watcher);
+		}
+		if (isDirty && !isValid) {
+			trigger();
+		}
+	}, [isSubmitSuccessful, isValid]);
+
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
@@ -260,11 +279,13 @@ const IndoNepalRetailer = () => {
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
 				<Form
-					parameter_list={indo_nepal_retailer_parameter_list}
-					register={register}
-					control={control}
-					formValues={watcher}
-					errors={errors}
+					{...{
+						parameter_list: indo_nepal_retailer_parameter_list,
+						formValues: watcher,
+						control,
+						register,
+						errors,
+					}}
 				/>
 
 				<Flex
@@ -284,6 +305,7 @@ const IndoNepalRetailer = () => {
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
 						loading={isSubmitting}
+						disabled={!isValid || !isDirty}
 					>
 						Save
 					</Button>

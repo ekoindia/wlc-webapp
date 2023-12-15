@@ -49,8 +49,17 @@ const CreditCardBillPaymentDistributor = () => {
 		handleSubmit,
 		register,
 		control,
-		formState: { errors, isSubmitting },
+		formState: {
+			errors,
+			isValid,
+			isDirty,
+			isSubmitting,
+			isSubmitSuccessful,
+		},
+		reset,
+		trigger,
 	} = useForm({
+		mode: "onChange",
 		defaultValues: {
 			pricing_type: "1", //check if product details can store this
 			select: { value: "0", label: "₹100 - ₹199999" }, //TODO: change this asap.
@@ -169,6 +178,15 @@ const CreditCardBillPaymentDistributor = () => {
 			});
 	}, []);
 
+	useEffect(() => {
+		if (isSubmitSuccessful) {
+			reset(watcher);
+		}
+		if (isDirty && !isValid) {
+			trigger();
+		}
+	}, [isSubmitSuccessful, isValid]);
+
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
@@ -213,13 +231,14 @@ const CreditCardBillPaymentDistributor = () => {
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
 				<Form
-					parameter_list={
-						credit_card_bill_payment_distributor_parameter_list
-					}
-					register={register}
-					control={control}
-					formValues={watcher}
-					errors={errors}
+					{...{
+						parameter_list:
+							credit_card_bill_payment_distributor_parameter_list,
+						formValues: watcher,
+						control,
+						register,
+						errors,
+					}}
 				/>
 				<Flex
 					direction={{ base: "row-reverse", md: "row" }}
@@ -238,6 +257,7 @@ const CreditCardBillPaymentDistributor = () => {
 						fontWeight="bold"
 						borderRadius={{ base: "none", md: "10" }}
 						loading={isSubmitting}
+						disabled={!isValid || !isDirty}
 					>
 						Save
 					</Button>

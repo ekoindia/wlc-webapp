@@ -14,20 +14,20 @@ const networkTableParameterList = [
 	{ name: "agent_type", label: "Type", sorting: true },
 	{
 		name: "onboarded_on",
-		label: "Onboarded On",
+		label: "Onboarded\nOn",
 		sorting: true,
 		show: "Date",
 	},
 	{
 		name: "account_status",
-		label: "Status",
+		label: "Account\nStatus",
 		sorting: true,
 		show: "Tag",
 	},
 	{ name: "eko_code", label: "User Code", sorting: true },
 	{
 		name: "commission_type",
-		label: "Commission Frequency",
+		label: "Commission\nFrequency",
 		sorting: true,
 	},
 	{

@@ -25,8 +25,7 @@ import {
 	TransactionIds,
 	UserType,
 } from "constants";
-import { useMenuContext } from "contexts/MenuContext";
-import { useUser } from "contexts/UserContext";
+import { useMenuContext, useOrgDetailContext, useUser } from "contexts";
 import { Priority, useRegisterActions } from "kbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -245,9 +244,13 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		isAdminAgentMode,
 		userType,
 	} = useUser();
+	const { orgDetail } = useOrgDetailContext();
+	const { metadata } = orgDetail;
+	const disabledFeatures = metadata?.disabled_features;
 	const { interactions } = useMenuContext();
 	const { interaction_list, role_tx_list } = interactions;
 	const router = useRouter();
+	const [menuList, setMenuList] = useState([]);
 	const [trxnList, setTrxnList] = useState([]);
 	const [otherList, setOtherList] = useState([]);
 	const [openIndex, setOpenIndex] = useState(-1);
@@ -265,8 +268,8 @@ const SideBar = ({ navOpen, setNavClose }) => {
 
 	// const [trxnActionsWorker] = useWorker(generateTransactionActions);
 
-	const menuList =
-		isAdmin && isAdminAgentMode !== true ? adminSidebarMenu : sidebarMenu;
+	// const menuList =
+	// 	isAdmin && isAdminAgentMode !== true ? adminSidebarMenu : sidebarMenu;
 
 	// Split the transaction list into two lists:
 	// 1. trxnList: List of transactions/products
@@ -275,6 +278,25 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		const trxnList = [];
 		const otherList = [];
 		let _otherActions = [];
+		let _filteredMenuList = [];
+
+		const _menuList =
+			isAdmin && isAdminAgentMode !== true
+				? adminSidebarMenu
+				: sidebarMenu;
+
+		if (disabledFeatures) {
+			_menuList.forEach((item) => {
+				const _feat = JSON.parse(disabledFeatures)?.features;
+				if (!_feat.includes(item.id)) {
+					_filteredMenuList.push(item);
+				}
+			});
+		} else {
+			_filteredMenuList = _menuList;
+		}
+
+		setMenuList(_filteredMenuList);
 
 		if (interaction_list && interaction_list.length > 0) {
 			interaction_list.forEach((tx) => {
@@ -358,7 +380,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		}
 	}, [
 		interaction_list,
-		menuList,
+		// menuList,
 		role_tx_list,
 		router,
 		ready,
