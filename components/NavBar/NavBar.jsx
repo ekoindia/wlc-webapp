@@ -40,23 +40,23 @@ const NavBar = ({ setNavOpen }) => {
 					display={{ base: "flex", sm: "none" }}
 					width="100%"
 					h="100%"
-					position={"fixed"}
-					zIndex={"999"}
+					position="fixed"
+					zIndex="999"
 				>
 					<MyAccountCard setIsCardOpen={setIsCardOpen} />
 				</Box>
 			)}
 
-			<Box as="nav" w={"full"} h={NavHeight}></Box>
+			<Box as="nav" w="full" h={NavHeight}></Box>
 			<Box
-				top={"0%"}
-				w={"full"}
-				position={"fixed"}
-				zIndex={"99"}
 				as="section"
-				boxShadow={"0px 3px 10px #0000001A"}
+				top="0%"
+				w="full"
+				position="fixed"
+				zIndex="99"
+				boxShadow="0px 3px 10px #0000001A"
 			>
-				<Box position={"sticky"} as="nav" w={"full"} h={NavHeight}>
+				<Box as="nav" position="sticky" w="full" h={NavHeight}>
 					<NavContent
 						setNavOpen={setNavOpen}
 						setIsCardOpen={setIsCardOpen}
@@ -347,16 +347,13 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 
 						{userDetails?.code && userDetails?.code > 1 ? (
 							<Text
-								fontSize={{
-									base: "12px",
-									sm: "10px",
-								}}
+								fontSize={{ base: "xs", sm: "xxs" }}
 								w="fit-content"
 								color="white"
 								mb="3px"
 							>
 								(User Code:{" "}
-								<Text as={"span"} fontWeight={"medium"}>
+								<Text as="span" fontWeight="medium">
 									{userDetails?.code}
 								</Text>
 								)
@@ -371,8 +368,8 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									base: "12px",
 									sm: "10px",
 								}}
-								w={"fit-content"}
-								color={"white"}
+								w="fit-content"
+								color="white"
 							>
 								{userDetails?.email}
 							</Text>
@@ -382,45 +379,42 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					{userDetails?.mobile && userDetails?.mobile > 1 ? (
 						<Flex
 							w="full"
-							pb=".3vw"
+							py="2"
 							justifyContent="space-between"
 							mt={{ base: "8px", sm: "initial" }}
 							wrap="wrap"
 						>
 							<Flex justifyContent="space-between" mt=".4vw">
-								<Box display="flex" alignItems="center">
+								<Flex
+									align="center"
+									gap={{ base: "4", sm: "2" }}
+								>
 									<Text
-										fontSize={{
-											base: "12px",
-											sm: "10px",
-										}}
-										color={"white"}
+										fontSize={{ base: "xs", sm: "xxs" }}
+										color="white"
 									>
 										+91{" "}
 										{userDetails?.mobile.slice(0, 5) +
 											" " +
 											userDetails?.mobile.slice(5)}
 									</Text>
-									<Box ml={{ base: "15px", sm: "initial" }}>
-										<IcoButton
-											size="xs"
-											theme="accent"
-											ml="2"
-											onClick={() => {
-												const prefix = isAdmin
-													? "/admin"
-													: "";
-												router.push(
-													`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
-												);
-												if (setIsCardOpen) {
-													setIsCardOpen(false);
-												}
-											}}
-											iconName="mode-edit"
-										/>
-									</Box>
-								</Box>
+									<IcoButton
+										size="xs"
+										theme="accent"
+										iconName="mode-edit"
+										onClick={() => {
+											const prefix = isAdmin
+												? "/admin"
+												: "";
+											router.push(
+												`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
+											);
+											if (setIsCardOpen) {
+												setIsCardOpen(false);
+											}
+										}}
+									/>
+								</Flex>
 							</Flex>
 
 							{isAdmin !== true && isOnboarding !== true && (
