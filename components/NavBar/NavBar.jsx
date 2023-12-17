@@ -4,7 +4,6 @@ import {
 	Divider,
 	Flex,
 	HStack,
-	IconButton,
 	Menu,
 	MenuButton,
 	MenuList,
@@ -113,7 +112,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 			<HStack
 				bg="navbar.bg"
 				h="full"
-				justifyContent={"space-between"}
+				justifyContent="space-between"
 				px={{ base: "4", xl: "6" }}
 				backgroundImage={svgBgDotted({
 					fill: contrast_color,
@@ -121,26 +120,17 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 				})}
 			>
 				{/* Left-side items of navbar */}
-				<Box
-					display={"flex"}
-					alignItems={"center"}
-					flexGrow={isMobile ? 1 : 0}
-				>
+				<Flex align="center" flexGrow={isMobile ? 1 : 0}>
 					<Flex align="center" minW={{ base: "auto", md: "250px" }}>
-						<IconButton
-							display={{ lg: "none" }}
-							onClick={() => {
-								setNavOpen(true);
+						<Icon
+							name="menu"
+							mr="12px"
+							display={{
+								base: isOnboarding ? "none" : "initial",
+								lg: "none",
 							}}
+							onClick={() => setNavOpen(true)}
 							aria-label="open menu"
-							icon={<Icon name="menu" />}
-							size={"sm"}
-							mr={{
-								base: "1vw",
-								sm: "2vw",
-								md: "1vw",
-							}}
-							variant="none"
 						/>
 						<OrgLogo
 							orgDetail={orgDetail}
@@ -161,7 +151,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 							<GlobalSearch />
 						</Flex>
 					)}
-				</Box>
+				</Flex>
 
 				{/* Right-side items of navbar */}
 				<Box display={{ base: "flex", md: "flex" }}>
@@ -171,11 +161,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 								setIsCardOpen(true);
 							}}
 						>
-							<Flex
-								align={"center"}
-								cursor={"pointer"}
-								zIndex={"10"}
-							>
+							<Flex align="center" cursor="pointer" zIndex="10">
 								<Box
 									bg="navbar.bgAlt"
 									padding="2px"
@@ -199,10 +185,10 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 								</Box>
 								{isAdmin ? (
 									<Flex
-										ml={"0.5vw"}
-										h={"2.3vw"}
-										justify={"center"}
-										direction={"column"}
+										ml="0.5vw"
+										h="2.3vw"
+										justify="center"
+										direction="column"
 										display={{ base: "none", md: "flex" }}
 										lineHeight={{
 											base: "15px",
@@ -211,10 +197,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 											"2xl": "22px",
 										}}
 									>
-										<Box
-											display={"flex"}
-											alignItems={"center"}
-										>
+										<Flex align="center">
 											<Text
 												as="span"
 												fontSize={{
@@ -237,14 +220,14 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 												mt="2px"
 												color="navbar.text"
 											/>
-										</Box>
+										</Flex>
 										<Text
 											fontSize={{
 												base: "10px",
 												"2xl": "14px",
 											}}
-											color={"navbar.textLight"}
-											textAlign={"start"}
+											color="navbar.textLight"
+											textAlign="start"
 										>
 											{isAdminAgentMode
 												? "Viewing as Agent"
@@ -263,11 +246,11 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 								xl: "320px",
 								"2xl": "349px",
 							}}
-							border={"none"}
-							bg={"transparent"}
-							boxShadow={"none"}
-							borderRadius={"0px"}
-							p={"0px"}
+							border="none"
+							bg="transparent"
+							boxShadow="none"
+							borderRadius="0px"
+							p="0px"
 							mr={{
 								base: "-0.9vw",
 								lg: "-0.6vw",
@@ -306,10 +289,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				borderTopRadius="10px"
 			>
 				<Flex
-					color="white"
-					justifyContent={"flex-end"}
-					w="100%"
 					display={{ base: "flex", sm: "none" }}
+					color="white"
+					justifyContent="flex-end"
+					w="100%"
 				>
 					<Icon
 						name="close"
@@ -328,10 +311,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					<Icon name="arrow-drop-down" size="sm" />
 				</Box>
 
-				<Box w={"full"} py="10px" userSelect="none">
+				<Box w="full" py="10px" userSelect="none">
 					<Flex
-						w={"full"}
-						align={"flex-end"}
+						w="full"
+						align="flex-end"
 						wrap="wrap"
 						justifyContent={{
 							base: "space-between",
@@ -350,7 +333,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									sm: "12px",
 									lg: "14px",
 								}}
-								color={"highlight"}
+								color="highlight"
 								textTransform="capitalize"
 								whiteSpace="nowrap"
 								overflow="hidden"
@@ -368,8 +351,8 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									base: "12px",
 									sm: "10px",
 								}}
-								w={"fit-content"}
-								color={"white"}
+								w="fit-content"
+								color="white"
 								mb="3px"
 							>
 								(User Code:{" "}
@@ -382,7 +365,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					</Flex>
 
 					{userDetails?.email ? (
-						<Flex w={"full"} py={".3vw"}>
+						<Flex w="full" py=".3vw">
 							<Text
 								fontSize={{
 									base: "12px",
@@ -398,14 +381,14 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 
 					{userDetails?.mobile && userDetails?.mobile > 1 ? (
 						<Flex
-							w={"full"}
-							pb={".3vw"}
-							justifyContent={"space-between"}
+							w="full"
+							pb=".3vw"
+							justifyContent="space-between"
 							mt={{ base: "8px", sm: "initial" }}
 							wrap="wrap"
 						>
 							<Flex justifyContent="space-between" mt=".4vw">
-								<Box display={"flex"} alignItems={"center"}>
+								<Box display="flex" alignItems="center">
 									<Text
 										fontSize={{
 											base: "12px",
