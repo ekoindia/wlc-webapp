@@ -4,7 +4,6 @@ import {
 	Divider,
 	Flex,
 	HStack,
-	IconButton,
 	Menu,
 	MenuButton,
 	MenuList,
@@ -41,27 +40,24 @@ const NavBar = ({ setNavOpen }) => {
 					display={{ base: "flex", sm: "none" }}
 					width="100%"
 					h="100%"
-					position={"fixed"}
-					zIndex={"999"}
+					position="fixed"
+					zIndex="999"
 				>
-					<MyAccountCard setIsCardOpen={setIsCardOpen} />
+					<MyAccountCard {...{ setIsCardOpen }} />
 				</Box>
 			)}
 
-			<Box as="nav" w={"full"} h={NavHeight}></Box>
+			<Box as="nav" w="full" h={NavHeight}></Box>
 			<Box
-				top={"0%"}
-				w={"full"}
-				position={"fixed"}
-				zIndex={"99"}
 				as="section"
-				boxShadow={"0px 3px 10px #0000001A"}
+				top="0%"
+				w="full"
+				position="fixed"
+				zIndex="99"
+				boxShadow="0px 3px 10px #0000001A"
 			>
-				<Box position={"sticky"} as="nav" w={"full"} h={NavHeight}>
-					<NavContent
-						setNavOpen={setNavOpen}
-						setIsCardOpen={setIsCardOpen}
-					/>
+				<Box as="nav" position="sticky" w="full" h={NavHeight}>
+					<NavContent {...{ setNavOpen, setIsCardOpen }} />
 				</Box>
 			</Box>
 		</>
@@ -109,177 +105,150 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	// };
 
 	return (
-		<>
-			<HStack
-				bg="navbar.bg"
-				h="full"
-				justifyContent={"space-between"}
-				px={{ base: "4", xl: "6" }}
-				backgroundImage={svgBgDotted({
-					fill: contrast_color,
-					opacity: 0.04,
-				})}
-			>
-				{/* Left-side items of navbar */}
-				<Box
-					display={"flex"}
-					alignItems={"center"}
-					flexGrow={isMobile ? 1 : 0}
-				>
-					<Flex align="center" minW={{ base: "auto", md: "250px" }}>
-						<IconButton
-							display={{ lg: "none" }}
-							onClick={() => {
-								setNavOpen(true);
+		<HStack
+			bg="navbar.bg"
+			h="full"
+			justifyContent="space-between"
+			px={{ base: "4", xl: "6" }}
+			backgroundImage={svgBgDotted({
+				fill: contrast_color,
+				opacity: 0.04,
+			})}
+		>
+			{/* Left-side items of navbar */}
+			<Flex align="center" flexGrow={isMobile ? 1 : 0}>
+				<Flex align="center" minW={{ base: "auto", md: "250px" }}>
+					{isOnboarding ? null : (
+						<Icon
+							name="menu"
+							mr="12px"
+							display={{
+								base: "initial",
+								lg: "none",
 							}}
+							onClick={() => setNavOpen(true)}
 							aria-label="open menu"
-							icon={<Icon name="menu" />}
-							size={"sm"}
-							mr={{
-								base: "1vw",
-								sm: "2vw",
-								md: "1vw",
-							}}
-							variant="none"
 						/>
-						<OrgLogo
-							orgDetail={orgDetail}
-							size="md"
-							dark={
-								orgDetail?.metadata?.theme?.navstyle === "light"
-							}
-							ml={{ base: 1, lg: 0 }}
-						/>
-					</Flex>
-
-					{ready && isLoggedIn === true && isOnboarding !== true && (
-						<Flex
-							flexGrow={isMobile ? 1 : 0}
-							justify={isMobile ? "flex-end" : "flex-start"}
-							pr={isMobile ? 2 : 0}
-						>
-							<GlobalSearch />
-						</Flex>
 					)}
-				</Box>
+					<OrgLogo
+						orgDetail={orgDetail}
+						size="md"
+						dark={orgDetail?.metadata?.theme?.navstyle === "light"}
+						ml={{ base: 1, lg: 0 }}
+					/>
+				</Flex>
 
-				{/* Right-side items of navbar */}
-				<Box display={{ base: "flex", md: "flex" }}>
-					<Menu>
-						<MenuButton
-							onClick={() => {
-								setIsCardOpen(true);
-							}}
-						>
+				{ready && isLoggedIn === true && isOnboarding !== true && (
+					<Flex
+						flexGrow={isMobile ? 1 : 0}
+						justify={isMobile ? "flex-end" : "flex-start"}
+						pr={isMobile ? 2 : 0}
+					>
+						<GlobalSearch />
+					</Flex>
+				)}
+			</Flex>
+
+			{/* Right-side items of navbar */}
+			<Menu>
+				<MenuButton
+					onClick={() => {
+						setIsCardOpen(true);
+					}}
+				>
+					<Flex align="center" cursor="pointer" zIndex="10">
+						<Box bg="navbar.bgAlt" padding="2px" borderRadius="50%">
+							<Avatar
+								w={{
+									base: "34px",
+									xl: "38px",
+									"2xl": "42px",
+								}}
+								h={{
+									base: "34px",
+									xl: "38px",
+									"2xl": "42px",
+								}}
+								name={userDetails?.name[0]}
+								lineHeight="3px"
+								src={userDetails?.pic}
+							/>
+						</Box>
+						{isAdmin ? (
 							<Flex
-								align={"center"}
-								cursor={"pointer"}
-								zIndex={"10"}
+								ml="0.5vw"
+								h="2.3vw"
+								justify="center"
+								direction="column"
+								display={{ base: "none", md: "flex" }}
+								lineHeight={{
+									base: "15px",
+									lg: "16px",
+									xl: "18px",
+									"2xl": "22px",
+								}}
 							>
-								<Box
-									bg="navbar.bgAlt"
-									padding="2px"
-									borderRadius="50%"
-								>
-									<Avatar
-										w={{
-											base: "34px",
-											xl: "38px",
-											"2xl": "42px",
+								<Flex align="center">
+									<Text
+										as="span"
+										fontSize={{
+											base: "12px",
+											"2xl": "16px",
 										}}
-										h={{
-											base: "34px",
-											xl: "38px",
-											"2xl": "42px",
-										}}
-										name={userDetails?.name[0]}
-										lineHeight="3px"
-										src={userDetails?.pic}
-									/>
-								</Box>
-								{isAdmin ? (
-									<Flex
-										ml={"0.5vw"}
-										h={"2.3vw"}
-										justify={"center"}
-										direction={"column"}
-										display={{ base: "none", md: "flex" }}
-										lineHeight={{
-											base: "15px",
-											lg: "16px",
-											xl: "18px",
-											"2xl": "22px",
-										}}
+										fontWeight="semibold"
+										mr="1.6vw"
+										color="navbar.text"
 									>
-										<Box
-											display={"flex"}
-											alignItems={"center"}
-										>
-											<Text
-												as="span"
-												fontSize={{
-													base: "12px",
-													"2xl": "16px",
-												}}
-												fontWeight="semibold"
-												mr="1.6vw"
-												color="navbar.text"
-											>
-												{limitText(
-													userDetails?.name || "",
-													12
-												)}
-											</Text>
+										{limitText(userDetails?.name || "", 12)}
+									</Text>
 
-											<Icon
-												name="arrow-drop-down"
-												size="xs"
-												mt="2px"
-												color="navbar.text"
-											/>
-										</Box>
-										<Text
-											fontSize={{
-												base: "10px",
-												"2xl": "14px",
-											}}
-											color={"navbar.textLight"}
-											textAlign={"start"}
-										>
-											{isAdminAgentMode
-												? "Viewing as Agent"
-												: "Logged in as Admin"}
-										</Text>
-									</Flex>
-								) : null}
+									<Icon
+										name="arrow-drop-down"
+										size="xs"
+										mt="2px"
+										color="navbar.text"
+									/>
+								</Flex>
+								<Text
+									fontSize={{
+										base: "10px",
+										"2xl": "14px",
+									}}
+									color="navbar.textLight"
+									textAlign="start"
+								>
+									{isAdminAgentMode
+										? "Viewing as Agent"
+										: "Logged in as Admin"}
+								</Text>
 							</Flex>
-						</MenuButton>
+						) : null}
+					</Flex>
+				</MenuButton>
 
-						<MenuList
-							w={{
-								base: "270px",
-								md: "280px",
-								lg: "290px",
-								xl: "320px",
-								"2xl": "349px",
-							}}
-							border={"none"}
-							bg={"transparent"}
-							boxShadow={"none"}
-							borderRadius={"0px"}
-							p={"0px"}
-							mr={{
-								base: "-0.9vw",
-								lg: "-0.6vw",
-							}}
-							display={{ base: "none", sm: "block" }}
-						>
-							<MyAccountCard />
-						</MenuList>
-					</Menu>
-				</Box>
-			</HStack>
-		</>
+				<MenuList
+					w={{
+						base: "270px",
+						md: "280px",
+						lg: "290px",
+						xl: "320px",
+						"2xl": "349px",
+					}}
+					border="none"
+					bg="transparent"
+					boxShadow="none"
+					borderRadius="0px"
+					p="0px"
+					mr={{
+						base: "-0.9vw",
+						lg: "-0.6vw",
+					}}
+					display={{ base: "none", sm: "block" }}
+				>
+					<MyAccountCard />
+				</MenuList>
+			</Menu>
+		</HStack>
 	);
 };
 
@@ -306,10 +275,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				borderTopRadius="10px"
 			>
 				<Flex
-					color="white"
-					justifyContent={"flex-end"}
-					w="100%"
 					display={{ base: "flex", sm: "none" }}
+					color="white"
+					justifyContent="flex-end"
+					w="100%"
 				>
 					<Icon
 						name="close"
@@ -328,10 +297,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					<Icon name="arrow-drop-down" size="sm" />
 				</Box>
 
-				<Box w={"full"} py="10px" userSelect="none">
+				<Box w="full" py="10px" userSelect="none">
 					<Flex
-						w={"full"}
-						align={"flex-end"}
+						w="full"
+						align="flex-end"
 						wrap="wrap"
 						justifyContent={{
 							base: "space-between",
@@ -350,7 +319,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									sm: "12px",
 									lg: "14px",
 								}}
-								color={"highlight"}
+								color="highlight"
 								textTransform="capitalize"
 								whiteSpace="nowrap"
 								overflow="hidden"
@@ -364,16 +333,13 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 
 						{userDetails?.code && userDetails?.code > 1 ? (
 							<Text
-								fontSize={{
-									base: "12px",
-									sm: "10px",
-								}}
-								w={"fit-content"}
-								color={"white"}
+								fontSize={{ base: "xs", sm: "xxs" }}
+								w="fit-content"
+								color="white"
 								mb="3px"
 							>
 								(User Code:{" "}
-								<Text as={"span"} fontWeight={"medium"}>
+								<Text as="span" fontWeight="medium">
 									{userDetails?.code}
 								</Text>
 								)
@@ -382,14 +348,14 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 					</Flex>
 
 					{userDetails?.email ? (
-						<Flex w={"full"} py={".3vw"}>
+						<Flex w="full" py=".3vw">
 							<Text
 								fontSize={{
 									base: "12px",
 									sm: "10px",
 								}}
-								w={"fit-content"}
-								color={"white"}
+								w="fit-content"
+								color="white"
 							>
 								{userDetails?.email}
 							</Text>
@@ -398,46 +364,43 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 
 					{userDetails?.mobile && userDetails?.mobile > 1 ? (
 						<Flex
-							w={"full"}
-							pb={".3vw"}
-							justifyContent={"space-between"}
+							w="full"
+							py="2"
+							justifyContent="space-between"
 							mt={{ base: "8px", sm: "initial" }}
 							wrap="wrap"
 						>
 							<Flex justifyContent="space-between" mt=".4vw">
-								<Box display={"flex"} alignItems={"center"}>
+								<Flex
+									align="center"
+									gap={{ base: "4", sm: "2" }}
+								>
 									<Text
-										fontSize={{
-											base: "12px",
-											sm: "10px",
-										}}
-										color={"white"}
+										fontSize={{ base: "xs", sm: "xxs" }}
+										color="white"
 									>
 										+91{" "}
 										{userDetails?.mobile.slice(0, 5) +
 											" " +
 											userDetails?.mobile.slice(5)}
 									</Text>
-									<Box ml={{ base: "15px", sm: "initial" }}>
-										<IcoButton
-											size="xs"
-											theme="accent"
-											ml="2"
-											onClick={() => {
-												const prefix = isAdmin
-													? "/admin"
-													: "";
-												router.push(
-													`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
-												);
-												if (setIsCardOpen) {
-													setIsCardOpen(false);
-												}
-											}}
-											iconName="mode-edit"
-										/>
-									</Box>
-								</Box>
+									<IcoButton
+										size="xs"
+										theme="accent"
+										iconName="mode-edit"
+										onClick={() => {
+											const prefix = isAdmin
+												? "/admin"
+												: "";
+											router.push(
+												`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
+											);
+											if (setIsCardOpen) {
+												setIsCardOpen(false);
+											}
+										}}
+									/>
+								</Flex>
 							</Flex>
 
 							{isAdmin !== true && isOnboarding !== true && (
