@@ -118,16 +118,18 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 			{/* Left-side items of navbar */}
 			<Flex align="center" flexGrow={isMobile ? 1 : 0}>
 				<Flex align="center" minW={{ base: "auto", md: "250px" }}>
-					<Icon
-						name="menu"
-						mr="12px"
-						display={{
-							base: isOnboarding ? "none" : "initial",
-							lg: "none",
-						}}
-						onClick={() => setNavOpen(true)}
-						aria-label="open menu"
-					/>
+					{isOnboarding ? null : (
+						<Icon
+							name="menu"
+							mr="12px"
+							display={{
+								base: "initial",
+								lg: "none",
+							}}
+							onClick={() => setNavOpen(true)}
+							aria-label="open menu"
+						/>
+					)}
 					<OrgLogo
 						orgDetail={orgDetail}
 						size="md"
