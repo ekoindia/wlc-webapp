@@ -43,7 +43,7 @@ const NavBar = ({ setNavOpen }) => {
 					position="fixed"
 					zIndex="999"
 				>
-					<MyAccountCard setIsCardOpen={setIsCardOpen} />
+					<MyAccountCard {...{ setIsCardOpen }} />
 				</Box>
 			)}
 
@@ -57,10 +57,7 @@ const NavBar = ({ setNavOpen }) => {
 				boxShadow="0px 3px 10px #0000001A"
 			>
 				<Box as="nav" position="sticky" w="full" h={NavHeight}>
-					<NavContent
-						setNavOpen={setNavOpen}
-						setIsCardOpen={setIsCardOpen}
-					/>
+					<NavContent {...{ setNavOpen, setIsCardOpen }} />
 				</Box>
 			</Box>
 		</>
@@ -108,161 +105,148 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	// };
 
 	return (
-		<>
-			<HStack
-				bg="navbar.bg"
-				h="full"
-				justifyContent="space-between"
-				px={{ base: "4", xl: "6" }}
-				backgroundImage={svgBgDotted({
-					fill: contrast_color,
-					opacity: 0.04,
-				})}
-			>
-				{/* Left-side items of navbar */}
-				<Flex align="center" flexGrow={isMobile ? 1 : 0}>
-					<Flex align="center" minW={{ base: "auto", md: "250px" }}>
-						<Icon
-							name="menu"
-							mr="12px"
-							display={{
-								base: isOnboarding ? "none" : "initial",
-								lg: "none",
-							}}
-							onClick={() => setNavOpen(true)}
-							aria-label="open menu"
-						/>
-						<OrgLogo
-							orgDetail={orgDetail}
-							size="md"
-							dark={
-								orgDetail?.metadata?.theme?.navstyle === "light"
-							}
-							ml={{ base: 1, lg: 0 }}
-						/>
-					</Flex>
-
-					{ready && isLoggedIn === true && isOnboarding !== true && (
-						<Flex
-							flexGrow={isMobile ? 1 : 0}
-							justify={isMobile ? "flex-end" : "flex-start"}
-							pr={isMobile ? 2 : 0}
-						>
-							<GlobalSearch />
-						</Flex>
-					)}
+		<HStack
+			bg="navbar.bg"
+			h="full"
+			justifyContent="space-between"
+			px={{ base: "4", xl: "6" }}
+			backgroundImage={svgBgDotted({
+				fill: contrast_color,
+				opacity: 0.04,
+			})}
+		>
+			{/* Left-side items of navbar */}
+			<Flex align="center" flexGrow={isMobile ? 1 : 0}>
+				<Flex align="center" minW={{ base: "auto", md: "250px" }}>
+					<Icon
+						name="menu"
+						mr="12px"
+						display={{
+							base: isOnboarding ? "none" : "initial",
+							lg: "none",
+						}}
+						onClick={() => setNavOpen(true)}
+						aria-label="open menu"
+					/>
+					<OrgLogo
+						orgDetail={orgDetail}
+						size="md"
+						dark={orgDetail?.metadata?.theme?.navstyle === "light"}
+						ml={{ base: 1, lg: 0 }}
+					/>
 				</Flex>
 
-				{/* Right-side items of navbar */}
-				<Box display={{ base: "flex", md: "flex" }}>
-					<Menu>
-						<MenuButton
-							onClick={() => {
-								setIsCardOpen(true);
-							}}
-						>
-							<Flex align="center" cursor="pointer" zIndex="10">
-								<Box
-									bg="navbar.bgAlt"
-									padding="2px"
-									borderRadius="50%"
-								>
-									<Avatar
-										w={{
-											base: "34px",
-											xl: "38px",
-											"2xl": "42px",
+				{ready && isLoggedIn === true && isOnboarding !== true && (
+					<Flex
+						flexGrow={isMobile ? 1 : 0}
+						justify={isMobile ? "flex-end" : "flex-start"}
+						pr={isMobile ? 2 : 0}
+					>
+						<GlobalSearch />
+					</Flex>
+				)}
+			</Flex>
+
+			{/* Right-side items of navbar */}
+			<Menu>
+				<MenuButton
+					onClick={() => {
+						setIsCardOpen(true);
+					}}
+				>
+					<Flex align="center" cursor="pointer" zIndex="10">
+						<Box bg="navbar.bgAlt" padding="2px" borderRadius="50%">
+							<Avatar
+								w={{
+									base: "34px",
+									xl: "38px",
+									"2xl": "42px",
+								}}
+								h={{
+									base: "34px",
+									xl: "38px",
+									"2xl": "42px",
+								}}
+								name={userDetails?.name[0]}
+								lineHeight="3px"
+								src={userDetails?.pic}
+							/>
+						</Box>
+						{isAdmin ? (
+							<Flex
+								ml="0.5vw"
+								h="2.3vw"
+								justify="center"
+								direction="column"
+								display={{ base: "none", md: "flex" }}
+								lineHeight={{
+									base: "15px",
+									lg: "16px",
+									xl: "18px",
+									"2xl": "22px",
+								}}
+							>
+								<Flex align="center">
+									<Text
+										as="span"
+										fontSize={{
+											base: "12px",
+											"2xl": "16px",
 										}}
-										h={{
-											base: "34px",
-											xl: "38px",
-											"2xl": "42px",
-										}}
-										name={userDetails?.name[0]}
-										lineHeight="3px"
-										src={userDetails?.pic}
-									/>
-								</Box>
-								{isAdmin ? (
-									<Flex
-										ml="0.5vw"
-										h="2.3vw"
-										justify="center"
-										direction="column"
-										display={{ base: "none", md: "flex" }}
-										lineHeight={{
-											base: "15px",
-											lg: "16px",
-											xl: "18px",
-											"2xl": "22px",
-										}}
+										fontWeight="semibold"
+										mr="1.6vw"
+										color="navbar.text"
 									>
-										<Flex align="center">
-											<Text
-												as="span"
-												fontSize={{
-													base: "12px",
-													"2xl": "16px",
-												}}
-												fontWeight="semibold"
-												mr="1.6vw"
-												color="navbar.text"
-											>
-												{limitText(
-													userDetails?.name || "",
-													12
-												)}
-											</Text>
+										{limitText(userDetails?.name || "", 12)}
+									</Text>
 
-											<Icon
-												name="arrow-drop-down"
-												size="xs"
-												mt="2px"
-												color="navbar.text"
-											/>
-										</Flex>
-										<Text
-											fontSize={{
-												base: "10px",
-												"2xl": "14px",
-											}}
-											color="navbar.textLight"
-											textAlign="start"
-										>
-											{isAdminAgentMode
-												? "Viewing as Agent"
-												: "Logged in as Admin"}
-										</Text>
-									</Flex>
-								) : null}
+									<Icon
+										name="arrow-drop-down"
+										size="xs"
+										mt="2px"
+										color="navbar.text"
+									/>
+								</Flex>
+								<Text
+									fontSize={{
+										base: "10px",
+										"2xl": "14px",
+									}}
+									color="navbar.textLight"
+									textAlign="start"
+								>
+									{isAdminAgentMode
+										? "Viewing as Agent"
+										: "Logged in as Admin"}
+								</Text>
 							</Flex>
-						</MenuButton>
+						) : null}
+					</Flex>
+				</MenuButton>
 
-						<MenuList
-							w={{
-								base: "270px",
-								md: "280px",
-								lg: "290px",
-								xl: "320px",
-								"2xl": "349px",
-							}}
-							border="none"
-							bg="transparent"
-							boxShadow="none"
-							borderRadius="0px"
-							p="0px"
-							mr={{
-								base: "-0.9vw",
-								lg: "-0.6vw",
-							}}
-							display={{ base: "none", sm: "block" }}
-						>
-							<MyAccountCard />
-						</MenuList>
-					</Menu>
-				</Box>
-			</HStack>
-		</>
+				<MenuList
+					w={{
+						base: "270px",
+						md: "280px",
+						lg: "290px",
+						xl: "320px",
+						"2xl": "349px",
+					}}
+					border="none"
+					bg="transparent"
+					boxShadow="none"
+					borderRadius="0px"
+					p="0px"
+					mr={{
+						base: "-0.9vw",
+						lg: "-0.6vw",
+					}}
+					display={{ base: "none", sm: "block" }}
+				>
+					<MyAccountCard />
+				</MenuList>
+			</Menu>
+		</HStack>
 	);
 };
 
