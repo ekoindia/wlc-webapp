@@ -366,41 +366,38 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						<Flex
 							w="full"
 							py="2"
-							justifyContent="space-between"
+							justify="space-between"
 							mt={{ base: "8px", sm: "initial" }}
 							wrap="wrap"
 						>
-							<Flex justifyContent="space-between" mt=".4vw">
-								<Flex
-									align="center"
-									gap={{ base: "4", sm: "2" }}
+							<Flex
+								justify="space-between"
+								align="center"
+								gap={{ base: "4", sm: "2" }}
+							>
+								<Text
+									fontSize={{ base: "xs", sm: "xxs" }}
+									color="white"
 								>
-									<Text
-										fontSize={{ base: "xs", sm: "xxs" }}
-										color="white"
-									>
-										+91{" "}
-										{userDetails?.mobile.slice(0, 5) +
-											" " +
-											userDetails?.mobile.slice(5)}
-									</Text>
-									<IcoButton
-										size="xs"
-										theme="accent"
-										iconName="mode-edit"
-										onClick={() => {
-											const prefix = isAdmin
-												? "/admin"
-												: "";
-											router.push(
-												`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
-											);
-											if (setIsCardOpen) {
-												setIsCardOpen(false);
-											}
-										}}
-									/>
-								</Flex>
+									+91{" "}
+									{userDetails?.mobile.slice(0, 5) +
+										" " +
+										userDetails?.mobile.slice(5)}
+								</Text>
+								<IcoButton
+									size="xs"
+									theme="accent"
+									iconName="mode-edit"
+									onClick={() => {
+										const prefix = isAdmin ? "/admin" : "";
+										router.push(
+											`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
+										);
+										if (setIsCardOpen) {
+											setIsCardOpen(false);
+										}
+									}}
+								/>
 							</Flex>
 
 							{isAdmin !== true && isOnboarding !== true && (
