@@ -15,8 +15,7 @@ import { DashboardDateFilter } from "..";
  */
 const BusinessDashboard = () => {
 	const [data, setData] = useState();
-	const [isLoading, setIsLoading] = useState(true);
-	console.log("isLoading", isLoading);
+	// const [isLoading, setIsLoading] = useState(true);
 	const { accessToken } = useSession();
 
 	const [dateRange, setDateRange] = useState(7);
@@ -55,7 +54,7 @@ const BusinessDashboard = () => {
 				console.log("[BusinessDashboard] - fetch result...", data);
 				const _data = data?.data?.dashboard_details[0] || [];
 				setData(_data);
-				setIsLoading(false);
+				// setIsLoading(false);
 			})
 			.catch((err) => {
 				console.error(`[BusinessDashboard] error: `, err);
@@ -63,12 +62,10 @@ const BusinessDashboard = () => {
 
 		return () => {
 			console.log("[BusinessDashboard] fetch aborted...", controller);
-			setIsLoading(true);
+			// setIsLoading(true);
 			controller.abort();
 		};
 	}, [currDate, prevDate]);
-
-	console.log("[BusinessDashboard] data", data);
 
 	const { topPanel, earningOverview, topMerchants, successRate } = data || {};
 
@@ -94,9 +91,11 @@ const BusinessDashboard = () => {
 					<SuccessRate data={successRate} />
 				</Flex>
 			</Flex>
-			<Flex p="0px 20px 20px">
-				<TopMerchants data={topMerchants} />
-			</Flex>
+			{topMerchants?.length > 0 ? (
+				<Flex p="0px 20px 20px">
+					<TopMerchants data={topMerchants} />
+				</Flex>
+			) : null}
 		</Flex>
 	);
 };
