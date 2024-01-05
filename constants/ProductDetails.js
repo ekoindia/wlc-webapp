@@ -79,6 +79,22 @@ export const products = {
 			pricing_type: "0",
 		},
 	},
+	UPI_MONEY_TRANSFER: {
+		uriSegment: "upi",
+		slabs: [
+			{ min: 100, max: 1000 },
+			{ min: 1001, max: 2000 },
+			{ min: 2001, max: 3000 },
+			{ min: 3001, max: 4000 },
+			{ min: 4001, max: 5000 },
+			{ min: 5001, max: 25000 },
+		],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
+		serviceCode: 721,
+	},
 };
 
 export const productPricingCommissionValidationConfig = {
@@ -139,6 +155,16 @@ export const productPricingCommissionValidationConfig = {
 			FIXED: { min: 0, max: 1000 },
 		},
 	},
+	UPI_MONEY_TRANSFER: {
+		RETAILER: {
+			PERCENT: { min: 0.3, max: 0.7 },
+			FIXED: { min: 3.72, max: 35 },
+		},
+		DISTRIBUTOR: {
+			PERCENT: { min: 0, max: 0.7 },
+			FIXED: { min: 0, max: 35 },
+		},
+	},
 };
 
 export const productPricingTextConfig = {
@@ -155,4 +181,5 @@ export const productPricingType = {
 	CREDIT_CARD_BILL_PAYMENT: productPricingTextConfig.PRICING,
 	ACCOUNT_VERIFICATION: productPricingTextConfig.PRICING,
 	CARD_PAYMENT: productPricingTextConfig.PRICING,
+	UPI_MONEY_TRANSFER: productPricingTextConfig.PRICING,
 };

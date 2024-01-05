@@ -10,6 +10,7 @@ import {
 	CreditCardBillPayment,
 	Dmt,
 	IndoNepal,
+	UpiMoneyTransfer,
 } from ".";
 /**
  * A PricingCommission page-component
@@ -29,6 +30,7 @@ const PricingCommissions = () => {
 		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
 		{ label: "Aadhaar Pay", comp: <AadhaarPay /> },
 		{ label: "Indo-Nepal Fund Transfer", comp: <IndoNepal /> },
+		{ label: "UPI Money Transfer", comp: <UpiMoneyTransfer /> },
 		{ label: "Airtel CMS", comp: <AirtelCms /> },
 	];
 
