@@ -2,6 +2,7 @@ import { Box, Flex, SlideFade, Text } from "@chakra-ui/react";
 import { Icon, ShowcaseCircle } from "components";
 import { useOrgDetailContext, useSession } from "contexts";
 import { fadeIn } from "libs/chakraKeyframes";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { svgBgDotted } from "utils/svgPatterns";
 import { Login, SocialVerify, VerifyOtp } from "./children";
@@ -177,6 +178,24 @@ const LoginPanel = () => {
 						</SlideFade>
 					)}
 				</Box>
+			</Flex>
+			<Flex
+				pos="absolute"
+				bottom="6px"
+				right="6px"
+				fontWeight="medium"
+				fontSize="xs"
+				color={{ base: "dark", md: "white" }}
+				opacity="0.4"
+			>
+				<Link href="/privacy">
+					<Flex gap="1" align="center">
+						<Icon name="open-in-new" size="xs" />
+						<Text display="inline" lineHeight="1">
+							Privacy Policy
+						</Text>
+					</Flex>
+				</Link>
 			</Flex>
 		</Flex>
 	);
