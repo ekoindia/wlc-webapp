@@ -1,4 +1,6 @@
-import { Grid } from "@chakra-ui/react";
+import { Flex, Grid, Text } from "@chakra-ui/react";
+import { Icon } from "components";
+import Link from "next/link";
 import {
 	EarningSummary,
 	ManageMyAccountCard,
@@ -22,21 +24,42 @@ const Profile = () => {
 	];
 
 	return (
-		<Grid
-			templateColumns={{
-				base: "repeat(auto-fit,minmax(280px,1fr))",
-				md: "repeat(auto-fit,minmax(340px,1fr))",
-				// xl: "repeat(auto-fit,minmax(440px,1fr))",
-			}}
-			justifyContent="center"
-			py={{ base: "20px", md: "0px" }}
-			gap={{ base: (2, 2), md: (4, 2), lg: (4, 6) }}
-			width={"100%"}
-		>
-			{widgets.map(({ id, component: Component }) => (
-				<Component key={id} />
-			))}
-		</Grid>
+		<div>
+			<Grid
+				templateColumns={{
+					base: "repeat(auto-fit,minmax(280px,1fr))",
+					md: "repeat(auto-fit,minmax(340px,1fr))",
+					// xl: "repeat(auto-fit,minmax(440px,1fr))",
+				}}
+				justifyContent="center"
+				py={{ base: "20px", md: "0px" }}
+				gap={{ base: (2, 2), md: (4, 2), lg: (4, 6) }}
+				width={"100%"}
+			>
+				{widgets.map(({ id, component: Component }) => (
+					<Component key={id} />
+				))}
+			</Grid>
+
+			<Flex
+				pos="absolute"
+				bottom="6px"
+				right="6px"
+				fontWeight="medium"
+				fontSize="xs"
+				color="dark"
+				opacity="0.5"
+			>
+				<Link href="/privacy">
+					<Flex gap="1" align="center">
+						<Icon name="open-in-new" size="xs" />
+						<Text display="inline" lineHeight="1">
+							Privacy Policy
+						</Text>
+					</Flex>
+				</Link>
+			</Flex>
+		</div>
 	);
 };
 //TODO user type id 2,3 --> Retailer -- shop details
