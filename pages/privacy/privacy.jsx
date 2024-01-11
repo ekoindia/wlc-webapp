@@ -4,15 +4,20 @@ import { LayoutLogin } from "components/Layout";
 import { useOrgDetailContext } from "contexts";
 import { useRouter } from "next/router";
 
+const ZOHO_FORM_URL =
+	"https://forms.zohopublic.in/ekoindiafinancialservicespvtlt/form/Reachouttous/formperma/zlHNZZ7Kyaw0S-8SpVtUMZLZ_bMHYLMjlzXeP12FRoc";
+
 const PrivacyPage = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const router = useRouter();
-	const { app_name, org_name, metadata } = orgDetail;
-	const reach_out_form_url = `https://forms.zohopublic.in/ekoindiafinancialservicespvtlt/form/Reachouttous/formperma/zlHNZZ7Kyaw0S-8SpVtUMZLZ_bMHYLMjlzXeP12FRoc`;
+	const { app_name, org_name, org_id, metadata } = orgDetail;
+	const currentUrl = window.location.href;
+	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
+	const reach_out_form_url = `${ZOHO_FORM_URL}?org_id=${org_id}&org_url=${baseUrl}`;
 
 	return (
-		<Box borderTop="5px solid" borderTopColor="primary.DEFAULT">
-			<Flex gap="2" mt="8" pl="2" pr="8">
+		<Box borderTop="10px solid" borderTopColor="primary.DEFAULT">
+			<Flex gap="2" mt="8" pl="1.5" pr="8">
 				<IcoButton
 					mt="1.5"
 					iconName="arrow-back"
@@ -203,7 +208,7 @@ const PrivacyPage = () => {
 							<P>
 								If you have any questions or suggestions about
 								our Privacy Policy, please reach out to us by
-								filling in the details below.
+								filling in the details below:
 								{/* <Link
 								color="accent.DEFAULT"
 								href={
