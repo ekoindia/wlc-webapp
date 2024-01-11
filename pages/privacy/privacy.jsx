@@ -10,7 +10,7 @@ const ZOHO_FORM_URL =
 const PrivacyPage = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const router = useRouter();
-	const { app_name, org_name, org_id, metadata } = orgDetail;
+	const { app_name, org_name, org_id } = orgDetail;
 	const currentUrl = window.location.href;
 	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
 	const reach_out_form_url = `${ZOHO_FORM_URL}?org_id=${org_id}&org_url=${baseUrl}`;
@@ -202,14 +202,14 @@ const PrivacyPage = () => {
 						on this page.
 					</P>
 
-					{metadata?.support_contacts?.email ? (
-						<>
-							<H2>Reach out to us</H2>
-							<P>
-								If you have any questions or suggestions about
-								our Privacy Policy, please reach out to us by
-								filling in the details below:
-								{/* <Link
+					{/* {metadata?.support_contacts?.email ? ( */}
+					{/* <> */}
+					<H2>Reach out to us</H2>
+					<P>
+						If you have any questions or suggestions about our
+						Privacy Policy, please reach out to us by filling in the
+						details below:
+						{/* <Link
 								color="accent.DEFAULT"
 								href={
 									"mailto:" +
@@ -219,9 +219,9 @@ const PrivacyPage = () => {
 							>
 								{metadata?.support_contacts?.email}
 							</Link> */}
-							</P>
-						</>
-					) : null}
+					</P>
+					{/* </> */}
+					{/* ) : null} */}
 
 					<iframe
 						allow="fullscreen"
