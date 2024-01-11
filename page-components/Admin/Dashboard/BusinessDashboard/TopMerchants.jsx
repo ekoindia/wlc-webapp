@@ -1,6 +1,44 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
 
+const topMerchantsTableParameterList = [
+	{ label: "Sr. No.", show: "#" },
+	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
+	{
+		name: "gtv",
+		label: "GTV",
+		sorting: true,
+		show: "Amount",
+	},
+	{
+		name: "totalTransactions",
+		label: "Total\nTransaction",
+		sorting: true,
+	},
+	{
+		name: "status",
+		label: "Status",
+		show: "Tag",
+		sorting: true,
+	},
+	{
+		name: "raCases",
+		label: "Pending\nTransactions",
+		sorting: true,
+	},
+	{
+		name: "onboardingDate",
+		label: "Onboarding\nDate",
+		sorting: true,
+		show: "Date",
+	},
+	{
+		name: "distributorMapped",
+		label: "Distributor\nMapped",
+		sorting: true,
+	},
+];
+
 /**
  * A TopMerchants page-component
  * TODO: Write more description here
@@ -9,43 +47,6 @@ import { Table } from "components";
  * @example	`<TopMerchants></TopMerchants>`
  */
 const TopMerchants = ({ data }) => {
-	const renderer = [
-		{ label: "Sr. No.", show: "#" },
-		{ name: "name", label: "Name", sorting: true, show: "Avatar" },
-		{
-			name: "gtv",
-			label: "GTV",
-			sorting: true,
-			show: "Amount",
-		},
-		{
-			name: "totalTransactions",
-			label: "Total Transaction",
-			sorting: true,
-		},
-		{
-			name: "status",
-			label: "Status",
-			show: "Tag",
-			sorting: true,
-		},
-		{
-			name: "raCases",
-			label: "Pending Transactions",
-			sorting: true,
-		},
-		{
-			name: "onboardingDate",
-			label: "Onboarding Date",
-			sorting: true,
-			show: "Date",
-		},
-		{
-			name: "distributorMapped",
-			label: "Distributor Mapped",
-			sorting: true,
-		},
-	];
 	return (
 		<Flex
 			direction="column"
@@ -54,6 +55,7 @@ const TopMerchants = ({ data }) => {
 			bg="white"
 			borderRadius="10"
 			border="basic"
+			gap="4"
 		>
 			<Flex
 				direction={{ base: "column", md: "row" }}
@@ -65,9 +67,10 @@ const TopMerchants = ({ data }) => {
 				{/* TODO: Need Pills */}
 			</Flex>
 			<Table
-				renderer={renderer}
-				data={data}
-				// ResponsiveCard={BusinessDashboardCard}
+				{...{
+					data,
+					renderer: topMerchantsTableParameterList,
+				}}
 			/>
 		</Flex>
 	);
