@@ -52,10 +52,10 @@ const Profile = () => {
 			>
 				<Link href="/privacy">
 					<Flex gap="1" align="center">
-						<Icon name="open-in-new" size="xs" />
 						<Text display="inline" lineHeight="1">
 							Privacy Policy
 						</Text>
+						<Icon name="open-in-new" size="xs" />
 					</Flex>
 				</Link>
 			</Flex>
