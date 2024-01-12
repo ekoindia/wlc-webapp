@@ -10,6 +10,7 @@ import {
 	CreditCardBillPayment,
 	Dmt,
 	IndoNepal,
+	RefundMethod,
 } from ".";
 /**
  * A PricingCommission page-component
@@ -17,6 +18,7 @@ import {
  */
 const PricingCommissions = () => {
 	const tabList = [
+		{ label: "Refund Method", comp: <RefundMethod /> },
 		{
 			label: "Commission Frequency",
 			comp: <CommissionFrequency />,
