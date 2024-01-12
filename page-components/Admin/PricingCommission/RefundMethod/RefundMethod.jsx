@@ -67,6 +67,17 @@ const RefundMethod = () => {
 			parameter_type_id: ParamType.LIST,
 			list_elements: refund_method_list,
 		},
+		{
+			name: "note",
+			label: `Note:`,
+			parameter_type_id: ParamType.LABEL,
+			value:
+				watcher.otp_verification_token == 0
+					? "Transactions will be Refunded using an OTP received by the Customer (Recommended)"
+					: watcher.otp_verification_token == 1
+					? "Transactions will be Refunded using the Agent’s own Secret Pin. If you choose this option, it would be possible for Agents within your network to Refund failed transactions using their Secret PIN without the customer’s knowledge. By choosing this setting, your organization agrees to accept the responsibility of any potential misuse."
+					: null,
+		},
 	];
 
 	const handleFormSubmit = (data) => {
@@ -82,7 +93,6 @@ const RefundMethod = () => {
 			generateNewToken,
 		})
 			.then((res) => {
-				console.log("res", res);
 				toast({
 					title: res.message,
 					status: getStatus(res.status),
