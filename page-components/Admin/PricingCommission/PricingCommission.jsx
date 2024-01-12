@@ -150,13 +150,18 @@ const Card = ({ label, icon }) => {
 					}
 				/>
 				<Flex direction="column" w="80%">
-					<Text>{label}</Text>
+					<Text
+						fontSize={{ base: "sm", md: "md" }}
+						fontWeight="medium"
+					>
+						{label}
+					</Text>
 					<Text fontSize="xs">{label}</Text>
 				</Flex>
 			</Flex>
 			<Icon
 				name="arrow-forward"
-				size="sm"
+				size={{ base: "xs", sm: "sm" }}
 				color={onHover ? `hsl(${h},80%,30%)` : "white"}
 			/>
 		</Flex>
