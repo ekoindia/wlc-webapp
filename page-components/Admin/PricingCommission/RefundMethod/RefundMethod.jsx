@@ -69,7 +69,7 @@ const RefundMethod = () => {
 		},
 		{
 			name: "note",
-			label: `Note:`,
+			label: "Note:",
 			parameter_type_id: ParamType.LABEL,
 			value:
 				watcher.otp_verification_token == 0
@@ -93,6 +93,9 @@ const RefundMethod = () => {
 			generateNewToken,
 		})
 			.then((res) => {
+				const _otp_verification_token =
+					res?.data?.otp_verification_token;
+				setRefundMethod(_otp_verification_token);
 				toast({
 					title: res.message,
 					status: getStatus(res.status),
