@@ -219,12 +219,17 @@ export const getArrowStyle = () => {
 export const getModalStyle = (
 	mobile_number,
 	eko_code,
-	account_status,
+	account_status_id,
 	agent_type
 ) => {
 	return (
 		<NetworkMenuWrapper
-			{...{ mobile_number, eko_code, account_status, agent_type }}
+			{...{
+				mobile_number,
+				eko_code,
+				account_status_id,
+				agent_type,
+			}}
 		/>
 	);
 };
