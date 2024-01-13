@@ -1,3 +1,4 @@
+import { Flex, Text } from "@chakra-ui/react";
 import { Headings } from "components";
 import dynamic from "next/dynamic";
 
@@ -25,7 +26,32 @@ const PricingForm = ({ label, comp }) => {
 	return (
 		<div>
 			<Headings title={label} />
-			<DynamicPageComponent />
+			<Flex direction="column" mx={{ base: "4", md: "0" }}>
+				<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>
+					<span
+						style={{
+							backgroundColor: "#FFD93B",
+							fontWeight: "700",
+						}}
+					>
+						Note:
+					</span>
+					&nbsp; The revised cost structure will come into effect from
+					tomorrow (12:00 AM midnight).
+				</Text>
+				<Flex
+					direction="column"
+					px={{ base: "6", md: "8" }}
+					pt="6"
+					pb="8"
+					bg="white"
+					border="card"
+					boxShadow="basic"
+					borderRadius="10px"
+				>
+					<DynamicPageComponent />
+				</Flex>
+			</Flex>
 		</div>
 	);
 };

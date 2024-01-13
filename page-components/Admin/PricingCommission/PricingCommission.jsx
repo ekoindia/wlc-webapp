@@ -144,6 +144,7 @@ const Card = ({ label, icon, slug }) => {
 			_hover={{
 				bg: `hsl(${h},80%,98%)`,
 				transition: "background 0.3s ease-out",
+				cursor: "pointer",
 			}}
 			boxShadow="buttonShadow"
 			onMouseEnter={() => setOnHover(true)}
