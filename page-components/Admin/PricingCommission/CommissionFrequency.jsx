@@ -218,4 +218,4 @@ const CommissionFrequency = () => {
 	);
 };
 
-export default CommissionFrequency;
+export { CommissionFrequency };

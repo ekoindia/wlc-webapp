@@ -411,7 +411,7 @@ const AccountVerification = () => {
 	);
 };
 
-export default AccountVerification;
+export { AccountVerification };
 
 const SectionTitle = ({ children }) => {
 	return (
