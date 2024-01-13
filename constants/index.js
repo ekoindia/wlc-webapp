@@ -25,6 +25,7 @@ export {
 	productPricingTextConfig,
 	productPricingType,
 	products,
+	product_slug_map,
 } from "./ProductDetails";
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
 export { roles } from "./role";

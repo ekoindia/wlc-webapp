@@ -1,6 +1,8 @@
 import { Avatar, Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { Headings, Icon, Tabs } from "components";
+import { product_slug_map } from "constants/ProductDetails";
 import useHslColor from "hooks/useHslColor";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import {
 	AadhaarPay,
@@ -17,7 +19,7 @@ import {
  * A PricingCommission page-component
  * @example	`<PricingCommission></PricingCommission>`
  */
-const PricingCommissions = () => {
+const PricingCommission = () => {
 	const tabList = [
 		{
 			label: "Commission Frequency",
@@ -64,9 +66,14 @@ const PricingCommissions = () => {
 						py={{ base: "4", md: "0px" }}
 						gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 					>
-						{tabList?.map(({ label, icon }) => (
-							<Card key={label} {...{ label, icon }} />
-						))}
+						{Object.values(product_slug_map)?.map(
+							({ label, icon, comp, slug }) => (
+								<Card
+									key={label}
+									{...{ label, icon, comp, slug }}
+								/>
+							)
+						)}
 					</Grid>
 				) : (
 					<>
@@ -112,11 +119,19 @@ const PricingCommissions = () => {
 	);
 };
 
-export default PricingCommissions;
+export { PricingCommission };
 
-const Card = ({ label, icon }) => {
+const Card = ({ label, icon, slug }) => {
 	const { h } = useHslColor(label);
 	const [onHover, setOnHover] = useState(false);
+	const router = useRouter();
+
+	const handleClick = (slug) => {
+		if (slug) {
+			router.push(`pricing/${slug}`);
+		}
+	};
+
 	return (
 		<Flex
 			key={label}
@@ -133,6 +148,7 @@ const Card = ({ label, icon }) => {
 			boxShadow="buttonShadow"
 			onMouseEnter={() => setOnHover(true)}
 			onMouseLeave={() => setOnHover(false)}
+			onClick={() => handleClick(slug)}
 		>
 			<Flex align="center" gap="4" w="100%">
 				<Avatar
@@ -162,7 +178,7 @@ const Card = ({ label, icon }) => {
 			<Icon
 				name="arrow-forward"
 				size={{ base: "xs", sm: "sm" }}
-				color={onHover ? `hsl(${h},80%,30%)` : "white"}
+				color={onHover ? `hsl(${h},80%,30%)` : "transparent"}
 			/>
 		</Flex>
 	);

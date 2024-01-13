@@ -156,3 +156,58 @@ export const productPricingType = {
 	ACCOUNT_VERIFICATION: productPricingTextConfig.PRICING,
 	CARD_PAYMENT: productPricingTextConfig.PRICING,
 };
+
+export const product_slug_map = {
+	"commission-frequency": {
+		label: "Commission Frequency",
+		icon: "money-deposit",
+		comp: "CommissionFrequency",
+		slug: "commission-frequency",
+	},
+	"money-transfer": {
+		label: "Money Transfer",
+		icon: "cash",
+		comp: "Dmt",
+		slug: "money-transfer",
+	},
+	aeps: {
+		label: "AePS",
+		icon: "cashout",
+		comp: "Aeps",
+		slug: "aeps",
+	},
+	"payment-gateway": {
+		label: "Payment Gateway",
+		comp: "CardPayment",
+		slug: "payment-gateway",
+	},
+	"account-verification": {
+		label: "Account Verification",
+		icon: "money-note",
+		comp: "AccountVerification",
+		slug: "account-verification",
+	},
+	"credit-card-bill-payment": {
+		label: "Credit Card Bill Payment",
+		icon: "creditcard",
+		comp: "CreditCardBillPayment",
+		slug: "credit-card-bill-payment",
+	},
+	"aadhaar-pay": {
+		label: "Aadhaar Pay",
+		icon: "wallet",
+		comp: "AadhaarPay",
+		slug: "aadhaar-pay",
+	},
+	"indo-nepal-fund-transfer": {
+		label: "Indo-Nepal Fund Transfer",
+		icon: "nepal",
+		comp: "IndoNepal",
+		slug: "indo-nepal-fund-transfer",
+	},
+	"airtel-cms": {
+		label: "Airtel CMS",
+		comp: "AirtelCms",
+		slug: "airtel-cms",
+	},
+};
