@@ -1,5 +1,5 @@
-import { PaddingBox } from "components";
-import { product_slug_map } from "constants";
+import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { PricingCommissionObject, product_slug_map } from "constants";
 import { useRouter } from "next/router";
 import { PricingForm } from "page-components/Admin";
 
@@ -10,7 +10,9 @@ const PricingFormPage = () => {
 
 	return (
 		<PaddingBox>
-			<PricingForm {...{ label, comp }} />
+			<BreadcrumbsWrapper BreadcrumbsObject={PricingCommissionObject}>
+				<PricingForm {...{ label, comp }} />
+			</BreadcrumbsWrapper>
 		</PaddingBox>
 	);
 };
