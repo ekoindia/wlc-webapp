@@ -94,8 +94,5 @@ export const buttonTheme = defineStyleConfig({
 	},
 	baseStyle: {
 		borderRadius: "10px",
-		_disabled: {
-			opacity: 0.7,
-		},
 	},
 });
