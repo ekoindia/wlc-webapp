@@ -1,119 +1,46 @@
 import { Avatar, Box, Flex, Grid, Text } from "@chakra-ui/react";
-import { Headings, Icon, Tabs } from "components";
-import { product_slug_map } from "constants/ProductDetails";
+import { Button, Headings, Icon } from "components";
+import { Endpoints, product_slug_map, TransactionTypes } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import {
-	AadhaarPay,
-	AccountVerification,
-	Aeps,
-	AirtelCms,
-	CardPayment,
-	CommissionFrequency,
-	CreditCardBillPayment,
-	Dmt,
-	IndoNepal,
-} from ".";
+import { saveDataToFile } from "utils";
 /**
  * A PricingCommission page-component
  * @example	`<PricingCommission></PricingCommission>`
  */
 const PricingCommission = () => {
-	const tabList = [
-		{
-			label: "Commission Frequency",
-			comp: <CommissionFrequency />,
-			icon: "money-deposit",
-			// disabled: true,
-		},
-		{ label: "Money Transfer", comp: <Dmt />, icon: "cash" },
-		{ label: "AePS", comp: <Aeps />, icon: "cashout" },
-		{ label: "Payment Gateway", comp: <CardPayment /> },
-		{
-			label: "Account Verification",
-			comp: <AccountVerification />,
-			icon: "money-note",
-		},
-		{
-			label: "Credit Card Bill Payment",
-			comp: <CreditCardBillPayment />,
-			icon: "creditcard",
-		},
-		{ label: "Aadhaar Pay", comp: <AadhaarPay />, icon: "wallet" },
-		{
-			label: "Indo-Nepal Fund Transfer",
-			comp: <IndoNepal />,
-			icon: "nepal",
-		},
-		{ label: "Airtel CMS", comp: <AirtelCms /> },
-	];
-
 	return (
 		<>
-			<Headings title="Pricing & Commissions" hasIcon={false} />
+			<Headings
+				title="Pricing & Commissions"
+				hasIcon={false}
+				propComp={<DownloadPricing />}
+			/>
 			<Box
 				px={{ base: "16px", md: "initial" }}
 				mb={{ base: "16", md: "0" }}
 			>
-				{tabList?.length > 5 ? (
-					<Grid
-						templateColumns={{
-							base: "repeat(auto-fit,minmax(250px,1fr))",
-							md: "repeat(auto-fit,minmax(300px,1fr))",
-						}}
-						justifyContent="center"
-						py={{ base: "4", md: "0px" }}
-						gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
-					>
-						{Object.values(product_slug_map)?.map(
-							({ label, icon, comp, slug }) => (
-								<Card
-									key={label}
-									{...{ label, icon, comp, slug }}
-								/>
-							)
-						)}
-					</Grid>
-				) : (
-					<>
-						<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>
-							<span
-								style={{
-									backgroundColor: "#FFD93B",
-									fontWeight: "700",
-								}}
-							>
-								Note:
-							</span>
-							&nbsp; The revised cost structure will come into
-							effect from tomorrow (12:00 AM midnight).
-						</Text>
-						<Box
-							bg="white"
-							border="card"
-							boxShadow="basic"
-							borderRadius="10px"
-						>
-							<Tabs>
-								{tabList.map(
-									(
-										{ label, comp, disabled = false },
-										index
-									) => (
-										<div
-											key={`${index}-${label}`}
-											label={label}
-											disabled={disabled}
-										>
-											{comp}
-										</div>
-									)
-								)}
-							</Tabs>
-						</Box>
-					</>
-				)}
+				<Grid
+					templateColumns={{
+						base: "repeat(auto-fit,minmax(250px,1fr))",
+						md: "repeat(auto-fit,minmax(300px,1fr))",
+					}}
+					justifyContent="center"
+					py={{ base: "4", md: "0px" }}
+					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
+				>
+					{Object.values(product_slug_map)?.map(
+						({ label, icon, comp, slug }) => (
+							<Card
+								key={label}
+								{...{ label, icon, comp, slug }}
+							/>
+						)
+					)}
+				</Grid>
 			</Box>
 		</>
 	);
@@ -182,5 +109,35 @@ const Card = ({ label, icon, slug }) => {
 				color={onHover ? `hsl(${h},80%,30%)` : "transparent"}
 			/>
 		</Flex>
+	);
+};
+
+const DownloadPricing = () => {
+	const { accessToken } = useSession();
+	const handleClick = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-is-file-download": "1",
+			},
+			body: {
+				interaction_type_id: TransactionTypes.DOWNLOAD_EXISTING_PRICING,
+			},
+			token: accessToken,
+		})
+			.then((data) => {
+				const _blob = data?.file?.blob;
+				const _filename = data?.file?.name || "file";
+				const _type = data?.file["content-type"];
+				const _b64 = true;
+				saveDataToFile(_blob, _filename, _type, _b64);
+			})
+			.catch((err) => {
+				console.error("Error: ", err);
+			});
+	};
+	return (
+		<Button fontSize="sm" onClick={handleClick}>
+			Existing Pricing
+		</Button>
 	);
 };
