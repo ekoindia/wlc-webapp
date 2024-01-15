@@ -11,8 +11,6 @@ const DeleteAccount = () => {
 	const currentUrl = window.location.href;
 	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
 
-	console.log("Gopi Kumar ", userData, mobile);
-
 	let src_url_loggedIn = `https://zfrmz.in/Ap36vU4GDK5eywKxdEA4?name=${app_name}&org_url=${baseUrl}&org_id=${org_id}&agent_type=${UserTypeLabel[user_type]}&mobile=${mobile}`;
 	let src_url = `https://zfrmz.in/qibBUJGotvHwFHLpV1pJ?name=${app_name}&org_url=${baseUrl}`;
 	return (
