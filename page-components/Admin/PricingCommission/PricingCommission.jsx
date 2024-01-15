@@ -10,6 +10,7 @@ import {
 	CreditCardBillPayment,
 	Dmt,
 	IndoNepal,
+	RefundMethod,
 	UpiMoneyTransfer,
 } from ".";
 /**
@@ -27,6 +28,7 @@ const PricingCommissions = () => {
 		{ label: "AePS", comp: <Aeps /> },
 		{ label: "Payment Gateway", comp: <CardPayment /> },
 		{ label: "Account Verification", comp: <AccountVerification /> },
+		{ label: "Refund Method", comp: <RefundMethod /> },
 		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
 		{ label: "Aadhaar Pay", comp: <AadhaarPay /> },
 		{ label: "Indo-Nepal Fund Transfer", comp: <IndoNepal /> },

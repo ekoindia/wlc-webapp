@@ -9,4 +9,5 @@ export { CreditCardBillPayment } from "./CreditCardBillPayment";
 export { Dmt } from "./Dmt";
 export { IndoNepal } from "./IndoNepal";
 export { default as PricingCommission } from "./PricingCommission";
+export { RefundMethod } from "./RefundMethod";
 export { UpiMoneyTransfer } from "./UpiMoneyTransfer";
