@@ -1,5 +1,12 @@
 import { FormControl, Grid, Text } from "@chakra-ui/react";
-import { Calenders, Input, Radio, Select, Textarea } from "components";
+import {
+	Calenders,
+	Input,
+	InputLabel,
+	Radio,
+	Select,
+	Textarea,
+} from "components";
 import { ParamType } from "constants";
 import { Controller } from "react-hook-form";
 import { getFormErrorMessage } from "utils";
@@ -64,6 +71,17 @@ const Form = ({
 					}
 
 					switch (parameter_type_id) {
+						case ParamType.LABEL:
+							return (
+								<div>
+									{label ? (
+										<InputLabel required={required}>
+											{label}
+										</InputLabel>
+									) : null}
+									<Text fontSize="sm">{value}</Text>
+								</div>
+							);
 						case ParamType.NUMERIC:
 							return (
 								<FormControl

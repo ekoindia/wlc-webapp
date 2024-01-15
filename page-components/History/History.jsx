@@ -6,7 +6,7 @@ import {
 	tableRowLimit,
 	TransactionTypes,
 } from "constants";
-import { useGlobalSearch, useSession, useUser } from "contexts";
+import { useGlobalSearch, useMenuContext, useSession, useUser } from "contexts";
 import { fetcher } from "helpers";
 import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
@@ -68,6 +68,22 @@ const History = () => {
 	const [openModalId, setOpenModalId] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
 	const [minDateExport, setMinDateExport] = useState(calendar_min_date);
+
+	const { interactions } = useMenuContext();
+	const { trxn_type_prod_map } = interactions;
+
+	const renderer = {
+		label: "hist_label",
+		value: "tx_typeid",
+	};
+
+	const history_interaction_list = Object.keys(trxn_type_prod_map).map(
+		(key) => {
+			const tx_typeid = parseInt(key);
+			return { ...trxn_type_prod_map[key], tx_typeid };
+		}
+	);
+
 	const [today] = useState(() => {
 		const _today = new Date();
 		return formatDate(_today, "yyyy-MM-dd");
@@ -338,7 +354,9 @@ const History = () => {
 		// Get all non-empty values from formState and set in finalFormState
 		const _finalFormState = {};
 		Object.keys(data).forEach((key) => {
-			if (data[key]) {
+			if (key === "product" && data[key] && data[key].tx_typeid) {
+				_finalFormState["tx_typeid"] = data[key].tx_typeid;
+			} else if (data[key]) {
 				_finalFormState[key] = data[key];
 			}
 		});
@@ -468,7 +486,19 @@ const History = () => {
 			id: action.FILTER,
 			label: "Filter",
 			icon: "filter",
-			parameter_list: history_filter_parameter_list,
+			parameter_list: [
+				{
+					name: "product",
+					label: "Product",
+					parameter_type_id: ParamType.LIST,
+					list_elements: history_interaction_list,
+					renderer: renderer,
+					validations: {
+						required: false,
+					},
+				},
+				...history_filter_parameter_list,
+			],
 			handleSubmit: handleSubmitFilter,
 			register: registerFilter,
 			control: controlFilter,

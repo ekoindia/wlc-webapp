@@ -30,7 +30,7 @@ export const prepareTableCell = (
 	expandedRow
 ) => {
 	const agent_type = item?.agent_type;
-	const account_status = item?.account_status;
+	const account_status_id = item?.account_status_id;
 	const mobile_number = item?.agent_mobile;
 	const eko_code = item?.profile?.eko_code ?? [];
 	const trx_type = item?.debit_credit || item?.trx_type;
@@ -46,7 +46,7 @@ export const prepareTableCell = (
 			return getModalStyle(
 				mobile_number,
 				eko_code,
-				account_status,
+				account_status_id,
 				agent_type
 			);
 		case "ExpandButton":
