@@ -262,4 +262,28 @@ export const product_slug_map = {
 		icon: "money-deposit",
 		slug: "refund-method",
 	},
+	"upi-money-transfer": {
+		label: "UPI Money Transfer",
+		desc: "lorem ipsum",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		comp: "UpiMoneyTransfer",
+		icon: "upi",
+		slug: "upi-money-transfer",
+	},
+	"upi-fund-transfer": {
+		label: "UPI Fund Transfer",
+		desc: "lorem ipsum",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		comp: "UpiFundTransfer",
+		icon: "upi",
+		slug: "upi-fund-transfer",
+	},
+	"validate-upi-id": {
+		label: "Validate UPI ID",
+		desc: "lorem ipsum",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		comp: "ValidateUpi",
+		icon: "upi",
+		slug: "validate-upi-id",
+	},
 };
