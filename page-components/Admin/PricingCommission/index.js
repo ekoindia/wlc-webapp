@@ -10,6 +10,7 @@ import { Dmt } from "./Dmt";
 import { IndoNepal } from "./IndoNepal";
 import { PricingCommission } from "./PricingCommission";
 import { PricingForm } from "./PricingForm";
+import { RefundMethod } from "./RefundMethod";
 
 export {
 	AadhaarPay,
@@ -24,4 +25,5 @@ export {
 	IndoNepal,
 	PricingCommission,
 	PricingForm,
+	RefundMethod,
 };

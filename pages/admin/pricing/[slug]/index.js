@@ -6,12 +6,12 @@ import { PricingForm } from "page-components/Admin";
 const PricingFormPage = () => {
 	const router = useRouter();
 	const { slug } = router.query;
-	const { label, comp } = product_slug_map[slug] ?? {};
+	const { label, comp, note } = product_slug_map[slug] ?? {};
 
 	return (
 		<PaddingBox>
 			<BreadcrumbsWrapper BreadcrumbsObject={PricingCommissionObject}>
-				<PricingForm {...{ label, comp }} />
+				<PricingForm {...{ label, comp, note }} />
 			</BreadcrumbsWrapper>
 		</PaddingBox>
 	);

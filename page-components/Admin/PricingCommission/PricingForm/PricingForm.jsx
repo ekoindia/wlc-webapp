@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<PricingForm></PricingForm>` TODO: Fix example
  */
-const PricingForm = ({ label, comp }) => {
+const PricingForm = ({ label, comp, note }) => {
 	const _pageComponent = comp;
 
 	const DynamicPageComponent = dynamic(
@@ -27,18 +27,19 @@ const PricingForm = ({ label, comp }) => {
 		<div>
 			<Headings title={label} />
 			<Flex direction="column" mx={{ base: "4", md: "0" }} mb="16">
-				<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>
-					<span
-						style={{
-							backgroundColor: "#FFD93B",
-							fontWeight: "700",
-						}}
-					>
-						Note:
-					</span>
-					&nbsp; The revised cost structure will come into effect from
-					tomorrow (12:00 AM midnight).
-				</Text>
+				{note?.length > 0 ? (
+					<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>
+						<span
+							style={{
+								backgroundColor: "#FFD93B",
+								fontWeight: "700",
+							}}
+						>
+							Note:
+						</span>
+						&nbsp; {note}
+					</Text>
+				) : null}
 				<Flex
 					direction="column"
 					px={{ base: "6", md: "8" }}

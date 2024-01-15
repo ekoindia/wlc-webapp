@@ -161,6 +161,7 @@ export const product_slug_map = {
 	"commission-frequency": {
 		label: "Commission Frequency",
 		desc: "Toggle between Daily/Monthly Commissions",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "money-deposit",
 		comp: "CommissionFrequency",
 		slug: "commission-frequency",
@@ -168,6 +169,7 @@ export const product_slug_map = {
 	"money-transfer": {
 		label: "Money Transfer",
 		desc: "Set Agent Pricing/Commission for Domestic Money Transfer services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "cash",
 		comp: "Dmt",
 		slug: "money-transfer",
@@ -175,6 +177,7 @@ export const product_slug_map = {
 	aeps: {
 		label: "AePS",
 		desc: "Set Agent Commissions for AePS Cashout services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "cashout",
 		comp: "Aeps",
 		slug: "aeps",
@@ -182,12 +185,14 @@ export const product_slug_map = {
 	"payment-gateway": {
 		label: "Payment Gateway",
 		desc: "Set Agent Pricing for loading E-value using Credit/Debit Card (PG)",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "CardPayment",
 		slug: "payment-gateway",
 	},
 	"account-verification": {
 		label: "Account Verification",
 		desc: "Change Configuration and Set Pricing for Recipient Bank Account Verification services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "money-note",
 		comp: "AccountVerification",
 		slug: "account-verification",
@@ -195,6 +200,7 @@ export const product_slug_map = {
 	"credit-card-bill-payment": {
 		label: "Credit Card Bill Payment",
 		desc: "Agent Pricing for Credit Card Bill Payment services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "creditcard",
 		comp: "CreditCardBillPayment",
 		slug: "credit-card-bill-payment",
@@ -202,6 +208,7 @@ export const product_slug_map = {
 	"aadhaar-pay": {
 		label: "Aadhaar Pay",
 		desc: "Set Agent Pricing for Credit Card Bill Payment services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "wallet",
 		comp: "AadhaarPay",
 		slug: "aadhaar-pay",
@@ -209,6 +216,7 @@ export const product_slug_map = {
 	"indo-nepal-fund-transfer": {
 		label: "Indo-Nepal Fund Transfer",
 		desc: "Set Agent Pricing/Commission for Indo-Nepal Fund Transfer services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "nepal",
 		comp: "IndoNepal",
 		slug: "indo-nepal-fund-transfer",
@@ -216,7 +224,14 @@ export const product_slug_map = {
 	"airtel-cms": {
 		label: "Airtel CMS",
 		desc: "Set Agent Pricing/Commission for Airtel CMS services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "AirtelCms",
 		slug: "airtel-cms",
+	},
+	"refund-method": {
+		label: "Refund Method",
+		desc: "lorem ipsum",
+		comp: "RefundMethod",
+		slug: "refund-method",
 	},
 };
