@@ -33,11 +33,8 @@ const PricingCommission = () => {
 					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 				>
 					{Object.values(product_slug_map)?.map(
-						({ label, icon, comp, slug }) => (
-							<Card
-								key={label}
-								{...{ label, icon, comp, slug }}
-							/>
+						({ label, desc, icon, slug }) => (
+							<Card key={slug} {...{ label, desc, icon, slug }} />
 						)
 					)}
 				</Grid>
@@ -48,7 +45,7 @@ const PricingCommission = () => {
 
 export { PricingCommission };
 
-const Card = ({ label, icon, slug }) => {
+const Card = ({ label, desc, icon, slug }) => {
 	const { h } = useHslColor(label);
 	const [onHover, setOnHover] = useState(false);
 	const router = useRouter();
@@ -94,13 +91,17 @@ const Card = ({ label, icon, slug }) => {
 					}
 				/>
 				<Flex direction="column" w="80%">
-					<Text
-						fontSize={{ base: "sm", md: "md" }}
-						fontWeight="medium"
-					>
-						{label}
-					</Text>
-					<Text fontSize="xs">{label}</Text>
+					{label?.length > 0 ? (
+						<Text
+							fontSize={{ base: "sm", md: "md" }}
+							fontWeight="medium"
+						>
+							{label}
+						</Text>
+					) : null}
+					{desc?.length > 0 ? (
+						<Text fontSize="xxs">{desc}</Text>
+					) : null}
 				</Flex>
 			</Flex>
 			<Icon
