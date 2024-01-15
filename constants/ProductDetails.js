@@ -232,6 +232,7 @@ export const product_slug_map = {
 		label: "Refund Method",
 		desc: "lorem ipsum",
 		comp: "RefundMethod",
+		icon: "money-deposit",
 		slug: "refund-method",
 	},
 };
