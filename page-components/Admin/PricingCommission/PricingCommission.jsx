@@ -65,6 +65,7 @@ const Card = ({ label, desc, icon, slug }) => {
 			borderRadius="10px"
 			align="center"
 			justify="space-between"
+			gap="1"
 			_hover={{
 				bg: `hsl(${h},80%,98%)`,
 				transition: "background 0.3s ease-out",

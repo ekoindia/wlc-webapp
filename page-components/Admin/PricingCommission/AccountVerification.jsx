@@ -1,4 +1,4 @@
-import { Divider, Flex, Text, useToast } from "@chakra-ui/react";
+import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
 import {
 	Endpoints,
@@ -46,17 +46,6 @@ const getStatus = (status) => {
 	}
 };
 
-const account_verification_operation = [
-	{
-		label: "Mandatory",
-		value: "0",
-	},
-	{
-		label: "Optional",
-		value: "1",
-	},
-];
-
 const _multiselectRenderer = {
 	value: "user_code",
 	label: "name",
@@ -74,24 +63,16 @@ const AccountVerification = () => {
 	const {
 		handleSubmit,
 		register,
-		formState: { errors, isSubmitting },
+		formState: {
+			errors,
+			isValid,
+			isDirty,
+			isSubmitting,
+			isSubmitSuccessful,
+		},
 		control,
 		reset,
-	} = useForm();
-
-	const {
-		handleSubmit: handleSubmitPricing,
-		register: registerPricing,
-		formState: {
-			errors: errorsPricing,
-			isValid: isValidPricing,
-			isDirty: isDirtyPricing,
-			isSubmitting: isSubmittingPricing,
-			isSubmitSuccessful: isSubmitSuccessfulPricing,
-		},
-		control: controlPricing,
-		reset: resetPricing,
-		trigger: triggerPricing,
+		trigger,
 	} = useForm({
 		mode: "onChange",
 		defaultValues: {
@@ -107,15 +88,9 @@ const AccountVerification = () => {
 
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
-	const [accountVerificationStatus, setAccountVerificationStatus] =
-		useState(null);
 
 	const watcher = useWatch({
 		control,
-	});
-
-	const watcherPricing = useWatch({
-		control: controlPricing,
 	});
 
 	useEffect(() => {
@@ -130,7 +105,6 @@ const AccountVerification = () => {
 				const _otp_verification_token =
 					res?.data?.otp_verification_token;
 				reset({ otp_verification_token: _otp_verification_token });
-				setAccountVerificationStatus(_otp_verification_token);
 			})
 			.catch((err) => {
 				console.error("error", err);
@@ -138,14 +112,11 @@ const AccountVerification = () => {
 	}, []);
 
 	useEffect(() => {
-		if (
-			watcherPricing.operation_type &&
-			watcherPricing.operation_type != "3"
-		) {
+		if (watcher.operation_type && watcher.operation_type != "3") {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
 
 			const _tf_req_uri =
-				watcherPricing.operation_type === "2"
+				watcher.operation_type === "2"
 					? "/network/agent-list?usertype=1"
 					: "/network/agent-list";
 
@@ -170,50 +141,23 @@ const AccountVerification = () => {
 				});
 
 			let _operationTypeList = operation_type_list.filter(
-				(item) => item.value == watcherPricing.operation_type
+				(item) => item.value == watcher.operation_type
 			);
 			let _label =
 				_operationTypeList.length > 0 && _operationTypeList[0].label;
 
 			setMultiSelectLabel(_label);
 		}
-	}, [watcherPricing.operation_type]);
+	}, [watcher.operation_type]);
 
 	useEffect(() => {
-		if (isSubmitSuccessfulPricing) {
-			resetPricing(watcherPricing);
+		if (isSubmitSuccessful) {
+			reset(watcher);
 		}
-		if (isDirtyPricing && !isValidPricing) {
-			triggerPricing();
+		if (isDirty && !isValid) {
+			trigger();
 		}
-	}, [isSubmitSuccessfulPricing, isValidPricing]);
-
-	const handleFormSubmit = (data) => {
-		const _finalData = { ...data };
-
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: {
-				interaction_type_id: 737,
-				operation: OPERATION.VERIFICATION_SUBMIT,
-				..._finalData,
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				const _otp_verification_token =
-					res?.data?.otp_verification_token;
-				setAccountVerificationStatus(_otp_verification_token);
-				toast({
-					title: res.message,
-					status: getStatus(res.status),
-					duration: 5000,
-					isClosable: true,
-				});
-			})
-			.catch((err) => {
-				console.error("error", err);
-			});
-	};
+	}, [isSubmitSuccessful, isValid]);
 
 	const handleFormSubmitPricing = (data) => {
 		const _finalData = { ...data };
@@ -222,7 +166,7 @@ const AccountVerification = () => {
 			(item) => item[_multiselectRenderer.value]
 		);
 
-		if (watcherPricing.operation_type == "3") {
+		if (watcher.operation_type == "3") {
 			delete _finalData.CspList;
 		} else {
 			_finalData.CspList = `${_CspList}`;
@@ -256,16 +200,6 @@ const AccountVerification = () => {
 	const prefix = "₹";
 
 	const account_verification_parameter_list = [
-		{
-			name: "otp_verification_token",
-			label: `Account Verification`,
-			parameter_type_id: ParamType.LIST,
-			list_elements: account_verification_operation,
-			defaultValue: DEFAULT.operation_type,
-		},
-	];
-
-	const account_verification_pricing_parameter_list = [
 		{
 			name: "operation_type",
 			label: `Set Pricing For`,
@@ -316,57 +250,20 @@ const AccountVerification = () => {
 
 	return (
 		<Flex direction="column" gap="8">
-			<form onSubmit={handleSubmit(handleFormSubmit)}>
+			<form onSubmit={handleSubmit(handleFormSubmitPricing)}>
 				<Flex direction="column" gap="8">
-					<SectionTitle>
-						Recipient Account Verification (Applicable for the
-						entire network)
-					</SectionTitle>
+					{/* <SectionTitle>
+						Set Account Verification Pricing
+					</SectionTitle> */}
 
 					<Form
 						{...{
 							parameter_list: account_verification_parameter_list,
-							formValues: watcher,
-							control,
 							register,
+							control,
+							formValues: watcher,
 							errors,
 						}}
-					/>
-
-					<Button
-						type="submit"
-						size="lg"
-						h="64px"
-						w={{ base: "100%", md: "200px" }}
-						fontWeight="bold"
-						disabled={
-							accountVerificationStatus &&
-							accountVerificationStatus ==
-								watcher.otp_verification_token
-						}
-						loading={isSubmitting}
-					>
-						Save
-					</Button>
-				</Flex>
-			</form>
-
-			<Divider />
-
-			<form onSubmit={handleSubmitPricing(handleFormSubmitPricing)}>
-				<Flex direction="column" gap="8">
-					<SectionTitle>
-						Set Account Verification Pricing
-					</SectionTitle>
-
-					<Form
-						parameter_list={
-							account_verification_pricing_parameter_list
-						}
-						register={registerPricing}
-						control={controlPricing}
-						formValues={watcherPricing}
-						errors={errorsPricing}
 					/>
 
 					<Flex
@@ -385,8 +282,8 @@ const AccountVerification = () => {
 							w={{ base: "100%", md: "200px" }}
 							fontWeight="bold"
 							// borderRadius={{ base: "none", md: "10" }}
-							loading={isSubmittingPricing}
-							disabled={!isValidPricing || !isDirtyPricing}
+							loading={isSubmitting}
+							disabled={!isValid || !isDirty}
 						>
 							Save
 						</Button>
@@ -413,15 +310,15 @@ const AccountVerification = () => {
 
 export { AccountVerification };
 
-const SectionTitle = ({ children }) => {
-	return (
-		<Text
-			as="h2"
-			fontWeight="medium"
-			fontSize={{ base: "lg", md: "xl" }}
-			lineHeight={{ base: "1.2", md: "1" }}
-		>
-			{children}
-		</Text>
-	);
-};
+// const SectionTitle = ({ children }) => {
+// 	return (
+// 		<Text
+// 			as="h2"
+// 			fontWeight="medium"
+// 			fontSize={{ base: "lg", md: "xl" }}
+// 			lineHeight={{ base: "1.2", md: "1" }}
+// 		>
+// 			{children}
+// 		</Text>
+// 	);
+// };
