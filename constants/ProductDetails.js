@@ -80,20 +80,110 @@ export const products = {
 		},
 	},
 	UPI_MONEY_TRANSFER: {
-		uriSegment: "upi",
+		uriSegment: "vpa",
 		slabs: [
-			{ min: 100, max: 1000 },
-			{ min: 1001, max: 2000 },
-			{ min: 2001, max: 3000 },
-			{ min: 3001, max: 4000 },
-			{ min: 4001, max: 5000 },
-			{ min: 5001, max: 25000 },
+			{
+				min: 100,
+				max: 1000,
+				validation: {
+					fixed: {
+						DISTRIBUTOR: { min: 5, max: 25 },
+						RETAILER: { min: 5, max: 25 },
+					},
+					percentage: false,
+				},
+			},
+			{
+				min: 1001,
+				max: 2000,
+				validation: {
+					fixed: {
+						DISTRIBUTOR: { min: 10, max: 30 },
+						RETAILER: { min: 10, max: 30 },
+					},
+					percentage: {
+						DISTRIBUTOR: { min: 0.5, max: 1.5 },
+						RETAILER: { min: 0.5, max: 1.5 },
+					},
+				},
+			},
+			{
+				min: 2001,
+				max: 25000,
+				validation: {
+					fixed: {
+						DISTRIBUTOR: { min: 10, max: 250 },
+						RETAILER: { min: 10, max: 250 },
+					},
+					percentage: {
+						DISTRIBUTOR: { min: 0.5, max: 1 },
+						RETAILER: { min: 0.5, max: 1 },
+					},
+				},
+			},
+		],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
+		serviceCode: 726,
+	},
+	UPI_FUND_TRANSFER: {
+		uriSegment: "vpa",
+		slabs: [
+			{
+				min: 100,
+				max: 1000,
+				validation: {
+					fixed: {
+						DISTRIBUTOR: { min: 5, max: 25 },
+						RETAILER: { min: 5, max: 25 },
+					},
+					percentage: false,
+				},
+			},
+			{
+				min: 1001,
+				max: 2000,
+				validation: {
+					fixed: {
+						DISTRIBUTOR: { min: 10, max: 30 },
+						RETAILER: { min: 10, max: 30 },
+					},
+					percentage: {
+						DISTRIBUTOR: { min: 0.5, max: 1.5 },
+						RETAILER: { min: 0.5, max: 1.5 },
+					},
+				},
+			},
+			{
+				min: 2001,
+				max: 49999,
+				validation: {
+					fixed: {
+						DISTRIBUTOR: { min: 10, max: 500 },
+						RETAILER: { min: 10, max: 500 },
+					},
+					percentage: {
+						DISTRIBUTOR: { min: 0.5, max: 1 },
+						RETAILER: { min: 0.5, max: 1 },
+					},
+				},
+			},
 		],
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "0",
 		},
 		serviceCode: 721,
+	},
+	VALIDATE_UPI_ID: {
+		uriSegment: "vpa",
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "1",
+		},
+		serviceCode: 727,
 	},
 };
 
@@ -155,15 +245,8 @@ export const productPricingCommissionValidationConfig = {
 			FIXED: { min: 0, max: 1000 },
 		},
 	},
-	UPI_MONEY_TRANSFER: {
-		RETAILER: {
-			PERCENT: { min: 0.3, max: 0.7 },
-			FIXED: { min: 3.72, max: 35 },
-		},
-		DISTRIBUTOR: {
-			PERCENT: { min: 0, max: 0.7 },
-			FIXED: { min: 0, max: 35 },
-		},
+	VALIDATE_UPI_ID: {
+		FIXED: { min: 0, max: 5 },
 	},
 };
 
@@ -182,108 +265,6 @@ export const productPricingType = {
 	ACCOUNT_VERIFICATION: productPricingTextConfig.PRICING,
 	CARD_PAYMENT: productPricingTextConfig.PRICING,
 	UPI_MONEY_TRANSFER: productPricingTextConfig.PRICING,
-};
-
-export const product_slug_map = {
-	"commission-frequency": {
-		label: "Commission Frequency",
-		desc: "Toggle between Daily/Monthly Commissions",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "money-deposit",
-		comp: "CommissionFrequency",
-		slug: "commission-frequency",
-	},
-	"money-transfer": {
-		label: "Money Transfer",
-		desc: "Set Agent Pricing/Commission for Domestic Money Transfer services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "cash",
-		comp: "Dmt",
-		slug: "money-transfer",
-	},
-	aeps: {
-		label: "AePS",
-		desc: "Set Agent Commissions for AePS Cashout services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "cashout",
-		comp: "Aeps",
-		slug: "aeps",
-	},
-	"payment-gateway": {
-		label: "Payment Gateway",
-		desc: "Set Agent Pricing for loading E-value using Credit/Debit Card (PG)",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "CardPayment",
-		slug: "payment-gateway",
-	},
-	"account-verification": {
-		label: "Account Verification",
-		desc: "Change Configuration and Set Pricing for Recipient Bank Account Verification services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "money-note",
-		comp: "AccountVerification",
-		slug: "account-verification",
-	},
-	"credit-card-bill-payment": {
-		label: "Credit Card Bill Payment",
-		desc: "Agent Pricing for Credit Card Bill Payment services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "creditcard",
-		comp: "CreditCardBillPayment",
-		slug: "credit-card-bill-payment",
-	},
-	"aadhaar-pay": {
-		label: "Aadhaar Pay",
-		desc: "Set Agent Pricing for Credit Card Bill Payment services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "wallet",
-		comp: "AadhaarPay",
-		slug: "aadhaar-pay",
-	},
-	"indo-nepal-fund-transfer": {
-		label: "Indo-Nepal Fund Transfer",
-		desc: "Set Agent Pricing/Commission for Indo-Nepal Fund Transfer services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "nepal",
-		comp: "IndoNepal",
-		slug: "indo-nepal-fund-transfer",
-	},
-	"airtel-cms": {
-		label: "Airtel CMS",
-		desc: "Set Agent Pricing/Commission for Airtel CMS services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "AirtelCms",
-		slug: "airtel-cms",
-	},
-	"refund-method": {
-		label: "Refund Method",
-		desc: "lorem ipsum",
-		comp: "RefundMethod",
-		icon: "money-deposit",
-		slug: "refund-method",
-	},
-	"upi-money-transfer": {
-		label: "UPI Money Transfer",
-		desc: "lorem ipsum",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "UpiMoneyTransfer",
-		icon: "upi",
-		slug: "upi-money-transfer",
-	},
-	"upi-fund-transfer": {
-		label: "UPI Fund Transfer",
-		desc: "lorem ipsum",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "UpiFundTransfer",
-		icon: "upi",
-		slug: "upi-fund-transfer",
-	},
-	"validate-upi-id": {
-		label: "Validate UPI ID",
-		desc: "lorem ipsum",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "ValidateUpi",
-		icon: "upi",
-		slug: "validate-upi-id",
-	},
+	UPI_FUND_TRANSFER: productPricingTextConfig.PRICING,
+	VALIDATE_UPI_ID: productPricingTextConfig.PRICING,
 };
