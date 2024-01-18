@@ -8,6 +8,7 @@
  * @property {string} [icon] - The icon representing the product.
  * @property {string} comp - The component associated with the product.
  * @property {string} slug - The slug identifying the product.
+ * @property {boolean} hide - Whether to hide the product from the pricing & commission page.
  */
 
 /**
@@ -23,6 +24,7 @@ export const product_slug_map = {
 		icon: "money-deposit",
 		comp: "CommissionFrequency",
 		slug: "commission-frequency",
+		hide: false,
 	},
 	"money-transfer": {
 		label: "Money Transfer",
@@ -31,6 +33,7 @@ export const product_slug_map = {
 		icon: "cash",
 		comp: "Dmt",
 		slug: "money-transfer",
+		hide: false,
 	},
 	aeps: {
 		label: "AePS",
@@ -39,6 +42,7 @@ export const product_slug_map = {
 		icon: "cashout",
 		comp: "Aeps",
 		slug: "aeps",
+		hide: false,
 	},
 	"payment-gateway": {
 		label: "Payment Gateway",
@@ -46,6 +50,7 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "CardPayment",
 		slug: "payment-gateway",
+		hide: false,
 	},
 	"optional-verification": {
 		label: "Optional Verification",
@@ -53,6 +58,7 @@ export const product_slug_map = {
 		icon: "playlist-add-check",
 		comp: "OptionalVerification",
 		slug: "optional-verification",
+		hide: false,
 	},
 	"account-verification": {
 		label: "Account Verification",
@@ -61,6 +67,7 @@ export const product_slug_map = {
 		icon: "money-note",
 		comp: "AccountVerification",
 		slug: "account-verification",
+		hide: false,
 	},
 	"credit-card-bill-payment": {
 		label: "Credit Card Bill Payment",
@@ -69,6 +76,7 @@ export const product_slug_map = {
 		icon: "creditcard",
 		comp: "CreditCardBillPayment",
 		slug: "credit-card-bill-payment",
+		hide: false,
 	},
 	"aadhaar-pay": {
 		label: "Aadhaar Pay",
@@ -77,6 +85,7 @@ export const product_slug_map = {
 		icon: "wallet",
 		comp: "AadhaarPay",
 		slug: "aadhaar-pay",
+		hide: false,
 	},
 	"indo-nepal-fund-transfer": {
 		label: "Indo-Nepal Fund Transfer",
@@ -85,6 +94,7 @@ export const product_slug_map = {
 		icon: "nepal",
 		comp: "IndoNepal",
 		slug: "indo-nepal-fund-transfer",
+		hide: false,
 	},
 	"airtel-cms": {
 		label: "Airtel CMS",
@@ -92,6 +102,7 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "AirtelCms",
 		slug: "airtel-cms",
+		hide: false,
 	},
 	"refund-method": {
 		label: "Refund Method",
@@ -99,6 +110,7 @@ export const product_slug_map = {
 		comp: "RefundMethod",
 		icon: "money-deposit",
 		slug: "refund-method",
+		hide: false,
 	},
 	"upi-money-transfer": {
 		label: "UPI Money Transfer",
@@ -107,6 +119,7 @@ export const product_slug_map = {
 		comp: "UpiMoneyTransfer",
 		icon: "upi",
 		slug: "upi-money-transfer",
+		hide: false,
 	},
 	"upi-fund-transfer": {
 		label: "UPI NeoBank Payments",
@@ -115,6 +128,7 @@ export const product_slug_map = {
 		comp: "UpiFundTransfer",
 		icon: "upi",
 		slug: "upi-fund-transfer",
+		hide: false,
 	},
 	"validate-upi-id": {
 		label: "UPI ID Verification",
@@ -123,6 +137,7 @@ export const product_slug_map = {
 		comp: "ValidateUpiId",
 		icon: "upi",
 		slug: "validate-upi-id",
+		hide: false,
 	},
 };
 
