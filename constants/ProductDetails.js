@@ -86,13 +86,13 @@ export const products = {
 				min: 100,
 				max: 1000,
 				validation: {
-					fixed: {
-						DISTRIBUTOR: { min: 0, max: 3.4 },
-						RETAILER: { min: 6.6, max: 8.4 },
+					RETAILER: {
+						fixed: { min: 6.6, max: 8.4 },
+						percentage: false,
 					},
-					percentage: {
-						DISTRIBUTOR: { min: 0, max: 0.7 },
-						RETAILER: false,
+					DISTRIBUTOR: {
+						fixed: { min: 0, max: 3.4 },
+						percentage: { min: 0, max: 0.7 },
 					},
 				},
 			},
@@ -100,21 +100,27 @@ export const products = {
 				min: 1001,
 				max: 3500,
 				validation: {
-					fixed: {
-						DISTRIBUTOR: { min: 0, max: 22.6 },
-						RETAILER: { min: 8.6, max: 29.6 },
+					RETAILER: {
+						fixed: { min: 8.6, max: 29.6 },
+						percentage: false,
 					},
-					percentage: false,
+					DISTRIBUTOR: {
+						fixed: { min: 0, max: 22.6 },
+						percentage: false,
+					},
 				},
 			},
 			{
 				min: 3501,
 				max: 25000,
 				validation: {
-					fixed: false,
-					percentage: {
-						DISTRIBUTOR: { min: 0, max: 0.7 },
-						RETAILER: { min: 0.3, max: 0.7 },
+					RETAILER: {
+						fixed: false,
+						percentage: { min: 0.3, max: 0.7 },
+					},
+					DISTRIBUTOR: {
+						fixed: false,
+						percentage: { min: 0, max: 0.7 },
 					},
 				},
 			},
