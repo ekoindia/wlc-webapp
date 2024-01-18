@@ -158,6 +158,7 @@ const RefundMethod = () => {
 					align="center"
 					bottom="0"
 					left="0"
+					bg="white"
 				>
 					<Button
 						type="submit"
