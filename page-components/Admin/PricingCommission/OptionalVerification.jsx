@@ -106,6 +106,12 @@ const OptionalVerification = () => {
 			list_elements: account_verification_operation,
 			defaultValue: DEFAULT.operation_type,
 		},
+		{
+			name: "note",
+			label: "Info:",
+			parameter_type_id: ParamType.LABEL,
+			value: "Choose whether Account Verification for Money Transfer Recipients is mandatory or optional for agents in your network.",
+		},
 	];
 
 	const handleFormSubmit = (data) => {
