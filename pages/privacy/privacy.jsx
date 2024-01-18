@@ -41,13 +41,13 @@ const PrivacyPage = () => {
 						This page is used to inform the app users regarding our
 						policies with the collection, use, and disclosure of
 						Personal Information if anyone decided to use our
-						Service.
+						SERVICE.
 					</P>
 					<P>
-						If you choose to use our Service, then you agree to the
+						If you choose to use our SERVICE, then you agree to the
 						collection and use of information in relation to this
 						policy. The Personal Information that we collect is used
-						for providing and improving the Service. We will not use
+						for providing and improving the SERVICE. We will not use
 						or share your information with anyone except as
 						described in this Privacy Policy.
 					</P>
@@ -58,7 +58,7 @@ const PrivacyPage = () => {
 				</P> */}
 					<H2>Information Collection and Use</H2>
 					<P>
-						For a better experience, while using our Service, we may
+						For a better experience, while using our SERVICE, we may
 						require you to provide us with certain personally
 						identifiable information, including but not limited to
 						email, & profile picture. The information that we
@@ -111,14 +111,14 @@ const PrivacyPage = () => {
 					</P>
 					<H2>Log Data</H2>
 					<P>
-						We want to inform you that whenever you use our Service,
+						We want to inform you that whenever you use our SERVICE,
 						in a case of an error in the app we collect data and
 						information (through third party products) called Log
 						Data. This Log Data may include information such as your
 						device Internet Protocol (“IP”) address, device name,
 						operating system version, the configuration of the app
-						when utilizing our Service, the time and date of your
-						use of the Service, and other statistics.
+						when utilizing our SERVICE, the time and date of your
+						use of the SERVICE, and other statistics.
 					</P>
 					<H2>Cookies</H2>
 					<P>
@@ -128,14 +128,14 @@ const PrivacyPage = () => {
 						are stored on your device internal memory.
 					</P>
 					<P>
-						This Service does not use these “cookies” explicitly.
+						This SERVICE does not use these “cookies” explicitly.
 						However, the app may use third party code and libraries
 						that use “cookies” to collection information and to
 						improve their services. You have the option to either
 						accept or refuse these cookies and know when a cookie is
 						being sent to your device. If you choose to refuse our
 						cookies, you may not be able to use some portions of
-						this Service.
+						this SERVICE.
 					</P>
 					<H2>Service Providers</H2>
 					<P>
@@ -144,17 +144,17 @@ const PrivacyPage = () => {
 					</P>
 					<P pl={8}>
 						<ul>
-							<li>To facilitate our Service</li>
-							<li>To provide the Service on our behalf</li>
-							<li>To perform Service-related services</li>
+							<li>To facilitate our SERVICE</li>
+							<li>To provide the SERVICE on our behalf</li>
+							<li>To perform SERVICE-related services</li>
 							<li>
-								To assist us in analyzing how our Service is
+								To assist us in analyzing how our SERVICE is
 								used
 							</li>
 						</ul>
 					</P>
 					<P>
-						We want to inform users of this Service that these third
+						We want to inform users of this SERVICE that these third
 						parties have access to your Personal Information. The
 						reason is to perform the tasks assigned to them on our
 						behalf. However, they are obligated not to disclose or
@@ -171,7 +171,7 @@ const PrivacyPage = () => {
 					</P>
 					<H2>Links to Other Sites</H2>
 					<P>
-						This Service may contain links to other sites. If you
+						This SERVICE may contain links to other sites. If you
 						click on a third-party link, you will be directed to
 						that site. Note that these external sites are not
 						operated by us. Therefore, we strongly advise you to
