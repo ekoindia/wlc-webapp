@@ -1,12 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import {
-	Endpoints,
-	ParamType,
-	productPricingCommissionValidationConfig,
-	productPricingType,
-	products,
-} from "constants";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -27,8 +21,8 @@ const PRICING_TYPE = {
 };
 
 const pricing_type_list = [
-	{ value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+	{ value: PRICING_TYPE.PERCENT, label: "Percentage (%)", isDisabled: false },
+	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)", isDisabled: false },
 ];
 
 const OPERATION = {
@@ -51,9 +45,7 @@ const getStatus = (status) => {
 };
 
 const UpiMoneyTransferRetailer = () => {
-	const { uriSegment, slabs, DEFAULT } = products.UPI_MONEY_TRANSFER;
-	const { PERCENT, FIXED } =
-		productPricingCommissionValidationConfig.UPI_MONEY_TRANSFER.RETAILER;
+	const { serviceCode, slabs, DEFAULT } = products.UPI_MONEY_TRANSFER;
 
 	const {
 		handleSubmit,
@@ -72,7 +64,6 @@ const UpiMoneyTransferRetailer = () => {
 		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
-			pricing_type: DEFAULT.pricing_type,
 		},
 	});
 
@@ -87,16 +78,9 @@ const UpiMoneyTransferRetailer = () => {
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
-
-	const min =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.min
-			: FIXED.min;
-
-	const max =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.max
-			: FIXED.max;
+	// const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
+	const [validation, setValidation] = useState({ min: null, max: null });
+	console.log("[UpiMTR] validation", validation);
 
 	let prefix = "";
 	let suffix = "";
@@ -106,6 +90,17 @@ const UpiMoneyTransferRetailer = () => {
 	} else {
 		prefix = "₹";
 	}
+
+	let helperText = "";
+
+	const min = validation?.min;
+	const max = validation?.max;
+
+	if (min != undefined) helperText += `Minimum: ${prefix}${min}${suffix}`;
+	if (max != undefined)
+		helperText += `${
+			min != undefined ? " - " : ""
+		}Maximum: ${prefix}${max}${suffix}`;
 
 	const upi_money_transfer_retailer_parameter_list = [
 		{
@@ -145,11 +140,11 @@ const UpiMoneyTransferRetailer = () => {
 			name: "actual_pricing",
 			label: `Define ${productPricingType.DMT} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
+			helperText: helperText,
 			validations: {
 				// required: true,
-				min: min,
-				max: max,
+				min: validation?.min,
+				max: validation?.max,
 			},
 			inputRightElement: (
 				<Icon
@@ -181,6 +176,30 @@ const UpiMoneyTransferRetailer = () => {
 
 		setSlabOptions(list);
 	}, []);
+
+	useEffect(() => {
+		const _pricingType =
+			watcher.pricing_type === PRICING_TYPE.PERCENT
+				? "percentage"
+				: watcher.pricing_type === PRICING_TYPE.FIXED
+				? "fixed"
+				: null;
+
+		let _min, _max;
+
+		if (watcher?.select?.value) {
+			let _validation = slabs[+watcher?.select?.value]?.validation;
+			_min = _validation?.[_pricingType]?.RETAILER?.min;
+			_max = _validation?.[_pricingType]?.RETAILER?.max;
+		}
+		// if (!_min && !_max) {
+		// 	let _pricingTypeList = pricingTypeList;
+		// 	console.log("_pricingTypeList", _pricingTypeList);
+
+		// 	setPricingTypeList(_pricingTypeList);
+		// }
+		setValidation({ min: _min, max: _max });
+	}, [watcher?.select?.value, watcher?.pricing_type]);
 
 	useEffect(() => {
 		if (watcher.operation_type != "3") {
@@ -247,12 +266,9 @@ const UpiMoneyTransferRetailer = () => {
 		delete _finalData.select;
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
-				"tf-req-method": "POST",
-			},
 			body: {
+				interaction_type_id: 754,
+				service_code: serviceCode,
 				operation_type: watcher.operation_type,
 				operation: OPERATION.SUBMIT,
 				..._finalData,
@@ -296,6 +312,7 @@ const UpiMoneyTransferRetailer = () => {
 					align="center"
 					bottom="0"
 					left="0"
+					bg="white"
 				>
 					<Button
 						type="submit"

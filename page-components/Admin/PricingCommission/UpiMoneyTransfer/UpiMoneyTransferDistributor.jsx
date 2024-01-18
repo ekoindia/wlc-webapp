@@ -1,12 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import {
-	Endpoints,
-	ParamType,
-	productPricingCommissionValidationConfig,
-	products,
-	TransactionTypes,
-} from "constants";
+import { Endpoints, ParamType, products } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -41,8 +35,6 @@ const pricing_type_list = [
 
 const UpiMoneyTransferDistributor = () => {
 	const { slabs, serviceCode } = products.UPI_MONEY_TRANSFER;
-	const { PERCENT, FIXED } =
-		productPricingCommissionValidationConfig.UPI_MONEY_TRANSFER.DISTRIBUTOR;
 
 	const {
 		handleSubmit,
@@ -59,9 +51,6 @@ const UpiMoneyTransferDistributor = () => {
 		trigger,
 	} = useForm({
 		mode: "onChange",
-		defaultValues: {
-			pricing_type: "1", //check if product details can store this
-		},
 	});
 
 	const watcher = useWatch({ control });
@@ -71,16 +60,8 @@ const UpiMoneyTransferDistributor = () => {
 	const { generateNewToken } = useRefreshToken();
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
-
-	const min =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.min
-			: FIXED.min;
-
-	const max =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.max
-			: FIXED.max;
+	const [validation, setValidation] = useState({ min: null, max: null });
+	console.log("[UpiMTD] validation", validation);
 
 	let prefix = "";
 	let suffix = "";
@@ -90,6 +71,17 @@ const UpiMoneyTransferDistributor = () => {
 	} else {
 		prefix = "₹";
 	}
+
+	let helperText = "";
+
+	const min = validation?.min;
+	const max = validation?.max;
+
+	if (min != undefined) helperText += `Minimum: ${prefix}${min}${suffix}`;
+	if (max != undefined)
+		helperText += `${
+			min != undefined ? " - " : ""
+		}Maximum: ${prefix}${max}${suffix}`;
 
 	const upi_money_transfer_distributor_parameter_list = [
 		{
@@ -120,7 +112,7 @@ const UpiMoneyTransferDistributor = () => {
 			name: "actual_pricing",
 			label: `Define Commission (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
+			helperText: helperText,
 			validations: {
 				// required: true,
 				min: min,
@@ -156,6 +148,25 @@ const UpiMoneyTransferDistributor = () => {
 
 		setSlabOptions(list);
 	}, []);
+
+	useEffect(() => {
+		const _pricingType =
+			watcher.pricing_type === PRICING_TYPE.PERCENT
+				? "percentage"
+				: watcher.pricing_type === PRICING_TYPE.FIXED
+				? "fixed"
+				: null;
+
+		let _min, _max;
+
+		if (watcher?.select?.value) {
+			let _validation = slabs[+watcher?.select?.value]?.validation;
+			_min = _validation?.[_pricingType]?.RETAILER?.min;
+			_max = _validation?.[_pricingType]?.RETAILER?.max;
+		}
+
+		setValidation({ min: _min, max: _max });
+	}, [watcher?.select?.value, watcher?.pricing_type]);
 
 	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -204,8 +215,7 @@ const UpiMoneyTransferDistributor = () => {
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
-				interaction_type_id:
-					TransactionTypes.SET_COMMISSION_FOR_DISTRIBUTORS,
+				interaction_type_id: 754,
 				service_code: serviceCode,
 				communication: 1,
 				..._finalData,
@@ -246,6 +256,7 @@ const UpiMoneyTransferDistributor = () => {
 					align="center"
 					bottom="0"
 					left="0"
+					bg="white"
 				>
 					<Button
 						type="submit"
