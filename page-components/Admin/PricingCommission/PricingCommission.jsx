@@ -1,6 +1,11 @@
-import { Avatar, Box, Flex, Grid, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Grid, Text } from "@chakra-ui/react";
 import { Button, Headings, Icon } from "components";
-import { Endpoints, product_slug_map, TransactionTypes } from "constants";
+import {
+	Endpoints,
+	product_categories,
+	product_slug_map,
+	TransactionTypes,
+} from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import useHslColor from "hooks/useHslColor";
@@ -19,26 +24,61 @@ const PricingCommission = () => {
 				hasIcon={false}
 				propComp={<DownloadPricing />}
 			/>
-			<Box
+			<Flex
+				direction="column"
 				px={{ base: "16px", md: "initial" }}
 				mb={{ base: "16", md: "0" }}
+				gap={{ base: "2", md: "8" }}
 			>
-				<Grid
-					templateColumns={{
-						base: "repeat(auto-fit,minmax(250px,1fr))",
-						md: "repeat(auto-fit,minmax(300px,1fr))",
-					}}
-					justifyContent="center"
-					py={{ base: "4", md: "0px" }}
-					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
-				>
-					{Object.values(product_slug_map)?.map(
-						({ label, desc, icon, slug }) => (
-							<Card key={slug} {...{ label, desc, icon, slug }} />
-						)
-					)}
-				</Grid>
-			</Box>
+				{Object.entries(product_categories)?.map(
+					([category, productList]) => {
+						return (
+							<Flex
+								key={category}
+								direction="column"
+								gap={{ base: "0.25", md: "2" }}
+								py="2"
+							>
+								<Text
+									fontSize={{ base: "md", md: "lg" }}
+									fontWeight="semibold"
+								>
+									{category}
+								</Text>
+								<Grid
+									templateColumns={{
+										base: "repeat(auto-fill,minmax(250px,1fr))",
+										md: "repeat(auto-fill,minmax(300px,1fr))",
+									}}
+									justifyContent="center"
+									py={{ base: "4", md: "0px" }}
+									gap={{
+										base: (2, 4),
+										md: (4, 2),
+										lg: (4, 6),
+									}}
+								>
+									{productList?.map((product) => {
+										const { label, desc, icon, slug } =
+											product_slug_map[product] ?? {};
+										return (
+											<Card
+												key={slug}
+												{...{
+													label,
+													desc,
+													icon,
+													slug,
+												}}
+											/>
+										);
+									})}
+								</Grid>
+							</Flex>
+						);
+					}
+				)}
+			</Flex>
 		</>
 	);
 };
