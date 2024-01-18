@@ -87,37 +87,34 @@ export const products = {
 				max: 1000,
 				validation: {
 					fixed: {
-						DISTRIBUTOR: { min: 5, max: 25 },
-						RETAILER: { min: 5, max: 25 },
+						DISTRIBUTOR: { min: 0, max: 3.4 },
+						RETAILER: { min: 6.6, max: 8.4 },
+					},
+					percentage: {
+						DISTRIBUTOR: { min: 0, max: 0.7 },
+						RETAILER: false,
+					},
+				},
+			},
+			{
+				min: 1001,
+				max: 3500,
+				validation: {
+					fixed: {
+						DISTRIBUTOR: { min: 0, max: 22.6 },
+						RETAILER: { min: 8.6, max: 29.6 },
 					},
 					percentage: false,
 				},
 			},
 			{
-				min: 1001,
-				max: 2000,
-				validation: {
-					fixed: {
-						DISTRIBUTOR: { min: 10, max: 30 },
-						RETAILER: { min: 10, max: 30 },
-					},
-					percentage: {
-						DISTRIBUTOR: { min: 0.5, max: 1.5 },
-						RETAILER: { min: 0.5, max: 1.5 },
-					},
-				},
-			},
-			{
-				min: 2001,
+				min: 3501,
 				max: 25000,
 				validation: {
-					fixed: {
-						DISTRIBUTOR: { min: 10, max: 250 },
-						RETAILER: { min: 10, max: 250 },
-					},
+					fixed: false,
 					percentage: {
-						DISTRIBUTOR: { min: 0.5, max: 1 },
-						RETAILER: { min: 0.5, max: 1 },
+						DISTRIBUTOR: { min: 0, max: 0.7 },
+						RETAILER: { min: 0.3, max: 0.7 },
 					},
 				},
 			},
@@ -136,7 +133,7 @@ export const products = {
 				max: 1000,
 				validation: {
 					fixed: {
-						DISTRIBUTOR: { min: 5, max: 25 },
+						DISTRIBUTOR: { min: 0, max: 25 },
 						RETAILER: { min: 5, max: 25 },
 					},
 					percentage: false,
@@ -144,38 +141,21 @@ export const products = {
 			},
 			{
 				min: 1001,
-				max: 2000,
-				validation: {
-					fixed: {
-						DISTRIBUTOR: { min: 10, max: 30 },
-						RETAILER: { min: 10, max: 30 },
-					},
-					percentage: {
-						DISTRIBUTOR: { min: 0.5, max: 1.5 },
-						RETAILER: { min: 0.5, max: 1.5 },
-					},
-				},
-			},
-			{
-				min: 2001,
 				max: 49999,
 				validation: {
 					fixed: {
-						DISTRIBUTOR: { min: 10, max: 500 },
+						DISTRIBUTOR: { min: 0, max: 500 },
 						RETAILER: { min: 10, max: 500 },
 					},
-					percentage: {
-						DISTRIBUTOR: { min: 0.5, max: 1 },
-						RETAILER: { min: 0.5, max: 1 },
-					},
+					percentage: false,
 				},
 			},
 		],
 		DEFAULT: {
 			operation_type: "3",
-			pricing_type: "0",
+			// pricing_type: "0",
 		},
-		serviceCode: 721,
+		serviceCode: 728,
 	},
 	VALIDATE_UPI_ID: {
 		uriSegment: "vpa",
