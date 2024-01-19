@@ -79,6 +79,98 @@ export const products = {
 			pricing_type: "0",
 		},
 	},
+	UPI_MONEY_TRANSFER: {
+		uriSegment: "vpa",
+		slabs: [
+			{
+				min: 100,
+				max: 1000,
+				validation: {
+					RETAILER: {
+						fixed: { min: 6.6, max: 8.4 },
+						percentage: false,
+					},
+					DISTRIBUTOR: {
+						fixed: { min: 0, max: 3.4 },
+						percentage: { min: 0, max: 0.7 },
+					},
+				},
+			},
+			{
+				min: 1001,
+				max: 3500,
+				validation: {
+					RETAILER: {
+						fixed: { min: 8.6, max: 29.6 },
+						percentage: false,
+					},
+					DISTRIBUTOR: {
+						fixed: { min: 0, max: 22.6 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 3501,
+				max: 25000,
+				validation: {
+					RETAILER: {
+						fixed: false,
+						percentage: { min: 0.3, max: 0.7 },
+					},
+					DISTRIBUTOR: {
+						fixed: false,
+						percentage: { min: 0, max: 0.7 },
+					},
+				},
+			},
+		],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
+		serviceCode: 726,
+	},
+	UPI_FUND_TRANSFER: {
+		uriSegment: "vpa",
+		slabs: [
+			{
+				min: 100,
+				max: 1000,
+				validation: {
+					fixed: {
+						DISTRIBUTOR: { min: 0, max: 25 },
+						RETAILER: { min: 5, max: 25 },
+					},
+					percentage: false,
+				},
+			},
+			{
+				min: 1001,
+				max: 49999,
+				validation: {
+					fixed: {
+						DISTRIBUTOR: { min: 0, max: 500 },
+						RETAILER: { min: 10, max: 500 },
+					},
+					percentage: false,
+				},
+			},
+		],
+		DEFAULT: {
+			operation_type: "3",
+			// pricing_type: "0",
+		},
+		serviceCode: 728,
+	},
+	VALIDATE_UPI_ID: {
+		uriSegment: "vpa",
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "1",
+		},
+		serviceCode: 727,
+	},
 };
 
 export const productPricingCommissionValidationConfig = {
@@ -139,6 +231,9 @@ export const productPricingCommissionValidationConfig = {
 			FIXED: { min: 0, max: 1000 },
 		},
 	},
+	VALIDATE_UPI_ID: {
+		FIXED: { min: 0, max: 5 },
+	},
 };
 
 export const productPricingTextConfig = {
@@ -155,4 +250,7 @@ export const productPricingType = {
 	CREDIT_CARD_BILL_PAYMENT: productPricingTextConfig.PRICING,
 	ACCOUNT_VERIFICATION: productPricingTextConfig.PRICING,
 	CARD_PAYMENT: productPricingTextConfig.PRICING,
+	UPI_MONEY_TRANSFER: productPricingTextConfig.PRICING,
+	UPI_FUND_TRANSFER: productPricingTextConfig.PRICING,
+	VALIDATE_UPI_ID: productPricingTextConfig.PRICING,
 };

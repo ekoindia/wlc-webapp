@@ -23,6 +23,7 @@ export const OtherMenuItems: number[] = [
 	TransactionIds.LOAD_EVALUE,
 	TransactionIds.REQUEST_EVALUE,
 	TransactionIds.TRANSFER_EVALUE,
+	TransactionIds.INITIATE_REFUND,
 	TransactionIds.MANAGE_MY_ACCOUNT,
 ];
 
@@ -34,6 +35,7 @@ export const AdminOtherMenuItems: number[] = [
 	TransactionIds.REQUEST_EVALUE,
 	TransactionIds.TRANSFER_EVALUE,
 	TransactionIds.FUND_SETTLEMENT,
+	TransactionIds.INITIATE_REFUND,
 	TransactionIds.NEO_BANK,
 	// TransactionIds.INVOICE_DOWNLOAD,
 ];

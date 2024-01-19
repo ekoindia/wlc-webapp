@@ -1,79 +1,193 @@
-import { Box, Text } from "@chakra-ui/react";
-import { Headings, Tabs } from "components";
+import { Avatar, Flex, Grid, Text } from "@chakra-ui/react";
+import { Button, Headings, Icon } from "components";
 import {
-	AadhaarPay,
-	AccountVerification,
-	Aeps,
-	AirtelCms,
-	CardPayment,
-	CommissionFrequency,
-	CreditCardBillPayment,
-	Dmt,
-	IndoNepal,
-} from ".";
+	Endpoints,
+	product_categories,
+	product_slug_map,
+	TransactionTypes,
+} from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
+import useHslColor from "hooks/useHslColor";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { saveDataToFile } from "utils";
 /**
  * A PricingCommission page-component
  * @example	`<PricingCommission></PricingCommission>`
  */
-const PricingCommissions = () => {
-	const tabList = [
-		{
-			label: "Commission Frequency",
-			comp: <CommissionFrequency />,
-			// disabled: true,
-		},
-		{ label: "Money Transfer", comp: <Dmt /> },
-		{ label: "AePS", comp: <Aeps /> },
-		{ label: "Payment Gateway", comp: <CardPayment /> },
-		{ label: "Account Verification", comp: <AccountVerification /> },
-		{ label: "Credit Card Bill Payment", comp: <CreditCardBillPayment /> },
-		{ label: "Aadhaar Pay", comp: <AadhaarPay /> },
-		{ label: "Indo-Nepal Fund Transfer", comp: <IndoNepal /> },
-		{ label: "Airtel CMS", comp: <AirtelCms /> },
-	];
-
+const PricingCommission = () => {
 	return (
 		<>
-			<Headings title="Pricing & Commissions" hasIcon={false} />
-			<Box
+			<Headings
+				title="Pricing & Commissions"
+				hasIcon={false}
+				propComp={<DownloadPricing />}
+			/>
+			<Flex
+				direction="column"
 				px={{ base: "16px", md: "initial" }}
 				mb={{ base: "16", md: "0" }}
+				gap={{ base: "2", md: "8" }}
 			>
-				<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>
-					<span
-						style={{
-							backgroundColor: "#FFD93B",
-							fontWeight: "700",
-						}}
-					>
-						Note:
-					</span>
-					&nbsp; The revised cost structure will come into effect from
-					tomorrow (12:00 AM midnight).
-				</Text>
-				<Box
-					bg="white"
-					border="card"
-					boxShadow="basic"
-					borderRadius="10px"
-				>
-					<Tabs>
-						{tabList.map(
-							({ label, comp, disabled = false }, index) => (
-								<div
-									key={`${index}-${label}`}
-									label={label}
-									disabled={disabled}
+				{Object.entries(product_categories)?.map(
+					([category, productList]) => {
+						return (
+							<Flex
+								key={category}
+								direction="column"
+								gap={{ base: "0.25", md: "2" }}
+								py="2"
+							>
+								<Text
+									fontSize={{ base: "md", md: "lg" }}
+									fontWeight="semibold"
 								>
-									{comp}
-								</div>
-							)
-						)}
-					</Tabs>
-				</Box>
-			</Box>
+									{category}
+								</Text>
+								<Grid
+									templateColumns={{
+										base: "repeat(auto-fill,minmax(250px,1fr))",
+										md: "repeat(auto-fill,minmax(300px,1fr))",
+									}}
+									justifyContent="center"
+									py={{ base: "4", md: "0px" }}
+									gap={{
+										base: (2, 4),
+										md: (4, 2),
+										lg: (4, 6),
+									}}
+								>
+									{productList?.map((product) => {
+										const {
+											label,
+											desc,
+											icon,
+											slug,
+											hide,
+										} = product_slug_map[product] ?? {};
+
+										if (hide) return;
+
+										return (
+											<Card
+												key={slug}
+												{...{
+													label,
+													desc,
+													icon,
+													slug,
+												}}
+											/>
+										);
+									})}
+								</Grid>
+							</Flex>
+						);
+					}
+				)}
+			</Flex>
 		</>
 	);
 };
 
-export default PricingCommissions;
+export { PricingCommission };
+
+const Card = ({ label, desc, icon, slug }) => {
+	const { h } = useHslColor(label);
+	const [onHover, setOnHover] = useState(false);
+	const router = useRouter();
+
+	const handleClick = (slug) => {
+		if (slug) {
+			router.push(`pricing/${slug}`);
+		}
+	};
+
+	return (
+		<Flex
+			key={label}
+			w="100%"
+			bg="white"
+			p="4"
+			borderRadius="10px"
+			align="center"
+			justify="space-between"
+			gap="1"
+			_hover={{
+				bg: `hsl(${h},80%,98%)`,
+				transition: "background 0.3s ease-out",
+				cursor: "pointer",
+			}}
+			boxShadow="buttonShadow"
+			onMouseEnter={() => setOnHover(true)}
+			onMouseLeave={() => setOnHover(false)}
+			onClick={() => handleClick(slug)}
+		>
+			<Flex align="center" gap="4" w="100%">
+				<Avatar
+					size={{ base: "sm", md: "md" }}
+					name={icon ? null : label}
+					border={`2px solid hsl(${h},80%,90%)`}
+					bg={`hsl(${h},80%,95%)`}
+					color={`hsl(${h},80%,30%)`}
+					icon={
+						<Icon
+							size={{ base: "sm", md: "md" }}
+							name={icon}
+							color={`hsl(${h},80%,30%)`}
+						/>
+					}
+				/>
+				<Flex direction="column" w="80%">
+					{label?.length > 0 ? (
+						<Text
+							fontSize={{ base: "sm", md: "md" }}
+							fontWeight="medium"
+						>
+							{label}
+						</Text>
+					) : null}
+					{desc?.length > 0 ? (
+						<Text fontSize="xxs">{desc}</Text>
+					) : null}
+				</Flex>
+			</Flex>
+			<Icon
+				name="arrow-forward"
+				size={{ base: "xs", sm: "sm" }}
+				color={onHover ? `hsl(${h},80%,30%)` : "transparent"}
+			/>
+		</Flex>
+	);
+};
+
+const DownloadPricing = () => {
+	const { accessToken } = useSession();
+	const handleClick = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-is-file-download": "1",
+			},
+			body: {
+				interaction_type_id: TransactionTypes.DOWNLOAD_EXISTING_PRICING,
+			},
+			token: accessToken,
+		})
+			.then((data) => {
+				const _blob = data?.file?.blob;
+				const _filename = data?.file?.name || "file";
+				const _type = data?.file["content-type"];
+				const _b64 = true;
+				saveDataToFile(_blob, _filename, _type, _b64);
+			})
+			.catch((err) => {
+				console.error("Error: ", err);
+			});
+	};
+	return (
+		<Button fontSize="sm" onClick={handleClick}>
+			Existing Pricing
+		</Button>
+	);
+};

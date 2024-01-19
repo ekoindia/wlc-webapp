@@ -92,5 +92,7 @@ export const buttonTheme = defineStyleConfig({
 		accent_outline,
 		primary_outline,
 	},
-	baseStyle: { borderRadius: "10px" },
+	baseStyle: {
+		borderRadius: "10px",
+	},
 });

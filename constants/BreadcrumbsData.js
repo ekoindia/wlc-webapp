@@ -18,6 +18,15 @@ export const TransactionHistoryObject = {
 
 export const PricingCommissionObject = {
 	"/admin/pricing": "Pricing & Commissions",
+	"/admin/pricing/commission-frequency": "Commission Frequency",
+	"/admin/pricing/money-transfer": "Money Transfer",
+	"/admin/pricing/aeps": "AePS",
+	"/admin/pricing/payment-gateway": "Payment Gateway",
+	"/admin/pricing/account-verification": "Account Verification",
+	"/admin/pricing/credit-card-bill-payment": "Credit Card Bill Payment",
+	"/admin/pricing/aadhaar-pay": "Aadhaar Pay",
+	"/admin/pricing/indo-nepal-fund-transfer": "Indo-Nepal Fund Transfer",
+	"/admin/pricing/airtel-cms": "Airtel CMS",
 };
 
 export const QueryObject = {

@@ -19,10 +19,18 @@ import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
-const statusObj = {
-	Active: 16,
-	// Close: 17,
-	Inactive: 18,
+const status = {
+	PENDING_APPROVAL: 13,
+	ACTIVE: 16,
+	// CLOSE: 17,
+	INACTIVE: 18,
+};
+
+const statusLabels = {
+	13: "Pending Approval",
+	16: "Active",
+	// 17: "Close",
+	18: "Inactive",
 };
 
 const reasons = [
@@ -34,11 +42,16 @@ const reasons = [
 	{ value: "999", label: "Other" },
 ];
 
-const generateMenuList = (list, currId, extra, includeExtra, other) => {
+const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 	let _list = [];
 
 	for (const listItem of list) {
-		if (currId != undefined && listItem.id != currId) {
+		let _isArray = Array.isArray(listItem.id);
+		let _id = _isArray ? listItem.id : [listItem.id];
+		if (
+			Object.values(status).includes(+statusId) &&
+			!_id.includes(+statusId)
+		) {
 			_list.push(listItem);
 		}
 	}
@@ -68,43 +81,15 @@ const getStatus = (status) => {
 const NetworkMenuWrapper = ({
 	mobile_number,
 	eko_code,
-	account_status,
+	account_status_id,
 	agent_type,
 }) => {
 	const { onOpen } = useDisclosure();
 	const [isOpen, setOpen] = useState(false);
-	const [clickedVal, setClickedVal] = useState();
+	const [accountStatusId, setAccountStatusId] = useState();
 	const { accessToken } = useSession();
 	const router = useRouter();
 	const toast = useToast();
-
-	const menuList = [
-		{
-			id: 16,
-			value: "Active",
-			label: "Mark Active",
-			onClick: (value) => {
-				setOpen(true);
-				setClickedVal(value);
-			},
-		},
-		{
-			id: 18,
-			value: "Inactive",
-			label: "Mark Inactive",
-			onClick: (value) => {
-				setOpen(true);
-				setClickedVal(value);
-			},
-		},
-	];
-
-	const others = {
-		label: "View Details",
-		onClick: () => {
-			router.push(`/admin/my-network/profile?mobile=${mobile_number}`);
-		},
-	};
 
 	const {
 		handleSubmit,
@@ -115,6 +100,27 @@ const NetworkMenuWrapper = ({
 
 	const watcher = useWatch({ control });
 
+	const menuList = [
+		{
+			id: 16,
+			value: 16,
+			label: "Mark Active",
+			onClick: (value) => {
+				setOpen(true);
+				setAccountStatusId(value);
+			},
+		},
+		{
+			id: [13, 18], // 13: Pending Approval, 18: Inactive
+			value: 18,
+			label: "Mark Inactive",
+			onClick: (value) => {
+				setOpen(true);
+				setAccountStatusId(value);
+			},
+		},
+	];
+
 	const changeRoleMenuItem = {
 		label: "Change Role",
 		onClick: () => {
@@ -124,7 +130,12 @@ const NetworkMenuWrapper = ({
 		},
 	};
 
-	const currId = statusObj[account_status];
+	const others = {
+		label: "View Details",
+		onClick: () => {
+			router.push(`/admin/my-network/profile?mobile=${mobile_number}`);
+		},
+	};
 
 	let _includeChangeRole = false;
 
@@ -137,7 +148,7 @@ const NetworkMenuWrapper = ({
 
 	const _finalMenuList = generateMenuList(
 		menuList,
-		currId,
+		account_status_id,
 		changeRoleMenuItem,
 		_includeChangeRole,
 		others
@@ -146,13 +157,13 @@ const NetworkMenuWrapper = ({
 	const parameter_list = [
 		{
 			name: "reason",
-			label: `Reason for marking ${clickedVal?.toLowerCase()}`,
+			label: `Reason for marking ${statusLabels[accountStatusId]}`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: reasons,
 			meta: {
 				force_dropdown: true,
 			},
-			is_inactive: currId == 18,
+			is_inactive: account_status_id == 18 || account_status_id == 13,
 		},
 		{
 			name: "reason_input",
@@ -165,9 +176,9 @@ const NetworkMenuWrapper = ({
 				required: true,
 			},
 			is_inactive:
-				currId == 16
+				account_status_id == 16
 					? watcher["reason"]?.value !== "999"
-					: currId == 18
+					: account_status_id == 18 || account_status_id == 13
 					? false
 					: true, // hack until I fix select
 		},
@@ -177,9 +188,10 @@ const NetworkMenuWrapper = ({
 		const { reason, reason_input } = data;
 
 		const _reason =
-			currId == 18 && reason_input !== undefined
+			(account_status_id == 18 || account_status_id == 13) &&
+			reason_input !== undefined
 				? reason_input
-				: currId == 16 && reason?.value === "999"
+				: account_status_id == 16 && reason?.value === "999"
 				? reason_input
 				: reason?.label;
 
@@ -193,7 +205,7 @@ const NetworkMenuWrapper = ({
 				},
 				body: {
 					csp_code: eko_code,
-					agentAccountStatus: statusObj[clickedVal],
+					agentAccountStatus: accountStatusId,
 					updateStatusNote: _reason,
 				},
 				token: accessToken,
@@ -243,7 +255,7 @@ const NetworkMenuWrapper = ({
 				<ModalOverlay />
 				<ModalContent height="auto" fontSize="sm">
 					<ModalHeader fontSize="lg" fontWeight="semibold">
-						<span>Mark {clickedVal}</span>
+						<span>Mark {statusLabels[accountStatusId]}</span>
 					</ModalHeader>
 					<ModalCloseButton _hover={{ color: "error" }} />
 					<ModalBody>

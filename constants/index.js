@@ -20,6 +20,7 @@ export {
 	IconNameType,
 	IconType,
 } from "./IconLibrary";
+export { product_categories, product_slug_map } from "./PricingConfiguration";
 export {
 	productPricingCommissionValidationConfig,
 	productPricingTextConfig,

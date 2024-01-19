@@ -249,6 +249,7 @@ const TransferSeller = ({
 				align="center"
 				bottom="0"
 				left="0"
+				bg="white"
 			>
 				<Button
 					size="lg"
@@ -290,6 +291,7 @@ const TransferSeller = ({
 				align="center"
 				bottom="0"
 				left="0"
+				bg="white"
 			>
 				<Button
 					size="lg"
