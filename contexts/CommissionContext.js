@@ -1,4 +1,3 @@
-import { ActionIcon } from "components/CommandBar";
 import { Endpoints } from "constants/EndPoints";
 import { useMenuContext, useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
@@ -203,21 +202,21 @@ export const CommissionSummaryProvider = ({ children }) => {
 	// Generate search actions for CommandBar
 	const CommissionAction = useMemo(() => {
 		const actionList = [
-			{
-				id: "know-your-commissions",
-				name: "Know Your Commissions",
-				subtitle: "Get commission details for every product",
-				keywords: `earning pricing`,
-				icon: (
-					<ActionIcon
-						icon="high-commission"
-						iconSize="28px"
-						// color={"success"}
-					/>
-				),
-				perform: false,
-				priority: 1,
-			},
+			// {
+			// 	id: "know-your-commissions",
+			// 	name: "Know Your Commissions",
+			// 	subtitle: "Get commission details for every product",
+			// 	keywords: `earning pricing`,
+			// 	icon: (
+			// 		<ActionIcon
+			// 			icon="high-commission"
+			// 			iconSize="28px"
+			// 			// color={"success"}
+			// 		/>
+			// 	),
+			// 	perform: false,
+			// 	priority: 1,
+			// },
 		];
 
 		const commissionProdIds = Object.keys(userCommission?.data || {});
