@@ -3,7 +3,6 @@ import { Endpoints } from "constants/EndPoints";
 import { useMenuContext, useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useDailyCacheState } from "hooks";
-import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { formatCurrency } from "utils";
 import { validateResp } from "utils/validateResponse";
@@ -115,7 +114,7 @@ const formatCommissionData = (data, trxn_type_prod_map) => {
 };
 
 export const CommissionSummaryProvider = ({ children }) => {
-	const router = useRouter();
+	//const router = useRouter();
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions;
 
@@ -253,22 +252,22 @@ export const CommissionSummaryProvider = ({ children }) => {
 			}
 			prodSlabs = prodSlabs.substring(0, 50) + "...";
 
-			actionList.push({
-				id: `know-your-commission-${id}`,
-				name: "View " + prod.label + " Commissions",
-				subtitle: "Earn " + prodSlabs,
-				keywords: `${prod.label} commission earning pricing`,
-				icon: (
-					<ActionIcon
-						icon="high-commission"
-						iconSize="28px"
-						color="#d946ef"
-					/>
-				),
-				parent: "know-your-commissions",
-				perform: () => router.push("/commissions/" + id),
-				priority: 1,
-			});
+			// actionList.push({
+			// 	id: `know-your-commission-${id}`,
+			// 	name: "View " + prod.label + " Commissions",
+			// 	subtitle: "Earn " + prodSlabs,
+			// 	keywords: `${prod.label} commission earning pricing`,
+			// 	icon: (
+			// 		<ActionIcon
+			// 			icon="high-commission"
+			// 			iconSize="28px"
+			// 			color="#d946ef"
+			// 		/>
+			// 	),
+			// 	parent: "know-your-commissions",
+			// 	perform: () => router.push("/commissions/" + id),
+			// 	priority: 1,
+			// });
 
 			// const prodSlabs = prod.slabs.map(({ transaction_value }) => ({
 			// 	id: `${id}-${transaction_value}`,
