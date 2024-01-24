@@ -47,7 +47,7 @@ const ShopCard = () => {
 		shop_type: data ? data.shop_type : "Shop Type",
 		shop_address: data ? data.shop_address : "Shop Address",
 		city: data ? data.city : "City",
-		state: data ? data.state : "State",
+		state: data ? data.shop_address_state : "State",
 		pincode: data ? Number(data.pincode) : "Pincode",
 	};
 	const [formState, setFormState] = useState(shopObj);
@@ -235,8 +235,8 @@ const ShopCard = () => {
 					/>
 					<Input
 						label="State"
-						name="state"
-						value={formState.state}
+						name="shop_address_state"
+						value={formState.shop_address_state}
 						onChange={handleChange}
 						inputContStyle={inputConstStyle}
 					/>

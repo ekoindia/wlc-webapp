@@ -66,7 +66,7 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 							fontSize={{ base: "0.65em", lg: "0.7em" }}
 							noOfLines={2}
 						>
-							{userData?.userDetails?.shopaddress}
+							{userData?.userDetails?.agent_shop_address}
 						</Text>
 					</Flex>
 				</Flex>
@@ -99,7 +99,7 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 			>
 				{orgDetail.org_name ? (
 					<Text fontSize="0.7em" mt="1em">
-						Powered by <strong>{orgDetail.org_name}</strong>
+						Powered by <strong>{orgDetail.org_name}</strong> App
 					</Text>
 				) : null}
 				{tnc ? (
