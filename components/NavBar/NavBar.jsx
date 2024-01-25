@@ -475,23 +475,23 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						<Icon name="logout" size="sm" mr="2" />
 						<Text fontWeight="medium">Logout</Text>
 					</Flex>
-					<Flex
-						ml="2"
-						px="3"
-						py="2"
-						borderLeft="1px solid"
-						borderColor="divider"
-						onClick={() => clearCacheAndReload(true)}
-						_hover={{ bg: "gray.100" }}
-					>
-						<Tooltip label="Clear Cache" placement="left">
+					<Tooltip label="Clear Cache" placement="left" hasArrow>
+						<Flex
+							ml="2"
+							px="3"
+							py="2"
+							borderLeft="1px solid"
+							borderColor="divider"
+							onClick={() => clearCacheAndReload(true)}
+							_hover={{ bg: "gray.100" }}
+						>
 							<Icon
 								name="reload"
 								label="Clear Cache"
 								size="14px"
 							/>
-						</Tooltip>
-					</Flex>
+						</Flex>
+					</Tooltip>
 				</Flex>
 			</Flex>
 		</Box>
