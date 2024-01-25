@@ -40,7 +40,7 @@ const toastDefaultOptions = {
 };
 
 export default function InfinityApp({ Component, pageProps, router, org }) {
-	console.log("[_app.tsx] InfinityApp (web) Started: ", {
+	console.log("[_app.tsx] Started: ", {
 		org,
 		is_local: typeof window === "undefined" ? false : true,
 		path: router.pathname,
@@ -342,3 +342,10 @@ InfinityApp.getInitialProps = async function (appContext) {
 // export function reportWebVitals(metric) {
 // 	console.log("📈 WebVitals: ", metric.name + "=" + metric.value, metric);
 // }
+
+// Console warning to show to end users...
+console.info(
+	"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it.",
+	"color:red;background:yellow;font-size:20px",
+	"font-size:16px"
+);

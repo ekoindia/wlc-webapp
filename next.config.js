@@ -2,7 +2,7 @@ const isProd = process.env.NEXT_PUBLIC_ENV === "production";
 const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
 
 // Config for removing console logs in production
-const excludeLogTypes = ["error"];
+const excludeLogTypes = ["error", "info"];
 if (isDebugMode) {
 	excludeLogTypes.push("debug");
 }
