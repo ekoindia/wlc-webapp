@@ -121,7 +121,6 @@ const ShopCard = () => {
 			label: "State",
 			parameter_type_id: ParamType.LIST,
 			list_elements: statesList,
-			validations: { pattern: TEXT_ONLY_REGEX },
 		},
 		{
 			key: "pincode",
