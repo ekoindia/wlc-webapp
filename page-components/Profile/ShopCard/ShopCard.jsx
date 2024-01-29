@@ -60,7 +60,8 @@ const shop_types = [
 	{ label: "Vegetable Store", value: 34 },
 ];
 
-// const PINCODE_REGEX = /^[1-9]{1}[0-9]{5}&}/;
+// const PINCODE_REGEX = /^[1-9][0-9]{5}&}/;
+const TEXT_ONLY_REGEX = /^[A-Za-z\s]+$/;
 
 /**
  * A ShopCard page-component
@@ -109,23 +110,23 @@ const ShopCard = () => {
 			key: "city",
 			name: "city",
 			label: "City",
+			validations: { pattern: TEXT_ONLY_REGEX },
 		},
 		{
 			key: "state",
 			name: "shop_address_state",
 			label: "State",
+			validations: { pattern: TEXT_ONLY_REGEX },
 		},
 		{
 			key: "pincode",
 			name: "pincode",
 			label: "Pincode",
-			// parameter_type_id: ParamType.NUMERIC,
 			maxLength: "6",
 			step: "1",
 			validations: {
-				// pattern: PINCODE_REGEX,
-				maxLength: 6,
 				minLength: 6,
+				// pattern: PINCODE_REGEX,
 			},
 		},
 	];
