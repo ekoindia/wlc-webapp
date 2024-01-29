@@ -137,12 +137,12 @@ const ShopCard = () => {
 
 		let _shopType = _formState?.shop_type;
 
-		const matchingOption = shop_types.find(
+		const shop_type = shop_types.find(
 			(option) => option.label.toLowerCase() === _shopType.toLowerCase()
 		);
 
-		if (matchingOption) {
-			_formState["shop_type"] = matchingOption;
+		if (shop_type) {
+			_formState["shop_type"] = shop_type;
 		} else {
 			_formState["shop_type"] = {};
 		}
