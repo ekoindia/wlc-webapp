@@ -62,7 +62,7 @@ export const product_slug_map = {
 	},
 	"account-verification": {
 		label: "Account Verification",
-		desc: "Set Pricing for Recipient Bank Account Verification services",
+		desc: "Set Agent Pricing for Recipient Bank Account Verification services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "money-note",
 		comp: "AccountVerification",
@@ -71,7 +71,7 @@ export const product_slug_map = {
 	},
 	"credit-card-bill-payment": {
 		label: "Credit Card Bill Payment",
-		desc: "Agent Pricing for Credit Card Bill Payment services",
+		desc: "Set Agent Pricing for Credit Card Bill Payment services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "creditcard",
 		comp: "CreditCardBillPayment",
