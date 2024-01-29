@@ -20,7 +20,6 @@ export const product_slug_map = {
 	"commission-frequency": {
 		label: "Commission Frequency",
 		desc: "Toggle between Daily/Monthly Commissions within your network",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "money-deposit",
 		comp: "CommissionFrequency",
 		slug: "commission-frequency",
