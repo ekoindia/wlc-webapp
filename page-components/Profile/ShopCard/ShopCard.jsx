@@ -83,13 +83,9 @@ const ShopCard = () => {
 		mode: "onChange",
 	});
 
-	console.log("[ShopCard] errors", errors);
-
 	const watcher = useWatch({
 		control,
 	});
-
-	// console.log("[ShopCard] watcher", watcher);
 
 	const shop_card_parameter_list = [
 		{
