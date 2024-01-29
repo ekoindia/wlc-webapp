@@ -69,7 +69,6 @@ const ShopCard = () => {
 	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { generateNewToken } = useRefreshToken();
-	console.log("[ShopCard] userData?.shopDetails", userData?.shopDetails);
 
 	const {
 		handleSubmit,
