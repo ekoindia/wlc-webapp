@@ -12,7 +12,7 @@ import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { WidgetBase } from "page-components/Home";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
@@ -60,6 +60,8 @@ const shop_types = [
 	{ label: "Vegetable Store", value: 34 },
 ];
 
+// const PINCODE_REGEX = /^[1-9]{1}[0-9]{5}&}/;
+
 /**
  * A ShopCard page-component
  * @example	`<ShopCard></ShopCard>` TODO: Fix example
@@ -69,6 +71,7 @@ const ShopCard = () => {
 	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { generateNewToken } = useRefreshToken();
+	const [shopDetails, setShopDetails] = useState({});
 
 	const {
 		handleSubmit,
@@ -80,9 +83,13 @@ const ShopCard = () => {
 		mode: "onChange",
 	});
 
+	console.log("[ShopCard] errors", errors);
+
 	const watcher = useWatch({
 		control,
 	});
+
+	// console.log("[ShopCard] watcher", watcher);
 
 	const shop_card_parameter_list = [
 		{
@@ -116,15 +123,21 @@ const ShopCard = () => {
 			key: "pincode",
 			name: "pincode",
 			label: "Pincode",
-			parameter_type_id: ParamType.NUMERIC,
+			// parameter_type_id: ParamType.NUMERIC,
+			maxLength: "6",
 			step: "1",
+			validations: {
+				// pattern: PINCODE_REGEX,
+				maxLength: 6,
+				minLength: 6,
+			},
 		},
 	];
 
 	useEffect(() => {
 		const data = userData?.shopDetails;
 
-		let _formState = {
+		let _shopDetails = {
 			shop_name: data ? data.shop_name : null,
 			shop_type_ui: data ? data.shop_type : null,
 			shop_type: data ? data.shop_type : null,
@@ -135,19 +148,19 @@ const ShopCard = () => {
 			pincode: data ? Number(data.pincode) : null,
 		};
 
-		let _shopType = _formState?.shop_type;
+		let _shopType = _shopDetails?.shop_type;
 
 		const shop_type = shop_types.find(
 			(option) => option.label.toLowerCase() === _shopType.toLowerCase()
 		);
 
 		if (shop_type) {
-			_formState["shop_type"] = shop_type;
+			_shopDetails["shop_type"] = shop_type;
 		} else {
-			_formState["shop_type"] = {};
+			_shopDetails["shop_type"] = {};
 		}
-
-		reset({ ..._formState });
+		setShopDetails({ ..._shopDetails });
+		reset({ ..._shopDetails });
 	}, [userData?.shopDetails]);
 
 	const handleFormSubmit = (data) => {
@@ -206,7 +219,9 @@ const ShopCard = () => {
 					<GridItem key={key} colSpan={1} rowSpan={1}>
 						<Flex direction="column">
 							<Text>{label}</Text>
-							<Text fontWeight="semibold">{watcher[key]}</Text>
+							<Text fontWeight="semibold">
+								{shopDetails[key]}
+							</Text>
 						</Flex>
 					</GridItem>
 				))}
