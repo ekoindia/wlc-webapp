@@ -171,6 +171,12 @@ export const products = {
 		},
 		serviceCode: 727,
 	},
+	QR_PAYMENT: {
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
+	},
 };
 
 export const productPricingCommissionValidationConfig = {
@@ -234,6 +240,10 @@ export const productPricingCommissionValidationConfig = {
 	VALIDATE_UPI_ID: {
 		FIXED: { min: 0, max: 5 },
 	},
+	QR_PAYMENT: {
+		PERCENT: { min: 0, max: 1 },
+		FIXED: { min: 0, max: 10 },
+	},
 };
 
 export const productPricingTextConfig = {
@@ -253,4 +263,5 @@ export const productPricingType = {
 	UPI_MONEY_TRANSFER: productPricingTextConfig.PRICING,
 	UPI_FUND_TRANSFER: productPricingTextConfig.PRICING,
 	VALIDATE_UPI_ID: productPricingTextConfig.PRICING,
+	QR_PAYMENT: productPricingTextConfig.PRICING,
 };
