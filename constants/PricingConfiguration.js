@@ -138,6 +138,15 @@ export const product_slug_map = {
 		slug: "validate-upi-id",
 		hide: true,
 	},
+	"qr-payment": {
+		label: "QR Payment",
+		desc: "Set Agent Pricing for QR Payment services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		comp: "QrPayment",
+		icon: "qrcode",
+		slug: "qr-payment",
+		hide: false,
+	},
 };
 
 /**
@@ -163,6 +172,7 @@ export const product_categories = {
 		"money-transfer",
 		"aeps",
 		"payment-gateway",
+		"qr-payment",
 		"account-verification",
 		"credit-card-bill-payment",
 		"aadhaar-pay",
