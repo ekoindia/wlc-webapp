@@ -169,7 +169,11 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 									xl: "38px",
 									"2xl": "42px",
 								}}
-								name={userDetails?.name[0]}
+								name={
+									userDetails?.name
+										? userDetails?.name[0]
+										: ""
+								}
 								lineHeight="3px"
 								src={userDetails?.pic}
 							/>

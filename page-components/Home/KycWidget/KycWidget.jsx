@@ -67,7 +67,6 @@ const KycWidget = () => {
 								}}
 								color="#FFD93B"
 								fontWeight="semibold"
-								fontFamily="Inter"
 							>
 								Your eKYC is not completed!
 							</Text>
