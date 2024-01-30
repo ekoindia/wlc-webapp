@@ -47,11 +47,19 @@ export const processTransactionData = (tmp_lst) => {
 		}
 
 		if ("ext_icon" in tmp_lst[i]) {
-			role_tx_list[tmp_lst[i].id].ext_icon = tmp_lst[i].ext_icon;
+			let ext_logo = tmp_lst[i].ext_icon;
+			if (ext_logo && ext_logo.startsWith("images/")) {
+				ext_logo = "/" + ext_logo;
+			}
+			role_tx_list[tmp_lst[i].id].ext_icon = ext_logo;
 		}
 
 		if ("logo" in tmp_lst[i]) {
-			role_tx_list[tmp_lst[i].id].logo = tmp_lst[i].logo;
+			let logo = tmp_lst[i].logo;
+			if (logo && logo.startsWith("images/")) {
+				logo = "/" + logo;
+			}
+			role_tx_list[tmp_lst[i].id].logo = logo;
 		}
 
 		if ("brand_category_ids" in tmp_lst[i]) {

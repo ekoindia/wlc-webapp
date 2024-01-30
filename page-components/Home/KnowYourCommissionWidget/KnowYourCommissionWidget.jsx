@@ -1,6 +1,7 @@
 import { Avatar, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useCommissionSummary, useUser } from "contexts";
+import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { WidgetBase } from "..";
 /**
@@ -46,72 +47,88 @@ const KnowYourCommission = () => {
 				{commissionProductIds?.map((id) => {
 					const prod = commissionData?.data?.[id];
 					return (
-						<Flex
+						<Tr
 							key={id}
-							p="8px 4px 8px 16px"
-							pr={{ base: "8px", md: "4px" }}
-							align="center"
-							justify="center"
-							borderBottom="1px solid #F5F6F8"
-						>
-							<Avatar
-								size={{ base: "sm", md: "md" }}
-								border={prod.icon ? null : "2px solid #D2D2D2"}
-								name={prod.icon ? null : prod.label}
-								bg={prod.icon ? "gray.200" : null}
-								icon={
-									<Icon
-										size={{ base: "sm", md: "md" }}
-										name={prod.icon}
-										color="primary.DEFAULT"
-									/>
-								}
-							/>
-							<Flex
-								alignItems="center"
-								justifyContent="space-between"
-								w="100%"
-								ml="10px"
-							>
-								<Flex direction="column">
-									<Text
-										fontSize={{
-											base: "xs",
-											md: "sm",
-										}}
-										fontWeight="medium"
-										noOfLines={1}
-									>
-										{prod.label}
-									</Text>
-								</Flex>
-								<Flex
-									justifyContent="space-between"
-									alignItems="center"
-									ml={2}
-									onClick={() => handleShowDetail(id)}
-									cursor="pointer"
-								>
-									<Text
-										color="accent.DEFAULT"
-										pr="6px"
-										display={{ base: "none", md: "block" }}
-										fontSize="sm"
-									>
-										Details
-									</Text>
-									<Icon
-										size="12px"
-										name="arrow-forward"
-										color="accent.DEFAULT"
-									/>
-								</Flex>
-							</Flex>
-						</Flex>
+							id={id}
+							prod={prod}
+							handleShowDetail={handleShowDetail}
+						/>
 					);
 				})}
 			</Flex>
 		</WidgetBase>
+	);
+};
+
+/**
+ * Internal table-row component
+ */
+const Tr = ({ id, prod, handleShowDetail }) => {
+	const { h } = useHslColor(prod.label);
+
+	return (
+		<Flex
+			p="8px 4px 8px 16px"
+			pr={{ base: "8px", md: "4px" }}
+			align="center"
+			justify="center"
+			borderBottom="1px solid #F5F6F8"
+		>
+			<Avatar
+				size={{ base: "sm", md: "md" }}
+				name={prod.icon ? null : prod.label}
+				border={`2px solid hsl(${h},80%,85%)`}
+				bg={`hsl(${h},80%,95%)`}
+				color={`hsl(${h},80%,30%)`}
+				icon={
+					<Icon
+						size={{ base: "sm", md: "md" }}
+						name={prod.icon}
+						color={`hsl(${h},80%,30%)`}
+					/>
+				}
+			/>
+			<Flex
+				alignItems="center"
+				justifyContent="space-between"
+				w="100%"
+				ml="10px"
+			>
+				<Flex direction="column">
+					<Text
+						fontSize={{
+							base: "xs",
+							md: "sm",
+						}}
+						fontWeight="medium"
+						noOfLines={1}
+					>
+						{prod.label}
+					</Text>
+				</Flex>
+				<Flex
+					justifyContent="space-between"
+					alignItems="center"
+					ml={2}
+					onClick={() => handleShowDetail(id)}
+					cursor="pointer"
+				>
+					<Text
+						color="accent.DEFAULT"
+						pr="6px"
+						display={{ base: "none", md: "block" }}
+						fontSize="sm"
+					>
+						Details
+					</Text>
+					<Icon
+						size="12px"
+						name="arrow-forward"
+						color="accent.DEFAULT"
+					/>
+				</Flex>
+			</Flex>
+		</Flex>
 	);
 };
 
