@@ -213,8 +213,6 @@ const QrPayment = () => {
 			_finalData.CspList = `${_CspList}`;
 		}
 
-		delete _finalData.select;
-
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: 737,
