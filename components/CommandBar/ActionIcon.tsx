@@ -75,7 +75,7 @@ const ActionIcon: React.FC<ActionIconProps> = ({
 		>
 			{ext_icon ? (
 				<Image
-					src={ext_icon}
+					src={fixLogoPath(ext_icon)}
 					alt={name}
 					w="full"
 					h="full"
@@ -102,6 +102,17 @@ const ActionIcon: React.FC<ActionIconProps> = ({
 			) : null}
 		</Circle>
 	);
+};
+
+/**
+ * Fix logo path by prepending "/" if it is an invalid partial path (eg: images/brands/xyz.png).
+ * @param 	{string}	icon	Icon name or path
+ * @returns	{string}			Fixed icon path
+ */
+const fixLogoPath = (logo: string) => {
+	if (!logo) return logo;
+	if (logo.startsWith("images/")) return `/${logo}`;
+	return logo;
 };
 
 export default ActionIcon;
