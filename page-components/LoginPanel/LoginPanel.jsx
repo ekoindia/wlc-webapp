@@ -130,7 +130,7 @@ const LoginPanel = () => {
 						logo="/favicon.svg"
 						header={`Welcome to ${orgDetail.app_name}`}
 						features={[
-							"Your business partner for services like Money Transfer, Bill Payments, AePS Cash-Out & more",
+							"Your business partner to grow your revenue and digitize your business",
 							"Start earning today from your shop, office, home or anywhere",
 						]}
 					/>
