@@ -83,7 +83,9 @@ const Form = ({
 											{label}
 										</InputLabel>
 									) : null}
-									<Text fontSize="sm">{value}</Text>
+									<Text fontSize={{ base: "xs", md: "sm" }}>
+										{value}
+									</Text>
 								</div>
 							);
 						case ParamType.NUMERIC:
