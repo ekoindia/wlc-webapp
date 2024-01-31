@@ -165,8 +165,8 @@ const ShopCard = () => {
 
 		let _shopDetails = {
 			shop_name: data ? data.shop_name : null,
-			shop_type_ui: data ? data.shop_type : null,
-			shop_type: data ? data.shop_type : null,
+			shop_type_ui: data ? shop_types[+data.shop_type]?.label : null,
+			shop_type: data ? shop_types[+data.shop_type] : {},
 			shop_address: data ? data.shop_address : null,
 			city: data ? data.city : null,
 			shop_address_state: data ? state : null,
@@ -174,17 +174,6 @@ const ShopCard = () => {
 			pincode: data ? Number(data.pincode) : null,
 		};
 
-		let _shopType = _shopDetails?.shop_type;
-
-		const shop_type = shop_types.find(
-			(option) => option.label.toLowerCase() === _shopType.toLowerCase()
-		);
-
-		if (shop_type) {
-			_shopDetails["shop_type"] = shop_type;
-		} else {
-			_shopDetails["shop_type"] = {};
-		}
 		setShopDetails({ ..._shopDetails });
 		reset({ ..._shopDetails });
 	}, [userData?.shopDetails]);
