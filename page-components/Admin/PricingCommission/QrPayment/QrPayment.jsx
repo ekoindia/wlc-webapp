@@ -27,7 +27,7 @@ const PRICING_TYPE = {
 };
 
 const pricing_type_list = [
-	{ value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
+	// { value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
 	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
 ];
 
@@ -152,6 +152,15 @@ const QrPayment = () => {
 					color="primary.DEFAULT"
 				/>
 			),
+		},
+		{
+			name: "note",
+			label: "Note:",
+			parameter_type_id: ParamType.LABEL,
+			value: "With this price setting, you will lose money on every QR E-value load within the network. If you want to avoid losses, please set a pricing greater than 2.36. If you are comfortable with the losses, please click on ‘Save’. Otherwise, define a pricing greater than 2.36",
+			is_inactive: watcher["actual_pricing"]
+				? !(watcher["actual_pricing"] < 2.36)
+				: true,
 		},
 	];
 

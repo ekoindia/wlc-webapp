@@ -174,7 +174,7 @@ export const products = {
 	QR_PAYMENT: {
 		DEFAULT: {
 			operation_type: "3",
-			pricing_type: "0",
+			pricing_type: "1",
 		},
 	},
 };
