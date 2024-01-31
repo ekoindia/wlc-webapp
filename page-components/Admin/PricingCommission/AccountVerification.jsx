@@ -159,7 +159,7 @@ const AccountVerification = () => {
 		}
 	}, [isSubmitSuccessful, isValid]);
 
-	const handleFormSubmitPricing = (data) => {
+	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
 		const _CspList = data?.CspList?.map(
@@ -250,7 +250,7 @@ const AccountVerification = () => {
 
 	return (
 		<Flex direction="column" gap="8">
-			<form onSubmit={handleSubmit(handleFormSubmitPricing)}>
+			<form onSubmit={handleSubmit(handleFormSubmit)}>
 				<Flex direction="column" gap="8">
 					{/* <SectionTitle>
 						Set Account Verification Pricing

@@ -1,98 +1,204 @@
 import {
 	Flex,
-	FormControl,
-	FormErrorMessage,
 	Grid,
 	GridItem,
-	NumberInput,
-	NumberInputField,
-	Select,
 	Text,
 	useDisclosure,
 	useToast,
 } from "@chakra-ui/react";
-import { Input, Modal } from "components";
-import { Endpoints, TransactionIds } from "constants";
+import { Button, Modal } from "components";
+import { Endpoints, ParamType, TransactionIds } from "constants";
 import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { WidgetBase } from "page-components/Home";
-import { useCallback, useState } from "react";
-import { capitalize } from "utils";
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components";
 
 /**
- * A <ShopCard> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
+ * Array containing objects representing various types of shops.
+ * @type {Array<{
+ *     label: string,
+ *     value: number
+ * }>}
+ */
+const shop_types = [
+	{ label: "Kirana", value: 1 },
+	{ label: "Medical", value: 2 },
+	{ label: "Individual", value: 3 },
+	{ label: "Money Transfer Agent", value: 4 },
+	{ label: "Tour & Travel Agent", value: 5 },
+	{ label: "Mobile & Accessories", value: 6 },
+	{ label: "Grocery & Kirana Store", value: 7 },
+	{ label: "Chemist & Pharmacy", value: 8 },
+	{ label: "Automobile Dealer", value: 9 },
+	{ label: "Boutique", value: 10 },
+	{ label: "Computer Center & Cyber Cafe", value: 11 },
+	{ label: "Courier Services", value: 12 },
+	{ label: "Electrical Store", value: 13 },
+	{ label: "Electronic & Home Appliances", value: 14 },
+	{ label: "Footwear", value: 15 },
+	{ label: "Forex & Money Exchanger", value: 16 },
+	{ label: "Game Parlour", value: 17 },
+	{ label: "Garment & Apparel", value: 18 },
+	{ label: "Gift & Toys", value: 19 },
+	{ label: "Hardware", value: 20 },
+	{ label: "Insurance Advisor", value: 21 },
+	{ label: "Newspaper Stall", value: 22 },
+	{ label: "Opticial & Optical Store", value: 23 },
+	{ label: "Photo Studio", value: 24 },
+	{ label: "Photostat", value: 25 },
+	{ label: "Property Dealer", value: 26 },
+	{ label: "Repair Services", value: 27 },
+	{ label: "Restaurant", value: 28 },
+	{ label: "Salon & Beauty Parlour", value: 29 },
+	{ label: "Sport Goods", value: 30 },
+	{ label: "Stationary & Books", value: 31 },
+	{ label: "Supermarket", value: 32 },
+	{ label: "Tailor", value: 33 },
+	{ label: "Vegetable Store", value: 34 },
+];
+
+const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
+
+// const PINCODE_REGEX = /^[1-9][0-9]{5}&}/;
+const TEXT_ONLY_REGEX = /^[A-Za-z\s]+$/;
+
+/**
+ * A ShopCard page-component
  * @example	`<ShopCard></ShopCard>` TODO: Fix example
  */
 const ShopCard = () => {
-	const { userData, refreshUser } = useUser();
-	const [disabled, setDisabled] = useState(false);
-	const [error, setError] = useState(false);
+	const { userData, refreshUser, accessToken } = useUser();
 	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const data = userData.shopDetails;
 	const { generateNewToken } = useRefreshToken();
-	const inputConstStyle = {
-		w: "100%",
-		pos: "relative",
-		br: "none",
-		mb: { base: 2, "2xl": "1rem" },
-	};
-	const shopObj = {
-		shop_name: data ? data.shop_name : "Shop Name",
-		shop_type: data ? data.shop_type : "Shop Type",
-		shop_address: data ? data.shop_address : "Shop Address",
-		city: data ? data.city : "City",
-		state: data ? data.shop_address_state : "State",
-		pincode: data ? Number(data.pincode) : "Pincode",
-	};
-	const [formState, setFormState] = useState(shopObj);
-	// const error = formState.pincode.length < 6 || formState.pincode.length > 6;
-	const options = [
-		{ label: "Kirana", value: 1 },
-		{ label: "Medical", value: 2 },
-		{ label: "Individual", value: 3 },
-		{ label: "Money Transfer Agent", value: 4 },
-		{ label: "Tour & Travel Agent", value: 5 },
-		{ label: "Mobile & Accessories", value: 6 },
-		{ label: "Grocery & Kirana Store", value: 7 },
-		{ label: "Chemist & Pharmacy", value: 8 },
-		{ label: "Automobile Dealer", value: 9 },
-		{ label: "Boutique", value: 10 },
-		{ label: "Computer Center & Cyber Cafe", value: 11 },
-		{ label: "Courier Services", value: 12 },
-		{ label: "Electrical Store", value: 13 },
-		{ label: "Electronic & Home Appliances", value: 14 },
-		{ label: "Footwear", value: 15 },
-		{ label: "Forex & Money Exchanger", value: 16 },
-		{ label: "Game Parlour", value: 17 },
-		{ label: "Garment & Apparel", value: 18 },
-		{ label: "Gift & Toys", value: 19 },
-		{ label: "Hardware", value: 20 },
-		{ label: "Insurance Advisor", value: 21 },
-		{ label: "Newspaper Stall", value: 22 },
-		{ label: "Opticial & Optical Store", value: 23 },
-		{ label: "Photo Studio", value: 24 },
-		{ label: "Photostat", value: 25 },
-		{ label: "Property Dealer", value: 26 },
-		{ label: "Repair Services", value: 27 },
-		{ label: "Restaurant", value: 28 },
-		{ label: "Salon & Beauty Parlour", value: 29 },
-		{ label: "Sport Goods", value: 30 },
-		{ label: "Stationary & Books", value: 31 },
-		{ label: "Supermarket", value: 32 },
-		{ label: "Tailor", value: 33 },
-		{ label: "Vegetable Store", value: 34 },
+	const [shopDetails, setShopDetails] = useState({});
+	const [statesList, setStatesList] = useState([]);
+
+	const {
+		handleSubmit,
+		register,
+		control,
+		formState: { errors, isValid, isDirty, isSubmitting },
+		reset,
+	} = useForm({
+		mode: "onChange",
+	});
+
+	const watcher = useWatch({
+		control,
+	});
+
+	const shop_card_parameter_list = [
+		{
+			key: "shop_name", //using this key to show data on UI
+			name: "shop_name",
+			label: "Shop Name",
+		},
+		{
+			key: "shop_type_ui",
+			name: "shop_type",
+			label: "Shop Type",
+			parameter_type_id: ParamType.LIST,
+			list_elements: shop_types,
+		},
+		{
+			key: "shop_address",
+			name: "shop_address",
+			label: "Shop Address",
+		},
+		{
+			key: "city",
+			name: "city",
+			label: "City",
+			validations: { pattern: TEXT_ONLY_REGEX },
+		},
+		{
+			key: "state",
+			name: "shop_address_state",
+			label: "State",
+			parameter_type_id: ParamType.LIST,
+			list_elements: statesList,
+		},
+		{
+			key: "pincode",
+			name: "pincode",
+			label: "Pincode",
+			maxLength: "6",
+			step: "1",
+			validations: {
+				minLength: 6,
+				// pattern: PINCODE_REGEX,
+			},
+		},
 	];
-	const onEditClick = () => {
-		onOpen();
+
+	const fetchStatesList = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: TransactionIds.STATE_TYPE,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				if (res.status === 0) {
+					setStatesList(res?.param_attributes.list_elements);
+				}
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
 	};
-	const hitQuery = useCallback(() => {
-		setDisabled(true);
+
+	useEffect(() => {
+		fetchStatesList();
+		const data = userData?.shopDetails;
+
+		const _state =
+			data?.state == "Delhi"
+				? "National Capital Territory of Delhi (UT)"
+				: data?.state;
+
+		const state = findObjectByValue(statesList, _state);
+
+		let _shopDetails = {
+			shop_name: data ? data.shop_name : null,
+			shop_type_ui: data ? data.shop_type : null,
+			shop_type: data ? data.shop_type : null,
+			shop_address: data ? data.shop_address : null,
+			city: data ? data.city : null,
+			shop_address_state: data ? state : null,
+			state: data ? _state : null,
+			pincode: data ? Number(data.pincode) : null,
+		};
+
+		let _shopType = _shopDetails?.shop_type;
+
+		const shop_type = shop_types.find(
+			(option) => option.label.toLowerCase() === _shopType.toLowerCase()
+		);
+
+		if (shop_type) {
+			_shopDetails["shop_type"] = shop_type;
+		} else {
+			_shopDetails["shop_type"] = {};
+		}
+		setShopDetails({ ..._shopDetails });
+		reset({ ..._shopDetails });
+	}, [userData?.shopDetails]);
+
+	const handleFormSubmit = (data) => {
+		const _finalData = { ...data };
+
+		_finalData["shop_type"] = _finalData["shop_type"]?.value;
+		_finalData["shop_address_state"] =
+			_finalData["shop_address_state"]?.value;
+
+		delete _finalData["shop_type_ui"];
+		delete _finalData["state"];
+
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -101,165 +207,79 @@ const ShopCard = () => {
 					interaction_type_id: TransactionIds.USER_PROFILE,
 					user_id: userData?.userId,
 					section: "shop_detail",
-					...formState,
+					..._finalData,
 				},
 				timeout: 30000,
 			},
 			generateNewToken
 		)
-			.then((data) => {
-				setDisabled(false);
+			.then((res) => {
 				refreshUser();
-				// updateShopDetails(formState);
 				toast({
-					title: data.message,
+					title: res.message,
 					status: "success",
-					duration: 2000,
+					duration: 6000,
 				});
 				onClose();
 			})
-			.catch((err) => {
-				setDisabled(false);
+			.catch((error) => {
 				toast({
 					title: data.message,
 					status: "error",
-					duration: 2000,
+					duration: 6000,
 				});
-				console.error("error: ", err);
+				console.error("📡Error:", error);
 			});
-	}, [formState, userData?.access_token, userData?.userId]);
-
-	const onSubmit = (e) => {
-		e.preventDefault();
-		if (!error) {
-			hitQuery();
-		}
 	};
 
-	const handleChange = (e) => {
-		if (e.target.name === "pincode") {
-			if (!(e.target.value.length == 6)) {
-				setError(true);
-			} else {
-				setError(false);
-			}
-		}
-		setFormState({ ...formState, [e.target.name]: e.target.value });
-	};
 	return (
 		<WidgetBase
 			title="My Shop"
 			iconName="mode-edit"
-			linkOnClick={onEditClick}
+			linkOnClick={() => onOpen()}
 		>
 			<Grid
 				templateColumns="repeat(2, 1fr)"
 				rowGap="20px"
 				fontSize={{ base: "14px" }}
 			>
-				{data &&
-					Object.entries(shopObj).map(([key], index) =>
-						data[key] != "" ? (
-							<GridItem key={index} colSpan={1} rowSpan={1}>
-								<Flex direction="column">
-									<Text>
-										{key
-											.replace(/_/g, " ")
-											.replace(/\b\w/g, (c) =>
-												c.toUpperCase()
-											)}
-									</Text>
-									<Text fontWeight="semibold">
-										{capitalize(data[key])}
-									</Text>
-								</Flex>
-							</GridItem>
-						) : null
-					)}
+				{shop_card_parameter_list.map(({ key, label }) => (
+					<GridItem key={key} colSpan={1} rowSpan={1}>
+						<Flex direction="column">
+							<Text>{label}</Text>
+							<Text fontWeight="semibold">
+								{shopDetails[key]}
+							</Text>
+						</Flex>
+					</GridItem>
+				))}
 			</Grid>
 
-			{/* Show Chakra Modal to edit Shop details */}
-			<Modal
-				isOpen={isOpen}
-				onClose={onClose}
-				title="Edit My Shop"
-				submitText="Save now"
-				onSubmit={onSubmit}
-				disabled={disabled}
-			>
-				<form onSubmit={onSubmit}>
-					<Input
-						label="Shop Name"
-						name="shop_name"
-						value={formState.shop_name}
-						onChange={handleChange}
-						inputContStyle={inputConstStyle}
-					/>
-					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
-						Shop Type
-					</Text>
-
-					<Select
-						label="Shop Type"
-						name="shop_type"
-						value={formState.shop_type}
-						onChange={handleChange}
-						mb={{ base: 2, "2xl": "1rem" }}
-						h="3rem"
-						inputContStyle={inputConstStyle}
-					>
-						{options.map((data, idx) => {
-							return (
-								<option
-									key={`${data?.label}_${idx}`}
-									value={data.value}
-								>
-									{data.label}
-								</option>
-							);
-						})}
-					</Select>
-					<Input
-						label="Shop Address"
-						name="shop_address"
-						value={formState.shop_address}
-						onChange={handleChange}
-						inputContStyle={inputConstStyle}
-					/>
-					<Input
-						label="City"
-						name="city"
-						value={formState.city}
-						onChange={handleChange}
-						inputContStyle={inputConstStyle}
-					/>
-					<Input
-						label="State"
-						name="shop_address_state"
-						value={formState.shop_address_state}
-						onChange={handleChange}
-						inputContStyle={inputConstStyle}
-					/>
-					<Text fontSize={{ base: "md", md: "md" }} fontWeight="bold">
-						Pincode
-					</Text>
-					<FormControl isInvalid={error}>
-						<NumberInput value={formState.pincode}>
-							<NumberInputField
-								name="pincode"
-								onChange={handleChange}
-								h="3rem"
-							/>
-						</NumberInput>
-						{error && (
-							<FormErrorMessage>
-								Pincode should be 6 digit
-							</FormErrorMessage>
-						)}
-					</FormControl>
+			<Modal isOpen={isOpen} onClose={onClose} title="Edit Shop Details">
+				<form onSubmit={handleSubmit(handleFormSubmit)}>
+					<Flex direction="column" gap="8" pb="4">
+						<Form
+							{...{
+								parameter_list: shop_card_parameter_list,
+								formValues: watcher,
+								control,
+								register,
+								errors,
+							}}
+						/>
+						<Button
+							type="submit"
+							size="lg"
+							width="100%"
+							fontSize="lg"
+							loading={isSubmitting}
+							disabled={!isValid || !isDirty}
+						>
+							Save
+						</Button>
+					</Flex>
 				</form>
 			</Modal>
-			{/* </Flex> */}
 		</WidgetBase>
 	);
 };

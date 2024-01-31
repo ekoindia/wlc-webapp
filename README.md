@@ -36,6 +36,11 @@ A white-labelled SaaS platform to run your business like agent-banking, micro-fi
 - Dashboard
   - _Business Dashboard_: Divided into 4 part i.e. TopPanel, EarningOverview, SuccessRate & TopMerchants with there config in there respective file - [page-components/Admin/Dashboard/BusinessDashboard](page-components/Admin/Dashboard/BusinessDashboard)
 
+## Agent (Retailers / Distributors)
+- Home
+  - [_Know Your Commissions_](page-components/Home/KnowYourCommissionWidget/KnowYourCommissionWidget.jsx):
+	- Commission Data is fetched via [CommissionContext](contexts/CommissionContext.js) when the user signs-in.
+
 ## Pub/Sub
 To use pub/sub, follow the following steps:
 - Open [PubSubContext.js](contexts/PubSubContext.js) and add your new topic/purpose under the `TOPIC` array.
