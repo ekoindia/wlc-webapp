@@ -55,6 +55,21 @@ const nextConfig = withBundleAnalyzer({
 				source: "/manifest.json",
 				destination: "/api/manifest-proxy",
 			},
+			{
+				// Fix Connect Widget bug (invalid partial path for '/images/brands/...')
+				source: "/transaction/images/:path*", // :path* is a catch-all
+				destination: "/images/:path*",
+			},
+			{
+				// Fix Connect Widget bug (invalid partial path)
+				source: "/transaction/locale/:path*", // :path* is a catch-all
+				destination: "https://connect.eko.in/locale/:path*",
+			},
+			{
+				// Fix Connect Widget bug (invalid partial path)
+				source: "/transaction/script/:path*", // :path* is a catch-all
+				destination: "https://connect.eko.in/script/:path*",
+			},
 		];
 	},
 });
