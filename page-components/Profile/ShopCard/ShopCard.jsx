@@ -12,7 +12,7 @@ import { useUser } from "contexts/UserContext";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 import { WidgetBase } from "page-components/Home";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
@@ -60,15 +60,22 @@ const shop_types = [
 	{ label: "Vegetable Store", value: 34 },
 ];
 
+const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
+
+// const PINCODE_REGEX = /^[1-9][0-9]{5}&}/;
+const TEXT_ONLY_REGEX = /^[A-Za-z\s]+$/;
+
 /**
  * A ShopCard page-component
  * @example	`<ShopCard></ShopCard>` TODO: Fix example
  */
 const ShopCard = () => {
-	const { userData, refreshUser } = useUser();
+	const { userData, refreshUser, accessToken } = useUser();
 	const toast = useToast();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { generateNewToken } = useRefreshToken();
+	const [shopDetails, setShopDetails] = useState({});
+	const [statesList, setStatesList] = useState([]);
 
 	const {
 		handleSubmit,
@@ -106,54 +113,88 @@ const ShopCard = () => {
 			key: "city",
 			name: "city",
 			label: "City",
+			validations: { pattern: TEXT_ONLY_REGEX },
 		},
 		{
 			key: "state",
 			name: "shop_address_state",
 			label: "State",
+			parameter_type_id: ParamType.LIST,
+			list_elements: statesList,
 		},
 		{
 			key: "pincode",
 			name: "pincode",
 			label: "Pincode",
-			parameter_type_id: ParamType.NUMERIC,
+			maxLength: "6",
 			step: "1",
+			validations: {
+				minLength: 6,
+				// pattern: PINCODE_REGEX,
+			},
 		},
 	];
 
+	const fetchStatesList = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: TransactionIds.STATE_TYPE,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				if (res.status === 0) {
+					setStatesList(res?.param_attributes.list_elements);
+				}
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
+	};
+
 	useEffect(() => {
+		fetchStatesList();
 		const data = userData?.shopDetails;
 
-		let _formState = {
+		const _state =
+			data?.state == "Delhi"
+				? "National Capital Territory of Delhi (UT)"
+				: data?.state;
+
+		const state = findObjectByValue(statesList, _state);
+
+		let _shopDetails = {
 			shop_name: data ? data.shop_name : null,
 			shop_type_ui: data ? data.shop_type : null,
 			shop_type: data ? data.shop_type : null,
 			shop_address: data ? data.shop_address : null,
 			city: data ? data.city : null,
-			shop_address_state: data ? data.state : null,
-			state: data ? data.state : null,
+			shop_address_state: data ? state : null,
+			state: data ? _state : null,
 			pincode: data ? Number(data.pincode) : null,
 		};
 
-		let _shopType = _formState?.shop_type;
+		let _shopType = _shopDetails?.shop_type;
 
 		const shop_type = shop_types.find(
 			(option) => option.label.toLowerCase() === _shopType.toLowerCase()
 		);
 
 		if (shop_type) {
-			_formState["shop_type"] = shop_type;
+			_shopDetails["shop_type"] = shop_type;
 		} else {
-			_formState["shop_type"] = {};
+			_shopDetails["shop_type"] = {};
 		}
-
-		reset({ ..._formState });
+		setShopDetails({ ..._shopDetails });
+		reset({ ..._shopDetails });
 	}, [userData?.shopDetails]);
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
 		_finalData["shop_type"] = _finalData["shop_type"]?.value;
+		_finalData["shop_address_state"] =
+			_finalData["shop_address_state"]?.value;
 
 		delete _finalData["shop_type_ui"];
 		delete _finalData["state"];
@@ -206,7 +247,9 @@ const ShopCard = () => {
 					<GridItem key={key} colSpan={1} rowSpan={1}>
 						<Flex direction="column">
 							<Text>{label}</Text>
-							<Text fontWeight="semibold">{watcher[key]}</Text>
+							<Text fontWeight="semibold">
+								{shopDetails[key]}
+							</Text>
 						</Flex>
 					</GridItem>
 				))}
