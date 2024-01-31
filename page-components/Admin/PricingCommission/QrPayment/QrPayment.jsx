@@ -155,9 +155,10 @@ const QrPayment = () => {
 		},
 		{
 			name: "note",
-			label: "Note:",
+			label: "Warning:",
 			parameter_type_id: ParamType.LABEL,
-			value: "With this price setting, you will lose money on every QR E-value load within the network. If you want to avoid losses, please set a pricing greater than 2.36. If you are comfortable with the losses, please click on ‘Save’. Otherwise, define a pricing greater than 2.36",
+			value: "With this price setting, you will lose money on every QR Payment within the network. If you want to avoid losses, please set a pricing greater than 2.36. If you are comfortable with the losses, please click on ‘Save’. Otherwise, define a pricing greater than 2.36",
+			labelStyle: { color: "error" },
 			is_inactive: watcher["actual_pricing"]
 				? !(watcher["actual_pricing"] < 2.36)
 				: true,
