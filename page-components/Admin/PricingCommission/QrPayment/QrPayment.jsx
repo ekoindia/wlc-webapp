@@ -225,7 +225,7 @@ const QrPayment = () => {
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
-				interaction_type_id: 737,
+				interaction_type_id: 758,
 				operation: OPERATION.SUBMIT,
 				..._finalData,
 			},
