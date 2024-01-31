@@ -52,7 +52,7 @@ export const product_slug_map = {
 		hide: false,
 	},
 	"optional-verification": {
-		label: "Optional Verification",
+		label: "Account Verification",
 		desc: "Change Configuration for Recipient Bank Account Verification process",
 		icon: "playlist-add-check",
 		comp: "OptionalVerification",
