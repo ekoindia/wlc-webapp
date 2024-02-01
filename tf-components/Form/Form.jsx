@@ -33,6 +33,7 @@ const Form = ({
 					{
 						name,
 						label,
+						labelStyle,
 						required = true,
 						value,
 						disabled,
@@ -75,11 +76,16 @@ const Form = ({
 							return (
 								<div>
 									{label ? (
-										<InputLabel required={required}>
+										<InputLabel
+											required={required}
+											{...labelStyle}
+										>
 											{label}
 										</InputLabel>
 									) : null}
-									<Text fontSize="sm">{value}</Text>
+									<Text fontSize={{ base: "xs", md: "sm" }}>
+										{value}
+									</Text>
 								</div>
 							);
 						case ParamType.NUMERIC:
@@ -98,6 +104,7 @@ const Form = ({
 										type="number"
 										fontSize="sm"
 										disabled={disabled}
+										labelStyle={labelStyle}
 										{...rest}
 										{...register(name, {
 											..._validations,
@@ -146,6 +153,7 @@ const Form = ({
 													onChange,
 													required,
 													disabled,
+													labelStyle,
 												}}
 												{...rest}
 											/>
@@ -194,6 +202,7 @@ const Form = ({
 													onChange,
 													required,
 													disabled,
+													labelStyle,
 												}}
 												{...rest}
 											/>
@@ -246,6 +255,7 @@ const Form = ({
 																multiSelectRenderer,
 															required,
 															isMulti: true,
+															labelStyle,
 														}}
 														{...rest}
 													/>
@@ -294,6 +304,7 @@ const Form = ({
 															onChange,
 															options:
 																list_elements,
+															labelStyle,
 														}}
 														{...rest}
 													/>
@@ -342,6 +353,7 @@ const Form = ({
 																required,
 																options:
 																	list_elements,
+																labelStyle,
 															}}
 															{...rest}
 														/>
@@ -394,6 +406,7 @@ const Form = ({
 															value,
 															disabled,
 															onChange,
+															labelStyle,
 														}}
 														{...rest}
 													/>
@@ -433,6 +446,7 @@ const Form = ({
 											type="text"
 											fontSize="sm"
 											disabled={disabled}
+											labelStyle={labelStyle}
 											{...rest}
 											{...register(name, {
 												..._validations,
