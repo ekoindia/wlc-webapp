@@ -128,18 +128,11 @@ const ShopCard = () => {
 	};
 
 	useEffect(() => {
-		const _shopTypes = JSON.parse(localStorage.getItem("oth-shop-types"));
-		const _stateList = JSON.parse(localStorage.getItem("oth-state-list"));
-
-		if (_shopTypes?.length > 0) {
-			setShopTypes(_shopTypes);
-		} else {
+		if (!shopTypes?.length) {
 			fetchShopTypes();
 		}
 
-		if (_stateList?.length > 0) {
-			setStateList(_stateList);
-		} else {
+		if (!stateList?.length) {
 			fetchStateList();
 		}
 	}, []);
