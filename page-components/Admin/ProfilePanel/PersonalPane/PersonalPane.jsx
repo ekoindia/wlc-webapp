@@ -47,11 +47,7 @@ const PersonalPane = ({ data }) => {
 	};
 
 	useEffect(() => {
-		const _shopTypes = JSON.parse(localStorage.getItem("oth-shop-types"));
-
-		if (_shopTypes?.length > 0) {
-			setShopTypes(_shopTypes);
-		} else {
+		if (!shopTypes?.length) {
 			fetchShopTypes();
 		}
 	}, []);

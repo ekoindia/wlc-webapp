@@ -84,7 +84,9 @@ thirteenYearsAgo.setFullYear(currentDate.getFullYear() - 13);
  * @example	`<UpdatePersonalInfo></UpdatePersonalInfo>`
  */
 const UpdatePersonalInfo = () => {
-	const [agentData, setAgentData] = useState();
+	const [agentData, setAgentData] = useLocalStorage(
+		"oth_last_selected_agent"
+	);
 	const [shopTypes, setShopTypes] = useLocalStorage("oth-shop-types");
 	const [inPreviewMode, setInPreviewMode] = useState(false);
 	const [previewDataList, setPreviewDataList] = useState();
@@ -120,19 +122,11 @@ const UpdatePersonalInfo = () => {
 	};
 
 	useEffect(() => {
-		const _shopTypes = JSON.parse(localStorage.getItem("oth-shop-types"));
-
-		if (_shopTypes?.length > 0) {
-			setShopTypes(_shopTypes);
-		} else {
+		if (!shopTypes?.length) {
 			fetchShopTypes();
 		}
-		const storedData = JSON.parse(
-			localStorage.getItem("oth_last_selected_agent")
-		);
-		if (storedData) {
-			setAgentData(storedData);
-		} else {
+
+		if (!agentData) {
 			fetchAgentDataViaCellNumber();
 		}
 	}, []);
