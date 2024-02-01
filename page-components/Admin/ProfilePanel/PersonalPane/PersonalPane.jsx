@@ -57,7 +57,7 @@ const PersonalPane = ({ data }) => {
 			const _label = getLabel(shopTypes, data?.shop_type);
 			setShopTypeLabel(_label);
 		}
-	}, [shopTypes]);
+	}, [data, shopTypes]);
 
 	const personalDataList = [
 		{
