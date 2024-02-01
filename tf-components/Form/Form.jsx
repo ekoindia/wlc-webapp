@@ -74,7 +74,7 @@ const Form = ({
 					switch (parameter_type_id) {
 						case ParamType.LABEL:
 							return (
-								<div>
+								<div key={`${name}-${label}-${index}`}>
 									{label ? (
 										<InputLabel
 											required={required}
