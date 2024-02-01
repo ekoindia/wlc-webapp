@@ -11,6 +11,7 @@ import { Button, Calenders, Headings, Input, Radio, Select } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import useLocalStorage from "hooks/useLocalStorage";
 import { formatDate } from "libs";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -83,8 +84,10 @@ thirteenYearsAgo.setFullYear(currentDate.getFullYear() - 13);
  * @example	`<UpdatePersonalInfo></UpdatePersonalInfo>`
  */
 const UpdatePersonalInfo = () => {
-	const [agentData, setAgentData] = useState();
-	const [shopTypesData, setShopTypesData] = useState();
+	const [agentData, setAgentData] = useLocalStorage(
+		"oth_last_selected_agent"
+	);
+	const [shopTypes, setShopTypes] = useLocalStorage("oth-shop-types");
 	const [inPreviewMode, setInPreviewMode] = useState(false);
 	const [previewDataList, setPreviewDataList] = useState();
 	const [finalData, setFinalData] = useState();
@@ -101,22 +104,29 @@ const UpdatePersonalInfo = () => {
 		reset,
 	} = useForm();
 
-	useEffect(() => {
-		const _shopTypesData = JSON.parse(
-			localStorage.getItem("oth-shop-types")
-		);
+	const fetchShopTypes = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: TransactionIds.SHOP_TYPE,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				if (res.status === 0) {
+					setShopTypes(res?.param_attributes.list_elements);
+				}
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
+	};
 
-		if (_shopTypesData?.length > 0) {
-			setShopTypesData(_shopTypesData);
-		} else {
+	useEffect(() => {
+		if (!shopTypes?.length) {
 			fetchShopTypes();
 		}
-		const storedData = JSON.parse(
-			localStorage.getItem("oth_last_selected_agent")
-		);
-		if (storedData) {
-			setAgentData(storedData);
-		} else {
+
+		if (!agentData) {
 			fetchAgentDataViaCellNumber();
 		}
 	}, []);
@@ -135,7 +145,9 @@ const UpdatePersonalInfo = () => {
 				agentData?.personal_information?.shop_type ??
 				agentData?.profile?.shop_type;
 
-			const shop_type = findObjectByValue(shopTypesData, shop_type_value);
+			const shop_type =
+				shopTypes?.length > 0 &&
+				findObjectByValue(shopTypes, shop_type_value);
 
 			const dob =
 				agentData?.personal_information?.dob ??
@@ -154,7 +166,7 @@ const UpdatePersonalInfo = () => {
 
 			reset({ ...defaultValues });
 		}
-	}, [agentData]);
+	}, [agentData, shopTypes]);
 
 	const handleFormPreview = (previewData) => {
 		const keysToFlatten = ["shop_type", "marital_status"];
@@ -175,7 +187,7 @@ const UpdatePersonalInfo = () => {
 					["value"]:
 						_previewDataObj.key !== "shop_type"
 							? previewData[key]
-							: shopTypesData?.find(
+							: shopTypes?.find(
 									(item) => item.value == previewData[key]
 							  )?.label,
 				};
@@ -183,23 +195,6 @@ const UpdatePersonalInfo = () => {
 			}
 		});
 		setPreviewDataList(_previewData);
-	};
-
-	const fetchShopTypes = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: {
-				interaction_type_id: TransactionIds.SHOP_TYPE,
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				if (res.status === 0) {
-					setShopTypesData(res?.param_attributes.list_elements);
-				}
-			})
-			.catch((err) => {
-				console.error("err", err);
-			});
 	};
 
 	const handleFormSubmit = () => {
@@ -517,7 +512,7 @@ const UpdatePersonalInfo = () => {
 													<Select
 														label="Shop Type"
 														value={value}
-														options={shopTypesData}
+														options={shopTypes}
 														onChange={onChange}
 														required
 													/>

@@ -8,57 +8,14 @@ import {
 } from "@chakra-ui/react";
 import { Button, Modal } from "components";
 import { Endpoints, ParamType, TransactionIds } from "constants";
-import { useUser } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
+import { useUser } from "contexts";
+import { fetcher } from "helpers";
+import useLocalStorage from "hooks/useLocalStorage";
 import useRefreshToken from "hooks/useRefreshToken";
 import { WidgetBase } from "page-components/Home";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
-
-/**
- * Array containing objects representing various types of shops.
- * @type {Array<{
- *     label: string,
- *     value: number
- * }>}
- */
-const shop_types = [
-	{ label: "Kirana", value: 1 },
-	{ label: "Medical", value: 2 },
-	{ label: "Individual", value: 3 },
-	{ label: "Money Transfer Agent", value: 4 },
-	{ label: "Tour & Travel Agent", value: 5 },
-	{ label: "Mobile & Accessories", value: 6 },
-	{ label: "Grocery & Kirana Store", value: 7 },
-	{ label: "Chemist & Pharmacy", value: 8 },
-	{ label: "Automobile Dealer", value: 9 },
-	{ label: "Boutique", value: 10 },
-	{ label: "Computer Center & Cyber Cafe", value: 11 },
-	{ label: "Courier Services", value: 12 },
-	{ label: "Electrical Store", value: 13 },
-	{ label: "Electronic & Home Appliances", value: 14 },
-	{ label: "Footwear", value: 15 },
-	{ label: "Forex & Money Exchanger", value: 16 },
-	{ label: "Game Parlour", value: 17 },
-	{ label: "Garment & Apparel", value: 18 },
-	{ label: "Gift & Toys", value: 19 },
-	{ label: "Hardware", value: 20 },
-	{ label: "Insurance Advisor", value: 21 },
-	{ label: "Newspaper Stall", value: 22 },
-	{ label: "Opticial & Optical Store", value: 23 },
-	{ label: "Photo Studio", value: 24 },
-	{ label: "Photostat", value: 25 },
-	{ label: "Property Dealer", value: 26 },
-	{ label: "Repair Services", value: 27 },
-	{ label: "Restaurant", value: 28 },
-	{ label: "Salon & Beauty Parlour", value: 29 },
-	{ label: "Sport Goods", value: 30 },
-	{ label: "Stationary & Books", value: 31 },
-	{ label: "Supermarket", value: 32 },
-	{ label: "Tailor", value: 33 },
-	{ label: "Vegetable Store", value: 34 },
-];
 
 const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
 
@@ -75,7 +32,8 @@ const ShopCard = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { generateNewToken } = useRefreshToken();
 	const [shopDetails, setShopDetails] = useState({});
-	const [statesList, setStatesList] = useState([]);
+	const [stateList, setStateList] = useLocalStorage("oth-state-list");
+	const [shopTypes, setShopTypes] = useLocalStorage("oth-shop-types");
 
 	const {
 		handleSubmit,
@@ -102,7 +60,7 @@ const ShopCard = () => {
 			name: "shop_type",
 			label: "Shop Type",
 			parameter_type_id: ParamType.LIST,
-			list_elements: shop_types,
+			list_elements: shopTypes,
 		},
 		{
 			key: "shop_address",
@@ -120,7 +78,7 @@ const ShopCard = () => {
 			name: "shop_address_state",
 			label: "State",
 			parameter_type_id: ParamType.LIST,
-			list_elements: statesList,
+			list_elements: stateList,
 		},
 		{
 			key: "pincode",
@@ -135,7 +93,7 @@ const ShopCard = () => {
 		},
 	];
 
-	const fetchStatesList = () => {
+	const fetchStateList = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: TransactionIds.STATE_TYPE,
@@ -144,7 +102,24 @@ const ShopCard = () => {
 		})
 			.then((res) => {
 				if (res.status === 0) {
-					setStatesList(res?.param_attributes.list_elements);
+					setStateList(res?.param_attributes.list_elements);
+				}
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
+	};
+
+	const fetchShopTypes = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: TransactionIds.SHOP_TYPE,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				if (res.status === 0) {
+					setShopTypes(res?.param_attributes.list_elements);
 				}
 			})
 			.catch((err) => {
@@ -153,7 +128,16 @@ const ShopCard = () => {
 	};
 
 	useEffect(() => {
-		fetchStatesList();
+		if (!shopTypes?.length) {
+			fetchShopTypes();
+		}
+
+		if (!stateList?.length) {
+			fetchStateList();
+		}
+	}, []);
+
+	useEffect(() => {
 		const data = userData?.shopDetails;
 
 		const _state =
@@ -161,12 +145,18 @@ const ShopCard = () => {
 				? "National Capital Territory of Delhi (UT)"
 				: data?.state;
 
-		const state = findObjectByValue(statesList, _state);
+		const _shopType = data?.shop_type;
+
+		const state =
+			stateList?.length > 0 && findObjectByValue(stateList, _state);
+
+		const shopType =
+			shopTypes?.length > 0 && findObjectByValue(shopTypes, _shopType);
 
 		let _shopDetails = {
 			shop_name: data ? data.shop_name : null,
-			shop_type_ui: data ? data.shop_type : null,
-			shop_type: data ? data.shop_type : null,
+			shop_type_ui: data ? shopType?.label : null,
+			shop_type: data ? shopType : {},
 			shop_address: data ? data.shop_address : null,
 			city: data ? data.city : null,
 			shop_address_state: data ? state : null,
@@ -174,20 +164,9 @@ const ShopCard = () => {
 			pincode: data ? Number(data.pincode) : null,
 		};
 
-		let _shopType = _shopDetails?.shop_type;
-
-		const shop_type = shop_types.find(
-			(option) => option.label.toLowerCase() === _shopType.toLowerCase()
-		);
-
-		if (shop_type) {
-			_shopDetails["shop_type"] = shop_type;
-		} else {
-			_shopDetails["shop_type"] = {};
-		}
 		setShopDetails({ ..._shopDetails });
 		reset({ ..._shopDetails });
-	}, [userData?.shopDetails]);
+	}, [userData?.shopDetails, shopTypes, stateList]);
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
