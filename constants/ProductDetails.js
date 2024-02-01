@@ -172,6 +172,7 @@ export const products = {
 		serviceCode: 727,
 	},
 	QR_PAYMENT: {
+		uriSegment: "qr",
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "1",

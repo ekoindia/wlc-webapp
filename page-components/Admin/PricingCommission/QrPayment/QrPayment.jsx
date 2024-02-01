@@ -51,7 +51,7 @@ const getStatus = (status) => {
 };
 
 const QrPayment = () => {
-	const { DEFAULT } = products.QR_PAYMENT;
+	const { DEFAULT, uriSegment } = products.QR_PAYMENT;
 	const { PERCENT, FIXED } =
 		productPricingCommissionValidationConfig.QR_PAYMENT;
 
@@ -224,23 +224,29 @@ const QrPayment = () => {
 		}
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
+				"tf-req-method": "POST",
+			},
 			body: {
-				interaction_type_id: 758,
+				operation_type: watcher.operation_type,
 				operation: OPERATION.SUBMIT,
 				..._finalData,
 			},
 			token: accessToken,
+			generateNewToken,
 		})
 			.then((res) => {
 				toast({
 					title: res.message,
 					status: getStatus(res.status),
-					duration: 5000,
+					duration: 6000,
 					isClosable: true,
 				});
 			})
-			.catch((err) => {
-				console.error("error", err);
+			.catch((error) => {
+				console.error("📡Error:", error);
 			});
 	};
 

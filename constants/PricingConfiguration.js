@@ -145,7 +145,7 @@ export const product_slug_map = {
 		comp: "QrPayment",
 		icon: "qrcode",
 		slug: "qr-payment",
-		hide: true,
+		hide: false,
 	},
 };
 
