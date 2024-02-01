@@ -12,6 +12,7 @@ const useDailyCacheState = (key, initialValue) => {
 
 	// Set a timer to update the date/time every day at midnight.
 	// The timer triggers after the amount time left for the day to end.
+	// Eg: If the time is 23:00:00, the timer will trigger after 1 hour.
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setDt(new Date());
