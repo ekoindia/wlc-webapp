@@ -141,7 +141,7 @@ export const product_slug_map = {
 	"qr-payment": {
 		label: "QR Payment",
 		desc: "Set Agent Pricing for QR Payment services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		// note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "QrPayment",
 		icon: "qrcode",
 		slug: "qr-payment",
