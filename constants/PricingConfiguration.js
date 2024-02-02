@@ -118,7 +118,7 @@ export const product_slug_map = {
 		comp: "UpiMoneyTransfer",
 		icon: "upi",
 		slug: "upi-money-transfer",
-		hide: true,
+		hide: false,
 	},
 	"upi-fund-transfer": {
 		label: "UPI NeoBank Payments",
@@ -127,7 +127,7 @@ export const product_slug_map = {
 		comp: "UpiFundTransfer",
 		icon: "upi",
 		slug: "upi-fund-transfer",
-		hide: true,
+		hide: false,
 	},
 	"validate-upi-id": {
 		label: "UPI ID Verification",
@@ -136,7 +136,7 @@ export const product_slug_map = {
 		comp: "ValidateUpiId",
 		icon: "upi",
 		slug: "validate-upi-id",
-		hide: true,
+		hide: false,
 	},
 	"qr-payment": {
 		label: "QR Payment",
