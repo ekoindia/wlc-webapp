@@ -4,81 +4,75 @@ import { UserTypeLabel } from "constants";
 import { useUser } from "contexts/UserContext";
 import { useEffect, useState } from "react";
 
+const profile_percent_parameter_list = [
+	"shop_name",
+	"shop_type",
+	"shop_address",
+	"city",
+	"state",
+	"pincode",
+	"gender",
+	"dob",
+	"qualification",
+	"marital_status",
+];
+
+const thresholds = [40, 60];
+
 /**
- * A <ProfileWidget> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<ProfileWidget></ProfileWidget>` TODO: Fix example
+ * Returns a style object based on the given percent.
+ * @param {number} percent - The percent to base the style on.
+ * @returns {Object} The style object.
+ */
+const getStyle = (percent) => {
+	if (percent >= thresholds[1]) {
+		return { clr: "success", boxShadow: "0px 0px 6px #00C34140" };
+	} else if (percent >= thresholds[0] && percent <= thresholds[1]) {
+		return { clr: "highlight", boxShadow: "0px 0px 6px #FFD93B40" };
+	} else if (percent <= thresholds[0]) {
+		return { clr: "error", boxShadow: "0px 0px 6px #FF408140" };
+	} else {
+		return { clr: "none", boxShadow: "none" };
+	}
+};
+
+/**
+ * Formats the given value into a comma-separated string.
+ * @param {Array|string} value - The value to format.
+ * @returns {string} The formatted string.
+ */
+const formatToCommaSeparated = (value) => {
+	if (!value) return "";
+	return Array.isArray(value)
+		? value.filter(Boolean).join(", ")
+		: (value ?? "").replace(/\s*,\s*/g, ", ").replace(/, $/, "");
+};
+
+/**
+ * A ProfileWidget page-component
  */
 const ProfileWidget = () => {
 	const { userData } = useUser();
 	const [percent, setPercent] = useState(0);
 	const data = userData.userDetails;
-	//to calculate percentage completion of profile 👇
-	const shopData = userData.shopDetails;
-	const personalData = userData.personalDetails;
+
+	let _alternateMobile = formatToCommaSeparated(data?.alternate_mobiles);
 
 	useEffect(() => {
-		let count = 0;
-		const percentageData = { ...shopData, ...personalData };
-		const parameterList = [
-			"shop_name",
-			"shop_type",
-			"shop_address",
-			"city",
-			"state",
-			"pincode",
-			"gender",
-			"dob",
-			"qualification",
-			"marital_status",
-		];
-		parameterList.forEach((item) => {
-			if (percentageData[item] !== "") {
-				count += 1;
-			}
-		});
-		const percentage = Math.floor((count / parameterList.length) * 100);
+		const { shopDetails, personalDetails } = userData;
+		const percentageData = { ...shopDetails, ...personalDetails };
+
+		const count = profile_percent_parameter_list.filter(
+			(item) => percentageData[item] !== ""
+		).length;
+		const percentage = Math.floor(
+			(count / profile_percent_parameter_list.length) * 100
+		);
+
 		setPercent(percentage);
-	}, [shopData, personalData]);
+	}, [userData]);
 
-	const thresholds = [40, 60];
-	const styleObj = {
-		bg:
-			percent >= thresholds[1]
-				? "success"
-				: percent >= thresholds[0] && percent <= thresholds[1]
-				? "highlight"
-				: percent <= thresholds[0]
-				? "error"
-				: null,
-		color:
-			percent >= thresholds[1]
-				? "success"
-				: percent >= thresholds[0] && percent <= thresholds[1]
-				? "highlight"
-				: percent <= thresholds[0]
-				? "error"
-				: null,
-		boxShadow:
-			percent >= thresholds[1]
-				? "0px 0px 6px #00C34140"
-				: percent >= thresholds[0] && percent <= thresholds[1]
-				? "0px 0px 6px #FFD93B40"
-				: percent <= thresholds[0]
-				? "0px 0px 6px #FF408140"
-				: null,
-	};
-
-	// const onEditClick = () => {
-	// 	console.log("clicked");
-	// };
-
-	// const onChangeBtnClick = () => {
-	// 	console.log("clicked");
-	// };
+	const { clr, boxShadow } = getStyle(percent);
 
 	return (
 		<Box
@@ -97,7 +91,6 @@ const ProfileWidget = () => {
 				}}
 				borderRadius="10px"
 				background="url('./bg.svg')"
-				// background="url('./bg.svg'), linear-gradient(to bottom, #11299e, #09154f)"
 				backgroundRepeat="no-repeat"
 				backgroundSize="cover"
 				backgroundPosition="bottom"
@@ -133,11 +126,10 @@ const ProfileWidget = () => {
 								size="24px"
 								color="highlight"
 							/>
+
 							<Text>
 								{data?.mobile}
-								{data?.alternate_mobiles?.length > 0
-									? ", " + data.alternate_mobiles.join(", ")
-									: null}
+								{_alternateMobile && `, ${_alternateMobile}`}
 							</Text>
 						</Flex>
 					</Flex>
@@ -164,15 +156,12 @@ const ProfileWidget = () => {
 							<Flex
 								w={`${percent}%`}
 								h="100%"
-								bg={styleObj.bg}
+								bg={clr}
 								borderRadius="30px"
-								boxShadow={styleObj.boxShadow}
+								boxShadow={boxShadow}
 							></Flex>
 						</Flex>
-						<Text
-							color={styleObj.color}
-							fontSize={{ base: "16px" }}
-						>
+						<Text color={clr} fontSize={{ base: "16px" }}>
 							{percent}&#37;
 						</Text>
 					</Flex>
