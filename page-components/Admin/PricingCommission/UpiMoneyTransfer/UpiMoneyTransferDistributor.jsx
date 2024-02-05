@@ -1,6 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { Endpoints, ParamType, products } from "constants";
+import { Endpoints, ParamType, products, TransactionTypes } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -258,7 +258,8 @@ const UpiMoneyTransferDistributor = () => {
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
-				interaction_type_id: 754,
+				interaction_type_id:
+					TransactionTypes.SET_COMMISSION_FOR_DISTRIBUTORS,
 				service_code: serviceCode,
 				communication: 1,
 				..._finalData,
