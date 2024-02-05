@@ -1,6 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { Endpoints, ParamType, products } from "constants";
+import { Endpoints, ParamType, products, TransactionTypes } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -29,8 +29,18 @@ const _multiselectRenderer = {
 };
 
 const pricing_type_list = [
-	{ value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+	{
+		id: "percentage",
+		value: PRICING_TYPE.PERCENT,
+		label: "Percentage (%)",
+		isDisabled: false,
+	},
+	{
+		id: "fixed",
+		value: PRICING_TYPE.FIXED,
+		label: "Fixed (₹)",
+		isDisabled: false,
+	},
 ];
 
 const UpiMoneyTransferDistributor = () => {
@@ -60,8 +70,8 @@ const UpiMoneyTransferDistributor = () => {
 	const { generateNewToken } = useRefreshToken();
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
 	const [validation, setValidation] = useState({ min: null, max: null });
-	console.log("[UpiMTD] validation", validation);
 
 	let prefix = "";
 	let suffix = "";
@@ -105,7 +115,7 @@ const UpiMoneyTransferDistributor = () => {
 			name: "pricing_type",
 			label: `Select Commission Type`,
 			parameter_type_id: ParamType.LIST,
-			list_elements: pricing_type_list,
+			list_elements: pricingTypeList,
 			// defaultValue: PRICING_TYPE.PERCENT,
 		},
 		{
@@ -149,6 +159,38 @@ const UpiMoneyTransferDistributor = () => {
 		setSlabOptions(list);
 	}, []);
 
+	// This useEffect hook updates the pricing type list based on slab selection.
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		if (watcher?.select?.value) {
+			const _validations =
+				slabs[+watcher?.select?.value]?.validation?.RETAILER;
+			let anyDisabled = false;
+
+			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+				const _validation = _validations[_typeObj.id];
+				const isDisabled = !_validation;
+				if (isDisabled) anyDisabled = true;
+				return { ..._typeObj, isDisabled };
+			});
+
+			setPricingTypeList(_pricingTypeList);
+
+			// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+			if (anyDisabled) {
+				const _firstNonDisabled = _pricingTypeList.find(
+					(item) => !item.isDisabled
+				);
+				if (_firstNonDisabled) {
+					watcher["pricing_type"] = _firstNonDisabled.value;
+				}
+			}
+
+			reset({ ...watcher });
+		}
+	}, [watcher?.select?.value]);
+
+	// This useEffect hook updates the validation state based on the selected slab and pricing type.
 	useEffect(() => {
 		const _pricingType =
 			watcher.pricing_type === PRICING_TYPE.PERCENT
@@ -157,16 +199,17 @@ const UpiMoneyTransferDistributor = () => {
 				? "fixed"
 				: null;
 
-		let _min, _max;
+		const _slab = +watcher?.select?.value;
 
-		if (watcher?.select?.value) {
-			let _validation = slabs[+watcher?.select?.value]?.validation;
-			_min = _validation?.[_pricingType]?.RETAILER?.min;
-			_max = _validation?.[_pricingType]?.RETAILER?.max;
+		// If a slab and pricing type are selected, update the validation state
+		if (_slab != null && _pricingType != null) {
+			const _validation = slabs[_slab]?.validation;
+			const _min = _validation?.RETAILER?.[_pricingType]?.min;
+			const _max = _validation?.RETAILER?.[_pricingType]?.max;
+
+			setValidation({ min: _min, max: _max });
 		}
-
-		setValidation({ min: _min, max: _max });
-	}, [watcher?.select?.value, watcher?.pricing_type]);
+	}, [watcher?.pricing_type, watcher?.select?.value]);
 
 	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -215,7 +258,8 @@ const UpiMoneyTransferDistributor = () => {
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
-				interaction_type_id: 754,
+				interaction_type_id:
+					TransactionTypes.SET_COMMISSION_FOR_DISTRIBUTORS,
 				service_code: serviceCode,
 				communication: 1,
 				..._finalData,
