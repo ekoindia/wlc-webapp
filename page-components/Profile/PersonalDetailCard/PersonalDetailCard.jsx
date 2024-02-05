@@ -148,6 +148,8 @@ const PersonalDetailCard = () => {
 			delete _finalData[keyToUiKeyMap[key]];
 		});
 
+		_finalData["dob"] = parseInt(formatDate(_finalData["dob"], "ddMMyyyy"));
+
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
