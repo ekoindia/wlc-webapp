@@ -88,8 +88,11 @@ const PersonalDetailCard = () => {
 			key: "dob",
 			name: "dob",
 			label: "Date of Birth",
-			parameter_type_id: ParamType.FROM_DATE,
+			parameter_type_id: watcher["dob"]
+				? ParamType.TEXT
+				: ParamType.FROM_DATE,
 			maxDate: today,
+			disabled: watcher["dob"] ? true : false,
 		},
 		{
 			key: "qualification_ui",
