@@ -37,15 +37,13 @@ const getStyle = (percent) => {
 };
 
 /**
- * Formats the given value into a comma-separated string.
- * @param {Array|string} value - The value to format.
- * @returns {string} The formatted string.
+ * Formats the given array of objects into a comma-separated string of numbers.
+ * @param {Array<{ number: string, verified: number }>} numberList - The array of objects to format. Each object should have a 'number' property.
+ * @returns {string} A string of numbers separated by commas. If the input is not an array, an empty string is returned.
  */
-const formatToCommaSeparated = (value) => {
-	if (!value) return "";
-	return Array.isArray(value)
-		? value.filter(Boolean).join(", ")
-		: (value ?? "").replace(/\s*,\s*/g, ", ").replace(/, $/, "");
+const formatToCommaSeparated = (numberList) => {
+	if (!Array.isArray(numberList)) return "";
+	return numberList.map((item) => item.number).join(", ");
 };
 
 /**
