@@ -35,7 +35,7 @@ export const product_slug_map = {
 		hide: false,
 	},
 	aeps: {
-		label: "AePS",
+		label: "AePS Cashout",
 		desc: "Set Agent Commissions for AePS Cashout services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "cashout",
