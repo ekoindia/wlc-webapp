@@ -60,6 +60,7 @@ const Radio = ({
 							size="lg"
 							key={item[renderer.value]}
 							value={item[renderer.value]}
+							isDisabled={item.isDisabled}
 						>
 							<Text
 								fontSize="sm"
