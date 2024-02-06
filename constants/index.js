@@ -13,6 +13,7 @@ export { colorThemes } from "./colorThemes";
 export { oldIcons } from "./connectIcons";
 export { Endpoints } from "./EndPoints";
 export { TransactionIds, TransactionTypes } from "./EpsTransactions";
+export { isFeatureEnabled } from "./FeatureToggle";
 export { FrontendUrls } from "./FrontendUrls";
 export {
 	IconLibrary,

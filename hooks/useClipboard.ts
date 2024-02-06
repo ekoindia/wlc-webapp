@@ -1,6 +1,16 @@
 import { useState } from "react";
 type CopyState = "READY" | "SUCCESS" | Error;
 
+/**
+ * useClipboard - A hook to copy text to the clipboard
+ * @param param0
+ * @example
+ * const { copy, state } = useClipboard();
+ * copy("Text to copy");
+ * if (state === "SUCCESS") {
+ *  alert("Copied to clipboard!");
+ * }
+ */
 const useClipboard = ({ delay = 2500 } = {}) => {
 	const [state, setState] = useState<CopyState>("READY");
 	const [copyTimeout, setCopyTimeout] =
