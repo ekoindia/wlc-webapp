@@ -45,11 +45,14 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 	const logoFontSize =
 		size === "lg" ? { base: "xl", md: "3xl" } : { base: "lg", md: "xl" };
 
+	// Get org-logo and replace "https://files.eko.in/" with "_files/"
+	const orgLogo = (orgDetail?.logo || "").replace(
+		"https://files.eko.co.in/",
+		"_files/"
+	);
+
 	// Show only Text Logo...
-	if (
-		(!(orgDetail && orgDetail.logo) || imageState === "failed") &&
-		orgDetail.app_name
-	) {
+	if ((!orgLogo || imageState === "failed") && orgDetail.app_name) {
 		return (
 			<Center
 				maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
@@ -76,7 +79,7 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 			opacity={imageState === "loaded" ? 1 : 0}
 		>
 			<Image
-				src={orgDetail.logo || fallbackLogo}
+				src={orgLogo || fallbackLogo}
 				// fallbackSrc={fallbackLogo}
 				alt={orgDetail.app_name + " logo"}
 				maxW={{ base: "10rem", md: "20rem", "2xl": "30rem" }}
