@@ -69,7 +69,11 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 	};
 
 	return (
-		<Flex direction="column">
+		<Flex
+			direction="column"
+			px={{ base: 5, "2xl": 7 }}
+			py={{ base: 7, "2xl": 10 }}
+		>
 			<Flex align="center">
 				<Box
 					onClick={() =>
