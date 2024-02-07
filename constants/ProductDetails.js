@@ -58,7 +58,50 @@ export const products = {
 	},
 	CREDIT_CARD_BILL_PAYMENT: {
 		uriSegment: "cc_bill_pay",
-		slabs: [{ min: 100, max: 199999 }],
+		slabs: [
+			{
+				min: 100,
+				max: 3000,
+				validation: {
+					RETAILER: {
+						fixed: { min: 3, max: 24 },
+						percentage: false,
+					},
+					DISTRIBUTOR: {
+						fixed: { min: 3, max: 24 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 3001,
+				max: 24999,
+				validation: {
+					RETAILER: {
+						fixed: { min: 3, max: 200 },
+						percentage: { min: 0.1, max: 0.8 },
+					},
+					DISTRIBUTOR: {
+						fixed: { min: 3, max: 200 },
+						percentage: { min: 0.1, max: 0.8 },
+					},
+				},
+			},
+			{
+				min: 25000,
+				max: 200000,
+				validation: {
+					RETAILER: {
+						fixed: { min: 6, max: 1600 },
+						percentage: { min: 0.03, max: 0.8 },
+					},
+					DISTRIBUTOR: {
+						fixed: { min: 6, max: 1600 },
+						percentage: { min: 0.03, max: 0.8 },
+					},
+				},
+			},
+		],
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "0",
