@@ -64,13 +64,11 @@ const ToggleCdm = () => {
 	const watcher = useWatch({
 		control,
 	});
-
 	const toast = useToast();
 	const router = useRouter();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 	const [cashDeposit, setCashDeposit] = useState(null);
-
 	const cdm_parameter_list = [
 		{
 			name: "cdm_charges",
@@ -118,7 +116,7 @@ const ToggleCdm = () => {
 		})
 			.then((res) => {
 				const _cdm_charges = res?.data?.cdm_charges;
-				reset({ otp_verification_token: _cdm_charges });
+				reset({ cdm_charges: _cdm_charges });
 				setCashDeposit(_cdm_charges);
 			})
 			.catch((err) => {
