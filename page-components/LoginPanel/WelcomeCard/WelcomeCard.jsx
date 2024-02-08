@@ -85,21 +85,27 @@ const WelcomeCard = ({ logo, header, features = [], onClick, ...rest }) => {
 						))}
 					</Flex>
 				</Flex>
-				<Flex
-					display={{ base: "flex", md: "none" }}
-					w="100%"
-					justify="flex-end"
-					pr="4"
-				>
-					{onClick !== undefined ? (
-						<IcoButton
-							iconName="arrow-forward"
-							size="md"
+				{onClick !== undefined ? (
+					<Flex
+						display={{ base: "flex", md: "none" }}
+						w="100%"
+						justify="flex-end"
+						pr="4"
+					>
+						<Flex
+							align="center"
+							gap="2.5"
 							onClick={() => onClick()}
-							boxShadow="0px 3px 10px #0000001A"
-						/>
-					) : null}
-				</Flex>
+						>
+							<Text fontWeight="semibold">Continue</Text>
+							<IcoButton
+								iconName="arrow-forward"
+								size="md"
+								boxShadow="0px 3px 10px #0000001A"
+							/>
+						</Flex>
+					</Flex>
+				) : null}
 			</Flex>
 		</Box>
 	);
