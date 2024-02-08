@@ -52,11 +52,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 	};
 
 	return (
-		<Flex
-			direction="column"
-			px={{ base: 5, "2xl": 7 }}
-			py={{ base: 7, "2xl": 10 }}
-		>
+		<Flex direction="column">
 			{/* Heading with Icon */}
 			<Flex align="center">
 				<Box onClick={() => setStep("LOGIN")} cursor="pointer">

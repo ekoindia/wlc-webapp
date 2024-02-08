@@ -146,6 +146,8 @@ const LoginPanel = () => {
 					minW={{ base: "300px", lg: "350px" }}
 					h={{ base: "100vh", lg: "auto" }}
 					boxShadow="0px 3px 20px #00000005"
+					px={{ base: 5, "2xl": 7 }}
+					py={{ base: 7, "2xl": 10 }}
 					bg="white"
 				>
 					{step === "LOGIN" && (
