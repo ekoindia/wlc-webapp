@@ -64,7 +64,7 @@ export const getCalculatorAction = ({
 			if (result) {
 				copy(result.toString());
 				toast({
-					title: "Copied: " + result,
+					title: "Result Copied: " + result,
 					status: "success",
 					duration: 2000,
 				});
