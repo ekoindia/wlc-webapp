@@ -17,6 +17,7 @@ import { UpiFundTransfer } from "./UpiFundTransfer";
 import { UpiMoneyTransfer } from "./UpiMoneyTransfer";
 import { ValidateUpiId } from "./ValidateUpiId";
 
+export { ToggleCdm } from "./ToggleCdm";
 export {
 	AadhaarPay,
 	AccountVerification,

@@ -111,6 +111,14 @@ export const product_slug_map = {
 		slug: "refund-method",
 		hide: false,
 	},
+	"cash-deposit": {
+		label: "Cash Deposit",
+		desc: "Choose the Refund Method for failed transactions within your network",
+		comp: "ToggleCdm",
+		icon: "money-deposit",
+		slug: "cash-deposit",
+		hide: false,
+	},
 	"upi-money-transfer": {
 		label: "UPI Money Transfer",
 		desc: "Set Agent Pricing/Commission for UPI Money Transfer services",
@@ -169,6 +177,7 @@ export const product_categories = {
 			"commission-frequency",
 			"refund-method",
 			"optional-verification",
+			"cash-deposit",
 		],
 	},
 	"Pricing Configuration": {
