@@ -9,12 +9,7 @@ import { useEffect, useState } from "react";
 import { WidgetBase } from "..";
 
 /**
- * A <RecentTrxnWidget> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<RecentTrxnWidget></RecentTrxnWidget>` TODO: Fix example
+ * A widget component for the home page to show a short list of recent transactions
  */
 const RecentTrxnWidget = () => {
 	const router = useRouter();

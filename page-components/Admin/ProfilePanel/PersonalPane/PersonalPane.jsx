@@ -25,11 +25,11 @@ const getLabel = (list, id) => {
  */
 const PersonalPane = ({ data }) => {
 	const [shopTypeLabel, setShopTypeLabel] = useState();
-	const [shopTypesData, setShopTypesData] = useLocalStorage("oth-shop-types");
+	const [shopTypes, setShopTypes] = useLocalStorage("oth-shop-types");
 	const router = useRouter();
 	const { accessToken } = useSession();
 
-	useEffect(() => {
+	const fetchShopTypes = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: TransactionIds.SHOP_TYPE,
@@ -38,20 +38,26 @@ const PersonalPane = ({ data }) => {
 		})
 			.then((res) => {
 				if (res.status === 0) {
-					setShopTypesData(res?.param_attributes.list_elements);
+					setShopTypes(res?.param_attributes.list_elements);
 				}
 			})
 			.catch((err) => {
 				console.error("err", err);
 			});
+	};
+
+	useEffect(() => {
+		if (!shopTypes?.length) {
+			fetchShopTypes();
+		}
 	}, []);
 
 	useEffect(() => {
-		if (shopTypesData?.length > 0) {
-			const _label = getLabel(shopTypesData, data?.shop_type);
+		if (shopTypes?.length > 0) {
+			const _label = getLabel(shopTypes, data?.shop_type);
 			setShopTypeLabel(_label);
 		}
-	}, [shopTypesData]);
+	}, [data, shopTypes]);
 
 	const personalDataList = [
 		{

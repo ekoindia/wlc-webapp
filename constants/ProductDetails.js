@@ -58,7 +58,50 @@ export const products = {
 	},
 	CREDIT_CARD_BILL_PAYMENT: {
 		uriSegment: "cc_bill_pay",
-		slabs: [{ min: 100, max: 199999 }],
+		slabs: [
+			{
+				min: 100,
+				max: 3000,
+				validation: {
+					RETAILER: {
+						fixed: { min: 3, max: 24 },
+						percentage: false,
+					},
+					DISTRIBUTOR: {
+						fixed: { min: 0, max: 24 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 3001,
+				max: 24999,
+				validation: {
+					RETAILER: {
+						fixed: { min: 3, max: 200 },
+						percentage: { min: 0.1, max: 0.8 },
+					},
+					DISTRIBUTOR: {
+						fixed: { min: 0, max: 200 },
+						percentage: { min: 0, max: 0.8 },
+					},
+				},
+			},
+			{
+				min: 25000,
+				max: 200000,
+				validation: {
+					RETAILER: {
+						fixed: { min: 6, max: 1600 },
+						percentage: { min: 0.03, max: 0.8 },
+					},
+					DISTRIBUTOR: {
+						fixed: { min: 0, max: 1600 },
+						percentage: { min: 0, max: 0.8 },
+					},
+				},
+			},
+		],
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "0",
@@ -171,6 +214,13 @@ export const products = {
 		},
 		serviceCode: 727,
 	},
+	QR_PAYMENT: {
+		uriSegment: "qr",
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "1",
+		},
+	},
 };
 
 export const productPricingCommissionValidationConfig = {
@@ -234,6 +284,10 @@ export const productPricingCommissionValidationConfig = {
 	VALIDATE_UPI_ID: {
 		FIXED: { min: 0, max: 5 },
 	},
+	QR_PAYMENT: {
+		PERCENT: { min: 0, max: 1 },
+		FIXED: { min: 0, max: 10 },
+	},
 };
 
 export const productPricingTextConfig = {
@@ -253,4 +307,5 @@ export const productPricingType = {
 	UPI_MONEY_TRANSFER: productPricingTextConfig.PRICING,
 	UPI_FUND_TRANSFER: productPricingTextConfig.PRICING,
 	VALIDATE_UPI_ID: productPricingTextConfig.PRICING,
+	QR_PAYMENT: productPricingTextConfig.PRICING,
 };

@@ -20,7 +20,6 @@ export const product_slug_map = {
 	"commission-frequency": {
 		label: "Commission Frequency",
 		desc: "Toggle between Daily/Monthly Commissions within your network",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "money-deposit",
 		comp: "CommissionFrequency",
 		slug: "commission-frequency",
@@ -36,7 +35,7 @@ export const product_slug_map = {
 		hide: false,
 	},
 	aeps: {
-		label: "AePS",
+		label: "AePS Cashout",
 		desc: "Set Agent Commissions for AePS Cashout services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "cashout",
@@ -53,7 +52,7 @@ export const product_slug_map = {
 		hide: false,
 	},
 	"optional-verification": {
-		label: "Optional Verification",
+		label: "Account Verification",
 		desc: "Change Configuration for Recipient Bank Account Verification process",
 		icon: "playlist-add-check",
 		comp: "OptionalVerification",
@@ -62,7 +61,7 @@ export const product_slug_map = {
 	},
 	"account-verification": {
 		label: "Account Verification",
-		desc: "Set Pricing for Recipient Bank Account Verification services",
+		desc: "Set Agent Pricing for Recipient Bank Account Verification services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "money-note",
 		comp: "AccountVerification",
@@ -71,7 +70,7 @@ export const product_slug_map = {
 	},
 	"credit-card-bill-payment": {
 		label: "Credit Card Bill Payment",
-		desc: "Agent Pricing for Credit Card Bill Payment services",
+		desc: "Set Agent Pricing for Credit Card Bill Payment services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "creditcard",
 		comp: "CreditCardBillPayment",
@@ -139,6 +138,14 @@ export const product_slug_map = {
 		slug: "validate-upi-id",
 		hide: true,
 	},
+	"qr-payment": {
+		label: "QR Payment",
+		desc: "Set Agent Pricing for QR Payment services",
+		comp: "QrPayment",
+		icon: "qrcode",
+		slug: "qr-payment",
+		hide: false,
+	},
 };
 
 /**
@@ -155,22 +162,31 @@ export const product_slug_map = {
  * @type {ProductCategoryMap}
  */
 export const product_categories = {
-	"Product Configuration": [
-		"commission-frequency",
-		"refund-method",
-		"optional-verification",
-	],
-	"Pricing Configuration": [
-		"money-transfer",
-		"aeps",
-		"payment-gateway",
-		"account-verification",
-		"credit-card-bill-payment",
-		"aadhaar-pay",
-		"indo-nepal-fund-transfer",
-		"airtel-cms",
-		"upi-money-transfer",
-		"upi-fund-transfer",
-		"validate-upi-id",
-	],
+	"Product Configuration": {
+		description:
+			"Manage product settings and configurations for your network.",
+		products: [
+			"commission-frequency",
+			"refund-method",
+			"optional-verification",
+		],
+	},
+	"Pricing Configuration": {
+		description:
+			"Set and adjust pricing and commissions for various services within your network.",
+		products: [
+			"money-transfer",
+			"aeps",
+			"payment-gateway",
+			"qr-payment",
+			"account-verification",
+			"credit-card-bill-payment",
+			"aadhaar-pay",
+			"indo-nepal-fund-transfer",
+			"airtel-cms",
+			"upi-money-transfer",
+			"upi-fund-transfer",
+			"validate-upi-id",
+		],
+	},
 };

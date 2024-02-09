@@ -34,6 +34,10 @@ const formatCommissionData = (data, trxn_type_prod_map) => {
 			return;
 		}
 
+		if (!(item.tx_type_id in trxn_type_prod_map)) {
+			return;
+		}
+
 		const slug = item.product
 			? item.product
 					.trim()
@@ -114,10 +118,17 @@ const formatCommissionData = (data, trxn_type_prod_map) => {
 	return newData;
 };
 
+/**
+ * Commission Provider to get the commission details for the user
+ * @param {*} param0
+ * @returns
+ */
 export const CommissionSummaryProvider = ({ children }) => {
 	const router = useRouter();
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions;
+
+	// console.log("trxn_type_prod_map:", /* interactions, */ trxn_type_prod_map);
 
 	const [fetchAttempted, setFetchAttempted] = useState(false);
 
@@ -139,6 +150,12 @@ export const CommissionSummaryProvider = ({ children }) => {
 			isAdmin ||
 			fetchAttempted
 		) {
+			return;
+		}
+
+		// If the transaction type product map is not available (from role-list),
+		// then skip fetching the commissions
+		if (!(trxn_type_prod_map && Object.keys(trxn_type_prod_map).length)) {
 			return;
 		}
 

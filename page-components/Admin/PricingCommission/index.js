@@ -11,6 +11,7 @@ import { IndoNepal } from "./IndoNepal";
 import { OptionalVerification } from "./OptionalVerification";
 import { PricingCommission } from "./PricingCommission";
 import { PricingForm } from "./PricingForm";
+import { QrPayment } from "./QrPayment";
 import { RefundMethod } from "./RefundMethod";
 import { UpiFundTransfer } from "./UpiFundTransfer";
 import { UpiMoneyTransfer } from "./UpiMoneyTransfer";
@@ -30,6 +31,7 @@ export {
 	OptionalVerification,
 	PricingCommission,
 	PricingForm,
+	QrPayment,
 	RefundMethod,
 	UpiFundTransfer,
 	UpiMoneyTransfer,
