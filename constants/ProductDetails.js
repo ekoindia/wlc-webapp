@@ -68,7 +68,7 @@ export const products = {
 						percentage: false,
 					},
 					DISTRIBUTOR: {
-						fixed: { min: 3, max: 24 },
+						fixed: { min: 0, max: 24 },
 						percentage: false,
 					},
 				},
@@ -82,8 +82,8 @@ export const products = {
 						percentage: { min: 0.1, max: 0.8 },
 					},
 					DISTRIBUTOR: {
-						fixed: { min: 3, max: 200 },
-						percentage: { min: 0.1, max: 0.8 },
+						fixed: { min: 0, max: 200 },
+						percentage: { min: 0, max: 0.8 },
 					},
 				},
 			},
@@ -96,8 +96,8 @@ export const products = {
 						percentage: { min: 0.03, max: 0.8 },
 					},
 					DISTRIBUTOR: {
-						fixed: { min: 6, max: 1600 },
-						percentage: { min: 0.03, max: 0.8 },
+						fixed: { min: 0, max: 1600 },
+						percentage: { min: 0, max: 0.8 },
 					},
 				},
 			},
