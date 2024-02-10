@@ -61,9 +61,6 @@ const CreditCardBillPaymentDistributor = () => {
 		trigger,
 	} = useForm({
 		mode: "onChange",
-		defaultValues: {
-			pricing_type: "1", //check if product details can store this
-		},
 	});
 
 	const watcher = useWatch({ control });
@@ -167,7 +164,7 @@ const CreditCardBillPaymentDistributor = () => {
 	useEffect(() => {
 		if (watcher?.select?.value) {
 			const _validations =
-				slabs[+watcher?.select?.value]?.validation?.RETAILER;
+				slabs[+watcher?.select?.value]?.validation?.DISTRIBUTOR;
 			let anyDisabled = false;
 
 			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
@@ -207,8 +204,8 @@ const CreditCardBillPaymentDistributor = () => {
 		// If a slab and pricing type are selected, update the validation state
 		if (_slab != null && _pricingType != null) {
 			const _validation = slabs[_slab]?.validation;
-			const _min = _validation?.RETAILER?.[_pricingType]?.min;
-			const _max = _validation?.RETAILER?.[_pricingType]?.max;
+			const _min = _validation?.DISTRIBUTOR?.[_pricingType]?.min;
+			const _max = _validation?.DISTRIBUTOR?.[_pricingType]?.max;
 
 			setValidation({ min: _min, max: _max });
 		}
