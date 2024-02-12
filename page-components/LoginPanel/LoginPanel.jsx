@@ -31,7 +31,13 @@ const LoginPanel = () => {
 	const { isLoggedIn } = useSession();
 
 	useEffect(() => {
-		if (number?.formatted?.length > 0) setShowWelcomeCard(false);
+		const duration = number?.formatted?.length > 0 ? 3000 : 30000;
+
+		const timer = setTimeout(() => {
+			setShowWelcomeCard(false);
+		}, duration);
+
+		return () => clearTimeout(timer);
 	}, [number?.formatted]);
 
 	// Get last login mobile number from local storage and set it as default value
@@ -54,6 +60,7 @@ const LoginPanel = () => {
 			setLastMobileFormatted(lastRoute.meta.mobile.formatted);
 			setLoginType("Mobile");
 			setStep("VERIFY_OTP");
+			setShowWelcomeCard(false);
 		} else if (lastLogin?.type !== "Google" && lastLogin?.mobile > 1) {
 			// Format mobile number in the following format: +91 123 456 7890
 			// TODO: Fix Input component so that this is not required
