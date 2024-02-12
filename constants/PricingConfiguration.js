@@ -146,6 +146,14 @@ export const product_slug_map = {
 		slug: "qr-payment",
 		hide: false,
 	},
+	cdm: {
+		label: "Cash Deposit",
+		desc: "Set Agent Pricing for CDM services",
+		comp: "Cdm",
+		icon: "money-deposit",
+		slug: "cdm",
+		hide: false,
+	},
 };
 
 /**
@@ -187,6 +195,7 @@ export const product_categories = {
 			"upi-money-transfer",
 			"upi-fund-transfer",
 			"validate-upi-id",
+			"cdm",
 		],
 	},
 };
