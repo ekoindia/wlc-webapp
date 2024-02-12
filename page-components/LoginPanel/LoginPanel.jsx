@@ -31,7 +31,7 @@ const LoginPanel = () => {
 	const { isLoggedIn } = useSession();
 
 	useEffect(() => {
-		const duration = number?.formatted?.length > 0 ? 3000 : 30000;
+		const duration = number?.formatted?.length > 0 ? 1000 : 30000;
 
 		const timer = setTimeout(() => {
 			setShowWelcomeCard(false);
