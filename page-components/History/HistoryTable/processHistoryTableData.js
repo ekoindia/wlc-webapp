@@ -8,10 +8,10 @@ import { getFirstWord, limitText } from "utils";
 export const getHistoryTableProcessedData = (data) => {
 	const processedData = data?.map((row) => {
 		row.description = getNarrationText(row);
-		if (row.amount_dr) {
+		if (row.amount_dr >= 0) {
 			row.amount = row.amount_dr;
 			row.trx_type = "DR";
-		} else if (row.amount_cr) {
+		} else if (row.amount_cr >= 0) {
 			row.amount = row.amount_cr;
 			row.trx_type = "CR";
 		}
