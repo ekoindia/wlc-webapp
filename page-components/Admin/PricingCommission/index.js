@@ -4,6 +4,7 @@ import { Aeps } from "./Aeps";
 import { AirtelCms } from "./AirtelCms";
 import { Bbps } from "./Bbps";
 import { CardPayment } from "./CardPayment";
+import { Cdm } from "./Cdm";
 import { CommissionFrequency } from "./CommissionFrequency";
 import { CreditCardBillPayment } from "./CreditCardBillPayment";
 import { Dmt } from "./Dmt";
@@ -17,7 +18,6 @@ import { UpiFundTransfer } from "./UpiFundTransfer";
 import { UpiMoneyTransfer } from "./UpiMoneyTransfer";
 import { ValidateUpiId } from "./ValidateUpiId";
 
-export { Cdm } from "./Cdm";
 export {
 	AadhaarPay,
 	AccountVerification,
@@ -25,6 +25,7 @@ export {
 	AirtelCms,
 	Bbps,
 	CardPayment,
+	Cdm,
 	CommissionFrequency,
 	CreditCardBillPayment,
 	Dmt,
