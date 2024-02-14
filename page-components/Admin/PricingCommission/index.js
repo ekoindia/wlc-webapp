@@ -13,11 +13,10 @@ import { PricingCommission } from "./PricingCommission";
 import { PricingForm } from "./PricingForm";
 import { QrPayment } from "./QrPayment";
 import { RefundMethod } from "./RefundMethod";
+import { ToggleCdm } from "./ToggleCdm";
 import { UpiFundTransfer } from "./UpiFundTransfer";
 import { UpiMoneyTransfer } from "./UpiMoneyTransfer";
 import { ValidateUpiId } from "./ValidateUpiId";
-
-export { ToggleCdm } from "./ToggleCdm";
 export {
 	AadhaarPay,
 	AccountVerification,
@@ -37,4 +36,5 @@ export {
 	UpiFundTransfer,
 	UpiMoneyTransfer,
 	ValidateUpiId,
+	ToggleCdm,
 };
