@@ -113,7 +113,7 @@ export const product_slug_map = {
 	},
 	"cash-deposit": {
 		label: "Cash Deposit",
-		desc: "Choose the Refund Method for failed transactions within your network",
+		desc: "Change Configuration for cash deposit charges within your network",
 		comp: "ToggleCdm",
 		icon: "money-deposit",
 		slug: "cash-deposit",

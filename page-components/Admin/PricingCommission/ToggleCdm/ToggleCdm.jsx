@@ -72,9 +72,15 @@ const ToggleCdm = () => {
 	const cdm_parameter_list = [
 		{
 			name: "cdm_charges",
-			label: `Agent Charges`,
+			label: `Deduct Cash Deposit charges from Agents`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: cdm_status_list,
+		},
+		{
+			name: "note",
+			label: "Info:",
+			parameter_type_id: ParamType.LABEL,
+			value: "Choose whether to deduct cash-deposit charges from the agents (Retailers, Distributors, etc) in your network. Note that if not deducting from agents, the charges will still be deducted from your account.",
 		},
 	];
 
