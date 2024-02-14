@@ -9,7 +9,7 @@ import { Divider, Flex, Stack, Text } from "@chakra-ui/react";
  */
 const SuccessRate = ({ data }) => {
 	const successRateList = [
-		{ key: "dmt", label: "DMT", value: data?.dmt },
+		{ key: "dmt", label: "Money Transfer", value: data?.dmt },
 		{ key: "bbps", label: "BBPS", value: data?.bbps },
 		{ key: "aepsCashout", label: "AePS Cashout", value: data?.aepsCashout },
 		{

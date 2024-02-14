@@ -147,6 +147,16 @@ const History = () => {
 
 	const history_filter_parameter_list = [
 		{
+			name: "product",
+			label: "Product",
+			parameter_type_id: ParamType.LIST,
+			list_elements: history_interaction_list,
+			renderer: renderer,
+			validations: {
+				required: false,
+			},
+		},
+		{
 			name: "tid",
 			label: "TID",
 			parameter_type_id: ParamType.NUMERIC,
@@ -230,6 +240,19 @@ const History = () => {
 
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
+
+		const data = {};
+		Object.keys(finalFormState).forEach((key) => {
+			if (
+				key === "product" &&
+				finalFormState[key] &&
+				finalFormState[key].tx_typeid
+			) {
+				data["tx_typeid"] = finalFormState[key].tx_typeid;
+			} else if (finalFormState[key]) {
+				data[key] = finalFormState[key];
+			}
+		});
 
 		setLoading(true);
 
@@ -354,9 +377,7 @@ const History = () => {
 		// Get all non-empty values from formState and set in finalFormState
 		const _finalFormState = {};
 		Object.keys(data).forEach((key) => {
-			if (key === "product" && data[key] && data[key].tx_typeid) {
-				_finalFormState["tx_typeid"] = data[key].tx_typeid;
-			} else if (data[key]) {
+			if (data[key]) {
 				_finalFormState[key] = data[key];
 			}
 		});
@@ -427,6 +448,15 @@ const History = () => {
 	const onReportDownload = (data) => {
 		setOpenModalId(null);
 
+		const _finalFormState = {};
+		Object.keys(data).forEach((key) => {
+			if (key === "product" && data[key] && data[key].tx_typeid) {
+				_finalFormState["tx_typeid"] = data[key].tx_typeid;
+			} else if (data[key]) {
+				_finalFormState[key] = data[key];
+			}
+		});
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-is-file-download": "1",
@@ -442,7 +472,7 @@ const History = () => {
 					account_list[0].id
 						? account_list[0]?.id
 						: null,
-				...data,
+				..._finalFormState,
 			},
 			token: accessToken,
 		})
@@ -486,19 +516,7 @@ const History = () => {
 			id: action.FILTER,
 			label: "Filter",
 			icon: "filter",
-			parameter_list: [
-				{
-					name: "product",
-					label: "Product",
-					parameter_type_id: ParamType.LIST,
-					list_elements: history_interaction_list,
-					renderer: renderer,
-					validations: {
-						required: false,
-					},
-				},
-				...history_filter_parameter_list,
-			],
+			parameter_list: history_filter_parameter_list,
 			handleSubmit: handleSubmitFilter,
 			register: registerFilter,
 			control: controlFilter,
