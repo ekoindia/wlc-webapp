@@ -36,7 +36,7 @@ const TopPanel = ({ data }) => {
 		},
 		{
 			key: "raCases",
-			label: "DMT RA Cases",
+			label: "Money Transfer RA Cases",
 			value: data?.raCases?.raCases,
 			type: "number",
 			variation: data?.raCases?.increaseOrDecrease,

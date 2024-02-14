@@ -99,7 +99,7 @@ const Login = ({
 	};
 
 	return (
-		<Flex direction="column" height="100%">
+		<Flex direction="column" h="100%">
 			<Box
 				display={{ base: "block", md: "none" }}
 				position="absolute"
