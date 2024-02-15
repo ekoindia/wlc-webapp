@@ -1,6 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { Endpoints, ParamType } from "constants";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -8,6 +8,12 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
+
+const operation_type_list = [
+	{ value: "3", label: "Whole Network" },
+	{ value: "2", label: "Distributor's Network" },
+	{ value: "1", label: "Individual Distributor/Retailer" },
+];
 
 const OPERATION = {
 	SUBMIT: 1,
@@ -46,6 +52,11 @@ const deposit_method_list = [
 	},
 ];
 
+const _multiselectRenderer = {
+	value: "user_code",
+	label: "name",
+};
+
 const bank_list_renderer = {
 	value: "bank_id",
 	label: "bank_name",
@@ -64,6 +75,7 @@ const getStatus = (status) => {
  * A Cdm page component
  */
 const Cdm = () => {
+	const { DEFAULT } = products.CDM;
 	const {
 		handleSubmit,
 		register,
@@ -80,8 +92,9 @@ const Cdm = () => {
 	} = useForm({
 		mode: "onChange",
 		defaultValues: {
-			payment_mode: DEPOSIT_METHOD.COUNTER_DEPOSIT,
-			pricing_type: PRICING_TYPE.FIXED,
+			operation_type: DEFAULT.operation_type,
+			pricing_type: DEFAULT.pricing_type,
+			payment_mode: DEFAULT.payment_mode,
 		},
 	});
 
@@ -96,6 +109,8 @@ const Cdm = () => {
 	const { generateNewToken } = useRefreshToken();
 	const [banks, setBanks] = useState([]);
 	const [validation, setValidation] = useState(null);
+	const [multiSelectLabel, setMultiSelectLabel] = useState();
+	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 
 	const { min, max } = validation ?? {};
 
@@ -117,6 +132,23 @@ const Cdm = () => {
 
 	const cdm_parameter_list = [
 		{
+			name: "operation_type",
+			label: `Set ${productPricingType.CDM} for`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: operation_type_list,
+			// defaultValue: DEFAULT.operation_type,
+		},
+		{
+			name: "CspList",
+			label: `Select ${multiSelectLabel}`,
+			parameter_type_id: ParamType.LIST,
+			is_multi: true,
+			list_elements: multiSelectOptions,
+			visible_on_param_name: "operation_type",
+			visible_on_param_value: /1|2/,
+			multiSelectRenderer: _multiselectRenderer,
+		},
+		{
 			name: "payment_mode",
 			label: "Deposit Method",
 			parameter_type_id: ParamType.LIST,
@@ -134,13 +166,13 @@ const Cdm = () => {
 		},
 		{
 			name: "pricing_type",
-			label: `Select Pricing Type`, //?
+			label: `Select ${productPricingType.CDM} Type`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: pricing_type_list,
 		},
 		{
 			name: "actual_pricing",
-			label: `Define Pricing (Exclusive of GST)`, //?
+			label: `Define ${productPricingType.CDM} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {
@@ -161,6 +193,44 @@ const Cdm = () => {
 			),
 		},
 	];
+
+	useEffect(() => {
+		if (watcher.operation_type != "3") {
+			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
+			const _tf_req_uri =
+				watcher.operation_type === "2"
+					? "/network/agent-list?usertype=1"
+					: "/network/agent-list";
+
+			fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `${_tf_req_uri}`,
+						"tf-req-method": "GET",
+					},
+					token: accessToken,
+					generateNewToken,
+				}
+			)
+				.then((res) => {
+					const _agents = res?.data?.csp_list ?? [];
+					setMultiSelectOptions(_agents);
+				})
+				.catch((error) => {
+					console.error("📡Error:", error);
+				});
+
+			let _operationTypeList = operation_type_list.filter(
+				(item) => item.value == watcher.operation_type
+			);
+			let _label =
+				_operationTypeList.length > 0 && _operationTypeList[0].label;
+
+			setMultiSelectLabel(_label);
+		}
+	}, [watcher.operation_type]);
 
 	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -209,11 +279,19 @@ const Cdm = () => {
 
 		const { bank_id } = _finalData["select"] ?? {};
 
-		delete _finalData["select"];
+		const _CspList = data?.CspList?.map(
+			(item) => item[_multiselectRenderer.value]
+		);
+
+		if (watcher.operation_type != 3) {
+			_finalData.CspList = `${_CspList}`;
+		}
+
+		delete _finalData.select;
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
-				operation_type: "3", //whole network
+				operation_type: _finalData?.operation_type,
 				interaction_type_id: 760,
 				operation: OPERATION.SUBMIT,
 				bank_id,
