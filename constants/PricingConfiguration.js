@@ -113,7 +113,7 @@ export const product_slug_map = {
 	},
 	"cash-deposit": {
 		label: "Cash Deposit",
-		desc: "Change Configuration for cash deposit charges within your network",
+		desc: "Configure Cash Deposit services within your network",
 		comp: "ToggleCdm",
 		icon: "money-deposit",
 		slug: "cash-deposit",
@@ -156,7 +156,7 @@ export const product_slug_map = {
 	},
 	cdm: {
 		label: "Cash Deposit",
-		desc: "Set Agent Pricing for CDM services",
+		desc: "Set Agent Pricing for Cash Deposit services",
 		comp: "Cdm",
 		icon: "money-deposit",
 		slug: "cdm",
