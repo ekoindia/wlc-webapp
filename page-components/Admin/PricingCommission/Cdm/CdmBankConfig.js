@@ -16,7 +16,7 @@ export const CdmBankConfig = {
 		desc: "SBI CDM without Card & Counter Deposit without Challan Slip",
 		validation: {
 			percentage: {
-				min: 0.08,
+				min: 0.09,
 				max: 2,
 			},
 			fixed: {
@@ -32,7 +32,7 @@ export const CdmBankConfig = {
 		desc: "ICICI CDM without Card & Counter Deposit without Challan Slip",
 		validation: {
 			percentage: {
-				min: 0.4,
+				min: 0.5,
 				max: 2,
 			},
 			fixed: false,
@@ -58,21 +58,12 @@ export const CdmBankConfig = {
 		desc: "Axis CDM without Card & Counter Deposit without Challan Slip",
 		validation: {
 			percentage: {
-				min: 0.4,
+				min: 0.5,
 				max: 2,
 			},
 			fixed: false,
 		},
 	},
-	// 7: {
-	// 	bank_id: 7,
-	// 	bank_label: "SBI-API",
-	// 	bank_name: "SBI-API-NEW",
-	// 	validation: {
-	// 		percentage: false, //?
-	// 		fixed: false,
-	// 	},
-	// },
 	8: {
 		bank_id: 8,
 		bank_label: "KVB Counter & CDM",
@@ -80,7 +71,7 @@ export const CdmBankConfig = {
 		desc: "KVB CDM with Card & Counter Deposit with Challan Slip",
 		validation: {
 			percentage: {
-				min: 0.5,
+				min: 0.6,
 				max: 2,
 			},
 			fixed: false,
@@ -93,7 +84,7 @@ export const CdmBankConfig = {
 		desc: "ICICI Counter Deposit with Challan Slip",
 		validation: {
 			percentage: {
-				min: 0.2,
+				min: 0.24,
 				max: 2,
 			},
 			fixed: false,
@@ -106,22 +97,12 @@ export const CdmBankConfig = {
 		desc: "IDBI Counter Deposit with Challan Slip",
 		validation: {
 			percentage: {
-				min: 0.5,
+				min: 0.6,
 				max: 2,
 			},
 			fixed: false,
 		},
 	},
-	// 21: {
-	// 	bank_id: 21,
-	// 	bank_label: "Yes Bank Turbo (Virtual)",
-	// 	bank_name: "YES Bank",
-	// desc: "Yes Bank Turbo E-value Load",
-	// 	validation: {
-	// 		percentage: false, //?
-	// 		fixed: false,
-	// 	},
-	// },
 	30: {
 		bank_id: 30,
 		bank_label: "HDFC Counter & CDM",
@@ -129,7 +110,7 @@ export const CdmBankConfig = {
 		desc: "HDFC CDM without Card & Counter Deposit without Challan Slip",
 		validation: {
 			percentage: {
-				min: 0.4,
+				min: 0.5,
 				max: 2,
 			},
 			fixed: false,
@@ -142,7 +123,7 @@ export const CdmBankConfig = {
 		desc: "PNB CDM without Card & Counter Deposit without Challan Slip",
 		validation: {
 			percentage: {
-				min: 0.05,
+				min: 0.06,
 				max: 2,
 			},
 			fixed: false,
