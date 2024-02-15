@@ -75,6 +75,7 @@ const ToggleCdm = () => {
 			label: `Deduct Cash Deposit charges from Agents`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: cdm_status_list,
+			labelStyle: { textTransform: "none" },
 		},
 		{
 			name: "note",
