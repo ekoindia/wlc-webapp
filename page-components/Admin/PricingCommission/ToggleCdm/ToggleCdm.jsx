@@ -80,7 +80,7 @@ const ToggleCdm = () => {
 			name: "note",
 			label: "Info:",
 			parameter_type_id: ParamType.LABEL,
-			value: "Choose whether to deduct cash-deposit charges from the agents (Retailers, Distributors, etc) in your network. Note that if not deducting from agents, the charges will still be deducted from your account.",
+			value: `If you select "Off", Cash Deposit Charges will be deducted from the Admin Portal for every Cash Deposit within the network. If you select "On", Deposit Charges, as set from the Pricing section, will be deducted from your network agents.`,
 		},
 	];
 
