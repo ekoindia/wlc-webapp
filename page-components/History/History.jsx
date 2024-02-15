@@ -6,13 +6,19 @@ import {
 	tableRowLimit,
 	TransactionTypes,
 } from "constants";
-import { useGlobalSearch, useMenuContext, useSession, useUser } from "contexts";
+import {
+	useAppSource,
+	useGlobalSearch,
+	useMenuContext,
+	useSession,
+	useUser,
+} from "contexts";
 import { fetcher } from "helpers";
 import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { calculateDateBefore } from "utils";
+import { ANDROID_ACTION, calculateDateBefore, doAndroidAction } from "utils";
 import { saveDataToFile } from "utils/FileSave";
 import { HistoryTable, HistoryToolbar } from ".";
 
@@ -68,6 +74,7 @@ const History = () => {
 	const [openModalId, setOpenModalId] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
 	const [minDateExport, setMinDateExport] = useState(calendar_min_date);
+	const { isAndroid } = useAppSource();
 
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions;
@@ -481,7 +488,14 @@ const History = () => {
 				const _filename = data?.file?.name || "file";
 				const _type = data?.file["content-type"];
 				const _b64 = true;
-				saveDataToFile(_blob, _filename, _type, _b64);
+				if (isAndroid) {
+					doAndroidAction(ANDROID_ACTION.SAVE_FILE_BLOB, {
+						blob: _blob,
+						name: _filename,
+					});
+				} else {
+					saveDataToFile(_blob, _filename, _type, _b64);
+				}
 			})
 			.catch((err) => {
 				console.error("[History] error: ", err);
