@@ -224,7 +224,6 @@ export const products = {
 	CDM: {
 		DEFAULT: {
 			operation_type: "3",
-			pricing_type: "1",
 			payment_mode: "1",
 		},
 	},
