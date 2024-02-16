@@ -111,6 +111,14 @@ export const product_slug_map = {
 		slug: "refund-method",
 		hide: false,
 	},
+	"cash-deposit": {
+		label: "Cash Deposit",
+		desc: "Configure Cash Deposit services within your network",
+		comp: "ToggleCdm",
+		icon: "money-deposit",
+		slug: "cash-deposit",
+		hide: false,
+	},
 	"upi-money-transfer": {
 		label: "UPI Money Transfer",
 		desc: "Set Agent Pricing/Commission for UPI Money Transfer services",
@@ -146,6 +154,14 @@ export const product_slug_map = {
 		slug: "qr-payment",
 		hide: false,
 	},
+	cdm: {
+		label: "Cash Deposit",
+		desc: "Set Agent Pricing for Cash Deposit services",
+		comp: "Cdm",
+		icon: "money-deposit",
+		slug: "cdm",
+		hide: false,
+	},
 };
 
 /**
@@ -169,6 +185,7 @@ export const product_categories = {
 			"commission-frequency",
 			"refund-method",
 			"optional-verification",
+			"cash-deposit",
 		],
 	},
 	"Pricing Configuration": {
@@ -187,6 +204,7 @@ export const product_categories = {
 			"upi-money-transfer",
 			"upi-fund-transfer",
 			"validate-upi-id",
+			"cdm",
 		],
 	},
 };

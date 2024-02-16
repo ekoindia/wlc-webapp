@@ -6,13 +6,19 @@ import {
 	tableRowLimit,
 	TransactionTypes,
 } from "constants";
-import { useGlobalSearch, useMenuContext, useSession, useUser } from "contexts";
+import {
+	useAppSource,
+	useGlobalSearch,
+	useMenuContext,
+	useSession,
+	useUser,
+} from "contexts";
 import { fetcher } from "helpers";
 import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { calculateDateBefore } from "utils";
+import { ANDROID_ACTION, calculateDateBefore, doAndroidAction } from "utils";
 import { saveDataToFile } from "utils/FileSave";
 import { HistoryTable, HistoryToolbar } from ".";
 
@@ -68,6 +74,7 @@ const History = () => {
 	const [openModalId, setOpenModalId] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
 	const [minDateExport, setMinDateExport] = useState(calendar_min_date);
+	const { isAndroid } = useAppSource();
 
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions;
@@ -146,6 +153,16 @@ const History = () => {
 	});
 
 	const history_filter_parameter_list = [
+		{
+			name: "product",
+			label: "Product",
+			parameter_type_id: ParamType.LIST,
+			list_elements: history_interaction_list,
+			renderer: renderer,
+			validations: {
+				required: false,
+			},
+		},
 		{
 			name: "tid",
 			label: "TID",
@@ -230,6 +247,19 @@ const History = () => {
 
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
+
+		const data = {};
+		Object.keys(finalFormState).forEach((key) => {
+			if (
+				key === "product" &&
+				finalFormState[key] &&
+				finalFormState[key].tx_typeid
+			) {
+				data["tx_typeid"] = finalFormState[key].tx_typeid;
+			} else if (finalFormState[key]) {
+				data[key] = finalFormState[key];
+			}
+		});
 
 		setLoading(true);
 
@@ -354,9 +384,7 @@ const History = () => {
 		// Get all non-empty values from formState and set in finalFormState
 		const _finalFormState = {};
 		Object.keys(data).forEach((key) => {
-			if (key === "product" && data[key] && data[key].tx_typeid) {
-				_finalFormState["tx_typeid"] = data[key].tx_typeid;
-			} else if (data[key]) {
+			if (data[key]) {
 				_finalFormState[key] = data[key];
 			}
 		});
@@ -427,6 +455,15 @@ const History = () => {
 	const onReportDownload = (data) => {
 		setOpenModalId(null);
 
+		const _finalFormState = {};
+		Object.keys(data).forEach((key) => {
+			if (key === "product" && data[key] && data[key].tx_typeid) {
+				_finalFormState["tx_typeid"] = data[key].tx_typeid;
+			} else if (data[key]) {
+				_finalFormState[key] = data[key];
+			}
+		});
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-is-file-download": "1",
@@ -442,7 +479,7 @@ const History = () => {
 					account_list[0].id
 						? account_list[0]?.id
 						: null,
-				...data,
+				..._finalFormState,
 			},
 			token: accessToken,
 		})
@@ -451,7 +488,14 @@ const History = () => {
 				const _filename = data?.file?.name || "file";
 				const _type = data?.file["content-type"];
 				const _b64 = true;
-				saveDataToFile(_blob, _filename, _type, _b64);
+				if (isAndroid) {
+					doAndroidAction(ANDROID_ACTION.SAVE_FILE_BLOB, {
+						blob: _blob,
+						name: _filename,
+					});
+				} else {
+					saveDataToFile(_blob, _filename, _type, _b64);
+				}
 			})
 			.catch((err) => {
 				console.error("[History] error: ", err);
@@ -486,19 +530,7 @@ const History = () => {
 			id: action.FILTER,
 			label: "Filter",
 			icon: "filter",
-			parameter_list: [
-				{
-					name: "product",
-					label: "Product",
-					parameter_type_id: ParamType.LIST,
-					list_elements: history_interaction_list,
-					renderer: renderer,
-					validations: {
-						required: false,
-					},
-				},
-				...history_filter_parameter_list,
-			],
+			parameter_list: history_filter_parameter_list,
 			handleSubmit: handleSubmitFilter,
 			register: registerFilter,
 			control: controlFilter,

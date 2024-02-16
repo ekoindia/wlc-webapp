@@ -12,6 +12,7 @@ const Select = ({
 	options = [],
 	renderer = { label: "label", value: "value" },
 	isMulti = false,
+	isClearable = true,
 	value,
 	label,
 	id,
@@ -170,6 +171,7 @@ const Select = ({
 				isMulti={isMulti}
 				styles={colorStyles}
 				isSearchable={options?.length > 15}
+				isClearable={isClearable}
 				options={options}
 				onChange={onChange}
 				placeholder={placeholder}

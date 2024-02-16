@@ -4,6 +4,7 @@ import { Aeps } from "./Aeps";
 import { AirtelCms } from "./AirtelCms";
 import { Bbps } from "./Bbps";
 import { CardPayment } from "./CardPayment";
+import { Cdm } from "./Cdm";
 import { CommissionFrequency } from "./CommissionFrequency";
 import { CreditCardBillPayment } from "./CreditCardBillPayment";
 import { Dmt } from "./Dmt";
@@ -13,10 +14,10 @@ import { PricingCommission } from "./PricingCommission";
 import { PricingForm } from "./PricingForm";
 import { QrPayment } from "./QrPayment";
 import { RefundMethod } from "./RefundMethod";
+import { ToggleCdm } from "./ToggleCdm";
 import { UpiFundTransfer } from "./UpiFundTransfer";
 import { UpiMoneyTransfer } from "./UpiMoneyTransfer";
 import { ValidateUpiId } from "./ValidateUpiId";
-
 export {
 	AadhaarPay,
 	AccountVerification,
@@ -24,6 +25,7 @@ export {
 	AirtelCms,
 	Bbps,
 	CardPayment,
+	Cdm,
 	CommissionFrequency,
 	CreditCardBillPayment,
 	Dmt,
@@ -36,4 +38,5 @@ export {
 	UpiFundTransfer,
 	UpiMoneyTransfer,
 	ValidateUpiId,
+	ToggleCdm,
 };
