@@ -48,9 +48,13 @@ const Radio = ({
 						base: "column",
 						md: "row",
 					}}
-					gap={{
+					columnGap={{
 						base: "4",
 						md: "12",
+					}}
+					rowGap={{
+						base: "4",
+						md: "4",
 					}}
 					wrap="wrap"
 					{...styles}
@@ -60,6 +64,7 @@ const Radio = ({
 							size="lg"
 							key={item[renderer.value]}
 							value={item[renderer.value]}
+							isDisabled={item.isDisabled}
 						>
 							<Text
 								fontSize="sm"

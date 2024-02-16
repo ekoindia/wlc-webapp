@@ -1,4 +1,4 @@
-import { Avatar, Flex, Grid, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Grid, Text, Tooltip } from "@chakra-ui/react";
 import { Button, Headings, Icon } from "components";
 import {
 	Endpoints,
@@ -31,7 +31,7 @@ const PricingCommission = () => {
 				gap={{ base: "2", md: "8" }}
 			>
 				{Object.entries(product_categories)?.map(
-					([category, productList]) => {
+					([category, { description, products }]) => {
 						return (
 							<Flex
 								key={category}
@@ -39,12 +39,37 @@ const PricingCommission = () => {
 								gap={{ base: "0.25", md: "2" }}
 								py="2"
 							>
-								<Text
-									fontSize={{ base: "md", md: "lg" }}
-									fontWeight="semibold"
-								>
-									{category}
-								</Text>
+								<Flex align="center" gap="1">
+									<Text
+										fontSize={{ base: "md", md: "lg" }}
+										fontWeight="semibold"
+									>
+										{category}
+									</Text>
+									<Tooltip
+										hasArrow
+										placement="right"
+										label={description}
+										aria-label={description}
+										fontSize="xs"
+										bg="primary.DEFAULT"
+										color="white"
+										borderRadius="8"
+									>
+										<span>
+											<Icon
+												name="info-outline"
+												size="xs"
+												cursor="pointer"
+												color="light"
+												display={{
+													base: "none",
+													md: "block",
+												}}
+											/>
+										</span>
+									</Tooltip>
+								</Flex>
 								<Grid
 									templateColumns={{
 										base: "repeat(auto-fill,minmax(250px,1fr))",
@@ -58,7 +83,7 @@ const PricingCommission = () => {
 										lg: (4, 6),
 									}}
 								>
-									{productList?.map((product) => {
+									{products?.map((product) => {
 										const {
 											label,
 											desc,
@@ -110,7 +135,7 @@ const Card = ({ label, desc, icon, slug }) => {
 			w="100%"
 			bg="white"
 			p="4"
-			borderRadius="10px"
+			borderRadius="8"
 			align="center"
 			justify="space-between"
 			gap="1"

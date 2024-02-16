@@ -35,7 +35,7 @@ export const product_slug_map = {
 		hide: false,
 	},
 	aeps: {
-		label: "AePS",
+		label: "AePS Cashout",
 		desc: "Set Agent Commissions for AePS Cashout services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "cashout",
@@ -111,6 +111,14 @@ export const product_slug_map = {
 		slug: "refund-method",
 		hide: false,
 	},
+	"cash-deposit": {
+		label: "Cash Deposit",
+		desc: "Configure Cash Deposit services within your network",
+		comp: "ToggleCdm",
+		icon: "money-deposit",
+		slug: "cash-deposit",
+		hide: false,
+	},
 	"upi-money-transfer": {
 		label: "UPI Money Transfer",
 		desc: "Set Agent Pricing/Commission for UPI Money Transfer services",
@@ -141,10 +149,17 @@ export const product_slug_map = {
 	"qr-payment": {
 		label: "QR Payment",
 		desc: "Set Agent Pricing for QR Payment services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "QrPayment",
 		icon: "qrcode",
 		slug: "qr-payment",
+		hide: false,
+	},
+	cdm: {
+		label: "Cash Deposit",
+		desc: "Set Agent Pricing for Cash Deposit services",
+		comp: "Cdm",
+		icon: "money-deposit",
+		slug: "cdm",
 		hide: false,
 	},
 };
@@ -163,23 +178,33 @@ export const product_slug_map = {
  * @type {ProductCategoryMap}
  */
 export const product_categories = {
-	"Product Configuration": [
-		"commission-frequency",
-		"refund-method",
-		"optional-verification",
-	],
-	"Pricing Configuration": [
-		"money-transfer",
-		"aeps",
-		"payment-gateway",
-		"qr-payment",
-		"account-verification",
-		"credit-card-bill-payment",
-		"aadhaar-pay",
-		"indo-nepal-fund-transfer",
-		"airtel-cms",
-		"upi-money-transfer",
-		"upi-fund-transfer",
-		"validate-upi-id",
-	],
+	"Product Configuration": {
+		description:
+			"Manage product settings and configurations for your network.",
+		products: [
+			"commission-frequency",
+			"refund-method",
+			"optional-verification",
+			"cash-deposit",
+		],
+	},
+	"Pricing Configuration": {
+		description:
+			"Set and adjust pricing and commissions for various services within your network.",
+		products: [
+			"money-transfer",
+			"aeps",
+			"payment-gateway",
+			"qr-payment",
+			"account-verification",
+			"credit-card-bill-payment",
+			"aadhaar-pay",
+			"indo-nepal-fund-transfer",
+			"airtel-cms",
+			"upi-money-transfer",
+			"upi-fund-transfer",
+			"validate-upi-id",
+			"cdm",
+		],
+	},
 };

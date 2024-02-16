@@ -11,8 +11,8 @@ A white-labelled SaaS platform to run your business like agent-banking, micro-fi
   - Open webpage: [http://localhost:3002](http://localhost:3002)
 
 ## Icon Library:
-- View available icons (open in incognito window where user is not logged-in): `localhost:3000/icons_demo`
-- To add new icons, see the file: `constants/IconLibrary.ts`
+- To view available icons, open the webpage: http://localhost:3002/icons_demo
+- To add new icons, see the file: [constants/IconLibrary.ts](constants/IconLibrary.ts)
 - There are duplicate icon-names as well, same icons with different names (for backward compatibility). Such icons are shown in red background with the pointer to the actual icon name.
 - For optimizing individual SVG icons, use: [SVGOMG - SVGO's Missing GUI](https://jakearchibald.github.io/svgomg/)
 
@@ -81,3 +81,32 @@ How does communication with the Android wrapper app work?
 		- Call postMessage method to send a `connect_ready` message to the Android app to let it know that the web-app is ready to receive messages.
 		- Setup a callback function `callFromAndroid` to listen to messages from the Android app.
 	- We have a `postMessage` method in [utils/AndroidUtils.ts](utils/AndroidUtils.ts) which can be used to send messages to the Android app.
+
+
+## Common Utilities
+### Custom [**hooks/**](hooks/) from the directory `hooks/`:
+- `useAppLink`: For handling app links (deep-links) and redirecting to the appropriate page. Supports old `connect.eko.in` links as well as the `ekoconnect://` links.
+- `useClipboard`: Copy text to clipboard.
+- `useDailyCacheState`: Cache the state in the browser's localStorage. The cache state has a `valid` flag which is set to `false` when the cache is stale (older than 1 day).
+- `useDebouncedState`: Debounce the state update to avoid unnecessary re-renders.
+- `useExternalResource`: Load an external resource (JS/CSS) dynamically. It returns a state variable (idle, loading, ready, error) and a reload function. The resource is loaded only once.
+
+
+## Global [Contexts](contexts/) (Data Providers)
+1. 
+
+
+
+## Browser Storage
+The following data is stored in the browser (localStorage & sessionStorage):
+### LocalStorage
+1.
+
+### SessionStorage
+1. `org_detail`: Organization details
+1. `user_detail`: User details
+1. `access_token`: Access token
+1. `access_token_lite`
+1. `access_token_crm`
+1. `token_timeout`: Token timeout
+1. `refresh_token`: Refresh token
