@@ -221,6 +221,12 @@ export const products = {
 			pricing_type: "1",
 		},
 	},
+	CDM: {
+		DEFAULT: {
+			operation_type: "3",
+			payment_mode: "1",
+		},
+	},
 };
 
 export const productPricingCommissionValidationConfig = {
@@ -308,4 +314,5 @@ export const productPricingType = {
 	UPI_FUND_TRANSFER: productPricingTextConfig.PRICING,
 	VALIDATE_UPI_ID: productPricingTextConfig.PRICING,
 	QR_PAYMENT: productPricingTextConfig.PRICING,
+	CDM: productPricingTextConfig.PRICING,
 };

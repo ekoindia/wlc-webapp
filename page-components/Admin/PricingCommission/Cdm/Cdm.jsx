@@ -1,6 +1,6 @@
-import { Flex, useToast } from "@chakra-ui/react";
+import { Flex, Text, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import { Endpoints, ParamType } from "constants";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -8,6 +8,13 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
+import { CdmBankConfig } from "./CdmBankConfig";
+
+const operation_type_list = [
+	{ value: "3", label: "Whole Network" },
+	{ value: "2", label: "Distributor's Network" },
+	{ value: "1", label: "Individual Distributor/Retailer" },
+];
 
 const OPERATION = {
 	SUBMIT: 1,
@@ -20,16 +27,19 @@ const PRICING_TYPE = {
 };
 
 const pricing_type_list = [
-	// {
-	// 	value: PRICING_TYPE.PERCENT,
-	// 	label: "Percentage (%)",
-	// },
 	{
+		id: "percentage",
+		value: PRICING_TYPE.PERCENT,
+		label: "Percentage (%)",
+		isDisabled: false,
+	},
+	{
+		id: "fixed",
 		value: PRICING_TYPE.FIXED,
 		label: "Fixed (₹)",
+		isDisabled: false,
 	},
 ];
-
 const DEPOSIT_METHOD = {
 	COUNTER_DEPOSIT: "1",
 	CDM: "7",
@@ -45,6 +55,11 @@ const deposit_method_list = [
 		label: "CDM",
 	},
 ];
+
+const _multiselectRenderer = {
+	value: "user_code",
+	label: "name",
+};
 
 const bank_list_renderer = {
 	value: "bank_id",
@@ -64,6 +79,7 @@ const getStatus = (status) => {
  * A Cdm page component
  */
 const Cdm = () => {
+	const { DEFAULT } = products.CDM;
 	const {
 		handleSubmit,
 		register,
@@ -80,22 +96,25 @@ const Cdm = () => {
 	} = useForm({
 		mode: "onChange",
 		defaultValues: {
-			payment_mode: DEPOSIT_METHOD.COUNTER_DEPOSIT,
-			pricing_type: PRICING_TYPE.FIXED,
+			operation_type: DEFAULT.operation_type,
+			payment_mode: DEFAULT.payment_mode,
 		},
 	});
 
 	const watcher = useWatch({
 		control,
 	});
-	console.log("watcher", watcher);
 
 	const toast = useToast();
 	const { accessToken } = useSession();
 	const router = useRouter();
 	const { generateNewToken } = useRefreshToken();
 	const [banks, setBanks] = useState([]);
+	const [descList, setDescList] = useState([]);
 	const [validation, setValidation] = useState(null);
+	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
+	const [multiSelectLabel, setMultiSelectLabel] = useState();
+	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 
 	const { min, max } = validation ?? {};
 
@@ -117,6 +136,23 @@ const Cdm = () => {
 
 	const cdm_parameter_list = [
 		{
+			name: "operation_type",
+			label: `Set ${productPricingType.CDM} for`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: operation_type_list,
+			// defaultValue: DEFAULT.operation_type,
+		},
+		{
+			name: "CspList",
+			label: `Select ${multiSelectLabel}`,
+			parameter_type_id: ParamType.LIST,
+			is_multi: true,
+			list_elements: multiSelectOptions,
+			visible_on_param_name: "operation_type",
+			visible_on_param_value: /1|2/,
+			multiSelectRenderer: _multiselectRenderer,
+		},
+		{
 			name: "payment_mode",
 			label: "Deposit Method",
 			parameter_type_id: ParamType.LIST,
@@ -134,13 +170,13 @@ const Cdm = () => {
 		},
 		{
 			name: "pricing_type",
-			label: `Select Pricing Type`, //?
+			label: `Select ${productPricingType.CDM} Type`,
 			parameter_type_id: ParamType.LIST,
-			list_elements: pricing_type_list,
+			list_elements: pricingTypeList,
 		},
 		{
 			name: "actual_pricing",
-			label: `Define Pricing (Exclusive of GST)`, //?
+			label: `Define ${productPricingType.CDM} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {
@@ -163,31 +199,138 @@ const Cdm = () => {
 	];
 
 	useEffect(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: {
-				interaction_type_id: 761,
-				payment_mode: watcher?.payment_mode,
-			},
-			token: accessToken,
-			generateNewToken,
-		})
-			.then((res) => {
-				const _banks = res?.data?.bank_list_details ?? [];
-				setBanks(_banks);
-				reset({ ...watcher, select: null, actual_pricing: "" });
-				setValidation(null);
-			})
-			.catch((err) => {
-				console.error("error", err);
-			});
-	}, [watcher?.payment_mode]);
+		if (watcher.operation_type != "3") {
+			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
+			const _tf_req_uri =
+				watcher.operation_type === "2"
+					? "/network/agent-list?usertype=1"
+					: "/network/agent-list";
+
+			fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `${_tf_req_uri}`,
+						"tf-req-method": "GET",
+					},
+					token: accessToken,
+					generateNewToken,
+				}
+			)
+				.then((res) => {
+					const _agents = res?.data?.csp_list ?? [];
+					setMultiSelectOptions(_agents);
+				})
+				.catch((error) => {
+					console.error("📡Error:", error);
+				});
+
+			let _operationTypeList = operation_type_list.filter(
+				(item) => item.value == watcher.operation_type
+			);
+			let _label =
+				_operationTypeList.length > 0 && _operationTypeList[0].label;
+
+			setMultiSelectLabel(_label);
+		}
+	}, [watcher.operation_type]);
 
 	useEffect(() => {
-		if (watcher?.select) {
-			const { min_slab_amount, max_slab_amount } = watcher?.select ?? {};
-			setValidation({ min: min_slab_amount, max: max_slab_amount });
+		if (watcher?.payment_mode) {
+			fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					body: {
+						interaction_type_id: 761,
+						payment_mode: watcher?.payment_mode,
+					},
+					token: accessToken,
+					generateNewToken,
+				}
+			)
+				.then((res) => {
+					const _bankList = res?.data?.bank_list_details ?? [];
+					let _banks = [];
+					let _desc_list = [];
+
+					// based on band_id in _bankList (from API), we can get the bank object from CdmBankConfig
+					_bankList.forEach((_bank) => {
+						const bank = CdmBankConfig[_bank.bank_id] ?? null;
+						if (bank) {
+							_banks.push(CdmBankConfig[_bank.bank_id]);
+							_desc_list.push({
+								[bank["bank_name"]]: bank["desc"],
+							});
+						}
+					});
+					setBanks(_banks);
+					setDescList(_desc_list);
+					reset({
+						...watcher,
+						select: null,
+						pricing_type: "",
+						actual_pricing: "",
+					});
+					setPricingTypeList(pricing_type_list);
+					setValidation(null);
+				})
+				.catch((err) => {
+					console.error("error", err);
+				});
 		}
-	}, [watcher?.select]);
+	}, [watcher?.payment_mode]);
+
+	// This useEffect hook updates the pricing type list based on slab selection.
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		if (watcher?.select?.bank_id) {
+			const { validation } = watcher?.select ?? {};
+
+			let anyDisabled = false;
+
+			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+				const _validation = validation[_typeObj.id];
+				const isDisabled = !_validation;
+				if (isDisabled) anyDisabled = true;
+				return { ..._typeObj, isDisabled };
+			});
+
+			setPricingTypeList(_pricingTypeList);
+
+			// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+			if (anyDisabled) {
+				const _firstNonDisabled = _pricingTypeList.find(
+					(item) => !item.isDisabled
+				);
+				if (
+					_firstNonDisabled &&
+					watcher.pricing_type !== _firstNonDisabled.value
+				) {
+					watcher.pricing_type = _firstNonDisabled.value;
+				}
+			}
+
+			reset({ ...watcher });
+		}
+	}, [watcher?.select?.bank_id]);
+
+	// This useEffect hook updates the validation state based on the selected slab and pricing type.
+	useEffect(() => {
+		const _pricingType =
+			watcher.pricing_type === PRICING_TYPE.PERCENT
+				? "percentage"
+				: watcher.pricing_type === PRICING_TYPE.FIXED
+				? "fixed"
+				: null;
+
+		// if any pricing type is selected then only we need to validate
+		if (_pricingType != null) {
+			const { min, max } =
+				watcher?.select?.validation?.[_pricingType] ?? {};
+			setValidation({ min, max });
+		}
+	}, [watcher?.pricing_type, watcher?.select?.bank_id]);
 
 	useEffect(() => {
 		if (validation) {
@@ -209,11 +352,19 @@ const Cdm = () => {
 
 		const { bank_id } = _finalData["select"] ?? {};
 
-		delete _finalData["select"];
+		const _CspList = data?.CspList?.map(
+			(item) => item[_multiselectRenderer.value]
+		);
+
+		if (watcher.operation_type != 3) {
+			_finalData.CspList = `${_CspList}`;
+		}
+
+		delete _finalData.select;
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
-				operation_type: "3", //whole network
+				operation_type: _finalData?.operation_type,
 				interaction_type_id: 760,
 				operation: OPERATION.SUBMIT,
 				bank_id,
@@ -238,54 +389,89 @@ const Cdm = () => {
 
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
-			<Flex direction="column" gap="8">
-				<Form
-					{...{
-						parameter_list: cdm_parameter_list,
-						formValues: watcher,
-						control,
-						register,
-						errors,
-					}}
-				/>
+			<Flex
+				direction={{ base: "column", xl: "row" }}
+				justify="space-between"
+				gap="8"
+			>
+				<Flex direction="column" gap="8">
+					<Form
+						{...{
+							parameter_list: cdm_parameter_list,
+							formValues: watcher,
+							control,
+							register,
+							errors,
+						}}
+					/>
 
-				<Flex
-					direction={{ base: "row-reverse", md: "row" }}
-					w={{ base: "100%", md: "500px" }}
-					position={{ base: "fixed", md: "initial" }}
-					gap={{ base: "0", md: "16" }}
-					align="center"
-					bottom="0"
-					left="0"
-					bg="white"
-				>
-					<Button
-						type="submit"
-						size="lg"
-						h="64px"
-						w={{ base: "100%", md: "200px" }}
-						fontWeight="bold"
-						borderRadius={{ base: "none", md: "10" }}
-						loading={isSubmitting}
-						disabled={!isValid || !isDirty}
+					<Flex
+						direction={{ base: "row-reverse", md: "row" }}
+						w={{ base: "100%", md: "500px" }}
+						position={{ base: "fixed", md: "initial" }}
+						gap={{ base: "0", md: "16" }}
+						align="center"
+						bottom="0"
+						left="0"
+						bg="white"
 					>
-						Save
-					</Button>
+						<Button
+							type="submit"
+							size="lg"
+							h="64px"
+							w={{ base: "100%", md: "200px" }}
+							fontWeight="bold"
+							borderRadius={{ base: "none", md: "10" }}
+							loading={isSubmitting}
+							disabled={!isValid || !isDirty}
+						>
+							Save
+						</Button>
 
-					<Button
-						h={{ base: "64px", md: "auto" }}
-						w={{ base: "100%", md: "initial" }}
-						bg={{ base: "white", md: "none" }}
-						variant="link"
-						fontWeight="bold"
-						color="primary.DEFAULT"
-						_hover={{ textDecoration: "none" }}
-						borderRadius={{ base: "none", md: "10" }}
-						onClick={() => router.back()}
-					>
-						Cancel
-					</Button>
+						<Button
+							h={{ base: "64px", md: "auto" }}
+							w={{ base: "100%", md: "initial" }}
+							bg={{ base: "white", md: "none" }}
+							variant="link"
+							fontWeight="bold"
+							color="primary.DEFAULT"
+							_hover={{ textDecoration: "none" }}
+							borderRadius={{ base: "none", md: "10" }}
+							onClick={() => router.back()}
+						>
+							Cancel
+						</Button>
+					</Flex>
 				</Flex>
+				{descList?.length > 0 ? (
+					<Flex
+						direction="column"
+						w={{ base: "100%", md: "500px" }}
+						gap="1"
+						fontSize="sm"
+					>
+						<Text
+							fontSize={{ base: "sm", "2xl": "lg" }}
+							fontWeight="bold"
+						>
+							Info
+						</Text>
+						<ul style={{ paddingLeft: "1rem" }}>
+							{descList.map((item, index) => {
+								const bank_id = Object.keys(item)[0];
+								const desc = item[bank_id];
+								return (
+									<li key={index}>
+										<Text as="span" fontWeight="semibold">
+											{bank_id}
+										</Text>
+										: {desc}
+									</li>
+								);
+							})}
+						</ul>
+					</Flex>
+				) : null}
 			</Flex>
 		</form>
 	);
