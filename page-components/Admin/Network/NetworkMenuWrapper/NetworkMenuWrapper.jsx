@@ -172,9 +172,6 @@ const NetworkMenuWrapper = ({
 			lines_min: 3,
 			// visible_on_param_name: "reason",
 			// visible_on_param_value: /999/, // Ideally this should be the code, need to fix select return value
-			validations: {
-				required: true,
-			},
 			is_inactive:
 				account_status_id == 16
 					? watcher["reason"]?.value !== "999"

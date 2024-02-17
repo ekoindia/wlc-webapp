@@ -498,9 +498,6 @@ const History = () => {
 				name: "search",
 				parameter_type_id: ParamType.NUMERIC,
 				placeholder: "Search by TID, Mobile, Account, etc",
-				validations: {
-					required: false,
-				},
 				inputLeftElement: (
 					<Icon name="search" size="sm" color="light" />
 				),
