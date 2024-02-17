@@ -122,30 +122,16 @@ const History = () => {
 		handleSubmit: handleSubmitFilter,
 		register: registerFilter,
 		control: controlFilter,
-		formState: {
-			errors: errorsFilter,
-			isDirty: isDirtyFilter,
-			isValid: isValidFilter,
-			isSubmitting: isSubmittingFilter,
-			isSubmitSuccessful: isSubmitSuccessfulFilter,
-		},
+		formState: { errors: errorsFilter, isSubmitting: isSubmittingFilter },
 		reset: resetFilter,
-		trigger: triggerFilter,
 	} = useForm();
 
 	const {
 		handleSubmit: handleSubmitExport,
 		register: registerExport,
 		control: controlExport,
-		formState: {
-			errors: errorsExport,
-			isDirty: isDirtyExport,
-			isValid: isValidExport,
-			isSubmitting: isSubmittingExport,
-			isSubmitSuccessfulL: isSubmitSuccessfulExport,
-		},
+		formState: { errors: errorsExport, isSubmitting: isSubmittingExport },
 		reset: resetExport,
-		trigger: triggerExport,
 	} = useForm({
 		defaultValues: {
 			reporttype: "pdf",
@@ -532,8 +518,6 @@ const History = () => {
 			control: controlFilter,
 			errors: errorsFilter,
 			isSubmitting: isSubmittingFilter,
-			isValid: isValidFilter,
-			isDirty: isDirtyFilter,
 			formValues: watcherFilter,
 			handleFormSubmit: onFilterSubmit,
 			submitButtonText: isFiltered ? "Update" : "Apply",
@@ -574,8 +558,6 @@ const History = () => {
 			control: controlExport,
 			errors: errorsExport,
 			isSubmitting: isSubmittingExport,
-			isValid: isValidExport,
-			isDirty: isDirtyExport,
 			formValues: watcherExport,
 			handleFormSubmit: onReportDownload,
 			submitButtonText: "Download",
@@ -602,28 +584,6 @@ const History = () => {
 			quickSearch(search, others);
 		}
 	}, [router.query]);
-
-	useEffect(() => {
-		if (isSubmitSuccessfulFilter) {
-			resetFilter(watcherFilter);
-		}
-
-		if (isSubmitSuccessfulExport) {
-			resetExport(watcherExport);
-		}
-
-		if (isDirtyFilter && !isValidFilter) {
-			triggerFilter();
-		}
-		if (isDirtyExport && !isValidExport) {
-			triggerExport();
-		}
-	}, [
-		isSubmitSuccessfulFilter,
-		isSubmitSuccessfulExport,
-		isValidFilter,
-		isValidExport,
-	]);
 
 	// Fetch transaction history when the following change: currentPage, finalFormState
 	useEffect(() => {
