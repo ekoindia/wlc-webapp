@@ -1,6 +1,6 @@
 import { chakra, Text } from "@chakra-ui/react";
 
-const InputLabel = ({ htmlFor, required, children, ...rest }) => {
+const InputLabel = ({ htmlFor, required = false, children, ...rest }) => {
 	const Label = chakra("label");
 	return (
 		<Label

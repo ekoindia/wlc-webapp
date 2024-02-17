@@ -56,8 +56,8 @@ const Form = ({
 					index
 				) => {
 					const _validations = required
-						? { required: true, ...validations }
-						: { ...validations };
+						? { ...validations, required: true }
+						: { ...validations, required: false };
 
 					const { force_dropdown } = meta;
 
@@ -302,6 +302,7 @@ const Form = ({
 															label,
 															value,
 															onChange,
+															required,
 															options:
 																list_elements,
 															labelStyle,

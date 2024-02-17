@@ -33,6 +33,7 @@ const UpiFundTransfer = () => {
 				onChange={(val) => {
 					setAgentType(val);
 				}}
+				required={true}
 			/>
 
 			{agentType === AGENT_TYPE.RETAILERS ? (

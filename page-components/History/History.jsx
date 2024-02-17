@@ -159,36 +159,28 @@ const History = () => {
 			parameter_type_id: ParamType.LIST,
 			list_elements: history_interaction_list,
 			renderer: renderer,
-			validations: {
-				required: false,
-			},
+			required: false,
 		},
 		{
 			name: "tid",
 			label: "TID",
 			parameter_type_id: ParamType.NUMERIC,
 			step: "1",
-			validations: {
-				required: false,
-			},
+			required: false,
 		},
 		{
 			name: "account",
 			label: "Account Number",
 			parameter_type_id: ParamType.NUMERIC,
 			step: "1",
-			validations: {
-				required: false,
-			},
+			required: false,
 		},
 		{
 			name: "customer_mobile",
 			label: "Customer Mobile No.",
 			step: "1",
 			parameter_type_id: ParamType.NUMERIC,
-			validations: {
-				required: false,
-			},
+			required: false,
 		},
 		{
 			name: "start_date",
@@ -196,14 +188,12 @@ const History = () => {
 			parameter_type_id: ParamType.FROM_DATE,
 			minDate: calendar_min_date,
 			maxDate: today,
-			validations: {
-				required:
-					openModalId == action.EXPORT
-						? watcherExport.tid
-							? false
-							: true
-						: false,
-			},
+			required:
+				openModalId == action.EXPORT
+					? watcherExport.tid
+						? false
+						: true
+					: false,
 		},
 		{
 			name: "tx_date",
@@ -216,32 +206,26 @@ const History = () => {
 					? minDateExport
 					: null,
 			maxDate: today,
-			validations: {
-				required:
-					openModalId == action.EXPORT
-						? watcherExport.tid
-							? false
-							: true
-						: false,
-			},
+			required:
+				openModalId == action.EXPORT
+					? watcherExport.tid
+						? false
+						: true
+					: false,
 		},
 		{
 			name: "amount",
 			label: "Amount",
 			parameter_type_id: ParamType.NUMERIC,
 			inputLeftElement: <Icon name="rupee" size="xs" color="light" />,
-			validations: {
-				required: false,
-			},
+			required: false,
 		},
 		{
 			name: "rr_no",
 			label: "Tracking Number",
 			step: "1",
 			parameter_type_id: ParamType.NUMERIC,
-			validations: {
-				required: false,
-			},
+			required: false,
 		},
 	];
 
