@@ -51,6 +51,8 @@ const HistoryToolbar = ({
 					control,
 					errors,
 					isSubmitting,
+					isDirty,
+					isValid,
 					formValues,
 					handleFormSubmit,
 					submitButtonText,
@@ -114,6 +116,7 @@ const HistoryToolbar = ({
 											size="lg"
 											type="submit"
 											loading={isSubmitting}
+											disabled={!isValid || !isDirty}
 										>
 											{submitButtonText}
 										</Button>
