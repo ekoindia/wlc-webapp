@@ -12,7 +12,6 @@ const Select = ({
 	options = [],
 	renderer = { label: "label", value: "value" },
 	isMulti = false,
-	isClearable = true,
 	value,
 	label,
 	id,
@@ -155,7 +154,7 @@ const Select = ({
 
 	const _getOptionValue = (option) => option[renderer.value];
 
-	const _isClearable = isMulti ? true : required ? false : isClearable;
+	const _isClearable = isMulti ? true : required ? false : true;
 
 	return (
 		<Flex direction="column" w="100%" {...rest}>
