@@ -1,7 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Button, Table } from "components";
+import { Table } from "components";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { NetworkCard } from "..";
 
 const commission_types = {
@@ -69,7 +68,7 @@ const NetworkTable = ({
 	setPageNumber,
 }) => {
 	const router = useRouter();
-	const [lastPageWithData, setLastPageWithData] = useState(1);
+	// const [lastPageWithData, setLastPageWithData] = useState(1);
 
 	agentDetails?.forEach((agent) => {
 		const commission_type = agent?.commission_duration;
@@ -94,17 +93,17 @@ const NetworkTable = ({
 		});
 	};
 
-	useEffect(() => {
-		if (networkTableDataSize > 0) setLastPageWithData(pageNumber);
-	}, [agentDetails]);
+	// useEffect(() => {
+	// 	if (networkTableDataSize > 0) setLastPageWithData(pageNumber);
+	// }, [agentDetails]);
 
-	let _pathname = router.pathname;
+	// let _pathname = router.pathname;
 
 	if (!isLoading && networkTableDataSize < 1) {
 		return (
 			<Flex direction="column" align="center" gap="2">
 				<Text color="light">Nothing Found</Text>
-				<Button
+				{/* <Button
 					onClick={() => {
 						router.push({
 							pathname: _pathname,
@@ -114,7 +113,7 @@ const NetworkTable = ({
 					}}
 				>
 					Back
-				</Button>
+				</Button> */}
 			</Flex>
 		);
 	}
