@@ -4,6 +4,21 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { NetworkCard } from "..";
 
+const commission_types = {
+	1: "Monthly",
+	2: "Daily",
+};
+
+/**
+ * Returns the commission type based on the provided value.
+ * @param {string} commission_type - The commission type value.
+ * @returns {string} The corresponding commission type.
+ */
+const getCommissionType = (commission_type) => {
+	if (commission_type === undefined) return "Instant";
+	return commission_types[commission_type];
+};
+
 /**
  * Network table parameter list
  */
@@ -55,6 +70,11 @@ const NetworkTable = ({
 }) => {
 	const router = useRouter();
 	const [lastPageWithData, setLastPageWithData] = useState(1);
+
+	agentDetails?.forEach((agent) => {
+		const commission_type = agent?.commission_duration;
+		agent.commission_type = getCommissionType(commission_type);
+	});
 
 	const networkTableDataSize = agentDetails?.length ?? 0;
 
