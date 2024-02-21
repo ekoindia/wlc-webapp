@@ -347,12 +347,8 @@ const Network = () => {
 				);
 			}
 		});
-
-		console.log("filteredItemLabels", _labels);
-
 		return [...new Set(_labels)];
 	}, [finalFormState]);
-	console.log("filteredItemLabels", filteredItemLabels);
 
 	useEffect(() => {
 		setInvokeApi((prev) => !prev);
