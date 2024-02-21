@@ -1,11 +1,11 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { Button, Headings, Icon } from "components";
 import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NetworkTable, NetworkToolbar } from ".";
 
@@ -26,7 +26,8 @@ const operation_type_list = [
 
 const status_list = [
 	{ label: "Active", value: "Active" },
-	{ label: "Inactive", value: "closed" },
+	{ label: "Inactive", value: "Inactive" },
+	// { label: "Closed", value: "closed" },
 ];
 
 const generateQueryParams = (params) => {
@@ -60,10 +61,15 @@ const Network = () => {
 	const [invokeApi, setInvokeApi] = useState(false);
 	const [queryParam, setQueryParam] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
-	// const [finalFormState, setFinalFormState] = useState({});
+	const [finalFormState, setFinalFormState] = useState({});
 	const [today] = useState(() => {
 		const _today = new Date();
 		return formatDate(_today, "yyyy-MM-dd");
+	});
+
+	const filterItemLimit = useBreakpointValue({
+		base: 2,
+		md: 4,
 	});
 
 	const {
@@ -137,6 +143,7 @@ const Network = () => {
 			});
 			setPageNumber(1);
 			setQueryParam(search_params);
+			setFinalFormState({ search_value });
 		}
 	};
 
@@ -145,6 +152,7 @@ const Network = () => {
 		setPrevSearch("");
 		resetSearch({ search_value: "" });
 		setQueryParam(null);
+		setFinalFormState({});
 	};
 
 	const onFilterSubmit = (data) => {
@@ -170,41 +178,15 @@ const Network = () => {
 		setIsSearched(false);
 		setPrevSearch("");
 		resetSearch({ search_value: "" });
+		setFinalFormState(filteredData);
 	};
 
 	const clearFilter = () => {
 		setIsFiltered(false);
 		setQueryParam(null);
 		resetFilter({ ...formElements });
+		setFinalFormState({});
 	};
-
-	useEffect(() => {
-		if (openModalId == action.FILTER) {
-			const _fromDateFilter = watcherFilter.onBoardingDateFrom;
-			const _txDateFilter = watcherFilter.onBoardingDateTo;
-			const _valuesFilter = watcherFilter;
-
-			if (_fromDateFilter) {
-				setMinDateFilter(_fromDateFilter);
-			}
-
-			if (_fromDateFilter > _txDateFilter) {
-				// reset filter form tx_date to from_date
-				resetFilter({
-					..._valuesFilter,
-					onBoardingDateTo: _fromDateFilter,
-				});
-			}
-		}
-	}, [watcherFilter.onBoardingDateFrom, watcherFilter.onBoardingDateTo]);
-
-	useEffect(() => {
-		setInvokeApi((prev) => !prev);
-	}, [pageNumber, queryParam]);
-
-	useEffect(() => {
-		hitQuery();
-	}, [invokeApi]);
 
 	const network_filter_parameter_list = [
 		{
@@ -261,24 +243,24 @@ const Network = () => {
 		},
 	];
 
+	const network_search_parameter_list = [
+		{
+			name: "search_value",
+			parameter_type_id: ParamType.NUMERIC,
+			placeholder: "Search by Mobile Number",
+			inputLeftElement: <Icon name="search" size="sm" color="light" />,
+			onEnter: handleSubmitSearch(onSearchSubmit),
+			required: false,
+			w: { base: "auto", md: "400px" },
+		},
+	];
+
 	const searchBarConfig = {
 		register: registerSearch,
 		control: controlSearch,
 		errors: errorsSearch,
 		formValue: watcherSearch,
-		parameter_list: [
-			{
-				name: "search_value",
-				parameter_type_id: ParamType.NUMERIC,
-				placeholder: "Search by Mobile Number",
-				inputLeftElement: (
-					<Icon name="search" size="sm" color="light" />
-				),
-				onEnter: handleSubmitSearch(onSearchSubmit),
-				required: false,
-				w: { base: "auto", md: "400px" },
-			},
-		],
+		parameter_list: network_search_parameter_list,
 	};
 
 	const actionBtnConfig = [
@@ -315,6 +297,71 @@ const Network = () => {
 		},
 	];
 
+	useEffect(() => {
+		if (openModalId == action.FILTER) {
+			const _fromDateFilter = watcherFilter.onBoardingDateFrom;
+			const _txDateFilter = watcherFilter.onBoardingDateTo;
+			const _valuesFilter = watcherFilter;
+
+			if (_fromDateFilter) {
+				setMinDateFilter(_fromDateFilter);
+			}
+
+			if (_fromDateFilter > _txDateFilter) {
+				// reset filter form tx_date to from_date
+				resetFilter({
+					..._valuesFilter,
+					onBoardingDateTo: _fromDateFilter,
+				});
+			}
+		}
+	}, [watcherFilter.onBoardingDateFrom, watcherFilter.onBoardingDateTo]);
+
+	const filteredItemLabels = useMemo(() => {
+		const _labels = [];
+		const labelsToReplace = {
+			From: "Date",
+			To: "Date",
+			search_value: "Mobile Number",
+		};
+
+		const _parameterList = isFiltered
+			? network_filter_parameter_list
+			: isSearched
+			? network_search_parameter_list
+			: [];
+
+		Object.keys(finalFormState).forEach((key) => {
+			const matchedItem = _parameterList.find(
+				(item) => item.name === key
+			);
+
+			if (matchedItem && isFiltered) {
+				const labelToAdd =
+					labelsToReplace[matchedItem.label] || matchedItem.label;
+				_labels.push(labelToAdd);
+			}
+			if (matchedItem && isSearched) {
+				_labels.push(
+					labelsToReplace[matchedItem.name] || matchedItem.name
+				);
+			}
+		});
+
+		console.log("filteredItemLabels", _labels);
+
+		return [...new Set(_labels)];
+	}, [finalFormState]);
+	console.log("filteredItemLabels", filteredItemLabels);
+
+	useEffect(() => {
+		setInvokeApi((prev) => !prev);
+	}, [pageNumber, queryParam]);
+
+	useEffect(() => {
+		hitQuery();
+	}, [invokeApi]);
+
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];
 
@@ -333,7 +380,12 @@ const Network = () => {
 					</Button>
 				}
 			/>
-			<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
+			<Flex
+				direction="column"
+				gap="4"
+				mx={{ base: "4", md: "0" }}
+				// align="center"
+			>
 				<NetworkToolbar
 					{...{
 						isSearched,
@@ -357,14 +409,19 @@ const Network = () => {
 					}}
 				/>
 
-				{/* <Flex
+				<Flex
 					display={isFiltered || isSearched ? "flex" : "none"}
+					alignSelf="center"
 					align="center"
 					gap="2"
-					mt="6"
 				>
 					<Flex color="light" fontSize="xs">
-						Filtering by &thinsp;
+						{isFiltered
+							? "Filtering by"
+							: isSearched
+							? "Searching by"
+							: null}
+						&nbsp;
 						{filteredItemLabels
 							?.slice(0, filterItemLimit)
 							.map((val, index) => (
@@ -394,13 +451,16 @@ const Network = () => {
 					<Button
 						size="xs"
 						onClick={() => {
-							setPageNumber(1);
-							setQueryParam(null);
+							isFiltered
+								? clearFilter()
+								: isSearched
+								? clearSearch()
+								: null;
 						}}
 					>
 						Show All
 					</Button>
-				</Flex> */}
+				</Flex>
 			</Flex>
 		</>
 	);
