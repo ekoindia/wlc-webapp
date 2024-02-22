@@ -267,13 +267,14 @@ const AccountVerification = () => {
 					/>
 
 					<Flex
-						direction={{ base: "column", md: "row" }}
+						direction={{ base: "row-reverse", md: "row" }}
 						w={{ base: "100%", md: "500px" }}
-						// position={{ base: "fixed", md: "initial" }}
+						position={{ base: "fixed", md: "initial" }}
 						gap={{ base: "4", md: "16" }}
 						align="center"
-						// bottom="0"
-						// left="0"
+						bottom="0"
+						left="0"
+						bg="white"
 					>
 						<Button
 							type="submit"
@@ -281,7 +282,7 @@ const AccountVerification = () => {
 							h="64px"
 							w={{ base: "100%", md: "200px" }}
 							fontWeight="bold"
-							// borderRadius={{ base: "none", md: "10" }}
+							borderRadius={{ base: "none", md: "10" }}
 							loading={isSubmitting}
 							disabled={!isValid || !isDirty}
 						>
@@ -296,7 +297,7 @@ const AccountVerification = () => {
 							fontWeight="bold"
 							color="primary.DEFAULT"
 							_hover={{ textDecoration: "none" }}
-							// borderRadius={{ base: "none", md: "10" }}
+							borderRadius={{ base: "none", md: "10" }}
 							onClick={() => router.back()}
 						>
 							Cancel
