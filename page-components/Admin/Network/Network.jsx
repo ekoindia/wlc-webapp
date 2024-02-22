@@ -58,7 +58,6 @@ const Network = () => {
 	const [isSearched, setIsSearched] = useState(false);
 	const [openModalId, setOpenModalId] = useState(null);
 	const [prevSearch, setPrevSearch] = useState("");
-	const [invokeApi, setInvokeApi] = useState(false);
 	const [queryParam, setQueryParam] = useState(null);
 	const [minDateFilter, setMinDateFilter] = useState(calendar_min_date);
 	const [finalFormState, setFinalFormState] = useState({});
@@ -351,12 +350,8 @@ const Network = () => {
 	}, [finalFormState]);
 
 	useEffect(() => {
-		setInvokeApi((prev) => !prev);
-	}, [pageNumber, queryParam]);
-
-	useEffect(() => {
 		hitQuery();
-	}, [invokeApi]);
+	}, [pageNumber, queryParam]);
 
 	const totalRecords = networkData?.totalRecords;
 	const agentDetails = networkData?.agent_details ?? [];
