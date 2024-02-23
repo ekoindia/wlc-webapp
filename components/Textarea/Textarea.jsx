@@ -14,7 +14,7 @@ const Textarea = forwardRef(
 			label,
 			labelStyle,
 			placeholder,
-			required,
+			required = false,
 			onChange,
 			noOfLines = 2,
 			maxLength = 100,

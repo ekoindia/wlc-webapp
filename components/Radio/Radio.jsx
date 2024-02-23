@@ -19,7 +19,7 @@ const Radio = ({
 	onChange,
 	label,
 	labelStyle,
-	required = true,
+	required = false,
 	defaultValue,
 	renderer = { label: "label", value: "value" },
 	styles,

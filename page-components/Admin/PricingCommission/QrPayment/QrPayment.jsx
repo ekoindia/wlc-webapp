@@ -137,7 +137,6 @@ const QrPayment = () => {
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
 			validations: {
-				required: true,
 				min: min,
 				max: max,
 			},
