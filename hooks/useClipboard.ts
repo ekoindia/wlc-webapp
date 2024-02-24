@@ -22,7 +22,6 @@ const useClipboard = ({ delay = 2500 } = {}) => {
 				try {
 					await navigator.clipboard.writeText(valueToCopy);
 					setState((prev) => ({ ...prev, [valueToCopy]: "SUCCESS" }));
-
 					setTimeout(() => {
 						setState((prev) => {
 							const newState = { ...prev };
