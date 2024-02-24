@@ -8,27 +8,53 @@ import {
 	Text,
 } from "@chakra-ui/react";
 import { Button, Card, Currency, IcoButton, Icon } from "components";
+import { useClipboard } from "hooks";
 import { useRouter } from "next/router";
 import { capitalize } from "utils/textFormat";
+
 /**
- * A <CompanyPane> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<CompanyPane></CompanyPane>`
+ * A <CompanyPane> component that displays company details.
+ *
+ * This component receives a data object as a prop and displays the company's avatar, name, user code, account type, plan name, and wallet balance. It also provides a button to view all transactions.
+ *
+ * @param {Object} props - Properties passed to the component
+ * @param {Object} props.data - The data object containing company details
+ * @param {string} props.data.agent_name - The name of the agent
+ * @param {string} props.data.eko_code - The user code of the agent
+ * @param {string} props.data.src - The source URL for the avatar image
+ * @param {string} props.data.agent_type - The type of the agent's account
+ * @param {string} props.data.plan_name - The name of the agent's plan
+ * @param {number} props.data.wallet_balance - The balance of the agent's wallet
+ *
+ * @example
+ * const data = {
+ *   agent_name: 'John Doe',
+ *   eko_code: '1234',
+ *   src: 'https://example.com/avatar.jpg',
+ *   agent_type: 'Premium',
+ *   plan_name: 'Gold Plan',
+ *   wallet_balance: 5000
+ * };
+ *
+ * <CompanyPane data={data} />
  */
 const CompanyPane = ({ data }) => {
 	const router = useRouter();
-	const { mobile } = router.query;
-	const handleclick = () => {
+	const { mobile } = router.query ?? {};
+	const { agent_name, eko_code, src, agent_type, plan_name, wallet_balance } =
+		data ?? {};
+
+	const { copy, state } = useClipboard();
+
+	const onViewAllTrxnClick = () => {
 		router.push(
 			`/admin/transaction-history/account-statement/detailed-statement?mobile=${mobile}`
 		);
 	};
 
 	const companyDataList = [
-		{ id: 1, label: "Account Type", value: data?.agent_type },
-		{ id: 2, label: "Plan name", value: data?.plan_name },
+		{ id: 1, label: "Account Type", value: agent_type },
+		{ id: 2, label: "Plan name", value: plan_name },
 		// { id: 3, label: "KYC status", value: "KYC Compliant" },
 	];
 
@@ -39,19 +65,40 @@ const CompanyPane = ({ data }) => {
 					<Avatar
 						size={{ base: "lg", md: "xl" }}
 						icon={<Icon name="person" />}
-						src={data?.src}
+						src={src}
 						showBorder={true}
 						borderColor="divider"
 					/>
 					<div>
 						<Text as="b" fontSize="xl">
-							{capitalize(data?.agent_name)}
+							{capitalize(agent_name)}
 						</Text>
-						<Flex gap="1" color="light" fontSize="sm">
+						<Flex color="light" fontSize="sm">
 							User Code:
-							<Text fontWeight="medium" color="accent.DEFAULT">
-								{data?.eko_code}
-							</Text>
+							<Flex
+								align="center"
+								gap="0.5"
+								cursor="pointer"
+								transition="opacity 0.3s ease-out"
+								_hover={{ opacity: 0.9 }}
+								onClick={() => copy(eko_code)}
+							>
+								<Text
+									fontWeight="medium"
+									color="accent.DEFAULT"
+								>
+									{eko_code}
+								</Text>
+								<Icon
+									title="Copy"
+									name={
+										state[eko_code] === "SUCCESS"
+											? "check"
+											: "content-copy"
+									}
+									size="xs"
+								/>
+							</Flex>
 						</Flex>
 					</div>
 				</Flex>
@@ -121,7 +168,7 @@ const CompanyPane = ({ data }) => {
 						<div>
 							<Text color="light">E-value Balance</Text>
 							<Currency
-								amount={data?.wallet_balance}
+								amount={wallet_balance}
 								fontSize="xl"
 								fontWeight="medium"
 								color="primary.DEFAULT"
@@ -136,7 +183,7 @@ const CompanyPane = ({ data }) => {
 						color="accent.DEFAULT"
 						gap="1"
 						_hover={{ textDecoration: "none" }}
-						onClick={handleclick}
+						onClick={onViewAllTrxnClick}
 					>
 						View All Transactions
 						<Icon name="arrow-forward" size="16px" />
