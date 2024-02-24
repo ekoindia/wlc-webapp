@@ -151,7 +151,7 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 							<IcoBtn
 								title="Copy note"
 								iconName={
-									state === "SUCCESS"
+									state[todo] === "SUCCESS"
 										? "check"
 										: "content-copy"
 								}

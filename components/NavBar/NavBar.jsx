@@ -357,7 +357,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									<Icon
 										title="Copy"
 										name={
-											state === "SUCCESS"
+											state[code] === "SUCCESS"
 												? "check"
 												: "content-copy"
 										}
@@ -393,7 +393,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							<Icon
 								title="Copy"
 								name={
-									state === "SUCCESS"
+									state[email] === "SUCCESS"
 										? "check"
 										: "content-copy"
 								}
@@ -436,7 +436,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									<Icon
 										title="Copy"
 										name={
-											state === "SUCCESS"
+											state[mobile] === "SUCCESS"
 												? "check"
 												: "content-copy"
 										}
