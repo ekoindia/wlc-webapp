@@ -82,7 +82,7 @@ const ContactPane = ({ data }) => {
 										<Icon
 											title="Copy"
 											name={
-												state[value] === "SUCCESS"
+												state[value]
 													? "check"
 													: "content-copy"
 											}

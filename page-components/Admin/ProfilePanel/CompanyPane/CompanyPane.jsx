@@ -92,7 +92,7 @@ const CompanyPane = ({ data }) => {
 								<Icon
 									title="Copy"
 									name={
-										state[eko_code] === "SUCCESS"
+										state[eko_code]
 											? "check"
 											: "content-copy"
 									}
