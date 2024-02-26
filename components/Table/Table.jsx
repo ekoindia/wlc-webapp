@@ -10,7 +10,7 @@ import { tableRowLimit as trl } from "constants";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { MobileView, Th, Tr } from ".";
-import { Pagination } from "..";
+import { Pagination, XScrollArrow } from "..";
 
 /**
  * A Table component
@@ -64,63 +64,57 @@ const Table = ({
 		<div>
 			{!isSmallScreen ? (
 				// Large screen
-				<TableContainer
-					borderRadius="10px 10px 0 0"
-					border="1px solid var(--chakra-colors-divider)"
-					css={{
-						"&::-webkit-scrollbar": {
-							height: "14px",
-						},
-
-						"&::-webkit-scrollbar-thumb": {
-							background: "#AAA",
-						},
-					}}
-					sx={{
-						"@media print": {
-							borderRadius: 0,
-							borderWidth: 0,
-						},
-					}}
-				>
-					<ChakraTable variant={variant} bg="white">
-						<Thead>
-							<ChakraTr
-								sx={{
-									"@media print": printExpansion
-										? {
-												display: "none !important",
-										  }
-										: null,
-								}}
-							>
-								<Th
+				<XScrollArrow>
+					<TableContainer
+						maxW="unset"
+						borderRadius="10px 10px 0 0"
+						border="1px solid var(--chakra-colors-divider)"
+						sx={{
+							"@media print": {
+								borderRadius: 0,
+								borderWidth: 0,
+							},
+						}}
+					>
+						<ChakraTable variant={variant} bg="white">
+							<Thead>
+								<ChakraTr
+									sx={{
+										"@media print": printExpansion
+											? {
+													display: "none !important",
+											  }
+											: null,
+									}}
+								>
+									<Th
+										{...{
+											renderer,
+											visibleColumns,
+											rowExpansion,
+										}}
+									/>
+								</ChakraTr>
+							</Thead>
+							<Tbody>
+								<Tr
 									{...{
+										data,
 										renderer,
+										onRowClick,
+										pageNumber,
+										tableRowLimit,
+										tableName,
 										visibleColumns,
+										isLoading,
+										printExpansion,
 										rowExpansion,
 									}}
 								/>
-							</ChakraTr>
-						</Thead>
-						<Tbody>
-							<Tr
-								{...{
-									data,
-									renderer,
-									onRowClick,
-									pageNumber,
-									tableRowLimit,
-									tableName,
-									visibleColumns,
-									isLoading,
-									printExpansion,
-									rowExpansion,
-								}}
-							/>
-						</Tbody>
-					</ChakraTable>
-				</TableContainer>
+							</Tbody>
+						</ChakraTable>
+					</TableContainer>
+				</XScrollArrow>
 			) : (
 				// Small screen
 				<MobileView
