@@ -67,7 +67,6 @@ const XScrollArrow = ({
 			pos="relative"
 			overflow="hidden"
 			align={pos}
-			{...rest}
 		>
 			{scrollButtonVisibility?.showLeftButton && (
 				<IcoButton
@@ -110,6 +109,7 @@ const XScrollArrow = ({
 						cursor: "pointer",
 					},
 				}}
+				{...rest}
 			>
 				<Flex id="contentBox" ref={contentBoxRef} w="max-content">
 					{children}
