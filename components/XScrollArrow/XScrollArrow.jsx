@@ -35,11 +35,12 @@ const XScrollArrow = ({ children, ...rest }) => {
 
 	useEffect(() => {
 		handleScroll();
-	}, []);
+	}, [contentBoxRef?.current?.clientWidth]);
 
 	return (
 		<Flex
 			id="XScrollArrowWrapper"
+			w="100%"
 			pos="relative"
 			overflow="hidden"
 			align="flex-start"
