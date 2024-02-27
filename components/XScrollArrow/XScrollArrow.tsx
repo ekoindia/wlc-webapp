@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { slideInLeft, slideInRight } from "libs/chakraKeyframes";
 import { useEffect, useRef, useState } from "react";
 import { IcoButton } from "..";
@@ -111,9 +111,9 @@ const XScrollArrow = ({
 					},
 				}}
 			>
-				<Box id="contentBox" ref={contentBoxRef} w="max-content">
+				<Flex id="contentBox" ref={contentBoxRef} w="max-content">
 					{children}
-				</Box>
+				</Flex>
 			</Flex>
 			{scrollButtonVisibility?.showRightButton && (
 				<IcoButton
