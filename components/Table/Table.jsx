@@ -66,6 +66,7 @@ const Table = ({
 				// Large screen
 				<XScrollArrow>
 					<TableContainer
+						id="table-container"
 						maxW="unset"
 						borderRadius="10px 10px 0 0"
 						border="1px solid var(--chakra-colors-divider)"
@@ -76,7 +77,7 @@ const Table = ({
 							},
 						}}
 					>
-						<ChakraTable variant={variant} bg="white">
+						<ChakraTable id="table" variant={variant} bg="white">
 							<Thead>
 								<ChakraTr
 									sx={{
