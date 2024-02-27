@@ -3,17 +3,37 @@ import { slideInLeft, slideInRight } from "libs/chakraKeyframes";
 import { useEffect, useRef, useState } from "react";
 import { IcoButton } from "..";
 
+type XScrollArrowProps = {
+	children?: React.ReactNode;
+	pos?: "flex-start" | "center" | "flex-end";
+	[x: string]: any;
+};
+
 /**
- * A <XScrollArrow> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<XScrollArrow></XScrollArrow>` TODO: Fix example
+ * A <XScrollArrow> component. This component creates a scrollable area with optional left and right scroll buttons.
+ * The scroll buttons appear based on the scroll position.
+ *
+ * @param 	{object}	props	Properties passed to the component
+ * @param	{React.ReactNode}	props.children	React nodes to be rendered inside the scrollable area.
+ * @param	{"flex-start" | "center" | "flex-end"}	props.pos	Alignment of the scrollable area. Defaults to "flex-start".
+ * @param	{...*}	rest	Rest of the props passed to this component. These will be spread on the Flex container.
+ *
+ * @example
+ * ```jsx
+ * <XScrollArrow pos="center">
+ *   <div>Content 1</div>
+ *   <div>Content 2</div>
+ *   <div>Content 3</div>
+ * </XScrollArrow>
+ * ```
  */
-const XScrollArrow = ({ children, ...rest }) => {
-	const scrollBoxRef = useRef(null);
-	const contentBoxRef = useRef(null);
+const XScrollArrow = ({
+	children,
+	pos = "flex-start",
+	...rest
+}: XScrollArrowProps): JSX.Element => {
+	const scrollBoxRef = useRef<HTMLDivElement>(null);
+	const contentBoxRef = useRef<HTMLDivElement>(null);
 
 	const [scrollButtonVisibility, setScrollButtonVisibility] = useState({
 		showLeftButton: false,
@@ -24,7 +44,7 @@ const XScrollArrow = ({ children, ...rest }) => {
 		const _scrollBox = scrollBoxRef.current;
 		const _contentBox = contentBoxRef.current;
 
-		if (_scrollBox) {
+		if (_scrollBox && _contentBox) {
 			const showLeftButton = _scrollBox.scrollLeft > 30;
 			const showRightButton =
 				_scrollBox.clientWidth + _scrollBox.scrollLeft <
@@ -43,7 +63,7 @@ const XScrollArrow = ({ children, ...rest }) => {
 			w="100%"
 			pos="relative"
 			overflow="hidden"
-			align="flex-start"
+			align={pos}
 			{...rest}
 		>
 			{scrollButtonVisibility?.showLeftButton && (
