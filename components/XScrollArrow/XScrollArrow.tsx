@@ -35,7 +35,10 @@ const XScrollArrow = ({
 	const scrollBoxRef = useRef<HTMLDivElement>(null);
 	const contentBoxRef = useRef<HTMLDivElement>(null);
 
-	const [scrollButtonVisibility, setScrollButtonVisibility] = useState({
+	const [scrollButtonVisibility, setScrollButtonVisibility] = useState<{
+		showLeftButton: boolean;
+		showRightButton: boolean;
+	}>({
 		showLeftButton: false,
 		showRightButton: false,
 	});
