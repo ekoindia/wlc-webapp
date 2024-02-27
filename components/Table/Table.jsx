@@ -3,7 +3,6 @@ import {
 	TableContainer,
 	Tbody,
 	Thead,
-	Tr as ChakraTr,
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { tableRowLimit as trl } from "constants";
@@ -61,7 +60,7 @@ const Table = ({
 	}, [router.query.page]);
 
 	return (
-		<div>
+		<div id="table-pagination-container">
 			{!isSmallScreen ? (
 				// Large screen
 				<XScrollArrow>
@@ -78,24 +77,22 @@ const Table = ({
 						}}
 					>
 						<ChakraTable id="table" variant={variant} bg="white">
-							<Thead>
-								<ChakraTr
-									sx={{
-										"@media print": printExpansion
-											? {
-													display: "none !important",
-											  }
-											: null,
+							<Thead
+								sx={{
+									"@media print": printExpansion
+										? {
+												display: "none !important",
+										  }
+										: null,
+								}}
+							>
+								<Th
+									{...{
+										renderer,
+										visibleColumns,
+										rowExpansion,
 									}}
-								>
-									<Th
-										{...{
-											renderer,
-											visibleColumns,
-											rowExpansion,
-										}}
-									/>
-								</ChakraTr>
+								/>
 							</Thead>
 							<Tbody>
 								<Tr
