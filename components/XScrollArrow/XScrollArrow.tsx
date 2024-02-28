@@ -10,7 +10,7 @@ type XScrollArrowProps = {
 };
 
 /**
- * A <XScrollArrow> component. This component creates a scrollable area with optional left and right scroll buttons.
+ * A XScrollArrow component. This component creates a scrollable area with optional left and right scroll buttons.
  * The scroll buttons appear based on the scroll position.
  *
  * @param 	{object}	props	Properties passed to the component
@@ -99,16 +99,6 @@ const XScrollArrow = ({
 				w="100%"
 				overflowX="scroll"
 				onScroll={handleScroll}
-				css={{
-					"&::-webkit-scrollbar": {
-						height: "10px",
-					},
-
-					"&::-webkit-scrollbar-thumb": {
-						background: "#AAA",
-						cursor: "pointer",
-					},
-				}}
 				{...rest}
 			>
 				<Flex id="contentBox" ref={contentBoxRef} w="max-content">
