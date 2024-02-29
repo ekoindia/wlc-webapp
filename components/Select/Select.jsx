@@ -12,12 +12,11 @@ const Select = ({
 	options = [],
 	renderer = { label: "label", value: "value" },
 	isMulti = false,
-	isClearable = true,
 	value,
 	label,
 	id,
 	disabled,
-	required,
+	required = false,
 	labelStyle,
 	getOptionLabel,
 	getOptionValue, // Check if really required
@@ -155,6 +154,8 @@ const Select = ({
 
 	const _getOptionValue = (option) => option[renderer.value];
 
+	const _isClearable = isMulti ? true : required ? false : true;
+
 	return (
 		<Flex direction="column" w="100%" {...rest}>
 			{label ? (
@@ -171,7 +172,7 @@ const Select = ({
 				isMulti={isMulti}
 				styles={colorStyles}
 				isSearchable={options?.length > 15}
-				isClearable={isClearable}
+				isClearable={_isClearable}
 				options={options}
 				onChange={onChange}
 				placeholder={placeholder}

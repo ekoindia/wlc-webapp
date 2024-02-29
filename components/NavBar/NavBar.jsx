@@ -16,6 +16,7 @@ import { useKBarReady } from "components/CommandBar";
 import { Endpoints, TransactionIds } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
+import { useClipboard } from "hooks";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
@@ -70,6 +71,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 	const { userData, isAdmin, isAdminAgentMode, isOnboarding, isLoggedIn } =
 		useUser();
 	const { userDetails } = userData;
+	const { name, pic } = userDetails ?? {};
 	const { orgDetail } = useOrgDetailContext();
 	// const router = useRouter();
 	const isMobile = useBreakpointValue({ base: true, md: false });
@@ -150,7 +152,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 			</Flex>
 
 			{/* Right-side items of navbar */}
-			<Menu>
+			<Menu defaultIsOpen={false}>
 				<MenuButton
 					onClick={() => {
 						setIsCardOpen(true);
@@ -169,13 +171,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 									xl: "38px",
 									"2xl": "42px",
 								}}
-								name={
-									userDetails?.name
-										? userDetails?.name[0]
-										: ""
-								}
+								name={name ? name[0] : ""}
 								lineHeight="3px"
-								src={userDetails?.pic}
+								src={pic}
 							/>
 						</Box>
 						{isAdmin ? (
@@ -203,7 +201,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 										mr="1.6vw"
 										color="navbar.text"
 									>
-										{limitText(userDetails?.name || "", 12)}
+										{limitText(name || "", 12)}
 									</Text>
 
 									<Icon
@@ -259,7 +257,9 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 const MyAccountCard = ({ setIsCardOpen }) => {
 	const { isAdmin, logout, isOnboarding, userData } = useUser();
 	const { userDetails } = userData;
+	const { name, code, email, mobile } = userDetails ?? {};
 	const router = useRouter();
+	const { copy, state } = useClipboard();
 	const menulist = isAdmin ? adminProfileMenu : profileMenu;
 
 	return (
@@ -304,7 +304,6 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				<Box w="full" py="10px" userSelect="none">
 					<Flex
 						w="full"
-						align="flex-end"
 						wrap="wrap"
 						justifyContent={{
 							base: "space-between",
@@ -316,7 +315,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 						}}
 						lineHeight="normal"
 					>
-						{userDetails?.name ? (
+						{name ? (
 							<Text
 								fontSize={{
 									base: "16px",
@@ -329,30 +328,58 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								overflow="hidden"
 								textOverflow="ellipsis"
 								width="40%"
-								title={userDetails?.name || ""}
+								title={name || ""}
 							>
-								{userDetails?.name?.toLowerCase()}
+								{name?.toLowerCase()}
 							</Text>
 						) : null}
 
-						{userDetails?.code && userDetails?.code > 1 ? (
-							<Text
+						{code && code > 1 ? (
+							<Flex
 								fontSize={{ base: "xs", sm: "xxs" }}
+								align="center"
 								w="fit-content"
 								color="white"
-								mb="3px"
+								gap="1"
 							>
-								(User Code:{" "}
-								<Text as="span" fontWeight="medium">
-									{userDetails?.code}
-								</Text>
-								)
-							</Text>
+								<Text as="span">User Code:</Text>
+								<Flex
+									align="center"
+									gap="0.5"
+									cursor="pointer"
+									transition="opacity 0.3s ease-out"
+									_hover={{ opacity: 0.9 }}
+									onClick={() => copy(code)}
+								>
+									<Text as="span" fontWeight="medium">
+										{code}
+									</Text>
+									<Icon
+										title="Copy"
+										name={
+											state[code]
+												? "check"
+												: "content-copy"
+										}
+										size="xs"
+										color="white"
+										transition="opacity 0.3s ease-out"
+									/>
+								</Flex>
+							</Flex>
 						) : null}
 					</Flex>
 
-					{userDetails?.email ? (
-						<Flex w="full" py=".3vw">
+					{email ? (
+						<Flex
+							py=".3vw"
+							align="center"
+							gap="0.5"
+							cursor="pointer"
+							transition="opacity 0.3s ease-out"
+							_hover={{ opacity: 0.9 }}
+							onClick={() => copy(email)}
+						>
 							<Text
 								fontSize={{
 									base: "12px",
@@ -361,12 +388,18 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								w="fit-content"
 								color="white"
 							>
-								{userDetails?.email}
+								{email}
 							</Text>
+							<Icon
+								title="Copy"
+								name={state[email] ? "check" : "content-copy"}
+								color="white"
+								size="xs"
+							/>
 						</Flex>
 					) : null}
 
-					{userDetails?.mobile && userDetails?.mobile > 1 ? (
+					{mobile && mobile > 1 ? (
 						<Flex
 							w="full"
 							py="2"
@@ -379,15 +412,34 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								align="center"
 								gap={{ base: "4", sm: "2" }}
 							>
-								<Text
-									fontSize={{ base: "xs", sm: "xxs" }}
-									color="white"
+								<Flex
+									align="center"
+									gap="0.5"
+									cursor="pointer"
+									transition="opacity 0.3s ease-out"
+									_hover={{ opacity: 0.9 }}
+									onClick={() => copy(mobile)}
 								>
-									+91{" "}
-									{userDetails?.mobile.slice(0, 5) +
-										" " +
-										userDetails?.mobile.slice(5)}
-								</Text>
+									<Text
+										fontSize={{ base: "xs", sm: "xxs" }}
+										color="white"
+									>
+										+91{" "}
+										{mobile.slice(0, 5) +
+											" " +
+											mobile.slice(5)}
+									</Text>
+									<Icon
+										title="Copy"
+										name={
+											state[mobile]
+												? "check"
+												: "content-copy"
+										}
+										color="white"
+										size="xs"
+									/>
+								</Flex>
 								<IcoButton
 									size="xs"
 									theme="accent"

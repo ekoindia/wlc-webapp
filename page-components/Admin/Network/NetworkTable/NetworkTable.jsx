@@ -1,8 +1,22 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Button, Table } from "components";
+import { Table } from "components";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { NetworkCard } from "..";
+
+const commission_types = {
+	1: "Monthly",
+	2: "Daily",
+};
+
+/**
+ * Returns the commission type based on the provided value.
+ * @param {string} commission_type - The commission type value.
+ * @returns {string} The corresponding commission type.
+ */
+const getCommissionType = (commission_type) => {
+	if (commission_type === undefined) return "Instant";
+	return commission_types[commission_type];
+};
 
 /**
  * Network table parameter list
@@ -54,7 +68,12 @@ const NetworkTable = ({
 	setPageNumber,
 }) => {
 	const router = useRouter();
-	const [lastPageWithData, setLastPageWithData] = useState(1);
+	// const [lastPageWithData, setLastPageWithData] = useState(1);
+
+	agentDetails?.forEach((agent) => {
+		const commission_type = agent?.commission_duration;
+		agent.commission_type = getCommissionType(commission_type);
+	});
 
 	const networkTableDataSize = agentDetails?.length ?? 0;
 
@@ -74,17 +93,17 @@ const NetworkTable = ({
 		});
 	};
 
-	useEffect(() => {
-		if (networkTableDataSize > 0) setLastPageWithData(pageNumber);
-	}, [agentDetails]);
+	// useEffect(() => {
+	// 	if (networkTableDataSize > 0) setLastPageWithData(pageNumber);
+	// }, [agentDetails]);
 
-	let _pathname = router.pathname;
+	// let _pathname = router.pathname;
 
 	if (!isLoading && networkTableDataSize < 1) {
 		return (
 			<Flex direction="column" align="center" gap="2">
 				<Text color="light">Nothing Found</Text>
-				<Button
+				{/* <Button
 					onClick={() => {
 						router.push({
 							pathname: _pathname,
@@ -94,7 +113,7 @@ const NetworkTable = ({
 					}}
 				>
 					Back
-				</Button>
+				</Button> */}
 			</Flex>
 		);
 	}

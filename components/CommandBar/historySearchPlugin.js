@@ -38,7 +38,10 @@ export const getHistorySearchActions = ({
 				keywords: "",
 				icon: "", // "tid"
 				// section: "History",
-				perform: () => router.push("/history"),
+				perform: () => {
+					const prefix = isAdmin ? "/admin" : "";
+					router.push(`${prefix}/history`);
+				},
 			}),
 		];
 	}
@@ -68,7 +71,7 @@ export const getHistorySearchActions = ({
 					// keywords: queryValue,
 					icon: "", // "mobile"
 					perform: () => {
-						console.log("Mobile search clicked", router);
+						// console.log("Mobile search clicked", router);
 						const prefix = isAdmin ? "/admin" : "";
 						router.push(
 							`${prefix}/history?customer_mobile=${numQueryVal}`

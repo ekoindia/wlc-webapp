@@ -47,6 +47,22 @@ export const globalStyles = {
 		backgroundColor: "#999",
 		border: "1px solid #777",
 	},
+
+	// Auto Dark Theme...
+	// "@media (prefers-color-scheme: dark)": {
+	// 	body: {
+	// 		filter: "invert(100%) hue-rotate(180deg)",
+	// 	},
+	// 	// Fix for Firefox
+	// 	html: {
+	// 		backgroundColor: "#111",
+	// 	},
+	// 	// Do not invert media (revert the invert)
+	// 	"img, video, canvas, iframe": {
+	// 		filter: "invert(100%) hue-rotate(180deg)",
+	// 	},
+	// },
+
 	// "div[tooltip]:not([tooltip='']):not([notooltip])": {
 	// 	position: "relative !important",
 	// },
