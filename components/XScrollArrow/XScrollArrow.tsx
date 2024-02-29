@@ -32,7 +32,6 @@ const XScrollArrow = ({
 	pos = "flex-start",
 	...rest
 }: XScrollArrowProps): JSX.Element => {
-	const scrollBoxRef = useRef<HTMLDivElement>(null);
 	const contentBoxRef = useRef<HTMLDivElement>(null);
 
 	const [scrollButtonVisibility, setScrollButtonVisibility] = useState<{
@@ -44,21 +43,20 @@ const XScrollArrow = ({
 	});
 
 	const handleScroll = () => {
-		const _scrollBox = scrollBoxRef.current;
 		const _contentBox = contentBoxRef.current;
 
-		if (_scrollBox && _contentBox) {
-			const showLeftButton = _scrollBox.scrollLeft > 30;
+		if (_contentBox) {
+			const showLeftButton = _contentBox.scrollLeft > 30;
 			const showRightButton =
-				_scrollBox.clientWidth + _scrollBox.scrollLeft <
-				_contentBox.clientWidth - 30;
+				_contentBox.clientWidth + _contentBox.scrollLeft <
+				_contentBox.scrollWidth - 30;
 			setScrollButtonVisibility({ showLeftButton, showRightButton });
 		}
 	};
 
 	useEffect(() => {
 		handleScroll();
-	}, [contentBoxRef?.current?.clientWidth]);
+	}, [contentBoxRef.current?.scrollWidth]);
 
 	return (
 		<Flex
@@ -84,26 +82,23 @@ const XScrollArrow = ({
 					boxShadow="0px 5px 10px 0px #00000033"
 					animation={`${slideInLeft} 0.2s ease-out`}
 					onClick={() => {
-						const _scrollBox = scrollBoxRef.current;
-						if (_scrollBox) {
-							_scrollBox.scrollLeft -= window.innerWidth * 0.6;
+						const _contentBox = contentBoxRef.current;
+						if (_contentBox) {
+							_contentBox.scrollLeft -= window.innerWidth * 0.6;
 						}
 						handleScroll();
 					}}
 				/>
 			)}
 			<Flex
-				id="scrollBox"
-				ref={scrollBoxRef}
-				maxW="100%"
+				id="contentBox"
+				ref={contentBoxRef}
 				w="100%"
-				overflowX="scroll"
+				overflowX="auto"
 				onScroll={handleScroll}
 				{...rest}
 			>
-				<Flex id="contentBox" ref={contentBoxRef} w="max-content">
-					{children}
-				</Flex>
+				{children}
 			</Flex>
 			{scrollButtonVisibility?.showRightButton && (
 				<IcoButton
@@ -122,9 +117,9 @@ const XScrollArrow = ({
 					w="40px"
 					animation={`${slideInRight} 0.2s ease-out`}
 					onClick={() => {
-						const _scrollBox = scrollBoxRef.current;
-						if (_scrollBox) {
-							_scrollBox.scrollLeft += window.innerWidth * 0.6;
+						const _contentBox = contentBoxRef.current;
+						if (_contentBox) {
+							_contentBox.scrollLeft += window.innerWidth * 0.6;
 						}
 						handleScroll();
 					}}
