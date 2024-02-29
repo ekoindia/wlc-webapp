@@ -1,6 +1,6 @@
 import {
+	Box,
 	Table as ChakraTable,
-	TableContainer,
 	Tbody,
 	Thead,
 	useMediaQuery,
@@ -64,9 +64,12 @@ const Table = ({
 			{!isSmallScreen ? (
 				// Large screen
 				<XScrollArrow>
-					<TableContainer
+					<Box
 						id="table-container"
-						maxW="unset"
+						w="100%"
+						maxW="100%"
+						whiteSpace="nowrap"
+						// overflow="unset !important"
 						borderRadius="10px 10px 0 0"
 						border="1px solid var(--chakra-colors-divider)"
 						sx={{
@@ -111,7 +114,7 @@ const Table = ({
 								/>
 							</Tbody>
 						</ChakraTable>
-					</TableContainer>
+					</Box>
 				</XScrollArrow>
 			) : (
 				// Small screen
