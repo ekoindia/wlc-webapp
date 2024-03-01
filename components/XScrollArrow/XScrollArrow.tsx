@@ -32,7 +32,7 @@ const XScrollArrow = ({
 	pos = "flex-start",
 	...rest
 }: XScrollArrowProps): JSX.Element => {
-	const contentBoxRef = useRef<HTMLDivElement>(null);
+	const scrollBoxRef = useRef<HTMLDivElement>(null);
 
 	const [scrollButtonVisibility, setScrollButtonVisibility] = useState<{
 		showLeftButton: boolean;
@@ -43,20 +43,20 @@ const XScrollArrow = ({
 	});
 
 	const handleScroll = () => {
-		const _contentBox = contentBoxRef.current;
+		const _scrollBox = scrollBoxRef.current;
 
-		if (_contentBox) {
-			const showLeftButton = _contentBox.scrollLeft > 30;
+		if (_scrollBox) {
+			const showLeftButton = _scrollBox.scrollLeft > 30;
 			const showRightButton =
-				_contentBox.clientWidth + _contentBox.scrollLeft <
-				_contentBox.scrollWidth - 30;
+				_scrollBox.clientWidth + _scrollBox.scrollLeft <
+				_scrollBox.scrollWidth - 30;
 			setScrollButtonVisibility({ showLeftButton, showRightButton });
 		}
 	};
 
 	useEffect(() => {
 		handleScroll();
-	}, [contentBoxRef.current?.scrollWidth]);
+	}, [scrollBoxRef.current?.scrollWidth]);
 
 	return (
 		<Flex
@@ -82,17 +82,17 @@ const XScrollArrow = ({
 					boxShadow="0px 5px 10px 0px #00000033"
 					animation={`${slideInLeft} 0.2s ease-out`}
 					onClick={() => {
-						const _contentBox = contentBoxRef.current;
-						if (_contentBox) {
-							_contentBox.scrollLeft -= window.innerWidth * 0.6;
+						const _scrollBox = scrollBoxRef.current;
+						if (_scrollBox) {
+							_scrollBox.scrollLeft -= window.innerWidth * 0.6;
 						}
 						handleScroll();
 					}}
 				/>
 			)}
 			<Flex
-				id="contentBox"
-				ref={contentBoxRef}
+				id="scrollBox"
+				ref={scrollBoxRef}
 				w="100%"
 				overflowX="auto"
 				onScroll={handleScroll}
@@ -117,9 +117,9 @@ const XScrollArrow = ({
 					w="40px"
 					animation={`${slideInRight} 0.2s ease-out`}
 					onClick={() => {
-						const _contentBox = contentBoxRef.current;
-						if (_contentBox) {
-							_contentBox.scrollLeft += window.innerWidth * 0.6;
+						const _scrollBox = scrollBoxRef.current;
+						if (_scrollBox) {
+							_scrollBox.scrollLeft += window.innerWidth * 0.6;
 						}
 						handleScroll();
 					}}
