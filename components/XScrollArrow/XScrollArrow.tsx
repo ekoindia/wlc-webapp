@@ -84,8 +84,11 @@ const XScrollArrow = ({
 				"&::-webkit-scrollbar": {
 					height: "10px",
 				},
+				"&::-webkit-scrollbar-track": {
+					background: "#D2D2D2",
+				},
 				"&::-webkit-scrollbar-thumb": {
-					background: "#AAA",
+					background: "#999999",
 				},
 		  }
 		: {
