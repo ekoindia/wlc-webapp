@@ -10,6 +10,16 @@ type XScrollArrowProps = {
 	[x: string]: any;
 };
 
+// for the pos prop, we map the values to the corresponding flex alignment
+const posMapping: Record<
+	XScrollArrowProps["pos"],
+	"flex-start" | "center" | "flex-end"
+> = {
+	top: "flex-start",
+	center: "center",
+	bottom: "flex-end",
+};
+
 /**
  * A XScrollArrow component. This component creates a scrollable area with optional left and right scroll buttons.
  * The scroll buttons appear based on the scroll position.
@@ -65,16 +75,6 @@ const XScrollArrow = ({
 	useEffect(() => {
 		handleScroll();
 	}, [scrollBoxRef.current?.scrollWidth]);
-
-	// for the pos prop, we map the values to the corresponding flex alignment
-	const posMapping: Record<
-		XScrollArrowProps["pos"],
-		"flex-start" | "center" | "flex-end"
-	> = {
-		top: "flex-start",
-		center: "center",
-		bottom: "flex-end",
-	};
 
 	const align = posMapping[pos];
 
