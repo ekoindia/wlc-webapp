@@ -10,7 +10,7 @@ const ZOHO_FORM_URL =
 const PrivacyPage = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const router = useRouter();
-	const { app_name, org_name, org_id } = orgDetail;
+	const { app_name, org_id } = orgDetail;
 	const currentUrl = window.location.href;
 	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
 	const reach_out_form_url = `${ZOHO_FORM_URL}?org_id=${org_id}&org_url=${baseUrl}`;
@@ -34,8 +34,8 @@ const PrivacyPage = () => {
 
 					<P>
 						Eko India Financial Services Pvt. Ltd. built the{" "}
-						{org_name} app as a Commercial app. This SERVICE is
-						provided by {org_name} and is intended for use as is.
+						{app_name} app as a Commercial app. This SERVICE is
+						provided by {app_name} and is intended for use as is.
 					</P>
 					<P>
 						This page is used to inform the app users regarding our
