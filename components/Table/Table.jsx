@@ -63,7 +63,7 @@ const Table = ({
 		<div id="table-pagination-container">
 			{!isSmallScreen ? (
 				// Large screen
-				<XScrollArrow>
+				<XScrollArrow allowScrollbar>
 					<Box
 						id="table-container"
 						w="100%"
