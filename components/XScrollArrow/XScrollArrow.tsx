@@ -5,7 +5,8 @@ import { IcoButton } from "..";
 
 type XScrollArrowProps = {
 	children?: React.ReactNode;
-	pos?: "flex-start" | "center" | "flex-end";
+	pos?: "top" | "center" | "bottom";
+	allowScrollbar?: boolean;
 	[x: string]: any;
 };
 
@@ -13,23 +14,30 @@ type XScrollArrowProps = {
  * A XScrollArrow component. This component creates a scrollable area with optional left and right scroll buttons.
  * The scroll buttons appear based on the scroll position.
  *
- * @param 	{object}	props	Properties passed to the component
- * @param	{React.ReactNode}	props.children	React nodes to be rendered inside the scrollable area.
- * @param	{"flex-start" | "center" | "flex-end"}	props.pos	Alignment of the scrollable area. Defaults to "flex-start".
- * @param	{...*}	rest	Rest of the props passed to this component. These will be spread on the Flex container.
+ * @component
+ * @param {object} props - Properties passed to the component
+ * @param {React.ReactNode} props.children - React nodes to be rendered inside the scrollable area.
+ * @param {"top" | "center" | "bottom"} [props.pos="top"] - Alignment of the scrollable area. Defaults to "top".
+ * @param {boolean} [props.allowScrollbar=false] - Determines whether a scrollbar should be displayed. Defaults to false.
+ * @param {...*} rest - Rest of the props passed to this component. These will be spread on the Flex container.
  *
  * @example
  * ```jsx
  * <XScrollArrow pos="center">
- *   <div>Content 1</div>
- *   <div>Content 2</div>
- *   <div>Content 3</div>
+ *   <Flex>
+ *      <Box>Content 1</Box>
+ *      <Box>Content 2</Box>
+ *      <Box>Content 3</Box>
+ *   </Flex>
  * </XScrollArrow>
  * ```
+ *
+ * @returns {JSX.Element} The XScrollArrow component.
  */
 const XScrollArrow = ({
 	children,
-	pos = "flex-start",
+	pos = "top",
+	allowScrollbar = false,
 	...rest
 }: XScrollArrowProps): JSX.Element => {
 	const scrollBoxRef = useRef<HTMLDivElement>(null);
@@ -58,13 +66,48 @@ const XScrollArrow = ({
 		handleScroll();
 	}, [scrollBoxRef.current?.scrollWidth]);
 
+	// for the pos prop, we map the values to the corresponding flex alignment
+	const posMapping: Record<
+		XScrollArrowProps["pos"],
+		"flex-start" | "center" | "flex-end"
+	> = {
+		top: "flex-start",
+		center: "center",
+		bottom: "flex-end",
+	};
+
+	const align = posMapping[pos];
+
+	// if allowScrollbar is true, we set the scrollbar styles
+	const scrollbarCSS = allowScrollbar
+		? {
+				"&::-webkit-scrollbar": {
+					height: "10px",
+				},
+				"&::-webkit-scrollbar-thumb": {
+					background: "#AAA",
+				},
+		  }
+		: {
+				"&::-webkit-scrollbar": {
+					display: "none",
+				},
+				"&::-moz-scrollbar": {
+					display: "none",
+				},
+				"&::scrollbar": {
+					display: "none",
+				},
+		  };
+
 	return (
 		<Flex
 			id="XScrollArrowWrapper"
 			w="100%"
 			pos="relative"
 			overflow="hidden"
-			align={pos}
+			align={align}
+			{...rest}
 		>
 			{scrollButtonVisibility?.showLeftButton && (
 				<IcoButton
@@ -96,7 +139,7 @@ const XScrollArrow = ({
 				w="100%"
 				overflowX="auto"
 				onScroll={handleScroll}
-				{...rest}
+				css={scrollbarCSS}
 			>
 				{children}
 			</Flex>
