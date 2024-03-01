@@ -140,6 +140,7 @@ const XScrollArrow = ({
 				overflowX="auto"
 				onScroll={handleScroll}
 				css={scrollbarCSS}
+				style={{ scrollBehavior: "smooth" }}
 			>
 				{children}
 			</Flex>
