@@ -1,5 +1,6 @@
 /* PLOP_INJECT_IMPORT */
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
+import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumbs } from "./Breadcrumb";
 import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { Button } from "./Button";
@@ -48,6 +49,7 @@ import { Tags } from "./Tags";
 import { Textarea } from "./Textarea";
 
 export {
+	BottomAppBar,
 	AdminViewToggleCard,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
