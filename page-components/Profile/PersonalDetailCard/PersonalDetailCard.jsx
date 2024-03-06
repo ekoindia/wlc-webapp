@@ -113,7 +113,7 @@ const PersonalDetailCard = () => {
 	const handleChange = (e) => {
 		setFormState({ ...formState, [e.target.name]: e.target.value });
 	};
-	console.log("data, personalDetailObj", data, personalDetailObj);
+	// console.log("data, personalDetailObj", data, personalDetailObj);
 
 	return (
 		<WidgetBase
