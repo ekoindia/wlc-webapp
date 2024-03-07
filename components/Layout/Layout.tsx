@@ -7,7 +7,8 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { ANDROID_ACTION, doAndroidAction } from "utils";
-import { NavBar, PageLoader, SideBar } from "..";
+import { useBottomBarItems } from ".";
+import { BottomAppBar, NavBar, PageLoader, SideBar } from "..";
 
 // Lazy-load the CommandBarBox component
 const CommandBarBox = dynamic(() => import("../CommandBar/CommandBarBox"), {
@@ -43,6 +44,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
+
+	// Get the bottom bar items
+	const bottomBarItems = useBottomBarItems();
 
 	// Setup Android Listener...
 	useEffect(() => {
@@ -125,7 +129,7 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 			{isPageLoading && <PageLoader />}
 
 			{isLoggedIn ? (
-				<Box w={"full"} className={fontClassName}>
+				<Box w="full" className={fontClassName}>
 					{/* Hide top navbar on small screen if this is a sub-page (shows it's own back button in the top header) */}
 					{isSmallScreen && isSubPage ? null : (
 						<Box
@@ -154,9 +158,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 									lg: "calc(100vh - 60px)",
 									"2xl": "calc(100vh - 90px)",
 								}}
-								w={"full"}
-								bg={"bg"}
-								overflow={"hidden"}
+								w="full"
+								bg="bg"
+								overflow="hidden"
 								sx={{
 									"@media print": {
 										bg: "none",
@@ -167,6 +171,23 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 							</Box>
 						</Flex>
 					)}
+					{isSmallScreen ? (
+						<Box
+							className="layout-bottom-app-bar"
+							pos="fixed"
+							w="100%"
+							bottom="0"
+							left="0"
+							right="0"
+							sx={{
+								"@media print": {
+									display: "none",
+								},
+							}}
+						>
+							<BottomAppBar {...{ bottomBarItems }} />
+						</Box>
+					) : null}
 				</Box>
 			) : (
 				<>{children}</>
