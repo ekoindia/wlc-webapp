@@ -1,95 +1,123 @@
-import { Flex, Text } from "@chakra-ui/react";
-import { useUser } from "contexts";
+import { Avatar, Flex } from "@chakra-ui/react";
+import { BottomBarItem } from "components/Layout/useBottomBarItems";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { Icon } from "..";
 
 /**
- * A <BottomAppBar> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<BottomAppBar></BottomAppBar>` TODO: Fix example
+ * BottomAppBar component.
+ *
+ * @component
+ *
+ * @param {object} props - Component props.
+ * @param {BottomBarItem[]} props.bottomBarItems - Array of items for the bottom app bar.
+ *
+ * @returns {React.Element} The rendered BottomAppBar component.
  */
-const BottomAppBar = () => {
-	const { isAdmin } = useUser();
+const BottomAppBar = ({
+	bottomBarItems,
+}: {
+	bottomBarItems: BottomBarItem[];
+}) => {
 	const router = useRouter();
+	const [lastScrollTop, setLastScrollTop] = useState(0);
+	const [isVisible, setIsVisible] = useState(false);
 
-	const menuList = [
-		{
-			name: "Home",
-			label: "Home",
-			icon: "home",
-			perform: () => {
-				const prefix = isAdmin ? "/admin" : "";
-				router.push(`${prefix}/`);
-			},
-		},
-		{
-			name: "History",
-			label: "History",
-			icon: "transaction-history",
-			perform: () => {
-				const prefix = isAdmin ? "/admin" : "";
-				router.push(`${prefix}/history`);
-			},
-		},
-		{
-			name: "Search",
-			label: "Search",
-			icon: "search",
-			perform: () => {
-				// open global search
-			},
-		},
-		{
-			name: "Network",
-			label: "Network",
-			icon: "refer",
-			perform: () => {
-				router.push(`/admin/my-network/`);
-			},
-			showAdmin: true,
-		},
-		{
-			name: "Other",
-			label: "Other",
-			icon: "supervisor-account",
-			perform: () => {
-				// open modal here asking admin to change user mode
-			},
-			showAdmin: true,
-		},
-	];
+	useEffect(() => {
+		// Slide up after a delay
+		const timer = setTimeout(() => {
+			setIsVisible(true);
+		}, 500);
+
+		return () => clearTimeout(timer);
+	}, []);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			const st = window.pageYOffset || document.documentElement.scrollTop;
+			if (st > lastScrollTop) {
+				setIsVisible(false);
+			} else {
+				setIsVisible(true);
+			}
+			setLastScrollTop(st <= 0 ? 0 : st);
+		};
+
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, [lastScrollTop]);
+
+	if (bottomBarItems?.length <= 0) return null;
 
 	return (
 		<Flex
+			className="bottom-app-bar"
 			bg="white"
 			w="100%"
-			pos="absolute"
+			minH="56px"
 			align="center"
-			justify="space-between"
-			bottom="0"
-			left="0"
-			right="0"
-			p="8px 16px 4px 16px"
+			justify="center"
 			boxShadow="0px 6px 10px #00000033"
+			px="16px"
+			transition="transform 0.3s ease-in-out"
+			transform={isVisible ? "translateY(0)" : "translateY(100%)"}
 		>
-			{menuList.map(({ icon, name, label, perform }, index) => {
-				return (
-					<Flex
-						key={`${index}-${name}`}
-						direction="column"
-						align="center"
-						justify="center"
-						gap="1"
-						onClick={perform}
-					>
-						<Icon name={icon} key={name} color="primary.dark" />
-						<Text fontSize="xs">{label}</Text>
-					</Flex>
-				);
-			})}
+			<Flex
+				w="100%"
+				h="100%"
+				maxW="400px"
+				align="center"
+				justify="space-between"
+			>
+				{bottomBarItems.map(
+					(
+						{ icon, name, avatar, label, action, path, src },
+						index
+					) => {
+						//if path is undefined, and action is undefined, and avatar is undefined return
+						if (!path && !action && !avatar) return;
+
+						const isActive = router.pathname === path;
+						return (
+							<Flex
+								className={`bottom-app-bar-${name}`}
+								key={`${index}-${label}`}
+								align="center"
+								justify="center"
+								w="100%"
+								h="100%"
+								py="8px"
+								gap="2"
+								color={isActive ? "primary.dark" : "gray.500"}
+								borderRadius="50px"
+								onClick={() =>
+									path ? router.push(`${path}`) : action()
+								}
+								// on click transition
+							>
+								{icon ? (
+									<Icon
+										key={name}
+										name={icon}
+										color={
+											isActive ? "primary.dark" : "light"
+										}
+										size="md"
+									/>
+								) : null}
+								{avatar ? (
+									<Avatar
+										src={src}
+										name={avatar}
+										size="sm"
+										onClick={action}
+									/>
+								) : null}
+							</Flex>
+						);
+					}
+				)}
+			</Flex>
 		</Flex>
 	);
 };
