@@ -15,6 +15,7 @@ const HistoryPage = () => {
 HistoryPage.pageMeta = {
 	title: "Transaction History | Admin",
 	isSubPage: true,
+	showBottomAppBar: true,
 };
 
 export default HistoryPage;

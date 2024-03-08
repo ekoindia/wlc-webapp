@@ -11,6 +11,7 @@ const AgentViewHomePage = () => {
 
 AgentViewHomePage.pageMeta = {
 	title: "Agent Homepage | Admin",
+	showBottomAppBar: true,
 };
 
 export default AgentViewHomePage;

@@ -14,6 +14,7 @@ const MyNetwork = () => {
 
 MyNetwork.pageMeta = {
 	title: "My Network | Admin",
+	showBottomAppBar: true,
 };
 
 export default MyNetwork;

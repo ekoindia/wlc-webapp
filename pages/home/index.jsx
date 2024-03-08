@@ -11,6 +11,7 @@ const HomePage = () => {
 
 HomePage.pageMeta = {
 	title: "Home",
+	showBottomAppBar: true,
 };
 
 export default HomePage;

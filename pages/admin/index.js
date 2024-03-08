@@ -6,6 +6,7 @@ const DashboardPage = () => {
 
 DashboardPage.pageMeta = {
 	title: "Dashboard | Admin",
+	showBottomAppBar: true,
 };
 
 export default DashboardPage;

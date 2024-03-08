@@ -14,6 +14,7 @@ const Pricing = () => {
 
 Pricing.pageMeta = {
 	title: "Pricing & Commission | Admin",
+	showBottomAppBar: true,
 };
 
 export default Pricing;

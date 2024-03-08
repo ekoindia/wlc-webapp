@@ -24,7 +24,7 @@ const CommandBarBox = dynamic(() => import("../CommandBar/CommandBarBox"), {
  * @param {Boolean} pageMeta.hideMenu - If true, then the layout will not render the left navigation drawer.
  */
 const Layout = ({ appName, pageMeta, fontClassName, children }) => {
-	const { isSubPage, title, hideMenu } = pageMeta;
+	const { isSubPage, title, hideMenu, showBottomAppBar = false } = pageMeta;
 
 	const { isLoggedIn } = useSession();
 	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
@@ -171,7 +171,7 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 							</Box>
 						</Flex>
 					)}
-					{isSmallScreen ? (
+					{showBottomAppBar && isSmallScreen ? (
 						<Box
 							className="layout-bottom-app-bar"
 							pos="fixed"

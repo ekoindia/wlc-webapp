@@ -11,6 +11,7 @@ const ProfilePage = () => {
 
 ProfilePage.pageMeta = {
 	title: "My Profile",
+	showBottomAppBar: true,
 };
 
 export default ProfilePage;
