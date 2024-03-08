@@ -1,7 +1,8 @@
-import { Avatar, Flex } from "@chakra-ui/react";
+import { Avatar, Flex, useToken } from "@chakra-ui/react";
 import { BottomBarItem } from "components/Layout/useBottomBarItems";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { svgBgDotted } from "utils/svgPatterns";
 import { Icon } from "..";
 
 /**
@@ -20,8 +21,12 @@ const BottomAppBar = ({
 	bottomBarItems: BottomBarItem[];
 }) => {
 	const router = useRouter();
+
 	const [lastScrollTop, setLastScrollTop] = useState(0);
 	const [isVisible, setIsVisible] = useState(false);
+
+	// Get theme color values
+	const [contrast_color] = useToken("colors", ["navbar.dark"]);
 
 	useEffect(() => {
 		// Slide up after a delay
@@ -61,6 +66,10 @@ const BottomAppBar = ({
 			px="16px"
 			transition="transform 0.3s ease-in-out"
 			transform={isVisible ? "translateY(0)" : "translateY(100%)"}
+			backgroundImage={svgBgDotted({
+				fill: contrast_color,
+				opacity: 0.04,
+			})}
 		>
 			<Flex
 				w="100%"
