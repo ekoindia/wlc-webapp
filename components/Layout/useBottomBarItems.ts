@@ -29,7 +29,7 @@ export type BottomBarItem = {
  * @returns {Array<BottomBarItem>} The array of bottom bar items.
  */
 export const useBottomBarItems = (): BottomBarItem[] => {
-	const { isAdmin, name, pic } = useUser();
+	const { isAdmin } = useUser();
 	const { query } = useKBar();
 	const { ready } = useKBarReady();
 
@@ -61,11 +61,6 @@ export const useBottomBarItems = (): BottomBarItem[] => {
 			label: "History",
 			icon: "transaction-history",
 			path: `${_pathPrefix}/history`,
-		},
-		{
-			name: "profile",
-			avatar: name ? name[0] : "",
-			src: pic,
 		},
 	];
 };
