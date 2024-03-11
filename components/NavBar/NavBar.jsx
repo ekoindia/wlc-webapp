@@ -13,7 +13,7 @@ import {
 import { useKBarReady } from "components/CommandBar";
 import { useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
 import { MyAccountCard } from ".";
@@ -27,7 +27,12 @@ export const NavHeight = {
 };
 
 const NavBar = ({ setNavOpen }) => {
+	const { isAdminAgentMode } = useUser();
 	const [isCardOpen, setIsCardOpen] = useState(false);
+
+	useEffect(() => {
+		setIsCardOpen(false);
+	}, [isAdminAgentMode]);
 
 	return (
 		<>
