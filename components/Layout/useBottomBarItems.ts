@@ -1,6 +1,7 @@
 import { useKBarReady } from "components/CommandBar";
 import { useUser } from "contexts";
 import { useKBar } from "kbar";
+import { TransactionsDrawer } from ".";
 
 export type BottomBarItem = {
 	name: string;
@@ -8,8 +9,7 @@ export type BottomBarItem = {
 	icon?: string;
 	path?: string;
 	action?: () => void;
-	avatar?: string;
-	src?: string;
+	component?: () => JSX.Element;
 };
 
 /**
@@ -21,8 +21,7 @@ export type BottomBarItem = {
  * - `icon`: A string that specifies the name of the item's icon.
  * - `path`: A string that defines the navigation path of the item. If the user is an admin, the path is prefixed with "/admin".
  * - `action`: A function that is executed when the item is clicked. For the "search" item, this function toggles the command bar.
- * - `avatar`: A string that represents the first character of the user's name.
- * - `src`: A string that represents the URL of the user's profile picture.
+ * - `component`: A function that returns a JSX element."
  *
  * The function uses the `useUser`, `useKBar`, and `useKBarReady` hooks to get the necessary data and functions.
  *
@@ -33,14 +32,12 @@ export const useBottomBarItems = (): BottomBarItem[] => {
 	const { query } = useKBar();
 	const { ready } = useKBarReady();
 
-	const _pathPrefix = isAdmin ? "/admin" : "";
-
 	return [
 		{
 			name: "dashboard",
 			label: "Dasboard",
 			icon: "dashboard",
-			path: isAdmin ? `${_pathPrefix}` : null,
+			path: isAdmin ? "/admin" : null,
 		},
 		{
 			name: "home",
@@ -57,10 +54,15 @@ export const useBottomBarItems = (): BottomBarItem[] => {
 			},
 		},
 		{
+			name: "transaction",
+			label: "Transaction",
+			component: isAdmin ? null : TransactionsDrawer, // bottom bar transaction drawer
+		},
+		{
 			name: "history",
 			label: "History",
 			icon: "transaction-history",
-			path: `${_pathPrefix}/history`,
+			path: isAdmin ? "/admin/history" : "/history",
 		},
 	];
 };

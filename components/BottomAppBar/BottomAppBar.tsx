@@ -1,4 +1,4 @@
-import { Avatar, Flex, useToken } from "@chakra-ui/react";
+import { Flex, useToken } from "@chakra-ui/react";
 import { BottomBarItem } from "components/Layout/useBottomBarItems";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -28,8 +28,8 @@ const BottomAppBar = ({
 	// Get theme color values
 	const [contrast_color] = useToken("colors", ["navbar.dark"]);
 
+	// Visible after a delay
 	useEffect(() => {
-		// Slide up after a delay
 		const timer = setTimeout(() => {
 			setIsVisible(true);
 		}, 500);
@@ -37,6 +37,7 @@ const BottomAppBar = ({
 		return () => clearTimeout(timer);
 	}, []);
 
+	// Hide on scroll down, show on scroll up
 	useEffect(() => {
 		const handleScroll = () => {
 			const st = window.pageYOffset || document.documentElement.scrollTop;
@@ -52,6 +53,7 @@ const BottomAppBar = ({
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, [lastScrollTop]);
 
+	// If there are no bottom bar items, return null
 	if (bottomBarItems?.length <= 0) return null;
 
 	return (
@@ -80,11 +82,18 @@ const BottomAppBar = ({
 			>
 				{bottomBarItems.map(
 					(
-						{ icon, name, avatar, label, action, path, src },
+						{
+							name,
+							label,
+							icon,
+							path,
+							action,
+							component: BottomBarComponentProp,
+						},
 						index
 					) => {
-						//if path is undefined, and action is undefined, and avatar is undefined return
-						if (!path && !action && !avatar) return;
+						//if path is undefined, and action is undefined, and BottomBarComponentProp is undefined return
+						if (!path && !action && !BottomBarComponentProp) return;
 
 						const isActive = router.pathname === path;
 						return (
@@ -100,7 +109,11 @@ const BottomAppBar = ({
 								color={isActive ? "primary.dark" : "gray.500"}
 								borderRadius="50px"
 								onClick={() =>
-									path ? router.push(`${path}`) : action()
+									path
+										? router.push(`${path}`)
+										: action
+										? action()
+										: null
 								}
 								// on click transition
 							>
@@ -114,13 +127,9 @@ const BottomAppBar = ({
 										size="md"
 									/>
 								) : null}
-								{avatar ? (
-									<Avatar
-										src={src}
-										name={avatar}
-										size="sm"
-										onClick={action}
-									/>
+
+								{BottomBarComponentProp ? (
+									<BottomBarComponentProp />
 								) : null}
 							</Flex>
 						);
