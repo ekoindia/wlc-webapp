@@ -30,8 +30,6 @@ export type BottomBarItem = {
  */
 export const useBottomBarItems = (): BottomBarItem[] => {
 	const { isAdmin, isAdminAgentMode } = useUser();
-	console.log("isAdmin", isAdmin);
-	console.log("isAdminAgentMode", isAdminAgentMode);
 	const { query } = useKBar();
 	const { ready } = useKBarReady();
 
