@@ -89,12 +89,11 @@ const BottomAppBar = ({
 							path,
 							action,
 							component: BottomBarComponentProp,
+							visible,
 						},
 						index
 					) => {
-						//if path is undefined, and action is undefined, and BottomBarComponentProp is undefined return
-						if (!path && !action && !BottomBarComponentProp) return;
-
+						if (!visible) return null;
 						const isActive = router.pathname === path;
 						return (
 							<Flex

@@ -10,6 +10,7 @@ export type BottomBarItem = {
 	path?: string;
 	action?: () => void;
 	component?: () => JSX.Element;
+	visible: boolean;
 };
 
 /**
@@ -28,7 +29,9 @@ export type BottomBarItem = {
  * @returns {Array<BottomBarItem>} The array of bottom bar items.
  */
 export const useBottomBarItems = (): BottomBarItem[] => {
-	const { isAdmin } = useUser();
+	const { isAdmin, isAdminAgentMode } = useUser();
+	console.log("isAdmin", isAdmin);
+	console.log("isAdminAgentMode", isAdminAgentMode);
 	const { query } = useKBar();
 	const { ready } = useKBarReady();
 
@@ -37,32 +40,38 @@ export const useBottomBarItems = (): BottomBarItem[] => {
 			name: "dashboard",
 			label: "Dasboard",
 			icon: "dashboard",
-			path: isAdmin ? "/admin" : null,
+			path: "/admin",
+			visible: isAdmin ? !isAdminAgentMode : isAdminAgentMode,
 		},
 		{
 			name: "home",
 			label: "Home",
 			icon: "home",
-			path: isAdmin ? null : "/home",
+			path: isAdmin ? "/admin/home" : "/home",
+			visible: !isAdmin || isAdminAgentMode,
 		},
 		{
 			name: "search",
 			label: "Search",
 			icon: "search",
 			action: () => {
-				ready && query.toggle(); // open command bar
+				// open k-bar if it's ready
+				ready && query.toggle();
 			},
+			visible: true,
 		},
 		{
 			name: "transaction",
 			label: "Transaction",
-			component: isAdmin ? null : TransactionsDrawer, // bottom bar transaction drawer
+			component: TransactionsDrawer, // bottom bar transaction drawer
+			visible: isAdmin ? isAdminAgentMode : !isAdminAgentMode,
 		},
 		{
 			name: "history",
 			label: "History",
 			icon: "transaction-history",
 			path: isAdmin ? "/admin/history" : "/history",
+			visible: true,
 		},
 	];
 };
