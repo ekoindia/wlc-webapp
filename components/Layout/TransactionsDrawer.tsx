@@ -75,15 +75,18 @@ const TransactionsDrawer = () => {
 
 	return (
 		<>
-			<Icon
-				ref={btnRef}
-				name="transaction"
-				size="md"
-				color="light"
+			<Flex
+				w="100%"
+				h="100%"
+				align="center"
+				justify="center"
+				borderRadius="50px"
 				onClick={onOpen}
 			>
-				Open
-			</Icon>
+				<Icon ref={btnRef} name="transaction" size="md" color="light">
+					Open
+				</Icon>
+			</Flex>
 			<Drawer
 				isOpen={isOpen}
 				placement="bottom"

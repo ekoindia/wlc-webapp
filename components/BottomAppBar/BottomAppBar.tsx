@@ -107,7 +107,6 @@ const BottomAppBar = ({
 								w="100%"
 								h="100%"
 								py="8px"
-								gap="2"
 								color={isActive ? "primary.dark" : "gray.500"}
 								borderRadius="50px"
 								onClick={() =>
