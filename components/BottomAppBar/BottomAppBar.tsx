@@ -1,5 +1,6 @@
 import { Flex, useToken } from "@chakra-ui/react";
 import { BottomBarItem } from "components/Layout/useBottomBarItems";
+import usePlatform from "hooks/usePlatform";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { svgBgDotted } from "utils/svgPatterns";
@@ -24,6 +25,7 @@ const BottomAppBar = ({
 
 	const [lastScrollTop, setLastScrollTop] = useState(0);
 	const [isVisible, setIsVisible] = useState(false);
+	const { isMac } = usePlatform();
 
 	// Get theme color values
 	const [contrast_color] = useToken("colors", ["navbar.dark"]);
@@ -61,11 +63,12 @@ const BottomAppBar = ({
 			className="bottom-app-bar"
 			bg="white"
 			w="100%"
-			minH="56px"
+			minH={isMac ? "64px" : "56px"}
 			align="center"
 			justify="center"
 			boxShadow="0px 6px 10px #00000033"
 			px="16px"
+			pb={isMac ? "10px" : "0px"}
 			transition="transform 0.3s ease-in-out"
 			transform={isVisible ? "translateY(0)" : "translateY(100%)"}
 			backgroundImage={svgBgDotted({
