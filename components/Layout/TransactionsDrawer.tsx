@@ -99,7 +99,7 @@ const TransactionsDrawer = () => {
 					name="transaction"
 					size="md"
 					color="light"
-					whileTap={{ scale: 0.8 }}
+					whileTap={{ scale: 0.6 }}
 				>
 					Open
 				</Icon>

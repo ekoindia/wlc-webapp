@@ -112,7 +112,7 @@ const BottomAppBar = ({
 								transition="0.5s linear"
 								_active={{ background: "transparent" }}
 								whileTap={{
-									scale: 0.8,
+									scale: 0.6,
 								}}
 								onClick={() =>
 									path
