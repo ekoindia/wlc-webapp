@@ -1,5 +1,6 @@
 import { Flex, useToken } from "@chakra-ui/react";
 import { BottomBarItem } from "components/Layout/useBottomBarItems";
+import { motion } from "framer-motion";
 import usePlatform from "hooks/usePlatform";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -67,8 +68,7 @@ const BottomAppBar = ({
 			align="center"
 			justify="center"
 			boxShadow="0px 6px 10px #00000033"
-			px="16px"
-			pb={isMac ? "14px" : "0px"}
+			pb={isMac ? "16px" : "0px"}
 			transition="transform 0.3s ease-in-out"
 			transform={isVisible ? "translateY(0)" : "translateY(100%)"}
 			backgroundImage={svgBgDotted({
@@ -100,6 +100,7 @@ const BottomAppBar = ({
 						const isActive = router.pathname === path;
 						return (
 							<Flex
+								as={motion.div}
 								className={`bottom-app-bar-${name}`}
 								key={`${index}-${label}`}
 								align="center"
@@ -108,7 +109,6 @@ const BottomAppBar = ({
 								h="100%"
 								py="8px"
 								color={isActive ? "primary.dark" : "gray.500"}
-								borderRadius="50px"
 								onClick={() =>
 									path
 										? router.push(`${path}`)
@@ -116,7 +116,10 @@ const BottomAppBar = ({
 										? action()
 										: null
 								}
-								// on click transition
+								whileTap={{
+									scale: 0.8,
+								}}
+								transition="0.5s linear"
 							>
 								{icon ? (
 									<Icon

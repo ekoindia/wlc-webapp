@@ -6,6 +6,7 @@ import {
 	DrawerContent,
 	DrawerOverlay,
 	Flex,
+	keyframes,
 	SimpleGrid,
 	Text,
 	useDisclosure,
@@ -13,10 +14,18 @@ import {
 import { TransactionIds } from "constants/EpsTransactions";
 import { OtherMenuItems } from "constants/SidebarMenu";
 import { useMenuContext } from "contexts";
+import { motion } from "framer-motion";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { IcoButton, Icon } from "..";
+
+const animationKeyframes = keyframes`
+  0%, 10%, 20%, 30%, 40%, 55%, 60%, 70%, 80%, 90%, 100% { transform: rotate(0); }
+  50% { transform: rotate(180deg); }
+`;
+
+const animation = `${animationKeyframes} 5s ease-in-out infinite`;
 
 /**
  * Component for displaying a drawer with transaction options.
@@ -80,10 +89,17 @@ const TransactionsDrawer = () => {
 				h="100%"
 				align="center"
 				justify="center"
-				borderRadius="50px"
 				onClick={onOpen}
 			>
-				<Icon ref={btnRef} name="transaction" size="md" color="light">
+				<Icon
+					as={motion.div}
+					animation={animation}
+					ref={btnRef}
+					name="transaction"
+					size="md"
+					color="light"
+					whileTap={{ scale: 0.8 }}
+				>
 					Open
 				</Icon>
 			</Flex>
