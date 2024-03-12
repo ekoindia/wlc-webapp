@@ -66,7 +66,7 @@ export const useBottomBarItems = (): BottomBarItem[] => {
 		},
 		{
 			name: "history",
-			label: "History",
+			label: "Trans. History",
 			icon: "transaction-history",
 			path: isAdmin ? "/admin/history" : "/history",
 			visible: true,
