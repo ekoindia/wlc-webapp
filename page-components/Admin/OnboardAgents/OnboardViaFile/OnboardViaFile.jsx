@@ -133,6 +133,7 @@ const OnboardViaFile = () => {
 						align="center"
 						bottom="0"
 						left="0"
+						bg="white"
 					>
 						<Button
 							onClick={handleFileUpload}
