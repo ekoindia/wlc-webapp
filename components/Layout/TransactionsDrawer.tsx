@@ -92,27 +92,39 @@ const TransactionsDrawer = () => {
 			>
 				<DrawerOverlay />
 				<DrawerContent
-					maxH="80%"
+					maxH="90%"
 					w="100%"
-					p="10px 20px"
+					py="8px"
 					borderTopRadius="10px"
 					gap="2"
 					pb="56px"
 				>
-					<Flex w="100%" align="center" justify="space-between">
+					<Flex
+						w="100%"
+						align="center"
+						justify="space-between"
+						pl="20px"
+					>
 						<Text fontSize="lg" fontWeight="semibold">
 							Start a Transaction
 						</Text>
-						<Icon
-							size="xs"
-							name="close"
-							color="light"
+						<Flex
+							direction="row-reverse"
 							onClick={onClose}
-							_active={{ color: "error" }}
-						/>
+							w="20%"
+							pr="20px"
+						>
+							<Icon
+								size="xs"
+								name="close"
+								color="light"
+								_active={{ color: "error" }}
+							/>
+						</Flex>
 					</Flex>
+					<Divider />
 					{/* Common Transactions */}
-					<Flex direction="column" gap="2" pb="2">
+					<Flex direction="column" gap="2" pb="1" px="20px">
 						{interactionList?.map(({ label, icon, id }, index) => {
 							return (
 								<>
@@ -126,9 +138,8 @@ const TransactionsDrawer = () => {
 							);
 						})}
 					</Flex>
-
 					{/* Recharge & Bill Payments */}
-					<Flex direction="column" gap="4">
+					<Flex direction="column" gap="4" px="20px">
 						<Text fontWeight="medium">
 							Recharge & Bill Payments
 						</Text>
