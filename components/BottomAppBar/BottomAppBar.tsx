@@ -1,4 +1,4 @@
-import { Flex, useToken } from "@chakra-ui/react";
+import { Flex, Text, useToken } from "@chakra-ui/react";
 import { BottomBarItem } from "components/Layout/useBottomBarItems";
 import { motion } from "framer-motion";
 import usePlatform from "hooks/usePlatform";
@@ -103,12 +103,14 @@ const BottomAppBar = ({
 								as={motion.div}
 								className={`bottom-app-bar-${name}`}
 								key={`${index}-${label}`}
+								direction="column"
 								align="center"
 								justify="center"
 								w="100%"
 								h="100%"
 								py="8px"
-								color={isActive ? "primary.dark" : "gray.500"}
+								gap="1"
+								color={isActive ? "primary.dark" : "light"}
 								transition="0.5s linear"
 								_active={{ background: "transparent" }}
 								whileTap={{
@@ -123,18 +125,17 @@ const BottomAppBar = ({
 								}
 							>
 								{icon ? (
-									<Icon
-										key={name}
-										name={icon}
-										color={
-											isActive ? "primary.dark" : "light"
-										}
-										size="md"
-									/>
+									<Icon key={name} name={icon} size="sm" />
 								) : null}
 
 								{BottomBarComponentProp ? (
 									<BottomBarComponentProp />
+								) : null}
+
+								{label ? (
+									<Text fontSize="10px" fontWeight="medium">
+										{label}
+									</Text>
 								) : null}
 							</Flex>
 						);
