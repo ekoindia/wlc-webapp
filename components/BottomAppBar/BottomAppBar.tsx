@@ -109,6 +109,11 @@ const BottomAppBar = ({
 								h="100%"
 								py="8px"
 								color={isActive ? "primary.dark" : "gray.500"}
+								transition="0.5s linear"
+								_active={{ background: "transparent" }}
+								whileTap={{
+									scale: 0.8,
+								}}
 								onClick={() =>
 									path
 										? router.push(`${path}`)
@@ -116,10 +121,6 @@ const BottomAppBar = ({
 										? action()
 										: null
 								}
-								whileTap={{
-									scale: 0.8,
-								}}
-								transition="0.5s linear"
 							>
 								{icon ? (
 									<Icon

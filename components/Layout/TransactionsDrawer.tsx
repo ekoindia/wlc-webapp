@@ -90,6 +90,7 @@ const TransactionsDrawer = () => {
 				align="center"
 				justify="center"
 				onClick={onOpen}
+				_active={{ background: "transparent" }}
 			>
 				<Icon
 					as={motion.div}
