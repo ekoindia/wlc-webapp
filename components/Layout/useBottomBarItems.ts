@@ -60,7 +60,6 @@ export const useBottomBarItems = (): BottomBarItem[] => {
 		},
 		{
 			name: "transaction",
-			label: "Transaction",
 			component: TransactionsDrawer, // bottom bar transaction drawer
 			visible: isAdmin ? isAdminAgentMode : !isAdminAgentMode,
 		},

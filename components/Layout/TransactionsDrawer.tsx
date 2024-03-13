@@ -76,6 +76,8 @@ const TransactionsDrawer = () => {
 	return (
 		<>
 			<Flex
+				direction="column"
+				gap="1"
 				w="100%"
 				h="100%"
 				align="center"
@@ -92,6 +94,9 @@ const TransactionsDrawer = () => {
 				>
 					Open
 				</Icon>
+				<Text fontSize="10px" fontWeight="medium" noOfLines={2}>
+					Transaction
+				</Text>
 			</Flex>
 			<Drawer
 				isOpen={isOpen}
