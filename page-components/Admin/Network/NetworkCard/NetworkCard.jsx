@@ -12,9 +12,9 @@ import { NetworkMenuWrapper } from "..";
 
 const NetworkCard = ({ item }) => {
 	const {
-		agent_mobile,
+		mobile_number,
 		eko_code,
-		account_status,
+		account_status_id,
 		agent_type,
 		address_details,
 	} = item;
@@ -28,9 +28,9 @@ const NetworkCard = ({ item }) => {
 				</Box>
 				<NetworkMenuWrapper
 					{...{
-						mobile_number: agent_mobile,
+						mobile_number,
 						eko_code,
-						account_status,
+						account_status_id,
 						agent_type,
 					}}
 				/>
