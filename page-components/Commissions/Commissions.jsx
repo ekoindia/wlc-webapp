@@ -5,40 +5,30 @@ import { useCommissionSummary } from "contexts";
 import { useEffect, useState } from "react";
 import { CommissionsTable } from ".";
 
-const limit = tableRowLimit?.XLARGE; // Page size
+const pageSize = tableRowLimit?.XLARGE;
 
 const Commissions = ({ prod_id }) => {
-	const [tableData, setTableData] = useState();
-	const [currentPage, setCurrentPage] = useState(1);
-	const [tagValue, setTagValue] = useState("");
+	const [tag, setTag] = useState(prod_id || "");
+	const [pageNumber, setPageNumber] = useState(1);
+	const [allCommissionsData, setAllCommissionsData] = useState([]);
+	const [currentCommissionsPageData, setCurrentCommissionsPageData] =
+		useState([]);
 
 	const commissionData = useCommissionSummary();
 
-	const handleTagClick = (id) => {
-		setTagValue(id);
-	};
-
 	useEffect(() => {
-		if (prod_id) {
-			setTagValue(prod_id);
-		}
-	}, [prod_id]);
-
-	useEffect(() => {
-		if (
-			!tagValue ||
-			!commissionData?.data ||
-			!(tagValue in commissionData.data)
-		) {
-			return;
-		}
-
-		const tagData = commissionData?.data?.[tagValue]?.slabs;
-
+		const tagData = commissionData?.data?.[tag]?.slabs;
 		if (tagData?.length > 0) {
-			setTableData(tagData);
+			setAllCommissionsData(tagData);
+			setPageNumber(1);
 		}
-	}, [tagValue, commissionData]);
+	}, [tag, commissionData]);
+
+	useEffect(() => {
+		const start = (pageNumber - 1) * pageSize;
+		const end = start + pageSize;
+		setCurrentCommissionsPageData(allCommissionsData.slice(start, end));
+	}, [allCommissionsData, pageNumber]);
 
 	const commissionProducts = Object.keys(commissionData?.data || {}).map(
 		(id) => ({
@@ -50,46 +40,47 @@ const Commissions = ({ prod_id }) => {
 	if (!commissionProducts?.length) return null;
 
 	return (
-		<Flex
-			w="full"
-			h="auto"
-			p={{ base: "0px", md: "20px", "2xl": "14px 30px 30px 30px" }}
-			direction="column"
-			border="card"
-			borderRadius="10"
-			boxShadow="basic"
-			bg="white"
-			px="16px"
-		>
+		<>
 			<Headings title="Know Your Commissions" />
-			<Flex w="full" h="auto" direction="row" py="1px">
-				{commissionProducts?.map((tx) => (
-					<Tags
-						key={tx?.id}
-						status={tx?.label}
-						w="fit-content"
-						h="32px"
-						margin="0 10px 12px 0"
-						size="lg"
-						px="10px"
-						borderRadius="16"
-						fontSize="12"
-						bg={tx?.id === tagValue ? "primary.DEFAULT" : "divider"}
-						color={tx?.id === tagValue ? "focusbg" : "dark"}
-						cursor="pointer"
-						_hover={{ bg: "primary.DEFAULT", color: "white" }}
-						onClick={() => handleTagClick(tx.id)}
-					/>
-				))}
+			<Flex
+				direction="column"
+				w="full"
+				h="auto"
+				gap="3"
+				p={{ base: "10px 20px", md: "20px" }}
+				borderRadius="10"
+				border={{ base: "none", md: "card" }}
+				boxShadow={{ base: "none", md: "basic" }}
+				bg={{ base: "transparent", md: "white" }}
+			>
+				<Flex w="full" h="auto" gap="2">
+					{commissionProducts?.map((tx) => (
+						<Tags
+							key={tx?.id}
+							status={tx?.label}
+							h="32px"
+							borderRadius="16"
+							fontSize="xs"
+							bg={tx?.id === tag ? "primary.DEFAULT" : "divider"}
+							color={tx?.id === tag ? "focusbg" : "dark"}
+							_hover={{ bg: "primary.DEFAULT", color: "white" }}
+							onClick={() => setTag(tx.id)}
+							cursor="pointer"
+						/>
+					))}
+				</Flex>
+				<CommissionsTable
+					{...{
+						tag,
+						pageNumber,
+						setPageNumber,
+						tableRowLimit: pageSize,
+						totalRecords: allCommissionsData?.length,
+						commissionData: currentCommissionsPageData,
+					}}
+				/>
 			</Flex>
-			<CommissionsTable
-				pageNumber={currentPage}
-				setPageNumber={setCurrentPage}
-				tableRowLimit={limit}
-				tagClicked={tagValue}
-				commissionData={tableData}
-			/>
-		</Flex>
+		</>
 	);
 };
 
