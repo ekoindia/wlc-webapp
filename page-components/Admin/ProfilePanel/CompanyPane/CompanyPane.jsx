@@ -73,7 +73,7 @@ const CompanyPane = ({ data }) => {
 						<Text as="b" fontSize="xl">
 							{capitalize(agent_name)}
 						</Text>
-						<Flex color="light" fontSize="sm">
+						<Flex color="light" fontSize="sm" gap="1">
 							User Code:
 							<Flex
 								align="center"

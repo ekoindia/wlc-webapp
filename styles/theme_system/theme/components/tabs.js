@@ -18,6 +18,9 @@ const baseStyle = definePartsStyle({
 			boxShadow: "none",
 		},
 	},
+	tablist: {
+		px: "3",
+	},
 	tabpanels: {
 		p: "10px 20px",
 	},
@@ -45,11 +48,8 @@ const defaultVariant = definePartsStyle({
 			borderRadius: "20px 20px 0px 0px",
 		},
 	},
-	tablist: {
-		w: "100%",
-		// overflowX: "auto",
-		// overflowY: "hidden",
-		borderBottom: "card",
+	tabpanels: {
+		borderTop: "card",
 	},
 });
 
