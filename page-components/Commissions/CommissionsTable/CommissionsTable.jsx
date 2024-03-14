@@ -1,46 +1,52 @@
 import { Table } from "components";
 import { CommissionsCard } from "..";
+
+const commissionTableParameterList = [
+	{
+		name: "transaction_value",
+		label: "Transaction Value",
+	},
+	{
+		name: "biller_name",
+		label: "Biller Name",
+	},
+	{
+		name: "commission",
+		label: "Commission",
+	},
+];
+
 /**
- * A <CommissionsTable> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<CommissionsTable></CommissionsTable>` TODO: Fix example
+ * The CommissionsTable component displays a table of commission data.
  */
 const CommissionsTable = ({
-	pageNumber,
+	commissionData,
 	setPageNumber,
 	tableRowLimit,
-	commissionData,
-	// tagClicked,
+	totalRecords,
+	pageNumber,
+	tag,
 }) => {
-	let renderer = [
-		{
-			name: "transaction_value",
-			label: "Transaction Value",
-		},
-		{
-			name: "biller_name",
-			label: "Biller Name",
-		},
-		{
-			name: "commission",
-			label: "Commission",
-		},
-	];
+	// If tag is 'money_transfer', remove 'biller_name' from the table
+	let tableParameters = commissionTableParameterList;
+	if (tag === "money_transfer") {
+		tableParameters = commissionTableParameterList.filter(
+			(param) => param.name !== "biller_name"
+		);
+	}
 
 	return (
 		<>
 			<Table
-				renderer={renderer}
-				visibleColumns={0}
-				data={commissionData}
-				variant="stripedActionNone"
-				ResponsiveCard={CommissionsCard}
-				tableRowLimit={tableRowLimit}
-				setPageNumber={setPageNumber}
-				pageNumber={pageNumber}
+				{...{
+					renderer: tableParameters,
+					ResponsiveCard: CommissionsCard,
+					data: commissionData,
+					setPageNumber,
+					tableRowLimit,
+					totalRecords,
+					pageNumber,
+				}}
 			/>
 		</>
 	);
