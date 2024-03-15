@@ -35,7 +35,12 @@ const BillPaymentWidget = () => {
 			bbps_tx_list.length > 8
 				? [
 						...bbps_tx_list.slice(0, 7),
-						{ id: null, label: "More", icon: "more-horiz" },
+						{
+							id: null,
+							label: "More",
+							icon: "more-horiz",
+							theme: "gray",
+						},
 				  ]
 				: bbps_tx_list
 		);
@@ -61,34 +66,36 @@ const BillPaymentWidget = () => {
 				alignItems="flex-start"
 				justifyContent="center"
 			>
-				{billPaymentOptions?.map(({ label, icon, id }, index) => (
-					<Box
-						key={index}
-						display="flex"
-						flexDirection="column"
-						alignItems="center"
-						justifyContent="center"
-					>
-						<IcoButton
-							title={label}
-							iconName={icon}
-							size="md"
-							theme="dark"
-							onClick={() => handleBillPaymentOptionClick(id)}
-						/>
-						<Text
-							pt={{ base: "10px" }}
-							fontSize={{
-								base: "xs",
-								"2xl": "md",
-							}}
-							noOfLines={2}
-							textAlign="center"
+				{billPaymentOptions?.map(
+					({ id, label, icon, theme = "dark" }, index) => (
+						<Box
+							key={index}
+							display="flex"
+							flexDirection="column"
+							alignItems="center"
+							justifyContent="center"
 						>
-							{label}
-						</Text>
-					</Box>
-				))}
+							<IcoButton
+								title={label}
+								iconName={icon}
+								size="md"
+								theme={theme}
+								onClick={() => handleBillPaymentOptionClick(id)}
+							/>
+							<Text
+								pt={{ base: "10px" }}
+								fontSize={{
+									base: "xs",
+									"2xl": "md",
+								}}
+								noOfLines={2}
+								textAlign="center"
+							>
+								{label}
+							</Text>
+						</Box>
+					)
+				)}
 			</SimpleGrid>
 			{/* Once data is there for offers,show this row*/}
 			{/* <Flex
