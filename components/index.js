@@ -9,6 +9,7 @@ import { Card } from "./Card";
 import { ColorPair } from "./ColorPair";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
+import { Details } from "./Details";
 import { Divider } from "./Divider";
 import { Dropzone } from "./Dropzone";
 import { EkoConnectWidget } from "./EkoConnectWidget";
@@ -50,6 +51,7 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	Details,
 	BottomAppBar,
 	XScrollArrow,
 	AdminViewToggleCard,
