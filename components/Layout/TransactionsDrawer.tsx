@@ -17,6 +17,35 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Details, Icon } from "..";
 
+/**
+ * Generates a new path for transaction navigation.
+ *
+ * @param {string} currentPath - The current path of the router.
+ * @param {number} id - The id to be included in the new path.
+ * @param {number} [group_interaction_id] - The optional group interaction id to be included in the new path.
+ * @returns {string} The new path.
+ */
+const generateNewPath = (
+	currentPath: string,
+	id: number,
+	group_interaction_id?: number
+) => {
+	let newPath;
+	if (currentPath.includes("transaction")) {
+		newPath = currentPath.replace(
+			/transaction\/\d+(\/\d*)?/,
+			`transaction/${id}${
+				group_interaction_id ? `/${group_interaction_id}` : ""
+			}`
+		);
+	} else {
+		newPath = `transaction/${id}${
+			group_interaction_id ? `/${group_interaction_id}` : ""
+		}`;
+	}
+	return newPath;
+};
+
 interface InteractionList {
 	id: number;
 	behavior: number;
@@ -216,8 +245,13 @@ const InteractionItem = ({
 
 	const router = useRouter();
 
-	const onInteractionClick = (id: number) => {
-		router.push(`transaction/${id}`);
+	const onInteractionClick = (id: number, group_interaction_id?: number) => {
+		const newPath = generateNewPath(
+			router.asPath,
+			id,
+			group_interaction_id
+		);
+		router.push(newPath);
 		onClose();
 	};
 
@@ -395,8 +429,13 @@ const GridInteractionItem = ({
 }: GridInteractionItemProps): JSX.Element => {
 	const router = useRouter();
 
-	const onInteractionClick = (id: number, group_interaction_id: number) => {
-		router.push(`transaction/${id}/${group_interaction_id || ""}`);
+	const onInteractionClick = (id: number, group_interaction_id?: number) => {
+		const newPath = generateNewPath(
+			router.asPath,
+			id,
+			group_interaction_id
+		);
+		router.push(newPath);
 		onClose();
 	};
 
