@@ -446,11 +446,11 @@ const GridInteractionItem = ({
 			}}
 		>
 			<Avatar
-				size={{ base: "sm", md: "md" }}
+				size="sm"
 				name={icon ? null : label}
 				bg="inputlabel"
 				color="white"
-				icon={<Icon size="sm" name={icon} color="white" />}
+				icon={<Icon size="16px" name={icon} color="white" />}
 			/>
 			<Text
 				pt={{ base: "10px" }}
