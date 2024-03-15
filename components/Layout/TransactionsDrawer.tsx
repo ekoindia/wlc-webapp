@@ -29,7 +29,7 @@ interface InteractionList {
  * Component for displaying a drawer with transaction options.
  * @returns JSX.Element
  */
-const TransactionsDrawer: React.FC = () => {
+const TransactionsDrawer = (): JSX.Element => {
 	const { interactions } = useMenuContext();
 	const { interaction_list } = interactions;
 	const btnRef = useRef<HTMLButtonElement>(null);
@@ -153,30 +153,74 @@ const DrawerHeader = ({ onClose }) => (
 	</Flex>
 );
 
-const Interaction: React.FC<{
+/* ####################### Interaction ####################### */
+
+type InteractionProps = {
 	id: number;
 	label: string;
 	icon: string;
-	onClose: Function;
-}> = ({ id, label, icon, onClose }) => {
+	onClose: () => void;
+};
+
+/**
+ * `Interaction` is a component that represents a single interaction.
+ * It simply passes its props to an `InteractionItem` component.
+ *
+ * @param {number} id - The ID of the interaction.
+ * @param {string} label - The label for the interaction.
+ * @param {string} icon - The icon for the interaction.
+ * @param {() => void} onClose - Callback invoked to close the modal.
+ *
+ * @returns {JSX.Element} An `InteractionItem` component with the same props as the `Interaction` component.
+ */
+const Interaction = ({
+	id,
+	label,
+	icon,
+	onClose,
+}: InteractionProps): JSX.Element => {
 	return <InteractionItem {...{ id, label, icon, onClose }} />;
 };
 
-const InteractionItem: React.FC<{
+/* ####################### InteractionItem ####################### */
+
+type InteractionItemProps = {
 	id: number;
 	label: string;
 	icon: string;
-	onClose: Function;
+	onClose: () => void;
 	isGridInteraction?: boolean;
-}> = ({ id, label, icon, onClose, isGridInteraction }) => {
+};
+
+/**
+ * `InteractionItem` is a component that represents a single interaction item.
+ * It displays an icon and a label, and navigates to the transaction page for the interaction when clicked.
+ * If `isGridInteraction` is true, the click handler is disabled.
+ *
+ * @param {number} id - The ID of the interaction.
+ * @param {string} label - The label for the interaction.
+ * @param {string} icon - The icon for the interaction.
+ * @param {() => void} onClose - Callback invoked to close the modal.
+ * @param {boolean} [isGridInteraction=false] - Whether the interaction is part of a grid. If true, the click handler is disabled.
+ *
+ * @returns {JSX.Element} A `Flex` component containing an `Icon` and a `Text` component.
+ */
+const InteractionItem = ({
+	id,
+	label,
+	icon,
+	onClose,
+	isGridInteraction = false,
+}: InteractionItemProps): JSX.Element => {
 	const { h } = useHslColor(label);
 
 	const router = useRouter();
 
-	const onInteractionClick = (id) => {
+	const onInteractionClick = (id: number) => {
 		router.push(`transaction/${id}`);
 		onClose();
 	};
+
 	return (
 		<Flex
 			align="center"
@@ -207,13 +251,36 @@ const InteractionItem: React.FC<{
 	);
 };
 
-const GridInteraction: React.FC<{
+/* ####################### GridInteraction ####################### */
+
+type GridInteractionProps = {
 	id: number;
 	group_interaction_ids: string;
 	label: string;
 	icon: string;
-	onClose: Function;
-}> = ({ id, group_interaction_ids, label, icon, onClose }) => {
+	onClose: () => void;
+};
+
+/**
+ * `GridInteraction` is a component that displays a group of interactions in a grid.
+ * It uses the `group_interaction_ids` prop to find the relevant interactions from the `role_tx_list` context.
+ * If there is more than one interaction in the group, it will pass `isGridInteraction` as true to the `InteractionItem` component.
+ *
+ * @param {number} id - The ID of the interaction group.
+ * @param {string} group_interaction_ids - A comma-separated string of interaction IDs.
+ * @param {string} label - The label for the interaction group.
+ * @param {string} icon - The icon for the interaction group.
+ * @param {() => void} onClose - Callback invoked to close the modal.
+ *
+ * @returns {JSX.Element} A `Flex` component containing a `Details` component, which in turn contains an `InteractionItem` and a `GridInteractionBox`.
+ */
+const GridInteraction = ({
+	id,
+	group_interaction_ids,
+	label,
+	icon,
+	onClose,
+}: GridInteractionProps): JSX.Element => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 
@@ -244,11 +311,34 @@ const GridInteraction: React.FC<{
 	);
 };
 
-const GridInteractionBox: React.FC<{
+/* ####################### GridInteractionBox ####################### */
+
+type GridInteractionBoxProps = {
 	id: number;
-	groupInteractions: any[];
-	onClose: Function;
-}> = ({ id, groupInteractions, onClose }) => {
+	groupInteractions: {
+		id: number;
+		label: string;
+		icon: string;
+	}[];
+	onClose: () => void;
+};
+
+/**
+ * `GridInteractionBox` is a component that displays a group of interactions in a grid.
+ * Each interaction is represented by a `GridInteractionItem` component.
+ *
+ * @param {number} id - The ID of the interaction group.
+ * @param {Object[]} groupInteractions - An array of objects representing the interactions in the group.
+ * Each object should have an `id`, a `label`, and an `icon`.
+ * @param {() => void} onClose - Callback invoked to close the modal.
+ *
+ * @returns {JSX.Element} A `SimpleGrid` component containing a `GridInteractionItem` for each interaction in the group.
+ */
+const GridInteractionBox = ({
+	id,
+	groupInteractions,
+	onClose,
+}: GridInteractionBoxProps): JSX.Element => {
 	return (
 		<SimpleGrid
 			columns={4}
@@ -274,16 +364,38 @@ const GridInteractionBox: React.FC<{
 	);
 };
 
-const GridInteractionItem: React.FC<{
+/* ####################### GridInteractionItem ####################### */
+
+type GridInteractionItemProps = {
 	id: number;
 	group_interaction_id: number;
 	label: string;
 	icon: string;
-	onClose: Function;
-}> = ({ id, group_interaction_id, label, icon, onClose }) => {
+	onClose: () => void;
+};
+
+/**
+ * `GridInteractionItem` is a component that represents a single interaction in a grid of interactions.
+ * When clicked, it navigates to the transaction page for the interaction and calls the `onClose` function.
+ *
+ * @param {number} id - The ID of the interaction group.
+ * @param {number} group_interaction_id - The ID of the interaction within the group.
+ * @param {string} label - The label for the interaction.
+ * @param {string} icon - The icon for the interaction.
+ * @param {() => void} onClose - A function to be called when the interaction is clicked.
+ *
+ * @returns {JSX.Element} A `Flex` component containing an `Avatar` and a `Text` component.
+ */
+const GridInteractionItem = ({
+	id,
+	group_interaction_id,
+	label,
+	icon,
+	onClose,
+}: GridInteractionItemProps): JSX.Element => {
 	const router = useRouter();
 
-	const onInteractionClick = (id, group_interaction_id) => {
+	const onInteractionClick = (id: number, group_interaction_id: number) => {
 		router.push(`transaction/${id}/${group_interaction_id || ""}`);
 		onClose();
 	};
