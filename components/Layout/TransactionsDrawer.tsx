@@ -397,6 +397,7 @@ const GridInteractionBox = ({
 /* ####################### GridInteractionItem ####################### */
 
 type GridInteractionItemProps = {
+	key: string;
 	id: number;
 	group_interaction_id: number;
 	label: string;
@@ -408,6 +409,7 @@ type GridInteractionItemProps = {
  * `GridInteractionItem` is a component that represents a single interaction in a grid of interactions.
  * When clicked, it navigates to the transaction page for the interaction and calls the `onClose` function.
  *
+ * @param {string} key - The unique key for the interaction.
  * @param {number} id - The ID of the interaction group.
  * @param {number} group_interaction_id - The ID of the interaction within the group.
  * @param {string} label - The label for the interaction.
@@ -417,6 +419,7 @@ type GridInteractionItemProps = {
  * @returns {JSX.Element} A `Flex` component containing an `Avatar` and a `Text` component.
  */
 const GridInteractionItem = ({
+	key,
 	id,
 	group_interaction_id,
 	label,
@@ -437,6 +440,7 @@ const GridInteractionItem = ({
 
 	return (
 		<Flex
+			key={key}
 			direction="column"
 			align="center"
 			justify="center"
