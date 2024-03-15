@@ -41,7 +41,12 @@ export { tableRowLimit, tableVariant } from "./tableConfig";
 export { table_data_mock } from "./table_data_mock";
 export { transactions_mock } from "./transactions_mock";
 export { transaction_history_mock } from "./transaction_history_mock";
-export { DisplayMedia, ParamMeta, ParamType } from "./trxnFramework";
+export {
+	DisplayMedia,
+	InteractionBehavior,
+	ParamMeta,
+	ParamType,
+} from "./trxnFramework";
 export { UserType, UserTypeLabel } from "./UserTypes";
 export {
 	baseRoute,
