@@ -245,12 +245,8 @@ const InteractionItem = ({
 
 	const router = useRouter();
 
-	const onInteractionClick = (id: number, group_interaction_id?: number) => {
-		const newPath = generateNewPath(
-			router.asPath,
-			id,
-			group_interaction_id
-		);
+	const onInteractionClick = (id: number) => {
+		const newPath = generateNewPath(router.asPath, id);
 		router.push(newPath);
 		onClose();
 	};
