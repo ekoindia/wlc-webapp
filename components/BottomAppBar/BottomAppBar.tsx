@@ -109,10 +109,9 @@ const BottomAppBar = ({
 								py="8px"
 								gap="1"
 								color={isActive ? "primary.dark" : "light"}
-								transition="0.5s linear"
 								_active={{
 									background: "transparent",
-									transform: isActive ? null : "scale(0.1)",
+									transform: isActive ? null : "scale(0.8)",
 									transition: isActive
 										? null
 										: "transform 0.5s ease-in",
@@ -140,6 +139,7 @@ const BottomAppBar = ({
 										fontSize="10px"
 										fontWeight="medium"
 										noOfLines={2}
+										userSelect="none"
 									>
 										{label}
 									</Text>
