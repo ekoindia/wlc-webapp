@@ -46,8 +46,10 @@ import { Table } from "./Table";
 import { Tabs } from "./Tabs";
 import { Tags } from "./Tags";
 import { Textarea } from "./Textarea";
+import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	XScrollArrow,
 	AdminViewToggleCard,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
