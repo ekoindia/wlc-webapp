@@ -5,7 +5,7 @@ import {
 	DrawerContent,
 	DrawerOverlay,
 	Flex,
-	SimpleGrid,
+	Grid,
 	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
@@ -256,6 +256,7 @@ const InteractionItem = ({
 			align="center"
 			gap="4"
 			py="1"
+			cursor="pointer"
 			onClick={
 				isGridInteraction
 					? null
@@ -370,9 +371,9 @@ const GridInteractionBox = ({
 	onClose,
 }: GridInteractionBoxProps): JSX.Element => {
 	return (
-		<SimpleGrid
-			columns={4}
-			rowGap="4"
+		<Grid
+			templateColumns={{ base: "repeat(auto-fit, minmax(100px, 1fr))" }}
+			gap="4"
 			alignItems="flex-start"
 			justifyContent="center"
 		>
@@ -390,7 +391,7 @@ const GridInteractionBox = ({
 					/>
 				)
 			)}
-		</SimpleGrid>
+		</Grid>
 	);
 };
 
@@ -444,6 +445,8 @@ const GridInteractionItem = ({
 			direction="column"
 			align="center"
 			justify="center"
+			gap="2"
+			cursor="pointer"
 			onClick={() => {
 				onInteractionClick(id, group_interaction_id);
 				onClose();
@@ -456,12 +459,7 @@ const GridInteractionItem = ({
 				color="white"
 				icon={<Icon size="16px" name={icon} color="white" />}
 			/>
-			<Text
-				pt={{ base: "10px" }}
-				fontSize={{ base: "xs", "2xl": "md" }}
-				noOfLines={2}
-				textAlign="center"
-			>
+			<Text fontSize="xs" noOfLines={2} textAlign="center">
 				{label}
 			</Text>
 		</Flex>
