@@ -1,4 +1,4 @@
-import { Details } from "components/Details";
+import { Accordion } from "components/Accordion";
 import { render } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Details", () => {
+describe("Accordion", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Details />);
+		const { container } = render(<Accordion />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Details", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Details in __tests__/components/Details/Details.test.jsx"
+		"TODO: add proper test cases for Accordion in __tests__/components/Accordion/Accordion.test.jsx"
 	);
 });

@@ -1,7 +1,7 @@
 import { useKBarReady } from "components/CommandBar";
 import { useUser } from "contexts";
 import { useKBar } from "kbar";
-import { TransactionsDrawer } from ".";
+import { AccountDrawer, TransactionsDrawer } from ".";
 
 export type BottomBarItem = {
 	name: string;
@@ -64,11 +64,16 @@ export const useBottomBarItems = (): BottomBarItem[] => {
 			visible: isAdmin ? isAdminAgentMode : !isAdminAgentMode,
 		},
 		{
-			name: "history",
-			label: "Trans. History",
-			icon: "transaction-history",
-			path: isAdmin ? "/admin/history" : "/history",
+			name: "account",
+			component: AccountDrawer,
 			visible: true,
 		},
+		// {
+		// 	name: "history",
+		// 	label: "History",
+		// 	icon: "transaction-history",
+		// 	path: isAdmin ? "/admin/history" : "/history",
+		// 	visible: true,
+		// },
 	];
 };

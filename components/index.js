@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Accordion, AccordionItem } from "./Accordion";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumbs } from "./Breadcrumb";
@@ -9,7 +10,6 @@ import { Card } from "./Card";
 import { ColorPair } from "./ColorPair";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
-import { Details } from "./Details";
 import { Divider } from "./Divider";
 import { Dropzone } from "./Dropzone";
 import { EkoConnectWidget } from "./EkoConnectWidget";
@@ -51,10 +51,10 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
-	Details,
-	BottomAppBar,
-	XScrollArrow,
+	Accordion,
+	AccordionItem,
 	AdminViewToggleCard,
+	BottomAppBar,
 	Breadcrumbs,
 	BreadcrumbsWrapper,
 	Button,
@@ -101,4 +101,5 @@ export {
 	Tabs,
 	Tags,
 	Textarea,
+	XScrollArrow,
 };

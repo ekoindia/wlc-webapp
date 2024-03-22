@@ -1,9 +1,11 @@
 import { BoxProps, chakra } from "@chakra-ui/react";
 import { ReactNode } from "react";
 
-interface DetailsProps extends BoxProps {
+export interface DetailsProps extends BoxProps {
 	summary: ReactNode;
 	children: ReactNode;
+	open?: Boolean;
+	onClick?: () => void;
 }
 
 /**
@@ -22,8 +24,23 @@ interface DetailsProps extends BoxProps {
  * </Details>
  * ```
  */
-const Details = ({ summary, children, ...rest }: DetailsProps) => {
-	const Details = chakra("details");
+const Details = ({
+	summary,
+	children,
+	open,
+	onClick,
+	...rest
+}: DetailsProps) => {
+	const Details = chakra("details", {
+		baseStyle: {
+			w: "100%",
+			listStyle: "none",
+			"::-webkit-details-marker": {
+				// for iphone
+				display: "none",
+			},
+		},
+	});
 	const Summary = chakra("summary", {
 		baseStyle: {
 			w: "100%",
@@ -35,9 +52,11 @@ const Details = ({ summary, children, ...rest }: DetailsProps) => {
 		},
 	});
 
+	console.log("open", open);
+
 	return (
-		<Details {...rest}>
-			<Summary>{summary}</Summary>
+		<Details open={open} {...rest}>
+			<Summary onClick={onClick}>{summary}</Summary>
 			{children}
 		</Details>
 	);

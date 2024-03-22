@@ -8,6 +8,7 @@ import {
 	Grid,
 	Text,
 	useDisclosure,
+	useToken,
 } from "@chakra-ui/react";
 import { OtherMenuItems } from "constants/SidebarMenu";
 import { InteractionBehavior } from "constants/trxnFramework";
@@ -15,7 +16,8 @@ import { useMenuContext } from "contexts";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { Details, Icon } from "..";
+import { svgBgDotted } from "utils/svgPatterns";
+import { Accordion, AccordionItem, Icon } from "..";
 
 /**
  * Generates a new path for transaction navigation.
@@ -148,39 +150,52 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => (
 			finalFocusRef={btnRef}
 		>
 			<DrawerOverlay />
-			<DrawerContent maxH="80%" w="100%" borderTopRadius="10px" pb="22px">
+			<DrawerContent h="80%" w="100%" borderTopRadius="10px" pb="22px">
 				<DrawerHeader onClose={onClose} />
 				<Divider />
 				<Flex
-					className="customScrollbars"
+					// className="customScrollbars"
 					direction="column"
 					overflowY="scroll"
+					px="5"
+					py="2"
 					gap="2"
 				>
-					<Flex direction="column" gap="2" py="2" px="20px">
-						{children}
-					</Flex>
+					{children}
 				</Flex>
 			</DrawerContent>
 		</Drawer>
 	</>
 );
 
-const DrawerHeader = ({ onClose }) => (
-	<Flex w="100%" align="center" justify="space-between" pl="20px" py="10px">
-		<Text fontSize="lg" fontWeight="semibold">
-			Start a Transaction
-		</Text>
-		<Flex direction="row-reverse" onClick={onClose} w="20%" pr="28px">
-			<Icon
-				size="xs"
-				name="close"
-				color="light"
-				_active={{ color: "error" }}
-			/>
+const DrawerHeader = ({ onClose }) => {
+	const [contrast_color] = useToken("colors", ["navbar.dark"]);
+	return (
+		<Flex
+			w="100%"
+			minH="56px"
+			align="center"
+			justify="space-between"
+			px="5"
+			backgroundImage={svgBgDotted({
+				fill: contrast_color,
+				opacity: 0.04,
+			})}
+		>
+			<Text fontSize="lg" fontWeight="semibold">
+				Start a Transaction
+			</Text>
+			<Flex direction="row-reverse" onClick={onClose} w="20%">
+				<Icon
+					size="xs"
+					name="close"
+					color="light"
+					_active={{ color: "error" }}
+				/>
+			</Flex>
 		</Flex>
-	</Flex>
-);
+	);
+};
 
 /* ####################### Interaction ####################### */
 
@@ -314,6 +329,7 @@ const GridInteraction = ({
 }: GridInteractionProps): JSX.Element => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
+	const [openIndex, setOpenIndex] = useState<number | null>(null);
 
 	const groupInteractions = group_interaction_ids
 		.split(",")
@@ -324,21 +340,24 @@ const GridInteraction = ({
 	const isGridInteraction = groupInteractions?.length > 1;
 
 	return (
-		<Flex direction="column" gap="4">
-			<Details
+		<Accordion {...{ openIndex, setOpenIndex }}>
+			<AccordionItem
 				summary={
 					<InteractionItem
-						{...{ id, label, icon, onClose, isGridInteraction }}
+						{...{
+							id,
+							label,
+							icon,
+							onClose,
+							isGridInteraction,
+						}}
 					/>
 				}
+				isOpen={openIndex === id}
 			>
-				<Flex id="test" direction="column" py="4">
-					<GridInteractionBox
-						{...{ id, groupInteractions, onClose }}
-					/>
-				</Flex>
-			</Details>
-		</Flex>
+				<GridInteractionBox {...{ id, groupInteractions, onClose }} />
+			</AccordionItem>
+		</Accordion>
 	);
 };
 
@@ -372,7 +391,7 @@ const GridInteractionBox = ({
 }: GridInteractionBoxProps): JSX.Element => {
 	return (
 		<Grid
-			templateColumns={{ base: "repeat(auto-fit, minmax(100px, 1fr))" }}
+			templateColumns={{ base: "repeat(auto-fill, minmax(100px, 1fr))" }}
 			gap="4"
 			alignItems="flex-start"
 			justifyContent="center"
