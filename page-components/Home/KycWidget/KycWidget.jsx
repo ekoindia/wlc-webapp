@@ -68,7 +68,7 @@ const KycWidget = () => {
 								color="#FFD93B"
 								fontWeight="semibold"
 							>
-								Your eKYC is not completed!
+								Your eKYC is not complete!
 							</Text>
 
 							<Text
@@ -76,12 +76,11 @@ const KycWidget = () => {
 								lineHeight={{ base: "16px", md: "27px" }}
 								color="#FFFFFF"
 							>
-								You have pending Aadahar verification, Address
-								proof verification. Please complete the same to
-								get going.
+								Your Aadahar & address proof verifications are
+								pending. Please complete them to get going.
 							</Text>
 						</Box>
-						<Box
+						{/* <Box
 							textAlign={"center"}
 							mt={{ base: "0px", md: "40px" }}
 						>
@@ -95,7 +94,7 @@ const KycWidget = () => {
 									62%
 								</Text>
 							</Text>
-						</Box>
+						</Box> */}
 						<Box
 							pt={{ base: "20px", md: "50px" }}
 							display={"flex"}
