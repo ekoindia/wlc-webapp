@@ -1,4 +1,5 @@
 import { Table } from "components";
+import { useOrgDetailContext } from "contexts/OrgDetailContext";
 
 const AGENT_TYPE = {
 	RETAILER: "0",
@@ -47,14 +48,30 @@ const onboardDistributorRenderer = [
  * @example	`<OnboardAgentResponse></OnboardAgentResponse>`
  */
 const OnboardAgentResponse = ({ applicantType, responseList }) => {
+	const { orgDetail } = useOrgDetailContext();
+
+	const tableRenderer = [
+		...(applicantType === AGENT_TYPE.RETAILER
+			? onboardRetailerRenderer
+			: onboardDistributorRenderer),
+		// Add share link for the current app/website
+		...[
+			{
+				name: "mobile",
+				label: "Share Login Link",
+				show: "ShareMobile",
+				meta: {
+					text: `Welcome to ${orgDetail?.org_name}! Click on the link to login to the ${orgDetail?.app_name} app:`,
+					url: window.location.origin || "",
+				},
+			},
+		],
+	];
+
 	return (
 		<Table
 			variant="stripedActionNone"
-			renderer={
-				applicantType === AGENT_TYPE.RETAILER
-					? onboardRetailerRenderer
-					: onboardDistributorRenderer
-			}
+			renderer={tableRenderer}
 			data={responseList}
 		/>
 	);

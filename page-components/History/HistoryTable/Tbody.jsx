@@ -8,12 +8,17 @@ import {
 	Text,
 	Tr as ChakraTr,
 } from "@chakra-ui/react";
-import { Button } from "components";
-import { useMenuContext } from "contexts";
+import { Button, Share } from "components";
+import { useMenuContext, useOrgDetailContext } from "contexts";
 import useHslColor from "hooks/useHslColor";
 import { Fragment } from "react";
 import { printPage } from "utils";
-import { prepareTableCell, showInPrint, showOnScreen } from ".";
+import {
+	generateShareMessage,
+	prepareTableCell,
+	showInPrint,
+	showOnScreen,
+} from ".";
 
 const animSlideDown = keyframes`
 	from {opacity: 0; transform: scaleY(0); transform-origin:top;}
@@ -118,6 +123,7 @@ const Trow = ({
 }) => {
 	const txicon = trxn_type_prod_map?.[item.tx_typeid]?.icon || null;
 	const { h } = useHslColor(item.tx_name);
+	const { orgDetail } = useOrgDetailContext();
 
 	const serialNumber =
 		index + pageNumber * tableRowLimit - (tableRowLimit - 1);
@@ -266,6 +272,7 @@ const Trow = ({
 
 						<Flex
 							direction="column"
+							gap={3}
 							sx={{
 								"@media print": {
 									display: "none !important",
@@ -290,6 +297,15 @@ const Trow = ({
 							>
 								Print
 							</Button>
+							{/* Share button */}
+							<Share
+								title={`${orgDetail.app_name} | Transaction Receipt (copy)`}
+								text={generateShareMessage(extraColumns, item)}
+								variant="link"
+								size="md"
+								color="accent.DEFAULT"
+								labelProps={{ fontSize: "xs" }}
+							/>
 						</Flex>
 					</Flex>
 				</ChakraTd>

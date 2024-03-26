@@ -94,3 +94,25 @@ export const showInPrint = (display_media_id) => {
 		display_media_id === DisplayMedia.BOTH
 	);
 };
+
+/**
+ * Convert a history row into sharable text message
+ * @param {array} extraColumns
+ * @param {object} item	The current history row name/value pairs
+ * @returns
+ */
+export const generateShareMessage = (extraColumns, item) => {
+	let message = "";
+	extraColumns.forEach((column) => {
+		let value = item[column.name];
+		if (
+			typeof value !== "undefined" &&
+			value != "" &&
+			value != "undefined" &&
+			showInPrint(column.display_media_id)
+		) {
+			message += `${column.label}: ${value}\n`;
+		}
+	});
+	return message;
+};

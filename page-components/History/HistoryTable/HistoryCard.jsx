@@ -1,11 +1,16 @@
 import { Avatar, Box, Flex, keyframes, Text } from "@chakra-ui/react";
-import { Button, Icon } from "components";
-import { useAppSource, useMenuContext } from "contexts";
+import { Button, Icon, Share } from "components";
+import { useAppSource, useMenuContext, useOrgDetailContext } from "contexts";
 import { getPaymentStyle, getStatusStyle } from "helpers/TableHelpers";
 import useHslColor from "hooks/useHslColor";
 import { formatDateTime } from "libs";
 import { printPage } from "utils";
-import { prepareTableCell, showInPrint, showOnScreen } from ".";
+import {
+	generateShareMessage,
+	prepareTableCell,
+	showInPrint,
+	showOnScreen,
+} from ".";
 
 const animSlideDown = keyframes`
 	from {opacity: 0; transform: scaleY(0); transform-origin:top;}
@@ -32,6 +37,7 @@ const HistoryCard = ({
 	const txicon = trxn_type_prod_map?.[item.tx_typeid]?.icon || null;
 	const { h } = useHslColor(item.tx_name);
 	const { isAndroid } = useAppSource();
+	const { orgDetail } = useOrgDetailContext();
 
 	const visible = visibleColumns > 0;
 	const extraColumns = visible ? renderer?.slice(visibleColumns) : [];
@@ -182,6 +188,7 @@ const HistoryCard = ({
 						direction="row-reverse"
 						w="100%"
 						mt="10px"
+						gap={3}
 						sx={{
 							"@media print": {
 								display: "none !important",
@@ -211,6 +218,15 @@ const HistoryCard = ({
 						>
 							Print
 						</Button>
+						{/* Share button */}
+						<Share
+							title={`${orgDetail.app_name} | Transaction Receipt (copy)`}
+							text={generateShareMessage(extraColumns, item)}
+							variant="link"
+							size="md"
+							color="accent.DEFAULT"
+							labelProps={{ fontSize: "xs" }}
+						/>
 					</Flex>
 				</Flex>
 			) : null}

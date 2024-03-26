@@ -1,6 +1,6 @@
 {
 	"name": "eko-infinity-webapp",
-	"version": "4.28.1",
+	"version": "4.29.0",
 	"private": true,
 	"description": "Eko's white-labelled financial platform service",
 	"keywords": [
@@ -63,6 +63,7 @@
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-hook-form": "^7.44.3",
+		"react-icons": "^5.0.1",
 		"react-markdown": "^9.0.1",
 		"react-select": "^5.7.5",
 		"remark-gfm": "^4.0.0",
