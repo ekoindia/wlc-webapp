@@ -15,25 +15,13 @@ import {
 	useDisclosure,
 	useToken,
 } from "@chakra-ui/react";
-import {
-	AdminBlacklistMenuItems,
-	AdminOtherMenuItems,
-	adminSidebarMenu,
-	Endpoints,
-	OtherMenuItems,
-	sidebarMenu,
-	TransactionIds,
-	UserType,
-} from "constants";
-import { useMenuContext, useOrgDetailContext, useUser } from "contexts";
-import { Priority, useRegisterActions } from "kbar";
+import { Endpoints, UserType } from "constants";
+import { useMenuContext, useUser } from "contexts";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
 import { /* AdminViewToggleCard, */ Icon, ProfileCard, StatusCard } from "..";
-import { ActionIcon, useKBarReady } from "../CommandBar";
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.
@@ -53,187 +41,6 @@ const isCurrentRoute = (routerUrl, path) => {
 	return (path + "/").startsWith(routePath + "/");
 };
 
-/**
- * A helper function to create the KBar actions array from all the visible transactions from transaction_list which are part of role_transaction_list.
- * @param {Array} interaction_list - List of all transactions
- * @param {Object} role_tx_list - All transaction_ids that are allowed to the user (mapped to the trxn details)
- * @returns {Array} Array of KBar actions
- */
-const generateTransactionActions = (
-	interaction_list,
-	role_tx_list,
-	router,
-	is_other_list = false
-) => {
-	const getTxAction = (tx, parent_id, is_group) => {
-		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
-		const desc = tx.description || tx.desc || "";
-
-		return {
-			id: "tx/" + _id,
-			name: tx.label,
-			subtitle: limitText(desc, 60),
-			// keywords: tx.label + " " + (tx.desc || "") + (tx.category || ""),
-			icon: (
-				<ActionIcon
-					icon={tx.icon}
-					ext_icon={tx.ext_icon}
-					name={tx.label}
-					style="filled"
-				/>
-			),
-			priority: parent_id ? Priority.HIGH : Priority.NORMAL,
-			// section: "Services",
-			perform: is_group ? null : () => router.push("/transaction/" + _id),
-			parent: parent_id
-				? "tx/" + parent_id
-				: is_other_list
-				? "others"
-				: "start-a-tx",
-		};
-	};
-
-	const trxnList = is_other_list
-		? [
-				{
-					id: "others",
-					name: "Others...",
-					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
-					icon: (
-						<ActionIcon
-							icon="others"
-							// color="gray.500"
-							style="filled"
-						/>
-					),
-					// shortcut: ["$mod+/"],
-					// section: "Services",
-				},
-		  ]
-		: [
-				{
-					id: "start-a-tx",
-					name: "Start a Transaction...",
-					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
-					icon: (
-						<ActionIcon
-							icon="transaction"
-							color="primary.light"
-							style="filled"
-						/>
-					),
-					shortcut: ["$mod+/"],
-					// section: "Services",
-				},
-		  ];
-
-	// Cache for transactions that contain sub-transactions
-	const trxnGroups = [];
-
-	// Cache of all trxn-ids already processed
-	const processedTrxns = {};
-
-	// Process main transactions
-	interaction_list.forEach((tx) => {
-		if (!tx) {
-			return;
-		}
-		if (tx.id in role_tx_list && !(tx.id in processedTrxns)) {
-			let is_group = false;
-			processedTrxns[tx.id] = true;
-			// Is this a transaction group (Grid) (i.e, contains sub-transactions)?
-			if (tx.behavior == 7 && tx?.group_interaction_ids?.length) {
-				is_group = true;
-				trxnGroups.push({
-					tx: tx,
-					parent: "" + tx.id,
-				});
-			}
-			trxnList.push(getTxAction(tx, null, is_group));
-		}
-	});
-
-	// Recusrively process transaction groups...
-	while (trxnGroups.length > 0) {
-		const group = trxnGroups.shift();
-		const { tx, parent } = group;
-		const group_interaction_ids = tx.group_interaction_ids.split(",");
-		group_interaction_ids.forEach((id) => {
-			const subTx = role_tx_list[id];
-			if (subTx && !(id in processedTrxns)) {
-				const thisTx = {
-					id: id,
-					...subTx,
-				};
-				processedTrxns[id] = true;
-				let is_group = false;
-				// Is this a transaction group (i.e, contains sub-transactions)?
-				if (
-					subTx.behavior == 7 &&
-					subTx?.group_interaction_ids?.length > 0
-				) {
-					is_group = true;
-
-					// Check if this group has all child transactions already processed
-					const group_tx_ids =
-						thisTx.group_interaction_ids.split(",");
-					let all_processed = true;
-					group_tx_ids.forEach((tx_id) => {
-						if (!(tx_id in processedTrxns)) {
-							all_processed = false;
-						}
-					});
-
-					if (all_processed) {
-						is_group = false;
-					} else {
-						trxnGroups.push({
-							tx: thisTx,
-							parent: "" + (parent ? `${parent}/` : "") + id,
-						});
-					}
-				}
-				trxnList.push(getTxAction(thisTx, parent, is_group));
-			}
-		});
-	}
-
-	return trxnList;
-};
-
-/**
- * A helper function to create the KBar actions array from all the visible left-menu links.
- * @param {Array} menu_list - List of all Menu items with a label and a link.
- * @param {Object} router - Next.js router object
- * @returns {Array} Array of KBar actions
- */
-const generateMenuLinkActions = (menu_list, router) => {
-	const menuLinkActions = [];
-
-	// get current route path from Nextjs router
-	const currentRoute = router.pathname;
-
-	menu_list.forEach((menu) => {
-		if (menu.link != currentRoute) {
-			menuLinkActions.push({
-				id: "menulnk/" + menu.name,
-				name: menu.name,
-				icon: (
-					<ActionIcon
-						icon={menu.icon}
-						name={menu.name}
-						style="filled"
-					/>
-				),
-				// section: "Services",
-				perform: () => router.push(menu.link),
-			});
-		}
-	});
-	// console.log("menuLinkActions", menuLinkActions, menu_list);
-	return menuLinkActions;
-};
-
 //MAIN EXPORT
 const SideBar = ({ navOpen, setNavClose }) => {
 	const {
@@ -244,18 +51,10 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		isAdminAgentMode,
 		userType,
 	} = useUser();
-	const { orgDetail } = useOrgDetailContext();
-	const { metadata } = orgDetail;
-	const disabledFeatures = metadata?.disabled_features;
-	const { interactions } = useMenuContext();
-	const { interaction_list, role_tx_list } = interactions;
+
+	const { trxnList, menuList, otherList } = useMenuContext();
 	const router = useRouter();
-	const [menuList, setMenuList] = useState([]);
-	const [trxnList, setTrxnList] = useState([]);
-	const [otherList, setOtherList] = useState([]);
 	const [openIndex, setOpenIndex] = useState(-1);
-	const [trxnActions, setTrxnActions] = useState([]);
-	const [otherActions, setOtherActions] = useState([]);
 
 	// Check if screen is smaller than "lg" to show a mobile sidebar with drawer
 	const isSmallScreen = useBreakpointValue(
@@ -263,152 +62,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		{ ssr: false }
 	);
 
-	// Check if CommandBar is loaded...
-	const { ready } = useKBarReady();
-
-	// const [trxnActionsWorker] = useWorker(generateTransactionActions);
-
-	// const menuList =
-	// 	isAdmin && isAdminAgentMode !== true ? adminSidebarMenu : sidebarMenu;
-
-	// Split the transaction list into two lists:
-	// 1. trxnList: List of transactions/products
-	// 2. otherList: List of other menu items
-	useEffect(() => {
-		const trxnList = [];
-		const otherList = [];
-		let _otherActions = [];
-		let _filteredMenuList = [];
-
-		const _menuList =
-			isAdmin && isAdminAgentMode !== true
-				? adminSidebarMenu
-				: sidebarMenu;
-
-		if (disabledFeatures) {
-			_menuList.forEach((item) => {
-				const _feat = JSON.parse(disabledFeatures)?.features;
-				if (!_feat.includes(item.id)) {
-					_filteredMenuList.push(item);
-				}
-			});
-		} else {
-			_filteredMenuList = _menuList;
-		}
-
-		setMenuList(_filteredMenuList);
-
-		if (interaction_list && interaction_list.length > 0) {
-			interaction_list.forEach((tx) => {
-				if (isAdmin) {
-					if (AdminOtherMenuItems.indexOf(tx.id) > -1) {
-						otherList.push(tx);
-					} else if (isAdminAgentMode) {
-						if (OtherMenuItems.indexOf(tx.id) > -1) {
-							otherList.push(tx);
-						} else if (AdminBlacklistMenuItems.indexOf(tx.id) < 0) {
-							// Add all other transactions to the trxnList (if not blacklisted)
-							trxnList.push(tx);
-						}
-					}
-				} else {
-					if (OtherMenuItems.indexOf(tx.id) > -1) {
-						otherList.push(tx);
-					} else {
-						trxnList.push(tx);
-					}
-				}
-			});
-
-			// Add manage-my-account to the otherList
-			let manageMyAccount = {
-				id: TransactionIds.MANAGE_MY_ACCOUNT,
-				...role_tx_list[TransactionIds.MANAGE_MY_ACCOUNT],
-			};
-			// Remove "Manage My Account", if already present in the list
-			if (manageMyAccount?.is_visible === 1) {
-				manageMyAccount = null;
-			}
-			// Remove "Manage My Account" for Admins
-			// if (isAdmin) {
-			// 	manageMyAccount = null;
-			// }
-
-			setTrxnList(trxnList);
-			setOtherList([
-				...[
-					{
-						icon: "transaction-history",
-						label: "Transaction History",
-						description: "Statement of your previous transactions",
-						link: (isAdmin ? "/admin" : "") + Endpoints.HISTORY,
-					},
-				],
-				...otherList,
-				...(manageMyAccount ? [manageMyAccount] : []),
-			]);
-
-			if (ready) {
-				_otherActions = generateTransactionActions(
-					[...otherList, manageMyAccount],
-					role_tx_list,
-					router,
-					true // is-other-list
-				);
-
-				// Generate KBar actions...
-				setTrxnActions(
-					isAdmin && isAdminAgentMode !== true
-						? []
-						: generateTransactionActions(
-								trxnList,
-								role_tx_list,
-								router
-						  )
-				);
-			}
-		}
-
-		if (ready) {
-			_otherActions = [
-				..._otherActions,
-				...generateMenuLinkActions(menuList, router),
-			];
-
-			// console.log("otherActions", _otherActions);
-			setOtherActions(_otherActions);
-		}
-	}, [
-		interaction_list,
-		// menuList,
-		role_tx_list,
-		router,
-		ready,
-		isAdmin,
-		isAdminAgentMode,
-	]);
-
-	// useEffect(() => {
-	// 	if (interaction_list && interaction_list.length > 0) {
-	// 		const _trxnActions = generateTransactionActions(
-	// 			interaction_list,
-	// 			role_tx_list,
-	// 			Icon,
-	// 			router
-	// 		);
-	// 		setTrxnActions(_trxnActions);
-	// 	}
-	// }, [interaction_list, role_tx_list]);
-
-	// console.log("trxnActions", trxnActions, otherActions);
-
-	useRegisterActions(
-		[...trxnActions, ...otherActions],
-		[[...trxnActions, ...otherActions]]
-	);
-	// useRegisterActions(otherActions, [otherActions]);
-
-	// Set the sub-menu (accordian) index that should be open by default
+	// Set the sub-menu (accordion) index that should be open by default
 	// For Distributors, open the "Other" submenu (index = 1)
 	// For Agents, open the "Start a Transaction" submenu (index = 0)
 	useEffect(() => {
@@ -462,28 +116,6 @@ const SideBar = ({ navOpen, setNavClose }) => {
 			<SideBarMenu {...otherProps} />
 		</Box>
 	);
-
-	// return (
-	// 	<>
-	// 		<Box display={{ base: "flex", lg: "none" }}>
-	// 			<SmallScreenSideMenu
-	// 				{...otherProps}
-	// 				navOpen={navOpen}
-	// 				setNavClose={setNavClose}
-	// 			/>
-	// 		</Box>
-	// 		<Box
-	// 			display={{ base: "none", lg: "flex" }}
-	// 			sx={{
-	// 				"@media print": {
-	// 					display: "none",
-	// 				},
-	// 			}}
-	// 		>
-	// 			<SideBarMenu {...otherProps} />
-	// 		</Box>
-	// 	</>
-	// );
 };
 
 export default SideBar;
