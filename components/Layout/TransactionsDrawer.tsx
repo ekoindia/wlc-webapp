@@ -10,12 +10,11 @@ import {
 	useDisclosure,
 	useToken,
 } from "@chakra-ui/react";
-import { OtherMenuItems } from "constants/SidebarMenu";
 import { InteractionBehavior } from "constants/trxnFramework";
 import { useMenuContext } from "contexts";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { svgBgDotted } from "utils/svgPatterns";
 import { Accordion, AccordionItem, Icon } from "..";
 
@@ -61,24 +60,13 @@ interface InteractionList {
  * @returns JSX.Element
  */
 const TransactionsDrawer = (): JSX.Element => {
-	const { interactions } = useMenuContext();
-	const { interaction_list } = interactions;
 	const btnRef = useRef<HTMLButtonElement>(null);
+	const { trxnList } = useMenuContext();
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [interactionList, setInteractionList] = useState<InteractionList[]>([
-		...interaction_list,
-	]);
-
-	useEffect(() => {
-		let _interactionList = interaction_list.filter(
-			(tx: InteractionList) => OtherMenuItems.indexOf(tx.id) === -1
-		);
-		setInteractionList(_interactionList);
-	}, [interaction_list]);
 
 	return (
 		<DrawerContainer {...{ isOpen, onOpen, onClose, btnRef }}>
-			{interactionList?.map(
+			{trxnList?.map(
 				(
 					{
 						id,
@@ -114,7 +102,7 @@ const TransactionsDrawer = (): JSX.Element => {
 									}}
 								/>
 							)}
-							{interactionList.length - 1 !== index && (
+							{trxnList.length - 1 !== index && (
 								<Divider variant="dashed" />
 							)}
 						</>
@@ -150,7 +138,7 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => (
 			finalFocusRef={btnRef}
 		>
 			<DrawerOverlay />
-			<DrawerContent h="80%" w="100%" borderTopRadius="10px" pb="22px">
+			<DrawerContent maxH="80%" w="100%" borderTopRadius="10px" pb="22px">
 				<DrawerHeader onClose={onClose} />
 				<Divider />
 				<Flex
