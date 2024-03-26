@@ -2,12 +2,13 @@ import { ActionIcon, useKBarReady } from "components/CommandBar";
 import {
 	AdminBlacklistMenuItems,
 	AdminOtherMenuItems,
+	adminSidebarMenu,
+	Endpoints,
 	OtherMenuItems,
+	sidebarMenu,
 	TransactionIds,
 } from "constants";
-import { adminSidebarMenu, sidebarMenu } from "constants/SidebarMenu";
-import { processTransactionData } from "helpers";
-import { fetcher } from "helpers/apiHelper";
+import { fetcher, processTransactionData } from "helpers";
 import { Priority, useRegisterActions } from "kbar";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -331,6 +332,15 @@ const MenuProvider = ({ children }) => {
 				menuList: _filteredMenuList,
 				trxnList: _trxnList,
 				otherList: [
+					...[
+						{
+							icon: "transaction-history",
+							label: "Transaction History",
+							description:
+								"Statement of your previous transactions",
+							link: (isAdmin ? "/admin" : "") + Endpoints.HISTORY,
+						},
+					],
 					..._otherList,
 					...(manageMyAccount ? [manageMyAccount] : []),
 				],
