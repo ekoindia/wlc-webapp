@@ -42,7 +42,7 @@ const BottomAppBar = ({
 	// Hide on scroll down, show on scroll up
 	useEffect(() => {
 		const handleScroll = () => {
-			const st = window.pageYOffset || document.documentElement.scrollTop;
+			const st = document.documentElement.scrollTop;
 			if (st > lastScrollTop) {
 				setIsVisible(false);
 			} else {
@@ -64,8 +64,6 @@ const BottomAppBar = ({
 			bg="white"
 			w="100%"
 			minH={isMac ? "64px" : "56px"}
-			align="center"
-			justify="center"
 			boxShadow="0px 6px 10px #00000033"
 			pb={isMac ? "16px" : "0px"}
 			transition="transform 0.3s ease-in-out"
@@ -75,13 +73,7 @@ const BottomAppBar = ({
 				opacity: 0.04,
 			})}
 		>
-			<Flex
-				w="100%"
-				h="100%"
-				maxW="400px"
-				align="center"
-				justify="space-between"
-			>
+			<Flex w="100%" h="100%" maxW="400px">
 				{bottomBarItems.map(
 					(
 						{
@@ -103,7 +95,6 @@ const BottomAppBar = ({
 								key={`${index}-${name}`}
 								direction="column"
 								align="center"
-								justify="center"
 								w="100%"
 								h="100%"
 								py="8px"
