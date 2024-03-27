@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { OrgLogo } from "components";
 import { useOrgDetailContext, useUser } from "contexts";
 
@@ -34,6 +34,7 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 				}}
 				flexDirection="column"
 				className="printhead"
+				width="100%"
 				{...rest}
 			>
 				<Flex flexDirection="row" align="center" width="100%">
@@ -41,7 +42,7 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 						<OrgLogo
 							orgDetail={orgDetail}
 							size="lg"
-							// size={{ base: "md", lg: "lg" }}
+							// size={{ base: "md", md: "lg" }}
 							// mr={8}
 							mr={3}
 							sx={{
@@ -54,17 +55,22 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 							}}
 						/>
 					)}
+					<Box flexGrow={1} />
 					<Flex
-						flexGrow={1}
 						flexDirection="column"
 						className="shop flex"
+						textAlign="right"
 					>
-						<Text fontSize={{ base: "1.2em", lg: "1.4em" }}>
+						<Text
+							fontSize={{ base: "1.05em", lg: "1.4em" }}
+							noOfLines={1}
+						>
 							{userData?.userDetails?.shop_name}
 						</Text>
 						<Text
-							fontSize={{ base: "0.65em", lg: "0.7em" }}
+							fontSize={{ base: "0.6em", lg: "0.7em" }}
 							noOfLines={2}
+							maxW="300px"
 						>
 							{userData?.userDetails?.agent_shop_address}
 						</Text>
@@ -99,7 +105,7 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 			>
 				{orgDetail.org_name ? (
 					<Text fontSize="0.7em" mt="1em">
-						Powered by <strong>{orgDetail.org_name}</strong> App
+						Provided by <strong>{orgDetail.org_name}</strong>
 					</Text>
 				) : null}
 				{tnc ? (
