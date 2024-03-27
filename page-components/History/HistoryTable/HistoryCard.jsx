@@ -220,7 +220,7 @@ const HistoryCard = ({
 						</Button>
 						{/* Share button */}
 						<Share
-							title={`${orgDetail.app_name} | Transaction Receipt (copy)`}
+							title={`${orgDetail.app_name} | Transaction Receipt (Copy)`}
 							text={generateShareMessage(extraColumns, item)}
 							variant="link"
 							size="md"

@@ -99,7 +99,7 @@ export const showInPrint = (display_media_id) => {
  * Convert a history row into sharable text message
  * @param {array} extraColumns
  * @param {object} item	The current history row name/value pairs
- * @returns
+ * @returns {string} The sharable text message
  */
 export const generateShareMessage = (extraColumns, item) => {
 	let message = "";
@@ -107,8 +107,8 @@ export const generateShareMessage = (extraColumns, item) => {
 		let value = item[column.name];
 		if (
 			typeof value !== "undefined" &&
+			value !== null &&
 			value != "" &&
-			value != "undefined" &&
 			showInPrint(column.display_media_id)
 		) {
 			message += `${column.label}: ${value}\n`;

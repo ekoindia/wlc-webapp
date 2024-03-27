@@ -61,7 +61,7 @@ const OnboardAgentResponse = ({ applicantType, responseList }) => {
 				label: "Share Login Link",
 				show: "ShareMobile",
 				meta: {
-					text: `Welcome to ${orgDetail?.org_name}! Click on the link to login to the ${orgDetail?.app_name} app:`,
+					text: `Welcome to ${orgDetail?.org_name}!\n\nClick on the link to login to the ${orgDetail?.app_name} app:`,
 					url: window.location.origin || "",
 				},
 			},

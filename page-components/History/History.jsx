@@ -675,7 +675,7 @@ const History = () => {
 					}}
 				/>
 
-				<PrintReceipt heading="Transaction Receipt (copy)">
+				<PrintReceipt heading="Transaction Receipt (Copy)">
 					<HistoryTable
 						{...{
 							loading,

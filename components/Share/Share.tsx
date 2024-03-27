@@ -55,6 +55,10 @@ interface ShareOption {
 	condition?: () => boolean; // Optional condition to show the share option
 }
 
+// Detect if the user is on a mobile or tablet device
+const isMobileOrTablet = () =>
+	/(android|iphone|ipad|mobile)/i.test(navigator.userAgent);
+
 /**
  * This component shows a web-share button. It is used to share any text or URL to WhatsApp, Telegram, Email, etc.
  * It shows a grid of icons for different social media platforms.
@@ -79,7 +83,7 @@ interface ShareOption {
 const Share = ({
 	title,
 	text,
-	url,
+	url = "",
 	mobile,
 	email,
 	label,
@@ -105,12 +109,8 @@ const Share = ({
 			onClick: () => {
 				console.log("Share to WhatsApp: ", text, url, selectedMobile);
 
-				const isMobileOrTablet = /(android|iphone|ipad|mobile)/i.test(
-					navigator.userAgent
-				);
-
 				const whatsAppUrl = `https://${
-					isMobileOrTablet ? "api" : "web"
+					isMobileOrTablet() ? "api" : "web"
 				}.whatsapp.com/send?`;
 
 				openUrlTab(
@@ -129,7 +129,7 @@ const Share = ({
 			label: "Message",
 			icon: FaSms,
 			color: "#2253bf",
-			// condition: () => !!selectedMobile,
+			condition: isMobileOrTablet,
 			onClick: () => {
 				console.log("Share to SMS: ", text, selectedMobile);
 
@@ -212,7 +212,10 @@ const Share = ({
 
 	// Return the full message to share
 	const shareMessage: string = [title || "", text || "", url || ""]
-		.filter((text) => text !== "")
+		.filter(
+			(text) =>
+				typeof text !== "undefined" && text !== null && text !== ""
+		)
 		.join("\n\n");
 
 	// Function to open a URL in new tab
@@ -250,8 +253,8 @@ const Share = ({
 			<Portal>
 				<MenuList p="0.5em" boxShadow="dark-lg">
 					<Text
-						marginBottom="0.3em"
-						fontSize="0.95em"
+						marginBottom={{ base: "0.1em", md: "0.3em" }}
+						fontSize={{ base: "0.85em", md: "0.95em" }}
 						fontWeight="bold"
 						w="100%"
 						textAlign="center"
@@ -286,14 +289,14 @@ const Share = ({
 								<MenuItemOption
 									value={mobile}
 									closeOnSelect={false}
-									fontSize="0.85em"
+									fontSize={{ base: "0.8em", md: "0.85em" }}
 								>
 									{mobile}
 								</MenuItemOption>
 								<MenuItemOption
 									value=""
 									closeOnSelect={false}
-									fontSize="0.85em"
+									fontSize={{ base: "0.8em", md: "0.85em" }}
 								>
 									Others…
 								</MenuItemOption>
@@ -302,7 +305,10 @@ const Share = ({
 						</>
 					)}
 
-					<Grid templateColumns="repeat(3, 1fr)" gap={2}>
+					<Grid
+						templateColumns="repeat(3, 1fr)"
+						gap={{ base: 1, md: 2 }}
+					>
 						{/* Show the list of share options */}
 						{shareOptions.map(
 							({
@@ -323,7 +329,7 @@ const Share = ({
 										onClick={onClick}
 									>
 										<Icon
-											boxSize={8}
+											boxSize={{ base: 6, md: 8 }}
 											as={icon}
 											marginBottom={1}
 											p={secondary ? 1 : 0}
@@ -335,7 +341,14 @@ const Share = ({
 													: "inherit"
 											}
 										/>
-										<Text fontSize="0.8em">{label}</Text>
+										<Text
+											fontSize={{
+												base: "0.7em",
+												md: "0.8em",
+											}}
+										>
+											{label}
+										</Text>
 									</MenuItem>
 								)
 						)}
