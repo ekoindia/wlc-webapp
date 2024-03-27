@@ -37,15 +37,18 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	const { isAndroid, setNativeVersion } = useAppSource();
 
 	const [isPageLoading, setIsPageLoading] = useState(false);
-	Router.events.on("routeChangeStart", () => setIsPageLoading(true));
-	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
-	Router.events.on("routeChangeError", () => setIsPageLoading(false));
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
 
 	// Setup Android Listener...
 	useEffect(() => {
+		// Show page-loading animation on route change
+		Router.events.on("routeChangeStart", () => setIsPageLoading(true));
+		Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
+		Router.events.on("routeChangeError", () => setIsPageLoading(false));
+
+		// Android action listener
 		if (typeof window !== "undefined" && isAndroid) {
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
