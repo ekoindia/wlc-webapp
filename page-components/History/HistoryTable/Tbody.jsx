@@ -292,7 +292,7 @@ const Trow = ({
 								pt="10px"
 								color="accent.DEFAULT"
 								onClick={() => {
-									printPage("Receipt (copy)");
+									printPage("Receipt (Copy)");
 								}}
 							>
 								Print

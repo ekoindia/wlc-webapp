@@ -213,7 +213,7 @@ const HistoryCard = ({
 							icon="print"
 							color="accent.DEFAULT"
 							onClick={() => {
-								printPage("Receipt (copy)", isAndroid);
+								printPage("Receipt (Copy)", isAndroid);
 							}}
 						>
 							Print
