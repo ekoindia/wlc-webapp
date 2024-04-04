@@ -110,7 +110,7 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 				value={value}
 				invalid={invalid}
 				errorMsg={errorMsg}
-				radius={10}
+				borderRadius={10}
 				labelStyle={{
 					color: "light",
 				}}
