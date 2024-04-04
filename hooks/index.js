@@ -6,6 +6,7 @@ export { default as useDebouncedState } from "./useDebouncedState";
 export { default as useExternalResource } from "./useExternalResource";
 export { default as useFeatureFlag } from "./useFeatureFlag";
 export { default as useHotkey } from "./useHotkey";
+export { default as useHslColor } from "./useHslColor";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLogin } from "./useLogin";
 export { default as usePagination, DOTS } from "./usePagination";
