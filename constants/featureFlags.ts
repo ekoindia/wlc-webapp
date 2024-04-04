@@ -7,7 +7,15 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	GPT_CHAT: {
 		enabled: true,
 		forUserId: [],
-		forEnv: ["development"], // ["staging", "development"]
+		forEnv: ["development"],
+	},
+
+	// Expression editor for generating custom expressions using a GUI.
+	// To be used by developers only for inserting custom expressions
+	//   in interaction-framework configuration database.
+	EXPRESSION_EDITOR: {
+		enabled: true,
+		forEnv: ["development"],
 	},
 };
 

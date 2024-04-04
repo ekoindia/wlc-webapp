@@ -1,0 +1,1186 @@
+{
+	"seq": {
+		"label": "Sequence Block",
+		"desc": "A list of functions to execute sequencially. Returns the value of the last expression",
+		"category": "Flow Control",
+		"args": [
+			{
+				"label": "function",
+				"types": ["function"],
+				"desc": "A function to execute sequentially"
+			},
+			{
+				"label": "function",
+				"types": ["function"],
+				"desc": "A function to execute sequentially"
+			}
+		],
+		"example": "seq(set('a',1), set('b',2), add(get('a'),get('b'))) => 3",
+		"add_args": {
+			"label": "Step",
+			"args": [
+				{
+					"label": "function",
+					"types": ["function"],
+					"desc": "A function to execute sequentially"
+				}
+			]
+		}
+	},
+	"if": {
+		"label": "If-Then-Else",
+		"desc": "Executes a conditional logic, returning one value if the condition is true, and another if false",
+		"category": "Flow Control",
+		"args": [
+			{
+				"label": "condition",
+				"types": ["boolean"],
+				"desc": "Condition to evaluate"
+			},
+			{
+				"label": "trueValue",
+				"types": ["any"],
+				"desc": "Value returned if condition is true"
+			},
+			{
+				"label": "falseValue",
+				"types": ["any"],
+				"desc": "Value returned if condition is false"
+			}
+		],
+		"example": "if(true, 'yes', 'no') => 'yes'"
+	},
+	"not": {
+		"desc": "Returns the logical NOT of the value",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "value",
+				"types": ["any"],
+				"desc": "The value to negate"
+			}
+		],
+		"example": "not(true) => false"
+	},
+	"==": {
+		"label": "Loosely Equals (==)",
+		"desc": "Checks if two values are equal using loose equality",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["any"],
+				"desc": "First value for comparison"
+			},
+			{
+				"label": "value2",
+				"types": ["any"],
+				"desc": "Second value for comparison"
+			}
+		],
+		"example": "==('1', 1) => true"
+	},
+	"===": {
+		"label": "Strictly Equals (===)",
+		"desc": "Checks if two values are equal using strict equality (matches data types as well)",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["any"],
+				"desc": "First value for comparison"
+			},
+			{
+				"label": "value2",
+				"types": ["any"],
+				"desc": "Second value for comparison"
+			}
+		],
+		"example": "===('1', 1) => false"
+	},
+	"!=": {
+		"label": "Loosely Not Equals (!=)",
+		"desc": "Checks if two values are not equal using loose inequality",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["any"],
+				"desc": "First value for comparison"
+			},
+			{
+				"label": "value2",
+				"types": ["any"],
+				"desc": "Second value for comparison"
+			}
+		],
+		"example": "!=('1', 1) => false"
+	},
+	"!==": {
+		"label": "Strictly Not Equals (!==)",
+		"desc": "Checks if two values are not equal using strict inequality (matches data types as well)",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["any"],
+				"desc": "First value for comparison"
+			},
+			{
+				"label": "value2",
+				"types": ["any"],
+				"desc": "Second value for comparison"
+			}
+		],
+		"example": "!===('1', 1) => true"
+	},
+	">": {
+		"label": "Greater Than (>)",
+		"desc": "Checks if the first value is greater than the second value",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["number"],
+				"desc": "First value for comparison"
+			},
+			{
+				"label": "value2",
+				"types": ["number"],
+				"desc": "Second value for comparison"
+			}
+		],
+		"example": ">(3, 1) => true"
+	},
+	"<": {
+		"label": "Less Than (<)",
+		"desc": "Checks if the first value is less than the second value",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["number"],
+				"desc": "First value for comparison"
+			},
+			{
+				"label": "value2",
+				"types": ["number"],
+				"desc": "Second value for comparison"
+			}
+		],
+		"example": "<(1, 3) => true"
+	},
+	"<=": {
+		"label": "Less Than Or Equal (<=)",
+		"desc": "Checks if the first value is less than or equal to the second value",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["number"],
+				"desc": "First value for comparison"
+			},
+			{
+				"label": "value2",
+				"types": ["number"],
+				"desc": "Second value for comparison"
+			}
+		],
+		"example": "<=(2, 2) => true"
+	},
+	">=": {
+		"label": "Greater Than Or Equal (>=)",
+		"desc": "Checks if the first value is greater than or equal to the second value",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["number"],
+				"desc": "First value for comparison"
+			},
+			{
+				"label": "value2",
+				"types": ["number"],
+				"desc": "Second value for comparison"
+			}
+		],
+		"example": ">=(3, 2) => true"
+	},
+	"and": {
+		"desc": "Returns true if all the given conditions are true",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "condition",
+				"types": ["boolean"],
+				"desc": "A boolean condition"
+			},
+			{
+				"label": "condition",
+				"types": ["boolean"],
+				"desc": "A boolean condition"
+			}
+		],
+		"example": "and(true, false, true, true) => false",
+		"add_args": {
+			"label": "Condition",
+			"args": [
+				{
+					"label": "condition",
+					"types": ["boolean"],
+					"desc": "A boolean condition"
+				}
+			]
+		}
+	},
+	"or": {
+		"desc": "Returns true if any of the given conditions is true",
+		"category": "Logical Operations",
+		"args": [
+			{
+				"label": "condition",
+				"types": ["boolean"],
+				"desc": "A boolean condition"
+			},
+			{
+				"label": "condition",
+				"types": ["boolean"],
+				"desc": "A boolean condition"
+			}
+		],
+		"example": "or(false, true, false) => true",
+		"add_args": {
+			"label": "Condition",
+			"args": [
+				{
+					"label": "condition",
+					"types": ["boolean"],
+					"desc": "A boolean condition"
+				}
+			]
+		}
+	},
+	"add": {
+		"label": "Add (+)",
+		"desc": "Adds two or more numbers or concatenates strings",
+		"category": "Numerical Operations",
+		"args": [
+			{
+				"label": "value",
+				"types": ["string"],
+				"desc": "Number or string to be added or concatenated"
+			},
+			{
+				"label": "value",
+				"types": ["string"],
+				"desc": "Number or string to be added or concatenated"
+			}
+		],
+		"example": "add(1, 2, 3) => 6",
+		"add_args": {
+			"label": "Value",
+			"args": [
+				{
+					"label": "value",
+					"types": ["string"],
+					"desc": "Number or string to be added or concatenated"
+				}
+			]
+		}
+	},
+	"-": {
+		"label": "Subtract (-)",
+		"desc": "Subtracts the second number from the first number",
+		"category": "Numerical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["number"],
+				"desc": "Value from which to subtract"
+			},
+			{
+				"label": "value2",
+				"types": ["number"],
+				"desc": "Value to subtract"
+			}
+		],
+		"example": "-(5, 3) => 2"
+	},
+	"*": {
+		"label": "Multiply (*)",
+		"desc": "Multiplies two numbers",
+		"category": "Numerical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["number"],
+				"desc": "First value to multiply"
+			},
+			{
+				"label": "value2",
+				"types": ["number"],
+				"desc": "Second value to multiply"
+			}
+		],
+		"example": "*(4, 3) => 12"
+	},
+	"/": {
+		"label": "Divide (/)",
+		"desc": "Divides the first number by the second number",
+		"category": "Numerical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["number"],
+				"desc": "Numerator"
+			},
+			{
+				"label": "value2",
+				"types": ["number"],
+				"desc": "Denominator"
+			}
+		],
+		"example": "/(12, 3) => 4"
+	},
+	"%": {
+		"label": "Modulus (%)",
+		"desc": "Calculates the remainder of the division of the first number by the second number",
+		"category": "Numerical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["number"],
+				"desc": "Dividend"
+			},
+			{
+				"label": "value2",
+				"types": ["number"],
+				"desc": "Divisor"
+			}
+		],
+		"example": "%(5, 3) => 2"
+	},
+	"**": {
+		"label": "Exponent (**)",
+		"desc": "Raises the first number to the power of the second number",
+		"category": "Numerical Operations",
+		"args": [
+			{
+				"label": "value1",
+				"types": ["number"],
+				"desc": "Base"
+			},
+			{
+				"label": "value2",
+				"types": ["number"],
+				"desc": "Exponent"
+			}
+		],
+		"example": "**(2, 3) => 8"
+	},
+	"min": {
+		"desc": "Finds the minimum value in a list of numbers",
+		"category": "Other Numerical Operations",
+		"args": [
+			{
+				"label": "value",
+				"types": ["number"],
+				"desc": "A number in the list"
+			},
+			{
+				"label": "value",
+				"types": ["number"],
+				"desc": "A number in the list"
+			}
+		],
+		"example": "min(1, 2, 3) => 1",
+		"add_args": {
+			"label": "Value",
+			"args": [
+				{
+					"label": "value",
+					"types": ["number"],
+					"desc": "A number in the list"
+				}
+			]
+		}
+	},
+	"max": {
+		"desc": "Finds the maximum value in a list of numbers",
+		"category": "Other Numerical Operations",
+		"args": [
+			{
+				"label": "value",
+				"types": ["number"],
+				"desc": "A number in the list"
+			},
+			{
+				"label": "value",
+				"types": ["number"],
+				"desc": "A number in the list"
+			}
+		],
+		"example": "max(1, 2, 3) => 3",
+		"add_args": {
+			"label": "Value",
+			"args": [
+				{
+					"label": "value",
+					"types": ["number"],
+					"desc": "A number in the list"
+				}
+			]
+		}
+	},
+	"abs": {
+		"desc": "Returns the absolute value of a number",
+		"category": "Other Numerical Operations",
+		"args": [
+			{
+				"label": "number",
+				"types": ["number"],
+				"desc": "The number to find the absolute value of"
+			}
+		],
+		"example": "abs(-5) => 5"
+	},
+	"round": {
+		"desc": "Rounds a number to the nearest integer or to a specified number of decimal places",
+		"category": "Other Numerical Operations",
+		"args": [
+			{
+				"label": "number",
+				"types": ["number"],
+				"desc": "The number to round"
+			},
+			{
+				"label": "precision",
+				"types": ["number"],
+				"desc": "Number of decimal places to round to (optional)",
+				"optional": true
+			}
+		],
+		"example": "round(5.678, 1) => 5.7"
+	},
+	"ceil": {
+		"desc": "Returns the smallest integer greater than or equal to the given number",
+		"category": "Other Numerical Operations",
+		"args": [
+			{
+				"label": "number",
+				"types": ["number"],
+				"desc": "The number to ceil"
+			}
+		],
+		"example": "ceil(5.1) => 6"
+	},
+	"floor": {
+		"desc": "Returns the largest integer less than or equal to the given number",
+		"category": "Other Numerical Operations",
+		"args": [
+			{
+				"label": "number",
+				"types": ["number"],
+				"desc": "The number to floor"
+			}
+		],
+		"example": "floor(5.9) => 5"
+	},
+	"sqrt": {
+		"desc": "Returns the square root of a number",
+		"category": "Other Numerical Operations",
+		"args": [
+			{
+				"label": "number",
+				"types": ["number"],
+				"desc": "The number to find the square root of"
+			}
+		],
+		"example": "sqrt(9) => 3"
+	},
+	"clamp": {
+		"desc": "Clamps a number within a specified range",
+		"category": "Other Numerical Operations",
+		"args": [
+			{
+				"label": "number",
+				"types": ["number"],
+				"desc": "The number to clamp"
+			},
+			{
+				"label": "min",
+				"types": ["number"],
+				"desc": "Minimum limit"
+			},
+			{
+				"label": "max",
+				"types": ["number"],
+				"desc": "Maximum limit"
+			}
+		],
+		"example": "clamp(5, 1, 10) => 5"
+	},
+	"rand": {
+		"label": "Random Number",
+		"desc": "Generates a random integer between min (inclusive) and max (exclusive)",
+		"category": "Other Numerical Operations",
+		"args": [
+			{
+				"label": "min",
+				"types": ["number"],
+				"desc": "Minimum value (inclusive)"
+			},
+			{
+				"label": "max",
+				"types": ["number"],
+				"desc": "Maximum value (exclusive)"
+			}
+		],
+		"example": "rand(1, 10) => 7"
+	},
+	"num": {
+		"label": "To Number (Float)",
+		"desc": "Converts the given argument to a number (float)",
+		"category": "Data Convertion",
+		"args": [
+			{
+				"label": "value",
+				"types": ["any"],
+				"desc": "Value to be converted to a number"
+			}
+		],
+		"example": "num('123.45') => 123.45"
+	},
+	"int": {
+		"label": "To Number (Integer)",
+		"desc": "Converts the given argument to an integer",
+		"category": "Data Convertion",
+		"args": [
+			{
+				"label": "value",
+				"types": ["any"],
+				"desc": "Value to be converted to an integer"
+			}
+		],
+		"example": "int('123.45') => 123"
+	},
+	"bool": {
+		"label": "To Boolean",
+		"desc": "Converts the given argument to a boolean",
+		"category": "Data Convertion",
+		"args": [
+			{
+				"label": "value",
+				"types": ["any"],
+				"desc": "Value to be converted to a boolean"
+			}
+		],
+		"example": "bool(1) => true"
+	},
+	"str": {
+		"label": "To String",
+		"desc": "Converts the given argument to a string",
+		"category": "Data Convertion",
+		"args": [
+			{
+				"label": "value",
+				"types": ["any"],
+				"desc": "Value to be converted to a string"
+			}
+		],
+		"example": "str(123) => '123'"
+	},
+	"stringify": {
+		"label": "JSON Array or Object To String",
+		"desc": "Converts an array expression to a string without parsing it as an expression",
+		"category": "Data Convertion",
+		"args": [
+			{
+				"label": "array",
+				"types": ["object"],
+				"desc": "Array or Object to be converted to a string"
+			}
+		],
+		"example": "stringify([1, 2, 3]) => '[1,2,3]'"
+	},
+	"obj2arr": {
+		"label": "Object To Array",
+		"desc": "Converts an object to an array. Each value in the object is added to the array. If the value is an object, the key is added to object under a key defined by the second argument",
+		"category": "Data Convertion",
+		"args": [
+			{
+				"label": "object",
+				"types": ["object"],
+				"desc": "Object to be converted to an array"
+			},
+			{
+				"label": "key",
+				"types": ["string"],
+				"desc": "Key to use for the object key in the array (optional)",
+				"optional": true
+			}
+		],
+		"example": "obj2arr({'a': { 'id': 1 }, 'b': { 'id': 2 }}, 'key') => [{'key': 'a', 'id': 1}, {'key': 'b', 'id': 2}]"
+	},
+	"geo2str": {
+		"label": "Format Geolocaion",
+		"desc": "Converts latitude, longitude, and accuracy to a single comma-separated string",
+		"category": "Data Convertion",
+		"args": [
+			{
+				"label": "latitude",
+				"types": ["number"],
+				"desc": "Latitude value"
+			},
+			{
+				"label": "longitude",
+				"types": ["number"],
+				"desc": "Longitude value"
+			},
+			{
+				"label": "accuracy",
+				"types": ["number"],
+				"desc": "Accuracy value"
+			}
+		],
+		"example": "geo2str(12.345678, 98.765432, 100) => '12.345678,98.765432,100'"
+	},
+	"concat": {
+		"desc": "Concatenates two or more strings",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "A text to concatenate"
+			},
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "A text to concatenate"
+			}
+		],
+		"example": "concat('Hello', ' ', 'World!') => 'Hello World!'",
+		"add_args": {
+			"label": "String",
+			"args": [
+				{
+					"label": "string",
+					"types": ["string"],
+					"desc": "A text to concatenate"
+				}
+			]
+		}
+	},
+	"padstart": {
+		"label": "Pad Start",
+		"desc": "Pads the string on the start with the specified character to create a new string of the given length",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to pad"
+			},
+			{
+				"label": "length",
+				"types": ["number"],
+				"desc": "Target length of the string after padding"
+			},
+			{
+				"label": "padChar",
+				"types": ["string"],
+				"desc": "Character to pad with"
+			}
+		],
+		"example": "padstart('123', 5, '0') => '00123'"
+	},
+	"padend": {
+		"label": "Pad End",
+		"desc": "Pads the string on the end with the specified character to create a new string of the given length",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to pad"
+			},
+			{
+				"label": "length",
+				"types": ["number"],
+				"desc": "Target length of the string after padding"
+			},
+			{
+				"label": "padChar",
+				"types": ["string"],
+				"desc": "Character to pad with"
+			}
+		],
+		"example": "padend('123', 5, '0') => '12300'"
+	},
+	"split": {
+		"desc": "Splits a string into an array of substrings, separated by the specified separator string",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to split"
+			},
+			{
+				"label": "separator",
+				"types": ["string"],
+				"desc": "The character or regular expression to split the string upon"
+			}
+		],
+		"example": "split('a,b,c', ',') => ['a', 'b', 'c']"
+	},
+	"lower": {
+		"label": "To Lower Case",
+		"desc": "Converts a string to lower case",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to convert to lower case"
+			}
+		],
+		"example": "lower('HELLO') => 'hello'"
+	},
+	"upper": {
+		"label": "To Upper Case",
+		"desc": "Converts a string to upper case",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to convert to upper case"
+			}
+		],
+		"example": "upper('hello') => 'HELLO'"
+	},
+	"title": {
+		"label": "To Title Case",
+		"desc": "Converts the first character of each word in a string to upper case",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to convert to title case"
+			}
+		],
+		"example": "title('hello world') => 'Hello World'"
+	},
+	"sentence": {
+		"label": "To Sentence Case",
+		"desc": "Converts the first character of a string to upper case and the rest to lower case",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to convert to sentence case"
+			}
+		],
+		"example": "sentence('hello WORLD') => 'Hello world'"
+	},
+	"len": {
+		"label": "length",
+		"desc": "Returns the length of a string",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to calculate the length of"
+			}
+		],
+		"example": "len('hello') => 5"
+	},
+	"trunc": {
+		"label": "truncate",
+		"desc": "Truncates a string to a specified length",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to truncate"
+			},
+			{
+				"label": "limit",
+				"types": ["number"],
+				"desc": "Maximum length of the truncated string"
+			}
+		],
+		"example": "trunc('hello world', 7) => 'hello w'"
+	},
+	"empty": {
+		"label": "is Empty?",
+		"desc": "Checks if a string is empty",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to check"
+			}
+		],
+		"example": "empty('') => true"
+	},
+	"contains": {
+		"desc": "Checks if a string contains a specified substring",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "Main string to search in"
+			},
+			{
+				"label": "substring",
+				"types": ["string"],
+				"desc": "Substring to search for"
+			}
+		],
+		"example": "contains('hello world', 'world') => true"
+	},
+	"startswith": {
+		"label": "Starts With",
+		"desc": "Checks if a string starts with a specified substring",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "Main string to search in"
+			},
+			{
+				"label": "substring",
+				"types": ["string"],
+				"desc": "Substring to check at the start"
+			},
+			{
+				"label": "start-index",
+				"types": ["number"],
+				"desc": "Position in string to start checking (optional)",
+				"optional": true
+			}
+		],
+		"example": "startswith('hello world', 'hello') => true"
+	},
+	"endswith": {
+		"label": "Ends With",
+		"desc": "Checks if a string ends with a specified substring",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "Main string to search in"
+			},
+			{
+				"label": "substring",
+				"types": ["string"],
+				"desc": "Substring to check at the end"
+			},
+			{
+				"label": "search-length",
+				"types": ["number"],
+				"desc": "Number of characters from the end to search within (optional)",
+				"optional": true
+			}
+		],
+		"example": "endswith('hello world', 'world') => true"
+	},
+	"test": {
+		"label": "Test Regex Match",
+		"desc": "Checks if a string matches a regular expression",
+		"category": "Regular Expressions",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to test against the regular expression"
+			},
+			{
+				"label": "regex",
+				"types": ["string"],
+				"desc": "Regular expression to match"
+			},
+			{
+				"label": "options",
+				"types": ["string"],
+				"desc": "Regular expression flags",
+				"optional": true
+			}
+		],
+		"example": "test('hello', '^h') => true"
+	},
+	"match": {
+		"label": "Regex Matched Group",
+		"desc": "Searches for a match in a string based on a regular expression. It returns the matched group specified by index.",
+		"category": "Regular Expressions",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String to search in"
+			},
+			{
+				"label": "regex",
+				"types": ["string"],
+				"desc": "Regular expression with capturing groups"
+			},
+			{
+				"label": "options",
+				"types": ["string"],
+				"desc": "Regular expression flags (optional)"
+			},
+			{
+				"label": "groupIndex",
+				"types": ["number"],
+				"desc": "Index of the group to return"
+			}
+		],
+		"example": "match('hello 123', '(\\d+)', '', 1) => '123'"
+	},
+	"replace": {
+		"desc": "Replaces occurrences of a substring in a string with a replacement string",
+		"category": "Regular Expressions",
+		"args": [
+			{
+				"label": "string",
+				"types": ["string"],
+				"desc": "String in which to replace occurrences"
+			},
+			{
+				"label": "search",
+				"types": ["string"],
+				"desc": "Substring or regular expression to search for"
+			},
+			{
+				"label": "replacement",
+				"types": ["string"],
+				"desc": "String to replace occurrences with"
+			}
+		],
+		"example": "replace('hello world', 'world', 'everyone') => 'hello everyone'"
+	},
+	"newarray": {
+		"label": "Create Array",
+		"desc": "Creates a new empty array. The length of the array and the default values can be optionally specified",
+		"category": "Array/Object",
+		"args": [
+			{
+				"label": "length",
+				"types": ["number"],
+				"desc": "Length of the array to create. Defaults to 0",
+				"optional": true
+			},
+			{
+				"label": "defaultValue",
+				"types": ["any"],
+				"desc": "Default value to fill the array with. Defaults to an empty string",
+				"optional": true
+			}
+		],
+		"example": "newarray(3, 0) => [0, 0, 0]"
+	},
+	"getvalueat": {
+		"label": "Get Value At",
+		"desc": "Gets the value at the specified key or index from an object or array",
+		"category": "Array/Object",
+		"args": [
+			{
+				"label": "source",
+				"types": ["object|array"],
+				"desc": "Object or array to get the value from"
+			},
+			{
+				"label": "keyOrIndex",
+				"types": ["string|number"],
+				"desc": "Key or index to retrieve the value from"
+			},
+			{
+				"label": "defaultValue",
+				"types": ["any"],
+				"desc": "Default value to return if key or index is not found",
+				"optional": true
+			}
+		],
+		"example": "getvalueat({'a': 1, 'b': 2}, 'b') => 2"
+	},
+	"setvalueat": {
+		"label": "Set Value At",
+		"desc": "Sets the value at the specified key or index in an object or array",
+		"category": "Array/Object",
+		"args": [
+			{
+				"label": "target",
+				"types": ["object|array"],
+				"desc": "Object or array to set the value in"
+			},
+			{
+				"label": "keyOrIndex",
+				"types": ["string|number"],
+				"desc": "Key or index where the value will be set"
+			},
+			{
+				"label": "value",
+				"types": ["any"],
+				"desc": "Value to set at the specified key or index"
+			}
+		],
+		"example": "setvalueat({'a': 1, 'b': 2}, 'b', 3) => {'a': 1, 'b': 3}"
+	},
+	"map": {
+		"desc": "Creates a new array with the results of calling a provided function on every element in the calling array",
+		"category": "Array/Object",
+		"args": [
+			{
+				"label": "array",
+				"types": ["array"],
+				"desc": "Array to process"
+			},
+			{
+				"label": "function",
+				"types": ["function|array"],
+				"desc": "Function or expression to apply to each element"
+			}
+		],
+		"example": "map([1, 2, 3], ['+', '{arg0}', 1]) => [2, 3, 4]"
+	},
+	"reduce": {
+		"desc": "Applies a function against an accumulator and each element in the array (from left to right) to reduce it to a single value",
+		"category": "Array/Object",
+		"args": [
+			{
+				"label": "array",
+				"types": ["array"],
+				"desc": "Array to reduce"
+			},
+			{
+				"label": "function",
+				"types": ["function"],
+				"desc": "Function to apply to each element"
+			},
+			{
+				"label": "initialValue",
+				"types": ["any"],
+				"desc": "Value to use as the first argument to the first call of the function"
+			}
+		],
+		"example": "reduce([1, 2, 3], ['+', '{arg0}', '{arg1}'], 0) => 6"
+	},
+	"filter": {
+		"desc": "Creates a new array with all elements that pass the test implemented by the provided function",
+		"category": "Array/Object",
+		"args": [
+			{
+				"label": "array",
+				"types": ["array"],
+				"desc": "Array to filter"
+			},
+			{
+				"label": "function",
+				"types": ["function|array"],
+				"desc": "Function or expression to test each element of the array"
+			}
+		],
+		"example": "filter([1, 2, 3, 4], ['>', '{arg0}', 2]) => [3, 4]"
+	},
+	"set": {
+		"label": "Set Variable",
+		"desc": "Sets a variable in the local scope to the specified value",
+		"category": "Variables and Functions",
+		"args": [
+			{
+				"label": "variableName",
+				"types": ["string"],
+				"desc": "Name of the variable to set"
+			},
+			{
+				"label": "value",
+				"types": ["any"],
+				"desc": "Value to assign to the variable"
+			}
+		],
+		"example": "set('myVar', 123) => 123"
+	},
+	"get": {
+		"label": "Get Variable",
+		"desc": "Gets the value of a variable in the local scope",
+		"category": "Variables and Functions",
+		"args": [
+			{
+				"label": "variableName",
+				"types": ["string"],
+				"desc": "Name of the variable to retrieve"
+			}
+		],
+		"example": "get('myVar') => 123"
+	},
+	"clear": {
+		"label": "clear Variable",
+		"desc": "Clears a variable in the local scope, effectively deleting it",
+		"category": "Variables and Functions",
+		"args": [
+			{
+				"label": "variableName",
+				"types": ["string"],
+				"desc": "Name of the variable to clear"
+			}
+		],
+		"example": "seq(clear('myVar'), get('myVar')) => ''"
+	},
+	"fn": {
+		"label": "Define Function",
+		"desc": "Defines a new custom function with a given name and an expression as its body. The arguments are passed to the function body as arg0, arg1, arg2, etc.",
+		"category": "Variables and Functions",
+		"args": [
+			{
+				"label": "function-name",
+				"types": ["string"],
+				"desc": "Name of the function to define"
+			},
+			{
+				"label": "function-body",
+				"types": ["array"],
+				"desc": "Expression array representing the function body"
+			}
+		],
+		"example": "fn('salute', 'concat(\"Hello, \", \"{$0}\")') => Creates a new function called 'salute'"
+	},
+	"call": {
+		"label": "Call Function",
+		"desc": "Calls a previously defined function with the given arguments",
+		"category": "Variables and Functions",
+		"args": [
+			{
+				"label": "function-name",
+				"types": ["string"],
+				"desc": "Name of the function to call"
+			},
+			{
+				"label": "arg",
+				"types": ["array"],
+				"desc": "An argument to pass to the function"
+			}
+		],
+		"example": "call('salute', 'world') => 'Hello, world'",
+		"add_args": {
+			"label": "Argument",
+			"args": [
+				{
+					"label": "arg",
+					"types": ["any"],
+					"desc": "An argument to pass to the function"
+				}
+			]
+		}
+	}
+}
