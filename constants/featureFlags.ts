@@ -1,0 +1,54 @@
+/**
+ * Note: This file is used to enable or disable features in the application.
+ * Can be used to enable or disable features based on user roles or environment.
+ */
+export const FeatureFlags: Record<string, FeatureFlagType> = {
+	// Experimental LLM conversational UI for financial transactions and queries.
+	GPT_CHAT: {
+		enabled: true,
+		forUserId: [],
+		forEnv: ["development"], // ["staging", "development"]
+	},
+};
+
+/**
+ * Type definition for a feature flag configuration.
+ */
+export type FeatureFlagType = {
+	/**
+	 * Whether the feature is enabled or not.
+	 * If false, the feature will not be available in the application.
+	 * If true, the feature will be available in the application, based on other conditions.
+	 * Default: false
+	 */
+	enabled: boolean;
+
+	/**
+	 * List of environments for which the feature is enabled.
+	 * If the list is empty, the feature is enabled for all environments.
+	 * Possible values: "development", "staging", "production"
+	 * Note: The environment is read from process.env.NEXT_PUBLIC_ENV
+	 */
+	forEnv?: string[];
+
+	/**
+	 * List of user-types for which the feature is enabled.
+	 * If the list is empty, the feature is enabled for all user-types.
+	 * Example: [1, 2, 3]
+	 */
+	forUserType?: number[];
+
+	/**
+	 * List of user-IDs for which the feature is enabled.
+	 * If the list is empty, the feature is enabled for all users.
+	 * Example: ["123", "456", "789"]
+	 */
+	forUserId?: string[];
+
+	/**
+	 * Whether the feature is enabled for Admin only.
+	 * If true, the feature is enabled only for Admin users.
+	 * Default: false
+	 */
+	forAdminOnly?: boolean;
+};

@@ -4,6 +4,7 @@ export { default as useClipboard } from "./useClipboard";
 export { default as useDailyCacheState } from "./useDailyCacheState";
 export { default as useDebouncedState } from "./useDebouncedState";
 export { default as useExternalResource } from "./useExternalResource";
+export { default as useFeatureFlag } from "./useFeatureFlag";
 export { default as useHotkey } from "./useHotkey";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLogin } from "./useLogin";
