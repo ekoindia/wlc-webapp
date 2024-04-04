@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
  * Hook for FeatureFlags. Check if a feature is enabled based on featureName, userId, userType, environment (process.env.NEXT_PUBLIC_ENV), etc.
  * The feature-flags (including featureName) are defined in the [constants/featureFlags.js](constants/featureFlags.js) file.
  * @param {string} featureName - Name of the feature (eg: "CHAT")
- * @returns {boolean} - Returns true if the feature is enabled, else false
+ * @returns {boolean} - Returns true if the feature is defined, enabled & passes all conditions, else false
  */
 const useFeatureFlag = (featureName) => {
 	const { isAdmin, userId, userType, isLoggedIn } = useSession();
@@ -15,14 +15,8 @@ const useFeatureFlag = (featureName) => {
 	useEffect(() => {
 		const feature: FeatureFlagType = FeatureFlags[featureName];
 
-		// If feature is not defined, return false.
-		if (!feature) {
-			setAllowed(false);
-			return;
-		}
-
-		// If the feature is disabled, return false without checking other conditions.
-		if (!feature.enabled) {
+		// If the feature is not defined or disabled, return false without checking other conditions.
+		if (!feature?.enabled) {
 			setAllowed(false);
 			return;
 		}
@@ -35,7 +29,7 @@ const useFeatureFlag = (featureName) => {
 
 		// Check if the feature is enabled for the environment (if a set of envoirnments are allowed).
 		if (
-			feature.forEnv.length > 0 &&
+			feature.forEnv?.length > 0 &&
 			!feature.forEnv.includes(process.env.NEXT_PUBLIC_ENV)
 		) {
 			setAllowed(false);
@@ -44,7 +38,7 @@ const useFeatureFlag = (featureName) => {
 
 		// Check if the feature is enabled for the user-type (if a set of allowed user-types is defined).
 		if (
-			feature.forUserType.length > 0 &&
+			feature.forUserType?.length > 0 &&
 			!(isLoggedIn && userType && feature.forUserType.includes(userType))
 		) {
 			setAllowed(false);
@@ -53,7 +47,7 @@ const useFeatureFlag = (featureName) => {
 
 		// Check if the feature is enabled for the user (if a set of allowed user-IDs is defined).
 		if (
-			feature.forUserId.length > 0 &&
+			feature.forUserId?.length > 0 &&
 			!(isLoggedIn && userId && feature.forUserId.includes(userId))
 		) {
 			setAllowed(false);
