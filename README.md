@@ -98,7 +98,7 @@ How does communication with the Android wrapper app work?
 
 ## 🛠️ Common Utilities
 
-### Custom [**hooks/**](hooks/) from the directory `hooks/`:
+### 🪝 Custom [**hooks/**](hooks/):
 - `useAppLink`: For handling app links (deep-links) and redirecting to the appropriate page. Supports old `connect.eko.in` links as well as the `ekoconnect://` links.
 - `useClipboard`: Copy text to clipboard.
 - `useDailyCacheState`: Cache the state in the browser's localStorage. The cache state has a `valid` flag which is set to `false` when the cache is stale (older than 1 day).
