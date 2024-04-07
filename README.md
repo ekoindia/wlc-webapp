@@ -103,7 +103,14 @@ How does communication with the Android wrapper app work?
 - `useClipboard`: Copy text to clipboard.
 - `useDailyCacheState`: Cache the state in the browser's localStorage. The cache state has a `valid` flag which is set to `false` when the cache is stale (older than 1 day).
 - `useDebouncedState`: Debounce the state update to avoid unnecessary re-renders.
+- `useDelayToggle`: A simple hook to toggle a boolean value after a delay. For example, it can be used to load/show a component after an initial delay.
 - `useExternalResource`: Load an external resource (JS/CSS) dynamically. It returns a state variable (idle, loading, ready, error) and a reload function. The resource is loaded only once.
+- `useFeatureFlag`: Check if a feature is enabled or not. Set the feature-flags with conditions in the [constants/featureFlags.ts](constants/featureFlags.ts) file.
+- `useHotkey`: Register a hotkey (keyboard shortcut) and execute a callback function when the hotkey is pressed. Uses the tinykeys library.
+- `useHslColor`: Get a dynamic color in HSL format based on the input value. Useful for creating a color scale or colored tags.
+- `useLocalStorage`: Read/Write data to the browser's localStorage.
+- `useSessionStorage`: Read/Write data to the browser's sessionStorage.
+- `usePubSub`: Publish/Subscribe to events. Add new topics in the [contexts/PubSubContext.js](contexts/PubSubContext.js) file.
 
 
 ## Global [Contexts](contexts/) (Data Providers)
