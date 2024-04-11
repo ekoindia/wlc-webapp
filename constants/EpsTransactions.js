@@ -28,7 +28,9 @@ export const TransactionIds = {
 		491, // Retailers (Load E-value)
 		240, // Distributors (Request E-value)
 	],
-
+	REVERSE_EVALUE: 7776, // For Admin
+	MANAGE_SELF_EVALUE: 7775, // Load E-value, Request E-value
+	MANAGE_NETWORK_EVALUE: 7774, // Transfer E-value, Reverse E-value
 	MANAGE_MY_ACCOUNT: 536,
 	INVOICE_DOWNLOAD: 542,
 	UPDATE_REGISTERED_MOBILE: 640,
