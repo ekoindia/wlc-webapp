@@ -10,6 +10,19 @@
 
 module.exports = {
 	extends: ["@commitlint/config-conventional"],
+	/*
+	 * Custom URL to show upon failure
+	 */
+	helpUrl:
+		"https://github.com/conventional-changelog/commitlint/#what-is-commitlint",
+	/*
+	 * Custom rules to enforce. [Doc](https://commitlint.js.org/reference/rules.html)
+	 * - 0: Disable the rule
+	 * - 1: Warn about the rule
+	 * - 2: Error about the rule (enforce the rule)
+	 * - "always": Enforce the rule (normal behavior)
+	 * - "never": Inverts the rule
+	 */
 	rules: {
 		"body-leading-blank": [1, "always"],
 		"body-max-line-length": [2, "always", 100],
@@ -20,9 +33,11 @@ module.exports = {
 		"subject-case": [
 			2,
 			"never",
-			["sentence-case", "start-case", "pascal-case", "upper-case"],
+			["start-case", "pascal-case", "upper-case"],
 		],
 		"subject-empty": [2, "never"],
+		"subject-min-length": [2, "always", 5],
+		"subject-max-length": [2, "always", 150],
 		"subject-full-stop": [2, "never", "."],
 		"type-case": [2, "always", "lower-case"],
 		"type-empty": [2, "never"],
@@ -44,6 +59,11 @@ module.exports = {
 				"translation",
 				"security",
 				"changeset",
+				"ui",
+				"i18n",
+				"a11y",
+				"config",
+				"wip",
 			],
 		],
 	},
