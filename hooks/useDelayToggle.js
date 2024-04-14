@@ -10,7 +10,7 @@ const useDelayToggle = (delayInMs = 0, initialValue = false) => {
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {
-			setValue(true);
+			setValue((value) => !value);
 		}, delayInMs);
 
 		return () => clearTimeout(timeout);

@@ -3,7 +3,7 @@ import { IcoButton, Icon } from "components";
 import { fadeIn } from "libs/chakraKeyframes";
 import { svgBgDotted } from "utils/svgPatterns";
 
-import useDelayToggle from "hooks/useDelayToggle";
+import { useDelayToggle } from "hooks";
 import dynamic from "next/dynamic";
 
 // Lazy-load load the showcase image
