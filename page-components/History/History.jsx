@@ -692,6 +692,11 @@ const History = () => {
 					align="center"
 					gap="2"
 					mt="6"
+					sx={{
+						"@media print": {
+							display: "none !important",
+						},
+					}}
 				>
 					<Flex color="light" fontSize="xs">
 						Filtering by &thinsp;
