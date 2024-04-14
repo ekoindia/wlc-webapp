@@ -20,28 +20,28 @@ type sidebarMenuType = {
 export const OtherMenuItems: number[] = [
 	TransactionIds.NEED_CASH,
 	TransactionIds.QUERY_TRACKER,
-	// TransactionIds.LOAD_EVALUE,
-	// TransactionIds.REQUEST_EVALUE,
-	// TransactionIds.TRANSFER_EVALUE,
 	TransactionIds.INITIATE_REFUND,
 	TransactionIds.MANAGE_NETWORK_EVALUE,
 	TransactionIds.MANAGE_SELF_EVALUE,
 	TransactionIds.MANAGE_MY_ACCOUNT,
+	// TransactionIds.LOAD_EVALUE,
+	// TransactionIds.REQUEST_EVALUE,
+	// TransactionIds.TRANSFER_EVALUE,
 ];
 
 /**
  * List of transaction ids that (if available) are to be shown in the "Others" sub-menu for Admins.
  */
 export const AdminOtherMenuItems: number[] = [
-	// TransactionIds.LOAD_EVALUE,
-	// TransactionIds.REQUEST_EVALUE,
-	// TransactionIds.TRANSFER_EVALUE,
 	TransactionIds.FUND_SETTLEMENT,
 	TransactionIds.INITIATE_REFUND,
 	TransactionIds.NEO_BANK,
-	// TransactionIds.REVERSE_EVALUE,
-	TransactionIds.MANAGE_SELF_EVALUE,
 	TransactionIds.MANAGE_NETWORK_EVALUE,
+	TransactionIds.MANAGE_SELF_EVALUE,
+	// TransactionIds.LOAD_EVALUE,
+	// TransactionIds.REQUEST_EVALUE,
+	// TransactionIds.TRANSFER_EVALUE,
+	// TransactionIds.REVERSE_EVALUE,
 	// TransactionIds.INVOICE_DOWNLOAD,
 ];
 
