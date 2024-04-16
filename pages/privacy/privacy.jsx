@@ -34,7 +34,7 @@ const PrivacyPage = () => {
 
 					<P>
 						Eko India Financial Services Pvt. Ltd. built the{" "}
-						{org_name} app as a Commercial app. This SERVICE is
+						{app_name} app as a Commercial app. This SERVICE is
 						provided by {org_name} and is intended for use as is.
 					</P>
 					<P>

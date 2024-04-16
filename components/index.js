@@ -39,6 +39,7 @@ import { ResponseCard } from "./ResponseCard";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
 import { Select } from "./Select";
+import { Share } from "./Share";
 import { ShowcaseCircle } from "./ShowcaseCircle";
 import { SideBar } from "./SideBar";
 import { StatusCard } from "./StatusCard";
@@ -51,6 +52,7 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	Share,
 	Accordion,
 	AccordionItem,
 	AdminViewToggleCard,

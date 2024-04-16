@@ -48,6 +48,22 @@ export const globalStyles = {
 		border: "1px solid #777",
 	},
 
+	// For React-Markdown. Add class "markdown-body" to the React-Markdown element.
+	".markdown-body > table": {
+		fontSize: "0.8em",
+		borderCollapse: "collapse",
+		borderSpacing: 0,
+		display: "block",
+		width: "max-content",
+		maxWidth: "100%",
+		overflow: "auto",
+		margin: "0.5em 0",
+	},
+	".markdown-body table td, .markdown-body table th": {
+		padding: "6px 10px",
+		border: "1px solid #888",
+	},
+
 	// Auto Dark Theme...
 	// "@media (prefers-color-scheme: dark)": {
 	// 	body: {

@@ -82,7 +82,7 @@ const SearchBar = ({
 					<Icon name="search" size="18px" color="light" />
 				}
 				type={type}
-				radius={10}
+				borderRadius={10}
 				maxLength={maxSearchLimit} //will work when type is text
 				value={value}
 				invalid={invalid}

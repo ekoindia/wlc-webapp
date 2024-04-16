@@ -22,15 +22,28 @@ const Button = forwardRef((props, ref) => {
 		disabled = false,
 		loading = false,
 		size,
+		borderRadius,
 		icon,
 		iconPosition = "left",
 		iconSpacing = "5px",
+		iconStyle,
 		onClick,
 		children,
 		...rest
 	} = props;
 
-	const IconComp = icon ? <Icon name={icon} size={size} /> : null;
+	const IconComp = icon ? (
+		<Icon name={icon} size={size} {...iconStyle} />
+	) : null;
+
+	const default_radius =
+		size === "lg"
+			? "10px"
+			: size === "sm"
+			? "6px"
+			: size === "xs"
+			? "4px"
+			: "8px";
 
 	return (
 		<ChakraButton
@@ -42,6 +55,7 @@ const Button = forwardRef((props, ref) => {
 			iconSpacing={children ? iconSpacing : null}
 			leftIcon={icon && iconPosition === "left" ? IconComp : null}
 			rightIcon={icon && iconPosition === "right" ? IconComp : null}
+			borderRadius={borderRadius || default_radius}
 			ref={ref}
 			{...rest}
 		>

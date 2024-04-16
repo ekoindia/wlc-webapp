@@ -9,6 +9,7 @@ import {
 	getModalStyle,
 	getNameStyle,
 	getPaymentStyle,
+	getShareMobileButton,
 	getStatusStyle,
 } from "helpers";
 
@@ -67,6 +68,8 @@ export const prepareTableCell = (
 			return getDateView(item[column.name]);
 		case "DateTime":
 			return getDateTimeView(item[column.name]);
+		case "ShareMobile":
+			return getShareMobileButton(item[column.name], column?.meta || {});
 		default:
 			return item[column.name];
 	}

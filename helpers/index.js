@@ -17,6 +17,7 @@ export {
 	getModalStyle,
 	getNameStyle,
 	getPaymentStyle,
+	getShareMobileButton,
 	getStatusStyle,
 	openGoogleMap,
 } from "./TableHelpers";

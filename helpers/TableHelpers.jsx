@@ -1,5 +1,5 @@
 import { Avatar, Box, Flex, Text, Tooltip } from "@chakra-ui/react";
-import { Currency, DateView, IcoButton, Icon } from "components";
+import { Currency, DateView, IcoButton, Icon, Share } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 import { capitalize, limitText, nullRemover, numberRemover } from "utils";
 
@@ -333,4 +333,16 @@ export const getDateView = (dateTime) => {
 
 export const getDateTimeView = (dateTime) => {
 	return <DateView date={dateTime} format="dd MMM yyyy hh:mm a" />;
+};
+
+export const getShareMobileButton = (mobile, meta) => {
+	return (
+		<Share
+			mobile={mobile}
+			title={meta?.title}
+			url={meta?.url}
+			text={meta?.text}
+			size="xs"
+		/>
+	);
 };

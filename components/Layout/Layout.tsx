@@ -1,6 +1,7 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
+import { useDelayToggle } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -8,10 +9,21 @@ import Router from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { ANDROID_ACTION, doAndroidAction } from "utils";
 import { useBottomBarItems } from ".";
-import { BottomAppBar, NavBar, PageLoader, SideBar } from "..";
+import { BottomAppBar, PageLoader /*,NavBar, SideBar */ } from "..";
+import { NavHeight } from "../NavBar";
 
 // Lazy-load the CommandBarBox component
 const CommandBarBox = dynamic(() => import("../CommandBar/CommandBarBox"), {
+	ssr: false,
+});
+
+// Lazy-load the sidebar component
+const SideBar = dynamic(() => import("../SideBar").then((pkg) => pkg.SideBar), {
+	ssr: false,
+});
+
+// Lazy-load the NavBar component
+const NavBar = dynamic(() => import("../NavBar").then((pkg) => pkg.NavBar), {
 	ssr: false,
 });
 
@@ -37,18 +49,26 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 	const { isAndroid, setNativeVersion } = useAppSource();
 
 	const [isPageLoading, setIsPageLoading] = useState(false);
-	Router.events.on("routeChangeStart", () => setIsPageLoading(true));
-	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
-	Router.events.on("routeChangeError", () => setIsPageLoading(false));
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
+
+	// Delay load non-essential components...
+	const [loadNavBar] = useDelayToggle(100);
+	const [loadSidebar] = useDelayToggle(100);
+	const [loadKbarBox] = useDelayToggle(500);
 
 	// Get the bottom bar items
 	const bottomBarItems = useBottomBarItems();
 
 	// Setup Android Listener...
 	useEffect(() => {
+		// Show page-loading animation on route change
+		Router.events.on("routeChangeStart", () => setIsPageLoading(true));
+		Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
+		Router.events.on("routeChangeError", () => setIsPageLoading(false));
+
+		// Android action listener
 		if (typeof window !== "undefined" && isAndroid) {
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
@@ -114,12 +134,18 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 					</title>
 				) : null}
 				{isLoggedIn ? (
-					<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+					<link
+						rel="icon"
+						type="image/svg+xml"
+						href="/favicon.svg"
+						key="favicon"
+					/>
 				) : (
 					<link
 						rel="icon"
 						type="image/svg+xml"
 						href="/favicon.closed.svg"
+						key="favicon"
 					/>
 				)}
 			</Head>
@@ -137,8 +163,9 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 									display: "none",
 								},
 							}}
+							h={NavHeight}
 						>
-							<NavBar setNavOpen={onOpen} />
+							{loadNavBar ? <NavBar setNavOpen={onOpen} /> : null}
 						</Box>
 					)}
 
@@ -146,16 +173,28 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 						<>{children}</>
 					) : (
 						<Flex>
-							<SideBar navOpen={isOpen} setNavClose={onClose} />
+							{loadSidebar ? (
+								<SideBar
+									navOpen={isOpen}
+									setNavClose={onClose}
+								/>
+							) : (
+								// Placeholder for the sidebar
+								<Box
+									w="250px"
+									minW="250px"
+									display={{ base: "none", md: "block" }}
+								></Box>
+							)}
 
 							{/* Main Content here */}
 
 							<Box
 								minH={{
-									base: "calc(100vh - 56px)",
-									md: "calc(100vh - 50px)",
-									lg: "calc(100vh - 60px)",
-									"2xl": "calc(100vh - 90px)",
+									base: `calc(100vh - ${NavHeight.base})`,
+									md: `calc(100vh - ${NavHeight.md})`,
+									lg: `calc(100vh - ${NavHeight.lg})`,
+									"2xl": `calc(100vh - ${NavHeight["2xl"]})`,
 								}}
 								w="full"
 								bg="bg"
@@ -192,7 +231,8 @@ const Layout = ({ appName, pageMeta, fontClassName, children }) => {
 				<>{children}</>
 			)}
 
-			{isLoggedIn && ready ? (
+			{/* Load CommandBar Popup component */}
+			{isLoggedIn && ready && loadKbarBox ? (
 				<CommandBarBox fontClassName={fontClassName} />
 			) : null}
 		</>

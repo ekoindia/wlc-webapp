@@ -675,7 +675,7 @@ const History = () => {
 					}}
 				/>
 
-				<PrintReceipt heading="Transaction Receipt (copy)">
+				<PrintReceipt heading="Transaction Receipt (Copy)">
 					<HistoryTable
 						{...{
 							loading,
@@ -692,6 +692,11 @@ const History = () => {
 					align="center"
 					gap="2"
 					mt="6"
+					sx={{
+						"@media print": {
+							display: "none !important",
+						},
+					}}
 				>
 					<Flex color="light" fontSize="xs">
 						Filtering by &thinsp;
