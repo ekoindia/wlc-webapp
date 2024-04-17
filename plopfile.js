@@ -9,8 +9,50 @@ const requireField = (fieldName) => {
 };
 
 module.exports = (plop) => {
+	/**
+	 * Helper to check if a value is in an array.
+	 */
 	plop.setHelper("isInArray", (txt, arr) => arr?.indexOf(txt) >= 0);
 
+	/**
+	 * Helper to get typescript/javascript extension based on the options.
+	 */
+	plop.setHelper("ext", (options) =>
+		options.includes("tsx") ? "tsx" : "jsx"
+	);
+
+	/**
+	 * Helper to cleanup the subfolders path.
+	 */
+	plop.setHelper("subPath", (subfolders) => {
+		if (!subfolders) return "";
+
+		subfolders = subfolders.trim().replace(/^[/\\]+/g, "/");
+
+		if (!subfolders.endsWith("/")) {
+			subfolders += "/";
+		}
+
+		return subfolders;
+	});
+
+	/**
+	 * Create a new React component (with unit-test & storybook) in any of the following folders:
+	 * - components
+	 * - page-components
+	 * - tf-components
+	 *
+	 * Option to use Typescript or Javascript.
+	 * Option to include hooks like useEffect, useState, useReducer.
+	 *
+	 * This generator will:
+	 * - Create a new folder for the component. Supports multiple component folders like page-components, etc.
+	 * - Create a new component file with optional hooks
+	 * - Create a new storybook file
+	 * - Create a new index file
+	 * - Create a new test file
+	 * - Add the component to the components index file
+	 */
 	plop.setGenerator("Component", {
 		description: "Create a reusable component",
 		prompts: [
@@ -21,14 +63,55 @@ module.exports = (plop) => {
 				validate: requireField("name"),
 			},
 			{
+				type: "list",
+				name: "componentfolder",
+				message:
+					"Where do you want to create the component? (Enter to select)",
+				choices: [
+					{ name: "components/", value: "components" },
+					{ name: "tf-components/", value: "tf-components" },
+					{ name: "page-components/", value: "page-components" },
+					{
+						name: "page-components/Admin/",
+						value: "page-components/Admin",
+					},
+				],
+				default: "component",
+			},
+			{
+				type: "input",
+				name: "subfolders",
+				message:
+					"[OPTIONAL] Enter sub-folders (if any) separated by '/':",
+			},
+			{
+				type: "checkbox",
+				name: "options",
+				message:
+					"Select additional details (Space to toggle, Enter when done):",
+				choices: [
+					{
+						name: "Use Typescript (.tsx)",
+						value: "tsx",
+						checked: true,
+					},
+					{
+						name: "Generate Storybook stories",
+						value: "stories",
+						checked: true,
+						disabled: true,
+					},
+				],
+			},
+			{
 				type: "checkbox",
 				name: "hooks",
 				message:
-					"Select required hooks (Space to select, Enter when done):",
+					"[OPTIONAL] Select required hooks (Space to select, Enter when done):",
 				choices: [
-					{ name: "useEffect" },
-					{ name: "useState" },
-					{ name: "useReducer" },
+					{ name: "useEffect", value: "useEffect" },
+					{ name: "useState", value: "useState" },
+					{ name: "useReducer", value: "useReducer" },
 				],
 			},
 		],
@@ -36,46 +119,50 @@ module.exports = (plop) => {
 			{
 				// Add component
 				type: "add",
-				path: "components/{{pascalCase name}}/{{pascalCase name}}.jsx",
-				templateFile: "plop-templates/Component/Component.jsx.hbs",
+				path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.{{ext options}}", // Use Typescript if selected
+				templateFile:
+					"plop-templates/Component/Component.{{ext options}}.hbs",
 			},
 			{
 				// Add Storybook stories file for the component
 				type: "add",
-				path: "components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+				path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
 				templateFile:
 					"plop-templates/Component/Component.stories.jsx.hbs",
+				// skip: !options.includes("stories"),
+				// skip: (answers) => !answers.options.includes("stories"),
+				skip: (answers) => console.log("PLOP>>>>> ", answers),
 			},
 			{
 				// Add component index file
 				type: "add",
-				path: "components/{{pascalCase name}}/index.js",
+				path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/index.js",
 				templateFile: "plop-templates/Component/index.js.hbs",
 			},
 			{
 				// Add Jest test for the component
 				type: "add",
-				path: "__tests__/components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
+				path: "__tests__/{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.test.jsx",
 				templateFile: "plop-templates/Component/Component.test.jsx.hbs",
 			},
 			{
 				// Add components index file (if it does not already exist)
 				type: "add",
-				path: "components/index.js",
+				path: "{{componentfolder}}/{{subPath subfolders}}index.js",
 				templateFile: "plop-templates/injectable-index.js.hbs",
 				skipIfExists: true,
 			},
 			{
 				// Append component import in the components index file
 				type: "append",
-				path: "components/index.js",
+				path: "{{componentfolder}}/{{subPath subfolders}}index.js",
 				pattern: `/* PLOP_INJECT_IMPORT */`,
-				template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
+				template: `import { {{pascalCase name}} } from "./{{subPath subfolders}}{{pascalCase name}}";`,
 			},
 			{
 				// Append component export in the components index file
 				type: "append",
-				path: "components/index.js",
+				path: "{{componentfolder}}/{{subPath subfolders}}index.js",
 				pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
 				template: `\t{{pascalCase name}},`,
 			},
