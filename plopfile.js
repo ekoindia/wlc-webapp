@@ -91,15 +91,24 @@ module.exports = (plop) => {
 					"Select additional details (Space to toggle, Enter when done):",
 				choices: [
 					{
-						name: "Use Typescript (.tsx)",
+						name: "Use Typescript (.tsx) for component",
 						value: "tsx",
+						checked: true,
+					},
+					{
+						name: "Generate Component",
+						value: "component",
+						checked: true,
+					},
+					{
+						name: "Generate Unit Test",
+						value: "test",
 						checked: true,
 					},
 					{
 						name: "Generate Storybook stories",
 						value: "stories",
 						checked: true,
-						disabled: true,
 					},
 				],
 			},
@@ -115,58 +124,92 @@ module.exports = (plop) => {
 				],
 			},
 		],
-		actions: [
-			{
-				// Add component
-				type: "add",
-				path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.{{ext options}}", // Use Typescript if selected
-				templateFile:
-					"plop-templates/Component/Component.{{ext options}}.hbs",
-			},
-			{
-				// Add Storybook stories file for the component
-				type: "add",
-				path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
-				templateFile:
-					"plop-templates/Component/Component.stories.jsx.hbs",
-				// skip: !options.includes("stories"),
-				// skip: (answers) => !answers.options.includes("stories"),
-				skip: (answers) => console.log("PLOP>>>>> ", answers),
-			},
-			{
-				// Add component index file
-				type: "add",
-				path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/index.js",
-				templateFile: "plop-templates/Component/index.js.hbs",
-			},
-			{
-				// Add Jest test for the component
-				type: "add",
-				path: "__tests__/{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-				templateFile: "plop-templates/Component/Component.test.jsx.hbs",
-			},
-			{
-				// Add components index file (if it does not already exist)
-				type: "add",
-				path: "{{componentfolder}}/{{subPath subfolders}}index.js",
-				templateFile: "plop-templates/injectable-index.js.hbs",
-				skipIfExists: true,
-			},
-			{
-				// Append component import in the components index file
-				type: "append",
-				path: "{{componentfolder}}/{{subPath subfolders}}index.js",
-				pattern: `/* PLOP_INJECT_IMPORT */`,
-				template: `import { {{pascalCase name}} } from "./{{subPath subfolders}}{{pascalCase name}}";`,
-			},
-			{
-				// Append component export in the components index file
-				type: "append",
-				path: "{{componentfolder}}/{{subPath subfolders}}index.js",
-				pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
-				template: `\t{{pascalCase name}},`,
-			},
-		],
+		actions: (data) => {
+			const { options } = data;
+			const actions = [];
+
+			if (!options) return actions;
+
+			// Generate component
+			if (options.includes("component")) {
+				actions.push(
+					...[
+						{
+							// Add component
+							type: "add",
+							path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.{{ext options}}", // Use Typescript if selected
+							templateFile:
+								"plop-templates/Component/Component.{{ext options}}.hbs",
+							skip: (answers) =>
+								!answers.options.includes("component"),
+						},
+						{
+							// Add component index file
+							type: "add",
+							path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/index.js",
+							templateFile:
+								"plop-templates/Component/index.js.hbs",
+							skip: (answers) =>
+								!answers.options.includes("component"),
+						},
+						{
+							// Add components index file (if it does not already exist)
+							type: "add",
+							path: "{{componentfolder}}/{{subPath subfolders}}index.js",
+							templateFile:
+								"plop-templates/injectable-index.js.hbs",
+							skipIfExists: true,
+							skip: (answers) =>
+								!answers.options.includes("component"),
+						},
+						{
+							// Append component import in the components index file
+							type: "append",
+							path: "{{componentfolder}}/{{subPath subfolders}}index.js",
+							pattern: `/* PLOP_INJECT_IMPORT */`,
+							template: `import { {{pascalCase name}} } from "./{{subPath subfolders}}{{pascalCase name}}";`,
+							skip: (answers) =>
+								!answers.options.includes("component"),
+						},
+						{
+							// Append component export in the components index file
+							type: "append",
+							path: "{{componentfolder}}/{{subPath subfolders}}index.js",
+							pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
+							template: `\t{{pascalCase name}},`,
+							skip: (answers) =>
+								!answers.options.includes("component"),
+						},
+					]
+				);
+			}
+
+			// Generate unit test
+			if (options.includes("test")) {
+				actions.push({
+					// Add Jest test for the component
+					type: "add",
+					path: "__tests__/{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.test.jsx",
+					templateFile:
+						"plop-templates/Component/Component.test.jsx.hbs",
+					skip: (answers) => !answers.options.includes("test"),
+				});
+			}
+
+			// Generate Storybook story
+			if (options.includes("stories")) {
+				actions.push({
+					// Add Storybook stories file for the component
+					type: "add",
+					path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+					templateFile:
+						"plop-templates/Component/Component.stories.jsx.hbs",
+					skip: (answers) => !answers.options.includes("stories"),
+				});
+			}
+
+			return actions;
+		},
 	});
 
 	plop.setGenerator("Component (.tsx)", {
