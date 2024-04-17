@@ -1,3 +1,4 @@
+import { Flex } from "@chakra-ui/react";
 {{#if hooks}}
 import {
 	{{#each hooks}}
@@ -60,9 +61,9 @@ const {{pascalCase name}} = ({ prop1, ...rest }: {{pascalCase name}}Props)  => {
 	{{/if}}
 
 	return (
-		<div {...rest}>
+		<Flex {...rest}>
 			{{name}}
-		</div>
+		</Flex>
 	);
 };
 

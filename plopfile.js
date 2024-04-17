@@ -122,6 +122,7 @@ module.exports = (plop) => {
 					{ name: "useState", value: "useState" },
 					{ name: "useReducer", value: "useReducer" },
 				],
+				when: (answers) => answers.options.includes("component"),
 			},
 		],
 		actions: (data) => {
@@ -140,8 +141,7 @@ module.exports = (plop) => {
 							path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.{{ext options}}", // Use Typescript if selected
 							templateFile:
 								"plop-templates/Component/Component.{{ext options}}.hbs",
-							skip: (answers) =>
-								!answers.options.includes("component"),
+							skipIfExists: true,
 						},
 						{
 							// Add component index file
@@ -149,8 +149,7 @@ module.exports = (plop) => {
 							path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/index.js",
 							templateFile:
 								"plop-templates/Component/index.js.hbs",
-							skip: (answers) =>
-								!answers.options.includes("component"),
+							skipIfExists: true,
 						},
 						{
 							// Add components index file (if it does not already exist)
@@ -159,8 +158,6 @@ module.exports = (plop) => {
 							templateFile:
 								"plop-templates/injectable-index.js.hbs",
 							skipIfExists: true,
-							skip: (answers) =>
-								!answers.options.includes("component"),
 						},
 						{
 							// Append component import in the components index file
@@ -168,8 +165,6 @@ module.exports = (plop) => {
 							path: "{{componentfolder}}/{{subPath subfolders}}index.js",
 							pattern: `/* PLOP_INJECT_IMPORT */`,
 							template: `import { {{pascalCase name}} } from "./{{subPath subfolders}}{{pascalCase name}}";`,
-							skip: (answers) =>
-								!answers.options.includes("component"),
 						},
 						{
 							// Append component export in the components index file
@@ -177,8 +172,6 @@ module.exports = (plop) => {
 							path: "{{componentfolder}}/{{subPath subfolders}}index.js",
 							pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
 							template: `\t{{pascalCase name}},`,
-							skip: (answers) =>
-								!answers.options.includes("component"),
 						},
 					]
 				);
@@ -192,7 +185,7 @@ module.exports = (plop) => {
 					path: "__tests__/{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.test.jsx",
 					templateFile:
 						"plop-templates/Component/Component.test.jsx.hbs",
-					skip: (answers) => !answers.options.includes("test"),
+					skipIfExists: true,
 				});
 			}
 
@@ -204,7 +197,7 @@ module.exports = (plop) => {
 					path: "{{componentfolder}}/{{subPath subfolders}}{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
 					templateFile:
 						"plop-templates/Component/Component.stories.jsx.hbs",
-					skip: (answers) => !answers.options.includes("stories"),
+					skipIfExists: true,
 				});
 			}
 
@@ -212,389 +205,14 @@ module.exports = (plop) => {
 		},
 	});
 
-	plop.setGenerator("Component (.tsx)", {
-		description: "Create a reusable typescript component",
-		prompts: [
-			{
-				type: "input",
-				name: "name",
-				message: "Name of the component?",
-				validate: requireField("name"),
-			},
-			{
-				type: "checkbox",
-				name: "hooks",
-				message:
-					"Select required hooks (Space to select, Enter when done):",
-				choices: [
-					{ name: "useEffect" },
-					{ name: "useState" },
-					{ name: "useReducer" },
-				],
-			},
-		],
-		actions: [
-			{
-				// Add component
-				type: "add",
-				path: "components/{{pascalCase name}}/{{pascalCase name}}.tsx",
-				templateFile: "plop-templates/Component/Component.jsx.hbs",
-			},
-			{
-				// Add Storybook stories file for the component
-				type: "add",
-				path: "components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
-				templateFile:
-					"plop-templates/Component/Component.stories.jsx.hbs",
-			},
-			{
-				// Add component index file
-				type: "add",
-				path: "components/{{pascalCase name}}/index.js",
-				templateFile: "plop-templates/Component/index.js.hbs",
-			},
-			{
-				// Add Jest test for the component
-				type: "add",
-				path: "__tests__/components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-				templateFile: "plop-templates/Component/Component.test.jsx.hbs",
-			},
-			{
-				// Add components index file (if it does not already exist)
-				type: "add",
-				path: "components/index.js",
-				templateFile: "plop-templates/injectable-index.js.hbs",
-				skipIfExists: true,
-			},
-			{
-				// Append component import in the components index file
-				type: "append",
-				path: "components/index.js",
-				pattern: `/* PLOP_INJECT_IMPORT */`,
-				template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
-			},
-			{
-				// Append component export in the components index file
-				type: "append",
-				path: "components/index.js",
-				pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
-				template: `\t{{pascalCase name}},`,
-			},
-		],
-	});
-
-	plop.setGenerator("Path-Component", {
-		description: "Create a reusable component",
-		prompts: [
-			{
-				type: "input",
-				name: "name",
-				message: "Name of the component?",
-				validate: requireField("name"),
-			},
-			{
-				type: "input",
-				name: "path",
-				message:
-					"Path for the component dont use slash before and after.",
-				validate: requireField("path"),
-			},
-			{
-				type: "checkbox",
-				name: "hooks",
-				message:
-					"Select required hooks (Space to select, Enter when done):",
-				choices: [
-					{ name: "useEffect" },
-					{ name: "useState" },
-					{ name: "useReducer" },
-				],
-			},
-		],
-		actions: [
-			{
-				// Add component
-				type: "add",
-				path: "components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
-				templateFile: "plop-templates/Component/Component.jsx.hbs",
-			},
-			{
-				// Add Storybook stories file for the component
-				type: "add",
-				path: "components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
-				templateFile:
-					"plop-templates/Component/Component.stories.jsx.hbs",
-			},
-			{
-				// Add component index file
-				type: "add",
-				path: "components/{{path}}/{{pascalCase name}}/index.js",
-				templateFile: "plop-templates/Component/index.js.hbs",
-			},
-			{
-				// Add Jest test for the component
-				type: "add",
-				path: "__tests__/components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-				templateFile: "plop-templates/Component/Component.test.jsx.hbs",
-			},
-			{
-				// Add components index file (if it does not already exist)
-				type: "add",
-				path: "components/{{path}}/index.js",
-				templateFile: "plop-templates/injectable-index.js.hbs",
-				skipIfExists: true,
-			},
-			{
-				// Append component import in the components index file
-				type: "append",
-				path: "components/{{path}}/index.js",
-				pattern: `/* PLOP_INJECT_IMPORT */`,
-				template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
-			},
-			{
-				// Append component export in the components index file
-				type: "append",
-				path: "components/{{path}}/index.js",
-				pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
-				template: `\t{{pascalCase name}},`,
-			},
-		],
-	});
-
-	plop.setGenerator("Page-Component", {
-		description: "Create a Page-Component",
-		prompts: [
-			{
-				type: "input",
-				name: "name",
-				message: "Name of the Page-Component?",
-				validate: requireField("name"),
-			},
-			{
-				type: "checkbox",
-				name: "hooks",
-				message:
-					"Select required hooks (Space to select, Enter when done):",
-				choices: [
-					{ name: "useEffect" },
-					{ name: "useState" },
-					{ name: "useReducer" },
-				],
-			},
-		],
-		actions: [
-			{
-				// Add component
-				type: "add",
-				path: "page-components/{{pascalCase name}}/{{pascalCase name}}.jsx",
-				templateFile: "plop-templates/Component/Component.jsx.hbs",
-			},
-			{
-				// Add Storybook stories file for the component
-				type: "add",
-				path: "page-components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
-				templateFile:
-					"plop-templates/Component/Component.stories.jsx.hbs",
-			},
-			{
-				// Add component index file
-				type: "add",
-				path: "page-components/{{pascalCase name}}/index.js",
-				templateFile: "plop-templates/Component/index.js.hbs",
-			},
-			{
-				// Add Jest test for the component
-				type: "add",
-				path: "__tests__/page-components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-				templateFile: "plop-templates/Component/Component.test.jsx.hbs",
-			},
-			{
-				// Add components index file (if it does not already exist)
-				type: "add",
-				path: "page-components/index.js",
-				templateFile: "plop-templates/injectable-index.js.hbs",
-				skipIfExists: true,
-			},
-			{
-				// Append component import in the components index file
-				type: "append",
-				path: "page-components/index.js",
-				pattern: `/* PLOP_INJECT_IMPORT */`,
-				template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
-			},
-			{
-				// Append component export in the components index file
-				type: "append",
-				path: "page-components/index.js",
-				pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
-				template: `\t{{pascalCase name}},`,
-			},
-		],
-	});
-
-	plop.setGenerator("Path-Page-Component", {
-		description: "Create a path Page-Component",
-		prompts: [
-			{
-				type: "input",
-				name: "name",
-				message: "Name of the Page-Component?",
-				validate: requireField("name"),
-			},
-			{
-				type: "input",
-				name: "role",
-				message: "Enter Role (Admin/, Merchant..)",
-			},
-			{
-				type: "input",
-				name: "path",
-				message: "Enter the Path with forward & backward slash",
-			},
-			{
-				type: "checkbox",
-				name: "hooks",
-				message:
-					"Select required hooks (Space to select, Enter when done):",
-				choices: [
-					{ name: "useEffect" },
-					{ name: "useState" },
-					{ name: "useReducer" },
-				],
-			},
-		],
-		actions: [
-			{
-				// Add component
-				type: "add",
-				path: "page-components/{{role}}/{{path}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
-				templateFile: "plop-templates/Component/Component.jsx.hbs",
-			},
-			{
-				// Add Storybook stories file for the component
-				type: "add",
-				path: "page-components/{{role}}/{{path}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
-				templateFile:
-					"plop-templates/Component/Component.stories.jsx.hbs",
-			},
-			{
-				// Add component index file
-				type: "add",
-				path: "page-components/{{role}}/{{path}}/{{pascalCase name}}/index.js",
-				templateFile: "plop-templates/Component/index.js.hbs",
-			},
-			{
-				// Add Jest test for the component
-				type: "add",
-				path: "__tests__/page-components/{{role}}/{{path}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-				templateFile: "plop-templates/Component/Component.test.jsx.hbs",
-			},
-			{
-				// Append component import in the components index file
-				type: "append",
-				path: "page-components/{{role}}/{{path}}/index.js",
-				template: `export { {{pascalCase name}} } from "./{{pascalCase name}}";`,
-			},
-			// {
-			//     // Add components index file (if it does not already exist)
-			//     type: "add",
-			//     path: "page-components/{{role}}/{{path}}/index.js",
-			//     templateFile: "plop-templates/injectable-index.js.hbs",
-			//     skipIfExists: true,
-			// },
-			// {
-			//     // Append component import in the components index file
-			//     type: "append",
-			//     path: "page-components/{{role}}/{{path}}/index.js",
-			//     pattern: `/* PLOP_INJECT_IMPORT */`,
-			//     template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
-			// },
-			// {
-			//     // Append component export in the components index file
-			//     type: "append",
-			//     path: "page-components/{{role}}/{{path}}/index.js",
-			//     pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
-			//     template: `\t{{pascalCase name}},`,
-			// },
-		],
-	});
-
-	plop.setGenerator("Role-Page-Component", {
-		description: "Create a role based Page-Component",
-		prompts: [
-			{
-				type: "input",
-				name: "name",
-				message: "Name of the Page-Component?",
-				validate: requireField("name"),
-			},
-			{
-				type: "input",
-				name: "role",
-				message: "Enter Role (Admin/, Merchant..)",
-			},
-			{
-				type: "checkbox",
-				name: "hooks",
-				message:
-					"Select required hooks (Space to select, Enter when done):",
-				choices: [
-					{ name: "useEffect" },
-					{ name: "useState" },
-					{ name: "useReducer" },
-				],
-			},
-		],
-		actions: [
-			{
-				// Add component
-				type: "add",
-				path: "page-components/{{role}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
-				templateFile: "plop-templates/Component/Component.jsx.hbs",
-			},
-			{
-				// Add Storybook stories file for the component
-				type: "add",
-				path: "page-components/{{role}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
-				templateFile:
-					"plop-templates/Component/Component.stories.jsx.hbs",
-			},
-			{
-				// Add component index file
-				type: "add",
-				path: "page-components/{{role}}/{{pascalCase name}}/index.js",
-				templateFile: "plop-templates/Component/index.js.hbs",
-			},
-			{
-				// Add Jest test for the component
-				type: "add",
-				path: "__tests__/page-components/{{role}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-				templateFile: "plop-templates/Component/Component.test.jsx.hbs",
-			},
-			{
-				// Add components index file (if it does not already exist)
-				type: "add",
-				path: "page-components/{{role}}/index.js",
-				templateFile: "plop-templates/injectable-index.js.hbs",
-				skipIfExists: true,
-			},
-			{
-				// Append component import in the components index file
-				type: "append",
-				path: "page-components/{{role}}/index.js",
-				pattern: `/* PLOP_INJECT_IMPORT */`,
-				template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
-			},
-			{
-				// Append component export in the components index file
-				type: "append",
-				path: "page-components/{{role}}/index.js",
-				pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
-				template: `\t{{pascalCase name}},`,
-			},
-		],
-	});
-
+	/**
+	 * Create a new Next.js page in any of the following folders:
+	 * - pages
+	 * - pages/admin
+	 *
+	 * Option to use Typescript or Javascript.
+	 * Option to generate unit-test.
+	 */
 	plop.setGenerator("Page", {
 		description: "Create a page",
 		prompts: [
@@ -604,54 +222,495 @@ module.exports = (plop) => {
 				message: "Name of the page?",
 				validate: requireField("name"),
 			},
+			{
+				type: "list",
+				name: "pagefolder",
+				message:
+					"Where do you want to create the component? (Enter to select)",
+				choices: [
+					{ name: "pages/", value: "pages" },
+					{ name: "pages/admin/", value: "pages/admin" },
+				],
+				default: "pages",
+			},
+			{
+				type: "checkbox",
+				name: "options",
+				message:
+					"Select additional details (Space to toggle, Enter when done):",
+				choices: [
+					{
+						name: "Use Typescript (.tsx) for component",
+						value: "tsx",
+						checked: true,
+					},
+					{
+						name: "Generate Page",
+						value: "page",
+						checked: true,
+					},
+					{
+						name: "Generate Unit Test",
+						value: "test",
+						checked: true,
+					},
+				],
+			},
 		],
-		actions: [
-			{
-				type: "add",
-				path: "pages/{{lowerCase name}}/{{lowerCase name}}.jsx",
-				templateFile: "plop-templates/Page/Page.jsx.hbs",
-			},
-			{
-				type: "add",
-				path: "pages/{{lowerCase name}}/index.js",
-				templateFile: "plop-templates/Page/index.js.hbs",
-			},
-			{
-				type: "add",
-				path: "__tests__/pages/{{lowerCase name}}/{{lowerCase name}}.test.jsx",
-				templateFile: "plop-templates/Page/Page.test.jsx.hbs",
-			},
-		],
+		actions: (data) => {
+			const { options } = data;
+			const actions = [];
+
+			if (!options) return actions;
+
+			// Generate page
+			if (options.includes("page")) {
+				actions.push(
+					...[
+						{
+							// Add page
+							type: "add",
+							path: "{{pagefolder}}/{{lowerCase name}}/{{lowerCase name}}.{{ext options}}", // Use Typescript extension if selected
+							templateFile: "plop-templates/Page/Page.jsx.hbs",
+							skipIfExists: true,
+						},
+						{
+							// Add page index file
+							type: "add",
+							path: "{{pagefolder}}/{{lowerCase name}}/index.js",
+							templateFile: "plop-templates/Page/index.js.hbs",
+							skipIfExists: true,
+						},
+					]
+				);
+			}
+
+			// Generate unit test
+			if (options.includes("test")) {
+				actions.push({
+					// Add Jest test for the page
+					type: "add",
+					path: "__tests__/{{pagefolder}}/{{lowerCase name}}/{{lowerCase name}}.test.jsx",
+					templateFile: "plop-templates/Page/Page.test.jsx.hbs",
+					skipIfExists: true,
+				});
+			}
+
+			return actions;
+		},
 	});
 
-	plop.setGenerator("Admin-Page", {
-		description: "Create a page inside admin",
-		prompts: [
-			{
-				type: "input",
-				name: "name",
-				message: "Name of the page?",
-				validate: requireField("name"),
-			},
-		],
-		actions: [
-			{
-				type: "add",
-				path: "pages/admin/{{lowerCase name}}/{{lowerCase name}}.jsx",
-				templateFile: "plop-templates/Page/Page.jsx.hbs",
-			},
-			{
-				type: "add",
-				path: "pages/admin/{{lowerCase name}}/index.js",
-				templateFile: "plop-templates/Page/index.js.hbs",
-			},
-			{
-				type: "add",
-				path: "__tests__/pages/admin/{{lowerCase name}}/{{lowerCase name}}.test.jsx",
-				templateFile: "plop-templates/Page/Page.test.jsx.hbs",
-			},
-		],
-	});
+	// plop.setGenerator("Component (.tsx)", {
+	// 	description: "Create a reusable typescript component",
+	// 	prompts: [
+	// 		{
+	// 			type: "input",
+	// 			name: "name",
+	// 			message: "Name of the component?",
+	// 			validate: requireField("name"),
+	// 		},
+	// 		{
+	// 			type: "checkbox",
+	// 			name: "hooks",
+	// 			message:
+	// 				"Select required hooks (Space to select, Enter when done):",
+	// 			choices: [
+	// 				{ name: "useEffect" },
+	// 				{ name: "useState" },
+	// 				{ name: "useReducer" },
+	// 			],
+	// 		},
+	// 	],
+	// 	actions: [
+	// 		{
+	// 			// Add component
+	// 			type: "add",
+	// 			path: "components/{{pascalCase name}}/{{pascalCase name}}.tsx",
+	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add Storybook stories file for the component
+	// 			type: "add",
+	// 			path: "components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+	// 			templateFile:
+	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add component index file
+	// 			type: "add",
+	// 			path: "components/{{pascalCase name}}/index.js",
+	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 		},
+	// 		{
+	// 			// Add Jest test for the component
+	// 			type: "add",
+	// 			path: "__tests__/components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
+	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add components index file (if it does not already exist)
+	// 			type: "add",
+	// 			path: "components/index.js",
+	// 			templateFile: "plop-templates/injectable-index.js.hbs",
+	// 			skipIfExists: true,
+	// 		},
+	// 		{
+	// 			// Append component import in the components index file
+	// 			type: "append",
+	// 			path: "components/index.js",
+	// 			pattern: `/* PLOP_INJECT_IMPORT */`,
+	// 			template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
+	// 		},
+	// 		{
+	// 			// Append component export in the components index file
+	// 			type: "append",
+	// 			path: "components/index.js",
+	// 			pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
+	// 			template: `\t{{pascalCase name}},`,
+	// 		},
+	// 	],
+	// });
+
+	// plop.setGenerator("Path-Component", {
+	// 	description: "Create a reusable component",
+	// 	prompts: [
+	// 		{
+	// 			type: "input",
+	// 			name: "name",
+	// 			message: "Name of the component?",
+	// 			validate: requireField("name"),
+	// 		},
+	// 		{
+	// 			type: "input",
+	// 			name: "path",
+	// 			message:
+	// 				"Path for the component dont use slash before and after.",
+	// 			validate: requireField("path"),
+	// 		},
+	// 		{
+	// 			type: "checkbox",
+	// 			name: "hooks",
+	// 			message:
+	// 				"Select required hooks (Space to select, Enter when done):",
+	// 			choices: [
+	// 				{ name: "useEffect" },
+	// 				{ name: "useState" },
+	// 				{ name: "useReducer" },
+	// 			],
+	// 		},
+	// 	],
+	// 	actions: [
+	// 		{
+	// 			// Add component
+	// 			type: "add",
+	// 			path: "components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
+	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add Storybook stories file for the component
+	// 			type: "add",
+	// 			path: "components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+	// 			templateFile:
+	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add component index file
+	// 			type: "add",
+	// 			path: "components/{{path}}/{{pascalCase name}}/index.js",
+	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 		},
+	// 		{
+	// 			// Add Jest test for the component
+	// 			type: "add",
+	// 			path: "__tests__/components/{{path}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
+	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add components index file (if it does not already exist)
+	// 			type: "add",
+	// 			path: "components/{{path}}/index.js",
+	// 			templateFile: "plop-templates/injectable-index.js.hbs",
+	// 			skipIfExists: true,
+	// 		},
+	// 		{
+	// 			// Append component import in the components index file
+	// 			type: "append",
+	// 			path: "components/{{path}}/index.js",
+	// 			pattern: `/* PLOP_INJECT_IMPORT */`,
+	// 			template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
+	// 		},
+	// 		{
+	// 			// Append component export in the components index file
+	// 			type: "append",
+	// 			path: "components/{{path}}/index.js",
+	// 			pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
+	// 			template: `\t{{pascalCase name}},`,
+	// 		},
+	// 	],
+	// });
+
+	// plop.setGenerator("Page-Component", {
+	// 	description: "Create a Page-Component",
+	// 	prompts: [
+	// 		{
+	// 			type: "input",
+	// 			name: "name",
+	// 			message: "Name of the Page-Component?",
+	// 			validate: requireField("name"),
+	// 		},
+	// 		{
+	// 			type: "checkbox",
+	// 			name: "hooks",
+	// 			message:
+	// 				"Select required hooks (Space to select, Enter when done):",
+	// 			choices: [
+	// 				{ name: "useEffect" },
+	// 				{ name: "useState" },
+	// 				{ name: "useReducer" },
+	// 			],
+	// 		},
+	// 	],
+	// 	actions: [
+	// 		{
+	// 			// Add component
+	// 			type: "add",
+	// 			path: "page-components/{{pascalCase name}}/{{pascalCase name}}.jsx",
+	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add Storybook stories file for the component
+	// 			type: "add",
+	// 			path: "page-components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+	// 			templateFile:
+	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add component index file
+	// 			type: "add",
+	// 			path: "page-components/{{pascalCase name}}/index.js",
+	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 		},
+	// 		{
+	// 			// Add Jest test for the component
+	// 			type: "add",
+	// 			path: "__tests__/page-components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
+	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add components index file (if it does not already exist)
+	// 			type: "add",
+	// 			path: "page-components/index.js",
+	// 			templateFile: "plop-templates/injectable-index.js.hbs",
+	// 			skipIfExists: true,
+	// 		},
+	// 		{
+	// 			// Append component import in the components index file
+	// 			type: "append",
+	// 			path: "page-components/index.js",
+	// 			pattern: `/* PLOP_INJECT_IMPORT */`,
+	// 			template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
+	// 		},
+	// 		{
+	// 			// Append component export in the components index file
+	// 			type: "append",
+	// 			path: "page-components/index.js",
+	// 			pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
+	// 			template: `\t{{pascalCase name}},`,
+	// 		},
+	// 	],
+	// });
+
+	// plop.setGenerator("Path-Page-Component", {
+	// 	description: "Create a path Page-Component",
+	// 	prompts: [
+	// 		{
+	// 			type: "input",
+	// 			name: "name",
+	// 			message: "Name of the Page-Component?",
+	// 			validate: requireField("name"),
+	// 		},
+	// 		{
+	// 			type: "input",
+	// 			name: "role",
+	// 			message: "Enter Role (Admin/, Merchant..)",
+	// 		},
+	// 		{
+	// 			type: "input",
+	// 			name: "path",
+	// 			message: "Enter the Path with forward & backward slash",
+	// 		},
+	// 		{
+	// 			type: "checkbox",
+	// 			name: "hooks",
+	// 			message:
+	// 				"Select required hooks (Space to select, Enter when done):",
+	// 			choices: [
+	// 				{ name: "useEffect" },
+	// 				{ name: "useState" },
+	// 				{ name: "useReducer" },
+	// 			],
+	// 		},
+	// 	],
+	// 	actions: [
+	// 		{
+	// 			// Add component
+	// 			type: "add",
+	// 			path: "page-components/{{role}}/{{path}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
+	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add Storybook stories file for the component
+	// 			type: "add",
+	// 			path: "page-components/{{role}}/{{path}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+	// 			templateFile:
+	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add component index file
+	// 			type: "add",
+	// 			path: "page-components/{{role}}/{{path}}/{{pascalCase name}}/index.js",
+	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 		},
+	// 		{
+	// 			// Add Jest test for the component
+	// 			type: "add",
+	// 			path: "__tests__/page-components/{{role}}/{{path}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
+	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Append component import in the components index file
+	// 			type: "append",
+	// 			path: "page-components/{{role}}/{{path}}/index.js",
+	// 			template: `export { {{pascalCase name}} } from "./{{pascalCase name}}";`,
+	// 		},
+	// 		// {
+	// 		//     // Add components index file (if it does not already exist)
+	// 		//     type: "add",
+	// 		//     path: "page-components/{{role}}/{{path}}/index.js",
+	// 		//     templateFile: "plop-templates/injectable-index.js.hbs",
+	// 		//     skipIfExists: true,
+	// 		// },
+	// 		// {
+	// 		//     // Append component import in the components index file
+	// 		//     type: "append",
+	// 		//     path: "page-components/{{role}}/{{path}}/index.js",
+	// 		//     pattern: `/* PLOP_INJECT_IMPORT */`,
+	// 		//     template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
+	// 		// },
+	// 		// {
+	// 		//     // Append component export in the components index file
+	// 		//     type: "append",
+	// 		//     path: "page-components/{{role}}/{{path}}/index.js",
+	// 		//     pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
+	// 		//     template: `\t{{pascalCase name}},`,
+	// 		// },
+	// 	],
+	// });
+
+	// plop.setGenerator("Role-Page-Component", {
+	// 	description: "Create a role based Page-Component",
+	// 	prompts: [
+	// 		{
+	// 			type: "input",
+	// 			name: "name",
+	// 			message: "Name of the Page-Component?",
+	// 			validate: requireField("name"),
+	// 		},
+	// 		{
+	// 			type: "input",
+	// 			name: "role",
+	// 			message: "Enter Role (Admin/, Merchant..)",
+	// 		},
+	// 		{
+	// 			type: "checkbox",
+	// 			name: "hooks",
+	// 			message:
+	// 				"Select required hooks (Space to select, Enter when done):",
+	// 			choices: [
+	// 				{ name: "useEffect" },
+	// 				{ name: "useState" },
+	// 				{ name: "useReducer" },
+	// 			],
+	// 		},
+	// 	],
+	// 	actions: [
+	// 		{
+	// 			// Add component
+	// 			type: "add",
+	// 			path: "page-components/{{role}}/{{pascalCase name}}/{{pascalCase name}}.jsx",
+	// 			templateFile: "plop-templates/Component/Component.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add Storybook stories file for the component
+	// 			type: "add",
+	// 			path: "page-components/{{role}}/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+	// 			templateFile:
+	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add component index file
+	// 			type: "add",
+	// 			path: "page-components/{{role}}/{{pascalCase name}}/index.js",
+	// 			templateFile: "plop-templates/Component/index.js.hbs",
+	// 		},
+	// 		{
+	// 			// Add Jest test for the component
+	// 			type: "add",
+	// 			path: "__tests__/page-components/{{role}}/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
+	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 		},
+	// 		{
+	// 			// Add components index file (if it does not already exist)
+	// 			type: "add",
+	// 			path: "page-components/{{role}}/index.js",
+	// 			templateFile: "plop-templates/injectable-index.js.hbs",
+	// 			skipIfExists: true,
+	// 		},
+	// 		{
+	// 			// Append component import in the components index file
+	// 			type: "append",
+	// 			path: "page-components/{{role}}/index.js",
+	// 			pattern: `/* PLOP_INJECT_IMPORT */`,
+	// 			template: `import { {{pascalCase name}} } from "./{{pascalCase name}}";`,
+	// 		},
+	// 		{
+	// 			// Append component export in the components index file
+	// 			type: "append",
+	// 			path: "page-components/{{role}}/index.js",
+	// 			pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
+	// 			template: `\t{{pascalCase name}},`,
+	// 		},
+	// 	],
+	// });
+
+	// plop.setGenerator("Admin-Page", {
+	// 	description: "Create a page inside admin",
+	// 	prompts: [
+	// 		{
+	// 			type: "input",
+	// 			name: "name",
+	// 			message: "Name of the page?",
+	// 			validate: requireField("name"),
+	// 		},
+	// 	],
+	// 	actions: [
+	// 		{
+	// 			type: "add",
+	// 			path: "pages/admin/{{lowerCase name}}/{{lowerCase name}}.jsx",
+	// 			templateFile: "plop-templates/Page/Page.jsx.hbs",
+	// 		},
+	// 		{
+	// 			type: "add",
+	// 			path: "pages/admin/{{lowerCase name}}/index.js",
+	// 			templateFile: "plop-templates/Page/index.js.hbs",
+	// 		},
+	// 		{
+	// 			type: "add",
+	// 			path: "__tests__/pages/admin/{{lowerCase name}}/{{lowerCase name}}.test.jsx",
+	// 			templateFile: "plop-templates/Page/Page.test.jsx.hbs",
+	// 		},
+	// 	],
+	// });
 
 	plop.setGenerator("Hook", {
 		description: "Create a React hook",
@@ -693,43 +752,43 @@ module.exports = (plop) => {
 		],
 	});
 
-	plop.setGenerator("Test for Component", {
-		description: "Create a Jest test file for a component",
-		prompts: [
-			{
-				type: "input",
-				name: "name",
-				message: "Name of the component?",
-				validate: requireField("name"),
-			},
-		],
-		actions: [
-			{
-				type: "add",
-				path: "__tests__/components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
-				templateFile: "plop-templates/Component/Component.test.jsx.hbs",
-			},
-		],
-	});
+	// plop.setGenerator("Test for Component", {
+	// 	description: "Create a Jest test file for a component",
+	// 	prompts: [
+	// 		{
+	// 			type: "input",
+	// 			name: "name",
+	// 			message: "Name of the component?",
+	// 			validate: requireField("name"),
+	// 		},
+	// 	],
+	// 	actions: [
+	// 		{
+	// 			type: "add",
+	// 			path: "__tests__/components/{{pascalCase name}}/{{pascalCase name}}.test.jsx",
+	// 			templateFile: "plop-templates/Component/Component.test.jsx.hbs",
+	// 		},
+	// 	],
+	// });
 
-	plop.setGenerator("StoryBook Stories for Component", {
-		description: "Create a Storybook Stories file for a component",
-		prompts: [
-			{
-				type: "input",
-				name: "name",
-				message: "Name of the component?",
-				validate: requireField("name"),
-			},
-		],
-		actions: [
-			{
-				// Add Storybook stories file for the component
-				type: "add",
-				path: "components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
-				templateFile:
-					"plop-templates/Component/Component.stories.jsx.hbs",
-			},
-		],
-	});
+	// plop.setGenerator("StoryBook Stories for Component", {
+	// 	description: "Create a Storybook Stories file for a component",
+	// 	prompts: [
+	// 		{
+	// 			type: "input",
+	// 			name: "name",
+	// 			message: "Name of the component?",
+	// 			validate: requireField("name"),
+	// 		},
+	// 	],
+	// 	actions: [
+	// 		{
+	// 			// Add Storybook stories file for the component
+	// 			type: "add",
+	// 			path: "components/{{pascalCase name}}/{{pascalCase name}}.stories.jsx",
+	// 			templateFile:
+	// 				"plop-templates/Component/Component.stories.jsx.hbs",
+	// 		},
+	// 	],
+	// });
 };
