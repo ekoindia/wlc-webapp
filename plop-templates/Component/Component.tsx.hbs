@@ -26,15 +26,23 @@ const reducer = (state, { type, payload }) => {
 };
 {{/if}}
 
+
+// Declare the props interface
+interface {{pascalCase name}}Props {
+	prop1?: string;
+	// size: "lg" | "md" | "sm" | "xs" | string;
+	[key: string]: any;
+}
+
 /**
  * A <{{pascalCase name}}> component
  * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param	{...*}	rest	Rest of the props
  * @example	`<{{pascalCase name}}></{{pascalCase name}}>` TODO: Fix example
  */
-const {{pascalCase name}} = ({ prop1, ...rest })  => {
+const {{pascalCase name}} = ({ prop1, ...rest }: {{pascalCase name}}Props)  => {
 	{{#if (isInArray "useState" hooks) }}
 	const [count, setCount] = useState(0);		// TODO: Edit state as required
 
