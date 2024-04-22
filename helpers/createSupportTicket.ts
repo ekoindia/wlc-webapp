@@ -105,7 +105,6 @@ export const createSupportTicket = ({
 			...technicalNotes,
 			...getSessionDetails(),
 			transaction_details: transaction_metadata?.transaction_detail,
-			device_time: new Date().toISOString(),
 			useragent: navigator.userAgent,
 			screen:
 				(window.innerWidth || document.body.clientWidth) +
@@ -115,6 +114,7 @@ export const createSupportTicket = ({
 				screen.width +
 				"x" +
 				screen.height,
+			device_time: new Date().toISOString(),
 			// TODO: Add the following details...
 			// last_unhandled_error: window._lastConnectGlobalError || "No Error",
 			// appsource: this.appsource,
@@ -169,7 +169,7 @@ export const createSupportTicket = ({
 /**
  * Get the org, session and app details from sessionStorage...
  */
-const getSessionDetails = async () => {
+const getSessionDetails = () => {
 	const org = JSON.parse(sessionStorage.getItem("org_detail"));
 	const user = JSON.parse(sessionStorage.getItem("user_details"));
 
