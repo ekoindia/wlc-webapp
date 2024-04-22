@@ -50,6 +50,8 @@ export const light = extendTheme({
 		divider: "#E9EDF1",
 		hint: "#D2D2D2",
 		dark: "#0F0F0F",
+		dark2: "#1A1A1A",
+		dark3: "#2C2C2C",
 		light: "#555555",
 		focusbg: "#FFFBF3",
 		white: "#FFFFFF",
