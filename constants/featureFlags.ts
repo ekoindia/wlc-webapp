@@ -1,8 +1,19 @@
 /**
  * Note: This file is used to enable or disable features in the application.
  * Can be used to enable or disable features based on user roles or environment.
+ *
+ * To check for a feature-flag, use the "useFeatureFlag" hook.
+ * @example
+ * 	import { useFeatureFlag } from "hooks";
+ * 	const isFeatureEnabled = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
+	// Beta (WIP) feature to Raise Issues...
+	RAISE_ISSUE: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// Experimental LLM conversational UI for financial transactions and queries.
 	GPT_CHAT: {
 		enabled: true,

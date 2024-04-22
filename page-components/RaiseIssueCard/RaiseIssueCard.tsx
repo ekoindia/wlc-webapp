@@ -12,6 +12,7 @@ import { Dropzone, Icon, InputLabel } from "components";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useUser } from "contexts";
 import { createSupportTicket, fetcher } from "helpers";
+import { useFeatureFlag } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
@@ -120,6 +121,9 @@ const RaiseIssueCard = ({
 		useState(true); // Has the "raise_issue_after" time elapsed for the current transaction?
 	const [isUserFeedbackRequired, setIsUserFeedbackRequired] =
 		useState<boolean>(true); // Do we need to submit user feedback (or, just link to another page)?
+
+	// Check if the feature is enabled...
+	const isFeatureEnabled = useFeatureFlag("RAISE_ISSUE");
 
 	/**
 	 * Effect: Fetch the issue types, if the user is logged in and the transaction details change ...
@@ -448,6 +452,15 @@ const RaiseIssueCard = ({
 			controller.abort();
 		};
 	};
+
+	// Is the feature enabled?
+	if (!isFeatureEnabled) {
+		return (
+			<Text fontSize="sm" color="gray.600">
+				Feature is disabled. Please try again later.
+			</Text>
+		);
+	}
 
 	// Show load animation while fetching issue-list
 	if (fetchingIssueList) {
