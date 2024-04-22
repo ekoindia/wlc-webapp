@@ -8,6 +8,7 @@ import { Button } from "./Button";
 import { Calenders } from "./Calenders";
 import { Card } from "./Card";
 import { ColorPair } from "./ColorPair";
+import { CommandBarBox } from "./CommandBar";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
 import { Divider } from "./Divider";
@@ -52,7 +53,6 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
-	Share,
 	Accordion,
 	AccordionItem,
 	AdminViewToggleCard,
@@ -63,6 +63,7 @@ export {
 	Calenders,
 	Card,
 	ColorPair,
+	CommandBarBox,
 	Currency,
 	DateView,
 	Divider,
@@ -94,6 +95,7 @@ export {
 	RouteProtecter,
 	SearchBar,
 	Select,
+	Share,
 	ShowcaseCircle,
 	SideBar,
 	StatusCard,

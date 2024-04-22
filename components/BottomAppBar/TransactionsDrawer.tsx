@@ -14,7 +14,7 @@ import { InteractionBehavior } from "constants/trxnFramework";
 import { useMenuContext } from "contexts";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { svgBgDotted } from "utils/svgPatterns";
 import { Accordion, AccordionItem, Icon } from "..";
 
@@ -31,6 +31,8 @@ const generateNewPath = (
 	id: number,
 	group_interaction_id?: number
 ) => {
+	//TODO Refactor this 👇
+	// do I really need if else ??
 	let newPath;
 	if (currentPath.includes("transaction")) {
 		newPath = currentPath.replace(
@@ -317,7 +319,6 @@ const GridInteraction = ({
 }: GridInteractionProps): JSX.Element => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
-	const [openIndex, setOpenIndex] = useState<number | null>(null);
 
 	const groupInteractions = group_interaction_ids
 		.split(",")
@@ -328,7 +329,7 @@ const GridInteraction = ({
 	const isGridInteraction = groupInteractions?.length > 1;
 
 	return (
-		<Accordion {...{ openIndex, setOpenIndex }}>
+		<Accordion>
 			<AccordionItem
 				summary={
 					<InteractionItem
@@ -341,7 +342,7 @@ const GridInteraction = ({
 						}}
 					/>
 				}
-				isOpen={openIndex === id}
+				// open={openIndex === id}
 			>
 				<GridInteractionBox {...{ id, groupInteractions, onClose }} />
 			</AccordionItem>

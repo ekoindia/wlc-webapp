@@ -1,4 +1,5 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
+import { useBottomBarItems } from "components/BottomAppBar";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
 import { useDelayToggle } from "hooks";
@@ -8,7 +9,6 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { ANDROID_ACTION, doAndroidAction } from "utils";
-import { useBottomBarItems } from ".";
 import { BottomAppBar, PageLoader /*,NavBar, SideBar */ } from "..";
 import { NavHeight } from "../NavBar";
 

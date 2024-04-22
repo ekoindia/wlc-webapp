@@ -1,5 +1,5 @@
 import { Flex, Text, useToken } from "@chakra-ui/react";
-import { BottomBarItem } from "components/Layout/useBottomBarItems";
+import { BottomBarItem } from "components/BottomAppBar/useBottomBarItems";
 import usePlatform from "hooks/usePlatform";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
