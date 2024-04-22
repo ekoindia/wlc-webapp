@@ -23,11 +23,20 @@ const IMAGE_MIME_TYPES = {
 /**
  * A Dropzone component to upload file either by selecting or by drag n drop
  * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
+ * @param	{File}	prop.file	File object to be uploaded
+ * @param	{function}	prop.setFile	Function to set the file object
+ * @param	{string}	[prop.accept=""]	Accepted file types
+ * @param	{boolean}	[prop.disabled=false]	Disable the dropzone
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<Dropzone></Dropzone>` TODO: Fix example
+ * @example	`<Dropzone file={screenshot} setFile={setScreenshot} />` TODO: Fix example
  */
-const Dropzone = ({ file, setFile, accept = "" }) => {
+const Dropzone = ({
+	file,
+	setFile,
+	accept = "",
+	disabled = false,
+	...rest
+}) => {
 	const [inDropZone, setInDropZone] = useState(false);
 	const [previewImage, setPreviewImage] = useState(null);
 
@@ -61,6 +70,7 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 
 	const handleDragOver = (event) => {
 		event.preventDefault();
+		if (disabled) return;
 		setInDropZone(true);
 	};
 
@@ -72,6 +82,7 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 	const handleDrop = (event) => {
 		event.preventDefault();
 		setInDropZone(false);
+		if (disabled) return;
 		const _file = event.dataTransfer.files[0];
 		// const fileUrl = URL.createObjectURL(file);
 		setFile(_file);
@@ -92,8 +103,12 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 			borderRadius="10px"
 			color="light"
 			p="5"
+			cursor={disabled ? "default" : "pointer"}
+			pointerEvents={disabled ? "none" : "auto"}
+			opacity={disabled ? 0.5 : 1}
+			{...rest}
 		>
-			{file === null ? (
+			{file === null || typeof file === "undefined" ? (
 				<Flex direction="column" align="center" w="100%" gap="2">
 					<Input
 						hidden
@@ -101,6 +116,7 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 						onChange={handleFileUploadInputChange}
 						id="fileUploadInput"
 						accept={accept}
+						disabled={disabled}
 					/>
 					<Button
 						variant="accent"
@@ -108,6 +124,7 @@ const Dropzone = ({ file, setFile, accept = "" }) => {
 						onClick={() =>
 							document.getElementById("fileUploadInput").click()
 						}
+						disabled={disabled}
 					>
 						Browse
 					</Button>
