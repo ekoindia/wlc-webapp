@@ -1,4 +1,5 @@
 export { fetcher } from "./apiHelper";
+export { createSupportTicket } from "./createSupportTicket";
 export {
 	/* dummyOrgDetails,  */ fetchOrgDetails,
 } from "./fetchOrgDetailsHelper";
