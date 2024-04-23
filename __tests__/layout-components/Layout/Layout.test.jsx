@@ -1,4 +1,4 @@
-import { Layout } from "components/Layout";
+import { Layout } from "layout-components";
 import { pageRender } from "test-utils";
 
 /*
@@ -48,6 +48,6 @@ describe("Layout", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Layout in __tests__/components/Layout/Layout.test.jsx"
+		"TODO: add proper test cases for Layout in __tests__/layout-components/Layout/Layout.test.jsx"
 	);
 });

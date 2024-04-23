@@ -20,7 +20,6 @@ import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
 import { Kbd } from "./Kbd";
-import { Layout } from "./Layout";
 import { Menus } from "./Menus";
 import { Modal } from "./Modal";
 import { NavBar } from "./NavBar";
@@ -73,7 +72,6 @@ export {
 	InputLabel,
 	InputMsg,
 	Kbd,
-	Layout,
 	Menus,
 	Modal,
 	NavBar,
