@@ -33,8 +33,9 @@ const NavBar = dynamic(() => import("../NavBar").then((pkg) => pkg.NavBar), {
  * @param {Boolean} pageMeta.isSubPage - If the page is a sub page, then the layout will not render the top navbar (Header) on small screens.
  * @param {String} pageMeta.title - The page title. This will be displayed in the browser titlebar.
  * @param {Boolean} pageMeta.hideMenu - If true, then the layout will not render the left navigation drawer.
+ * @param {String} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
-const Layout = ({ appName, pageMeta, fontClassName, children }) => {
+const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	const { isSubPage, title, hideMenu } = pageMeta;
 
 	const { isLoggedIn } = useSession();
