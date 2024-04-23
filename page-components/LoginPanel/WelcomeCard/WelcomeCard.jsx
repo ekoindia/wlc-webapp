@@ -1,12 +1,27 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { IcoButton, Icon, ShowcaseCircle } from "components";
+import { IcoButton, Icon } from "components";
 import { fadeIn } from "libs/chakraKeyframes";
 import { svgBgDotted } from "utils/svgPatterns";
+
+import { useDelayToggle } from "hooks";
+import dynamic from "next/dynamic";
+
+// Lazy-load load the showcase image
+const ShowcaseCircle = dynamic(
+	() => import("components/ShowcaseCircle").then((pkg) => pkg.ShowcaseCircle),
+	{
+		default: () => <ShowcasePlaceholder />,
+		ssr: false,
+	}
+);
 
 /**
  * A Welcome card with a logo, title and a list of features
  */
 const WelcomeCard = ({ logo, header, features = [], onClick, ...rest }) => {
+	// Delay-load showcase image
+	const [loadShowcaseImage] = useDelayToggle(500);
+
 	return (
 		<Box
 			bgGradient="linear(to-b, primary.light, primary.dark)"
@@ -34,16 +49,20 @@ const WelcomeCard = ({ logo, header, features = [], onClick, ...rest }) => {
 			>
 				<Flex direction="column" align="center" gap="4">
 					{/* Top image box with circles and stars */}
-					<ShowcaseCircle>
-						<img
-							src={logo}
-							alt="store"
-							width="80px"
-							height="80px"
-							loading="lazy"
-							style={{ pointerEvents: "none" }}
-						/>
-					</ShowcaseCircle>
+					{loadShowcaseImage ? (
+						<ShowcaseCircle>
+							<img
+								src={logo}
+								alt="store"
+								width="80px"
+								height="80px"
+								loading="lazy"
+								style={{ pointerEvents: "none" }}
+							/>
+						</ShowcaseCircle>
+					) : (
+						<ShowcasePlaceholder />
+					)}
 
 					{/* Title */}
 					<Text
@@ -110,5 +129,10 @@ const WelcomeCard = ({ logo, header, features = [], onClick, ...rest }) => {
 		</Box>
 	);
 };
+
+// Showcase Image Placeholder
+const ShowcasePlaceholder = () => (
+	<Box w="240px" h="240px" borderRadius="full" bg="#FFFFFF05" />
+);
 
 export default WelcomeCard;

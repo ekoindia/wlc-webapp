@@ -405,6 +405,11 @@ const Network = () => {
 					alignSelf="center"
 					align="center"
 					gap="2"
+					sx={{
+						"@media print": {
+							display: "none !important",
+						},
+					}}
 				>
 					<Flex color="light" fontSize="xs">
 						{isFiltered

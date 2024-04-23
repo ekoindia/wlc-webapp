@@ -5,20 +5,24 @@ import { Icon } from "..";
 /**
  * A <Heading> component
  * TODO: Write more description here
- * @arg 	{String}	title	Properties passed to the component
- * @arg 	{Boolean}	hasIcon	Properties passed to the component
- * @arg 	{Component}	propComp	Properties passed to the component
- * @arg 	{Function}	redirectHandler	Properties passed to the component
- * @arg 	{Function}	redirectHandler	Properties passed to the component
- * @example	`<Heading></Heading>`
+ * @component
+ * @param 	{Object}	props
+ * @param 	{String}	props.title	The title
+ * @param 	{String}	[props.subtitle]	The subtitle
+ * @param 	{Boolean}	[props.hasIcon=true]	Whether to show the back icon
+ * @param 	{Boolean}	[props.isCompVisible=true]	Whether to show the component
+ * @param 	{Component}	[props.propComp]	Properties passed to the component
+ * @param 	{Function}	[props.redirectHandler]	Properties passed to the component
+ * @param 	{...*}	rest	Rest of the props
+ * @example	`<Heading title="Welcome" />`
  */
 const Headings = ({
 	hasIcon = true,
 	title,
 	subtitle,
-	redirectHandler,
 	propComp,
 	isCompVisible = true,
+	redirectHandler,
 	...rest
 }) => {
 	const router = useRouter();

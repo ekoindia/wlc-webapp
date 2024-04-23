@@ -10,8 +10,12 @@ export const TransactionTypes = {
 	GET_WALLET_BALANCE: 9,
 	GET_NOTIFICATIONS: 10010,
 	GET_EARNING_SUMMARY: 623,
-	GET_ALL_QUERIES_FOR_ORG: 692,
 	SET_COMMISSION_FOR_DISTRIBUTORS: 726, //for various products
+
+	// For "Raise Query"
+	GET_ALL_QUERIES_FOR_ORG: 692,
+	GET_QUERY_TYPES: 10022,
+	RAISE_ISSUE: 10000,
 };
 
 /**
@@ -28,7 +32,9 @@ export const TransactionIds = {
 		491, // Retailers (Load E-value)
 		240, // Distributors (Request E-value)
 	],
-
+	REVERSE_EVALUE: 7776, // For Admin
+	MANAGE_SELF_EVALUE: 7775, // Load E-value, Request E-value
+	MANAGE_NETWORK_EVALUE: 7774, // Transfer E-value, Reverse E-value
 	MANAGE_MY_ACCOUNT: 536,
 	INVOICE_DOWNLOAD: 542,
 	UPDATE_REGISTERED_MOBILE: 640,

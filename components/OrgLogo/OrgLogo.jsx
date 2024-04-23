@@ -82,7 +82,11 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 				src={orgLogo || fallbackLogo}
 				// fallbackSrc={fallbackLogo}
 				alt={orgDetail.app_name + " logo"}
-				maxW={{ base: "10rem", md: "20rem", "2xl": "30rem" }}
+				maxW={{
+					base: "min(100%, 10rem)",
+					md: "min(100%, 20rem)",
+					"2xl": "min(100%, 30rem)",
+				}}
 				maxH={logoHeight}
 				w="auto"
 				h="auto"

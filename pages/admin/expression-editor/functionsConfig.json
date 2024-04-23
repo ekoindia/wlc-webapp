@@ -831,6 +831,24 @@
 		],
 		"example": "empty('') => true"
 	},
+	"default": {
+		"label": "Default Value If Null Or Empty",
+		"desc": "If provided value is null, undefined or empty string, returns the default value",
+		"category": "String Operations",
+		"args": [
+			{
+				"label": "value",
+				"types": [],
+				"desc": "Value to check"
+			},
+			{
+				"label": "default",
+				"types": [],
+				"desc": "Default value to return if the value is null"
+			}
+		],
+		"example": "default(null, 'default') => 'default'"
+	},
 	"contains": {
 		"desc": "Checks if a string contains a specified substring",
 		"category": "String Operations",
