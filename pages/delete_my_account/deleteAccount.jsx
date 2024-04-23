@@ -1,6 +1,6 @@
-import { LayoutLogin } from "components/Layout";
 import { UserTypeLabel } from "constants";
 import { useOrgDetailContext, useUser } from "contexts";
+import { LayoutLogin } from "layout-components";
 
 const DeleteAccount = () => {
 	const { orgDetail } = useOrgDetailContext();

@@ -1,6 +1,6 @@
 import { ChakraProvider, ToastPosition } from "@chakra-ui/react";
 import { GoogleTagManager } from "@next/third-parties/google";
-import { ErrorBoundary, Layout, RouteProtecter } from "components";
+import { ErrorBoundary, RouteProtecter } from "components";
 import { KBarLazyProvider } from "components/CommandBar";
 import {
 	AppSourceProvider,
@@ -18,6 +18,7 @@ import {
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
+import { Layout } from "layout-components";
 import App from "next/app";
 // import { Inter } from "next/font/google";
 import Head from "next/head";

@@ -11,6 +11,7 @@
 				"./page-components/Admin/*"
 			],
 			"tf-components/*": ["./tf-components/*"],
+			"layout-components/*": ["./layout-components/*"],
 			"constants/*": ["./constants/*"],
 			"contexts/*": ["./contexts/*"],
 			"helpers/*": ["./helpers/*"],

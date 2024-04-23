@@ -90,6 +90,7 @@ function Key({ children, ...rest }) {
 			minH="24px"
 			minW="26px"
 			color="light"
+			fontFamily="inherit"
 			{...rest}
 		>
 			{children}

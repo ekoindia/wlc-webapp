@@ -56,13 +56,12 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 ### Pub/Sub
 
 To use pub/sub, follow the following steps:
-- Open [PubSubContext.js](contexts/PubSubContext.js) and add your new topic/purpose under the `TOPIC` array.
+- Add your new topic/purpose in the [constants/PubSubTopics.ts](constants/PubSubTopics.ts) file.
 - For publishing events to this topic:
   ```jsx
   import { usePubSub } from "contexts";
 
   const { publish, TOPICS } = usePubSub();
-  ...
   publish(TOPIC.MY_TOPIC, data);	// data = additional data to pass to the subscribers
   ```
   Where, _data_ is the additional data you want to pass to the subscribers.
@@ -91,7 +90,7 @@ How does communication with the Android wrapper app work?
 	- Web-app can call this `postMessage` method to send messages to the Android app.
 	- Android app can listen to these messages and take appropriate actions.
 - On this web-app side:
-	- In the [Layout component](components/Layout/Layout.tsx), the following 1-time setup is done:
+	- In the [Layout component](layout-components/Layout/Layout.tsx), the following 1-time setup is done:
 		- Call postMessage method to send a `connect_ready` message to the Android app to let it know that the web-app is ready to receive messages.
 		- Setup a callback function `callFromAndroid` to listen to messages from the Android app.
 	- We have a `postMessage` method in [utils/AndroidUtils.ts](utils/AndroidUtils.ts) which can be used to send messages to the Android app.

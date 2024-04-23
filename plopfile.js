@@ -41,6 +41,7 @@ module.exports = (plop) => {
 	 * - components
 	 * - page-components
 	 * - tf-components
+	 * - layout-components
 	 *
 	 * Option to use Typescript or Javascript.
 	 * Option to include hooks like useEffect, useState, useReducer.
@@ -75,6 +76,7 @@ module.exports = (plop) => {
 						name: "page-components/Admin/",
 						value: "page-components/Admin",
 					},
+					{ name: "layout-components/", value: "layout-components" },
 				],
 				default: "component",
 			},

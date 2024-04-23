@@ -1,5 +1,7 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
+import { PageLoader /*,NavBar, SideBar */ } from "components";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
+import { NavHeight } from "components/NavBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
 import { useDelayToggle } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
@@ -8,23 +10,30 @@ import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { ANDROID_ACTION, doAndroidAction } from "utils";
-import { PageLoader /*,NavBar, SideBar */ } from "..";
-import { NavHeight } from "../NavBar";
 
 // Lazy-load the CommandBarBox component
-const CommandBarBox = dynamic(() => import("../CommandBar/CommandBarBox"), {
-	ssr: false,
-});
+const CommandBarBox = dynamic(
+	() => import("components/CommandBar/CommandBarBox"),
+	{
+		ssr: false,
+	}
+);
 
 // Lazy-load the sidebar component
-const SideBar = dynamic(() => import("../SideBar").then((pkg) => pkg.SideBar), {
-	ssr: false,
-});
+const SideBar = dynamic(
+	() => import("components/SideBar").then((pkg) => pkg.SideBar),
+	{
+		ssr: false,
+	}
+);
 
 // Lazy-load the NavBar component
-const NavBar = dynamic(() => import("../NavBar").then((pkg) => pkg.NavBar), {
-	ssr: false,
-});
+const NavBar = dynamic(
+	() => import("components/NavBar").then((pkg) => pkg.NavBar),
+	{
+		ssr: false,
+	}
+);
 
 /**
  * The default page layout component
