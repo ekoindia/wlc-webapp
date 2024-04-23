@@ -28,6 +28,7 @@ export {
 	products,
 } from "./ProductDetails";
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
+export { PubSubTopics } from "./PubSubTopics";
 export { roles } from "./role";
 export {
 	AdminBlacklistMenuItems,

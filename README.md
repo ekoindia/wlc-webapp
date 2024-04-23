@@ -56,13 +56,12 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 ### Pub/Sub
 
 To use pub/sub, follow the following steps:
-- Open [PubSubContext.js](contexts/PubSubContext.js) and add your new topic/purpose under the `TOPIC` array.
+- Add your new topic/purpose in the [constants/PubSubTopics.ts](constants/PubSubTopics.ts) file.
 - For publishing events to this topic:
   ```jsx
   import { usePubSub } from "contexts";
 
   const { publish, TOPICS } = usePubSub();
-  ...
   publish(TOPIC.MY_TOPIC, data);	// data = additional data to pass to the subscribers
   ```
   Where, _data_ is the additional data you want to pass to the subscribers.

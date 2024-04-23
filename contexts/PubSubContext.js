@@ -1,3 +1,4 @@
+import { PubSubTopics } from "constants";
 import {
 	createContext,
 	useCallback,
@@ -10,10 +11,10 @@ import uuid from "uuid";
 // Create Context Object
 const PubSubContext = createContext();
 
-// List of topics
-export const TOPICS = {
-	ANDROID_RESPONSE: "ANDROID_RESPONSE",
-};
+// List of topics. UPDATE: Moved to constants/PubSubTopics.ts
+// export const TOPICS = {
+// 	ANDROID_RESPONSE: "ANDROID_RESPONSE",
+// };
 
 // Create a provider for components to consume and subscribe to changes
 export const PubSubProvider = (props) => {
@@ -53,8 +54,8 @@ export const PubSubProvider = (props) => {
 	}, []);
 
 	const value = useMemo(
-		() => ({ subscribe, publish, TOPICS }),
-		[subscribe, publish, TOPICS]
+		() => ({ subscribe, publish, TOPICS: PubSubTopics }),
+		[subscribe, publish]
 	);
 
 	return (
