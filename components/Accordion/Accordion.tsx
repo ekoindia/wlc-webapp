@@ -1,33 +1,33 @@
-import { Children, cloneElement, ReactElement } from "react";
-import { DetailsProps } from ".";
+import { ReactElement } from "react";
+import { AccordionItemProps, AccordionProvider } from ".";
 
 type AccordionProps = {
-	children: ReactElement<DetailsProps>;
-	openIndex: number | null;
-	// setOpenIndex: () => void;
+	className?: string;
+	children: ReactElement<AccordionItemProps>;
+	preExpanded?: Array<number>;
+	allowMultipleExpanded?: boolean;
+	allowZeroExpanded?: boolean;
+	// eslint-disable-next-line no-unused-vars
+	onChange?: (id: number) => void;
 };
 
-/**
- * Accordion component that ensures only one Details component is open at a time.
- *
- * @param {AccordionProps} props - The props to pass into the Accordion component.
- * @returns {JSX.Element} The rendered Accordion component.
- */
 const Accordion = ({
+	className = "accordion",
 	children,
-	openIndex,
-}: // setOpenIndex,
-AccordionProps): JSX.Element => {
+	preExpanded,
+	allowMultipleExpanded,
+	allowZeroExpanded,
+	onChange,
+}: AccordionProps): JSX.Element => {
 	return (
-		<>
-			{Children.map(children, (child, index) => {
-				// Clone the child element and add the 'open' and 'onClick' props
-				return cloneElement(child, {
-					open: index === openIndex,
-					// onClick: () => setOpenIndex(index),
-				});
-			})}
-		</>
+		<AccordionProvider
+			preExpanded={preExpanded}
+			allowZeroExpanded={allowZeroExpanded}
+			allowMultipleExpanded={allowMultipleExpanded}
+			onChange={onChange ? (id: number) => onChange(id) : undefined}
+		>
+			<div className={className}>{children}</div>
+		</AccordionProvider>
 	);
 };
 
