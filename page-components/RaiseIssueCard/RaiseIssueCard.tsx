@@ -17,6 +17,8 @@ import useRefreshToken from "hooks/useRefreshToken";
 import { useEffect, useState } from "react";
 import Markdown from "react-markdown";
 
+// MARK: Constants
+
 /**
  * Type of solution to be provided for the feedback
  */
@@ -29,25 +31,36 @@ import Markdown from "react-markdown";
  * Type-IDs for generic issue types
  */
 const GENERIC_ISSUE_TYPE = {
-	ONBOARDING: -2, // Onboarding generic issues
-	DEFAULT: -1, // Default generic issues
+	DEFAULT: "-1", // Default generic issues
+	ONBOARDING: "-2", // Onboarding generic issues
+};
+
+/**
+ * Comment Type
+ */
+const COMMENT_TYPE = {
+	DISABLED: -1,
+	OPTIONAL: 0,
+	MANDATORY: 1,
 };
 
 // Declare the props interface
 interface RaiseIssueProps {
 	heading?: string;
 	showCloseIcon?: boolean;
-	tid: string;
-	status: -2 | -1 | 0 | 1 | 2 | 3 | 4 | 6 | 7 | 8 | 9;
-	transactionTime: string;
-	metadata: any;
-	context: any;
-	logo: string;
-	customIssueType: string;
-	origin: "Response" | "History" | "Global-Help" | "Other";
-	onClose: Function;
-	onOpenUrl: Function;
-	onRequestCamCapture: Function;
+	tid?: string;
+	tx_typeid?: string;
+	status?: -2 | -1 | 0 | 1 | 2 | 3 | 4 | 6 | 7 | 8 | 9;
+	transactionTime?: string;
+	metadata?: any;
+	context?: any;
+	logo?: string;
+	customIssueType?: string;
+	origin: "Response" | "History" | "Global-Help" | "Command-Bar" | "Other";
+	onResult?: Function;
+	onClose?: Function;
+	onOpenUrl?: Function;
+	onRequestCamCapture?: Function;
 	[key: string]: any;
 }
 
@@ -59,6 +72,7 @@ interface RaiseIssueProps {
  * @param {string} [prop.heading] - Heading for the feedback panel
  * @param {boolean} [prop.showCloseIcon=false] - Whether to show a close icon on the feedback panel
  * @param {string} prop.tid - Unique ID of the transaction for which issue is being raised
+ * @param {string} prop.tx_typeid - Transaction type ID. It is used to fetch the issue types for a certain transaction type. If not provided here, it will be fetched from `metadata.` (if available)
  * @param {number} prop.status - Transaction status (eg: -2, -1, 0, 1, 2, 3, 4, 6, 7, 8, 9)
  * @param {string} prop.transactionTime - Transaction time
  * @param {object} prop.metadata - Additional metadata for the transaction, like, transaction_detail, pre_msg_template, post_msg_template, parameters_formatted, etc.
@@ -66,6 +80,7 @@ interface RaiseIssueProps {
  * @param {string} prop.logo - Logo to show in the feedback panel (eg: for BBPS)
  * @param {string} prop.customIssueType - Custom issue type to capture, instead of pulling issue types for a certain transaction type. This is useful for creating custom "Raise Issue" buttons in the UI.
  * @param {string} prop.origin - Origin of the feedback panel (eg: "transaction-list")
+ * @param {function} prop.onResult - Function to return the result of the feedback
  * @param {function} prop.onClose - Function to close the feedback
  * @param {function} prop.onOpenUrl - Function to open a URL
  * @param {function} prop.onRequestCamCapture - Function to request camera capture
@@ -77,12 +92,14 @@ const RaiseIssueCard = ({
 	status,
 	metadata,
 	tid,
+	tx_typeid,
 	logo,
 	transactionTime,
 	// description,
 	context, // toAndFroData // TODO: Is it needed here???
 	customIssueType,
 	origin,
+	onResult,
 	onClose,
 	onOpenUrl,
 	onRequestCamCapture,
@@ -157,6 +174,7 @@ const RaiseIssueCard = ({
 		setFetchingIssueList(true);
 
 		const _tx_typeid: string =
+			tx_typeid ||
 			metadata?.transaction_detail?.tx_typeid ||
 			(onboarding == 1
 				? GENERIC_ISSUE_TYPE.ONBOARDING
@@ -291,6 +309,7 @@ const RaiseIssueCard = ({
 		}
 
 		// Calculate solution type... If the issue type is 0 or not provided, then we assume that the user feedback is required
+
 		setIsUserFeedbackRequired(!selectedIssue?.type);
 
 		// Calculate isRaisedAfterTimeElapsed. If true, it indicates that the current transaction was done before the "raise_issue_after" time which is represented as a duration string like "0d", "1d", "2h", "5m", etc.
@@ -433,6 +452,13 @@ const RaiseIssueCard = ({
 					ticket_id: data?.data?.feedback_ticket_id || "",
 				});
 				setFeedbackDone(true);
+				onResult &&
+					onResult({
+						success: true,
+						feedback_ticket_id:
+							data?.data?.feedback_ticket_id || "",
+						context: context, // eg: { row_index: X }
+					});
 			})
 			.catch((err) => {
 				console.error("[RaiseIssue] feedback submit error: ", err);
@@ -587,6 +613,22 @@ const RaiseIssueCard = ({
 							</Box>
 						) : null}
 
+						{/* Show TAT */}
+						{selectedIssue.tat && selectedIssue.tat !== "0" ? (
+							<Box mb={8}>
+								<Text fontSize="sm" color="gray.600">
+									<InputLabel required>
+										Expected Resolution Time:
+									</InputLabel>
+									{` ${selectedIssue.tat} ${
+										selectedIssue.tat == "1"
+											? "day"
+											: "days"
+									}`}
+								</Text>
+							</Box>
+						) : null}
+
 						{/* Show the feedback form input fields */}
 						{selectedIssue && issueInputList.length > 0 ? (
 							<>
@@ -686,36 +728,43 @@ const RaiseIssueCard = ({
 						{isUserFeedbackRequired ? (
 							<>
 								{/* Show the comments input */}
-								<Box
-									mb={4}
-									maxW={{ base: "100%", md: "350px" }}
-								>
-									<InputLabel
-										required={
-											selectedIssue.comment ? true : false
-										}
+								{selectedIssue.comment !==
+								COMMENT_TYPE.DISABLED ? (
+									<Box
+										mb={4}
+										maxW={{ base: "100%", md: "350px" }}
 									>
-										Comments
-									</InputLabel>
-									<Textarea
-										value={comment}
-										isDisabled={disableInputs}
-										focusBorderColor="primary.light"
-										placeholder="Please enter your comments or any additional details here..."
-										onChange={(e) =>
-											setComment(e.target.value)
-										}
-									/>
-									{selectedIssue.comment ? (
-										<Text
-											fontSize="xs"
-											fontWeight="medium"
-											color="error"
+										<InputLabel
+											required={
+												selectedIssue.comment ===
+												COMMENT_TYPE.MANDATORY
+													? true
+													: false
+											}
 										>
-											* Required
-										</Text>
-									) : null}
-								</Box>
+											Comments
+										</InputLabel>
+										<Textarea
+											value={comment}
+											isDisabled={disableInputs}
+											focusBorderColor="primary.light"
+											placeholder="Please enter your comments or any additional details here..."
+											onChange={(e) =>
+												setComment(e.target.value)
+											}
+										/>
+										{selectedIssue.comment ===
+										COMMENT_TYPE.MANDATORY ? (
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color="error"
+											>
+												* Required
+											</Text>
+										) : null}
+									</Box>
+								) : null}
 
 								{/* Show the submit button */}
 								<Box mt={4}>
@@ -813,7 +862,11 @@ const Card = ({
 			boxSizing="border-box"
 			w="full"
 			h="auto"
-			p={{ base: "10px", md: "30px", "2xl": "34px 40px 40px 40px" }}
+			p={{
+				base: "10px",
+				md: "20px 30px 30px 30px",
+				"2xl": "30px 40px 40px 40px",
+			}}
 			m={{ base: "5px", md: "0" }}
 			direction={"column"}
 			border="card"
@@ -1034,6 +1087,7 @@ const _processIssueList = (issue_list) => {
 
 	issue_list.forEach(function (i) {
 		// Fill missing default values...
+		i.type = i.type || 0; // Default: Ticket
 		i.value = i.value || i.label; // Value is same as label by default
 		i.raise_issue_after = i.raise_issue_after || "0d";
 		i.tat = i.tat || "0";
