@@ -10,13 +10,14 @@ import {
 	Text,
 	Tooltip,
 	useBreakpointValue,
+	useDisclosure,
 	useToken,
 } from "@chakra-ui/react";
 import { useKBarReady } from "components/CommandBar";
 import { Endpoints, TransactionIds } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useOrgDetailContext, useUser } from "contexts";
-import { useClipboard } from "hooks";
+import { useClipboard, useFeatureFlag, useRaiseIssue } from "hooks";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
@@ -31,6 +32,11 @@ export const NavHeight = {
 	"2xl": "90px",
 };
 
+/**
+ * The top app-bar component
+ * @param {*} props
+ * @param {function} props.setNavOpen - Function to expand the left-menu drawer (in mobile view)
+ */
 const NavBar = ({ setNavOpen }) => {
 	const [isCardOpen, setIsCardOpen] = useState(false);
 
@@ -81,6 +87,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 
 	// Get theme color values
 	const [contrast_color] = useToken("colors", ["navbar.dark"]);
+
+	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
 		ssr: false,
@@ -152,9 +160,10 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 			</Flex>
 
 			{/* Right-side items of navbar */}
-			<Menu defaultIsOpen={false}>
+			<Menu defaultIsOpen={false} isOpen={isOpen} onClose={onClose}>
 				<MenuButton
 					onClick={() => {
+						onOpen();
 						setIsCardOpen(true);
 					}}
 				>
@@ -230,10 +239,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 
 				<MenuList
 					w={{
-						base: "270px",
-						md: "280px",
-						lg: "290px",
-						xl: "320px",
+						base: "100%",
+						sm: "320px",
 						"2xl": "349px",
 					}}
 					border="none"
@@ -247,20 +254,40 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 					}}
 					display={{ base: "none", sm: "block" }}
 				>
-					<MyAccountCard />
+					<MyAccountCard {...{ setIsCardOpen, onClose }} />
 				</MenuList>
 			</Menu>
 		</HStack>
 	);
 };
 
-const MyAccountCard = ({ setIsCardOpen }) => {
-	const { isAdmin, logout, isOnboarding, userData } = useUser();
+/**
+ * Show the user's account details in a card, whenever the top-right corner profile icon is clicked.
+ * MARK: Profile Menu
+ * @param {object} param
+ * @param {function} param.setIsCardOpen - Function to set the state of the card
+ * @param {function} param.onClose - Function to close the card menu (in Desktop view)
+ * @returns {JSX.Element} - The user's account details card
+ */
+const MyAccountCard = ({ setIsCardOpen, onClose }) => {
+	const { isAdmin, logout, isOnboarding, userData, isLoggedIn } = useUser();
+	const { showRaiseIssueDialog } = useRaiseIssue();
+	const isRaiseIssueAllowed = useFeatureFlag("RAISE_ISSUE");
+
 	const { userDetails } = userData;
 	const { name, code, email, mobile } = userDetails ?? {};
 	const router = useRouter();
 	const { copy, state } = useClipboard();
 	const menulist = isAdmin ? adminProfileMenu : profileMenu;
+
+	/**
+	 * Helper function to close the user-profile menu
+	 */
+	const close = () => {
+		console.log("close::: ", setIsCardOpen ? true : false);
+		setIsCardOpen && setIsCardOpen(false);
+		onClose && onClose();
+	};
 
 	return (
 		<Box
@@ -269,6 +296,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 			borderRadius="10px"
 			w={{ base: "100%", sm: "initial" }}
 		>
+			{/* PROFILE SECTION */}
 			<Flex
 				direction="column"
 				px={{ base: "3", sm: "2", md: "2", lg: "4" }}
@@ -278,17 +306,14 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				position="relative"
 				borderTopRadius="10px"
 			>
+				{/* Close button for small screen */}
 				<Flex
 					display={{ base: "flex", sm: "none" }}
 					color="white"
 					justifyContent="flex-end"
 					w="100%"
 				>
-					<Icon
-						name="close"
-						size="16px"
-						onClick={() => setIsCardOpen(false)}
-					/>
+					<Icon name="close" size="16px" onClick={close} />
 				</Flex>
 				<Box
 					display={{ base: "none", sm: "initial" }}
@@ -449,9 +474,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 										router.push(
 											`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
 										);
-										if (setIsCardOpen) {
-											setIsCardOpen(false);
-										}
+										close();
 									}}
 								/>
 							</Flex>
@@ -467,10 +490,8 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									borderRadius="6px"
 									fontSize="12px"
 									onClick={() => {
+										close();
 										router.push(Endpoints.USER_PROFILE);
-										if (setIsCardOpen) {
-											setIsCardOpen(false);
-										}
 									}}
 								>
 									View Profile
@@ -485,6 +506,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				) : null}
 			</Flex>
 
+			{/* MENU SECTION */}
 			<Flex
 				direction="column"
 				px="4"
@@ -494,6 +516,29 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				fontSize={{ base: "sm", md: "xs" }}
 				borderBottomRadius="10px"
 			>
+				{/* Raise-Query menu item */}
+				{isLoggedIn && isRaiseIssueAllowed ? (
+					<>
+						<Flex
+							w="100%"
+							h={{ base: "auto", md: "100%" }}
+							align="center"
+							justify="space-between"
+							cursor="pointer"
+							minH="50px"
+							onClick={() => {
+								close();
+								showRaiseIssueDialog({ origin: "Global-Help" });
+							}}
+						>
+							<Text>Raise Query</Text>
+							<Icon name="chevron-right" size="xxs" />
+						</Flex>
+						<Divider />
+					</>
+				) : null}
+
+				{/* Configured menu items (internal links) which are configured in `constants/profileCardMenu.js` */}
 				{isOnboarding !== true
 					? menulist.map((ele) => (
 							<Fragment key={"mnu-" + ele.title + ele.link}>
@@ -506,9 +551,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									minH="50px"
 									onClick={() => {
 										router.push(ele.link);
-										if (setIsCardOpen) {
-											setIsCardOpen(false);
-										}
+										close();
 									}}
 								>
 									<Text>{ele.title}</Text>
@@ -518,6 +561,8 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							</Fragment>
 					  ))
 					: null}
+
+				{/* Logout Row */}
 				<Flex
 					direction="row"
 					minH="50px"
