@@ -35,6 +35,17 @@ const NavBar = dynamic(
 	}
 );
 
+// Lazy-load the DynamicPopupModuleLoader component
+const DynamicPopupModuleLoader = dynamic(
+	() =>
+		import("layout-components/DynamicPopupModuleLoader").then(
+			(pkg) => pkg.DynamicPopupModuleLoader
+		),
+	{
+		ssr: false,
+	}
+);
+
 /**
  * The default page layout component
  * @param {String} appName - The name of the application. This will be displayed in the browser titlebar.
@@ -159,6 +170,11 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 
 			{/* Show page-loading animation */}
 			{isPageLoading && <PageLoader />}
+
+			{/* Show any dynamic popup modules */}
+			{/* <Modal isOpen={true} onClose={() => console.log} isCentered> */}
+			<DynamicPopupModuleLoader module="Feedback" />
+			{/* </Modal> */}
 
 			{isLoggedIn ? (
 				<Box w={"full"} className={fontClassName}>
