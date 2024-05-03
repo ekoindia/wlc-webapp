@@ -11,6 +11,7 @@ interface SupportTicketType {
 	origin?: string;
 	tat?: string;
 	priority?: string;
+	context?: string;
 	tid?: string;
 	tx_typeid?: string;
 	transaction_metadata?: any;
@@ -31,6 +32,7 @@ interface SupportTicketType {
  * @param {string} [options.origin=""] - The origin of the issue
  * @param {string} [options.tat=""] - The TAT for the issue
  * @param {string} [options.priority=""] - The priority of the issue
+ * @param {string} [options.context=""] - Optional info to be shared with the support team. Not visible to the user
  * @param {string} [options.tid=""] - The transaction ID
  * @param {string} [options.tx_typeid=""] - The transaction type ID
  * @param {Object} [options.transaction_metadata={}] - The transaction metadata
@@ -50,6 +52,7 @@ export const createSupportTicket = ({
 	origin = "",
 	tat = "",
 	priority = "",
+	context = "",
 	tid = "",
 	tx_typeid = "",
 	transaction_metadata = {},
@@ -62,6 +65,11 @@ export const createSupportTicket = ({
 	if (comment) {
 		commentMessage = `Comments:\n${comment}\n\n`;
 		fullDescription = `\n<p><strong>COMMENT:</strong><br>\n${comment}\n<br><br>\n`;
+	}
+
+	if (context) {
+		commentMessage += `Notes for Support Team:\n${context}\n\n`;
+		fullDescription += `\n<p><strong>NOTES FOR SUPPORT TEAM:</strong><br>\n${context}\n<br><br>\n`;
 	}
 
 	if (inputs?.length > 0) {
