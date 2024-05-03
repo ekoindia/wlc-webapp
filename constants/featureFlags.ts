@@ -12,6 +12,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	RAISE_ISSUE: {
 		enabled: true,
 		forEnv: ["development"],
+		forAdminOnly: true,
 	},
 
 	// Experimental LLM conversational UI for financial transactions and queries.
