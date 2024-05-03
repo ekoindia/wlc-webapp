@@ -19,6 +19,7 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - TODO: Provide for A-B testing, gradual roll-out, etc.
 - To add a new feature-flag, add a new entry in the [constants/featureFlags.ts](constants/featureFlags.ts) file.
 - To test for a feature-flag, use the `useFeatureFlag` hook from [hooks/useFeatureFlag.tsx](hooks/useFeatureFlag.tsx).
+  - Eg: `const isFeatureEnabled = useFeatureFlag('MY_FEATURE');`
 
 
 ## 🎨 UI Features:
@@ -36,7 +37,9 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - There are duplicate icon-names as well, same icons with different names (for backward compatibility). Such icons are shown in red background with the pointer to the actual icon name.
   - For optimizing individual SVG icons, use: [SVGOMG - SVGO's Missing GUI](https://jakearchibald.github.io/svgomg/)
 - **Top Navbar** - [components/NavBar/NavBar.jsx](components/NavBar/NavBar.jsx)
-  - Menu items configuration: [constants/profileCardMenus.js](constants/profileCardMenus.js)
+  - Profile-menu (drop-down menu in top-right corner):
+    - Rendered in the `MyAccountCard` component in NavBar.jsx.
+    - Items configuration (for internal links, such as, Settings page): [constants/profileCardMenus.js](constants/profileCardMenus.js)
 - **Left Sidebar** - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
   - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
   - Menu Context (data fetch after login): [contexts/MenuContext.tsx](contexts/MenuContext.tsx)
