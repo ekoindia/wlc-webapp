@@ -9,14 +9,20 @@ const useRaiseIssue = () => {
 	const { publish, subscribe, TOPICS } = usePubSub();
 	const [status, setStatus] = useState("idle");
 	const [result, setResult] = useState(null);
+	const [resultHandler, setResultHandler] = useState(null);
 
 	const ResultTopic = TOPICS.SHOW_DIALOG_FEATURE + ".Feedback.Result";
 
 	/**
 	 * Open the "Raise Issue" dialog
-	 * @param {*} options - Options to pass to the dialog
+	 * @param {object} options - Options to pass to the dialog.
+	 * @param {function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
 	 */
-	const showRaiseIssueDialog = (options) => {
+	const showRaiseIssueDialog = (options, onResponse) => {
+		// Set the result handler
+		setResultHandler(onResponse);
+
+		// Show the dialog
 		publish(TOPICS.SHOW_DIALOG_FEATURE, {
 			feature: "Feedback",
 			options: options,
@@ -40,6 +46,7 @@ const useRaiseIssue = () => {
 		const unsubscribe = subscribe(ResultTopic, (data) => {
 			setResult(data);
 			setStatus("result");
+			resultHandler && resultHandler(data);
 		});
 
 		return unsubscribe; // Unsubscribe on component unmount

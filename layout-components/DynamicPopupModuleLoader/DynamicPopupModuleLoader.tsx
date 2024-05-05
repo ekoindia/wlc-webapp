@@ -3,24 +3,35 @@ import {
 	ModalCloseButton,
 	ModalContent,
 	ModalOverlay,
-	useDisclosure,
 } from "@chakra-ui/react";
 import { usePubSub } from "contexts";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 
-// Type of modules that can be loaded
-export type ModuleTypes = "Feedback";
+/**
+ * Names of the modules that can be loaded
+ */
+export type ModuleNameType = "Feedback";
+// | "FileViewer";
 // | "Support"
 // | "Camera"
-// | "FileViewer"
 // | "About";
+
+/**
+ * Data type for the module to load dynamically
+ */
+type ModuleDataType = {
+	feature: ModuleNameType;
+	options?: object;
+	resultTopic?: string;
+	result?: any;
+};
 
 /**
  * Default options for each module
  */
 const defaultOptions: {
-	[_key in ModuleTypes]: {
+	[_key in ModuleNameType]: {
 		/**
 		 * Properties to pass to the module
 		 */
@@ -58,7 +69,7 @@ const defaultOptions: {
  * List of modules that can be loaded dynamically.
  * Module name mapped to to the dynamically imported component.
  */
-const moduleList: { [_key in ModuleTypes]: any } = {
+const moduleList: { [_key in ModuleNameType]: any } = {
 	Feedback: dynamic(
 		() =>
 			import("page-components/RaiseIssueCard").then(
@@ -74,7 +85,7 @@ const moduleList: { [_key in ModuleTypes]: any } = {
 
 // Declare the props interface
 interface PropsType {
-	module: ModuleTypes;
+	module: ModuleNameType;
 	options?: { [key: string]: any };
 	[key: string]: any;
 }
@@ -85,7 +96,7 @@ interface PropsType {
  *
  * @component
  * @param {object} prop - Properties passed to the component
-//  * @param {ModuleTypes} prop.module - The module to show as a modal popup
+//  * @param {ModuleNameType} prop.module - The module to show as a modal popup
 //  * @param {object} [prop.options] - Options to pass to the module
 //  * @param {function} prop.onClose - Callback function to close the modal
  * @param {...*} rest - Rest of the props
@@ -98,48 +109,102 @@ const DynamicPopupModuleLoader = ({
 	// onResult,
 	...rest
 }: PropsType) => {
-	const [module, setModule] = useState<ModuleTypes>(null); // The module type to load
-	const [options, setOptions] = useState<any>(null); // Options to pass to the module
-	const [result, setResult] = useState<any>(null); // The result returned by the module
-	const [resultTopic, setResultTopic] = useState<string>(null); // The topic to publish the result to
-	const { isOpen, onOpen, onClose } = useDisclosure();
+	/**
+	 * State to store the properties for the module to be loaded
+	 */
+	const [moduleData, setModuleData] = useState<
+		| {
+				ModuleNameType: ModuleDataType;
+		  }
+		| {}
+	>({});
+
 	const { publish, subscribe, TOPICS } = usePubSub();
 
+	// Listen to the topic to show the dialog with a feature
 	useEffect(() => {
-		const unsubscribe = subscribe(TOPICS.SHOW_DIALOG_FEATURE, (data) => {
-			if (!(data && data.feature)) {
-				return;
-			}
+		const unsubscribe = subscribe(
+			TOPICS.SHOW_DIALOG_FEATURE,
+			(data: {
+				feature: ModuleNameType;
+				options: object;
+				resultTopic: string;
+			}) => {
+				if (!(data && data.feature)) {
+					return;
+				}
 
-			setOptions(data.options);
-			setModule(data.feature);
-			setResultTopic(data.resultTopic);
-			onOpen();
-		});
+				// Store the module data as a sub-object with key as the module name
+				setModuleData((prevData) => ({
+					...prevData,
+					[data.feature]: data,
+				}));
+			}
+		);
 
 		return unsubscribe; // Unsubscribe on component unmount
 	}, []);
 
 	/**
-	 * Callback function to handle the result from the module.
-	 */
-	const onResult = (data) => {
-		setResult(data);
-	};
-
-	/**
 	 * Callback function to close the modal popup.
+	 * @param {string} module - The module name
 	 */
-	const onPopupClose = () => {
-		onClose(); // Close the Chakra modal
-		if (resultTopic) {
-			publish(resultTopic, result);
+	const onPopupClose = (module, result) => {
+		console.log("DynamicPopupModuleLoader: onPopupClose", module, result);
+
+		if (moduleData[module] && moduleData[module].resultTopic) {
+			publish(moduleData[module].resultTopic, result);
 		}
+		setModuleData((prevData) => ({
+			...prevData,
+			[module]: null,
+		}));
 	};
 
 	if (!module) {
 		return null;
 	}
+
+	// MARK: JSX
+	return (
+		<>
+			{Object.keys(moduleData).map((module) => {
+				if (!(module && moduleData[module])) {
+					return null;
+				}
+
+				const { options } = moduleData[module];
+
+				return (
+					<Dialog
+						key={module}
+						module={module}
+						options={options}
+						onPopupClose={onPopupClose}
+						{...rest}
+					/>
+				);
+			})}
+		</>
+	);
+};
+
+/**
+ * Component to render the modal dialogue with a component.
+ * @param {object} props - The properties of the component
+ * @param {ModuleNameType} props.module - The module to show as a modal popup
+ * @param {object} [props.options] - Options to pass to the module
+ * @param {function} props.onPopupClose - Callback function to close the modal
+ * @param {...*} rest - Rest of the props
+ */
+const Dialog = ({ module, options, onPopupClose, ...rest }) => {
+	// const { isOpen, onOpen, onClose } = useDisclosure();
+	const [result, setResult] = useState<any>(null); // The result returned by the module
+
+	// Open the modal popup when the component is mounted
+	// useEffect(() => {
+	// 	onOpen();
+	// }, []);
 
 	// Get the dynamic component to load
 	const Component = moduleList[module];
@@ -149,16 +214,12 @@ const DynamicPopupModuleLoader = ({
 		return null;
 	}
 
-	console.log("DynamicPopupModuleLoader: ", {
-		module,
-		options,
-		props,
-		styles,
-	});
-
-	// MARK: JSX
 	return (
-		<Modal isOpen={isOpen} onClose={onPopupClose} {...rest}>
+		<Modal
+			isOpen={true}
+			onClose={() => onPopupClose(module, result)}
+			{...rest}
+		>
 			<ModalOverlay bg="blackAlpha.600" backdropBlur="10px" />
 			<ModalContent {...{ ...{ maxW: "100%" }, ...styles }}>
 				{hideCloseIcon ? null : (
@@ -167,8 +228,8 @@ const DynamicPopupModuleLoader = ({
 				{/* <ModalBody> */}
 				<Component
 					{...{ ...props, ...options }}
-					onClose={onClose}
-					onResult={onResult}
+					onClose={() => onPopupClose(module, result)}
+					onResult={setResult}
 				/>
 				{/* </ModalBody> */}
 			</ModalContent>
