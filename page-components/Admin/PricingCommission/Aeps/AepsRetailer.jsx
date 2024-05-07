@@ -93,6 +93,14 @@ const AepsRetailer = () => {
 		prefix = "₹";
 	}
 
+	let helperText = "";
+
+	if (min != undefined) helperText += `Minimum: ${prefix}${min}${suffix}`;
+	if (max != undefined)
+		helperText += `${
+			min != undefined ? " - " : ""
+		}Maximum: ${prefix}${max}${suffix}`;
+
 	const aeps_retailer_parameter_list = [
 		{
 			name: "operation_type",
@@ -131,7 +139,7 @@ const AepsRetailer = () => {
 			name: "actual_pricing",
 			label: `Define ${productPricingType.DMT} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
+			helperText: helperText,
 			validations: {
 				// required: true,
 				min: validation?.min,
