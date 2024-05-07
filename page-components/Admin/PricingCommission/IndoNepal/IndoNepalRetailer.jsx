@@ -1,12 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import {
-	Endpoints,
-	ParamType,
-	productPricingCommissionValidationConfig,
-	productPricingType,
-	products,
-} from "constants";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -21,9 +15,14 @@ const operation_type_list = [
 	{ value: "1", label: "Individual Distributor/Retailer" },
 ];
 
+const PAYMENT_MODE = {
+	CASH_TO_CASH: "1",
+	CASH_TO_ACCOUNT: "2",
+};
+
 const payment_mode_list = [
-	{ value: "1", label: "Cash to Cash" },
-	{ value: "2", label: "Cash to Account" },
+	{ value: PAYMENT_MODE.CASH_TO_CASH, label: "Cash to Cash" },
+	{ value: PAYMENT_MODE.CASH_TO_ACCOUNT, label: "Cash to Account" },
 ];
 
 const PRICING_TYPE = {
@@ -57,9 +56,6 @@ const getStatus = (status) => {
 
 const IndoNepalRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.INDO_NEPAL_FUND_TRANSFER;
-	const { FIXED_CTC, FIXED_CTA } =
-		productPricingCommissionValidationConfig.INDO_NEPAL_FUND_TRANSFER
-			.RETAILER;
 
 	const {
 		handleSubmit,
@@ -95,12 +91,27 @@ const IndoNepalRetailer = () => {
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+	const [validation, setValidation] = useState({ min: null, max: null });
 
-	const min = watcher["payment_mode"] == "1" ? FIXED_CTC.min : FIXED_CTA.min;
+	const min = validation.min;
+	const max = validation.max;
 
-	const max = watcher["payment_mode"] == "1" ? FIXED_CTC.max : FIXED_CTA.max;
+	let prefix = "";
+	let suffix = "";
 
-	const prefix = watcher["pricing_type"] === PRICING_TYPE.PERCENT ? "%" : "₹";
+	if (watcher["pricing_type"] === PRICING_TYPE.PERCENT) {
+		suffix = "%";
+	} else {
+		prefix = "₹";
+	}
+
+	let helperText = "";
+
+	if (min != undefined) helperText += `Minimum: ${prefix}${min}${suffix}`;
+	if (max != undefined)
+		helperText += `${
+			min != undefined ? " - " : ""
+		}Maximum: ${prefix}${max}${suffix}`;
 
 	const indo_nepal_retailer_parameter_list = [
 		{
@@ -146,11 +157,11 @@ const IndoNepalRetailer = () => {
 			name: "actual_pricing",
 			label: `Define ${productPricingType.INDO_NEPAL_FUND_TRANSFER} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
+			helperText: helperText,
 			validations: {
 				// required: true,
-				min: min,
-				max: max,
+				min: validation?.min,
+				max: validation?.max,
 			},
 			inputRightElement: (
 				<Icon
@@ -165,6 +176,36 @@ const IndoNepalRetailer = () => {
 			),
 		},
 	];
+
+	// This useEffect updates the validation state based on the selected slab, pricing type and payment mode.
+	useEffect(() => {
+		const _pricingType =
+			watcher.pricing_type === PRICING_TYPE.PERCENT
+				? "percentage"
+				: watcher.pricing_type === PRICING_TYPE.FIXED
+				? "fixed"
+				: null;
+
+		const _slab = +watcher?.select?.value;
+
+		const _paymentMode =
+			watcher.payment_mode === PAYMENT_MODE.CASH_TO_CASH
+				? "cash_to_cash"
+				: watcher.payment_mode === PAYMENT_MODE.CASH_TO_ACCOUNT
+				? "cash_to_account"
+				: null;
+
+		// If a slab, pricing type & payment mode are selected, update the validation state
+		if (_slab != null && _pricingType != null && _paymentMode != null) {
+			const _validation = slabs[_slab]?.validation;
+			const _min =
+				_validation?.RETAILER?.[_pricingType]?.[_paymentMode]?.min;
+			const _max =
+				_validation?.RETAILER?.[_pricingType]?.[_paymentMode]?.max;
+
+			setValidation({ min: _min, max: _max });
+		}
+	}, [watcher?.pricing_type, watcher?.payment_mode, watcher?.select?.value]);
 
 	useEffect(() => {
 		const list = [];
