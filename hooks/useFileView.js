@@ -17,17 +17,28 @@ const useFileView = () => {
 		});
 	};
 
+	/**
+	 * Show an image in the FileViewer dialog.
+	 * @param {string} url - The URL of the image to show.
+	 * @param {object} [options] - Options to pass to the dialog.
+	 */
 	const showImage = (url, options) => publishTopic("image", url, options);
 
 	/**
 	 * Show any audio/video media like YouTube, Vimeo, SoundCloud, local files, etc.
 	 * @param {string} url - The URL of the media to show.
 	 * @param {object} [options] - Options to pass to the dialog.
-	 * @returns
 	 */
 	const showMedia = (url, options) => publishTopic("media", url, options);
 
-	return { showImage, showMedia };
+	/**
+	 * Show an external webpage in an iframe.
+	 * @param {string} url - The URL of the webpage to show.
+	 * @param {object} [options] - Options to pass to the dialog.
+	 */
+	const showWebpage = (url, options) => publishTopic("url", url, options);
+
+	return { showImage, showMedia, showWebpage };
 };
 
 export default useFileView;

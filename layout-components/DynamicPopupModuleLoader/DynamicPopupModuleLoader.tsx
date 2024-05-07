@@ -29,7 +29,7 @@ type ModuleDataType = {
 /**
  * Default options for each module
  */
-const defaultOptions: {
+const DefaultOptions: {
 	[_key in ModuleNameType]: {
 		/**
 		 * Properties to pass to the module
@@ -61,19 +61,19 @@ const defaultOptions: {
 		},
 		style: {
 			w: { base: "100%", md: "650px", lg: "800px" },
-			background: "transparent",
 		},
 		// minW: { base: "100%", md: "400px" },
 	},
 	FileViewer: {
 		style: {
+			m: "0",
 			borderRadius: "6px",
 			overflow: "hidden",
-			// background: "transparent",
+			pointerEvents: "none",
 		},
 		closeBtnStyle: {
 			position: "fixed",
-			top: "10px",
+			top: "5px",
 			right: "10px",
 		},
 	},
@@ -232,7 +232,7 @@ const Dialog = ({ module, options, onPopupClose }) => {
 	// Get the dynamic component to load
 	const Component = moduleList[module];
 	const { props, style, closeBtnStyle, hideCloseIcon } =
-		defaultOptions[module] || {};
+		DefaultOptions[module] || {};
 
 	if (!Component) {
 		return null;
@@ -250,6 +250,8 @@ const Dialog = ({ module, options, onPopupClose }) => {
 						maxW: "100%",
 						alignItems: "center",
 						justifyContent: "center",
+						bg: "transparent",
+						boxShadow: "none",
 					},
 					...style,
 				}}
@@ -262,8 +264,10 @@ const Dialog = ({ module, options, onPopupClose }) => {
 						bg="white"
 						size={{ base: "md", md: "lg" }}
 						borderRadius="full"
-						opacity="0.8"
+						opacity="0.9"
+						p={{ base: "6px", md: "13px" }}
 						_hover={{ bg: "error", color: "white" }}
+						pointerEvents="auto"
 						{...closeBtnStyle}
 					/>
 				)}
