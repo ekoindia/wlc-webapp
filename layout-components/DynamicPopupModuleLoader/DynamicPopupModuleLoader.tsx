@@ -11,8 +11,7 @@ import { useEffect, useState } from "react";
 /**
  * Names of the modules that can be loaded
  */
-export type ModuleNameType = "Feedback";
-// | "FileViewer";
+export type ModuleNameType = "Feedback" | "FileViewer";
 // | "Support"
 // | "Camera"
 // | "About";
@@ -40,7 +39,13 @@ const defaultOptions: {
 		/**
 		 * Styles attributes to apply to the modal popup. Eg: width, height, etc.
 		 */
-		styles?: { [key: string]: any };
+		style?: { [key: string]: any };
+
+		/**
+		 * Styles attributes to apply to the close button in the modal popup.
+		 */
+		closeBtnStyle?: { [key: string]: any };
+
 		/**
 		 * Whether to hide the default close icon in the modal popup.
 		 * It can be useful if the component has its own close button.
@@ -54,14 +59,25 @@ const defaultOptions: {
 			origin: "Global-Help",
 			// showCloseIcon: true,
 		},
-		styles: {
+		style: {
 			w: { base: "100%", md: "650px", lg: "800px" },
 			background: "transparent",
 		},
 		// minW: { base: "100%", md: "400px" },
 	},
+	FileViewer: {
+		style: {
+			borderRadius: "6px",
+			overflow: "hidden",
+			// background: "transparent",
+		},
+		closeBtnStyle: {
+			position: "fixed",
+			top: "10px",
+			right: "10px",
+		},
+	},
 	// Camera: {},
-	// FileViewer: {},
 	// About: {},
 };
 
@@ -80,15 +96,14 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 			loading: () => <p>Loading...</p>,
 		}
 	),
-	// Register: dynamic(() => import("/components/module2")),
+	FileViewer: dynamic(
+		() => import("components/FileView").then((pkg) => pkg.FileView) as any,
+		{
+			ssr: false,
+			loading: () => <p>Loading...</p>,
+		}
+	),
 };
-
-// Declare the props interface
-interface PropsType {
-	module: ModuleNameType;
-	options?: { [key: string]: any };
-	[key: string]: any;
-}
 
 /**
  * Loads a component dynamically as a modal popup.
@@ -96,28 +111,14 @@ interface PropsType {
  *
  * @component
  * @param {object} prop - Properties passed to the component
-//  * @param {ModuleNameType} prop.module - The module to show as a modal popup
-//  * @param {object} [prop.options] - Options to pass to the module
-//  * @param {function} prop.onClose - Callback function to close the modal
  * @param {...*} rest - Rest of the props
  * @example	`<DynamicPopupModuleLoader></DynamicPopupModuleLoader>` TODO: Fix example
  */
-const DynamicPopupModuleLoader = ({
-	// module,
-	// options,
-	// onClose,
-	// onResult,
-	...rest
-}: PropsType) => {
+const DynamicPopupModuleLoader = () => {
 	/**
-	 * State to store the properties for the module to be loaded
+	 * State to store the properties for the modules to be loaded
 	 */
-	const [moduleData, setModuleData] = useState<
-		| {
-				ModuleNameType: ModuleDataType;
-		  }
-		| {}
-	>({});
+	const [moduleData, setModuleData] = useState<ModuleDataType[] | []>([]);
 
 	const { publish, subscribe, TOPICS } = usePubSub();
 
@@ -134,11 +135,8 @@ const DynamicPopupModuleLoader = ({
 					return;
 				}
 
-				// Store the module data as a sub-object with key as the module name
-				setModuleData((prevData) => ({
-					...prevData,
-					[data.feature]: data,
-				}));
+				// Push the module data to be displayed as a modal popup
+				addModule(data);
 			}
 		);
 
@@ -146,42 +144,66 @@ const DynamicPopupModuleLoader = ({
 	}, []);
 
 	/**
-	 * Callback function to close the modal popup.
-	 * @param {string} module - The module name
+	 * Function to add a module to the list of modules to be displayed. If it already exists, it will be replaced.
 	 */
-	const onPopupClose = (module, result) => {
-		console.log("DynamicPopupModuleLoader: onPopupClose", module, result);
-
-		if (moduleData[module] && moduleData[module].resultTopic) {
-			publish(moduleData[module].resultTopic, result);
-		}
-		setModuleData((prevData) => ({
-			...prevData,
-			[module]: null,
-		}));
+	const addModule = (module: ModuleDataType) => {
+		setModuleData((prevData) => {
+			const index = prevData.findIndex(
+				(_module) => _module.feature === module.feature
+			);
+			if (index >= 0) {
+				const newData = [...prevData];
+				newData[index] = module;
+				return newData;
+			}
+			return [...prevData, module];
+		});
 	};
 
-	if (!module) {
-		return null;
-	}
+	/**
+	 * Function to remove a module from the list of modules to be displayed
+	 */
+	const removeModule = (moduleName: ModuleNameType) => {
+		setModuleData((prevData) =>
+			prevData.filter((_module) => _module.feature !== moduleName)
+		);
+	};
+
+	/**
+	 * Callback function to close the modal popup.
+	 * @param {string} moduleName - The module name
+	 */
+	const onPopupClose = (moduleName, result) => {
+		console.log(
+			"DynamicPopupModuleLoader: onPopupClose",
+			moduleName,
+			result
+		);
+
+		if (moduleData[moduleName] && moduleData[moduleName].resultTopic) {
+			publish(moduleData[moduleName].resultTopic, result);
+		}
+		removeModule(moduleName);
+	};
 
 	// MARK: JSX
 	return (
 		<>
-			{Object.keys(moduleData).map((module) => {
-				if (!(module && moduleData[module])) {
+			{moduleData?.map((_module) => {
+				if (!_module?.feature) {
 					return null;
 				}
 
-				const { options } = moduleData[module];
+				const { feature, options } = _module;
+
+				console.log("DynamicPopupModuleLoader: _module", _module);
 
 				return (
 					<Dialog
-						key={module}
-						module={module}
+						key={feature}
+						module={feature}
 						options={options}
 						onPopupClose={onPopupClose}
-						{...rest}
 					/>
 				);
 			})}
@@ -195,9 +217,10 @@ const DynamicPopupModuleLoader = ({
  * @param {ModuleNameType} props.module - The module to show as a modal popup
  * @param {object} [props.options] - Options to pass to the module
  * @param {function} props.onPopupClose - Callback function to close the modal
- * @param {...*} rest - Rest of the props
  */
-const Dialog = ({ module, options, onPopupClose, ...rest }) => {
+const Dialog = ({ module, options, onPopupClose }) => {
+	console.log("DynamicPopupModuleLoader: Dialog 1: " + module);
+
 	// const { isOpen, onOpen, onClose } = useDisclosure();
 	const [result, setResult] = useState<any>(null); // The result returned by the module
 
@@ -208,22 +231,41 @@ const Dialog = ({ module, options, onPopupClose, ...rest }) => {
 
 	// Get the dynamic component to load
 	const Component = moduleList[module];
-	const { props, styles, hideCloseIcon } = defaultOptions[module] || {};
+	const { props, style, closeBtnStyle, hideCloseIcon } =
+		defaultOptions[module] || {};
 
 	if (!Component) {
 		return null;
 	}
 
+	console.log("DynamicPopupModuleLoader: Dialog 2", module, Component);
+
 	return (
-		<Modal
-			isOpen={true}
-			onClose={() => onPopupClose(module, result)}
-			{...rest}
-		>
-			<ModalOverlay bg="blackAlpha.600" backdropBlur="10px" />
-			<ModalContent {...{ ...{ maxW: "100%" }, ...styles }}>
+		<Modal isOpen={true} onClose={() => onPopupClose(module, result)}>
+			<ModalOverlay bg="blackAlpha.700" backdropBlur="10px" />
+			<ModalContent
+				{...{
+					...{
+						w: "auto",
+						maxW: "100%",
+						alignItems: "center",
+						justifyContent: "center",
+					},
+					...style,
+				}}
+			>
 				{hideCloseIcon ? null : (
-					<ModalCloseButton _hover={{ color: "error" }} />
+					<ModalCloseButton
+						// position="fixed"
+						// top="10px"
+						// right="10px"
+						bg="white"
+						size={{ base: "md", md: "lg" }}
+						borderRadius="full"
+						opacity="0.8"
+						_hover={{ bg: "error", color: "white" }}
+						{...closeBtnStyle}
+					/>
 				)}
 				{/* <ModalBody> */}
 				<Component

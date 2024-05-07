@@ -1,4 +1,5 @@
 import { Flex, Image, Text } from "@chakra-ui/react";
+import { useFileView } from "hooks";
 import { useState } from "react";
 import { Button, IcoButton, Input } from "..";
 
@@ -39,6 +40,8 @@ const Dropzone = ({
 }) => {
 	const [inDropZone, setInDropZone] = useState(false);
 	const [previewImage, setPreviewImage] = useState(null);
+
+	const { showImage } = useFileView();
 
 	// console.log("[Dropzone] file", file);
 	// console.log("[Dropzone] previewImage", previewImage);
@@ -160,7 +163,11 @@ const Dropzone = ({
 
 					<Flex p="10px" w="100%" h="100%">
 						{previewImage ? (
-							<Image src={previewImage} borderRadius="10px" />
+							<Image
+								src={previewImage}
+								borderRadius="10px"
+								onClick={() => showImage(previewImage)}
+							/>
 						) : (
 							<Text
 								w="100%"

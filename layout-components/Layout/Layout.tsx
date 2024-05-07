@@ -172,9 +172,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 			{isPageLoading && <PageLoader />}
 
 			{/* Show any dynamic popup modules */}
-			{/* <Modal isOpen={true} onClose={() => console.log} isCentered> */}
-			<DynamicPopupModuleLoader module="Feedback" />
-			{/* </Modal> */}
+			<DynamicPopupModuleLoader />
 
 			{isLoggedIn ? (
 				<Box w={"full"} className={fontClassName}>

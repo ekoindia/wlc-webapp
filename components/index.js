@@ -12,6 +12,7 @@ import { Divider } from "./Divider";
 import { Dropzone } from "./Dropzone";
 import { EkoConnectWidget } from "./EkoConnectWidget";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { FileView } from "./FileView";
 import { GlobalSearch } from "./GlobalSearch";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
@@ -49,6 +50,7 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	FileView,
 	Share,
 	XScrollArrow,
 	AdminViewToggleCard,

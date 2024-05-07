@@ -2,7 +2,7 @@ import { usePubSub } from "contexts";
 import { useEffect, useState } from "react";
 
 /**
- * Hook for using the "Raising Issue" popup dialog feature
+ * Hook to open the "Raising Issue" popup dialog
  * @returns {object} - The status of the dialog, the result of the dialog, and a function to show the dialog.
  */
 const useRaiseIssue = () => {
