@@ -8,6 +8,13 @@
  * 	const isFeatureEnabled = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
+	// A test page ("/test" or "/admin/test") to quickly check
+	// components, hooks, etc, during the development.
+	TEST_PAGE: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// Beta (WIP) feature to Raise Issues...
 	RAISE_ISSUE: {
 		enabled: true,
