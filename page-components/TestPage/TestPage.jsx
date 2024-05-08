@@ -70,6 +70,9 @@ const Section = ({ title, children }) => (
 	</Flex>
 );
 
+/**
+ * Testing the screen capture API
+ */
 const ScreenshotTest = () => {
 	// https://developer.chrome.com/docs/web-platform/screen-sharing-controls/
 	// https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
@@ -77,6 +80,7 @@ const ScreenshotTest = () => {
 	// Ref for the video & canvas elements
 	const videoRef = useRef(null);
 	const canvasRef = useRef(null);
+	const imageRef = useRef(null);
 
 	const displayMediaOptions = {
 		video: {
@@ -94,8 +98,6 @@ const ScreenshotTest = () => {
 	};
 
 	const captureScreen = () => {
-		// const screenshot = window.document.documentElement;
-		// console.log(screenshot);
 		navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(
 			(stream) => {
 				videoRef.current.srcObject = stream;
@@ -113,33 +115,6 @@ const ScreenshotTest = () => {
 		videoRef.current.srcObject = null;
 	};
 
-	const onVideoLoad = () => {
-		console.log("Video loaded");
-
-		const video = videoRef.current;
-		const canvas = canvasRef.current;
-		const context = canvas.getContext("2d");
-
-		// Add "loadeddata" event listener to the video element
-		video.addEventListener("loadeddata", () => {
-			console.log("Video loadeddata");
-			// Draw the video frame to the canvas
-			context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-			// Extract the image data from the canvas
-			const imageData = context.getImageData(
-				0,
-				0,
-				canvas.width,
-				canvas.height
-			);
-			console.log(imageData);
-
-			// Stop the screen capture
-			stopCapture();
-		});
-	};
-
 	const captureFrame = () => {
 		// Call captureFrameDbc after 1 second
 		setTimeout(captureFrameDbc, 100);
@@ -149,6 +124,9 @@ const ScreenshotTest = () => {
 		const video = videoRef.current;
 		const canvas = canvasRef.current;
 		const context = canvas.getContext("2d");
+
+		canvas.width = video.videoWidth;
+		canvas.height = video.videoHeight;
 
 		// Draw the video frame to the canvas
 		context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -162,6 +140,9 @@ const ScreenshotTest = () => {
 		);
 		console.log("ImageData: ", imageData);
 
+		// Set the image data to the image element
+		imageRef.current.src = canvas.toDataURL("image/jpeg", 8.0);
+
 		// Stop the screen capture
 		stopCapture();
 	};
@@ -174,18 +155,44 @@ const ScreenshotTest = () => {
 				controls
 				autoPlay
 				muted
-				width="50%"
-				onCanPlay={onVideoLoad}
+				width="100%"
+				height="auto"
+				// onCanPlay={onVideoLoad}
 				onLoadedData={captureFrame}
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					maxWidth: "90%",
+					maxHeight: "90%",
+					zIndex: "-9999",
+					pointerEvents: "none",
+				}}
 				// loadeddata={onVideoLoad}
 			>
-				{/* <source src="movie.mp4" type="video/mp4" /> */}
-				{/* <source src="movie.ogg" type="video/ogg" /> */}
 				Your browser does not support the video tag.
 			</video>
 
 			{/* Add a canvas element with a ref */}
-			<canvas ref={canvasRef} width="640" height="480"></canvas>
+			<canvas
+				ref={canvasRef}
+				style={{
+					visibility: "hidden",
+					position: "absolute",
+					top: 0,
+					left: 0,
+					maxWidth: "90%",
+					maxHeight: "90%",
+					zIndex: "-9999",
+				}}
+			></canvas>
+
+			{/* Add an image element with a ref */}
+			<img
+				ref={imageRef}
+				style={{ maxHeight: "400px", maxWidth: "400px" }}
+				alt="Screenshot"
+			/>
 
 			<Button onClick={captureScreen}>Take Screenshot</Button>
 		</Flex>

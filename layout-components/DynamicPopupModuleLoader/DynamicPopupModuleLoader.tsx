@@ -222,6 +222,7 @@ const Dialog = ({ module, options, onPopupClose }) => {
 	console.log("DynamicPopupModuleLoader: Dialog 1: " + module);
 
 	// const { isOpen, onOpen, onClose } = useDisclosure();
+	const [isHidden, setIsHidden] = useState(false);
 	const [result, setResult] = useState<any>(null); // The result returned by the module
 
 	// Open the modal popup when the component is mounted
@@ -242,7 +243,11 @@ const Dialog = ({ module, options, onPopupClose }) => {
 
 	return (
 		<Modal isOpen={true} onClose={() => onPopupClose(module, result)}>
-			<ModalOverlay bg="blackAlpha.700" backdropBlur="10px" />
+			<ModalOverlay
+				bg="blackAlpha.700"
+				backdropBlur="10px"
+				visibility={isHidden ? "hidden" : "visible"}
+			/>
 			<ModalContent
 				{...{
 					...{
@@ -255,6 +260,7 @@ const Dialog = ({ module, options, onPopupClose }) => {
 					},
 					...style,
 				}}
+				visibility={isHidden ? "hidden" : "visible"}
 			>
 				{hideCloseIcon ? null : (
 					<ModalCloseButton
@@ -276,6 +282,8 @@ const Dialog = ({ module, options, onPopupClose }) => {
 					{...{ ...props, ...options }}
 					onClose={() => onPopupClose(module, result)}
 					onResult={setResult}
+					onHide={() => setIsHidden(true)}
+					onShow={() => setIsHidden(false)}
 				/>
 				{/* </ModalBody> */}
 			</ModalContent>

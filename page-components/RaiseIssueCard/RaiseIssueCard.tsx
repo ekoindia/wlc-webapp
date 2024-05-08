@@ -8,13 +8,14 @@ import {
 	Textarea,
 	useToast,
 } from "@chakra-ui/react";
-import { Dropzone, Icon, InputLabel } from "components";
+import { Dropzone, IcoButton, Icon, InputLabel } from "components";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useUser } from "contexts";
 import { createSupportTicket, fetcher } from "helpers";
-import { useFeatureFlag } from "hooks";
+import { useFeatureFlag, useFileView } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { RiScreenshot2Line } from "react-icons/ri";
 import Markdown from "react-markdown";
 
 // MARK: Constants
@@ -61,6 +62,8 @@ interface RaiseIssueProps {
 	onClose?: Function;
 	onOpenUrl?: Function;
 	onRequestCamCapture?: Function;
+	onHide?: Function;
+	onShow?: Function;
 	[key: string]: any;
 }
 
@@ -84,6 +87,8 @@ interface RaiseIssueProps {
  * @param {function} prop.onClose - Function to close the feedback
  * @param {function} prop.onOpenUrl - Function to open a URL
  * @param {function} prop.onRequestCamCapture - Function to request camera capture
+ * @param {function} prop.onHide - Function to temporarily hide the feedback panel
+ * @param {function} prop.onShow - Function to show the temporarily hidden feedback panel
  * @param {...*} rest - Rest of the props
  */
 const RaiseIssueCard = ({
@@ -103,6 +108,8 @@ const RaiseIssueCard = ({
 	onClose,
 	onOpenUrl,
 	onRequestCamCapture,
+	onHide,
+	onShow,
 	...rest
 }: RaiseIssueProps) => {
 	const toast = useToast();
@@ -125,6 +132,9 @@ const RaiseIssueCard = ({
 	const [selectedSubCat, setSelectedSubCat] = useState<number | null>(null); // Selected sub-category
 	const [selectedIssue, setSelectedIssue] = useState<IssueType | null>(null); // Selected issue-type
 	const [feedbackSubmitResponse, setFeedbackSubmitResponse] = useState(null); // Feedback submit response
+
+	// Screenshot
+	const [screenshot, setScreenshot] = useState<File | null>(null);
 
 	// Status flags...
 	const [fetchingIssueList, setFetchingIssueList] = useState(false); // Is the issue list being fetched?
@@ -724,6 +734,16 @@ const RaiseIssueCard = ({
 							</>
 						) : null}
 
+						{/* Show option to capture screenshot */}
+						<Box mb={4} maxW={{ base: "100%", md: "350px" }}>
+							<Screenshot
+								screenshot={screenshot}
+								onCapture={setScreenshot}
+								onHide={onHide}
+								onShow={onShow}
+							/>
+						</Box>
+
 						{/* Show a multi-line input to capture user comment & the submit button */}
 						{isUserFeedbackRequired ? (
 							<>
@@ -1039,6 +1059,7 @@ const Label = ({ children, ...rest }) => {
 
 /**
  * Category-list button component
+ * MARK: <CategoryButton>
  * @param {object} props - Properties passed to the component.
  * @param {boolean} [props.isSelected] - Whether the category is selected (default: false).
  * @param {boolean} [props.isPrimary] - Whether this is the primary category (default: false).
@@ -1074,7 +1095,188 @@ const CategoryButton = ({
 };
 
 /**
+ * Component to capture and show the current screenshot
+ * MARK: <Screenshot>
+ * @param {object} props - Properties passed to the component.
+ * @param {string} props.screenshot - The screenshot image data.
+ * @param {function} props.onCapture - Function to call when the screenshot is captured.
+ * @param {function} props.onHide - Function to call to temporarily hide the Raise Query dialog so that the screenshot can be taken.
+ * @param {function} props.onShow - Function to call to show the Raise Query dialog after the screenshot is taken.
+ */
+const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
+	// https://developer.chrome.com/docs/web-platform/screen-sharing-controls/
+	// https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
+
+	// Ref for the video & canvas elements
+	const videoRef = useRef(null);
+	const canvasRef = useRef(null);
+
+	const { showImage } = useFileView();
+
+	const DisplayMediaOptions = {
+		video: {
+			displaySurface: "browser",
+		},
+		audio: false,
+		// audio: {
+		// 	suppressLocalAudioPlayback: true,
+		// },
+		preferCurrentTab: true,
+		selfBrowserSurface: "include", // allow the user to share the current tab
+		systemAudio: "exclude",
+		surfaceSwitching: "exclude", // allow the user to dynamically switch between shared tabs
+		monitorTypeSurfaces: "exclude", // prevent the user from sharing an entire screen.
+	};
+
+	const captureScreen = () => {
+		onHide();
+		navigator.mediaDevices.getDisplayMedia(DisplayMediaOptions).then(
+			(stream) => {
+				videoRef.current.srcObject = stream;
+			},
+			(err) => {
+				console.error("Screenshot Error: " + err);
+				onShow();
+			}
+		);
+	};
+
+	const stopCapture = () => {
+		let tracks = videoRef.current.srcObject.getTracks();
+
+		tracks.forEach((track) => track.stop());
+		videoRef.current.srcObject = null;
+		onShow();
+	};
+
+	const captureFrame = () => {
+		// Call captureFrameDbc after a short delay (such that the video is loaded properly)
+		const DELAY = 100;
+		setTimeout(() => {
+			const video = videoRef.current;
+			const canvas = canvasRef.current;
+			const context = canvas.getContext("2d");
+
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+
+			// Draw the video frame to the canvas
+			context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+			// Extract the image data from the canvas
+			const imageData = context.getImageData(
+				0,
+				0,
+				canvas.width,
+				canvas.height
+			);
+			console.log("ImageData: ", imageData);
+
+			// Set the image data to the image element
+			// imageRef.current.src = canvas.toDataURL("image/jpeg", 8.0);
+
+			// Inform the parent component about the captured screenshot
+			onCapture && onCapture(canvas.toDataURL("image/jpeg", 0.8));
+
+			// Stop the screen capture
+			stopCapture();
+		}, DELAY);
+	};
+
+	return (
+		<Flex
+			w="100%"
+			direction="column"
+			align="center"
+			justify="center"
+			border="2px"
+			borderStyle="dashed"
+			borderColor="divider"
+			borderRadius="10px"
+			color="light"
+			p="5"
+			{...rest}
+			// cursor={disabled ? "default" : "pointer"}
+			// pointerEvents={disabled ? "none" : "auto"}
+			// opacity={disabled ? 0.5 : 1}
+		>
+			{/* Hidden video element */}
+			<video
+				ref={videoRef}
+				controls
+				autoPlay
+				muted
+				width="100%"
+				height="auto"
+				onLoadedData={captureFrame}
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					maxWidth: "90%",
+					maxHeight: "90%",
+					zIndex: "-9999",
+					pointerEvents: "none",
+				}}
+			/>
+
+			{/* Hidden canvas element */}
+			<canvas
+				ref={canvasRef}
+				style={{
+					visibility: "hidden",
+					position: "absolute",
+					top: 0,
+					left: 0,
+					maxWidth: "90%",
+					maxHeight: "90%",
+					zIndex: "-9999",
+				}}
+			></canvas>
+
+			{/* Preview Image with delete button */}
+			{screenshot ? (
+				<Flex position="relative">
+					<img
+						src={screenshot}
+						style={{
+							maxHeight: "200px",
+							maxWidth: "200px",
+							cursor: "pointer",
+						}}
+						alt="Screenshot"
+						onClick={() => showImage(screenshot)}
+					/>
+					<IcoButton
+						iconName="close"
+						title="Discard"
+						size="xs"
+						theme="primary"
+						// boxShadow="0px 3px 10px #11299E1A"
+						_hover={{ bg: "primary.dark" }}
+						position="absolute"
+						top="-10px"
+						right="-10px"
+						onClick={() => {
+							onCapture && onCapture(null);
+						}}
+					/>
+				</Flex>
+			) : null}
+
+			{screenshot ? null : (
+				<Button variant="accent" onClick={captureScreen}>
+					<RiScreenshot2Line size="24px" />
+					&nbsp; Add Screenshot
+				</Button>
+			)}
+		</Flex>
+	);
+};
+
+/**
  * Helper function to process the issue list, and create a separate list of categories & nested sub-categories
+ * MARK: fx: _processIssueList
  * @param {string} issue_list - List of issues
  * @returns {{processed_issue_list: [], category_list: [], category_map: {}}} - A processed list of issues, categories, and sub-categories
  */
@@ -1130,7 +1332,7 @@ const _processIssueList = (issue_list) => {
 	};
 };
 
-// MARK: Types
+// MARK: Types...
 
 // Type of a selected issue...
 interface IssueType {
