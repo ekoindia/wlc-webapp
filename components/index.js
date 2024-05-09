@@ -12,6 +12,7 @@ import { Divider } from "./Divider";
 import { Dropzone } from "./Dropzone";
 import { EkoConnectWidget } from "./EkoConnectWidget";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { FileView } from "./FileView";
 import { GlobalSearch } from "./GlobalSearch";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
@@ -20,7 +21,6 @@ import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
 import { Kbd } from "./Kbd";
-import { Layout } from "./Layout";
 import { Menus } from "./Menus";
 import { Modal } from "./Modal";
 import { NavBar } from "./NavBar";
@@ -37,6 +37,7 @@ import { ResponseCard } from "./ResponseCard";
 import { RouteProtecter } from "./RouteProtecter";
 import { SearchBar } from "./SearchBar";
 import { Select } from "./Select";
+import { Share } from "./Share";
 import { ShowcaseCircle } from "./ShowcaseCircle";
 import { SideBar } from "./SideBar";
 import { StatusCard } from "./StatusCard";
@@ -49,6 +50,8 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	FileView,
+	Share,
 	XScrollArrow,
 	AdminViewToggleCard,
 	Breadcrumbs,
@@ -71,7 +74,6 @@ export {
 	InputLabel,
 	InputMsg,
 	Kbd,
-	Layout,
 	Menus,
 	Modal,
 	NavBar,

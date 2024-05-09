@@ -1,0 +1,73 @@
+import { Flex } from "@chakra-ui/react";
+{{#if hooks}}
+import {
+	{{#each hooks}}
+	{{this}},
+	{{/each}}
+} from "react";
+{{/if}}
+
+{{~#if (isInArray "useReducer" hooks) }}
+
+// TODO: Update your reducer state as required...
+const initialState = {count: 0};
+
+const reducer = (state, { type, payload }) => {
+	switch (type) {
+		case 'INC':
+			return {count: state.count + 1};
+		case 'DEC':
+			return {count: state.count - 1};
+		case 'ADD':
+			return {count: state.count + payload};
+		default:
+			throw new Error(`Unknown action type: ${type}`);
+	}
+};
+{{/if}}
+
+// Declare the props interface
+interface {{pascalCase name}}Props {
+	prop1?: string;
+	// size: "lg" | "md" | "sm" | "xs" | string;
+	[key: string]: any;
+}
+
+/**
+ * A <{{pascalCase name}}> component
+ * TODO: Write more description here
+ *
+ * @component
+ * @param {object} prop - Properties passed to the component
+ * @param {string} prop.prop1 - TODO: Property description. A normal property.
+ * @param {number} [prop.optionalProp2=0] - TODO: Property description. An optional property with default value.
+ * @param {...*} rest - Rest of the props
+ * @example	`<{{pascalCase name}}></{{pascalCase name}}>` TODO: Fix example
+ */
+const {{pascalCase name}} = ({ prop1, ...rest }: {{pascalCase name}}Props)  => {
+	{{#if (isInArray "useState" hooks) }}
+	const [count, setCount] = useState(0);		// TODO: Edit state as required
+
+	{{/if}}
+
+	{{~#if (isInArray "useReducer" hooks) }}
+	const [state, dispatch] = useReducer(reducer, initialState);	// TODO: Edit state as required
+
+	{{/if}}
+
+	{{~#if (isInArray "useEffect" hooks) }}
+	useEffect(() => {
+		// TODO: Add your useEffect code here and update dependencies as required
+	}, []);
+
+	{{/if}}
+
+	// MARK: JSX
+	return (
+		<Flex {...rest}>
+			{{name}}
+		</Flex>
+	);
+};
+
+export default {{pascalCase name}};

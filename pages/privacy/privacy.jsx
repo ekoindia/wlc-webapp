@@ -1,7 +1,7 @@
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import { IcoButton } from "components";
-import { LayoutLogin } from "components/Layout";
 import { useOrgDetailContext } from "contexts";
+import { LayoutLogin } from "layout-components";
 import { useRouter } from "next/router";
 
 const ZOHO_FORM_URL =

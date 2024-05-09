@@ -27,6 +27,7 @@ const Input = forwardRef(
 			description,
 			value,
 			type = "text",
+			size = "lg", // TODO: Change default size to "md" and fix all implementations
 			isNumInput = false,
 			min,
 			max,
@@ -42,7 +43,7 @@ const Input = forwardRef(
 			hidden = false,
 			invalid = false,
 			errorMsg = "",
-			radius,
+			borderRadius,
 			labelStyle,
 			errorStyle,
 			inputContStyle,
@@ -60,6 +61,15 @@ const Input = forwardRef(
 		ref
 	) => {
 		const _id = useId();
+
+		const default_radius =
+			size === "lg"
+				? "10px"
+				: size === "sm"
+				? "6px"
+				: size === "xs"
+				? "4px"
+				: "8px";
 
 		const onChangeHandler = useCallback(
 			(e) => {
@@ -100,13 +110,17 @@ const Input = forwardRef(
 						{label}
 					</InputLabel>
 				) : null}
-
-				<InputGroup size="lg">
+				<InputGroup
+					size={size}
+					borderRadius={borderRadius || default_radius || size}
+				>
 					{leftAddon ? (
 						<InputLeftAddon
 							pointerEvents="none"
 							bg="transparent"
-							borderLeftRadius={radius || "6px"}
+							borderLeftRadius={
+								borderRadius || default_radius || size
+							}
 							borderColor={errorMsg && invalid ? "error" : "hint"}
 						>
 							{leftAddon}
@@ -132,7 +146,7 @@ const Input = forwardRef(
 						hidden={hidden}
 						value={value}
 						// required={required}
-						borderRadius={radius || "lg"}
+						borderRadius={borderRadius || default_radius || size}
 						borderColor={errorMsg && invalid ? "error" : "hint"}
 						bg={errorMsg && invalid ? "#fff7fa" : ""}
 						w="100%"

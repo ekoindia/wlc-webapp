@@ -1,4 +1,5 @@
 export { fetcher } from "./apiHelper";
+export { createSupportTicket } from "./createSupportTicket";
 export {
 	/* dummyOrgDetails,  */ fetchOrgDetails,
 } from "./fetchOrgDetailsHelper";
@@ -17,6 +18,7 @@ export {
 	getModalStyle,
 	getNameStyle,
 	getPaymentStyle,
+	getShareMobileButton,
 	getStatusStyle,
 	openGoogleMap,
 } from "./TableHelpers";

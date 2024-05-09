@@ -30,10 +30,11 @@ import { Icon, Kbd } from "..";
 
 /**
  * KBar Portal Box to show the search bar and results
- * @param {any} fontClassName - The class name to be applied to the rendered results for setting custom font.
- * @returns
+ * @param {object} props
+ * @param {string} [props.fontClassName=null] - The class name to be applied to the rendered results to set a custom font.
+ * @returns {JSX.Element} The CommandBarBox component
  */
-export default function CommandBarBox({ fontClassName }) {
+export default function CommandBarBox({ fontClassName = null }) {
 	const { query } = useKBar();
 
 	const isSmallScreen = useBreakpointValue(

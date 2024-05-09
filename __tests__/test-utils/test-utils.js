@@ -2,11 +2,11 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Layout from "components/Layout/Layout";
 import { LayoutProvider } from "contexts/LayoutContext";
 import { MenuProvider } from "contexts/MenuContext";
 import { OrgDetailProvider } from "contexts/OrgDetailContext";
 import { UserProvider } from "contexts/UserContext";
+import { Layout } from "layout-components";
 import { light } from "styles/themes";
 import { MockAdminUser, MockOrg, MockUser } from "./test-utils.mocks";
 

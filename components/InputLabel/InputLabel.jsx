@@ -1,7 +1,18 @@
 import { chakra, Text } from "@chakra-ui/react";
 
+/**
+ *
+ * @param {*} props - properties passed to the component
+ * @param {string} [props.htmlFor] - The id of the input element the label is associated with
+ * @param {boolean} [props.required] - Whether the input is required or not
+ * @param {string} [props.children] - The text content of the label
+ * @returns {JSX.Element|null} - The label element, or null if no children are provided
+ */
 const InputLabel = ({ htmlFor, required = false, children, ...rest }) => {
 	const Label = chakra("label");
+
+	if (!children) return null;
+
 	return (
 		<Label
 			htmlFor={htmlFor || undefined}

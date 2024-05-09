@@ -1,5 +1,5 @@
-import { Layout } from "components/Layout";
-import { pageRender } from "test-utils";
+import { DynamicPopupModuleLoader } from "components/DynamicPopupModuleLoader";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { pageRender } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Layout", () => {
+describe("DynamicPopupModuleLoader", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<Layout />);
+		const { container } = render(<DynamicPopupModuleLoader />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Layout", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Layout in __tests__/components/Layout/Layout.test.jsx"
+		"TODO: add proper test cases for DynamicPopupModuleLoader in __tests__/components/DynamicPopupModuleLoader/DynamicPopupModuleLoader.test.jsx"
 	);
 });

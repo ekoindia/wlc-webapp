@@ -1,4 +1,4 @@
-import { LayoutLogin } from "components/Layout";
+import { LayoutLogin } from "layout-components";
 import { LoginPanel } from "page-components";
 
 /**

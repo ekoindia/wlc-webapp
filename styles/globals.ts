@@ -3,12 +3,16 @@
  * These CSS styles are applied globally.
  */
 export const globalStyles = {
+	html: {
+		fontFamily: "system-ui, sans-serif",
+	},
 	body: {
 		// margin: 0,
 		// padding: 0,
 		// width: "100vw",
 		// height: "100vh",
 		overscrollBehaviorY: "none",
+		fontFamily: "system-ui, sans-serif",
 	},
 	"[hidden], [hideempty]:empty": {
 		display: "none !important",
@@ -46,6 +50,22 @@ export const globalStyles = {
 	".customScrollbars::-webkit-scrollbar-thumb:hover": {
 		backgroundColor: "#999",
 		border: "1px solid #777",
+	},
+
+	// For React-Markdown. Add class "markdown-body" to the React-Markdown element.
+	".markdown-body > table": {
+		fontSize: "0.8em",
+		borderCollapse: "collapse",
+		borderSpacing: 0,
+		display: "block",
+		width: "max-content",
+		maxWidth: "100%",
+		overflow: "auto",
+		margin: "0.5em 0",
+	},
+	".markdown-body table td, .markdown-body table th": {
+		padding: "6px 10px",
+		border: "1px solid #888",
 	},
 
 	// Auto Dark Theme...

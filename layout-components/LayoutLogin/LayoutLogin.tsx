@@ -1,10 +1,10 @@
+import { PageLoader } from "components";
 import { useAppSource, usePubSub, useUser } from "contexts";
 import { loginUsingRefreshTokenAndroid } from "helpers/loginHelper";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import { ANDROID_ACTION, doAndroidAction } from "utils";
-import { PageLoader } from "..";
 
 /**
  * Custom (light) page layout component for the Login page

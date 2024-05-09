@@ -1,5 +1,5 @@
-import { LayoutLogin } from "components/Layout";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
+import { LayoutLogin } from "layout-components";
 
 /**
  * Secret route to clear the Next.js server-side org cache

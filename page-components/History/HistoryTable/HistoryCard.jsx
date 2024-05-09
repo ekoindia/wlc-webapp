@@ -1,11 +1,17 @@
 import { Avatar, Box, Flex, keyframes, Text } from "@chakra-ui/react";
-import { Button, Icon } from "components";
-import { useAppSource, useMenuContext } from "contexts";
+import { Button, Icon, Share } from "components";
+import { useAppSource, useMenuContext, useOrgDetailContext } from "contexts";
 import { getPaymentStyle, getStatusStyle } from "helpers/TableHelpers";
+import { useFeatureFlag, useRaiseIssue } from "hooks";
 import useHslColor from "hooks/useHslColor";
 import { formatDateTime } from "libs";
 import { printPage } from "utils";
-import { prepareTableCell, showInPrint, showOnScreen } from ".";
+import {
+	generateShareMessage,
+	prepareTableCell,
+	showInPrint,
+	showOnScreen,
+} from ".";
 
 const animSlideDown = keyframes`
 	from {opacity: 0; transform: scaleY(0); transform-origin:top;}
@@ -32,6 +38,10 @@ const HistoryCard = ({
 	const txicon = trxn_type_prod_map?.[item.tx_typeid]?.icon || null;
 	const { h } = useHslColor(item.tx_name);
 	const { isAndroid } = useAppSource();
+	const { orgDetail } = useOrgDetailContext();
+
+	const isRaiseIssueAllowed = useFeatureFlag("RAISE_ISSUE");
+	const { showRaiseIssueDialog } = useRaiseIssue();
 
 	const visible = visibleColumns > 0;
 	const extraColumns = visible ? renderer?.slice(visibleColumns) : [];
@@ -182,6 +192,7 @@ const HistoryCard = ({
 						direction="row-reverse"
 						w="100%"
 						mt="10px"
+						gap={3}
 						sx={{
 							"@media print": {
 								display: "none !important",
@@ -198,6 +209,7 @@ const HistoryCard = ({
 						>
 							Repeat
 						</Button> */}
+
 						{/* Print Receipt button */}
 						<Button
 							variant="link"
@@ -206,11 +218,54 @@ const HistoryCard = ({
 							icon="print"
 							color="accent.DEFAULT"
 							onClick={() => {
-								printPage("Receipt (copy)", isAndroid);
+								printPage("Receipt (Copy)", isAndroid);
 							}}
 						>
 							Print
 						</Button>
+						{/* Share button */}
+						<Share
+							title={`${orgDetail.app_name} | Transaction Receipt (Copy)`}
+							text={generateShareMessage(extraColumns, item)}
+							variant="link"
+							size="md"
+							color="accent.DEFAULT"
+							labelProps={{ fontSize: "xs" }}
+						/>
+						{/* Raise Query */}
+						{isRaiseIssueAllowed ? (
+							<Button
+								variant="link"
+								fontSize="xs"
+								size="md"
+								icon="feedback"
+								color="accent.DEFAULT"
+								iconStyle={{
+									size: "20px",
+									mr: "3px",
+								}}
+								onClick={() => {
+									// console.log("Raise Issue:::::", item);
+									showRaiseIssueDialog({
+										origin: "History",
+										tid: item.tid,
+										tx_typeid: item.tx_typeid,
+										status: item.status_id || 0,
+										transaction_time: item.datetime,
+										// logo:
+										metadata: {
+											transaction_detail: item,
+											// parameters_formatted:
+											pre_msg_template:
+												"Transaction History Details",
+											post_msg_template: "",
+										},
+									});
+								}}
+							>
+								Report Issue
+							</Button>
+						) : null}
 					</Flex>
 				</Flex>
 			) : null}

@@ -2,12 +2,46 @@ import { Flex, SlideFade, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useOrgDetailContext, useSession } from "contexts";
 import { fadeIn } from "libs/chakraKeyframes";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Login, SocialVerify, VerifyOtp, WelcomeCard } from "./children";
+import { Login } from "./Login";
+// import { Login, SocialVerify, VerifyOtp, WelcomeCard } from "./children";
 
-const FOUR_MINUTES_IN_MS = 240000;
+// Lazy load the LoginPanel components...
+// const Login = dynamic(() => import("./Login").then((pkg) => pkg.Login), {
+// 	// loading: () => <div>Loading...</div>,
+// 	ssr: false,
+// });
+const VerifyOtp = dynamic(
+	() => import("./VerifyOtp").then((pkg) => pkg.VerifyOtp),
+	{
+		// loading: () => <div>Loading...</div>,
+		ssr: false,
+	}
+);
+const SocialVerify = dynamic(
+	() => import("./SocialVerify").then((pkg) => pkg.SocialVerify),
+	{
+		// loading: () => <div>Loading...</div>,
+		ssr: false,
+	}
+);
+const WelcomeCard = dynamic(
+	() => import("./WelcomeCard").then((pkg) => pkg.WelcomeCard),
+	{
+		ssr: false,
+	}
+);
 
+// Time in milliseconds to persist the OTP screen, if the user comes back to the app within this time.
+const PERSIST_OTP_SCREEN_TIMEOUT_MS = 240000; // 4 mins
+
+/**
+ * Format mobile number in the following format: 123 456 7890
+ * @param {number} mobile
+ * @returns {string} Formatted mobile number
+ */
 const formatMobileNumber = (mobile) => {
 	return mobile.toString().replace(/(\d{3})(\d{3})(\d{4})/, "$1 $2 $3");
 };
@@ -30,6 +64,8 @@ const LoginPanel = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const { isLoggedIn } = useSession();
 
+	// On small-screen, quickly hide the welcome card and move on to the login screen,
+	// especially, if the user had already entered their mobile number previously
 	useEffect(() => {
 		const duration = number?.formatted?.length > 0 ? 1000 : 30000;
 
@@ -52,7 +88,7 @@ const LoginPanel = () => {
 			lastRoute?.meta?.step === "VERIFY_OTP" &&
 			lastRoute?.meta?.type === "Mobile" &&
 			lastRoute?.meta?.mobile?.formatted &&
-			lastRoute?.at > Date.now() - FOUR_MINUTES_IN_MS
+			lastRoute?.at > Date.now() - PERSIST_OTP_SCREEN_TIMEOUT_MS
 		) {
 			// Was the user on enter-OTP screen in the last 4 mins?
 			// Take them back there without resending OTP...
@@ -97,6 +133,7 @@ const LoginPanel = () => {
 	// Hide login panel if user is already logged in
 	if (isLoggedIn) return null;
 
+	// MARK: JSX
 	return (
 		<Flex
 			w="full"

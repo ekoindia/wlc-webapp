@@ -1,5 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Button, Icon, Modal } from "components";
+import { Fragment } from "react";
 import { Form } from "tf-components";
 
 /**
@@ -58,9 +59,8 @@ const HistoryToolbar = ({
 					secondaryButtonText,
 					styles,
 				}) => (
-					<>
+					<Fragment key={id}>
 						<Button
-							key={id}
 							size="lg"
 							variant="primary_outline"
 							onClick={() =>
@@ -121,7 +121,7 @@ const HistoryToolbar = ({
 								</Flex>
 							</form>
 						</Modal>
-					</>
+					</Fragment>
 				)
 			)}
 		</Flex>
