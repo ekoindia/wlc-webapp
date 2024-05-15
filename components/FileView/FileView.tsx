@@ -92,7 +92,7 @@ const FileView = ({ file, type, options }: FileViewProps) => {
 			width="100%"
 			height="100vh"
 		>
-			<Box pointerEvents="auto">
+			<Box pointerEvents="auto" maxH="100%" maxW="100%">
 				<FileViewContent
 					file={file}
 					fileType={fileType}
@@ -138,7 +138,13 @@ const FileViewContent = ({
 				// TODO: Add HTTP POST form submission for iframe
 			);
 		case "image":
-			return <img src={file} alt="Image" />;
+			return (
+				<img
+					src={file}
+					style={{ maxHeight: "100%", maxWidth: "100%" }}
+					alt="Image Preview"
+				/>
+			);
 		case "video":
 		case "audio":
 		case "youtube":

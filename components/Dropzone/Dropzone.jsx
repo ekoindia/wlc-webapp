@@ -165,7 +165,8 @@ const Dropzone = ({
 						{previewImage ? (
 							<Image
 								src={previewImage}
-								borderRadius="10px"
+								borderRadius="4px"
+								boxShadow="rgba(0, 0, 0, 0.05) 0px 0px 0px 1px"
 								onClick={() => showImage(previewImage)}
 							/>
 						) : (
