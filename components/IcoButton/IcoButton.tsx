@@ -3,8 +3,7 @@ import { IconNameType } from "constants/IconLibrary";
 import { Icon } from "..";
 
 type Props = {
-	iconName: IconNameType;
-	size: "lg" | "md" | "sm" | "xs" | string;
+	size?: "lg" | "md" | "sm" | "xs" | string;
 	iconSize?: string;
 	iconStyle?: Object;
 	theme?: "dark" | "light" | "gray" | "primary" | "accent";
@@ -12,18 +11,23 @@ type Props = {
 	title?: string;
 	onClick?: () => void;
 	[key: string]: any;
-};
+} & (
+	| { iconName: IconNameType; icon?: never }
+	| { icon: React.FC<any>; iconName?: never }
+	| { iconName?: IconNameType; icon?: React.FC<any> }
+);
 
 /**
  * A IcoButton component to show Icons
- * @param {IconNameType} iconName - The name of the icon to display.
- * @param {string} size - The size of the button. Can be "lg", "md", "sm", or a custom string.
- * @param {string|number} iconSize - An optional custom size for the icon.
- * @param {Object} iconStyle - The styles to apply to the icon (should contain width, height).
- * @param {string} theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
- * @param {string|number} rounded - The rounding of the button. Can be a number, or "full" (default).
- * @param {string} title - The title of the button.
- * @param {MouseEvent} onClick - The click event handler
+ * @param {Props} props - The props of the component
+ * @param {IconNameType} props.iconName - The name of the icon to display.
+ * @param {string} [props.size="md"] - The size of the button. Can be "lg", "md", "sm", or a custom string.
+ * @param {string|number} props.iconSize - An optional custom size for the icon.
+ * @param {Object} props.iconStyle - The styles to apply to the icon (should contain width, height).
+ * @param {string} props.theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
+ * @param {string|number} props.rounded - The rounding of the button. Can be a number, or "full" (default).
+ * @param {string} props.title - The title of the button.
+ * @param {MouseEvent} props.onClick - The click event handler
  * @param {...Object} rest - A catch-all prop that allows any other prop to be passed in.
  * @example
  * //Example usage:
@@ -36,7 +40,8 @@ type Props = {
  */
 const IcoButton = ({
 	iconName,
-	size,
+	icon,
+	size = "md",
 	iconSize,
 	iconStyle,
 	theme = "light",
@@ -46,6 +51,8 @@ const IcoButton = ({
 	...rest
 }: Props): JSX.Element => {
 	const clickable: boolean = onClick === undefined;
+
+	const IconElement = icon;
 
 	const bgSize: string =
 		size === "lg"
@@ -119,7 +126,11 @@ const IcoButton = ({
 			{...btnTheme}
 			{...rest}
 		>
-			<Icon name={iconName} size={_iconSize} {...iconStyle} />
+			{icon ? (
+				<IconElement size={_iconSize} {...iconStyle} />
+			) : (
+				<Icon name={iconName} size={_iconSize} {...iconStyle} />
+			)}
 		</Center>
 	);
 };
