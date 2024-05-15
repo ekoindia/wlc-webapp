@@ -9,6 +9,7 @@ export { default as useFeatureFlag } from "./useFeatureFlag";
 export { default as useFileView } from "./useFileView";
 export { default as useHotkey } from "./useHotkey";
 export { default as useHslColor } from "./useHslColor";
+export { default as useImageEditor } from "./useImageEditor";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLogin } from "./useLogin";
 export { default as usePagination, DOTS } from "./usePagination";

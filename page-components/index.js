@@ -2,6 +2,7 @@
 export { Commissions } from "./Commissions";
 export { History } from "./History";
 export { Home } from "./Home";
+export { ImageEditor } from "./ImageEditor";
 export { LoginPanel } from "./LoginPanel";
 export { Profile } from "./Profile";
 export { RaiseIssueCard } from "./RaiseIssueCard";
