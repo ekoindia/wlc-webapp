@@ -1,14 +1,16 @@
-import { Button, Flex, Text } from "@chakra-ui/react";
-import { useFeatureFlag, useFileView } from "hooks";
-import { useRef } from "react";
+import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { useFeatureFlag, useFileView, useImageEditor } from "hooks";
+import { useCallback, useRef, useState } from "react";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 /**
- * A TestPage page-component
- * @example	`<TestPage></TestPage>` TODO: Fix example
+ * A '/test' page-component
+ * This page is used to test various components and features and is only accessible in development mode.
+ * To add a new test, create a component and add it to the 'TestComponents' list at the bottom of the file.
  */
 const TestPage = () => {
 	const isTestPageEnabled = useFeatureFlag("TEST_PAGE");
-	const { showImage, showMedia, showWebpage } = useFileView();
 
 	if (!isTestPageEnabled) {
 		return null;
@@ -20,45 +22,24 @@ const TestPage = () => {
 				Test Page
 			</Text>
 
-			<Section title="File Viewers">
-				<Flex gap="2em" wrap="wrap">
-					<Button
-						onClick={() =>
-							showImage(
-								"https://www.artsandcollections.com/wp-content/uploads/2018/08/sherlockvintageWEB.jpg"
-							)
-						}
-					>
-						Show Image
-					</Button>
-
-					<Button
-						onClick={() =>
-							showMedia(
-								"https://www.youtube.com/watch?v=EzFXDvC-EwM"
-							)
-						}
-					>
-						Show Youtube Video
-					</Button>
-
-					<Button onClick={() => showWebpage("https://abhi.page")}>
-						Show Webpage
-					</Button>
-				</Flex>
-			</Section>
-
-			<Section title="Screenshot Capture">
-				<ScreenshotTest />
-			</Section>
+			<SimpleGrid columns={{ base: 1, md: 2 }} p="10px" gap="15px">
+				{TestComponents.map((component, index) => (
+					<Section key={index} title={component.title}>
+						<component.component />
+					</Section>
+				))}
+			</SimpleGrid>
 		</>
 	);
 };
 
+/**
+ * A Test Section component
+ */
 const Section = ({ title, children }) => (
 	<Flex
 		direction="column"
-		m={{ base: "5px", md: "2em" }}
+		// m={{ base: "5px", md: "2em" }}
 		p={{ base: "5px", md: "1em" }}
 		bg="white"
 		borderRadius="6px"
@@ -71,7 +52,51 @@ const Section = ({ title, children }) => (
 );
 
 /**
+ * Testing the FileViewers
+ * MARK: FileViewersTest
+ */
+const FileViewersTest = () => {
+	const { showImage, showMedia, showWebpage } = useFileView();
+
+	const onSelectFile = useCallback((e) => {
+		if (e.target.files && e.target.files.length > 0) {
+			const reader = new FileReader();
+			reader.addEventListener("load", () => showImage(reader.result));
+			reader.readAsDataURL(e.target.files[0]);
+		}
+	}, []);
+
+	return (
+		<Flex gap="1em" wrap="wrap">
+			<input type="file" accept="image/*" onChange={onSelectFile} />
+			<Button
+				onClick={() =>
+					showImage(
+						"https://www.artsandcollections.com/wp-content/uploads/2018/08/sherlockvintageWEB.jpg"
+					)
+				}
+			>
+				Show Image
+			</Button>
+
+			<Button
+				onClick={() =>
+					showMedia("https://www.youtube.com/watch?v=EzFXDvC-EwM")
+				}
+			>
+				Show Youtube Video
+			</Button>
+
+			<Button onClick={() => showWebpage("https://abhi.page")}>
+				Show Webpage
+			</Button>
+		</Flex>
+	);
+};
+
+/**
  * Testing the screen capture API
+ * MARK: ScreenshotTest
  */
 const ScreenshotTest = () => {
 	// https://developer.chrome.com/docs/web-platform/screen-sharing-controls/
@@ -198,5 +223,148 @@ const ScreenshotTest = () => {
 		</Flex>
 	);
 };
+
+/**
+ * Testing the ImageEditor
+ * MARK: ImageEditorTest
+ */
+const ImageEditorTest = () => {
+	const { editImage } = useImageEditor();
+	const [image, setImage] = useState(null);
+	const [imageDimensions, setImageDimensions] = useState("");
+	const fileRef = useRef(null);
+
+	const onResult = (data) => {
+		console.log("Result Image: ", data);
+		if (data.accepted) {
+			setImage(data.image);
+		}
+		if (fileRef?.current?.value) {
+			fileRef.current.value = null;
+		}
+	};
+
+	const onImgLoad = (e) => {
+		setImageDimensions(
+			e.target.naturalWidth + "x" + e.target.naturalHeight
+		);
+		console.log(
+			"Image Loaded: ",
+			e.target.naturalWidth,
+			e.target.naturalHeight
+		);
+	};
+
+	const onSelectFile = useCallback((e) => {
+		if (e.target.files && e.target.files.length > 0) {
+			const reader = new FileReader();
+			reader.addEventListener("load", () =>
+				editImage(
+					reader.result,
+					{
+						maxLength: 1200,
+						aspectRatio: 1,
+					},
+					(data) => onResult(data)
+				)
+			);
+			reader.readAsDataURL(e.target.files[0]);
+		}
+	}, []);
+
+	return (
+		<Flex direction="column" align="center">
+			<input
+				ref={fileRef}
+				type="file"
+				accept="image/*"
+				onChange={onSelectFile}
+			/>
+			{image ? (
+				<img
+					src={image}
+					style={{ maxHeight: "400px", maxWidth: "400px" }}
+					alt="Screenshot"
+					onLoad={onImgLoad}
+				/>
+			) : null}
+			{imageDimensions ? (
+				<Text fontSize="sm" color="gray.500">
+					{imageDimensions}
+				</Text>
+			) : null}
+			{/* <Flex gap="2em" wrap="wrap">
+				<Button
+					onClick={() =>
+						editImage(
+							"https://www.artsandcollections.com/wp-content/uploads/2018/08/sherlockvintageWEB.jpg",
+							null,
+							onResult
+						)
+					}
+				>
+					Edit Image
+				</Button>
+			</Flex> */}
+		</Flex>
+	);
+};
+
+/**
+ * Testing the Markdown component
+ * MARK: MarkdownTest
+ */
+const MarkdownTest = () => {
+	// const markdown1 = `A simple markdown with **bold** and *italic* text.
+
+	// ## Testing Markdown
+	// | Tables        | Are           | Cool  |
+	// | ------------- | ------------- | ----- |
+	// | col 3 is      | right-aligned | $1600 |
+	// | col 2 is      | centered      |   $12 |
+	// | zebra stripes | are neat      |    $1 |
+	// `;
+
+	// const markdown2 = `A simple markdown with **bold** and *italic* text.`;
+
+	const markdown3 = `| Tables        | Are           |\n
+	| ------------- | ------------- |
+	| col 3 is      | right-aligned |`;
+
+	return (
+		<Flex
+			sx={{
+				".markdown-body strong": {
+					color: "red",
+				},
+			}}
+		>
+			<Markdown remarkPlugins={[remarkGfm]} className="markdown-body">
+				{markdown3}
+			</Markdown>
+		</Flex>
+	);
+};
+
+// List of test components
+// MARK: List of Tests
+const TestComponents = [
+	{
+		title: "File Viewers",
+		component: FileViewersTest,
+	},
+	{
+		title: "Screenshot Capture",
+		component: ScreenshotTest,
+	},
+	{
+		title: "Image Editor",
+		component: ImageEditorTest,
+	},
+	{
+		title: "Markdown",
+		component: MarkdownTest,
+	},
+];
 
 export default TestPage;
