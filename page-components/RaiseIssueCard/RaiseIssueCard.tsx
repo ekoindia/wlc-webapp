@@ -12,7 +12,7 @@ import { Dropzone, IcoButton, Icon, InputLabel } from "components";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useUser } from "contexts";
 import { createSupportTicket, fetcher } from "helpers";
-import { useFeatureFlag, useFileView } from "hooks";
+import { useFeatureFlag, useFileView, useImageEditor } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useEffect, useRef, useState } from "react";
 import { RiScreenshot2Line } from "react-icons/ri";
@@ -134,7 +134,7 @@ const RaiseIssueCard = ({
 	const [feedbackSubmitResponse, setFeedbackSubmitResponse] = useState(null); // Feedback submit response
 
 	// Screenshot
-	const [screenshot, setScreenshot] = useState<File | null>(null);
+	const [screenshot, setScreenshot] = useState<string | null>(null);
 
 	// Status flags...
 	const [fetchingIssueList, setFetchingIssueList] = useState(false); // Is the issue list being fetched?
@@ -447,6 +447,7 @@ const RaiseIssueCard = ({
 				value: string | number;
 			}[],
 			files: issueFileList as { label: string; value: File }[],
+			screenshot: screenshot || undefined,
 			origin,
 			tat: selectedIssue.tat,
 			priority: selectedIssue.priority,
@@ -1109,9 +1110,26 @@ const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
 
 	// Ref for the video & canvas elements
 	const videoRef = useRef(null);
-	const canvasRef = useRef(null);
+	// const canvasRef = useRef(null);
 
 	const { showImage } = useFileView();
+	const { editImage } = useImageEditor();
+	const [originalCapture, setOriginalCapture] = useState<string | null>(null);
+	const [edited, setEdited] = useState(false);
+
+	// Edit/crop screenshot when captured...
+	useEffect(() => {
+		if (originalCapture && !edited) {
+			editImage(originalCapture, null, (data) => {
+				if (data?.accepted && data?.image) {
+					onCapture && onCapture(data.image);
+					setEdited(true);
+				} else {
+					setOriginalCapture(null);
+				}
+			});
+		}
+	}, [edited, originalCapture, onCapture]);
 
 	const DisplayMediaOptions = {
 		video: {
@@ -1154,32 +1172,48 @@ const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
 		const DELAY = 100;
 		setTimeout(() => {
 			const video = videoRef.current;
-			const canvas = canvasRef.current;
+			const canvas = new OffscreenCanvas(
+				video.videoWidth,
+				video.videoHeight
+			); // canvasRef.current;
 			const context = canvas.getContext("2d");
 
-			canvas.width = video.videoWidth;
-			canvas.height = video.videoHeight;
+			// canvas.width = video.videoWidth;
+			// canvas.height = video.videoHeight;
 
 			// Draw the video frame to the canvas
 			context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
 			// Extract the image data from the canvas
-			const imageData = context.getImageData(
-				0,
-				0,
-				canvas.width,
-				canvas.height
-			);
-			console.log("ImageData: ", imageData);
+			// const imageData = context.getImageData(
+			// 	0,
+			// 	0,
+			// 	canvas.width,
+			// 	canvas.height
+			// );
+			// console.log("ImageData: ", imageData);
 
 			// Set the image data to the image element
 			// imageRef.current.src = canvas.toDataURL("image/jpeg", 8.0);
 
 			// Inform the parent component about the captured screenshot
-			onCapture && onCapture(canvas.toDataURL("image/jpeg", 0.8));
+			// onCapture && onCapture(canvas.toDataURL("image/jpeg", 0.8));
 
-			// Stop the screen capture
-			stopCapture();
+			canvas
+				.convertToBlob({ type: "image/jpeg", quality: 0.8 })
+				.then(
+					(blob) => {
+						// onCapture && onCapture(URL.createObjectURL(blob));
+						setOriginalCapture(URL.createObjectURL(blob));
+						setEdited(false);
+					},
+					(err) => {
+						console.error("Blob Error: ", err);
+					}
+				)
+				.finally(() => {
+					stopCapture();
+				});
 		}, DELAY);
 	};
 
@@ -1221,7 +1255,7 @@ const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
 			/>
 
 			{/* Hidden canvas element */}
-			<canvas
+			{/* <canvas
 				ref={canvasRef}
 				style={{
 					visibility: "hidden",
@@ -1232,7 +1266,7 @@ const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
 					maxHeight: "90%",
 					zIndex: "-9999",
 				}}
-			></canvas>
+			></canvas> */}
 
 			{/* Preview Image with delete button */}
 			{screenshot ? (
@@ -1243,6 +1277,8 @@ const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
 							maxHeight: "200px",
 							maxWidth: "200px",
 							cursor: "pointer",
+							borderRadius: "4px",
+							boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
 						}}
 						alt="Screenshot"
 						onClick={() => showImage(screenshot)}

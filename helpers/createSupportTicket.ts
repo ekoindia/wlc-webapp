@@ -8,6 +8,7 @@ interface SupportTicketType {
 	comment?: string;
 	inputs?: Array<{ label: string; value: string | number }>;
 	files?: Array<{ label: string; value: File }>;
+	screenshot?: string;
 	origin?: string;
 	tat?: string;
 	priority?: string;
@@ -29,6 +30,7 @@ interface SupportTicketType {
  * @param {string} [options.comment=""] - Any additional comments
  * @param {Array} [options.inputs=[]] - Additional inputs to be sent
  * @param {Array} [options.files=[]] - Additional files to be sent
+ * @param {string} [options.screenshot] - The screenshot of the issue
  * @param {string} [options.origin=""] - The origin of the issue
  * @param {string} [options.tat=""] - The TAT for the issue
  * @param {string} [options.priority=""] - The priority of the issue
@@ -49,6 +51,7 @@ export const createSupportTicket = ({
 	comment = "",
 	inputs = [],
 	files = [],
+	screenshot,
 	origin = "",
 	tat = "",
 	priority = "",
@@ -148,6 +151,28 @@ export const createSupportTicket = ({
 			formData.append(fileName, files[i].value);
 			filesFound = true;
 		}
+	}
+
+	if (screenshot) {
+		// const screenshotFile = new File(
+		// 	[screenshot],
+		// 	"screenshot.jpg",
+		// 	screenshot
+		// );
+
+		// Convert the base64 screenshot to a File...
+		const filename = "screenshot.jpg";
+		const blobBin = atob(screenshot.split(",")[1]);
+		const l_blobBin = blobBin.length;
+		let array = [];
+		for (let i = 0; i < l_blobBin; i++) {
+			array.push(blobBin.charCodeAt(i));
+		}
+		const screenshotFile = new File([new Uint8Array(array)], filename, {
+			type: "image/jpeg",
+		});
+		formData.append(filename, screenshotFile);
+		filesFound = true;
 	}
 
 	const headers = {
