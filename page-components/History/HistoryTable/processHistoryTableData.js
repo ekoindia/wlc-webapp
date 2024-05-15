@@ -1,3 +1,4 @@
+import { DisplayMedia } from "constants";
 import { getFirstWord, limitText } from "utils";
 import { getViewComponent } from ".";
 
@@ -145,7 +146,7 @@ const generateParameterMetadata = (key, type) => {
 	_parameterMetadata.label = convertKeyToLabel(key);
 	_parameterMetadata.parameter_type_id = type;
 	_parameterMetadata.show = getViewComponent(type);
-	_parameterMetadata.display_media_id = 1;
+	_parameterMetadata.display_media_id = DisplayMedia.BOTH;
 
 	return _parameterMetadata;
 };
