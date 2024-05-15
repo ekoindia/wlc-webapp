@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 /**
  * Names of the modules that can be loaded
  */
-export type ModuleNameType = "Feedback" | "FileViewer";
+export type ModuleNameType = "Feedback" | "FileViewer" | "ImageEditor";
 // | "Support"
 // | "Camera"
 // | "About";
@@ -47,6 +47,11 @@ const DefaultOptions: {
 		closeBtnStyle?: { [key: string]: any };
 
 		/**
+		 * Style attributes to apply to the modal overlay.
+		 */
+		overlayStyle?: { [key: string]: any };
+
+		/**
 		 * Whether to hide the default close icon in the modal popup.
 		 * It can be useful if the component has its own close button.
 		 */
@@ -58,6 +63,9 @@ const DefaultOptions: {
 			heading: "Raise Query",
 			origin: "Global-Help",
 			// showCloseIcon: true,
+		},
+		closeBtnStyle: {
+			boxShadow: "none",
 		},
 		style: {
 			w: { base: "100%", md: "650px", lg: "800px" },
@@ -75,6 +83,26 @@ const DefaultOptions: {
 			position: "fixed",
 			top: "5px",
 			right: "10px",
+		},
+	},
+	ImageEditor: {
+		hideCloseIcon: true,
+		props: {
+			maxLength: "1024", // Maximum length of the longer side of the image in px
+		},
+		style: {
+			m: "0",
+			borderRadius: "6px",
+			overflow: "hidden",
+			pointerEvents: "none",
+		},
+		closeBtnStyle: {
+			position: "fixed",
+			top: "5px",
+			right: "10px",
+		},
+		overlayStyle: {
+			bg: "blackAlpha.800",
 		},
 	},
 	// Camera: {},
@@ -98,6 +126,16 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 	),
 	FileViewer: dynamic(
 		() => import("components/FileView").then((pkg) => pkg.FileView) as any,
+		{
+			ssr: false,
+			loading: () => <p>Loading...</p>,
+		}
+	),
+	ImageEditor: dynamic(
+		() =>
+			import("page-components/ImageEditor").then(
+				(pkg) => pkg.ImageEditor
+			) as any,
 		{
 			ssr: false,
 			loading: () => <p>Loading...</p>,
@@ -173,15 +211,29 @@ const DynamicPopupModuleLoader = () => {
 	 * Callback function to close the modal popup.
 	 * @param {string} moduleName - The module name
 	 */
-	const onPopupClose = (moduleName, result) => {
-		console.log(
-			"DynamicPopupModuleLoader: onPopupClose",
-			moduleName,
-			result
-		);
+	const onPopupClose = (index, moduleName, result) => {
+		const closedModule = moduleData[index];
 
-		if (moduleData[moduleName] && moduleData[moduleName].resultTopic) {
-			publish(moduleData[moduleName].resultTopic, result);
+		console.log("DynamicPopupModuleLoader: onPopupClose", {
+			index,
+			moduleName,
+			moduleData,
+			result,
+			closedModule,
+		});
+
+		if (
+			closedModule &&
+			closedModule.feature === moduleName &&
+			closedModule.resultTopic
+		) {
+			console.log(
+				"DynamicPopupModuleLoader: onPopupClose: publishing result: ",
+				closedModule.resultTopic,
+				result
+			);
+
+			publish(closedModule.resultTopic, result);
 		}
 		removeModule(moduleName);
 	};
@@ -189,7 +241,7 @@ const DynamicPopupModuleLoader = () => {
 	// MARK: JSX
 	return (
 		<>
-			{moduleData?.map((_module) => {
+			{moduleData?.map((_module, _i) => {
 				if (!_module?.feature) {
 					return null;
 				}
@@ -201,8 +253,10 @@ const DynamicPopupModuleLoader = () => {
 				return (
 					<Dialog
 						key={feature}
+						index={_i}
 						module={feature}
 						options={options}
+						isBackgroundModule={_i !== moduleData.length - 1}
 						onPopupClose={onPopupClose}
 					/>
 				);
@@ -215,10 +269,18 @@ const DynamicPopupModuleLoader = () => {
  * Component to render the modal dialogue with a component.
  * @param {object} props - The properties of the component
  * @param {ModuleNameType} props.module - The module to show as a modal popup
+ * @param {number} props.index - The index of the module in the list
  * @param {object} [props.options] - Options to pass to the module
+ * @param {boolean} [props.isBackgroundModule] - Whether the module is in the background
  * @param {function} props.onPopupClose - Callback function to close the modal
  */
-const Dialog = ({ module, options, onPopupClose }) => {
+const Dialog = ({
+	module,
+	index,
+	options,
+	isBackgroundModule,
+	onPopupClose,
+}) => {
 	console.log("DynamicPopupModuleLoader: Dialog 1: " + module);
 
 	// const { isOpen, onOpen, onClose } = useDisclosure();
@@ -232,7 +294,7 @@ const Dialog = ({ module, options, onPopupClose }) => {
 
 	// Get the dynamic component to load
 	const Component = moduleList[module];
-	const { props, style, closeBtnStyle, hideCloseIcon } =
+	const { props, style, closeBtnStyle, overlayStyle, hideCloseIcon } =
 		DefaultOptions[module] || {};
 
 	if (!Component) {
@@ -242,10 +304,14 @@ const Dialog = ({ module, options, onPopupClose }) => {
 	console.log("DynamicPopupModuleLoader: Dialog 2", module, Component);
 
 	return (
-		<Modal isOpen={true} onClose={() => onPopupClose(module, result)}>
+		<Modal
+			isOpen={true}
+			onClose={() => onPopupClose(index, module, result || {})}
+		>
 			<ModalOverlay
 				bg="blackAlpha.700"
 				backdropBlur="10px"
+				{...overlayStyle}
 				visibility={isHidden ? "hidden" : "visible"}
 			/>
 			<ModalContent
@@ -262,30 +328,31 @@ const Dialog = ({ module, options, onPopupClose }) => {
 				}}
 				visibility={isHidden ? "hidden" : "visible"}
 			>
-				{hideCloseIcon ? null : (
+				<Component
+					{...{ ...props, ...options }}
+					onClose={(resp) =>
+						onPopupClose(index, module, resp || result)
+					}
+					onResult={setResult}
+					onHide={() => setIsHidden(true)}
+					onShow={() => setIsHidden(false)}
+				/>
+				{hideCloseIcon || isBackgroundModule ? null : (
 					<ModalCloseButton
 						// position="fixed"
 						// top="10px"
 						// right="10px"
-						bg="white"
+						bg="gray.100"
 						size={{ base: "md", md: "lg" }}
 						borderRadius="full"
 						opacity="0.9"
 						p={{ base: "6px", md: "13px" }}
 						_hover={{ bg: "error", color: "white" }}
 						pointerEvents="auto"
+						boxShadow="dark-lg"
 						{...closeBtnStyle}
 					/>
 				)}
-				{/* <ModalBody> */}
-				<Component
-					{...{ ...props, ...options }}
-					onClose={() => onPopupClose(module, result)}
-					onResult={setResult}
-					onHide={() => setIsHidden(true)}
-					onShow={() => setIsHidden(false)}
-				/>
-				{/* </ModalBody> */}
 			</ModalContent>
 		</Modal>
 	);
