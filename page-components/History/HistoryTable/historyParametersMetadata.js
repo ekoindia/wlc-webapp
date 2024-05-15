@@ -6,7 +6,7 @@ import { DisplayMedia } from "constants/trxnFramework";
  * @param {number} parameter_type_id
  * @returns
  */
-const getViewComponent = (parameter_type_id) => {
+export const getViewComponent = (parameter_type_id) => {
 	switch (parameter_type_id) {
 		case 9:
 			return "Amount";

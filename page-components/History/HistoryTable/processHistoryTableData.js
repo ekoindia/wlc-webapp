@@ -1,4 +1,5 @@
 import { getFirstWord, limitText } from "utils";
+import { getViewComponent } from ".";
 
 /**
  * Prepare each row of the Transaction History table data (for sellers & distributors) by adding new generated columns like description, amount, trx_type, etc.
@@ -20,16 +21,6 @@ export const getHistoryTableProcessedData = (data) => {
 
 	return processedData;
 };
-
-// export const getFormattedDateAndTime = (datetimeStr) => {
-// 	const datetime = new Date(datetimeStr);
-// 	const formattedDate = String(datetime).slice(4, 15);
-// 	const formattedTime = String(datetime).slice(16, 24);
-// 	return {
-// 		date: formattedDate,
-// 		time: formattedTime,
-// 	};
-// };
 
 export const filterNarrationText = (txt) => {
 	return txt ? txt.replace(/[0-9]+/g, "").trim() : "";
@@ -91,4 +82,83 @@ export const getNarrationText = (row) => {
 	// 	(row.client_ref_id ? " Cl.ID:" + row.client_ref_id : "") + // ClientRefID
 	// 	(row.reversal_narration ? " " + row.reversal_narration : "") // Rev. Narration
 	// );
+};
+
+/**
+ * Processes transaction data to extract additional metadata and generate history parameter metadata.
+ *
+ * @param {Array<Object>} trxn_data - The transaction data array.
+ * @param {Array<Object>} history_parameter_metadata - The history parameter metadata array.
+ * @returns {Object} - An object containing updated transaction data and history parameter metadata.
+ */
+export const getAdditionalTransactionMetadata = (
+	trxn_data,
+	history_parameter_metadata
+) => {
+	const _history_parameter_metadata = history_parameter_metadata ?? [];
+	const _trxn_data = trxn_data ?? [];
+	_trxn_data?.forEach((item) => {
+		const trxn_additional_data = item?.["transaction_additional_metadata"];
+		if (trxn_additional_data) {
+			for (let key in trxn_additional_data) {
+				// adding key value in data object
+				item[key] = trxn_additional_data[key]["value"];
+
+				//generate parameter metadata based on type
+				const parameterMetadata = generateParameterMetadata(
+					key,
+					trxn_additional_data[key]["type"]
+				);
+
+				// Push only if parameter metadata not present
+				if (
+					!_history_parameter_metadata.some(
+						(meta) => meta.name === parameterMetadata.name
+					)
+				) {
+					_history_parameter_metadata.push(parameterMetadata);
+				}
+			}
+
+			// removing "transaction_additional_metadata" as not needed after flattening
+			delete item["transaction_additional_metadata"];
+		}
+	});
+
+	return {
+		history_parameter_metadata: _history_parameter_metadata,
+		trxn_data: _trxn_data,
+	};
+};
+
+/**
+ * Generates parameter metadata based on the key and type.
+ *
+ * @param {string} key - The parameter key.
+ * @param {string} type - The parameter type.
+ * @returns {Object} - The generated parameter metadata.
+ */
+const generateParameterMetadata = (key, type) => {
+	let _parameterMetadata = {};
+
+	_parameterMetadata.name = key;
+	_parameterMetadata.label = convertKeyToLabel(key);
+	_parameterMetadata.parameter_type_id = type;
+	_parameterMetadata.show = getViewComponent(type);
+	_parameterMetadata.display_media_id = 1;
+
+	return _parameterMetadata;
+};
+
+/**
+ * Converts a key string to a readable label format.
+ *
+ * @param {string} key - The key string to convert.
+ * @returns {string} - The converted label string.
+ */
+const convertKeyToLabel = (key) => {
+	return key
+		.replace(/([A-Z])/g, " $1")
+		.replace(/^./, (str) => str.toUpperCase())
+		.replace(/_./g, (str) => " " + str[1].toUpperCase());
 };
