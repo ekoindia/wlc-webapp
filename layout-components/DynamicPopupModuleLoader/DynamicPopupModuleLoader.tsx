@@ -11,9 +11,12 @@ import { useEffect, useState } from "react";
 /**
  * Names of the modules that can be loaded
  */
-export type ModuleNameType = "Feedback" | "FileViewer" | "ImageEditor";
+export type ModuleNameType =
+	| "Feedback"
+	| "FileViewer"
+	| "ImageEditor"
+	| "Camera";
 // | "Support"
-// | "Camera"
 // | "About";
 
 /**
@@ -96,16 +99,22 @@ const DefaultOptions: {
 			overflow: "hidden",
 			pointerEvents: "none",
 		},
-		closeBtnStyle: {
-			position: "fixed",
-			top: "5px",
-			right: "10px",
+		overlayStyle: {
+			bg: "blackAlpha.800",
+		},
+	},
+	Camera: {
+		hideCloseIcon: true,
+		style: {
+			m: "0",
+			borderRadius: "6px",
+			overflow: "hidden",
+			// pointerEvents: "none",
 		},
 		overlayStyle: {
 			bg: "blackAlpha.800",
 		},
 	},
-	// Camera: {},
 	// About: {},
 };
 
@@ -136,6 +145,13 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 			import("page-components/ImageEditor").then(
 				(pkg) => pkg.ImageEditor
 			) as any,
+		{
+			ssr: false,
+			loading: () => <p>Loading...</p>,
+		}
+	),
+	Camera: dynamic(
+		() => import("components/Camera").then((pkg) => pkg.Camera) as any,
 		{
 			ssr: false,
 			loading: () => <p>Loading...</p>,

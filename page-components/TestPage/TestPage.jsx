@@ -1,5 +1,6 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import { useFeatureFlag, useFileView, useImageEditor } from "hooks";
+import { Dropzone } from "components";
+import { useCamera, useFeatureFlag, useFileView, useImageEditor } from "hooks";
 import { useCallback, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -293,19 +294,84 @@ const ImageEditorTest = () => {
 					{imageDimensions}
 				</Text>
 			) : null}
-			{/* <Flex gap="2em" wrap="wrap">
-				<Button
-					onClick={() =>
-						editImage(
-							"https://www.artsandcollections.com/wp-content/uploads/2018/08/sherlockvintageWEB.jpg",
-							null,
-							onResult
-						)
-					}
-				>
-					Edit Image
-				</Button>
-			</Flex> */}
+		</Flex>
+	);
+};
+
+/**
+ * Testing Camera
+ * MARK: CameraTest
+ */
+const CameraTest = () => {
+	const { openCamera } = useCamera();
+	const [image, setImage] = useState(null);
+	const [imageDimensions, setImageDimensions] = useState("");
+	const fileRef = useRef(null);
+
+	const onOpenCamera = (options = null) => {
+		console.log("[TestPage] Opening Camera ", options);
+		openCamera(
+			options, // { aspectRatio: 1, facingMode: "environment" },
+			(data) => onResult(data)
+		);
+	};
+
+	const onResult = (data) => {
+		console.log("Result Camera: ", data);
+		if (data.accepted) {
+			setImage(data.image);
+		}
+		if (fileRef?.current?.value) {
+			fileRef.current.value = null;
+		}
+	};
+
+	const onImgLoad = (e) => {
+		setImageDimensions(
+			e.target.naturalWidth + "x" + e.target.naturalHeight
+		);
+		console.log(
+			"Camera Image Loaded: ",
+			e.target.naturalWidth,
+			e.target.naturalHeight
+		);
+	};
+
+	return (
+		<Flex direction="column" align="center">
+			<Button onClick={onOpenCamera}>Open Camera</Button>
+			{image ? (
+				<img
+					src={image}
+					style={{ maxHeight: "400px", maxWidth: "400px" }}
+					alt="Screenshot"
+					onLoad={onImgLoad}
+				/>
+			) : null}
+			{imageDimensions ? (
+				<Text fontSize="sm" color="gray.500">
+					{imageDimensions}
+				</Text>
+			) : null}
+		</Flex>
+	);
+};
+
+/**
+ * Testing the DropZone component
+ * MARK: DropZoneTest
+ */
+const DropZoneTest = () => {
+	const [file, setFile] = useState(null);
+
+	// const setFile = (file) => {
+	// 	console.log("File: ", file);
+	// };
+
+	return (
+		<Flex direction="column" align="center" justify="center">
+			<Dropzone file={file} accept="" setFile={setFile} />
+			<Text>{file ? file?.name : ""}</Text>
 		</Flex>
 	);
 };
@@ -360,6 +426,14 @@ const TestComponents = [
 	{
 		title: "Image Editor",
 		component: ImageEditorTest,
+	},
+	{
+		title: "Camera",
+		component: CameraTest,
+	},
+	{
+		title: "File Upload (Dropzone)",
+		component: DropZoneTest,
 	},
 	{
 		title: "Markdown",

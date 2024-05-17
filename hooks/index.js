@@ -1,5 +1,6 @@
 /* PLOP_INJECT_EXPORT */
 export { default as useAppLink } from "./useAppLink";
+export { default as useCamera } from "./useCamera";
 export { default as useClipboard } from "./useClipboard";
 export { default as useDailyCacheState } from "./useDailyCacheState";
 export { default as useDebouncedState } from "./useDebouncedState";
