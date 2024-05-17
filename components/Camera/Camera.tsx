@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
 import { IcoButton } from "components";
 import { IconNameType } from "constants/IconLibrary";
 import React, { useCallback, useRef, useState } from "react";
@@ -205,19 +205,19 @@ const Camera = ({
 		return { imageSrc, imageFile };
 	}, [webcamRef]);
 
-	if (status === "error") {
-		return (
-			<Flex
-				direction="row"
-				align="center"
-				justify="center"
-				width="100%"
-				height="100vh"
-			>
-				<Text color="white">{errorMessage}</Text>
-			</Flex>
-		);
-	}
+	// if (status === "error") {
+	// 	return (
+	// 		<Flex
+	// 			direction="row"
+	// 			align="center"
+	// 			justify="center"
+	// 			width="100%"
+	// 			height="100vh"
+	// 		>
+	// 			<Text color="white">{errorMessage}</Text>
+	// 		</Flex>
+	// 	);
+	// }
 
 	return (
 		<Flex
@@ -275,45 +275,81 @@ const Camera = ({
 				/>
 				{/* {!camDevices.length && <p className="text-lg text-black bg-white">Please "Allow" browser to use your camera.</p>} */}
 				<Box height={toolbar_height} width="100%" />
-				<Flex
-					position="fixed"
-					direction="row-reverse"
-					bottom="0"
-					left="0"
-					right="0"
-					height={toolbar_height}
-					align="center"
-					justify="center"
-					gap={{ base: "10px", md: "25px" }}
-					pointerEvents="auto"
-					bg="#00000099"
-					borderRadius={{ base: "0", md: "md" }}
-				>
-					<IcoBtn
-						icon={MdCamera}
-						label="Accept Image"
-						isMain
-						onClick={onCapture}
-					/>
-					<IcoBtn
+				{status === "start" ? (
+					// Show the toolbar when camera is ready
+					<Flex
 						position="fixed"
-						right="10px"
-						top="10px"
-						icon={MdClose}
-						label="Reject Image"
-						bg="#00000060"
-						color="white"
-						onClick={onCancel}
-						_hover={{ bg: "#44000090" }}
-					/>
-					{camDevices?.length > 1 ? (
+						direction="row-reverse"
+						bottom="0"
+						left="0"
+						right="0"
+						height={toolbar_height}
+						align="center"
+						justify="center"
+						gap={{ base: "10px", md: "25px" }}
+						pointerEvents="auto"
+						bg="#00000099"
+						borderRadius={{ base: "0", md: "md" }}
+					>
 						<IcoBtn
-							icon={MdCameraswitch}
-							label="Switch Camera"
-							onClick={switchCamera}
+							icon={MdCamera}
+							label="Accept Image"
+							isMain
+							onClick={onCapture}
 						/>
-					) : null}
-				</Flex>
+						{camDevices?.length > 1 ? (
+							<IcoBtn
+								icon={MdCameraswitch}
+								label="Switch Camera"
+								onClick={switchCamera}
+							/>
+						) : null}
+					</Flex>
+				) : (
+					// Camera not ready...
+					<Flex
+						position="fixed"
+						top="0"
+						right="0"
+						bottom="0"
+						left="0"
+						direction="row"
+						align="center"
+						justify="center"
+						pointerEvents="none"
+					>
+						{status === "error" ? (
+							// Show error message
+							<Text color="white">{errorMessage}</Text>
+						) : null}
+						{status === "init" ? (
+							// Show spinner while camera is initializing
+							<Spinner
+								thickness="4px"
+								speed="0.65s"
+								color="white"
+								size="xl"
+								// position="fixed"
+								// top="calc(50% - 30px)"
+								// ml="auto"
+								// mr="auto"
+							/>
+						) : null}
+					</Flex>
+				)}
+
+				{/* Close button  */}
+				<IcoBtn
+					position="fixed"
+					right="10px"
+					top="10px"
+					icon={MdClose}
+					label="Reject Image"
+					bg="#00000060"
+					color="white"
+					onClick={onCancel}
+					_hover={{ bg: "#44000090" }}
+				/>
 			</Box>
 		</Flex>
 	);
