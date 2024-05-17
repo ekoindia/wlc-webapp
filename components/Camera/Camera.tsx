@@ -58,7 +58,7 @@ const Camera = ({
 		height: 720,
 		// aspectRatio: 0.8,
 	});
-	const [status, setStatus] = useState<"init" | "start" | "error">("init"); // chrome://settings/content/notifications, chrome://settings/content/camera, chrome://settings/content/location, etc
+	const [status, setStatus] = useState<"init" | "ready" | "error">("init"); // chrome://settings/content/notifications, chrome://settings/content/camera, chrome://settings/content/location, etc
 	const [errorMessage, setErrorMessage] = useState<string>("");
 
 	/**
@@ -265,7 +265,7 @@ const Camera = ({
 									)
 								);
 						}
-						setStatus("start");
+						setStatus("ready");
 					}}
 					onUserMediaError={(err) => {
 						console.error("[Camera] err", err);
@@ -275,7 +275,7 @@ const Camera = ({
 				/>
 				{/* {!camDevices.length && <p className="text-lg text-black bg-white">Please "Allow" browser to use your camera.</p>} */}
 				<Box height={toolbar_height} width="100%" />
-				{status === "start" ? (
+				{status === "ready" ? (
 					// Show the toolbar when camera is ready
 					<Flex
 						position="fixed"
