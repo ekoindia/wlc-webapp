@@ -1,21 +1,12 @@
 import { Flex, Image, Text } from "@chakra-ui/react";
-import { useFileView } from "hooks";
-import { useState } from "react";
+import { useCamera, useFileView, useImageEditor } from "hooks";
+import { useEffect, useRef, useState } from "react";
+import { MdCameraAlt } from "react-icons/md";
 import { Button, IcoButton, Input } from "..";
-
-// const EXCEL_MIME_TYPES = {
-// 	"application/vnd.ms-excel": true,
-// 	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": true,
-// 	"application/vnd.ms-excel.sheet.macroEnabled.12": true,
-// 	"application/vnd.ms-excel.sheet.binary.macroEnabled.12": true,
-// 	"text/csv": true,
-// 	"application/vnd.ms-excel": true,
-// 	"application/vnd.openxmlformats-officedocument.spreadsheetml.template": true,
-// 	"application/vnd.ms-excel.addin.macroEnabled.12": true,
-// };
 
 const IMAGE_MIME_TYPES = {
 	"image/jpeg": true,
+	"image/jpg": true,
 	"image/png": true,
 	"image/svg+xml": true,
 	"image/webp": true,
@@ -39,31 +30,103 @@ const Dropzone = ({
 	...rest
 }) => {
 	const [inDropZone, setInDropZone] = useState(false);
+	const [isValidDrop, setIsValidDrop] = useState(false);
+	const [isImageAllowed, setIsImageAllowed] = useState(false);
 	const [previewImage, setPreviewImage] = useState(null);
 
+	// Reference for the Input element
+	const fileInputRef = useRef(null);
+
+	const { openCamera } = useCamera();
 	const { showImage } = useFileView();
+	const { editImage } = useImageEditor();
+
+	// Log file
+	useEffect(() => {
+		console.log("[Dropzone] file: ", file);
+	}, [file]);
+
+	// Detect if image is allowed (if accept is not provided, all files are allowed)
+	useEffect(() => {
+		if (!accept) {
+			setIsImageAllowed(true);
+		} else {
+			const _accept = accept.split(",");
+			const _isImageAllowed = _accept.some(
+				(type) => IMAGE_MIME_TYPES[type]
+			);
+			setIsImageAllowed(_isImageAllowed);
+		}
+	}, [accept]);
+
+	/**
+	 * Open the Image Editor for the file
+	 * @param {*} file
+	 */
+	const openImageEditor = (image, file) => {
+		if (!image && !file) return;
+
+		const options = {
+			fileName: file?.name || "",
+			// maxLength: 1600,
+			// aspectRatio: 1,
+		};
+
+		if (IMAGE_MIME_TYPES[file.type]) {
+			// convertImage(_file);
+			console.log(
+				"[Dropzone] Opening Image Editor: ",
+				typeof image,
+				image,
+				file
+			);
+
+			// Load image from File or  Blob object for ImageEditor
+			if (image instanceof Blob || !image) {
+				const reader = new FileReader();
+				reader.onloadend = () => {
+					editImage(reader.result, options, (data) =>
+						handleImageEditorResponse(data)
+					);
+				};
+				reader.readAsDataURL(image || file);
+				return;
+			}
+
+			// Open ImageEditor with normal image data
+			editImage(image, options, (data) =>
+				handleImageEditorResponse(data)
+			);
+		}
+	};
 
 	// console.log("[Dropzone] file", file);
 	// console.log("[Dropzone] previewImage", previewImage);
 
 	const handleFileUploadInputChange = (e) => {
 		const _file = e.target.files[0];
-		setFile(_file);
+
+		if (!_file) return;
 
 		if (IMAGE_MIME_TYPES[_file.type]) {
-			convertImage(_file);
+			// convertImage(_file);
+			openImageEditor(null, _file);
+		} else {
+			setFile(_file);
 		}
-
-		// if (EXCEL_MIME_TYPES[_file.type]) {
-		// 	// const _fileUrl = URL.createObjectURL(_file);
-		// 	// setFile(_fileUrl);
-		// 	setFile(_file);
-		// } else {
-		// 	console.log("Please upload file of correct format");
-		// }
 	};
 
-	const convertImage = (_file) => {
+	/**
+	 * Convert image file/blob to preview image data URL
+	 * @param {*} _file
+	 * @param {*} type
+	 */
+	const convertImage = (_file, type = "file") => {
+		if (type === "blob") {
+			setPreviewImage(_file);
+			return;
+		}
+
 		const reader = new FileReader();
 		reader.onloadend = () => {
 			setPreviewImage(reader.result);
@@ -73,30 +136,160 @@ const Dropzone = ({
 
 	const handleDragOver = (event) => {
 		event.preventDefault();
-		if (disabled) return;
+		if (disabled || inDropZone) {
+			return;
+		}
+
+		const dataTransfer = event.dataTransfer;
+		const _file = event?.dataTransfer?.files[0];
+
+		console.log("[Dropzone] DragOver event: ", {
+			types: dataTransfer.types,
+			files: JSON.stringify(event.dataTransfer.files, null, 2),
+			accept,
+			_file,
+		});
+
+		let _type = "";
+
+		if (dataTransfer.items) {
+			_type = dataTransfer?.items[0]?.type || "";
+		}
+
+		if (_type && (accept === "" || accept.indexOf(_type) >= 0)) {
+			setIsValidDrop(true);
+		} else {
+			setIsValidDrop(false);
+		}
 		setInDropZone(true);
 	};
 
+	/**
+	 * Handle drag leave event. It marks that the file
+	 * @param {*} event
+	 */
 	const handleDragLeave = (event) => {
 		event.preventDefault();
 		setInDropZone(false);
+		setIsValidDrop(false);
 	};
 
-	const handleDrop = (event) => {
+	/**
+	 * Handle file/image drop event. It sets the dropped file, if the format is allowed.
+	 * @param {*} event
+	 */
+	const handleDrop = async (event) => {
 		event.preventDefault();
 		setInDropZone(false);
-		if (disabled) return;
-		const _file = event.dataTransfer.files[0];
+		setIsValidDrop(false);
+		if (disabled || !isValidDrop) return;
+
+		const dataTransfer = event?.dataTransfer;
+
+		if (!dataTransfer) return;
+
+		let _file = dataTransfer.files[0];
 		// const fileUrl = URL.createObjectURL(file);
-		setFile(_file);
+
+		if (!_file && dataTransfer.items) {
+			// Use DataTransferItemList interface to access the file(s)
+			const _item = dataTransfer.items[0];
+			if (_item.kind === "file") {
+				_file = _item.getAsFile();
+				console.log("FILE FOUND::: ", _file);
+			} else if (_item.kind === "string") {
+				_item.getAsString((url) => {
+					fetch(url)
+						.then((r) => r.blob())
+						.then((blobFile) => {
+							const _type = blobFile.type;
+
+							// Check if the file type is allowed
+							if (
+								!(
+									_type &&
+									(accept === "" ||
+										accept.indexOf(_type) >= 0)
+								)
+							) {
+								return;
+							}
+
+							const timestamp = new Date()
+								.toLocaleString()
+								.replace(/[^0-9]+/g, "_");
+							const filename = `FileDrop_${timestamp}.${
+								_type.split("/")[1] || "jpg"
+							}`;
+
+							const fileObj = new File([blobFile], filename, {
+								type: _type,
+							});
+
+							console.log("URL FILE FOUND::: ", fileObj);
+
+							if (IMAGE_MIME_TYPES[fileObj.type]) {
+								// convertImage(fileObj);
+								openImageEditor(blobFile, fileObj);
+							} else {
+								setFile(fileObj);
+							}
+						})
+						.catch((err) => {
+							console.error("Error fetching file: ", err);
+						});
+				});
+				return;
+			}
+		}
+
+		if (!_file) return;
+
+		if (IMAGE_MIME_TYPES[_file.type]) {
+			// convertImage(_file);
+			openImageEditor("", _file);
+		} else {
+			setFile(_file);
+		}
+		console.log("[Dropzone] Drop event end: ", { event, _file });
+	};
+
+	/**
+	 * Handle the image returned from the Camera
+	 * @param {*} data
+	 */
+	const handleCameraResponse = (data) => {
+		if (data.accepted) {
+			openImageEditor(data.image, data.file);
+		}
+	};
+
+	/**
+	 * Handle the image returned from the Image Editor.
+	 * Set the file and image preview.
+	 * @param {*} data
+	 */
+	const handleImageEditorResponse = (data) => {
+		console.log("Image Editor result: ", data);
+		if (data.accepted) {
+			setFile(data.file);
+			convertImage(data.image, "blob");
+		}
 	};
 
 	return (
 		<Flex
-			bg={inDropZone ? "overlayBg" : "initial"}
+			bg={
+				inDropZone
+					? isValidDrop
+						? "#00FF0010"
+						: "#FF000020"
+					: "initial"
+			}
 			w="100%"
 			align="center"
 			justify="center"
+			// onDragEnter={handleDragEnter}
 			onDragOver={handleDragOver}
 			onDragLeave={handleDragLeave}
 			onDrop={handleDrop}
@@ -114,6 +307,7 @@ const Dropzone = ({
 			{file === null || typeof file === "undefined" ? (
 				<Flex direction="column" align="center" w="100%" gap="2">
 					<Input
+						ref={fileInputRef}
 						hidden
 						type="file"
 						onChange={handleFileUploadInputChange}
@@ -121,17 +315,41 @@ const Dropzone = ({
 						accept={accept}
 						disabled={disabled}
 					/>
-					<Button
-						variant="accent"
-						size="md"
-						onClick={() =>
-							document.getElementById("fileUploadInput").click()
-						}
-						disabled={disabled}
+					<Flex
+						direction="row"
+						align="center"
+						gap="2"
+						opacity={inDropZone ? 0 : 1}
+						pointerEvents={inDropZone ? "none" : "auto"}
 					>
-						Browse
-					</Button>
-					<Text fontSize="sm">or drag &amp; drop your file here</Text>
+						<Btn
+							onClick={() => fileInputRef?.current?.click()}
+							disabled={disabled}
+						>
+							Browse
+						</Btn>
+						{isImageAllowed ? (
+							<Btn
+								onClick={() =>
+									openCamera(null, handleCameraResponse)
+								}
+								disabled={disabled}
+							>
+								<MdCameraAlt size="20px" />
+							</Btn>
+						) : null}
+					</Flex>
+					<Text
+						fontSize="sm"
+						color="GrayText"
+						pointerEvents={inDropZone ? "none" : "auto"}
+					>
+						{inDropZone
+							? isValidDrop
+								? "Drop your file here"
+								: "File type not allowed"
+							: "or, drag & drop your file here"}
+					</Text>
 				</Flex>
 			) : (
 				<Flex
@@ -173,7 +391,7 @@ const Dropzone = ({
 							<Text
 								w="100%"
 								h="100%"
-								fontSize="xs"
+								fontSize="xxs"
 								noOfLines={1}
 								align="center"
 								cursor="default"
@@ -186,6 +404,23 @@ const Dropzone = ({
 				</Flex>
 			)}
 		</Flex>
+	);
+};
+
+/**
+ * Custom Button component for Dropzone
+ */
+const Btn = ({ disabled, onClick, children, ...rest }) => {
+	return (
+		<Button
+			variant="primary"
+			size="md"
+			onClick={onClick}
+			disabled={disabled}
+			{...rest}
+		>
+			{children}
+		</Button>
 	);
 };
 
