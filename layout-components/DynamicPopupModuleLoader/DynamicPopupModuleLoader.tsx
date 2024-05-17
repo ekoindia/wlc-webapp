@@ -1,8 +1,10 @@
 import {
+	Flex,
 	Modal,
 	ModalCloseButton,
 	ModalContent,
 	ModalOverlay,
+	Spinner,
 } from "@chakra-ui/react";
 import { usePubSub } from "contexts";
 import dynamic from "next/dynamic";
@@ -130,14 +132,14 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 			) as any,
 		{
 			ssr: false,
-			loading: () => <p>Loading...</p>,
+			loading: () => <Loading />,
 		}
 	),
 	FileViewer: dynamic(
 		() => import("components/FileView").then((pkg) => pkg.FileView) as any,
 		{
 			ssr: false,
-			loading: () => <p>Loading...</p>,
+			loading: () => <Loading />,
 		}
 	),
 	ImageEditor: dynamic(
@@ -147,14 +149,14 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 			) as any,
 		{
 			ssr: false,
-			loading: () => <p>Loading...</p>,
+			loading: () => <Loading />,
 		}
 	),
 	Camera: dynamic(
 		() => import("components/Camera").then((pkg) => pkg.Camera) as any,
 		{
 			ssr: false,
-			loading: () => <p>Loading...</p>,
+			loading: () => <Loading />,
 		}
 	),
 };
@@ -371,6 +373,27 @@ const Dialog = ({
 				)}
 			</ModalContent>
 		</Modal>
+	);
+};
+
+/**
+ * Spinner (loading animation) component while loading the dynamic modules
+ */
+const Loading = () => {
+	return (
+		<Flex
+			position="fixed"
+			top="0"
+			right="0"
+			bottom="0"
+			left="0"
+			direction="row"
+			align="center"
+			justify="center"
+			pointerEvents="none"
+		>
+			<Spinner thickness="4px" speed="0.65s" color="white" size="xl" />
+		</Flex>
 	);
 };
 

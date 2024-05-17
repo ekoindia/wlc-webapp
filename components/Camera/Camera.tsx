@@ -329,10 +329,6 @@ const Camera = ({
 								speed="0.65s"
 								color="white"
 								size="xl"
-								// position="fixed"
-								// top="calc(50% - 30px)"
-								// ml="auto"
-								// mr="auto"
 							/>
 						) : null}
 					</Flex>
