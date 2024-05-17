@@ -364,6 +364,9 @@ const IcoBtn = ({
 			alignItems="center"
 			justifyContent="center"
 			_hover={{ filter: "brightness(0.9)" }}
+			outline={isMain ? "2px solid white" : "none"}
+			outlineOffset={isMain ? "2px" : "0"}
+			// _after={isMain ? { content: `" "`,  } : {}}
 			{...rest}
 		>
 			{icon}
