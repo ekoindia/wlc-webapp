@@ -5,7 +5,7 @@ import { forwardRef } from "react";
 /**
  * A <Button> component
  * @param 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.variant="accent"]	Button variant:	"primary" | "accent" | "secondary" | "outline" | "ghost" | "link" | "solid" | "unstyled"
+ * @param	{string}	[prop.variant="accent"]	Button variant:	"primary" | "accent" | "outline" | "ghost" | "link" | "solid" | "unstyled"
  * @param	{boolean}	[prop.disabled=false]	Disable the button
  * @param	{boolean}	[prop.loading=false]	Show loading state
  * @param	{string}	[prop.size]	Size of the button: "lg" | "md" | "sm" | "xs"
@@ -16,7 +16,7 @@ import { forwardRef } from "react";
  * @param	{string}	[prop.children]	Children elements of the button
  * @param	{...*}		rest	Rest of the props
  * @param	{React.Ref}	ref	Reference to the button element
- * @example	`<Button>Click Me</Button>`
+ * @example	`<Button onClick={()=>{...}}>Click Me</Button>`
  */
 const Button = forwardRef(
 	(
