@@ -16,9 +16,14 @@ import ReactCrop, {
 // Declare the props interface
 interface ImageEditorProps {
 	image: string;
+	fileName?: string;
 	maxLength?: number;
 	aspectRatio?: number;
-	onClose: (_result: { image: string; accepted: boolean }) => void;
+	onClose: (_result: {
+		image: string;
+		file?: File;
+		accepted: boolean;
+	}) => void;
 }
 
 // MARK: CSS Styles...
@@ -42,6 +47,7 @@ const rc_mask_opacity = 0.8; // Default = 0.5
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {string} prop.image - The image to be edited
+ * @param {string} [prop.fileName] - The name of the image file being edited
  * @param {number} [prop.maxLength] - The maximum length of the image (longer side) in pixels
  * @param {number} [prop.aspectRatio] - The fixed aspect ratio of the crop area. E.g., 1 for square, 16/9 for landscape, etc.  If not provided, the crop area can be resized freely.
  * @param {function} prop.onClose - Callback function to close the editor (when the user accepted or rejected the changes/image)
@@ -49,6 +55,7 @@ const rc_mask_opacity = 0.8; // Default = 0.5
  */
 const ImageEditor = ({
 	image,
+	fileName,
 	maxLength,
 	aspectRatio,
 	onClose,
@@ -65,14 +72,6 @@ const ImageEditor = ({
 
 	// Set defaut crop area when the image is loaded & the crop is enabled
 	useEffect(() => {
-		console.log("ImageEditor: useEffect:", {
-			imageRef_current: imageRef?.current,
-			imageLoaded,
-			cropEnabled,
-			crop,
-			aspectRatio,
-		});
-
 		if (imageLoaded && cropEnabled && crop === null) {
 			const { width, height } = imageRef.current;
 
@@ -119,10 +118,12 @@ const ImageEditor = ({
 	/**
 	 * Callback function for the "Accept Image" button
 	 */
-	const onAccept = () => {
+	const onAccept = async () => {
 		if (!imageRef.current) {
 			// Dispatch the result with original image & close the editor
-			onClose && onClose({ image: image, accepted: true });
+			const imageFile = await getFileFromImageUrl(image);
+			onClose &&
+				onClose({ image: image, file: imageFile, accepted: true });
 			return;
 		}
 
@@ -133,11 +134,16 @@ const ImageEditor = ({
 			crop,
 			maxLength,
 		})
-			.then((croppedImageUrl: string) => {
+			.then(async (croppedImageUrl: string) => {
 				// Close the editor with result
+
+				// Create a file-version of the cropped image
+				const imageFile = await getFileFromImageUrl(croppedImageUrl);
+
 				onClose &&
 					onClose({
 						image: croppedImageUrl || sourceImage || image,
+						file: imageFile,
 						accepted: true,
 					});
 			})
@@ -145,6 +151,22 @@ const ImageEditor = ({
 				console.error("[getProcessedImg] Error: ", err);
 				onClose && onClose({ image: image, accepted: false });
 			});
+	};
+
+	const getFileFromImageUrl = async (imageUrl: string) => {
+		const blob = await fetch(imageUrl).then((res) => res.blob());
+		let _fileName = fileName;
+		if (!_fileName) {
+			const timestamp = new Date()
+				.toLocaleString()
+				.replace(/[^0-9]+/g, "_");
+			_fileName = `Image_${timestamp}.${
+				blob.type.split("/")[1] || "jpg"
+			}`;
+		}
+		return new File([blob], _fileName, {
+			type: blob.type,
+		});
 	};
 
 	// MARK: JSX
@@ -417,8 +439,7 @@ const ImageEditor = ({
 						minWidth={100}
 						minHeight={100}
 						disabled={!cropEnabled}
-						onChange={(c, p) => {
-							console.log("CROPPED::: ", c, p);
+						onChange={(c) => {
 							setCrop(c);
 						}}
 					>
@@ -561,12 +582,12 @@ const getProcessedImg = ({ image, cropEnabled, crop, maxLength }) => {
 	}
 
 	// Scale image to the original size...
-	const pixelRatio = window.devicePixelRatio;
+	// const pixelRatio = window.devicePixelRatio;
 	const scaleX = image.naturalWidth / image.width;
 	const scaleY = image.naturalHeight / image.height;
 
-	const width = crop.width * pixelRatio * scaleX;
-	const height = crop.height * pixelRatio * scaleY;
+	// const width = crop.width * pixelRatio * scaleX;
+	// const height = crop.height * pixelRatio * scaleY;
 
 	const croppedWidth = crop.width * scaleX;
 	const croppedHeight = crop.height * scaleY;
@@ -576,25 +597,6 @@ const getProcessedImg = ({ image, cropEnabled, crop, maxLength }) => {
 		width: croppedWidth,
 		height: croppedHeight,
 		maxLength,
-	});
-
-	console.log("→ → → → Processing Image: ", {
-		crop,
-		scaleX,
-		scaleY,
-		pixelRatio,
-		image: {
-			image_width: image.width,
-			image_height: image.height,
-			naturalWidth: image.naturalWidth,
-			naturalHeight: image.naturalHeight,
-			width,
-			height,
-			croppedWidth,
-			croppedHeight,
-			finalWidth,
-			finalHeight,
-		},
 	});
 
 	const canvas = new OffscreenCanvas(finalWidth, finalHeight);
@@ -688,8 +690,6 @@ const getDefaultCrop = (width, height, aspectRatio) => {
 			height
 		);
 	}
-
-	console.log("getDefaultCrop: ", { width, height, aspectRatio, _crop });
 
 	return _crop;
 };

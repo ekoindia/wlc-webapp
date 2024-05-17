@@ -12,15 +12,11 @@ const useImageEditor = () => {
 
 	const ResultTopic = TOPICS.SHOW_DIALOG_FEATURE + ".ImageEditor.Result";
 
-	// Log resultHandler on change
-	useEffect(() => {
-		console.log("[useImageEditor] Result Handler updated: ", resultHandler);
-	}, [resultHandler]);
-
 	/**
 	 * Subscribe to the result topic to get the result of the ImageEditor dialog
 	 * The data object should contain:
-	 * - image: the edited image
+	 * - image: the edited image (as base64 string)
+	 * - file: the edited image (as File object)
 	 * - accepted (true/false): if the user accepted the changes
 	 * - edited: if the image was edited
 	 */
@@ -45,6 +41,7 @@ const useImageEditor = () => {
 	 * Open the ImageEditor dialog
 	 * @param {string} url - The URL of the image.
 	 * @param {object} options - Options to pass to the editor.
+	 * @param {number} [options.fileName] - Name of the file being edited.
 	 * @param {number} options.maxLength - Maximum length or width of the image.
 	 * @param {number} options.aspectRatio - Aspect ratio of the image. E.g., 1 for square, 16/9 for widescreen.
 	 * @param {function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
