@@ -941,9 +941,7 @@ const Card = ({
 									cursor="pointer"
 									color="gray.700"
 									_hover={{ bg: "gray.100" }}
-									onClick={() => {
-										console.log("Close Icon Clicked...");
-									}}
+									onClick={() => onClose()}
 								>
 									<Icon name="close" size="xs" />
 								</Flex>
@@ -1178,26 +1176,8 @@ const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
 			); // canvasRef.current;
 			const context = canvas.getContext("2d");
 
-			// canvas.width = video.videoWidth;
-			// canvas.height = video.videoHeight;
-
 			// Draw the video frame to the canvas
 			context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-			// Extract the image data from the canvas
-			// const imageData = context.getImageData(
-			// 	0,
-			// 	0,
-			// 	canvas.width,
-			// 	canvas.height
-			// );
-			// console.log("ImageData: ", imageData);
-
-			// Set the image data to the image element
-			// imageRef.current.src = canvas.toDataURL("image/jpeg", 8.0);
-
-			// Inform the parent component about the captured screenshot
-			// onCapture && onCapture(canvas.toDataURL("image/jpeg", 0.8));
 
 			canvas
 				.convertToBlob({ type: "image/jpeg", quality: 0.8 })
@@ -1253,20 +1233,6 @@ const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
 					pointerEvents: "none",
 				}}
 			/>
-
-			{/* Hidden canvas element */}
-			{/* <canvas
-				ref={canvasRef}
-				style={{
-					visibility: "hidden",
-					position: "absolute",
-					top: 0,
-					left: 0,
-					maxWidth: "90%",
-					maxHeight: "90%",
-					zIndex: "-9999",
-				}}
-			></canvas> */}
 
 			{/* Preview Image with delete button */}
 			{screenshot ? (
