@@ -25,7 +25,7 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 ## 🎨 UI Features:
 
 - **Global Styles**:
-  - Global CSS are defined in [styles/globals.ts](styles/globals.ts).
+  - Global CSS styles are defined in [styles/globals.ts](styles/globals.ts).
 - **Theme**:
   - Default color theme configuration (CHakraUI): [styles/themes.tsx](styles/themes.tsx)
   - A list of predefined color-themes for the organizations to choose from: [constants/colorThemes.js](constants/colorThemes.js)
