@@ -187,6 +187,7 @@ const getDynamicActions = ({
 	setParse,
 	parseLoadState,
 	setParseLoadState,
+	// showRaiseIssueDialog,
 }) => {
 	const preActions = [];
 	const postActions = [];
@@ -225,6 +226,25 @@ const getDynamicActions = ({
 		if (!isAdmin) {
 			postActions.push(...getNotesAction({ queryValue, addTodo, toast }));
 		}
+
+		// TODO: JUST FOR TESTING... Raise Query with Screenshot
+		// postActions.push(
+		// 	getKBarAction({
+		// 		id: "raise-issue-with-screenshot",
+		// 		name: "Raise Issue with Screenshot",
+		// 		icon: "feedback",
+		// 		// shortcut: "Ctrl+Alt+I",
+		// 		// keywords: "issue bug report",
+		// 		section: "Actions",
+		// 		perform: () => {
+		// 			showRaiseIssueDialog({
+		// 				origin: "Global-Help",
+		// 				autoCaptureScreenshot: true,
+		// 				customIssueType: "Need help with this screen",
+		// 			});
+		// 		},
+		// 	})
+		// );
 	}
 
 	return [preActions, postActions];
@@ -259,6 +279,8 @@ function RenderResults({ className, isSmallScreen }) {
 		1000
 	);
 
+	// const { showRaiseIssueDialog } = useRaiseIssue();
+
 	useEffect(() => {
 		setQueryValueDebounced(queryValue);
 	}, [queryValue, setQueryValueDebounced]);
@@ -279,6 +301,7 @@ function RenderResults({ className, isSmallScreen }) {
 			setParse,
 			parseLoadState,
 			setParseLoadState,
+			// showRaiseIssueDialog,
 		});
 		setPreActions(_preActions);
 		setPostActions(_postActions);

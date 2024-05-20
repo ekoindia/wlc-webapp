@@ -1,6 +1,8 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { IcoButton } from "components";
 import { IconNameType } from "constants/IconLibrary";
+import { useFeatureFlag } from "hooks";
+import { initializefaceDetector } from "libs/faceDetector";
 import { useEffect, useRef, useState } from "react";
 import {
 	MdClose,
@@ -19,6 +21,7 @@ interface ImageEditorProps {
 	fileName?: string;
 	maxLength?: number;
 	aspectRatio?: number;
+	detectFace?: boolean;
 	onClose: (_result: {
 		image: string;
 		file?: File;
@@ -50,6 +53,7 @@ const rc_mask_opacity = 0.8; // Default = 0.5
  * @param {string} [prop.fileName] - The name of the image file being edited
  * @param {number} [prop.maxLength] - The maximum length of the image (longer side) in pixels
  * @param {number} [prop.aspectRatio] - The fixed aspect ratio of the crop area. E.g., 1 for square, 16/9 for landscape, etc.  If not provided, the crop area can be resized freely.
+ * @param {boolean} [prop.detectFace] - Whether to detect the face in the image (default: false)
  * @param {function} prop.onClose - Callback function to close the editor (when the user accepted or rejected the changes/image)
  * @example	`<ImageEditor image="..." onResult={...} onClose={...} />`
  */
@@ -58,6 +62,7 @@ const ImageEditor = ({
 	fileName,
 	maxLength,
 	aspectRatio,
+	detectFace = false,
 	onClose,
 }: ImageEditorProps) => {
 	const [sourceImage, setSourceImage] = useState<string>(image);
@@ -69,6 +74,59 @@ const ImageEditor = ({
 	const [imageLoaded, setImageLoaded] = useState(false);
 
 	const imageRef = useRef(null);
+
+	// For face detection
+	const isFaceDetectionEnabled = useFeatureFlag("FACE_DETECTOR");
+	const [faceDetector, setFaceDetector] = useState<any>(null);
+	const [confidence, setConfidence] = useState("");
+
+	// FaceDetector dynamic initialization
+	useEffect(() => {
+		if (!detectFace) return;
+		if (!isFaceDetectionEnabled) return;
+
+		initializefaceDetector("IMAGE").then((detector) => {
+			setFaceDetector(detector);
+		});
+	}, [detectFace, isFaceDetectionEnabled]);
+
+	// Detect Face when the image is loaded and the faceDetector is ready
+	useEffect(() => {
+		if (imageLoaded && imageRef && faceDetector) {
+			const detections = faceDetector.detect(imageRef.current).detections;
+			console.log("🙄 FACE DETECTED::: ", detections);
+			const face = detections[0]?.boundingBox;
+			if (face) {
+				const score = detections[0]?.categories[0]?.score;
+				setConfidence(
+					"Face detected: " + Math.round(score * 100) + "% confidence"
+				);
+
+				console.log("🙄 FACE 1 ::: ", {
+					face,
+					crop,
+					width: imageRef.current.width,
+					naturalWidth: imageRef.current.naturalWidth,
+				});
+
+				// Set the crop area to the detected face
+				const ratio =
+					imageRef.current.height / imageRef.current.naturalHeight;
+				const faceX = face.originX * ratio;
+				const faceY = face.originY * ratio;
+				const faceWidth = face.width * ratio;
+				const faceHeight = face.height * ratio;
+
+				setCrop({
+					unit: "px",
+					x: faceX, // face.originX,
+					y: faceY, // face.originY,
+					width: faceWidth,
+					height: faceHeight,
+				});
+			}
+		}
+	}, [imageLoaded, imageRef, faceDetector]);
 
 	// Set defaut crop area when the image is loaded & the crop is enabled
 	useEffect(() => {
@@ -182,6 +240,7 @@ const ImageEditor = ({
 		>
 			<Box pointerEvents="auto" maxH="100%" maxW="100%">
 				<Box
+					position="relative"
 					maxH="100%"
 					maxW="100%"
 					sx={{
@@ -440,6 +499,7 @@ const ImageEditor = ({
 						minHeight={100}
 						disabled={!cropEnabled}
 						onChange={(c) => {
+							// console.log("🙄 ??? CROP CHANGED::: ", c);
 							setCrop(c);
 						}}
 					>
@@ -456,6 +516,20 @@ const ImageEditor = ({
 							onLoad={onImageLoad}
 						/>
 					</ReactCrop>
+					{confidence ? (
+						<Box
+							position="absolute"
+							bottom="0"
+							left="0"
+							p="5px"
+							fontSize="xs"
+							bg="#00000080"
+							color="yellow.300"
+							pointerEvents="none"
+						>
+							{confidence}
+						</Box>
+					) : null}
 				</Box>
 				<Box height={toolbar_height} width="100%" />
 				<Flex

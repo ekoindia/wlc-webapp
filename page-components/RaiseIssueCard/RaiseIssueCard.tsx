@@ -12,8 +12,14 @@ import { Dropzone, IcoButton, Icon, InputLabel } from "components";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useUser } from "contexts";
 import { createSupportTicket, fetcher } from "helpers";
-import { useFeatureFlag, useFileView, useImageEditor } from "hooks";
+import {
+	useDebouncedState,
+	useFeatureFlag,
+	useFileView,
+	useImageEditor,
+} from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
+import { initializeTextClassifier } from "libs";
 import { useEffect, useRef, useState } from "react";
 import { RiScreenshot2Line } from "react-icons/ri";
 import Markdown from "react-markdown";
@@ -58,6 +64,7 @@ interface RaiseIssueProps {
 	logo?: string;
 	customIssueType?: string;
 	origin: "Response" | "History" | "Global-Help" | "Command-Bar" | "Other";
+	autoCaptureScreenshot?: boolean;
 	onResult?: Function;
 	onClose?: Function;
 	onOpenUrl?: Function;
@@ -82,6 +89,7 @@ interface RaiseIssueProps {
  * @param {object} prop.context - Contains an object of format `{ row_index: X }`, where X is the index of the row in the transaction list. It is useful for tracking the row index of the transactions shown in a list, for which the issue is being raised.
  * @param {string} prop.logo - Logo to show in the feedback panel (eg: for BBPS)
  * @param {string} prop.customIssueType - Custom issue type to capture, instead of pulling issue types for a certain transaction type. This is useful for creating custom "Raise Issue" buttons in the UI.
+ * @param {boolean} prop.autoCaptureScreenshot - Whether to capture a screenshot of the current page
  * @param {string} prop.origin - Origin of the feedback panel (eg: "transaction-list")
  * @param {function} prop.onResult - Function to return the result of the feedback
  * @param {function} prop.onClose - Function to close the feedback
@@ -103,6 +111,7 @@ const RaiseIssueCard = ({
 	// description,
 	context, // toAndFroData // TODO: Is it needed here???
 	customIssueType,
+	autoCaptureScreenshot = false,
 	origin,
 	onResult,
 	onClose,
@@ -152,6 +161,94 @@ const RaiseIssueCard = ({
 	// Check if the feature is enabled...
 	const isFeatureEnabled = useFeatureFlag("RAISE_ISSUE");
 
+	// Experimental text-classifier for user comments...
+	// @see https://ai.google.dev/edge/mediapipe/solutions/text/text_classifier
+	const isTextClassifierEnabled = useFeatureFlag("TEXT_CLASSIFIER");
+	const [textClassifier, setTextClassifier] = useState<any>(null);
+	const [classifierResult, setClassifierResult] = useState("");
+
+	// Init Text Classifier...
+	useEffect(() => {
+		if (!isTextClassifierEnabled) return;
+		// Initialize the text-classifier...
+		initializeTextClassifier().then((_textClassifier) => {
+			console.log(
+				"[RaiseIssue] Text Classifier initialized...",
+				_textClassifier
+			);
+			setTextClassifier(_textClassifier);
+		});
+	}, [isTextClassifierEnabled]);
+
+	// Debounce user comments for classification...
+	const [debouncedComment, setDebouncedComment] = useDebouncedState(
+		null,
+		500
+	);
+	useEffect(() => {
+		setDebouncedComment(comment);
+	}, [comment]);
+
+	// Classify user comments...
+	useEffect(() => {
+		if (!textClassifier || !debouncedComment) return;
+		if (debouncedComment.length <= 10) return;
+
+		// Example Classification:
+		// {
+		// 	"classifications": [
+		// 		{
+		// 		"categories": [
+		// 			{
+		// 			"index": 0,
+		// 			"score": 0.9956762194633484,
+		// 			"categoryName": "negative",
+		// 			"displayName": ""
+		// 			},
+		// 			{
+		// 			"index": 1,
+		// 			"score": 0.0043237595818936825,
+		// 			"categoryName": "positive",
+		// 			"displayName": ""
+		// 			}
+		// 		],
+		// 		"headIndex": 0,
+		// 		"headName": "probability"
+		// 		}
+		// 	],
+		// 	"timestampMs": 1
+		// }
+
+		const result = textClassifier.classify(debouncedComment);
+
+		if (!(result?.classifications?.length > 0)) return;
+
+		const categories = result.classifications[0].categories;
+
+		const catNames = {
+			negative: "👎",
+			positive: "👍",
+		};
+
+		// Set the classifier result...
+		setClassifierResult(
+			categories
+				.map(
+					(cat) =>
+						`${
+							catNames[cat.categoryName] || cat.categoryName
+						} ${Math.round(cat.score * 100)}%`
+				)
+				.join(", ")
+		);
+
+		console.log(
+			"[RaiseIssue] Classifying comment...",
+			debouncedComment,
+			categories
+		);
+	}, [textClassifier, debouncedComment]);
+
 	/**
 	 * Effect: Fetch the issue types, if the user is logged in and the transaction details change ...
 	 * MARK: Get List
@@ -159,27 +256,38 @@ const RaiseIssueCard = ({
 	useEffect(() => {
 		if (!(isLoggedIn && userData)) return;
 
-		if (fetchingIssueList) return;
-
 		// Custom Query? Set it as the select query. No need to fetch issue types...
 		if (customIssueType) {
-			setStatusIssueListMap([
-				{
-					label: customIssueType,
-					value: customIssueType,
-					// desc: "How can we help you? Please submit this form and we will reach out to you soon.",
-					raise_issue_after: "0d",
-					reopened_tat: "0",
-					tat: "0",
-					category: { id: 1, title: "Others" },
-					sub_category: { id: 1, title: "Others" },
+			console.log("Custom issue type found: ", customIssueType);
+
+			const customIssue = {
+				label: customIssueType,
+				value: customIssueType,
+				// desc: "How can we help you? Please submit this form and we will reach out to you soon.",
+				raise_issue_after: "0d",
+				reopened_tat: "0",
+				tat: "0",
+				category: { id: 1, title: "Others" },
+				sub_category: { id: 1, title: "Others" },
+			};
+
+			setCategoryList([{ id: 1, title: "Others" }]);
+			setCategoryMap({
+				1: {
+					subcat_list: [{ id: 1, title: "Others" }],
+					submap: {
+						1: { id: 1, title: "Others" },
+					},
 				},
-			]);
+			});
+			setStatusIssueListMap([customIssue]);
 			setSelectedCat(1);
 			setSelectedSubCat(1);
-			setSelectedIssue(statusIssueListMap[0]);
+			setSelectedIssue(customIssue);
 			return;
 		}
+
+		if (fetchingIssueList) return;
 
 		setFetchingIssueList(true);
 
@@ -260,6 +368,7 @@ const RaiseIssueCard = ({
 		tid,
 		status,
 		origin,
+		customIssueType,
 		metadata?.transaction_detail,
 	]);
 
@@ -739,6 +848,7 @@ const RaiseIssueCard = ({
 						<Box mb={4} maxW={{ base: "100%", md: "350px" }}>
 							<Screenshot
 								screenshot={screenshot}
+								autoCaptureScreenshot={autoCaptureScreenshot}
 								onCapture={setScreenshot}
 								onHide={onHide}
 								onShow={onShow}
@@ -782,6 +892,15 @@ const RaiseIssueCard = ({
 												color="error"
 											>
 												* Required
+											</Text>
+										) : null}
+										{classifierResult ? (
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color="gray.600"
+											>
+												{classifierResult}
 											</Text>
 										) : null}
 									</Box>
@@ -1098,11 +1217,19 @@ const CategoryButton = ({
  * MARK: <Screenshot>
  * @param {object} props - Properties passed to the component.
  * @param {string} props.screenshot - The screenshot image data.
+ * @param {boolean} [props.autoCaptureScreenshot=false] - Whether to automatically capture the screenshot (default: false).
  * @param {function} props.onCapture - Function to call when the screenshot is captured.
  * @param {function} props.onHide - Function to call to temporarily hide the Raise Query dialog so that the screenshot can be taken.
  * @param {function} props.onShow - Function to call to show the Raise Query dialog after the screenshot is taken.
  */
-const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
+const Screenshot = ({
+	screenshot,
+	autoCaptureScreenshot = false,
+	onCapture,
+	onHide,
+	onShow,
+	...rest
+}) => {
 	// https://developer.chrome.com/docs/web-platform/screen-sharing-controls/
 	// https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
 
@@ -1114,6 +1241,16 @@ const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
 	const { editImage } = useImageEditor();
 	const [originalCapture, setOriginalCapture] = useState<string | null>(null);
 	const [edited, setEdited] = useState(false);
+	const [screenshotCaptureAttempted, setScreenshotCaptureAttempted] =
+		useState(false);
+
+	// Auto-capture screenshot...
+	useEffect(() => {
+		if (autoCaptureScreenshot && !screenshotCaptureAttempted) {
+			setScreenshotCaptureAttempted(true);
+			captureScreen();
+		}
+	}, [autoCaptureScreenshot, screenshotCaptureAttempted]);
 
 	// Edit/crop screenshot when captured...
 	useEffect(() => {
@@ -1267,7 +1404,7 @@ const Screenshot = ({ screenshot, onCapture, onHide, onShow, ...rest }) => {
 			) : null}
 
 			{screenshot ? null : (
-				<Button variant="accent" onClick={captureScreen}>
+				<Button variant="primary" onClick={captureScreen}>
 					<RiScreenshot2Line size="24px" />
 					&nbsp; Add Screenshot
 				</Button>

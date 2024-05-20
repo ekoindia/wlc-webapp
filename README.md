@@ -114,13 +114,21 @@ How does communication with the Android wrapper app work?
 - `useSessionStorage`: Read/Write data to the browser's sessionStorage.
 - `usePubSub`: Publish/Subscribe to events. Add new topics in the [contexts/PubSubContext.js](contexts/PubSubContext.js) file.
 
+### 📦 Custom [**libs**](libs/):
+These are wrappers around 3rd-party libraries or associated utility functions.
+- [GoogleMap](libs/GoogleMap.jsx) - Google Maps API wrapper
+- [Map View](libs/MapView.js) - View static maps using iFrame
+- [dateFormat](libs/dateFormat.js) - Date formatting utility (wrapper around `date-fns`)
+- [faceDetector](libs/faceDetector.js) - Dynamically loads MediaPipe Face Detector model (uses wasm)
+- [chakraKeyFrames](libs/chakraKeyFrames.js) - Common keyframes for ChakraUI animations
 
-## Global [Contexts](contexts/) (Data Providers)
+
+## 💽 Global [Contexts](contexts/) (Data Providers)
 1.
 
 
 
-## Browser Storage
+## 💾 Browser Storage
 The following data is stored in the browser (localStorage & sessionStorage):
 ### LocalStorage
 1.

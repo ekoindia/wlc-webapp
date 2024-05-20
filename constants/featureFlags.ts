@@ -8,11 +8,23 @@
  * 	const isFeatureEnabled = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
-	// Beta (WIP) feature to Raise Issues...
+	// Feature to Raise Issues...
 	RAISE_ISSUE: {
 		enabled: true,
 		forEnv: ["development"],
 		forAdminOnly: true,
+	},
+
+	// Face detector for images, videos, and live streams.
+	FACE_DETECTOR: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+	},
+
+	// Face detector for images, videos, and live streams.
+	TEXT_CLASSIFIER: {
+		enabled: true,
+		forEnv: ["development", "staging"],
 	},
 
 	// Experimental LLM conversational UI for financial transactions and queries.
@@ -32,12 +44,15 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// A test page ("/test" or "/admin/test") to quickly check
 	// components, hooks, etc, during the development.
-	// Note: ONLY FOR DEVELOPMENT ENVIRONMENT.
+	// Note: DO NOT CHANGE. ONLY FOR DEVELOPMENT ENVIRONMENT.
 	TEST_PAGE: {
 		enabled: true,
-		forEnv: ["development"],
+		forEnv: ["development"], // DO NOT CHANGE
 	},
 };
+
+// Type definition for environments
+type EnvTypes = "development" | "staging" | "production";
 
 /**
  * Type definition for a feature flag configuration.
@@ -57,7 +72,7 @@ export type FeatureFlagType = {
 	 * Possible values: "development", "staging", "production"
 	 * Note: The environment is read from process.env.NEXT_PUBLIC_ENV
 	 */
-	forEnv?: string[];
+	forEnv?: EnvTypes[];
 
 	/**
 	 * List of user-types for which the feature is enabled.

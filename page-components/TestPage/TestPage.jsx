@@ -1,6 +1,12 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { Dropzone } from "components";
-import { useCamera, useFeatureFlag, useFileView, useImageEditor } from "hooks";
+import {
+	useCamera,
+	useFeatureFlag,
+	useFileView,
+	useImageEditor,
+	useRaiseIssue,
+} from "hooks";
 import { useCallback, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -377,6 +383,30 @@ const DropZoneTest = () => {
 };
 
 /**
+ * Testing the DropZone component
+ * MARK: DropZoneTest
+ */
+const CustomRaiseQueryTest = () => {
+	const { showRaiseIssueDialog } = useRaiseIssue();
+
+	return (
+		<Flex direction="column" align="center" justify="center">
+			<Button
+				onClick={() =>
+					showRaiseIssueDialog({
+						origin: "Global-Help",
+						autoCaptureScreenshot: true,
+						customIssueType: "Need help with this screen",
+					})
+				}
+			>
+				Raise Issue with Screenshot
+			</Button>
+		</Flex>
+	);
+};
+
+/**
  * Testing the Markdown component
  * MARK: MarkdownTest
  */
@@ -434,6 +464,10 @@ const TestComponents = [
 	{
 		title: "File Upload (Dropzone)",
 		component: DropZoneTest,
+	},
+	{
+		title: "Raise Issue",
+		component: CustomRaiseQueryTest,
 	},
 	{
 		title: "Markdown",
