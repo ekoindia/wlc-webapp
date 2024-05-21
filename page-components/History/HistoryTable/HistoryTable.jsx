@@ -1,5 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import {
+	getAdditionalTransactionMetadata,
 	getHistoryTableProcessedData,
 	HistoryCard,
 	historyParametersMetadata,
@@ -20,6 +21,12 @@ const HistoryTable = ({
 }) => {
 	const processedData = getHistoryTableProcessedData(transactionList);
 
+	const { trxn_data, history_parameter_metadata } =
+		getAdditionalTransactionMetadata(
+			processedData,
+			historyParametersMetadata
+		);
+
 	if (!loading && processedData?.length < 1) {
 		return (
 			<Flex direction="column" align="center" gap="2" mt="8" mb="2">
@@ -30,8 +37,8 @@ const HistoryTable = ({
 
 	return (
 		<Table
-			renderer={historyParametersMetadata}
-			data={processedData}
+			renderer={history_parameter_metadata}
+			data={trxn_data}
 			isLoading={loading}
 			pageNumber={pageNumber}
 			setPageNumber={setPageNumber}
