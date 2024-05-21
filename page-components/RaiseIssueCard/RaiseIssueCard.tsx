@@ -1283,7 +1283,7 @@ const Screenshot = ({
 
 	const captureScreen = () => {
 		onHide();
-		navigator.mediaDevices.getDisplayMedia(DisplayMediaOptions).then(
+		navigator.mediaDevices.getDisplayMedia(DisplayMediaOptions as any).then(
 			(stream) => {
 				videoRef.current.srcObject = stream;
 			},
