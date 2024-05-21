@@ -52,7 +52,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 };
 
 // Type definition for environments
-type EnvTypes = "development" | "staging" | "production";
+type EnvTypes = "development" | "staging" | "production" | string;
 
 /**
  * Type definition for a feature flag configuration.
