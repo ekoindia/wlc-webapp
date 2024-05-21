@@ -677,7 +677,7 @@ const getProcessedImg = ({ image, cropEnabled, crop, maxLength }) => {
 	const ctx = canvas.getContext("2d");
 
 	// ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-	ctx.imageSmoothingQuality = "high";
+	// ctx.imageSmoothingQuality = "high";
 	ctx.drawImage(
 		image,
 		crop.x * scaleX,
