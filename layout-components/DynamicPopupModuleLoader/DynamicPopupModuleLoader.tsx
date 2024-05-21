@@ -207,6 +207,12 @@ const DynamicPopupModuleLoader = () => {
 			const index = prevData.findIndex(
 				(_module) => _module.feature === module.feature
 			);
+
+			console.log(
+				"DynamicPopupModuleLoader: addModule: replacing module",
+				{ index, prevData, module }
+			);
+
 			if (index >= 0) {
 				const newData = [...prevData];
 				newData[index] = module;

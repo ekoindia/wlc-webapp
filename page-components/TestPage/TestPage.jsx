@@ -1,5 +1,5 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import { Dropzone } from "components";
+import { Dropzone, Input } from "components";
 import {
 	useCamera,
 	useFeatureFlag,
@@ -369,14 +369,108 @@ const CameraTest = () => {
  */
 const DropZoneTest = () => {
 	const [file, setFile] = useState(null);
+	const [options, setOptions] = useState({});
 
 	// const setFile = (file) => {
 	// 	console.log("File: ", file);
 	// };
 
+	const changeSingleOption = (key, value) => {
+		setOptions((prev) => ({ ...prev, [key]: value }));
+	};
+
 	return (
-		<Flex direction="column" align="center" justify="center">
-			<Dropzone file={file} accept="" setFile={setFile} />
+		<Flex direction="column">
+			{/* Create a form for options (check boxes & input). CHanging the
+			options should update the options object. Add the following options: maxLength, detectFace, faceCount, aspectRatio, disableImageConfirm, disableImageEdit  */}
+			<Flex
+				direction="row"
+				wrap="wrap"
+				gap="1em"
+				align="center"
+				mb={8}
+				fontSize="12px"
+			>
+				<label>
+					<input
+						type="checkbox"
+						checked={options.detectFace}
+						style={{ marginRight: "5px" }}
+						onChange={(e) =>
+							changeSingleOption("detectFace", e.target.checked)
+						}
+					/>
+					Detect Face
+				</label>
+				<label>
+					<input
+						type="checkbox"
+						checked={options.disableImageConfirm}
+						style={{ marginRight: "5px" }}
+						onChange={(e) =>
+							changeSingleOption(
+								"disableImageConfirm",
+								e.target.checked
+							)
+						}
+					/>
+					Disable Image Confirm
+				</label>
+				<label>
+					<input
+						type="checkbox"
+						checked={options.disableImageEdit}
+						style={{ marginRight: "5px" }}
+						onChange={(e) =>
+							changeSingleOption(
+								"disableImageEdit",
+								e.target.checked
+							)
+						}
+					/>
+					Disable Image Edit
+				</label>
+				{/* <Input
+					label="Face Count"
+					size="sm"
+					required
+					inputContStyle={{ w: "100px" }}
+					labelStyle={{ mb: 0 }}
+					value={options.faceCount}
+					onChange={(e) =>
+						changeSingleOption("faceCount", e.target.value)
+					}
+				/> */}
+				<Input
+					label="Max Length (px)"
+					size="sm"
+					inputContStyle={{ w: "100px" }}
+					required
+					labelStyle={{ mb: 0, fontSize: "10px" }}
+					value={options.maxLength}
+					onChange={(e) =>
+						changeSingleOption("maxLength", e.target.value)
+					}
+				/>
+				<Input
+					label="Aspect Ratio (w/h)"
+					size="sm"
+					required
+					inputContStyle={{ w: "100px" }}
+					labelStyle={{ mb: 0, fontSize: "10px" }}
+					value={options.aspectRatio}
+					onChange={(e) =>
+						changeSingleOption("aspectRatio", e.target.value)
+					}
+				/>
+			</Flex>
+
+			<Dropzone
+				file={file}
+				options={options}
+				accept=""
+				setFile={setFile}
+			/>
 			<Text>{file ? file?.name : ""}</Text>
 		</Flex>
 	);
@@ -466,7 +560,7 @@ const TestComponents = [
 		component: DropZoneTest,
 	},
 	{
-		title: "Raise Issue",
+		title: "Raise Custom Issue",
 		component: CustomRaiseQueryTest,
 	},
 	{

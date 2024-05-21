@@ -2,18 +2,14 @@ import { Box, Flex } from "@chakra-ui/react";
 import { IcoButton } from "components";
 import { IconNameType } from "constants/IconLibrary";
 import { useFeatureFlag } from "hooks";
-import { initializefaceDetector } from "libs/faceDetector";
+import { getDefaultCrop, initializeFaceDetector } from "libs/faceDetector";
 import { useEffect, useRef, useState } from "react";
 import {
 	MdClose,
 	MdOutlineCrop,
 	MdOutlineRotate90DegreesCw,
 } from "react-icons/md";
-import ReactCrop, {
-	centerCrop,
-	makeAspectCrop,
-	type Crop,
-} from "react-image-crop";
+import ReactCrop, { type Crop } from "react-image-crop";
 
 // Declare the props interface
 interface ImageEditorProps {
@@ -21,6 +17,9 @@ interface ImageEditorProps {
 	fileName?: string;
 	maxLength?: number;
 	aspectRatio?: number;
+	disableCrop?: boolean;
+	disableRotate?: boolean;
+	disableImageEdit?: boolean;
 	detectFace?: boolean;
 	onClose: (_result: {
 		image: string;
@@ -53,7 +52,10 @@ const rc_mask_opacity = 0.8; // Default = 0.5
  * @param {string} [prop.fileName] - The name of the image file being edited
  * @param {number} [prop.maxLength] - The maximum length of the image (longer side) in pixels
  * @param {number} [prop.aspectRatio] - The fixed aspect ratio of the crop area. E.g., 1 for square, 16/9 for landscape, etc.  If not provided, the crop area can be resized freely.
- * @param {boolean} [prop.detectFace] - Whether to detect the face in the image (default: false)
+ * @param {boolean} [prop.detectFace=false] - Whether to detect the face in the image
+ * @param {boolean} [prop.disableCrop=false] - Whether to disable the crop functionality
+ * @param {boolean} [prop.disableRotate=false] - Whether to disable the rotate functionality
+ * @param {boolean} [prop.disableImageEdit=false] - Whether to disable the all image editing functionalities
  * @param {function} prop.onClose - Callback function to close the editor (when the user accepted or rejected the changes/image)
  * @example	`<ImageEditor image="..." onResult={...} onClose={...} />`
  */
@@ -63,11 +65,16 @@ const ImageEditor = ({
 	maxLength,
 	aspectRatio,
 	detectFace = false,
+	disableCrop = false,
+	disableRotate = false,
+	disableImageEdit = false,
 	onClose,
 }: ImageEditorProps) => {
 	const [sourceImage, setSourceImage] = useState<string>(image);
 	const [crop, setCrop] = useState<Crop>(null);
-	const [cropEnabled, setCropEnabled] = useState(true);
+	const [cropEnabled, setCropEnabled] = useState(
+		disableCrop || disableImageEdit ? false : true
+	);
 	const [enableCropAfterImageLoad, setEnableCropAfterImageLoad] =
 		useState(false);
 	const [rotation, setRotation] = useState(0);
@@ -85,7 +92,7 @@ const ImageEditor = ({
 		if (!detectFace) return;
 		if (!isFaceDetectionEnabled) return;
 
-		initializefaceDetector("IMAGE").then((detector) => {
+		initializeFaceDetector("IMAGE").then((detector) => {
 			setFaceDetector(detector);
 		});
 	}, [detectFace, isFaceDetectionEnabled]);
@@ -110,12 +117,12 @@ const ImageEditor = ({
 				});
 
 				// Set the crop area to the detected face
-				const ratio =
+				const scaleFactor =
 					imageRef.current.height / imageRef.current.naturalHeight;
-				const faceX = face.originX * ratio;
-				const faceY = face.originY * ratio;
-				const faceWidth = face.width * ratio;
-				const faceHeight = face.height * ratio;
+				const faceX = face.originX * scaleFactor;
+				const faceY = face.originY * scaleFactor;
+				const faceWidth = face.width * scaleFactor;
+				const faceHeight = face.height * scaleFactor;
 
 				setCrop({
 					unit: "px",
@@ -142,7 +149,7 @@ const ImageEditor = ({
 		setImageLoaded(true);
 
 		// Set the default crop area when the image is loaded
-		if (enableCropAfterImageLoad) {
+		if (enableCropAfterImageLoad && !(disableCrop || disableImageEdit)) {
 			setEnableCropAfterImageLoad(false);
 			setCropEnabled(true);
 		}
@@ -492,7 +499,7 @@ const ImageEditor = ({
 				>
 					<ReactCrop
 						keepSelection={true}
-						aspect={aspectRatio || undefined}
+						aspect={aspectRatio > 0 ? aspectRatio : undefined}
 						crop={crop}
 						minWidth={100}
 						minHeight={100}
@@ -558,25 +565,29 @@ const ImageEditor = ({
 						color="white"
 						onClick={onReject}
 					/>
-					<IcoBtn
-						icon={MdOutlineCrop}
-						label="Crop Image"
-						selected={cropEnabled}
-						onClick={() =>
-							setCropEnabled((cropEnabled) => !cropEnabled)
-						}
-					/>
-					<IcoBtn
-						icon={MdOutlineRotate90DegreesCw}
-						label="Rotate Image"
-						onClick={() => {
-							rotateImage();
-							// setRotation((rotation) => {
-							// 	const newRotation = rotation + 90;
-							// 	return newRotation >= 360 ? 0 : newRotation;
-							// });
-						}}
-					/>
+					{disableCrop || disableImageEdit ? null : (
+						<IcoBtn
+							icon={MdOutlineCrop}
+							label="Crop Image"
+							selected={cropEnabled}
+							onClick={() =>
+								setCropEnabled((cropEnabled) => !cropEnabled)
+							}
+						/>
+					)}
+					{disableRotate || disableImageEdit ? null : (
+						<IcoBtn
+							icon={MdOutlineRotate90DegreesCw}
+							label="Rotate Image"
+							onClick={() => {
+								rotateImage();
+								// setRotation((rotation) => {
+								// 	const newRotation = rotation + 90;
+								// 	return newRotation >= 360 ? 0 : newRotation;
+								// });
+							}}
+						/>
+					)}
 				</Flex>
 			</Box>
 		</Flex>
@@ -642,16 +653,32 @@ const IcoBtn = ({
  * 2. Rotating the image based on the rotation angle
  * 3. Resizing the cropped image to fit the maxLength
  * @param {object} params - The parameters for the image processing
- * @param params.image - The image to be processed
- * @param params.cropEnabled - Whether the crop is enabled
- * @param params.crop - The crop area
- * @param params.maxLength - The maximum length of the image (longer side) in pixels
+ * @param {HTMLImageElement} params.image - The image to be processed
+ * @param {boolean} params.cropEnabled - Whether the crop is enabled
+ * @param {object} params.crop - The crop area
+ * @param {number} params.maxLength - The maximum length of the image (longer side) in pixels
  * @returns {string} - The cropped image as a file URL string
  */
-const getProcessedImg = ({ image, cropEnabled, crop, maxLength }) => {
+const getProcessedImg = ({
+	image,
+	cropEnabled,
+	crop,
+	maxLength,
+}: {
+	image: HTMLImageElement;
+	cropEnabled: boolean;
+	crop: Crop;
+	maxLength: number;
+}) => {
 	if (!cropEnabled || !crop) {
 		// Use a default crop area which is the entire image
-		crop = { x: 0, y: 0, width: image.width, height: image.height };
+		crop = {
+			unit: "px",
+			x: 0,
+			y: 0,
+			width: image.width,
+			height: image.height,
+		};
 	}
 
 	// Scale image to the original size...
@@ -719,57 +746,19 @@ const getFinalImageDimensions = ({ width, height, maxLength }) => {
 
 	// Get the final width & height based on the maxLength
 
-	const aspectRatio = width / height;
+	const currentAspectRatio = width / height;
 
 	if (maxLength && longerSide > maxLength) {
 		if (isLandscape) {
 			finalWidth = maxLength;
-			finalHeight = maxLength / aspectRatio;
+			finalHeight = maxLength / currentAspectRatio;
 		} else {
 			finalHeight = maxLength;
-			finalWidth = maxLength * aspectRatio;
+			finalWidth = maxLength * currentAspectRatio;
 		}
 	}
 
 	return { finalWidth, finalHeight };
-};
-
-/**
- * Returns the default crop area based on the image dimensions & aspect ratio. Centers the crop area, if required.
- * @param {number} width - The width of the image
- * @param {number} height - The height of the image
- * @param {number} aspectRatio - The aspect ratio of the crop area. E.g., 1 for square, 16/9 for landscape, etc.
- * @returns {Crop} - The default crop area
- */
-const getDefaultCrop = (width, height, aspectRatio) => {
-	let _crop: Crop = {
-		unit: "px",
-		x: 0,
-		y: 0,
-		width: width,
-		height: height,
-	};
-
-	if (aspectRatio) {
-		_crop = centerCrop(
-			makeAspectCrop(
-				{
-					unit: "px",
-					x: 0,
-					y: 0,
-					width: width,
-					height: height,
-				},
-				aspectRatio,
-				width,
-				height
-			),
-			width,
-			height
-		);
-	}
-
-	return _crop;
 };
 
 /**

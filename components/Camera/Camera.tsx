@@ -1,6 +1,7 @@
 import { Box, Flex, Spinner, Text } from "@chakra-ui/react";
 import { IcoButton } from "components";
 import { IconNameType } from "constants/IconLibrary";
+import { useImageEditor } from "hooks";
 import React, { useCallback, useRef, useState } from "react";
 import { MdCamera, MdCameraswitch, MdClose } from "react-icons/md";
 import Webcam from "react-webcam";
@@ -24,12 +25,17 @@ type DeviceList = {
 }[];
 
 type CameraProps = {
-	mediaRecorderRef?: any | null;
-	capturing?: boolean;
-	recordedChunks?: any;
-	type: string;
-	cameraType: string;
-	imagesVal: any;
+	// mediaRecorderRef?: any | null;
+	maxLength?: number;
+	detectFace?: boolean;
+	minFaceCount?: number;
+	maxFaceCount?: number;
+	autoCapture?: boolean;
+	aspectRatio?: number;
+	disableImageConfirm?: boolean;
+	disableImageEdit?: boolean;
+	disableCrop?: boolean;
+	disableRotate?: boolean;
 	preferredFacingMode?: "user" | "environment";
 	onClose?: (_result: {
 		image: string;
@@ -41,11 +47,30 @@ type CameraProps = {
 /**
  * Camera Component
  * @param {CameraProps} props - The properties of the component
+ * @param {boolean} [props.detectFace=false] - Whether to detect face in the image
+ * @param {number} [props.minFaceCount] - The minimum number of faces to detect
+ * @param {number} [props.maxFaceCount] - The maximum number of faces to detect
+ * @param {boolean} [props.autoCapture=false] - Whether to auto capture the image
+ * @param {number} [props.aspectRatio] - A fixed aspect ratio for the image
+ * @param {boolean} [props.disableImageConfirm=false] - Whether to disable image confirmation
+ * @param {boolean} [props.disableImageEdit=false] - Whether to disable image editing
+ * @param {boolean} [props.disableCrop=false] - Whether to disable image cropping
+ * @param {boolean} [props.disableRotate=false] - Whether to disable image rotation
  * @param {string} [props.preferredFacingMode="environment"] - The preferred facing mode for the camera
  * @param {function} [props.onClose] - The callback function for image capture or on cancel
  * @returns {JSX.Element} - The Camera component
  */
 const Camera = ({
+	maxLength,
+	detectFace = false,
+	// minFaceCount,
+	// maxFaceCount,
+	// autoCapture = false,
+	aspectRatio,
+	disableImageConfirm = false,
+	disableImageEdit = false,
+	disableCrop = false,
+	disableRotate = false,
 	preferredFacingMode = FACING_MODE_ENVIRONMENT,
 	onClose,
 }: CameraProps) => {
@@ -60,6 +85,7 @@ const Camera = ({
 	});
 	const [status, setStatus] = useState<"init" | "ready" | "error">("init"); // chrome://settings/content/notifications, chrome://settings/content/camera, chrome://settings/content/location, etc
 	const [errorMessage, setErrorMessage] = useState<string>("");
+	const { editImage } = useImageEditor();
 
 	/**
 	 * To close the camera
@@ -73,7 +99,25 @@ const Camera = ({
 	 */
 	const onCapture = async () => {
 		const { imageSrc, imageFile } = await capture();
-		onClose({ image: imageSrc, file: imageFile, accepted: true });
+
+		if (disableImageConfirm) {
+			onClose({ image: imageSrc, file: imageFile, accepted: true });
+			return;
+		}
+
+		// Show the image editor for editing and confirmation
+		editImage(
+			imageSrc,
+			{
+				detectFace,
+				maxLength,
+				aspectRatio,
+				disableCrop,
+				disableRotate,
+				disableImageEdit,
+			},
+			onClose
+		);
 	};
 
 	/**

@@ -13,11 +13,23 @@ const IMAGE_MIME_TYPES = {
 };
 
 /**
- * A Dropzone component to upload file either by selecting or by drag n drop
+ * A Dropzone component to upload file either by selecting or by drag & drop
  * @param 	{object}	prop	Properties passed to the component
- * @param	{File}	prop.file	File object to be uploaded
+ * @param	{File}		prop.file	File object to be uploaded
  * @param	{function}	prop.setFile	Function to set the file object
  * @param	{string}	[prop.accept=""]	Accepted file types
+ * @param	{boolean}	[prop.cameraOnly=false]	Only allow camera to capture image. No file upload or drag/drop.
+ * @param	{object}	[prop.options={}]	Additional options for the dropzone
+ * @param	{number}	[prop.options.maxLength]	Maximum length of the image
+ * @param	{boolean}	[prop.options.detectFace]	Detect faces in the image?
+ * @param	{number}	[prop.options.minFaceCount]	Minimum number of faces to be detected
+ * @param	{number}	[prop.options.maxFaceCount]	Maximum number of faces to be detected
+ * @param	{boolean}	[prop.options.autoCapture=false]	Auto-click camera when object is detected
+ * @param	{number}	[prop.options.aspectRatio]	Aspect ratio for the image
+ * @param	{number}	[prop.options.disableImageConfirm]	Accept image without the confirmation dialog (including the option to crop, rotate, etc)
+ * @param	{number}	[prop.options.disableImageEdit]	Disable image editing (crop, rotate, etc)
+ * @param	{boolean}	[prop.options.disableCrop=false]	Disable cropping the image
+ * @param	{boolean}	[prop.options.disableRotate=false]	Disable rotating the image
  * @param	{boolean}	[prop.disabled=false]	Disable the dropzone
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Dropzone file={screenshot} setFile={setScreenshot} />` TODO: Fix example
@@ -26,6 +38,8 @@ const Dropzone = ({
 	file,
 	setFile,
 	accept = "",
+	cameraOnly = false,
+	options = {},
 	disabled = false,
 	...rest
 }) => {
@@ -66,26 +80,33 @@ const Dropzone = ({
 	const openImageEditor = (image, file) => {
 		if (!image && !file) return;
 
-		const options = {
+		const _options = {
 			fileName: file?.name || "",
-			// maxLength: 1600,
-			// aspectRatio: 1,
+			...options,
 		};
 
 		if (IMAGE_MIME_TYPES[file.type]) {
 			// convertImage(_file);
-			console.log(
-				"[Dropzone] Opening Image Editor: ",
-				typeof image,
+			console.log("[Dropzone] Opening Image Editor: ", {
+				image_type: typeof image,
 				image,
-				file
-			);
+				file,
+				options,
+			});
 
-			// Load image from File or  Blob object for ImageEditor
+			// Check if the image confirmation dialog is disabled.
+			// If disabled, directly accept the image without showing the confirmation dialog.
+			if (options?.disableImageConfirm) {
+				setFile(file);
+				setPreviewImage(image);
+				return;
+			}
+
 			if (image instanceof Blob || !image) {
+				// Load image from File or  Blob object for ImageEditor
 				const reader = new FileReader();
 				reader.onloadend = () => {
-					editImage(reader.result, options, (data) =>
+					editImage(reader.result, _options, (data) =>
 						handleImageEditorResponse(data)
 					);
 				};
@@ -94,19 +115,17 @@ const Dropzone = ({
 			}
 
 			// Open ImageEditor with normal image data
-			editImage(image, options, (data) =>
+			editImage(image, _options, (data) =>
 				handleImageEditorResponse(data)
 			);
 		}
 	};
 
-	// console.log("[Dropzone] file", file);
-	// console.log("[Dropzone] previewImage", previewImage);
-
 	const handleFileUploadInputChange = (e) => {
 		const _file = e.target.files[0];
 
 		if (!_file) return;
+		if (cameraOnly) return;
 
 		if (IMAGE_MIME_TYPES[_file.type]) {
 			// convertImage(_file);
@@ -135,7 +154,10 @@ const Dropzone = ({
 	};
 
 	const handleDragOver = (event) => {
+		if (cameraOnly) return;
+
 		event.preventDefault();
+
 		if (disabled || inDropZone) {
 			return;
 		}
@@ -179,9 +201,13 @@ const Dropzone = ({
 	 * @param {*} event
 	 */
 	const handleDrop = async (event) => {
+		if (cameraOnly) return;
+
 		event.preventDefault();
+
 		setInDropZone(false);
 		setIsValidDrop(false);
+
 		if (disabled || !isValidDrop) return;
 
 		const dataTransfer = event?.dataTransfer;
@@ -256,18 +282,26 @@ const Dropzone = ({
 
 	/**
 	 * Handle the image returned from the Camera
-	 * @param {*} data
+	 * @param {object} data
+	 * @param {boolean} data.accepted - Is the image accepted?
+	 * @param {string} data.image - Image data URL
+	 * @param {File} data.file - File object for the image
 	 */
 	const handleCameraResponse = (data) => {
 		if (data.accepted) {
-			openImageEditor(data.image, data.file);
+			// openImageEditor(data.image, data.file);	// Editor is not required for camera images
+			setFile(data.file);
+			convertImage(data.image, "blob");
 		}
 	};
 
 	/**
 	 * Handle the image returned from the Image Editor.
 	 * Set the file and image preview.
-	 * @param {*} data
+	 * @param {object} data
+	 * @param {boolean} data.accepted - Is the image accepted?
+	 * @param {string} data.image - Image data URL
+	 * @param {File} data.file - File object for the image
 	 */
 	const handleImageEditorResponse = (data) => {
 		console.log("Image Editor result: ", data);
@@ -322,16 +356,21 @@ const Dropzone = ({
 						opacity={inDropZone ? 0 : 1}
 						pointerEvents={inDropZone ? "none" : "auto"}
 					>
-						<Btn
-							onClick={() => fileInputRef?.current?.click()}
-							disabled={disabled}
-						>
-							Browse
-						</Btn>
+						{cameraOnly ? null : (
+							<Btn
+								onClick={() => fileInputRef?.current?.click()}
+								disabled={disabled}
+							>
+								Browse
+							</Btn>
+						)}
 						{isImageAllowed ? (
 							<Btn
 								onClick={() =>
-									openCamera(null, handleCameraResponse)
+									openCamera(
+										{ ...options },
+										handleCameraResponse
+									)
 								}
 								disabled={disabled}
 							>

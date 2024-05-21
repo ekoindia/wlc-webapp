@@ -40,6 +40,11 @@ const useCamera = () => {
 	 * Open the Camera dialog
 	 * @param {object} [options] - Options to pass to the editor.
 	 * @param {number} [options.aspectRatio] - Aspect ratio of the image. E.g., 1 for square, 16/9 for widescreen.
+	 * @param {number} [options.maxLength] - Maximum length or width of the image.
+	 * @param {number} [options.aspectRatio] - Aspect ratio of the image. E.g., 1 for square, 16/9 for widescreen.
+	 * @param {boolean} [options.disableCrop=false] - Disable cropping.
+	 * @param {boolean} [options.disableRotate=false] - Disable rotation.
+	 * @param {boolean} [options.disableImageEdit=false] - Disable image editing. Just show the confirmation dialog.
 	 * @param {function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
 	 */
 	const openCamera = (options, onResponse) => {
