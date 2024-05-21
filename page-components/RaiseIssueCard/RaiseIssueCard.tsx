@@ -1311,7 +1311,9 @@ const Screenshot = ({
 				video.videoWidth,
 				video.videoHeight
 			); // canvasRef.current;
-			const context = canvas.getContext("2d");
+			const context = canvas.getContext(
+				"2d"
+			) as OffscreenCanvasRenderingContext2D;
 
 			// Draw the video frame to the canvas
 			context.drawImage(video, 0, 0, canvas.width, canvas.height);

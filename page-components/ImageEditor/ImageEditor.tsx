@@ -674,7 +674,7 @@ const getProcessedImg = ({ image, cropEnabled, crop, maxLength }) => {
 	});
 
 	const canvas = new OffscreenCanvas(finalWidth, finalHeight);
-	const ctx = canvas.getContext("2d");
+	const ctx = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
 
 	// ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 	// ctx.imageSmoothingQuality = "high";
