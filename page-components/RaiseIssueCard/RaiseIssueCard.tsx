@@ -1307,32 +1307,30 @@ const Screenshot = ({
 		const DELAY = 100;
 		setTimeout(() => {
 			const video = videoRef.current;
-			const canvas = new OffscreenCanvas(
-				video.videoWidth,
-				video.videoHeight
-			); // canvasRef.current;
-			const context = canvas.getContext(
-				"2d"
-			) as OffscreenCanvasRenderingContext2D;
+
+			// const canvas = new OffscreenCanvas(
+			// 	video.videoWidth,
+			// 	video.videoHeight
+			// ); // canvasRef.current;
+
+			const canvas = document.createElement("canvas");
+			canvas.width = Math.floor(video.videoWidth);
+			canvas.height = Math.floor(video.videoHeight);
+
+			const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 			// Draw the video frame to the canvas
 			context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-			canvas
-				.convertToBlob({ type: "image/jpeg", quality: 0.8 })
-				.then(
-					(blob) => {
-						// onCapture && onCapture(URL.createObjectURL(blob));
-						setOriginalCapture(URL.createObjectURL(blob));
-						setEdited(false);
-					},
-					(err) => {
-						console.error("Blob Error: ", err);
-					}
-				)
-				.finally(() => {
-					stopCapture();
-				});
+			try {
+				const imgUrl = canvas.toDataURL("image/jpeg", 0.8);
+				setOriginalCapture(imgUrl);
+				setEdited(false);
+				stopCapture();
+			} catch (err) {
+				console.error("Blob Error: ", err);
+				stopCapture();
+			}
 		}, DELAY);
 	};
 

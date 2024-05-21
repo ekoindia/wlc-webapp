@@ -186,29 +186,28 @@ const ImageEditor = ({
 		}
 
 		// Get the cropped image
-		getProcessedImg({
-			image: imageRef.current,
-			cropEnabled,
-			crop,
-			maxLength,
-		})
-			.then(async (croppedImageUrl: string) => {
-				// Close the editor with result
-
-				// Create a file-version of the cropped image
-				const imageFile = await getFileFromImageUrl(croppedImageUrl);
-
-				onClose &&
-					onClose({
-						image: croppedImageUrl || sourceImage || image,
-						file: imageFile,
-						accepted: true,
-					});
-			})
-			.catch((err) => {
-				console.error("[getProcessedImg] Error: ", err);
-				onClose && onClose({ image: image, accepted: false });
+		try {
+			const croppedImageUrl = getProcessedImg({
+				image: imageRef.current,
+				cropEnabled,
+				crop,
+				maxLength,
 			});
+			// Close the editor with result
+
+			// Create a file-version of the cropped image
+			const imageFile = await getFileFromImageUrl(croppedImageUrl);
+
+			onClose &&
+				onClose({
+					image: croppedImageUrl || sourceImage || image,
+					file: imageFile,
+					accepted: true,
+				});
+		} catch (err) {
+			console.error("[getProcessedImg] Error: ", err);
+			onClose && onClose({ image: image, accepted: false });
+		}
 	};
 
 	const getFileFromImageUrl = async (imageUrl: string) => {
@@ -647,7 +646,7 @@ const IcoBtn = ({
  * @param params.cropEnabled - Whether the crop is enabled
  * @param params.crop - The crop area
  * @param params.maxLength - The maximum length of the image (longer side) in pixels
- * @returns {Promise<string>} - The cropped image as a file URL string
+ * @returns {string} - The cropped image as a file URL string
  */
 const getProcessedImg = ({ image, cropEnabled, crop, maxLength }) => {
 	if (!cropEnabled || !crop) {
@@ -673,8 +672,11 @@ const getProcessedImg = ({ image, cropEnabled, crop, maxLength }) => {
 		maxLength,
 	});
 
-	const canvas = new OffscreenCanvas(finalWidth, finalHeight);
-	const ctx = canvas.getContext("2d") as OffscreenCanvasRenderingContext2D;
+	// const canvas = new OffscreenCanvas(finalWidth, finalHeight);
+	const canvas = document.createElement("canvas");
+	canvas.width = Math.floor(finalWidth);
+	canvas.height = Math.floor(finalHeight);
+	const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 
 	// ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 	// ctx.imageSmoothingQuality = "high";
@@ -690,12 +692,14 @@ const getProcessedImg = ({ image, cropEnabled, crop, maxLength }) => {
 		finalHeight
 	);
 
-	return canvas.convertToBlob({ type: "image/jpeg", quality: 0.8 }).then(
-		(blob) => URL.createObjectURL(blob),
-		(err) => {
-			console.error("Canvas convertToBlob Error: ", err);
-		}
-	);
+	return canvas.toDataURL("image/jpeg", 0.8); // TODO: get quality value from options
+
+	// return canvas.convertToBlob({ type: "image/jpeg", quality: 0.8 }).then(
+	// 	(blob) => URL.createObjectURL(blob),
+	// 	(err) => {
+	// 		console.error("Canvas convertToBlob Error: ", err);
+	// 	}
+	// );
 };
 
 /**
@@ -837,7 +841,7 @@ const getRotatedImage = (image, angle) => {
 
 	ctx.restore();
 
-	return canvas.toDataURL("image/jpg");
+	return canvas.toDataURL("image/jpeg");
 };
 
 /**
