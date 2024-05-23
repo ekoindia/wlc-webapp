@@ -13,7 +13,7 @@ type AccordionPanelProps = {
  *
  * @param {AccordionPanelProps} props - Props for configuring the AccordionPanel component.
  * @param {ReactNode} props.children - The content to be displayed within the panel.
- * @param {boolean} props.isExpanded - Indicates whether the accordion item is expanded.
+ * @param {boolean} [props.isExpanded] - Indicates whether the accordion item is expanded.
  * @param {...Object} props.rest - A catch-all prop that allows any other prop to be passed in.
  *
  * @returns {JSX.Element} The AccordionPanel component.
