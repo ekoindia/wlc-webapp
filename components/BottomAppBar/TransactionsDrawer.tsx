@@ -148,7 +148,7 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => (
 			finalFocusRef={btnRef}
 		>
 			<DrawerOverlay />
-			<DrawerContent maxH="80%" w="100%" borderTopRadius="10px" pb="22px">
+			<DrawerContent maxH="70%" w="100%" borderTopRadius="10px" pb="5">
 				<DrawerHeader onClose={onClose} />
 				<Divider />
 				<Flex
@@ -156,7 +156,7 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => (
 					direction="column"
 					overflowY="scroll"
 					px="5"
-					py="2"
+					// py="2"
 					gap="2"
 				>
 					{children}
@@ -208,10 +208,11 @@ type InteractionProps = {
  * `Interaction` is a component that represents a single interaction.
  * It simply passes its props to an `InteractionItem` component.
  *
- * @param {number} id - The ID of the interaction.
- * @param {string} label - The label for the interaction.
- * @param {string} icon - The icon for the interaction.
- * @param {() => void} onClose - Callback invoked to close the modal.
+ * @param {InteractionProps} props - Props for configuring the Interaction component.
+ * @param {number} props.id - The ID of the interaction.
+ * @param {string} props.label - The label for the interaction.
+ * @param {string} props.icon - The icon for the interaction.
+ * @param {() => void} props.onClose - Callback invoked to close the modal.
  *
  * @returns {JSX.Element} An `InteractionItem` component with the same props as the `Interaction` component.
  */
@@ -232,32 +233,26 @@ const Interaction = ({
 
 	return (
 		<AccordionItem id={id}>
-			<AccordionButton py="1">
+			<AccordionButton
+				iconName="chevron-right"
+				iconSize="10px"
+				py="1"
+				pr="1"
+			>
 				<Flex
+					py="1"
+					w="100%"
 					align="center"
 					gap="4"
-					py="1"
 					cursor="pointer"
 					onClick={() => {
 						onInteractionClick(id);
 					}}
 				>
-					<Flex gap="4" w="100%" align="center">
-						<Icon
-							name={icon}
-							size="md"
-							color={`hsl(${h},80%,30%)`}
-						/>
-						<Text fontSize="sm" fontWeight="medium">
-							{label}
-						</Text>
-					</Flex>
-					<Icon
-						name="chevron-right"
-						size="xs"
-						color="light"
-						_active={{ color: `hsl(${h},80%,30%)` }}
-					/>
+					<Icon name={icon} size="md" color={`hsl(${h},80%,30%)`} />
+					<Text fontSize="sm" fontWeight="medium">
+						{label}
+					</Text>
 				</Flex>
 			</AccordionButton>
 		</AccordionItem>
@@ -279,11 +274,12 @@ type GridInteractionProps = {
  * It uses the `group_interaction_ids` prop to find the relevant interactions from the `role_tx_list` context.
  * If there is more than one interaction in the group, it will pass `isGridInteraction` as true to the `InteractionItem` component.
  *
- * @param {number} id - The ID of the interaction group.
- * @param {string} group_interaction_ids - A comma-separated string of interaction IDs.
- * @param {string} label - The label for the interaction group.
- * @param {string} icon - The icon for the interaction group.
- * @param {() => void} onClose - Callback invoked to close the modal.
+ * @param {GridInteractionProps} props - Props for configuring the GridInteraction component.
+ * @param {number} props.id - The ID of the interaction group.
+ * @param {string} props.group_interaction_ids - A comma-separated string of interaction IDs.
+ * @param {string} props.label - The label for the interaction group.
+ * @param {string} props.icon - The icon for the interaction group.
+ * @param {() => void} props.onClose - Callback invoked to close the modal.
  *
  * @returns {JSX.Element} A `Flex` component containing a `Details` component, which in turn contains an `InteractionItem` and a `GridInteractionBox`.
  */
@@ -307,7 +303,7 @@ const GridInteraction = ({
 	return (
 		<AccordionItem id={id}>
 			<AccordionButton py="1">
-				<Flex gap="4" w="100%" align="center" cursor="pointer">
+				<Flex py="1" gap="4" w="100%" align="center" cursor="pointer">
 					<Icon name={icon} size="md" color={`hsl(${h},80%,30%)`} />
 					<Text fontSize="sm" fontWeight="medium">
 						{label}
@@ -358,12 +354,13 @@ type GridInteractionItemProps = {
  * `GridInteractionItem` is a component that represents a single interaction in a grid of interactions.
  * When clicked, it navigates to the transaction page for the interaction and calls the `onClose` function.
  *
- * @param {string} key - The unique key for the interaction.
- * @param {number} id - The ID of the interaction group.
- * @param {number} group_interaction_id - The ID of the interaction within the group.
- * @param {string} label - The label for the interaction.
- * @param {string} icon - The icon for the interaction.
- * @param {() => void} onClose - A function to be called when the interaction is clicked.
+ * @param {GridInteractionItemProps} props - Props for configuring the GridInteractionItem component.
+ * @param {string} props.key - The unique key for the interaction.
+ * @param {number} props.id - The ID of the interaction group.
+ * @param {number} props.group_interaction_id - The ID of the interaction within the group.
+ * @param {string} props.label - The label for the interaction.
+ * @param {string} props.icon - The icon for the interaction.
+ * @param {() => void} props.onClose - A function to be called when the interaction is clicked.
  *
  * @returns {JSX.Element} A `Flex` component containing an `Avatar` and a `Text` component.
  */
