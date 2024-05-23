@@ -1,5 +1,10 @@
 /* PLOP_INJECT_IMPORT */
-import { Accordion, AccordionItem } from "./Accordion";
+import {
+	Accordion,
+	AccordionButton,
+	AccordionItem,
+	AccordionPanel,
+} from "./Accordion";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumbs } from "./Breadcrumb";
@@ -54,7 +59,9 @@ import { XScrollArrow } from "./XScrollArrow";
 
 export {
 	Accordion,
+	AccordionButton,
 	AccordionItem,
+	AccordionPanel,
 	AdminViewToggleCard,
 	BottomAppBar,
 	Breadcrumbs,

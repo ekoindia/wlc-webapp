@@ -1,13 +1,13 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
 type AccordionContextType = {
-	openIndex: number[]; // The index of the open accordion items.
-	setOpenIndex: React.Dispatch<React.SetStateAction<number[]>>; // Function to set the open accordion items.
-	preExpanded?: Array<number>; // The pre-expanded accordion items.
-	allowZeroExpanded?: boolean; // Whether to allow zero expanded accordion items.
-	allowMultipleExpanded?: boolean; // Whether to allow multiple expanded accordion items.
+	openIndex: number[];
+	allowToggle?: boolean;
+	allowMultiple?: boolean;
+	defaultIndex?: number;
 	// eslint-disable-next-line no-unused-vars
-	onChange?: (id: number) => void; // Function to call when an accordion item is changed.
+	handleOpenIndexes: (id: number) => void;
+	// onChange?: (id: number) => void;
 };
 
 /**
@@ -19,38 +19,56 @@ const AccordionContext = createContext<AccordionContextType | undefined>(
 );
 
 type AccordionProviderProps = {
-	children: ReactNode; // The children components.
-	preExpanded?: Array<number>; // The pre-expanded accordion items.
-	allowZeroExpanded?: boolean; // Whether to allow zero expanded accordion items.
-	allowMultipleExpanded?: boolean; // Whether to allow multiple expanded accordion items.
+	children: ReactNode;
+	allowToggle?: boolean;
+	allowMultiple?: boolean;
 	// eslint-disable-next-line no-unused-vars
-	onChange?: (id: number) => void; // Function to call when an accordion item is changed.
+	// onChange?: (id: number) => void;
 };
 
 /**
  * AccordionProvider component.
  * It provides the Accordion context to its children.
  *
- * @param {AccordionProviderProps} props - The props to pass to the component.
+ * @param {Object} props - Props for configuring the accordion component.
+ * @param {boolean} [props.allowToggle=false] - If true, any expanded accordion item can be collapsed again.
+ * @param {boolean} [props.allowMultiple=false] - If true, multiple accordion items can be expanded at once.
+ * @param {ReactElement<AccordionItemProps>} props.children - The accordion items.
+ * @param {(id: number) => void} [props.onChange] - Function called when an accordion item is changed. The `id` parameter is the identifier of the accordion item that has changed.
  */
 const AccordionProvider = ({
 	children,
-	preExpanded,
-	allowZeroExpanded,
-	allowMultipleExpanded,
-	onChange,
-}: AccordionProviderProps) => {
+	allowToggle,
+	allowMultiple,
+}: // onChange,
+AccordionProviderProps) => {
 	const [openIndex, setOpenIndex] = useState<Array<number>>([]);
+
+	const handleOpenIndexes = (index: number) => {
+		setOpenIndex((prevIndexes) => {
+			const isOpen = prevIndexes.includes(index);
+
+			if (isOpen && !allowToggle) {
+				// If it's already open and allowToggle is false, do nothing
+				return prevIndexes;
+			} else if (isOpen && allowToggle) {
+				// If it's already open and allowToggle is true, close it
+				return prevIndexes.filter((i) => i !== index);
+			} else {
+				// If it's not open, open it based on allowMultiple
+				return allowMultiple ? [...prevIndexes, index] : [index];
+			}
+		});
+	};
 
 	return (
 		<AccordionContext.Provider
 			value={{
 				openIndex,
-				setOpenIndex,
-				preExpanded,
-				allowZeroExpanded,
-				allowMultipleExpanded,
-				onChange: onChange ? (id: number) => onChange(id) : undefined,
+				handleOpenIndexes,
+				allowToggle,
+				allowMultiple,
+				// onChange: onChange ? (id: number) => onChange(id) : undefined,
 			}}
 		>
 			{children}
