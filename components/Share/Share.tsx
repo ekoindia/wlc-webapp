@@ -244,7 +244,11 @@ const Share = ({
 				{...rest}
 			>
 				{/* Show the label if it is not hidden */}
-				{!hideLabel && <Text {...labelProps}>{label || "Share"}</Text>}
+				{!hideLabel && (
+					<Text textAlign="left" {...labelProps}>
+						{label || "Share"}
+					</Text>
+				)}
 
 				{children}
 			</MenuButton>

@@ -1,31 +1,26 @@
 import { Flex } from "@chakra-ui/react";
-import { Radio } from "components";
-import { useState } from "react";
-import {
-	CreditCardBillPaymentDistributor,
-	CreditCardBillPaymentRetailer,
-} from ".";
+import { CreditCardBillPaymentRetailer } from ".";
 
-const AGENT_TYPE = {
-	RETAILERS: "0",
-	DISTRIBUTOR: "2",
-};
+// const AGENT_TYPE = {
+// 	RETAILERS: "0",
+// 	DISTRIBUTOR: "2",
+// };
 
-const agent_type_list = [
-	{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
-	{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
-];
+// const agent_type_list = [
+// 	{ value: AGENT_TYPE.RETAILERS, label: "Retailers" },
+// 	{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
+// ];
 
 /**
  * A CreditCardBillPayment tab page-component
  * @example	<CreditCardBillPayment/>
  */
 const CreditCardBillPayment = () => {
-	const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILERS);
+	// const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILERS);
 
 	return (
 		<Flex direction="column" gap="8">
-			<Radio
+			{/* <Radio
 				label="Select Agent Type"
 				value={agentType}
 				options={agent_type_list}
@@ -35,11 +30,11 @@ const CreditCardBillPayment = () => {
 				required={true}
 			/>
 
-			{agentType === AGENT_TYPE.RETAILERS ? (
-				<CreditCardBillPaymentRetailer />
-			) : (
+			{agentType === AGENT_TYPE.RETAILERS ? ( */}
+			<CreditCardBillPaymentRetailer />
+			{/* ) : (
 				<CreditCardBillPaymentDistributor />
-			)}
+			)} */}
 		</Flex>
 	);
 };

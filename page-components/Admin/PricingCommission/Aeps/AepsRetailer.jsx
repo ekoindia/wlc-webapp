@@ -1,12 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import {
-	Endpoints,
-	ParamType,
-	productPricingCommissionValidationConfig,
-	productPricingType,
-	products,
-} from "constants";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -27,7 +21,7 @@ const PRICING_TYPE = {
 };
 
 const pricing_type_list = [
-	{ value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
+	// { value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
 	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
 ];
 
@@ -52,8 +46,6 @@ const getStatus = (status) => {
 
 const AepsRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.AEPS;
-	const { PERCENT, FIXED } =
-		productPricingCommissionValidationConfig.AEPS.RETAILER;
 
 	const {
 		handleSubmit,
@@ -87,16 +79,10 @@ const AepsRetailer = () => {
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+	const [validation, setValidation] = useState({ min: null, max: null });
 
-	const min =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.min
-			: FIXED.min;
-
-	const max =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.max
-			: FIXED.max;
+	const min = validation?.min;
+	const max = validation?.max;
 
 	let prefix = "";
 	let suffix = "";
@@ -106,6 +92,14 @@ const AepsRetailer = () => {
 	} else {
 		prefix = "₹";
 	}
+
+	let helperText = "";
+
+	if (min != undefined) helperText += `Minimum: ${prefix}${min}${suffix}`;
+	if (max != undefined)
+		helperText += `${
+			min != undefined ? " - " : ""
+		}Maximum: ${prefix}${max}${suffix}`;
 
 	const aeps_retailer_parameter_list = [
 		{
@@ -145,11 +139,11 @@ const AepsRetailer = () => {
 			name: "actual_pricing",
 			label: `Define ${productPricingType.DMT} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
+			helperText: helperText,
 			validations: {
 				// required: true,
-				min: min,
-				max: max,
+				min: validation?.min,
+				max: validation?.max,
 			},
 			inputRightElement: (
 				<Icon
@@ -219,6 +213,27 @@ const AepsRetailer = () => {
 			setMultiSelectLabel(_label);
 		}
 	}, [watcher.operation_type]);
+
+	// This useEffect hook updates the validation state based on the selected slab and pricing type.
+	useEffect(() => {
+		const _pricingType =
+			watcher.pricing_type === PRICING_TYPE.PERCENT
+				? "percentage"
+				: watcher.pricing_type === PRICING_TYPE.FIXED
+				? "fixed"
+				: null;
+
+		const _slab = +watcher?.select?.value;
+
+		// If a slab and pricing type are selected, update the validation state
+		if (_slab != null && _pricingType != null) {
+			const _validation = slabs[_slab]?.validation;
+			const _min = _validation?.RETAILER?.[_pricingType]?.min;
+			const _max = _validation?.RETAILER?.[_pricingType]?.max;
+
+			setValidation({ min: _min, max: _max });
+		}
+	}, [watcher?.pricing_type, watcher?.select?.value]);
 
 	useEffect(() => {
 		if (isSubmitSuccessful) {

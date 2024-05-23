@@ -3,12 +3,16 @@
  * These CSS styles are applied globally.
  */
 export const globalStyles = {
+	html: {
+		fontFamily: "system-ui, sans-serif",
+	},
 	body: {
 		// margin: 0,
 		// padding: 0,
 		// width: "100vw",
 		// height: "100vh",
 		overscrollBehaviorY: "none",
+		fontFamily: "system-ui, sans-serif",
 	},
 	"[hidden], [hideempty]:empty": {
 		display: "none !important",

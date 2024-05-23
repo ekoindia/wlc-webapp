@@ -11,6 +11,7 @@ const Kbd = ({ children, ...rest }) => {
 			alignItems="center"
 			justifyContent="center"
 			borderColor="hint"
+			lineHeight={1}
 			{...rest}
 		>
 			{children}

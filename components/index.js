@@ -11,6 +11,7 @@ import { Breadcrumbs } from "./Breadcrumb";
 import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
+import { Camera } from "./Camera";
 import { Card } from "./Card";
 import { ColorPair } from "./ColorPair";
 import { CommandBarBox } from "./CommandBar";
@@ -20,6 +21,7 @@ import { Divider } from "./Divider";
 import { Dropzone } from "./Dropzone";
 import { EkoConnectWidget } from "./EkoConnectWidget";
 import { ErrorBoundary } from "./ErrorBoundary";
+import { FileView } from "./FileView";
 import { GlobalSearch } from "./GlobalSearch";
 import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
@@ -28,7 +30,6 @@ import { Input } from "./Input";
 import { InputLabel } from "./InputLabel";
 import { InputMsg } from "./InputMsg";
 import { Kbd } from "./Kbd";
-import { Layout } from "./Layout";
 import { Menus } from "./Menus";
 import { Modal } from "./Modal";
 import { NavBar } from "./NavBar";
@@ -58,6 +59,8 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	Camera,
+	FileView,
 	Accordion,
 	AccordionButton,
 	AccordionItem,
@@ -85,7 +88,6 @@ export {
 	InputLabel,
 	InputMsg,
 	Kbd,
-	Layout,
 	Menus,
 	Modal,
 	NavBar,

@@ -20,18 +20,80 @@ export const products = {
 	AEPS: {
 		uriSegment: "aeps",
 		slabs: [
-			{ min: 100, max: 100 },
-			{ min: 101, max: 499 },
-			{ min: 500, max: 999 },
-			{ min: 1000, max: 1999 },
-			{ min: 2000, max: 2999 },
-			{ min: 3000, max: 6999 },
-			{ min: 7000, max: 9999 },
-			{ min: 10000, max: 10000 },
+			{
+				min: 101,
+				max: 499,
+				validation: {
+					RETAILER: {
+						fixed: { min: 0, max: 1 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 500,
+				max: 999,
+				validation: {
+					RETAILER: {
+						fixed: { min: 0, max: 3.25 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 1000,
+				max: 1999,
+				validation: {
+					RETAILER: {
+						fixed: { min: 0, max: 6.9 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 2000,
+				max: 2999,
+				validation: {
+					RETAILER: {
+						fixed: { min: 0, max: 11.5 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 3000,
+				max: 6999,
+				validation: {
+					RETAILER: {
+						fixed: { min: 0, max: 13.65 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 7000,
+				max: 9999,
+				validation: {
+					RETAILER: {
+						fixed: { min: 0, max: 13.65 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 10000,
+				max: 10000,
+				validation: {
+					RETAILER: {
+						fixed: { min: 0, max: 13.65 },
+						percentage: false,
+					},
+				},
+			},
 		],
 		DEFAULT: {
 			operation_type: "3",
-			pricing_type: "0",
+			pricing_type: "1",
 		},
 		serviceCode: 424,
 	},
@@ -46,8 +108,46 @@ export const products = {
 	INDO_NEPAL_FUND_TRANSFER: {
 		uriSegment: "indonepal",
 		slabs: [
-			{ min: 100, max: 5000 },
-			{ min: 5001, max: 49800 },
+			{
+				min: 100,
+				max: 5000,
+				validation: {
+					RETAILER: {
+						fixed: {
+							cash_to_cash: { min: 0, max: 33.8 },
+							cash_to_account: { min: 0, max: 20.5 },
+						},
+						percentage: false,
+					},
+					DISTRIBUTOR: {
+						fixed: {
+							cash_to_cash: { min: 0, max: 23.3 },
+							cash_to_account: { min: 0, max: 13.75 },
+						},
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 5001,
+				max: 49999,
+				validation: {
+					RETAILER: {
+						fixed: {
+							cash_to_cash: { min: 0, max: 45 },
+							cash_to_account: { min: 0, max: 27.4 },
+						},
+						percentage: false,
+					},
+					DISTRIBUTOR: {
+						fixed: {
+							cash_to_cash: { min: 0, max: 30.8 },
+							cash_to_account: { min: 0, max: 18.3 },
+						},
+						percentage: false,
+					},
+				},
+			},
 		],
 		DEFAULT: {
 			operation_type: "3",
@@ -232,37 +332,17 @@ export const products = {
 export const productPricingCommissionValidationConfig = {
 	DMT: {
 		RETAILER: {
-			PERCENT: { min: 0.3, max: 0.7 },
-			FIXED: { min: 3.72, max: 35 },
+			PERCENT: { min: 0.45, max: 0.7 },
+			// FIXED: { min: 3.72, max: 35 },
 		},
 		DISTRIBUTOR: {
-			PERCENT: { min: 0, max: 0.7 },
-			FIXED: { min: 0, max: 35 },
-		},
-	},
-	AEPS: {
-		RETAILER: {
-			PERCENT: { min: 0, max: 0.45 },
-			FIXED: { min: 0, max: 13.65 },
-		},
-		DISTRIBUTOR: {
-			PERCENT: { min: 0, max: 0.45 },
-			FIXED: { min: 0, max: 13.65 },
+			PERCENT: { min: 0, max: 0.25 },
+			// FIXED: { min: 0, max: 35 },
 		},
 	},
 	AADHAAR_PAY: {
 		PERCENT: { min: 0.3, max: 1 },
 		FIXED: { min: 0.3, max: 100 },
-	},
-	INDO_NEPAL_FUND_TRANSFER: {
-		RETAILER: {
-			FIXED_CTC: { min: 0, max: 90 },
-			FIXED_CTA: { min: 0, max: 1.8 },
-		},
-		DISTRIBUTOR: {
-			FIXED_CTC: { min: 0, max: 90 },
-			FIXED_CTA: { min: 0, max: 1.8 },
-		},
 	},
 	CREDIT_CARD_BILL_PAYMENT: {
 		RETAILER: {

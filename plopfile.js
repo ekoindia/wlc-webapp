@@ -41,6 +41,7 @@ module.exports = (plop) => {
 	 * - components
 	 * - page-components
 	 * - tf-components
+	 * - layout-components
 	 *
 	 * Option to use Typescript or Javascript.
 	 * Option to include hooks like useEffect, useState, useReducer.
@@ -75,6 +76,7 @@ module.exports = (plop) => {
 						name: "page-components/Admin/",
 						value: "page-components/Admin",
 					},
+					{ name: "layout-components/", value: "layout-components" },
 				],
 				default: "component",
 			},
@@ -87,8 +89,7 @@ module.exports = (plop) => {
 			{
 				type: "checkbox",
 				name: "options",
-				message:
-					"Select additional details (Space to toggle, Enter when done):",
+				message: "Select additional details:",
 				choices: [
 					{
 						name: "Use Typescript (.tsx) for component",
@@ -115,8 +116,7 @@ module.exports = (plop) => {
 			{
 				type: "checkbox",
 				name: "hooks",
-				message:
-					"[OPTIONAL] Select required hooks (Space to select, Enter when done):",
+				message: "[OPTIONAL] Select required hooks:",
 				choices: [
 					{ name: "useEffect", value: "useEffect" },
 					{ name: "useState", value: "useState" },
@@ -236,8 +236,7 @@ module.exports = (plop) => {
 			{
 				type: "checkbox",
 				name: "options",
-				message:
-					"Select additional details (Space to toggle, Enter when done):",
+				message: "Select additional details:",
 				choices: [
 					{
 						name: "Use Typescript (.tsx) for component",
@@ -298,6 +297,51 @@ module.exports = (plop) => {
 
 			return actions;
 		},
+	});
+
+	/**
+	 * Create a new hook in the hooks folder.
+	 * Option to use Typescript or Javascript.
+	 * Option to generate unit-test.
+	 */
+	plop.setGenerator("Hook", {
+		description: "Create a React hook",
+		prompts: [
+			{
+				type: "input",
+				name: "name",
+				message: "Name of the hook (WITHOUT PREPENDING 'use')?",
+				validate: requireField("name"),
+			},
+		],
+		actions: [
+			{
+				// Add hook
+				type: "add",
+				path: "hooks/use{{pascalCase name}}.js",
+				templateFile: "plop-templates/hooks/hook.jsx.hbs",
+			},
+			{
+				// Add hooks index file (if it does not already exist)
+				type: "add",
+				path: "hooks/index.js",
+				template: `/* PLOP_INJECT_EXPORT */\n`,
+				skipIfExists: true,
+			},
+			{
+				// Append hook export in the hooks index file
+				type: "append",
+				path: "hooks/index.js",
+				pattern: `/* PLOP_INJECT_EXPORT */`,
+				template: `export { default as use{{pascalCase name}} } from "./use{{pascalCase name}}";`,
+			},
+			{
+				// Add Jest test for the hook
+				type: "add",
+				path: "__tests__/hooks/use{{pascalCase name}}/use{{pascalCase name}}.test.js",
+				templateFile: "plop-templates/hooks/hook.test.jsx.hbs",
+			},
+		],
 	});
 
 	// plop.setGenerator("Component (.tsx)", {
@@ -711,46 +755,6 @@ module.exports = (plop) => {
 	// 		},
 	// 	],
 	// });
-
-	plop.setGenerator("Hook", {
-		description: "Create a React hook",
-		prompts: [
-			{
-				type: "input",
-				name: "name",
-				message: "Name of the hook (WITHOUT PREPENDING 'use')?",
-				validate: requireField("name"),
-			},
-		],
-		actions: [
-			{
-				// Add hook
-				type: "add",
-				path: "hooks/use{{pascalCase name}}.js",
-				templateFile: "plop-templates/hooks/hook.jsx.hbs",
-			},
-			{
-				// Add hooks index file (if it does not already exist)
-				type: "add",
-				path: "hooks/index.js",
-				template: `/* PLOP_INJECT_EXPORT */\n`,
-				skipIfExists: true,
-			},
-			{
-				// Append hook export in the hooks index file
-				type: "append",
-				path: "hooks/index.js",
-				pattern: `/* PLOP_INJECT_EXPORT */`,
-				template: `export { default as use{{pascalCase name}} } from "./use{{pascalCase name}}";`,
-			},
-			{
-				// Add Jest test for the hook
-				type: "add",
-				path: "__tests__/hooks/use{{pascalCase name}}/use{{pascalCase name}}.test.js",
-				templateFile: "plop-templates/hooks/hook.test.jsx.hbs",
-			},
-		],
-	});
 
 	// plop.setGenerator("Test for Component", {
 	// 	description: "Create a Jest test file for a component",

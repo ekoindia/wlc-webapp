@@ -28,6 +28,8 @@ export default async function proxy(req, res) {
 		theme_color: theme?.primary_light || "#ffffff",
 		display: "standalone",
 		categories: ["finance", "shopping"],
+		// TODO:  "description": "A simple, secure and fast way to pay your bills and recharge your mobile phone.",
+		// TODO: "screenshots": [{src, sizes, type, form_factor, label}],
 		icons: [
 			{
 				src: "/favicon.svg",

@@ -71,9 +71,7 @@ const GlobalSearch = ({ ...rest }) => {
 				color="dark"
 				display={{ base: "none", md: "flex" }}
 			>
-				<Key fontFamily={isMac ? "sans" : null}>
-					{isMac ? "⌘" : "Ctrl"}
-				</Key>
+				<Key>{isMac ? "⌘" : "Ctrl"}</Key>
 				<Key>K</Key>
 			</Flex>
 		</Flex>
@@ -92,6 +90,7 @@ function Key({ children, ...rest }) {
 			minH="24px"
 			minW="26px"
 			color="light"
+			fontFamily="inherit"
 			{...rest}
 		>
 			{children}

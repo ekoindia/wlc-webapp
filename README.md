@@ -19,12 +19,13 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - TODO: Provide for A-B testing, gradual roll-out, etc.
 - To add a new feature-flag, add a new entry in the [constants/featureFlags.ts](constants/featureFlags.ts) file.
 - To test for a feature-flag, use the `useFeatureFlag` hook from [hooks/useFeatureFlag.tsx](hooks/useFeatureFlag.tsx).
+  - Eg: `const isFeatureEnabled = useFeatureFlag('MY_FEATURE');`
 
 
 ## 🎨 UI Features:
 
 - **Global Styles**:
-  - Global CSS are defined in [styles/globals.ts](styles/globals.ts).
+  - Global CSS styles are defined in [styles/globals.ts](styles/globals.ts).
 - **Theme**:
   - Default color theme configuration (CHakraUI): [styles/themes.tsx](styles/themes.tsx)
   - A list of predefined color-themes for the organizations to choose from: [constants/colorThemes.js](constants/colorThemes.js)
@@ -36,7 +37,9 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - There are duplicate icon-names as well, same icons with different names (for backward compatibility). Such icons are shown in red background with the pointer to the actual icon name.
   - For optimizing individual SVG icons, use: [SVGOMG - SVGO's Missing GUI](https://jakearchibald.github.io/svgomg/)
 - **Top Navbar** - [components/NavBar/NavBar.jsx](components/NavBar/NavBar.jsx)
-  - Menu items configuration: [constants/profileCardMenus.js](constants/profileCardMenus.js)
+  - Profile-menu (drop-down menu in top-right corner):
+    - Rendered in the `MyAccountCard` component in NavBar.jsx.
+    - Items configuration (for internal links, such as, Settings page): [constants/profileCardMenus.js](constants/profileCardMenus.js)
 - **Left Sidebar** - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
   - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
   - Menu Context (data fetch after login): [contexts/MenuContext.tsx](contexts/MenuContext.tsx)
@@ -56,13 +59,12 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 ### Pub/Sub
 
 To use pub/sub, follow the following steps:
-- Open [PubSubContext.js](contexts/PubSubContext.js) and add your new topic/purpose under the `TOPIC` array.
+- Add your new topic/purpose in the [constants/PubSubTopics.ts](constants/PubSubTopics.ts) file.
 - For publishing events to this topic:
   ```jsx
   import { usePubSub } from "contexts";
 
   const { publish, TOPICS } = usePubSub();
-  ...
   publish(TOPIC.MY_TOPIC, data);	// data = additional data to pass to the subscribers
   ```
   Where, _data_ is the additional data you want to pass to the subscribers.
@@ -91,7 +93,7 @@ How does communication with the Android wrapper app work?
 	- Web-app can call this `postMessage` method to send messages to the Android app.
 	- Android app can listen to these messages and take appropriate actions.
 - On this web-app side:
-	- In the [Layout component](components/Layout/Layout.tsx), the following 1-time setup is done:
+	- In the [Layout component](layout-components/Layout/Layout.tsx), the following 1-time setup is done:
 		- Call postMessage method to send a `connect_ready` message to the Android app to let it know that the web-app is ready to receive messages.
 		- Setup a callback function `callFromAndroid` to listen to messages from the Android app.
 	- We have a `postMessage` method in [utils/AndroidUtils.ts](utils/AndroidUtils.ts) which can be used to send messages to the Android app.
@@ -112,13 +114,21 @@ How does communication with the Android wrapper app work?
 - `useSessionStorage`: Read/Write data to the browser's sessionStorage.
 - `usePubSub`: Publish/Subscribe to events. Add new topics in the [contexts/PubSubContext.js](contexts/PubSubContext.js) file.
 
+### 📦 Custom [**libs**](libs/):
+These are wrappers around 3rd-party libraries or associated utility functions.
+- [GoogleMap](libs/GoogleMap.jsx) - Google Maps API wrapper
+- [Map View](libs/MapView.js) - View static maps using iFrame
+- [dateFormat](libs/dateFormat.js) - Date formatting utility (wrapper around `date-fns`)
+- [faceDetector](libs/faceDetector.js) - Dynamically loads MediaPipe Face Detector model (uses wasm)
+- [chakraKeyFrames](libs/chakraKeyFrames.js) - Common keyframes for ChakraUI animations
 
-## Global [Contexts](contexts/) (Data Providers)
+
+## 💽 Global [Contexts](contexts/) (Data Providers)
 1.
 
 
 
-## Browser Storage
+## 💾 Browser Storage
 The following data is stored in the browser (localStorage & sessionStorage):
 ### LocalStorage
 1.

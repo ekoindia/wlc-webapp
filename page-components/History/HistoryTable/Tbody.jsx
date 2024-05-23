@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { Button, Share } from "components";
 import { useMenuContext, useOrgDetailContext } from "contexts";
+import { useFeatureFlag, useRaiseIssue } from "hooks";
 import useHslColor from "hooks/useHslColor";
 import { Fragment } from "react";
 import { printPage } from "utils";
@@ -124,6 +125,8 @@ const Trow = ({
 	const txicon = trxn_type_prod_map?.[item.tx_typeid]?.icon || null;
 	const { h } = useHslColor(item.tx_name);
 	const { orgDetail } = useOrgDetailContext();
+	const isRaiseIssueAllowed = useFeatureFlag("RAISE_ISSUE");
+	const { showRaiseIssueDialog } = useRaiseIssue();
 
 	const serialNumber =
 		index + pageNumber * tableRowLimit - (tableRowLimit - 1);
@@ -272,6 +275,7 @@ const Trow = ({
 
 						<Flex
 							direction="column"
+							align="flex-start"
 							gap={3}
 							sx={{
 								"@media print": {
@@ -283,13 +287,46 @@ const Trow = ({
 							{/* <Button fontSize="xs" size="md" disabled>
 										Repeat Transaction
 									</Button> */}
+							{/* Raise Query */}
+							{isRaiseIssueAllowed ? (
+								<Button
+									variant="link"
+									fontSize="xs"
+									size="md"
+									icon="feedback"
+									color="accent.DEFAULT"
+									iconStyle={{
+										size: "20px",
+										mr: "3px",
+									}}
+									onClick={() => {
+										// console.log("Raise Issue:::::", item);
+										showRaiseIssueDialog({
+											origin: "History",
+											tid: item.tid,
+											tx_typeid: item.tx_typeid,
+											status: item.status_id || 0,
+											transaction_time: item.datetime,
+											// logo:
+											metadata: {
+												transaction_detail: item,
+												// parameters_formatted:
+												pre_msg_template:
+													"Transaction History Details",
+												post_msg_template: "",
+											},
+										});
+									}}
+								>
+									Report Issue
+								</Button>
+							) : null}
 							{/* Print Receipt button */}
 							<Button
 								variant="link"
 								fontSize="xs"
 								size="md"
 								icon="print"
-								pt="10px"
 								color="accent.DEFAULT"
 								onClick={() => {
 									printPage("Receipt (Copy)");
@@ -305,6 +342,7 @@ const Trow = ({
 								size="md"
 								color="accent.DEFAULT"
 								labelProps={{ fontSize: "xs" }}
+								iconProps={{ size: "22px" }}
 							/>
 						</Flex>
 					</Flex>

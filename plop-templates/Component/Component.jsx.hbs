@@ -29,9 +29,12 @@ const reducer = (state, { type, payload }) => {
 /**
  * A <{{pascalCase name}}> component
  * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
+ *
+ * @component
+ * @param {object} prop - Properties passed to the component
+ * @param {string} prop.prop1 - TODO: Property description. A normal property.
+ * @param {number} [prop.optionalProp2=0] - TODO: Property description. An optional property with default value.
+ * @param {...*} rest - Rest of the props
  * @example	`<{{pascalCase name}}></{{pascalCase name}}>` TODO: Fix example
  */
 const {{pascalCase name}} = ({ prop1, ...rest })  => {
@@ -52,6 +55,7 @@ const {{pascalCase name}} = ({ prop1, ...rest })  => {
 
 	{{/if}}
 
+	// MARK: Main JSX
 	return (
 		<Flex {...rest}>
 			{{name}}

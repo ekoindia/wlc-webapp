@@ -12,6 +12,8 @@ module.exports = {
 		"../page-components/**/*.stories.@(js|jsx|ts|tsx)",
 		"../tf-components/**/*.stories.mdx",
 		"../tf-components/**/*.stories.@(js|jsx|ts|tsx)",
+		"../layout-components/**/*.stories.mdx",
+		"../layout-components/**/*.stories.@(js|jsx|ts|tsx)",
 	],
 	addons: [
 		"@storybook/addon-links",
@@ -31,6 +33,7 @@ module.exports = {
 		// 				path.resolve(__dirname, "../pages"),
 		// 				path.resolve(__dirname, "../page-components"),
 		// 				path.resolve(__dirname, "../tf-components"),
+		// 				path.resolve(__dirname, "../layout-components"),
 		// 				// path.resolve(__dirname, "../features"),
 		// 			], // You can specify directories
 		// 		},
@@ -64,6 +67,10 @@ module.exports = {
 		config.resolve.alias["tf-components"] = path.resolve(
 			__dirname,
 			"../tf-components"
+		);
+		config.resolve.alias["layout-components"] = path.resolve(
+			__dirname,
+			"../layout-components"
 		);
 		// config.resolve.alias["features"] = path.resolve(
 		// 	__dirname,

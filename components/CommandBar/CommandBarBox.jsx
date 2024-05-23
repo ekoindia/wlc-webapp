@@ -30,10 +30,11 @@ import { Icon, Kbd } from "..";
 
 /**
  * KBar Portal Box to show the search bar and results
- * @param {any} fontClassName - The class name to be applied to the rendered results for setting custom font.
- * @returns
+ * @param {object} props
+ * @param {string} [props.fontClassName=null] - The class name to be applied to the rendered results to set a custom font.
+ * @returns {JSX.Element} The CommandBarBox component
  */
-export default function CommandBarBox({ fontClassName }) {
+export default function CommandBarBox({ fontClassName = null }) {
 	const { query } = useKBar();
 
 	const isSmallScreen = useBreakpointValue(
@@ -186,6 +187,7 @@ const getDynamicActions = ({
 	setParse,
 	parseLoadState,
 	setParseLoadState,
+	// showRaiseIssueDialog,
 }) => {
 	const preActions = [];
 	const postActions = [];
@@ -224,6 +226,25 @@ const getDynamicActions = ({
 		if (!isAdmin) {
 			postActions.push(...getNotesAction({ queryValue, addTodo, toast }));
 		}
+
+		// TODO: JUST FOR TESTING... Raise Query with Screenshot
+		// postActions.push(
+		// 	getKBarAction({
+		// 		id: "raise-issue-with-screenshot",
+		// 		name: "Raise Issue with Screenshot",
+		// 		icon: "feedback",
+		// 		// shortcut: "Ctrl+Alt+I",
+		// 		// keywords: "issue bug report",
+		// 		section: "Actions",
+		// 		perform: () => {
+		// 			showRaiseIssueDialog({
+		// 				origin: "Global-Help",
+		// 				autoCaptureScreenshot: true,
+		// 				customIssueType: "Need help with this screen",
+		// 			});
+		// 		},
+		// 	})
+		// );
 	}
 
 	return [preActions, postActions];
@@ -258,6 +279,8 @@ function RenderResults({ className, isSmallScreen }) {
 		1000
 	);
 
+	// const { showRaiseIssueDialog } = useRaiseIssue();
+
 	useEffect(() => {
 		setQueryValueDebounced(queryValue);
 	}, [queryValue, setQueryValueDebounced]);
@@ -278,6 +301,7 @@ function RenderResults({ className, isSmallScreen }) {
 			setParse,
 			parseLoadState,
 			setParseLoadState,
+			// showRaiseIssueDialog,
 		});
 		setPreActions(_preActions);
 		setPostActions(_postActions);

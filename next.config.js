@@ -26,6 +26,7 @@ const nextConfig = withBundleAnalyzer({
 			"components",
 			"page-components",
 			"tf-components",
+			"layout-components",
 			"pages",
 			"features",
 			"libs",

@@ -71,7 +71,8 @@ const ResultItem = forwardRef(({ className, item, active }, ref) => {
 								minH="24px"
 								minW="24px"
 								variant="dark"
-								fontFamily={key === "$mod" ? "sans" : null}
+								// fontFamily={key === "$mod" ? "sans" : null}
+								fontFamily="inherit"
 								textTransform={
 									key?.length === 1 ? "uppercase" : undefined
 								}

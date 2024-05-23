@@ -11,7 +11,7 @@ import {
 	useUser,
 	useWallet,
 } from "contexts";
-import { useAppLink, useExternalResource } from "hooks";
+import { useAppLink, useExternalResource, useRaiseIssue } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRegisterActions } from "kbar";
 import Head from "next/head";
@@ -56,6 +56,9 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 	// Create a reference for the Widget component
 	const widgetRef = useRef(null);
+
+	// Show the "Raise Issue" dialog
+	const { showRaiseIssueDialog } = useRaiseIssue();
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
@@ -168,23 +171,28 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 				priority: 99, // Show on top
 				// shortcut: ["$mod+shift+/"],
 				perform: () => {
-					widgetRef?.current?._onFeedbackDialogEvent({
-						detail: {
-							open_feedback_dlg: true,
-							feedback_origin: isResp
-								? "Response"
-								: "command-bar",
+					showRaiseIssueDialog(
+						{
+							origin: isResp ? "Response" : "Command-Bar",
 							tid: resp?.response?.data?.tid ?? -1,
 							status:
 								resp?.response?.data?.tx_status?.toString() ??
 								"-1",
-							extra_metadata: metadata,
+							metadata: metadata,
 							customIssueType:
 								isResp && resp?.response?.data?.tid
 									? undefined
 									: "Need help with " + start_trxn.label,
 						},
-					});
+						// Handle Response: Inform widget when the Raise-Issue dialog is closed with a response
+						(data) =>
+							data &&
+							widgetRef?.current?.feedbackResponse({
+								feedback_ticket_id:
+									data.feedback_ticket_id || "",
+								to_and_fro_data: data.context,
+							})
+					);
 				},
 			},
 		];
@@ -205,10 +213,12 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 	// const { widgetLoading } =
 	useSetupWidgetEventListeners(
+		widgetRef,
 		router,
 		openUrl,
 		refreshUser,
-		setTransactionFlow
+		setTransactionFlow,
+		showRaiseIssueDialog
 	);
 
 	// Handle widget load error
@@ -369,6 +379,8 @@ const setupWidgetEventListeners = ({
 	router,
 	openUrl,
 	setTransactionFlow,
+	showRaiseIssueDialog,
+	widgetRef,
 }) => {
 	/**
 	 * Event called when the user session expires
@@ -436,6 +448,20 @@ const setupWidgetEventListeners = ({
 			cardType: isResp ? "response" : "request",
 			response: detail,
 		}));
+	};
+
+	const onFeedbackDialogEvent = ({ detail }) => {
+		// console.log("[EkoConnectWidget] >>> onFeedbackDialogEvent:: ", detail);
+		showRaiseIssueDialog(
+			detail,
+			// Handle Response: Inform widget when the Raise-Issue dialog is closed with a response
+			(data) =>
+				data &&
+				widgetRef?.current?.feedbackResponse({
+					feedback_ticket_id: data.feedback_ticket_id || "",
+					to_and_fro_data: data.context,
+				})
+		);
 	};
 
 	/**
@@ -515,6 +541,7 @@ const setupWidgetEventListeners = ({
 	window.addEventListener("open-url", onOpenUrl);
 	window.addEventListener("wlc-widget-loaded", onWlcWidgetLoad);
 	window.addEventListener("eko-response", onEkoResponse);
+	window.addEventListener("feedback-dialog-event", onFeedbackDialogEvent);
 	// TODO: iron-signal / show-toast
 	// TODO: iron-signal / track-event
 	// TODO: profile-update   		(es-interaction.html #1716)
@@ -545,6 +572,10 @@ const setupWidgetEventListeners = ({
 		window.removeEventListener("open-url", onOpenUrl);
 		window.removeEventListener("wlc-widget-loaded", onWlcWidgetLoad);
 		window.removeEventListener("eko-response", onEkoResponse);
+		window.removeEventListener(
+			"feedback-dialog-event",
+			onFeedbackDialogEvent
+		);
 	};
 };
 
@@ -561,17 +592,21 @@ const configurePolymer = () => {
 
 /**
  * Custom hook to setup event listeners for the Connect widget.
+ * @param {Object} widgetRef - The React reference to the Connect widget component.
  * @param {Object} router - The React Router instance
  * @param {Function} openUrl - The useAppLink function to open internal or external URLs.
  * @param {Function} refreshUser - Function to refresh the user profile data.
  * @param {Function} setTransactionFlow - Function to set the current transaction flow state.
+ * @param {Function} showRaiseIssueDialog - Function to show the "Raise Issue" dialog.
  * @returns	{Object} - The widgetLoading state
  */
 const useSetupWidgetEventListeners = (
+	widgetRef,
 	router,
 	openUrl,
 	refreshUser,
-	setTransactionFlow
+	setTransactionFlow,
+	showRaiseIssueDialog
 ) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
@@ -591,6 +626,8 @@ const useSetupWidgetEventListeners = (
 			router,
 			openUrl,
 			setTransactionFlow,
+			showRaiseIssueDialog,
+			widgetRef,
 		});
 		configurePolymer();
 
