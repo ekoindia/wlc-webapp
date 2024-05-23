@@ -1,5 +1,6 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
 import { PageLoader /*,NavBar, SideBar */ } from "components";
+import { BottomAppBar, useBottomBarItems } from "components/BottomAppBar";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { NavHeight } from "components/NavBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
@@ -56,7 +57,7 @@ const DynamicPopupModuleLoader = dynamic(
  * @param {String} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
 const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
-	const { isSubPage, title, hideMenu } = pageMeta;
+	const { isSubPage, title, hideMenu, showBottomAppBar = true } = pageMeta;
 
 	const { isLoggedIn } = useSession();
 	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
@@ -73,6 +74,9 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
+
+	// Get the bottom bar items
+	const bottomBarItems = useBottomBarItems();
 
 	// Delay load non-essential components...
 	const [loadNavBar] = useDelayToggle(100);
@@ -230,6 +234,23 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							</Box>
 						</Flex>
 					)}
+					{showBottomAppBar && isSmallScreen ? (
+						<Box
+							className="layout-bottom-app-bar"
+							pos="fixed"
+							w="100%"
+							bottom="0"
+							left="0"
+							right="0"
+							sx={{
+								"@media print": {
+									display: "none",
+								},
+							}}
+						>
+							<BottomAppBar {...{ bottomBarItems }} />
+						</Box>
+					) : null}
 				</Box>
 			) : (
 				<>{children}</>
