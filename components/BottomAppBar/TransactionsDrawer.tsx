@@ -16,7 +16,13 @@ import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useRef } from "react";
 import { svgBgDotted } from "utils/svgPatterns";
-import { Accordion, AccordionItem, Icon } from "..";
+import {
+	Accordion,
+	AccordionButton,
+	AccordionItem,
+	AccordionPanel,
+	Icon,
+} from "..";
 
 /**
  * Generates a new path for transaction navigation.
@@ -68,49 +74,51 @@ const TransactionsDrawer = (): JSX.Element => {
 
 	return (
 		<DrawerContainer {...{ isOpen, onOpen, onClose, btnRef }}>
-			{trxnList?.map(
-				(
-					{
-						id,
-						behavior,
-						group_interaction_ids,
-						label,
-						icon,
-					}: InteractionList,
-					index: number
-				) => {
-					return (
-						<>
-							{group_interaction_ids !== null &&
-							InteractionBehavior.GRID === +behavior ? (
-								<GridInteraction
-									{...{
-										key: index,
-										id,
-										group_interaction_ids,
-										label,
-										icon,
-										onClose,
-									}}
-								/>
-							) : (
-								<Interaction
-									{...{
-										key: index,
-										id,
-										label,
-										icon,
-										onClose,
-									}}
-								/>
-							)}
-							{trxnList.length - 1 !== index && (
-								<Divider variant="dashed" />
-							)}
-						</>
-					);
-				}
-			)}
+			<Accordion allowToggle>
+				{trxnList?.map(
+					(
+						{
+							id,
+							behavior,
+							group_interaction_ids,
+							label,
+							icon,
+						}: InteractionList,
+						index: number
+					) => {
+						return (
+							<>
+								{group_interaction_ids !== null &&
+								InteractionBehavior.GRID === +behavior ? (
+									<GridInteraction
+										{...{
+											key: index,
+											id,
+											group_interaction_ids,
+											label,
+											icon,
+											onClose,
+										}}
+									/>
+								) : (
+									<Interaction
+										{...{
+											key: index,
+											id,
+											label,
+											icon,
+											onClose,
+										}}
+									/>
+								)}
+								{trxnList.length - 1 !== index && (
+									<Divider variant="dashed" />
+								)}
+							</>
+						);
+					}
+				)}
+			</Accordion>
 		</DrawerContainer>
 	);
 };
@@ -213,42 +221,8 @@ const Interaction = ({
 	icon,
 	onClose,
 }: InteractionProps): JSX.Element => {
-	return <InteractionItem {...{ id, label, icon, onClose }} />;
-};
-
-/* ####################### InteractionItem ####################### */
-
-type InteractionItemProps = {
-	id: number;
-	label: string;
-	icon: string;
-	onClose: () => void;
-	isGridInteraction?: boolean;
-};
-
-/**
- * `InteractionItem` is a component that represents a single interaction item.
- * It displays an icon and a label, and navigates to the transaction page for the interaction when clicked.
- * If `isGridInteraction` is true, the click handler is disabled.
- *
- * @param {number} id - The ID of the interaction.
- * @param {string} label - The label for the interaction.
- * @param {string} icon - The icon for the interaction.
- * @param {() => void} onClose - Callback invoked to close the modal.
- * @param {boolean} [isGridInteraction=false] - Whether the interaction is part of a grid. If true, the click handler is disabled.
- *
- * @returns {JSX.Element} A `Flex` component containing an `Icon` and a `Text` component.
- */
-const InteractionItem = ({
-	id,
-	label,
-	icon,
-	onClose,
-	isGridInteraction = false,
-}: InteractionItemProps): JSX.Element => {
-	const { h } = useHslColor(label);
-
 	const router = useRouter();
+	const { h } = useHslColor(label);
 
 	const onInteractionClick = (id: number) => {
 		const newPath = generateNewPath(router.asPath, id);
@@ -257,33 +231,36 @@ const InteractionItem = ({
 	};
 
 	return (
-		<Flex
-			align="center"
-			gap="4"
-			py="1"
-			cursor="pointer"
-			onClick={
-				isGridInteraction
-					? null
-					: () => {
-							onInteractionClick(id);
-							onClose();
-					  }
-			}
-		>
-			<Flex gap="4" w="100%" align="center">
-				<Icon name={icon} size="md" color={`hsl(${h},80%,30%)`} />
-				<Text fontSize="sm" fontWeight="medium">
-					{label}
-				</Text>
-			</Flex>
-			<Icon
-				name="chevron-right"
-				size="xs"
-				color="light"
-				_active={{ color: `hsl(${h},80%,30%)` }}
-			/>
-		</Flex>
+		<AccordionItem id={id}>
+			<AccordionButton py="1">
+				<Flex
+					align="center"
+					gap="4"
+					py="1"
+					cursor="pointer"
+					onClick={() => {
+						onInteractionClick(id);
+					}}
+				>
+					<Flex gap="4" w="100%" align="center">
+						<Icon
+							name={icon}
+							size="md"
+							color={`hsl(${h},80%,30%)`}
+						/>
+						<Text fontSize="sm" fontWeight="medium">
+							{label}
+						</Text>
+					</Flex>
+					<Icon
+						name="chevron-right"
+						size="xs"
+						color="light"
+						_active={{ color: `hsl(${h},80%,30%)` }}
+					/>
+				</Flex>
+			</AccordionButton>
+		</AccordionItem>
 	);
 };
 
@@ -319,6 +296,7 @@ const GridInteraction = ({
 }: GridInteractionProps): JSX.Element => {
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
+	const { h } = useHslColor(label);
 
 	const groupInteractions = group_interaction_ids
 		.split(",")
@@ -326,80 +304,42 @@ const GridInteraction = ({
 		.filter((id) => id in role_tx_list)
 		.map((id) => ({ id, ...role_tx_list[id] }));
 
-	const isGridInteraction = groupInteractions?.length > 1;
-
 	return (
-		<Accordion>
-			<AccordionItem
-				summary={
-					<InteractionItem
-						{...{
-							id,
-							label,
-							icon,
-							onClose,
-							isGridInteraction,
-						}}
-					/>
-				}
-				// open={openIndex === id}
-			>
-				<GridInteractionBox {...{ id, groupInteractions, onClose }} />
-			</AccordionItem>
-		</Accordion>
-	);
-};
-
-/* ####################### GridInteractionBox ####################### */
-
-type GridInteractionBoxProps = {
-	id: number;
-	groupInteractions: {
-		id: number;
-		label: string;
-		icon: string;
-	}[];
-	onClose: () => void;
-};
-
-/**
- * `GridInteractionBox` is a component that displays a group of interactions in a grid.
- * Each interaction is represented by a `GridInteractionItem` component.
- *
- * @param {number} id - The ID of the interaction group.
- * @param {Object[]} groupInteractions - An array of objects representing the interactions in the group.
- * Each object should have an `id`, a `label`, and an `icon`.
- * @param {() => void} onClose - Callback invoked to close the modal.
- *
- * @returns {JSX.Element} A `SimpleGrid` component containing a `GridInteractionItem` for each interaction in the group.
- */
-const GridInteractionBox = ({
-	id,
-	groupInteractions,
-	onClose,
-}: GridInteractionBoxProps): JSX.Element => {
-	return (
-		<Grid
-			templateColumns={{ base: "repeat(auto-fill, minmax(100px, 1fr))" }}
-			gap="4"
-			alignItems="flex-start"
-			justifyContent="center"
-		>
-			{groupInteractions?.map(
-				({ id: group_interaction_id, label, icon }, index) => (
-					<GridInteractionItem
-						key={`${index}-${label}`}
-						{...{
-							id,
-							group_interaction_id,
-							label,
-							icon,
-							onClose,
-						}}
-					/>
-				)
-			)}
-		</Grid>
+		<AccordionItem id={id}>
+			<AccordionButton py="1">
+				<Flex gap="4" w="100%" align="center" cursor="pointer">
+					<Icon name={icon} size="md" color={`hsl(${h},80%,30%)`} />
+					<Text fontSize="sm" fontWeight="medium">
+						{label}
+					</Text>
+				</Flex>
+			</AccordionButton>
+			<AccordionPanel>
+				<Grid
+					templateColumns={{
+						base: "repeat(auto-fill, minmax(100px, 1fr))",
+					}}
+					gap="4"
+					alignItems="flex-start"
+					justifyContent="center"
+				>
+					{groupInteractions?.map(
+						({ id: group_interaction_id, label, icon }, index) => (
+							<GridInteractionItem
+								key={`${index}-${label}`}
+								{...{
+									id,
+									group_interaction_id,
+									label,
+									icon,
+									onClose,
+								}}
+							/>
+						)
+					)}
+				</Grid>
+			</AccordionPanel>
+		</AccordionItem>
 	);
 };
 
