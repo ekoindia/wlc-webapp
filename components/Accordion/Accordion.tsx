@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import { ReactElement } from "react";
 import { AccordionItemProps, AccordionProvider } from ".";
 
@@ -6,6 +7,7 @@ type AccordionProps = {
 	children: ReactElement<AccordionItemProps>;
 	allowToggle?: boolean;
 	allowMultiple?: boolean;
+	[key: string]: any; // rest
 	// eslint-disable-next-line no-unused-vars
 	// onChange?: (id: number) => void; // TODO check if required!
 };
@@ -18,6 +20,7 @@ type AccordionProps = {
  * @param {boolean} [props.allowToggle=false] - If true, any expanded accordion item can be collapsed again.
  * @param {boolean} [props.allowMultiple=false] - If true, multiple accordion items can be expanded at once.
  * @param {ReactElement<AccordionItemProps>} props.children - The accordion items.
+ * @param {...Object} props.rest - A catch-all prop that allows any other prop to be passed in.
  *
  * @returns {JSX.Element} The Accordion component.
  *
@@ -28,6 +31,7 @@ const Accordion = ({
 	allowMultiple = false,
 	// onChange,
 	children,
+	...rest
 }: AccordionProps): JSX.Element => {
 	return (
 		<AccordionProvider
@@ -35,7 +39,9 @@ const Accordion = ({
 			allowMultiple={allowMultiple}
 			// onChange={onChange}
 		>
-			<div className={className}>{children}</div>
+			<Box className={className} {...rest}>
+				{children}
+			</Box>
 		</AccordionProvider>
 	);
 };
