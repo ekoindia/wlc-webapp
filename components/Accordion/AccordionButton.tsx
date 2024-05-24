@@ -50,7 +50,7 @@ const AccordionButton = ({
 				size={iconSize}
 				color={iconColor}
 				style={{
-					transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+					transform: isExpanded ? "rotate(-180deg)" : "rotate(0deg)",
 					transition: "transform 0.1s ease-in-out",
 				}}
 			/>
