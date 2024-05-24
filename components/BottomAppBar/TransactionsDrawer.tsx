@@ -7,6 +7,7 @@ import {
 	Flex,
 	Grid,
 	Text,
+	useBreakpointValue,
 	useDisclosure,
 	useToken,
 } from "@chakra-ui/react";
@@ -294,11 +295,32 @@ const GridInteraction = ({
 	const { role_tx_list } = interactions;
 	const { h } = useHslColor(label);
 
+	// Set the number of columns based on the screen size
+	const numColumns = useBreakpointValue({ base: 3, sm: 4 }, { ssr: false });
+
+	const groupInteractionCount = numColumns * 2; // Two rows of items
+
 	const groupInteractions = group_interaction_ids
 		.split(",")
 		.map(Number)
 		.filter((id) => id in role_tx_list)
 		.map((id) => ({ id, ...role_tx_list[id] }));
+
+	const groupInteractionsLength = groupInteractions?.length ?? 0;
+
+	// Ensure the "More" button appears at the end of the grid without extra space
+	const _groupInteractions =
+		groupInteractionsLength > groupInteractionCount
+			? [
+					...groupInteractions.slice(0, groupInteractionCount - 1),
+					{
+						id: null,
+						label: "More",
+						icon: "more-horiz",
+						theme: "gray",
+					},
+			  ]
+			: groupInteractions;
 
 	return (
 		<AccordionItem id={id}>
@@ -312,15 +334,21 @@ const GridInteraction = ({
 			</AccordionButton>
 			<AccordionPanel>
 				<Grid
-					templateColumns={{
-						base: "repeat(auto-fill, minmax(100px, 1fr))",
-					}}
-					gap="4"
+					templateColumns={`repeat(${numColumns}, 1fr)`}
+					gap="3"
 					alignItems="flex-start"
 					justifyContent="center"
 				>
-					{groupInteractions?.map(
-						({ id: group_interaction_id, label, icon }, index) => (
+					{_groupInteractions?.map(
+						(
+							{
+								id: group_interaction_id,
+								label,
+								icon,
+								theme = "dark",
+							},
+							index
+						) => (
 							<GridInteractionItem
 								key={`${index}-${label}`}
 								{...{
@@ -328,6 +356,7 @@ const GridInteraction = ({
 									group_interaction_id,
 									label,
 									icon,
+									theme,
 									onClose,
 								}}
 							/>
@@ -347,6 +376,7 @@ type GridInteractionItemProps = {
 	group_interaction_id: number;
 	label: string;
 	icon: string;
+	theme: string;
 	onClose: () => void;
 };
 
@@ -360,6 +390,7 @@ type GridInteractionItemProps = {
  * @param {number} props.group_interaction_id - The ID of the interaction within the group.
  * @param {string} props.label - The label for the interaction.
  * @param {string} props.icon - The icon for the interaction.
+ * @param {string} props.theme - The theme for the Avatar
  * @param {() => void} props.onClose - A function to be called when the interaction is clicked.
  *
  * @returns {JSX.Element} A `Flex` component containing an `Avatar` and a `Text` component.
@@ -370,6 +401,7 @@ const GridInteractionItem = ({
 	group_interaction_id,
 	label,
 	icon,
+	theme,
 	onClose,
 }: GridInteractionItemProps): JSX.Element => {
 	const router = useRouter();
@@ -384,6 +416,23 @@ const GridInteractionItem = ({
 		onClose();
 	};
 
+	// TODO create common func for getting theme object
+	// for avatar bg & color
+	const avatarTheme: Object =
+		theme === "dark"
+			? {
+					bg: "inputlabel",
+					color: "white",
+					boxShadow: "0px 3px 10px #0000001A",
+			  }
+			: theme === "gray"
+			? {
+					bgGradient: "linear(to-b, divider, hint)",
+					color: "white",
+					border: "1px solid var(--chakra-colors-divider)",
+			  }
+			: null;
+
 	return (
 		<Flex
 			key={key}
@@ -391,6 +440,7 @@ const GridInteractionItem = ({
 			align="center"
 			justify="center"
 			gap="2"
+			py="2"
 			cursor="pointer"
 			onClick={() => {
 				onInteractionClick(id, group_interaction_id);
@@ -400,11 +450,10 @@ const GridInteractionItem = ({
 			<Avatar
 				size="sm"
 				name={icon ? null : label}
-				bg="inputlabel"
-				color="white"
 				icon={<Icon size="16px" name={icon} color="white" />}
+				{...avatarTheme}
 			/>
-			<Text fontSize="xs" noOfLines={2} textAlign="center">
+			<Text fontSize="xs" noOfLines={1} textAlign="center">
 				{label}
 			</Text>
 		</Flex>
