@@ -1,6 +1,7 @@
 import { Flex, Image, Text } from "@chakra-ui/react";
-import { useCamera, useFileView, useImageEditor } from "hooks";
-import { useEffect, useRef, useState } from "react";
+import { useOrgDetailContext, useUser } from "contexts";
+import { useCamera, useFileView, useGeolocation, useImageEditor } from "hooks";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MdCameraAlt } from "react-icons/md";
 import { Button, IcoButton, Input } from "..";
 
@@ -31,6 +32,7 @@ const IMAGE_MIME_TYPES = {
  * @param	{boolean}	[prop.options.disableCrop=false]	Disable cropping the image
  * @param	{boolean}	[prop.options.disableRotate=false]	Disable rotating the image
  * @param	{boolean}	[prop.disabled=false]	Disable the dropzone
+ * @param	{boolean}	[prop.watermark=false]	Add watermark to the Camera image. The following data is added to the image: timestamp, user name, usercode, org name, and geolocation.
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Dropzone file={screenshot} setFile={setScreenshot} />` TODO: Fix example
  */
@@ -41,6 +43,7 @@ const Dropzone = ({
 	cameraOnly = false,
 	options = {},
 	disabled = false,
+	watermark = false,
 	...rest
 }) => {
 	const [inDropZone, setInDropZone] = useState(false);
@@ -54,6 +57,54 @@ const Dropzone = ({
 	const { openCamera } = useCamera();
 	const { showImage } = useFileView();
 	const { editImage } = useImageEditor();
+
+	const { userData } = useUser();
+	const { userDetails } = userData;
+	const { name, code } = userDetails ?? {};
+	const { orgDetail } = useOrgDetailContext();
+	const { org_id, app_name } = orgDetail ?? {};
+	const [ip, setIp] = useState("");
+	const {
+		latitude,
+		longitude,
+		accuracy,
+		error: locationError,
+	} = useGeolocation({
+		highAccuracy: true,
+	});
+
+	// Get the user's IP address, if watermark is enabled
+	useEffect(() => {
+		if (!watermark) return;
+		if (ip) return;
+
+		fetch("https://api.ipify.org?format=json")
+			.then((res) => res.json())
+			.then((data) => {
+				console.log("User's IP address: ", data);
+				setIp(data.ip);
+			})
+			.catch((err) => {
+				console.error("Error fetching IP address: ", err);
+			});
+	}, [watermark]);
+
+	// Generate memoised watermark text
+	const watermarkText = useMemo(() => {
+		if (!watermark) return "";
+
+		const timestamp = new Date().toLocaleString();
+		const _name = name || "";
+		const _code = code || "";
+		const _org = (app_name || "Org") + (org_id ? ` (${org_id})` : "");
+		const _location = locationError
+			? ""
+			: `${latitude}, ${longitude} (${accuracy}m)`;
+
+		return `${_name} (${_code})\n${_org}\n${_location} – ${
+			ip || ""
+		}\n${timestamp} @ ${window.location.host}`;
+	}, [watermark, name, code, org_id, app_name, location, ip]);
 
 	// Log file
 	useEffect(() => {
@@ -368,7 +419,13 @@ const Dropzone = ({
 							<Btn
 								onClick={() =>
 									openCamera(
-										{ ...options },
+										{
+											watermark:
+												watermark && watermarkText
+													? watermarkText
+													: "",
+											...options,
+										},
 										handleCameraResponse
 									)
 								}

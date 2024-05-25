@@ -2,7 +2,11 @@ import { Box, Flex } from "@chakra-ui/react";
 import { IcoButton } from "components";
 import { IconNameType } from "constants/IconLibrary";
 import { useFeatureFlag } from "hooks";
-import { getDefaultCrop, initializeFaceDetector } from "libs/faceDetector";
+import {
+	getCompositeFaceBound,
+	getDefaultCrop,
+	initializeFaceDetector,
+} from "libs/faceDetector";
 import { useEffect, useRef, useState } from "react";
 import {
 	MdClose,
@@ -21,6 +25,7 @@ interface ImageEditorProps {
 	disableRotate?: boolean;
 	disableImageEdit?: boolean;
 	detectFace?: boolean;
+	watermark?: string;
 	onClose: (_result: {
 		image: string;
 		file?: File;
@@ -56,6 +61,7 @@ const rc_mask_opacity = 0.8; // Default = 0.5
  * @param {boolean} [prop.disableCrop=false] - Whether to disable the crop functionality
  * @param {boolean} [prop.disableRotate=false] - Whether to disable the rotate functionality
  * @param {boolean} [prop.disableImageEdit=false] - Whether to disable the all image editing functionalities
+ * @param {string} [prop.watermark] - The watermark text to be displayed on the bottom-left corner of the edited image
  * @param {function} prop.onClose - Callback function to close the editor (when the user accepted or rejected the changes/image)
  * @example	`<ImageEditor image="..." onResult={...} onClose={...} />`
  */
@@ -68,6 +74,7 @@ const ImageEditor = ({
 	disableCrop = false,
 	disableRotate = false,
 	disableImageEdit = false,
+	watermark,
 	onClose,
 }: ImageEditorProps) => {
 	const [sourceImage, setSourceImage] = useState<string>(image);
@@ -109,8 +116,13 @@ const ImageEditor = ({
 					"Face detected: " + Math.round(score * 100) + "% confidence"
 				);
 
+				// const fullFace = getFullFaceBound(face);
+
+				const fullFace = getCompositeFaceBound(detections, 2);
+
 				console.log("🙄 FACE 1 ::: ", {
 					face,
+					fullFace,
 					crop,
 					width: imageRef.current.width,
 					naturalWidth: imageRef.current.naturalWidth,
@@ -119,10 +131,10 @@ const ImageEditor = ({
 				// Set the crop area to the detected face
 				const scaleFactor =
 					imageRef.current.height / imageRef.current.naturalHeight;
-				const faceX = face.originX * scaleFactor;
-				const faceY = face.originY * scaleFactor;
-				const faceWidth = face.width * scaleFactor;
-				const faceHeight = face.height * scaleFactor;
+				const faceX = fullFace.x * scaleFactor;
+				const faceY = fullFace.y * scaleFactor;
+				const faceWidth = fullFace.width * scaleFactor;
+				const faceHeight = fullFace.height * scaleFactor;
 
 				setCrop({
 					unit: "px",
@@ -194,17 +206,19 @@ const ImageEditor = ({
 
 		// Get the cropped image
 		try {
-			const croppedImageUrl = getProcessedImg({
+			// Get the edited image (cropped, rotated, resized, watermarked, etc.)
+			let croppedImageUrl = getProcessedImg({
 				image: imageRef.current,
 				cropEnabled,
 				crop,
 				maxLength,
+				watermark,
 			});
-			// Close the editor with result
 
 			// Create a file-version of the cropped image
 			const imageFile = await getFileFromImageUrl(croppedImageUrl);
 
+			// Close the editor with result
 			onClose &&
 				onClose({
 					image: croppedImageUrl || sourceImage || image,
@@ -654,21 +668,24 @@ const IcoBtn = ({
  * 3. Resizing the cropped image to fit the maxLength
  * @param {object} params - The parameters for the image processing
  * @param {HTMLImageElement} params.image - The image to be processed
- * @param {boolean} params.cropEnabled - Whether the crop is enabled
- * @param {object} params.crop - The crop area
- * @param {number} params.maxLength - The maximum length of the image (longer side) in pixels
- * @returns {string} - The cropped image as a file URL string
+ * @param {boolean} [params.cropEnabled] - Whether the crop is enabled
+ * @param {object} [params.crop] - The crop area
+ * @param {number} [params.maxLength] - The maximum length of the image (longer side) in pixels
+ * @param {string} [params.watermark] - The watermark text to be displayed on the bottom-left of the edited image
+ * @returns {string} - The edited image as a file URL string
  */
 const getProcessedImg = ({
 	image,
 	cropEnabled,
 	crop,
 	maxLength,
+	watermark,
 }: {
 	image: HTMLImageElement;
-	cropEnabled: boolean;
-	crop: Crop;
-	maxLength: number;
+	cropEnabled?: boolean;
+	crop?: Crop;
+	maxLength?: number;
+	watermark?: string;
 }) => {
 	if (!cropEnabled || !crop) {
 		// Use a default crop area which is the entire image
@@ -718,6 +735,26 @@ const getProcessedImg = ({
 		finalWidth,
 		finalHeight
 	);
+
+	// Add watermark text to the bottom-left corner of the image
+	if (watermark) {
+		const fontSize = Math.max(7, Math.min(12, finalWidth / 20));
+		ctx.font = `${fontSize}px Arial`;
+		ctx.fillStyle = "rgba(255, 255, 0)";
+		// Add black shadow behind the text
+		ctx.shadowColor = "rgba(0, 0, 0, 0.9)";
+		ctx.shadowOffsetX = 1;
+		ctx.shadowOffsetY = 1;
+		ctx.shadowBlur = 3;
+		const text = watermark.split("\n");
+		text.forEach((line, index) => {
+			ctx.fillText(
+				line,
+				10,
+				finalHeight - 2 - (text.length - index) * fontSize
+			);
+		});
+	}
 
 	return canvas.toDataURL("image/jpeg", 0.8); // TODO: get quality value from options
 

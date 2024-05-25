@@ -369,7 +369,15 @@ const CameraTest = () => {
  */
 const DropZoneTest = () => {
 	const [file, setFile] = useState(null);
-	const [options, setOptions] = useState({});
+	const [options, setOptions] = useState({
+		maxLength: 1200,
+		detectFace: false,
+		faceCount: 1,
+		aspectRatio: "",
+		disableImageConfirm: false,
+		disableImageEdit: false,
+	});
+	const [watermark, setWatermark] = useState(false);
 
 	// const setFile = (file) => {
 	// 	console.log("File: ", file);
@@ -381,7 +389,7 @@ const DropZoneTest = () => {
 
 	return (
 		<Flex direction="column">
-			{/* Create a form for options (check boxes & input). CHanging the
+			{/* Create a form for options (check boxes & input). Changing the
 			options should update the options object. Add the following options: maxLength, detectFace, faceCount, aspectRatio, disableImageConfirm, disableImageEdit  */}
 			<Flex
 				direction="row"
@@ -430,6 +438,15 @@ const DropZoneTest = () => {
 					/>
 					Disable Image Edit
 				</label>
+				<label>
+					<input
+						type="checkbox"
+						checked={watermark}
+						style={{ marginRight: "5px" }}
+						onChange={(e) => setWatermark(e.target.checked)}
+					/>
+					Watermark
+				</label>
 				{/* <Input
 					label="Face Count"
 					size="sm"
@@ -470,6 +487,7 @@ const DropZoneTest = () => {
 				options={options}
 				accept=""
 				setFile={setFile}
+				watermark={watermark}
 			/>
 			<Text>{file ? file?.name : ""}</Text>
 		</Flex>
@@ -478,7 +496,7 @@ const DropZoneTest = () => {
 
 /**
  * Testing the DropZone component
- * MARK: DropZoneTest
+ * MARK: RaiseQueryTest
  */
 const CustomRaiseQueryTest = () => {
 	const { showRaiseIssueDialog } = useRaiseIssue();

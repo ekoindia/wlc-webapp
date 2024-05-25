@@ -37,6 +37,7 @@ type CameraProps = {
 	disableCrop?: boolean;
 	disableRotate?: boolean;
 	preferredFacingMode?: "user" | "environment";
+	watermark?: string;
 	onClose?: (_result: {
 		image: string;
 		file?: File;
@@ -57,6 +58,7 @@ type CameraProps = {
  * @param {boolean} [props.disableCrop=false] - Whether to disable image cropping
  * @param {boolean} [props.disableRotate=false] - Whether to disable image rotation
  * @param {string} [props.preferredFacingMode="environment"] - The preferred facing mode for the camera
+ * @param {string} [props.watermark] - The watermark text to display on the captured (& edited) image
  * @param {function} [props.onClose] - The callback function for image capture or on cancel
  * @returns {JSX.Element} - The Camera component
  */
@@ -72,6 +74,7 @@ const Camera = ({
 	disableCrop = false,
 	disableRotate = false,
 	preferredFacingMode = FACING_MODE_ENVIRONMENT,
+	watermark,
 	onClose,
 }: CameraProps) => {
 	const webcamRef = useRef<any | null>(null);
@@ -94,6 +97,18 @@ const Camera = ({
 		onClose({ image: "", accepted: false });
 	};
 
+	const onEditorResponse = (result) => {
+		const { accepted } = result;
+
+		if (!accepted) {
+			// onClose({ image: "", accepted: false });
+			webcamRef?.current?.video?.play();
+			return;
+		}
+
+		onClose(result);
+	};
+
 	/**
 	 * To capture the image
 	 */
@@ -105,6 +120,8 @@ const Camera = ({
 			return;
 		}
 
+		console.log("[Camera] onCapture", webcamRef?.current);
+
 		// Show the image editor for editing and confirmation
 		editImage(
 			imageSrc,
@@ -115,9 +132,12 @@ const Camera = ({
 				disableCrop,
 				disableRotate,
 				disableImageEdit,
+				watermark,
 			},
-			onClose
+			onEditorResponse
 		);
+
+		webcamRef?.current?.video?.pause();
 	};
 
 	/**

@@ -48,6 +48,7 @@ const useImageEditor = () => {
 	 * @param {boolean} [options.disableCrop=false] - Disable cropping.
 	 * @param {boolean} [options.disableRotate=false] - Disable rotation.
 	 * @param {boolean} [options.disableImageEdit=false] - Disable image editing. Just show the confirmation dialog.
+	 * @param {string} [options.watermark] - Watermark text to add to bottom-left of the edited image.
 	 * @param {function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
 	 */
 	const editImage = (image, options, onResponse) => {
