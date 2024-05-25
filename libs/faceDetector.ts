@@ -49,6 +49,8 @@ const getCompositeFaceBound = (
 		x2 = 0,
 		y2 = 0;
 
+	console.log("[getCompositeFaceBound] faceDetections: ", faceDetections);
+
 	const faceCount = Math.min(faceDetections.length, maxFaceCount);
 
 	for (let i = 0; i < faceCount; i++) {
@@ -69,19 +71,31 @@ const getCompositeFaceBound = (
 };
 
 /**
- * Get a bounding-box (x, y, width, height) which should tightly contain the full face (i.e, hair, forehead, chin, ears).
+ * Get a bounding-box (originX, originY, width, height) which should tightly contain the full face (i.e, hair, forehead, chin, ears).
  * The face recognition bounding-box is usually a tight crop around the eyes to lips. This function expands the bounding-box to include the full face.
  * @param {object} boundingBox - The bounding-box of the detected face
  */
 const getFullFaceBound = (boundingBox) => {
-	const { x, y, width, height } = boundingBox;
-	const aspectRatio = width / height;
-	const fullFaceWidth = width;
-	const fullFaceHeight = fullFaceWidth / aspectRatio;
-	const fullFaceY = y - (fullFaceHeight - height) / 2;
+	const { originX: x, originY: y, width, height } = boundingBox;
+
+	// Extra height to include the full face (hair, forehead, chin, ears)
+	const extraHeight = height * 0.55;
+	const extraChinHeight = height * 0.1;
+	const fullFaceY = y - extraHeight;
+	const fullFaceHeight = height + extraHeight + extraChinHeight;
+
+	// Increase the width to make it a square crop
+	let fullFaceWidth = width;
+	let fullFaceX = x;
+	if (width < fullFaceHeight) {
+		const extraWidth = (fullFaceHeight - width) / 2;
+		fullFaceWidth = fullFaceHeight;
+		fullFaceX -= extraWidth;
+	}
+
 	return {
-		x: x,
-		y: fullFaceY,
+		x: fullFaceX < 0 ? 0 : fullFaceX,
+		y: fullFaceY < 0 ? 0 : fullFaceY,
 		width: fullFaceWidth,
 		height: fullFaceHeight,
 	};
