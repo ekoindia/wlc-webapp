@@ -172,13 +172,13 @@ export const fetchOrgDetails = async (host, force) => {
 				props: {
 					data: orgDetails,
 				},
-		  }
+			}
 		: {
 				...invalidOrg,
 				props: {
 					reason: "Org not found",
 				},
-		  };
+			};
 };
 
 /**

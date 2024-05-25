@@ -14,7 +14,7 @@ const Th = ({ renderer, visibleColumns, rowExpansion }) => {
 		? [
 				{ label: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
-		  ]
+			]
 		: renderer;
 
 	return main.map((item, index) => {

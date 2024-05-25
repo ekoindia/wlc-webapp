@@ -63,7 +63,7 @@ const Tr = ({
 		? [
 				{ label: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
-		  ]
+			]
 		: renderer;
 
 	const extra = rowExpansion ? renderer?.slice(visibleColumns) : [];

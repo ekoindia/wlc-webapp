@@ -558,7 +558,7 @@ const MyAccountCard = ({ setIsCardOpen, onClose }) => {
 								</Flex>
 								<Divider />
 							</Fragment>
-					  ))
+						))
 					: null}
 
 				{/* Logout Row */}

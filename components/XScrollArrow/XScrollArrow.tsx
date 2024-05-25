@@ -90,7 +90,7 @@ const XScrollArrow = ({
 				"&::-webkit-scrollbar-thumb": {
 					background: "#999999",
 				},
-		  }
+			}
 		: {
 				"&::-webkit-scrollbar": {
 					display: "none",
@@ -101,7 +101,7 @@ const XScrollArrow = ({
 				"&::scrollbar": {
 					display: "none",
 				},
-		  };
+			};
 
 	return (
 		<Flex

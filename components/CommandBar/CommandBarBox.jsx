@@ -69,7 +69,7 @@ export default function CommandBarBox({ fontClassName = null }) {
 							}, 100);
 						}
 					},
-			  }
+				}
 			: {}
 	);
 

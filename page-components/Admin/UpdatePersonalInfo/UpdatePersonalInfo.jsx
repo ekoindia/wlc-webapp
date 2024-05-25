@@ -189,7 +189,7 @@ const UpdatePersonalInfo = () => {
 							? previewData[key]
 							: shopTypes?.find(
 									(item) => item.value == previewData[key]
-							  )?.label,
+								)?.label,
 				};
 				_previewData.push(_previewDataObj);
 			}

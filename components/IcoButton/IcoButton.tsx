@@ -58,28 +58,28 @@ const IcoButton = ({
 		size === "lg"
 			? "64px"
 			: size === "md"
-			? "48px"
-			: size === "sm"
-			? "32px"
-			: size === "xs"
-			? "24px"
-			: size === "xxs"
-			? "18px"
-			: size;
+				? "48px"
+				: size === "sm"
+					? "32px"
+					: size === "xs"
+						? "24px"
+						: size === "xxs"
+							? "18px"
+							: size;
 
 	const _iconSize: string = iconSize
 		? iconSize
 		: size === "lg"
-		? "32px"
-		: size === "md"
-		? "24px"
-		: size === "sm"
-		? "14px"
-		: size === "xs"
-		? "11px"
-		: size === "xxs"
-		? "8px"
-		: "80%";
+			? "32px"
+			: size === "md"
+				? "24px"
+				: size === "sm"
+					? "14px"
+					: size === "xs"
+						? "11px"
+						: size === "xxs"
+							? "8px"
+							: "80%";
 
 	const btnTheme: Object =
 		theme === "dark"
@@ -87,30 +87,30 @@ const IcoButton = ({
 					bg: "inputlabel",
 					color: "white",
 					boxShadow: "0px 3px 10px #0000001A",
-			  }
+				}
 			: theme === "light"
-			? {
-					bg: "divider",
-					color: "primary.DEFAULT",
-					border: "1px solid var(--chakra-colors-divider)",
-			  }
-			: theme === "gray"
-			? {
-					bgGradient: "linear(to-b, divider, hint)",
-					color: "white",
-					border: "1px solid var(--chakra-colors-divider)",
-			  }
-			: theme === "primary"
-			? {
-					bg: "primary.DEFAULT",
-					color: "white",
-			  }
-			: theme === "accent"
-			? {
-					bg: "accent.DEFAULT",
-					color: "white",
-			  }
-			: null;
+				? {
+						bg: "divider",
+						color: "primary.DEFAULT",
+						border: "1px solid var(--chakra-colors-divider)",
+					}
+				: theme === "gray"
+					? {
+							bgGradient: "linear(to-b, divider, hint)",
+							color: "white",
+							border: "1px solid var(--chakra-colors-divider)",
+						}
+					: theme === "primary"
+						? {
+								bg: "primary.DEFAULT",
+								color: "white",
+							}
+						: theme === "accent"
+							? {
+									bg: "accent.DEFAULT",
+									color: "white",
+								}
+							: null;
 
 	return (
 		<Center

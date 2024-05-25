@@ -193,8 +193,8 @@ const IndoNepalDistributor = () => {
 			watcher.pricing_type === PRICING_TYPE.PERCENT
 				? "percentage"
 				: watcher.pricing_type === PRICING_TYPE.FIXED
-				? "fixed"
-				: null;
+					? "fixed"
+					: null;
 
 		const _slab = +watcher?.select?.value;
 
@@ -202,8 +202,8 @@ const IndoNepalDistributor = () => {
 			watcher.payment_mode === PAYMENT_MODE.CASH_TO_CASH
 				? "cash_to_cash"
 				: watcher.payment_mode === PAYMENT_MODE.CASH_TO_ACCOUNT
-				? "cash_to_account"
-				: null;
+					? "cash_to_account"
+					: null;
 
 		// If a slab, pricing type & payment mode are selected, update the validation state
 		if (_slab != null && _pricingType != null && _paymentMode != null) {
@@ -251,8 +251,8 @@ const IndoNepalDistributor = () => {
 					watcher.payment_mode === "1"
 						? serviceCode[0]
 						: watcher.payment_mode === "2"
-						? serviceCode[1]
-						: null,
+							? serviceCode[1]
+							: null,
 				communication: 1,
 				..._finalData,
 			},

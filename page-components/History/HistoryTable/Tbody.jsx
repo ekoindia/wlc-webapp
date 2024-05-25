@@ -47,7 +47,7 @@ const Tbody = ({
 		? [
 				{ label: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
-		  ]
+			]
 		: renderer;
 
 	const extraColumns = visible ? renderer?.slice(visibleColumns) : [];

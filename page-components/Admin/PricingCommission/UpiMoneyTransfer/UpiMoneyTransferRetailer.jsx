@@ -223,8 +223,8 @@ const UpiMoneyTransferRetailer = () => {
 			watcher.pricing_type === PRICING_TYPE.PERCENT
 				? "percentage"
 				: watcher.pricing_type === PRICING_TYPE.FIXED
-				? "fixed"
-				: null;
+					? "fixed"
+					: null;
 
 		const _slab = +watcher?.select?.value;
 

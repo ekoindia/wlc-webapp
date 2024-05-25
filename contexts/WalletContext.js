@@ -102,7 +102,7 @@ const WalletProvider = ({ children }) => {
 						// perform: () => router.push("/commissions/" + id),
 						// priority: -1,
 					},
-			  ]
+				]
 			: [];
 	}, [balance]);
 	useBusinessSearchActions(walletAction, [walletAction]);
