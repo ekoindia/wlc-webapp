@@ -51,12 +51,12 @@ export const getCalculatorAction = ({
 		subtitle: result
 			? `Result of ${expr}  (⏎ to copy)`
 			: parseLoadState === "loading"
-			? "Loading calculator..."
-			: parseLoadState === "error"
-			? "Error loading calculator!"
-			: expr
-			? "Error: Invalid expression!"
-			: "Start typing an expression to calculate... (eg: =2+2)",
+				? "Loading calculator..."
+				: parseLoadState === "error"
+					? "Error loading calculator!"
+					: expr
+						? "Error: Invalid expression!"
+						: "Start typing an expression to calculate... (eg: =2+2)",
 		icon: "calculator",
 		iconSize: "lg",
 		iconColor: "#7c3aed",

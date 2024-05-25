@@ -1369,7 +1369,7 @@ const SignupPage = () => {
 									background: "#FFF",
 									display: "flex",
 									justifyContent: "center",
-							  }
+								}
 							: {}
 					}
 				>

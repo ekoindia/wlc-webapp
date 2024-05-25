@@ -41,7 +41,7 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 					base: "30px",
 					md: "36px",
 					"2xl": "46px",
-			  };
+				};
 	const logoFontSize =
 		size === "lg" ? { base: "xl", md: "3xl" } : { base: "lg", md: "xl" };
 

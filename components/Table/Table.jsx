@@ -85,7 +85,7 @@ const Table = ({
 									"@media print": printExpansion
 										? {
 												display: "none !important",
-										  }
+											}
 										: null,
 								}}
 							>

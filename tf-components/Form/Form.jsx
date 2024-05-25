@@ -123,7 +123,7 @@ const Form = ({
 											? `⚠ (${getFormErrorMessage(
 													name,
 													errors
-											  )}) ${helperText || ""}`
+												)}) ${helperText || ""}`
 											: helperText || ""}
 									</Text>
 								</FormControl>
@@ -172,7 +172,7 @@ const Form = ({
 											? `⚠ (${getFormErrorMessage(
 													name,
 													errors
-											  )}) ${helperText || ""}`
+												)}) ${helperText || ""}`
 											: helperText || ""}
 									</Text>
 								</FormControl>
@@ -221,7 +221,7 @@ const Form = ({
 											? `⚠ (${getFormErrorMessage(
 													name,
 													errors
-											  )}) ${helperText || ""}`
+												)}) ${helperText || ""}`
 											: helperText || ""}
 									</Text>
 								</FormControl>
@@ -274,7 +274,7 @@ const Form = ({
 													? `⚠ (${getFormErrorMessage(
 															name,
 															errors
-													  )}) ${helperText || ""}`
+														)}) ${helperText || ""}`
 													: helperText || ""}
 											</Text>
 										</FormControl>
@@ -324,7 +324,7 @@ const Form = ({
 													? `⚠ (${getFormErrorMessage(
 															name,
 															errors
-													  )}) ${helperText || ""}`
+														)}) ${helperText || ""}`
 													: helperText || ""}
 											</Text>
 										</FormControl>
@@ -374,7 +374,7 @@ const Form = ({
 													? `⚠ (${getFormErrorMessage(
 															name,
 															errors
-													  )}) ${helperText || ""}`
+														)}) ${helperText || ""}`
 													: helperText || ""}
 											</Text>
 										</FormControl>
@@ -427,7 +427,7 @@ const Form = ({
 												? `⚠ (${getFormErrorMessage(
 														name,
 														errors
-												  )}) ${helperText || ""}`
+													)}) ${helperText || ""}`
 												: helperText || ""}
 										</Text>
 									</FormControl>
@@ -466,7 +466,7 @@ const Form = ({
 												? `⚠ (${getFormErrorMessage(
 														name,
 														errors
-												  )}) ${helperText || ""}`
+													)}) ${helperText || ""}`
 												: helperText || ""}
 										</Text>
 									</FormControl>

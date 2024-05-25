@@ -16,7 +16,7 @@ const PaddingBox = ({ children, noSpacing = false, ...rest }) => {
 							base: "0px", //TODO change to 10px, manage full width component separately on small screen
 							md: "30px",
 							"2xl": "40px",
-					  }
+						}
 					: null
 			}
 			pb={!noSpacing ? { base: "20px", md: "30px" } : null}

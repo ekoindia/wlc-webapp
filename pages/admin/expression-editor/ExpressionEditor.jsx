@@ -858,7 +858,7 @@ const FunctionContainerBox = ({
 						<Text userSelect="none" textTransform="capitalize">
 							{functionBlock.functionType
 								? functionBlock.label ||
-								  functionBlock.functionType
+									functionBlock.functionType
 								: "Function"}
 						</Text>
 						{isValid ? null : (

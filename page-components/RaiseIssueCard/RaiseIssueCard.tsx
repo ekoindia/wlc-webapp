@@ -442,8 +442,8 @@ const RaiseIssueCard = ({
 					(durationUnit === "d"
 						? 24 * 60
 						: durationUnit === "h"
-						? 60
-						: 1) * 60000;
+							? 60
+							: 1) * 60000;
 				var requiredDate =
 					new Date(transactionTime).getTime() +
 					duration * durationMultiplier;

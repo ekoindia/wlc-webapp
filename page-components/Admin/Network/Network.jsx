@@ -228,8 +228,8 @@ const Network = () => {
 				openModalId == action.FILTER
 					? minDateFilter
 					: // : openModalId == action.EXPORT
-					  // ? minDateExport
-					  null,
+						// ? minDateExport
+						null,
 			maxDate: today,
 			// validations: {
 			// 	required:
@@ -291,7 +291,7 @@ const Network = () => {
 							borderColor: "primary.dark",
 							boxShadow: "none",
 						},
-				  }
+					}
 				: null,
 		},
 	];
@@ -327,8 +327,8 @@ const Network = () => {
 		const _parameterList = isFiltered
 			? network_filter_parameter_list
 			: isSearched
-			? network_search_parameter_list
-			: [];
+				? network_search_parameter_list
+				: [];
 
 		Object.keys(finalFormState).forEach((key) => {
 			const matchedItem = _parameterList.find(
@@ -415,8 +415,8 @@ const Network = () => {
 						{isFiltered
 							? "Filtering by"
 							: isSearched
-							? "Searching by"
-							: null}
+								? "Searching by"
+								: null}
 						&nbsp;
 						{filteredItemLabels
 							?.slice(0, filterItemLimit)
@@ -450,8 +450,8 @@ const Network = () => {
 							isFiltered
 								? clearFilter()
 								: isSearched
-								? clearSearch()
-								: null;
+									? clearSearch()
+									: null;
 						}}
 					>
 						Show All

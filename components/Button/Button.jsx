@@ -44,10 +44,10 @@ const Button = forwardRef(
 			size === "lg"
 				? "10px"
 				: size === "sm"
-				? "6px"
-				: size === "xs"
-				? "4px"
-				: "8px";
+					? "6px"
+					: size === "xs"
+						? "4px"
+						: "8px";
 
 		return (
 			<ChakraButton

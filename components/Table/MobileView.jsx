@@ -30,8 +30,8 @@ const MobileView = ({
 		_dataLength === 0
 			? "No Transactions"
 			: _dataLength === 1
-			? "Recent Transaction"
-			: "Recent Transactions";
+				? "Recent Transaction"
+				: "Recent Transactions";
 
 	if (isLoading) {
 		console.log("loading");

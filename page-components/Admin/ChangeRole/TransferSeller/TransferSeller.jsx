@@ -118,7 +118,7 @@ const TransferSeller = ({
 				? "/network/agent-list?usertype=3"
 				: `/network/agent-list?usertype=2&user_id=${
 						transferAgentsFrom[renderer.value]
-				  }`;
+					}`;
 
 			fetchList(
 				{

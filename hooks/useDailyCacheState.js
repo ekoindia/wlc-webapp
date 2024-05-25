@@ -14,9 +14,17 @@ const useDailyCacheState = (key, initialValue) => {
 	// The timer triggers after the amount time left for the day to end.
 	// Eg: If the time is 23:00:00, the timer will trigger after 1 hour.
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			setDt(new Date());
-		}, 1000 * 60 * 60 * 24 - (dt.getHours() * 60 * 60 + dt.getMinutes() * 60 + dt.getSeconds()) * 1000 + 1000);
+		const timer = setTimeout(
+			() => {
+				setDt(new Date());
+			},
+			1000 * 60 * 60 * 24 -
+				(dt.getHours() * 60 * 60 +
+					dt.getMinutes() * 60 +
+					dt.getSeconds()) *
+					1000 +
+				1000
+		);
 		return () => clearTimeout(timer);
 	}, [dt]);
 

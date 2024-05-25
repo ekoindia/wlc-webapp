@@ -90,10 +90,10 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 						dark: colors?.accent_dark || light.colors.accent.dark,
 					},
 				},
-		  }
+			}
 		: {
 				...light,
-		  };
+			};
 
 	// Add NavBar style colors (light or default dark)...
 	const lightNav = colors?.navstyle === "light";

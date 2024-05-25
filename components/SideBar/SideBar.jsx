@@ -88,8 +88,8 @@ const generateTransactionActions = (
 			parent: parent_id
 				? "tx/" + parent_id
 				: is_other_list
-				? "others"
-				: "start-a-tx",
+					? "others"
+					: "start-a-tx",
 		};
 	};
 
@@ -109,7 +109,7 @@ const generateTransactionActions = (
 					// shortcut: ["$mod+/"],
 					// section: "Services",
 				},
-		  ]
+			]
 		: [
 				{
 					id: "start-a-tx",
@@ -125,7 +125,7 @@ const generateTransactionActions = (
 					shortcut: ["$mod+/"],
 					// section: "Services",
 				},
-		  ];
+			];
 
 	// Cache for transactions that contain sub-transactions
 	const trxnGroups = [];
@@ -364,7 +364,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 								trxnList,
 								role_tx_list,
 								router
-						  )
+							)
 				);
 			}
 		}

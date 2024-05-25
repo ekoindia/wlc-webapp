@@ -321,8 +321,8 @@ const Cdm = () => {
 			watcher.pricing_type === PRICING_TYPE.PERCENT
 				? "percentage"
 				: watcher.pricing_type === PRICING_TYPE.FIXED
-				? "fixed"
-				: null;
+					? "fixed"
+					: null;
 
 		// if any pricing type is selected then only we need to validate
 		if (_pricingType != null) {
