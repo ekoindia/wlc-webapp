@@ -43,6 +43,8 @@ const useImageEditor = () => {
 	 * @param {object} options - Options to pass to the editor.
 	 * @param {number} [options.fileName] - Name of the file being edited.
 	 * @param {boolean} [options.detectFace=false] - Detect face in the image.
+	 * @param {number} [options.minFaceCount=0] - Minimum number of faces required to be detected (if detectFace is true).
+	 * @param {number} [options.maxFaceCount=1] - Maximum number of faces allowed to be detected (if detectFace is true).
 	 * @param {number} [options.maxLength] - Maximum length or width of the image.
 	 * @param {number} [options.aspectRatio] - Aspect ratio of the image. E.g., 1 for square, 16/9 for widescreen.
 	 * @param {boolean} [options.disableCrop=false] - Disable cropping.

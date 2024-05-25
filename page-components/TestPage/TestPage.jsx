@@ -372,7 +372,8 @@ const DropZoneTest = () => {
 	const [options, setOptions] = useState({
 		maxLength: 1200,
 		detectFace: false,
-		faceCount: 1,
+		minFaceCount: 1,
+		maxFaceCount: 2,
 		aspectRatio: "",
 		disableImageConfirm: false,
 		disableImageEdit: false,
@@ -447,17 +448,6 @@ const DropZoneTest = () => {
 					/>
 					Watermark
 				</label>
-				{/* <Input
-					label="Face Count"
-					size="sm"
-					required
-					inputContStyle={{ w: "100px" }}
-					labelStyle={{ mb: 0 }}
-					value={options.faceCount}
-					onChange={(e) =>
-						changeSingleOption("faceCount", e.target.value)
-					}
-				/> */}
 				<Input
 					label="Max Length (px)"
 					size="sm"
@@ -480,9 +470,32 @@ const DropZoneTest = () => {
 						changeSingleOption("aspectRatio", e.target.value)
 					}
 				/>
+				<Input
+					label="Min Faces"
+					size="sm"
+					required
+					inputContStyle={{ w: "80px" }}
+					labelStyle={{ mb: 0, fontSize: "10px" }}
+					value={options.minFaceCount}
+					onChange={(e) =>
+						changeSingleOption("minFaceCount", e.target.value)
+					}
+				/>
+				<Input
+					label="Max Faces"
+					size="sm"
+					required
+					inputContStyle={{ w: "80px" }}
+					labelStyle={{ mb: 0, fontSize: "10px" }}
+					value={options.maxFaceCount}
+					onChange={(e) =>
+						changeSingleOption("maxFaceCount", e.target.value)
+					}
+				/>
 			</Flex>
 
 			<Dropzone
+				label="Upload Your Photo"
 				file={file}
 				options={options}
 				accept=""
