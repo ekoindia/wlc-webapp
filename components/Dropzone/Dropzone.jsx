@@ -1,5 +1,7 @@
 import { Flex, Image, Text } from "@chakra-ui/react";
+import { Endpoints } from "constants";
 import { useOrgDetailContext, useUser } from "contexts";
+import { fetcher } from "helpers/apiHelper";
 import { useCamera, useFileView, useGeolocation, useImageEditor } from "hooks";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MdCameraAlt } from "react-icons/md";
@@ -59,7 +61,7 @@ const Dropzone = ({
 	const { editImage } = useImageEditor();
 
 	const { userData } = useUser();
-	const { userDetails } = userData;
+	const { userDetails, access_token } = userData;
 	const { name, code } = userDetails ?? {};
 	const { orgDetail } = useOrgDetailContext();
 	const { org_id, app_name } = orgDetail ?? {};
@@ -78,14 +80,16 @@ const Dropzone = ({
 		if (!watermark) return;
 		if (ip) return;
 
-		fetch("https://api.ipify.org?format=json")
-			.then((res) => res.json())
-			.then((data) => {
-				console.log("User's IP address: ", data);
-				setIp(data.ip);
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.GET_IP, {
+			token: access_token,
+			timeout: 20000,
+		})
+			.then((res) => {
+				setIp(res.ip);
+				console.log("User's IP address: ", res);
 			})
-			.catch((err) => {
-				console.error("Error fetching IP address: ", err);
+			.catch((error) => {
+				console.error("Error getting IP:", error);
 			});
 	}, [watermark]);
 

@@ -12,4 +12,5 @@ export const Endpoints = {
 	GET_ORG_FROM_DOMAIN: "/wlctransactions/wlcorgmeta",
 	USER_PROFILE: "/profile",
 	HISTORY: "/history",
+	GET_IP: "/transactions/getip",
 };
