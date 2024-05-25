@@ -1,11 +1,11 @@
 import { Flex, Image, Text } from "@chakra-ui/react";
+import { Button, IcoButton, Input, InputLabel } from "components";
 import { Endpoints } from "constants";
 import { useOrgDetailContext, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useCamera, useFileView, useGeolocation, useImageEditor } from "hooks";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MdCameraAlt } from "react-icons/md";
-import { Button, IcoButton, Input } from "..";
 
 const IMAGE_MIME_TYPES = {
 	"image/jpeg": true,
@@ -18,6 +18,7 @@ const IMAGE_MIME_TYPES = {
 /**
  * A Dropzone component to upload file either by selecting or by drag & drop
  * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	[prop.label]	Label for the dropzone
  * @param	{File}		prop.file	File object to be uploaded
  * @param	{function}	prop.setFile	Function to set the file object
  * @param	{string}	[prop.accept=""]	Accepted file types
@@ -25,27 +26,32 @@ const IMAGE_MIME_TYPES = {
  * @param	{object}	[prop.options={}]	Additional options for the dropzone
  * @param	{number}	[prop.options.maxLength]	Maximum length of the image
  * @param	{boolean}	[prop.options.detectFace]	Detect faces in the image?
- * @param	{number}	[prop.options.minFaceCount]	Minimum number of faces to be detected
- * @param	{number}	[prop.options.maxFaceCount]	Maximum number of faces to be detected
+ * @param	{number}	[prop.options.minFaceCount]	Minimum number of faces required to be detected (if detectFace is true)
+ * @param	{number}	[prop.options.maxFaceCount]	Maximum number of faces to be detected (for auto-cropping)
  * @param	{boolean}	[prop.options.autoCapture=false]	Auto-click camera when object is detected
  * @param	{number}	[prop.options.aspectRatio]	Aspect ratio for the image
  * @param	{number}	[prop.options.disableImageConfirm]	Accept image without the confirmation dialog (including the option to crop, rotate, etc)
  * @param	{number}	[prop.options.disableImageEdit]	Disable image editing (crop, rotate, etc)
  * @param	{boolean}	[prop.options.disableCrop=false]	Disable cropping the image
  * @param	{boolean}	[prop.options.disableRotate=false]	Disable rotating the image
+ * @param	{boolean}	[prop.required=false]	Mark the dropzone as required
  * @param	{boolean}	[prop.disabled=false]	Disable the dropzone
  * @param	{boolean}	[prop.watermark=false]	Add watermark to the Camera image. The following data is added to the image: timestamp, user name, usercode, org name, and geolocation.
+ * @param	{object}	[prop.labelStyle={}]	Style for the label
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Dropzone file={screenshot} setFile={setScreenshot} />` TODO: Fix example
  */
 const Dropzone = ({
+	label,
 	file,
 	setFile,
 	accept = "",
 	cameraOnly = false,
 	options = {},
+	required = false,
 	disabled = false,
 	watermark = false,
+	labelStyle,
 	...rest
 }) => {
 	const [inDropZone, setInDropZone] = useState(false);
@@ -363,147 +369,156 @@ const Dropzone = ({
 		if (data.accepted) {
 			setFile(data.file);
 			convertImage(data.image, "blob");
+		} else if (fileInputRef?.current?.value) {
+			fileInputRef.current.value = null;
 		}
 	};
 
 	return (
-		<Flex
-			bg={
-				inDropZone
-					? isValidDrop
-						? "#00FF0010"
-						: "#FF000020"
-					: "initial"
-			}
-			w="100%"
-			align="center"
-			justify="center"
-			// onDragEnter={handleDragEnter}
-			onDragOver={handleDragOver}
-			onDragLeave={handleDragLeave}
-			onDrop={handleDrop}
-			border="2px"
-			borderStyle="dashed"
-			borderColor="divider"
-			borderRadius="10px"
-			color="light"
-			p="5"
-			cursor={disabled ? "default" : "pointer"}
-			pointerEvents={disabled ? "none" : "auto"}
-			opacity={disabled ? 0.5 : 1}
-			{...rest}
-		>
-			{file === null || typeof file === "undefined" ? (
-				<Flex direction="column" align="center" w="100%" gap="2">
-					<Input
-						ref={fileInputRef}
-						hidden
-						type="file"
-						onChange={handleFileUploadInputChange}
-						id="fileUploadInput"
-						accept={accept}
-						disabled={disabled}
-					/>
+		<>
+			<InputLabel required={required} {...labelStyle}>
+				{label}
+			</InputLabel>
+			<Flex
+				bg={
+					inDropZone
+						? isValidDrop
+							? "#00FF0010"
+							: "#FF000020"
+						: "initial"
+				}
+				w="100%"
+				align="center"
+				justify="center"
+				// onDragEnter={handleDragEnter}
+				onDragOver={handleDragOver}
+				onDragLeave={handleDragLeave}
+				onDrop={handleDrop}
+				border="2px"
+				borderStyle="dashed"
+				borderColor="divider"
+				borderRadius="10px"
+				color="light"
+				p="5"
+				// cursor={disabled ? "default" : "pointer"}
+				pointerEvents={disabled ? "none" : "auto"}
+				opacity={disabled ? 0.5 : 1}
+				{...rest}
+			>
+				{file === null || typeof file === "undefined" ? (
+					<Flex direction="column" align="center" w="100%" gap="2">
+						<Input
+							ref={fileInputRef}
+							type="file"
+							hidden
+							onChange={handleFileUploadInputChange}
+							accept={accept}
+							disabled={disabled}
+						/>
+						<Flex
+							direction="row"
+							align="center"
+							gap="2"
+							opacity={inDropZone ? 0 : 1}
+							pointerEvents={inDropZone ? "none" : "auto"}
+						>
+							{cameraOnly ? null : (
+								<Btn
+									onClick={() =>
+										fileInputRef?.current?.click()
+									}
+									disabled={disabled}
+								>
+									Browse
+								</Btn>
+							)}
+							{isImageAllowed ? (
+								<Btn
+									onClick={() =>
+										openCamera(
+											{
+												watermark:
+													watermark && watermarkText
+														? watermarkText
+														: "",
+												...options,
+											},
+											handleCameraResponse
+										)
+									}
+									disabled={disabled}
+								>
+									<MdCameraAlt size="20px" />
+								</Btn>
+							) : null}
+						</Flex>
+						<Text
+							fontSize="sm"
+							color="GrayText"
+							pointerEvents="none"
+							userSelect="none"
+						>
+							{inDropZone
+								? isValidDrop
+									? "Drop your file here"
+									: "File type not allowed"
+								: "or, drag & drop your file here"}
+						</Text>
+					</Flex>
+				) : (
 					<Flex
-						direction="row"
+						w="40%"
+						minH="60%"
 						align="center"
-						gap="2"
-						opacity={inDropZone ? 0 : 1}
-						pointerEvents={inDropZone ? "none" : "auto"}
+						direction="column"
+						bg="overlayBg"
+						borderRadius="inherit"
+						position="relative"
 					>
-						{cameraOnly ? null : (
-							<Btn
-								onClick={() => fileInputRef?.current?.click()}
-								disabled={disabled}
-							>
-								Browse
-							</Btn>
-						)}
-						{isImageAllowed ? (
-							<Btn
-								onClick={() =>
-									openCamera(
-										{
-											watermark:
-												watermark && watermarkText
-													? watermarkText
-													: "",
-											...options,
-										},
-										handleCameraResponse
-									)
+						<IcoButton
+							iconName="close"
+							title="Discard"
+							size="xs"
+							theme="primary"
+							// boxShadow="0px 3px 10px #11299E1A"
+							_hover={{ bg: "primary.dark" }}
+							position="absolute"
+							top="-10px"
+							right="-10px"
+							onClick={() => {
+								setFile(null);
+								if (previewImage) {
+									setPreviewImage(null);
 								}
-								disabled={disabled}
-							>
-								<MdCameraAlt size="20px" />
-							</Btn>
-						) : null}
-					</Flex>
-					<Text
-						fontSize="sm"
-						color="GrayText"
-						pointerEvents={inDropZone ? "none" : "auto"}
-					>
-						{inDropZone
-							? isValidDrop
-								? "Drop your file here"
-								: "File type not allowed"
-							: "or, drag & drop your file here"}
-					</Text>
-				</Flex>
-			) : (
-				<Flex
-					w="40%"
-					minH="60%"
-					align="center"
-					direction="column"
-					bg="overlayBg"
-					borderRadius="inherit"
-					position="relative"
-				>
-					<IcoButton
-						iconName="close"
-						title="Discard"
-						size="xs"
-						theme="primary"
-						// boxShadow="0px 3px 10px #11299E1A"
-						_hover={{ bg: "primary.dark" }}
-						position="absolute"
-						top="-10px"
-						right="-10px"
-						onClick={() => {
-							setFile(null);
-							if (previewImage) {
-								setPreviewImage(null);
-							}
-						}}
-					/>
+							}}
+						/>
 
-					<Flex p="10px" w="100%" h="100%">
-						{previewImage ? (
-							<Image
-								src={previewImage}
-								borderRadius="4px"
-								boxShadow="rgba(0, 0, 0, 0.05) 0px 0px 0px 1px"
-								onClick={() => showImage(previewImage)}
-							/>
-						) : (
-							<Text
-								w="100%"
-								h="100%"
-								fontSize="xxs"
-								noOfLines={1}
-								align="center"
-								cursor="default"
-								title={file.name}
-							>
-								{file.name}
-							</Text>
-						)}
+						<Flex p="10px" w="100%" h="100%">
+							{previewImage ? (
+								<Image
+									src={previewImage}
+									borderRadius="4px"
+									boxShadow="rgba(0, 0, 0, 0.05) 0px 0px 0px 1px"
+									onClick={() => showImage(previewImage)}
+								/>
+							) : (
+								<Text
+									w="100%"
+									h="100%"
+									fontSize="xxs"
+									noOfLines={1}
+									align="center"
+									cursor="default"
+									title={file.name}
+								>
+									{file.name}
+								</Text>
+							)}
+						</Flex>
 					</Flex>
-				</Flex>
-			)}
-		</Flex>
+				)}
+			</Flex>
+		</>
 	);
 };
 
