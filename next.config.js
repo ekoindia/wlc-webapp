@@ -1,4 +1,5 @@
 const isProd = process.env.NEXT_PUBLIC_ENV === "production";
+const isDev = process.env.NEXT_PUBLIC_ENV === "development";
 const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
 
 // Config for removing console logs in production
@@ -18,7 +19,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
  */
 const nextConfig = withBundleAnalyzer({
 	/* config options here */
-	reactStrictMode: isProd ? false : true,
+	reactStrictMode: isDev ? true : false,
 	poweredByHeader: false,
 	swcMinify: true,
 	eslint: {
