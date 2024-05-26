@@ -778,7 +778,7 @@ const getProcessedImg = ({
 
 	// Add watermark text to the bottom-left corner of the image
 	if (watermark) {
-		const fontSize = Math.max(7, Math.min(12, finalWidth / 20));
+		const fontSize = Math.max(7, Math.min(12, finalWidth / 30));
 		ctx.font = `${fontSize}px Arial`;
 		ctx.fillStyle = "rgba(255, 255, 0)";
 		// Add black shadow behind the text
