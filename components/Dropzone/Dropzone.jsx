@@ -128,7 +128,7 @@ const Dropzone = ({
 		} else {
 			const _accept = accept.split(",");
 			const _isImageAllowed = _accept.some(
-				(type) => IMAGE_MIME_TYPES[type]
+				(type) => IMAGE_MIME_TYPES[type] || type.startsWith("image/")
 			);
 			setIsImageAllowed(_isImageAllowed);
 		}
