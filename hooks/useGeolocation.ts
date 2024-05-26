@@ -123,7 +123,6 @@ const useGeolocation = ({
 		positionWatchTimeBuffer,
 		decimalPlaces,
 		maxWatchUpdates,
-		updateCount,
 	]);
 
 	return position;
