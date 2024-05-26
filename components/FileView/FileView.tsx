@@ -40,13 +40,17 @@ interface FileViewProps {
  */
 const FileView = ({ file, type, options }: FileViewProps) => {
 	const [fileType, setFileType] = useState<FileTypes>(null);
-	const [status, setStatus] = useState<"init" | "ready" | "error">("init");
+	const [isReady, setIsReady] = useState<boolean>(false);
 
 	// Deduce the file type from the file extension, if not provided
 	useEffect(() => {
 		if (!file) return;
 
-		if (!type) {
+		if (type) {
+			// Use the provided file type
+			setFileType(type);
+		} else {
+			// Deduce the file type from the file extension
 			const ext = file.split(".").pop();
 			if (ext) {
 				switch (ext.toLowerCase()) {
@@ -78,8 +82,6 @@ const FileView = ({ file, type, options }: FileViewProps) => {
 						break;
 				}
 			}
-		} else {
-			setFileType(type);
 		}
 	}, [file, type]);
 
@@ -98,9 +100,9 @@ const FileView = ({ file, type, options }: FileViewProps) => {
 					file={file}
 					fileType={fileType}
 					options={options}
-					setStatus={setStatus}
+					setIsReady={setIsReady}
 				/>
-				{status === "init" ? (
+				{!isReady ? (
 					<Flex
 						position="fixed"
 						top="0"
@@ -131,18 +133,18 @@ const FileView = ({ file, type, options }: FileViewProps) => {
  * @param {string} prop.file - File to be displayed
  * @param {FileTypes} prop.fileType - Type of the file to be displayed (pdf, image, video, audio, URL, HTML, etc.)
  * @param {any} [prop.options] - Options for the file to be displayed
- * @param {Function} [prop.setStatus] - Function to set the status of the file view (init, ready, error)
+ * @param {Function} [prop.setIsReady] - Function to mark the view as loaded (iframe, image, etc)
  */
 const FileViewContent = ({
 	file,
 	fileType,
 	options,
-	setStatus,
+	setIsReady,
 }: {
 	file: string;
 	fileType: FileTypes;
 	options?: any;
-	setStatus?: Function;
+	setIsReady?: Function;
 }) => {
 	// MARK: Main JSX
 	// Return the appropriate component based on the file type
@@ -159,7 +161,7 @@ const FileViewContent = ({
 						src={file}
 						style={{ width: "100vw", height: "calc(100vh - 50px)" }}
 						title={options?.label || options?.header || ""}
-						onLoad={() => setStatus && setStatus("ready")}
+						onLoad={() => setIsReady(true)}
 					/>
 				</Flex>
 				// TODO: Add HTTP POST form submission for iframe
@@ -170,7 +172,7 @@ const FileViewContent = ({
 					src={file}
 					style={{ maxHeight: "100%", maxWidth: "100%" }}
 					alt="Image Preview"
-					onLoad={() => setStatus && setStatus("ready")}
+					onLoad={() => setIsReady(true)}
 				/>
 			);
 		case "video":
@@ -187,11 +189,10 @@ const FileViewContent = ({
 					maxW="100%"
 					borderRadius="6px"
 					overflow="hidden"
-					onReady={() => setStatus && setStatus("ready")}
+					onReady={() => setIsReady(true)}
 				/>
 			);
 		default:
-			setStatus && setStatus("error");
 			return <Box>Unsupported File Type</Box>;
 	}
 };
