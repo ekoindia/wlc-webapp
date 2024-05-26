@@ -1,5 +1,5 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import { Dropzone, Input } from "components";
+import { Dropzone, Input, Select } from "components";
 import {
 	useCamera,
 	useFeatureFlag,
@@ -377,6 +377,7 @@ const DropZoneTest = () => {
 		aspectRatio: "",
 		disableImageConfirm: false,
 		disableImageEdit: false,
+		accept: "",
 	});
 	const [watermark, setWatermark] = useState(false);
 
@@ -492,13 +493,32 @@ const DropZoneTest = () => {
 						changeSingleOption("maxFaceCount", e.target.value)
 					}
 				/>
+				<Select
+					label="Allowed File Types"
+					size="sm"
+					w="200px"
+					labelStyle={{ mb: 0, fontSize: "10px" }}
+					required
+					value={options.accept}
+					options={[
+						// { label: "Any File Type", value: "" },
+						{
+							label: "JPG / PNG / PDF",
+							value: "image/jpeg,image/png,application/pdf",
+						},
+						{ label: "Any Image Type", value: "image/*" },
+					]}
+					onChange={(selected) =>
+						changeSingleOption("accept", selected.value)
+					}
+				/>
 			</Flex>
 
 			<Dropzone
 				label="Upload Your Photo"
 				file={file}
 				options={options}
-				accept=""
+				accept={options.accept}
 				setFile={setFile}
 				watermark={watermark}
 			/>
@@ -575,8 +595,8 @@ const TestComponents = [
 		component: FileViewersTest,
 	},
 	{
-		title: "Screenshot Capture",
-		component: ScreenshotTest,
+		title: "File Upload (Dropzone)",
+		component: DropZoneTest,
 	},
 	{
 		title: "Image Editor",
@@ -587,8 +607,8 @@ const TestComponents = [
 		component: CameraTest,
 	},
 	{
-		title: "File Upload (Dropzone)",
-		component: DropZoneTest,
+		title: "Screenshot Capture",
+		component: ScreenshotTest,
 	},
 	{
 		title: "Raise Custom Issue",
