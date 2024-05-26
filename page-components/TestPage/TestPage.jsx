@@ -380,6 +380,19 @@ const DropZoneTest = () => {
 		accept: "",
 	});
 	const [watermark, setWatermark] = useState(false);
+	const [cameraOnly, setCameraOnly] = useState(false);
+
+	const MimeOptions = [
+		{
+			label: "Any File Type",
+			value: "",
+		},
+		{
+			label: "JPG / PNG / PDF",
+			value: "image/jpeg,image/png,application/pdf",
+		},
+		{ label: "Any Image Type", value: "image/*" },
+	];
 
 	// const setFile = (file) => {
 	// 	console.log("File: ", file);
@@ -449,6 +462,15 @@ const DropZoneTest = () => {
 					/>
 					Watermark
 				</label>
+				<label>
+					<input
+						type="checkbox"
+						checked={cameraOnly}
+						style={{ marginRight: "5px" }}
+						onChange={(e) => setCameraOnly(e.target.checked)}
+					/>
+					Camera Only
+				</label>
 				<Input
 					label="Max Length (px)"
 					size="sm"
@@ -499,15 +521,12 @@ const DropZoneTest = () => {
 					w="200px"
 					labelStyle={{ mb: 0, fontSize: "10px" }}
 					required
-					value={options.accept}
-					options={[
-						// { label: "Any File Type", value: "" },
-						{
-							label: "JPG / PNG / PDF",
-							value: "image/jpeg,image/png,application/pdf",
-						},
-						{ label: "Any Image Type", value: "image/*" },
-					]}
+					value={
+						MimeOptions.filter(
+							(opt) => opt.value === options.accept
+						)[0]
+					}
+					options={MimeOptions}
 					onChange={(selected) =>
 						changeSingleOption("accept", selected.value)
 					}
@@ -521,6 +540,7 @@ const DropZoneTest = () => {
 				accept={options.accept}
 				setFile={setFile}
 				watermark={watermark}
+				cameraOnly={cameraOnly}
 			/>
 			<Text>{file ? file?.name : ""}</Text>
 		</Flex>
