@@ -5,6 +5,7 @@ import {
 	ModalContent,
 	ModalOverlay,
 	Spinner,
+	useToast,
 } from "@chakra-ui/react";
 import { usePubSub } from "contexts";
 import dynamic from "next/dynamic";
@@ -162,6 +163,11 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 };
 
 /**
+ * Maximum modules that can be loaded at a time
+ */
+const MAX_MODULES = 10;
+
+/**
  * Loads a component dynamically as a modal popup.
  * Used in the main Layout component to load & show RaiseIssue, ImageCapture, FileViewer, etc components in any page.
  *
@@ -175,8 +181,8 @@ const DynamicPopupModuleLoader = () => {
 	 * State to store the properties for the modules to be loaded
 	 */
 	const [moduleData, setModuleData] = useState<ModuleDataType[] | []>([]);
-
 	const { publish, subscribe, TOPICS } = usePubSub();
+	const toast = useToast();
 
 	// Listen to the topic to show the dialog with a feature
 	useEffect(() => {
@@ -203,21 +209,33 @@ const DynamicPopupModuleLoader = () => {
 	 * Function to add a module to the list of modules to be displayed. If it already exists, it will be replaced.
 	 */
 	const addModule = (module: ModuleDataType) => {
-		setModuleData((prevData) => {
-			const index = prevData.findIndex(
-				(_module) => _module.feature === module.feature
+		// If the module count exceeds the maximum limit, show an error toast
+		if (moduleData.length >= MAX_MODULES) {
+			toast({
+				title: "Too many popups!",
+				status: "error",
+				duration: 2000,
+				isClosable: true,
+			});
+			console.error(
+				"DynamicPopupModuleLoader: Maximum modules limit reached: ",
+				moduleData.length
 			);
+			return;
+		}
 
-			console.log(
-				"DynamicPopupModuleLoader: addModule: replacing module",
-				{ index, prevData, module }
-			);
-
-			if (index >= 0) {
+		setModuleData((prevData: ModuleDataType[]) => {
+			// If the last module is the same as the new module, replace the last module
+			if (
+				prevData.length > 0 &&
+				prevData[prevData.length - 1].feature === module.feature
+			) {
 				const newData = [...prevData];
-				newData[index] = module;
+				newData[prevData.length - 1] = module;
 				return newData;
 			}
+
+			// Otherwise, add the new module to the list
 			return [...prevData, module];
 		});
 	};
@@ -226,9 +244,24 @@ const DynamicPopupModuleLoader = () => {
 	 * Function to remove a module from the list of modules to be displayed
 	 */
 	const removeModule = (moduleName: ModuleNameType) => {
-		setModuleData((prevData) =>
-			prevData.filter((_module) => _module.feature !== moduleName)
-		);
+		// See if the module is the last one in the list
+		const lastModule = moduleData[moduleData.length - 1];
+		if (lastModule?.feature === moduleName) {
+			// If the module is the last one, remove it from the list
+			setModuleData((prevData: ModuleDataType[]) =>
+				prevData.filter((_module) => _module.feature !== moduleName)
+			);
+		} else {
+			// If the module is not the last one, find the last matching module and remove it
+			const lastIndex = moduleData
+				.map((_module) => _module.feature)
+				.lastIndexOf(moduleName);
+			if (lastIndex >= 0) {
+				setModuleData((prevData: ModuleDataType[]) =>
+					prevData.filter((_module, _i) => _i !== lastIndex)
+				);
+			}
+		}
 	};
 
 	/**
