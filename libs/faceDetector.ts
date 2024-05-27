@@ -54,12 +54,13 @@ const getCompositeFaceBound = (
 	const faceCount = Math.min(faceDetections.length, maxFaceCount);
 
 	for (let i = 0; i < faceCount; i++) {
-		const { originX, originY, width, height } =
-			faceDetections[i].boundingBox;
-		x1 = Math.min(x1, originX);
-		y1 = Math.min(y1, originY);
-		x2 = Math.max(x2, originX + width);
-		y2 = Math.max(y2, originY + height);
+		const { x, y, width, height } = getFullFaceBound(
+			faceDetections[i].boundingBox
+		);
+		x1 = Math.min(x1, x);
+		y1 = Math.min(y1, y);
+		x2 = Math.max(x2, x + width);
+		y2 = Math.max(y2, y + height);
 	}
 
 	return {

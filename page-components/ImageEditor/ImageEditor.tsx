@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useToast } from "@chakra-ui/react";
 import { IcoButton } from "components";
 import { IconNameType } from "constants/IconLibrary";
 import { useFeatureFlag } from "hooks";
@@ -25,6 +25,8 @@ interface ImageEditorProps {
 	disableRotate?: boolean;
 	disableImageEdit?: boolean;
 	detectFace?: boolean;
+	minFaceCount?: number;
+	maxFaceCount?: number;
 	watermark?: string;
 	onClose: (_result: {
 		image: string;
@@ -57,7 +59,9 @@ const rc_mask_opacity = 0.8; // Default = 0.5
  * @param {string} [prop.fileName] - The name of the image file being edited
  * @param {number} [prop.maxLength] - The maximum length of the image (longer side) in pixels
  * @param {number} [prop.aspectRatio] - The fixed aspect ratio of the crop area. E.g., 1 for square, 16/9 for landscape, etc.  If not provided, the crop area can be resized freely.
- * @param {boolean} [prop.detectFace=false] - Whether to detect the face in the image
+ * @param {boolean} [prop.detectFace=false] - Whether to enable face detection in the image for auto-cropping.
+ * @param {number} [prop.minFaceCount=0] - The minimum number of faces required to be detected in the image (if face detection is enabled)
+ * @param {number} [prop.maxFaceCount=1] - The maximum number of faces to be detected in the image (if face detection is enabled)
  * @param {boolean} [prop.disableCrop=false] - Whether to disable the crop functionality
  * @param {boolean} [prop.disableRotate=false] - Whether to disable the rotate functionality
  * @param {boolean} [prop.disableImageEdit=false] - Whether to disable the all image editing functionalities
@@ -71,6 +75,8 @@ const ImageEditor = ({
 	maxLength,
 	aspectRatio,
 	detectFace = false,
+	minFaceCount = 0,
+	maxFaceCount = 1,
 	disableCrop = false,
 	disableRotate = false,
 	disableImageEdit = false,
@@ -87,11 +93,13 @@ const ImageEditor = ({
 	const [rotation, setRotation] = useState(0);
 	const [imageLoaded, setImageLoaded] = useState(false);
 
+	const toast = useToast();
 	const imageRef = useRef(null);
 
 	// For face detection
 	const isFaceDetectionEnabled = useFeatureFlag("FACE_DETECTOR");
 	const [faceDetector, setFaceDetector] = useState<any>(null);
+	const [detectedFaceCount, setDetectedFaceCount] = useState(0);
 	const [confidence, setConfidence] = useState("");
 
 	// FaceDetector dynamic initialization
@@ -108,17 +116,32 @@ const ImageEditor = ({
 	useEffect(() => {
 		if (imageLoaded && imageRef && faceDetector) {
 			const detections = faceDetector.detect(imageRef.current).detections;
+
 			console.log("🙄 FACE DETECTED::: ", detections);
+
 			const face = detections[0]?.boundingBox;
-			if (face) {
+
+			if (detections?.length > 0 && face) {
 				const score = detections[0]?.categories[0]?.score;
 				setConfidence(
-					"Face detected: " + Math.round(score * 100) + "% confidence"
+					detections.length === 1
+						? "Face detected: " +
+								Math.round(score * 100) +
+								"% confidence"
+						: detections.length +
+								" faces detected: " +
+								Math.round(score * 100) +
+								"% confidence, ..."
 				);
+
+				setDetectedFaceCount(detections.length);
 
 				// const fullFace = getFullFaceBound(face);
 
-				const fullFace = getCompositeFaceBound(detections, 2);
+				const fullFace = getCompositeFaceBound(
+					detections,
+					maxFaceCount
+				);
 
 				console.log("🙄 FACE 1 ::: ", {
 					face,
@@ -201,6 +224,24 @@ const ImageEditor = ({
 			const imageFile = await getFileFromImageUrl(image);
 			onClose &&
 				onClose({ image: image, file: imageFile, accepted: true });
+			return;
+		}
+
+		// Check if minimum face count is satisfied
+		if (
+			detectFace &&
+			minFaceCount > 0 &&
+			detectedFaceCount < minFaceCount
+		) {
+			const errorMsg =
+				minFaceCount === 1
+					? "No face detected."
+					: `Minimum ${minFaceCount} faces required.`;
+			toast({
+				title: errorMsg + " Please try again",
+				status: "error",
+				duration: 6000,
+			});
 			return;
 		}
 
@@ -519,7 +560,6 @@ const ImageEditor = ({
 						minHeight={100}
 						disabled={!cropEnabled}
 						onChange={(c) => {
-							// console.log("🙄 ??? CROP CHANGED::: ", c);
 							setCrop(c);
 						}}
 					>
@@ -738,7 +778,7 @@ const getProcessedImg = ({
 
 	// Add watermark text to the bottom-left corner of the image
 	if (watermark) {
-		const fontSize = Math.max(7, Math.min(12, finalWidth / 20));
+		const fontSize = Math.max(7, Math.min(12, finalWidth / 30));
 		ctx.font = `${fontSize}px Arial`;
 		ctx.fillStyle = "rgba(255, 255, 0)";
 		// Add black shadow behind the text
