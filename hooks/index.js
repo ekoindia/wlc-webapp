@@ -8,6 +8,7 @@ export { default as useDelayToggle } from "./useDelayToggle";
 export { default as useExternalResource } from "./useExternalResource";
 export { default as useFeatureFlag } from "./useFeatureFlag";
 export { default as useFileView } from "./useFileView";
+export { default as useGeolocation } from "./useGeolocation";
 export { default as useHotkey } from "./useHotkey";
 export { default as useHslColor } from "./useHslColor";
 export { default as useImageEditor } from "./useImageEditor";

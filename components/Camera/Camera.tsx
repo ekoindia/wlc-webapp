@@ -37,6 +37,7 @@ type CameraProps = {
 	disableCrop?: boolean;
 	disableRotate?: boolean;
 	preferredFacingMode?: "user" | "environment";
+	watermark?: string;
 	onClose?: (_result: {
 		image: string;
 		file?: File;
@@ -47,9 +48,9 @@ type CameraProps = {
 /**
  * Camera Component
  * @param {CameraProps} props - The properties of the component
- * @param {boolean} [props.detectFace=false] - Whether to detect face in the image
- * @param {number} [props.minFaceCount] - The minimum number of faces to detect
- * @param {number} [props.maxFaceCount] - The maximum number of faces to detect
+ * @param {boolean} [props.detectFace=false] - Whether to enable face detection in the image
+ * @param {number} [props.minFaceCount=0] - The minimum number of faces required to be detected (if face detection is enabled)
+ * @param {number} [props.maxFaceCount=1] - The maximum number of faces to detect
  * @param {boolean} [props.autoCapture=false] - Whether to auto capture the image
  * @param {number} [props.aspectRatio] - A fixed aspect ratio for the image
  * @param {boolean} [props.disableImageConfirm=false] - Whether to disable image confirmation
@@ -57,14 +58,15 @@ type CameraProps = {
  * @param {boolean} [props.disableCrop=false] - Whether to disable image cropping
  * @param {boolean} [props.disableRotate=false] - Whether to disable image rotation
  * @param {string} [props.preferredFacingMode="environment"] - The preferred facing mode for the camera
+ * @param {string} [props.watermark] - The watermark text to display on the captured (& edited) image
  * @param {function} [props.onClose] - The callback function for image capture or on cancel
  * @returns {JSX.Element} - The Camera component
  */
 const Camera = ({
 	maxLength,
 	detectFace = false,
-	// minFaceCount,
-	// maxFaceCount,
+	minFaceCount = 0,
+	maxFaceCount = 1,
 	// autoCapture = false,
 	aspectRatio,
 	disableImageConfirm = false,
@@ -72,6 +74,7 @@ const Camera = ({
 	disableCrop = false,
 	disableRotate = false,
 	preferredFacingMode = FACING_MODE_ENVIRONMENT,
+	watermark,
 	onClose,
 }: CameraProps) => {
 	const webcamRef = useRef<any | null>(null);
@@ -94,6 +97,18 @@ const Camera = ({
 		onClose({ image: "", accepted: false });
 	};
 
+	const onEditorResponse = (result) => {
+		const { accepted } = result;
+
+		if (!accepted) {
+			// onClose({ image: "", accepted: false });
+			webcamRef?.current?.video?.play();
+			return;
+		}
+
+		onClose(result);
+	};
+
 	/**
 	 * To capture the image
 	 */
@@ -105,19 +120,26 @@ const Camera = ({
 			return;
 		}
 
+		console.log("[Camera] onCapture", webcamRef?.current);
+
 		// Show the image editor for editing and confirmation
 		editImage(
 			imageSrc,
 			{
 				detectFace,
+				minFaceCount,
+				maxFaceCount,
 				maxLength,
 				aspectRatio,
 				disableCrop,
 				disableRotate,
 				disableImageEdit,
+				watermark,
 			},
-			onClose
+			onEditorResponse
 		);
+
+		webcamRef?.current?.video?.pause();
 	};
 
 	/**

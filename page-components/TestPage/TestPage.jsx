@@ -1,5 +1,5 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import { Dropzone, Input } from "components";
+import { Dropzone, Input, Select } from "components";
 import {
 	useCamera,
 	useFeatureFlag,
@@ -369,7 +369,30 @@ const CameraTest = () => {
  */
 const DropZoneTest = () => {
 	const [file, setFile] = useState(null);
-	const [options, setOptions] = useState({});
+	const [options, setOptions] = useState({
+		maxLength: 1200,
+		detectFace: false,
+		minFaceCount: 1,
+		maxFaceCount: 2,
+		aspectRatio: "",
+		disableImageConfirm: false,
+		disableImageEdit: false,
+		accept: "",
+	});
+	const [watermark, setWatermark] = useState(false);
+	const [cameraOnly, setCameraOnly] = useState(false);
+
+	const MimeOptions = [
+		{
+			label: "Any File Type",
+			value: "",
+		},
+		{
+			label: "JPG / PNG / PDF",
+			value: "image/jpeg,image/png,application/pdf",
+		},
+		{ label: "Any Image Type", value: "image/*" },
+	];
 
 	// const setFile = (file) => {
 	// 	console.log("File: ", file);
@@ -381,7 +404,7 @@ const DropZoneTest = () => {
 
 	return (
 		<Flex direction="column">
-			{/* Create a form for options (check boxes & input). CHanging the
+			{/* Create a form for options (check boxes & input). Changing the
 			options should update the options object. Add the following options: maxLength, detectFace, faceCount, aspectRatio, disableImageConfirm, disableImageEdit  */}
 			<Flex
 				direction="row"
@@ -430,17 +453,24 @@ const DropZoneTest = () => {
 					/>
 					Disable Image Edit
 				</label>
-				{/* <Input
-					label="Face Count"
-					size="sm"
-					required
-					inputContStyle={{ w: "100px" }}
-					labelStyle={{ mb: 0 }}
-					value={options.faceCount}
-					onChange={(e) =>
-						changeSingleOption("faceCount", e.target.value)
-					}
-				/> */}
+				<label>
+					<input
+						type="checkbox"
+						checked={watermark}
+						style={{ marginRight: "5px" }}
+						onChange={(e) => setWatermark(e.target.checked)}
+					/>
+					Watermark
+				</label>
+				<label>
+					<input
+						type="checkbox"
+						checked={cameraOnly}
+						style={{ marginRight: "5px" }}
+						onChange={(e) => setCameraOnly(e.target.checked)}
+					/>
+					Camera Only
+				</label>
 				<Input
 					label="Max Length (px)"
 					size="sm"
@@ -463,13 +493,54 @@ const DropZoneTest = () => {
 						changeSingleOption("aspectRatio", e.target.value)
 					}
 				/>
+				<Input
+					label="Min Faces"
+					size="sm"
+					required
+					inputContStyle={{ w: "80px" }}
+					labelStyle={{ mb: 0, fontSize: "10px" }}
+					value={options.minFaceCount}
+					onChange={(e) =>
+						changeSingleOption("minFaceCount", e.target.value)
+					}
+				/>
+				<Input
+					label="Max Faces"
+					size="sm"
+					required
+					inputContStyle={{ w: "80px" }}
+					labelStyle={{ mb: 0, fontSize: "10px" }}
+					value={options.maxFaceCount}
+					onChange={(e) =>
+						changeSingleOption("maxFaceCount", e.target.value)
+					}
+				/>
+				<Select
+					label="Allowed File Types"
+					size="sm"
+					w="200px"
+					labelStyle={{ mb: 0, fontSize: "10px" }}
+					required
+					value={
+						MimeOptions.filter(
+							(opt) => opt.value === options.accept
+						)[0]
+					}
+					options={MimeOptions}
+					onChange={(selected) =>
+						changeSingleOption("accept", selected.value)
+					}
+				/>
 			</Flex>
 
 			<Dropzone
+				label="Upload Your Photo"
 				file={file}
 				options={options}
-				accept=""
+				accept={options.accept}
 				setFile={setFile}
+				watermark={watermark}
+				cameraOnly={cameraOnly}
 			/>
 			<Text>{file ? file?.name : ""}</Text>
 		</Flex>
@@ -478,7 +549,7 @@ const DropZoneTest = () => {
 
 /**
  * Testing the DropZone component
- * MARK: DropZoneTest
+ * MARK: RaiseQueryTest
  */
 const CustomRaiseQueryTest = () => {
 	const { showRaiseIssueDialog } = useRaiseIssue();
@@ -544,8 +615,8 @@ const TestComponents = [
 		component: FileViewersTest,
 	},
 	{
-		title: "Screenshot Capture",
-		component: ScreenshotTest,
+		title: "File Upload (Dropzone)",
+		component: DropZoneTest,
 	},
 	{
 		title: "Image Editor",
@@ -556,8 +627,8 @@ const TestComponents = [
 		component: CameraTest,
 	},
 	{
-		title: "File Upload (Dropzone)",
-		component: DropZoneTest,
+		title: "Screenshot Capture",
+		component: ScreenshotTest,
 	},
 	{
 		title: "Raise Custom Issue",
