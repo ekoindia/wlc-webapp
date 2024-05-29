@@ -141,9 +141,9 @@ const getDefaultCrop = (width, height, aspectRatio) => {
 };
 
 export {
-	type RunningModeType,
-	initializeFaceDetector,
+	getCompositeFaceBound,
 	getDefaultCrop,
 	getFullFaceBound,
-	getCompositeFaceBound,
+	initializeFaceDetector,
+	type RunningModeType,
 };
