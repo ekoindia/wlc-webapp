@@ -13,6 +13,7 @@ export default [
 	},
 
 	// Apply recommended configurations from plugins
+	// TODO include core-web-vitals
 	// next.configs["core-web-vitals"],
 	jsdoc.configs["flat/recommended"],
 	// storybook.configs["recommended"],
