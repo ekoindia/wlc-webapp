@@ -2,7 +2,7 @@ import { Center } from "@chakra-ui/react";
 import { IconNameType } from "constants/IconLibrary";
 import { Icon } from "..";
 
-type Props = {
+type IcoButtonProps = {
 	size?: "lg" | "md" | "sm" | "xs" | string;
 	iconSize?: string;
 	iconStyle?: Object;
@@ -19,15 +19,15 @@ type Props = {
 
 /**
  * A IcoButton component to show Icons
- * @param {Props} props - The props of the component
+ * @param {IcoButtonProps} props - The props of the component
  * @param {IconNameType} props.iconName - The name of the icon to display.
  * @param {string} [props.size="md"] - The size of the button. Can be "lg", "md", "sm", or a custom string.
- * @param {string|number} props.iconSize - An optional custom size for the icon.
- * @param {Object} props.iconStyle - The styles to apply to the icon (should contain width, height).
- * @param {string} props.theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
- * @param {string|number} props.rounded - The rounding of the button. Can be a number, or "full" (default).
- * @param {string} props.title - The title of the button.
- * @param {MouseEvent} props.onClick - The click event handler
+ * @param {string|number} [props.iconSize] - An optional custom size for the icon.
+ * @param {Object} [props.iconStyle] - The styles to apply to the icon (should contain width, height).
+ * @param {string} [props.theme] - The color theme of the button. Can be "light" or "dark" or any custom theme.
+ * @param {string|number} [props.rounded] - The rounding of the button. Can be a number, or "full" (default).
+ * @param {string} [props.title] - The title of the button.
+ * @param {MouseEvent} [props.onClick] - The click event handler
  * @param {...Object} rest - A catch-all prop that allows any other prop to be passed in.
  * @example
  * //Example usage:
@@ -49,7 +49,7 @@ const IcoButton = ({
 	title,
 	onClick,
 	...rest
-}: Props): JSX.Element => {
+}: IcoButtonProps): JSX.Element => {
 	const clickable: boolean = onClick === undefined;
 
 	const IconElement = icon;
