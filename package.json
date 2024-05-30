@@ -1,5 +1,4 @@
 {
-	"type": "module",
 	"name": "eko-infinity-webapp",
 	"version": "4.35.0",
 	"private": true,
@@ -8,6 +7,7 @@
 		"eko",
 		"white-label"
 	],
+	"type": "module",
 	"scripts": {
 		"dev": "next dev -p 3002",
 		"inspect": "NODE_OPTIONS='--inspect' next dev",
