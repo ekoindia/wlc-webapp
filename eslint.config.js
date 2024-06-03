@@ -5,7 +5,6 @@ export default [
 	// Register plugins
 	{
 		plugins: {
-			// next: next,
 			jsdoc: jsdoc,
 			prettier: prettier,
 			// storybook: storybook,
@@ -13,14 +12,16 @@ export default [
 	},
 
 	// Apply recommended configurations from plugins
-	// TODO include core-web-vitals
-	// next.configs["core-web-vitals"],
 	jsdoc.configs["flat/recommended"],
+	// TODO include core-web-vitals & storybook
+	// next.configs["core-web-vitals"],
 	// storybook.configs["recommended"],
 
 	// Global configuration
 	{
 		ignores: ["**/*.BAK.*", "**/*.stories.*", "**/*.mocks.*", "**/*.min.*"],
+
+		files: ["**/*.{ts,tsx,jsx,js}"],
 
 		languageOptions: {
 			globals: {
@@ -41,7 +42,6 @@ export default [
 			"prettier/prettier": "error",
 			"comma-spacing": ["error", { before: false, after: true }],
 			"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
-			"jsdoc/require-description": "warn",
 			semi: ["error", "always", { omitLastInOneLineBlock: true }],
 			"no-unused-vars": [
 				"error",
