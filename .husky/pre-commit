@@ -1,4 +1,11 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Run lint-staged
 npm run lint-staged
+
+# Run build
+npm run build
+
+# Run dependency check script
+npm run check-deps
