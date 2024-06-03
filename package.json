@@ -32,7 +32,8 @@
 		"test-watch": "jest --coverage=false --watch",
 		"test-coverage": "jest --coverage",
 		"test-update-snapshots": "jest --updateSnapshot",
-		"check-updates": "echo 'TO UPDATE, RUN: npm install package-name' && npm outdated --depth=0"
+		"check-updates": "npm-check -u",
+		"check-deps": "node check-deps.js"
 	},
 	"lint-staged": {
 		"**/*.{js,jsx,ts,tsx}": [
@@ -81,6 +82,7 @@
 		"@commitlint/cli": "^19.3.0",
 		"@commitlint/config-conventional": "^19.2.2",
 		"@next/bundle-analyzer": "^14.2.3",
+		"@next/eslint-plugin-next": "^14.2.3",
 		"@storybook/addon-actions": "^6.5.15",
 		"@storybook/addon-essentials": "^6.5.15",
 		"@storybook/addon-interactions": "^6.5.15",
@@ -108,6 +110,7 @@
 		"jest-environment-jsdom": "^29.7.0",
 		"lint-staged": "^15.2.5",
 		"next-router-mock": "^0.9.13",
+		"npm-check": "^6.0.1",
 		"plop": "^4.0.1",
 		"postcss": "^8.4.38",
 		"prettier": "^3.2.5",
