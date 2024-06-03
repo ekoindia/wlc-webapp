@@ -41,6 +41,7 @@ export default [
 		rules: {
 			"prettier/prettier": "error",
 			"comma-spacing": ["error", { before: false, after: true }],
+			"jsdoc/require-description": "warn",
 			"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
 			semi: ["error", "always", { omitLastInOneLineBlock: true }],
 			"no-unused-vars": [
