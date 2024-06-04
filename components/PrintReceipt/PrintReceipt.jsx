@@ -40,7 +40,6 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 				<Flex flexDirection="row" align="center" width="100%">
 					{orgDetail.logo && (
 						<OrgLogo
-							orgDetail={orgDetail}
 							size="lg"
 							// size={{ base: "md", md: "lg" }}
 							// mr={8}

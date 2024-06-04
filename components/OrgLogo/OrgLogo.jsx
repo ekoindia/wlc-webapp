@@ -1,4 +1,5 @@
 import { Center, Image, Text } from "@chakra-ui/react";
+import { useOrgDetailContext } from "contexts";
 import { useState } from "react";
 
 const fallbackLogo =
@@ -6,15 +7,16 @@ const fallbackLogo =
 
 /**
  * Show the organization Logo. If logo is not available, show the app name as logo
- * @param 	{object}	orgDetail	Organization Details, specially `logo` & `app_name`
+//  * @param 	{object}	orgDetail	Organization Details, specially `logo` & `app_name`
  * @param	{string}	size	Size of the logo. `lg` for large, `md` for medium
  * @param	{boolean}	dark	Show logo on dark background
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<OrgLogo></OrgLogo>` TODO: Fix example
  */
-const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
+const OrgLogo = ({ size = "md", dark = false, ...rest }) => {
 	const [imageState, setImageState] = useState("loading");
 	const [isSmallLogo, setIsSmallLogo] = useState(false); // Is it a circular/squarish logo?
+	const { orgDetail } = useOrgDetailContext();
 
 	const onLoad = (success, e) => {
 		if (success) {
