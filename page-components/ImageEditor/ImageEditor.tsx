@@ -556,6 +556,11 @@ const ImageEditor = ({
 						keepSelection={true}
 						aspect={aspectRatio > 0 ? aspectRatio : undefined}
 						crop={crop}
+						circularCrop={
+							detectFace && aspectRatio == 1 && maxFaceCount <= 1
+								? true
+								: false
+						}
 						minWidth={100}
 						minHeight={100}
 						disabled={!cropEnabled}
