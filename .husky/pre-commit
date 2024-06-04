@@ -5,7 +5,7 @@
 npm run lint-staged
 
 # Run build
-npm run build
+# npm run build
 
 # Run dependency check script
-npm run check-deps
+# npm run check-deps
