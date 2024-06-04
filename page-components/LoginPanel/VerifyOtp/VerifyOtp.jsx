@@ -8,12 +8,11 @@ import { useCallback, useEffect, useState } from "react";
 
 /**
  * A <VerifyOtp> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<VerifyOtp></VerifyOtp>`
+ * @arg {Object} prop - Properties passed to the component
+ * @param {string} [prop.loginType] - Login type, eg: Mobile
+ * @param {Object} prop.number - Object containing the original and formatted mobile number
+ * @param {Function} prop.setStep - Function to set the step
  */
-
 const VerifyOtp = ({ loginType, number, setStep }) => {
 	const { login } = useUser();
 	const { orgDetail } = useOrgDetailContext();

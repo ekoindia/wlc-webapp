@@ -1,7 +1,8 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
+import { useFeatureFlag } from "hooks";
 import { useState } from "react";
-import { GeneralConfig, ThemeConfig } from ".";
+import { GeneralConfig, LandingPageConfig, ThemeConfig } from ".";
 
 /**
  * A Configurations page-component
@@ -9,14 +10,31 @@ import { GeneralConfig, ThemeConfig } from ".";
 const Configurations = () => {
 	const [currTab, setCurrTab] = useState(0);
 
+	const [isConfigEnabled] = useFeatureFlag("PORTAL_CONFIG");
+
 	const list = [
-		{ label: "General", component: <GeneralConfig /> },
+		{ label: "Landing Page", component: <LandingPageConfig /> },
 		{ label: "Theme", component: <ThemeConfig /> },
+		{ label: "General", component: <GeneralConfig /> },
 	];
 
 	const onClick = (idx) => setCurrTab(idx);
 
 	const getComp = (idx) => list[idx].component;
+
+	if (!isConfigEnabled) {
+		return (
+			<Flex
+				justifyContent="center"
+				alignItems="center"
+				h="10em"
+				w="100%"
+				fontSize="2xl"
+			>
+				<Text>Coming soon!!</Text>
+			</Flex>
+		);
+	}
 
 	return (
 		<div>

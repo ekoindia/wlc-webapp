@@ -19,7 +19,14 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - TODO: Provide for A-B testing, gradual roll-out, etc.
 - To add a new feature-flag, add a new entry in the [constants/featureFlags.ts](constants/featureFlags.ts) file.
 - To test for a feature-flag, use the `useFeatureFlag` hook from [hooks/useFeatureFlag.tsx](hooks/useFeatureFlag.tsx).
-  - Eg: `const isFeatureEnabled = useFeatureFlag('MY_FEATURE');`
+  - Eg: `const [isFeatureEnabled] = useFeatureFlag('MY_FEATURE');`
+  - to dynamically check for feature flags, use the `checkFeatureFlag` function:
+    ```jsx
+	import { checkFeatureFlag } from 'hooks/useFeatureFlag';
+	const [isFeatureEnabled, checkFeatureFlag] = checkFeatureFlag('MY_FEATURE');
+
+	const isAnotherFeatureEnabled = checkFeatureFlag('ANOTHER_FEATURE');
+	```
 
 
 ## 🎨 UI Features:
