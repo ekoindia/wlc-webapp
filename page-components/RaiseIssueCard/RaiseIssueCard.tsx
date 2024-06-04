@@ -159,11 +159,11 @@ const RaiseIssueCard = ({
 		useState<boolean>(true); // Do we need to submit user feedback (or, just link to another page)?
 
 	// Check if the feature is enabled...
-	const isFeatureEnabled = useFeatureFlag("RAISE_ISSUE");
+	const [isFeatureEnabled] = useFeatureFlag("RAISE_ISSUE");
 
 	// Experimental text-classifier for user comments...
 	// @see https://ai.google.dev/edge/mediapipe/solutions/text/text_classifier
-	const isTextClassifierEnabled = useFeatureFlag("TEXT_CLASSIFIER");
+	const [isTextClassifierEnabled] = useFeatureFlag("TEXT_CLASSIFIER");
 	const [textClassifier, setTextClassifier] = useState<any>(null);
 	const [classifierResult, setClassifierResult] = useState("");
 

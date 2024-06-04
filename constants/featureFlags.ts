@@ -5,9 +5,16 @@
  * To check for a feature-flag, use the "useFeatureFlag" hook.
  * @example
  * 	import { useFeatureFlag } from "hooks";
- * 	const isFeatureEnabled = useFeatureFlag("FEATURE_NAME");
+ * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
+	// Feature to show Portal Configurations like Landing Page, Theme, etc to Admin.
+	PORTAL_CONFIG: {
+		enabled: true,
+		forEnv: ["development"],
+		forAdminOnly: true,
+	},
+
 	// Feature to Raise Issues...
 	RAISE_ISSUE: {
 		enabled: true,

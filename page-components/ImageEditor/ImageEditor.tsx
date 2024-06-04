@@ -97,7 +97,7 @@ const ImageEditor = ({
 	const imageRef = useRef(null);
 
 	// For face detection
-	const isFaceDetectionEnabled = useFeatureFlag("FACE_DETECTOR");
+	const [isFaceDetectionEnabled] = useFeatureFlag("FACE_DETECTOR");
 	const [faceDetector, setFaceDetector] = useState<any>(null);
 	const [detectedFaceCount, setDetectedFaceCount] = useState(0);
 	const [confidence, setConfidence] = useState("");

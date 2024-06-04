@@ -111,7 +111,7 @@ const convertToStackArray = (expr) => {
  */
 function ExpressionEditor({ header = "Expression Editor" }) {
 	// Check if the feature flag is enabled
-	const isFeatureEnabled = useFeatureFlag("EXPRESSION_EDITOR");
+	const [isFeatureEnabled] = useFeatureFlag("EXPRESSION_EDITOR");
 
 	// State to manage the current expression structure created by the user
 	const [expression, setExpression] = useState({

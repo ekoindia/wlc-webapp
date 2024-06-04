@@ -26,6 +26,7 @@ import {
 	UserType,
 } from "constants";
 import { useMenuContext, useOrgDetailContext, useUser } from "contexts";
+import { useFeatureFlag } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -257,6 +258,8 @@ const SideBar = ({ navOpen, setNavClose }) => {
 	const [trxnActions, setTrxnActions] = useState([]);
 	const [otherActions, setOtherActions] = useState([]);
 
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
+
 	// Check if screen is smaller than "lg" to show a mobile sidebar with drawer
 	const isSmallScreen = useBreakpointValue(
 		{ base: true, lg: false },
@@ -285,16 +288,27 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				? adminSidebarMenu
 				: sidebarMenu;
 
-		if (disabledFeatures) {
-			_menuList.forEach((item) => {
-				const _feat = JSON.parse(disabledFeatures)?.features;
-				if (!_feat.includes(item.id)) {
-					_filteredMenuList.push(item);
-				}
-			});
-		} else {
-			_filteredMenuList = _menuList;
-		}
+		// Filter out Disabled features (from org-metadata) & Feature Flags !!!
+		const _feat = disabledFeatures
+			? JSON.parse(disabledFeatures)?.features
+			: [];
+		_menuList.forEach((item) => {
+			// Skip if the feature is disabled (from org-metadata)
+			if (_feat.includes(item.id)) {
+				return;
+			}
+
+			// Skip if the feature is disabled (from feature-flags)
+			if (
+				item.featureFlag &&
+				checkFeatureFlag(item.featureFlag) !== true
+			) {
+				return;
+			}
+
+			// Else, add to the menu list
+			_filteredMenuList.push(item);
+		});
 
 		setMenuList(_filteredMenuList);
 
