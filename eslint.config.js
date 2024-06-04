@@ -1,3 +1,4 @@
+import tsEslintParser from "@typescript-eslint/parser";
 import jsdoc from "eslint-plugin-jsdoc";
 import prettier from "eslint-plugin-prettier";
 
@@ -31,6 +32,9 @@ export default [
 				expect: "readonly",
 				JSX: "readonly",
 			},
+
+			// Using eslint parser for both js & ts files
+			parser: tsEslintParser,
 			parserOptions: {
 				ecmaFeatures: {
 					jsx: true,
