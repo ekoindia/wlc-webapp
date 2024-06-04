@@ -1,19 +1,19 @@
-import { Flex, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Image, Text } from "@chakra-ui/react";
 import { Button, IcoButton, Input, InputLabel } from "components";
 import { Endpoints } from "constants";
 import { useOrgDetailContext, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useCamera, useFileView, useGeolocation, useImageEditor } from "hooks";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { MdCameraAlt } from "react-icons/md";
+import { MdCameraAlt, MdFolderOpen, MdPhotoLibrary } from "react-icons/md";
 
-const IMAGE_MIME_TYPES = {
-	"image/jpeg": true,
-	"image/jpg": true,
-	"image/png": true,
-	"image/svg+xml": true,
-	"image/webp": true,
-};
+// const IMAGE_MIME_TYPES = {
+// 	"image/jpeg": true,
+// 	"image/jpg": true,
+// 	"image/png": true,
+// 	"image/svg+xml": true,
+// 	"image/webp": true,
+// };
 
 /**
  * A Dropzone component to upload file either by selecting or by drag & drop
@@ -23,6 +23,7 @@ const IMAGE_MIME_TYPES = {
  * @param	{function}	prop.setFile	Function to set the file object
  * @param	{string}	[prop.accept=""]	Accepted file types
  * @param	{boolean}	[prop.cameraOnly=false]	Only allow camera to capture image. No file upload or drag/drop.
+ * @param	{boolean}	[prop.watermark=false]	Add watermark to the Camera image. The following data is added to the image: timestamp, user name, usercode, org name, and geolocation.
  * @param	{object}	[prop.options={}]	Additional options for the dropzone
  * @param	{number}	[prop.options.maxLength]	Maximum length of the image
  * @param	{boolean}	[prop.options.detectFace]	Detect faces in the image?
@@ -36,7 +37,6 @@ const IMAGE_MIME_TYPES = {
  * @param	{boolean}	[prop.options.disableRotate=false]	Disable rotating the image
  * @param	{boolean}	[prop.required=false]	Mark the dropzone as required
  * @param	{boolean}	[prop.disabled=false]	Disable the dropzone
- * @param	{boolean}	[prop.watermark=false]	Add watermark to the Camera image. The following data is added to the image: timestamp, user name, usercode, org name, and geolocation.
  * @param	{object}	[prop.labelStyle={}]	Style for the label
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Dropzone file={screenshot} setFile={setScreenshot} />` TODO: Fix example
@@ -47,16 +47,17 @@ const Dropzone = ({
 	setFile,
 	accept = "",
 	cameraOnly = false,
+	watermark = false,
 	options = {},
 	required = false,
 	disabled = false,
-	watermark = false,
 	labelStyle,
 	...rest
 }) => {
 	const [inDropZone, setInDropZone] = useState(false);
 	const [isValidDrop, setIsValidDrop] = useState(false);
 	const [isImageAllowed, setIsImageAllowed] = useState(false);
+	const [isNonImageAllowed, setIsNonImageAllowed] = useState(false);
 	const [previewImage, setPreviewImage] = useState(null);
 
 	// Reference for the Input element
@@ -125,12 +126,15 @@ const Dropzone = ({
 	useEffect(() => {
 		if (!accept) {
 			setIsImageAllowed(true);
+			setIsNonImageAllowed(true);
 		} else {
 			const _accept = accept.split(",");
-			const _isImageAllowed = _accept.some(
-				(type) => IMAGE_MIME_TYPES[type] || type.startsWith("image/")
-			);
+			const _isImageAllowed = _accept.some((type) => isImageType(type));
 			setIsImageAllowed(_isImageAllowed);
+			const _isNonImageAllowed = _accept.some(
+				(type) => !isImageType(type)
+			);
+			setIsNonImageAllowed(_isNonImageAllowed);
 		}
 	}, [accept]);
 
@@ -146,7 +150,7 @@ const Dropzone = ({
 			...options,
 		};
 
-		if (IMAGE_MIME_TYPES[file.type]) {
+		if (isImageType(file.type)) {
 			// convertImage(_file);
 			console.log("[Dropzone] Opening Image Editor: ", {
 				image_type: typeof image,
@@ -188,7 +192,7 @@ const Dropzone = ({
 		if (!_file) return;
 		if (cameraOnly) return;
 
-		if (IMAGE_MIME_TYPES[_file.type]) {
+		if (isImageType(_file.type)) {
 			// convertImage(_file);
 			openImageEditor(null, _file);
 		} else {
@@ -315,7 +319,7 @@ const Dropzone = ({
 
 							console.log("URL FILE FOUND::: ", fileObj);
 
-							if (IMAGE_MIME_TYPES[fileObj.type]) {
+							if (isImageType(fileObj.type)) {
 								// convertImage(fileObj);
 								openImageEditor(blobFile, fileObj);
 							} else {
@@ -332,7 +336,7 @@ const Dropzone = ({
 
 		if (!_file) return;
 
-		if (IMAGE_MIME_TYPES[_file.type]) {
+		if (isImageType(_file.type)) {
 			// convertImage(_file);
 			openImageEditor("", _file);
 		} else {
@@ -374,12 +378,13 @@ const Dropzone = ({
 		}
 	};
 
+	// MARK: JSX
 	return (
 		<>
 			<InputLabel required={required} {...labelStyle}>
 				{label}
 			</InputLabel>
-			<Flex
+			<Box
 				bg={
 					inDropZone
 						? isValidDrop
@@ -395,7 +400,7 @@ const Dropzone = ({
 				onDragLeave={handleDragLeave}
 				onDrop={handleDrop}
 				border="2px"
-				borderStyle="dashed"
+				borderStyle={cameraOnly ? "solid" : "dashed"}
 				borderColor="divider"
 				borderRadius="10px"
 				color="light"
@@ -406,7 +411,7 @@ const Dropzone = ({
 				{...rest}
 			>
 				{file === null || typeof file === "undefined" ? (
-					<Flex direction="column" align="center" w="100%" gap="2">
+					<>
 						<Input
 							ref={fileInputRef}
 							type="file"
@@ -416,55 +421,78 @@ const Dropzone = ({
 							disabled={disabled}
 						/>
 						<Flex
-							direction="row"
+							direction="column"
 							align="center"
+							w="100%"
 							gap="2"
-							opacity={inDropZone ? 0 : 1}
-							pointerEvents={inDropZone ? "none" : "auto"}
 						>
+							<Flex
+								direction="row"
+								align="center"
+								gap="2"
+								opacity={inDropZone ? 0 : 1}
+								pointerEvents={inDropZone ? "none" : "auto"}
+							>
+								{cameraOnly ? null : (
+									<Btn
+										onClick={() =>
+											fileInputRef?.current?.click()
+										}
+										disabled={disabled}
+									>
+										{isNonImageAllowed ? (
+											<MdFolderOpen size="22px" />
+										) : (
+											<MdPhotoLibrary size="20px" />
+										)}
+										<Text ml="0.3em">
+											Select &nbsp;
+											{isNonImageAllowed
+												? "File"
+												: "Photo"}
+										</Text>
+									</Btn>
+								)}
+								{isImageAllowed ? (
+									<Btn
+										onClick={() =>
+											openCamera(
+												{
+													watermark:
+														watermark &&
+														watermarkText
+															? watermarkText
+															: "",
+													...options,
+												},
+												handleCameraResponse
+											)
+										}
+										disabled={disabled}
+									>
+										<MdCameraAlt size="20px" />
+										{cameraOnly ? (
+											<Text ml="0.3em">Open Camera</Text>
+										) : null}
+									</Btn>
+								) : null}
+							</Flex>
 							{cameraOnly ? null : (
-								<Btn
-									onClick={() =>
-										fileInputRef?.current?.click()
-									}
-									disabled={disabled}
+								<Text
+									fontSize="sm"
+									color="GrayText"
+									pointerEvents="none"
+									userSelect="none"
 								>
-									Browse
-								</Btn>
+									{inDropZone
+										? isValidDrop
+											? "Drop your file here"
+											: "File type not allowed"
+										: "or, drag & drop the file here"}
+								</Text>
 							)}
-							{isImageAllowed ? (
-								<Btn
-									onClick={() =>
-										openCamera(
-											{
-												watermark:
-													watermark && watermarkText
-														? watermarkText
-														: "",
-												...options,
-											},
-											handleCameraResponse
-										)
-									}
-									disabled={disabled}
-								>
-									<MdCameraAlt size="20px" />
-								</Btn>
-							) : null}
 						</Flex>
-						<Text
-							fontSize="sm"
-							color="GrayText"
-							pointerEvents="none"
-							userSelect="none"
-						>
-							{inDropZone
-								? isValidDrop
-									? "Drop your file here"
-									: "File type not allowed"
-								: "or, drag & drop your file here"}
-						</Text>
-					</Flex>
+					</>
 				) : (
 					<Flex
 						w="40%"
@@ -517,7 +545,7 @@ const Dropzone = ({
 						</Flex>
 					</Flex>
 				)}
-			</Flex>
+			</Box>
 		</>
 	);
 };
@@ -538,5 +566,12 @@ const Btn = ({ disabled, onClick, children, ...rest }) => {
 		</Button>
 	);
 };
+
+/**
+ * Check if the mime-type is for an image
+ */
+function isImageType(type) {
+	return type && type.toLowerCase().startsWith("image/");
+}
 
 export default Dropzone;
