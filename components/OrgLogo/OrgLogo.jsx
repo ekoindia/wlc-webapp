@@ -1,4 +1,4 @@
-import { Center, Image, Text } from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
 import { useOrgDetailContext } from "contexts";
 import { useState } from "react";
 
@@ -56,7 +56,9 @@ const OrgLogo = ({ size = "md", dark = false, ...rest }) => {
 	// Show only Text Logo...
 	if ((!orgLogo || imageState === "failed") && orgDetail.app_name) {
 		return (
-			<Center
+			<Flex
+				direction="row"
+				align="center"
 				maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
 				// height={logoHeight}
 				// bg="primary.DEFAULT"
@@ -69,13 +71,15 @@ const OrgLogo = ({ size = "md", dark = false, ...rest }) => {
 					logoFontSize={logoFontSize}
 					dark={dark}
 				/>
-			</Center>
+			</Flex>
 		);
 	}
 
 	// Image Logo...
 	return (
-		<Center
+		<Flex
+			direction="row"
+			align="center"
 			h={logoHeight}
 			transition="opacity 1s ease-out"
 			opacity={imageState === "loaded" ? 1 : 0}
@@ -112,7 +116,7 @@ const OrgLogo = ({ size = "md", dark = false, ...rest }) => {
 					ml={imageState === "loaded" ? 2 : 0}
 				/>
 			) : null}
-		</Center>
+		</Flex>
 	);
 };
 
