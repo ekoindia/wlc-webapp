@@ -15,6 +15,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 	},
 
+	// Feature to show a custom Landing Page that can be fully configured by Admins.
+	CMS_LANDING_PAGE: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// Feature to Raise Issues...
 	RAISE_ISSUE: {
 		enabled: true,

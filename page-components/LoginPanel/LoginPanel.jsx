@@ -1,7 +1,8 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Render } from "@measured/puck";
+// import { Render } from "@measured/puck";
 import { Icon } from "components";
 import { useOrgDetailContext, useSession } from "contexts";
+import { useFeatureFlag } from "hooks";
 import { fadeIn } from "libs/chakraKeyframes";
 import { cmsConfig } from "libs/cms";
 import dynamic from "next/dynamic";
@@ -15,6 +16,21 @@ const WelcomeCard = dynamic(
 		ssr: false,
 	}
 );
+
+// For CMS custom screen
+// TODO: Move to static import, and, enable SSR
+const Render = dynamic(
+	() => import("@measured/puck").then((pkg) => pkg.Render),
+	{
+		ssr: false,
+	}
+);
+// const cmsConfig = dynamic(
+// 	() => import("libs/cms").then((pkg) => pkg.cmsConfig),
+// 	{
+// 		ssr: false,
+// 	}
+// );
 
 // Time in milliseconds to persist the OTP screen, if the user comes back to the app within this time.
 const PERSIST_OTP_SCREEN_TIMEOUT_MS = 240000; // 4 mins
@@ -42,6 +58,8 @@ const LoginPanel = () => {
 	const { isLoggedIn } = useSession();
 
 	const [cmsData, setCmsData] = useState(null);
+
+	const [isCmsEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
 
 	// Load landing page custom config (for Puck)
 	useEffect(() => {
@@ -138,7 +156,7 @@ const LoginPanel = () => {
 					direction="column"
 					justify="flex-start"
 				>
-					{cmsData ? (
+					{isCmsEnabled && cmsData ? (
 						<Render config={cmsConfig} data={cmsData} />
 					) : (
 						<WelcomeCard
