@@ -10,10 +10,11 @@ import { useState } from "react";
  * @arg {Object} prop - Properties passed to the component
  * @param {string} [prop.email] - Email of the user
  * @param {Object} prop.number - Object containing the original and formatted mobile number
+ * @param {boolean} prop.previewMode - Flag to check if the component is in preview mode
  * @param {Function} prop.setNumber - Function to set the number
  * @param {Function} prop.setStep - Function to set the step
  */
-const SocialVerify = ({ email, number, setNumber, setStep }) => {
+const SocialVerify = ({ email, number, previewMode, setNumber, setStep }) => {
 	const toast = useToast();
 	const [value, setValue] = useState(number.formatted);
 	const { isAndroid } = useAppSource();
@@ -27,6 +28,8 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 	};
 
 	const onVerifyOtp = async () => {
+		if (previewMode === true) return;
+
 		if (value.length === 12) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({

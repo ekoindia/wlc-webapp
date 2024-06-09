@@ -29,8 +29,7 @@ const PERSIST_OTP_SCREEN_TIMEOUT_MS = 240000; // 4 mins
 
 // Declare the props interface
 interface LoginWidgetProps {
-	prop1?: string;
-	// size: "lg" | "md" | "sm" | "xs" | string;
+	previewMode?: boolean;
 	[key: string]: any;
 }
 
@@ -44,12 +43,11 @@ interface LoginWidgetProps {
  *
  * @component
  * @param {object} prop - Properties passed to the component
- * @param {string} prop.prop1 - TODO: Property description. A normal property.
- * @param {number} [prop.optionalProp2=0] - TODO: Property description. An optional property with default value.
+ * @param {boolean} prop.previewMode - Show login widget as a preview. Do not allow submitting the form. Used in CMS Editor as a preview of the Login widget.
  * @param {...*} rest - Rest of the props
  * @example	`<LoginWidget></LoginWidget>` TODO: Fix example
  */
-const LoginWidget = ({ prop1, ...rest }: LoginWidgetProps) => {
+const LoginWidget = ({ previewMode = false, ...rest }: LoginWidgetProps) => {
 	const [step, setStep] = useState("LOGIN");
 	const [email, setEmail] = useState("");
 	const [number, setNumber] = useState({
@@ -116,7 +114,7 @@ const LoginWidget = ({ prop1, ...rest }: LoginWidgetProps) => {
 	}, [step]);
 
 	// Hide LoginWidget if user is already logged in
-	if (isLoggedIn) return null;
+	if (isLoggedIn && previewMode !== true) return null;
 
 	// MARK: JSX
 	return (
@@ -133,6 +131,7 @@ const LoginWidget = ({ prop1, ...rest }: LoginWidgetProps) => {
 			px={{ base: 5, "2xl": 7 }}
 			py={{ base: 7, "2xl": 10 }}
 			bg="white"
+			color="#333"
 			{...rest}
 		>
 			{step === "LOGIN" && (
@@ -145,17 +144,22 @@ const LoginWidget = ({ prop1, ...rest }: LoginWidgetProps) => {
 						setLoginType,
 						lastUserName,
 						lastMobileFormatted,
+						previewMode,
 					}}
 				/>
 			)}
 			{step === "VERIFY_OTP" && (
 				<SlideFade offsetX={100} offsetY={0} in={true}>
-					<VerifyOtp {...{ number, loginType, setStep }} />
+					<VerifyOtp
+						{...{ number, loginType, setStep, previewMode }}
+					/>
 				</SlideFade>
 			)}
 			{step === "SOCIAL_VERIFY" && (
 				<SlideFade offsetX={100} offsetY={0} in={true}>
-					<SocialVerify {...{ email, number, setNumber, setStep }} />
+					<SocialVerify
+						{...{ email, number, setNumber, setStep, previewMode }}
+					/>
 				</SlideFade>
 			)}
 		</Flex>

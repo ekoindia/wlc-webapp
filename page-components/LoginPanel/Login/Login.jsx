@@ -20,6 +20,9 @@ const DynamicGoogleButton = dynamic(
  * @params 	{Function}	setStep		Function to set the step like LOGIN, VERIFYOTP & SOCIALVERIFY
  * @params 	{Function}	setNumber	Function to set the users mobile number if the user is loogin using Mobile number
  * @params 	{Object}	number		Object which gives the number in two forms formatted and original (or unformatted)
+ * @params 	{string}	lastUserName	Last user name who logged in
+ * @params 	{string}	lastMobileFormatted	Last mobile number which was used to login
+ * @params 	{boolean}	previewMode	Flag to check if the component is in preview mode
  * @params 	{Function}	setEmail	Function to set the users email
  * @params 	{Function}	setLoginType	Function to set the login type
  * @example	`<Login></Login>`
@@ -28,10 +31,11 @@ const Login = ({
 	setStep,
 	setNumber,
 	number,
-	setEmail,
-	setLoginType,
 	lastUserName,
 	lastMobileFormatted,
+	previewMode,
+	setEmail,
+	setLoginType,
 }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
@@ -62,6 +66,8 @@ const Login = ({
 	};
 
 	const sendOtp = async () => {
+		if (previewMode === true) return;
+
 		if (value.length === 12) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({
