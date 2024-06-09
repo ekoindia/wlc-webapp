@@ -1,1 +1,1 @@
-export { CmsComponentType, cmsConfig } from "./puckCmsConfig";
+export { CmsComponentType, cmsConfig, context } from "./puckCmsConfig";

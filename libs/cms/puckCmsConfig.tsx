@@ -3,13 +3,37 @@
  * @see https://puckeditor.com/docs/integrating-puck/component-configuration
  */
 
-import { Center as ChCenter, Text as ChText } from "@chakra-ui/react";
+import { Center as ChCenter, Flex as ChFlex } from "@chakra-ui/react";
 import { DropZone, type Config } from "@measured/puck";
-import { OrgLogo } from "components";
-import { spacingOptions } from "./options";
+import { Card, OrgLogo } from "components";
 // import dynamic from "next/dynamic";
+import { createContext, useEffect, useState } from "react";
+import {
+	ButtonGroup,
+	Columns,
+	FeatureList,
+	Flex,
+	Heading,
+	Hero,
+	Text,
+} from "./blocks";
+import { LoginWidgetConf } from "./components";
+import {
+	bgColors,
+	extendedSizeOptions,
+	paddingSizeMap,
+	pixelSizeOptions,
+} from "./options";
 
-// const OrgLogo = dynamic(
+/**
+ * Context for managing common values across components
+ */
+export const context = createContext({
+	paddingX: "" as string,
+	setPaddingX: (_value: string) => {},
+});
+
+// const OrgLogo2 = dynamic(
 // 	() => import("components/OrgLogo").then((pkg) => pkg.OrgLogo),
 // 	{
 // 		ssr: false,
@@ -20,22 +44,22 @@ import { spacingOptions } from "./options";
  * Define the Types: components, categories, etc
  * MARK: Types
  */
-type CmsComponentType = {
-	Heading: {
-		title: string;
-		type: string;
-	};
-	Center: {
-		w: string;
-		h: string;
-		// children: React.ReactNode;
-	};
-	Logo: {};
-	VerticalSpace: {
-		h: string;
-	};
-};
-type categoryType = "layout" | "typography";
+// type CmsComponentType = {
+// 	Heading: {
+// 		title: string;
+// 		type: string;
+// 	};
+// 	Center: {
+// 		w: string;
+// 		h: string;
+// 		// children: React.ReactNode;
+// 	};
+// 	Logo: {};
+// 	VerticalSpace: {
+// 		h: string;
+// 	};
+// };
+// type categoryType = "layout" | "typography";
 
 /**
  * Define the Categories
@@ -43,10 +67,13 @@ type categoryType = "layout" | "typography";
  */
 const categories: any = {
 	layout: {
-		components: ["Center", "VerticalSpace"],
+		components: ["Columns", "Flex", "Center", "VerticalSpace"],
+	},
+	sections: {
+		components: ["Hero", "FeatureList", "ButtonGroup"],
 	},
 	typography: {
-		components: ["Heading"],
+		components: ["Heading", "Text"],
 	},
 };
 
@@ -55,56 +82,21 @@ const categories: any = {
  * MARK: Components
  */
 const components: any = {
-	Heading: {
-		fields: {
-			title: {
-				type: "text",
-			},
-			type: {
-				type: "select",
-				options: [
-					{
-						label: "Heading 1",
-						value: "h1",
-					},
-					{
-						label: "Heading 2",
-						value: "h2",
-					},
-					{
-						label: "Heading 3",
-						value: "h3",
-					},
-				],
-			},
-		},
-		defaultProps: {
-			title: "Title goes here",
-			type: "h1",
-		},
-		render: ({ title, type }) => {
-			return (
-				<ChText
-					as={type || "h1"}
-					fontSize={
-						type == "h1" ? "3xl" : type == "h2" ? "2xl" : "xl"
-					}
-					fontWeight={type == "h1" ? "semibold" : "bold"}
-				>
-					{title}
-				</ChText>
-			);
-		},
-	},
+	Columns,
+	Flex,
+	Hero,
+	Heading,
+	Text,
 	VerticalSpace: {
+		label: "Vertical Space",
 		fields: {
 			h: {
 				type: "select",
-				options: spacingOptions,
+				options: pixelSizeOptions,
 			},
 		},
 		defaultProps: {
-			h: "20px",
+			h: "16px",
 		},
 		render: ({ h }) => {
 			return <div style={{ height: h }} />;
@@ -128,12 +120,33 @@ const components: any = {
 		},
 	},
 	Logo: {
-		fields: {},
-		defaultProps: {},
-		render: () => {
-			return <OrgLogo />;
+		fields: {
+			size: {
+				type: "select",
+				label: "Size",
+				options: [
+					{ label: "Normal", value: "md" },
+					{ label: "Large", value: "lg" },
+				],
+			},
+			dark: {
+				type: "radio",
+				label: "Dark Logo",
+				options: [
+					{ label: "Yes", value: true },
+					{ label: "No", value: false },
+				],
+			},
+		},
+		defaultProps: { size: "md", dark: false },
+		render: ({ dark, size }) => {
+			return <OrgLogo size={size} dark={dark} />;
 		},
 	},
+	ButtonGroup,
+	FeatureList,
+	LoginWidgetConf,
+	Card,
 };
 
 /**
@@ -141,20 +154,59 @@ const components: any = {
  * MARK: Editor Root
  */
 const editorRoot: any = {
-	fields: {},
-	render: ({ children }) => {
+	fields: {
+		pad: {
+			type: "select",
+			label: "Padding",
+			options: extendedSizeOptions,
+		},
+		bg: {
+			type: "select",
+			label: "Background Color",
+			options: bgColors,
+		},
+		clr: {
+			type: "select",
+			label: "Text Color",
+			options: bgColors,
+		},
+	},
+	defaultProps: {
+		bg: "primary.dark",
+		clr: "white",
+		pad: "md",
+	},
+	render: ({ bg = "white", clr = "white", pad = "md", children }) => {
+		// const padding =
+		// 	pad && pad in paddingSizeMap ? paddingSizeMap[pad] : pad;
+		// console.log("padding", padding);
+
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const [paddingX, setPaddingX] = useState("" as string);
+
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		useEffect(() => {
+			const padding =
+				pad && pad in paddingSizeMap ? paddingSizeMap[pad] : pad;
+			setPaddingX(padding);
+		}, [pad]);
+
 		return (
-			<div
-				className="puckRoot"
-				style={{
-					position: "relative",
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "initial",
-				}}
-			>
-				{children}
-			</div>
+			<context.Provider value={{ paddingX, setPaddingX }}>
+				<ChFlex
+					className="puckRoot"
+					position="relative"
+					direction="column"
+					align="flex-start"
+					w="100%"
+					h="100%"
+					bg={bg}
+					color={clr}
+					// padding={padding}
+				>
+					{children}
+				</ChFlex>
+			</context.Provider>
 		);
 	},
 };
@@ -162,7 +214,7 @@ const editorRoot: any = {
 /**
  * Define the configuration for the Puck Editor
  */
-const cmsConfig: Config<CmsComponentType, {}, categoryType> = {
+const cmsConfig: Config<{}> = {
 	categories: categories,
 
 	components: components,
@@ -170,4 +222,4 @@ const cmsConfig: Config<CmsComponentType, {}, categoryType> = {
 	root: editorRoot,
 };
 
-export { cmsConfig, type CmsComponentType };
+export { cmsConfig };
