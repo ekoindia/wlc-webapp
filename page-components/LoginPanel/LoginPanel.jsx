@@ -134,7 +134,9 @@ const LoginPanel = () => {
 						md: "flex",
 					}}
 					w="100%"
-					h="100%"
+					// h="100%"
+					direction="column"
+					justify="flex-start"
 				>
 					{cmsData ? (
 						<Render config={cmsConfig} data={cmsData} />
