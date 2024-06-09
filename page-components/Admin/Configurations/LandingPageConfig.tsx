@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { Puck } from "@measured/puck";
 import "@measured/puck/puck.css";
+import { Icon } from "components";
 import { cmsConfig } from "libs/cms";
 import { useEffect, useState } from "react";
 
@@ -43,6 +44,21 @@ const LandingPageConfig = () => {
 			<Puck
 				config={cmsConfig}
 				data={initialData || {}}
+				viewports={[
+					{
+						width: 360,
+						height: "auto", // Optional height. Can be numeric or "auto". Defaults to "auto".
+						label: "Mobile", // Optional. Shown in tooltip.
+						icon: <Icon name="mobile" size="22px" color="#333" />,
+						// icon: <svg />, // Optional. Use lucide-icons to align with Puck UI.
+					},
+					{
+						width: 1024,
+						height: "auto",
+						label: "Desktop",
+						icon: <Icon name="tv" color="#333" />,
+					},
+				]}
 				onPublish={save}
 			/>
 		</Box>
