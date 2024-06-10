@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 // import { Render } from "@measured/puck";
 import { Icon } from "components";
 import { useOrgDetailContext, useSession } from "contexts";
@@ -121,11 +121,12 @@ const LoginPanel = () => {
 
 	// MARK: JSX
 	return (
-		<Flex
+		<Box
+			boxSizing="border-box"
 			w="full"
 			h="100vh"
-			align="center"
-			justify="center"
+			maxH="100vh"
+			direction="column"
 			bg="accent.light"
 			bgImage={{
 				base: "none",
@@ -137,47 +138,56 @@ const LoginPanel = () => {
 			overflowY="auto"
 		>
 			<Flex
-				w={{ base: "100%", md: "80%" }}
-				h={{ base: "100vh", lg: "auto" }}
-				maxW="1000px"
-				overflow="hidden"
-				borderRadius={{ base: 0, md: "15px" }}
-				boxShadow="xl"
-				animation={`${fadeIn} ease-out 1s`}
+				direction="row"
+				align="center"
+				minH="100%"
+				p={{ base: 0, md: "20px 0" }}
 			>
-				{/* Description Box */}
 				<Flex
-					display={{
-						base: showWelcomeCard ? "flex" : "none",
-						md: "flex",
-					}}
-					w="100%"
-					// h="100%"
-					direction="column"
-					justify="flex-start"
+					boxSizing="border-box"
+					w={{ base: "100%", md: "80%" }}
+					h={{ base: "100vh", lg: "auto" }}
+					maxW="1000px"
+					overflow="hidden"
+					borderRadius={{ base: 0, md: "15px" }}
+					boxShadow="xl"
+					animation={`${fadeIn} ease-out 1s`}
+					m="auto"
 				>
-					{isCmsEnabled && cmsData ? (
-						<Render config={cmsConfig} data={cmsData} />
-					) : (
-						<WelcomeCard
-							logo="/favicon.svg"
-							header={`Welcome to ${orgDetail.app_name}`}
-							features={[
-								"Your business partner to grow your revenue and digitize your business",
-								"Start earning today from your shop, office, home or anywhere",
-							]}
-							onClick={() => setShowWelcomeCard(false)}
-						/>
-					)}
-				</Flex>
+					{/* Description Box */}
+					<Flex
+						display={{
+							base: showWelcomeCard ? "flex" : "none",
+							md: "flex",
+						}}
+						w="100%"
+						// h="100%"
+						direction="column"
+						justify="flex-start"
+					>
+						{isCmsEnabled && cmsData ? (
+							<Render config={cmsConfig} data={cmsData} />
+						) : (
+							<WelcomeCard
+								logo="/favicon.svg"
+								header={`Welcome to ${orgDetail.app_name}`}
+								features={[
+									"Your business partner to grow your revenue and digitize your business",
+									"Start earning today from your shop, office, home or anywhere",
+								]}
+								onClick={() => setShowWelcomeCard(false)}
+							/>
+						)}
+					</Flex>
 
-				{/* Login Widget */}
-				<LoginWidget
-					display={{
-						base: showWelcomeCard ? "none" : "block",
-						md: "block",
-					}}
-				/>
+					{/* Login Widget */}
+					<LoginWidget
+						display={{
+							base: showWelcomeCard ? "none" : "block",
+							md: "block",
+						}}
+					/>
+				</Flex>
 			</Flex>
 
 			{/* Privacy Policy Link */}
@@ -201,7 +211,7 @@ const LoginPanel = () => {
 					</Link>
 				</Flex>
 			)}
-		</Flex>
+		</Box>
 	);
 };
 
