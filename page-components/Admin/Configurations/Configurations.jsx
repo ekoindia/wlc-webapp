@@ -13,8 +13,8 @@ const Configurations = () => {
 	const [isConfigEnabled] = useFeatureFlag("PORTAL_CONFIG");
 
 	const list = [
-		{ label: "Landing Page", component: <LandingPageConfig /> },
 		{ label: "Theme", component: <ThemeConfig /> },
+		{ label: "Landing Page", component: <LandingPageConfig /> },
 		{ label: "General", component: <GeneralConfig /> },
 	];
 
@@ -41,9 +41,13 @@ const Configurations = () => {
 			<Flex
 				bg={{ base: "white", md: "none" }}
 				borderRadius="0px 0px 20px 20px"
-				my={{
-					base: "0",
-					md: "5",
+				py={{
+					base: 0,
+					md: 5,
+				}}
+				mb={{
+					base: 5,
+					md: 0,
 				}}
 			>
 				<Flex
