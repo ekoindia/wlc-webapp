@@ -102,6 +102,12 @@ export type FeatureFlagType = {
 	forUserId?: string[];
 
 	/**
+	 * List of roles for which the feature is enabled.
+	 * If the list is empty, then roles have no effect on the availability of the feature.
+	 */
+	forRoles?: string[];
+
+	/**
 	 * Whether the feature is enabled for Admin only.
 	 * If true, the feature is enabled only for Admin users.
 	 * Default: false
