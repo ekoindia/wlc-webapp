@@ -123,8 +123,8 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 						<Flex
 							key={i}
 							direction="row"
-							bg={i == 0 ? primaryDark : ""}
-							color={i == 0 ? "white" : undefined}
+							bg={i == 1 ? primaryDark : ""}
+							color={i == 1 ? "white" : undefined}
 							borderBottom="1px solid #999"
 							h="15px"
 							w="100%"
@@ -134,7 +134,7 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 								h="100%"
 								w="3px"
 								mr="3px"
-								bg={i == 0 ? accent : ""}
+								bg={i == 1 ? accent : ""}
 							></Box>
 							{item}
 						</Flex>
