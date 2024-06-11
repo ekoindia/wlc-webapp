@@ -76,6 +76,10 @@ export const bgColors = [
 	{ label: "Accent", value: "accent.DEFAULT" },
 	{ label: "Accent (Dark)", value: "accent.dark" },
 	{ label: "Accent (Light)", value: "accent.light" },
+	{ label: "Background", value: "bg" },
 	{ label: "White", value: "white" },
+	{ label: "Black", value: "black" },
+	{ label: "Success", value: "success" },
+	{ label: "Error", value: "error" },
 	{ label: "Transparent", value: "transparent" },
 ];
