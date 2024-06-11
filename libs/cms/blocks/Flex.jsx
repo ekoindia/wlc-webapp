@@ -33,7 +33,7 @@ export const Flex = {
 
 	render: ({ items, minItemWidth, bg }) => {
 		return (
-			<Section bg={bg}>
+			<Section sectionBg={bg}>
 				<ChFlex gap="24px" wrap="wrap" minHeight="0" minWidth="0">
 					{items.map((item, idx) => (
 						<div

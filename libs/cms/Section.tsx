@@ -5,7 +5,6 @@ import { context } from ".";
 export type SectionProps = {
 	direction?: "row" | "column" | "row-reverse" | "column-reverse";
 	align?: "flex-start" | "center" | "flex-end";
-	fullWidth?: boolean;
 	padding?: string;
 	maxWidth?: string;
 	bg?: string;
@@ -20,7 +19,6 @@ export type SectionProps = {
  * @param {object} props - Component props
  * @param {string} [props.direction] - Flex direction
  * @param {string} [props.align] - Flex alignment
- * @param {boolean} [props.fullWidth] - Ignore paddingX and show the component as full width
  * @param {string} [props.padding] - Vertical padding
  * @param {string} [props.maxWidth] - Maximum width
  * @param {string} [props.bg] - Background color
@@ -32,16 +30,16 @@ export type SectionProps = {
 export const Section = ({
 	direction = "row",
 	align = "center",
-	fullWidth = false,
 	padding = "8px",
-	maxWidth = "1280px",
+	maxWidth = "1024px",
 	bg = "transparent",
+	sectionBg = "white",
 	bgImg = "",
 	style = {},
 	children,
 	...rest
 }: SectionProps) => {
-	const { paddingX } = useContext(context);
+	const { paddingX, commonSectionBg } = useContext(context);
 
 	return (
 		<Flex
@@ -51,8 +49,6 @@ export const Section = ({
 			boxSizing="border-box"
 			w="full"
 			maxW="full"
-			px={fullWidth ? "0" : paddingX || "0"}
-			py={padding}
 			bg={bg}
 			bgImg={bgImg}
 			style={{
@@ -64,6 +60,9 @@ export const Section = ({
 				align={align}
 				w="full"
 				maxW={maxWidth}
+				px={paddingX || 0}
+				py={padding}
+				bg={commonSectionBg || sectionBg}
 				{...rest}
 			>
 				{children}
