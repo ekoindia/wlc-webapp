@@ -119,25 +119,15 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 					color={navStyle === "light" ? "#222" : "white"}
 				>
 					{/* Left Menu Items */}
+					<MenuItem item="₹10,000" primaryDark={primaryDark} />
 					{["Home", "Start Here", "Others"].map((item, i) => (
-						<Flex
+						<MenuItem
 							key={i}
-							direction="row"
-							bg={i == 1 ? primaryDark : ""}
-							color={i == 1 ? "white" : undefined}
-							borderBottom="1px solid #999"
-							h="15px"
-							w="100%"
-							align="center"
-						>
-							<Box
-								h="100%"
-								w="3px"
-								mr="3px"
-								bg={i == 1 ? accent : ""}
-							></Box>
-							{item}
-						</Flex>
+							item={item}
+							primaryDark={primaryDark}
+							accent={accent}
+							selected={i === 1}
+						/>
 					))}
 				</Flex>
 
@@ -181,6 +171,26 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 					</Flex>
 				</Flex>
 			</Flex>
+		</Flex>
+	);
+};
+
+/**
+ * Menu Item component for preview
+ */
+const MenuItem = ({ item, primaryDark, accent, selected = false }) => {
+	return (
+		<Flex
+			direction="row"
+			bg={selected ? primaryDark : ""}
+			color={selected ? "white" : ""}
+			borderBottom="1px solid #999"
+			h="15px"
+			w="100%"
+			align="center"
+		>
+			<Box h="100%" w="3px" mr="3px" bg={selected ? accent : ""}></Box>
+			{item}
 		</Flex>
 	);
 };
