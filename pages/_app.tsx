@@ -115,6 +115,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 			sel: lightNav
 				? theme.colors.primary.DEFAULT // theme.colors.primary.DEFAULT + "40"
 				: theme.colors.primary.dark, // Selection color
+
 			divider: lightNav
 				? theme.colors.primary.light + "40"
 				: theme.colors.primary.light,
@@ -127,6 +128,10 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 			wm: lightNav ? "#00000050" : "#FFFFFF50", // Watermark color
 			wmLight: lightNav ? "#00000030" : "#FFFFFF25",
 			title: lightNav ? theme.colors.primary.dark : "#FFD93B",
+			borderRightColor: lightNav ? "#FFF" : "#00000050",
+		},
+		logo: {
+			text: lightNav ? "#fff" : "primary.dark",
 		},
 	};
 

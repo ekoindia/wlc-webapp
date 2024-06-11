@@ -112,7 +112,6 @@ const OrgLogo = ({ size = "md", dark = false, ...rest }) => {
 					app_name={orgDetail.app_name}
 					logoFontSize={logoFontSize}
 					dark={dark}
-					color="primary.dark"
 					ml={imageState === "loaded" ? 2 : 0}
 				/>
 			) : null}
@@ -132,7 +131,7 @@ const OrgLogo = ({ size = "md", dark = false, ...rest }) => {
 const TextLogo = ({
 	app_name,
 	logoFontSize,
-	color = "gray.800",
+	color = "logo.text",
 	dark = false,
 	...restTextLogoAttrs
 }) => (
