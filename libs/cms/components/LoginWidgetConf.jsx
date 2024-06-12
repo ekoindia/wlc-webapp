@@ -2,12 +2,26 @@ import { LoginWidget } from "page-components/LoginPanel";
 
 export const LoginWidgetConf = {
 	label: "Login Widget",
-	fields: {},
-	defaultProps: {},
-	render: ({ puck, ...rest }) => {
+	fields: {
+		hideLogo: {
+			type: "radio",
+			label: "Hide Logo",
+			options: [
+				{ label: "Yes", value: true },
+				{ label: "No", value: false },
+			],
+		},
+	},
+	defaultProps: { hideLogo: false },
+	render: ({ hideLogo, puck, ...rest }) => {
 		const { isEditing } = puck;
 		return (
-			<LoginWidget previewMode={isEditing} borderRadius="8px" {...rest} />
+			<LoginWidget
+				hideLogo={hideLogo}
+				previewMode={isEditing}
+				borderRadius="8px"
+				{...rest}
+			/>
 		);
 	},
 };
