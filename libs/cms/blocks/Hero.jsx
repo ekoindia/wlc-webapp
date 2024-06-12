@@ -68,6 +68,14 @@ export const Hero = {
 				{ label: "background", value: "background" },
 			],
 		},
+		dark: {
+			label: "Dark Mode",
+			type: "radio",
+			options: [
+				{ label: "Yes", value: true },
+				{ label: "No", value: false },
+			],
+		},
 		padding: { type: "text" },
 	},
 	defaultProps: {
@@ -76,6 +84,7 @@ export const Hero = {
 		description: "Description",
 		buttons: [{ label: "Learn more", href: "#" }],
 		padding: "64px",
+		dark: true,
 	},
 	render: ({
 		align = "left",
@@ -85,6 +94,7 @@ export const Hero = {
 		padding,
 		imageUrl,
 		imageMode,
+		dark = true,
 	}) => {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const { paddingX } = useContext(context);
@@ -93,7 +103,9 @@ export const Hero = {
 		const bgOverlay =
 			"linear-gradient(-90deg,rgb(247, 250, 255, 0.7) 0%,rgb(247, 250, 255, 0.7) 80%)";
 		const bgOverlayLarge =
-			"linear-gradient(-90deg,rgba(255, 255, 255, 0) 0%,rgb(247, 250, 255) 70%)";
+			"linear-gradient(-90deg,rgba(255, 255, 255, 0) 0%,rgb(247, 250, 255) 60%)";
+		const bgOverlayLargeDark =
+			"linear-gradient(-90deg,rgba(0, 0, 0, 0) 0%,rgb(0, 0, 0, 0.8) 60%)";
 
 		return (
 			// Hero
@@ -101,7 +113,7 @@ export const Hero = {
 				padding="0"
 				fullWidth={true}
 				position="relative"
-				bgImg="linear-gradient(rgba(255, 255, 255, 0),rgb(247, 250, 255) 100%);"
+				// bgImg="linear-gradient(rgba(255, 255, 255, 0),rgb(247, 250, 255) 100%);"
 			>
 				{imageMode === "background" && (
 					// image & imageOverlay
@@ -123,7 +135,12 @@ export const Hero = {
 							className="imageOverlay"
 							backgroundImage={
 								align === "left"
-									? { base: bgOverlay, md: bgOverlayLarge }
+									? {
+											base: bgOverlay,
+											md: dark
+												? bgOverlayLargeDark
+												: bgOverlayLarge,
+									  }
 									: bgOverlay
 							}
 							position="absolute"
@@ -168,15 +185,17 @@ export const Hero = {
 							lineHeight="1.1"
 							fontSize={{ base: "48px", md: "64px" }}
 							// color="#333"
+							color={{ base: dark ? "white" : "#333" }}
 						>
 							{title}
 						</Text>
 						<p
 							style={{
-								color:
-									imageMode === "background"
-										? "#404040"
-										: "#767676",
+								color: dark
+									? "white"
+									: imageMode === "background"
+									? "#404040"
+									: "#767676",
 								fontSize: "20px",
 								lineHeight: 1.5,
 								margin: 0,
