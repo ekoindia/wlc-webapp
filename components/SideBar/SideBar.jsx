@@ -856,6 +856,7 @@ const LinkMenuItem = ({
 				bg={isCurrent ? "sidebar.sel" : ""} //ORIG_THEME: sidebar.active-bg
 				_hover={{
 					background: "sidebar.sel",
+					color: "white",
 				}}
 				borderLeft="8px"
 				borderLeftColor={
