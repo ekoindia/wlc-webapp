@@ -43,11 +43,16 @@ interface LoginWidgetProps {
  *
  * @component
  * @param {object} prop - Properties passed to the component
- * @param {boolean} prop.previewMode - Show login widget as a preview. Do not allow submitting the form. Used in CMS Editor as a preview of the Login widget.
+ * @param {boolean} [prop.previewMode] - Show login widget as a preview. Do not allow submitting the form. Used in CMS Editor as a preview of the Login widget.
+ * @param {boolean} [prop.hideLogo] - Hide the logo in the login widget
  * @param {...*} rest - Rest of the props
  * @example	`<LoginWidget></LoginWidget>` TODO: Fix example
  */
-const LoginWidget = ({ previewMode = false, ...rest }: LoginWidgetProps) => {
+const LoginWidget = ({
+	previewMode = false,
+	hideLogo = false,
+	...rest
+}: LoginWidgetProps) => {
 	const [step, setStep] = useState("LOGIN");
 	const [email, setEmail] = useState("");
 	const [number, setNumber] = useState({
@@ -123,8 +128,8 @@ const LoginWidget = ({ previewMode = false, ...rest }: LoginWidgetProps) => {
 			// 	base: showWelcomeCard ? "none" : "block",
 			// 	md: "block",
 			// }}
-			flex={1}
-			w="100%"
+			// flex={1}
+			// w="100%"
 			minW={{ base: "300px", lg: "350px" }}
 			h={{ base: "100vh", lg: "auto" }}
 			boxShadow="0px 3px 20px #00000005"
@@ -136,6 +141,7 @@ const LoginWidget = ({ previewMode = false, ...rest }: LoginWidgetProps) => {
 		>
 			{step === "LOGIN" && (
 				<Login
+					hideLogo={hideLogo}
 					{...{
 						number,
 						setNumber,

@@ -25,6 +25,7 @@ const Render = dynamic(
 		ssr: false,
 	}
 );
+
 // const cmsConfig = dynamic(
 // 	() => import("libs/cms").then((pkg) => pkg.cmsConfig),
 // 	{
@@ -144,6 +145,7 @@ const LoginPanel = () => {
 				p={{ base: 0, md: "20px 0" }}
 			>
 				<Flex
+					direction="row"
 					boxSizing="border-box"
 					w={{ base: "100%", md: "80%" }}
 					h={{ base: "100vh", lg: "auto" }}
@@ -186,6 +188,7 @@ const LoginPanel = () => {
 							base: showWelcomeCard ? "none" : "block",
 							md: "block",
 						}}
+						flex={1}
 					/>
 				</Flex>
 			</Flex>
