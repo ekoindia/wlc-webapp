@@ -24,6 +24,7 @@ import {
 	paddingSizeMap,
 	pixelSizeOptions,
 } from "./options";
+import { Section } from "./Section";
 
 /**
  * Context for managing common values across components
@@ -31,6 +32,8 @@ import {
 export const context = createContext({
 	paddingX: "" as string,
 	setPaddingX: (_value: string) => {},
+	commonSectionBg: "" as string,
+	setCommonSectionBg: (_value: string) => {},
 });
 
 // const OrgLogo2 = dynamic(
@@ -99,7 +102,11 @@ const components: any = {
 			h: "16px",
 		},
 		render: ({ h }) => {
-			return <div style={{ height: h }} />;
+			return (
+				<Section>
+					<div style={{ height: h }} />
+				</Section>
+			);
 		},
 	},
 	Center: {
@@ -181,10 +188,11 @@ const editorRoot: any = {
 		// 	pad && pad in paddingSizeMap ? paddingSizeMap[pad] : pad;
 		// console.log("padding", padding);
 
-		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const [paddingX, setPaddingX] = useState("" as string);
+		/* eslint-disable react-hooks/rules-of-hooks */
 
-		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const [paddingX, setPaddingX] = useState("" as string);
+		const [commonSectionBg, setCommonSectionBg] = useState("" as string);
+
 		useEffect(() => {
 			const padding =
 				pad && pad in paddingSizeMap ? paddingSizeMap[pad] : pad;
@@ -192,7 +200,14 @@ const editorRoot: any = {
 		}, [pad]);
 
 		return (
-			<context.Provider value={{ paddingX, setPaddingX }}>
+			<context.Provider
+				value={{
+					paddingX,
+					setPaddingX,
+					commonSectionBg,
+					setCommonSectionBg,
+				}}
+			>
 				<ChFlex
 					className="puckRoot"
 					position="relative"
