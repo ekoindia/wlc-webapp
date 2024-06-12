@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 // import { createAdaptor } from "@measured/puck";
-import { Button } from "components";
+import { Button, OrgLogo } from "components";
 import { useContext } from "react";
 import { context } from "..";
 import { Section } from "../Section";
@@ -53,6 +53,22 @@ export const Hero = {
 				},
 			},
 		},
+		logo: {
+			label: "Show Logo?",
+			type: "radio",
+			options: [
+				{ label: "Yes", value: true },
+				{ label: "No", value: false },
+			],
+		},
+		logoSize: {
+			label: "Logo Size",
+			type: "radio",
+			options: [
+				{ label: "Normal", value: "md" },
+				{ label: "Large", value: "lg" },
+			],
+		},
 		align: {
 			type: "radio",
 			options: [
@@ -79,6 +95,8 @@ export const Hero = {
 		padding: { type: "text" },
 	},
 	defaultProps: {
+		logo: true,
+		logoSize: "lg",
 		title: "Hero",
 		align: "left",
 		description: "Description",
@@ -91,6 +109,8 @@ export const Hero = {
 		title,
 		description,
 		buttons,
+		logo = false,
+		logoSize = "lg",
 		padding,
 		imageUrl,
 		imageMode,
@@ -180,6 +200,9 @@ export const Hero = {
 								: undefined
 						}
 					>
+						{logo ? (
+							<OrgLogo size={logoSize} dark={dark} mb="2em" />
+						) : null}
 						<Text
 							as="h1"
 							lineHeight="1.1"
