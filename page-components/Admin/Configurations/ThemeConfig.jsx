@@ -1,75 +1,138 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { ColorPair, InputLabel as Label, Radio } from "components";
 import { colorThemes } from "constants/colorThemes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const ThemeConfig = () => {
 	const [selectedTheme, setSelectedTheme] = useState(colorThemes[0]);
 	const [selectedThemeIdx, setSelectedThemeIdx] = useState(0);
 	const [navStyle, setNavStyle] = useState("");
+	const [landingPageStyle, setLandingPageStyle] = useState("");
+
+	// Load current Landing Page Style from LocalStorage
+	useEffect(() => {
+		const landingPageStyle = localStorage.getItem(
+			"inf-landing-page-cms-conf"
+		); // Eg: {"type":"page"}
+		if (landingPageStyle) {
+			setLandingPageStyle(JSON.parse(landingPageStyle).type);
+		} else {
+			setLandingPageStyle("card");
+		}
+	}, []);
+
+	// Save the selected Landing Page Style to LocalStorage
+	// TODO: Save on server
+	useEffect(() => {
+		// console.log("Selected Landing Page Style:", landingPageStyle);
+		if (landingPageStyle === "page") {
+			localStorage.setItem(
+				"inf-landing-page-cms-conf",
+				JSON.stringify({ type: "page" })
+			);
+		} else if (landingPageStyle === "card") {
+			// Delete the key if the value is "card"
+			localStorage.removeItem("inf-landing-page-cms-conf");
+		}
+	}, [landingPageStyle]);
 
 	return (
+		<Flex direction="column" gap={{ base: 4, md: 8 }}>
+			<Section title="Colors">
+				<AppPreview
+					primary={selectedTheme.primary}
+					primaryDark={selectedTheme.primary_dark}
+					accent={selectedTheme.accent}
+					navStyle={navStyle}
+				/>
+
+				<Flex direction="column" gap={6}>
+					<Box>
+						<Radio
+							label="Select Menu Bar Style"
+							options={[
+								{ label: "Default", value: "" },
+								{ label: "Light", value: "light" },
+							]}
+							required
+							onChange={(e) => setNavStyle(e)}
+						/>
+					</Box>
+
+					<Box>
+						<Label required>Select Theme Colors</Label>
+						<Flex direction="row" gap={4} wrap="wrap">
+							{colorThemes.map((theme, i) => (
+								<Flex
+									key={i + theme.name}
+									direction="column"
+									align="center"
+									justify="center"
+									position="relative"
+									w="62px"
+									h="62px"
+									border={
+										selectedThemeIdx === i
+											? "3px solid #666"
+											: ""
+									}
+									borderRadius="full"
+								>
+									<ColorPair
+										primary={theme.primary}
+										accent={theme.accent}
+										size="52px"
+										cursor="pointer"
+										onClick={() => {
+											setSelectedTheme(theme);
+											setSelectedThemeIdx(i);
+										}}
+									/>
+								</Flex>
+							))}
+						</Flex>
+					</Box>
+				</Flex>
+			</Section>
+
+			<Section title="Landing Page">
+				<Radio
+					label="Select Landing Page Style"
+					options={[
+						{ label: "Splash Screen (Default)", value: "card" },
+						{ label: "Landing Page", value: "page" },
+					]}
+					value={landingPageStyle}
+					required
+					onChange={(e) => setLandingPageStyle(e)}
+				/>
+			</Section>
+		</Flex>
+	);
+};
+
+/**
+ * Section card component
+ */
+const Section = ({ title, children }) => {
+	return (
 		<Flex
-			direction={{ base: "column", md: "row" }}
+			direction="column"
 			gap={{ base: 4, md: 8 }}
 			bg="white"
 			borderRadius={6}
 			p={{ base: 4, md: 8 }}
 		>
-			<AppPreview
-				primary={selectedTheme.primary}
-				primaryDark={selectedTheme.primary_dark}
-				accent={selectedTheme.accent}
-				navStyle={navStyle}
-			/>
-
-			<Flex direction="column" gap={6}>
-				<Box>
-					<Radio
-						label="Select Menu Bar Style"
-						options={[
-							{ label: "Default", value: "" },
-							{ label: "Light", value: "light" },
-						]}
-						selectedIdx={0}
-						required
-						onChange={(e) => setNavStyle(e)}
-					/>
-				</Box>
-
-				<Box>
-					<Label required>Select Theme Colors</Label>
-					<Flex direction="row" gap={4} wrap="wrap">
-						{colorThemes.map((theme, i) => (
-							<Flex
-								key={i + theme.name}
-								direction="column"
-								align="center"
-								justify="center"
-								position="relative"
-								w="62px"
-								h="62px"
-								border={
-									selectedThemeIdx === i
-										? "3px solid #666"
-										: ""
-								}
-								borderRadius="full"
-							>
-								<ColorPair
-									primary={theme.primary}
-									accent={theme.accent}
-									size="52px"
-									cursor="pointer"
-									onClick={() => {
-										setSelectedTheme(theme);
-										setSelectedThemeIdx(i);
-									}}
-								/>
-							</Flex>
-						))}
-					</Flex>
-				</Box>
+			{title ? (
+				<Text as="h2" fontSize="24px" fontWeight="600" color="#444">
+					{title}
+				</Text>
+			) : null}
+			<Flex
+				direction={{ base: "column", md: "row" }}
+				gap={{ base: 4, md: 8 }}
+			>
+				{children}
 			</Flex>
 		</Flex>
 	);
