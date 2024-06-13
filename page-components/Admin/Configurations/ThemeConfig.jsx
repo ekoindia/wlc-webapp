@@ -197,7 +197,7 @@ const Section = ({ title, children }) => {
 			) : null}
 			<Flex
 				direction={{ base: "column", md: "row" }}
-				gap={{ base: 4, md: 8 }}
+				gap={{ base: 4, md: 8, lg: 12 }}
 			>
 				{children}
 			</Flex>
