@@ -122,6 +122,8 @@ export const Hero = {
 		const center = align === "center";
 		const bgOverlay =
 			"linear-gradient(-90deg,rgb(247, 250, 255, 0.7) 0%,rgb(247, 250, 255, 0.7) 80%)";
+		const bgOverlayDark =
+			"linear-gradient(-90deg,rgb(0 ,0, 0, 0.75) 0%,rgb(0 ,0, 0, 0.75) 80%)";
 		const bgOverlayLarge =
 			"linear-gradient(-90deg,rgba(255, 255, 255, 0) 0%,rgb(247, 250, 255) 60%)";
 		const bgOverlayLargeDark =
@@ -156,11 +158,15 @@ export const Hero = {
 							backgroundImage={
 								align === "left"
 									? {
-											base: bgOverlay,
+											base: dark
+												? bgOverlayDark
+												: bgOverlay,
 											md: dark
 												? bgOverlayLargeDark
 												: bgOverlayLarge,
 									  }
+									: dark
+									? bgOverlayDark
 									: bgOverlay
 							}
 							position="absolute"

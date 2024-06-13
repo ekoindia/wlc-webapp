@@ -1,16 +1,53 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
-import { ColorPair, InputLabel as Label, Radio } from "components";
+import { Box, Flex, Text, useToken } from "@chakra-ui/react";
+import { ColorPair, Icon, InputLabel as Label, Radio } from "components";
 import { colorThemes } from "constants/colorThemes";
 import { useEffect, useState } from "react";
 
 const ThemeConfig = () => {
-	const [selectedTheme, setSelectedTheme] = useState(colorThemes[0]);
-	const [selectedThemeIdx, setSelectedThemeIdx] = useState(0);
+	const [selectedTheme, setSelectedTheme] = useState(null);
+	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-1);
 	const [navStyle, setNavStyle] = useState("");
 	const [landingPageStyle, setLandingPageStyle] = useState("");
 
-	// Load current Landing Page Style from LocalStorage
+	// Get current theme color values
+	const [
+		primary,
+		primary_light,
+		primary_dark,
+		accent,
+		accent_light,
+		accent_dark,
+	] = useToken("colors", [
+		"primary.DEFAULT",
+		"primary.light",
+		"primary.dark",
+		"accent.DEFAULT",
+		"accent.light",
+		"accent.dark",
+	]);
+
+	// Load Landing Page Style from LocalStorage & also set the current color theme
 	useEffect(() => {
+		// TODO: Get the current navbar style (light or dark)
+
+		// Set the current color theme
+		setSelectedTheme({
+			primary,
+			primary_light,
+			primary_dark,
+			accent,
+			accent_light,
+			accent_dark,
+		});
+		console.log("Finding theme: ", colorThemes, { primary, accent });
+		// Set index of the selected theme
+		setSelectedThemeIdx(
+			colorThemes.findIndex(
+				(theme) => theme.primary == primary && theme.accent == accent
+			)
+		);
+
+		// Set the current Landing Page Style
 		const landingPageStyle = localStorage.getItem(
 			"inf-landing-page-cms-conf"
 		); // Eg: {"type":"page"}
@@ -40,9 +77,9 @@ const ThemeConfig = () => {
 		<Flex direction="column" gap={{ base: 4, md: 8 }}>
 			<Section title="Colors">
 				<AppPreview
-					primary={selectedTheme.primary}
-					primaryDark={selectedTheme.primary_dark}
-					accent={selectedTheme.accent}
+					primary={selectedTheme?.primary}
+					primaryDark={selectedTheme?.primary_dark}
+					accent={selectedTheme?.accent}
 					navStyle={navStyle}
 				/>
 
@@ -60,34 +97,64 @@ const ThemeConfig = () => {
 					</Box>
 
 					<Box>
-						<Label required>Select Theme Colors</Label>
-						<Flex direction="row" gap={4} wrap="wrap">
+						<Label required>Select a Color Theme</Label>
+						<Flex direction="row" gap={8} wrap="wrap">
 							{colorThemes.map((theme, i) => (
 								<Flex
 									key={i + theme.name}
 									direction="column"
 									align="center"
-									justify="center"
-									position="relative"
-									w="62px"
-									h="62px"
-									border={
-										selectedThemeIdx === i
-											? "3px solid #666"
-											: ""
-									}
-									borderRadius="full"
+									gap={1}
 								>
-									<ColorPair
-										primary={theme.primary}
-										accent={theme.accent}
-										size="52px"
-										cursor="pointer"
-										onClick={() => {
-											setSelectedTheme(theme);
-											setSelectedThemeIdx(i);
-										}}
-									/>
+									<Flex
+										direction="column"
+										align="center"
+										justify="center"
+										position="relative"
+										w="62px"
+										h="62px"
+										border={
+											selectedThemeIdx === i
+												? "3px solid #666"
+												: ""
+										}
+										borderRadius="full"
+									>
+										<ColorPair
+											primary={theme.primary}
+											accent={theme.accent}
+											size="52px"
+											cursor="pointer"
+											onClick={() => {
+												setSelectedTheme(theme);
+												setSelectedThemeIdx(i);
+											}}
+										/>
+										{selectedThemeIdx === i ? (
+											<Icon
+												name="check"
+												position="absolute"
+												bottom="-6px"
+												right="-8px"
+												w="16px"
+												h="16px"
+												bg="success"
+												color="white"
+												border="2px solid #FFF"
+												borderRadius="full"
+												p="4px"
+											/>
+										) : null}
+									</Flex>
+
+									<Text
+										fontFamily="Cursive"
+										fontSize="xs"
+										fontWeight={600}
+										color={theme.primary_dark}
+									>
+										{theme.name}
+									</Text>
 								</Flex>
 							))}
 						</Flex>
@@ -147,11 +214,16 @@ const Section = ({ title, children }) => {
  * @param {string} props.navStyle - Navigation style (light/dark)
  */
 const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
+	const w = "300px",
+		h = "200px";
+
+	if (!primary || !accent) return <Box w={w} h={h} />;
+
 	return (
 		<Flex
 			direction="column"
-			w="300px"
-			h="200px"
+			w={w}
+			h={h}
 			border="1px solid #999"
 			borderRadius={6}
 			overflow="hidden"
