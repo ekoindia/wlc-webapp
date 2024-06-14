@@ -53,6 +53,7 @@ const DynamicPopupModuleLoader = dynamic(
  * @param {Boolean} pageMeta.isSubPage - If the page is a sub page, then the layout will not render the top navbar (Header) on small screens.
  * @param {String} pageMeta.title - The page title. This will be displayed in the browser titlebar.
  * @param {Boolean} pageMeta.hideMenu - If true, then the layout will not render the left navigation drawer.
+ * @param {Boolean} pageMeta.pageHeight - If true, then the layout will take no more than full height of the screen.
  * @param {String} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
 const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
@@ -211,15 +212,29 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							{/* Main Content here */}
 
 							<Box
+								as="main"
 								minH={{
 									base: `calc(100vh - ${NavHeight.base})`,
 									md: `calc(100vh - ${NavHeight.md})`,
 									lg: `calc(100vh - ${NavHeight.lg})`,
 									"2xl": `calc(100vh - ${NavHeight["2xl"]})`,
 								}}
+								maxH={
+									pageMeta.pageHeight
+										? {
+												base: `calc(100vh - ${NavHeight.base})`,
+												md: `calc(100vh - ${NavHeight.md})`,
+												lg: `calc(100vh - ${NavHeight.lg})`,
+												"2xl": `calc(100vh - ${NavHeight["2xl"]})`,
+										  }
+										: undefined
+								}
 								w={"full"}
 								bg={"bg"}
 								overflow={"hidden"}
+								// overflowY={
+								// 	pageMeta.pageHeight ? "auto" : "hidden"
+								// }
 								sx={{
 									"@media print": {
 										bg: "none",
