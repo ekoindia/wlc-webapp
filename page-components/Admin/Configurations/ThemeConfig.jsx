@@ -1,11 +1,20 @@
 import { Box, Flex, Text, useToken } from "@chakra-ui/react";
-import { ColorPair, Icon, InputLabel as Label, Radio } from "components";
+import {
+	ColorPair,
+	ColorPickerWidget,
+	Icon,
+	InputLabel as Label,
+	Radio,
+} from "components";
 import { colorThemes } from "constants/colorThemes";
 import { useEffect, useState } from "react";
 
+const bgTransition = "background 0.5s ease-in";
+
 const ThemeConfig = () => {
 	const [selectedTheme, setSelectedTheme] = useState(null);
-	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-1);
+	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-2);
+	const [customTheme, setCustomTheme] = useState(null);
 	const [navStyle, setNavStyle] = useState("");
 	const [landingPageStyle, setLandingPageStyle] = useState("");
 
@@ -73,6 +82,30 @@ const ThemeConfig = () => {
 		}
 	}, [landingPageStyle]);
 
+	// Apply custom theme when both primary and accent colors are set
+	// Calculate 10 degree darker and lighter shades of the primary & accent colors
+	useEffect(() => {
+		if (
+			customTheme?.primary &&
+			customTheme?.accent &&
+			selectedThemeIdx === -1
+		) {
+			// Calculate darker and lighter shades
+
+			setSelectedTheme(customTheme);
+		}
+	}, [customTheme]);
+
+	const _customThemePreview = customTheme?.primary
+		? {
+				primary: customTheme?.primary,
+				accent: customTheme?.accent,
+		  }
+		: {
+				primary: selectedTheme?.primary,
+				accent: selectedTheme?.accent,
+		  };
+
 	return (
 		<Flex direction="column" gap={{ base: 4, md: 8 }}>
 			<Section title="Colors">
@@ -100,64 +133,86 @@ const ThemeConfig = () => {
 						<Label required>Select a Color Theme</Label>
 						<Flex direction="row" gap={8} wrap="wrap">
 							{colorThemes.map((theme, i) => (
-								<Flex
+								<ColorSelector
 									key={i + theme.name}
-									direction="column"
-									align="center"
-									gap={1}
-								>
-									<Flex
-										direction="column"
-										align="center"
-										justify="center"
-										position="relative"
-										w="62px"
-										h="62px"
-										border={
-											selectedThemeIdx === i
-												? "3px solid #666"
-												: ""
-										}
-										borderRadius="full"
-									>
-										<ColorPair
-											primary={theme.primary}
-											accent={theme.accent}
-											size="52px"
-											cursor="pointer"
-											onClick={() => {
-												setSelectedTheme(theme);
-												setSelectedThemeIdx(i);
-											}}
-										/>
-										{selectedThemeIdx === i ? (
-											<Icon
-												name="check"
-												position="absolute"
-												bottom="-6px"
-												right="-8px"
-												w="16px"
-												h="16px"
-												bg="success"
-												color="white"
-												border="2px solid #FFF"
-												borderRadius="full"
-												p="4px"
-											/>
-										) : null}
-									</Flex>
-
-									<Text
-										fontFamily="Cursive"
-										fontSize="xs"
-										fontWeight={600}
-										color={theme.primary_dark}
-									>
-										{theme.name}
-									</Text>
-								</Flex>
+									theme={theme}
+									i={i}
+									isSelected={selectedThemeIdx === i}
+									onSelect={(theme, i) => {
+										setSelectedTheme(theme);
+										setSelectedThemeIdx(i);
+									}}
+								/>
 							))}
+
+							{/* Add custom color selector */}
+							<ColorSelector
+								theme={
+									selectedThemeIdx === -1
+										? {
+												name: "Custom Theme",
+												primary:
+													_customThemePreview?.primary,
+												accent: _customThemePreview?.accent,
+										  }
+										: {
+												name: "Custom Theme",
+										  }
+								}
+								i={-1}
+								isSelected={
+									selectedThemeIdx === -1 && selectedTheme
+								}
+								onSelect={(theme, i) => {
+									setSelectedTheme(theme);
+									setSelectedThemeIdx(i);
+								}}
+							/>
 						</Flex>
+
+						{/* Custom Theme Editor Section */}
+						{selectedThemeIdx === -1 ? (
+							<Flex direction="column" mt={10}>
+								<Label required>Select your Own Colors</Label>
+								<table>
+									<tbody>
+										<tr>
+											<td>Primary Color</td>
+											<td>
+												<ColorPickerWidget
+													themeEditor
+													defaultColor={primary}
+													width={300}
+													onColorChange={(color) =>
+														setCustomTheme({
+															...customTheme,
+															primary: color.hex,
+														})
+													}
+												/>
+											</td>
+										</tr>
+										<tr>
+											<td>Accent Color</td>
+											<td>
+												<ColorPickerWidget
+													themeEditor
+													defaultColor={accent}
+													width={300}
+													my={2}
+													onColorChange={(color) =>
+														setCustomTheme({
+															...customTheme,
+															accent: color.hex,
+														})
+													}
+												/>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</Flex>
+						) : null}
 					</Box>
 				</Flex>
 			</Section>
@@ -217,7 +272,7 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 	const w = "300px",
 		h = "200px";
 
-	if (!primary || !accent) return <Box w={w} h={h} />;
+	// if (!primary || !accent) return <Box w={w} h={h} />;
 
 	return (
 		<Flex
@@ -230,82 +285,94 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 			fontSize="5px"
 			shadow="base"
 		>
-			<Flex
-				bg={navStyle === "light" ? primary : "white"}
-				h="8%"
-				minH="8%"
-				w="100%"
-				align="center"
-				px="1em"
-				fontSize="6px"
-				fontWeight="700"
-				color={navStyle === "light" ? "#FFFFFF90" : "#666"}
-			>
-				Logo
-			</Flex>
-
-			<Flex direction="row" w="100%" h="100%" flex="1">
-				{/* Left Menu */}
-				<Flex
-					bg={navStyle === "light" ? "white" : primary}
-					w="25%"
-					h="100%"
-					direction="column"
-					color={navStyle === "light" ? "#222" : "white"}
-				>
-					{/* Left Menu Items */}
-					<MenuItem item="₹10,000" primaryDark={primaryDark} />
-					{["Home", "Start Here", "Others"].map((item, i) => (
-						<MenuItem
-							key={i}
-							item={item}
-							primaryDark={primaryDark}
-							accent={accent}
-							selected={i === 1}
-						/>
-					))}
-				</Flex>
-
-				{/* Right Pane */}
-				<Flex
-					direction="column"
-					flex="1"
-					align="center"
-					bg="bg"
-					w="30px"
-					h="100%"
-					p="3%"
-				>
-					{/* Show a white transaction card with a button (rounded box) at the bottom in accent color */}
+			{primary && accent ? (
+				<>
 					<Flex
-						bg="white"
+						bg={navStyle === "light" ? primary : "white"}
+						h="8%"
+						minH="8%"
 						w="100%"
-						h="80%"
-						direction="column"
-						borderRadius={3}
-						p="3%"
-						shadow="base"
+						align="center"
+						px="1em"
+						fontSize="6px"
+						fontWeight="700"
+						color={navStyle === "light" ? "#FFFFFF90" : "#666"}
+						transition={bgTransition}
 					>
-						<Text size="1.2em" fontWeight="500">
-							Transaction Card
-						</Text>
-						<Box flex="1"></Box>
+						Logo
+					</Flex>
+
+					<Flex direction="row" w="100%" h="100%" flex="1">
+						{/* Left Menu */}
 						<Flex
-							bg={accent}
-							w="20%"
-							h="10%"
-							align="center"
-							justify="center"
-							borderRadius={2}
-							px="4px"
-							color="white"
-							fontSize="0.8em"
+							bg={navStyle === "light" ? "white" : primary}
+							w="25%"
+							h="100%"
+							direction="column"
+							color={navStyle === "light" ? "#222" : "white"}
+							transition={bgTransition}
 						>
-							Proceed
+							{/* Left Menu Items */}
+							<MenuItem
+								item="₹10,000"
+								primaryDark={primaryDark}
+							/>
+							{["Home", "Start Here", "Others"].map((item, i) => (
+								<MenuItem
+									key={i}
+									item={item}
+									primaryDark={primaryDark}
+									accent={accent}
+									selected={i === 1}
+								/>
+							))}
+						</Flex>
+
+						{/* Right Pane */}
+						<Flex
+							direction="column"
+							flex="1"
+							align="center"
+							bg="bg"
+							w="30px"
+							h="100%"
+							p="3%"
+						>
+							{/* Show a white transaction card with a button (rounded box) at the bottom in accent color */}
+							<Flex
+								bg="white"
+								w="100%"
+								h="80%"
+								direction="column"
+								borderRadius={3}
+								p="3%"
+								shadow="base"
+							>
+								<Text size="1.2em" fontWeight="500">
+									Transaction Card
+								</Text>
+								<Box flex="1"></Box>
+								<Flex
+									bg={accent}
+									w="20%"
+									h="10%"
+									align="center"
+									justify="center"
+									borderRadius={2}
+									px="4px"
+									color="white"
+									fontSize="0.8em"
+									transition={bgTransition}
+								>
+									Proceed
+								</Flex>
+							</Flex>
 						</Flex>
 					</Flex>
-				</Flex>
-			</Flex>
+				</>
+			) : (
+				<Box w={w} h={h} />
+			)}
 		</Flex>
 	);
 };
@@ -323,9 +390,76 @@ const MenuItem = ({ item, primaryDark, accent, selected = false }) => {
 			h="15px"
 			w="100%"
 			align="center"
+			transition={bgTransition}
 		>
 			<Box h="100%" w="3px" mr="3px" bg={selected ? accent : ""}></Box>
 			{item}
+		</Flex>
+	);
+};
+
+const ColorSelector = ({ theme, i, isSelected, onSelect, ...rest }) => {
+	return (
+		<Flex
+			direction="column"
+			align="center"
+			gap={1}
+			cursor="pointer"
+			onClick={() => onSelect && onSelect(theme, i)}
+			{...rest}
+		>
+			<Flex
+				direction="column"
+				align="center"
+				justify="center"
+				position="relative"
+				w="62px"
+				h="62px"
+				border={isSelected ? "3px solid #666" : ""}
+				borderRadius="full"
+			>
+				{theme?.primary && theme?.accent ? (
+					<ColorPair
+						primary={theme.primary}
+						accent={theme.accent}
+						size="52px"
+					/>
+				) : (
+					<Icon
+						name="add"
+						bg="#999"
+						color="white"
+						size="52px"
+						p="14px"
+						borderRadius="full"
+					/>
+				)}
+				{isSelected ? (
+					<Icon
+						name="check"
+						position="absolute"
+						bottom="-6px"
+						right="-8px"
+						w="16px"
+						h="16px"
+						bg="success"
+						color="white"
+						border="2px solid #FFF"
+						borderRadius="full"
+						p="4px"
+					/>
+				) : null}
+			</Flex>
+
+			<Text
+				fontFamily="Cursive"
+				fontSize="xs"
+				fontWeight={600}
+				color={theme.primary_dark || theme.primary}
+				opacity={0.6}
+			>
+				{theme.name}
+			</Text>
 		</Flex>
 	);
 };
