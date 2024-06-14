@@ -154,6 +154,14 @@ export const product_slug_map = {
 		slug: "qr-payment",
 		hide: false,
 	},
+	"agreement-signing": {
+		label: "Agreement Signing",
+		desc: "Upload the organisation’s signature to be used on agent agreements.",
+		icon: "handshake",
+		comp: "AgreementSigning",
+		slug: "agreement-signing",
+		hide: false,
+	},
 	cdm: {
 		label: "Cash Deposit",
 		desc: "Set Agent Pricing for Cash Deposit services",
@@ -186,6 +194,7 @@ export const product_categories = {
 			"refund-method",
 			"optional-verification",
 			"cash-deposit",
+			"agreement-signing",
 		],
 	},
 	"Pricing Configuration": {

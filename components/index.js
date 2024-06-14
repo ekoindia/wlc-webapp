@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { Address } from "./Address";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { Breadcrumbs } from "./Breadcrumb";
 import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
@@ -53,6 +54,7 @@ import { XScrollArrow } from "./XScrollArrow";
 
 export {
 	ColorPickerWidget,
+	Address,
 	Camera,
 	FileView,
 	Share,

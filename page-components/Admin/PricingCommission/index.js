@@ -1,6 +1,7 @@
 import { AadhaarPay } from "./AadhaarPay";
 import { AccountVerification } from "./AccountVerification";
 import { Aeps } from "./Aeps";
+import { AgreementSigning } from "./AgreementSigning";
 import { AirtelCms } from "./AirtelCms";
 import { Bbps } from "./Bbps";
 import { CardPayment } from "./CardPayment";
@@ -23,6 +24,7 @@ export {
 	AccountVerification,
 	Aeps,
 	AirtelCms,
+	AgreementSigning,
 	Bbps,
 	CardPayment,
 	Cdm,

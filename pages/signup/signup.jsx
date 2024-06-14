@@ -578,6 +578,7 @@ const SignupPage = () => {
 	const [isSpinner, setisSpinner] = useState(true);
 	const [apiInProgress, setApiInProgress] = useState(false);
 	const [esignStatus, setEsignStatus] = useState(0); // 0: loading, 1: ready, 2: failed
+
 	const [stepperData, setStepperData] = useState([
 		{
 			id: 1,
@@ -653,6 +654,23 @@ const SignupPage = () => {
 
 		return unsubscribe;
 	}, []);
+
+	// useEffect(() => {
+	// 	const handleMessage = (event) => {
+	// 		if (event.data.type === "STATUS_UPDATE") {
+	// 			const { status } = event.data;
+	// 			// Handle the status update
+	// 			console.log(`Received Status Signup: ${status}`);
+	// 		}
+	// 	};
+
+	// 	window.addEventListener("message", handleMessage);
+
+	// 	// Cleanup listener on component unmount
+	// 	return () => {
+	// 		window.removeEventListener("message", handleMessage);
+	// 	};
+	// }, []);
 
 	const androidleegalityResponseHandler = (res) => {
 		let value = JSON.parse(res);
