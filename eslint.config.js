@@ -1,6 +1,8 @@
+import { fixupPluginRules } from "@eslint/compat";
 import tsEslintParser from "@typescript-eslint/parser";
 import jsdoc from "eslint-plugin-jsdoc";
 import prettier from "eslint-plugin-prettier";
+import reactHooks from "eslint-plugin-react-hooks";
 
 export default [
 	// Register plugins
@@ -8,6 +10,7 @@ export default [
 		plugins: {
 			jsdoc: jsdoc,
 			prettier: prettier,
+			"react-hooks": fixupPluginRules(reactHooks),
 			// storybook: storybook,
 		},
 	},
@@ -47,6 +50,8 @@ export default [
 			"comma-spacing": ["error", { before: false, after: true }],
 			"jsdoc/require-description": "warn",
 			"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+			"react-hooks/rules-of-hooks": "error",
+			"react-hooks/exhaustive-deps": "warn",
 			semi: ["error", "always", { omitLastInOneLineBlock: true }],
 			"no-unused-vars": [
 				"error",
