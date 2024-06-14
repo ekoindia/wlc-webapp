@@ -14,7 +14,6 @@ const bgTransition = "background 0.5s ease-in";
 const ThemeConfig = () => {
 	const [selectedTheme, setSelectedTheme] = useState(null);
 	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-2);
-	const [customTheme, setCustomTheme] = useState(null);
 	const [navStyle, setNavStyle] = useState("");
 	const [landingPageStyle, setLandingPageStyle] = useState("");
 
@@ -34,6 +33,17 @@ const ThemeConfig = () => {
 		"accent.light",
 		"accent.dark",
 	]);
+
+	// Set default custom theme as the current theme. Users can change this.
+	const [customTheme, setCustomTheme] = useState({
+		primary,
+		primary_light,
+		primary_dark,
+		accent,
+		accent_light,
+		accent_dark,
+	});
+	const [customThemeSet, setCustomThemeSet] = useState(false); // Whether user has edited & set a custom theme
 
 	// Load Landing Page Style from LocalStorage & also set the current color theme
 	useEffect(() => {
@@ -93,8 +103,18 @@ const ThemeConfig = () => {
 			// Calculate darker and lighter shades
 
 			setSelectedTheme(customTheme);
+
+			// Set if custom theme has been edited by the user
+			if (
+				customTheme?.primary != primary ||
+				customTheme?.accent != accent
+			) {
+				setCustomThemeSet(true);
+			} else {
+				setCustomThemeSet(false);
+			}
 		}
-	}, [customTheme]);
+	}, [customTheme, primary, accent]);
 
 	const _customThemePreview = customTheme?.primary
 		? {
@@ -110,9 +130,9 @@ const ThemeConfig = () => {
 		<Flex direction="column" gap={{ base: 4, md: 8 }}>
 			<Section title="Colors">
 				<AppPreview
-					primary={selectedTheme?.primary}
-					primaryDark={selectedTheme?.primary_dark}
-					accent={selectedTheme?.accent}
+					primary={selectedTheme?.primary || primary}
+					primaryDark={selectedTheme?.primary_dark || primary_dark}
+					accent={selectedTheme?.accent || accent}
 					navStyle={navStyle}
 				/>
 
@@ -148,12 +168,15 @@ const ThemeConfig = () => {
 							{/* Add custom color selector */}
 							<ColorSelector
 								theme={
-									selectedThemeIdx === -1
+									customThemeSet && selectedThemeIdx === -1
 										? {
 												name: "Custom Theme",
 												primary:
-													_customThemePreview?.primary,
-												accent: _customThemePreview?.accent,
+													_customThemePreview?.primary ||
+													primary,
+												accent:
+													_customThemePreview?.accent ||
+													accent,
 										  }
 										: {
 												name: "Custom Theme",
@@ -180,6 +203,7 @@ const ThemeConfig = () => {
 											<td>Primary Color</td>
 											<td>
 												<ColorPickerWidget
+													label="Change Color"
 													themeEditor
 													defaultColor={primary}
 													width={300}
@@ -196,6 +220,7 @@ const ThemeConfig = () => {
 											<td>Accent Color</td>
 											<td>
 												<ColorPickerWidget
+													label="Change Color"
 													themeEditor
 													defaultColor={accent}
 													width={300}
@@ -284,6 +309,8 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 			overflow="hidden"
 			fontSize="5px"
 			shadow="base"
+			pointerEvents="none"
+			userSelect="none"
 		>
 			{primary && accent ? (
 				<>
@@ -317,15 +344,17 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 								item="₹10,000"
 								primaryDark={primaryDark}
 							/>
-							{["Home", "Start Here", "Others"].map((item, i) => (
-								<MenuItem
-									key={i}
-									item={item}
-									primaryDark={primaryDark}
-									accent={accent}
-									selected={i === 1}
-								/>
-							))}
+							{["Home", "Transaction", "Others"].map(
+								(item, i) => (
+									<MenuItem
+										key={i}
+										item={item}
+										primaryDark={primaryDark}
+										accent={accent}
+										selected={i === 1}
+									/>
+								)
+							)}
 						</Flex>
 
 						{/* Right Pane */}
@@ -349,9 +378,10 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 								shadow="base"
 							>
 								<Text size="1.2em" fontWeight="500">
-									Transaction Card
+									Transaction
 								</Text>
 								<Box flex="1"></Box>
+								{/* Button */}
 								<Flex
 									bg={accent}
 									w="20%"
@@ -361,7 +391,7 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 									borderRadius={2}
 									px="4px"
 									color="white"
-									fontSize="0.8em"
+									fontSize="0.9em"
 									transition={bgTransition}
 								>
 									Proceed

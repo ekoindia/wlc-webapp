@@ -1,6 +1,8 @@
 import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { IconLibrary } from "constants/IconLibrary";
+import { useEffect, useState } from "react";
+import { extendedSizeOptions, paddingSizeMap } from "../options";
 import { Section } from "../Section";
 
 /**
@@ -8,7 +10,7 @@ import { Section } from "../Section";
  */
 const DEFAULTS = {
 	title: "Feature",
-	desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum diam in lacus convallis, et vehicula magna luctus. Donec quis velit nisi. Aenean tristique.",
+	desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum diam in lacus convallis, et vehicula magna luctus.",
 	icon: "badge",
 };
 
@@ -39,14 +41,29 @@ export const FeatureList = {
 				{ label: "card", value: "card" },
 			],
 		},
+		p: {
+			type: "select",
+			label: "Vertical Padding",
+			options: extendedSizeOptions,
+		},
 	},
 	defaultProps: {
-		items: [DEFAULTS],
+		items: [DEFAULTS, DEFAULTS, DEFAULTS],
 		mode: "flat",
+		p: "md",
 	},
-	render: ({ items, mode }) => {
+	render: ({ items, mode, p }) => {
+		/* eslint-disable react-hooks/rules-of-hooks */
+
+		const [paddingX, setPaddingX] = useState("");
+
+		useEffect(() => {
+			const padding = p && p in paddingSizeMap ? paddingSizeMap[p] : p;
+			setPaddingX(padding);
+		}, [p]);
+
 		return (
-			<Section>
+			<Section padding={paddingX}>
 				{mode === "card" ? (
 					// columns={{ base: 1, md: 3 }}
 					<SimpleGrid minChildWidth="280px" gap="24px">

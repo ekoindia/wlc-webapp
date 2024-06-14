@@ -97,12 +97,15 @@ export const Hero = {
 	defaultProps: {
 		logo: true,
 		logoSize: "lg",
-		title: "Hero",
+		title: "Your E-store",
 		align: "left",
-		description: "Description",
+		description:
+			"Your business partner to grow your revenue and digitize your business. Start earning today from your shop, office, home or anywhere.",
 		buttons: [{ label: "Learn more", href: "#" }],
+		imageUrl:
+			"https://images.unsplash.com/photo-1687204209659-3bded6aecd79?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=900&q=80",
 		padding: "64px",
-		dark: true,
+		dark: false,
 	},
 	render: ({
 		align = "left",
@@ -114,18 +117,18 @@ export const Hero = {
 		padding,
 		imageUrl,
 		imageMode,
-		dark = true,
+		dark = false,
 	}) => {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const { paddingX } = useContext(context);
 
 		const center = align === "center";
 		const bgOverlay =
-			"linear-gradient(-90deg,rgb(247, 250, 255, 0.7) 0%,rgb(247, 250, 255, 0.7) 80%)";
+			"linear-gradient(-90deg,rgb(247, 250, 255, 0.8) 0%,rgb(247, 250, 255, 0.8) 80%)";
 		const bgOverlayDark =
 			"linear-gradient(-90deg,rgb(0 ,0, 0, 0.75) 0%,rgb(0 ,0, 0, 0.75) 80%)";
 		const bgOverlayLarge =
-			"linear-gradient(-90deg,rgba(255, 255, 255, 0) 0%,rgb(247, 250, 255) 60%)";
+			"linear-gradient(-90deg,rgba(255, 255, 255, 0) 0%,rgba(247, 250, 255, 0.95) 60%)";
 		const bgOverlayLargeDark =
 			"linear-gradient(-90deg,rgba(0, 0, 0, 0) 0%,rgb(0, 0, 0, 0.8) 60%)";
 
@@ -154,7 +157,6 @@ export const Hero = {
 							}}
 						></div>
 						<Box
-							className="imageOverlay"
 							backgroundImage={
 								align === "left"
 									? {
@@ -180,7 +182,7 @@ export const Hero = {
 
 				{/* Inner */}
 				<Flex
-					className="cms-hero-inner"
+					w="100%"
 					direction="row"
 					align="center"
 					justify={center ? "center" : undefined}
@@ -189,7 +191,7 @@ export const Hero = {
 					gap="48px"
 					px={paddingX || "0"}
 					py={padding}
-					wrap={{ base: "wrap", lg: "nowrap" }}
+					wrap={{ base: "wrap", md: "nowrap" }}
 					zIndex="1"
 				>
 					<Flex
@@ -212,7 +214,7 @@ export const Hero = {
 						<Text
 							as="h1"
 							lineHeight="1.1"
-							fontSize={{ base: "48px", md: "64px" }}
+							fontSize={{ base: "42px", md: "60px", lg: "64px" }}
 							// color="#333"
 							color={{ base: dark ? "white" : "#333" }}
 						>
