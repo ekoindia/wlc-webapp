@@ -148,11 +148,11 @@ const ThemeConfig = () => {
 		? {
 				primary: customTheme?.primary,
 				accent: customTheme?.accent,
-		  }
+			}
 		: {
 				primary: selectedTheme?.primary,
 				accent: selectedTheme?.accent,
-		  };
+			};
 
 	return (
 		<Flex direction="column" gap={{ base: 4, md: 8 }}>
@@ -205,10 +205,10 @@ const ThemeConfig = () => {
 												accent:
 													_customThemePreview?.accent ||
 													accent,
-										  }
+											}
 										: {
 												name: "Custom Theme",
-										  }
+											}
 								}
 								i={-1}
 								isSelected={
@@ -315,7 +315,7 @@ const Section = ({ title, children }) => {
 
 /**
  * Component to show a 270px x 180px preview of the website using the theme colors. Show the primary and accent colors. Show the white top-bar, the primary left menu with a few dummy menu items
- * @param {Object} props
+ * @param {object} props
  * @param {string} props.primary - Primary color
  * @param {string} props.primaryDark - Primary Dark color
  * @param {string} props.accent - Accent color
@@ -437,6 +437,11 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 
 /**
  * Menu Item component for preview
+ * @param {object} props
+ * @param {object} props.item
+ * @param {string} props.primaryDark
+ * @param {string} props.accent
+ * @param {boolean} props.selected
  */
 const MenuItem = ({ item, primaryDark, accent, selected = false }) => {
 	return (

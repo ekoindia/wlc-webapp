@@ -52,7 +52,7 @@ export const FeatureList = {
 
 /**
  * Feature Item component
- * @param {Object} props
+ * @param {object} props
  * @param {string} props.icon - Icon name
  * @param {string} props.title - Title
  * @param {string} props.desc - Description

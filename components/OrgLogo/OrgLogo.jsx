@@ -128,6 +128,7 @@ const OrgLogo = ({ size = "md", dark = false, imageStyles = {}, ...rest }) => {
  * @param {string} props.app_name	App name to show as logo
  * @param {string} props.logoFontSize	Font size of the logo
  * @param {object} restTextLogoAttrs	Rest of the props passed to this component.
+ * @param props.dark
  * @returns
  */
 const TextLogo = ({

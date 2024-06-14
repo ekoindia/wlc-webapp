@@ -42,6 +42,9 @@ const TestPage = () => {
 
 /**
  * A Test Section component
+ * @param {object} props
+ * @param {string} props.title - Title of the section
+ * @param {ReactNode} props.children - Children of the section
  */
 const Section = ({ title, children }) => (
 	<Flex

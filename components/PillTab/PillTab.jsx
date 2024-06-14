@@ -15,10 +15,13 @@ const getProcessedList = (list) => {
 
 /**
  * A PillTab component,
+ * @param list.list
  * @param 	{Array}	list    List of object containing label & component.
- * @param 	{Number}	currTab Index of current tab.
+ * @param 	{number}	currTab Index of current tab.
  * @param 	{Function}	onClick	Click event when clicked on particular pillTab.
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param list.currTab
+ * @param list.onClick
  * @example	`<PillTab></PillTab>` TODO: Fix example
  */
 const PillTab = ({ list, currTab, onClick, ...rest }) => {

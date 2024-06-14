@@ -105,9 +105,17 @@ const Tbody = ({
 /**
  * A Tbody component
  * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param {object} prop - Properties passed to the component
+ * @param prop.item
+ * @param prop.index
+ * @param prop.mainColumns
+ * @param prop.extraColumns
+ * @param prop.handleRowClick
+ * @param prop.pageNumber
+ * @param prop.tableRowLimit
+ * @param prop.printExpansion
+ * @param prop.expandedRow
+ * @param prop.trxn_type_prod_map
  * @example	`<Tbody></Tbody>` TODO: Fix example
  */
 const Trow = ({

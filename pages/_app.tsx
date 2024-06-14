@@ -40,6 +40,14 @@ const toastDefaultOptions = {
 	isClosable: true,
 };
 
+/**
+ * Main App Component
+ * @param {object} props
+ * @param {object} props.Component - The page component
+ * @param {object} props.pageProps - The page props
+ * @param {object} props.router - The router object
+ * @param {object} props.org - The organization details
+ */
 export default function InfinityApp({ Component, pageProps, router, org }) {
 	console.log("[_app.tsx] Started: ", {
 		org,

@@ -21,9 +21,12 @@ const animSlideDown = keyframes`
 /**
  * A <HistoryCard> component
  * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param {object} props - Properties passed to the component
+ * @param {object} props.item
+ * @param {*} props.renderer
+ * @param {*} props.expanded
+ * @param {*} props.toggleExpand
+ * @param {*} props.visibleColumns
  * @example	`<HistoryCard></HistoryCard>` TODO: Fix example
  */
 const HistoryCard = ({
