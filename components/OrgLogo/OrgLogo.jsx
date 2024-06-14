@@ -7,12 +7,12 @@ const fallbackLogo =
 
 /**
  * Show the organization Logo. If logo is not available, show the app name as logo
-//  * @param 	{object}	orgDetail	Organization Details, specially `logo` & `app_name`
- * @param	{string}	size	Size of the logo. `lg` for large, `md` for medium
- * @param	{boolean}	dark	Show logo on dark background
- * @param	{object}	[imageStyles]	Additional styles for the logo image
+ * @param	{object}	props
+ * @param	{string}	[props.size]	Size of the logo. `lg` for large, `md` for medium
+ * @param	{boolean}	[props.dark]	Show logo on dark background
+ * @param	{object}	[props.imageStyles]	Additional styles for the logo image
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<OrgLogo></OrgLogo>` TODO: Fix example
+ * @example	`<OrgLogo size="lg" />`
  */
 const OrgLogo = ({ size = "md", dark = false, imageStyles = {}, ...rest }) => {
 	const [imageState, setImageState] = useState("loading");
