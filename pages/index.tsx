@@ -1,21 +1,22 @@
 import { LayoutLogin } from "layout-components";
-import { LoginPanel } from "page-components";
+import { LandingPanel } from "page-components";
 
 /**
- * The Login page as index. Currently being used as the login page.
+ * The Landing Page as index. Currently being used as the login page.
  */
-export default function LoginPage(/* { data } */) {
+export default function LandingPage(/* { data } */) {
 	// console.log("ServerSideProps:: Org=", data);
 	// const { setOrgDetail } = useOrgDetailContext();
 	// useEffect(() => {
 	// 	setOrgDetail(data);
 	// }, [data]);
 
-	return <LoginPanel />;
+	// return <LoginPanel />;
+	return <LandingPanel />;
 }
 
 // Custom layout for the Login page...
-LoginPage.getLayout = (page, org) => (
+LandingPage.getLayout = (page, org) => (
 	<LayoutLogin appName={org?.app_name || ""}>{page}</LayoutLogin>
 );
 

@@ -49,24 +49,22 @@ const rc_mask_opacity = 0.8; // Default = 0.5
 
 /**
  * A <ImageEditor> component with crop functionality to edit an image.
- *
  * @see https://github.com/sekoyo/react-image-crop
  * @see https://codesandbox.io/s/72py4jlll6
- *
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {string} prop.image - The image to be edited
  * @param {string} [prop.fileName] - The name of the image file being edited
  * @param {number} [prop.maxLength] - The maximum length of the image (longer side) in pixels
  * @param {number} [prop.aspectRatio] - The fixed aspect ratio of the crop area. E.g., 1 for square, 16/9 for landscape, etc.  If not provided, the crop area can be resized freely.
- * @param {boolean} [prop.detectFace=false] - Whether to enable face detection in the image for auto-cropping.
- * @param {number} [prop.minFaceCount=0] - The minimum number of faces required to be detected in the image (if face detection is enabled)
- * @param {number} [prop.maxFaceCount=1] - The maximum number of faces to be detected in the image (if face detection is enabled)
- * @param {boolean} [prop.disableCrop=false] - Whether to disable the crop functionality
- * @param {boolean} [prop.disableRotate=false] - Whether to disable the rotate functionality
- * @param {boolean} [prop.disableImageEdit=false] - Whether to disable the all image editing functionalities
+ * @param {boolean} [prop.detectFace] - Whether to enable face detection in the image for auto-cropping.
+ * @param {number} [prop.minFaceCount] - The minimum number of faces required to be detected in the image (if face detection is enabled)
+ * @param {number} [prop.maxFaceCount] - The maximum number of faces to be detected in the image (if face detection is enabled)
+ * @param {boolean} [prop.disableCrop] - Whether to disable the crop functionality
+ * @param {boolean} [prop.disableRotate] - Whether to disable the rotate functionality
+ * @param {boolean} [prop.disableImageEdit] - Whether to disable the all image editing functionalities
  * @param {string} [prop.watermark] - The watermark text to be displayed on the bottom-left corner of the edited image
- * @param {function} prop.onClose - Callback function to close the editor (when the user accepted or rejected the changes/image)
+ * @param {Function} prop.onClose - Callback function to close the editor (when the user accepted or rejected the changes/image)
  * @example	`<ImageEditor image="..." onResult={...} onClose={...} />`
  */
 const ImageEditor = ({
@@ -97,7 +95,7 @@ const ImageEditor = ({
 	const imageRef = useRef(null);
 
 	// For face detection
-	const isFaceDetectionEnabled = useFeatureFlag("FACE_DETECTOR");
+	const [isFaceDetectionEnabled] = useFeatureFlag("FACE_DETECTOR");
 	const [faceDetector, setFaceDetector] = useState<any>(null);
 	const [detectedFaceCount, setDetectedFaceCount] = useState(0);
 	const [confidence, setConfidence] = useState("");
@@ -659,9 +657,9 @@ const ImageEditor = ({
  * @param {IconNameType} [props.iconName] - The icon name for the button
  * @param {JSX.Element} [props.icon] - The icon to be displayed
  * @param {string} [props.label] - The label for the button
- * @param {boolean} [props.selected=false] - Whether the button is selected (toggled on)
- * @param {boolean} [props.isMain=false] - The main button flag
- * @param {function} props.onClick - The callback function for the button click event
+ * @param {boolean} [props.selected] - Whether the button is selected (toggled on)
+ * @param {boolean} [props.isMain] - The main button flag
+ * @param {Function} props.onClick - The callback function for the button click event
  * @returns {JSX.Element} - The JSX element
  */
 const IcoBtn = ({
@@ -921,6 +919,8 @@ const getRotatedImage = (image, angle) => {
  * it's original width and height is no longer usable in the rendered page.
  * So, calculate projected rect size, that each edge are sum of the
  * width projection and height projection of the original rect.
+ * @param size
+ * @param rad
  */
 const calcProjectedRectSizeOfRotatedRect = (size, rad) => {
 	const { width, height } = size;

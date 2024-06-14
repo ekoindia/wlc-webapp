@@ -5,8 +5,9 @@ import { Box } from "@chakra-ui/react";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.primary	Primary color to show on the left.
  * @param	{string}	prop.accent	Accent color to show on the right.
+ * @param	{string}	[prop.size]	Size of the component (diameter of the circle).
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<ColorPair primary="#F00", accent="#00F" />`
+ * @example	`<ColorPair primary="#00F", accent="#F0F" />`
  */
 const ColorPair = ({ primary, accent, size = "45px", ...rest }) => {
 	return (

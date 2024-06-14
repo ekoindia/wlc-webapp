@@ -5,13 +5,16 @@ import { RemoveFormatted, sendOtpRequest } from "helpers";
 import { useState } from "react";
 
 /**
- * A <SocialVerify> component
- * TODO: Used when the google auth is successfull to verify phone number if the user is new
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<SocialVerify></SocialVerify>`
+ * A <SocialVerify> component. Used to verify phone number if the user is new,
+ * 		and if they have logged in using Google or other social SSO.
+ * @param {object} prop - Properties passed to the component
+ * @param {string} [prop.email] - Email of the user
+ * @param {object} prop.number - Object containing the original and formatted mobile number
+ * @param {boolean} prop.previewMode - Flag to check if the component is in preview mode
+ * @param {Function} prop.setNumber - Function to set the number
+ * @param {Function} prop.setStep - Function to set the step
  */
-const SocialVerify = ({ email, number, setNumber, setStep }) => {
+const SocialVerify = ({ email, number, previewMode, setNumber, setStep }) => {
 	const toast = useToast();
 	const [value, setValue] = useState(number.formatted);
 	const { isAndroid } = useAppSource();
@@ -25,6 +28,8 @@ const SocialVerify = ({ email, number, setNumber, setStep }) => {
 	};
 
 	const onVerifyOtp = async () => {
+		if (previewMode === true) return;
+
 		if (value.length === 12) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({

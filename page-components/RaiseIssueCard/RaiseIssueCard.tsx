@@ -76,11 +76,10 @@ interface RaiseIssueProps {
 
 /**
  * A component to for users to raise an issue or provide a feedback
- *
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {string} [prop.heading] - Heading for the feedback panel
- * @param {boolean} [prop.showCloseIcon=false] - Whether to show a close icon on the feedback panel
+ * @param {boolean} [prop.showCloseIcon] - Whether to show a close icon on the feedback panel
  * @param {string} prop.tid - Unique ID of the transaction for which issue is being raised
  * @param {string} prop.tx_typeid - Transaction type ID. It is used to fetch the issue types for a certain transaction type. If not provided here, it will be fetched from `metadata.` (if available)
  * @param {number} prop.status - Transaction status (eg: -2, -1, 0, 1, 2, 3, 4, 6, 7, 8, 9)
@@ -91,12 +90,12 @@ interface RaiseIssueProps {
  * @param {string} prop.customIssueType - Custom issue type to capture, instead of pulling issue types for a certain transaction type. This is useful for creating custom "Raise Issue" buttons in the UI.
  * @param {boolean} prop.autoCaptureScreenshot - Whether to capture a screenshot of the current page
  * @param {string} prop.origin - Origin of the feedback panel (eg: "transaction-list")
- * @param {function} prop.onResult - Function to return the result of the feedback
- * @param {function} prop.onClose - Function to close the feedback
- * @param {function} prop.onOpenUrl - Function to open a URL
- * @param {function} prop.onRequestCamCapture - Function to request camera capture
- * @param {function} prop.onHide - Function to temporarily hide the feedback panel
- * @param {function} prop.onShow - Function to show the temporarily hidden feedback panel
+ * @param {Function} prop.onResult - Function to return the result of the feedback
+ * @param {Function} prop.onClose - Function to close the feedback
+ * @param {Function} prop.onOpenUrl - Function to open a URL
+ * @param {Function} prop.onRequestCamCapture - Function to request camera capture
+ * @param {Function} prop.onHide - Function to temporarily hide the feedback panel
+ * @param {Function} prop.onShow - Function to show the temporarily hidden feedback panel
  * @param {...*} rest - Rest of the props
  */
 const RaiseIssueCard = ({
@@ -159,11 +158,11 @@ const RaiseIssueCard = ({
 		useState<boolean>(true); // Do we need to submit user feedback (or, just link to another page)?
 
 	// Check if the feature is enabled...
-	const isFeatureEnabled = useFeatureFlag("RAISE_ISSUE");
+	const [isFeatureEnabled] = useFeatureFlag("RAISE_ISSUE");
 
 	// Experimental text-classifier for user comments...
 	// @see https://ai.google.dev/edge/mediapipe/solutions/text/text_classifier
-	const isTextClassifierEnabled = useFeatureFlag("TEXT_CLASSIFIER");
+	const [isTextClassifierEnabled] = useFeatureFlag("TEXT_CLASSIFIER");
 	const [textClassifier, setTextClassifier] = useState<any>(null);
 	const [classifierResult, setClassifierResult] = useState("");
 
@@ -979,8 +978,8 @@ const RaiseIssueCard = ({
  * Container card component
  * @param {object} props - Properties passed to the component.
  * @param {string} [props.heading] - Label to show above the card.
- * @param {boolean} [props.showCloseIcon=false] - Whether to show a close icon on the card (default: false).
- * @param {function} [props.onClose] - Function to call when the close icon is clicked.
+ * @param {boolean} [props.showCloseIcon] - Whether to show a close icon on the card (default: false).
+ * @param {Function} [props.onClose] - Function to call when the close icon is clicked.
  * @param {ReactNode} props.children - Content to show inside the card.
  * @param {...*} rest - Rest of the props for the card.
  * @returns {JSX.Element} - A card container.
@@ -1083,7 +1082,7 @@ const Card = ({
  * @param {number|string} props.selectedId - ID of the selected category.
  * @param {string} [props.idKey] - Key to use for the category ID (default: "id").
  * @param {string} [props.labelKey] - Key to use for the category title (default: "title").
- * @param {function} props.onSelect - Function to call when a category is selected. It receives the selected category object as an argument.
+ * @param {Function} props.onSelect - Function to call when a category is selected. It receives the selected category object as an argument.
  * @param {...*} rest - Rest of the props for the outer container.
  * @returns {JSX.Element} - A list of categories to select from.
  */
@@ -1181,7 +1180,7 @@ const Label = ({ children, ...rest }) => {
  * @param {object} props - Properties passed to the component.
  * @param {boolean} [props.isSelected] - Whether the category is selected (default: false).
  * @param {boolean} [props.isPrimary] - Whether this is the primary category (default: false).
- * @param {function} [props.onClick] - Function to call when the category is clicked.
+ * @param {Function} [props.onClick] - Function to call when the category is clicked.
  * @param {string} props.children - Label to show on the button.
  * @param {...*} rest - Rest of the props for the button.
  * @returns {JSX.Element} - A button to select a category.
@@ -1217,10 +1216,10 @@ const CategoryButton = ({
  * MARK: <Screenshot>
  * @param {object} props - Properties passed to the component.
  * @param {string} props.screenshot - The screenshot image data.
- * @param {boolean} [props.autoCaptureScreenshot=false] - Whether to automatically capture the screenshot (default: false).
- * @param {function} props.onCapture - Function to call when the screenshot is captured.
- * @param {function} props.onHide - Function to call to temporarily hide the Raise Query dialog so that the screenshot can be taken.
- * @param {function} props.onShow - Function to call to show the Raise Query dialog after the screenshot is taken.
+ * @param {boolean} [props.autoCaptureScreenshot] - Whether to automatically capture the screenshot (default: false).
+ * @param {Function} props.onCapture - Function to call when the screenshot is captured.
+ * @param {Function} props.onHide - Function to call to temporarily hide the Raise Query dialog so that the screenshot can be taken.
+ * @param {Function} props.onShow - Function to call to show the Raise Query dialog after the screenshot is taken.
  */
 const Screenshot = ({
 	screenshot,

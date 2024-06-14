@@ -17,21 +17,27 @@ const DynamicGoogleButton = dynamic(
 /**
  * A <Login> component
  * Responsible for handling different types of login like Mobile Number & Google Login
- * @params 	{Function}	setStep		Function to set the step like LOGIN, VERIFYOTP & SOCIALVERIFY
- * @params 	{Function}	setNumber	Function to set the users mobile number if the user is loogin using Mobile number
- * @params 	{Object}	number		Object which gives the number in two forms formatted and original (or unformatted)
- * @params 	{Function}	setEmail	Function to set the users email
- * @params 	{Function}	setLoginType	Function to set the login type
- * @example	`<Login></Login>`
+ * @param {object} props
+ * @param {boolean} [props.hideLogo] - Flag to hide the logo
+ * @param {Function} props.setStep - Function to set the step like LOGIN, VERIFYOTP & SOCIALVERIFY
+ * @param {Function} props.setNumber - Function to set the users mobile number if the user is loogin using Mobile number
+ * @param {object} props.number - Object which gives the number in two forms formatted and original (or unformatted)
+ * @param {string} props.lastUserName - Last user name who logged in
+ * @param {string} props.lastMobileFormatted - Last mobile number which was used to login
+ * @param {boolean} props.previewMode - Flag to check if the component is in preview mode
+ * @param {Function} props.setEmail - Function to set the users email
+ * @param {Function} props.setLoginType - Function to set the login type
  */
 const Login = ({
+	hideLogo = false,
 	setStep,
 	setNumber,
 	number,
-	setEmail,
-	setLoginType,
 	lastUserName,
 	lastMobileFormatted,
+	previewMode,
+	setEmail,
+	setLoginType,
 }) => {
 	const EnterRef = useRef();
 	const toast = useToast();
@@ -62,6 +68,8 @@ const Login = ({
 	};
 
 	const sendOtp = async () => {
+		if (previewMode === true) return;
+
 		if (value.length === 12) {
 			let originalNum = RemoveFormatted(value);
 			setNumber({
@@ -99,7 +107,7 @@ const Login = ({
 	};
 
 	return (
-		<Flex direction="column" h="100%">
+		<Flex direction="column" _h="100%">
 			<Box
 				display={{ base: "block", md: "none" }}
 				position="absolute"
@@ -109,13 +117,16 @@ const Login = ({
 				h="10px"
 				bg="primary.DEFAULT"
 			></Box>
-			<Flex mb={lastUserName ? "6" : { base: 10, lg: 14 }}>
-				<OrgLogo
-					orgDetail={orgDetail}
-					size="lg"
-					// ml={{ base: 4, md: "0" }}
-				/>
-			</Flex>
+
+			{hideLogo ? null : (
+				<Flex mb={lastUserName ? "6" : { base: 10, lg: 14 }}>
+					<OrgLogo
+						orgDetail={orgDetail}
+						size="lg"
+						// ml={{ base: 4, md: "0" }}
+					/>
+				</Flex>
+			)}
 
 			{lastUserName ? (
 				<Text
@@ -168,7 +179,7 @@ const Login = ({
 				</Text>
 			)} */}
 
-			<Box flex="0.5" />
+			<Box flex="0.5 1 40px" />
 
 			<Input
 				label="Login with your mobile number" // "Enter mobile number"
@@ -209,7 +220,7 @@ const Login = ({
 
 			{showGoogle ? (
 				<>
-					<Box flex="2" />
+					<Box flex="1 1 60px" />
 
 					<Flex direction="row" align="center" w="100%">
 						<Text

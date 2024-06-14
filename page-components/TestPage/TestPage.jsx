@@ -17,7 +17,7 @@ import remarkGfm from "remark-gfm";
  * To add a new test, create a component and add it to the 'TestComponents' list at the bottom of the file.
  */
 const TestPage = () => {
-	const isTestPageEnabled = useFeatureFlag("TEST_PAGE");
+	const [isTestPageEnabled] = useFeatureFlag("TEST_PAGE");
 
 	if (!isTestPageEnabled) {
 		return null;
@@ -42,6 +42,9 @@ const TestPage = () => {
 
 /**
  * A Test Section component
+ * @param root0
+ * @param root0.title
+ * @param root0.children
  */
 const Section = ({ title, children }) => (
 	<Flex
