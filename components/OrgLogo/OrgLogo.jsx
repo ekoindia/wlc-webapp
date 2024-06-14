@@ -7,13 +7,14 @@ const fallbackLogo =
 
 /**
  * Show the organization Logo. If logo is not available, show the app name as logo
-//  * @param 	{object}	orgDetail	Organization Details, specially `logo` & `app_name`
- * @param	{string}	size	Size of the logo. `lg` for large, `md` for medium
- * @param	{boolean}	dark	Show logo on dark background
+ * @param	{object}	props
+ * @param	{string}	[props.size]	Size of the logo. `lg` for large, `md` for medium
+ * @param	{boolean}	[props.dark]	Show logo on dark background
+ * @param	{object}	[props.imageStyles]	Additional styles for the logo image
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<OrgLogo></OrgLogo>` TODO: Fix example
+ * @example	`<OrgLogo size="lg" />`
  */
-const OrgLogo = ({ size = "md", dark = false, ...rest }) => {
+const OrgLogo = ({ size = "md", dark = false, imageStyles = {}, ...rest }) => {
 	const [imageState, setImageState] = useState("loading");
 	const [isSmallLogo, setIsSmallLogo] = useState(false); // Is it a circular/squarish logo?
 	const { orgDetail } = useOrgDetailContext();
@@ -83,6 +84,7 @@ const OrgLogo = ({ size = "md", dark = false, ...rest }) => {
 			h={logoHeight}
 			transition="opacity 1s ease-out"
 			opacity={imageState === "loaded" ? 1 : 0}
+			{...rest}
 		>
 			<Image
 				src={orgLogo || fallbackLogo}
@@ -104,7 +106,7 @@ const OrgLogo = ({ size = "md", dark = false, ...rest }) => {
 				loading="eager"
 				onLoad={(e) => onLoad(true, e)}
 				onError={() => onLoad(false)}
-				{...rest}
+				{...imageStyles}
 			/>
 			{isSmallLogo &&
 			(imageState === "loaded" || imageState === "failed") ? (

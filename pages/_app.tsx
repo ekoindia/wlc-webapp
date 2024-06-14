@@ -208,12 +208,9 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 																<PubSubProvider>
 																	<ErrorBoundary>
 																		{getLayout(
-																			<main /* className={inter.className} */
-																			>
-																				<Component
-																					{...pageProps}
-																				/>
-																			</main>,
+																			<Component
+																				{...pageProps}
+																			/>,
 																			org
 																		)}
 																	</ErrorBoundary>

@@ -4,15 +4,13 @@ import { Configurations } from "page-components/Admin";
 
 const ConfigurationsPage = () => {
 	return (
-		<>
-			<PaddingBox>
-				<BreadcrumbsWrapper
-					BreadcrumbsObject={ConfigurationsBreadcrumbData}
-				>
-					<Configurations />
-				</BreadcrumbsWrapper>
-			</PaddingBox>
-		</>
+		<PaddingBox>
+			<BreadcrumbsWrapper
+				BreadcrumbsObject={ConfigurationsBreadcrumbData}
+			>
+				<Configurations />
+			</BreadcrumbsWrapper>
+		</PaddingBox>
 	);
 };
 

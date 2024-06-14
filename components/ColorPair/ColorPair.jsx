@@ -24,7 +24,7 @@ const ColorPair = ({ primary, accent, size = "45px", ...rest }) => {
 						cx="25"
 						cy="25"
 						r="25"
-						clip-path="url(#a)"
+						clipPath="url(#a)"
 						fill={accent}
 					/>
 				</g>

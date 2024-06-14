@@ -7,6 +7,7 @@ import { Calenders } from "./Calenders";
 import { Camera } from "./Camera";
 import { Card } from "./Card";
 import { ColorPair } from "./ColorPair";
+import { ColorPickerWidget } from "./ColorPickerWidget";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
 import { Divider } from "./Divider";
@@ -51,6 +52,7 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	ColorPickerWidget,
 	Camera,
 	FileView,
 	Share,
