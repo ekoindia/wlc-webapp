@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 
 /**
  * A <Button> component
- * @param 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.variant="accent"]	Button variant:	"primary" | "accent" | "outline" | "ghost" | "link" | "solid" | "unstyled"
  * @param	{boolean}	[prop.disabled=false]	Disable the button
  * @param	{boolean}	[prop.loading=false]	Show loading state
@@ -12,7 +12,7 @@ import { forwardRef } from "react";
  * @param	{string}	[prop.icon]	Icon to show in the button
  * @param	{string}	[prop.iconPosition="left"]	Position of the icon
  * @param	{string}	[prop.iconSpacing]	Spacing between the icon and the text
- * @param	{function}	[prop.onClick]	Click handler
+ * @param	{Function}	[prop.onClick]	Click handler
  * @param	{string}	[prop.children]	Children elements of the button
  * @param	{...*}		rest	Rest of the props
  * @param	{React.Ref}	ref	Reference to the button element

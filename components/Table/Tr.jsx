@@ -43,6 +43,16 @@ const showInPrint = (display_media_id) => {
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.data
+ * @param prop.renderer
+ * @param prop.onRowClick
+ * @param prop.pageNumber
+ * @param prop.tableRowLimit
+ * @param prop.tableName
+ * @param prop.visibleColumns
+ * @param prop.isLoading
+ * @param prop.printExpansion
+ * @param prop.rowExpansion
  * @example	`<Tr></Tr>` TODO: Fix example
  */
 const Tr = ({

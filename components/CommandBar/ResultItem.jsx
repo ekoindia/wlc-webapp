@@ -5,8 +5,8 @@ import { Icon, Kbd } from "..";
 
 /**
  * Component to render a single KBar result item
- * @param {Object} props
- * @param {Object} props.item - The KBar Action item to render
+ * @param {object} props
+ * @param {object} props.item - The KBar Action item to render
  * @param {boolean} props.active - Whether the item is active or not
  * @param {string} props.className - The className to apply to the item
  */

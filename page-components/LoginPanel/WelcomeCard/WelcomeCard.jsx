@@ -17,6 +17,11 @@ const ShowcaseCircle = dynamic(
 
 /**
  * A Welcome card with a logo, title and a list of features
+ * @param root0
+ * @param root0.logo
+ * @param root0.header
+ * @param root0.features
+ * @param root0.onClick
  */
 const WelcomeCard = ({ logo, header, features = [], onClick, ...rest }) => {
 	// Delay-load showcase image

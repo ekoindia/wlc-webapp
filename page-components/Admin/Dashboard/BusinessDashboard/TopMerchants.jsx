@@ -42,8 +42,9 @@ const topMerchantsTableParameterList = [
 /**
  * A TopMerchants page-component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.data
  * @example	`<TopMerchants></TopMerchants>`
  */
 const TopMerchants = ({ data }) => {

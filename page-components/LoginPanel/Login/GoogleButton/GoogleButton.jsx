@@ -7,10 +7,10 @@ import { useLogin } from "hooks";
 
 /**
  * A custom Google login button
- * @param	{function}	[prop.setStep]	Function to set the step like LOGIN, VERIFYOTP & SOCIALVERIFY
- * @param	{function}	[prop.setLoginType]	Function to set the type of login
- * @param	{function}	[prop.setNumber]	Function to set the number
- * @param	{function}	[prop.setEmail]	Function to set the email
+ * @param	{Function}	[prop.setStep]	Function to set the step like LOGIN, VERIFYOTP & SOCIALVERIFY
+ * @param	{Function}	[prop.setLoginType]	Function to set the type of login
+ * @param	{Function}	[prop.setNumber]	Function to set the number
+ * @param	{Function}	[prop.setEmail]	Function to set the email
  * @example	`<GoogleButton></GoogleButton>`
  */
 const GoogleButtonContent = ({

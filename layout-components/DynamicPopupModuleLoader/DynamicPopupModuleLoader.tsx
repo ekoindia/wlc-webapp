@@ -170,7 +170,6 @@ const MAX_MODULES = 10;
 /**
  * Loads a component dynamically as a modal popup.
  * Used in the main Layout component to load & show RaiseIssue, ImageCapture, FileViewer, etc components in any page.
- *
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {...*} rest - Rest of the props
@@ -207,6 +206,7 @@ const DynamicPopupModuleLoader = () => {
 
 	/**
 	 * Function to add a module to the list of modules to be displayed. If it already exists, it will be replaced.
+	 * @param module
 	 */
 	const addModule = (module: ModuleDataType) => {
 		// If the module count exceeds the maximum limit, show an error toast
@@ -242,6 +242,7 @@ const DynamicPopupModuleLoader = () => {
 
 	/**
 	 * Function to remove a module from the list of modules to be displayed
+	 * @param moduleName
 	 */
 	const removeModule = (moduleName: ModuleNameType) => {
 		// See if the module is the last one in the list
@@ -266,7 +267,9 @@ const DynamicPopupModuleLoader = () => {
 
 	/**
 	 * Callback function to close the modal popup.
+	 * @param index
 	 * @param {string} moduleName - The module name
+	 * @param result
 	 */
 	const onPopupClose = (index, moduleName, result) => {
 		const closedModule = moduleData[index];
@@ -329,7 +332,7 @@ const DynamicPopupModuleLoader = () => {
  * @param {number} props.index - The index of the module in the list
  * @param {object} [props.options] - Options to pass to the module
  * @param {boolean} [props.isBackgroundModule] - Whether the module is in the background
- * @param {function} props.onPopupClose - Callback function to close the modal
+ * @param {Function} props.onPopupClose - Callback function to close the modal
  */
 const Dialog = ({
 	module,

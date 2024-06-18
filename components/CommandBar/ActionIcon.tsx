@@ -27,6 +27,7 @@ interface ActionIconProps {
  * @param	{string}	prop.color	Color of the icon.
  * @param	{string}	prop.style	Style of the icon (filled, outline, or default).
  * @param	{string}	prop.badgeColor	Color of the badge. Badge is hidden, if the color is not provided.
+ * @param prop.fontSize
  */
 const ActionIcon: React.FC<ActionIconProps> = ({
 	icon = "",
@@ -107,6 +108,7 @@ const ActionIcon: React.FC<ActionIconProps> = ({
 /**
  * Fix logo path by prepending "/" if it is an invalid partial path (eg: images/brands/xyz.png).
  * @param 	{string}	icon	Icon name or path
+ * @param logo
  * @returns	{string}			Fixed icon path
  */
 const fixLogoPath = (logo: string) => {

@@ -74,8 +74,12 @@ const getStatus = (status) => {
 
 /**
  * A NetworkMenuWrapper component
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.mobile_number
+ * @param prop.eko_code
+ * @param prop.account_status_id
+ * @param prop.agent_type
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
 const NetworkMenuWrapper = ({

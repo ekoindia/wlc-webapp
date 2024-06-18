@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 /**
  * Hook for caching data for one day. After one day, the isValid status is returned as false.
  * @param {string} defaultValue
+ * @param key
+ * @param initialValue
  * @returns {Array} [value, setValue, isValid]
- *
  */
 const useDailyCacheState = (key, initialValue) => {
 	const [dt, setDt] = useState(new Date());

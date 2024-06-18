@@ -21,6 +21,10 @@ const independent_retailer_select_option = {
 
 /**
  * A TransferSeller Tab inside ChangeRole page-component
+ * @param root0
+ * @param root0.agentData
+ * @param root0.setResponseDetails
+ * @param root0.showOrgChangeRoleView
  * @example	`<TransferSeller></TransferSeller>`
  */
 const TransferSeller = ({

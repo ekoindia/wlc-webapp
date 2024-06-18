@@ -2,6 +2,8 @@ import { ANDROID_ACTION, doAndroidAction } from "utils";
 
 /**
  * Function to initiate printing of page / receipt / etc.
+ * @param page_title
+ * @param isAndroid
  */
 export const printPage = (
 	page_title,

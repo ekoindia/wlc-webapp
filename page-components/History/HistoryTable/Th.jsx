@@ -7,6 +7,8 @@ import { Fragment } from "react";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.renderer
+ * @param prop.visibleColumns
  * @example	`<Th></Th>` TODO: Fix example
  */
 const Th = ({ renderer, visibleColumns }) => {

@@ -2,6 +2,8 @@ import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
 
 /**
  * Get dynamic manifest data for the given (sub)domain
+ * @param req
+ * @param res
  */
 export default async function proxy(req, res) {
 	res.setHeader("Content-Type", "application/json");

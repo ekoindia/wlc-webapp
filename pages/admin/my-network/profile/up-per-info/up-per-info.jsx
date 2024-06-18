@@ -2,6 +2,9 @@ import { BreadcrumbsWrapper, PaddingBox } from "components";
 import { NetworkObject } from "constants";
 import { UpdatePersonalInfo } from "page-components/Admin";
 
+/**
+ *
+ */
 function UpdatePersonalInfoPage() {
 	return (
 		<PaddingBox>

@@ -21,14 +21,14 @@ type IcoButtonProps = {
  * A IcoButton component to show Icons
  * @param {IcoButtonProps} props - The props of the component
  * @param {IconNameType} props.iconName - The name of the icon to display.
- * @param {string} [props.size="md"] - The size of the button. Can be "lg", "md", "sm", or a custom string.
+ * @param {string} [props.size] - The size of the button. Can be "lg", "md", "sm", or a custom string.
  * @param {string|number} [props.iconSize] - An optional custom size for the icon.
- * @param {Object} [props.iconStyle] - The styles to apply to the icon (should contain width, height).
+ * @param {object} [props.iconStyle] - The styles to apply to the icon (should contain width, height).
  * @param {string} [props.theme] - The color theme of the button. Can be "light" or "dark" or any custom theme.
  * @param {string|number} [props.rounded] - The rounding of the button. Can be a number, or "full" (default).
  * @param {string} [props.title] - The title of the button.
  * @param {MouseEvent} [props.onClick] - The click event handler
- * @param {...Object} rest - A catch-all prop that allows any other prop to be passed in.
+ * @param {...object} rest - A catch-all prop that allows any other prop to be passed in.
  * @example
  * //Example usage:
  * <IcoButton

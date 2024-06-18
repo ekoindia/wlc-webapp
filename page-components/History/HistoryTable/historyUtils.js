@@ -20,6 +20,9 @@ import {
  * @param {*} column
  * @param {number} index - Table row index
  * @param {number} serialNo
+ * @param expandedRow
+ * @param icon
+ * @param hue
  * @returns
  */
 export const prepareTableCell = (
@@ -97,7 +100,7 @@ export const showInPrint = (display_media_id) => {
 
 /**
  * Convert a history row into sharable text message
- * @param {array} extraColumns
+ * @param {Array} extraColumns
  * @param {object} item	The current history row name/value pairs
  * @returns {string} The sharable text message
  */

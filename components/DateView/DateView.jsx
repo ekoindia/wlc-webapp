@@ -6,6 +6,7 @@ import { formatDate } from "libs";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.date	The date value.
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.format
  * @example	`<DateView></DateView>` TODO: Fix example
  */
 const DateView = ({ date, format, ...rest }) => {

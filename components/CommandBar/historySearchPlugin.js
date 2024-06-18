@@ -3,7 +3,7 @@ import { getKBarAction } from ".";
 /**
  * Get Kbar result actions for searching in Transaction History based on the numeric query input.
  * For example, if the user types a number matching a phone number pattern, then show an action to search History by phone number.
- * @param {Object} Options
+ * @param {object} Options
  * @param {string} Options.queryValue - The query value to search for
  * @param {boolean} Options.isAdmin - Whether the user is an admin
  * @param {object} Options.router - The router object

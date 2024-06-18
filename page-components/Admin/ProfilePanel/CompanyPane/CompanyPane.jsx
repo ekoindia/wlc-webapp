@@ -16,16 +16,14 @@ import { capitalize } from "utils/textFormat";
  * A <CompanyPane> component that displays company details.
  *
  * This component receives a data object as a prop and displays the company's avatar, name, user code, account type, plan name, and wallet balance. It also provides a button to view all transactions.
- *
- * @param {Object} props - Properties passed to the component
- * @param {Object} props.data - The data object containing company details
+ * @param {object} props - Properties passed to the component
+ * @param {object} props.data - The data object containing company details
  * @param {string} props.data.agent_name - The name of the agent
  * @param {string} props.data.eko_code - The user code of the agent
  * @param {string} props.data.src - The source URL for the avatar image
  * @param {string} props.data.agent_type - The type of the agent's account
  * @param {string} props.data.plan_name - The name of the agent's plan
  * @param {number} props.data.wallet_balance - The balance of the agent's wallet
- *
  * @example
  * const data = {
  *   agent_name: 'John Doe',

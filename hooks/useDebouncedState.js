@@ -3,11 +3,9 @@ import { debounce } from "utils";
 
 /**
  * A custom hook to create a debounced state setter.
- *
  * @param {(() => any) | any} initialState - The initial state. Could be a value or a function.
  * @param {number} delay - The amount of milliseconds to delay the state setter.
- * @param {number} [maxWait=0] - The maximum time callback is allowed to be delayed before it's invoked. 0 means no max wait.
- *
+ * @param {number} [maxWait] - The maximum time callback is allowed to be delayed before it's invoked. 0 means no max wait.
  * @returns {[any, (newState: any) => void]} The state and its debounced setter.
  */
 function useDebouncedState(initialState, delay, maxWait = 0) {
