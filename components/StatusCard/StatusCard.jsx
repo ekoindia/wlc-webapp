@@ -75,6 +75,8 @@ const StatusCard = ({ ...rest }) => {
 			bg="status.bg" // ORIG_THEME: bgColor || sidebar.card-bg-dark
 			borderBottom="1px solid" // ORIG_THEME: br-sidebar
 			borderBottomColor="primary.light"
+			borderRight="1px solid"
+			borderRightColor="status.borderRightColor"
 			{...rest}
 		>
 			<Flex align="center" gap="2.5">

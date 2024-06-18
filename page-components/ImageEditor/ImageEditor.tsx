@@ -97,7 +97,7 @@ const ImageEditor = ({
 	const imageRef = useRef(null);
 
 	// For face detection
-	const isFaceDetectionEnabled = useFeatureFlag("FACE_DETECTOR");
+	const [isFaceDetectionEnabled] = useFeatureFlag("FACE_DETECTOR");
 	const [faceDetector, setFaceDetector] = useState<any>(null);
 	const [detectedFaceCount, setDetectedFaceCount] = useState(0);
 	const [confidence, setConfidence] = useState("");
@@ -556,6 +556,11 @@ const ImageEditor = ({
 						keepSelection={true}
 						aspect={aspectRatio > 0 ? aspectRatio : undefined}
 						crop={crop}
+						circularCrop={
+							detectFace && aspectRatio == 1 && maxFaceCount <= 1
+								? true
+								: false
+						}
 						minWidth={100}
 						minHeight={100}
 						disabled={!cropEnabled}

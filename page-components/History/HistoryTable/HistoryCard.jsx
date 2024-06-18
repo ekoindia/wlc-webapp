@@ -40,7 +40,7 @@ const HistoryCard = ({
 	const { isAndroid } = useAppSource();
 	const { orgDetail } = useOrgDetailContext();
 
-	const isRaiseIssueAllowed = useFeatureFlag("RAISE_ISSUE");
+	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
 	const { showRaiseIssueDialog } = useRaiseIssue();
 
 	const visible = visibleColumns > 0;

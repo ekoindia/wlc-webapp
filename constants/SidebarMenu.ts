@@ -8,6 +8,7 @@ type sidebarMenuType = {
 	link?: string;
 	trxn_id?: number; // Transaction Id to link to. Converts to "/transaction/<trxn_id>" links after checking if it is allowed as per user's roles.
 	dynamicAdminView?: boolean; // If true, then the menu item will be shown to Admins in the "Agent-View". The link should be prepended with "/admin" in this case.
+	featureFlag?: string; // The feature flag to check if the menu item should be shown or not.
 	// comp?: boolean;
 	// api?: boolean;
 	// subLevel?: boolean;
@@ -120,11 +121,29 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		link: "/admin/transaction/" + TransactionIds.INVOICE_DOWNLOAD,
 		trxn_id: TransactionIds.INVOICE_DOWNLOAD,
 	},
-	// {
-	// 	icon: "manage",
-	// 	name: "Configurations",
-	// 	link: "/admin/configurations",
-	// },
+	{
+		id: 99,
+		icon: "manage",
+		name: "Configurations",
+		link: "/admin/configurations",
+		featureFlag: "PORTAL_CONFIG",
+	},
+
+	// UAT Options
+	{
+		id: 901,
+		icon: "calculator",
+		name: "Expression Editor",
+		link: "/admin/expression-editor",
+		featureFlag: "EXPRESSION_EDITOR",
+	},
+	{
+		id: 902,
+		icon: "error",
+		name: "Test Page",
+		link: "/admin/test",
+		featureFlag: "TEST_PAGE",
+	},
 ];
 
 /**

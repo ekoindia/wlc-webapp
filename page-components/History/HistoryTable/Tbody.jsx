@@ -125,7 +125,7 @@ const Trow = ({
 	const txicon = trxn_type_prod_map?.[item.tx_typeid]?.icon || null;
 	const { h } = useHslColor(item.tx_name);
 	const { orgDetail } = useOrgDetailContext();
-	const isRaiseIssueAllowed = useFeatureFlag("RAISE_ISSUE");
+	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
 	const { showRaiseIssueDialog } = useRaiseIssue();
 
 	const serialNumber =

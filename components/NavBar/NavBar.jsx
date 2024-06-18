@@ -147,7 +147,6 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 						/>
 					)}
 					<OrgLogo
-						orgDetail={orgDetail}
 						size="md"
 						dark={orgDetail?.metadata?.theme?.navstyle === "light"}
 						ml={{ base: 1, lg: 0 }}
@@ -277,7 +276,7 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 const MyAccountCard = ({ setIsCardOpen, onClose }) => {
 	const { isAdmin, logout, isOnboarding, userData, isLoggedIn } = useUser();
 	const { showRaiseIssueDialog } = useRaiseIssue();
-	const isRaiseIssueAllowed = useFeatureFlag("RAISE_ISSUE");
+	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
 
 	const { userDetails } = userData;
 	const { name, code, email, mobile } = userDetails ?? {};

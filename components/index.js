@@ -14,6 +14,7 @@ import { Calenders } from "./Calenders";
 import { Camera } from "./Camera";
 import { Card } from "./Card";
 import { ColorPair } from "./ColorPair";
+import { ColorPickerWidget } from "./ColorPickerWidget";
 import { CommandBarBox } from "./CommandBar";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
@@ -59,6 +60,7 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	ColorPickerWidget,
 	Camera,
 	FileView,
 	Accordion,

@@ -56,6 +56,8 @@ const PillTab = ({ list, currTab, onClick, ...rest }) => {
 						borderRadius={{ base: "80px" }}
 						onClick={() => onClick(index)}
 						cursor="pointer"
+						transition="background 0.2s ease-in"
+						userSelect="none"
 					>
 						{label}
 					</Flex>

@@ -8,13 +8,13 @@ import { useCallback, useEffect, useState } from "react";
 
 /**
  * A <VerifyOtp> component
- * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<VerifyOtp></VerifyOtp>`
+ * @arg {Object} prop - Properties passed to the component
+ * @param {string} [prop.loginType] - Login type, eg: Mobile
+ * @param {Object} prop.number - Object containing the original and formatted mobile number
+ * @param {boolean} prop.previewMode - Flag to check if the component is in preview mode
+ * @param {Function} prop.setStep - Function to set the step
  */
-
-const VerifyOtp = ({ loginType, number, setStep }) => {
+const VerifyOtp = ({ loginType, number, previewMode, setStep }) => {
 	const { login } = useUser();
 	const { orgDetail } = useOrgDetailContext();
 	const [loading, submitLogin] = useLogin(login, setStep);
@@ -42,6 +42,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 	};
 
 	const resendOtpHandler = async () => {
+		if (previewMode === true) return;
 		resetTimer();
 		const otp_sent = await sendOtpRequest(
 			orgDetail.org_id,
@@ -57,6 +58,7 @@ const VerifyOtp = ({ loginType, number, setStep }) => {
 	};
 
 	const verifyOtpHandler = (_otp) => {
+		if (previewMode === true) return;
 		if (loading) return;
 		if (!(_otp || Otp)) return;
 
