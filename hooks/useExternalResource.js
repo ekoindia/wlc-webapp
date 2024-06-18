@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
  * The hook returns a state variable and a reload function.
  * The state variable represents the current status of the element (idle, loading, ready, error).
  * The reload function can be used to reload the resource.
- *
  * @param {string} src - The source URL of the external resource.
  * @param {string} type - The type of the external resource ('script' or 'link').
  * @param {string} rel - The rel attribute of the link element (only used if type is 'link').

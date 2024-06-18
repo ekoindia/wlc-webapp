@@ -35,7 +35,7 @@ export type IconProps = {
  * @param 	{string}	[w]	Width of the icon
  * @param 	{string}	[h]	Height of the icon
  * @param 	{string}	[width]	Width of the icon
- * @arg 	{string}	[height]	Height of the icon
+ * @param 	{string}	[height]	Height of the icon
  * @example	`<Icon name="home" size="lg" />`
  */
 const Icon = ({

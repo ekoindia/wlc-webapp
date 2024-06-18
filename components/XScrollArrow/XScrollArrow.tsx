@@ -23,14 +23,12 @@ const posMapping: Record<
 /**
  * A XScrollArrow component. This component creates a scrollable area with optional left and right scroll buttons.
  * The scroll buttons appear based on the scroll position.
- *
  * @component
  * @param {object} props - Properties passed to the component
  * @param {React.ReactNode} props.children - React nodes to be rendered inside the scrollable area.
- * @param {"top" | "center" | "bottom"} [props.pos="top"] - Alignment of the scrollable area. Defaults to "top".
- * @param {boolean} [props.allowScrollbar=false] - Determines whether a scrollbar should be displayed. Defaults to false.
+ * @param {"top" | "center" | "bottom"} [props.pos] - Alignment of the scrollable area. Defaults to "top".
+ * @param {boolean} [props.allowScrollbar] - Determines whether a scrollbar should be displayed. Defaults to false.
  * @param {...*} rest - Rest of the props passed to this component. These will be spread on the Flex container.
- *
  * @example
  * ```jsx
  * <XScrollArrow pos="center">
@@ -41,7 +39,6 @@ const posMapping: Record<
  *   </Flex>
  * </XScrollArrow>
  * ```
- *
  * @returns {JSX.Element} The XScrollArrow component.
  */
 const XScrollArrow = ({

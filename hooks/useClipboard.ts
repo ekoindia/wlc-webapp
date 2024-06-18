@@ -5,7 +5,7 @@ type CopyState = { [key: string]: true | Error };
  * useClipboard - A hook to copy text to the clipboard. It manages a separate state for each text.
  * @param {number} delay - The delay in milliseconds after which the state for a text is reset. Default is 2500.
  * @returns {Function} copy - A function that takes a string and copies it to the clipboard.
- * @returns {Object} state - An object that contains the state for each text. The state can be true, or an Error object.
+ * @returns {object} state - An object that contains the state for each text. The state can be true, or an Error object.
  * @example
  * const { copy, state } = useClipboard();
  * copy("Text to copy");

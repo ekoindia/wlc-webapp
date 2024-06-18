@@ -16,7 +16,7 @@ const useRaiseIssue = () => {
 	/**
 	 * Open the "Raise Issue" dialog
 	 * @param {object} options - Options to pass to the dialog.
-	 * @param {function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
+	 * @param {Function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
 	 */
 	const showRaiseIssueDialog = (options, onResponse) => {
 		// Set the result handler

@@ -3,7 +3,7 @@ import { ParamType } from "constants";
 
 /**
  * Data Output component: Shows formatted values based on the type of value and other formatting options.
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.value]	The value to display.
  * @param	{string}	[prop.value_formatted]	The formatted value to display.
  * @param	{number}	[prop.parameter_type_id]	The data type of the value. Defaults to 12 (ParamType.TEXT).

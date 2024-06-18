@@ -17,6 +17,16 @@ import { Tbody, Th } from ".";
  * A Table component
  * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
+ * @param prop.renderer
+ * @param prop.data
+ * @param prop.isLoading
+ * @param prop.pageNumber
+ * @param prop.setPageNumber
+ * @param prop.visibleColumns
+ * @param prop.ResponsiveCard
+ * @param prop.variant
+ * @param prop.tableRowLimit
+ * @param prop.printExpansion
  * @example	`<Table></Table>` TODO: Fix example
  */
 const Table = ({

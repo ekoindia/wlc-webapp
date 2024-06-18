@@ -7,6 +7,9 @@ import { Icon } from "components";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.hasNext
+ * @param prop.currentPage
+ * @param prop.setCurrentPage
  * @example	`<HistoryPagination></HistoryPagination>` TODO: Fix example
  */
 const HistoryPagination = ({ hasNext, currentPage, setCurrentPage }) => {

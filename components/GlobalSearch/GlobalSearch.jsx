@@ -7,7 +7,7 @@ import { useKBar } from "kbar";
 
 /**
  * The Global Search Bar.
- * @param	{Object}	props	Props for this component.
+ * @param	{object}	props	Props for this component.
  * @example	`<GlobalSearch />`
  */
 const GlobalSearch = ({ ...rest }) => {
@@ -78,6 +78,11 @@ const GlobalSearch = ({ ...rest }) => {
 	);
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.children
+ */
 function Key({ children, ...rest }) {
 	return (
 		<Kbd

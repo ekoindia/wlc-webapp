@@ -62,6 +62,10 @@ const KnowYourCommission = () => {
 
 /**
  * Internal table-row component
+ * @param root0
+ * @param root0.id
+ * @param root0.prod
+ * @param root0.handleShowDetail
  */
 const Tr = ({ id, prod, handleShowDetail }) => {
 	const { h } = useHslColor(prod.label);

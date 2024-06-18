@@ -32,8 +32,9 @@ const trxnHistoryTableParameterList = [
 
 /**
  * A TransactionHistoryTable component
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.trxnData
  * @example	`<TransactionHistoryTable></TransactionHistoryTable>`
  */
 const TransactionHistoryTable = ({ trxnData }) => {

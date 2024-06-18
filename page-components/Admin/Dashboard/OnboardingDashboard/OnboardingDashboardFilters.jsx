@@ -4,8 +4,8 @@ import { useState } from "react";
 
 /**
  * To modify filter list, will add id to each list item & Onboarding Funnel item
- * @param {Object} data contains onboardingFunnelTotal and filterList
- * @returns {Object} containing funnelKeyList, filterList, & filterListLength
+ * @param {object} data contains onboardingFunnelTotal and filterList
+ * @returns {object} containing funnelKeyList, filterList, & filterListLength
  */
 const getModifiedFilterList = (data) => {
 	let filterList = [
@@ -36,8 +36,12 @@ const getModifiedFilterList = (data) => {
 /**
  * A Onboarding Dashboard Filter page-component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.filterLoading
+ * @param prop.filterData
+ * @param prop.filterStatus
+ * @param prop.setFilterStatus
  * @example	`<OnboardingDashboardFilters></OnboardingDashboardFilters>`
  */
 const OnboardingDashboardFilters = ({

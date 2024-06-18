@@ -22,24 +22,24 @@ interface SupportTicketType {
 
 /**
  * Create a support ticket for the given issue...
- * @param {Object} options
+ * @param {object} options
  * @param {string} options.accessToken - The access token for the user
  * @param {string} options.summary - The issue-type value
- * @param {string} [options.category="Others"] - The category of the issue
- * @param {string} [options.subCategory="Others"] - The sub-category of the issue
- * @param {string} [options.comment=""] - Any additional comments
- * @param {Array} [options.inputs=[]] - Additional inputs to be sent
- * @param {Array} [options.files=[]] - Additional files to be sent
+ * @param {string} [options.category] - The category of the issue
+ * @param {string} [options.subCategory] - The sub-category of the issue
+ * @param {string} [options.comment] - Any additional comments
+ * @param {Array} [options.inputs] - Additional inputs to be sent
+ * @param {Array} [options.files] - Additional files to be sent
  * @param {string} [options.screenshot] - The screenshot of the issue
- * @param {string} [options.origin=""] - The origin of the issue
- * @param {string} [options.tat=""] - The TAT for the issue
- * @param {string} [options.priority=""] - The priority of the issue
- * @param {string} [options.context=""] - Optional info to be shared with the support team. Not visible to the user
- * @param {string} [options.tid=""] - The transaction ID
- * @param {string} [options.tx_typeid=""] - The transaction type ID
- * @param {Object} [options.transaction_metadata={}] - The transaction metadata
- * @param {Object} [options.technicalNotes={}] - Any additional technical notes
- * @param {AbortController} [options.controller=null] - The abort controller for the request
+ * @param {string} [options.origin] - The origin of the issue
+ * @param {string} [options.tat] - The TAT for the issue
+ * @param {string} [options.priority] - The priority of the issue
+ * @param {string} [options.context] - Optional info to be shared with the support team. Not visible to the user
+ * @param {string} [options.tid] - The transaction ID
+ * @param {string} [options.tx_typeid] - The transaction type ID
+ * @param {object} [options.transaction_metadata] - The transaction metadata
+ * @param {object} [options.technicalNotes] - Any additional technical notes
+ * @param {AbortController} [options.controller] - The abort controller for the request
  * @returns {Promise} - The promise object representing the feedback submission
  * @throws {Error} - If there is an error submitting the feedback
  */

@@ -87,10 +87,9 @@ export const getNarrationText = (row) => {
 
 /**
  * Processes transaction data to extract additional metadata and generate history parameter metadata.
- *
- * @param {Array<Object>} trxn_data - The transaction data array.
- * @param {Array<Object>} history_parameter_metadata - The history parameter metadata array.
- * @returns {Object} - An object containing updated transaction data and history parameter metadata.
+ * @param {Array<object>} trxn_data - The transaction data array.
+ * @param {Array<object>} history_parameter_metadata - The history parameter metadata array.
+ * @returns {object} - An object containing updated transaction data and history parameter metadata.
  */
 export const getAdditionalTransactionMetadata = (
 	trxn_data,
@@ -134,10 +133,9 @@ export const getAdditionalTransactionMetadata = (
 
 /**
  * Generates parameter metadata based on the key and type.
- *
  * @param {string} key - The parameter key.
  * @param {string} type - The parameter type.
- * @returns {Object} - The generated parameter metadata.
+ * @returns {object} - The generated parameter metadata.
  */
 const generateParameterMetadata = (key, type) => {
 	let _parameterMetadata = {};
@@ -153,7 +151,6 @@ const generateParameterMetadata = (key, type) => {
 
 /**
  * Converts a key string to a readable label format.
- *
  * @param {string} key - The key string to convert.
  * @returns {string} - The converted label string.
  */

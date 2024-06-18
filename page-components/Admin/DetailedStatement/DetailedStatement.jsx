@@ -23,7 +23,7 @@ oneYearAgoDate.setFullYear(currentDate.getFullYear() - 1); // one year ago date 
 
 /**
  * A DetailedStatement page-component
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<DetailedStatement></DetailedStatement>`
  */

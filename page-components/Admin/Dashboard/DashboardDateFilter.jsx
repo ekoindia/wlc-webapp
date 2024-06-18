@@ -16,6 +16,11 @@ const calendarDataList = [
 
 /**
  * DashboardDateFilter component
+ * @param root0
+ * @param root0.prevDate
+ * @param root0.currDate
+ * @param root0.dateRange
+ * @param root0.setDateRange
  * @returns
  */
 const DashboardDateFilter = ({

@@ -4,8 +4,12 @@ import { Icon } from "..";
 /**
  * A <ProfileCard> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.name
+ * @param prop.mobileNumber
+ * @param prop.img
+ * @param prop.onClick
  * @example	`<ProfileCard></ProfileCard>`
  */
 const ProfileCard = ({ name = "", mobileNumber, img, onClick, ...rest }) => {

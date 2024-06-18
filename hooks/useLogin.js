@@ -4,6 +4,12 @@ import { useAppSource, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 
+/**
+ *
+ * @param login
+ * @param setStep
+ * @param setEmail
+ */
 function useLogin(login, setStep, setEmail) {
 	const { login: processLoginResponse } = useUser();
 	const [busy, setBusy] = useState(false);

@@ -48,18 +48,18 @@ type CameraProps = {
 /**
  * Camera Component
  * @param {CameraProps} props - The properties of the component
- * @param {boolean} [props.detectFace=false] - Whether to enable face detection in the image
- * @param {number} [props.minFaceCount=0] - The minimum number of faces required to be detected (if face detection is enabled)
- * @param {number} [props.maxFaceCount=1] - The maximum number of faces to detect
- * @param {boolean} [props.autoCapture=false] - Whether to auto capture the image
+ * @param {boolean} [props.detectFace] - Whether to enable face detection in the image
+ * @param {number} [props.minFaceCount] - The minimum number of faces required to be detected (if face detection is enabled)
+ * @param {number} [props.maxFaceCount] - The maximum number of faces to detect
+ * @param {boolean} [props.autoCapture] - Whether to auto capture the image
  * @param {number} [props.aspectRatio] - A fixed aspect ratio for the image
- * @param {boolean} [props.disableImageConfirm=false] - Whether to disable image confirmation
- * @param {boolean} [props.disableImageEdit=false] - Whether to disable image editing
- * @param {boolean} [props.disableCrop=false] - Whether to disable image cropping
- * @param {boolean} [props.disableRotate=false] - Whether to disable image rotation
- * @param {string} [props.preferredFacingMode="environment"] - The preferred facing mode for the camera
+ * @param {boolean} [props.disableImageConfirm] - Whether to disable image confirmation
+ * @param {boolean} [props.disableImageEdit] - Whether to disable image editing
+ * @param {boolean} [props.disableCrop] - Whether to disable image cropping
+ * @param {boolean} [props.disableRotate] - Whether to disable image rotation
+ * @param {string} [props.preferredFacingMode] - The preferred facing mode for the camera
  * @param {string} [props.watermark] - The watermark text to display on the captured (& edited) image
- * @param {function} [props.onClose] - The callback function for image capture or on cancel
+ * @param {Function} [props.onClose] - The callback function for image capture or on cancel
  * @returns {JSX.Element} - The Camera component
  */
 const Camera = ({
@@ -171,6 +171,7 @@ const Camera = ({
 
 	/**
 	 * Function to get camera device list based on different conditions like priority and preferred facing mode
+	 * @param _mediaDevices
 	 */
 	const getModifiedDeviceList = (_mediaDevices: DeviceList) => {
 		const _deviceList: DeviceList = _mediaDevices;
@@ -201,6 +202,7 @@ const Camera = ({
 
 	/**
 	 * Function to get camera index
+	 * @param deviceList
 	 */
 	const getDeviceIdx = (deviceList: DeviceList) => {
 		/* Step 2: Get the device index */
@@ -227,6 +229,9 @@ const Camera = ({
 
 	/**
 	 * Initializing Camera
+	 * @param camDevices
+	 * @param deviceIdx
+	 * @param resolutionIndex
 	 */
 	const initCamera = (
 		camDevices: DeviceList,
@@ -423,9 +428,9 @@ const Camera = ({
  * @param {IconNameType} [props.iconName] - The icon name for the button
  * @param {JSX.Element} [props.icon] - The icon to be displayed
  * @param {string} [props.label] - The label for the button
- * @param {boolean} [props.selected=false] - Whether the button is selected (toggled on)
- * @param {boolean} [props.isMain=false] - The main button flag
- * @param {function} props.onClick - The callback function for the button click event
+ * @param {boolean} [props.selected] - Whether the button is selected (toggled on)
+ * @param {boolean} [props.isMain] - The main button flag
+ * @param {Function} props.onClick - The callback function for the button click event
  * @returns {JSX.Element} - The JSX element
  */
 const IcoBtn = ({

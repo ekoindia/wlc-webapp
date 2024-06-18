@@ -19,19 +19,19 @@ const DEFAULT_TIMEOUT = 120000; // 2 minutes
  * - Rotates access-token if nearing expiry
  * @param {string} url
  * @param {object} options
- * @param {string} [options.method="POST"]	HTTP method (default: "POST")
- * @param {object} [options.headers=null]	Additional headers (optional)
+ * @param {string} [options.method]	HTTP method (default: "POST")
+ * @param {object} [options.headers]	Additional headers (optional)
  * @param {object} options.body		Additional data (as JSON object)
- * @param {number} [options.timeout=120000]	Timeout (in milliseconds. Default: 120000)
+ * @param {number} [options.timeout]	Timeout (in milliseconds. Default: 120000)
  * @param {string} options.token	Authorization access-token (if required)
  * @param {object} options.controller	AbortController instance
  * @param {object} tokenOptions
  * @param {number} [tokenOptions.token_timeout]	Access-token expiry time in milliseconds
  * @param {string} tokenOptions.refreshToken	Refresh-token
- * @param {function} tokenOptions.updateUserInfo	Function to update user info
+ * @param {Function} tokenOptions.updateUserInfo	Function to update user info
  * @param {boolean} tokenOptions.isTokenUpdating	Flag to check if token is already being updated
- * @param {function} tokenOptions.setIsTokenUpdating	Function to set isTokenUpdating flag
- * @param {function} [generateNewToken]	Function to generate new access token (when current token is nearing expiry, or token-expired error is returned by the server)
+ * @param {Function} tokenOptions.setIsTokenUpdating	Function to set isTokenUpdating flag
+ * @param {Function} [generateNewToken]	Function to generate new access token (when current token is nearing expiry, or token-expired error is returned by the server)
  * @returns {Promise} Promise object represents the response
  * - If response is ok, returns the response as JSON
  * @throws {Error} If response is not ok, throws an error

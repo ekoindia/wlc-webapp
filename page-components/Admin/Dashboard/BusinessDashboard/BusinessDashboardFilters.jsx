@@ -4,8 +4,12 @@ import { DateView } from "components";
 /**
  * A <BusinessDashboardFilters> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.prevDate
+ * @param prop.currDate
+ * @param prop.dateRange
+ * @param prop.setDateRange
  * @example	`<BusinessDashboardFilters></BusinessDashboardFilters>`
  */
 const BusinessDashboardFilters = ({

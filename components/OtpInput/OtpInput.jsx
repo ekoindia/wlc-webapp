@@ -3,13 +3,17 @@ import { useRef, useState } from "react";
 
 /**
  * A <OtpInput> component for taking Otp input
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{number}	[prop.length] Number input fields has to be shown @default 6
- * @param	{String}	    [prop.value] To pass initial Otp value
- * @param	{function}	    [prop.onChange] To get the otp value
- * @param	{Object}	[prop.containerStyle] Takes an object for conatiner style
+ * @param	{string}	    [prop.value] To pass initial Otp value
+ * @param	{Function}	    [prop.onChange] To get the otp value
+ * @param	{object}	[prop.containerStyle] Takes an object for conatiner style
  * @param	{number}	[prop.inputStyle] Takes an object for input field style
  * @param 	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.placeholder
+ * @param prop.onKeyDown
+ * @param prop.onEnter
+ * @param prop.onComplete
  * @example	`<OtpInput></OtpInput>`
  */
 const OtpInput = ({

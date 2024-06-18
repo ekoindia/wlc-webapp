@@ -37,8 +37,8 @@ type FaceDetection = {
 
 /**
  * Get a common bounding-box (x, y, width, height) which should tightly contain all the detected faces in the image.
- * @param {array<FaceDetection>} faceDetections - An array of detected faces in the image. Each face detection should have a bounding-box (x, y, width, height).
- * @param {number} [maxFaceCount=1] - The maximum number of faces to consider. Default is 1.
+ * @param {Array<FaceDetection>} faceDetections - An array of detected faces in the image. Each face detection should have a bounding-box (x, y, width, height).
+ * @param {number} [maxFaceCount] - The maximum number of faces to consider. Default is 1.
  */
 const getCompositeFaceBound = (
 	faceDetections: FaceDetection[],

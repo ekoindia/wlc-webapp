@@ -4,7 +4,7 @@ import { Button, ShowcaseCircle } from "..";
 /**
  * This function will return object containing image and color based on status code
  * @param {number}  status
- * @returns {Object}    object contains label, image & color
+ * @returns {object}    object contains label, image & color
  */
 const getStatus = (status) => {
 	switch (status) {
@@ -31,7 +31,7 @@ const getStatus = (status) => {
 
 /**
  * A ResponseCard component
- * @param	{Number}	status  status code of the transaction
+ * @param	{number}	status  status code of the transaction
  * @param 	{object}	details details of the transaction which will be visible in StatusDisplay
  * @param   {string}    onClick  onClick handler when clicking on continue
  * @param	{...*}	rest	Rest of the props passed to this component.

@@ -279,6 +279,7 @@ const History = () => {
 	/**
 	 * Search for a transaction based on the query. The query can be a transaction-id, account, amount, or, a mobile number.
 	 * @param {*} search
+	 * @param otherQueries
 	 */
 	const quickSearch = (search, otherQueries = {}) => {
 		console.log("Search inside quickSearch", search, otherQueries);

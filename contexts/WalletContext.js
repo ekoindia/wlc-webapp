@@ -19,11 +19,12 @@ const WalletContext = createContext();
 
 /**
  * @name useFetchBalance
+ * @param accessToken
  * @description This custom hook is used for fetching wallet balance and it can only be used in WalletProvider function
  * - If you want to use this hook in any other component, custom hook, context etc then first take out the setBalance from useWallet and then pass it in the useFetchBalance hook.
- * @param {function} setBalance - This is a function used to set the balance value.
- * @returns {function} fetchBalance - This function is used to fetch wallet balance.
- * */
+ * @param {Function} setBalance - This is a function used to set the balance value.
+ * @returns {Function} fetchBalance - This function is used to fetch wallet balance.
+ */
 const useFetchBalance = (setBalance, accessToken) => {
 	const [loading, setLoading] = useState(false);
 
@@ -61,11 +62,13 @@ const useFetchBalance = (setBalance, accessToken) => {
 };
 
 /**
+ * @param root0
+ * @param root0.children
  * @name WalletProvider
  * @description It is used in _app.js file and is used to provide context value in whole app
- * @returns {Object} An object with the following properties:
- * @property {function} refreshWallet - used to refresh wallet balance
- * @property {function} setBalance - used to set the balance from anywhere
+ * @returns {object} An object with the following properties:
+ * @property {Function} refreshWallet - used to refresh wallet balance
+ * @property {Function} setBalance - used to set the balance from anywhere
  * @property {string} balance - used to get the wallet balance value
  */
 const WalletProvider = ({ children }) => {

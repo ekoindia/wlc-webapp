@@ -1,5 +1,8 @@
 /**
  * Function to save/download data to a file
+ * @param data
+ * @param filename
+ * @param type
  * @param is_b64 true for file data returned from server, false for locally created text data (eg: csv)
  */
 export const saveDataToFile = (data, filename, type, is_b64) => {

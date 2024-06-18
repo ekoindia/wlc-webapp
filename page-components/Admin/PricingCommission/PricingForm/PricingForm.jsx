@@ -8,6 +8,9 @@ import dynamic from "next/dynamic";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.label
+ * @param prop.comp
+ * @param prop.note
  * @example	`<PricingForm></PricingForm>` TODO: Fix example
  */
 const PricingForm = ({ label, comp, note }) => {

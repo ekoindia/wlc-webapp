@@ -26,7 +26,7 @@ oneYearAgoDate.setFullYear(currentDate.getFullYear() - 1);
 /**
  * A NetworkFilter component
  * is a filter drawer on network page
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<NetworkFilter></NetworkFilter>`
  *

@@ -24,12 +24,10 @@ type TabProps = {
 
 /**
  * A Tabs component built with Chakra UI.
- *
  * @param {ReactNode} children - The child components to be rendered within the tabs.
- * @param {string} [variant="default"] - The variant of the tabs. Can be one of "line", "enclosed", "enclosed-colored", "soft-rounded", "solid-rounded", "unstyled", or "default".
- * @param {number} [defaultIndex=0] - The index of the tab to be selected by default.
+ * @param {string} [variant] - The variant of the tabs. Can be one of "line", "enclosed", "enclosed-colored", "soft-rounded", "solid-rounded", "unstyled", or "default".
+ * @param {number} [defaultIndex] - The index of the tab to be selected by default.
  * @param {...any} rest - Any other props to be passed to the ChakraTabs component.
- *
  * @example
  * <Tabs variant="enclosed" defaultIndex={1}>
  *   <Tab label="Tab 1">Content for Tab 1</Tab>

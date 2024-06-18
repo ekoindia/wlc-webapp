@@ -43,8 +43,10 @@ const onboardDistributorRenderer = [
 
 /**
  * A OnboardAgentResponse page-component, to show result after user uploaded list of users to be onboarded on platform
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.applicantType
+ * @param prop.responseList
  * @example	`<OnboardAgentResponse></OnboardAgentResponse>`
  */
 const OnboardAgentResponse = ({ applicantType, responseList }) => {

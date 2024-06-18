@@ -5,6 +5,20 @@ import { Icon, InputLabel } from "..";
 
 /**
  * A Select component
+ * @param root0
+ * @param root0.placeholder
+ * @param root0.onChange
+ * @param root0.options
+ * @param root0.renderer
+ * @param root0.isMulti
+ * @param root0.value
+ * @param root0.label
+ * @param root0.id
+ * @param root0.disabled
+ * @param root0.required
+ * @param root0.labelStyle
+ * @param root0.getOptionLabel
+ * @param root0.getOptionValue
  */
 const Select = ({
 	placeholder = "--Select--",
@@ -196,6 +210,7 @@ export default Select;
 
 /**
  * Dropdown Icon for React Select to show custom dropdown icon.
+ * @param base
  */
 const DropdownIcon = (base) => {
 	const _menuIsOpen = base?.selectProps?.menuIsOpen;

@@ -426,7 +426,7 @@ const useNotifications = () => {
 	/**
 	 * Process the notification or ad list. Remove duplicates and trim to limit.
 	 * @param {Array} list List of notifications or ads
-	 * @param {Number} limit Limit of notifications or ads
+	 * @param {number} limit Limit of notifications or ads
 	 */
 	const sanitizeList = (list, limit) => {
 		// Remove duplicates where title, desc, etc. are the same
@@ -451,7 +451,7 @@ const useNotifications = () => {
 
 	/**
 	 * Update the notification metadata on server.
-	 * @param {Object} body	Notification status update data
+	 * @param {object} body	Notification status update data
 	 */
 	const updateEMS = (body) => {
 		// TODO: USE BEACON...
@@ -466,8 +466,8 @@ const useNotifications = () => {
 
 	/**
 	 * Update the notification status on server.
-	 * @param {Number} notificationId	Notification ID
-	 * @param {Number} status	Notification status
+	 * @param {number} notificationId	Notification ID
+	 * @param {number} status	Notification status
 	 * @returns
 	 */
 	const updateNotifStatus = (notificationId, status) => {
@@ -484,7 +484,7 @@ const useNotifications = () => {
 
 	/**
 	 * Mark a notification as read.
-	 * @param {Number} notificationId	Notification ID
+	 * @param {number} notificationId	Notification ID
 	 */
 	const markAsRead = async (notificationId) => {
 		setNotifications(
