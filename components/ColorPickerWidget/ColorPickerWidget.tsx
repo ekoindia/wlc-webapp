@@ -128,7 +128,7 @@ const ColorPickerWidget = ({
 					{/* <PopoverArrow /> */}
 					{/* <PopoverCloseButton /> */}
 					<SketchPicker
-						// disableAlpha
+						disableAlpha
 						presetColors={presetColors}
 						color={color}
 						onChange={(clr) => setColor(clr.hex)}

@@ -5,7 +5,7 @@
 
 import { Center as ChCenter, Flex as ChFlex } from "@chakra-ui/react";
 import { DropZone, type Config } from "@measured/puck";
-import { Card, OrgLogo } from "components";
+import { OrgLogo } from "components";
 // import dynamic from "next/dynamic";
 import { createContext, useEffect, useState } from "react";
 import {
@@ -153,7 +153,6 @@ const components: any = {
 	ButtonGroup,
 	FeatureList,
 	LoginWidgetConf,
-	Card,
 };
 
 /**
@@ -179,11 +178,11 @@ const editorRoot: any = {
 		},
 	},
 	defaultProps: {
-		bg: "primary.dark",
-		clr: "white",
+		bg: "bg",
+		clr: "black",
 		pad: "md",
 	},
-	render: ({ bg = "white", clr = "white", pad = "md", children }) => {
+	render: ({ bg = "bg", clr = "black", pad = "md", children }) => {
 		// const padding =
 		// 	pad && pad in paddingSizeMap ? paddingSizeMap[pad] : pad;
 		// console.log("padding", padding);
