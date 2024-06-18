@@ -9,6 +9,7 @@ import {
 	TransactionIds,
 } from "constants";
 import { fetcher, processTransactionData } from "helpers";
+import { useFeatureFlag } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import { useRouter } from "next/router";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -223,6 +224,8 @@ const MenuProvider = ({ children }) => {
 	const [trxnActions, setTrxnActions] = useState([]);
 	const [otherActions, setOtherActions] = useState([]);
 
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
+
 	const fetchData = async () => {
 		setLoading(true);
 		try {
@@ -287,16 +290,27 @@ const MenuProvider = ({ children }) => {
 				? adminSidebarMenu
 				: sidebarMenu;
 
-		if (disabledFeatures) {
-			_menuList.forEach((item) => {
-				const _feat = JSON.parse(disabledFeatures)?.features;
-				if (!_feat.includes(item.id)) {
-					_filteredMenuList.push(item);
-				}
-			});
-		} else {
-			_filteredMenuList = _menuList;
-		}
+		// Filter out Disabled features (from org-metadata) & Feature Flags !!!
+		const _feat = disabledFeatures
+			? JSON.parse(disabledFeatures)?.features
+			: [];
+		_menuList.forEach((item) => {
+			// Skip if the feature is disabled (from org-metadata)
+			if (_feat.includes(item.id)) {
+				return;
+			}
+
+			// Skip if the feature is disabled (from feature-flags)
+			if (
+				item.featureFlag &&
+				checkFeatureFlag(item.featureFlag) !== true
+			) {
+				return;
+			}
+
+			// Else, add to the menu list
+			_filteredMenuList.push(item);
+		});
 
 		if (interaction_list?.length > 0) {
 			interaction_list.forEach((tx) => {
