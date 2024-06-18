@@ -14,6 +14,8 @@
 		"build": "next build",
 		"start": "next start",
 		"analyze": "ANALYZE=true next build",
+		"eslint": "eslint . --config eslint.config.js",
+		"eslint-fix": "eslint . --config eslint.config.js --fix",
 		"lint": "next lint",
 		"lint-error": "next lint --quiet",
 		"lint-fix": "next lint --fix",
@@ -38,7 +40,7 @@
 	"lint-staged": {
 		"**/*.{js,jsx,ts,tsx}": [
 			"prettier --write",
-			"eslint --fix"
+			"eslint --config eslint.config.js --fix"
 		]
 	},
 	"dependencies": {
