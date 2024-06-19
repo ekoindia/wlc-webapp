@@ -5,6 +5,7 @@ type sidebarMenuType = {
 	id: number;
 	icon?: IconNameType;
 	name?: string;
+	label?: string;
 	link?: string;
 	trxn_id?: number; // Transaction Id to link to. Converts to "/transaction/<trxn_id>" links after checking if it is allowed as per user's roles.
 	dynamicAdminView?: boolean; // If true, then the menu item will be shown to Admins in the "Agent-View". The link should be prepended with "/admin" in this case.
@@ -66,45 +67,53 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	{
 		id: 1,
 		name: "Dashboard",
+		label: "Dashboard",
 		icon: "dashboard",
 		link: "/admin",
 	},
 	{
 		id: 2,
 		name: "My Network",
+		label: "My Network",
 		icon: "refer",
 		link: "/admin/my-network",
 	},
 	{
 		id: 3,
 		name: "Network Transactions",
+		label: "Network Transactions",
 		icon: "swap-horiz",
 		link: "/admin/transaction-history",
 	},
 	// {
 	// 	name: "Invoicing",
+	// 	label: "Invoicing",
 	// 	icon: "invoice",
 	// 	link: "/admin/invoicing",
 	// },
 	{
 		id: 4,
 		name: "Pricing & Commissions",
+		label: "Pricing & Commissions",
 		icon: "commission-percent",
 		link: "/admin/pricing",
 	},
 	// {
 	// 	name: "Company Profile",
+	// 	label: "Company Profile",
 	// 	icon: "person",
 	// 	link: "/admin/company",
 	// },
 	// {
 	// 	name: "Send Notifications",
+	// 	label: "Send Notifications",
 	// 	icon: "notifications-none",
 	// 	link: "/admin/notifications",
 	// },
 	{
 		id: 5,
 		name: "Onboard Agents",
+		label: "Onboard Agents",
 		icon: "person-add",
 		link: "/admin/onboard-agents",
 	},
@@ -112,12 +121,14 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		id: 6,
 		icon: "query",
 		name: "Query Center",
+		label: "Query Center",
 		link: "/admin/query",
 	},
 	{
 		id: 7,
 		icon: "description",
 		name: "Invoice",
+		label: "Invoice",
 		link: "/admin/transaction/" + TransactionIds.INVOICE_DOWNLOAD,
 		trxn_id: TransactionIds.INVOICE_DOWNLOAD,
 	},
@@ -125,6 +136,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		id: 99,
 		icon: "manage",
 		name: "Configurations",
+		label: "Configurations",
 		link: "/admin/configurations",
 		featureFlag: "PORTAL_CONFIG",
 	},
@@ -134,6 +146,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		id: 901,
 		icon: "calculator",
 		name: "Expression Editor",
+		label: "Expression Editor",
 		link: "/admin/expression-editor",
 		featureFlag: "EXPRESSION_EDITOR",
 	},
@@ -141,6 +154,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		id: 902,
 		icon: "error",
 		name: "Test Page",
+		label: "Test Page",
 		link: "/admin/test",
 		featureFlag: "TEST_PAGE",
 	},
@@ -153,24 +167,28 @@ export const sidebarMenu: sidebarMenuType[] = [
 	{
 		id: 8,
 		name: "Home",
+		label: "Home",
 		icon: "menu-home",
 		link: "/home",
 		dynamicAdminView: true,
 	},
 	// {
 	// 	name: "Select Plan",
+	// 	label: "Select Plan",
 	// 	icon: "select-plan",
 	// 	link: "/select-plan",
 	// },
 
 	// {
 	// 	name: "Start A Transaction",
+	// 	label: "Start A Transaction",
 	// 	icon: "transaction",
 	// 	subLevel: true,
 	// 	api: true,
 	// },
 	// {
 	// 	name: "Others",
+	// 	label: "Others",
 	// 	icon: "others",
 	// 	subLevel: true,
 	// 	subLevelObject: [
