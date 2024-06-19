@@ -1,6 +1,4 @@
 import {
-	Avatar,
-	Box,
 	Divider,
 	Drawer,
 	DrawerContent,
@@ -10,51 +8,51 @@ import {
 	useDisclosure,
 	useToken,
 } from "@chakra-ui/react";
-import { TransactionIds } from "constants/EpsTransactions";
-import { useUser } from "contexts/UserContext";
-import useClipboard from "hooks/useClipboard";
-import Link from "next/link";
+import { useMenuContext } from "contexts/MenuContext";
+import useHslColor from "hooks/useHslColor";
+import { useRouter } from "next/router";
 import { useRef } from "react";
-import { clearCacheAndReload } from "utils/cacheUtils";
 import { svgBgDotted } from "utils/svgPatterns";
-import { AdminViewToggleCard, IcoButton, Icon, StatusCard } from "..";
+import { Icon } from "..";
 
 /**
- * Formats a mobile number by adding a country code and a space at the middle of the number.
- * @param {string} mobile - The mobile number to format.
- * @param {string} countryCode - The country code to add to the mobile number.
- * @returns {string} The formatted mobile number.
+ * Generates a new path for transaction navigation.
+ *
+ * @param {string} currentPath - The current path of the router.
+ * @param {number} id - The id to be included in the new path.
+ * @param {number} [group_interaction_id] - The optional group interaction id to be included in the new path.
+ * @returns {string} The new path.
  */
-const formatMobileNumber = (mobile, countryCode = "+91") => {
-	if (!mobile) return "";
-	const mid = Math.floor(mobile.length / 2);
-	return `${countryCode} ${mobile.slice(0, mid)} ${mobile.slice(mid)}`;
+const generateNewPath = (
+	currentPath: string,
+	id: number,
+	group_interaction_id?: number
+) => {
+	const newTransactionPath = `transaction/${id}${
+		group_interaction_id ? `/${group_interaction_id}` : ""
+	}`;
+
+	return currentPath.includes("transaction")
+		? currentPath.replace(/transaction\/\d+(\/\d*)?/, newTransactionPath)
+		: newTransactionPath;
 };
 
 const AccountDrawer = () => {
 	const btnRef = useRef<HTMLButtonElement>(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const { menuList, otherList } = useMenuContext();
+
+	const _list = [...menuList, ...otherList];
+	console.log("_list", _list);
+
 	return (
 		<DrawerContainer {...{ isOpen, onOpen, onClose, btnRef }}>
-			<Flex direction="column" w="100%" gap="4" bg="bg" pb="4">
-				<AccountCard />
-				<Flex direction="column" px="4" gap="4">
-					<InfoCard />
-					<LinkCard />
-					{/* <MenuCard /> */}
-					<AppOption />
-				</Flex>
-				<Flex align="center" justify="center" py="4">
-					<Link href="/privacy">
-						<Flex gap="1" fontWeight="medium">
-							<Text fontSize="xs" lineHeight="1">
-								Privacy Policy
-							</Text>
-							<Icon name="open-in-new" size="xs" />
-						</Flex>
-					</Link>
-				</Flex>
-			</Flex>
+			{_list?.map(({ id, icon, label, link }, index) => (
+				<>
+					<Interaction {...{ id, icon, label, link, onClose }} />
+					{_list.length - 1 !== index && <Divider variant="dashed" />}
+				</>
+			))}
 		</DrawerContainer>
 	);
 };
@@ -62,9 +60,6 @@ const AccountDrawer = () => {
 export default AccountDrawer;
 
 const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => {
-	const { userData } = useUser();
-	const { userDetails } = userData;
-	const { name, pic } = userDetails ?? {};
 	return (
 		<>
 			<Flex
@@ -76,16 +71,9 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => {
 				justify="center"
 				onClick={onOpen}
 			>
-				<Avatar
-					name={name ? name[0] : ""}
-					src={pic}
-					size="xs"
-					bg="primary.dark"
-					w="18px"
-					h="18px"
-				/>
+				<Icon ref={btnRef} name="others" size="sm" color="light" />
 				<Text fontSize="10px" fontWeight="medium" noOfLines={2}>
-					You
+					More
 				</Text>
 			</Flex>
 			<Drawer
@@ -98,9 +86,9 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => {
 				<DrawerOverlay />
 				<DrawerContent
 					w="100%"
-					h="100%"
+					// h="100%"
 					borderTopRadius="10px"
-					// pb="22px"
+					pb="5"
 				>
 					<DrawerHeader onClose={onClose} />
 					<Divider />
@@ -108,6 +96,8 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => {
 						// className="customScrollbars"
 						direction="column"
 						overflowY="scroll"
+						px="5"
+						py="2"
 						gap="2"
 					>
 						{children}
@@ -133,7 +123,7 @@ const DrawerHeader = ({ onClose }) => {
 			})}
 		>
 			<Text fontSize="lg" fontWeight="semibold">
-				Account
+				More
 			</Text>
 			<Flex direction="row-reverse" onClick={onClose} w="20%">
 				<Icon
@@ -147,302 +137,64 @@ const DrawerHeader = ({ onClose }) => {
 	);
 };
 
+/* ####################### Interaction ####################### */
+
+type InteractionProps = {
+	id: number;
+	label: string;
+	icon: string;
+	link: string;
+	onClose: () => void;
+};
+
 /**
- * AccountCard component
- * This component displays the account details of the user.
- * It includes the user's avatar, name, mobile number, status card, and admin view toggle card.
+ * `Interaction` is a component that represents a single interaction.
+ * It simply passes its props to an `InteractionItem` component.
+ *
+ * @param {InteractionProps} props - Props for configuring the Interaction component.
+ * @param {number} props.id - The ID of the interaction.
+ * @param {string} props.label - The label for the interaction.
+ * @param {string} props.icon - The icon for the interaction.
+ * @param {string} props.link - The icon for the interaction.
+ * @param {() => void} props.onClose - Callback invoked to close the modal.
+ *
+ * @returns {JSX.Element} An `InteractionItem` component with the same props as the `Interaction` component.
  */
-const AccountCard = () => {
-	const [contrastColor] = useToken("colors", ["navbar.dark"]);
-	const { userData, isAdmin } = useUser();
-	const { name, pic } = userData?.userDetails ?? {};
+const Interaction = ({
+	id,
+	label,
+	icon,
+	link,
+	onClose,
+}: InteractionProps): JSX.Element => {
+	const router = useRouter();
+	const { h } = useHslColor(label);
 
-	const cards = [
-		{ Component: StatusCard, visible: true },
-		{ Component: AdminViewToggleCard, visible: isAdmin },
-	];
+	const handleOnClick = () => {
+		if (link) {
+			router.push(link);
+		} else {
+			const newPath = generateNewPath(router.asPath, id);
+			router.push(newPath);
+		}
+		onClose();
+	};
 
 	return (
-		<Flex
-			direction="column"
-			gap="4"
-			p="4"
-			borderBottomRadius="10px"
-			boxShadow="buttonShadow"
-			bg="white"
-			backgroundImage={svgBgDotted({
-				fill: contrastColor,
-				opacity: 0.04,
-			})}
-		>
-			<Flex align="center" justify="space-between">
-				<Flex align="center" gap="3">
-					<Avatar
-						name={name ? name[0] : ""}
-						src={pic}
-						h="56px"
-						w="56px"
-						bg="primary.dark"
-					/>
-					<Flex direction="column">
-						<Text fontSize="md" fontWeight="medium" noOfLines={2}>
-							{name}
-						</Text>
-					</Flex>
-				</Flex>
-				<Link
-					href={
-						isAdmin
-							? `/admin/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}`
-							: `/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}`
-					}
-				>
-					<IcoButton
-						iconName="mode-edit"
-						size="sm"
-						boxShadow="buttonShadow"
-					/>
-				</Link>
+		<Flex id={`${id}-${label}`} align="center" cursor="pointer">
+			<Flex
+				py="1"
+				w="100%"
+				align="center"
+				gap="4"
+				onClick={handleOnClick}
+			>
+				<Icon name={icon} size="md" color={`hsl(${h},80%,30%)`} />
+				<Text fontSize="sm" fontWeight="medium">
+					{label}
+				</Text>
 			</Flex>
-			{cards.map(
-				(card, index) =>
-					card.visible && (
-						<Box
-							key={index}
-							bgGradient="linear(to-r, primary.dark, primary.light)"
-							borderRadius="10px"
-						>
-							<card.Component
-								borderRadius="10px"
-								marginBottom="0px"
-								border="none"
-								bg="inherit"
-							/>
-						</Box>
-					)
-			)}
+			<Icon name="chevron-right" size="10px" color="light" />
 		</Flex>
 	);
 };
-
-const InfoCard = () => {
-	const { copy, state } = useClipboard();
-	const { userData } = useUser();
-	const { code, mobile, email } = userData?.userDetails ?? {};
-
-	const userInfo = [
-		{
-			label: "Mobile",
-			value: mobile,
-			decoratedValue: formatMobileNumber(mobile),
-			onClick: () => copy(mobile),
-		},
-		{
-			label: "Email",
-			value: email,
-			onClick: () => copy(email),
-		},
-		{
-			label: "User Code",
-			value: code,
-			onClick: () => copy(code),
-		},
-	];
-
-	return (
-		<Flex direction="column" gap="2" p="4" bg="white" borderRadius="10px">
-			{userInfo.map(
-				({ label, value, decoratedValue, onClick }, index) => (
-					<>
-						<Flex
-							key={index}
-							align="center"
-							gap="0.5"
-							cursor="pointer"
-							onClick={onClick}
-						>
-							<Flex fontSize="sm" gap="1">
-								<Text color="light">{label}: </Text>
-								<Text fontWeight="medium" color="dark">
-									{decoratedValue?.length
-										? decoratedValue
-										: value}
-								</Text>
-							</Flex>
-
-							<Icon
-								title="Copy"
-								name={state[value] ? "check" : "content-copy"}
-								size="xs"
-								color="light"
-								transition="opacity 0.3s ease-out"
-							/>
-						</Flex>
-						{userInfo?.length - 1 !== index && <Divider />}
-					</>
-				)
-			)}
-		</Flex>
-	);
-};
-
-const LinkCard = () => {
-	const { isAdmin } = useUser();
-	const links = [
-		{ label: "View Profile", href: "/profile", visible: !isAdmin },
-		{
-			label: "View Transaction History",
-			href: isAdmin ? "/admin/history" : "/history",
-			visible: true,
-		},
-	];
-
-	return (
-		<Flex direction="column" gap="2" p="4" bg="white" borderRadius="10px">
-			{links.map(
-				({ label, href, visible }, index) =>
-					visible && (
-						<>
-							<Link href={href}>
-								<Flex align="center" justify="space-between">
-									<Text
-										fontSize="sm"
-										fontWeight="medium"
-										color="primary.dark"
-									>
-										{label}
-									</Text>
-
-									<Icon
-										name="chevron-right"
-										size="xs"
-										color="light"
-									/>
-								</Flex>
-							</Link>
-							{links?.length - 1 !== index && <Divider />}
-						</>
-					)
-			)}
-		</Flex>
-	);
-};
-
-const AppOption = () => {
-	const { logout } = useUser();
-
-	const options = [
-		{ label: "Sign Out", onClick: logout },
-		{ label: "Reset", onClick: () => clearCacheAndReload() },
-	];
-
-	return (
-		<Flex direction="column" gap="2" p="4" bg="white" borderRadius="10px">
-			{options.map(({ label, onClick }, index) => {
-				return (
-					<>
-						<Flex
-							key={index}
-							align="center"
-							justify="space-between"
-							onClick={onClick}
-						>
-							<Text
-								fontSize="sm"
-								fontWeight="medium"
-								color="primary.dark"
-							>
-								{label}
-							</Text>
-							<Icon
-								name="chevron-right"
-								size="xs"
-								color="light"
-							/>
-						</Flex>
-						{options?.length - 1 !== index && <Divider />}
-					</>
-				);
-			})}
-		</Flex>
-	);
-};
-
-// const MenuCard = () => {
-// 	const { isAdmin } = useUser();
-// 	const { menuList, otherList } = useNavigationLists();
-// 	return (
-// 		<Flex direction="column" gap="4">
-// 			<Flex
-// 				direction="column"
-// 				gap="4"
-// 				p="4"
-// 				bg="white"
-// 				borderRadius="10px"
-// 			>
-// 				{menuList?.map((item, index) => {
-// 					const key = `menu-${item.label}-${index}`;
-
-// 					return (
-// 						<>
-// 							<Link href={item.link} key={key}>
-// 								<Flex align="center" justify="space-between">
-// 									<Text
-// 										fontSize="sm"
-// 										fontWeight="medium"
-// 										color="primary.dark"
-// 									>
-// 										{item.label}
-// 									</Text>
-// 									<Icon
-// 										name="chevron-right"
-// 										size="xs"
-// 										color="light"
-// 									/>
-// 								</Flex>
-// 							</Link>
-// 							{menuList?.length - 1 !== index && <Divider />}
-// 						</>
-// 					);
-// 				})}
-// 			</Flex>
-// 			<Flex
-// 				direction="column"
-// 				gap="4"
-// 				p="4"
-// 				bg="white"
-// 				borderRadius="10px"
-// 			>
-// 				{otherList?.map((item, index) => {
-// 					const link =
-// 						item?.link ||
-// 						`${isAdmin ? "/admin" : ""}/transaction/${item?.id}`;
-
-// 					const key = `other-${item.label}-${index}`;
-
-// 					return (
-// 						<>
-// 							<Link href={link} key={key}>
-// 								<Flex align="center" justify="space-between">
-// 									<Text
-// 										fontSize="sm"
-// 										fontWeight="medium"
-// 										color="primary.dark"
-// 									>
-// 										{item.label}
-// 									</Text>
-// 									<Icon
-// 										name="chevron-right"
-// 										size="xs"
-// 										color="light"
-// 									/>
-// 								</Flex>
-// 							</Link>
-// 							{otherList?.length - 1 !== index && <Divider />}
-// 						</>
-// 					);
-// 				})}
-// 			</Flex>
-// 		</Flex>
-// 	);
-// };
