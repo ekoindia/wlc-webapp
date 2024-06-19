@@ -139,7 +139,7 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => (
 		>
 			<Icon ref={btnRef} name="transaction" size="sm" color="light" />
 			<Text fontSize="10px" fontWeight="medium" noOfLines={2}>
-				Transaction
+				Transactions
 			</Text>
 		</Flex>
 		<Drawer
