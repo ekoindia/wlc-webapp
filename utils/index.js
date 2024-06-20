@@ -13,6 +13,9 @@ export {
 export {
 	darken,
 	generateShades,
+	getContrastColor,
+	getFirstContrastColor,
+	hasMinimumContrast,
 	hexToRgba,
 	lighten,
 	rgbaToHex,
