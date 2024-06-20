@@ -63,7 +63,7 @@ const ThemeConfig = () => {
 			accent_light,
 			accent_dark,
 		});
-		console.log("Finding theme: ", colorThemes, { primary, accent });
+		// console.log("Finding theme: ", colorThemes, { primary, accent });
 		// Set index of the selected theme
 		setSelectedThemeIdx(
 			colorThemes.findIndex(
