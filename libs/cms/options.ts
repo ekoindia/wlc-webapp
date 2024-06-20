@@ -1,3 +1,20 @@
+import { IconLibrary } from "constants/IconLibrary";
+
+// TODO: Move to "fields/" folder & create a visual picker
+export const iconField = {
+	type: "select",
+	label: "Icon",
+	options: [
+		{ label: "None", value: "" },
+		...Object.keys(IconLibrary)
+			.filter((iconName) => (IconLibrary[iconName].link ? false : true))
+			.map((iconName) => ({
+				label: iconName,
+				value: iconName,
+			})),
+	],
+};
+
 /**
  * Option list of size values in px: 0 to 160px.
  * Can be used for sizing or spacing.
@@ -82,4 +99,18 @@ export const bgColors = [
 	{ label: "Success", value: "success" },
 	{ label: "Error", value: "error" },
 	{ label: "Transparent", value: "transparent" },
+];
+
+/**
+ * Font weight options
+ */
+export const fontWeightOptions = [
+	{ label: "Thin", value: "100" },
+	{ label: "Extra Light", value: "200" },
+	{ label: "Light", value: "300" },
+	{ label: "Regular", value: "400" },
+	{ label: "Medium", value: "500" },
+	{ label: "Semi Bold", value: "600" },
+	{ label: "Bold", value: "700" },
+	{ label: "Extra Bold", value: "800" },
 ];
