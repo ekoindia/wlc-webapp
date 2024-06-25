@@ -11,8 +11,6 @@ const save = (data) => {
 	localStorage.setItem("inf-landing-page-cms", JSON.stringify(data));
 };
 
-console.log("cmsConfig: ", cmsConfig);
-
 const LandingPageConfig = () => {
 	const [initialData, setInitialData] = useState(null);
 
