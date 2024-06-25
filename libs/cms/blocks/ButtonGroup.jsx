@@ -1,6 +1,6 @@
 // import { ComponentConfig } from "@measured/puck/types/Config";
 import { Button } from "components";
-import { pixelSizeOptions, quickSizeOptions } from "../options";
+import { iconField, pixelSizeOptions, quickSizeOptions } from "../options";
 import { Section } from "../Section";
 
 export const ButtonGroup = {
@@ -11,7 +11,7 @@ export const ButtonGroup = {
 			getItemSummary: (item) => item.label || "Button",
 			arrayFields: {
 				label: { type: "text" },
-				// href: { type: "text" },
+				href: { type: "text" },
 				variant: {
 					type: "select",
 					options: [
@@ -26,12 +26,8 @@ export const ButtonGroup = {
 						{ label: "Link", value: "link" },
 					],
 				},
+				ico: iconField,
 			},
-		},
-		padding: {
-			type: "select",
-			// label: "Padding",
-			options: pixelSizeOptions,
 		},
 		align: {
 			type: "radio",
@@ -45,6 +41,20 @@ export const ButtonGroup = {
 			type: "radio",
 			options: quickSizeOptions,
 		},
+		bir: {
+			// Button Icons on Right?
+			type: "radio",
+			label: "Button Icon Position",
+			options: [
+				{ label: "Left", value: false },
+				{ label: "Right", value: true },
+			],
+		},
+		padding: {
+			type: "select",
+			// label: "Padding",
+			options: pixelSizeOptions,
+		},
 	},
 	defaultProps: {
 		buttons: [{ label: "Learn more", href: "#", variant: "accent" }],
@@ -52,7 +62,7 @@ export const ButtonGroup = {
 		align: "left",
 		size: "md",
 	},
-	render: ({ buttons, padding, align, size }) => {
+	render: ({ buttons, padding, align, size, bir }) => {
 		return (
 			<Section padding={padding}>
 				<div
@@ -71,6 +81,8 @@ export const ButtonGroup = {
 							key={i}
 							// href={button.href}
 							variant={button.variant}
+							icon={button.ico}
+							iconPosition={bir ? "right" : "left"}
 						>
 							{button.label}
 						</Button>

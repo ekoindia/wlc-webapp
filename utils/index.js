@@ -10,6 +10,16 @@ export {
 	clearLocalStorage,
 	clearSessionStorage,
 } from "./cacheUtils";
+export {
+	darken,
+	generateShades,
+	getContrastColor,
+	getFirstContrastColor,
+	hasMinimumContrast,
+	hexToRgba,
+	lighten,
+	rgbaToHex,
+} from "./colorUtils";
 export { default as CombineProviders } from "./CombineProviders";
 export { calculateDateBefore } from "./dateUtils";
 export { debounce } from "./debounce";

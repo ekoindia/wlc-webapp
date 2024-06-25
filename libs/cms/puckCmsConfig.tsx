@@ -15,6 +15,7 @@ import {
 	Flex,
 	Heading,
 	Hero,
+	Stats,
 	Text,
 } from "./blocks";
 import { LoginWidgetConf } from "./components";
@@ -76,7 +77,7 @@ const categories: any = {
 		components: ["Hero", "FeatureList", "ButtonGroup"],
 	},
 	typography: {
-		components: ["Heading", "Text"],
+		components: ["Stats", "Heading", "Text"],
 	},
 };
 
@@ -90,6 +91,7 @@ const components: any = {
 	Hero,
 	Heading,
 	Text,
+	Stats,
 	VerticalSpace: {
 		label: "Vertical Space",
 		fields: {

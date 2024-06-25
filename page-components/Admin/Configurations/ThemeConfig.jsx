@@ -8,9 +8,14 @@ import {
 } from "components";
 import { colorThemes } from "constants/colorThemes";
 import { useEffect, useState } from "react";
+import { generateShades } from "utils";
 
 const bgTransition = "background 0.5s ease-in";
 
+/**
+ * Component to configure the theme colors of the app.
+ * Users can select a predefined color theme or set their own primary and accent colors.
+ */
 const ThemeConfig = () => {
 	const [selectedTheme, setSelectedTheme] = useState(null);
 	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-2);
@@ -58,7 +63,7 @@ const ThemeConfig = () => {
 			accent_light,
 			accent_dark,
 		});
-		console.log("Finding theme: ", colorThemes, { primary, accent });
+		// console.log("Finding theme: ", colorThemes, { primary, accent });
 		// Set index of the selected theme
 		setSelectedThemeIdx(
 			colorThemes.findIndex(
@@ -92,7 +97,7 @@ const ThemeConfig = () => {
 		}
 	}, [landingPageStyle]);
 
-	// Apply custom theme when both primary and accent colors are set
+	// Apply custom theme when selected by the user (and, if it is different than the predefined themes)
 	// Calculate 10 degree darker and lighter shades of the primary & accent colors
 	useEffect(() => {
 		if (
@@ -101,8 +106,23 @@ const ThemeConfig = () => {
 			selectedThemeIdx === -1
 		) {
 			// Calculate darker and lighter shades
+			const { dark: primary_dark, light: primary_light } = generateShades(
+				customTheme.primary,
+				10
+			);
+			const { dark: accent_dark, light: accent_light } = generateShades(
+				customTheme.accent,
+				10
+			);
 
-			setSelectedTheme(customTheme);
+			// console.log("Custom Theme:>>>> ", {
+			// 	primary: customTheme.primary,
+			// 	primary_dark,
+			// 	primary_light,
+			// 	accent: customTheme.accent,
+			// 	accent_dark,
+			// 	accent_light,
+			// });
 
 			// Set if custom theme has been edited by the user
 			if (
@@ -113,6 +133,14 @@ const ThemeConfig = () => {
 			} else {
 				setCustomThemeSet(false);
 			}
+
+			setSelectedTheme({
+				...customTheme,
+				primary_light,
+				primary_dark,
+				accent_light,
+				accent_dark,
+			});
 		}
 	}, [customTheme, primary, accent]);
 

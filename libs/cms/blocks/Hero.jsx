@@ -1,8 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 // import { createAdaptor } from "@measured/puck";
 import { Button, OrgLogo } from "components";
-import { useContext } from "react";
-import { context } from "..";
+import { iconField, quickSizeOptions } from "../options";
 import { Section } from "../Section";
 
 // const quotesAdaptor = createAdaptor(
@@ -51,6 +50,7 @@ export const Hero = {
 						{ label: "Link", value: "link" },
 					],
 				},
+				ico: iconField,
 			},
 		},
 		logo: {
@@ -92,6 +92,20 @@ export const Hero = {
 				{ label: "No", value: false },
 			],
 		},
+		bs: {
+			type: "radio",
+			label: "Button Size",
+			options: quickSizeOptions,
+		},
+		bir: {
+			// Button Icons on Right?
+			type: "radio",
+			label: "Button Icon Position",
+			options: [
+				{ label: "Left", value: false },
+				{ label: "Right", value: true },
+			],
+		},
 		padding: { type: "text" },
 	},
 	defaultProps: {
@@ -104,8 +118,10 @@ export const Hero = {
 		buttons: [{ label: "Learn more", href: "#" }],
 		imageUrl:
 			"https://images.unsplash.com/photo-1687204209659-3bded6aecd79?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=900&q=80",
-		padding: "64px",
+		bs: "lg",
+		bir: false,
 		dark: false,
+		padding: "64px",
 	},
 	render: ({
 		align = "left",
@@ -117,10 +133,12 @@ export const Hero = {
 		padding,
 		imageUrl,
 		imageMode,
+		bs,
+		bir,
 		dark = false,
 	}) => {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const { paddingX } = useContext(context);
+		// const { paddingX } = useContext(context);
 
 		const center = align === "center";
 		const bgOverlay =
@@ -189,7 +207,8 @@ export const Hero = {
 					textAlign={center ? "center" : undefined}
 					position="relative"
 					gap="48px"
-					px={paddingX || "0"}
+					// px={paddingX || "0"}
+					px={{ base: "20px", md: "20px", lg: "40px" }}
 					py={padding}
 					wrap={{ base: "wrap", md: "nowrap" }}
 					zIndex="1"
@@ -242,7 +261,9 @@ export const Hero = {
 									key={i}
 									href={button.href}
 									variant={button.variant}
-									size="lg"
+									size={bs || "lg"}
+									icon={button.ico}
+									iconPosition={bir ? "right" : "left"}
 								>
 									{button.label}
 								</Button>
