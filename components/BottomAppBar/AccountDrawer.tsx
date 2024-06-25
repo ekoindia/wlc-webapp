@@ -113,10 +113,10 @@ const DrawerHeader = ({ onClose }) => {
 	return (
 		<Flex
 			w="100%"
+			px="5"
 			minH="56px"
 			align="center"
 			justify="space-between"
-			px="5"
 			backgroundImage={svgBgDotted({
 				fill: contrast_color,
 				opacity: 0.04,
@@ -168,6 +168,7 @@ const Interaction = ({
 	onClose,
 }: InteractionProps): JSX.Element => {
 	const router = useRouter();
+
 	const { h } = useHslColor(label);
 
 	const handleOnClick = () => {
@@ -182,13 +183,7 @@ const Interaction = ({
 
 	return (
 		<Flex id={`${id}-${label}`} align="center" cursor="pointer">
-			<Flex
-				py="1"
-				w="100%"
-				align="center"
-				gap="4"
-				onClick={handleOnClick}
-			>
+			<Flex w="100%" gap="4" align="center" onClick={handleOnClick}>
 				<Icon name={icon} size="md" color={`hsl(${h},80%,30%)`} />
 				<Text fontSize="sm" fontWeight="medium">
 					{label}
