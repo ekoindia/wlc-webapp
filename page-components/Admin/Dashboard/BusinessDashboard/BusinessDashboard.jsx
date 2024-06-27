@@ -9,7 +9,7 @@ import { DashboardDateFilter } from "..";
 /**
  * A <BusinessDashboard> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<BusinessDashboard></BusinessDashboard>`
  */

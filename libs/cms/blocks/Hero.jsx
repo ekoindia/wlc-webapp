@@ -137,7 +137,6 @@ export const Hero = {
 		bir,
 		dark = false,
 	}) => {
-		// eslint-disable-next-line react-hooks/rules-of-hooks
 		// const { paddingX } = useContext(context);
 
 		const center = align === "center";
@@ -184,10 +183,10 @@ export const Hero = {
 											md: dark
 												? bgOverlayLargeDark
 												: bgOverlayLarge,
-									  }
+										}
 									: dark
-									? bgOverlayDark
-									: bgOverlay
+										? bgOverlayDark
+										: bgOverlay
 							}
 							position="absolute"
 							right={0}
@@ -223,8 +222,8 @@ export const Hero = {
 							center
 								? "100%"
 								: imageMode === "background"
-								? { base: "auto", md: "50%" }
-								: undefined
+									? { base: "auto", md: "50%" }
+									: undefined
 						}
 					>
 						{logo ? (
@@ -244,8 +243,8 @@ export const Hero = {
 								color: dark
 									? "white"
 									: imageMode === "background"
-									? "#404040"
-									: "#767676",
+										? "#404040"
+										: "#767676",
 								fontSize: "20px",
 								lineHeight: 1.5,
 								margin: 0,

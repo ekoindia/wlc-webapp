@@ -31,6 +31,10 @@ const retailer_type_list = [
 
 /**
  * PromoteSellerToDistributor page-component
+ * @param root0
+ * @param root0.agentData
+ * @param root0.setResponseDetails
+ * @param root0.showOrgChangeRoleView
  * @returns
  */
 const PromoteSellerToDistributor = ({

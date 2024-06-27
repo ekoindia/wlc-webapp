@@ -20,6 +20,7 @@ import {
  * @param {number} index - Table row index
  * @param {number} serialNo
  * @param {string} tableName
+ * @param expandedRow
  * @returns
  */
 export const prepareTableCell = (

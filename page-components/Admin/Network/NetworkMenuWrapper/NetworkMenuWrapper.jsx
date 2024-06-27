@@ -74,8 +74,12 @@ const getStatus = (status) => {
 
 /**
  * A NetworkMenuWrapper component
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.mobile_number
+ * @param prop.eko_code
+ * @param prop.account_status_id
+ * @param prop.agent_type
  * @example	`<NetworkMenuWrapper></NetworkMenuWrapper>`
  */
 const NetworkMenuWrapper = ({
@@ -176,8 +180,8 @@ const NetworkMenuWrapper = ({
 				account_status_id == 16
 					? watcher["reason"]?.value !== "999"
 					: account_status_id == 18 || account_status_id == 13
-					? false
-					: true, // hack until I fix select
+						? false
+						: true, // hack until I fix select
 		},
 	];
 
@@ -189,8 +193,8 @@ const NetworkMenuWrapper = ({
 			reason_input !== undefined
 				? reason_input
 				: account_status_id == 16 && reason?.value === "999"
-				? reason_input
-				: reason?.label;
+					? reason_input
+					: reason?.label;
 
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,

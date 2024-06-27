@@ -40,7 +40,6 @@ interface LoginWidgetProps {
  * - Show Login Options
  * - Verify OTP
  * - Social Verify
- *
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {boolean} [prop.previewMode] - Show login widget as a preview. Do not allow submitting the form. Used in CMS Editor as a preview of the Login widget.

@@ -25,10 +25,10 @@ import { /* AdminViewToggleCard, */ Icon, ProfileCard, StatusCard } from "..";
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.
- * @param {Object} routerUrl The current route URL.
+ * @param {object} routerUrl The current route URL.
  * @param {string} path The path to compare with the current route.
  * @returns {boolean} True if the current route is the same as the route passed to it.
- **/
+ */
 const isCurrentRoute = (routerUrl, path) => {
 	if (!routerUrl || !path) return false;
 
@@ -230,10 +230,16 @@ const SmallScreenSideMenu = ({ navOpen, setNavClose, ...rest }) => {
 
 /**
  * Transaction Submenu Section for non-admin users
+ * @param trxnList.trxnList
  * @param {Array} trxnList - List of "transactions" submenu items
  * @param {Array} otherList - List of "other" submenu items
- * @param {Object} router - Next.js router object
- * @param {Boolean} isAdmin - Flag to check if user is an admin
+ * @param {object} router - Next.js router object
+ * @param {boolean} isAdmin - Flag to check if user is an admin
+ * @param trxnList.otherList
+ * @param trxnList.router
+ * @param trxnList.isAdmin
+ * @param trxnList.openIndex
+ * @param trxnList.setOpenIndex
  */
 const AccordionMenu = ({
 	trxnList = [],

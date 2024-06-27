@@ -2,9 +2,9 @@ import { Avatar, Flex, Grid, Text, Tooltip } from "@chakra-ui/react";
 import { Button, Headings, Icon } from "components";
 import {
 	Endpoints,
+	TransactionTypes,
 	product_categories,
 	product_slug_map,
-	TransactionTypes,
 } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";

@@ -44,8 +44,8 @@ const Menus = ({
 		iconPos === "right"
 			? { rightIcon: <Icon name={iconName} {...iconStyles} /> }
 			: iconPos === "left"
-			? { leftIcon: <Icon name={iconName} {...iconStyles} /> }
-			: { icon: <Icon name={iconName} {...iconStyles} /> };
+				? { leftIcon: <Icon name={iconName} {...iconStyles} /> }
+				: { icon: <Icon name={iconName} {...iconStyles} /> };
 
 	return (
 		<Box
@@ -112,7 +112,7 @@ const Menus = ({
 													)}
 												</>
 											);
-									  })
+										})
 									: null}
 							</MenuList>
 						</>

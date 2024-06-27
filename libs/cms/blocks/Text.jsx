@@ -55,8 +55,8 @@ export const Text = {
 							align === "center"
 								? "center"
 								: align === "right"
-								? "flex-end"
-								: "flex-start",
+									? "flex-end"
+									: "flex-start",
 					}}
 				>
 					{text.split(/\n/).map((line, i) => (

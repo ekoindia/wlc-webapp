@@ -118,7 +118,7 @@ const UserProvider = ({ userMockData, children }) => {
 
 	/**
 	 * Mark the user as logged in in the userState.
-	 * @param {Object} sessionData - User data to be updated.
+	 * @param {object} sessionData - User data to be updated.
 	 */
 	const login = (sessionData) => {
 		dispatch({
@@ -244,23 +244,23 @@ const UserProvider = ({ userMockData, children }) => {
 
 /**
  * Get user profile details.
- * @returns {Object} An object with the following properties:
+ * @returns {object} An object with the following properties:
  * @property {boolean} isLoggedIn - If true, user is logged in
  * @property {boolean} isAdmin - If true, user is an admin
  * @property {number} userId - User ID
  * @property {string} userType - User type
  * @property {string} accessToken - Access token
- * @property {Object} userData - Detailed user profile data object
- * @property {function} login - Login function
- * @property {function} logout - Logout function
+ * @property {object} userData - Detailed user profile data object
+ * @property {Function} login - Login function
+ * @property {Function} logout - Logout function
  * @property {boolean} loading - If true, user data is being loaded
- * @property {function} setLoading - Set loading state (used by RouteProtector)
- * @property {function} refreshUser - Fetch fresh user profile data from the server
- * @property {function} updateUserInfo - Update user info
+ * @property {Function} setLoading - Set loading state (used by RouteProtector)
+ * @property {Function} refreshUser - Fetch fresh user profile data from the server
+ * @property {Function} updateUserInfo - Update user info
  * @property {boolean} isTokenUpdating - If true, token is being updated
- * @property {function} setIsTokenUpdating - Set token updating state
- * @property {function} updateShopDetails - Update shop details
- * @property {function} updatePersonalDetail - Update personal details
+ * @property {Function} setIsTokenUpdating - Set token updating state
+ * @property {Function} updateShopDetails - Update shop details
+ * @property {Function} updatePersonalDetail - Update personal details
  * @example
  * const { userData, loading } = useUser();
  */
@@ -274,15 +274,15 @@ const useUser = () => {
 
 /**
  * Get user session details.
- * @returns {Object} An object with the following properties:
+ * @returns {object} An object with the following properties:
  * @property {boolean} isLoggedIn - If true, user is logged in
  * @property {boolean} isAdmin - If true, user is an admin
  * @property {number} userId - User ID
  * @property {string} userType - User type
  * @property {string} accessToken - Access token
  * @property {boolean} loading - If true, user data is being loaded
- * @property {function} setLoading - Set loading state (used by RouteProtector)
- * @property {function} refreshUser - Fetch fresh user profile data from the server
+ * @property {Function} setLoading - Set loading state (used by RouteProtector)
+ * @property {Function} refreshUser - Fetch fresh user profile data from the server
  * @example
  * const { isLoggedIn, isAdmin, userId } = useSession();
  */

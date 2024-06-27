@@ -37,6 +37,7 @@ export type SectionProps = {
  * @param {CSSProperties} [props.style] - Additional styles
  * @param {ReactNode} props.children - Child components
  * @param {any} [props.rest] - Additional props
+ * @param props.sectionBg
  */
 export const Section = ({
 	title,

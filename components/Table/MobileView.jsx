@@ -3,9 +3,15 @@ import { prepareTableCell } from ".";
 
 /**
  * A MobileView component is a part of table component, this component will handle default mobile view of the table.
+ * @param data.data
  * @param	{Array}	data	TODO: Property description.
  * @param 	{Array}	renderer	Properties passed to the component
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param data.renderer
+ * @param data.isLoading
+ * @param data.onRowClick
+ * @param data.ResponsiveCard
+ * @param data.isReceipt
  * @example	`<Tr></Tr>` TODO: Fix example
  */
 const MobileView = ({
@@ -30,8 +36,8 @@ const MobileView = ({
 		_dataLength === 0
 			? "No Transactions"
 			: _dataLength === 1
-			? "Recent Transaction"
-			: "Recent Transactions";
+				? "Recent Transaction"
+				: "Recent Transactions";
 
 	if (isLoading) {
 		console.log("loading");

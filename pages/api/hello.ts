@@ -5,8 +5,13 @@ type Data = {
 	name: string;
 };
 
+/**
+ *
+ * @param _req
+ * @param res
+ */
 export default function handler(
-	req: NextApiRequest,
+	_req: NextApiRequest,
 	res: NextApiResponse<Data>
 ) {
 	res.status(200).json({ name: "Sync" });

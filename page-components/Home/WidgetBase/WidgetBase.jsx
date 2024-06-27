@@ -7,7 +7,7 @@ import { IcoButton } from "components";
  * @param 	{string}	title	Widget title
  * @param 	{object}	titleProps	Props for the title
  * @param 	{string}	linkLabel	Link label to be shown in the header (eg: "Show All")
- * @param 	{function}	linkOnClick	Link onClick handler
+ * @param 	{Function}	linkOnClick	Link onClick handler
  * @param 	{object}	linkProps	Props for the link
  * @param 	{object}	headerProps	Props for the header
  * @param 	{object}	iconName	Icon name for IcoButton

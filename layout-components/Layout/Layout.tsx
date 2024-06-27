@@ -49,13 +49,13 @@ const DynamicPopupModuleLoader = dynamic(
 
 /**
  * The default page layout component
- * @param {String} appName - The name of the application. This will be displayed in the browser titlebar.
- * @param {Object} pageMeta - The page meta data.
- * @param {Boolean} pageMeta.isSubPage - If the page is a sub page, then the layout will not render the top navbar (Header) on small screens.
- * @param {String} pageMeta.title - The page title. This will be displayed in the browser titlebar.
- * @param {Boolean} pageMeta.hideMenu - If true, then the layout will not render the left navigation drawer.
- * @param {Boolean} pageMeta.pageHeight - If true, then the layout will take no more than full height of the screen.
- * @param {String} [fontClassName] - A class name to apply to the layout for setting a custom Font.
+ * @param {string} appName - The name of the application. This will be displayed in the browser titlebar.
+ * @param {object} pageMeta - The page meta data.
+ * @param {boolean} pageMeta.isSubPage - If the page is a sub page, then the layout will not render the top navbar (Header) on small screens.
+ * @param {string} pageMeta.title - The page title. This will be displayed in the browser titlebar.
+ * @param {boolean} pageMeta.hideMenu - If true, then the layout will not render the left navigation drawer.
+ * @param {boolean} pageMeta.pageHeight - If true, then the layout will take no more than full height of the screen.
+ * @param {string} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
 const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	const { isSubPage, title, hideMenu, showBottomAppBar = true } = pageMeta;
@@ -230,7 +230,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 												md: `calc(100vh - ${NavHeight.md})`,
 												lg: `calc(100vh - ${NavHeight.lg})`,
 												"2xl": `calc(100vh - ${NavHeight["2xl"]})`,
-										  }
+											}
 										: undefined
 								}
 								w={"full"}

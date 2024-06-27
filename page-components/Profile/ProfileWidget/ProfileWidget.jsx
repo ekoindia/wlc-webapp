@@ -22,7 +22,7 @@ const thresholds = [40, 60];
 /**
  * Returns a style object based on the given percent.
  * @param {number} percent - The percent to base the style on.
- * @returns {Object} The style object.
+ * @returns {object} The style object.
  */
 const getStyle = (percent) => {
 	if (percent >= thresholds[1]) {

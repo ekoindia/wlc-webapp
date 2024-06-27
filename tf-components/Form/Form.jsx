@@ -15,7 +15,12 @@ import { getFormErrorMessage } from "utils";
  * A Form component
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
+ * @param prop.parameter_list
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.register
+ * @param prop.formValues
+ * @param prop.control
+ * @param prop.errors
  * @example	`<Form></Form>` TODO: Fix example
  */
 const Form = ({
@@ -123,7 +128,7 @@ const Form = ({
 											? `⚠ (${getFormErrorMessage(
 													name,
 													errors
-											  )}) ${helperText || ""}`
+												)}) ${helperText || ""}`
 											: helperText || ""}
 									</Text>
 								</FormControl>
@@ -172,7 +177,7 @@ const Form = ({
 											? `⚠ (${getFormErrorMessage(
 													name,
 													errors
-											  )}) ${helperText || ""}`
+												)}) ${helperText || ""}`
 											: helperText || ""}
 									</Text>
 								</FormControl>
@@ -221,7 +226,7 @@ const Form = ({
 											? `⚠ (${getFormErrorMessage(
 													name,
 													errors
-											  )}) ${helperText || ""}`
+												)}) ${helperText || ""}`
 											: helperText || ""}
 									</Text>
 								</FormControl>
@@ -274,7 +279,7 @@ const Form = ({
 													? `⚠ (${getFormErrorMessage(
 															name,
 															errors
-													  )}) ${helperText || ""}`
+														)}) ${helperText || ""}`
 													: helperText || ""}
 											</Text>
 										</FormControl>
@@ -324,7 +329,7 @@ const Form = ({
 													? `⚠ (${getFormErrorMessage(
 															name,
 															errors
-													  )}) ${helperText || ""}`
+														)}) ${helperText || ""}`
 													: helperText || ""}
 											</Text>
 										</FormControl>
@@ -374,7 +379,7 @@ const Form = ({
 													? `⚠ (${getFormErrorMessage(
 															name,
 															errors
-													  )}) ${helperText || ""}`
+														)}) ${helperText || ""}`
 													: helperText || ""}
 											</Text>
 										</FormControl>
@@ -427,7 +432,7 @@ const Form = ({
 												? `⚠ (${getFormErrorMessage(
 														name,
 														errors
-												  )}) ${helperText || ""}`
+													)}) ${helperText || ""}`
 												: helperText || ""}
 										</Text>
 									</FormControl>
@@ -466,7 +471,7 @@ const Form = ({
 												? `⚠ (${getFormErrorMessage(
 														name,
 														errors
-												  )}) ${helperText || ""}`
+													)}) ${helperText || ""}`
 												: helperText || ""}
 										</Text>
 									</FormControl>

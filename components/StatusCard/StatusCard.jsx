@@ -9,6 +9,9 @@ import { Icon } from "..";
 
 /**
  * A <StatusCard> component
+ * TODO: Write more description here
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<StatusCard></StatusCard>`
  */
 const StatusCard = ({ ...rest }) => {

@@ -7,7 +7,7 @@ import React, {
 } from "react";
 
 /**
- * @typedef {Object} TodoValue
+ * @typedef {object} TodoValue
  * @property {string[]} todos - The current list of todo notes.
  * @property {function(string):boolean} addTodo - Function to add a note.
  * @property {function(number):void} deleteTodo - Function to delete a note.
@@ -31,7 +31,7 @@ export const useTodos = () => {
 
 /**
  * Provider component for the todo context.
- * @param {Object} props - The props.
+ * @param {object} props - The props.
  * @param {React.ReactNode} props.children - The child components.
  * @returns {React.ReactElement} The provider element.
  */

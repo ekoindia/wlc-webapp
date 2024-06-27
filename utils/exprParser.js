@@ -25,7 +25,7 @@ export const parse = (expression) => {
 
 /**
  * Evaluate the given tree.
- * @param {Object} tree - The tree to evaluate.
+ * @param {object} tree - The tree to evaluate.
  * @returns {number} The result of the tree.
  * @example
  * evaluate({ value: "+", left: "1", right: { value: "*", left: "2", right: "3" } }); // 7

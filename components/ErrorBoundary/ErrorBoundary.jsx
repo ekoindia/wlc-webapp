@@ -4,9 +4,8 @@ import React from "react";
 
 /**
  * An ErrorBoundary component to catch JavaScript errors anywhere
- *   in their child component tree, log those errors, and display
- *   a fallback UI.
- *
+ * in their child component tree, log those errors, and display
+ * a fallback UI.
  * @see https://reactjs.org/docs/error-boundaries.html
  */
 class ErrorBoundary extends React.Component {

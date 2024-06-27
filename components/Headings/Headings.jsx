@@ -6,11 +6,11 @@ import { Icon } from "..";
  * A <Heading> component
  * TODO: Write more description here
  * @component
- * @param 	{Object}	props
- * @param 	{String}	props.title	The title
- * @param 	{String}	[props.subtitle]	The subtitle
- * @param 	{Boolean}	[props.hasIcon=true]	Whether to show the back icon
- * @param 	{Boolean}	[props.isCompVisible=true]	Whether to show the component
+ * @param 	{object}	props
+ * @param 	{string}	props.title	The title
+ * @param 	{string}	[props.subtitle]	The subtitle
+ * @param 	{boolean}	[props.hasIcon]	Whether to show the back icon
+ * @param 	{boolean}	[props.isCompVisible]	Whether to show the component
  * @param 	{Component}	[props.propComp]	Properties passed to the component
  * @param 	{Function}	[props.redirectHandler]	Properties passed to the component
  * @param 	{...*}	rest	Rest of the props

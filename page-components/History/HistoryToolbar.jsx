@@ -5,6 +5,13 @@ import { Form } from "tf-components";
 
 /**
  * A HistoryToolbar page-component
+ * @param root0
+ * @param root0.isFiltered
+ * @param root0.clearFilter
+ * @param root0.openModalId
+ * @param root0.setOpenModalId
+ * @param root0.searchBarConfig
+ * @param root0.actionBtnConfig
  * @example	`<HistoryToolbar></HistoryToolbar>` TODO: Fix example
  */
 const HistoryToolbar = ({

@@ -79,7 +79,7 @@ thirteenYearsAgo.setFullYear(currentDate.getFullYear() - 13);
 
 /**
  * A UpdatePersonalInformation page-component
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<UpdatePersonalInfo></UpdatePersonalInfo>`
  */
@@ -189,7 +189,7 @@ const UpdatePersonalInfo = () => {
 							? previewData[key]
 							: shopTypes?.find(
 									(item) => item.value == previewData[key]
-							  )?.label,
+								)?.label,
 				};
 				_previewData.push(_previewDataObj);
 			}

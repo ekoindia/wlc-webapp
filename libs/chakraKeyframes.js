@@ -1,5 +1,5 @@
 /**
- * @desc Chakra UI common animation keyframes
+ * @description Chakra UI common animation keyframes
  * @example
  * import { fadeIn } from "libs/chakraKeyframes";
  *

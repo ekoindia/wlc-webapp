@@ -16,7 +16,6 @@ const Render = dynamic(
 /**
  * A <LandingPanel> component for the Landing Page (index).
  * It loads the standard Login Panel or the custom CMS page as per the user config.
- *
  * @component
  */
 const LandingPanel = () => {

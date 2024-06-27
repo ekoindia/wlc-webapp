@@ -3,7 +3,7 @@ import { ActionImpl, Priority } from "kbar";
 
 /**
  * Returns a KBar action object
- * @param {Object} props
+ * @param {object} props
  * @param {string} props.id - The unique ID of the action
  * @param {string} props.name - The name of the action
  * @param {string} props.subtitle - The subtitle of the action
@@ -12,7 +12,8 @@ import { ActionImpl, Priority } from "kbar";
  * @param {string} props.iconColor - The color of the icon
  * @param {string} props.keywords - The search keywords for the action (comma-separated)
  * @param {Priority} props.priority - The priority of the action
- * @param {function} props.perform - The function to run when the action is selected
+ * @param {Function} props.perform - The function to run when the action is selected
+ * @param props.shortcut
  */
 export const getKBarAction = ({
 	id,

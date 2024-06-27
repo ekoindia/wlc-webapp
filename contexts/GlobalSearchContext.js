@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 /**
- * @typedef {Object} GlobalSearchValue
+ * @typedef {object} GlobalSearchValue
  * @property {string} title - The current GlobalSearch title.
  * @property {function(string):void} setSearchTitle - Function to update the GlobalSearch title.
  * @property {function():void} resetSearchTitle - Set the GlobalSearch title back to default.
@@ -22,7 +22,8 @@ export const useGlobalSearch = () => {
 
 /**
  * Provider component for the globalSearch context.
- * @param {Object} props - The props.
+ * @param {object} props - The props.
+ * @param props.children
  */
 export const GlobalSearchProvider = ({ children }) => {
 	// State to store the placeholder text for the Global Searchbar

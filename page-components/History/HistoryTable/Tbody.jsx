@@ -47,7 +47,7 @@ const Tbody = ({
 		? [
 				{ label: "", show: "ExpandButton" },
 				...(renderer?.slice(0, visibleColumns) ?? []),
-		  ]
+			]
 		: renderer;
 
 	const extraColumns = visible ? renderer?.slice(visibleColumns) : [];
@@ -108,6 +108,16 @@ const Tbody = ({
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.item
+ * @param prop.index
+ * @param prop.mainColumns
+ * @param prop.extraColumns
+ * @param prop.handleRowClick
+ * @param prop.pageNumber
+ * @param prop.tableRowLimit
+ * @param prop.printExpansion
+ * @param prop.expandedRow
+ * @param prop.trxn_type_prod_map
  * @example	`<Tbody></Tbody>` TODO: Fix example
  */
 const Trow = ({

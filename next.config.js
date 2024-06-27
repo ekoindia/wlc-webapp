@@ -1,3 +1,5 @@
+import withBundleAnalyzer from "@next/bundle-analyzer";
+
 const isProd = process.env.NEXT_PUBLIC_ENV === "production";
 const isDev = process.env.NEXT_PUBLIC_ENV === "development";
 const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
@@ -9,7 +11,7 @@ if (isDebugMode) {
 }
 const removeConsoleOptions = isProd ? { exclude: excludeLogTypes } : false;
 
-const withBundleAnalyzer = require("@next/bundle-analyzer")({
+const bundleAnalyzer = withBundleAnalyzer({
 	enabled: process.env.ANALYZE === "true",
 	openAnalyzer: true,
 });
@@ -17,7 +19,7 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 /**
  * @type {import('next').NextConfig}
  */
-const nextConfig = withBundleAnalyzer({
+const nextConfig = {
 	/* config options here */
 	reactStrictMode: isDev ? true : false,
 	poweredByHeader: false,
@@ -92,6 +94,5 @@ const nextConfig = withBundleAnalyzer({
 			},
 		];
 	},
-});
-
-module.exports = nextConfig;
+};
+export default bundleAnalyzer(nextConfig);

@@ -36,7 +36,7 @@ export const NavHeight = {
 /**
  * The top app-bar component
  * @param {*} props
- * @param {function} props.setNavOpen - Function to expand the left-menu drawer (in mobile view)
+ * @param {Function} props.setNavOpen - Function to expand the left-menu drawer (in mobile view)
  */
 const NavBar = ({ setNavOpen }) => {
 	const { isAdminAgentMode } = useUser();
@@ -269,8 +269,8 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
  * Show the user's account details in a card, whenever the top-right corner profile icon is clicked.
  * MARK: Profile Menu
  * @param {object} param
- * @param {function} param.setIsCardOpen - Function to set the state of the card
- * @param {function} param.onClose - Function to close the card menu (in Desktop view)
+ * @param {Function} param.setIsCardOpen - Function to set the state of the card
+ * @param {Function} param.onClose - Function to close the card menu (in Desktop view)
  * @returns {JSX.Element} - The user's account details card
  */
 const MyAccountCard = ({ setIsCardOpen, onClose }) => {
@@ -563,7 +563,7 @@ const MyAccountCard = ({ setIsCardOpen, onClose }) => {
 								</Flex>
 								<Divider />
 							</Fragment>
-					  ))
+						))
 					: null}
 
 				{/* Logout Row */}

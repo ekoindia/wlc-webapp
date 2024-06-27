@@ -1,7 +1,6 @@
 /**
  * Map of product slugs to their respective details.
- *
- * @typedef {Object} ProductDetails
+ * @typedef {object} ProductDetails
  * @property {string} label - The label of the product.
  * @property {string} desc - The description of the product.
  * @property {string} [note] - Additional notes about the product.
@@ -13,7 +12,6 @@
 
 /**
  * Map containing details for various products identified by their slugs.
- *
  * @type {Object.<string, ProductDetails>}
  */
 export const product_slug_map = {
@@ -166,15 +164,13 @@ export const product_slug_map = {
 
 /**
  * Map of product categories to their associated slugs.
- *
- * @typedef {Object} ProductCategoryMap
+ * @typedef {object} ProductCategoryMap
  * @property {string[]} Product Configuration - Slugs associated with the "Product Configuration" category.
  * @property {string[]} Pricing Configuration - Slugs associated with the "Pricing Configuration" category.
  */
 
 /**
  * Map containing product categories and their associated slugs.
- *
  * @type {ProductCategoryMap}
  */
 export const product_categories = {
