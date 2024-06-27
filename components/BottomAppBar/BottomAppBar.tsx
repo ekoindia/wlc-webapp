@@ -8,12 +8,9 @@ import { Icon } from "..";
 
 /**
  * BottomAppBar component.
- *
  * @component
- *
  * @param {object} props - Component props.
  * @param {BottomBarItem[]} props.bottomBarItems - Array of items for the bottom app bar.
- *
  * @returns {React.Element} The rendered BottomAppBar component.
  */
 const BottomAppBar = ({
@@ -62,6 +59,7 @@ const BottomAppBar = ({
 		<Flex
 			className="bottom-app-bar"
 			bg="white"
+			justify="center"
 			w="100%"
 			minH={isMac ? "64px" : "56px"}
 			boxShadow="0px 6px 10px #00000033"
@@ -111,10 +109,10 @@ const BottomAppBar = ({
 									isActive
 										? null
 										: path
-										? router.push(`${path}`)
-										: action
-										? action()
-										: null
+											? router.push(`${path}`)
+											: action
+												? action()
+												: null
 								}
 							>
 								{icon ? (
