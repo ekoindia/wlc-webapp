@@ -21,7 +21,7 @@ const DynamicGoogleButton = dynamic(
  * @param {boolean} [props.hideLogo] - Flag to hide the logo
  * @param {Function} props.setStep - Function to set the step like LOGIN, VERIFYOTP & SOCIALVERIFY
  * @param {Function} props.setNumber - Function to set the users mobile number if the user is loogin using Mobile number
- * @param {Object} props.number - Object which gives the number in two forms formatted and original (or unformatted)
+ * @param {object} props.number - Object which gives the number in two forms formatted and original (or unformatted)
  * @param {string} props.lastUserName - Last user name who logged in
  * @param {string} props.lastMobileFormatted - Last mobile number which was used to login
  * @param {boolean} props.previewMode - Flag to check if the component is in preview mode

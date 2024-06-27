@@ -203,8 +203,8 @@ const History = () => {
 				openModalId == action.FILTER
 					? minDateFilter
 					: openModalId == action.EXPORT
-					? minDateExport
-					: null,
+						? minDateExport
+						: null,
 			maxDate: today,
 			required:
 				openModalId == action.EXPORT
@@ -279,6 +279,7 @@ const History = () => {
 	/**
 	 * Search for a transaction based on the query. The query can be a transaction-id, account, amount, or, a mobile number.
 	 * @param {*} search
+	 * @param otherQueries
 	 */
 	const quickSearch = (search, otherQueries = {}) => {
 		console.log("Search inside quickSearch", search, otherQueries);
@@ -304,8 +305,8 @@ const History = () => {
 				start_date: otherQueries["tid"]
 					? ""
 					: watcherFilter.start_date ??
-					  watcherExport.start_date ??
-					  firstDateOfMonth,
+						watcherExport.start_date ??
+						firstDateOfMonth,
 				tx_date: otherQueries["tid"]
 					? ""
 					: watcherFilter.tx_date ?? watcherExport.tx_date ?? today,
@@ -352,8 +353,8 @@ const History = () => {
 				type == "tid"
 					? ""
 					: watcherFilter.start_date ??
-					  watcherExport.start_date ??
-					  firstDateOfMonth,
+						watcherExport.start_date ??
+						firstDateOfMonth,
 			tx_date:
 				type == "tid"
 					? ""
@@ -536,7 +537,7 @@ const History = () => {
 							borderColor: "primary.dark",
 							boxShadow: "none",
 						},
-				  }
+					}
 				: null,
 		},
 		{

@@ -9,7 +9,7 @@ import { useState } from "react";
  * A <TodoWidget> component to show a list of Todo notes on homepage for agents.
  * @param 	{object}	prop	Properties passed to the component
  * @param	{Array}		prop.todos	List of todos to show.
- * @param	{function}	prop.onDeleteTodo	Function to delete a todo.
+ * @param	{Function}	prop.onDeleteTodo	Function to delete a todo.
  * @param	{...*}		rest	Rest of the props passed to this component.
  * @example	`<TodoWidget />` TODO: Fix example
  */

@@ -4,8 +4,8 @@ import { tinykeys } from "tinykeys";
 /**
  * Hook for setting Hotkey actions.
  * Uses [tinykeys library](https://github.com/jamiebuilds/tinykeys).
- * @param {Object} keyFunctionMap - Map of key and function to be executed.
- * @param {Object} target - Target element to listen for keypress (Default: window).
+ * @param {object} keyFunctionMap - Map of key and function to be executed.
+ * @param {object} target - Target element to listen for keypress (Default: window).
  * @returns {void}
  * @example
  * // Example usage:

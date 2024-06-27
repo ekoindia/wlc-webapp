@@ -2,6 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 
 /**
  * A <CommissionsCard> component
+ * @param item.item
  * @param 	{object}	item	Item object containing transaction details
  */
 const CommissionsCard = ({ item }) => {

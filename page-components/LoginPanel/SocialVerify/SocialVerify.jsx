@@ -7,9 +7,9 @@ import { useState } from "react";
 /**
  * A <SocialVerify> component. Used to verify phone number if the user is new,
  * 		and if they have logged in using Google or other social SSO.
- * @arg {Object} prop - Properties passed to the component
+ * @param {object} prop - Properties passed to the component
  * @param {string} [prop.email] - Email of the user
- * @param {Object} prop.number - Object containing the original and formatted mobile number
+ * @param {object} prop.number - Object containing the original and formatted mobile number
  * @param {boolean} prop.previewMode - Flag to check if the component is in preview mode
  * @param {Function} prop.setNumber - Function to set the number
  * @param {Function} prop.setStep - Function to set the step

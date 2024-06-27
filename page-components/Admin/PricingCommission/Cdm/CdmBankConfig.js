@@ -1,12 +1,12 @@
 /**
  * Represents the configuration for CDM banks.
- * @typedef {Object} CdmBankConfig
+ * @typedef {object} CdmBankConfig
  * @property {number} bank_id - The ID of the bank.
  * @property {string} bank_label - The label of the bank.
  * @property {string} bank_name - The name of the bank.
- * @property {Object} validation - The validation rules for the bank.
- * @property {Object|boolean} validation.percentage - The percentage validation rules for the bank. Can be an object with `min` and `max` properties or `false` if not applicable.
- * @property {Object|boolean} validation.fixed - The fixed validation rules for the bank. Can be an object with `min` and `max` properties or `false` if not applicable.
+ * @property {object} validation - The validation rules for the bank.
+ * @property {object | boolean} validation.percentage - The percentage validation rules for the bank. Can be an object with `min` and `max` properties or `false` if not applicable.
+ * @property {object | boolean} validation.fixed - The fixed validation rules for the bank. Can be an object with `min` and `max` properties or `false` if not applicable.
  */
 export const CdmBankConfig = {
 	1: {

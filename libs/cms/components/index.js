@@ -1,2 +1,2 @@
-export { Card } from "./Card";
+// export { Card } from "./Card";
 export { LoginWidgetConf } from "./LoginWidgetConf";

@@ -19,7 +19,7 @@ export const getFirstWord = (text) => {
  * Capitalizes first letters of words in string.
  * @param {string} str String to be modified
  * @param {boolean=false} lower Whether all other letters should be lowercased
- * @return {string}
+ * @returns {string}
  * @usage
  *   capitalize('fix this string');     // -> 'Fix This String'
  *   capitalize('javaSCrIPT');    // -> 'Javascript'

@@ -23,6 +23,9 @@ const invalidOrg = {
 	notFound: true,
 };
 
+// To strip quotes from theme color in local
+const stripQuotes = (str) => (str ? str.replace(/^['"]|['"]$/g, "") : str);
+
 /**
  * Mock org details (used in development)
  */
@@ -35,12 +38,12 @@ export const MockOrgDetails = {
 		support_contacts: { email: "xyz@com", phone: "0123456789" },
 		theme: {
 			navstyle: process.env.THEME_NAVSTYLE || "", // light or dark (default)
-			primary: process.env.THEME_PRIMARY || "",
-			primary_dark: process.env.THEME_PRIMARY_DARK || "",
-			primary_light: process.env.THEME_PRIMARY_LIGHT || "",
-			accent: process.env.THEME_ACCENT || "",
-			accent_dark: process.env.THEME_ACCENT_DARK || "",
-			accent_light: process.env.THEME_ACCENT_LIGHT || "",
+			primary: stripQuotes(process.env.THEME_PRIMARY) || "",
+			primary_dark: stripQuotes(process.env.THEME_PRIMARY_DARK) || "",
+			primary_light: stripQuotes(process.env.THEME_PRIMARY_LIGHT) || "",
+			accent: stripQuotes(process.env.THEME_ACCENT) || "",
+			accent_dark: stripQuotes(process.env.THEME_ACCENT_DARK) || "",
+			accent_light: stripQuotes(process.env.THEME_ACCENT_LIGHT) || "",
 		},
 	},
 	login_types: {
@@ -172,13 +175,13 @@ export const fetchOrgDetails = async (host, force) => {
 				props: {
 					data: orgDetails,
 				},
-		  }
+			}
 		: {
 				...invalidOrg,
 				props: {
 					reason: "Org not found",
 				},
-		  };
+			};
 };
 
 /**

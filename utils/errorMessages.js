@@ -14,6 +14,8 @@ const errorTypeMessages = {
 
 /**
  * Get the appropriate error message for a form field based on its name and errors object.
+ * @param name
+ * @param errors
  */
 export const getFormErrorMessage = (name, errors) => {
 	//TODO add provision for custom messages

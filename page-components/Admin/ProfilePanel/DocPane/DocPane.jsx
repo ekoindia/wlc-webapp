@@ -13,7 +13,7 @@ import { Button, Card, IcoButton } from "components";
 /**
  * A <DocPane> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<DocPane></DocPane>`
  */

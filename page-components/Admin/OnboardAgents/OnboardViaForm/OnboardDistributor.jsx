@@ -12,6 +12,9 @@ const NAME_REGEX = /^[A-Za-z\s]+$/;
 
 /**
  * OnboardDistributor page-component
+ * @param root0
+ * @param root0.applicantType
+ * @param root0.setResponse
  */
 const OnboardDistributor = ({ applicantType, setResponse }) => {
 	const {

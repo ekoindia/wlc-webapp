@@ -85,15 +85,15 @@ const EarningSummary = ({ ...rest }) => {
 												item.comparison > 0
 													? "caret-up"
 													: item.comparison < 0
-													? "caret-down"
-													: null
+														? "caret-down"
+														: null
 											}
 											color={
 												item.comparison > 0
 													? "success"
 													: item.comparison < 0
-													? "error"
-													: null
+														? "error"
+														: null
 											}
 											size="16px"
 										/>

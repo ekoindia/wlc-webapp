@@ -8,9 +8,9 @@ import { ANDROID_ACTION, doAndroidAction } from "utils";
 
 /**
  * Custom (light) page layout component for the Login page
- * @param {String} appName - The name of the application. This will be displayed in the browser titlebar.
- * @param {Object} pageMeta - The page meta data.
- * @param {String} pageMeta.title - The page title. This will be displayed in the browser titlebar.
+ * @param {string} appName - The name of the application. This will be displayed in the browser titlebar.
+ * @param {object} pageMeta - The page meta data.
+ * @param {string} pageMeta.title - The page title. This will be displayed in the browser titlebar.
  */
 const LayoutLogin = ({ appName, children }) => {
 	const { publish, TOPICS } = usePubSub();

@@ -1,5 +1,5 @@
 /**
- * @fileoverview Contains utility functions for the Android wrapper app.
+ * @file Contains utility functions for the Android wrapper app.
  * The following functions are available:
  * - isAndroidApp: Checks if the web-app is running inside the Android wrapper app.
  * - doAndroidAction: Sends a message to the Android app.
