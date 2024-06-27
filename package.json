@@ -10,7 +10,7 @@
 	"type": "module",
 	"scripts": {
 		"preinstall": "nvm use || nvm install",
-		"dev": "nvm use && next dev -p 3002",
+		"dev": "next dev -p 3002",
 		"inspect": "NODE_OPTIONS='--inspect' next dev",
 		"build": "next build",
 		"start": "next start",
