@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { CmsEditor } from "./CmsEditor";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { Breadcrumbs } from "./Breadcrumb";
 import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
@@ -52,6 +53,7 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	CmsEditor,
 	ColorPickerWidget,
 	Camera,
 	FileView,
