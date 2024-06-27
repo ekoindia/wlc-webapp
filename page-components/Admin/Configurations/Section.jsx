@@ -2,9 +2,9 @@ import { Flex, Text } from "@chakra-ui/react";
 
 /**
  * Section card component for the configuration page
- * @param root0
- * @param root0.title
- * @param root0.children
+ * @param {object} props
+ * @param {string} [props.title] - Title of the section
+ * @param {object} props.children - Child components
  */
 export const Section = ({ title, children }) => {
 	return (
