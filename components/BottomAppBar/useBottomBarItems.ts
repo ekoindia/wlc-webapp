@@ -1,7 +1,7 @@
 import { useKBarReady } from "components/CommandBar";
 import { useUser } from "contexts";
 import { useKBar } from "kbar";
-import { AccountDrawer, TransactionsDrawer } from ".";
+import { More, Transactions } from ".";
 
 export type BottomBarItem = {
 	name: string;
@@ -25,7 +25,6 @@ export type BottomBarItem = {
  * - `component`: A function that returns a JSX element."
  *
  * The function uses the `useUser`, `useKBar`, and `useKBarReady` hooks to get the necessary data and functions.
- *
  * @returns {Array<BottomBarItem>} The array of bottom bar items.
  */
 export const useBottomBarItems = (): BottomBarItem[] => {
@@ -60,12 +59,12 @@ export const useBottomBarItems = (): BottomBarItem[] => {
 		},
 		{
 			name: "transaction",
-			component: TransactionsDrawer, // bottom bar transaction drawer
+			component: Transactions, // bottom bar transaction drawer
 			visible: isAdmin ? isAdminAgentMode : !isAdminAgentMode,
 		},
 		{
 			name: "account",
-			component: AccountDrawer,
+			component: More,
 			visible: true,
 		},
 		// {

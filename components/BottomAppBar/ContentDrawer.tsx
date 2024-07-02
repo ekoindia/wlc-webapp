@@ -27,7 +27,6 @@ import {
 
 /**
  * Generates a new path for transaction navigation.
- *
  * @param {string} currentPath - The current path of the router.
  * @param {number} id - The id to be included in the new path.
  * @param {number} [group_interaction_id] - The optional group interaction id to be included in the new path.
@@ -62,21 +61,16 @@ interface InteractionList {
 	group_interaction_ids: string;
 	label: string;
 	icon: string;
+	link?: string;
 }
 
-/**
- * Component for displaying a drawer with transaction options.
- * @returns JSX.Element
- */
-const TransactionsDrawer = (): JSX.Element => {
+const ContentDrawer = ({ list, title, icon }) => {
 	const btnRef = useRef<HTMLButtonElement>(null);
-	const { trxnList } = useMenuContext();
 	const { isOpen, onOpen, onClose } = useDisclosure();
-
 	return (
-		<DrawerContainer {...{ isOpen, onOpen, onClose, btnRef }}>
+		<DrawerContainer {...{ icon, title, isOpen, onOpen, onClose, btnRef }}>
 			<Accordion allowToggle>
-				{trxnList?.map(
+				{list?.map(
 					(
 						{
 							id,
@@ -84,6 +78,7 @@ const TransactionsDrawer = (): JSX.Element => {
 							group_interaction_ids,
 							label,
 							icon,
+							link,
 						}: InteractionList,
 						index: number
 					) => {
@@ -108,11 +103,12 @@ const TransactionsDrawer = (): JSX.Element => {
 											id,
 											label,
 											icon,
+											link,
 											onClose,
 										}}
 									/>
 								)}
-								{trxnList.length - 1 !== index && (
+								{list.length - 1 !== index && (
 									<Divider variant="dashed" />
 								)}
 							</>
@@ -124,9 +120,17 @@ const TransactionsDrawer = (): JSX.Element => {
 	);
 };
 
-export default TransactionsDrawer;
+export default ContentDrawer;
 
-const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => (
+const DrawerContainer = ({
+	icon,
+	title,
+	isOpen,
+	onOpen,
+	onClose,
+	btnRef,
+	children,
+}) => (
 	<>
 		<Flex
 			direction="column"
@@ -137,9 +141,9 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => (
 			justify="center"
 			onClick={onOpen}
 		>
-			<Icon ref={btnRef} name="transaction" size="sm" color="light" />
+			<Icon ref={btnRef} name={icon} size="sm" color="light" />
 			<Text fontSize="10px" fontWeight="medium" noOfLines={2}>
-				Transactions
+				{title}
 			</Text>
 		</Flex>
 		<Drawer
@@ -150,7 +154,7 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => (
 		>
 			<DrawerOverlay />
 			<DrawerContent maxH="70%" w="100%" borderTopRadius="10px" pb="5">
-				<DrawerHeader onClose={onClose} />
+				<DrawerHeader title={title} onClose={onClose} />
 				<Divider />
 				<Flex
 					// className="customScrollbars"
@@ -167,7 +171,7 @@ const DrawerContainer = ({ isOpen, onOpen, onClose, btnRef, children }) => (
 	</>
 );
 
-const DrawerHeader = ({ onClose }) => {
+const DrawerHeader = ({ title, onClose }) => {
 	const [contrast_color] = useToken("colors", ["navbar.dark"]);
 	return (
 		<Flex
@@ -182,7 +186,7 @@ const DrawerHeader = ({ onClose }) => {
 			})}
 		>
 			<Text fontSize="lg" fontWeight="semibold">
-				Start a Transaction
+				{title}
 			</Text>
 			<Flex direction="row-reverse" onClick={onClose} w="20%">
 				<Icon
@@ -203,18 +207,18 @@ type InteractionProps = {
 	label: string;
 	icon: string;
 	onClose: () => void;
+	link?: string;
 };
 
 /**
  * `Interaction` is a component that represents a single interaction.
  * It simply passes its props to an `InteractionItem` component.
- *
  * @param {InteractionProps} props - Props for configuring the Interaction component.
  * @param {number} props.id - The ID of the interaction.
  * @param {string} props.label - The label for the interaction.
  * @param {string} props.icon - The icon for the interaction.
+ * @param {string} props.link - Link of the sidebar menu items.
  * @param {() => void} props.onClose - Callback invoked to close the modal.
- *
  * @returns {JSX.Element} An `InteractionItem` component with the same props as the `Interaction` component.
  */
 const Interaction = ({
@@ -222,6 +226,7 @@ const Interaction = ({
 	label,
 	icon,
 	onClose,
+	link,
 }: InteractionProps): JSX.Element => {
 	const router = useRouter();
 	const { h } = useHslColor(label);
@@ -229,6 +234,11 @@ const Interaction = ({
 	const onInteractionClick = (id: number) => {
 		const newPath = generateNewPath(router.asPath, id);
 		router.push(newPath);
+		onClose();
+	};
+
+	const onLinkClick = (link: string) => {
+		router.push(link);
 		onClose();
 	};
 
@@ -247,7 +257,11 @@ const Interaction = ({
 					gap="4"
 					cursor="pointer"
 					onClick={() => {
-						onInteractionClick(id);
+						if (link) {
+							onLinkClick(link);
+						} else {
+							onInteractionClick(id);
+						}
 					}}
 				>
 					<Icon name={icon} size="md" color={`hsl(${h},80%,30%)`} />
@@ -274,14 +288,12 @@ type GridInteractionProps = {
  * `GridInteraction` is a component that displays a group of interactions in a grid.
  * It uses the `group_interaction_ids` prop to find the relevant interactions from the `role_tx_list` context.
  * If there is more than one interaction in the group, it will pass `isGridInteraction` as true to the `InteractionItem` component.
- *
  * @param {GridInteractionProps} props - Props for configuring the GridInteraction component.
  * @param {number} props.id - The ID of the interaction group.
  * @param {string} props.group_interaction_ids - A comma-separated string of interaction IDs.
  * @param {string} props.label - The label for the interaction group.
  * @param {string} props.icon - The icon for the interaction group.
  * @param {() => void} props.onClose - Callback invoked to close the modal.
- *
  * @returns {JSX.Element} A `Flex` component containing a `Details` component, which in turn contains an `InteractionItem` and a `GridInteractionBox`.
  */
 const GridInteraction = ({
@@ -319,7 +331,7 @@ const GridInteraction = ({
 						icon: "more-horiz",
 						theme: "gray",
 					},
-			  ]
+				]
 			: groupInteractions;
 
 	return (
@@ -383,7 +395,6 @@ type GridInteractionItemProps = {
 /**
  * `GridInteractionItem` is a component that represents a single interaction in a grid of interactions.
  * When clicked, it navigates to the transaction page for the interaction and calls the `onClose` function.
- *
  * @param {GridInteractionItemProps} props - Props for configuring the GridInteractionItem component.
  * @param {string} props.key - The unique key for the interaction.
  * @param {number} props.id - The ID of the interaction group.
@@ -392,7 +403,6 @@ type GridInteractionItemProps = {
  * @param {string} props.icon - The icon for the interaction.
  * @param {string} props.theme - The theme for the Avatar
  * @param {() => void} props.onClose - A function to be called when the interaction is clicked.
- *
  * @returns {JSX.Element} A `Flex` component containing an `Avatar` and a `Text` component.
  */
 const GridInteractionItem = ({
@@ -424,14 +434,14 @@ const GridInteractionItem = ({
 					bg: "inputlabel",
 					color: "white",
 					boxShadow: "0px 3px 10px #0000001A",
-			  }
+				}
 			: theme === "gray"
-			? {
-					bgGradient: "linear(to-b, divider, hint)",
-					color: "white",
-					border: "1px solid var(--chakra-colors-divider)",
-			  }
-			: null;
+				? {
+						bgGradient: "linear(to-b, divider, hint)",
+						color: "white",
+						border: "1px solid var(--chakra-colors-divider)",
+					}
+				: null;
 
 	return (
 		<Flex
