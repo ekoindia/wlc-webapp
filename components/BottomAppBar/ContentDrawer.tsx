@@ -248,7 +248,7 @@ const Interaction = ({
 				iconName="chevron-right"
 				iconSize="10px"
 				py="1"
-				pr="1"
+				pr="0.5"
 			>
 				<Flex
 					py="1"
