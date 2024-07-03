@@ -1,6 +1,6 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
 import { PageLoader /*,NavBar, SideBar */ } from "components";
-import { BottomAppBar, useBottomBarItems } from "components/BottomAppBar";
+import { useBottomBarItems } from "components/BottomAppBar";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { NavHeight } from "components/NavBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
@@ -42,6 +42,14 @@ const DynamicPopupModuleLoader = dynamic(
 		import("layout-components/DynamicPopupModuleLoader").then(
 			(pkg) => pkg.DynamicPopupModuleLoader
 		),
+	{
+		ssr: false,
+	}
+);
+
+// Lazy-load the BottomAppBar component
+const BottomAppBar = dynamic(
+	() => import("components/BottomAppBar").then((pkg) => pkg.BottomAppBar),
 	{
 		ssr: false,
 	}
