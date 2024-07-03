@@ -15,16 +15,14 @@ type AccordionButtonProps = {
 
 /**
  * AccordionButton is a component that toggles the expansion state of an accordion item.
- *
  * @param {AccordionButtonProps} props - Props for configuring the AccordionButton component.
  * @param {ReactNode} props.children - The content to be displayed within the button.
  * @param {boolean} [props.isExpanded] - Indicates whether the accordion item is expanded.
- * @param {IconNameType} [props.iconName="expand-more"] - The name of the icon to display.
- * @param {string} [props.iconSize='xs'] - The size of the icon.
- * @param {string} [props.iconColor='light'] - The color of the icon.
+ * @param {IconNameType} [props.iconName] - The name of the icon to display.
+ * @param {string} [props.iconSize] - The size of the icon.
+ * @param {string} [props.iconColor] - The color of the icon.
  * @param {() => void} [props.handleOpenIndexes] - Callback function to handle the toggling of the accordion item's expanded state.
- * @param {...Object} props.rest - A catch-all prop that allows any other prop to be passed in.
- *
+ * @param {...object} props.rest - A catch-all prop that allows any other prop to be passed in.
  * @returns {JSX.Element} The AccordionButton component.
  */
 const AccordionButton = ({
@@ -50,7 +48,7 @@ const AccordionButton = ({
 				size={iconSize}
 				color={iconColor}
 				style={{
-					transform: isExpanded ? "rotate(-180deg)" : "rotate(0deg)",
+					// transform: isExpanded ? "rotate(-180deg)" : "rotate(0deg)",
 					transition: "transform 0.1s ease-in-out",
 				}}
 			/>
