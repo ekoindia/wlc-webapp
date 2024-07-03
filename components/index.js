@@ -19,6 +19,7 @@ import { CommandBarBox } from "./CommandBar";
 import { Currency } from "./Currency";
 import { DateView } from "./DateView";
 import { Divider } from "./Divider";
+import { Drawer } from "./Drawer";
 import { Dropzone } from "./Dropzone";
 import { EkoConnectWidget } from "./EkoConnectWidget";
 import { ErrorBoundary } from "./ErrorBoundary";
@@ -60,9 +61,6 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
-	ColorPickerWidget,
-	Camera,
-	FileView,
 	Accordion,
 	AccordionButton,
 	AccordionItem,
@@ -73,15 +71,19 @@ export {
 	BreadcrumbsWrapper,
 	Button,
 	Calenders,
+	Camera,
 	Card,
 	ColorPair,
+	ColorPickerWidget,
 	CommandBarBox,
 	Currency,
 	DateView,
 	Divider,
+	Drawer,
 	Dropzone,
 	EkoConnectWidget,
 	ErrorBoundary,
+	FileView,
 	GlobalSearch,
 	Headings,
 	IcoButton,
