@@ -336,46 +336,65 @@ const GridInteraction = ({
 
 	return (
 		<AccordionItem id={id}>
-			<AccordionButton py="1">
-				<Flex py="1" gap="4" w="100%" align="center" cursor="pointer">
-					<Icon name={icon} size="md" color={`hsl(${h},80%,30%)`} />
-					<Text fontSize="sm" fontWeight="medium">
-						{label}
-					</Text>
-				</Flex>
-			</AccordionButton>
-			<AccordionPanel>
-				<Grid
-					templateColumns={`repeat(${numColumns}, 1fr)`}
-					gap="3"
-					alignItems="flex-start"
-					justifyContent="center"
-				>
-					{_groupInteractions?.map(
-						(
-							{
-								id: group_interaction_id,
-								label,
-								icon,
-								theme = "dark",
-							},
-							index
-						) => (
-							<GridInteractionItem
-								key={`${index}-${label}`}
-								{...{
-									id,
-									group_interaction_id,
-									label,
-									icon,
-									theme,
-									onClose,
-								}}
+			{({ isExpanded, handleOpenIndexes }) => (
+				<>
+					<AccordionButton
+						py="1"
+						iconName={isExpanded ? "minus" : "add"}
+						iconSize="10px"
+						onClick={handleOpenIndexes}
+					>
+						<Flex
+							py="1"
+							gap="4"
+							w="100%"
+							align="center"
+							cursor="pointer"
+						>
+							<Icon
+								name={icon}
+								size="md"
+								color={`hsl(${h},80%,30%)`}
 							/>
-						)
-					)}
-				</Grid>
-			</AccordionPanel>
+							<Text fontSize="sm" fontWeight="medium">
+								{label}
+							</Text>
+						</Flex>
+					</AccordionButton>
+					<AccordionPanel isExpanded={isExpanded}>
+						<Grid
+							templateColumns={`repeat(${numColumns}, 1fr)`}
+							gap="3"
+							alignItems="flex-start"
+							justifyContent="center"
+						>
+							{_groupInteractions?.map(
+								(
+									{
+										id: group_interaction_id,
+										label,
+										icon,
+										theme = "dark",
+									},
+									index
+								) => (
+									<GridInteractionItem
+										key={`${index}-${label}`}
+										{...{
+											id,
+											group_interaction_id,
+											label,
+											icon,
+											theme,
+											onClose,
+										}}
+									/>
+								)
+							)}
+						</Grid>
+					</AccordionPanel>
+				</>
+			)}
 		</AccordionItem>
 	);
 };
