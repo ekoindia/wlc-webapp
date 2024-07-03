@@ -58,7 +58,7 @@ const DynamicPopupModuleLoader = dynamic(
  * @param {string} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
 const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
-	const { isSubPage, title, hideMenu, showBottomAppBar = true } = pageMeta;
+	const { isSubPage, title, hideMenu } = pageMeta;
 
 	const { isLoggedIn } = useSession();
 	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
@@ -249,7 +249,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							</Box>
 						</Flex>
 					)}
-					{showBottomAppBar && isSmallScreen ? (
+					{isSmallScreen ? (
 						<Box
 							className="layout-bottom-app-bar"
 							pos="fixed"
