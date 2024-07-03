@@ -1,22 +1,15 @@
 import {
 	Avatar,
 	Divider,
-	Drawer,
-	DrawerContent,
-	DrawerOverlay,
 	Flex,
 	Grid,
 	Text,
 	useBreakpointValue,
-	useDisclosure,
-	useToken,
 } from "@chakra-ui/react";
 import { InteractionBehavior } from "constants/trxnFramework";
 import { useMenuContext } from "contexts";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
-import { useRef } from "react";
-import { svgBgDotted } from "utils/svgPatterns";
 import {
 	Accordion,
 	AccordionButton,
@@ -37,168 +30,78 @@ const generateNewPath = (
 	id: number,
 	group_interaction_id?: number
 ) => {
-	//TODO Refactor this 👇
-	// do I really need if else ??
-	let newPath;
-	if (currentPath.includes("transaction")) {
-		newPath = currentPath.replace(
-			/transaction\/\d+(\/\d*)?/,
-			`transaction/${id}${
-				group_interaction_id ? `/${group_interaction_id}` : ""
-			}`
-		);
-	} else {
-		newPath = `transaction/${id}${
-			group_interaction_id ? `/${group_interaction_id}` : ""
-		}`;
-	}
+	const newPathSegment = `transaction/${id}${
+		group_interaction_id ? `/${group_interaction_id}` : ""
+	}`;
+
+	const newPath = currentPath.includes("transaction")
+		? currentPath.replace(/transaction\/\d+(\/\d*)?/, newPathSegment)
+		: newPathSegment;
+
 	return newPath;
 };
 
-interface InteractionList {
-	id: number;
-	behavior: number;
-	group_interaction_ids: string;
-	label: string;
-	icon: string;
-	link?: string;
-}
-
-const ContentDrawer = ({ list, title, icon }) => {
-	const btnRef = useRef<HTMLButtonElement>(null);
-	const { isOpen, onOpen, onClose } = useDisclosure();
+/**
+ * BottomAppBarDrawerList component renders a list of interactions within an Accordion.
+ * @component
+ * @param {object} props - The component props
+ * @param {Array} props.list - The list of interaction items to be displayed.
+ * @param {Function} props.onClose - Function to be called when the drawer is closed.
+ * @example
+ * const list = [
+ *   { id: 1, behavior: 2, group_interaction_ids: null, label: 'Label 1', icon: 'icon1', link: 'link1' },
+ *   { id: 2, behavior: 1, group_interaction_ids: [3, 4], label: 'Label 2', icon: 'icon2' },
+ * ];
+ * return (
+ *   <BottomAppBarDrawerList list={list} onClose={handleClose} />
+ * )
+ */
+const BottomAppBarDrawerList = ({ list, onClose }): JSX.Element => {
 	return (
-		<DrawerContainer {...{ icon, title, isOpen, onOpen, onClose, btnRef }}>
-			<Accordion allowToggle>
-				{list?.map(
-					(
-						{
-							id,
-							behavior,
-							group_interaction_ids,
-							label,
-							icon,
-							link,
-						}: InteractionList,
-						index: number
-					) => {
-						return (
-							<>
-								{group_interaction_ids !== null &&
-								InteractionBehavior.GRID === +behavior ? (
-									<GridInteraction
-										{...{
-											key: index,
-											id,
-											group_interaction_ids,
-											label,
-											icon,
-											onClose,
-										}}
-									/>
-								) : (
-									<Interaction
-										{...{
-											key: index,
-											id,
-											label,
-											icon,
-											link,
-											onClose,
-										}}
-									/>
-								)}
-								{list.length - 1 !== index && (
-									<Divider variant="dashed" />
-								)}
-							</>
-						);
-					}
-				)}
-			</Accordion>
-		</DrawerContainer>
+		<Accordion allowToggle>
+			{list?.map(
+				(
+					{ id, behavior, group_interaction_ids, label, icon, link },
+					index: number
+				) => {
+					return (
+						<>
+							{group_interaction_ids !== null &&
+							InteractionBehavior.GRID === +behavior ? (
+								<GridInteraction
+									{...{
+										key: index,
+										id,
+										group_interaction_ids,
+										label,
+										icon,
+										onClose,
+									}}
+								/>
+							) : (
+								<Interaction
+									{...{
+										key: index,
+										id,
+										label,
+										icon,
+										link,
+										onClose,
+									}}
+								/>
+							)}
+							{list.length - 1 !== index && (
+								<Divider variant="dashed" />
+							)}
+						</>
+					);
+				}
+			)}
+		</Accordion>
 	);
 };
 
-export default ContentDrawer;
-
-const DrawerContainer = ({
-	icon,
-	title,
-	isOpen,
-	onOpen,
-	onClose,
-	btnRef,
-	children,
-}) => (
-	<>
-		<Flex
-			direction="column"
-			gap="1"
-			w="100%"
-			h="100%"
-			align="center"
-			justify="center"
-			onClick={onOpen}
-		>
-			<Icon ref={btnRef} name={icon} size="sm" color="light" />
-			<Text fontSize="10px" fontWeight="medium" noOfLines={2}>
-				{title}
-			</Text>
-		</Flex>
-		<Drawer
-			isOpen={isOpen}
-			placement="bottom"
-			onClose={onClose}
-			finalFocusRef={btnRef}
-		>
-			<DrawerOverlay />
-			<DrawerContent maxH="70%" w="100%" borderTopRadius="10px" pb="5">
-				<DrawerHeader title={title} onClose={onClose} />
-				<Divider />
-				<Flex
-					// className="customScrollbars"
-					direction="column"
-					overflowY="scroll"
-					px="5"
-					// py="2"
-					gap="2"
-				>
-					{children}
-				</Flex>
-			</DrawerContent>
-		</Drawer>
-	</>
-);
-
-const DrawerHeader = ({ title, onClose }) => {
-	const [contrast_color] = useToken("colors", ["navbar.dark"]);
-	return (
-		<Flex
-			w="100%"
-			minH="56px"
-			align="center"
-			justify="space-between"
-			px="5"
-			backgroundImage={svgBgDotted({
-				fill: contrast_color,
-				opacity: 0.04,
-			})}
-		>
-			<Text fontSize="lg" fontWeight="semibold">
-				{title}
-			</Text>
-			<Flex direction="row-reverse" onClick={onClose} w="20%">
-				<Icon
-					size="xs"
-					name="close"
-					color="light"
-					_active={{ color: "error" }}
-				/>
-			</Flex>
-		</Flex>
-	);
-};
+export default BottomAppBarDrawerList;
 
 /* ####################### Interaction ####################### */
 
