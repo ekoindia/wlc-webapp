@@ -379,8 +379,8 @@ const GridInteraction = ({
 									index
 								) => (
 									<GridInteractionItem
-										key={`${index}-${label}`}
 										{...{
+											key: `${index}-${label}`,
 											id,
 											group_interaction_id,
 											label,
