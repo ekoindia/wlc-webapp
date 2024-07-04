@@ -80,7 +80,7 @@ const Drawer = ({
 			<DrawerContent {...drawerContentStyles}>
 				<DrawerHeader title={title} onClose={onClose} />
 				<Divider />
-				<DrawerBody>{children}</DrawerBody>
+				<DrawerBody p="0">{children}</DrawerBody>
 			</DrawerContent>
 		</ChakraDrawer>
 	);

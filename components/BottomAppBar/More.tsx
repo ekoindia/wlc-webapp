@@ -1,4 +1,4 @@
-import { Flex, Text, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { useMenuContext } from "contexts";
 import { useRef } from "react";
 import { BottomAppBarDrawerList } from ".";
@@ -38,7 +38,9 @@ const More = () => {
 				isFullHeight={false}
 				finalFocusRef={btnRef}
 			>
-				<StatusCard />
+				<Box bg="primary.DEFAULT">
+					<StatusCard />
+				</Box>
 				<BottomAppBarDrawerList {...{ list, onClose }} />
 			</Drawer>
 		</>

@@ -58,7 +58,7 @@ const generateNewPath = (
  */
 const BottomAppBarDrawerList = ({ list, onClose }): JSX.Element => {
 	return (
-		<Accordion allowToggle>
+		<Accordion px="4" allowToggle>
 			{list?.map(
 				(
 					{ id, behavior, group_interaction_ids, label, icon, link },
