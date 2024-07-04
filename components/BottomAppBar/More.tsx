@@ -39,7 +39,7 @@ const More = () => {
 				finalFocusRef={btnRef}
 			>
 				<Box bg="primary.DEFAULT">
-					<StatusCard />
+					<StatusCard onLoadBalanceClick={() => onClose()} />
 				</Box>
 				<BottomAppBarDrawerList {...{ list, onClose }} />
 			</Drawer>
