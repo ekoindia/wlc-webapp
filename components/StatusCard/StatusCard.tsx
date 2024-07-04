@@ -1,5 +1,5 @@
 import { Circle, Flex, Text, Tooltip, useToast } from "@chakra-ui/react";
-import { TransactionIds } from "constants";
+import { TransactionIds } from "constants/EpsTransactions";
 import { useMenuContext, useSession } from "contexts";
 import { useWallet } from "contexts/WalletContext";
 import { useRouter } from "next/router";
@@ -7,14 +7,26 @@ import { useState } from "react";
 import { formatCurrency } from "utils/numberFormat";
 import { Icon } from "..";
 
+type StatusCardProps = {
+	className?: string;
+	onLoadBalanceClick?: () => void;
+};
+
 /**
- * A <StatusCard> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<StatusCard></StatusCard>`
+ * StatusCard component displays the user's balance and provides options to refresh
+ * the balance and load more balance.
+ * @param {StatusCardProps} props - The properties passed to the component.
+ * @param {string} [props.className] - Optional classes to pass to this component.
+ * @param {() => void} [props.onLoadBalanceClick] - Callback function to be called when the "Load Balance" button is clicked.
+ * @example
+ * ```tsx
+ * <StatusCard onLoadBalanceClick={() => console.log("Load Balance clicked")} />
+ * ```
  */
-const StatusCard = ({ ...rest }) => {
+const StatusCard = ({
+	onLoadBalanceClick,
+	...rest
+}: StatusCardProps): JSX.Element => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
 	const toast = useToast();
@@ -51,6 +63,9 @@ const StatusCard = ({ ...rest }) => {
 		}
 
 		router.push(`${isAdmin ? "/admin" : ""}/transaction/${id}`);
+		if (onLoadBalanceClick) {
+			onLoadBalanceClick();
+		}
 	};
 
 	const onRefreshHandler = () => {
@@ -110,7 +125,6 @@ const StatusCard = ({ ...rest }) => {
 							size={{ base: "12px", "2xl": "14px" }}
 							mr="0.2em"
 						/>
-
 						<Text
 							fontSize={{
 								base: "14px",
@@ -124,7 +138,7 @@ const StatusCard = ({ ...rest }) => {
 				</Flex>
 			</Flex>
 			<Flex columnGap="12px" align="center">
-				<Tooltip label="Refresh" /* hasArrow={true} */ placement="top">
+				<Tooltip label="Refresh" placement="top">
 					<Circle
 						size={{ base: "6", "2xl": "8" }}
 						bg="white"
@@ -138,10 +152,7 @@ const StatusCard = ({ ...rest }) => {
 						/>
 					</Circle>
 				</Tooltip>
-				<Tooltip
-					label="Load Balance"
-					/* hasArrow={true} */ placement="top"
-				>
+				<Tooltip label="Load Balance" placement="top">
 					<Circle
 						size={{ base: "6", "2xl": "8" }}
 						bg={"success"}
