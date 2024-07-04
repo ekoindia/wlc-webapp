@@ -4,13 +4,16 @@ import { useRef } from "react";
 import { BottomAppBarDrawerList } from ".";
 import { Drawer, Icon, StatusCard } from "..";
 
+// Ignore both home & dashboard in more option as it is already visible
+const IGNORE_LIST = [1, 8];
+
 /**
  * The More component renders a button that opens a drawer containing additional menu items.
  */
 const More = () => {
 	const btnRef = useRef<HTMLButtonElement>(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const { menuList, otherList } = useNavigationLists();
+	const { menuList, otherList } = useNavigationLists(IGNORE_LIST);
 	const list = [...menuList, ...otherList];
 
 	return (

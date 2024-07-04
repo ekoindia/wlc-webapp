@@ -201,9 +201,10 @@ const generateMenuLinkActions = (menu_list, router) => {
 
 /**
  * Hook for generating navigation lists.
+ * @param ignoreList
  * @returns {object} Navigation lists.
  */
-const useNavigationLists = () => {
+const useNavigationLists = (ignoreList = []) => {
 	const router = useRouter();
 	const { interactions } = useMenuContext();
 	const { interaction_list: interactionList, role_tx_list: roleTxList } =
@@ -246,6 +247,9 @@ const useNavigationLists = () => {
 			// Skip if the feature is disabled (from feature-flags)
 			if (item.featureFlag && !checkFeatureFlag(item.featureFlag))
 				return false;
+
+			// Ignore certain items
+			if (ignoreList.includes(item.id)) return false;
 
 			return true;
 		});
