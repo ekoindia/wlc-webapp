@@ -7,7 +7,7 @@ import {
 	useBreakpointValue,
 } from "@chakra-ui/react";
 import { InteractionBehavior } from "constants/trxnFramework";
-import { useMenuContext } from "contexts";
+import { useMenuContext, useSession } from "contexts";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import {
@@ -22,21 +22,25 @@ import {
  * Generates a new path for transaction navigation.
  * @param {string} currentPath - The current path of the router.
  * @param {number} id - The id to be included in the new path.
+ * @param {boolean} isAdmin - Whether the user is an admin.
  * @param {number} [group_interaction_id] - The optional group interaction id to be included in the new path.
  * @returns {string} The new path.
  */
 const generateNewPath = (
 	currentPath: string,
 	id: number,
+	isAdmin: boolean,
 	group_interaction_id?: number
 ) => {
 	const newPathSegment = `transaction/${id}${
 		group_interaction_id ? `/${group_interaction_id}` : ""
 	}`;
 
+	const baseSegment = isAdmin ? `/admin/` : `/`;
+
 	const newPath = currentPath.includes("transaction")
 		? currentPath.replace(/transaction\/\d+(\/\d*)?/, newPathSegment)
-		: newPathSegment;
+		: `${baseSegment}${newPathSegment}`;
 
 	return newPath;
 };
@@ -133,9 +137,10 @@ const Interaction = ({
 }: InteractionProps): JSX.Element => {
 	const router = useRouter();
 	const { h } = useHslColor(label);
+	const { isAdmin } = useSession();
 
 	const onInteractionClick = (id: number) => {
-		const newPath = generateNewPath(router.asPath, id);
+		const newPath = generateNewPath(router.asPath, id, isAdmin);
 		router.push(newPath);
 		onClose();
 	};
@@ -311,11 +316,13 @@ const GridInteractionItem = ({
 	onClose,
 }: GridInteractionItemProps): JSX.Element => {
 	const router = useRouter();
+	const { isAdmin } = useSession();
 
 	const onInteractionClick = (id: number, group_interaction_id?: number) => {
 		const newPath = generateNewPath(
 			router.asPath,
 			id,
+			isAdmin,
 			group_interaction_id
 		);
 		router.push(newPath);
