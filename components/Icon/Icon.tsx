@@ -1,42 +1,39 @@
-import { Box, chakra, useBreakpointValue } from "@chakra-ui/react";
+import {
+	Box,
+	chakra,
+	ResponsiveValue,
+	useBreakpointValue,
+} from "@chakra-ui/react";
 import { getIconSvg, IconNameType } from "constants/IconLibrary";
 
 export type IconProps = {
-	name: string; //IconNameType
+	name: string;
 	color?: string;
-	size?: string;
+	size?: ResponsiveValue<string>;
 	width?: any;
 	height?: any;
 	w?: any;
 	h?: any;
 	[rest: string]: any;
-	// style?: React.CSSProperties;
 };
 
 /**
- * A <Icon> component
- * TODO: Write more description here
- * @param 	{object}	props	Properties passed to the component
- * @param 	{string}	props.name	Name of the icon to display
- * @param root0.size
- * @param root0.w
- * @param root0.h
- * @param root0.width
- * @param root0.height
- * @param 	{string}	[props.size]	Size of the icon
- * @param root0
- * @param props.size
- * @param props.w
- * @param props.h
- * @param props.width
- * @param props.height
- * @param root0.name
- * @param props.name
- * @param 	{string}	[w]	Width of the icon
- * @param 	{string}	[h]	Height of the icon
- * @param 	{string}	[width]	Width of the icon
- * @param 	{string}	[height]	Height of the icon
- * @example	`<Icon name="home" size="lg" />`
+ * Icon component renders an SVG icon.
+ * @param {IconProps} props - Properties passed to the component.
+ * @param {string} props.name - Name of the icon to display.
+ * @param {string} [props.color] - Color of the icon.
+ * @param {ResponsiveValue<string>} [props.size] - Size of the icon. This can be a responsive value.
+ * @param {string} [props.width] - Width of the icon.
+ * @param {string} [props.height] - Height of the icon.
+ * @param {string} [props.w] - Width of the icon. Alias for `width`.
+ * @param {string} [props.h] - Height of the icon. Alias for `height`.
+ * @param {object} [rest] - Additional properties to pass to the component.
+ * @example
+ * // Basic usage
+ * <Icon name="home" size="lg" />
+ * @example
+ * // Responsive size
+ * <Icon name="home" size={{ base: "24px", md: "32px", lg: "48px" }} />
  */
 const Icon = ({
 	name,
