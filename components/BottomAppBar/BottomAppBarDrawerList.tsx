@@ -243,7 +243,7 @@ const GridInteraction = ({
 					>
 						<IconWithLabel {...{ icon, hue: h, label }} />
 					</AccordionButton>
-					<AccordionPanel isExpanded={isExpanded}>
+					<AccordionPanel isExpanded={isExpanded} pb="2">
 						<Grid
 							templateColumns={`repeat(${numColumns}, 1fr)`}
 							gap="3"
