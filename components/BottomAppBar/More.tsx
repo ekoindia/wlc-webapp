@@ -1,5 +1,5 @@
 import { Box, Flex, Text, useDisclosure } from "@chakra-ui/react";
-import { useMenuContext } from "contexts";
+import { useNavigationLists } from "hooks";
 import { useRef } from "react";
 import { BottomAppBarDrawerList } from ".";
 import { Drawer, Icon, StatusCard } from "..";
@@ -10,7 +10,7 @@ import { Drawer, Icon, StatusCard } from "..";
 const More = () => {
 	const btnRef = useRef<HTMLButtonElement>(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const { menuList, otherList } = useMenuContext();
+	const { menuList, otherList } = useNavigationLists();
 	const list = [...menuList, ...otherList];
 
 	return (

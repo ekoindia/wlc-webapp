@@ -16,7 +16,8 @@ import {
 	useToken,
 } from "@chakra-ui/react";
 import { Endpoints, UserType } from "constants";
-import { useMenuContext, useUser } from "contexts";
+import { useUser } from "contexts";
+import { useNavigationLists } from "hooks";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -52,7 +53,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		userType,
 	} = useUser();
 
-	const { trxnList, menuList, otherList } = useMenuContext();
+	const { trxnList, menuList, otherList } = useNavigationLists();
 	const router = useRouter();
 	const [openIndex, setOpenIndex] = useState(-1);
 
