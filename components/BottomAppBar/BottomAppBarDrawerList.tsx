@@ -150,28 +150,17 @@ const Interaction = ({
 			<AccordionButton
 				iconName="chevron-right"
 				iconSize="10px"
-				py="1"
+				py="2"
 				pr="0.5"
+				onClick={() => {
+					if (link) {
+						onLinkClick(link);
+					} else {
+						onInteractionClick(id);
+					}
+				}}
 			>
-				<Flex
-					py="1"
-					w="100%"
-					align="center"
-					gap="4"
-					cursor="pointer"
-					onClick={() => {
-						if (link) {
-							onLinkClick(link);
-						} else {
-							onInteractionClick(id);
-						}
-					}}
-				>
-					<Icon name={icon} size="md" color={`hsl(${h},80%,30%)`} />
-					<Text fontSize="sm" fontWeight="medium">
-						{label}
-					</Text>
-				</Flex>
+				<IconWithLabel {...{ icon, hue: h, label }} />
 			</AccordionButton>
 		</AccordionItem>
 	);
@@ -242,27 +231,12 @@ const GridInteraction = ({
 			{({ isExpanded, handleOpenIndexes }) => (
 				<>
 					<AccordionButton
-						py="1"
 						iconName={isExpanded ? "minus" : "add"}
 						iconSize="10px"
+						py="2"
 						onClick={handleOpenIndexes}
 					>
-						<Flex
-							py="1"
-							gap="4"
-							w="100%"
-							align="center"
-							cursor="pointer"
-						>
-							<Icon
-								name={icon}
-								size="md"
-								color={`hsl(${h},80%,30%)`}
-							/>
-							<Text fontSize="sm" fontWeight="medium">
-								{label}
-							</Text>
-						</Flex>
+						<IconWithLabel {...{ icon, hue: h, label }} />
 					</AccordionButton>
 					<AccordionPanel isExpanded={isExpanded}>
 						<Grid
@@ -391,3 +365,33 @@ const GridInteractionItem = ({
 		</Flex>
 	);
 };
+
+/* ####################### IconWithLabel ####################### */
+
+type IconWithLabelProps = {
+	icon: string;
+	hue: number;
+	label: string;
+};
+
+/**
+ * IconWithLabel component renders a Flex container with an Icon and Text.
+ * @param {IconWithLabelProps} props - Properties passed to the component.
+ * @param {string} props.icon - Name of the icon to display.
+ * @param {number} props.hue - Hue value for the icon color.
+ * @param {string} props.label - Text label to display next to the icon.
+ * @example
+ * <IconWithLabel icon="home" hue={120} label="Home" />
+ */
+const IconWithLabel = ({
+	icon,
+	hue,
+	label,
+}: IconWithLabelProps): JSX.Element => (
+	<Flex py="1" w="100%" align="center" gap="4" cursor="pointer">
+		<Icon name={icon} size="sm" color={`hsl(${hue},80%,30%)`} />
+		<Text fontSize="sm" fontWeight="medium">
+			{label}
+		</Text>
+	</Flex>
+);
