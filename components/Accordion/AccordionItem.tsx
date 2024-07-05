@@ -2,7 +2,7 @@ import { Box } from "@chakra-ui/react";
 import React, { ReactElement, ReactNode } from "react";
 import { useAccordion } from "./AccordionContext";
 
-type AccordionItemProps = {
+export type AccordionItemProps = {
 	id: number;
 	children:
 		| ReactNode
@@ -16,12 +16,10 @@ type AccordionItemProps = {
 
 /**
  * AccordionItem component represents an item within an accordion. It handles rendering its children based on whether the item is expanded or collapsed.
- *
  * @param {AccordionItemProps} props - The properties for the AccordionItem component.
  * @param {number} props.id - The unique identifier for the accordion item.
- * @param {React.ReactNode | function({isExpanded: boolean, handleOpenIndexes: function}): React.ReactNode} props.children - The content of the accordion item. This can either be a React node or a function that takes an object containing `isExpanded` and `handleOpenIndexes` and returns a React node.
- * @param {...Object} props.rest - A catch-all prop that allows any other prop to be passed in.
- *
+ * @param {React.ReactNode | function({isExpanded: boolean, handleOpenIndexes: Function}): React.ReactNode} props.children - The content of the accordion item. This can either be a React node or a function that takes an object containing `isExpanded` and `handleOpenIndexes` and returns a React node.
+ * @param {...object} props.rest - A catch-all prop that allows any other prop to be passed in.
  * @returns {JSX.Element} The rendered accordion item component.
  */
 const AccordionItem = ({
