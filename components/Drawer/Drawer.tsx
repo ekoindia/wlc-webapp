@@ -5,6 +5,7 @@ import {
 	DrawerContent,
 	DrawerOverlay,
 } from "@chakra-ui/react";
+import { useSwipe } from "hooks";
 import { DrawerHeader } from ".";
 
 interface DrawerProps {
@@ -66,19 +67,21 @@ const Drawer = ({
 		? {}
 		: { maxH: "70%", w: "100%", borderTopRadius: "10px", pb: "5" };
 
+	const { onTouchStart, onTouchMove, onTouchEnd } = useSwipe({
+		onSwipedDown: () => onClose(),
+	});
+
 	return (
 		<ChakraDrawer
-			id={id}
-			size={size}
-			isOpen={isOpen}
-			onClose={onClose}
-			placement={placement}
-			finalFocusRef={finalFocusRef}
+			{...{ id, size, isOpen, onClose, placement, finalFocusRef }}
 			{...rest}
 		>
 			<DrawerOverlay />
-			<DrawerContent {...drawerContentStyles}>
-				<DrawerHeader title={title} onClose={onClose} />
+			<DrawerContent
+				{...{ onTouchStart, onTouchMove, onTouchEnd }}
+				{...drawerContentStyles}
+			>
+				<DrawerHeader {...{ title, onClose }} />
 				<Divider />
 				<DrawerBody p="0">{children}</DrawerBody>
 			</DrawerContent>
