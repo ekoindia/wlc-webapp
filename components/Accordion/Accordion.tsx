@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { ReactElement } from "react";
-import { AccordionItemProps, AccordionProvider } from ".";
+import { AccordionProvider } from ".";
+import { AccordionItemProps } from "./AccordionItem";
 
 type AccordionProps = {
 	className?: string;
@@ -8,22 +9,17 @@ type AccordionProps = {
 	allowToggle?: boolean;
 	allowMultiple?: boolean;
 	[key: string]: any; // rest
-	// eslint-disable-next-line no-unused-vars
-	// onChange?: (id: number) => void; // TODO check if required!
 };
 
 /**
  * Accordion is a compound component that manages state for all its accordion items using the Context API.
- *
  * @param {AccordionProps} props - Props for configuring the Accordion component.
- * @param {string} [props.className="accordion"] - className for the accordion container.
- * @param {boolean} [props.allowToggle=false] - If true, any expanded accordion item can be collapsed again.
- * @param {boolean} [props.allowMultiple=false] - If true, multiple accordion items can be expanded at once.
+ * @param {string} [props.className] - className for the accordion container.
+ * @param {boolean} [props.allowToggle] - If true, any expanded accordion item can be collapsed again.
+ * @param {boolean} [props.allowMultiple] - If true, multiple accordion items can be expanded at once.
  * @param {ReactElement<AccordionItemProps>} props.children - The accordion items.
- * @param {...Object} props.rest - A catch-all prop that allows any other prop to be passed in.
- *
+ * @param {...object} props.rest - A catch-all prop that allows any other prop to be passed in.
  * @returns {JSX.Element} The Accordion component.
- *
  */
 const Accordion = ({
 	className = "accordion",
