@@ -1,4 +1,5 @@
 import { Flex, ResponsiveValue } from "@chakra-ui/react";
+// @ts-ignore
 import { Button } from "components";
 import { usePlatform } from "hooks";
 
@@ -83,6 +84,8 @@ const ActionButtonGroup = ({
 					onClick,
 				}) => {
 					return (
+						// TODO: remove this directive after converting button to tsx.
+						// @ts-ignore
 						<Button
 							key={label}
 							{...{
