@@ -1,4 +1,5 @@
 /* PLOP_INJECT_IMPORT */
+import { ActionButtonGroup } from "./ActionButtonGroup";
 import {
 	Accordion,
 	AccordionButton,
@@ -61,6 +62,7 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	ActionButtonGroup,
 	Accordion,
 	AccordionButton,
 	AccordionItem,
