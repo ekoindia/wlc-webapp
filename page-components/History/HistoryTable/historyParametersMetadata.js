@@ -105,6 +105,13 @@ export const historyParametersMetadata = [
 		pattern_format: "#### #### #",
 		display_media_id: DisplayMedia.PRINT,
 	},
+	{
+		name: "settlement_type",
+		label: "Settlement Type",
+		show: "Settlement Type",
+		parameter_type_id: 12,
+		display_media_id: DisplayMedia.SCREEN,
+	},
 	// Only shown to customer as "1% (min. Rs. 10)"; maybe for DMT only. Is it required as per regulations?
 	// {
 	// 	name: "fee",
