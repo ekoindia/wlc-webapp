@@ -2,50 +2,57 @@ import { Box, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { Endpoints, TransactionIds } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
 import { useUser } from "contexts";
-import { useClipboard } from "hooks";
+import { useClipboard, useFeatureFlag, useRaiseIssue } from "hooks";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import { clearCacheAndReload } from "utils";
 import { AdminViewToggleCard, Button, IcoButton, Icon } from "..";
 
-const MyAccountCard = ({ setIsCardOpen }) => {
-	const { isAdmin, logout, isOnboarding, userData } = useUser();
+/**
+ * Show the user's account details in a card, whenever the top-right corner profile icon is clicked.
+ * MARK: Profile Menu
+ * @param {object} param
+ * @param {Function} param.setIsCardOpen - Function to set the state of the card
+ * @param {Function} param.onClose - Function to close the card menu (in Desktop view)
+ * @returns {JSX.Element} - The user's account details card
+ */
+const MyAccountCard = ({ setIsCardOpen, onClose }) => {
+	const { isAdmin, logout, isOnboarding, userData, isLoggedIn } = useUser();
+	const { showRaiseIssueDialog } = useRaiseIssue();
+	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
+
 	const { userDetails } = userData;
 	const { name, code, email, mobile } = userDetails ?? {};
 	const router = useRouter();
 	const { copy, state } = useClipboard();
 	const menulist = isAdmin ? adminProfileMenu : profileMenu;
 
+	/**
+	 * Helper function to close the user-profile menu
+	 */
+	const close = () => {
+		// console.log("close::: ", setIsCardOpen ? true : false);
+		setIsCardOpen && setIsCardOpen(false);
+		onClose && onClose();
+	};
+
 	return (
 		<Box
 			border="card"
 			boxShadow="0px 6px 10px #00000033"
 			borderRadius="10px"
-			w={{ base: "100%", sm: "initial" }}
 		>
+			{/* PROFILE SECTION */}
 			<Flex
 				direction="column"
-				px={{ base: "3", sm: "2", md: "2", lg: "4" }}
-				py={{ base: "2", sm: "2", md: "1", lg: "" }}
+				px="4"
+				py="1"
 				w="full"
 				bg="primary.DEFAULT"
 				position="relative"
 				borderTopRadius="10px"
 			>
-				<Flex
-					display={{ base: "flex", sm: "none" }}
-					color="white"
-					justifyContent="flex-end"
-					w="100%"
-				>
-					<Icon
-						name="close"
-						size="16px"
-						onClick={() => setIsCardOpen(false)}
-					/>
-				</Flex>
 				<Box
-					display={{ base: "none", sm: "initial" }}
 					color="primary.DEFAULT"
 					transform="rotate(180deg)"
 					position="absolute"
@@ -158,7 +165,6 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 							w="full"
 							py="2"
 							justify="space-between"
-							mt={{ base: "8px", sm: "initial" }}
 							wrap="wrap"
 						>
 							<Flex
@@ -203,9 +209,7 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 										router.push(
 											`${prefix}/transaction/${TransactionIds.MANAGE_MY_ACCOUNT}/${TransactionIds.UPDATE_REGISTERED_MOBILE}`
 										);
-										if (setIsCardOpen) {
-											setIsCardOpen(false);
-										}
+										close();
 									}}
 								/>
 							</Flex>
@@ -221,10 +225,8 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 									borderRadius="6px"
 									fontSize="12px"
 									onClick={() => {
+										close();
 										router.push(Endpoints.USER_PROFILE);
-										if (setIsCardOpen) {
-											setIsCardOpen(false);
-										}
 									}}
 								>
 									View Profile
@@ -239,30 +241,49 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 				) : null}
 			</Flex>
 
+			{/* MENU SECTION */}
 			<Flex
 				direction="column"
 				px="4"
 				w="100%"
 				bg="white"
-				h={{ base: "100%", sm: "initial" }}
 				fontSize={{ base: "sm", md: "xs" }}
 				borderBottomRadius="10px"
 			>
+				{/* Raise-Query menu item */}
+				{isLoggedIn && isRaiseIssueAllowed ? (
+					<>
+						<Flex
+							w="100%"
+							align="center"
+							justify="space-between"
+							cursor="pointer"
+							minH="50px"
+							onClick={() => {
+								close();
+								showRaiseIssueDialog({ origin: "Global-Help" });
+							}}
+						>
+							<Text>Raise Query</Text>
+							<Icon name="chevron-right" size="xxs" />
+						</Flex>
+						<Divider />
+					</>
+				) : null}
+
+				{/* Configured menu items (internal links) which are configured in `constants/profileCardMenu.js` */}
 				{isOnboarding !== true
 					? menulist.map((ele) => (
 							<Fragment key={"mnu-" + ele.title + ele.link}>
 								<Flex
 									w="100%"
-									h={{ base: "auto", md: "100%" }}
 									align="center"
 									justify="space-between"
 									cursor="pointer"
 									minH="50px"
 									onClick={() => {
 										router.push(ele.link);
-										if (setIsCardOpen) {
-											setIsCardOpen(false);
-										}
+										close();
 									}}
 								>
 									<Text>{ele.title}</Text>
@@ -270,8 +291,10 @@ const MyAccountCard = ({ setIsCardOpen }) => {
 								</Flex>
 								<Divider />
 							</Fragment>
-					  ))
+						))
 					: null}
+
+				{/* Logout Row */}
 				<Flex
 					direction="row"
 					minH="50px"
