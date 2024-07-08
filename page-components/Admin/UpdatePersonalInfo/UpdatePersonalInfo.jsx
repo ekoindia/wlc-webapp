@@ -7,7 +7,14 @@ import {
 	Text,
 	useToast,
 } from "@chakra-ui/react";
-import { Button, Calenders, Headings, Input, Radio, Select } from "components";
+import {
+	ActionButtonGroup,
+	Calenders,
+	Headings,
+	Input,
+	Radio,
+	Select,
+} from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -169,6 +176,7 @@ const UpdatePersonalInfo = () => {
 	}, [agentData, shopTypes]);
 
 	const handleFormPreview = (previewData) => {
+		console.log("previewData", previewData);
 		const keysToFlatten = ["shop_type", "marital_status"];
 		Object.entries(previewData).map(([key, value]) => {
 			if (keysToFlatten.includes(key)) {
@@ -280,6 +288,50 @@ const UpdatePersonalInfo = () => {
 			label: "Last Name",
 			required: true,
 			validation: { required: "⚠ Required" },
+		},
+	];
+
+	const PreviewButtonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Preview",
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Cancel",
+			onClick: () => router.back(),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
+		},
+	];
+
+	const SubmitButtonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Save",
+			onClick: () => handleFormSubmit(),
+			loading: isSubmitting,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Cancel",
+			onClick: () => setInPreviewMode(!inPreviewMode),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
 		},
 	];
 
@@ -534,7 +586,7 @@ const UpdatePersonalInfo = () => {
 										)}
 									</FormControl>
 								</Flex>
-								<Flex
+								{/* <Flex
 									direction={{
 										base: "row-reverse",
 										md: "row",
@@ -576,7 +628,12 @@ const UpdatePersonalInfo = () => {
 									>
 										Cancel
 									</Button>
-								</Flex>
+								</Flex> */}
+
+								<ActionButtonGroup
+									buttonConfigList={PreviewButtonConfigList}
+									bottom="0"
+								/>
 							</Flex>
 						) : (
 							<Flex direction="column" gap="8">
@@ -606,7 +663,7 @@ const UpdatePersonalInfo = () => {
 									)}
 								</SimpleGrid>
 
-								<Flex
+								{/* <Flex
 									direction={{
 										base: "row-reverse",
 										md: "row",
@@ -652,7 +709,11 @@ const UpdatePersonalInfo = () => {
 									>
 										Cancel
 									</Button>
-								</Flex>
+								</Flex> */}
+
+								<ActionButtonGroup
+									buttonConfigList={SubmitButtonConfigList}
+								/>
 							</Flex>
 						)}
 					</Flex>

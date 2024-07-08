@@ -1,5 +1,11 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { Button, Dropzone, Icon, InputLabel } from "components";
+import {
+	ActionButtonGroup,
+	Button,
+	Dropzone,
+	Icon,
+	InputLabel,
+} from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -76,6 +82,29 @@ const AirtelCms = () => {
 			});
 	};
 
+	const buttonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Upload",
+			onClick: () => handleFileUpload(),
+			disabled: file === null || file === undefined,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Cancel",
+			onClick: () => router.back(),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
+		},
+	];
+
 	return (
 		<Flex direction="column" gap="8">
 			{data === null ? (
@@ -103,40 +132,8 @@ const AirtelCms = () => {
 							accept=".xls,.xlsx"
 						/>
 					</Flex>
-					<Flex
-						direction={{ base: "row-reverse", md: "row" }}
-						w={{ base: "100%", md: "500px" }}
-						position={{ base: "fixed", md: "initial" }}
-						gap={{ base: "0", md: "16" }}
-						align="center"
-						bottom="0"
-						left="0"
-					>
-						<Button
-							onClick={handleFileUpload}
-							size="lg"
-							h="64px"
-							w={{ base: "100%", md: "200px" }}
-							fontWeight="bold"
-							borderRadius={{ base: "none", md: "10" }}
-							disabled={file === null || file === undefined}
-						>
-							Upload
-						</Button>
-						<Button
-							h={{ base: "64px", md: "auto" }}
-							w={{ base: "100%", md: "initial" }}
-							bg={{ base: "white", md: "none" }}
-							variant="link"
-							fontWeight="bold"
-							color="primary.DEFAULT"
-							_hover={{ textDecoration: "none" }}
-							borderRadius={{ base: "none", md: "10" }}
-							onClick={() => router.back()}
-						>
-							Cancel
-						</Button>
-					</Flex>
+
+					<ActionButtonGroup {...{ buttonConfigList }} />
 				</Flex>
 			) : (
 				<Flex direction="column" gap="2">
