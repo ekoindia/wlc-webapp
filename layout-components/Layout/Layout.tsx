@@ -69,7 +69,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	const { isSubPage, title, hideMenu } = pageMeta;
 
 	const { isLoggedIn } = useSession();
-	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
+	const { isOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
 
 	const isSmallScreen = useBreakpointValue({ base: true, md: false });
 
@@ -199,7 +199,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							}}
 							h={NavHeight}
 						>
-							{loadNavBar ? <NavBar setNavOpen={onOpen} /> : null}
+							{loadNavBar ? <NavBar /> : null}
 						</Box>
 					)}
 

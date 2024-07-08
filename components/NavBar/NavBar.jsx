@@ -14,7 +14,6 @@ import {
 import { useKBarReady } from "components/CommandBar";
 import { useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
-import { useState } from "react";
 import { limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
 import { MyAccountCard } from ".";
@@ -31,8 +30,6 @@ export const NavHeight = {
  * The top app-bar component
  */
 const NavBar = () => {
-	const [, setIsCardOpen] = useState(false);
-
 	return (
 		<>
 			<Box as="nav" w="full" h={NavHeight}></Box>
@@ -45,7 +42,7 @@ const NavBar = () => {
 				boxShadow="0px 3px 10px #0000001A"
 			>
 				<Box as="nav" position="sticky" w="full" h={NavHeight}>
-					<NavContent {...{ setIsCardOpen }} />
+					<NavContent />
 				</Box>
 			</Box>
 		</>
@@ -54,7 +51,7 @@ const NavBar = () => {
 
 export default NavBar;
 
-const NavContent = ({ setIsCardOpen }) => {
+const NavContent = () => {
 	const { userData, isAdmin, isAdminAgentMode, isOnboarding, isLoggedIn } =
 		useUser();
 	const { userDetails } = userData;
@@ -124,7 +121,6 @@ const NavContent = ({ setIsCardOpen }) => {
 				<MenuButton
 					onClick={() => {
 						onOpen();
-						setIsCardOpen(true);
 					}}
 				>
 					<Flex align="center" cursor="pointer" zIndex="10">
@@ -213,7 +209,7 @@ const NavContent = ({ setIsCardOpen }) => {
 						lg: "-0.6vw",
 					}}
 				>
-					<MyAccountCard {...{ setIsCardOpen, onClose }} />
+					<MyAccountCard {...{ onClose }} />
 				</MenuList>
 			</Menu>
 		</HStack>
