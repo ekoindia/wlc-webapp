@@ -12,11 +12,10 @@ import { AdminViewToggleCard, Button, IcoButton, Icon } from "..";
  * Show the user's account details in a card, whenever the top-right corner profile icon is clicked.
  * MARK: Profile Menu
  * @param {object} param
- * @param {Function} param.setIsCardOpen - Function to set the state of the card
  * @param {Function} param.onClose - Function to close the card menu (in Desktop view)
  * @returns {JSX.Element} - The user's account details card
  */
-const MyAccountCard = ({ setIsCardOpen, onClose }) => {
+const MyAccountCard = ({ onClose }) => {
 	const { isAdmin, logout, isOnboarding, userData, isLoggedIn } = useUser();
 	const { showRaiseIssueDialog } = useRaiseIssue();
 	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
@@ -32,7 +31,6 @@ const MyAccountCard = ({ setIsCardOpen, onClose }) => {
 	 */
 	const close = () => {
 		// console.log("close::: ", setIsCardOpen ? true : false);
-		setIsCardOpen && setIsCardOpen(false);
 		onClose && onClose();
 	};
 
