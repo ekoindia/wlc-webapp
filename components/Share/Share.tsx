@@ -1,5 +1,4 @@
 import {
-	Button,
 	Grid,
 	Icon,
 	Menu,
@@ -12,6 +11,7 @@ import {
 	Portal,
 	Text,
 } from "@chakra-ui/react";
+import { Button } from "components";
 import { ReactNode, useState } from "react";
 import { IconType } from "react-icons";
 import { FaSms, FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
@@ -237,7 +237,7 @@ const Share = ({
 			{/* Share menu button... */}
 			<MenuButton
 				as={Button}
-				leftIcon={!hideIcon && <FiShare2 {...iconProps} />}
+				icon={!hideIcon && <FiShare2 {...iconProps} />}
 				variant={variant}
 				borderRadius="full"
 				size={size}

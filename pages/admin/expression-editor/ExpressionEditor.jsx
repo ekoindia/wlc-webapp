@@ -32,7 +32,6 @@
 import { AddIcon, DeleteIcon, WarningTwoIcon } from "@chakra-ui/icons";
 import {
 	Box,
-	// Button,
 	Center,
 	Flex,
 	Heading,

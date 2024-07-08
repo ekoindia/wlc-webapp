@@ -1,5 +1,5 @@
-import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import { Dropzone, Input, Select } from "components";
+import { Flex, SimpleGrid, Text } from "@chakra-ui/react";
+import { Button, Dropzone, Input, Select } from "components";
 import {
 	useCamera,
 	useFeatureFlag,

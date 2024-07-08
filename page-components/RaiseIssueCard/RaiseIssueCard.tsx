@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	Flex,
 	Input,
 	Spinner,
@@ -8,7 +7,7 @@ import {
 	Textarea,
 	useToast,
 } from "@chakra-ui/react";
-import { Dropzone, IcoButton, Icon, InputLabel } from "components";
+import { Button, Dropzone, IcoButton, Icon, InputLabel } from "components";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useUser } from "contexts";
 import { createSupportTicket, fetcher } from "helpers";
@@ -911,13 +910,14 @@ const RaiseIssueCard = ({
 										variant="accent"
 										size="lg"
 										isDisabled={disableSubmit}
-										rightIcon={
+										icon={
 											<Icon
 												name="arrow-forward"
 												size="sm"
 												ml={1}
 											/>
 										}
+										iconPosition="right"
 										onClick={() => {
 											submitFeedback();
 										}}

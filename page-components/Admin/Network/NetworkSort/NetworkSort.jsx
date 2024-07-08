@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	Center,
 	Menu,
 	MenuButton,
@@ -14,7 +13,7 @@ import {
 	StackDivider,
 	Text,
 } from "@chakra-ui/react";
-import { Icon } from "components";
+import { Button, Icon } from "components";
 import { Fragment, useState } from "react";
 
 /**

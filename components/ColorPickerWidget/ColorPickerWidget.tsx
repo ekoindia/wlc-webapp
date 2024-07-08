@@ -1,11 +1,11 @@
 import {
-	Button,
 	Flex,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 	useToken,
 } from "@chakra-ui/react";
+import { Button } from "components";
 import { colorThemes } from "constants/colorThemes";
 import { useEffect, useState } from "react";
 import { SketchPicker } from "react-color";
@@ -122,10 +122,24 @@ const ColorPickerWidget = ({
 				<PopoverContent
 					alignItems="center"
 					bg="transparent"
+					// bg="white"
+					// p={{ base: 2, md: 4 }}
 					width="min-content"
 				>
 					{/* <PopoverArrow /> */}
 					{/* <PopoverCloseButton /> */}
+					{/* <ColorPicker
+						hideOpacity
+						// hideColorTypeBtns
+						// hidePresets
+						hideAdvancedSliders
+						hideColorGuide
+						value={color}
+						onChange={(clr) => {
+							setColor(clr);
+							onColorChange && onColorChange(clr);
+						}}
+					/> */}
 					<SketchPicker
 						disableAlpha
 						presetColors={presetColors}
