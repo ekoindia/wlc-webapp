@@ -4,35 +4,31 @@ import { InputLabel } from "..";
 
 /**
  * A Radio component
- * @param options.id
- * @param 	{Array}	options     options to show
- * @param 	{object}	renderer	mapping object for label & value
- * @param 	{string}	value	value
- * @param 	{Function}	onChange	function
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @param options.value
- * @param options.options
- * @param options.onChange
- * @param options.label
- * @param options.labelStyle
- * @param options.required
- * @param options.defaultValue
- * @param options.renderer
- * @param options.styles
- * @example	`<Radio></Radio>` TODO: Fix example
+ * @param {object} prop
+ * @param {string} [prop.id] - Optional ID for the radio group
+ * @param {string} [prop.value] - Selected value
+ * @param {string} [prop.defaultValue] - Default value
+ * @param {string} [prop.label] - Label for the radio group
+ * @param {object} [prop.labelStyle] - Style object for label
+ * @param {Array} 	prop.options - Array of options to show with `label` and `value` keys
+ * @param {boolean} [prop.required] - Required field
+ * @param {object} [prop.renderer] - mapping object for label & value
+ * @param {object} [prop.styles] - Style object for radio group
+ * @param {Function} prop.onChange - Function to call on change
+ * @param {...*} rest - Rest of the props passed to this component.
+ * @example	`<Radio value={...} options={[...]} />`
  */
 const Radio = ({
 	id,
 	value,
-	options,
-	onChange,
+	defaultValue,
 	label,
 	labelStyle,
+	options,
 	required = false,
-	defaultValue,
 	renderer = { label: "label", value: "value" },
 	styles,
+	onChange,
 	...rest
 }) => {
 	const _id = useId();
