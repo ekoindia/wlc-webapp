@@ -9,6 +9,7 @@ import {
 import { colorThemes } from "constants/colorThemes";
 import { useEffect, useState } from "react";
 import { generateShades } from "utils";
+import { Section } from "./Section";
 
 const bgTransition = "background 0.5s ease-in";
 
@@ -20,7 +21,6 @@ const ThemeConfig = () => {
 	const [selectedTheme, setSelectedTheme] = useState(null);
 	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-2);
 	const [navStyle, setNavStyle] = useState("");
-	const [landingPageStyle, setLandingPageStyle] = useState("");
 
 	// Get current theme color values
 	const [
@@ -50,7 +50,7 @@ const ThemeConfig = () => {
 	});
 	const [customThemeSet, setCustomThemeSet] = useState(false); // Whether user has edited & set a custom theme
 
-	// Load Landing Page Style from LocalStorage & also set the current color theme
+	// Load the current color theme
 	useEffect(() => {
 		// TODO: Get the current navbar style (light or dark)
 
@@ -70,32 +70,7 @@ const ThemeConfig = () => {
 				(theme) => theme.primary == primary && theme.accent == accent
 			)
 		);
-
-		// Set the current Landing Page Style
-		const landingPageStyle = localStorage.getItem(
-			"inf-landing-page-cms-conf"
-		); // Eg: {"type":"page"}
-		if (landingPageStyle) {
-			setLandingPageStyle(JSON.parse(landingPageStyle).type);
-		} else {
-			setLandingPageStyle("card");
-		}
 	}, []);
-
-	// Save the selected Landing Page Style to LocalStorage
-	// TODO: Save on server
-	useEffect(() => {
-		// console.log("Selected Landing Page Style:", landingPageStyle);
-		if (landingPageStyle === "page") {
-			localStorage.setItem(
-				"inf-landing-page-cms-conf",
-				JSON.stringify({ type: "page" })
-			);
-		} else if (landingPageStyle === "card") {
-			// Delete the key if the value is "card"
-			localStorage.removeItem("inf-landing-page-cms-conf");
-		}
-	}, [landingPageStyle]);
 
 	// Apply custom theme when selected by the user (and, if it is different than the predefined themes)
 	// Calculate 10 degree darker and lighter shades of the primary & accent colors
