@@ -79,7 +79,7 @@ const NavBar = ({ setNavOpen }) => {
 
 export default NavBar;
 
-const NavContent = ({ setNavOpen, setIsCardOpen }) => {
+const NavContent = ({ /* setNavOpen, */ setIsCardOpen }) => {
 	const { userData, isAdmin, isAdminAgentMode, isOnboarding, isLoggedIn } =
 		useUser();
 	const { userDetails } = userData;
@@ -133,25 +133,12 @@ const NavContent = ({ setNavOpen, setIsCardOpen }) => {
 		>
 			{/* Left-side items of navbar */}
 			<Flex align="center" flexGrow={isMobile ? 1 : 0}>
-				<Flex align="center" minW={{ base: "auto", md: "250px" }}>
-					{isOnboarding ? null : (
-						<Icon
-							name="menu"
-							mr="12px"
-							display={{
-								base: "initial",
-								lg: "none",
-							}}
-							onClick={() => setNavOpen(true)}
-							aria-label="open menu"
-						/>
-					)}
-					<OrgLogo
-						size="md"
-						dark={orgDetail?.metadata?.theme?.navstyle === "light"}
-						ml={{ base: 1, lg: 0 }}
-					/>
-				</Flex>
+				<OrgLogo
+					size="md"
+					align="center"
+					dark={orgDetail?.metadata?.theme?.navstyle === "light"}
+					minW={{ base: "auto", md: "250px" }}
+				/>
 
 				{!isMobile &&
 					ready &&
