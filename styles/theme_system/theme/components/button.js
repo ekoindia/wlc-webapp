@@ -38,6 +38,18 @@ const success = defineStyle({
 	},
 });
 
+const error = defineStyle({
+	bg: "error",
+	boxShadow: "0px 3px 10px #A52A2A40",
+	color: "white",
+	_hover: {
+		bg: "#A52A2A",
+		_disabled: {
+			bg: "error",
+		},
+	},
+});
+
 const ghost = defineStyle({
 	bg: "white",
 	color: "dark",
@@ -87,6 +99,7 @@ export const buttonTheme = defineStyleConfig({
 		primary,
 		accent,
 		success,
+		error,
 		ghost,
 		link,
 		accent_outline,
