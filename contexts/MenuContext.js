@@ -23,7 +23,6 @@ const fetchData = async (accessToken) => {
 			token: accessToken,
 		}
 	);
-	console.log("response", response);
 
 	if (!response.length) {
 		throw new Error("No data received from the API");

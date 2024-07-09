@@ -30,7 +30,6 @@ const MyAccountCard = ({ onClose }) => {
 	 * Helper function to close the user-profile menu
 	 */
 	const close = () => {
-		// console.log("close::: ", setIsCardOpen ? true : false);
 		onClose && onClose();
 	};
 
