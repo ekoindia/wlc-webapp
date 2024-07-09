@@ -15,6 +15,13 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 	},
 
+	// Custom theme support for paid tier.
+	CUSTOM_THEME: {
+		enabled: true,
+		forRoles: [],
+		forEnv: ["development"],
+	},
+
 	// Feature to show a custom Landing Page that can be fully configured by Admins.
 	CMS_LANDING_PAGE: {
 		enabled: true,

@@ -6,7 +6,8 @@ import {
 	InputLabel as Label,
 	Radio,
 } from "components";
-import { colorThemes } from "constants/colorThemes";
+import { colorThemes } from "constants";
+import { useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
 import { generateShades } from "utils";
 
@@ -21,6 +22,7 @@ const ThemeConfig = () => {
 	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-2);
 	const [navStyle, setNavStyle] = useState("");
 	const [landingPageStyle, setLandingPageStyle] = useState("");
+	const [isConfigEnabled] = useFeatureFlag("CUSTOM_THEME");
 
 	// Get current theme color values
 	const [
@@ -194,35 +196,38 @@ const ThemeConfig = () => {
 							))}
 
 							{/* Add custom color selector */}
-							<ColorSelector
-								theme={
-									customThemeSet && selectedThemeIdx === -1
-										? {
-												name: "Custom Theme",
-												primary:
-													_customThemePreview?.primary ||
-													primary,
-												accent:
-													_customThemePreview?.accent ||
-													accent,
-											}
-										: {
-												name: "Custom Theme",
-											}
-								}
-								i={-1}
-								isSelected={
-									selectedThemeIdx === -1 && selectedTheme
-								}
-								onSelect={(theme, i) => {
-									setSelectedTheme(theme);
-									setSelectedThemeIdx(i);
-								}}
-							/>
+							{isConfigEnabled && (
+								<ColorSelector
+									theme={
+										customThemeSet &&
+										selectedThemeIdx === -1
+											? {
+													name: "Custom Theme",
+													primary:
+														_customThemePreview?.primary ||
+														primary,
+													accent:
+														_customThemePreview?.accent ||
+														accent,
+												}
+											: {
+													name: "Custom Theme",
+												}
+									}
+									i={-1}
+									isSelected={
+										selectedThemeIdx === -1 && selectedTheme
+									}
+									onSelect={(theme, i) => {
+										setSelectedTheme(theme);
+										setSelectedThemeIdx(i);
+									}}
+								/>
+							)}
 						</Flex>
 
 						{/* Custom Theme Editor Section */}
-						{selectedThemeIdx === -1 ? (
+						{isConfigEnabled && selectedThemeIdx === -1 ? (
 							<Flex direction="column" mt={10}>
 								<Label required>Select your Own Colors</Label>
 								<table>
