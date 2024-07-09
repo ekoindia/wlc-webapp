@@ -6,7 +6,7 @@ import { fetcher } from "./apiHelper";
  * Verify OTP and get user details to login the user.
  * @param {number} org_id	Organization ID
  * @param {number} number	User's mobile number
- * @param {function} toast		Function to show toast messages
+ * @param {Function} toast		Function to show toast messages
  * @param {string} sendState	"send" or "resend" for showing proper toast message
  * @param {boolean} isAndroid	Is the user using the Android wrapper app?
  * @returns {boolean} Is SEND-OTP request successful?
@@ -80,6 +80,10 @@ async function sendOtpRequest(
 }
 
 // TODO: Use proper Input component that returns only unformatted input and make this redundent
+/**
+ *
+ * @param number
+ */
 function RemoveFormatted(number) {
 	return number.replace(/\D/g, "");
 }
@@ -104,6 +108,7 @@ function getTokenExpiryTime(data) {
 
 /**
  * Create userState
+ * @param data
  */
 function createUserState(data) {
 	let token_timeout = getTokenExpiryTime(data);
@@ -209,6 +214,10 @@ function getAuthTokens() {
 	return tokenData;
 }
 
+/**
+ *
+ * @param data
+ */
 function ParseJson(data) {
 	return data !== "undefined" ? JSON.parse(data) : "";
 }
@@ -231,6 +240,7 @@ function getSessions() {
 
 /**
  * Clears all the auth tokens from the session storage.
+ * @param isAndroid
  */
 function clearAuthTokens(isAndroid) {
 	for (var i = 0; i < sessionStorage.length; i++) {
@@ -271,10 +281,10 @@ function revokeSession(user_id) {
 /**
  * Generate a new access token using the refresh token.
  * @param {string} refresh_token	The refresh token
- * @param {function} updateUserInfo	Function to update the userState
+ * @param {Function} updateUserInfo	Function to update the userState
  * @param {boolean} isTokenUpdating	Is the token already being updated?
- * @param {function} setIsTokenUpdating	Function to set the token update status
- * @param {function} logout	Function to logout the user
+ * @param {Function} setIsTokenUpdating	Function to set the token update status
+ * @param {Function} logout	Function to logout the user
  * @returns
  */
 function generateNewAccessToken(
@@ -323,6 +333,14 @@ function generateNewAccessToken(
 		.finally(setIsTokenUpdating(false));
 }
 
+/**
+ *
+ * @param refresh_token
+ * @param updateUserInfo
+ * @param login
+ * @param logout
+ * @param isAndroid
+ */
 function loginUsingRefreshTokenAndroid(
 	refresh_token,
 	updateUserInfo,

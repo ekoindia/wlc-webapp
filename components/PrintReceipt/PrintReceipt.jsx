@@ -4,6 +4,10 @@ import { useOrgDetailContext, useUser } from "contexts";
 
 /**
  * Show a receipt header/footer on paper when printing the page (@media print).
+ * @param root0
+ * @param root0.heading
+ * @param root0.receiptTnc
+ * @param root0.children
  * @example
  * 	<PrintReceipt>
  * 		{children}
@@ -40,7 +44,6 @@ const PrintReceipt = ({ heading, receiptTnc, children, ...rest }) => {
 				<Flex flexDirection="row" align="center" width="100%">
 					{orgDetail.logo && (
 						<OrgLogo
-							orgDetail={orgDetail}
 							size="lg"
 							// size={{ base: "md", md: "lg" }}
 							// mr={8}

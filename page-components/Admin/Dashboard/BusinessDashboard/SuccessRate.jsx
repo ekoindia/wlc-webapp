@@ -3,8 +3,9 @@ import { Divider, Flex, Stack, Text } from "@chakra-ui/react";
 /**
  * A SuccessRate page-component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.data
  * @example	`<SuccessRate></SuccessRate>`
  */
 const SuccessRate = ({ data }) => {

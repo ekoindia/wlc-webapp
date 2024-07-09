@@ -73,7 +73,7 @@ const IconsDemo = () => {
 							: a.category.localeCompare(b.category);
 					}
 					return (a.size || 0) - (b.size || 0);
-			  })
+				})
 			: icons;
 		setSortedIcons(_sortedIcons);
 	}, [icons, sortType]);

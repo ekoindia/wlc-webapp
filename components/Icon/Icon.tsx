@@ -12,14 +12,32 @@ export type IconProps = {
 	[rest: string]: any;
 	// style?: React.CSSProperties;
 };
+
 /**
  * A <Icon> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param 	{object}	props	Properties passed to the component
+ * @param 	{string}	props.name	Name of the icon to display
+ * @param root0.size
+ * @param root0.w
+ * @param root0.h
+ * @param root0.width
+ * @param root0.height
+ * @param 	{string}	[props.size]	Size of the icon
+ * @param root0
+ * @param props.size
+ * @param props.w
+ * @param props.h
+ * @param props.width
+ * @param props.height
+ * @param root0.name
+ * @param props.name
+ * @param 	{string}	[w]	Width of the icon
+ * @param 	{string}	[h]	Height of the icon
+ * @param 	{string}	[width]	Width of the icon
+ * @param 	{string}	[height]	Height of the icon
  * @example	`<Icon name="home" size="lg" />`
  */
-
 const Icon = ({
 	name,
 	size = "md",

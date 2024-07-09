@@ -20,8 +20,8 @@ export const useCommissionSummary = () => {
 
 /**
  * Format the commission data to be used in the UI
- * @param {Object} data - Commission data
- * @param {Object} trxn_type_prod_map - Transaction type product map (to get product icon, etc)
+ * @param {object} data - Commission data
+ * @param {object} trxn_type_prod_map - Transaction type product map (to get product icon, etc)
  */
 const formatCommissionData = (data, trxn_type_prod_map) => {
 	const newData = {};

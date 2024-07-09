@@ -7,6 +7,13 @@ import { Icon } from "..";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.pageSize
+ * @param prop.totalCount
+ * @param prop.currentPage
+ * @param prop.onPageChange
+ * @param prop.isSmallScreen
+ * @param prop.tableDataSize
+ * @param prop.siblingCount
  * @example	`<Pagination></Pagination>` TODO: Fix example
  */
 const Pagination = ({

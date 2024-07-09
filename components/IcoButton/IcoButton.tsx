@@ -2,9 +2,8 @@ import { Center } from "@chakra-ui/react";
 import { IconNameType } from "constants/IconLibrary";
 import { Icon } from "..";
 
-type Props = {
-	iconName: IconNameType;
-	size: "lg" | "md" | "sm" | "xs" | string;
+type IcoButtonProps = {
+	size?: "lg" | "md" | "sm" | "xs" | string;
 	iconSize?: string;
 	iconStyle?: Object;
 	theme?: "dark" | "light" | "gray" | "primary" | "accent";
@@ -12,19 +11,24 @@ type Props = {
 	title?: string;
 	onClick?: () => void;
 	[key: string]: any;
-};
+} & (
+	| { iconName: IconNameType; icon?: never }
+	| { icon: React.FC<any>; iconName?: never }
+	| { iconName?: IconNameType; icon?: React.FC<any> }
+);
 
 /**
  * A IcoButton component to show Icons
- * @param {IconNameType} iconName - The name of the icon to display.
- * @param {string} size - The size of the button. Can be "lg", "md", "sm", or a custom string.
- * @param {string|number} iconSize - An optional custom size for the icon.
- * @param {Object} iconStyle - The styles to apply to the icon (should contain width, height).
- * @param {string} theme - The color theme of the button. Can be "light" or "dark" or any custom theme.
- * @param {string|number} rounded - The rounding of the button. Can be a number, or "full" (default).
- * @param {string} title - The title of the button.
- * @param {MouseEvent} onClick - The click event handler
- * @param {...Object} rest - A catch-all prop that allows any other prop to be passed in.
+ * @param {IcoButtonProps} props - The props of the component
+ * @param {IconNameType} props.iconName - The name of the icon to display.
+ * @param {string} [props.size] - The size of the button. Can be "lg", "md", "sm", or a custom string.
+ * @param {string|number} [props.iconSize] - An optional custom size for the icon.
+ * @param {object} [props.iconStyle] - The styles to apply to the icon (should contain width, height).
+ * @param {string} [props.theme] - The color theme of the button. Can be "light" or "dark" or any custom theme.
+ * @param {string|number} [props.rounded] - The rounding of the button. Can be a number, or "full" (default).
+ * @param {string} [props.title] - The title of the button.
+ * @param {MouseEvent} [props.onClick] - The click event handler
+ * @param {...object} rest - A catch-all prop that allows any other prop to be passed in.
  * @example
  * //Example usage:
  * <IcoButton
@@ -36,7 +40,8 @@ type Props = {
  */
 const IcoButton = ({
 	iconName,
-	size,
+	icon,
+	size = "md",
 	iconSize,
 	iconStyle,
 	theme = "light",
@@ -44,35 +49,37 @@ const IcoButton = ({
 	title,
 	onClick,
 	...rest
-}: Props): JSX.Element => {
+}: IcoButtonProps): JSX.Element => {
 	const clickable: boolean = onClick === undefined;
+
+	const IconElement = icon;
 
 	const bgSize: string =
 		size === "lg"
 			? "64px"
 			: size === "md"
-			? "48px"
-			: size === "sm"
-			? "32px"
-			: size === "xs"
-			? "24px"
-			: size === "xxs"
-			? "18px"
-			: size;
+				? "48px"
+				: size === "sm"
+					? "32px"
+					: size === "xs"
+						? "24px"
+						: size === "xxs"
+							? "18px"
+							: size;
 
 	const _iconSize: string = iconSize
 		? iconSize
 		: size === "lg"
-		? "32px"
-		: size === "md"
-		? "24px"
-		: size === "sm"
-		? "14px"
-		: size === "xs"
-		? "11px"
-		: size === "xxs"
-		? "8px"
-		: "80%";
+			? "32px"
+			: size === "md"
+				? "24px"
+				: size === "sm"
+					? "14px"
+					: size === "xs"
+						? "11px"
+						: size === "xxs"
+							? "8px"
+							: "80%";
 
 	const btnTheme: Object =
 		theme === "dark"
@@ -80,30 +87,30 @@ const IcoButton = ({
 					bg: "inputlabel",
 					color: "white",
 					boxShadow: "0px 3px 10px #0000001A",
-			  }
+				}
 			: theme === "light"
-			? {
-					bg: "divider",
-					color: "primary.DEFAULT",
-					border: "1px solid var(--chakra-colors-divider)",
-			  }
-			: theme === "gray"
-			? {
-					bgGradient: "linear(to-b, divider, hint)",
-					color: "white",
-					border: "1px solid var(--chakra-colors-divider)",
-			  }
-			: theme === "primary"
-			? {
-					bg: "primary.DEFAULT",
-					color: "white",
-			  }
-			: theme === "accent"
-			? {
-					bg: "accent.DEFAULT",
-					color: "white",
-			  }
-			: null;
+				? {
+						bg: "divider",
+						color: "primary.DEFAULT",
+						border: "1px solid var(--chakra-colors-divider)",
+					}
+				: theme === "gray"
+					? {
+							bgGradient: "linear(to-b, divider, hint)",
+							color: "white",
+							border: "1px solid var(--chakra-colors-divider)",
+						}
+					: theme === "primary"
+						? {
+								bg: "primary.DEFAULT",
+								color: "white",
+							}
+						: theme === "accent"
+							? {
+									bg: "accent.DEFAULT",
+									color: "white",
+								}
+							: null;
 
 	return (
 		<Center
@@ -119,7 +126,11 @@ const IcoButton = ({
 			{...btnTheme}
 			{...rest}
 		>
-			<Icon name={iconName} size={_iconSize} {...iconStyle} />
+			{icon ? (
+				<IconElement size={_iconSize} {...iconStyle} />
+			) : (
+				<Icon name={iconName} size={_iconSize} {...iconStyle} />
+			)}
 		</Center>
 	);
 };

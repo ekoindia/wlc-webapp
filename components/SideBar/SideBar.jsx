@@ -18,14 +18,15 @@ import {
 import {
 	AdminBlacklistMenuItems,
 	AdminOtherMenuItems,
-	adminSidebarMenu,
 	Endpoints,
 	OtherMenuItems,
-	sidebarMenu,
 	TransactionIds,
 	UserType,
+	adminSidebarMenu,
+	sidebarMenu,
 } from "constants";
 import { useMenuContext, useOrgDetailContext, useUser } from "contexts";
+import { useFeatureFlag } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -37,10 +38,10 @@ import { ActionIcon, useKBarReady } from "../CommandBar";
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.
- * @param {Object} routerUrl The current route URL.
+ * @param {object} routerUrl The current route URL.
  * @param {string} path The path to compare with the current route.
  * @returns {boolean} True if the current route is the same as the route passed to it.
- **/
+ */
 const isCurrentRoute = (routerUrl, path) => {
 	if (!routerUrl || !path) return false;
 
@@ -56,7 +57,9 @@ const isCurrentRoute = (routerUrl, path) => {
 /**
  * A helper function to create the KBar actions array from all the visible transactions from transaction_list which are part of role_transaction_list.
  * @param {Array} interaction_list - List of all transactions
- * @param {Object} role_tx_list - All transaction_ids that are allowed to the user (mapped to the trxn details)
+ * @param {object} role_tx_list - All transaction_ids that are allowed to the user (mapped to the trxn details)
+ * @param router
+ * @param is_other_list
  * @returns {Array} Array of KBar actions
  */
 const generateTransactionActions = (
@@ -88,8 +91,8 @@ const generateTransactionActions = (
 			parent: parent_id
 				? "tx/" + parent_id
 				: is_other_list
-				? "others"
-				: "start-a-tx",
+					? "others"
+					: "start-a-tx",
 		};
 	};
 
@@ -109,7 +112,7 @@ const generateTransactionActions = (
 					// shortcut: ["$mod+/"],
 					// section: "Services",
 				},
-		  ]
+			]
 		: [
 				{
 					id: "start-a-tx",
@@ -125,7 +128,7 @@ const generateTransactionActions = (
 					shortcut: ["$mod+/"],
 					// section: "Services",
 				},
-		  ];
+			];
 
 	// Cache for transactions that contain sub-transactions
 	const trxnGroups = [];
@@ -204,7 +207,7 @@ const generateTransactionActions = (
 /**
  * A helper function to create the KBar actions array from all the visible left-menu links.
  * @param {Array} menu_list - List of all Menu items with a label and a link.
- * @param {Object} router - Next.js router object
+ * @param {object} router - Next.js router object
  * @returns {Array} Array of KBar actions
  */
 const generateMenuLinkActions = (menu_list, router) => {
@@ -257,6 +260,8 @@ const SideBar = ({ navOpen, setNavClose }) => {
 	const [trxnActions, setTrxnActions] = useState([]);
 	const [otherActions, setOtherActions] = useState([]);
 
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
+
 	// Check if screen is smaller than "lg" to show a mobile sidebar with drawer
 	const isSmallScreen = useBreakpointValue(
 		{ base: true, lg: false },
@@ -285,16 +290,27 @@ const SideBar = ({ navOpen, setNavClose }) => {
 				? adminSidebarMenu
 				: sidebarMenu;
 
-		if (disabledFeatures) {
-			_menuList.forEach((item) => {
-				const _feat = JSON.parse(disabledFeatures)?.features;
-				if (!_feat.includes(item.id)) {
-					_filteredMenuList.push(item);
-				}
-			});
-		} else {
-			_filteredMenuList = _menuList;
-		}
+		// Filter out Disabled features (from org-metadata) & Feature Flags !!!
+		const _feat = disabledFeatures
+			? JSON.parse(disabledFeatures)?.features
+			: [];
+		_menuList.forEach((item) => {
+			// Skip if the feature is disabled (from org-metadata)
+			if (_feat.includes(item.id)) {
+				return;
+			}
+
+			// Skip if the feature is disabled (from feature-flags)
+			if (
+				item.featureFlag &&
+				checkFeatureFlag(item.featureFlag) !== true
+			) {
+				return;
+			}
+
+			// Else, add to the menu list
+			_filteredMenuList.push(item);
+		});
 
 		setMenuList(_filteredMenuList);
 
@@ -364,7 +380,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 								trxnList,
 								role_tx_list,
 								router
-						  )
+							)
 				);
 			}
 		}
@@ -598,10 +614,16 @@ const SmallScreenSideMenu = ({ navOpen, setNavClose, ...rest }) => {
 
 /**
  * Transaction Submenu Section for non-admin users
+ * @param trxnList.trxnList
  * @param {Array} trxnList - List of "transactions" submenu items
  * @param {Array} otherList - List of "other" submenu items
- * @param {Object} router - Next.js router object
- * @param {Boolean} isAdmin - Flag to check if user is an admin
+ * @param {object} router - Next.js router object
+ * @param {boolean} isAdmin - Flag to check if user is an admin
+ * @param trxnList.otherList
+ * @param trxnList.router
+ * @param trxnList.isAdmin
+ * @param trxnList.openIndex
+ * @param trxnList.setOpenIndex
  */
 const AccordionMenu = ({
 	trxnList = [],
@@ -842,6 +864,7 @@ const LinkMenuItem = ({
 				bg={isCurrent ? "sidebar.sel" : ""} //ORIG_THEME: sidebar.active-bg
 				_hover={{
 					background: "sidebar.sel",
+					color: "white",
 				}}
 				borderLeft="8px"
 				borderLeftColor={

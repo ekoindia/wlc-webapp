@@ -3,7 +3,7 @@ import { getNameStyle, getStatusStyle } from "helpers";
 /**
  * A <BusinessDashboardCard> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<BusinessDashboardCard></BusinessDashboardCard>`
  */

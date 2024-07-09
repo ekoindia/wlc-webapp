@@ -12,7 +12,7 @@ import { InputLabel, InputMsg } from "../";
 /**
  * A <Input> component
  * TODO: A reusable component for input (only text)
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<Input></Input>`
  * @example	`<Input/>`
@@ -66,10 +66,10 @@ const Input = forwardRef(
 			size === "lg"
 				? "10px"
 				: size === "sm"
-				? "6px"
-				: size === "xs"
-				? "4px"
-				: "8px";
+					? "6px"
+					: size === "xs"
+						? "4px"
+						: "8px";
 
 		const onChangeHandler = useCallback(
 			(e) => {

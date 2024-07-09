@@ -75,8 +75,8 @@ const RefundMethod = () => {
 				watcher.otp_verification_token == 0
 					? "Transactions will be Refunded using an OTP received by the Customer (Recommended)"
 					: watcher.otp_verification_token == 1
-					? "Transactions will be Refunded using the Agent’s own Secret PIN. If you choose this option, it would be possible for Agents within your network to Refund failed transactions using their Secret PIN without the customer’s knowledge. By choosing this setting, your organization agrees to accept the responsibility of any potential misuse."
-					: null,
+						? "Transactions will be Refunded using the Agent’s own Secret PIN. If you choose this option, it would be possible for Agents within your network to Refund failed transactions using their Secret PIN without the customer’s knowledge. By choosing this setting, your organization agrees to accept the responsibility of any potential misuse."
+						: null,
 		},
 	];
 

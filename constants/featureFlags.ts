@@ -5,21 +5,39 @@
  * To check for a feature-flag, use the "useFeatureFlag" hook.
  * @example
  * 	import { useFeatureFlag } from "hooks";
- * 	const isFeatureEnabled = useFeatureFlag("FEATURE_NAME");
+ * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
-	// A test page ("/test" or "/admin/test") to quickly check
-	// components, hooks, etc, during the development.
-	TEST_PAGE: {
+	// Feature to show Portal Configurations like Landing Page, Theme, etc to Admin.
+	PORTAL_CONFIG: {
+		enabled: true,
+		forEnv: ["development"],
+		forAdminOnly: true,
+	},
+
+	// Feature to show a custom Landing Page that can be fully configured by Admins.
+	CMS_LANDING_PAGE: {
 		enabled: true,
 		forEnv: ["development"],
 	},
 
-	// Beta (WIP) feature to Raise Issues...
+	// Feature to Raise Issues...
 	RAISE_ISSUE: {
 		enabled: true,
 		forEnv: ["development"],
 		forAdminOnly: true,
+	},
+
+	// Face detector for images, videos, and live streams.
+	FACE_DETECTOR: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+	},
+
+	// Face detector for images, videos, and live streams.
+	TEXT_CLASSIFIER: {
+		enabled: true,
+		forEnv: ["development", "staging"],
 	},
 
 	// Experimental LLM conversational UI for financial transactions and queries.
@@ -36,7 +54,18 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 		forEnv: ["development"],
 	},
+
+	// A test page ("/test" or "/admin/test") to quickly check
+	// components, hooks, etc, during the development.
+	// Note: DO NOT CHANGE. ONLY FOR DEVELOPMENT ENVIRONMENT.
+	TEST_PAGE: {
+		enabled: true,
+		forEnv: ["development"], // DO NOT CHANGE
+	},
 };
+
+// Type definition for environments
+type EnvTypes = "development" | "staging" | "production" | string;
 
 /**
  * Type definition for a feature flag configuration.
@@ -56,7 +85,7 @@ export type FeatureFlagType = {
 	 * Possible values: "development", "staging", "production"
 	 * Note: The environment is read from process.env.NEXT_PUBLIC_ENV
 	 */
-	forEnv?: string[];
+	forEnv?: EnvTypes[];
 
 	/**
 	 * List of user-types for which the feature is enabled.
@@ -71,6 +100,12 @@ export type FeatureFlagType = {
 	 * Example: ["123", "456", "789"]
 	 */
 	forUserId?: string[];
+
+	/**
+	 * List of roles for which the feature is enabled.
+	 * If the list is empty, then roles have no effect on the availability of the feature.
+	 */
+	forRoles?: string[];
 
 	/**
 	 * Whether the feature is enabled for Admin only.

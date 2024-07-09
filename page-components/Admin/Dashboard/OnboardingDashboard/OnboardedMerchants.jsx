@@ -5,8 +5,12 @@ import { OnboardingDashboardCard } from ".";
 /**
  * A OnboardedMerchants page-component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.onboardingMerchantData
+ * @param prop.pageNumber
+ * @param prop.setPageNumber
+ * @param prop.isLoading
  * @example	`<OnboardedMerchants></OnboardedMerchants>`
  */
 const OnboardedMerchants = ({

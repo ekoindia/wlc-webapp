@@ -16,11 +16,11 @@ const useRaiseIssue = () => {
 	/**
 	 * Open the "Raise Issue" dialog
 	 * @param {object} options - Options to pass to the dialog.
-	 * @param {function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
+	 * @param {Function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
 	 */
 	const showRaiseIssueDialog = (options, onResponse) => {
 		// Set the result handler
-		setResultHandler(onResponse);
+		setResultHandler(() => onResponse);
 
 		// Show the dialog
 		publish(TOPICS.SHOW_DIALOG_FEATURE, {
@@ -35,9 +35,8 @@ const useRaiseIssue = () => {
 	/**
 	 * Subscribe to the result topic to get the result of the "Raise Issue" dialog
 	 * The data object should contain:
-	 * - module: The module to load
-	 * - options: Options to pass to the module
-	 * - resultTopic: The topic to publish the result to
+	 * - message
+	 * - ticket_id
 	 */
 	useEffect(() => {
 		// If the dialog is not open, do not listen to the result topic

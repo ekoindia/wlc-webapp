@@ -1,4 +1,5 @@
-import { Center, Image, Text } from "@chakra-ui/react";
+import { Flex, Image, Text } from "@chakra-ui/react";
+import { useOrgDetailContext } from "contexts";
 import { useState } from "react";
 
 const fallbackLogo =
@@ -6,15 +7,17 @@ const fallbackLogo =
 
 /**
  * Show the organization Logo. If logo is not available, show the app name as logo
- * @param 	{object}	orgDetail	Organization Details, specially `logo` & `app_name`
- * @param	{string}	size	Size of the logo. `lg` for large, `md` for medium
- * @param	{boolean}	dark	Show logo on dark background
+ * @param	{object}	props
+ * @param	{string}	[props.size]	Size of the logo. `lg` for large, `md` for medium
+ * @param	{boolean}	[props.dark]	Show logo on dark background
+ * @param	{object}	[props.imageStyles]	Additional styles for the logo image
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<OrgLogo></OrgLogo>` TODO: Fix example
+ * @example	`<OrgLogo size="lg" />`
  */
-const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
+const OrgLogo = ({ size = "md", dark = false, imageStyles = {}, ...rest }) => {
 	const [imageState, setImageState] = useState("loading");
 	const [isSmallLogo, setIsSmallLogo] = useState(false); // Is it a circular/squarish logo?
+	const { orgDetail } = useOrgDetailContext();
 
 	const onLoad = (success, e) => {
 		if (success) {
@@ -41,7 +44,7 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 					base: "30px",
 					md: "36px",
 					"2xl": "46px",
-			  };
+				};
 	const logoFontSize =
 		size === "lg" ? { base: "xl", md: "3xl" } : { base: "lg", md: "xl" };
 
@@ -54,7 +57,9 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 	// Show only Text Logo...
 	if ((!orgLogo || imageState === "failed") && orgDetail.app_name) {
 		return (
-			<Center
+			<Flex
+				direction="row"
+				align="center"
 				maxW={{ base: "12rem", md: "20rem", "2xl": "30rem" }}
 				// height={logoHeight}
 				// bg="primary.DEFAULT"
@@ -67,16 +72,19 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 					logoFontSize={logoFontSize}
 					dark={dark}
 				/>
-			</Center>
+			</Flex>
 		);
 	}
 
 	// Image Logo...
 	return (
-		<Center
+		<Flex
+			direction="row"
+			align="center"
 			h={logoHeight}
 			transition="opacity 1s ease-out"
 			opacity={imageState === "loaded" ? 1 : 0}
+			{...rest}
 		>
 			<Image
 				src={orgLogo || fallbackLogo}
@@ -98,7 +106,7 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 				loading="eager"
 				onLoad={(e) => onLoad(true, e)}
 				onError={() => onLoad(false)}
-				{...rest}
+				{...imageStyles}
 			/>
 			{isSmallLogo &&
 			(imageState === "loaded" || imageState === "failed") ? (
@@ -106,11 +114,10 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
 					app_name={orgDetail.app_name}
 					logoFontSize={logoFontSize}
 					dark={dark}
-					color="primary.dark"
 					ml={imageState === "loaded" ? 2 : 0}
 				/>
 			) : null}
-		</Center>
+		</Flex>
 	);
 };
 
@@ -121,12 +128,13 @@ const OrgLogo = ({ orgDetail, size = "md", dark = false, ...rest }) => {
  * @param {string} props.app_name	App name to show as logo
  * @param {string} props.logoFontSize	Font size of the logo
  * @param {object} restTextLogoAttrs	Rest of the props passed to this component.
+ * @param props.dark
  * @returns
  */
 const TextLogo = ({
 	app_name,
 	logoFontSize,
-	color = "gray.800",
+	color = "logo.text",
 	dark = false,
 	...restTextLogoAttrs
 }) => (

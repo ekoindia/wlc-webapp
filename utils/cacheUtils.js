@@ -1,5 +1,5 @@
 /**
- * @fileoverview Contains utility functions for managing (clearing) the cache (localStorage & sessionStorage).
+ * @file Contains utility functions for managing (clearing) the cache (localStorage & sessionStorage).
  */
 
 // import { OrgDetailSessionStorageKey } from "contexts";
@@ -16,6 +16,7 @@ const sessionStoragePreserveKeys = ["org_detail"]; // [OrgDetailSessionStorageKe
 
 /**
  * Clears all the data stored in the caches.
+ * @param clear_session
  */
 export const clearCache = (clear_session) => {
 	// Clear session storage
@@ -27,6 +28,7 @@ export const clearCache = (clear_session) => {
 
 /**
  * Clears all the data stored in the caches and reloads the app.
+ * @param clear_session
  */
 export const clearCacheAndReload = (clear_session) => {
 	// Clear both session storage & local storage caches...

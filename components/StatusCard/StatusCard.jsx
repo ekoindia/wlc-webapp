@@ -10,7 +10,7 @@ import { Icon } from "..";
 /**
  * A <StatusCard> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<StatusCard></StatusCard>`
  */
@@ -78,6 +78,8 @@ const StatusCard = () => {
 			bg="status.bg" // ORIG_THEME: bgColor || sidebar.card-bg-dark
 			borderBottom="1px solid" // ORIG_THEME: br-sidebar
 			borderBottomColor="primary.light"
+			borderRight="1px solid"
+			borderRightColor="status.borderRightColor"
 		>
 			<Flex align="center" gap="2.5">
 				<Icon

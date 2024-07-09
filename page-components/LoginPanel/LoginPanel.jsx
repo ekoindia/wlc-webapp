@@ -1,38 +1,37 @@
-import { Flex, SlideFade, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+// import { Render } from "@measured/puck";
 import { Icon } from "components";
 import { useOrgDetailContext, useSession } from "contexts";
+import { useFeatureFlag } from "hooks";
 import { fadeIn } from "libs/chakraKeyframes";
+import { cmsConfig } from "libs/cms";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Login } from "./Login";
-// import { Login, SocialVerify, VerifyOtp, WelcomeCard } from "./children";
+import { LoginWidget } from "./LoginWidget";
 
-// Lazy load the LoginPanel components...
-// const Login = dynamic(() => import("./Login").then((pkg) => pkg.Login), {
-// 	// loading: () => <div>Loading...</div>,
-// 	ssr: false,
-// });
-const VerifyOtp = dynamic(
-	() => import("./VerifyOtp").then((pkg) => pkg.VerifyOtp),
-	{
-		// loading: () => <div>Loading...</div>,
-		ssr: false,
-	}
-);
-const SocialVerify = dynamic(
-	() => import("./SocialVerify").then((pkg) => pkg.SocialVerify),
-	{
-		// loading: () => <div>Loading...</div>,
-		ssr: false,
-	}
-);
 const WelcomeCard = dynamic(
 	() => import("./WelcomeCard").then((pkg) => pkg.WelcomeCard),
 	{
 		ssr: false,
 	}
 );
+
+// For CMS custom screen
+// TODO: Move to static import, and, enable SSR
+const Render = dynamic(
+	() => import("@measured/puck").then((pkg) => pkg.Render),
+	{
+		ssr: false,
+	}
+);
+
+// const cmsConfig = dynamic(
+// 	() => import("libs/cms").then((pkg) => pkg.cmsConfig),
+// 	{
+// 		ssr: false,
+// 	}
+// );
 
 // Time in milliseconds to persist the OTP screen, if the user comes back to the app within this time.
 const PERSIST_OTP_SCREEN_TIMEOUT_MS = 240000; // 4 mins
@@ -51,18 +50,31 @@ const formatMobileNumber = (mobile) => {
  * @example	`<LoginPanel></LoginPanel>`
  */
 const LoginPanel = () => {
-	const [step, setStep] = useState("LOGIN");
-	const [email, setEmail] = useState("");
 	const [number, setNumber] = useState({
 		original: "",
 		formatted: "",
 	});
-	const [loginType, setLoginType] = useState("Mobile");
-	const [lastMobileFormatted, setLastMobileFormatted] = useState("");
-	const [lastUserName, setLastUserName] = useState("");
 	const [showWelcomeCard, setShowWelcomeCard] = useState(true);
 	const { orgDetail } = useOrgDetailContext();
 	const { isLoggedIn } = useSession();
+
+	const [cmsData, setCmsData] = useState(null);
+
+	const [isCmsEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
+
+	// Load landing page custom config (for Puck)
+	useEffect(() => {
+		try {
+			const cachedCmsData = JSON.parse(
+				localStorage.getItem("inf-landing-page-cms")
+			);
+			if (cachedCmsData) {
+				setCmsData(cachedCmsData);
+			}
+		} catch (e) {
+			console.error(e);
+		}
+	}, []);
 
 	// On small-screen, quickly hide the welcome card and move on to the login screen,
 	// especially, if the user had already entered their mobile number previously
@@ -93,9 +105,6 @@ const LoginPanel = () => {
 			// Was the user on enter-OTP screen in the last 4 mins?
 			// Take them back there without resending OTP...
 			setNumber(lastRoute.meta.mobile);
-			setLastMobileFormatted(lastRoute.meta.mobile.formatted);
-			setLoginType("Mobile");
-			setStep("VERIFY_OTP");
 			setShowWelcomeCard(false);
 		} else if (lastLogin?.type !== "Google" && lastLogin?.mobile > 1) {
 			// Format mobile number in the following format: +91 123 456 7890
@@ -105,41 +114,20 @@ const LoginPanel = () => {
 				original: lastLogin.mobile,
 				formatted: formatted_mobile,
 			});
-			setLastMobileFormatted(formatted_mobile);
-		}
-
-		// Check if lastLogin.name exists and is not a mobile number
-		if (lastLogin?.name && lastLogin.name.match(/^[a-zA-Z]/)) {
-			setLastUserName(lastLogin.name.split(" ")[0]);
 		}
 	}, []);
-
-	// Cache current OTP-Verification step in local storage,
-	// so that OTP Verification can be continued when app is closed on mobile.
-	useEffect(() => {
-		if (step === "VERIFY_OTP") {
-			localStorage.setItem(
-				"inf-last-route",
-				JSON.stringify({
-					path: "/",
-					meta: { step: step, type: loginType, mobile: number },
-					at: Date.now(),
-				})
-			);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [step]);
 
 	// Hide login panel if user is already logged in
 	if (isLoggedIn) return null;
 
 	// MARK: JSX
 	return (
-		<Flex
+		<Box
+			boxSizing="border-box"
 			w="full"
 			h="100vh"
-			align="center"
-			justify="center"
+			maxH="100vh"
+			direction="column"
 			bg="accent.light"
 			bgImage={{
 				base: "none",
@@ -151,74 +139,57 @@ const LoginPanel = () => {
 			overflowY="auto"
 		>
 			<Flex
-				w={{ base: "100%", md: "80%" }}
-				h={{ base: "100vh", lg: "auto" }}
-				maxW="1000px"
-				overflow="hidden"
-				borderRadius={{ base: 0, md: "15px" }}
-				boxShadow="xl"
-				animation={`${fadeIn} ease-out 1s`}
+				direction="row"
+				align="center"
+				minH="100%"
+				p={{ base: 0, md: "20px 0" }}
 			>
-				{/* Description Box */}
 				<Flex
-					display={{
-						base: showWelcomeCard ? "flex" : "none",
-						md: "flex",
-					}}
-					w="100%"
-					h="100%"
-				>
-					<WelcomeCard
-						logo="/favicon.svg"
-						header={`Welcome to ${orgDetail.app_name}`}
-						features={[
-							"Your business partner to grow your revenue and digitize your business",
-							"Start earning today from your shop, office, home or anywhere",
-						]}
-						onClick={() => setShowWelcomeCard(false)}
-					/>
-				</Flex>
-
-				{/* Login Box */}
-				<Flex
-					display={{
-						base: showWelcomeCard ? "none" : "block",
-						md: "block",
-					}}
-					flex={1}
-					w="100%"
-					minW={{ base: "300px", lg: "350px" }}
+					direction="row"
+					boxSizing="border-box"
+					w={{ base: "100%", md: "80%" }}
 					h={{ base: "100vh", lg: "auto" }}
-					boxShadow="0px 3px 20px #00000005"
-					px={{ base: 5, "2xl": 7 }}
-					py={{ base: 7, "2xl": 10 }}
-					bg="white"
+					maxW="1000px"
+					overflow="hidden"
+					borderRadius={{ base: 0, md: "15px" }}
+					boxShadow="xl"
+					animation={`${fadeIn} ease-out 1s`}
+					m="auto"
 				>
-					{step === "LOGIN" && (
-						<Login
-							{...{
-								number,
-								setNumber,
-								setStep,
-								setEmail,
-								setLoginType,
-								lastUserName,
-								lastMobileFormatted,
-							}}
-						/>
-					)}
-					{step === "VERIFY_OTP" && (
-						<SlideFade offsetX={100} offsetY={0} in={true}>
-							<VerifyOtp {...{ number, loginType, setStep }} />
-						</SlideFade>
-					)}
-					{step === "SOCIAL_VERIFY" && (
-						<SlideFade offsetX={100} offsetY={0} in={true}>
-							<SocialVerify
-								{...{ email, number, setNumber, setStep }}
+					{/* Description Box */}
+					<Flex
+						display={{
+							base: showWelcomeCard ? "flex" : "none",
+							md: "flex",
+						}}
+						w="100%"
+						// h="100%"
+						direction="column"
+						justify="flex-start"
+					>
+						{isCmsEnabled && cmsData ? (
+							<Render config={cmsConfig} data={cmsData} />
+						) : (
+							<WelcomeCard
+								logo="/favicon.svg"
+								header={`Welcome to ${orgDetail.app_name}`}
+								features={[
+									"Your business partner to grow your revenue and digitize your business",
+									"Start earning today from your shop, office, home or anywhere",
+								]}
+								onClick={() => setShowWelcomeCard(false)}
 							/>
-						</SlideFade>
-					)}
+						)}
+					</Flex>
+
+					{/* Login Widget */}
+					<LoginWidget
+						display={{
+							base: showWelcomeCard ? "none" : "block",
+							md: "block",
+						}}
+						flex={1}
+					/>
 				</Flex>
 			</Flex>
 
@@ -243,7 +214,7 @@ const LoginPanel = () => {
 					</Link>
 				</Flex>
 			)}
-		</Flex>
+		</Box>
 	);
 };
 

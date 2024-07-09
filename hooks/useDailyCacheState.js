@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 /**
  * Hook for caching data for one day. After one day, the isValid status is returned as false.
  * @param {string} defaultValue
+ * @param key
+ * @param initialValue
  * @returns {Array} [value, setValue, isValid]
- *
  */
 const useDailyCacheState = (key, initialValue) => {
 	const [dt, setDt] = useState(new Date());
@@ -14,9 +15,17 @@ const useDailyCacheState = (key, initialValue) => {
 	// The timer triggers after the amount time left for the day to end.
 	// Eg: If the time is 23:00:00, the timer will trigger after 1 hour.
 	useEffect(() => {
-		const timer = setTimeout(() => {
-			setDt(new Date());
-		}, 1000 * 60 * 60 * 24 - (dt.getHours() * 60 * 60 + dt.getMinutes() * 60 + dt.getSeconds()) * 1000 + 1000);
+		const timer = setTimeout(
+			() => {
+				setDt(new Date());
+			},
+			1000 * 60 * 60 * 24 -
+				(dt.getHours() * 60 * 60 +
+					dt.getMinutes() * 60 +
+					dt.getSeconds()) *
+					1000 +
+				1000
+		);
 		return () => clearTimeout(timer);
 	}, [dt]);
 

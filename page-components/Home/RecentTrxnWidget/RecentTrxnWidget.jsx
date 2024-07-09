@@ -113,6 +113,9 @@ const RecentTrxnWidget = () => {
 
 /**
  * Internal table-row component
+ * @param root0
+ * @param root0.tx
+ * @param root0.handleShowHistory
  */
 const Tr = ({ tx, handleShowHistory }) => {
 	const { h } = useHslColor(tx.name);

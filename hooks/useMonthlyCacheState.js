@@ -4,8 +4,9 @@ import { useMemo, useState } from "react";
 /**
  * Hook for caching data for one month. After one month, the isValid status is returned as false.
  * @param {string} defaultValue
+ * @param key
+ * @param initialValue
  * @returns {Array} [value, setValue, isValid]
- *
  */
 const useMonthlyCacheState = (key, initialValue) => {
 	const [dt] = useState(new Date());

@@ -1,5 +1,6 @@
 /* PLOP_INJECT_EXPORT */
 export { default as useAppLink } from "./useAppLink";
+export { default as useCamera } from "./useCamera";
 export { default as useClipboard } from "./useClipboard";
 export { default as useDailyCacheState } from "./useDailyCacheState";
 export { default as useDebouncedState } from "./useDebouncedState";
@@ -7,8 +8,10 @@ export { default as useDelayToggle } from "./useDelayToggle";
 export { default as useExternalResource } from "./useExternalResource";
 export { default as useFeatureFlag } from "./useFeatureFlag";
 export { default as useFileView } from "./useFileView";
+export { default as useGeolocation } from "./useGeolocation";
 export { default as useHotkey } from "./useHotkey";
 export { default as useHslColor } from "./useHslColor";
+export { default as useImageEditor } from "./useImageEditor";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLogin } from "./useLogin";
 export { default as usePagination, DOTS } from "./usePagination";

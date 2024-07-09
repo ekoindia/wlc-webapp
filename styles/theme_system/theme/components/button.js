@@ -61,24 +61,24 @@ const link = defineStyle({
 });
 
 const primary_outline = defineStyle({
-	bg: "white",
-	border: "1px solid",
+	// bg: "white",
+	border: "2px solid",
 	borderColor: "primary.DEFAULT",
 	color: "primary.DEFAULT",
 	_hover: {
-		color: "primary.dark",
-		borderColor: "primary.dark",
+		color: "white",
+		bg: "primary.DEFAULT",
 	},
 });
 
 const accent_outline = defineStyle({
-	bg: "white",
-	border: "1px solid",
+	// bg: "white",
+	border: "2px solid",
 	borderColor: "accent.DEFAULT",
 	color: "accent.DEFAULT",
 	_hover: {
-		color: "accent.dark",
-		borderColor: "accent.dark",
+		color: "white",
+		bg: "accent.DEFAULT",
 	},
 });
 
@@ -93,6 +93,6 @@ export const buttonTheme = defineStyleConfig({
 		primary_outline,
 	},
 	baseStyle: {
-		borderRadius: "10px",
+		borderRadius: "8px",
 	},
 });

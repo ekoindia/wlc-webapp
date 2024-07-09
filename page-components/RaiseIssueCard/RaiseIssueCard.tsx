@@ -8,13 +8,20 @@ import {
 	Textarea,
 	useToast,
 } from "@chakra-ui/react";
-import { Dropzone, Icon, InputLabel } from "components";
+import { Dropzone, IcoButton, Icon, InputLabel } from "components";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useUser } from "contexts";
 import { createSupportTicket, fetcher } from "helpers";
-import { useFeatureFlag } from "hooks";
+import {
+	useDebouncedState,
+	useFeatureFlag,
+	useFileView,
+	useImageEditor,
+} from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
-import { useEffect, useState } from "react";
+import { initializeTextClassifier } from "libs";
+import { useEffect, useRef, useState } from "react";
+import { RiScreenshot2Line } from "react-icons/ri";
 import Markdown from "react-markdown";
 
 // MARK: Constants
@@ -57,20 +64,22 @@ interface RaiseIssueProps {
 	logo?: string;
 	customIssueType?: string;
 	origin: "Response" | "History" | "Global-Help" | "Command-Bar" | "Other";
+	autoCaptureScreenshot?: boolean;
 	onResult?: Function;
 	onClose?: Function;
 	onOpenUrl?: Function;
 	onRequestCamCapture?: Function;
+	onHide?: Function;
+	onShow?: Function;
 	[key: string]: any;
 }
 
 /**
  * A component to for users to raise an issue or provide a feedback
- *
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {string} [prop.heading] - Heading for the feedback panel
- * @param {boolean} [prop.showCloseIcon=false] - Whether to show a close icon on the feedback panel
+ * @param {boolean} [prop.showCloseIcon] - Whether to show a close icon on the feedback panel
  * @param {string} prop.tid - Unique ID of the transaction for which issue is being raised
  * @param {string} prop.tx_typeid - Transaction type ID. It is used to fetch the issue types for a certain transaction type. If not provided here, it will be fetched from `metadata.` (if available)
  * @param {number} prop.status - Transaction status (eg: -2, -1, 0, 1, 2, 3, 4, 6, 7, 8, 9)
@@ -79,11 +88,14 @@ interface RaiseIssueProps {
  * @param {object} prop.context - Contains an object of format `{ row_index: X }`, where X is the index of the row in the transaction list. It is useful for tracking the row index of the transactions shown in a list, for which the issue is being raised.
  * @param {string} prop.logo - Logo to show in the feedback panel (eg: for BBPS)
  * @param {string} prop.customIssueType - Custom issue type to capture, instead of pulling issue types for a certain transaction type. This is useful for creating custom "Raise Issue" buttons in the UI.
+ * @param {boolean} prop.autoCaptureScreenshot - Whether to capture a screenshot of the current page
  * @param {string} prop.origin - Origin of the feedback panel (eg: "transaction-list")
- * @param {function} prop.onResult - Function to return the result of the feedback
- * @param {function} prop.onClose - Function to close the feedback
- * @param {function} prop.onOpenUrl - Function to open a URL
- * @param {function} prop.onRequestCamCapture - Function to request camera capture
+ * @param {Function} prop.onResult - Function to return the result of the feedback
+ * @param {Function} prop.onClose - Function to close the feedback
+ * @param {Function} prop.onOpenUrl - Function to open a URL
+ * @param {Function} prop.onRequestCamCapture - Function to request camera capture
+ * @param {Function} prop.onHide - Function to temporarily hide the feedback panel
+ * @param {Function} prop.onShow - Function to show the temporarily hidden feedback panel
  * @param {...*} rest - Rest of the props
  */
 const RaiseIssueCard = ({
@@ -98,11 +110,14 @@ const RaiseIssueCard = ({
 	// description,
 	context, // toAndFroData // TODO: Is it needed here???
 	customIssueType,
+	autoCaptureScreenshot = false,
 	origin,
 	onResult,
 	onClose,
 	onOpenUrl,
 	onRequestCamCapture,
+	onHide,
+	onShow,
 	...rest
 }: RaiseIssueProps) => {
 	const toast = useToast();
@@ -126,6 +141,9 @@ const RaiseIssueCard = ({
 	const [selectedIssue, setSelectedIssue] = useState<IssueType | null>(null); // Selected issue-type
 	const [feedbackSubmitResponse, setFeedbackSubmitResponse] = useState(null); // Feedback submit response
 
+	// Screenshot
+	const [screenshot, setScreenshot] = useState<string | null>(null);
+
 	// Status flags...
 	const [fetchingIssueList, setFetchingIssueList] = useState(false); // Is the issue list being fetched?
 	const [issueListError, setIssueListError] = useState(false); // Is there an error fetching the issue list?
@@ -140,7 +158,95 @@ const RaiseIssueCard = ({
 		useState<boolean>(true); // Do we need to submit user feedback (or, just link to another page)?
 
 	// Check if the feature is enabled...
-	const isFeatureEnabled = useFeatureFlag("RAISE_ISSUE");
+	const [isFeatureEnabled] = useFeatureFlag("RAISE_ISSUE");
+
+	// Experimental text-classifier for user comments...
+	// @see https://ai.google.dev/edge/mediapipe/solutions/text/text_classifier
+	const [isTextClassifierEnabled] = useFeatureFlag("TEXT_CLASSIFIER");
+	const [textClassifier, setTextClassifier] = useState<any>(null);
+	const [classifierResult, setClassifierResult] = useState("");
+
+	// Init Text Classifier...
+	useEffect(() => {
+		if (!isTextClassifierEnabled) return;
+		// Initialize the text-classifier...
+		initializeTextClassifier().then((_textClassifier) => {
+			console.log(
+				"[RaiseIssue] Text Classifier initialized...",
+				_textClassifier
+			);
+			setTextClassifier(_textClassifier);
+		});
+	}, [isTextClassifierEnabled]);
+
+	// Debounce user comments for classification...
+	const [debouncedComment, setDebouncedComment] = useDebouncedState(
+		null,
+		500
+	);
+	useEffect(() => {
+		setDebouncedComment(comment);
+	}, [comment]);
+
+	// Classify user comments...
+	useEffect(() => {
+		if (!textClassifier || !debouncedComment) return;
+		if (debouncedComment.length <= 10) return;
+
+		// Example Classification:
+		// {
+		// 	"classifications": [
+		// 		{
+		// 		"categories": [
+		// 			{
+		// 			"index": 0,
+		// 			"score": 0.9956762194633484,
+		// 			"categoryName": "negative",
+		// 			"displayName": ""
+		// 			},
+		// 			{
+		// 			"index": 1,
+		// 			"score": 0.0043237595818936825,
+		// 			"categoryName": "positive",
+		// 			"displayName": ""
+		// 			}
+		// 		],
+		// 		"headIndex": 0,
+		// 		"headName": "probability"
+		// 		}
+		// 	],
+		// 	"timestampMs": 1
+		// }
+
+		const result = textClassifier.classify(debouncedComment);
+
+		if (!(result?.classifications?.length > 0)) return;
+
+		const categories = result.classifications[0].categories;
+
+		const catNames = {
+			negative: "👎",
+			positive: "👍",
+		};
+
+		// Set the classifier result...
+		setClassifierResult(
+			categories
+				.map(
+					(cat) =>
+						`${
+							catNames[cat.categoryName] || cat.categoryName
+						} ${Math.round(cat.score * 100)}%`
+				)
+				.join(", ")
+		);
+
+		console.log(
+			"[RaiseIssue] Classifying comment...",
+			debouncedComment,
+			categories
+		);
+	}, [textClassifier, debouncedComment]);
 
 	/**
 	 * Effect: Fetch the issue types, if the user is logged in and the transaction details change ...
@@ -149,27 +255,38 @@ const RaiseIssueCard = ({
 	useEffect(() => {
 		if (!(isLoggedIn && userData)) return;
 
-		if (fetchingIssueList) return;
-
 		// Custom Query? Set it as the select query. No need to fetch issue types...
 		if (customIssueType) {
-			setStatusIssueListMap([
-				{
-					label: customIssueType,
-					value: customIssueType,
-					// desc: "How can we help you? Please submit this form and we will reach out to you soon.",
-					raise_issue_after: "0d",
-					reopened_tat: "0",
-					tat: "0",
-					category: { id: 1, title: "Others" },
-					sub_category: { id: 1, title: "Others" },
+			console.log("Custom issue type found: ", customIssueType);
+
+			const customIssue = {
+				label: customIssueType,
+				value: customIssueType,
+				// desc: "How can we help you? Please submit this form and we will reach out to you soon.",
+				raise_issue_after: "0d",
+				reopened_tat: "0",
+				tat: "0",
+				category: { id: 1, title: "Others" },
+				sub_category: { id: 1, title: "Others" },
+			};
+
+			setCategoryList([{ id: 1, title: "Others" }]);
+			setCategoryMap({
+				1: {
+					subcat_list: [{ id: 1, title: "Others" }],
+					submap: {
+						1: { id: 1, title: "Others" },
+					},
 				},
-			]);
+			});
+			setStatusIssueListMap([customIssue]);
 			setSelectedCat(1);
 			setSelectedSubCat(1);
-			setSelectedIssue(statusIssueListMap[0]);
+			setSelectedIssue(customIssue);
 			return;
 		}
+
+		if (fetchingIssueList) return;
 
 		setFetchingIssueList(true);
 
@@ -250,6 +367,7 @@ const RaiseIssueCard = ({
 		tid,
 		status,
 		origin,
+		customIssueType,
 		metadata?.transaction_detail,
 	]);
 
@@ -323,8 +441,8 @@ const RaiseIssueCard = ({
 					(durationUnit === "d"
 						? 24 * 60
 						: durationUnit === "h"
-						? 60
-						: 1) * 60000;
+							? 60
+							: 1) * 60000;
 				var requiredDate =
 					new Date(transactionTime).getTime() +
 					duration * durationMultiplier;
@@ -437,6 +555,7 @@ const RaiseIssueCard = ({
 				value: string | number;
 			}[],
 			files: issueFileList as { label: string; value: File }[],
+			screenshot: screenshot || undefined,
 			origin,
 			tat: selectedIssue.tat,
 			priority: selectedIssue.priority,
@@ -724,6 +843,17 @@ const RaiseIssueCard = ({
 							</>
 						) : null}
 
+						{/* Show option to capture screenshot */}
+						<Box mb={4} maxW={{ base: "100%", md: "350px" }}>
+							<Screenshot
+								screenshot={screenshot}
+								autoCaptureScreenshot={autoCaptureScreenshot}
+								onCapture={setScreenshot}
+								onHide={onHide}
+								onShow={onShow}
+							/>
+						</Box>
+
 						{/* Show a multi-line input to capture user comment & the submit button */}
 						{isUserFeedbackRequired ? (
 							<>
@@ -761,6 +891,15 @@ const RaiseIssueCard = ({
 												color="error"
 											>
 												* Required
+											</Text>
+										) : null}
+										{classifierResult ? (
+											<Text
+												fontSize="xs"
+												fontWeight="medium"
+												color="gray.600"
+											>
+												{classifierResult}
 											</Text>
 										) : null}
 									</Box>
@@ -839,8 +978,8 @@ const RaiseIssueCard = ({
  * Container card component
  * @param {object} props - Properties passed to the component.
  * @param {string} [props.heading] - Label to show above the card.
- * @param {boolean} [props.showCloseIcon=false] - Whether to show a close icon on the card (default: false).
- * @param {function} [props.onClose] - Function to call when the close icon is clicked.
+ * @param {boolean} [props.showCloseIcon] - Whether to show a close icon on the card (default: false).
+ * @param {Function} [props.onClose] - Function to call when the close icon is clicked.
  * @param {ReactNode} props.children - Content to show inside the card.
  * @param {...*} rest - Rest of the props for the card.
  * @returns {JSX.Element} - A card container.
@@ -920,9 +1059,7 @@ const Card = ({
 									cursor="pointer"
 									color="gray.700"
 									_hover={{ bg: "gray.100" }}
-									onClick={() => {
-										console.log("Close Icon Clicked...");
-									}}
+									onClick={() => onClose()}
 								>
 									<Icon name="close" size="xs" />
 								</Flex>
@@ -945,7 +1082,7 @@ const Card = ({
  * @param {number|string} props.selectedId - ID of the selected category.
  * @param {string} [props.idKey] - Key to use for the category ID (default: "id").
  * @param {string} [props.labelKey] - Key to use for the category title (default: "title").
- * @param {function} props.onSelect - Function to call when a category is selected. It receives the selected category object as an argument.
+ * @param {Function} props.onSelect - Function to call when a category is selected. It receives the selected category object as an argument.
  * @param {...*} rest - Rest of the props for the outer container.
  * @returns {JSX.Element} - A list of categories to select from.
  */
@@ -1039,10 +1176,11 @@ const Label = ({ children, ...rest }) => {
 
 /**
  * Category-list button component
+ * MARK: <CategoryButton>
  * @param {object} props - Properties passed to the component.
  * @param {boolean} [props.isSelected] - Whether the category is selected (default: false).
  * @param {boolean} [props.isPrimary] - Whether this is the primary category (default: false).
- * @param {function} [props.onClick] - Function to call when the category is clicked.
+ * @param {Function} [props.onClick] - Function to call when the category is clicked.
  * @param {string} props.children - Label to show on the button.
  * @param {...*} rest - Rest of the props for the button.
  * @returns {JSX.Element} - A button to select a category.
@@ -1074,7 +1212,209 @@ const CategoryButton = ({
 };
 
 /**
+ * Component to capture and show the current screenshot
+ * MARK: <Screenshot>
+ * @param {object} props - Properties passed to the component.
+ * @param {string} props.screenshot - The screenshot image data.
+ * @param {boolean} [props.autoCaptureScreenshot] - Whether to automatically capture the screenshot (default: false).
+ * @param {Function} props.onCapture - Function to call when the screenshot is captured.
+ * @param {Function} props.onHide - Function to call to temporarily hide the Raise Query dialog so that the screenshot can be taken.
+ * @param {Function} props.onShow - Function to call to show the Raise Query dialog after the screenshot is taken.
+ */
+const Screenshot = ({
+	screenshot,
+	autoCaptureScreenshot = false,
+	onCapture,
+	onHide,
+	onShow,
+	...rest
+}) => {
+	// https://developer.chrome.com/docs/web-platform/screen-sharing-controls/
+	// https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
+
+	// Ref for the video & canvas elements
+	const videoRef = useRef(null);
+	// const canvasRef = useRef(null);
+
+	const { showImage } = useFileView();
+	const { editImage } = useImageEditor();
+	const [originalCapture, setOriginalCapture] = useState<string | null>(null);
+	const [edited, setEdited] = useState(false);
+	const [screenshotCaptureAttempted, setScreenshotCaptureAttempted] =
+		useState(false);
+
+	// Auto-capture screenshot...
+	useEffect(() => {
+		if (autoCaptureScreenshot && !screenshotCaptureAttempted) {
+			setScreenshotCaptureAttempted(true);
+			captureScreen();
+		}
+	}, [autoCaptureScreenshot, screenshotCaptureAttempted]);
+
+	// Edit/crop screenshot when captured...
+	useEffect(() => {
+		if (originalCapture && !edited) {
+			editImage(originalCapture, null, (data) => {
+				if (data?.accepted && data?.image) {
+					onCapture && onCapture(data.image);
+					setEdited(true);
+				} else {
+					setOriginalCapture(null);
+				}
+			});
+		}
+	}, [edited, originalCapture, onCapture]);
+
+	const DisplayMediaOptions = {
+		video: {
+			displaySurface: "browser",
+		},
+		audio: false,
+		// audio: {
+		// 	suppressLocalAudioPlayback: true,
+		// },
+		preferCurrentTab: true,
+		selfBrowserSurface: "include", // allow the user to share the current tab
+		systemAudio: "exclude",
+		surfaceSwitching: "exclude", // allow the user to dynamically switch between shared tabs
+		monitorTypeSurfaces: "exclude", // prevent the user from sharing an entire screen.
+	};
+
+	const captureScreen = () => {
+		onHide();
+		navigator.mediaDevices.getDisplayMedia(DisplayMediaOptions as any).then(
+			(stream) => {
+				videoRef.current.srcObject = stream;
+			},
+			(err) => {
+				console.error("Screenshot Error: " + err);
+				onShow();
+			}
+		);
+	};
+
+	const stopCapture = () => {
+		let tracks = videoRef.current.srcObject.getTracks();
+
+		tracks.forEach((track) => track.stop());
+		videoRef.current.srcObject = null;
+		onShow();
+	};
+
+	const captureFrame = () => {
+		// Call captureFrameDbc after a short delay (such that the video is loaded properly)
+		const DELAY = 100;
+		setTimeout(() => {
+			const video = videoRef.current;
+
+			// const canvas = new OffscreenCanvas(
+			// 	video.videoWidth,
+			// 	video.videoHeight
+			// ); // canvasRef.current;
+
+			const canvas = document.createElement("canvas");
+			canvas.width = Math.floor(video.videoWidth);
+			canvas.height = Math.floor(video.videoHeight);
+
+			const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+
+			// Draw the video frame to the canvas
+			context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+			try {
+				const imgUrl = canvas.toDataURL("image/jpeg", 0.8);
+				setOriginalCapture(imgUrl);
+				setEdited(false);
+				stopCapture();
+			} catch (err) {
+				console.error("Blob Error: ", err);
+				stopCapture();
+			}
+		}, DELAY);
+	};
+
+	return (
+		<Flex
+			w="100%"
+			direction="column"
+			align="center"
+			justify="center"
+			border="2px"
+			borderStyle="dashed"
+			borderColor="divider"
+			borderRadius="10px"
+			color="light"
+			p="5"
+			{...rest}
+			// cursor={disabled ? "default" : "pointer"}
+			// pointerEvents={disabled ? "none" : "auto"}
+			// opacity={disabled ? 0.5 : 1}
+		>
+			{/* Hidden video element */}
+			<video
+				ref={videoRef}
+				controls
+				autoPlay
+				muted
+				width="100%"
+				height="auto"
+				onLoadedData={captureFrame}
+				style={{
+					position: "absolute",
+					top: 0,
+					left: 0,
+					maxWidth: "90%",
+					maxHeight: "90%",
+					zIndex: "-9999",
+					pointerEvents: "none",
+				}}
+			/>
+
+			{/* Preview Image with delete button */}
+			{screenshot ? (
+				<Flex position="relative">
+					<img
+						src={screenshot}
+						style={{
+							maxHeight: "200px",
+							maxWidth: "200px",
+							cursor: "pointer",
+							borderRadius: "4px",
+							boxShadow: "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px",
+						}}
+						alt="Screenshot"
+						onClick={() => showImage(screenshot)}
+					/>
+					<IcoButton
+						iconName="close"
+						title="Discard"
+						size="xs"
+						theme="primary"
+						// boxShadow="0px 3px 10px #11299E1A"
+						_hover={{ bg: "primary.dark" }}
+						position="absolute"
+						top="-10px"
+						right="-10px"
+						onClick={() => {
+							onCapture && onCapture(null);
+						}}
+					/>
+				</Flex>
+			) : null}
+
+			{screenshot ? null : (
+				<Button variant="primary" onClick={captureScreen}>
+					<RiScreenshot2Line size="24px" />
+					&nbsp; Add Screenshot
+				</Button>
+			)}
+		</Flex>
+	);
+};
+
+/**
  * Helper function to process the issue list, and create a separate list of categories & nested sub-categories
+ * MARK: fx: _processIssueList
  * @param {string} issue_list - List of issues
  * @returns {{processed_issue_list: [], category_list: [], category_map: {}}} - A processed list of issues, categories, and sub-categories
  */
@@ -1130,7 +1470,7 @@ const _processIssueList = (issue_list) => {
 	};
 };
 
-// MARK: Types
+// MARK: Types...
 
 // Type of a selected issue...
 interface IssueType {

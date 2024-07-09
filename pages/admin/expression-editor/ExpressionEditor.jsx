@@ -76,7 +76,7 @@ const functionCategories = {
 
 /**
  * Function to recursively convert the expression to a stack array format
- * @param {Object} expr - The expression object to convert
+ * @param {object} expr - The expression object to convert
  * @returns {Array} - The stack array representation of the expression
  * @example OUTPUT: ["add", 1, ["mul", 2, 3]]
  */
@@ -106,12 +106,12 @@ const convertToStackArray = (expr) => {
 /**
  * Main component for the Expression Editor. Manages state for selected functions
  * and renders the function selector and expression builder.
- * @param {Object} props - Component props.
+ * @param {object} props - Component props.
  * @param {string} props.header - The header text for the editor.
  */
 function ExpressionEditor({ header = "Expression Editor" }) {
 	// Check if the feature flag is enabled
-	const isFeatureEnabled = useFeatureFlag("EXPRESSION_EDITOR");
+	const [isFeatureEnabled] = useFeatureFlag("EXPRESSION_EDITOR");
 
 	// State to manage the current expression structure created by the user
 	const [expression, setExpression] = useState({
@@ -132,7 +132,7 @@ function ExpressionEditor({ header = "Expression Editor" }) {
 
 	/**
 	 * Handles changes to the expression structure.
-	 * @param {Object} newExpressionBlock - The updated sub-expression object at the given path
+	 * @param {object} newExpressionBlock - The updated sub-expression object at the given path
 	 * @param {Array} path - The path to the sub-expression block being changed.
 	 */
 	const handleExpressionChange = (newExpressionBlock, path) => {
@@ -261,13 +261,13 @@ function ExpressionEditor({ header = "Expression Editor" }) {
 
 /**
  * ExpressionBlock component a single expression block. It could be a function or a value.
- * @param {Object} props - Component props.
- * @param {Object} props.expressionBlock - The sub-expression object for this block.
- * @param {function} props.onExpressionChange - Callback to handle changes in the expression.
- * @param {function} props.onValueChange - Callback to handle changes in the value of the expression block.
- * @param {function} props.onRemoveArg - Callback to remove the current argument from the expression block.
+ * @param {object} props - Component props.
+ * @param {object} props.expressionBlock - The sub-expression object for this block.
+ * @param {Function} props.onExpressionChange - Callback to handle changes in the expression.
+ * @param {Function} props.onValueChange - Callback to handle changes in the value of the expression block.
+ * @param {Function} props.onRemoveArg - Callback to remove the current argument from the expression block.
  * @param {Array} props.path - The path to this expression block in the overall expression.
- * @param {Object} props.functionsConfig - Configuration object for all possible functions.
+ * @param {object} props.functionsConfig - Configuration object for all possible functions.
  */
 function ExpressionBlock({
 	expressionBlock,
@@ -320,7 +320,7 @@ function ExpressionBlock({
 
 	/**
 	 * Updates the state of the function block for the expression.
-	 * @param {Object} newFunctionBlock - The updated function block object.
+	 * @param {object} newFunctionBlock - The updated function block object.
 	 */
 	const setFunctionBlock = (newFunctionBlock) => {
 		if (!(expressionBlock.nodeType === "function")) {
@@ -369,10 +369,10 @@ function ExpressionBlock({
 
 /**
  * ExpressionParamInput component to render an input field for a function argument.
- * @param {Object} props - Component props.
- * @param {Object} props.arg - The argument object.
- * @param {function} props.onChange - Callback to handle changes in the argument.
- * @param {function} props.onRemove - Callback to remove the argument.
+ * @param {object} props - Component props.
+ * @param {object} props.arg - The argument object.
+ * @param {Function} props.onChange - Callback to handle changes in the argument.
+ * @param {Function} props.onRemove - Callback to remove the argument.
  */
 function ExpressionParamInput({ arg, onChange, onRemove }) {
 	return (
@@ -428,12 +428,12 @@ function ExpressionParamInput({ arg, onChange, onRemove }) {
  * FunctionBlock component to render a function block.
  * It can contain zero or more arguments. Each argument is a nested ExpressionBlock.
  * It shows as a box with the function name and a list of vertically aligned argument blocks.
- * @param {Object} props - Component props.
+ * @param {object} props - Component props.
  * @param {string} props.functionBlock - The expression sub-block of nodeType function, containing the function name and arguments.
- * @param {function} props.onChange - Callback to handle changes in the current function block.
- * @param {function} props.onValueChange - Callback to handle changes in the value of an argument.
- * @param {function} props.onRemoveArg - Callback to remove an argument from the function block.
- * @param {Object} props.functionsConfig - Configuration object for all possible functions.
+ * @param {Function} props.onChange - Callback to handle changes in the current function block.
+ * @param {Function} props.onValueChange - Callback to handle changes in the value of an argument.
+ * @param {Function} props.onRemoveArg - Callback to remove an argument from the function block.
+ * @param {object} props.functionsConfig - Configuration object for all possible functions.
  * @param {Array} props.path - The path to this function block in the overall expression.
  */
 function FunctionBlock({
@@ -484,7 +484,7 @@ function FunctionBlock({
 
 	/**
 	 * Handles changes to an argument in the function block.
-	 * @param {Object} newArgBlock - The updated argument object.
+	 * @param {object} newArgBlock - The updated argument object.
 	 * @param {number} index - The index of the argument being changed.
 	 */
 	const handleParamChange = (newArgBlock, index) => {
@@ -502,7 +502,7 @@ function FunctionBlock({
 	/**
 	 * Handle function-type select.
 	 * @param {string} selectedFunctionName - The name of the selected function.
-	 * @param {Object} selectedFunctionBlock - The configuration object for the selected function.
+	 * @param {object} selectedFunctionBlock - The configuration object for the selected function.
 	 */
 	const handleFunctionSelect = (
 		selectedFunctionName,
@@ -644,10 +644,10 @@ function FunctionBlock({
 
 /**
  * ExpressionTypeSelector component allows the user to choose the type of expression block (nodeType).
- * @param {Object} props - Component props.
- * @param {function} props.onTypeChange - Callback function to handle nodeType selection. It passes the new nodeType as an argument (eg: "function" or "value").
+ * @param {object} props - Component props.
+ * @param {Function} props.onTypeChange - Callback function to handle nodeType selection. It passes the new nodeType as an argument (eg: "function" or "value").
  * @param {boolean} props.isRemovable - Indicates whether the block can be removed.
- * @param {function} props.onRemove - Callback function to remove the block.
+ * @param {Function} props.onRemove - Callback function to remove the block.
  */
 function ExpressionTypeSelector({ onTypeChange, isRemovable, onRemove }) {
 	// Show two buttons: "Add Function" and "Add Value"
@@ -689,9 +689,9 @@ function ExpressionTypeSelector({ onTypeChange, isRemovable, onRemove }) {
 
 /**
  * FunctionSelector component renders a list of functions for the user to choose from.
- * @param {Object} props - Component props.
- * @param {function} props.onFunctionSelect - Callback function to handle function selection.
- * @param {Object} props.functionsConfig - Configuration object for functions.
+ * @param {object} props - Component props.
+ * @param {Function} props.onFunctionSelect - Callback function to handle function selection.
+ * @param {object} props.functionsConfig - Configuration object for functions.
  */
 function FunctionSelector({ onFunctionSelect, functionsConfig }) {
 	// Convert the functionsConfig object into an array of categories with sub-arrays of functions
@@ -858,7 +858,7 @@ const FunctionContainerBox = ({
 						<Text userSelect="none" textTransform="capitalize">
 							{functionBlock.functionType
 								? functionBlock.label ||
-								  functionBlock.functionType
+									functionBlock.functionType
 								: "Function"}
 						</Text>
 						{isValid ? null : (
@@ -940,6 +940,9 @@ const CategoryIcon = ({ category, ...rest }) => {
 
 /**
  * Delete icon component
+ * @param root0
+ * @param root0.tooltip
+ * @param root0.onClick
  */
 function DeleteIcoButton({ tooltip, onClick }) {
 	return (

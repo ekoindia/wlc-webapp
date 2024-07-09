@@ -15,6 +15,20 @@ import { Pagination, XScrollArrow } from "..";
  * A Table component
  * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
+ * @param prop.data
+ * @param prop.renderer
+ * @param prop.isLoading
+ * @param prop.tableName
+ * @param prop.onRowClick
+ * @param prop.totalRecords
+ * @param prop.pageNumber
+ * @param prop.visibleColumns
+ * @param prop.ResponsiveCard
+ * @param prop.isReceipt
+ * @param prop.printExpansion
+ * @param prop.setPageNumber
+ * @param prop.variant
+ * @param prop.tableRowLimit
  * @example	`<Table></Table>` TODO: Fix example
  */
 const Table = ({
@@ -85,7 +99,7 @@ const Table = ({
 									"@media print": printExpansion
 										? {
 												display: "none !important",
-										  }
+											}
 										: null,
 								}}
 							>

@@ -2,9 +2,12 @@ import { Flex } from "@chakra-ui/react";
 
 /**
  * A base card
+ * @param children.className
  * @param 	{object}	children	Child elements for the card body
- * @param 	{function}	onClick 	onClick function
+ * @param 	{Function}	onClick 	onClick function
  * @param	{...*}	rest	Rest of the props passed to this component
+ * @param children.children
+ * @param children.onClick
  * @example	`<Card></Card>` TODO: Fix example
  */
 const Card = ({ className = "", children, onClick, ...rest }) => {

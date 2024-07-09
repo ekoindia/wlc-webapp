@@ -1,7 +1,7 @@
 /**
  * An array containing options for the ChangeRole menu, along with their respective paths.
  * Each option represents a specific role change action with a corresponding path.
- * @typedef {Object} ChangeRoleOption
+ * @typedef {object} ChangeRoleOption
  * @property {string} slug - A unique identifier for the role change option.
  * @property {string} label - The display label for the role change option.
  * @property {string} path - The URL path for navigating to the role change page with a specific tab.

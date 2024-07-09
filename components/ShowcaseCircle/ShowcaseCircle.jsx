@@ -21,6 +21,8 @@ const animCircle = keyframes`
  * @param 	{object}	prop	Properties passed to the component
  * @param	{boolean}	prop.noStars	Don't show stars in the background.
  * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param prop.imgStars
+ * @param prop.children
  * @example	`<ShowcaseCircle></ShowcaseCircle>` TODO: Fix example
  */
 const ShowcaseCircle = ({

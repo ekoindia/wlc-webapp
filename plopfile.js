@@ -8,7 +8,11 @@ const requireField = (fieldName) => {
 	};
 };
 
-module.exports = (plop) => {
+/**
+ *
+ * @param plop
+ */
+export default function (plop) {
 	/**
 	 * Helper to check if a value is in an array.
 	 */
@@ -795,4 +799,4 @@ module.exports = (plop) => {
 	// 		},
 	// 	],
 	// });
-};
+}

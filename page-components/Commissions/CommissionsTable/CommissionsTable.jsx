@@ -18,6 +18,13 @@ const commissionTableParameterList = [
 
 /**
  * The CommissionsTable component displays a table of commission data.
+ * @param root0
+ * @param root0.commissionData
+ * @param root0.setPageNumber
+ * @param root0.tableRowLimit
+ * @param root0.totalRecords
+ * @param root0.pageNumber
+ * @param root0.tag
  */
 const CommissionsTable = ({
 	commissionData,

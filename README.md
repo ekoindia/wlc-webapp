@@ -19,13 +19,20 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - TODO: Provide for A-B testing, gradual roll-out, etc.
 - To add a new feature-flag, add a new entry in the [constants/featureFlags.ts](constants/featureFlags.ts) file.
 - To test for a feature-flag, use the `useFeatureFlag` hook from [hooks/useFeatureFlag.tsx](hooks/useFeatureFlag.tsx).
-  - Eg: `const isFeatureEnabled = useFeatureFlag('MY_FEATURE');`
+  - Eg: `const [isFeatureEnabled] = useFeatureFlag('MY_FEATURE');`
+  - to dynamically check for feature flags, use the `checkFeatureFlag` function:
+    ```jsx
+	import { checkFeatureFlag } from 'hooks/useFeatureFlag';
+	const [isFeatureEnabled, checkFeatureFlag] = checkFeatureFlag('MY_FEATURE');
+
+	const isAnotherFeatureEnabled = checkFeatureFlag('ANOTHER_FEATURE');
+	```
 
 
 ## 🎨 UI Features:
 
 - **Global Styles**:
-  - Global CSS are defined in [styles/globals.ts](styles/globals.ts).
+  - Global CSS styles are defined in [styles/globals.ts](styles/globals.ts).
 - **Theme**:
   - Default color theme configuration (CHakraUI): [styles/themes.tsx](styles/themes.tsx)
   - A list of predefined color-themes for the organizations to choose from: [constants/colorThemes.js](constants/colorThemes.js)
@@ -114,13 +121,21 @@ How does communication with the Android wrapper app work?
 - `useSessionStorage`: Read/Write data to the browser's sessionStorage.
 - `usePubSub`: Publish/Subscribe to events. Add new topics in the [contexts/PubSubContext.js](contexts/PubSubContext.js) file.
 
+### 📦 Custom [**libs**](libs/):
+These are wrappers around 3rd-party libraries or associated utility functions.
+- [GoogleMap](libs/GoogleMap.jsx) - Google Maps API wrapper
+- [Map View](libs/MapView.js) - View static maps using iFrame
+- [dateFormat](libs/dateFormat.js) - Date formatting utility (wrapper around `date-fns`)
+- [faceDetector](libs/faceDetector.js) - Dynamically loads MediaPipe Face Detector model (uses wasm)
+- [chakraKeyFrames](libs/chakraKeyFrames.js) - Common keyframes for ChakraUI animations
 
-## Global [Contexts](contexts/) (Data Providers)
+
+## 💽 Global [Contexts](contexts/) (Data Providers)
 1.
 
 
 
-## Browser Storage
+## 💾 Browser Storage
 The following data is stored in the browser (localStorage & sessionStorage):
 ### LocalStorage
 1.
