@@ -47,7 +47,7 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "CardPayment",
 		slug: "payment-gateway",
-		hide: false,
+		hide: true,
 	},
 	"optional-verification": {
 		label: "Account Verification",
