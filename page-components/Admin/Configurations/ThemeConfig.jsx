@@ -1,12 +1,15 @@
 import { Box, Flex, Text, useToken } from "@chakra-ui/react";
 import {
+	Button,
 	ColorPair,
 	ColorPickerWidget,
 	Icon,
 	InputLabel as Label,
 	Radio,
 } from "components";
-import { colorThemes } from "constants";
+import { colorThemes, Endpoints, TransactionIds } from "constants";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
 import { useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
 import { generateShades } from "utils";
@@ -23,6 +26,7 @@ const ThemeConfig = () => {
 	const [navStyle, setNavStyle] = useState("");
 	const [landingPageStyle, setLandingPageStyle] = useState("");
 	const [isConfigEnabled] = useFeatureFlag("CUSTOM_THEME");
+	const { accessToken } = useSession();
 
 	// Get current theme color values
 	const [
@@ -156,6 +160,33 @@ const ThemeConfig = () => {
 				accent: selectedTheme?.accent,
 			};
 
+	const handleSubmit = () => {
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
+			{
+				body: {
+					interaction_type_id: TransactionIds.UPDATE_ORG_DETAILS,
+					orgDetails: {
+						metadata: [
+							{
+								name: "theme",
+								type: "json",
+								value: selectedTheme,
+							},
+						],
+					},
+				},
+				token: accessToken,
+			}
+		)
+			.then((res) => {
+				console.log("res", res);
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
+	};
+
 	return (
 		<Flex direction="column" gap={{ base: 4, md: 8 }}>
 			<Section title="Colors">
@@ -287,6 +318,8 @@ const ThemeConfig = () => {
 					onChange={(e) => setLandingPageStyle(e)}
 				/>
 			</Section>
+
+			<Button onClick={() => handleSubmit()}>HIT ME</Button>
 		</Flex>
 	);
 };
