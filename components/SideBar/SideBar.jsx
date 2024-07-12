@@ -12,7 +12,6 @@ import {
 	Text,
 	// Tooltip,
 	useBreakpointValue,
-	useDisclosure,
 	useToken,
 } from "@chakra-ui/react";
 import { Endpoints, UserType } from "constants";
@@ -22,7 +21,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { svgBgDotted } from "utils/svgPatterns";
-import { /* AdminViewToggleCard, */ Icon, ProfileCard, StatusCard } from "..";
+import {
+	/* AdminViewToggleCard, */
+	Icon,
+	ProfileCard,
+	StatusCard,
+} from "..";
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.
@@ -43,7 +47,7 @@ const isCurrentRoute = (routerUrl, path) => {
 };
 
 //MAIN EXPORT
-const SideBar = ({ navOpen, setNavClose }) => {
+const SideBar = ({ isSidebarOpen, closeSidebar }) => {
 	const {
 		isLoggedIn,
 		isOnboarding,
@@ -100,9 +104,7 @@ const SideBar = ({ navOpen, setNavClose }) => {
 			}}
 		>
 			<SmallScreenSideMenu
-				{...otherProps}
-				navOpen={navOpen}
-				setNavClose={setNavClose}
+				{...{ isSidebarOpen, closeSidebar, ...otherProps }}
 			/>
 		</Box>
 	) : (
@@ -201,29 +203,27 @@ const SideBarMenu = ({
 };
 
 //FOR MOBILE SCREENS
-const SmallScreenSideMenu = ({ navOpen, setNavClose, ...rest }) => {
+const SmallScreenSideMenu = ({ isSidebarOpen, closeSidebar, ...rest }) => {
 	const router = useRouter();
-	const { /* isOpen, onOpen, */ onClose } = useDisclosure();
 
 	// Close navigation drawer on page change
 	useEffect(() => {
-		setNavClose();
-	}, [router.asPath, setNavClose]);
+		closeSidebar();
+	}, [router.asPath]);
 
 	return (
 		<Drawer
 			autoFocus={false}
-			isOpen={navOpen}
+			isOpen={isSidebarOpen}
 			placement="left"
-			onClose={onClose}
+			onClose={closeSidebar}
 			returnFocusOnClose={false}
-			onOverlayClick={setNavClose}
+			onOverlayClick={closeSidebar}
 			size="full"
 		>
 			<DrawerOverlay />
 			<DrawerContent maxW="250px" boxShadow={"none"}>
 				<SideBarMenu {...rest} />
-				{/* setNavClose={setNavClose} */}
 			</DrawerContent>
 		</Drawer>
 	);

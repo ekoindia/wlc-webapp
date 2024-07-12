@@ -28,8 +28,10 @@ export const NavHeight = {
 
 /**
  * The top app-bar component
+ * @param root0
+ * @param root0.openSidebar
  */
-const NavBar = () => {
+const NavBar = ({ openSidebar }) => {
 	return (
 		<>
 			<Box as="nav" w="full" h={NavHeight}></Box>
@@ -42,7 +44,7 @@ const NavBar = () => {
 				boxShadow="0px 3px 10px #0000001A"
 			>
 				<Box as="nav" position="sticky" w="full" h={NavHeight}>
-					<NavContent />
+					<NavContent {...{ openSidebar }} />
 				</Box>
 			</Box>
 		</>
@@ -51,14 +53,21 @@ const NavBar = () => {
 
 export default NavBar;
 
-const NavContent = () => {
+const NavContent = ({ openSidebar }) => {
 	const { userData, isAdmin, isAdminAgentMode, isOnboarding, isLoggedIn } =
 		useUser();
 	const { userDetails } = userData;
 	const { name, pic } = userDetails ?? {};
 	const { orgDetail } = useOrgDetailContext();
 	// const router = useRouter();
-	const isMobile = useBreakpointValue({ base: true, md: false });
+
+	const screenSize = useBreakpointValue(
+		{ base: "sm", md: "md", lg: "lg" },
+		{ ssr: false }
+	);
+
+	const isSmallScreen = screenSize === "sm";
+	const isTabScreen = screenSize === "md";
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
@@ -98,7 +107,16 @@ const NavContent = () => {
 			})}
 		>
 			{/* Left-side items of navbar */}
-			<Flex align="center" flexGrow={isMobile ? 1 : 0}>
+			<Flex align="center" flexGrow={isSmallScreen ? 1 : 0}>
+				{isOnboarding ? null : isTabScreen ? (
+					<Icon
+						name="menu"
+						mr="12px"
+						onClick={() => openSidebar()}
+						aria-label="open menu"
+					/>
+				) : null}
+
 				<OrgLogo
 					size="md"
 					align="center"
@@ -106,7 +124,7 @@ const NavContent = () => {
 					minW={{ base: "auto", md: "250px" }}
 				/>
 
-				{!isMobile &&
+				{!isSmallScreen &&
 					ready &&
 					isLoggedIn === true &&
 					isOnboarding !== true && (

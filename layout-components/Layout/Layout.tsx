@@ -69,9 +69,12 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	const { isSubPage, title, hideMenu } = pageMeta;
 
 	const { isLoggedIn } = useSession();
-	const { isOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
+	const { isOpen: isSidebarOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
 
-	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+	const isSmallScreen = useBreakpointValue(
+		{ base: true, md: false },
+		{ ssr: false }
+	);
 
 	const { publish, TOPICS } = usePubSub();
 
@@ -91,6 +94,14 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	const [loadNavBar] = useDelayToggle(100);
 	const [loadSidebar] = useDelayToggle(100);
 	const [loadKbarBox] = useDelayToggle(500);
+
+	const openSidebar = () => {
+		onOpen();
+	};
+
+	const closeSidebar = () => {
+		onClose();
+	};
 
 	// Setup Android Listener...
 	useEffect(() => {
@@ -199,7 +210,9 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							}}
 							h={NavHeight}
 						>
-							{loadNavBar ? <NavBar /> : null}
+							{loadNavBar ? (
+								<NavBar {...{ openSidebar }} />
+							) : null}
 						</Box>
 					)}
 
@@ -208,10 +221,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 					) : (
 						<Flex>
 							{loadSidebar ? (
-								<SideBar
-									navOpen={isOpen}
-									setNavClose={onClose}
-								/>
+								<SideBar {...{ isSidebarOpen, closeSidebar }} />
 							) : (
 								// Placeholder for the sidebar
 								<Box
