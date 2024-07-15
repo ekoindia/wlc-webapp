@@ -4,8 +4,9 @@ import { getNameStyle } from "helpers";
 /**
  * A <OnboardingDashboardCard> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.item
  * @example	`<OnboardingDashboardCard></OnboardingDashboardCard>`
  */
 const OnboardingDashboardCard = ({ item }) => {

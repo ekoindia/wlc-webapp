@@ -5,8 +5,19 @@ import { Button, Icon, Input } from "..";
 /**
  * A <SearchBar> component
  * TODO: A reusable component for SearchBar
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.type
+ * @param prop.setSearch
+ * @param prop.setIsSearching
+ * @param prop.minSearchLimit
+ * @param prop.maxSearchLimit
+ * @param prop.placeholder
+ * @param prop.showButton
+ * @param prop.seachContStyle
+ * @param prop.btnTitle
+ * @param prop.btnStyle
+ * @param prop.loading
  * @example	`<SearchBar></SearchBar>`
  */
 const SearchBar = ({

@@ -119,7 +119,7 @@ const Share = ({
 						window.encodeURIComponent(shareMessage) +
 						(selectedMobile
 							? "&phone=" +
-							  window.encodeURIComponent(selectedMobile)
+								window.encodeURIComponent(selectedMobile)
 							: "")
 				);
 			},
@@ -341,8 +341,8 @@ const Share = ({
 												color
 													? color
 													: secondary
-													? "#666"
-													: "inherit"
+														? "#666"
+														: "inherit"
 											}
 										/>
 										<Text

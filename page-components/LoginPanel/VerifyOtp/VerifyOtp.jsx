@@ -8,9 +8,9 @@ import { useCallback, useEffect, useState } from "react";
 
 /**
  * A <VerifyOtp> component
- * @arg {Object} prop - Properties passed to the component
+ * @param {object} prop - Properties passed to the component
  * @param {string} [prop.loginType] - Login type, eg: Mobile
- * @param {Object} prop.number - Object containing the original and formatted mobile number
+ * @param {object} prop.number - Object containing the original and formatted mobile number
  * @param {boolean} prop.previewMode - Flag to check if the component is in preview mode
  * @param {Function} prop.setStep - Function to set the step
  */

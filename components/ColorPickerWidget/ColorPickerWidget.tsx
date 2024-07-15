@@ -36,12 +36,13 @@ interface ColorPickerWidgetProps {
 
 /**
  * A custom color picker component.
- *
  * @component
  * @param {object} prop - Properties passed to the component
+ * @param prop.label
  * @param {boolean} [themeEditor] - Adds all preset theme colors to the color picker for easily selecting those colors.
  * @param {string} [prop.defaultColor] - Default color
- * @param {function} [prop.onColorChange] - Callback function to handle color change
+ * @param {Function} [prop.onColorChange] - Callback function to handle color change
+ * @param prop.themeEditor
  * @param {...*} rest - Rest of the props
  * @example	`<ColorPickerWidget />`
  */
@@ -127,7 +128,7 @@ const ColorPickerWidget = ({
 					{/* <PopoverArrow /> */}
 					{/* <PopoverCloseButton /> */}
 					<SketchPicker
-						// disableAlpha
+						disableAlpha
 						presetColors={presetColors}
 						color={color}
 						onChange={(clr) => setColor(clr.hex)}

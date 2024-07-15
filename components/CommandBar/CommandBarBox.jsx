@@ -31,7 +31,7 @@ import { Icon, Kbd } from "..";
 /**
  * KBar Portal Box to show the search bar and results
  * @param {object} props
- * @param {string} [props.fontClassName=null] - The class name to be applied to the rendered results to set a custom font.
+ * @param {string} [props.fontClassName] - The class name to be applied to the rendered results to set a custom font.
  * @returns {JSX.Element} The CommandBarBox component
  */
 export default function CommandBarBox({ fontClassName = null }) {
@@ -69,7 +69,7 @@ export default function CommandBarBox({ fontClassName = null }) {
 							}, 100);
 						}
 					},
-			  }
+				}
 			: {}
 	);
 
@@ -151,6 +151,8 @@ export default function CommandBarBox({ fontClassName = null }) {
 
 /**
  * A custom Kbd component to show the keyboard shortcut in the KBar search results
+ * @param root0
+ * @param root0.children
  */
 function Key({ children, ...rest }) {
 	return (
@@ -167,13 +169,13 @@ function Key({ children, ...rest }) {
  * @param {string} Options.current - The KBar result currentRootActionId.
  * @param {boolean} Options.isAdmin - Whether the current user is an admin or not.
  * @param {object} Options.router - The Next.js router object.
- * @param {function} Options.addTodo - The function to be used to add a new todo.
- * @param {function} Options.copy - The function to be used to copy text to clipboard.
- * @param {function} Options.toast - The function to be used to show a toast notification.
- * @param {function} Options.parse - The function to be used to parse a math expression.
- * @param {function} Options.setParse - The function to be used to load and set the parse function dynamically.
+ * @param {Function} Options.addTodo - The function to be used to add a new todo.
+ * @param {Function} Options.copy - The function to be used to copy text to clipboard.
+ * @param {Function} Options.toast - The function to be used to show a toast notification.
+ * @param {Function} Options.parse - The function to be used to parse a math expression.
+ * @param {Function} Options.setParse - The function to be used to load and set the parse function dynamically.
  * @param {string} Options.parseLoadState - The state of the dynamically-loaded parse function.
- * @param {function} Options.setParseLoadState - The function to be used to set the parseLoadState.
+ * @param {Function} Options.setParseLoadState - The function to be used to set the parseLoadState.
  */
 const getDynamicActions = ({
 	queryValue,
@@ -252,7 +254,7 @@ const getDynamicActions = ({
 
 /**
  * Component to render KBar results
- * @param {String} className - The class name to be applied to the rendered results.
+ * @param {string} className - The class name to be applied to the rendered results.
  */
 function RenderResults({ className, isSmallScreen }) {
 	const { results } = useMatches();
@@ -396,6 +398,8 @@ function RenderResults({ className, isSmallScreen }) {
 
 /**
  * Back button for the search results
+ * @param root0
+ * @param root0.className
  */
 function BackButton({ className }) {
 	const { query, current, parentId, parentName } = useKBar((state) => ({

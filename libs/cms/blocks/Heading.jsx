@@ -1,4 +1,4 @@
-import { Text as ChText } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import { pixelSizeOptions } from "../options";
 import { Section } from "../Section";
 
@@ -37,7 +37,7 @@ export const Heading = {
 	render: ({ title, type, padding }) => {
 		return (
 			<Section padding={padding}>
-				<ChText
+				<Text
 					as={type || "h1"}
 					fontSize={
 						type == "h1" ? "3xl" : type == "h2" ? "2xl" : "xl"
@@ -45,7 +45,7 @@ export const Heading = {
 					fontWeight={type == "h1" ? "semibold" : "bold"}
 				>
 					{title}
-				</ChText>
+				</Text>
 			</Section>
 		);
 	},

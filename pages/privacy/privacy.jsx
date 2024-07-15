@@ -240,6 +240,9 @@ const PrivacyPage = () => {
 
 /**
  * Paragraph component
+ * @param root0
+ * @param root0.mb
+ * @param root0.children
  */
 const P = ({ mb = 5, children, ...rest }) => {
 	return (
@@ -251,6 +254,9 @@ const P = ({ mb = 5, children, ...rest }) => {
 
 /**
  * Heading 1 component
+ * @param root0
+ * @param root0.mb
+ * @param root0.children
  */
 const H1 = ({ mb = 6, children, ...rest }) => {
 	return (
@@ -262,6 +268,9 @@ const H1 = ({ mb = 6, children, ...rest }) => {
 
 /**
  * Heading 2 component
+ * @param root0
+ * @param root0.mb
+ * @param root0.children
  */
 const H2 = ({ mb = 2, children, ...rest }) => {
 	return (

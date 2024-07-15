@@ -4,6 +4,15 @@ import { Form } from "tf-components";
 
 /**
  * A NetworkToolbar page-component
+ * @param root0
+ * @param root0.isSearched
+ * @param root0.clearSearch
+ * @param root0.isFiltered
+ * @param root0.clearFilter
+ * @param root0.openModalId
+ * @param root0.setOpenModalId
+ * @param root0.searchBarConfig
+ * @param root0.actionBtnConfig
  * @example	`<NetworkToolbar></NetworkToolbar>` TODO: Fix example
  */
 const NetworkToolbar = ({

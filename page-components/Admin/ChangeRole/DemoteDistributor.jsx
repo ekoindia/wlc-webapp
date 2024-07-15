@@ -14,6 +14,8 @@ const renderer = {
 
 /**
  * DemoteDistributor page-component
+ * @param root0
+ * @param root0.agentData
  * @returns
  */
 const DemoteDistributor = ({ agentData /* , setResponseDetails */ }) => {

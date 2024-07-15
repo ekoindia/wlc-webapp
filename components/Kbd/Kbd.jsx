@@ -2,6 +2,8 @@ import { Kbd as ChakraKbd } from "@chakra-ui/react";
 
 /**
  * A <Kbd> component
+ * @param root0
+ * @param root0.children
  * @example	`<Kbd>F5</Kbd>`
  */
 const Kbd = ({ children, ...rest }) => {

@@ -9,6 +9,12 @@ import { defaultActions } from ".";
 const KBarContext = createContext();
 
 // Custom KBarProvider wrapper
+/**
+ *
+ * @param root0
+ * @param root0.children
+ * @param root0.load
+ */
 export function KBarLazyProvider({ children, load }) {
 	const [kbar, setKBar] = useState(null);
 	const [loaded, setLoaded] = useState(false);
@@ -49,6 +55,9 @@ export function KBarLazyProvider({ children, load }) {
 }
 
 // Custom hook to use the context
+/**
+ *
+ */
 export function useKBarReady() {
 	const context = useContext(KBarContext);
 	if (context === undefined) {

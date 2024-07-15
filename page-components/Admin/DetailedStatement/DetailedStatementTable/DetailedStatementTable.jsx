@@ -27,7 +27,7 @@ const detailedStatementTableParameterList = [
 
 /**
  * A DetailedStatementTable page-component
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<DetailedStatementTable></DetailedStatementTable>`
  */

@@ -1,3 +1,11 @@
+/**
+ *
+ * @param root0
+ * @param root0.w
+ * @param root0.h
+ * @param root0.lat
+ * @param root0.lng
+ */
 export default function MapView({ w, h, lat, lng }) {
 	return (
 		<iframe

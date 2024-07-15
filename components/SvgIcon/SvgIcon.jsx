@@ -4,8 +4,10 @@ import { IconLibrary } from "constants/IconLibrary";
 /**
  * A <SvgIcon> component
  * TODO: Write more description here
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.name
+ * @param prop.style
  * @example	`<SvgIcon></SvgIcon>`
  */
 const SvgIcon = ({ name, style, ...rest }) => {

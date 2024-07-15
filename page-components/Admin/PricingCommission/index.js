@@ -37,8 +37,8 @@ export {
 	PricingForm,
 	QrPayment,
 	RefundMethod,
+	ToggleCdm,
 	UpiFundTransfer,
 	UpiMoneyTransfer,
 	ValidateUpiId,
-	ToggleCdm,
 };

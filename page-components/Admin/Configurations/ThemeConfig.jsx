@@ -8,13 +8,17 @@ import {
 } from "components";
 import { colorThemes } from "constants/colorThemes";
 import { useEffect, useState } from "react";
+import { generateShades } from "utils";
 
 const bgTransition = "background 0.5s ease-in";
 
+/**
+ * Component to configure the theme colors of the app.
+ * Users can select a predefined color theme or set their own primary and accent colors.
+ */
 const ThemeConfig = () => {
 	const [selectedTheme, setSelectedTheme] = useState(null);
 	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-2);
-	const [customTheme, setCustomTheme] = useState(null);
 	const [navStyle, setNavStyle] = useState("");
 	const [landingPageStyle, setLandingPageStyle] = useState("");
 
@@ -35,6 +39,17 @@ const ThemeConfig = () => {
 		"accent.dark",
 	]);
 
+	// Set default custom theme as the current theme. Users can change this.
+	const [customTheme, setCustomTheme] = useState({
+		primary,
+		primary_light,
+		primary_dark,
+		accent,
+		accent_light,
+		accent_dark,
+	});
+	const [customThemeSet, setCustomThemeSet] = useState(false); // Whether user has edited & set a custom theme
+
 	// Load Landing Page Style from LocalStorage & also set the current color theme
 	useEffect(() => {
 		// TODO: Get the current navbar style (light or dark)
@@ -48,7 +63,7 @@ const ThemeConfig = () => {
 			accent_light,
 			accent_dark,
 		});
-		console.log("Finding theme: ", colorThemes, { primary, accent });
+		// console.log("Finding theme: ", colorThemes, { primary, accent });
 		// Set index of the selected theme
 		setSelectedThemeIdx(
 			colorThemes.findIndex(
@@ -82,7 +97,7 @@ const ThemeConfig = () => {
 		}
 	}, [landingPageStyle]);
 
-	// Apply custom theme when both primary and accent colors are set
+	// Apply custom theme when selected by the user (and, if it is different than the predefined themes)
 	// Calculate 10 degree darker and lighter shades of the primary & accent colors
 	useEffect(() => {
 		if (
@@ -91,28 +106,61 @@ const ThemeConfig = () => {
 			selectedThemeIdx === -1
 		) {
 			// Calculate darker and lighter shades
+			const { dark: primary_dark, light: primary_light } = generateShades(
+				customTheme.primary,
+				10
+			);
+			const { dark: accent_dark, light: accent_light } = generateShades(
+				customTheme.accent,
+				10
+			);
 
-			setSelectedTheme(customTheme);
+			// console.log("Custom Theme:>>>> ", {
+			// 	primary: customTheme.primary,
+			// 	primary_dark,
+			// 	primary_light,
+			// 	accent: customTheme.accent,
+			// 	accent_dark,
+			// 	accent_light,
+			// });
+
+			// Set if custom theme has been edited by the user
+			if (
+				customTheme?.primary != primary ||
+				customTheme?.accent != accent
+			) {
+				setCustomThemeSet(true);
+			} else {
+				setCustomThemeSet(false);
+			}
+
+			setSelectedTheme({
+				...customTheme,
+				primary_light,
+				primary_dark,
+				accent_light,
+				accent_dark,
+			});
 		}
-	}, [customTheme]);
+	}, [customTheme, primary, accent]);
 
 	const _customThemePreview = customTheme?.primary
 		? {
 				primary: customTheme?.primary,
 				accent: customTheme?.accent,
-		  }
+			}
 		: {
 				primary: selectedTheme?.primary,
 				accent: selectedTheme?.accent,
-		  };
+			};
 
 	return (
 		<Flex direction="column" gap={{ base: 4, md: 8 }}>
 			<Section title="Colors">
 				<AppPreview
-					primary={selectedTheme?.primary}
-					primaryDark={selectedTheme?.primary_dark}
-					accent={selectedTheme?.accent}
+					primary={selectedTheme?.primary || primary}
+					primaryDark={selectedTheme?.primary_dark || primary_dark}
+					accent={selectedTheme?.accent || accent}
 					navStyle={navStyle}
 				/>
 
@@ -148,16 +196,19 @@ const ThemeConfig = () => {
 							{/* Add custom color selector */}
 							<ColorSelector
 								theme={
-									selectedThemeIdx === -1
+									customThemeSet && selectedThemeIdx === -1
 										? {
 												name: "Custom Theme",
 												primary:
-													_customThemePreview?.primary,
-												accent: _customThemePreview?.accent,
-										  }
+													_customThemePreview?.primary ||
+													primary,
+												accent:
+													_customThemePreview?.accent ||
+													accent,
+											}
 										: {
 												name: "Custom Theme",
-										  }
+											}
 								}
 								i={-1}
 								isSelected={
@@ -180,6 +231,7 @@ const ThemeConfig = () => {
 											<td>Primary Color</td>
 											<td>
 												<ColorPickerWidget
+													label="Change Color"
 													themeEditor
 													defaultColor={primary}
 													width={300}
@@ -196,6 +248,7 @@ const ThemeConfig = () => {
 											<td>Accent Color</td>
 											<td>
 												<ColorPickerWidget
+													label="Change Color"
 													themeEditor
 													defaultColor={accent}
 													width={300}
@@ -235,6 +288,9 @@ const ThemeConfig = () => {
 
 /**
  * Section card component
+ * @param root0
+ * @param root0.title
+ * @param root0.children
  */
 const Section = ({ title, children }) => {
 	return (
@@ -262,7 +318,7 @@ const Section = ({ title, children }) => {
 
 /**
  * Component to show a 270px x 180px preview of the website using the theme colors. Show the primary and accent colors. Show the white top-bar, the primary left menu with a few dummy menu items
- * @param {Object} props
+ * @param {object} props
  * @param {string} props.primary - Primary color
  * @param {string} props.primaryDark - Primary Dark color
  * @param {string} props.accent - Accent color
@@ -284,6 +340,8 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 			overflow="hidden"
 			fontSize="5px"
 			shadow="base"
+			pointerEvents="none"
+			userSelect="none"
 		>
 			{primary && accent ? (
 				<>
@@ -317,15 +375,17 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 								item="₹10,000"
 								primaryDark={primaryDark}
 							/>
-							{["Home", "Start Here", "Others"].map((item, i) => (
-								<MenuItem
-									key={i}
-									item={item}
-									primaryDark={primaryDark}
-									accent={accent}
-									selected={i === 1}
-								/>
-							))}
+							{["Home", "Transaction", "Others"].map(
+								(item, i) => (
+									<MenuItem
+										key={i}
+										item={item}
+										primaryDark={primaryDark}
+										accent={accent}
+										selected={i === 1}
+									/>
+								)
+							)}
 						</Flex>
 
 						{/* Right Pane */}
@@ -349,9 +409,10 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 								shadow="base"
 							>
 								<Text size="1.2em" fontWeight="500">
-									Transaction Card
+									Transaction
 								</Text>
 								<Box flex="1"></Box>
+								{/* Button */}
 								<Flex
 									bg={accent}
 									w="20%"
@@ -361,7 +422,7 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 									borderRadius={2}
 									px="4px"
 									color="white"
-									fontSize="0.8em"
+									fontSize="0.9em"
 									transition={bgTransition}
 								>
 									Proceed
@@ -379,6 +440,11 @@ const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
 
 /**
  * Menu Item component for preview
+ * @param root0
+ * @param root0.item
+ * @param root0.primaryDark
+ * @param root0.accent
+ * @param root0.selected
  */
 const MenuItem = ({ item, primaryDark, accent, selected = false }) => {
 	return (

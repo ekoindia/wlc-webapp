@@ -29,7 +29,6 @@ interface FileViewProps {
 
 /**
  * FileView component to display a file of the following types: pdf, image, video, audio, URL, HTML, etc.
- *
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {string} prop.file - File to be displayed

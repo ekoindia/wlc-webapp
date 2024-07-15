@@ -42,6 +42,9 @@ const TestPage = () => {
 
 /**
  * A Test Section component
+ * @param root0
+ * @param root0.title
+ * @param root0.children
  */
 const Section = ({ title, children }) => (
 	<Flex

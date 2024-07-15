@@ -20,24 +20,24 @@ import { MdCameraAlt, MdFolderOpen, MdPhotoLibrary } from "react-icons/md";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.label]	Label for the dropzone
  * @param	{File}		prop.file	File object to be uploaded
- * @param	{function}	prop.setFile	Function to set the file object
- * @param	{string}	[prop.accept=""]	Accepted file types
- * @param	{boolean}	[prop.cameraOnly=false]	Only allow camera to capture image. No file upload or drag/drop.
- * @param	{boolean}	[prop.watermark=false]	Add watermark to the Camera image. The following data is added to the image: timestamp, user name, usercode, org name, and geolocation.
- * @param	{object}	[prop.options={}]	Additional options for the dropzone
+ * @param	{Function}	prop.setFile	Function to set the file object
+ * @param	{string}	[prop.accept]	Accepted file types
+ * @param	{boolean}	[prop.cameraOnly]	Only allow camera to capture image. No file upload or drag/drop.
+ * @param	{boolean}	[prop.watermark]	Add watermark to the Camera image. The following data is added to the image: timestamp, user name, usercode, org name, and geolocation.
+ * @param	{object}	[prop.options]	Additional options for the dropzone
  * @param	{number}	[prop.options.maxLength]	Maximum length of the image
  * @param	{boolean}	[prop.options.detectFace]	Detect faces in the image?
  * @param	{number}	[prop.options.minFaceCount]	Minimum number of faces required to be detected (if detectFace is true)
  * @param	{number}	[prop.options.maxFaceCount]	Maximum number of faces to be detected (for auto-cropping)
- * @param	{boolean}	[prop.options.autoCapture=false]	Auto-click camera when object is detected
+ * @param	{boolean}	[prop.options.autoCapture]	Auto-click camera when object is detected
  * @param	{number}	[prop.options.aspectRatio]	Aspect ratio for the image
  * @param	{number}	[prop.options.disableImageConfirm]	Accept image without the confirmation dialog (including the option to crop, rotate, etc)
  * @param	{number}	[prop.options.disableImageEdit]	Disable image editing (crop, rotate, etc)
- * @param	{boolean}	[prop.options.disableCrop=false]	Disable cropping the image
- * @param	{boolean}	[prop.options.disableRotate=false]	Disable rotating the image
- * @param	{boolean}	[prop.required=false]	Mark the dropzone as required
- * @param	{boolean}	[prop.disabled=false]	Disable the dropzone
- * @param	{object}	[prop.labelStyle={}]	Style for the label
+ * @param	{boolean}	[prop.options.disableCrop]	Disable cropping the image
+ * @param	{boolean}	[prop.options.disableRotate]	Disable rotating the image
+ * @param	{boolean}	[prop.required]	Mark the dropzone as required
+ * @param	{boolean}	[prop.disabled]	Disable the dropzone
+ * @param	{object}	[prop.labelStyle]	Style for the label
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Dropzone file={screenshot} setFile={setScreenshot} />` TODO: Fix example
  */
@@ -140,6 +140,7 @@ const Dropzone = ({
 
 	/**
 	 * Open the Image Editor for the file
+	 * @param image
 	 * @param {*} file
 	 */
 	const openImageEditor = (image, file) => {
@@ -552,6 +553,10 @@ const Dropzone = ({
 
 /**
  * Custom Button component for Dropzone
+ * @param root0
+ * @param root0.disabled
+ * @param root0.onClick
+ * @param root0.children
  */
 const Btn = ({ disabled, onClick, children, ...rest }) => {
 	return (
@@ -569,6 +574,7 @@ const Btn = ({ disabled, onClick, children, ...rest }) => {
 
 /**
  * Check if the mime-type is for an image
+ * @param type
  */
 function isImageType(type) {
 	return type && type.toLowerCase().startsWith("image/");

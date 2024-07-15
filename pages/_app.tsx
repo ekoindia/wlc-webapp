@@ -40,6 +40,14 @@ const toastDefaultOptions = {
 	isClosable: true,
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.Component
+ * @param root0.pageProps
+ * @param root0.router
+ * @param root0.org
+ */
 export default function InfinityApp({ Component, pageProps, router, org }) {
 	console.log("[_app.tsx] Started: ", {
 		org,
@@ -90,10 +98,10 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 						dark: colors?.accent_dark || light.colors.accent.dark,
 					},
 				},
-		  }
+			}
 		: {
 				...light,
-		  };
+			};
 
 	// Add NavBar style colors (light or default dark)...
 	const lightNav = colors?.navstyle === "light";

@@ -7,13 +7,11 @@ import { useRouter } from "next/router";
  * A <ContactPane> component that displays contact information.
  *
  * This component receives a data object as a prop and displays the mobile number and email. It also provides buttons to call the mobile number and send an email.
- *
- * @param {Object} props - Properties passed to the component
- * @param {Object} props.data - The data object containing contact details
+ * @param {object} props - Properties passed to the component
+ * @param {object} props.data - The data object containing contact details
  * @param {string} props.data.agent_mobile - The mobile number of the agent
  * @param {string} props.data.email - The email of the agent
  * @param {string} [props.className] - Optional classes to pass to this component
- *
  * @example
  * const data = {
  *   agent_mobile: '1234567890',

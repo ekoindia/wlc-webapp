@@ -28,7 +28,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
  * - Toast notifications.
  * - Raise Query (ticket management).
  * @param	{string}	start_id	The transaction id to load. Start of the path.
- * @param	{array}	paths	The list of sub-paths to load.
+ * @param	{Array}	paths	The list of sub-paths to load.
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<EkoConnectWidget start_id="123" route_params={{trxntypeid: 123, subpath_list: ["123"]}} />`
  */
@@ -370,6 +370,16 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 /**
  * Add listeners for the custom events dispatched by the Connect widget.
+ * @param root0
+ * @param root0.setWidgetLoading
+ * @param root0.generateNewToken
+ * @param root0.refreshUser
+ * @param root0.setBalance
+ * @param root0.router
+ * @param root0.openUrl
+ * @param root0.setTransactionFlow
+ * @param root0.showRaiseIssueDialog
+ * @param root0.widgetRef
  */
 const setupWidgetEventListeners = ({
 	setWidgetLoading,
@@ -473,8 +483,9 @@ const setupWidgetEventListeners = ({
 	 * 	- login-again: Login again (refresh access-token) when the session expires.
 	 * 	- goto-transaction: Open the transaction page.
 	 * 	- goto-history: Open the history page.
-	 * @param {Object} e.detail	- The event detail object
-	 * @param {String} e.detail.name	- The name of the event
+	 * @param {object} e.detail	- The event detail object
+	 * @param {string} e.detail.name	- The name of the event
+	 * @param e
 	 */
 	const onIronSignal = (e) => {
 		console.log("🎬 >>> onIronSignal:: ", e?.detail);
@@ -592,13 +603,13 @@ const configurePolymer = () => {
 
 /**
  * Custom hook to setup event listeners for the Connect widget.
- * @param {Object} widgetRef - The React reference to the Connect widget component.
- * @param {Object} router - The React Router instance
+ * @param {object} widgetRef - The React reference to the Connect widget component.
+ * @param {object} router - The React Router instance
  * @param {Function} openUrl - The useAppLink function to open internal or external URLs.
  * @param {Function} refreshUser - Function to refresh the user profile data.
  * @param {Function} setTransactionFlow - Function to set the current transaction flow state.
  * @param {Function} showRaiseIssueDialog - Function to show the "Raise Issue" dialog.
- * @returns	{Object} - The widgetLoading state
+ * @returns	{object} - The widgetLoading state
  */
 const useSetupWidgetEventListeners = (
 	widgetRef,
@@ -643,8 +654,10 @@ const useSetupWidgetEventListeners = (
  * Show if:
  * 1. interaction-id to 'Set PIN' is available in current role
  * 2. this.user_details.is_pin_not_set = 1
- * @param {String} set_pin_transaction_id - The transaction-id to 'Set PIN'
- * @returns {Boolean} - True if the nudge should be shown, false otherwise
+ * @param {string} set_pin_transaction_id - The transaction-id to 'Set PIN'
+ * @param role_tx_list
+ * @param is_pin_not_set
+ * @returns {boolean} - True if the nudge should be shown, false otherwise
  */
 const showSetPIN = (set_pin_transaction_id, role_tx_list, is_pin_not_set) => {
 	return set_pin_transaction_id &&

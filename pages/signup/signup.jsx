@@ -693,6 +693,9 @@ const SignupPage = () => {
 
 	const initialStepSetter = (user_data) => {
 		const currentStepData = [];
+		/**
+		 *
+		 */
 		function stepSetter() {
 			// console.log(
 			// 	"[oaas] > Setup Steps #1: ",
@@ -1178,7 +1181,6 @@ const SignupPage = () => {
 						})
 					);
 				} else {
-					// eslint-disable-next-line no-undef
 					const leegality = new Leegality({
 						callback: handleLeegalityCallback.bind(this),
 						logo: orgDetail.logo,
@@ -1387,7 +1389,7 @@ const SignupPage = () => {
 									background: "#FFF",
 									display: "flex",
 									justifyContent: "center",
-							  }
+								}
 							: {}
 					}
 				>

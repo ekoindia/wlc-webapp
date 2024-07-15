@@ -56,8 +56,13 @@ const networkTableParameterList = [
 
 /**
  * A NetworkTable page-component which will redirect to Retailer details on row click
- * @arg 	{Object}	prop	Properties passed to the component
+ * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @param prop.isLoading
+ * @param prop.pageNumber
+ * @param prop.totalRecords
+ * @param prop.agentDetails
+ * @param prop.setPageNumber
  * @example	`<NetworkTable></NetworkTable>`
  */
 const NetworkTable = ({

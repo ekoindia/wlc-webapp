@@ -9,7 +9,7 @@ import { formatCurrency } from "utils/numberFormat";
 import { useBusinessSearchActions } from "./GlobalSearchContext";
 
 /**
- * @typedef {Object} EarningSummaryValue
+ * @typedef {object} EarningSummaryValue
  * @property {number} this_month_till_yesterday - This month's earnings till yesterday midnight.
  * @property {number} last_month_till_yesterday - Last month's earnings till the previous day midnight.
  * @property {number} last_month_total - Last month's total earnings.
@@ -32,6 +32,8 @@ export const useEarningSummary = () => {
 
 /**
  * Provider component for the EarningSummary context.
+ * @param root0
+ * @param root0.children
  */
 export const EarningSummaryProvider = ({ children }) => {
 	const [userEarnings, setUserEarnings, isValid] = useDailyCacheState(
@@ -146,7 +148,7 @@ export const EarningSummaryProvider = ({ children }) => {
 							/>
 						),
 					},
-			  ]
+				]
 			: [];
 	}, [userEarnings]);
 

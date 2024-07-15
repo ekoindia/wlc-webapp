@@ -1,17 +1,15 @@
 import { Box } from "@chakra-ui/react";
 import { Puck } from "@measured/puck";
 import "@measured/puck/puck.css";
-import { Icon } from "components";
 import { cmsConfig } from "libs/cms";
 import { useEffect, useState } from "react";
+import { FiMonitor, FiSmartphone } from "react-icons/fi";
 
 // Save the data to your database
 const save = (data) => {
 	console.log("SAVING LANDING PAGE CONFIG: ", data);
 	localStorage.setItem("inf-landing-page-cms", JSON.stringify(data));
 };
-
-console.log("cmsConfig: ", cmsConfig);
 
 const LandingPageConfig = () => {
 	const [initialData, setInitialData] = useState(null);
@@ -49,14 +47,13 @@ const LandingPageConfig = () => {
 						width: 360,
 						height: "auto", // Optional height. Can be numeric or "auto". Defaults to "auto".
 						label: "Mobile", // Optional. Shown in tooltip.
-						icon: <Icon name="mobile" size="22px" color="#333" />,
-						// icon: <svg />, // Optional. Use lucide-icons to align with Puck UI.
+						icon: <FiSmartphone />,
 					},
 					{
-						width: 1024,
+						width: 1100,
 						height: "auto",
 						label: "Desktop",
-						icon: <Icon name="tv" color="#333" />,
+						icon: <FiMonitor />,
 					},
 				]}
 				onPublish={save}

@@ -1,8 +1,7 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 // import { createAdaptor } from "@measured/puck";
 import { Button, OrgLogo } from "components";
-import { useContext } from "react";
-import { context } from "..";
+import { iconField, quickSizeOptions } from "../options";
 import { Section } from "../Section";
 
 // const quotesAdaptor = createAdaptor(
@@ -51,6 +50,7 @@ export const Hero = {
 						{ label: "Link", value: "link" },
 					],
 				},
+				ico: iconField,
 			},
 		},
 		logo: {
@@ -92,17 +92,36 @@ export const Hero = {
 				{ label: "No", value: false },
 			],
 		},
+		bs: {
+			type: "radio",
+			label: "Button Size",
+			options: quickSizeOptions,
+		},
+		bir: {
+			// Button Icons on Right?
+			type: "radio",
+			label: "Button Icon Position",
+			options: [
+				{ label: "Left", value: false },
+				{ label: "Right", value: true },
+			],
+		},
 		padding: { type: "text" },
 	},
 	defaultProps: {
 		logo: true,
 		logoSize: "lg",
-		title: "Hero",
+		title: "Your E-store",
 		align: "left",
-		description: "Description",
+		description:
+			"Your business partner to grow your revenue and digitize your business. Start earning today from your shop, office, home or anywhere.",
 		buttons: [{ label: "Learn more", href: "#" }],
+		imageUrl:
+			"https://images.unsplash.com/photo-1687204209659-3bded6aecd79?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=900&q=80",
+		bs: "lg",
+		bir: false,
+		dark: false,
 		padding: "64px",
-		dark: true,
 	},
 	render: ({
 		align = "left",
@@ -114,18 +133,20 @@ export const Hero = {
 		padding,
 		imageUrl,
 		imageMode,
-		dark = true,
+		bs,
+		bir,
+		dark = false,
 	}) => {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const { paddingX } = useContext(context);
+		// const { paddingX } = useContext(context);
 
 		const center = align === "center";
 		const bgOverlay =
-			"linear-gradient(-90deg,rgb(247, 250, 255, 0.7) 0%,rgb(247, 250, 255, 0.7) 80%)";
+			"linear-gradient(-90deg,rgb(247, 250, 255, 0.8) 0%,rgb(247, 250, 255, 0.8) 80%)";
 		const bgOverlayDark =
 			"linear-gradient(-90deg,rgb(0 ,0, 0, 0.75) 0%,rgb(0 ,0, 0, 0.75) 80%)";
 		const bgOverlayLarge =
-			"linear-gradient(-90deg,rgba(255, 255, 255, 0) 0%,rgb(247, 250, 255) 60%)";
+			"linear-gradient(-90deg,rgba(255, 255, 255, 0) 0%,rgba(247, 250, 255, 0.95) 60%)";
 		const bgOverlayLargeDark =
 			"linear-gradient(-90deg,rgba(0, 0, 0, 0) 0%,rgb(0, 0, 0, 0.8) 60%)";
 
@@ -154,7 +175,6 @@ export const Hero = {
 							}}
 						></div>
 						<Box
-							className="imageOverlay"
 							backgroundImage={
 								align === "left"
 									? {
@@ -164,10 +184,10 @@ export const Hero = {
 											md: dark
 												? bgOverlayLargeDark
 												: bgOverlayLarge,
-									  }
+										}
 									: dark
-									? bgOverlayDark
-									: bgOverlay
+										? bgOverlayDark
+										: bgOverlay
 							}
 							position="absolute"
 							right={0}
@@ -180,16 +200,17 @@ export const Hero = {
 
 				{/* Inner */}
 				<Flex
-					className="cms-hero-inner"
+					w="100%"
 					direction="row"
 					align="center"
 					justify={center ? "center" : undefined}
 					textAlign={center ? "center" : undefined}
 					position="relative"
 					gap="48px"
-					px={paddingX || "0"}
+					// px={paddingX || "0"}
+					px={{ base: "20px", md: "20px", lg: "40px" }}
 					py={padding}
-					wrap={{ base: "wrap", lg: "nowrap" }}
+					wrap={{ base: "wrap", md: "nowrap" }}
 					zIndex="1"
 				>
 					<Flex
@@ -202,8 +223,8 @@ export const Hero = {
 							center
 								? "100%"
 								: imageMode === "background"
-								? { base: "auto", md: "50%" }
-								: undefined
+									? { base: "auto", md: "50%" }
+									: undefined
 						}
 					>
 						{logo ? (
@@ -212,7 +233,7 @@ export const Hero = {
 						<Text
 							as="h1"
 							lineHeight="1.1"
-							fontSize={{ base: "48px", md: "64px" }}
+							fontSize={{ base: "42px", md: "60px", lg: "64px" }}
 							// color="#333"
 							color={{ base: dark ? "white" : "#333" }}
 						>
@@ -223,8 +244,8 @@ export const Hero = {
 								color: dark
 									? "white"
 									: imageMode === "background"
-									? "#404040"
-									: "#767676",
+										? "#404040"
+										: "#767676",
 								fontSize: "20px",
 								lineHeight: 1.5,
 								margin: 0,
@@ -240,7 +261,9 @@ export const Hero = {
 									key={i}
 									href={button.href}
 									variant={button.variant}
-									size="lg"
+									size={bs || "lg"}
+									icon={button.ico}
+									iconPosition={bir ? "right" : "left"}
 								>
 									{button.label}
 								</Button>

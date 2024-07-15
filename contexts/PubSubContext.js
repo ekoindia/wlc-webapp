@@ -6,7 +6,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import uuid from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 // Create Context Object
 const PubSubContext = createContext();
@@ -21,7 +21,7 @@ export const PubSubProvider = (props) => {
 	const [_subscribers, setSubscribers] = useState({});
 
 	const subscribe = useCallback((topic, callback) => {
-		const id = uuid.v4();
+		const id = uuidv4();
 		// console.log("[PubSub] subscribe", topic, id);
 		setSubscribers((prev) => ({
 			...prev,

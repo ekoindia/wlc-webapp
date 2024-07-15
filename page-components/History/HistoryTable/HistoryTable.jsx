@@ -10,6 +10,11 @@ import {
 /**
  * A <HistoryTable> component
  * @param 	{object}	prop	Properties passed to the component
+ * @param prop.pageNumber
+ * @param prop.setPageNumber
+ * @param prop.tableRowLimit
+ * @param prop.transactionList
+ * @param prop.loading
  * @example	`<HistoryTable></HistoryTable>` TODO: Fix example
  */
 const HistoryTable = ({
