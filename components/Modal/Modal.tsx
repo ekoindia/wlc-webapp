@@ -72,7 +72,7 @@ const Modal = ({
 			{...rest}
 		>
 			<ModalOverlay />
-			<ModalContent>
+			<ModalContent py="4">
 				<ModalHeader {...{ title, onClose }} />
 				<ModalBody>{children}</ModalBody>
 			</ModalContent>

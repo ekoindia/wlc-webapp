@@ -16,13 +16,7 @@ interface ModalHeaderProps {
  */
 const ModalHeader = ({ title, onClose }: ModalHeaderProps): JSX.Element => {
 	return (
-		<Flex
-			w="100%"
-			minH="56px"
-			align="center"
-			justify="space-between"
-			px="5"
-		>
+		<Flex align="center" justify="space-between" px="6">
 			<Text fontSize="lg" fontWeight="semibold">
 				{title}
 			</Text>
