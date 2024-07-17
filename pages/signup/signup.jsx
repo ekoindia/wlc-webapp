@@ -1,5 +1,5 @@
 import { Center, Spinner, useToast, useToken } from "@chakra-ui/react";
-import { Endpoints, TransactionIds } from "constants";
+import { agreementProvider, Endpoints, TransactionIds } from "constants";
 import {
 	useAppSource,
 	useOrgDetailContext,
@@ -1146,6 +1146,29 @@ const SignupPage = () => {
 		}
 	};
 
+	useEffect(() => {
+		const handleMessage = (event) => {
+			if (event.data.type === "STATUS_UPDATE") {
+				const { body } = event.data;
+
+				handleStepDataSubmit({
+					id: 12,
+					form_data: {
+						agreement_status: body.status == 0 ? "success" : "fail",
+						document_id: signUrlData?.document_id,
+					},
+				});
+			}
+		};
+
+		window.addEventListener("message", handleMessage);
+
+		// Cleanup listener on component unmount
+		return () => {
+			window.removeEventListener("message", handleMessage);
+		};
+	}, []);
+
 	const handleStepCallBack = (callType) => {
 		console.log("[stepcallback]", callType, latLong, userLoginData);
 		if (callType.type === 12) {
@@ -1161,32 +1184,38 @@ const SignupPage = () => {
 				// 	isAndroid ? "Android" : "Web"
 				// );
 
-				if (!signUrlData?.short_url) {
-					console.error("[oaas Leegality] Didn't receive short-url");
-					toast({
-						title: "Error starting eSign session. Please reload and try again later.",
-						status: "error",
-						duration: 2000,
-					});
-				}
+				if (signUrlData?.pipe == agreementProvider.KARZA) {
+					if (!signUrlData?.short_url) {
+						console.error(
+							"[oaas Leegality] Didn't receive short-url"
+						);
+						toast({
+							title: "Error starting eSign session. Please reload and try again later.",
+							status: "error",
+							duration: 2000,
+						});
+					}
 
-				if (isAndroid) {
-					doAndroidAction(
-						ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
-						JSON.stringify({
-							signing_url: signUrlData?.short_url,
-							document_id: signUrlData?.document_id,
-							//	signUrlData?.short_url,
-							// logo: orgDetail.logo,
-						})
-					);
-				} else {
-					const leegality = new Leegality({
-						callback: handleLeegalityCallback.bind(this),
-						logo: orgDetail.logo,
-					});
-					leegality.init();
-					leegality.esign(signUrlData?.short_url); // signUrlData?.short_url
+					if (isAndroid) {
+						doAndroidAction(
+							ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
+							JSON.stringify({
+								signing_url: signUrlData?.short_url,
+								document_id: signUrlData?.document_id,
+								//	signUrlData?.short_url,
+								// logo: orgDetail.logo,
+							})
+						);
+					} else {
+						const leegality = new Leegality({
+							callback: handleLeegalityCallback.bind(this),
+							logo: orgDetail.logo,
+						});
+						leegality.init();
+						leegality.esign(signUrlData?.short_url); // signUrlData?.short_url
+					}
+				} else if (signUrlData?.pipe == agreementProvider.SIGNZY) {
+					window.open(signUrlData?.short_url, "SignAgreementWindow");
 				}
 			}
 		} else if (callType.type === 10) {

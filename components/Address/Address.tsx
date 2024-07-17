@@ -1,40 +1,251 @@
-// import { Flex } from "@chakra-ui/react";
-// import {
-// 	useEffect,
-// 	useState,
-// } from "react";
+import { Box, Flex, Button } from "@chakra-ui/react";
+// import { Button } from "components";
+import { Endpoints } from "constants/EndPoints";
+import { ParamType } from "constants/trxnFramework";
+import { TransactionIds } from "constants/EpsTransactions";
+import { useSession } from "contexts";
+import { fetcher } from "helpers";
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components";
 
-// // Declare the props interface
-// interface AddressProps {
-// 	prop1?: string;
-// 	// size: "lg" | "md" | "sm" | "xs" | string;
-// 	[key: string]: any;
-// }
+// Declare the props interface
+interface AddressProps {
+	onSubmit: () => void;
+	onCancel: () => void;
+}
 
-// /**
-//  * A <Address> component
-//  * TODO: Write more description here
-//  *
-//  * @component
-//  * @param {object} prop - Properties passed to the component
-//  * @param {string} prop.prop1 - TODO: Property description. A normal property.
-//  * @param {number} [prop.optionalProp2=0] - TODO: Property description. An optional property with default value.
-//  * @param {...*} rest - Rest of the props
-//  * @example	`<Address></Address>` TODO: Fix example
-//  */
-// const Address = ({ prop1, ...rest }: AddressProps)  => {
-// 	const [count, setCount] = useState(0);		// TODO: Edit state as required
+interface State {
+	value: string;
+	label: string;
+}
 
-// 	useEffect(() => {
-// 		// TODO: Add your useEffect code here and update dependencies as required
-// 	}, []);
+interface ValueObject {
+	value: string;
+	[key: string]: any;
+}
 
-// 	// MARK: JSX
-// 	return (
-// 		<Flex {...rest}>
-// 			Address
-// 		</Flex>
-// 	);
-// };
+const findObjectByValue = (
+	arr: ValueObject[],
+	value: string
+): ValueObject | undefined => {
+	return arr.find((obj) => obj.value === value);
+};
 
-// export default Address;
+/**
+ * A <Address> component
+ * TODO: Write more description here
+ * @component
+ * @param {object} prop - Properties passed to the component
+ * @param {string} prop.prop1 - TODO: Property description. A normal property.
+ * @param {number} [prop.optionalProp2] - TODO: Property description. An optional property with default value.
+ * @param prop.onSubmit
+ * @param prop.onCancel
+ * @param {...*} rest - Rest of the props
+ * @example	<Address></Address> TODO: Fix example
+ */
+const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
+	console.log("@@@@@@ Address Component");
+	const [agentData, setAgentData] = useState<any>();
+	const [statesList, setStatesList] = useState<State[]>([]);
+	const { accessToken } = useSession();
+
+	const current_address_parameter_list = [
+		{
+			name: "address_line1",
+			label: "Address Line 1",
+		},
+		{
+			name: "address_line2",
+			label: "Address Line 2",
+			required: false,
+		},
+		{
+			name: "pincode",
+			label: "Postal Code",
+			parameter_type_id: ParamType.NUMERIC,
+			step: "1",
+			maxLength: 6,
+		},
+		{
+			name: "city",
+			label: "City",
+		},
+		{
+			name: "country_state",
+			label: "State",
+			parameter_type_id: ParamType.LIST,
+			list_elements: statesList,
+		},
+		{
+			name: "country",
+			label: "Country",
+			disabled: true,
+		},
+	];
+
+	const {
+		handleSubmit,
+		register,
+		formState: { errors, isValid },
+		control,
+		reset,
+	} = useForm();
+
+	const watcher = useWatch({ control });
+
+	const fetchStatesList = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id: TransactionIds.STATE_TYPE,
+			},
+			token: accessToken,
+			controller: undefined,
+		})
+			.then((res: any) => {
+				if (res.status === 0) {
+					setStatesList(res?.param_attributes.list_elements);
+				}
+			})
+			.catch((err: any) => {
+				console.error("err", err);
+			});
+	};
+
+	const fetchAgentDataViaCellNumber = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				// "tf-req-uri": /network/agents?record_count=1&search_value=${mobile},
+				"tf-req-method": "GET",
+			},
+			token: accessToken,
+			body: undefined,
+			controller: undefined,
+		})
+			.then((res: any) => {
+				setAgentData(res?.data?.agent_details[0]);
+			})
+			.catch((error: any) => {
+				console.error("[ProfilePanel] Get Agent Detail Error:", error);
+			});
+	};
+
+	useEffect(() => {
+		fetchStatesList();
+
+		const storedData = JSON.parse(
+			localStorage.getItem("oth_last_selected_agent") as string
+		);
+		if (storedData !== undefined) {
+			setAgentData(storedData);
+		} else {
+			fetchAgentDataViaCellNumber();
+		}
+	}, []);
+
+	useEffect(() => {
+		let defaultValues: Record<string, any> = {};
+
+		const _state =
+			agentData?.state == "Delhi"
+				? "National Capital Territory of Delhi (UT)"
+				: agentData?.state;
+
+		const state = findObjectByValue(statesList, _state);
+
+		defaultValues.address_line1 = agentData?.line_1;
+		defaultValues.address_line2 = agentData?.line_2;
+		defaultValues.pincode = agentData?.zip;
+		defaultValues.city = agentData?.city;
+		defaultValues.country_state = state;
+		defaultValues.country = "India";
+
+		reset({ ...defaultValues });
+	}, [agentData, statesList]);
+
+	const handleFormSubmit = (submittedData: Record<string, any>) => {
+		const keysToFlatten = ["country_state"];
+
+		const finalData = Object.entries(submittedData).reduce(
+			(acc: Record<string, any>, [key, value]) => {
+				if (keysToFlatten.includes(key)) {
+					if (value?.value !== undefined && value?.value !== "") {
+						acc[key] = value.value;
+					}
+				} else {
+					if (value !== undefined && value !== "") {
+						acc[key] = value;
+					}
+				}
+				return acc;
+			},
+			{}
+		);
+		onSubmit(finalData);
+	};
+
+	return (
+		<Box px={{ base: "20px", md: "0" }}>
+			<Flex
+				direction="column"
+				w="100%"
+				bg="white"
+				borderRadius="10px"
+				mt="20px"
+				gap="4"
+			>
+				<form onSubmit={handleSubmit(handleFormSubmit)}>
+					<Flex direction="column" gap="6">
+						<Form
+							prop1={""}
+							{...{
+								register,
+								control,
+								formValues: watcher,
+								parameter_list: current_address_parameter_list,
+								errors,
+								templateColumns: {
+									base: "1fr",
+									lg: "repeat(auto-fit, minmax(300px, 1fr))",
+								},
+								columnGap: 4,
+								width: "100%",
+							}}
+						/>
+					</Flex>
+					<Flex gap="4" mt={6} mb={2}>
+						<Button
+							type="submit"
+							w="100%"
+							size="lg"
+							fontWeight="bold"
+							bg="accent.light"
+							textColor="white"
+							isDisabled={!isValid}
+
+							//onClick={secondaryButtonAction}
+						>
+							Save
+						</Button>
+						<Button
+							w="100%"
+							size="lg"
+							//type="submit"
+							//w={{ base: "100%", md: "initial" }}
+							variant="link"
+							color="primary.DEFAULT"
+							display="flex"
+							justifyContent="center"
+							onClick={onCancel}
+						>
+							Cancel
+						</Button>
+					</Flex>
+				</form>
+			</Flex>
+		</Box>
+	);
+};
+
+export default Address;

@@ -23,6 +23,7 @@ export {
 	productPricingTextConfig,
 	productPricingType,
 	products,
+	agreementProvider,
 } from "./ProductDetails";
 export { PubSubTopics } from "./PubSubTopics";
 export {

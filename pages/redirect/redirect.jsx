@@ -1,35 +1,32 @@
-// {base_url}/redirect?status=0 Success
+import { useEffect } from "react";
+import { Spinner, Flex, Text } from "@chakra-ui/react";
 
-// const Redirect = () => {
-// 	const queryParams = new URLSearchParams(window.location.search);
-// 	const initialStatus = queryParams.get("status");
-// 	const [status, setStatus] = useState(initialStatus);
+const Redirect = () => {
+	const queryParams = new URLSearchParams(window.location.search);
+	const _status = queryParams.get("status");
 
-// 	useEffect(() => {
-// 		let statusMessage = "";
-// 		if (status == 0) {
-// 			statusMessage = "success";
-// 		} else if (status == 1) {
-// 			statusMessage = "fail ";
-// 		}
-// 		window.postMessage(
-// 			{ type: "STATUS_UPDATE", status: statusMessage },
-// 			"https://localhost:3002"
-// 		);
-// 		setTimeout(() => {
-// 			console.log("@@@@ window close");
-// 			window.close();
-// 		}, 5000);
-// 	}, [status]);
+	useEffect(() => {
+		window.opener.postMessage(
+			{ type: "STATUS_UPDATE", body: { status: _status } },
+			window.location.origin
+		);
 
-// 	return (
-// 		<>
-// 			<div>
-// 				<h1>Redirect Page</h1>
-// 				<p>Status: {status}</p>
-// 			</div>
-// 		</>
-// 	);
-// };
+		setTimeout(() => {
+			window.close();
+		}, 20000);
+	}, []);
 
-// export default Redirect;
+	return (
+		<Flex
+			height="100vh"
+			alignItems="center"
+			justifyContent="center"
+			direction="column"
+		>
+			<Spinner size="xl" />
+			<Text mt={4}>Redirecting...</Text>
+		</Flex>
+	);
+};
+
+export default Redirect;

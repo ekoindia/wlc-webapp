@@ -638,7 +638,7 @@ const AgreementTesting = () => {
 
 	const openWindow = () => {
 		const features =
-			"width=800,height=600,top=200,left=200,toolbar=no,menubar=no,scrollbars=yes,resizable=yes,status=no";
+			"toolbar=no,menubar=no,scrollbars=yes,resizable=yes,status=no";
 		window.open(url, "SignAgreementWindow", features);
 	};
 

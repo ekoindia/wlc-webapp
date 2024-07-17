@@ -53,8 +53,8 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
-	ColorPickerWidget,
 	Address,
+	ColorPickerWidget,
 	Camera,
 	FileView,
 	Share,

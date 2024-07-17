@@ -396,3 +396,10 @@ export const productPricingType = {
 	QR_PAYMENT: productPricingTextConfig.PRICING,
 	CDM: productPricingTextConfig.PRICING,
 };
+
+export const agreementProvider = {
+	DIGIO: 0,
+	KARZA: 1,
+	SIGNZY: 2,
+	LEEGALITY: 3,
+};
