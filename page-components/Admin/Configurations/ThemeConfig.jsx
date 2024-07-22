@@ -1,4 +1,12 @@
-import { Box, Flex, Text, useDisclosure, useToken } from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	Grid,
+	GridItem,
+	Text,
+	useDisclosure,
+	useToken,
+} from "@chakra-ui/react";
 import {
 	Button,
 	ColorPair,
@@ -204,65 +212,72 @@ const ThemeConfig = () => {
 					navStyle={navStyle}
 				/>
 
-				<Flex direction="column" gap="6">
-					<Box>
-						<Radio
-							label="Select Menu Bar Style"
-							options={[
-								{ label: "Default", value: "" },
-								{ label: "Light", value: "light" },
-							]}
-							required
-							onChange={(e) => setNavStyle(e)}
-						/>
-					</Box>
+				<Flex direction="column" gap="10" w="100%">
+					<Radio
+						label="Select Menu Bar Style"
+						options={[
+							{ label: "Default", value: "" },
+							{ label: "Light", value: "light" },
+						]}
+						required
+						onChange={(e) => setNavStyle(e)}
+					/>
 
-					<Box>
+					<Box w="100%">
 						<Label required>Select a Color Theme</Label>
-						<Flex direction="row" gap={8} wrap="wrap">
+						<Grid
+							templateColumns="repeat(auto-fill, minmax(100px, 1fr))"
+							gap="6"
+							pt="1"
+						>
 							{colorThemes.map((theme, i) => (
-								<ColorSelector
-									key={i + theme.name}
-									theme={theme}
-									i={i}
-									isSelected={selectedThemeIdx === i}
-									onSelect={(theme, i) => {
-										setSelectedTheme(theme);
-										setSelectedThemeIdx(i);
-									}}
-								/>
+								<GridItem>
+									<ColorSelector
+										key={i + theme.name}
+										theme={theme}
+										i={i}
+										isSelected={selectedThemeIdx === i}
+										onSelect={(theme, i) => {
+											setSelectedTheme(theme);
+											setSelectedThemeIdx(i);
+										}}
+									/>
+								</GridItem>
 							))}
 
 							{/* Add custom color selector */}
 							{isConfigEnabled && (
-								<ColorSelector
-									theme={
-										customThemeSet &&
-										selectedThemeIdx === -1
-											? {
-													name: "Custom Theme",
-													primary:
-														_customThemePreview?.primary ||
-														primary,
-													accent:
-														_customThemePreview?.accent ||
-														accent,
-												}
-											: {
-													name: "Custom Theme",
-												}
-									}
-									i={-1}
-									isSelected={
-										selectedThemeIdx === -1 && selectedTheme
-									}
-									onSelect={(theme, i) => {
-										setSelectedTheme(theme);
-										setSelectedThemeIdx(i);
-									}}
-								/>
+								<GridItem>
+									<ColorSelector
+										theme={
+											customThemeSet &&
+											selectedThemeIdx === -1
+												? {
+														name: "Custom Theme",
+														primary:
+															_customThemePreview?.primary ||
+															primary,
+														accent:
+															_customThemePreview?.accent ||
+															accent,
+													}
+												: {
+														name: "Custom Theme",
+													}
+										}
+										i={-1}
+										isSelected={
+											selectedThemeIdx === -1 &&
+											selectedTheme
+										}
+										onSelect={(theme, i) => {
+											setSelectedTheme(theme);
+											setSelectedThemeIdx(i);
+										}}
+									/>
+								</GridItem>
 							)}
-						</Flex>
+						</Grid>
 
 						{/* Custom Theme Editor Section */}
 						{isConfigEnabled && selectedThemeIdx === -1 ? (
@@ -310,6 +325,49 @@ const ThemeConfig = () => {
 							</Flex>
 						) : null}
 					</Box>
+
+					<Button
+						w={{ base: "auto", md: "180px" }}
+						onClick={() => onOpen()}
+					>
+						Apply
+					</Button>
+
+					<Modal
+						{...{
+							id: "theme-consent",
+							size: "sm",
+							title: "Attention",
+							isOpen,
+							onClose,
+						}}
+					>
+						<Flex direction="column" gap="4">
+							<Flex direction="column" gap="2">
+								<Text>
+									You are about to change theme for all your
+									network. All your users will see the new
+									colors after next login.
+								</Text>
+								<Text fontWeight="semibold">
+									Are you sure you want to continue?
+								</Text>
+							</Flex>
+							{/* TODO: Use ActionButtonGroup here */}
+							<Flex gap="2">
+								<Button w="100%" onClick={() => handleSubmit()}>
+									Save
+								</Button>
+								<Button
+									w="100%"
+									onClick={() => onClose()}
+									variant="link"
+								>
+									Cancel
+								</Button>
+							</Flex>
+						</Flex>
+					</Modal>
 				</Flex>
 			</Section>
 
@@ -321,36 +379,10 @@ const ThemeConfig = () => {
 						{ label: "Landing Page", value: "page" },
 					]}
 					value={landingPageStyle}
-					required
 					onChange={(e) => setLandingPageStyle(e)}
+					required
 				/>
 			</Section>
-
-			<Button onClick={() => onOpen()}>Save</Button>
-
-			<Modal
-				{...{
-					id: "theme-consent",
-					size: "sm",
-					title: "Attention",
-					isOpen,
-					onClose,
-				}}
-			>
-				<Flex direction="column" gap="4">
-					<Flex direction="column" gap="2">
-						<Text>
-							You are about to change theme for all your network.
-							All your users will see the new colors after next
-							login.
-						</Text>
-						<Text fontWeight="semibold">
-							Are you sure you want to continue?
-						</Text>
-					</Flex>
-					<Button onClick={() => handleSubmit()}>Apply</Button>
-				</Flex>
-			</Modal>
 		</Flex>
 	);
 };
