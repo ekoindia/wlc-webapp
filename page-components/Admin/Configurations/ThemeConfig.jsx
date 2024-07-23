@@ -29,6 +29,7 @@ import { AppPreview } from ".";
  * Users can select a predefined color theme or set their own primary and accent colors.
  */
 const ThemeConfig = () => {
+	const [currentTheme, setCurrentTheme] = useState(null);
 	const [selectedTheme, setSelectedTheme] = useState(null);
 	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-2);
 	const [navStyle, setNavStyle] = useState("");
@@ -70,6 +71,16 @@ const ThemeConfig = () => {
 		// TODO: Get the current navbar style (light or dark)
 
 		// Set the current color theme
+		setCurrentTheme({
+			primary,
+			primary_light,
+			primary_dark,
+			accent,
+			accent_light,
+			accent_dark,
+		});
+
+		// Set the selected color theme
 		setSelectedTheme({
 			primary,
 			primary_light,
@@ -169,8 +180,19 @@ const ThemeConfig = () => {
 				accent: selectedTheme?.accent,
 			};
 
+	const handleThemeSelect = (theme, i) => {
+		setSelectedTheme({
+			primary: theme.primary,
+			primary_light: theme.primary_light,
+			primary_dark: theme.primary_dark,
+			accent: theme.accent,
+			accent_light: theme.accent_light,
+			accent_dark: theme.accent_dark,
+		});
+		setSelectedThemeIdx(i);
+	};
+
 	const handleSubmit = () => {
-		console.log("SUBMIT");
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
 			{
@@ -191,6 +213,7 @@ const ThemeConfig = () => {
 		)
 			.then((res) => {
 				console.log("res", res);
+				// reload + cache_clear
 				onClose();
 			})
 			.catch((err) => {
@@ -237,10 +260,7 @@ const ThemeConfig = () => {
 										theme={theme}
 										i={i}
 										isSelected={selectedThemeIdx === i}
-										onSelect={(theme, i) => {
-											setSelectedTheme(theme);
-											setSelectedThemeIdx(i);
-										}}
+										onSelect={handleThemeSelect}
 									/>
 								</GridItem>
 							))}
@@ -270,10 +290,7 @@ const ThemeConfig = () => {
 											selectedThemeIdx === -1 &&
 											selectedTheme
 										}
-										onSelect={(theme, i) => {
-											setSelectedTheme(theme);
-											setSelectedThemeIdx(i);
-										}}
+										onSelect={handleThemeSelect}
 									/>
 								</GridItem>
 							)}
@@ -329,6 +346,11 @@ const ThemeConfig = () => {
 					<Button
 						w={{ base: "auto", md: "180px" }}
 						onClick={() => onOpen()}
+						disabled={
+							currentTheme?.primary === selectedTheme?.primary &&
+							currentTheme?.accent === selectedTheme?.accent
+						}
+						// disabled={areObjectsEqual(currentTheme, selectedTheme)}
 					>
 						Apply
 					</Button>
