@@ -23,6 +23,7 @@ export {
 export { default as CombineProviders } from "./CombineProviders";
 export { calculateDateBefore } from "./dateUtils";
 export { debounce } from "./debounce";
+export { areObjectsEqual } from "./equalityUtils";
 export { getFormErrorMessage } from "./errorMessages";
 export { parse } from "./exprParser";
 export { b64toByteArrays, saveDataToFile } from "./FileSave";
