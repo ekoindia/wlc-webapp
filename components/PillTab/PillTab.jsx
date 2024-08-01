@@ -37,7 +37,7 @@ const PillTab = ({ list, currTab, onClick, ...rest }) => {
 			justify={{ base: "space-between", md: "flex-start" }}
 			{...rest}
 		>
-			{tabList?.map(({ label, visible }, index) => {
+			{tabList?.map(({ label, visible = true }, index) => {
 				if (!visible) return;
 				const isActive = index === currTab;
 				return (
