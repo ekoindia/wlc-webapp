@@ -25,7 +25,7 @@ const Configurations = () => {
 			component: <LandingPageConfig />,
 			visible: isCmsLandingPageEnabled,
 		},
-		{ label: "General", component: <GeneralConfig /> },
+		{ label: "General", component: <GeneralConfig />, visible: false },
 	];
 
 	useEffect(() => {
