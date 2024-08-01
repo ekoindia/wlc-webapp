@@ -5,6 +5,7 @@ import {
 	GridItem,
 	Text,
 	useDisclosure,
+	useToast,
 	useToken,
 } from "@chakra-ui/react";
 import {
@@ -17,12 +18,22 @@ import {
 	Radio,
 } from "components";
 import { colorThemes, Endpoints, TransactionIds } from "constants";
-import { useSession } from "contexts";
+import { OrgDetailSessionStorageKey, useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useFeatureFlag } from "hooks";
+import { useFeatureFlag, useSessionStorage } from "hooks";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { generateShades } from "utils";
 import { AppPreview } from ".";
+
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
 
 /**
  * Component to configure the theme colors of the app.
@@ -34,9 +45,17 @@ const ThemeConfig = () => {
 	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-2);
 	const [navStyle, setNavStyle] = useState("");
 	const [landingPageStyle, setLandingPageStyle] = useState("");
-	const [isConfigEnabled] = useFeatureFlag("CUSTOM_THEME");
+	const [isCustomThemeCreatorEnabled] = useFeatureFlag(
+		"CUSTOM_THEME_CREATOR"
+	);
+	const [isCmsLandingPageEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
 	const { accessToken } = useSession();
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const toast = useToast();
+	const router = useRouter();
+	const [orgDetail, setOrgDetail] = useSessionStorage(
+		OrgDetailSessionStorageKey
+	);
 
 	// Get current theme color values
 	const [
@@ -212,9 +231,36 @@ const ThemeConfig = () => {
 			}
 		)
 			.then((res) => {
-				console.log("res", res);
-				// reload + cache_clear
-				onClose();
+				if (res?.status == 0) {
+					// Update the orgDetail with the new theme
+					const updatedOrgDetail = {
+						...orgDetail,
+						metadata: {
+							...orgDetail.metadata,
+							theme: selectedTheme,
+						},
+					};
+
+					// Save the updated orgDetail to session storage
+					setOrgDetail(updatedOrgDetail);
+
+					// Show success toast
+					toast({
+						title: res.message,
+						status: getStatus(res.status),
+						duration: 6000,
+						isClosable: true,
+					});
+
+					// Close modal
+					onClose();
+
+					// Clear Server Cache
+					router.push({ pathname: "/clear_org_cache" });
+
+					// Clear local & session storage
+					clearCache();
+				}
 			})
 			.catch((err) => {
 				console.error("err", err);
@@ -266,7 +312,7 @@ const ThemeConfig = () => {
 							))}
 
 							{/* Add custom color selector */}
-							{isConfigEnabled && (
+							{isCustomThemeCreatorEnabled && (
 								<GridItem>
 									<ColorSelector
 										theme={
@@ -297,7 +343,8 @@ const ThemeConfig = () => {
 						</Grid>
 
 						{/* Custom Theme Editor Section */}
-						{isConfigEnabled && selectedThemeIdx === -1 ? (
+						{isCustomThemeCreatorEnabled &&
+						selectedThemeIdx === -1 ? (
 							<Flex direction="column" mt={10}>
 								<Label required>Select your Own Colors</Label>
 								<table>
@@ -393,18 +440,20 @@ const ThemeConfig = () => {
 				</Flex>
 			</Section>
 
-			<Section title="Landing Page">
-				<Radio
-					label="Select Landing Page Style"
-					options={[
-						{ label: "Splash Screen (Default)", value: "card" },
-						{ label: "Landing Page", value: "page" },
-					]}
-					value={landingPageStyle}
-					onChange={(e) => setLandingPageStyle(e)}
-					required
-				/>
-			</Section>
+			{isCmsLandingPageEnabled && (
+				<Section title="Landing Page">
+					<Radio
+						label="Select Landing Page Style"
+						options={[
+							{ label: "Splash Screen (Default)", value: "card" },
+							{ label: "Landing Page", value: "page" },
+						]}
+						value={landingPageStyle}
+						onChange={(e) => setLandingPageStyle(e)}
+						required
+					/>
+				</Section>
+			)}
 		</Flex>
 	);
 };
