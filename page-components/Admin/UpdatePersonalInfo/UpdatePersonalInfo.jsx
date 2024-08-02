@@ -632,7 +632,6 @@ const UpdatePersonalInfo = () => {
 
 								<ActionButtonGroup
 									buttonConfigList={PreviewButtonConfigList}
-									bottom="0"
 								/>
 							</Flex>
 						) : (

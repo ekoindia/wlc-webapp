@@ -20,6 +20,7 @@ const PricingFormPage = () => {
 PricingFormPage.pageMeta = {
 	title: `Pricing & Commissions`,
 	isSubPage: true,
+	reduceBottomAppBarAnimation: true,
 };
 
 export default PricingFormPage;

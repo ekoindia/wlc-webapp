@@ -16,8 +16,9 @@ function UpdateSellerAddressPage() {
 }
 
 UpdateSellerAddressPage.pageMeta = {
-	title: "My Network > Update Retailer Address | Admin",
+	title: "My Network > Update Agent Address | Admin",
 	isSubPage: true,
+	reduceBottomAppBarAnimation: true,
 };
 
 export default UpdateSellerAddressPage;

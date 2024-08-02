@@ -18,6 +18,7 @@ function UpdatePersonalInfoPage() {
 UpdatePersonalInfoPage.pageMeta = {
 	title: "My Network > Update Personal Info | Admin",
 	isSubPage: true,
+	reduceBottomAppBarAnimation: true,
 };
 
 export default UpdatePersonalInfoPage;
