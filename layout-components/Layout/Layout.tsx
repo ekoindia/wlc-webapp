@@ -66,7 +66,8 @@ const BottomAppBar = dynamic(
  * @param {string} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
 const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
-	const { isSubPage, title, hideMenu } = pageMeta;
+	const { isSubPage, title, hideMenu, reduceBottomAppBarAnimation } =
+		pageMeta;
 
 	const { isLoggedIn } = useSession();
 	const { isOpen: isSidebarOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
@@ -281,7 +282,13 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 								},
 							}}
 						>
-							<BottomAppBar {...{ bottomBarItems }} />
+							<BottomAppBar
+								{...{
+									bottomBarItems,
+									reduceAnimation:
+										reduceBottomAppBarAnimation,
+								}}
+							/>
 						</Box>
 					) : null}
 				</Box>

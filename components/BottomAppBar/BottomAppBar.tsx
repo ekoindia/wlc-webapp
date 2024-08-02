@@ -6,18 +6,23 @@ import { useEffect, useState } from "react";
 import { svgBgDotted } from "utils/svgPatterns";
 import { Icon } from "..";
 
+type BottomAppBarProps = {
+	bottomBarItems: BottomBarItem[];
+	reduceAnimation?: boolean;
+};
+
 /**
  * BottomAppBar component.
  * @component
- * @param {object} props - Component props.
+ * @param {BottomAppBarProps} props - The props of the component.
  * @param {BottomBarItem[]} props.bottomBarItems - Array of items for the bottom app bar.
+ * @param {boolean} [props.reduceAnimation] - Flag to reduce animations for the component.
  * @returns {React.Element} The rendered BottomAppBar component.
  */
 const BottomAppBar = ({
 	bottomBarItems,
-}: {
-	bottomBarItems: BottomBarItem[];
-}) => {
+	reduceAnimation = false,
+}: BottomAppBarProps) => {
 	const router = useRouter();
 
 	const [lastScrollTop, setLastScrollTop] = useState(0);
@@ -38,19 +43,21 @@ const BottomAppBar = ({
 
 	// Hide on scroll down, show on scroll up
 	useEffect(() => {
-		const handleScroll = () => {
-			const st = document.documentElement.scrollTop;
-			if (st > lastScrollTop) {
-				setIsVisible(false);
-			} else {
-				setIsVisible(true);
-			}
-			setLastScrollTop(st <= 0 ? 0 : st);
-		};
+		if (!reduceAnimation) {
+			const handleScroll = () => {
+				const st = document.documentElement.scrollTop;
+				if (st > lastScrollTop) {
+					setIsVisible(false);
+				} else {
+					setIsVisible(true);
+				}
+				setLastScrollTop(st <= 0 ? 0 : st);
+			};
 
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, [lastScrollTop]);
+			window.addEventListener("scroll", handleScroll);
+			return () => window.removeEventListener("scroll", handleScroll);
+		}
+	}, [lastScrollTop, router.asPath]);
 
 	// If there are no bottom bar items, return null
 	if (bottomBarItems?.length <= 0) return null;
@@ -64,8 +71,14 @@ const BottomAppBar = ({
 			minH={isMac ? "64px" : "56px"}
 			boxShadow="0px -3px 10px #0000001A"
 			pb={isMac ? "16px" : "0px"}
-			transition="transform 0.3s ease-in-out"
-			transform={isVisible ? "translateY(0)" : "translateY(100%)"}
+			transition={reduceAnimation ? "none" : "transform 0.3s ease-in-out"}
+			transform={
+				reduceAnimation
+					? "none"
+					: isVisible
+						? "translateY(0)"
+						: "translateY(100%)"
+			}
 			backgroundImage={svgBgDotted({
 				fill: contrast_color,
 				opacity: 0.04,
