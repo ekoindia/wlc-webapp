@@ -302,7 +302,7 @@ const UpdateSellerAddress = () => {
 				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
 
-			<Box px={{ base: "20px", md: "0" }} mb="16">
+			<Box px={{ base: "20px", md: "0" }} mb="32">
 				<Flex
 					direction="column"
 					w="100%"

@@ -360,7 +360,7 @@ const UpdatePersonalInfo = () => {
 				<Divider display={{ base: "none", md: "block" }} />
 			</Flex>
 			<form onSubmit={handleSubmit(handleFormPreview)}>
-				<Box px={{ base: "20px", md: "0" }} mb="16">
+				<Box px={{ base: "20px", md: "0" }} mb="32">
 					<Flex
 						direction="column"
 						w="100%"

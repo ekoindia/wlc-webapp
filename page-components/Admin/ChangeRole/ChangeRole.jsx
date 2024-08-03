@@ -123,6 +123,7 @@ const ChangeRole = () => {
 						base: showOrgChangeRoleView ? "8" : "-10px",
 						md: "initial",
 					}}
+					mb="32"
 				>
 					{!showOrgChangeRoleView && (
 						<>
