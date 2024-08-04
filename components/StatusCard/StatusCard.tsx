@@ -2,6 +2,7 @@ import { Circle, Flex, Text, Tooltip, useToast } from "@chakra-ui/react";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useMenuContext, useSession } from "contexts";
 import { useWallet } from "contexts/WalletContext";
+import { rotateAntiClockwise } from "libs/chakraKeyframes";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { formatCurrency } from "utils/numberFormat";
@@ -29,11 +30,11 @@ const StatusCard = ({
 }: StatusCardProps): JSX.Element => {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
+	const [isRefreshing, setIsRefreshing] = useState(false);
 	const toast = useToast();
 	const { refreshWallet, balance, loading } = useWallet();
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
-
 	const { isLoggedIn, isOnboarding, isAdmin } = useSession();
 
 	if (isOnboarding || isLoggedIn !== true) return null;
@@ -71,10 +72,14 @@ const StatusCard = ({
 	const onRefreshHandler = () => {
 		if (!disabled) {
 			setDisabled(true);
+			setIsRefreshing(true);
 			// fetching updated account balance
 			refreshWallet();
 			// Added 30sec timer
-			setTimeout(() => setDisabled(false), 30000); // enable button after 10 sec
+			setTimeout(() => {
+				setDisabled(false);
+				setIsRefreshing(false);
+			}, 30000); // enable button after 30 sec
 		}
 	};
 
@@ -149,6 +154,13 @@ const StatusCard = ({
 							name="refresh"
 							size={{ base: "12px", "2xl": "16px" }}
 							color="primary.dark" // ORIG_THEME: sidebar.card-bg-dark
+							sx={
+								isRefreshing
+									? {
+											animation: `${rotateAntiClockwise} 1s ease-in-out`,
+										}
+									: {}
+							}
 						/>
 					</Circle>
 				</Tooltip>
