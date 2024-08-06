@@ -1,17 +1,16 @@
 import { Box, Flex, Button } from "@chakra-ui/react";
-// import { Button } from "components";
 import { Endpoints } from "constants/EndPoints";
 import { ParamType } from "constants/trxnFramework";
 import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, FieldValues } from "react-hook-form";
 import { Form } from "tf-components";
 
 // Declare the props interface
 interface AddressProps {
-	onSubmit: () => void;
+	onSubmit: (_data: Record<string, any>) => void;
 	onCancel: () => void;
 }
 
@@ -42,11 +41,9 @@ const findObjectByValue = (
  * @param prop.onSubmit
  * @param prop.onCancel
  * @param {...*} rest - Rest of the props
- * @example	<Address></Address> TODO: Fix example
+ * @example <Address></Address> TODO: Fix example
  */
 const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
-	console.log("@@@@@@ Address Component");
-	const [agentData, setAgentData] = useState<any>();
 	const [statesList, setStatesList] = useState<State[]>([]);
 	const { accessToken } = useSession();
 
@@ -87,10 +84,11 @@ const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
 	const {
 		handleSubmit,
 		register,
-		formState: { errors, isValid },
+		formState: { errors },
 		control,
 		reset,
-	} = useForm();
+		setValue,
+	} = useForm<FieldValues>();
 
 	const watcher = useWatch({ control });
 
@@ -104,6 +102,7 @@ const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
 		})
 			.then((res: any) => {
 				if (res.status === 0) {
+					console.log(res?.param_attributes.list_elements);
 					setStatesList(res?.param_attributes.list_elements);
 				}
 			})
@@ -112,57 +111,100 @@ const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
 			});
 	};
 
-	const fetchAgentDataViaCellNumber = () => {
+	const fetchCityViaPincode = (pincode: string) => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				// "tf-req-uri": /network/agents?record_count=1&search_value=${mobile},
-				"tf-req-method": "GET",
-			},
 			token: accessToken,
-			body: undefined,
+			body: {
+				pincode: pincode,
+				interaction_type_id: 353,
+			},
 			controller: undefined,
 		})
 			.then((res: any) => {
-				setAgentData(res?.data?.agent_details[0]);
+				if (res.status === 0) {
+					const dependentParams = res.dependent_params;
+
+					const cityParam = dependentParams.find(
+						(param: { name: string }) =>
+							param.name === "sender_city"
+					);
+					const stateParam = dependentParams.find(
+						(param: { name: string }) =>
+							param.name === "sender_state"
+					);
+
+					if (cityParam && stateParam) {
+						const city = cityParam.value;
+						const state = stateParam.value;
+
+						const stateObject = findObjectByValue(
+							statesList,
+							state
+						);
+						setValue("city", city, { shouldValidate: false });
+						setValue("country_state", stateObject, {
+							shouldValidate: false,
+						});
+					}
+				}
 			})
 			.catch((error: any) => {
-				console.error("[ProfilePanel] Get Agent Detail Error:", error);
+				console.error(
+					"[ProfilePanel] Get City and State Error:",
+					error
+				);
 			});
 	};
+
+	const pincode = useWatch({
+		control,
+		name: "pincode",
+	});
+
+	useEffect(() => {
+		if (pincode && pincode.length === 6) {
+			fetchCityViaPincode(pincode);
+		}
+	}, [pincode]);
 
 	useEffect(() => {
 		fetchStatesList();
 
-		const storedData = JSON.parse(
-			localStorage.getItem("oth_last_selected_agent") as string
-		);
-		if (storedData !== undefined) {
-			setAgentData(storedData);
-		} else {
-			fetchAgentDataViaCellNumber();
-		}
+		// const storedData = JSON.parse(
+		// 	localStorage.getItem("oth_last_selected_agent")
+		// );
+		// if (storedData !== undefined) {
+		// 	setAgentData(storedData);
+		// } else {
+		// 	fetchAgentDataViaCellNumber();
+		// }
 	}, []);
+
+	// const fetchAgentDataViaCellNumber = () => {
+	//     fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+	//       headers: {
+	//         "tf-req-uri-root-path": "/ekoicici/v1",
+	//         "tf-req-method": "GET",
+	//       },
+	//       token: accessToken,
+	//       body: undefined,
+	//       controller: undefined,
+	//     })
+	//       .then((res: any) => {
+	//         setAgentData(res?.data?.agent_details[0]);
+	//       })
+	//       .catch((error: any) => {
+	//         console.error("[ProfilePanel] Get Agent Detail Error:", error);
+	//       });
+	//   };
 
 	useEffect(() => {
 		let defaultValues: Record<string, any> = {};
 
-		const _state =
-			agentData?.state == "Delhi"
-				? "National Capital Territory of Delhi (UT)"
-				: agentData?.state;
-
-		const state = findObjectByValue(statesList, _state);
-
-		defaultValues.address_line1 = agentData?.line_1;
-		defaultValues.address_line2 = agentData?.line_2;
-		defaultValues.pincode = agentData?.zip;
-		defaultValues.city = agentData?.city;
-		defaultValues.country_state = state;
 		defaultValues.country = "India";
 
 		reset({ ...defaultValues });
-	}, [agentData, statesList]);
+	}, [statesList, reset]);
 
 	const handleFormSubmit = (submittedData: Record<string, any>) => {
 		const keysToFlatten = ["country_state"];
@@ -220,19 +262,15 @@ const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
 							w="100%"
 							size="lg"
 							fontWeight="bold"
-							bg="accent.light"
 							textColor="white"
-							isDisabled={!isValid}
-
-							//onClick={secondaryButtonAction}
+							variant="accent"
+							_hover={{ backgroundColor: "accent.dark" }}
 						>
 							Save
 						</Button>
 						<Button
 							w="100%"
 							size="lg"
-							//type="submit"
-							//w={{ base: "100%", md: "initial" }}
 							variant="link"
 							color="primary.DEFAULT"
 							display="flex"

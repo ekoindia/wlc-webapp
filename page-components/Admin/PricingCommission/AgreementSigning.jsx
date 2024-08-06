@@ -60,7 +60,7 @@ const AgreementSigning = () => {
 	const [isOtpValid, setIsOtpValid] = useState(false);
 	const { accessToken } = useSession();
 
-	const { userData } = useUser();
+	const { userData, refreshUser } = useUser();
 
 	const modal = useDisclosure();
 	const [modalContent, setModalContent] = useState(null);
@@ -136,8 +136,10 @@ const AgreementSigning = () => {
 			.then((res) => {
 				const data = res?.data;
 				const base64ImageUrl = `data:image/jpeg;base64,${data?.code}`;
-				setImageUrl(base64ImageUrl);
-				setSignerName(data?.authorized_signatory_name);
+				if (data?.code) {
+					setImageUrl(base64ImageUrl);
+					setSignerName(data?.authorized_signatory_name);
+				}
 			})
 			.catch((err) => {
 				console.log("error", err);
@@ -178,13 +180,12 @@ const AgreementSigning = () => {
 					duration: 6000,
 					isClosable: true,
 				});
-				//if (res.status === 0) {
-				const url = file ? URL.createObjectURL(file) : "";
-				setImageUrl(url);
-				setSignerName(inputSigner);
-				modal.onClose();
-				setFile(null);
-				//}
+				if (res.status === 0) {
+					const url = file ? URL.createObjectURL(file) : "";
+					setImageUrl(url);
+					setSignerName(inputSignerName);
+				}
+				handleModalClose();
 			})
 			.catch((err) => {
 				console.error("err", err);
@@ -291,12 +292,12 @@ const AgreementSigning = () => {
 		})
 			.then((res) => {
 				if (res.status == 0) {
-					//setIsVerifying(true);
 					setEmail(data.email);
+					refreshUser();
 					handleModalClose();
 				} else {
 					toast({
-						title: "Failed to verify your email.Please try again.",
+						title: "Failed to verify your email. Please try again.",
 						status: "error",
 						duration: 6000,
 					});
@@ -342,17 +343,33 @@ const AgreementSigning = () => {
 				token: accessToken,
 			}
 		)
-			.then((data) => {
+			.then((res) => {
 				// if success - format address - then set in setAddress - Toast - Close
-				if (data.status == 0) {
+				if (res.status == 0) {
 					setAddress(address);
+					refreshUser();
 					handleModalClose();
 					toast({
-						title: "Successfully Updated",
+						title: res.message,
 						status: "success",
 						duration: 2000,
 						isClosable: true,
 					});
+
+					// Update Session Storage
+					const businessDetails = {
+						address_line1: data.address_line1,
+						address_line2: data.address_line2,
+						pincode: data.pincode,
+						city: data.city,
+						state: data.state,
+						country: data.country,
+					};
+
+					sessionStorage.setItem(
+						"business_details",
+						JSON.stringify(businessDetails)
+					);
 				}
 			})
 			.catch((err) => {
@@ -555,45 +572,11 @@ const AgreementSigning = () => {
 		<Flex direction="column" gap="8">
 			<Flex direction="column" gap="8" w={{ base: "100%", md: "500px" }}>
 				<Flex direction="column">
-					<InputLabel required>Your Signature</InputLabel>
-					<Flex direction="row" align="center" gap={4}>
-						{imageUrl && (
-							<Box height="auto">
-								<Image
-									src={imageUrl}
-									width="100%"
-									height="120px"
-									objectFit="contain"
-								/>
-								{signerName ? (
-									<Text>
-										{" "}
-										<b>Signer Name:</b> {signerName}{" "}
-									</Text>
-								) : null}
-							</Box>
-						)}
-
-						<Button
-							size="l"
-							bg="primary.DEFAULT"
-							height="30px"
-							width="60px"
-							_hover={{ bg: "primary.dark" }}
-							onClick={() => {
-								setModalContent("signature");
-								modal.onOpen();
-							}}
-						>
-							Edit
-						</Button>
-					</Flex>
-				</Flex>
-
-				<Flex direction="column">
 					<InputLabel required={true}>Email</InputLabel>
 					<Flex direction="row" gap={4}>
 						{email && <Text>{email}</Text>}
+
+						{/* {!email && ( */}
 						<Button
 							size="l"
 							bg="primary.DEFAULT"
@@ -605,14 +588,16 @@ const AgreementSigning = () => {
 								modal.onOpen();
 							}}
 						>
-							{email ? "Edit" : "Add"}
+							Add
 						</Button>
+						{/* )} */}
 					</Flex>
 				</Flex>
 				<Flex direction="column">
 					<InputLabel required={true}>Business Address</InputLabel>
 					<Flex direction="row" gap={4}>
 						{address && <Text>{address}</Text>}
+						{/* {!address && ( */}
 						<Button
 							size="l"
 							bg="primary.DEFAULT"
@@ -626,8 +611,50 @@ const AgreementSigning = () => {
 						>
 							{address ? "Edit" : "Add "}
 						</Button>
+						{/* )}   */}
 					</Flex>
 				</Flex>
+
+				{email?.length > 0 && address?.length > 0 && (
+					<Flex direction="column">
+						<InputLabel required>Your Signature</InputLabel>
+						<Flex direction="row" align="center" gap={4}>
+							{imageUrl && (
+								<Box height="auto">
+									<Image
+										src={imageUrl}
+										width="100%"
+										height="120px"
+										objectFit="contain"
+									/>
+									{signerName ? (
+										<Text>
+											<span style={{ fontWeight: "500" }}>
+												Signer Name:
+											</span>{" "}
+											{signerName}{" "}
+										</Text>
+									) : null}
+								</Box>
+							)}
+
+							<Button
+								size="l"
+								bg="primary.DEFAULT"
+								height="30px"
+								width="60px"
+								_hover={{ bg: "primary.dark" }}
+								onClick={() => {
+									setModalContent("signature");
+									modal.onOpen();
+								}}
+							>
+								{imageUrl ? "Edit" : "Add "}
+							</Button>
+						</Flex>
+					</Flex>
+				)}
+
 				<Flex direction="column">
 					<InputLabel>Update Organisation Name</InputLabel>
 					<Flex direction="row" gap={4}>
@@ -641,16 +668,8 @@ const AgreementSigning = () => {
 								width={address ? "60px" : "100px"}
 								height="30px"
 								onClick={() => {
-									// console.log("Raise Issue:::::", item);
 									showRaiseIssueDialog({
 										origin: "Agreement Signing",
-										tid: "Update Organisation Detail",
-										// tid: item.tid,
-										// tx_typeid: item.tx_typeid,
-										// status: item.status_id || 0,
-										// transaction_time: item.datetime,
-										// logo:
-
 										customIssueType:
 											"Update Organisation Name",
 										heading: "Update Organisation Name",

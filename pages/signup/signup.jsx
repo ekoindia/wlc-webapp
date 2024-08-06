@@ -1149,13 +1149,14 @@ const SignupPage = () => {
 	useEffect(() => {
 		const handleMessage = (event) => {
 			if (event.data.type === "STATUS_UPDATE") {
-				const { body } = event.data;
+				//const { body } = event.data;
 
 				handleStepDataSubmit({
 					id: 12,
 					form_data: {
-						agreement_status: body.status == 0 ? "success" : "fail",
+						//agreement_status: body.status == 0 ? "success" : "fail",
 						document_id: signUrlData?.document_id,
+						agreement_id: userData?.userDetails?.agreement_id,
 					},
 				});
 			}
@@ -1167,7 +1168,7 @@ const SignupPage = () => {
 		return () => {
 			window.removeEventListener("message", handleMessage);
 		};
-	}, []);
+	}, [signUrlData]);
 
 	const handleStepCallBack = (callType) => {
 		console.log("[stepcallback]", callType, latLong, userLoginData);
@@ -1184,7 +1185,9 @@ const SignupPage = () => {
 				// 	isAndroid ? "Android" : "Web"
 				// );
 
-				if (signUrlData?.pipe == agreementProvider.KARZA) {
+				if (signUrlData?.pipe == agreementProvider.SIGNZY) {
+					window.open(signUrlData?.short_url, "SignAgreementWindow");
+				} else if (signUrlData?.pipe == agreementProvider.KARZA) {
 					if (!signUrlData?.short_url) {
 						console.error(
 							"[oaas Leegality] Didn't receive short-url"
@@ -1214,8 +1217,6 @@ const SignupPage = () => {
 						leegality.init();
 						leegality.esign(signUrlData?.short_url); // signUrlData?.short_url
 					}
-				} else if (signUrlData?.pipe == agreementProvider.SIGNZY) {
-					window.open(signUrlData?.short_url, "SignAgreementWindow");
 				}
 			}
 		} else if (callType.type === 10) {

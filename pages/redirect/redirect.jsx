@@ -8,12 +8,12 @@ const Redirect = () => {
 	useEffect(() => {
 		window.opener.postMessage(
 			{ type: "STATUS_UPDATE", body: { status: _status } },
-			window.location.origin
+			"*"
 		);
 
 		setTimeout(() => {
 			window.close();
-		}, 20000);
+		}, 300);
 	}, []);
 
 	return (
