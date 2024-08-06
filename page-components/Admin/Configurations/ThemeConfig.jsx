@@ -548,6 +548,7 @@ const ColorSelector = ({ theme, i, isSelected, onSelect, ...rest }) => {
 				fontSize="xs"
 				fontWeight={600}
 				textAlign="center"
+				userSelect="none"
 				color={theme.primary_dark || theme.primary}
 				opacity={0.6}
 			>
