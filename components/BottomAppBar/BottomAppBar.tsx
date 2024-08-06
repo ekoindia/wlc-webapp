@@ -8,7 +8,7 @@ import { Icon } from "..";
 
 type BottomAppBarProps = {
 	bottomBarItems: BottomBarItem[];
-	reduceAnimation?: boolean;
+	isFixedBottomAppBar?: boolean;
 };
 
 /**
@@ -16,12 +16,12 @@ type BottomAppBarProps = {
  * @component
  * @param {BottomAppBarProps} props - The props of the component.
  * @param {BottomBarItem[]} props.bottomBarItems - Array of items for the bottom app bar.
- * @param {boolean} [props.reduceAnimation] - Flag to reduce animations for the component.
+ * @param {boolean} [props.isFixedBottomAppBar] - Flag to fix bottom app bar.
  * @returns {React.Element} The rendered BottomAppBar component.
  */
 const BottomAppBar = ({
 	bottomBarItems,
-	reduceAnimation = false,
+	isFixedBottomAppBar = false,
 }: BottomAppBarProps) => {
 	const router = useRouter();
 
@@ -43,7 +43,7 @@ const BottomAppBar = ({
 
 	// Hide on scroll down, show on scroll up
 	useEffect(() => {
-		if (!reduceAnimation) {
+		if (!isFixedBottomAppBar) {
 			const handleScroll = () => {
 				const st = document.documentElement.scrollTop;
 				if (st > lastScrollTop) {
@@ -71,9 +71,11 @@ const BottomAppBar = ({
 			minH={isMac ? "64px" : "56px"}
 			boxShadow="0px -3px 10px #0000001A"
 			pb={isMac ? "16px" : "0px"}
-			transition={reduceAnimation ? "none" : "transform 0.3s ease-in-out"}
+			transition={
+				isFixedBottomAppBar ? "none" : "transform 0.3s ease-in-out"
+			}
 			transform={
-				reduceAnimation
+				isFixedBottomAppBar
 					? "none"
 					: isVisible
 						? "translateY(0)"

@@ -14,7 +14,7 @@ const OnboardAgentsPage = () => {
 
 OnboardAgentsPage.pageMeta = {
 	title: "Onboard Agents | Admin",
-	reduceBottomAppBarAnimation: true,
+	isFixedBottomAppBar: true,
 };
 
 export default OnboardAgentsPage;

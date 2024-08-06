@@ -15,7 +15,7 @@ const ChangeRolePage = () => {
 ChangeRolePage.pageMeta = {
 	title: "My Network > Change Role | Admin",
 	isSubPage: true,
-	reduceBottomAppBarAnimation: true,
+	isFixedBottomAppBar: true,
 };
 
 export default ChangeRolePage;
