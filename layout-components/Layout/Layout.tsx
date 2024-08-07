@@ -1,5 +1,6 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
 import { PageLoader /*,NavBar, SideBar */ } from "components";
+import { useBottomBarItems } from "components/BottomAppBar";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { NavHeight } from "components/NavBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
@@ -46,6 +47,14 @@ const DynamicPopupModuleLoader = dynamic(
 	}
 );
 
+// Lazy-load the BottomAppBar component
+const BottomAppBar = dynamic(
+	() => import("components/BottomAppBar").then((pkg) => pkg.BottomAppBar),
+	{
+		ssr: false,
+	}
+);
+
 /**
  * The default page layout component
  * @param {string} appName - The name of the application. This will be displayed in the browser titlebar.
@@ -57,12 +66,15 @@ const DynamicPopupModuleLoader = dynamic(
  * @param {string} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
 const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
-	const { isSubPage, title, hideMenu } = pageMeta;
+	const { isSubPage, title, hideMenu, isFixedBottomAppBar } = pageMeta;
 
 	const { isLoggedIn } = useSession();
-	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
+	const { isOpen: isSidebarOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
 
-	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+	const isSmallScreen = useBreakpointValue(
+		{ base: true, md: false },
+		{ ssr: false }
+	);
 
 	const { publish, TOPICS } = usePubSub();
 
@@ -75,10 +87,21 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
 
+	// Get the bottom bar items
+	const bottomBarItems = useBottomBarItems();
+
 	// Delay load non-essential components...
 	const [loadNavBar] = useDelayToggle(100);
 	const [loadSidebar] = useDelayToggle(100);
 	const [loadKbarBox] = useDelayToggle(500);
+
+	const openSidebar = () => {
+		onOpen();
+	};
+
+	const closeSidebar = () => {
+		onClose();
+	};
 
 	// Setup Android Listener...
 	useEffect(() => {
@@ -187,7 +210,9 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							}}
 							h={NavHeight}
 						>
-							{loadNavBar ? <NavBar setNavOpen={onOpen} /> : null}
+							{loadNavBar ? (
+								<NavBar {...{ openSidebar }} />
+							) : null}
 						</Box>
 					)}
 
@@ -196,10 +221,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 					) : (
 						<Flex>
 							{loadSidebar ? (
-								<SideBar
-									navOpen={isOpen}
-									setNavClose={onClose}
-								/>
+								<SideBar {...{ isSidebarOpen, closeSidebar }} />
 							) : (
 								// Placeholder for the sidebar
 								<Box
@@ -245,6 +267,28 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							</Box>
 						</Flex>
 					)}
+					{isSmallScreen ? (
+						<Box
+							className="layout-bottom-app-bar"
+							pos="fixed"
+							w="100%"
+							bottom="0"
+							left="0"
+							right="0"
+							sx={{
+								"@media print": {
+									display: "none",
+								},
+							}}
+						>
+							<BottomAppBar
+								{...{
+									bottomBarItems,
+									isFixedBottomAppBar,
+								}}
+							/>
+						</Box>
+					) : null}
 				</Box>
 			) : (
 				<>{children}</>

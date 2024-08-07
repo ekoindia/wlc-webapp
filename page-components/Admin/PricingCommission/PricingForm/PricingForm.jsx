@@ -29,7 +29,7 @@ const PricingForm = ({ label, comp, note }) => {
 	return (
 		<div>
 			<Headings title={label} />
-			<Flex direction="column" mx={{ base: "4", md: "0" }} mb="16">
+			<Flex direction="column" mx={{ base: "4", md: "0" }} mb="32">
 				{note?.length > 0 ? (
 					<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>
 						<span
