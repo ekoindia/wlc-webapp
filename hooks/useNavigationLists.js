@@ -275,7 +275,11 @@ const useNavigationLists = (ignoreList = []) => {
 				}
 			});
 
-			let manageMyAccount = roleTxList[TransactionIds.MANAGE_MY_ACCOUNT];
+			let manageMyAccount = {
+				id: TransactionIds.MANAGE_MY_ACCOUNT,
+				...roleTxList[TransactionIds.MANAGE_MY_ACCOUNT],
+			};
+
 			if (manageMyAccount?.is_visible !== 1) {
 				manageMyAccount = null;
 			}
