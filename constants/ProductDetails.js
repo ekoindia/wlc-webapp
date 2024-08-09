@@ -332,7 +332,7 @@ export const products = {
 export const productPricingCommissionValidationConfig = {
 	DMT: {
 		RETAILER: {
-			PERCENT: { min: 0.45, max: 0.7 },
+			PERCENT: { min: 0.6, max: 0.8 },
 			// FIXED: { min: 3.72, max: 35 },
 		},
 		DISTRIBUTOR: {
