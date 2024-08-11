@@ -1,8 +1,8 @@
 import { Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { useNavigationLists } from "hooks";
 import { useRef } from "react";
-import { BottomAppBarDrawerList } from ".";
-import { Drawer, Icon } from "..";
+import { useAccordionMenuConverter } from ".";
+import { AccordionMenu, Drawer, Icon } from "..";
 
 /**
  * The Transactions component renders a button that opens a drawer containing transactions.
@@ -10,7 +10,11 @@ import { Drawer, Icon } from "..";
 const Transactions = () => {
 	const btnRef = useRef<HTMLButtonElement>(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const { trxnList: list } = useNavigationLists();
+	const { trxnList } = useNavigationLists();
+
+	const list = useAccordionMenuConverter(trxnList);
+
+	const onMenuItemClick = () => onClose();
 
 	return (
 		<>
@@ -37,7 +41,7 @@ const Transactions = () => {
 				isFullHeight={false}
 				finalFocusRef={btnRef}
 			>
-				<BottomAppBarDrawerList {...{ list, onClose }} />
+				<AccordionMenu {...{ list, onMenuItemClick }} />
 			</Drawer>
 		</>
 	);
