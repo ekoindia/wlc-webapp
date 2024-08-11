@@ -19,13 +19,13 @@ const IGNORE_LIST = [1, 8];
  *   { id: 1, label: 'Label 1', link: '/custom-link' },
  *   { id: 2, label: 'Label 2' },
  * ];
- * const updatedList = addLinksToMenu(list, true);
+ * const updatedList = attachLinkToMenuItems(list, true);
  * updatedList = [
  *   { id: 1, label: 'Label 1', link: '/custom-link' },
  *   { id: 2, label: 'Label 2', link: '/admin/transaction/2' },
  * ];
  */
-const addLinksToMenu = (list: any[], isAdmin: boolean): any[] => {
+const attachLinkToMenuItems = (list: any[], isAdmin: boolean): any[] => {
 	const prefix = isAdmin ? "/admin" : "";
 
 	const getLink = (id: number, link?: string) => {
@@ -56,7 +56,7 @@ const More = () => {
 			label: "Others",
 			icon: "others",
 			showAll: true,
-			subItems: addLinksToMenu(otherList, isAdmin),
+			subItems: attachLinkToMenuItems(otherList, isAdmin),
 			isPanelExpanded: menuList?.length < 1,
 		},
 	];
