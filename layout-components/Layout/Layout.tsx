@@ -1,6 +1,6 @@
 import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
 import { PageLoader /*,NavBar, SideBar */ } from "components";
-import { useBottomBarItems } from "components/BottomAppBar";
+import { useBottomAppBarItems } from "components/BottomAppBar";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { NavHeight } from "components/NavBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
@@ -88,7 +88,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	const { ready } = useKBarReady();
 
 	// Get the bottom bar items
-	const bottomBarItems = useBottomBarItems();
+	const bottomAppBarItems = useBottomAppBarItems();
 
 	// Delay load non-essential components...
 	const [loadNavBar] = useDelayToggle(100);
@@ -283,7 +283,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 						>
 							<BottomAppBar
 								{...{
-									bottomBarItems,
+									items: bottomAppBarItems,
 									isFixedBottomAppBar,
 								}}
 							/>

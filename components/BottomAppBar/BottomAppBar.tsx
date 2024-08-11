@@ -1,13 +1,13 @@
 import { Flex, Text, useToken } from "@chakra-ui/react";
-import { BottomBarItem } from "components/BottomAppBar/useBottomBarItems";
 import { usePlatform } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { svgBgDotted } from "utils/svgPatterns";
+import { BottomAppBarItem } from ".";
 import { Icon } from "..";
 
 type BottomAppBarProps = {
-	bottomBarItems: BottomBarItem[];
+	items: BottomAppBarItem[];
 	isFixedBottomAppBar?: boolean;
 };
 
@@ -15,12 +15,12 @@ type BottomAppBarProps = {
  * BottomAppBar component.
  * @component
  * @param {BottomAppBarProps} props - The props of the component.
- * @param {BottomBarItem[]} props.bottomBarItems - Array of items for the bottom app bar.
+ * @param {BottomAppBarItem[]} props.items - Array of items for the bottom app bar.
  * @param {boolean} [props.isFixedBottomAppBar] - Flag to fix bottom app bar.
  * @returns {React.Element} The rendered BottomAppBar component.
  */
 const BottomAppBar = ({
-	bottomBarItems,
+	items,
 	isFixedBottomAppBar = false,
 }: BottomAppBarProps) => {
 	const router = useRouter();
@@ -60,7 +60,7 @@ const BottomAppBar = ({
 	}, [lastScrollTop, router.asPath]);
 
 	// If there are no bottom bar items, return null
-	if (bottomBarItems?.length <= 0) return null;
+	if (items?.length <= 0) return null;
 
 	return (
 		<Flex
@@ -87,7 +87,7 @@ const BottomAppBar = ({
 			})}
 		>
 			<Flex w="100%" h="100%" maxW="400px">
-				{bottomBarItems.map(
+				{items.map(
 					(
 						{
 							name,
