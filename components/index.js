@@ -1,11 +1,12 @@
 /* PLOP_INJECT_IMPORT */
-import { ActionButtonGroup } from "./ActionButtonGroup";
 import {
 	Accordion,
 	AccordionButton,
 	AccordionItem,
 	AccordionPanel,
 } from "./Accordion";
+import { AccordionMenu } from "./AccordionMenu";
+import { ActionButtonGroup } from "./ActionButtonGroup";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumbs } from "./Breadcrumb";
@@ -62,11 +63,12 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
-	ActionButtonGroup,
 	Accordion,
 	AccordionButton,
 	AccordionItem,
+	AccordionMenu,
 	AccordionPanel,
+	ActionButtonGroup,
 	AdminViewToggleCard,
 	BottomAppBar,
 	Breadcrumbs,
