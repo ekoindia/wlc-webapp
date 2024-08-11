@@ -112,7 +112,6 @@ export const useAccordionMenuConverter = (list: any[]) => {
 	};
 
 	return list.map((item) => {
-		console.log("item", item);
 		const {
 			group_interaction_ids,
 			behavior,
