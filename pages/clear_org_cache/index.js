@@ -1,25 +1,26 @@
+import { Flex, Spinner } from "@chakra-ui/react";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
-import { LayoutLogin } from "layout-components";
 
 /**
  * Secret route to clear the Next.js server-side org cache
- * @param root0
- * @param root0.app_name
+ * @returns {JSX.Element} The component displaying a centered spinner
  */
-export default function ClearOrgCache({ app_name }) {
-	return <div>Cache cleared for {app_name}</div>;
+export default function ClearOrgCache() {
+	return (
+		<Flex w="full" h="full" justify="center" align="center">
+			<Spinner />
+		</Flex>
+	);
 }
 
-// Custom layout for the Login page...
-ClearOrgCache.getLayout = (page) => <LayoutLogin>{page}</LayoutLogin>;
-
 /**
- *
- * @param root0
- * @param root0.req
+ * Fetches the organization details and provides them as props for the page
+ * @param {object} context - The context object containing request information
+ * @param {object} context.req - The HTTP request object
+ * @returns {Promise<{props: {app_name: string}}>} The app name as a prop for the page
  */
 export async function getServerSideProps({ req }) {
 	// Get org details (like, logo, name, etc) from server
 	const org_details = await fetchOrgDetails(req.headers.host, true);
-	return { props: { app_name: org_details?.app_name || "" } };
+	return { props: { app_name: org_details?.props?.data?.app_name || "" } };
 }

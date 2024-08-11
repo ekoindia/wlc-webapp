@@ -41,13 +41,14 @@ const BillPaymentWidget = () => {
 							icon: "more-horiz",
 							theme: "gray",
 						},
-				  ]
+					]
 				: bbps_tx_list
 		);
 	}, [role_tx_list]);
 
 	/**
 	 * Handles click on bill payment option.
+	 * @param id
 	 */
 	const handleBillPaymentOptionClick = (id) => {
 		router.push(

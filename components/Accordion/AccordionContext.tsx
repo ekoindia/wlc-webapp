@@ -22,17 +22,16 @@ type AccordionProviderProps = {
 	children: ReactNode;
 	allowToggle?: boolean;
 	allowMultiple?: boolean;
-	// eslint-disable-next-line no-unused-vars
+
 	// onChange?: (id: number) => void;
 };
 
 /**
  * AccordionProvider component.
  * It provides the Accordion context to its children.
- *
- * @param {Object} props - Props for configuring the accordion component.
- * @param {boolean} [props.allowToggle=false] - If true, any expanded accordion item can be collapsed again.
- * @param {boolean} [props.allowMultiple=false] - If true, multiple accordion items can be expanded at once.
+ * @param {object} props - Props for configuring the accordion component.
+ * @param {boolean} [props.allowToggle] - If true, any expanded accordion item can be collapsed again.
+ * @param {boolean} [props.allowMultiple] - If true, multiple accordion items can be expanded at once.
  * @param {ReactElement<AccordionItemProps>} props.children - The accordion items.
  * @param {(id: number) => void} [props.onChange] - Function called when an accordion item is changed. The `id` parameter is the identifier of the accordion item that has changed.
  */
@@ -79,7 +78,6 @@ AccordionProviderProps) => {
 /**
  * useAccordion hook.
  * It provides the Accordion context.
- *
  * @throws {Error} If used outside of an AccordionProvider.
  * @returns {AccordionContextType} The Accordion context.
  */

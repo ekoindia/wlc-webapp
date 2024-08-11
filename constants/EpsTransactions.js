@@ -69,4 +69,5 @@ export const TransactionIds = {
 	COMMISSION_TYPE: 726,
 	NEO_BANK: 995,
 	INITIATE_REFUND: 335,
+	UPDATE_ORG_DETAILS: 774,
 };
