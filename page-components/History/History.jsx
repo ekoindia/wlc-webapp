@@ -355,9 +355,11 @@ const History = () => {
 	const onFilterSubmit = (data) => {
 		// Get all non-empty values from formState and set in finalFormState
 		const _finalFormState = {};
+		const preservedProductObj = {}; // to preserve this product object to auto-fill product export form.
 
 		Object.keys(data).forEach((key) => {
 			if (key === "product" && data[key] && data[key]?.tx_typeid) {
+				preservedProductObj[key] = data[key];
 				_finalFormState["tx_typeid"] = data[key].tx_typeid;
 			} else if (data[key]) {
 				_finalFormState[key] = data[key];
@@ -367,6 +369,7 @@ const History = () => {
 		setFinalFormState(_finalFormState);
 
 		resetExport({
+			...preservedProductObj,
 			..._finalFormState,
 			start_date: watcherFilter.start_date ?? watcherExport.start_date,
 			tx_date: watcherFilter.tx_date ?? watcherExport.tx_date,
@@ -439,6 +442,7 @@ const History = () => {
 				_finalFormState[key] = data[key];
 			}
 		});
+		console.log("_finalFormState", _finalFormState);
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
