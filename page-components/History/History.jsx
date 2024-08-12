@@ -232,19 +232,6 @@ const History = () => {
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
 
-		const data = {};
-		Object.keys(finalFormState).forEach((key) => {
-			if (
-				key === "product" &&
-				finalFormState[key] &&
-				finalFormState[key].tx_typeid
-			) {
-				data["tx_typeid"] = finalFormState[key].tx_typeid;
-			} else if (finalFormState[key]) {
-				data[key] = finalFormState[key];
-			}
-		});
-
 		setLoading(true);
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -368,11 +355,15 @@ const History = () => {
 	const onFilterSubmit = (data) => {
 		// Get all non-empty values from formState and set in finalFormState
 		const _finalFormState = {};
+
 		Object.keys(data).forEach((key) => {
-			if (data[key]) {
+			if (key === "product" && data[key] && data[key]?.tx_typeid) {
+				_finalFormState["tx_typeid"] = data[key].tx_typeid;
+			} else if (data[key]) {
 				_finalFormState[key] = data[key];
 			}
 		});
+
 		setFinalFormState(_finalFormState);
 
 		resetExport({
