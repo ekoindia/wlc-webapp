@@ -18,4 +18,8 @@ const QueryPage = () => {
 	);
 };
 
+QueryPage.pageMeta = {
+	title: "Query Center | Admin",
+};
+
 export default QueryPage;

@@ -27,7 +27,7 @@ const PricingCommission = () => {
 			<Flex
 				direction="column"
 				px={{ base: "16px", md: "initial" }}
-				mb={{ base: "16", md: "0" }}
+				// mb={{ base: "16", md: "0" }}
 				gap={{ base: "2", md: "8" }}
 			>
 				{Object.entries(product_categories)?.map(

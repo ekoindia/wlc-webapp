@@ -1,5 +1,13 @@
-import { Avatar, Box, Checkbox, Circle, Flex, Text } from "@chakra-ui/react";
-import { Button, Icon } from "components";
+import {
+	Avatar,
+	Box,
+	Checkbox,
+	Circle,
+	Flex,
+	Text,
+	useBreakpointValue,
+} from "@chakra-ui/react";
+import { ActionButtonGroup, Icon } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -36,6 +44,10 @@ const MoveAgents = ({
 	setResponseDetails,
 	onChange = () => {},
 }) => {
+	const isSmallScreen = useBreakpointValue(
+		{ base: true, md: false },
+		{ ssr: false }
+	);
 	const [selectAllChecked, setSelectAllChecked] = useState(false);
 	const [selectedOptions, setSelectedOptions] = useState([]);
 	const [optionsValueList, setOptionsValueList] = useState([]);
@@ -121,6 +133,29 @@ const MoveAgents = ({
 			setResponseDetails({ status: res.status, message: res.message });
 		});
 	};
+
+	const buttonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Move",
+			onClick: () => handleMoveAgent(),
+			disabled: !selectedAgentsToTransfer?.length > 0,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Go Back",
+			onClick: () => setShowSelectAgent(false),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
+		},
+	];
 
 	return (
 		<>
@@ -230,54 +265,24 @@ const MoveAgents = ({
 						</Box>
 					</Flex>
 				</Flex>
-				<Circle
-					display={{ base: "none", md: "flex" }}
-					size={{ base: "12", xl: "20" }}
-					color="divider"
-					bg="primary.dark"
-				>
-					<Icon name="fast-forward" size={{ base: "sm", xl: "lg" }} />
-				</Circle>
+				{isSmallScreen ? null : (
+					<Circle
+						size={{ base: "12", xl: "20" }}
+						color="divider"
+						bg="primary.dark"
+					>
+						<Icon
+							name="fast-forward"
+							size={{ base: "sm", xl: "lg" }}
+						/>
+					</Circle>
+				)}
 				<TransferAgentsToBox {...{ agentList, transferAgentsTo }} />
 			</Flex>
 
-			<Flex
-				display={{ base: "flex", md: "none" }}
-				direction="row-reverse"
-				w="100%"
-				position="fixed"
-				gap="0"
-				align="center"
-				bottom="0"
-				left="0"
-				zIndex="99"
-			>
-				<Button
-					size="lg"
-					h="64px"
-					w="100%"
-					fontWeight="bold"
-					borderRadius="none"
-					onClick={handleMoveAgent}
-					disabled={!selectedAgentsToTransfer?.length > 0}
-				>
-					Move
-				</Button>
-
-				<Button
-					h="64px"
-					w="100%"
-					bg="white"
-					variant="link"
-					fontWeight="bold"
-					color="primary.DEFAULT"
-					_hover={{ textDecoration: "none" }}
-					borderRadius="none"
-					onClick={() => setShowSelectAgent(false)}
-				>
-					Go Back
-				</Button>
-			</Flex>
+			{isSmallScreen ? (
+				<ActionButtonGroup {...{ buttonConfigList }} zIndex="99" />
+			) : null}
 		</>
 	);
 };

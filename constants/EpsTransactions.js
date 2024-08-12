@@ -72,4 +72,5 @@ export const TransactionIds = {
 	INITIATE_REFUND: 335,
 	SEND_OTP: 553,
 	RESEND_OTP: 554,
+	UPDATE_ORG_DETAILS: 774,
 };

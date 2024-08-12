@@ -34,7 +34,7 @@ const findObjectByValue = (
 
 /**
  * A <Address> component
- * TODO: Write more description here
+ * A Address component renders addrees_line1 , address_line2, pincode, state, country . It can be used with all kinds of Address
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {string} prop.prop1 - TODO: Property description. A normal property.

@@ -1,4 +1,4 @@
-import { Avatar, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Divider, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useCommissionSummary, useUser } from "contexts";
 import useHslColor from "hooks/useHslColor";
@@ -44,15 +44,20 @@ const KnowYourCommission = () => {
 				className="customScrollbars"
 				overflowY={{ base: "none", md: "scroll" }}
 			>
-				{commissionProductIds?.map((id) => {
+				{commissionProductIds?.map((id, index) => {
 					const prod = commissionData?.data?.[id];
 					return (
-						<Tr
-							key={id}
-							id={id}
-							prod={prod}
-							handleShowDetail={handleShowDetail}
-						/>
+						<>
+							<Tr
+								key={id}
+								id={id}
+								prod={prod}
+								handleShowDetail={handleShowDetail}
+							/>
+							{commissionProductIds?.length - 1 !== index ? (
+								<Divider />
+							) : null}
+						</>
 					);
 				})}
 			</Flex>
@@ -76,7 +81,7 @@ const Tr = ({ id, prod, handleShowDetail }) => {
 			pr={{ base: "8px", md: "4px" }}
 			align="center"
 			justify="center"
-			borderBottom="1px solid #F5F6F8"
+			// borderBottom="1px solid #F5F6F8"
 		>
 			<Avatar
 				size={{ base: "sm", md: "md" }}
