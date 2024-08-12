@@ -6,14 +6,20 @@ const Redirect = () => {
 	const _status = queryParams.get("status");
 
 	useEffect(() => {
+		const targetOrigin =
+			process.env.NEXT_PUBLIC_ENV === "production" ||
+			window.location.origin.includes("connect.eko.in")
+				? window.location.origin
+				: "*";
+
 		window.opener.postMessage(
 			{ type: "STATUS_UPDATE", body: { status: _status } },
-			"*"
+			targetOrigin
 		);
 
 		setTimeout(() => {
 			window.close();
-		}, 300);
+		}, 400);
 	}, []);
 
 	return (

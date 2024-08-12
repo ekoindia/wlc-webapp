@@ -1,4 +1,4 @@
-import { Box, Flex, Button } from "@chakra-ui/react";
+import { Box, Flex, Button, Text } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { ParamType } from "constants/trxnFramework";
 import { TransactionIds } from "constants/EpsTransactions";
@@ -8,10 +8,11 @@ import { useEffect, useState } from "react";
 import { useForm, useWatch, FieldValues } from "react-hook-form";
 import { Form } from "tf-components";
 
-// Declare the props interface
 interface AddressProps {
 	onSubmit: (_data: Record<string, any>) => void;
 	onCancel: () => void;
+	defaultAddress: Record<string, any>;
+	desc?: string;
 }
 
 interface State {
@@ -43,7 +44,13 @@ const findObjectByValue = (
  * @param {...*} rest - Rest of the props
  * @example <Address></Address> TODO: Fix example
  */
-const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
+
+const Address: React.FC<AddressProps> = ({
+	onSubmit,
+	onCancel,
+	defaultAddress,
+	desc,
+}) => {
 	const [statesList, setStatesList] = useState<State[]>([]);
 	const { accessToken } = useSession();
 
@@ -102,7 +109,6 @@ const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
 		})
 			.then((res: any) => {
 				if (res.status === 0) {
-					console.log(res?.param_attributes.list_elements);
 					setStatesList(res?.param_attributes.list_elements);
 				}
 			})
@@ -110,6 +116,27 @@ const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
 				console.error("err", err);
 			});
 	};
+
+	useEffect(() => {
+		fetchStatesList();
+	}, []);
+
+	useEffect(() => {
+		if (defaultAddress) {
+			Object.keys(defaultAddress).forEach((key) => {
+				setValue(key, defaultAddress[key]);
+			});
+		}
+	}, [defaultAddress, setValue]);
+
+	useEffect(() => {
+		let defaultValues: Record<string, any> = {
+			country: "India",
+			address_line1: defaultAddress?.shop_address,
+		};
+
+		reset({ ...defaultValues, ...defaultAddress });
+	}, [statesList, reset, defaultAddress]);
 
 	const fetchCityViaPincode = (pincode: string) => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -167,45 +194,6 @@ const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
 		}
 	}, [pincode]);
 
-	useEffect(() => {
-		fetchStatesList();
-
-		// const storedData = JSON.parse(
-		// 	localStorage.getItem("oth_last_selected_agent")
-		// );
-		// if (storedData !== undefined) {
-		// 	setAgentData(storedData);
-		// } else {
-		// 	fetchAgentDataViaCellNumber();
-		// }
-	}, []);
-
-	// const fetchAgentDataViaCellNumber = () => {
-	//     fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-	//       headers: {
-	//         "tf-req-uri-root-path": "/ekoicici/v1",
-	//         "tf-req-method": "GET",
-	//       },
-	//       token: accessToken,
-	//       body: undefined,
-	//       controller: undefined,
-	//     })
-	//       .then((res: any) => {
-	//         setAgentData(res?.data?.agent_details[0]);
-	//       })
-	//       .catch((error: any) => {
-	//         console.error("[ProfilePanel] Get Agent Detail Error:", error);
-	//       });
-	//   };
-
-	useEffect(() => {
-		let defaultValues: Record<string, any> = {};
-
-		defaultValues.country = "India";
-
-		reset({ ...defaultValues });
-	}, [statesList, reset]);
-
 	const handleFormSubmit = (submittedData: Record<string, any>) => {
 		const keysToFlatten = ["country_state"];
 
@@ -256,6 +244,15 @@ const Address: React.FC<AddressProps> = ({ onSubmit, onCancel }) => {
 							}}
 						/>
 					</Flex>
+
+					{desc && (
+						<Text mt={4} color="red">
+							<Text as="span" color="black" fontWeight="bold">
+								Note:{" "}
+							</Text>
+							{desc.replace(/^Note:\s*/, "")}
+						</Text>
+					)}
 					<Flex gap="4" mt={6} mb={2}>
 						<Button
 							type="submit"

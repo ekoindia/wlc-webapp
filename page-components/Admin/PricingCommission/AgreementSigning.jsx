@@ -18,10 +18,9 @@ import {
 import { Address } from "components";
 import { Endpoints, TransactionIds } from "constants";
 import { useSession, useUser, useOrgDetailContext } from "contexts";
-import { fetcher } from "helpers";
+import { fetcher, createSupportTicket } from "helpers";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useFeatureFlag, useRaiseIssue } from "hooks";
 
 const getStatus = (status) => {
 	switch (status) {
@@ -56,8 +55,10 @@ const AgreementSigning = () => {
 	const [file, setFile] = useState(null);
 	const [imageUrl, setImageUrl] = useState(null);
 	const [email, setEmail] = useState("");
-	const [address, setAddress] = useState();
+	const [address, setAddress] = useState(null);
+	const [shopAddress, setShopAddress] = useState();
 	const [isOtpValid, setIsOtpValid] = useState(false);
+	const [activeComponent, setActiveComponent] = useState(null);
 	const { accessToken } = useSession();
 
 	const { userData, refreshUser } = useUser();
@@ -75,9 +76,10 @@ const AgreementSigning = () => {
 	const [isTimerRunning, setIsTimerRunning] = useState(false);
 	const { orgDetail } = useOrgDetailContext();
 	const [signerName, setSignerName] = useState("");
+	const [feedbackTicket, setFeedbackTicket] = useState("");
 
-	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
-	const { showRaiseIssueDialog } = useRaiseIssue();
+	const address_desc =
+		"Note: Please ensure that this is your correct business address, as it will be used for signing agreements with your users.";
 
 	const {
 		handleSubmit,
@@ -94,17 +96,30 @@ const AgreementSigning = () => {
 		getRecentSignature();
 		setEmail(userData.userDetails.business_email);
 
-		const { address_line1, address_line2, pincode, city, state, country } =
-			userData?.businessDetails;
-		const addressDecorated = formatAddress({
-			address_line1: address_line1,
-			address_line2: address_line2,
-			pincode: pincode,
-			city: city,
-			country_state: state,
-			country: country,
-		});
-		setAddress(addressDecorated);
+		if (
+			!userData?.businessDetails ||
+			Object.keys(userData.businessDetails).length === 0
+		) {
+			setShopAddress(userData?.shopDetails);
+		} else {
+			const {
+				address_line1,
+				address_line2,
+				pincode,
+				city,
+				state,
+				country,
+			} = userData.businessDetails;
+			const addressDecorated = formatAddress({
+				address_line1: address_line1,
+				address_line2: address_line2,
+				pincode: pincode,
+				city: city,
+				country_state: state,
+				country: country,
+			});
+			setAddress(addressDecorated);
+		}
 	}, []);
 
 	const resetEmailState = () => {
@@ -117,11 +132,11 @@ const AgreementSigning = () => {
 
 	const resetSignatureState = () => {
 		setFile(null);
-		//reset({...signer });
+		reset({ signerName: "" });
 	};
 
-	const resetAddressState = () => {
-		//setAddress(null);
+	const resetOrganizationName = () => {
+		reset({ orgname: "" });
 	};
 
 	const getRecentSignature = () => {
@@ -193,12 +208,12 @@ const AgreementSigning = () => {
 	};
 
 	const handleModalClose = () => {
-		if (modalContent === "email") {
+		if (activeComponent === "email") {
 			resetEmailState();
-		} else if (modalContent === "signature") {
+		} else if (activeComponent === "signature") {
 			resetSignatureState();
-		} else if (modalContent === "address") {
-			resetAddressState();
+		} else if (activeComponent === "orgUpdate") {
+			resetOrganizationName();
 		}
 		modal.onClose();
 	};
@@ -309,7 +324,6 @@ const AgreementSigning = () => {
 	};
 
 	const verifyOtpHandler = (_otp) => {
-		//console.log("Otp Handler", otp);
 		setOtp(_otp);
 	};
 
@@ -319,8 +333,39 @@ const AgreementSigning = () => {
 		await sendOtpRequest(TransactionIds.RESEND_OTP);
 	};
 
+	const updateOrgName = async (data) => {
+		try {
+			const response = await createSupportTicket({
+				accessToken,
+				summary: "Update Organisation Name",
+				category: "Agreement Signing",
+				feedback_origin: "Agreement Signing",
+				context: data.orgname,
+			})
+				.then(() => {
+					if (response.status == 0) {
+						setFeedbackTicket(
+							response?.data?.feedback_ticket_id || ""
+						);
+						reset({ orgname: "" });
+					} else {
+						toast({
+							title: "Failed to create support ticket.",
+							status: "error",
+							duration: 5000,
+							isClosable: true,
+						});
+					}
+				})
+				.catch((error) => {
+					console.error("Error creating support ticket", error);
+				});
+		} catch (error) {
+			console.error("Unexpected error:", error);
+		}
+	};
+
 	const handleAddressSubmit = (data) => {
-		console.log("data address", data);
 		const address = formatAddress(data);
 
 		const postData = {
@@ -378,7 +423,7 @@ const AgreementSigning = () => {
 	};
 
 	const renderModalContent = () => {
-		switch (modalContent) {
+		switch (activeComponent) {
 			case "signature":
 				return (
 					<Flex direction="column" mt={4}>
@@ -391,9 +436,9 @@ const AgreementSigning = () => {
 						<Input
 							required
 							mt={2}
-							label="Signer Name"
+							label="Authorised Signatory"
 							{...register("signer", {
-								required: "Signer Name is required",
+								required: "Authorised Signatory is required",
 								pattern: {
 									value: /^[A-Za-z\s]+$/,
 									message:
@@ -539,7 +584,7 @@ const AgreementSigning = () => {
 								size="lg"
 								fontWeight="bold"
 								isDisabled={!isOtpValid}
-								_hover={{ bg: "primary.dark" }}
+								_hover={{ bg: "accent.dark" }}
 							>
 								Save
 							</Button>
@@ -561,8 +606,98 @@ const AgreementSigning = () => {
 					<Address
 						onSubmit={handleAddressSubmit}
 						onCancel={handleModalClose}
+						defaultAddress={shopAddress}
+						desc={address_desc}
 					></Address>
 				);
+
+			case "orgUpdate":
+				return !feedbackTicket ? (
+					<Flex
+						as="form"
+						onSubmit={handleSubmit(updateOrgName)}
+						direction="column"
+						gap={4}
+					>
+						<Input
+							required
+							mt={2}
+							label="Organisation Name"
+							{...register("orgname", {
+								required: "Organisation Name is required",
+								pattern: {
+									value: /^[A-Za-z\s\-\.,'&()]+$/,
+									message:
+										"Only alphabetic characters, spaces, and common symbols are allowed",
+								},
+							})}
+						/>
+
+						{errors.orgname && (
+							<Text color="red.500">
+								{errors.orgname.message}
+							</Text>
+						)}
+
+						<Flex gap={4} mt={6} mb={2}>
+							<Button
+								type="submit"
+								w="100%"
+								size="lg"
+								fontWeight="bold"
+								_hover={{ bg: "accent.dark" }}
+							>
+								Save
+							</Button>
+							<Button
+								w="100%"
+								size="lg"
+								variant="link"
+								color="primary.DEFAULT"
+								align="center"
+								onClick={handleModalClose}
+							>
+								Cancel
+							</Button>
+						</Flex>
+					</Flex>
+				) : (
+					<Flex direction="column" align="center">
+						<Text fontSize="md" color="black">
+							We have created a ticket with our support team to
+							update your organization name. Your Relationship
+							Manager will connect with you shortly.
+						</Text>
+						<Flex
+							direction="column"
+							align="center"
+							justify="center"
+							p={4}
+							borderRadius="md"
+							boxShadow="md"
+							bg="green.50"
+							mt={6}
+							mb={6}
+							mx="auto"
+							maxW="l"
+						>
+							<Text fontSize="lg" color="black" fontWeight="bold">
+								Ticket Successfully Created
+							</Text>
+							<Text fontSize="md" color="gray.700">
+								Your Ticket ID is:{" "}
+								<Text
+									as="span"
+									fontWeight="bold"
+									color="green.600"
+								>
+									{feedbackTicket}
+								</Text>
+							</Text>
+						</Flex>
+					</Flex>
+				);
+
 			default:
 				return null;
 		}
@@ -570,48 +705,50 @@ const AgreementSigning = () => {
 
 	return (
 		<Flex direction="column" gap="8">
-			<Flex direction="column" gap="8" w={{ base: "100%", md: "500px" }}>
+			<Flex direction="column" gap="8" w={{ base: "100%", md: "800px" }}>
 				<Flex direction="column">
 					<InputLabel required={true}>Email</InputLabel>
 					<Flex direction="row" gap={4}>
 						{email && <Text>{email}</Text>}
 
-						{/* {!email && ( */}
-						<Button
-							size="l"
-							bg="primary.DEFAULT"
-							height="30px"
-							width={email ? "60px" : "100px"}
-							_hover={{ bg: "primary.dark" }}
-							onClick={() => {
-								setModalContent("email");
-								modal.onOpen();
-							}}
-						>
-							Add
-						</Button>
-						{/* )} */}
+						{!email && (
+							<Button
+								size="l"
+								bg="primary.DEFAULT"
+								height="30px"
+								width={email ? "60px" : "100px"}
+								_hover={{ bg: "primary.dark" }}
+								onClick={() => {
+									setModalContent("Add Email");
+									setActiveComponent("email");
+									modal.onOpen();
+								}}
+							>
+								Add
+							</Button>
+						)}
 					</Flex>
 				</Flex>
 				<Flex direction="column">
 					<InputLabel required={true}>Business Address</InputLabel>
-					<Flex direction="row" gap={4}>
+					<Flex direction="row" align="center" gap={4}>
 						{address && <Text>{address}</Text>}
-						{/* {!address && ( */}
-						<Button
-							size="l"
-							bg="primary.DEFAULT"
-							height="30px"
-							width={address ? "60px" : "100px"}
-							_hover={{ bg: "primary.dark" }}
-							onClick={() => {
-								setModalContent("address");
-								modal.onOpen();
-							}}
-						>
-							{address ? "Edit" : "Add "}
-						</Button>
-						{/* )}   */}
+						{!address && (
+							<Button
+								size="l"
+								bg="primary.DEFAULT"
+								height="30px"
+								width="60px"
+								_hover={{ bg: "primary.dark" }}
+								onClick={() => {
+									setModalContent("Add Business Address");
+									setActiveComponent("address");
+									modal.onOpen();
+								}}
+							>
+								{address ? "Edit" : "Add "}
+							</Button>
+						)}
 					</Flex>
 				</Flex>
 
@@ -630,9 +767,9 @@ const AgreementSigning = () => {
 									{signerName ? (
 										<Text>
 											<span style={{ fontWeight: "500" }}>
-												Signer Name:
+												Authorised Signatory:
 											</span>{" "}
-											{signerName}{" "}
+											{signerName}
 										</Text>
 									) : null}
 								</Box>
@@ -645,7 +782,8 @@ const AgreementSigning = () => {
 								width="60px"
 								_hover={{ bg: "primary.dark" }}
 								onClick={() => {
-									setModalContent("signature");
+									setModalContent("Add Signature");
+									setActiveComponent("signature");
 									modal.onOpen();
 								}}
 							>
@@ -659,33 +797,20 @@ const AgreementSigning = () => {
 					<InputLabel>Update Organisation Name</InputLabel>
 					<Flex direction="row" gap={4}>
 						<Text>{orgDetail.org_name}</Text>
-						{isRaiseIssueAllowed ? (
-							<Button
-								size="l"
-								bg="primary.DEFAULT"
-								//icon="feedback"
-								_hover={{ bg: "primary.dark" }}
-								width={address ? "60px" : "100px"}
-								height="30px"
-								onClick={() => {
-									showRaiseIssueDialog({
-										origin: "Agreement Signing",
-										customIssueType:
-											"Update Organisation Name",
-										heading: "Update Organisation Name",
-										metadata: {
-											//transaction_detail: item,
-											// parameters_formatted:
-											pre_msg_template:
-												"Transaction History Details",
-											post_msg_template: "",
-										},
-									});
-								}}
-							>
-								Edit
-							</Button>
-						) : null}
+						<Button
+							size="l"
+							bg="primary.DEFAULT"
+							height="30px"
+							width="60px"
+							_hover={{ bg: "primary.dark" }}
+							onClick={() => {
+								setModalContent("Update Organisation Name");
+								setActiveComponent("orgUpdate");
+								modal.onOpen();
+							}}
+						>
+							{imageUrl ? "Edit" : "Add "}
+						</Button>
 					</Flex>
 				</Flex>
 			</Flex>
@@ -693,7 +818,7 @@ const AgreementSigning = () => {
 			<Modal
 				isOpen={modal.isOpen}
 				onClose={handleModalClose}
-				title={"Add " + modalContent}
+				title={modalContent}
 				disabled={isSubmitting}
 			>
 				{renderModalContent()}
