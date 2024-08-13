@@ -1,5 +1,4 @@
 /* PLOP_INJECT_EXPORT */
-export { default as useSwipe } from "./useSwipe";
 export { default as useAppLink } from "./useAppLink";
 export { default as useCamera } from "./useCamera";
 export { default as useClipboard } from "./useClipboard";
@@ -16,9 +15,10 @@ export { default as useImageEditor } from "./useImageEditor";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLogin } from "./useLogin";
 export { default as useNavigationLists } from "./useNavigationLists";
-export { DOTS, default as usePagination } from "./usePagination";
+export { ELLIPSIS, default as usePagination } from "./usePagination";
 export { default as usePlatform } from "./usePlatform";
 export { default as useRaiseIssue } from "./useRaiseIssue";
 export { default as useRefreshToken } from "./useRefreshToken";
 export { default as useRequest } from "./useRequest";
 export { default as useSessionStorage } from "./useSessionStorage";
+export { default as useSwipe } from "./useSwipe";
