@@ -25,8 +25,18 @@ const payment_mode_list = [
 ];
 
 const pricing_type_list = [
-	// { value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+	{
+		id: "percentage",
+		value: PRICING_TYPE.PERCENT,
+		label: "Percentage (%)",
+		isDisabled: false,
+	},
+	{
+		id: "fixed",
+		value: PRICING_TYPE.FIXED,
+		label: "Fixed (₹)",
+		isDisabled: false,
+	},
 ];
 
 const getStatus = (status) => {
@@ -62,7 +72,6 @@ const IndoNepalDistributor = () => {
 	} = useForm({
 		mode: "onChange",
 		defaultValues: {
-			pricing_type: "0", //check if product details can store this
 			payment_mode: "1",
 		},
 	});
@@ -74,6 +83,7 @@ const IndoNepalDistributor = () => {
 	const { generateNewToken } = useRefreshToken();
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
 	const [validation, setValidation] = useState({ min: null, max: null });
 
 	const min = validation.min;
@@ -118,7 +128,7 @@ const IndoNepalDistributor = () => {
 			name: "pricing_type",
 			label: `Select Commission Type`,
 			parameter_type_id: ParamType.LIST,
-			list_elements: pricing_type_list,
+			list_elements: pricingTypeList,
 			// defaultValue: PRICING_TYPE.PERCENT,
 		},
 		{
@@ -187,6 +197,37 @@ const IndoNepalDistributor = () => {
 			});
 	}, []);
 
+	// This useEffect hook updates the pricing type list based on slab selection.
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		if (watcher?.select?.value) {
+			const _validations =
+				slabs[+watcher?.select?.value]?.validation?.PRICING;
+			let anyDisabled = false;
+
+			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+				const _validation = _validations[_typeObj.id];
+				const isDisabled = !_validation;
+				if (isDisabled) anyDisabled = true;
+				return { ..._typeObj, isDisabled };
+			});
+
+			setPricingTypeList(_pricingTypeList);
+
+			// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+			if (anyDisabled) {
+				const _firstNonDisabled = _pricingTypeList.find(
+					(item) => !item.isDisabled
+				);
+				if (_firstNonDisabled) {
+					watcher["pricing_type"] = _firstNonDisabled.value;
+				}
+			}
+
+			reset({ ...watcher });
+		}
+	}, [watcher?.select?.value]);
+
 	// This useEffect updates the validation state based on the selected slab, pricing type and payment mode.
 	useEffect(() => {
 		const _pricingType =
@@ -209,9 +250,9 @@ const IndoNepalDistributor = () => {
 		if (_slab != null && _pricingType != null && _paymentMode != null) {
 			const _validation = slabs[_slab]?.validation;
 			const _min =
-				_validation?.DISTRIBUTOR?.[_pricingType]?.[_paymentMode]?.min;
+				_validation?.COMMISSION?.[_pricingType]?.[_paymentMode]?.min;
 			const _max =
-				_validation?.DISTRIBUTOR?.[_pricingType]?.[_paymentMode]?.max;
+				_validation?.COMMISSION?.[_pricingType]?.[_paymentMode]?.max;
 
 			setValidation({ min: _min, max: _max });
 		}

@@ -190,7 +190,7 @@ const CreditCardBillPaymentRetailer = () => {
 	useEffect(() => {
 		if (watcher?.select?.value) {
 			const _validations =
-				slabs[+watcher?.select?.value]?.validation?.RETAILER;
+				slabs[+watcher?.select?.value]?.validation?.PRICING;
 			let anyDisabled = false;
 
 			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
@@ -230,8 +230,8 @@ const CreditCardBillPaymentRetailer = () => {
 		// If a slab and pricing type are selected, update the validation state
 		if (_slab != null && _pricingType != null) {
 			const _validation = slabs[_slab]?.validation;
-			const _min = _validation?.RETAILER?.[_pricingType]?.min;
-			const _max = _validation?.RETAILER?.[_pricingType]?.max;
+			const _min = _validation?.PRICING?.[_pricingType]?.min;
+			const _max = _validation?.PRICING?.[_pricingType]?.max;
 
 			setValidation({ min: _min, max: _max });
 		}
