@@ -170,7 +170,7 @@ export const products = {
 				max: 10000,
 				validation: {
 					PRICING: {
-						fixed: { min: 0.3, max: 100 },
+						fixed: false,
 						percentage: { min: 0.3, max: 1 },
 					},
 				},
