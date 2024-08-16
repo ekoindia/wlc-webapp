@@ -1,12 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import {
-	Endpoints,
-	ParamType,
-	productPricingCommissionValidationConfig,
-	productPricingType,
-	products,
-} from "constants";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -27,8 +21,18 @@ const PRICING_TYPE = {
 };
 
 const pricing_type_list = [
-	// { value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+	{
+		id: "percentage",
+		value: PRICING_TYPE.PERCENT,
+		label: "Percentage (%)",
+		isDisabled: false,
+	},
+	{
+		id: "fixed",
+		value: PRICING_TYPE.FIXED,
+		label: "Fixed (₹)",
+		isDisabled: false,
+	},
 ];
 
 const OPERATION = {
@@ -51,9 +55,11 @@ const getStatus = (status) => {
 };
 
 const QrPayment = () => {
-	const { DEFAULT, uriSegment } = products.QR_PAYMENT;
-	const { PERCENT, FIXED } =
-		productPricingCommissionValidationConfig.QR_PAYMENT;
+	const {
+		validation: qr_payment_validation,
+		DEFAULT,
+		uriSegment,
+	} = products.QR_PAYMENT;
 
 	const {
 		handleSubmit,
@@ -72,7 +78,6 @@ const QrPayment = () => {
 		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
-			pricing_type: DEFAULT.pricing_type,
 		},
 	});
 
@@ -86,16 +91,11 @@ const QrPayment = () => {
 	const { generateNewToken } = useRefreshToken();
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
+	const [validation, setValidation] = useState({ min: null, max: null });
 
-	const min =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.min
-			: FIXED.min;
-
-	const max =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.max
-			: FIXED.max;
+	const min = validation?.min;
+	const max = validation?.max;
 
 	let prefix = "";
 	let suffix = "";
@@ -105,6 +105,14 @@ const QrPayment = () => {
 	} else {
 		prefix = "₹";
 	}
+
+	let helperText = "";
+
+	if (min != undefined) helperText += `Minimum: ${prefix}${min}${suffix}`;
+	if (max != undefined)
+		helperText += `${
+			min != undefined ? " - " : ""
+		}Maximum: ${prefix}${max}${suffix}`;
 
 	const qr_payment_parameter_list = [
 		{
@@ -128,17 +136,18 @@ const QrPayment = () => {
 			name: "pricing_type",
 			label: `Select ${productPricingType.CARD_PAYMENT} Type`,
 			parameter_type_id: ParamType.LIST,
-			list_elements: pricing_type_list,
+			list_elements: pricingTypeList,
 			// defaultValue: DEFAULT.pricing_type,
 		},
 		{
 			name: "actual_pricing",
 			label: `Define ${productPricingType.CARD_PAYMENT} (GST Inclusive)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
+			helperText: helperText,
 			validations: {
-				min: min,
-				max: max,
+				// required: true,
+				min: validation?.min,
+				max: validation?.max,
 			},
 			inputRightElement: (
 				<Icon
@@ -201,6 +210,54 @@ const QrPayment = () => {
 			setMultiSelectLabel(_label);
 		}
 	}, [watcher.operation_type]);
+
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		// if (watcher?.select?.value) {
+		const _validations = qr_payment_validation?.PRICING;
+		let anyDisabled = false;
+
+		const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+			const _validation = _validations[_typeObj.id];
+			const isDisabled = !_validation;
+			if (isDisabled) anyDisabled = true;
+			return { ..._typeObj, isDisabled };
+		});
+
+		setPricingTypeList(_pricingTypeList);
+
+		// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+		if (anyDisabled) {
+			const _firstNonDisabled = _pricingTypeList.find(
+				(item) => !item.isDisabled
+			);
+			if (_firstNonDisabled) {
+				watcher["pricing_type"] = _firstNonDisabled.value;
+			}
+		}
+
+		reset({ ...watcher });
+		// }
+	}, []);
+
+	// This useEffect hook updates the validation state based on the selected slab and pricing type.
+	useEffect(() => {
+		const _pricingType =
+			watcher.pricing_type === PRICING_TYPE.PERCENT
+				? "percentage"
+				: watcher.pricing_type === PRICING_TYPE.FIXED
+					? "fixed"
+					: null;
+
+		// If pricing type is selected, update the validation state
+		if (_pricingType != null) {
+			const _validation = qr_payment_validation;
+			const _min = _validation?.PRICING?.[_pricingType]?.min;
+			const _max = _validation?.PRICING?.[_pricingType]?.max;
+
+			setValidation({ min: _min, max: _max });
+		}
+	}, [watcher?.pricing_type]);
 
 	useEffect(() => {
 		if (isSubmitSuccessful) {

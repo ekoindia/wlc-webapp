@@ -243,9 +243,9 @@ const AccountVerification = () => {
 
 		// If pricing type is selected, update the validation state
 		if (_pricingType != null) {
-			const _validation = account_verification_validation?.PRICING;
-			const _min = _validation?.[_pricingType]?.min;
-			const _max = _validation?.[_pricingType]?.max;
+			const _validation = account_verification_validation;
+			const _min = _validation?.PRICING?.[_pricingType]?.min;
+			const _max = _validation?.PRICING?.[_pricingType]?.max;
 
 			setValidation({ min: _min, max: _max });
 		}

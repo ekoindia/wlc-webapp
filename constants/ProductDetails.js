@@ -425,9 +425,11 @@ export const products = {
 	},
 	QR_PAYMENT: {
 		uriSegment: "qr",
-		PRICING: {
-			fixed: { min: 0, max: 10 },
-			percentage: { min: 0, max: 1 },
+		validation: {
+			PRICING: {
+				fixed: { min: 0, max: 10 },
+				percentage: false,
+			},
 		},
 		DEFAULT: {
 			operation_type: "3",
