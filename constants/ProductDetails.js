@@ -374,6 +374,20 @@ export const products = {
 		},
 		serviceCode: 728,
 	},
+	VALIDATE_UPI_ID: {
+		uriSegment: "vpa",
+		validation: {
+			PRICING: {
+				fixed: { min: 0, max: 5 },
+				percentage: false,
+			},
+		},
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "1",
+		},
+		serviceCode: 727,
+	},
 	CARD_PAYMENT: {
 		uriSegment: "pg",
 		slabs: [
@@ -398,26 +412,16 @@ export const products = {
 		},
 	},
 	ACCOUNT_VERIFICATION: {
-		PRICING: {
-			fixed: { min: 1.84, max: 5 },
-			percentage: false,
+		validation: {
+			PRICING: {
+				fixed: { min: 1.84, max: 5 },
+				percentage: false,
+			},
 		},
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "1",
 		},
-	},
-	VALIDATE_UPI_ID: {
-		uriSegment: "vpa",
-		PRICING: {
-			fixed: { min: 0, max: 5 },
-			percentage: false,
-		},
-		DEFAULT: {
-			operation_type: "3",
-			pricing_type: "1",
-		},
-		serviceCode: 727,
 	},
 	QR_PAYMENT: {
 		uriSegment: "qr",

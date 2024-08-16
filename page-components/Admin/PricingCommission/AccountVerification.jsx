@@ -1,12 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { Button, Icon } from "components";
-import {
-	Endpoints,
-	ParamType,
-	productPricingCommissionValidationConfig,
-	productPricingType,
-	products,
-} from "constants";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -33,8 +27,18 @@ const PRICING_TYPE = {
 };
 
 const pricing_type_list = [
-	// { value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+	{
+		id: "percentage",
+		value: PRICING_TYPE.PERCENT,
+		label: "Percentage (%)",
+		isDisabled: false,
+	},
+	{
+		id: "fixed",
+		value: PRICING_TYPE.FIXED,
+		label: "Fixed (₹)",
+		isDisabled: false,
+	},
 ];
 
 const getStatus = (status) => {
@@ -56,9 +60,8 @@ const _multiselectRenderer = {
  * @example	<AccountVerification/>
  */
 const AccountVerification = () => {
-	const { DEFAULT } = products.ACCOUNT_VERIFICATION;
-	const { FIXED } =
-		productPricingCommissionValidationConfig.ACCOUNT_VERIFICATION;
+	const { validation: account_verification_validation, DEFAULT } =
+		products.ACCOUNT_VERIFICATION;
 
 	const {
 		handleSubmit,
@@ -77,39 +80,89 @@ const AccountVerification = () => {
 		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
-			pricing_type: DEFAULT.pricing_type,
 		},
 	});
-
-	const toast = useToast();
-	const { accessToken } = useSession();
-	const router = useRouter();
-	const { generateNewToken } = useRefreshToken();
-
-	const [multiSelectLabel, setMultiSelectLabel] = useState();
-	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 
 	const watcher = useWatch({
 		control,
 	});
+	const toast = useToast();
+	const { accessToken } = useSession();
+	const router = useRouter();
+	const { generateNewToken } = useRefreshToken();
+	const [multiSelectLabel, setMultiSelectLabel] = useState();
+	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
+	const [validation, setValidation] = useState({ min: null, max: null });
 
-	useEffect(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			body: {
-				interaction_type_id: 737,
-				operation: OPERATION.FETCH,
+	const min = validation?.min;
+	const max = validation?.max;
+
+	let prefix = "";
+	let suffix = "";
+
+	if (watcher["pricing_type"] === PRICING_TYPE.PERCENT) {
+		suffix = "%";
+	} else {
+		prefix = "₹";
+	}
+
+	let helperText = "";
+
+	if (min != undefined) helperText += `Minimum: ${prefix}${min}${suffix}`;
+	if (max != undefined)
+		helperText += `${
+			min != undefined ? " - " : ""
+		}Maximum: ${prefix}${max}${suffix}`;
+
+	const account_verification_parameter_list = [
+		{
+			name: "operation_type",
+			label: `Set Pricing For`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: operation_type_list,
+			defaultValue: DEFAULT.operation_type,
+		},
+		{
+			name: "CspList",
+			label: `Select ${multiSelectLabel}`,
+			parameter_type_id: ParamType.LIST,
+			is_multi: true,
+			list_elements: multiSelectOptions,
+			visible_on_param_name: "operation_type",
+			visible_on_param_value: /1|2/,
+			multiSelectRenderer: _multiselectRenderer,
+		},
+		{
+			name: "pricing_type",
+			label: `Select ${productPricingType.ACCOUNT_VERIFICATION} Type`,
+			parameter_type_id: ParamType.LIST,
+			list_elements: pricingTypeList,
+			defaultValue: DEFAULT.pricing_type,
+		},
+		{
+			name: "actual_pricing",
+			label: `Define ${productPricingType.ACCOUNT_VERIFICATION} (GST Inclusive)`,
+			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
+			helperText: helperText,
+			validations: {
+				// required: true,
+				min: validation?.min,
+				max: validation?.max,
 			},
-			token: accessToken,
-		})
-			.then((res) => {
-				const _otp_verification_token =
-					res?.data?.otp_verification_token;
-				reset({ otp_verification_token: _otp_verification_token });
-			})
-			.catch((err) => {
-				console.error("error", err);
-			});
-	}, []);
+			inputRightElement: (
+				<Icon
+					name={
+						watcher["pricing_type"] == PRICING_TYPE.PERCENT
+							? "percent_bg"
+							: "rupee_bg"
+					}
+					size="23px"
+					color="primary.DEFAULT"
+				/>
+			),
+		},
+	];
 
 	useEffect(() => {
 		if (watcher.operation_type && watcher.operation_type != "3") {
@@ -149,6 +202,54 @@ const AccountVerification = () => {
 			setMultiSelectLabel(_label);
 		}
 	}, [watcher.operation_type]);
+
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		// if (watcher?.select?.value) {
+		const _validations = account_verification_validation?.PRICING;
+		let anyDisabled = false;
+
+		const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+			const _validation = _validations[_typeObj.id];
+			const isDisabled = !_validation;
+			if (isDisabled) anyDisabled = true;
+			return { ..._typeObj, isDisabled };
+		});
+
+		setPricingTypeList(_pricingTypeList);
+
+		// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+		if (anyDisabled) {
+			const _firstNonDisabled = _pricingTypeList.find(
+				(item) => !item.isDisabled
+			);
+			if (_firstNonDisabled) {
+				watcher["pricing_type"] = _firstNonDisabled.value;
+			}
+		}
+
+		reset({ ...watcher });
+		// }
+	}, []);
+
+	// This useEffect hook updates the validation state based on the selected slab and pricing type.
+	useEffect(() => {
+		const _pricingType =
+			watcher.pricing_type === PRICING_TYPE.PERCENT
+				? "percentage"
+				: watcher.pricing_type === PRICING_TYPE.FIXED
+					? "fixed"
+					: null;
+
+		// If pricing type is selected, update the validation state
+		if (_pricingType != null) {
+			const _validation = account_verification_validation?.PRICING;
+			const _min = _validation?.[_pricingType]?.min;
+			const _max = _validation?.[_pricingType]?.max;
+
+			setValidation({ min: _min, max: _max });
+		}
+	}, [watcher?.pricing_type]);
 
 	useEffect(() => {
 		if (isSubmitSuccessful) {
@@ -192,61 +293,6 @@ const AccountVerification = () => {
 				console.error("error", err);
 			});
 	};
-
-	const min = FIXED.min;
-
-	const max = FIXED.max;
-
-	const prefix = "₹";
-
-	const account_verification_parameter_list = [
-		{
-			name: "operation_type",
-			label: `Set Pricing For`,
-			parameter_type_id: ParamType.LIST,
-			list_elements: operation_type_list,
-			defaultValue: DEFAULT.operation_type,
-		},
-		{
-			name: "CspList",
-			label: `Select ${multiSelectLabel}`,
-			parameter_type_id: ParamType.LIST,
-			is_multi: true,
-			list_elements: multiSelectOptions,
-			visible_on_param_name: "operation_type",
-			visible_on_param_value: /1|2/,
-			multiSelectRenderer: _multiselectRenderer,
-		},
-		{
-			name: "pricing_type",
-			label: `Select ${productPricingType.ACCOUNT_VERIFICATION} Type`,
-			parameter_type_id: ParamType.LIST,
-			list_elements: pricing_type_list,
-			defaultValue: DEFAULT.pricing_type,
-		},
-		{
-			name: "actual_pricing",
-			label: `Define ${productPricingType.ACCOUNT_VERIFICATION} (GST Inclusive)`,
-			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min} - Maximum: ${prefix}${max}`,
-			validations: {
-				// required: true,
-				min: min,
-				max: max,
-			},
-			inputRightElement: (
-				<Icon
-					name={
-						watcher["pricing_type"] == PRICING_TYPE.PERCENT
-							? "percent_bg"
-							: "rupee_bg"
-					}
-					size="23px"
-					color="primary.DEFAULT"
-				/>
-			),
-		},
-	];
 
 	return (
 		<Flex direction="column" gap="8">
