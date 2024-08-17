@@ -5,15 +5,80 @@ export const products = {
 	DMT: {
 		uriSegment: "dmt",
 		slabs: [
-			{ min: 100, max: 1000 },
-			{ min: 1001, max: 2000 },
-			{ min: 2001, max: 3000 },
-			{ min: 3001, max: 4000 },
-			{ min: 4001, max: 5000 },
+			{
+				min: 100,
+				max: 1000,
+				validation: {
+					PRICING: {
+						fixed: { min: 8, max: 12 },
+						percentage: false,
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
+			{
+				min: 1001,
+				max: 2000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.75, max: 1.2 },
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
+			{
+				min: 2001,
+				max: 3000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.6, max: 1.2 },
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
+			{
+				min: 3001,
+				max: 4000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.55, max: 1.2 },
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
+			{
+				min: 4001,
+				max: 5000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.52, max: 1.2 },
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
 		],
 		DEFAULT: {
 			operation_type: "3",
-			pricing_type: "0",
+			// pricing_type: "0",
 		},
 		serviceCode: 721,
 	},
@@ -24,7 +89,7 @@ export const products = {
 				min: 101,
 				max: 499,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 0, max: 1 },
 						percentage: false,
 					},
@@ -34,7 +99,7 @@ export const products = {
 				min: 500,
 				max: 999,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 0, max: 3.25 },
 						percentage: false,
 					},
@@ -44,7 +109,7 @@ export const products = {
 				min: 1000,
 				max: 1999,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 0, max: 6.9 },
 						percentage: false,
 					},
@@ -54,7 +119,7 @@ export const products = {
 				min: 2000,
 				max: 2999,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 0, max: 11.5 },
 						percentage: false,
 					},
@@ -64,7 +129,7 @@ export const products = {
 				min: 3000,
 				max: 6999,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 0, max: 13.65 },
 						percentage: false,
 					},
@@ -74,7 +139,7 @@ export const products = {
 				min: 7000,
 				max: 9999,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 0, max: 13.65 },
 						percentage: false,
 					},
@@ -84,7 +149,7 @@ export const products = {
 				min: 10000,
 				max: 10000,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 0, max: 13.65 },
 						percentage: false,
 					},
@@ -99,7 +164,18 @@ export const products = {
 	},
 	AADHAAR_PAY: {
 		uriSegment: "aadharpay",
-		slabs: [{ min: 1, max: 10000 }],
+		slabs: [
+			{
+				min: 1,
+				max: 10000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.3, max: 1 },
+					},
+				},
+			},
+		],
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "0",
@@ -112,14 +188,14 @@ export const products = {
 				min: 100,
 				max: 5000,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: {
 							cash_to_cash: { min: 0, max: 33.8 },
 							cash_to_account: { min: 0, max: 20.5 },
 						},
 						percentage: false,
 					},
-					DISTRIBUTOR: {
+					COMMISSION: {
 						fixed: {
 							cash_to_cash: { min: 0, max: 23.3 },
 							cash_to_account: { min: 0, max: 13.75 },
@@ -132,14 +208,14 @@ export const products = {
 				min: 5001,
 				max: 49999,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: {
 							cash_to_cash: { min: 0, max: 45 },
 							cash_to_account: { min: 0, max: 27.4 },
 						},
 						percentage: false,
 					},
-					DISTRIBUTOR: {
+					COMMISSION: {
 						fixed: {
 							cash_to_cash: { min: 0, max: 30.8 },
 							cash_to_account: { min: 0, max: 18.3 },
@@ -163,11 +239,11 @@ export const products = {
 				min: 100,
 				max: 3000,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 3, max: 24 },
 						percentage: false,
 					},
-					DISTRIBUTOR: {
+					COMMISSION: {
 						fixed: { min: 0, max: 24 },
 						percentage: false,
 					},
@@ -177,11 +253,11 @@ export const products = {
 				min: 3001,
 				max: 24999,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 3, max: 200 },
 						percentage: { min: 0.1, max: 0.8 },
 					},
-					DISTRIBUTOR: {
+					COMMISSION: {
 						fixed: { min: 0, max: 200 },
 						percentage: { min: 0, max: 0.8 },
 					},
@@ -191,11 +267,11 @@ export const products = {
 				min: 25000,
 				max: 200000,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 6, max: 1600 },
 						percentage: { min: 0.03, max: 0.8 },
 					},
-					DISTRIBUTOR: {
+					COMMISSION: {
 						fixed: { min: 0, max: 1600 },
 						percentage: { min: 0, max: 0.8 },
 					},
@@ -204,23 +280,9 @@ export const products = {
 		],
 		DEFAULT: {
 			operation_type: "3",
-			pricing_type: "0",
+			// pricing_type: "0",
 		},
 		serviceCode: 711,
-	},
-	ACCOUNT_VERIFICATION: {
-		DEFAULT: {
-			operation_type: "3",
-			pricing_type: "1",
-		},
-	},
-	CARD_PAYMENT: {
-		uriSegment: "pg",
-		slabs: [{ min: 100, max: 200000 }],
-		DEFAULT: {
-			operation_type: "3",
-			pricing_type: "0",
-		},
 	},
 	UPI_MONEY_TRANSFER: {
 		uriSegment: "vpa",
@@ -229,11 +291,11 @@ export const products = {
 				min: 100,
 				max: 1000,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 6.6, max: 8.4 },
 						percentage: false,
 					},
-					DISTRIBUTOR: {
+					COMMISSION: {
 						fixed: { min: 0, max: 3.4 },
 						percentage: { min: 0, max: 0.7 },
 					},
@@ -243,11 +305,11 @@ export const products = {
 				min: 1001,
 				max: 3500,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: { min: 8.6, max: 29.6 },
 						percentage: false,
 					},
-					DISTRIBUTOR: {
+					COMMISSION: {
 						fixed: { min: 0, max: 22.6 },
 						percentage: false,
 					},
@@ -257,11 +319,11 @@ export const products = {
 				min: 3501,
 				max: 25000,
 				validation: {
-					RETAILER: {
+					PRICING: {
 						fixed: false,
 						percentage: { min: 0.3, max: 0.7 },
 					},
-					DISTRIBUTOR: {
+					COMMISSION: {
 						fixed: false,
 						percentage: { min: 0, max: 0.7 },
 					},
@@ -281,22 +343,28 @@ export const products = {
 				min: 100,
 				max: 1000,
 				validation: {
-					fixed: {
-						DISTRIBUTOR: { min: 0, max: 25 },
-						RETAILER: { min: 5, max: 25 },
+					PRICING: {
+						fixed: { min: 5, max: 25 },
+						percentage: false,
 					},
-					percentage: false,
+					COMMISSION: {
+						fixed: { min: 0, max: 25 },
+						percentage: false,
+					},
 				},
 			},
 			{
 				min: 1001,
 				max: 49999,
 				validation: {
-					fixed: {
-						DISTRIBUTOR: { min: 0, max: 500 },
-						RETAILER: { min: 10, max: 500 },
+					PRICING: {
+						fixed: { min: 10, max: 500 },
+						percentage: false,
 					},
-					percentage: false,
+					COMMISSION: {
+						fixed: { min: 0, max: 500 },
+						percentage: false,
+					},
 				},
 			},
 		],
@@ -308,14 +376,61 @@ export const products = {
 	},
 	VALIDATE_UPI_ID: {
 		uriSegment: "vpa",
+		validation: {
+			PRICING: {
+				fixed: { min: 0, max: 5 },
+				percentage: false,
+			},
+		},
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "1",
 		},
 		serviceCode: 727,
 	},
+	CARD_PAYMENT: {
+		uriSegment: "pg",
+		slabs: [
+			{
+				min: 100,
+				max: 200000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.9, max: 4 },
+					},
+					COMMISSION: {
+						fixed: { min: 0, max: 1000 },
+						percentage: { min: 0, max: 4 },
+					},
+				},
+			},
+		],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "0",
+		},
+	},
+	ACCOUNT_VERIFICATION: {
+		validation: {
+			PRICING: {
+				fixed: { min: 1.84, max: 5 },
+				percentage: false,
+			},
+		},
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "1",
+		},
+	},
 	QR_PAYMENT: {
 		uriSegment: "qr",
+		validation: {
+			PRICING: {
+				fixed: { min: 0, max: 10 },
+				percentage: false,
+			},
+		},
 		DEFAULT: {
 			operation_type: "3",
 			pricing_type: "1",
@@ -326,53 +441,6 @@ export const products = {
 			operation_type: "3",
 			payment_mode: "1",
 		},
-	},
-};
-
-export const productPricingCommissionValidationConfig = {
-	DMT: {
-		RETAILER: {
-			PERCENT: { min: 0.6, max: 0.8 },
-			// FIXED: { min: 3.72, max: 35 },
-		},
-		DISTRIBUTOR: {
-			PERCENT: { min: 0, max: 0.25 },
-			// FIXED: { min: 0, max: 35 },
-		},
-	},
-	AADHAAR_PAY: {
-		PERCENT: { min: 0.3, max: 1 },
-		FIXED: { min: 0.3, max: 100 },
-	},
-	CREDIT_CARD_BILL_PAYMENT: {
-		RETAILER: {
-			PERCENT: { min: 0, max: 0.8 },
-			FIXED: { min: 3, max: 1500 },
-		},
-		DISTRIBUTOR: {
-			PERCENT: { min: 0, max: 0.8 },
-			FIXED: { min: 0, max: 1500 },
-		},
-	},
-	ACCOUNT_VERIFICATION: {
-		FIXED: { min: 1.84, max: 5 },
-	},
-	CARD_PAYMENT: {
-		RETAILER: {
-			PERCENT: { min: 0.9, max: 4 },
-			FIXED: { min: 1, max: 1000 },
-		},
-		DISTRIBUTOR: {
-			PERCENT: { min: 0, max: 4 },
-			FIXED: { min: 0, max: 1000 },
-		},
-	},
-	VALIDATE_UPI_ID: {
-		FIXED: { min: 0, max: 5 },
-	},
-	QR_PAYMENT: {
-		PERCENT: { min: 0, max: 1 },
-		FIXED: { min: 0, max: 10 },
 	},
 };
 
