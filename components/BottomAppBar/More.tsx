@@ -1,34 +1,44 @@
 import { Box, Flex, Text, useDisclosure } from "@chakra-ui/react";
-import { Endpoints } from "constants/EndPoints";
-import { InteractionBehavior } from "constants/trxnFramework";
 import { useUser } from "contexts/UserContext";
 import { useNavigationLists } from "hooks";
 import { useRef } from "react";
-import { BottomAppBarDrawerList } from ".";
-import { Drawer, Icon, StatusCard } from "..";
+import { useAccordionMenuConverter } from ".";
+import { AccordionMenu, Drawer, Icon, StatusCard } from "..";
 
 // Ignore both home & dashboard in more option as it is already visible
 const IGNORE_LIST = [1, 8];
 
-// Generates a grid interaction object by consolidating IDs from a list of interactions.
-const generateGridInteraction = (list) => {
-	const gridInteractions = {
-		behavior: InteractionBehavior.GRID,
-		group_interaction_ids: "",
-		label: "Others",
-		icon: "others",
+/**
+ * Adds or modifies the `link` property of items in a list based on their `id` and a specified admin prefix.
+ * If a `link` already exists for an item, it is retained; otherwise, a link is generated using the item's `id`.
+ * @param {Array} list - The list of items, where each item is expected to have an `id` property.
+ * @param {boolean} isAdmin - A flag to determine if the admin prefix should be applied to the generated links.
+ * @returns {Array} The updated list with added or modified `link` properties for each item.
+ * @example
+ * const list = [
+ *   { id: 1, label: 'Label 1', link: '/custom-link' },
+ *   { id: 2, label: 'Label 2' },
+ * ];
+ * const updatedList = attachLinkToMenuItems(list, true);
+ * updatedList = [
+ *   { id: 1, label: 'Label 1', link: '/custom-link' },
+ *   { id: 2, label: 'Label 2', link: '/admin/transaction/2' },
+ * ];
+ */
+const attachLinkToMenuItems = (list: any[], isAdmin: boolean): any[] => {
+	const prefix = isAdmin ? "/admin" : "";
+
+	const getLink = (id: number, link?: string) => {
+		return link ? link : `${prefix}/transaction/${id}`;
 	};
 
-	list.forEach((listElement) => {
-		if (listElement?.id) {
-			if (gridInteractions.group_interaction_ids) {
-				gridInteractions.group_interaction_ids += ",";
-			}
-			gridInteractions.group_interaction_ids += listElement.id;
+	return list.map((item) => {
+		if (item.id !== undefined) {
+			item.link = getLink(item.id, item.link);
 		}
-	});
 
-	return { gridInteractions };
+		return item;
+	});
 };
 
 /**
@@ -37,21 +47,23 @@ const generateGridInteraction = (list) => {
 const More = () => {
 	const btnRef = useRef<HTMLButtonElement>(null);
 	const { isAdmin } = useUser();
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { menuList, otherList } = useNavigationLists(IGNORE_LIST);
-	const { gridInteractions: other } = generateGridInteraction(otherList);
-	const list = [
+	const combinedList = [
 		...menuList,
-		// Adding Transaction History, as it will not be found in role_tx_list when handling group_interaction_ids, due to which Transaction History appears as a separate item outside of the "Others" option.
 		{
-			icon: "transaction-history",
-			label: "Transaction History",
-			description: "Statement of your previous transactions",
-			link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
+			label: "Others",
+			icon: "others",
+			showAll: true,
+			subItems: attachLinkToMenuItems(otherList, isAdmin),
+			isPanelExpanded: menuList?.length < 1,
 		},
-		other,
 	];
 
+	const list = useAccordionMenuConverter(combinedList);
+
+	const onMenuItemClick = () => onClose();
 	return (
 		<>
 			<Flex
@@ -80,7 +92,7 @@ const More = () => {
 				<Box bg="primary.DEFAULT">
 					<StatusCard onLoadBalanceClick={() => onClose()} />
 				</Box>
-				<BottomAppBarDrawerList {...{ list, onClose }} />
+				<AccordionMenu {...{ list, onMenuItemClick }} />
 			</Drawer>
 		</>
 	);

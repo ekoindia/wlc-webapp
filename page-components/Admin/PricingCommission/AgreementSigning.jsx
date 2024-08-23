@@ -716,7 +716,7 @@ const AgreementSigning = () => {
 								size="l"
 								bg="primary.DEFAULT"
 								height="30px"
-								width={email ? "60px" : "100px"}
+								width="60px"
 								_hover={{ bg: "primary.dark" }}
 								onClick={() => {
 									setModalContent("Add Email");

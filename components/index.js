@@ -7,6 +7,7 @@ import {
 	AccordionItem,
 	AccordionPanel,
 } from "./Accordion";
+import { AccordionMenu } from "./AccordionMenu";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumbs } from "./Breadcrumb";
@@ -63,11 +64,6 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
-	ColorPickerWidget,
-	Camera,
-	FileView,
-	Share,
-	XScrollArrow,
 	AdminViewToggleCard,
 	BottomAppBar,
 	Breadcrumbs,
@@ -128,4 +124,5 @@ export {
 	AccordionButton,
 	AccordionPanel,
 	AccordionItem,
+	AccordionMenu,
 };
