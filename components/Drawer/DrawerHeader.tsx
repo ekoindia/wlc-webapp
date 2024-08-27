@@ -30,7 +30,7 @@ const DrawerHeader = ({ title, onClose }: DrawerHeaderProps) => {
 				opacity: 0.04,
 			})}
 		>
-			<Text fontSize="lg" fontWeight="semibold">
+			<Text fontSize="lg" fontWeight="semibold" userSelect="none">
 				{title}
 			</Text>
 			<Flex direction="row-reverse" onClick={onClose} w="20%">
