@@ -20,6 +20,7 @@ const OnboardAgents = () => {
 				border="card"
 				boxShadow="basic"
 				mx={{ base: "4", md: "0" }}
+				mb={{ base: "16", md: "0" }}
 			>
 				<Tabs>
 					{tabList.map(({ label, comp }, index) => (

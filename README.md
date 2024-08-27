@@ -56,7 +56,16 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 	- To add a new data-point in the history table, add a new entry in the `historyParametersMetadata` array.
   - History API response is parsed into the required format in [page-components/History/HistoryTable/processHistoryTableData.js](page-components/History/HistoryTable/processHistoryTableData.js)
   - History Table component: [page-components/History/HistoryTable/HistoryTable.jsx](page-components/History/HistoryTable/HistoryTable.jsx)
-
+- **Bottom App Bar** - The `BottomAppBar` is a flexible component that serves as the primary navigation bar at the bottom of the small screen. It adapts to various use cases, allowing for the inclusion of navigation links, actions, and custom components. [components/BottomAppBar/BottomAppBar.tsx](components/BottomAppBar/BottomAppBar.tsx)
+  - _Bottom App Bar Items_ - The items in the Bottom App Bar are configured using the `useBottomAppBarItems` hook. This hook returns an array of objects, each representing an item in the bottom app bar. [components/BottomAppBar/useBottomAppBar.ts](components/BottomAppBar/useBottomAppBar.ts)
+    - Each item can include the following properties:
+        - `name`: A unique identifier for the item.
+        - `label`: The text label displayed beneath the icon.
+        - `icon`: The name of the icon displayed in the item.
+        - `path`: The navigation path for the item. For admin users, paths can be prefixed with `/admin`.
+        - `action`: A function that is executed when the item is clicked, such as toggling a search bar.
+        - `component`: A custom JSX component that can be rendered within the item.
+        - `visible`: A boolean indicating whether the item should be visible in the Bottom App Bar.
 
 ## ✨ Other Features:
 

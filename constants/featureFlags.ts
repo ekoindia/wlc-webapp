@@ -8,11 +8,24 @@
  * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
-	// Feature to show Portal Configurations like Landing Page, Theme, etc to Admin.
+	// UAT: Feature to show Portal Configurations like Landing Page, Theme, etc to Admin.
 	PORTAL_CONFIG: {
 		enabled: true,
 		forEnv: ["development"],
 		forAdminOnly: true,
+	},
+
+	// Theme selection from predefined themes (free tier)
+	THEME_PICKER: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
+	// Custom theme support for paid tier
+	CUSTOM_THEME_CREATOR: {
+		enabled: true,
+		forRoles: [],
+		forEnv: ["development"],
 	},
 
 	// Feature to show a custom Landing Page that can be fully configured by Admins.

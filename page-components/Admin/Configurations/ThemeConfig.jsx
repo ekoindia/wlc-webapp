@@ -1,26 +1,61 @@
-import { Box, Flex, Text, useToken } from "@chakra-ui/react";
 import {
+	Box,
+	Flex,
+	Grid,
+	GridItem,
+	Text,
+	useDisclosure,
+	useToast,
+	useToken,
+} from "@chakra-ui/react";
+import {
+	Button,
 	ColorPair,
 	ColorPickerWidget,
 	Icon,
 	InputLabel as Label,
+	Modal,
 	Radio,
 } from "components";
-import { colorThemes } from "constants/colorThemes";
+import { colorThemes, Endpoints, TransactionIds } from "constants";
+import { OrgDetailSessionStorageKey, useSession } from "contexts";
+import { fetcher } from "helpers";
+import { useFeatureFlag, useSessionStorage } from "hooks";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { generateShades } from "utils";
+import { AppPreview } from ".";
 
-const bgTransition = "background 0.5s ease-in";
+const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
 
 /**
  * Component to configure the theme colors of the app.
  * Users can select a predefined color theme or set their own primary and accent colors.
  */
 const ThemeConfig = () => {
+	const [currentTheme, setCurrentTheme] = useState(null);
 	const [selectedTheme, setSelectedTheme] = useState(null);
 	const [selectedThemeIdx, setSelectedThemeIdx] = useState(-2);
 	const [navStyle, setNavStyle] = useState("");
 	const [landingPageStyle, setLandingPageStyle] = useState("");
+	const [isCustomThemeCreatorEnabled] = useFeatureFlag(
+		"CUSTOM_THEME_CREATOR"
+	);
+	const [isCmsLandingPageEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
+	const { accessToken } = useSession();
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const toast = useToast();
+	const router = useRouter();
+	const [orgDetail, setOrgDetail] = useSessionStorage(
+		OrgDetailSessionStorageKey
+	);
 
 	// Get current theme color values
 	const [
@@ -55,6 +90,16 @@ const ThemeConfig = () => {
 		// TODO: Get the current navbar style (light or dark)
 
 		// Set the current color theme
+		setCurrentTheme({
+			primary,
+			primary_light,
+			primary_dark,
+			accent,
+			accent_light,
+			accent_dark,
+		});
+
+		// Set the selected color theme
 		setSelectedTheme({
 			primary,
 			primary_light,
@@ -154,8 +199,80 @@ const ThemeConfig = () => {
 				accent: selectedTheme?.accent,
 			};
 
+	const handleThemeSelect = (theme, i) => {
+		setSelectedTheme({
+			primary: theme.primary,
+			primary_light: theme.primary_light,
+			primary_dark: theme.primary_dark,
+			accent: theme.accent,
+			accent_light: theme.accent_light,
+			accent_dark: theme.accent_dark,
+		});
+		setSelectedThemeIdx(i);
+	};
+
+	const handleSubmit = () => {
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
+			{
+				body: {
+					interaction_type_id: TransactionIds.UPDATE_ORG_DETAILS,
+					orgDetails: {
+						metadata: [
+							{
+								name: "theme",
+								type: "json",
+								value: selectedTheme,
+							},
+						],
+					},
+				},
+				token: accessToken,
+			}
+		)
+			.then((res) => {
+				if (res?.status == 0) {
+					// Update the orgDetail with the new theme
+					const updatedOrgDetail = {
+						...orgDetail,
+						metadata: {
+							...orgDetail.metadata,
+							theme: selectedTheme,
+						},
+					};
+
+					// Save the updated orgDetail to session storage
+					setOrgDetail(updatedOrgDetail);
+
+					// Show success toast
+					toast({
+						title: res.message,
+						status: getStatus(res.status),
+						duration: 6000,
+						isClosable: true,
+					});
+
+					// Close modal
+					onClose();
+
+					// Clear Server Cache
+					router.push({ pathname: "/clear_org_cache" });
+
+					// Clear local & session storage
+					clearCache();
+				}
+			})
+			.catch((err) => {
+				console.error("err", err);
+			});
+	};
+
 	return (
-		<Flex direction="column" gap={{ base: 4, md: 8 }}>
+		<Flex
+			direction="column"
+			gap={{ base: 4, md: 8 }}
+			px={{ base: 4, md: 0 }}
+		>
 			<Section title="Colors">
 				<AppPreview
 					primary={selectedTheme?.primary || primary}
@@ -164,65 +281,70 @@ const ThemeConfig = () => {
 					navStyle={navStyle}
 				/>
 
-				<Flex direction="column" gap={6}>
-					<Box>
-						<Radio
-							label="Select Menu Bar Style"
-							options={[
-								{ label: "Default", value: "" },
-								{ label: "Light", value: "light" },
-							]}
-							required
-							onChange={(e) => setNavStyle(e)}
-						/>
-					</Box>
+				<Flex direction="column" gap="10" w="100%">
+					<Radio
+						label="Select Menu Bar Style"
+						options={[
+							{ label: "Default", value: "" },
+							{ label: "Light", value: "light" },
+						]}
+						required
+						onChange={(e) => setNavStyle(e)}
+					/>
 
-					<Box>
+					<Box w="100%">
 						<Label required>Select a Color Theme</Label>
-						<Flex direction="row" gap={8} wrap="wrap">
+						<Grid
+							templateColumns="repeat(auto-fill, minmax(100px, 1fr))"
+							gap="6"
+							pt="1"
+						>
 							{colorThemes.map((theme, i) => (
-								<ColorSelector
-									key={i + theme.name}
-									theme={theme}
-									i={i}
-									isSelected={selectedThemeIdx === i}
-									onSelect={(theme, i) => {
-										setSelectedTheme(theme);
-										setSelectedThemeIdx(i);
-									}}
-								/>
+								<GridItem>
+									<ColorSelector
+										key={i + theme.name}
+										theme={theme}
+										i={i}
+										isSelected={selectedThemeIdx === i}
+										onSelect={handleThemeSelect}
+									/>
+								</GridItem>
 							))}
 
 							{/* Add custom color selector */}
-							<ColorSelector
-								theme={
-									customThemeSet && selectedThemeIdx === -1
-										? {
-												name: "Custom Theme",
-												primary:
-													_customThemePreview?.primary ||
-													primary,
-												accent:
-													_customThemePreview?.accent ||
-													accent,
-											}
-										: {
-												name: "Custom Theme",
-											}
-								}
-								i={-1}
-								isSelected={
-									selectedThemeIdx === -1 && selectedTheme
-								}
-								onSelect={(theme, i) => {
-									setSelectedTheme(theme);
-									setSelectedThemeIdx(i);
-								}}
-							/>
-						</Flex>
+							{isCustomThemeCreatorEnabled && (
+								<GridItem>
+									<ColorSelector
+										theme={
+											customThemeSet &&
+											selectedThemeIdx === -1
+												? {
+														name: "Custom Theme",
+														primary:
+															_customThemePreview?.primary ||
+															primary,
+														accent:
+															_customThemePreview?.accent ||
+															accent,
+													}
+												: {
+														name: "Custom Theme",
+													}
+										}
+										i={-1}
+										isSelected={
+											selectedThemeIdx === -1 &&
+											selectedTheme
+										}
+										onSelect={handleThemeSelect}
+									/>
+								</GridItem>
+							)}
+						</Grid>
 
 						{/* Custom Theme Editor Section */}
-						{selectedThemeIdx === -1 ? (
+						{isCustomThemeCreatorEnabled &&
+						selectedThemeIdx === -1 ? (
 							<Flex direction="column" mt={10}>
 								<Label required>Select your Own Colors</Label>
 								<table>
@@ -267,24 +389,76 @@ const ThemeConfig = () => {
 							</Flex>
 						) : null}
 					</Box>
+
+					<Button
+						w={{ base: "auto", md: "180px" }}
+						onClick={() => onOpen()}
+						disabled={
+							currentTheme?.primary === selectedTheme?.primary &&
+							currentTheme?.accent === selectedTheme?.accent
+						}
+						// disabled={areObjectsEqual(currentTheme, selectedTheme)}
+					>
+						Apply
+					</Button>
+
+					<Modal
+						{...{
+							id: "theme-consent",
+							size: "sm",
+							title: "Attention",
+							isOpen,
+							onClose,
+						}}
+					>
+						<Flex direction="column" gap="4">
+							<Flex direction="column" gap="2">
+								<Text>
+									You are about to change theme for all your
+									network. All your users will see the new
+									colors after next login.
+								</Text>
+								<Text fontWeight="semibold">
+									Are you sure you want to continue?
+								</Text>
+							</Flex>
+							{/* TODO: Use ActionButtonGroup here */}
+							<Flex gap="2">
+								<Button w="100%" onClick={() => handleSubmit()}>
+									Save
+								</Button>
+								<Button
+									w="100%"
+									onClick={() => onClose()}
+									variant="link"
+								>
+									Cancel
+								</Button>
+							</Flex>
+						</Flex>
+					</Modal>
 				</Flex>
 			</Section>
 
-			<Section title="Landing Page">
-				<Radio
-					label="Select Landing Page Style"
-					options={[
-						{ label: "Splash Screen (Default)", value: "card" },
-						{ label: "Landing Page", value: "page" },
-					]}
-					value={landingPageStyle}
-					required
-					onChange={(e) => setLandingPageStyle(e)}
-				/>
-			</Section>
+			{isCmsLandingPageEnabled && (
+				<Section title="Landing Page">
+					<Radio
+						label="Select Landing Page Style"
+						options={[
+							{ label: "Splash Screen (Default)", value: "card" },
+							{ label: "Landing Page", value: "page" },
+						]}
+						value={landingPageStyle}
+						onChange={(e) => setLandingPageStyle(e)}
+						required
+					/>
+				</Section>
+			)}
 		</Flex>
 	);
 };
+
+export default ThemeConfig;
 
 /**
  * Section card component
@@ -312,154 +486,6 @@ const Section = ({ title, children }) => {
 			>
 				{children}
 			</Flex>
-		</Flex>
-	);
-};
-
-/**
- * Component to show a 270px x 180px preview of the website using the theme colors. Show the primary and accent colors. Show the white top-bar, the primary left menu with a few dummy menu items
- * @param {object} props
- * @param {string} props.primary - Primary color
- * @param {string} props.primaryDark - Primary Dark color
- * @param {string} props.accent - Accent color
- * @param {string} props.navStyle - Navigation style (light/dark)
- */
-const AppPreview = ({ primary, primaryDark, accent, navStyle }) => {
-	const w = "300px",
-		h = "200px";
-
-	// if (!primary || !accent) return <Box w={w} h={h} />;
-
-	return (
-		<Flex
-			direction="column"
-			w={w}
-			h={h}
-			border="1px solid #999"
-			borderRadius={6}
-			overflow="hidden"
-			fontSize="5px"
-			shadow="base"
-			pointerEvents="none"
-			userSelect="none"
-		>
-			{primary && accent ? (
-				<>
-					<Flex
-						bg={navStyle === "light" ? primary : "white"}
-						h="8%"
-						minH="8%"
-						w="100%"
-						align="center"
-						px="1em"
-						fontSize="6px"
-						fontWeight="700"
-						color={navStyle === "light" ? "#FFFFFF90" : "#666"}
-						transition={bgTransition}
-					>
-						Logo
-					</Flex>
-
-					<Flex direction="row" w="100%" h="100%" flex="1">
-						{/* Left Menu */}
-						<Flex
-							bg={navStyle === "light" ? "white" : primary}
-							w="25%"
-							h="100%"
-							direction="column"
-							color={navStyle === "light" ? "#222" : "white"}
-							transition={bgTransition}
-						>
-							{/* Left Menu Items */}
-							<MenuItem
-								item="₹10,000"
-								primaryDark={primaryDark}
-							/>
-							{["Home", "Transaction", "Others"].map(
-								(item, i) => (
-									<MenuItem
-										key={i}
-										item={item}
-										primaryDark={primaryDark}
-										accent={accent}
-										selected={i === 1}
-									/>
-								)
-							)}
-						</Flex>
-
-						{/* Right Pane */}
-						<Flex
-							direction="column"
-							flex="1"
-							align="center"
-							bg="bg"
-							w="30px"
-							h="100%"
-							p="3%"
-						>
-							{/* Show a white transaction card with a button (rounded box) at the bottom in accent color */}
-							<Flex
-								bg="white"
-								w="100%"
-								h="80%"
-								direction="column"
-								borderRadius={3}
-								p="3%"
-								shadow="base"
-							>
-								<Text size="1.2em" fontWeight="500">
-									Transaction
-								</Text>
-								<Box flex="1"></Box>
-								{/* Button */}
-								<Flex
-									bg={accent}
-									w="20%"
-									h="10%"
-									align="center"
-									justify="center"
-									borderRadius={2}
-									px="4px"
-									color="white"
-									fontSize="0.9em"
-									transition={bgTransition}
-								>
-									Proceed
-								</Flex>
-							</Flex>
-						</Flex>
-					</Flex>
-				</>
-			) : (
-				<Box w={w} h={h} />
-			)}
-		</Flex>
-	);
-};
-
-/**
- * Menu Item component for preview
- * @param root0
- * @param root0.item
- * @param root0.primaryDark
- * @param root0.accent
- * @param root0.selected
- */
-const MenuItem = ({ item, primaryDark, accent, selected = false }) => {
-	return (
-		<Flex
-			direction="row"
-			bg={selected ? primaryDark : ""}
-			color={selected ? "white" : ""}
-			borderBottom="1px solid #999"
-			h="15px"
-			w="100%"
-			align="center"
-			transition={bgTransition}
-		>
-			<Box h="100%" w="3px" mr="3px" bg={selected ? accent : ""}></Box>
-			{item}
 		</Flex>
 	);
 };
@@ -521,6 +547,8 @@ const ColorSelector = ({ theme, i, isSelected, onSelect, ...rest }) => {
 				fontFamily="Cursive"
 				fontSize="xs"
 				fontWeight={600}
+				textAlign="center"
+				userSelect="none"
 				color={theme.primary_dark || theme.primary}
 				opacity={0.6}
 			>
@@ -529,5 +557,3 @@ const ColorSelector = ({ theme, i, isSelected, onSelect, ...rest }) => {
 		</Flex>
 	);
 };
-
-export default ThemeConfig;

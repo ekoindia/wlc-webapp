@@ -747,3 +747,20 @@ export const DisplayMedia = {
 	PRINT: 2, // Show only in print
 	NONE: 3, // Hide
 };
+
+/**
+ * Enum for interaction behaviors.
+ * @enum {number}
+ * @readonly
+ */
+export enum InteractionBehavior {
+	NORMAL = 1, // Normal Interaction. Request SimpliBank.
+	LINK = 2, // Interaction Flow. Only used for left-menu entry. Load another interaction.
+	LOCAL = 3, // Local Interaction. No server request. Use default response from DB & pass all request params in response.
+	FILE_DOWNLOAD = 4, // The response to this interaction is a file (binary data) instead of normal JSON response
+	INFORMATION = 5, // Do not fire any request. Just show a static information card
+	GROUP = 6, // A group of interactions as per 'group_interaction_ids' field. Show a menu to select between them
+	GRID = 7, // Similar to GROUP but shown as a GRID (Store Listing). First one not selected by default
+	BRAND = 8, // A Brand with products (brand_products table) pointing to other transactions
+	TOKEN_SCANNER = 9, // Scan Token and Pay
+}

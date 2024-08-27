@@ -137,7 +137,6 @@ export const Hero = {
 		bir,
 		dark = false,
 	}) => {
-		// eslint-disable-next-line react-hooks/rules-of-hooks
 		// const { paddingX } = useContext(context);
 
 		const center = align === "center";

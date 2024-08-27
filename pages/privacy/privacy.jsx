@@ -14,6 +14,7 @@ const PrivacyPage = () => {
 	const currentUrl = window.location.href;
 	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
 	const reach_out_form_url = `${ZOHO_FORM_URL}?org_id=${org_id}&org_url=${baseUrl}`;
+	const delete_my_account_form_url = `${baseUrl}/delete_my_account`;
 
 	return (
 		<Box borderTop="10px solid" borderTopColor="primary.DEFAULT">
@@ -29,7 +30,7 @@ const PrivacyPage = () => {
 
 				<Box maxW={{ base: "100%", md: "600px" }} w="full" mx="auto">
 					<H1 color="primary.DEFAULT" mb="4">
-						{app_name} Privacy Policy
+						Privacy Policy
 					</H1>
 
 					<P>
@@ -200,6 +201,19 @@ const PrivacyPage = () => {
 						posting the new Privacy Policy on this page. These
 						changes are effective immediately after they are posted
 						on this page.
+					</P>
+					<H2>Personal Data and Account Deletion</H2>
+					<P>
+						Your privacy is important to us. If you wish to delete
+						any of your personal data or completely close your
+						account, please submit your request{" "}
+						<Link
+							color="accent.DEFAULT"
+							href={delete_my_account_form_url}
+						>
+							here
+						</Link>
+						.
 					</P>
 
 					{/* {metadata?.support_contacts?.email ? ( */}
