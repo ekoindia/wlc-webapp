@@ -1,16 +1,5 @@
-import {
-	Flex,
-	IconButton,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalHeader,
-	ModalOverlay,
-	useDisclosure,
-	useToast,
-} from "@chakra-ui/react";
-import { Button, Menus } from "components";
+import { Flex, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
+import { Button, Menus, Modal } from "components";
 import { ChangeRoleMenuList, Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -250,38 +239,28 @@ const NetworkMenuWrapper = ({
 			<Modal
 				isOpen={isOpen}
 				onClose={() => setOpen(false)}
-				size={{ base: "sm", md: "lg" }}
-				isCentered={true}
+				title={`Mark ${statusLabels[accountStatusId]}`}
 			>
-				<ModalOverlay />
-				<ModalContent height="auto" fontSize="sm">
-					<ModalHeader fontSize="lg" fontWeight="semibold">
-						<span>Mark {statusLabels[accountStatusId]}</span>
-					</ModalHeader>
-					<ModalCloseButton _hover={{ color: "error" }} />
-					<ModalBody>
-						<form onSubmit={handleSubmit(handleFormSubmit)}>
-							<Flex direction="column" gap="8" pb="4">
-								<Form
-									parameter_list={parameter_list}
-									register={register}
-									control={control}
-									formValues={watcher}
-									errors={errors}
-								/>
-								<Button
-									type="submit"
-									size="lg"
-									width="100%"
-									fontSize="lg"
-									loading={isSubmitting}
-								>
-									Save
-								</Button>
-							</Flex>
-						</form>
-					</ModalBody>
-				</ModalContent>
+				<form onSubmit={handleSubmit(handleFormSubmit)}>
+					<Flex direction="column" gap="8" pb="4">
+						<Form
+							parameter_list={parameter_list}
+							register={register}
+							control={control}
+							formValues={watcher}
+							errors={errors}
+						/>
+						<Button
+							type="submit"
+							size="lg"
+							width="100%"
+							fontSize="lg"
+							loading={isSubmitting}
+						>
+							Save
+						</Button>
+					</Flex>
+				</form>
 			</Modal>
 		</div>
 	);
