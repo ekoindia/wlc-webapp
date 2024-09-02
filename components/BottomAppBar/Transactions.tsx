@@ -28,7 +28,12 @@ const Transactions = () => {
 				onClick={onOpen}
 			>
 				<Icon ref={btnRef} name="transaction" size="sm" color="light" />
-				<Text fontSize="10px" fontWeight="medium" noOfLines={2}>
+				<Text
+					fontSize="10px"
+					fontWeight="medium"
+					noOfLines={2}
+					userSelect="none"
+				>
 					Transactions
 				</Text>
 			</Flex>

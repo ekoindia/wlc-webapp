@@ -117,6 +117,7 @@ const StatusCard = ({
 							"2xl": "12px",
 						}}
 						pointerEvents="none"
+						userSelect="none"
 					>
 						E-value Balance
 					</Text>
@@ -136,6 +137,7 @@ const StatusCard = ({
 								"2xl": "16px",
 							}}
 							fontWeight="medium"
+							userSelect="none"
 						>
 							{formatCurrency(balance, "INR", true, true)}
 						</Text>

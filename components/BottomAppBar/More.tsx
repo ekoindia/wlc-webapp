@@ -76,7 +76,12 @@ const More = () => {
 				onClick={onOpen}
 			>
 				<Icon ref={btnRef} name="others" size="sm" color="light" />
-				<Text fontSize="10px" fontWeight="medium" noOfLines={2}>
+				<Text
+					fontSize="10px"
+					fontWeight="medium"
+					noOfLines={2}
+					userSelect="none"
+				>
 					More
 				</Text>
 			</Flex>
