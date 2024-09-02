@@ -489,7 +489,8 @@ const setupWidgetEventListeners = ({
 		openCamera(
 			detail,
 			// Handle Response: Inform widget when the Camera is closed with a response
-			(data) => data && widgetRef?.current?.cameraResponse(data.image)
+			(data) =>
+				data?.image && widgetRef?.current?.cameraResponse(data.image)
 		);
 	};
 
