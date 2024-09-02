@@ -1,5 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { IcoButton } from "..";
+import { IcoButton } from "components";
 
 interface ModalHeaderProps {
 	title: string;
