@@ -414,7 +414,7 @@ export const products = {
 	ACCOUNT_VERIFICATION: {
 		validation: {
 			PRICING: {
-				fixed: { min: 1.84, max: 5 },
+				fixed: { min: 0.84, max: 5 },
 				percentage: false,
 			},
 		},
