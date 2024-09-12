@@ -147,7 +147,7 @@ const DmtRetailer = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.DMT} (Exclusive of GST)`,
+			label: `Define ${productPricingType.DMT} (GST Inclusive)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {

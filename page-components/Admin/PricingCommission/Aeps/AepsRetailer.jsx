@@ -140,14 +140,14 @@ const AepsRetailer = () => {
 		},
 		{
 			name: "pricing_type",
-			label: `Select ${productPricingType.DMT} Type`,
+			label: `Select ${productPricingType.AEPS} Type`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: pricingTypeList,
 			// defaultValue: DEFAULT.pricing_type,
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.DMT} (Exclusive of GST)`,
+			label: `Define ${productPricingType.AEPS} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {
