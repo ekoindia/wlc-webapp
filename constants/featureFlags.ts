@@ -1,3 +1,10 @@
+// Few pre-defined org-ids for configuring feature flags:
+const ORG_ID = {
+	EKOSTORE: 1,
+	EKOTEST: 101, // SuperPay
+	SBIKIOSK: 287,
+};
+
 /**
  * Note: This file is used to enable or disable features in the application.
  * Can be used to enable or disable features based on user roles or environment.
@@ -37,8 +44,19 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Feature to Raise Issues...
 	RAISE_ISSUE: {
 		enabled: true,
-		forEnv: ["development"],
 		forAdminOnly: true,
+		envConstraints: {
+			// development: {
+			// 	// forUserId: ["1234"],
+			// 	forOrgId: [3],
+			// },
+			staging: {
+				forOrgId: [3],
+			},
+			production: {
+				forOrgId: [ORG_ID.SBIKIOSK, 259], // 259 = VijayPay
+			},
+		},
 	},
 
 	// Face detector for images, videos, and live streams.
@@ -56,8 +74,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Experimental LLM conversational UI for financial transactions and queries.
 	GPT_CHAT: {
 		enabled: true,
-		forUserId: [],
 		forEnv: ["development"],
+		envConstraints: {
+			production: {
+				forUserId: [],
+			},
+		},
 	},
 
 	// Expression editor for generating custom expressions using a GUI.
@@ -79,6 +101,23 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 // Type definition for environments
 type EnvTypes = "development" | "staging" | "production" | string;
+
+// Type definition for specific constraints for each envoirnment
+type EnvConstraints = {
+	/**
+	 * List of org-ids for which the feature is enabled.
+	 * If the list is empty, the feature is enabled for all orgs.
+	 * Example: [1, 2, 3]
+	 */
+	forOrgId?: number[];
+
+	/**
+	 * List of user-IDs for which the feature is enabled.
+	 * If the list is empty, the feature is enabled for all users.
+	 * Example: ["123", "456", "789"]
+	 */
+	forUserId?: string[];
+};
 
 /**
  * Type definition for a feature flag configuration.
@@ -112,7 +151,7 @@ export type FeatureFlagType = {
 	 * If the list is empty, the feature is enabled for all users.
 	 * Example: ["123", "456", "789"]
 	 */
-	forUserId?: string[];
+	// forUserId?: string[];
 
 	/**
 	 * List of roles for which the feature is enabled.
@@ -126,4 +165,9 @@ export type FeatureFlagType = {
 	 * Default: false
 	 */
 	forAdminOnly?: boolean;
+
+	/**
+	 * Specific constraints for each environment.
+	 */
+	envConstraints?: Record<EnvTypes, EnvConstraints>;
 };
