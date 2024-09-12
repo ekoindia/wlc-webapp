@@ -1,6 +1,6 @@
 import { Flex, Text, useToken } from "@chakra-ui/react";
 import { svgBgDotted } from "utils/svgPatterns";
-import { Icon } from "..";
+import { IcoButton } from "..";
 
 interface DrawerHeaderProps {
 	title: string;
@@ -30,17 +30,19 @@ const DrawerHeader = ({ title, onClose }: DrawerHeaderProps) => {
 				opacity: 0.04,
 			})}
 		>
-			<Text fontSize="lg" fontWeight="semibold">
+			<Text fontSize="lg" fontWeight="semibold" userSelect="none">
 				{title}
 			</Text>
-			<Flex direction="row-reverse" onClick={onClose} w="20%">
-				<Icon
-					size="xs"
-					name="close"
-					color="light"
-					_active={{ color: "error" }}
-				/>
-			</Flex>
+			<IcoButton
+				size="sm"
+				iconName="close"
+				iconSize="xs"
+				color="light"
+				theme="ghost"
+				_hover={{ color: "error" }}
+				_active={{ color: "error" }}
+				onClick={onClose}
+			/>
 		</Flex>
 	);
 };

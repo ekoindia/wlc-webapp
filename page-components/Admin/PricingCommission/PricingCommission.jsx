@@ -169,12 +169,15 @@ const Card = ({ label, desc, icon, slug }) => {
 						<Text
 							fontSize={{ base: "sm", md: "md" }}
 							fontWeight="medium"
+							userSelect="none"
 						>
 							{label}
 						</Text>
 					) : null}
 					{desc?.length > 0 ? (
-						<Text fontSize="xxs">{desc}</Text>
+						<Text fontSize="xxs" userSelect="none">
+							{desc}
+						</Text>
 					) : null}
 				</Flex>
 			</Flex>

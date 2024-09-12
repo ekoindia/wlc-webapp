@@ -120,7 +120,7 @@ const DmtDistributor = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define Commission (Exclusive of GST)`,
+			label: `Define Commission (GST Inclusive)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {

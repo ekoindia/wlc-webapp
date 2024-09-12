@@ -327,7 +327,12 @@ const MenuPanelItem = ({
 				icon={<Icon size="16px" name={icon} color="white" />}
 				{...avatarTheme}
 			/>
-			<Text fontSize="xs" noOfLines={2} textAlign="center">
+			<Text
+				fontSize="xs"
+				noOfLines={2}
+				textAlign="center"
+				userSelect="none"
+			>
 				{label}
 			</Text>
 		</Flex>
@@ -359,7 +364,7 @@ const IconWithLabel = ({
 }: IconWithLabelProps): JSX.Element => (
 	<Flex py="1" w="100%" align="center" gap="4" cursor="pointer">
 		<Icon name={icon} size="sm" color={`hsl(${hue},80%,30%)`} />
-		<Text fontSize="sm" fontWeight="medium">
+		<Text fontSize="sm" fontWeight="medium" userSelect="none">
 			{label}
 		</Text>
 	</Flex>

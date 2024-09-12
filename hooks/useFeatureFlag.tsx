@@ -1,5 +1,5 @@
 import { FeatureFlags, FeatureFlagType } from "constants/featureFlags";
-import { useSession } from "contexts";
+import { useSession, useOrgDetailContext } from "contexts";
 import { useCallback, useEffect, useState } from "react";
 
 /**
@@ -10,6 +10,8 @@ import { useCallback, useEffect, useState } from "react";
  */
 const useFeatureFlag = (featureName: string) => {
 	const { isAdmin, userId, userType, isLoggedIn } = useSession();
+	const { orgDetail } = useOrgDetailContext();
+	const { org_id } = orgDetail ?? {};
 	const [allowed, setAllowed] = useState<boolean>(false);
 
 	/**
@@ -49,12 +51,33 @@ const useFeatureFlag = (featureName: string) => {
 				return false;
 			}
 
-			// Check if the feature is enabled for the user (if a set of allowed user-IDs is defined).
+			// Check envoirnment specific conditions, such as user-id or org-id:
 			if (
-				feature.forUserId?.length > 0 &&
-				!(isLoggedIn && userId && feature.forUserId.includes(userId))
+				feature.envConstraints &&
+				process.env.NEXT_PUBLIC_ENV in feature.envConstraints
 			) {
-				return false;
+				const envConstraints =
+					feature.envConstraints[process.env.NEXT_PUBLIC_ENV];
+
+				// Check if the current user is allowed for the feature.
+				if (
+					envConstraints.forUserId?.length > 0 &&
+					!(
+						isLoggedIn &&
+						userId &&
+						envConstraints.forUserId.includes(userId)
+					)
+				) {
+					return false;
+				}
+
+				// Check if the current org is allowed for the feature.
+				if (
+					envConstraints.forOrgId?.length > 0 &&
+					!(org_id && envConstraints.forOrgId.includes(+org_id))
+				) {
+					return false;
+				}
 			}
 
 			// If all conditions are satisfied, return true.
