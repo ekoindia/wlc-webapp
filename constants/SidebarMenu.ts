@@ -25,7 +25,7 @@ export const OtherMenuItems: number[] = [
 	TransactionIds.INITIATE_REFUND,
 	TransactionIds.MANAGE_NETWORK_EVALUE,
 	TransactionIds.MANAGE_SELF_EVALUE,
-	TransactionIds.MANAGE_MY_ACCOUNT,
+	// TransactionIds.MANAGE_MY_ACCOUNT,
 	// TransactionIds.LOAD_EVALUE,
 	// TransactionIds.REQUEST_EVALUE,
 	// TransactionIds.TRANSFER_EVALUE,
