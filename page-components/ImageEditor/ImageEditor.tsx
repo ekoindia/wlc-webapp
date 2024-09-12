@@ -86,6 +86,7 @@ const ImageEditor = ({
 	const [cropEnabled, setCropEnabled] = useState(
 		disableCrop || disableImageEdit ? false : true
 	);
+	const [manualCropStarted, setManualCropStarted] = useState(false); // Has the user started a manual crop?
 	const [enableCropAfterImageLoad, setEnableCropAfterImageLoad] =
 		useState(false);
 	const [rotation, setRotation] = useState(0);
@@ -98,7 +99,7 @@ const ImageEditor = ({
 	const [isFaceDetectionEnabled] = useFeatureFlag("FACE_DETECTOR");
 	const [faceDetector, setFaceDetector] = useState<any>(null);
 	const [detectedFaceCount, setDetectedFaceCount] = useState(0);
-	const [confidence, setConfidence] = useState("");
+	// const [confidence, setConfidence] = useState("");
 
 	// FaceDetector dynamic initialization
 	useEffect(() => {
@@ -120,21 +121,27 @@ const ImageEditor = ({
 			const face = detections[0]?.boundingBox;
 
 			if (detections?.length > 0 && face) {
-				const score = detections[0]?.categories[0]?.score;
-				setConfidence(
-					detections.length === 1
-						? "Face detected: " +
-								Math.round(score * 100) +
-								"% confidence"
-						: detections.length +
-								" faces detected: " +
-								Math.round(score * 100) +
-								"% confidence, ..."
-				);
+				// const score = detections[0]?.categories[0]?.score;
+				// setConfidence(
+				// 	detections.length === 1
+				// 		? "Face detected: " +
+				// 				Math.round(score * 100) +
+				// 				"% confidence"
+				// 		: detections.length +
+				// 				" faces detected: " +
+				// 				Math.round(score * 100) +
+				// 				"% confidence, ..."
+				// );
 
 				setDetectedFaceCount(detections.length);
 
 				// const fullFace = getFullFaceBound(face);
+
+				// If the user has already started cropping the image manually,
+				// don't change the crop area
+				if (manualCropStarted) {
+					return;
+				}
 
 				const fullFace = getCompositeFaceBound(
 					detections,
@@ -166,7 +173,7 @@ const ImageEditor = ({
 				});
 			}
 		}
-	}, [imageLoaded, imageRef, faceDetector]);
+	}, [imageLoaded, imageRef, faceDetector, manualCropStarted]);
 
 	// Set defaut crop area when the image is loaded & the crop is enabled
 	useEffect(() => {
@@ -564,6 +571,7 @@ const ImageEditor = ({
 						disabled={!cropEnabled}
 						onChange={(c) => {
 							setCrop(c);
+							manualCropStarted || setManualCropStarted(true);
 						}}
 					>
 						<img
@@ -579,7 +587,7 @@ const ImageEditor = ({
 							onLoad={onImageLoad}
 						/>
 					</ReactCrop>
-					{confidence ? (
+					{/* {confidence ? (
 						<Box
 							position="absolute"
 							bottom="0"
@@ -592,7 +600,7 @@ const ImageEditor = ({
 						>
 							{confidence}
 						</Box>
-					) : null}
+					) : null} */}
 				</Box>
 				<Box height={toolbar_height} width="100%" />
 				<Flex
