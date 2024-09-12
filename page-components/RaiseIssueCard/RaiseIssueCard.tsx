@@ -51,6 +51,15 @@ const COMMENT_TYPE = {
 	MANDATORY: 1,
 };
 
+/**
+ * Screenshot capture type
+ */
+const SCREENSHOT_TYPE = {
+	DISABLED: -1,
+	OPTIONAL: 0,
+	MANDATORY: 1,
+};
+
 // Declare the props interface
 interface RaiseIssueProps {
 	heading?: string;
@@ -123,7 +132,8 @@ const RaiseIssueCard = ({
 	const toast = useToast();
 
 	// User/Session data...
-	const { accessToken, userData, isLoggedIn } = useUser();
+	const { accessToken, userData, isLoggedIn, isAdmin, isAdminAgentMode } =
+		useUser();
 	const { generateNewToken } = useRefreshToken();
 	const onboarding = userData?.user_details?.onboarding || 0; // Is the user onboarding?
 
@@ -316,6 +326,7 @@ const RaiseIssueCard = ({
 					operator: operator || "",
 					partner_id: partner_id || "",
 					channel: channel || "",
+					is_admin: isAdmin && !isAdminAgentMode ? 1 : 0,
 				},
 				controller: controller,
 				token: accessToken,
@@ -844,15 +855,20 @@ const RaiseIssueCard = ({
 						) : null}
 
 						{/* Show option to capture screenshot */}
-						<Box mb={4} maxW={{ base: "100%", md: "350px" }}>
-							<Screenshot
-								screenshot={screenshot}
-								autoCaptureScreenshot={autoCaptureScreenshot}
-								onCapture={setScreenshot}
-								onHide={onHide}
-								onShow={onShow}
-							/>
-						</Box>
+						{selectedIssue.screenshot ===
+						SCREENSHOT_TYPE.DISABLED ? null : (
+							<Box mb={4} maxW={{ base: "100%", md: "350px" }}>
+								<Screenshot
+									screenshot={screenshot}
+									autoCaptureScreenshot={
+										autoCaptureScreenshot
+									}
+									onCapture={setScreenshot}
+									onHide={onHide}
+									onShow={onShow}
+								/>
+							</Box>
+						)}
 
 						{/* Show a multi-line input to capture user comment & the submit button */}
 						{isUserFeedbackRequired ? (
@@ -1405,7 +1421,7 @@ const Screenshot = ({
 			{screenshot ? null : (
 				<Button variant="primary" onClick={captureScreen}>
 					<RiScreenshot2Line size="24px" />
-					&nbsp; Add Screenshot
+					&nbsp; Capture Screenshot
 				</Button>
 			)}
 		</Flex>
@@ -1484,37 +1500,53 @@ interface IssueType {
 	 * Value of the issue (visible to the support team as the issue sub-sub-type or label)
 	 */
 	value: string;
+
 	/**
 	 * Label of the issue (visible to the user as the issue type). If not provided, `value` is used.
 	 */
 	label?: string;
+
 	/**
 	 * Additional description of the issue
 	 */
 	desc?: string;
+
 	/**
 	 * Time after which the issue can be raised. Eg: "0d", "1d", "2d", etc.
 	 */
 	raise_issue_after?: string;
+
 	/**
 	 * Number of days within which the issue is expected to be resolved. Eg: "0", "1", "2", etc.
 	 */
 	tat?: string;
+
 	/**
 	 * Number of days within which the issue is expected to be resolved, if reopened. Eg: "0", "1", "2", etc.
 	 */
 	reopened_tat?: string;
+
 	/**
 	 * Whether to allow comments while raising the issue. -1: Disabled, 0: Optional, 1: Mandatory
 	 * @default 0
 	 */
 	comment?: -1 | 0 | 1;
+
+	/**
+	 * Type of screenshot capture: -1 = Disabled, 0 = Optional, 1 = Mandatory
+	 * @default 0
+	 */
+	screenshot?: -1 | 0 | 1;
+
 	category: { id: number; title: string };
+
 	sub_category: { id: number; title: string };
+
 	/**
 	 * Optional array of Inputs to be captured from the user. Each input is an object with properties `label`, `type`, `length_min`, `length_max` & `is_required`.
 	 */
 	inputs?: IssueInputType[];
+
 	/**
 	 * Optional array of file-upload fields to be captured from the user. Each field is an object with properties `label` & `is_required`.
 	 */

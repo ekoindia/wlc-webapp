@@ -9,6 +9,8 @@ export const UserType = {
 	PAYMENT_MERCHANT: 8,
 	CUSTOMER: 10,
 	ENTERPRISE_PARTNER_ADMIN: 23,
+	ORG_ADMIN: 24,
+	ORG_EMPLOYEE: 25,
 };
 
 export const UserTypeLabel = {
@@ -22,4 +24,6 @@ export const UserTypeLabel = {
 	8: "Payment Retailer",
 	10: "User", // Customer
 	23: "Enterprise Partner", // API Partner Dashboard
+	24: "Organization Admin",
+	25: "Organization Employee",
 };
