@@ -54,7 +54,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 				forOrgId: [3],
 			},
 			production: {
-				forOrgId: [ORG_ID.SBIKIOSK, 259], // 259 = VijayPay
+				forOrgId: [ORG_ID.EKOTEST, ORG_ID.SBIKIOSK /*, 259 */], // 259 = VijayPay
 			},
 		},
 	},
