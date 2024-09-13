@@ -240,7 +240,7 @@ export const products = {
 				max: 3000,
 				validation: {
 					PRICING: {
-						fixed: { min: 3, max: 24 },
+						fixed: { min: 5, max: 24 },
 						percentage: false,
 					},
 					COMMISSION: {
@@ -254,8 +254,8 @@ export const products = {
 				max: 24999,
 				validation: {
 					PRICING: {
-						fixed: { min: 3, max: 200 },
-						percentage: { min: 0.1, max: 0.8 },
+						fixed: { min: 8, max: 200 },
+						percentage: { min: 0.3, max: 2 },
 					},
 					COMMISSION: {
 						fixed: { min: 0, max: 200 },
@@ -268,8 +268,8 @@ export const products = {
 				max: 200000,
 				validation: {
 					PRICING: {
-						fixed: { min: 6, max: 1600 },
-						percentage: { min: 0.03, max: 0.8 },
+						fixed: { min: 15, max: 1600 },
+						percentage: { min: 0.06, max: 2 },
 					},
 					COMMISSION: {
 						fixed: { min: 0, max: 1600 },
