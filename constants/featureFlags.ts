@@ -62,13 +62,13 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Face detector for images, videos, and live streams.
 	FACE_DETECTOR: {
 		enabled: true,
-		forEnv: ["development", "staging"],
+		// forEnv: ["development", "staging"],
 	},
 
 	// Face detector for images, videos, and live streams.
 	TEXT_CLASSIFIER: {
 		enabled: true,
-		forEnv: ["development", "staging"],
+		forEnv: ["development"],
 	},
 
 	// Experimental LLM conversational UI for financial transactions and queries.
