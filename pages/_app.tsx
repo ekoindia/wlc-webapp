@@ -329,12 +329,22 @@ InfinityApp.getInitialProps = async function (appContext) {
 		)
 	);
 
-	if (org_details?.props?.data?.not_found) {
+	if (org_details?.props?.data?.not_found || org_details?.notFound) {
 		console.error(
 			"[_app.tsx] getInitialProps:: Org details not found. Redirecting to 404"
 		);
-		// Redirect to marketing landing page
-		res.writeHead(302, { Location: "https://eko.in/eloka" });
+
+		const source = org_details?.props?.data?.not_found
+			? "backend"
+			: "cache";
+
+		console.debug(
+			`[_app.tsx] getInitialProps:: Response Details from ${source}`
+		);
+		// TODO: Redirect to marketing landing page...
+		// res.writeHead(302, { Location: "https://eko.in" });
+		// res.end();
+		res.statusCode = 404;
 		res.end();
 		return {};
 	}
@@ -344,15 +354,3 @@ InfinityApp.getInitialProps = async function (appContext) {
 		org: org_details?.props?.data,
 	};
 };
-
-// TODO: Remove from production...
-// export function reportWebVitals(metric) {
-// 	console.log("📈 WebVitals: ", metric.name + "=" + metric.value, metric);
-// }
-
-// Console warning to show to end users...
-console.info(
-	"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it.",
-	"color:red;background:yellow;font-size:20px",
-	"font-size:16px"
-);
