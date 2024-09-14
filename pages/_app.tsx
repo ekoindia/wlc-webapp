@@ -21,9 +21,9 @@ import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
 import { Layout } from "layout-components";
 import App from "next/app";
 // import { Inter } from "next/font/google";
+import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import Head from "next/head";
 import { SWRConfig } from "swr";
-import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import { light } from "../styles/themes";
 
 // Variable Font
@@ -329,20 +329,24 @@ InfinityApp.getInitialProps = async function (appContext) {
 		)
 	);
 
-	if (!org_details?.props?.data) {
+	if (org_details?.props?.data?.not_found || org_details?.notFound) {
 		console.error(
 			"[_app.tsx] getInitialProps:: Org details not found. Redirecting to 404"
+		);
+
+		const source = org_details?.props?.data?.not_found
+			? "backend"
+			: "cache";
+
+		console.debug(
+			`[_app.tsx] getInitialProps:: Response Details from ${source}`
 		);
 		// TODO: Redirect to marketing landing page...
 		// res.writeHead(302, { Location: "https://eko.in" });
 		// res.end();
 		res.statusCode = 404;
 		res.end();
-		return {
-			err: {
-				statusCode: 404,
-			},
-		};
+		return {};
 	}
 
 	return {
