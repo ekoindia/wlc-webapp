@@ -15,10 +15,12 @@ export default function LandingPage(/* { data } */) {
 	return <LandingPanel />;
 }
 
+LandingPage.pageMeta = {
+	title: "Welcome",
+};
+
 // Custom layout for the Login page...
-LandingPage.getLayout = (page, org) => (
-	<LayoutLogin appName={org?.app_name || ""}>{page}</LayoutLogin>
-);
+LandingPage.getLayout = LayoutLogin;
 
 // export async function getServerSideProps({ req }) {
 // 	const org_details = await fetchOrgDetails(req.headers.host);

@@ -165,17 +165,18 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	// Get standard or custom Layout for the page...
 	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx). Eg: See the login page (pages/index.tsx)
 	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
-	const getLayout =
-		Component.getLayout ||
-		((page) => (
-			<Layout
+	const getLayout = (page) => {
+		const CurrentLayout = Component.getLayout || Layout;
+		return (
+			<CurrentLayout
 				// fontClassName={inter.className}
 				appName={org?.app_name}
 				pageMeta={Component?.pageMeta || {}}
 			>
 				{page}
-			</Layout>
-		));
+			</CurrentLayout>
+		);
+	};
 
 	// Is this a login page? This should help decide if features like CommandBar should be loaded.
 	const isLoginPage =
