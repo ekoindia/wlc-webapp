@@ -330,19 +330,16 @@ InfinityApp.getInitialProps = async function (appContext) {
 	);
 
 	if (org_details?.props?.data?.not_found || org_details?.notFound) {
-		console.error(
-			"[_app.tsx] getInitialProps:: Org details not found. Redirecting to 404"
-		);
-
 		const source = org_details?.props?.data?.not_found
 			? "backend"
 			: "cache";
-
-		console.debug(
-			`[_app.tsx] getInitialProps:: Response Details from ${source}`
+		
+		console.error(
+			"[_app.tsx - getInitialProps] Org not found. Redirecting to 404. Source=" + source
 		);
+
 		// TODO: Redirect to marketing landing page...
-		// res.writeHead(302, { Location: "https://eko.in" });
+		// res.writeHead(302, { Location: "https://eko.in/eloka" });
 		// res.end();
 		res.statusCode = 404;
 		res.end();
