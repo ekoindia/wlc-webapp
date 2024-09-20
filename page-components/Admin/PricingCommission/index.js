@@ -15,6 +15,8 @@ import { PricingForm } from "./PricingForm";
 import { QrPayment } from "./QrPayment";
 import { RefundMethod } from "./RefundMethod";
 import { ToggleCdm } from "./ToggleCdm";
+import { TravelFlight } from "./TravelFlight";
+import { TravelTrain } from "./TravelTrain";
 import { UpiFundTransfer } from "./UpiFundTransfer";
 import { UpiMoneyTransfer } from "./UpiMoneyTransfer";
 import { ValidateUpiId } from "./ValidateUpiId";
@@ -36,6 +38,8 @@ export {
 	QrPayment,
 	RefundMethod,
 	ToggleCdm,
+	TravelFlight,
+	TravelTrain,
 	UpiFundTransfer,
 	UpiMoneyTransfer,
 	ValidateUpiId,

@@ -160,6 +160,21 @@ export const product_slug_map = {
 		slug: "cdm",
 		hide: false,
 	},
+	"travel-train": {
+		label: "Travel Train",
+		desc: "Set Agent Pricing for Cash Deposit services",
+		comp: "TravelTrain",
+		slug: "travel-train",
+		hide: false,
+	},
+	"travel-flight": {
+		label: "Travel Flight",
+		desc: "Set Agent Pricing for Cash Deposit services",
+		comp: "TravelFlight",
+		icon: "flight",
+		slug: "travel-flight",
+		hide: false,
+	},
 };
 
 /**
@@ -201,6 +216,8 @@ export const product_categories = {
 			"upi-fund-transfer",
 			"validate-upi-id",
 			"cdm",
+			"travel-train",
+			"travel-flight",
 		],
 	},
 };
