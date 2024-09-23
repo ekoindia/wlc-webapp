@@ -164,6 +164,7 @@ export const product_slug_map = {
 		label: "Travel Train",
 		desc: "Set Agent Pricing for Cash Deposit services",
 		comp: "TravelTrain",
+		icon: "train",
 		slug: "travel-train",
 		hide: false,
 	},
