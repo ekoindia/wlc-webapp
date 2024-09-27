@@ -67,6 +67,22 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
         - `component`: A custom JSX component that can be rendered within the item.
         - `visible`: A boolean indicating whether the item should be visible in the Bottom App Bar.
 
+
+## 💼 Business Features:
+
+### 📈 Pricing Configuration for Admins:
+1. Create a page-component for the pricing configuration running the command `npm run g`
+   1. Select "Component"
+   2. Enter the name of the page-component (eg: `TrainTravel`)
+   3. Select Path: `page-components/Admin`
+   4. Enter sub-folder: `PricingCommission`
+2. Copy sub-components from other existing pricing page-component such as: `TrainTravelDistributor` and `TrainTravelRetailer`
+2. Create a configuration for the product in [`constants/PricingConfiguration.js`](constants/PricingConfiguration.js) file under the `product_slug_map` object.
+   1. Set a unique slug (for the page URL) and the name of the page-component to display (created in step #1).
+   2. If it is a pricing configuration page for a product, add the slug to `product_categories` object.
+3. Create a configuration for the product in [`constants/ProductDetails.js`](constants/ProductDetails.js) page. Set slabs, validations, etc for the pricing configuration.
+
+
 ## ✨ Other Features:
 
 ### 🚦 Routing (Public vs Private Pages):
