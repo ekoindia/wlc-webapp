@@ -1,10 +1,22 @@
 import { PageLoader } from "components";
 import { useAppSource, usePubSub, useUser } from "contexts";
 import { loginUsingRefreshTokenAndroid } from "helpers/loginHelper";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import Router from "next/router";
 import { useEffect, useState } from "react";
 import { ANDROID_ACTION, doAndroidAction } from "utils";
+
+// Lazy-load the DynamicPopupModuleLoader component
+const DynamicPopupModuleLoader = dynamic(
+	() =>
+		import("layout-components/DynamicPopupModuleLoader").then(
+			(pkg) => pkg.DynamicPopupModuleLoader
+		),
+	{
+		ssr: false,
+	}
+);
 
 /**
  * Custom page layout component for the Gateway (Redirection) pages
@@ -15,17 +27,18 @@ import { ANDROID_ACTION, doAndroidAction } from "utils";
 const LayoutGateway = ({ appName, children }) => {
 	const { publish, TOPICS } = usePubSub();
 	const { isAndroid, setNativeVersion } = useAppSource();
-
 	const [isPageLoading, setIsPageLoading] = useState(false);
-	Router.events.on("routeChangeStart", () => setIsPageLoading(true));
-	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
-	Router.events.on("routeChangeError", () => setIsPageLoading(false));
-
 	const { updateUserInfo, logout, login } = useUser();
 
-	// Setup Android Listener...
 	// TODO: Duplicate code from the default Layout component...Breakout into a separate component/hook?
+	// One Time Setup: Setup Android Listener & Route Change Listeners...
 	useEffect(() => {
+		// Show page-loading animation on route change
+		Router.events.on("routeChangeStart", () => setIsPageLoading(true));
+		Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
+		Router.events.on("routeChangeError", () => setIsPageLoading(false));
+
+		// Android action listener
 		if (typeof window !== "undefined" && isAndroid) {
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
@@ -64,6 +77,9 @@ const LayoutGateway = ({ appName, children }) => {
 
 			{/* Show page-loading animation */}
 			{isPageLoading && <PageLoader />}
+
+			{/* Show any dynamic popup modules */}
+			<DynamicPopupModuleLoader />
 
 			<>{children}</>
 		</>
