@@ -71,6 +71,7 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 ## 💼 Business Features:
 
 ### 📈 Pricing Configuration for Admins:
+To add pricing configuration page for a new product in the Admin portal under "Pricing & Commission" left-menu section, use the following steps:
 1. Create a page-component for the pricing configuration running the command `npm run g`
    1. Select "Component"
    2. Enter the name of the page-component (eg: `TrainTravel`)

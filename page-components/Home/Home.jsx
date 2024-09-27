@@ -80,6 +80,7 @@ const Home = () => {
 
 	widgets.push({ id: 99, component: QueryWidget });
 
+	// EXPERIMENTAL: GPT Chat widget
 	if (isGptChatAllowed) {
 		console.log("Adding GPT Chat: ", GptChatBetaWidget);
 		widgets.push({ id: 100, component: GptChatBetaWidget });

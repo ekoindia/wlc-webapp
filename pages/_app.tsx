@@ -211,8 +211,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 																		{getLayout(
 																			<Component
 																				{...pageProps}
-																			/>,
-																			org
+																			/>
 																		)}
 																	</ErrorBoundary>
 																</PubSubProvider>
@@ -334,9 +333,10 @@ InfinityApp.getInitialProps = async function (appContext) {
 		const source = org_details?.props?.data?.not_found
 			? "backend"
 			: "cache";
-		
+
 		console.error(
-			"[_app.tsx - getInitialProps] Org not found. Redirecting to 404. Source=" + source
+			"[_app.tsx - getInitialProps] Org not found. Redirecting to 404. Source=" +
+				source
 		);
 
 		// TODO: Redirect to marketing landing page...
