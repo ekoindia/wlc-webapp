@@ -110,6 +110,9 @@ export const fetchOrgDetails = async (host, force) => {
 	// Check cache for valid (sub)domain
 	let orgDetails = ORG_CACHE[domain || subdomain];
 
+	// Prevent DOS attack when users keep hitting invalid domains
+	const DOS_ATTACK_DELAY = 3000; // Delay in milliseconds
+
 	// Check cache for invalid (sub)domain
 	if (
 		force !== true &&
@@ -126,6 +129,10 @@ export const fetchOrgDetails = async (host, force) => {
 			INVALID_DOMAIN_CACHE.clear();
 			LAST_INVALID_DOMAIN_CACHE_BUST_TIME = Date.now();
 		} else {
+			// Delay the response for invalid domains to prevent DOS attack
+			await new Promise((resolve) =>
+				setTimeout(resolve, DOS_ATTACK_DELAY)
+			);
 			return {
 				...invalidOrg,
 				props: {
@@ -167,6 +174,11 @@ export const fetchOrgDetails = async (host, force) => {
 		} else if (orgDetails?.not_found === true) {
 			// Domain details not available. Cache the invalid domain.
 			INVALID_DOMAIN_CACHE.add(domain || subdomain);
+
+			// Delay the response for invalid domains to prevent DOS attack
+			await new Promise((resolve) =>
+				setTimeout(resolve, DOS_ATTACK_DELAY)
+			);
 		}
 	}
 
