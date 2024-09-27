@@ -13,6 +13,9 @@ const publicLinks = [
 // These links can be visited only by logged-out (public) users
 const publicOnlyLinks = ["/"];
 
+// Public sections, i.e., any sub-route of these starting-routes can be visited by both logged-in and logged-out (public) users
+const publicSections = ["gateway"];
+
 const baseRoute = {
 	admin: "/admin",
 };
@@ -22,4 +25,10 @@ const initialRoute = {
 	"non-admin": "/home",
 };
 
-export { baseRoute, initialRoute, publicLinks, publicOnlyLinks };
+export {
+	baseRoute,
+	initialRoute,
+	publicLinks,
+	publicOnlyLinks,
+	publicSections,
+};
