@@ -16,19 +16,20 @@ const LayoutLogin = ({ appName, pageMeta, children }) => {
 	const { title } = pageMeta || {};
 	const { publish, TOPICS } = usePubSub();
 	const { isAndroid, setNativeVersion } = useAppSource();
-
 	const [isPageLoading, setIsPageLoading] = useState(false);
-	Router.events.on("routeChangeStart", () => setIsPageLoading(true));
-	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
-	Router.events.on("routeChangeError", () => setIsPageLoading(false));
-
 	const { updateUserInfo, logout, login } = useUser();
 
 	const pageTitle = "" + (title ? title + " | " : "") + (appName || "");
 
-	// Setup Android Listener...
 	// TODO: Duplicate code from the default Layout component...Breakout into a separate component/hook?
+	// One Time Setup: Setup Android Listener & Route Change Listeners...
 	useEffect(() => {
+		// Show page-loading animation on route change
+		Router.events.on("routeChangeStart", () => setIsPageLoading(true));
+		Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
+		Router.events.on("routeChangeError", () => setIsPageLoading(false));
+
+		// Android action listener
 		if (typeof window !== "undefined" && isAndroid) {
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
