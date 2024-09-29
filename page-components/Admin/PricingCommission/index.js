@@ -1,42 +1,21 @@
-import { AadhaarPay } from "./AadhaarPay";
-import { AccountVerification } from "./AccountVerification";
-import { Aeps } from "./Aeps";
-import { AirtelCms } from "./AirtelCms";
-import { Bbps } from "./Bbps";
-import { CardPayment } from "./CardPayment";
-import { Cdm } from "./Cdm";
-import { CommissionFrequency } from "./CommissionFrequency";
-import { CreditCardBillPayment } from "./CreditCardBillPayment";
-import { Dmt } from "./Dmt";
-import { IndoNepal } from "./IndoNepal";
-import { OptionalVerification } from "./OptionalVerification";
-import { PricingCommission } from "./PricingCommission";
-import { PricingForm } from "./PricingForm";
-import { QrPayment } from "./QrPayment";
-import { RefundMethod } from "./RefundMethod";
-import { ToggleCdm } from "./ToggleCdm";
-import { UpiFundTransfer } from "./UpiFundTransfer";
-import { UpiMoneyTransfer } from "./UpiMoneyTransfer";
-import { ValidateUpiId } from "./ValidateUpiId";
-export {
-	AadhaarPay,
-	AccountVerification,
-	Aeps,
-	AirtelCms,
-	Bbps,
-	CardPayment,
-	Cdm,
-	CommissionFrequency,
-	CreditCardBillPayment,
-	Dmt,
-	IndoNepal,
-	OptionalVerification,
-	PricingCommission,
-	PricingForm,
-	QrPayment,
-	RefundMethod,
-	ToggleCdm,
-	UpiFundTransfer,
-	UpiMoneyTransfer,
-	ValidateUpiId,
-};
+export { PricingCommission } from "./PricingCommission";
+export { PricingForm } from "./PricingForm";
+export { FormFileUpload } from "./FormFileUpload";
+export { FormSetPricingSlug } from "./FormSetPricingSlug";
+export { AadhaarPay } from "./AadhaarPay";
+export { AccountVerification } from "./AccountVerification";
+export { Aeps } from "./Aeps";
+export { Bbps } from "./Bbps";
+export { CardPayment } from "./CardPayment";
+export { Cdm } from "./Cdm";
+export { CommissionFrequency } from "./CommissionFrequency";
+export { CreditCardBillPayment } from "./CreditCardBillPayment";
+export { Dmt } from "./Dmt";
+export { IndoNepal } from "./IndoNepal";
+export { OptionalVerification } from "./OptionalVerification";
+export { QrPayment } from "./QrPayment";
+export { RefundMethod } from "./RefundMethod";
+export { ToggleCdm } from "./ToggleCdm";
+export { UpiFundTransfer } from "./UpiFundTransfer";
+export { UpiMoneyTransfer } from "./UpiMoneyTransfer";
+export { ValidateUpiId } from "./ValidateUpiId";

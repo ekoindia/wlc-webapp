@@ -24,7 +24,7 @@ const DEFAULT_TIMEOUT = 120000; // 2 minutes
  * @param {object} options.body		Additional data (as JSON object)
  * @param {number} [options.timeout]	Timeout (in milliseconds. Default: 120000)
  * @param {string} options.token	Authorization access-token (if required)
- * @param {object} options.controller	AbortController instance
+ * @param {object} [options.controller]	AbortController instance
  * @param {object} tokenOptions
  * @param {number} [tokenOptions.token_timeout]	Access-token expiry time in milliseconds
  * @param {string} tokenOptions.refreshToken	Refresh-token
@@ -46,7 +46,7 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 		body = {},
 		timeout,
 		token,
-		controller,
+		controller = null,
 		isMultipart,
 		...restOptions
 	} = options;
