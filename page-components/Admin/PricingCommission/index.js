@@ -1,7 +1,7 @@
 export { PricingCommission } from "./PricingCommission";
 export { PricingForm } from "./PricingForm";
 export { FormFileUpload } from "./FormFileUpload";
-export { FormSetPricingSlug } from "./FormSetPricingSlug";
+// export { FormSetPricingSlug } from "./FormSetPricingSlug";	// Work In Progress
 export { AadhaarPay } from "./AadhaarPay";
 export { AccountVerification } from "./AccountVerification";
 export { Aeps } from "./Aeps";
