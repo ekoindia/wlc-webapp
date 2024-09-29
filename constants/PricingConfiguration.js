@@ -5,9 +5,11 @@
  * @property {string} desc - The description of the product.
  * @property {string} [note] - Additional notes about the product.
  * @property {string} [icon] - The icon representing the product.
- * @property {string} comp - The component associated with the product.
- * @property {string} slug - The slug identifying the product.
+ * @property {string} [template] - The component template to use for the product. Possible values: "fileupload", "standard", "custom". If "custom", the component name should be provided in the "comp" property.
+ * @property {string} [comp] - The name of the component associated with the product (located at: page-components/Admin/PricingCommission/...).
+ * @property {string} slug - The slug (url) identifying the product.
  * @property {boolean} hide - Whether to hide the product from the pricing & commission page.
+ * @property {object} [meta] - Additional metadata for the product (depending on the template)
  */
 
 /**
@@ -97,9 +99,18 @@ export const product_slug_map = {
 		label: "Airtel CMS",
 		desc: "Set Agent Pricing/Commission for Airtel CMS services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "AirtelCms",
+		template: "fileupload",
+		// comp: "AirtelCms",
 		slug: "airtel-cms",
 		hide: false,
+		meta: {
+			sampleFileDownloadParams: {
+				interaction_type_id: 707,
+				service_code: 57,
+			},
+			fileUploadUri:
+				"/network/pricing_commissions/airtel_cms_bulk_update_commercial",
+		},
 	},
 	"refund-method": {
 		label: "Refund Method",
@@ -159,6 +170,14 @@ export const product_slug_map = {
 		icon: "money-deposit",
 		slug: "cdm",
 		hide: false,
+	},
+	"payu-pg": {
+		label: "PayU Payment Gateway",
+		desc: "Set Agent Pricing for loading E-value using PayU Payment Gateway",
+		comp: "CardPaymentRetailer",
+		icon: "payu",
+		slug: "payu-pg",
+		hide: true,
 	},
 };
 

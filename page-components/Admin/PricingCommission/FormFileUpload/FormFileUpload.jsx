@@ -14,10 +14,13 @@ import { useState } from "react";
 import { saveDataToFile } from "utils";
 
 /**
- * A AirtelCms tab page-component
- * @example	<AirtelCms/>
+ * Component to configure pricing for a product using file-upload
+ * @param {*} props
+ * @param {object} props.sampleFileDownloadParams - parameters to pass to the API for downloading the sample file. This may include interaction_type_id and service_code.
+ * @param {string} props.fileUploadUri - File upload URI
+ * @returns {JSX.Element}
  */
-const AirtelCms = () => {
+const FormFileUpload = ({ sampleFileDownloadParams, fileUploadUri }) => {
 	const [file, setFile] = useState(null);
 	const [data, setData] = useState(null);
 
@@ -30,10 +33,10 @@ const AirtelCms = () => {
 				"tf-is-file-download": "1",
 			},
 			body: {
-				interaction_type_id: 707,
-				service_code: 57,
+				...sampleFileDownloadParams,
 			},
 			token: accessToken,
+			controller: null,
 		})
 			.then((data) => {
 				const _blob = data?.file?.blob;
@@ -43,7 +46,7 @@ const AirtelCms = () => {
 				saveDataToFile(_blob, _filename, _type, _b64);
 			})
 			.catch((err) => {
-				console.error("err", err);
+				console.error("Error downloading sample file: ", err);
 			});
 	};
 
@@ -54,10 +57,11 @@ const AirtelCms = () => {
 		};
 
 		const formData = new FormData();
-		formData.append("formdata", new URLSearchParams(formDataObj));
+		formData.append(
+			"formdata",
+			new URLSearchParams(formDataObj).toString()
+		);
 		formData.append("file", file);
-
-		console.log("formData", formData);
 
 		fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD_CUSTOM_URL,
@@ -66,19 +70,18 @@ const AirtelCms = () => {
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 					"tf-req-uri-root-path": "/ekoicici/v1",
-					"tf-req-uri": `/network/pricing_commissions/airtel_cms_bulk_update_commercial`,
 					"tf-req-method": "PUT",
+					"tf-req-uri": fileUploadUri,
 				},
 				body: formData,
 			}
 		)
 			.then((res) => res.json())
 			.then((data) => {
-				// console.log("[AirtelCms] data:", data);
 				setData(data);
 			})
 			.catch((err) => {
-				console.error("err", err);
+				console.error("Error uploading file: ", err);
 			});
 	};
 
@@ -168,8 +171,8 @@ const AirtelCms = () => {
 					</Flex>
 
 					{/* {data?.data?.csp_list?.length > 0 && (
-						<AirtelCmsResponse
-							airtelCmsResponseList={data?.data?.csp_list}
+						<FileUploadResponse
+							responseList={data?.data?.csp_list}
 						/>
 					)} */}
 				</Flex>
@@ -178,13 +181,11 @@ const AirtelCms = () => {
 	);
 };
 
-export default AirtelCms;
-
-// const AirtelCmsResponse = ({
+// const FileUploadResponse = ({
 // 	// totalRecords,
 // 	// pageNumber,
 // 	// setPageNumber,
-// 	airtelCmsResponseList,
+// 	responseList,
 // }) => {
 // 	const renderer = [
 // 		{ label: "Sr. No.", show: "#" },
@@ -209,7 +210,9 @@ export default AirtelCms;
 // 			// totalRecords={totalRecords}
 // 			// pageNumber={pageNumber}
 // 			// setPageNumber={setPageNumber}
-// 			data={airtelCmsResponseList}
+// 			data={responseList}
 // 		/>
 // 	);
 // };
+
+export default FormFileUpload;

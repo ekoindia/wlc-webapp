@@ -4,16 +4,13 @@ import dynamic from "next/dynamic";
 
 /**
  * A <PricingForm> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @param prop.label
- * @param prop.comp
- * @param prop.note
- * @example	`<PricingForm></PricingForm>` TODO: Fix example
+ * @param {object} prop Properties passed to the component
+ * @param {string} prop.label Label to be displayed on the page
+ * @param {string} prop.comp Component to be displayed on the page
+ * @param {string} prop.note Note to be displayed on the page
+ * @param {object} [prop.meta] Additional metadata for the page
  */
-const PricingForm = ({ label, comp, note }) => {
+const PricingForm = ({ label, comp, note, meta }) => {
 	const _pageComponent = comp;
 
 	const DynamicPageComponent = dynamic(
@@ -53,7 +50,7 @@ const PricingForm = ({ label, comp, note }) => {
 					boxShadow="basic"
 					borderRadius="10px"
 				>
-					<DynamicPageComponent />
+					<DynamicPageComponent {...meta} />
 				</Flex>
 			</Flex>
 		</div>

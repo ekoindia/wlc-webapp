@@ -13,8 +13,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { saveDataToFile } from "utils";
 /**
- * A PricingCommission page-component
- * @example	`<PricingCommission></PricingCommission>`
+ * Admin > Left-menu > Pricing & Commission page: show a list of products to set pricing/commissions for.
  */
 const PricingCommission = () => {
 	return (
