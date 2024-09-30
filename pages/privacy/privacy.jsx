@@ -29,7 +29,12 @@ const PrivacyPage = () => {
 				/>
 
 				<Box maxW={{ base: "100%", md: "600px" }} w="full" mx="auto">
-					<H1 color="primary.DEFAULT" mb="4">
+					<H1
+						color="primary.DEFAULT"
+						mb="8"
+						w="full"
+						textAlign="center"
+					>
 						Privacy Policy
 					</H1>
 
@@ -299,6 +304,6 @@ PrivacyPage.pageMeta = {
 };
 
 // Custom simple layout...
-PrivacyPage.getLayout = (page) => <LayoutLogin>{page}</LayoutLogin>;
+PrivacyPage.getLayout = LayoutLogin;
 
 export default PrivacyPage;

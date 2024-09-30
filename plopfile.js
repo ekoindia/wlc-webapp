@@ -167,15 +167,7 @@ export default function (plop) {
 							// Append component import in the components index file
 							type: "append",
 							path: "{{componentfolder}}/{{subPath subfolders}}index.js",
-							pattern: `/* PLOP_INJECT_IMPORT */`,
-							template: `import { {{pascalCase name}} } from "./{{subPath subfolders}}{{pascalCase name}}";`,
-						},
-						{
-							// Append component export in the components index file
-							type: "append",
-							path: "{{componentfolder}}/{{subPath subfolders}}index.js",
-							pattern: `export {`, //`/* PLOP_INJECT_EXPORT */`,
-							template: `\t{{pascalCase name}},`,
+							template: `export { {{pascalCase name}} } from "./{{pascalCase name}}";`,
 						},
 					]
 				);

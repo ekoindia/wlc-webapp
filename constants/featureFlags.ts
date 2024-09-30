@@ -90,6 +90,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
+	// Eloka Gateway for redirection-based transaction processing.
+	ELOKA_GATEWAY: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// A test page ("/test" or "/admin/test") to quickly check
 	// components, hooks, etc, during the development.
 	// Note: DO NOT CHANGE. ONLY FOR DEVELOPMENT ENVIRONMENT.
