@@ -182,15 +182,15 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		hide: false,
 	},
 
-	test_cdm: {
-		product_key: "CDM",
-		label: "Cash Deposit Test",
-		desc: "Set Agent Pricing for Cash Deposit services",
-		// comp: "Cdm",
-		template: "standard",
-		icon: "money-deposit",
-		hide: false,
-	},
+	// test_cdm: {
+	// 	product_key: "CDM",
+	// 	label: "Cash Deposit Test",
+	// 	desc: "Set Agent Pricing for Cash Deposit services",
+	// 	// comp: "Cdm",
+	// 	template: "standard",
+	// 	icon: "money-deposit",
+	// 	hide: false,
+	// },
 };
 
 /**
@@ -236,7 +236,7 @@ export const product_categories: ProductCategoryMap = {
 			"upi-fund-transfer",
 			"validate-upi-id",
 			"cdm",
-			"test_cdm",
+			// "test_cdm",
 		],
 	},
 };
