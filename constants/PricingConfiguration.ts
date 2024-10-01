@@ -1,28 +1,53 @@
-/**
- * Map of product slugs to their respective details.
- * @typedef {object} ProductDetails
- * @property {string} label - The label of the product.
- * @property {string} desc - The description of the product.
- * @property {string} [note] - Additional notes about the product.
- * @property {string} [icon] - The icon representing the product.
- * @property {string} [template] - The component template to use for the product. Possible values: "fileupload", "standard", "custom". If "custom", the component name should be provided in the "comp" property.
- * @property {string} [comp] - The name of the component associated with the product (located at: page-components/Admin/PricingCommission/...).
- * @property {string} slug - The slug (url) identifying the product.
- * @property {boolean} hide - Whether to hide the product from the pricing & commission page.
- * @property {object} [meta] - Additional metadata for the product (depending on the template)
- */
+import { products } from "./ProductDetails";
 
 /**
- * Map containing details for various products identified by their slugs.
- * @type {Object.<string, ProductDetails>}
+ * Interface for product details.
  */
-export const product_slug_map = {
+interface ProductDetails {
+	/**
+	 * The key used to identify the product in the `constants/ProductDetails` file.
+	 * THis will help fetch additional product pricing config for this product from the ProductDetails file.
+	 */
+	product_key?: keyof typeof products;
+
+	/** The label of the product */
+	label: string;
+
+	/** The description of the product. */
+	desc: string;
+
+	/** Additional notes about the product. */
+	note?: string;
+
+	/** The icon representing the product. */
+	icon?: string;
+
+	/**
+	 * The component template to use for the product.
+	 * Possible values: "fileupload", "standard", "custom".
+	 * If "custom", the component name should be provided in the "comp" property.
+	 */
+	template?: "fileupload" | "standard" | "custom";
+
+	/** The name of the component associated with the product (located at: page-components/Admin/PricingCommission/...). */
+	comp?: string;
+
+	/** Additional metadata for the product (depending on the template). These are passed as props to the component (defined by `template` or `comp`) */
+	meta?: Record<string, any>;
+
+	/** Whether to hide the product from the pricing & commission page. Can be used to temporarily disable a product pricing for all users */
+	hide?: boolean;
+}
+
+/**
+ * Map of product slugs to their respective details.
+ */
+export const product_slug_map: Record<string, ProductDetails> = {
 	"commission-frequency": {
 		label: "Commission Frequency",
 		desc: "Toggle between Daily/Monthly Commissions within your network",
 		icon: "money-deposit",
 		comp: "CommissionFrequency",
-		slug: "commission-frequency",
 		hide: false,
 	},
 	"money-transfer": {
@@ -31,7 +56,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "cash",
 		comp: "Dmt",
-		slug: "money-transfer",
 		hide: false,
 	},
 	aeps: {
@@ -40,7 +64,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "cashout",
 		comp: "Aeps",
-		slug: "aeps",
 		hide: false,
 	},
 	"payment-gateway": {
@@ -48,7 +71,6 @@ export const product_slug_map = {
 		desc: "Set Agent Pricing for loading E-value using Credit/Debit Card (PG)",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "CardPayment",
-		slug: "payment-gateway",
 		hide: true,
 	},
 	"optional-verification": {
@@ -56,7 +78,6 @@ export const product_slug_map = {
 		desc: "Change Configuration for Recipient Bank Account Verification process",
 		icon: "playlist-add-check",
 		comp: "OptionalVerification",
-		slug: "optional-verification",
 		hide: false,
 	},
 	"account-verification": {
@@ -65,7 +86,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "money-note",
 		comp: "AccountVerification",
-		slug: "account-verification",
 		hide: false,
 	},
 	"credit-card-bill-payment": {
@@ -74,7 +94,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "creditcard",
 		comp: "CreditCardBillPayment",
-		slug: "credit-card-bill-payment",
 		hide: false,
 	},
 	"aadhaar-pay": {
@@ -83,7 +102,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "wallet",
 		comp: "AadhaarPay",
-		slug: "aadhaar-pay",
 		hide: false,
 	},
 	"indo-nepal-fund-transfer": {
@@ -92,7 +110,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "nepal",
 		comp: "IndoNepal",
-		slug: "indo-nepal-fund-transfer",
 		hide: false,
 	},
 	"airtel-cms": {
@@ -101,7 +118,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		template: "fileupload",
 		// comp: "AirtelCms",
-		slug: "airtel-cms",
 		hide: false,
 		meta: {
 			sampleFileDownloadParams: {
@@ -117,7 +133,6 @@ export const product_slug_map = {
 		desc: "Choose the Refund Method for failed transactions within your network",
 		comp: "RefundMethod",
 		icon: "money-deposit",
-		slug: "refund-method",
 		hide: false,
 	},
 	"cash-deposit": {
@@ -125,7 +140,6 @@ export const product_slug_map = {
 		desc: "Configure Cash Deposit services within your network",
 		comp: "ToggleCdm",
 		icon: "money-deposit",
-		slug: "cash-deposit",
 		hide: false,
 	},
 	"upi-money-transfer": {
@@ -134,7 +148,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "UpiMoneyTransfer",
 		icon: "upi",
-		slug: "upi-money-transfer",
 		hide: true,
 	},
 	"upi-fund-transfer": {
@@ -143,7 +156,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "UpiFundTransfer",
 		icon: "upi",
-		slug: "upi-fund-transfer",
 		hide: true,
 	},
 	"validate-upi-id": {
@@ -152,7 +164,6 @@ export const product_slug_map = {
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		comp: "ValidateUpiId",
 		icon: "upi",
-		slug: "validate-upi-id",
 		hide: true,
 	},
 	"qr-payment": {
@@ -160,39 +171,44 @@ export const product_slug_map = {
 		desc: "Set Agent Pricing for QR Payment services",
 		comp: "QrPayment",
 		icon: "qrcode",
-		slug: "qr-payment",
 		hide: false,
 	},
 	cdm: {
+		product_key: "CDM",
 		label: "Cash Deposit",
 		desc: "Set Agent Pricing for Cash Deposit services",
 		comp: "Cdm",
 		icon: "money-deposit",
-		slug: "cdm",
 		hide: false,
 	},
-	"payu-pg": {
-		label: "PayU Payment Gateway",
-		desc: "Set Agent Pricing for loading E-value using PayU Payment Gateway",
-		comp: "CardPaymentRetailer",
-		icon: "payu",
-		slug: "payu-pg",
-		hide: true,
+
+	test_cdm: {
+		product_key: "CDM",
+		label: "Cash Deposit Test",
+		desc: "Set Agent Pricing for Cash Deposit services",
+		// comp: "Cdm",
+		template: "standard",
+		icon: "money-deposit",
+		hide: false,
 	},
 };
 
 /**
- * Map of product categories to their associated slugs.
- * @typedef {object} ProductCategoryMap
- * @property {string[]} Product Configuration - Slugs associated with the "Product Configuration" category.
- * @property {string[]} Pricing Configuration - Slugs associated with the "Pricing Configuration" category.
+ * Interface for product category map.
  */
+interface ProductCategoryMap {
+	[category: string]: {
+		/** Short description of the product category. */
+		description: string;
+		/** List of product slugs associated with the category. */
+		products: (keyof typeof product_slug_map)[];
+	};
+}
 
 /**
- * Map containing product categories and their associated slugs.
- * @type {ProductCategoryMap}
+ * Define how products are categorized and visible on the Pricing & Commission page.
  */
-export const product_categories = {
+export const product_categories: ProductCategoryMap = {
 	"Product Configuration": {
 		description:
 			"Manage product settings and configurations for your network.",
@@ -220,6 +236,7 @@ export const product_categories = {
 			"upi-fund-transfer",
 			"validate-upi-id",
 			"cdm",
+			"test_cdm",
 		],
 	},
 };

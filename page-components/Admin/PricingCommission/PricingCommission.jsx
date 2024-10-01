@@ -83,24 +83,19 @@ const PricingCommission = () => {
 									}}
 								>
 									{products?.map((product) => {
-										const {
-											label,
-											desc,
-											icon,
-											slug,
-											hide,
-										} = product_slug_map[product] ?? {};
+										const { label, desc, icon, hide } =
+											product_slug_map[product] ?? {};
 
 										if (hide) return;
 
 										return (
 											<Card
-												key={slug}
+												key={product}
+												slug={product}
 												{...{
 													label,
 													desc,
 													icon,
-													slug,
 												}}
 											/>
 										);
