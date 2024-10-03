@@ -44,6 +44,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Feature to Raise Issues...
 	RAISE_ISSUE: {
 		enabled: true,
+		forAdminOnly: true,
 	},
 
 	// Face detector for images, videos, and live streams.
