@@ -1,7 +1,7 @@
 // Few pre-defined org-ids for configuring feature flags:
 // const ORG_ID = {
 // 	EKOSTORE: 1,
-// 	EKOTEST: 101, // SuperPay
+// 	EKOTEST: 101, // SuperPay (Production UAT)
 // 	SBIKIOSK: 287,
 // };
 
