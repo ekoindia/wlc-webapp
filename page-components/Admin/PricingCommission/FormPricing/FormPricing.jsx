@@ -15,8 +15,8 @@ const agent_type_list = [
 
 /**
  * The parent component to show pricing/commission form for Retailers and Distributors.
- * @param root0
- * @param root0.productDetails
+ * @param props
+ * @param props.productDetails
  */
 const FormPricing = ({ productDetails }) => {
 	const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILERS);
