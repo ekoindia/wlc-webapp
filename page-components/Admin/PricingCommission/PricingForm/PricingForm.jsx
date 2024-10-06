@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Flex, Text } from "@chakra-ui/react";
 import { Headings } from "components";
+import { PricingGrid } from "../PricingGrid";
 import { products, product_slug_map } from "constants";
 import dynamic from "next/dynamic";
 
@@ -18,8 +19,16 @@ const TemplateComponent = {
  * @param {string} prop.slug URL slug to identify the product for which pricing has to be configured
  */
 const PricingForm = ({ slug }) => {
-	const { product_key, label, comp, note, template, meta } =
-		product_slug_map[slug] ?? {};
+	const {
+		product_key,
+		label,
+		comp,
+		note,
+		template,
+		meta,
+		is_group,
+		products: group_products,
+	} = product_slug_map[slug] ?? {};
 
 	const componentName = useMemo(() => {
 		if (template && template in TemplateComponent) {
@@ -28,6 +37,24 @@ const PricingForm = ({ slug }) => {
 		return comp;
 	}, [template]);
 
+	// Reder the group of products
+	if (is_group && products) {
+		return (
+			<PricingPageHeader label={label} note={note}>
+				<PricingGrid product_list={group_products} sub_page />
+			</PricingPageHeader>
+		);
+	}
+
+	if (!componentName) {
+		return (
+			<Text color="error">
+				Error: Component not found for product-key: {slug}
+			</Text>
+		);
+	}
+
+	// Dynamically import the component, if available
 	const DynamicPageComponent = dynamic(
 		() =>
 			import(`../${componentName}`)
@@ -47,9 +74,35 @@ const PricingForm = ({ slug }) => {
 		}
 	);
 
-	const productDetails = product_key ? products[product_key] : null;
+	const productDetails =
+		product_key && product_key in products ? products[product_key] : null;
+
 	console.log("productDetails:: ", product_key, productDetails);
 
+	return (
+		<PricingPageHeader label={label} note={note}>
+			<Flex
+				direction="column"
+				px={{ base: "6", md: "8" }}
+				pt="6"
+				pb="8"
+				bg="white"
+				border="card"
+				boxShadow="basic"
+				borderRadius="10px"
+			>
+				<DynamicPageComponent
+					productDetails={productDetails}
+					{...meta}
+				/>
+			</Flex>
+		</PricingPageHeader>
+	);
+};
+
+export default PricingForm;
+
+const PricingPageHeader = ({ label, note, children }) => {
 	return (
 		<div>
 			<Headings title={label} />
@@ -67,24 +120,8 @@ const PricingForm = ({ slug }) => {
 						&nbsp; {note}
 					</Text>
 				) : null}
-				<Flex
-					direction="column"
-					px={{ base: "6", md: "8" }}
-					pt="6"
-					pb="8"
-					bg="white"
-					border="card"
-					boxShadow="basic"
-					borderRadius="10px"
-				>
-					<DynamicPageComponent
-						productDetails={productDetails}
-						{...meta}
-					/>
-				</Flex>
+				{children}
 			</Flex>
 		</div>
 	);
 };
-
-export default PricingForm;
