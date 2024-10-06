@@ -1,9 +1,9 @@
 // Few pre-defined org-ids for configuring feature flags:
-const ORG_ID = {
-	EKOSTORE: 1,
-	EKOTEST: 101, // SuperPay
-	SBIKIOSK: 287,
-};
+// const ORG_ID = {
+// 	EKOSTORE: 1,
+// 	EKOTEST: 101, // SuperPay (Production UAT)
+// 	SBIKIOSK: 287,
+// };
 
 /**
  * Note: This file is used to enable or disable features in the application.
@@ -45,18 +45,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	RAISE_ISSUE: {
 		enabled: true,
 		forAdminOnly: true,
-		envConstraints: {
-			// development: {
-			// 	// forUserId: ["1234"],
-			// 	forOrgId: [3],
-			// },
-			staging: {
-				forOrgId: [3],
-			},
-			production: {
-				forOrgId: [ORG_ID.EKOTEST, ORG_ID.SBIKIOSK /*, 259 */], // 259 = VijayPay
-			},
-		},
 	},
 
 	// Face detector for images, videos, and live streams.

@@ -464,3 +464,58 @@ export const productPricingType = {
 	QR_PAYMENT: productPricingTextConfig.PRICING,
 	CDM: productPricingTextConfig.PRICING,
 };
+
+// TODO: WIP Type Definitions for converting to Typescript
+/**
+ * Interface for setting min/max range
+ */
+// interface Range {
+// 	min: number;
+// 	max: number;
+// }
+
+/**
+ * Interface for setting min/max range for pricing and commission
+ */
+// interface PriceRange {
+// 	fixed: Range | false;
+// 	percentage: Range | false;
+// }
+
+/**
+ * Interface for Validation details
+ */
+// interface Validation {
+// 	PRICING: PriceRange;
+// 	COMMISSION?: PriceRange;
+// }
+
+/**
+ * Interface for a pricing Slab
+ */
+// interface Slab {
+// 	min: number;
+// 	max: number;
+// 	validation: Validation;
+// }
+
+/**
+ * Interface for Product details
+ */
+// interface Product {
+// 	uriSegment: string;
+// 	slabs?: Slab[];
+// 	DEFAULT: {
+// 		operation_type: string;
+// 		pricing_type?: string;
+// 		payment_mode?: string;
+// 	};
+// 	serviceCode?: number | number[];
+// }
+
+/**
+ * Interface for Products object
+ */
+// interface Products {
+// 	[key: string]: Product;
+// }

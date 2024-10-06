@@ -1,28 +1,108 @@
+import { useMemo } from "react";
 import { Flex, Text } from "@chakra-ui/react";
 import { Headings } from "components";
+import { PricingGrid } from "../PricingGrid";
+import { products, product_slug_map } from "constants";
 import dynamic from "next/dynamic";
+
+/**
+ * Map template to the component name
+ */
+const TemplateComponent = {
+	fileupload: "FormFileUpload",
+	standard: "FormPricing",
+};
 
 /**
  * A <PricingForm> component
  * @param {object} prop Properties passed to the component
- * @param {string} prop.label Label to be displayed on the page
- * @param {string} prop.comp Component to be displayed on the page
- * @param {string} prop.note Note to be displayed on the page
- * @param {object} [prop.meta] Additional metadata for the page
+ * @param {string} prop.slug URL slug to identify the product for which pricing has to be configured
  */
-const PricingForm = ({ label, comp, note, meta }) => {
-	const _pageComponent = comp;
+const PricingForm = ({ slug }) => {
+	const {
+		product_key,
+		label,
+		comp,
+		note,
+		template,
+		meta,
+		is_group,
+		products: group_products,
+	} = product_slug_map[slug] ?? {};
 
+	const componentName = useMemo(() => {
+		if (template && template in TemplateComponent) {
+			return TemplateComponent[template];
+		}
+		return comp;
+	}, [template]);
+
+	// Reder the group of products
+	if (is_group && products) {
+		return (
+			<PricingPageHeader label={label} note={note}>
+				<PricingGrid product_list={group_products} sub_page />
+			</PricingPageHeader>
+		);
+	}
+
+	if (!componentName) {
+		return (
+			<Text color="error">
+				Error: Component not found for product-key: {slug}
+			</Text>
+		);
+	}
+
+	// Dynamically import the component, if available
 	const DynamicPageComponent = dynamic(
 		() =>
-			import(`../${_pageComponent}`).then((mod) => {
-				return mod[_pageComponent];
-			}),
+			import(`../${componentName}`)
+				.then((_mod) => {
+					return _mod[componentName];
+				})
+				.catch((err) => {
+					console.error(
+						"Error loading component: ",
+						componentName,
+						err
+					);
+					return null;
+				}),
 		{
 			ssr: false,
 		}
 	);
 
+	const productDetails =
+		product_key && product_key in products ? products[product_key] : null;
+
+	console.log("productDetails:: ", product_key, productDetails);
+
+	return (
+		<PricingPageHeader label={label} note={note}>
+			<Flex
+				direction="column"
+				px={{ base: "6", md: "8" }}
+				pt="6"
+				pb="8"
+				bg="white"
+				border="card"
+				boxShadow="basic"
+				borderRadius="10px"
+			>
+				<DynamicPageComponent
+					productDetails={productDetails}
+					{...meta}
+				/>
+			</Flex>
+		</PricingPageHeader>
+	);
+};
+
+export default PricingForm;
+
+const PricingPageHeader = ({ label, note, children }) => {
 	return (
 		<div>
 			<Headings title={label} />
@@ -40,21 +120,8 @@ const PricingForm = ({ label, comp, note, meta }) => {
 						&nbsp; {note}
 					</Text>
 				) : null}
-				<Flex
-					direction="column"
-					px={{ base: "6", md: "8" }}
-					pt="6"
-					pb="8"
-					bg="white"
-					border="card"
-					boxShadow="basic"
-					borderRadius="10px"
-				>
-					<DynamicPageComponent {...meta} />
-				</Flex>
+				{children}
 			</Flex>
 		</div>
 	);
 };
-
-export default PricingForm;
