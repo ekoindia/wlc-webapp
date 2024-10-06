@@ -9,6 +9,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
+/*
+	TODO:
+		- Multi-select agent list:
+			- Show as table with following columns: agent type, agent code, agent name, agent mobile, city, state
+			- Download the full list only once (in the PricingConfiguration main page component) and filter as needed. Also, cache & share the same list with all pricing configuration sub-components.
+*/
+
 const AGENT_TYPE = {
 	RETAILERS: "0",
 	DISTRIBUTOR: "2",
@@ -125,6 +132,7 @@ const FormSetPricingSlug = ({ agentType, productDetails }) => {
 			min != undefined ? " - " : ""
 		}Maximum: ${prefix}${max}${suffix}`;
 
+	// Create a list of form parameters based on product, agent-type, and operation-type selected.
 	const parameter_list = useMemo(() => {
 		const _list = [];
 
@@ -136,7 +144,6 @@ const FormSetPricingSlug = ({ agentType, productDetails }) => {
 					label: `Set ${productPricingType.DMT} for`,
 					parameter_type_id: ParamType.LIST,
 					list_elements: operation_type_list,
-					// defaultValue: DEFAULT.operation_type,
 				},
 				{
 					name: "CspList",
@@ -174,32 +181,6 @@ const FormSetPricingSlug = ({ agentType, productDetails }) => {
 		}
 
 		_list.push(
-			// {
-			// 	name: "operation_type",
-			// 	label: `Set ${productPricingType.DMT} for`,
-			// 	parameter_type_id: ParamType.LIST,
-			// 	list_elements: operation_type_list,
-			// 	// defaultValue: DEFAULT.operation_type,
-			// },
-			// {
-			// 	name: "CspList",
-			// 	label: `Select ${multiSelectLabel}`,
-			// 	parameter_type_id: ParamType.LIST,
-			// 	is_multi: true,
-			// 	list_elements: multiSelectOptions,
-			// 	visible_on_param_name: "operation_type",
-			// 	visible_on_param_value: /1|2/,
-			// 	multiSelectRenderer: _multiselectRenderer,
-			// },
-			// {
-			// 	name: "select",
-			// 	label: "Select Slab",
-			// 	parameter_type_id: ParamType.LIST,
-			// 	list_elements: slabOptions,
-			// 	meta: {
-			// 		force_dropdown: true,
-			// 	},
-			// },
 			{
 				name: "pricing_type",
 				label: `Select ${productPricingType.DMT} Type`,
@@ -240,6 +221,7 @@ const FormSetPricingSlug = ({ agentType, productDetails }) => {
 		validation,
 	]);
 
+	// Button configurations for the form
 	const buttonConfigList = [
 		{
 			type: "submit",
@@ -285,6 +267,7 @@ const FormSetPricingSlug = ({ agentType, productDetails }) => {
 	// Fetch the list of agents (retailers, distributors, or both) based on the agent-type and operation-type selected.
 	useEffect(() => {
 		// TODO: CACHE AGENT LIST
+		// TODO: Download full agent list only once and filter as needed
 
 		// Reset agent-list before fetching
 		setMultiSelectOptions([]);
@@ -382,6 +365,7 @@ const FormSetPricingSlug = ({ agentType, productDetails }) => {
 		}
 	}, [watcher?.pricing_type, watcher?.select?.value]);
 
+	// Reset form values after successful submission
 	useEffect(() => {
 		if (isSubmitSuccessful) {
 			reset(watcher);
@@ -391,6 +375,8 @@ const FormSetPricingSlug = ({ agentType, productDetails }) => {
 		}
 	}, [isSubmitSuccessful, isValid]);
 
+	// Function to handle form submit
+	// MARK: Form Submit
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
@@ -408,17 +394,38 @@ const FormSetPricingSlug = ({ agentType, productDetails }) => {
 
 		delete _finalData.select;
 
+		const requestOptions = uriSegment
+			? {
+					headers: {
+						"tf-req-uri-root-path": "/ekoicici/v1",
+						"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
+						"tf-req-method": "POST",
+					},
+					body: {
+						operation_type: watcher.operation_type,
+						operation: OPERATION.SUBMIT,
+						..._finalData,
+					},
+				}
+			: {
+					body: {
+						interaction_type_id:
+							TransactionTypes.SET_COMMISSION_FOR_DISTRIBUTORS,
+						// communication: 1,
+						..._finalData,
+					},
+				};
+
+		if (service_code) {
+			requestOptions.body.service_code = service_code;
+		}
+
+		if (agentType === AGENT_TYPE.DISTRIBUTOR) {
+			requestOptions.body.communication = 1;
+		}
+
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `/network/pricing_commissions/${uriSegment}`,
-				"tf-req-method": "POST",
-			},
-			body: {
-				operation_type: watcher.operation_type,
-				operation: OPERATION.SUBMIT,
-				..._finalData,
-			},
+			...requestOptions,
 			token: accessToken,
 			generateNewToken,
 		})
@@ -436,6 +443,7 @@ const FormSetPricingSlug = ({ agentType, productDetails }) => {
 			});
 	};
 
+	// MARK: Render Form
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
 			<Flex direction="column" gap="8">
