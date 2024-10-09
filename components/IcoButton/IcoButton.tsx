@@ -6,7 +6,7 @@ type IcoButtonProps = {
 	size?: "lg" | "md" | "sm" | "xs" | string;
 	iconSize?: string;
 	iconStyle?: Object;
-	theme?: "dark" | "light" | "gray" | "primary" | "accent";
+	theme?: "dark" | "light" | "gray" | "primary" | "accent" | "ghost";
 	rounded?: "full" | string | number;
 	title?: string;
 	onClick?: () => void;
@@ -110,7 +110,12 @@ const IcoButton = ({
 									bg: "accent.DEFAULT",
 									color: "white",
 								}
-							: null;
+							: theme === "ghost"
+								? {
+										bg: "transparent",
+										color: "dark",
+									}
+								: null;
 
 	return (
 		<Center

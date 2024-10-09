@@ -21,7 +21,7 @@ import {
 import useRefreshToken from "hooks/useRefreshToken";
 import { initializeTextClassifier } from "libs";
 import { useEffect, useRef, useState } from "react";
-import { RiScreenshot2Line } from "react-icons/ri";
+import { RiScreenshot2Line, RiCheckboxCircleFill } from "react-icons/ri";
 import Markdown from "react-markdown";
 
 // MARK: Constants
@@ -46,6 +46,15 @@ const GENERIC_ISSUE_TYPE = {
  * Comment Type
  */
 const COMMENT_TYPE = {
+	DISABLED: -1,
+	OPTIONAL: 0,
+	MANDATORY: 1,
+};
+
+/**
+ * Screenshot capture type
+ */
+const SCREENSHOT_TYPE = {
 	DISABLED: -1,
 	OPTIONAL: 0,
 	MANDATORY: 1,
@@ -123,7 +132,8 @@ const RaiseIssueCard = ({
 	const toast = useToast();
 
 	// User/Session data...
-	const { accessToken, userData, isLoggedIn } = useUser();
+	const { accessToken, userData, isLoggedIn, isAdmin, isAdminAgentMode } =
+		useUser();
 	const { generateNewToken } = useRefreshToken();
 	const onboarding = userData?.user_details?.onboarding || 0; // Is the user onboarding?
 
@@ -316,6 +326,7 @@ const RaiseIssueCard = ({
 					operator: operator || "",
 					partner_id: partner_id || "",
 					channel: channel || "",
+					is_admin: isAdmin && !isAdminAgentMode ? 1 : 0,
 				},
 				controller: controller,
 				token: accessToken,
@@ -478,12 +489,6 @@ const RaiseIssueCard = ({
 	const submitFeedback = () => {
 		if (!(isLoggedIn && userData)) return;
 
-		// Validate the form...
-		if (!selectedIssue) {
-			console.error("[RaiseIssue] No issue selected...");
-			return;
-		}
-
 		// Is the form-submit already in progress?
 		if (submittingFeedback) {
 			toast({
@@ -497,6 +502,16 @@ const RaiseIssueCard = ({
 			return;
 		}
 
+		// Submit the feedback...
+		setSubmittingFeedback(true);
+
+		// Validate the form...
+		if (!selectedIssue) {
+			console.error("[RaiseIssue] No issue selected...");
+			setSubmittingFeedback(false);
+			return;
+		}
+
 		// Validate the inputs...
 		if (issueInputList.some((input) => input.is_required && !input.value)) {
 			toast({
@@ -505,6 +520,7 @@ const RaiseIssueCard = ({
 				duration: 2000,
 			});
 			console.error("[RaiseIssue] Required input missing...");
+			setSubmittingFeedback(false);
 			return;
 		}
 
@@ -520,6 +536,7 @@ const RaiseIssueCard = ({
 				selectedIssue,
 				comment
 			);
+			setSubmittingFeedback(false);
 			return;
 		}
 
@@ -531,6 +548,7 @@ const RaiseIssueCard = ({
 				duration: 2000,
 			});
 			console.error("[RaiseIssue] Required files missing...");
+			setSubmittingFeedback(false);
 			return;
 		}
 
@@ -542,8 +560,6 @@ const RaiseIssueCard = ({
 				? GENERIC_ISSUE_TYPE.ONBOARDING
 				: GENERIC_ISSUE_TYPE.DEFAULT);
 
-		// Submit the feedback...
-		setSubmittingFeedback(true);
 		createSupportTicket({
 			accessToken,
 			summary: selectedIssue.label,
@@ -566,24 +582,40 @@ const RaiseIssueCard = ({
 		})
 			.then((data) => {
 				console.log("[RaiseIssue] feedback submit result...", data);
-				setFeedbackSubmitResponse({
-					message: data?.message || "Submitted successfully.",
-					ticket_id: data?.data?.feedback_ticket_id || "",
-				});
-				setFeedbackDone(true);
-				onResult &&
-					onResult({
-						success: true,
-						feedback_ticket_id:
-							data?.data?.feedback_ticket_id || "",
-						context: context, // eg: { row_index: X }
+
+				const isSuccess =
+					data?.status === 0 && data?.data?.feedback_ticket_id
+						? true
+						: false;
+
+				if (isSuccess) {
+					setFeedbackSubmitResponse({
+						message: data?.message || "Submitted successfully.",
+						ticket_id: data?.data?.feedback_ticket_id || "",
 					});
+					setFeedbackDone(true);
+					onResult &&
+						onResult({
+							success: isSuccess,
+							feedback_ticket_id:
+								data?.data?.feedback_ticket_id || "",
+							message: data?.message || "",
+							context: context, // eg: { row_index: X }
+						});
+				} else {
+					setIsFormSubmitError(true);
+					toast({
+						title: data?.message || "Error creating ticket",
+						status: "error",
+						duration: 2000,
+					});
+				}
 			})
 			.catch((err) => {
 				console.error("[RaiseIssue] feedback submit error: ", err);
 				setIsFormSubmitError(true);
 				toast({
-					title: "Error submitting feedback. Please try again later.",
+					title: "Error creating ticket. Please try again later.",
 					status: "error",
 					duration: 2000,
 				});
@@ -650,6 +682,7 @@ const RaiseIssueCard = ({
 					}
 					categoryList={categoryList}
 					selectedId={selectedCat}
+					disabled={disableInputs}
 					onSelect={(cat) => {
 						setSelectedIssue(null); // Clear issue-type selection
 						setSelectedSubCat(null); // Clear sub-category selection
@@ -668,6 +701,7 @@ const RaiseIssueCard = ({
 						}
 						categoryList={categoryMap[selectedCat]?.subcat_list}
 						selectedId={selectedSubCat}
+						disabled={disableInputs}
 						onSelect={(cat) => {
 							setSelectedIssue(null); // Clear issue-type selection
 							setSelectedSubCat(cat === null ? null : cat.id); // Set sub-category selection
@@ -708,6 +742,7 @@ const RaiseIssueCard = ({
 						selectedId={selectedIssue?.label || null}
 						idKey="label"
 						labelKey="label"
+						disabled={disableInputs}
 						onSelect={(issue) => {
 							setSelectedIssue(issue);
 							// console.log("SELECTED ISSUE::: ", issue);
@@ -757,6 +792,7 @@ const RaiseIssueCard = ({
 										key={index}
 										mb={4}
 										maxW={{ base: "100%", md: "350px" }}
+										hidden={feedbackDone}
 									>
 										<InputLabel
 											required={input.is_required}
@@ -806,6 +842,7 @@ const RaiseIssueCard = ({
 										key={index}
 										mb={4}
 										maxW={{ base: "100%", md: "350px" }}
+										hidden={feedbackDone}
 									>
 										<InputLabel required={file.is_required}>
 											{file.label}
@@ -844,15 +881,25 @@ const RaiseIssueCard = ({
 						) : null}
 
 						{/* Show option to capture screenshot */}
-						<Box mb={4} maxW={{ base: "100%", md: "350px" }}>
-							<Screenshot
-								screenshot={screenshot}
-								autoCaptureScreenshot={autoCaptureScreenshot}
-								onCapture={setScreenshot}
-								onHide={onHide}
-								onShow={onShow}
-							/>
-						</Box>
+						{selectedIssue.screenshot ===
+						SCREENSHOT_TYPE.DISABLED ? null : (
+							<Box
+								mb={4}
+								maxW={{ base: "100%", md: "350px" }}
+								hidden={feedbackDone}
+							>
+								<Screenshot
+									screenshot={screenshot}
+									autoCaptureScreenshot={
+										autoCaptureScreenshot
+									}
+									disabled={disableInputs}
+									onCapture={setScreenshot}
+									onHide={onHide}
+									onShow={onShow}
+								/>
+							</Box>
+						)}
 
 						{/* Show a multi-line input to capture user comment & the submit button */}
 						{isUserFeedbackRequired ? (
@@ -863,6 +910,7 @@ const RaiseIssueCard = ({
 									<Box
 										mb={4}
 										maxW={{ base: "100%", md: "350px" }}
+										hidden={feedbackDone}
 									>
 										<InputLabel
 											required={
@@ -906,7 +954,7 @@ const RaiseIssueCard = ({
 								) : null}
 
 								{/* Show the submit button */}
-								<Box mt={4}>
+								<Box mt={4} hidden={feedbackDone}>
 									<Button
 										variant="accent"
 										size="lg"
@@ -944,25 +992,47 @@ const RaiseIssueCard = ({
 								{/* Show the feedback submit response */}
 								{feedbackDone && feedbackSubmitResponse ? (
 									<Box mt={4}>
-										<Text
-											fontSize="sm"
-											fontWeight="medium"
-											color="success"
-										>
-											{feedbackSubmitResponse.message}
-										</Text>
-										{feedbackSubmitResponse.ticket_id ? (
-											<Text
-												fontSize="sm"
-												fontWeight="medium"
-												color="success"
+										<Flex direction="row">
+											<RiCheckboxCircleFill
+												size="48px"
+												color="green"
+												opacity="0.6"
+											/>
+											<Box ml="1em">
+												<Text
+													fontSize="lg"
+													color="#555"
+												>
+													{
+														feedbackSubmitResponse.message
+													}
+												</Text>
+												{feedbackSubmitResponse.ticket_id ? (
+													<Text
+														fontSize="sm"
+														color="gray.600"
+													>
+														Ticket ID:{" "}
+														{
+															feedbackSubmitResponse.ticket_id
+														}
+													</Text>
+												) : null}
+											</Box>
+										</Flex>
+
+										{/* Show the close button after form submit */}
+										<Box mt="3em">
+											<Button
+												variant="accent"
+												size="lg"
+												onClick={() => {
+													onClose && onClose();
+												}}
 											>
-												Ticket ID:{" "}
-												{
-													feedbackSubmitResponse.ticket_id
-												}
-											</Text>
-										) : null}
+												Close
+											</Button>
+										</Box>
 									</Box>
 								) : null}
 							</>
@@ -1082,6 +1152,7 @@ const Card = ({
  * @param {number|string} props.selectedId - ID of the selected category.
  * @param {string} [props.idKey] - Key to use for the category ID (default: "id").
  * @param {string} [props.labelKey] - Key to use for the category title (default: "title").
+ * @param {boolean} [props.disabled] - Whether the category list is disabled (default: false).
  * @param {Function} props.onSelect - Function to call when a category is selected. It receives the selected category object as an argument.
  * @param {...*} rest - Rest of the props for the outer container.
  * @returns {JSX.Element} - A list of categories to select from.
@@ -1093,6 +1164,7 @@ const CategoryList = ({
 	selectedId,
 	idKey = "id",
 	labelKey = "title",
+	disabled = false,
 	onSelect,
 	...rest
 }: {
@@ -1102,6 +1174,7 @@ const CategoryList = ({
 	selectedId: number | string;
 	idKey?: string;
 	labelKey?: string;
+	disabled?: boolean;
 	onSelect: Function;
 }) => {
 	// Hide the list of categories, if only one item available
@@ -1117,7 +1190,15 @@ const CategoryList = ({
 			return (
 				<Box mb={8} {...rest}>
 					<Label>{label}</Label>
-					<Flex direction="row" w="full" gap={2} wrap="wrap">
+					<Flex
+						direction="row"
+						w="full"
+						gap={2}
+						wrap="wrap"
+						cursor={disabled ? "default" : "pointer"}
+						pointerEvents={disabled ? "none" : "auto"}
+						opacity={disabled ? 0.5 : 1}
+					>
 						<CategoryButton isSelected>
 							{_selectedCat[labelKey]}
 						</CategoryButton>
@@ -1135,7 +1216,15 @@ const CategoryList = ({
 	return (
 		<Box mb={8} {...rest}>
 			<Label>{label}</Label>
-			<Flex direction="row" w="full" gap={2} wrap="wrap">
+			<Flex
+				direction="row"
+				w="full"
+				gap={2}
+				wrap="wrap"
+				cursor={disabled ? "default" : "pointer"}
+				pointerEvents={disabled ? "none" : "auto"}
+				opacity={disabled ? 0.5 : 1}
+			>
 				{categoryList.map((cat: object) => (
 					<div key={cat[idKey]}>
 						<CategoryButton
@@ -1217,6 +1306,7 @@ const CategoryButton = ({
  * @param {object} props - Properties passed to the component.
  * @param {string} props.screenshot - The screenshot image data.
  * @param {boolean} [props.autoCaptureScreenshot] - Whether to automatically capture the screenshot (default: false).
+ * @param {boolean} [props.disabled] - Whether the screenshot capture is disabled (default: false).
  * @param {Function} props.onCapture - Function to call when the screenshot is captured.
  * @param {Function} props.onHide - Function to call to temporarily hide the Raise Query dialog so that the screenshot can be taken.
  * @param {Function} props.onShow - Function to call to show the Raise Query dialog after the screenshot is taken.
@@ -1224,6 +1314,7 @@ const CategoryButton = ({
 const Screenshot = ({
 	screenshot,
 	autoCaptureScreenshot = false,
+	disabled,
 	onCapture,
 	onHide,
 	onShow,
@@ -1240,28 +1331,36 @@ const Screenshot = ({
 	const { editImage } = useImageEditor();
 	const [originalCapture, setOriginalCapture] = useState<string | null>(null);
 	const [edited, setEdited] = useState(false);
-	const [screenshotCaptureAttempted, setScreenshotCaptureAttempted] =
-		useState(false);
+	const autoCaptureAttempted = useRef(false);
+
+	const DISABLE_EDIT = true;
 
 	// Auto-capture screenshot...
 	useEffect(() => {
-		if (autoCaptureScreenshot && !screenshotCaptureAttempted) {
-			setScreenshotCaptureAttempted(true);
+		console.log("Auto-capture screenshot 1: ", autoCaptureScreenshot);
+
+		if (autoCaptureScreenshot && !autoCaptureAttempted.current) {
+			autoCaptureAttempted.current = true;
 			captureScreen();
 		}
-	}, [autoCaptureScreenshot, screenshotCaptureAttempted]);
+	}, [autoCaptureScreenshot, autoCaptureAttempted]);
 
 	// Edit/crop screenshot when captured...
 	useEffect(() => {
 		if (originalCapture && !edited) {
-			editImage(originalCapture, null, (data) => {
-				if (data?.accepted && data?.image) {
-					onCapture && onCapture(data.image);
-					setEdited(true);
-				} else {
-					setOriginalCapture(null);
-				}
-			});
+			if (DISABLE_EDIT) {
+				onCapture && onCapture(originalCapture);
+				setEdited(true);
+			} else {
+				editImage(originalCapture, null, (data) => {
+					if (data?.accepted && data?.image) {
+						onCapture && onCapture(data.image);
+						setEdited(true);
+					} else {
+						setOriginalCapture(null);
+					}
+				});
+			}
 		}
 	}, [edited, originalCapture, onCapture]);
 
@@ -1281,6 +1380,9 @@ const Screenshot = ({
 	};
 
 	const captureScreen = () => {
+		if (disabled) {
+			return;
+		}
 		onHide();
 		navigator.mediaDevices.getDisplayMedia(DisplayMediaOptions as any).then(
 			(stream) => {
@@ -1346,9 +1448,9 @@ const Screenshot = ({
 			color="light"
 			p="5"
 			{...rest}
-			// cursor={disabled ? "default" : "pointer"}
-			// pointerEvents={disabled ? "none" : "auto"}
-			// opacity={disabled ? 0.5 : 1}
+			cursor={disabled ? "default" : "pointer"}
+			pointerEvents={disabled ? "none" : "auto"}
+			opacity={disabled ? 0.5 : 1}
 		>
 			{/* Hidden video element */}
 			<video
@@ -1360,13 +1462,14 @@ const Screenshot = ({
 				height="auto"
 				onLoadedData={captureFrame}
 				style={{
-					position: "absolute",
+					position: "fixed",
 					top: 0,
 					left: 0,
 					maxWidth: "90%",
 					maxHeight: "90%",
 					zIndex: "-9999",
 					pointerEvents: "none",
+					opacity: 0,
 				}}
 			/>
 
@@ -1403,9 +1506,13 @@ const Screenshot = ({
 			) : null}
 
 			{screenshot ? null : (
-				<Button variant="primary" onClick={captureScreen}>
+				<Button
+					variant="primary"
+					onClick={captureScreen}
+					opacity={disabled ? 0.4 : 1}
+				>
 					<RiScreenshot2Line size="24px" />
-					&nbsp; Add Screenshot
+					&nbsp; Capture Screenshot
 				</Button>
 			)}
 		</Flex>
@@ -1484,37 +1591,53 @@ interface IssueType {
 	 * Value of the issue (visible to the support team as the issue sub-sub-type or label)
 	 */
 	value: string;
+
 	/**
 	 * Label of the issue (visible to the user as the issue type). If not provided, `value` is used.
 	 */
 	label?: string;
+
 	/**
 	 * Additional description of the issue
 	 */
 	desc?: string;
+
 	/**
 	 * Time after which the issue can be raised. Eg: "0d", "1d", "2d", etc.
 	 */
 	raise_issue_after?: string;
+
 	/**
 	 * Number of days within which the issue is expected to be resolved. Eg: "0", "1", "2", etc.
 	 */
 	tat?: string;
+
 	/**
 	 * Number of days within which the issue is expected to be resolved, if reopened. Eg: "0", "1", "2", etc.
 	 */
 	reopened_tat?: string;
+
 	/**
 	 * Whether to allow comments while raising the issue. -1: Disabled, 0: Optional, 1: Mandatory
 	 * @default 0
 	 */
 	comment?: -1 | 0 | 1;
+
+	/**
+	 * Type of screenshot capture: -1 = Disabled, 0 = Optional, 1 = Mandatory
+	 * @default 0
+	 */
+	screenshot?: -1 | 0 | 1;
+
 	category: { id: number; title: string };
+
 	sub_category: { id: number; title: string };
+
 	/**
 	 * Optional array of Inputs to be captured from the user. Each input is an object with properties `label`, `type`, `length_min`, `length_max` & `is_required`.
 	 */
 	inputs?: IssueInputType[];
+
 	/**
 	 * Optional array of file-upload fields to be captured from the user. Each field is an object with properties `label` & `is_required`.
 	 */

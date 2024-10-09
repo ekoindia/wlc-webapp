@@ -9,6 +9,31 @@ import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
+const fee_type_list = [
+	{ value: "1", label: "Transaction" },
+	{ value: "2", label: "Settlement Type" },
+];
+
+const payment_mode_list = [
+	{ value: "4", label: "Debit Card" },
+	{ value: "3", label: "Credit Card" },
+	{ value: "2", label: "Net Banking" },
+	{ value: "1", label: "UPI" },
+];
+
+const card_type_list = [
+	{ value: "4", label: "Visa" },
+	{ value: "3", label: "Rupay" },
+	{ value: "2", label: "Mastercard" },
+	{ value: "1", label: "Amex" },
+	{ value: "0", label: "Diner" },
+];
+
+const settlement_type_list = [
+	{ value: "3", label: "Instant" },
+	{ value: "2", label: "T + 1" },
+];
+
 const operation_type_list = [
 	{ value: "3", label: "Whole Network" },
 	{ value: "2", label: "Distributor's Network" },
@@ -54,8 +79,8 @@ const getStatus = (status) => {
 	}
 };
 
-const AepsRetailer = () => {
-	const { uriSegment, slabs, DEFAULT } = products.AEPS;
+const CardPaymentRetailer = () => {
+	const { uriSegment, slabs /* DEFAULT */ } = products.CARD_PAYMENT;
 
 	const {
 		handleSubmit,
@@ -73,13 +98,19 @@ const AepsRetailer = () => {
 	} = useForm({
 		mode: "onChange",
 		defaultValues: {
-			operation_type: DEFAULT.operation_type,
+			// operation_type: DEFAULT.operation_type,
+			fee_type: "1",
+			payment_mode: "",
+			select: { value: "0", label: "₹100 - ₹200000" },
 		},
 	});
 
 	const watcher = useWatch({
 		control,
 	});
+	console.log("Watcher Values:", watcher);
+
+	// const shouldShowCardType = watcher.fee_type === "1" && watcher.payment_mode?.value === "4";
 
 	const toast = useToast();
 	const router = useRouter();
@@ -111,10 +142,42 @@ const AepsRetailer = () => {
 			min != undefined ? " - " : ""
 		}Maximum: ${prefix}${max}${suffix}`;
 
-	const aeps_retailer_parameter_list = [
+	const card_payment_retailer_parameter_list = [
+		{
+			name: "fee_type",
+			label: "Select Transaction Type",
+			parameter_type_id: ParamType.LIST,
+			list_elements: fee_type_list,
+		},
+		{
+			name: "payment_mode",
+			label: "Select Payment Mode",
+			parameter_type_id: ParamType.LIST,
+			list_elements: payment_mode_list,
+			visible_on_param_name: "fee_type",
+			visible_on_param_value: /1/,
+		},
+		{
+			name: "settlement_type",
+			label: "Select Settlement Type",
+			parameter_type_id: ParamType.LIST,
+			list_elements: settlement_type_list,
+			visible_on_param_name: "fee_type",
+			visible_on_param_value: /^(?!1$)/,
+		},
+
+		{
+			name: "card_type",
+			label: "Select Card Type",
+			parameter_type_id: ParamType.LIST,
+			list_elements: card_type_list,
+			visible:
+				watcher.fee_type === "1" && watcher.payment_mode?.value === "4",
+		},
+
 		{
 			name: "operation_type",
-			label: `Set ${productPricingType.DMT} for`,
+			label: `Set ${productPricingType.CARD_PAYMENT} for`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: operation_type_list,
 			// defaultValue: DEFAULT.operation_type,
@@ -140,14 +203,14 @@ const AepsRetailer = () => {
 		},
 		{
 			name: "pricing_type",
-			label: `Select ${productPricingType.AEPS} Type`,
+			label: `Select ${productPricingType.CARD_PAYMENT} Type`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: pricingTypeList,
 			// defaultValue: DEFAULT.pricing_type,
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.AEPS} (Exclusive of GST)`,
+			label: `Define ${productPricingType.CARD_PAYMENT} (Exclusive of GST)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {
@@ -167,7 +230,7 @@ const AepsRetailer = () => {
 				/>
 			),
 		},
-	];
+	].filter((param) => param.visible !== false);
 
 	const buttonConfigList = [
 		{
@@ -191,6 +254,11 @@ const AepsRetailer = () => {
 			},
 		},
 	];
+
+	useEffect(() => {
+		console.log("Fee Type:", watcher.fee_type);
+		console.log("Payment Mode:", watcher.payment_mode);
+	}, [watcher.fee_type, watcher.payment_mode]);
 
 	useEffect(() => {
 		const list = [];
@@ -358,10 +426,10 @@ const AepsRetailer = () => {
 			<Flex direction="column" gap="8">
 				<Form
 					{...{
-						parameter_list: aeps_retailer_parameter_list,
-						formValues: watcher,
-						control,
+						parameter_list: card_payment_retailer_parameter_list,
 						register,
+						control,
+						formValues: watcher,
 						errors,
 					}}
 				/>
@@ -372,4 +440,4 @@ const AepsRetailer = () => {
 	);
 };
 
-export default AepsRetailer;
+export default CardPaymentRetailer;

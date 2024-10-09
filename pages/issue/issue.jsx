@@ -17,6 +17,6 @@ IssuePage.pageMeta = {
 };
 
 // Use a diferent layout, if needed...
-// Issue.getLayout = (page) => <LayoutLogin>{page}</LayoutLogin>;
+// Issue.getLayout = LayoutLogin;
 
 export default IssuePage;

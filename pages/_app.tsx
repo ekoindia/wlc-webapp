@@ -21,9 +21,9 @@ import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
 import { Layout } from "layout-components";
 import App from "next/app";
 // import { Inter } from "next/font/google";
+import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import Head from "next/head";
 import { SWRConfig } from "swr";
-import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import { light } from "../styles/themes";
 
 // Variable Font
@@ -165,17 +165,18 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	// Get standard or custom Layout for the page...
 	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx). Eg: See the login page (pages/index.tsx)
 	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
-	const getLayout =
-		Component.getLayout ||
-		((page) => (
-			<Layout
+	const getLayout = (page) => {
+		const CurrentLayout = Component.getLayout || Layout;
+		return (
+			<CurrentLayout
 				// fontClassName={inter.className}
 				appName={org?.app_name}
 				pageMeta={Component?.pageMeta || {}}
 			>
 				{page}
-			</Layout>
-		));
+			</CurrentLayout>
+		);
+	};
 
 	// Is this a login page? This should help decide if features like CommandBar should be loaded.
 	const isLoginPage =
@@ -210,8 +211,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 																		{getLayout(
 																			<Component
 																				{...pageProps}
-																			/>,
-																			org
+																			/>
 																		)}
 																	</ErrorBoundary>
 																</PubSubProvider>
@@ -329,20 +329,22 @@ InfinityApp.getInitialProps = async function (appContext) {
 		)
 	);
 
-	if (!org_details?.props?.data) {
+	if (org_details?.props?.data?.not_found || org_details?.notFound) {
+		const source = org_details?.props?.data?.not_found
+			? "backend"
+			: "cache";
+
 		console.error(
-			"[_app.tsx] getInitialProps:: Org details not found. Redirecting to 404"
+			"[_app.tsx - getInitialProps] Org not found. Redirecting to 404. Source=" +
+				source
 		);
+
 		// TODO: Redirect to marketing landing page...
-		// res.writeHead(302, { Location: "https://eko.in" });
+		// res.writeHead(302, { Location: "https://eko.in/eloka" });
 		// res.end();
 		res.statusCode = 404;
 		res.end();
-		return {
-			err: {
-				statusCode: 404,
-			},
-		};
+		return {};
 	}
 
 	return {

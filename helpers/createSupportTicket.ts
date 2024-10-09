@@ -183,12 +183,17 @@ export const createSupportTicket = ({
 		headers["Content-Type"] = "application/json";
 	}
 
-	return fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {
-		method: "POST",
-		body: filesFound ? formData : JSON.stringify(feedbackData),
-		headers: headers,
-		signal: controller ? controller.signal : undefined,
-	}).then((res) => {
+	return fetch(
+		process.env.NEXT_PUBLIC_API_BASE_URL +
+			"/transactions/" +
+			(filesFound ? "upload" : "do"),
+		{
+			method: "POST",
+			body: filesFound ? formData : JSON.stringify(feedbackData),
+			headers: headers,
+			signal: controller ? controller.signal : undefined,
+		}
+	).then((res) => {
 		if (res.ok) {
 			console.log("[RaiseIssue] feedback submit result...", res);
 			return res.json();

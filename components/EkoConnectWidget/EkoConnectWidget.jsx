@@ -11,7 +11,12 @@ import {
 	useUser,
 	useWallet,
 } from "contexts";
-import { useAppLink, useExternalResource, useRaiseIssue } from "hooks";
+import {
+	useAppLink,
+	useCamera,
+	useExternalResource,
+	useRaiseIssue,
+} from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
 import { useRegisterActions } from "kbar";
 import Head from "next/head";
@@ -27,9 +32,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
  * - Location capture.
  * - Toast notifications.
  * - Raise Query (ticket management).
- * @param	{string}	start_id	The transaction id to load. Start of the path.
- * @param	{Array}	paths	The list of sub-paths to load.
- * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param {object} props Properties passed to the component
+ * @param {string|integer} props.start_id The transaction id to load. Start of the path.
+ * @param {Array<string>} props.paths The list of sub-paths to load.
+ * @param {...*} rest Rest of the props passed to this component.
  * @example	`<EkoConnectWidget start_id="123" route_params={{trxntypeid: 123, subpath_list: ["123"]}} />`
  */
 const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
@@ -59,6 +65,9 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 	// Show the "Raise Issue" dialog
 	const { showRaiseIssueDialog } = useRaiseIssue();
+
+	// Open Camera
+	const { openCamera } = useCamera();
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
@@ -218,7 +227,8 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		openUrl,
 		refreshUser,
 		setTransactionFlow,
-		showRaiseIssueDialog
+		showRaiseIssueDialog,
+		openCamera
 	);
 
 	// Handle widget load error
@@ -379,6 +389,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
  * @param root0.openUrl
  * @param root0.setTransactionFlow
  * @param root0.showRaiseIssueDialog
+ * @param root0.openCamera
  * @param root0.widgetRef
  */
 const setupWidgetEventListeners = ({
@@ -390,6 +401,7 @@ const setupWidgetEventListeners = ({
 	openUrl,
 	setTransactionFlow,
 	showRaiseIssueDialog,
+	openCamera,
 	widgetRef,
 }) => {
 	/**
@@ -474,6 +486,15 @@ const setupWidgetEventListeners = ({
 		);
 	};
 
+	const onRequestCamCapture = ({ detail }) => {
+		openCamera(
+			detail,
+			// Handle Response: Inform widget when the Camera is closed with a response
+			(data) =>
+				data?.image && widgetRef?.current?.cameraResponse(data.image)
+		);
+	};
+
 	/**
 	 * Common events listener for the custom global events dispatched by the Connect widget.
 	 * Supports the following events (identified by the "name" property in the event detail object):
@@ -553,6 +574,8 @@ const setupWidgetEventListeners = ({
 	window.addEventListener("wlc-widget-loaded", onWlcWidgetLoad);
 	window.addEventListener("eko-response", onEkoResponse);
 	window.addEventListener("feedback-dialog-event", onFeedbackDialogEvent);
+	window.addEventListener("request-camera-capture", onRequestCamCapture);
+
 	// TODO: iron-signal / show-toast
 	// TODO: iron-signal / track-event
 	// TODO: profile-update   		(es-interaction.html #1716)
@@ -587,6 +610,10 @@ const setupWidgetEventListeners = ({
 			"feedback-dialog-event",
 			onFeedbackDialogEvent
 		);
+		window.removeEventListener(
+			"request-camera-capture",
+			onRequestCamCapture
+		);
 	};
 };
 
@@ -609,6 +636,7 @@ const configurePolymer = () => {
  * @param {Function} refreshUser - Function to refresh the user profile data.
  * @param {Function} setTransactionFlow - Function to set the current transaction flow state.
  * @param {Function} showRaiseIssueDialog - Function to show the "Raise Issue" dialog.
+ * @param {Function} openCamera - Function to open the camera.
  * @returns	{object} - The widgetLoading state
  */
 const useSetupWidgetEventListeners = (
@@ -617,7 +645,8 @@ const useSetupWidgetEventListeners = (
 	openUrl,
 	refreshUser,
 	setTransactionFlow,
-	showRaiseIssueDialog
+	showRaiseIssueDialog,
+	openCamera
 ) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
@@ -638,6 +667,7 @@ const useSetupWidgetEventListeners = (
 			openUrl,
 			setTransactionFlow,
 			showRaiseIssueDialog,
+			openCamera,
 			widgetRef,
 		});
 		configurePolymer();

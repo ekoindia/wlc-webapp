@@ -240,7 +240,7 @@ export const products = {
 				max: 3000,
 				validation: {
 					PRICING: {
-						fixed: { min: 3, max: 24 },
+						fixed: { min: 5, max: 24 },
 						percentage: false,
 					},
 					COMMISSION: {
@@ -254,8 +254,8 @@ export const products = {
 				max: 24999,
 				validation: {
 					PRICING: {
-						fixed: { min: 3, max: 200 },
-						percentage: { min: 0.1, max: 0.8 },
+						fixed: { min: 8, max: 200 },
+						percentage: { min: 0.3, max: 2 },
 					},
 					COMMISSION: {
 						fixed: { min: 0, max: 200 },
@@ -268,8 +268,8 @@ export const products = {
 				max: 200000,
 				validation: {
 					PRICING: {
-						fixed: { min: 6, max: 1600 },
-						percentage: { min: 0.03, max: 0.8 },
+						fixed: { min: 15, max: 1600 },
+						percentage: { min: 0.06, max: 2 },
 					},
 					COMMISSION: {
 						fixed: { min: 0, max: 1600 },
@@ -414,7 +414,7 @@ export const products = {
 	ACCOUNT_VERIFICATION: {
 		validation: {
 			PRICING: {
-				fixed: { min: 1.84, max: 5 },
+				fixed: { min: 0.84, max: 5 },
 				percentage: false,
 			},
 		},
@@ -471,3 +471,58 @@ export const agreementProvider = {
 	SIGNZY: 2,
 	LEEGALITY: 3,
 };
+
+// TODO: WIP Type Definitions for converting to Typescript
+/**
+ * Interface for setting min/max range
+ */
+// interface Range {
+// 	min: number;
+// 	max: number;
+// }
+
+/**
+ * Interface for setting min/max range for pricing and commission
+ */
+// interface PriceRange {
+// 	fixed: Range | false;
+// 	percentage: Range | false;
+// }
+
+/**
+ * Interface for Validation details
+ */
+// interface Validation {
+// 	PRICING: PriceRange;
+// 	COMMISSION?: PriceRange;
+// }
+
+/**
+ * Interface for a pricing Slab
+ */
+// interface Slab {
+// 	min: number;
+// 	max: number;
+// 	validation: Validation;
+// }
+
+/**
+ * Interface for Product details
+ */
+// interface Product {
+// 	uriSegment: string;
+// 	slabs?: Slab[];
+// 	DEFAULT: {
+// 		operation_type: string;
+// 		pricing_type?: string;
+// 		payment_mode?: string;
+// 	};
+// 	serviceCode?: number | number[];
+// }
+
+/**
+ * Interface for Products object
+ */
+// interface Products {
+// 	[key: string]: Product;
+// }

@@ -77,6 +77,17 @@ const Form = ({
 					}
 
 					switch (parameter_type_id) {
+						case ParamType.FIXED:
+							// A fixed value that is not editable: use a hidden input
+							return (
+								<input
+									key={`${name}-${label}-${index}`}
+									type="hidden"
+									value={value}
+									{...register(name)}
+								/>
+							);
+
 						case ParamType.LABEL:
 							return (
 								<div key={`${name}-${label}-${index}`}>
@@ -93,6 +104,7 @@ const Form = ({
 									</Text>
 								</div>
 							);
+
 						case ParamType.NUMERIC:
 							return (
 								<FormControl
@@ -133,6 +145,7 @@ const Form = ({
 									</Text>
 								</FormControl>
 							);
+
 						case ParamType.FROM_DATE:
 							return (
 								<FormControl
@@ -182,6 +195,7 @@ const Form = ({
 									</Text>
 								</FormControl>
 							);
+
 						case ParamType.TO_DATE:
 							return (
 								<FormControl
@@ -231,6 +245,7 @@ const Form = ({
 									</Text>
 								</FormControl>
 							);
+
 						case ParamType.LIST:
 							if (list_elements) {
 								if (is_multi) {
@@ -387,6 +402,7 @@ const Form = ({
 								}
 							}
 							break;
+
 						default:
 							if (lines_min > 1) {
 								return (

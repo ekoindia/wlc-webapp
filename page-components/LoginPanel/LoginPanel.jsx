@@ -194,26 +194,28 @@ const LoginPanel = () => {
 			</Flex>
 
 			{/* Privacy Policy Link */}
-			{showWelcomeCard ? null : (
-				<Flex
-					pos="absolute"
-					bottom="6px"
-					right="6px"
-					fontWeight="medium"
-					fontSize="xs"
-					color={{ base: "dark", md: "white" }}
-					opacity="0.4"
-				>
-					<Link href="/privacy">
-						<Flex gap="1" align="center">
-							<Text display="inline" lineHeight="1">
-								Privacy Policy
-							</Text>
-							<Icon name="open-in-new" size="xs" />
-						</Flex>
-					</Link>
-				</Flex>
-			)}
+			<Flex
+				display={{
+					base: showWelcomeCard ? "none" : "block",
+					md: "block",
+				}}
+				pos="absolute"
+				bottom="6px"
+				right="6px"
+				fontWeight="medium"
+				fontSize="xs"
+				color={{ base: "dark", md: "white" }}
+				opacity="0.4"
+			>
+				<Link href="/privacy">
+					<Flex gap="1" align="center">
+						<Text display="inline" lineHeight="1">
+							Privacy Policy
+						</Text>
+						<Icon name="open-in-new" size="xs" />
+					</Flex>
+				</Link>
+			</Flex>
 		</Box>
 	);
 };

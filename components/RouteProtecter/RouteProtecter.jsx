@@ -4,6 +4,7 @@ import {
 	initialRoute,
 	publicLinks,
 	publicOnlyLinks,
+	publicSections,
 } from "constants";
 import { useSession } from "contexts/UserContext";
 import { useEffect, useState } from "react";
@@ -48,10 +49,12 @@ const RouteProtecter = ({ router, children }) => {
 	useEffect(() => {
 		const path = router.pathname;
 		let isAuthorized = authorized;
+		const pathStart = path.split("/")[1];
 
 		console.log("%cRoute-Protecter: ROUTE UPDATED:\n", "color:green", {
 			asPath: router.asPath,
 			path: path,
+			pathStart: pathStart,
 			isLoggedIn: isLoggedIn,
 			isAdmin: isAdmin,
 			userId: userId,
@@ -68,7 +71,11 @@ const RouteProtecter = ({ router, children }) => {
 			console.log("::::nonLogged user::::");
 			// This condition will redirect to initial path if the route is inaccessible
 			if (
-				!(publicOnlyLinks.includes(path) || publicLinks.includes(path))
+				!(
+					publicOnlyLinks.includes(path) ||
+					publicLinks.includes(path) ||
+					publicSections?.includes(pathStart)
+				)
 			) {
 				router.push("/");
 				return;
@@ -154,6 +161,7 @@ const RouteProtecter = ({ router, children }) => {
 			router.pathname !== "/404" &&
 			!publicLinks.includes(router.pathname) &&
 			!publicOnlyLinks.includes(router.pathname) &&
+			!publicSections?.includes(router.pathname?.split("/")[1]) &&
 			!isLoggedIn) ||
 		loading
 	) {
