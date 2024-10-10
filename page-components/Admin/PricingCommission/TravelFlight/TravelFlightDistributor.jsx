@@ -44,7 +44,8 @@ const pricing_type_list = [
 ];
 
 const TravelFlightDistributor = () => {
-	const { slabs, serviceCode } = products.DMT;
+	const { validation: travelFlightValidation, serviceCode } =
+		products.FLIGHT_BOOKING.distributor;
 
 	const {
 		handleSubmit,
@@ -68,7 +69,6 @@ const TravelFlightDistributor = () => {
 	const router = useRouter();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
-	const [, /*slabOptions*/ setSlabOptions] = useState([]);
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
 	const [validation, setValidation] = useState({ min: null, max: null });
@@ -93,7 +93,7 @@ const TravelFlightDistributor = () => {
 			min != undefined ? " - " : ""
 		}Maximum: ${prefix}${max}${suffix}`;
 
-	const dmt_distributor_parameter_list = [
+	const train_booking_distributor_parameter_list = [
 		{
 			name: "CspList",
 			label: "Select Distributor",
@@ -102,15 +102,6 @@ const TravelFlightDistributor = () => {
 			list_elements: multiSelectOptions,
 			multiSelectRenderer: _multiselectRenderer,
 		},
-		// {
-		// 	name: "select",
-		// 	label: "Select Slab",
-		// 	parameter_type_id: ParamType.LIST,
-		// 	list_elements: slabOptions,
-		// 	meta: {
-		// 		force_dropdown: true,
-		// 	},
-		// },
 		{
 			name: "pricing_type",
 			label: `Select Commission Type`,
@@ -166,23 +157,6 @@ const TravelFlightDistributor = () => {
 	];
 
 	useEffect(() => {
-		const list = [];
-
-		slabs.map((item, index) => {
-			const temp = { value: `${index}` };
-
-			const label =
-				item.min == item.max
-					? `₹${item.min}`
-					: `₹${item.min} - ₹${item.max}`;
-
-			list.push({ ...temp, label });
-		});
-
-		setSlabOptions(list);
-	}, []);
-
-	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
@@ -201,38 +175,6 @@ const TravelFlightDistributor = () => {
 			});
 	}, []);
 
-	// This useEffect hook updates the pricing type list based on slab selection.
-	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
-	useEffect(() => {
-		if (watcher?.select?.value) {
-			const _validations =
-				slabs[+watcher?.select?.value]?.validation?.COMMISSION;
-			let anyDisabled = false;
-
-			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
-				const _validation = _validations[_typeObj.id];
-				const isDisabled = !_validation;
-				if (isDisabled) anyDisabled = true;
-				return { ..._typeObj, isDisabled };
-			});
-
-			setPricingTypeList(_pricingTypeList);
-
-			// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
-			if (anyDisabled) {
-				const _firstNonDisabled = _pricingTypeList.find(
-					(item) => !item.isDisabled
-				);
-				if (_firstNonDisabled) {
-					watcher["pricing_type"] = _firstNonDisabled.value;
-				}
-			}
-
-			reset({ ...watcher });
-		}
-	}, [watcher?.select?.value]);
-
-	// This useEffect hook updates the validation state based on the selected slab and pricing type.
 	useEffect(() => {
 		const _pricingType =
 			watcher.pricing_type === PRICING_TYPE.PERCENT
@@ -241,17 +183,42 @@ const TravelFlightDistributor = () => {
 					? "fixed"
 					: null;
 
-		const _slab = +watcher?.select?.value;
-
-		// If a slab and pricing type are selected, update the validation state
-		if (_slab != null && _pricingType != null) {
-			const _validation = slabs[_slab]?.validation;
-			const _min = _validation?.COMMISSION?.[_pricingType]?.min;
-			const _max = _validation?.COMMISSION?.[_pricingType]?.max;
+		// If pricing type is selected, update the validation state
+		if (_pricingType != null) {
+			const _min = travelFlightValidation?.[_pricingType]?.min;
+			const _max = travelFlightValidation?.[_pricingType]?.max;
 
 			setValidation({ min: _min, max: _max });
 		}
-	}, [watcher?.pricing_type, watcher?.select?.value]);
+	}, [watcher?.pricing_type]);
+
+	// This useEffect hook updates the pricing type list based on slab selection.
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		const _validations = travelFlightValidation;
+		let anyDisabled = false;
+
+		const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+			const _validation = _validations[_typeObj.id];
+			const isDisabled = !_validation;
+			if (isDisabled) anyDisabled = true;
+			return { ..._typeObj, isDisabled };
+		});
+
+		setPricingTypeList(_pricingTypeList);
+
+		// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+		if (anyDisabled) {
+			const _firstNonDisabled = _pricingTypeList.find(
+				(item) => !item.isDisabled
+			);
+			if (_firstNonDisabled) {
+				watcher["pricing_type"] = _firstNonDisabled.value;
+			}
+		}
+
+		reset({ ...watcher });
+	}, []);
 
 	useEffect(() => {
 		if (isSubmitSuccessful) {
@@ -265,10 +232,6 @@ const TravelFlightDistributor = () => {
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
 
-		const { min, max } = slabs[data?.select?.value] || {};
-		_finalData.min_slab_amount = min;
-		_finalData.max_slab_amount = max;
-
 		const _CspList = data?.CspList?.map(
 			(item) => item[_multiselectRenderer.value]
 		);
@@ -276,8 +239,6 @@ const TravelFlightDistributor = () => {
 		if (watcher.operation_type != 3) {
 			_finalData.CspList = `${_CspList}`;
 		}
-
-		delete _finalData.select;
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
@@ -307,7 +268,8 @@ const TravelFlightDistributor = () => {
 			<Flex direction="column" gap="8">
 				<Form
 					{...{
-						parameter_list: dmt_distributor_parameter_list,
+						parameter_list:
+							train_booking_distributor_parameter_list,
 						formValues: watcher,
 						control,
 						register,

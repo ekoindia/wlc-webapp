@@ -55,7 +55,11 @@ const getStatus = (status) => {
 };
 
 const TravelTrainRetailer = () => {
-	const { uriSegment, slabs, DEFAULT } = products.DMT;
+	const {
+		validation: travelTrainValidation,
+		initialVal,
+		uriSegment,
+	} = products.TRAIN_BOOKING.agent;
 
 	const {
 		handleSubmit,
@@ -73,7 +77,7 @@ const TravelTrainRetailer = () => {
 	} = useForm({
 		mode: "onChange",
 		defaultValues: {
-			operation_type: DEFAULT.operation_type,
+			operation_type: initialVal.operation_type,
 		},
 	});
 
@@ -85,7 +89,6 @@ const TravelTrainRetailer = () => {
 	const router = useRouter();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
-	const [, /*slabOptions*/ setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
@@ -111,7 +114,7 @@ const TravelTrainRetailer = () => {
 			min != undefined ? " - " : ""
 		}Maximum: ${prefix}${max}${suffix}`;
 
-	const dmt_retailer_parameter_list = [
+	const travel_train_retailer_parameter_list = [
 		{
 			name: "operation_type",
 			label: `Set ${productPricingType.DMT} for`,
@@ -193,23 +196,6 @@ const TravelTrainRetailer = () => {
 	];
 
 	useEffect(() => {
-		const list = [];
-
-		slabs.map((item, index) => {
-			const temp = { value: `${index}` };
-
-			const label =
-				item.min == item.max
-					? `₹${item.min}`
-					: `₹${item.min} - ₹${item.max}`;
-
-			list.push({ ...temp, label });
-		});
-
-		setSlabOptions(list);
-	}, []);
-
-	useEffect(() => {
 		if (watcher.operation_type != "3") {
 			/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
 			const _tf_req_uri =
@@ -247,38 +233,6 @@ const TravelTrainRetailer = () => {
 		}
 	}, [watcher.operation_type]);
 
-	// This useEffect hook updates the pricing type list based on slab selection.
-	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
-	useEffect(() => {
-		if (watcher?.select?.value) {
-			const _validations =
-				slabs[+watcher?.select?.value]?.validation?.PRICING;
-			let anyDisabled = false;
-
-			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
-				const _validation = _validations[_typeObj.id];
-				const isDisabled = !_validation;
-				if (isDisabled) anyDisabled = true;
-				return { ..._typeObj, isDisabled };
-			});
-
-			setPricingTypeList(_pricingTypeList);
-
-			// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
-			if (anyDisabled) {
-				const _firstNonDisabled = _pricingTypeList.find(
-					(item) => !item.isDisabled
-				);
-				if (_firstNonDisabled) {
-					watcher["pricing_type"] = _firstNonDisabled.value;
-				}
-			}
-
-			reset({ ...watcher });
-		}
-	}, [watcher?.select?.value]);
-
-	// This useEffect hook updates the validation state based on the selected slab and pricing type.
 	useEffect(() => {
 		const _pricingType =
 			watcher.pricing_type === PRICING_TYPE.PERCENT
@@ -287,17 +241,42 @@ const TravelTrainRetailer = () => {
 					? "fixed"
 					: null;
 
-		const _slab = +watcher?.select?.value;
-
-		// If a slab and pricing type are selected, update the validation state
-		if (_slab != null && _pricingType != null) {
-			const _validation = slabs[_slab]?.validation;
-			const _min = _validation?.PRICING?.[_pricingType]?.min;
-			const _max = _validation?.PRICING?.[_pricingType]?.max;
+		// If pricing type is selected, update the validation state
+		if (_pricingType != null) {
+			const _min = travelTrainValidation?.[_pricingType]?.min;
+			const _max = travelTrainValidation?.[_pricingType]?.max;
 
 			setValidation({ min: _min, max: _max });
 		}
-	}, [watcher?.pricing_type, watcher?.select?.value]);
+	}, [watcher?.pricing_type]);
+
+	// This useEffect hook updates the pricing type list based on slab selection.
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		const _validations = travelTrainValidation;
+		let anyDisabled = false;
+
+		const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+			const _validation = _validations[_typeObj.id];
+			const isDisabled = !_validation;
+			if (isDisabled) anyDisabled = true;
+			return { ..._typeObj, isDisabled };
+		});
+
+		setPricingTypeList(_pricingTypeList);
+
+		// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+		if (anyDisabled) {
+			const _firstNonDisabled = _pricingTypeList.find(
+				(item) => !item.isDisabled
+			);
+			if (_firstNonDisabled) {
+				watcher["pricing_type"] = _firstNonDisabled.value;
+			}
+		}
+
+		reset({ ...watcher });
+	}, []);
 
 	useEffect(() => {
 		if (isSubmitSuccessful) {
@@ -310,10 +289,6 @@ const TravelTrainRetailer = () => {
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
-
-		const { min, max } = slabs[data?.select?.value] || {};
-		_finalData.min_slab_amount = min;
-		_finalData.max_slab_amount = max;
 
 		const _CspList = data?.CspList?.map(
 			(item) => item[_multiselectRenderer.value]
@@ -334,6 +309,7 @@ const TravelTrainRetailer = () => {
 			body: {
 				operation_type: watcher.operation_type,
 				operation: OPERATION.SUBMIT,
+				booking_type: 2,
 				..._finalData,
 			},
 			token: accessToken,
@@ -346,7 +322,6 @@ const TravelTrainRetailer = () => {
 					duration: 6000,
 					isClosable: true,
 				});
-				// handleReset();
 			})
 			.catch((error) => {
 				console.error("📡Error:", error);
@@ -358,7 +333,7 @@ const TravelTrainRetailer = () => {
 			<Flex direction="column" gap="8">
 				<Form
 					{...{
-						parameter_list: dmt_retailer_parameter_list,
+						parameter_list: travel_train_retailer_parameter_list,
 						formValues: watcher,
 						control,
 						register,
