@@ -436,6 +436,46 @@ export const products = {
 			pricing_type: "1",
 		},
 	},
+	TRAIN_BOOKING: {
+		agent: {
+			uriSegment: "travel",
+			initialVal: {
+				operation_type: "3",
+				pricing_type: "1",
+			},
+			validation: {
+				fixed: false,
+				percentage: { min: 0, max: 0.1 },
+			},
+		},
+		distributor: {
+			serviceCode: 712,
+			validation: {
+				fixed: false,
+				percentage: { min: 0, max: 0.2 },
+			},
+		},
+	},
+	FLIGHT_BOOKING: {
+		agent: {
+			uriSegment: "travel",
+			initialVal: {
+				operation_type: "3",
+				pricing_type: "1",
+			},
+			validation: {
+				fixed: false,
+				percentage: { min: 0, max: 0.1 },
+			},
+		},
+		distributor: {
+			serviceCode: 750,
+			validation: {
+				fixed: false,
+				percentage: { min: 0, max: 0.3 },
+			},
+		},
+	},
 	CDM: {
 		DEFAULT: {
 			operation_type: "3",
