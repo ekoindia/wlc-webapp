@@ -164,6 +164,7 @@ export type IconNameType =
 	| "timer"
 	| "toc"
 	| "today"
+	| "toggle"
 	| "triangle-up"
 	| "triangle-down"
 	| "tv"
@@ -366,6 +367,7 @@ export const IconCategories: IconCategoriesType = {
 		"search",
 		"calender",
 		"today",
+		"toggle",
 		"camera",
 		"select-plan",
 		"tick",
@@ -1025,6 +1027,10 @@ export const IconLibrary: IconLibraryType = {
 	today: {
 		viewBox: "0 0 24 24",
 		path: `<path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>`,
+	},
+	toggle: {
+		viewBox: "0 0 1024 1024",
+		path: `<path d="M298 640q52 0 90-38t38-90-38-90-90-38-90 38-38 90 38 90 90 38zM726 298q88 0 150 63t62 151-62 151-150 63h-428q-88 0-150-63t-62-151 62-151 150-63h428z"/>`,
 	},
 	"triangle-up": { viewBox: "0 0 6 5", path: `<path d="M3,0,6,5H0Z"/>` },
 	"triangle-down": {
