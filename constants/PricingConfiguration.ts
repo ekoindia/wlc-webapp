@@ -1,11 +1,39 @@
 import { products } from "./ProductDetails";
 
+/*
+TODO:
+	1. Multi level URL. Eg: /pricing/pg/nimbbl/settlement
+	2. Each level (left to right) loads extra_params from config and the next level merges their extra_params. Right-most (last) level has max priority.
+	3. Product types:
+		a. Standard: Uses a custom-component or a template to show a page
+		b. group:
+		c. dynamic_group: Fetch group products from API. Store extra_params for each sub-product in a context. The next level product component will fetch the extra_params for this dynamic product from the context.
+*/
+
 /**
  * Interface for product "meta".
  * This interface defines few of the additional properties that can be passed to the product component.
  * The "meta" property can accept other name/value pairs as well, depending on the product template.
  */
 interface ProductMeta {
+	/**
+	 * The API details to set the pricing/commission details for agent(s).
+	 * TODO: MOVE TO ProductDetails, because the same URL config can be used for multiple sub-products.
+	 */
+	agent?: Record<
+		"url" | "trxn_type_id" | "uriSegment" | "service_code" | string,
+		string | number
+	>;
+
+	/**
+	 * The API details to set the pricing/commission details for distributor(s).
+	 * TODO: MOVE TO ProductDetails, because the same URL config can be used for multiple sub-products.
+	 */
+	distributor?: Record<
+		"url" | "trxn_type_id" | "uriSegment" | "service_code" | string,
+		string | number
+	>;
+
 	/**
 	 * Pass additional payload to the API request when configuring pricing for this product.
 	 * Eg: { "service_code": 1234 }
@@ -60,7 +88,7 @@ interface ProductDetails {
 	note?: string;
 
 	/** The icon representing the product. */
-	icon?: string;
+	icon?: string | React.ComponentType;
 
 	/**
 	 * The component template to use for the product.
@@ -176,10 +204,10 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		hide: false,
 	},
 	"toggle-cash-deposit-charges": {
-		label: "Toggle Cash-Deposit Charges",
+		label: "Manage Cash-Deposit Charges",
 		desc: "Enable/disable Cash-Deposit charges for your network",
 		comp: "ToggleCdm",
-		icon: "money-deposit",
+		icon: "toggle",
 		hide: false,
 	},
 	"upi-money-transfer": {

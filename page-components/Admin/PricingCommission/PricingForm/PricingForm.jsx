@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { Flex, Text } from "@chakra-ui/react";
 import { Headings } from "components";
 import { PricingGrid } from "../PricingGrid";
-import { products, product_slug_map } from "constants";
+import { products, product_slug_map, productPricingType } from "constants";
 import dynamic from "next/dynamic";
 
 /**
@@ -35,9 +35,9 @@ const PricingForm = ({ slug }) => {
 			return TemplateComponent[template];
 		}
 		return comp;
-	}, [template]);
+	}, [template, comp]);
 
-	// Reder the group of products
+	// Render the group of products
 	if (is_group && products) {
 		return (
 			<PricingPageHeader label={label} note={note}>
@@ -47,6 +47,13 @@ const PricingForm = ({ slug }) => {
 	}
 
 	if (!componentName) {
+		console.error(
+			"Component not found for product-key: ",
+			slug,
+			componentName,
+			comp
+		);
+
 		return (
 			<Text color="error">
 				Error: Component not found for product-key: {slug}
@@ -76,6 +83,10 @@ const PricingForm = ({ slug }) => {
 
 	const productDetails =
 		product_key && product_key in products ? products[product_key] : null;
+	const productPricingTypeDetails =
+		product_key && product_key in productPricingType
+			? productPricingType[product_key]
+			: "Commission";
 
 	console.log("productDetails:: ", product_key, productDetails);
 
@@ -93,6 +104,7 @@ const PricingForm = ({ slug }) => {
 			>
 				<DynamicPageComponent
 					productDetails={productDetails}
+					pricingType={productPricingTypeDetails}
 					{...meta}
 				/>
 			</Flex>
