@@ -103,7 +103,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 		onClose();
 	};
 
-	// Setup Android Listener...
+	// One Time Setup: Setup Android Listener & Route Change Listeners...
 	useEffect(() => {
 		// Show page-loading animation on route change
 		Router.events.on("routeChangeStart", () => setIsPageLoading(true));

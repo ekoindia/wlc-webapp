@@ -1,9 +1,10 @@
-import AirtelCms from "./AirtelCms";
+import React from "react";
+import TravelTrain from "./TravelTrain";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "PageComponent/Admin/PricingCommission/AirtelCms",
-	component: AirtelCms,
+	title: "PageComponentsAdmin/TravelTrain",
+	component: TravelTrain,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +47,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <AirtelCms {...args} />;
+const Template = (args) => <TravelTrain {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

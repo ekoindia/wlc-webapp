@@ -33,6 +33,6 @@ DeleteAccount.pageMeta = {
 };
 
 //Custom simple layout...
-DeleteAccount.getLayout = (page) => <LayoutLogin>{page}</LayoutLogin>;
+DeleteAccount.getLayout = LayoutLogin;
 
 export default DeleteAccount;

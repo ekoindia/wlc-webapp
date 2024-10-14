@@ -1,9 +1,10 @@
 // Few pre-defined org-ids for configuring feature flags:
-// const ORG_ID = {
-// 	EKOSTORE: 1,
-// 	EKOTEST: 101, // SuperPay (Production UAT)
-// 	SBIKIOSK: 287,
-// };
+// eslint-disable-next-line no-unused-vars
+const ORG_ID = {
+	EKOSTORE: 1,
+	EKOTEST: 101, // SuperPay (Production UAT)
+	SBIKIOSK: 287,
+};
 
 /**
  * Note: This file is used to enable or disable features in the application.
@@ -18,14 +19,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// UAT: Feature to show Portal Configurations like Landing Page, Theme, etc to Admin.
 	PORTAL_CONFIG: {
 		enabled: true,
-		forEnv: ["development"],
 		forAdminOnly: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST],
+			},
+		},
 	},
 
 	// Theme selection from predefined themes (free tier)
 	THEME_PICKER: {
 		enabled: true,
-		forEnv: ["development"],
 	},
 
 	// Custom theme support for paid tier
@@ -74,6 +78,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// To be used by developers only for inserting custom expressions
 	//   in interaction-framework configuration database.
 	EXPRESSION_EDITOR: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
+	// Eloka Gateway for redirection-based transaction processing.
+	ELOKA_GATEWAY: {
 		enabled: true,
 		forEnv: ["development"],
 	},

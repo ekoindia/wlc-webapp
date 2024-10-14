@@ -52,4 +52,5 @@ export {
 	initialRoute,
 	publicLinks,
 	publicOnlyLinks,
+	publicSections,
 } from "./validRoutes";

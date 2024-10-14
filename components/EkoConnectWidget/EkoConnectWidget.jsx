@@ -32,9 +32,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
  * - Location capture.
  * - Toast notifications.
  * - Raise Query (ticket management).
- * @param	{string}	start_id	The transaction id to load. Start of the path.
- * @param	{Array}	paths	The list of sub-paths to load.
- * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param {object} props Properties passed to the component
+ * @param {string|integer} props.start_id The transaction id to load. Start of the path.
+ * @param {Array<string>} props.paths The list of sub-paths to load.
+ * @param {...*} rest Rest of the props passed to this component.
  * @example	`<EkoConnectWidget start_id="123" route_params={{trxntypeid: 123, subpath_list: ["123"]}} />`
  */
 const EkoConnectWidget = ({ start_id, paths, ...rest }) => {

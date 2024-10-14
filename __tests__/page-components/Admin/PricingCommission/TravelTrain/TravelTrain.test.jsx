@@ -1,5 +1,5 @@
-import { AirtelCms } from "components/AirtelCms";
 import { render } from "test-utils";
+import { TravelTrain } from "components/TravelTrain";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("AirtelCms", () => {
+describe("TravelTrain", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<AirtelCms />);
+		const { container } = render(<TravelTrain />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("AirtelCms", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for AirtelCms in __tests__/components/AirtelCms/AirtelCms.test.jsx"
+		"TODO: add proper test cases for TravelTrain in __tests__/components/TravelTrain/TravelTrain.test.jsx"
 	);
 });
