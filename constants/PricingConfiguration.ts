@@ -244,14 +244,14 @@ export const product_slug_map: Record<string, ProductDetails> = {
 	"travel-booking": {
 		is_group: true,
 		label: "Travel Booking",
-		desc: "Set Agent Commission for travel booking services",
+		desc: "Set Agent Commission for Travel Booking services",
 		hide: false,
 		products: ["train-booking", "flight-booking"],
 	},
 	"train-booking": {
 		// product_key: "TRAIN_BOOKING",
 		label: "Train Booking",
-		desc: "Set Agent Commission for train booking services",
+		desc: "Set Agent Commission for Train Ticket Booking services",
 		// template: "standard",
 		comp: "TravelTrain",
 		icon: "train",
@@ -260,7 +260,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 	"flight-booking": {
 		// product_key: "FLIGHT_BOOKING",
 		label: "Flight Booking",
-		desc: "Set Agent Commission for flight booking services",
+		desc: "Set Agent Commission for Flight Ticket Booking services",
 		// template: "standard",
 		comp: "TravelFlight",
 		icon: "flight",
