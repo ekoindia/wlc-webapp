@@ -1,5 +1,5 @@
 // Few pre-defined org-ids for configuring feature flags:
-
+// eslint-disable-next-line no-unused-vars
 const ORG_ID = {
 	EKOSTORE: 1,
 	EKOTEST: 101, // SuperPay (Production UAT)
