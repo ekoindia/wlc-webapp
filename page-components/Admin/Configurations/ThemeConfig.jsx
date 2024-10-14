@@ -89,8 +89,7 @@ const ThemeConfig = () => {
 
 	// Load Landing Page Style from LocalStorage & also set the current color theme
 	useEffect(() => {
-		// TODO: Get the current navbar style (light or dark)
-
+		// Set the current navbar style
 		setNavStyle(navstyle);
 
 		// Set the current color theme
@@ -218,7 +217,7 @@ const ThemeConfig = () => {
 	const handleSubmit = () => {
 		const _finalTheme = {
 			...selectedTheme,
-			...{ navstyle: navStyle },
+			navstyle: navStyle,
 		};
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
