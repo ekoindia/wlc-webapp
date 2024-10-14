@@ -19,14 +19,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// UAT: Feature to show Portal Configurations like Landing Page, Theme, etc to Admin.
 	PORTAL_CONFIG: {
 		enabled: true,
-		forEnv: ["development"],
 		forAdminOnly: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST],
+			},
+		},
 	},
 
 	// Theme selection from predefined themes (free tier)
 	THEME_PICKER: {
 		enabled: true,
-		forEnv: ["development"],
 	},
 
 	// Custom theme support for paid tier

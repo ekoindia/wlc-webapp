@@ -9,31 +9,6 @@ import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
-const fee_type_list = [
-	{ value: "1", label: "Transaction" },
-	{ value: "2", label: "Settlement Type" },
-];
-
-const payment_mode_list = [
-	{ value: "4", label: "Debit Card" },
-	{ value: "3", label: "Credit Card" },
-	{ value: "2", label: "Net Banking" },
-	{ value: "1", label: "UPI" },
-];
-
-const card_type_list = [
-	{ value: "4", label: "Visa" },
-	{ value: "3", label: "Rupay" },
-	{ value: "2", label: "Mastercard" },
-	{ value: "1", label: "Amex" },
-	{ value: "0", label: "Diner" },
-];
-
-const settlement_type_list = [
-	{ value: "3", label: "Instant" },
-	{ value: "2", label: "T + 1" },
-];
-
 const operation_type_list = [
 	{ value: "3", label: "Whole Network" },
 	{ value: "2", label: "Distributor's Network" },
@@ -79,8 +54,12 @@ const getStatus = (status) => {
 	}
 };
 
-const CardPaymentRetailer = () => {
-	const { uriSegment, slabs /* DEFAULT  */ } = products.CARD_PAYMENT;
+const TravelTrainRetailer = () => {
+	const {
+		validation: travelTrainValidation,
+		initialVal,
+		uriSegment,
+	} = products.TRAIN_BOOKING.agent;
 
 	const {
 		handleSubmit,
@@ -98,25 +77,18 @@ const CardPaymentRetailer = () => {
 	} = useForm({
 		mode: "onChange",
 		defaultValues: {
-			// operation_type: DEFAULT.operation_type,
-			fee_type: "1",
-			payment_mode: "",
-			select: { value: "0", label: "₹100 - ₹200000" },
+			operation_type: initialVal.operation_type,
 		},
 	});
 
 	const watcher = useWatch({
 		control,
 	});
-	console.log("Watcher Values:", watcher);
-
-	// const shouldShowCardType = watcher.fee_type === "1" && watcher.payment_mode?.value === "4";
 
 	const toast = useToast();
 	const router = useRouter();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
-	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
 	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
@@ -142,42 +114,10 @@ const CardPaymentRetailer = () => {
 			min != undefined ? " - " : ""
 		}Maximum: ${prefix}${max}${suffix}`;
 
-	const card_payment_retailer_parameter_list = [
-		{
-			name: "fee_type",
-			label: "Select Transaction Type",
-			parameter_type_id: ParamType.LIST,
-			list_elements: fee_type_list,
-		},
-		{
-			name: "payment_mode",
-			label: "Select Payment Mode",
-			parameter_type_id: ParamType.LIST,
-			list_elements: payment_mode_list,
-			visible_on_param_name: "fee_type",
-			visible_on_param_value: /1/,
-		},
-		{
-			name: "settlement_type",
-			label: "Select Settlement Type",
-			parameter_type_id: ParamType.LIST,
-			list_elements: settlement_type_list,
-			visible_on_param_name: "fee_type",
-			visible_on_param_value: /^(?!1$)/,
-		},
-
-		{
-			name: "card_type",
-			label: "Select Card Type",
-			parameter_type_id: ParamType.LIST,
-			list_elements: card_type_list,
-			visible:
-				watcher.fee_type === "1" && watcher.payment_mode?.value === "4",
-		},
-
+	const travel_train_retailer_parameter_list = [
 		{
 			name: "operation_type",
-			label: `Set ${productPricingType.CARD_PAYMENT} for`,
+			label: `Set ${productPricingType.DMT} for`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: operation_type_list,
 			// defaultValue: DEFAULT.operation_type,
@@ -192,25 +132,25 @@ const CardPaymentRetailer = () => {
 			visible_on_param_value: /1|2/,
 			multiSelectRenderer: _multiselectRenderer,
 		},
-		{
-			name: "select",
-			label: "Select Slab",
-			parameter_type_id: ParamType.LIST,
-			list_elements: slabOptions,
-			meta: {
-				force_dropdown: true,
-			},
-		},
+		// {
+		// 	name: "select",
+		// 	label: "Select Slab",
+		// 	parameter_type_id: ParamType.LIST,
+		// 	list_elements: slabOptions,
+		// 	meta: {
+		// 		force_dropdown: true,
+		// 	},
+		// },
 		{
 			name: "pricing_type",
-			label: `Select ${productPricingType.CARD_PAYMENT} Type`,
+			label: `Select ${productPricingType.DMT} Type`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: pricingTypeList,
 			// defaultValue: DEFAULT.pricing_type,
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.CARD_PAYMENT} (Exclusive of GST)`,
+			label: `Define ${productPricingType.DMT} (GST Inclusive)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {
@@ -230,7 +170,7 @@ const CardPaymentRetailer = () => {
 				/>
 			),
 		},
-	].filter((param) => param.visible !== false);
+	];
 
 	const buttonConfigList = [
 		{
@@ -254,28 +194,6 @@ const CardPaymentRetailer = () => {
 			},
 		},
 	];
-
-	useEffect(() => {
-		console.log("Fee Type:", watcher.fee_type);
-		console.log("Payment Mode:", watcher.payment_mode);
-	}, [watcher.fee_type, watcher.payment_mode]);
-
-	useEffect(() => {
-		const list = [];
-
-		slabs.map((item, index) => {
-			const temp = { value: `${index}` };
-
-			const label =
-				item.min == item.max
-					? `₹${item.min}`
-					: `₹${item.min} - ₹${item.max}`;
-
-			list.push({ ...temp, label });
-		});
-
-		setSlabOptions(list);
-	}, []);
 
 	useEffect(() => {
 		if (watcher.operation_type != "3") {
@@ -315,38 +233,6 @@ const CardPaymentRetailer = () => {
 		}
 	}, [watcher.operation_type]);
 
-	// This useEffect hook updates the pricing type list based on slab selection.
-	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
-	useEffect(() => {
-		if (watcher?.select?.value) {
-			const _validations =
-				slabs[+watcher?.select?.value]?.validation?.PRICING;
-			let anyDisabled = false;
-
-			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
-				const _validation = _validations[_typeObj.id];
-				const isDisabled = !_validation;
-				if (isDisabled) anyDisabled = true;
-				return { ..._typeObj, isDisabled };
-			});
-
-			setPricingTypeList(_pricingTypeList);
-
-			// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
-			if (anyDisabled) {
-				const _firstNonDisabled = _pricingTypeList.find(
-					(item) => !item.isDisabled
-				);
-				if (_firstNonDisabled) {
-					watcher["pricing_type"] = _firstNonDisabled.value;
-				}
-			}
-
-			reset({ ...watcher });
-		}
-	}, [watcher?.select?.value]);
-
-	// This useEffect hook updates the validation state based on the selected slab and pricing type.
 	useEffect(() => {
 		const _pricingType =
 			watcher.pricing_type === PRICING_TYPE.PERCENT
@@ -355,17 +241,42 @@ const CardPaymentRetailer = () => {
 					? "fixed"
 					: null;
 
-		const _slab = +watcher?.select?.value;
-
-		// If a slab and pricing type are selected, update the validation state
-		if (_slab != null && _pricingType != null) {
-			const _validation = slabs[_slab]?.validation;
-			const _min = _validation?.PRICING?.[_pricingType]?.min;
-			const _max = _validation?.PRICING?.[_pricingType]?.max;
+		// If pricing type is selected, update the validation state
+		if (_pricingType != null) {
+			const _min = travelTrainValidation?.[_pricingType]?.min;
+			const _max = travelTrainValidation?.[_pricingType]?.max;
 
 			setValidation({ min: _min, max: _max });
 		}
-	}, [watcher?.pricing_type, watcher?.select?.value]);
+	}, [watcher?.pricing_type]);
+
+	// This useEffect hook updates the pricing type list based on slab selection.
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		const _validations = travelTrainValidation;
+		let anyDisabled = false;
+
+		const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+			const _validation = _validations[_typeObj.id];
+			const isDisabled = !_validation;
+			if (isDisabled) anyDisabled = true;
+			return { ..._typeObj, isDisabled };
+		});
+
+		setPricingTypeList(_pricingTypeList);
+
+		// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+		if (anyDisabled) {
+			const _firstNonDisabled = _pricingTypeList.find(
+				(item) => !item.isDisabled
+			);
+			if (_firstNonDisabled) {
+				watcher["pricing_type"] = _firstNonDisabled.value;
+			}
+		}
+
+		reset({ ...watcher });
+	}, []);
 
 	useEffect(() => {
 		if (isSubmitSuccessful) {
@@ -378,10 +289,6 @@ const CardPaymentRetailer = () => {
 
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
-
-		const { min, max } = slabs[data?.select?.value] || {};
-		_finalData.min_slab_amount = min;
-		_finalData.max_slab_amount = max;
 
 		const _CspList = data?.CspList?.map(
 			(item) => item[_multiselectRenderer.value]
@@ -402,6 +309,7 @@ const CardPaymentRetailer = () => {
 			body: {
 				operation_type: watcher.operation_type,
 				operation: OPERATION.SUBMIT,
+				booking_type: 2,
 				..._finalData,
 			},
 			token: accessToken,
@@ -414,7 +322,6 @@ const CardPaymentRetailer = () => {
 					duration: 6000,
 					isClosable: true,
 				});
-				// handleReset();
 			})
 			.catch((error) => {
 				console.error("📡Error:", error);
@@ -426,10 +333,10 @@ const CardPaymentRetailer = () => {
 			<Flex direction="column" gap="8">
 				<Form
 					{...{
-						parameter_list: card_payment_retailer_parameter_list,
-						register,
-						control,
+						parameter_list: travel_train_retailer_parameter_list,
 						formValues: watcher,
+						control,
+						register,
 						errors,
 					}}
 				/>
@@ -440,4 +347,4 @@ const CardPaymentRetailer = () => {
 	);
 };
 
-export default CardPaymentRetailer;
+export default TravelTrainRetailer;
