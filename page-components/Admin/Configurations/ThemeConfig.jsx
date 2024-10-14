@@ -59,6 +59,7 @@ const ThemeConfig = () => {
 
 	// Get current theme color values
 	const [
+		navstyle,
 		primary,
 		primary_light,
 		primary_dark,
@@ -66,6 +67,7 @@ const ThemeConfig = () => {
 		accent_light,
 		accent_dark,
 	] = useToken("colors", [
+		"navstyle",
 		"primary.DEFAULT",
 		"primary.light",
 		"primary.dark",
@@ -88,6 +90,8 @@ const ThemeConfig = () => {
 	// Load Landing Page Style from LocalStorage & also set the current color theme
 	useEffect(() => {
 		// TODO: Get the current navbar style (light or dark)
+
+		setNavStyle(navstyle);
 
 		// Set the current color theme
 		setCurrentTheme({
@@ -212,6 +216,10 @@ const ThemeConfig = () => {
 	};
 
 	const handleSubmit = () => {
+		const _finalTheme = {
+			...selectedTheme,
+			...{ navstyle: navStyle },
+		};
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION_JSON,
 			{
@@ -222,7 +230,7 @@ const ThemeConfig = () => {
 							{
 								name: "theme",
 								type: "json",
-								value: selectedTheme,
+								value: _finalTheme,
 							},
 						],
 					},
@@ -237,7 +245,7 @@ const ThemeConfig = () => {
 						...orgDetail,
 						metadata: {
 							...orgDetail.metadata,
-							theme: selectedTheme,
+							theme: _finalTheme,
 						},
 					};
 
@@ -285,11 +293,12 @@ const ThemeConfig = () => {
 					<Radio
 						label="Select Menu Bar Style"
 						options={[
-							{ label: "Default", value: "" },
+							{ label: "Default", value: "default" },
 							{ label: "Light", value: "light" },
 						]}
-						required
+						value={navStyle}
 						onChange={(e) => setNavStyle(e)}
+						required
 					/>
 
 					<Box w="100%">
@@ -394,6 +403,7 @@ const ThemeConfig = () => {
 						w={{ base: "auto", md: "180px" }}
 						onClick={() => onOpen()}
 						disabled={
+							navStyle === navstyle &&
 							currentTheme?.primary === selectedTheme?.primary &&
 							currentTheme?.accent === selectedTheme?.accent
 						}
