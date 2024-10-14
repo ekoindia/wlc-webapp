@@ -20,11 +20,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	PORTAL_CONFIG: {
 		enabled: true,
 		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST],
-			},
-		},
 	},
 
 	// Theme selection from predefined themes (free tier)

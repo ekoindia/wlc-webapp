@@ -82,6 +82,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 				...light,
 				colors: {
 					...light.colors,
+					navstyle: colors.navstyle,
 					primary: {
 						...light.colors.primary,
 						light:

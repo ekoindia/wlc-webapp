@@ -503,6 +503,7 @@ export const productPricingType = {
 	VALIDATE_UPI_ID: productPricingTextConfig.PRICING,
 	QR_PAYMENT: productPricingTextConfig.PRICING,
 	CDM: productPricingTextConfig.PRICING,
+	TRAVEL_BOOKING: productPricingTextConfig.COMMISSION,
 };
 
 // TODO: WIP Type Definitions for converting to Typescript

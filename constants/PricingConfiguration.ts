@@ -166,7 +166,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 	},
 	"aadhaar-pay": {
 		label: "Aadhaar Pay",
-		desc: "Set Agent Pricing for Credit Card Bill Payment services",
+		desc: "Set Agent Pricing for Aadhaar Pay services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "wallet",
 		comp: "AadhaarPay",
@@ -244,14 +244,14 @@ export const product_slug_map: Record<string, ProductDetails> = {
 	"travel-booking": {
 		is_group: true,
 		label: "Travel Booking",
-		desc: "Set Agent Pricing for QR Payment services",
+		desc: "Set Agent Commission for Travel Booking services",
 		hide: false,
 		products: ["train-booking", "flight-booking"],
 	},
 	"train-booking": {
 		// product_key: "TRAIN_BOOKING",
 		label: "Train Booking",
-		desc: "Set Agent Pricing for QR Payment services",
+		desc: "Set Agent Commission for Train Ticket Booking services",
 		// template: "standard",
 		comp: "TravelTrain",
 		icon: "train",
@@ -260,7 +260,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 	"flight-booking": {
 		// product_key: "FLIGHT_BOOKING",
 		label: "Flight Booking",
-		desc: "Set Agent Pricing for QR Payment services",
+		desc: "Set Agent Commission for Flight Ticket Booking services",
 		// template: "standard",
 		comp: "TravelFlight",
 		icon: "flight",
@@ -280,7 +280,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		label: "Cash Deposit Test",
 		desc: "Set Agent Pricing for Cash Deposit services",
 		icon: "money-deposit",
-		hide: false,
+		hide: true,
 		products: [
 			"cash_deposit_counter",
 			"cash_deposit_machine",
