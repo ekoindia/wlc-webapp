@@ -61,11 +61,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	GPT_CHAT: {
 		enabled: true,
 		forEnv: ["development"],
-		envConstraints: {
-			production: {
-				forUserId: [],
-			},
-		},
+		// envConstraints: {
+		// 	production: {
+		// 		forUserId: [],
+		// 	},
+		// },
 	},
 
 	// Expression editor for generating custom expressions using a GUI.
