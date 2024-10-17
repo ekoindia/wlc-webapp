@@ -477,6 +477,10 @@ export const products = {
 		},
 	},
 	CDM: {
+		api: {
+			retailer: {},
+			// distributor: {},
+		},
 		DEFAULT: {
 			operation_type: "3",
 			payment_mode: "1",

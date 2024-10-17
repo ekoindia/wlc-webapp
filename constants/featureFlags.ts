@@ -1,9 +1,9 @@
 // Few pre-defined org-ids for configuring feature flags:
-// const ORG_ID = {
-// 	EKOSTORE: 1,
-// 	EKOTEST: 101, // SuperPay (Production UAT)
-// 	SBIKIOSK: 287,
-// };
+const ORG_ID = {
+	EKOSTORE: 1,
+	EKOTEST: 101, // SuperPay (Production UAT)
+	SBIKIOSK: 287,
+};
 
 /**
  * Note: This file is used to enable or disable features in the application.
@@ -45,6 +45,22 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 	},
 
+	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
+	RAISE_ISSUE_SBIKIOSK: {
+		enabled: true,
+		envConstraints: {
+			development: {
+				forOrgId: [1],
+			},
+			staging: {
+				forOrgId: [1],
+			},
+			production: {
+				forOrgId: [ORG_ID.SBIKIOSK],
+			},
+		},
+	},
+
 	// Face detector for images, videos, and live streams.
 	FACE_DETECTOR: {
 		enabled: true,
@@ -61,11 +77,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	GPT_CHAT: {
 		enabled: true,
 		forEnv: ["development"],
-		envConstraints: {
-			production: {
-				forUserId: [],
-			},
-		},
+		// envConstraints: {
+		// 	production: {
+		// 		forUserId: [],
+		// 	},
+		// },
 	},
 
 	// Expression editor for generating custom expressions using a GUI.
