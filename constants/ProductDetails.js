@@ -2,85 +2,36 @@
  * Product Details
  */
 export const products = {
-	DMT: {
-		uriSegment: "dmt",
+	AADHAAR_PAY: {
+		uriSegment: "aadharpay",
 		slabs: [
 			{
-				min: 100,
-				max: 1000,
-				validation: {
-					PRICING: {
-						fixed: { min: 8, max: 12 },
-						percentage: false,
-					},
-					COMMISSION: {
-						fixed: false,
-						percentage: { min: 0, max: 0.25 },
-					},
-				},
-			},
-			{
-				min: 1001,
-				max: 2000,
+				min: 1,
+				max: 10000,
 				validation: {
 					PRICING: {
 						fixed: false,
-						percentage: { min: 0.75, max: 1.2 },
-					},
-					COMMISSION: {
-						fixed: false,
-						percentage: { min: 0, max: 0.25 },
-					},
-				},
-			},
-			{
-				min: 2001,
-				max: 3000,
-				validation: {
-					PRICING: {
-						fixed: false,
-						percentage: { min: 0.6, max: 1.2 },
-					},
-					COMMISSION: {
-						fixed: false,
-						percentage: { min: 0, max: 0.25 },
-					},
-				},
-			},
-			{
-				min: 3001,
-				max: 4000,
-				validation: {
-					PRICING: {
-						fixed: false,
-						percentage: { min: 0.55, max: 1.2 },
-					},
-					COMMISSION: {
-						fixed: false,
-						percentage: { min: 0, max: 0.25 },
-					},
-				},
-			},
-			{
-				min: 4001,
-				max: 5000,
-				validation: {
-					PRICING: {
-						fixed: false,
-						percentage: { min: 0.52, max: 1.2 },
-					},
-					COMMISSION: {
-						fixed: false,
-						percentage: { min: 0, max: 0.25 },
+						percentage: { min: 0.3, max: 1 },
 					},
 				},
 			},
 		],
 		DEFAULT: {
 			operation_type: "3",
-			// pricing_type: "0",
+			pricing_type: "0",
 		},
-		serviceCode: 721,
+	},
+	ACCOUNT_VERIFICATION: {
+		validation: {
+			PRICING: {
+				fixed: { min: 0.84, max: 5 },
+				percentage: false,
+			},
+		},
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "1",
+		},
 	},
 	AEPS: {
 		uriSegment: "aeps",
@@ -162,16 +113,20 @@ export const products = {
 		},
 		serviceCode: 424,
 	},
-	AADHAAR_PAY: {
-		uriSegment: "aadharpay",
+	CARD_PAYMENT: {
+		uriSegment: "pg",
 		slabs: [
 			{
-				min: 1,
-				max: 10000,
+				min: 100,
+				max: 200000,
 				validation: {
 					PRICING: {
 						fixed: false,
-						percentage: { min: 0.3, max: 1 },
+						percentage: { min: 0.9, max: 4 },
+					},
+					COMMISSION: {
+						fixed: { min: 0, max: 1000 },
+						percentage: { min: 0, max: 4 },
 					},
 				},
 			},
@@ -181,56 +136,15 @@ export const products = {
 			pricing_type: "0",
 		},
 	},
-	INDO_NEPAL_FUND_TRANSFER: {
-		uriSegment: "indonepal",
-		slabs: [
-			{
-				min: 100,
-				max: 5000,
-				validation: {
-					PRICING: {
-						fixed: {
-							cash_to_cash: { min: 0, max: 33.8 },
-							cash_to_account: { min: 0, max: 20.5 },
-						},
-						percentage: false,
-					},
-					COMMISSION: {
-						fixed: {
-							cash_to_cash: { min: 0, max: 23.3 },
-							cash_to_account: { min: 0, max: 13.75 },
-						},
-						percentage: false,
-					},
-				},
-			},
-			{
-				min: 5001,
-				max: 49999,
-				validation: {
-					PRICING: {
-						fixed: {
-							cash_to_cash: { min: 0, max: 45 },
-							cash_to_account: { min: 0, max: 27.4 },
-						},
-						percentage: false,
-					},
-					COMMISSION: {
-						fixed: {
-							cash_to_cash: { min: 0, max: 30.8 },
-							cash_to_account: { min: 0, max: 18.3 },
-						},
-						percentage: false,
-					},
-				},
-			},
-		],
+	CDM: {
+		api: {
+			retailer: {},
+			// distributor: {},
+		},
 		DEFAULT: {
 			operation_type: "3",
-			pricing_type: "1",
 			payment_mode: "1",
 		},
-		serviceCode: [198, 466], //['cash_to_cash','cash_to_account']
 	},
 	CREDIT_CARD_BILL_PAYMENT: {
 		uriSegment: "cc_bill_pay",
@@ -284,6 +198,237 @@ export const products = {
 		},
 		serviceCode: 711,
 	},
+	DMT: {
+		uriSegment: "dmt",
+		slabs: [
+			{
+				min: 100,
+				max: 1000,
+				validation: {
+					PRICING: {
+						fixed: { min: 8, max: 12 },
+						percentage: false,
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
+			{
+				min: 1001,
+				max: 2000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.75, max: 1.2 },
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
+			{
+				min: 2001,
+				max: 3000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.6, max: 1.2 },
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
+			{
+				min: 3001,
+				max: 4000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.55, max: 1.2 },
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
+			{
+				min: 4001,
+				max: 5000,
+				validation: {
+					PRICING: {
+						fixed: false,
+						percentage: { min: 0.52, max: 1.2 },
+					},
+					COMMISSION: {
+						fixed: false,
+						percentage: { min: 0, max: 0.25 },
+					},
+				},
+			},
+		],
+		DEFAULT: {
+			operation_type: "3",
+			// pricing_type: "0",
+		},
+		serviceCode: 721,
+	},
+	FLIGHT_BOOKING: {
+		agent: {
+			uriSegment: "travel",
+			initialVal: {
+				operation_type: "3",
+				pricing_type: "1",
+			},
+			validation: {
+				fixed: false,
+				percentage: { min: 0, max: 0.1 },
+			},
+		},
+		distributor: {
+			serviceCode: 750,
+			validation: {
+				fixed: false,
+				percentage: { min: 0, max: 0.3 },
+			},
+		},
+	},
+	INDO_NEPAL_FUND_TRANSFER: {
+		uriSegment: "indonepal",
+		slabs: [
+			{
+				min: 100,
+				max: 5000,
+				validation: {
+					PRICING: {
+						fixed: {
+							cash_to_cash: { min: 0, max: 33.8 },
+							cash_to_account: { min: 0, max: 20.5 },
+						},
+						percentage: false,
+					},
+					COMMISSION: {
+						fixed: {
+							cash_to_cash: { min: 0, max: 23.3 },
+							cash_to_account: { min: 0, max: 13.75 },
+						},
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 5001,
+				max: 49999,
+				validation: {
+					PRICING: {
+						fixed: {
+							cash_to_cash: { min: 0, max: 45 },
+							cash_to_account: { min: 0, max: 27.4 },
+						},
+						percentage: false,
+					},
+					COMMISSION: {
+						fixed: {
+							cash_to_cash: { min: 0, max: 30.8 },
+							cash_to_account: { min: 0, max: 18.3 },
+						},
+						percentage: false,
+					},
+				},
+			},
+		],
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "1",
+			payment_mode: "1",
+		},
+		serviceCode: [198, 466], //['cash_to_cash','cash_to_account']
+	},
+	INSURANCE_DEKHO: {
+		distributor: {
+			serviceCode: 725,
+			validation: {
+				fixed: false,
+				percentage: { min: 0, max: 37.5 },
+			},
+		},
+	},
+	QR_PAYMENT: {
+		uriSegment: "qr",
+		validation: {
+			PRICING: {
+				fixed: { min: 0, max: 10 },
+				percentage: false,
+			},
+		},
+		DEFAULT: {
+			operation_type: "3",
+			pricing_type: "1",
+		},
+	},
+	TRAIN_BOOKING: {
+		agent: {
+			uriSegment: "travel",
+			initialVal: {
+				operation_type: "3",
+				pricing_type: "1",
+			},
+			validation: {
+				fixed: false,
+				percentage: { min: 0, max: 0.1 },
+			},
+		},
+		distributor: {
+			serviceCode: 712,
+			validation: {
+				fixed: false,
+				percentage: { min: 0, max: 0.2 },
+			},
+		},
+	},
+	UPI_FUND_TRANSFER: {
+		uriSegment: "vpa",
+		slabs: [
+			{
+				min: 100,
+				max: 1000,
+				validation: {
+					PRICING: {
+						fixed: { min: 5, max: 25 },
+						percentage: false,
+					},
+					COMMISSION: {
+						fixed: { min: 0, max: 25 },
+						percentage: false,
+					},
+				},
+			},
+			{
+				min: 1001,
+				max: 49999,
+				validation: {
+					PRICING: {
+						fixed: { min: 10, max: 500 },
+						percentage: false,
+					},
+					COMMISSION: {
+						fixed: { min: 0, max: 500 },
+						percentage: false,
+					},
+				},
+			},
+		],
+		DEFAULT: {
+			operation_type: "3",
+			// pricing_type: "0",
+		},
+		serviceCode: 728,
+	},
 	UPI_MONEY_TRANSFER: {
 		uriSegment: "vpa",
 		slabs: [
@@ -336,44 +481,6 @@ export const products = {
 		},
 		serviceCode: 726,
 	},
-	UPI_FUND_TRANSFER: {
-		uriSegment: "vpa",
-		slabs: [
-			{
-				min: 100,
-				max: 1000,
-				validation: {
-					PRICING: {
-						fixed: { min: 5, max: 25 },
-						percentage: false,
-					},
-					COMMISSION: {
-						fixed: { min: 0, max: 25 },
-						percentage: false,
-					},
-				},
-			},
-			{
-				min: 1001,
-				max: 49999,
-				validation: {
-					PRICING: {
-						fixed: { min: 10, max: 500 },
-						percentage: false,
-					},
-					COMMISSION: {
-						fixed: { min: 0, max: 500 },
-						percentage: false,
-					},
-				},
-			},
-		],
-		DEFAULT: {
-			operation_type: "3",
-			// pricing_type: "0",
-		},
-		serviceCode: 728,
-	},
 	VALIDATE_UPI_ID: {
 		uriSegment: "vpa",
 		validation: {
@@ -388,104 +495,6 @@ export const products = {
 		},
 		serviceCode: 727,
 	},
-	CARD_PAYMENT: {
-		uriSegment: "pg",
-		slabs: [
-			{
-				min: 100,
-				max: 200000,
-				validation: {
-					PRICING: {
-						fixed: false,
-						percentage: { min: 0.9, max: 4 },
-					},
-					COMMISSION: {
-						fixed: { min: 0, max: 1000 },
-						percentage: { min: 0, max: 4 },
-					},
-				},
-			},
-		],
-		DEFAULT: {
-			operation_type: "3",
-			pricing_type: "0",
-		},
-	},
-	ACCOUNT_VERIFICATION: {
-		validation: {
-			PRICING: {
-				fixed: { min: 0.84, max: 5 },
-				percentage: false,
-			},
-		},
-		DEFAULT: {
-			operation_type: "3",
-			pricing_type: "1",
-		},
-	},
-	QR_PAYMENT: {
-		uriSegment: "qr",
-		validation: {
-			PRICING: {
-				fixed: { min: 0, max: 10 },
-				percentage: false,
-			},
-		},
-		DEFAULT: {
-			operation_type: "3",
-			pricing_type: "1",
-		},
-	},
-	TRAIN_BOOKING: {
-		agent: {
-			uriSegment: "travel",
-			initialVal: {
-				operation_type: "3",
-				pricing_type: "1",
-			},
-			validation: {
-				fixed: false,
-				percentage: { min: 0, max: 0.1 },
-			},
-		},
-		distributor: {
-			serviceCode: 712,
-			validation: {
-				fixed: false,
-				percentage: { min: 0, max: 0.2 },
-			},
-		},
-	},
-	FLIGHT_BOOKING: {
-		agent: {
-			uriSegment: "travel",
-			initialVal: {
-				operation_type: "3",
-				pricing_type: "1",
-			},
-			validation: {
-				fixed: false,
-				percentage: { min: 0, max: 0.1 },
-			},
-		},
-		distributor: {
-			serviceCode: 750,
-			validation: {
-				fixed: false,
-				percentage: { min: 0, max: 0.3 },
-			},
-		},
-	},
-	CDM: {
-		api: {
-			retailer: {},
-			// distributor: {},
-		},
-		DEFAULT: {
-			operation_type: "3",
-			payment_mode: "1",
-		},
-	},
 };
 
 export const productPricingTextConfig = {
@@ -494,20 +503,20 @@ export const productPricingTextConfig = {
 };
 
 export const productPricingType = {
-	DMT: productPricingTextConfig.PRICING,
-	AEPS: productPricingTextConfig.COMMISSION,
 	AADHAAR_PAY: productPricingTextConfig.PRICING,
-	INDO_NEPAL_FUND_TRANSFER: productPricingTextConfig.COMMISSION,
-	// BBPS: productPricingTextConfig.COMMISSION,
-	CREDIT_CARD_BILL_PAYMENT: productPricingTextConfig.PRICING,
 	ACCOUNT_VERIFICATION: productPricingTextConfig.PRICING,
+	AEPS: productPricingTextConfig.COMMISSION,
+	// BBPS: productPricingTextConfig.COMMISSION,
 	CARD_PAYMENT: productPricingTextConfig.PRICING,
-	UPI_MONEY_TRANSFER: productPricingTextConfig.PRICING,
-	UPI_FUND_TRANSFER: productPricingTextConfig.PRICING,
-	VALIDATE_UPI_ID: productPricingTextConfig.PRICING,
-	QR_PAYMENT: productPricingTextConfig.PRICING,
 	CDM: productPricingTextConfig.PRICING,
+	CREDIT_CARD_BILL_PAYMENT: productPricingTextConfig.PRICING,
+	DMT: productPricingTextConfig.PRICING,
+	INDO_NEPAL_FUND_TRANSFER: productPricingTextConfig.COMMISSION,
+	QR_PAYMENT: productPricingTextConfig.PRICING,
 	TRAVEL_BOOKING: productPricingTextConfig.COMMISSION,
+	UPI_FUND_TRANSFER: productPricingTextConfig.PRICING,
+	UPI_MONEY_TRANSFER: productPricingTextConfig.PRICING,
+	VALIDATE_UPI_ID: productPricingTextConfig.PRICING,
 };
 
 // TODO: WIP Type Definitions for converting to Typescript
