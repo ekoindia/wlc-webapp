@@ -224,7 +224,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		// template: "standard",
 		comp: "InsuranceDekho",
 		icon: "insurance",
-		hide: false,
+		hide: true,
 	},
 	"money-transfer": {
 		label: "Money Transfer",
