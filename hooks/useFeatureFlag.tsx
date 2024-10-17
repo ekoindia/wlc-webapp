@@ -21,13 +21,24 @@ const useFeatureFlag = (featureName: string) => {
 		(customFeatureName: string) => {
 			const feature: FeatureFlagType = FeatureFlags[customFeatureName];
 
-			// If the feature is not defined or disabled, return false without checking other conditions.
-			if (!feature?.enabled) {
+			// If feature is not defined, return false.
+			if (!feature) {
+				console.log("Feature not defined:", customFeatureName);
+				return false;
+			}
+
+			// If the feature is disabled, return false.
+			if (feature.enabled !== true) {
+				console.log("Feature disabled:", customFeatureName);
 				return false;
 			}
 
 			// Check if the feature is allowed for Admin only
 			if (feature.forAdminOnly && !isAdmin) {
+				console.log(
+					"Feature not allowed for non-Admins:",
+					customFeatureName
+				);
 				return false;
 			}
 
@@ -36,6 +47,10 @@ const useFeatureFlag = (featureName: string) => {
 				feature.forEnv?.length > 0 &&
 				!feature.forEnv.includes(process.env.NEXT_PUBLIC_ENV)
 			) {
+				console.log(
+					"Feature not allowed for this environment:",
+					customFeatureName
+				);
 				return false;
 			}
 
@@ -81,9 +96,19 @@ const useFeatureFlag = (featureName: string) => {
 			}
 
 			// If all conditions are satisfied, return true.
+			console.log("Feature enabled:", customFeatureName);
+
 			return true;
 		},
-		[FeatureFlags, isAdmin, userId, userType, isLoggedIn]
+		[
+			FeatureFlags,
+			isAdmin,
+			userId,
+			userType,
+			isLoggedIn,
+			org_id,
+			process.env.NEXT_PUBLIC_ENV,
+		]
 	);
 
 	/**

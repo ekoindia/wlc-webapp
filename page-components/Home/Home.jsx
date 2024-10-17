@@ -40,7 +40,7 @@ const Home = () => {
 	const { todos, deleteTodo } = useTodos();
 
 	// Check if the GPT Chat widget is enabled
-	const isGptChatAllowed = useFeatureFlag("GPT_CHAT");
+	const [isGptChatAllowed] = useFeatureFlag("GPT_CHAT");
 
 	// Check network speed on page load...
 	const isFastNetwork = useMemo(() => {
@@ -82,7 +82,6 @@ const Home = () => {
 
 	// EXPERIMENTAL: GPT Chat widget
 	if (isGptChatAllowed) {
-		console.log("Adding GPT Chat: ", GptChatBetaWidget);
 		widgets.push({ id: 100, component: GptChatBetaWidget });
 	}
 

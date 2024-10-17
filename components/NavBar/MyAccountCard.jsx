@@ -19,6 +19,9 @@ const MyAccountCard = ({ onClose }) => {
 	const { isAdmin, logout, isOnboarding, userData, isLoggedIn } = useUser();
 	const { showRaiseIssueDialog } = useRaiseIssue();
 	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
+	const [isRaiseIssueAllowedForSbiKiosk] = useFeatureFlag(
+		"RAISE_ISSUE_SBIKIOSK"
+	);
 
 	const { userDetails } = userData;
 	const { name, code, email, mobile } = userDetails ?? {};
@@ -248,7 +251,8 @@ const MyAccountCard = ({ onClose }) => {
 				borderBottomRadius="10px"
 			>
 				{/* Raise-Query menu item */}
-				{isLoggedIn && isRaiseIssueAllowed ? (
+				{isLoggedIn &&
+				(isRaiseIssueAllowed || isRaiseIssueAllowedForSbiKiosk) ? (
 					<>
 						<Flex
 							w="100%"
