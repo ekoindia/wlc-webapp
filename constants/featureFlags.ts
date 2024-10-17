@@ -75,7 +75,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// Experimental LLM conversational UI for financial transactions and queries.
 	GPT_CHAT: {
-		enabled: true,
+		enabled: false,
 		forEnv: ["development"],
 		// envConstraints: {
 		// 	production: {
