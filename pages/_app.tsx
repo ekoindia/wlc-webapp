@@ -82,6 +82,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 				...light,
 				colors: {
 					...light.colors,
+					navstyle: colors.navstyle,
 					primary: {
 						...light.colors.primary,
 						light:
@@ -360,7 +361,9 @@ InfinityApp.getInitialProps = async function (appContext) {
 
 // Console warning to show to end users...
 console.info(
-	"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it.",
+	"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it. (" +
+		process.env.NEXT_PUBLIC_ENV +
+		")",
 	"color:red;background:yellow;font-size:20px",
 	"font-size:16px"
 );

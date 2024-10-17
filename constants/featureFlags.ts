@@ -1,10 +1,9 @@
 // Few pre-defined org-ids for configuring feature flags:
-
-const ORG_ID = {
-	EKOSTORE: 1,
-	EKOTEST: 101, // SuperPay (Production UAT)
-	SBIKIOSK: 287,
-};
+// const ORG_ID = {
+// 	EKOSTORE: 1,
+// 	EKOTEST: 101, // SuperPay (Production UAT)
+// 	SBIKIOSK: 287,
+// };
 
 /**
  * Note: This file is used to enable or disable features in the application.
@@ -20,11 +19,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	PORTAL_CONFIG: {
 		enabled: true,
 		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST],
-			},
-		},
 	},
 
 	// Theme selection from predefined themes (free tier)
@@ -83,11 +77,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	GPT_CHAT: {
 		enabled: true,
 		forEnv: ["development"],
-		envConstraints: {
-			production: {
-				forUserId: [],
-			},
-		},
+		// envConstraints: {
+		// 	production: {
+		// 		forUserId: [],
+		// 	},
+		// },
 	},
 
 	// Expression editor for generating custom expressions using a GUI.

@@ -117,7 +117,7 @@ const TravelFlightRetailer = () => {
 	const travel_flight_retailer_parameter_list = [
 		{
 			name: "operation_type",
-			label: `Set ${productPricingType.DMT} for`,
+			label: `Set ${productPricingType.TRAVEL_BOOKING} for`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: operation_type_list,
 			// defaultValue: DEFAULT.operation_type,
@@ -143,14 +143,14 @@ const TravelFlightRetailer = () => {
 		// },
 		{
 			name: "pricing_type",
-			label: `Select ${productPricingType.DMT} Type`,
+			label: `Select ${productPricingType.TRAVEL_BOOKING} Type`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: pricingTypeList,
 			// defaultValue: DEFAULT.pricing_type,
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.DMT} (GST Inclusive)`,
+			label: `Define ${productPricingType.TRAVEL_BOOKING} (GST Inclusive)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {
