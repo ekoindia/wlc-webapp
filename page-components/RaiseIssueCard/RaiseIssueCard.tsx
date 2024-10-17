@@ -169,6 +169,9 @@ const RaiseIssueCard = ({
 
 	// Check if the feature is enabled...
 	const [isFeatureEnabled] = useFeatureFlag("RAISE_ISSUE");
+	const [isRaiseIssueAllowedForSbiKiosk] = useFeatureFlag(
+		"RAISE_ISSUE_SBIKIOSK"
+	);
 
 	// Experimental text-classifier for user comments...
 	// @see https://ai.google.dev/edge/mediapipe/solutions/text/text_classifier
@@ -631,10 +634,10 @@ const RaiseIssueCard = ({
 	};
 
 	// Is the feature enabled?
-	if (!isFeatureEnabled) {
+	if (!(isFeatureEnabled || isRaiseIssueAllowedForSbiKiosk)) {
 		return (
 			<Text fontSize="sm" color="gray.600">
-				Feature is disabled. Please try again later.
+				Feature is disabled. Please contact support.
 			</Text>
 		);
 	}
