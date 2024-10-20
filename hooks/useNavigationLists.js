@@ -7,7 +7,6 @@ import {
 	InteractionBehavior,
 	OtherMenuItems,
 	sidebarMenu,
-	TransactionIds,
 } from "constants";
 import { useMenuContext, useOrgDetailContext, useUser } from "contexts";
 import { useFeatureFlag } from "hooks";
@@ -275,15 +274,6 @@ const useNavigationLists = (ignoreList = []) => {
 				}
 			});
 
-			let manageMyAccount = {
-				id: TransactionIds.MANAGE_MY_ACCOUNT,
-				...roleTxList[TransactionIds.MANAGE_MY_ACCOUNT],
-			};
-
-			if (manageMyAccount?.is_visible !== 1) {
-				manageMyAccount = null;
-			}
-
 			setAppLists({
 				menuList: _filteredMenuList,
 				trxnList: _trxnList,
@@ -295,13 +285,12 @@ const useNavigationLists = (ignoreList = []) => {
 						link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
 					},
 					..._otherList,
-					...(manageMyAccount ? [manageMyAccount] : []),
 				],
 			});
 
 			if (ready) {
 				const _otherActions = generateTransactionActions(
-					[..._otherList, manageMyAccount].filter(Boolean),
+					_otherList.filter(Boolean),
 					roleTxList,
 					router,
 					true
