@@ -115,7 +115,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		label: "Aadhaar Pay",
 		desc: "Set Agent Pricing for Aadhaar Pay services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "wallet",
+		// icon: "wallet",
 		comp: "AadhaarPay",
 		hide: false,
 	},
@@ -123,7 +123,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		label: "Account Verification",
 		desc: "Set Agent Pricing for Recipient Bank Account Verification services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "money-note",
+		icon: "playlist-add-check",
 		comp: "AccountVerification",
 		hide: false,
 	},
@@ -137,7 +137,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 	},
 	"airtel-cms": {
 		label: "Airtel CMS",
-		desc: "Set Agent Pricing/Commission for Airtel CMS services",
+		desc: "Set Agent Commission for Airtel CMS services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		template: "fileupload",
 		// comp: "AirtelCms",
@@ -151,6 +151,21 @@ export const product_slug_map: Record<string, ProductDetails> = {
 				"/network/pricing_commissions/airtel_cms_bulk_update_commercial",
 		},
 	},
+	"agreement-signing": {
+		label: "Agreement Signing",
+		desc: "Setup organisation’s signature to be used on agent agreements.",
+		note: "Configure your email, signature, etc to enable custom agreement signing with your network's agents. If not set, Eko's agreement will be used.",
+		icon: "handshake",
+		comp: "AgreementSigning",
+		hide: false,
+	},
+	"account-verification-toggle": {
+		label: "Account Verification",
+		desc: "Change Configuration for Recipient Bank Account Verification process",
+		icon: "playlist-add-check",
+		comp: "OptionalVerification",
+		hide: false,
+	},
 	cash_deposit_counter: {
 		product_key: "CDM",
 		label: "Counter Cash Deposit",
@@ -162,6 +177,13 @@ export const product_slug_map: Record<string, ProductDetails> = {
 				payment_mode: "1",
 			},
 		},
+		hide: false,
+	},
+	"cash-deposit-charges-config": {
+		label: "Manage Cash-Deposit Charges",
+		desc: "Enable/disable Cash-Deposit charges for your network",
+		comp: "ToggleCdm",
+		icon: "toggle",
 		hide: false,
 	},
 	cash_deposit_machine: {
@@ -188,7 +210,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 	"commission-frequency": {
 		label: "Commission Frequency",
 		desc: "Toggle between Daily and Monthly Commissions within your network",
-		icon: "money-deposit",
+		// icon: "money-deposit",
 		comp: "CommissionFrequency",
 		hide: false,
 	},
@@ -211,7 +233,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 	},
 	"indo-nepal-fund-transfer": {
 		label: "Indo-Nepal Fund Transfer",
-		desc: "Set Agent Pricing/Commission for Indo-Nepal Fund Transfer services",
+		desc: "Set Agent Commission for Indo-Nepal Fund Transfer services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
 		icon: "nepal",
 		comp: "IndoNepal",
@@ -264,22 +286,8 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		products: [
 			"cash_deposit_counter",
 			"cash_deposit_machine",
-			"toggle-cash-deposit-charges",
+			"cash-deposit-charges-config",
 		],
-	},
-	"toggle-account-verification": {
-		label: "Account Verification",
-		desc: "Change Configuration for Recipient Bank Account Verification process",
-		icon: "playlist-add-check",
-		comp: "OptionalVerification",
-		hide: false,
-	},
-	"toggle-cash-deposit-charges": {
-		label: "Manage Cash-Deposit Charges",
-		desc: "Enable/disable Cash-Deposit charges for your network",
-		comp: "ToggleCdm",
-		icon: "toggle",
-		hide: false,
 	},
 	"train-booking": {
 		// product_key: "TRAIN_BOOKING",
@@ -339,17 +347,19 @@ interface ProductCategoryMap {
  * Define how products are categorized and visible on the Pricing & Commission page.
  */
 export const product_categories: ProductCategoryMap = {
-	"General Settings": {
+	"Business Settings": {
 		description:
 			"Manage product settings and configurations for your network.",
 		products: [
-			"toggle-account-verification",
+			"account-verification-toggle",
+			"agreement-signing",
 			// "cash-deposit",
 			"commission-frequency",
+			"cash-deposit-charges-config",
 			"refund-method",
 		],
 	},
-	"Earning Opportunities": {
+	"Earning Opportunity Commissions": {
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [
@@ -365,7 +375,7 @@ export const product_categories: ProductCategoryMap = {
 			"validate-upi-id",
 		],
 	},
-	"Digitization Products": {
+	"Digitization Tools Pricing": {
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [
