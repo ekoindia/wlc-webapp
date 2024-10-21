@@ -157,7 +157,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		note: "Configure your email, signature, etc to enable custom agreement signing with your network's agents. If not set, Eko's agreement will be used.",
 		icon: "handshake",
 		comp: "AgreementSigning",
-		hide: false,
+		hide: true,
 	},
 	"account-verification-toggle": {
 		label: "Account Verification",
