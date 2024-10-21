@@ -118,7 +118,7 @@ const FormFileUpload = ({ sampleFileDownloadParams, fileUploadUri }) => {
 				>
 					<Flex direction="column">
 						<InputLabel required={true}>
-							Download Sample File &thinsp;
+							Download Sample Configuration File &thinsp;
 						</InputLabel>
 						<Button onClick={handleFileDownload} w="136px">
 							<Icon name="file-download" size="sm" />
@@ -127,7 +127,7 @@ const FormFileUpload = ({ sampleFileDownloadParams, fileUploadUri }) => {
 					</Flex>
 					<Flex direction="column">
 						<InputLabel required={true}>
-							Upload your pricing
+							Upload your commission configuration
 						</InputLabel>
 						<Dropzone
 							file={file}
