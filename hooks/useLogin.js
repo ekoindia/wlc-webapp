@@ -72,6 +72,17 @@ function useLogin(login, setStep, setEmail) {
 						return;
 					}
 
+					if (responseData.accountInactive) {
+						toast({
+							title: "Your account has been temporarily blocked.",
+							description: "Please contact support.",
+							status: "error",
+							duration: null,
+						});
+						setStep("LOGIN");
+						return;
+					}
+
 					if (
 						responseData?.details?.user_type === -1 &&
 						data?.id_type === "Google"
@@ -103,7 +114,7 @@ function useLogin(login, setStep, setEmail) {
 				processLoginResponse(responseData);
 			})
 			.catch((e) => {
-				console.error("Login Error: ", e);
+				console.error("Login Error:", e);
 			})
 			.finally(() => setBusy(false));
 	}

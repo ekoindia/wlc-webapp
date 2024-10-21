@@ -82,6 +82,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 				...light,
 				colors: {
 					...light.colors,
+					navstyle: colors.navstyle,
 					primary: {
 						...light.colors.primary,
 						light:
@@ -294,34 +295,51 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 InfinityApp.getInitialProps = async function (appContext) {
 	const { ctx } = appContext;
-	const { res } = ctx;
+	const { res, pathname } = ctx;
 
 	const defaultProps = App.getInitialProps(appContext);
 
-	if (typeof window !== "undefined") {
-		console.log("[_app.tsx] getInitialProps from SessionStorage.");
+	if (pathname === "/404") {
 		return {
 			...defaultProps,
-			org: JSON.parse(
-				window.sessionStorage.getItem(OrgDetailSessionStorageKey)
-			),
+		};
+	}
+
+	// If we are on the client side, try to get org details from SessionStorage
+	// This can happen on page refresh or when user navigates to a different page
+	if (typeof window !== "undefined" && window.sessionStorage) {
+		console.log("[_app.tsx] getInitialProps from SessionStorage.");
+
+		const orgDetails = window.sessionStorage.getItem(
+			OrgDetailSessionStorageKey
+		);
+
+		if (orgDetails) {
+			return {
+				...defaultProps,
+				org: JSON.parse(orgDetails),
+			};
+		}
+	}
+
+	// This should be executed server-side only...
+	const host = ctx?.req?.headers?.host; // || window?.location?.host;
+
+	if (!host) {
+		console.error("[_app.tsx - getInitialProps] Host not found");
+		return {
+			...defaultProps,
 		};
 	}
 
 	// Get org details (like, logo, name, etc) from server
-	const org_details = await fetchOrgDetails(ctx.req.headers.host, false);
-
-	console.log(
-		"\n\n\n>>>>>>> org_details: ",
-		ctx.req.headers.host,
-		org_details
-	);
+	const org_details = await fetchOrgDetails(host, false);
 
 	console.debug(
 		"[_app.tsx] getInitialProps:: ",
 		JSON.stringify(
 			{
-				host: ctx?.req?.headers?.host,
+				host: host,
 				org: org_details?.props?.data,
 			},
 			null,
@@ -360,7 +378,9 @@ InfinityApp.getInitialProps = async function (appContext) {
 
 // Console warning to show to end users...
 console.info(
-	"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it.",
+	"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it. (" +
+		process.env.NEXT_PUBLIC_ENV +
+		")",
 	"color:red;background:yellow;font-size:20px",
 	"font-size:16px"
 );

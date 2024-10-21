@@ -15,10 +15,18 @@ const agent_type_list = [
 
 /**
  * The parent component to show pricing/commission form for Retailers and Distributors.
- * @param props
- * @param props.productDetails
+ * @param {*} props
+ * @param {object} props.productDetails Pricing configuration for this product, such as, slabs, limits, etc.
+ * @param {string} props.pricingType Pricing type for this product (pricing or commission)
+ * @param {object} props.additional_payload Additional payload to be sent to the API
+ * @param {object} props.additional_headers Additional headers to be sent to the API
  */
-const FormPricing = ({ productDetails }) => {
+const FormPricing = ({
+	productDetails,
+	pricingType,
+	additional_payload,
+	additional_headers,
+}) => {
 	const [agentType, setAgentType] = useState(AGENT_TYPE.RETAILERS);
 
 	if (!productDetails) {
@@ -40,6 +48,9 @@ const FormPricing = ({ productDetails }) => {
 			<FormSetPricingSlug
 				agentType={agentType}
 				productDetails={productDetails}
+				pricingType={pricingType}
+				additional_payload={additional_payload}
+				additional_headers={additional_headers}
 			/>
 		</Flex>
 	);

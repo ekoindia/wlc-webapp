@@ -1,11 +1,39 @@
 import { products } from "./ProductDetails";
 
+/*
+TODO:
+	1. Multi level URL. Eg: /pricing/pg/nimbbl/settlement
+	2. Each level (left to right) loads extra_params from config and the next level merges their extra_params. Right-most (last) level has max priority.
+	3. Product types:
+		a. Standard: Uses a custom-component or a template to show a page
+		b. group:
+		c. dynamic_group: Fetch group products from API. Store extra_params for each sub-product in a context. The next level product component will fetch the extra_params for this dynamic product from the context.
+*/
+
 /**
  * Interface for product "meta".
  * This interface defines few of the additional properties that can be passed to the product component.
  * The "meta" property can accept other name/value pairs as well, depending on the product template.
  */
 interface ProductMeta {
+	/**
+	 * The API details to set the pricing/commission details for agent(s).
+	 * TODO: MOVE TO ProductDetails, because the same URL config can be used for multiple sub-products.
+	 */
+	agent?: Record<
+		"url" | "trxn_type_id" | "uriSegment" | "service_code" | string,
+		string | number
+	>;
+
+	/**
+	 * The API details to set the pricing/commission details for distributor(s).
+	 * TODO: MOVE TO ProductDetails, because the same URL config can be used for multiple sub-products.
+	 */
+	distributor?: Record<
+		"url" | "trxn_type_id" | "uriSegment" | "service_code" | string,
+		string | number
+	>;
+
 	/**
 	 * Pass additional payload to the API request when configuring pricing for this product.
 	 * Eg: { "service_code": 1234 }
@@ -60,7 +88,7 @@ interface ProductDetails {
 	note?: string;
 
 	/** The icon representing the product. */
-	icon?: string;
+	icon?: string | React.ComponentType;
 
 	/**
 	 * The component template to use for the product.
@@ -83,41 +111,12 @@ interface ProductDetails {
  * Map of product slugs to their respective details.
  */
 export const product_slug_map: Record<string, ProductDetails> = {
-	"commission-frequency": {
-		label: "Commission Frequency",
-		desc: "Toggle between Daily and Monthly Commissions within your network",
-		icon: "money-deposit",
-		comp: "CommissionFrequency",
-		hide: false,
-	},
-	"money-transfer": {
-		label: "Money Transfer",
-		desc: "Set Agent Pricing/Commission for Domestic Money Transfer services",
+	"aadhaar-pay": {
+		label: "Aadhaar Pay",
+		desc: "Set Agent Pricing for Aadhaar Pay services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "cash",
-		comp: "Dmt",
-		hide: false,
-	},
-	aeps: {
-		label: "AePS Cashout",
-		desc: "Set Agent Commissions for AePS Cashout services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "cashout",
-		comp: "Aeps",
-		hide: false,
-	},
-	"payment-gateway": {
-		label: "Payment Gateway",
-		desc: "Set Agent Pricing for loading E-value using Credit/Debit Card (PG)",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "CardPayment",
-		hide: true,
-	},
-	"optional-verification": {
-		label: "Account Verification",
-		desc: "Change Configuration for Recipient Bank Account Verification process",
-		icon: "playlist-add-check",
-		comp: "OptionalVerification",
+		icon: "wallet",
+		comp: "AadhaarPay",
 		hide: false,
 	},
 	"account-verification": {
@@ -128,28 +127,12 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		comp: "AccountVerification",
 		hide: false,
 	},
-	"credit-card-bill-payment": {
-		label: "Credit Card Bill Payment",
-		desc: "Set Agent Pricing for Credit Card Bill Payment services",
+	aeps: {
+		label: "AePS Cashout",
+		desc: "Set Agent Commissions for AePS Cashout services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "creditcard",
-		comp: "CreditCardBillPayment",
-		hide: false,
-	},
-	"aadhaar-pay": {
-		label: "Aadhaar Pay",
-		desc: "Set Agent Pricing for Credit Card Bill Payment services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "wallet",
-		comp: "AadhaarPay",
-		hide: false,
-	},
-	"indo-nepal-fund-transfer": {
-		label: "Indo-Nepal Fund Transfer",
-		desc: "Set Agent Pricing/Commission for Indo-Nepal Fund Transfer services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		icon: "nepal",
-		comp: "IndoNepal",
+		icon: "cashout",
+		comp: "Aeps",
 		hide: false,
 	},
 	"airtel-cms": {
@@ -168,80 +151,6 @@ export const product_slug_map: Record<string, ProductDetails> = {
 				"/network/pricing_commissions/airtel_cms_bulk_update_commercial",
 		},
 	},
-	"refund-method": {
-		label: "Refund Method",
-		desc: "Choose the Refund Method for failed transactions within your network",
-		comp: "RefundMethod",
-		icon: "replay",
-		hide: false,
-	},
-	"toggle-cash-deposit-charges": {
-		label: "Toggle Cash-Deposit Charges",
-		desc: "Enable/disable Cash-Deposit charges for your network",
-		comp: "ToggleCdm",
-		icon: "money-deposit",
-		hide: false,
-	},
-	"upi-money-transfer": {
-		label: "UPI Money Transfer",
-		desc: "Set Agent Pricing/Commission for UPI Money Transfer services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "UpiMoneyTransfer",
-		icon: "upi",
-		hide: true,
-	},
-	"upi-fund-transfer": {
-		label: "UPI NeoBank Payments",
-		desc: "Set Agent Pricing/Commission for UPI NeoBank Payments",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "UpiFundTransfer",
-		icon: "upi",
-		hide: true,
-	},
-	"validate-upi-id": {
-		label: "UPI ID Verification",
-		desc: "Set Agent Pricing for Recipient UPI ID Verification services",
-		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		comp: "ValidateUpiId",
-		icon: "upi",
-		hide: true,
-	},
-	"qr-payment": {
-		label: "QR Payment",
-		desc: "Set Agent Pricing for QR Payment services",
-		comp: "QrPayment",
-		icon: "qrcode",
-		hide: false,
-	},
-	"agreement-signing": {
-		label: "Agreement Signing",
-		desc: "Upload the organisation’s signature to be used on agent agreements.",
-		icon: "handshake",
-		comp: "AgreementSigning",
-		hide: false,
-	},
-	cdm: {
-		product_key: "CDM",
-		label: "Cash Deposit",
-		desc: "Set Agent Pricing for Cash Deposit services",
-		comp: "Cdm",
-		icon: "money-deposit",
-		hide: false,
-	},
-
-	test_cdm: {
-		is_group: true,
-		label: "Cash Deposit Test",
-		desc: "Set Agent Pricing for Cash Deposit services",
-		icon: "money-deposit",
-		hide: false,
-		products: [
-			"cash_deposit_counter",
-			"cash_deposit_machine",
-			"toggle-cash-deposit-charges",
-		],
-	},
-
 	cash_deposit_counter: {
 		product_key: "CDM",
 		label: "Counter Cash Deposit",
@@ -268,6 +177,150 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		},
 		hide: false,
 	},
+	cdm: {
+		product_key: "CDM",
+		label: "Cash Deposit",
+		desc: "Set Agent Pricing for Cash Deposit services",
+		comp: "Cdm",
+		icon: "money-deposit",
+		hide: false,
+	},
+	"commission-frequency": {
+		label: "Commission Frequency",
+		desc: "Toggle between Daily and Monthly Commissions within your network",
+		icon: "money-deposit",
+		comp: "CommissionFrequency",
+		hide: false,
+	},
+	"credit-card-bill-payment": {
+		label: "Credit Card Bill Payment",
+		desc: "Set Agent Pricing for Credit Card Bill Payment services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		icon: "creditcard",
+		comp: "CreditCardBillPayment",
+		hide: false,
+	},
+	"flight-booking": {
+		// product_key: "FLIGHT_BOOKING",
+		label: "Flight Booking",
+		desc: "Set Agent Commission for flight booking services",
+		// template: "standard",
+		comp: "TravelFlight",
+		icon: "flight",
+		hide: false,
+	},
+	"indo-nepal-fund-transfer": {
+		label: "Indo-Nepal Fund Transfer",
+		desc: "Set Agent Pricing/Commission for Indo-Nepal Fund Transfer services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		icon: "nepal",
+		comp: "IndoNepal",
+		hide: false,
+	},
+	"insurance-dekho": {
+		// product_key: "FLIGHT_BOOKING",
+		label: "InsuranceDekho",
+		desc: "Set Agent Commission for InsuranceDekho services",
+		// template: "standard",
+		comp: "InsuranceDekho",
+		icon: "insurance",
+		hide: true,
+	},
+	"money-transfer": {
+		label: "Money Transfer",
+		desc: "Set Agent Pricing/Commission for Domestic Money Transfer services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		icon: "cash",
+		comp: "Dmt",
+		hide: false,
+	},
+	"payment-gateway": {
+		label: "Payment Gateway",
+		desc: "Set Agent Pricing for loading E-value using Credit/Debit Card (PG)",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		comp: "CardPayment",
+		hide: true,
+	},
+	"qr-payment": {
+		label: "QR Payment",
+		desc: "Set Agent Pricing for QR Payment services",
+		comp: "QrPayment",
+		icon: "qrcode",
+		hide: false,
+	},
+	"refund-method": {
+		label: "Refund Method",
+		desc: "Choose the Refund Method for failed transactions within your network",
+		comp: "RefundMethod",
+		icon: "replay",
+		hide: false,
+	},
+	test_cdm: {
+		is_group: true,
+		label: "Cash Deposit Test",
+		desc: "Set Agent Pricing for Cash Deposit services",
+		icon: "money-deposit",
+		hide: true,
+		products: [
+			"cash_deposit_counter",
+			"cash_deposit_machine",
+			"toggle-cash-deposit-charges",
+		],
+	},
+	"toggle-account-verification": {
+		label: "Account Verification",
+		desc: "Change Configuration for Recipient Bank Account Verification process",
+		icon: "playlist-add-check",
+		comp: "OptionalVerification",
+		hide: false,
+	},
+	"toggle-cash-deposit-charges": {
+		label: "Manage Cash-Deposit Charges",
+		desc: "Enable/disable Cash-Deposit charges for your network",
+		comp: "ToggleCdm",
+		icon: "toggle",
+		hide: false,
+	},
+	"train-booking": {
+		// product_key: "TRAIN_BOOKING",
+		label: "Train Booking",
+		desc: "Set Agent Commission for train booking services",
+		// template: "standard",
+		comp: "TravelTrain",
+		icon: "train",
+		hide: false,
+	},
+	"travel-booking": {
+		is_group: true,
+		label: "Travel Booking",
+		desc: "Set Agent Commission for travel booking services",
+		hide: false,
+		products: ["train-booking", "flight-booking"],
+	},
+	"upi-fund-transfer": {
+		label: "UPI NeoBank Payments",
+		desc: "Set Agent Pricing/Commission for UPI NeoBank Payments",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		comp: "UpiFundTransfer",
+		icon: "upi",
+		hide: true,
+	},
+	"upi-money-transfer": {
+		label: "UPI Money Transfer",
+		desc: "Set Agent Pricing/Commission for UPI Money Transfer services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		comp: "UpiMoneyTransfer",
+		icon: "upi",
+		hide: true,
+	},
+	"validate-upi-id": {
+		label: "UPI ID Verification",
+		desc: "Set Agent Pricing for Recipient UPI ID Verification services",
+		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
+		comp: "ValidateUpiId",
+		icon: "upi",
+		hide: true,
+	},
 };
 
 /**
@@ -290,23 +343,25 @@ export const product_categories: ProductCategoryMap = {
 		description:
 			"Manage product settings and configurations for your network.",
 		products: [
+			"toggle-account-verification",
+			// "cash-deposit",
 			"commission-frequency",
 			"refund-method",
-			"optional-verification",
-			// "cash-deposit",
 		],
 	},
 	"Earning Opportunities": {
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [
-			"money-transfer",
 			"aeps",
+			"airtel-cms",
 			"credit-card-bill-payment",
 			"indo-nepal-fund-transfer",
-			"airtel-cms",
-			"upi-money-transfer",
+			"insurance-dekho",
+			"money-transfer",
+			"travel-booking",
 			"upi-fund-transfer",
+			"upi-money-transfer",
 			"validate-upi-id",
 		],
 	},
@@ -314,12 +369,11 @@ export const product_categories: ProductCategoryMap = {
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [
+			"aadhaar-pay",
+			"account-verification",
+			"cdm",
 			"payment-gateway",
 			"qr-payment",
-			"account-verification",
-			"aadhaar-pay",
-			"cdm",
-			"agreement-signing",
 			"test_cdm",
 		],
 	},
