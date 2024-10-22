@@ -127,7 +127,7 @@ const FormFileUpload = ({ sampleFileDownloadParams, fileUploadUri }) => {
 					</Flex>
 					<Flex direction="column">
 						<InputLabel required={true}>
-							Upload your commission configuration
+							Upload Your Commission Configuration
 						</InputLabel>
 						<Dropzone
 							file={file}
