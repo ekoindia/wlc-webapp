@@ -54,7 +54,6 @@ import { Share } from "./Share";
 import { ShowcaseCircle } from "./ShowcaseCircle";
 import { SideBar } from "./SideBar";
 import { StatusCard } from "./StatusCard";
-import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
 import { Tabs } from "./Tabs";
@@ -116,7 +115,6 @@ export {
 	ShowcaseCircle,
 	SideBar,
 	StatusCard,
-	SvgIcon,
 	Switch,
 	Table,
 	Tabs,
