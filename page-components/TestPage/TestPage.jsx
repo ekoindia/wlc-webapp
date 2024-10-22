@@ -611,8 +611,8 @@ const MarkdownTest = () => {
 };
 
 /**
- * Testing the Markdown component
- * MARK: MarkdownTest
+ * Testing the Agreement Signing (SignZy)
+ * MARK: AgreementTest
  */
 const AgreementTesting = () => {
 	useEffect(() => {
