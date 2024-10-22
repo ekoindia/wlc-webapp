@@ -25,6 +25,7 @@ export {
 	productPricingTextConfig,
 	productPricingType,
 	products,
+	agreementProvider,
 } from "./ProductDetails";
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
 export { PubSubTopics } from "./PubSubTopics";

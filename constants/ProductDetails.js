@@ -519,6 +519,13 @@ export const productPricingType = {
 	VALIDATE_UPI_ID: productPricingTextConfig.PRICING,
 };
 
+export const agreementProvider = {
+	DIGIO: 0,
+	KARZA: 1,
+	SIGNZY: 2,
+	LEEGALITY: 3,
+};
+
 // TODO: WIP Type Definitions for converting to Typescript
 /**
  * Interface for setting min/max range

@@ -1,4 +1,6 @@
 /* PLOP_INJECT_IMPORT */
+import { Address } from "./Address";
+import { ActionButtonGroup } from "./ActionButtonGroup";
 import {
 	Accordion,
 	AccordionButton,
@@ -6,7 +8,6 @@ import {
 	AccordionPanel,
 } from "./Accordion";
 import { AccordionMenu } from "./AccordionMenu";
-import { ActionButtonGroup } from "./ActionButtonGroup";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumbs } from "./Breadcrumb";
@@ -63,12 +64,6 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
-	Accordion,
-	AccordionButton,
-	AccordionItem,
-	AccordionMenu,
-	AccordionPanel,
-	ActionButtonGroup,
 	AdminViewToggleCard,
 	BottomAppBar,
 	Breadcrumbs,
@@ -123,4 +118,11 @@ export {
 	Tags,
 	Textarea,
 	XScrollArrow,
+	Address,
+	ActionButtonGroup,
+	Accordion,
+	AccordionButton,
+	AccordionPanel,
+	AccordionItem,
+	AccordionMenu,
 };
