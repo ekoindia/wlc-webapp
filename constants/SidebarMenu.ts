@@ -139,7 +139,6 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		name: "Configurations",
 		label: "Configurations",
 		link: "/admin/configurations",
-		featureFlag: "PORTAL_CONFIG",
 	},
 
 	// UAT Options

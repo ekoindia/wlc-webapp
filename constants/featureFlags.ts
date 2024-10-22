@@ -15,10 +15,10 @@ const ORG_ID = {
  * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
-	// UAT: Feature to show Portal Configurations like Landing Page, Theme, etc to Admin.
-	PORTAL_CONFIG: {
+	// Feature to show Tree-view in Network Management.
+	NETWORK_TREE_VIEW: {
 		enabled: true,
-		forAdminOnly: true,
+		forEnv: ["development"],
 	},
 
 	// Theme selection from predefined themes (free tier)
@@ -26,10 +26,9 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 	},
 
-	// Custom theme support for paid tier
+	// Custom theme support (paid tier)
 	CUSTOM_THEME_CREATOR: {
 		enabled: true,
-		forRoles: [],
 		forEnv: ["development"],
 	},
 
