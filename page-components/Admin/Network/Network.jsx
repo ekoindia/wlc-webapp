@@ -363,6 +363,7 @@ const Network = () => {
 				hasIcon={false}
 				propComp={
 					<Button
+						size={{ base: "sm", md: "md" }}
 						onClick={() =>
 							router.push("/admin/my-network/profile/change-role")
 						}

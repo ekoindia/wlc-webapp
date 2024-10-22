@@ -87,7 +87,7 @@ const NetworkToolbar = ({
 						<>
 							<Button
 								key={id}
-								size="lg"
+								size="md"
 								variant="primary_outline"
 								onClick={() =>
 									setOpenModalId(
