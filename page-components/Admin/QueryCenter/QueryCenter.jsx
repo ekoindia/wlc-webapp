@@ -8,16 +8,14 @@ import { useEffect, useState } from "react";
 import { QueryCenterTable } from ".";
 
 /**
- * A <QueryCenter> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<QueryCenter></QueryCenter>` TODO: Fix example
+ * A <QueryCenter> page component to show a list of queries/tickets raised by the admin or its network.
+ * @param {object} prop Properties passed to the component
+ * @param {...*} rest Rest of the props passed to this component.
  */
-const QueryCenter = ({ prop1, ...rest }) => {
+const QueryCenter = ({ ...rest }) => {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [data, setData] = useState(null);
+	const [loading, setLoading] = useState(true);
 	const { accessToken } = useSession();
 
 	useEffect(() => {
@@ -34,6 +32,9 @@ const QueryCenter = ({ prop1, ...rest }) => {
 			.catch((error) => {
 				// Handle any errors that occurred during the fetch
 				console.error("[QueryCenter] Get All Queries Error:", error);
+			})
+			.finally(() => {
+				setLoading(false);
 			});
 	}, []);
 
@@ -49,7 +50,7 @@ const QueryCenter = ({ prop1, ...rest }) => {
 					/>
 				) : (
 					<Text textAlign="center" fontSize="sm">
-						Nothing Found
+						{loading ? "Loading Tickets..." : "Nothing Found"}
 					</Text>
 				)}
 			</Box>
