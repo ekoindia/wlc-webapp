@@ -18,6 +18,7 @@ const Textarea = forwardRef(
 			onChange,
 			noOfLines = 2,
 			maxLength = 100,
+			size = "md",
 			resize = "none",
 			disabled,
 			isInvalid,
@@ -44,6 +45,7 @@ const Textarea = forwardRef(
 					resize={resize}
 					noOfLines={noOfLines}
 					maxLength={maxLength}
+					size={size}
 					onChange={onChange}
 					isDisabled={disabled}
 					isInvalid={isInvalid}

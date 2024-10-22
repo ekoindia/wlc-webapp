@@ -13,14 +13,14 @@ import { getFormErrorMessage } from "utils";
 
 /**
  * A Form component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param prop.parameter_list
- * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param {object} prop Properties passed to the component
+ * @param {Array} prop.parameter_list
  * @param prop.register
  * @param prop.formValues
  * @param prop.control
  * @param prop.errors
+ * @param {string} [prop.size] Size of the form components: "sm" | "md" | "lg"
+ * @param {...*} rest Rest of the props passed to this component.
  * @example	`<Form></Form>` TODO: Fix example
  */
 const Form = ({
@@ -29,6 +29,7 @@ const Form = ({
 	formValues,
 	control,
 	errors,
+	size = "md",
 	...rest
 }) => {
 	return (
@@ -122,6 +123,7 @@ const Form = ({
 										fontSize="sm"
 										disabled={disabled}
 										labelStyle={labelStyle}
+										size={size}
 										{...rest}
 										{...register(name, {
 											..._validations,
@@ -172,6 +174,7 @@ const Form = ({
 													required,
 													disabled,
 													labelStyle,
+													size,
 												}}
 												{...rest}
 											/>
@@ -222,6 +225,7 @@ const Form = ({
 													required,
 													disabled,
 													labelStyle,
+													size,
 												}}
 												{...rest}
 											/>
@@ -276,6 +280,7 @@ const Form = ({
 															required,
 															isMulti: true,
 															labelStyle,
+															size,
 														}}
 														{...rest}
 													/>
@@ -326,6 +331,7 @@ const Form = ({
 															options:
 																list_elements,
 															labelStyle,
+															size,
 														}}
 														{...rest}
 													/>
@@ -429,6 +435,7 @@ const Form = ({
 															disabled,
 															onChange,
 															labelStyle,
+															size,
 														}}
 														{...rest}
 													/>
@@ -466,6 +473,7 @@ const Form = ({
 											required={required}
 											value={value}
 											type="text"
+											size={size}
 											fontSize="sm"
 											disabled={disabled}
 											labelStyle={labelStyle}
