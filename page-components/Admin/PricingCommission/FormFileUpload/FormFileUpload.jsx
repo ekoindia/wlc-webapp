@@ -118,7 +118,7 @@ const FormFileUpload = ({ sampleFileDownloadParams, fileUploadUri }) => {
 				>
 					<Flex direction="column">
 						<InputLabel required={true}>
-							Download Sample Configuration File &thinsp;
+							Download Sample Configuration File
 						</InputLabel>
 						<Button onClick={handleFileDownload} w="136px">
 							<Icon name="file-download" size="sm" />
