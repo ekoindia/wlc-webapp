@@ -100,7 +100,13 @@ const DownloadPricing = () => {
 			});
 	};
 	return (
-		<Button fontSize="sm" onClick={handleClick}>
+		<Button
+			size={{ base: "sm", md: "md" }}
+			icon="file-download"
+			iconStyle={{ size: { base: "xs", md: "sm" } }}
+			iconSpacing="2"
+			onClick={handleClick}
+		>
 			Existing Pricing
 		</Button>
 	);
