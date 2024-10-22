@@ -107,7 +107,7 @@ const Card = ({ label, desc, icon, slug, sub_page = false }) => {
 						/>
 					}
 				/>
-				<Flex direction="column" w="80%">
+				<Flex direction="column" w="80%" gap="1">
 					{label?.length > 0 ? (
 						<Text
 							fontSize={{ base: "sm", md: "md" }}
@@ -118,7 +118,7 @@ const Card = ({ label, desc, icon, slug, sub_page = false }) => {
 						</Text>
 					) : null}
 					{desc?.length > 0 ? (
-						<Text fontSize="xxs" userSelect="none">
+						<Text fontSize="xxs" userSelect="none" noOfLines={3}>
 							{desc}
 						</Text>
 					) : null}
