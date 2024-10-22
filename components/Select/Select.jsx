@@ -5,6 +5,7 @@ import { Icon, InputLabel } from "..";
 
 /**
  * A Select component
+ * TODO: support for Chakra-Input-like "size" parameter: sm | md | lg
  * @param root0
  * @param root0.placeholder
  * @param root0.onChange
