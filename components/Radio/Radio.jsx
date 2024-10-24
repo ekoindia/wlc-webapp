@@ -4,23 +4,19 @@ import { InputLabel } from "..";
 
 /**
  * A Radio component
- * @param options.id
- * @param 	{Array}	options     options to show
- * @param 	{object}	renderer	mapping object for label & value
- * @param 	{string}	value	value
- * @param 	{Function}	onChange	function
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @param options.value
- * @param options.options
- * @param options.onChange
- * @param options.label
- * @param options.labelStyle
- * @param options.required
- * @param options.defaultValue
- * @param options.renderer
- * @param options.styles
- * @example	`<Radio></Radio>` TODO: Fix example
+ * @param {object} props Properties passed to the component
+ * @param {string} props.id
+ * @param {Array} props.options Options to show
+ * @param {object} props.renderer Mapping object for label & value
+ * @param {string} props.value Value
+ * @param {string} props.size Size of the radio: "sm" | "md" | "lg"
+ * @param {Function} props.onChange	function
+ * @param {...*} rest Rest of the props passed to this component.
+ * @param props.label
+ * @param props.labelStyle
+ * @param props.required
+ * @param props.defaultValue
+ * @param props.styles
  */
 const Radio = ({
 	id,
@@ -29,6 +25,7 @@ const Radio = ({
 	onChange,
 	label,
 	labelStyle,
+	size = "md",
 	required = false,
 	defaultValue,
 	renderer = { label: "label", value: "value" },
@@ -71,7 +68,7 @@ const Radio = ({
 				>
 					{options?.map((item) => (
 						<ChakraRadio
-							size="lg"
+							size={size}
 							key={item[renderer.value]}
 							value={item[renderer.value]}
 							isDisabled={item.isDisabled}

@@ -10,7 +10,6 @@ import { GeneralConfig, LandingPageConfig, ThemeConfig } from ".";
 const Configurations = () => {
 	const [currTab, setCurrTab] = useState(null);
 
-	const [isPortalConfigEnabled] = useFeatureFlag("PORTAL_CONFIG");
 	const [isThemePickerEnabled] = useFeatureFlag("THEME_PICKER");
 	const [isCmsLandingPageEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
 
@@ -36,20 +35,6 @@ const Configurations = () => {
 	const onClick = (idx) => setCurrTab(idx);
 
 	const getComp = (idx) => list[idx]?.component;
-
-	if (!isPortalConfigEnabled) {
-		return (
-			<Flex
-				justifyContent="center"
-				alignItems="center"
-				h="10em"
-				w="100%"
-				fontSize="2xl"
-			>
-				<Text>Coming soon!!</Text>
-			</Flex>
-		);
-	}
 
 	return (
 		<div>

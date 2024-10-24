@@ -19,6 +19,7 @@ export const buildUserObjectState = (data) => {
 		},
 		personalDetails: data?.personal_details,
 		shopDetails: data?.shop_details,
+		businessDetails: data?.business_details,
 		accountDetails: data?.account_details,
 		onboarding: data?.details?.onboarding,
 		onboarding_steps: data?.details?.onboarding_steps,

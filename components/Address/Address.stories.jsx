@@ -1,9 +1,10 @@
-import SvgIcon from "./SvgIcon";
+import React from "react";
+import Address from "./Address";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/SvgIcon",
-	component: SvgIcon,
+	title: "Components/Address",
+	component: Address,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +47,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <SvgIcon {...args} />;
+const Template = (args) => <Address {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

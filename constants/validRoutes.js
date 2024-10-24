@@ -7,6 +7,7 @@ const publicLinks = [
 	"/delete_my_account",
 	"/icons_demo",
 	"/test",
+	"/redirect",
 	"/gateway",
 ];
 

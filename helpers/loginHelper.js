@@ -147,6 +147,10 @@ function setUserDetails(data) {
 			"account_details",
 			JSON.stringify(data.accountDetails)
 		);
+		sessionStorage.setItem(
+			"business_details",
+			JSON.stringify(data.businessDetails)
+		);
 
 		// Cache the original login-type (Google / Mobile) and user details in LocalStorage after a sucessful login
 		if (
@@ -234,6 +238,7 @@ function getSessions() {
 		account_details: ParseJson(sessionStorage.getItem("account_details")),
 		personal_details: ParseJson(sessionStorage.getItem("personal_details")),
 		shop_details: ParseJson(sessionStorage.getItem("shop_details")),
+		business_details: ParseJson(sessionStorage.getItem("business_details")),
 	};
 	return userData;
 }

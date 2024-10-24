@@ -7,7 +7,7 @@ import {
 	useImageEditor,
 	useRaiseIssue,
 } from "hooks";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -610,6 +610,51 @@ const MarkdownTest = () => {
 	);
 };
 
+/**
+ * Testing the Agreement Signing (SignZy)
+ * MARK: AgreementTest
+ */
+const AgreementTesting = () => {
+	useEffect(() => {
+		const handleMessage = (event) => {
+			if (event.data.type === "STATUS_UPDATE") {
+				const { status } = event.data;
+
+				// Handle the status update
+				console.log(`Received status test page : ${status}`);
+			}
+		};
+
+		window.addEventListener("message", handleMessage);
+
+		// Cleanup listener on component unmount
+		return () => {
+			window.removeEventListener("message", handleMessage);
+		};
+	}, []);
+
+	const url =
+		"https://contracting-v2-preproduction.signzy.app/745bef83-1c72-406c-b037-0766b9e6e387/main";
+
+	const openWindow = () => {
+		const features =
+			"toolbar=no,menubar=no,scrollbars=yes,resizable=yes,status=no";
+		window.open(url, "SignAgreementWindow", features);
+	};
+
+	return (
+		<Flex
+			sx={{
+				".markdown-body strong": {
+					color: "red",
+				},
+			}}
+		>
+			<Button onClick={openWindow}>Sign Agreement</Button>
+		</Flex>
+	);
+};
+
 // List of test components
 // MARK: List of Tests
 const TestComponents = [
@@ -640,6 +685,10 @@ const TestComponents = [
 	{
 		title: "Markdown",
 		component: MarkdownTest,
+	},
+	{
+		title: "Agreement Testing",
+		component: AgreementTesting,
 	},
 ];
 

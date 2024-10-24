@@ -1,4 +1,6 @@
 /* PLOP_INJECT_IMPORT */
+import { Address } from "./Address";
+import { ActionButtonGroup } from "./ActionButtonGroup";
 import {
 	Accordion,
 	AccordionButton,
@@ -6,7 +8,6 @@ import {
 	AccordionPanel,
 } from "./Accordion";
 import { AccordionMenu } from "./AccordionMenu";
-import { ActionButtonGroup } from "./ActionButtonGroup";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumbs } from "./Breadcrumb";
@@ -54,7 +55,6 @@ import { Share } from "./Share";
 import { ShowcaseCircle } from "./ShowcaseCircle";
 import { SideBar } from "./SideBar";
 import { StatusCard } from "./StatusCard";
-import { SvgIcon } from "./SvgIcon";
 import { Switch } from "./Switch";
 import { Table } from "./Table";
 import { Tabs } from "./Tabs";
@@ -63,12 +63,6 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
-	Accordion,
-	AccordionButton,
-	AccordionItem,
-	AccordionMenu,
-	AccordionPanel,
-	ActionButtonGroup,
 	AdminViewToggleCard,
 	BottomAppBar,
 	Breadcrumbs,
@@ -116,11 +110,17 @@ export {
 	ShowcaseCircle,
 	SideBar,
 	StatusCard,
-	SvgIcon,
 	Switch,
 	Table,
 	Tabs,
 	Tags,
 	Textarea,
 	XScrollArrow,
+	Address,
+	ActionButtonGroup,
+	Accordion,
+	AccordionButton,
+	AccordionPanel,
+	AccordionItem,
+	AccordionMenu,
 };

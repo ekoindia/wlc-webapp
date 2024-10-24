@@ -14,8 +14,7 @@ const agent_type_list = [
 ];
 
 /**
- * A <InsuranceDekho> component
- * TODO: Write more description here
+ * A <InsuranceDekho> pricing configuration screen
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {string} prop.prop1 - TODO: Property description. A normal property.

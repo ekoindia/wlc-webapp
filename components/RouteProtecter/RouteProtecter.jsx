@@ -86,7 +86,7 @@ const RouteProtecter = ({ router, children }) => {
 			isAuthorized = false;
 		} else if (isLoggedIn && (userId === "1" || isOnboarding === true)) {
 			console.log("::::Enter in Onboarding::::", path, userId);
-			if (path !== "/signup") {
+			if (path !== "/signup" && path !== "/redirect") {
 				// Goto onboarding page if user is not on onboarding page
 				router.replace("/signup");
 				return;

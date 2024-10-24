@@ -25,7 +25,7 @@ export const OtherMenuItems: number[] = [
 	TransactionIds.INITIATE_REFUND,
 	TransactionIds.MANAGE_NETWORK_EVALUE,
 	TransactionIds.MANAGE_SELF_EVALUE,
-	// TransactionIds.MANAGE_MY_ACCOUNT,
+	TransactionIds.MANAGE_MY_ACCOUNT,
 	// TransactionIds.LOAD_EVALUE,
 	// TransactionIds.REQUEST_EVALUE,
 	// TransactionIds.TRANSFER_EVALUE,
@@ -40,6 +40,7 @@ export const AdminOtherMenuItems: number[] = [
 	TransactionIds.NEO_BANK,
 	TransactionIds.MANAGE_NETWORK_EVALUE,
 	TransactionIds.MANAGE_SELF_EVALUE,
+	TransactionIds.MANAGE_MY_ACCOUNT,
 	// TransactionIds.LOAD_EVALUE,
 	// TransactionIds.REQUEST_EVALUE,
 	// TransactionIds.TRANSFER_EVALUE,
@@ -138,7 +139,6 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		name: "Configurations",
 		label: "Configurations",
 		link: "/admin/configurations",
-		featureFlag: "PORTAL_CONFIG",
 	},
 
 	// UAT Options

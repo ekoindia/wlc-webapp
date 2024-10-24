@@ -114,7 +114,7 @@ function useLogin(login, setStep, setEmail) {
 				processLoginResponse(responseData);
 			})
 			.catch((e) => {
-				console.error("Login Error::::::::::::::::::::: ", e);
+				console.error("Login Error:", e);
 			})
 			.finally(() => setBusy(false));
 	}

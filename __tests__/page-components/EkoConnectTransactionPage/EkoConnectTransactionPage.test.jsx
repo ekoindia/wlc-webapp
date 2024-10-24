@@ -1,5 +1,5 @@
-import { SvgIcon } from "components/SvgIcon";
 import { render } from "test-utils";
+import { EkoConnectTransactionPage } from "components/EkoConnectTransactionPage";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("SvgIcon", () => {
+describe("EkoConnectTransactionPage", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<SvgIcon />);
+		const { container } = render(<EkoConnectTransactionPage />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("SvgIcon", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for SvgIcon in __tests__/components/SvgIcon/SvgIcon.test.jsx"
+		"TODO: add proper test cases for EkoConnectTransactionPage in __tests__/components/EkoConnectTransactionPage/EkoConnectTransactionPage.test.jsx"
 	);
 });
