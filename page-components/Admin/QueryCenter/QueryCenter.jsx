@@ -25,9 +25,18 @@ const QueryCenter = ({ ...rest }) => {
 			},
 			token: accessToken,
 		})
-			.then((data) => {
-				const _data = data?.data?.csp_list ?? [];
-				setData(_data);
+			.then((res) => {
+				const _data = res?.data?.csp_list ?? [];
+				if (data === null) {
+					setData(_data);
+					console.log("[QueryCenter] Data loaded:", _data, res);
+				} else {
+					console.error(
+						"[QueryCenter] Data already loaded:",
+						_data,
+						res
+					);
+				}
 			})
 			.catch((error) => {
 				// Handle any errors that occurred during the fetch
