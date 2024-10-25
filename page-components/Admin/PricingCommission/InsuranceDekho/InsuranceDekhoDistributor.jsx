@@ -139,7 +139,7 @@ const InsuranceDekhoDistributor = () => {
 			name: "note",
 			label: "Note:",
 			parameter_type_id: ParamType.LABEL,
-			value: "The commission percentage you enter above will be the percent of the commission you earn from a sale of InsuranceDekho.",
+			value: "The commission percentage you enter above will be the percent of the commission you earn from the sale of an InsuranceDekho product.",
 		},
 	];
 
