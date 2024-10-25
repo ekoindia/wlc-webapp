@@ -5,7 +5,7 @@ const InsuranceDekhoRetailer = () => {
 		<Flex direction="column" gap="8">
 			<Text fontSize="sm" fontWeight="medium">
 				Your retailers will receive 62.5% of the commission earned by
-				you.
+				you
 			</Text>
 		</Flex>
 	);
