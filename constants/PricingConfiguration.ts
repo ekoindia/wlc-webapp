@@ -240,13 +240,12 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		hide: false,
 	},
 	"insurance-dekho": {
-		// product_key: "FLIGHT_BOOKING",
 		label: "InsuranceDekho",
 		desc: "Set Agent Commission for InsuranceDekho services",
 		// template: "standard",
 		comp: "InsuranceDekho",
 		icon: "insurance",
-		hide: true,
+		hide: false,
 	},
 	"money-transfer": {
 		label: "Money Transfer",
