@@ -113,7 +113,7 @@ const InsuranceDekhoDistributor = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define Commission (GST Inclusive)`,
+			label: "Define Commission",
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {
