@@ -33,18 +33,14 @@ const findObjectByValue = (
 };
 
 /**
- * A <Address> component
- * A Address component renders addrees_line1 , address_line2, pincode, state, country . It can be used with all kinds of Address
+ * A Address component renders addrees_line1 , address_line2, pincode, state, country.
  * @component
  * @param {object} prop - Properties passed to the component
- * @param {string} prop.prop1 - TODO: Property description. A normal property.
- * @param {number} [prop.optionalProp2] - TODO: Property description. An optional property with default value.
- * @param prop.onSubmit
- * @param prop.onCancel
- * @param {...*} rest - Rest of the props
- * @example <Address></Address> TODO: Fix example
+ * @param {Function} prop.onSubmit
+ * @param {Function} prop.onCancel
+ * @param {object} prop.defaultAddress
+ * @param {string} prop.desc
  */
-
 const Address: React.FC<AddressProps> = ({
 	onSubmit,
 	onCancel,
@@ -228,7 +224,6 @@ const Address: React.FC<AddressProps> = ({
 				<form onSubmit={handleSubmit(handleFormSubmit)}>
 					<Flex direction="column" gap="6">
 						<Form
-							prop1={""}
 							{...{
 								register,
 								control,

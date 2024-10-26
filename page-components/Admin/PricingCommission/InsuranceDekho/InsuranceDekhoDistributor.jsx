@@ -93,6 +93,8 @@ const InsuranceDekhoDistributor = () => {
 			min != undefined ? " - " : ""
 		}Maximum: ${prefix}${max}${suffix}`;
 
+	helperText += " (of your commission)";
+
 	const insurance_dekho_distributor_parameter_list = [
 		{
 			name: "CspList",
@@ -111,7 +113,7 @@ const InsuranceDekhoDistributor = () => {
 		},
 		{
 			name: "actual_pricing",
-			label: `Define Commission (GST Inclusive)`,
+			label: "Define Commission",
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 			helperText: helperText,
 			validations: {
@@ -124,12 +126,20 @@ const InsuranceDekhoDistributor = () => {
 					name={
 						watcher["pricing_type"] == PRICING_TYPE.PERCENT
 							? "percent_bg"
-							: "rupee_bg"
+							: watcher["pricing_type"] == PRICING_TYPE.PERCENT
+								? "rupee_bg"
+								: null
 					}
 					size="23px"
 					color="primary.DEFAULT"
 				/>
 			),
+		},
+		{
+			name: "note",
+			label: "Note:",
+			parameter_type_id: ParamType.LABEL,
+			value: "The commission percentage you enter above will be the percent of the commission you earn from the sale of an InsuranceDekho product.",
 		},
 	];
 

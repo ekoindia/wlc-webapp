@@ -124,7 +124,9 @@ const TravelTrainDistributor = () => {
 					name={
 						watcher["pricing_type"] == PRICING_TYPE.PERCENT
 							? "percent_bg"
-							: "rupee_bg"
+							: watcher["pricing_type"] == PRICING_TYPE.FIXED
+								? "rupee_bg"
+								: null
 					}
 					size="23px"
 					color="primary.DEFAULT"
