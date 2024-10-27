@@ -72,6 +72,16 @@ interface RaiseIssueProps {
 	context?: any;
 	logo?: string;
 	customIssueType?: string;
+	customIssueDetails?: {
+		desc?: string;
+		category?: string;
+		sub_category?: string;
+		tat?: number;
+		screenshot?: -1 | 0 | 1;
+		inputs?: any; // Array of { label: string, is_required: boolean, type: number }
+		files?: any; // Array of { label: string, is_required: boolean, accept: string }
+		context?: string;
+	};
 	origin: "Response" | "History" | "Global-Help" | "Command-Bar" | "Other";
 	autoCaptureScreenshot?: boolean;
 	onResult?: Function;
@@ -94,9 +104,10 @@ interface RaiseIssueProps {
  * @param {number} prop.status - Transaction status (eg: -2, -1, 0, 1, 2, 3, 4, 6, 7, 8, 9)
  * @param {string} prop.transactionTime - Transaction time
  * @param {object} prop.metadata - Additional metadata for the transaction, like, transaction_detail, pre_msg_template, post_msg_template, parameters_formatted, etc.
- * @param {object} prop.context - Contains an object of format `{ row_index: X }`, where X is the index of the row in the transaction list. It is useful for tracking the row index of the transactions shown in a list, for which the issue is being raised.
+ * @param {{ row_index: number }} prop.context - Contains an object of format `{ row_index: X }`, where X is the index of the row in the transaction list. It is useful for tracking the row index of the transactions shown in a list, for which the issue is being raised. This is not the same as `issue_type.context` which is used to pass additional context to the support team.
  * @param {string} prop.logo - Logo to show in the feedback panel (eg: for BBPS)
  * @param {string} prop.customIssueType - Custom issue type to capture, instead of pulling issue types for a certain transaction type. This is useful for creating custom "Raise Issue" buttons in the UI.
+ * @param {object} prop.customIssueDetails - Other configurations for the Custom issue. This is useful for creating custom "Raise Issue" buttons in the UI.
  * @param {boolean} prop.autoCaptureScreenshot - Whether to capture a screenshot of the current page
  * @param {string} prop.origin - Origin of the feedback panel (eg: "transaction-list")
  * @param {Function} prop.onResult - Function to return the result of the feedback
@@ -117,8 +128,9 @@ const RaiseIssueCard = ({
 	logo,
 	transactionTime,
 	// description,
-	context, // toAndFroData // TODO: Is it needed here???
+	context,
 	customIssueType,
+	customIssueDetails,
 	autoCaptureScreenshot = false,
 	origin,
 	onResult,
@@ -275,12 +287,22 @@ const RaiseIssueCard = ({
 			const customIssue = {
 				label: customIssueType,
 				value: customIssueType,
-				// desc: "How can we help you? Please submit this form and we will reach out to you soon.",
+				desc: customIssueDetails?.desc || "",
 				raise_issue_after: "0d",
 				reopened_tat: "0",
-				tat: "0",
-				category: { id: 1, title: "Others" },
-				sub_category: { id: 1, title: "Others" },
+				tat: "" + (customIssueDetails?.tat || 0),
+				screenshot: customIssueDetails?.screenshot ?? -1,
+				category: {
+					id: 1,
+					title: customIssueDetails?.category || "Others",
+				},
+				sub_category: {
+					id: 1,
+					title: customIssueDetails?.sub_category || "Others",
+				},
+				inputs: customIssueDetails?.inputs || undefined,
+				files: customIssueDetails?.files || undefined,
+				context: customIssueDetails?.context || "",
 			};
 
 			setCategoryList([{ id: 1, title: "Others" }]);
@@ -569,6 +591,7 @@ const RaiseIssueCard = ({
 			category: selectedIssue.category.title,
 			subCategory: selectedIssue.sub_category.title,
 			comment,
+			context: selectedIssue.context,
 			inputs: issueInputList as {
 				label: string;
 				value: string | number;
@@ -1625,6 +1648,11 @@ interface IssueType {
 	 * @default 0
 	 */
 	comment?: -1 | 0 | 1;
+
+	/**
+	 * Additional context/comments for the support team
+	 */
+	context?: string;
 
 	/**
 	 * Type of screenshot capture: -1 = Disabled, 0 = Optional, 1 = Mandatory

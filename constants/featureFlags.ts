@@ -21,6 +21,13 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
+	// MANUALLY CONFIGURE CUSTOM IMAGE FOR LANDING/LOGIN PAGE...
+	// TODO: Remove this after we are able to auto-upload images on file server for configuring the landing page (CMS).
+	MANUAL_LANDING_PAGE_IMAGE_SETUP: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// Theme selection from predefined themes (free tier)
 	THEME_PICKER: {
 		enabled: true,

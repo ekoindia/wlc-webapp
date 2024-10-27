@@ -20,7 +20,7 @@ import {
 import { colorThemes, Endpoints, TransactionIds } from "constants";
 import { OrgDetailSessionStorageKey, useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useFeatureFlag, useSessionStorage } from "hooks";
+import { useFeatureFlag, useSessionStorage, useRaiseIssue } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { generateShades } from "utils";
@@ -49,6 +49,9 @@ const ThemeConfig = () => {
 		"CUSTOM_THEME_CREATOR"
 	);
 	const [isCmsLandingPageEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
+	const [isManualLandingPageImageSetupEnabled] = useFeatureFlag(
+		"MANUAL_LANDING_PAGE_IMAGE_SETUP"
+	);
 	const { accessToken } = useSession();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const toast = useToast();
@@ -56,6 +59,7 @@ const ThemeConfig = () => {
 	const [orgDetail, setOrgDetail] = useSessionStorage(
 		OrgDetailSessionStorageKey
 	);
+	const { showRaiseIssueDialog } = useRaiseIssue();
 
 	// Get current theme color values
 	const [
@@ -90,7 +94,7 @@ const ThemeConfig = () => {
 	// Load Landing Page Style from LocalStorage & also set the current color theme
 	useEffect(() => {
 		// Set the current navbar style
-		setNavStyle(navstyle);
+		setNavStyle(navstyle || "default");
 
 		// Set the current color theme
 		setCurrentTheme({
@@ -463,6 +467,44 @@ const ThemeConfig = () => {
 					/>
 				</Section>
 			)}
+
+			{isManualLandingPageImageSetupEnabled && (
+				<Section title="Landing Page Image">
+					<Button
+						onClick={() =>
+							showRaiseIssueDialog({
+								origin: "Other",
+								customIssueType:
+									"Setup My Image for Eloka Landing Page",
+								customIssueDetails: {
+									category: "Admin Issues",
+									subcategory: "App/Portal Related",
+									desc: "Upload your own image for the landing page. We will set it up for you within two working days. Please ensure the image is of high quality and is relevant to your business.\n\n**Maximum Image Length:** 600px\n\n**Maximum Image Size:** 350KB",
+									context: `Set Eloka portal custom landing page image.<br>Org ID: ${orgDetail?.org_id}<br>App Name: ${orgDetail?.app_name}<br><br><strong>STEPS:</strong><ol><li>Upload the attached image on "https://files.eko.in" server in the following location: /docs/org/${(orgDetail?.app_name || "" + orgDetail?.org_id)?.replaceAll(/ /g, "")}/welcome.jpg</li><li>Configure org-metadata in database for org_id=${orgDetail?.org_id}:</li></ol><pre>${JSON.stringify(
+										{
+											cms_meta: { type: "image" },
+											cms_data: {
+												img: `https://files.eko.in/docs/org/${(orgDetail?.app_name || "" + orgDetail?.org_id)?.replaceAll(/ /g, "")}/welcome.jpg`,
+											},
+										}
+									)}</pre>`,
+									tat: 2,
+									screenshot: -1,
+									files: [
+										{
+											label: "Image/Poster For Landing Page",
+											accept: "image/*",
+											is_required: true,
+										},
+									],
+								},
+							})
+						}
+					>
+						Upload Image For LandingPage
+					</Button>
+				</Section>
+			)}
 		</Flex>
 	);
 };
@@ -471,9 +513,9 @@ export default ThemeConfig;
 
 /**
  * Section card component
- * @param root0
- * @param root0.title
- * @param root0.children
+ * @param {*} props
+ * @param {string} props.title Title of the section
+ * @param {ReactNode} props.children Children components to be rendered inside the section
  */
 const Section = ({ title, children }) => {
 	return (
@@ -499,6 +541,14 @@ const Section = ({ title, children }) => {
 	);
 };
 
+/**
+ * Color selector component
+ * @param {*} props
+ * @param {object} props.theme Color theme object
+ * @param {number} props.i Index of the theme
+ * @param {boolean} props.isSelected Flag to indicate if the theme is selected
+ * @param {Function} props.onSelect Function to handle theme selection
+ */
 const ColorSelector = ({ theme, i, isSelected, onSelect, ...rest }) => {
 	return (
 		<Flex
