@@ -68,6 +68,7 @@ const LoginPanel = ({ cmsType, cmsData }) => {
 	const { isLoggedIn } = useSession();
 
 	const [isCmsEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
+	const [isImageThemeEnabled] = useFeatureFlag("CMS_IMAGE_THEME");
 
 	// On small-screen, quickly hide the welcome card and move on to the login screen,
 	// especially, if the user had already entered their mobile number previously
@@ -162,7 +163,7 @@ const LoginPanel = ({ cmsType, cmsData }) => {
 					>
 						{isCmsEnabled && cmsType === "card" && cmsData ? (
 							<Render config={cmsConfig} data={cmsData} />
-						) : isCmsEnabled &&
+						) : isImageThemeEnabled &&
 						  cmsType === "image" &&
 						  cmsData?.img ? (
 							<ImageCard

@@ -25,6 +25,7 @@ const LandingPanel = () => {
 	const [cmsData, setCmsData] = useState(null);
 	const [cmsMeta, setCmsMeta] = useState({} as any);
 	const [isCmsEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
+	const [isImageThemeEnabled] = useFeatureFlag("CMS_IMAGE_THEME");
 
 	/*
 		org_details: {
@@ -47,7 +48,7 @@ const LandingPanel = () => {
 
 	// Load landing page custom config (for Puck)
 	useEffect(() => {
-		if (!isCmsEnabled) {
+		if (!(isCmsEnabled || isImageThemeEnabled)) {
 			setPageReady(true);
 			return;
 		}
@@ -87,6 +88,7 @@ const LandingPanel = () => {
 		}
 	}, [
 		isCmsEnabled,
+		isImageThemeEnabled,
 		orgDetail?.metadata?.cms_meta,
 		orgDetail?.metadata?.cms_data,
 	]);

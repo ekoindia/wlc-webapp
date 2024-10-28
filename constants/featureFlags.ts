@@ -39,6 +39,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
+	// Basic Landing Page customization where Admins can upload a custom image.
+	CMS_IMAGE_THEME: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// Feature to show a custom Landing Page that can be fully configured by Admins.
 	CMS_LANDING_PAGE: {
 		enabled: true,
