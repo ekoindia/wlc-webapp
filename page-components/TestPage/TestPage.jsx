@@ -10,6 +10,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useNotification } from "contexts";
 
 /**
  * A '/test' page-component
@@ -655,6 +656,13 @@ const AgreementTesting = () => {
 	);
 };
 
+const NotificationPanelTest = () => {
+	const { openNotificationPanel } = useNotification();
+	return (
+		<Button onClick={openNotificationPanel}>Show Notification Panel</Button>
+	);
+};
+
 // List of test components
 // MARK: List of Tests
 const TestComponents = [
@@ -689,6 +697,10 @@ const TestComponents = [
 	{
 		title: "Agreement Testing",
 		component: AgreementTesting,
+	},
+	{
+		title: "Notification Panel Test",
+		component: NotificationPanelTest,
 	},
 ];
 

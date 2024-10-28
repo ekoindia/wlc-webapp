@@ -12,7 +12,7 @@ import {
 	useToken,
 } from "@chakra-ui/react";
 import { useKBarReady } from "components/CommandBar";
-import { useOrgDetailContext, useUser } from "contexts";
+import { useNotification, useOrgDetailContext, useUser } from "contexts";
 import dynamic from "next/dynamic";
 import { limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
@@ -60,6 +60,11 @@ const NavContent = ({ openSidebar }) => {
 	const { name, pic } = userDetails ?? {};
 	const { orgDetail } = useOrgDetailContext();
 	// const router = useRouter();
+	const {
+		notificationCount,
+		unreadNotificationCount,
+		openNotificationPanel,
+	} = useNotification();
 
 	const screenSize = useBreakpointValue(
 		{ base: "sm", md: "md", lg: "lg" },
@@ -133,103 +138,173 @@ const NavContent = ({ openSidebar }) => {
 						</Flex>
 					)}
 			</Flex>
-
 			{/* Right-side items of navbar */}
-			<Menu defaultIsOpen={false} isOpen={isOpen} onClose={onClose}>
-				<MenuButton
-					onClick={() => {
-						onOpen();
-					}}
-				>
-					<Flex align="center" cursor="pointer" zIndex="10">
-						<Box bg="navbar.bgAlt" padding="2px" borderRadius="50%">
-							<Avatar
-								w={{
-									base: "34px",
-									xl: "38px",
-									"2xl": "42px",
-								}}
-								h={{
-									base: "34px",
-									xl: "38px",
-									"2xl": "42px",
-								}}
-								name={name ? name[0] : ""}
-								lineHeight="3px"
-								src={pic}
-							/>
-						</Box>
-						{isAdmin ? (
-							<Flex
-								ml="0.5vw"
-								h="2.3vw"
-								justify="center"
-								direction="column"
-								display={{ base: "none", md: "flex" }}
-								lineHeight={{
-									base: "15px",
-									lg: "16px",
-									xl: "18px",
-									"2xl": "22px",
-								}}
+			<Flex align="center" gap={{ base: "1em", md: "1.5em" }}>
+				{/* Show Notifications Icon, only if notifications are available */}
+				{notificationCount ? (
+					<Ico
+						iconName={
+							unreadNotificationCount
+								? "notifications"
+								: "notifications-none"
+						}
+						bubble={unreadNotificationCount || ""}
+						navstyle={orgDetail?.metadata?.theme?.navstyle}
+						onClick={openNotificationPanel}
+					/>
+				) : null}
+
+				{/* Profile Menu */}
+				<Menu defaultIsOpen={false} isOpen={isOpen} onClose={onClose}>
+					<MenuButton
+						onClick={() => {
+							onOpen();
+						}}
+					>
+						<Flex align="center" cursor="pointer" zIndex="10">
+							<Box
+								bg="navbar.bgAlt"
+								padding="2px"
+								borderRadius="50%"
 							>
-								<Flex align="center">
-									<Text
-										as="span"
-										fontSize={{
-											base: "12px",
-											"2xl": "16px",
-										}}
-										fontWeight="semibold"
-										mr="1.6vw"
-										color="navbar.text"
-									>
-										{limitText(name || "", 12)}
-									</Text>
-
-									<Icon
-										name="arrow-drop-down"
-										size="xs"
-										mt="2px"
-										color="navbar.text"
-									/>
-								</Flex>
-								<Text
-									fontSize={{
-										base: "10px",
-										"2xl": "14px",
+								<Avatar
+									w={{
+										base: "34px",
+										xl: "38px",
+										"2xl": "42px",
 									}}
-									color="navbar.textLight"
-									textAlign="start"
+									h={{
+										base: "34px",
+										xl: "38px",
+										"2xl": "42px",
+									}}
+									name={name ? name[0] : ""}
+									lineHeight="3px"
+									src={pic}
+								/>
+							</Box>
+							{isAdmin ? (
+								<Flex
+									ml="0.5vw"
+									h="2.3vw"
+									justify="center"
+									direction="column"
+									display={{ base: "none", md: "flex" }}
+									lineHeight={{
+										base: "15px",
+										lg: "16px",
+										xl: "18px",
+										"2xl": "22px",
+									}}
 								>
-									{isAdminAgentMode
-										? "Viewing as Agent"
-										: "Logged in as Admin"}
-								</Text>
-							</Flex>
-						) : null}
-					</Flex>
-				</MenuButton>
+									<Flex align="center">
+										<Text
+											as="span"
+											fontSize={{
+												base: "12px",
+												"2xl": "16px",
+											}}
+											fontWeight="semibold"
+											mr="1.6vw"
+											color="navbar.text"
+										>
+											{limitText(name || "", 12)}
+										</Text>
 
-				<MenuList
-					w={{
-						base: "320px",
-						sm: "320px",
-						"2xl": "349px",
-					}}
-					border="none"
-					bg="transparent"
-					boxShadow="none"
-					borderRadius="0px"
-					p="0px"
-					mr={{
-						base: "-0.9vw",
-						lg: "-0.6vw",
-					}}
-				>
-					<MyAccountCard {...{ onClose }} />
-				</MenuList>
-			</Menu>
+										<Icon
+											name="arrow-drop-down"
+											size="xs"
+											mt="2px"
+											color="navbar.text"
+										/>
+									</Flex>
+									<Text
+										fontSize={{
+											base: "10px",
+											"2xl": "14px",
+										}}
+										color="navbar.textLight"
+										textAlign="start"
+									>
+										{isAdminAgentMode
+											? "Viewing as Agent"
+											: "Logged in as Admin"}
+									</Text>
+								</Flex>
+							) : null}
+						</Flex>
+					</MenuButton>
+
+					<MenuList
+						w={{
+							base: "320px",
+							sm: "320px",
+							"2xl": "349px",
+						}}
+						border="none"
+						bg="transparent"
+						boxShadow="none"
+						borderRadius="0px"
+						p="0px"
+						mr={{
+							base: "-0.9vw",
+							lg: "-0.6vw",
+						}}
+					>
+						<MyAccountCard {...{ onClose }} />
+					</MenuList>
+				</Menu>
+			</Flex>
 		</HStack>
+	);
+};
+
+/**
+ * Icon button to show in the top app bar.
+ * @param {*} props
+ * @param {string} props.iconName Name of the icon to pass to the Icon component
+ * @param {number} props.bubble Number to show in the bubble
+ * @param {string} props.navstyle Color style of the navbar: default or light. When "light", the top navbar is actually colored dark.
+ * @param {Function} props.onClick Click event handler
+ */
+const Ico = ({ iconName, bubble, navstyle, onClick }) => {
+	return (
+		<Flex
+			align="center"
+			justify="center"
+			cursor="pointer"
+			onClick={onClick}
+			position="relative"
+			borderRadius="50%"
+			_hover={{ bg: "gray.200" }}
+			w="40px"
+			h="40px"
+		>
+			<Icon
+				name={iconName}
+				size="md"
+				color={navstyle === "light" ? "#fff" : "#444"}
+			/>
+
+			{bubble ? (
+				<Flex
+					position="absolute"
+					top="1px"
+					right="1px"
+					bg="#be123c"
+					color="white"
+					fontSize="xxs"
+					fontWeight="semibold"
+					borderRadius="50%"
+					w="18px"
+					h="18px"
+					display="flex"
+					align="center"
+					justify="center"
+				>
+					{bubble}
+				</Flex>
+			) : null}
+		</Flex>
 	);
 };

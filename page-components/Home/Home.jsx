@@ -63,7 +63,12 @@ const Home = () => {
 	const widgets = [
 		{ id: 1, component: CommonTrxnWidget },
 		{ id: 2, component: BillPaymentWidget },
-		{ id: 3, component: NotificationWidget },
+		{
+			id: 3,
+			component: () => (
+				<NotificationWidget title="Notifications" compactMode />
+			),
+		},
 		{ id: 4, component: EarningSummary },
 		{ id: 5, component: KnowYourCommission },
 		{ id: 6, component: RecentTrxnWidget },

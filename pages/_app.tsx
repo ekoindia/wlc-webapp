@@ -203,11 +203,11 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 														localStorageProvider,
 												}}
 											>
-												<NotificationProvider>
-													<EarningSummaryProvider>
-														<CommissionSummaryProvider>
-															<TodoProvider>
-																<PubSubProvider>
+												<PubSubProvider>
+													<NotificationProvider>
+														<EarningSummaryProvider>
+															<CommissionSummaryProvider>
+																<TodoProvider>
 																	<ErrorBoundary>
 																		{getLayout(
 																			<Component
@@ -215,11 +215,11 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 																			/>
 																		)}
 																	</ErrorBoundary>
-																</PubSubProvider>
-															</TodoProvider>
-														</CommissionSummaryProvider>
-													</EarningSummaryProvider>
-												</NotificationProvider>
+																</TodoProvider>
+															</CommissionSummaryProvider>
+														</EarningSummaryProvider>
+													</NotificationProvider>
+												</PubSubProvider>
 											</SWRConfig>
 										</RouteProtecter>
 									</WalletProvider>
