@@ -21,6 +21,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
+	// MANUALLY CONFIGURE CUSTOM IMAGE FOR LANDING/LOGIN PAGE...
+	// TODO: Remove this after we are able to auto-upload images on file server for configuring the landing page (CMS).
+	MANUAL_LANDING_PAGE_IMAGE_SETUP: {
+		enabled: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST],
+			},
+		},
+	},
+
 	// Theme selection from predefined themes (free tier)
 	THEME_PICKER: {
 		enabled: true,
@@ -30,6 +41,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	CUSTOM_THEME_CREATOR: {
 		enabled: true,
 		forEnv: ["development"],
+	},
+
+	// Basic Landing Page customization where Admins can upload a custom image.
+	CMS_IMAGE_THEME: {
+		enabled: true,
+		forEnv: ["development", "staging"],
 	},
 
 	// Feature to show a custom Landing Page that can be fully configured by Admins.

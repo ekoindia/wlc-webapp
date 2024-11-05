@@ -45,6 +45,12 @@ export const MockOrgDetails = {
 			accent_dark: stripQuotes(process.env.THEME_ACCENT_DARK) || "",
 			accent_light: stripQuotes(process.env.THEME_ACCENT_LIGHT) || "",
 		},
+		cms_meta: {
+			type: process.env.CMS_TYPE || undefined,
+		},
+		cms_data: {
+			img: process.env.CMS_IMG || undefined,
+		},
 	},
 	login_types: {
 		google: {

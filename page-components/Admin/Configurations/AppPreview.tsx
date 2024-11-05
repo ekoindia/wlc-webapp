@@ -30,6 +30,7 @@ const AppPreview = ({
 			direction="column"
 			w={w}
 			h={h}
+			minW={w}
 			border="1px solid #999"
 			borderRadius={6}
 			overflow="hidden"

@@ -65,6 +65,15 @@ export const createSupportTicket = ({
 	let commentMessage = "";
 	let fullDescription = "";
 
+	console.log(
+		"[RaiseIssue] feedback submit... ENV=",
+		process.env.NEXT_PUBLIC_ENV
+	);
+
+	if (process.env.NEXT_PUBLIC_ENV !== "production") {
+		comment = `UAT TESTING!! Please ignore this ticket.\n\n${comment}`;
+	}
+
 	if (comment) {
 		commentMessage = `Comments:\n${comment}\n\n`;
 		fullDescription = `\n<p><strong>COMMENT:</strong><br>\n${comment}\n<br><br>\n`;
@@ -99,17 +108,19 @@ export const createSupportTicket = ({
 	const feedbackData: Record<string, string> = {
 		interaction_type_id: "" + TransactionTypes.RAISE_ISSUE,
 
-		summary: summary,
+		summary:
+			(process.env.NEXT_PUBLIC_ENV !== "production" ? "[IGNORE] " : "") +
+			summary, // Subject line
 		description: fullDescription,
 		category: category,
 		sub_category: subCategory,
+		feedback_issue_type: summary, // sub-sub-category
 
 		tid: tid || "",
 		tx_typeid: tx_typeid || "",
 		tat: tat || "",
 		priority: priority || "",
 		feedback_origin: origin,
-		feedback_issue_type: summary,
 		comment: commentMessage,
 
 		technical_notes: JSON.stringify({
@@ -133,6 +144,8 @@ export const createSupportTicket = ({
 			// db_cache_ver: this.db_cache_ver,
 		}),
 	};
+
+	console.log("[RaiseIssue] feedback submit...", feedbackData);
 
 	const formData = new FormData();
 	formData.append("formdata", new URLSearchParams(feedbackData).toString());

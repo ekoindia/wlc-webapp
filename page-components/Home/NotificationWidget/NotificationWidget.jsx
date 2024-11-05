@@ -18,10 +18,25 @@ import { useAppLink } from "hooks";
 import { formatDateTime } from "libs";
 import { WidgetBase } from "..";
 
+// const PRIORITY = {
+// 	LOW: 1,
+// 	NORMAL: 2,
+// 	HIGH: 3,
+// };
+
+// const STATE = {
+// 	NORMAL: 1,
+// 	POSITIVE: 2,
+// 	NEGATIVE: 3,
+// };
+
 /**
  * Homepage widget to show a list of notifications.
+ * @param {object} props
+ * @param {string} [props.title] Title of the widget
+ * @param {boolean} [props.compactMode] Flag to display the widget in compact mode
  */
-const NotificationWidget = () => {
+const NotificationWidget = ({ title = "", compactMode = false }) => {
 	// Get notifications from context
 	const {
 		notifications,
@@ -39,7 +54,7 @@ const NotificationWidget = () => {
 
 	return (
 		<>
-			<WidgetBase title="Notifications" noPadding>
+			<WidgetBase title={title} noPadding>
 				<Flex
 					direction="column"
 					className="customScrollbars"
@@ -50,7 +65,10 @@ const NotificationWidget = () => {
 					{notifications.map((notif) => (
 						<Flex
 							key={notif.id}
-							p="8px 16px"
+							p={{
+								base: "8px 16px",
+								md: compactMode ? "8px 16px" : "16px",
+							}}
 							cursor="pointer"
 							_hover={{ bg: "darkShade" }}
 							borderBottom="1px solid #F5F6F8"
@@ -106,11 +124,15 @@ const NotificationWidget = () => {
 									<Text
 										fontSize={{ base: "xs", md: "sm" }}
 										fontWeight="bold"
-										noOfLines={1}
+										noOfLines={compactMode ? 1 : 2}
 									>
 										{notif.title}
 									</Text>
-									<Text mt="1" fontSize="xs" noOfLines={2}>
+									<Text
+										mt="1"
+										fontSize="xs"
+										noOfLines={compactMode ? 2 : 4}
+									>
 										{notif.desc}
 									</Text>
 								</Flex>
