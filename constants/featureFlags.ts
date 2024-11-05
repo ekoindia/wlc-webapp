@@ -25,7 +25,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// TODO: Remove this after we are able to auto-upload images on file server for configuring the landing page (CMS).
 	MANUAL_LANDING_PAGE_IMAGE_SETUP: {
 		enabled: true,
-		forEnv: ["development", "staging"],
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST],
+			},
+		},
 	},
 
 	// Theme selection from predefined themes (free tier)
