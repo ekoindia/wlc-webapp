@@ -65,9 +65,13 @@ export const createSupportTicket = ({
 	let commentMessage = "";
 	let fullDescription = "";
 
+	console.log(
+		"[RaiseIssue] feedback submit... ENV=",
+		process.env.NEXT_PUBLIC_ENV
+	);
+
 	if (process.env.NEXT_PUBLIC_ENV !== "production") {
-		commentMessage += `UAT TESTING!! Please ignore this ticket.\n\n`;
-		fullDescription += `<p><strong>UAT TESTING!! Please ignore this ticket.</strong><br><br>\n`;
+		comment = `UAT TESTING!! Please ignore this ticket.\n\n${comment}`;
 	}
 
 	if (comment) {
@@ -138,6 +142,8 @@ export const createSupportTicket = ({
 			// db_cache_ver: this.db_cache_ver,
 		}),
 	};
+
+	console.log("[RaiseIssue] feedback submit...", feedbackData);
 
 	const formData = new FormData();
 	formData.append("formdata", new URLSearchParams(feedbackData).toString());
