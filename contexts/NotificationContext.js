@@ -205,52 +205,52 @@ const useNotifications = () => {
 	const fetchNotifications = useCallback(async () => {
 		setIsLoading(true);
 
-		const dummyData = {
-			message: "Success",
-			response_type_id: 0,
-			response_status_id: 0,
-			status: 0,
-			data: {
-				notifications: [
-					// Notification - 1
-					{
-						id: 352,
-						notification_type: 0, // Ad
-						title: "Earn with AePS",
-						desc: "Make your shop an ATM with AePS Cashout!",
-						image: "https://files.eko.co.in/docs/notification/image_1528367534103_2082.png",
-						link: "/transaction/252/626", // 252/626, /246/252, 344
-						// link: "https://play.google.com/store/apps/details?id=com.bethsoft.blade",
-						link_label: "Start using AePS",
-						notify_time: "2021-03-05 14:00:00",
-						// expiry_time: "2020-03-18 15:11:00",
-						priority: 3, // HIGH PRIORITY
-						read: 0,
-					},
+		// const dummyData = {
+		// 	message: "Success",
+		// 	response_type_id: 0,
+		// 	response_status_id: 0,
+		// 	status: 0,
+		// 	data: {
+		// 		notifications: [
+		// 			// Notification - 1
+		// 			{
+		// 				id: 352,
+		// 				notification_type: 0, // Ad
+		// 				title: "Earn with AePS",
+		// 				desc: "Make your shop an ATM with AePS Cashout!",
+		// 				image: "https://files.eko.co.in/docs/notification/image_1528367534103_2082.png",
+		// 				link: "/transaction/252/626", // 252/626, /246/252, 344
+		// 				// link: "https://play.google.com/store/apps/details?id=com.bethsoft.blade",
+		// 				link_label: "Start using AePS",
+		// 				notify_time: "2021-03-05 14:00:00",
+		// 				// expiry_time: "2020-03-18 15:11:00",
+		// 				priority: 3, // HIGH PRIORITY
+		// 				read: 0,
+		// 			},
 
-					{
-						id: 351,
-						title: "Help us improve by giving your feedback about AePS",
-						desc: "How did you like our AePS service?",
-						markdown: 0,
+		// 			{
+		// 				id: 351,
+		// 				title: "Help us improve by giving your feedback about AePS",
+		// 				desc: "How did you like our AePS service?",
+		// 				markdown: 0,
 
-						poll: "👍 Like it |😐 It's Ok|👎 Don't like it %% Comments|🤷‍♀️ I don't use AePS",
-						// "feedback": "Like it",
+		// 				poll: "👍 Like it |😐 It's Ok|👎 Don't like it %% Comments|🤷‍♀️ I don't use AePS",
+		// 				// "feedback": "Like it",
 
-						//"link":"https://connect.eko.in/#!/transaction/243",
-						//"image":"http://files.eko.in/pics/ad1.jpg",
-						//"youtube":"sJRRC0YaK5A",
+		// 				//"link":"https://connect.eko.in/#!/transaction/243",
+		// 				//"image":"http://files.eko.in/pics/ad1.jpg",
+		// 				//"youtube":"sJRRC0YaK5A",
 
-						priority: 2,
-						// "state": 2,
-						notify_time: "2021-03-08 14:00:00",
-						read: 0,
-					},
-				],
-			},
-		};
-		handleNotificationsResponse(dummyData);
-		return;
+		// 				priority: 2,
+		// 				// "state": 2,
+		// 				notify_time: "2021-03-08 14:00:00",
+		// 				read: 0,
+		// 			},
+		// 		],
+		// 	},
+		// };
+		// handleNotificationsResponse(dummyData);
+		// return;
 
 		try {
 			const resp = await fetcher(
