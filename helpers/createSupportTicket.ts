@@ -65,6 +65,11 @@ export const createSupportTicket = ({
 	let commentMessage = "";
 	let fullDescription = "";
 
+	if (process.env.NEXT_PUBLIC_ENV !== "production") {
+		commentMessage += `UAT TESTING!! Please ignore this ticket.\n\n`;
+		fullDescription += `<p><strong>UAT TESTING!! Please ignore this ticket.</strong><br><br>\n`;
+	}
+
 	if (comment) {
 		commentMessage = `Comments:\n${comment}\n\n`;
 		fullDescription = `\n<p><strong>COMMENT:</strong><br>\n${comment}\n<br><br>\n`;
