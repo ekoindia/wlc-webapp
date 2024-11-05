@@ -108,17 +108,19 @@ export const createSupportTicket = ({
 	const feedbackData: Record<string, string> = {
 		interaction_type_id: "" + TransactionTypes.RAISE_ISSUE,
 
-		summary: summary,
+		summary:
+			(process.env.NEXT_PUBLIC_ENV !== "production" ? "[IGNORE] " : "") +
+			summary, // Subject line
 		description: fullDescription,
 		category: category,
 		sub_category: subCategory,
+		feedback_issue_type: summary, // sub-sub-category
 
 		tid: tid || "",
 		tx_typeid: tx_typeid || "",
 		tat: tat || "",
 		priority: priority || "",
 		feedback_origin: origin,
-		feedback_issue_type: summary,
 		comment: commentMessage,
 
 		technical_notes: JSON.stringify({
