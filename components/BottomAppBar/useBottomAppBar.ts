@@ -1,6 +1,7 @@
 import { useKBarReady } from "components/CommandBar";
 import { InteractionBehavior } from "constants/trxnFramework";
 import { useMenuContext, useUser } from "contexts";
+import { useNavigationLists } from "hooks";
 import { useKBar } from "kbar";
 import { More, Transactions } from ".";
 
@@ -32,6 +33,7 @@ export const useBottomAppBarItems = (): BottomAppBarItem[] => {
 	const { isAdmin, isAdminAgentMode } = useUser();
 	const { query } = useKBar();
 	const { ready } = useKBarReady();
+	const { trxnList } = useNavigationLists();
 
 	return [
 		{
@@ -61,7 +63,10 @@ export const useBottomAppBarItems = (): BottomAppBarItem[] => {
 		{
 			name: "transaction",
 			component: Transactions, // bottom bar transaction drawer
-			visible: isAdmin ? isAdminAgentMode : !isAdminAgentMode,
+			visible:
+				trxnList &&
+				trxnList.length > 0 &&
+				(isAdmin !== true || isAdminAgentMode),
 		},
 		{
 			name: "account",

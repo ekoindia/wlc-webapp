@@ -1,3 +1,4 @@
+import React from "react";
 import { Avatar, Divider, Flex, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { useCommissionSummary, useUser } from "contexts";
@@ -47,9 +48,8 @@ const KnowYourCommission = () => {
 				{commissionProductIds?.map((id, index) => {
 					const prod = commissionData?.data?.[id];
 					return (
-						<>
+						<React.Fragment key={id}>
 							<Tr
-								key={id}
 								id={id}
 								prod={prod}
 								handleShowDetail={handleShowDetail}
@@ -57,7 +57,7 @@ const KnowYourCommission = () => {
 							{commissionProductIds?.length - 1 !== index ? (
 								<Divider />
 							) : null}
-						</>
+						</React.Fragment>
 					);
 				})}
 			</Flex>

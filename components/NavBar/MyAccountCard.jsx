@@ -274,25 +274,37 @@ const MyAccountCard = ({ onClose }) => {
 
 				{/* Configured menu items (internal links) which are configured in `constants/profileCardMenu.js` */}
 				{isOnboarding !== true
-					? menulist.map((ele) => (
-							<Fragment key={"mnu-" + ele.title + ele.link}>
-								<Flex
-									w="100%"
-									align="center"
-									justify="space-between"
-									cursor="pointer"
-									minH="50px"
-									onClick={() => {
-										router.push(ele.link);
-										close();
-									}}
-								>
-									<Text>{ele.title}</Text>
-									<Icon name="chevron-right" size="xxs" />
-								</Flex>
-								<Divider />
-							</Fragment>
-						))
+					? menulist
+							.filter((ele) => {
+								// Check if the item is allowed for the user
+								// If the item contains "trxn-id", the it should be available in the role-trxn-list
+								if (ele["trxn-id"]) {
+									return (
+										userData.role_tx_list[
+											ele["trxn-id"]
+										] !== undefined
+									);
+								}
+							})
+							.map((ele) => (
+								<Fragment key={"mnu-" + ele.title + ele.link}>
+									<Flex
+										w="100%"
+										align="center"
+										justify="space-between"
+										cursor="pointer"
+										minH="50px"
+										onClick={() => {
+											router.push(ele.link);
+											close();
+										}}
+									>
+										<Text>{ele.title}</Text>
+										<Icon name="chevron-right" size="xxs" />
+									</Flex>
+									<Divider />
+								</Fragment>
+							))
 					: null}
 
 				{/* Logout Row */}

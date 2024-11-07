@@ -29,6 +29,7 @@ const generateTransactionActions = (
 	router,
 	is_other_list = false
 ) => {
+	// Helper inner function to get the transaction action object
 	const getTxAction = (tx, parent_id, is_group) => {
 		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
 		const desc = tx.description || tx.desc || "";
@@ -98,6 +99,7 @@ const generateTransactionActions = (
 	const processedTrxns = {};
 
 	// Process main transactions
+	let trxn_found = false;
 	interaction_list.forEach((tx) => {
 		if (!tx) {
 			return;
@@ -105,6 +107,7 @@ const generateTransactionActions = (
 		if (tx.id in role_tx_list && !(tx.id in processedTrxns)) {
 			let is_group = false;
 			processedTrxns[tx.id] = true;
+			trxn_found = true;
 			// Is this a transaction group (Grid) (i.e, contains sub-transactions)?
 			if (tx.behavior == 7 && tx?.group_interaction_ids?.length) {
 				is_group = true;
@@ -116,6 +119,11 @@ const generateTransactionActions = (
 			trxnList.push(getTxAction(tx, null, is_group));
 		}
 	});
+
+	// If transaction list is empty or no transaction is allowed, return empty array
+	if (!trxn_found) {
+		return [];
+	}
 
 	// Recusrively process transaction groups...
 	while (trxnGroups.length > 0) {
@@ -253,67 +261,63 @@ const useNavigationLists = (ignoreList = []) => {
 			return true;
 		});
 
-		if (interactionList?.length > 0) {
-			interactionList.forEach((tx) => {
-				if (isAdmin) {
-					if (AdminOtherMenuItems.includes(tx.id)) {
-						_otherList.push(tx);
-					} else if (isAdminAgentMode) {
-						if (OtherMenuItems.includes(tx.id)) {
-							_otherList.push(tx);
-						} else if (!AdminBlacklistMenuItems.includes(tx.id)) {
-							_trxnList.push(tx);
-						}
-					}
-				} else {
+		// if (interactionList?.length > 0) {
+		interactionList.forEach((tx) => {
+			if (isAdmin) {
+				if (AdminOtherMenuItems.includes(tx.id)) {
+					_otherList.push(tx);
+				} else if (isAdminAgentMode) {
 					if (OtherMenuItems.includes(tx.id)) {
 						_otherList.push(tx);
-					} else {
+					} else if (!AdminBlacklistMenuItems.includes(tx.id)) {
 						_trxnList.push(tx);
 					}
 				}
-			});
-
-			setAppLists({
-				menuList: _filteredMenuList,
-				trxnList: _trxnList,
-				otherList: [
-					{
-						icon: "transaction-history",
-						label: "Transaction History",
-						description: "Statement of your previous transactions",
-						link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
-					},
-					..._otherList,
-				],
-			});
-
-			if (ready) {
-				const _otherActions = generateTransactionActions(
-					_otherList.filter(Boolean),
-					roleTxList,
-					router,
-					true
-				);
-
-				const _menuLinkActions = generateMenuLinkActions(
-					_filteredMenuList,
-					router
-				);
-
-				setOtherActions([..._otherActions, ..._menuLinkActions]);
-
-				setTrxnActions(
-					isAdmin && isAdminAgentMode !== true
-						? []
-						: generateTransactionActions(
-								_trxnList,
-								roleTxList,
-								router
-							)
-				);
+			} else {
+				if (OtherMenuItems.includes(tx.id)) {
+					_otherList.push(tx);
+				} else {
+					_trxnList.push(tx);
+				}
 			}
+		});
+
+		setAppLists({
+			menuList: _filteredMenuList,
+			trxnList: _trxnList,
+			otherList: [
+				{
+					icon: "transaction-history",
+					label: "Transaction History",
+					description: "Statement of your previous transactions",
+					link: `${isAdmin ? "/admin" : ""}${Endpoints.HISTORY}`,
+				},
+				..._otherList,
+			],
+		});
+
+		if (ready) {
+			const _otherActions = generateTransactionActions(
+				_otherList.filter(Boolean),
+				roleTxList,
+				router,
+				true
+			);
+
+			const _menuLinkActions = generateMenuLinkActions(
+				_filteredMenuList,
+				router
+			);
+
+			setOtherActions([..._otherActions, ..._menuLinkActions]);
+
+			setTrxnActions(
+				isAdmin && isAdminAgentMode !== true
+					? []
+					: generateTransactionActions(_trxnList, roleTxList, router)
+			);
 		}
+		// }
 	};
 
 	useEffect(() => {

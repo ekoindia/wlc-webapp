@@ -9,6 +9,7 @@ import {
 import { useUser } from "contexts/UserContext";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
+import React from "react";
 import {
 	Accordion,
 	AccordionButton,
@@ -50,11 +51,10 @@ const AccordionMenu = ({ list, onMenuItemClick }): JSX.Element => {
 					index: number
 				) => {
 					return (
-						<>
+						<React.Fragment key={index}>
 							{subItems?.length > 0 ? (
 								<MenuPanel
 									{...{
-										key: index,
 										id,
 										label,
 										icon,
@@ -67,7 +67,6 @@ const AccordionMenu = ({ list, onMenuItemClick }): JSX.Element => {
 							) : (
 								<MenuItem
 									{...{
-										key: index,
 										id,
 										label,
 										icon,
@@ -79,7 +78,7 @@ const AccordionMenu = ({ list, onMenuItemClick }): JSX.Element => {
 							{list.length - 1 !== index && (
 								<Divider variant="dashed" />
 							)}
-						</>
+						</React.Fragment>
 					);
 				}
 			)}
@@ -238,8 +237,8 @@ const MenuPanel = ({
 									index
 								) => (
 									<MenuPanelItem
+										key={`${index}-${label}`}
 										{...{
-											key: `${index}-${label}`,
 											id,
 											label,
 											icon,
@@ -261,7 +260,6 @@ const MenuPanel = ({
 /* ####################### MenuPanelItem ####################### */
 
 type MenuPanelItemProps = {
-	key: string;
 	label: string;
 	icon: string;
 	link: string;
@@ -273,7 +271,6 @@ type MenuPanelItemProps = {
  * `MenuPanelItem` is a component that represents a single sub-item in a list of sub-items.
  * It displays an icon and label, and optionally navigates to a link when clicked.
  * @param {MenuPanelItemProps} props - Props for configuring the MenuPanelItem component.
- * @param {string} props.key - The unique key for the sub-item.
  * @param {string} props.label - The label for the sub-item.
  * @param {string} props.icon - The icon for the sub-item.
  * @param {string} props.link - The link associated with the sub-item.
@@ -282,7 +279,6 @@ type MenuPanelItemProps = {
  * @returns {JSX.Element} A `Flex` component containing an `Avatar` and a `Text` component.
  */
 const MenuPanelItem = ({
-	key,
 	label,
 	icon,
 	link,
@@ -309,7 +305,6 @@ const MenuPanelItem = ({
 
 	return (
 		<Flex
-			key={key}
 			direction="column"
 			align="center"
 			justify="center"

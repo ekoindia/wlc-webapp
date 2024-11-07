@@ -137,6 +137,8 @@ const SideBarMenu = ({
 }) => {
 	// Get theme color values
 	const [contrast_color] = useToken("colors", ["sidebar.dark"]);
+	const showOtherListAsMainList =
+		trxnList?.length === 0 && otherList?.length > 0;
 
 	return (
 		<Box
@@ -179,22 +181,36 @@ const SideBarMenu = ({
 					{/* Fixed menu items */}
 					{menuList?.map((menu, index) => (
 						<LinkMenuItem
-							key={menu.name}
+							key={menu.name || menu.label}
 							menu={menu}
 							index={index}
 							isAdminAgentMode={isAdminAgentMode}
 						/>
 					))}
 
+					{/* Others menu items as fixed items (if normal) */}
+					{showOtherListAsMainList
+						? otherList?.map((menu, index) => (
+								<LinkMenuItem
+									key={menu.label}
+									menu={menu}
+									index={index}
+									isAdminAgentMode={isAdminAgentMode}
+								/>
+							))
+						: null}
+
 					{/* Dynamic menu items */}
-					<AccordionMenu
-						trxnList={trxnList}
-						otherList={otherList}
-						router={router}
-						isAdmin={isAdmin}
-						openIndex={openIndex}
-						setOpenIndex={setOpenIndex}
-					/>
+					{showOtherListAsMainList ? null : (
+						<AccordionMenu
+							trxnList={trxnList}
+							otherList={otherList}
+							router={router}
+							isAdmin={isAdmin}
+							openIndex={openIndex}
+							setOpenIndex={setOpenIndex}
+						/>
+					)}
 				</Box>
 				{/* {rest.children} */}
 			</Flex>
@@ -448,11 +464,16 @@ const LinkMenuItem = ({
 	isAdminAgentMode,
 }) => {
 	const router = useRouter();
-	const link = (isAdminAgentMode ? "/admin" : "") + menu.link;
-	const isCurrent = isCurrentRoute(router.asPath, link);
+	const link = menu.link
+		? (isAdminAgentMode ? "/admin" : "") + menu.link
+		: "";
+	const id_link = menu?.id
+		? `${isAdminAgentMode ? "/admin" : ""}/transaction/${menu?.id}`
+		: "";
+	const isCurrent = isCurrentRoute(router.asPath, link || id_link);
 
 	return (
-		<Link href={link} key={index}>
+		<Link href={link || id_link} key={index}>
 			<Flex
 				key={index}
 				fontSize={{
@@ -492,7 +513,7 @@ const LinkMenuItem = ({
 				transitionTimingFunction="ease-out"
 			>
 				<Icon name={menu.icon} size="sm" />
-				{menu.name}
+				{menu.name || menu.label}
 			</Flex>
 		</Link>
 	);

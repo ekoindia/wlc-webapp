@@ -3,6 +3,7 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 
 
 ## 🧑‍💻 Setup Development Envoirnment:
+
 - One-time Setup:
   - Run `npm i`
   - Run `npm run prepare`
