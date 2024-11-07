@@ -68,7 +68,7 @@ const HistoryToolbar = ({
 				}) => (
 					<Fragment key={id}>
 						<Button
-							size="lg"
+							size="md"
 							variant="primary_outline"
 							onClick={() =>
 								setOpenModalId(id === openModalId ? null : id)
@@ -109,7 +109,7 @@ const HistoryToolbar = ({
 									<Flex gap="4">
 										<Button
 											w="100%"
-											size="lg"
+											size="md"
 											variant="link"
 											color="primary.dark"
 											onClick={secondaryButtonAction}
@@ -118,7 +118,7 @@ const HistoryToolbar = ({
 										</Button>
 										<Button
 											w="100%"
-											size="lg"
+											size="md"
 											type="submit"
 											loading={isSubmitting}
 										>
