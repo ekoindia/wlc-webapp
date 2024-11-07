@@ -138,7 +138,7 @@ const SideBarMenu = ({
 	// Get theme color values
 	const [contrast_color] = useToken("colors", ["sidebar.dark"]);
 	const showOtherListAsMainList =
-		trxnList?.length === 0 && otherList?.length > 0;
+		isAdmin !== true && trxnList?.length === 0 && otherList?.length > 0;
 
 	return (
 		<Box
