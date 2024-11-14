@@ -13,6 +13,8 @@ import "react-complex-tree/lib/style-modern.css";
 
 /**
  * Show network users in an expandable tree view.
+ * TODO: Add caching mechanism for the network users data in the NetworkUserContext.
+ * TODO: Move logic for list to tree conversion from NetworkUsersContext to here so that data filtering can be done effectively.
  */
 const NetworkTreeView = () => {
 	const [selectedItem, setSelectedItem] = useState(null);
