@@ -178,8 +178,6 @@ const LoginPanel = ({ cmsType, cmsData }) => {
 									"Your business partner to grow your revenue and digitize your business",
 									"Start earning today from your shop, office, home or anywhere",
 								]}
-								cmsType={cmsType}
-								cmsData={cmsData}
 								onClick={() => setShowWelcomeCard(false)}
 							/>
 						)}
