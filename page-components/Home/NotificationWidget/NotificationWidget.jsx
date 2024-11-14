@@ -46,7 +46,7 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 	} = useNotification();
 	const { openUrl } = useAppLink();
 
-	console.log("NOTIFICATIONS: ", notifications);
+	// console.log("NOTIFICATIONS: ", notifications);
 
 	if (!notifications.length) {
 		return null;

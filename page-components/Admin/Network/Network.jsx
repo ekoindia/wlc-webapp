@@ -3,11 +3,12 @@ import { Button, Headings, Icon } from "components";
 import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
+import { useFeatureFlag } from "hooks";
 import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { NetworkTable, NetworkToolbar } from ".";
+import { NetworkTable, NetworkToolbar, NetworkTreeView } from ".";
 
 const calendar_min_date = "2023-01-01";
 
@@ -65,6 +66,9 @@ const Network = () => {
 		const _today = new Date();
 		return formatDate(_today, "yyyy-MM-dd");
 	});
+	const [viewType, setViewType] = useState("list"); // List or Tree view
+
+	const [isTreeViewEnabled] = useFeatureFlag("NETWORK_TREE_VIEW");
 
 	const filterItemLimit = useBreakpointValue({
 		base: 2,
@@ -388,18 +392,27 @@ const Network = () => {
 						setOpenModalId,
 						searchBarConfig,
 						actionBtnConfig,
+						viewType,
+						setViewType,
+						hideFilter: viewType === "tree",
 					}}
 				/>
 
-				<NetworkTable
-					{...{
-						isLoading,
-						totalRecords,
-						agentDetails,
-						pageNumber,
-						setPageNumber,
-					}}
-				/>
+				{viewType === "list" ? (
+					<NetworkTable
+						{...{
+							isLoading,
+							totalRecords,
+							agentDetails,
+							pageNumber,
+							setPageNumber,
+						}}
+					/>
+				) : null}
+
+				{isTreeViewEnabled && viewType === "tree" ? (
+					<NetworkTreeView />
+				) : null}
 
 				<Flex
 					display={isFiltered || isSearched ? "flex" : "none"}
