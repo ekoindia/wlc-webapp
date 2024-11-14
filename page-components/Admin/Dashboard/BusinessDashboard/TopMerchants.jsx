@@ -2,7 +2,7 @@ import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
 
 const topMerchantsTableParameterList = [
-	{ label: "Sr. No.", show: "#" },
+	{ label: "#", show: "#" },
 	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
 	{
 		name: "gtv",
