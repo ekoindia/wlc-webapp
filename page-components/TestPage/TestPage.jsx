@@ -563,9 +563,14 @@ const CustomRaiseQueryTest = () => {
 			<Button
 				onClick={() =>
 					showRaiseIssueDialog({
-						origin: "Global-Help",
+						origin: "Other",
 						autoCaptureScreenshot: true,
 						customIssueType: "Need help with this screen",
+						category: "Dummy Category",
+						subcategory: "Dummy Sub-Category",
+						context:
+							"Context: this is a test ticket. Please delete.",
+						tat: 6,
 					})
 				}
 			>
