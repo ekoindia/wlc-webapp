@@ -262,7 +262,7 @@ const Network = () => {
 		register: registerSearch,
 		control: controlSearch,
 		errors: errorsSearch,
-		formValue: watcherSearch,
+		formValues: watcherSearch,
 		parameter_list: network_search_parameter_list,
 	};
 

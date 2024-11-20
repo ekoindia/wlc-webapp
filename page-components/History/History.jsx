@@ -514,7 +514,7 @@ const History = () => {
 		register: registerSearch,
 		control: controlSearch,
 		errors: errorsSearch,
-		formValue: watcherSearch,
+		formValues: watcherSearch,
 		parameter_list: [
 			{
 				name: "search",
