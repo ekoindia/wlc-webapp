@@ -2,7 +2,7 @@ export const UserType = {
 	DISTRIBUTOR: 1,
 	MERCHANT: 2,
 	I_MERCHANT: 3,
-	FOS: 4, // FOS / CCE / Cash Executive / EkoStar?
+	FOS: 4, // FOS / CCE / Cash Executive / Field Agent
 	SALES_EXECUTIVE: 5,
 	SUB_MERCHANT: 6,
 	SUPER_DISTRIBUTOR: 7,

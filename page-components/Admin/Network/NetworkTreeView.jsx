@@ -1,31 +1,37 @@
-import { Box, Flex, Text, Avatar, Checkbox, Stack } from "@chakra-ui/react";
-import { Icon } from "components";
-import { UserTypeLabel } from "constants";
+import { Box, Flex, Text /* Checkbox, Stack */ } from "@chakra-ui/react";
+import { UserType /*, UserTypeLabel */ } from "constants";
 import { useNetworkUsers } from "contexts";
-import { useSet } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import {
 	UncontrolledTreeEnvironment,
 	Tree,
 	StaticTreeDataProvider,
 } from "react-complex-tree";
+import useHslColor from "hooks/useHslColor";
+import { FaRegUser } from "react-icons/fa6";
+import { FcBusinessman, FcManager } from "react-icons/fc";
+import { MdFolderShared } from "react-icons/md";
+import { RiEBike2Fill } from "react-icons/ri";
+import { getInitials } from "utils/textFormat";
+import { NetworkMenuWrapper } from "./NetworkMenuWrapper";
 import "react-complex-tree/lib/style-modern.css";
+// import { useSet } from "hooks";
 
 /**
  * Show network users in an expandable tree view.
  * TODO: Add caching mechanism for the network users data in the NetworkUserContext.
- * TODO: Move logic for list to tree conversion from NetworkUsersContext to here so that data filtering can be done effectively.
+ * TODO: Move logic for list to tree conversion from NetworkUsersContext to here so that data filtering can be done effectively, and the tree can be updated on the fly.
  */
 const NetworkTreeView = () => {
 	const [selectedItem, setSelectedItem] = useState(null);
-	const [userTypeFilterList, setUserTypeFilterList] = useState([]);
-	const filteredUserSet = useSet([]); // filteredUserTypes, setFilteredUserTypes
+	// const [userTypeFilterList, setUserTypeFilterList] = useState([]);
+	// const filteredUserSet = useSet([]); // filteredUserTypes, setFilteredUserTypes
 
 	const {
 		networkCount,
 		networkUsersTree,
 		refreshUserList,
-		userTypeIdList,
+		// userTypeIdList,
 		fetchedAt,
 		loading,
 	} = useNetworkUsers();
@@ -48,19 +54,19 @@ const NetworkTreeView = () => {
 	);
 
 	// Prepare the User-Type Filter
-	useEffect(() => {
-		if (userTypeIdList.length > 0) {
-			// Set all user types as selected by default
-			filteredUserSet.set([...userTypeIdList]);
+	// useEffect(() => {
+	// 	if (userTypeIdList.length > 0) {
+	// 		// Set all user types as selected by default
+	// 		filteredUserSet.set([...userTypeIdList]);
 
-			// Create list of options for the filter checkboxes
-			const _userTypeFilterList = userTypeIdList.map((userTypeId) => ({
-				value: userTypeId,
-				label: UserTypeLabel[userTypeId] || "Type " + userTypeId,
-			}));
-			setUserTypeFilterList(_userTypeFilterList);
-		}
-	}, [userTypeIdList]);
+	// 		// Create list of options for the filter checkboxes
+	// 		const _userTypeFilterList = userTypeIdList.map((userTypeId) => ({
+	// 			value: userTypeId,
+	// 			label: UserTypeLabel[userTypeId] || "Type " + userTypeId,
+	// 		}));
+	// 		setUserTypeFilterList(_userTypeFilterList);
+	// 	}
+	// }, [userTypeIdList]);
 
 	return (
 		<Flex
@@ -121,6 +127,7 @@ const NetworkTreeView = () => {
 				order={{ base: -1, lg: 1 }}
 				maxW="100%"
 				boxSizing="border-box"
+				color="light"
 			>
 				<Flex
 					direction="column"
@@ -129,28 +136,18 @@ const NetworkTreeView = () => {
 					top={{ lg: "268px" }}
 				>
 					{/* MARK: Filters */}
-					<Box
+					{/* <Box
 						w={{ base: "100%", lg: "unset" }}
 						minW="280px"
 						bg="white"
 						p={{ base: 3, md: 6 }}
 						borderRadius={6}
-						opacity={0.6}
 						shadow="md"
 					>
-						{/* <CheckboxGroup
-						// defaultValue={[...userTypeIdList]}
-						// value={[...filteredUserTypes]}
-						// onChange={(values) => {
-						// 	console.log("Selected values::: ", values);
-
-						// 	// setFilteredUserTypes([...values]);
-						// }}
-						> */}
 						<Stack spacing={2} direction="column">
-							{userTypeFilterList.map((userType) => (
+							{userTypeFilterList.map((userType, i) => (
 								<Checkbox
-									key={userType.value}
+									key={userType.value || i}
 									value={userType.value}
 									isChecked={filteredUserSet.has(
 										userType.value
@@ -169,8 +166,7 @@ const NetworkTreeView = () => {
 								</Checkbox>
 							))}
 						</Stack>
-						{/* </CheckboxGroup> */}
-					</Box>
+					</Box> */}
 
 					{/* MARK: Info */}
 					<Box
@@ -179,7 +175,6 @@ const NetworkTreeView = () => {
 						bg="white"
 						p={{ base: 3, md: 6 }}
 						borderRadius={6}
-						opacity={0.6}
 						shadow="md"
 					>
 						{selectedItem ? (
@@ -194,13 +189,33 @@ const NetworkTreeView = () => {
 									gap={2}
 									fontSize="14px"
 								>
-									<Text
-										fontWeight="bold"
-										fontSize="1.2em"
-										mb={2}
-									>
-										{selectedItem?.meta?.name}
-									</Text>
+									<Flex direction="row" gap="15px">
+										<Text
+											flex={1}
+											fontWeight="bold"
+											fontSize="1.2em"
+											mb={2}
+										>
+											{selectedItem?.meta?.name}
+										</Text>
+										{selectedItem?.meta?.mobile &&
+										selectedItem?.meta?.user_code ? (
+											<NetworkMenuWrapper
+												mobile_number={
+													selectedItem?.meta?.mobile
+												}
+												eko_code={
+													selectedItem?.meta
+														?.user_code
+												}
+												// account_status_id
+												agent_type={
+													selectedItem?.meta
+														?.user_type
+												} // TODO: use user-type-id in NetworkMenuWrapper
+											/>
+										) : null}
+									</Flex>
 									<Box>
 										<strong>Type: </strong>
 										{selectedItem?.meta?.user_type}
@@ -252,11 +267,14 @@ const NetworkTreeItem = ({
 
 	return (
 		<Flex direction="row" align="center" gap="10px">
-			<NetworkTreeItemLogo
+			<UserTypeIcon
 				rootCategory={rootCategory}
-				user_type={meta?.user_type || "Others"}
+				user_type={meta?.user_type || data || "Others"}
+				user_type_id={meta?.user_type_id || 0}
 			/>
-			<Text>{data || meta.mobile}</Text>
+			<Text textTransform="capitalize">
+				{(data || meta.mobile || "").toString().toLowerCase()}
+			</Text>
 			{isFolder && count ? (
 				<Flex
 					align="center"
@@ -277,28 +295,77 @@ const NetworkTreeItem = ({
 };
 
 /**
- * Network Tree Item Logo component
+ * Tree item logo: show a folder icon for root folders or an avatar based on the user-type
  * @param {object} props
- * @param {boolean} props.rootCategory - Whether the item is a root category
+ * @param {boolean} props.rootCategory - Whether the item is a root category folder
  * @param {string} props.user_type - Type of the user
+ * @param {number} props.user_type_id - ID of the user type
  */
-const NetworkTreeItemLogo = ({ rootCategory, user_type }) => {
-	// const userTypeAvatarMap = {
-	// 	[UserType.DISTRIBUTOR]: "distributor",
-	// 	2: "retailer",
-	// 	3: "independent-retailer",
-	// };
+function UserTypeIcon({ rootCategory, user_type, user_type_id }) {
+	const { h } = useHslColor(user_type);
 
-	return rootCategory ? (
-		<Icon name="folder-open" size="md" color="light" />
-	) : (
-		<Avatar
-			size="xs"
-			name={user_type}
-			// icon={<Icon size="16px" name={icon} color="white" />}
-			// {...avatarTheme}
-		/>
+	if (rootCategory) {
+		return (
+			<MdFolderShared
+				size="28px"
+				color={`hsl(${h},80%,30%)`}
+				title={`${user_type} Folder`}
+			/>
+		);
+	}
+
+	let IconComponent = null;
+	let size = "20px";
+
+	switch (user_type_id) {
+		case UserType.SUPER_DISTRIBUTOR:
+			IconComponent = FcBusinessman;
+			break;
+		case UserType.DISTRIBUTOR:
+			IconComponent = FcManager;
+			break;
+		case UserType.FOS:
+			IconComponent = RiEBike2Fill;
+			size = "18px";
+			break;
+		default:
+			IconComponent = FaRegUser; // Default icon
+			size = "14px";
+	}
+
+	const initials = getInitials(user_type, 2);
+
+	return (
+		<Flex
+			rounded="full"
+			align="center"
+			justify="center"
+			width="28px"
+			height="28px"
+			border={`2px solid hsl(${h},80%,90%)`}
+			bg={`hsl(${h},80%,95%)`}
+			color={`hsl(${h},80%,30%)`}
+			position="relative"
+		>
+			<IconComponent size={size} title={user_type} />
+			<Flex
+				align="center"
+				justify="center"
+				position="absolute"
+				bottom="-4px"
+				right="-4px"
+				rounded="full"
+				bg={`hsl(${h},80%,30%)`}
+				color="white"
+				fontSize="0.5em"
+				fontWeight="700"
+				minW="14px"
+				minH="14px"
+			>
+				{initials}
+			</Flex>
+		</Flex>
 	);
-};
+}
 
 export default NetworkTreeView;
