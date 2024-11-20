@@ -247,9 +247,9 @@ const PrivacyPage = () => {
 						src={reach_out_form_url}
 						height={1000}
 						width="100%"
-						frameborder="0"
 						marginheight="0"
 						marginwidth="0"
+						style={{ border: "none" }}
 					></iframe>
 				</Box>
 			</Flex>
