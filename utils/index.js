@@ -37,6 +37,7 @@ export {
 	limitText,
 	nullRemover,
 	numberRemover,
+	getInitials,
 } from "./textFormat";
 export { buildUserObjectState } from "./userObjectBuilder";
 export { validateResp } from "./validateResponse";
