@@ -1,6 +1,7 @@
 import React from "react";
 import { Flex, Text, ButtonGroup, IconButton, Box } from "@chakra-ui/react";
 import { Button, Icon, Modal } from "components";
+import { useFeatureFlag } from "hooks";
 import { Form } from "tf-components";
 import { MdAccountTree, MdOutlineTableRows } from "react-icons/md";
 
@@ -35,6 +36,8 @@ const NetworkToolbar = ({
 	hideFilter = false,
 	setViewType,
 }) => {
+	const [isTreeViewEnabled] = useFeatureFlag("NETWORK_TREE_VIEW");
+
 	return (
 		<Flex
 			gap="2"
@@ -50,43 +53,59 @@ const NetworkToolbar = ({
 			}}
 		>
 			{/* MARK: Switch View */}
-			<ButtonGroup
-				size={size}
-				borderColor="primary.DEFAULT"
-				borderWidth={2}
-				borderRadius={8}
-				isAttached
-				variant="outline"
-			>
-				<IconButton
-					aria-label="Show List View"
-					title="List View"
-					icon={<MdOutlineTableRows />}
-					borderRadius={8}
-					color={viewType === "list" ? "#FFF" : "#666"}
-					// borderColor="#999"
+			{isTreeViewEnabled ? (
+				<ButtonGroup
+					size={size}
+					borderColor="primary.DEFAULT"
 					borderWidth={2}
-					bg={viewType === "list" ? "primary.DEFAULT" : "transparent"}
-					_hover={{
-						bg: viewType === "list" ? "primary.DEFAULT" : "white",
-					}}
-					onClick={() => setViewType("list")}
-				/>
-				<IconButton
-					aria-label="Show Tree View"
-					title="Tree View"
-					icon={<MdAccountTree />}
 					borderRadius={8}
-					color={viewType === "list" ? "#666" : "#FFF"}
-					// borderColor="#999"
-					borderWidth={2}
-					bg={viewType === "tree" ? "primary.DEFAULT" : "transparent"}
-					_hover={{
-						bg: viewType === "tree" ? "primary.DEFAULT" : "white",
-					}}
-					onClick={() => setViewType("tree")}
-				/>
-			</ButtonGroup>
+					isAttached
+					variant="outline"
+				>
+					<IconButton
+						aria-label="Show List View"
+						title="List View"
+						icon={<MdOutlineTableRows />}
+						borderRadius={8}
+						color={viewType === "list" ? "#FFF" : "#666"}
+						// borderColor="#999"
+						borderWidth={2}
+						bg={
+							viewType === "list"
+								? "primary.DEFAULT"
+								: "transparent"
+						}
+						_hover={{
+							bg:
+								viewType === "list"
+									? "primary.DEFAULT"
+									: "white",
+						}}
+						onClick={() => setViewType("list")}
+					/>
+					<IconButton
+						aria-label="Show Tree View"
+						title="Tree View"
+						icon={<MdAccountTree />}
+						borderRadius={8}
+						color={viewType === "list" ? "#666" : "#FFF"}
+						// borderColor="#999"
+						borderWidth={2}
+						bg={
+							viewType === "tree"
+								? "primary.DEFAULT"
+								: "transparent"
+						}
+						_hover={{
+							bg:
+								viewType === "tree"
+									? "primary.DEFAULT"
+									: "white",
+						}}
+						onClick={() => setViewType("tree")}
+					/>
+				</ButtonGroup>
+			) : null}
 
 			{/* MARK: Spacer */}
 			<Box flex="1" />

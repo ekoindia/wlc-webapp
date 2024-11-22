@@ -8,7 +8,15 @@ import { formatDate } from "libs/dateFormat";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { NetworkTable, NetworkToolbar, NetworkTreeView } from ".";
+import { NetworkTable, NetworkToolbar } from ".";
+import dynamic from "next/dynamic";
+
+const NetworkTreeView = dynamic(
+	() => import(".").then((pkg) => pkg.NetworkTreeView),
+	{
+		ssr: false,
+	}
+);
 
 const calendar_min_date = "2023-01-01";
 
