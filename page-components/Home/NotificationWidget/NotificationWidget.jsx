@@ -54,7 +54,11 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 
 	return (
 		<>
-			<WidgetBase title={title} noPadding>
+			<WidgetBase
+				title={title}
+				autoHeight={compactMode ? false : true}
+				noPadding
+			>
 				<Flex
 					direction="column"
 					className="customScrollbars"
