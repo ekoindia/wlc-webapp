@@ -5,4 +5,5 @@ export { NetworkMenuWrapper } from "./NetworkMenuWrapper";
 export { NetworkSort } from "./NetworkSort";
 export { NetworkTable } from "./NetworkTable";
 export { default as NetworkToolbar } from "./NetworkToolbar";
+export { default as NetworkTreeView } from "./NetworkTreeView";
 export { SortAndFilterMobile } from "./SortAndFilterMobile";

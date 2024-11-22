@@ -84,12 +84,21 @@ const History = () => {
 		value: "tx_typeid",
 	};
 
-	const history_interaction_list = Object.keys(trxn_type_prod_map).map(
-		(key) => {
-			const tx_typeid = parseInt(key);
-			return { ...trxn_type_prod_map[key], tx_typeid };
+	const [history_interaction_list, setHistoryInteractionList] = useState([]);
+	useEffect(() => {
+		if (!trxn_type_prod_map) return;
+
+		const _history_interaction_list = Object.keys(trxn_type_prod_map).map(
+			(key) => {
+				const tx_typeid = parseInt(key);
+				return { ...trxn_type_prod_map[key], tx_typeid };
+			}
+		);
+
+		if (_history_interaction_list.length > 0) {
+			setHistoryInteractionList(_history_interaction_list);
 		}
-	);
+	}, [trxn_type_prod_map]);
 
 	const [today] = useState(() => {
 		const _today = new Date();
@@ -152,82 +161,94 @@ const History = () => {
 		control: controlExport,
 	});
 
-	const history_filter_parameter_list = [
-		{
-			name: "product",
-			label: "Product",
-			parameter_type_id: ParamType.LIST,
-			list_elements: history_interaction_list,
-			renderer: renderer,
-			required: false,
-		},
-		{
-			name: "tid",
-			label: "TID",
-			parameter_type_id: ParamType.NUMERIC,
-			step: "1",
-			required: false,
-		},
-		{
-			name: "account",
-			label: "Account Number",
-			parameter_type_id: ParamType.NUMERIC,
-			step: "1",
-			required: false,
-		},
-		{
-			name: "customer_mobile",
-			label: "Customer Mobile No.",
-			step: "1",
-			parameter_type_id: ParamType.NUMERIC,
-			required: false,
-		},
-		{
-			name: "start_date",
-			label: "From",
-			parameter_type_id: ParamType.FROM_DATE,
-			minDate: calendar_min_date,
-			maxDate: today,
-			required:
-				openModalId == action.EXPORT
-					? watcherExport.tid
-						? false
-						: true
-					: false,
-		},
-		{
-			name: "tx_date",
-			label: "To",
-			parameter_type_id: ParamType.TO_DATE,
-			minDate:
-				openModalId == action.FILTER
-					? minDateFilter
-					: openModalId == action.EXPORT
-						? minDateExport
-						: null,
-			maxDate: today,
-			required:
-				openModalId == action.EXPORT
-					? watcherExport.tid
-						? false
-						: true
-					: false,
-		},
-		{
-			name: "amount",
-			label: "Amount",
-			parameter_type_id: ParamType.NUMERIC,
-			inputLeftElement: <Icon name="rupee" size="xs" color="light" />,
-			required: false,
-		},
-		{
-			name: "rr_no",
-			label: "Tracking Number",
-			step: "1",
-			parameter_type_id: ParamType.NUMERIC,
-			required: false,
-		},
-	];
+	const history_filter_parameter_list = useMemo(
+		() => [
+			{
+				name: "product",
+				label: "Product",
+				parameter_type_id: ParamType.LIST,
+				list_elements: history_interaction_list,
+				renderer: renderer,
+				required: false,
+			},
+			{
+				name: "tid",
+				label: "TID",
+				parameter_type_id: ParamType.NUMERIC,
+				step: "1",
+				required: false,
+			},
+			{
+				name: "account",
+				label: "Account Number",
+				parameter_type_id: ParamType.NUMERIC,
+				step: "1",
+				required: false,
+			},
+			{
+				name: "customer_mobile",
+				label: "Customer Mobile No.",
+				step: "1",
+				parameter_type_id: ParamType.NUMERIC,
+				required: false,
+			},
+			{
+				name: "start_date",
+				label: "From",
+				parameter_type_id: ParamType.FROM_DATE,
+				minDate: calendar_min_date,
+				maxDate: today,
+				required:
+					openModalId == action.EXPORT
+						? watcherExport.tid
+							? false
+							: true
+						: false,
+			},
+			{
+				name: "tx_date",
+				label: "To",
+				parameter_type_id: ParamType.TO_DATE,
+				minDate:
+					openModalId == action.FILTER
+						? minDateFilter
+						: openModalId == action.EXPORT
+							? minDateExport
+							: null,
+				maxDate: today,
+				required:
+					openModalId == action.EXPORT
+						? watcherExport.tid
+							? false
+							: true
+						: false,
+			},
+			{
+				name: "amount",
+				label: "Amount",
+				parameter_type_id: ParamType.NUMERIC,
+				inputLeftElement: <Icon name="rupee" size="xs" color="light" />,
+				required: false,
+			},
+			{
+				name: "rr_no",
+				label: "Tracking Number",
+				step: "1",
+				parameter_type_id: ParamType.NUMERIC,
+				required: false,
+			},
+		],
+		[
+			history_interaction_list,
+			renderer,
+			calendar_min_date,
+			minDateFilter,
+			minDateExport,
+			today,
+			openModalId,
+			watcherExport,
+		]
+	);
 
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
@@ -304,12 +325,12 @@ const History = () => {
 				..._finalFormState,
 				start_date: otherQueries["tid"]
 					? ""
-					: watcherFilter.start_date ??
+					: (watcherFilter.start_date ??
 						watcherExport.start_date ??
-						firstDateOfMonth,
+						firstDateOfMonth),
 				tx_date: otherQueries["tid"]
 					? ""
-					: watcherFilter.tx_date ?? watcherExport.tx_date ?? today,
+					: (watcherFilter.tx_date ?? watcherExport.tx_date ?? today),
 				reporttype: "pdf",
 			});
 			setIsFiltered(true);
@@ -352,13 +373,13 @@ const History = () => {
 			start_date:
 				type == "tid"
 					? ""
-					: watcherFilter.start_date ??
+					: (watcherFilter.start_date ??
 						watcherExport.start_date ??
-						firstDateOfMonth,
+						firstDateOfMonth),
 			tx_date:
 				type == "tid"
 					? ""
-					: watcherFilter.tx_date ?? watcherExport.tx_date ?? today,
+					: (watcherFilter.tx_date ?? watcherExport.tx_date ?? today),
 			reporttype: "pdf",
 		});
 		setIsFiltered(true);
@@ -493,7 +514,7 @@ const History = () => {
 		register: registerSearch,
 		control: controlSearch,
 		errors: errorsSearch,
-		formValue: watcherSearch,
+		formValues: watcherSearch,
 		parameter_list: [
 			{
 				name: "search",

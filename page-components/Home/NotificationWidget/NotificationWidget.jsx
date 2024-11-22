@@ -46,7 +46,7 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 	} = useNotification();
 	const { openUrl } = useAppLink();
 
-	console.log("NOTIFICATIONS: ", notifications);
+	// console.log("NOTIFICATIONS: ", notifications);
 
 	if (!notifications.length) {
 		return null;
@@ -54,7 +54,11 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 
 	return (
 		<>
-			<WidgetBase title={title} noPadding>
+			<WidgetBase
+				title={title}
+				autoHeight={compactMode ? false : true}
+				noPadding
+			>
 				<Flex
 					direction="column"
 					className="customScrollbars"

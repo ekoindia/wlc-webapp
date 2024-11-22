@@ -14,6 +14,7 @@ import {
 	TodoProvider,
 	UserProvider,
 	WalletProvider,
+	NetworkUsersProvider,
 } from "contexts";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
@@ -207,15 +208,17 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 													<NotificationProvider>
 														<EarningSummaryProvider>
 															<CommissionSummaryProvider>
-																<TodoProvider>
-																	<ErrorBoundary>
-																		{getLayout(
-																			<Component
-																				{...pageProps}
-																			/>
-																		)}
-																	</ErrorBoundary>
-																</TodoProvider>
+																<NetworkUsersProvider>
+																	<TodoProvider>
+																		<ErrorBoundary>
+																			{getLayout(
+																				<Component
+																					{...pageProps}
+																				/>
+																			)}
+																		</ErrorBoundary>
+																	</TodoProvider>
+																</NetworkUsersProvider>
 															</CommissionSummaryProvider>
 														</EarningSummaryProvider>
 													</NotificationProvider>

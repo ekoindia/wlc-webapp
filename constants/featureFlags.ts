@@ -18,7 +18,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Feature to show Tree-view in Network Management.
 	NETWORK_TREE_VIEW: {
 		enabled: true,
-		forEnv: ["development"],
+		forEnv: ["development", "staging"], // TODO: Enable for all only after DATA CACHING in NetworkUsersContext.
 	},
 
 	// MANUALLY CONFIGURE CUSTOM IMAGE FOR LANDING/LOGIN PAGE...

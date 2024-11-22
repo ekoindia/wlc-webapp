@@ -60,3 +60,20 @@ export const numberRemover = (text) => {
 	const withoutNumbers = text.replace(regex, "");
 	return withoutNumbers;
 };
+
+/**
+ * Get initials from a given text in upper-case
+ * @param {string} text Text from which initials need to be extracted
+ * @param {number} len Number of characters to extract
+ * @returns Initials of length `len` characters
+ */
+export const getInitials = (text, len = 2) => {
+	if (!text || typeof text !== "string") return "";
+
+	return text
+		.split(/[^a-zA-Z0-9]/)
+		.slice(0, len)
+		.map((word) => word[0])
+		.join("")
+		.toUpperCase();
+};

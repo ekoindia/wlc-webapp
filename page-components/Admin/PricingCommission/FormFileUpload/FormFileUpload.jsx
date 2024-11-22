@@ -188,7 +188,7 @@ const FormFileUpload = ({ sampleFileDownloadParams, fileUploadUri }) => {
 // 	responseList,
 // }) => {
 // 	const renderer = [
-// 		{ label: "Sr. No.", show: "#" },
+// 		{ label: "#", show: "#" },
 // 		{ name: "name", label: "Name", sorting: true, show: "Avatar" },
 // 		{ name: "mobile", label: "Mobile", sorting: true },
 // 		{

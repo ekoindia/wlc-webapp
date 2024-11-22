@@ -9,7 +9,7 @@ const baseStyle = definePartsStyle({
 		w: "5",
 		h: "5",
 		borderColor: "primary.DEFAULT",
-		borderWidth: "1px",
+		borderWidth: "2px",
 		borderStyle: "solid",
 		borderRadius: "4",
 
