@@ -5,7 +5,10 @@ export {
 } from "./fetchOrgDetailsHelper";
 export { localStorageProvider } from "./localStorageProvider";
 export { RemoveFormatted, sendOtpRequest } from "./loginHelper";
-export { processTransactionData } from "./processTransactionData";
+export {
+	processTransactionData,
+	filterTransactionLists,
+} from "./processTransactionData";
 export {
 	getAmountStyle,
 	getArrowStyle,

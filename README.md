@@ -51,6 +51,7 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 - **Left Sidebar** - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
   - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
   - Menu Context (data fetch after login): [contexts/MenuContext.tsx](contexts/MenuContext.tsx)
+  - MenuContext filtered into transaction & other lists for the sidebar: [hooks/useNavigationLists.js](hooks/useNavigationLists.js)
   - Menu data filtering & transformation using: [helpers/processTransactionData.js](helpers/processTransactionData.js)
 - **Transaction History** (for sellers & distributors) - [page-components/History/History.jsx](page-components/History/History.jsx)
   - History Table metadata: [page-components/History/HistoryTable/historyParametersMetadata.js](page-components/History/HistoryTable/historyParametersMetadata.js)
@@ -88,7 +89,7 @@ To add pricing configuration page for a new product in the Admin portal under "P
    3. Select Path: `page-components/Admin`
    4. Enter sub-folder: `PricingCommission`
 2. Copy sub-components from other existing pricing page-component such as: `TrainTravelDistributor` and `TrainTravelRetailer`
-3. Create a configuration for the product in [`constants/PricingConfiguration.js`](constants/PricingConfiguration.js) file under the `product_slug_map` object.
+3. Create a configuration for the product in [`constants/PricingConfiguration.ts`](constants/PricingConfiguration.ts) file under the `product_slug_map` object.
    1. Set a unique slug (for the page URL) and the name of the page-component to display (created in step #1).
    2. Add the slug to `product_categories` object in the order that you want to display on the product listing page. If not added here, the product will not be displayed on the product listing page.
 4. Create a configuration for the product in [`constants/ProductDetails.js`](constants/ProductDetails.js) page. Set slabs, validations, etc for the pricing configuration.
