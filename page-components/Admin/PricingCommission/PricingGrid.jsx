@@ -1,6 +1,6 @@
 import { Avatar, Flex, Grid, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { product_slug_map } from "constants";
+import { business_config_slug_map } from "constants";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -28,7 +28,7 @@ const PricingGrid = ({ product_list, sub_page = false }) => {
 		>
 			{product_list?.map((product) => {
 				const { label, desc, icon, hide } =
-					product_slug_map[product] ?? {};
+					business_config_slug_map[product] ?? {};
 
 				if (hide) return null;
 				if (!label) return null;

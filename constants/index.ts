@@ -19,12 +19,17 @@ export {
 	type IconNameType,
 	type IconType,
 } from "./IconLibrary";
-export { product_categories, product_slug_map } from "./PricingConfiguration";
+export {
+	business_categories,
+	product_categories,
+	business_config_slug_map,
+} from "./ProductBusinessConfigurations";
 export {
 	productPricingTextConfig,
 	productPricingType,
 	products,
 	agreementProvider,
+	ProductRoleConfiguration,
 } from "./ProductDetails";
 export { adminProfileMenu, profileMenu } from "./profileCardMenus";
 export { PubSubTopics } from "./PubSubTopics";

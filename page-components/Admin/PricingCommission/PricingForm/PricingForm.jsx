@@ -2,7 +2,11 @@ import { useMemo } from "react";
 import { Flex, Text } from "@chakra-ui/react";
 import { Headings } from "components";
 import { PricingGrid } from "../PricingGrid";
-import { products, product_slug_map, productPricingType } from "constants";
+import {
+	products,
+	business_config_slug_map,
+	productPricingType,
+} from "constants";
 import dynamic from "next/dynamic";
 
 /**
@@ -28,7 +32,7 @@ const PricingForm = ({ slug }) => {
 		meta,
 		is_group,
 		products: group_products,
-	} = product_slug_map[slug] ?? {};
+	} = business_config_slug_map[slug] ?? {};
 
 	const componentName = useMemo(() => {
 		if (template && template in TemplateComponent) {

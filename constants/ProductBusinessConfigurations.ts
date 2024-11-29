@@ -60,9 +60,9 @@ interface ProductMeta {
 }
 
 /**
- * Interface for product details.
+ * Interface for product/business configuration item details.
  */
-interface ProductDetails {
+interface ConfigDetails {
 	/**
 	 * Whether the product is a group of products. When opened, it shows multiple sub-products.
 	 * If true, the `products` property should be defined with the list of product-slugs associated with the group.
@@ -70,7 +70,7 @@ interface ProductDetails {
 	is_group?: boolean;
 
 	/** List of product slugs associated with the group. */
-	products?: (keyof typeof product_slug_map)[];
+	products?: (keyof typeof business_config_slug_map)[];
 
 	/**
 	 * The key used to identify the product in the `constants/ProductDetails` file.
@@ -110,7 +110,7 @@ interface ProductDetails {
 /**
  * Map of product slugs to their respective details.
  */
-export const product_slug_map: Record<string, ProductDetails> = {
+export const business_config_slug_map: Record<string, ConfigDetails> = {
 	"aadhaar-pay": {
 		label: "Aadhaar Pay",
 		desc: "Set Agent Pricing for Aadhaar Pay services",
@@ -328,24 +328,31 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		icon: "upi",
 		hide: true,
 	},
+	"toggle-services": {
+		label: "Enable/Disable Services",
+		desc: "Hide or show any product/service from the left-menu or the E-value screen for your entire network",
+		comp: "ToggleServices",
+		icon: "toggle",
+		hide: false,
+	},
 };
 
 /**
- * Interface for product category map.
+ * Interface for product/business category map.
  */
-interface ProductCategoryMap {
+interface BusinessCategoryMap {
 	[category: string]: {
 		/** Short description of the product category. */
 		description: string;
 		/** List of product slugs associated with the category. */
-		products: (keyof typeof product_slug_map)[];
+		products: (keyof typeof business_config_slug_map)[];
 	};
 }
 
 /**
- * Define how products are categorized and visible on the Pricing & Commission page.
+ * Define how business configurations are categorized and visible on the Business Settings page.
  */
-export const product_categories: ProductCategoryMap = {
+export const business_categories: BusinessCategoryMap = {
 	"Business Settings": {
 		description:
 			"Manage product settings and configurations for your network.",
@@ -356,8 +363,15 @@ export const product_categories: ProductCategoryMap = {
 			"commission-frequency",
 			"cash-deposit-charges-config",
 			"refund-method",
+			"toggle-services",
 		],
 	},
+};
+
+/**
+ * Define how products are categorized and visible on the Pricing & Commission page.
+ */
+export const product_categories: BusinessCategoryMap = {
 	"Earning Opportunity Commissions": {
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
