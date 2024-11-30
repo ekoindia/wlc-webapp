@@ -1,4 +1,4 @@
-import PricingCommission from "page-components/Admin/PricingCommission/PricingCommission";
+import ConfigPageCard from "page-components/Admin/PricingCommission/ConfigPageCard";
 import { pageRender } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { pageRender } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("PricingCommission", () => {
+describe("ConfigPageCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<PricingCommission />);
+		const { container } = pageRender(<ConfigPageCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("PricingCommission", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for PricingCommission in __tests__/components/PricingCommission/PricingCommission.test.jsx"
+		"TODO: add proper test cases for ConfigPageCard in __tests__/components/PricingCommission/PricingCommission.test.jsx"
 	);
 });

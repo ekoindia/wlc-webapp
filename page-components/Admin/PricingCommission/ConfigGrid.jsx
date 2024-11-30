@@ -6,12 +6,13 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 
 /**
- * Grid component to display the list of products for configuring their pricing.
+ * Grid component to display the list of configuration items.
+ * For example, display a grid of products to set pricing/commissions for.
  * @param {*} props
- * @param {Array} props.product_list List of product-slugs to display
+ * @param {Array} props.product_list List of product-slugs or other configuration-slugs to display.
  * @param {boolean} [props.sub_page] Flag to identify if the grid is being used in a sub-page.
  */
-const PricingGrid = ({ product_list, sub_page = false }) => {
+const ConfigGrid = ({ product_list, sub_page = false }) => {
 	return (
 		<Grid
 			templateColumns={{
@@ -50,7 +51,7 @@ const PricingGrid = ({ product_list, sub_page = false }) => {
 	);
 };
 
-export { PricingGrid };
+export { ConfigGrid };
 
 /**
  * Pricing & Commission: Card Component.

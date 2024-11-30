@@ -13,7 +13,8 @@ import { Form } from "tf-components";
 	TODO:
 		- Multi-select agent list:
 			- Show as table with following columns: agent type, agent code, agent name, agent mobile, city, state
-			- Download the full list only once (in the PricingCommission main page component) and filter as needed. Also, cache & share the same list with all pricing configuration sub-components.
+			- Download the full list only once (in the PricingCommission/ConfigPageCard main page component) and filter as needed.
+			- Also, cache & share the same list with all pricing configuration sub-components.
 */
 
 const AGENT_TYPE = {

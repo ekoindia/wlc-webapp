@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Flex, Text } from "@chakra-ui/react";
 import { Headings } from "components";
-import { PricingGrid } from "../PricingGrid";
+import { ConfigGrid } from "../ConfigGrid";
 import {
 	products,
 	business_config_slug_map,
@@ -45,7 +45,7 @@ const PricingForm = ({ slug }) => {
 	if (is_group && products) {
 		return (
 			<PricingPageHeader label={label} note={note}>
-				<PricingGrid product_list={group_products} sub_page />
+				<ConfigGrid product_list={group_products} sub_page />
 			</PricingPageHeader>
 		);
 	}

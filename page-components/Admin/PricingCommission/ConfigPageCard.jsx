@@ -1,16 +1,14 @@
 import { Flex, Text, Tooltip } from "@chakra-ui/react";
-import { Button, Headings, Icon } from "components";
-import { Endpoints, TransactionTypes, product_categories } from "constants";
-import { useSession } from "contexts";
-import { fetcher } from "helpers";
-import { saveDataToFile } from "utils";
-import { PricingGrid } from "./PricingGrid";
+import { Headings, Icon } from "components";
+import { product_categories } from "constants";
+import { ConfigGrid } from "./ConfigGrid";
+import { DownloadPricing } from "./DownloadPricing";
 
 /**
  * Admin > Pricing & Commission: Main Page.
  * Show a list of products to set pricing/commissions for.
  */
-const PricingCommission = () => {
+const ConfigPageCard = () => {
 	return (
 		<>
 			<Headings
@@ -64,7 +62,7 @@ const PricingCommission = () => {
 										</span>
 									</Tooltip>
 								</Flex>
-								<PricingGrid product_list={products} />
+								<ConfigGrid product_list={products} />
 							</Flex>
 						);
 					}
@@ -74,40 +72,4 @@ const PricingCommission = () => {
 	);
 };
 
-export { PricingCommission };
-
-const DownloadPricing = () => {
-	const { accessToken } = useSession();
-	const handleClick = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-is-file-download": "1",
-			},
-			body: {
-				interaction_type_id: TransactionTypes.DOWNLOAD_EXISTING_PRICING,
-			},
-			token: accessToken,
-		})
-			.then((data) => {
-				const _blob = data?.file?.blob;
-				const _filename = data?.file?.name || "file";
-				const _type = data?.file["content-type"];
-				const _b64 = true;
-				saveDataToFile(_blob, _filename, _type, _b64);
-			})
-			.catch((err) => {
-				console.error("Error: ", err);
-			});
-	};
-	return (
-		<Button
-			size={{ base: "sm", md: "md" }}
-			icon="file-download"
-			iconStyle={{ size: { base: "xs", md: "sm" } }}
-			iconSpacing="2"
-			onClick={handleClick}
-		>
-			Existing Pricing
-		</Button>
-	);
-};
+export { ConfigPageCard };
