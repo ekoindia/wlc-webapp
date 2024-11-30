@@ -186,12 +186,12 @@ const generateMenuLinkActions = (menu_list, router) => {
 	menu_list.forEach((menu) => {
 		if (menu.link != currentRoute) {
 			menuLinkActions.push({
-				id: "menulnk/" + menu.name,
-				name: menu.name,
+				id: "menulnk/" + (menu.name || menu.label),
+				name: menu.name || menu.label,
 				icon: (
 					<ActionIcon
 						icon={menu.icon}
-						name={menu.name}
+						name={menu.name || menu.label}
 						style="filled"
 					/>
 				),
