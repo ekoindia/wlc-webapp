@@ -70,18 +70,23 @@ export const createSupportTicket = ({
 		process.env.NEXT_PUBLIC_ENV
 	);
 
+	// Add UAT TESTING comment for non-production environments...
 	if (process.env.NEXT_PUBLIC_ENV !== "production") {
-		comment = `UAT TESTING!! Please ignore this ticket.\n\n${comment}`;
+		comment = `UAT TESTING!! Please ignore this ticket.<br><br>${comment}`;
 	}
 
+	// Convert new lines to HTML breaks...
+	comment = nl2br(comment);
+	context = nl2br(context);
+
 	if (comment) {
-		commentMessage = `Comments:\n${comment}\n\n`;
-		fullDescription = `\n<p><strong>COMMENT:</strong><br>\n${comment}\n<br><br>\n`;
+		commentMessage = `<p>Comments:<br>${comment}</p>`;
+		fullDescription = `<p><strong>COMMENT:</strong><br>${comment}</p>\n`;
 	}
 
 	if (context) {
-		commentMessage += `Notes for Support Team:\n${context}\n\n`;
-		fullDescription += `\n<p><strong>NOTES FOR SUPPORT TEAM:</strong><br>\n${context}\n<br><br>\n`;
+		commentMessage += `<p>Notes for Support Team:<br>${context}</p>`;
+		fullDescription += `<p><strong>NOTES FOR SUPPORT TEAM:</strong><br>${context}</p>`;
 	}
 
 	if (inputs?.length > 0) {
@@ -101,7 +106,7 @@ export const createSupportTicket = ({
 	}
 
 	if (transaction_metadata?.pre_msg_template) {
-		fullDescription += `\n<p>\n${transaction_metadata.pre_msg_template}\n`;
+		fullDescription += `\n<p>${transaction_metadata.pre_msg_template}</p>`;
 	}
 
 	// Prepare the feedback data...
@@ -245,4 +250,12 @@ const getSessionDetails = () => {
 			roles: user?.role_list || "",
 		},
 	};
+};
+
+/**
+ * Utility function to convert new lines to HTML breaks...
+ * @param str
+ */
+const nl2br = (str: string) => {
+	return str.replace(/(?:\r\n|\r|\n)/g, "<br>");
 };
