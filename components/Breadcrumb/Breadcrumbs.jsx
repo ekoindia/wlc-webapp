@@ -16,11 +16,25 @@ const Breadcrumbs = ({ crumbs = [] }) => {
 		router.push(_redirect);
 	};
 
-	console.log("CRUMBS: ", crumbs);
-
 	// TODO: Go back in browser history, instead of pushing new URLs to the history stack.
+	/**
+	 * Handle click event on a breadcrumb. If the breadcrumb is not the current page, navigate to the URL.
+	 * If the breadcrumb URL is part of the browser history for the matching number of steps, go back in the history.
+	 * @param {object} crumb The breadcrumb object that was clicked
+	 */
 	const onCrumbClick = (crumb) => {
+		// If the crumb is the current page, do nothing
 		if (crumb.isCurrent || !crumb.href) return;
+
+		// If the last URL in Browser History (implied by document.referrer) is the same URL that we want to go back to, go back one step in the history.
+		const history = window.history;
+		const crumbURL = window.location.origin + crumb.href;
+		if (document.referrer === crumbURL) {
+			history.back();
+			return;
+		}
+
+		// Otherwise, just load the URL
 		router.push(crumb.href);
 	};
 
