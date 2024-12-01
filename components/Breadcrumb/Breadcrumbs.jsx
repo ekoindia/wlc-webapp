@@ -29,6 +29,7 @@ const Breadcrumbs = ({ crumbs = [] }) => {
 			display={{ base: "none", md: "flex" }}
 			fontSize="xs"
 			alignItems="center"
+			userSelect="none"
 			separator={<Icon size="9px" name="chevron-right" color={"light"} />}
 		>
 			<BreadcrumbItem>
@@ -49,14 +50,14 @@ const Breadcrumbs = ({ crumbs = [] }) => {
 				</BreadcrumbLink>
 			</BreadcrumbItem>
 			{crumbs?.map((crumb, index) => (
-				<BreadcrumbItem key={index}>
+				<BreadcrumbItem key={index} isCurrentPage={crumb.isCurrent}>
 					<BreadcrumbLink
 						onClick={() => onCrumbClick(crumb)}
 						_hover={{ textDecoration: "none" }}
 						fontSize="xs"
-						isCurrentPage={crumb.isCurrent}
 						color={crumb.isCurrent ? "light" : "primary.DEFAULT"}
-						pointerEvents={crumb.isCurrent ? "none" : "auto"}
+						// pointerEvents={crumb.isCurrent ? "none" : "auto"}
+						cursor="default"
 					>
 						{crumb.label}
 					</BreadcrumbLink>
