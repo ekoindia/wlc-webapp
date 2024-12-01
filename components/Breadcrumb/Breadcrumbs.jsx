@@ -16,7 +16,6 @@ const Breadcrumbs = ({ crumbs = [] }) => {
 		router.push(_redirect);
 	};
 
-	// TODO: Go back in browser history, instead of pushing new URLs to the history stack.
 	/**
 	 * Handle click event on a breadcrumb. If the breadcrumb is not the current page, navigate to the URL.
 	 * If the breadcrumb URL is part of the browser history for the matching number of steps, go back in the history.
