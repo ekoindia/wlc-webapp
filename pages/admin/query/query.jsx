@@ -1,5 +1,4 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { QueryObject } from "constants";
 import Head from "next/head";
 import { QueryCenter } from "page-components/Admin";
 
@@ -10,7 +9,11 @@ const QueryPage = () => {
 				<title>Query</title>
 			</Head>
 			<PaddingBox>
-				<BreadcrumbsWrapper BreadcrumbsObject={QueryObject}>
+				<BreadcrumbsWrapper
+					breadcrumbsData={{
+						"/admin/query": "Query Center",
+					}}
+				>
 					<QueryCenter />
 				</BreadcrumbsWrapper>
 			</PaddingBox>

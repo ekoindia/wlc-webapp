@@ -1,11 +1,11 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { TransactionHistoryObject } from "constants";
+import { TransactionHistoryBreadcrumbs } from "constants";
 import { TransactionHistory } from "page-components/Admin";
 
 const TransactionHistoryPage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper BreadcrumbsObject={TransactionHistoryObject}>
+			<BreadcrumbsWrapper breadcrumbsData={TransactionHistoryBreadcrumbs}>
 				<TransactionHistory />
 			</BreadcrumbsWrapper>
 		</PaddingBox>

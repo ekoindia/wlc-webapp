@@ -1,11 +1,14 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { NotificationsBreadcrumbData } from "constants";
 import { NotificationCreator } from "page-components/Admin";
 
 const Notifications = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper BreadcrumbsObject={NotificationsBreadcrumbData}>
+			<BreadcrumbsWrapper
+				breadcrumbsData={{
+					"/admin/notifications": "Send Notifications",
+				}}
+			>
 				<NotificationCreator />
 			</BreadcrumbsWrapper>
 		</PaddingBox>

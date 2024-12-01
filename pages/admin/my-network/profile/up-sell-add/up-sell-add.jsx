@@ -1,5 +1,5 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { NetworkObject } from "constants";
+import { MyNetworkBreadcrumbs } from "constants";
 import { UpdateSellerAddress } from "page-components/Admin";
 
 /**
@@ -8,7 +8,7 @@ import { UpdateSellerAddress } from "page-components/Admin";
 function UpdateSellerAddressPage() {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+			<BreadcrumbsWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
 				<UpdateSellerAddress />
 			</BreadcrumbsWrapper>
 		</PaddingBox>

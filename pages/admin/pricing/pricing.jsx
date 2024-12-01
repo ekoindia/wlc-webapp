@@ -1,22 +1,30 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { PricingCommissionObject } from "constants";
+import {
+	product_pricing_categories,
+	PricingCommissionBreadcrumbs,
+} from "constants";
 import { ConfigPageCard } from "page-components/Admin";
+import { DownloadPricing } from "page-components/Admin/PricingCommission/DownloadPricing";
 
 /**
  * Show the Pricing & Commission page: grid of products to set pricing/commissions for.
  */
-const Pricing = () => {
+const PricingPage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper BreadcrumbsObject={PricingCommissionObject}>
-				<ConfigPageCard />
+			<BreadcrumbsWrapper breadcrumbsData={PricingCommissionBreadcrumbs}>
+				<ConfigPageCard
+					heading="Pricing & Commissions"
+					configCategories={product_pricing_categories}
+					HeaderTool={<DownloadPricing />}
+				/>
 			</BreadcrumbsWrapper>
 		</PaddingBox>
 	);
 };
 
-Pricing.pageMeta = {
-	title: "Pricing & Commission | Admin",
+PricingPage.pageMeta = {
+	title: "PricingPage & Commission | Admin",
 };
 
-export default Pricing;
+export default PricingPage;

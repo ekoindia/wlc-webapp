@@ -1,46 +1,49 @@
 import { Box } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Breadcrumbs } from "..";
 
 /**
- * A <BreadcrumbsWrapper> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<BreadcrumbsWrapper></BreadcrumbsWrapper>`
+ * Breadcrumbs component wrapper to calculate the sub-paths and display the breadcrumbs at the top of the page.
+ * @param {object} props Properties passed to the component
+ * @param {object} props.breadcrumbsData Object containing the possible URLs and the labels for the breadcrumbs
+ * @param {string} [props.slug] Value of the URL slug (if part of the URL)
+ * @param {React.Component} [props.children] Child components to render
  */
-
-const BreadcrumbsWrapper = (props) => {
-	const { children, BreadcrumbsObject } = props;
+const BreadcrumbsWrapper = ({ breadcrumbsData, slug, children }) => {
 	const router = useRouter();
-	const hrefs = [];
-	const labels = [];
-	const currentURL = router.pathname;
-	const pathArray = currentURL.split("/");
-	pathArray.shift();
+	const [crumbs, setCrumbs] = useState([]);
 
-	let URL;
-	if (BreadcrumbsObject !== undefined)
-		pathArray.forEach((ele) => {
-			const temp = "/" + ele;
-			URL = URL ? URL + temp : temp;
-			if (BreadcrumbsObject[URL]) {
-				hrefs.push(URL);
-				labels.push(BreadcrumbsObject[URL]);
+	/**
+	 * Get the breadcrumbs data (sub-path hrefs & labels) based on the current URL
+	 */
+	useEffect(() => {
+		if (!breadcrumbsData) return;
+
+		// Get the current path and replace the slug if present
+		const currentURL = router.pathname.replace("[slug]", slug || "");
+		const pathArray = currentURL.split("/");
+
+		let URL = "";
+		let _crumbs = [];
+
+		pathArray.forEach((path, index) => {
+			if (!path) return;
+			URL += "/" + path;
+			if (breadcrumbsData[URL]) {
+				_crumbs.push({
+					href: URL,
+					label: breadcrumbsData[URL],
+					isCurrent: index === pathArray.length - 1,
+				});
 			}
 		});
-
-	const handleOnClick = (link) => {
-		router.push(link);
-	};
+		setCrumbs(_crumbs);
+	}, [breadcrumbsData, router.pathname, slug]);
 
 	return (
 		<Box>
-			<Breadcrumbs
-				hrefs={hrefs}
-				labels={labels}
-				handleOnClick={handleOnClick}
-			/>
+			<Breadcrumbs crumbs={crumbs} />
 			{children}
 		</Box>
 	);
