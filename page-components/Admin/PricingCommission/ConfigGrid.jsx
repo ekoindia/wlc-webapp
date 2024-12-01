@@ -8,11 +8,12 @@ import { useState } from "react";
 /**
  * Grid component to display the list of configuration items.
  * For example, display a grid of products to set pricing/commissions for.
- * @param {*} props
+ * @param {object} props
  * @param {Array} props.product_list List of product-slugs or other configuration-slugs to display.
+ * @param {string} props.basePath Base path for the current page. Used to define links for the sub-pages.
  * @param {boolean} [props.sub_page] Flag to identify if the grid is being used in a sub-page.
  */
-const ConfigGrid = ({ product_list, sub_page = false }) => {
+const ConfigGrid = ({ product_list, basePath, sub_page = false }) => {
 	return (
 		<Grid
 			templateColumns={{
@@ -39,6 +40,7 @@ const ConfigGrid = ({ product_list, sub_page = false }) => {
 						key={product}
 						slug={product}
 						sub_page={sub_page}
+						basePath={basePath}
 						{...{
 							label,
 							desc,
@@ -61,15 +63,16 @@ export { ConfigGrid };
  * @param {string} props.icon Icon for the card
  * @param {string} props.slug Slug for the card. This will be used to navigate to the pricing page.
  * @param {boolean} [props.sub_page] Flag to identify if the card is being used in a sub-page.
+ * @param {string} props.basePath Base path for the current page. Used to define links for the sub-pages
  */
-const Card = ({ label, desc, icon, slug, sub_page = false }) => {
+const Card = ({ label, desc, icon, slug, basePath, sub_page = false }) => {
 	const { h } = useHslColor(label);
 	const [onHover, setOnHover] = useState(false);
 	const router = useRouter();
 
 	const handleClick = (slug) => {
 		if (slug) {
-			router.push((sub_page ? "" : "pricing/") + slug);
+			router.push((sub_page ? "" : `${basePath}/`) + slug);
 		}
 	};
 

@@ -108,7 +108,9 @@ interface ConfigDetails {
 }
 
 /**
- * Map of product slugs to their respective details.
+ * Configuration for all "Settings" sub-pages.
+ * For example, configure the "Pricing & Commissions" settings for each product.
+ * Or, configure the settings component and metadata for each "Business Settings" options.
  */
 export const business_config_slug_map: Record<string, ConfigDetails> = {
 	"aadhaar-pay": {
@@ -340,22 +342,22 @@ export const business_config_slug_map: Record<string, ConfigDetails> = {
 /**
  * Interface for product/business category map.
  */
-interface BusinessCategoryMap {
-	[category: string]: {
-		/** Short description of the product category. */
-		description: string;
-		/** List of product slugs associated with the category. */
-		products: (keyof typeof business_config_slug_map)[];
-	};
+interface SettingCategoriesType {
+	/** Name of the category. Leave it blank to hide the category label */
+	category?: string;
+	/** Short description of the product category. */
+	description?: string;
+	/** List of product slugs associated with the category. */
+	products: (keyof typeof business_config_slug_map)[];
 }
 
 /**
  * Define how business configurations are categorized and visible on the Business Settings page.
  */
-export const business_categories: BusinessCategoryMap = {
-	"Business Settings": {
-		description:
-			"Manage product settings and configurations for your network.",
+export const business_setting_categories: SettingCategoriesType[] = [
+	{
+		// category: "Business Settings",
+		// description: "",
 		products: [
 			"account-verification-toggle",
 			"agreement-signing",
@@ -366,13 +368,14 @@ export const business_categories: BusinessCategoryMap = {
 			"toggle-services",
 		],
 	},
-};
+];
 
 /**
- * Define how products are categorized and visible on the Pricing & Commission page.
+ * Define how products are categorized and visible on the "Pricing & Commission" page.
  */
-export const product_categories: BusinessCategoryMap = {
-	"Earning Opportunity Commissions": {
+export const product_pricing_categories: SettingCategoriesType[] = [
+	{
+		category: "Earning Opportunity Commissions",
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [
@@ -388,7 +391,8 @@ export const product_categories: BusinessCategoryMap = {
 			"validate-upi-id",
 		],
 	},
-	"Digitization Tools Pricing": {
+	{
+		category: "Digitization Tools Pricing",
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [
@@ -400,4 +404,4 @@ export const product_categories: BusinessCategoryMap = {
 			"test_cdm",
 		],
 	},
-};
+];
