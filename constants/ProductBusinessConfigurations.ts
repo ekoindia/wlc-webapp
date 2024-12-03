@@ -382,7 +382,7 @@ export const business_setting_categories: SettingCategoriesType[] = [
  */
 export const product_pricing_categories: SettingCategoriesType[] = [
 	{
-		category: "Earning Opportunity Commissions",
+		category: "Earning Opportunities",
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [
@@ -399,7 +399,7 @@ export const product_pricing_categories: SettingCategoriesType[] = [
 		],
 	},
 	{
-		category: "Digitization Tools Pricing",
+		category: "Digitization Tools",
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [

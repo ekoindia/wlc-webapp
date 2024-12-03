@@ -530,7 +530,7 @@ const ApplyChangesAlert = ({
 							Cancel
 						</Button>
 						<Button onClick={onApply} ml={3}>
-							Apply Changes
+							Confirm
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>
