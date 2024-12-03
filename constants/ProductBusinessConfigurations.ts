@@ -105,6 +105,11 @@ interface ConfigDetails {
 
 	/** Whether to hide the product from the pricing & commission page. Can be used to temporarily disable a product pricing for all users */
 	hide?: boolean;
+
+	/**
+	 * The feature flag to check if the item should be shown or not.
+	 */
+	featureFlag?: string;
 }
 
 /**
@@ -336,6 +341,7 @@ export const business_config_slug_map: Record<string, ConfigDetails> = {
 		comp: "ToggleServices",
 		icon: "toggle",
 		hide: false,
+		featureFlag: "TOGGLE_SERVICES",
 	},
 };
 

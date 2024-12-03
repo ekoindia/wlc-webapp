@@ -7,6 +7,7 @@ import {
 	business_config_slug_map,
 	productPricingType,
 } from "constants";
+import { useFeatureFlag } from "hooks";
 import dynamic from "next/dynamic";
 
 /**
@@ -32,7 +33,10 @@ const PricingForm = ({ slug }) => {
 		meta,
 		is_group,
 		products: group_products,
+		featureFlag,
 	} = business_config_slug_map[slug] ?? {};
+
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
 
 	const componentName = useMemo(() => {
 		if (template && template in TemplateComponent) {
@@ -40,6 +44,11 @@ const PricingForm = ({ slug }) => {
 		}
 		return comp;
 	}, [template, comp]);
+
+	// Check featureFlag:  if provided and not enabled, return null
+	if (featureFlag && checkFeatureFlag(featureFlag) !== true) {
+		return null;
+	}
 
 	// Render the group of products
 	if (is_group && products) {

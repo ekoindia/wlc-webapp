@@ -1,6 +1,7 @@
 import { Avatar, Flex, Grid, Text } from "@chakra-ui/react";
 import { Icon } from "components";
 import { business_config_slug_map } from "constants";
+import { useFeatureFlag } from "hooks";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -14,6 +15,8 @@ import { useState } from "react";
  * @param {boolean} [props.sub_page] Flag to identify if the grid is being used in a sub-page.
  */
 const ConfigGrid = ({ product_list, basePath, sub_page = false }) => {
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
+
 	return (
 		<Grid
 			templateColumns={{
@@ -29,11 +32,16 @@ const ConfigGrid = ({ product_list, basePath, sub_page = false }) => {
 			}}
 		>
 			{product_list?.map((product) => {
-				const { label, desc, icon, hide } =
+				const { label, desc, icon, hide, featureFlag } =
 					business_config_slug_map[product] ?? {};
 
 				if (hide) return null;
 				if (!label) return null;
+
+				// Check featureFlag:  if provided and not enabled, return null
+				if (featureFlag && checkFeatureFlag(featureFlag) !== true) {
+					return null;
+				}
 
 				return (
 					<Card
