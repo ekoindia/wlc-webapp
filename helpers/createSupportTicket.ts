@@ -1,5 +1,7 @@
 import { TransactionTypes } from "constants/EpsTransactions";
 
+const DEFAULT_TIMEOUT = 120000; // 2 minutes
+
 interface SupportTicketType {
 	accessToken: string;
 	summary: string;
@@ -18,6 +20,7 @@ interface SupportTicketType {
 	transaction_metadata?: any;
 	technicalNotes?: any;
 	controller?: AbortController;
+	generateNewToken?: Function;
 }
 
 /**
@@ -40,6 +43,7 @@ interface SupportTicketType {
  * @param {object} [options.transaction_metadata] - The transaction metadata
  * @param {object} [options.technicalNotes] - Any additional technical notes
  * @param {AbortController} [options.controller] - The abort controller for the request
+ * @param {Function} [options.generateNewToken] - The function to generate a new token
  * @returns {Promise} - The promise object representing the feedback submission
  * @throws {Error} - If there is an error submitting the feedback
  */
@@ -61,14 +65,15 @@ export const createSupportTicket = ({
 	transaction_metadata = {},
 	technicalNotes = {},
 	controller = null,
+	generateNewToken = null,
 }: SupportTicketType) => {
 	let commentMessage = "";
 	let fullDescription = "";
 
-	console.log(
-		"[RaiseIssue] feedback submit... ENV=",
-		process.env.NEXT_PUBLIC_ENV
-	);
+	// Timeout controller for the fetch request
+	const _controller = controller || new AbortController();
+
+	const timeout_id = setTimeout(() => _controller.abort(), DEFAULT_TIMEOUT);
 
 	// Add UAT TESTING comment for non-production environments...
 	if (process.env.NEXT_PUBLIC_ENV !== "production") {
@@ -201,7 +206,7 @@ export const createSupportTicket = ({
 		headers["Content-Type"] = "application/json";
 	}
 
-	return fetch(
+	const fetchPromise = fetch(
 		process.env.NEXT_PUBLIC_API_BASE_URL +
 			"/transactions/" +
 			(filesFound ? "upload" : "do"),
@@ -211,15 +216,27 @@ export const createSupportTicket = ({
 			headers: headers,
 			signal: controller ? controller.signal : undefined,
 		}
-	).then((res) => {
-		if (res.ok) {
-			console.log("[RaiseIssue] feedback submit result...", res);
-			return res.json();
-		} else {
-			console.error("[RaiseIssue] feedback submit error: ", res);
-			throw new Error("Error submitting feedback");
-		}
-	});
+	)
+		.then((res) => {
+			if (res.ok) {
+				console.log("[RaiseIssue] feedback submit result...", res);
+				return res.json();
+			} else {
+				console.error("[RaiseIssue] feedback submit error: ", res);
+				throw new Error("Error submitting feedback");
+			}
+		})
+		.finally(() => {
+			// Cancel aborting the fetch request after timeout
+			clearTimeout(timeout_id);
+		});
+
+	// Try to update the access-token, if token is nearing expiry
+	if (typeof generateNewToken === "function") {
+		generateNewToken();
+	}
+
+	return fetchPromise;
 };
 
 /**
