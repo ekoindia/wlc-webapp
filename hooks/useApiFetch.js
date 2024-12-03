@@ -37,7 +37,6 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 	 * @param {number} [options.timeout] - The timeout (in milliseconds) for the fetch request.
 	 * @param {string} [options.token] - The access token to be used for the fetch request. The `access_token_lite` is used by default.
 	 * @param {boolean} [options.isMultipart] - Flag to indicate if the request is a multipart form data request. Defaults to `false`.
-	 * @param {object} [otherFetchOptions] - Any other options to be passed to the fetcher utility.
 	 * @returns {Promise} A promise object representing the fetch response.
 	 */
 	const fetchApiData = async ({
@@ -108,7 +107,7 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 		return () => {
 			cancelFetch();
 		};
-	}, []);
+	}, [cancelFetch]);
 
 	return [fetchApiData, cancelFetch, loading];
 };
