@@ -481,7 +481,7 @@ const ThemeConfig = () => {
 										customIssueDetails: {
 											category: "Admin Issues",
 											subcategory: "App/Portal Related",
-											desc: "Upload your own image for the landing page. We will set it up for you within two working days. Please ensure the image is of high quality and is relevant to your business.\n\n**Maximum Image Length:** 600px\n\n**Maximum Image Size:** 350KB",
+											desc: "Upload your own image for the landing page. We will set it up for you within two working days. Please ensure the image is of high quality and is relevant to your business.\n\n**Image Length x Height:** between 600x600 pixels to 800x800 pixels\n\n**Maximum Image Size:** 350KB",
 											context: `Set Eloka portal custom landing page image.<br>Org ID: ${orgDetail?.org_id}<br>App Name: ${orgDetail?.app_name}<br><br><strong>STEPS:</strong><ol><li>Upload the attached image on "https://files.eko.in" server in the following location: /docs/org/${(orgDetail?.app_name || "" + orgDetail?.org_id)?.replaceAll(/ /g, "")}/welcome.jpg</li><li>Configure org-metadata in database for org_id=${orgDetail?.org_id}:</li></ol><pre>${JSON.stringify(
 												{
 													cms_meta: { type: "image" },
