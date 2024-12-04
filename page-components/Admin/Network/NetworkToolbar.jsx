@@ -19,6 +19,7 @@ import { MdAccountTree, MdOutlineTableRows } from "react-icons/md";
  * @param {string} props.size Size of the toolbar: "sm" | "md" | "lg"
  * @param {string} props.viewType List or Tree view
  * @param {boolean} props.hideFilter Hide the filter button, if true.
+ * @param {boolean} props.hideSearch Hide the search bar, if true.
  * @param {Function} props.setViewType
  * @example	`<NetworkToolbar></NetworkToolbar>` TODO: Fix example
  */
@@ -34,6 +35,7 @@ const NetworkToolbar = ({
 	size = "md",
 	viewType,
 	hideFilter = false,
+	hideSearch = false,
 	setViewType,
 }) => {
 	const [isTreeViewEnabled] = useFeatureFlag("NETWORK_TREE_VIEW");
@@ -111,21 +113,23 @@ const NetworkToolbar = ({
 			<Box flex="1" />
 
 			{/* MARK: Search */}
-			<Flex>
-				<Form {...searchBarConfig} size={size} />
-				<Button
-					size="xs"
-					display={{
-						base: "none",
-						md: isSearched ? "block" : "none",
-					}}
-					variant="link"
-					onClick={clearSearch}
-					_hover={{ textDecoration: "none" }}
-				>
-					Clear Search
-				</Button>
-			</Flex>
+			{hideSearch ? null : (
+				<Flex>
+					<Form {...searchBarConfig} size={size} />
+					<Button
+						size="xs"
+						display={{
+							base: "none",
+							md: isSearched ? "block" : "none",
+						}}
+						variant="link"
+						onClick={clearSearch}
+						_hover={{ textDecoration: "none" }}
+					>
+						Clear Search
+					</Button>
+				</Flex>
+			)}
 
 			{/* MARK: Filter */}
 			{hideFilter ? null : (

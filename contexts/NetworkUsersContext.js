@@ -1,11 +1,11 @@
 import { Endpoints, UserType, UserTypeLabel } from "constants";
 import { useSession } from "contexts/UserContext";
-import { fetcher } from "helpers/apiHelper";
-// import { useDailyCacheState } from "hooks";
+import { useApiFetch, useDailyCacheState } from "hooks";
 import {
 	createContext,
 	useCallback,
 	useContext,
+	useEffect,
 	useMemo,
 	useState,
 } from "react";
@@ -20,7 +20,7 @@ import {
  */
 
 /**
- * The NetworkUsers context.
+ * The NetworkUsers context. Fetch and cache the network users data.
  */
 const NetworkUsersContext = createContext();
 
@@ -34,31 +34,47 @@ export const useNetworkUsers = () => {
 
 /**
  * Provider component for the NetworkUsers context.
- * TODO: Add caching mechanism for the network users data.
- * @param root0
- * @param root0.children
+ * @param {object} props - The props to pass to the provider.
+ * @param {object} props.children - The child components.
  */
 export const NetworkUsersProvider = ({ children }) => {
-	// const [networkUsers, setNetworkUsers, isValid] = useDailyCacheState(
-	// 	"inf-networkusers",
-	// 	{
-	// 		// commission_due: 0,
-	// 		this_month_till_yesterday: 0,
-	// 		last_month_till_yesterday: 0,
-	// 		last_month_total: 0,
-	// 		asof: "",
-	// 		userId: "",
-	// 	}
-	// ); // User earnings
+	const [networkUsers, setNetworkUsers, isValid] = useDailyCacheState(
+		"inf-netusrs",
+		{
+			networkUsersList: [],
+			asof: null,
+			userId: "",
+		}
+	);
 	const [networkCount, setNetworkCount] = useState(0);
-	const [networkUsersList, setNetworkUsersList] = useState([]);
 	const [networkUsersTree, setNetworkUsersTree] = useState({});
 	const [userTypeIdList, setUserTypeIdList] = useState([]);
-	const [fetchedAt, setFetchedAt] = useState(null);
-	const [loading, setLoading] = useState(false);
 
 	// Get the logged-in user's data from the UserContext.
-	const { isLoggedIn, isAdmin, isOnboarding, accessToken } = useSession();
+	const { isLoggedIn, isAdmin, isOnboarding, accessToken, userId } =
+		useSession();
+
+	const [fetchUsers, loading] = useApiFetch(Endpoints.TRANSACTION, {
+		headers: {
+			"tf-req-uri-root-path": "/ekoicici/v1",
+			"tf-req-uri": "/network/agent-list",
+			"tf-req-method": "GET",
+		},
+	});
+
+	/**
+	 * Get Tree View Data and User Count from the list of users
+	 */
+	useEffect(() => {
+		if (!networkUsers?.networkUsersList?.length) return;
+
+		setNetworkCount(networkUsers.networkUsersList.length || 0);
+		generateTree(
+			networkUsers.networkUsersList,
+			setNetworkUsersTree,
+			setUserTypeIdList
+		);
+	}, [networkUsers.networkUsersList]);
 
 	/**
 	 * Fetch the network users data from the server.
@@ -74,31 +90,19 @@ export const NetworkUsersProvider = ({ children }) => {
 
 		// If the cached data is present & valid (no older than one day),
 		// don't fetch from the server.
-		// if (isValid && networkUsers?.userId && networkUsers?.userId === userId)
-		// 	return;
-
-		setLoading(true);
+		if (isValid && networkUsers?.userId && networkUsers?.userId === userId)
+			return;
 
 		// Fetch the earnings data from the server.
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agent-list",
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
-		})
+		fetchUsers()
 			.then((res) => {
 				if (res?.data?.csp_list) {
-					setNetworkCount(res?.data?.csp_list.length || 0);
-					setNetworkUsersList(res?.data?.csp_list);
-					generateTree(
-						res?.data?.csp_list,
-						setNetworkUsersTree,
-						setUserTypeIdList
-					);
+					setNetworkUsers({
+						networkUsersList: res?.data?.csp_list,
+						asof: Date.now(),
+						userId: userId,
+					});
 				}
-				setFetchedAt(Date.now());
 			})
 			.catch((error) => {
 				// Handle any errors that occurred during the fetch
@@ -109,19 +113,18 @@ export const NetworkUsersProvider = ({ children }) => {
 	const value = useMemo(() => {
 		return {
 			networkCount,
-			networkUsersList,
+			networkUsersList: networkUsers.networkUsersList,
 			networkUsersTree,
 			userTypeIdList,
-			fetchedAt,
+			fetchedAt: networkUsers.asof,
 			loading,
 			refreshUserList,
 		};
 	}, [
 		networkCount,
-		networkUsersList,
+		networkUsers,
 		networkUsersTree,
 		userTypeIdList,
-		fetchedAt,
 		loading,
 		refreshUserList,
 	]);
