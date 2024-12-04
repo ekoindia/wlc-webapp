@@ -116,6 +116,7 @@ interface ConfigDetails {
  * Configuration for all "Settings" sub-pages.
  * For example, configure the "Pricing & Commissions" settings for each product.
  * Or, configure the settings component and metadata for each "Business Settings" options.
+ * MARK: slug-map
  */
 export const business_config_slug_map: Record<string, ConfigDetails> = {
 	"aadhaar-pay": {
@@ -360,6 +361,7 @@ interface SettingCategoriesType {
 
 /**
  * Define how business configurations are categorized and visible on the Business Settings page.
+ * MARK: business
  */
 export const business_setting_categories: SettingCategoriesType[] = [
 	{
@@ -379,6 +381,7 @@ export const business_setting_categories: SettingCategoriesType[] = [
 
 /**
  * Define how products are categorized and visible on the "Pricing & Commission" page.
+ * MARK: pricing
  */
 export const product_pricing_categories: SettingCategoriesType[] = [
 	{

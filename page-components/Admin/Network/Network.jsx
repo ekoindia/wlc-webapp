@@ -403,6 +403,7 @@ const Network = () => {
 						viewType,
 						setViewType,
 						hideFilter: viewType === "tree",
+						hideSearch: viewType === "tree",
 					}}
 				/>
 

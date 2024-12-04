@@ -69,74 +69,75 @@ const NetworkTreeView = () => {
 	// }, [userTypeIdList]);
 
 	return (
-		<Flex
-			className="test"
-			direction={{ base: "column", lg: "row" }}
-			w="100%"
-			gap={5}
-		>
-			{/* MARK: Tree Box */}
-			<Box
-				flex="3"
-				maxW="100%"
-				maxH={{ base: "400px", md: "100%" }}
-				overflowY="auto"
-				bg="white"
-				p={2}
-				borderRadius={6}
-				sx={{
-					"--rct-item-height": "42px",
-					"--rct-arrow-size": "14px",
-					"--rct-arrow-container-size": "20px",
-					// "--rct-bar-color": "red",
-					".rct-tree-item-button": {
-						fontSize: "14px",
-					},
-				}}
+		<>
+			<Flex
+				className="test"
+				direction={{ base: "column", lg: "row" }}
+				w="100%"
+				gap={5}
 			>
-				<UncontrolledTreeEnvironment
-					dataProvider={dataProvider}
-					getItemTitle={(item) => item.data}
-					// 	(item.data || item.meta.mobile) +
-					// 	(item.isFolder && item.count ? ` [${item.count}]` : "")
-					// }
-					viewState={{}}
-					renderItemTitle={({ item }) => (
-						<NetworkTreeItem {...item} />
-					)}
-					canDragAndDrop={false}
-					disableMultiselect={true}
-					onSelectItems={(items) =>
-						items &&
-						items[0] &&
-						items[0] in networkUsersTree &&
-						setSelectedItem &&
-						setSelectedItem(networkUsersTree[items[0]])
-					}
+				{/* MARK: Tree Box */}
+				<Box
+					flex="3"
+					maxW="100%"
+					maxH={{ base: "400px", md: "100%" }}
+					overflowY="auto"
+					bg="white"
+					p={2}
+					borderRadius={6}
+					sx={{
+						"--rct-item-height": "42px",
+						"--rct-arrow-size": "14px",
+						"--rct-arrow-container-size": "20px",
+						// "--rct-bar-color": "red",
+						".rct-tree-item-button": {
+							fontSize: "14px",
+						},
+					}}
 				>
-					<Tree
-						treeId="tree-network"
-						rootItem="root"
-						treeLabel="Network Tree"
-					/>
-				</UncontrolledTreeEnvironment>
-			</Box>
+					<UncontrolledTreeEnvironment
+						dataProvider={dataProvider}
+						getItemTitle={(item) => item.data}
+						// 	(item.data || item.meta.mobile) +
+						// 	(item.isFolder && item.count ? ` [${item.count}]` : "")
+						// }
+						viewState={{}}
+						renderItemTitle={({ item }) => (
+							<NetworkTreeItem {...item} />
+						)}
+						canDragAndDrop={false}
+						disableMultiselect={true}
+						onSelectItems={(items) =>
+							items &&
+							items[0] &&
+							items[0] in networkUsersTree &&
+							setSelectedItem &&
+							setSelectedItem(networkUsersTree[items[0]])
+						}
+					>
+						<Tree
+							treeId="tree-network"
+							rootItem="root"
+							treeLabel="Network Tree"
+						/>
+					</UncontrolledTreeEnvironment>
+				</Box>
 
-			<Box
-				flex="2"
-				order={{ base: -1, lg: 1 }}
-				maxW="100%"
-				boxSizing="border-box"
-				color="light"
-			>
-				<Flex
-					direction="column"
-					gap={3}
-					position={{ lg: "fixed" }}
-					top={{ lg: "268px" }}
+				<Box
+					flex="2"
+					order={{ base: -1, lg: 1 }}
+					maxW="100%"
+					boxSizing="border-box"
+					color="light"
 				>
-					{/* MARK: Filters */}
-					{/* <Box
+					<Flex
+						direction="column"
+						gap={3}
+						position={{ lg: "fixed" }}
+						top={{ lg: "268px" }}
+					>
+						{/* MARK: Filters */}
+						{/* <Box
 						w={{ base: "100%", lg: "unset" }}
 						minW="280px"
 						bg="white"
@@ -168,81 +169,95 @@ const NetworkTreeView = () => {
 						</Stack>
 					</Box> */}
 
-					{/* MARK: Info */}
-					<Box
-						w={{ base: "100%", lg: "unset" }}
-						minW="280px"
-						bg="white"
-						p={{ base: 3, md: 6 }}
-						borderRadius={6}
-						shadow="md"
-					>
-						{selectedItem ? (
-							selectedItem.rootCategory ? (
-								<Text>
-									Expand the category and select a user to
-									view details
-								</Text>
-							) : (
-								<Flex
-									direction="column"
-									gap={2}
-									fontSize="14px"
-								>
-									<Flex direction="row" gap="15px">
-										<Text
-											flex={1}
-											fontWeight="bold"
-											fontSize="1.2em"
-											mb={2}
-										>
-											{selectedItem?.meta?.name}
-										</Text>
-										{selectedItem?.meta?.mobile &&
-										selectedItem?.meta?.user_code ? (
-											<NetworkMenuWrapper
-												mobile_number={
-													selectedItem?.meta?.mobile
-												}
-												eko_code={
-													selectedItem?.meta
-														?.user_code
-												}
-												// account_status_id
-												agent_type={
-													selectedItem?.meta
-														?.user_type
-												} // TODO: use user-type-id in NetworkMenuWrapper
-											/>
-										) : null}
+						{/* MARK: Info */}
+						<Box
+							w={{ base: "100%", lg: "unset" }}
+							minW="280px"
+							bg="white"
+							p={{ base: 3, md: 6 }}
+							borderRadius={6}
+							shadow="md"
+						>
+							{selectedItem ? (
+								selectedItem.rootCategory ? (
+									<Text>
+										Expand the category and select a user to
+										view details
+									</Text>
+								) : (
+									<Flex
+										direction="column"
+										gap={2}
+										fontSize="14px"
+									>
+										<Flex direction="row" gap="15px">
+											<Text
+												flex={1}
+												fontWeight="bold"
+												fontSize="1.2em"
+												mb={2}
+											>
+												{selectedItem?.meta?.name}
+											</Text>
+											{selectedItem?.meta?.mobile &&
+											selectedItem?.meta?.user_code ? (
+												<NetworkMenuWrapper
+													mobile_number={
+														selectedItem?.meta
+															?.mobile
+													}
+													eko_code={
+														selectedItem?.meta
+															?.user_code
+													}
+													// account_status_id
+													agent_type={
+														selectedItem?.meta
+															?.user_type
+													} // TODO: use user-type-id in NetworkMenuWrapper
+												/>
+											) : null}
+										</Flex>
+										<Box>
+											<strong>Type: </strong>
+											{selectedItem?.meta?.user_type}
+										</Box>
+										<Box>
+											<strong>Mobile: </strong>
+											{selectedItem?.meta?.mobile}
+										</Box>
+										<Box>
+											<strong>User Code: </strong>
+											{selectedItem?.meta?.user_code}
+										</Box>
 									</Flex>
-									<Box>
-										<strong>Type: </strong>
-										{selectedItem?.meta?.user_type}
-									</Box>
-									<Box>
-										<strong>Mobile: </strong>
-										{selectedItem?.meta?.mobile}
-									</Box>
-									<Box>
-										<strong>User Code: </strong>
-										{selectedItem?.meta?.user_code}
-									</Box>
-								</Flex>
-							)
-						) : (
-							<Text textStyle="italics">
-								You have <strong>{networkCount} users</strong>{" "}
-								in your network.
-								<br />
-								<br />
-								Expand/select an item for details.
-							</Text>
-						)}
-					</Box>
-				</Flex>
-			</Box>
-		</Flex>
+								)
+							) : (
+								<Text textStyle="italics">
+									You have{" "}
+									<strong>{networkCount} users</strong> in
+									your network.
+									<br />
+									<br />
+									Expand/select an item for details.
+								</Text>
+							)}
+						</Box>
+					</Flex>
+				</Box>
+			</Flex>
+
+			<Text
+				fontSize="xxs"
+				color="light"
+				mt="2em"
+				width="100%"
+				textAlign="center"
+			>
+				<strong>Last Updated:</strong>{" "}
+				{new Date(fetchedAt).toLocaleString()}
+			</Text>
+		</>
 	);
 };
 

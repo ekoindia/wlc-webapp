@@ -49,10 +49,12 @@ export function fetcher(url, options, generateNewToken) {
 	// Timeout controller for the fetch request
 	const _controller = controller || new AbortController();
 
-	const timeout_id = setTimeout(
-		() => _controller.abort(),
-		timeout || DEFAULT_TIMEOUT
-	);
+	const timeout_id = setTimeout(() => {
+		_controller.abort();
+		const err = new Error("Request Timed Out");
+		err.name = "AbortError";
+		throw err;
+	}, timeout || DEFAULT_TIMEOUT);
 
 	// Add client_ref_id to the request body, if not already present
 	body.client_ref_id ??= Date.now() + "" + Math.floor(Math.random() * 1000);
