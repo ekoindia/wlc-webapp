@@ -1,8 +1,13 @@
 import { useMemo } from "react";
 import { Flex, Text } from "@chakra-ui/react";
 import { Headings } from "components";
-import { PricingGrid } from "../PricingGrid";
-import { products, product_slug_map, productPricingType } from "constants";
+import { ConfigGrid } from "../ConfigGrid";
+import {
+	products,
+	business_config_slug_map,
+	productPricingType,
+} from "constants";
+import { useFeatureFlag } from "hooks";
 import dynamic from "next/dynamic";
 
 /**
@@ -28,7 +33,10 @@ const PricingForm = ({ slug }) => {
 		meta,
 		is_group,
 		products: group_products,
-	} = product_slug_map[slug] ?? {};
+		featureFlag,
+	} = business_config_slug_map[slug] ?? {};
+
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
 
 	const componentName = useMemo(() => {
 		if (template && template in TemplateComponent) {
@@ -37,11 +45,16 @@ const PricingForm = ({ slug }) => {
 		return comp;
 	}, [template, comp]);
 
+	// Check featureFlag:  if provided and not enabled, return null
+	if (featureFlag && checkFeatureFlag(featureFlag) !== true) {
+		return null;
+	}
+
 	// Render the group of products
 	if (is_group && products) {
 		return (
 			<PricingPageHeader label={label} note={note}>
-				<PricingGrid product_list={group_products} sub_page />
+				<ConfigGrid product_list={group_products} sub_page />
 			</PricingPageHeader>
 		);
 	}

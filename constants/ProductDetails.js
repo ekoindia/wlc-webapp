@@ -1,5 +1,10 @@
 /**
- * Product Details
+ * Product Details:
+ * - products: Object containing details of all products for their pricing and commission
+ * - productPricingTextConfig: Object containing text for "pricing" and "commission" terms
+ * - productPricingType: Object containing product names mapped to their pricing type
+ * - agreementProvider: Object containing agreement providers
+ * - ProductRoleConfiguration: Object containing products mapped to their roles (for enabling & disabling the products)
  */
 export const products = {
 	AADHAAR_PAY: {
@@ -580,3 +585,57 @@ export const agreementProvider = {
 // interface Products {
 // 	[key: string]: Product;
 // }
+
+/**
+ * List of all products mapped to their roles.
+ */
+export const ProductRoleConfiguration = {
+	products: [
+		{ trxn_id: 1997, label: "Money Transfer", roles: [49200, 49300] },
+		{ trxn_id: 1122, label: "UPI Money Transfer", roles: [38000] },
+		{ trxn_id: 252, label: "AePS Cashout", roles: [4600, 9300] },
+		{
+			trxn_id: 244,
+			label: "Recharge & Bill Payment",
+			roles: [/* 100, */ 20000, 20100],
+			comment: "Including Credit Card Bill Payment",
+		},
+		{ trxn_id: 933, label: "Travel Booking", roles: [34003] },
+		{ trxn_id: 208, label: "Indo-Nepal Transfer", roles: [3700] },
+		{ trxn_id: 1776, label: "QR Payment", roles: [34000] },
+		{ trxn_id: 1729, label: "Lending & Insurance", roles: [39000, 37500] },
+		{ trxn_id: 645, label: "LIC Bill Payment", roles: [28000] },
+		{ trxn_id: 1117, label: "Aadhaar Pay", roles: [14200] },
+		{ trxn_id: 877, label: "Airtel CMS", roles: [32000] },
+		// { trxn_id: 66, label: "Credit Card Bill Payment", roles: [] },
+		{ trxn_id: 9984, label: "Product Store", roles: [7400] },
+	],
+	evalue: [
+		// { trxn_id: 0, label: "QR Payment (Static QR)", roles: [] },	// Same role as QR Payment transaction
+		// {
+		// 	trxn_id: 0,
+		// 	label: "Dynamic QR (for Load E-value using UPI)",
+		// 	roles: [],
+		// },
+		// { trxn_id: 0, label: "Request E-value (Retailer)", roles: [] },
+		// { trxn_id: 0, label: "Request E-value (Distributor)", roles: [] },
+		// { trxn_id: 0, label: "Request E-value (Super Distributor)", roles: [] },
+		// { trxn_id: 0, label: "Payment Gateway (PG)", roles: [] },
+		{ trxn_id: 92, label: "Challan Deposit", roles: [8700] },
+		{ trxn_id: 324, label: "CDM", roles: [10100] },
+		{
+			trxn_id: 302,
+			label: "Load E-value via Virtual Account",
+			roles: [9600],
+		}, // PhonePe, PayTM and Yes Bank
+		// { trxn_id: 647, label: "AePS Pay", roles: [] }, // Same role as AePS transaction
+		{ trxn_id: 263, label: "Get Business Loan", roles: [3200] },
+		{ trxn_id: 821, label: "Via NEFT/IMPS/RTGS", roles: [23000] },
+		{
+			trxn_id: 1735,
+			label: "Via Debit/Credit Card",
+			roles: [41000],
+		}, // Worldline PG
+		// { trxn_id: 0, label: "Transfer E-value", roles: [700] },
+	],
+};

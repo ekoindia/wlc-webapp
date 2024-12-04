@@ -15,6 +15,13 @@ const ORG_ID = {
  * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
+	// Feature for Admins to toggle services for their network (Business Settings > Enable/Disable Services)
+	TOGGLE_SERVICES: {
+		enabled: true,
+		forAdminOnly: true,
+		forEnv: ["development", "staging"],
+	},
+
 	// Feature to show Tree-view in Network Management.
 	NETWORK_TREE_VIEW: {
 		enabled: true,

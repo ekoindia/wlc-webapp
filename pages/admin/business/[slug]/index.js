@@ -1,16 +1,16 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { PricingCommissionBreadcrumbs } from "constants";
+import { BusinessSettingsBreadcrumbs } from "constants/BreadcrumbsData";
 import { useRouter } from "next/router";
 import { PricingForm } from "page-components/Admin";
 
-const PricingFormPage = () => {
+const BusinessSettingSubpage = () => {
 	const router = useRouter();
 	const { slug } = router.query;
 
 	return (
 		<PaddingBox>
 			<BreadcrumbsWrapper
-				breadcrumbsData={PricingCommissionBreadcrumbs}
+				breadcrumbsData={BusinessSettingsBreadcrumbs}
 				slug={slug}
 			>
 				<PricingForm slug={slug} />
@@ -19,10 +19,10 @@ const PricingFormPage = () => {
 	);
 };
 
-PricingFormPage.pageMeta = {
-	title: `Configure Pricing & Commissions`,
+BusinessSettingSubpage.pageMeta = {
+	title: "Configure Business Settings",
 	isSubPage: true,
 	isFixedBottomAppBar: true,
 };
 
-export default PricingFormPage;
+export default BusinessSettingSubpage;

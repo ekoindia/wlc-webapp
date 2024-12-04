@@ -60,9 +60,9 @@ interface ProductMeta {
 }
 
 /**
- * Interface for product details.
+ * Interface for product/business configuration item details.
  */
-interface ProductDetails {
+interface ConfigDetails {
 	/**
 	 * Whether the product is a group of products. When opened, it shows multiple sub-products.
 	 * If true, the `products` property should be defined with the list of product-slugs associated with the group.
@@ -70,7 +70,7 @@ interface ProductDetails {
 	is_group?: boolean;
 
 	/** List of product slugs associated with the group. */
-	products?: (keyof typeof product_slug_map)[];
+	products?: (keyof typeof business_config_slug_map)[];
 
 	/**
 	 * The key used to identify the product in the `constants/ProductDetails` file.
@@ -105,17 +105,24 @@ interface ProductDetails {
 
 	/** Whether to hide the product from the pricing & commission page. Can be used to temporarily disable a product pricing for all users */
 	hide?: boolean;
+
+	/**
+	 * The feature flag to check if the item should be shown or not.
+	 */
+	featureFlag?: string;
 }
 
 /**
- * Map of product slugs to their respective details.
+ * Configuration for all "Settings" sub-pages.
+ * For example, configure the "Pricing & Commissions" settings for each product.
+ * Or, configure the settings component and metadata for each "Business Settings" options.
  */
-export const product_slug_map: Record<string, ProductDetails> = {
+export const business_config_slug_map: Record<string, ConfigDetails> = {
 	"aadhaar-pay": {
 		label: "Aadhaar Pay",
 		desc: "Set Agent Pricing for Aadhaar Pay services",
 		note: "The revised cost structure will come into effect from tomorrow (12:00 AM midnight).",
-		// icon: "wallet",
+		icon: "fingerprint",
 		comp: "AadhaarPay",
 		hide: false,
 	},
@@ -210,7 +217,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 	"commission-frequency": {
 		label: "Commission Frequency",
 		desc: "Toggle between Daily and Monthly Commissions within your network",
-		// icon: "money-deposit",
+		icon: "today",
 		comp: "CommissionFrequency",
 		hide: false,
 	},
@@ -301,6 +308,7 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		is_group: true,
 		label: "Travel Booking",
 		desc: "Set Agent Commission for travel booking services",
+		icon: "flight",
 		hide: false,
 		products: ["train-booking", "flight-booking"],
 	},
@@ -328,37 +336,53 @@ export const product_slug_map: Record<string, ProductDetails> = {
 		icon: "upi",
 		hide: true,
 	},
+	"toggle-services": {
+		label: "Enable/Disable Services",
+		desc: "Hide or show any product/service from the left-menu or the E-value screen for your entire network",
+		comp: "ToggleServices",
+		icon: "toggle",
+		hide: false,
+		featureFlag: "TOGGLE_SERVICES",
+	},
 };
 
 /**
- * Interface for product category map.
+ * Interface for product/business category map.
  */
-interface ProductCategoryMap {
-	[category: string]: {
-		/** Short description of the product category. */
-		description: string;
-		/** List of product slugs associated with the category. */
-		products: (keyof typeof product_slug_map)[];
-	};
+interface SettingCategoriesType {
+	/** Name of the category. Leave it blank to hide the category label */
+	category?: string;
+	/** Short description of the product category. */
+	description?: string;
+	/** List of product slugs associated with the category. */
+	products: (keyof typeof business_config_slug_map)[];
 }
 
 /**
- * Define how products are categorized and visible on the Pricing & Commission page.
+ * Define how business configurations are categorized and visible on the Business Settings page.
  */
-export const product_categories: ProductCategoryMap = {
-	"Business Settings": {
-		description:
-			"Manage product settings and configurations for your network.",
+export const business_setting_categories: SettingCategoriesType[] = [
+	{
+		// category: "Business Settings",
+		// description: "",
 		products: [
 			"account-verification-toggle",
 			"agreement-signing",
 			// "cash-deposit",
 			"commission-frequency",
+			"toggle-services",
 			"cash-deposit-charges-config",
 			"refund-method",
 		],
 	},
-	"Earning Opportunity Commissions": {
+];
+
+/**
+ * Define how products are categorized and visible on the "Pricing & Commission" page.
+ */
+export const product_pricing_categories: SettingCategoriesType[] = [
+	{
+		category: "Earning Opportunities",
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [
@@ -374,7 +398,8 @@ export const product_categories: ProductCategoryMap = {
 			"validate-upi-id",
 		],
 	},
-	"Digitization Tools Pricing": {
+	{
+		category: "Digitization Tools",
 		description:
 			"Set and adjust pricing and commissions for various services within your network.",
 		products: [
@@ -386,4 +411,4 @@ export const product_categories: ProductCategoryMap = {
 			"test_cdm",
 		],
 	},
-};
+];

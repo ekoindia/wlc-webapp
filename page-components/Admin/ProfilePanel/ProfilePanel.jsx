@@ -69,12 +69,11 @@ const ChangeRoleMobile = ({ changeRoleMenuList }) => {
 
 const ProfilePanel = () => {
 	const router = useRouter();
-	const [agentData, setAgentData] = useState([]);
+	const [agentData, setAgentData] = useState({});
 	const [isMenuVisible, setIsMenuVisible] = useState(false);
 	const [changeRoleMenuList, setChangeRoleMenuList] = useState([]);
 	const { accessToken } = useSession();
 	const { mobile } = router.query;
-	const { line_1, line_2, location, status, zip } = agentData;
 
 	const hitQuery = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -144,7 +143,13 @@ const ProfilePanel = () => {
 				<AddressPane
 					data={{
 						...agentData?.address_details,
-						address: [line_1, line_2, location, status, zip]
+						address: [
+							agentData?.line_1,
+							agentData?.line_2,
+							agentData?.location,
+							agentData?.status,
+							agentData?.zip,
+						]
 							.filter((value) => value)
 							.join(", "),
 					}}
@@ -172,7 +177,7 @@ const ProfilePanel = () => {
 				<ContactPane
 					data={{
 						...agentData?.contact_information,
-						agent_mobile: agentData.agent_mobile,
+						agent_mobile: agentData?.agent_mobile,
 					}}
 				/>
 			),
@@ -212,9 +217,11 @@ const ProfilePanel = () => {
 					py={{ base: "4", md: "0px" }}
 					gap={{ base: (2, 4), md: (4, 2), lg: (4, 6) }}
 				>
-					{panes.map((item) => (
-						<GridItem key={item.id}>{item.comp}</GridItem>
-					))}
+					{agentData
+						? panes.map((item) => (
+								<GridItem key={item.id}>{item.comp}</GridItem>
+							))
+						: null}
 				</Grid>
 			)}
 		</>

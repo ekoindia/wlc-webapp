@@ -25,12 +25,7 @@ const DEFAULT_TIMEOUT = 120000; // 2 minutes
  * @param {number} [options.timeout]	Timeout (in milliseconds. Default: 120000)
  * @param {string} options.token	Authorization access-token (if required)
  * @param {object} [options.controller]	AbortController instance
- * @param {object} tokenOptions
- * @param {number} [tokenOptions.token_timeout]	Access-token expiry time in milliseconds
- * @param {string} tokenOptions.refreshToken	Refresh-token
- * @param {Function} tokenOptions.updateUserInfo	Function to update user info
- * @param {boolean} tokenOptions.isTokenUpdating	Flag to check if token is already being updated
- * @param {Function} tokenOptions.setIsTokenUpdating	Function to set isTokenUpdating flag
+ * @param {boolean} [options.isMultipart]	Flag to indicate multipart form data
  * @param {Function} [generateNewToken]	Function to generate new access token (when current token is nearing expiry, or token-expired error is returned by the server)
  * @returns {Promise} Promise object represents the response
  * - If response is ok, returns the response as JSON
@@ -39,7 +34,7 @@ const DEFAULT_TIMEOUT = 120000; // 2 minutes
  * - If access-token has expired, error object has name: "Unauthorized"
  * - If response has timed-out, error object has name: "AbortError"
  */
-export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
+export function fetcher(url, options, generateNewToken) {
 	const {
 		method,
 		headers,
@@ -130,32 +125,6 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 			// Cancel aborting the fetch request after timeout
 			clearTimeout(timeout_id);
 		});
-
-	// Try to update the access-token, if token is nearing expiry
-	// if (tokenOptions) {
-	// 	const {
-	// 		token_timeout,
-	// 		refresh_token,
-	// 		updateUserInfo,
-	// 		isTokenUpdating,
-	// 		setIsTokenUpdating,
-	// 	} = tokenOptions;
-
-	// 	if (
-	// 		refresh_token &&
-	// 		token_timeout &&
-	// 		isTokenUpdating !== true &&
-	// 		token_timeout <= Date.now()
-	// 	) {
-	// 		// Fetch new access-token using the refresh-token...
-	// 		generateNewAccessToken(
-	// 			refresh_token,
-	// 			updateUserInfo,
-	// 			isTokenUpdating,
-	// 			setIsTokenUpdating
-	// 		);
-	// 	}
-	// }
 
 	// Try to update the access-token, if token is nearing expiry
 	if (typeof generateNewToken === "function") {

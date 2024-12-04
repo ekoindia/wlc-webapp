@@ -1,12 +1,12 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { NetworkObject } from "constants";
+import { MyNetworkBreadcrumbs } from "constants";
 
 import { ProfilePanel } from "page-components/Admin";
 
 const Profile = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+			<BreadcrumbsWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
 				<ProfilePanel />
 			</BreadcrumbsWrapper>
 		</PaddingBox>

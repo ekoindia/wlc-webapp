@@ -1,17 +1,22 @@
 import { Avatar, Flex, Grid, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { product_slug_map } from "constants";
+import { business_config_slug_map } from "constants";
+import { useFeatureFlag } from "hooks";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 /**
- * Grid component to display the list of products for configuring their pricing.
- * @param {*} props
- * @param {Array} props.product_list List of product-slugs to display
+ * Grid component to display the list of configuration items.
+ * For example, display a grid of products to set pricing/commissions for.
+ * @param {object} props
+ * @param {Array} props.product_list List of product-slugs or other configuration-slugs to display.
+ * @param {string} props.basePath Base path for the current page. Used to define links for the sub-pages.
  * @param {boolean} [props.sub_page] Flag to identify if the grid is being used in a sub-page.
  */
-const PricingGrid = ({ product_list, sub_page = false }) => {
+const ConfigGrid = ({ product_list, basePath, sub_page = false }) => {
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
+
 	return (
 		<Grid
 			templateColumns={{
@@ -27,17 +32,23 @@ const PricingGrid = ({ product_list, sub_page = false }) => {
 			}}
 		>
 			{product_list?.map((product) => {
-				const { label, desc, icon, hide } =
-					product_slug_map[product] ?? {};
+				const { label, desc, icon, hide, featureFlag } =
+					business_config_slug_map[product] ?? {};
 
 				if (hide) return null;
 				if (!label) return null;
+
+				// Check featureFlag:  if provided and not enabled, return null
+				if (featureFlag && checkFeatureFlag(featureFlag) !== true) {
+					return null;
+				}
 
 				return (
 					<Card
 						key={product}
 						slug={product}
 						sub_page={sub_page}
+						basePath={basePath}
 						{...{
 							label,
 							desc,
@@ -50,7 +61,7 @@ const PricingGrid = ({ product_list, sub_page = false }) => {
 	);
 };
 
-export { PricingGrid };
+export { ConfigGrid };
 
 /**
  * Pricing & Commission: Card Component.
@@ -60,15 +71,16 @@ export { PricingGrid };
  * @param {string} props.icon Icon for the card
  * @param {string} props.slug Slug for the card. This will be used to navigate to the pricing page.
  * @param {boolean} [props.sub_page] Flag to identify if the card is being used in a sub-page.
+ * @param {string} props.basePath Base path for the current page. Used to define links for the sub-pages
  */
-const Card = ({ label, desc, icon, slug, sub_page = false }) => {
+const Card = ({ label, desc, icon, slug, basePath, sub_page = false }) => {
 	const { h } = useHslColor(label);
 	const [onHover, setOnHover] = useState(false);
 	const router = useRouter();
 
 	const handleClick = (slug) => {
 		if (slug) {
-			router.push((sub_page ? "" : "pricing/") + slug);
+			router.push((sub_page ? "" : `${basePath}/`) + slug);
 		}
 	};
 

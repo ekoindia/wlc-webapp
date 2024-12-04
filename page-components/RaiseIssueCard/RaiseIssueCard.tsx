@@ -605,6 +605,7 @@ const RaiseIssueCard = ({
 			tx_typeid,
 			transaction_metadata: metadata,
 			controller,
+			generateNewToken,
 		})
 			.then((data) => {
 				console.log("[RaiseIssue] feedback submit result...", data);

@@ -51,6 +51,7 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 - **Left Sidebar** - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
   - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
   - Menu Context (data fetch after login): [contexts/MenuContext.tsx](contexts/MenuContext.tsx)
+  - MenuContext filtered into transaction & other lists for the sidebar: [hooks/useNavigationLists.js](hooks/useNavigationLists.js)
   - Menu data filtering & transformation using: [helpers/processTransactionData.js](helpers/processTransactionData.js)
 - **Transaction History** (for sellers & distributors) - [page-components/History/History.jsx](page-components/History/History.jsx)
   - History Table metadata: [page-components/History/HistoryTable/historyParametersMetadata.js](page-components/History/HistoryTable/historyParametersMetadata.js)
@@ -71,26 +72,26 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 
 ## 💼 Business Features:
 
-### 📈 Pricing Configuration for Admins:
+### 📈 Business/Pricing Configuration for Admins:
 To add pricing configuration page for a new product in the Admin portal under "Pricing & Commission" left-menu section, use the following steps:
 
 #### For Pricing Configuration using File Upload:
-1. Create a configuration for the product in [`constants/PricingConfiguration.js`](constants/PricingConfiguration.js) file under the `product_slug_map` object.
+1. Create a configuration for the product in [`constants/ProductBusinessConfigurations.ts`](constants/ProductBusinessConfigurations.ts) file under the `business_config_slug_map` object.
    1. Set a unique slug (for the page URL) and the name of the page-component to display.
    2. Set template="fileupload"
    3. Add set URL & parameters for file-upload and sample-file-download in the `meta` object.
-   4. Add the slug to `product_categories` object in the order that you want to display on the product listing page. If not added here, the product will not be displayed on the product listing page.
+   4. Add the slug to `product_pricing_categories` object in the order that you want to display on the product listing page. If not added here, the product will not be displayed on the product listing page.
 
-#### For creating a custom Pricing Configuration page:
+#### For creating a custom Pricing (or, Business) Configuration page:
 1. Create a page-component for the pricing configuration running the command `npm run g`
    1. Select "Component"
    2. Enter the name of the page-component (eg: `TrainTravel`)
    3. Select Path: `page-components/Admin`
    4. Enter sub-folder: `PricingCommission`
 2. Copy sub-components from other existing pricing page-component such as: `TrainTravelDistributor` and `TrainTravelRetailer`
-3. Create a configuration for the product in [`constants/PricingConfiguration.js`](constants/PricingConfiguration.js) file under the `product_slug_map` object.
+3. Create a configuration for the product in [`constants/ProductBusinessConfigurations.ts`](constants/ProductBusinessConfigurations.ts) file under the `business_config_slug_map` object.
    1. Set a unique slug (for the page URL) and the name of the page-component to display (created in step #1).
-   2. Add the slug to `product_categories` object in the order that you want to display on the product listing page. If not added here, the product will not be displayed on the product listing page.
+   2. Add the slug to `product_pricing_categories` object in the order that you want to display on the product listing page. If not added here, the product will not be displayed on the product listing page.
 4. Create a configuration for the product in [`constants/ProductDetails.js`](constants/ProductDetails.js) page. Set slabs, validations, etc for the pricing configuration.
 
 

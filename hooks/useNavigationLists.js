@@ -1,14 +1,12 @@
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import {
-	AdminBlacklistMenuItems,
-	AdminOtherMenuItems,
 	adminSidebarMenu,
 	Endpoints,
 	InteractionBehavior,
-	OtherMenuItems,
 	sidebarMenu,
 } from "constants";
 import { useMenuContext, useOrgDetailContext, useUser } from "contexts";
+import { filterTransactionLists } from "helpers";
 import { useFeatureFlag } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import { useRouter } from "next/router";
@@ -188,12 +186,12 @@ const generateMenuLinkActions = (menu_list, router) => {
 	menu_list.forEach((menu) => {
 		if (menu.link != currentRoute) {
 			menuLinkActions.push({
-				id: "menulnk/" + menu.name,
-				name: menu.name,
+				id: "menulnk/" + (menu.name || menu.label),
+				name: menu.name || menu.label,
 				icon: (
 					<ActionIcon
 						icon={menu.icon}
-						name={menu.name}
+						name={menu.name || menu.label}
 						style="filled"
 					/>
 				),
@@ -233,8 +231,6 @@ const useNavigationLists = (ignoreList = []) => {
 	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
 
 	const processInteractions = () => {
-		const _trxnList = [];
-		const _otherList = [];
 		let _filteredMenuList = [];
 
 		const _menuList =
@@ -261,26 +257,8 @@ const useNavigationLists = (ignoreList = []) => {
 			return true;
 		});
 
-		// if (interactionList?.length > 0) {
-		interactionList.forEach((tx) => {
-			if (isAdmin) {
-				if (AdminOtherMenuItems.includes(tx.id)) {
-					_otherList.push(tx);
-				} else if (isAdminAgentMode) {
-					if (OtherMenuItems.includes(tx.id)) {
-						_otherList.push(tx);
-					} else if (!AdminBlacklistMenuItems.includes(tx.id)) {
-						_trxnList.push(tx);
-					}
-				}
-			} else {
-				if (OtherMenuItems.includes(tx.id)) {
-					_otherList.push(tx);
-				} else {
-					_trxnList.push(tx);
-				}
-			}
-		});
+		const { trxnList: _trxnList, otherList: _otherList } =
+			filterTransactionLists(interactionList, isAdmin, isAdminAgentMode);
 
 		setAppLists({
 			menuList: _filteredMenuList,

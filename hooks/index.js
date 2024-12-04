@@ -1,4 +1,5 @@
 /* PLOP_INJECT_EXPORT */
+export { default as useApiFetch } from "./useApiFetch";
 export { default as useSet } from "./useSet";
 export { default as useSwipe } from "./useSwipe";
 export { default as useAppLink } from "./useAppLink";
