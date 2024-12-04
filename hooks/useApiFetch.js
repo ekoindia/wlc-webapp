@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
 
@@ -20,12 +21,30 @@ import useRefreshToken from "hooks/useRefreshToken";
 const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 	const [endpoint] = useState(defaultUrlEndpoint);
 	const [options] = useState(defaultOptions);
-	const [controller] = useState(new AbortController());
+	const [controller, setController] = useState();
 
 	const { generateNewToken } = useRefreshToken();
 	const { accessToken } = useSession();
 
 	const [loading, setLoading] = useState(false);
+
+	/**
+	 * Function to cancel the fetch request.
+	 */
+	const cancelFetch = () => {
+		if (loading && controller) {
+			controller.abort();
+			setLoading(false);
+			setController(null);
+		}
+	};
+
+	// Cancel fetch on unmount
+	useEffect(() => {
+		return () => {
+			cancelFetch();
+		};
+	}, [cancelFetch]);
 
 	/**
 	 * Function to fetch data from the API.
@@ -48,8 +67,9 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 		token,
 		isMultipart,
 		...otherFetchOptions
-	}) => {
+	} = {}) => {
 		setLoading(true);
+		setController(new AbortController());
 
 		let url = url_endpoint || endpoint;
 
@@ -62,30 +82,42 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 			url = process.env.NEXT_PUBLIC_API_BASE_URL + url;
 		}
 
-		try {
-			const data = await fetcher(
-				url,
-				{
-					...{
-						controller: controller,
-						token: accessToken,
-					},
-					...options,
-					...{
-						body: {
-							...options?.body,
-							...body,
-						},
-						method,
-						headers,
-						timeout,
-						token,
-						isMultipart,
-						...otherFetchOptions,
-					},
+		const fetcherOptions = {
+			...options,
+			...{
+				body: {
+					...options?.body,
+					...body,
 				},
-				generateNewToken
-			);
+				method: method || options.method,
+				headers: headers || options.headers,
+				timeout: timeout || options.timeout,
+				token: token || options.token || accessToken,
+				controller: controller,
+				isMultipart: isMultipart || options.isMultipart,
+				...otherFetchOptions,
+			},
+		};
+
+		console.log("[useApiFetch] Fetching data from:", url, {
+			fetcherOptions,
+			options,
+			newOptions: {
+				body: {
+					...options?.body,
+					...body,
+				},
+				method,
+				headers,
+				timeout,
+				token,
+				isMultipart,
+				...otherFetchOptions,
+			},
+		});
+
+		try {
+			const data = await fetcher(url, fetcherOptions, generateNewToken);
 			return data;
 		} catch (err) {
 			console.error("[useApiFetch] error: ", err);
@@ -95,21 +127,7 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 		}
 	};
 
-	/**
-	 * Function to cancel the fetch request.
-	 */
-	const cancelFetch = () => {
-		controller.abort();
-	};
-
-	// Cancel fetch on unmount
-	useEffect(() => {
-		return () => {
-			cancelFetch();
-		};
-	}, [cancelFetch]);
-
-	return [fetchApiData, cancelFetch, loading];
+	return [fetchApiData, loading, cancelFetch];
 };
 
 export default useApiFetch;
