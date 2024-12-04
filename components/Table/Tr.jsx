@@ -82,7 +82,7 @@ const Tr = ({
 		if (rowExpansion) {
 			setExpandedRow(index === expandedRow ? null : index);
 		} else if (onRowClick !== undefined) {
-			onRowClick(data[index]);
+			onRowClick(data[index], index);
 		}
 	};
 

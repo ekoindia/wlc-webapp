@@ -13,7 +13,6 @@ import { Pagination, XScrollArrow } from "..";
 
 /**
  * A Table component
- * TODO: Write more description here
  * @param 	{object}	prop	Properties passed to the component
  * @param prop.data
  * @param prop.renderer
@@ -29,7 +28,6 @@ import { Pagination, XScrollArrow } from "..";
  * @param prop.setPageNumber
  * @param prop.variant
  * @param prop.tableRowLimit
- * @example	`<Table></Table>` TODO: Fix example
  */
 const Table = ({
 	data,
