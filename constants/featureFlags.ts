@@ -19,22 +19,34 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	TOGGLE_SERVICES: {
 		enabled: true,
 		forAdminOnly: true,
-		forEnv: ["development", "staging"],
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+			},
+		},
 	},
 
 	// Feature to show Tree-view in Network Management.
 	NETWORK_TREE_VIEW: {
 		enabled: true,
-		forEnv: ["development", "staging"], // TODO: Enable for all only after DATA CACHING in NetworkUsersContext.
+		forAdminOnly: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+			},
+		},
 	},
 
 	// MANUALLY CONFIGURE CUSTOM IMAGE FOR LANDING/LOGIN PAGE...
+	// This flag is to show the image-upload option to Admins for configuring the landing page
+	//   where the request goes to the DevOps team for manual configuration.
 	// TODO: Remove this after we are able to auto-upload images on file server for configuring the landing page (CMS).
 	MANUAL_LANDING_PAGE_IMAGE_SETUP: {
 		enabled: true,
+		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST],
+				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
 			},
 		},
 	},
@@ -51,9 +63,15 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	},
 
 	// Basic Landing Page customization where Admins can upload a custom image.
+	// This flag is to show the image on the landing/login page.
 	CMS_IMAGE_THEME: {
 		enabled: true,
-		forEnv: ["development", "staging"],
+		forAdminOnly: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+			},
+		},
 	},
 
 	// Feature to show a custom Landing Page that can be fully configured by Admins.
