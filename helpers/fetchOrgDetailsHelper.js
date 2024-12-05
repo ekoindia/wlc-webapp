@@ -160,14 +160,61 @@ export const fetchOrgDetails = async (host, force) => {
 
 		console.log("Fetched Org details::: ", orgDetails, force);
 
-		// Process metadata...
-		if (typeof orgDetails?.metadata?.support_contacts === "string") {
-			orgDetails.metadata.support_contacts = JSON.parse(
-				orgDetails.metadata.support_contacts
-			);
+		// Process metadata: convert string to JSON
+		if (
+			orgDetails?.metadata?.support_contacts &&
+			typeof orgDetails?.metadata?.support_contacts === "string"
+		) {
+			try {
+				orgDetails.metadata.support_contacts = JSON.parse(
+					orgDetails.metadata.support_contacts
+				);
+			} catch (e) {
+				console.error("Error parsing support_contacts: ", e);
+				orgDetails.metadata.support_contacts = {};
+			}
 		}
-		if (typeof orgDetails?.metadata?.theme === "string") {
-			orgDetails.metadata.theme = JSON.parse(orgDetails.metadata.theme);
+
+		if (
+			orgDetails?.metadata?.theme &&
+			typeof orgDetails?.metadata?.theme === "string"
+		) {
+			try {
+				orgDetails.metadata.theme = JSON.parse(
+					orgDetails.metadata.theme
+				);
+			} catch (e) {
+				console.error("Error parsing theme: ", e);
+				orgDetails.metadata.theme = {};
+			}
+		}
+
+		if (
+			orgDetails?.metadata?.cms_meta &&
+			typeof orgDetails?.metadata?.cms_meta === "string"
+		) {
+			try {
+				orgDetails.metadata.cms_meta = JSON.parse(
+					orgDetails.metadata.cms_meta
+				);
+			} catch (e) {
+				console.error("Error parsing cms_meta: ", e);
+				orgDetails.metadata.cms_meta = {};
+			}
+		}
+
+		if (
+			typeof orgDetails?.metadata?.cms_data &&
+			typeof orgDetails?.metadata?.cms_data === "string"
+		) {
+			try {
+				orgDetails.metadata.cms_data = JSON.parse(
+					orgDetails.metadata.cms_data
+				);
+			} catch (e) {
+				console.error("Error parsing cms_data: ", e);
+				orgDetails.metadata.cms_data = {};
+			}
 		}
 
 		// Cache the org details
