@@ -57,7 +57,7 @@ async function sendOtpRequest(
 		// Success toast on UAT only
 		if (process.env.NEXT_PUBLIC_ENV !== "production" && toast) {
 			toast({
-				title: `Demo OTP Sent: ${_otp}`,
+				title: `Demo OTP: ${_otp}`,
 				status: "success",
 				duration: 5000,
 				position: "top-right",

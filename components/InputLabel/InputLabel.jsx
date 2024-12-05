@@ -16,13 +16,14 @@ const InputLabel = ({ htmlFor, required = false, children, ...rest }) => {
 	return (
 		<Label
 			htmlFor={htmlFor || undefined}
-			fontSize={{ base: "sm", "2xl": "lg" }}
+			fontSize={{ base: "sm", "2xl": "md" }}
 			fontWeight="semibold"
 			textTransform="capitalize"
 			pl="0"
 			mb={{ base: 2, "2xl": "0.8rem" }}
 			color="inputlabel"
 			variant="selectNone"
+			noOfLines={1}
 			{...rest}
 		>
 			{children}
