@@ -1,25 +1,23 @@
 import { Table } from "components";
 
 /**
- * A <QueryCenterTable> component
- * TODO: Write more description here
+ * Show a list of queries raised by the admin/user.
  * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @param prop.pageNumber
- * @param prop.setPageNumber
- * @param prop.data
- * @example	`<QueryCenterTable></QueryCenterTable>` TODO: Fix example
+ * @param 	{number}	prop.pageNumber	Current page number
+ * @param 	{Function}	prop.setPageNumber	Function to set the page number
+ * @param 	{object[]}	prop.data	List of queries
+ * @param 	{Function}	prop.onSelect	Function to call when a ticket/query is selected. It should accept the data and the index of the selected ticket.
  */
 const QueryCenterTable = ({
-	pageNumber,
-	setPageNumber,
+	// pageNumber,
+	// setPageNumber,
 	// totalRecords,
 	data,
+	onSelect,
 }) => {
 	const renderer = [
 		{ name: "ticketNumber", label: "Ticket ID" },
-		{ name: "subject", label: "Subject", show: "Description" },
+		{ name: "label", label: "Subject", show: "Description" },
 		{ name: "statusType", label: "Status", show: "Tag" },
 		{ name: "contactName", label: "Agent Name" },
 		// {
@@ -38,15 +36,19 @@ const QueryCenterTable = ({
 			sorting: true,
 			show: "DateTime",
 		},
+		{ name: "", label: "", show: "Arrow" },
 	];
 
 	return (
 		<Table
 			renderer={renderer}
 			// totalRecords={totalRecords}
-			setPageNumber={setPageNumber}
-			pageNumber={pageNumber}
+			// setPageNumber={setPageNumber}
+			// pageNumber={pageNumber}
 			data={data}
+			onRowClick={onSelect}
+			// visibleColumns={5}
+			variant="stripedActionRedirect"
 		/>
 	);
 };
