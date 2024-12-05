@@ -6,7 +6,9 @@ import useRefreshToken from "hooks/useRefreshToken";
 /**
  * Hook for fetching data from the Eloka internal APIs (using the fetcher utility). It's a wrapper around the fetcher utility which automatically takes care of token refresh and other common API-related tasks.
  * @param {string} defaultUrlEndpoint - The default URL endpoint to fetch data from. If not provided, it can be overwritten later during the actual fetch call.
- * @param {object} defaultOptions - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
+ * @param {object} settings - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
+ * @param {Function} settings.onSuccess - The callback function to be called on successful fetch.
+ * @param {Function} settings.onError - The callback function to be called on fetch error.
  * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
  * @example
  * const [getUsers, cancel, loading] = useApiFetch("/api/v1/users", {
@@ -18,9 +20,11 @@ import useRefreshToken from "hooks/useRefreshToken";
  * 		});
  * }, []);
  */
-const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
+const useApiFetch = (defaultUrlEndpoint, settings) => {
+	const { onSuccess, onError, ...options } = settings;
+
 	const [endpoint] = useState(defaultUrlEndpoint);
-	const [options] = useState(defaultOptions);
+	// const [options] = useState(otherOptions);
 	const [controller, setController] = useState();
 
 	const { generateNewToken } = useRefreshToken();
@@ -66,7 +70,6 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 		timeout,
 		token,
 		isMultipart,
-		...otherFetchOptions
 	} = {}) => {
 		setLoading(true);
 		setController(new AbortController());
@@ -83,7 +86,6 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 		}
 
 		const fetcherOptions = {
-			...options,
 			...{
 				body: {
 					...options?.body,
@@ -95,7 +97,6 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 				token: token || options.token || accessToken,
 				controller: controller,
 				isMultipart: isMultipart || options.isMultipart,
-				...otherFetchOptions,
 			},
 		};
 
@@ -112,15 +113,16 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 				timeout,
 				token,
 				isMultipart,
-				...otherFetchOptions,
 			},
 		});
 
 		try {
 			const data = await fetcher(url, fetcherOptions, generateNewToken);
+			onSuccess && onSuccess(data);
 			return data;
 		} catch (err) {
 			console.error("[useApiFetch] error: ", err);
+			onError && onError(err);
 			return null;
 		} finally {
 			setLoading(false);
