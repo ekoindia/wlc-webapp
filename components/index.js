@@ -124,3 +124,5 @@ export {
 	AccordionItem,
 	AccordionMenu,
 };
+
+export { PhoneNumber } from "./PhoneNumber";
