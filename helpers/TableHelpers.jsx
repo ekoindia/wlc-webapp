@@ -7,14 +7,15 @@ import { capitalize, limitText, nullRemover, numberRemover } from "utils";
 const statusChecker = {
 	Active: "success",
 	Success: "success",
-	Open: "success",
+	Closed: "success",
+	Open: "error",
 	Inactive: "error",
 	Cancel: "error",
-	Closed: "error",
 	Failed: "error",
 	Fail: "error",
 	Pending: "orange.500",
 	Initiated: "orange.300",
+	WIP: "orange.300",
 	"Refund pending": "purple.500",
 	Other: "light",
 };
