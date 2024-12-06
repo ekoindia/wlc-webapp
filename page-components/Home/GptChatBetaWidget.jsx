@@ -154,6 +154,7 @@ const GptChatBetaWidget = () => {
 				</Box>
 
 				{/* Chat Text Input Field */}
+				{/* TODO: Migrate to ChatInput component */}
 				<Input
 					placeholder="Ask your question and press Enter"
 					inputLeftElement={
