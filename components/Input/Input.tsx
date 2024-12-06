@@ -6,18 +6,93 @@ import {
 	InputLeftElement,
 	InputRightElement,
 } from "@chakra-ui/react";
-import { forwardRef, useCallback, useId } from "react";
-import { InputLabel, InputMsg } from "../";
+import {
+	forwardRef,
+	useCallback,
+	useId,
+	ReactElement,
+	CSSProperties,
+} from "react";
+import { InputLabel, InputMsg } from "..";
+
+interface InputProps {
+	id?: string;
+	name?: string;
+	label?: string;
+	placeholder?: string;
+	description?: string;
+	value?: string;
+	type?: string;
+	size?: "xs" | "sm" | "md" | "lg";
+	isNumInput?: boolean;
+	min?: number;
+	max?: number;
+	minLength?: number;
+	maxLength?: number;
+	leftAddon?: React.ReactNode;
+	inputLeftElement?: React.ReactNode;
+	inputRightElement?: React.ReactNode;
+	required?: boolean;
+	disabled?: boolean;
+	hidden?: boolean;
+	invalid?: boolean;
+	errorMsg?: string;
+	borderRadius?: string;
+	labelStyle?: CSSProperties;
+	errorStyle?: CSSProperties;
+	inputContStyle?: Object;
+	inputAttributes?: Object;
+	m?: number;
+	mt?: number;
+	mr?: number;
+	mb?: number;
+	ml?: number;
+	onChange?: Function;
+	onKeyDown?: Function;
+	onEnter?: Function;
+	[key: string]: any;
+}
 
 /**
  * A <Input> component
- * TODO: A reusable component for input (only text)
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Input></Input>`
- * @example	`<Input/>`
+ * @param {object} prop Properties passed to the component
+ * @param {string} [prop.id] HTML ID of the input element
+ * @param {string} [prop.name] Name of the input element
+ * @param {string} [prop.label] Label for the input element
+ * @param {string} [prop.placeholder] Placeholder text for the input element
+ * @param {string} [prop.description] Description text for the input element
+ * @param {string} [prop.value] Value of the input element
+ * @param {string} [prop.type] Type of the input element
+ * @param {string} [prop.size] Size of the input element
+ * @param {boolean} [prop.isNumInput] If the input is a number input
+ * @param {number} [prop.min] Minimum value for the input element
+ * @param {number} [prop.max] Maximum value for the input element
+ * @param {number} [prop.minLength] Minimum length of the input element
+ * @param {number} [prop.maxLength] Maximum length of the input element
+ * @param {React.ReactNode} [prop.leftAddon] Left addon for the input element
+ * @param {React.ReactNode} [prop.inputLeftElement] Left element for the input element
+ * @param {React.ReactNode} [prop.inputRightElement] Right element for the input element
+ * @param {boolean} [prop.required] If the input is required
+ * @param {boolean} [prop.disabled] If the input is disabled
+ * @param {boolean} [prop.hidden] If the input is hidden
+ * @param {boolean} [prop.invalid] If the input is invalid
+ * @param {string} [prop.errorMsg] Error message for the input element
+ * @param {string} [prop.borderRadius] Border radius for the input element
+ * @param {object} [prop.labelStyle] Style for the label
+ * @param {object} [prop.errorStyle] Style for the error message
+ * @param {object} [prop.inputContStyle] Style for the input container
+ * @param {object} [prop.inputAttributes] Additional attributes for the input element
+ * @param {number} [prop.m] Margin for the input container
+ * @param {number} [prop.mt] Margin top for the input container
+ * @param {number} [prop.mr] Margin right for the input container
+ * @param {number} [prop.mb] Margin bottom for the input container
+ * @param {number} [prop.ml] Margin left for the input container
+ * @param {Function} [prop.onChange] Function to handle the change event
+ * @param {Function} [prop.onKeyDown] Function to handle the key down event
+ * @param {Function} [prop.onEnter] Function to handle the enter key event
+ * @returns {React.ReactElement} A <Input> component
  */
-const Input = forwardRef(
+const Input = forwardRef<HTMLInputElement, InputProps>(
 	(
 		{
 			id,
@@ -32,12 +107,10 @@ const Input = forwardRef(
 			min,
 			max,
 			minLength,
-			maxLength = "100",
+			maxLength = 100,
 			leftAddon,
 			inputLeftElement,
-			inputLeftElementStyle,
 			inputRightElement,
-			inputRightElementStyle,
 			required = false,
 			disabled = false,
 			hidden = false,
@@ -59,7 +132,7 @@ const Input = forwardRef(
 			...rest
 		},
 		ref
-	) => {
+	): ReactElement => {
 		const _id = useId();
 
 		const default_radius =
@@ -91,7 +164,7 @@ const Input = forwardRef(
 
 		return (
 			<Flex
-				direction="column"
+				flexDirection="column"
 				align="flex-start"
 				w="100%"
 				m={m}
@@ -128,10 +201,7 @@ const Input = forwardRef(
 					) : null}
 
 					{inputLeftElement ? (
-						<InputLeftElement
-							pointerEvents="none"
-							{...inputLeftElementStyle}
-						>
+						<InputLeftElement pointerEvents="none">
 							{inputLeftElement}
 						</InputLeftElement>
 					) : null}
@@ -177,8 +247,7 @@ const Input = forwardRef(
 
 					{inputRightElement ? (
 						<InputRightElement
-							pointerEvents="none"
-							{...inputRightElementStyle}
+							pointerEvents={onEnter ? undefined : "none"}
 						>
 							{inputRightElement}
 						</InputRightElement>
