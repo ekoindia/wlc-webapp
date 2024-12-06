@@ -8,10 +8,10 @@ import {
 	DrawerOverlay,
 	DrawerContent,
 	DrawerCloseButton,
-	// DrawerFooter,
+	DrawerFooter,
 	useToast,
 } from "@chakra-ui/react";
-import { Headings, Button } from "components";
+import { Headings, Button, ChatInput } from "components";
 import { Value } from "tf-components";
 import { TransactionTypes, ParamType } from "constants";
 import { Endpoints } from "constants/EndPoints";
@@ -184,7 +184,7 @@ const QueryDetails = ({
 	comments,
 	loadingComments,
 	fetchTickets,
-	// fetchComments,
+	fetchComments,
 	onClose,
 }) => {
 	const toast = useToast();
@@ -203,6 +203,30 @@ const QueryDetails = ({
 			duration: 5000,
 			isClosable: true,
 		});
+
+	/**
+	 * MARK: Add Comment API
+	 */
+	const [addCommentAPI, addingComment] = useApiFetch(Endpoints.TRANSACTION, {
+		body: {
+			interaction_type_id: TransactionTypes.ADD_QUERY_COMMENT,
+			feedback_ticket_id: ticket.id,
+		},
+		onSuccess: (data) => {
+			if (data.response_status_id == 0) {
+				fetchComments(ticket.id, true);
+				toastSuccess("Comment Added");
+			} else {
+				toastError("Error adding comment");
+			}
+		},
+		onError: () => toastError("Error adding comment"),
+	});
+
+	const addComment = (comment) => {
+		if (addingComment) return;
+		addCommentAPI({ body: { comment } });
+	};
 
 	/**
 	 * MARK: Close Ticket
@@ -382,60 +406,80 @@ const QueryDetails = ({
 										key={comment.timestamp}
 										direction="column"
 										position="relative"
-										p={{ base: 3, md: 5 }}
+										p={{ base: 3, md: 4 }}
 										borderRadius="20px"
-										borderBottomLeftRadius={
-											my ? "0" : undefined
-										}
-										borderTopRightRadius={
+										borderTopLeftRadius={
 											my ? undefined : "0"
 										}
-										bg={my ? "white" : "bisque"}
-										shadow="md"
-										textAlign={my ? "left" : "right"}
-										alignSelf={
-											my ? "flex-start" : "flex-end"
+										borderBottomRightRadius={
+											my ? "0" : undefined
 										}
+										bg={my ? "white" : "bisque"}
+										shadow={my ? "sm" : "md"}
+										textAlign={my ? "right" : "left"}
+										alignSelf={
+											my ? "flex-end" : "flex-start"
+										}
+										align={my ? "flex-end" : "flex-start"}
 										w="fit-content"
 										maxW={{ base: "90%", md: "80%" }}
+										minW="60%"
+										gap={2}
 									>
-										{Icon ? (
+										{comment.by && comment.by !== "You" ? (
 											<Flex
-												position="absolute"
-												top="10px"
-												right={my ? "10px" : undefined}
-												left={my ? undefined : "10px"}
-												bg={my ? "white" : "bisque"}
-												borderRadius="full"
-												// w="2em"
-												// h="2em"
-												justify="center"
+												direction="row"
 												align="center"
-												fontSize="20px"
+												gap="0.5em"
 											>
-												<Icon />
+												{Icon ? <Icon /> : null}
+												<Text
+													fontSize="sm"
+													fontWeight={700}
+												>
+													{comment.by}:
+												</Text>
 											</Flex>
 										) : null}
-										{comment.by ? (
-											<Text
-												fontSize="sm"
-												fontWeight={700}
-											>
-												{comment.by}:
-											</Text>
-										) : null}
-										<Text>{comment.comment}</Text>
+										<Box>
+											{comment.comment
+												.split(/\n/)
+												.map((line, i) => (
+													<p key={i}>{line}</p>
+												))}
+										</Box>
+										<Text
+											fontSize="xxs"
+											color="gray.500"
+											mt={2}
+										>
+											{
+												<Value
+													value={comment.timestamp}
+													typeId={ParamType.DATETIME}
+													metadata="dd MMM yyyy, hh:mm a"
+												/>
+											}
+										</Text>
 									</Flex>
 								);
 							})}
 						</Flex>
 					</DrawerBody>
 
-					{/* <DrawerFooter bg="white" borderTop="1px solid #EEE">
-						<Text fontSize="sm" color="light">
-							{ticket.webUrl}
-						</Text>
-					</DrawerFooter> */}
+					{/*
+						MARK: Add Comment
+					*/}
+					<DrawerFooter bg="white" borderTop="1px solid #EEE">
+						<ChatInput
+							placeholder="Add a comment"
+							fontSize="sm"
+							color="light"
+							maxLength={500}
+							loading={addingComment}
+							onEnter={(comment) => addComment(comment)}
+						/>
+					</DrawerFooter>
 				</DrawerContent>
 			</Drawer>
 		</>

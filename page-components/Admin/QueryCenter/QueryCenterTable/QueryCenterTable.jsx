@@ -18,7 +18,7 @@ const QueryCenterTable = ({
 	const renderer = [
 		{ name: "ticketNumber", label: "Ticket ID" },
 		{ name: "label", label: "Subject", show: "Description" },
-		{ name: "statusType", label: "Status", show: "Tag" },
+		{ name: "status", label: "Status", show: "Tag" },
 		{ name: "contactName", label: "Agent Name" },
 		// {
 		// 	name: "eko_code",
