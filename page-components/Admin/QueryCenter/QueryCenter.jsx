@@ -127,7 +127,7 @@ const QueryCenter = () => {
 		initFetchComments(ticket.id);
 	}, [selectedTicketIndex, data]);
 
-	// MARK: Main Render
+	// MARK: Main JSX
 	return (
 		<>
 			<Headings title="Query Center" hasIcon={false} />
@@ -286,6 +286,15 @@ const QueryDetails = ({
 
 	if (!ticket) return null;
 
+	// Allow add comment if the following conditions are fulfilled:
+	// - Ticket is open
+	// - Comment addition is not pending
+	// - Total comment does not exceed 30
+	// - TODO: User has less than 10 consecutive comments at the end of the list
+	const allowAddComment =
+		ticket.statusType === "Open" && !addingComment && comments?.length < 30;
+
+	// MARK: Detail JSX
 	return (
 		<>
 			<Drawer isOpen={true} placement="right" size="md" onClose={onClose}>
@@ -327,7 +336,7 @@ const QueryDetails = ({
 									value={ticket["CSP Code"]}
 								/>
 								<Val
-									label="Created At"
+									label="Created On"
 									value={ticket.createdTime}
 									typeId={ParamType.DATETIME}
 									metadata="dd MMM yyyy"
@@ -430,7 +439,8 @@ const QueryDetails = ({
 											<Flex
 												direction="row"
 												align="center"
-												gap="0.5em"
+												gap="0.3em"
+												fontSize="1.6em"
 											>
 												{Icon ? <Icon /> : null}
 												<Text
@@ -470,16 +480,18 @@ const QueryDetails = ({
 					{/*
 						MARK: Add Comment
 					*/}
-					<DrawerFooter bg="white" borderTop="1px solid #EEE">
-						<ChatInput
-							placeholder="Add a comment"
-							fontSize="sm"
-							color="light"
-							maxLength={500}
-							loading={addingComment}
-							onEnter={(comment) => addComment(comment)}
-						/>
-					</DrawerFooter>
+					{allowAddComment ? (
+						<DrawerFooter bg="white" borderTop="1px solid #EEE">
+							<ChatInput
+								placeholder="Add a comment"
+								fontSize="sm"
+								color="light"
+								maxLength={500}
+								loading={addingComment}
+								onEnter={(comment) => addComment(comment)}
+							/>
+						</DrawerFooter>
+					) : null}
 				</DrawerContent>
 			</Drawer>
 		</>
