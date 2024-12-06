@@ -126,3 +126,5 @@ export {
 };
 
 export { PhoneNumber } from "./PhoneNumber";
+
+export { ChatInput } from "./ChatInput";
