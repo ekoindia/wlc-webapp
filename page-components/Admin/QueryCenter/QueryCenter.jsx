@@ -324,13 +324,14 @@ const QueryDetails = ({
 								mt={6}
 								flexWrap="wrap"
 							>
-								{ticket.statusType !== "Closed" ? (
+								{ticket.statusType === "Open" ? (
 									<Button onClick={close} loading={closing}>
 										Close
 									</Button>
 								) : null}
 
-								{ticket.statusType !== "Closed" ? (
+								{ticket.statusType === "Open" &&
+								ticket.status !== "Escalated" ? (
 									<Button
 										variant="outline"
 										onClick={escalate}
@@ -367,10 +368,15 @@ const QueryDetails = ({
 							gap={{ base: 5, md: 8 }}
 							p={{ base: 2, md: 6 }}
 						>
-							{/* List of Comments... */}
+							{/*
+								MARK: Comments
+							*/}
 							{comments?.map((comment) => {
 								const my = comment.by == "You";
 								const Icon = comment.Icon;
+
+								if (!comment.comment) return null;
+
 								return (
 									<Flex
 										key={comment.timestamp}
@@ -507,33 +513,45 @@ const processIssues = (issues) => {
  */
 const processComments = (comments) => {
 	const regCommenter = /^\*\*(Me|Eko|Agent|Admin):\*\*/i;
+	const regCommenter2 = /^\[([^\[\]\:]+)\]:/;
 
 	return comments.map((comment) => {
 		// Extract the "**Me:**", "**Eko:**", etc into a separate field
 		const match = comment.comment.match(regCommenter);
-		const commentBy = match ? match[1] : "Unknown";
+		const commentBy = match ? match[1] : null;
 
-		switch (commentBy.toLowerCase()) {
-			case "me":
+		if (commentBy) {
+			switch (commentBy.toLowerCase()) {
+				case "me":
+					comment.by = "You";
+					break;
+				case "eko":
+				case "agent":
+					comment.by = "Support";
+					comment.Icon = MdSupportAgent;
+					break;
+				// case "agent":
+				// 	comment.by = "Agent";
+				// 	comment.Icon = FaRegUser;
+				// 	break;
+				case "admin":
+					comment.by = "Admin";
+					comment.Icon = FcBusinessman;
+					break;
+			}
+
+			// Remove the ""**Me:**" part from the comment
+			comment.comment = comment.comment.replace(regCommenter, "").trim();
+		} else {
+			// Match old style comments like "[CONNECTUSER]:"
+			const match2 = comment.comment.match(regCommenter2);
+			const commentBy2 = match2 ? match2[1] : null;
+			if (commentBy2 === "CONNECTUSER") {
 				comment.by = "You";
-				break;
-			case "eko":
-			case "agent":
-				comment.by = "Support";
-				comment.Icon = MdSupportAgent;
-				break;
-			// case "agent":
-			// 	comment.by = "Agent";
-			// 	comment.Icon = FaRegUser;
-			// 	break;
-			case "admin":
-				comment.by = "Admin";
-				comment.Icon = FcBusinessman;
-				break;
+			}
+			// Remove the "[CONNECTUSER]:" part from the comment
+			comment.comment = comment.comment.replace(regCommenter2, "").trim();
 		}
-
-		// Remove the ""**Me:**" part from the comment
-		comment.comment = comment.comment.replace(regCommenter, "").trim();
 
 		// Remove the "Comment:" part from the start of the comment
 		comment.comment = comment.comment.replace(/^Comments?:/i, "").trim();
