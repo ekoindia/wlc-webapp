@@ -62,7 +62,7 @@ const Value = ({
 	return (
 		<Flex direction="column" {...rest}>
 			{label && (
-				<InputLabel required fontSize="xs" mb={0}>
+				<InputLabel hideOptionalMark fontSize="xs" mb={0}>
 					{label}
 				</InputLabel>
 			)}

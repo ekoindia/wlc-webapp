@@ -37,6 +37,7 @@ import { MdCameraAlt, MdFolderOpen, MdPhotoLibrary } from "react-icons/md";
  * @param	{boolean}	[prop.options.disableRotate]	Disable rotating the image
  * @param	{boolean}	[prop.required]	Mark the dropzone as required
  * @param	{boolean}	[prop.disabled]	Disable the dropzone
+ * @param	{boolean}	[prop.hideOptionalMark]	Hide the "optional" mark for the label
  * @param	{object}	[prop.labelStyle]	Style for the label
  * @param	{...*}	rest	Rest of the props passed to this component.
  * @example	`<Dropzone file={screenshot} setFile={setScreenshot} />` TODO: Fix example
@@ -51,6 +52,7 @@ const Dropzone = ({
 	options = {},
 	required = false,
 	disabled = false,
+	hideOptionalMark = false,
 	labelStyle,
 	...rest
 }) => {
@@ -382,7 +384,11 @@ const Dropzone = ({
 	// MARK: JSX
 	return (
 		<>
-			<InputLabel required={required} {...labelStyle}>
+			<InputLabel
+				required={required}
+				hideOptionalMark={hideOptionalMark}
+				{...labelStyle}
+			>
 				{label}
 			</InputLabel>
 			<Box

@@ -42,6 +42,7 @@ interface InputProps {
 	errorStyle?: CSSProperties;
 	inputContStyle?: Object;
 	inputAttributes?: Object;
+	hideOptionalMark?: boolean;
 	m?: number;
 	mt?: number;
 	mr?: number;
@@ -82,6 +83,7 @@ interface InputProps {
  * @param {object} [prop.errorStyle] Style for the error message
  * @param {object} [prop.inputContStyle] Style for the input container
  * @param {object} [prop.inputAttributes] Additional attributes for the input element
+ * @param {boolean} [prop.hideOptionalMark] If the optional mark should be hidden
  * @param {number} [prop.m] Margin for the input container
  * @param {number} [prop.mt] Margin top for the input container
  * @param {number} [prop.mr] Margin right for the input container
@@ -121,6 +123,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 			errorStyle,
 			inputContStyle,
 			inputAttributes,
+			hideOptionalMark = false,
 			m,
 			mt,
 			mr,
@@ -178,6 +181,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 					<InputLabel
 						htmlFor={id ?? _id}
 						required={required}
+						hideOptionalMark={hideOptionalMark}
 						{...labelStyle}
 					>
 						{label}
