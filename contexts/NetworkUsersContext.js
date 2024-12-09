@@ -69,6 +69,12 @@ export const NetworkUsersProvider = ({ children }) => {
 				});
 			}
 		},
+		onError: ({ errorObject, request }) => {
+			console.error("Error fetching network users:", {
+				error: errorObject,
+				request,
+			});
+		},
 	});
 
 	/**

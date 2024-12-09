@@ -103,7 +103,7 @@ export function fetcher(url, options, generateNewToken) {
 					});
 				});
 
-				const err = new Error("API Error");
+				const err = new Error("FetchError");
 				err.response = res;
 				err.status = res.status;
 				if (res.status === 401) {
