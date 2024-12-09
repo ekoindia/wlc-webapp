@@ -22,12 +22,12 @@ export const defaultUserState = {
 export const UserReducer = (state, { type, payload, meta }) => {
 	switch (type) {
 		case "INIT_USER_STORE": {
+			console.log("[UserReducer] initUserState", payload);
 			return payload;
 		}
 
 		case "UPDATE_USER_STORE": {
 			if (payload && payload.access_token && payload.refresh_token) {
-				console.log("Updated userStore");
 				//delete payload["long_session"]; // FIX: Why remove long_session??? // Uncommented , require this variable for biometric login
 				let tokenTimeout = getTokenExpiryTime(payload);
 				const newState = buildUserObjectState({
@@ -35,7 +35,7 @@ export const UserReducer = (state, { type, payload, meta }) => {
 					token_timeout: tokenTimeout || state?.token_timeout,
 				});
 
-				console.log("newUserState", newState);
+				console.log("[UserReducer] newUserState", newState);
 				setandUpdateAuthTokens(
 					payload,
 					meta?.isAndroid || false,
@@ -75,7 +75,7 @@ export const UserReducer = (state, { type, payload, meta }) => {
 				...state,
 				...createUserState(payload),
 			};
-			console.log("newState", newState);
+			console.log("[UserReducer] Login new state: ", newState);
 			// const newState = {
 			// 	...state,
 			// 	loggedIn: true,

@@ -4,26 +4,42 @@
  */
 
 export const buildUserObjectState = (data) => {
+	const {
+		personal_details,
+		shop_details,
+		business_details,
+		account_details,
+		details,
+		...restData
+	} = data;
+
+	const {
+		uid,
+		onboarding,
+		onboarding_steps,
+		role_list,
+		agreementId,
+		...restDetails
+	} = details || {};
+
 	return {
-		loggedIn: true,
-		is_org_admin: data?.details?.is_org_admin || 0,
 		isAdminAgentMode: false,
-		access_token: data.access_token,
-		refresh_token: data.refresh_token,
-		token_timeout: data?.token_timeout,
-		long_session: data?.long_session,
-		userId: data?.details?.mobile,
-		uid: data.details?.uid,
-		userDetails: {
-			...data.details,
-		},
-		personalDetails: data?.personal_details,
-		shopDetails: data?.shop_details,
-		businessDetails: data?.business_details,
-		accountDetails: data?.account_details,
-		onboarding: data?.details?.onboarding,
-		onboarding_steps: data?.details?.onboarding_steps,
-		role_list: data?.details?.role_list,
-		agreementId: data?.details?.agreement_id,
+		loggedIn: true,
+		is_org_admin: details?.is_org_admin || 0,
+		userId: details?.mobile,
+
+		uid,
+		onboarding,
+		onboarding_steps,
+		role_list,
+		agreementId,
+
+		userDetails: restDetails,
+		personalDetails: personal_details,
+		shopDetails: shop_details,
+		businessDetails: business_details,
+		accountDetails: account_details,
+
+		...restData,
 	};
 };
