@@ -25,6 +25,10 @@ import { QueryCenterTable } from ".";
 
 /**
  * A <QueryCenter> page component to show a list of queries/tickets raised by the admin or its network.
+ * TODO: BUG: "Category" is not coming in the response; only "SubCategory" is coming.
+ * TODO: BUG: Opening of a closed ticket is not working.
+ * TODO: BUG: Pagination not working.
+ * TODO: Show different tabs for Self and Network queries.
  */
 const QueryCenter = () => {
 	const [pageNumber, setPageNumber] = useState(1);
@@ -84,8 +88,16 @@ const QueryCenter = () => {
 		fetchComments({
 			body: { feedback_ticket_id: ticket_id },
 		})
-			.then((res) => {
-				const _comments = res?.data?.comment_list ?? [];
+			.then(({ data, error, errorObject }) => {
+				if (error) {
+					console.error(
+						"[QueryCenter] Get Query Comments Error:",
+						errorObject
+					);
+					return;
+				}
+
+				const _comments = data?.data?.comment_list ?? [];
 				if (_comments?.length > 0) {
 					// Process and save the list of comments
 					setCommentsCache({
