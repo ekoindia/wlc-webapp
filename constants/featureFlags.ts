@@ -90,7 +90,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// This flag is to show the image on the landing/login page.
 	CMS_IMAGE_THEME: {
 		enabled: true,
-		forAdminOnly: true,
 		envConstraints: {
 			production: {
 				forOrgId: [
