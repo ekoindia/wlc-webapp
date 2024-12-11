@@ -28,10 +28,8 @@ export const NavHeight = {
 
 /**
  * The top app-bar component
- * @param root0
- * @param root0.openSidebar
  */
-const NavBar = ({ openSidebar }) => {
+const NavBar = () => {
 	return (
 		<>
 			<Box as="nav" w="full" h={NavHeight}></Box>
@@ -44,7 +42,7 @@ const NavBar = ({ openSidebar }) => {
 				boxShadow="0px 3px 10px #0000001A"
 			>
 				<Box as="nav" position="sticky" w="full" h={NavHeight}>
-					<NavContent {...{ openSidebar }} />
+					<NavContent />
 				</Box>
 			</Box>
 		</>
@@ -53,7 +51,10 @@ const NavBar = ({ openSidebar }) => {
 
 export default NavBar;
 
-const NavContent = ({ openSidebar }) => {
+/**
+ * The content of the top app-bar
+ */
+const NavContent = () => {
 	const { userData, isAdmin, isAdminAgentMode, isOnboarding, isLoggedIn } =
 		useUser();
 	const { userDetails } = userData;
@@ -72,7 +73,7 @@ const NavContent = ({ openSidebar }) => {
 	);
 
 	const isSmallScreen = screenSize === "sm";
-	const isTabScreen = screenSize === "md";
+	// const isTabScreen = screenSize === "md";
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
@@ -113,14 +114,15 @@ const NavContent = ({ openSidebar }) => {
 		>
 			{/* Left-side items of navbar */}
 			<Flex align="center" flexGrow={isSmallScreen ? 1 : 0}>
-				{isOnboarding ? null : isTabScreen ? (
+				{/* [Redundant] For showing Hamberger-Menu on Small Screen. Replaced with BottomAppBar */}
+				{/* {isOnboarding ? null : isTabScreen ? (
 					<Icon
 						name="menu"
 						mr="12px"
 						onClick={() => openSidebar()}
 						aria-label="open menu"
 					/>
-				) : null}
+				) : null} */}
 
 				<OrgLogo
 					size="md"
