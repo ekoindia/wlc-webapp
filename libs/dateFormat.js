@@ -8,21 +8,24 @@
  */
 import { format } from "date-fns";
 
+const DEFAULT_FORMAT = "dd/MM/yyyy";
+
 /**
  * Helper function to format a date string.
  * @param {string} dateString - The date string
  * @param {string} formatString - The date format specified as [Unicode Technical Standard #35](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table). Defaults to `dd/MM/yyyy`.
  * @returns {string} - Formatted date string. Returns empty string if the `dateString` is empty. Returns the `dateString` if it is not a valid date string.
  */
-export const formatDate = (dateString, formatString = "dd/MM/yyyy") => {
+export const formatDate = (dateString, formatString) => {
 	if (!dateString) return "";
 	const dateObj = new Date(dateString);
+
 	if (isNaN(dateObj)) {
 		return dateString;
 	}
 
 	// Fix basic format issues
-	formatString = formatString.replace(/ AA/, " a");
+	formatString = (formatString || DEFAULT_FORMAT).replace(/ AA/, " a");
 
 	return format(dateObj, formatString);
 };

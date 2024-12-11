@@ -61,28 +61,6 @@ const UserProvider = ({ userMockData, children }) => {
 		}
 	}, []);
 
-	// useEffect(() => {
-	// 	console.log("User Context : UseEffect", {
-	// 		logged: state?.loggedIn,
-	// 		path: Router.asPath,
-	// 	});
-
-	// 	if (state?.loggedIn) {
-	// 		// setLoading(false)
-	// 		console.log("User Context : ", state?.loggedIn, Router.asPath);
-
-	// 		if (Router.pathname === '/404') return true
-	// 		else if (Router.pathname.includes("/admin")) Router.push(Router.asPath);
-	// 		else Router.replace("/admin/my-network");
-
-	// 		// the above condition is for when user refrehes the poge
-	// 		// if (!Router.pathname.includes(roleRoutes[state?.role])) {
-	// 		// 	console.log("Redirect");
-	// 		// 	Router.replace(roleInitialRoute[state?.role]);
-	// 		// }
-	// 	}
-	// }, [state?.loggedIn]);
-
 	/**
 	 * Fetch the user profile data again and update the userState.
 	 */
@@ -192,6 +170,10 @@ const UserProvider = ({ userMockData, children }) => {
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
 			accessToken: state?.access_token || "",
+			accessTokenLite:
+				state?.access_token_lite || state?.access_token || "",
+			accessTokenCrm:
+				state?.access_token_crm || state?.access_token || "",
 			isOnboarding: isOnboarding,
 			userData: state || {},
 			login,
@@ -216,6 +198,10 @@ const UserProvider = ({ userMockData, children }) => {
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
 			accessToken: state?.access_token || "",
+			accessTokenLite:
+				state?.access_token_lite || state?.access_token || "",
+			accessTokenCrm:
+				state?.access_token_crm || state?.access_token || "",
 			isOnboarding: isOnboarding,
 			loading,
 			setLoading,
@@ -223,13 +209,15 @@ const UserProvider = ({ userMockData, children }) => {
 		};
 	}, [
 		isLoggedIn,
-		state?.userId,
-		state?.user_type,
-		state?.access_token,
-		state?.onboarding,
-		state?.isAdminAgentMode,
-		loading,
 		isAdmin,
+		state?.isAdminAgentMode,
+		state?.userId,
+		state?.userDetails?.user_type,
+		state?.access_token,
+		state?.access_token_lite,
+		state?.access_token_crm,
+		isOnboarding,
+		loading,
 		refreshUser,
 	]);
 

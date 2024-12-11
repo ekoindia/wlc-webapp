@@ -6,8 +6,28 @@ import useRefreshToken from "hooks/useRefreshToken";
 /**
  * Hook for fetching data from the Eloka internal APIs (using the fetcher utility). It's a wrapper around the fetcher utility which automatically takes care of token refresh and other common API-related tasks.
  * @param {string} defaultUrlEndpoint - The default URL endpoint to fetch data from. If not provided, it can be overwritten later during the actual fetch call.
- * @param {object} defaultOptions - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
+ * @param {object} settings - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
+ * @param {Function} settings.onSuccess - The callback function to be called on successful fetch.
+ * @param {Function} settings.onError - The callback function to be called on fetch error.
+ * @param {boolean} [settings.noAuth] - Flag to indicate if the fetch request should skip passing the access token. Default is `false`.
+//  * @param {boolean} [settings.noClientRefId] - Flag to indicate if the fetch request should skip passing the unique client-reference-ID. Default is `false`.
  * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
+ * TODO:
+ * - Convert to TypeScript
+ * - Error Boundaries and Retry Logic
+ * - httpCache: cache header for HTTPS caching: https://developer.mozilla.org/en-US/docs/Web/API/Request/cache
+ * - local cache mechanism: localStorage, sessionStorage, or IndexedDB
+ * - pagination support
+ * - transformRequest
+ * - transformResponse
+ * - schema: use normalizr or similar library to normalize the response data
+ * - noClientRefId flag to skip passing the client reference ID
+ * - passDataToResponse flag to pass the data to the response interceptor
+ * - OpenTelemetry
+ * - interceptors - request, response (useful for logging, error handling, etc.). Can be implemented using the fetcher utility. This can be done by passing the interceptor functions as options to the fetcher utility, which will do the following: `fetcher(url, { interceptors: { request: [interceptor1, interceptor2], response: [interceptor3, interceptor4] } })`. This should work like Redux middleware. The interceptors can be async functions that can modify the request or response data. The request interceptors can be used to modify the request data before sending it to the server. The response interceptors can be used to modify the response data before passing it to the caller. The interceptors can be used for logging, error handling, etc.
+ * - support for multiple fetch requests at the same time
+ * - support for multiple fetch requests in a queue
+ * - support for only one fetch request at a time. If a new fetch request is made while the previous one is still in progress, the previous one is cancelled.
  * @example
  * const [getUsers, cancel, loading] = useApiFetch("/api/v1/users", {
  * 		method: "GET",
@@ -18,13 +38,21 @@ import useRefreshToken from "hooks/useRefreshToken";
  * 		});
  * }, []);
  */
-const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
+const useApiFetch = (defaultUrlEndpoint, settings) => {
+	const {
+		onSuccess,
+		onError,
+		noAuth = false,
+		// noClientRefId = false,
+		...options
+	} = settings;
+
 	const [endpoint] = useState(defaultUrlEndpoint);
-	const [options] = useState(defaultOptions);
+	// const [options] = useState(otherOptions);
 	const [controller, setController] = useState();
 
 	const { generateNewToken } = useRefreshToken();
-	const { accessToken } = useSession();
+	const { accessTokenLite } = useSession();
 
 	const [loading, setLoading] = useState(false);
 
@@ -56,7 +84,7 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 	 * @param {number} [options.timeout] - The timeout (in milliseconds) for the fetch request.
 	 * @param {string} [options.token] - The access token to be used for the fetch request. The `access_token_lite` is used by default.
 	 * @param {boolean} [options.isMultipart] - Flag to indicate if the request is a multipart form data request. Defaults to `false`.
-	 * @returns {Promise} A promise object representing the fetch response.
+	 * @returns {object} An object containing the fetched data, and any error information: { data, error, aborted, errorObject }
 	 */
 	const fetchApiData = async ({
 		url_endpoint,
@@ -66,7 +94,6 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 		timeout,
 		token,
 		isMultipart,
-		...otherFetchOptions
 	} = {}) => {
 		setLoading(true);
 		setController(new AbortController());
@@ -83,7 +110,6 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 		}
 
 		const fetcherOptions = {
-			...options,
 			...{
 				body: {
 					...options?.body,
@@ -92,36 +118,44 @@ const useApiFetch = (defaultUrlEndpoint, defaultOptions) => {
 				method: method || options.method,
 				headers: headers || options.headers,
 				timeout: timeout || options.timeout,
-				token: token || options.token || accessToken,
+				token:
+					token || options.token || (noAuth ? null : accessTokenLite),
 				controller: controller,
 				isMultipart: isMultipart || options.isMultipart,
-				...otherFetchOptions,
 			},
 		};
 
-		console.log("[useApiFetch] Fetching data from:", url, {
-			fetcherOptions,
-			options,
-			newOptions: {
-				body: {
-					...options?.body,
-					...body,
-				},
-				method,
-				headers,
-				timeout,
-				token,
-				isMultipart,
-				...otherFetchOptions,
-			},
-		});
+		// Summary of the request, to be used for logging and debugging
+		const requestSummary = {
+			url: url,
+			body: fetcherOptions.body,
+			method: fetcherOptions.method,
+			headers: fetcherOptions.headers,
+			isMultipart: fetcherOptions.isMultipart,
+		};
 
 		try {
 			const data = await fetcher(url, fetcherOptions, generateNewToken);
-			return data;
+			onSuccess && onSuccess(data, requestSummary);
+			return { data, request: requestSummary };
 		} catch (err) {
-			console.error("[useApiFetch] error: ", err);
-			return null;
+			const errResponse = {
+				data: err.response,
+				status: err.status,
+				error: true,
+				errorObject: err,
+				request: requestSummary,
+			};
+
+			// If the request was aborted, return null
+			if (err.name === "AbortError") {
+				errResponse.aborted = true;
+			}
+
+			console.error("[useApiFetch] Error: ", errResponse);
+
+			onError && onError(errResponse);
+			return errResponse;
 		} finally {
 			setLoading(false);
 		}

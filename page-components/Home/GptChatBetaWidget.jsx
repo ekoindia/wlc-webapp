@@ -82,7 +82,7 @@ const GptChatBetaWidget = () => {
 			token: accessToken,
 		})
 			.then((data) => {
-				console.log("[GPT] Response::::::::::::: ", data);
+				console.log("[GPT] Response: ", data);
 				if (data.reply) {
 					setChatLines([
 						...chatLines,
@@ -154,6 +154,7 @@ const GptChatBetaWidget = () => {
 				</Box>
 
 				{/* Chat Text Input Field */}
+				{/* TODO: Migrate to ChatInput component */}
 				<Input
 					placeholder="Ask your question and press Enter"
 					inputLeftElement={

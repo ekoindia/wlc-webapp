@@ -18,6 +18,7 @@ const Calenders = forwardRef(
 			value,
 			minDate,
 			maxDate,
+			hideOptionalMark = false,
 			onChange = () => {},
 			...rest
 		},
@@ -33,7 +34,11 @@ const Calenders = forwardRef(
 			<Flex direction={{ base: "column", md: "" }} {...rest}>
 				<Flex>
 					{label ? (
-						<InputLabel required={required} {...labelStyle}>
+						<InputLabel
+							required={required}
+							hideOptionalMark={hideOptionalMark}
+							{...labelStyle}
+						>
 							{label}
 						</InputLabel>
 					) : null}

@@ -1,7 +1,7 @@
 // Few pre-defined org-ids for configuring feature flags:
 const ORG_ID = {
 	EKOSTORE: 1,
-	EKOTEST: 101, // SuperPay (Production UAT)
+	EKOTESTS: [101, 259], // 101: SuperPay (Production UAT), 259: VijayPay (Production UAT)
 	SBIKIOSK: 287,
 };
 
@@ -21,7 +21,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
 			},
 		},
 	},
@@ -32,7 +32,27 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					ORG_ID.SBIKIOSK,
+					...ORG_ID.EKOTESTS,
+					10,
+				], // 10 = MobyPay
+			},
+		},
+	},
+
+	// Option to expand an issue in query-center to show detailed options and perform operations such as: Add Comment, Escalate, Close, etc.
+	QUERY_CENTER_DETAILED_OPTIONS: {
+		enabled: true,
+		forAdminOnly: true,
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					ORG_ID.SBIKIOSK,
+					...ORG_ID.EKOTESTS,
+				],
 			},
 		},
 	},
@@ -46,7 +66,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					ORG_ID.SBIKIOSK,
+					...ORG_ID.EKOTESTS,
+					10,
+				], // 10 = MobyPay
 			},
 		},
 	},
@@ -69,7 +94,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					ORG_ID.SBIKIOSK,
+					...ORG_ID.EKOTESTS,
+					10,
+				], // 10 = MobyPay
 			},
 		},
 	},

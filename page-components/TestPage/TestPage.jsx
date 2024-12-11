@@ -1,5 +1,6 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { Dropzone, Input, Select } from "components";
+import { Value } from "tf-components";
 import {
 	useCamera,
 	useFeatureFlag,
@@ -11,6 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useNotification } from "contexts";
+import { ParamType } from "constants";
 
 /**
  * A '/test' page-component
@@ -661,10 +663,39 @@ const AgreementTesting = () => {
 	);
 };
 
+/**
+ * Notification Panel Test
+ * MARK: NotificationPanelTest
+ * @returns
+ */
 const NotificationPanelTest = () => {
 	const { openNotificationPanel } = useNotification();
 	return (
 		<Button onClick={openNotificationPanel}>Show Notification Panel</Button>
+	);
+};
+
+/**
+ * Test the TF-Components
+ * MARK: TfComponentsTest
+ */
+const TfComponentsTest = () => {
+	return (
+		<Flex direction="row" wrap gap={3}>
+			<Value
+				label="Mobile Number"
+				value="9876543210"
+				typeId={ParamType.MOBILE}
+				metadata="91"
+			/>
+
+			<Value
+				label="Date"
+				value="2024-03-06 23:34"
+				typeId={ParamType.DATETIME}
+				metadata="dd-MM-yyyy"
+			/>
+		</Flex>
 	);
 };
 
@@ -706,6 +737,10 @@ const TestComponents = [
 	{
 		title: "Notification Panel Test",
 		component: NotificationPanelTest,
+	},
+	{
+		title: "TF-Components",
+		component: TfComponentsTest,
 	},
 ];
 

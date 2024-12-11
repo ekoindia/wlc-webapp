@@ -15,6 +15,7 @@ import { InputLabel } from "..";
  * @param props.label
  * @param props.labelStyle
  * @param props.required
+ * @param props.hideOptionalMark Hide the "optional" mark for the label
  * @param props.defaultValue
  * @param props.styles
  */
@@ -27,6 +28,7 @@ const Radio = ({
 	labelStyle,
 	size = "md",
 	required = false,
+	hideOptionalMark = false,
 	defaultValue,
 	renderer = { label: "label", value: "value" },
 	styles,
@@ -39,6 +41,7 @@ const Radio = ({
 				<InputLabel
 					htmlFor={id ?? _id}
 					required={required}
+					hideOptionalMark={hideOptionalMark}
 					{...labelStyle}
 				>
 					{label}

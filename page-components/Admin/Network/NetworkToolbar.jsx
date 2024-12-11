@@ -115,7 +115,7 @@ const NetworkToolbar = ({
 			{/* MARK: Search */}
 			{hideSearch ? null : (
 				<Flex>
-					<Form {...searchBarConfig} size={size} />
+					<Form {...searchBarConfig} hideOptionalMark size={size} />
 					<Button
 						size="xs"
 						display={{
@@ -207,6 +207,7 @@ const NetworkToolbar = ({
 													control,
 													formValues,
 													errors,
+													hideOptionalMark: true,
 												}}
 											/>
 											<Flex gap="4">

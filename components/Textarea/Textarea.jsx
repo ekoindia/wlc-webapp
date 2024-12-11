@@ -15,6 +15,7 @@ const Textarea = forwardRef(
 			labelStyle,
 			placeholder,
 			required = false,
+			hideOptionalMark = false,
 			onChange,
 			noOfLines = 2,
 			maxLength = 100,
@@ -34,6 +35,7 @@ const Textarea = forwardRef(
 					<InputLabel
 						htmlFor={id ?? _id}
 						required={required}
+						hideOptionalMark={hideOptionalMark}
 						{...labelStyle}
 					>
 						{label}

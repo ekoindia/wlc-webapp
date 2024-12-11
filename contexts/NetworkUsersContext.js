@@ -60,6 +60,21 @@ export const NetworkUsersProvider = ({ children }) => {
 			"tf-req-uri": "/network/agent-list",
 			"tf-req-method": "GET",
 		},
+		onSuccess: (res) => {
+			if (res?.data?.csp_list) {
+				setNetworkUsers({
+					networkUsersList: res?.data?.csp_list,
+					asof: Date.now(),
+					userId: userId,
+				});
+			}
+		},
+		onError: ({ errorObject, request }) => {
+			console.error("Error fetching network users:", {
+				error: errorObject,
+				request,
+			});
+		},
 	});
 
 	/**
@@ -94,20 +109,7 @@ export const NetworkUsersProvider = ({ children }) => {
 			return;
 
 		// Fetch the earnings data from the server.
-		fetchUsers()
-			.then((res) => {
-				if (res?.data?.csp_list) {
-					setNetworkUsers({
-						networkUsersList: res?.data?.csp_list,
-						asof: Date.now(),
-						userId: userId,
-					});
-				}
-			})
-			.catch((error) => {
-				// Handle any errors that occurred during the fetch
-				console.error("[NetworkUsersContext] Error:", error);
-			});
+		fetchUsers();
 	}, [isLoggedIn, accessToken, isOnboarding, isAdmin]);
 
 	const value = useMemo(() => {

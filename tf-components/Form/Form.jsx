@@ -20,6 +20,7 @@ import { getFormErrorMessage } from "utils";
  * @param prop.control
  * @param prop.errors
  * @param {string} [prop.size] Size of the form components: "sm" | "md" | "lg"
+ * @param {boolean} [prop.hideOptionalMark] Hide the optional mark on the form fields.
  * @param {...*} rest Rest of the props passed to this component.
  */
 const Form = ({
@@ -29,6 +30,7 @@ const Form = ({
 	control,
 	errors,
 	size = "md",
+	hideOptionalMark = false,
 	...rest
 }) => {
 	return (
@@ -94,6 +96,7 @@ const Form = ({
 									{label ? (
 										<InputLabel
 											required={required}
+											hideOptionalMark={hideOptionalMark}
 											{...labelStyle}
 										>
 											{label}
@@ -116,6 +119,7 @@ const Form = ({
 										id={name}
 										label={label}
 										required={required}
+										hideOptionalMark={hideOptionalMark}
 										value={value}
 										step="0.01"
 										type="number"
@@ -174,6 +178,7 @@ const Form = ({
 													disabled,
 													labelStyle,
 													size,
+													hideOptionalMark,
 												}}
 												{...rest}
 											/>
@@ -225,6 +230,7 @@ const Form = ({
 													disabled,
 													labelStyle,
 													size,
+													hideOptionalMark,
 												}}
 												{...rest}
 											/>
@@ -280,6 +286,7 @@ const Form = ({
 															isMulti: true,
 															labelStyle,
 															size,
+															hideOptionalMark,
 														}}
 														{...rest}
 													/>
@@ -331,6 +338,7 @@ const Form = ({
 																list_elements,
 															labelStyle,
 															size,
+															hideOptionalMark,
 														}}
 														{...rest}
 													/>
@@ -380,6 +388,7 @@ const Form = ({
 																options:
 																	list_elements,
 																labelStyle,
+																hideOptionalMark,
 															}}
 															{...rest}
 														/>
@@ -435,6 +444,7 @@ const Form = ({
 															onChange,
 															labelStyle,
 															size,
+															hideOptionalMark,
 														}}
 														{...rest}
 													/>
@@ -476,6 +486,7 @@ const Form = ({
 											fontSize="sm"
 											disabled={disabled}
 											labelStyle={labelStyle}
+											hideOptionalMark={hideOptionalMark}
 											{...rest}
 											{...register(name, {
 												..._validations,
