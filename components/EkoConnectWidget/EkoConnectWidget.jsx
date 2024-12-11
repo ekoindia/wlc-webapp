@@ -273,6 +273,9 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		);
 	}
 
+	if (!userData) return null;
+
+	// MARK: JSX
 	return (
 		<PaddingBox noSpacing={true} {...rest}>
 			<Head>
