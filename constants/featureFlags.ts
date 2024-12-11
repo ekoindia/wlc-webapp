@@ -1,7 +1,7 @@
 // Few pre-defined org-ids for configuring feature flags:
 const ORG_ID = {
 	EKOSTORE: 1,
-	EKOTEST: 101, // SuperPay (Production UAT)
+	EKOTESTS: [101, 259], // 101: SuperPay (Production UAT), 259: VijayPay (Production UAT)
 	SBIKIOSK: 287,
 };
 
@@ -21,7 +21,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
 			},
 		},
 	},
@@ -32,7 +32,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
 			},
 		},
 	},
@@ -46,7 +46,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
 			},
 		},
 	},
@@ -69,7 +69,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ORG_ID.EKOTEST, 10], // 10 = MobyPay
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
 			},
 		},
 	},
