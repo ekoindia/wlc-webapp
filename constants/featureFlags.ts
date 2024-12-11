@@ -42,6 +42,21 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// Option to expand an issue in query-center to show detailed options and perform operations such as: Add Comment, Escalate, Close, etc.
+	QUERY_CENTER_DETAILED_OPTIONS: {
+		enabled: true,
+		forAdminOnly: true,
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					ORG_ID.SBIKIOSK,
+					...ORG_ID.EKOTESTS,
+				],
+			},
+		},
+	},
+
 	// MANUALLY CONFIGURE CUSTOM IMAGE FOR LANDING/LOGIN PAGE...
 	// This flag is to show the image-upload option to Admins for configuring the landing page
 	//   where the request goes to the DevOps team for manual configuration.

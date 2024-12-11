@@ -15,7 +15,7 @@ import { Headings, Button, ChatInput } from "components";
 import { Value } from "tf-components";
 import { TransactionTypes, ParamType } from "constants";
 import { Endpoints } from "constants/EndPoints";
-import { useApiFetch } from "hooks";
+import { useApiFetch, useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
 // import { FaRegUser } from "react-icons/fa6";
 import { FcBusinessman } from "react-icons/fc";
@@ -109,7 +109,7 @@ const QueryCenter = () => {
 						processComments(_comments)
 					);
 				} else {
-					console.error("[QueryCenter] Comments not found", res);
+					console.error("[QueryCenter] Comments not found", data);
 				}
 			})
 			.catch((error) => {
@@ -216,6 +216,10 @@ const QueryDetails = ({
 			isClosable: true,
 		});
 
+	const [isDetailedOptionsAllowed] = useFeatureFlag(
+		"QUERY_CENTER_DETAILED_OPTIONS"
+	);
+
 	/**
 	 * MARK: Add Comment API
 	 */
@@ -297,6 +301,8 @@ const QueryDetails = ({
 	// });
 
 	if (!ticket) return null;
+
+	if (!isDetailedOptionsAllowed) return null;
 
 	// Allow add comment if the following conditions are fulfilled:
 	// - Ticket is open
