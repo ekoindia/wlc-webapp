@@ -70,6 +70,11 @@ const ChatInput = ({
 						size="18px"
 						color="light"
 						cursor="pointer"
+						style={
+							value === ""
+								? { opacity: 0.4, pointerEvents: "none" }
+								: {}
+						}
 						onClick={onSubmit}
 					/>
 				)
