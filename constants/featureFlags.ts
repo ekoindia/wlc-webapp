@@ -32,7 +32,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					ORG_ID.SBIKIOSK,
+					...ORG_ID.EKOTESTS,
+					10,
+				], // 10 = MobyPay
 			},
 		},
 	},
@@ -46,7 +51,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					ORG_ID.SBIKIOSK,
+					...ORG_ID.EKOTESTS,
+					10,
+				], // 10 = MobyPay
 			},
 		},
 	},
@@ -69,7 +79,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					ORG_ID.SBIKIOSK,
+					...ORG_ID.EKOTESTS,
+					10,
+				], // 10 = MobyPay
 			},
 		},
 	},
