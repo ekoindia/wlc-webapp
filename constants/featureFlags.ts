@@ -15,6 +15,35 @@ const ORG_ID = {
  * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
+	// MARK: 🚩Dev Flags
+
+	// Custom theme support (paid tier)
+	CUSTOM_THEME_CREATOR: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
+	// Feature to show a custom Landing Page that can be fully configured by Admins.
+	CMS_LANDING_PAGE: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
+	// Eloka Gateway for redirection-based transaction processing.
+	ELOKA_GATEWAY: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
+	// ------------------------------------------------------------------------
+	// MARK: 🚩BETA Flags
+
+	// Feature to Raise Issues...
+	RAISE_ISSUE: {
+		enabled: true,
+		forAdminOnly: true, // TODO: Enable for all users
+	},
+
 	// Feature for Admins to toggle services for their network (Business Settings > Enable/Disable Services)
 	TOGGLE_SERVICES: {
 		enabled: true,
@@ -57,6 +86,22 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// Basic Landing Page customization where Admins can upload a custom image.
+	// This flag is to show the image on the landing/login page.
+	CMS_IMAGE_THEME: {
+		enabled: true,
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					ORG_ID.SBIKIOSK,
+					...ORG_ID.EKOTESTS,
+					10,
+				], // 10 = MobyPay
+			},
+		},
+	},
+
 	// MANUALLY CONFIGURE CUSTOM IMAGE FOR LANDING/LOGIN PAGE...
 	// This flag is to show the image-upload option to Admins for configuring the landing page
 	//   where the request goes to the DevOps team for manual configuration.
@@ -76,45 +121,8 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
-	// Theme selection from predefined themes (free tier)
-	THEME_PICKER: {
-		enabled: true,
-	},
-
-	// Custom theme support (paid tier)
-	CUSTOM_THEME_CREATOR: {
-		enabled: true,
-		forEnv: ["development"],
-	},
-
-	// Basic Landing Page customization where Admins can upload a custom image.
-	// This flag is to show the image on the landing/login page.
-	CMS_IMAGE_THEME: {
-		enabled: true,
-		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					ORG_ID.SBIKIOSK,
-					...ORG_ID.EKOTESTS,
-					10,
-				], // 10 = MobyPay
-			},
-		},
-	},
-
-	// Feature to show a custom Landing Page that can be fully configured by Admins.
-	CMS_LANDING_PAGE: {
-		enabled: true,
-		forEnv: ["development"],
-	},
-
-	// Feature to Raise Issues...
-	RAISE_ISSUE: {
-		enabled: true,
-		forAdminOnly: true,
-	},
+	// ------------------------------------------------------------------------
+	// MARK: 🚩Production Flags
 
 	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
 	RAISE_ISSUE_SBIKIOSK: {
@@ -132,11 +140,18 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// Theme selection from predefined themes (free tier)
+	THEME_PICKER: {
+		enabled: true,
+	},
+
 	// Face detector for images, videos, and live streams.
 	FACE_DETECTOR: {
 		enabled: true,
-		// forEnv: ["development", "staging"],
 	},
+
+	// ------------------------------------------------------------------------
+	// MARK: ⚠️Test-Only Flags
 
 	// Face detector for images, videos, and live streams.
 	TEXT_CLASSIFIER: {
@@ -159,12 +174,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// To be used by developers only for inserting custom expressions
 	//   in interaction-framework configuration database.
 	EXPRESSION_EDITOR: {
-		enabled: true,
-		forEnv: ["development"],
-	},
-
-	// Eloka Gateway for redirection-based transaction processing.
-	ELOKA_GATEWAY: {
 		enabled: true,
 		forEnv: ["development"],
 	},
@@ -197,6 +206,8 @@ type EnvConstraints = {
 	 */
 	forUserId?: string[];
 };
+
+// MARK: ⚙️ Types
 
 /**
  * Type definition for a feature flag configuration.
