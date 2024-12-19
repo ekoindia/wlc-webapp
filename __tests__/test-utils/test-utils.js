@@ -55,15 +55,30 @@ const AdminProviders = ({ children }) => {
 	);
 };
 
-// Standard page render (for logged-in users)
+/**
+ * Standard page render (for logged-in users)
+ * @param {ReactElement} ui - The component to render
+ * @param {object} options - Additional options for rendering
+ * @returns {RenderResult} - The rendered component
+ */
 const pageRender = (ui, options = {}) =>
 	render(ui, { wrapper: LoggedInProviders, ...options });
 
-// Page render for logged-out users
+/**
+ * Page render for logged-out users
+ * @param {ReactElement} ui - The component to render
+ * @param {object} options - Additional options for rendering
+ * @returns {RenderResult} - The rendered component
+ */
 const loggedOutPageRender = (ui, options = {}) =>
 	render(ui, { wrapper: LoggedOutProviders, ...options });
 
-// Page render for admin users
+/**
+ * Page render for admin users
+ * @param {ReactElement} ui - The component to render
+ * @param {object} options - Additional options for rendering
+ * @returns {RenderResult} - The rendered component
+ */
 const adminRender = (ui, options = {}) =>
 	render(ui, { wrapper: AdminProviders, ...options });
 
