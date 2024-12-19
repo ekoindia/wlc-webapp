@@ -48,6 +48,7 @@ Eloka Web App
 - TypeScript
 - ChakraUI
 - Jest
+- Storybook
 
 ## Naming Conventions
 - Use lowercase with dashes for directories (e.g., components/form-wizard)
