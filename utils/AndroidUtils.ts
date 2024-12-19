@@ -133,8 +133,16 @@ export const doAndroidAction = (action: string, data?: any): boolean => {
 			}
 		}
 
-		window[ANDROID_INTERFACE_NAME].doAction(action, data_str);
-		return true; // Return true if action is successfully sent
+		try {
+			window[ANDROID_INTERFACE_NAME].doAction(action, data_str);
+			return true; // Return true if action is successfully sent
+		} catch (e) {
+			console.error(
+				`[doAndroidAction] Error while invoking Android action "${action}":`,
+				e
+			);
+			return false; // Return false if doAction throws an error
+		}
 	}
 	return false; // Return false if not running inside Android app
 };
