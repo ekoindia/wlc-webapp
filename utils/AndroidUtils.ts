@@ -128,6 +128,13 @@ export const doAndroidAction = (action: String, data?: any) => {
 			}
 		}
 
-		window[ANDROID_INTERFACE_NAME].doAction(action, data_str);
+		try {
+			window[ANDROID_INTERFACE_NAME]?.doAction(action, data_str);
+		} catch (e) {
+			console.error(
+				`[doAndroidAction] Error while invoking Android action "${action}":`,
+				e
+			);
+		}
 	}
 };
