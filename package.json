@@ -1,5 +1,5 @@
 {
-	"name": "eko-infinity-webapp",
+	"name": "eloka-webapp",
 	"version": "4.39.0",
 	"private": true,
 	"description": "Eko's white-labelled financial platform service",
@@ -65,7 +65,7 @@
 		"jsonwebtoken": "^9.0.2",
 		"kbar": "^0.1.0-beta.45",
 		"lint": "^0.8.19",
-		"next": "^14.2.4",
+		"next": "^14.2.20",
 		"react": "^18.3.1",
 		"react-color": "^2.19.3",
 		"react-complex-tree": "^2.4.5",

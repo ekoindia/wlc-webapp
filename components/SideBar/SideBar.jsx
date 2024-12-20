@@ -5,14 +5,14 @@ import {
 	AccordionPanel,
 	Box,
 	Circle,
-	Drawer,
-	DrawerContent,
-	DrawerOverlay,
 	Flex,
 	Text,
-	// Tooltip,
-	useBreakpointValue,
 	useToken,
+	// Drawer,
+	// DrawerContent,
+	// DrawerOverlay,
+	// Tooltip,
+	// useBreakpointValue,
 } from "@chakra-ui/react";
 import { Endpoints, UserType } from "constants";
 import { useUser } from "contexts";
@@ -46,8 +46,11 @@ const isCurrentRoute = (routerUrl, path) => {
 	return (path + "/").startsWith(routePath + "/");
 };
 
-//MAIN EXPORT
-const SideBar = ({ isSidebarOpen, closeSidebar }) => {
+/**
+ * Sidebar to show the left-hand navigation menu
+ * @returns {JSX.Element} A sidebar component
+ */
+const SideBar = () => {
 	const {
 		isLoggedIn,
 		isOnboarding,
@@ -62,10 +65,10 @@ const SideBar = ({ isSidebarOpen, closeSidebar }) => {
 	const [openIndex, setOpenIndex] = useState(-1);
 
 	// Check if screen is smaller than "lg" to show a mobile sidebar with drawer
-	const isSmallScreen = useBreakpointValue(
-		{ base: true, lg: false },
-		{ ssr: false }
-	);
+	// const isSmallScreen = useBreakpointValue(
+	// 	{ base: true, lg: false },
+	// 	{ ssr: false }
+	// );
 
 	// Set the sub-menu (accordion) index that should be open by default
 	// For Distributors, open the "Other" submenu (index = 1)
@@ -95,20 +98,8 @@ const SideBar = ({ isSidebarOpen, closeSidebar }) => {
 		return null;
 	}
 
-	return isSmallScreen ? ( // Mobile sidebar with drawer
-		<Box
-			sx={{
-				"@media print": {
-					display: "none",
-				},
-			}}
-		>
-			<SmallScreenSideMenu
-				{...{ isSidebarOpen, closeSidebar, ...otherProps }}
-			/>
-		</Box>
-	) : (
-		// Desktop sidebar
+	// Desktop sidebar
+	return (
 		<Box
 			sx={{
 				"@media print": {
@@ -119,6 +110,31 @@ const SideBar = ({ isSidebarOpen, closeSidebar }) => {
 			<SideBarMenu {...otherProps} />
 		</Box>
 	);
+
+	// return isSmallScreen ? ( // Mobile sidebar with drawer
+	// 	<Box
+	// 		sx={{
+	// 			"@media print": {
+	// 				display: "none",
+	// 			},
+	// 		}}
+	// 	>
+	// 		<SmallScreenSideMenu
+	// 			{...{ isSidebarOpen, closeSidebar, ...otherProps }}
+	// 		/>
+	// 	</Box>
+	// ) : (
+	// 	// Desktop sidebar
+	// 	<Box
+	// 		sx={{
+	// 			"@media print": {
+	// 				display: "none",
+	// 			},
+	// 		}}
+	// 	>
+	// 		<SideBarMenu {...otherProps} />
+	// 	</Box>
+	// );
 };
 
 export default SideBar;
@@ -179,22 +195,20 @@ const SideBarMenu = ({
 					<StatusCard />
 
 					{/* Fixed menu items */}
-					{menuList?.map((menu, index) => (
+					{menuList?.map((menu) => (
 						<LinkMenuItem
-							key={menu.name || menu.label}
+							key={menu.id || menu.name || menu.label}
 							menu={menu}
-							index={index}
 							isAdminAgentMode={isAdminAgentMode}
 						/>
 					))}
 
 					{/* Others menu items as fixed items (if normal) */}
 					{showOtherListAsMainList
-						? otherList?.map((menu, index) => (
+						? otherList?.map((menu) => (
 								<LinkMenuItem
-									key={menu.label}
+									key={menu.id || menu.label}
 									menu={menu}
-									index={index}
 									isAdminAgentMode={isAdminAgentMode}
 								/>
 							))
@@ -219,31 +233,31 @@ const SideBarMenu = ({
 };
 
 //FOR MOBILE SCREENS
-const SmallScreenSideMenu = ({ isSidebarOpen, closeSidebar, ...rest }) => {
-	const router = useRouter();
+// const SmallScreenSideMenu = ({ isSidebarOpen, closeSidebar, ...rest }) => {
+// 	const router = useRouter();
 
-	// Close navigation drawer on page change
-	useEffect(() => {
-		closeSidebar();
-	}, [router.asPath]);
+// 	// Close navigation drawer on page change
+// 	useEffect(() => {
+// 		closeSidebar();
+// 	}, [router.asPath]);
 
-	return (
-		<Drawer
-			autoFocus={false}
-			isOpen={isSidebarOpen}
-			placement="left"
-			onClose={closeSidebar}
-			returnFocusOnClose={false}
-			onOverlayClick={closeSidebar}
-			size="full"
-		>
-			<DrawerOverlay />
-			<DrawerContent maxW="250px" boxShadow={"none"}>
-				<SideBarMenu {...rest} />
-			</DrawerContent>
-		</Drawer>
-	);
-};
+// 	return (
+// 		<Drawer
+// 			autoFocus={false}
+// 			isOpen={isSidebarOpen}
+// 			placement="left"
+// 			onClose={closeSidebar}
+// 			returnFocusOnClose={false}
+// 			onOverlayClick={closeSidebar}
+// 			size="full"
+// 		>
+// 			<DrawerOverlay />
+// 			<DrawerContent maxW="250px" boxShadow={"none"}>
+// 				<SideBarMenu {...rest} />
+// 			</DrawerContent>
+// 		</Drawer>
+// 	);
+// };
 
 /**
  * Transaction Submenu Section for non-admin users
@@ -372,12 +386,14 @@ const AccordionSubMenuSection = ({
 
 			<AccordionPanel padding={"0px"} border="none">
 				{menuItems?.map((tx) => {
+					if (!tx) return null;
+
 					const link =
-						tx?.link ||
-						`${isAdmin ? "/admin" : ""}/transaction/${tx?.id}`;
+						tx.link ||
+						`${isAdmin ? "/admin" : ""}/transaction/${tx.id}`;
 					const isCurrent = isCurrentRoute(router.asPath, link);
 					return (
-						<Link key={link} href={link}>
+						<Link key={tx.id || link} href={link}>
 							<Box
 								w="100%"
 								padding="0px 14px 0px 40px"
@@ -460,7 +476,7 @@ const AccordionSubMenuSection = ({
 
 const LinkMenuItem = ({
 	menu,
-	/* currentRoute, */ index,
+	/* currentRoute, */
 	isAdminAgentMode,
 }) => {
 	const router = useRouter();
@@ -473,9 +489,8 @@ const LinkMenuItem = ({
 	const isCurrent = isCurrentRoute(router.asPath, link || id_link);
 
 	return (
-		<Link href={link || id_link} key={index}>
+		<Link href={link || id_link}>
 			<Flex
-				key={index}
 				fontSize={{
 					base: "14px",
 					"2xl": "16px",
