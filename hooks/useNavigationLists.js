@@ -239,9 +239,27 @@ const useNavigationLists = (ignoreList = []) => {
 				: sidebarMenu;
 
 		// Filter out Disabled features (from org-metadata) & Feature Flags !!!
-		const _feat = disabledFeatures
-			? JSON.parse(disabledFeatures)?.features
-			: [];
+		let _feat = [];
+		if (disabledFeatures) {
+			let disabledFeaturesObj = {};
+
+			try {
+				if (typeof disabledFeatures === "object") {
+					disabledFeaturesObj = disabledFeatures;
+				} else if (typeof disabledFeatures === "string") {
+					disabledFeaturesObj = JSON.parse(disabledFeatures);
+				}
+				_feat = disabledFeaturesObj?.features;
+
+				if (_feat && typeof _feat === "string") {
+					_feat = JSON.parse(_feat);
+				}
+
+				_feat = disabledFeaturesObj?.features;
+			} catch (e) {
+				console.error("Error parsing disabled features", e);
+			}
+		}
 
 		_filteredMenuList = _menuList.filter((item) => {
 			// Skip if the feature is disabled (from org-metadata)
