@@ -50,9 +50,9 @@ export function fetcher(url, options, generateNewToken) {
 	const _controller = controller || new AbortController();
 
 	const timeout_id = setTimeout(() => {
-		_controller.abort();
 		const err = new Error("Request Timed Out");
 		err.name = "AbortError";
+		_controller.abort(err);
 		throw err;
 	}, timeout || DEFAULT_TIMEOUT);
 
@@ -76,6 +76,15 @@ export function fetcher(url, options, generateNewToken) {
 		// delete headersData["Content-Type"];
 		delete bodyData.client_ref_id;
 		delete bodyData.source;
+	}
+
+	// Check if the signal is already aborted
+	if (_controller?.signal?.aborted) {
+		console.warn("📡 Fetch Aborted:", {
+			url,
+			options,
+		});
+		return;
 	}
 
 	const fetchPromise = fetch(url, {

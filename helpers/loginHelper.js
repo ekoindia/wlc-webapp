@@ -4,6 +4,7 @@ import { fetcher } from "./apiHelper";
 
 /**
  * Verify OTP and get user details to login the user.
+ * MARK: Send OTP
  * @param {number} org_id	Organization ID
  * @param {number} number	User's mobile number
  * @param {Function} toast		Function to show toast messages
@@ -245,7 +246,8 @@ function getSessions() {
 
 /**
  * Clears all the auth tokens from the session storage.
- * @param isAndroid
+ * MARK: Clear Tokens
+ * @param {boolean} isAndroid - Is the user using the Android wrapper app?
  */
 function clearAuthTokens(isAndroid) {
 	for (var i = 0; i < sessionStorage.length; i++) {
@@ -263,6 +265,7 @@ function clearAuthTokens(isAndroid) {
 
 /**
  * Revoke server-side refresh-token for this session. Used during logout.
+ * MARK: Revoke Token
  * @param {*} user_id	The User-ID of the user
  */
 function revokeSession(user_id) {
@@ -280,7 +283,7 @@ function revokeSession(user_id) {
 		timeout: 5000,
 	})
 		// .then((data) => console.log("REFRESH TOKEN REVOKED: ", data))
-		.catch((err) => console.log("Refresh Token Revoke Error: ", err));
+		.catch((err) => console.error("Refresh Token Revoke Error: ", err));
 }
 
 /**
@@ -399,16 +402,16 @@ const refreshUserProfile = (login, updateUserInfo, isAndroid = false) => {
 };
 
 export {
-	sendOtpRequest,
-	RemoveFormatted,
-	setandUpdateAuthTokens,
-	getAuthTokens,
 	clearAuthTokens,
-	revokeSession,
-	generateNewAccessToken,
-	getSessions,
 	createUserState,
-	setUserDetails,
+	generateNewAccessToken,
+	getAuthTokens,
+	getSessions,
 	getTokenExpiryTime,
 	loginUsingRefreshTokenAndroid,
+	RemoveFormatted,
+	revokeSession,
+	sendOtpRequest,
+	setandUpdateAuthTokens,
+	setUserDetails,
 };

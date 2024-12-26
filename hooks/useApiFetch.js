@@ -58,10 +58,11 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 
 	/**
 	 * Function to cancel the fetch request.
+	 * @param {string} [reason] - The reason for cancelling the fetch request.
 	 */
-	const cancelFetch = () => {
+	const cancelFetch = (reason) => {
 		if (loading && controller) {
-			controller.abort();
+			controller.abort(reason || "Cancelled");
 			setLoading(false);
 			setController(null);
 		}
@@ -70,7 +71,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 	// Cancel fetch on unmount
 	useEffect(() => {
 		return () => {
-			cancelFetch();
+			cancelFetch("Component unmounted");
 		};
 	}, [cancelFetch]);
 
