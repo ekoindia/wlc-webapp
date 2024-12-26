@@ -36,7 +36,13 @@
 		"test-coverage": "jest --coverage",
 		"test-update-snapshots": "jest --updateSnapshot",
 		"check-updates": "npm-check -u",
-		"check-deps": "node check-deps.js"
+		"check-deps": "node check-deps.js",
+		"docker:dev": "docker-compose up dev",
+		"docker:prod": "docker-compose up prod",
+		"docker:dev:build": "docker-compose up dev --build",
+		"docker:prod:build": "docker-compose up prod --build",
+		"docker:stop": "docker-compose down",
+		"docker:clean": "docker-compose down -v --rmi all"
 	},
 	"lint-staged": {
 		"**/*.{js,jsx,ts,tsx}": [

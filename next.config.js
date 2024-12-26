@@ -4,6 +4,12 @@ const isProd = process.env.NEXT_PUBLIC_ENV === "production";
 const isDev = process.env.NEXT_PUBLIC_ENV === "development";
 const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
 
+/**
+ * Check if the build is running inside a Docker container to generate the standalone build.
+ * This envoirnment variable can be passed in the Dockerfile.
+ */
+const isDockerBuild = process.env.DOCKER_BUILD === "true";
+
 /*
 // Default Content Security Policy
 const cspHeaders = [
@@ -172,4 +178,10 @@ const nextConfig = {
 	// 	];
 	// },
 };
+
+// Add standalone build config for Docker
+if (isDockerBuild) {
+	nextConfig.output = "standalone";
+}
+
 export default bundleAnalyzer(nextConfig);

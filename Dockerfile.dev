@@ -1,0 +1,18 @@
+FROM node:18-alpine
+
+ARG PORT=3000
+
+WORKDIR /app
+
+# Install dependencies for development
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Expose development port
+EXPOSE $PORT
+
+# Start development server with debugging enabled
+CMD ["npm", "run", "dev"]
