@@ -6,7 +6,7 @@ services:
             context: .
             dockerfile: Dockerfile.dev
         ports:
-            - "3002:3000"
+            - "3002:3002"
             - "9229:9229" # For debugging
         volumes:
             - .:/app

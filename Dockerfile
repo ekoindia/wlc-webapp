@@ -72,10 +72,6 @@ USER nextjs
 
 # Expose production port
 EXPOSE $PORT
-ENV PORT $PORT
-
-# Set the hostname to localhost
-ENV HOSTNAME "0.0.0.0"
 
 # Start production server.
 # server.js is created by next build from the standalone output.
