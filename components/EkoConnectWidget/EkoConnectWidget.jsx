@@ -674,9 +674,9 @@ const configurePolymer = () => {
  * @param {Function} setTransactionFlow - Function to set the current transaction flow state.
  * @param {Function} showRaiseIssueDialog - Function to show the "Raise Issue" dialog.
  * @param {Function} openCamera - Function to open the camera.
- * @param editImage
+ * @param {Function} editImage - Function to open the Image editor (for modifying or accepting the captured/uploaded image).
  * @param showImage
- * @returns	{object} - The widgetLoading state
+ * @returns {object} - The widgetLoading state
  */
 const useSetupWidgetEventListeners = (
 	widgetRef,
