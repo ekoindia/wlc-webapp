@@ -15,6 +15,7 @@ import {
 	useAppLink,
 	useCamera,
 	useExternalResource,
+	useFileView,
 	useImageEditor,
 	useRaiseIssue,
 } from "hooks";
@@ -71,6 +72,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	const { openCamera } = useCamera();
 
 	// Edit Image
+	const { showImage } = useFileView();
 	const { editImage } = useImageEditor();
 
 	// Check if CommandBar is loaded...
@@ -233,7 +235,8 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		setTransactionFlow,
 		showRaiseIssueDialog,
 		openCamera,
-		editImage
+		editImage,
+		showImage
 	);
 
 	// Handle widget load error
@@ -399,6 +402,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
  * @param root0.showRaiseIssueDialog
  * @param root0.openCamera
  * @param root0.editImage
+ * @param root0.showImage
  * @param root0.widgetRef
  */
 const setupWidgetEventListeners = ({
@@ -412,6 +416,7 @@ const setupWidgetEventListeners = ({
 	showRaiseIssueDialog,
 	openCamera,
 	editImage,
+	showImage,
 	widgetRef,
 }) => {
 	/**
@@ -545,8 +550,27 @@ const setupWidgetEventListeners = ({
 				onGotoHist(e?.detail);
 				break;
 			case "file-view":
-				// Open the image editor
-				editImage(e?.detail?.data?.file);
+				const {
+					name: fileName = "",
+					file,
+					options = {},
+					userConfirmation = false,
+				} = e?.detail?.data ?? {};
+
+				options.fileName = fileName;
+
+				if (userConfirmation) {
+					const handleResponse = (data) => {
+						// console.log(
+						// 	"[EkoConnectWidget] FileView Response: ",
+						// 	data
+						// );
+						widgetRef?.current?.fileViewResponse(data);
+					};
+					editImage(file, options, handleResponse);
+				} else {
+					showImage(file, options);
+				}
 				break;
 			case "track-event":
 				// Track Google Analytics events (from widget)
@@ -651,6 +675,7 @@ const configurePolymer = () => {
  * @param {Function} showRaiseIssueDialog - Function to show the "Raise Issue" dialog.
  * @param {Function} openCamera - Function to open the camera.
  * @param editImage
+ * @param showImage
  * @returns	{object} - The widgetLoading state
  */
 const useSetupWidgetEventListeners = (
@@ -661,7 +686,8 @@ const useSetupWidgetEventListeners = (
 	setTransactionFlow,
 	showRaiseIssueDialog,
 	openCamera,
-	editImage
+	editImage,
+	showImage
 ) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
@@ -684,6 +710,7 @@ const useSetupWidgetEventListeners = (
 			showRaiseIssueDialog,
 			openCamera,
 			editImage,
+			showImage,
 			widgetRef,
 		});
 		configurePolymer();
