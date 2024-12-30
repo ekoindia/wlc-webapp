@@ -22,9 +22,9 @@ services:
         # Enable debugging
         stdin_open: true
         tty: true
-        container_name: wlc-webapp-dev
+        container_name: eloka-webapp-dev
         networks:
-            - wlc-network
+            - eloka-network
         healthcheck:
             test: ["CMD", "wget", "--spider", "http://localhost:3000"]
             interval: 30s
@@ -44,9 +44,9 @@ services:
             - NODE_ENV=production
             - NEXT_PUBLIC_ENV=production
             - NEXT_TELEMETRY_DISABLED=1
-        container_name: wlc-webapp-prod
+        container_name: eloka-webapp-prod
         networks:
-            - wlc-network
+            - eloka-network
         healthcheck:
             test: ["CMD", "wget", "--spider", "http://localhost:3000"]
             interval: 30s
@@ -54,5 +54,5 @@ services:
             retries: 3
 
 networks:
-    wlc-network:
-        name: wlc-network
+    eloka-network:
+        name: eloka-network
