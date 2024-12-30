@@ -5,14 +5,13 @@ import { Form } from "tf-components";
 
 /**
  * A HistoryToolbar page-component
- * @param root0
- * @param root0.isFiltered
- * @param root0.clearFilter
- * @param root0.openModalId
- * @param root0.setOpenModalId
- * @param root0.searchBarConfig
- * @param root0.actionBtnConfig
- * @example	`<HistoryToolbar></HistoryToolbar>` TODO: Fix example
+ * @param 	{object}	prop	Properties passed to the component
+ * @param {boolean} prop.isFiltered - Whether the table is filtered or not.
+ * @param {Function} prop.clearFilter - Function to clear the filter.
+ * @param {string} prop.openModalId - The ID of the open modal.
+ * @param {Function} prop.setOpenModalId - Function to set the open modal ID.
+ * @param {object} prop.searchBarConfig - The search bar configuration.
+ * @param {object} prop.actionBtnConfig - The action button configuration.
  */
 const HistoryToolbar = ({
 	isFiltered,
@@ -104,6 +103,7 @@ const HistoryToolbar = ({
 											formValues,
 											errors,
 											gap: "2",
+											hideOptionalMark: true,
 										}}
 									/>
 									<Flex gap="4">
