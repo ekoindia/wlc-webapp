@@ -15,6 +15,8 @@ import {
 	useAppLink,
 	useCamera,
 	useExternalResource,
+	useFileView,
+	useImageEditor,
 	useRaiseIssue,
 } from "hooks";
 import useRefreshToken from "hooks/useRefreshToken";
@@ -68,6 +70,10 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 	// Open Camera
 	const { openCamera } = useCamera();
+
+	// Edit Image
+	const { showImage } = useFileView();
+	const { editImage } = useImageEditor();
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
@@ -228,7 +234,9 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		refreshUser,
 		setTransactionFlow,
 		showRaiseIssueDialog,
-		openCamera
+		openCamera,
+		editImage,
+		showImage
 	);
 
 	// Handle widget load error
@@ -393,6 +401,8 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
  * @param root0.setTransactionFlow
  * @param root0.showRaiseIssueDialog
  * @param root0.openCamera
+ * @param root0.editImage
+ * @param root0.showImage
  * @param root0.widgetRef
  */
 const setupWidgetEventListeners = ({
@@ -405,6 +415,8 @@ const setupWidgetEventListeners = ({
 	setTransactionFlow,
 	showRaiseIssueDialog,
 	openCamera,
+	editImage,
+	showImage,
 	widgetRef,
 }) => {
 	/**
@@ -537,9 +549,31 @@ const setupWidgetEventListeners = ({
 				// Open the transaction page
 				onGotoHist(e?.detail);
 				break;
+			case "file-view":
+				const {
+					name: fileName = "",
+					file,
+					options = {},
+					userConfirmation = false,
+				} = e?.detail?.data ?? {};
+
+				options.fileName = fileName;
+
+				if (userConfirmation) {
+					const handleResponse = (data) => {
+						// console.log(
+						// 	"[EkoConnectWidget] FileView Response: ",
+						// 	data
+						// );
+						widgetRef?.current?.fileViewResponse(data);
+					};
+					editImage(file, options, handleResponse);
+				} else {
+					showImage(file, options);
+				}
+				break;
 			case "track-event":
 				// Track Google Analytics events (from widget)
-				// console.log(">>> TRACK EVENT:: ", e?.detail?.data);
 				switch (e?.detail?.data?.category) {
 					case "Transaction":
 						if (e?.detail?.data?.action === "Page Change") {
@@ -640,7 +674,9 @@ const configurePolymer = () => {
  * @param {Function} setTransactionFlow - Function to set the current transaction flow state.
  * @param {Function} showRaiseIssueDialog - Function to show the "Raise Issue" dialog.
  * @param {Function} openCamera - Function to open the camera.
- * @returns	{object} - The widgetLoading state
+ * @param {Function} editImage - Function to open the Image editor (for modifying or accepting the captured/uploaded image).
+ * @param {Function} showImage - Function to show an image in the FileViewer dialog.
+ * @returns {object} - The widgetLoading state
  */
 const useSetupWidgetEventListeners = (
 	widgetRef,
@@ -649,7 +685,9 @@ const useSetupWidgetEventListeners = (
 	refreshUser,
 	setTransactionFlow,
 	showRaiseIssueDialog,
-	openCamera
+	openCamera,
+	editImage,
+	showImage
 ) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
@@ -671,6 +709,8 @@ const useSetupWidgetEventListeners = (
 			setTransactionFlow,
 			showRaiseIssueDialog,
 			openCamera,
+			editImage,
+			showImage,
 			widgetRef,
 		});
 		configurePolymer();

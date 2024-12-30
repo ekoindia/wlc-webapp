@@ -1,18 +1,11 @@
 {
-  "editor.detectIndentation": false,
-  "eslint.options": {
-    "overrideConfigFile": "../.eslintrc.json"
-  },
-  "eslint.run": "onSave",
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ],
+  "editor.detectIndentation": true,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
-	"source.fixAll.eslint": "explicit"
+	"source.fixAll.eslint": "explicit",
+  "source.addMissingImports.ts": "explicit",
+  "source.organizeImports": "explicit",
 },
 "typescript.tsdk": "node_modules\\typescript\\lib",
 "[json]": {
