@@ -255,6 +255,29 @@ export const fetchOrgDetails = async (host, force) => {
  * @param subdomain
  */
 const fetchOrgDetailsfromApi = async (domain, subdomain) => {
+	// Validate domain and subdomain
+	if (domain) {
+		// Test for valid domain name using URL object
+		try {
+			const parsed_hostname = new URL("https://" + domain).hostname;
+			if (!parsed_hostname.inclides(".")) {
+				domain = "";
+			}
+		} catch (_e) {
+			domain = "";
+		}
+	} else if (subdomain) {
+		// Test for valid subdomain: only alphanumeric characters with hyphen, dot or underscore allowed.
+		if (!/^[-a-z0-9\._]+$/i.test(subdomain)) {
+			subdomain = "";
+		}
+	}
+
+	if (!domain && !subdomain) {
+		console.error("Invalid (sub)domain: ", { domain, subdomain });
+		return null;
+	}
+
 	try {
 		const res = await fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL +

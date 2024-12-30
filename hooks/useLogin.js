@@ -115,6 +115,13 @@ function useLogin(login, setStep, setEmail) {
 			})
 			.catch((e) => {
 				console.error("Login Error:", e);
+				// TODO: Show toast message with server error (<Err object>.body.message - parse `body` from string to JSON)
+				toast({
+					title: "Login failed. Try again or contact support.",
+					status: "error",
+					duration: 5000,
+				});
+				setStep("LOGIN");
 			})
 			.finally(() => setBusy(false));
 	}
