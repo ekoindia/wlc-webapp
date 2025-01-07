@@ -250,12 +250,22 @@ function getSessions() {
  * @param {boolean} isAndroid - Is the user using the Android wrapper app?
  */
 function clearAuthTokens(isAndroid) {
+	console.log("Clearing all auth tokens from session storage.");
+
 	for (var i = 0; i < sessionStorage.length; i++) {
 		var key = sessionStorage.key(i);
 		if (key !== "org_detail") {
 			sessionStorage.removeItem(key);
 		}
 	}
+
+	// Manually clear session keys...
+	// This fixes a bug where session keys are not cleared in some cases in the previous step.
+	sessionStorage.removeItem("access_token");
+	sessionStorage.removeItem("refresh_token");
+	sessionStorage.removeItem("access_token_lite");
+	sessionStorage.removeItem("access_token_crm");
+	sessionStorage.removeItem("role_tx_list");
 
 	if (isAndroid) {
 		doAndroidAction(ANDROID_ACTION.CLEAR_REFRESH_TOKEN);
@@ -275,6 +285,9 @@ function revokeSession(user_id) {
 	}
 
 	const refresh_token = sessionStorage.getItem("refresh_token");
+
+	console.log("Revoking refresh token on backend: ", refresh_token);
+
 	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
 		body: {
 			user_id: user_id,
