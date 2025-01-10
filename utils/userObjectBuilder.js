@@ -34,7 +34,7 @@ export const buildUserObjectState = (data) => {
 		role_list,
 		agreementId,
 
-		userDetails: restDetails,
+		userDetails: { ...restDetails, role_list },
 		personalDetails: personal_details,
 		shopDetails: shop_details,
 		businessDetails: business_details,
