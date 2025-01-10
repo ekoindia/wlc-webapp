@@ -250,21 +250,22 @@ export const fetchOrgDetails = async (host, force) => {
 };
 
 /**
- * Fetch org details from the API (server-side only)
- * @param domain
- * @param subdomain
+ * Fetch org details from the API (server-side only) based on either domain or subdomain
+ * @param {string} domain - Domain name without protocol (e.g. example.com)
+ * @param {string} subdomain - Subdomain name without domain or protocol (e.g. subdomain)
  */
 const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 	// Validate domain and subdomain
 	if (domain) {
 		// Test for valid domain name using URL object
 		try {
-			const parsed_hostname = new URL("https://" + domain).hostname;
-			if (!parsed_hostname.inclides(".")) {
+			const parsedHostname = new URL("https://" + domain)?.hostname; // Add protocol for validation
+			if (!parsedHostname?.includes(".")) {
 				domain = "";
 			}
 		} catch (_e) {
 			domain = "";
+			console.error("Error validating domain: ", domain, _e);
 		}
 	} else if (subdomain) {
 		// Test for valid subdomain: only alphanumeric characters with hyphen, dot or underscore allowed.
