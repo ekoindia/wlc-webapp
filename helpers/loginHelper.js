@@ -4,6 +4,7 @@ import { fetcher } from "./apiHelper";
 
 /**
  * Verify OTP and get user details to login the user.
+ * MARK: Send OTP
  * @param {number} org_id	Organization ID
  * @param {number} number	User's mobile number
  * @param {Function} toast		Function to show toast messages
@@ -245,15 +246,26 @@ function getSessions() {
 
 /**
  * Clears all the auth tokens from the session storage.
- * @param isAndroid
+ * MARK: Clear Tokens
+ * @param {boolean} isAndroid - Is the user using the Android wrapper app?
  */
 function clearAuthTokens(isAndroid) {
+	console.log("Clearing all auth tokens from session storage.");
+
 	for (var i = 0; i < sessionStorage.length; i++) {
 		var key = sessionStorage.key(i);
 		if (key !== "org_detail") {
 			sessionStorage.removeItem(key);
 		}
 	}
+
+	// Manually clear session keys...
+	// This fixes a bug where session keys are not cleared in some cases in the previous step.
+	sessionStorage.removeItem("access_token");
+	sessionStorage.removeItem("refresh_token");
+	sessionStorage.removeItem("access_token_lite");
+	sessionStorage.removeItem("access_token_crm");
+	sessionStorage.removeItem("role_tx_list");
 
 	if (isAndroid) {
 		doAndroidAction(ANDROID_ACTION.CLEAR_REFRESH_TOKEN);
@@ -263,6 +275,7 @@ function clearAuthTokens(isAndroid) {
 
 /**
  * Revoke server-side refresh-token for this session. Used during logout.
+ * MARK: Revoke Token
  * @param {*} user_id	The User-ID of the user
  */
 function revokeSession(user_id) {
@@ -272,6 +285,9 @@ function revokeSession(user_id) {
 	}
 
 	const refresh_token = sessionStorage.getItem("refresh_token");
+
+	console.log("Revoking refresh token on backend: ", refresh_token);
+
 	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
 		body: {
 			user_id: user_id,
@@ -280,7 +296,7 @@ function revokeSession(user_id) {
 		timeout: 5000,
 	})
 		// .then((data) => console.log("REFRESH TOKEN REVOKED: ", data))
-		.catch((err) => console.log("Refresh Token Revoke Error: ", err));
+		.catch((err) => console.error("Refresh Token Revoke Error: ", err));
 }
 
 /**
@@ -399,16 +415,16 @@ const refreshUserProfile = (login, updateUserInfo, isAndroid = false) => {
 };
 
 export {
-	sendOtpRequest,
-	RemoveFormatted,
-	setandUpdateAuthTokens,
-	getAuthTokens,
 	clearAuthTokens,
-	revokeSession,
-	generateNewAccessToken,
-	getSessions,
 	createUserState,
-	setUserDetails,
+	generateNewAccessToken,
+	getAuthTokens,
+	getSessions,
 	getTokenExpiryTime,
 	loginUsingRefreshTokenAndroid,
+	RemoveFormatted,
+	revokeSession,
+	sendOtpRequest,
+	setandUpdateAuthTokens,
+	setUserDetails,
 };

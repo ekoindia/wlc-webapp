@@ -1,20 +1,17 @@
 const path = require("path");
+import remarkGfm from "remark-gfm";
 
 module.exports = {
 	stories: [
-		"../stories/**/*.stories.mdx",
+		"../stories/**/*.mdx",
 		"../stories/**/*.stories.@(js|jsx|ts|tsx)",
-		"../components/**/*.stories.mdx",
 		"../components/**/*.stories.@(js|jsx|ts|tsx)",
-		"../pages/**/*.stories.mdx",
 		"../pages/**/*.stories.@(js|jsx|ts|tsx)",
-		"../page-components/**/*.stories.mdx",
 		"../page-components/**/*.stories.@(js|jsx|ts|tsx)",
-		"../tf-components/**/*.stories.mdx",
 		"../tf-components/**/*.stories.@(js|jsx|ts|tsx)",
-		"../layout-components/**/*.stories.mdx",
 		"../layout-components/**/*.stories.@(js|jsx|ts|tsx)",
 	],
+
 	addons: [
 		"@storybook/addon-links",
 		"@storybook/addon-essentials",
@@ -42,18 +39,42 @@ module.exports = {
 		// 		},
 		// 	},
 		// },
+		{
+			name: "@storybook/addon-docs",
+			options: {
+				mdxPluginOptions: {
+					mdxCompileOptions: {
+						remarkPlugins: [remarkGfm],
+					},
+				},
+			},
+		},
+		"@storybook/addon-mdx-gfm",
+		"@chromatic-com/storybook",
 	],
+
 	features: {
 		emotionAlias: false,
 	},
-	framework: "@storybook/react",
-	core: {
-		builder: "@storybook/builder-webpack5",
+
+	framework: {
+		name: "@storybook/nextjs",
+		options: {},
 	},
+
 	staticDirs: ["../public"],
-	docs: {
-		autodocs: true,
+
+	docs: {},
+
+	core: {
+		disableTelemetry: true,
 	},
+
+	// typescript: {
+	// 	check: false,
+	// 	checkOptions: {},
+	// 	reactDocgen: false
+	// },
 	webpackFinal: async (config) => {
 		config.resolve.alias["components"] = path.resolve(
 			__dirname,
@@ -96,9 +117,4 @@ module.exports = {
 		});
 		return config;
 	},
-	// typescript: {
-	// 	check: false,
-	// 	checkOptions: {},
-	// 	reactDocgen: false
-	// },
 };
