@@ -259,12 +259,14 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 	if (domain) {
 		// Test for valid domain name using URL object
 		try {
-			const parsed_hostname = new URL("https://" + domain).hostname;
-			if (!parsed_hostname.inclides(".")) {
+			const cleanDomain = domain.replace(/^https?:\/\//, ""); // Strip protocol if present
+			const parsedHostname = new URL("https://" + cleanDomain)?.hostname; // Add protocol for validation
+			if (!parsedHostname?.includes(".")) {
 				domain = "";
 			}
 		} catch (_e) {
 			domain = "";
+			console.error("Error validating domain: ", domain, _e);
 		}
 	} else if (subdomain) {
 		// Test for valid subdomain: only alphanumeric characters with hyphen, dot or underscore allowed.
