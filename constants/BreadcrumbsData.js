@@ -9,13 +9,6 @@ export const MyNetworkBreadcrumbs = {
 	"/admin/my-network/profile/change-role": "Change Role",
 };
 
-export const TransactionHistoryBreadcrumbs = {
-	"/admin/transaction-history": "Transaction History",
-	"/admin/transaction-history/account-statement": "Account Statement",
-	"/admin/transaction-history/account-statement/detailed-statement":
-		"Detailed Statement",
-};
-
 export const NetworkTransactionHistoryBreadcrumbs = {
 	"/admin/network-transaction-history": "Network Transaction History",
 };
