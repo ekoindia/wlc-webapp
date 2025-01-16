@@ -1,11 +1,11 @@
 import { PaddingBox } from "components";
 // import Head from "next/head";
-import { History } from "page-components";
+import { TransactionHistory } from "page-components";
 
 const HistoryPage = () => {
 	return (
 		<PaddingBox>
-			<History />
+			<TransactionHistory />
 		</PaddingBox>
 	);
 };
