@@ -4,6 +4,7 @@ export { Configurations } from "./Configurations";
 export { Dashboard } from "./Dashboard";
 export { DetailedStatement } from "./DetailedStatement";
 export { Network } from "./Network";
+export { NetworkTransactionHistory } from "./NetworkTransactionHistory";
 export { NotificationCreator } from "./NotificationCreator";
 export { OnboardAgents } from "./OnboardAgents";
 export { ConfigPageCard, PricingForm } from "./PricingCommission";
