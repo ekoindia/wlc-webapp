@@ -45,9 +45,7 @@ const CompanyPane = ({ data }) => {
 	const { copy, state } = useClipboard();
 
 	const onViewAllTrxnClick = () => {
-		router.push(
-			`/admin/transaction-history/account-statement/detailed-statement?mobile=${mobile}`
-		);
+		router.push(`/admin/network-transaction-history?search=${mobile}`);
 	};
 
 	const companyDataList = [
