@@ -1,6 +1,8 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { business_setting_categories } from "constants";
-import { BusinessSettingsBreadcrumbs } from "constants/BreadcrumbsData";
+import {
+	business_setting_categories,
+	BusinessSettingsBreadcrumbs,
+} from "constants";
 import { ConfigPageCard } from "page-components/Admin";
 
 /**

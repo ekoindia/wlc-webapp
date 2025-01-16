@@ -1,5 +1,5 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { NetworkTransactionHistoryBreadcrumbs } from "constants/BreadcrumbsData";
+import { NetworkTransactionHistoryBreadcrumbs } from "constants";
 import { NetworkTransactionHistory } from "page-components/Admin";
 
 const NetworkTransactionHistoryPage = () => {

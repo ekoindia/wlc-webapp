@@ -1,5 +1,5 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { BusinessSettingsBreadcrumbs } from "constants/BreadcrumbsData";
+import { BusinessSettingsBreadcrumbs } from "constants";
 import { useRouter } from "next/router";
 import { PricingForm } from "page-components/Admin";
 
