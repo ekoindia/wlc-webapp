@@ -81,7 +81,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		id: 10,
 		label: "Network Transactions",
 		icon: "swap-horiz",
-		link: "/admin/transaction-history",
+		link: "/admin/network-transaction-history",
 	},
 	// {
 	// 	id: 15,

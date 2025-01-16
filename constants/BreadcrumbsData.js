@@ -16,6 +16,10 @@ export const TransactionHistoryBreadcrumbs = {
 		"Detailed Statement",
 };
 
+export const NetworkTransactionHistoryBreadcrumbs = {
+	"/admin/network-transaction-history": "Network Transaction History",
+};
+
 export const PricingCommissionBreadcrumbs = {
 	"/admin/pricing": "Pricing & Commissions",
 	"/admin/pricing/money-transfer": "Money Transfer",
