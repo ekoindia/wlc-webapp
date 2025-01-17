@@ -302,10 +302,11 @@ const History = ({ forNetwork = false }) => {
 				isNetworkTransactionHistory: forNetwork ? 1 : 0,
 				start_index: (currentPage - 1) * limit,
 				limit: limit,
-				account_id:
-					account_list &&
-					account_list.length > 0 &&
-					account_list[0].id
+				account_id: forNetwork
+					? null
+					: account_list &&
+						  account_list.length > 0 &&
+						  account_list[0].id
 						? account_list[0]?.id
 						: null,
 				...finalFormState,
