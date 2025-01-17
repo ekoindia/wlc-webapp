@@ -6,6 +6,9 @@
 
 import { Endpoints } from "constants/EndPoints";
 
+// The `response_type_id` if the organization is not found on the server
+const ORG_NOT_FOUND_RESPONSE_TYPE_ID = 1829;
+
 // Cache the org details on the server...
 const ORG_CACHE = {};
 
@@ -274,7 +277,7 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 		}
 	}
 
-	if (!domain && !subdomain) {
+	if (!(domain || subdomain)) {
 		console.error("Invalid (sub)domain: ", { domain, subdomain });
 		return null;
 	}
@@ -322,7 +325,7 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 		if (data?.data?.org_id) {
 			// Org details found
 			return data.data;
-		} else if (data?.response_type_id == 1829) {
+		} else if (data?.response_type_id == ORG_NOT_FOUND_RESPONSE_TYPE_ID) {
 			// Org details not found
 			console.debug(
 				"Org details not found on server: ",
