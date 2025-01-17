@@ -1,9 +1,11 @@
 import { Flex, Text } from "@chakra-ui/react";
+import { useMemo } from "react";
 import {
 	getAdditionalTransactionMetadata,
 	getHistoryTableProcessedData,
 	HistoryCard,
 	historyParametersMetadata,
+	networkHistoryParametersMetadata,
 	Table,
 } from ".";
 
@@ -15,7 +17,7 @@ import {
  * @param prop.tableRowLimit
  * @param prop.transactionList
  * @param prop.loading
- * @example	`<HistoryTable></HistoryTable>` TODO: Fix example
+ * @param prop.forNetwork
  */
 const HistoryTable = ({
 	pageNumber,
@@ -23,14 +25,26 @@ const HistoryTable = ({
 	tableRowLimit,
 	transactionList,
 	loading = false,
+	forNetwork = false,
 }) => {
-	const processedData = getHistoryTableProcessedData(transactionList);
+	const processedData = useMemo(
+		() => getHistoryTableProcessedData(transactionList),
+		[transactionList]
+	);
 
-	const { trxn_data, history_parameter_metadata } =
-		getAdditionalTransactionMetadata(
-			processedData,
-			historyParametersMetadata
-		);
+	// How many columns to show in the table (for self or network history)
+	const visibleColumns = forNetwork ? 4 : 6;
+
+	const { trxn_data, history_parameter_metadata } = useMemo(
+		() =>
+			getAdditionalTransactionMetadata(
+				processedData,
+				forNetwork
+					? networkHistoryParametersMetadata
+					: historyParametersMetadata
+			),
+		[processedData]
+	);
 
 	if (!loading && processedData?.length < 1) {
 		return (
@@ -47,7 +61,7 @@ const HistoryTable = ({
 			isLoading={loading}
 			pageNumber={pageNumber}
 			setPageNumber={setPageNumber}
-			visibleColumns={6}
+			visibleColumns={visibleColumns}
 			ResponsiveCard={HistoryCard}
 			tableRowLimit={tableRowLimit}
 		/>
