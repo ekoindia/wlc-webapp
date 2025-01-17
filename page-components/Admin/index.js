@@ -1,15 +1,12 @@
-export { AccountStatement } from "./AccountStatement";
 export { ChangeRole } from "./ChangeRole";
 export { Configurations } from "./Configurations";
 export { Dashboard } from "./Dashboard";
-export { DetailedStatement } from "./DetailedStatement";
 export { Network } from "./Network";
 export { NotificationCreator } from "./NotificationCreator";
 export { OnboardAgents } from "./OnboardAgents";
 export { ConfigPageCard, PricingForm } from "./PricingCommission";
 export { ProfilePanel } from "./ProfilePanel";
 export { QueryCenter } from "./QueryCenter";
-export { TransactionHistory } from "./TransactionHistory";
 export { UpdatePersonalInfo } from "./UpdatePersonalInfo";
 export { UpdateSellerAddress } from "./UpdateSellerAddress";
 export { UpdateSellerInfo } from "./UpdateSellerInfo";

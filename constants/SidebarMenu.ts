@@ -78,13 +78,6 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		link: "/admin/my-network",
 	},
 	{
-		// TODO: REMOVE THIS WITH RELATED COMPONENTS
-		id: 9,
-		label: "Network Transactions (Old)",
-		icon: "swap-horiz",
-		link: "/admin/transaction-history",
-	},
-	{
 		id: 10,
 		label: "Network Transactions",
 		icon: "swap-horiz",
