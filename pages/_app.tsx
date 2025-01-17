@@ -7,6 +7,7 @@ import {
 	CommissionSummaryProvider,
 	EarningSummaryProvider,
 	GlobalSearchProvider,
+	NetworkUsersProvider,
 	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
@@ -14,17 +15,14 @@ import {
 	TodoProvider,
 	UserProvider,
 	WalletProvider,
-	NetworkUsersProvider,
 } from "contexts";
 import { MenuProvider } from "contexts/MenuContext";
-import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
 import { Layout } from "layout-components";
 import App from "next/app";
 // import { Inter } from "next/font/google";
 import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import Head from "next/head";
-import { SWRConfig } from "swr";
 import { light } from "../styles/themes";
 
 // Variable Font
@@ -198,32 +196,25 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 								<MenuProvider>
 									<WalletProvider>
 										<RouteProtecter router={router}>
-											<SWRConfig
-												value={{
-													provider:
-														localStorageProvider,
-												}}
-											>
-												<PubSubProvider>
-													<NotificationProvider>
-														<EarningSummaryProvider>
-															<CommissionSummaryProvider>
-																<NetworkUsersProvider>
-																	<TodoProvider>
-																		<ErrorBoundary>
-																			{getLayout(
-																				<Component
-																					{...pageProps}
-																				/>
-																			)}
-																		</ErrorBoundary>
-																	</TodoProvider>
-																</NetworkUsersProvider>
-															</CommissionSummaryProvider>
-														</EarningSummaryProvider>
-													</NotificationProvider>
-												</PubSubProvider>
-											</SWRConfig>
+											<PubSubProvider>
+												<NotificationProvider>
+													<EarningSummaryProvider>
+														<CommissionSummaryProvider>
+															<NetworkUsersProvider>
+																<TodoProvider>
+																	<ErrorBoundary>
+																		{getLayout(
+																			<Component
+																				{...pageProps}
+																			/>
+																		)}
+																	</ErrorBoundary>
+																</TodoProvider>
+															</NetworkUsersProvider>
+														</CommissionSummaryProvider>
+													</EarningSummaryProvider>
+												</NotificationProvider>
+											</PubSubProvider>
 										</RouteProtecter>
 									</WalletProvider>
 								</MenuProvider>
