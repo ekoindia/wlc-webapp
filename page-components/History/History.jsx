@@ -465,7 +465,7 @@ const History = ({ forNetwork = false }) => {
 			setPrevSearch(search);
 			const prefix = isAdmin ? "/admin" : "";
 			const suffix = forNetwork ? "/network-statement" : "/history";
-			router.push(`${prefix}/${suffix}?search=${search}`, undefined, {
+			router.push(`${prefix}${suffix}?search=${search}`, undefined, {
 				shallow: true,
 			});
 		}
