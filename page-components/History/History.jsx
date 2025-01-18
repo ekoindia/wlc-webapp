@@ -452,7 +452,8 @@ const History = ({ forNetwork = false }) => {
 		});
 		setIsFiltered(false);
 		const prefix = isAdmin ? "/admin" : "";
-		router.push(`${prefix}/history`, undefined, {
+		const suffix = forNetwork ? "/network-statement" : "/history";
+		router.push(`${prefix}${suffix}`, undefined, {
 			shallow: true,
 		});
 	};
@@ -463,7 +464,8 @@ const History = ({ forNetwork = false }) => {
 			quickSearch(search);
 			setPrevSearch(search);
 			const prefix = isAdmin ? "/admin" : "";
-			router.push(`${prefix}/history?search=${search}`, undefined, {
+			const suffix = forNetwork ? "/network-statement" : "/history";
+			router.push(`${prefix}${suffix}?search=${search}`, undefined, {
 				shallow: true,
 			});
 		}
