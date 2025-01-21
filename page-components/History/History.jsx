@@ -165,15 +165,15 @@ const History = ({ forNetwork = false }) => {
 			...(forNetwork
 				? [
 						{
-							name: "csp_mobile",
+							name: "agent_mobile",
 							label: "Agent's Mobile No.",
 							parameter_type_id: ParamType.NUMERIC,
 							step: 1,
 							required: false,
 						},
 						{
-							name: "cspcode",
-							label: "Agent's UserCode",
+							name: "csp_code",
+							label: "Agent's Code",
 							parameter_type_id: ParamType.NUMERIC,
 							step: 1,
 							required: false,
