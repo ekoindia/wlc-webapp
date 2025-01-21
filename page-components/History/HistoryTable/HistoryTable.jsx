@@ -33,7 +33,7 @@ const HistoryTable = ({
 	);
 
 	// How many columns to show in the table (for self or network history)
-	const visibleColumns = forNetwork ? 4 : 6;
+	const visibleColumns = forNetwork ? 7 : 6;
 
 	const { trxn_data, history_parameter_metadata } = useMemo(
 		() =>

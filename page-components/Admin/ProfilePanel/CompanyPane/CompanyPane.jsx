@@ -45,7 +45,7 @@ const CompanyPane = ({ data }) => {
 	const { copy, state } = useClipboard();
 
 	const onViewAllTrxnClick = () => {
-		router.push(`/admin/network-statement?search=${mobile}`);
+		router.push(`/admin/network-statement?agent_mobile=${mobile}`);
 	};
 
 	const companyDataList = [
