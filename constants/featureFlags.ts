@@ -140,6 +140,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// Custom flag for enabling Real Time Network Transactions
+	NETWORK_STATEMENT: {
+		enabled: true,
+		forAdminOnly: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 59], // 59 =  MoneyBnk
+			},
+		},
+	},
+
 	// Theme selection from predefined themes (free tier)
 	THEME_PICKER: {
 		enabled: true,

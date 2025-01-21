@@ -81,6 +81,14 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		id: 10,
 		label: "Network Transactions",
 		icon: "swap-horiz",
+		link: "/admin/network-statement",
+		featureFlag: "NETWORK_STATEMENT",
+	},
+	{
+		// TODO: REMOVE THIS WITH RELATED COMPONENTS
+		id: 9,
+		label: "Network Statement (Old)",
+		icon: "swap-horiz",
 		link: "/admin/transaction-history",
 	},
 	// {
