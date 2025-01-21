@@ -399,7 +399,7 @@ export const historyParametersMetadata = [
 export const networkHistoryParametersMetadata = [
 	{
 		name: "agent_name",
-		label: "Agent Name",
+		label: "Agent",
 		sorting: true,
 		show: "Avatar",
 		parameter_type_id: 12,
@@ -561,6 +561,12 @@ export const networkHistoryParametersMetadata = [
 	{
 		name: "customer_mobile",
 		label: "Customer's Mobile",
+		parameter_type_id: 15,
+		// display_media_id: DisplayMedia.BOTH,
+	},
+	{
+		name: "agent_cell",
+		label: "Agent's Mobile No.",
 		parameter_type_id: 15,
 		// display_media_id: DisplayMedia.BOTH,
 	},
