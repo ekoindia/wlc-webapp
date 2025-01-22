@@ -514,12 +514,17 @@ const History = ({ forNetwork = false }) => {
 					TransactionTypes.DOWNLOAD_TRXN_HISTORY_REPORT,
 				start_index: 0,
 				limit: 50000,
-				account_id:
-					account_list &&
-					account_list.length > 0 &&
-					account_list[0].id
-						? account_list[0]?.id
-						: null,
+				isNetworkTransactionHistory: forNetwork ? 1 : 0,
+				...(forNetwork
+					? {}
+					: {
+							account_id:
+								account_list &&
+								account_list.length > 0 &&
+								account_list[0]?.id
+									? account_list[0].id
+									: null,
+						}),
 				..._finalFormState,
 			},
 			token: accessToken,
