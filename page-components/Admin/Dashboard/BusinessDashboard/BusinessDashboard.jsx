@@ -1,10 +1,9 @@
 import { Flex } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
-import { useSession } from "contexts";
-import { fetcher } from "helpers";
+import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
-import { EarningOverview, SuccessRate, TopMerchants, TopPanel } from ".";
-import { DashboardDateFilter } from "..";
+import { EarningOverview, SuccessRate, TopMerchants } from ".";
+import { DashboardDateFilter, TopPanel } from "..";
 
 /**
  * A <BusinessDashboard> component
@@ -15,9 +14,6 @@ import { DashboardDateFilter } from "..";
  */
 const BusinessDashboard = () => {
 	const [data, setData] = useState();
-	// const [isLoading, setIsLoading] = useState(true);
-	const { accessToken } = useSession();
-
 	const [dateRange, setDateRange] = useState(7);
 	const [prevDate, setPrevDate] = useState("");
 	const [currDate, setCurrDate] = useState("");
@@ -31,59 +27,86 @@ const BusinessDashboard = () => {
 		setPrevDate(previousDate.toISOString());
 	}, [dateRange]);
 
-	useEffect(() => {
-		console.log("[BusinessDashboard] fetch init...");
-
-		const controller = new AbortController();
-
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agents/businessdashboard",
-				"tf-req-method": "GET",
-			},
+	// MARK: Fetching Data
+	const [fetchBusinessDashboardData] = useApiFetch(
+		Endpoints.TRANSACTION_JSON,
+		{
 			body: {
-				dateFrom: prevDate.slice(0, 10),
-				dateTo: currDate.slice(0, 10),
-				dateRange: dateRange,
+				interaction_type_id: 682,
+				requestPayload: {
+					Top_panel: {
+						datefrom: prevDate.slice(0, 10),
+						dateto: currDate.slice(0, 10),
+					},
+					earning_overview: {
+						datefrom: prevDate.slice(0, 10),
+						dateto: currDate.slice(0, 10),
+						typeid: "81",
+					},
+					success_rate: {
+						datefrom: prevDate.slice(0, 10),
+						dateto: currDate.slice(0, 10),
+					},
+					gtv_top_merchants: {
+						datefrom: prevDate.slice(0, 10),
+						dateto: currDate.slice(0, 10),
+						typeid: "81",
+					},
+				},
 			},
-			controller: controller,
-			token: accessToken,
-		})
-			.then((data) => {
-				console.log("[BusinessDashboard] - fetch result...", data);
-				const _data = data?.data?.dashboard_details[0] || [];
+			onSuccess: (res) => {
+				const _data = res?.data?.dashboard_details[0] || [];
 				setData(_data);
-				// setIsLoading(false);
-			})
-			.catch((err) => {
-				console.error(`[BusinessDashboard] error: `, err);
-			});
+			},
+		}
+	);
 
-		return () => {
-			console.log("[BusinessDashboard] fetch aborted...", controller);
-			// setIsLoading(true);
-			controller.abort();
-		};
+	useEffect(() => {
+		if (prevDate && currDate) {
+			fetchBusinessDashboardData();
+		}
 	}, [currDate, prevDate]);
 
 	const { topPanel, earningOverview, topMerchants, successRate } = data || {};
 
+	const topPanelList = [
+		{
+			key: "activeRetailers",
+			label: "Active Retailers",
+			value: topPanel?.activeRetailers?.activeRetailers,
+			type: "number",
+			variation: topPanel?.activeRetailers?.increaseOrDecrease,
+			icon: "people",
+		},
+		{
+			key: "activeDistributors",
+			label: "Active Distributors",
+			value: topPanel?.activeDistributors?.activeDistributors,
+			type: "number",
+			variation: topPanel?.activeDistributors?.increaseOrDecrease,
+			icon: "refer",
+		},
+		{
+			key: "grossTransactionValue",
+			label: "GTV",
+			value: topPanel?.grossTransactionValue?.grossTransactionValue,
+			type: "amount",
+			variation: topPanel?.grossTransactionValue?.increaseOrDecrease,
+			icon: "rupee_bg",
+		},
+	];
+
 	return (
-		<Flex direction="column">
-			<Flex
-				bg={{ base: "white", md: "initial" }}
-				p={{ base: "10px 0px 30px 0px", md: "0px" }}
-				borderRadius="0px 0px 20px 20px"
-			>
-				<TopPanel data={topPanel} />
-			</Flex>
-			<Flex p="20px 20px 0px">
-				<DashboardDateFilter
-					{...{ prevDate, currDate, dateRange, setDateRange }}
-				/>
-			</Flex>
-			<Flex p="20px" gap="4" wrap="wrap">
+		<Flex
+			direction="column"
+			gap="4"
+			p={{ base: "0px 20px", md: "20px 0px" }}
+		>
+			<DashboardDateFilter
+				{...{ prevDate, currDate, dateRange, setDateRange }}
+			/>
+			<TopPanel {...{ topPanelList }} />
+			<Flex gap="4" wrap="wrap">
 				<Flex flex="2">
 					<EarningOverview data={earningOverview} />
 				</Flex>
@@ -91,11 +114,7 @@ const BusinessDashboard = () => {
 					<SuccessRate data={successRate} />
 				</Flex>
 			</Flex>
-			{topMerchants?.length > 0 ? (
-				<Flex p="0px 20px 20px">
-					<TopMerchants data={topMerchants} />
-				</Flex>
-			) : null}
+			<TopMerchants data={topMerchants} />
 		</Flex>
 	);
 };
