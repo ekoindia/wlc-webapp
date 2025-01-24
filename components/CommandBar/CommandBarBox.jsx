@@ -243,6 +243,7 @@ const getDynamicActions = ({
 				...getChatGptAgentAction({
 					queryValue,
 					org_id,
+					isAdmin,
 					userType,
 					toast,
 					copy,

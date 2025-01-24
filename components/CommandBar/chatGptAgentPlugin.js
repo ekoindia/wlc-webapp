@@ -1,9 +1,11 @@
+import { getChatGptAgentUrl } from "helpers";
 import { ActionImpl, Priority } from "kbar";
 import { RiChatAiLine } from "react-icons/ri";
 
 export const getChatGptAgentAction = ({
 	queryValue,
 	org_id,
+	isAdmin,
 	// userType,
 	toast,
 	copy,
@@ -12,11 +14,7 @@ export const getChatGptAgentAction = ({
 	// 	return [];
 	// }
 
-	let gptAgentUrl = null;
-	if (org_id === 287) {
-		// Eko Kiosk
-		gptAgentUrl = "g-6790d44389448191805b94259a16b196-eko-sbi-kiosk-helper";
-	}
+	const gptAgentUrl = getChatGptAgentUrl({ orgId: org_id, isAdmin });
 
 	if (!gptAgentUrl) {
 		return [];
@@ -32,7 +30,7 @@ export const getChatGptAgentAction = ({
 			copy(query);
 			toast({
 				title: "Opening ChatGPT...Just paste your query there!",
-				description: query,
+				// description: query,
 				status: "info",
 				position: "top",
 				duration: 4000,
@@ -43,10 +41,7 @@ export const getChatGptAgentAction = ({
 		setTimeout(
 			() => {
 				try {
-					window.open(
-						`https://chatgpt.com/g/g-6790d44389448191805b94259a16b196-eko-sbi-kiosk-helper/`,
-						"_blank"
-					);
+					window.open(gptAgentUrl, "_blank");
 				} catch (err) {
 					console.error("Error opening ChatGPT:", err);
 					toast({
