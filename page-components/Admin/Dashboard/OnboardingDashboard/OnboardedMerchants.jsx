@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Table } from "components";
 import { OnboardingDashboardCard } from ".";
 
@@ -60,9 +60,6 @@ const OnboardedMerchants = ({
 			borderRadius="10"
 			border="basic"
 		>
-			<Text fontSize="xl" fontWeight="semibold">
-				Onboarded Merchants
-			</Text>
 			<Table
 				renderer={renderer}
 				visibleColumns={5}
