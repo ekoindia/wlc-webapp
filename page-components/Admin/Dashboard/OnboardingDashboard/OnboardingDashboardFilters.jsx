@@ -28,9 +28,7 @@ const getModifiedFilterList = (data) => {
 
 	filterList[0]["status_ids"] = [...funnelKeyList];
 
-	const filterListLength = filterList?.length;
-
-	return { funnelKeyList, filterList, filterListLength };
+	return { funnelKeyList, filterList };
 };
 
 /**
@@ -52,8 +50,7 @@ const OnboardingDashboardFilters = ({
 }) => {
 	const [inFunnel, setInFunnel] = useState(false);
 
-	const { funnelKeyList, filterList, filterListLength } =
-		getModifiedFilterList(filterData);
+	const { funnelKeyList, filterList } = getModifiedFilterList(filterData);
 
 	const handleFilterStatusClick = (id, key) => {
 		if (id === 0) {
@@ -88,8 +85,10 @@ const OnboardingDashboardFilters = ({
 			direction="column"
 			bg={{ base: "none", md: "white" }}
 			borderRadius="10px"
+			p={{ base: "0px", md: "20px" }}
+			gap="2"
 		>
-			<Flex gap="2" p="20px">
+			<Flex gap="2">
 				<Icon name="filter" size="23px" />
 				<Text fontSize="md" fontWeight="semibold">
 					Filter using onboarding status
@@ -105,11 +104,9 @@ const OnboardingDashboardFilters = ({
 						height: "0px",
 					},
 					"&::-webkit-scrollbar-thumb": {
-						background: "#cbd5e0",
 						borderRadius: "0px",
 					},
 				}}
-				pb="20px"
 			>
 				{filterList?.map((item, index) => {
 					const isActive =
@@ -131,8 +128,7 @@ const OnboardingDashboardFilters = ({
 							borderRadius="10px"
 							minW={{ base: "135px", sm: "160px" }}
 							maxW="160px"
-							ml="20px"
-							mr={index === filterListLength - 1 ? "20px" : null}
+							ml={index === 0 ? "0px" : "20px"}
 							_hover={{ boxShadow: "basic" }}
 							onClick={() => {
 								handleFilterStatusClick(

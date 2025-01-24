@@ -1,10 +1,11 @@
 import { Flex } from "@chakra-ui/react";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
-import { fetcher } from "helpers";
+import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
 import { OnboardedMerchants, OnboardingDashboardFilters } from ".";
-import { DashboardDateFilter } from "..";
+import { DashboardDateFilter, TopPanel } from "..";
+
 /**
  * A OnboardingDashboard page-component
  * @param 	{object}	prop	Properties passed to the component
@@ -13,8 +14,6 @@ import { DashboardDateFilter } from "..";
  */
 const OnboardingDashboard = () => {
 	const [onboardingMerchantData, setOnboardingMerchantsData] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [filterLoading, setFilterLoading] = useState(true); //to handle filter skeleton
 	const [filterStatus, setFilterStatus] = useState([]);
 	const [filterData, setFilterData] = useState([]);
 	const [pageNumber, setPageNumber] = useState(1);
@@ -33,8 +32,9 @@ const OnboardingDashboard = () => {
 		setFilterStatus([]);
 	}, [dateRange]);
 
-	useEffect(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+	const [fetchOnboardingDashboardFilterData, filterLoading] = useApiFetch(
+		Endpoints.TRANSACTION,
+		{
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
 				"tf-req-uri":
@@ -46,26 +46,27 @@ const OnboardingDashboard = () => {
 				dateTo: currDate.slice(0, 10),
 			},
 			token: accessToken,
-		}).then((res) => {
-			const _onboardingFilterList = res?.data?.onboarding_funnel;
-			const _onboardingFunnelTotal = res?.data?.totalrecord;
-			setFilterData({
-				onboardingFunnelTotal: _onboardingFunnelTotal,
-				filterList: _onboardingFilterList,
-			});
-		});
-	}, [prevDate]);
+			onSuccess: (res) => {
+				const _onboardingFilterList = res?.data?.onboarding_funnel;
+				const _onboardingFunnelTotal = res?.data?.totalrecord;
+				setFilterData({
+					onboardingFunnelTotal: _onboardingFunnelTotal,
+					filterList: _onboardingFilterList,
+				});
+			},
+		}
+	);
 
 	useEffect(() => {
-		const controller = new AbortController();
+		if (prevDate) {
+			fetchOnboardingDashboardFilterData();
+		}
+	}, [prevDate]);
 
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri":
-					"/network/dashboard/onboarding/agent_funnel_details",
-				"tf-req-method": "GET",
-			},
+	const [fetchOnboardingDashboardData, isLoading] = useApiFetch(
+		Endpoints.TRANSACTION,
+		{
+			interaction_type_id: 682,
 			body: {
 				record_count: 10,
 				account_status: `${filterStatus}`,
@@ -73,60 +74,73 @@ const OnboardingDashboard = () => {
 				dateFrom: prevDate.slice(0, 10),
 				dateTo: currDate.slice(0, 10),
 			},
-			controller: controller,
-			token: accessToken,
-		})
-			.then((res) => {
+			onSuccess: (res) => {
 				const _data = res?.data?.onboarding_funnel || [];
 				const _totalRecords = res?.data?.totalRecords;
 				setOnboardingMerchantsData({
 					tableData: _data,
 					totalRecords: _totalRecords,
 				});
+			},
+		}
+	);
 
-				if (filterLoading) setFilterLoading(false);
-			})
-			.catch((err) => {
-				console.error(`[OnboardingDashboard] error: `, err);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-
-		return () => {
-			setIsLoading(true);
-			controller.abort();
-		};
+	useEffect(() => {
+		if (prevDate) {
+			fetchOnboardingDashboardData();
+		}
 	}, [filterStatus, pageNumber, prevDate]);
 
-	return (
-		<Flex direction="column">
-			<Flex p={{ base: "20px 20px 0", md: "0 20px 20px" }}>
-				<DashboardDateFilter
-					{...{ prevDate, currDate, dateRange, setDateRange }}
-				/>
-			</Flex>
+	const topPanel = {};
 
-			<Flex px={{ base: "0px", md: "20px" }}>
-				<OnboardingDashboardFilters
-					{...{
-						filterLoading,
-						filterData,
-						filterStatus,
-						setFilterStatus,
-					}}
-				/>
-			</Flex>
-			<Flex p="20px">
-				<OnboardedMerchants
-					{...{
-						onboardingMerchantData,
-						pageNumber,
-						setPageNumber,
-						isLoading,
-					}}
-				/>
-			</Flex>
+	const topPanelList = [
+		{
+			key: "totalRetailers",
+			label: " Retailers Onboarded",
+			value: topPanel?.totalRetailers?.totalRetailers,
+			type: "number",
+			variation: topPanel?.totalRetailers?.increaseOrDecrease,
+			icon: "people",
+		},
+		{
+			key: "totalDistributors",
+			label: "Distributors Onboarded",
+			value: topPanel?.totalDistributors?.totalDistributors,
+			type: "number",
+			variation: topPanel?.totalDistributors?.increaseOrDecrease,
+			icon: "refer",
+		},
+	];
+
+	return (
+		<Flex
+			direction="column"
+			gap="4"
+			p={{ base: "0px 20px", md: "20px 0px" }}
+		>
+			<DashboardDateFilter
+				{...{ prevDate, currDate, dateRange, setDateRange }}
+			/>
+
+			<TopPanel {...{ topPanelList }} />
+
+			<OnboardingDashboardFilters
+				{...{
+					filterLoading,
+					filterData,
+					filterStatus,
+					setFilterStatus,
+				}}
+			/>
+
+			<OnboardedMerchants
+				{...{
+					onboardingMerchantData,
+					pageNumber,
+					setPageNumber,
+					isLoading,
+				}}
+			/>
 		</Flex>
 	);
 };
