@@ -17,18 +17,22 @@ const MenuContext = createContext();
  * @returns {Promise<object>} The processed data.
  */
 const fetchData = async (accessToken) => {
-	const response = await fetcher(
-		`${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions/wlc`,
-		{
-			token: accessToken,
+	try {
+		const response = await fetcher(
+			`${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions/wlc`,
+			{
+				token: accessToken,
+			}
+		);
+
+		if (!response.length) {
+			throw new Error("Error fetching transaction list");
 		}
-	);
 
-	if (!response.length) {
-		throw new Error("No data received from the API");
+		return processTransactionData(response);
+	} catch (error) {
+		console.error("Error fetching transaction list:", error);
 	}
-
-	return processTransactionData(response);
 };
 
 const MenuProvider = ({ children }) => {

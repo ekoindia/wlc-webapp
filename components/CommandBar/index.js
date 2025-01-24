@@ -1,5 +1,6 @@
 export { default as ActionIcon } from "./ActionIcon";
 export { getCalculatorAction } from "./calculatorPlugin";
+export { getChatGptAgentAction } from "./chatGptAgentPlugin";
 export { default as CommandBarBox } from "./CommandBarBox";
 export { KBarLazyProvider, useKBarReady } from "./CommandBarContextLoader";
 export { defaultActions } from "./defaultActions";

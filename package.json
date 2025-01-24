@@ -37,12 +37,12 @@
 		"test-update-snapshots": "jest --updateSnapshot",
 		"check-updates": "npm-check -u",
 		"check-deps": "node check-deps.js",
-		"docker:dev": "docker-compose up dev",
-		"docker:prod": "docker-compose up prod",
-		"docker:dev:build": "docker-compose up dev --build",
-		"docker:prod:build": "docker-compose up prod --build",
-		"docker:stop": "docker-compose down",
-		"docker:clean": "docker-compose down -v --rmi all"
+		"docker:dev": "docker compose up dev",
+		"docker:prod": "docker compose up prod",
+		"docker:dev:build": "docker compose up dev --build",
+		"docker:prod:build": "docker compose up prod --build",
+		"docker:stop": "docker compose down",
+		"docker:clean": "docker compose down -v --rmi all"
 	},
 	"lint-staged": {
 		"**/*.{js,jsx,ts,tsx}": [
@@ -82,7 +82,7 @@
 		"react-complex-tree": "^2.4.5",
 		"react-dom": "^18.3.1",
 		"react-hook-form": "^7.44.3",
-		"react-icons": "^5.0.1",
+		"react-icons": "^5.4.0",
 		"react-image-crop": "^11.0.5",
 		"react-markdown": "^9.0.1",
 		"react-player": "^2.16.0",

@@ -11,6 +11,7 @@ interface ActionIconProps {
 	style?: string;
 	badgeColor?: string;
 	fontSize?: string;
+	IconComp?: React.ComponentType;
 }
 
 /**
@@ -28,6 +29,7 @@ interface ActionIconProps {
  * @param	{string}	prop.style	Style of the icon (filled, outline, or default).
  * @param	{string}	prop.badgeColor	Color of the badge. Badge is hidden, if the color is not provided.
  * @param prop.fontSize
+ * @param prop.IconComp
  */
 const ActionIcon: React.FC<ActionIconProps> = ({
 	icon = "",
@@ -39,10 +41,13 @@ const ActionIcon: React.FC<ActionIconProps> = ({
 	style = "default", // filled, outline, or default
 	badgeColor = "",
 	fontSize,
+	IconComp,
 }) => {
 	let bgColor, borderColor, borderWidth, icoColor;
 
-	if (ext_icon) {
+	if (IconComp) {
+		return <IconComp />;
+	} else if (ext_icon) {
 		bgColor = "white";
 		borderWidth = "0";
 	} else if (style === "filled") {
