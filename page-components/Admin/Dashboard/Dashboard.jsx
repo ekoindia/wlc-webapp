@@ -25,15 +25,16 @@ const Dashboard = () => {
 		<div>
 			<Flex
 				bg={{ base: "white", md: "none" }}
-				pb={{ base: currTab === 0 ? "0px" : "10px", md: "0px" }}
-				borderRadius={currTab === 0 ? "0px" : "0px 0px 20px 20px"}
+				mb={{ base: "20px", md: "0px" }}
+				pb={{ base: "10px", md: "0px" }}
+				borderRadius={{ base: "0px 0px 20px 20px", md: "none" }}
 			>
 				<Flex
 					direction={{ base: "column", md: "row" }}
 					align={{ base: "flex-start", md: "center" }}
 					gap={{ base: "2", md: "8" }}
 					w="100%"
-					m="20px"
+					m={{ base: "20px", md: "0px" }}
 					fontSize="sm"
 					justify="space-between"
 				>
