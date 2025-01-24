@@ -3,13 +3,12 @@ Dockerfile
 node_modules
 *.log
 *.BAK
-README.md
 docker
 .next
 .git
-.github
-.vscode
-.husky
+# .github
+# .vscode
+# .husky
 .storybook
 .swc
 .*rules
@@ -22,7 +21,7 @@ plopfile.js
 check-deps.js
 commitlint.config.js
 CONTRIBUTING.md
-docs
+# docs
 logs
 analyze
 certificates
