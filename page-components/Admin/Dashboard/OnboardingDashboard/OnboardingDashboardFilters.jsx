@@ -120,12 +120,12 @@ const OnboardingDashboardFilters = ({
 							justify="space-between"
 							bg="white"
 							p="10px 15px"
-							border={isActive ? "1px" : "basic"}
-							borderColor={isActive && "primary.light"}
+							border={isActive ? "2px" : "basic"}
+							borderColor={isActive ? "primary.light" : "none"}
 							boxShadow={
 								isActive ? "0px 3px 10px #1F5AA733" : null
 							}
-							borderRadius="10px"
+							borderRadius="12px"
 							minW={{ base: "135px", sm: "160px" }}
 							maxW="160px"
 							ml={index === 0 ? "0px" : "20px"}
@@ -138,8 +138,34 @@ const OnboardingDashboardFilters = ({
 							}}
 							cursor="pointer"
 							gap="2"
+							position="relative" // Enable relative positioning for the container
 						>
-							<Text fontSize="sm">{item.label}</Text>
+							{/* Radio Indicator */}
+							{isActive && (
+								<Flex
+									className="radio_indicator"
+									position="absolute" // Place in the top-right corner
+									top="4px"
+									right="4px"
+									w="20px"
+									h="20px"
+									border="2px solid var(--chakra-colors-primary-light)"
+									borderRadius="12px"
+									align="center"
+									justify="center"
+								>
+									<Flex
+										w="10px"
+										h="10px"
+										bg="primary.light"
+										borderRadius="6px"
+									></Flex>
+								</Flex>
+							)}
+
+							<Text fontSize="sm" w="90%">
+								{item.label}
+							</Text>
 							<Skeleton
 								isLoaded={!filterLoading}
 								w="40%"
