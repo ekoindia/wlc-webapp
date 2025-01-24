@@ -63,7 +63,7 @@ const TopMerchants = ({ data }) => {
 				justify="space-between"
 			>
 				<Text fontSize="xl" fontWeight="semibold">
-					GTV wise Top Merchants
+					GTV-wise Top Merchants
 				</Text>
 				{/* TODO: Need Pills */}
 			</Flex>
