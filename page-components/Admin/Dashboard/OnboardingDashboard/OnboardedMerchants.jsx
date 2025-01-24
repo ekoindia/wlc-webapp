@@ -2,6 +2,39 @@ import { Flex } from "@chakra-ui/react";
 import { Table } from "components";
 import { OnboardingDashboardCard } from ".";
 
+const onboarded_merchants_parameter_list = [
+	{
+		name: "name",
+		label: "Agents's Name",
+		sorting: true,
+		show: "Avatar",
+	},
+	{
+		name: "user_code",
+		label: "User Code",
+		sorting: true,
+	},
+	{
+		name: "location",
+		label: "Location",
+		sorting: true,
+	},
+	{
+		name: "business_type",
+		label: "Business Type",
+		sorting: true,
+	},
+	{ name: "onboardedOn", label: "Onboarded on", show: "Date" },
+	// { name: "businessDetailsCaptured", label: "Business Detail Captured" },
+	// { name: "businessName", label: "Business Name" },
+	// { name: "daysinFunnel", label: "Onboarding Funnel" },
+	// { name: "panCaptured", label: "PAN Captured" },
+	// { name: "aadhaarCaptured", label: "Aadhaar Captured" },
+	// { name: "agreementSigned", label: "Agreement Signed" },
+	// { name: "onboarded", label: "Onboarded" },
+	// { name: "transacting", label: "Non Transacting Live" },
+];
+
 /**
  * A OnboardedMerchants page-component
  * TODO: Write more description here
@@ -19,38 +52,6 @@ const OnboardedMerchants = ({
 	setPageNumber,
 	isLoading,
 }) => {
-	const renderer = [
-		{
-			name: "name",
-			label: "Merchant's Name",
-			sorting: true,
-			show: "Avatar",
-		},
-		{
-			name: "user_code",
-			label: "User Code",
-			sorting: true,
-		},
-		{
-			name: "location",
-			label: "Location",
-			sorting: true,
-		},
-		{
-			name: "business_type",
-			label: "Business Type",
-			sorting: true,
-		},
-		{ name: "onboardedOn", label: "Onboarded on", show: "Date" },
-		// { name: "businessDetailsCaptured", label: "Business Detail Captured" },
-		// { name: "businessName", label: "Business Name" },
-		// { name: "daysinFunnel", label: "Onboarding Funnel" },
-		// { name: "panCaptured", label: "PAN Captured" },
-		// { name: "aadhaarCaptured", label: "Aadhaar Captured" },
-		// { name: "agreementSigned", label: "Agreement Signed" },
-		// { name: "onboarded", label: "Onboarded" },
-		// { name: "transacting", label: "Non Transacting Live" },
-	];
 	return (
 		<Flex
 			direction="column"
@@ -61,7 +62,7 @@ const OnboardedMerchants = ({
 			border="basic"
 		>
 			<Table
-				renderer={renderer}
+				renderer={onboarded_merchants_parameter_list}
 				visibleColumns={5}
 				data={onboardingMerchantData?.tableData}
 				variant="stripedActionNone"
