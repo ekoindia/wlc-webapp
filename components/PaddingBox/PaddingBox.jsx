@@ -11,6 +11,7 @@ import { Box } from "@chakra-ui/react";
 const PaddingBox = ({ children, noSpacing = false, ...rest }) => {
 	return (
 		<Box
+			className="padding-box"
 			p={
 				!noSpacing
 					? {
