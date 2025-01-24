@@ -89,8 +89,8 @@ const OnboardingDashboardFilters = ({
 			gap="2"
 		>
 			<Flex gap="2">
-				<Icon name="filter" size="23px" />
-				<Text fontSize="md" fontWeight="semibold">
+				<Icon name="filter" size="sm" />
+				<Text fontSize="sm" fontWeight="semibold">
 					Filter By Onboarding Status
 				</Text>
 			</Flex>
