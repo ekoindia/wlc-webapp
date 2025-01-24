@@ -7,59 +7,25 @@ import { Currency, IcoButton, Icon } from "components";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @param prop.data
+ * @param prop._data
+ * @param prop.topPanelList
  * @example	`<TopPanel></TopPanel>`
  */
-const TopPanel = ({ data }) => {
-	const topPanelList = [
-		{
-			key: "totalDistributers",
-			label: "Distributors Onboarded",
-			value: data?.totalDistributors?.totalDistributors,
-			type: "number",
-			variation: data?.totalDistributors?.increaseOrDecrease,
-			icon: "refer",
-		},
-		{
-			key: "activeDistributers",
-			label: "Active Distributors",
-			value: data?.activeDistributors?.activeDistributors,
-			type: "number",
-			variation: data?.activeDistributors?.increaseOrDecrease,
-			icon: "people",
-		},
-		{
-			key: "grossTransactionValue",
-			label: "GTV",
-			value: data?.grossTransactionValue?.grossTransactionValue,
-			type: "amount",
-			variation: data?.grossTransactionValue?.increaseOrDecrease,
-			icon: "rupee_bg",
-		},
-		{
-			key: "raCases",
-			label: "Money Transfer RA Cases",
-			value: data?.raCases?.raCases,
-			type: "number",
-			variation: data?.raCases?.increaseOrDecrease,
-			icon: "percent_bg",
-		},
-	];
+const TopPanel = ({ topPanelList }) => {
+	if (!topPanelList?.length) return null;
 
-	const topPanelListLength = topPanelList.length;
 	return (
 		<Grid
 			w="100%"
 			templateColumns="repeat(4, 4fr)"
 			overflowX="auto"
-			pb={4}
 			css={{
 				"&::-webkit-scrollbar": {
-					width: "2px",
-					height: "2px",
+					width: "0px",
+					height: "0px",
 				},
 				"&::-webkit-scrollbar-thumb": {
-					background: "#cbd5e0",
-					borderRadius: "2px",
+					borderRadius: "0px",
 				},
 			}}
 		>
@@ -72,8 +38,7 @@ const TopPanel = ({ data }) => {
 					border="basic"
 					borderRadius="10px"
 					minW={{ base: "250px", sm: "300px" }}
-					ml="20px"
-					mr={index === topPanelListLength - 1 ? "20px" : null}
+					ml={index === 0 ? "0px" : "20px"}
 				>
 					<Flex direction="column" gap="1">
 						<Text fontSize="sm">{item.label}</Text>
