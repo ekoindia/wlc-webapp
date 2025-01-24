@@ -28,7 +28,7 @@ const SuccessRate = ({ data }) => {
 		<Flex
 			direction="column"
 			bg="white"
-			p="30px 20px"
+			p="20px 20px 30px"
 			borderRadius="10"
 			border="basic"
 			gap="3"
