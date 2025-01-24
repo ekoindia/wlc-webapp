@@ -99,6 +99,9 @@ export const light = extendTheme({
 			},
 		},
 		Text: {
+			baseStyle: {
+				userSelect: "none", // Apply userSelect: none globally to all Text components
+			},
 			variants: {
 				selectNone: {
 					userSelect: "none",
