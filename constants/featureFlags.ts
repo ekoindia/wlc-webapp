@@ -15,7 +15,9 @@ const ORG_ID = {
  * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
+	// ------------------------------------------------------------------------
 	// MARK: 🚩Dev Flags
+	// Put all in-development flags in this section.
 
 	// Custom theme support (paid tier)
 	CUSTOM_THEME_CREATOR: {
@@ -37,6 +39,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// ------------------------------------------------------------------------
 	// MARK: 🚩BETA Flags
+	// Put all UAT/Beta testing flags in this section.
 
 	// Feature to Raise Issues...
 	RAISE_ISSUE: {
@@ -121,8 +124,30 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// Custom flag for enabling Real Time Network Transactions for Admins
+	NETWORK_STATEMENT: {
+		enabled: true,
+		forAdminOnly: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS /*, 59*/], // 59 =  MoneyBnk
+			},
+		},
+	},
+
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
+	// Put all production flags (visible to all relevant users) in this section.
+
+	// ChatGPT agent for SBI Kiosk Agents...
+	CHATGPT_AGENT: {
+		enabled: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.SBIKIOSK, ...ORG_ID.EKOTESTS],
+			},
+		},
+	},
 
 	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
 	RAISE_ISSUE_SBIKIOSK: {
@@ -140,17 +165,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
-	// Custom flag for enabling Real Time Network Transactions
-	NETWORK_STATEMENT: {
-		enabled: true,
-		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS /*, 59*/], // 59 =  MoneyBnk
-			},
-		},
-	},
-
 	// Theme selection from predefined themes (free tier)
 	THEME_PICKER: {
 		enabled: true,
@@ -163,6 +177,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// ------------------------------------------------------------------------
 	// MARK: ⚠️Test-Only Flags
+	// Put all experimental or developer testing-only flags in this section.
 
 	// Face detector for images, videos, and live streams.
 	TEXT_CLASSIFIER: {

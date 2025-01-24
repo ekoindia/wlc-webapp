@@ -6,8 +6,13 @@ import {
 	useBreakpointValue,
 	useToast,
 } from "@chakra-ui/react";
-import { useSession, useTodos } from "contexts";
-import { useClipboard, useDebouncedState, useHotkey } from "hooks";
+import { useOrgDetailContext, useSession, useTodos } from "contexts";
+import {
+	useClipboard,
+	useDebouncedState,
+	useFeatureFlag,
+	useHotkey,
+} from "hooks";
 import {
 	KBarAnimator,
 	KBarPortal,
@@ -21,6 +26,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
 	getCalculatorAction,
+	getChatGptAgentAction,
 	getHistorySearchActions,
 	getNotesAction,
 	ResultItem,
@@ -168,6 +174,8 @@ function Key({ children, ...rest }) {
  * @param {string} Options.queryValue - The query value to be used to generate dynamic actions.
  * @param {string} Options.current - The KBar result currentRootActionId.
  * @param {boolean} Options.isAdmin - Whether the current user is an admin or not.
+ * @param {number} Options.userType - The user-type-id of the current user.
+ * @param {number} Options.org_id - The org_id of the current user.
  * @param {object} Options.router - The Next.js router object.
  * @param {Function} Options.addTodo - The function to be used to add a new todo.
  * @param {Function} Options.copy - The function to be used to copy text to clipboard.
@@ -176,11 +184,14 @@ function Key({ children, ...rest }) {
  * @param {Function} Options.setParse - The function to be used to load and set the parse function dynamically.
  * @param {string} Options.parseLoadState - The state of the dynamically-loaded parse function.
  * @param {Function} Options.setParseLoadState - The function to be used to set the parseLoadState.
+ * @param {boolean} Options.isChatGptAgentAllowed - Whether ChatGPT agent is allowed or not.
  */
 const getDynamicActions = ({
 	queryValue,
 	current,
 	isAdmin,
+	userType,
+	org_id,
 	router,
 	addTodo,
 	copy,
@@ -189,6 +200,7 @@ const getDynamicActions = ({
 	setParse,
 	parseLoadState,
 	setParseLoadState,
+	isChatGptAgentAllowed,
 	// showRaiseIssueDialog,
 }) => {
 	const preActions = [];
@@ -217,12 +229,26 @@ const getDynamicActions = ({
 		// Other actions...
 
 		// Add History Search actions...
-		const historyActions = getHistorySearchActions({
-			queryValue,
-			router,
-			isAdmin,
-		});
-		preActions.push(...historyActions);
+		preActions.push(
+			...getHistorySearchActions({
+				queryValue,
+				router,
+				isAdmin,
+			})
+		);
+
+		// Add ChatGPT agent action...
+		if (isChatGptAgentAllowed) {
+			preActions.push(
+				...getChatGptAgentAction({
+					queryValue,
+					org_id,
+					userType,
+					toast,
+					copy,
+				})
+			);
+		}
 
 		// Add Notes/Todo action...
 		if (!isAdmin) {
@@ -262,9 +288,11 @@ function RenderResults({ className, isSmallScreen }) {
 		current: state.currentRootActionId,
 		queryValue: state.searchQuery,
 	}));
-	const { isLoggedIn, isAdmin } = useSession();
+	const { isLoggedIn, isAdmin, userType } = useSession();
+	const { orgDetail } = useOrgDetailContext();
 	const { addTodo } = useTodos();
 	const router = useRouter();
+	const org_id = orgDetail?.org_id;
 
 	const [parse, setParse] = useState(null);
 	const [parseLoadState, setParseLoadState] = useState("");
@@ -281,6 +309,8 @@ function RenderResults({ className, isSmallScreen }) {
 		1000
 	);
 
+	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT");
+
 	// const { showRaiseIssueDialog } = useRaiseIssue();
 
 	useEffect(() => {
@@ -295,6 +325,8 @@ function RenderResults({ className, isSmallScreen }) {
 			queryValue: queryValueDebounced,
 			current,
 			isAdmin,
+			userType,
+			org_id,
 			router,
 			addTodo,
 			copy,
@@ -303,11 +335,22 @@ function RenderResults({ className, isSmallScreen }) {
 			setParse,
 			parseLoadState,
 			setParseLoadState,
+			isChatGptAgentAllowed,
 			// showRaiseIssueDialog,
 		});
 		setPreActions(_preActions);
 		setPostActions(_postActions);
-	}, [queryValueDebounced, current, isAdmin, router, addTodo, parse]);
+	}, [
+		queryValueDebounced,
+		current,
+		isAdmin,
+		userType,
+		org_id,
+		router,
+		addTodo,
+		parse,
+		isChatGptAgentAllowed,
+	]);
 
 	if (!isLoggedIn) {
 		return null;

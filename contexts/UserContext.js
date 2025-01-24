@@ -162,6 +162,7 @@ const UserProvider = ({ userMockData, children }) => {
 	const isOnboarding =
 		state?.onboarding == 1 || state?.userId == "1" ? true : false;
 
+	// MARK: useUser()
 	const userContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
@@ -190,6 +191,7 @@ const UserProvider = ({ userMockData, children }) => {
 		};
 	}, [state, isLoggedIn, loading, isTokenUpdating, isAdmin, refreshUser]);
 
+	// MARK: useSession()
 	const sessionContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
