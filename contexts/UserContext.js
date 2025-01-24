@@ -208,6 +208,7 @@ const UserProvider = ({ userMockData, children }) => {
 			loading,
 			setLoading,
 			refreshUser,
+			logout,
 		};
 	}, [
 		isLoggedIn,
@@ -221,6 +222,7 @@ const UserProvider = ({ userMockData, children }) => {
 		isOnboarding,
 		loading,
 		refreshUser,
+		logout,
 	]);
 
 	return (
