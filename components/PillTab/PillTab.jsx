@@ -29,7 +29,7 @@ const PillTab = ({ list, currTab, onClick, ...rest }) => {
 	return (
 		<Flex
 			p="0.5"
-			gap="4"
+			gap={{ base: "0", md: "4" }}
 			w="100%"
 			h={{ base: "36px", md: "40px" }}
 			bg={{ base: "divider", md: "inherit" }}
