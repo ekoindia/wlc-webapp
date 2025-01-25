@@ -8,11 +8,6 @@ import {
 	Flex,
 	Text,
 	useToken,
-	// Drawer,
-	// DrawerContent,
-	// DrawerOverlay,
-	// Tooltip,
-	// useBreakpointValue,
 } from "@chakra-ui/react";
 import { Endpoints, UserType } from "constants";
 import { useUser } from "contexts";
@@ -139,7 +134,22 @@ const SideBar = () => {
 
 export default SideBar;
 
-//FOR LAPTOP SCREENS
+/**
+ * Sidebar Menu with status card, profile card, and navigation menu items.
+ * This is shown on larger screens.
+ * MARK: SideBarMenu
+ * @param {object} props
+ * @param {object} props.userData - The user data object
+ * @param {Array} props.menuList - List of fixed menu items
+ * @param {Array} props.trxnList - List of "transactions" submenu items
+ * @param {Array} props.otherList - List of "other" submenu items
+ * @param {object} props.router - Next.js router object
+ * @param {boolean} props.isAdmin - Flag to check if user is an admin
+ * @param {boolean} props.isAdminAgentMode - Flag to check if user is in admin-agent mode
+ * @param {number} props.openIndex - The index of the open accordion menu
+ * @param {Function} props.setOpenIndex - Function to set the open accordion menu index
+ * @returns {JSX.Element} A sidebar menu component
+ */
 const SideBarMenu = ({
 	userData,
 	menuList,
@@ -227,6 +237,9 @@ const SideBarMenu = ({
 					)}
 				</Box>
 				{/* {rest.children} */}
+
+				{/* Extra padding at the bottom */}
+				<Box h="100px" />
 			</Flex>
 		</Box>
 	);
@@ -261,6 +274,7 @@ const SideBarMenu = ({
 
 /**
  * Transaction Submenu Section for non-admin users
+ * MARK: AccordianMenu
  * @param trxnList.trxnList
  * @param {Array} trxnList - List of "transactions" submenu items
  * @param {Array} otherList - List of "other" submenu items
