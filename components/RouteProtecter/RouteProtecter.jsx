@@ -16,8 +16,7 @@ const isBrowser = typeof window !== "undefined";
  * TODO: To protect the private routes and give access to route according to user role.
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.router]	Router is passed from _app.js
- * @param	{string}	[prop.children]	Children is also passed from _app.js
- * @example	`<RouteProtecter></RouteProtecter>`
+ * @param	{object}	[prop.children]	Children of the component
  */
 const RouteProtecter = ({ router, children }) => {
 	const {
