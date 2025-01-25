@@ -9,6 +9,8 @@ import {
 import { useSession } from "contexts/UserContext";
 import { useEffect, useState } from "react";
 
+const isBrowser = typeof window !== "undefined";
+
 /**
  * A <RouteProtecter> component
  * TODO: To protect the private routes and give access to route according to user role.
@@ -17,9 +19,6 @@ import { useEffect, useState } from "react";
  * @param	{string}	[prop.children]	Children is also passed from _app.js
  * @example	`<RouteProtecter></RouteProtecter>`
  */
-
-const isBrowser = typeof window !== "undefined";
-
 const RouteProtecter = ({ router, children }) => {
 	const {
 		isLoggedIn,
@@ -30,6 +29,8 @@ const RouteProtecter = ({ router, children }) => {
 		loading,
 		setLoading,
 	} = useSession();
+
+	// Flag to check if the user is authorized to access the route
 	const [authorized, setAuthorized] = useState(false);
 
 	const role = isAdmin ? "admin" : "non-admin";
@@ -46,11 +47,14 @@ const RouteProtecter = ({ router, children }) => {
 		loading: loading,
 	});
 
+	/**
+	 * On every route & login-status change, check if the user is authorized to access the route...
+	 */
 	useEffect(() => {
-		const path = router.pathname;
-		const fullPath = router.asPath;
-		let isAuthorized = authorized;
-		const pathStart = path.split("/")[1];
+		const path = router.pathname; // Pathname of the route. Eg: /transaction/[id]
+		const fullPath = router.asPath; // Full pathname + query params as shown in browser. Eg: /transaction/123?name=John
+		let isAuthorized = authorized; // Local flag to check if the user is authorized to access the route
+		const pathStart = path.split("/")[1]; // First part of the path. Eg: transaction
 
 		console.log("%c[RouteProtecter] ROUTE UPDATED:\n", "color:green", {
 			asPath: router.asPath,
@@ -71,7 +75,8 @@ const RouteProtecter = ({ router, children }) => {
 		else if (!isLoggedIn && !loading) {
 			// MARK: LoggedOut
 			console.log("[RouteProtecter] ::::nonLogged user::::");
-			// This condition will redirect to initial path if the route is inaccessible
+
+			// Redirect to initial path if the route is inaccessible
 			if (
 				!(
 					publicOnlyLinks.includes(path) ||

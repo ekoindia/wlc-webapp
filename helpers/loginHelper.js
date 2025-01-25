@@ -80,9 +80,9 @@ async function sendOtpRequest(
 	return success;
 }
 
-// TODO: Use proper Input component that returns only unformatted input and make this redundent
 /**
- *
+ * Remove all non-numeric characters from the input string.
+ * TODO: Use proper Input component that returns only unformatted input and make this redundent
  * @param number
  */
 function RemoveFormatted(number) {
