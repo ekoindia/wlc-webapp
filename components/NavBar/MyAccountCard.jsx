@@ -348,7 +348,11 @@ const MyAccountCard = ({ onClose }) => {
 					align="center"
 					color="error"
 				>
-					<Flex py="3" align="center" onClick={logout}>
+					<Flex
+						py="3"
+						align="center"
+						onClick={() => logout({ isForced: true })}
+					>
 						<Icon name="logout" size="sm" mr="2" />
 						<Text fontWeight="medium">Logout</Text>
 					</Flex>

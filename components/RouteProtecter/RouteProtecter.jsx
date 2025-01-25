@@ -34,7 +34,7 @@ const RouteProtecter = ({ router, children }) => {
 
 	const role = isAdmin ? "admin" : "non-admin";
 
-	console.log("%cRoute-Protecter: Start\n", "color:green", {
+	console.log("%c[RouteProtecter] Start\n", "color:green", {
 		// pathname: router.pathname,
 		asPath: router.asPath,
 		// query: router.query,
@@ -48,10 +48,11 @@ const RouteProtecter = ({ router, children }) => {
 
 	useEffect(() => {
 		const path = router.pathname;
+		const fullPath = router.asPath;
 		let isAuthorized = authorized;
 		const pathStart = path.split("/")[1];
 
-		console.log("%cRoute-Protecter: ROUTE UPDATED:\n", "color:green", {
+		console.log("%c[RouteProtecter] ROUTE UPDATED:\n", "color:green", {
 			asPath: router.asPath,
 			path: path,
 			pathStart: pathStart,
@@ -68,7 +69,8 @@ const RouteProtecter = ({ router, children }) => {
 		}
 		// when the user is isLoggedIn and loading is false
 		else if (!isLoggedIn && !loading) {
-			console.log("::::nonLogged user::::");
+			// MARK: LoggedOut
+			console.log("[RouteProtecter] ::::nonLogged user::::");
 			// This condition will redirect to initial path if the route is inaccessible
 			if (
 				!(
@@ -77,66 +79,116 @@ const RouteProtecter = ({ router, children }) => {
 					publicSections?.includes(pathStart)
 				)
 			) {
-				router.push("/");
+				// Add the URL-encoded original path to the redirect query parameter
+				if (
+					path &&
+					path !== "/" &&
+					path !== "/home" &&
+					path !== "/admin"
+				) {
+					// If the user has forced-loggedout, do not store the original path for later redirection
+					const forcedLogout =
+						sessionStorage.getItem("inf-forced-logout");
+					if (forcedLogout === "1") {
+						sessionStorage.removeItem("inf-forced-logout");
+						router.push("/");
+						return;
+					}
+
+					// Otherwise, store the original path for later redirection after login
+					router.push(`/?next=${encodeURIComponent(fullPath)}`);
+				} else {
+					router.push("/");
+				}
 				return;
 			}
 			//setLoading(false);
 			//setAuthorized(true);
 			if (authorized) setAuthorized(false);
 			isAuthorized = false;
-		} else if (isLoggedIn && (userId === "1" || isOnboarding === true)) {
-			console.log("::::Enter in Onboarding::::", path, userId);
-			if (path !== "/signup" && path !== "/redirect") {
-				// Goto onboarding page if user is not on onboarding page
-				router.replace("/signup");
-				return;
-			}
-			setLoading(false);
-			setAuthorized(true);
-			isAuthorized = true;
-		} else if (isLoggedIn && role === "admin") {
-			console.log("::::Enter in Admin::::", path, isAdminAgentMode);
+		} else if (isLoggedIn) {
+			// Read the "next" query parameter to redirect the user after login
+			const _next = router.query?.next;
 
-			// This condition will redirect to initial path if the route is inaccessible after login
-			if (
-				publicOnlyLinks.includes(path) ||
-				!path.includes(baseRoute[role])
-			) {
-				// if (!path.startsWith("/admin/")) {
-				// 	router.replace("/admin" + path);
-				// } else {
-				router.replace(initialRoute[role]);
-				// }
-				return;
-			}
-
-			// Handle Agent-View for admins...update homepage to the correct view
-			if (isAdminAgentMode) {
-				if (path === "/admin") {
-					// Re-route Admin to Agent Home Page
-					router.replace("/admin/home");
+			if (userId === "1" || isOnboarding === true) {
+				// MARK: Onboarding
+				console.log(
+					"[RouteProtecter] ::::Onboarding::::",
+					path,
+					userId
+				);
+				if (path !== "/signup" && path !== "/redirect") {
+					// Goto onboarding page if user is not on onboarding page
+					router.replace("/signup");
 					return;
 				}
-			} else {
-				if (path === "/admin/home") {
-					router.replace("/admin");
+				setLoading(false);
+				setAuthorized(true);
+				isAuthorized = true;
+			} else if (role === "admin") {
+				// MARK: Admin
+				console.log(
+					"[RouteProtecter] ::::Logged-in as Admin::::",
+					path,
+					isAdminAgentMode
+				);
+
+				// Redirect to initial path if the route is inaccessible after login
+				if (
+					publicOnlyLinks.includes(path) ||
+					!path.includes(baseRoute[role])
+				) {
+					// Redirect to the "next" query parameter if it exists.
+					// If it does not start with the baseRoute, then redirect to the initialRoute.
+					if (_next && _next.startsWith(baseRoute[role])) {
+						router.replace(_next);
+						return;
+					}
+
+					// Redirect to the initialRoute
+					router.replace(initialRoute[role]);
 					return;
 				}
-			}
 
-			setLoading(false);
-			setAuthorized(true);
-			isAuthorized = true;
-		} else if (isLoggedIn && role === "non-admin") {
-			console.log("::::Enter in nonAdmin::::", path);
-			// Above condition will check, publicLink contain path or path contain "/admin"
-			if (publicOnlyLinks.includes(path) || path.includes("/admin")) {
-				router.replace(initialRoute[role]);
-				return;
+				// Handle Agent-View for admins...update homepage to the correct view
+				if (isAdminAgentMode) {
+					if (path === "/admin") {
+						// Re-route Admin to Agent Home Page
+						router.replace("/admin/home");
+						return;
+					}
+				} else {
+					if (path === "/admin/home") {
+						router.replace("/admin");
+						return;
+					}
+				}
+
+				setLoading(false);
+				setAuthorized(true);
+				isAuthorized = true;
+			} else if (role === "non-admin") {
+				// MARK: Non-Admin
+				console.log(
+					"[RouteProtecter] ::::Logged-in as nonAdmin::::",
+					path
+				);
+				// If the current path is public-only (not for logged-in users),
+				// or, if it contains "/admin", then redirect to the initial path
+				if (publicOnlyLinks.includes(path) || path.includes("/admin")) {
+					// Redirect to the "next" query parameter if it exists.
+					if (_next) {
+						router.replace(_next);
+						return;
+					}
+
+					router.replace(initialRoute[role]);
+					return;
+				}
+				setLoading(false);
+				setAuthorized(true);
+				isAuthorized = true;
 			}
-			setLoading(false);
-			setAuthorized(true);
-			isAuthorized = true;
 		}
 
 		// Cache the last route (if it is not the Login route)...
@@ -172,7 +224,7 @@ const RouteProtecter = ({ router, children }) => {
 		);
 	}
 
-	console.log("%cRoute-Protecter: End", "color:green");
+	console.log("%c[RouteProtecter] End", "color:green");
 
 	return <>{children}</>;
 };

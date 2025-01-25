@@ -43,7 +43,7 @@ export const getDefaultActions = ({ logout }) => {
 			section: "System",
 			priority: 0,
 			parent: "systemsettings",
-			perform: logout,
+			perform: () => logout({ isForced: true }),
 		});
 	}
 
