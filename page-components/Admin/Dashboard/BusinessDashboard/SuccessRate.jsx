@@ -15,7 +15,7 @@ const SuccessRate = ({ data }) => {
 		{ key: "aepsCashout", label: "AePS Cashout", value: data?.aepsCashout },
 		{
 			key: "aepsMiniStatement",
-			label: "AePS mini statement",
+			label: "AePS Mini Statement",
 			value: data?.aepsMiniStatement,
 		},
 		{
@@ -39,24 +39,14 @@ const SuccessRate = ({ data }) => {
 			</Text>
 			<Divider />
 			<Stack divider={<Divider />}>
-				{successRateList?.map(
-					(item) =>
-						item.value && (
-							<Flex
-								justify="space-between"
-								fontSize="sm"
-								key={item.key}
-							>
-								<Text whiteSpace="nowrap">{item.label}</Text>
-								<Text
-									fontWeight="semibold"
-									color="primary.DEFAULT"
-								>
-									{item.value}%
-								</Text>
-							</Flex>
-						)
-				)}
+				{successRateList?.map((item) => (
+					<Flex justify="space-between" fontSize="sm" key={item.key}>
+						<Text whiteSpace="nowrap">{item.label}</Text>
+						<Text fontWeight="semibold" color="primary.DEFAULT">
+							{item.value}%
+						</Text>
+					</Flex>
+				))}
 			</Stack>
 		</Flex>
 	);

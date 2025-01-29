@@ -1,5 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Table } from "components";
+import { PillTab, Table } from "components";
 
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
@@ -45,9 +45,13 @@ const topMerchantsTableParameterList = [
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @param prop.data
+ * @param prop.filterList
+ * @param prop.filters
+ * @param prop.onFilterChange
+ * @param prop.currTab
  * @example	`<TopMerchants></TopMerchants>`
  */
-const TopMerchants = ({ data }) => {
+const TopMerchants = ({ data, filters, currTab, onFilterChange }) => {
 	return (
 		<Flex
 			direction="column"
@@ -61,11 +65,18 @@ const TopMerchants = ({ data }) => {
 			<Flex
 				direction={{ base: "column", md: "row" }}
 				justify="space-between"
+				align="center"
+				gap={{ base: "2", md: "4" }}
+				w="100%"
 			>
 				<Text fontSize="xl" fontWeight="semibold">
 					GTV-wise Top Merchants
 				</Text>
-				{/* TODO: Need Pills */}
+				<Flex w={{ base: "100%", md: "auto" }}>
+					<PillTab
+						{...{ list: filters, currTab, onClick: onFilterChange }}
+					/>
+				</Flex>
 			</Flex>
 			<Table
 				{...{

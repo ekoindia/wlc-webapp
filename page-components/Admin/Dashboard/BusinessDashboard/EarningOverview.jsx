@@ -1,5 +1,5 @@
 import { Divider, Flex, Grid, Text } from "@chakra-ui/react";
-import { Currency, Icon } from "components";
+import { Currency, Icon, PillTab } from "components";
 
 /**
  * A EarningOverview page-component
@@ -7,9 +7,12 @@ import { Currency, Icon } from "components";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @param prop.data
+ * @param prop.filters
+ * @param prop.onFilterChange
+ * @param prop.currTab
  * @example	`<EarningOverview></EarningOverview>`
  */
-const EarningOverview = ({ data }) => {
+const EarningOverview = ({ data, filters, currTab, onFilterChange }) => {
 	const earningOverviewList = [
 		{
 			key: "gtv",
@@ -81,11 +84,18 @@ const EarningOverview = ({ data }) => {
 			<Flex
 				direction={{ base: "column", md: "row" }}
 				justify="space-between"
+				align="center"
+				gap={{ base: "2", md: "4" }}
+				w="100%"
 			>
 				<Text fontSize="xl" fontWeight="semibold">
 					Earning Overview
 				</Text>
-				{/* TODO: Need Pills */}
+				<Flex w={{ base: "100%", md: "auto" }}>
+					<PillTab
+						{...{ list: filters, currTab, onClick: onFilterChange }}
+					/>
+				</Flex>
 			</Flex>
 			<Divider display={{ base: "none", md: "block" }} />
 			<Flex h="100%" w="100%" align="center">
