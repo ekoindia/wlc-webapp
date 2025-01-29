@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
+import { useEffect, useState } from "react";
 
 /**
  * Hook for fetching data from the Eloka internal APIs (using the fetcher utility). It's a wrapper around the fetcher utility which automatically takes care of token refresh and other common API-related tasks.
@@ -85,7 +85,12 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 	 * @param {number} [options.timeout] - The timeout (in milliseconds) for the fetch request.
 	 * @param {string} [options.token] - The access token to be used for the fetch request. The `access_token_lite` is used by default.
 	 * @param {boolean} [options.isMultipart] - Flag to indicate if the request is a multipart form data request. Defaults to `false`.
-	 * @returns {object} An object containing the fetched data, and any error information: { data, error, aborted, errorObject }
+	 * @returns {object} An object containing the fetched data, and any error information: { data, error, aborted, timedout, errorObject }
+	 * - `data` is the fetched data (if successful).
+	 * - `error` is `true` if there was an error.
+	 * - `aborted` is `true` if the request was aborted using the cancelFetch() function.
+	 * - `timedout` is `true` if the request timed out.
+	 * - `errorObject` contains the Error object (if any).
 	 */
 	const fetchApiData = async ({
 		url_endpoint,
@@ -148,9 +153,14 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 				request: requestSummary,
 			};
 
-			// If the request was aborted, return null
+			// Was the request was aborted?
 			if (err.name === "AbortError") {
 				errResponse.aborted = true;
+			}
+
+			// Did the request time-out?
+			if (err.name === "TimeoutError") {
+				errResponse.timedout = true;
 			}
 
 			console.error("[useApiFetch] Error: ", errResponse);
