@@ -10,6 +10,11 @@ const onboarded_merchants_parameter_list = [
 		show: "Avatar",
 	},
 	{
+		name: "mobile",
+		label: "Mobile No.",
+		sorting: true,
+	},
+	{
 		name: "user_code",
 		label: "User Code",
 		sorting: true,
@@ -25,14 +30,6 @@ const onboarded_merchants_parameter_list = [
 		sorting: true,
 	},
 	{ name: "onboardedOn", label: "Onboarded on", show: "Date" },
-	// { name: "businessDetailsCaptured", label: "Business Detail Captured" },
-	// { name: "businessName", label: "Business Name" },
-	// { name: "daysinFunnel", label: "Onboarding Funnel" },
-	// { name: "panCaptured", label: "PAN Captured" },
-	// { name: "aadhaarCaptured", label: "Aadhaar Captured" },
-	// { name: "agreementSigned", label: "Agreement Signed" },
-	// { name: "onboarded", label: "Onboarded" },
-	// { name: "transacting", label: "Non Transacting Live" },
 ];
 
 /**
@@ -63,7 +60,7 @@ const OnboardedMerchants = ({
 		>
 			<Table
 				renderer={onboarded_merchants_parameter_list}
-				visibleColumns={5}
+				visibleColumns={6}
 				data={onboardingMerchantData?.tableData}
 				variant="stripedActionNone"
 				ResponsiveCard={OnboardingDashboardCard}
