@@ -5,7 +5,7 @@ import { Flex } from "@chakra-ui/react";
  * @returns {Array}
  */
 const getProcessedList = (list) => {
-	return list.map((item, index) => {
+	return list?.map((item, index) => {
 		return {
 			...item,
 			_id: index,
