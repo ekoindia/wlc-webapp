@@ -12,7 +12,9 @@ export type BottomAppBarItem = {
 	path?: string;
 	action?: () => void;
 	component?: () => JSX.Element;
-	visible: boolean;
+	visible: boolean; // Is this item visible?
+	disabled?: boolean; // Is this item disabled?
+	hideInSideBar?: boolean; // Is this item hidden in Compact SideBar Mode?
 };
 
 /**
@@ -25,11 +27,18 @@ export type BottomAppBarItem = {
  * - `path`: A string that defines the navigation path of the item. If the user is an admin, the path is prefixed with "/admin".
  * - `action`: A function that is executed when the item is clicked. For the "search" item, this function toggles the command bar.
  * - `component`: A function that returns a JSX element."
+ * - `visible`: A boolean that determines if the item is visible in the bottom bar.
+ * - `disabled`: A boolean that determines if the item is disabled.
+ * - `hideInSideBar`: A boolean that determines if the item is hidden in the compact side-bar mode.
  *
  * The function uses the `useUser`, `useKBar`, and `useKBarReady` hooks to get the necessary data and functions.
+ * @param root0
+ * @param root0.isSideBarMode
  * @returns {Array<BottomAppBarItem>} The array of bottom bar items.
  */
-export const useBottomAppBarItems = (): BottomAppBarItem[] => {
+export const useBottomAppBarItems = ({
+	isSideBarMode = false,
+} = {}): BottomAppBarItem[] => {
 	const { isAdmin, isAdminAgentMode } = useUser();
 	const { query } = useKBar();
 	const { ready } = useKBarReady();
@@ -38,7 +47,7 @@ export const useBottomAppBarItems = (): BottomAppBarItem[] => {
 	return [
 		{
 			name: "dashboard",
-			label: "Dasboard",
+			label: "Dashboard",
 			icon: "dashboard",
 			path: "/admin",
 			visible: isAdmin ? !isAdminAgentMode : isAdminAgentMode,
@@ -59,18 +68,24 @@ export const useBottomAppBarItems = (): BottomAppBarItem[] => {
 				ready && query.toggle();
 			},
 			visible: true,
+			disabled: !ready,
+			hideInSideBar: true,
 		},
 		{
 			name: "transaction",
-			component: Transactions, // bottom bar transaction drawer
+			component: Transactions.bind(null, {
+				isSideBarMode,
+			}), // bottom bar "Transactions" drawer
 			visible:
 				trxnList &&
 				trxnList.length > 0 &&
 				(isAdmin !== true || isAdminAgentMode),
 		},
 		{
-			name: "account",
-			component: More,
+			name: "more",
+			component: More.bind(null, {
+				isSideBarMode,
+			}), // bottom bar "More" drawer
 			visible: true,
 		},
 	];

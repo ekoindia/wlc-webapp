@@ -9,9 +9,11 @@ import {
 	Text,
 	useToken,
 } from "@chakra-ui/react";
+import { useBottomAppBarItems } from "components/BottomAppBar";
 import { Endpoints, UserType } from "constants";
 import { useUser } from "contexts";
-import { useNavigationLists } from "hooks";
+import { useFeatureFlag, useLocalStorage, useNavigationLists } from "hooks";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -22,6 +24,14 @@ import {
 	ProfileCard,
 	StatusCard,
 } from "..";
+
+// Lazy-load the BottomAppBar component (for icon-only compact side-bar view)
+const BottomAppBar = dynamic(
+	() => import("components/BottomAppBar").then((pkg) => pkg.BottomAppBar),
+	{
+		ssr: false,
+	}
+);
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.
@@ -43,6 +53,7 @@ const isCurrentRoute = (routerUrl, path) => {
 
 /**
  * Sidebar to show the left-hand navigation menu
+ * MARK: SideBar
  * @returns {JSX.Element} A sidebar component
  */
 const SideBar = () => {
@@ -163,84 +174,149 @@ const SideBarMenu = ({
 }) => {
 	// Get theme color values
 	const [contrast_color] = useToken("colors", ["sidebar.dark"]);
+
+	// Feature-Flag for Compact-Mode
+	const [isCompactSidebarEnabled] = useFeatureFlag("COMPACT_SIDEBAR");
+
+	// Compact Mode Setting
+	const [isCompactView, setIsCompactView] = useLocalStorage(
+		"inf-compactsidebar",
+		false,
+		{
+			dontStoreInitialValue: true,
+		}
+	);
+
+	// Get the bottom-bar items (for compact side-bar view)
+	const bottomAppBarItems = useBottomAppBarItems({ isSideBarMode: true });
+
 	const showOtherListAsMainList =
 		isAdmin !== true && trxnList?.length === 0 && otherList?.length > 0;
+
+	// if (isCompactView) {
+	// 	return <BottomAppBar items={bottomAppBarItems} isSideBarMode={true} />;
+	// }
 
 	return (
 		<Box
 			className="sidebar"
-			w={{
-				// base: "full",
-				// sm: "55vw",
-				// md: "13.5vw",
-				// lg: "225px",
-				// xl: "250px",
-				// "2xl": "250px",
-				base: "250px",
-			}}
+			position="relative"
+			w={
+				isCompactView
+					? "80px"
+					: {
+							// base: "full",
+							// sm: "55vw",
+							// md: "13.5vw",
+							// lg: "225px",
+							// xl: "250px",
+							// "2xl": "250px",
+							base: "250px",
+						}
+			}
 			bg="sidebar.bg" // ORIG_THEME: primary.DEFAULT
 			color="sidebar.text" // ORIG_THEME: "white"
 			height={"100%"}
+			py={isCompactView ? "20px" : 0}
 			backgroundImage={svgBgDotted({
 				fill: contrast_color,
 			})}
 			overflowY="auto"
 		>
-			<Flex direction="column">
-				<Box borderRight="12px" height={"100%"} w={"100%"}>
-					{/* Show user-profile card and wallet balance for agents (non-admin users) */}
-					{!isAdmin && (
-						<Link href={Endpoints.USER_PROFILE}>
-							<ProfileCard
-								name={userData?.userDetails?.name}
-								mobileNumber={userData?.userDetails?.mobile}
-								img={userData?.userDetails?.pic}
-								cursor="pointer"
-							/>
-						</Link>
-					)}
-
-					{/* {isAdmin && <AdminViewToggleCard />} */}
-
-					<StatusCard />
-
-					{/* Fixed menu items */}
-					{menuList?.map((menu) => (
-						<LinkMenuItem
-							key={menu.id || menu.name || menu.label}
-							menu={menu}
-							isAdminAgentMode={isAdminAgentMode}
-						/>
-					))}
-
-					{/* Others menu items as fixed items (if normal) */}
-					{showOtherListAsMainList
-						? otherList?.map((menu) => (
-								<LinkMenuItem
-									key={menu.id || menu.label}
-									menu={menu}
-									isAdminAgentMode={isAdminAgentMode}
+			{isCompactSidebarEnabled && isCompactView ? (
+				<BottomAppBar items={bottomAppBarItems} isSideBarMode={true} />
+			) : (
+				<Flex direction="column">
+					<Box borderRight="12px" height={"100%"} w={"100%"}>
+						{/* Show user-profile card and wallet balance for agents (non-admin users) */}
+						{!isAdmin && (
+							<Link href={Endpoints.USER_PROFILE}>
+								<ProfileCard
+									name={userData?.userDetails?.name}
+									mobileNumber={userData?.userDetails?.mobile}
+									img={userData?.userDetails?.pic}
+									cursor="pointer"
 								/>
-							))
-						: null}
+							</Link>
+						)}
 
-					{/* Dynamic menu items */}
-					{showOtherListAsMainList ? null : (
-						<AccordionMenu
-							trxnList={trxnList}
-							otherList={otherList}
-							router={router}
-							isAdmin={isAdmin}
-							openIndex={openIndex}
-							setOpenIndex={setOpenIndex}
-						/>
-					)}
-				</Box>
-				{/* {rest.children} */}
+						{/* {isAdmin && <AdminViewToggleCard />} */}
 
-				{/* Extra padding at the bottom */}
-				<Box h="100px" />
-			</Flex>
+						<StatusCard />
+
+						{/* Fixed menu items */}
+						{menuList?.map((menu) => (
+							<LinkMenuItem
+								key={menu.id || menu.name || menu.label}
+								menu={menu}
+								isAdminAgentMode={isAdminAgentMode}
+							/>
+						))}
+
+						{/* Others menu items as fixed items (if normal) */}
+						{showOtherListAsMainList
+							? otherList?.map((menu) => (
+									<LinkMenuItem
+										key={menu.id || menu.label}
+										menu={menu}
+										isAdminAgentMode={isAdminAgentMode}
+									/>
+								))
+							: null}
+
+						{/* Dynamic menu items */}
+						{showOtherListAsMainList ? null : (
+							<AccordionMenu
+								trxnList={trxnList}
+								otherList={otherList}
+								router={router}
+								isAdmin={isAdmin}
+								openIndex={openIndex}
+								setOpenIndex={setOpenIndex}
+							/>
+						)}
+					</Box>
+					{/* {rest.children} */}
+
+					{/* Extra padding at the bottom */}
+					<Box h="100px" />
+				</Flex>
+			)}
+
+			{/* Button to toggle Compact-View for Sidebar */}
+			{isCompactSidebarEnabled ? (
+				<Flex
+					position="fixed"
+					align="center"
+					justify="center"
+					bottom="0"
+					left="0"
+					w="35px"
+					h="35px"
+					borderRadius="0 99px 99px 0"
+					bg="white"
+					color="primary.DEFAULT"
+					cursor="pointer"
+					boxShadow="base"
+					opacity="0.8"
+					area-label={
+						isCompactView ? "Expand Sidebar" : "Collapse Sidebar"
+					}
+					onClick={() =>
+						isCompactSidebarEnabled &&
+						setIsCompactView(!isCompactView)
+					}
+				>
+					<Icon
+						name="chevron-left"
+						transform={
+							isCompactView ? "rotate(180deg)" : "rotate(0)"
+						}
+						transition="transform 0.2s ease-out"
+						size="xs"
+					/>
+				</Flex>
+			) : null}
 		</Box>
 	);
 };
@@ -280,11 +356,14 @@ const SideBarMenu = ({
  * @param {Array} otherList - List of "other" submenu items
  * @param {object} router - Next.js router object
  * @param {boolean} isAdmin - Flag to check if user is an admin
+ * @param {number} openIndex - The index of the open accordion menu
+ * @param {Function} setOpenIndex - Function to set the open accordion menu index
  * @param trxnList.otherList
  * @param trxnList.router
  * @param trxnList.isAdmin
  * @param trxnList.openIndex
  * @param trxnList.setOpenIndex
+ * @returns {JSX.Element} An accordion menu component
  */
 const AccordionMenu = ({
 	trxnList = [],
@@ -339,6 +418,17 @@ const AccordionMenu = ({
 	);
 };
 
+/**
+ * An expandable section with a list of menu items
+ * MARK: Section
+ * @param {string} title - The title of the section
+ * @param {string} icon - The icon name of the section
+ * @param {Array} menuItems - The list of menu items
+ * @param {object} router - Next.js router object
+ * @param {boolean} expanded - If the section is expanded
+ * @param {boolean} isAdmin - If the user is an admin
+ * @returns {JSX.Element} An accordion section component
+ */
 const AccordionSubMenuSection = ({
 	title,
 	icon,
@@ -488,6 +578,12 @@ const AccordionSubMenuSection = ({
 	);
 };
 
+/**
+ * MARK: Link Item
+ * @param root0
+ * @param root0.menu
+ * @param root0.isAdminAgentMode
+ */
 const LinkMenuItem = ({
 	menu,
 	/* currentRoute, */
