@@ -1,5 +1,5 @@
 import { FeatureFlags, FeatureFlagType } from "constants/featureFlags";
-import { useSession, useOrgDetailContext } from "contexts";
+import { useOrgDetailContext, useSession } from "contexts";
 import { useCallback, useEffect, useState } from "react";
 
 /**
@@ -19,6 +19,11 @@ const useFeatureFlag = (featureName: string) => {
 	 */
 	const checkFeatureFlag = useCallback(
 		(customFeatureName: string) => {
+			if (!customFeatureName) {
+				console.error("Feature name not provided:", customFeatureName);
+				return false;
+			}
+
 			const feature: FeatureFlagType = FeatureFlags[customFeatureName];
 
 			// If feature is not defined, return false.
@@ -115,6 +120,9 @@ const useFeatureFlag = (featureName: string) => {
 	 * Check if the default feature (passed to the hook) is enabled based on the conditions defined in the featureFlags.
 	 */
 	useEffect(() => {
+		if (!featureName) {
+			return;
+		}
 		setAllowed(checkFeatureFlag(featureName));
 	}, [featureName, checkFeatureFlag]);
 
