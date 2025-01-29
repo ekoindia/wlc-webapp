@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { useApiFetch } from "hooks";
@@ -21,6 +21,7 @@ const OnboardingDashboard = () => {
 	const [dateRange, setDateRange] = useState(7);
 	const [prevDate, setPrevDate] = useState("");
 	const [currDate, setCurrDate] = useState("");
+	const [topPanelData, setTopPanelData] = useState([]);
 
 	useEffect(() => {
 		let currentDate = new Date();
@@ -32,23 +33,43 @@ const OnboardingDashboard = () => {
 		setFilterStatus([]);
 	}, [dateRange]);
 
+	const [fetchOnboardingDashboardTopPanelData] = useApiFetch(
+		Endpoints.TRANSACTION_JSON,
+		{
+			body: {
+				interaction_type_id: 817,
+				requestPayload: {
+					Top_panel: {
+						datefrom: prevDate.slice(0, 10),
+						dateto: currDate.slice(0, 10),
+					},
+				},
+			},
+			onSuccess: (res) => {
+				const _data = res?.data?.onboarding_funnel[0] || [];
+				setTopPanelData(_data);
+			},
+		}
+	);
+
+	useEffect(() => {
+		if (prevDate) {
+			fetchOnboardingDashboardTopPanelData();
+		}
+	}, [currDate, prevDate]);
+
 	const [fetchOnboardingDashboardFilterData, filterLoading] = useApiFetch(
 		Endpoints.TRANSACTION,
 		{
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri":
-					"/network/dashboard/onboarding/agent_funnel_summary",
-				"tf-req-method": "GET",
-			},
 			body: {
+				interaction_type_id: 683,
 				dateFrom: prevDate.slice(0, 10),
 				dateTo: currDate.slice(0, 10),
 			},
 			token: accessToken,
 			onSuccess: (res) => {
 				const _onboardingFilterList = res?.data?.onboarding_funnel;
-				const _onboardingFunnelTotal = res?.data?.totalrecord;
+				const _onboardingFunnelTotal = res?.data?.totalRecords;
 				setFilterData({
 					onboardingFunnelTotal: _onboardingFunnelTotal,
 					filterList: _onboardingFilterList,
@@ -61,13 +82,13 @@ const OnboardingDashboard = () => {
 		if (prevDate) {
 			fetchOnboardingDashboardFilterData();
 		}
-	}, [prevDate]);
+	}, [prevDate, currDate]);
 
 	const [fetchOnboardingDashboardData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION,
 		{
-			interaction_type_id: 682,
 			body: {
+				interaction_type_id: 727,
 				record_count: 10,
 				account_status: `${filterStatus}`,
 				page_number: pageNumber,
@@ -91,23 +112,21 @@ const OnboardingDashboard = () => {
 		}
 	}, [filterStatus, pageNumber, prevDate]);
 
-	const topPanel = {};
-
 	const topPanelList = [
 		{
 			key: "totalRetailers",
 			label: " Retailers Onboarded",
-			value: topPanel?.totalRetailers?.totalRetailers,
+			value: topPanelData?.totalRetailers?.totalRetailers,
 			type: "number",
-			variation: topPanel?.totalRetailers?.increaseOrDecrease,
+			variation: topPanelData?.totalRetailers?.increaseOrDecrease,
 			icon: "people",
 		},
 		{
 			key: "totalDistributors",
 			label: "Distributors Onboarded",
-			value: topPanel?.totalDistributors?.totalDistributors,
+			value: topPanelData?.totalDistributors?.totalDistributors,
 			type: "number",
-			variation: topPanel?.totalDistributors?.increaseOrDecrease,
+			variation: topPanelData?.totalDistributors?.increaseOrDecrease,
 			icon: "refer",
 		},
 	];
@@ -124,6 +143,9 @@ const OnboardingDashboard = () => {
 
 			<TopPanel {...{ topPanelList }} />
 
+			<Text fontSize="xl" fontWeight="semibold">
+				Onboarding Agents
+			</Text>
 			<OnboardingDashboardFilters
 				{...{
 					filterLoading,
