@@ -104,8 +104,8 @@ const Icon = ({
 			w={_size}
 			h={_size}
 			minW={_size}
-			{...rest}
 			transition="color 0.3s ease-out, background 0.3s ease-out"
+			{...rest}
 		>
 			<chakra.svg
 				style={{ width: "100%", height: "100%" }}
