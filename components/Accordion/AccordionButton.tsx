@@ -9,6 +9,7 @@ type AccordionButtonProps = {
 	iconName?: IconNameType;
 	iconSize?: "lg" | "md" | "sm" | "xs" | string;
 	iconColor?: string;
+	iconStyle?: object;
 	handleOpenIndexes?: () => void; // Making this optional to avoid typescript error as this being passed from AccordionItem internally.
 	[key: string]: any; // rest
 };
@@ -21,6 +22,7 @@ type AccordionButtonProps = {
  * @param {IconNameType} [props.iconName] - The name of the icon to display.
  * @param {string} [props.iconSize] - The size of the icon.
  * @param {string} [props.iconColor] - The color of the icon.
+ * @param {object} [props.iconStyle] - The style of the icon.
  * @param {() => void} [props.handleOpenIndexes] - Callback function to handle the toggling of the accordion item's expanded state.
  * @param {...object} props.rest - A catch-all prop that allows any other prop to be passed in.
  * @returns {JSX.Element} The AccordionButton component.
@@ -31,6 +33,7 @@ const AccordionButton = ({
 	iconName = "expand-more",
 	iconSize = "sm",
 	iconColor = "light",
+	iconStyle,
 	handleOpenIndexes,
 	...rest
 }: AccordionButtonProps): JSX.Element => {
@@ -50,6 +53,7 @@ const AccordionButton = ({
 				style={{
 					// transform: isExpanded ? "rotate(-180deg)" : "rotate(0deg)",
 					transition: "transform 0.1s ease-in-out",
+					...iconStyle,
 				}}
 			/>
 		</Flex>
