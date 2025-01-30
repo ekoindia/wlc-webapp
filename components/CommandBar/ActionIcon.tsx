@@ -1,5 +1,6 @@
 import { Circle, Image } from "@chakra-ui/react";
 import { Icon } from "components";
+import { ReactNode } from "react";
 
 interface ActionIconProps {
 	icon?: string;
@@ -11,7 +12,7 @@ interface ActionIconProps {
 	style?: string;
 	badgeColor?: string;
 	fontSize?: string;
-	IconComp?: React.ComponentType;
+	IconComp?: ReactNode;
 }
 
 /**
@@ -28,8 +29,8 @@ interface ActionIconProps {
  * @param	{string}	prop.color	Color of the icon.
  * @param	{string}	prop.style	Style of the icon (filled, outline, or default).
  * @param	{string}	prop.badgeColor	Color of the badge. Badge is hidden, if the color is not provided.
- * @param prop.fontSize
- * @param prop.IconComp
+ * @param	{string}	prop.fontSize	Font size of the icon.
+ * @param	{ReactNode}	prop.IconComp	Component to show as icon.
  */
 const ActionIcon: React.FC<ActionIconProps> = ({
 	icon = "",
@@ -46,7 +47,8 @@ const ActionIcon: React.FC<ActionIconProps> = ({
 	let bgColor, borderColor, borderWidth, icoColor;
 
 	if (IconComp) {
-		return <IconComp />;
+		bgColor = "transparent";
+		borderWidth = "0";
 	} else if (ext_icon) {
 		bgColor = "white";
 		borderWidth = "0";
@@ -79,7 +81,9 @@ const ActionIcon: React.FC<ActionIconProps> = ({
 			fontWeight="500"
 			overflow={ext_icon ? "hidden" : "visible"}
 		>
-			{ext_icon ? (
+			{IconComp ? (
+				<>{IconComp}</>
+			) : ext_icon ? (
 				<Image
 					src={fixLogoPath(ext_icon)}
 					alt={name}

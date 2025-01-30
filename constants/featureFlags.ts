@@ -37,6 +37,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
+	// Custom Flag for collapsable(compact) Sidebar (Left-Menu)
+	COMPACT_SIDEBAR: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// ------------------------------------------------------------------------
 	// MARK: 🚩BETA Flags
 	// Put all UAT/Beta testing flags in this section.
@@ -130,7 +136,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS /*, 59*/], // 59 =  MoneyBnk
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 59], // 59 =  MoneyBnk
 			},
 		},
 	},

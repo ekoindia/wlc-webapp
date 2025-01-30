@@ -1,9 +1,9 @@
 import { Box, Flex, Text, useDisclosure } from "@chakra-ui/react";
+import { AccordionMenu, Icon, StatusCard } from "components";
 import { useUser } from "contexts/UserContext";
 import { useNavigationLists } from "hooks";
 import { useRef } from "react";
-import { useAccordionMenuConverter } from ".";
-import { AccordionMenu, Drawer, Icon, StatusCard } from "..";
+import { BottomAppBarDrawer, useAccordionMenuConverter } from ".";
 
 // Ignore both home & dashboard in more option as it is already visible
 const IGNORE_LIST = [1, 8];
@@ -41,10 +41,17 @@ const attachLinkToMenuItems = (list: any[], isAdmin: boolean): any[] => {
 	});
 };
 
+interface ButtonProps {
+	isSideBarMode?: boolean;
+}
+
 /**
  * The More component renders a button that opens a drawer containing additional menu items.
+ * @param {object} props - The props of the component.
+ * @param {string} [props.placement] - The placement of the drawer.
+ * @param props.isSideBarMode
  */
-const More = () => {
+const More = ({ isSideBarMode = false }: ButtonProps) => {
 	const btnRef = useRef<HTMLButtonElement>(null);
 	const { isAdmin } = useUser();
 
@@ -64,6 +71,7 @@ const More = () => {
 	const list = useAccordionMenuConverter(combinedList);
 
 	const onMenuItemClick = () => onClose();
+
 	return (
 		<>
 			<Flex
@@ -75,7 +83,7 @@ const More = () => {
 				justify="center"
 				onClick={onOpen}
 			>
-				<Icon ref={btnRef} name="others" size="sm" color="light" />
+				<Icon ref={btnRef} name="others" size="sm" />
 				<Text
 					fontSize="10px"
 					fontWeight="medium"
@@ -85,20 +93,20 @@ const More = () => {
 					More
 				</Text>
 			</Flex>
-			<Drawer
+			<BottomAppBarDrawer
 				id="more-drawer"
 				title="More"
 				isOpen={isOpen}
 				onOpen={onOpen}
 				onClose={onClose}
-				isFullHeight={false}
+				isSideBarMode={isSideBarMode}
 				finalFocusRef={btnRef}
 			>
 				<Box bg="primary.DEFAULT">
 					<StatusCard onLoadBalanceClick={() => onClose()} />
 				</Box>
 				<AccordionMenu {...{ list, onMenuItemClick }} />
-			</Drawer>
+			</BottomAppBarDrawer>
 		</>
 	);
 };

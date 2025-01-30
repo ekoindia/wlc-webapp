@@ -80,9 +80,9 @@ async function sendOtpRequest(
 	return success;
 }
 
-// TODO: Use proper Input component that returns only unformatted input and make this redundent
 /**
- *
+ * Remove all non-numeric characters from the input string.
+ * TODO: Use proper Input component that returns only unformatted input and make this redundent
  * @param number
  */
 function RemoveFormatted(number) {
@@ -252,25 +252,31 @@ function getSessions() {
 function clearAuthTokens(isAndroid) {
 	console.log("Clearing all auth tokens from session storage.");
 
-	for (var i = 0; i < sessionStorage.length; i++) {
-		var key = sessionStorage.key(i);
-		if (key !== "org_detail") {
-			sessionStorage.removeItem(key);
-		}
-	}
+	// Important session-storage keys to keep even after logout
+	const IMP_SESSION_KEYS = ["org_detail", "inf-forced-logout"];
 
-	// Manually clear session keys...
-	// This fixes a bug where session keys are not cleared in some cases in the previous step.
-	sessionStorage.removeItem("access_token");
-	sessionStorage.removeItem("refresh_token");
-	sessionStorage.removeItem("access_token_lite");
-	sessionStorage.removeItem("access_token_crm");
-	sessionStorage.removeItem("role_tx_list");
+	// Backup important keys
+	const backup = {};
+	IMP_SESSION_KEYS.forEach((key) => {
+		const _val = sessionStorage.getItem(key);
+		if (_val !== null) {
+			backup[key] = _val;
+		}
+	});
+
+	// Clear all session keys
+	sessionStorage.clear();
+
+	// Restore important keys
+	IMP_SESSION_KEYS.forEach((key) => {
+		if (key in backup) {
+			sessionStorage.setItem(key, backup[key]);
+		}
+	});
 
 	if (isAndroid) {
 		doAndroidAction(ANDROID_ACTION.CLEAR_REFRESH_TOKEN);
 	}
-	// sessionStorage.clear();
 }
 
 /**

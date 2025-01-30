@@ -32,7 +32,8 @@ const DEFAULT_TIMEOUT = 120000; // 2 minutes
  * @throws {Error} If response is not ok, throws an error
  * - Error object has extra properties: response, status
  * - If access-token has expired, error object has name: "Unauthorized"
- * - If response has timed-out, error object has name: "AbortError"
+ * - If response was aborted using AbortController, error object has name: "AbortError"
+ * - If response has timed-out, error object has name: "TimeoutError"
  */
 export function fetcher(url, options, generateNewToken) {
 	const {
@@ -49,9 +50,10 @@ export function fetcher(url, options, generateNewToken) {
 	// Timeout controller for the fetch request
 	const _controller = controller || new AbortController();
 
+	// Set timeout for the fetch request
 	const timeout_id = setTimeout(() => {
 		const err = new Error("Request Timed Out");
-		err.name = "AbortError";
+		err.name = "TimeoutError";
 		_controller.abort(err);
 		throw err;
 	}, timeout || DEFAULT_TIMEOUT);

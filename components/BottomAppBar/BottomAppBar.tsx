@@ -9,6 +9,8 @@ import { Icon } from "..";
 type BottomAppBarProps = {
 	items: BottomAppBarItem[];
 	isFixedBottomAppBar?: boolean;
+	isSideBarMode?: boolean;
+	[key: string]: any;
 };
 
 /**
@@ -16,12 +18,16 @@ type BottomAppBarProps = {
  * @component
  * @param {BottomAppBarProps} props - The props of the component.
  * @param {BottomAppBarItem[]} props.items - Array of items for the bottom app bar.
- * @param {boolean} [props.isFixedBottomAppBar] - Flag to fix bottom app bar.
+ * @param {boolean} [props.isFixedBottomAppBar] - Flag to fix bottom app bar. Otherwise, it will hide on scroll down and show on scroll up.
+ * @param {boolean} [props.isSideBarMode] - Flag to show bottom app bar in sidebar mode (compact side-bar on the left hand side of the screen for medium to large screens).
+ * @param {...object} rest - Additional properties passed to the component.
  * @returns {React.Element} The rendered BottomAppBar component.
  */
 const BottomAppBar = ({
 	items,
 	isFixedBottomAppBar = false,
+	isSideBarMode = false,
+	...rest
 }: BottomAppBarProps) => {
 	const router = useRouter();
 
@@ -43,7 +49,7 @@ const BottomAppBar = ({
 
 	// Hide on scroll down, show on scroll up
 	useEffect(() => {
-		if (!isFixedBottomAppBar) {
+		if (isFixedBottomAppBar !== true && isSideBarMode !== true) {
 			const handleScroll = () => {
 				const st = document.documentElement.scrollTop;
 				if (st > lastScrollTop) {
@@ -65,17 +71,19 @@ const BottomAppBar = ({
 	return (
 		<Flex
 			className="bottom-app-bar"
-			bg="white"
+			bg={isSideBarMode ? "sidebar.bg" : "white"}
 			justify="center"
 			w="100%"
 			minH={isMac ? "64px" : "56px"}
 			boxShadow="0px -3px 10px #0000001A"
 			pb={isMac ? "16px" : "0px"}
 			transition={
-				isFixedBottomAppBar ? "none" : "transform 0.3s ease-in-out"
+				isFixedBottomAppBar || isSideBarMode
+					? "none"
+					: "transform 0.3s ease-in-out"
 			}
 			transform={
-				isFixedBottomAppBar
+				isFixedBottomAppBar || isSideBarMode
 					? "none"
 					: isVisible
 						? "translateY(0)"
@@ -85,8 +93,15 @@ const BottomAppBar = ({
 				fill: contrast_color,
 				opacity: 0.04,
 			})}
+			{...rest}
 		>
-			<Flex w="100%" h="100%" maxW="400px">
+			<Flex
+				w="100%"
+				h="100%"
+				maxW="400px"
+				direction={isSideBarMode ? "column" : "row"}
+				gap={isSideBarMode ? "25px" : 0}
+			>
 				{items.map(
 					(
 						{
@@ -97,10 +112,14 @@ const BottomAppBar = ({
 							action,
 							component: BottomBarComponentProp,
 							visible,
+							disabled,
+							hideInSideBar,
 						},
 						index
 					) => {
 						if (!visible) return null;
+						if (isSideBarMode && hideInSideBar) return null;
+
 						const isActive = router.pathname === path;
 						return (
 							<Flex
@@ -112,7 +131,18 @@ const BottomAppBar = ({
 								h="100%"
 								py="8px"
 								gap="1"
-								color={isActive ? "primary.dark" : "light"}
+								bg={
+									isSideBarMode && isActive
+										? "#00000033"
+										: "transparent"
+								}
+								color={
+									isSideBarMode
+										? "sidebar.text"
+										: isActive
+											? "primary.dark"
+											: "light"
+								}
 								_active={{
 									background: "transparent",
 									transform: isActive ? null : "scale(0.8)",
@@ -120,8 +150,12 @@ const BottomAppBar = ({
 										? null
 										: "transform 0.5s ease-in",
 								}}
+								cursor={
+									isActive || disabled ? "default" : "pointer"
+								}
+								opacity={disabled ? 0.5 : 1}
 								onClick={() =>
-									isActive
+									isActive || disabled
 										? null
 										: path
 											? router.push(`${path}`)

@@ -76,20 +76,6 @@ export const UserReducer = (state, { type, payload, meta }) => {
 				...createUserState(payload),
 			};
 			console.log("[UserReducer] Login new state: ", newState);
-			// const newState = {
-			// 	...state,
-			// 	loggedIn: true,
-			// 	access_token: payload.access_token,
-			// 	refresh_token: payload.refresh_token,
-			// 	userId: payload.details.mobile,
-			// 	uid: payload.details?.uid,
-			// 	userDetails: {
-			// 		...payload.details
-			// 	},
-			// 	personalDetails: payload?.personal_details,
-			// 	shopDetails: payload?.shop_details,
-			// 	accountDetails: payload?.account_details,
-			// }
 
 			setandUpdateAuthTokens(payload, meta?.isAndroid || false, true);
 			setUserDetails(newState);

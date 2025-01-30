@@ -2,22 +2,23 @@
  * Lazy-load context wrapper for KBarProvider context. It lazy-loads the context provider only when load=true is pased to the KBarLazyProvider
  */
 
+import { useSession } from "contexts";
 import { createContext, useContext, useEffect, useState } from "react";
-import { defaultActions } from ".";
+import { getDefaultActions } from ".";
 
 // Create a context for our provider
 const KBarContext = createContext();
 
-// Custom KBarProvider wrapper
 /**
- *
- * @param root0
- * @param root0.children
- * @param root0.load
+ * Custom KBarProvider wrapper
+ * @param {object} props
+ * @param {React.ReactNode} props.children - The children to render
+ * @param {boolean} props.load - If true, load the KBarProvider
  */
 export function KBarLazyProvider({ children, load }) {
 	const [kbar, setKBar] = useState(null);
 	const [loaded, setLoaded] = useState(false);
+	const { logout } = useSession();
 
 	// Use useEffect to asynchronously import the kbar library and set the state
 	useEffect(() => {
@@ -34,7 +35,7 @@ export function KBarLazyProvider({ children, load }) {
 		<KBarContext.Provider value={{ ready: loaded }}>
 			{loaded && kbar ? (
 				<kbar.KBarProvider
-					actions={defaultActions}
+					actions={getDefaultActions({ logout })}
 					options={{
 						enableHistory: false,
 						disableScrollbarManagement: true,

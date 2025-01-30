@@ -23,8 +23,8 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - Eg: `const [isFeatureEnabled] = useFeatureFlag('MY_FEATURE');`
   - to dynamically check for feature flags, use the `checkFeatureFlag` function:
     ```jsx
-	import { checkFeatureFlag } from 'hooks/useFeatureFlag';
-	const [isFeatureEnabled, checkFeatureFlag] = checkFeatureFlag('MY_FEATURE');
+	import { useFeatureFlag } from 'hooks/useFeatureFlag';
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
 
 	const isAnotherFeatureEnabled = checkFeatureFlag('ANOTHER_FEATURE');
 	```

@@ -1,6 +1,7 @@
 import { getChatGptAgentUrl } from "helpers";
-import { ActionImpl, Priority } from "kbar";
+import { Priority } from "kbar";
 import { RiChatAiLine } from "react-icons/ri";
+import { getKBarAction } from ".";
 
 export const getChatGptAgentAction = ({
 	queryValue,
@@ -55,22 +56,36 @@ export const getChatGptAgentAction = ({
 		);
 	};
 
-	// console.log("getChatGptAgentAction:", queryValue);
-
 	return [
-		ActionImpl.create(
-			{
-				id: "chatGptAgent/search",
-				name: "Ask ChatGPT",
-				subtitle: `Eloka के बारे में अपनी भाषा में कुछ भी पूछें...`,
-				keywords: queryValue,
-				icon: <RiChatAiLine size="28px" />,
-				priority: queryValue ? -888 : Priority.HIGH,
-				perform: () => {
-					openChatGptTab && openChatGptTab(queryValue);
-				},
+		getKBarAction({
+			id: "chatGptAgent/open",
+			name: "Ask ChatGPT",
+			subtitle: `Ask anything about Eloka in your language...`,
+			keywords: queryValue,
+			IconComp: (
+				<>
+					<svg width="0" height="0">
+						<linearGradient
+							id="bg-gradient"
+							x1="100%"
+							y1="100%"
+							x2="0%"
+							y2="0%"
+						>
+							<stop stopColor="#009FFF" offset="0%" />
+							<stop stopColor="#ec2F4B" offset="100%" />
+						</linearGradient>
+					</svg>
+					<RiChatAiLine
+						size="100%"
+						style={{ fill: "url(#bg-gradient)" }}
+					/>
+				</>
+			),
+			priority: queryValue ? -888 : Priority.HIGH,
+			perform: () => {
+				openChatGptTab(queryValue);
 			},
-			{}
-		),
+		}),
 	];
 };

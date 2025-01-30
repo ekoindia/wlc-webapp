@@ -1,13 +1,19 @@
 import { Flex, Text, useDisclosure } from "@chakra-ui/react";
+import { AccordionMenu, Icon } from "components";
 import { useNavigationLists } from "hooks";
 import { useRef } from "react";
-import { useAccordionMenuConverter } from ".";
-import { AccordionMenu, Drawer, Icon } from "..";
+import { BottomAppBarDrawer, useAccordionMenuConverter } from ".";
+
+interface ButtonProps {
+	isSideBarMode?: boolean;
+}
 
 /**
  * The Transactions component renders a button that opens a drawer containing transactions.
+ * @param root0
+ * @param root0.isSideBarMode
  */
-const Transactions = () => {
+const Transactions = ({ isSideBarMode = false }: ButtonProps) => {
 	const btnRef = useRef<HTMLButtonElement>(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { trxnList } = useNavigationLists();
@@ -27,7 +33,7 @@ const Transactions = () => {
 				justify="center"
 				onClick={onOpen}
 			>
-				<Icon ref={btnRef} name="transaction" size="sm" color="light" />
+				<Icon ref={btnRef} name="transaction" size="sm" />
 				<Text
 					fontSize="10px"
 					fontWeight="medium"
@@ -37,17 +43,17 @@ const Transactions = () => {
 					Transactions
 				</Text>
 			</Flex>
-			<Drawer
+			<BottomAppBarDrawer
 				id="transaction-drawer"
 				title="Transactions"
 				isOpen={isOpen}
 				onOpen={onOpen}
 				onClose={onClose}
-				isFullHeight={false}
+				isSideBarMode={isSideBarMode}
 				finalFocusRef={btnRef}
 			>
 				<AccordionMenu {...{ list, onMenuItemClick }} />
-			</Drawer>
+			</BottomAppBarDrawer>
 		</>
 	);
 };
