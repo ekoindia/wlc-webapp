@@ -136,7 +136,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS /*, 59*/], // 59 =  MoneyBnk
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 59], // 59 =  MoneyBnk
 			},
 		},
 	},
