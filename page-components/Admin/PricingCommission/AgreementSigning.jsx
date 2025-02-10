@@ -431,11 +431,10 @@ const AgreementSigning = () => {
 						<Dropzone
 							file={file}
 							setFile={setFile}
-							accept=".jpg,.png,.jpeg"
+							accept="image/jpeg,image/png"
 							options={{
 								maxLength: 400,
-								aspectRatio: 2,
-							
+								aspectRatio: 1.5,
 							}}
 						/>
 						<Input
