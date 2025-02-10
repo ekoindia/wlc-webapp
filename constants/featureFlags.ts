@@ -53,17 +53,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true, // TODO: Enable for all users
 	},
 
-	// Feature for Admins to toggle services for their network (Business Settings > Enable/Disable Services)
-	TOGGLE_SERVICES: {
-		enabled: true,
-		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
-			},
-		},
-	},
-
 	// Feature to show Tree-view in Network Management.
 	NETWORK_TREE_VIEW: {
 		enabled: true,
@@ -144,6 +133,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
+
+	// Feature for Admins to toggle services for their network (Business Settings > Enable/Disable Services)
+	TOGGLE_SERVICES: {
+		enabled: true,
+	},
 
 	// ChatGPT agent for SBI Kiosk Agents...
 	CHATGPT_AGENT: {
