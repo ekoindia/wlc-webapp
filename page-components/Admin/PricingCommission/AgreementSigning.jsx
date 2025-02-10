@@ -432,6 +432,11 @@ const AgreementSigning = () => {
 							file={file}
 							setFile={setFile}
 							accept=".jpg,.png,.jpeg"
+							options={{
+								maxLength: 400,
+								aspectRatio: 2,
+							
+							}}
 						/>
 						<Input
 							required
