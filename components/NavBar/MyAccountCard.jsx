@@ -1,7 +1,8 @@
 import { Box, Divider, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { Endpoints, TransactionIds } from "constants";
 import { adminProfileMenu, profileMenu } from "constants/profileCardMenus";
-import { useUser } from "contexts";
+import { useOrgDetailContext, useUser } from "contexts";
+import { getChatGptAgentUrl } from "helpers";
 import { useClipboard, useFeatureFlag, useRaiseIssue } from "hooks";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
@@ -22,12 +23,21 @@ const MyAccountCard = ({ onClose }) => {
 	const [isRaiseIssueAllowedForSbiKiosk] = useFeatureFlag(
 		"RAISE_ISSUE_SBIKIOSK"
 	);
+	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT");
+	const { orgDetail } = useOrgDetailContext();
 
 	const { userDetails } = userData;
 	const { name, code, email, mobile } = userDetails ?? {};
 	const router = useRouter();
 	const { copy, state } = useClipboard();
 	const menulist = isAdmin ? adminProfileMenu : profileMenu;
+
+	const gptAgentUrl = isChatGptAgentAllowed
+		? getChatGptAgentUrl({
+				orgId: orgDetail?.org_id,
+				isAdmin,
+			})
+		: null;
 
 	/**
 	 * Helper function to close the user-profile menu
@@ -307,6 +317,27 @@ const MyAccountCard = ({ onClose }) => {
 							))
 					: null}
 
+				{/* ChatGPT Agent... */}
+				{gptAgentUrl ? (
+					<>
+						<Flex
+							w="100%"
+							align="center"
+							justify="space-between"
+							cursor="pointer"
+							minH="50px"
+							onClick={() => {
+								close();
+								window.open(gptAgentUrl, "_blank");
+							}}
+						>
+							<Text>Ask ChatGPT</Text>
+							<Icon name="chevron-right" size="xxs" />
+						</Flex>
+						<Divider />
+					</>
+				) : null}
+
 				{/* Logout Row */}
 				<Flex
 					direction="row"
@@ -317,7 +348,11 @@ const MyAccountCard = ({ onClose }) => {
 					align="center"
 					color="error"
 				>
-					<Flex py="3" align="center" onClick={logout}>
+					<Flex
+						py="3"
+						align="center"
+						onClick={() => logout({ isForced: true })}
+					>
 						<Icon name="logout" size="sm" mr="2" />
 						<Text fontWeight="medium">Logout</Text>
 					</Flex>

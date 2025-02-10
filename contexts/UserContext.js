@@ -108,8 +108,15 @@ const UserProvider = ({ userMockData, children }) => {
 
 	/**
 	 * Mark the user as logged out in the userState.
+	 * @param {object} options - Options to logout.
+	 * @param {boolean} options.isForced - If true, user has force logged-out using the Logout menu-option.
 	 */
-	const logout = () => {
+	const logout = ({ isForced = false } = {}) => {
+		// If forced-logout by the user, store it in the sessionStorage
+		if (isForced) {
+			sessionStorage.setItem("inf-forced-logout", "1");
+		}
+
 		dispatch({ type: "LOGOUT", meta: { isAndroid: isAndroid } });
 	};
 
@@ -162,6 +169,7 @@ const UserProvider = ({ userMockData, children }) => {
 	const isOnboarding =
 		state?.onboarding == 1 || state?.userId == "1" ? true : false;
 
+	// MARK: useUser()
 	const userContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
@@ -190,6 +198,7 @@ const UserProvider = ({ userMockData, children }) => {
 		};
 	}, [state, isLoggedIn, loading, isTokenUpdating, isAdmin, refreshUser]);
 
+	// MARK: useSession()
 	const sessionContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
@@ -206,6 +215,7 @@ const UserProvider = ({ userMockData, children }) => {
 			loading,
 			setLoading,
 			refreshUser,
+			logout,
 		};
 	}, [
 		isLoggedIn,
@@ -219,6 +229,7 @@ const UserProvider = ({ userMockData, children }) => {
 		isOnboarding,
 		loading,
 		refreshUser,
+		logout,
 	]);
 
 	return (

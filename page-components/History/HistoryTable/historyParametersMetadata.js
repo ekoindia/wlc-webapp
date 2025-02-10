@@ -393,7 +393,7 @@ export const historyParametersMetadata = [
 ];
 
 /**
- * Parameters to show in the Transaction History table (for agents)
+ * Parameters to show in the Network Transactions table (for admins)
  * MARK: Network History Items
  */
 export const networkHistoryParametersMetadata = [

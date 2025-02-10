@@ -123,7 +123,12 @@ const MenuItem = ({
 		<AccordionItem id={id}>
 			<AccordionButton
 				iconName="chevron-right"
-				iconSize="10px"
+				iconSize="16px"
+				iconColor="#666"
+				iconStyle={{
+					borderRadius: "50%",
+					padding: "2px",
+				}}
 				py="2"
 				pr="0.5"
 				onClick={() => {
@@ -213,8 +218,14 @@ const MenuPanel = ({
 				<>
 					<AccordionButton
 						iconName={isExpanded ? "minus" : "add"}
-						iconSize="10px"
-						py="2"
+						iconSize="16px"
+						iconColor="white"
+						iconStyle={{
+							borderRadius: "50%",
+							backgroundColor: "#666",
+							padding: "4px",
+						}}
+						py={{ base: "2", md: "3", lg: "4" }}
 						onClick={isPanelExpanded ? null : handleOpenIndexes}
 					>
 						<IconWithLabel {...{ icon, hue: h, label }} />
@@ -227,7 +238,7 @@ const MenuPanel = ({
 					>
 						<Grid
 							templateColumns={`repeat(${numColumns}, 1fr)`}
-							gap="3"
+							gap="1"
 							alignItems="flex-start"
 							justifyContent="center"
 						>
@@ -309,7 +320,7 @@ const MenuPanelItem = ({
 			align="center"
 			justify="center"
 			gap="2"
-			py="2"
+			py="1"
 			cursor="pointer"
 			onClick={() => {
 				if (link) router.push(link);
@@ -323,7 +334,7 @@ const MenuPanelItem = ({
 				{...avatarTheme}
 			/>
 			<Text
-				fontSize="xs"
+				fontSize="xxs"
 				noOfLines={2}
 				textAlign="center"
 				userSelect="none"

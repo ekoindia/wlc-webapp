@@ -13,6 +13,48 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - Open webpage: [http://localhost:3002](http://localhost:3002)
 
 
+## 📜 Available Scripts
+
+### Development
+- `npm run dev` - Run development server on port 3002
+- `npm run dev.https` - Run development server with HTTPS on port 3004
+- `npm run scan` - Run development server on port 3006 with react-scan to detects rerenders and other performance issues
+- `npm run inspect` - Run development server with Node inspector
+- `npm start` - Start production server
+- `npm run build` - Build production bundle
+- `npm run analyze` - Build with bundle-analyzer for size analysis
+
+### Code Quality
+- `npm run lint` - Run Next.js linting
+- `npm run lint-error` - Run linting with fewer warnings
+- `npm run lint-fix` - Fix linting issues automatically
+- `npm run eslint` - Run ESLint with project config
+- `npm run eslint-fix` - Fix ESLint issues automatically
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting without changes
+
+### Testing
+- `npm test` - Run all tests
+- `npm run test-file` - Run tests for a single file
+- `npm run test-watch` - Run tests in watch mode
+- `npm run test-coverage` - Run tests with coverage report
+- `npm run test-update-snapshots` - Update test snapshots
+
+### Development Tools
+- `npm run g` or `npm run generate` - Run plop generator for new components
+- `npm run sb` or `npm run storybook` - Run Storybook on port 6006
+- `npm run build-storybook` - Build static Storybook
+- `npm run check-updates` - Check for outdated dependencies
+- `npm run check-deps` - Run custom dependency checks
+
+### Docker Commands
+- `npm run docker:dev` - Run development container
+- `npm run docker:prod` - Run production container
+- `npm run docker:dev:build` - Build and run development container
+- `npm run docker:prod:build` - Build and run production container
+- `npm run docker:stop` - Stop all containers
+- `npm run docker:clean` - Remove containers, images, and volumes
+
 ## ✅ Toggle Feature Flags:
 
 - Feature flags are used to enable/disable a specific feature.
@@ -23,8 +65,8 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - Eg: `const [isFeatureEnabled] = useFeatureFlag('MY_FEATURE');`
   - to dynamically check for feature flags, use the `checkFeatureFlag` function:
     ```jsx
-	import { checkFeatureFlag } from 'hooks/useFeatureFlag';
-	const [isFeatureEnabled, checkFeatureFlag] = checkFeatureFlag('MY_FEATURE');
+	import { useFeatureFlag } from 'hooks/useFeatureFlag';
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
 
 	const isAnotherFeatureEnabled = checkFeatureFlag('ANOTHER_FEATURE');
 	```

@@ -2,7 +2,7 @@ import { CloseButton, Flex, Image, Text, useToast } from "@chakra-ui/react";
 import { Icon } from "components";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { TransactionTypes } from "constants";
-import { useSession, usePubSub } from "contexts";
+import { usePubSub, useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useLocalStorage } from "hooks";
 import { Priority, useRegisterActions } from "kbar";

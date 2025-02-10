@@ -14,12 +14,16 @@ import { ActionImpl, Priority } from "kbar";
  * @param {Priority} props.priority - The priority of the action
  * @param {Function} props.perform - The function to run when the action is selected
  * @param props.shortcut
+ * @param props.ext_icon
+ * @param props.IconComp
  */
 export const getKBarAction = ({
 	id,
 	name,
 	subtitle,
 	icon,
+	ext_icon,
+	IconComp,
 	iconSize = "md",
 	iconColor = "#334155",
 	keywords,
@@ -36,6 +40,8 @@ export const getKBarAction = ({
 			icon: (
 				<ActionIcon
 					icon={icon || "transaction-history"}
+					ext_icon={ext_icon}
+					IconComp={IconComp}
 					iconSize={iconSize}
 					color={iconColor}
 				/>

@@ -7,6 +7,7 @@ import {
 	CommissionSummaryProvider,
 	EarningSummaryProvider,
 	GlobalSearchProvider,
+	NetworkUsersProvider,
 	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
@@ -14,7 +15,6 @@ import {
 	TodoProvider,
 	UserProvider,
 	WalletProvider,
-	NetworkUsersProvider,
 } from "contexts";
 import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
@@ -192,9 +192,9 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		>
 			<AppSourceProvider>
 				<OrgDetailProvider initialData={org || null}>
-					<KBarLazyProvider load={!isLoginPage}>
-						<GlobalSearchProvider>
-							<UserProvider userMockData={mockUser}>
+					<UserProvider userMockData={mockUser}>
+						<KBarLazyProvider load={!isLoginPage}>
+							<GlobalSearchProvider>
 								<MenuProvider>
 									<WalletProvider>
 										<RouteProtecter router={router}>
@@ -227,9 +227,9 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 										</RouteProtecter>
 									</WalletProvider>
 								</MenuProvider>
-							</UserProvider>
-						</GlobalSearchProvider>
-					</KBarLazyProvider>
+							</GlobalSearchProvider>
+						</KBarLazyProvider>
+					</UserProvider>
 				</OrgDetailProvider>
 			</AppSourceProvider>
 		</ChakraProvider>
