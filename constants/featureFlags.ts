@@ -53,83 +53,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true, // TODO: Enable for all users
 	},
 
-	// Feature for Admins to toggle services for their network (Business Settings > Enable/Disable Services)
-	TOGGLE_SERVICES: {
-		enabled: true,
-		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 10], // 10 = MobyPay
-			},
-		},
-	},
-
-	// Feature to show Tree-view in Network Management.
-	NETWORK_TREE_VIEW: {
-		enabled: true,
-		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					ORG_ID.SBIKIOSK,
-					...ORG_ID.EKOTESTS,
-					10,
-				], // 10 = MobyPay
-			},
-		},
-	},
-
-	// Option to expand an issue in query-center to show detailed options and perform operations such as: Add Comment, Escalate, Close, etc.
-	QUERY_CENTER_DETAILED_OPTIONS: {
-		enabled: true,
-		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					ORG_ID.SBIKIOSK,
-					...ORG_ID.EKOTESTS,
-				],
-			},
-		},
-	},
-
-	// Basic Landing Page customization where Admins can upload a custom image.
-	// This flag is to show the image on the landing/login page.
-	CMS_IMAGE_THEME: {
-		enabled: true,
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					ORG_ID.SBIKIOSK,
-					...ORG_ID.EKOTESTS,
-					10,
-				], // 10 = MobyPay
-			},
-		},
-	},
-
-	// MANUALLY CONFIGURE CUSTOM IMAGE FOR LANDING/LOGIN PAGE...
-	// This flag is to show the image-upload option to Admins for configuring the landing page
-	//   where the request goes to the DevOps team for manual configuration.
-	// TODO: Remove this after we are able to auto-upload images on file server for configuring the landing page (CMS).
-	MANUAL_LANDING_PAGE_IMAGE_SETUP: {
-		enabled: true,
-		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					ORG_ID.SBIKIOSK,
-					...ORG_ID.EKOTESTS,
-					10,
-				], // 10 = MobyPay
-			},
-		},
-	},
-
 	// Custom flag for enabling Real Time Network Transactions for Admins
 	NETWORK_STATEMENT: {
 		enabled: true,
@@ -144,6 +67,38 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
+
+	// Feature for Admins to toggle services for their network (Business Settings > Enable/Disable Services)
+	TOGGLE_SERVICES: {
+		enabled: true,
+		forAdminOnly: true,
+	},
+
+	// Option to expand an issue in query-center to show detailed options and perform operations such as: Add Comment, Escalate, Close, etc.
+	QUERY_CENTER_DETAILED_OPTIONS: {
+		enabled: true,
+		forAdminOnly: true,
+	},
+
+	// Feature to show Tree-view in Network Management.
+	NETWORK_TREE_VIEW: {
+		enabled: true,
+	},
+
+	// Basic Landing Page customization where Admins can upload a custom image.
+	// This flag is to show the image on the landing/login page.
+	CMS_IMAGE_THEME: {
+		enabled: true,
+	},
+
+	// MANUALLY CONFIGURE CUSTOM IMAGE FOR LANDING/LOGIN PAGE...
+	// This flag is to show the image-upload option to Admins for configuring the landing page
+	//   where the request goes to the DevOps team for manual configuration.
+	// TODO: Remove this after we are able to auto-upload images on file server for configuring the landing page (CMS).
+	MANUAL_LANDING_PAGE_IMAGE_SETUP: {
+		enabled: true,
+		forAdminOnly: true,
+	},
 
 	// ChatGPT agent for SBI Kiosk Agents...
 	CHATGPT_AGENT: {
