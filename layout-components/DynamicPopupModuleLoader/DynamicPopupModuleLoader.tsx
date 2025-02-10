@@ -6,6 +6,12 @@ import {
 	ModalOverlay,
 	Spinner,
 	useToast,
+	Drawer,
+	DrawerBody,
+	DrawerHeader,
+	DrawerOverlay,
+	DrawerContent,
+	DrawerCloseButton,
 } from "@chakra-ui/react";
 import { usePubSub } from "contexts";
 import dynamic from "next/dynamic";
@@ -18,7 +24,8 @@ export type ModuleNameType =
 	| "Feedback"
 	| "FileViewer"
 	| "ImageEditor"
-	| "Camera";
+	| "Camera"
+	| "Notifications";
 // | "Support"
 // | "About";
 
@@ -38,9 +45,24 @@ type ModuleDataType = {
 const DefaultOptions: {
 	[_key in ModuleNameType]: {
 		/**
+		 * Title of the popup (optional). Works better with "drawer" style.
+		 */
+		title?: string;
+
+		/**
 		 * Properties to pass to the module
 		 */
 		props?: { [key: string]: any };
+
+		/**
+		 * Type of pupup style to use: "modal" (default) or "drawer"
+		 */
+		popupStyle?: "modal" | "drawer";
+
+		/**
+		 * Styles attributes to apply to the modal dialog (Modal or Panel)
+		 */
+		dialogStyles?: { [key: string]: any };
 
 		/**
 		 * Styles attributes to apply to the modal popup. Eg: width, height, etc.
@@ -118,6 +140,14 @@ const DefaultOptions: {
 			bg: "blackAlpha.800",
 		},
 	},
+	Notifications: {
+		title: "Notifications",
+		popupStyle: "drawer",
+		dialogStyles: {
+			size: { base: "full", md: "md" },
+		},
+		// props: {},
+	},
 	// About: {},
 };
 
@@ -155,6 +185,16 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 	),
 	Camera: dynamic(
 		() => import("components/Camera").then((pkg) => pkg.Camera) as any,
+		{
+			ssr: false,
+			loading: () => <Loading />,
+		}
+	),
+	Notifications: dynamic(
+		() =>
+			import(
+				"page-components/Home/NotificationWidget/NotificationWidget.jsx"
+			) as any,
 		{
 			ssr: false,
 			loading: () => <Loading />,
@@ -354,8 +394,16 @@ const Dialog = ({
 
 	// Get the dynamic component to load
 	const Component = moduleList[module];
-	const { props, style, closeBtnStyle, overlayStyle, hideCloseIcon } =
-		DefaultOptions[module] || {};
+	const {
+		title,
+		popupStyle,
+		dialogStyles,
+		props,
+		style,
+		closeBtnStyle,
+		overlayStyle,
+		hideCloseIcon,
+	} = DefaultOptions[module] || {};
 
 	if (!Component) {
 		return null;
@@ -363,10 +411,45 @@ const Dialog = ({
 
 	console.log("DynamicPopupModuleLoader: Dialog 2", module, Component);
 
+	// Check if the popup style is a drawer...
+	if (popupStyle === "drawer") {
+		return (
+			<Drawer
+				isOpen={true}
+				placement="right"
+				onClose={() => onPopupClose(index, module, result || {})}
+				{...dialogStyles}
+			>
+				<DrawerOverlay />
+				<DrawerContent>
+					{hideCloseIcon || isBackgroundModule ? null : (
+						<DrawerCloseButton />
+					)}
+
+					{title ? <DrawerHeader>{title}</DrawerHeader> : null}
+
+					<DrawerBody p={0}>
+						<Component
+							{...{ ...props, ...options }}
+							onClose={(resp) =>
+								onPopupClose(index, module, resp || result)
+							}
+							onResult={setResult}
+							onHide={() => setIsHidden(true)}
+							onShow={() => setIsHidden(false)}
+						/>
+					</DrawerBody>
+				</DrawerContent>
+			</Drawer>
+		);
+	}
+
+	// Otherwise, show the modal popup...
 	return (
 		<Modal
 			isOpen={true}
 			onClose={() => onPopupClose(index, module, result || {})}
+			{...dialogStyles}
 		>
 			<ModalOverlay
 				bg="blackAlpha.700"
@@ -399,9 +482,6 @@ const Dialog = ({
 				/>
 				{hideCloseIcon || isBackgroundModule ? null : (
 					<ModalCloseButton
-						// position="fixed"
-						// top="10px"
-						// right="10px"
 						bg="gray.100"
 						size={{ base: "md", md: "lg" }}
 						borderRadius="full"

@@ -4,6 +4,7 @@ import { fetcher } from "./apiHelper";
 
 /**
  * Verify OTP and get user details to login the user.
+ * MARK: Send OTP
  * @param {number} org_id	Organization ID
  * @param {number} number	User's mobile number
  * @param {Function} toast		Function to show toast messages
@@ -57,7 +58,7 @@ async function sendOtpRequest(
 		// Success toast on UAT only
 		if (process.env.NEXT_PUBLIC_ENV !== "production" && toast) {
 			toast({
-				title: `Demo OTP Sent: ${_otp}`,
+				title: `Demo OTP: ${_otp}`,
 				status: "success",
 				duration: 5000,
 				position: "top-right",
@@ -79,9 +80,9 @@ async function sendOtpRequest(
 	return success;
 }
 
-// TODO: Use proper Input component that returns only unformatted input and make this redundent
 /**
- *
+ * Remove all non-numeric characters from the input string.
+ * TODO: Use proper Input component that returns only unformatted input and make this redundent
  * @param number
  */
 function RemoveFormatted(number) {
@@ -146,6 +147,10 @@ function setUserDetails(data) {
 		sessionStorage.setItem(
 			"account_details",
 			JSON.stringify(data.accountDetails)
+		);
+		sessionStorage.setItem(
+			"business_details",
+			JSON.stringify(data.businessDetails)
 		);
 
 		// Cache the original login-type (Google / Mobile) and user details in LocalStorage after a sucessful login
@@ -234,30 +239,49 @@ function getSessions() {
 		account_details: ParseJson(sessionStorage.getItem("account_details")),
 		personal_details: ParseJson(sessionStorage.getItem("personal_details")),
 		shop_details: ParseJson(sessionStorage.getItem("shop_details")),
+		business_details: ParseJson(sessionStorage.getItem("business_details")),
 	};
 	return userData;
 }
 
 /**
  * Clears all the auth tokens from the session storage.
- * @param isAndroid
+ * MARK: Clear Tokens
+ * @param {boolean} isAndroid - Is the user using the Android wrapper app?
  */
 function clearAuthTokens(isAndroid) {
-	for (var i = 0; i < sessionStorage.length; i++) {
-		var key = sessionStorage.key(i);
-		if (key !== "org_detail") {
-			sessionStorage.removeItem(key);
+	console.log("Clearing all auth tokens from session storage.");
+
+	// Important session-storage keys to keep even after logout
+	const IMP_SESSION_KEYS = ["org_detail", "inf-forced-logout"];
+
+	// Backup important keys
+	const backup = {};
+	IMP_SESSION_KEYS.forEach((key) => {
+		const _val = sessionStorage.getItem(key);
+		if (_val !== null) {
+			backup[key] = _val;
 		}
-	}
+	});
+
+	// Clear all session keys
+	sessionStorage.clear();
+
+	// Restore important keys
+	IMP_SESSION_KEYS.forEach((key) => {
+		if (key in backup) {
+			sessionStorage.setItem(key, backup[key]);
+		}
+	});
 
 	if (isAndroid) {
 		doAndroidAction(ANDROID_ACTION.CLEAR_REFRESH_TOKEN);
 	}
-	// sessionStorage.clear();
 }
 
 /**
  * Revoke server-side refresh-token for this session. Used during logout.
+ * MARK: Revoke Token
  * @param {*} user_id	The User-ID of the user
  */
 function revokeSession(user_id) {
@@ -267,6 +291,9 @@ function revokeSession(user_id) {
 	}
 
 	const refresh_token = sessionStorage.getItem("refresh_token");
+
+	console.log("Revoking refresh token on backend: ", refresh_token);
+
 	fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.LOGOUT, {
 		body: {
 			user_id: user_id,
@@ -275,7 +302,7 @@ function revokeSession(user_id) {
 		timeout: 5000,
 	})
 		// .then((data) => console.log("REFRESH TOKEN REVOKED: ", data))
-		.catch((err) => console.log("Refresh Token Revoke Error: ", err));
+		.catch((err) => console.error("Refresh Token Revoke Error: ", err));
 }
 
 /**
@@ -394,16 +421,16 @@ const refreshUserProfile = (login, updateUserInfo, isAndroid = false) => {
 };
 
 export {
-	sendOtpRequest,
-	RemoveFormatted,
-	setandUpdateAuthTokens,
-	getAuthTokens,
 	clearAuthTokens,
-	revokeSession,
-	generateNewAccessToken,
-	getSessions,
 	createUserState,
-	setUserDetails,
+	generateNewAccessToken,
+	getAuthTokens,
+	getSessions,
 	getTokenExpiryTime,
 	loginUsingRefreshTokenAndroid,
+	RemoveFormatted,
+	revokeSession,
+	sendOtpRequest,
+	setandUpdateAuthTokens,
+	setUserDetails,
 };

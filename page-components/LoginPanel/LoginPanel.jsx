@@ -17,6 +17,13 @@ const WelcomeCard = dynamic(
 	}
 );
 
+const ImageCard = dynamic(
+	() => import("./ImageCard").then((pkg) => pkg.ImageCard),
+	{
+		ssr: false,
+	}
+);
+
 // For CMS custom screen
 // TODO: Move to static import, and, enable SSR
 const Render = dynamic(
@@ -46,10 +53,12 @@ const formatMobileNumber = (mobile) => {
 };
 
 /**
- * This is the main component where all the Login related component rendered.
- * @example	`<LoginPanel></LoginPanel>`
+ * This is the main component where all the Login related components are rendered.
+ * @param {*} props
+ * @param {string} props.cmsType Type of CMS to render. Renders the default WelcomeCard if not provided. If "image", the custom image provided in cmsData is rendered.
+ * @param {object} props.cmsData Custom CMS data to render. If cmsType is "image", this object should contain the image URL.
  */
-const LoginPanel = () => {
+const LoginPanel = ({ cmsType, cmsData }) => {
 	const [number, setNumber] = useState({
 		original: "",
 		formatted: "",
@@ -58,23 +67,8 @@ const LoginPanel = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const { isLoggedIn } = useSession();
 
-	const [cmsData, setCmsData] = useState(null);
-
 	const [isCmsEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
-
-	// Load landing page custom config (for Puck)
-	useEffect(() => {
-		try {
-			const cachedCmsData = JSON.parse(
-				localStorage.getItem("inf-landing-page-cms")
-			);
-			if (cachedCmsData) {
-				setCmsData(cachedCmsData);
-			}
-		} catch (e) {
-			console.error(e);
-		}
-	}, []);
+	const [isImageThemeEnabled] = useFeatureFlag("CMS_IMAGE_THEME");
 
 	// On small-screen, quickly hide the welcome card and move on to the login screen,
 	// especially, if the user had already entered their mobile number previously
@@ -167,8 +161,15 @@ const LoginPanel = () => {
 						direction="column"
 						justify="flex-start"
 					>
-						{isCmsEnabled && cmsData ? (
+						{isCmsEnabled && cmsType === "card" && cmsData ? (
 							<Render config={cmsConfig} data={cmsData} />
+						) : isImageThemeEnabled &&
+						  cmsType === "image" &&
+						  cmsData?.img ? (
+							<ImageCard
+								img={cmsData?.img}
+								onClick={() => setShowWelcomeCard(false)}
+							/>
 						) : (
 							<WelcomeCard
 								logo="/favicon.svg"
@@ -194,26 +195,28 @@ const LoginPanel = () => {
 			</Flex>
 
 			{/* Privacy Policy Link */}
-			{showWelcomeCard ? null : (
-				<Flex
-					pos="absolute"
-					bottom="6px"
-					right="6px"
-					fontWeight="medium"
-					fontSize="xs"
-					color={{ base: "dark", md: "white" }}
-					opacity="0.4"
-				>
-					<Link href="/privacy">
-						<Flex gap="1" align="center">
-							<Text display="inline" lineHeight="1">
-								Privacy Policy
-							</Text>
-							<Icon name="open-in-new" size="xs" />
-						</Flex>
-					</Link>
-				</Flex>
-			)}
+			<Flex
+				display={{
+					base: showWelcomeCard ? "none" : "block",
+					md: "block",
+				}}
+				pos="absolute"
+				bottom="6px"
+				right="6px"
+				fontWeight="medium"
+				fontSize="xs"
+				color={{ base: "dark", md: "white" }}
+				opacity="0.4"
+			>
+				<Link href="/privacy">
+					<Flex gap="1" align="center">
+						<Text display="inline" lineHeight="1">
+							Privacy Policy
+						</Text>
+						<Icon name="open-in-new" size="xs" />
+					</Flex>
+				</Link>
+			</Flex>
 		</Box>
 	);
 };

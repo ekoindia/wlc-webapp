@@ -12,24 +12,28 @@ import { ANDROID_ACTION, doAndroidAction } from "utils";
  * @param {object} pageMeta - The page meta data.
  * @param {string} pageMeta.title - The page title. This will be displayed in the browser titlebar.
  */
-const LayoutLogin = ({ appName, children }) => {
+const LayoutLogin = ({ appName, pageMeta, children }) => {
+	const { title } = pageMeta || {};
 	const { publish, TOPICS } = usePubSub();
 	const { isAndroid, setNativeVersion } = useAppSource();
-
 	const [isPageLoading, setIsPageLoading] = useState(false);
-	Router.events.on("routeChangeStart", () => setIsPageLoading(true));
-	Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
-	Router.events.on("routeChangeError", () => setIsPageLoading(false));
-
 	const { updateUserInfo, logout, login } = useUser();
 
-	// Setup Android Listener...
+	const pageTitle = "" + (title ? title + " | " : "") + (appName || "");
+
 	// TODO: Duplicate code from the default Layout component...Breakout into a separate component/hook?
+	// One Time Setup: Setup Android Listener & Route Change Listeners...
 	useEffect(() => {
+		// Show page-loading animation on route change
+		Router.events.on("routeChangeStart", () => setIsPageLoading(true));
+		Router.events.on("routeChangeComplete", () => setIsPageLoading(false));
+		Router.events.on("routeChangeError", () => setIsPageLoading(false));
+
+		// Android action listener
 		if (typeof window !== "undefined" && isAndroid) {
 			// Android action response listener
 			window["callFromAndroid"] = (action, data) => {
-				console.log("[_app.tsx] callFromAndroid:: ", action, data);
+				console.log("[LayoutLogin] callFromAndroid:: ", action, data);
 
 				// Set the Android app version
 				if (action === ANDROID_ACTION.SET_NATIVE_VERSION) {
@@ -58,10 +62,7 @@ const LayoutLogin = ({ appName, children }) => {
 	return (
 		<>
 			<Head>
-				<title>
-					Welcome
-					{appName ? `  to ${appName}` : ""}
-				</title>
+				<title>{pageTitle}</title>
 				<link
 					rel="icon"
 					type="image/svg+xml"

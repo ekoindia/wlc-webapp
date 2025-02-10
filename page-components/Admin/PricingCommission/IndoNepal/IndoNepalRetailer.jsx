@@ -1,5 +1,5 @@
 import { Flex, useToast } from "@chakra-ui/react";
-import { Button, Icon } from "components";
+import { ActionButtonGroup, Icon } from "components";
 import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
@@ -31,8 +31,18 @@ const PRICING_TYPE = {
 };
 
 const pricing_type_list = [
-	// { value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	{ value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+	{
+		id: "percentage",
+		value: PRICING_TYPE.PERCENT,
+		label: "Percentage (%)",
+		isDisabled: false,
+	},
+	{
+		id: "fixed",
+		value: PRICING_TYPE.FIXED,
+		label: "Fixed (₹)",
+		isDisabled: false,
+	},
 ];
 
 const OPERATION = {
@@ -75,7 +85,6 @@ const IndoNepalRetailer = () => {
 		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
-			pricing_type: DEFAULT.pricing_type,
 			payment_mode: "1",
 		},
 	});
@@ -91,6 +100,7 @@ const IndoNepalRetailer = () => {
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
 	const [validation, setValidation] = useState({ min: null, max: null });
 
 	const min = validation.min;
@@ -144,7 +154,7 @@ const IndoNepalRetailer = () => {
 			name: "pricing_type",
 			label: `Select ${productPricingType.INDO_NEPAL_FUND_TRANSFER} Type`,
 			parameter_type_id: ParamType.LIST,
-			list_elements: pricing_type_list,
+			list_elements: pricingTypeList,
 			// defaultValue: DEFAULT.pricing_type,
 		},
 		{
@@ -168,12 +178,68 @@ const IndoNepalRetailer = () => {
 					name={
 						watcher["pricing_type"] == PRICING_TYPE.PERCENT
 							? "percent_bg"
-							: "rupee_bg"
+							: watcher["pricing_type"] == PRICING_TYPE.FIXED
+								? "rupee_bg"
+								: null
 					}
 					size="23px"
 					color="primary.DEFAULT"
 				/>
 			),
+		},
+	];
+
+	// This useEffect hook updates the pricing type list based on slab selection.
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		if (watcher?.select?.value) {
+			const _validations =
+				slabs[+watcher?.select?.value]?.validation?.PRICING;
+			let anyDisabled = false;
+
+			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+				const _validation = _validations[_typeObj.id];
+				const isDisabled = !_validation;
+				if (isDisabled) anyDisabled = true;
+				return { ..._typeObj, isDisabled };
+			});
+
+			setPricingTypeList(_pricingTypeList);
+
+			// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+			if (anyDisabled) {
+				const _firstNonDisabled = _pricingTypeList.find(
+					(item) => !item.isDisabled
+				);
+				if (_firstNonDisabled) {
+					watcher["pricing_type"] = _firstNonDisabled.value;
+				}
+			}
+
+			reset({ ...watcher });
+		}
+	}, [watcher?.select?.value]);
+
+	const buttonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Save",
+			loading: isSubmitting,
+			disabled: !isValid || !isDirty,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Cancel",
+			onClick: () => router.back(),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
 		},
 	];
 
@@ -199,9 +265,9 @@ const IndoNepalRetailer = () => {
 		if (_slab != null && _pricingType != null && _paymentMode != null) {
 			const _validation = slabs[_slab]?.validation;
 			const _min =
-				_validation?.RETAILER?.[_pricingType]?.[_paymentMode]?.min;
+				_validation?.PRICING?.[_pricingType]?.[_paymentMode]?.min;
 			const _max =
-				_validation?.RETAILER?.[_pricingType]?.[_paymentMode]?.max;
+				_validation?.PRICING?.[_pricingType]?.[_paymentMode]?.max;
 
 			setValidation({ min: _min, max: _max });
 		}
@@ -329,43 +395,7 @@ const IndoNepalRetailer = () => {
 					}}
 				/>
 
-				<Flex
-					direction={{ base: "row-reverse", md: "row" }}
-					w={{ base: "100%", md: "500px" }}
-					position={{ base: "fixed", md: "initial" }}
-					gap={{ base: "0", md: "16" }}
-					align="center"
-					bottom="0"
-					left="0"
-					bg="white"
-				>
-					<Button
-						type="submit"
-						size="lg"
-						h="64px"
-						w={{ base: "100%", md: "200px" }}
-						fontWeight="bold"
-						borderRadius={{ base: "none", md: "10" }}
-						loading={isSubmitting}
-						disabled={!isValid || !isDirty}
-					>
-						Save
-					</Button>
-
-					<Button
-						h={{ base: "64px", md: "auto" }}
-						w={{ base: "100%", md: "initial" }}
-						bg={{ base: "white", md: "none" }}
-						variant="link"
-						fontWeight="bold"
-						color="primary.DEFAULT"
-						_hover={{ textDecoration: "none" }}
-						borderRadius={{ base: "none", md: "10" }}
-						onClick={() => router.back()}
-					>
-						Cancel
-					</Button>
-				</Flex>
+				<ActionButtonGroup {...{ buttonConfigList }} />
 			</Flex>
 		</form>
 	);

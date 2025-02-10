@@ -1,4 +1,13 @@
-/* This function process transaction data and returns an object which contains role_tx_list and interaction_list. */
+import {
+	AdminBlacklistMenuItems,
+	AdminOtherMenuItems,
+	OtherMenuItems,
+} from "constants";
+
+/**
+ * Process transaction data and return an object containing role_tx_list and interaction_list.
+ * @param {Array} tmp_lst - List of all transactions
+ */
 export const processTransactionData = (tmp_lst) => {
 	//This function intends to process transaction data
 	const interaction_list = [];
@@ -220,4 +229,41 @@ export const processTransactionData = (tmp_lst) => {
 		interaction_list,
 		trxn_type_prod_map,
 	};
+};
+
+/**
+ * Filter visible items from the interaction_list into trxnList and otherList
+ * @param {Array} interaction_list - List of all transactions
+ * @param {boolean} isAdmin - Is the user an admin?
+ * @param {boolean} isAdminAgentMode - Is the user in admin agent mode?
+ */
+export const filterTransactionLists = (
+	interaction_list,
+	isAdmin = false,
+	isAdminAgentMode = false
+) => {
+	const trxnList = [];
+	const otherList = [];
+
+	interaction_list.forEach((tx) => {
+		if (isAdmin) {
+			if (AdminOtherMenuItems.includes(tx.id)) {
+				otherList.push(tx);
+			} else if (isAdminAgentMode) {
+				if (OtherMenuItems.includes(tx.id)) {
+					otherList.push(tx);
+				} else if (!AdminBlacklistMenuItems.includes(tx.id)) {
+					trxnList.push(tx);
+				}
+			}
+		} else {
+			if (OtherMenuItems.includes(tx.id)) {
+				otherList.push(tx);
+			} else {
+				trxnList.push(tx);
+			}
+		}
+	});
+
+	return { trxnList, otherList };
 };

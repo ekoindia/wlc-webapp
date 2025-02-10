@@ -19,6 +19,7 @@ export type IconNameType =
 	| "arrow-increase"
 	| "arrow-decrease"
 	| "badge"
+	| "bharat-connect"
 	| "book"
 	| "business-center"
 	| "calculator"
@@ -164,6 +165,8 @@ export type IconNameType =
 	| "timer"
 	| "toc"
 	| "today"
+	| "toggle"
+	| "train"
 	| "triangle-up"
 	| "triangle-down"
 	| "tv"
@@ -224,6 +227,7 @@ export interface IconCategoriesType {
 
 export const IconCategories: IconCategoriesType = {
 	App: [
+		"dashboard",
 		"menu",
 		"menu-home",
 		"home",
@@ -300,6 +304,7 @@ export const IconCategories: IconCategoriesType = {
 		"datacard",
 		"insurance",
 		"local-hospital",
+		"bharat-connect",
 	],
 	"Business, Finance & Wallet": [
 		"account-balance",
@@ -340,16 +345,18 @@ export const IconCategories: IconCategoriesType = {
 		"others",
 		"money-deposit",
 		"cash",
+		"cashout",
+		"fingerprint",
+		"flight",
 		"money",
 		"money-note",
-		"cashout",
+		"nepal",
+		"pos",
 		"transaction-history",
 		"history",
 		"upi",
 		"qrcode",
-		"fingerprint",
-		"nepal",
-		"pos",
+		"train",
 	],
 	Form: [
 		"check",
@@ -366,6 +373,7 @@ export const IconCategories: IconCategoriesType = {
 		"search",
 		"calender",
 		"today",
+		"toggle",
 		"camera",
 		"select-plan",
 		"tick",
@@ -381,7 +389,6 @@ export const IconCategories: IconCategoriesType = {
 		"directions-bike",
 		"directions-car",
 		"directions-walk",
-		"flight",
 		"fullscreen",
 		"games",
 		"flash-on",
@@ -392,6 +399,28 @@ export const IconCategories: IconCategoriesType = {
 		"widgets",
 		"wc",
 		"power-settings-new",
+	],
+
+	"⚠️ Smaller UI Icons": [
+		"add",
+		"plus",
+		"close",
+		"file-download",
+		"file-upload",
+		"mode-edit",
+		"remove",
+		"minus",
+		"logout",
+		"arrow-decrease",
+		"arrow-increase",
+		"arrow-drop-down",
+		"caret-down",
+		"caret-up",
+		"expand-add",
+		"sort",
+		"triangle-down",
+		"triangle-up",
+		"tick",
 	],
 };
 
@@ -464,6 +493,10 @@ export const IconLibrary: IconLibraryType = {
 	badge: {
 		viewBox: "0 0 20 20",
 		path: `<path d="M10 12c-3.314 0-6-2.686-6-6s2.686-6 6-6v0c3.314 0 6 2.686 6 6s-2.686 6-6 6v0zM10 9c1.657 0 3-1.343 3-3s-1.343-3-3-3v0c-1.657 0-3 1.343-3 3s1.343 3 3 3v0zM14 11.75v8.25l-4-4-4 4v-8.25c1.115 0.79 2.502 1.262 4 1.262s2.885-0.473 4.022-1.277l-0.022 0.015z"/>`,
+	},
+	"bharat-connect": {
+		viewBox: "0 0 204.63 225",
+		path: `<path d="M149.36 67.66c0 1.99-.06 3.94-.19 5.81-.12 1.87-.53 4.33-1.2 7.4-.68 3.06-1.57 5.87-2.68 8.43-1.1 2.56-2.73 5.25-4.89 8.06-2.15 2.82-4.7 5.15-7.66 7.03-2.95 1.87-6.7 3.43-11.25 4.68-4.55 1.25-9.65 1.88-15.31 1.88H61.3c-3.32 0-6.01-2.73-6.01-6.11V87.65h.02c6.94 0 15.68 0 24.82-.01h27.28c3.49 0 6.13-1.75 7.44-4.92 1.29-3.12.68-6.19-1.74-8.66-8.57-8.75-17.23-17.54-25.31-25.72-1.86-1.89-4.18-2.66-6.7-2.24-3.07.52-5.22 2.35-6.19 5.28-1 3.05-.34 5.88 1.92 8.2 3.31 3.38 6.65 6.75 10.14 10.27l1.91 1.94h-33.6l-.01-43c.01-3.36 2.69-6.09 6-6.09h44.91c12.17 0 22.41 4.03 30.71 12.09 8.32 8.04 12.47 19.01 12.47 32.87zM149.36 159.02c0 1.99-.06 3.94-.19 5.81-.12 1.87-.53 4.33-1.2 7.4-.68 3.06-1.57 5.87-2.68 8.43-1.1 2.56-2.73 5.25-4.89 8.06-2.15 2.81-4.7 5.15-7.66 7.03-2.95 1.87-6.7 3.43-11.25 4.68-4.55 1.25-9.65 1.88-15.31 1.88H61.3c-3.32 0-6.01-2.73-6.01-6.11v-8.72l-.01-67.35c.01-3.36 2.69-6.09 6-6.09h44.91c12.17 0 22.41 4.03 30.71 12.09 3.56 3.47 6.37 7.46 8.41 12-6.32 0-14.15 0-22.43.01H93.01c-3.49 0-6.13 1.74-7.45 4.92-1.28 3.12-.67 6.2 1.75 8.66 8.51 8.69 17.2 17.5 25.31 25.72 1.53 1.55 3.36 2.35 5.37 2.35.44 0 .88-.04 1.34-.12 3.07-.52 5.22-2.35 6.19-5.29 1-3.04.34-5.87-1.93-8.19-3.31-3.39-6.65-6.76-10.15-10.28l-1.89-1.92h37.61c.13 1.65.2 3.32.2 5.03z"/>`,
 	},
 	book: {
 		viewBox: "0 0 24 24",
@@ -1025,6 +1058,14 @@ export const IconLibrary: IconLibraryType = {
 	today: {
 		viewBox: "0 0 24 24",
 		path: `<path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>`,
+	},
+	toggle: {
+		viewBox: "0 0 1024 1024",
+		path: `<path d="M298 640q52 0 90-38t38-90-38-90-90-38-90 38-38 90 38 90 90 38zM726 298q88 0 150 63t62 151-62 151-150 63h-428q-88 0-150-63t-62-151 62-151 150-63h428z"/>`,
+	},
+	train: {
+		viewBox: "0 0 24 24",
+		path: `<path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h2.23l2-2H14l2 2h2v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-7H6V6h5v4zm2 0V6h5v4h-5zm3.5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>`,
 	},
 	"triangle-up": { viewBox: "0 0 6 5", path: `<path d="M3,0,6,5H0Z"/>` },
 	"triangle-down": {

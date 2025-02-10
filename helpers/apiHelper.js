@@ -24,29 +24,25 @@ const DEFAULT_TIMEOUT = 120000; // 2 minutes
  * @param {object} options.body		Additional data (as JSON object)
  * @param {number} [options.timeout]	Timeout (in milliseconds. Default: 120000)
  * @param {string} options.token	Authorization access-token (if required)
- * @param {object} options.controller	AbortController instance
- * @param {object} tokenOptions
- * @param {number} [tokenOptions.token_timeout]	Access-token expiry time in milliseconds
- * @param {string} tokenOptions.refreshToken	Refresh-token
- * @param {Function} tokenOptions.updateUserInfo	Function to update user info
- * @param {boolean} tokenOptions.isTokenUpdating	Flag to check if token is already being updated
- * @param {Function} tokenOptions.setIsTokenUpdating	Function to set isTokenUpdating flag
+ * @param {object} [options.controller]	AbortController instance
+ * @param {boolean} [options.isMultipart]	Flag to indicate multipart form data
  * @param {Function} [generateNewToken]	Function to generate new access token (when current token is nearing expiry, or token-expired error is returned by the server)
  * @returns {Promise} Promise object represents the response
  * - If response is ok, returns the response as JSON
  * @throws {Error} If response is not ok, throws an error
  * - Error object has extra properties: response, status
  * - If access-token has expired, error object has name: "Unauthorized"
- * - If response has timed-out, error object has name: "AbortError"
+ * - If response was aborted using AbortController, error object has name: "AbortError"
+ * - If response has timed-out, error object has name: "TimeoutError"
  */
-export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
+export function fetcher(url, options, generateNewToken) {
 	const {
 		method,
 		headers,
 		body = {},
 		timeout,
 		token,
-		controller,
+		controller = null,
 		isMultipart,
 		...restOptions
 	} = options;
@@ -54,10 +50,13 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 	// Timeout controller for the fetch request
 	const _controller = controller || new AbortController();
 
-	const timeout_id = setTimeout(
-		() => _controller.abort(),
-		timeout || DEFAULT_TIMEOUT
-	);
+	// Set timeout for the fetch request
+	const timeout_id = setTimeout(() => {
+		const err = new Error("Request Timed Out");
+		err.name = "TimeoutError";
+		_controller.abort(err);
+		throw err;
+	}, timeout || DEFAULT_TIMEOUT);
 
 	// Add client_ref_id to the request body, if not already present
 	body.client_ref_id ??= Date.now() + "" + Math.floor(Math.random() * 1000);
@@ -79,6 +78,15 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 		// delete headersData["Content-Type"];
 		delete bodyData.client_ref_id;
 		delete bodyData.source;
+	}
+
+	// Check if the signal is already aborted
+	if (_controller?.signal?.aborted) {
+		console.warn("📡 Fetch Aborted:", {
+			url,
+			options,
+		});
+		return;
 	}
 
 	const fetchPromise = fetch(url, {
@@ -106,7 +114,7 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 					});
 				});
 
-				const err = new Error("API Error");
+				const err = new Error("FetchError");
 				err.response = res;
 				err.status = res.status;
 				if (res.status === 401) {
@@ -130,32 +138,6 @@ export function fetcher(url, options, generateNewToken /*tokenOptions*/) {
 			// Cancel aborting the fetch request after timeout
 			clearTimeout(timeout_id);
 		});
-
-	// Try to update the access-token, if token is nearing expiry
-	// if (tokenOptions) {
-	// 	const {
-	// 		token_timeout,
-	// 		refresh_token,
-	// 		updateUserInfo,
-	// 		isTokenUpdating,
-	// 		setIsTokenUpdating,
-	// 	} = tokenOptions;
-
-	// 	if (
-	// 		refresh_token &&
-	// 		token_timeout &&
-	// 		isTokenUpdating !== true &&
-	// 		token_timeout <= Date.now()
-	// 	) {
-	// 		// Fetch new access-token using the refresh-token...
-	// 		generateNewAccessToken(
-	// 			refresh_token,
-	// 			updateUserInfo,
-	// 			isTokenUpdating,
-	// 			setIsTokenUpdating
-	// 		);
-	// 	}
-	// }
 
 	// Try to update the access-token, if token is nearing expiry
 	if (typeof generateNewToken === "function") {

@@ -1,12 +1,12 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { NetworkObject } from "constants";
+import { MyNetworkBreadcrumbs } from "constants";
 
 import { ProfilePanel } from "page-components/Admin";
 
 const Profile = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+			<BreadcrumbsWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
 				<ProfilePanel />
 			</BreadcrumbsWrapper>
 		</PaddingBox>
@@ -14,7 +14,7 @@ const Profile = () => {
 };
 
 Profile.pageMeta = {
-	title: "My Network > Retailer Details | Admin",
+	title: "My Network > Agent Details | Admin",
 	isSubPage: true,
 };
 

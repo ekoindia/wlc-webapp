@@ -1,11 +1,11 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { NetworkObject } from "constants";
+import { MyNetworkBreadcrumbs } from "constants";
 import { ChangeRole } from "page-components/Admin";
 
 const ChangeRolePage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+			<BreadcrumbsWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
 				<ChangeRole />
 			</BreadcrumbsWrapper>
 		</PaddingBox>
@@ -15,6 +15,7 @@ const ChangeRolePage = () => {
 ChangeRolePage.pageMeta = {
 	title: "My Network > Change Role | Admin",
 	isSubPage: true,
+	isFixedBottomAppBar: true,
 };
 
 export default ChangeRolePage;

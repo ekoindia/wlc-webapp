@@ -61,28 +61,6 @@ const UserProvider = ({ userMockData, children }) => {
 		}
 	}, []);
 
-	// useEffect(() => {
-	// 	console.log("User Context : UseEffect", {
-	// 		logged: state?.loggedIn,
-	// 		path: Router.asPath,
-	// 	});
-
-	// 	if (state?.loggedIn) {
-	// 		// setLoading(false)
-	// 		console.log("User Context : ", state?.loggedIn, Router.asPath);
-
-	// 		if (Router.pathname === '/404') return true
-	// 		else if (Router.pathname.includes("/admin")) Router.push(Router.asPath);
-	// 		else Router.replace("/admin/my-network");
-
-	// 		// the above condition is for when user refrehes the poge
-	// 		// if (!Router.pathname.includes(roleRoutes[state?.role])) {
-	// 		// 	console.log("Redirect");
-	// 		// 	Router.replace(roleInitialRoute[state?.role]);
-	// 		// }
-	// 	}
-	// }, [state?.loggedIn]);
-
 	/**
 	 * Fetch the user profile data again and update the userState.
 	 */
@@ -130,8 +108,15 @@ const UserProvider = ({ userMockData, children }) => {
 
 	/**
 	 * Mark the user as logged out in the userState.
+	 * @param {object} options - Options to logout.
+	 * @param {boolean} options.isForced - If true, user has force logged-out using the Logout menu-option.
 	 */
-	const logout = () => {
+	const logout = ({ isForced = false } = {}) => {
+		// If forced-logout by the user, store it in the sessionStorage
+		if (isForced) {
+			sessionStorage.setItem("inf-forced-logout", "1");
+		}
+
 		dispatch({ type: "LOGOUT", meta: { isAndroid: isAndroid } });
 	};
 
@@ -184,6 +169,7 @@ const UserProvider = ({ userMockData, children }) => {
 	const isOnboarding =
 		state?.onboarding == 1 || state?.userId == "1" ? true : false;
 
+	// MARK: useUser()
 	const userContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
@@ -192,6 +178,10 @@ const UserProvider = ({ userMockData, children }) => {
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
 			accessToken: state?.access_token || "",
+			accessTokenLite:
+				state?.access_token_lite || state?.access_token || "",
+			accessTokenCrm:
+				state?.access_token_crm || state?.access_token || "",
 			isOnboarding: isOnboarding,
 			userData: state || {},
 			login,
@@ -208,6 +198,7 @@ const UserProvider = ({ userMockData, children }) => {
 		};
 	}, [state, isLoggedIn, loading, isTokenUpdating, isAdmin, refreshUser]);
 
+	// MARK: useSession()
 	const sessionContextValue = useMemo(() => {
 		return {
 			isLoggedIn: isLoggedIn,
@@ -216,21 +207,29 @@ const UserProvider = ({ userMockData, children }) => {
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
 			accessToken: state?.access_token || "",
+			accessTokenLite:
+				state?.access_token_lite || state?.access_token || "",
+			accessTokenCrm:
+				state?.access_token_crm || state?.access_token || "",
 			isOnboarding: isOnboarding,
 			loading,
 			setLoading,
 			refreshUser,
+			logout,
 		};
 	}, [
 		isLoggedIn,
-		state?.userId,
-		state?.user_type,
-		state?.access_token,
-		state?.onboarding,
-		state?.isAdminAgentMode,
-		loading,
 		isAdmin,
+		state?.isAdminAgentMode,
+		state?.userId,
+		state?.userDetails?.user_type,
+		state?.access_token,
+		state?.access_token_lite,
+		state?.access_token_crm,
+		isOnboarding,
+		loading,
 		refreshUser,
+		logout,
 	]);
 
 	return (

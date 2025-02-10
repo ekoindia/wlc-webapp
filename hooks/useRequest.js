@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import useRefreshToken from "./useRefreshToken.js";
 
+// TODO: REDUNDANT. REMOVE USAGE AND DELETE.
 const useRequest = ({
 	method = "GET",
 	baseUrl,

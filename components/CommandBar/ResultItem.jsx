@@ -44,7 +44,7 @@ const ResultItem = forwardRef(({ className, item, active }, ref) => {
 					color={active ? "#0f172a" : "#334155"}
 					fontWeight="450"
 				>
-					{item.name}
+					{item.name || item.label}
 				</Text>
 				{item.subtitle && (
 					<Text

@@ -1,5 +1,5 @@
 import { FeatureFlags, FeatureFlagType } from "constants/featureFlags";
-import { useSession } from "contexts";
+import { useOrgDetailContext, useSession } from "contexts";
 import { useCallback, useEffect, useState } from "react";
 
 /**
@@ -10,6 +10,8 @@ import { useCallback, useEffect, useState } from "react";
  */
 const useFeatureFlag = (featureName: string) => {
 	const { isAdmin, userId, userType, isLoggedIn } = useSession();
+	const { orgDetail } = useOrgDetailContext();
+	const { org_id } = orgDetail ?? {};
 	const [allowed, setAllowed] = useState<boolean>(false);
 
 	/**
@@ -17,15 +19,31 @@ const useFeatureFlag = (featureName: string) => {
 	 */
 	const checkFeatureFlag = useCallback(
 		(customFeatureName: string) => {
+			if (!customFeatureName) {
+				console.error("Feature name not provided:", customFeatureName);
+				return false;
+			}
+
 			const feature: FeatureFlagType = FeatureFlags[customFeatureName];
 
-			// If the feature is not defined or disabled, return false without checking other conditions.
-			if (!feature?.enabled) {
+			// If feature is not defined, return false.
+			if (!feature) {
+				console.log("Feature not defined:", customFeatureName);
+				return false;
+			}
+
+			// If the feature is disabled, return false.
+			if (feature.enabled !== true) {
+				console.log("Feature disabled:", customFeatureName);
 				return false;
 			}
 
 			// Check if the feature is allowed for Admin only
 			if (feature.forAdminOnly && !isAdmin) {
+				console.log(
+					"Feature not allowed for non-Admins:",
+					customFeatureName
+				);
 				return false;
 			}
 
@@ -34,6 +52,10 @@ const useFeatureFlag = (featureName: string) => {
 				feature.forEnv?.length > 0 &&
 				!feature.forEnv.includes(process.env.NEXT_PUBLIC_ENV)
 			) {
+				console.log(
+					"Feature not allowed for this environment:",
+					customFeatureName
+				);
 				return false;
 			}
 
@@ -49,24 +71,58 @@ const useFeatureFlag = (featureName: string) => {
 				return false;
 			}
 
-			// Check if the feature is enabled for the user (if a set of allowed user-IDs is defined).
+			// Check envoirnment specific conditions, such as user-id or org-id:
 			if (
-				feature.forUserId?.length > 0 &&
-				!(isLoggedIn && userId && feature.forUserId.includes(userId))
+				feature.envConstraints &&
+				process.env.NEXT_PUBLIC_ENV in feature.envConstraints
 			) {
-				return false;
+				const envConstraints =
+					feature.envConstraints[process.env.NEXT_PUBLIC_ENV];
+
+				// Check if the current user is allowed for the feature.
+				if (
+					envConstraints.forUserId?.length > 0 &&
+					!(
+						isLoggedIn &&
+						userId &&
+						envConstraints.forUserId.includes(userId)
+					)
+				) {
+					return false;
+				}
+
+				// Check if the current org is allowed for the feature.
+				if (
+					envConstraints.forOrgId?.length > 0 &&
+					!(org_id && envConstraints.forOrgId.includes(+org_id))
+				) {
+					return false;
+				}
 			}
 
 			// If all conditions are satisfied, return true.
+			console.log("Feature enabled:", customFeatureName);
+
 			return true;
 		},
-		[FeatureFlags, isAdmin, userId, userType, isLoggedIn]
+		[
+			FeatureFlags,
+			isAdmin,
+			userId,
+			userType,
+			isLoggedIn,
+			org_id,
+			process.env.NEXT_PUBLIC_ENV,
+		]
 	);
 
 	/**
 	 * Check if the default feature (passed to the hook) is enabled based on the conditions defined in the featureFlags.
 	 */
 	useEffect(() => {
+		if (!featureName) {
+			return;
+		}
 		setAllowed(checkFeatureFlag(featureName));
 	}, [featureName, checkFeatureFlag]);
 

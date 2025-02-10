@@ -5,36 +5,33 @@ import {
 	AccordionPanel,
 	Box,
 	Circle,
-	Drawer,
-	DrawerContent,
-	DrawerOverlay,
 	Flex,
 	Text,
-	// Tooltip,
-	useBreakpointValue,
-	useDisclosure,
 	useToken,
 } from "@chakra-ui/react";
-import {
-	AdminBlacklistMenuItems,
-	AdminOtherMenuItems,
-	Endpoints,
-	OtherMenuItems,
-	TransactionIds,
-	UserType,
-	adminSidebarMenu,
-	sidebarMenu,
-} from "constants";
-import { useMenuContext, useOrgDetailContext, useUser } from "contexts";
-import { useFeatureFlag } from "hooks";
-import { Priority, useRegisterActions } from "kbar";
+import { useBottomAppBarItems } from "components/BottomAppBar";
+import { Endpoints, UserType } from "constants";
+import { useUser } from "contexts";
+import { useFeatureFlag, useLocalStorage, useNavigationLists } from "hooks";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { limitText } from "utils";
 import { svgBgDotted } from "utils/svgPatterns";
-import { /* AdminViewToggleCard, */ Icon, ProfileCard, StatusCard } from "..";
-import { ActionIcon, useKBarReady } from "../CommandBar";
+import {
+	/* AdminViewToggleCard, */
+	Icon,
+	ProfileCard,
+	StatusCard,
+} from "..";
+
+// Lazy-load the BottomAppBar component (for icon-only compact side-bar view)
+const BottomAppBar = dynamic(
+	() => import("components/BottomAppBar").then((pkg) => pkg.BottomAppBar),
+	{
+		ssr: false,
+	}
+);
 
 /**
  * A helper function to check if the current route is the same as the route passed to it.
@@ -55,190 +52,11 @@ const isCurrentRoute = (routerUrl, path) => {
 };
 
 /**
- * A helper function to create the KBar actions array from all the visible transactions from transaction_list which are part of role_transaction_list.
- * @param {Array} interaction_list - List of all transactions
- * @param {object} role_tx_list - All transaction_ids that are allowed to the user (mapped to the trxn details)
- * @param router
- * @param is_other_list
- * @returns {Array} Array of KBar actions
+ * Sidebar to show the left-hand navigation menu
+ * MARK: SideBar
+ * @returns {JSX.Element} A sidebar component
  */
-const generateTransactionActions = (
-	interaction_list,
-	role_tx_list,
-	router,
-	is_other_list = false
-) => {
-	const getTxAction = (tx, parent_id, is_group) => {
-		const _id = "" + (parent_id ? `${parent_id}/` : "") + tx.id;
-		const desc = tx.description || tx.desc || "";
-
-		return {
-			id: "tx/" + _id,
-			name: tx.label,
-			subtitle: limitText(desc, 60),
-			// keywords: tx.label + " " + (tx.desc || "") + (tx.category || ""),
-			icon: (
-				<ActionIcon
-					icon={tx.icon}
-					ext_icon={tx.ext_icon}
-					name={tx.label}
-					style="filled"
-				/>
-			),
-			priority: parent_id ? Priority.HIGH : Priority.NORMAL,
-			// section: "Services",
-			perform: is_group ? null : () => router.push("/transaction/" + _id),
-			parent: parent_id
-				? "tx/" + parent_id
-				: is_other_list
-					? "others"
-					: "start-a-tx",
-		};
-	};
-
-	const trxnList = is_other_list
-		? [
-				{
-					id: "others",
-					name: "Others...",
-					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
-					icon: (
-						<ActionIcon
-							icon="others"
-							// color="gray.500"
-							style="filled"
-						/>
-					),
-					// shortcut: ["$mod+/"],
-					// section: "Services",
-				},
-			]
-		: [
-				{
-					id: "start-a-tx",
-					name: "Start a Transaction...",
-					// keywords: "dmt bbps recharge billpay product earn send cashin cashout transfer",
-					icon: (
-						<ActionIcon
-							icon="transaction"
-							color="primary.light"
-							style="filled"
-						/>
-					),
-					shortcut: ["$mod+/"],
-					// section: "Services",
-				},
-			];
-
-	// Cache for transactions that contain sub-transactions
-	const trxnGroups = [];
-
-	// Cache of all trxn-ids already processed
-	const processedTrxns = {};
-
-	// Process main transactions
-	interaction_list.forEach((tx) => {
-		if (!tx) {
-			return;
-		}
-		if (tx.id in role_tx_list && !(tx.id in processedTrxns)) {
-			let is_group = false;
-			processedTrxns[tx.id] = true;
-			// Is this a transaction group (Grid) (i.e, contains sub-transactions)?
-			if (tx.behavior == 7 && tx?.group_interaction_ids?.length) {
-				is_group = true;
-				trxnGroups.push({
-					tx: tx,
-					parent: "" + tx.id,
-				});
-			}
-			trxnList.push(getTxAction(tx, null, is_group));
-		}
-	});
-
-	// Recusrively process transaction groups...
-	while (trxnGroups.length > 0) {
-		const group = trxnGroups.shift();
-		const { tx, parent } = group;
-		const group_interaction_ids = tx.group_interaction_ids.split(",");
-		group_interaction_ids.forEach((id) => {
-			const subTx = role_tx_list[id];
-			if (subTx && !(id in processedTrxns)) {
-				const thisTx = {
-					id: id,
-					...subTx,
-				};
-				processedTrxns[id] = true;
-				let is_group = false;
-				// Is this a transaction group (i.e, contains sub-transactions)?
-				if (
-					subTx.behavior == 7 &&
-					subTx?.group_interaction_ids?.length > 0
-				) {
-					is_group = true;
-
-					// Check if this group has all child transactions already processed
-					const group_tx_ids =
-						thisTx.group_interaction_ids.split(",");
-					let all_processed = true;
-					group_tx_ids.forEach((tx_id) => {
-						if (!(tx_id in processedTrxns)) {
-							all_processed = false;
-						}
-					});
-
-					if (all_processed) {
-						is_group = false;
-					} else {
-						trxnGroups.push({
-							tx: thisTx,
-							parent: "" + (parent ? `${parent}/` : "") + id,
-						});
-					}
-				}
-				trxnList.push(getTxAction(thisTx, parent, is_group));
-			}
-		});
-	}
-
-	return trxnList;
-};
-
-/**
- * A helper function to create the KBar actions array from all the visible left-menu links.
- * @param {Array} menu_list - List of all Menu items with a label and a link.
- * @param {object} router - Next.js router object
- * @returns {Array} Array of KBar actions
- */
-const generateMenuLinkActions = (menu_list, router) => {
-	const menuLinkActions = [];
-
-	// get current route path from Nextjs router
-	const currentRoute = router.pathname;
-
-	menu_list.forEach((menu) => {
-		if (menu.link != currentRoute) {
-			menuLinkActions.push({
-				id: "menulnk/" + menu.name,
-				name: menu.name,
-				icon: (
-					<ActionIcon
-						icon={menu.icon}
-						name={menu.name}
-						style="filled"
-					/>
-				),
-				// section: "Services",
-				perform: () => router.push(menu.link),
-			});
-		}
-	});
-	// console.log("menuLinkActions", menuLinkActions, menu_list);
-	return menuLinkActions;
-};
-
-//MAIN EXPORT
-const SideBar = ({ navOpen, setNavClose }) => {
+const SideBar = () => {
 	const {
 		isLoggedIn,
 		isOnboarding,
@@ -247,184 +65,18 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		isAdminAgentMode,
 		userType,
 	} = useUser();
-	const { orgDetail } = useOrgDetailContext();
-	const { metadata } = orgDetail;
-	const disabledFeatures = metadata?.disabled_features;
-	const { interactions } = useMenuContext();
-	const { interaction_list, role_tx_list } = interactions;
-	const router = useRouter();
-	const [menuList, setMenuList] = useState([]);
-	const [trxnList, setTrxnList] = useState([]);
-	const [otherList, setOtherList] = useState([]);
-	const [openIndex, setOpenIndex] = useState(-1);
-	const [trxnActions, setTrxnActions] = useState([]);
-	const [otherActions, setOtherActions] = useState([]);
 
-	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
+	const { trxnList, menuList, otherList } = useNavigationLists();
+	const router = useRouter();
+	const [openIndex, setOpenIndex] = useState(-1);
 
 	// Check if screen is smaller than "lg" to show a mobile sidebar with drawer
-	const isSmallScreen = useBreakpointValue(
-		{ base: true, lg: false },
-		{ ssr: false }
-	);
+	// const isSmallScreen = useBreakpointValue(
+	// 	{ base: true, lg: false },
+	// 	{ ssr: false }
+	// );
 
-	// Check if CommandBar is loaded...
-	const { ready } = useKBarReady();
-
-	// const [trxnActionsWorker] = useWorker(generateTransactionActions);
-
-	// const menuList =
-	// 	isAdmin && isAdminAgentMode !== true ? adminSidebarMenu : sidebarMenu;
-
-	// Split the transaction list into two lists:
-	// 1. trxnList: List of transactions/products
-	// 2. otherList: List of other menu items
-	useEffect(() => {
-		const trxnList = [];
-		const otherList = [];
-		let _otherActions = [];
-		let _filteredMenuList = [];
-
-		const _menuList =
-			isAdmin && isAdminAgentMode !== true
-				? adminSidebarMenu
-				: sidebarMenu;
-
-		// Filter out Disabled features (from org-metadata) & Feature Flags !!!
-		const _feat = disabledFeatures
-			? JSON.parse(disabledFeatures)?.features
-			: [];
-		_menuList.forEach((item) => {
-			// Skip if the feature is disabled (from org-metadata)
-			if (_feat.includes(item.id)) {
-				return;
-			}
-
-			// Skip if the feature is disabled (from feature-flags)
-			if (
-				item.featureFlag &&
-				checkFeatureFlag(item.featureFlag) !== true
-			) {
-				return;
-			}
-
-			// Else, add to the menu list
-			_filteredMenuList.push(item);
-		});
-
-		setMenuList(_filteredMenuList);
-
-		if (interaction_list && interaction_list.length > 0) {
-			interaction_list.forEach((tx) => {
-				if (isAdmin) {
-					if (AdminOtherMenuItems.indexOf(tx.id) > -1) {
-						otherList.push(tx);
-					} else if (isAdminAgentMode) {
-						if (OtherMenuItems.indexOf(tx.id) > -1) {
-							otherList.push(tx);
-						} else if (AdminBlacklistMenuItems.indexOf(tx.id) < 0) {
-							// Add all other transactions to the trxnList (if not blacklisted)
-							trxnList.push(tx);
-						}
-					}
-				} else {
-					if (OtherMenuItems.indexOf(tx.id) > -1) {
-						otherList.push(tx);
-					} else {
-						trxnList.push(tx);
-					}
-				}
-			});
-
-			// Add manage-my-account to the otherList
-			let manageMyAccount = {
-				id: TransactionIds.MANAGE_MY_ACCOUNT,
-				...role_tx_list[TransactionIds.MANAGE_MY_ACCOUNT],
-			};
-			// Remove "Manage My Account", if already present in the list
-			if (manageMyAccount?.is_visible === 1) {
-				manageMyAccount = null;
-			}
-			// Remove "Manage My Account" for Admins
-			// if (isAdmin) {
-			// 	manageMyAccount = null;
-			// }
-
-			setTrxnList(trxnList);
-			setOtherList([
-				...[
-					{
-						icon: "transaction-history",
-						label: "Transaction History",
-						description: "Statement of your previous transactions",
-						link: (isAdmin ? "/admin" : "") + Endpoints.HISTORY,
-					},
-				],
-				...otherList,
-				...(manageMyAccount ? [manageMyAccount] : []),
-			]);
-
-			if (ready) {
-				_otherActions = generateTransactionActions(
-					[...otherList, manageMyAccount],
-					role_tx_list,
-					router,
-					true // is-other-list
-				);
-
-				// Generate KBar actions...
-				setTrxnActions(
-					isAdmin && isAdminAgentMode !== true
-						? []
-						: generateTransactionActions(
-								trxnList,
-								role_tx_list,
-								router
-							)
-				);
-			}
-		}
-
-		if (ready) {
-			_otherActions = [
-				..._otherActions,
-				...generateMenuLinkActions(menuList, router),
-			];
-
-			// console.log("otherActions", _otherActions);
-			setOtherActions(_otherActions);
-		}
-	}, [
-		interaction_list,
-		// menuList,
-		role_tx_list,
-		router,
-		ready,
-		isAdmin,
-		isAdminAgentMode,
-	]);
-
-	// useEffect(() => {
-	// 	if (interaction_list && interaction_list.length > 0) {
-	// 		const _trxnActions = generateTransactionActions(
-	// 			interaction_list,
-	// 			role_tx_list,
-	// 			Icon,
-	// 			router
-	// 		);
-	// 		setTrxnActions(_trxnActions);
-	// 	}
-	// }, [interaction_list, role_tx_list]);
-
-	// console.log("trxnActions", trxnActions, otherActions);
-
-	useRegisterActions(
-		[...trxnActions, ...otherActions],
-		[[...trxnActions, ...otherActions]]
-	);
-	// useRegisterActions(otherActions, [otherActions]);
-
-	// Set the sub-menu (accordian) index that should be open by default
+	// Set the sub-menu (accordion) index that should be open by default
 	// For Distributors, open the "Other" submenu (index = 1)
 	// For Agents, open the "Start a Transaction" submenu (index = 0)
 	useEffect(() => {
@@ -452,22 +104,8 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		return null;
 	}
 
-	return isSmallScreen ? ( // Mobile sidebar with drawer
-		<Box
-			sx={{
-				"@media print": {
-					display: "none",
-				},
-			}}
-		>
-			<SmallScreenSideMenu
-				{...otherProps}
-				navOpen={navOpen}
-				setNavClose={setNavClose}
-			/>
-		</Box>
-	) : (
-		// Desktop sidebar
+	// Desktop sidebar
+	return (
 		<Box
 			sx={{
 				"@media print": {
@@ -479,32 +117,50 @@ const SideBar = ({ navOpen, setNavClose }) => {
 		</Box>
 	);
 
-	// return (
-	// 	<>
-	// 		<Box display={{ base: "flex", lg: "none" }}>
-	// 			<SmallScreenSideMenu
-	// 				{...otherProps}
-	// 				navOpen={navOpen}
-	// 				setNavClose={setNavClose}
-	// 			/>
-	// 		</Box>
-	// 		<Box
-	// 			display={{ base: "none", lg: "flex" }}
-	// 			sx={{
-	// 				"@media print": {
-	// 					display: "none",
-	// 				},
-	// 			}}
-	// 		>
-	// 			<SideBarMenu {...otherProps} />
-	// 		</Box>
-	// 	</>
+	// return isSmallScreen ? ( // Mobile sidebar with drawer
+	// 	<Box
+	// 		sx={{
+	// 			"@media print": {
+	// 				display: "none",
+	// 			},
+	// 		}}
+	// 	>
+	// 		<SmallScreenSideMenu
+	// 			{...{ isSidebarOpen, closeSidebar, ...otherProps }}
+	// 		/>
+	// 	</Box>
+	// ) : (
+	// 	// Desktop sidebar
+	// 	<Box
+	// 		sx={{
+	// 			"@media print": {
+	// 				display: "none",
+	// 			},
+	// 		}}
+	// 	>
+	// 		<SideBarMenu {...otherProps} />
+	// 	</Box>
 	// );
 };
 
 export default SideBar;
 
-//FOR LAPTOP SCREENS
+/**
+ * Sidebar Menu with status card, profile card, and navigation menu items.
+ * This is shown on larger screens.
+ * MARK: SideBarMenu
+ * @param {object} props
+ * @param {object} props.userData - The user data object
+ * @param {Array} props.menuList - List of fixed menu items
+ * @param {Array} props.trxnList - List of "transactions" submenu items
+ * @param {Array} props.otherList - List of "other" submenu items
+ * @param {object} props.router - Next.js router object
+ * @param {boolean} props.isAdmin - Flag to check if user is an admin
+ * @param {boolean} props.isAdminAgentMode - Flag to check if user is in admin-agent mode
+ * @param {number} props.openIndex - The index of the open accordion menu
+ * @param {Function} props.setOpenIndex - Function to set the open accordion menu index
+ * @returns {JSX.Element} A sidebar menu component
+ */
 const SideBarMenu = ({
 	userData,
 	menuList,
@@ -519,111 +175,195 @@ const SideBarMenu = ({
 	// Get theme color values
 	const [contrast_color] = useToken("colors", ["sidebar.dark"]);
 
+	// Feature-Flag for Compact-Mode
+	const [isCompactSidebarEnabled] = useFeatureFlag("COMPACT_SIDEBAR");
+
+	// Compact Mode Setting
+	const [isCompactView, setIsCompactView] = useLocalStorage(
+		"inf-compactsidebar",
+		false,
+		{
+			dontStoreInitialValue: true,
+		}
+	);
+
+	// Get the bottom-bar items (for compact side-bar view)
+	const bottomAppBarItems = useBottomAppBarItems({ isSideBarMode: true });
+
+	const showOtherListAsMainList =
+		isAdmin !== true && trxnList?.length === 0 && otherList?.length > 0;
+
+	// if (isCompactView) {
+	// 	return <BottomAppBar items={bottomAppBarItems} isSideBarMode={true} />;
+	// }
+
 	return (
 		<Box
 			className="sidebar"
-			w={{
-				// base: "full",
-				// sm: "55vw",
-				// md: "13.5vw",
-				// lg: "225px",
-				// xl: "250px",
-				// "2xl": "250px",
-				base: "250px",
-			}}
+			position="relative"
+			w={
+				isCompactView
+					? "80px"
+					: {
+							// base: "full",
+							// sm: "55vw",
+							// md: "13.5vw",
+							// lg: "225px",
+							// xl: "250px",
+							// "2xl": "250px",
+							base: "250px",
+						}
+			}
 			bg="sidebar.bg" // ORIG_THEME: primary.DEFAULT
 			color="sidebar.text" // ORIG_THEME: "white"
 			height={"100%"}
+			py={isCompactView ? "20px" : 0}
 			backgroundImage={svgBgDotted({
 				fill: contrast_color,
 			})}
 			overflowY="auto"
 		>
-			<Flex direction="column">
-				<Box borderRight="12px" height={"100%"} w={"100%"}>
-					{/* Show user-profile card and wallet balance for agents (non-admin users) */}
-					{!isAdmin && (
-						<Link href={Endpoints.USER_PROFILE}>
-							<ProfileCard
-								name={userData?.userDetails?.name}
-								mobileNumber={userData?.userDetails?.mobile}
-								img={userData?.userDetails?.pic}
-								cursor="pointer"
+			{isCompactSidebarEnabled && isCompactView ? (
+				<BottomAppBar items={bottomAppBarItems} isSideBarMode={true} />
+			) : (
+				<Flex direction="column">
+					<Box borderRight="12px" height={"100%"} w={"100%"}>
+						{/* Show user-profile card and wallet balance for agents (non-admin users) */}
+						{!isAdmin && (
+							<Link href={Endpoints.USER_PROFILE}>
+								<ProfileCard
+									name={userData?.userDetails?.name}
+									mobileNumber={userData?.userDetails?.mobile}
+									img={userData?.userDetails?.pic}
+									cursor="pointer"
+								/>
+							</Link>
+						)}
+
+						{/* {isAdmin && <AdminViewToggleCard />} */}
+
+						<StatusCard />
+
+						{/* Fixed menu items */}
+						{menuList?.map((menu) => (
+							<LinkMenuItem
+								key={menu.id || menu.name || menu.label}
+								menu={menu}
+								isAdminAgentMode={isAdminAgentMode}
 							/>
-						</Link>
-					)}
+						))}
 
-					{/* {isAdmin && <AdminViewToggleCard />} */}
+						{/* Others menu items as fixed items (if normal) */}
+						{showOtherListAsMainList
+							? otherList?.map((menu) => (
+									<LinkMenuItem
+										key={menu.id || menu.label}
+										menu={menu}
+										isAdminAgentMode={isAdminAgentMode}
+									/>
+								))
+							: null}
 
-					<StatusCard />
+						{/* Dynamic menu items */}
+						{showOtherListAsMainList ? null : (
+							<AccordionMenu
+								trxnList={trxnList}
+								otherList={otherList}
+								router={router}
+								isAdmin={isAdmin}
+								openIndex={openIndex}
+								setOpenIndex={setOpenIndex}
+							/>
+						)}
+					</Box>
+					{/* {rest.children} */}
 
-					{/* Fixed menu items */}
-					{menuList?.map((menu, index) => (
-						<LinkMenuItem
-							key={menu.name}
-							menu={menu}
-							index={index}
-							isAdminAgentMode={isAdminAgentMode}
-						/>
-					))}
+					{/* Extra padding at the bottom */}
+					<Box h="100px" />
+				</Flex>
+			)}
 
-					{/* Dynamic menu items */}
-					<AccordionMenu
-						trxnList={trxnList}
-						otherList={otherList}
-						router={router}
-						isAdmin={isAdmin}
-						openIndex={openIndex}
-						setOpenIndex={setOpenIndex}
+			{/* Button to toggle Compact-View for Sidebar */}
+			{isCompactSidebarEnabled ? (
+				<Flex
+					position="fixed"
+					align="center"
+					justify="center"
+					bottom="0"
+					left="0"
+					w="35px"
+					h="35px"
+					borderRadius="0 99px 99px 0"
+					bg="white"
+					color="primary.DEFAULT"
+					cursor="pointer"
+					boxShadow="base"
+					opacity="0.8"
+					area-label={
+						isCompactView ? "Expand Sidebar" : "Collapse Sidebar"
+					}
+					onClick={() =>
+						isCompactSidebarEnabled &&
+						setIsCompactView(!isCompactView)
+					}
+				>
+					<Icon
+						name="chevron-left"
+						transform={
+							isCompactView ? "rotate(180deg)" : "rotate(0)"
+						}
+						transition="transform 0.2s ease-out"
+						size="xs"
 					/>
-				</Box>
-				{/* {rest.children} */}
-			</Flex>
+				</Flex>
+			) : null}
 		</Box>
 	);
 };
 
 //FOR MOBILE SCREENS
-const SmallScreenSideMenu = ({ navOpen, setNavClose, ...rest }) => {
-	const router = useRouter();
-	const { /* isOpen, onOpen, */ onClose } = useDisclosure();
+// const SmallScreenSideMenu = ({ isSidebarOpen, closeSidebar, ...rest }) => {
+// 	const router = useRouter();
 
-	// Close navigation drawer on page change
-	useEffect(() => {
-		setNavClose();
-	}, [router.asPath, setNavClose]);
+// 	// Close navigation drawer on page change
+// 	useEffect(() => {
+// 		closeSidebar();
+// 	}, [router.asPath]);
 
-	return (
-		<Drawer
-			autoFocus={false}
-			isOpen={navOpen}
-			placement="left"
-			onClose={onClose}
-			returnFocusOnClose={false}
-			onOverlayClick={setNavClose}
-			size="full"
-		>
-			<DrawerOverlay />
-			<DrawerContent maxW="250px" boxShadow={"none"}>
-				<SideBarMenu {...rest} />
-				{/* setNavClose={setNavClose} */}
-			</DrawerContent>
-		</Drawer>
-	);
-};
+// 	return (
+// 		<Drawer
+// 			autoFocus={false}
+// 			isOpen={isSidebarOpen}
+// 			placement="left"
+// 			onClose={closeSidebar}
+// 			returnFocusOnClose={false}
+// 			onOverlayClick={closeSidebar}
+// 			size="full"
+// 		>
+// 			<DrawerOverlay />
+// 			<DrawerContent maxW="250px" boxShadow={"none"}>
+// 				<SideBarMenu {...rest} />
+// 			</DrawerContent>
+// 		</Drawer>
+// 	);
+// };
 
 /**
  * Transaction Submenu Section for non-admin users
+ * MARK: AccordianMenu
  * @param trxnList.trxnList
  * @param {Array} trxnList - List of "transactions" submenu items
  * @param {Array} otherList - List of "other" submenu items
  * @param {object} router - Next.js router object
  * @param {boolean} isAdmin - Flag to check if user is an admin
+ * @param {number} openIndex - The index of the open accordion menu
+ * @param {Function} setOpenIndex - Function to set the open accordion menu index
  * @param trxnList.otherList
  * @param trxnList.router
  * @param trxnList.isAdmin
  * @param trxnList.openIndex
  * @param trxnList.setOpenIndex
+ * @returns {JSX.Element} An accordion menu component
  */
 const AccordionMenu = ({
 	trxnList = [],
@@ -678,6 +418,17 @@ const AccordionMenu = ({
 	);
 };
 
+/**
+ * An expandable section with a list of menu items
+ * MARK: Section
+ * @param {string} title - The title of the section
+ * @param {string} icon - The icon name of the section
+ * @param {Array} menuItems - The list of menu items
+ * @param {object} router - Next.js router object
+ * @param {boolean} expanded - If the section is expanded
+ * @param {boolean} isAdmin - If the user is an admin
+ * @returns {JSX.Element} An accordion section component
+ */
 const AccordionSubMenuSection = ({
 	title,
 	icon,
@@ -739,12 +490,14 @@ const AccordionSubMenuSection = ({
 
 			<AccordionPanel padding={"0px"} border="none">
 				{menuItems?.map((tx) => {
+					if (!tx) return null;
+
 					const link =
-						tx?.link ||
-						`${isAdmin ? "/admin" : ""}/transaction/${tx?.id}`;
+						tx.link ||
+						`${isAdmin ? "/admin" : ""}/transaction/${tx.id}`;
 					const isCurrent = isCurrentRoute(router.asPath, link);
 					return (
-						<Link key={link} href={link}>
+						<Link key={tx.id || link} href={link}>
 							<Box
 								w="100%"
 								padding="0px 14px 0px 40px"
@@ -825,19 +578,29 @@ const AccordionSubMenuSection = ({
 	);
 };
 
+/**
+ * MARK: Link Item
+ * @param root0
+ * @param root0.menu
+ * @param root0.isAdminAgentMode
+ */
 const LinkMenuItem = ({
 	menu,
-	/* currentRoute, */ index,
+	/* currentRoute, */
 	isAdminAgentMode,
 }) => {
 	const router = useRouter();
-	const link = (isAdminAgentMode ? "/admin" : "") + menu.link;
-	const isCurrent = isCurrentRoute(router.asPath, link);
+	const link = menu.link
+		? (isAdminAgentMode ? "/admin" : "") + menu.link
+		: "";
+	const id_link = menu?.id
+		? `${isAdminAgentMode ? "/admin" : ""}/transaction/${menu?.id}`
+		: "";
+	const isCurrent = isCurrentRoute(router.asPath, link || id_link);
 
 	return (
-		<Link href={link} key={index}>
+		<Link href={link || id_link}>
 			<Flex
-				key={index}
 				fontSize={{
 					base: "14px",
 					"2xl": "16px",
@@ -875,7 +638,7 @@ const LinkMenuItem = ({
 				transitionTimingFunction="ease-out"
 			>
 				<Icon name={menu.icon} size="sm" />
-				{menu.name}
+				{menu.name || menu.label}
 			</Flex>
 		</Link>
 	);

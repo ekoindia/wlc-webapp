@@ -1,5 +1,5 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { NetworkObject } from "constants";
+import { MyNetworkBreadcrumbs } from "constants";
 import { UpdatePersonalInfo } from "page-components/Admin";
 
 /**
@@ -8,7 +8,7 @@ import { UpdatePersonalInfo } from "page-components/Admin";
 function UpdatePersonalInfoPage() {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper BreadcrumbsObject={NetworkObject}>
+			<BreadcrumbsWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
 				<UpdatePersonalInfo />
 			</BreadcrumbsWrapper>
 		</PaddingBox>
@@ -18,6 +18,7 @@ function UpdatePersonalInfoPage() {
 UpdatePersonalInfoPage.pageMeta = {
 	title: "My Network > Update Personal Info | Admin",
 	isSubPage: true,
+	isFixedBottomAppBar: true,
 };
 
 export default UpdatePersonalInfoPage;

@@ -1,5 +1,6 @@
-import { Box, Flex, useBreakpointValue, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
 import { PageLoader /*,NavBar, SideBar */ } from "components";
+import { useBottomAppBarItems } from "components/BottomAppBar";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { NavHeight } from "components/NavBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
@@ -46,6 +47,14 @@ const DynamicPopupModuleLoader = dynamic(
 	}
 );
 
+// Lazy-load the BottomAppBar component
+const BottomAppBar = dynamic(
+	() => import("components/BottomAppBar").then((pkg) => pkg.BottomAppBar),
+	{
+		ssr: false,
+	}
+);
+
 /**
  * The default page layout component
  * @param {string} appName - The name of the application. This will be displayed in the browser titlebar.
@@ -57,12 +66,21 @@ const DynamicPopupModuleLoader = dynamic(
  * @param {string} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
 const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
-	const { isSubPage, title, hideMenu } = pageMeta;
+	const { isSubPage, title, hideMenu, isFixedBottomAppBar } = pageMeta;
 
 	const { isLoggedIn } = useSession();
-	const { isOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer
+	// const { isOpen: isSidebarOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer from the top header bar on small screens
 
-	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+	const isSmallScreen = useBreakpointValue(
+		{ base: true, md: false, lg: false },
+		{ ssr: false }
+	);
+
+	// Which screen-sizes to show the bottom app bar, instead of the left navigation drawer?
+	const isBottomAppBarScreen = useBreakpointValue(
+		{ base: true, md: true, lg: false },
+		{ ssr: true }
+	);
 
 	const { publish, TOPICS } = usePubSub();
 
@@ -75,12 +93,16 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
 
+	// Get the bottom bar items
+	const bottomAppBarItems = useBottomAppBarItems();
+
 	// Delay load non-essential components...
 	const [loadNavBar] = useDelayToggle(100);
 	const [loadSidebar] = useDelayToggle(100);
 	const [loadKbarBox] = useDelayToggle(500);
 
-	// Setup Android Listener...
+	// One Time Setup: Setup Android Listener & Route Change Listeners...
+	// MARK: Listeners
 	useEffect(() => {
 		// Show page-loading animation on route change
 		Router.events.on("routeChangeStart", () => setIsPageLoading(true));
@@ -110,6 +132,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	// Add Business section of Command bar...
 	// TODO: Move this to a wrapper component for KBar
 	// Prepare the Command Bar actions for "My Business" section
+	// MARK: Set KBar
 	const businessSearch = useMemo(() => {
 		console.log(
 			"[DynamicSearchController] Preparing to register businessActions: ",
@@ -143,6 +166,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 
 	useRegisterActions(businessSearch, [businessSearch]);
 
+	// MARK: JSX
 	return (
 		<>
 			<Head>
@@ -177,7 +201,11 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 
 			{isLoggedIn ? (
 				<Box w={"full"} className={fontClassName}>
-					{/* Hide top navbar on small screen if this is a sub-page (shows it's own back button in the top header) */}
+					{/*
+						MARK: Top NavBar
+						Hide top navbar on small screen if this is a sub-page
+						(shows it's own back button in the top header)
+					*/}
 					{isSmallScreen && isSubPage ? null : (
 						<Box
 							sx={{
@@ -187,19 +215,21 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							}}
 							h={NavHeight}
 						>
-							{loadNavBar ? <NavBar setNavOpen={onOpen} /> : null}
+							{loadNavBar ? <NavBar /> : null}
 						</Box>
 					)}
 
 					{hideMenu ? (
+						// MARK: No-Menu?
 						<>{children}</>
 					) : (
 						<Flex>
-							{loadSidebar ? (
-								<SideBar
-									navOpen={isOpen}
-									setNavClose={onClose}
-								/>
+							{/*
+								Load the sidebar component
+								MARK: SideBar
+							*/}
+							{isBottomAppBarScreen ? null : loadSidebar ? (
+								<SideBar />
 							) : (
 								// Placeholder for the sidebar
 								<Box
@@ -209,8 +239,10 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 								></Box>
 							)}
 
-							{/* Main Content here */}
-
+							{/*
+								Main Content here
+								MARK: MAIN
+							*/}
 							<Box
 								as="main"
 								minH={{
@@ -245,12 +277,41 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							</Box>
 						</Flex>
 					)}
+
+					{/*
+						MARK: BottomAppBar
+					*/}
+					{isBottomAppBarScreen ? (
+						<Box
+							className="layout-bottom-app-bar"
+							pos="fixed"
+							w="100%"
+							bottom="0"
+							left="0"
+							right="0"
+							sx={{
+								"@media print": {
+									display: "none",
+								},
+							}}
+						>
+							<BottomAppBar
+								{...{
+									items: bottomAppBarItems,
+									isFixedBottomAppBar,
+								}}
+							/>
+						</Box>
+					) : null}
 				</Box>
 			) : (
 				<>{children}</>
 			)}
 
-			{/* Load CommandBar Popup component */}
+			{/*
+				Load CommandBar Popup component
+				MARK: KBar Popup
+			*/}
 			{isLoggedIn && ready && loadKbarBox ? (
 				<CommandBarBox fontClassName={fontClassName} />
 			) : null}

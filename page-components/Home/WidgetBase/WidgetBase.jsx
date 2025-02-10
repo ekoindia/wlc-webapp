@@ -14,6 +14,7 @@ import { IcoButton } from "components";
  * @param 	{object}	iconStyle	Icon style for IcoButton
  * @param 	{object}	icoBtnProps	Props for IcoButton
  * @param 	{boolean}	noPadding	Whether to remove padding from the widget body
+ * @param 	{boolean}	autoHeight	Whether to make the widget full height
  * @param 	{object}	children	Child elements for the widget body
  * @param	{...*}	rest	Rest of the props passed to this component
  * @example	`<WidgetBase></WidgetBase>` TODO: Fix example
@@ -29,16 +30,21 @@ const WidgetBase = ({
 	iconStyle,
 	icoBtnProps,
 	noPadding = false,
+	autoHeight = false,
 	children,
 	...rest
 }) => {
 	return (
 		<Flex
-			h={{
-				base: "auto",
-				md: "320px",
-				"2xl": "360px",
-			}}
+			h={
+				autoHeight
+					? "auto"
+					: {
+							base: "auto",
+							md: "320px",
+							"2xl": "360px",
+						}
+			}
 			direction="column"
 			bg="white"
 			p={!noPadding && "5"}

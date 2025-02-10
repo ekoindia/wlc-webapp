@@ -1,0 +1,57 @@
+services:
+    dev:
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        ports:
+            - "3002:3002"
+            - "9229:9229" # For debugging
+        volumes:
+            - .:/app
+            - /app/node_modules
+            - /app/.next
+        env_file:
+            - .env.local
+        environment:
+            - NODE_ENV=development
+            - NEXT_PUBLIC_ENV=development
+            - NEXT_TELEMETRY_DISABLED=1
+        command: npm run dev
+        # Enable debugging
+        stdin_open: true
+        tty: true
+        container_name: eloka-webapp-dev
+        networks:
+            - eloka-network
+        healthcheck:
+            test: ["CMD", "wget", "--spider", "http://localhost:3000"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    prod:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - NEXT_PUBLIC_ENV=production
+                - DOCKER_BUILD=true
+        ports:
+            - "3002:3000"
+        environment:
+            - NODE_ENV=production
+            - NEXT_PUBLIC_ENV=production
+            - NEXT_TELEMETRY_DISABLED=1
+        container_name: eloka-webapp-prod
+        restart: unless-stopped
+        networks:
+            - eloka-network
+        healthcheck:
+            test: ["CMD", "wget", "--spider", "http://localhost:3000"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+networks:
+    eloka-network:
+        name: eloka-network

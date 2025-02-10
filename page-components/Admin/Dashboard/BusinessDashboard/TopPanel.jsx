@@ -51,6 +51,7 @@ const TopPanel = ({ data }) => {
 			w="100%"
 			templateColumns="repeat(4, 4fr)"
 			overflowX="auto"
+			pb={4}
 			css={{
 				"&::-webkit-scrollbar": {
 					width: "2px",

@@ -5,6 +5,7 @@ type sidebarMenuType = {
 	id: number;
 	icon?: IconNameType;
 	name?: string;
+	label?: string;
 	link?: string;
 	trxn_id?: number; // Transaction Id to link to. Converts to "/transaction/<trxn_id>" links after checking if it is allowed as per user's roles.
 	dynamicAdminView?: boolean; // If true, then the menu item will be shown to Admins in the "Agent-View". The link should be prepended with "/admin" in this case.
@@ -39,6 +40,7 @@ export const AdminOtherMenuItems: number[] = [
 	TransactionIds.NEO_BANK,
 	TransactionIds.MANAGE_NETWORK_EVALUE,
 	TransactionIds.MANAGE_SELF_EVALUE,
+	TransactionIds.MANAGE_MY_ACCOUNT,
 	// TransactionIds.LOAD_EVALUE,
 	// TransactionIds.REQUEST_EVALUE,
 	// TransactionIds.TRANSFER_EVALUE,
@@ -65,82 +67,98 @@ export const AdminBlacklistMenuItems: number[] = [
 export const adminSidebarMenu: sidebarMenuType[] = [
 	{
 		id: 1,
-		name: "Dashboard",
+		label: "Dashboard",
 		icon: "dashboard",
 		link: "/admin",
 	},
 	{
-		id: 2,
-		name: "My Network",
+		id: 5,
+		label: "My Network",
 		icon: "refer",
 		link: "/admin/my-network",
 	},
 	{
-		id: 3,
-		name: "Network Transactions",
+		id: 10,
+		label: "Network Transactions",
+		icon: "swap-horiz",
+		link: "/admin/network-statement",
+		featureFlag: "NETWORK_STATEMENT",
+	},
+	{
+		// TODO: REMOVE THIS WITH RELATED COMPONENTS
+		id: 9,
+		label: "Network Statement",
 		icon: "swap-horiz",
 		link: "/admin/transaction-history",
 	},
 	// {
-	// 	name: "Invoicing",
+	// 	id: 15,
+	// 	label: "Invoicing",
 	// 	icon: "invoice",
 	// 	link: "/admin/invoicing",
 	// },
 	{
-		id: 4,
-		name: "Pricing & Commissions",
+		id: 20,
+		label: "Business Settings",
+		icon: "business-center",
+		link: "/admin/business",
+	},
+	{
+		id: 25,
+		label: "Pricing & Commissions",
 		icon: "commission-percent",
 		link: "/admin/pricing",
 	},
 	// {
-	// 	name: "Company Profile",
+	// 	id: 30,
+	// 	label: "Company Profile",
 	// 	icon: "person",
 	// 	link: "/admin/company",
 	// },
 	// {
-	// 	name: "Send Notifications",
+	// 	id: 35,
+	// 	label: "Send Notifications",
 	// 	icon: "notifications-none",
 	// 	link: "/admin/notifications",
 	// },
 	{
-		id: 5,
-		name: "Onboard Agents",
+		id: 40,
+		label: "Onboard Agents",
 		icon: "person-add",
 		link: "/admin/onboard-agents",
 	},
 	{
-		id: 6,
+		id: 45,
+		label: "Query Center",
 		icon: "query",
-		name: "Query Center",
 		link: "/admin/query",
 	},
 	{
-		id: 7,
+		id: 50,
+		label: "Invoice",
 		icon: "description",
-		name: "Invoice",
 		link: "/admin/transaction/" + TransactionIds.INVOICE_DOWNLOAD,
 		trxn_id: TransactionIds.INVOICE_DOWNLOAD,
 	},
 	{
 		id: 99,
+		label: "Configurations",
 		icon: "manage",
-		name: "Configurations",
 		link: "/admin/configurations",
-		featureFlag: "PORTAL_CONFIG",
 	},
 
 	// UAT Options
 	{
 		id: 901,
+		label: "Expression Editor",
 		icon: "calculator",
-		name: "Expression Editor",
 		link: "/admin/expression-editor",
 		featureFlag: "EXPRESSION_EDITOR",
 	},
 	{
 		id: 902,
+		label: "Test Page",
 		icon: "error",
-		name: "Test Page",
 		link: "/admin/test",
 		featureFlag: "TEST_PAGE",
 	},
@@ -151,26 +169,29 @@ export const adminSidebarMenu: sidebarMenuType[] = [
  */
 export const sidebarMenu: sidebarMenuType[] = [
 	{
-		id: 8,
-		name: "Home",
+		id: 210,
+		label: "Home",
 		icon: "menu-home",
 		link: "/home",
 		dynamicAdminView: true,
 	},
 	// {
-	// 	name: "Select Plan",
+	// 	id: 220,
+	// 	label: "Select Plan",
 	// 	icon: "select-plan",
 	// 	link: "/select-plan",
 	// },
 
 	// {
-	// 	name: "Start A Transaction",
+	// 	id: 230,
+	// 	label: "Start A Transaction",
 	// 	icon: "transaction",
 	// 	subLevel: true,
 	// 	api: true,
 	// },
 	// {
-	// 	name: "Others",
+	// 	id: 240,
+	// 	label: "Others",
 	// 	icon: "others",
 	// 	subLevel: true,
 	// 	subLevelObject: [

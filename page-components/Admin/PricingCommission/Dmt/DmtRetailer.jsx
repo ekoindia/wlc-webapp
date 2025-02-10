@@ -1,12 +1,6 @@
 import { Flex, useToast } from "@chakra-ui/react";
-import { Button, Icon } from "components";
-import {
-	Endpoints,
-	ParamType,
-	productPricingCommissionValidationConfig,
-	productPricingType,
-	products,
-} from "constants";
+import { ActionButtonGroup, Icon } from "components";
+import { Endpoints, ParamType, productPricingType, products } from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -27,8 +21,18 @@ const PRICING_TYPE = {
 };
 
 const pricing_type_list = [
-	{ value: PRICING_TYPE.PERCENT, label: "Percentage (%)" },
-	// { value: PRICING_TYPE.FIXED, label: "Fixed (₹)" },
+	{
+		id: "percentage",
+		value: PRICING_TYPE.PERCENT,
+		label: "Percentage (%)",
+		isDisabled: false,
+	},
+	{
+		id: "fixed",
+		value: PRICING_TYPE.FIXED,
+		label: "Fixed (₹)",
+		isDisabled: false,
+	},
 ];
 
 const OPERATION = {
@@ -52,8 +56,6 @@ const getStatus = (status) => {
 
 const DmtRetailer = () => {
 	const { uriSegment, slabs, DEFAULT } = products.DMT;
-	const { PERCENT, FIXED } =
-		productPricingCommissionValidationConfig.DMT.RETAILER;
 
 	const {
 		handleSubmit,
@@ -72,7 +74,6 @@ const DmtRetailer = () => {
 		mode: "onChange",
 		defaultValues: {
 			operation_type: DEFAULT.operation_type,
-			pricing_type: DEFAULT.pricing_type,
 		},
 	});
 
@@ -87,16 +88,11 @@ const DmtRetailer = () => {
 	const [slabOptions, setSlabOptions] = useState([]);
 	const [multiSelectLabel, setMultiSelectLabel] = useState();
 	const [multiSelectOptions, setMultiSelectOptions] = useState([]);
+	const [pricingTypeList, setPricingTypeList] = useState(pricing_type_list);
+	const [validation, setValidation] = useState({ min: null, max: null });
 
-	const min =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.min
-			: FIXED.min;
-
-	const max =
-		watcher["pricing_type"] === PRICING_TYPE.PERCENT
-			? PERCENT.max
-			: FIXED.max;
+	const min = validation?.min;
+	const max = validation?.max;
 
 	let prefix = "";
 	let suffix = "";
@@ -106,6 +102,14 @@ const DmtRetailer = () => {
 	} else {
 		prefix = "₹";
 	}
+
+	let helperText = "";
+
+	if (min != undefined) helperText += `Minimum: ${prefix}${min}${suffix}`;
+	if (max != undefined)
+		helperText += `${
+			min != undefined ? " - " : ""
+		}Maximum: ${prefix}${max}${suffix}`;
 
 	const dmt_retailer_parameter_list = [
 		{
@@ -138,30 +142,55 @@ const DmtRetailer = () => {
 			name: "pricing_type",
 			label: `Select ${productPricingType.DMT} Type`,
 			parameter_type_id: ParamType.LIST,
-			list_elements: pricing_type_list,
+			list_elements: pricingTypeList,
 			// defaultValue: DEFAULT.pricing_type,
 		},
 		{
 			name: "actual_pricing",
-			label: `Define ${productPricingType.DMT} (Exclusive of GST)`,
+			label: `Define ${productPricingType.DMT} (GST Inclusive)`,
 			parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
-			helperText: `Minimum: ${prefix}${min}${suffix} - Maximum: ${prefix}${max}${suffix}`,
+			helperText: helperText,
 			validations: {
 				// required: true,
-				min: min,
-				max: max,
+				min: validation?.min,
+				max: validation?.max,
 			},
 			inputRightElement: (
 				<Icon
 					name={
 						watcher["pricing_type"] == PRICING_TYPE.PERCENT
 							? "percent_bg"
-							: "rupee_bg"
+							: watcher["pricing_type"] == PRICING_TYPE.FIXED
+								? "rupee_bg"
+								: null
 					}
 					size="23px"
 					color="primary.DEFAULT"
 				/>
 			),
+		},
+	];
+
+	const buttonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Save",
+			loading: isSubmitting,
+			disabled: !isValid || !isDirty,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Cancel",
+			onClick: () => router.back(),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
 		},
 	];
 
@@ -219,6 +248,58 @@ const DmtRetailer = () => {
 			setMultiSelectLabel(_label);
 		}
 	}, [watcher.operation_type]);
+
+	// This useEffect hook updates the pricing type list based on slab selection.
+	// If any pricing type is disabled, it sets the first non-disabled pricing type as the selected pricing type.
+	useEffect(() => {
+		if (watcher?.select?.value) {
+			const _validations =
+				slabs[+watcher?.select?.value]?.validation?.PRICING;
+			let anyDisabled = false;
+
+			const _pricingTypeList = pricing_type_list.map((_typeObj) => {
+				const _validation = _validations[_typeObj.id];
+				const isDisabled = !_validation;
+				if (isDisabled) anyDisabled = true;
+				return { ..._typeObj, isDisabled };
+			});
+
+			setPricingTypeList(_pricingTypeList);
+
+			// If any pricing type is disabled, set the first non-disabled pricing type as the selected pricing type
+			if (anyDisabled) {
+				const _firstNonDisabled = _pricingTypeList.find(
+					(item) => !item.isDisabled
+				);
+				if (_firstNonDisabled) {
+					watcher["pricing_type"] = _firstNonDisabled.value;
+				}
+			}
+
+			reset({ ...watcher });
+		}
+	}, [watcher?.select?.value]);
+
+	// This useEffect hook updates the validation state based on the selected slab and pricing type.
+	useEffect(() => {
+		const _pricingType =
+			watcher.pricing_type === PRICING_TYPE.PERCENT
+				? "percentage"
+				: watcher.pricing_type === PRICING_TYPE.FIXED
+					? "fixed"
+					: null;
+
+		const _slab = +watcher?.select?.value;
+
+		// If a slab and pricing type are selected, update the validation state
+		if (_slab != null && _pricingType != null) {
+			const _validation = slabs[_slab]?.validation;
+			const _min = _validation?.PRICING?.[_pricingType]?.min;
+			const _max = _validation?.PRICING?.[_pricingType]?.max;
+
+			setValidation({ min: _min, max: _max });
+		}
+	}, [watcher?.pricing_type, watcher?.select?.value]);
 
 	useEffect(() => {
 		if (isSubmitSuccessful) {
@@ -287,43 +368,7 @@ const DmtRetailer = () => {
 					}}
 				/>
 
-				<Flex
-					direction={{ base: "row-reverse", md: "row" }}
-					w={{ base: "100%", md: "500px" }}
-					position={{ base: "fixed", md: "initial" }}
-					gap={{ base: "0", md: "16" }}
-					align="center"
-					bottom="0"
-					left="0"
-					bg="white"
-				>
-					<Button
-						type="submit"
-						size="lg"
-						h="64px"
-						w={{ base: "100%", md: "200px" }}
-						fontWeight="bold"
-						borderRadius={{ base: "none", md: "10" }}
-						loading={isSubmitting}
-						disabled={!isValid || !isDirty}
-					>
-						Save
-					</Button>
-
-					<Button
-						h={{ base: "64px", md: "auto" }}
-						w={{ base: "100%", md: "initial" }}
-						bg={{ base: "white", md: "none" }}
-						variant="link"
-						fontWeight="bold"
-						color="primary.DEFAULT"
-						_hover={{ textDecoration: "none" }}
-						borderRadius={{ base: "none", md: "10" }}
-						onClick={() => router.back()}
-					>
-						Cancel
-					</Button>
-				</Flex>
+				<ActionButtonGroup {...{ buttonConfigList }} />
 			</Flex>
 		</form>
 	);

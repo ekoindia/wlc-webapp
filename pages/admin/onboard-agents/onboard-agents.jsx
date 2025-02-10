@@ -1,19 +1,23 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { OnboardAgentObject } from "constants";
 import { OnboardAgents } from "page-components/Admin";
 
 const OnboardAgentsPage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper BreadcrumbsObject={OnboardAgentObject}>
+			<BreadcrumbsWrapper
+				breadcrumbsData={{
+					"/admin/onboard-agents": "Onboard Agents",
+				}}
+			>
 				<OnboardAgents />
 			</BreadcrumbsWrapper>
 		</PaddingBox>
 	);
 };
 
-OnboardAgents.pageMeta = {
+OnboardAgentsPage.pageMeta = {
 	title: "Onboard Agents | Admin",
+	isFixedBottomAppBar: true,
 };
 
 export default OnboardAgentsPage;

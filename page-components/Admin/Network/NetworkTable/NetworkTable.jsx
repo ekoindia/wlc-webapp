@@ -22,7 +22,7 @@ const getCommissionType = (commission_type) => {
  * Network table parameter list
  */
 const networkTableParameterList = [
-	{ label: "Sr. No.", show: "#" },
+	{ label: "#", show: "#" },
 	{ name: "agent_name", label: "Name", show: "Avatar", sorting: true },
 	{ name: "agent_mobile", label: "Mobile", sorting: true },
 	{ name: "agent_type", label: "Type", sorting: true },

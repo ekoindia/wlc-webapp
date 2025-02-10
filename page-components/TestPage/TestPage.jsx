@@ -1,5 +1,6 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { Dropzone, Input, Select } from "components";
+import { Value } from "tf-components";
 import {
 	useCamera,
 	useFeatureFlag,
@@ -7,9 +8,11 @@ import {
 	useImageEditor,
 	useRaiseIssue,
 } from "hooks";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useNotification } from "contexts";
+import { ParamType } from "constants";
 
 /**
  * A '/test' page-component
@@ -562,9 +565,14 @@ const CustomRaiseQueryTest = () => {
 			<Button
 				onClick={() =>
 					showRaiseIssueDialog({
-						origin: "Global-Help",
+						origin: "Other",
 						autoCaptureScreenshot: true,
 						customIssueType: "Need help with this screen",
+						category: "Dummy Category",
+						subcategory: "Dummy Sub-Category",
+						context:
+							"Context: this is a test ticket. Please delete.",
+						tat: 6,
 					})
 				}
 			>
@@ -610,6 +618,87 @@ const MarkdownTest = () => {
 	);
 };
 
+/**
+ * Testing the Agreement Signing (SignZy)
+ * MARK: AgreementTest
+ */
+const AgreementTesting = () => {
+	useEffect(() => {
+		const handleMessage = (event) => {
+			if (event.data.type === "STATUS_UPDATE") {
+				const { status } = event.data;
+
+				// Handle the status update
+				console.log(`Received status test page : ${status}`);
+			}
+		};
+
+		window.addEventListener("message", handleMessage);
+
+		// Cleanup listener on component unmount
+		return () => {
+			window.removeEventListener("message", handleMessage);
+		};
+	}, []);
+
+	const url =
+		"https://contracting-v2-preproduction.signzy.app/745bef83-1c72-406c-b037-0766b9e6e387/main";
+
+	const openWindow = () => {
+		const features =
+			"toolbar=no,menubar=no,scrollbars=yes,resizable=yes,status=no";
+		window.open(url, "SignAgreementWindow", features);
+	};
+
+	return (
+		<Flex
+			sx={{
+				".markdown-body strong": {
+					color: "red",
+				},
+			}}
+		>
+			<Button onClick={openWindow}>Sign Agreement</Button>
+		</Flex>
+	);
+};
+
+/**
+ * Notification Panel Test
+ * MARK: NotificationPanelTest
+ * @returns
+ */
+const NotificationPanelTest = () => {
+	const { openNotificationPanel } = useNotification();
+	return (
+		<Button onClick={openNotificationPanel}>Show Notification Panel</Button>
+	);
+};
+
+/**
+ * Test the TF-Components
+ * MARK: TfComponentsTest
+ */
+const TfComponentsTest = () => {
+	return (
+		<Flex direction="row" wrap gap={3}>
+			<Value
+				label="Mobile Number"
+				value="9876543210"
+				typeId={ParamType.MOBILE}
+				metadata="91"
+			/>
+
+			<Value
+				label="Date"
+				value="2024-03-06 23:34"
+				typeId={ParamType.DATETIME}
+				metadata="dd-MM-yyyy"
+			/>
+		</Flex>
+	);
+};
+
 // List of test components
 // MARK: List of Tests
 const TestComponents = [
@@ -640,6 +729,18 @@ const TestComponents = [
 	{
 		title: "Markdown",
 		component: MarkdownTest,
+	},
+	{
+		title: "Agreement Testing",
+		component: AgreementTesting,
+	},
+	{
+		title: "Notification Panel Test",
+		component: NotificationPanelTest,
+	},
+	{
+		title: "TF-Components",
+		component: TfComponentsTest,
 	},
 ];
 

@@ -6,6 +6,7 @@ export { default as Th } from "./Th";
 export {
 	getViewComponent,
 	historyParametersMetadata,
+	networkHistoryParametersMetadata,
 } from "./historyParametersMetadata";
 export {
 	generateShareMessage,

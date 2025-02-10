@@ -14,6 +14,14 @@ const PrivacyPage = () => {
 	const currentUrl = window.location.href;
 	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
 	const reach_out_form_url = `${ZOHO_FORM_URL}?org_id=${org_id}&org_url=${baseUrl}`;
+	const delete_my_account_form_url = `${baseUrl}/delete_my_account`;
+
+	// Is Google Login available?
+	const showGoogle =
+		orgDetail?.login_types?.google?.default ||
+		orgDetail?.login_types?.google?.client_id
+			? true
+			: false;
 
 	return (
 		<Box borderTop="10px solid" borderTopColor="primary.DEFAULT">
@@ -27,9 +35,23 @@ const PrivacyPage = () => {
 					onClick={() => router.back()}
 				/>
 
-				<Box maxW={{ base: "100%", md: "600px" }} w="full" mx="auto">
-					<H1 color="primary.DEFAULT" mb="4">
-						{app_name} Privacy Policy
+				<Box
+					maxW={{ base: "100%", md: "600px" }}
+					w="full"
+					mx="auto"
+					sx={{
+						"ul ul": {
+							marginLeft: "2em",
+						},
+					}}
+				>
+					<H1
+						color="primary.DEFAULT"
+						mb="8"
+						w="full"
+						textAlign="center"
+					>
+						Privacy Policy
 					</H1>
 
 					<P>
@@ -51,74 +73,293 @@ const PrivacyPage = () => {
 						or share your information with anyone except as
 						described in this Privacy Policy.
 					</P>
-					{/* <P>
-					The terms used in this Privacy Policy have the same meanings
-					as in our Terms and Conditions, which is accessible at
-					Connect unless otherwise defined in this Privacy Policy.
-				</P> */}
-					<H2>Information Collection and Use</H2>
+
+					<H2>Information Collection, Sharing, and Usage</H2>
 					<P>
-						For a better experience, while using our SERVICE, we may
-						require you to provide us with certain personally
-						identifiable information, including but not limited to
-						email, & profile picture. The information that we
-						request may be retained by us and used as described in
-						this privacy policy. We do not share these information
-						with any third party.
+						This app collects certain types of information to
+						provide and improve its functionality, ensure security,
+						and deliver a seamless user experience. Below, we
+						outline the types of information we collect, the
+						purposes for which they are used, and any instances of
+						sharing:
 					</P>
+
+					<H3>1. Personal Information</H3>
 					<P pl={8}>
-						<ol>
+						<ul>
 							<li>
-								<strong>Email:</strong> We store and use your
-								email-ID to identify you when you login again to
-								the app. We do not share your email with any
-								third party.
+								<strong>Name:</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> app functionality,
+										fraud prevention, KYC, account
+										management.
+									</li>
+									<li>
+										<em>Sharing:</em> optionally shared only
+										with trusted providers of 3rd party
+										services that you opt to use, for KYC
+										purposes.
+									</li>
+								</ul>
 							</li>
 							<li>
-								<strong>Profile Picture:</strong> We do not
-								store or process your profile picture in any
-								manner and only use it to show your picture in
-								the app during a session when you login using
-								your social identity.
+								<strong>Email Address:</strong> (optional)
+								<ul>
+									<li>
+										<em>Purpose:</em> app functionality,
+										developer communication, fraud
+										prevention, account management.
+									</li>
+									<li>
+										<em>Sharing:</em> optional and shared
+										only when necessary with providers of
+										trusted services that you opt to use,
+										for KYC or communication purposes.
+									</li>
+								</ul>
 							</li>
-						</ol>
+							<li>
+								<strong>User ID:</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> app functionality,
+										fraud prevention, KYC, account
+										management.
+									</li>
+									<li>
+										<em>Sharing:</em> optionally shared with
+										providers of trusted services that you
+										opt to use, for account identification
+										purposes.
+									</li>
+								</ul>
+							</li>
+							<li>
+								<strong>Address:</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> fraud prevention, KYC,
+										account management.
+									</li>
+									<li>
+										<em>Sharing:</em> not shared externally
+										unless required for fraud-related
+										investigations.
+									</li>
+								</ul>
+							</li>
+							<li>
+								<strong>Phone Number:</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> app functionality,
+										developer communication, fraud
+										prevention, account management.
+									</li>
+									<li>
+										<em>Sharing:</em> optionally shared with
+										providers of trusted services that you
+										opt to use, for KYC and communication
+										purposes.
+									</li>
+								</ul>
+							</li>
+							<li>
+								<strong>Date of Birth (DOB):</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> KYC, fraud prevention,
+										account management.
+									</li>
+									<li>
+										<em>Sharing:</em> not shared externally
+										unless required for fraud-related
+										investigations
+									</li>
+								</ul>
+							</li>
+						</ul>
 					</P>
+
+					<H3>2. Financial Information</H3>
+					<P pl={8}>
+						<ul>
+							<li>
+								<strong>User Payment Information:</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> app functionality
+										(e.g., enabling purchases or
+										settlements)
+									</li>
+									<li>
+										<em>Sharing:</em> optional and used only
+										as required for transactions via secure
+										payment gateways.
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</P>
+
+					<H3>3. Location Information</H3>
+					<P pl={8}>
+						<ul>
+							<li>
+								<strong>Precise Location:</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> app functionality,
+										fraud prevention, analytics.
+									</li>
+									<li>
+										<em>Sharing:</em> not shared externally
+										unless required for fraud-related
+										investigations.
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</P>
+
+					<H3>4. Photos</H3>
+					<P pl={8}>
+						<ul>
+							<li>
+								<em>Purpose:</em> KYC, fraud prevention, account
+								management.
+							</li>
+							<li>
+								<em>Sharing:</em> not shared externally unless
+								required for fraud-related investigations
+							</li>
+						</ul>
+					</P>
+
+					<H3>5. App Information & Performance</H3>
+					<P pl={8}>
+						<ul>
+							<li>
+								<strong>Crash Logs:</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> analytics (to improve
+										app stability and functionality).
+									</li>
+									<li>
+										<em>Sharing:</em> required and securely
+										shared with analytics providers.
+									</li>
+								</ul>
+							</li>
+							<li>
+								<strong>Diagnostics:</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> analytics (to identify
+										and fix issues).
+									</li>
+									<li>
+										<em>Sharing:</em> required and securely
+										shared with analytics providers for
+										troubleshooting.
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</P>
+
+					<H3>6. Files & Documents</H3>
+					<P pl={8}>
+						<ul>
+							<li>
+								<em>Purpose:</em> processed ephemerally for app
+								functionality, KYC, fraud prevention, etc.
+							</li>
+							<li>
+								<em>Sharing:</em> not stored or shared
+								externally.
+							</li>
+						</ul>
+					</P>
+
+					<H3>7. App Activity</H3>
+					<P pl={8}>
+						<ul>
+							<li>
+								<strong>App Interactions:</strong>
+								<ul>
+									<li>
+										<em>Purpose:</em> analytics (to
+										understand user behavior and improve app
+										experience).
+									</li>
+									<li>
+										<em>Sharing:</em> required and securely
+										shared with analytics providers.
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</P>
+
+					<H3>8. Device or Other Identifiers</H3>
+					<P pl={8}>
+						<ul>
+							<li>
+								<em>Purpose:</em> fraud prevention, developer
+								communication.
+							</li>
+							<li>
+								<em>Sharing:</em> may be shared externally for
+								developer communication (eg, push notification)
+								or for fraud-related investigations.
+							</li>
+						</ul>
+					</P>
+
+					{showGoogle ? (
+						<>
+							<H3>9. Data Collected by Third Party Services</H3>
+							<P>
+								The app does use third party services that may
+								collect information used to identify you. Link
+								to privacy policy of third party service
+								providers used by the app:
+							</P>
+							<P pl={8}>
+								<ul>
+									<li>
+										<Link
+											color="accent.DEFAULT"
+											href="https://www.google.com/policies/privacy/"
+											target="_blank"
+										>
+											Google
+										</Link>
+									</li>
+								</ul>
+							</P>
+						</>
+					) : null}
+
 					<P>
 						The app is built and hosted by Eko India Financial
 						Services Pvt. Ltd. and is responsible for collecting and
 						using the data as described in this policy.
 					</P>
-					<P>
-						The app does use third party services that may collect
-						information used to identify you.
-					</P>
-					<P>
-						Link to privacy policy of third party service providers
-						used by the app:
-					</P>
-					<P pl={8}>
-						<ul>
-							<li>
-								<Link
-									color="accent.DEFAULT"
-									href="https://www.google.com/policies/privacy/"
-									target="_blank"
-								>
-									Google
-								</Link>
-							</li>
-						</ul>
-					</P>
+
 					<H2>Log Data</H2>
 					<P>
-						We want to inform you that whenever you use our SERVICE,
-						in a case of an error in the app we collect data and
-						information (through third party products) called Log
-						Data. This Log Data may include information such as your
-						device Internet Protocol (“IP”) address, device name,
-						operating system version, the configuration of the app
-						when utilizing our SERVICE, the time and date of your
-						use of the SERVICE, and other statistics.
+						Whenever you use our SERVICE, in a case of an error in
+						the app we collect data and information (through third
+						party products) called Log Data. This Log Data may
+						include information such as your device Internet
+						Protocol (“IP”) address, device name, operating system
+						version, the configuration of the app when utilizing our
+						SERVICE, the time and date of your use of the SERVICE,
+						and other statistics.
 					</P>
 					<H2>Cookies</H2>
 					<P>
@@ -131,11 +372,10 @@ const PrivacyPage = () => {
 						This SERVICE does not use these “cookies” explicitly.
 						However, the app may use third party code and libraries
 						that use “cookies” to collection information and to
-						improve their services. You have the option to either
-						accept or refuse these cookies and know when a cookie is
-						being sent to your device. If you choose to refuse our
-						cookies, you may not be able to use some portions of
-						this SERVICE.
+						improve their services. You may choose to refuse these
+						cookies via your device settings. If you choose to
+						refuse these cookies, you may not be able to use some
+						parts of this SERVICE.
 					</P>
 					<H2>Service Providers</H2>
 					<P>
@@ -145,6 +385,10 @@ const PrivacyPage = () => {
 					<P pl={8}>
 						<ul>
 							<li>To facilitate our SERVICE</li>
+							<li>
+								To provide their service for you to use
+								optionally
+							</li>
 							<li>To provide the SERVICE on our behalf</li>
 							<li>To perform SERVICE-related services</li>
 							<li>
@@ -155,10 +399,11 @@ const PrivacyPage = () => {
 					</P>
 					<P>
 						We want to inform users of this SERVICE that these third
-						parties have access to your Personal Information. The
-						reason is to perform the tasks assigned to them on our
-						behalf. However, they are obligated not to disclose or
-						use the information for any other purpose.
+						parties may have access to your Personal Information.
+						The reason is to perform the tasks assigned to them or
+						required by the services that they may provide to you.
+						However, they are obligated not to disclose or use the
+						information for any other purpose.
 					</P>
 					<H2>Security</H2>
 					<P>
@@ -182,15 +427,15 @@ const PrivacyPage = () => {
 					</P>
 					<H2>Children’s Privacy</H2>
 					<P>
-						These Services do not address anyone under the age of
-						13. We do not knowingly collect personally identifiable
-						information from children under 13. In the case we
-						discover that a child under 13 has provided us with
+						This SERVICE does not address anyone under the age of
+						18. We do not knowingly collect personally identifiable
+						information from children under 18. In the case we
+						discover that a child under 18 has provided us with
 						personal information, we immediately delete this from
 						our servers. If you are a parent or guardian and you are
 						aware that your child has provided us with personal
-						information, please contact us so that we will be able
-						to do necessary actions.
+						information, please contact us using the form below so
+						that we will be able to take necessary actions.
 					</P>
 					<H2>Changes to This Privacy Policy</H2>
 					<P>
@@ -201,15 +446,28 @@ const PrivacyPage = () => {
 						changes are effective immediately after they are posted
 						on this page.
 					</P>
+					<H2>Personal Data and Account Deletion</H2>
+					<P>
+						Your privacy is important to us. If you wish to delete
+						any of your personal data or completely close your
+						account, please submit your request{" "}
+						<Link
+							color="accent.DEFAULT"
+							href={delete_my_account_form_url}
+						>
+							here
+						</Link>
+						.
+					</P>
 
-					{/* {metadata?.support_contacts?.email ? ( */}
-					{/* <> */}
-					<H2>Reach out to us</H2>
+					<H2>Contact Us</H2>
 					<P>
 						If you have any questions or suggestions about our
 						Privacy Policy, please reach out to us by filling in the
 						details below:
-						{/* <Link
+						{/* {metadata?.support_contacts?.email ? (
+							Email us at at{" "}
+							<Link
 								color="accent.DEFAULT"
 								href={
 									"mailto:" +
@@ -218,20 +476,20 @@ const PrivacyPage = () => {
 								target="_blank"
 							>
 								{metadata?.support_contacts?.email}
-							</Link> */}
+							</Link>, or fill in the form below:
+						) : null} */}
+						<iframe
+							allow="fullscreen"
+							src={reach_out_form_url}
+							marginheight="0"
+							marginwidth="0"
+							style={{
+								border: "none",
+								width: "100%",
+								height: "880px",
+							}}
+						></iframe>
 					</P>
-					{/* </> */}
-					{/* ) : null} */}
-
-					<iframe
-						allow="fullscreen"
-						src={reach_out_form_url}
-						height={1000}
-						width="100%"
-						frameborder="0"
-						marginheight="0"
-						marginwidth="0"
-					></iframe>
 				</Box>
 			</Flex>
 		</Box>
@@ -280,11 +538,25 @@ const H2 = ({ mb = 2, children, ...rest }) => {
 	);
 };
 
+/**
+ * Heading 3 component
+ * @param root0
+ * @param root0.mb
+ * @param root0.children
+ */
+const H3 = ({ mb = 2, children, ...rest }) => {
+	return (
+		<Text as="H3" fontSize="17px" fontWeight="bold" mb={mb} {...rest}>
+			{children}
+		</Text>
+	);
+};
+
 PrivacyPage.pageMeta = {
 	title: "Privacy Policy",
 };
 
 // Custom simple layout...
-PrivacyPage.getLayout = (page) => <LayoutLogin>{page}</LayoutLogin>;
+PrivacyPage.getLayout = LayoutLogin;
 
 export default PrivacyPage;

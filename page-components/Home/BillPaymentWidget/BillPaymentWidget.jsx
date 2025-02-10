@@ -16,49 +16,47 @@ import { WidgetBase } from "..";
  */
 const BillPaymentWidget = () => {
 	const router = useRouter();
-	const [data, setData] = useState([]);
-	const [more, setMore] = useState(false);
+	const [billPaymentOptions, setBillPaymentOptions] = useState([]);
 	const { interactions } = useMenuContext();
 	const { role_tx_list } = interactions;
 
 	useEffect(() => {
-		if (!role_tx_list[TransactionIds.BILL_PAYMENT]) {
-			return;
-		}
-		//getting group_interaction_ids from recharge & bill payment
-		let group_interaction_ids =
-			role_tx_list[TransactionIds.BILL_PAYMENT].group_interaction_ids;
-		// str to array
-		group_interaction_ids = group_interaction_ids.split(",").map(Number);
+		const billPayment = role_tx_list[TransactionIds.BILL_PAYMENT];
+		if (!billPayment) return;
 
-		const bbps_tx_list = [];
+		const group_interaction_ids = billPayment.group_interaction_ids
+			.split(",")
+			.map(Number);
+		const bbps_tx_list = group_interaction_ids
+			.filter((id) => id in role_tx_list)
+			.map((id) => ({ id, ...role_tx_list[id] }));
 
-		group_interaction_ids.forEach((id) => {
-			if (id in role_tx_list) {
-				bbps_tx_list.push({
-					id: id,
-					...role_tx_list[id],
-				});
-			}
-		});
-		if (bbps_tx_list?.length > 8) {
-			setData(bbps_tx_list.slice(0, 7));
-			setMore(true);
-		} else {
-			setData(bbps_tx_list);
-			setMore(false);
-		}
+		setBillPaymentOptions(
+			bbps_tx_list.length > 8
+				? [
+						...bbps_tx_list.slice(0, 7),
+						{
+							id: null,
+							label: "More",
+							icon: "more-horiz",
+							theme: "gray",
+						},
+					]
+				: bbps_tx_list
+		);
 	}, [role_tx_list]);
 
-	const handleIconClick = (id) => {
+	/**
+	 * Handles click on bill payment option.
+	 * @param id
+	 */
+	const handleBillPaymentOptionClick = (id) => {
 		router.push(
 			`transaction/${TransactionIds.BILL_PAYMENT}/` + (id ? `${id}` : "")
 		);
 	};
 
-	if (!data.length) {
-		return null;
-	}
+	if (!billPaymentOptions?.length) return null;
 
 	return (
 		<WidgetBase title="Recharge & bill payments" noPadding>
@@ -69,80 +67,36 @@ const BillPaymentWidget = () => {
 				alignItems="flex-start"
 				justifyContent="center"
 			>
-				{data.map((transaction, index) => (
-					<Box
-						key={index}
-						display="flex"
-						flexDirection="column"
-						alignItems="center"
-						justifyContent="center"
-						// pt={{ base: "22px" }}
-					>
-						<IcoButton
-							title={transaction.label}
-							iconName={transaction.icon}
-							size="md"
-							// iconStyle={{
-							// 	width: "30px",
-							// 	height: "30px",
-							// }}
-							// size={{
-							// 	base: "48px",
-							// 	lg: "56px",
-							// 	xl: "64px",
-							// }}
-							theme="dark"
-							onClick={() => handleIconClick(transaction.id)}
-						/>
-						<Text
-							pt={{ base: "10px" }}
-							fontSize={{
-								base: "xs",
-								"2xl": "md",
-							}}
-							noOfLines={2}
-							textAlign="center"
+				{billPaymentOptions?.map(
+					({ id, label, icon, theme = "dark" }, index) => (
+						<Box
+							key={index}
+							display="flex"
+							flexDirection="column"
+							alignItems="center"
+							justifyContent="center"
 						>
-							{transaction.label}
-						</Text>
-					</Box>
-				))}
-				{more ? (
-					<Box
-						display="flex"
-						flexDirection="column"
-						alignItems="center"
-						justifyContent="center"
-						// pt={{ base: "22px" }}
-					>
-						<IcoButton
-							title="more"
-							iconName="more-horiz"
-							size="md"
-							// iconStyle={{
-							// 	width: "30px",
-							// 	height: "30px",
-							// }}
-							// size={{
-							// 	base: "48px",
-							// 	lg: "56px",
-							// 	xl: "64px",
-							// }}
-							theme="gray"
-							onClick={() => handleIconClick()}
-						/>
-						<Text
-							pt={{ base: "5px" }}
-							fontSize={{
-								base: "xs",
-								"2xl": "md",
-							}}
-							textAlign="center"
-						>
-							More
-						</Text>
-					</Box>
-				) : null}
+							<IcoButton
+								title={label}
+								iconName={icon}
+								size="md"
+								theme={theme}
+								onClick={() => handleBillPaymentOptionClick(id)}
+							/>
+							<Text
+								pt={{ base: "10px" }}
+								fontSize={{
+									base: "xs",
+									"2xl": "md",
+								}}
+								noOfLines={2}
+								textAlign="center"
+							>
+								{label}
+							</Text>
+						</Box>
+					)
+				)}
 			</SimpleGrid>
 			{/* Once data is there for offers,show this row*/}
 			{/* <Flex

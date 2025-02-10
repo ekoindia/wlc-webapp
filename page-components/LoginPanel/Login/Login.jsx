@@ -121,7 +121,6 @@ const Login = ({
 			{hideLogo ? null : (
 				<Flex mb={lastUserName ? "6" : { base: 10, lg: 14 }}>
 					<OrgLogo
-						orgDetail={orgDetail}
 						size="lg"
 						// ml={{ base: 4, md: "0" }}
 					/>

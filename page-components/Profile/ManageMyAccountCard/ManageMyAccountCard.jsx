@@ -12,7 +12,6 @@ import { Fragment, useEffect, useState } from "react";
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	prop.prop1	TODO: Property description.
  * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<ManageMyAccountCard></ManageMyAccountCard>` TODO: Fix example
  */
 const ManageMyAccountCard = () => {
 	const { interactions } = useMenuContext();
@@ -42,6 +41,11 @@ const ManageMyAccountCard = () => {
 
 		setData(mma_tx_list);
 	}, [role_tx_list]);
+
+	// Hide the card if there are no transactions to show
+	if (!data.length) {
+		return null;
+	}
 
 	const onClick = (id) => {
 		router.push(

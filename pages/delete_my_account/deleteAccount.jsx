@@ -20,9 +20,9 @@ const DeleteAccount = () => {
 				src={isLoggedIn ? src_url_loggedIn : src_url}
 				height={1000}
 				width="100%"
-				frameborder="0"
 				marginheight="0"
 				marginwidth="0"
+				style={{ border: "none" }}
 			></iframe>
 		</>
 	);
@@ -33,6 +33,6 @@ DeleteAccount.pageMeta = {
 };
 
 //Custom simple layout...
-DeleteAccount.getLayout = (page) => <LayoutLogin>{page}</LayoutLogin>;
+DeleteAccount.getLayout = LayoutLogin;
 
 export default DeleteAccount;

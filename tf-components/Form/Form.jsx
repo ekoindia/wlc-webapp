@@ -13,15 +13,15 @@ import { getFormErrorMessage } from "utils";
 
 /**
  * A Form component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param prop.parameter_list
- * @param	{...*}	rest	Rest of the props passed to this component.
+ * @param {object} prop Properties passed to the component
+ * @param {Array} prop.parameter_list
  * @param prop.register
  * @param prop.formValues
  * @param prop.control
  * @param prop.errors
- * @example	`<Form></Form>` TODO: Fix example
+ * @param {string} [prop.size] Size of the form components: "sm" | "md" | "lg"
+ * @param {boolean} [prop.hideOptionalMark] Hide the optional mark on the form fields.
+ * @param {...*} rest Rest of the props passed to this component.
  */
 const Form = ({
 	parameter_list,
@@ -29,6 +29,8 @@ const Form = ({
 	formValues,
 	control,
 	errors,
+	size = "md",
+	hideOptionalMark = false,
 	...rest
 }) => {
 	return (
@@ -77,12 +79,24 @@ const Form = ({
 					}
 
 					switch (parameter_type_id) {
+						case ParamType.FIXED:
+							// A fixed value that is not editable: use a hidden input
+							return (
+								<input
+									key={`${name}-${label}-${index}`}
+									type="hidden"
+									value={value}
+									{...register(name)}
+								/>
+							);
+
 						case ParamType.LABEL:
 							return (
 								<div key={`${name}-${label}-${index}`}>
 									{label ? (
 										<InputLabel
 											required={required}
+											hideOptionalMark={hideOptionalMark}
 											{...labelStyle}
 										>
 											{label}
@@ -93,6 +107,7 @@ const Form = ({
 									</Text>
 								</div>
 							);
+
 						case ParamType.NUMERIC:
 							return (
 								<FormControl
@@ -104,12 +119,14 @@ const Form = ({
 										id={name}
 										label={label}
 										required={required}
+										hideOptionalMark={hideOptionalMark}
 										value={value}
 										step="0.01"
 										type="number"
 										fontSize="sm"
 										disabled={disabled}
 										labelStyle={labelStyle}
+										size={size}
 										{...rest}
 										{...register(name, {
 											..._validations,
@@ -133,6 +150,7 @@ const Form = ({
 									</Text>
 								</FormControl>
 							);
+
 						case ParamType.FROM_DATE:
 							return (
 								<FormControl
@@ -159,6 +177,8 @@ const Form = ({
 													required,
 													disabled,
 													labelStyle,
+													size,
+													hideOptionalMark,
 												}}
 												{...rest}
 											/>
@@ -182,6 +202,7 @@ const Form = ({
 									</Text>
 								</FormControl>
 							);
+
 						case ParamType.TO_DATE:
 							return (
 								<FormControl
@@ -208,6 +229,8 @@ const Form = ({
 													required,
 													disabled,
 													labelStyle,
+													size,
+													hideOptionalMark,
 												}}
 												{...rest}
 											/>
@@ -231,6 +254,7 @@ const Form = ({
 									</Text>
 								</FormControl>
 							);
+
 						case ParamType.LIST:
 							if (list_elements) {
 								if (is_multi) {
@@ -261,6 +285,8 @@ const Form = ({
 															required,
 															isMulti: true,
 															labelStyle,
+															size,
+															hideOptionalMark,
 														}}
 														{...rest}
 													/>
@@ -311,6 +337,8 @@ const Form = ({
 															options:
 																list_elements,
 															labelStyle,
+															size,
+															hideOptionalMark,
 														}}
 														{...rest}
 													/>
@@ -360,6 +388,7 @@ const Form = ({
 																options:
 																	list_elements,
 																labelStyle,
+																hideOptionalMark,
 															}}
 															{...rest}
 														/>
@@ -387,6 +416,7 @@ const Form = ({
 								}
 							}
 							break;
+
 						default:
 							if (lines_min > 1) {
 								return (
@@ -413,6 +443,8 @@ const Form = ({
 															disabled,
 															onChange,
 															labelStyle,
+															size,
+															hideOptionalMark,
 														}}
 														{...rest}
 													/>
@@ -450,9 +482,11 @@ const Form = ({
 											required={required}
 											value={value}
 											type="text"
+											size={size}
 											fontSize="sm"
 											disabled={disabled}
 											labelStyle={labelStyle}
+											hideOptionalMark={hideOptionalMark}
 											{...rest}
 											{...register(name, {
 												..._validations,

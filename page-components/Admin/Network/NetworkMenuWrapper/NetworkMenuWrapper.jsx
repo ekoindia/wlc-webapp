@@ -1,17 +1,11 @@
+import { Flex, IconButton, useDisclosure, useToast } from "@chakra-ui/react";
+import { Button, Menus, Modal } from "components";
 import {
-	Flex,
-	IconButton,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalHeader,
-	ModalOverlay,
-	useDisclosure,
-	useToast,
-} from "@chakra-ui/react";
-import { Button, Menus } from "components";
-import { ChangeRoleMenuList, Endpoints, ParamType } from "constants";
+	ChangeRoleMenuList,
+	Endpoints,
+	ParamType,
+	TransactionTypes,
+} from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
@@ -60,7 +54,11 @@ const generateMenuList = (list, statusId, extra, includeExtra, other) => {
 		_list.push(extra);
 	}
 
-	return [..._list, other];
+	for (const ele of other) {
+		if (ele?.visible) _list.push(ele);
+	}
+
+	return [..._list];
 };
 
 const getStatus = (status) => {
@@ -104,6 +102,23 @@ const NetworkMenuWrapper = ({
 
 	const watcher = useWatch({ control });
 
+	const downloadAgreement = () => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			body: {
+				interaction_type_id:
+					TransactionTypes.DOWNLOAD_NETWORK_AGREEMENT,
+				csp_code: eko_code,
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				window.open(res?.data?.short_url, "_blank");
+			})
+			.catch((err) => {
+				console.error("Error: ", err);
+			});
+	};
+
 	const menuList = [
 		{
 			id: 16,
@@ -134,12 +149,24 @@ const NetworkMenuWrapper = ({
 		},
 	};
 
-	const others = {
-		label: "View Details",
-		onClick: () => {
-			router.push(`/admin/my-network/profile?mobile=${mobile_number}`);
+	const others = [
+		{
+			label: "View Details",
+			visible: true,
+			onClick: () => {
+				router.push(
+					`/admin/my-network/profile?mobile=${mobile_number}`
+				);
+			},
 		},
-	};
+		{
+			label: "Download Agreement",
+			visible: account_status_id == status.ACTIVE,
+			onClick: () => {
+				downloadAgreement();
+			},
+		},
+	];
 
 	let _includeChangeRole = false;
 
@@ -250,38 +277,28 @@ const NetworkMenuWrapper = ({
 			<Modal
 				isOpen={isOpen}
 				onClose={() => setOpen(false)}
-				size={{ base: "sm", md: "lg" }}
-				isCentered={true}
+				title={`Mark ${statusLabels[accountStatusId]}`}
 			>
-				<ModalOverlay />
-				<ModalContent height="auto" fontSize="sm">
-					<ModalHeader fontSize="lg" fontWeight="semibold">
-						<span>Mark {statusLabels[accountStatusId]}</span>
-					</ModalHeader>
-					<ModalCloseButton _hover={{ color: "error" }} />
-					<ModalBody>
-						<form onSubmit={handleSubmit(handleFormSubmit)}>
-							<Flex direction="column" gap="8" pb="4">
-								<Form
-									parameter_list={parameter_list}
-									register={register}
-									control={control}
-									formValues={watcher}
-									errors={errors}
-								/>
-								<Button
-									type="submit"
-									size="lg"
-									width="100%"
-									fontSize="lg"
-									loading={isSubmitting}
-								>
-									Save
-								</Button>
-							</Flex>
-						</form>
-					</ModalBody>
-				</ModalContent>
+				<form onSubmit={handleSubmit(handleFormSubmit)}>
+					<Flex direction="column" gap="8" pb="4">
+						<Form
+							parameter_list={parameter_list}
+							register={register}
+							control={control}
+							formValues={watcher}
+							errors={errors}
+						/>
+						<Button
+							type="submit"
+							size="lg"
+							width="100%"
+							fontSize="lg"
+							loading={isSubmitting}
+						>
+							Save
+						</Button>
+					</Flex>
+				</form>
 			</Modal>
 		</div>
 	);

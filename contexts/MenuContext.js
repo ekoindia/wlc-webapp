@@ -1,9 +1,39 @@
-import { processTransactionData } from "helpers";
-import { fetcher } from "helpers/apiHelper";
+import { fetcher, processTransactionData } from "helpers";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useSession } from "./UserContext";
+import { useSession } from ".";
+
+const SESSION_STORAGE_KEYS = {
+	INTERACTION_LIST: "interaction_list",
+	ROLE_TX_LIST: "role_tx_list",
+	CACHE_ACCESS_TOKEN: "cache_access_token",
+	TRXN_TYPE_PROD_MAP: "trxn_type_prod_map",
+};
 
 const MenuContext = createContext();
+
+/**
+ * Fetches and processes transaction data.
+ * @param {string} accessToken - The access token for the API request.
+ * @returns {Promise<object>} The processed data.
+ */
+const fetchData = async (accessToken) => {
+	try {
+		const response = await fetcher(
+			`${process.env.NEXT_PUBLIC_API_BASE_URL}/transactions/wlc`,
+			{
+				token: accessToken,
+			}
+		);
+
+		if (!response.length) {
+			throw new Error("Error fetching transaction list");
+		}
+
+		return processTransactionData(response);
+	} catch (error) {
+		console.error("Error fetching transaction list:", error);
+	}
+};
 
 const MenuProvider = ({ children }) => {
 	const { isLoggedIn, isAdmin, accessToken } = useSession();
@@ -14,84 +44,76 @@ const MenuProvider = ({ children }) => {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		if (isLoggedIn) {
-			// if (!isAdmin) {
+		const loadMenuData = async () => {
+			try {
+				setLoading(true);
 
-			// load menu & role data
-			setLoading(true);
+				const localInteractionList =
+					sessionStorage.getItem(
+						SESSION_STORAGE_KEYS.INTERACTION_LIST
+					) || "[]";
+				const localRoleTxList =
+					sessionStorage.getItem(SESSION_STORAGE_KEYS.ROLE_TX_LIST) ||
+					"{}";
+				const cachedAccessToken =
+					sessionStorage.getItem(
+						SESSION_STORAGE_KEYS.CACHE_ACCESS_TOKEN
+					) || "-";
+				const trxnTypeProdMap =
+					sessionStorage.getItem(
+						SESSION_STORAGE_KEYS.TRXN_TYPE_PROD_MAP
+					) || "{}";
 
-			// TODO: useSWR with caching
-			const local_interaction_list =
-				sessionStorage.getItem("interaction_list") || "[]";
-			const local_role_tx_list =
-				sessionStorage.getItem("role_tx_list") || "{}";
-			const cache_access_token =
-				sessionStorage.getItem("cache_access_token") || "-";
-			const trxn_type_prod_map =
-				sessionStorage.getItem("trxn_type_prod_map") || "{}";
+				if (
+					localInteractionList !== "[]" &&
+					localRoleTxList !== "{}" &&
+					cachedAccessToken === accessToken
+				) {
+					const contextData = {
+						interaction_list: JSON.parse(localInteractionList),
+						role_tx_list: JSON.parse(localRoleTxList),
+						trxn_type_prod_map: JSON.parse(trxnTypeProdMap),
+					};
+					setInteractions(contextData);
+					console.log(
+						"[MenuContext]: Data loaded from cache",
+						contextData
+					);
+				} else {
+					const processedData = await fetchData(accessToken);
+					setInteractions(processedData);
 
-			// Data cached? Use it...
-			if (
-				local_interaction_list &&
-				local_role_tx_list &&
-				cache_access_token === accessToken &&
-				local_interaction_list !== "[]" &&
-				local_role_tx_list !== "{}"
-			) {
-				const context_data = {
-					interaction_list: JSON.parse(local_interaction_list),
-					role_tx_list: JSON.parse(local_role_tx_list),
-					trxn_type_prod_map: JSON.parse(trxn_type_prod_map || {}),
-				};
-				setInteractions(context_data);
-				setLoading(false);
-				console.log(
-					"[MenuContext]: data loaded from cache: ",
-					context_data
-				);
-				return;
-			}
+					sessionStorage.setItem(
+						SESSION_STORAGE_KEYS.INTERACTION_LIST,
+						JSON.stringify(processedData.interaction_list)
+					);
+					sessionStorage.setItem(
+						SESSION_STORAGE_KEYS.ROLE_TX_LIST,
+						JSON.stringify(processedData.role_tx_list)
+					);
+					sessionStorage.setItem(
+						SESSION_STORAGE_KEYS.TRXN_TYPE_PROD_MAP,
+						JSON.stringify(processedData.trxn_type_prod_map)
+					);
+					sessionStorage.setItem(
+						SESSION_STORAGE_KEYS.CACHE_ACCESS_TOKEN,
+						accessToken
+					);
 
-			// Data not cached? Fetch from API...
-			fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/wlc",
-				{
-					token: accessToken,
-					// body: { org_id: -1 },
+					console.log(
+						"[MenuContext]: Data loaded from API",
+						processedData
+					);
 				}
-			)
-				// .then((res) => res.json())
-				.then((data) => {
-					setLoading(false);
-					if (data.length) {
-						const processedData = processTransactionData(data);
-						setInteractions(processedData);
-						sessionStorage.setItem(
-							"interaction_list",
-							JSON.stringify(processedData.interaction_list)
-						);
-						sessionStorage.setItem(
-							"role_tx_list",
-							JSON.stringify(processedData.role_tx_list)
-						);
-						sessionStorage.setItem(
-							"trxn_type_prod_map",
-							JSON.stringify(processedData.trxn_type_prod_map)
-						);
-						sessionStorage.setItem(
-							"cache_access_token",
-							accessToken
-						);
+			} catch (error) {
+				console.error("MenuProvider error:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
 
-						console.log(
-							"[MenuContext]: data loaded from API: ",
-							processedData
-						);
-					}
-				})
-				.catch((err) => console.error("MenuProvider error: ", err))
-				.finally(() => setLoading(false));
-			// }
+		if (isLoggedIn) {
+			loadMenuData();
 		}
 	}, [isLoggedIn, isAdmin, accessToken]);
 
@@ -107,8 +129,15 @@ const MenuProvider = ({ children }) => {
 	);
 };
 
+/**
+ * Custom hook to use the MenuContext.
+ * @returns {object} The context value.
+ */
 const useMenuContext = () => {
 	const context = useContext(MenuContext);
+	if (!context) {
+		throw new Error("useMenuContext must be used within a MenuProvider");
+	}
 	return context;
 };
 

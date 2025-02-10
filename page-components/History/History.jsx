@@ -45,11 +45,9 @@ const export_type_options = [
 /**
  * A History component shows transaction history
  * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @example	`<History></History>` TODO: Fix example
+ * @param	{boolean}	[prop.forNetwork]	Whether to show the transaction history for the whole network
  */
-const History = () => {
+const History = ({ forNetwork = false }) => {
 	const formElements = {
 		tid: "",
 		account: "",
@@ -84,12 +82,21 @@ const History = () => {
 		value: "tx_typeid",
 	};
 
-	const history_interaction_list = Object.keys(trxn_type_prod_map).map(
-		(key) => {
-			const tx_typeid = parseInt(key);
-			return { ...trxn_type_prod_map[key], tx_typeid };
+	const [history_interaction_list, setHistoryInteractionList] = useState([]);
+	useEffect(() => {
+		if (!trxn_type_prod_map) return;
+
+		const _history_interaction_list = Object.keys(trxn_type_prod_map).map(
+			(key) => {
+				const tx_typeid = parseInt(key);
+				return { ...trxn_type_prod_map[key], tx_typeid };
+			}
+		);
+
+		if (_history_interaction_list.length > 0) {
+			setHistoryInteractionList(_history_interaction_list);
 		}
-	);
+	}, [trxn_type_prod_map]);
 
 	const [today] = useState(() => {
 		const _today = new Date();
@@ -152,83 +159,125 @@ const History = () => {
 		control: controlExport,
 	});
 
-	const history_filter_parameter_list = [
-		{
-			name: "product",
-			label: "Product",
-			parameter_type_id: ParamType.LIST,
-			list_elements: history_interaction_list,
-			renderer: renderer,
-			required: false,
-		},
-		{
-			name: "tid",
-			label: "TID",
-			parameter_type_id: ParamType.NUMERIC,
-			step: "1",
-			required: false,
-		},
-		{
-			name: "account",
-			label: "Account Number",
-			parameter_type_id: ParamType.NUMERIC,
-			step: "1",
-			required: false,
-		},
-		{
-			name: "customer_mobile",
-			label: "Customer Mobile No.",
-			step: "1",
-			parameter_type_id: ParamType.NUMERIC,
-			required: false,
-		},
-		{
-			name: "start_date",
-			label: "From",
-			parameter_type_id: ParamType.FROM_DATE,
-			minDate: calendar_min_date,
-			maxDate: today,
-			required:
-				openModalId == action.EXPORT
-					? watcherExport.tid
-						? false
-						: true
-					: false,
-		},
-		{
-			name: "tx_date",
-			label: "To",
-			parameter_type_id: ParamType.TO_DATE,
-			minDate:
-				openModalId == action.FILTER
-					? minDateFilter
-					: openModalId == action.EXPORT
-						? minDateExport
-						: null,
-			maxDate: today,
-			required:
-				openModalId == action.EXPORT
-					? watcherExport.tid
-						? false
-						: true
-					: false,
-		},
-		{
-			name: "amount",
-			label: "Amount",
-			parameter_type_id: ParamType.NUMERIC,
-			inputLeftElement: <Icon name="rupee" size="xs" color="light" />,
-			required: false,
-		},
-		{
-			name: "rr_no",
-			label: "Tracking Number",
-			step: "1",
-			parameter_type_id: ParamType.NUMERIC,
-			required: false,
-		},
-	];
+	// MARK: Filter Form
+	const history_filter_parameter_list = useMemo(
+		() => [
+			...(forNetwork
+				? [
+						{
+							name: "agent_mobile",
+							label: "Agent's Mobile No.",
+							parameter_type_id: ParamType.NUMERIC,
+							step: 1,
+							required: false,
+						},
+						{
+							name: "csp_code",
+							label: "Agent's Code",
+							parameter_type_id: ParamType.NUMERIC,
+							step: 1,
+							required: false,
+						},
+					]
+				: []),
+			...[
+				{
+					name: "product",
+					label: "Product",
+					parameter_type_id: ParamType.LIST,
+					list_elements: history_interaction_list,
+					renderer: renderer,
+					required: false,
+				},
+				{
+					name: "tid",
+					label: "TID",
+					parameter_type_id: ParamType.NUMERIC,
+					step: "1",
+					required: false,
+				},
+				{
+					name: "account",
+					label: "Account Number",
+					parameter_type_id: ParamType.NUMERIC,
+					step: "1",
+					required: false,
+				},
+				{
+					name: "customer_mobile",
+					label: "Customer Mobile No.",
+					step: "1",
+					parameter_type_id: ParamType.NUMERIC,
+					required: false,
+				},
+				{
+					name: "start_date",
+					label: "From",
+					parameter_type_id: ParamType.FROM_DATE,
+					minDate: calendar_min_date,
+					maxDate: today,
+					required:
+						openModalId == action.EXPORT
+							? watcherExport.tid
+								? false
+								: true
+							: false,
+				},
+				{
+					name: "tx_date",
+					label: "To",
+					parameter_type_id: ParamType.TO_DATE,
+					minDate:
+						openModalId == action.FILTER
+							? minDateFilter
+							: openModalId == action.EXPORT
+								? minDateExport
+								: null,
+					maxDate: today,
+					required:
+						openModalId == action.EXPORT
+							? watcherExport.tid
+								? false
+								: true
+							: false,
+				},
+				{
+					name: "amount",
+					label: "Amount",
+					parameter_type_id: ParamType.NUMERIC,
+					inputLeftElement: (
+						<Icon name="rupee" size="xs" color="light" />
+					),
+					required: false,
+				},
+				{
+					name: "rr_no",
+					label: "Tracking Number",
+					step: "1",
+					parameter_type_id: ParamType.NUMERIC,
+					required: false,
+				},
+			],
+		],
+		[
+			history_interaction_list,
+			renderer,
+			calendar_min_date,
+			minDateFilter,
+			minDateExport,
+			today,
+			openModalId,
+			watcherExport,
+			forNetwork,
+		]
+	);
 
+	console.log(
+		"[History] filter_parameter_list",
+		history_filter_parameter_list
+	);
+
+	// MARK: Fetch Data
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
 
@@ -237,14 +286,19 @@ const History = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: TransactionTypes.GET_TRANSACTION_HISTORY,
+				isNetworkTransactionHistory: forNetwork ? 1 : 0,
 				start_index: (currentPage - 1) * limit,
 				limit: limit,
-				account_id:
-					account_list &&
-					account_list.length > 0 &&
-					account_list[0].id
-						? account_list[0]?.id
-						: null,
+				...(forNetwork
+					? {}
+					: {
+							account_id:
+								account_list &&
+								account_list.length > 0 &&
+								account_list[0]?.id
+									? account_list[0].id
+									: null,
+						}),
 				...finalFormState,
 			},
 			controller: abortController,
@@ -291,12 +345,12 @@ const History = () => {
 				..._finalFormState,
 				start_date: otherQueries["tid"]
 					? ""
-					: watcherFilter.start_date ??
+					: (watcherFilter.start_date ??
 						watcherExport.start_date ??
-						firstDateOfMonth,
+						firstDateOfMonth),
 				tx_date: otherQueries["tid"]
 					? ""
-					: watcherFilter.tx_date ?? watcherExport.tx_date ?? today,
+					: (watcherFilter.tx_date ?? watcherExport.tx_date ?? today),
 				reporttype: "pdf",
 			});
 			setIsFiltered(true);
@@ -339,13 +393,13 @@ const History = () => {
 			start_date:
 				type == "tid"
 					? ""
-					: watcherFilter.start_date ??
+					: (watcherFilter.start_date ??
 						watcherExport.start_date ??
-						firstDateOfMonth,
+						firstDateOfMonth),
 			tx_date:
 				type == "tid"
 					? ""
-					: watcherFilter.tx_date ?? watcherExport.tx_date ?? today,
+					: (watcherFilter.tx_date ?? watcherExport.tx_date ?? today),
 			reporttype: "pdf",
 		});
 		setIsFiltered(true);
@@ -392,7 +446,8 @@ const History = () => {
 		});
 		setIsFiltered(false);
 		const prefix = isAdmin ? "/admin" : "";
-		router.push(`${prefix}/history`, undefined, {
+		const suffix = forNetwork ? "/network-statement" : "/history";
+		router.push(`${prefix}${suffix}`, undefined, {
 			shallow: true,
 		});
 	};
@@ -403,7 +458,8 @@ const History = () => {
 			quickSearch(search);
 			setPrevSearch(search);
 			const prefix = isAdmin ? "/admin" : "";
-			router.push(`${prefix}/history?search=${search}`, undefined, {
+			const suffix = forNetwork ? "/network-statement" : "/history";
+			router.push(`${prefix}${suffix}?search=${search}`, undefined, {
 				shallow: true,
 			});
 		}
@@ -453,12 +509,17 @@ const History = () => {
 					TransactionTypes.DOWNLOAD_TRXN_HISTORY_REPORT,
 				start_index: 0,
 				limit: 50000,
-				account_id:
-					account_list &&
-					account_list.length > 0 &&
-					account_list[0].id
-						? account_list[0]?.id
-						: null,
+				isNetworkTransactionHistory: forNetwork ? 1 : 0,
+				...(forNetwork
+					? {}
+					: {
+							account_id:
+								account_list &&
+								account_list.length > 0 &&
+								account_list[0]?.id
+									? account_list[0].id
+									: null,
+						}),
 				..._finalFormState,
 			},
 			token: accessToken,
@@ -488,7 +549,7 @@ const History = () => {
 		register: registerSearch,
 		control: controlSearch,
 		errors: errorsSearch,
-		formValue: watcherSearch,
+		formValues: watcherSearch,
 		parameter_list: [
 			{
 				name: "search",
@@ -501,8 +562,10 @@ const History = () => {
 				onEnter: handleSubmitSearch(onSearchSubmit),
 			},
 		],
+		hideOptionalMark: true,
 	};
 
+	// MARK: Toolbar Buttons
 	const actionBtnConfig = [
 		{
 			id: action.FILTER,
@@ -639,9 +702,14 @@ const History = () => {
 		watcherExport.tx_date,
 	]);
 
+	// MARK: JSX
 	return (
 		<>
-			<Headings title="Transaction History" />
+			<Headings
+				title={
+					forNetwork ? "Network Transactions" : "Transaction History"
+				}
+			/>
 			<Flex
 				w="full"
 				h="auto"
@@ -668,6 +736,7 @@ const History = () => {
 						setOpenModalId,
 						searchBarConfig,
 						actionBtnConfig,
+						forNetwork,
 					}}
 				/>
 
@@ -679,6 +748,7 @@ const History = () => {
 							tableRowLimit: limit,
 							pageNumber: currentPage,
 							setPageNumber: setCurrentPage,
+							forNetwork,
 						}}
 					/>
 				</PrintReceipt>

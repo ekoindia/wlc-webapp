@@ -5,6 +5,7 @@ import { Icon, InputLabel } from "..";
 
 /**
  * A Select component
+ * TODO: support for Chakra-Input-like "size" parameter: sm | md | lg
  * @param root0
  * @param root0.placeholder
  * @param root0.onChange
@@ -16,6 +17,7 @@ import { Icon, InputLabel } from "..";
  * @param root0.id
  * @param root0.disabled
  * @param root0.required
+ * @param root0.hideOptionalMark
  * @param root0.labelStyle
  * @param root0.getOptionLabel
  * @param root0.getOptionValue
@@ -31,6 +33,7 @@ const Select = ({
 	id,
 	disabled,
 	required = false,
+	hideOptionalMark = false,
 	labelStyle,
 	getOptionLabel,
 	getOptionValue, // Check if really required
@@ -176,6 +179,7 @@ const Select = ({
 				<InputLabel
 					htmlFor={id ?? _id}
 					required={required}
+					hideOptionalMark={hideOptionalMark}
 					{...labelStyle}
 				>
 					{label}

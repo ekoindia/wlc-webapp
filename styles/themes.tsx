@@ -23,6 +23,7 @@ export const light = extendTheme({
 		global: globalStyles,
 	},
 	colors: {
+		navstyle: "default",
 		primary: {
 			light: "#1F3ABC", // ORIG_THEME: #1d3ac9
 			DEFAULT: "#11299E",

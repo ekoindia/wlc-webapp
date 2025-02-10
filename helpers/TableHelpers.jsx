@@ -5,18 +5,22 @@ import { capitalize, limitText, nullRemover, numberRemover } from "utils";
 
 // convert status to color
 const statusChecker = {
-	Active: "success",
-	Success: "success",
-	Open: "success",
-	Inactive: "error",
-	Cancel: "error",
-	Closed: "error",
-	Failed: "error",
-	Fail: "error",
-	Pending: "orange.500",
-	Initiated: "orange.300",
-	"Refund pending": "purple.500",
-	Other: "light",
+	active: "success",
+	success: "success",
+	closed: "success",
+	resolved: "success",
+	open: "error",
+	inactive: "error",
+	cancel: "error",
+	failed: "error",
+	fail: "error",
+	escalated: "orange.500",
+	pending: "orange.500",
+	initiated: "orange.300",
+	"on hold": "orange.300",
+	wip: "purple.500",
+	"refund pending": "purple.500",
+	other: "light",
 };
 
 export const getAvatar = (name, icon, hue) => {
@@ -80,10 +84,11 @@ export const getNameStyle = (name = "", icon, hue) => {
 };
 
 export const getStatusStyle = (status = "", tableName) => {
-	const clr = statusChecker[status] || "light";
+	const _status = status?.toLowerCase();
+	const clr = statusChecker[_status] || "light";
 	if (tableName === "History") {
-		const clr = statusChecker[status] || "light";
-		if (status?.toLowerCase() !== "success") {
+		const clr = statusChecker[_status] || "light";
+		if (_status !== "success") {
 			return (
 				<Flex justify="flex-end">
 					<Flex

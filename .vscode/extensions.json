@@ -1,5 +1,11 @@
 {
 	"recommendations": [
-		"mskelton.npm-outdated"
+		"mskelton.npm-outdated",
+		"streetsidesoftware.code-spell-checker",
+		"github.copilot",
+		"github.copilot-chat",
+		"yoavbls.pretty-ts-errors",
+		"esbenp.prettier-vscode",
+		"joshbolduc.commitlint"
 	]
 }

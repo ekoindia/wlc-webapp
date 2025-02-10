@@ -7,6 +7,7 @@ import {
 	CommissionSummaryProvider,
 	EarningSummaryProvider,
 	GlobalSearchProvider,
+	NetworkUsersProvider,
 	NotificationProvider,
 	OrgDetailProvider,
 	OrgDetailSessionStorageKey,
@@ -21,9 +22,9 @@ import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
 import { Layout } from "layout-components";
 import App from "next/app";
 // import { Inter } from "next/font/google";
+import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import Head from "next/head";
 import { SWRConfig } from "swr";
-import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
 import { light } from "../styles/themes";
 
 // Variable Font
@@ -82,6 +83,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 				...light,
 				colors: {
 					...light.colors,
+					navstyle: colors.navstyle,
 					primary: {
 						...light.colors.primary,
 						light:
@@ -165,17 +167,18 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 	// Get standard or custom Layout for the page...
 	// - For custom layout, define the getLayout function in the page Component (pages/<MyPage>/index.jsx). Eg: See the login page (pages/index.tsx)
 	// - For hiding the top navbar on small screens, define isSubPage = true in the page Component (pages/<MyPage>/index.jsx).
-	const getLayout =
-		Component.getLayout ||
-		((page) => (
-			<Layout
+	const getLayout = (page) => {
+		const CurrentLayout = Component.getLayout || Layout;
+		return (
+			<CurrentLayout
 				// fontClassName={inter.className}
 				appName={org?.app_name}
 				pageMeta={Component?.pageMeta || {}}
 			>
 				{page}
-			</Layout>
-		));
+			</CurrentLayout>
+		);
+	};
 
 	// Is this a login page? This should help decide if features like CommandBar should be loaded.
 	const isLoginPage =
@@ -189,9 +192,9 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		>
 			<AppSourceProvider>
 				<OrgDetailProvider initialData={org || null}>
-					<KBarLazyProvider load={!isLoginPage}>
-						<GlobalSearchProvider>
-							<UserProvider userMockData={mockUser}>
+					<UserProvider userMockData={mockUser}>
+						<KBarLazyProvider load={!isLoginPage}>
+							<GlobalSearchProvider>
 								<MenuProvider>
 									<WalletProvider>
 										<RouteProtecter router={router}>
@@ -201,31 +204,32 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 														localStorageProvider,
 												}}
 											>
-												<NotificationProvider>
-													<EarningSummaryProvider>
-														<CommissionSummaryProvider>
-															<TodoProvider>
-																<PubSubProvider>
-																	<ErrorBoundary>
-																		{getLayout(
-																			<Component
-																				{...pageProps}
-																			/>,
-																			org
-																		)}
-																	</ErrorBoundary>
-																</PubSubProvider>
-															</TodoProvider>
-														</CommissionSummaryProvider>
-													</EarningSummaryProvider>
-												</NotificationProvider>
+												<PubSubProvider>
+													<NotificationProvider>
+														<EarningSummaryProvider>
+															<CommissionSummaryProvider>
+																<NetworkUsersProvider>
+																	<TodoProvider>
+																		<ErrorBoundary>
+																			{getLayout(
+																				<Component
+																					{...pageProps}
+																				/>
+																			)}
+																		</ErrorBoundary>
+																	</TodoProvider>
+																</NetworkUsersProvider>
+															</CommissionSummaryProvider>
+														</EarningSummaryProvider>
+													</NotificationProvider>
+												</PubSubProvider>
 											</SWRConfig>
 										</RouteProtecter>
 									</WalletProvider>
 								</MenuProvider>
-							</UserProvider>
-						</GlobalSearchProvider>
-					</KBarLazyProvider>
+							</GlobalSearchProvider>
+						</KBarLazyProvider>
+					</UserProvider>
 				</OrgDetailProvider>
 			</AppSourceProvider>
 		</ChakraProvider>
@@ -294,34 +298,51 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 InfinityApp.getInitialProps = async function (appContext) {
 	const { ctx } = appContext;
-	const { res } = ctx;
+	const { res, pathname } = ctx;
 
 	const defaultProps = App.getInitialProps(appContext);
 
-	if (typeof window !== "undefined") {
-		console.log("[_app.tsx] getInitialProps from SessionStorage.");
+	if (pathname === "/404") {
 		return {
 			...defaultProps,
-			org: JSON.parse(
-				window.sessionStorage.getItem(OrgDetailSessionStorageKey)
-			),
+		};
+	}
+
+	// If we are on the client side, try to get org details from SessionStorage
+	// This can happen on page refresh or when user navigates to a different page
+	if (typeof window !== "undefined" && window.sessionStorage) {
+		console.log("[_app.tsx] getInitialProps from SessionStorage.");
+
+		const orgDetails = window.sessionStorage.getItem(
+			OrgDetailSessionStorageKey
+		);
+
+		if (orgDetails) {
+			return {
+				...defaultProps,
+				org: JSON.parse(orgDetails),
+			};
+		}
+	}
+
+	// This should be executed server-side only...
+	const host = ctx?.req?.headers?.host; // || window?.location?.host;
+
+	if (!host) {
+		console.error("[_app.tsx - getInitialProps] Host not found");
+		return {
+			...defaultProps,
 		};
 	}
 
 	// Get org details (like, logo, name, etc) from server
-	const org_details = await fetchOrgDetails(ctx.req.headers.host, false);
-
-	console.log(
-		"\n\n\n>>>>>>> org_details: ",
-		ctx.req.headers.host,
-		org_details
-	);
+	const org_details = await fetchOrgDetails(host, false);
 
 	console.debug(
 		"[_app.tsx] getInitialProps:: ",
 		JSON.stringify(
 			{
-				host: ctx?.req?.headers?.host,
+				host: host,
 				org: org_details?.props?.data,
 			},
 			null,
@@ -329,20 +350,22 @@ InfinityApp.getInitialProps = async function (appContext) {
 		)
 	);
 
-	if (!org_details?.props?.data) {
+	if (org_details?.props?.data?.not_found || org_details?.notFound) {
+		const source = org_details?.props?.data?.not_found
+			? "backend"
+			: "cache";
+
 		console.error(
-			"[_app.tsx] getInitialProps:: Org details not found. Redirecting to 404"
+			"[_app.tsx - getInitialProps] Org not found. Redirecting to 404. Source=" +
+				source
 		);
+
 		// TODO: Redirect to marketing landing page...
-		// res.writeHead(302, { Location: "https://eko.in" });
+		// res.writeHead(302, { Location: "https://eko.in/eloka" });
 		// res.end();
 		res.statusCode = 404;
 		res.end();
-		return {
-			err: {
-				statusCode: 404,
-			},
-		};
+		return {};
 	}
 
 	return {
@@ -358,7 +381,9 @@ InfinityApp.getInitialProps = async function (appContext) {
 
 // Console warning to show to end users...
 console.info(
-	"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it.",
+	"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it. (" +
+		process.env.NEXT_PUBLIC_ENV +
+		")",
 	"color:red;background:yellow;font-size:20px",
 	"font-size:16px"
 );

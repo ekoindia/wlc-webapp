@@ -3,6 +3,7 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 
 
 ## 🧑‍💻 Setup Development Envoirnment:
+
 - One-time Setup:
   - Run `npm i`
   - Run `npm run prepare`
@@ -11,6 +12,48 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - Run: `npm run dev`
   - Open webpage: [http://localhost:3002](http://localhost:3002)
 
+
+## 📜 Available Scripts
+
+### Development
+- `npm run dev` - Run development server on port 3002
+- `npm run dev.https` - Run development server with HTTPS on port 3004
+- `npm run scan` - Run development server on port 3006 with react-scan to detects rerenders and other performance issues
+- `npm run inspect` - Run development server with Node inspector
+- `npm start` - Start production server
+- `npm run build` - Build production bundle
+- `npm run analyze` - Build with bundle-analyzer for size analysis
+
+### Code Quality
+- `npm run lint` - Run Next.js linting
+- `npm run lint-error` - Run linting with fewer warnings
+- `npm run lint-fix` - Fix linting issues automatically
+- `npm run eslint` - Run ESLint with project config
+- `npm run eslint-fix` - Fix ESLint issues automatically
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting without changes
+
+### Testing
+- `npm test` - Run all tests
+- `npm run test-file` - Run tests for a single file
+- `npm run test-watch` - Run tests in watch mode
+- `npm run test-coverage` - Run tests with coverage report
+- `npm run test-update-snapshots` - Update test snapshots
+
+### Development Tools
+- `npm run g` or `npm run generate` - Run plop generator for new components
+- `npm run sb` or `npm run storybook` - Run Storybook on port 6006
+- `npm run build-storybook` - Build static Storybook
+- `npm run check-updates` - Check for outdated dependencies
+- `npm run check-deps` - Run custom dependency checks
+
+### Docker Commands
+- `npm run docker:dev` - Run development container
+- `npm run docker:prod` - Run production container
+- `npm run docker:dev:build` - Build and run development container
+- `npm run docker:prod:build` - Build and run production container
+- `npm run docker:stop` - Stop all containers
+- `npm run docker:clean` - Remove containers, images, and volumes
 
 ## ✅ Toggle Feature Flags:
 
@@ -22,8 +65,8 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
   - Eg: `const [isFeatureEnabled] = useFeatureFlag('MY_FEATURE');`
   - to dynamically check for feature flags, use the `checkFeatureFlag` function:
     ```jsx
-	import { checkFeatureFlag } from 'hooks/useFeatureFlag';
-	const [isFeatureEnabled, checkFeatureFlag] = checkFeatureFlag('MY_FEATURE');
+	import { useFeatureFlag } from 'hooks/useFeatureFlag';
+	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
 
 	const isAnotherFeatureEnabled = checkFeatureFlag('ANOTHER_FEATURE');
 	```
@@ -50,12 +93,48 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 - **Left Sidebar** - [components/SideBar/SideBar.jsx](components/SideBar/SideBar.jsx)
   - Menu items configuration: [constants/SidebarMenu.ts](constants/SidebarMenu.ts)
   - Menu Context (data fetch after login): [contexts/MenuContext.tsx](contexts/MenuContext.tsx)
+  - MenuContext filtered into transaction & other lists for the sidebar: [hooks/useNavigationLists.js](hooks/useNavigationLists.js)
   - Menu data filtering & transformation using: [helpers/processTransactionData.js](helpers/processTransactionData.js)
 - **Transaction History** (for sellers & distributors) - [page-components/History/History.jsx](page-components/History/History.jsx)
   - History Table metadata: [page-components/History/HistoryTable/historyParametersMetadata.js](page-components/History/HistoryTable/historyParametersMetadata.js)
 	- To add a new data-point in the history table, add a new entry in the `historyParametersMetadata` array.
   - History API response is parsed into the required format in [page-components/History/HistoryTable/processHistoryTableData.js](page-components/History/HistoryTable/processHistoryTableData.js)
   - History Table component: [page-components/History/HistoryTable/HistoryTable.jsx](page-components/History/HistoryTable/HistoryTable.jsx)
+- **Bottom App Bar** - The `BottomAppBar` is a flexible component that serves as the primary navigation bar at the bottom of the small screen. It adapts to various use cases, allowing for the inclusion of navigation links, actions, and custom components. [components/BottomAppBar/BottomAppBar.tsx](components/BottomAppBar/BottomAppBar.tsx)
+  - _Bottom App Bar Items_ - The items in the Bottom App Bar are configured using the `useBottomAppBarItems` hook. This hook returns an array of objects, each representing an item in the bottom app bar. [components/BottomAppBar/useBottomAppBar.ts](components/BottomAppBar/useBottomAppBar.ts)
+    - Each item can include the following properties:
+        - `name`: A unique identifier for the item.
+        - `label`: The text label displayed beneath the icon.
+        - `icon`: The name of the icon displayed in the item.
+        - `path`: The navigation path for the item. For admin users, paths can be prefixed with `/admin`.
+        - `action`: A function that is executed when the item is clicked, such as toggling a search bar.
+        - `component`: A custom JSX component that can be rendered within the item.
+        - `visible`: A boolean indicating whether the item should be visible in the Bottom App Bar.
+
+
+## 💼 Business Features:
+
+### 📈 Business/Pricing Configuration for Admins:
+To add pricing configuration page for a new product in the Admin portal under "Pricing & Commission" left-menu section, use the following steps:
+
+#### For Pricing Configuration using File Upload:
+1. Create a configuration for the product in [`constants/ProductBusinessConfigurations.ts`](constants/ProductBusinessConfigurations.ts) file under the `business_config_slug_map` object.
+   1. Set a unique slug (for the page URL) and the name of the page-component to display.
+   2. Set template="fileupload"
+   3. Add set URL & parameters for file-upload and sample-file-download in the `meta` object.
+   4. Add the slug to `product_pricing_categories` object in the order that you want to display on the product listing page. If not added here, the product will not be displayed on the product listing page.
+
+#### For creating a custom Pricing (or, Business) Configuration page:
+1. Create a page-component for the pricing configuration running the command `npm run g`
+   1. Select "Component"
+   2. Enter the name of the page-component (eg: `TrainTravel`)
+   3. Select Path: `page-components/Admin`
+   4. Enter sub-folder: `PricingCommission`
+2. Copy sub-components from other existing pricing page-component such as: `TrainTravelDistributor` and `TrainTravelRetailer`
+3. Create a configuration for the product in [`constants/ProductBusinessConfigurations.ts`](constants/ProductBusinessConfigurations.ts) file under the `business_config_slug_map` object.
+   1. Set a unique slug (for the page URL) and the name of the page-component to display (created in step #1).
+   2. Add the slug to `product_pricing_categories` object in the order that you want to display on the product listing page. If not added here, the product will not be displayed on the product listing page.
+4. Create a configuration for the product in [`constants/ProductDetails.js`](constants/ProductDetails.js) page. Set slabs, validations, etc for the pricing configuration.
 
 
 ## ✨ Other Features:

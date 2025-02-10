@@ -10,6 +10,7 @@
 
 /**
  * List to show ChangeRole Menu options & tabs inside it.
+ * TODO: instead of visibleString, use an array of user-type-id to filter the options
  * @type {ChangeRoleOption[]}
  */
 export const ChangeRoleMenuList = [

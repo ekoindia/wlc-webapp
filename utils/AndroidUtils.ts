@@ -111,23 +111,38 @@ export const isAndroidApp = () => {
  * Sends a message to the Android app.
  * @param {string} action - Action to be performed by the Android app.
  * @param {any} data - Data to be sent to the Android app.
+ * @returns {boolean} - True if the message was sent successfully, false otherwise.
  */
-export const doAndroidAction = (action: String, data?: any) => {
-	if (isAndroidApp()) {
+export const doAndroidAction = (action: string, data?: any): boolean => {
+	if (
+		isAndroidApp() &&
+		ANDROID_INTERFACE_NAME in window &&
+		typeof window[ANDROID_INTERFACE_NAME].doAction === "function"
+	) {
 		let data_str = data;
 
 		if (typeof data === "object") {
 			try {
-				data_str =
-					typeof data === "object" ? JSON.stringify(data) : data;
+				data_str = JSON.stringify(data);
 			} catch (e) {
 				console.error(
 					"[doAndroidAction] Error while stringifying data:",
 					e
 				);
+				return false; // Return false if stringifying fails
 			}
 		}
 
-		window[ANDROID_INTERFACE_NAME].doAction(action, data_str);
+		try {
+			window[ANDROID_INTERFACE_NAME].doAction(action, data_str);
+			return true; // Return true if action is successfully sent
+		} catch (e) {
+			console.error(
+				`[doAndroidAction] Error while invoking Android action "${action}":`,
+				e
+			);
+			return false; // Return false if doAction throws an error
+		}
 	}
+	return false; // Return false if not running inside Android app
 };

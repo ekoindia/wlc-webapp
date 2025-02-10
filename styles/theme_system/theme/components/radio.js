@@ -7,7 +7,7 @@ const { definePartsStyle, defineMultiStyleConfig } =
 const baseStyle = definePartsStyle({
 	control: {
 		borderColor: "primary.DEFAULT",
-		borderWidth: "1px",
+		borderWidth: "2px",
 		borderStyle: "solid",
 
 		_checked: {

@@ -1,5 +1,5 @@
 import { Flex, FormControl, Text } from "@chakra-ui/react";
-import { Button, Input } from "components";
+import { ActionButtonGroup, Input } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -22,7 +22,7 @@ const OnboardDistributor = ({ applicantType, setResponse }) => {
 		register,
 		control,
 		// trigger,
-		formState: { errors, isSubmitting },
+		formState: { errors, isSubmitting, isDirty, isValid },
 	} = useForm({
 		defaultValues: {
 			agents: [{ agent_name: "", agent_mobile: "" }],
@@ -63,6 +63,29 @@ const OnboardDistributor = ({ applicantType, setResponse }) => {
 				console.error("error", err);
 			});
 	};
+
+	const buttonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Save",
+			loading: isSubmitting,
+			disabled: !isValid || !isDirty,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Cancel",
+			onClick: () => router.back(),
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
+		},
+	];
 
 	return (
 		<form onSubmit={handleSubmit(handleFormSubmit)}>
@@ -135,67 +158,35 @@ const OnboardDistributor = ({ applicantType, setResponse }) => {
 						</Flex>
 					);
 				})}
-				<Flex
-					direction={{ base: "row-reverse", md: "row" }}
-					w={{ base: "100%", md: "500px" }}
-					position={{ base: "fixed", md: "initial" }}
-					gap={{ base: "0", md: "16" }}
-					align="center"
-					bottom="0"
-					left="0"
-					bg="white"
-				>
-					<Button
-						type="submit"
-						size="lg"
-						h="64px"
-						w={{ base: "100%", md: "200px" }}
-						fontWeight="bold"
-						borderRadius={{ base: "none", md: "10" }}
-						loading={isSubmitting}
-					>
-						Save
-					</Button>
 
-					<Button
-						h={{ base: "64px", md: "auto" }}
-						w={{ base: "100%", md: "initial" }}
-						bg={{ base: "white", md: "none" }}
-						variant="link"
-						fontWeight="bold"
-						color="primary.DEFAULT"
-						_hover={{ textDecoration: "none" }}
-						borderRadius={{ base: "none", md: "10" }}
-						onClick={() => router.back()}
-					>
-						Cancel
-					</Button>
-
-					{/* <Button
-						h={{ base: "64px", md: "auto" }}
-						w={{ base: "100%", md: "initial" }}
-						bg={{ base: "white", md: "none" }}
-						variant="link"
-						fontWeight="bold"
-						color="primary.DEFAULT"
-						_hover={{ textDecoration: "none" }}
-						borderRadius={{ base: "none", md: "10" }}
-						onClick={async () => {
-							const _noError = await trigger();
-							if (_noError) {
-								append({
-									agent_name: "",
-									agent_mobile: "",
-								});
-							}
-						}}
-					>
-						+ Add New
-					</Button> */}
-				</Flex>
+				<ActionButtonGroup {...{ buttonConfigList }} />
 			</Flex>
 		</form>
 	);
 };
 
 export default OnboardDistributor;
+
+/* 
+    <Button
+        h={{ base: "64px", md: "auto" }}
+        w={{ base: "100%", md: "initial" }}
+        bg={{ base: "white", md: "none" }}
+        variant="link"
+        fontWeight="bold"
+        color="primary.DEFAULT"
+        _hover={{ textDecoration: "none" }}
+        borderRadius={{ base: "none", md: "10" }}
+        onClick={async () => {
+            const _noError = await trigger();
+            if (_noError) {
+                append({
+                    agent_name: "",
+                    agent_mobile: "",
+                });
+            }
+        }}
+    >
+        + Add New
+    </Button> 
+*/

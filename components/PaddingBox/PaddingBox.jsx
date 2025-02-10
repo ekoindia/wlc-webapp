@@ -1,13 +1,12 @@
 import { Box } from "@chakra-ui/react";
 
 /**
- * A <PaddingBox> component
- * TODO: Write more description here
+ * Utility wrapper component to add consistent padding to the page-components.
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.children
- * @param prop.noSpacing
- * @example	`<PaddingBox></PaddingBox>`
+ * @param	{boolean}	[prop.noSpacing]	Flag to remove padding from the component.
+ * @param	{any}		[prop.children]		Children
+ * @example	`<PaddingBox><PageComponent/></PaddingBox>`
  */
 const PaddingBox = ({ children, noSpacing = false, ...rest }) => {
 	return (

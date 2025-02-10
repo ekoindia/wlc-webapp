@@ -2,7 +2,7 @@ import { CloseButton, Flex, Image, Text, useToast } from "@chakra-ui/react";
 import { Icon } from "components";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { TransactionTypes } from "constants";
-import { useSession } from "contexts";
+import { usePubSub, useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useLocalStorage } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
@@ -48,9 +48,13 @@ const useNotifications = () => {
 	const [notifications, setNotifications] = useState([]);
 	const [ads, setAds] = useState([]);
 	// const [customerNotifications, setCustomerNotifications] = useState([]);
+	const [notificationCount, setNotificationCount] = useState(0);
+	const [adCount, setAdCount] = useState(0);
 	const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 	const [openedNotification, setOpenedNotification] = useState(null);
+
+	const { publish, TOPICS } = usePubSub();
 
 	// Notification settings.
 	const [notifSettings, setNotifSettings] = useLocalStorage(
@@ -162,6 +166,15 @@ const useNotifications = () => {
 	};
 
 	/**
+	 * Open the notification panel overlay to show all notifications
+	 */
+	const openNotificationPanel = () => {
+		publish(TOPICS.SHOW_DIALOG_FEATURE, {
+			feature: "Notifications",
+		});
+	};
+
+	/**
 	 * Open a notification
 	 * @param {number} notificationId
 	 */
@@ -191,6 +204,54 @@ const useNotifications = () => {
 	 */
 	const fetchNotifications = useCallback(async () => {
 		setIsLoading(true);
+
+		// const dummyData = {
+		// 	message: "Success",
+		// 	response_type_id: 0,
+		// 	response_status_id: 0,
+		// 	status: 0,
+		// 	data: {
+		// 		notifications: [
+		// 			// Notification - 1
+		// 			{
+		// 				id: 352,
+		// 				notification_type: 0, // Ad
+		// 				title: "Earn with AePS",
+		// 				desc: "Make your shop an ATM with AePS Cashout!",
+		// 				image: "https://files.eko.co.in/docs/notification/image_1528367534103_2082.png",
+		// 				link: "/transaction/252/626", // 252/626, /246/252, 344
+		// 				// link: "https://play.google.com/store/apps/details?id=com.bethsoft.blade",
+		// 				link_label: "Start using AePS",
+		// 				notify_time: "2021-03-05 14:00:00",
+		// 				// expiry_time: "2020-03-18 15:11:00",
+		// 				priority: 3, // HIGH PRIORITY
+		// 				read: 0,
+		// 			},
+
+		// 			{
+		// 				id: 351,
+		// 				title: "Help us improve by giving your feedback about AePS",
+		// 				desc: "How did you like our AePS service?",
+		// 				markdown: 0,
+
+		// 				poll: "👍 Like it |😐 It's Ok|👎 Don't like it %% Comments|🤷‍♀️ I don't use AePS",
+		// 				// "feedback": "Like it",
+
+		// 				//"link":"https://connect.eko.in/#!/transaction/243",
+		// 				//"image":"http://files.eko.in/pics/ad1.jpg",
+		// 				//"youtube":"sJRRC0YaK5A",
+
+		// 				priority: 2,
+		// 				// "state": 2,
+		// 				notify_time: "2021-03-08 14:00:00",
+		// 				read: 0,
+		// 			},
+		// 		],
+		// 	},
+		// };
+		// handleNotificationsResponse(dummyData);
+		// return;
+
 		try {
 			const resp = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do",
@@ -201,6 +262,7 @@ const useNotifications = () => {
 					token: accessToken,
 				}
 			);
+
 			handleNotificationsResponse(resp);
 		} catch (error) {
 			console.error("Failed to fetch notifications:", error);
@@ -222,6 +284,8 @@ const useNotifications = () => {
 			return;
 		}
 
+		let _notif_count = 0;
+		let _ad_count = 0;
 		let _unread_notif = 0; // Unread notifications count
 		const _notif_list = []; // Normal notifications
 		const _ad_list = []; // Ad notifications
@@ -232,11 +296,13 @@ const useNotifications = () => {
 
 			if (_notif.notification_type === NOTIF_TYPE.NORMAL) {
 				_notif_list.push(_notif);
+				_notif_count++;
 				if (!_notif.read) {
 					_unread_notif++;
 				}
 			} else if (_notif.notification_type === NOTIF_TYPE.AD) {
 				_ad_list.push(_notif);
+				_ad_count++;
 			}
 			// else if (_notif.notification_type === NOTIF_TYPE.CUSTOMER_AD)
 			// {
@@ -269,6 +335,8 @@ const useNotifications = () => {
 			sanitizeList(_notif_list, NOTIF_TYPE_META[NOTIF_TYPE.NORMAL].limit)
 		);
 		setAds(sanitizeList(_ad_list, NOTIF_TYPE_META[NOTIF_TYPE.AD].limit));
+		setNotificationCount(_notif_count);
+		setAdCount(_ad_count);
 		setUnreadNotificationCount(_unread_notif);
 
 		// TODO: Remove expired notifications & ads
@@ -545,18 +613,23 @@ const useNotifications = () => {
 		return {
 			notifications,
 			ads,
+			notificationCount,
+			adCount,
 			unreadNotificationCount,
 			isLoading,
 			openedNotification,
 			fetchNotifications,
 			markAsRead,
 			findNotificationById,
+			openNotificationPanel,
 			openNotification,
 			closeNotification,
 		};
 	}, [
 		notifications,
 		ads,
+		notificationCount,
+		adCount,
 		unreadNotificationCount,
 		isLoading,
 		openedNotification,

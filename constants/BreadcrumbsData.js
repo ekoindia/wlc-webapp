@@ -1,4 +1,4 @@
-export const NetworkObject = {
+export const MyNetworkBreadcrumbs = {
 	"/admin/my-network": "My Network",
 	"/admin/my-network/profile": "Agent Details",
 	"/admin/my-network/profile/up-sell-info": "Update Agent Information",
@@ -9,38 +9,38 @@ export const NetworkObject = {
 	"/admin/my-network/profile/change-role": "Change Role",
 };
 
-export const TransactionHistoryObject = {
+export const TransactionHistoryBreadcrumbs = {
 	"/admin/transaction-history": "Transaction History",
 	"/admin/transaction-history/account-statement": "Account Statement",
 	"/admin/transaction-history/account-statement/detailed-statement":
 		"Detailed Statement",
 };
 
-export const PricingCommissionObject = {
+export const PricingCommissionBreadcrumbs = {
 	"/admin/pricing": "Pricing & Commissions",
-	"/admin/pricing/commission-frequency": "Commission Frequency",
 	"/admin/pricing/money-transfer": "Money Transfer",
 	"/admin/pricing/aeps": "AePS",
 	"/admin/pricing/payment-gateway": "Payment Gateway",
 	"/admin/pricing/account-verification": "Account Verification",
-	"/admin/pricing/credit-card-bill-payment": "Credit Card Bill Payment",
+	"/admin/pricing/credit-card-bill-payment": "Credit Card Bill",
 	"/admin/pricing/aadhaar-pay": "Aadhaar Pay",
-	"/admin/pricing/indo-nepal-fund-transfer": "Indo-Nepal Fund Transfer",
+	"/admin/pricing/indo-nepal-fund-transfer": "Indo-Nepal",
 	"/admin/pricing/airtel-cms": "Airtel CMS",
+	"/admin/pricing/insurance-dekho": "InsuranceDekho",
+	"/admin/pricing/travel-booking": "Travel",
+	"/admin/pricing/train-booking": "Train",
+	"/admin/pricing/flight-booking": "Flight",
+	"/admin/pricing/cdm": "Cash Deposit",
+	"/admin/pricing/qr-payment": "QR",
 };
 
-export const QueryObject = {
-	"/admin/query": "Query Center",
-};
-
-export const NotificationsBreadcrumbData = {
-	"/admin/notifications": "Send Notifications",
-};
-
-export const OnboardAgentObject = {
-	"/admin/onboard-agents": "Onboard Agents",
-};
-
-export const ConfigurationsBreadcrumbData = {
-	"/admin/configurations": "Configurations",
+export const BusinessSettingsBreadcrumbs = {
+	"/admin/business": "Business Settings",
+	"/admin/business/account-verification-toggle": "Account Verification",
+	"/admin/business/agreement-signing": "Agreement Signing",
+	"/admin/business/commission-frequency": "Commission Frequency",
+	"/admin/business/cash-deposit-charges-config":
+		"Manage Cash-Deposit Charges",
+	"/admin/business/refund-method": "Refund Method",
+	"/admin/business/toggle-services": "Enable/Disable Services",
 };

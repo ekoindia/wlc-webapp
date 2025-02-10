@@ -1,40 +1,40 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
 import { useFeatureFlag } from "hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GeneralConfig, LandingPageConfig, ThemeConfig } from ".";
 
 /**
  * A Configurations page-component
  */
 const Configurations = () => {
-	const [currTab, setCurrTab] = useState(0);
+	const [currTab, setCurrTab] = useState(null);
 
-	const [isConfigEnabled] = useFeatureFlag("PORTAL_CONFIG");
+	const [isThemePickerEnabled] = useFeatureFlag("THEME_PICKER");
+	const [isCmsLandingPageEnabled] = useFeatureFlag("CMS_LANDING_PAGE");
 
 	const list = [
-		{ label: "Theme", component: <ThemeConfig /> },
-		{ label: "Landing Page", component: <LandingPageConfig /> },
-		{ label: "General", component: <GeneralConfig /> },
+		{
+			label: "Theme",
+			component: <ThemeConfig />,
+			visible: isThemePickerEnabled,
+		},
+		{
+			label: "Landing Page",
+			component: <LandingPageConfig />,
+			visible: isCmsLandingPageEnabled,
+		},
+		{ label: "General", component: <GeneralConfig />, visible: false },
 	];
+
+	useEffect(() => {
+		// TODO: remove this effect after theme picker UAT testing.
+		if (isThemePickerEnabled) setCurrTab(0);
+	}, [isThemePickerEnabled]);
 
 	const onClick = (idx) => setCurrTab(idx);
 
-	const getComp = (idx) => list[idx].component;
-
-	if (!isConfigEnabled) {
-		return (
-			<Flex
-				justifyContent="center"
-				alignItems="center"
-				h="10em"
-				w="100%"
-				fontSize="2xl"
-			>
-				<Text>Coming soon!!</Text>
-			</Flex>
-		);
-	}
+	const getComp = (idx) => list[idx]?.component;
 
 	return (
 		<div>

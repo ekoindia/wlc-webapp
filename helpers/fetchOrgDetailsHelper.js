@@ -6,6 +6,9 @@
 
 import { Endpoints } from "constants/EndPoints";
 
+// The `response_type_id` if the organization is not found on the server
+const ORG_NOT_FOUND_RESPONSE_TYPE_ID = 1829;
+
 // Cache the org details on the server...
 const ORG_CACHE = {};
 
@@ -44,6 +47,12 @@ export const MockOrgDetails = {
 			accent: stripQuotes(process.env.THEME_ACCENT) || "",
 			accent_dark: stripQuotes(process.env.THEME_ACCENT_DARK) || "",
 			accent_light: stripQuotes(process.env.THEME_ACCENT_LIGHT) || "",
+		},
+		cms_meta: {
+			type: process.env.CMS_TYPE || undefined,
+		},
+		cms_data: {
+			img: process.env.CMS_IMG || undefined,
 		},
 	},
 	login_types: {
@@ -110,6 +119,9 @@ export const fetchOrgDetails = async (host, force) => {
 	// Check cache for valid (sub)domain
 	let orgDetails = ORG_CACHE[domain || subdomain];
 
+	// Prevent DOS attack when users keep hitting invalid domains
+	const DOS_ATTACK_DELAY = 3000; // Delay in milliseconds
+
 	// Check cache for invalid (sub)domain
 	if (
 		force !== true &&
@@ -126,6 +138,10 @@ export const fetchOrgDetails = async (host, force) => {
 			INVALID_DOMAIN_CACHE.clear();
 			LAST_INVALID_DOMAIN_CACHE_BUST_TIME = Date.now();
 		} else {
+			// Delay the response for invalid domains to prevent DOS attack
+			await new Promise((resolve) =>
+				setTimeout(resolve, DOS_ATTACK_DELAY)
+			);
 			return {
 				...invalidOrg,
 				props: {
@@ -147,14 +163,61 @@ export const fetchOrgDetails = async (host, force) => {
 
 		console.log("Fetched Org details::: ", orgDetails, force);
 
-		// Process metadata...
-		if (typeof orgDetails?.metadata?.support_contacts === "string") {
-			orgDetails.metadata.support_contacts = JSON.parse(
-				orgDetails.metadata.support_contacts
-			);
+		// Process metadata: convert string to JSON
+		if (
+			orgDetails?.metadata?.support_contacts &&
+			typeof orgDetails?.metadata?.support_contacts === "string"
+		) {
+			try {
+				orgDetails.metadata.support_contacts = JSON.parse(
+					orgDetails.metadata.support_contacts
+				);
+			} catch (e) {
+				console.error("Error parsing support_contacts: ", e);
+				orgDetails.metadata.support_contacts = {};
+			}
 		}
-		if (typeof orgDetails?.metadata?.theme === "string") {
-			orgDetails.metadata.theme = JSON.parse(orgDetails.metadata.theme);
+
+		if (
+			orgDetails?.metadata?.theme &&
+			typeof orgDetails?.metadata?.theme === "string"
+		) {
+			try {
+				orgDetails.metadata.theme = JSON.parse(
+					orgDetails.metadata.theme
+				);
+			} catch (e) {
+				console.error("Error parsing theme: ", e);
+				orgDetails.metadata.theme = {};
+			}
+		}
+
+		if (
+			orgDetails?.metadata?.cms_meta &&
+			typeof orgDetails?.metadata?.cms_meta === "string"
+		) {
+			try {
+				orgDetails.metadata.cms_meta = JSON.parse(
+					orgDetails.metadata.cms_meta
+				);
+			} catch (e) {
+				console.error("Error parsing cms_meta: ", e);
+				orgDetails.metadata.cms_meta = {};
+			}
+		}
+
+		if (
+			typeof orgDetails?.metadata?.cms_data &&
+			typeof orgDetails?.metadata?.cms_data === "string"
+		) {
+			try {
+				orgDetails.metadata.cms_data = JSON.parse(
+					orgDetails.metadata.cms_data
+				);
+			} catch (e) {
+				console.error("Error parsing cms_data: ", e);
+				orgDetails.metadata.cms_data = {};
+			}
 		}
 
 		// Cache the org details
@@ -167,6 +230,11 @@ export const fetchOrgDetails = async (host, force) => {
 		} else if (orgDetails?.not_found === true) {
 			// Domain details not available. Cache the invalid domain.
 			INVALID_DOMAIN_CACHE.add(domain || subdomain);
+
+			// Delay the response for invalid domains to prevent DOS attack
+			await new Promise((resolve) =>
+				setTimeout(resolve, DOS_ATTACK_DELAY)
+			);
 		}
 	}
 
@@ -185,11 +253,35 @@ export const fetchOrgDetails = async (host, force) => {
 };
 
 /**
- * Fetch org details from the API (server-side only)
- * @param domain
- * @param subdomain
+ * Fetch org details from the API (server-side only) based on either domain or subdomain
+ * @param {string} domain - Domain name without protocol (e.g. example.com)
+ * @param {string} subdomain - Subdomain name without domain or protocol (e.g. subdomain)
  */
 const fetchOrgDetailsfromApi = async (domain, subdomain) => {
+	// Validate domain and subdomain
+	if (domain) {
+		// Test for valid domain name using URL object
+		try {
+			const parsedHostname = new URL("https://" + domain)?.hostname; // Add protocol for validation
+			if (!parsedHostname?.includes(".")) {
+				domain = "";
+			}
+		} catch (_e) {
+			domain = "";
+			console.error("Error validating domain: ", domain, _e);
+		}
+	} else if (subdomain) {
+		// Test for valid subdomain: only alphanumeric characters with hyphen, dot or underscore allowed.
+		if (!/^[-a-z0-9\._]+$/i.test(subdomain)) {
+			subdomain = "";
+		}
+	}
+
+	if (!(domain || subdomain)) {
+		console.error("Invalid (sub)domain: ", { domain, subdomain });
+		return null;
+	}
+
 	try {
 		const res = await fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL +
@@ -233,7 +325,7 @@ const fetchOrgDetailsfromApi = async (domain, subdomain) => {
 		if (data?.data?.org_id) {
 			// Org details found
 			return data.data;
-		} else if (data?.response_type_id == 1829) {
+		} else if (data?.response_type_id == ORG_NOT_FOUND_RESPONSE_TYPE_ID) {
 			// Org details not found
 			console.debug(
 				"Org details not found on server: ",
