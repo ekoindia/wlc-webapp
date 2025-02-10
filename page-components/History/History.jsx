@@ -42,6 +42,11 @@ const export_type_options = [
 	},
 ];
 
+const product_filter_renderer = {
+	label: "hist_label",
+	value: "tx_typeid",
+};
+
 /**
  * A History component shows transaction history
  * @param 	{object}	prop	Properties passed to the component
@@ -76,11 +81,6 @@ const History = ({ forNetwork = false }) => {
 
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions;
-
-	const renderer = {
-		label: "hist_label",
-		value: "tx_typeid",
-	};
 
 	const [history_interaction_list, setHistoryInteractionList] = useState([]);
 	useEffect(() => {
@@ -182,11 +182,11 @@ const History = ({ forNetwork = false }) => {
 				: []),
 			...[
 				{
-					name: "product",
+					name: "tx_typeid",
 					label: "Product",
 					parameter_type_id: ParamType.LIST,
 					list_elements: history_interaction_list,
-					renderer: renderer,
+					renderer: product_filter_renderer,
 					required: false,
 				},
 				{
@@ -261,7 +261,7 @@ const History = ({ forNetwork = false }) => {
 		],
 		[
 			history_interaction_list,
-			renderer,
+			product_filter_renderer,
 			calendar_min_date,
 			minDateFilter,
 			minDateExport,
@@ -272,27 +272,14 @@ const History = ({ forNetwork = false }) => {
 		]
 	);
 
-	console.log(
-		"[History] filter_parameter_list",
-		history_filter_parameter_list
-	);
+	// console.log(
+	// 	"[History] filter_parameter_list",
+	// 	history_filter_parameter_list
+	// );
 
 	// MARK: Fetch Data
 	const hitQuery = (abortController, key) => {
 		console.log("[History] fetch started...", key);
-
-		const data = {};
-		Object.keys(finalFormState).forEach((key) => {
-			if (
-				key === "product" &&
-				finalFormState[key] &&
-				finalFormState[key].tx_typeid
-			) {
-				data["tx_typeid"] = finalFormState[key].tx_typeid;
-			} else if (finalFormState[key]) {
-				data[key] = finalFormState[key];
-			}
-		});
 
 		setLoading(true);
 
@@ -393,7 +380,8 @@ const History = ({ forNetwork = false }) => {
 		if (len === 10 && /^[6-9]/.test(search) && !isDecimal)
 			type = "customer_mobile";
 		else if (len <= 7) type = "amount";
-		else if (len === 10 && !isDecimal) type = "tid";
+		else if ((len === 10 || len === 11) && !isDecimal)
+			type = "tid"; // TID can have a length of 10 or 11.
 		else if (len >= 9 && len <= 18 && !isDecimal) type = "account";
 
 		// Set Filter form for searching...
@@ -422,15 +410,19 @@ const History = ({ forNetwork = false }) => {
 	const onFilterSubmit = (data) => {
 		// Get all non-empty values from formState and set in finalFormState
 		const _finalFormState = {};
+
 		Object.keys(data).forEach((key) => {
-			if (data[key]) {
+			if (key === "tx_typeid" && data[key] && data[key]?.tx_typeid) {
+				_finalFormState["tx_typeid"] = data[key].tx_typeid;
+			} else if (data[key]) {
 				_finalFormState[key] = data[key];
 			}
 		});
+
 		setFinalFormState(_finalFormState);
 
 		resetExport({
-			..._finalFormState,
+			...data,
 			start_date: watcherFilter.start_date ?? watcherExport.start_date,
 			tx_date: watcherFilter.tx_date ?? watcherExport.tx_date,
 			reporttype: watcherExport.reporttype,
@@ -498,12 +490,13 @@ const History = ({ forNetwork = false }) => {
 
 		const _finalFormState = {};
 		Object.keys(data).forEach((key) => {
-			if (key === "product" && data[key] && data[key].tx_typeid) {
+			if (key === "tx_typeid" && data[key] && data[key].tx_typeid) {
 				_finalFormState["tx_typeid"] = data[key].tx_typeid;
 			} else if (data[key]) {
 				_finalFormState[key] = data[key];
 			}
 		});
+		// console.log("_finalFormState", _finalFormState);
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
