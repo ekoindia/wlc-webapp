@@ -498,7 +498,7 @@ const History = ({ forNetwork = false }) => {
 				_finalFormState[key] = data[key];
 			}
 		});
-		console.log("_finalFormState", _finalFormState);
+		// console.log("_finalFormState", _finalFormState);
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
