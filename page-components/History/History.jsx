@@ -42,6 +42,11 @@ const export_type_options = [
 	},
 ];
 
+const product_filter_renderer = {
+	label: "hist_label",
+	value: "tx_typeid",
+};
+
 /**
  * A History component shows transaction history
  * @param 	{object}	prop	Properties passed to the component
@@ -76,11 +81,6 @@ const History = ({ forNetwork = false }) => {
 
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions;
-
-	const renderer = {
-		label: "hist_label",
-		value: "tx_typeid",
-	};
 
 	const [history_interaction_list, setHistoryInteractionList] = useState([]);
 	useEffect(() => {
@@ -182,11 +182,11 @@ const History = ({ forNetwork = false }) => {
 				: []),
 			...[
 				{
-					name: "product",
+					name: "tx_typeid",
 					label: "Product",
 					parameter_type_id: ParamType.LIST,
 					list_elements: history_interaction_list,
-					renderer: renderer,
+					renderer: product_filter_renderer,
 					required: false,
 				},
 				{
@@ -261,7 +261,7 @@ const History = ({ forNetwork = false }) => {
 		],
 		[
 			history_interaction_list,
-			renderer,
+			product_filter_renderer,
 			calendar_min_date,
 			minDateFilter,
 			minDateExport,
@@ -272,10 +272,10 @@ const History = ({ forNetwork = false }) => {
 		]
 	);
 
-	console.log(
-		"[History] filter_parameter_list",
-		history_filter_parameter_list
-	);
+	// console.log(
+	// 	"[History] filter_parameter_list",
+	// 	history_filter_parameter_list
+	// );
 
 	// MARK: Fetch Data
 	const hitQuery = (abortController, key) => {
@@ -409,11 +409,9 @@ const History = ({ forNetwork = false }) => {
 	const onFilterSubmit = (data) => {
 		// Get all non-empty values from formState and set in finalFormState
 		const _finalFormState = {};
-		const preservedProductObj = {}; // to preserve this product object to auto-fill product export form.
 
 		Object.keys(data).forEach((key) => {
-			if (key === "product" && data[key] && data[key]?.tx_typeid) {
-				preservedProductObj[key] = data[key];
+			if (key === "tx_typeid" && data[key] && data[key]?.tx_typeid) {
 				_finalFormState["tx_typeid"] = data[key].tx_typeid;
 			} else if (data[key]) {
 				_finalFormState[key] = data[key];
@@ -423,8 +421,7 @@ const History = ({ forNetwork = false }) => {
 		setFinalFormState(_finalFormState);
 
 		resetExport({
-			...preservedProductObj,
-			..._finalFormState,
+			...data,
 			start_date: watcherFilter.start_date ?? watcherExport.start_date,
 			tx_date: watcherFilter.tx_date ?? watcherExport.tx_date,
 			reporttype: watcherExport.reporttype,
@@ -492,7 +489,7 @@ const History = ({ forNetwork = false }) => {
 
 		const _finalFormState = {};
 		Object.keys(data).forEach((key) => {
-			if (key === "product" && data[key] && data[key].tx_typeid) {
+			if (key === "tx_typeid" && data[key] && data[key].tx_typeid) {
 				_finalFormState["tx_typeid"] = data[key].tx_typeid;
 			} else if (data[key]) {
 				_finalFormState[key] = data[key];
