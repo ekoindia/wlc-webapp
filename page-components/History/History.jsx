@@ -380,7 +380,8 @@ const History = ({ forNetwork = false }) => {
 		if (len === 10 && /^[6-9]/.test(search) && !isDecimal)
 			type = "customer_mobile";
 		else if (len <= 7) type = "amount";
-		else if (len === 10 && !isDecimal) type = "tid";
+		else if ((len === 10 || len === 11) && !isDecimal)
+			type = "tid"; // TID can have a length of 10 or 11.
 		else if (len >= 9 && len <= 18 && !isDecimal) type = "account";
 
 		// Set Filter form for searching...
