@@ -1,5 +1,8 @@
 import { Flex, Select, Text } from "@chakra-ui/react";
 import { Table } from "components";
+import { Endpoints } from "constants";
+import { useApiFetch } from "hooks";
+import { useEffect, useState } from "react";
 
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
@@ -50,9 +53,49 @@ const topMerchantsTableParameterList = [
  * @param prop.onFilterChange
  * @param prop.currTab
  * @param prop.productFilterList
+ * @param prop.dateFrom
+ * @param prop.dateTo
  * @example	`<TopMerchants></TopMerchants>`
  */
-const TopMerchants = ({ data, currTab, productFilterList, onFilterChange }) => {
+const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
+	const [requestPayload, setRequestPayload] = useState({});
+	const [productFilter, setProductFilter] = useState("81");
+	const [topMerchantsData, setTopMerchantsData] = useState([]);
+
+	// MARK: Fetching Product Overview Data
+	const [fetchProductOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
+		body: {
+			interaction_type_id: 682,
+			requestPayload: requestPayload,
+		},
+		onSuccess: (res) => {
+			const _data = res?.data?.dashboard_object?.gtv_top_merchants || [];
+			setTopMerchantsData(_data);
+		},
+	});
+
+	useEffect(() => {
+		if (dateFrom && dateTo) {
+			setRequestPayload(() => ({
+				gtv_top_merchants: {
+					datefrom: dateFrom,
+					dateto: dateTo,
+					typeid: productFilter,
+				},
+			}));
+		}
+	}, [dateFrom, dateTo, productFilter]);
+
+	useEffect(() => {
+		if (dateFrom && dateTo) {
+			fetchProductOverviewData();
+		}
+	}, [requestPayload]);
+
+	const onFilterChange = (typeid) => {
+		setProductFilter(typeid);
+	};
+
 	return (
 		<Flex
 			direction="column"
@@ -75,7 +118,7 @@ const TopMerchants = ({ data, currTab, productFilterList, onFilterChange }) => {
 				<Flex w={{ base: "100%", md: "auto" }}>
 					<Select
 						variant="filled"
-						value={currTab}
+						value={productFilter}
 						onChange={(e) => onFilterChange(e.target.value)}
 						size="sm"
 					>
@@ -89,7 +132,7 @@ const TopMerchants = ({ data, currTab, productFilterList, onFilterChange }) => {
 			</Flex>
 			<Table
 				{...{
-					data,
+					data: topMerchantsData,
 					renderer: topMerchantsTableParameterList,
 				}}
 			/>
