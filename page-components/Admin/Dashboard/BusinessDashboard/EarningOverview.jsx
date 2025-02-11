@@ -19,7 +19,6 @@ const EarningOverview = ({
 	productFilterList,
 	onFilterChange,
 }) => {
-	console.log("currTab", currTab);
 	const earningOverviewList = [
 		{
 			key: "gtv",
