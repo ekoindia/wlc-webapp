@@ -1,5 +1,8 @@
 import { Divider, Flex, Grid, Select, Text } from "@chakra-ui/react";
 import { Currency, Icon } from "components";
+import { Endpoints } from "constants";
+import { useApiFetch } from "hooks";
+import { useEffect, useState } from "react";
 
 /**
  * A EarningOverview page-component
@@ -11,72 +14,100 @@ import { Currency, Icon } from "components";
  * @param prop.onFilterChange
  * @param prop.currTab
  * @param prop.productFilterList
+ * @param prop.dateFrom
+ * @param prop.dateTo
  * @example	`<EarningOverview></EarningOverview>`
  */
-const EarningOverview = ({
-	data,
-	currTab,
-	productFilterList,
-	onFilterChange,
-}) => {
+const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
+	const [requestPayload, setRequestPayload] = useState({});
+	const [productFilter, setProductFilter] = useState("81");
+	const [earningOverviewData, setEarningOverviewData] = useState({});
+
+	// MARK: Fetching Product Overview Data
+	const [fetchProductOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
+		body: {
+			interaction_type_id: 682,
+			requestPayload: requestPayload,
+		},
+		onSuccess: (res) => {
+			const _data = res?.data?.dashboard_object?.products_overview || [];
+			setEarningOverviewData(_data);
+		},
+	});
+
+	useEffect(() => {
+		if (dateFrom && dateTo) {
+			setRequestPayload(() => ({
+				products_overview: {
+					datefrom: dateFrom,
+					dateto: dateTo,
+					typeid: productFilter,
+				},
+			}));
+		}
+	}, [dateFrom, dateTo, productFilter]);
+
+	useEffect(() => {
+		if (dateFrom && dateTo) {
+			fetchProductOverviewData();
+		}
+	}, [requestPayload]);
+
+	const onFilterChange = (typeid) => {
+		setProductFilter(typeid);
+	};
+
 	const earningOverviewList = [
 		{
 			key: "gtv",
 			label: "GTV",
-			lastPeriod: data?.gtv?.lastPeriod,
-			value: data?.gtv?.amount,
+			lastPeriod: earningOverviewData?.gtv?.lastPeriod,
+			value: earningOverviewData?.gtv?.amount,
 			type: "amount",
-			variation: data?.gtv?.increaseOrDecrease,
+			variation: earningOverviewData?.gtv?.increaseOrDecrease,
 		},
 		{
 			key: "transactions",
 			label: "Transactions",
-			lastPeriod: data?.transactions?.lastPeriod,
-			value: data?.transactions?.transactions,
+			lastPeriod: earningOverviewData?.transactions?.lastPeriod,
+			value: earningOverviewData?.transactions?.transactions,
 			type: "number",
-			variation: data?.transactions?.increaseOrDecrease,
+			variation: earningOverviewData?.transactions?.increaseOrDecrease,
 		},
 		{
 			key: "activeAgents",
 			label: "Active Agents",
-			lastPeriod: data?.activeAgents?.lastPeriod,
-			value: data?.activeAgents?.active,
+			lastPeriod: earningOverviewData?.activeAgents?.lastPeriod,
+			value: earningOverviewData?.activeAgents?.active,
 			type: "number",
-			variation: data?.activeAgents?.increaseOrDecrease,
+			variation: earningOverviewData?.activeAgents?.increaseOrDecrease,
 		},
 		{
 			key: "onboardedAgents",
 			label: "Onboarded Agents",
-			lastPeriod: data?.onboardedAgents?.lastPeriod,
-			value: data?.onboardedAgents?.onboarded,
+			lastPeriod: earningOverviewData?.onboardedAgents?.lastPeriod,
+			value: earningOverviewData?.onboardedAgents?.onboarded,
 			type: "number",
-			variation: data?.onboardedAgents?.increaseOrDecrease,
+			variation: earningOverviewData?.onboardedAgents?.increaseOrDecrease,
 		},
-		// {
-		// 	key: "pendingTransactions",
-		// 	label: "Pending Transactions",
-		// 	lastPeriod: data?.pendingTransactions?.lastPeriod,
-		// 	value: data?.pendingTransactions?.pendingTransactions,
-		// 	type: "number",
-		// 	variation: data?.pendingTransactions?.increaseOrDecrease,
-		// },
 		{
 			key: "raCases",
 			label: "Pending Transactions",
-			lastPeriod: data?.raCases?.lastPeriod,
-			value: data?.raCases?.raCases,
+			lastPeriod: earningOverviewData?.raCases?.lastPeriod,
+			value: earningOverviewData?.raCases?.raCases,
 			type: "number",
-			variation: data?.raCases?.increaseOrDecrease,
+			variation: earningOverviewData?.raCases?.increaseOrDecrease,
 		},
 		{
 			key: "commissionDue",
 			label: "Commission Due",
-			lastPeriod: data?.commissionDue?.lastPeriod,
-			value: data?.commissionDue?.commissionDue,
+			lastPeriod: earningOverviewData?.commissionDue?.lastPeriod,
+			value: earningOverviewData?.commissionDue?.commissionDue,
 			type: "amount",
-			variation: data?.commissionDue?.increaseOrDecrease,
+			variation: earningOverviewData?.commissionDue?.increaseOrDecrease,
 		},
 	];
+
 	return (
 		<Flex
 			direction="column"
@@ -99,7 +130,7 @@ const EarningOverview = ({
 				<Flex w={{ base: "100%", md: "auto" }}>
 					<Select
 						variant="filled"
-						value={currTab}
+						value={productFilter}
 						onChange={(e) => onFilterChange(e.target.value)}
 						size="sm"
 					>
