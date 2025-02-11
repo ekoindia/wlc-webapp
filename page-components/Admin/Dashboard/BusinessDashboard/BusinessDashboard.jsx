@@ -32,7 +32,6 @@ const BusinessDashboard = () => {
 		earning_overview: {
 			datefrom: "",
 			dateto: "",
-			// typeid: "81", // Default typeid
 		},
 		success_rate: {
 			datefrom: "",
@@ -41,7 +40,6 @@ const BusinessDashboard = () => {
 		gtv_top_merchants: {
 			datefrom: "",
 			dateto: "",
-			// typeid: "81", // Default typeid
 		},
 	});
 
