@@ -141,27 +141,27 @@ const OnboardingDashboardFilters = ({
 							position="relative" // Enable relative positioning for the container
 						>
 							{/* Radio Indicator */}
-							{isActive && (
-								<Flex
-									className="radio_indicator"
-									position="absolute" // Place in the top-right corner
-									top="4px"
-									right="4px"
-									w="20px"
-									h="20px"
-									border="2px solid var(--chakra-colors-primary-light)"
-									borderRadius="12px"
-									align="center"
-									justify="center"
-								>
+							<Flex
+								className="radio_indicator"
+								position="absolute" // Place in the top-right corner
+								top="4px"
+								right="4px"
+								w="20px"
+								h="20px"
+								border="2px solid var(--chakra-colors-primary-light)"
+								borderRadius="12px"
+								align="center"
+								justify="center"
+							>
+								{isActive && (
 									<Flex
 										w="10px"
 										h="10px"
 										bg="primary.light"
 										borderRadius="6px"
 									></Flex>
-								</Flex>
-							)}
+								)}
+							</Flex>
 
 							<Text fontSize="sm" w="90%">
 								{item.label}
