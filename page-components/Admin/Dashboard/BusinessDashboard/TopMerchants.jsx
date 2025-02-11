@@ -1,5 +1,5 @@
-import { Flex, Text } from "@chakra-ui/react";
-import { PillTab, Table } from "components";
+import { Flex, Select, Text } from "@chakra-ui/react";
+import { Table } from "components";
 
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
@@ -49,9 +49,10 @@ const topMerchantsTableParameterList = [
  * @param prop.filters
  * @param prop.onFilterChange
  * @param prop.currTab
+ * @param prop.productFilterList
  * @example	`<TopMerchants></TopMerchants>`
  */
-const TopMerchants = ({ data, filters, currTab, onFilterChange }) => {
+const TopMerchants = ({ data, currTab, productFilterList, onFilterChange }) => {
 	return (
 		<Flex
 			direction="column"
@@ -65,7 +66,6 @@ const TopMerchants = ({ data, filters, currTab, onFilterChange }) => {
 			<Flex
 				direction={{ base: "column", md: "row" }}
 				justify="space-between"
-				align="center"
 				gap={{ base: "2", md: "4" }}
 				w="100%"
 			>
@@ -73,9 +73,18 @@ const TopMerchants = ({ data, filters, currTab, onFilterChange }) => {
 					GTV-wise Top Merchants
 				</Text>
 				<Flex w={{ base: "100%", md: "auto" }}>
-					<PillTab
-						{...{ list: filters, currTab, onClick: onFilterChange }}
-					/>
+					<Select
+						variant="filled"
+						value={currTab}
+						onChange={(e) => onFilterChange(e.target.value)}
+						size="sm"
+					>
+						{productFilterList.map(({ label, value }) => (
+							<option key={value} value={value}>
+								{label}
+							</option>
+						))}
+					</Select>
 				</Flex>
 			</Flex>
 			<Table

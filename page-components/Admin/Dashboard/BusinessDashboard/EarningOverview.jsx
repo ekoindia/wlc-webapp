@@ -1,5 +1,5 @@
-import { Divider, Flex, Grid, Text } from "@chakra-ui/react";
-import { Currency, Icon, PillTab } from "components";
+import { Divider, Flex, Grid, Select, Text } from "@chakra-ui/react";
+import { Currency, Icon } from "components";
 
 /**
  * A EarningOverview page-component
@@ -10,9 +10,16 @@ import { Currency, Icon, PillTab } from "components";
  * @param prop.filters
  * @param prop.onFilterChange
  * @param prop.currTab
+ * @param prop.productFilterList
  * @example	`<EarningOverview></EarningOverview>`
  */
-const EarningOverview = ({ data, filters, currTab, onFilterChange }) => {
+const EarningOverview = ({
+	data,
+	currTab,
+	productFilterList,
+	onFilterChange,
+}) => {
+	console.log("currTab", currTab);
 	const earningOverviewList = [
 		{
 			key: "gtv",
@@ -84,7 +91,6 @@ const EarningOverview = ({ data, filters, currTab, onFilterChange }) => {
 			<Flex
 				direction={{ base: "column", md: "row" }}
 				justify="space-between"
-				align="center"
 				gap={{ base: "2", md: "4" }}
 				w="100%"
 			>
@@ -92,9 +98,18 @@ const EarningOverview = ({ data, filters, currTab, onFilterChange }) => {
 					Earning Overview
 				</Text>
 				<Flex w={{ base: "100%", md: "auto" }}>
-					<PillTab
-						{...{ list: filters, currTab, onClick: onFilterChange }}
-					/>
+					<Select
+						variant="filled"
+						value={currTab}
+						onChange={(e) => onFilterChange(e.target.value)}
+						size="sm"
+					>
+						{productFilterList.map(({ label, value }) => (
+							<option key={value} value={value}>
+								{label}
+							</option>
+						))}
+					</Select>
 				</Flex>
 			</Flex>
 			<Divider display={{ base: "none", md: "block" }} />
