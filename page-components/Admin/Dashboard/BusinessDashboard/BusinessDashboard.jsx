@@ -1,15 +1,10 @@
 import { Flex } from "@chakra-ui/react";
-import { Endpoints } from "constants/EndPoints";
+import { Endpoints, ProductRoleConfiguration } from "constants";
+import { useUser } from "contexts";
 import { useApiFetch } from "hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { EarningOverview, SuccessRate, TopMerchants } from ".";
 import { DashboardDateFilter, TopPanel } from "..";
-
-const productList = [
-	{ label: "Money Transfer", typeid: "81" },
-	{ label: "AePS", typeid: "345" },
-	{ label: "Bill Payments", typeid: "63" },
-];
 
 /**
  * A <BusinessDashboard> component
@@ -19,7 +14,11 @@ const productList = [
  * @example	`<BusinessDashboard></BusinessDashboard>`
  */
 const BusinessDashboard = () => {
-	const [data, setData] = useState();
+	const { userData } = useUser();
+	const { userDetails } = userData;
+	const { role_list } = userDetails;
+
+	const [businessDashboardData, setBusinessDashboardData] = useState();
 	const [dateRange, setDateRange] = useState(7);
 	const [prevDate, setPrevDate] = useState("");
 	const [currDate, setCurrDate] = useState("");
@@ -33,7 +32,7 @@ const BusinessDashboard = () => {
 		earning_overview: {
 			datefrom: "",
 			dateto: "",
-			typeid: "81", // Default typeid
+			// typeid: "81", // Default typeid
 		},
 		success_rate: {
 			datefrom: "",
@@ -42,14 +41,41 @@ const BusinessDashboard = () => {
 		gtv_top_merchants: {
 			datefrom: "",
 			dateto: "",
-			typeid: "81", // Default typeid
+			// typeid: "81", // Default typeid
 		},
 	});
 
 	const [filterState, setFilterState] = useState({
-		earning_overview: 0, // Index of the current tab in EarningOverview
-		gtv_top_merchants: 0, // Index of the current tab in TopMerchants
+		earning_overview: "81", // Index of the current tab in EarningOverview
+		gtv_top_merchants: "81", // Index of the current tab in TopMerchants
 	});
+
+	const productFilterList = useMemo(() => {
+		const productListWithRoleList =
+			ProductRoleConfiguration?.products ?? [];
+
+		if (!role_list || productListWithRoleList.length === 0) {
+			return [];
+		}
+
+		// Filter products whose roles intersect with role_list
+		const filteredProducts = productListWithRoleList.filter((product) =>
+			product.roles.some((role) => role_list.includes(role))
+		);
+
+		// Remove products where tx_typeid is missing or null
+		return filteredProducts
+			.filter((product) => product.tx_typeid !== undefined)
+			.map((product) => ({
+				label: product.label,
+				value: product.tx_typeid,
+			}));
+	}, [role_list]);
+
+	// console.log("[BusinessDashboard] role_list", role_list);
+	// console.log("[BusinessDashboard] productFilterList", productFilterList);
+	// console.log("[BusinessDashboard] filterState", filterState);
+	// console.log("[BusinessDashboard] requestPayload", requestPayload);
 
 	useEffect(() => {
 		let currentDate = new Date();
@@ -59,10 +85,8 @@ const BusinessDashboard = () => {
 		setCurrDate(currentDate.toISOString());
 		setPrevDate(previousDate.toISOString());
 
-		const earningOverviewTypeid =
-			productList[filterState.earning_overview]?.typeid;
-		const topMerchantsTypeid =
-			productList[filterState.gtv_top_merchants]?.typeid;
+		const earningOverviewTypeid = filterState?.earning_overview;
+		const topMerchantsTypeid = filterState?.gtv_top_merchants;
 
 		setRequestPayload({
 			Top_panel: {
@@ -86,7 +110,7 @@ const BusinessDashboard = () => {
 		});
 	}, [dateRange, filterState]);
 
-	// MARK: Fetching Data
+	// MARK: Fetching Business Dashboard Data
 	const [fetchBusinessDashboardData] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
@@ -96,7 +120,7 @@ const BusinessDashboard = () => {
 			},
 			onSuccess: (res) => {
 				const _data = res?.data?.dashboard_details[0] || [];
-				setData(_data);
+				setBusinessDashboardData(_data);
 			},
 		}
 	);
@@ -107,7 +131,8 @@ const BusinessDashboard = () => {
 		}
 	}, [currDate, prevDate, requestPayload]);
 
-	const { topPanel, earningOverview, topMerchants, successRate } = data || {};
+	const { topPanel, earningOverview, topMerchants, successRate } =
+		businessDashboardData || {};
 
 	const topPanelList = [
 		{
@@ -137,17 +162,17 @@ const BusinessDashboard = () => {
 	];
 
 	// Function to handle filter changes dynamically
-	const handleFilterChange = (section, index) => {
+	const handleFilterChange = (section, typeid) => {
 		setFilterState((prev) => ({
 			...prev,
-			[section]: index,
+			[section]: typeid,
 		}));
 
 		setRequestPayload((prev) => ({
 			...prev,
 			[section]: {
 				...prev[section],
-				typeid: productList[index]?.typeid, // Update the typeid dynamically
+				typeid: typeid, // Update the typeid dynamically
 			},
 		}));
 	};
@@ -166,8 +191,8 @@ const BusinessDashboard = () => {
 				<Flex flex="2">
 					<EarningOverview
 						data={earningOverview}
-						filters={productList}
 						currTab={filterState.earning_overview}
+						productFilterList={productFilterList}
 						onFilterChange={(index) =>
 							handleFilterChange("earning_overview", index)
 						}
@@ -179,8 +204,8 @@ const BusinessDashboard = () => {
 			</Flex>
 			<TopMerchants
 				data={topMerchants}
-				filters={productList}
 				currTab={filterState.gtv_top_merchants}
+				productFilterList={productFilterList}
 				onFilterChange={(index) =>
 					handleFilterChange("gtv_top_merchants", index)
 				}
