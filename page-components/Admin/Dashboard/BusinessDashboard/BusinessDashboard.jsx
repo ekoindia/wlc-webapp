@@ -18,35 +18,12 @@ const BusinessDashboard = () => {
 	const { userDetails } = userData;
 	const { role_list } = userDetails;
 
-	const [businessDashboardData, setBusinessDashboardData] = useState();
 	const [dateRange, setDateRange] = useState(7);
 	const [prevDate, setPrevDate] = useState("");
 	const [currDate, setCurrDate] = useState("");
-
-	// Centralized state for the requestPayload
-	const [requestPayload, setRequestPayload] = useState({
-		Top_panel: {
-			datefrom: "",
-			dateto: "",
-		},
-		earning_overview: {
-			datefrom: "",
-			dateto: "",
-		},
-		success_rate: {
-			datefrom: "",
-			dateto: "",
-		},
-		gtv_top_merchants: {
-			datefrom: "",
-			dateto: "",
-		},
-	});
-
-	const [filterState, setFilterState] = useState({
-		earning_overview: "81", // Index of the current tab in EarningOverview
-		gtv_top_merchants: "81", // Index of the current tab in TopMerchants
-	});
+	const [requestPayload, setRequestPayload] = useState({});
+	const [businessOverviewData, setBusinessOverviewData] = useState();
+	const [activeAgentsData, setActiveAgentsData] = useState();
 
 	const productFilterList = useMemo(() => {
 		const productListWithRoleList =
@@ -70,45 +47,7 @@ const BusinessDashboard = () => {
 			}));
 	}, [role_list]);
 
-	// console.log("[BusinessDashboard] role_list", role_list);
-	// console.log("[BusinessDashboard] productFilterList", productFilterList);
-	// console.log("[BusinessDashboard] filterState", filterState);
-	// console.log("[BusinessDashboard] requestPayload", requestPayload);
-
-	useEffect(() => {
-		let currentDate = new Date();
-		let previousDate = new Date(
-			currentDate.getTime() - dateRange * 24 * 60 * 60 * 1000
-		);
-		setCurrDate(currentDate.toISOString());
-		setPrevDate(previousDate.toISOString());
-
-		const earningOverviewTypeid = filterState?.earning_overview;
-		const topMerchantsTypeid = filterState?.gtv_top_merchants;
-
-		setRequestPayload({
-			Top_panel: {
-				datefrom: previousDate.toISOString().slice(0, 10),
-				dateto: currentDate.toISOString().slice(0, 10),
-			},
-			earning_overview: {
-				datefrom: previousDate.toISOString().slice(0, 10),
-				dateto: currentDate.toISOString().slice(0, 10),
-				typeid: earningOverviewTypeid,
-			},
-			success_rate: {
-				datefrom: previousDate.toISOString().slice(0, 10),
-				dateto: currentDate.toISOString().slice(0, 10),
-			},
-			gtv_top_merchants: {
-				datefrom: previousDate.toISOString().slice(0, 10),
-				dateto: currentDate.toISOString().slice(0, 10),
-				typeid: topMerchantsTypeid,
-			},
-		});
-	}, [dateRange, filterState]);
-
-	// MARK: Fetching Business Dashboard Data
+	// MARK: Fetching Business Overview Data
 	const [fetchBusinessDashboardData] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
@@ -117,11 +56,43 @@ const BusinessDashboard = () => {
 				requestPayload: requestPayload,
 			},
 			onSuccess: (res) => {
-				const _data = res?.data?.dashboard_details[0] || [];
-				setBusinessDashboardData(_data);
+				const _data =
+					res?.data?.dashboard_object?.business_overview || [];
+				setBusinessOverviewData(_data);
 			},
 		}
 	);
+
+	// MARK: Fetching Active Agents Data
+	const [fetchActiveAgentsData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
+		body: {
+			interaction_type_id: 818,
+		},
+		onSuccess: (res) => {
+			const _data = res?.data?.dashboard_object?.totalActiveData || [];
+			setActiveAgentsData(_data);
+		},
+	});
+
+	useEffect(() => {
+		fetchActiveAgentsData();
+	}, []);
+
+	useEffect(() => {
+		let currentDate = new Date();
+		let previousDate = new Date(
+			currentDate.getTime() - dateRange * 24 * 60 * 60 * 1000
+		);
+		setCurrDate(currentDate.toISOString().slice(0, 10));
+		setPrevDate(previousDate.toISOString().slice(0, 10));
+
+		setRequestPayload({
+			business_overview: {
+				// datefrom: previousDate.toISOString().slice(0, 10),
+				// dateto: currentDate.toISOString().slice(0, 10),
+			},
+		});
+	}, [dateRange]);
 
 	useEffect(() => {
 		if (prevDate && currDate) {
@@ -129,51 +100,34 @@ const BusinessDashboard = () => {
 		}
 	}, [currDate, prevDate, requestPayload]);
 
-	const { topPanel, earningOverview, topMerchants, successRate } =
-		businessDashboardData || {};
-
 	const topPanelList = [
 		{
 			key: "activeRetailers",
 			label: "Active Retailers",
-			value: topPanel?.activeRetailers?.activeRetailers,
+			value: activeAgentsData?.activeRetailers?.activeRetailers,
 			type: "number",
-			variation: topPanel?.activeRetailers?.increaseOrDecrease,
+			variation: activeAgentsData?.activeRetailers?.increaseOrDecrease,
 			icon: "people",
 		},
 		{
 			key: "activeDistributors",
 			label: "Active Distributors",
-			value: topPanel?.activeDistributors?.activeDistributors,
+			value: activeAgentsData?.activeDistributors?.activeDistributors,
 			type: "number",
-			variation: topPanel?.activeDistributors?.increaseOrDecrease,
+			variation: activeAgentsData?.activeDistributors?.increaseOrDecrease,
 			icon: "refer",
 		},
 		{
 			key: "grossTransactionValue",
 			label: "GTV",
-			value: topPanel?.grossTransactionValue?.grossTransactionValue,
+			value: businessOverviewData?.grossTransactionValue
+				?.grossTransactionValue,
 			type: "amount",
-			variation: topPanel?.grossTransactionValue?.increaseOrDecrease,
+			variation:
+				businessOverviewData?.grossTransactionValue?.increaseOrDecrease,
 			icon: "rupee_bg",
 		},
 	];
-
-	// Function to handle filter changes dynamically
-	const handleFilterChange = (section, typeid) => {
-		setFilterState((prev) => ({
-			...prev,
-			[section]: typeid,
-		}));
-
-		setRequestPayload((prev) => ({
-			...prev,
-			[section]: {
-				...prev[section],
-				typeid: typeid, // Update the typeid dynamically
-			},
-		}));
-	};
 
 	return (
 		<Flex
@@ -188,25 +142,19 @@ const BusinessDashboard = () => {
 			<Flex gap="4" wrap="wrap">
 				<Flex flex="2">
 					<EarningOverview
-						data={earningOverview}
-						currTab={filterState.earning_overview}
+						dateFrom={prevDate}
+						dateTo={currDate}
 						productFilterList={productFilterList}
-						onFilterChange={(index) =>
-							handleFilterChange("earning_overview", index)
-						}
 					/>
 				</Flex>
 				<Flex flex="1">
-					<SuccessRate data={successRate} />
+					<SuccessRate dateFrom={prevDate} dateTo={currDate} />
 				</Flex>
 			</Flex>
 			<TopMerchants
-				data={topMerchants}
-				currTab={filterState.gtv_top_merchants}
+				dateFrom={prevDate}
+				dateTo={currDate}
 				productFilterList={productFilterList}
-				onFilterChange={(index) =>
-					handleFilterChange("gtv_top_merchants", index)
-				}
 			/>
 		</Flex>
 	);
