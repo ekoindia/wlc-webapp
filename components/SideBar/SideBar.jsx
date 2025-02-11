@@ -230,7 +230,10 @@ const SideBarMenu = ({
 					<Box borderRight="12px" height={"100%"} w={"100%"}>
 						{/* Show user-profile card and wallet balance for agents (non-admin users) */}
 						{!isAdmin && (
-							<Link href={Endpoints.USER_PROFILE}>
+							<Link
+								href={Endpoints.USER_PROFILE}
+								prefetch={false}
+							>
 								<ProfileCard
 									name={userData?.userDetails?.name}
 									mobileNumber={userData?.userDetails?.mobile}
@@ -497,7 +500,7 @@ const AccordionSubMenuSection = ({
 						`${isAdmin ? "/admin" : ""}/transaction/${tx.id}`;
 					const isCurrent = isCurrentRoute(router.asPath, link);
 					return (
-						<Link key={tx.id || link} href={link}>
+						<Link key={tx.id || link} href={link} prefetch={false}>
 							<Box
 								w="100%"
 								padding="0px 14px 0px 40px"
@@ -599,7 +602,7 @@ const LinkMenuItem = ({
 	const isCurrent = isCurrentRoute(router.asPath, link || id_link);
 
 	return (
-		<Link href={link || id_link}>
+		<Link href={link || id_link} prefetch={false}>
 			<Flex
 				fontSize={{
 					base: "14px",
