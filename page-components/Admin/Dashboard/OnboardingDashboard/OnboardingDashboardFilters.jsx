@@ -11,7 +11,7 @@ const getModifiedFilterList = (data) => {
 	let filterList = [
 		{
 			id: 0,
-			label: "Onboarding Funnel",
+			label: "All Onboarding Agent",
 			value: data?.onboardingFunnelTotal,
 		},
 	];
