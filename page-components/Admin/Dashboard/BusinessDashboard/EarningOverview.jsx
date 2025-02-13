@@ -22,7 +22,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 	const [earningOverviewData, setEarningOverviewData] = useState({});
 
 	// MARK: Fetching Product Overview Data
-	const [fetchProductOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
+	const [fetchEarningOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
 		onSuccess: (res) => {
 			const _data = res?.data?.dashboard_object?.products_overview || [];
 			setEarningOverviewData(_data);
@@ -32,7 +32,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
-		fetchProductOverviewData({
+		fetchEarningOverviewData({
 			body: {
 				interaction_type_id: 682,
 				requestPayload: {
