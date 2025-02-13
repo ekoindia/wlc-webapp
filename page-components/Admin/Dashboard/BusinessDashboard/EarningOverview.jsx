@@ -46,10 +46,6 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 		});
 	}, [dateFrom, dateTo, productFilter]);
 
-	const onFilterChange = (typeid) => {
-		setProductFilter(typeid);
-	};
-
 	const earningOverviewList = [
 		{
 			key: "gtv",
@@ -124,7 +120,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 					<Select
 						variant="filled"
 						value={productFilter}
-						onChange={(e) => onFilterChange(e.target.value)}
+						onChange={(e) => setProductFilter(e.target.value)}
 						size="sm"
 					>
 						{productFilterList.map(({ label, value }) => (

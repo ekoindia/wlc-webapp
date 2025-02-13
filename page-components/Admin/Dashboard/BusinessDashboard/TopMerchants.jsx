@@ -84,10 +84,6 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 		});
 	}, [dateFrom, dateTo, productFilter]);
 
-	const onFilterChange = (typeid) => {
-		setProductFilter(typeid);
-	};
-
 	return (
 		<Flex
 			direction="column"
@@ -111,7 +107,7 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 					<Select
 						variant="filled"
 						value={productFilter}
-						onChange={(e) => onFilterChange(e.target.value)}
+						onChange={(e) => setProductFilter(e.target.value)}
 						size="sm"
 					>
 						{productFilterList.map(({ label, value }) => (
