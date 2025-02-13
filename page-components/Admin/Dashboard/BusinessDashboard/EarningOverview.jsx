@@ -5,30 +5,25 @@ import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
 
 /**
- * A EarningOverview page-component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.data
- * @param prop.filters
- * @param prop.onFilterChange
- * @param prop.currTab
- * @param prop.productFilterList
- * @param prop.dateFrom
- * @param prop.dateTo
- * @example	`<EarningOverview></EarningOverview>`
+ * EarningOverview component displays an overview of earnings based on various metrics.
+ * @param {object} props - Properties passed to the component.
+ * @param {string} [props.className] - Optional classes to pass to this component.
+ * @param {Array} props.productFilterList - List of product filters.
+ * @param {string} props.dateFrom - Start date for filtering data.
+ * @param {string} props.dateTo - End date for filtering data.
+ * @example
+ * <EarningOverview
+ *   dateFrom="2023-01-01"
+ *   dateTo="2023-01-31"
+ *   productFilterList={[{ label: "Product 1", value: "81" }]}
+ * />
  */
 const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
-	const [requestPayload, setRequestPayload] = useState({});
 	const [productFilter, setProductFilter] = useState("81");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
 
 	// MARK: Fetching Product Overview Data
 	const [fetchProductOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
-		body: {
-			interaction_type_id: 682,
-			requestPayload: requestPayload,
-		},
 		onSuccess: (res) => {
 			const _data = res?.data?.dashboard_object?.products_overview || [];
 			setEarningOverviewData(_data);
@@ -36,22 +31,21 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 	});
 
 	useEffect(() => {
-		if (dateFrom && dateTo) {
-			setRequestPayload(() => ({
-				products_overview: {
-					datefrom: dateFrom,
-					dateto: dateTo,
-					typeid: productFilter,
-				},
-			}));
-		}
-	}, [dateFrom, dateTo, productFilter]);
+		if (!dateFrom || !dateTo) return;
 
-	useEffect(() => {
-		if (dateFrom && dateTo) {
-			fetchProductOverviewData();
-		}
-	}, [requestPayload]);
+		fetchProductOverviewData({
+			body: {
+				interaction_type_id: 682,
+				requestPayload: {
+					products_overview: {
+						datefrom: dateFrom,
+						dateto: dateTo,
+						typeid: productFilter,
+					},
+				},
+			},
+		});
+	}, [dateFrom, dateTo, productFilter]);
 
 	const onFilterChange = (typeid) => {
 		setProductFilter(typeid);
