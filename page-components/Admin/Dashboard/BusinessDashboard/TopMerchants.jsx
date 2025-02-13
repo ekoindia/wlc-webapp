@@ -56,7 +56,7 @@ const topMerchantsTableParameterList = [
  * />
  */
 const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
-	const [productFilter, setProductFilter] = useState("81");
+	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]);
 
 	// MARK: Fetching Top Merchants Data

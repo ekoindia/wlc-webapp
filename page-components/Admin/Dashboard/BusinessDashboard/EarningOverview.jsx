@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
  * />
  */
 const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
-	const [productFilter, setProductFilter] = useState("81");
+	const [productFilter, setProductFilter] = useState("");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
 
 	// MARK: Fetching Product Overview Data

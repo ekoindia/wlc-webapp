@@ -4,7 +4,7 @@ import { useUser } from "contexts";
 import { useApiFetch } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { EarningOverview, SuccessRate, TopMerchants } from ".";
-import { DashboardDateFilter, TopPanel } from "..";
+import { DashboardDateFilter, getDateRange, TopPanel } from "..";
 
 /**
  * A <BusinessDashboard> component
@@ -17,35 +17,39 @@ const BusinessDashboard = () => {
 	const { userData } = useUser();
 	const { userDetails } = userData;
 	const { role_list } = userDetails;
-
-	const [dateRange, setDateRange] = useState(7);
-	const [prevDate, setPrevDate] = useState("");
-	const [currDate, setCurrDate] = useState("");
 	const [requestPayload, setRequestPayload] = useState({});
 	const [businessOverviewData, setBusinessOverviewData] = useState();
 	const [activeAgentsData, setActiveAgentsData] = useState();
+	const [dateRange, setDateRange] = useState("today");
+	const { prevDate, currDate } = useMemo(
+		() => getDateRange(dateRange),
+		[dateRange]
+	);
 
 	const productFilterList = useMemo(() => {
 		const productListWithRoleList =
 			ProductRoleConfiguration?.products ?? [];
 
+		const allOption = { label: "All", value: "" };
+
 		if (!role_list || productListWithRoleList.length === 0) {
-			return [];
+			return [allOption];
 		}
 
 		// Filter products whose roles intersect with role_list
-		const filteredProducts = productListWithRoleList.filter((product) =>
-			product.roles.some((role) => role_list.includes(role))
-		);
-
-		// Remove products where tx_typeid is missing or null
-		return filteredProducts
-			.filter((product) => product.tx_typeid !== undefined)
+		const filteredProducts = productListWithRoleList
+			.filter((product) =>
+				product.roles.some((role) => role_list.includes(role))
+			)
+			.filter((product) => product.tx_typeid !== undefined) // Ensure tx_typeid is present
 			.map((product) => ({
 				label: product.label,
 				value: product.tx_typeid,
 			}));
-	}, [role_list]);
+
+		// Prepend "All" option
+		return [allOption, ...filteredProducts];
+	}, [role_list, ProductRoleConfiguration]);
 
 	// MARK: Fetching Business Overview Data
 	const [fetchBusinessDashboardData] = useApiFetch(
@@ -79,13 +83,6 @@ const BusinessDashboard = () => {
 	}, []);
 
 	useEffect(() => {
-		let currentDate = new Date();
-		let previousDate = new Date(
-			currentDate.getTime() - dateRange * 24 * 60 * 60 * 1000
-		);
-		setCurrDate(currentDate.toISOString().slice(0, 10));
-		setPrevDate(previousDate.toISOString().slice(0, 10));
-
 		setRequestPayload({
 			business_overview: {
 				// datefrom: previousDate.toISOString().slice(0, 10),
