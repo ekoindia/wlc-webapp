@@ -43,31 +43,25 @@ const topMerchantsTableParameterList = [
 ];
 
 /**
- * A TopMerchants page-component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.data
- * @param prop.filterList
- * @param prop.filters
- * @param prop.onFilterChange
- * @param prop.currTab
- * @param prop.productFilterList
- * @param prop.dateFrom
- * @param prop.dateTo
- * @example	`<TopMerchants></TopMerchants>`
+ * TopMerchants component displays a table of top merchants based on GTV.
+ * @param {object} props - Properties passed to the component.
+ * @param {string} [props.className] - Optional classes to pass to this component.
+ * @param {Array} props.productFilterList - List of product filters.
+ * @param {string} props.dateFrom - Start date for filtering data.
+ * @param {string} props.dateTo - End date for filtering data.
+ * @example
+ * <TopMerchants
+ *   dateFrom="2023-01-01"
+ *   dateTo="2023-01-31"
+ *   productFilterList={[{ label: "Product 1", value: "81" }]}
+ * />
  */
 const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
-	const [requestPayload, setRequestPayload] = useState({});
 	const [productFilter, setProductFilter] = useState("81");
 	const [topMerchantsData, setTopMerchantsData] = useState([]);
 
-	// MARK: Fetching Product Overview Data
+	// MARK: Fetching Top Merchants Data
 	const [fetchProductOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
-		body: {
-			interaction_type_id: 682,
-			requestPayload: requestPayload,
-		},
 		onSuccess: (res) => {
 			const _data = res?.data?.dashboard_object?.gtv_top_merchants || [];
 			setTopMerchantsData(_data);
@@ -75,22 +69,21 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 	});
 
 	useEffect(() => {
-		if (dateFrom && dateTo) {
-			setRequestPayload(() => ({
-				gtv_top_merchants: {
-					datefrom: dateFrom,
-					dateto: dateTo,
-					typeid: productFilter,
-				},
-			}));
-		}
-	}, [dateFrom, dateTo, productFilter]);
+		if (!dateFrom || !dateTo) return;
 
-	useEffect(() => {
-		if (dateFrom && dateTo) {
-			fetchProductOverviewData();
-		}
-	}, [requestPayload]);
+		fetchProductOverviewData({
+			body: {
+				interaction_type_id: 682,
+				requestPayload: {
+					gtv_top_merchants: {
+						datefrom: dateFrom,
+						dateto: dateTo,
+						typeid: productFilter,
+					},
+				},
+			},
+		});
+	}, [dateFrom, dateTo, productFilter]);
 
 	const onFilterChange = (typeid) => {
 		setProductFilter(typeid);
