@@ -60,17 +60,21 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 	const [topMerchantsData, setTopMerchantsData] = useState([]);
 
 	// MARK: Fetching Top Merchants Data
-	const [fetchProductOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
-		onSuccess: (res) => {
-			const _data = res?.data?.dashboard_object?.gtv_top_merchants || [];
-			setTopMerchantsData(_data);
-		},
-	});
+	const [fetchTopMerchantsOverviewData] = useApiFetch(
+		Endpoints.TRANSACTION_JSON,
+		{
+			onSuccess: (res) => {
+				const _data =
+					res?.data?.dashboard_object?.gtv_top_merchants || [];
+				setTopMerchantsData(_data);
+			},
+		}
+	);
 
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
-		fetchProductOverviewData({
+		fetchTopMerchantsOverviewData({
 			body: {
 				interaction_type_id: 682,
 				requestPayload: {
