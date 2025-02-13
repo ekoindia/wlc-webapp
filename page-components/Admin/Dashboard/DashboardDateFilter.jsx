@@ -76,28 +76,49 @@ const DashboardDateFilter = ({
 
 export default DashboardDateFilter;
 
+/**
+ * Returns the date range based on the selected filter.
+ * - `prevDate` starts at 00:00:00 of the respective day.
+ * - `currDate` is the exact current time when the function is executed.
+ * @param {string} filter - The date range filter. Options: "today", "yesterday", "last7", "last30".
+ * @returns {{ prevDate: string, currDate: string }} An object containing `prevDate` (start of the day) and `currDate` (current execution time).
+ */
 export const getDateRange = (filter) => {
 	const currentDate = new Date();
 	let previousDate = new Date();
 
+	/**
+	 * Sets the given date to the start of the day (00:00:00.000).
+	 * @param {Date} date - The date object to modify.
+	 * @returns {Date} The updated date object.
+	 */
+	const setToStartOfDay = (date) => {
+		date.setHours(0, 0, 0, 0);
+		return date;
+	};
+
 	switch (filter) {
 		case "yesterday":
 			previousDate.setDate(currentDate.getDate() - 1);
+			previousDate = setToStartOfDay(previousDate);
 			currentDate.setDate(currentDate.getDate() - 1);
+			currentDate.setHours(23, 59, 59, 999); // End of yesterday
 			break;
 		case "last7":
 			previousDate.setDate(currentDate.getDate() - 7);
+			previousDate = setToStartOfDay(previousDate);
 			break;
 		case "last30":
 			previousDate.setDate(currentDate.getDate() - 30);
+			previousDate = setToStartOfDay(previousDate);
 			break;
 		case "today":
 		default:
-			previousDate = currentDate;
+			previousDate = setToStartOfDay(previousDate);
 	}
 
 	return {
-		prevDate: previousDate.toISOString().slice(0, 10),
-		currDate: currentDate.toISOString().slice(0, 10),
+		prevDate: previousDate.toISOString().slice(0, 10), // Start of the day (00:00:00)
+		currDate: currentDate.toISOString().slice(0, 10), // Exact function execution time
 	};
 };
