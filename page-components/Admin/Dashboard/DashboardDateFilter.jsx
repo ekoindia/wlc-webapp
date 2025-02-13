@@ -1,38 +1,20 @@
 import { Flex } from "@chakra-ui/react";
 import { DateView } from "components";
 
-const calendarDataList = [
-	{
-		id: 0,
-		value: 7,
-		label: "Last 7 Days",
-	},
-	{
-		id: 1,
-		value: 30,
-		label: "Last 30 Days",
-	},
+const _dateFilterList = [
+	{ id: 0, value: "today", label: "Today" },
+	{ id: 1, value: "yesterday", label: "Yesterday" },
+	{ id: 2, value: "last7", label: "Last 7 Days" },
+	{ id: 3, value: "last30", label: "Last 30 Days" },
 ];
 
-/**
- * DashboardDateFilter component
- * @param root0
- * @param root0.prevDate
- * @param root0.currDate
- * @param root0.dateRange
- * @param root0.setDateRange
- * @returns
- */
 const DashboardDateFilter = ({
+	dateFilterList = _dateFilterList,
 	prevDate,
 	currDate,
 	dateRange,
 	setDateRange,
 }) => {
-	const handleDateRangeClick = (/* id, */ value) => {
-		setDateRange(value);
-	};
-
 	return (
 		<Flex
 			w="100%"
@@ -43,33 +25,45 @@ const DashboardDateFilter = ({
 			gap={{ base: "2", md: "0" }}
 		>
 			<span>
-				Showing stats from{" "}
-				<DateView
-					date={prevDate}
-					format="dd MMM, yyyy"
-					fontWeight="medium"
-				/>{" "}
-				to{" "}
-				<DateView
-					date={currDate}
-					format="dd MMM, yyyy"
-					fontWeight="medium"
-				/>
+				{prevDate === currDate ? (
+					<>
+						Showing stats for{" "}
+						<DateView
+							date={currDate}
+							format="dd MMM, yyyy"
+							fontWeight="medium"
+						/>
+					</>
+				) : (
+					<>
+						Showing stats from{" "}
+						<DateView
+							date={prevDate}
+							format="dd MMM, yyyy"
+							fontWeight="medium"
+						/>{" "}
+						to{" "}
+						<DateView
+							date={currDate}
+							format="dd MMM, yyyy"
+							fontWeight="medium"
+						/>
+					</>
+				)}
 			</span>
-			<Flex align="center" gap="4">
-				{calendarDataList?.map((item) => {
+
+			<Flex pt={{ base: "4", md: "0" }} align="center" gap="4">
+				{dateFilterList?.map((item) => {
 					const isActive = dateRange === item.value;
 					return (
 						<Flex
 							key={item.id}
 							bg={isActive ? "white" : "initial"}
 							p="6px 8px"
-							borderRadius={isActive ? "10px" : "0px"}
-							border={isActive ? "card" : "none"}
-							onClick={() =>
-								handleDateRangeClick(/* item.id, */ item.value)
-							}
+							borderRadius="10px"
+							border="card"
 							cursor="pointer"
+							onClick={() => setDateRange(item.value)}
 						>
 							{item.label}
 						</Flex>
@@ -81,3 +75,29 @@ const DashboardDateFilter = ({
 };
 
 export default DashboardDateFilter;
+
+export const getDateRange = (filter) => {
+	const currentDate = new Date();
+	let previousDate = new Date();
+
+	switch (filter) {
+		case "yesterday":
+			previousDate.setDate(currentDate.getDate() - 1);
+			currentDate.setDate(currentDate.getDate() - 1);
+			break;
+		case "last7":
+			previousDate.setDate(currentDate.getDate() - 7);
+			break;
+		case "last30":
+			previousDate.setDate(currentDate.getDate() - 30);
+			break;
+		case "today":
+		default:
+			previousDate = currentDate;
+	}
+
+	return {
+		prevDate: previousDate.toISOString().slice(0, 10),
+		currDate: currentDate.toISOString().slice(0, 10),
+	};
+};
