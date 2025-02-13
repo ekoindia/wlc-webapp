@@ -45,7 +45,6 @@ const topMerchantsTableParameterList = [
 /**
  * TopMerchants component displays a table of top merchants based on GTV.
  * @param {object} props - Properties passed to the component.
- * @param {string} [props.className] - Optional classes to pass to this component.
  * @param {Array} props.productFilterList - List of product filters.
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
