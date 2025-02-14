@@ -1,5 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { DateView } from "components";
+import { formatDateTime } from "libs/dateFormat";
+import { calculateDateBefore } from "utils";
 
 const _dateFilterList = [
 	{ id: 0, value: "today", label: "Today" },
@@ -15,6 +17,10 @@ const DashboardDateFilter = ({
 	dateRange,
 	setDateRange,
 }) => {
+	const _prevDate = prevDate.slice(0, 10);
+	const _currDate = currDate.slice(0, 10);
+	const isSameDay = _prevDate === _currDate;
+
 	return (
 		<Flex
 			w="100%"
@@ -25,11 +31,11 @@ const DashboardDateFilter = ({
 			gap={{ base: "2", md: "0" }}
 		>
 			<span>
-				{prevDate === currDate ? (
+				{isSameDay ? (
 					<>
-						Showing stats for{" "}
+						Showing stats for {""}
 						<DateView
-							date={currDate}
+							date={_prevDate}
 							format="dd MMM, yyyy"
 							fontWeight="medium"
 						/>
@@ -38,13 +44,13 @@ const DashboardDateFilter = ({
 					<>
 						Showing stats from{" "}
 						<DateView
-							date={prevDate}
+							date={_prevDate}
 							format="dd MMM, yyyy"
 							fontWeight="medium"
 						/>{" "}
 						to{" "}
 						<DateView
-							date={currDate}
+							date={_currDate}
 							format="dd MMM, yyyy"
 							fontWeight="medium"
 						/>
@@ -52,7 +58,7 @@ const DashboardDateFilter = ({
 				)}
 			</span>
 
-			<Flex pt={{ base: "4", md: "0" }} align="center" gap="4">
+			<Flex align="center" gap="4">
 				{dateFilterList?.map((item) => {
 					const isActive = dateRange === item.value;
 					return (
@@ -84,7 +90,8 @@ export default DashboardDateFilter;
  * @returns {{ prevDate: string, currDate: string }} An object containing `prevDate` (start of the day) and `currDate` (current execution time).
  */
 export const getDateRange = (filter) => {
-	const currentDate = new Date();
+	console.log("filter", filter);
+	let currentDate = new Date();
 	let previousDate = new Date();
 
 	/**
@@ -97,28 +104,40 @@ export const getDateRange = (filter) => {
 		return date;
 	};
 
-	switch (filter) {
-		case "yesterday":
-			previousDate.setDate(currentDate.getDate() - 1);
-			previousDate = setToStartOfDay(previousDate);
-			currentDate.setDate(currentDate.getDate() - 1);
-			currentDate.setHours(23, 59, 59, 999); // End of yesterday
-			break;
-		case "last7":
-			previousDate.setDate(currentDate.getDate() - 7);
-			previousDate = setToStartOfDay(previousDate);
-			break;
-		case "last30":
-			previousDate.setDate(currentDate.getDate() - 30);
-			previousDate = setToStartOfDay(previousDate);
-			break;
-		case "today":
-		default:
-			previousDate = setToStartOfDay(previousDate);
+	/**
+	 * Sets the given date to the end of the day (23:59:59.999).
+	 * @param {Date} date - The date object to modify.
+	 * @returns {Date} The updated date object.
+	 */
+	const setToEndOfDay = (date) => {
+		date.setHours(23, 59, 59, 999);
+		return date;
+	};
+
+	const daysMap = {
+		yesterday: 1,
+		last7: 7,
+		last30: 30,
+	};
+
+	if (filter in daysMap) {
+		previousDate = setToStartOfDay(
+			calculateDateBefore(currentDate, daysMap[filter])
+		);
+
+		// If it's "yesterday", set the end time to that day's end, else it's today
+		currentDate =
+			filter === "yesterday"
+				? setToEndOfDay(calculateDateBefore(currentDate, 1))
+				: setToEndOfDay(currentDate);
+	} else {
+		// Default to "today"
+		previousDate = setToStartOfDay(previousDate);
+		currentDate = setToEndOfDay(currentDate);
 	}
 
 	return {
-		prevDate: previousDate.toISOString().slice(0, 10), // Start of the day (00:00:00)
-		currDate: currentDate.toISOString().slice(0, 10), // Exact function execution time
+		prevDate: formatDateTime(previousDate, "dd/MM/yyyy HH:mm:ss"),
+		currDate: formatDateTime(currentDate, "dd/MM/yyyy HH:mm:ss"),
 	};
 };
