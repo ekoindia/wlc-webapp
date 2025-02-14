@@ -65,7 +65,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 		},
 		{
 			key: "activeAgents",
-			label: "Active Agents",
+			label: "Transacting Agents",
 			lastPeriod: earningOverviewData?.activeAgents?.lastPeriod,
 			value: earningOverviewData?.activeAgents?.active,
 			type: "number",
