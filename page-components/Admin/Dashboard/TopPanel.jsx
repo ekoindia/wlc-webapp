@@ -3,22 +3,20 @@ import { Currency, IcoButton, Icon } from "components";
 
 /**
  * A TopPanel page-component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.data
- * @param prop._data
- * @param prop.topPanelList
+ * @param root0
+ * @param root0.panelDataList
  * @example	`<TopPanel></TopPanel>`
  */
-const TopPanel = ({ topPanelList }) => {
-	if (!topPanelList?.length) return null;
+const TopPanel = ({ panelDataList }) => {
+	if (!panelDataList?.length) return null;
 
 	return (
 		<Grid
 			w="100%"
-			templateColumns="repeat(4, 4fr)"
+			templateColumns="repeat(auto-fit, minmax(250px, 1fr))"
 			overflowX="auto"
+			whiteSpace="nowrap"
+			display="flex"
 			css={{
 				"&::-webkit-scrollbar": {
 					width: "0px",
@@ -29,7 +27,7 @@ const TopPanel = ({ topPanelList }) => {
 				},
 			}}
 		>
-			{topPanelList?.map((item, index) => (
+			{panelDataList?.map((item, index) => (
 				<Flex
 					key={item.key}
 					bg="white"
