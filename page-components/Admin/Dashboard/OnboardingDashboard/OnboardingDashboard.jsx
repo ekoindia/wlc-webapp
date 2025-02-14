@@ -102,7 +102,7 @@ const OnboardingDashboard = () => {
 		}
 	}, [filterStatus, pageNumber, prevDate]);
 
-	const topPanelList = [
+	const onboardedAgents = [
 		{
 			key: "totalRetailers",
 			label: " Retailers Onboarded",
@@ -122,16 +122,12 @@ const OnboardingDashboard = () => {
 	];
 
 	return (
-		<Flex
-			direction="column"
-			gap="4"
-			p={{ base: "0px 20px", md: "20px 0px" }}
-		>
+		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
 			<DashboardDateFilter
 				{...{ prevDate, currDate, dateRange, setDateRange }}
 			/>
 
-			<TopPanel {...{ topPanelList }} />
+			<TopPanel panelDataList={onboardedAgents} />
 
 			<Text fontSize="xl" fontWeight="semibold">
 				Onboarding Agents
