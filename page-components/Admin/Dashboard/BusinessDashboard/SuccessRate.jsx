@@ -1,29 +1,79 @@
 import { Divider, Flex, Stack, Text } from "@chakra-ui/react";
+import { Endpoints, ProductRoleConfiguration } from "constants";
+import { useApiFetch } from "hooks";
+import { useEffect, useState } from "react";
 
 /**
  * A SuccessRate page-component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.data
+ * @param root0
+ * @param root0.dateFrom
+ * @param root0.dateTo
  * @example	`<SuccessRate></SuccessRate>`
  */
-const SuccessRate = ({ data }) => {
-	const successRateList = [
-		{ key: "dmt", label: "Money Transfer", value: data?.dmt },
-		{ key: "bbps", label: "BBPS", value: data?.bbps },
-		{ key: "aepsCashout", label: "AePS Cashout", value: data?.aepsCashout },
-		{
-			key: "aepsMiniStatement",
-			label: "AePS Mini Statement",
-			value: data?.aepsMiniStatement,
+const SuccessRate = ({ dateFrom, dateTo }) => {
+	const [requestPayload, setRequestPayload] = useState({});
+	const [successRateData, setSuccessRateData] = useState([]);
+
+	// MARK: Fetching Success Rate Data
+	const [fetchSuccessRateData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
+		body: {
+			interaction_type_id: 682,
+			requestPayload: requestPayload,
 		},
-		{
-			key: "accountVerification",
-			label: "Account Verification",
-			value: data?.accountVerification,
+		onSuccess: (res) => {
+			const _data = res?.data?.dashboard_object?.successRate || {};
+			const _product = ProductRoleConfiguration?.products ?? [];
+
+			const _successRate = _product
+				.filter((p) => p.tx_typeid && _data[p.tx_typeid]) // Ensure tx_typeid exists in API response
+				.map((p) => {
+					const productData = _data[p.tx_typeid];
+
+					// Only keep data where successCount and totalCount are greater than 0
+					if (
+						!productData ||
+						productData.successCount === 0 ||
+						productData.totalCount === 0
+					) {
+						return null;
+					}
+
+					const successRate =
+						(
+							(productData.successCount /
+								productData.totalCount) *
+							100
+						).toFixed(2) + "%";
+
+					return {
+						key: p.tx_typeid,
+						label: p.label,
+						value: successRate,
+					};
+				})
+				.filter(Boolean); // Remove null values
+
+			setSuccessRateData(_successRate);
 		},
-	];
+	});
+
+	useEffect(() => {
+		if (dateFrom && dateTo) {
+			setRequestPayload(() => ({
+				success_rate: {
+					datefrom: dateFrom,
+					dateto: dateTo,
+				},
+			}));
+		}
+	}, [dateFrom, dateTo]);
+
+	useEffect(() => {
+		if (dateFrom && dateTo) {
+			fetchSuccessRateData();
+		}
+	}, [requestPayload]);
+
 	return (
 		<Flex
 			direction="column"
@@ -39,11 +89,11 @@ const SuccessRate = ({ data }) => {
 			</Text>
 			<Divider />
 			<Stack divider={<Divider />}>
-				{successRateList?.map((item) => (
+				{successRateData?.map((item) => (
 					<Flex justify="space-between" fontSize="sm" key={item.key}>
 						<Text whiteSpace="nowrap">{item.label}</Text>
 						<Text fontWeight="semibold" color="primary.DEFAULT">
-							{item.value}%
+							{item.value}
 						</Text>
 					</Flex>
 				))}
