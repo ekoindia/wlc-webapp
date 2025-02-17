@@ -105,7 +105,7 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 				w="100%"
 			>
 				<Text fontSize="xl" fontWeight="semibold">
-					GTV-wise Top Merchants
+					GTV-wise Top Retailers
 				</Text>
 				<Flex w={{ base: "100%", md: "auto" }}>
 					<Select
