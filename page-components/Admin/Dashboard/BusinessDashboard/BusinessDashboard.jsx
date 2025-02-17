@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { Endpoints, ProductRoleConfiguration } from "constants";
+import { Endpoints, ProductRoleConfiguration, UserTypeLabel } from "constants";
 import { useUser } from "contexts";
 import { useApiFetch } from "hooks";
 import { useEffect, useMemo, useState } from "react";
@@ -17,9 +17,8 @@ const BusinessDashboard = () => {
 	const { userData } = useUser();
 	const { userDetails } = userData;
 	const { role_list } = userDetails;
-	const [requestPayload, setRequestPayload] = useState({});
-	const [businessOverviewData, setBusinessOverviewData] = useState();
-	const [activeAgentsData, setActiveAgentsData] = useState();
+	const [activeAgents, setActiveAgents] = useState([]);
+	// const [totalGtvData, setTotalGtvData] = useState();
 	const [dateRange, setDateRange] = useState("today");
 	const { prevDate, currDate } = useMemo(
 		() => getDateRange(dateRange),
@@ -51,22 +50,6 @@ const BusinessDashboard = () => {
 		return [allOption, ...filteredProducts];
 	}, [role_list, ProductRoleConfiguration]);
 
-	// MARK: Fetching Business Overview Data
-	const [fetchBusinessDashboardData] = useApiFetch(
-		Endpoints.TRANSACTION_JSON,
-		{
-			body: {
-				interaction_type_id: 682,
-				requestPayload: requestPayload,
-			},
-			onSuccess: (res) => {
-				const _data =
-					res?.data?.dashboard_object?.business_overview || [];
-				setBusinessOverviewData(_data);
-			},
-		}
-	);
-
 	// MARK: Fetching Active Agents Data
 	const [fetchActiveAgentsData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
 		body: {
@@ -74,68 +57,49 @@ const BusinessDashboard = () => {
 		},
 		onSuccess: (res) => {
 			const _data = res?.data?.dashboard_object?.totalActiveData || [];
-			setActiveAgentsData(_data);
+			const activeAgentsList = transformActiveAgentsData(_data) ?? [];
+			setActiveAgents(activeAgentsList);
 		},
 	});
 
+	// // MARK: Fetching Total GTV Data
+	// const [fetchTotalGtvData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
+	// 	body: {
+	// 		interaction_type_id: 819,
+	// 	},
+	// 	onSuccess: (res) => {
+	// 		const _data =
+	// 			res?.data?.dashboard_object?.business_overview
+	// 				?.grossTransactionValue || [];
+	// 		console.log("[fetchTotalGtvData] _data", _data);
+	// 		setTotalGtvData(_data);
+	// 	},
+	// });
+
 	useEffect(() => {
 		fetchActiveAgentsData();
+		// fetchTotalGtvData();
 	}, []);
 
-	useEffect(() => {
-		setRequestPayload({
-			business_overview: {
-				// datefrom: previousDate.toISOString().slice(0, 10),
-				// dateto: currentDate.toISOString().slice(0, 10),
-			},
-		});
-	}, [dateRange]);
-
-	useEffect(() => {
-		if (prevDate && currDate) {
-			fetchBusinessDashboardData();
-		}
-	}, [currDate, prevDate, requestPayload]);
-
-	const topPanelList = [
-		{
-			key: "activeRetailers",
-			label: "Active Retailers",
-			value: activeAgentsData?.activeRetailers?.activeRetailers,
-			type: "number",
-			variation: activeAgentsData?.activeRetailers?.increaseOrDecrease,
-			icon: "people",
-		},
-		{
-			key: "activeDistributors",
-			label: "Active Distributors",
-			value: activeAgentsData?.activeDistributors?.activeDistributors,
-			type: "number",
-			variation: activeAgentsData?.activeDistributors?.increaseOrDecrease,
-			icon: "refer",
-		},
-		{
-			key: "grossTransactionValue",
-			label: "GTV",
-			value: businessOverviewData?.grossTransactionValue
-				?.grossTransactionValue,
-			type: "amount",
-			variation:
-				businessOverviewData?.grossTransactionValue?.increaseOrDecrease,
-			icon: "rupee_bg",
-		},
-	];
+	// const totalGtv = [
+	// 	{
+	// 		key: "grossTransactionValue",
+	// 		label: "Total GTV",
+	// 		value: totalGtvData?.gtvvolume,
+	// 		type: "amount",
+	// 		info: totalGtvData?.gtvcount,
+	// 		icon: "rupee_bg",
+	// 	},
+	// ];
 
 	return (
-		<Flex
-			direction="column"
-			gap="4"
-			p={{ base: "0px 20px", md: "20px 0px" }}
-		>
+		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
+			<TopPanel panelDataList={[...activeAgents]} />
+
 			<DashboardDateFilter
 				{...{ prevDate, currDate, dateRange, setDateRange }}
 			/>
-			<TopPanel {...{ topPanelList }} />
+
 			<Flex gap="4" wrap="wrap">
 				<Flex flex="2">
 					<EarningOverview
@@ -158,3 +122,28 @@ const BusinessDashboard = () => {
 };
 
 export default BusinessDashboard;
+
+/**
+ * Transforms API response into a format compatible with the component.
+ * @param {object} apiData - The raw data from the API response.
+ * @returns {Array} A formatted array of objects for rendering.
+ */
+const transformActiveAgentsData = (apiData) => {
+	if (!apiData || typeof apiData !== "object") return [];
+
+	return Object.entries(apiData)
+		.map(([key, data]) => {
+			const userType = UserTypeLabel[key]; // Get label from mapping
+			if (!userType) return null; // Ignore unknown user types
+
+			return {
+				key: `active${userType.replace(/\s+/g, "")}`, // Convert to camelCase
+				label: `Active ${userType}`,
+				value: parseInt(data.activecount, 10), // Ensure numeric value
+				type: "number",
+				// variation: `${(data.activecount / data.totalcount) * 100}`,
+				icon: "people", // Default icon, can be customized per user type
+			};
+		})
+		.filter(Boolean); // Remove null values
+};
