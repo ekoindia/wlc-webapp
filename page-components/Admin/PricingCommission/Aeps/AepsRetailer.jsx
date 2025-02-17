@@ -114,7 +114,7 @@ const AepsRetailer = () => {
 	const aeps_retailer_parameter_list = [
 		{
 			name: "operation_type",
-			label: `Set ${productPricingType.DMT} for`,
+			label: `Set ${productPricingType.AEPS} for`,
 			parameter_type_id: ParamType.LIST,
 			list_elements: operation_type_list,
 			// defaultValue: DEFAULT.operation_type,
