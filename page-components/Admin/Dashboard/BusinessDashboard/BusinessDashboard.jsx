@@ -71,7 +71,6 @@ const BusinessDashboard = () => {
 	// 		const _data =
 	// 			res?.data?.dashboard_object?.business_overview
 	// 				?.grossTransactionValue || [];
-	// 		console.log("[fetchTotalGtvData] _data", _data);
 	// 		setTotalGtvData(_data);
 	// 	},
 	// });
