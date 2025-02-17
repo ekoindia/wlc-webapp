@@ -10,6 +10,7 @@ type sidebarMenuType = {
 	trxn_id?: number; // Transaction Id to link to. Converts to "/transaction/<trxn_id>" links after checking if it is allowed as per user's roles.
 	dynamicAdminView?: boolean; // If true, then the menu item will be shown to Admins in the "Agent-View". The link should be prepended with "/admin" in this case.
 	featureFlag?: string; // The feature flag to check if the menu item should be shown or not.
+	beta?: boolean; // If true, then the menu item is in beta.
 	// comp?: boolean;
 	// api?: boolean;
 	// subLevel?: boolean;
@@ -83,6 +84,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		icon: "swap-horiz",
 		link: "/admin/network-statement",
 		featureFlag: "NETWORK_STATEMENT",
+		beta: true,
 	},
 	{
 		// TODO: REMOVE THIS WITH RELATED COMPONENTS
