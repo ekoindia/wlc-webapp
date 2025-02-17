@@ -137,7 +137,7 @@ export const getDateRange = (filter) => {
 	}
 
 	return {
-		prevDate: formatDateTime(previousDate, "dd/MM/yyyy HH:mm:ss"),
-		currDate: formatDateTime(currentDate, "dd/MM/yyyy HH:mm:ss"),
+		prevDate: formatDateTime(previousDate, "yyyy-MM-dd HH:mm:ss"),
+		currDate: formatDateTime(currentDate, "yyyy-MM-dd HH:mm:ss"),
 	};
 };
