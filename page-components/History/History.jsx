@@ -707,6 +707,7 @@ const History = ({ forNetwork = false }) => {
 				title={
 					forNetwork ? "Network Transactions" : "Transaction History"
 				}
+				isBeta={forNetwork ? true : false}
 			/>
 			<Flex
 				w="full"
