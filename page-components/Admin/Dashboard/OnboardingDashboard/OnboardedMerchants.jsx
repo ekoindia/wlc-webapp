@@ -4,12 +4,6 @@ import { OnboardingDashboardCard } from ".";
 
 const onboarded_merchants_parameter_list = [
 	{
-		name: "name",
-		label: "Agents's Name",
-		sorting: true,
-		show: "Avatar",
-	},
-	{
 		name: "mobile",
 		label: "Mobile No.",
 		sorting: true,
@@ -29,7 +23,6 @@ const onboarded_merchants_parameter_list = [
 		label: "Business Type",
 		sorting: true,
 	},
-	{ name: "onboardedOn", label: "Onboarded on", show: "Date" },
 ];
 
 /**
