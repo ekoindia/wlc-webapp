@@ -4,6 +4,19 @@ import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
 
+const calculateVariation = (current, lastMonth) => {
+	if (!current || !lastMonth || lastMonth == 0) return null; // Hide if new metric or missing data
+	if (Number(current) === Number(lastMonth)) return null; // Hide 0% change
+
+	const percentageChange = ((current - lastMonth) / lastMonth) * 100;
+
+	if (percentageChange > 100) {
+		return `${Math.floor(percentageChange / 100)}X`; // Return as X multiplier (string)
+	}
+
+	return Number(percentageChange.toFixed(2)); // Return as a number
+};
+
 /**
  * EarningOverview component displays an overview of earnings based on various metrics.
  * @param {object} props - Properties passed to the component.
@@ -20,6 +33,7 @@ import { useEffect, useState } from "react";
 const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
+	console.log("earningOverviewData", earningOverviewData);
 
 	// MARK: Fetching Product Overview Data
 	const [fetchEarningOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
@@ -50,50 +64,68 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 		{
 			key: "gtv",
 			label: "GTV",
-			lastPeriod: earningOverviewData?.gtv?.lastPeriod,
-			value: earningOverviewData?.gtv?.amount,
+			value: earningOverviewData?.gtv?.amount || 0,
+			lastPeriod: earningOverviewData?.gtv?.lastMonth || 0,
 			type: "amount",
-			variation: earningOverviewData?.gtv?.increaseOrDecrease,
+			variation: calculateVariation(
+				earningOverviewData?.gtv?.amount,
+				earningOverviewData?.gtv?.lastMonth
+			),
 		},
 		{
 			key: "transactions",
 			label: "Transactions",
-			lastPeriod: earningOverviewData?.transactions?.lastPeriod,
-			value: earningOverviewData?.transactions?.transactions,
+			value: earningOverviewData?.transactions?.transactions || 0,
+			lastPeriod: earningOverviewData?.transactions?.lastMonth || 0,
 			type: "number",
-			variation: earningOverviewData?.transactions?.increaseOrDecrease,
+			variation: calculateVariation(
+				earningOverviewData?.transactions?.transactions,
+				earningOverviewData?.transactions?.lastMonth
+			),
 		},
 		{
 			key: "activeAgents",
 			label: "Transacting Agents",
-			lastPeriod: earningOverviewData?.activeAgents?.lastPeriod,
-			value: earningOverviewData?.activeAgents?.active,
+			value: earningOverviewData?.activeAgents?.active || 0,
+			lastPeriod: earningOverviewData?.activeAgents?.lastMonth || 0,
 			type: "number",
-			variation: earningOverviewData?.activeAgents?.increaseOrDecrease,
+			variation: calculateVariation(
+				earningOverviewData?.activeAgents?.active,
+				earningOverviewData?.activeAgents?.lastMonth
+			),
 		},
 		{
 			key: "onboardedAgents",
 			label: "Onboarded Agents",
-			lastPeriod: earningOverviewData?.onboardedAgents?.lastPeriod,
-			value: earningOverviewData?.onboardedAgents?.onboarded,
+			value: earningOverviewData?.onboardedAgents?.onboarded || 0,
+			lastPeriod: earningOverviewData?.onboardedAgents?.lastMonth || 0,
 			type: "number",
-			variation: earningOverviewData?.onboardedAgents?.increaseOrDecrease,
+			variation: calculateVariation(
+				earningOverviewData?.onboardedAgents?.onboarded,
+				earningOverviewData?.onboardedAgents?.lastMonth
+			),
 		},
 		{
 			key: "raCases",
 			label: "Pending Transactions",
-			lastPeriod: earningOverviewData?.raCases?.lastPeriod,
-			value: earningOverviewData?.raCases?.raCases,
+			value: earningOverviewData?.raCases?.raCases || 0,
+			lastPeriod: earningOverviewData?.raCases?.lastMonth || 0,
 			type: "number",
-			variation: earningOverviewData?.raCases?.increaseOrDecrease,
+			variation: calculateVariation(
+				earningOverviewData?.raCases?.raCases,
+				earningOverviewData?.raCases?.lastMonth
+			),
 		},
 		{
 			key: "commissionDue",
 			label: "Commission Due",
-			lastPeriod: earningOverviewData?.commissionDue?.lastPeriod,
-			value: earningOverviewData?.commissionDue?.commissionDue,
+			value: earningOverviewData?.commissionDue?.commissionDue || 0,
+			lastPeriod: earningOverviewData?.commissionDue?.lastMonth || 0,
 			type: "amount",
-			variation: earningOverviewData?.commissionDue?.increaseOrDecrease,
+			variation: calculateVariation(
+				earningOverviewData?.commissionDue?.commissionDue,
+				earningOverviewData?.commissionDue?.lastMonth
+			),
 		},
 	];
 
@@ -136,20 +168,17 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 				<Grid
 					templateColumns={{
 						base: "1fr",
-						md: "repeat(auto-fit,minmax(160px,1fr))",
+						md: "repeat(auto-fit, minmax(160px, 1fr))",
 					}}
 					gap={{ base: "2", md: "8" }}
 					w="100%"
 				>
-					{earningOverviewList?.map(
+					{earningOverviewList.map(
 						(item) =>
-							item.value && (
+							item.value !== 0 && (
 								<Flex
 									key={item.key}
-									direction={{
-										base: "row",
-										md: "column",
-									}}
+									direction={{ base: "row", md: "column" }}
 									justify={{
 										base: "space-between",
 										md: "flex-start",
@@ -183,7 +212,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 											)}
 										</Flex>
 									</Flex>
-									{item.lastPeriod && (
+									{item.lastPeriod !== 0 && ( // Show last period if it's not zero
 										<Flex
 											direction="column"
 											align={{
@@ -212,50 +241,55 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 													)}
 												</Flex>
 											</Flex>
-											<Flex gap="1" align="center">
-												{item.variation ? (
-													<>
-														<Icon
-															name={
-																item.variation >
-																0
-																	? "arrow-increase"
-																	: "arrow-decrease"
-															}
+											{item.variation && (
+												<Flex gap="1" align="center">
+													<Icon
+														name={
+															parseFloat(
+																item.variation
+															) > 0
+																? "arrow-increase"
+																: "arrow-decrease"
+														}
+														color={
+															parseFloat(
+																item.variation
+															) > 0
+																? "success"
+																: "error"
+														}
+														size="xs"
+													/>
+													<Flex
+														fontSize="10px"
+														wrap="nowrap"
+														gap="1"
+													>
+														<Text
 															color={
-																item.variation >
-																0
+																parseFloat(
+																	item.variation
+																) > 0
 																	? "success"
 																	: "error"
 															}
-															size="xs"
-														/>
-														<Flex
-															fontSize="10px"
-															wrap="nowrap"
-															gap="1"
 														>
-															<Text
-																color={
-																	item.variation >
-																	0
-																		? "success"
-																		: "error"
-																}
-															>
-																{item.variation}
-																%
-															</Text>
-															<Text>
-																{item.variation >
-																0
-																	? "Increase"
-																	: "Decrease"}
-															</Text>
-														</Flex>
-													</>
-												) : null}
-											</Flex>
+															{isNaN(
+																item.variation
+															)
+																? item.variation
+																: `${item.variation}%`}
+														</Text>
+														<Text>
+															{parseFloat(
+																item.variation
+															) > 0
+																? "Increase"
+																: "Decrease"}
+														</Text>
+													</Flex>
+												</Flex>
+											)}
 										</Flex>
 									)}
 								</Flex>
@@ -263,6 +297,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 					)}
 				</Grid>
 			</Flex>
+
 			{/*TODO: Need IcoButton -- Download Reports */}
 		</Flex>
 	);
