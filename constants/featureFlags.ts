@@ -53,20 +53,15 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true, // TODO: Enable for all users
 	},
 
+	// ------------------------------------------------------------------------
+	// MARK: 🚩Production Flags
+	// Put all production flags (visible to all relevant users) in this section.
+
 	// Custom flag for enabling Real Time Network Transactions for Admins
 	NETWORK_STATEMENT: {
 		enabled: true,
 		forAdminOnly: true,
-		envConstraints: {
-			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 59], // 59 =  MoneyBnk
-			},
-		},
 	},
-
-	// ------------------------------------------------------------------------
-	// MARK: 🚩Production Flags
-	// Put all production flags (visible to all relevant users) in this section.
 
 	// Feature for Admins to toggle services for their network (Business Settings > Enable/Disable Services)
 	TOGGLE_SERVICES: {
