@@ -3,7 +3,7 @@ import { usePlatform } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { svgBgDotted } from "utils/svgPatterns";
-import { BottomAppBarItem } from ".";
+import { type BottomAppBarItem } from ".";
 import { Icon } from "..";
 
 type BottomAppBarProps = {
@@ -60,8 +60,15 @@ const BottomAppBar = ({
 				setLastScrollTop(st <= 0 ? 0 : st);
 			};
 
-			window.addEventListener("scroll", handleScroll);
-			return () => window.removeEventListener("scroll", handleScroll);
+			// Use AbortController to remove the event listeners when the component is unmounted
+
+			const controller = new AbortController();
+			const { signal } = controller;
+
+			window.addEventListener("scroll", handleScroll, { signal });
+
+			// Cleanup the event listeners on unmount using the AbortController
+			return () => controller.abort();
 		}
 	}, [lastScrollTop, router.asPath]);
 
@@ -127,13 +134,20 @@ const BottomAppBar = ({
 								key={`${index}-${name}`}
 								direction="column"
 								align="center"
+								justify="center"
 								w="100%"
 								h="100%"
-								py="8px"
+								py={isSideBarMode ? "12px" : "10px"}
+								borderLeft={isSideBarMode ? "4px" : 0}
+								borderLeftColor={
+									isSideBarMode && isActive
+										? "accent.DEFAULT"
+										: "transparent"
+								}
 								gap="1"
 								bg={
 									isSideBarMode && isActive
-										? "#00000033"
+										? "sidebar.sel"
 										: "transparent"
 								}
 								color={
@@ -154,6 +168,9 @@ const BottomAppBar = ({
 									isActive || disabled ? "default" : "pointer"
 								}
 								opacity={disabled ? 0.5 : 1}
+								transitionProperty="border-left-color, background-color"
+								transitionDuration="0.3s"
+								transitionTimingFunction="ease-out"
 								onClick={() =>
 									isActive || disabled
 										? null

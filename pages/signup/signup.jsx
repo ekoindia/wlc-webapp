@@ -655,23 +655,6 @@ const SignupPage = () => {
 		return unsubscribe;
 	}, []);
 
-	// useEffect(() => {
-	// 	const handleMessage = (event) => {
-	// 		if (event.data.type === "STATUS_UPDATE") {
-	// 			const { status } = event.data;
-	// 			// Handle the status update
-	// 			console.log(`Received Status Signup: ${status}`);
-	// 		}
-	// 	};
-
-	// 	window.addEventListener("message", handleMessage);
-
-	// 	// Cleanup listener on component unmount
-	// 	return () => {
-	// 		window.removeEventListener("message", handleMessage);
-	// 	};
-	// }, []);
-
 	const androidleegalityResponseHandler = (res) => {
 		let value = JSON.parse(res);
 		if (value.agreement_status === "success") {
@@ -1162,11 +1145,15 @@ const SignupPage = () => {
 			}
 		};
 
-		window.addEventListener("message", handleMessage);
+		// Use AbortController to remove the event listeners when the component is unmounted
+		const controller = new AbortController();
+		const { signal } = controller;
+
+		window.addEventListener("message", handleMessage, { signal });
 
 		// Cleanup listener on component unmount
 		return () => {
-			window.removeEventListener("message", handleMessage);
+			controller.abort();
 		};
 	}, [signUrlData]);
 

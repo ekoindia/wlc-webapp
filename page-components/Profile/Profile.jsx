@@ -50,7 +50,7 @@ const Profile = () => {
 				color="dark"
 				opacity="0.5"
 			>
-				<Link href="/privacy">
+				<Link href="/privacy" prefetch={false}>
 					<Flex gap="1" align="center">
 						<Text display="inline" lineHeight="1">
 							Privacy Policy

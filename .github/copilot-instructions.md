@@ -21,6 +21,7 @@ White-labeled, multi-tenant, SaaS web-app to manage a network of agents who make
 - Use functional and declarative programming patterns; avoid classes
 - Prefer iteration and modularization over code duplication
 - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError)
+- Use tabs for indentation
 - Structure repository files as follows:
 ```
 Eloka Web App

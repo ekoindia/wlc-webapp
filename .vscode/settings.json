@@ -3,12 +3,22 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
-	"source.fixAll.eslint": "explicit",
-  "source.addMissingImports.ts": "explicit",
-  "source.organizeImports": "explicit",
-},
-"typescript.tsdk": "node_modules\\typescript\\lib",
-"[json]": {
-	"editor.defaultFormatter": "esbenp.prettier-vscode"
-}
+    "source.fixAll.eslint": "explicit",
+    "source.addMissingImports.ts": "explicit",
+    "source.organizeImports": "explicit",
+  },
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#091968",
+    "activityBar.background": "#11299E",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#FE9F00",
+    "activityBarBadge.foreground": "#000",
+    "sash.hoverBorder": "#1F3ABC",
+    "statusBar.background": "#11299E",
+  },
 }

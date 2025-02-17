@@ -335,6 +335,7 @@ const PrivacyPage = () => {
 											color="accent.DEFAULT"
 											href="https://www.google.com/policies/privacy/"
 											target="_blank"
+											prefetch={false}
 										>
 											Google
 										</Link>
@@ -454,6 +455,7 @@ const PrivacyPage = () => {
 						<Link
 							color="accent.DEFAULT"
 							href={delete_my_account_form_url}
+							prefetch={false}
 						>
 							here
 						</Link>
@@ -474,6 +476,7 @@ const PrivacyPage = () => {
 									metadata?.support_contacts?.email
 								}
 								target="_blank"
+								prefetch={false}
 							>
 								{metadata?.support_contacts?.email}
 							</Link>, or fill in the form below:
