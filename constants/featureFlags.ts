@@ -37,12 +37,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
-	// Custom Flag for collapsable(compact) Sidebar (Left-Menu)
-	COMPACT_SIDEBAR: {
-		enabled: true,
-		forEnv: ["development"],
-	},
-
 	// ------------------------------------------------------------------------
 	// MARK: 🚩BETA Flags
 	// Put all UAT/Beta testing flags in this section.
@@ -56,6 +50,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
+
+	// Custom Flag for collapsable(compact) Sidebar (Left-Menu)
+	COMPACT_SIDEBAR: {
+		enabled: true,
+	},
 
 	// Custom flag for enabling Real Time Network Transactions for Admins
 	NETWORK_STATEMENT: {
