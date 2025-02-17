@@ -16,6 +16,7 @@ import {
 	AccordionItem,
 	AccordionPanel,
 	Icon,
+	Tags,
 } from "..";
 
 /**
@@ -35,6 +36,7 @@ import {
  * )
  */
 const AccordionMenu = ({ list, onMenuItemClick }): JSX.Element => {
+	console.log("list", list);
 	return (
 		<Accordion px="4" allowToggle>
 			{list?.map(
@@ -47,6 +49,7 @@ const AccordionMenu = ({ list, onMenuItemClick }): JSX.Element => {
 						subItems,
 						showAll = false,
 						isPanelExpanded = null,
+						beta = false,
 					},
 					index: number
 				) => {
@@ -72,6 +75,7 @@ const AccordionMenu = ({ list, onMenuItemClick }): JSX.Element => {
 										icon,
 										link,
 										onMenuItemClick,
+										isBeta: beta,
 									}}
 								/>
 							)}
@@ -96,6 +100,7 @@ type MenuItemProps = {
 	icon: string;
 	link?: string;
 	onMenuItemClick?: () => void;
+	isBeta?: boolean;
 };
 
 /**
@@ -115,6 +120,7 @@ const MenuItem = ({
 	icon,
 	link,
 	onMenuItemClick,
+	isBeta,
 }: MenuItemProps): JSX.Element => {
 	const router = useRouter();
 	const { h } = useHslColor(label);
@@ -136,7 +142,7 @@ const MenuItem = ({
 					if (onMenuItemClick) onMenuItemClick();
 				}}
 			>
-				<IconWithLabel {...{ icon, hue: h, label }} />
+				<IconWithLabel {...{ icon, hue: h, label, isBeta }} />
 			</AccordionButton>
 		</AccordionItem>
 	);
@@ -351,6 +357,7 @@ type IconWithLabelProps = {
 	icon: string;
 	hue: number;
 	label: string;
+	isBeta?: boolean;
 };
 
 /**
@@ -359,6 +366,7 @@ type IconWithLabelProps = {
  * @param {string} props.icon - Name of the icon to display.
  * @param {number} props.hue - Hue value for the icon color.
  * @param {string} props.label - Text label to display next to the icon.
+ * @param {boolean} props.isBeta - If true, the "Beta" tag is displayed next to the label.
  * @returns {JSX.Element} The rendered IconWithLabel component.
  * @example
  * <IconWithLabel icon="home" hue={120} label="Home" />
@@ -367,11 +375,27 @@ const IconWithLabel = ({
 	icon,
 	hue,
 	label,
+	isBeta,
 }: IconWithLabelProps): JSX.Element => (
 	<Flex py="1" w="100%" align="center" gap="4" cursor="pointer">
 		<Icon name={icon} size="sm" color={`hsl(${hue},80%,30%)`} />
-		<Text fontSize="sm" fontWeight="medium" userSelect="none">
-			{label}
-		</Text>
+		<Flex align="center" gap="2">
+			<Text fontSize="sm" fontWeight="medium" userSelect="none">
+				{label}
+			</Text>
+			{isBeta && (
+				<Tags
+					status="BETA"
+					bg="accent.DEFAULT"
+					color="white"
+					borderRadius="full"
+					h="14px"
+					fontSize="8px"
+					fontWeight="500"
+					px="6px"
+					border="none"
+				/>
+			)}
+		</Flex>
 	</Flex>
 );
