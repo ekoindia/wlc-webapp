@@ -2,7 +2,7 @@ import { Divider, Flex, Grid, Select, Text } from "@chakra-ui/react";
 import { Currency, Icon } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const calculateVariation = (current, lastMonth) => {
 	if (!current || !lastMonth || lastMonth == 0) return null; // Hide if new metric or missing data
@@ -136,7 +136,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 			p="20px 20px 30px"
 			borderRadius="10"
 			border="basic"
-			gap="3"
+			gap="2"
 			w="100%"
 		>
 			<Flex
@@ -163,7 +163,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 					</Select>
 				</Flex>
 			</Flex>
-			<Divider display={{ base: "none", md: "block" }} />
+			<Divider />
 			<Flex h="100%" w="100%" align="center">
 				<Grid
 					templateColumns={{
@@ -174,98 +174,94 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 					w="100%"
 				>
 					{earningOverviewList.map(
-						(item) =>
+						(item, index) =>
 							item.value !== 0 && (
-								<Flex
-									key={item.key}
-									direction={{ base: "row", md: "column" }}
-									justify={{
-										base: "space-between",
-										md: "flex-start",
-									}}
-									w="100%"
-									gap="1"
-								>
+								<React.Fragment key={item.key}>
 									<Flex
-										direction="column"
-										align={{
-											base: "flex-start",
-											md: "center",
+										direction={{
+											base: "row",
+											md: "column",
 										}}
+										justify={{
+											base: "space-between",
+											md: "flex-start",
+										}}
+										w="100%"
 										gap="1"
 									>
-										<Text
-											fontSize="sm"
-											textAlign="center"
-											whiteSpace="nowrap"
-										>
-											{item.label}
-										</Text>
-										<Flex
-											fontWeight="semibold"
-											color="primary.DEFAULT"
-										>
-											{item.type === "amount" ? (
-												<Currency amount={item.value} />
-											) : (
-												<span>{item.value}</span>
-											)}
-										</Flex>
-									</Flex>
-									{item.lastPeriod !== 0 && ( // Show last period if it's not zero
 										<Flex
 											direction="column"
 											align={{
-												base: "flex-end",
+												base: "flex-start",
 												md: "center",
 											}}
 											gap="1"
 										>
-											<Flex
-												fontSize="xs"
+											<Text
+												fontSize="sm"
+												textAlign="center"
 												whiteSpace="nowrap"
+											>
+												{item.label}
+											</Text>
+											<Flex
+												fontWeight="semibold"
+												color="primary.DEFAULT"
+											>
+												{item.type === "amount" ? (
+													<Currency
+														amount={item.value}
+													/>
+												) : (
+													<span>{item.value}</span>
+												)}
+											</Flex>
+										</Flex>
+										{item.lastPeriod !== 0 && (
+											<Flex
+												direction="column"
+												align={{
+													base: "flex-end",
+													md: "center",
+												}}
 												gap="1"
 											>
-												<span>Last Period:</span>
-												<Flex fontWeight="semibold">
-													{item.type === "amount" ? (
-														<Currency
-															amount={
-																item.lastPeriod
-															}
-														/>
-													) : (
-														<span>
-															{item.lastPeriod}
-														</span>
-													)}
+												<Flex
+													fontSize="xs"
+													whiteSpace="nowrap"
+													gap="1"
+												>
+													<span>Last Period:</span>
+													<Flex fontWeight="semibold">
+														{item.type ===
+														"amount" ? (
+															<Currency
+																amount={
+																	item.lastPeriod
+																}
+															/>
+														) : (
+															<span>
+																{
+																	item.lastPeriod
+																}
+															</span>
+														)}
+													</Flex>
 												</Flex>
-											</Flex>
-											{item.variation && (
-												<Flex gap="1" align="center">
-													<Icon
-														name={
-															parseFloat(
-																item.variation
-															) > 0
-																? "arrow-increase"
-																: "arrow-decrease"
-														}
-														color={
-															parseFloat(
-																item.variation
-															) > 0
-																? "success"
-																: "error"
-														}
-														size="xs"
-													/>
+												{item.variation && (
 													<Flex
-														fontSize="10px"
-														wrap="nowrap"
 														gap="1"
+														align="center"
 													>
-														<Text
+														<Icon
+															name={
+																parseFloat(
+																	item.variation
+																) > 0
+																	? "arrow-increase"
+																	: "arrow-decrease"
+															}
 															color={
 																parseFloat(
 																	item.variation
@@ -273,26 +269,50 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 																	? "success"
 																	: "error"
 															}
+															size="xs"
+														/>
+														<Flex
+															fontSize="10px"
+															wrap="nowrap"
+															gap="1"
 														>
-															{isNaN(
-																item.variation
-															)
-																? item.variation
-																: `${item.variation}%`}
-														</Text>
-														<Text>
-															{parseFloat(
-																item.variation
-															) > 0
-																? "Increase"
-																: "Decrease"}
-														</Text>
+															<Text
+																color={
+																	parseFloat(
+																		item.variation
+																	) > 0
+																		? "success"
+																		: "error"
+																}
+															>
+																{isNaN(
+																	item.variation
+																)
+																	? item.variation
+																	: `${item.variation}%`}
+															</Text>
+															<Text>
+																{parseFloat(
+																	item.variation
+																) > 0
+																	? "Increase"
+																	: "Decrease"}
+															</Text>
+														</Flex>
 													</Flex>
-												</Flex>
-											)}
-										</Flex>
+												)}
+											</Flex>
+										)}
+									</Flex>
+									{index < earningOverviewList.length - 1 && (
+										<Divider
+											display={{
+												base: "block",
+												md: "none",
+											}}
+										/>
 									)}
-								</Flex>
+								</React.Fragment>
 							)
 					)}
 				</Grid>
