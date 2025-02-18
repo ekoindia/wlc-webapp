@@ -14,13 +14,29 @@ const onboarded_merchants_parameter_list = [
 		sorting: true,
 	},
 	{
-		name: "location",
-		label: "Location",
+		name: "agent_type",
+		label: "Agent Type",
 		sorting: true,
+	},
+	{
+		name: "account_status_desc",
+		label: "Account Status",
+		sorting: true,
+	},
+	{
+		name: "last_updated",
+		label: "Last Updated",
+		sorting: true,
+		show: "DateTime",
 	},
 	{
 		name: "business_type",
 		label: "Business Type",
+		sorting: true,
+	},
+	{
+		name: "location",
+		label: "Location",
 		sorting: true,
 	},
 ];
@@ -53,7 +69,7 @@ const OnboardedMerchants = ({
 		>
 			<Table
 				renderer={onboarded_merchants_parameter_list}
-				visibleColumns={6}
+				visibleColumns={5}
 				data={onboardingMerchantData?.tableData}
 				variant="stripedActionNone"
 				ResponsiveCard={OnboardingDashboardCard}
