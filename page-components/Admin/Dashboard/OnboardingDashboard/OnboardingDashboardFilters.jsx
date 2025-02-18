@@ -1,82 +1,54 @@
 import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { useState } from "react";
 
 /**
- * To modify filter list, will add id to each list item & Onboarding Funnel item
- * @param {object} data contains onboardingFunnelTotal and filterList
- * @returns {object} containing funnelKeyList, filterList, & filterListLength
- */
-const getModifiedFilterList = (data) => {
-	let filterList = [
-		{
-			id: 0,
-			label: "All Onboarding Agent",
-			value: data?.onboardingFunnelTotal,
-		},
-	];
-
-	let funnelKeyList = [];
-
-	const _filterList = data?.filterList;
-
-	_filterList?.forEach((ele, index) => {
-		let _filter = { id: index + 1, ...ele };
-		filterList.push(_filter);
-		funnelKeyList.push(ele?.status_ids);
-	});
-
-	filterList[0]["status_ids"] = [...funnelKeyList];
-
-	return { funnelKeyList, filterList };
-};
-
-/**
- * A Onboarding Dashboard Filter page-component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.filterLoading
- * @param prop.filterData
- * @param prop.filterStatus
- * @param prop.setFilterStatus
- * @example	`<OnboardingDashboardFilters></OnboardingDashboardFilters>`
+ * OnboardingDashboardFilters component renders a filter section for onboarding statuses.
+ * It allows users to filter the onboarding agents based on their statuses.
+ * @param {object} props - Properties passed to the component
+ * @param {boolean} props.filterLoading - Indicates if the filter data is still loading
+ * @param {Array} props.filterList - List of filter items to display
+ * @param {Array} props.funnelKeyList - List of keys representing all possible statuses
+ * @param {Array} props.filterStatus - Currently selected filter statuses
+ * @param {Function} props.setFilterStatus - Function to update the selected filter statuses
+ * @example
+ * <OnboardingDashboardFilters
+ *   filterLoading={false}
+ *   filterList={[{ id: 1, label: 'Active', status_ids: 'active', value: 10 }]}
+ *   funnelKeyList={['active', 'inactive']}
+ *   filterStatus={['active']}
+ *   setFilterStatus={(status) => console.log(status)}
+ * />
  */
 const OnboardingDashboardFilters = ({
 	filterLoading,
-	filterData,
+	filterList,
+	funnelKeyList,
 	filterStatus,
 	setFilterStatus,
 }) => {
-	const [inFunnel, setInFunnel] = useState(false);
-
-	const { funnelKeyList, filterList } = getModifiedFilterList(filterData);
-
 	const handleFilterStatusClick = (id, key) => {
+		// If "All Onboarding Agent" is clicked
 		if (id === 0) {
-			if (!inFunnel) {
-				setFilterStatus((prev) => {
-					const _filterStatus = new Set([...prev, ...key]);
-					return [..._filterStatus];
-				});
-				setInFunnel(true);
-			} else {
-				setFilterStatus((prev) =>
-					prev.filter((item) => !funnelKeyList.includes(item))
-				);
-				setInFunnel(false);
-			}
-		} else {
-			const filterStatusUpdated = filterStatus.includes(key)
-				? filterStatus.filter((item) => item !== key)
-				: [...filterStatus, key];
+			const isAllSelected = funnelKeyList
+				.flat()
+				.every((item) => filterStatus.includes(item));
 
-			const isAllItemsIncluded = funnelKeyList.every((item) =>
-				filterStatusUpdated.includes(item)
+			// Select all if not already fully selected
+			setFilterStatus(
+				isAllSelected ? filterStatus : funnelKeyList.flat()
 			);
-			setInFunnel(isAllItemsIncluded);
-			setFilterStatus(filterStatusUpdated);
+			return; // Prevent direct deselection of "All"
 		}
+
+		// Toggle selected status
+		const updatedStatus = filterStatus.includes(key)
+			? filterStatus.filter((item) => item !== key) // Deselect
+			: [...filterStatus, key]; // Select
+
+		// Prevent deselecting all filters (must have at least one active)
+		if (updatedStatus.length === 0) return;
+
+		setFilterStatus(updatedStatus);
 	};
 
 	return (
@@ -109,10 +81,13 @@ const OnboardingDashboardFilters = ({
 				}}
 			>
 				{filterList?.map((item, index) => {
+					const isAllSelected = funnelKeyList
+						.flat()
+						.every((item) => filterStatus.includes(item));
 					const isActive =
-						item.id === 0 && inFunnel
-							? true
-							: filterStatus?.includes(item.status_ids);
+						item.id === 0
+							? isAllSelected
+							: filterStatus.includes(item.status_ids);
 					return (
 						<Flex
 							key={item.id}
