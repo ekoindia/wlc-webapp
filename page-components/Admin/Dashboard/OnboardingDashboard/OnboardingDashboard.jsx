@@ -167,47 +167,49 @@ const OnboardingDashboard = () => {
 
 			<TopPanel panelDataList={onboardedAgents} />
 
-			<Text fontSize="xl" fontWeight="semibold">
-				Onboarding Agents
-			</Text>
+			<Flex direction="column" gap="2">
+				<Text fontSize="xl" fontWeight="semibold">
+					Onboarding Agents
+				</Text>
 
-			<Flex
-				direction="column"
-				gap="4"
-				bg="white"
-				borderRadius="10"
-				p={{ base: "20px", md: "0px" }}
-			>
-				<OnboardingDashboardFilters
-					{...{
-						filterLoading,
-						filterList,
-						funnelKeyList,
-						filterStatus,
-						setFilterStatus,
-					}}
-				/>
-
-				{/* show "Nothing Found", if onboardingMerchantData is empty */}
-				{!isLoading && !onboardingMerchantData?.tableData?.length ? (
-					<Flex
-						direction="column"
-						align="center"
-						mt={{ base: "2", md: "0" }}
-						mb={{ base: "2", md: "8" }}
-					>
-						<Text color="light">Nothing Found</Text>
-					</Flex>
-				) : (
-					<OnboardedMerchants
+				<Flex
+					direction="column"
+					bg="white"
+					borderRadius="10"
+					p={{ base: "20px", md: "0px" }}
+				>
+					<OnboardingDashboardFilters
 						{...{
-							onboardingMerchantData,
-							pageNumber,
-							setPageNumber,
-							isLoading,
+							filterLoading,
+							filterList,
+							funnelKeyList,
+							filterStatus,
+							setFilterStatus,
 						}}
 					/>
-				)}
+
+					{/* show "Nothing Found", if onboardingMerchantData is empty */}
+					{!isLoading &&
+					!onboardingMerchantData?.tableData?.length ? (
+						<Flex
+							direction="column"
+							align="center"
+							mt={{ base: "2", md: "0" }}
+							mb={{ base: "2", md: "8" }}
+						>
+							<Text color="light">Nothing Found</Text>
+						</Flex>
+					) : (
+						<OnboardedMerchants
+							{...{
+								onboardingMerchantData,
+								pageNumber,
+								setPageNumber,
+								isLoading,
+							}}
+						/>
+					)}
+				</Flex>
 			</Flex>
 		</Flex>
 	);
