@@ -1,6 +1,7 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
 import { Dropzone, Input, Select } from "components";
-import { Value } from "tf-components";
+import { ParamType } from "constants";
+import { useNotification } from "contexts";
 import {
 	useCamera,
 	useFeatureFlag,
@@ -11,8 +12,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useNotification } from "contexts";
-import { ParamType } from "constants";
+import { Value } from "tf-components";
 
 /**
  * A '/test' page-component
@@ -633,11 +633,16 @@ const AgreementTesting = () => {
 			}
 		};
 
-		window.addEventListener("message", handleMessage);
+		// Use AbortController to remove the event listeners when the component is unmounted
+
+		const controller = new AbortController();
+		const { signal } = controller;
+
+		window.addEventListener("message", handleMessage, { signal });
 
 		// Cleanup listener on component unmount
 		return () => {
-			window.removeEventListener("message", handleMessage);
+			controller.abort();
 		};
 	}, []);
 
