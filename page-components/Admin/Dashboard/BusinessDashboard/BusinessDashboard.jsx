@@ -108,11 +108,11 @@ const transformActiveAgentsData = (apiData) => {
 
 			return {
 				key: `active${userType.replace(/\s+/g, "")}`, // Convert to camelCase
-				label: `Active ${userType}`,
+				label: `Active ${userType}(s)`,
 				value: parseInt(data.activecount, 10), // Ensure numeric value
 				type: "number",
 				// variation: `${(data.activecount / data.totalcount) * 100}`,
-				info: `of ${data.totalcount} Total ${userType}`,
+				info: `of ${data.totalcount} Total`,
 				icon: "people", // Default icon, can be customized per user type
 			};
 		})
