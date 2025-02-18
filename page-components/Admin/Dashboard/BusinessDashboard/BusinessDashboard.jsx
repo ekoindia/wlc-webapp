@@ -112,6 +112,7 @@ const transformActiveAgentsData = (apiData) => {
 				value: parseInt(data.activecount, 10), // Ensure numeric value
 				type: "number",
 				// variation: `${(data.activecount / data.totalcount) * 100}`,
+				info: `of ${data.totalcount} Total ${userType}`,
 				icon: "people", // Default icon, can be customized per user type
 			};
 		})
