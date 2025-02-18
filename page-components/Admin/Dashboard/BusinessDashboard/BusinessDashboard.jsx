@@ -18,7 +18,6 @@ const BusinessDashboard = () => {
 	const { userDetails } = userData;
 	const { role_list } = userDetails;
 	const [activeAgents, setActiveAgents] = useState([]);
-	// const [totalGtvData, setTotalGtvData] = useState();
 	const [dateRange, setDateRange] = useState("today");
 	const { prevDate, currDate } = useMemo(
 		() => getDateRange(dateRange),
@@ -62,34 +61,9 @@ const BusinessDashboard = () => {
 		},
 	});
 
-	// // MARK: Fetching Total GTV Data
-	// const [fetchTotalGtvData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
-	// 	body: {
-	// 		interaction_type_id: 819,
-	// 	},
-	// 	onSuccess: (res) => {
-	// 		const _data =
-	// 			res?.data?.dashboard_object?.business_overview
-	// 				?.grossTransactionValue || [];
-	// 		setTotalGtvData(_data);
-	// 	},
-	// });
-
 	useEffect(() => {
 		fetchActiveAgentsData();
-		// fetchTotalGtvData();
 	}, []);
-
-	// const totalGtv = [
-	// 	{
-	// 		key: "grossTransactionValue",
-	// 		label: "Total GTV",
-	// 		value: totalGtvData?.gtvvolume,
-	// 		type: "amount",
-	// 		info: totalGtvData?.gtvcount,
-	// 		icon: "rupee_bg",
-	// 	},
-	// ];
 
 	return (
 		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
