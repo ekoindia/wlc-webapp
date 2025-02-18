@@ -139,7 +139,9 @@ const OnboardingDashboard = () => {
 	}, [currDate, prevDate]);
 
 	useEffect(() => {
-		fetchOnboardingAgentsData();
+		if (filterStatus?.length) {
+			fetchOnboardingAgentsData();
+		}
 	}, [filterStatus, pageNumber]);
 
 	const onboardedAgents = [
