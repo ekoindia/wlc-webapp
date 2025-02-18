@@ -87,8 +87,6 @@ const OnboardingDashboard = () => {
 		{
 			body: {
 				interaction_type_id: 683,
-				dateFrom: prevDate, // remove
-				dateTo: currDate, // remove
 			},
 			token: accessToken,
 			onSuccess: (res) => {
@@ -110,8 +108,6 @@ const OnboardingDashboard = () => {
 				record_count: 10,
 				account_status: `${filterStatus}`,
 				page_number: pageNumber,
-				dateFrom: prevDate, // remove
-				dateTo: currDate, // remove
 			},
 			onSuccess: (res) => {
 				const _data = res?.data?.onboarding_funnel || [];
