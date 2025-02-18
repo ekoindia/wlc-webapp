@@ -7,21 +7,61 @@ import { OnboardedMerchants, OnboardingDashboardFilters } from ".";
 import { DashboardDateFilter, getDateRange, TopPanel } from "..";
 
 /**
- * A OnboardingDashboard page-component
- * @example	`<OnboardingDashboard></OnboardingDashboard>`
+ * To modify filter list, will add id to each list item & Onboarding Funnel item
+ * @param {object} data - Contains onboardingFunnelTotal and filterList
+ * @returns {object} - Contains funnelKeyList, filterList, & filterListLength
+ */
+const getModifiedFilterList = (data) => {
+	let filterList = [
+		{
+			id: 0,
+			label: "All Onboarding Agent",
+			value: data?.onboardingFunnelTotal,
+			status_ids: "*", // Using wildcard to represent all filters
+		},
+	];
+
+	let funnelKeyList = [];
+
+	const _filterList = data?.filterList;
+
+	_filterList?.forEach((ele, index) => {
+		let _filter = { id: index + 1, ...ele };
+		filterList.push(_filter);
+		funnelKeyList.push(ele?.status_ids);
+	});
+
+	return { funnelKeyList, filterList };
+};
+
+/**
+ * OnboardingDashboard component renders the dashboard for onboarding agents.
+ * It includes filters, top panel data, and a list of onboarded merchants.
+ * @component
+ * @example
+ * return (
+ *   <OnboardingDashboard />
+ * )
  */
 const OnboardingDashboard = () => {
-	const [onboardingMerchantData, setOnboardingMerchantsData] = useState([]);
-	const [filterStatus, setFilterStatus] = useState([]);
 	const [filterData, setFilterData] = useState([]);
-	const [pageNumber, setPageNumber] = useState(1);
+	const [onboardingMerchantData, setOnboardingMerchantsData] = useState([]);
 	const { accessToken } = useSession();
+	const [pageNumber, setPageNumber] = useState(1);
 	const [topPanelData, setTopPanelData] = useState([]);
 	const [dateRange, setDateRange] = useState("today");
+
 	const { prevDate, currDate } = useMemo(
 		() => getDateRange(dateRange),
 		[dateRange]
 	);
+
+	const { funnelKeyList, filterList } = useMemo(
+		() => getModifiedFilterList(filterData),
+		[filterData]
+	);
+
+	const [filterStatus, setFilterStatus] = useState([]);
 
 	const [fetchOnboardingDashboardTopPanelData] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
@@ -42,19 +82,13 @@ const OnboardingDashboard = () => {
 		}
 	);
 
-	useEffect(() => {
-		if (prevDate) {
-			fetchOnboardingDashboardTopPanelData();
-		}
-	}, [currDate, prevDate]);
-
 	const [fetchOnboardingDashboardFilterData, filterLoading] = useApiFetch(
 		Endpoints.TRANSACTION,
 		{
 			body: {
 				interaction_type_id: 683,
-				dateFrom: prevDate,
-				dateTo: currDate,
+				dateFrom: prevDate, // remove
+				dateTo: currDate, // remove
 			},
 			token: accessToken,
 			onSuccess: (res) => {
@@ -68,13 +102,7 @@ const OnboardingDashboard = () => {
 		}
 	);
 
-	useEffect(() => {
-		if (prevDate) {
-			fetchOnboardingDashboardFilterData();
-		}
-	}, [prevDate, currDate]);
-
-	const [fetchOnboardingDashboardData, isLoading] = useApiFetch(
+	const [fetchOnboardingAgentsData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION,
 		{
 			body: {
@@ -82,8 +110,8 @@ const OnboardingDashboard = () => {
 				record_count: 10,
 				account_status: `${filterStatus}`,
 				page_number: pageNumber,
-				dateFrom: prevDate,
-				dateTo: currDate,
+				dateFrom: prevDate, // remove
+				dateTo: currDate, // remove
 			},
 			onSuccess: (res) => {
 				const _data = res?.data?.onboarding_funnel || [];
@@ -97,10 +125,22 @@ const OnboardingDashboard = () => {
 	);
 
 	useEffect(() => {
-		if (prevDate) {
-			fetchOnboardingDashboardData();
+		fetchOnboardingDashboardFilterData();
+	}, []);
+
+	useEffect(() => {
+		setFilterStatus(funnelKeyList);
+	}, [funnelKeyList]);
+
+	useEffect(() => {
+		if (prevDate && currDate) {
+			fetchOnboardingDashboardTopPanelData();
 		}
-	}, [filterStatus, pageNumber, prevDate]);
+	}, [currDate, prevDate]);
+
+	useEffect(() => {
+		fetchOnboardingAgentsData();
+	}, [filterStatus, pageNumber]);
 
 	const onboardedAgents = [
 		{
@@ -132,23 +172,45 @@ const OnboardingDashboard = () => {
 			<Text fontSize="xl" fontWeight="semibold">
 				Onboarding Agents
 			</Text>
-			<OnboardingDashboardFilters
-				{...{
-					filterLoading,
-					filterData,
-					filterStatus,
-					setFilterStatus,
-				}}
-			/>
 
-			<OnboardedMerchants
-				{...{
-					onboardingMerchantData,
-					pageNumber,
-					setPageNumber,
-					isLoading,
-				}}
-			/>
+			<Flex
+				direction="column"
+				gap="4"
+				bg="white"
+				borderRadius="10"
+				p={{ base: "20px", md: "0px" }}
+			>
+				<OnboardingDashboardFilters
+					{...{
+						filterLoading,
+						filterList,
+						funnelKeyList,
+						filterStatus,
+						setFilterStatus,
+					}}
+				/>
+
+				{/* show "Nothing Found", if onboardingMerchantData is empty */}
+				{!isLoading && !onboardingMerchantData?.tableData?.length ? (
+					<Flex
+						direction="column"
+						align="center"
+						mt={{ base: "2", md: "0" }}
+						mb={{ base: "2", md: "8" }}
+					>
+						<Text color="light">Nothing Found</Text>
+					</Flex>
+				) : (
+					<OnboardedMerchants
+						{...{
+							onboardingMerchantData,
+							pageNumber,
+							setPageNumber,
+							isLoading,
+						}}
+					/>
+				)}
+			</Flex>
 		</Flex>
 	);
 };
