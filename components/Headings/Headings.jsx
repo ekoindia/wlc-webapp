@@ -1,7 +1,7 @@
 import { Box, Flex, Text, useBreakpointValue } from "@chakra-ui/react";
 import { NavHeight } from "components/NavBar";
 import { useRouter } from "next/router";
-import { Icon } from "..";
+import { Icon, Tags } from "..";
 /**
  * A <Heading> component
  * TODO: Write more description here
@@ -13,6 +13,7 @@ import { Icon } from "..";
  * @param 	{boolean}	[props.isCompVisible]	Whether to show the component
  * @param 	{Component}	[props.propComp]	Properties passed to the component
  * @param 	{Function}	[props.redirectHandler]	Properties passed to the component
+ * @param {boolean} [props.isBeta]	Whether to show the beta tag
  * @param 	{...*}	rest	Rest of the props
  * @example	`<Heading title="Welcome" />`
  */
@@ -23,6 +24,7 @@ const Headings = ({
 	propComp,
 	isCompVisible = true,
 	redirectHandler,
+	isBeta = false,
 	...rest
 }) => {
 	const router = useRouter();
@@ -90,18 +92,33 @@ const Headings = ({
 						</Box>
 					)}
 					<Flex direction="column" cursor="default" userSelect="none">
-						<Text
-							fontSize={{
-								base: "18px",
-								sm: "18px",
-								md: "20px",
-								lg: "25px",
-								"2xl": "30px",
-							}}
-							fontWeight="semibold"
-						>
-							{title}
-						</Text>
+						<Flex direction="row" gap="2" h="100%" align="center">
+							<Text
+								fontSize={{
+									base: "18px",
+									sm: "18px",
+									md: "20px",
+									lg: "25px",
+									"2xl": "30px",
+								}}
+								fontWeight="semibold"
+							>
+								{title}
+							</Text>
+							{isBeta ? (
+								<Tags
+									status="BETA"
+									bg="accent.DEFAULT"
+									color="white"
+									borderRadius="full"
+									h="14px"
+									fontSize="8px"
+									fontWeight="500"
+									px="6px"
+									border="none"
+								/>
+							) : null}
+						</Flex>
 						<Text fontSize="sm" color="gray.600">
 							{subtitle}
 						</Text>
