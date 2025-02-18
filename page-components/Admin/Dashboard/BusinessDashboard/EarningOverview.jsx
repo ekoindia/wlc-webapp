@@ -33,7 +33,6 @@ const calculateVariation = (current, lastMonth) => {
 const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
-	console.log("earningOverviewData", earningOverviewData);
 
 	// MARK: Fetching Product Overview Data
 	const [fetchEarningOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
