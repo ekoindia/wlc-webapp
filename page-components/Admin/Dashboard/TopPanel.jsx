@@ -92,14 +92,27 @@ const TopPanel = ({ panelDataList }) => {
 								) : null}
 							</Flex>
 						</Flex>
+						<Flex>
+							{item.info ? (
+								<Text
+									color="primary.DEFAULT"
+									fontSize="xs"
+									fontWeight="500"
+								>
+									{item.info}
+								</Text>
+							) : null}
+						</Flex>
 					</Flex>
-					<IcoButton
-						size="md"
-						color="white"
-						iconName={item.icon}
-						rounded={10}
-						bgGradient="linear(to-b, primary.light, primary.dark)"
-					/>
+					<Flex align="center">
+						<IcoButton
+							size="md"
+							color="white"
+							iconName={item.icon}
+							rounded={10}
+							bgGradient="linear(to-b, primary.light, primary.dark)"
+						/>
+					</Flex>
 				</Flex>
 			))}
 		</Grid>
