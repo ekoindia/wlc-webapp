@@ -1,4 +1,4 @@
-import { Flex, Select, Text } from "@chakra-ui/react";
+import { Divider, Flex, Select, Text } from "@chakra-ui/react";
 import { Table } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
@@ -60,7 +60,7 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 	const [topMerchantsData, setTopMerchantsData] = useState([]);
 
 	// MARK: Fetching Top Merchants Data
-	const [fetchTopMerchantsOverviewData] = useApiFetch(
+	const [fetchTopMerchantsOverviewData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
 			onSuccess: (res) => {
@@ -107,6 +107,7 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 				<Text fontSize="xl" fontWeight="semibold">
 					GTV-wise Top Retailers
 				</Text>
+
 				<Flex w={{ base: "100%", md: "auto" }}>
 					<Select
 						variant="filled"
@@ -122,12 +123,22 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 					</Select>
 				</Flex>
 			</Flex>
-			<Table
-				{...{
-					data: topMerchantsData,
-					renderer: topMerchantsTableParameterList,
-				}}
-			/>
+			<Divider />
+			<Flex direction="column" align="center">
+				{topMerchantsData?.length > 0 ? (
+					<Table
+						{...{
+							data: topMerchantsData,
+							renderer: topMerchantsTableParameterList,
+							isLoading,
+						}}
+					/>
+				) : (
+					<Text color="gray.500" fontSize="md">
+						Nothing Found
+					</Text>
+				)}
+			</Flex>
 		</Flex>
 	);
 };
