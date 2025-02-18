@@ -22,6 +22,7 @@ const onboarded_merchants_parameter_list = [
 		name: "account_status_desc",
 		label: "Account Status",
 		sorting: true,
+		show: "Tag",
 	},
 	{
 		name: "last_updated",
