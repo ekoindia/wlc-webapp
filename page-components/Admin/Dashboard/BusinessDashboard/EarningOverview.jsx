@@ -136,7 +136,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 			p="20px 20px 30px"
 			borderRadius="10"
 			border="basic"
-			gap="2"
+			gap="4"
 			w="100%"
 		>
 			<Flex

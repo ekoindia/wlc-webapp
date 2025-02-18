@@ -84,7 +84,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			h={{ base: "auto", xl: "320px" }} // Set fixed height for scrolling
 			overflowY="auto" // Enables scrolling
 			className="customScrollbars" // Use custom styles if needed
-			gap="3"
+			gap="4"
 		>
 			<Text fontSize="xl" fontWeight="semibold">
 				Success Rate
@@ -129,7 +129,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 					<Text
 						color="gray.500"
 						fontSize="md"
-						pt={{ base: "4", md: "0" }}
+						// pt={{ base: "4", md: "0" }}
 					>
 						Nothing Found
 					</Text>
