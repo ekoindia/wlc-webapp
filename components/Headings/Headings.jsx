@@ -105,7 +105,7 @@ const Headings = ({
 							>
 								{title}
 							</Text>
-							{isBeta && (
+							{isBeta ? (
 								<Tags
 									status="BETA"
 									bg="accent.DEFAULT"
@@ -117,7 +117,7 @@ const Headings = ({
 									px="6px"
 									border="none"
 								/>
-							)}
+							) : null}
 						</Flex>
 						<Text fontSize="sm" color="gray.600">
 							{subtitle}

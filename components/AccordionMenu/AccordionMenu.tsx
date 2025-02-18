@@ -36,7 +36,6 @@ import {
  * )
  */
 const AccordionMenu = ({ list, onMenuItemClick }): JSX.Element => {
-	console.log("list", list);
 	return (
 		<Accordion px="4" allowToggle>
 			{list?.map(
@@ -383,7 +382,7 @@ const IconWithLabel = ({
 			<Text fontSize="sm" fontWeight="medium" userSelect="none">
 				{label}
 			</Text>
-			{isBeta && (
+			{isBeta ? (
 				<Tags
 					status="BETA"
 					bg="accent.DEFAULT"
@@ -395,7 +394,7 @@ const IconWithLabel = ({
 					px="6px"
 					border="none"
 				/>
-			)}
+			) : null}
 		</Flex>
 	</Flex>
 );

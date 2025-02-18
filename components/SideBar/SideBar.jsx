@@ -601,7 +601,6 @@ const LinkMenuItem = ({
 		? `${isAdminAgentMode ? "/admin" : ""}/transaction/${menu?.id}`
 		: "";
 	const isCurrent = isCurrentRoute(router.asPath, link || id_link);
-	const isBeta = menu?.beta ?? false;
 
 	return (
 		<Link href={link || id_link} prefetch={false}>
@@ -646,7 +645,7 @@ const LinkMenuItem = ({
 					{menu.name || menu.label}
 				</Flex>
 
-				{isBeta && (
+				{menu?.beta ? (
 					<Tags
 						status="BETA"
 						bg="accent.DEFAULT"
@@ -658,7 +657,7 @@ const LinkMenuItem = ({
 						px="6px"
 						border="none"
 					/>
-				)}
+				) : null}
 			</Flex>
 		</Link>
 	);
