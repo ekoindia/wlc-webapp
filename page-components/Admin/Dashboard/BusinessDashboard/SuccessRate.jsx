@@ -89,27 +89,50 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 				Success Rate
 			</Text>
 
+			<Divider />
+
 			<Flex
 				direction="column"
 				className="customScrollbars"
 				overflowY={{ base: "none", lg: "auto" }} // Scroll only on larger screens
+				flex="1" // Takes full height for centering
+				justify={successRateData?.length ? "flex-start" : "center"}
+				align="center"
 			>
-				{successRateData?.map((item) => (
-					<Flex key={item.key} direction="column" gap="2">
-						<Divider />
+				{successRateData?.length ? (
+					successRateData.map((item, index) => (
 						<Flex
-							justify="space-between"
-							fontSize="sm"
+							key={item.key}
+							direction="column"
 							gap="2"
-							pb="2"
+							w="100%"
 						>
-							<Text>{item.label}</Text>
-							<Text fontWeight="semibold" color="primary.DEFAULT">
-								{item.value}
-							</Text>
+							{index > 0 ? <Divider /> : null}
+							<Flex
+								justify="space-between"
+								fontSize="sm"
+								gap="2"
+								pb="2"
+							>
+								<Text>{item.label}</Text>
+								<Text
+									fontWeight="semibold"
+									color="primary.DEFAULT"
+								>
+									{item.value}
+								</Text>
+							</Flex>
 						</Flex>
-					</Flex>
-				))}
+					))
+				) : (
+					<Text
+						color="gray.500"
+						fontSize="md"
+						pt={{ base: "4", md: "0" }}
+					>
+						Nothing Found
+					</Text>
+				)}
 			</Flex>
 		</Flex>
 	);
