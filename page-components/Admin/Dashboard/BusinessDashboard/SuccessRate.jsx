@@ -1,4 +1,4 @@
-import { Divider, Flex, Stack, Text } from "@chakra-ui/react";
+import { Divider, Flex, Text } from "@chakra-ui/react";
 import { Endpoints, ProductRoleConfiguration } from "constants";
 import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
@@ -78,28 +78,79 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 		<Flex
 			direction="column"
 			bg="white"
-			p="20px 20px 30px"
-			borderRadius="10"
-			border="basic"
-			gap="3"
+			borderRadius="10px"
+			p="5"
 			w="100%"
+			h={{ base: "auto", xl: "320px" }} // Set fixed height for scrolling
+			overflowY="auto" // Enables scrolling
+			className="customScrollbars" // Use custom styles if needed
 		>
-			<Text fontSize="xl" fontWeight="semibold">
+			<Text fontSize="xl" fontWeight="semibold" pb="3">
 				Success Rate
 			</Text>
-			<Divider />
-			<Stack divider={<Divider />}>
+
+			<Flex
+				direction="column"
+				className="customScrollbars"
+				overflowY={{ base: "none", lg: "auto" }} // Scroll only on larger screens
+			>
 				{successRateData?.map((item) => (
-					<Flex justify="space-between" fontSize="sm" key={item.key}>
-						<Text whiteSpace="nowrap">{item.label}</Text>
-						<Text fontWeight="semibold" color="primary.DEFAULT">
-							{item.value}
-						</Text>
+					<Flex key={item.key} direction="column" gap="2">
+						<Divider />
+						<Flex
+							justify="space-between"
+							fontSize="sm"
+							gap="2"
+							pb="2"
+						>
+							<Text>{item.label}</Text>
+							<Text fontWeight="semibold" color="primary.DEFAULT">
+								{item.value}
+							</Text>
+						</Flex>
 					</Flex>
 				))}
-			</Stack>
+			</Flex>
 		</Flex>
 	);
 };
 
 export default SuccessRate;
+
+{
+	/* <Flex
+direction="column"
+bg="white"
+p="20px 20px 30px"
+borderRadius="10"
+border="basic"
+gap="3"
+w="100%"
+>
+<Text fontSize="xl" fontWeight="semibold">
+	Success Rate
+</Text>
+<Divider />
+<Flex
+	direction="column"
+	className="customScrollbars"
+	overflowY={{ base: "none", md: "scroll" }}
+>
+	{successRateData?.map((item, index) => (
+		<Flex key={item.key} direction="column">
+			<Flex justify="space-between" fontSize="sm">
+				<Text whiteSpace="nowrap">{item.label}</Text>
+				<Text fontWeight="semibold" color="primary.DEFAULT">
+					{item.value}
+				</Text>
+			</Flex>
+			{index < successRateData.length - 1 && <Divider />}
+		</Flex>
+				))}
+				))}
+			</Stack>
+	))}
+			</Stack>
+</Flex>
+</Flex> */
+}
