@@ -90,7 +90,6 @@ export default DashboardDateFilter;
  * @returns {{ prevDate: string, currDate: string }} An object containing `prevDate` (start of the day) and `currDate` (current execution time).
  */
 export const getDateRange = (filter) => {
-	console.log("filter", filter);
 	let currentDate = new Date();
 	let previousDate = new Date();
 
