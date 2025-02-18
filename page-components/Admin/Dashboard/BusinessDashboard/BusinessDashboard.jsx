@@ -1,10 +1,17 @@
 import { Flex, Grid } from "@chakra-ui/react";
 import { Endpoints, ProductRoleConfiguration, UserTypeLabel } from "constants";
 import { useUser } from "contexts";
-import { useApiFetch } from "hooks";
+import { useApiFetch, useDailyCacheState } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { EarningOverview, SuccessRate, TopMerchants } from ".";
 import { DashboardDateFilter, getDateRange, TopPanel } from "..";
+
+const UserTypeIcon = {
+	1: "refer", // Distributor
+	2: "people", // Retailer
+	3: "person", // I-Merchant
+	4: "directions-walk", // FOS / CCE / Cash Executive / EkoStar?
+};
 
 /**
  * A <BusinessDashboard> component
@@ -17,8 +24,11 @@ const BusinessDashboard = () => {
 	const { userData } = useUser();
 	const { userDetails } = userData;
 	const { role_list } = userDetails;
-	const [activeAgents, setActiveAgents] = useState([]);
 	const [dateRange, setDateRange] = useState("today");
+	const [activeAgents, setActiveAgents, isValid] = useDailyCacheState(
+		"active-agents",
+		[]
+	);
 	const { prevDate, currDate } = useMemo(
 		() => getDateRange(dateRange),
 		[dateRange]
@@ -62,6 +72,7 @@ const BusinessDashboard = () => {
 	});
 
 	useEffect(() => {
+		if (isValid && activeAgents?.length) return;
 		fetchActiveAgentsData();
 	}, []);
 
@@ -104,6 +115,7 @@ const transformActiveAgentsData = (apiData) => {
 	return Object.entries(apiData)
 		.map(([key, data]) => {
 			const userType = UserTypeLabel[key]; // Get label from mapping
+			const userTypeIcon = UserTypeIcon[key];
 			if (!userType) return null; // Ignore unknown user types
 
 			return {
@@ -113,7 +125,7 @@ const transformActiveAgentsData = (apiData) => {
 				type: "number",
 				// variation: `${(data.activecount / data.totalcount) * 100}`,
 				info: `of ${data.totalcount} Total`,
-				icon: "people", // Default icon, can be customized per user type
+				icon: userTypeIcon ?? "person",
 			};
 		})
 		.filter(Boolean); // Remove null values
