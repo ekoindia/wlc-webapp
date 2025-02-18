@@ -23,6 +23,7 @@ import {
 	Icon,
 	ProfileCard,
 	StatusCard,
+	Tags,
 } from "..";
 
 // Lazy-load the BottomAppBar component (for icon-only compact side-bar view)
@@ -230,7 +231,10 @@ const SideBarMenu = ({
 					<Box borderRight="12px" height={"100%"} w={"100%"}>
 						{/* Show user-profile card and wallet balance for agents (non-admin users) */}
 						{!isAdmin && (
-							<Link href={Endpoints.USER_PROFILE}>
+							<Link
+								href={Endpoints.USER_PROFILE}
+								prefetch={false}
+							>
 								<ProfileCard
 									name={userData?.userDetails?.name}
 									mobileNumber={userData?.userDetails?.mobile}
@@ -497,7 +501,7 @@ const AccordionSubMenuSection = ({
 						`${isAdmin ? "/admin" : ""}/transaction/${tx.id}`;
 					const isCurrent = isCurrentRoute(router.asPath, link);
 					return (
-						<Link key={tx.id || link} href={link}>
+						<Link key={tx.id || link} href={link} prefetch={false}>
 							<Box
 								w="100%"
 								padding="0px 14px 0px 40px"
@@ -599,7 +603,7 @@ const LinkMenuItem = ({
 	const isCurrent = isCurrentRoute(router.asPath, link || id_link);
 
 	return (
-		<Link href={link || id_link}>
+		<Link href={link || id_link} prefetch={false}>
 			<Flex
 				fontSize={{
 					base: "14px",
@@ -622,23 +626,38 @@ const LinkMenuItem = ({
 				w="full"
 				role="group"
 				cursor="pointer"
-				borderBottom="1px solid" // ORIG_THEME: br-sidebar
-				borderBottomColor="sidebar.divider" // ORIG_THEME: primary.light
-				bg={isCurrent ? "sidebar.sel" : ""} //ORIG_THEME: sidebar.active-bg
+				borderBottom="1px solid"
+				borderBottomColor="sidebar.divider"
+				bg={isCurrent ? "sidebar.sel" : ""}
 				_hover={{
 					background: "sidebar.sel",
 					color: "white",
 				}}
 				borderLeft="8px"
-				borderLeftColor={
-					isCurrent ? "accent.dark" : "transparent" // ORIG_THEME: sidebar.active-border
-				}
+				borderLeftColor={isCurrent ? "accent.dark" : "transparent"}
 				transitionProperty="border-left-color, background-color"
 				transitionDuration="0.3s"
 				transitionTimingFunction="ease-out"
+				justify="space-between"
 			>
-				<Icon name={menu.icon} size="sm" />
-				{menu.name || menu.label}
+				<Flex align="center" gap="13px">
+					<Icon name={menu.icon} size="sm" />
+					{menu.name || menu.label}
+				</Flex>
+
+				{menu?.beta ? (
+					<Tags
+						status="BETA"
+						bg="accent.DEFAULT"
+						color="white"
+						borderRadius="full"
+						h="14px"
+						fontSize="8px"
+						fontWeight="500"
+						px="6px"
+						border="none"
+					/>
+				) : null}
 			</Flex>
 		</Link>
 	);

@@ -573,13 +573,21 @@ const setupWidgetEventListeners = ({
 		}
 	};
 
-	window.addEventListener("iron-signal", onIronSignal);
-	window.addEventListener("trxn-busy-change", onTrxnBusyChanged);
-	window.addEventListener("open-url", onOpenUrl);
-	window.addEventListener("wlc-widget-loaded", onWlcWidgetLoad);
-	window.addEventListener("eko-response", onEkoResponse);
-	window.addEventListener("feedback-dialog-event", onFeedbackDialogEvent);
-	window.addEventListener("request-camera-capture", onRequestCamCapture);
+	// Use AbortController to remove the event listeners when the component is unmounted
+	const controller = new AbortController();
+	const { signal } = controller;
+
+	window.addEventListener("iron-signal", onIronSignal, { signal });
+	window.addEventListener("trxn-busy-change", onTrxnBusyChanged, { signal });
+	window.addEventListener("open-url", onOpenUrl, { signal });
+	window.addEventListener("wlc-widget-loaded", onWlcWidgetLoad, { signal });
+	window.addEventListener("eko-response", onEkoResponse, { signal });
+	window.addEventListener("feedback-dialog-event", onFeedbackDialogEvent, {
+		signal,
+	});
+	window.addEventListener("request-camera-capture", onRequestCamCapture, {
+		signal,
+	});
 
 	// TODO: iron-signal / show-toast
 	// TODO: iron-signal / track-event
@@ -605,20 +613,8 @@ const setupWidgetEventListeners = ({
 
 	// Cleanup...
 	return () => {
-		// On component unmount, remove the event listeners.
-		window.removeEventListener("iron-signal", onIronSignal);
-		window.removeEventListener("trxn-busy-change", onTrxnBusyChanged);
-		window.removeEventListener("open-url", onOpenUrl);
-		window.removeEventListener("wlc-widget-loaded", onWlcWidgetLoad);
-		window.removeEventListener("eko-response", onEkoResponse);
-		window.removeEventListener(
-			"feedback-dialog-event",
-			onFeedbackDialogEvent
-		);
-		window.removeEventListener(
-			"request-camera-capture",
-			onRequestCamCapture
-		);
+		// On component unmount, remove the event listeners by using the AbortController
+		controller.abort();
 	};
 };
 

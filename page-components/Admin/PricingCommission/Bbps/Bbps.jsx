@@ -106,6 +106,7 @@ const Bbps = () => {
 					w="fit-content"
 					fontWeight="semibold"
 					isExternal
+					prefetch={false}
 				>
 					<Button>
 						<Icon name="file-download" size="sm" />

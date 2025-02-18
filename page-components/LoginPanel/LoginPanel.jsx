@@ -208,7 +208,7 @@ const LoginPanel = ({ cmsType, cmsData }) => {
 				color={{ base: "dark", md: "white" }}
 				opacity="0.4"
 			>
-				<Link href="/privacy">
+				<Link href="/privacy" prefetch={false}>
 					<Flex gap="1" align="center">
 						<Text display="inline" lineHeight="1">
 							Privacy Policy

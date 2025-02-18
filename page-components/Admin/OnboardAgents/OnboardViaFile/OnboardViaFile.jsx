@@ -134,6 +134,7 @@ const OnboardViaFile = () => {
 							}
 							w="fit-content"
 							fontWeight="semibold"
+							prefetch={false}
 							isExternal
 						>
 							<Button>

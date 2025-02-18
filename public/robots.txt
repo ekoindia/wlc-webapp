@@ -1,2 +1,11 @@
 User-agent: *
-Disallow: /
+Disallow: /admin
+Disallow: /api
+Disallow: /clear_org_cache
+Disallow: /delete_my_account
+Disallow: /gateway
+Disallow: /redirect
+Disallow: /privacy
+Disallow: /signup
+Disallow: /icons_demo
+Disallow: /test
