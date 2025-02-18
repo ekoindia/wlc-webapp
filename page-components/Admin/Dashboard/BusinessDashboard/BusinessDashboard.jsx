@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Grid } from "@chakra-ui/react";
 import { Endpoints, ProductRoleConfiguration, UserTypeLabel } from "constants";
 import { useUser } from "contexts";
 import { useApiFetch } from "hooks";
@@ -99,18 +99,15 @@ const BusinessDashboard = () => {
 				{...{ prevDate, currDate, dateRange, setDateRange }}
 			/>
 
-			<Flex gap="4" wrap="wrap">
-				<Flex flex="2">
-					<EarningOverview
-						dateFrom={prevDate}
-						dateTo={currDate}
-						productFilterList={productFilterList}
-					/>
-				</Flex>
-				<Flex flex="1">
-					<SuccessRate dateFrom={prevDate} dateTo={currDate} />
-				</Flex>
-			</Flex>
+			<Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap="4">
+				<EarningOverview
+					dateFrom={prevDate}
+					dateTo={currDate}
+					productFilterList={productFilterList}
+				/>
+
+				<SuccessRate dateFrom={prevDate} dateTo={currDate} />
+			</Grid>
 			<TopMerchants
 				dateFrom={prevDate}
 				dateTo={currDate}
