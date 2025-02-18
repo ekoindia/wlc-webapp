@@ -16,7 +16,7 @@ const getModifiedFilterList = (data) => {
 		{
 			id: 0,
 			label: "All Onboarding Agent",
-			value: data?.onboardingFunnelTotal,
+			value: data?.onboardingFunnelTotal ?? 0,
 			status_ids: "*", // Using wildcard to represent all filters
 		},
 	];
