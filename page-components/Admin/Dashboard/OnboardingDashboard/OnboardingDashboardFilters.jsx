@@ -128,14 +128,14 @@ const OnboardingDashboardFilters = ({
 								align="center"
 								justify="center"
 							>
-								{isActive && (
+								{isActive ? (
 									<Flex
 										w="10px"
 										h="10px"
 										bg="primary.light"
 										borderRadius="6px"
 									></Flex>
-								)}
+								) : null}
 							</Flex>
 
 							<Text fontSize="sm" w="90%">
