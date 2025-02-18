@@ -39,12 +39,23 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// ------------------------------------------------------------------------
 	// MARK: 🚩BETA Flags
+	// Feature Enabled only for certain orgs/users in production
 	// Put all UAT/Beta testing flags in this section.
 
 	// Feature to Raise Issues...
 	RAISE_ISSUE: {
 		enabled: true,
 		forAdminOnly: true, // TODO: Enable for all users
+	},
+
+	// ChatGPT agent (currently for SBI Kiosk Agents...)
+	CHATGPT_AGENT: {
+		enabled: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.SBIKIOSK, ...ORG_ID.EKOTESTS],
+			},
+		},
 	},
 
 	// ------------------------------------------------------------------------
@@ -94,16 +105,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 	},
 
-	// ChatGPT agent for SBI Kiosk Agents...
-	CHATGPT_AGENT: {
-		enabled: true,
-		envConstraints: {
-			production: {
-				forOrgId: [ORG_ID.SBIKIOSK, ...ORG_ID.EKOTESTS],
-			},
-		},
-	},
-
 	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
 	RAISE_ISSUE_SBIKIOSK: {
 		enabled: true,
@@ -131,7 +132,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	},
 
 	// ------------------------------------------------------------------------
-	// MARK: ⚠️Test-Only Flags
+	// MARK: 🧪Test-Only Flags
 	// Put all experimental or developer testing-only flags in this section.
 
 	// Face detector for images, videos, and live streams.
