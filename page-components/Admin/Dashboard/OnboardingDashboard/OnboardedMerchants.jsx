@@ -59,14 +59,7 @@ const OnboardedMerchants = ({
 	isLoading,
 }) => {
 	return (
-		<Flex
-			direction="column"
-			p="20px"
-			w="100%"
-			bg="white"
-			borderRadius="10"
-			border="basic"
-		>
+		<Flex direction="column" p="20px" w="100%">
 			<Table
 				renderer={onboarded_merchants_parameter_list}
 				visibleColumns={5}
