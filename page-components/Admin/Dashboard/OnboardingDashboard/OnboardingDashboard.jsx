@@ -34,6 +34,12 @@ const getModifiedFilterList = (data) => {
 	return { funnelKeyList, filterList };
 };
 
+const getCacheKey = (prevDate, currDate) => {
+	const fromKey = prevDate.slice(0, 10);
+	const toKey = currDate.slice(0, 10);
+	return `${fromKey}-${toKey}`;
+};
+
 /**
  * OnboardingDashboard component renders the dashboard for onboarding agents.
  * It includes filters, top panel data, and a list of onboarded merchants.
@@ -50,6 +56,7 @@ const OnboardingDashboard = () => {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [topPanelData, setTopPanelData] = useState([]);
 	const [dateRange, setDateRange] = useState("today");
+	const [onboardingDashboardData, setOnboardingDashboardData] = useState({});
 
 	const { prevDate, currDate } = useMemo(
 		() => getDateRange(dateRange),
@@ -62,6 +69,11 @@ const OnboardingDashboard = () => {
 	);
 
 	const [filterStatus, setFilterStatus] = useState([]);
+
+	const cacheKey = useMemo(
+		() => getCacheKey(prevDate, currDate),
+		[prevDate, currDate]
+	);
 
 	const [fetchOnboardingDashboardTopPanelData] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
@@ -77,6 +89,15 @@ const OnboardingDashboard = () => {
 			},
 			onSuccess: (res) => {
 				const _data = res?.data?.onboarding_funnel[0] || [];
+
+				setOnboardingDashboardData((prev) => ({
+					...prev,
+					onboardedAgentsCache: {
+						...(prev.onboardedAgentsCache || {}),
+						[cacheKey]: _data,
+					},
+				}));
+
 				setTopPanelData(_data);
 			},
 		}
@@ -130,9 +151,15 @@ const OnboardingDashboard = () => {
 
 	useEffect(() => {
 		if (prevDate && currDate) {
-			fetchOnboardingDashboardTopPanelData();
+			if (onboardingDashboardData?.onboardedAgentsCache?.[cacheKey]) {
+				setTopPanelData(
+					onboardingDashboardData.onboardedAgentsCache[cacheKey]
+				);
+			} else {
+				fetchOnboardingDashboardTopPanelData();
+			}
 		}
-	}, [currDate, prevDate]);
+	}, [currDate, prevDate, onboardingDashboardData]);
 
 	useEffect(() => {
 		if (filterStatus?.length) {
@@ -143,7 +170,7 @@ const OnboardingDashboard = () => {
 	const onboardedAgents = [
 		{
 			key: "totalRetailers",
-			label: " Retailers Onboarded",
+			label: "Retailers Onboarded",
 			value: topPanelData?.totalRetailers?.totalRetailers,
 			type: "number",
 			variation: topPanelData?.totalRetailers?.increaseOrDecrease,
