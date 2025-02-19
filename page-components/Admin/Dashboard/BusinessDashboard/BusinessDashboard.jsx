@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState } from "react";
 import { EarningOverview, SuccessRate, TopMerchants } from ".";
 import { DashboardDateFilter, getDateRange, TopPanel } from "..";
 
+const ACTIVE_AGENTS_CACHE_KEY = "inf-dashboard-active-agents";
+
 const UserTypeIcon = {
 	1: "refer", // Distributor
 	2: "people", // Retailer
@@ -26,7 +28,7 @@ const BusinessDashboard = () => {
 	const { role_list } = userDetails;
 	const [dateRange, setDateRange] = useState("today");
 	const [activeAgents, setActiveAgents, isValid] = useDailyCacheState(
-		"inf-dashboard-active-agents",
+		ACTIVE_AGENTS_CACHE_KEY,
 		[]
 	);
 	const { prevDate, currDate } = useMemo(
