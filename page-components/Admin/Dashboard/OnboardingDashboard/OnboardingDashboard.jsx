@@ -66,12 +66,22 @@ const OnboardingDashboard = () => {
 		[dateRange]
 	);
 
+	const [filterStatus, setFilterStatus] = useState([]);
+
 	const { funnelKeyList, filterList } = useMemo(
 		() => getModifiedFilterList(filterData),
 		[filterData]
 	);
 
-	const [filterStatus, setFilterStatus] = useState([]);
+	const isAllSelected = useMemo(
+		() => funnelKeyList.flat().every((item) => filterStatus.includes(item)),
+		[funnelKeyList, filterStatus]
+	);
+
+	const isInitialLoad = useMemo(
+		() => isAllSelected && pageNumber === 1,
+		[isAllSelected, pageNumber]
+	);
 
 	const cacheKey = useMemo(
 		() => getCacheKey(prevDate, currDate),
@@ -148,6 +158,20 @@ const OnboardingDashboard = () => {
 			onSuccess: (res) => {
 				const _data = res?.data?.onboarding_funnel || [];
 				const _totalRecords = res?.data?.totalRecords;
+
+				if (isInitialLoad) {
+					setOnboardingDashboardData((prev) => ({
+						...prev,
+						agentsCache: {
+							...(prev.agentsCache || {}),
+							default: {
+								tableData: _data,
+								totalRecords: _totalRecords,
+							},
+						},
+					}));
+				}
+
 				setOnboardingMerchantsData({
 					tableData: _data,
 					totalRecords: _totalRecords,
@@ -189,7 +213,12 @@ const OnboardingDashboard = () => {
 	}, [currDate, prevDate, onboardingDashboardData]);
 
 	useEffect(() => {
-		if (filterStatus?.length) {
+		if (!filterStatus?.length) return;
+		if (isInitialLoad && onboardingDashboardData?.agentsCache?.default) {
+			setOnboardingMerchantsData(
+				onboardingDashboardData.agentsCache.default
+			);
+		} else {
 			fetchOnboardingAgentsData();
 		}
 	}, [filterStatus, pageNumber]);
