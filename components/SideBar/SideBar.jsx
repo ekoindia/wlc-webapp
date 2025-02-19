@@ -23,6 +23,7 @@ import {
 	Icon,
 	ProfileCard,
 	StatusCard,
+	Tags,
 } from "..";
 
 // Lazy-load the BottomAppBar component (for icon-only compact side-bar view)
@@ -625,23 +626,38 @@ const LinkMenuItem = ({
 				w="full"
 				role="group"
 				cursor="pointer"
-				borderBottom="1px solid" // ORIG_THEME: br-sidebar
-				borderBottomColor="sidebar.divider" // ORIG_THEME: primary.light
-				bg={isCurrent ? "sidebar.sel" : ""} //ORIG_THEME: sidebar.active-bg
+				borderBottom="1px solid"
+				borderBottomColor="sidebar.divider"
+				bg={isCurrent ? "sidebar.sel" : ""}
 				_hover={{
 					background: "sidebar.sel",
 					color: "white",
 				}}
 				borderLeft="8px"
-				borderLeftColor={
-					isCurrent ? "accent.dark" : "transparent" // ORIG_THEME: sidebar.active-border
-				}
+				borderLeftColor={isCurrent ? "accent.dark" : "transparent"}
 				transitionProperty="border-left-color, background-color"
 				transitionDuration="0.3s"
 				transitionTimingFunction="ease-out"
+				justify="space-between"
 			>
-				<Icon name={menu.icon} size="sm" />
-				{menu.name || menu.label}
+				<Flex align="center" gap="13px">
+					<Icon name={menu.icon} size="sm" />
+					{menu.name || menu.label}
+				</Flex>
+
+				{menu?.beta ? (
+					<Tags
+						status="BETA"
+						bg="accent.DEFAULT"
+						color="white"
+						borderRadius="full"
+						h="14px"
+						fontSize="8px"
+						fontWeight="500"
+						px="6px"
+						border="none"
+					/>
+				) : null}
 			</Flex>
 		</Link>
 	);

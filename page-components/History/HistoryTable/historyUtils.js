@@ -37,38 +37,53 @@ export const prepareTableCell = (
 	const account_status = item?.account_status;
 	const eko_code = item?.profile?.eko_code ?? [];
 	const trx_type = item?.debit_credit || item?.trx_type;
+
+	let value = "";
+
+	if (!(item && column)) {
+		return "";
+	}
+
+	if (column?.name) {
+		value = item[column.name] || "";
+	}
+
+	if (column?.compute && typeof column.compute === "function") {
+		value = column.compute(value, item, index);
+	}
+
 	switch (column?.show) {
 		case "#":
 			return serialNo;
 		case "Tag":
-			return getStatusStyle(item[column.name], "History");
+			return getStatusStyle(value, "History");
 		case "Modal":
 			return getModalStyle(eko_code, account_status);
 		case "ExpandButton":
 			return getExpandIcoButton(expandedRow, index);
 		case "IconButton":
 			return getLocationStyle(
-				item[column.name],
+				value,
 				item?.address_details?.lattitude,
 				item?.address_details?.longitude
 			);
 		case "Avatar":
 			// Name with avatar
-			return getNameStyle(item[column.name], icon, hue);
+			return getNameStyle(value, icon, hue);
 		case "Arrow":
 			return getArrowStyle();
 		case "Amount":
-			return getAmountStyle(item[column.name]);
+			return getAmountStyle(value);
 		case "Payment":
-			return getPaymentStyle(item[column.name], trx_type);
+			return getPaymentStyle(value, trx_type);
 		case "Description":
-			return getDescriptionStyle(item[column.name]);
+			return getDescriptionStyle(value);
 		case "Date":
-			return getDateView(item[column.name]);
+			return getDateView(value);
 		case "DateTime":
-			return getDateTimeView(item[column.name]);
+			return getDateTimeView(value);
 		default:
-			return item[column.name];
+			return value;
 	}
 };
 

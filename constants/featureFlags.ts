@@ -37,14 +37,9 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
-	// Custom Flag for collapsable(compact) Sidebar (Left-Menu)
-	COMPACT_SIDEBAR: {
-		enabled: true,
-		forEnv: ["development"],
-	},
-
 	// ------------------------------------------------------------------------
 	// MARK: 🚩BETA Flags
+	// Feature Enabled only for certain orgs/users in production
 	// Put all UAT/Beta testing flags in this section.
 
 	// Feature to Raise Issues...
@@ -53,13 +48,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true, // TODO: Enable for all users
 	},
 
-	// Custom flag for enabling Real Time Network Transactions for Admins
-	NETWORK_STATEMENT: {
+	// ChatGPT agent (currently for SBI Kiosk Agents...)
+	CHATGPT_AGENT: {
 		enabled: true,
-		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 59], // 59 =  MoneyBnk
+				forOrgId: [ORG_ID.SBIKIOSK, ...ORG_ID.EKOTESTS],
 			},
 		},
 	},
@@ -67,6 +61,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
+
+	// Custom Flag for collapsable(compact) Sidebar (Left-Menu)
+	COMPACT_SIDEBAR: {
+		enabled: true,
+	},
+
+	// Custom flag for enabling Real Time Network Transactions for Admins
+	NETWORK_STATEMENT: {
+		enabled: true,
+		forAdminOnly: true,
+	},
 
 	// Feature for Admins to toggle services for their network (Business Settings > Enable/Disable Services)
 	TOGGLE_SERVICES: {
@@ -100,16 +105,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 	},
 
-	// ChatGPT agent for SBI Kiosk Agents...
-	CHATGPT_AGENT: {
-		enabled: true,
-		envConstraints: {
-			production: {
-				forOrgId: [ORG_ID.SBIKIOSK, ...ORG_ID.EKOTESTS],
-			},
-		},
-	},
-
 	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
 	RAISE_ISSUE_SBIKIOSK: {
 		enabled: true,
@@ -137,7 +132,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	},
 
 	// ------------------------------------------------------------------------
-	// MARK: ⚠️Test-Only Flags
+	// MARK: 🧪Test-Only Flags
 	// Put all experimental or developer testing-only flags in this section.
 
 	// Face detector for images, videos, and live streams.
