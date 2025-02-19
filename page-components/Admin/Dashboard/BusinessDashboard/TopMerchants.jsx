@@ -124,7 +124,7 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 				</Flex>
 			</Flex>
 			<Divider />
-			<Flex direction="column" align="center">
+			<Flex direction="column">
 				{topMerchantsData?.length > 0 ? (
 					<Table
 						{...{
