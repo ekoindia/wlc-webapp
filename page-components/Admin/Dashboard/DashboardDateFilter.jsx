@@ -33,7 +33,7 @@ const DashboardDateFilter = ({
 			<span>
 				{isSameDay ? (
 					<>
-						Showing stats for {""}
+						Showing stats for{" "}
 						<DateView
 							date={_prevDate}
 							format="dd MMM, yyyy"
