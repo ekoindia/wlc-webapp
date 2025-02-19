@@ -26,7 +26,7 @@ const BusinessDashboard = () => {
 	const { role_list } = userDetails;
 	const [dateRange, setDateRange] = useState("today");
 	const [activeAgents, setActiveAgents, isValid] = useDailyCacheState(
-		"active-agents",
+		"inf-dashboard-active-agents",
 		[]
 	);
 	const { prevDate, currDate } = useMemo(
