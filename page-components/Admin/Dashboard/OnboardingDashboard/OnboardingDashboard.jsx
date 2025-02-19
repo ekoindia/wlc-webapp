@@ -4,7 +4,9 @@ import { useSession } from "contexts";
 import { useApiFetch } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { OnboardedMerchants, OnboardingDashboardFilters } from ".";
-import { DashboardDateFilter, getDateRange, TopPanel } from "..";
+import { DashboardDateFilter, getDateRange, TopPanel, useDashboard } from "..";
+
+const ONBOARDING_DASHBOARD_FILTERS_CACHE_KEY = "onboardingDashboardFilters";
 
 /**
  * To modify filter list, will add id to each list item & Onboarding Funnel item
@@ -56,7 +58,8 @@ const OnboardingDashboard = () => {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [topPanelData, setTopPanelData] = useState([]);
 	const [dateRange, setDateRange] = useState("today");
-	const [onboardingDashboardData, setOnboardingDashboardData] = useState({});
+	const { onboardingDashboardData, setOnboardingDashboardData } =
+		useDashboard();
 
 	const { prevDate, currDate } = useMemo(
 		() => getDateRange(dateRange),
@@ -113,6 +116,18 @@ const OnboardingDashboard = () => {
 			onSuccess: (res) => {
 				const _onboardingFilterList = res?.data?.onboarding_funnel;
 				const _onboardingFunnelTotal = res?.data?.totalRecords;
+
+				setOnboardingDashboardData((prev) => ({
+					...prev,
+					filterCache: {
+						...(prev.filterCache || {}),
+						[ONBOARDING_DASHBOARD_FILTERS_CACHE_KEY]: {
+							onboardingFunnelTotal: _onboardingFunnelTotal,
+							filterList: _onboardingFilterList,
+						},
+					},
+				}));
+
 				setFilterData({
 					onboardingFunnelTotal: _onboardingFunnelTotal,
 					filterList: _onboardingFilterList,
@@ -142,7 +157,19 @@ const OnboardingDashboard = () => {
 	);
 
 	useEffect(() => {
-		fetchOnboardingDashboardFilterData();
+		if (
+			onboardingDashboardData?.filterCache?.[
+				ONBOARDING_DASHBOARD_FILTERS_CACHE_KEY
+			]
+		) {
+			setFilterData(
+				onboardingDashboardData.filterCache[
+					ONBOARDING_DASHBOARD_FILTERS_CACHE_KEY
+				]
+			);
+		} else {
+			fetchOnboardingDashboardFilterData();
+		}
 	}, []);
 
 	useEffect(() => {
