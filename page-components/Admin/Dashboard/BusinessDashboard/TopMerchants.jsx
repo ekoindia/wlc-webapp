@@ -3,6 +3,14 @@ import { Table } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
+import { useDashboard } from "..";
+
+// Helper function to generate cache key
+const getCacheKey = (productFilter, dateFrom, dateTo) => {
+	const fromKey = dateFrom.slice(0, 10); // Extract "YYYY-MM-DD"
+	const toKey = dateTo.slice(0, 10);
+	return `${productFilter || "all"}-${fromKey}-${toKey}`;
+};
 
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
@@ -58,14 +66,27 @@ const topMerchantsTableParameterList = [
 const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]);
+	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 
-	// MARK: Fetching Top Merchants Data
+	// Fetching Top Merchants Data
 	const [fetchTopMerchantsOverviewData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
 			onSuccess: (res) => {
 				const _data =
 					res?.data?.dashboard_object?.gtv_top_merchants || [];
+
+				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+
+				// Cache the data
+				setBusinessDashboardData((prev) => ({
+					...prev,
+					topMerchantsCache: {
+						...(prev.topMerchantsCache || {}),
+						[cacheKey]: _data,
+					},
+				}));
+
 				setTopMerchantsData(_data);
 			},
 		}
@@ -74,6 +95,17 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
+		const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+
+		// Use cached data if available
+		if (businessDashboardData?.topMerchantsCache?.[cacheKey]) {
+			setTopMerchantsData(
+				businessDashboardData.topMerchantsCache[cacheKey]
+			);
+			return;
+		}
+
+		// Fetch data if not cached
 		fetchTopMerchantsOverviewData({
 			body: {
 				interaction_type_id: 682,
@@ -86,7 +118,7 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter]);
+	}, [dateFrom, dateTo, productFilter, businessDashboardData]);
 
 	return (
 		<Flex
