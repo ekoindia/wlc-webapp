@@ -1,32 +1,44 @@
 import { Divider, Flex, Text } from "@chakra-ui/react";
 import { Endpoints, ProductRoleConfiguration } from "constants";
-import { useApiFetch } from "hooks";
-import { useEffect, useState } from "react";
+import { useApiFetch, useDailyCacheState } from "hooks";
+import { useEffect, useMemo, useState } from "react";
 import { useDashboard } from "..";
 
-// Generate cache key using only date range
-const getCacheKey = (dateFrom, dateTo) => {
-	const fromKey = dateFrom.slice(0, 10); // Extract YYYY-MM-DD
-	const toKey = dateTo.slice(0, 10);
-	return `successRate-${fromKey}-${toKey}`;
-};
+const successRateLocalCacheKey = "inf-dashboard-success-rate";
 
-/**
- * A SuccessRate page-component that displays the success rate of transactions with caching.
- * @component
- * @param {object} props - The component props
- * @param {string} props.dateFrom - The start date for fetching success rate data
- * @param {string} props.dateTo - The end date for fetching success rate data
- * @example
- * ```jsx
- * <SuccessRate dateFrom="2024-01-01" dateTo="2024-01-31" />
- * ```
- */
+// Generate cache key using only date range
+const getCacheKey = (dateFrom, dateTo) =>
+	`successRate-${dateFrom.substring(0, 10)}-${dateTo.substring(0, 10)}`;
+
 const SuccessRate = ({ dateFrom, dateTo }) => {
 	const [successRateData, setSuccessRateData] = useState([]);
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
+	const [successRateCache, setSuccessRateCache, isCacheValid] =
+		useDailyCacheState(successRateLocalCacheKey, {});
 
-	// Fetching Success Rate Data
+	const cacheKey = useMemo(
+		() => getCacheKey(dateFrom, dateTo),
+		[dateFrom, dateTo]
+	);
+	const cachedSuccessRate =
+		businessDashboardData?.successRateCache?.[cacheKey];
+
+	const updateSuccessRateCache = (_successRate) => {
+		const updatedCache = {
+			...(successRateCache || {}),
+			data: {
+				...(successRateCache?.data || {}),
+				[cacheKey]: _successRate,
+			},
+		};
+
+		setSuccessRateCache(updatedCache);
+		setBusinessDashboardData((prev) => ({
+			...prev,
+			successRateCache: updatedCache.data,
+		}));
+	};
+
 	const [fetchSuccessRateData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
 		onSuccess: (res) => {
 			const _data = res?.data?.dashboard_object?.successRate || {};
@@ -38,9 +50,8 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 					const productData = _data[p.tx_typeid];
 
 					if (
-						!productData ||
-						productData.successCount === 0 ||
-						productData.totalCount === 0
+						!productData?.successCount ||
+						!productData?.totalCount
 					) {
 						return null;
 					}
@@ -60,16 +71,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 				})
 				.filter(Boolean);
 
-			// Cache data for future use
-			const cacheKey = getCacheKey(dateFrom, dateTo);
-			setBusinessDashboardData((prev) => ({
-				...prev,
-				successRateCache: {
-					...(prev.successRateCache || {}),
-					[cacheKey]: _successRate,
-				},
-			}));
-
+			updateSuccessRateCache(_successRate);
 			setSuccessRateData(_successRate);
 		},
 	});
@@ -77,17 +79,17 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
-		const cacheKey = getCacheKey(dateFrom, dateTo);
-
-		// Use cached data if available
-		if (businessDashboardData?.successRateCache?.[cacheKey]) {
-			setSuccessRateData(
-				businessDashboardData.successRateCache[cacheKey]
-			);
+		if (cachedSuccessRate) {
+			setSuccessRateData(cachedSuccessRate);
 			return;
 		}
 
-		// Fetch data only if not cached
+		if (isCacheValid && successRateCache?.data?.[cacheKey]) {
+			updateSuccessRateCache(successRateCache.data[cacheKey]);
+			setSuccessRateData(successRateCache.data[cacheKey]);
+			return;
+		}
+
 		fetchSuccessRateData({
 			body: {
 				interaction_type_id: 682,
@@ -99,7 +101,14 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 				},
 			},
 		});
-	}, [dateFrom, dateTo, businessDashboardData]);
+	}, [
+		dateFrom,
+		dateTo,
+		cacheKey,
+		cachedSuccessRate,
+		isCacheValid,
+		successRateCache,
+	]);
 
 	return (
 		<Flex
@@ -108,12 +117,17 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			borderRadius="10px"
 			p="5"
 			w="100%"
-			h={{ base: "auto", xl: "280px" }} // Set fixed height for scrolling
-			overflowY="auto" // Enables scrolling
-			className="customScrollbars" // Use custom styles if needed
+			h={{ base: "auto", xl: "280px" }}
+			overflowY="auto"
+			className="customScrollbars"
 			gap="4"
 		>
-			<Text fontSize="xl" fontWeight="semibold">
+			<Text
+				as="h2"
+				fontSize="xl"
+				fontWeight="semibold"
+				aria-label="Success Rate"
+			>
 				Success Rate
 			</Text>
 
@@ -122,36 +136,39 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			<Flex
 				direction="column"
 				className="customScrollbars"
-				overflowY={{ base: "none", lg: "auto" }} // Scroll only on larger screens
-				flex="1" // Takes full height for centering
+				overflowY={{ base: "none", lg: "auto" }}
+				flex="1"
 				justify={successRateData?.length ? "flex-start" : "center"}
 				align="center"
 			>
 				{successRateData?.length ? (
-					successRateData.map((item, index) => (
-						<Flex
-							key={item.key}
-							direction="column"
-							gap="2"
-							w="100%"
-						>
-							{index > 0 ? <Divider /> : null}
+					successRateData.map((item, index) => {
+						const showDivider = index > 0;
+						return (
 							<Flex
-								justify="space-between"
-								fontSize="sm"
+								key={item.key}
+								direction="column"
 								gap="2"
-								pb="2"
+								w="100%"
 							>
-								<Text>{item.label}</Text>
-								<Text
-									fontWeight="semibold"
-									color="primary.DEFAULT"
+								{showDivider && <Divider />}
+								<Flex
+									justify="space-between"
+									fontSize="sm"
+									gap="2"
+									pb="2"
 								>
-									{item.value}
-								</Text>
+									<Text>{item.label}</Text>
+									<Text
+										fontWeight="semibold"
+										color="primary.DEFAULT"
+									>
+										{item.value}
+									</Text>
+								</Flex>
 							</Flex>
-						</Flex>
-					))
+						);
+					})
 				) : (
 					<Text color="gray.500" fontSize="md">
 						Nothing Found
