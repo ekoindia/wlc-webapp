@@ -17,9 +17,9 @@ const DashboardDateFilter = ({
 	dateRange,
 	setDateRange,
 }) => {
-	const _prevDate = prevDate.slice(0, 10);
-	const _currDate = currDate.slice(0, 10);
-	const isSameDay = _prevDate === _currDate;
+	const _prevDate = prevDate;
+	const _currDate = currDate;
+	const isSameDay = _prevDate.slice(0, 10) === _currDate.slice(0, 10);
 
 	return (
 		<Flex
@@ -85,13 +85,12 @@ export default DashboardDateFilter;
 /**
  * Returns the date range based on the selected filter.
  * - `prevDate` starts at 00:00:00 of the respective day.
- * - `currDate` is the exact current time when the function is executed.
+ * - `currDate` is either the exact current time (for "today") or the end of the day (other filters).
  * @param {string} filter - The date range filter. Options: "today", "yesterday", "last7", "last30".
- * @returns {{ prevDate: string, currDate: string }} An object containing `prevDate` (start of the day) and `currDate` (current execution time).
+ * @returns {{ prevDate: string, currDate: string }} An object containing `prevDate` (start of the day) and `currDate` (current time or end of day).
  */
 export const getDateRange = (filter) => {
-	let currentDate = new Date();
-	let previousDate = new Date();
+	const currentDate = new Date();
 
 	/**
 	 * Sets the given date to the start of the day (00:00:00.000).
@@ -113,30 +112,31 @@ export const getDateRange = (filter) => {
 		return date;
 	};
 
+	// Date range map
 	const daysMap = {
 		yesterday: 1,
 		last7: 7,
 		last30: 30,
 	};
 
+	let previousDate, currentEndDate;
+
 	if (filter in daysMap) {
+		// For "yesterday", "last7", and "last30", end date is yesterday
+		currentEndDate = setToEndOfDay(calculateDateBefore(currentDate, 1));
+
+		// Calculate the starting date (e.g., 7 days ago for "last7")
 		previousDate = setToStartOfDay(
 			calculateDateBefore(currentDate, daysMap[filter])
 		);
-
-		// If it's "yesterday", set the end time to that day's end, else it's today
-		currentDate =
-			filter === "yesterday"
-				? setToEndOfDay(calculateDateBefore(currentDate, 1))
-				: setToEndOfDay(currentDate);
 	} else {
-		// Default to "today"
-		previousDate = setToStartOfDay(previousDate);
-		currentDate = setToEndOfDay(currentDate);
+		// Default to "today": start of today and current time
+		previousDate = setToStartOfDay(new Date());
+		currentEndDate = currentDate; // Keep the exact current time
 	}
 
 	return {
 		prevDate: formatDateTime(previousDate, "yyyy-MM-dd HH:mm:ss"),
-		currDate: formatDateTime(currentDate, "yyyy-MM-dd HH:mm:ss"),
+		currDate: formatDateTime(currentEndDate, "yyyy-MM-dd HH:mm:ss"),
 	};
 };
