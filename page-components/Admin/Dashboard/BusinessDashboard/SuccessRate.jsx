@@ -4,22 +4,21 @@ import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
 
 /**
- * A SuccessRate page-component
- * @param root0
- * @param root0.dateFrom
- * @param root0.dateTo
- * @example	`<SuccessRate></SuccessRate>`
+ * A SuccessRate page-component that displays the success rate of transactions.
+ * @component
+ * @param {object} props - The component props
+ * @param {string} props.dateFrom - The start date for fetching success rate data
+ * @param {string} props.dateTo - The end date for fetching success rate data
+ * @example
+ * ```jsx
+ * <SuccessRate dateFrom="2024-01-01" dateTo="2024-01-31" />
+ * ```
  */
 const SuccessRate = ({ dateFrom, dateTo }) => {
-	const [requestPayload, setRequestPayload] = useState({});
 	const [successRateData, setSuccessRateData] = useState([]);
 
-	// MARK: Fetching Success Rate Data
+	// Fetching Success Rate Data
 	const [fetchSuccessRateData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
-		body: {
-			interaction_type_id: 682,
-			requestPayload: requestPayload,
-		},
 		onSuccess: (res) => {
 			const _data = res?.data?.dashboard_object?.successRate || {};
 			const _product = ProductRoleConfiguration?.products ?? [];
@@ -57,22 +56,22 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 		},
 	});
 
+	// Update request payload when dateFrom or dateTo changes
 	useEffect(() => {
 		if (dateFrom && dateTo) {
-			setRequestPayload(() => ({
-				success_rate: {
-					datefrom: dateFrom,
-					dateto: dateTo,
+			fetchSuccessRateData({
+				body: {
+					interaction_type_id: 682,
+					requestPayload: {
+						success_rate: {
+							datefrom: dateFrom,
+							dateto: dateTo,
+						},
+					},
 				},
-			}));
+			});
 		}
 	}, [dateFrom, dateTo]);
-
-	useEffect(() => {
-		if (dateFrom && dateTo) {
-			fetchSuccessRateData();
-		}
-	}, [requestPayload]);
 
 	return (
 		<Flex
@@ -126,11 +125,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 						</Flex>
 					))
 				) : (
-					<Text
-						color="gray.500"
-						fontSize="md"
-						// pt={{ base: "4", md: "0" }}
-					>
+					<Text color="gray.500" fontSize="md">
 						Nothing Found
 					</Text>
 				)}
@@ -140,41 +135,3 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 };
 
 export default SuccessRate;
-
-{
-	/* <Flex
-direction="column"
-bg="white"
-p="20px 20px 30px"
-borderRadius="10"
-border="basic"
-gap="3"
-w="100%"
->
-<Text fontSize="xl" fontWeight="semibold">
-	Success Rate
-</Text>
-<Divider />
-<Flex
-	direction="column"
-	className="customScrollbars"
-	overflowY={{ base: "none", md: "scroll" }}
->
-	{successRateData?.map((item, index) => (
-		<Flex key={item.key} direction="column">
-			<Flex justify="space-between" fontSize="sm">
-				<Text whiteSpace="nowrap">{item.label}</Text>
-				<Text fontWeight="semibold" color="primary.DEFAULT">
-					{item.value}
-				</Text>
-			</Flex>
-			{index < successRateData.length - 1 && <Divider />}
-		</Flex>
-				))}
-				))}
-			</Stack>
-	))}
-			</Stack>
-</Flex>
-</Flex> */
-}
