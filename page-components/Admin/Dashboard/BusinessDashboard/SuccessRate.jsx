@@ -2,9 +2,17 @@ import { Divider, Flex, Text } from "@chakra-ui/react";
 import { Endpoints, ProductRoleConfiguration } from "constants";
 import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
+import { useDashboard } from "..";
+
+// Generate cache key using only date range
+const getCacheKey = (dateFrom, dateTo) => {
+	const fromKey = dateFrom.slice(0, 10); // Extract YYYY-MM-DD
+	const toKey = dateTo.slice(0, 10);
+	return `successRate-${fromKey}-${toKey}`;
+};
 
 /**
- * A SuccessRate page-component that displays the success rate of transactions.
+ * A SuccessRate page-component that displays the success rate of transactions with caching.
  * @component
  * @param {object} props - The component props
  * @param {string} props.dateFrom - The start date for fetching success rate data
@@ -16,6 +24,7 @@ import { useEffect, useState } from "react";
  */
 const SuccessRate = ({ dateFrom, dateTo }) => {
 	const [successRateData, setSuccessRateData] = useState([]);
+	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 
 	// Fetching Success Rate Data
 	const [fetchSuccessRateData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
@@ -24,11 +33,10 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			const _product = ProductRoleConfiguration?.products ?? [];
 
 			const _successRate = _product
-				.filter((p) => p.tx_typeid && _data[p.tx_typeid]) // Ensure tx_typeid exists in API response
+				.filter((p) => p.tx_typeid && _data[p.tx_typeid])
 				.map((p) => {
 					const productData = _data[p.tx_typeid];
 
-					// Only keep data where successCount and totalCount are greater than 0
 					if (
 						!productData ||
 						productData.successCount === 0 ||
@@ -50,28 +58,48 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 						value: successRate,
 					};
 				})
-				.filter(Boolean); // Remove null values
+				.filter(Boolean);
+
+			// Cache data for future use
+			const cacheKey = getCacheKey(dateFrom, dateTo);
+			setBusinessDashboardData((prev) => ({
+				...prev,
+				successRateCache: {
+					...(prev.successRateCache || {}),
+					[cacheKey]: _successRate,
+				},
+			}));
 
 			setSuccessRateData(_successRate);
 		},
 	});
 
-	// Update request payload when dateFrom or dateTo changes
 	useEffect(() => {
-		if (dateFrom && dateTo) {
-			fetchSuccessRateData({
-				body: {
-					interaction_type_id: 682,
-					requestPayload: {
-						success_rate: {
-							datefrom: dateFrom,
-							dateto: dateTo,
-						},
+		if (!dateFrom || !dateTo) return;
+
+		const cacheKey = getCacheKey(dateFrom, dateTo);
+
+		// Use cached data if available
+		if (businessDashboardData?.successRateCache?.[cacheKey]) {
+			setSuccessRateData(
+				businessDashboardData.successRateCache[cacheKey]
+			);
+			return;
+		}
+
+		// Fetch data only if not cached
+		fetchSuccessRateData({
+			body: {
+				interaction_type_id: 682,
+				requestPayload: {
+					success_rate: {
+						datefrom: dateFrom,
+						dateto: dateTo,
 					},
 				},
-			});
-		}
-	}, [dateFrom, dateTo]);
+			},
+		});
+	}, [dateFrom, dateTo, businessDashboardData]);
 
 	return (
 		<Flex
