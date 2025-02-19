@@ -3,67 +3,43 @@ import { Currency, IcoButton, Icon } from "components";
 
 /**
  * A TopPanel page-component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.data
- * @example	`<TopPanel></TopPanel>`
+ * @component
+ * @example
+ * ```jsx
+ * <TopPanel panelDataList={[{ key: '1', label: 'Revenue', value: 1000, type: 'amount', variation: 5, icon: 'money' }]} />
+ * ```
+ * @param {object} props - Component props
+ * @param {Array} props.panelDataList - List of panel data objects
+ * @param {string} props.panelDataList[].key - Unique key for the panel item
+ * @param {string} props.panelDataList[].label - Label text for the panel item
+ * @param {number|string} props.panelDataList[].value - The value to display
+ * @param {string} [props.panelDataList[].type] - Type of value (e.g., "amount")
+ * @param {number} [props.panelDataList[].variation] - Percentage variation (positive or negative)
+ * @param {string} [props.panelDataList[].info] - Additional info text
+ * @param {string} props.panelDataList[].icon - Icon name for the button
+ * @returns {JSX.Element|null} The rendered component or null if no data
  */
-const TopPanel = ({ data }) => {
-	const topPanelList = [
-		{
-			key: "totalDistributers",
-			label: "Distributors Onboarded",
-			value: data?.totalDistributors?.totalDistributors,
-			type: "number",
-			variation: data?.totalDistributors?.increaseOrDecrease,
-			icon: "refer",
-		},
-		{
-			key: "activeDistributers",
-			label: "Active Distributors",
-			value: data?.activeDistributors?.activeDistributors,
-			type: "number",
-			variation: data?.activeDistributors?.increaseOrDecrease,
-			icon: "people",
-		},
-		{
-			key: "grossTransactionValue",
-			label: "GTV",
-			value: data?.grossTransactionValue?.grossTransactionValue,
-			type: "amount",
-			variation: data?.grossTransactionValue?.increaseOrDecrease,
-			icon: "rupee_bg",
-		},
-		{
-			key: "raCases",
-			label: "Money Transfer RA Cases",
-			value: data?.raCases?.raCases,
-			type: "number",
-			variation: data?.raCases?.increaseOrDecrease,
-			icon: "percent_bg",
-		},
-	];
+const TopPanel = ({ panelDataList }) => {
+	if (!panelDataList?.length) return null;
 
-	const topPanelListLength = topPanelList.length;
 	return (
 		<Grid
 			w="100%"
-			templateColumns="repeat(4, 4fr)"
+			templateColumns="repeat(auto-fit, minmax(250px, 1fr))"
 			overflowX="auto"
-			pb={4}
+			whiteSpace="nowrap"
+			display="flex"
 			css={{
 				"&::-webkit-scrollbar": {
-					width: "2px",
-					height: "2px",
+					width: "0px",
+					height: "0px",
 				},
 				"&::-webkit-scrollbar-thumb": {
-					background: "#cbd5e0",
-					borderRadius: "2px",
+					borderRadius: "0px",
 				},
 			}}
 		>
-			{topPanelList?.map((item, index) => (
+			{panelDataList?.map((item, index) => (
 				<Flex
 					key={item.key}
 					bg="white"
@@ -72,8 +48,7 @@ const TopPanel = ({ data }) => {
 					border="basic"
 					borderRadius="10px"
 					minW={{ base: "250px", sm: "300px" }}
-					ml="20px"
-					mr={index === topPanelListLength - 1 ? "20px" : null}
+					ml={index === 0 ? "0px" : "20px"}
 				>
 					<Flex direction="column" gap="1">
 						<Text fontSize="sm">{item.label}</Text>
@@ -129,14 +104,27 @@ const TopPanel = ({ data }) => {
 								) : null}
 							</Flex>
 						</Flex>
+						<Flex>
+							{item.info ? (
+								<Text
+									color="primary.DEFAULT"
+									fontSize="xs"
+									fontWeight="500"
+								>
+									{item.info}
+								</Text>
+							) : null}
+						</Flex>
 					</Flex>
-					<IcoButton
-						size="md"
-						color="white"
-						iconName={item.icon}
-						rounded={10}
-						bgGradient="linear(to-b, primary.light, primary.dark)"
-					/>
+					<Flex align="center">
+						<IcoButton
+							size="md"
+							color="white"
+							iconName={item.icon}
+							rounded={10}
+							bgGradient="linear(to-b, primary.light, primary.dark)"
+						/>
+					</Flex>
 				</Flex>
 			))}
 		</Grid>

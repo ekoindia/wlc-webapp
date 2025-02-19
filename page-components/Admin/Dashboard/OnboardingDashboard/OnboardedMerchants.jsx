@@ -1,6 +1,46 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { Table } from "components";
 import { OnboardingDashboardCard } from ".";
+
+const onboarded_merchants_parameter_list = [
+	{
+		name: "mobile",
+		label: "Mobile No.",
+		sorting: true,
+	},
+	{
+		name: "user_code",
+		label: "User Code",
+		sorting: true,
+	},
+	{
+		name: "agent_type",
+		label: "Agent Type",
+		sorting: true,
+	},
+	{
+		name: "account_status_desc",
+		label: "Account Status",
+		sorting: true,
+		show: "Tag",
+	},
+	{
+		name: "last_updated",
+		label: "Last Updated",
+		sorting: true,
+		show: "DateTime",
+	},
+	{
+		name: "business_type",
+		label: "Business Type",
+		sorting: true,
+	},
+	{
+		name: "location",
+		label: "Location",
+		sorting: true,
+	},
+];
 
 /**
  * A OnboardedMerchants page-component
@@ -19,52 +59,10 @@ const OnboardedMerchants = ({
 	setPageNumber,
 	isLoading,
 }) => {
-	const renderer = [
-		{
-			name: "name",
-			label: "Merchant's Name",
-			sorting: true,
-			show: "Avatar",
-		},
-		{
-			name: "user_code",
-			label: "User Code",
-			sorting: true,
-		},
-		{
-			name: "location",
-			label: "Location",
-			sorting: true,
-		},
-		{
-			name: "business_type",
-			label: "Business Type",
-			sorting: true,
-		},
-		{ name: "onboardedOn", label: "Onboarded on", show: "Date" },
-		// { name: "businessDetailsCaptured", label: "Business Detail Captured" },
-		// { name: "businessName", label: "Business Name" },
-		// { name: "daysinFunnel", label: "Onboarding Funnel" },
-		// { name: "panCaptured", label: "PAN Captured" },
-		// { name: "aadhaarCaptured", label: "Aadhaar Captured" },
-		// { name: "agreementSigned", label: "Agreement Signed" },
-		// { name: "onboarded", label: "Onboarded" },
-		// { name: "transacting", label: "Non Transacting Live" },
-	];
 	return (
-		<Flex
-			direction="column"
-			p="20px"
-			w="100%"
-			bg="white"
-			borderRadius="10"
-			border="basic"
-		>
-			<Text fontSize="xl" fontWeight="semibold">
-				Onboarded Merchants
-			</Text>
+		<Flex direction="column" p="20px" w="100%">
 			<Table
-				renderer={renderer}
+				renderer={onboarded_merchants_parameter_list}
 				visibleColumns={5}
 				data={onboardingMerchantData?.tableData}
 				variant="stripedActionNone"

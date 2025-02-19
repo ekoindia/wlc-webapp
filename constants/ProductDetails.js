@@ -591,21 +591,44 @@ export const agreementProvider = {
  */
 export const ProductRoleConfiguration = {
 	products: [
-		{ trxn_id: 1997, label: "Money Transfer", roles: [49200, 49300] },
-		{ trxn_id: 1122, label: "UPI Money Transfer", roles: [38000] },
-		{ trxn_id: 252, label: "AePS Cashout", roles: [4600, 9300] },
+		{
+			trxn_id: 1997,
+			tx_typeid: 81,
+			label: "Money Transfer",
+			roles: [49200, 49300],
+		},
+		{
+			trxn_id: 1122,
+			label: "UPI Money Transfer",
+			roles: [38000],
+		},
+		{
+			trxn_id: 252,
+			tx_typeid: 345,
+			label: "AePS Cashout",
+			roles: [4600, 9300],
+		},
 		{
 			trxn_id: 244,
+			tx_typeid: 63,
 			label: "Recharge & Bill Payment",
 			roles: [/* 100, */ 20000, 20100],
 			comment: "Including Credit Card Bill Payment",
 		},
-		{ trxn_id: 933, label: "Travel Booking", roles: [34003] },
-		{ trxn_id: 208, label: "Indo-Nepal Transfer", roles: [3700] },
-		{ trxn_id: 1776, label: "QR Payment", roles: [34000] },
-		{ trxn_id: 1729, label: "Lending & Insurance", roles: [39000, 37500] },
+		{
+			trxn_id: 933,
+			label: "Travel Booking",
+			roles: [34003],
+		},
+		{ trxn_id: 208, tx_typeid: 279, label: "Indo-Nepal", roles: [3700] },
+		{ trxn_id: 1776, tx_typeid: 325, label: "QR Payment", roles: [34000] },
+		{
+			trxn_id: 1729,
+			label: "Lending & Insurance",
+			roles: [39000, 37500],
+		},
 		{ trxn_id: 645, label: "LIC Bill Payment", roles: [28000] },
-		{ trxn_id: 1117, label: "Aadhaar Pay", roles: [14200] },
+		{ trxn_id: 1117, tx_typeid: 558, label: "Aadhaar Pay", roles: [14200] },
 		{ trxn_id: 877, label: "Airtel CMS", roles: [32000] },
 		// { trxn_id: 66, label: "Credit Card Bill Payment", roles: [] },
 		{ trxn_id: 9984, label: "Product Store", roles: [7400] },
