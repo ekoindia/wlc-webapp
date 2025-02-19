@@ -3,9 +3,21 @@ import { Currency, IcoButton, Icon } from "components";
 
 /**
  * A TopPanel page-component
- * @param root0
- * @param root0.panelDataList
- * @example	`<TopPanel></TopPanel>`
+ * @component
+ * @example
+ * ```jsx
+ * <TopPanel panelDataList={[{ key: '1', label: 'Revenue', value: 1000, type: 'amount', variation: 5, icon: 'money' }]} />
+ * ```
+ * @param {object} props - Component props
+ * @param {Array} props.panelDataList - List of panel data objects
+ * @param {string} props.panelDataList[].key - Unique key for the panel item
+ * @param {string} props.panelDataList[].label - Label text for the panel item
+ * @param {number|string} props.panelDataList[].value - The value to display
+ * @param {string} [props.panelDataList[].type] - Type of value (e.g., "amount")
+ * @param {number} [props.panelDataList[].variation] - Percentage variation (positive or negative)
+ * @param {string} [props.panelDataList[].info] - Additional info text
+ * @param {string} props.panelDataList[].icon - Icon name for the button
+ * @returns {JSX.Element|null} The rendered component or null if no data
  */
 const TopPanel = ({ panelDataList }) => {
 	if (!panelDataList?.length) return null;
