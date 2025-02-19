@@ -3,6 +3,16 @@ import { Currency, Icon } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
 import React, { useEffect, useState } from "react";
+import { useDashboard } from "..";
+
+// Helper function to generate cache key
+const getCacheKey = (productFilter, dateFrom, dateTo) => {
+	// Extract only the date portion (first 10 characters: "YYYY-MM-DD")
+	const fromKey = dateFrom.slice(0, 10);
+	const toKey = dateTo.slice(0, 10);
+
+	return `${productFilter || "all"}-${fromKey}-${toKey}`;
+};
 
 const calculateVariation = (current, lastMonth) => {
 	if (!current || !lastMonth || lastMonth == 0) return null; // Hide if new metric or missing data
@@ -33,11 +43,24 @@ const calculateVariation = (current, lastMonth) => {
 const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
+	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 
 	// MARK: Fetching Product Overview Data
 	const [fetchEarningOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
 		onSuccess: (res) => {
 			const _data = res?.data?.dashboard_object?.products_overview || [];
+
+			const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+
+			// Cache data for future use
+			setBusinessDashboardData((prev) => ({
+				...prev,
+				earningOverviewCache: {
+					...(prev.earningOverviewCache || {}),
+					[cacheKey]: _data,
+				},
+			}));
+
 			setEarningOverviewData(_data);
 		},
 	});
@@ -45,6 +68,17 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
+		const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+
+		// Use cached data if available
+		if (businessDashboardData?.earningOverviewCache?.[cacheKey]) {
+			setEarningOverviewData(
+				businessDashboardData.earningOverviewCache[cacheKey]
+			);
+			return;
+		}
+
+		// Fetch data only when not cached
 		fetchEarningOverviewData({
 			body: {
 				interaction_type_id: 682,
@@ -57,7 +91,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter]);
+	}, [dateFrom, dateTo, productFilter, businessDashboardData]);
 
 	const earningOverviewList = [
 		{
