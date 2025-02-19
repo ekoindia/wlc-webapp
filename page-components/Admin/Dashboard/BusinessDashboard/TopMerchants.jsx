@@ -134,7 +134,12 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 						}}
 					/>
 				) : (
-					<Text color="gray.500" fontSize="md">
+					<Text
+						color="gray.500"
+						fontSize="md"
+						w="100%"
+						align="center"
+					>
 						Nothing Found
 					</Text>
 				)}

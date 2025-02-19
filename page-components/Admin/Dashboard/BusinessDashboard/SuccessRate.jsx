@@ -80,7 +80,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			borderRadius="10px"
 			p="5"
 			w="100%"
-			h={{ base: "auto", xl: "320px" }} // Set fixed height for scrolling
+			h={{ base: "auto", xl: "280px" }} // Set fixed height for scrolling
 			overflowY="auto" // Enables scrolling
 			className="customScrollbars" // Use custom styles if needed
 			gap="4"
