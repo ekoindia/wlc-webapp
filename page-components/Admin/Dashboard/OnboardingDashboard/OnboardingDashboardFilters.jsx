@@ -1,85 +1,54 @@
 import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { useState } from "react";
 
 /**
- * To modify filter list, will add id to each list item & Onboarding Funnel item
- * @param {object} data contains onboardingFunnelTotal and filterList
- * @returns {object} containing funnelKeyList, filterList, & filterListLength
- */
-const getModifiedFilterList = (data) => {
-	let filterList = [
-		{
-			id: 0,
-			label: "Onboarding Funnel",
-			value: data?.onboardingFunnelTotal,
-		},
-	];
-
-	let funnelKeyList = [];
-
-	const _filterList = data?.filterList;
-
-	_filterList?.forEach((ele, index) => {
-		let _filter = { id: index + 1, ...ele };
-		filterList.push(_filter);
-		funnelKeyList.push(ele?.status_ids);
-	});
-
-	filterList[0]["status_ids"] = [...funnelKeyList];
-
-	const filterListLength = filterList?.length;
-
-	return { funnelKeyList, filterList, filterListLength };
-};
-
-/**
- * A Onboarding Dashboard Filter page-component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.filterLoading
- * @param prop.filterData
- * @param prop.filterStatus
- * @param prop.setFilterStatus
- * @example	`<OnboardingDashboardFilters></OnboardingDashboardFilters>`
+ * OnboardingDashboardFilters component renders a filter section for onboarding statuses.
+ * It allows users to filter the onboarding agents based on their statuses.
+ * @param {object} props - Properties passed to the component
+ * @param {boolean} props.filterLoading - Indicates if the filter data is still loading
+ * @param {Array} props.filterList - List of filter items to display
+ * @param {Array} props.funnelKeyList - List of keys representing all possible statuses
+ * @param {Array} props.filterStatus - Currently selected filter statuses
+ * @param {Function} props.setFilterStatus - Function to update the selected filter statuses
+ * @example
+ * <OnboardingDashboardFilters
+ *   filterLoading={false}
+ *   filterList={[{ id: 1, label: 'Active', status_ids: 'active', value: 10 }]}
+ *   funnelKeyList={['active', 'inactive']}
+ *   filterStatus={['active']}
+ *   setFilterStatus={(status) => console.log(status)}
+ * />
  */
 const OnboardingDashboardFilters = ({
 	filterLoading,
-	filterData,
+	filterList,
+	funnelKeyList,
 	filterStatus,
 	setFilterStatus,
 }) => {
-	const [inFunnel, setInFunnel] = useState(false);
-
-	const { funnelKeyList, filterList, filterListLength } =
-		getModifiedFilterList(filterData);
-
 	const handleFilterStatusClick = (id, key) => {
+		// If "All Onboarding Agent" is clicked
 		if (id === 0) {
-			if (!inFunnel) {
-				setFilterStatus((prev) => {
-					const _filterStatus = new Set([...prev, ...key]);
-					return [..._filterStatus];
-				});
-				setInFunnel(true);
-			} else {
-				setFilterStatus((prev) =>
-					prev.filter((item) => !funnelKeyList.includes(item))
-				);
-				setInFunnel(false);
-			}
-		} else {
-			const filterStatusUpdated = filterStatus.includes(key)
-				? filterStatus.filter((item) => item !== key)
-				: [...filterStatus, key];
+			const isAllSelected = funnelKeyList
+				.flat()
+				.every((item) => filterStatus.includes(item));
 
-			const isAllItemsIncluded = funnelKeyList.every((item) =>
-				filterStatusUpdated.includes(item)
+			// Select all if not already fully selected
+			setFilterStatus(
+				isAllSelected ? filterStatus : funnelKeyList.flat()
 			);
-			setInFunnel(isAllItemsIncluded);
-			setFilterStatus(filterStatusUpdated);
+			return; // Prevent direct deselection of "All"
 		}
+
+		// Toggle selected status
+		const updatedStatus = filterStatus.includes(key)
+			? filterStatus.filter((item) => item !== key) // Deselect
+			: [...filterStatus, key]; // Select
+
+		// Prevent deselecting all filters (must have at least one active)
+		if (updatedStatus.length === 0) return;
+
+		setFilterStatus(updatedStatus);
 	};
 
 	return (
@@ -88,11 +57,13 @@ const OnboardingDashboardFilters = ({
 			direction="column"
 			bg={{ base: "none", md: "white" }}
 			borderRadius="10px"
+			p={{ base: "0px", md: "20px" }}
+			gap="2"
 		>
-			<Flex gap="2" p="20px">
-				<Icon name="filter" size="23px" />
-				<Text fontSize="md" fontWeight="semibold">
-					Filter using onboarding status
+			<Flex gap="2">
+				<Icon name="filter" size="sm" />
+				<Text fontSize="sm" fontWeight="semibold">
+					Filter By Onboarding Status
 				</Text>
 			</Flex>
 			<Flex
@@ -105,17 +76,18 @@ const OnboardingDashboardFilters = ({
 						height: "0px",
 					},
 					"&::-webkit-scrollbar-thumb": {
-						background: "#cbd5e0",
 						borderRadius: "0px",
 					},
 				}}
-				pb="20px"
 			>
 				{filterList?.map((item, index) => {
+					const isAllSelected = funnelKeyList
+						.flat()
+						.every((item) => filterStatus.includes(item));
 					const isActive =
-						item.id === 0 && inFunnel
-							? true
-							: filterStatus?.includes(item.status_ids);
+						item.id === 0
+							? isAllSelected
+							: filterStatus.includes(item.status_ids);
 					return (
 						<Flex
 							key={item.id}
@@ -123,16 +95,15 @@ const OnboardingDashboardFilters = ({
 							justify="space-between"
 							bg="white"
 							p="10px 15px"
-							border={isActive ? "1px" : "basic"}
-							borderColor={isActive && "primary.light"}
+							border={isActive ? "2px" : "basic"}
+							borderColor={isActive ? "primary.light" : "none"}
 							boxShadow={
 								isActive ? "0px 3px 10px #1F5AA733" : null
 							}
-							borderRadius="10px"
+							borderRadius="12px"
 							minW={{ base: "135px", sm: "160px" }}
 							maxW="160px"
-							ml="20px"
-							mr={index === filterListLength - 1 ? "20px" : null}
+							ml={index === 0 ? "0px" : "20px"}
 							_hover={{ boxShadow: "basic" }}
 							onClick={() => {
 								handleFilterStatusClick(
@@ -142,8 +113,34 @@ const OnboardingDashboardFilters = ({
 							}}
 							cursor="pointer"
 							gap="2"
+							position="relative" // Enable relative positioning for the container
 						>
-							<Text fontSize="sm">{item.label}</Text>
+							{/* Radio Indicator */}
+							<Flex
+								className="radio_indicator"
+								position="absolute" // Place in the top-right corner
+								top="4px"
+								right="4px"
+								w="20px"
+								h="20px"
+								border="2px solid var(--chakra-colors-primary-light)"
+								borderRadius="12px"
+								align="center"
+								justify="center"
+							>
+								{isActive ? (
+									<Flex
+										w="10px"
+										h="10px"
+										bg="primary.light"
+										borderRadius="6px"
+									></Flex>
+								) : null}
+							</Flex>
+
+							<Text fontSize="sm" w="90%">
+								{item.label}
+							</Text>
 							<Skeleton
 								isLoaded={!filterLoading}
 								w="40%"

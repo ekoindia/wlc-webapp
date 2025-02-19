@@ -1,5 +1,16 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Divider, Flex, Select, Text } from "@chakra-ui/react";
 import { Table } from "components";
+import { Endpoints } from "constants";
+import { useApiFetch } from "hooks";
+import { useEffect, useState } from "react";
+import { useDashboard } from "..";
+
+// Helper function to generate cache key
+const getCacheKey = (productFilter, dateFrom, dateTo) => {
+	const fromKey = dateFrom.slice(0, 10); // Extract "YYYY-MM-DD"
+	const toKey = dateTo.slice(0, 10);
+	return `${productFilter || "all"}-${fromKey}-${toKey}`;
+};
 
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
@@ -40,14 +51,75 @@ const topMerchantsTableParameterList = [
 ];
 
 /**
- * A TopMerchants page-component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.data
- * @example	`<TopMerchants></TopMerchants>`
+ * TopMerchants component displays a table of top merchants based on GTV.
+ * @param {object} props - Properties passed to the component.
+ * @param {Array} props.productFilterList - List of product filters.
+ * @param {string} props.dateFrom - Start date for filtering data.
+ * @param {string} props.dateTo - End date for filtering data.
+ * @example
+ * <TopMerchants
+ *   dateFrom="2023-01-01"
+ *   dateTo="2023-01-31"
+ *   productFilterList={[{ label: "Product 1", value: "81" }]}
+ * />
  */
-const TopMerchants = ({ data }) => {
+const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
+	const [productFilter, setProductFilter] = useState("");
+	const [topMerchantsData, setTopMerchantsData] = useState([]);
+	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
+
+	// Fetching Top Merchants Data
+	const [fetchTopMerchantsOverviewData, isLoading] = useApiFetch(
+		Endpoints.TRANSACTION_JSON,
+		{
+			onSuccess: (res) => {
+				const _data =
+					res?.data?.dashboard_object?.gtv_top_merchants || [];
+
+				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+
+				// Cache the data
+				setBusinessDashboardData((prev) => ({
+					...prev,
+					topMerchantsCache: {
+						...(prev.topMerchantsCache || {}),
+						[cacheKey]: _data,
+					},
+				}));
+
+				setTopMerchantsData(_data);
+			},
+		}
+	);
+
+	useEffect(() => {
+		if (!dateFrom || !dateTo) return;
+
+		const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+
+		// Use cached data if available
+		if (businessDashboardData?.topMerchantsCache?.[cacheKey]) {
+			setTopMerchantsData(
+				businessDashboardData.topMerchantsCache[cacheKey]
+			);
+			return;
+		}
+
+		// Fetch data if not cached
+		fetchTopMerchantsOverviewData({
+			body: {
+				interaction_type_id: 682,
+				requestPayload: {
+					gtv_top_merchants: {
+						datefrom: dateFrom,
+						dateto: dateTo,
+						typeid: productFilter,
+					},
+				},
+			},
+		});
+	}, [dateFrom, dateTo, productFilter, businessDashboardData]);
+
 	return (
 		<Flex
 			direction="column"
@@ -61,18 +133,49 @@ const TopMerchants = ({ data }) => {
 			<Flex
 				direction={{ base: "column", md: "row" }}
 				justify="space-between"
+				gap={{ base: "2", md: "4" }}
+				w="100%"
 			>
 				<Text fontSize="xl" fontWeight="semibold">
-					GTV wise Top Merchants
+					GTV-wise Top Retailers
 				</Text>
-				{/* TODO: Need Pills */}
+
+				<Flex w={{ base: "100%", md: "auto" }}>
+					<Select
+						variant="filled"
+						value={productFilter}
+						onChange={(e) => setProductFilter(e.target.value)}
+						size="sm"
+					>
+						{productFilterList.map(({ label, value }) => (
+							<option key={value} value={value}>
+								{label}
+							</option>
+						))}
+					</Select>
+				</Flex>
 			</Flex>
-			<Table
-				{...{
-					data,
-					renderer: topMerchantsTableParameterList,
-				}}
-			/>
+			<Divider />
+			<Flex direction="column">
+				{topMerchantsData?.length > 0 ? (
+					<Table
+						{...{
+							data: topMerchantsData,
+							renderer: topMerchantsTableParameterList,
+							isLoading,
+						}}
+					/>
+				) : (
+					<Text
+						color="gray.500"
+						fontSize="md"
+						w="100%"
+						align="center"
+					>
+						Nothing Found
+					</Text>
+				)}
+			</Flex>
 		</Flex>
 	);
 };

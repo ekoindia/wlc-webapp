@@ -1,131 +1,298 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
-import { fetcher } from "helpers";
-import { useEffect, useState } from "react";
+import { useApiFetch } from "hooks";
+import { useEffect, useMemo, useState } from "react";
 import { OnboardedMerchants, OnboardingDashboardFilters } from ".";
-import { DashboardDateFilter } from "..";
+import { DashboardDateFilter, getDateRange, TopPanel, useDashboard } from "..";
+
+const ONBOARDING_DASHBOARD_FILTERS_CACHE_KEY = "onboardingDashboardFilters";
+
 /**
- * A OnboardingDashboard page-component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<OnboardingDashboard></OnboardingDashboard>`
+ * To modify filter list, will add id to each list item & Onboarding Funnel item
+ * @param {object} data - Contains onboardingFunnelTotal and filterList
+ * @returns {object} - Contains funnelKeyList, filterList, & filterListLength
+ */
+const getModifiedFilterList = (data) => {
+	let filterList = [
+		{
+			id: 0,
+			label: "All Onboarding Agents",
+			value: data?.onboardingFunnelTotal ?? 0,
+			status_ids: "*", // Using wildcard to represent all filters
+		},
+	];
+
+	let funnelKeyList = [];
+
+	const _filterList = data?.filterList;
+
+	_filterList?.forEach((ele, index) => {
+		let _filter = { id: index + 1, ...ele };
+		filterList.push(_filter);
+		funnelKeyList.push(ele?.status_ids);
+	});
+
+	return { funnelKeyList, filterList };
+};
+
+const getCacheKey = (prevDate, currDate) => {
+	const fromKey = prevDate.slice(0, 10);
+	const toKey = currDate.slice(0, 10);
+	return `${fromKey}-${toKey}`;
+};
+
+/**
+ * OnboardingDashboard component renders the dashboard for onboarding agents.
+ * It includes filters, top panel data, and a list of onboarded merchants.
+ * @component
+ * @example
+ * return (
+ *   <OnboardingDashboard />
+ * )
  */
 const OnboardingDashboard = () => {
-	const [onboardingMerchantData, setOnboardingMerchantsData] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [filterLoading, setFilterLoading] = useState(true); //to handle filter skeleton
-	const [filterStatus, setFilterStatus] = useState([]);
 	const [filterData, setFilterData] = useState([]);
-	const [pageNumber, setPageNumber] = useState(1);
+	const [onboardingMerchantData, setOnboardingMerchantsData] = useState([]);
 	const { accessToken } = useSession();
-	const [dateRange, setDateRange] = useState(7);
-	const [prevDate, setPrevDate] = useState("");
-	const [currDate, setCurrDate] = useState("");
+	const [pageNumber, setPageNumber] = useState(1);
+	const [topPanelData, setTopPanelData] = useState([]);
+	const [dateRange, setDateRange] = useState("today");
+	const { onboardingDashboardData, setOnboardingDashboardData } =
+		useDashboard();
 
-	useEffect(() => {
-		let currentDate = new Date();
-		let previousDate = new Date(
-			currentDate.getTime() - dateRange * 24 * 60 * 60 * 1000
-		);
-		setCurrDate(currentDate.toISOString());
-		setPrevDate(previousDate.toISOString());
-		setFilterStatus([]);
-	}, [dateRange]);
+	const { prevDate, currDate } = useMemo(
+		() => getDateRange(dateRange),
+		[dateRange]
+	);
 
-	useEffect(() => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri":
-					"/network/dashboard/onboarding/agent_funnel_summary",
-				"tf-req-method": "GET",
-			},
+	const [filterStatus, setFilterStatus] = useState([]);
+
+	const { funnelKeyList, filterList } = useMemo(
+		() => getModifiedFilterList(filterData),
+		[filterData]
+	);
+
+	const isAllSelected = useMemo(
+		() => funnelKeyList.flat().every((item) => filterStatus.includes(item)),
+		[funnelKeyList, filterStatus]
+	);
+
+	const isInitialLoad = useMemo(
+		() => isAllSelected && pageNumber === 1,
+		[isAllSelected, pageNumber]
+	);
+
+	const cacheKey = useMemo(
+		() => getCacheKey(prevDate, currDate),
+		[prevDate, currDate]
+	);
+
+	const [fetchOnboardingDashboardTopPanelData] = useApiFetch(
+		Endpoints.TRANSACTION_JSON,
+		{
 			body: {
-				dateFrom: prevDate.slice(0, 10),
-				dateTo: currDate.slice(0, 10),
+				interaction_type_id: 817,
+				requestPayload: {
+					Top_panel: {
+						datefrom: prevDate,
+						dateto: currDate,
+					},
+				},
+			},
+			onSuccess: (res) => {
+				const _data = res?.data?.onboarding_funnel[0] || [];
+
+				setOnboardingDashboardData((prev) => ({
+					...prev,
+					onboardedAgentsCache: {
+						...(prev.onboardedAgentsCache || {}),
+						[cacheKey]: _data,
+					},
+				}));
+
+				setTopPanelData(_data);
+			},
+		}
+	);
+
+	const [fetchOnboardingDashboardFilterData, filterLoading] = useApiFetch(
+		Endpoints.TRANSACTION,
+		{
+			body: {
+				interaction_type_id: 683,
 			},
 			token: accessToken,
-		}).then((res) => {
-			const _onboardingFilterList = res?.data?.onboarding_funnel;
-			const _onboardingFunnelTotal = res?.data?.totalrecord;
-			setFilterData({
-				onboardingFunnelTotal: _onboardingFunnelTotal,
-				filterList: _onboardingFilterList,
-			});
-		});
-	}, [prevDate]);
+			onSuccess: (res) => {
+				const _onboardingFilterList = res?.data?.onboarding_funnel;
+				const _onboardingFunnelTotal = res?.data?.totalRecords;
 
-	useEffect(() => {
-		const controller = new AbortController();
+				setOnboardingDashboardData((prev) => ({
+					...prev,
+					filterCache: {
+						...(prev.filterCache || {}),
+						[ONBOARDING_DASHBOARD_FILTERS_CACHE_KEY]: {
+							onboardingFunnelTotal: _onboardingFunnelTotal,
+							filterList: _onboardingFilterList,
+						},
+					},
+				}));
 
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri":
-					"/network/dashboard/onboarding/agent_funnel_details",
-				"tf-req-method": "GET",
+				setFilterData({
+					onboardingFunnelTotal: _onboardingFunnelTotal,
+					filterList: _onboardingFilterList,
+				});
 			},
+		}
+	);
+
+	const [fetchOnboardingAgentsData, isLoading] = useApiFetch(
+		Endpoints.TRANSACTION,
+		{
 			body: {
+				interaction_type_id: 727,
 				record_count: 10,
 				account_status: `${filterStatus}`,
 				page_number: pageNumber,
-				dateFrom: prevDate.slice(0, 10),
-				dateTo: currDate.slice(0, 10),
 			},
-			controller: controller,
-			token: accessToken,
-		})
-			.then((res) => {
+			onSuccess: (res) => {
 				const _data = res?.data?.onboarding_funnel || [];
 				const _totalRecords = res?.data?.totalRecords;
+
+				if (isInitialLoad) {
+					setOnboardingDashboardData((prev) => ({
+						...prev,
+						agentsCache: {
+							...(prev.agentsCache || {}),
+							default: {
+								tableData: _data,
+								totalRecords: _totalRecords,
+							},
+						},
+					}));
+				}
+
 				setOnboardingMerchantsData({
 					tableData: _data,
 					totalRecords: _totalRecords,
 				});
+			},
+		}
+	);
 
-				if (filterLoading) setFilterLoading(false);
-			})
-			.catch((err) => {
-				console.error(`[OnboardingDashboard] error: `, err);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
+	useEffect(() => {
+		if (
+			onboardingDashboardData?.filterCache?.[
+				ONBOARDING_DASHBOARD_FILTERS_CACHE_KEY
+			]
+		) {
+			setFilterData(
+				onboardingDashboardData.filterCache[
+					ONBOARDING_DASHBOARD_FILTERS_CACHE_KEY
+				]
+			);
+		} else {
+			fetchOnboardingDashboardFilterData();
+		}
+	}, []);
 
-		return () => {
-			setIsLoading(true);
-			controller.abort();
-		};
-	}, [filterStatus, pageNumber, prevDate]);
+	useEffect(() => {
+		setFilterStatus(funnelKeyList);
+	}, [funnelKeyList]);
+
+	useEffect(() => {
+		if (prevDate && currDate) {
+			if (onboardingDashboardData?.onboardedAgentsCache?.[cacheKey]) {
+				setTopPanelData(
+					onboardingDashboardData.onboardedAgentsCache[cacheKey]
+				);
+			} else {
+				fetchOnboardingDashboardTopPanelData();
+			}
+		}
+	}, [currDate, prevDate, onboardingDashboardData]);
+
+	useEffect(() => {
+		if (!filterStatus?.length) return;
+		if (isInitialLoad && onboardingDashboardData?.agentsCache?.default) {
+			setOnboardingMerchantsData(
+				onboardingDashboardData.agentsCache.default
+			);
+		} else {
+			fetchOnboardingAgentsData();
+		}
+	}, [filterStatus, pageNumber]);
+
+	const onboardedAgents = [
+		{
+			key: "totalRetailers",
+			label: "Retailers Onboarded",
+			value: topPanelData?.totalRetailers?.totalRetailers,
+			type: "number",
+			variation: topPanelData?.totalRetailers?.increaseOrDecrease,
+			icon: "people",
+		},
+		{
+			key: "totalDistributors",
+			label: "Distributors Onboarded",
+			value: topPanelData?.totalDistributors?.totalDistributors,
+			type: "number",
+			variation: topPanelData?.totalDistributors?.increaseOrDecrease,
+			icon: "refer",
+		},
+	];
 
 	return (
-		<Flex direction="column">
-			<Flex p={{ base: "20px 20px 0", md: "0 20px 20px" }}>
-				<DashboardDateFilter
-					{...{ prevDate, currDate, dateRange, setDateRange }}
-				/>
-			</Flex>
+		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
+			<DashboardDateFilter
+				{...{ prevDate, currDate, dateRange, setDateRange }}
+			/>
 
-			<Flex px={{ base: "0px", md: "20px" }}>
-				<OnboardingDashboardFilters
-					{...{
-						filterLoading,
-						filterData,
-						filterStatus,
-						setFilterStatus,
-					}}
-				/>
-			</Flex>
-			<Flex p="20px">
-				<OnboardedMerchants
-					{...{
-						onboardingMerchantData,
-						pageNumber,
-						setPageNumber,
-						isLoading,
-					}}
-				/>
+			<TopPanel panelDataList={onboardedAgents} />
+
+			<Flex direction="column" gap="2">
+				<Text fontSize="xl" fontWeight="semibold">
+					Onboarding Agents
+				</Text>
+
+				<Flex
+					direction="column"
+					bg="white"
+					borderRadius="10"
+					p={{ base: "20px", md: "0px" }}
+				>
+					<OnboardingDashboardFilters
+						{...{
+							filterLoading,
+							filterList,
+							funnelKeyList,
+							filterStatus,
+							setFilterStatus,
+						}}
+					/>
+
+					{/* show "Nothing Found", if onboardingMerchantData is empty */}
+					{!isLoading &&
+					!onboardingMerchantData?.tableData?.length ? (
+						<Flex
+							direction="column"
+							align="center"
+							mt={{ base: "2", md: "0" }}
+							mb={{ base: "2", md: "8" }}
+						>
+							<Text color="light">Nothing Found</Text>
+						</Flex>
+					) : (
+						<OnboardedMerchants
+							{...{
+								onboardingMerchantData,
+								pageNumber,
+								setPageNumber,
+								isLoading,
+							}}
+						/>
+					)}
+				</Flex>
 			</Flex>
 		</Flex>
 	);
