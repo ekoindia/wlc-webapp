@@ -1,11 +1,15 @@
 import { Flex, Grid } from "@chakra-ui/react";
-import { Endpoints, ProductRoleConfiguration, UserTypeLabel } from "constants";
+import {
+	Endpoints,
+	ProductRoleConfiguration,
+	UserTypeIcon,
+	UserTypeLabel,
+} from "constants";
 import { useUser } from "contexts";
 import { useApiFetch, useDailyCacheState } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { EarningOverview, SuccessRate, TopMerchants } from ".";
 import { DashboardDateFilter, getDateRange, TopPanel } from "..";
-import { UserTypeIcon } from "constants";
 
 const ACTIVE_AGENTS_CACHE_KEY = "inf-dashboard-active-agents";
 
@@ -48,8 +52,9 @@ const BusinessDashboard = () => {
 		const filteredProducts = productListWithRoleList
 			.filter((product) =>
 				product.roles.some((role) => role_list.includes(role))
-			)
+			) // Filter products based on role_list
 			.filter((product) => product.tx_typeid !== undefined) // Ensure tx_typeid is present
+			.filter((product) => product.isFinancial !== false) // Exclude non-financial products
 			.map((product) => ({
 				label: product.label,
 				value: product.tx_typeid,
