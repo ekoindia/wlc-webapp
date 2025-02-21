@@ -27,3 +27,10 @@ export const UserTypeLabel = {
 	24: "Organization Admin",
 	25: "Organization Employee",
 };
+
+export const UserTypeIcon = {
+	1: "refer", // Distributor
+	2: "people", // Retailer
+	3: "person", // I-Merchant
+	4: "directions-walk", // FOS / CCE / Cash Executive / EkoStar?
+};
