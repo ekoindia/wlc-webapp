@@ -227,7 +227,7 @@ const OnboardingDashboard = () => {
 		{
 			key: "totalRetailers",
 			label: "Retailers Onboarded",
-			value: topPanelData?.totalRetailers?.totalRetailers,
+			value: topPanelData?.totalRetailers?.totalRetailers ?? 0,
 			type: "number",
 			variation: topPanelData?.totalRetailers?.increaseOrDecrease,
 			icon: "people",
@@ -235,7 +235,7 @@ const OnboardingDashboard = () => {
 		{
 			key: "totalDistributors",
 			label: "Distributors Onboarded",
-			value: topPanelData?.totalDistributors?.totalDistributors,
+			value: topPanelData?.totalDistributors?.totalDistributors ?? 0,
 			type: "number",
 			variation: topPanelData?.totalDistributors?.increaseOrDecrease,
 			icon: "refer",
