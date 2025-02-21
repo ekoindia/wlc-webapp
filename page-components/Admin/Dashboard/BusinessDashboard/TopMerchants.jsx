@@ -97,7 +97,7 @@ const TopMerchants = ({
 
 				setTopMerchantsData(_data);
 
-				if (isToday(dateTo)) {
+				if (isToday(dateFrom) && isToday(dateTo)) {
 					setCachedDate({ dateFrom, dateTo });
 				}
 			},
