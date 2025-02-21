@@ -692,7 +692,7 @@ export const ProductRoleConfiguration = {
 			label: "Payment Gateway",
 			roles: [14000, 26000, 41000, 42000, 44000, 46000, 49500],
 			canDisable: true,
-			isFinancial: false,
+			isFinancial: true,
 		},
 		{
 			trxn_id: 995,
@@ -715,7 +715,7 @@ export const ProductRoleConfiguration = {
 			tx_typeid: 149,
 			label: "Account Verification",
 			roles: [49200, 49300],
-			canDisable: true,
+			canDisable: false,
 			isFinancial: false,
 		},
 		{
@@ -723,7 +723,7 @@ export const ProductRoleConfiguration = {
 			tx_typeid: 785,
 			label: "Neobank Account Verification",
 			roles: [37400],
-			canDisable: true,
+			canDisable: false,
 			isFinancial: false,
 		},
 		{
@@ -731,7 +731,7 @@ export const ProductRoleConfiguration = {
 			tx_typeid: 1,
 			label: "Deposit",
 			roles: [4200, 5100, 5300, 5301, 8700, 9600, 10100, 49000, 49100],
-			canDisable: true,
+			canDisable: false,
 			isFinancial: false,
 		},
 	],
