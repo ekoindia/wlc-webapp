@@ -105,6 +105,8 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 			return;
 		}
 
+		const _typeid = productFilter ? { typeid: productFilter } : {};
+
 		// Fetch data if not cached
 		fetchTopMerchantsOverviewData({
 			body: {
@@ -113,7 +115,7 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 					gtv_top_merchants: {
 						datefrom: dateFrom,
 						dateto: dateTo,
-						typeid: productFilter,
+						..._typeid,
 					},
 				},
 			},

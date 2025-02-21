@@ -78,6 +78,8 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 			return;
 		}
 
+		const _typeid = productFilter ? { typeid: productFilter } : {};
+
 		// Fetch data only when not cached
 		fetchEarningOverviewData({
 			body: {
@@ -86,7 +88,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 					products_overview: {
 						datefrom: dateFrom,
 						dateto: dateTo,
-						typeid: productFilter,
+						..._typeid,
 					},
 				},
 			},
