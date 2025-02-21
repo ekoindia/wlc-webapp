@@ -56,6 +56,8 @@ const topMerchantsTableParameterList = [
  * @param {Array} props.productFilterList - List of product filters.
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
+ * @param props.setCachedDate
+ * @param props.cachedDate
  * @example
  * <TopMerchants
  *   dateFrom="2023-01-01"
@@ -63,7 +65,13 @@ const topMerchantsTableParameterList = [
  *   productFilterList={[{ label: "Product 1", value: "81" }]}
  * />
  */
-const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
+const TopMerchants = ({
+	dateFrom,
+	dateTo,
+	productFilterList,
+	cachedDate,
+	setCachedDate,
+}) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]);
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
@@ -88,6 +96,10 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 				}));
 
 				setTopMerchantsData(_data);
+
+				if (isToday(dateTo)) {
+					setCachedDate({ dateFrom, dateTo });
+				}
 			},
 		}
 	);
@@ -113,8 +125,8 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 				interaction_type_id: 682,
 				requestPayload: {
 					gtv_top_merchants: {
-						datefrom: dateFrom,
-						dateto: dateTo,
+						datefrom: cachedDate?.dateFrom ?? dateFrom,
+						dateto: cachedDate?.dateTo ?? dateTo,
 						..._typeid,
 					},
 				},
