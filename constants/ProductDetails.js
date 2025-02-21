@@ -682,7 +682,7 @@ export const ProductRoleConfiguration = {
 			label: "Product Store",
 			roles: [7400],
 			canDisable: true,
-			isFinancial: true,
+			isFinancial: false,
 		},
 
 		// New products
@@ -700,7 +700,7 @@ export const ProductRoleConfiguration = {
 			label: "Fund Transfer", // Fund Settlement No
 			roles: [37400],
 			canDisable: true,
-			isFinancial: false,
+			isFinancial: true,
 		},
 		{
 			trxn_id: 66,
@@ -732,7 +732,7 @@ export const ProductRoleConfiguration = {
 			label: "Deposit",
 			roles: [4200, 5100, 5300, 5301, 8700, 9600, 10100, 49000, 49100],
 			canDisable: false,
-			isFinancial: false,
+			isFinancial: true,
 		},
 	],
 	evalue: [
