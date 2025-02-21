@@ -24,11 +24,12 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 		businessDashboardData?.successRateCache?.[cacheKey];
 
 	const updateSuccessRateCache = (_successRate) => {
+		// Always store something in the cache (even if empty)
 		const updatedCache = {
 			...(successRateCache || {}),
 			data: {
 				...(successRateCache?.data || {}),
-				[cacheKey]: _successRate,
+				[cacheKey]: _successRate.length ? _successRate : [], // Store empty array if no data
 			},
 		};
 
@@ -44,6 +45,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			const _data = res?.data?.dashboard_object?.successRate || {};
 			const _product = ProductRoleConfiguration?.products ?? [];
 
+			// Check if _data has any success rate data
 			const _successRate = _product
 				.filter((p) => p.tx_typeid && _data[p.tx_typeid])
 				.map((p) => {
@@ -69,9 +71,11 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 						value: successRate,
 					};
 				})
-				.filter(Boolean);
+				.filter(Boolean); // Remove null values
 
-			updateSuccessRateCache(_successRate);
+			// If _successRate is empty, store [] instead of undefined
+			updateSuccessRateCache(_successRate.length ? _successRate : []);
+
 			setSuccessRateData(_successRate);
 		},
 	});
@@ -79,14 +83,16 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
-		if (cachedSuccessRate) {
+		if (cachedSuccessRate !== undefined) {
+			// Cache exists, even if empty
 			setSuccessRateData(cachedSuccessRate);
 			return;
 		}
 
-		if (isCacheValid && successRateCache?.data?.[cacheKey]) {
+		if (isCacheValid && successRateCache?.data?.[cacheKey]?.length) {
 			updateSuccessRateCache(successRateCache.data[cacheKey]);
 			setSuccessRateData(successRateCache.data[cacheKey]);
+
 			return;
 		}
 
