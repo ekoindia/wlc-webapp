@@ -3,7 +3,7 @@ import { Table } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
-import { useDashboard } from "..";
+import { isToday, useDashboard } from "..";
 
 // Helper function to generate cache key
 const getCacheKey = (productFilter, dateFrom, dateTo) => {
@@ -119,14 +119,16 @@ const TopMerchants = ({
 
 		const _typeid = productFilter ? { typeid: productFilter } : {};
 
+		const _today = isToday(dateTo);
+
 		// Fetch data if not cached
 		fetchTopMerchantsOverviewData({
 			body: {
 				interaction_type_id: 682,
 				requestPayload: {
 					gtv_top_merchants: {
-						datefrom: cachedDate?.dateFrom ?? dateFrom,
-						dateto: cachedDate?.dateTo ?? dateTo,
+						datefrom: _today ? cachedDate?.dateFrom : dateFrom,
+						dateto: _today ? cachedDate?.dateTo : dateTo,
 						..._typeid,
 					},
 				},
