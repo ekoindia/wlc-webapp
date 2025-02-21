@@ -3,7 +3,7 @@ import { Currency, Icon } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
 import React, { useEffect, useState } from "react";
-import { useDashboard } from "..";
+import { isToday, useDashboard } from "..";
 
 // Helper function to generate cache key
 const getCacheKey = (productFilter, dateFrom, dateTo) => {
@@ -33,6 +33,8 @@ const calculateVariation = (current, lastMonth) => {
  * @param {Array} props.productFilterList - List of product filters.
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
+ * @param props.setCachedDate
+ * @param props.cachedDate
  * @example
  * <EarningOverview
  *   dateFrom="2023-01-01"
@@ -40,7 +42,13 @@ const calculateVariation = (current, lastMonth) => {
  *   productFilterList={[{ label: "Product 1", value: "81" }]}
  * />
  */
-const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
+const EarningOverview = ({
+	dateFrom,
+	dateTo,
+	productFilterList,
+	cachedDate,
+	setCachedDate = () => {},
+}) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
@@ -62,6 +70,10 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 			}));
 
 			setEarningOverviewData(_data);
+
+			if (isToday(dateTo)) {
+				setCachedDate({ dateFrom, dateTo });
+			}
 		},
 	});
 
@@ -78,15 +90,17 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 			return;
 		}
 
+		const _typeid = productFilter ? { typeid: productFilter } : {};
+
 		// Fetch data only when not cached
 		fetchEarningOverviewData({
 			body: {
 				interaction_type_id: 682,
 				requestPayload: {
 					products_overview: {
-						datefrom: dateFrom,
-						dateto: dateTo,
-						typeid: productFilter,
+						datefrom: cachedDate?.dateFrom ?? dateFrom,
+						dateto: cachedDate?.dateTo ?? dateTo,
+						..._typeid,
 					},
 				},
 			},
