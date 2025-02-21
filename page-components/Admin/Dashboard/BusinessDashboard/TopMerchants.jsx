@@ -97,7 +97,12 @@ const TopMerchants = ({
 
 				setTopMerchantsData(_data);
 
-				if (isToday(dateFrom) && isToday(dateTo)) {
+				if (
+					cachedDate?.dateFrom &&
+					cachedDate?.dateTo &&
+					isToday(dateFrom) &&
+					isToday(dateTo)
+				) {
 					setCachedDate({ dateFrom, dateTo });
 				}
 			},
@@ -119,7 +124,11 @@ const TopMerchants = ({
 
 		const _typeid = productFilter ? { typeid: productFilter } : {};
 
-		const _today = isToday(dateTo);
+		const _today =
+			cachedDate?.dateFrom &&
+			cachedDate?.dateTo &&
+			isToday(dateFrom) &&
+			isToday(dateTo);
 
 		// Fetch data if not cached
 		fetchTopMerchantsOverviewData({

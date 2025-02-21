@@ -71,7 +71,12 @@ const EarningOverview = ({
 
 			setEarningOverviewData(_data);
 
-			if (isToday(dateTo)) {
+			if (
+				cachedDate?.dateFrom &&
+				cachedDate?.dateTo &&
+				isToday(dateFrom) &&
+				isToday(dateTo)
+			) {
 				setCachedDate({ dateFrom, dateTo });
 			}
 		},
@@ -92,7 +97,11 @@ const EarningOverview = ({
 
 		const _typeid = productFilter ? { typeid: productFilter } : {};
 
-		const _today = isToday(dateFrom) && isToday(dateTo);
+		const _today =
+			cachedDate?.dateFrom &&
+			cachedDate?.dateTo &&
+			isToday(dateFrom) &&
+			isToday(dateTo);
 
 		// Fetch data only when not cached
 		fetchEarningOverviewData({
