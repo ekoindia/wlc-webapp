@@ -23,7 +23,7 @@ const topMerchantsTableParameterList = [
 	},
 	{
 		name: "totalTransactions",
-		label: "Total\nTransaction",
+		label: "Transaction\nCount",
 		sorting: true,
 	},
 	{
