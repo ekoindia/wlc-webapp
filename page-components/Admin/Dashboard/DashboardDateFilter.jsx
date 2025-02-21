@@ -10,7 +10,7 @@ const _dateFilterList = [
 	{ id: 3, value: "last30", label: "Last 30 Days" },
 ];
 
-const isToday = (date) => {
+export const isToday = (date) => {
 	const today = new Date();
 	const givenDate = new Date(date);
 	return (
@@ -26,10 +26,12 @@ const DashboardDateFilter = ({
 	currDate,
 	dateRange,
 	setDateRange,
+	cachedDate,
 }) => {
 	const _prevDate = prevDate;
 	const _currDate = currDate;
 	const isSameDay = _prevDate.slice(0, 10) === _currDate.slice(0, 10);
+	const _cachedDate = cachedDate?.dateTo;
 
 	// Check if current date is equal to today
 	const isCurrentDateToday = isToday(_currDate);
@@ -57,8 +59,8 @@ const DashboardDateFilter = ({
 								{" "}
 								till{" "}
 								<DateView
-									date={_currDate}
-									format="HH:mm"
+									date={_cachedDate ?? _currDate}
+									format="hh:mm a"
 									fontWeight="medium"
 								/>
 							</>
@@ -84,7 +86,7 @@ const DashboardDateFilter = ({
 								till{" "}
 								<DateView
 									date={_currDate}
-									format="HH:mm"
+									format="hh:mm a"
 									fontWeight="medium"
 								/>
 							</>
