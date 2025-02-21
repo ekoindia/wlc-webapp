@@ -1,5 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Endpoints } from "constants";
+import { Endpoints, UserTypeIcon, UserTypeLabel } from "constants";
 import { useSession } from "contexts";
 import { useApiFetch } from "hooks";
 import { useEffect, useMemo, useState } from "react";
@@ -56,7 +56,8 @@ const OnboardingDashboard = () => {
 	const [onboardingMerchantData, setOnboardingMerchantsData] = useState([]);
 	const { accessToken } = useSession();
 	const [pageNumber, setPageNumber] = useState(1);
-	const [topPanelData, setTopPanelData] = useState([]);
+	const [onboardingAgentsTopPanelData, setOnboardingAgentsTopPanelData] =
+		useState([]);
 	const [dateRange, setDateRange] = useState("today");
 	const { onboardingDashboardData, setOnboardingDashboardData } =
 		useDashboard();
@@ -88,7 +89,7 @@ const OnboardingDashboard = () => {
 		[prevDate, currDate]
 	);
 
-	const [fetchOnboardingDashboardTopPanelData] = useApiFetch(
+	const [fetchOnboardingAgentsTopPanelData] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
 			body: {
@@ -102,16 +103,18 @@ const OnboardingDashboard = () => {
 			},
 			onSuccess: (res) => {
 				const _data = res?.data?.onboarding_funnel[0] || [];
+				const onboardedAgentsList =
+					transformOnboardingAgentsData(_data);
 
 				setOnboardingDashboardData((prev) => ({
 					...prev,
 					onboardedAgentsCache: {
 						...(prev.onboardedAgentsCache || {}),
-						[cacheKey]: _data,
+						[cacheKey]: onboardedAgentsList,
 					},
 				}));
 
-				setTopPanelData(_data);
+				setOnboardingAgentsTopPanelData(onboardedAgentsList);
 			},
 		}
 	);
@@ -203,11 +206,11 @@ const OnboardingDashboard = () => {
 	useEffect(() => {
 		if (prevDate && currDate) {
 			if (onboardingDashboardData?.onboardedAgentsCache?.[cacheKey]) {
-				setTopPanelData(
+				setOnboardingAgentsTopPanelData(
 					onboardingDashboardData.onboardedAgentsCache[cacheKey]
 				);
 			} else {
-				fetchOnboardingDashboardTopPanelData();
+				fetchOnboardingAgentsTopPanelData();
 			}
 		}
 	}, [currDate, prevDate, onboardingDashboardData]);
@@ -223,32 +226,13 @@ const OnboardingDashboard = () => {
 		}
 	}, [filterStatus, pageNumber]);
 
-	const onboardedAgents = [
-		{
-			key: "totalRetailers",
-			label: "Retailers Onboarded",
-			value: topPanelData?.totalRetailers?.totalRetailers ?? 0,
-			type: "number",
-			variation: topPanelData?.totalRetailers?.increaseOrDecrease,
-			icon: "people",
-		},
-		{
-			key: "totalDistributors",
-			label: "Distributors Onboarded",
-			value: topPanelData?.totalDistributors?.totalDistributors ?? 0,
-			type: "number",
-			variation: topPanelData?.totalDistributors?.increaseOrDecrease,
-			icon: "refer",
-		},
-	];
-
 	return (
 		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
 			<DashboardDateFilter
 				{...{ prevDate, currDate, dateRange, setDateRange }}
 			/>
 
-			<TopPanel panelDataList={onboardedAgents} />
+			<TopPanel panelDataList={onboardingAgentsTopPanelData} />
 
 			<Flex direction="column" gap="2">
 				<Text fontSize="xl" fontWeight="semibold">
@@ -299,3 +283,30 @@ const OnboardingDashboard = () => {
 };
 
 export default OnboardingDashboard;
+
+/**
+ * Transforms API response into a format compatible with the component.
+ * @param {object} apiData - The raw data from the API response.
+ * @returns {Array} A formatted array of objects for rendering.
+ */
+const transformOnboardingAgentsData = (apiData) => {
+	if (!apiData || typeof apiData !== "object") return [];
+
+	return Object.entries(apiData)
+		.map(([key, data]) => {
+			const userType = UserTypeLabel[key]; // Get label from mapping
+			const userTypeIcon = UserTypeIcon[key];
+			if (!userType) return null; // Ignore unknown user types
+
+			return {
+				key: `onboarded${userType.replace(/\s+/g, "")}`, // Convert to camelCase
+				label: `${userType}(s) Onboarded`,
+				value: parseInt(data.totalCount, 10), // Ensure numeric value
+				type: "number",
+				// variation: `${(data.activecount / data.totalcount) * 100}`,
+				// info: `of ${data.totalcount} Total`,
+				icon: userTypeIcon ?? "person",
+			};
+		})
+		.filter(Boolean); // Remove null values
+};
