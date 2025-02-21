@@ -92,14 +92,16 @@ const EarningOverview = ({
 
 		const _typeid = productFilter ? { typeid: productFilter } : {};
 
+		const _today = isToday(dateTo);
+
 		// Fetch data only when not cached
 		fetchEarningOverviewData({
 			body: {
 				interaction_type_id: 682,
 				requestPayload: {
 					products_overview: {
-						datefrom: cachedDate?.dateFrom ?? dateFrom,
-						dateto: cachedDate?.dateTo ?? dateTo,
+						datefrom: _today ? cachedDate?.dateFrom : dateFrom,
+						dateto: _today ? cachedDate?.dateTo : dateTo,
 						..._typeid,
 					},
 				},
