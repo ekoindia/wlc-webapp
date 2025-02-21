@@ -92,7 +92,6 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 		if (isCacheValid && successRateCache?.data?.[cacheKey]?.length) {
 			updateSuccessRateCache(successRateCache.data[cacheKey]);
 			setSuccessRateData(successRateCache.data[cacheKey]);
-
 			return;
 		}
 
