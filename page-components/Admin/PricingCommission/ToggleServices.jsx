@@ -1,26 +1,26 @@
 import {
-	Flex,
+	AlertDialog,
+	AlertDialogBody,
+	AlertDialogContent,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogOverlay,
 	Box,
+	Flex,
+	Grid,
+	ListItem,
 	Switch,
 	Text,
-	Grid,
-	useToast,
-	AlertDialog,
-	AlertDialogOverlay,
-	AlertDialogContent,
-	AlertDialogHeader,
-	AlertDialogBody,
-	AlertDialogFooter,
 	UnorderedList,
-	ListItem,
+	useToast,
 } from "@chakra-ui/react";
 import { Button } from "components";
 import { createSupportTicket } from "helpers";
 // import useHslColor from "hooks/useHslColor";
-import { useMenuContext, useSession, useOrgDetailContext } from "contexts";
-import { useRouter } from "next/router";
-import { useEffect, useState, useRef } from "react";
 import { ProductRoleConfiguration } from "constants";
+import { useMenuContext, useOrgDetailContext, useSession } from "contexts";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 const TAT = "1";
@@ -549,7 +549,7 @@ const ApplyChangesAlert = ({
 const getServiceList = (products, role_tx_list) => {
 	const _serviceList = [];
 	products.forEach((product) => {
-		if (!product.roles) return;
+		if (!product.roles || !product.canDisable) return; // Skip products without roles or cannot be disabled
 		if (product.roles.length && product.trxn_id) {
 			const available = product.trxn_id in role_tx_list;
 			_serviceList.push({
