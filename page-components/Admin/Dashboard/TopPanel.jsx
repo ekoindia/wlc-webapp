@@ -40,7 +40,9 @@ const TopPanel = ({ panelDataList }) => {
 			}}
 		>
 			{panelDataList
-				?.filter((item) => item.value) // Filters out null, undefined, and 0
+				?.filter(
+					(item) => item.value !== null && item.value !== undefined
+				)
 				.map((item, index) => (
 					<Flex
 						key={item.key}
