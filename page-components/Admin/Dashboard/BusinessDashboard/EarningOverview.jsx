@@ -33,8 +33,6 @@ const calculateVariation = (current, lastMonth) => {
  * @param {Array} props.productFilterList - List of product filters.
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
- * @param props.setCachedDate
- * @param props.cachedDate
  * @example
  * <EarningOverview
  *   dateFrom="2023-01-01"
