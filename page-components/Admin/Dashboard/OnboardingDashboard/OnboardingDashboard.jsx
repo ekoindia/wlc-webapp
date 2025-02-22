@@ -102,7 +102,12 @@ const OnboardingDashboard = () => {
 				},
 			},
 			onSuccess: (res) => {
-				const _data = res?.data?.onboarding_funnel[0] || [];
+				const defaultData = {
+					1: { totalCount: 0, lastPeriod: 0 },
+					2: { totalCount: 0, lastPeriod: 0 },
+				};
+
+				const _data = res?.data?.onboarding_funnel?.[0] || defaultData;
 				const onboardedAgentsList =
 					transformOnboardingAgentsData(_data);
 

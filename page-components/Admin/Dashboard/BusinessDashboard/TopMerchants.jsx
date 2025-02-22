@@ -45,11 +45,7 @@ const topMerchantsTableParameterList = [
 
 // Helper function to generate cache key
 const getCacheKey = (productFilter, dateFrom, dateTo) => {
-	// Extract only the date portion (first 10 characters: "YYYY-MM-DD")
-	const fromKey = dateFrom.slice(0, 10);
-	const toKey = dateTo.slice(0, 10);
-
-	return `${productFilter || "all"}-${fromKey}-${toKey}`;
+	return `${productFilter || "all"}-${dateFrom}-${dateTo}`;
 };
 
 /**
