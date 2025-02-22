@@ -13,6 +13,7 @@ const DashboardContext = createContext(undefined);
  * @returns {JSX.Element} The provider component.
  */
 const DashboardProvider = ({ children }) => {
+	const [cachedTodaysDateTo, setCachedTodaysDateTo] = useState(null);
 	const [businessDashboardData, setBusinessDashboardData] = useState({});
 	const [onboardingDashboardData, setOnboardingDashboardData] = useState({});
 
@@ -23,6 +24,8 @@ const DashboardProvider = ({ children }) => {
 				setBusinessDashboardData,
 				onboardingDashboardData,
 				setOnboardingDashboardData,
+				cachedTodaysDateTo,
+				setCachedTodaysDateTo,
 			}}
 		>
 			{children}
