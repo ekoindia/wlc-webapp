@@ -29,7 +29,7 @@ const DashboardDateFilter = ({
 }) => {
 	const _prevDate = prevDate;
 	const _currDate = currDate;
-	const isSameDay = _prevDate.slice(0, 10) === _currDate.slice(0, 10);
+	const isSameDay = _prevDate?.slice(0, 10) === _currDate?.slice(0, 10);
 
 	// Check if current date is equal to today
 	const isCurrentDateToday = isToday(_currDate);
