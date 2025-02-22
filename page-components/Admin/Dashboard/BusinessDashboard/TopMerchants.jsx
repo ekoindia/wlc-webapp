@@ -3,14 +3,7 @@ import { Table } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
-import { isToday, useDashboard } from "..";
-
-// Helper function to generate cache key
-const getCacheKey = (productFilter, dateFrom, dateTo) => {
-	const fromKey = dateFrom.slice(0, 10); // Extract "YYYY-MM-DD"
-	const toKey = dateTo.slice(0, 10);
-	return `${productFilter || "all"}-${fromKey}-${toKey}`;
-};
+import { useDashboard } from "..";
 
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
@@ -50,6 +43,15 @@ const topMerchantsTableParameterList = [
 	},
 ];
 
+// Helper function to generate cache key
+const getCacheKey = (productFilter, dateFrom, dateTo) => {
+	// Extract only the date portion (first 10 characters: "YYYY-MM-DD")
+	const fromKey = dateFrom.slice(0, 10);
+	const toKey = dateTo.slice(0, 10);
+
+	return `${productFilter || "all"}-${fromKey}-${toKey}`;
+};
+
 /**
  * TopMerchants component displays a table of top merchants based on GTV.
  * @param {object} props - Properties passed to the component.
@@ -65,13 +67,7 @@ const topMerchantsTableParameterList = [
  *   productFilterList={[{ label: "Product 1", value: "81" }]}
  * />
  */
-const TopMerchants = ({
-	dateFrom,
-	dateTo,
-	productFilterList,
-	cachedDate,
-	setCachedDate,
-}) => {
+const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]);
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
@@ -86,25 +82,21 @@ const TopMerchants = ({
 
 				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
 
-				// Cache the data
-				setBusinessDashboardData((prev) => ({
-					...prev,
-					topMerchantsCache: {
-						...(prev.topMerchantsCache || {}),
-						[cacheKey]: _data,
-					},
-				}));
+				// Prevent unnecessary re-renders by checking existing data
+				setBusinessDashboardData((prev) => {
+					if (prev.topMerchantsCache?.[cacheKey]) {
+						return prev; // Skip update if already cached
+					}
+					return {
+						...prev,
+						topMerchantsCache: {
+							...(prev.topMerchantsCache || {}),
+							[cacheKey]: _data,
+						},
+					};
+				});
 
 				setTopMerchantsData(_data);
-
-				if (
-					cachedDate?.dateFrom &&
-					cachedDate?.dateTo &&
-					isToday(dateFrom) &&
-					isToday(dateTo)
-				) {
-					setCachedDate({ dateFrom, dateTo });
-				}
 			},
 		}
 	);
@@ -124,26 +116,19 @@ const TopMerchants = ({
 
 		const _typeid = productFilter ? { typeid: productFilter } : {};
 
-		const _today =
-			cachedDate?.dateFrom &&
-			cachedDate?.dateTo &&
-			isToday(dateFrom) &&
-			isToday(dateTo);
-
-		// Fetch data if not cached
 		fetchTopMerchantsOverviewData({
 			body: {
 				interaction_type_id: 682,
 				requestPayload: {
 					gtv_top_merchants: {
-						datefrom: _today ? cachedDate?.dateFrom : dateFrom,
-						dateto: _today ? cachedDate?.dateTo : dateTo,
+						datefrom: dateFrom,
+						dateto: dateTo,
 						..._typeid,
 					},
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter, businessDashboardData]);
+	}, [dateFrom, dateTo, productFilter]);
 
 	return (
 		<Flex
@@ -184,11 +169,9 @@ const TopMerchants = ({
 			<Flex direction="column">
 				{topMerchantsData?.length > 0 ? (
 					<Table
-						{...{
-							data: topMerchantsData,
-							renderer: topMerchantsTableParameterList,
-							isLoading,
-						}}
+						data={topMerchantsData}
+						renderer={topMerchantsTableParameterList}
+						isLoading={isLoading}
 					/>
 				) : (
 					<Text

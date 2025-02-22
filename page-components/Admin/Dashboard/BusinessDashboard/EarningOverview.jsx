@@ -3,7 +3,7 @@ import { Currency, Icon } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
 import React, { useEffect, useState } from "react";
-import { isToday, useDashboard } from "..";
+import { useDashboard } from "..";
 
 // Helper function to generate cache key
 const getCacheKey = (productFilter, dateFrom, dateTo) => {
@@ -42,13 +42,7 @@ const calculateVariation = (current, lastMonth) => {
  *   productFilterList={[{ label: "Product 1", value: "81" }]}
  * />
  */
-const EarningOverview = ({
-	dateFrom,
-	dateTo,
-	productFilterList,
-	cachedDate,
-	setCachedDate = () => {},
-}) => {
+const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
@@ -70,15 +64,6 @@ const EarningOverview = ({
 			}));
 
 			setEarningOverviewData(_data);
-
-			if (
-				cachedDate?.dateFrom &&
-				cachedDate?.dateTo &&
-				isToday(dateFrom) &&
-				isToday(dateTo)
-			) {
-				setCachedDate({ dateFrom, dateTo });
-			}
 		},
 	});
 
@@ -97,26 +82,20 @@ const EarningOverview = ({
 
 		const _typeid = productFilter ? { typeid: productFilter } : {};
 
-		const _today =
-			cachedDate?.dateFrom &&
-			cachedDate?.dateTo &&
-			isToday(dateFrom) &&
-			isToday(dateTo);
-
 		// Fetch data only when not cached
 		fetchEarningOverviewData({
 			body: {
 				interaction_type_id: 682,
 				requestPayload: {
 					products_overview: {
-						datefrom: _today ? cachedDate?.dateFrom : dateFrom,
-						dateto: _today ? cachedDate?.dateTo : dateTo,
+						datefrom: dateFrom,
+						dateto: dateTo,
 						..._typeid,
 					},
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter, businessDashboardData]);
+	}, [dateFrom, dateTo, productFilter]);
 
 	const earningOverviewList = [
 		{
