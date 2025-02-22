@@ -26,12 +26,10 @@ const DashboardDateFilter = ({
 	currDate,
 	dateRange,
 	setDateRange,
-	cachedDate,
 }) => {
 	const _prevDate = prevDate;
 	const _currDate = currDate;
 	const isSameDay = _prevDate.slice(0, 10) === _currDate.slice(0, 10);
-	const _cachedDate = cachedDate?.dateTo;
 
 	// Check if current date is equal to today
 	const isCurrentDateToday = isToday(_currDate);
@@ -59,7 +57,7 @@ const DashboardDateFilter = ({
 								{" "}
 								till{" "}
 								<DateView
-									date={_cachedDate ?? _currDate}
+									date={_currDate}
 									format="hh:mm a"
 									fontWeight="medium"
 								/>

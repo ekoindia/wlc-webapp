@@ -9,7 +9,7 @@ import { useUser } from "contexts";
 import { useApiFetch, useDailyCacheState } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { EarningOverview, SuccessRate, TopMerchants } from ".";
-import { DashboardDateFilter, getDateRange, TopPanel } from "..";
+import { DashboardDateFilter, getDateRange, TopPanel, useDashboard } from "..";
 
 const ACTIVE_AGENTS_CACHE_KEY = "inf-dashboard-active-agents";
 
@@ -24,11 +24,11 @@ const BusinessDashboard = () => {
 	const { userData } = useUser();
 	const { userDetails } = userData;
 	const { role_list } = userDetails;
-	const [cachedDate, setCachedDate] = useState({
-		dateFrom: null,
-		dateTo: null,
-	});
+
 	const [dateRange, setDateRange] = useState("today");
+
+	const { cachedTodaysDateTo, setCachedTodaysDateTo } = useDashboard();
+
 	const [activeAgents, setActiveAgents, isValid] = useDailyCacheState(
 		ACTIVE_AGENTS_CACHE_KEY,
 		[]
@@ -81,31 +81,40 @@ const BusinessDashboard = () => {
 		fetchActiveAgentsData();
 	}, []);
 
+	useEffect(() => {
+		if (dateRange === "today" && !cachedTodaysDateTo) {
+			setCachedTodaysDateTo(currDate);
+		}
+	}, []);
+
+	const _currDate = dateRange === "today" ? cachedTodaysDateTo : currDate;
+
 	return (
 		<Flex direction="column" gap="4" p={{ base: "20px", md: "20px 0px" }}>
 			<TopPanel panelDataList={[...activeAgents]} />
 
 			<DashboardDateFilter
-				{...{ prevDate, currDate, dateRange, setDateRange, cachedDate }}
+				dateRange={dateRange}
+				prevDate={prevDate}
+				currDate={_currDate}
+				setDateRange={setDateRange}
 			/>
 
 			<Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap="4">
 				<EarningOverview
+					dateRange={dateRange}
 					dateFrom={prevDate}
-					dateTo={currDate}
+					dateTo={_currDate}
 					productFilterList={productFilterList}
-					cachedDate={cachedDate}
-					setCachedDate={setCachedDate}
 				/>
 
 				<SuccessRate dateFrom={prevDate} dateTo={currDate} />
 			</Grid>
 			<TopMerchants
+				dateRange={dateRange}
 				dateFrom={prevDate}
-				dateTo={currDate}
+				dateTo={_currDate}
 				productFilterList={productFilterList}
-				cachedDate={cachedDate}
-				setCachedDate={setCachedDate}
 			/>
 		</Flex>
 	);
