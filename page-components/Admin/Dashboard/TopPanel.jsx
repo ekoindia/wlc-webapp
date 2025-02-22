@@ -39,94 +39,101 @@ const TopPanel = ({ panelDataList }) => {
 				},
 			}}
 		>
-			{panelDataList?.map((item, index) => (
-				<Flex
-					key={item.key}
-					bg="white"
-					justify="space-between"
-					p="12px 18px"
-					border="basic"
-					borderRadius="10px"
-					minW={{ base: "250px", sm: "300px" }}
-					ml={index === 0 ? "0px" : "20px"}
-				>
-					<Flex direction="column" gap="1">
-						<Text fontSize="sm">{item.label}</Text>
-						<Flex
-							direction={{ base: "column", sm: "row" }}
-							align={{ base: "flex-start", sm: "center" }}
-							gap={{ base: "1", sm: "6" }}
-						>
-							<Flex fontWeight="semibold" color="primary.DEFAULT">
-								{item.type === "amount" ? (
-									<Currency amount={item.value} />
-								) : (
-									<span>{item.value}</span>
-								)}
-							</Flex>
-							<Flex gap="1" align="center">
-								{item.variation ? (
-									<>
-										<Icon
-											name={
-												item.variation > 0
-													? "increase"
-													: "decrease"
-											}
-											color={
-												item.variation > 0
-													? "success"
-													: "error"
-											}
-											size="xs"
-										/>
-										<Flex
-											fontSize="10px"
-											wrap="nowrap"
-											gap="1"
-										>
-											<Text
+			{panelDataList
+				?.filter(
+					(item) => item.value !== null && item.value !== undefined
+				)
+				.map((item, index) => (
+					<Flex
+						key={item.key}
+						bg="white"
+						justify="space-between"
+						p="12px 18px"
+						border="basic"
+						borderRadius="10px"
+						minW={{ base: "250px", sm: "300px" }}
+						ml={index === 0 ? "0px" : "20px"}
+					>
+						<Flex direction="column" gap="1">
+							<Text fontSize="sm">{item.label}</Text>
+							<Flex
+								direction={{ base: "column", sm: "row" }}
+								align={{ base: "flex-start", sm: "center" }}
+								gap={{ base: "1", sm: "6" }}
+							>
+								<Flex
+									fontWeight="semibold"
+									color="primary.DEFAULT"
+								>
+									{item.type === "amount" ? (
+										<Currency amount={item.value} />
+									) : (
+										<span>{item.value}</span>
+									)}
+								</Flex>
+								<Flex gap="1" align="center">
+									{item.variation ? (
+										<>
+											<Icon
+												name={
+													item.variation > 0
+														? "increase"
+														: "decrease"
+												}
 												color={
 													item.variation > 0
 														? "success"
 														: "error"
 												}
+												size="xs"
+											/>
+											<Flex
+												fontSize="10px"
+												wrap="nowrap"
+												gap="1"
 											>
-												{item.variation}%
-											</Text>
-											<Text>
-												{item.variation > 0
-													? "Increase"
-													: "Decrease"}
-											</Text>
-										</Flex>
-									</>
+												<Text
+													color={
+														item.variation > 0
+															? "success"
+															: "error"
+													}
+												>
+													{item.variation}%
+												</Text>
+												<Text>
+													{item.variation > 0
+														? "Increase"
+														: "Decrease"}
+												</Text>
+											</Flex>
+										</>
+									) : null}
+								</Flex>
+							</Flex>
+							<Flex>
+								{item.info ? (
+									<Text
+										color="primary.DEFAULT"
+										fontSize="xs"
+										fontWeight="500"
+									>
+										{item.info}
+									</Text>
 								) : null}
 							</Flex>
 						</Flex>
-						<Flex>
-							{item.info ? (
-								<Text
-									color="primary.DEFAULT"
-									fontSize="xs"
-									fontWeight="500"
-								>
-									{item.info}
-								</Text>
-							) : null}
+						<Flex align="center">
+							<IcoButton
+								size="md"
+								color="white"
+								iconName={item.icon}
+								rounded={10}
+								bgGradient="linear(to-b, primary.light, primary.dark)"
+							/>
 						</Flex>
 					</Flex>
-					<Flex align="center">
-						<IcoButton
-							size="md"
-							color="white"
-							iconName={item.icon}
-							rounded={10}
-							bgGradient="linear(to-b, primary.light, primary.dark)"
-						/>
-					</Flex>
-				</Flex>
-			))}
+				))}
 		</Grid>
 	);
 };

@@ -10,6 +10,16 @@ const _dateFilterList = [
 	{ id: 3, value: "last30", label: "Last 30 Days" },
 ];
 
+export const isToday = (date) => {
+	const today = new Date();
+	const givenDate = new Date(date);
+	return (
+		today.getFullYear() === givenDate.getFullYear() &&
+		today.getMonth() === givenDate.getMonth() &&
+		today.getDate() === givenDate.getDate()
+	);
+};
+
 const DashboardDateFilter = ({
 	dateFilterList = _dateFilterList,
 	prevDate,
@@ -19,7 +29,10 @@ const DashboardDateFilter = ({
 }) => {
 	const _prevDate = prevDate;
 	const _currDate = currDate;
-	const isSameDay = _prevDate.slice(0, 10) === _currDate.slice(0, 10);
+	const isSameDay = _prevDate?.slice(0, 10) === _currDate?.slice(0, 10);
+
+	// Check if current date is equal to today
+	const isCurrentDateToday = isToday(_currDate);
 
 	return (
 		<Flex
@@ -35,25 +48,47 @@ const DashboardDateFilter = ({
 					<>
 						Showing stats for{" "}
 						<DateView
-							date={_prevDate}
-							format="dd MMM, yyyy"
+							date={_currDate}
+							format="dd MMM yyyy"
 							fontWeight="medium"
 						/>
+						{isCurrentDateToday ? (
+							<>
+								{" "}
+								till{" "}
+								<DateView
+									date={_currDate}
+									format="hh:mm a"
+									fontWeight="medium"
+								/>
+							</>
+						) : null}
 					</>
 				) : (
 					<>
 						Showing stats from{" "}
 						<DateView
 							date={_prevDate}
-							format="dd MMM, yyyy"
+							format="dd MMM yyyy"
 							fontWeight="medium"
 						/>{" "}
 						to{" "}
 						<DateView
 							date={_currDate}
-							format="dd MMM, yyyy"
+							format="dd MMM yyyy"
 							fontWeight="medium"
 						/>
+						{isCurrentDateToday ? (
+							<>
+								{" "}
+								till{" "}
+								<DateView
+									date={_currDate}
+									format="hh:mm a"
+									fontWeight="medium"
+								/>
+							</>
+						) : null}
 					</>
 				)}
 			</span>

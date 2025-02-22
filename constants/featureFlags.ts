@@ -48,19 +48,15 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true, // TODO: Enable for all users
 	},
 
-	// ChatGPT agent (currently for SBI Kiosk Agents...)
-	CHATGPT_AGENT: {
-		enabled: true,
-		envConstraints: {
-			production: {
-				forOrgId: [ORG_ID.SBIKIOSK, ...ORG_ID.EKOTESTS],
-			},
-		},
-	},
-
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
+
+	// Open ChatGPT Agent in new tab
+	// To answer Admin's queries related to Eloka products and features.
+	CHATGPT_AGENT: {
+		enabled: true,
+	},
 
 	// Custom Flag for collapsable(compact) Sidebar (Left-Menu)
 	COMPACT_SIDEBAR: {

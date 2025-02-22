@@ -5,13 +5,6 @@ import { useApiFetch } from "hooks";
 import { useEffect, useState } from "react";
 import { useDashboard } from "..";
 
-// Helper function to generate cache key
-const getCacheKey = (productFilter, dateFrom, dateTo) => {
-	const fromKey = dateFrom.slice(0, 10); // Extract "YYYY-MM-DD"
-	const toKey = dateTo.slice(0, 10);
-	return `${productFilter || "all"}-${fromKey}-${toKey}`;
-};
-
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
 	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
@@ -23,7 +16,7 @@ const topMerchantsTableParameterList = [
 	},
 	{
 		name: "totalTransactions",
-		label: "Total\nTransaction",
+		label: "Transaction\nCount",
 		sorting: true,
 	},
 	{
@@ -49,6 +42,11 @@ const topMerchantsTableParameterList = [
 		sorting: true,
 	},
 ];
+
+// Helper function to generate cache key
+const getCacheKey = (productFilter, dateFrom, dateTo) => {
+	return `${productFilter || "all"}-${dateFrom}-${dateTo}`;
+};
 
 /**
  * TopMerchants component displays a table of top merchants based on GTV.
@@ -78,14 +76,19 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 
 				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
 
-				// Cache the data
-				setBusinessDashboardData((prev) => ({
-					...prev,
-					topMerchantsCache: {
-						...(prev.topMerchantsCache || {}),
-						[cacheKey]: _data,
-					},
-				}));
+				// Prevent unnecessary re-renders by checking existing data
+				setBusinessDashboardData((prev) => {
+					if (prev.topMerchantsCache?.[cacheKey]) {
+						return prev; // Skip update if already cached
+					}
+					return {
+						...prev,
+						topMerchantsCache: {
+							...(prev.topMerchantsCache || {}),
+							[cacheKey]: _data,
+						},
+					};
+				});
 
 				setTopMerchantsData(_data);
 			},
@@ -105,7 +108,8 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 			return;
 		}
 
-		// Fetch data if not cached
+		const _typeid = productFilter ? { typeid: productFilter } : {};
+
 		fetchTopMerchantsOverviewData({
 			body: {
 				interaction_type_id: 682,
@@ -113,12 +117,12 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 					gtv_top_merchants: {
 						datefrom: dateFrom,
 						dateto: dateTo,
-						typeid: productFilter,
+						..._typeid,
 					},
 				},
 			},
 		});
-	}, [dateFrom, dateTo, productFilter, businessDashboardData]);
+	}, [dateFrom, dateTo, productFilter]);
 
 	return (
 		<Flex
@@ -159,11 +163,9 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 			<Flex direction="column">
 				{topMerchantsData?.length > 0 ? (
 					<Table
-						{...{
-							data: topMerchantsData,
-							renderer: topMerchantsTableParameterList,
-							isLoading,
-						}}
+						data={topMerchantsData}
+						renderer={topMerchantsTableParameterList}
+						isLoading={isLoading}
 					/>
 				) : (
 					<Text
