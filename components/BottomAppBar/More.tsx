@@ -5,8 +5,8 @@ import { useNavigationLists } from "hooks";
 import { useRef } from "react";
 import { BottomAppBarDrawer, useAccordionMenuConverter } from ".";
 
-// Ignore both home & dashboard in more option as it is already visible
-const IGNORE_LIST = [1, 8];
+// Ignore both dashboard (1) & home (210) in more option as it is already visible
+const IGNORE_LIST = [1, 210];
 
 /**
  * Adds or modifies the `link` property of items in a list based on their `id` and a specified admin prefix.
