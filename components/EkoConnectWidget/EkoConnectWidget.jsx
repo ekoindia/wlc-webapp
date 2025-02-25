@@ -378,7 +378,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 							process.env.NEXT_PUBLIC_WIDGET_GA_ID || ""
 						}
 						analytics-partner-user-id={
-							userData.accountDetails.code || ""
+							userData?.accountDetails?.code || ""
 						}
 						theme-colors={JSON.stringify(theme_colors)}
 					></tf-wlc-widget>
