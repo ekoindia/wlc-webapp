@@ -53,6 +53,7 @@ const TopPanel = ({ panelDataList }) => {
 						borderRadius="10px"
 						minW={{ base: "250px", sm: "300px" }}
 						ml={index === 0 ? "0px" : "20px"}
+						mb="10px"
 					>
 						<Flex direction="column" gap="1">
 							<Text fontSize="sm">{item.label}</Text>
