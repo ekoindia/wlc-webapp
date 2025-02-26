@@ -9,9 +9,6 @@ import {
 	useBottomAppBarItems,
 } from ".";
 
-// Ignore both dashboard (1) & home (210) in more option as it is already visible
-// const IGNORE_LIST = [1, 210];
-
 /**
  * Adds or modifies the `link` property of items in a list based on their `id` and a specified admin prefix.
  * If a `link` already exists for an item, it is retained; otherwise, a link is generated using the item's `id`.
