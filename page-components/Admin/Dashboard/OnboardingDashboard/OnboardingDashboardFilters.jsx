@@ -59,6 +59,7 @@ const OnboardingDashboardFilters = ({
 			borderRadius="10px"
 			p={{ base: "0px", md: "20px" }}
 			gap="2"
+			mb="10px"
 		>
 			<Flex gap="2">
 				<Icon name="filter" size="sm" />
@@ -69,6 +70,8 @@ const OnboardingDashboardFilters = ({
 			<Flex
 				className="skeleton_filter_parent"
 				justify={{ base: "space-between", xl: "flex-start" }}
+				gap="4"
+				p="5px 5px 12px 5px"
 				overflowX="auto"
 				css={{
 					"&::-webkit-scrollbar": {
@@ -80,7 +83,7 @@ const OnboardingDashboardFilters = ({
 					},
 				}}
 			>
-				{filterList?.map((item, index) => {
+				{filterList?.map((item) => {
 					const isAllSelected = funnelKeyList
 						.flat()
 						.every((item) => filterStatus.includes(item));
@@ -97,14 +100,12 @@ const OnboardingDashboardFilters = ({
 							p="10px 15px"
 							border={isActive ? "2px" : "basic"}
 							borderColor={isActive ? "primary.light" : "none"}
-							boxShadow={
-								isActive ? "0px 3px 10px #1F5AA733" : null
-							}
+							boxShadow={isActive ? "md" : null}
 							borderRadius="12px"
 							minW={{ base: "135px", sm: "160px" }}
 							maxW="160px"
-							ml={index === 0 ? "0px" : "20px"}
-							_hover={{ boxShadow: "basic" }}
+							_hover={{ boxShadow: "lg" }}
+							transition="all 0.3s ease-out"
 							onClick={() => {
 								handleFilterStatusClick(
 									item.id,
