@@ -104,6 +104,7 @@ const OnboardingDashboardFilters = ({
 							minW={{ base: "135px", sm: "160px" }}
 							maxW="160px"
 							ml={index === 0 ? "0px" : "20px"}
+							mb="10px"
 							_hover={{ boxShadow: "basic" }}
 							onClick={() => {
 								handleFilterStatusClick(
