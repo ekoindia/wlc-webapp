@@ -3,10 +3,11 @@ import { AccordionMenu, Icon, StatusCard } from "components";
 import { useUser } from "contexts/UserContext";
 import { useNavigationLists } from "hooks";
 import { useRef } from "react";
-import { BottomAppBarDrawer, useAccordionMenuConverter } from ".";
-
-// Ignore both home & dashboard in more option as it is already visible
-const IGNORE_LIST = [1, 8];
+import {
+	BottomAppBarDrawer,
+	useAccordionMenuConverter,
+	useBottomAppBarItems,
+} from ".";
 
 /**
  * Adds or modifies the `link` property of items in a list based on their `id` and a specified admin prefix.
@@ -56,16 +57,48 @@ const More = ({ isSideBarMode = false }: ButtonProps) => {
 	const { isAdmin } = useUser();
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const { menuList, otherList } = useNavigationLists(IGNORE_LIST);
+	const bottomAppBarItems = useBottomAppBarItems();
+	const { menuList, otherList } = useNavigationLists();
+
+	/**
+	 * Checks if a given item path exists in the bottom app bar list and is visible.
+	 * @param {string} itemPath - The path of the menu item to check.
+	 * @returns {boolean} - Returns `true` if the item is in the bottom app bar and visible, otherwise `false`.
+	 */
+	const isInBottomAppBar = (itemPath: string): boolean => {
+		const adminPrefixedPath = `/admin${itemPath}`;
+		return bottomAppBarItems.some(
+			(barItem) =>
+				barItem.path &&
+				barItem.visible &&
+				(barItem.path === itemPath ||
+					barItem.path === adminPrefixedPath)
+		);
+	};
+
+	// Filter `menuList` to remove items present in the bottom app bar.
+	let filteredMenuList = menuList.filter(
+		(item) => !isInBottomAppBar(item.link || "")
+	);
+
+	/**
+	 * Combines filtered menu items with "Others" section if applicable.
+	 * - "Others" is added only if `otherList` has items.
+	 * - `isPanelExpanded` is set to `true` if `filteredMenuList` is empty.
+	 */
 	const combinedList = [
-		...menuList,
-		{
-			label: "Others",
-			icon: "others",
-			showAll: true,
-			subItems: attachLinkToMenuItems(otherList, isAdmin),
-			isPanelExpanded: menuList?.length < 1,
-		},
+		...filteredMenuList,
+		...(otherList.length > 0
+			? [
+					{
+						label: "Others",
+						icon: "others",
+						showAll: true,
+						subItems: attachLinkToMenuItems(otherList, isAdmin),
+						isPanelExpanded: filteredMenuList.length < 1,
+					},
+				]
+			: []),
 	];
 
 	const list = useAccordionMenuConverter(combinedList);
