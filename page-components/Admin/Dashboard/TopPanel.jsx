@@ -26,6 +26,7 @@ const TopPanel = ({ panelDataList }) => {
 		<Grid
 			w="100%"
 			templateColumns="repeat(auto-fit, minmax(250px, 1fr))"
+			gap="4"
 			overflowX="auto"
 			whiteSpace="nowrap"
 			display="flex"
@@ -43,7 +44,7 @@ const TopPanel = ({ panelDataList }) => {
 				?.filter(
 					(item) => item.value !== null && item.value !== undefined
 				)
-				.map((item, index) => (
+				.map((item) => (
 					<Flex
 						key={item.key}
 						bg="white"
@@ -52,7 +53,6 @@ const TopPanel = ({ panelDataList }) => {
 						border="basic"
 						borderRadius="10px"
 						minW={{ base: "250px", sm: "300px" }}
-						ml={index === 0 ? "0px" : "20px"}
 						mb="10px"
 					>
 						<Flex direction="column" gap="1">
