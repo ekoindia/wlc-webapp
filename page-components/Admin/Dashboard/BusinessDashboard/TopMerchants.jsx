@@ -8,6 +8,7 @@ import { useDashboard } from "..";
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
 	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
+	{ name: "usercode", label: "Agent's\nCode", sorting: true },
 	{
 		name: "gtv",
 		label: "GTV",

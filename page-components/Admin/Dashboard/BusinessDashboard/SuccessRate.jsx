@@ -1,4 +1,4 @@
-import { Divider, Flex, Text } from "@chakra-ui/react";
+import { Divider, Flex, Skeleton, Text } from "@chakra-ui/react";
 import { Endpoints, ProductRoleConfiguration } from "constants";
 import { useApiFetch, useDailyCacheState } from "hooks";
 import { useEffect, useMemo, useState } from "react";
@@ -40,45 +40,48 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 		}));
 	};
 
-	const [fetchSuccessRateData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
-		onSuccess: (res) => {
-			const _data = res?.data?.dashboard_object?.successRate || {};
-			const _product = ProductRoleConfiguration?.products ?? [];
+	const [fetchSuccessRateData, isLoading] = useApiFetch(
+		Endpoints.TRANSACTION_JSON,
+		{
+			onSuccess: (res) => {
+				const _data = res?.data?.dashboard_object?.successRate || {};
+				const _product = ProductRoleConfiguration?.products ?? [];
 
-			// Check if _data has any success rate data
-			const _successRate = _product
-				.filter((p) => p.tx_typeid && _data[p.tx_typeid])
-				.map((p) => {
-					const productData = _data[p.tx_typeid];
+				// Check if _data has any success rate data
+				const _successRate = _product
+					.filter((p) => p.tx_typeid && _data[p.tx_typeid])
+					.map((p) => {
+						const productData = _data[p.tx_typeid];
 
-					if (
-						!productData?.successCount ||
-						!productData?.totalCount
-					) {
-						return null;
-					}
+						if (
+							!productData?.successCount ||
+							!productData?.totalCount
+						) {
+							return null;
+						}
 
-					const successRate =
-						(
-							(productData.successCount /
-								productData.totalCount) *
-							100
-						).toFixed(2) + "%";
+						const successRate =
+							(
+								(productData.successCount /
+									productData.totalCount) *
+								100
+							).toFixed(2) + "%";
 
-					return {
-						key: p.tx_typeid,
-						label: p.label,
-						value: successRate,
-					};
-				})
-				.filter(Boolean); // Remove null values
+						return {
+							key: p.tx_typeid,
+							label: p.label,
+							value: successRate,
+						};
+					})
+					.filter(Boolean); // Remove null values
 
-			// If _successRate is empty, store [] instead of undefined
-			updateSuccessRateCache(_successRate.length ? _successRate : []);
+				// If _successRate is empty, store [] instead of undefined
+				updateSuccessRateCache(_successRate.length ? _successRate : []);
 
-			setSuccessRateData(_successRate);
-		},
-	});
+				setSuccessRateData(_successRate);
+			},
+		}
+	);
 
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
@@ -163,12 +166,18 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 									gap="2"
 									pb="2"
 								>
-									<Text>{item.label}</Text>
+									<Text>
+										<Skeleton isLoaded={!isLoading}>
+											{item.label}
+										</Skeleton>
+									</Text>
 									<Text
 										fontWeight="semibold"
 										color="primary.DEFAULT"
 									>
-										{item.value}
+										<Skeleton isLoaded={!isLoading}>
+											{item.value}
+										</Skeleton>
 									</Text>
 								</Flex>
 							</Flex>

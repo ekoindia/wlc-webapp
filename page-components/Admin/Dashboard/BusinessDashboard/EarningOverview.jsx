@@ -1,4 +1,4 @@
-import { Divider, Flex, Grid, Select, Text } from "@chakra-ui/react";
+import { Divider, Flex, Grid, Select, Skeleton, Text } from "@chakra-ui/react";
 import { Currency, Icon } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
@@ -42,24 +42,28 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 
 	// MARK: Fetching Product Overview Data
-	const [fetchEarningOverviewData] = useApiFetch(Endpoints.TRANSACTION_JSON, {
-		onSuccess: (res) => {
-			const _data = res?.data?.dashboard_object?.products_overview || [];
+	const [fetchEarningOverviewData, isLoading] = useApiFetch(
+		Endpoints.TRANSACTION_JSON,
+		{
+			onSuccess: (res) => {
+				const _data =
+					res?.data?.dashboard_object?.products_overview || [];
 
-			const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
+				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
 
-			// Cache data for future use
-			setBusinessDashboardData((prev) => ({
-				...prev,
-				earningOverviewCache: {
-					...(prev.earningOverviewCache || {}),
-					[cacheKey]: _data,
-				},
-			}));
+				// Cache data for future use
+				setBusinessDashboardData((prev) => ({
+					...prev,
+					earningOverviewCache: {
+						...(prev.earningOverviewCache || {}),
+						[cacheKey]: _data,
+					},
+				}));
 
-			setEarningOverviewData(_data);
-		},
-	});
+				setEarningOverviewData(_data);
+			},
+		}
+	);
 
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
@@ -233,19 +237,25 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 												textAlign="center"
 												whiteSpace="nowrap"
 											>
-												{item.label}
+												<Skeleton isLoaded={!isLoading}>
+													{item.label}
+												</Skeleton>
 											</Text>
 											<Flex
 												fontWeight="semibold"
 												color="primary.DEFAULT"
 											>
-												{item.type === "amount" ? (
-													<Currency
-														amount={item.value}
-													/>
-												) : (
-													<span>{item.value}</span>
-												)}
+												<Skeleton isLoaded={!isLoading}>
+													{item.type === "amount" ? (
+														<Currency
+															amount={item.value}
+														/>
+													) : (
+														<span>
+															{item.value}
+														</span>
+													)}
+												</Skeleton>
 											</Flex>
 										</Flex>
 										{item.lastPeriod !== 0 && (
@@ -264,20 +274,26 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 												>
 													<span>Last Period:</span>
 													<Flex fontWeight="semibold">
-														{item.type ===
-														"amount" ? (
-															<Currency
-																amount={
-																	item.lastPeriod
-																}
-															/>
-														) : (
-															<span>
-																{
-																	item.lastPeriod
-																}
-															</span>
-														)}
+														<Skeleton
+															isLoaded={
+																!isLoading
+															}
+														>
+															{item.type ===
+															"amount" ? (
+																<Currency
+																	amount={
+																		item.lastPeriod
+																	}
+																/>
+															) : (
+																<span>
+																	{
+																		item.lastPeriod
+																	}
+																</span>
+															)}
+														</Skeleton>
 													</Flex>
 												</Flex>
 												{item.variation && (
@@ -285,23 +301,29 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 														gap="1"
 														align="center"
 													>
-														<Icon
-															name={
-																parseFloat(
-																	item.variation
-																) > 0
-																	? "arrow-increase"
-																	: "arrow-decrease"
+														<Skeleton
+															isLoaded={
+																!isLoading
 															}
-															color={
-																parseFloat(
-																	item.variation
-																) > 0
-																	? "success"
-																	: "error"
-															}
-															size="xs"
-														/>
+														>
+															<Icon
+																name={
+																	parseFloat(
+																		item.variation
+																	) > 0
+																		? "arrow-increase"
+																		: "arrow-decrease"
+																}
+																color={
+																	parseFloat(
+																		item.variation
+																	) > 0
+																		? "success"
+																		: "error"
+																}
+																size="xs"
+															/>
+														</Skeleton>
 														<Flex
 															fontSize="10px"
 															wrap="nowrap"
@@ -316,18 +338,30 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 																		: "error"
 																}
 															>
-																{isNaN(
-																	item.variation
-																)
-																	? item.variation
-																	: `${item.variation}%`}
+																<Skeleton
+																	isLoaded={
+																		!isLoading
+																	}
+																>
+																	{isNaN(
+																		item.variation
+																	)
+																		? item.variation
+																		: `${item.variation}%`}
+																</Skeleton>
 															</Text>
 															<Text>
-																{parseFloat(
-																	item.variation
-																) > 0
-																	? "Increase"
-																	: "Decrease"}
+																<Skeleton
+																	isLoaded={
+																		!isLoading
+																	}
+																>
+																	{parseFloat(
+																		item.variation
+																	) > 0
+																		? "Increase"
+																		: "Decrease"}
+																</Skeleton>
 															</Text>
 														</Flex>
 													</Flex>
