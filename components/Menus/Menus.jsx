@@ -5,6 +5,7 @@ import {
 	MenuDivider,
 	MenuItem,
 	MenuList,
+	Portal,
 	Text,
 } from "@chakra-ui/react";
 import { Icon } from "..";
@@ -73,48 +74,51 @@ const Menus = ({
 									{title}
 								</Text>
 							</MenuButton>
-							<MenuList
-								py="0px"
-								minW="fit-content"
-								{...listStyles}
-							>
-								{menulist
-									? menulist.map((item, index) => {
-											return (
-												<>
-													<MenuItem
-														key={
-															item.id ??
-															`${index}-${item.label}`
-														}
-														value={item.value}
-														color="dark"
-														onClick={() =>
-															item.onClick(
-																item.value
-															)
-														}
-														minHeight="48px"
-														fontSize="sm"
-														_hover={{
-															bg: "divider",
-														}}
-														{...itemStyles}
-													>
-														{item.label}
-													</MenuItem>
-													{index !==
-														menulist.length - 1 && (
-														<MenuDivider
-															margin="auto"
-															w="90%"
-														/>
-													)}
-												</>
-											);
-										})
-									: null}
-							</MenuList>
+							<Portal>
+								<MenuList
+									py="0px"
+									minW="fit-content"
+									{...listStyles}
+								>
+									{menulist
+										? menulist.map((item, index) => {
+												return (
+													<>
+														<MenuItem
+															key={
+																item.id ??
+																`${index}-${item.label}`
+															}
+															value={item.value}
+															color="dark"
+															onClick={() =>
+																item.onClick(
+																	item.value
+																)
+															}
+															minHeight="48px"
+															fontSize="sm"
+															_hover={{
+																bg: "divider",
+															}}
+															{...itemStyles}
+														>
+															{item.label}
+														</MenuItem>
+														{index !==
+															menulist.length -
+																1 && (
+															<MenuDivider
+																margin="auto"
+																w="90%"
+															/>
+														)}
+													</>
+												);
+											})
+										: null}
+								</MenuList>
+							</Portal>
 						</>
 					)
 				}
