@@ -51,7 +51,7 @@ const OrgLogo = ({ size = "md", dark = false, imageStyles = {}, ...rest }) => {
 	// Get org-logo and replace "https://files.eko.in/" with "_files/"
 	const orgLogo = (orgDetail?.logo || "").replace(
 		"https://files.eko.co.in/",
-		"_files/"
+		"/_files/"
 	);
 
 	// Show only Text Logo...

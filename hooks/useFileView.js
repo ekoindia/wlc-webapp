@@ -38,7 +38,17 @@ const useFileView = () => {
 	 */
 	const showWebpage = (url, options) => publishTopic("url", url, options);
 
-	return { showImage, showMedia, showWebpage };
+	/**
+	 * Show any file in the FileViewer dialog, based on the file extension.
+	 * @param {string} url - The URL of the file to show.
+	 * @param {object} [options] - Options to pass to the dialog.
+	 */
+	const showFile = (url, options) => {
+		const type = options?.type;
+		publishTopic(type, url, options);
+	};
+
+	return { showImage, showMedia, showWebpage, showFile };
 };
 
 export default useFileView;
