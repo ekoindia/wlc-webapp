@@ -72,7 +72,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	const { openCamera } = useCamera();
 
 	// Edit Image
-	const { showImage } = useFileView();
+	const { showFile } = useFileView();
 	const { editImage } = useImageEditor();
 
 	// Check if CommandBar is loaded...
@@ -236,7 +236,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 		showRaiseIssueDialog,
 		openCamera,
 		editImage,
-		showImage
+		showFile
 	);
 
 	// Handle widget load error
@@ -402,7 +402,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
  * @param root0.showRaiseIssueDialog
  * @param root0.openCamera
  * @param root0.editImage
- * @param root0.showImage
+ * @param root0.showFile
  * @param root0.widgetRef
  */
 const setupWidgetEventListeners = ({
@@ -416,7 +416,7 @@ const setupWidgetEventListeners = ({
 	showRaiseIssueDialog,
 	openCamera,
 	editImage,
-	showImage,
+	showFile,
 	widgetRef,
 }) => {
 	/**
@@ -550,14 +550,45 @@ const setupWidgetEventListeners = ({
 				onGotoHist(e?.detail);
 				break;
 			case "file-view":
-				const {
+				let {
 					name: fileName = "",
 					file,
 					options = {},
 					userConfirmation = false,
+					is_youtube, // [Boolean] Is this a YouTube video?
+					label,
+					link,
+					whatsapp, // [Boolean] Allow share via WhatsApp?
+					download, // Download link
 				} = e?.detail?.data ?? {};
 
-				options.fileName = fileName;
+				if (!file) {
+					break;
+				}
+
+				// White-labelled file URLs: "https://files.eko.in/" with "_files/"
+				file = file.replace("https://files.eko.co.in/", "/_files/");
+
+				if (is_youtube) {
+					file = "https://www.youtube.com/watch?v=" + file;
+					options.type = "youtube";
+				}
+
+				// options.fileName = fileName;
+				const _options = {
+					fileName,
+					label,
+					link,
+					whatsapp,
+					download,
+					...options,
+				};
+
+				console.log(
+					"File view from Connect: ",
+					{ file, options, fileName, _options }
+					// e?.detail?.data
+				);
 
 				if (userConfirmation) {
 					const handleResponse = (data) => {
@@ -567,9 +598,10 @@ const setupWidgetEventListeners = ({
 						// );
 						widgetRef?.current?.fileViewResponse(data);
 					};
-					editImage(file, options, handleResponse);
+					editImage(file, _options, handleResponse);
 				} else {
-					showImage(file, options);
+					// showImage(file, options);
+					showFile(file, _options);
 				}
 				break;
 			case "track-event":
@@ -671,7 +703,7 @@ const configurePolymer = () => {
  * @param {Function} showRaiseIssueDialog - Function to show the "Raise Issue" dialog.
  * @param {Function} openCamera - Function to open the camera.
  * @param {Function} editImage - Function to open the Image editor (for modifying or accepting the captured/uploaded image).
- * @param {Function} showImage - Function to show an image in the FileViewer dialog.
+ * @param {Function} showFile - Function to show any file in the FileViewer dialog.
  * @returns {object} - The widgetLoading state
  */
 const useSetupWidgetEventListeners = (
@@ -683,7 +715,7 @@ const useSetupWidgetEventListeners = (
 	showRaiseIssueDialog,
 	openCamera,
 	editImage,
-	showImage
+	showFile
 ) => {
 	// Is connect-wlc-widget loading?
 	const [widgetLoading, setWidgetLoading] = useState(true);
@@ -706,7 +738,7 @@ const useSetupWidgetEventListeners = (
 			showRaiseIssueDialog,
 			openCamera,
 			editImage,
-			showImage,
+			showFile,
 			widgetRef,
 		});
 		configurePolymer();
