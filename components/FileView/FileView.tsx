@@ -153,7 +153,15 @@ const FileViewContent = ({
 		case "html":
 			return (
 				<Flex direction="column">
-					<Flex h={{ base: "42px", md: "50px" }} bg="primary.DEFAULT">
+					<Flex
+						h={{ base: "42px", md: "50px" }}
+						bg="primary.DEFAULT"
+						color="white"
+						align="center"
+						px="1em"
+						fontSize="lg"
+						fontWeight="bold"
+					>
 						{options?.label || options?.header || ""}
 					</Flex>
 					<iframe
