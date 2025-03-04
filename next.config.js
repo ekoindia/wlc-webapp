@@ -152,6 +152,12 @@ const nextConfig = {
 				source: "/admin/transaction/script/:path*", // :path* is a catch-all
 				destination: "https://connect.eko.in/script/:path*",
 			},
+
+			// Dynamic sitemap.xml for each organization
+			{
+				source: "/sitemap.xml",
+				destination: "/api/sitemap-proxy",
+			},
 		];
 	},
 	// async headers() {
