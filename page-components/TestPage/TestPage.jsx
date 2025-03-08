@@ -9,6 +9,7 @@ import {
 	useImageEditor,
 	useRaiseIssue,
 } from "hooks";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -704,6 +705,24 @@ const TfComponentsTest = () => {
 	);
 };
 
+/**
+ * Test the Logout Page
+ * MARK: Logout
+ */
+const LogoutPageTest = () => {
+	const router = useRouter();
+
+	return (
+		<Button
+			onClick={() => {
+				router.push("/logout");
+			}}
+		>
+			Logout
+		</Button>
+	);
+};
+
 // List of test components
 // MARK: List of Tests
 const TestComponents = [
@@ -746,6 +765,10 @@ const TestComponents = [
 	{
 		title: "TF-Components",
 		component: TfComponentsTest,
+	},
+	{
+		title: "Logout Page Test",
+		component: LogoutPageTest,
 	},
 ];
 
