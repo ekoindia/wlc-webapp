@@ -1,28 +1,6 @@
 import { DisplayMedia } from "constants/trxnFramework";
 
 /**
- * Returns the default view component for a given parameter type id.
- * TODO: Remove "view" components in favor of <Value> component that directly uses the parameter-type-id. Allow custom value-renderer components to be passed to <Value> component (or, prefix/postfix components).
- * @param {number} parameter_type_id
- * @returns
- */
-export const getViewComponent = (parameter_type_id) => {
-	switch (parameter_type_id) {
-		case 9:
-		case 10:
-			return "Amount";
-		case 12:
-			return null; // return "Avatar";
-		case 14:
-			return "DateTime";
-		case 15:
-			return "Mobile";
-		default:
-			return null;
-	}
-};
-
-/**
  * Parameters to show in the Transaction History table (for agents)
  * MARK: Self History Items
  *
@@ -74,7 +52,6 @@ export const historyParametersMetadata = [
 		name: "debit",
 		label: "Debit",
 		desc: "The total amount debited from the E-value. This may include the debited transaction amount, fee, TDS, and GST, as applicable.",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
@@ -104,7 +81,6 @@ export const historyParametersMetadata = [
 		name: "credit",
 		label: "Credit",
 		desc: "The total amount credited to the E-value. This may include the credited transaction amount & the commission earned, if applicable.",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
@@ -131,7 +107,6 @@ export const historyParametersMetadata = [
 	{
 		name: "r_bal",
 		label: "Running\nBalance",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
@@ -151,7 +126,6 @@ export const historyParametersMetadata = [
 		name: "datetime",
 		label: "Date & Time",
 		sorting: true,
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
@@ -182,14 +156,12 @@ export const historyParametersMetadata = [
 	{
 		name: "amount",
 		label: "Amount",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.BOTH,
 	},
 	{
 		name: "fee",
 		label: "Charges",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
@@ -197,21 +169,18 @@ export const historyParametersMetadata = [
 	// {
 	// 	name: "fee",
 	// 	label: "Customer Charges",
-	// 	show: getViewComponent(9),
 	// 	parameter_type_id: 9,
 	// 	display_media_id: DisplayMedia.SCREEN,
 	// },
 	{
 		name: "commission_earned",
 		label: "Commission Earned",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
 	// {
 	// 	name: "r_bal",
 	// 	label: "Balance Amount",
-	// 	show: getViewComponent(9),
 	// 	parameter_type_id: 9,
 	// 	display_media_id: DisplayMedia.SCREEN,
 	// },
@@ -242,20 +211,18 @@ export const historyParametersMetadata = [
 	{
 		name: "gst",
 		label: "GST",
-		parameter_type_id: 10,
+		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
 	{
 		name: "eko_service_charge",
 		label: "Service Charge",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	}, // For Enterprise
 	{
 		name: "eko_gst",
 		label: "GST",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	}, // For Enterprise (API Partners) only
@@ -439,7 +406,6 @@ export const historyParametersMetadata = [
 		name: "insurance_amount",
 		label: "Assurance Amount",
 		parameter_type_id: 10,
-		show: getViewComponent(10),
 		// display_media_id: DisplayMedia.BOTH,
 	},
 	{
@@ -452,14 +418,12 @@ export const historyParametersMetadata = [
 		name: "policy",
 		label: "Download Policy",
 		parameter_type_id: 31,
-		// show: getViewComponent(31),
 		// display_media_id: DisplayMedia.BOTH,
 	},
 	// {
 	// 	name: "refund_amount",
 	// 	label: "Refunded Amount",
 	// 	parameter_type_id: 10,
-	// 	show: getViewComponent(10),
 	// 	display_media_id: DisplayMedia.SCREEN,
 	// },
 	// {
@@ -473,14 +437,12 @@ export const historyParametersMetadata = [
 	{
 		name: "datetime",
 		label: "Transaction Time",
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.PRINT,
 	},
 	{
 		name: "updated_datetime",
 		label: "Updated Time",
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.SCREEN,
 	},
@@ -551,7 +513,6 @@ export const networkHistoryParametersMetadata = [
 		name: "datetime",
 		label: "Date & Time",
 		sorting: true,
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
@@ -587,14 +548,12 @@ export const networkHistoryParametersMetadata = [
 	{
 		name: "amount",
 		label: "Amount",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.PRINT,
 	},
 	{
 		name: "fee",
 		label: "Charges",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
@@ -615,14 +574,12 @@ export const networkHistoryParametersMetadata = [
 	{
 		name: "commission_earned",
 		label: "Commission Earned",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
 	// {
 	// 	name: "r_bal",
 	// 	label: "Balance Amount",
-	// 	show: getViewComponent(9),
 	// 	parameter_type_id: 9,
 	// 	display_media_id: DisplayMedia.SCREEN,
 	// },
@@ -654,14 +611,12 @@ export const networkHistoryParametersMetadata = [
 	{
 		name: "eko_service_charge",
 		label: "Service Charge",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	}, // For Enterprise
 	{
 		name: "eko_gst",
 		label: "GST",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	}, // For Enterprise
@@ -843,7 +798,6 @@ export const networkHistoryParametersMetadata = [
 		name: "insurance_amount",
 		label: "Assurance Amount",
 		parameter_type_id: 10,
-		show: getViewComponent(10),
 		// display_media_id: DisplayMedia.BOTH,
 	},
 	{
@@ -856,14 +810,12 @@ export const networkHistoryParametersMetadata = [
 		name: "policy",
 		label: "Download Policy",
 		parameter_type_id: 31,
-		// show: getViewComponent(31),
 		// display_media_id: DisplayMedia.BOTH,
 	},
 	{
 		name: "refund_amount",
 		label: "Refunded Amount",
 		parameter_type_id: 10,
-		show: getViewComponent(10),
 		display_media_id: DisplayMedia.SCREEN,
 	},
 	// {
@@ -877,14 +829,12 @@ export const networkHistoryParametersMetadata = [
 	{
 		name: "datetime",
 		label: "Transaction Time",
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.PRINT,
 	},
 	{
 		name: "updated_datetime",
 		label: "Updated Time",
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.SCREEN,
 	},
