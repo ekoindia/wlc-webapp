@@ -26,10 +26,12 @@ const Currency = ({
 	}
 
 	// Check if amount is negative
-	const isNegative = isValidAmount && amount < 0;
+	const isNegative = amount < 0;
 
 	// Get absolute value for formatting
-	const absoluteAmount = isValidAmount ? Math.abs(Number(amount)) : 0;
+	const absoluteAmount = isNegative
+		? Math.abs(Number(amount))
+		: Number(amount);
 
 	// Get currency symbol
 	const symbol = getCurrencySymbol(currencyCode);
