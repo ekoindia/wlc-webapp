@@ -207,7 +207,8 @@ const Trow = ({
 			{expandedRow === index && (
 				<ChakraTd
 					colSpan={mainColumns.length}
-					bg="focusbg" // bg={index % 2 ? "shade" : "initial"}
+					// bg="focusbg"
+					bg={index % 2 ? "shade" : "initial"}
 					pl={{ base: 0, md: "40px" }}
 					pr="10px"
 					sx={{
