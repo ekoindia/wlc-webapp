@@ -54,7 +54,6 @@ On mobile devices, click on the "More" icon in the bottom navigation bar and the
 	{
 		name: "debit",
 		label: "Debit",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		compute: (value, row, _index) =>
