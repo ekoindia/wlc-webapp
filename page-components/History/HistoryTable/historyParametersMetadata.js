@@ -94,6 +94,8 @@ export const historyParametersMetadata = [
 				(row.amount_dr > 0 ? row.amount_dr : 0) +
 					(row.fee > 0 ? row.fee : 0) +
 					(row.tds > 0 ? row.tds : 0) +
+					(row.gst > 0 ? row.gst : 0) +
+					(row.insurance_amount > 0 ? row.insurance_amount : 0) +
 					(row.eko_gst > 0 ? row.eko_gst : 0) || ""
 			);
 		},
@@ -120,8 +122,9 @@ export const historyParametersMetadata = [
 
 			return (
 				(row.amount_cr > 0 ? row.amount_cr : 0) +
-					(row.commission_earned > 0 ? row.commission_earned : 0) ||
-				""
+					(row.commission_earned > 0 ? row.commission_earned : 0) +
+					(row.eko_service_charge > 0 ? row.eko_service_charge : 0) +
+					(row.bonus > 0 ? row.bonus : 0) || ""
 			);
 		},
 	},
@@ -181,7 +184,7 @@ export const historyParametersMetadata = [
 		label: "Amount",
 		show: getViewComponent(9),
 		parameter_type_id: 9,
-		display_media_id: DisplayMedia.PRINT,
+		display_media_id: DisplayMedia.BOTH,
 	},
 	{
 		name: "fee",
@@ -236,7 +239,12 @@ export const historyParametersMetadata = [
 		parameter_type_id: 10,
 		display_media_id: DisplayMedia.SCREEN,
 	},
-
+	{
+		name: "gst",
+		label: "GST",
+		parameter_type_id: 10,
+		display_media_id: DisplayMedia.SCREEN,
+	},
 	{
 		name: "eko_service_charge",
 		label: "Service Charge",
@@ -250,13 +258,13 @@ export const historyParametersMetadata = [
 		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
-	}, // For Enterprise
+	}, // For Enterprise (API Partners) only
 	{
 		name: "tid",
 		label: "TID",
 		parameter_type_id: 11,
 		pattern_format: "#### #### #",
-		display_media_id: DisplayMedia.PRINT,
+		display_media_id: DisplayMedia.BOTH,
 	},
 
 	{
@@ -402,12 +410,6 @@ export const historyParametersMetadata = [
 	// 	// display_media_id: DisplayMedia.BOTH,
 	// },
 	{
-		name: "gst",
-		label: "GST",
-		parameter_type_id: 10,
-		display_media_id: DisplayMedia.SCREEN,
-	},
-	{
 		name: "loan_id",
 		label: "Loan ID",
 		parameter_type_id: 12,
@@ -453,13 +455,13 @@ export const historyParametersMetadata = [
 		// show: getViewComponent(31),
 		// display_media_id: DisplayMedia.BOTH,
 	},
-	{
-		name: "refund_amount",
-		label: "Refunded Amount",
-		parameter_type_id: 10,
-		show: getViewComponent(10),
-		display_media_id: DisplayMedia.SCREEN,
-	},
+	// {
+	// 	name: "refund_amount",
+	// 	label: "Refunded Amount",
+	// 	parameter_type_id: 10,
+	// 	show: getViewComponent(10),
+	// 	display_media_id: DisplayMedia.SCREEN,
+	// },
 	// {
 	// 	name: "plan_name",
 	// 	label: "Plan Name",
