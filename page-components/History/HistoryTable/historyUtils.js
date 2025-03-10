@@ -12,6 +12,7 @@ import {
 	getNameStyle,
 	getPaymentStyle,
 	getStatusStyle,
+	getTrxnSummaryStyle,
 } from "helpers";
 
 /**
@@ -55,6 +56,8 @@ export const prepareTableCell = (
 	switch (column?.show) {
 		case "#":
 			return serialNo;
+		case "TrxnSummary":
+			return getTrxnSummaryStyle(item, icon, hue);
 		case "Tag":
 			return getStatusStyle(value, "History");
 		case "Modal":
