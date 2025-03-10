@@ -60,7 +60,7 @@ export const getNarrationText = (row) => {
 
 	// Add customer's reversal-narration (only if previous info not available)
 	if (row.reversal_narration && !narration) {
-		narration += " " + limitText(row.reversal_narration, 50);
+		narration += " " + limitText(row.reversal_narration, 150);
 	}
 
 	return narration;
