@@ -1,4 +1,3 @@
-import { Flex } from "@chakra-ui/react";
 import { formatCurrency, getCurrencySymbol } from "utils/numberFormat";
 
 /**
@@ -7,37 +6,48 @@ import { formatCurrency, getCurrencySymbol } from "utils/numberFormat";
  * @param	{number}	prop.amount	The currency amount.
  * @param	{string}	[prop.currencyCode]	The currency code. Defaults to "INR".
  * @param	{boolean}	[prop.preserveFraction]	Preserve the fraction value, even if it is zero. Defaults to false.
- * @param	{...*}		rest	Rest of the props passed to this component.
  * @example	`<Currency value="12345" currencyCode="INR" />`	// Displays ₹ 12,345.00
  */
 const Currency = ({
 	amount,
 	currencyCode = "INR",
 	preserveFraction = false,
-	...rest
 }) => {
-	return (
-		<Flex as="span" display="inline-flex" justify="center" {...rest}>
-			{!(
-				typeof amount === "undefined" ||
-				amount === null ||
-				amount === ""
-			) && (
-				<>
-					{/* <span hidden={_isHidden(amount)} */}
-					<span mr="0.2em">{getCurrencySymbol(currencyCode)}</span>
-					<span>
-						{formatCurrency(
-							amount,
-							currencyCode,
-							true,
-							preserveFraction ? false : true
-						)}
-					</span>
-				</>
-			)}
-		</Flex>
+	// Check if amount is valid
+	const isValidAmount = !(
+		typeof amount === "undefined" ||
+		amount === null ||
+		amount === ""
 	);
+
+	if (!isValidAmount) {
+		// If amount is invalid, don't render anything
+		return null;
+	}
+
+	// Check if amount is negative
+	const isNegative = amount < 0;
+
+	// Get absolute value for formatting
+	const absoluteAmount = isNegative
+		? Math.abs(Number(amount))
+		: Number(amount);
+
+	// Get currency symbol
+	const symbol = getCurrencySymbol(currencyCode);
+
+	// Format the currency amount
+	const displayAmount =
+		(isNegative ? "- " : "") +
+		symbol +
+		formatCurrency(
+			absoluteAmount,
+			currencyCode,
+			true,
+			preserveFraction ? false : true
+		);
+
+	return displayAmount;
 };
 
 export default Currency;

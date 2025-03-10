@@ -12,7 +12,30 @@ import {
 	getNameStyle,
 	getPaymentStyle,
 	getStatusStyle,
+	getTrxnSummaryStyle,
 } from "helpers";
+
+/**
+ * Returns the default view component for a given parameter type id.
+ * TODO: Remove "view" components in favor of <Value> component that directly uses the parameter-type-id. Allow custom value-renderer components to be passed to <Value> component (or, prefix/postfix components).
+ * @param {number} parameter_type_id
+ * @returns
+ */
+const getViewComponent = (parameter_type_id) => {
+	switch (parameter_type_id) {
+		case 9:
+		case 10:
+			return "Amount";
+		case 12:
+			return null; // return "Avatar";
+		case 14:
+			return "DateTime";
+		case 15:
+			return "Mobile";
+		default:
+			return null;
+	}
+};
 
 /**
  *
@@ -44,17 +67,25 @@ export const prepareTableCell = (
 		return "";
 	}
 
-	if (column?.name) {
+	if (column.name) {
 		value = item[column.name] || "";
 	}
 
-	if (column?.compute && typeof column.compute === "function") {
+	if (column.compute && typeof column.compute === "function") {
 		value = column.compute(value, item, index);
 	}
 
-	switch (column?.show) {
+	// If a component to render the value is not provided, use the component based on the parameter type
+	let viewType = column.show;
+	if (!viewType && column.parameter_type_id) {
+		viewType = getViewComponent(column.parameter_type_id);
+	}
+
+	switch (viewType) {
 		case "#":
 			return serialNo;
+		case "TrxnSummary":
+			return getTrxnSummaryStyle(item, icon, hue);
 		case "Tag":
 			return getStatusStyle(value, "History");
 		case "Modal":

@@ -24,5 +24,6 @@ export {
 	getPaymentStyle,
 	getShareMobileButton,
 	getStatusStyle,
+	getTrxnSummaryStyle,
 	openGoogleMap,
 } from "./TableHelpers";

@@ -1,6 +1,5 @@
 import { DisplayMedia } from "constants";
 import { getFirstWord, limitText } from "utils";
-import { getViewComponent } from ".";
 
 /**
  * Prepare each row of the Transaction History table data (for sellers & distributors) by adding new generated columns like description, amount, trx_type, etc.
@@ -60,7 +59,7 @@ export const getNarrationText = (row) => {
 
 	// Add customer's reversal-narration (only if previous info not available)
 	if (row.reversal_narration && !narration) {
-		narration += " " + limitText(row.reversal_narration, 50);
+		narration += " " + limitText(row.reversal_narration, 150);
 	}
 
 	return narration;
@@ -143,7 +142,6 @@ const generateParameterMetadata = (key, type) => {
 	_parameterMetadata.name = key;
 	_parameterMetadata.label = convertKeyToLabel(key);
 	_parameterMetadata.parameter_type_id = type;
-	_parameterMetadata.show = getViewComponent(type);
 	_parameterMetadata.display_media_id = DisplayMedia.BOTH;
 
 	return _parameterMetadata;

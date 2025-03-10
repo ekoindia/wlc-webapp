@@ -1,52 +1,116 @@
 import { DisplayMedia } from "constants/trxnFramework";
 
 /**
- * Returns the default view component for a given parameter type id.
- * TODO: Remove "view" components in favor of <Value> component that directly uses the parameter-type-id. Allow custom value-renderer components to be passed to <Value> component (or, prefix/postfix components).
- * @param {number} parameter_type_id
- * @returns
- */
-export const getViewComponent = (parameter_type_id) => {
-	switch (parameter_type_id) {
-		case 9:
-			return "Amount";
-		case 12:
-			return null; // return "Avatar";
-		case 14:
-			return "DateTime";
-		case 15:
-			return "Mobile";
-		default:
-			return null;
-	}
-};
-
-/**
  * Parameters to show in the Transaction History table (for agents)
  * MARK: Self History Items
+ *
+ * name - Parameter name returned from the server for this field
+ * label - Label to show in the table header
+ * sorting - If true, this column is sortable
+ * show - The DataType which determines which custom component is used to render this field
+ * parameter_type_id - The data-type of the parameter
+ * display_media_id - The media type to display this field on (screen, print, both)
+ * pattern_format - The format to use for this field (if applicable)
+ * compute - A function to compute the value of this field (if applicable). The compute function takes the value of the field, the row data, and the index of the row as arguments & returns the computed value.
+ * case_id - Whether to convert the field value to a specific case (1: uppercase, 2: lowercase, 3: titlecase)
+ * visible_in_table - Whether to show this field in the table column. If false, the field will be hidden in the table column but will still be available in the expanded row.
+ * visible_in_card - Whether to show this field in the small-screen card. If false, the field will be hidden in the card but will still be available in the expanded view.
+ * hide_by_default - Whether to hide this field by default in the table column. Only applicable for fields that are visible_in_table. If true, the field will be hidden in the table column by default but can be toggled on by the user.
+ * aggregate - What kind of aggregation to perform on this field (sum, avg, min, max, count) at the end of the table. Possible values: "sum", "avg", "min", "max", "count", "first", "last", "opening", "closing".
+ * bg - Custom background color of the column.
+ * alternateBg - Custom background color of the column for alternate rows.
  */
 export const historyParametersMetadata = [
 	{
-		name: "tx_name",
-		label: "Transaction Type",
+		name: "summary",
+		label: "Summary",
 		sorting: true,
-		show: "Avatar",
+		show: "TrxnSummary",
 		parameter_type_id: 12,
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 	{
 		name: "description",
 		label: "Description",
 		show: "Description",
 		parameter_type_id: 12,
+		visible_in_table: true,
+		hide_by_default: true,
 	},
 	{
 		name: "amount",
-		label: "Amount",
+		label: "Transaction\nAmount",
 		sorting: true,
 		show: "Payment",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
+		aggregate: "sum",
+	},
+	{
+		name: "debit",
+		label: "Debit",
+		desc: "The total amount debited from the E-value. This may include the debited transaction amount, fee, TDS, and GST, as applicable.",
+		parameter_type_id: 9,
+		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
+		aggregate: "sum",
+		// bg: "#f8d7da",
+		// alternateBg: "#f5c6cb",
+		bg: "#fdf5f6",
+		alternateBg: "#fbe6e8",
+		compute: (value, row, _index) => {
+			if (row.response_status_id === 1) {
+				// For failed transactions, show the debit amount as 0
+				// TODO: Check if this is the correct behavior. Do we still deduct fee etc?
+				return "";
+			}
+
+			return (
+				(row.amount_dr > 0 ? row.amount_dr : 0) +
+					(row.fee > 0 ? row.fee : 0) +
+					(row.tds > 0 ? row.tds : 0) +
+					(row.gst > 0 ? row.gst : 0) +
+					(row.insurance_amount > 0 ? row.insurance_amount : 0) +
+					(row.eko_gst > 0 ? row.eko_gst : 0) || ""
+			);
+		},
+	},
+	{
+		name: "credit",
+		label: "Credit",
+		desc: "The total amount credited to the E-value. This may include the credited transaction amount & the commission earned, if applicable.",
+		parameter_type_id: 9,
+		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
+		aggregate: "sum",
+		// bg: "#e3ffec",
+		// alternateBg: "#c6ffd9",
+		bg: "#f5fff8",
+		alternateBg: "#e3ffec",
+		compute: (value, row, _index) => {
+			if (row.response_status_id === 1) {
+				// For failed transactions, show the debit amount as 0
+				// TODO: Check if this is the correct behavior. Can we still credit in failed cases?
+				return "";
+			}
+
+			return (
+				(row.amount_cr > 0 ? row.amount_cr : 0) +
+					(row.commission_earned > 0 ? row.commission_earned : 0) +
+					(row.eko_service_charge > 0 ? row.eko_service_charge : 0) +
+					(row.bonus > 0 ? row.bonus : 0) || ""
+			);
+		},
+	},
+	{
+		name: "r_bal",
+		label: "Running\nBalance",
+		parameter_type_id: 9,
+		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
+		aggregate: "closing",
 	},
 	{
 		name: "tid",
@@ -55,19 +119,23 @@ export const historyParametersMetadata = [
 		parameter_type_id: 11,
 		pattern_format: "#### #### #",
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
+		hide_by_default: true,
 	},
 	{
 		name: "datetime",
 		label: "Date & Time",
 		sorting: true,
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 	{
 		name: "status",
+		label: "Status",
 		show: "Tag",
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 
 	/* ------------------------------------------------------------
@@ -88,53 +156,34 @@ export const historyParametersMetadata = [
 	{
 		name: "amount",
 		label: "Amount",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
-		display_media_id: DisplayMedia.PRINT,
+		display_media_id: DisplayMedia.BOTH,
 	},
 	{
 		name: "fee",
 		label: "Charges",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
-		display_media_id: DisplayMedia.SCREEN,
-	},
-	{
-		name: "tid",
-		label: "TID",
-		parameter_type_id: 11,
-		pattern_format: "#### #### #",
-		display_media_id: DisplayMedia.PRINT,
-	},
-	{
-		name: "settlement_type",
-		label: "Settlement Type",
-		show: "Settlement Type",
-		parameter_type_id: 12,
 		display_media_id: DisplayMedia.SCREEN,
 	},
 	// Only shown to customer as "1% (min. Rs. 10)"; maybe for DMT only. Is it required as per regulations?
 	// {
 	// 	name: "fee",
 	// 	label: "Customer Charges",
-	// 	show: getViewComponent(9),
 	// 	parameter_type_id: 9,
 	// 	display_media_id: DisplayMedia.SCREEN,
 	// },
 	{
 		name: "commission_earned",
 		label: "Commission Earned",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
-	{
-		name: "r_bal",
-		label: "Balance Amount",
-		show: getViewComponent(9),
-		parameter_type_id: 9,
-		display_media_id: DisplayMedia.SCREEN,
-	},
+	// {
+	// 	name: "r_bal",
+	// 	label: "Balance Amount",
+	// 	parameter_type_id: 9,
+	// 	display_media_id: DisplayMedia.SCREEN,
+	// },
 
 	// Add new fields below ------------------------------------
 
@@ -159,21 +208,39 @@ export const historyParametersMetadata = [
 		parameter_type_id: 10,
 		display_media_id: DisplayMedia.SCREEN,
 	},
-
+	{
+		name: "gst",
+		label: "GST",
+		parameter_type_id: 9,
+		display_media_id: DisplayMedia.SCREEN,
+	},
 	{
 		name: "eko_service_charge",
 		label: "Service Charge",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	}, // For Enterprise
 	{
 		name: "eko_gst",
 		label: "GST",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
-	}, // For Enterprise
+	}, // For Enterprise (API Partners) only
+	{
+		name: "tid",
+		label: "TID",
+		parameter_type_id: 11,
+		pattern_format: "#### #### #",
+		display_media_id: DisplayMedia.BOTH,
+	},
+
+	{
+		name: "settlement_type",
+		label: "Settlement Type",
+		show: "Settlement Type",
+		parameter_type_id: 12,
+		display_media_id: DisplayMedia.SCREEN,
+	},
 
 	{
 		name: "customer_name",
@@ -310,12 +377,6 @@ export const historyParametersMetadata = [
 	// 	// display_media_id: DisplayMedia.BOTH,
 	// },
 	{
-		name: "gst",
-		label: "GST",
-		parameter_type_id: 10,
-		display_media_id: DisplayMedia.SCREEN,
-	},
-	{
 		name: "loan_id",
 		label: "Loan ID",
 		parameter_type_id: 12,
@@ -345,7 +406,6 @@ export const historyParametersMetadata = [
 		name: "insurance_amount",
 		label: "Assurance Amount",
 		parameter_type_id: 10,
-		show: getViewComponent(10),
 		// display_media_id: DisplayMedia.BOTH,
 	},
 	{
@@ -358,16 +418,14 @@ export const historyParametersMetadata = [
 		name: "policy",
 		label: "Download Policy",
 		parameter_type_id: 31,
-		// show: getViewComponent(31),
 		// display_media_id: DisplayMedia.BOTH,
 	},
-	{
-		name: "refund_amount",
-		label: "Refunded Amount",
-		parameter_type_id: 10,
-		show: getViewComponent(10),
-		display_media_id: DisplayMedia.SCREEN,
-	},
+	// {
+	// 	name: "refund_amount",
+	// 	label: "Refunded Amount",
+	// 	parameter_type_id: 10,
+	// 	display_media_id: DisplayMedia.SCREEN,
+	// },
 	// {
 	// 	name: "plan_name",
 	// 	label: "Plan Name",
@@ -379,14 +437,12 @@ export const historyParametersMetadata = [
 	{
 		name: "datetime",
 		label: "Transaction Time",
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.PRINT,
 	},
 	{
 		name: "updated_datetime",
 		label: "Updated Time",
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.SCREEN,
 	},
@@ -395,6 +451,20 @@ export const historyParametersMetadata = [
 /**
  * Parameters to show in the Network Transactions table (for admins)
  * MARK: Network History Items
+ *
+ * name - Parameter name returned from the server for this field
+ * label - Label to show in the table header
+ * sorting - If true, this column is sortable
+ * show - The DataType which determines which custom component is used to render this field
+ * parameter_type_id - The data-type of the parameter
+ * display_media_id - The media type to display this field on (screen, print, both)
+ * pattern_format - The format to use for this field (if applicable)
+ * compute - A function to compute the value of this field (if applicable). The compute function takes the value of the field, the row data, and the index of the row as arguments & returns the computed value.
+ * case_id - Whether to convert the field value to a specific case (1: uppercase, 2: lowercase, 3: titlecase)
+ * visible_in_table - Whether to show this field in the table column. If false, the field will be hidden in the table column but will still be available in the expanded row.
+ * visible_in_card - Whether to show this field in the small-screen card. If false, the field will be hidden in the card but will still be available in the expanded view.
+ * hide_by_default - Whether to hide this field by default in the table column. Only applicable for fields that are visible_in_table. If true, the field will be hidden in the table column by default but can be toggled on by the user.
+ * aggregate - What kind of aggregation to perform on this field (sum, avg, min, max, count) at the end of the table. Possible values: "sum", "avg", "min", "max", "count", "first", "last", "opening", "closing", "total".
  */
 export const networkHistoryParametersMetadata = [
 	{
@@ -404,6 +474,7 @@ export const networkHistoryParametersMetadata = [
 		show: "Avatar",
 		parameter_type_id: 12,
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 	{
 		name: "agent_type",
@@ -411,6 +482,7 @@ export const networkHistoryParametersMetadata = [
 		sorting: true,
 		parameter_type_id: 12,
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 	{
 		name: "agent_code",
@@ -418,6 +490,7 @@ export const networkHistoryParametersMetadata = [
 		sorting: true,
 		parameter_type_id: 12,
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 	{
 		name: "tx_name",
@@ -425,6 +498,7 @@ export const networkHistoryParametersMetadata = [
 		sorting: true,
 		parameter_type_id: 12,
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 	{
 		name: "amount",
@@ -433,19 +507,21 @@ export const networkHistoryParametersMetadata = [
 		show: "Payment",
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 	{
 		name: "datetime",
 		label: "Date & Time",
 		sorting: true,
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 	{
 		name: "status",
 		show: "Tag",
 		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
 	},
 
 	/* ------------------------------------------------------------
@@ -472,14 +548,12 @@ export const networkHistoryParametersMetadata = [
 	{
 		name: "amount",
 		label: "Amount",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.PRINT,
 	},
 	{
 		name: "fee",
 		label: "Charges",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
@@ -500,14 +574,12 @@ export const networkHistoryParametersMetadata = [
 	{
 		name: "commission_earned",
 		label: "Commission Earned",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	},
 	// {
 	// 	name: "r_bal",
 	// 	label: "Balance Amount",
-	// 	show: getViewComponent(9),
 	// 	parameter_type_id: 9,
 	// 	display_media_id: DisplayMedia.SCREEN,
 	// },
@@ -539,14 +611,12 @@ export const networkHistoryParametersMetadata = [
 	{
 		name: "eko_service_charge",
 		label: "Service Charge",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	}, // For Enterprise
 	{
 		name: "eko_gst",
 		label: "GST",
-		show: getViewComponent(9),
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 	}, // For Enterprise
@@ -728,7 +798,6 @@ export const networkHistoryParametersMetadata = [
 		name: "insurance_amount",
 		label: "Assurance Amount",
 		parameter_type_id: 10,
-		show: getViewComponent(10),
 		// display_media_id: DisplayMedia.BOTH,
 	},
 	{
@@ -741,14 +810,12 @@ export const networkHistoryParametersMetadata = [
 		name: "policy",
 		label: "Download Policy",
 		parameter_type_id: 31,
-		// show: getViewComponent(31),
 		// display_media_id: DisplayMedia.BOTH,
 	},
 	{
 		name: "refund_amount",
 		label: "Refunded Amount",
 		parameter_type_id: 10,
-		show: getViewComponent(10),
 		display_media_id: DisplayMedia.SCREEN,
 	},
 	// {
@@ -762,14 +829,12 @@ export const networkHistoryParametersMetadata = [
 	{
 		name: "datetime",
 		label: "Transaction Time",
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.PRINT,
 	},
 	{
 		name: "updated_datetime",
 		label: "Updated Time",
-		show: getViewComponent(14),
 		parameter_type_id: 14,
 		display_media_id: DisplayMedia.SCREEN,
 	},

@@ -196,6 +196,16 @@ const FileViewContent = ({
 					maxW="100%"
 					borderRadius="6px"
 					overflow="hidden"
+					config={{
+						youtube: {
+							playerVars: {
+								modestbranding: 1,
+								// controls: 0,
+								rel: 0,
+								showinfo: 0,
+							},
+						},
+					}}
 					onReady={() => setIsReady(true)}
 				/>
 			);

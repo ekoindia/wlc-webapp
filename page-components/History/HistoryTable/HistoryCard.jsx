@@ -19,17 +19,14 @@ const animSlideDown = keyframes`
 `;
 
 /**
- * A <HistoryCard> component
- * TODO: Write more description here
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @param prop.item
- * @param prop.renderer
- * @param prop.expanded
- * @param prop.toggleExpand
- * @param prop.visibleColumns
- * @example	`<HistoryCard></HistoryCard>` TODO: Fix example
+ * Responsive History Card: A card component to show a row of transaction-history on small screens.
+ * This component displays transaction details with options to expand for more information.
+ * @param {object} prop - Properties passed to the component
+ * @param {object} prop.item - The transaction item to display
+ * @param {Array} prop.renderer - The renderer functions or components
+ * @param {boolean} prop.expanded - Flag indicating if the card is expanded
+ * @param {Function} prop.toggleExpand - Function to toggle the expanded state
+ * @param {number} prop.visibleColumns - Number of visible columns
  */
 const HistoryCard = ({
 	item,

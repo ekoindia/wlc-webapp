@@ -2,6 +2,7 @@ import { Flex, Text } from "@chakra-ui/react";
 import { Button, Icon, Modal } from "components";
 import { Fragment } from "react";
 import { Form } from "tf-components";
+import { useHistory } from "./HistoryContext";
 
 /**
  * A HistoryToolbar page-component
@@ -21,6 +22,9 @@ const HistoryToolbar = ({
 	searchBarConfig,
 	actionBtnConfig,
 }) => {
+	// Get context values from HistoryContext
+	const { historyParameterMetadata } = useHistory();
+
 	return (
 		<Flex
 			gap="2"
@@ -54,6 +58,7 @@ const HistoryToolbar = ({
 					icon,
 					parameter_list,
 					handleSubmit,
+					Component,
 					register,
 					control,
 					errors,
@@ -88,45 +93,53 @@ const HistoryToolbar = ({
 							onClose={() => setOpenModalId(null)}
 							title={label}
 						>
-							<form onSubmit={handleSubmit(handleFormSubmit)}>
-								<Flex
-									direction="column"
-									w="100%"
-									gap="8"
-									mb="4"
-								>
-									<Form
-										{...{
-											parameter_list,
-											register,
-											control,
-											formValues,
-											errors,
-											gap: "2",
-											hideOptionalMark: true,
-										}}
-									/>
-									<Flex gap="4">
-										<Button
-											w="100%"
-											size="md"
-											variant="link"
-											color="primary.dark"
-											onClick={secondaryButtonAction}
-										>
-											{secondaryButtonText}
-										</Button>
-										<Button
-											w="100%"
-											size="md"
-											type="submit"
-											loading={isSubmitting}
-										>
-											{submitButtonText}
-										</Button>
+							{Component ? (
+								<Component
+									{...{
+										historyParameterMetadata,
+									}}
+								/>
+							) : (
+								<form onSubmit={handleSubmit(handleFormSubmit)}>
+									<Flex
+										direction="column"
+										w="100%"
+										gap="8"
+										mb="4"
+									>
+										<Form
+											{...{
+												parameter_list,
+												register,
+												control,
+												formValues,
+												errors,
+												gap: "2",
+												hideOptionalMark: true,
+											}}
+										/>
+										<Flex gap="4">
+											<Button
+												w="100%"
+												size="md"
+												variant="link"
+												color="primary.dark"
+												onClick={secondaryButtonAction}
+											>
+												{secondaryButtonText}
+											</Button>
+											<Button
+												w="100%"
+												size="md"
+												type="submit"
+												loading={isSubmitting}
+											>
+												{submitButtonText}
+											</Button>
+										</Flex>
 									</Flex>
-								</Flex>
-							</form>
+								</form>
+							)}
 						</Modal>
 					</Fragment>
 				)
