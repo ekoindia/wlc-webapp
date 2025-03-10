@@ -1,9 +1,9 @@
 import {
 	Box,
-	Flex,
 	Table as ChakraTable,
-	TableContainer,
 	Tbody as ChakraTbody,
+	Flex,
+	TableContainer,
 	Thead,
 	useMediaQuery,
 } from "@chakra-ui/react";
@@ -12,6 +12,7 @@ import { tableRowLimit as trl } from "constants";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Tbody, Th } from ".";
+import { useHistory } from "../HistoryContext";
 
 /**
  * A Table component
@@ -22,7 +23,6 @@ import { Tbody, Th } from ".";
  * @param prop.isLoading
  * @param prop.pageNumber
  * @param prop.setPageNumber
- * @param prop.visibleColumns
  * @param prop.ResponsiveCard
  * @param prop.variant
  * @param prop.tableRowLimit
@@ -36,7 +36,6 @@ const Table = ({
 	// totalRecords,
 	pageNumber = 1,
 	setPageNumber = () => {},
-	visibleColumns,
 	// onRowClick,
 	ResponsiveCard,
 	variant = "stripedActionExpand",
@@ -46,14 +45,23 @@ const Table = ({
 	const [, setHasNoMoreItems] = useState(false);
 	const router = useRouter();
 	const [isSmallScreen] = useMediaQuery("only screen and (max-width: 860px)");
-	// const isSmallScreen = useBreakpointValue({ base: true, lg: false });
-	const [expandedRow, setExpandedRow] = useState(null);
-	const toggleExpand = (index) => {
-		setExpandedRow(index === expandedRow ? null : index);
-	};
 
-	const tableDataSize = data?.length;
+	// Get context values from HistoryContext
+	const {
+		mainColumns,
+		extraColumns,
+		visibleColumns,
+		expandedRow,
+		setExpandedRow,
+		toggleExpand,
+	} = useHistory();
 
+	const tableDataSize = data?.length || 0;
+
+	/**
+	 * Set the page number from the page number in the URL query string
+	 * and reset the expanded row
+	 */
 	useEffect(() => {
 		if (router.query.page && +router.query.page !== pageNumber) {
 			setPageNumber(+router.query.page);
@@ -61,6 +69,10 @@ const Table = ({
 		setExpandedRow(null);
 	}, [router.query.page]);
 
+	/**
+	 * Prepare the mobile cards for the table
+	 * @returns {JSX.Element[]} - Array of mobile cards
+	 */
 	const prepareMobileCards = () => {
 		return data?.map((item, index) => (
 			<Box
@@ -97,17 +109,21 @@ const Table = ({
 				// Large screen
 				<TableContainer
 					borderRadius="10px 10px 0 0"
-					mt={{ base: "20px", "2xl": "10px" }} //TODO remove this
+					mt={{ base: "20px", "2xl": "10px" }}
 					border="1px solid #E9EDF1"
 					css={{
 						"&::-webkit-scrollbar": {
-							height: "2px",
-							width: "7px",
+							height: "10px",
 						},
-
 						"&::-webkit-scrollbar-thumb": {
-							background: "#555555",
-							border: "1px solid #707070",
+							background: "#757575",
+							borderRadius: "99px",
+						},
+						"&::-webkit-scrollbar-thumb:hover": {
+							background: "#888",
+						},
+						"&::-webkit-scrollbar-track": {
+							background: "#e1e1e1",
 						},
 					}}
 					sx={{
@@ -127,17 +143,20 @@ const Table = ({
 									: null,
 							}}
 						>
-							<Th {...{ renderer, visibleColumns }} />
+							<Th
+								columns={mainColumns}
+								isExpandable={extraColumns?.length}
+							/>
 						</Thead>
 						<ChakraTbody>
 							<Tbody
 								{...{
 									data,
-									renderer,
 									// onRowClick,
 									pageNumber,
 									tableRowLimit,
-									visibleColumns,
+									mainColumns,
+									extraColumns,
 									isLoading,
 									printExpansion,
 									expandedRow,
@@ -161,7 +180,7 @@ const Table = ({
 			)}
 
 			{/* Pagination */}
-			{!(tableDataSize < tableRowLimit && pageNumber === 1) && (
+			{tableDataSize < tableRowLimit && pageNumber === 1 ? null : (
 				<Pagination
 					className="pagination-bar"
 					currentPage={pageNumber}

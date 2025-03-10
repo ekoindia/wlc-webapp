@@ -1,18 +1,18 @@
 import {
 	Box,
+	Td as ChakraTd,
+	Tr as ChakraTr,
 	Divider,
 	Flex,
 	keyframes,
 	Skeleton,
-	Td as ChakraTd,
 	Text,
-	Tr as ChakraTr,
 } from "@chakra-ui/react";
 import { Button, Share } from "components";
 import { useMenuContext, useOrgDetailContext } from "contexts";
 import { useFeatureFlag, useRaiseIssue } from "hooks";
 import useHslColor from "hooks/useHslColor";
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { printPage } from "utils";
 import {
 	generateShareMessage,
@@ -28,11 +28,11 @@ const animSlideDown = keyframes`
 
 const Tbody = ({
 	data,
-	renderer,
+	mainColumns,
+	extraColumns,
 	// onRowClick,
 	pageNumber,
 	tableRowLimit,
-	visibleColumns,
 	isLoading,
 	printExpansion = false,
 	expandedRow,
@@ -40,21 +40,34 @@ const Tbody = ({
 }) => {
 	const { interactions } = useMenuContext();
 	const { trxn_type_prod_map } = interactions;
+	const [isExpandable, setIsExpandable] = useState(false); // Is the row expandable (i.e, has extra columns)
+	const [columns, setColumns] = useState([]); // Fields to show in the table columns
 
-	const visible = visibleColumns > 0;
+	/**
+	 * Set columns to show in the table.
+	 * Also, Set isExpandable to true if there are extra columns.
+	 * Also, add an extra column to the mainColumns for the expand button.
+	 */
+	useEffect(() => {
+		setIsExpandable(extraColumns?.length > 0);
 
-	const mainColumns = visible
-		? [
-				{ label: "", show: "ExpandButton" },
-				...(renderer?.slice(0, visibleColumns) ?? []),
-			]
-		: renderer;
-
-	const extraColumns = visible ? renderer?.slice(visibleColumns) : [];
-	// const printExtras = [{ name: "trx_name", label: "Transaction" }]
+		// Set the columns to show in the table
+		setColumns(
+			extraColumns?.length > 0
+				? [
+						{
+							label: "",
+							show: "ExpandButton",
+							width: "35px",
+						},
+						...mainColumns,
+					]
+				: mainColumns
+		);
+	}, [mainColumns, extraColumns]);
 
 	const handleRowClick = (index) => {
-		if (visible) {
+		if (isExpandable) {
 			setExpandedRow(index === expandedRow ? null : index);
 		}
 		// else if (onRowClick !== undefined) {
@@ -62,12 +75,13 @@ const Tbody = ({
 		// }
 	};
 
+	// Show the skeleton loader if data is loading...
 	if (isLoading) {
 		return Array(5)
 			.fill(Math.random())
 			.map((item, index) => (
 				<ChakraTr key={`${item}-${index}`}>
-					{mainColumns?.map((column, index) => (
+					{columns?.map((column, index) => (
 						<ChakraTd
 							p={{ base: ".5em", xl: "1em" }}
 							key={`${column.label}-${index}`}
@@ -89,7 +103,7 @@ const Tbody = ({
 			{...{
 				item,
 				index,
-				mainColumns,
+				mainColumns: columns,
 				extraColumns,
 				handleRowClick,
 				pageNumber,
@@ -154,10 +168,27 @@ const Trow = ({
 				}}
 			>
 				{mainColumns?.map((column, rendererIndex) => {
+					const bg =
+						index % 2
+							? column?.alternateBg || "initial"
+							: column?.bg || "initial";
 					return (
 						<ChakraTd
-							p={{ base: ".5em", xl: "1em" }}
+							p={{ base: "0.2em 0.4em", xl: "0.6em 1em" }}
+							w={column.width || "auto"}
 							key={`td-${rendererIndex}-${column.label}-${serialNumber}`}
+							_notFirst={{
+								borderLeft: "1px solid #dadada",
+							}}
+							bg={bg}
+							isNumeric={
+								column?.parameter_type_id === 9 ? true : false
+							}
+							textAlign={
+								column?.parameter_type_id === 9
+									? "right"
+									: "left"
+							}
 						>
 							{prepareTableCell(
 								item,
@@ -176,7 +207,7 @@ const Trow = ({
 			{expandedRow === index && (
 				<ChakraTd
 					colSpan={mainColumns.length}
-					bg={index % 2 ? "shade" : "initial"}
+					bg="focusbg" // bg={index % 2 ? "shade" : "initial"}
 					pl={{ base: 0, md: "40px" }}
 					pr="10px"
 					sx={{

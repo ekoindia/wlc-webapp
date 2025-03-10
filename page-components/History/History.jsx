@@ -20,13 +20,21 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { ANDROID_ACTION, calculateDateBefore, doAndroidAction } from "utils";
 import { saveDataToFile } from "utils/FileSave";
-import { HistoryTable, HistoryToolbar } from ".";
+import { HistoryTable, HistoryToolbar /*, ToggleColumns */ } from ".";
+import { HistoryProvider } from "./HistoryContext";
+import {
+	getAdditionalTransactionMetadata,
+	getHistoryTableProcessedData,
+	historyParametersMetadata,
+	networkHistoryParametersMetadata,
+} from "./HistoryTable";
 
 const limit = tableRowLimit?.XLARGE; // Page size
 
 const action = {
 	FILTER: 0,
 	EXPORT: 1,
+	TOGGLE_COLUMNS: 2,
 };
 
 const calendar_min_date = calculateDateBefore(new Date(), 90, "yyyy-MM-dd");
@@ -83,6 +91,8 @@ const History = ({ forNetwork = false }) => {
 	const { trxn_type_prod_map } = interactions;
 
 	const [history_interaction_list, setHistoryInteractionList] = useState([]);
+
+	// Fetch history_interaction_list
 	useEffect(() => {
 		if (!trxn_type_prod_map) return;
 
@@ -102,6 +112,7 @@ const History = ({ forNetwork = false }) => {
 		const _today = new Date();
 		return formatDate(_today, "yyyy-MM-dd");
 	});
+
 	const [firstDateOfMonth] = useState(() => {
 		const _currentDate = new Date();
 		const _firstDateOfMonth = new Date(
@@ -319,6 +330,7 @@ const History = ({ forNetwork = false }) => {
 
 	/**
 	 * Search for a transaction based on the query. The query can be a transaction-id, account, amount, or, a mobile number.
+	 * MARK: Quick Search
 	 * @param {*} search
 	 * @param otherQueries
 	 */
@@ -407,6 +419,7 @@ const History = ({ forNetwork = false }) => {
 		setOpenModalId(null);
 	};
 
+	// MARK: Filter Submit
 	const onFilterSubmit = (data) => {
 		// Get all non-empty values from formState and set in finalFormState
 		const _finalFormState = {};
@@ -563,7 +576,7 @@ const History = ({ forNetwork = false }) => {
 		hideOptionalMark: true,
 	};
 
-	// MARK: Toolbar Buttons
+	// MARK: Toolbar
 	const actionBtnConfig = [
 		{
 			id: action.FILTER,
@@ -621,6 +634,12 @@ const History = ({ forNetwork = false }) => {
 			secondaryButtonText: "Cancel",
 			secondaryButtonAction: () => setOpenModalId(null),
 		},
+		// {
+		// 	id: action.TOGGLE_COLUMNS,
+		// 	label: "Columns",
+		// 	icon: "visibility",
+		// 	Component: ToggleColumns,
+		// },
 	];
 
 	// Set GlobalSearch title
@@ -700,6 +719,26 @@ const History = ({ forNetwork = false }) => {
 		watcherExport.tx_date,
 	]);
 
+	// How many columns to show in the table (for self or network history)
+	// TODO: REDUNDANT. Calculate visible columns in HistoryCard (mobile view) directly from history_parameter_metadata
+	const visibleColumns = forNetwork ? 7 : 7;
+
+	const processedData = useMemo(
+		() => getHistoryTableProcessedData(transactionList),
+		[transactionList]
+	);
+
+	const { trxn_data, history_parameter_metadata } = useMemo(
+		() =>
+			getAdditionalTransactionMetadata(
+				processedData,
+				forNetwork
+					? networkHistoryParametersMetadata
+					: historyParametersMetadata
+			),
+		[processedData, forNetwork]
+	);
+
 	// MARK: JSX
 	return (
 		<>
@@ -709,93 +748,108 @@ const History = ({ forNetwork = false }) => {
 				}
 				isBeta={forNetwork ? true : false}
 			/>
-			<Flex
-				w="full"
-				h="auto"
-				p={{ base: "0px", md: "20px", "2xl": "14px 30px 30px 30px" }}
-				direction={"column"}
-				border={{ base: "", md: "card" }}
-				borderRadius={{ base: "0", md: "10" }}
-				boxShadow={{ base: "none", md: "0px 5px 15px #0000000D;" }}
-				align="center"
-				bg={{ base: "none", md: "white" }}
-				px="16px"
-				sx={{
-					"@media print": {
-						padding: "0 !important",
-						bg: "none !important",
-					},
-				}}
+			<HistoryProvider
+				historyParameterMetadata={history_parameter_metadata}
+				data={trxn_data}
+				initialVisibleColumns={visibleColumns}
+				initialIsFiltered={isFiltered}
+				forNetwork={forNetwork}
+				onClearFilter={clearFilter}
 			>
-				<HistoryToolbar
-					{...{
-						isFiltered,
-						clearFilter,
-						openModalId,
-						setOpenModalId,
-						searchBarConfig,
-						actionBtnConfig,
-						forNetwork,
-					}}
-				/>
-
-				<PrintReceipt heading="Transaction Receipt (Copy)">
-					<HistoryTable
-						{...{
-							loading,
-							transactionList,
-							tableRowLimit: limit,
-							pageNumber: currentPage,
-							setPageNumber: setCurrentPage,
-							forNetwork,
-						}}
-					/>
-				</PrintReceipt>
-
 				<Flex
-					display={isFiltered ? "flex" : "none"}
+					w="full"
+					h="auto"
+					p={{
+						base: "0px",
+						md: "20px",
+						"2xl": "14px 30px 30px 30px",
+					}}
+					direction={"column"}
+					border={{ base: "", md: "card" }}
+					borderRadius={{ base: "0", md: "10" }}
+					boxShadow={{ base: "none", md: "0px 5px 15px #0000000D;" }}
 					align="center"
-					gap="2"
-					mt="6"
+					bg={{ base: "none", md: "white" }}
+					px="16px"
 					sx={{
 						"@media print": {
-							display: "none !important",
+							padding: "0 !important",
+							bg: "none !important",
 						},
 					}}
 				>
-					<Flex color="light" fontSize="xs">
-						Filtering by &thinsp;
-						{filteredItemLabels
-							?.slice(0, filterItemLimit)
-							.map((val, index) => (
-								<Text
-									key={index}
-									color="dark"
-									fontWeight="semibold"
-									whiteSpace="nowrap"
-								>
-									{`${val}${
-										index !== filteredItemLabels.length - 1
-											? ",\u{2009}"
-											: ""
-									}`}
+					<HistoryToolbar
+						{...{
+							isFiltered,
+							clearFilter,
+							openModalId,
+							setOpenModalId,
+							searchBarConfig,
+							actionBtnConfig,
+							forNetwork,
+						}}
+					/>
+
+					<PrintReceipt heading="Transaction Receipt (Copy)">
+						<HistoryTable
+							{...{
+								loading,
+								// transactionList,
+								tableRowLimit: limit,
+								pageNumber: currentPage,
+								setPageNumber: setCurrentPage,
+								forNetwork,
+							}}
+						/>
+					</PrintReceipt>
+
+					<Flex
+						display={isFiltered ? "flex" : "none"}
+						align="center"
+						gap="2"
+						mt="6"
+						sx={{
+							"@media print": {
+								display: "none !important",
+							},
+						}}
+					>
+						<Flex color="light" fontSize="xs">
+							Filtering by &thinsp;
+							{filteredItemLabels
+								?.slice(0, filterItemLimit)
+								.map((val, index) => (
+									<Text
+										key={index}
+										color="dark"
+										fontWeight="semibold"
+										whiteSpace="nowrap"
+									>
+										{`${val}${
+											index !==
+											filteredItemLabels.length - 1
+												? ",\u{2009}"
+												: ""
+										}`}
+									</Text>
+								))}
+							{(filteredItemLabels?.length || 0) -
+								filterItemLimit >
+								0 && (
+								<Text color="dark" fontWeight="semibold">
+									{`and ${
+										(filteredItemLabels?.length || 0) -
+										filterItemLimit
+									} more`}
 								</Text>
-							))}
-						{(filteredItemLabels?.length || 0) - filterItemLimit >
-							0 && (
-							<Text color="dark" fontWeight="semibold">
-								{`and ${
-									(filteredItemLabels?.length || 0) -
-									filterItemLimit
-								} more`}
-							</Text>
-						)}
+							)}
+						</Flex>
+						<Button size="xs" onClick={() => clearFilter()}>
+							Show All
+						</Button>
 					</Flex>
-					<Button size="xs" onClick={() => clearFilter()}>
-						Show All
-					</Button>
 				</Flex>
-			</Flex>
+			</HistoryProvider>
 		</>
 	);
 };

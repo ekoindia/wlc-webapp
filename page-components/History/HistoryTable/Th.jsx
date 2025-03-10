@@ -1,24 +1,19 @@
-import { Flex, Th as ChakraTh } from "@chakra-ui/react";
+import { Th as ChakraTh, Flex, Tooltip } from "@chakra-ui/react";
 import { Fragment } from "react";
 
 /**
- * A Th component
- * TODO: Write more description here
+ * A Table Header component for the Transaction History Table
  * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	prop.prop1	TODO: Property description.
- * @param	{...*}	rest	Rest of the props passed to this component.
- * @param prop.renderer
- * @param prop.visibleColumns
- * @example	`<Th></Th>` TODO: Fix example
+ * @param	{Array}	prop.columns	Columns passed to the component.
+ * @param	{boolean}	prop.isExpandable	Indicates if rows of the table can be expanded. It adds an extra column for the expand button.
  */
-const Th = ({ renderer, visibleColumns }) => {
-	const visible = visibleColumns > 0;
-	const main = visible
+const Th = ({ columns, isExpandable }) => {
+	const main = isExpandable
 		? [
-				{ label: "", show: "ExpandButton" },
-				...(renderer?.slice(0, visibleColumns) ?? []),
+				{ label: "" }, // Extra column for expand button
+				...columns,
 			]
-		: renderer;
+		: columns;
 
 	return main.map((item, index) => {
 		let labelContent = item.label;
@@ -49,14 +44,22 @@ const Th = ({ renderer, visibleColumns }) => {
 					base: isMultiLine ? "2px .5em" : "4px .5em",
 					xl: isMultiLine ? "4px 1em" : "8px 1em",
 				}}
+				w={item.width || "auto"}
 				fontSize={{ base: "xxs", lg: "xs" }}
 				cursor="default"
 			>
-				<Flex gap="2" align="center">
-					{labelContent}
-					{/* {item.label} */}
-					{/* {item.sorting && <Icon name="sort" size="8px" />} */}
-				</Flex>
+				<Tooltip
+					label={item?.desc}
+					placement="bottom"
+					gutter="18"
+					hasArrow
+				>
+					<Flex align="center" justify="center">
+						{labelContent}
+						{/* {item.label} */}
+						{/* {item.sorting && <Icon name="sort" size="8px" />} */}
+					</Flex>
+				</Tooltip>
 			</ChakraTh>
 		);
 	});
