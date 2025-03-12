@@ -1,6 +1,8 @@
 # Eloka Web App by Eko
 Project "Infinity": A white-labelled SaaS platform to run your business like agent-banking, micro-finance, etc.
 
+![Uptime](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fekoindia%2Fuptime%2Fmaster%2Fapi%2Feloka-webapp%2Fuptime.json)
+
 
 ## 🧑‍💻 Setup Development Envoirnment:
 
