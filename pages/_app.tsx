@@ -42,12 +42,15 @@ const toastDefaultOptions = {
 };
 
 /**
- *
- * @param root0
- * @param root0.Component
- * @param root0.pageProps
- * @param root0.router
- * @param root0.org
+ * Main App component for the Infinity application.
+ * This component wraps the entire application and provides global context providers.
+ * It also handles the initial loading of organization details and sets up the theme.
+ * @param {object} props - The properties passed to the component.
+ * @param {object} props.Component - The current page component.
+ * @param {object} props.pageProps - The properties passed to the current page component.
+ * @param {object} props.router - The Next.js router object.
+ * @param {object} props.org - The organization details.
+ * @returns {JSX.Element} The rendered component.
  */
 export default function InfinityApp({ Component, pageProps, router, org }) {
 	console.log("[_app.tsx] Started: ", {
@@ -273,6 +276,7 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 					href="/manifest.json"
 					crossOrigin="anonymous"
 				/>
+				<link rel="canonical" href={org?.canonicalUrl} />
 			</Head>
 
 			{/* {process.env.NEXT_PUBLIC_GTM_ID ? (
@@ -298,11 +302,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 InfinityApp.getInitialProps = async function (appContext) {
 	const { ctx } = appContext;
-	const { res, pathname } = ctx;
 
 	const defaultProps = App.getInitialProps(appContext);
 
-	if (pathname === "/404") {
+	if (ctx?.pathname === "/404") {
 		return {
 			...defaultProps,
 		};
@@ -320,13 +323,21 @@ InfinityApp.getInitialProps = async function (appContext) {
 		if (orgDetails) {
 			return {
 				...defaultProps,
-				org: JSON.parse(orgDetails),
+				org: {
+					...JSON.parse(orgDetails),
+					canonicalUrl: window?.location?.href?.replace(
+						/^http:\/\//i,
+						"https://"
+					),
+				},
 			};
 		}
 	}
 
+	const { req, res } = ctx;
+
 	// This should be executed server-side only...
-	const host = ctx?.req?.headers?.host; // || window?.location?.host;
+	const host = req?.headers?.host; // || window?.location?.host;
 
 	if (!host) {
 		console.error("[_app.tsx - getInitialProps] Host not found");
@@ -370,7 +381,10 @@ InfinityApp.getInitialProps = async function (appContext) {
 
 	return {
 		...defaultProps,
-		org: org_details?.props?.data,
+		org: {
+			...org_details?.props?.data,
+			canonicalUrl: "https://" + host + req?.url,
+		},
 	};
 };
 
