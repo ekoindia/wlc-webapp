@@ -30,7 +30,7 @@ const statusChecker = {
 	other: "light",
 };
 
-export const getAvatar = (name, icon, hue) => {
+export const getAvatar = (name = "", icon, hue) => {
 	const _name = numberRemover(name);
 
 	const needDefaultIcon = _name?.length < 1;
@@ -143,7 +143,7 @@ const getStatusColor = (response_status_id) => {
 export const getTrxnSummaryStyle = (item, icon, hue) => {
 	if (!item) return "";
 
-	const name = item?.tx_name;
+	const name = item?.tx_name ?? "";
 	const _name = numberRemover(name);
 
 	const needDefaultIcon = _name?.length < 1;
