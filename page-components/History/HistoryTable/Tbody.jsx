@@ -58,7 +58,7 @@ const Tbody = ({
 						{
 							label: "",
 							show: "ExpandButton",
-							width: "35px",
+							width: "min-content",
 						},
 						...mainColumns,
 					]
