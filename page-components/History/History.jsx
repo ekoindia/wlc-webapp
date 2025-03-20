@@ -72,8 +72,8 @@ const History = ({ forNetwork = false }) => {
 	};
 	const router = useRouter();
 	const { userData, isAdmin } = useUser();
-	const { accountDetails } = userData;
-	const { account_list } = accountDetails;
+	const { accountDetails } = userData ?? {};
+	const { account_list } = accountDetails ?? {};
 	const { accessToken } = useSession();
 	const { setSearchTitle } = useGlobalSearch();
 	const [data, setData] = useState();

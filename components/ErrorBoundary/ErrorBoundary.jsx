@@ -6,7 +6,7 @@ import React from "react";
  * An ErrorBoundary component to catch JavaScript errors anywhere
  * in their child component tree, log those errors, and display
  * a fallback UI.
- * @see https://reactjs.org/docs/error-boundaries.html
+ * @see https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary
  */
 class ErrorBoundary extends React.Component {
 	constructor(props) {

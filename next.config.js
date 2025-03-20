@@ -153,11 +153,11 @@ const nextConfig = {
 				destination: "https://connect.eko.in/script/:path*",
 			},
 
-			// Dynamic sitemap.xml for each organization
-			{
-				source: "/sitemap.xml",
-				destination: "/api/sitemap-proxy",
-			},
+			// Dynamic sitemap.xml for each organization (not needed for now)
+			// {
+			// 	source: "/sitemap.xml",
+			// 	destination: "/api/sitemap-proxy",
+			// },
 		];
 	},
 	// async headers() {
