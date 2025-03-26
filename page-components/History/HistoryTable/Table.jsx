@@ -5,6 +5,7 @@ import {
 	Flex,
 	TableContainer,
 	Thead,
+	Tr,
 	useMediaQuery,
 } from "@chakra-ui/react";
 import { Pagination } from "components";
@@ -52,6 +53,7 @@ const Table = ({
 		extraColumns,
 		visibleColumns,
 		expandedRow,
+		aggregatedData,
 		setExpandedRow,
 		toggleExpand,
 	} = useHistory();
@@ -143,10 +145,12 @@ const Table = ({
 									: null,
 							}}
 						>
-							<Th
-								columns={mainColumns}
-								isExpandable={extraColumns?.length}
-							/>
+							<Tr>
+								<Th
+									columns={mainColumns}
+									isExpandable={extraColumns?.length}
+								/>
+							</Tr>
 						</Thead>
 						<ChakraTbody>
 							<Tbody
@@ -157,6 +161,7 @@ const Table = ({
 									tableRowLimit,
 									mainColumns,
 									extraColumns,
+									aggregatedData,
 									isLoading,
 									printExpansion,
 									expandedRow,

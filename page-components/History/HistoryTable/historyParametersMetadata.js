@@ -16,7 +16,7 @@ import { DisplayMedia } from "constants/trxnFramework";
  * visible_in_table - Whether to show this field in the table column. If false, the field will be hidden in the table column but will still be available in the expanded row.
  * visible_in_card - Whether to show this field in the small-screen card. If false, the field will be hidden in the card but will still be available in the expanded view.
  * hide_by_default - Whether to hide this field by default in the table column. Only applicable for fields that are visible_in_table. If true, the field will be hidden in the table column by default but can be toggled on by the user.
- * aggregate - What kind of aggregation to perform on this field (sum, avg, min, max, count) at the end of the table. Possible values: "sum", "avg", "min", "max", "count", "first", "last", "opening", "closing".
+ * aggregate - What kind of aggregation to perform on this field (sum, avg, min, max, count) at the end of the table. It contains type & label. Possible values of `type`: "sum", "avg", "min", "max", "count", "first", "last", "opening", "closing".
  * bg - Custom background color of the column.
  * alternateBg - Custom background color of the column for alternate rows.
  */
@@ -46,8 +46,25 @@ export const historyParametersMetadata = [
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
-		aggregate: "sum",
 	},
+
+	{
+		name: "fee",
+		label: "Charges",
+		parameter_type_id: 9,
+		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
+		hide_by_default: true,
+	},
+	{
+		name: "commission_earned",
+		label: "Commission",
+		parameter_type_id: 9,
+		display_media_id: DisplayMedia.SCREEN,
+		visible_in_table: true,
+		hide_by_default: true,
+	},
+
 	{
 		name: "debit",
 		label: "Debit",
@@ -55,7 +72,7 @@ export const historyParametersMetadata = [
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
-		aggregate: "sum",
+		aggregate: { type: "sum", label: "Total Debit" },
 		// bg: "#f8d7da",
 		// alternateBg: "#f5c6cb",
 		bg: "#fdf5f6",
@@ -84,7 +101,7 @@ export const historyParametersMetadata = [
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
-		aggregate: "sum",
+		aggregate: { type: "sum", label: "Total Credit" },
 		// bg: "#e3ffec",
 		// alternateBg: "#c6ffd9",
 		bg: "#f5fff8",
@@ -110,7 +127,7 @@ export const historyParametersMetadata = [
 		parameter_type_id: 9,
 		display_media_id: DisplayMedia.SCREEN,
 		visible_in_table: true,
-		aggregate: "closing",
+		aggregate: { type: "first", label: "Closing Balance" },
 	},
 	{
 		name: "tid",
@@ -464,7 +481,7 @@ export const historyParametersMetadata = [
  * visible_in_table - Whether to show this field in the table column. If false, the field will be hidden in the table column but will still be available in the expanded row.
  * visible_in_card - Whether to show this field in the small-screen card. If false, the field will be hidden in the card but will still be available in the expanded view.
  * hide_by_default - Whether to hide this field by default in the table column. Only applicable for fields that are visible_in_table. If true, the field will be hidden in the table column by default but can be toggled on by the user.
- * aggregate - What kind of aggregation to perform on this field (sum, avg, min, max, count) at the end of the table. Possible values: "sum", "avg", "min", "max", "count", "first", "last", "opening", "closing", "total".
+ * aggregate - What kind of aggregation to perform on this field (sum, avg, min, max, count) at the end of the table. Possible values: "sum", "avg", "min", "max", "count", "opening", "closing".
  */
 export const networkHistoryParametersMetadata = [
 	{
