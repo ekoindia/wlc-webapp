@@ -2,7 +2,6 @@ import { Flex, Text } from "@chakra-ui/react";
 import { Button, Icon, Modal } from "components";
 import { Fragment } from "react";
 import { Form } from "tf-components";
-import { useHistory } from "./HistoryContext";
 
 /**
  * A HistoryToolbar page-component
@@ -22,9 +21,6 @@ const HistoryToolbar = ({
 	searchBarConfig,
 	actionBtnConfig,
 }) => {
-	// Get context values from HistoryContext
-	const { historyParameterMetadata } = useHistory();
-
 	return (
 		<Flex
 			gap="2"
@@ -69,6 +65,7 @@ const HistoryToolbar = ({
 					secondaryButtonAction,
 					secondaryButtonText,
 					styles,
+					desktopOnly,
 				}) => (
 					<Fragment key={id}>
 						<Button
@@ -78,6 +75,11 @@ const HistoryToolbar = ({
 								setOpenModalId(id === openModalId ? null : id)
 							}
 							{...styles}
+							display={
+								desktopOnly
+									? { base: "none", md: "flex" }
+									: "flex"
+							}
 						>
 							<Icon name={icon} size="sm" />
 							&nbsp;
@@ -94,13 +96,14 @@ const HistoryToolbar = ({
 							title={label}
 						>
 							{Component ? (
-								<Component
-									{...{
-										historyParameterMetadata,
-									}}
-								/>
+								<Component />
 							) : (
-								<form onSubmit={handleSubmit(handleFormSubmit)}>
+								<form
+									onSubmit={
+										handleSubmit &&
+										handleSubmit(handleFormSubmit)
+									}
+								>
 									<Flex
 										direction="column"
 										w="100%"

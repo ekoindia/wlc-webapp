@@ -20,7 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { ANDROID_ACTION, calculateDateBefore, doAndroidAction } from "utils";
 import { saveDataToFile } from "utils/FileSave";
-import { HistoryTable, HistoryToolbar /*, ToggleColumns */ } from ".";
+import { HistoryTable, HistoryToolbar, ToggleColumns } from ".";
 import { HistoryProvider } from "./HistoryContext";
 import {
 	getAdditionalTransactionMetadata,
@@ -634,12 +634,13 @@ const History = ({ forNetwork = false }) => {
 			secondaryButtonText: "Cancel",
 			secondaryButtonAction: () => setOpenModalId(null),
 		},
-		// {
-		// 	id: action.TOGGLE_COLUMNS,
-		// 	label: "Columns",
-		// 	icon: "visibility",
-		// 	Component: ToggleColumns,
-		// },
+		{
+			id: action.TOGGLE_COLUMNS,
+			label: "Columns",
+			icon: "visibility",
+			Component: ToggleColumns,
+			desktopOnly: true,
+		},
 	];
 
 	// Set GlobalSearch title
@@ -721,7 +722,7 @@ const History = ({ forNetwork = false }) => {
 
 	// How many columns to show in the table (for self or network history)
 	// TODO: REDUNDANT. Calculate visible columns in HistoryCard (mobile view) directly from history_parameter_metadata
-	const visibleColumns = forNetwork ? 7 : 7;
+	const visibleColumns = forNetwork ? 7 : 11;
 
 	const processedData = useMemo(
 		() => getHistoryTableProcessedData(transactionList),
