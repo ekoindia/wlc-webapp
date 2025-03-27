@@ -452,7 +452,16 @@ export const getDateView = (dateTime) => {
 
 export const getDateTimeView = (dateTime) => {
 	return (
-		<Flex direction="column" align="center">
+		<Flex
+			direction="column"
+			align="center"
+			sx={{
+				"@media print": {
+					flexDirection: "row",
+					gap: "0.4em",
+				},
+			}}
+		>
 			<DateView date={dateTime} format="d-MMM-yyyy" />
 			<DateView date={dateTime} format="h:mm a" />
 		</Flex>
