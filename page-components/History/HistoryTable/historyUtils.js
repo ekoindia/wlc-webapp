@@ -87,7 +87,7 @@ export const prepareTableCell = (
 		case "Modal":
 			return getModalStyle(eko_code, account_status);
 		case "ExpandButton":
-			return getExpandIcoButton(expandedRow, index);
+			return getExpandIcoButton(expandedRow, index, column.center);
 		case "IconButton":
 			return getLocationStyle(
 				value,

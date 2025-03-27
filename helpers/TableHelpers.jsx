@@ -10,8 +10,8 @@ import { Currency, DateView, IcoButton, Icon, Share } from "components";
 import { NetworkMenuWrapper } from "page-components/Admin/Network";
 import { capitalize, limitText, nullRemover, numberRemover } from "utils";
 
-// convert status to color
-const statusChecker = {
+// convert status text to color
+const statusTextColor = {
 	active: "success",
 	success: "success",
 	closed: "success",
@@ -30,7 +30,18 @@ const statusChecker = {
 	other: "light",
 };
 
-export const getAvatar = (name = "", icon, hue) => {
+// Convert response_status_id to a color, but only for critical statuses
+const statusIdColor = {
+	0: "", // SUCCESS - Transparent
+	1: "error", // FAILURE
+	2: "#FBC02D", // INITIATED
+	3: "#9C27B0", // REFUND_INITIATED
+	5: "#8D6E63", // HOLD
+	8: "success", // SCHEDULED
+	9: "error", // SCHEDULED_EXPIRED
+};
+
+export const getAvatar = (name, icon, hue) => {
 	const _name = numberRemover(name);
 
 	const needDefaultIcon = _name?.length < 1;
@@ -114,32 +125,6 @@ const getStatusIcon = (response_status_id) => {
 	}
 };
 
-/**
- * Get status color based on the response_status_id
- * @param {number} response_status_id - The response status ID
- * @returns {string} Color corresponding to the response status
- */
-const getStatusColor = (response_status_id) => {
-	switch (response_status_id) {
-		case 0: // SUCCESS
-			return "";
-		case 1: // FAILURE
-			return "error";
-		case 2: // INITIATED
-			return "#FBC02D";
-		case 3: // REFUND_INITIATED
-			return "#9C27B0";
-		case 5: // HOLD
-			return "#8D6E63";
-		case 8: // SCHEDULED
-			return "success";
-		case 9: // SCHEDULED_EXPIRED
-			return "error";
-		default:
-			return "gray";
-	}
-};
-
 export const getTrxnSummaryStyle = (item, icon, hue) => {
 	if (!item) return "";
 
@@ -152,7 +137,7 @@ export const getTrxnSummaryStyle = (item, icon, hue) => {
 	}
 
 	const statusIcon = getStatusIcon(item?.response_status_id);
-	const statusColor = getStatusColor(item?.response_status_id);
+	const statusColor = statusIdColor[item?.response_status_id] ?? "gray";
 
 	return (
 		<Flex align="center" gap="0.625rem">
@@ -172,13 +157,13 @@ export const getTrxnSummaryStyle = (item, icon, hue) => {
 				>
 					{statusColor ? (
 						<AvatarBadge
-							boxSize="1.45em"
+							boxSize="20px"
 							bg={statusColor}
-							p="3px"
+							// p="8px"
 							color="white"
 						>
 							{statusIcon ? (
-								<Icon name={statusIcon} size="0.6em" />
+								<Icon name={statusIcon} size="8px" />
 							) : null}
 						</AvatarBadge>
 					) : null}
@@ -206,9 +191,8 @@ export const getTrxnSummaryStyle = (item, icon, hue) => {
 
 export const getStatusStyle = (status = "", tableName) => {
 	const _status = status?.toLowerCase();
-	const clr = statusChecker[_status] || "light";
+	const clr = statusTextColor[_status] || "light";
 	if (tableName === "History") {
-		const clr = statusChecker[_status] || "light";
 		if (_status !== "success") {
 			return (
 				<Flex justify="center">
@@ -360,15 +344,17 @@ export const getModalStyle = (
 	);
 };
 
-export const getExpandIcoButton = (expandedRow, index) => {
+export const getExpandIcoButton = (expandedRow, index, center) => {
 	return (
-		<IcoButton
-			iconName={expandedRow === index ? "remove" : "expand-add"}
-			color="white"
+		<Icon
+			size="16px"
+			p="4px"
 			bg="accent.DEFAULT"
-			size="xxs"
-			title={expandedRow === index ? "Shrink" : "Expand"}
-			cursor="pointer"
+			borderRadius="50%"
+			color="white"
+			name={expandedRow === index ? "remove" : "expand-add"}
+			title={expandedRow === index ? "Shrink Row" : "Expand Row"}
+			margin={center ? "0 auto" : "0"}
 			sx={{
 				"@media print": {
 					display: "none !important",

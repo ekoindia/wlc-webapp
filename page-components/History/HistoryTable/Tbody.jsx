@@ -59,7 +59,8 @@ const Tbody = ({
 						{
 							label: "",
 							show: "ExpandButton",
-							width: "min-content",
+							width: "40px",
+							center: true,
 						},
 						...mainColumns,
 					]
@@ -199,9 +200,11 @@ const Trow = ({
 								column?.parameter_type_id === 9 ? true : false
 							}
 							textAlign={
-								column?.parameter_type_id === 9
-									? "right"
-									: "left"
+								column.center
+									? "center"
+									: column?.parameter_type_id === 9
+										? "right"
+										: "left"
 							}
 						>
 							{prepareTableCell(
