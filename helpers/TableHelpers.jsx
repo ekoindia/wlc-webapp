@@ -41,7 +41,7 @@ const statusIdColor = {
 	9: "error", // SCHEDULED_EXPIRED
 };
 
-export const getAvatar = (name, icon, hue) => {
+export const getAvatar = (name = "", icon, hue) => {
 	const _name = numberRemover(name);
 
 	const needDefaultIcon = _name?.length < 1;
