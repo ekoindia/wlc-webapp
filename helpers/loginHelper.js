@@ -2,6 +2,10 @@ import { Endpoints } from "constants/EndPoints";
 import { ANDROID_ACTION, buildUserObjectState, doAndroidAction } from "utils";
 import { fetcher } from "./apiHelper";
 
+const EKO_RESPONSE_TYPE_ID = {
+	SEND_OTP_LIMIT_EXHAUSTED: 2377,
+};
+
 /**
  * Verify OTP and get user details to login the user.
  * MARK: Send OTP
@@ -22,6 +26,8 @@ async function sendOtpRequest(
 	let success = false;
 	let errMsg = "";
 	let _otp = ""; // Only for UAT
+	let _sendOtpLimitExhausted = false;
+	let _retryAfter = null;
 
 	if (isAndroid) {
 		doAndroidAction(ANDROID_ACTION.OTP_FETCH_REQUEST);
@@ -46,6 +52,10 @@ async function sendOtpRequest(
 		if (data?.status == 0) {
 			success = true;
 			_otp = data?.data?.otp; // Only for UAT
+			_sendOtpLimitExhausted =
+				data?.response_type_id ===
+				EKO_RESPONSE_TYPE_ID.SEND_OTP_LIMIT_EXHAUSTED;
+			_retryAfter = +data?.data?.description;
 		} else {
 			errMsg = data?.message || data?.invalid_params?.csp_id;
 		}
@@ -56,12 +66,26 @@ async function sendOtpRequest(
 
 	if (success) {
 		// Success toast on UAT only
-		if (process.env.NEXT_PUBLIC_ENV !== "production" && toast) {
+		if (
+			process.env.NEXT_PUBLIC_ENV !== "production" &&
+			toast &&
+			!_sendOtpLimitExhausted
+		) {
 			toast({
 				title: `Demo OTP: ${_otp}`,
 				status: "success",
 				duration: 5000,
 				position: "top-right",
+			});
+		}
+		// Request OTP limit exhausted
+		if (_sendOtpLimitExhausted && _retryAfter != null) {
+			let _otpLimitExhaustedMsgSuffix =
+				_retryAfter > 0 ? `${_retryAfter} minutes.` : "some time";
+			toast({
+				title: `Request OTP limit exhausted. Please try again after ${_otpLimitExhaustedMsgSuffix}`,
+				status: "error",
+				duration: 6000,
 			});
 		}
 	} else {
