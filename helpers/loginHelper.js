@@ -82,7 +82,7 @@ async function sendOtpRequest(
 				let _otpLimitExhaustedMsgSuffix =
 					_retryAfter > 1 ? `${_retryAfter} minutes.` : "some time";
 				toast({
-					title: `Request OTP limit exhausted. Please try again after ${_otpLimitExhaustedMsgSuffix}`,
+					title: `You have requested too many OTPs. Please try again after ${_otpLimitExhaustedMsgSuffix}`,
 					status: "error",
 					duration: 6000,
 				});
