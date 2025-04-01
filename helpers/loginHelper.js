@@ -55,7 +55,7 @@ async function sendOtpRequest(
 			_sendOtpLimitExhausted =
 				data?.response_type_id ===
 				EKO_RESPONSE_TYPE_ID.SEND_OTP_LIMIT_EXHAUSTED;
-			_retryAfter = +data?.data?.description;
+			_retryAfter = +data?.data?.description; // Time in minutes to retry OTP request
 		} else {
 			errMsg = data?.message || data?.invalid_params?.csp_id;
 		}
@@ -81,7 +81,7 @@ async function sendOtpRequest(
 		// Request OTP limit exhausted
 		if (_sendOtpLimitExhausted && _retryAfter != null) {
 			let _otpLimitExhaustedMsgSuffix =
-				_retryAfter > 0 ? `${_retryAfter} minutes.` : "some time";
+				_retryAfter > 1 ? `${_retryAfter} minutes.` : "some time";
 			toast({
 				title: `Request OTP limit exhausted. Please try again after ${_otpLimitExhaustedMsgSuffix}`,
 				status: "error",
