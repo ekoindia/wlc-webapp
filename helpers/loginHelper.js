@@ -2,6 +2,10 @@ import { Endpoints } from "constants/EndPoints";
 import { ANDROID_ACTION, buildUserObjectState, doAndroidAction } from "utils";
 import { fetcher } from "./apiHelper";
 
+const EKO_RESPONSE_TYPE_ID = {
+	SEND_OTP_LIMIT_EXHAUSTED: 2377,
+};
+
 /**
  * Verify OTP and get user details to login the user.
  * MARK: Send OTP
@@ -22,6 +26,8 @@ async function sendOtpRequest(
 	let success = false;
 	let errMsg = "";
 	let _otp = ""; // Only for UAT
+	let _sendOtpLimitExhausted = false;
+	let _retryAfter = null;
 
 	if (isAndroid) {
 		doAndroidAction(ANDROID_ACTION.OTP_FETCH_REQUEST);
@@ -48,6 +54,10 @@ async function sendOtpRequest(
 			_otp = data?.data?.otp; // Only for UAT
 		} else {
 			errMsg = data?.message || data?.invalid_params?.csp_id;
+			_sendOtpLimitExhausted =
+				data?.response_type_id ===
+				EKO_RESPONSE_TYPE_ID.SEND_OTP_LIMIT_EXHAUSTED;
+			_retryAfter = +data?.data?.description; // Time in minutes to retry OTP request
 		}
 	} catch (err) {
 		success = false;
@@ -66,15 +76,27 @@ async function sendOtpRequest(
 		}
 	} else {
 		// Failure toast
-		toast &&
-			toast({
-				title:
-					`Failed to ${
-						sendState === "resend" ? "resend" : "send"
-					} OTP. ` + (errMsg ? errMsg : "Please try again."),
-				status: "error",
-				duration: 6000,
-			});
+		if (toast) {
+			// Request OTP limit exhausted
+			if (_sendOtpLimitExhausted && _retryAfter != null) {
+				let _otpLimitExhaustedMsgSuffix =
+					_retryAfter > 1 ? `${_retryAfter} minutes.` : "some time";
+				toast({
+					title: `You have requested too many OTPs. Please try again after ${_otpLimitExhaustedMsgSuffix}`,
+					status: "error",
+					duration: 6000,
+				});
+			} else {
+				toast({
+					title:
+						`Failed to ${
+							sendState === "resend" ? "resend" : "send"
+						} OTP. ` + (errMsg ? errMsg : "Please try again."),
+					status: "error",
+					duration: 6000,
+				});
+			}
+		}
 	}
 
 	return success;
