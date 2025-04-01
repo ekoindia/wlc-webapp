@@ -52,12 +52,12 @@ async function sendOtpRequest(
 		if (data?.status == 0) {
 			success = true;
 			_otp = data?.data?.otp; // Only for UAT
+		} else {
+			errMsg = data?.message || data?.invalid_params?.csp_id;
 			_sendOtpLimitExhausted =
 				data?.response_type_id ===
 				EKO_RESPONSE_TYPE_ID.SEND_OTP_LIMIT_EXHAUSTED;
 			_retryAfter = +data?.data?.description; // Time in minutes to retry OTP request
-		} else {
-			errMsg = data?.message || data?.invalid_params?.csp_id;
 		}
 	} catch (err) {
 		success = false;
@@ -66,11 +66,7 @@ async function sendOtpRequest(
 
 	if (success) {
 		// Success toast on UAT only
-		if (
-			process.env.NEXT_PUBLIC_ENV !== "production" &&
-			toast &&
-			!_sendOtpLimitExhausted
-		) {
+		if (process.env.NEXT_PUBLIC_ENV !== "production" && toast) {
 			toast({
 				title: `Demo OTP: ${_otp}`,
 				status: "success",
@@ -78,27 +74,29 @@ async function sendOtpRequest(
 				position: "top-right",
 			});
 		}
-		// Request OTP limit exhausted
-		if (_sendOtpLimitExhausted && _retryAfter != null) {
-			let _otpLimitExhaustedMsgSuffix =
-				_retryAfter > 1 ? `${_retryAfter} minutes.` : "some time";
-			toast({
-				title: `Request OTP limit exhausted. Please try again after ${_otpLimitExhaustedMsgSuffix}`,
-				status: "error",
-				duration: 6000,
-			});
-		}
 	} else {
 		// Failure toast
-		toast &&
-			toast({
-				title:
-					`Failed to ${
-						sendState === "resend" ? "resend" : "send"
-					} OTP. ` + (errMsg ? errMsg : "Please try again."),
-				status: "error",
-				duration: 6000,
-			});
+		if (toast) {
+			// Request OTP limit exhausted
+			if (_sendOtpLimitExhausted && _retryAfter != null) {
+				let _otpLimitExhaustedMsgSuffix =
+					_retryAfter > 1 ? `${_retryAfter} minutes.` : "some time";
+				toast({
+					title: `Request OTP limit exhausted. Please try again after ${_otpLimitExhaustedMsgSuffix}`,
+					status: "error",
+					duration: 6000,
+				});
+			} else {
+				toast({
+					title:
+						`Failed to ${
+							sendState === "resend" ? "resend" : "send"
+						} OTP. ` + (errMsg ? errMsg : "Please try again."),
+					status: "error",
+					duration: 6000,
+				});
+			}
+		}
 	}
 
 	return success;
