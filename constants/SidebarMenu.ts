@@ -111,6 +111,12 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		icon: "commission-percent",
 		link: "/admin/pricing",
 	},
+	{
+		id: 30,
+		label: "Pricing Configuration",
+		icon: "commission-percent",
+		link: "/admin/pricing-config",
+	},
 	// {
 	// 	id: 30,
 	// 	label: "Company Profile",
