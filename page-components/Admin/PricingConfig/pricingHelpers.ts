@@ -119,20 +119,14 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 				}
 
 				if (distributorCommission) {
-					const distributorData = {
-						productId: distributorCommission.productId,
-						label: distributorCommission.label,
-						slabs: distributorCommission.slabs,
-					};
-
 					const distributorFormNode = createNode({
 						type: "form",
-						label: `${provider.label} > ${distributorData.label}`,
+						label: `${provider.label} > ${distributorCommission.label}`,
 						name: formatName("distributor-commission"),
 						formlink: generateKey(
 							formatName(product.label),
 							"distributor-commission",
-							distributorData,
+							distributorCommission,
 							formRegistry
 						),
 						meta: { agentType: AGENT_TYPE.DISTRIBUTOR },
