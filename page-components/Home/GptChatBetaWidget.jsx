@@ -31,7 +31,7 @@ const GptChatBetaWidget = () => {
 	const { accessToken } = useSession();
 	const { isLoggedIn /*, isAdminAgentMode, isAdmin */ } = useUser();
 	// const { interactions } = useMenuContext();
-	// const { trxn_type_prod_map } = interactions;
+	// const { trxn_type_prod_map } = interactions || {};
 
 	const scrollRef = useRef(null);
 

@@ -66,7 +66,7 @@ const Form = ({
 						? { ...validations, required: true }
 						: { ...validations, required: false };
 
-					const { force_dropdown } = meta;
+					const { force_dropdown } = meta || {};
 
 					if (is_inactive) return;
 

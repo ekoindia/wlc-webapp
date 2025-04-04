@@ -45,7 +45,7 @@ export function fetcher(url, options, generateNewToken) {
 		controller = null,
 		isMultipart,
 		...restOptions
-	} = options;
+	} = options || {};
 
 	// Use AbortSignal.timeout to set a timeout for the fetch request
 	const requestTimeout = timeout || DEFAULT_TIMEOUT;

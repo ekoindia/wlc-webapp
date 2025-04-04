@@ -126,7 +126,7 @@ const formatCommissionData = (data, trxn_type_prod_map) => {
 export const CommissionSummaryProvider = ({ children }) => {
 	const router = useRouter();
 	const { interactions } = useMenuContext();
-	const { trxn_type_prod_map } = interactions;
+	const { trxn_type_prod_map } = interactions || {};
 
 	// console.log("trxn_type_prod_map:", /* interactions, */ trxn_type_prod_map);
 

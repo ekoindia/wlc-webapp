@@ -217,7 +217,7 @@ const useNavigationLists = (ignoreList = []) => {
 	const { ready } = useKBarReady();
 	const { isAdmin, isAdminAgentMode } = useUser();
 	const { orgDetail } = useOrgDetailContext();
-	const { metadata } = orgDetail;
+	const { metadata } = orgDetail || {};
 	const disabledFeatures = metadata?.disabled_features;
 
 	const [appLists, setAppLists] = useState({

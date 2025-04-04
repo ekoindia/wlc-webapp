@@ -61,7 +61,11 @@ const DemoteDistributor = ({ agentData /* , setResponseDetails */ }) => {
 	}, [agentData]);
 
 	const onSubmit = (data) => {
-		const { mobile } = data;
+		const { mobile } = data || {};
+		if (!mobile) {
+			console.error("Mobile number is required.");
+			return;
+		}
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
