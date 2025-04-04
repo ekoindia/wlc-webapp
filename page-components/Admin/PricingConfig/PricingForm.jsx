@@ -145,7 +145,7 @@ const reducer = (state, action) => {
  * @returns {JSX.Element}
  */
 const PricingForm = ({ agentType, productDetails }) => {
-	const { paymentMode, slabs } = productDetails || {};
+	const { paymentMode, slabs, categoryList } = productDetails || {};
 	console.log("[Pricing] paymentMode", paymentMode);
 
 	// Initialize reducer
@@ -205,6 +205,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 	// Create a list of form parameters based on product, agent-type, and operation-type selected.
 	// Create a list of form parameters based on product, agent-type, and operation-type selected.
+	// TODO: Memoize this function to avoid unnecessary re-renders
 	const getParameterList = () => {
 		const _list = [];
 
@@ -368,6 +369,19 @@ const PricingForm = ({ agentType, productDetails }) => {
 		});
 	}, [slabs]);
 
+	// Set categoryList directly from productDetails if available
+	useEffect(() => {
+		if (!categoryList?.length) return;
+
+		dispatch({
+			type: ACTIONS.SET_CATEGORY_LIST_OPTIONS,
+			payload: categoryList.map((item) => ({
+				...item,
+				value: `${item.productId}`,
+			})),
+		});
+	}, [categoryList]);
+
 	// Set PaymentModeOptions based on the fetched paymentMode
 	useEffect(() => {
 		if (!paymentMode?.length) return;
@@ -522,11 +536,12 @@ const PricingForm = ({ agentType, productDetails }) => {
 		console.log("[Pricing] >>>> 2");
 
 		const selectedCategory = state.categoryListOptions?.find(
-			(item) => item.value === watcher.category
+			(item) => item.value === watcher.category.value
 		);
 
+		console.log("[Pricing] selectedCategory 1", selectedCategory);
 		if (selectedCategory) {
-			console.log("[Pricing] selectedCategory", selectedCategory);
+			console.log("[Pricing] selectedCategory 2", selectedCategory);
 
 			// // Reset slab value to null, pricing type to null and actual pricing to null
 			// watcher["select"] = null;
