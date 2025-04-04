@@ -11,7 +11,7 @@ export const buildUserObjectState = (data) => {
 		account_details,
 		details,
 		...restData
-	} = data;
+	} = data || {};
 
 	const {
 		uid,

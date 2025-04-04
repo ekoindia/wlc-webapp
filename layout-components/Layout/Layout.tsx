@@ -66,7 +66,7 @@ const BottomAppBar = dynamic(
  * @param {string} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
 const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
-	const { isSubPage, title, hideMenu, isFixedBottomAppBar } = pageMeta;
+	const { isSubPage, title, hideMenu, isFixedBottomAppBar } = pageMeta || {};
 
 	const { isLoggedIn } = useSession();
 	// const { isOpen: isSidebarOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer from the top header bar on small screens

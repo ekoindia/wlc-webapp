@@ -17,7 +17,7 @@ const ManageMyAccountCard = () => {
 	const { interactions } = useMenuContext();
 	const router = useRouter();
 	const [data, setData] = useState([]);
-	const { role_tx_list } = interactions;
+	const { role_tx_list } = interactions || {};
 	// const dataLength = data.length;
 
 	useEffect(() => {

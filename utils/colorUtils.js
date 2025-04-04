@@ -62,7 +62,7 @@ export function getFirstContrastColor(color, ...colors) {
 /**
  * Converts a hexadecimal color string to an RGBA object.
  * @param {string} hex - The hexadecimal color string (e.g., "#RGB", "#RRGGBB" or "#RRGGBBAA").
- * @returns {Object|null} An object containing the RGBA values { r, g, b, a }, or null if the input is invalid.
+ * @returns {object | null} An object containing the RGBA values { r, g, b, a }, or null if the input is invalid.
  */
 export const hexToRgba = (hex) => {
 	if (!hex) return null;
@@ -91,12 +91,13 @@ export const hexToRgba = (hex) => {
 
 /**
  * Converts an RGBA object to a hexadecimal color string.
- * @param {Object} rgba - An object containing the RGBA values { r, g, b, a }.
+ * @param {object} rgba - An object containing the RGBA values { r, g, b, a }.
  * @param {boolean} [ignoreAlpha] - If true, the alpha value will not be included in the output.
  * @returns {string} The hexadecimal color string (e.g., "#RRGGBB" or "#RRGGBBAA").
  */
 export const rgbaToHex = (rgba, ignoreAlpha = false) => {
-	let { r, g, b, a } = rgba;
+	if (!rgba) return null;
+	let { r = 0, g = 0, b = 0, a = 1 } = rgba;
 	let alphaHex =
 		ignoreAlpha !== true && a
 			? Math.round(a * 255)
@@ -112,9 +113,9 @@ export const rgbaToHex = (rgba, ignoreAlpha = false) => {
 
 /**
  * Darkens an RGB color by a specified percentage.
- * @param {Object} rgb - An object containing the RGB values { r, g, b }.
+ * @param {object} rgb - An object containing the RGB values { r, g, b }.
  * @param {number} percentage - The percentage by which to darken the color (0-100).
- * @returns {Object} An object containing the darkened RGB values { r, g, b }.
+ * @returns {object} An object containing the darkened RGB values { r, g, b }.
  */
 export const darken = (rgb, percentage) => {
 	return {
@@ -126,9 +127,9 @@ export const darken = (rgb, percentage) => {
 
 /**
  * Lightens an RGB color by a specified percentage.
- * @param {Object} rgb - An object containing the RGB values { r, g, b }.
+ * @param {object} rgb - An object containing the RGB values { r, g, b }.
  * @param {number} percentage - The percentage by which to lighten the color (0-100).
- * @returns {Object} An object containing the lightened RGB values { r, g, b }.
+ * @returns {object} An object containing the lightened RGB values { r, g, b }.
  */
 export const lighten = (rgb, percentage) => {
 	return {
@@ -142,7 +143,7 @@ export const lighten = (rgb, percentage) => {
  * Generates a darker and lighter color shades based on the input color.
  * @param {string} color - The hexadecimal color string (e.g., "#RRGGBB" or "#RRGGBBAA").
  * @param {number} [degree] - The percentage by which to darken and lighten the color (0-100).
- * @returns {Object} An object containing the darker and lighter color themes { dark, light }.
+ * @returns {object} An object containing the darker and lighter color themes { dark, light }.
  */
 export const generateShades = (color, degree = 10) => {
 	// Convert the color from hex to RGBA.

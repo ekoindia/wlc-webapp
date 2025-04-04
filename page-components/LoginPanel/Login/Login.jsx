@@ -185,7 +185,6 @@ const Login = ({
 				placeholder="XXX XXX XXXX"
 				required
 				leftAddon="+91"
-				type="mobile_number"
 				value={value}
 				invalid={invalid}
 				errorMsg={errorMsg}

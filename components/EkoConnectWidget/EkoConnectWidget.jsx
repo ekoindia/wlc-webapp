@@ -47,7 +47,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 	const { userData, isLoggedIn, refreshUser } = useUser();
 	const { orgDetail } = useOrgDetailContext();
 	const { interactions } = useMenuContext();
-	const { role_tx_list } = interactions;
+	const { role_tx_list } = interactions || {};
 	const { balance } = useWallet();
 	const { subscribe, TOPICS } = usePubSub();
 	const { appSource } = useAppSource();

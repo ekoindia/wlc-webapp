@@ -37,7 +37,7 @@ const StatusCard = ({
 	// const toast = useToast();
 	const { refreshWallet, balance, loading } = useWallet();
 	const { interactions } = useMenuContext();
-	const { role_tx_list } = interactions;
+	const { role_tx_list } = interactions || {};
 	const { isLoggedIn, isOnboarding, isAdmin } = useSession();
 
 	// Fetch the transaction id for "Add Balance" from the allowed list of transactions

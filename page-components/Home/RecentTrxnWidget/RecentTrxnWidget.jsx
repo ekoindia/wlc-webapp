@@ -21,7 +21,7 @@ const RecentTrxnWidget = () => {
 		md: 10,
 	});
 	const { interactions } = useMenuContext();
-	const { trxn_type_prod_map } = interactions;
+	const { trxn_type_prod_map } = interactions || {};
 
 	useEffect(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/transactions/do", {

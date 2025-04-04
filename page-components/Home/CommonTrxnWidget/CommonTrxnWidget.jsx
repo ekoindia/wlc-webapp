@@ -23,7 +23,7 @@ import { WidgetBase } from "..";
 const CommonTrxnWidget = () => {
 	const router = useRouter();
 	const { interactions } = useMenuContext();
-	let { interaction_list } = interactions;
+	let { interaction_list } = interactions || {};
 	const [showAll, setShowAll] = useState(false);
 
 	// Remove "other..." entries from the list
