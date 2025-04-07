@@ -91,6 +91,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 
 				const { agentPricing, distributorCommission } = provider;
 
+				// Add Agent Pricing node if agentPricing exists
 				if (agentPricing) {
 					const agentFormNode = createNode({
 						type: "form",
@@ -106,18 +107,17 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 					});
 
 					providerNode.children!.push(
-						distributorCommission
-							? createNode({
-									type: "path",
-									label: "Agent Pricing",
-									name: formatName("Agent Pricing"),
-									desc: `Set Agent's Pricing for ${provider.label}`,
-									children: [agentFormNode],
-								})
-							: agentFormNode
+						createNode({
+							type: "path",
+							label: "Agent Pricing",
+							name: formatName("Agent Pricing"),
+							desc: `Set Agent's Pricing for ${provider.label}`,
+							children: [agentFormNode],
+						})
 					);
 				}
 
+				// Add Distributor Commission node if distributorCommission exists
 				if (distributorCommission) {
 					const distributorFormNode = createNode({
 						type: "form",
@@ -133,15 +133,13 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 					});
 
 					providerNode.children!.push(
-						agentPricing
-							? createNode({
-									type: "path",
-									label: "Distributor Commission",
-									name: formatName("Distributor Commission"),
-									desc: `Set Distributor's Commission for ${provider.label}`,
-									children: [distributorFormNode],
-								})
-							: distributorFormNode
+						createNode({
+							type: "path",
+							label: "Distributor Commission",
+							name: formatName("Distributor Commission"),
+							desc: `Set Distributor's Commission for ${provider.label}`,
+							children: [distributorFormNode],
+						})
 					);
 				}
 
