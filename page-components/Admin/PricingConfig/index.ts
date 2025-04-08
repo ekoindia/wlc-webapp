@@ -1,8 +1,8 @@
 export { default as PricingConfig } from "./PricingConfig";
 export {
 	PricingConfigProvider,
-	ProductNode,
 	usePricingConfig,
+	type ProductNode,
 } from "./PricingConfigContext";
 export {
 	AGENT_TYPES,
