@@ -1,4 +1,5 @@
 import { Endpoints } from "constants/EndPoints";
+import { TransactionTypes } from "constants/EpsTransactions";
 import useApiFetch from "hooks/useApiFetch";
 import {
 	createContext,
@@ -67,10 +68,10 @@ const PricingConfigProvider = ({
 	useEffect(() => {
 		fetchProductConfig({
 			body: {
-				interaction_type_id: 837,
+				interaction_type_id: TransactionTypes.GET_PRICING_CONFIG,
 			},
 		});
-	}, [fetchProductConfig]);
+	}, []);
 
 	return (
 		<PricingConfigContext.Provider value={{ pricingTree, formDataMap }}>
