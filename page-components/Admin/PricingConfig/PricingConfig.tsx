@@ -3,7 +3,7 @@ import { Icon } from "components";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { PricingForm, usePricingConfig } from ".";
+import { PricingForm, ProductNode, usePricingConfig } from ".";
 
 interface PricingConfigProps {
 	pathArray?: string[] | null; // Array of path segments for navigation
@@ -21,20 +21,6 @@ interface CardProps {
 	icon?: string; // Optional icon name for the card
 	children?: ProductNode[]; // Optional child nodes for navigation
 	basePath: string; // Base path for navigation
-}
-
-interface ProductNode {
-	name: string; // Unique name of the product node
-	label: string; // Label for the product node
-	desc?: string; // Optional description
-	icon?: string; // Optional icon name
-	children?: ProductNode[]; // Optional child nodes
-	meta?: {
-		agentType?: string; // Metadata for agent type (optional)
-		[key: string]: any; // Allow additional metadata properties
-	};
-	type?: string; // Type of the node (e.g., "form", "product")
-	formlink?: string; // Link to the form (optional)
 }
 
 // Utility function
