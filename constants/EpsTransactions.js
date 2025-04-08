@@ -13,6 +13,10 @@ export const TransactionTypes = {
 	SET_COMMISSION_FOR_DISTRIBUTORS: 726, //for various products
 	DOWNLOAD_NETWORK_AGREEMENT: 792,
 
+	// Pricing Config
+	GET_PRICING_CONFIG: 837,
+	SET_PRICING: 838,
+
 	// For "Raise Query"
 	GET_ALL_QUERIES_FOR_ORG: 692,
 	GET_QUERY_TYPES: 10022,
