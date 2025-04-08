@@ -551,7 +551,13 @@ const AccordionSubMenuSection = ({
 											isCurrent ? "#FFF" : "sidebar.text"
 										}
 									>
-										<Icon name={tx.icon} size="sm" />
+										<Icon
+											name={
+												tx.icon ||
+												"radio-button-unchecked"
+											}
+											size="sm"
+										/>
 										<Text
 											fontSize={{
 												base: "12px",
