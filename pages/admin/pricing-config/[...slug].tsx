@@ -1,15 +1,17 @@
 import { PaddingBox } from "components";
 import { useRouter } from "next/router";
-import { PricingConfig } from "page-components/Admin";
+import { PricingConfig, PricingConfigProvider } from "page-components/Admin";
 
 const PricingConfigPage = () => {
 	const router = useRouter();
-	const { slug } = router.query; // Extract dynamic slug
-	const pathArray = Array.isArray(slug) ? slug : [slug]; // Ensure it's an array
+	const { slug } = router.query;
+	const pathArray = Array.isArray(slug) ? slug : null;
 
 	return (
 		<PaddingBox>
-			<PricingConfig pathArray={pathArray} />
+			<PricingConfigProvider>
+				<PricingConfig pathArray={pathArray} />
+			</PricingConfigProvider>
 		</PaddingBox>
 	);
 };

@@ -1,14 +1,12 @@
 import { Avatar, Flex, Grid, Text } from "@chakra-ui/react";
 import { Icon } from "components";
-import { Endpoints } from "constants/EndPoints";
-import useApiFetch from "hooks/useApiFetch";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { generatePricingTrees, PricingConfigProvider, PricingForm } from ".";
+import { PricingForm, usePricingConfig } from ".";
 
 interface PricingConfigProps {
-	pathArray?: string[]; // Array of path segments for navigation
+	pathArray?: string[] | null; // Array of path segments for navigation
 }
 
 interface ConfigGridProps {
@@ -68,80 +66,78 @@ const findNodeInTree = (
  * @returns {JSX.Element} - Rendered PricingConfig component.
  */
 const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
-	const [pricingTree, setPricingTree] = useState<ProductNode[]>([]);
-	const [currentPricingNode, setCurrentPricingNode] = useState<
+	const [currentPricingTreeNode, setCurrentPricingTreeNode] = useState<
 		ProductNode[] | null
-	>([]);
-	const [formDataMap, setFormDataMap] = useState<Record<string, any>>({});
+	>(null);
 	const [formData, setFormData] = useState<Record<string, any>>({});
 
+	// Get pricing tree and form data map from context
+	const { pricingTree, formDataMap } = usePricingConfig();
+
+	// Base path for navigation
 	const basePath = pathArray?.length
 		? `/admin/pricing-config/${pathArray.join("/")}`
 		: "/admin/pricing-config";
 
-	// Fetching Product Overview Data
-	const [fetchProductConfig] = useApiFetch(Endpoints.TRANSACTION_JSON, {
-		onSuccess: async (res) => {
-			const _productList = res?.data?.product_list || [];
-			const { pricingTree, formRegistry } =
-				generatePricingTrees(_productList);
-			console.log("[Pricing] pricingTree", pricingTree);
-
-			setPricingTree(pricingTree);
-			setCurrentPricingNode(pricingTree);
-			setFormDataMap(formRegistry);
-		},
-		onError: (err) => {
-			console.error("Error fetching product config:", err);
-		},
-	});
-
+	// Initialize the pricing tree when it becomes available
 	useEffect(() => {
-		fetchProductConfig({
-			body: {
-				interaction_type_id: 837,
-			},
-		});
-	}, []);
+		if (pricingTree?.length > 0) {
+			setCurrentPricingTreeNode(pricingTree);
+		}
+	}, [pricingTree]);
 
+	// Update the current pricing node based on the path array
 	useEffect(() => {
-		if (pathArray?.length > 0 && pricingTree?.length > 0) {
+		if (!pricingTree?.length) return;
+
+		if (pathArray?.length) {
 			const node = findNodeInTree(pricingTree, pathArray);
 
 			if (node?.[0]?.type === "form") {
 				const _formData = formDataMap[node[0].formlink];
-				console.log("[Pricing] _formData", _formData);
-
 				if (_formData) {
-					setCurrentPricingNode(() => {
-						setFormData(_formData); // Update formData before updating currentPricingNode
-						return node;
-					});
+					setFormData(_formData);
+					setCurrentPricingTreeNode(node);
 				}
 			} else {
-				setCurrentPricingNode(node);
+				setCurrentPricingTreeNode(node);
 			}
+		} else {
+			setCurrentPricingTreeNode(pricingTree);
 		}
-	}, [pathArray, pricingTree]);
+	}, [pathArray, pricingTree, formDataMap]);
 
-	return (
-		<PricingConfigProvider>
-			{currentPricingNode === null ? (
-				<Text>Nothing found</Text>
-			) : currentPricingNode?.length > 0 &&
-			  currentPricingNode[0]?.type !== "form" ? (
+	// Render the appropriate UI based on the current pricing node
+	const renderContent = () => {
+		if (!currentPricingTreeNode) {
+			return <Text>Nothing found</Text>;
+		}
+
+		if (
+			currentPricingTreeNode.length > 0 &&
+			currentPricingTreeNode[0]?.type !== "form"
+		) {
+			return (
 				<ConfigGrid
-					product_list={currentPricingNode}
+					product_list={currentPricingTreeNode}
 					basePath={basePath}
 				/>
-			) : formData && currentPricingNode?.[0]?.type === "form" ? (
+			);
+		}
+
+		if (formData && currentPricingTreeNode[0]?.type === "form") {
+			return (
 				<PricingForm
-					agentType={currentPricingNode?.[0]?.meta?.agentType}
+					agentType={currentPricingTreeNode[0]?.meta?.agentType}
 					productDetails={formData}
 				/>
-			) : null}
-		</PricingConfigProvider>
-	);
+			);
+		}
+
+		return null;
+	};
+
+	return <>{renderContent()}</>;
 };
 
 export default PricingConfig;

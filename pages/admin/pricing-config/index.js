@@ -1,1 +1,1 @@
-export { default } from "./PricingConfigPage";
+export { default } from "./[...slug]";
