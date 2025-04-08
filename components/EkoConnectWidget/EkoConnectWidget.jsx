@@ -37,11 +37,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
  * @param {object} props Properties passed to the component
  * @param {string|integer} props.start_id The transaction id to load. Start of the path.
  * @param {Array<string>} props.paths The list of sub-paths to load.
+ * @param {string} props.language The language for localization (default: "en").
  * @param {...*} rest Rest of the props passed to this component.
  * @example	`<EkoConnectWidget start_id="123" route_params={{trxntypeid: 123, subpath_list: ["123"]}} />`
  */
-const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
-	console.log("[EkoConnectWidget] Transaction id to load: ", start_id, paths);
+const EkoConnectWidget = ({ start_id, paths, language = "en", ...rest }) => {
+	console.log("[EkoConnectWidget] Started: ", { start_id, paths, language });
 
 	const { openUrl, router } = useAppLink();
 	const { userData, isLoggedIn, refreshUser } = useUser();
@@ -346,7 +347,7 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 							userData.userDetails.save_threshold_amount
 						}
 						user_balance={balance}
-						language="en"
+						language={language}
 						enable-print={true}
 						user_details={JSON.stringify(userData.userDetails)}
 						account_details={JSON.stringify(
@@ -391,19 +392,20 @@ const EkoConnectWidget = ({ start_id, paths, ...rest }) => {
 
 /**
  * Add listeners for the custom events dispatched by the Connect widget.
- * @param root0
- * @param root0.setWidgetLoading
- * @param root0.generateNewToken
- * @param root0.refreshUser
- * @param root0.setBalance
- * @param root0.router
- * @param root0.openUrl
- * @param root0.setTransactionFlow
- * @param root0.showRaiseIssueDialog
- * @param root0.openCamera
- * @param root0.editImage
- * @param root0.showFile
- * @param root0.widgetRef
+ * @param {object} params - The parameters for the event listeners
+ * @param {Function} params.setWidgetLoading - Function to set the widget loading state.
+ * @param {Function} params.generateNewToken - Function to generate a new access token.
+ * @param {Function} params.refreshUser - Function to refresh the user profile data.
+ * @param {Function} params.setBalance - Function to set the wallet balance.
+ * @param {object} params.router - The React Router instance
+ * @param {Function} params.openUrl - The useAppLink function to open internal or external URLs.
+ * @param {Function} params.setTransactionFlow - Function to set the current transaction flow state.
+ * @param {Function} params.showRaiseIssueDialog - Function to show the "Raise Issue" dialog.
+ * @param {Function} params.openCamera - Function to open the camera.
+ * @param {Function} params.editImage - Function to open the Image editor (for modifying or accepting the captured/uploaded image).
+ * @param {Function} params.showFile - Function to show any file in the FileViewer dialog.
+ * @param {object} params.widgetRef - The React reference to the Connect widget component.
+ * @returns {Function} - A function to remove the event listeners.
  */
 const setupWidgetEventListeners = ({
 	setWidgetLoading,
