@@ -177,3 +177,26 @@ function generateKey(
  */
 const formatName = (label: string): string =>
 	label.toLowerCase().replace(/\s+/g, "-"); // Convert spaces to '-'
+
+// Helper function to format slabs
+export const formatSlabs = (slabs) =>
+	slabs?.map((item, index) => ({
+		value: `${index}`,
+		label:
+			item.min === item.max
+				? `₹${item.min}`
+				: `₹${item.min} – ₹${item.max}`,
+		validation: item.validation,
+		min_slab_amount: item.min,
+		max_slab_amount: item.max,
+	})) || [];
+
+// This function checks the status of the API response and returns a string indicating success or error
+export const getStatus = (status) => {
+	switch (status) {
+		case 0:
+			return "success";
+		default:
+			return "error";
+	}
+};
