@@ -10,7 +10,7 @@ import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 import {
@@ -153,8 +153,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 		}Maximum: ${prefix}${max}${suffix}`;
 
 	// Create a list of form parameters based on product, agent-type, and operation-type selected.
-	// TODO: Memoize this function to avoid unnecessary re-renders
-	const getParameterList = () => {
+	const parameter_list = useMemo(() => {
 		const _list = [];
 
 		if (agentType === AGENT_TYPES.RETAILERS) {
@@ -162,7 +161,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 			_list.push(
 				{
 					name: "operation_type",
-					label: `Set ${productPricingType.DMT} for`,
+					label: `Set Pricing for`,
 					parameter_type_id: ParamType.LIST,
 					list_elements: OPERATION_TYPE_OPTIONS,
 				},
@@ -256,10 +255,20 @@ const PricingForm = ({ agentType, productDetails }) => {
 				),
 			}
 		);
-		return _list;
-	};
 
-	const parameter_list = getParameterList();
+		return _list;
+	}, [
+		agentType,
+		multiSelectLabel,
+		multiSelectOptions,
+		state.paymentModeOptions,
+		state.categoryListOptions,
+		state.slabOptions,
+		state.pricingTypeList,
+		state.pricingValidation,
+		watcher.pricing_type,
+		helperText,
+	]);
 
 	/**
 	 * Resets the dependent fields of a given field to their default values and executes an optional callback.
