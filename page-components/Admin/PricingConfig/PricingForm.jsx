@@ -60,6 +60,35 @@ const updatePricingTypeList = (validations, pricingTypeList) => {
 };
 
 /**
+ * Defines the dependencies for each field in the form and their default reset values.
+ * When a field changes, its dependent fields are reset to their default values.
+ * @constant
+ * @type {Object<string, Array<{ key: string, defaultValue: any }>>}
+ * @property {Array<{ key: string, defaultValue: any }>} payment_mode - Dependencies for the `payment_mode` field.
+ * @property {Array<{ key: string, defaultValue: any }>} category - Dependencies for the `category` field.
+ * @property {Array<{ key: string, defaultValue: any }>} select - Dependencies for the `select` field.
+ * @property {Array<{ key: string, defaultValue: any }>} pricing_type - Dependencies for the `pricing_type` field.
+ */
+const FIELD_DEPENDENCIES = {
+	payment_mode: [
+		{ key: "category", defaultValue: null },
+		{ key: "select", defaultValue: null },
+		{ key: "pricing_type", defaultValue: {} },
+		{ key: "actual_pricing", defaultValue: "" },
+	],
+	category: [
+		{ key: "select", defaultValue: null },
+		{ key: "pricing_type", defaultValue: {} },
+		{ key: "actual_pricing", defaultValue: "" },
+	],
+	select: [
+		{ key: "pricing_type", defaultValue: {} },
+		{ key: "actual_pricing", defaultValue: "" },
+	],
+	pricing_type: [{ key: "actual_pricing", defaultValue: "" }],
+};
+
+/**
  * Form sub-component to set pricing/commission for a product (fixed amount or percentage).
  * @param {*} props
  * @param {string} props.agentType - Type of agent (e.g. distributor, retailer, etc.)
@@ -95,7 +124,6 @@ const PricingForm = ({ agentType, productDetails }) => {
 	const watcher = useWatch({
 		control,
 	});
-	console.log("[Pricing] watcher", watcher);
 
 	const toast = useToast();
 	const router = useRouter();
@@ -233,6 +261,32 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 	const parameter_list = getParameterList();
 
+	/**
+	 * Resets the dependent fields of a given field to their default values and executes an optional callback.
+	 * @param {string} fieldName - The name of the field whose dependencies need to be reset.
+	 * @param {() => void} [callback] - Optional callback function to execute after resetting the fields.
+	 * @returns {void}
+	 */
+	const resetDependentFields = (fieldName, callback) => {
+		const dependencies = FIELD_DEPENDENCIES[fieldName] ?? [];
+
+		if (!dependencies.length) return;
+
+		// need to create a final object, then reset in one go
+		const resetValues = dependencies.reduce(
+			(acc, { key, defaultValue }) => {
+				acc[key] = defaultValue;
+				return acc;
+			},
+			{}
+		);
+		reset({ ...watcher, ...resetValues });
+
+		if (callback) {
+			callback();
+		}
+	};
+
 	// Fetch the list of agents (retailers, distributors, or both) based on the agent-type and operation-type selected.
 	useEffect(() => {
 		// TODO: CACHE AGENT LIST
@@ -367,45 +421,70 @@ const PricingForm = ({ agentType, productDetails }) => {
 	}, [paymentMode]);
 
 	// Set CategoryListOptions or SlabOptions based on selected paymentMode
-	// If paymentMode contains CategoryList, set CategoryListOptions
-	// Otherwise, set SlabOptions directly
 	useEffect(() => {
 		const _paymentMode = watcher?.payment_mode;
-
-		console.log("[Pricing] _paymentMode", _paymentMode);
 
 		if (!_paymentMode) return;
 
 		const { slabs, categoryList, productId } = _paymentMode ?? {};
 
 		if (categoryList?.length > 0) {
-			console.log("[Pricing] setting categoryList options", categoryList);
-
 			const _categoryOptions = categoryList.map((item) => ({
 				...item,
 				value: `${item.productId}`,
 			}));
 
-			// Update the categoryListOptions based on selected payment mode
-			dispatch({
-				type: PRICING_ACTIONS.SET_CATEGORY_LIST_OPTIONS,
-				payload: _categoryOptions,
+			resetDependentFields("payment_mode", () => {
+				// Update the categoryListOptions based on selected payment mode
+				dispatch({
+					type: PRICING_ACTIONS.SET_CATEGORY_LIST_OPTIONS,
+					payload: _categoryOptions,
+				});
+
+				// Reset the slabOptions when payment mode changes
+				dispatch({
+					type: PRICING_ACTIONS.SET_SLAB_OPTIONS,
+					payload: [],
+				});
+
+				// Reset the pricing type list when payment mode changes
+				dispatch({
+					type: PRICING_ACTIONS.SET_PRICING_TYPE_LIST,
+					payload: PRICING_TYPE_OPTIONS,
+				});
+
+				// Reset the pricing validation when payment mode changes
+				dispatch({
+					type: PRICING_ACTIONS.SET_PRICING_VALIDATION,
+					payload: {},
+				});
 			});
 		}
 		if (slabs?.length > 0) {
 			const formattedSlabs = formatSlabs(slabs ?? []);
-			console.log("[Pricing] setting slabs options", formattedSlabs);
 
-			// Update the slabOptions based on selected payment mode
-			dispatch({
-				type: PRICING_ACTIONS.SET_SLAB_OPTIONS,
-				payload: formattedSlabs,
+			resetDependentFields("payment_mode", () => {
+				// Update the slabOptions based on selected payment mode
+				dispatch({
+					type: PRICING_ACTIONS.SET_SLAB_OPTIONS,
+					payload: formattedSlabs,
+				});
+
+				// Reset the pricing type list when payment mode changes
+				dispatch({
+					type: PRICING_ACTIONS.SET_PRICING_TYPE_LIST,
+					payload: PRICING_TYPE_OPTIONS,
+				});
+
+				// Reset the pricing validation when payment mode changes
+				dispatch({
+					type: PRICING_ACTIONS.SET_PRICING_VALIDATION,
+					payload: {},
+				});
 			});
 		}
 		// Update the productId if available
 		if (productId != null) {
-			console.log("[Pricing] setting product id", productId);
-
 			// Update the productId in the state
 			dispatch({
 				type: PRICING_ACTIONS.SET_PRODUCT_ID,
@@ -418,32 +497,41 @@ const PricingForm = ({ agentType, productDetails }) => {
 	useEffect(() => {
 		const _category = watcher?.category;
 
-		console.log("[Pricing] _category", _category);
-
 		if (!_category) return;
 
 		const { productId, slabs } = _category ?? {};
 
 		// Set productId if available
 		if (productId != null) {
-			console.log("[Pricing] setting productId", productId);
 			dispatch({
 				type: PRICING_ACTIONS.SET_PRODUCT_ID,
 				payload: productId,
 			});
 		}
 
-		// Set slabs, if available
-		if (slabs?.length > 0) {
-			const formattedSlabs = formatSlabs(slabs ?? []);
-			console.log("[Pricing] setting slabs options", formattedSlabs);
+		resetDependentFields("category", () => {
+			if (slabs?.length > 0) {
+				const formattedSlabs = formatSlabs(slabs ?? []);
 
-			// Update the slabOptions based on selected category
-			dispatch({
-				type: PRICING_ACTIONS.SET_SLAB_OPTIONS,
-				payload: formattedSlabs,
-			});
-		}
+				// Update the slabOptions based on selected category
+				dispatch({
+					type: PRICING_ACTIONS.SET_SLAB_OPTIONS,
+					payload: formattedSlabs,
+				});
+
+				// Reset the pricing type list when category changes
+				dispatch({
+					type: PRICING_ACTIONS.SET_PRICING_TYPE_LIST,
+					payload: PRICING_TYPE_OPTIONS,
+				});
+
+				// Reset the pricing validation when category changes
+				dispatch({
+					type: PRICING_ACTIONS.SET_PRICING_VALIDATION,
+					payload: {},
+				});
+			}
+		});
 	}, [watcher?.category?.value]);
 
 	// Update pricing type list based on slab selection
@@ -452,37 +540,39 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 		if (!_select) return;
 
-		console.log("[Pricing] _select", _select);
-
 		const { validation } = _select ?? {};
 
 		if (!validation) {
-			console.error(
-				"Error::: validation not available for selected slab",
-				_select
-			);
 			return;
 		}
 
-		console.log("[Pricing] 	validation", validation);
+		// Reset dependent fields and execute subsequent logic in the callback
+		resetDependentFields("select", () => {
+			const { updatedList, firstNonDisabled } = updatePricingTypeList(
+				validation,
+				PRICING_TYPE_OPTIONS
+			);
 
-		const { updatedList, firstNonDisabled } = updatePricingTypeList(
-			validation,
-			PRICING_TYPE_OPTIONS
-		);
+			// Update pricing type list based on slab validation
+			dispatch({
+				type: PRICING_ACTIONS.SET_PRICING_TYPE_LIST,
+				payload: updatedList,
+			});
 
-		// Update pricing type list based on slab validation
-		dispatch({
-			type: PRICING_ACTIONS.SET_PRICING_TYPE_LIST,
-			payload: updatedList,
+			// Reset the pricing validation when slab changes
+			dispatch({
+				type: PRICING_ACTIONS.SET_PRICING_VALIDATION,
+				payload: {},
+			});
+
+			// Set the first non-disabled pricing type as the selected one
+			if (firstNonDisabled) {
+				reset({
+					...watcher,
+					pricing_type: firstNonDisabled.value, // Explicitly set the first non-disabled value
+				});
+			}
 		});
-
-		// Set the first non-disabled pricing type as the selected one
-		if (firstNonDisabled) watcher["pricing_type"] = firstNonDisabled.value;
-
-		// Reset actual pricing to null
-		watcher["actual_pricing"] = "";
-		reset({ ...watcher });
 	}, [watcher?.select?.value]);
 
 	// Update validation state based on selected slab and pricing type
@@ -514,6 +604,9 @@ const PricingForm = ({ agentType, productDetails }) => {
 				type: PRICING_ACTIONS.SET_PRICING_VALIDATION,
 				payload: { min, max },
 			});
+
+			// Reset the actual_pricing field to trigger validation
+			resetDependentFields("pricing_type");
 		}
 	}, [watcher?.pricing_type, watcher?.select?.value]);
 
