@@ -1,7 +1,12 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
 import { useState } from "react";
-import { BusinessDashboard, DashboardProvider, OnboardingDashboard } from ".";
+import {
+	AnnouncementsDashboard,
+	BusinessDashboard,
+	DashboardProvider,
+	OnboardingDashboard,
+} from ".";
 
 /**
  * A Dashboard page component
@@ -16,6 +21,13 @@ const Dashboard = () => {
 		{ label: "Business", component: <BusinessDashboard /> },
 		{ label: "Onboarding", component: <OnboardingDashboard /> },
 	];
+
+	if (process.env.NEXT_PUBLIC_ADMIN_ANNOUNCEMENT_EMBED_URL) {
+		list.push({
+			label: "Announcements",
+			component: <AnnouncementsDashboard />,
+		});
+	}
 
 	const onClick = (idx) => setCurrTab(idx);
 

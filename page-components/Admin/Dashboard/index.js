@@ -1,3 +1,4 @@
+export { default as AnnouncementsDashboard } from "./AnnouncementsDashboard";
 export { BusinessDashboard } from "./BusinessDashboard";
 export { default as Dashboard } from "./Dashboard";
 export { DashboardProvider, useDashboard } from "./DashboardContext";
