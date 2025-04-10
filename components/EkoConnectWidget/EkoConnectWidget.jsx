@@ -37,7 +37,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
  * @param {object} props Properties passed to the component
  * @param {string|integer} props.start_id The transaction id to load. Start of the path.
  * @param {Array<string>} props.paths The list of sub-paths to load.
- * @param {string} props.language The language for localization (default: "en").
+ * @param {string} [props.language] The language for localization (default: "en").
  * @param {...*} rest Rest of the props passed to this component.
  * @example	`<EkoConnectWidget start_id="123" route_params={{trxntypeid: 123, subpath_list: ["123"]}} />`
  */
