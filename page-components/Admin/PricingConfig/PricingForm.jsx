@@ -1,6 +1,11 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
-import { Endpoints, ParamType, productPricingType } from "constants";
+import {
+	Endpoints,
+	ParamType,
+	productPricingType,
+	TransactionTypes,
+} from "constants";
 import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
@@ -8,6 +13,18 @@ import { useRouter } from "next/router";
 import { useEffect, useReducer, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
+import {
+	AGENT_TYPES,
+	formatSlabs,
+	getStatus,
+	OPERATION,
+	OPERATION_TYPE_OPTIONS,
+	PRICING_ACTIONS,
+	PRICING_TYPE_OPTIONS,
+	PRICING_TYPES,
+	pricingInitialState,
+	pricingReducer,
+} from ".";
 
 /*
     TODO:
@@ -18,69 +35,14 @@ import { Form } from "tf-components";
 */
 
 // TODO: set productId as a fixed parameter in the form
-
-const AGENT_TYPE = {
-	RETAILERS: "0",
-	DISTRIBUTOR: "2",
-};
-
-const operation_type_list = [
-	{ value: "3", label: "Whole Network" },
-	{ value: "2", label: "Distributor's Network" },
-	{ value: "1", label: "Individual Distributor/Retailer" },
-];
-
-const PRICING_TYPE = {
-	PERCENT: "0",
-	FIXED: "1",
-};
-
-const pricing_type_list = [
-	{
-		id: "percentage",
-		value: PRICING_TYPE.PERCENT,
-		label: "Percentage (%)",
-		isDisabled: false,
-	},
-	{
-		id: "fixed",
-		value: PRICING_TYPE.FIXED,
-		label: "Fixed (₹)",
-		isDisabled: false,
-	},
-];
-
-const OPERATION = {
-	SUBMIT: 1,
-	FETCH: 0,
-};
+// TODO: set operation_type to 4 in case of distributor's commission
+// TODO: fix form reset when selecting different payment modes, slabs and everything
+// INFO: No need to send payment_mode or category in the final API call, just send product_id from these fields
 
 const _multiselectRenderer = {
 	value: "user_code",
 	label: "name",
 };
-
-const getStatus = (status) => {
-	switch (status) {
-		case 0:
-			return "success";
-		default:
-			return "error";
-	}
-};
-
-// Helper function to format slabs
-const formatSlabs = (slabs) =>
-	slabs?.map((item, index) => ({
-		value: `${index}`,
-		label:
-			item.min === item.max
-				? `₹${item.min}`
-				: `₹${item.min} - ₹${item.max}`,
-		validation: item.validation,
-		min_slab_amount: item.min,
-		max_slab_amount: item.max,
-	})) || [];
 
 // Helper function to update pricing type list
 const updatePricingTypeList = (validations, pricingTypeList) => {
@@ -97,46 +59,6 @@ const updatePricingTypeList = (validations, pricingTypeList) => {
 	return { updatedList, firstNonDisabled, anyDisabled };
 };
 
-// Define initial state
-const initialState = {
-	paymentModeOptions: [],
-	categoryListOptions: [],
-	slabOptions: [],
-	pricingTypeList: pricing_type_list,
-	pricingValidation: { min: null, max: null },
-	productId: null,
-};
-
-// Define action types
-const ACTIONS = {
-	SET_PAYMENT_MODE_OPTIONS: "SET_PAYMENT_MODE_OPTIONS",
-	SET_CATEGORY_LIST_OPTIONS: "SET_CATEGORY_LIST_OPTIONS",
-	SET_SLAB_OPTIONS: "SET_SLAB_OPTIONS",
-	SET_PRICING_TYPE_LIST: "SET_PRICING_TYPE_LIST",
-	SET_PRICING_VALIDATION: "SET_PRICING_VALIDATION",
-	SET_PRODUCT_ID: "SET_PRODUCT_ID",
-};
-
-// Reducer function
-const reducer = (state, action) => {
-	switch (action.type) {
-		case ACTIONS.SET_PAYMENT_MODE_OPTIONS:
-			return { ...state, paymentModeOptions: action.payload };
-		case ACTIONS.SET_CATEGORY_LIST_OPTIONS:
-			return { ...state, categoryListOptions: action.payload };
-		case ACTIONS.SET_SLAB_OPTIONS:
-			return { ...state, slabOptions: action.payload };
-		case ACTIONS.SET_PRICING_TYPE_LIST:
-			return { ...state, pricingTypeList: action.payload };
-		case ACTIONS.SET_PRICING_VALIDATION:
-			return { ...state, pricingValidation: action.payload };
-		case ACTIONS.SET_PRODUCT_ID:
-			return { ...state, productId: action.payload };
-		default:
-			return state;
-	}
-};
-
 /**
  * Form sub-component to set pricing/commission for a product (fixed amount or percentage).
  * @param {*} props
@@ -146,10 +68,9 @@ const reducer = (state, action) => {
  */
 const PricingForm = ({ agentType, productDetails }) => {
 	const { paymentMode, slabs, categoryList } = productDetails || {};
-	console.log("[Pricing] paymentMode", paymentMode);
 
 	// Initialize reducer
-	const [state, dispatch] = useReducer(reducer, initialState);
+	const [state, dispatch] = useReducer(pricingReducer, pricingInitialState);
 
 	const {
 		handleSubmit,
@@ -189,7 +110,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 	let prefix = "";
 	let suffix = "";
 
-	if (watcher["pricing_type"] === PRICING_TYPE.PERCENT) {
+	if (watcher["pricing_type"] === PRICING_TYPES.PERCENT) {
 		suffix = "%";
 	} else {
 		prefix = "₹";
@@ -204,19 +125,18 @@ const PricingForm = ({ agentType, productDetails }) => {
 		}Maximum: ${prefix}${max}${suffix}`;
 
 	// Create a list of form parameters based on product, agent-type, and operation-type selected.
-	// Create a list of form parameters based on product, agent-type, and operation-type selected.
 	// TODO: Memoize this function to avoid unnecessary re-renders
 	const getParameterList = () => {
 		const _list = [];
 
-		if (agentType === AGENT_TYPE.RETAILERS) {
+		if (agentType === AGENT_TYPES.RETAILERS) {
 			// retailers
 			_list.push(
 				{
 					name: "operation_type",
 					label: `Set ${productPricingType.DMT} for`,
 					parameter_type_id: ParamType.LIST,
-					list_elements: operation_type_list,
+					list_elements: OPERATION_TYPE_OPTIONS,
 				},
 				{
 					name: "CspList",
@@ -229,7 +149,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 					multiSelectRenderer: _multiselectRenderer,
 				}
 			);
-		} else if (agentType === AGENT_TYPE.DISTRIBUTOR) {
+		} else if (agentType === AGENT_TYPES.DISTRIBUTOR) {
 			// distributors
 			_list.push({
 				name: "CspList",
@@ -247,6 +167,9 @@ const PricingForm = ({ agentType, productDetails }) => {
 				label: "Select Payment Mode",
 				parameter_type_id: ParamType.LIST,
 				list_elements: state.paymentModeOptions,
+				meta: {
+					force_dropdown: true,
+				},
 			});
 		}
 
@@ -256,9 +179,9 @@ const PricingForm = ({ agentType, productDetails }) => {
 				label: "Select Category",
 				parameter_type_id: ParamType.LIST,
 				list_elements: state.categoryListOptions,
-				// meta: {
-				// 	force_dropdown: true,
-				// },
+				meta: {
+					force_dropdown: true,
+				},
 			});
 		}
 
@@ -295,7 +218,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 				inputRightElement: (
 					<Icon
 						name={
-							watcher["pricing_type"] == PRICING_TYPE.PERCENT
+							watcher["pricing_type"] == PRICING_TYPES.PERCENT
 								? "percent_bg"
 								: "rupee_bg"
 						}
@@ -319,7 +242,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 		setMultiSelectOptions([]);
 
 		if (
-			agentType === AGENT_TYPE.RETAILERS &&
+			agentType === AGENT_TYPES.RETAILERS &&
 			watcher.operation_type == "3"
 		) {
 			// No need to fetch list of agents when operation_type is "3" (Whole Network) for Agent's commission
@@ -328,7 +251,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 		/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
 		const _tf_req_uri =
-			agentType === AGENT_TYPE.DISTRIBUTOR ||
+			agentType === AGENT_TYPES.DISTRIBUTOR ||
 			watcher.operation_type === "2"
 				? "/network/agent-list?usertype=1"
 				: "/network/agent-list";
@@ -350,7 +273,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 				console.error("📡Error fetching network list:", error);
 			});
 
-		let _operationTypeList = operation_type_list.filter(
+		let _operationTypeList = OPERATION_TYPE_OPTIONS.filter(
 			(item) => item.value == watcher.operation_type
 		);
 		let _label =
@@ -362,9 +285,8 @@ const PricingForm = ({ agentType, productDetails }) => {
 	// Set slabs directly from productDetails if available
 	useEffect(() => {
 		if (!slabs?.length) return;
-
 		dispatch({
-			type: ACTIONS.SET_SLAB_OPTIONS,
+			type: PRICING_ACTIONS.SET_SLAB_OPTIONS,
 			payload: formatSlabs(slabs),
 		});
 	}, [slabs]);
@@ -374,7 +296,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 		if (!categoryList?.length) return;
 
 		dispatch({
-			type: ACTIONS.SET_CATEGORY_LIST_OPTIONS,
+			type: PRICING_ACTIONS.SET_CATEGORY_LIST_OPTIONS,
 			payload: categoryList.map((item) => ({
 				...item,
 				value: `${item.productId}`,
@@ -384,15 +306,23 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 	// Set PaymentModeOptions based on the fetched paymentMode
 	useEffect(() => {
-		if (!paymentMode?.length) return;
+		if (!paymentMode || paymentMode.length === 0) return;
 
-		if (paymentMode.length === 1 && paymentMode[0].label === "Default") {
-			const { slabs, validation, productId } = paymentMode[0];
+		const handleSingleDefaultPaymentMode = (mode) => {
+			const { productId, slabs, validation } = mode;
 
-			// Set slabs if available
+			// Set productId, if available
+			if (productId != null) {
+				dispatch({
+					type: PRICING_ACTIONS.SET_PRODUCT_ID,
+					payload: productId,
+				});
+			}
+
+			// Set slabs, if available
 			if (slabs) {
 				dispatch({
-					type: ACTIONS.SET_SLAB_OPTIONS,
+					type: PRICING_ACTIONS.SET_SLAB_OPTIONS,
 					payload: formatSlabs(slabs),
 				});
 			}
@@ -401,37 +331,38 @@ const PricingForm = ({ agentType, productDetails }) => {
 			if (validation) {
 				const { updatedList, firstNonDisabled } = updatePricingTypeList(
 					validation,
-					pricing_type_list
+					PRICING_TYPE_OPTIONS
 				);
 
 				dispatch({
-					type: ACTIONS.SET_PRICING_TYPE_LIST,
+					type: PRICING_ACTIONS.SET_PRICING_TYPE_LIST,
 					payload: updatedList,
 				});
 
 				// Set the first non-disabled pricing type as the selected one
-				if (firstNonDisabled)
+				if (firstNonDisabled) {
 					watcher["pricing_type"] = firstNonDisabled.value;
-				reset({ ...watcher });
+					reset({ ...watcher });
+				}
 			}
+		};
 
-			// Set productId if available
-			if (productId != null) {
-				console.log("[Pricing] productId 1", productId);
-				dispatch({
-					type: ACTIONS.SET_PRODUCT_ID,
-					payload: productId,
-				});
-			}
-		} else {
-			// Map payment modes to options
+		const handleMultiplePaymentModes = (modes) => {
+			const _paymentModeOptions = modes.map((item, index) => ({
+				...item,
+				value: `${index}`,
+			}));
+
 			dispatch({
-				type: ACTIONS.SET_PAYMENT_MODE_OPTIONS,
-				payload: paymentMode.map((item, index) => ({
-					value: `${index}`,
-					label: item.label,
-				})),
+				type: PRICING_ACTIONS.SET_PAYMENT_MODE_OPTIONS,
+				payload: _paymentModeOptions,
 			});
+		};
+
+		if (paymentMode.length === 1 && paymentMode[0].label === "Default") {
+			handleSingleDefaultPaymentMode(paymentMode[0]);
+		} else {
+			handleMultiplePaymentModes(paymentMode);
 		}
 	}, [paymentMode]);
 
@@ -439,149 +370,110 @@ const PricingForm = ({ agentType, productDetails }) => {
 	// If paymentMode contains CategoryList, set CategoryListOptions
 	// Otherwise, set SlabOptions directly
 	useEffect(() => {
-		console.log("[Pricing] >>>> 1");
+		const _paymentMode = watcher?.payment_mode;
 
-		// Handle Radio and Select component differences
-		const _paymentMode =
-			state.paymentModeOptions?.length > 3
-				? watcher?.payment_mode?.value
-				: watcher?.payment_mode;
+		console.log("[Pricing] _paymentMode", _paymentMode);
 
 		if (!_paymentMode) return;
 
-		const selectedPaymentMode = paymentMode?.[+_paymentMode];
+		const { slabs, categoryList, productId } = _paymentMode ?? {};
 
-		// If no categoryList, set slabs directly; otherwise, set categoryListOptions
-		if (!selectedPaymentMode?.categoryList) {
-			console.log("[Pricing] selectedPaymentMode", selectedPaymentMode);
-			console.log("[Pricing] If >>>> 1.1");
-			// Update the slabOptions based on selected payment mode
-			console.log(
-				"[Pricing] selectedPaymentMode?.slabs",
-				selectedPaymentMode?.slabs
-			);
+		if (categoryList?.length > 0) {
+			console.log("[Pricing] setting categoryList options", categoryList);
 
-			const slabs = formatSlabs(selectedPaymentMode?.slabs ?? []);
-			const productId = selectedPaymentMode?.productId ?? null;
+			const _categoryOptions = categoryList.map((item) => ({
+				...item,
+				value: `${item.productId}`,
+			}));
 
-			// Update the slabOptions based on selected payment mode
-			if (slabs?.length > 0) {
-				dispatch({
-					type: ACTIONS.SET_SLAB_OPTIONS,
-					payload: slabs,
-				});
-			}
-
-			// Update the productId if available
-			if (productId != null) {
-				console.log("[Pricing] productId 2", productId);
-				dispatch({
-					type: ACTIONS.SET_PRODUCT_ID,
-					payload: productId,
-				});
-			}
-
-			// Reset Slab value to null and pricing type to null
-			watcher["select"] = null;
-			watcher["pricing_type"] = null;
-			watcher["actual_pricing"] = "";
-			reset({ ...watcher });
-
-			// Reset pricing type list
-			dispatch({
-				type: ACTIONS.SET_PRICING_TYPE_LIST,
-				payload: pricing_type_list,
-			});
-
-			// Reset pricing validation
-			dispatch({
-				type: ACTIONS.SET_PRICING_VALIDATION,
-				payload: { min: null, max: null },
-			});
-		} else {
-			console.log("[Pricing] Else >>>> 1.2");
 			// Update the categoryListOptions based on selected payment mode
 			dispatch({
-				type: ACTIONS.SET_CATEGORY_LIST_OPTIONS,
-				payload: selectedPaymentMode.categoryList.map((item) => ({
-					...item,
-					value: `${item.productId}`,
-				})),
+				type: PRICING_ACTIONS.SET_CATEGORY_LIST_OPTIONS,
+				payload: _categoryOptions,
 			});
-
-			// // Reset slab value to null, pricing type to null and actual pricing to null
-			// watcher["select"] = null;
-			// watcher["pricing_type"] = null;
-			// watcher["actual_pricing"] = "";
-			// reset({ ...watcher });
-
-			// // Reset pricing type list
-			// dispatch({
-			// 	type: ACTIONS.SET_PRICING_TYPE_LIST,
-			// 	payload: pricing_type_list,
-			// });
-
-			// // Reset pricing validation
-			// dispatch({
-			// 	type: ACTIONS.SET_PRICING_VALIDATION,
-			// 	payload: { min: null, max: null },
-			// });
 		}
-	}, [state.paymentModeOptions, watcher?.payment_mode]);
+		if (slabs?.length > 0) {
+			const formattedSlabs = formatSlabs(slabs ?? []);
+			console.log("[Pricing] setting slabs options", formattedSlabs);
+
+			// Update the slabOptions based on selected payment mode
+			dispatch({
+				type: PRICING_ACTIONS.SET_SLAB_OPTIONS,
+				payload: formattedSlabs,
+			});
+		}
+		// Update the productId if available
+		if (productId != null) {
+			console.log("[Pricing] setting product id", productId);
+
+			// Update the productId in the state
+			dispatch({
+				type: PRICING_ACTIONS.SET_PRODUCT_ID,
+				payload: productId,
+			});
+		}
+	}, [watcher?.payment_mode?.value]);
 
 	// Set SlabOptions based on selected CategoryListOptions
 	useEffect(() => {
-		if (!watcher?.category) return;
+		const _category = watcher?.category;
 
-		console.log("[Pricing] >>>> 2");
+		console.log("[Pricing] _category", _category);
 
-		const selectedCategory = state.categoryListOptions?.find(
-			(item) => item.value === watcher.category.value
-		);
+		if (!_category) return;
 
-		console.log("[Pricing] selectedCategory 1", selectedCategory);
-		if (selectedCategory) {
-			console.log("[Pricing] selectedCategory 2", selectedCategory);
+		const { productId, slabs } = _category ?? {};
 
-			// // Reset slab value to null, pricing type to null and actual pricing to null
-			// watcher["select"] = null;
-			// watcher["pricing_type"] = null;
-			// watcher["actual_pricing"] = "";
-			// reset({ ...watcher });
-
-			// Update SlabOptions based on selected category
+		// Set productId if available
+		if (productId != null) {
+			console.log("[Pricing] setting productId", productId);
 			dispatch({
-				type: ACTIONS.SET_SLAB_OPTIONS,
-				payload: formatSlabs(selectedCategory?.slabs),
-			});
-
-			// Reset pricing type list
-			dispatch({
-				type: ACTIONS.SET_PRICING_TYPE_LIST,
-				payload: pricing_type_list,
-			});
-
-			// Reset pricing validation
-			dispatch({
-				type: ACTIONS.SET_PRICING_VALIDATION,
-				payload: { min: null, max: null },
+				type: PRICING_ACTIONS.SET_PRODUCT_ID,
+				payload: productId,
 			});
 		}
-	}, [state.categoryListOptions, watcher?.category]);
+
+		// Set slabs, if available
+		if (slabs?.length > 0) {
+			const formattedSlabs = formatSlabs(slabs ?? []);
+			console.log("[Pricing] setting slabs options", formattedSlabs);
+
+			// Update the slabOptions based on selected category
+			dispatch({
+				type: PRICING_ACTIONS.SET_SLAB_OPTIONS,
+				payload: formattedSlabs,
+			});
+		}
+	}, [watcher?.category?.value]);
 
 	// Update pricing type list based on slab selection
 	useEffect(() => {
-		if (!watcher?.select?.value) return;
+		const _select = watcher?.select;
 
-		const { validation } = state.slabOptions[+watcher?.select?.value] || {};
+		if (!_select) return;
+
+		console.log("[Pricing] _select", _select);
+
+		const { validation } = _select ?? {};
+
+		if (!validation) {
+			console.error(
+				"Error::: validation not available for selected slab",
+				_select
+			);
+			return;
+		}
+
+		console.log("[Pricing] 	validation", validation);
+
 		const { updatedList, firstNonDisabled } = updatePricingTypeList(
 			validation,
-			pricing_type_list
+			PRICING_TYPE_OPTIONS
 		);
 
 		// Update pricing type list based on slab validation
 		dispatch({
-			type: ACTIONS.SET_PRICING_TYPE_LIST,
+			type: PRICING_ACTIONS.SET_PRICING_TYPE_LIST,
 			payload: updatedList,
 		});
 
@@ -596,9 +488,9 @@ const PricingForm = ({ agentType, productDetails }) => {
 	// Update validation state based on selected slab and pricing type
 	useEffect(() => {
 		const pricingType =
-			watcher.pricing_type === PRICING_TYPE.PERCENT
+			watcher.pricing_type === PRICING_TYPES.PERCENT
 				? "percentage"
-				: watcher.pricing_type === PRICING_TYPE.FIXED
+				: watcher.pricing_type === PRICING_TYPES.FIXED
 					? "fixed"
 					: null;
 
@@ -619,16 +511,11 @@ const PricingForm = ({ agentType, productDetails }) => {
 		// Only update state if min or max is not null
 		if (min !== null || max !== null) {
 			dispatch({
-				type: ACTIONS.SET_PRICING_VALIDATION,
+				type: PRICING_ACTIONS.SET_PRICING_VALIDATION,
 				payload: { min, max },
 			});
 		}
-	}, [
-		watcher?.pricing_type,
-		watcher?.select?.value,
-		watcher?.payment_mode,
-		watcher?.category,
-	]);
+	}, [watcher?.pricing_type, watcher?.select?.value]);
 
 	// Reset form values after successful submission
 	useEffect(() => {
@@ -671,14 +558,14 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 		const requestOptions = {
 			body: {
-				interaction_type_id: 838,
+				interaction_type_id: TransactionTypes.SET_PRICING,
 				operation: OPERATION.SUBMIT,
 				product_id: state.productId,
 				..._finalData,
 			},
 		};
 
-		if (agentType === AGENT_TYPE.DISTRIBUTOR) {
+		if (agentType === AGENT_TYPES.DISTRIBUTOR) {
 			requestOptions.body.communication = 1;
 		}
 
