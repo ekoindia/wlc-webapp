@@ -203,3 +203,32 @@ export const getStatus = (status) => {
 			return "error";
 	}
 };
+
+/**
+ * Groups products by their `service_type` and returns unique categories with associated products.
+ * @param {Array<any>} productList - List of products, each containing a `meta.service_type`.
+ * @returns {Array<{ category_name: string; description: string; products: any[] }>}
+ * List of categories with their name, description, and associated products.
+ */
+export const generateProductCategoryList = (productList: any[]) =>
+	Object.values(
+		productList.reduce(
+			(acc, product) => {
+				const category = product?.meta?.service_type;
+				if (category) {
+					acc[category] ??= {
+						category: category,
+						description:
+							"Set and adjust pricing and commissions for various services within your network.",
+						products: [],
+					};
+					acc[category].products.push(product);
+				}
+				return acc;
+			},
+			{} as Record<
+				string,
+				{ category_name: string; description: string; products: any[] }
+			>
+		)
+	);
