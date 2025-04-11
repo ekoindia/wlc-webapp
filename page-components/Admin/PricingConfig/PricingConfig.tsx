@@ -1,9 +1,15 @@
-import { Avatar, Flex, Grid, Text } from "@chakra-ui/react";
-import { Icon } from "components";
+import { Avatar, Flex, Grid, Text, Tooltip } from "@chakra-ui/react";
+import { Headings, Icon } from "components";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
+import { DownloadPricing } from "page-components/Admin/PricingCommission/DownloadPricing";
 import { useEffect, useState } from "react";
-import { PricingForm, ProductNode, usePricingConfig } from ".";
+import {
+	generateProductCategoryList,
+	PricingForm,
+	ProductNode,
+	usePricingConfig,
+} from ".";
 
 interface PricingConfigProps {
 	pathArray?: string[] | null; // Array of path segments for navigation
@@ -56,6 +62,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 		ProductNode[] | null
 	>(null);
 	const [formData, setFormData] = useState<Record<string, any>>({});
+	const [productCategoryList, setProductCategoryList] = useState([]);
 
 	// Get pricing tree and form data map from context
 	const { pricingTree, formDataMap } = usePricingConfig();
@@ -93,8 +100,27 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 		}
 	}, [pathArray, pricingTree, formDataMap]);
 
+	// Need to generate the category tree based on the pricingTree
+	useEffect(() => {
+		if (pricingTree?.length) {
+			const categoryTree = generateProductCategoryList(pricingTree);
+			console.log("[Pricing] categoryTree", categoryTree);
+			setProductCategoryList(categoryTree);
+		}
+	}, [pricingTree]);
+
 	// Render the appropriate UI based on the current pricing node
 	const renderContent = (): JSX.Element | null => {
+		if (pathArray == undefined) {
+			return (
+				<ConfigPageCard
+					heading="Pricing & Commissions"
+					configCategories={productCategoryList}
+					HeaderTool={<DownloadPricing />}
+				/>
+			);
+		}
+
 		if (!currentPricingTreeNode?.length) {
 			return <Text>Nothing found</Text>;
 		}
@@ -251,5 +277,102 @@ const Card = ({
 				color={onHover ? `hsl(${h},80%,30%)` : "transparent"}
 			/>
 		</Flex>
+	);
+};
+
+/**
+ * Show a configuration page with a list of configuratoin options.
+ * For example, a list of products to set pricing/commissions for.
+ * @param {object} props
+ * @param {string} [props.heading] Heading of the page
+ * @param {object} props.configCategories Object containing the configuration categories
+ * @param {React.Component} [props.HeaderTool] Component to display in the header
+ */
+const ConfigPageCard = ({
+	heading = "Configurations",
+	configCategories,
+	HeaderTool,
+}) => {
+	const [basePath, setBasePath] = useState("");
+
+	// Get the base path for the current page
+	useEffect(() => {
+		const path = window.location.pathname;
+		const pathParts = path.split("/");
+		setBasePath(pathParts[pathParts.length - 1]);
+	}, []);
+
+	return (
+		<>
+			<Headings title={heading} hasIcon={false} propComp={HeaderTool} />
+
+			<Flex
+				direction="column"
+				px={{ base: "16px", md: "initial" }}
+				// mb={{ base: "16", md: "0" }}
+				gap={{ base: "2", md: "8" }}
+			>
+				{configCategories?.map(
+					({ category, description, products }) => {
+						if (!products?.length) return null;
+
+						return (
+							<Flex
+								key={category}
+								direction="column"
+								gap={{ base: "0.25", md: "2" }}
+								py="2"
+							>
+								{/* Category heading with description-tooltip */}
+								{category ? (
+									<Flex align="center" gap="1">
+										<Text
+											fontSize={{
+												base: "md",
+												md: "lg",
+											}}
+											fontWeight="semibold"
+										>
+											{category}
+										</Text>
+										{description ? (
+											<Tooltip
+												hasArrow
+												placement="right"
+												label={description}
+												aria-label={description}
+												fontSize="xs"
+												bg="primary.DEFAULT"
+												color="white"
+												borderRadius="8"
+											>
+												<span>
+													<Icon
+														name="info-outline"
+														size="xs"
+														cursor="pointer"
+														color="light"
+														display={{
+															base: "none",
+															md: "block",
+														}}
+													/>
+												</span>
+											</Tooltip>
+										) : null}
+									</Flex>
+								) : null}
+
+								{/* List of configuration options in the category */}
+								<ConfigGrid
+									product_list={products}
+									basePath={basePath}
+								/>
+							</Flex>
+						);
+					}
+				)}
+			</Flex>
+		</>
 	);
 };
