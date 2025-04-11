@@ -94,33 +94,28 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 	}, [pathArray, pricingTree, formDataMap]);
 
 	// Render the appropriate UI based on the current pricing node
-	const renderContent = () => {
-		if (!currentPricingTreeNode) {
+	const renderContent = (): JSX.Element | null => {
+		if (!currentPricingTreeNode?.length) {
 			return <Text>Nothing found</Text>;
 		}
 
-		if (
-			currentPricingTreeNode.length > 0 &&
-			currentPricingTreeNode[0]?.type !== "form"
-		) {
-			return (
-				<ConfigGrid
-					product_list={currentPricingTreeNode}
-					basePath={basePath}
-				/>
-			);
-		}
+		const [firstNode] = currentPricingTreeNode;
 
-		if (formData && currentPricingTreeNode[0]?.type === "form") {
+		if (firstNode.type === "form" && formData) {
 			return (
 				<PricingForm
-					agentType={currentPricingTreeNode[0]?.meta?.agentType}
+					agentType={firstNode.meta?.agentType}
 					productDetails={formData}
 				/>
 			);
 		}
 
-		return null;
+		return (
+			<ConfigGrid
+				product_list={currentPricingTreeNode}
+				basePath={basePath}
+			/>
+		);
 	};
 
 	return <>{renderContent()}</>;
