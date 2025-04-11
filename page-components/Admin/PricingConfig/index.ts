@@ -12,7 +12,12 @@ export {
 	PRICING_TYPES,
 } from "./pricingConstants";
 export { default as PricingForm } from "./PricingForm";
-export { formatSlabs, generatePricingTrees, getStatus } from "./pricingHelpers";
+export {
+	formatSlabs,
+	generatePricingTrees,
+	generateProductCategoryList,
+	getStatus,
+} from "./pricingHelpers";
 export {
 	PRICING_ACTIONS,
 	pricingInitialState,
