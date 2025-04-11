@@ -204,7 +204,6 @@ const Card = ({
 	label,
 	desc,
 	icon,
-	children,
 	basePath,
 }: CardProps): JSX.Element => {
 	const { h } = useHslColor(label);
@@ -212,11 +211,7 @@ const Card = ({
 	const router = useRouter();
 
 	const handleClick = () => {
-		if (!children?.length) {
-			router.push(`${basePath}/form`);
-		} else {
-			router.push(`${basePath}/${name}`);
-		}
+		router.push(`${basePath}/${name}`);
 	};
 
 	return (
