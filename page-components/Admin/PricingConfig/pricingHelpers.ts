@@ -79,6 +79,9 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 			label: product.label,
 			name: productName,
 			desc: product.desc,
+			meta: {
+				service_type: product.serviceType,
+			},
 			children: product.provider.map((provider) => {
 				const providerName = formatName(provider.label);
 				const providerNode: TreeNode = {
