@@ -96,7 +96,8 @@ const FIELD_DEPENDENCIES = {
  * @returns {JSX.Element}
  */
 const PricingForm = ({ agentType, productDetails }) => {
-	const { paymentMode, slabs, categoryList } = productDetails || {};
+	const { paymentMode, slabs, categoryList, productId } =
+		productDetails || {};
 
 	// Initialize reducer
 	const [state, dispatch] = useReducer(pricingReducer, pricingInitialState);
@@ -344,6 +345,15 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 		setMultiSelectLabel(_label);
 	}, [agentType, watcher.operation_type]);
+
+	// Set ProductId directly from productDetails if available
+	useEffect(() => {
+		if (!productId) return;
+		dispatch({
+			type: PRICING_ACTIONS.SET_PRODUCT_ID,
+			payload: productId,
+		});
+	}, [productId]);
 
 	// Set slabs directly from productDetails if available
 	useEffect(() => {
@@ -633,30 +643,27 @@ const PricingForm = ({ agentType, productDetails }) => {
 	// MARK: Form Submit
 	const handleFormSubmit = (data) => {
 		const _finalData = { ...data };
-		console.log("[Pricing] _finalData", _finalData);
 
 		const { min_slab_amount, max_slab_amount } =
 			state.slabOptions?.[_finalData?.select?.value] || {};
 
-		console.log(
-			"[Pricing] state.slabOptions?.[_finalData?.select?.value]",
-			state.slabOptions?.[_finalData?.select?.value]
-		);
-
 		_finalData.min_slab_amount = min_slab_amount;
 		_finalData.max_slab_amount = max_slab_amount;
 
-		console.log("[Pricing] _finalData >>>> FINAL DATA", _finalData);
+		let _cspList = [];
 
-		const _CspList = data?.CspList?.map(
-			(item) => item[_multiselectRenderer.value]
-		);
-
-		if (watcher.operation_type != 3) {
-			_finalData.CspList = `${_CspList}`;
+		if (_finalData?.CspList?.length > 0) {
+			_cspList = _finalData?.CspList?.map(
+				(item) => item[_multiselectRenderer.value]
+			);
+			_finalData.CspList = `${_cspList}`;
+		} else {
+			delete _finalData.CspList;
 		}
 
 		delete _finalData.select;
+		delete _finalData.payment_mode;
+		delete _finalData.category;
 
 		const requestOptions = {
 			body: {
@@ -669,6 +676,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 		if (agentType === AGENT_TYPES.DISTRIBUTOR) {
 			requestOptions.body.communication = 1;
+			requestOptions.body.operation_type = 4; // Todo: Make this fixed parameter
 		}
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
