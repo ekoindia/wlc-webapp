@@ -2,6 +2,7 @@ export { default as PricingConfig } from "./PricingConfig";
 export {
 	PricingConfigProvider,
 	usePricingConfig,
+	type ProductCategory,
 	type ProductNode,
 } from "./PricingConfigContext";
 export {

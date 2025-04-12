@@ -8,7 +8,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { generatePricingTrees } from ".";
+import { generatePricingTrees, generateProductCategoryList } from ".";
 
 export interface ProductNode {
 	name: string; // Unique name of the product node
@@ -24,9 +24,16 @@ export interface ProductNode {
 	formlink?: string; // Link to the form (optional)
 }
 
+export interface ProductCategory {
+	category: string;
+	description: string;
+	products: ProductNode[]; // Use the existing ProductNode interface for products
+}
+
 interface PricingConfigContextValue {
 	pricingTree: ProductNode[];
 	formDataMap: Record<string, any>;
+	productCategoryList: ProductCategory[];
 }
 
 const PricingConfigContext = createContext<PricingConfigContextValue | null>(
@@ -48,6 +55,9 @@ const PricingConfigProvider = ({
 }: PricingConfigProviderProps): JSX.Element => {
 	const [pricingTree, setPricingTree] = useState<ProductNode[]>([]);
 	const [formDataMap, setFormDataMap] = useState<Record<string, any>>({});
+	const [productCategoryList, setProductCategoryList] = useState<
+		ProductCategory[]
+	>([]);
 
 	// Fetching Product Overview Data
 	const [fetchProductConfig] = useApiFetch(Endpoints.TRANSACTION_JSON, {
@@ -55,9 +65,11 @@ const PricingConfigProvider = ({
 			const productList = res?.data?.product_list || [];
 			const { pricingTree, formRegistry } =
 				generatePricingTrees(productList);
+			const categoryTree = generateProductCategoryList(pricingTree);
 
 			setPricingTree(pricingTree);
 			setFormDataMap(formRegistry);
+			setProductCategoryList(categoryTree);
 		},
 		onError: (err) => {
 			console.error("Error fetching product config:", err);
@@ -74,7 +86,9 @@ const PricingConfigProvider = ({
 	}, []);
 
 	return (
-		<PricingConfigContext.Provider value={{ pricingTree, formDataMap }}>
+		<PricingConfigContext.Provider
+			value={{ pricingTree, formDataMap, productCategoryList }}
+		>
 			{children}
 		</PricingConfigContext.Provider>
 	);

@@ -1,3 +1,5 @@
+import { ProductCategory, ProductNode } from "./PricingConfigContext";
+
 const AGENT_TYPE = {
 	RETAILERS: "0",
 	DISTRIBUTOR: "2",
@@ -207,44 +209,30 @@ export const getStatus = (status) => {
 /**
  * Groups products by their `service_type` and returns unique categories with associated products.
  * Categories and products within each category are sorted alphabetically.
- * @param {Array<any>} productList - List of products, each containing a `meta.service_type` and a `name`.
- * @returns {Array<{ category_name: string; description: string; products: any[] }>}
+ * @param {ProductNode[]} productList - List of products, each containing a `meta.service_type` and a `name`.
+ * @returns {ProductCategory[]} - Array of product categories.
  * List of categories with their name, description, and associated sorted products.
  */
 export const generateProductCategoryList = (productList: any[]) => {
-	const grouped = productList.reduce(
-		(acc, product) => {
-			const category = product?.meta?.service_type;
-			if (category) {
-				acc[category] ??= {
-					category: category,
-					description:
-						"Set and adjust pricing and commissions for various services within your network.",
-					products: [],
-				};
-				acc[category].products.push(product);
-			}
-			return acc;
-		},
-		{} as Record<
-			string,
-			{ category_name: string; description: string; products: any[] }
-		>
-	);
+	const grouped = productList.reduce((acc, product) => {
+		const category = product?.meta?.service_type;
+		if (category) {
+			acc[category] ??= {
+				category: category,
+				description:
+					"Set and adjust pricing and commissions for various services within your network.",
+				products: [],
+			};
+			acc[category].products.push(product);
+		}
+		return acc;
+	}, {} as ProductCategory[]);
 
 	// Convert to array and sort categories alphabetically
 	return Object.values(grouped)
-		.map(
-			(cat: {
-				category: string;
-				description: string;
-				products: any[];
-			}) => ({
-				...cat,
-				products: cat.products.sort((a, b) =>
-					a.name.localeCompare(b.name)
-				),
-			})
-		)
+		.map((cat: ProductCategory) => ({
+			...cat,
+			products: cat.products.sort((a, b) => a.name.localeCompare(b.name)),
+		}))
 		.sort((a, b) => a.category.localeCompare(b.category));
 };

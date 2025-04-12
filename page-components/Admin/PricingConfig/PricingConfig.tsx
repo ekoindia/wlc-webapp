@@ -4,12 +4,7 @@ import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { DownloadPricing } from "page-components/Admin/PricingCommission/DownloadPricing";
 import { useEffect, useState } from "react";
-import {
-	generateProductCategoryList,
-	PricingForm,
-	ProductNode,
-	usePricingConfig,
-} from ".";
+import { PricingForm, ProductNode, usePricingConfig } from ".";
 
 interface PricingConfigProps {
 	pathArray?: string[] | null; // Array of path segments for navigation
@@ -62,10 +57,10 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 		ProductNode[] | null
 	>(null);
 	const [formData, setFormData] = useState<Record<string, any>>({});
-	const [productCategoryList, setProductCategoryList] = useState([]);
 
 	// Get pricing tree and form data map from context
-	const { pricingTree, formDataMap } = usePricingConfig();
+	const { pricingTree, formDataMap, productCategoryList } =
+		usePricingConfig();
 
 	// Base path for navigation
 	const basePath = pathArray?.length
@@ -99,15 +94,6 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 			setCurrentPricingTreeNode(pricingTree);
 		}
 	}, [pathArray, pricingTree, formDataMap]);
-
-	// Need to generate the category tree based on the pricingTree
-	useEffect(() => {
-		if (pricingTree?.length) {
-			const categoryTree = generateProductCategoryList(pricingTree);
-			console.log("[Pricing] categoryTree", categoryTree);
-			setProductCategoryList(categoryTree);
-		}
-	}, [pricingTree]);
 
 	// Render the appropriate UI based on the current pricing node
 	const renderContent = (): JSX.Element | null => {
