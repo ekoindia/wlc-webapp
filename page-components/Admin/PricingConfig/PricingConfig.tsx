@@ -106,6 +106,11 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 		}
 	}, [pathArray, pricingTree, formDataMap]);
 
+	// Set the page title and icon based on the current node
+	const title = crumbs?.[crumbs.length - 1]?.label ?? "Pricing & Commissions";
+	const hasIcon = Boolean(pathArray?.length > 0);
+	const propComp = pathArray?.length > 0 ? null : <DownloadPricing />;
+
 	// Render the appropriate UI based on the current pricing node
 	const renderContent = (): JSX.Element | null => {
 		if (pathArray == undefined) {
@@ -138,16 +143,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 	return (
 		<>
 			<BreadcrumbWrapper crumbs={crumbs}>
-				<Headings
-					title={
-						crumbs?.[crumbs.length - 1]?.label ??
-						"Pricing & Commissions"
-					}
-					hasIcon={pathArray?.length > 0 ? true : false}
-					propComp={
-						pathArray?.length > 0 ? null : <DownloadPricing />
-					}
-				/>
+				<Headings title={title} hasIcon={hasIcon} propComp={propComp} />
 				{renderContent()}
 			</BreadcrumbWrapper>
 		</>
