@@ -114,7 +114,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 					providerNode.children!.push(
 						createNode({
 							type: "path",
-							label: "Agent Pricing",
+							label: "Agent's Pricing",
 							name: formatName("Agent Pricing"),
 							desc: `Set Agent's Pricing for ${provider.label}`,
 							children: [agentFormNode],
@@ -140,7 +140,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 					providerNode.children!.push(
 						createNode({
 							type: "path",
-							label: "Distributor Commission",
+							label: "Distributor's Commission",
 							name: formatName("Distributor Commission"),
 							desc: `Set Distributor's Commission for ${provider.label}`,
 							children: [distributorFormNode],
