@@ -190,8 +190,8 @@ export const formatSlabs = (slabs) =>
 		value: `${index}`,
 		label:
 			item.min === item.max
-				? `${formatCurrency(item.min)}`
-				: `${formatCurrency(item.min)} – ${formatCurrency(item.max)}`,
+				? `${formatCurrency(item.min, "INR", false, false)}`
+				: `${formatCurrency(item.min, "INR", false, false)} – ${formatCurrency(item.max, "INR", false, false)}`,
 		validation: item.validation,
 		min_slab_amount: item.min,
 		max_slab_amount: item.max,
