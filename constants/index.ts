@@ -3,7 +3,6 @@ export { allowedCategories } from "./allowedCategories";
 export {
 	MyNetworkBreadcrumbs,
 	PricingCommissionBreadcrumbs,
-	PricingConfigBreadcrumbs,
 	TransactionHistoryBreadcrumbs,
 } from "./BreadcrumbsData";
 export { colorThemes } from "./colorThemes";

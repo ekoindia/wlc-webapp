@@ -34,10 +34,6 @@ export const PricingCommissionBreadcrumbs = {
 	"/admin/pricing/qr-payment": "QR",
 };
 
-export const PricingConfigBreadcrumbs = {
-	"/admin/pricing-config": "Pricing & Commissions",
-};
-
 export const BusinessSettingsBreadcrumbs = {
 	"/admin/business": "Business Settings",
 	"/admin/business/account-verification-toggle": "Account Verification",
