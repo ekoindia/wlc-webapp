@@ -11,7 +11,6 @@ import { Address } from "./Address";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumb } from "./Breadcrumb";
-import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
 import { BreadcrumbWrapper } from "./BreadcrumbWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
@@ -74,7 +73,6 @@ export {
 	AdminViewToggleCard,
 	BottomAppBar,
 	Breadcrumb,
-	BreadcrumbsWrapper,
 	BreadcrumbWrapper,
 	Button,
 	Calenders,
