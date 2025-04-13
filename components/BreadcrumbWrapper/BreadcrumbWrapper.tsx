@@ -16,19 +16,21 @@ interface BreadcrumbData {
  * Props for the BreadcrumbWrapper component.
  */
 interface BreadcrumbWrapperProps {
-	breadcrumbsData: Record<string, string>; // Object containing possible URLs and their labels
+	breadcrumbsData?: Record<string, string>; // Object containing possible URLs and their labels
+	crumbs?: BreadcrumbData[]; // Pre-generated crumbs
 	slug?: string; // Optional slug value for dynamic routes
 	children?: ReactNode; // Child components to render
 }
 
 /**
  * BreadcrumbWrapper component.
- * Calculates sub-paths and displays breadcrumbs at the top of the page.
+ * Displays breadcrumbs at the top of the page.
  * @param {BreadcrumbWrapperProps} props - Properties passed to the component.
  * @returns {JSX.Element} The rendered BreadcrumbWrapper component.
  */
 const BreadcrumbWrapper: React.FC<BreadcrumbWrapperProps> = ({
 	breadcrumbsData,
+	crumbs: providedCrumbs,
 	slug,
 	children,
 }) => {
@@ -36,9 +38,14 @@ const BreadcrumbWrapper: React.FC<BreadcrumbWrapperProps> = ({
 	const [crumbs, setCrumbs] = useState<BreadcrumbData[]>([]);
 
 	/**
-	 * Get the breadcrumbs data (sub-path hrefs & labels) based on the current URL.
+	 * Generate crumbs if breadcrumbsData is provided and crumbs are not directly passed.
 	 */
 	useEffect(() => {
+		if (providedCrumbs) {
+			setCrumbs(providedCrumbs);
+			return;
+		}
+
 		if (!breadcrumbsData) return;
 
 		// Get the current path and replace the slug if present
@@ -60,7 +67,7 @@ const BreadcrumbWrapper: React.FC<BreadcrumbWrapperProps> = ({
 			}
 		});
 		setCrumbs(_crumbs);
-	}, [breadcrumbsData, router.pathname, slug]);
+	}, [breadcrumbsData, providedCrumbs, router.pathname, slug]);
 
 	return (
 		<Box>
