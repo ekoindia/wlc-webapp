@@ -1,3 +1,4 @@
+import { formatCurrency } from "utils/numberFormat";
 import { ProductCategory, ProductNode } from "./PricingConfigContext";
 
 const AGENT_TYPE = {
@@ -189,8 +190,8 @@ export const formatSlabs = (slabs) =>
 		value: `${index}`,
 		label:
 			item.min === item.max
-				? `₹${item.min}`
-				: `₹${item.min} – ₹${item.max}`,
+				? `${formatCurrency(item.min)}`
+				: `${formatCurrency(item.min)} – ${formatCurrency(item.max)}`,
 		validation: item.validation,
 		min_slab_amount: item.min,
 		max_slab_amount: item.max,

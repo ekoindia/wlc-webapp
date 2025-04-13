@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
+import { formatCurrency } from "utils/numberFormat";
 import {
 	AGENT_TYPES,
 	formatSlabs,
@@ -33,11 +34,6 @@ import {
             - Download the full list only once (in the PricingCommission/ConfigPageCard main page component) and filter as needed.
             - Also, cache & share the same list with all pricing configuration sub-components.
 */
-
-// TODO: set productId as a fixed parameter in the form
-// TODO: set operation_type to 4 in case of distributor's commission
-// TODO: fix form reset when selecting different payment modes, slabs and everything
-// INFO: No need to send payment_mode or category in the final API call, just send product_id from these fields
 
 const _multiselectRenderer = {
 	value: "user_code",
@@ -136,22 +132,28 @@ const PricingForm = ({ agentType, productDetails }) => {
 	const min = state.pricingValidation?.min;
 	const max = state.pricingValidation?.max;
 
-	let prefix = "";
 	let suffix = "";
 
 	if (watcher["pricing_type"] === PRICING_TYPES.PERCENT) {
 		suffix = "%";
-	} else {
-		prefix = "₹";
 	}
 
 	let helperText = "";
 
-	if (min != undefined) helperText += `Minimum: ${prefix}${min}${suffix}`;
-	if (max != undefined)
-		helperText += `${
-			min != undefined ? " - " : ""
-		}Maximum: ${prefix}${max}${suffix}`;
+	if (watcher["pricing_type"] === PRICING_TYPES.FIXED) {
+		const formattedMin = min != undefined ? formatCurrency(min) : undefined;
+		const formattedMax = max != undefined ? formatCurrency(max) : undefined;
+
+		if (formattedMin != undefined) helperText += `Minimum: ${formattedMin}`;
+		if (formattedMax != undefined)
+			helperText += `${
+				formattedMin != undefined ? " - " : ""
+			}Maximum: ${formattedMax}`;
+	} else {
+		if (min != undefined) helperText += `Minimum: ${min}${suffix}`;
+		if (max != undefined)
+			helperText += `${min != undefined ? " - " : ""}Maximum: ${max}${suffix}`;
+	}
 
 	// Create a list of form parameters based on product, agent-type, and operation-type selected.
 	const parameter_list = useMemo(() => {
