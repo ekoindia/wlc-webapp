@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { Breadcrumbs } from "..";
 
 /**
@@ -22,7 +22,9 @@ const BreadcrumbsWrapper = ({ breadcrumbsData, slug, children }) => {
 
 		// Get the current path and replace the slug if present
 		const currentURL = router.pathname.replace("[slug]", slug || "");
+		console.log("[Pricing] currentURL", currentURL);
 		const pathArray = currentURL.split("/");
+		console.log("[Pricing] pathArray", pathArray);
 
 		let URL = "";
 		let _crumbs = [];

@@ -1,6 +1,4 @@
 /* PLOP_INJECT_IMPORT */
-import { Address } from "./Address";
-import { ActionButtonGroup } from "./ActionButtonGroup";
 import {
 	Accordion,
 	AccordionButton,
@@ -8,10 +6,13 @@ import {
 	AccordionPanel,
 } from "./Accordion";
 import { AccordionMenu } from "./AccordionMenu";
+import { ActionButtonGroup } from "./ActionButtonGroup";
+import { Address } from "./Address";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
-import { Breadcrumbs } from "./Breadcrumb";
+import { Breadcrumb } from "./Breadcrumb";
 import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
+import { BreadcrumbWrapper } from "./BreadcrumbWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
 import { Camera } from "./Camera";
@@ -63,10 +64,18 @@ import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
 
 export {
+	Accordion,
+	AccordionButton,
+	AccordionItem,
+	AccordionMenu,
+	AccordionPanel,
+	ActionButtonGroup,
+	Address,
 	AdminViewToggleCard,
 	BottomAppBar,
-	Breadcrumbs,
+	Breadcrumb,
 	BreadcrumbsWrapper,
+	BreadcrumbWrapper,
 	Button,
 	Calenders,
 	Camera,
@@ -116,13 +125,6 @@ export {
 	Tags,
 	Textarea,
 	XScrollArrow,
-	Address,
-	ActionButtonGroup,
-	Accordion,
-	AccordionButton,
-	AccordionPanel,
-	AccordionItem,
-	AccordionMenu,
 };
 
 export { PhoneNumber } from "./PhoneNumber";
