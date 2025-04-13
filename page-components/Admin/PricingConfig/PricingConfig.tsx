@@ -1,10 +1,17 @@
 import { Avatar, Flex, Grid, Text, Tooltip } from "@chakra-ui/react";
-import { Headings, Icon } from "components";
+import { BreadcrumbWrapper, Headings, Icon } from "components";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { DownloadPricing } from "page-components/Admin/PricingCommission/DownloadPricing";
 import { useEffect, useState } from "react";
+import { generateBreadcrumbs } from "utils/breadcrumbUtils";
 import { PricingForm, ProductNode, usePricingConfig } from ".";
+
+const labelOverrides = {
+	"agent-pricing": "Agent's Pricing",
+	"distributor-commission": "Distributor's Commission",
+	"pricing-config": "Pricing & Commission",
+};
 
 interface PricingConfigProps {
 	pathArray?: string[] | null; // Array of path segments for navigation
@@ -58,6 +65,10 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 	>(null);
 	const [formData, setFormData] = useState<Record<string, any>>({});
 
+	const { asPath } = useRouter();
+
+	const crumbs = generateBreadcrumbs(asPath, labelOverrides, ["/admin"]);
+
 	// Get pricing tree and form data map from context
 	const { pricingTree, formDataMap, productCategoryList } =
 		usePricingConfig();
@@ -98,13 +109,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 	// Render the appropriate UI based on the current pricing node
 	const renderContent = (): JSX.Element | null => {
 		if (pathArray == undefined) {
-			return (
-				<ConfigPageCard
-					heading="Pricing & Commissions"
-					configCategories={productCategoryList}
-					HeaderTool={<DownloadPricing />}
-				/>
-			);
+			return <ConfigPageCard configCategories={productCategoryList} />;
 		}
 
 		if (!currentPricingTreeNode?.length) {
@@ -130,7 +135,23 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 		);
 	};
 
-	return <>{renderContent()}</>;
+	return (
+		<>
+			<BreadcrumbWrapper crumbs={crumbs}>
+				<Headings
+					title={
+						crumbs?.[crumbs.length - 1]?.label ??
+						"Pricing & Commissions"
+					}
+					hasIcon={pathArray?.length > 0 ? true : false}
+					propComp={
+						pathArray?.length > 0 ? null : <DownloadPricing />
+					}
+				/>
+				{renderContent()}
+			</BreadcrumbWrapper>
+		</>
+	);
 };
 
 export default PricingConfig;
@@ -269,11 +290,7 @@ const Card = ({
  * @param {object} props.configCategories Object containing the configuration categories
  * @param {React.Component} [props.HeaderTool] Component to display in the header
  */
-const ConfigPageCard = ({
-	heading = "Configurations",
-	configCategories,
-	HeaderTool,
-}) => {
+const ConfigPageCard = ({ configCategories }) => {
 	const [basePath, setBasePath] = useState("");
 
 	// Get the base path for the current page
@@ -285,8 +302,6 @@ const ConfigPageCard = ({
 
 	return (
 		<>
-			<Headings title={heading} hasIcon={false} propComp={HeaderTool} />
-
 			<Flex
 				direction="column"
 				px={{ base: "16px", md: "initial" }}
