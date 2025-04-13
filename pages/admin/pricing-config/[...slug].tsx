@@ -1,19 +1,23 @@
 import { BreadcrumbWrapper, PaddingBox } from "components";
-import { PricingConfigBreadcrumbs } from "constants";
 import { useRouter } from "next/router";
 import { PricingConfig, PricingConfigProvider } from "page-components/Admin";
+import { generateBreadcrumbs } from "utils/breadcrumbUtils";
+
+const labelOverrides = {
+	"agent-pricing": "Agent's Pricing",
+	"distributor-commission": "Distributor's Commission",
+	"pricing-config": "Pricing & Commission",
+};
 
 const PricingConfigPage = () => {
-	const router = useRouter();
-	const { slug } = router.query;
+	const { asPath, query } = useRouter();
+	const { slug } = query;
 	const pathArray = Array.isArray(slug) ? slug : null;
+	const crumbs = generateBreadcrumbs(asPath, labelOverrides, ["/admin"]);
 
 	return (
 		<PaddingBox>
-			<BreadcrumbWrapper
-				breadcrumbsData={PricingConfigBreadcrumbs}
-				slug={slug}
-			>
+			<BreadcrumbWrapper crumbs={crumbs}>
 				<PricingConfigProvider>
 					<PricingConfig pathArray={pathArray} />
 				</PricingConfigProvider>
