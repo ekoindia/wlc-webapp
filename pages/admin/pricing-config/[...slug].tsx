@@ -1,4 +1,5 @@
-import { PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
+import { PricingConfigBreadcrumbs } from "constants";
 import { useRouter } from "next/router";
 import { PricingConfig, PricingConfigProvider } from "page-components/Admin";
 
@@ -9,9 +10,14 @@ const PricingConfigPage = () => {
 
 	return (
 		<PaddingBox>
-			<PricingConfigProvider>
-				<PricingConfig pathArray={pathArray} />
-			</PricingConfigProvider>
+			<BreadcrumbWrapper
+				breadcrumbsData={PricingConfigBreadcrumbs}
+				slug={slug}
+			>
+				<PricingConfigProvider>
+					<PricingConfig pathArray={pathArray} />
+				</PricingConfigProvider>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

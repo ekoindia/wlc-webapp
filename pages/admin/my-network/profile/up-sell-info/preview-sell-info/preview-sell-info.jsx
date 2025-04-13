@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { MyNetworkBreadcrumbs } from "constants";
 import { PreviewSellerInfo } from "page-components/Admin/UpdateSellerInfo";
 
@@ -8,9 +8,9 @@ import { PreviewSellerInfo } from "page-components/Admin/UpdateSellerInfo";
 function PreviewSellerInfoPage() {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
+			<BreadcrumbWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
 				<PreviewSellerInfo />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 }

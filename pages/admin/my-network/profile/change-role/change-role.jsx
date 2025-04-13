@@ -1,13 +1,13 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { MyNetworkBreadcrumbs } from "constants";
 import { ChangeRole } from "page-components/Admin";
 
 const ChangeRolePage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
+			<BreadcrumbWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
 				<ChangeRole />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };
