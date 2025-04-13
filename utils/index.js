@@ -4,6 +4,7 @@ export {
 	doAndroidAction,
 	isAndroidApp,
 } from "./AndroidUtils";
+export { generateBreadcrumbs } from "./breadcrumbUtils";
 export {
 	clearCache,
 	clearCacheAndReload,
@@ -34,10 +35,10 @@ export { obj2queryparams } from "./queryBuilder";
 export {
 	capitalize,
 	getFirstWord,
+	getInitials,
 	limitText,
 	nullRemover,
 	numberRemover,
-	getInitials,
 } from "./textFormat";
 export { buildUserObjectState } from "./userObjectBuilder";
 export { validateResp } from "./validateResponse";
