@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { generateBreadcrumbs } from "utils/breadcrumbUtils";
 import { PricingForm, ProductNode, usePricingConfig } from ".";
 
+// Label overrides for specific paths
 const labelOverrides = {
 	"agent-pricing": "Agent's Pricing",
 	"distributor-commission": "Distributor's Commission",
