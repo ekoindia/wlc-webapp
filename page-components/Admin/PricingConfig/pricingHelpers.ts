@@ -1,5 +1,5 @@
 import { formatCurrency } from "utils/numberFormat";
-import { ProductCategory, ProductNode } from "./PricingConfigContext";
+import { ProductCategory } from "./PricingConfigContext";
 
 const AGENT_TYPE = {
 	RETAILERS: "0",
