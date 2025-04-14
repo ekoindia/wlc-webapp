@@ -36,6 +36,7 @@ interface PricingConfigContextValue {
 	productCategoryList: ProductCategory[];
 	distributorList: Agent[];
 	allAgentList: Agent[];
+	isFetchingProductConfig: boolean;
 }
 
 export interface Agent {
@@ -73,21 +74,24 @@ const PricingConfigProvider = ({
 	const [allAgentList, setAllAgentList] = useState<Agent[]>([]);
 
 	// Fetching Product Overview Data
-	const [fetchProductConfig] = useApiFetch(Endpoints.TRANSACTION_JSON, {
-		onSuccess: async (res) => {
-			const productList = res?.data?.product_list || [];
-			const { pricingTree, formRegistry } =
-				generatePricingTrees(productList);
-			const categoryTree = generateProductCategoryList(pricingTree);
+	const [fetchProductConfig, isFetchingProductConfig] = useApiFetch(
+		Endpoints.TRANSACTION_JSON,
+		{
+			onSuccess: async (res) => {
+				const productList = res?.data?.product_list || [];
+				const { pricingTree, formRegistry } =
+					generatePricingTrees(productList);
+				const categoryTree = generateProductCategoryList(pricingTree);
 
-			setPricingTree(pricingTree);
-			setFormDataMap(formRegistry);
-			setProductCategoryList(categoryTree);
-		},
-		onError: (err) => {
-			console.error("Error fetching product config:", err);
-		},
-	});
+				setPricingTree(pricingTree);
+				setFormDataMap(formRegistry);
+				setProductCategoryList(categoryTree);
+			},
+			onError: (err) => {
+				console.error("Error fetching product config:", err);
+			},
+		}
+	);
 
 	// Fetch Distributor List Data
 	const [fetchDistributorList] = useApiFetch(Endpoints.TRANSACTION, {
@@ -146,6 +150,7 @@ const PricingConfigProvider = ({
 				productCategoryList,
 				distributorList,
 				allAgentList,
+				isFetchingProductConfig,
 			}}
 		>
 			{children}
