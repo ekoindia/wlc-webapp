@@ -45,7 +45,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 		noAuth = false,
 		// noClientRefId = false,
 		...options
-	} = settings;
+	} = settings || {};
 
 	const [endpoint] = useState(defaultUrlEndpoint);
 	// const [options] = useState(otherOptions);

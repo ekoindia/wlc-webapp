@@ -17,14 +17,19 @@ const NetworkCard = ({ item }) => {
 		account_status_id,
 		agent_type,
 		address_details,
-	} = item;
+		agent_name,
+		agent_mobile,
+		onboarded_on,
+		commission_type,
+		account_status,
+	} = item ?? {};
 
-	const { lattitude, longitude, address } = address_details;
+	const { lattitude, longitude, address } = address_details ?? {};
 	return (
 		<Flex direction="column" bg="white" borderRadius="10px" p="20px">
 			<Flex justifyContent="space-between">
-				<Box color="primary.DEFAULT" fontSize={{ base: "md " }}>
-					{getNameStyle(item.agent_name)}
+				<Box color="primary.DEFAULT" fontSize={{ base: "md" }}>
+					{getNameStyle(agent_name)}
 				</Box>
 				<NetworkMenuWrapper
 					{...{
@@ -41,7 +46,7 @@ const NetworkCard = ({ item }) => {
 						Mobile Number:
 					</Box>
 					<Box as="span" color="dark">
-						{item.agent_mobile}
+						{agent_mobile}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -49,7 +54,7 @@ const NetworkCard = ({ item }) => {
 						Type:
 					</Box>
 					<Box as="span" color="dark">
-						{item.agent_type}
+						{agent_type}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -57,7 +62,7 @@ const NetworkCard = ({ item }) => {
 						Onboarded on:
 					</Box>
 					<Box as="span" color="dark">
-						{item.onboarded_on}
+						{onboarded_on}
 					</Box>
 				</Flex>
 				<Flex gap="2">
@@ -65,7 +70,7 @@ const NetworkCard = ({ item }) => {
 						Commission Type:
 					</Box>
 					<Box as="span" color="dark">
-						{item.commission_type}
+						{commission_type}
 					</Box>
 				</Flex>
 				<Flex
@@ -75,7 +80,7 @@ const NetworkCard = ({ item }) => {
 					gap="4"
 					align="center"
 				>
-					<div>{getStatusStyle(item.account_status)}</div>
+					<div>{getStatusStyle(account_status)}</div>
 					<div>{getLocationStyle(address, lattitude, longitude)}</div>
 				</Flex>
 			</Flex>

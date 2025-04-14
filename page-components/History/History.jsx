@@ -88,7 +88,7 @@ const History = ({ forNetwork = false }) => {
 	const { isAndroid } = useAppSource();
 
 	const { interactions } = useMenuContext();
-	const { trxn_type_prod_map } = interactions;
+	const { trxn_type_prod_map } = interactions || {};
 
 	const [history_interaction_list, setHistoryInteractionList] = useState([]);
 

@@ -36,7 +36,7 @@ const HistoryCard = ({
 	visibleColumns,
 }) => {
 	const { interactions } = useMenuContext();
-	const { trxn_type_prod_map } = interactions;
+	const { trxn_type_prod_map } = interactions || {};
 	const txicon = trxn_type_prod_map?.[item.tx_typeid]?.icon || null;
 	const { h } = useHslColor(item.tx_name);
 	const { isAndroid } = useAppSource();

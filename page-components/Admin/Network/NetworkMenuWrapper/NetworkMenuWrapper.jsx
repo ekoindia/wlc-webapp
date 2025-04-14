@@ -213,7 +213,7 @@ const NetworkMenuWrapper = ({
 	];
 
 	const handleFormSubmit = (data) => {
-		const { reason, reason_input } = data;
+		const { reason, reason_input } = data || {};
 
 		const _reason =
 			(account_status_id == 18 || account_status_id == 13) &&

@@ -76,7 +76,11 @@ const UpgradeSellerToIseller = ({
 	];
 
 	const onSubmit = (data) => {
-		const { retailer } = data;
+		const { retailer } = data || {};
+		if (!retailer) {
+			console.error("Retailer is required.");
+			return;
+		}
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",

@@ -40,7 +40,7 @@ const Tbody = ({
 	setExpandedRow,
 }) => {
 	const { interactions } = useMenuContext();
-	const { trxn_type_prod_map } = interactions;
+	const { trxn_type_prod_map } = interactions || {};
 	const [isExpandable, setIsExpandable] = useState(false); // Is the row expandable (i.e, has extra columns)
 	const [columns, setColumns] = useState([]); // Fields to show in the table columns
 
