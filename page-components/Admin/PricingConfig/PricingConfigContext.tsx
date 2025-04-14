@@ -34,6 +34,17 @@ interface PricingConfigContextValue {
 	pricingTree: ProductNode[];
 	formDataMap: Record<string, any>;
 	productCategoryList: ProductCategory[];
+	distributorList: Agent[];
+	allAgentList: Agent[];
+}
+
+export interface Agent {
+	user_code: string;
+	name: string;
+	mobile: string;
+	parent_user_code?: string;
+	user_type_id: number;
+	customer_id: number;
 }
 
 const PricingConfigContext = createContext<PricingConfigContextValue | null>(
@@ -58,6 +69,8 @@ const PricingConfigProvider = ({
 	const [productCategoryList, setProductCategoryList] = useState<
 		ProductCategory[]
 	>([]);
+	const [distributorList, setDistributorList] = useState<Agent[]>([]);
+	const [allAgentList, setAllAgentList] = useState<Agent[]>([]);
 
 	// Fetching Product Overview Data
 	const [fetchProductConfig] = useApiFetch(Endpoints.TRANSACTION_JSON, {
@@ -76,18 +89,64 @@ const PricingConfigProvider = ({
 		},
 	});
 
-	// Fetch product configuration on mount
+	// Fetch Distributor List Data
+	const [fetchDistributorList] = useApiFetch(Endpoints.TRANSACTION, {
+		onSuccess: (res) => {
+			const distributors = res?.data?.csp_list || [];
+			setDistributorList(distributors);
+		},
+		onError: (err) => {
+			console.error("Error fetching distributor list:", err);
+		},
+	});
+
+	// Fetch All Agent List Data
+	const [fetchAllAgentList] = useApiFetch(Endpoints.TRANSACTION, {
+		onSuccess: (res) => {
+			const allAgents = res?.data?.csp_list || [];
+			setAllAgentList(allAgents);
+		},
+		onError: (err) => {
+			console.error("Error fetching all agent list:", err);
+		},
+	});
+
 	useEffect(() => {
+		// Fetch product configuration
 		fetchProductConfig({
 			body: {
 				interaction_type_id: TransactionTypes.GET_PRICING_CONFIG,
+			},
+		});
+
+		// Fetch Distributor List
+		fetchDistributorList({
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": "/network/agent-list?usertype=1",
+				"tf-req-method": "GET",
+			},
+		});
+
+		// Fetch All Agent List
+		fetchAllAgentList({
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": "/network/agent-list",
+				"tf-req-method": "GET",
 			},
 		});
 	}, []);
 
 	return (
 		<PricingConfigContext.Provider
-			value={{ pricingTree, formDataMap, productCategoryList }}
+			value={{
+				pricingTree,
+				formDataMap,
+				productCategoryList,
+				distributorList,
+				allAgentList,
+			}}
 		>
 			{children}
 		</PricingConfigContext.Provider>
