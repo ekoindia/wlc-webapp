@@ -64,7 +64,7 @@ const findNodeInTree = (
 	return nextNode ? findNodeInTree(nextNode, pathArray, index + 1) : null;
 };
 
-// Component: PricingConfig
+// MARK: PricingConfig
 /**
  * PricingConfig Component
  * Displays a hierarchical configuration interface for pricing and commissions.
@@ -173,7 +173,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 
 export default PricingConfig;
 
-// Component: ConfigGrid
+// MARK: ConfigGrid
 /**
  * ConfigGrid Component
  * Displays a grid of configuration items.
@@ -216,7 +216,7 @@ const ConfigGrid = ({
 	);
 };
 
-// Component: Card
+// MARK: Card
 /**
  * Card Component
  * Displays a single card for a product or configuration item.
@@ -299,6 +299,7 @@ const Card = ({
 	);
 };
 
+// MARK: ConfigPageCard
 /**
  * ConfigPageCard Component
  * Displays a configuration page with a list of configuration options.
