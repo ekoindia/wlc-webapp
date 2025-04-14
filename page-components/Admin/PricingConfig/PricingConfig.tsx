@@ -173,6 +173,124 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 
 export default PricingConfig;
 
+// MARK: ConfigPageCard
+/**
+ * ConfigPageCard Component
+ * Displays a configuration page with a list of configuration options.
+ * For example, a list of products to set pricing/commissions for.
+ * @param {ConfigPageCardProps} props - Props for the component.
+ * @param {ConfigCategory[]} props.configCategories - Array of configuration categories.
+ * @param {boolean} props.isLoading - Flag to indicate if the data is loading.
+ * @returns {JSX.Element} - Rendered ConfigPageCard component.
+ */
+const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
+	configCategories,
+	isLoading,
+}) => {
+	const [basePath, setBasePath] = useState<string>("");
+
+	// Get the base path for the current page
+	useEffect(() => {
+		const path = window.location.pathname;
+		const pathParts = path.split("/");
+		setBasePath(pathParts[pathParts.length - 1]);
+	}, []);
+
+	return (
+		<Flex
+			direction="column"
+			px={{ base: "16px", md: "initial" }}
+			gap={{ base: "2", md: "8" }}
+		>
+			{isLoading ? (
+				<>
+					{Array.from({ length: 2 }).map((_, index) => (
+						<Flex key={index} direction="column" gap="4" w="100%">
+							<Skeleton height="24px" width="20%" />
+							<Flex
+								direction="row"
+								justify="space-between"
+								gap="4"
+								w="100%"
+							>
+								{Array.from({ length: 3 }).map(
+									(_, subIndex) => (
+										<Skeleton
+											key={subIndex}
+											height="80px"
+											width="100%"
+										/>
+									)
+								)}
+							</Flex>
+						</Flex>
+					))}
+				</>
+			) : (
+				// Render the actual content when isLoading is false
+				configCategories?.map(({ category, description, products }) => {
+					if (!products?.length) return null;
+
+					return (
+						<Flex
+							key={category}
+							direction="column"
+							gap={{ base: "0.25", md: "2" }}
+							py="2"
+						>
+							{/* Category heading with description-tooltip */}
+							{category ? (
+								<Flex align="center" gap="1">
+									<Text
+										fontSize={{
+											base: "md",
+											md: "lg",
+										}}
+										fontWeight="semibold"
+									>
+										{category}
+									</Text>
+									{description ? (
+										<Tooltip
+											hasArrow
+											placement="right"
+											label={description}
+											aria-label={description}
+											fontSize="xs"
+											bg="primary.DEFAULT"
+											color="white"
+											borderRadius="8"
+										>
+											<span>
+												<Icon
+													name="info-outline"
+													size="xs"
+													cursor="pointer"
+													color="light"
+													display={{
+														base: "none",
+														md: "block",
+													}}
+												/>
+											</span>
+										</Tooltip>
+									) : null}
+								</Flex>
+							) : null}
+
+							{/* List of configuration options in the category */}
+							<ConfigGrid
+								product_list={products}
+								basePath={basePath}
+							/>
+						</Flex>
+					);
+				})
+			)}
+		</Flex>
+	);
+};
+
 // MARK: ConfigGrid
 /**
  * ConfigGrid Component
@@ -295,124 +413,6 @@ const Card = ({
 				size={{ base: "xs", sm: "sm" }}
 				color={onHover ? `hsl(${h},80%,30%)` : "transparent"}
 			/>
-		</Flex>
-	);
-};
-
-// MARK: ConfigPageCard
-/**
- * ConfigPageCard Component
- * Displays a configuration page with a list of configuration options.
- * For example, a list of products to set pricing/commissions for.
- * @param {ConfigPageCardProps} props - Props for the component.
- * @param {ConfigCategory[]} props.configCategories - Array of configuration categories.
- * @param {boolean} props.isLoading - Flag to indicate if the data is loading.
- * @returns {JSX.Element} - Rendered ConfigPageCard component.
- */
-const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
-	configCategories,
-	isLoading,
-}) => {
-	const [basePath, setBasePath] = useState<string>("");
-
-	// Get the base path for the current page
-	useEffect(() => {
-		const path = window.location.pathname;
-		const pathParts = path.split("/");
-		setBasePath(pathParts[pathParts.length - 1]);
-	}, []);
-
-	return (
-		<Flex
-			direction="column"
-			px={{ base: "16px", md: "initial" }}
-			gap={{ base: "2", md: "8" }}
-		>
-			{isLoading ? (
-				<>
-					{Array.from({ length: 2 }).map((_, index) => (
-						<Flex key={index} direction="column" gap="4" w="100%">
-							<Skeleton height="24px" width="20%" />
-							<Flex
-								direction="row"
-								justify="space-between"
-								gap="4"
-								w="100%"
-							>
-								{Array.from({ length: 3 }).map(
-									(_, subIndex) => (
-										<Skeleton
-											key={subIndex}
-											height="80px"
-											width="100%"
-										/>
-									)
-								)}
-							</Flex>
-						</Flex>
-					))}
-				</>
-			) : (
-				// Render the actual content when isLoading is false
-				configCategories?.map(({ category, description, products }) => {
-					if (!products?.length) return null;
-
-					return (
-						<Flex
-							key={category}
-							direction="column"
-							gap={{ base: "0.25", md: "2" }}
-							py="2"
-						>
-							{/* Category heading with description-tooltip */}
-							{category ? (
-								<Flex align="center" gap="1">
-									<Text
-										fontSize={{
-											base: "md",
-											md: "lg",
-										}}
-										fontWeight="semibold"
-									>
-										{category}
-									</Text>
-									{description ? (
-										<Tooltip
-											hasArrow
-											placement="right"
-											label={description}
-											aria-label={description}
-											fontSize="xs"
-											bg="primary.DEFAULT"
-											color="white"
-											borderRadius="8"
-										>
-											<span>
-												<Icon
-													name="info-outline"
-													size="xs"
-													cursor="pointer"
-													color="light"
-													display={{
-														base: "none",
-														md: "block",
-													}}
-												/>
-											</span>
-										</Tooltip>
-									) : null}
-								</Flex>
-							) : null}
-
-							{/* List of configuration options in the category */}
-							<ConfigGrid
-								product_list={products}
-								basePath={basePath}
-							/>
-						</Flex>
-					);
-				})
-			)}
 		</Flex>
 	);
 };
