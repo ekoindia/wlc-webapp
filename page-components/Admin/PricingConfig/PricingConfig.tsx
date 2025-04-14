@@ -298,74 +298,69 @@ const ConfigPageCard = ({ configCategories }) => {
 	}, []);
 
 	return (
-		<>
-			<Flex
-				direction="column"
-				px={{ base: "16px", md: "initial" }}
-				// mb={{ base: "16", md: "0" }}
-				gap={{ base: "2", md: "8" }}
-			>
-				{configCategories?.map(
-					({ category, description, products }) => {
-						if (!products?.length) return null;
+		<Flex
+			direction="column"
+			px={{ base: "16px", md: "initial" }}
+			gap={{ base: "2", md: "8" }}
+		>
+			{configCategories?.map(({ category, description, products }) => {
+				if (!products?.length) return null;
 
-						return (
-							<Flex
-								key={category}
-								direction="column"
-								gap={{ base: "0.25", md: "2" }}
-								py="2"
-							>
-								{/* Category heading with description-tooltip */}
-								{category ? (
-									<Flex align="center" gap="1">
-										<Text
-											fontSize={{
-												base: "md",
-												md: "lg",
-											}}
-											fontWeight="semibold"
-										>
-											{category}
-										</Text>
-										{description ? (
-											<Tooltip
-												hasArrow
-												placement="right"
-												label={description}
-												aria-label={description}
-												fontSize="xs"
-												bg="primary.DEFAULT"
-												color="white"
-												borderRadius="8"
-											>
-												<span>
-													<Icon
-														name="info-outline"
-														size="xs"
-														cursor="pointer"
-														color="light"
-														display={{
-															base: "none",
-															md: "block",
-														}}
-													/>
-												</span>
-											</Tooltip>
-										) : null}
-									</Flex>
+				return (
+					<Flex
+						key={category}
+						direction="column"
+						gap={{ base: "0.25", md: "2" }}
+						py="2"
+					>
+						{/* Category heading with description-tooltip */}
+						{category ? (
+							<Flex align="center" gap="1">
+								<Text
+									fontSize={{
+										base: "md",
+										md: "lg",
+									}}
+									fontWeight="semibold"
+								>
+									{category}
+								</Text>
+								{description ? (
+									<Tooltip
+										hasArrow
+										placement="right"
+										label={description}
+										aria-label={description}
+										fontSize="xs"
+										bg="primary.DEFAULT"
+										color="white"
+										borderRadius="8"
+									>
+										<span>
+											<Icon
+												name="info-outline"
+												size="xs"
+												cursor="pointer"
+												color="light"
+												display={{
+													base: "none",
+													md: "block",
+												}}
+											/>
+										</span>
+									</Tooltip>
 								) : null}
-
-								{/* List of configuration options in the category */}
-								<ConfigGrid
-									product_list={products}
-									basePath={basePath}
-								/>
 							</Flex>
-						);
-					}
-				)}
-			</Flex>
-		</>
+						) : null}
+
+						{/* List of configuration options in the category */}
+						<ConfigGrid
+							product_list={products}
+							basePath={basePath}
+						/>
+					</Flex>
+				);
+			})}
+		</Flex>
 	);
 };
