@@ -186,7 +186,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 				label: "Select Distributor",
 				parameter_type_id: ParamType.LIST,
 				is_multi: true,
-				list_elements: multiSelectOptions,
+				list_elements: state.multiSelectOptions,
 				multiSelectRenderer: _multiselectRenderer,
 			});
 		}
