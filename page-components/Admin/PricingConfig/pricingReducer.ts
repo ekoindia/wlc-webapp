@@ -18,6 +18,8 @@ export const pricingInitialState = {
 	pricingTypeList: PRICING_TYPE_OPTIONS,
 	pricingValidation: { min: null, max: null },
 	productId: null,
+	multiSelectLabel: "",
+	multiSelectOptions: [],
 };
 
 /**
@@ -38,6 +40,8 @@ export const PRICING_ACTIONS = {
 	SET_PRICING_TYPE_LIST: "SET_PRICING_TYPE_LIST",
 	SET_PRICING_VALIDATION: "SET_PRICING_VALIDATION",
 	SET_PRODUCT_ID: "SET_PRODUCT_ID",
+	SET_MULTI_SELECT_LABEL: "SET_MULTI_SELECT_LABEL",
+	SET_MULTI_SELECT_OPTIONS: "SET_MULTI_SELECT_OPTIONS",
 } as const;
 
 /**
@@ -70,6 +74,10 @@ export const pricingReducer = (
 			return { ...state, pricingValidation: action.payload };
 		case PRICING_ACTIONS.SET_PRODUCT_ID:
 			return { ...state, productId: action.payload };
+		case PRICING_ACTIONS.SET_MULTI_SELECT_LABEL:
+			return { ...state, multiSelectLabel: action.payload };
+		case PRICING_ACTIONS.SET_MULTI_SELECT_OPTIONS:
+			return { ...state, multiSelectOptions: action.payload };
 		default:
 			return state;
 	}

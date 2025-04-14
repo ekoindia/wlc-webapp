@@ -10,7 +10,7 @@ import { useSession } from "contexts/";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useReducer, useState } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 import { formatCurrency } from "utils/numberFormat";
@@ -25,6 +25,7 @@ import {
 	PRICING_TYPES,
 	pricingInitialState,
 	pricingReducer,
+	usePricingConfig,
 } from ".";
 
 /*
@@ -126,8 +127,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 	const router = useRouter();
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
-	const [multiSelectLabel, setMultiSelectLabel] = useState(); // move to reducer
-	const [multiSelectOptions, setMultiSelectOptions] = useState([]); // move to reducer
+	const { allAgentList, distributorList } = usePricingConfig();
 
 	const min = state.pricingValidation?.min;
 	const max = state.pricingValidation?.max;
@@ -170,10 +170,10 @@ const PricingForm = ({ agentType, productDetails }) => {
 				},
 				{
 					name: "CspList",
-					label: `Select ${multiSelectLabel}`,
+					label: `Select ${state.multiSelectLabel}`,
 					parameter_type_id: ParamType.LIST,
 					is_multi: true,
-					list_elements: multiSelectOptions,
+					list_elements: state.multiSelectOptions,
 					visible_on_param_name: "operation_type",
 					visible_on_param_value: /1|2/,
 					multiSelectRenderer: _multiselectRenderer,
@@ -262,8 +262,8 @@ const PricingForm = ({ agentType, productDetails }) => {
 		return _list;
 	}, [
 		agentType,
-		multiSelectLabel,
-		multiSelectOptions,
+		state.multiSelectLabel,
+		state.multiSelectOptions,
 		state.paymentModeOptions,
 		state.categoryListOptions,
 		state.slabOptions,
@@ -299,54 +299,46 @@ const PricingForm = ({ agentType, productDetails }) => {
 		}
 	};
 
-	// Fetch the list of agents (retailers, distributors, or both) based on the agent-type and operation-type selected.
-	useEffect(() => {
-		// TODO: CACHE AGENT LIST
-		// TODO: Download full agent list only once and filter as needed
+	const { filteredList, label } = useMemo(() => {
+		// Default values
+		let filteredList = [];
+		let label = "";
 
-		// Reset agent-list before fetching
-		setMultiSelectOptions([]);
-
+		// Skip filtering if operation_type is "3" for retailers
 		if (
-			agentType === AGENT_TYPES.RETAILERS &&
-			watcher.operation_type == "3"
+			!(
+				agentType === AGENT_TYPES.RETAILERS &&
+				watcher.operation_type == "3"
+			)
 		) {
-			// No need to fetch list of agents when operation_type is "3" (Whole Network) for Agent's commission
-			return;
+			// Determine the appropriate list based on agentType and operation_type
+			filteredList =
+				agentType === AGENT_TYPES.DISTRIBUTOR ||
+				watcher.operation_type === "2"
+					? distributorList
+					: allAgentList;
+
+			// Determine the label based on operation_type
+			const operationType = OPERATION_TYPE_OPTIONS.find(
+				(item) => item.value == watcher.operation_type
+			);
+			label = operationType?.label || "";
 		}
 
-		/* no need of api call when user clicked on product radio option in select_commission_for field as multiselect option is hidden for this */
-		const _tf_req_uri =
-			agentType === AGENT_TYPES.DISTRIBUTOR ||
-			watcher.operation_type === "2"
-				? "/network/agent-list?usertype=1"
-				: "/network/agent-list";
+		return { filteredList, label };
+	}, [agentType, watcher.operation_type, allAgentList, distributorList]);
 
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": `${_tf_req_uri}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
-			generateNewToken,
-		})
-			.then((res) => {
-				const _agents = res?.data?.csp_list ?? [];
-				setMultiSelectOptions(_agents);
-			})
-			.catch((error) => {
-				console.error("📡Error fetching network list:", error);
-			});
+	useEffect(() => {
+		dispatch({
+			type: PRICING_ACTIONS.SET_MULTI_SELECT_OPTIONS,
+			payload: filteredList,
+		});
 
-		let _operationTypeList = OPERATION_TYPE_OPTIONS.filter(
-			(item) => item.value == watcher.operation_type
-		);
-		let _label =
-			_operationTypeList.length > 0 && _operationTypeList[0].label;
-
-		setMultiSelectLabel(_label);
-	}, [agentType, watcher.operation_type]);
+		dispatch({
+			type: PRICING_ACTIONS.SET_MULTI_SELECT_LABEL,
+			payload: label,
+		});
+	}, [filteredList, label]);
 
 	// Set ProductId directly from productDetails if available
 	useEffect(() => {
