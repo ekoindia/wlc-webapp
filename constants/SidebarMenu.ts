@@ -116,6 +116,8 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		label: "Pricing Configuration",
 		icon: "commission-percent",
 		link: "/admin/pricing-config",
+		featureFlag: "PRICING_COMMISSION",
+		beta: true,
 	},
 	// {
 	// 	id: 30,

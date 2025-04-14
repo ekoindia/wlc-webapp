@@ -48,6 +48,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true, // TODO: Enable for all users
 	},
 
+	// Pricing & Commission (New)
+	PRICING_COMMISSION: {
+		enabled: true,
+		forEnv: ["development"],
+	},
+
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
