@@ -200,32 +200,11 @@ const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
 		<Flex
 			direction="column"
 			px={{ base: "16px", md: "initial" }}
-			gap={{ base: "2", md: "8" }}
+			gap={{ base: "0.25", md: "2" }}
+			py="2"
 		>
 			{isLoading ? (
-				<>
-					{Array.from({ length: 2 }).map((_, index) => (
-						<Flex key={index} direction="column" gap="4" w="100%">
-							<Skeleton height="24px" width="20%" />
-							<Flex
-								direction="row"
-								justify="space-between"
-								gap="4"
-								w="100%"
-							>
-								{Array.from({ length: 3 }).map(
-									(_, subIndex) => (
-										<Skeleton
-											key={subIndex}
-											height="80px"
-											width="100%"
-										/>
-									)
-								)}
-							</Flex>
-						</Flex>
-					))}
-				</>
+				<SkeletonLoader count={2} />
 			) : (
 				// Render the actual content when isLoading is false
 				configCategories?.map(({ category, description, products }) => {
@@ -413,6 +392,38 @@ const Card = ({
 				size={{ base: "xs", sm: "sm" }}
 				color={onHover ? `hsl(${h},80%,30%)` : "transparent"}
 			/>
+		</Flex>
+	);
+};
+
+/**
+ * SkeletonLoader Component
+ * Renders a reusable skeleton loader for a section with a heading and multiple boxes.
+ * @param {number} count - Number of skeleton rows to render.
+ * @returns {JSX.Element} - Rendered SkeletonLoader component.
+ */
+const SkeletonLoader: React.FC<{ count: number }> = ({ count }) => {
+	return (
+		<Flex direction="column" gap="8">
+			{Array.from({ length: count }).map((_, index) => (
+				<Flex key={index} direction="column" gap="4" w="100%">
+					<Skeleton height="24px" width="20%" />
+					<Flex
+						direction={{ base: "column", md: "row" }}
+						justify="space-between"
+						gap="4"
+						w="100%"
+					>
+						{Array.from({ length: 3 }).map((_, subIndex) => (
+							<Skeleton
+								key={subIndex}
+								height="80px"
+								width="100%"
+							/>
+						))}
+					</Flex>
+				</Flex>
+			))}
 		</Flex>
 	);
 };
