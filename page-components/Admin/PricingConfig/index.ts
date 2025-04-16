@@ -17,6 +17,7 @@ export {
 	formatSlabs,
 	generatePricingTrees,
 	generateProductCategoryList,
+	getPricingTypeString,
 	getStatus,
 } from "./pricingHelpers";
 export {

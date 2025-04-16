@@ -1,5 +1,5 @@
 import { formatCurrency } from "utils/numberFormat";
-import { ProductCategory } from "./PricingConfigContext";
+import { PRICING_TYPE_OPTIONS, ProductCategory } from ".";
 
 const AGENT_TYPE = {
 	RETAILERS: "0",
@@ -236,4 +236,15 @@ export const generateProductCategoryList = (productList: any[]) => {
 			products: cat.products.sort((a, b) => a.name.localeCompare(b.name)),
 		}))
 		.sort((a, b) => a.category.localeCompare(b.category));
+};
+
+/**
+ * Helper function to get the pricing type string.
+ * Maps over PRICING_TYPE_OPTIONS and returns the id if the value matches the provided type.
+ * @param {string} type - The pricing type (e.g., PRICING_TYPES.PERCENT or PRICING_TYPES.FIXED).
+ * @returns {string | null} - The corresponding id or null if not found.
+ */
+export const getPricingTypeString = (type) => {
+	const match = PRICING_TYPE_OPTIONS.find((option) => option.value === type);
+	return match ? match.id : null;
 };
