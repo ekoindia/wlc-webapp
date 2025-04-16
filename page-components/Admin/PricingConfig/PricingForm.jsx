@@ -17,6 +17,7 @@ import { formatCurrency } from "utils/numberFormat";
 import {
 	AGENT_TYPES,
 	formatSlabs,
+	getPricingTypeString,
 	getStatus,
 	OPERATION,
 	OPERATION_TYPE_OPTIONS,
@@ -93,7 +94,7 @@ const FIELD_DEPENDENCIES = {
  * @returns {JSX.Element}
  */
 const PricingForm = ({ agentType, productDetails }) => {
-	const { paymentMode, slabs, categoryList, productId } =
+	const { paymentMode, slabs, categoryList, productId, validation } =
 		productDetails || {};
 
 	// Initialize reducer
@@ -358,6 +359,39 @@ const PricingForm = ({ agentType, productDetails }) => {
 		});
 	}, [slabs]);
 
+	// Set validation directly from productDetails if available
+	useEffect(() => {
+		if (!validation) return;
+		const { updatedList, firstNonDisabled } = updatePricingTypeList(
+			validation,
+			PRICING_TYPE_OPTIONS
+		);
+		dispatch({
+			type: PRICING_ACTIONS.SET_PRICING_TYPE_LIST,
+			payload: updatedList,
+		});
+
+		if (firstNonDisabled) {
+			watcher["pricing_type"] = firstNonDisabled.value;
+			reset({ ...watcher });
+		}
+
+		const pricingType = getPricingTypeString(watcher.pricing_type);
+
+		const min = validation?.[pricingType]?.min ?? null;
+		const max = validation?.[pricingType]?.max ?? null;
+
+		// Only update state if min or max is not null
+		if (min !== null || max !== null) {
+			dispatch({
+				type: PRICING_ACTIONS.SET_PRICING_VALIDATION,
+				payload: { min, max },
+			});
+
+			resetDependentFields("pricing_type");
+		}
+	}, [validation]);
+
 	// Set categoryList directly from productDetails if available
 	useEffect(() => {
 		if (!categoryList?.length) return;
@@ -590,12 +624,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 	// Update validation state based on selected slab and pricing type
 	useEffect(() => {
-		const pricingType =
-			watcher.pricing_type === PRICING_TYPES.PERCENT
-				? "percentage"
-				: watcher.pricing_type === PRICING_TYPES.FIXED
-					? "fixed"
-					: null;
+		const pricingType = getPricingTypeString(watcher?.pricing_type);
 
 		// Update validation state if slab and pricing type are selected
 		const slabIndex = +watcher?.select?.value;
