@@ -50,6 +50,10 @@ const GptChatBetaWidget = () => {
 	const sendChatInput = (value) => {
 		if (!value) return;
 		if (chatLines?.length >= 20) return;
+		if (typeof value !== "string") {
+			console.error("[GPT] Invalid chat input: ", value);
+			return;
+		}
 
 		setChatInput(value);
 		setChatLines([...chatLines, { from: "user", msg: value }]);
@@ -83,10 +87,15 @@ const GptChatBetaWidget = () => {
 		})
 			.then((data) => {
 				console.log("[GPT] Response: ", data);
-				if (data.reply) {
+				if (data && data.reply && typeof data.reply === "string") {
 					setChatLines([
 						...chatLines,
 						{ from: "system", msg: data.reply },
+					]);
+				} else {
+					setChatLines([
+						...chatLines,
+						{ from: "system", msg: "Unexpected response" },
 					]);
 				}
 			})
@@ -108,7 +117,7 @@ const GptChatBetaWidget = () => {
 
 	return (
 		<WidgetBase
-			title="Ask ElokaGPT"
+			title="Ask Saathi" // ElokaGPT
 			noPadding
 			pb="0"
 			linkLabel="Clear"
@@ -193,6 +202,12 @@ const GptChatBetaWidget = () => {
 // Component to chow a chat bubble with a message
 const ChatBubble = ({ from, msg }) => {
 	if (!msg) return null;
+
+	if (typeof msg !== "string") {
+		console.trace("[GPT] Message is not a string: ", msg);
+
+		// msg = JSON.stringify(msg);
+	}
 
 	return (
 		<Flex
