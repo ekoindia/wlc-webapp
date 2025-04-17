@@ -162,12 +162,16 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 	};
 
 	return (
-		<>
-			<BreadcrumbWrapper crumbs={crumbs}>
-				<Headings title={title} hasIcon={hasIcon} propComp={propComp} />
+		<BreadcrumbWrapper crumbs={crumbs}>
+			<Headings title={title} hasIcon={hasIcon} propComp={propComp} />
+			<Flex
+				direction="column"
+				px={{ base: "16px", md: "initial" }}
+				gap={{ base: "2", md: "8" }}
+			>
 				{renderContent()}
-			</BreadcrumbWrapper>
-		</>
+			</Flex>
+		</BreadcrumbWrapper>
 	);
 };
 
@@ -196,77 +200,70 @@ const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
 		setBasePath(pathParts[pathParts.length - 1]);
 	}, []);
 
+	// Render a loading skeleton if data is still being fetched
+	if (isLoading) {
+		return <SkeletonLoader count={2} />;
+	}
+
+	// Render the configuration categories
 	return (
-		<Flex
-			direction="column"
-			px={{ base: "16px", md: "initial" }}
-			gap={{ base: "0.25", md: "2" }}
-			py="2"
-		>
-			{isLoading ? (
-				<SkeletonLoader count={2} />
-			) : (
-				// Render the actual content when isLoading is false
-				configCategories?.map(({ category, description, products }) => {
-					if (!products?.length) return null;
+		<>
+			{configCategories?.map(({ category, description, products }) => {
+				if (!products?.length) return null;
 
-					return (
-						<Flex
-							key={category}
-							direction="column"
-							gap={{ base: "0.25", md: "2" }}
-							py="2"
-						>
-							{/* Category heading with description-tooltip */}
-							{category ? (
-								<Flex align="center" gap="1">
-									<Text
-										fontSize={{
-											base: "md",
-											md: "lg",
-										}}
-										fontWeight="semibold"
+				return (
+					<Flex
+						key={category}
+						direction="column"
+						gap={{ base: "0.25", md: "2" }}
+						py="2"
+					>
+						{/* Category heading with description-tooltip */}
+						{category && (
+							<Flex align="center" gap="2">
+								<Text
+									fontSize={{ base: "md", md: "lg" }}
+									fontWeight="semibold"
+								>
+									{category}
+								</Text>
+								{description && (
+									<Tooltip
+										hasArrow
+										placement="right"
+										label={description}
+										aria-label={description}
+										fontSize="xs"
+										bg="primary.DEFAULT"
+										color="white"
+										borderRadius="8"
 									>
-										{category}
-									</Text>
-									{description ? (
-										<Tooltip
-											hasArrow
-											placement="right"
-											label={description}
-											aria-label={description}
-											fontSize="xs"
-											bg="primary.DEFAULT"
-											color="white"
-											borderRadius="8"
-										>
-											<span>
-												<Icon
-													name="info-outline"
-													size="xs"
-													cursor="pointer"
-													color="light"
-													display={{
-														base: "none",
-														md: "block",
-													}}
-												/>
-											</span>
-										</Tooltip>
-									) : null}
-								</Flex>
-							) : null}
+										<span>
+											<Icon
+												name="info-outline"
+												size="xs"
+												cursor="pointer"
+												color="light"
+												display={{
+													base: "none",
+													md: "block",
+												}}
+											/>
+										</span>
+									</Tooltip>
+								)}
+							</Flex>
+						)}
 
-							{/* List of configuration options in the category */}
-							<ConfigGrid
-								product_list={products}
-								basePath={basePath}
-							/>
-						</Flex>
-					);
-				})
-			)}
-		</Flex>
+						{/* List of configuration options in the category */}
+						<ConfigGrid
+							product_list={products}
+							basePath={basePath}
+						/>
+					</Flex>
+				);
+			})}
+		</>
 	);
 };
 
