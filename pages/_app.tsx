@@ -393,11 +393,13 @@ InfinityApp.getInitialProps = async function (appContext) {
 // 	console.log("📈 WebVitals: ", metric.name + "=" + metric.value, metric);
 // }
 
-// Console warning to show to end users...
-console.info(
-	"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it. (" +
-		process.env.NEXT_PUBLIC_ENV +
-		")",
-	"color:red;background:yellow;font-size:20px",
-	"font-size:16px"
-);
+// Console warning to show to end users in the browser...
+if (typeof window !== "undefined") {
+	console.info(
+		"%cWARNING!\n\n%cUsing this console may allow attackers to pretend to be you and steal your information using an attack called Self-XSS.\nAvoid entering or pasting code if you're unsure about it. (" +
+			process.env.NEXT_PUBLIC_ENV +
+			")",
+		"color:red;background:yellow;font-size:20px",
+		"font-size:16px"
+	);
+}
