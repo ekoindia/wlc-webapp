@@ -1,5 +1,6 @@
 import { Endpoints } from "constants/EndPoints";
 import { TransactionTypes } from "constants/EpsTransactions";
+import { NetworkUser, useNetworkUsers } from "contexts";
 import useApiFetch from "hooks/useApiFetch";
 import {
 	createContext,
@@ -34,18 +35,9 @@ interface PricingConfigContextValue {
 	pricingTree: ProductNode[];
 	formDataMap: Record<string, any>;
 	productCategoryList: ProductCategory[];
-	distributorList: Agent[];
-	allAgentList: Agent[];
+	distributorList: NetworkUser[];
+	allAgentList: NetworkUser[];
 	isFetchingProductConfig: boolean;
-}
-
-export interface Agent {
-	user_code: string;
-	name: string;
-	mobile: string;
-	parent_user_code?: string;
-	user_type_id: number;
-	customer_id: number;
 }
 
 const PricingConfigContext = createContext<PricingConfigContextValue | null>(
@@ -65,13 +57,15 @@ interface PricingConfigProviderProps {
 const PricingConfigProvider = ({
 	children,
 }: PricingConfigProviderProps): JSX.Element => {
+	const { networkUsersList, refreshUserList, fetchedAt, loading } =
+		useNetworkUsers();
 	const [pricingTree, setPricingTree] = useState<ProductNode[]>([]);
 	const [formDataMap, setFormDataMap] = useState<Record<string, any>>({});
 	const [productCategoryList, setProductCategoryList] = useState<
 		ProductCategory[]
 	>([]);
-	const [distributorList, setDistributorList] = useState<Agent[]>([]);
-	const [allAgentList, setAllAgentList] = useState<Agent[]>([]);
+	const [distributorList, setDistributorList] = useState<NetworkUser[]>([]);
+	const [allAgentList, setAllAgentList] = useState<NetworkUser[]>([]);
 
 	// Fetching Product Overview Data
 	const [fetchProductConfig, isFetchingProductConfig] = useApiFetch(
@@ -93,28 +87,6 @@ const PricingConfigProvider = ({
 		}
 	);
 
-	// Fetch Distributor List Data
-	const [fetchDistributorList] = useApiFetch(Endpoints.TRANSACTION, {
-		onSuccess: (res) => {
-			const distributors = res?.data?.csp_list || [];
-			setDistributorList(distributors);
-		},
-		onError: (err) => {
-			console.error("Error fetching distributor list:", err);
-		},
-	});
-
-	// Fetch All Agent List Data
-	const [fetchAllAgentList] = useApiFetch(Endpoints.TRANSACTION, {
-		onSuccess: (res) => {
-			const allAgents = res?.data?.csp_list || [];
-			setAllAgentList(allAgents);
-		},
-		onError: (err) => {
-			console.error("Error fetching all agent list:", err);
-		},
-	});
-
 	useEffect(() => {
 		// Fetch product configuration
 		fetchProductConfig({
@@ -122,25 +94,24 @@ const PricingConfigProvider = ({
 				interaction_type_id: TransactionTypes.GET_PRICING_CONFIG,
 			},
 		});
-
-		// Fetch Distributor List
-		fetchDistributorList({
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agent-list?usertype=1",
-				"tf-req-method": "GET",
-			},
-		});
-
-		// Fetch All Agent List
-		fetchAllAgentList({
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				"tf-req-uri": "/network/agent-list",
-				"tf-req-method": "GET",
-			},
-		});
 	}, []);
+
+	// Fetch Network User List as a tree when tree-view is visible
+	useEffect(() => {
+		if (fetchedAt === null && !loading) {
+			refreshUserList();
+		}
+	}, [fetchedAt]);
+
+	useEffect(() => {
+		if (networkUsersList?.length > 0) {
+			const distributors = networkUsersList.filter(
+				(user) => user.user_type_id === 1
+			);
+			setDistributorList(distributors);
+			setAllAgentList(networkUsersList);
+		}
+	}, [networkUsersList]);
 
 	return (
 		<PricingConfigContext.Provider
