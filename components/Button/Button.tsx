@@ -16,9 +16,11 @@ interface ButtonProps
 		| "primary"
 		| "accent"
 		| "outline"
+		| "primary_outline"
+		| "accent_outline"
+		| "success"
 		| "ghost"
 		| "link"
-		| "solid"
 		| "unstyled";
 	disabled?: boolean;
 	loading?: boolean;
@@ -35,18 +37,19 @@ interface ButtonProps
 /**
  * A <Button> component
  * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.variant="accent"]	Button variant:	"primary" | "accent" | "outline" | "ghost" | "link" | "solid" | "unstyled"
+ * @param	{string}	[prop.variant="accent"]	Button variant:	"primary" | "accent" | "primary_outline" | "accent_outline" | "outline" (same as "accent_outline") | "success" | "ghost" | "link" | "unstyled"
  * @param	{boolean}	[prop.disabled]	Disable the button (default: false)
  * @param	{boolean}	[prop.loading=false]	Show loading state
  * @param	{string}	[prop.size]	Size of the button: "lg" | "md" | "sm" | "xs"
- * @param	{string}	[prop.icon]	Icon to show in the button
- * @param	{string}	[prop.iconPosition]	Position of the icon (default: "left")
+ * @param	{string}	[prop.icon]	Icon name to show in the button (e.g., "arrow-back")
+ * @param	{string}	[prop.iconPosition="left"]	Position of the icon: "left" or "right"
  * @param	{string}	[prop.iconSpacing]	Spacing between the icon and the text
  * @param	{Function}	[prop.onClick]	Click handler
  * @param	{ReactNode}	[prop.children]	Children elements of the button
  * @param	{...*}		rest	Rest of the props
  * @param	{React.Ref}	ref	Reference to the button element
- * @example	`<Button onClick={()=>{...}}>Click Me</Button>`
+ * @example	`<Button onClick={()=>{...}} icon="arrow-back">Back</Button>`
+ * @example	`<Button icon="arrow-forward" iconPosition="right">Next</Button>`
  */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	(
@@ -58,7 +61,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			borderRadius,
 			icon,
 			iconPosition = "left",
-			iconSpacing = "5px",
+			iconSpacing = "0.6em",
 			iconStyle,
 			onClick,
 			children,
