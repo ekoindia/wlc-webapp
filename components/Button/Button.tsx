@@ -1,24 +1,54 @@
-import { Button as ChakraButton } from "@chakra-ui/react";
+import {
+	Button as ChakraButton,
+	ButtonProps as ChakraButtonProps,
+} from "@chakra-ui/react";
 import { Icon } from "components";
-import { forwardRef } from "react";
+import { forwardRef, ReactNode } from "react";
+
+interface IconStyleProps {
+	color?: string;
+	[key: string]: any;
+}
+
+interface ButtonProps
+	extends Omit<ChakraButtonProps, "leftIcon" | "rightIcon"> {
+	variant?:
+		| "primary"
+		| "accent"
+		| "outline"
+		| "ghost"
+		| "link"
+		| "solid"
+		| "unstyled";
+	disabled?: boolean;
+	loading?: boolean;
+	size?: "lg" | "md" | "sm" | "xs";
+	borderRadius?: string;
+	icon?: string;
+	iconPosition?: "left" | "right";
+	iconSpacing?: string;
+	iconStyle?: IconStyleProps;
+	onClick?: () => void;
+	children?: ReactNode;
+}
 
 /**
  * A <Button> component
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.variant="accent"]	Button variant:	"primary" | "accent" | "outline" | "ghost" | "link" | "solid" | "unstyled"
- * @param	{boolean}	[prop.disabled=false]	Disable the button
+ * @param	{boolean}	[prop.disabled]	Disable the button (default: false)
  * @param	{boolean}	[prop.loading=false]	Show loading state
  * @param	{string}	[prop.size]	Size of the button: "lg" | "md" | "sm" | "xs"
  * @param	{string}	[prop.icon]	Icon to show in the button
- * @param	{string}	[prop.iconPosition="left"]	Position of the icon
+ * @param	{string}	[prop.iconPosition]	Position of the icon (default: "left")
  * @param	{string}	[prop.iconSpacing]	Spacing between the icon and the text
  * @param	{Function}	[prop.onClick]	Click handler
- * @param	{string}	[prop.children]	Children elements of the button
+ * @param	{ReactNode}	[prop.children]	Children elements of the button
  * @param	{...*}		rest	Rest of the props
  * @param	{React.Ref}	ref	Reference to the button element
  * @example	`<Button onClick={()=>{...}}>Click Me</Button>`
  */
-const Button = forwardRef(
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	(
 		{
 			variant = "accent",
@@ -35,12 +65,12 @@ const Button = forwardRef(
 			...rest
 		},
 		ref
-	) => {
+	): JSX.Element => {
 		const IconComp = icon ? (
 			<Icon name={icon} size={size} {...iconStyle} />
 		) : null;
 
-		const default_radius =
+		const default_radius: string =
 			size === "lg"
 				? "10px"
 				: size === "sm"
@@ -69,6 +99,10 @@ const Button = forwardRef(
 	}
 );
 
+Button.displayName = "Button";
+
+export default Button;
+
 // function Button(
 // 	{
 // 		variant = "solid", // solid, ghost, outline, or link
@@ -88,7 +122,6 @@ const Button = forwardRef(
 // 	ref
 // ) {
 // 	const IconComp = icon ? <Icon name={icon} size={size} /> : null;
-
 // 	return (
 // 		<ChakraButton
 // 			variant={variant}
@@ -109,7 +142,3 @@ const Button = forwardRef(
 // 		</ChakraButton>
 // 	);
 // }
-
-Button.displayName = "Button";
-
-export default Button;
