@@ -1,6 +1,5 @@
 - Every time you choose to apply a rule(s), explicitly state the rule(s) in the output. You can abbreviate the rule description to a single word or phrase.
 - Ask me, if necessary and only once, a series of yes/no questions that will help you provide a better recommendation.
-- Log every change you make with a summary and files you have changed in a log file named `aichanges.md`. If it doesn't exist then create it as well.
 
 ## Project Context: Eloka SaaS Web App
 White-labeled, multi-tenant, SaaS web-app to manage a network of agents who make financial transactions via this app.
