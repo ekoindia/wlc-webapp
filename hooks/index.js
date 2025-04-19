@@ -1,7 +1,5 @@
 /* PLOP_INJECT_EXPORT */
-export { default as useApiFetch } from "./useApiFetch";
-export { default as useSet } from "./useSet";
-export { default as useSwipe } from "./useSwipe";
+export { default as useApiFetch, useEpsV3Fetch } from "./useApiFetch";
 export { default as useAppLink } from "./useAppLink";
 export { default as useCamera } from "./useCamera";
 export { default as useClipboard } from "./useClipboard";
@@ -24,3 +22,5 @@ export { default as useRaiseIssue } from "./useRaiseIssue";
 export { default as useRefreshToken } from "./useRefreshToken";
 export { default as useRequest } from "./useRequest";
 export { default as useSessionStorage } from "./useSessionStorage";
+export { default as useSet } from "./useSet";
+export { default as useSwipe } from "./useSwipe";
