@@ -6,8 +6,9 @@ const GstinVerifyPage = () => {
 		<PaddingBox>
 			<BreadcrumbsWrapper
 				breadcrumbsData={{
-					"/products/gstin": "GSTIN Verification",
-					"/products/gstin/verify": "Verify GSTIN",
+					"/products/kyc": "KYC Verification Tools",
+					"/products/kyc/gstin": "GSTIN Verification",
+					"/products/kyc/gstin/verify": "Verify GSTIN",
 				}}
 			>
 				<GstinVerifyForm />

@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, Headings, PaddingBox } from "components";
+import { BreadcrumbsWrapper, PaddingBox, PageTitle } from "components";
 import { GstinVerification } from "page-components/products/kyc/gstin/GstinVerification";
 
 // TODO: Confirm role
@@ -12,7 +12,7 @@ const GstinPage = () => {
 					"/products/kyc/gstin": "GSTIN Verification",
 				}}
 			>
-				<Headings title="GSTIN Verification" />
+				<PageTitle title="GSTIN Verification" />
 				<GstinVerification />
 			</BreadcrumbsWrapper>
 		</PaddingBox>

@@ -6,8 +6,9 @@ const GstinPanPage = () => {
 		<PaddingBox>
 			<BreadcrumbsWrapper
 				breadcrumbsData={{
-					"/products/gstin": "GSTIN Verification",
-					"/products/gstin/pan": "PAN Lookup",
+					"/products/kyc": "KYC Verification Tools",
+					"/products/kyc/gstin": "GSTIN Verification",
+					"/products/kyc/gstin/pan": "PAN Lookup",
 				}}
 			>
 				<GstinPanForm />
