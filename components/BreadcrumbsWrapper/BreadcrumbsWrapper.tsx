@@ -17,6 +17,7 @@ interface BreadcrumbsWrapperProps {
 	breadcrumbsData: BreadcrumbsData;
 	slug?: string;
 	children?: ReactNode;
+	hideHome?: boolean;
 }
 
 /**
@@ -25,6 +26,7 @@ interface BreadcrumbsWrapperProps {
  * @param props.breadcrumbsData - Object containing the possible URLs and the labels for the breadcrumbs. Pass the current page and parent page URLs as keys and the labels as values.
  * @param props.slug - Value of the URL slug (if part of the URL)
  * @param props.children - Rest of the child components of the page to be displayed below the breadcrumbs.
+ * @param props.hideHome - Optional flag to hide the first home breadcrumb.
  * @example
  * ```tsx
  * // Fixed URL example
@@ -55,6 +57,7 @@ interface BreadcrumbsWrapperProps {
 const BreadcrumbsWrapper = ({
 	breadcrumbsData,
 	slug,
+	hideHome = false,
 	children,
 }: BreadcrumbsWrapperProps): JSX.Element => {
 	const router = useRouter();
@@ -89,7 +92,7 @@ const BreadcrumbsWrapper = ({
 
 	return (
 		<Box>
-			<Breadcrumbs crumbs={crumbs} />
+			<Breadcrumbs crumbs={crumbs} hideHome={hideHome} />
 			{children}
 		</Box>
 	);

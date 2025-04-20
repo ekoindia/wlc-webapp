@@ -7,8 +7,9 @@ import { Icon } from "../";
  * Breadcrumbs component.
  * @param {object} props Properties passed to the component
  * @param {Array} [props.crumbs] Array of breadcrumbs to be displayed. Each item should have a `href` and `label`. The latest item should have `isCurrent` flag set to true.
+ * @param {boolean} [props.hideHome] Optional flag to hide the first home breadcrumb.
  */
-const Breadcrumbs = ({ crumbs = [] }) => {
+const Breadcrumbs = ({ crumbs = [], hideHome = false }) => {
 	const { isAdmin } = useSession();
 	const router = useRouter();
 	const onHomeClick = () => {
@@ -45,23 +46,25 @@ const Breadcrumbs = ({ crumbs = [] }) => {
 			userSelect="none"
 			separator={<Icon size="9px" name="chevron-right" color={"light"} />}
 		>
-			<BreadcrumbItem>
-				<BreadcrumbLink
-					fontSize="xs"
-					display="flex"
-					alignItems="center"
-					color={"primary.DEFAULT"}
-					_hover={{ textDecoration: "none" }}
-					onClick={onHomeClick}
-				>
-					<Icon
-						name="home"
-						size={{ base: "16px", md: "14px" }}
-						mr="1"
-					/>
-					Home
-				</BreadcrumbLink>
-			</BreadcrumbItem>
+			{hideHome !== true ? (
+				<BreadcrumbItem>
+					<BreadcrumbLink
+						fontSize="xs"
+						display="flex"
+						alignItems="center"
+						color={"primary.DEFAULT"}
+						_hover={{ textDecoration: "none" }}
+						onClick={onHomeClick}
+					>
+						<Icon
+							name="home"
+							size={{ base: "16px", md: "14px" }}
+							mr="1"
+						/>
+						Home
+					</BreadcrumbLink>
+				</BreadcrumbItem>
+			) : null}
 			{crumbs?.map((crumb, index) => (
 				<BreadcrumbItem key={index} isCurrentPage={crumb.isCurrent}>
 					<BreadcrumbLink
