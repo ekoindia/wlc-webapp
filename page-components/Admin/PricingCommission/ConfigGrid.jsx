@@ -40,8 +40,6 @@ const ConfigGrid = ({ product_list, basePath, sub_page = false }) => {
 			})
 			.filter(Boolean);
 
-		console.log("productGridList", sub_page, updatedProductGridList);
-
 		setProductGridList(updatedProductGridList);
 	}, [
 		product_list,
