@@ -1,5 +1,5 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { GstinVerifyForm } from "page-components/products/gstin/GstinVerifyForm";
+import { GstinVerifyForm } from "page-components/products/kyc/gstin/GstinVerifyForm";
 
 const GstinVerifyPage = () => {
 	return (

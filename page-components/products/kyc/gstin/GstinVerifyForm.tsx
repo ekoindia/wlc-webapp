@@ -4,7 +4,7 @@ import { useEpsV3Fetch } from "hooks";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ResponseToolbar } from "../common/ResponseToolbar";
+import { ResponseToolbar } from "../../common/ResponseToolbar";
 
 interface SplitAddress {
 	building_name?: string;

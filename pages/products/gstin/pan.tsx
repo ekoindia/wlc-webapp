@@ -1,5 +1,5 @@
 import { BreadcrumbsWrapper, PaddingBox } from "components";
-import { GstinPanForm } from "page-components/products/gstin/GstinPanForm";
+import { GstinPanForm } from "page-components/products/kyc/gstin/GstinPanForm";
 
 const GstinPanPage = () => {
 	return (
