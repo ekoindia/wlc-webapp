@@ -35,13 +35,15 @@ Ask for the API documentation if not provided.
 - Use `PageTitle` component for the page title. Eg: `<PageTitle title="GSTIN Verification" />`
 - Use the `InfoTileGrid` component for displaying a group of sub-item links (like PAN, GSTIN, etc.) in a grid format.
 - Add the `ResponseToolbar` component for actions like Back, Reset, and Copy JSON, at the end of the response card.
+- Always decompose large components into smaller internal components for better readability and maintainability.
 
 ### 4. Component Reuse & Modularity
 
 - **Reuse all possible UI and logic components from:**
   `page-components/products/common/`
 	- Examples:
-		- `ResponseToolbar` (for Back, Reset, Copy JSON actions)
+		- `ResponseToolbar` (for Back, Reset, Copy JSON actions at the end of the response card)
+		- `ResponseSection` (for displaying a section of the API responses. It shows the section heading and a left border)
 - Place any new reusable logic/UI in `page-components/products/common/` for future use.
 - For all page components, wrap the page contents inside a `PaddingBox` component.
 - For sub-pages, use the `BreadcrumbsWrapper` component for navigation (inside the `PaddingBox` component)
