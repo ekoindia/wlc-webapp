@@ -1,5 +1,5 @@
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
-import { Button, Headings } from "components";
+import { Button, PageTitle } from "components";
 import Router from "next/router";
 
 /**
@@ -13,7 +13,7 @@ import Router from "next/router";
 const PreviewSellerInfo = () => {
 	return (
 		<>
-			<Headings title="Preview Agent Information" />
+			<PageTitle title="Preview Agent Information" />
 			<Flex
 				direction={"column"}
 				w="full"

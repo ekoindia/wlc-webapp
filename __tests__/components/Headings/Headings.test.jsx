@@ -1,4 +1,4 @@
-import { Headings } from "components/Headings";
+import { Headings } from "components";
 import { pageRender } from "test-utils";
 
 /*

@@ -1,18 +1,18 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Button, Currency, Headings } from "components";
+import { Button, Currency, PageTitle } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AccountStatementTable } from ".";
+
 /**
  * A AccountStatement page-component
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.className]	Optional classes to pass to this component.
  * @example	`<AccountStatement></AccountStatement>`
  */
-
 const AccountStatement = () => {
 	const router = useRouter();
 	const [accountStatementData, setAccountStatementData] = useState({});
@@ -70,8 +70,8 @@ const AccountStatement = () => {
 	}/${current.getFullYear()}`;
 
 	return (
-		<div>
-			<Headings title="Account Statement" />
+		<>
+			<PageTitle title="Account Statement" />
 			<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
 				<Flex
 					direction="column"
@@ -129,7 +129,7 @@ const AccountStatement = () => {
 					{...{ isLoading, accountStatementTableData }}
 				/>
 			</Flex>
-		</div>
+		</>
 	);
 };
 

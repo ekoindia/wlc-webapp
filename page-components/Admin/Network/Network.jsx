@@ -1,15 +1,15 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
-import { Button, Headings, Icon } from "components";
+import { Button, Icon, PageTitle } from "components";
 import { Endpoints, ParamType } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useFeatureFlag } from "hooks";
 import { formatDate } from "libs/dateFormat";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { NetworkTable, NetworkToolbar } from ".";
-import dynamic from "next/dynamic";
 
 const NetworkTreeView = dynamic(
 	() => import(".").then((pkg) => pkg.NetworkTreeView),
@@ -370,10 +370,10 @@ const Network = () => {
 
 	return (
 		<>
-			<Headings
+			<PageTitle
 				title="My Network"
-				hasIcon={false}
-				propComp={
+				hideBackIcon
+				toolComponent={
 					<Button
 						size={{ base: "sm", md: "md" }}
 						onClick={() =>

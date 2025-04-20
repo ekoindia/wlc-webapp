@@ -10,8 +10,8 @@ import {
 import {
 	ActionButtonGroup,
 	Calenders,
-	Headings,
 	Input,
+	PageTitle,
 	Radio,
 	Select,
 } from "components";
@@ -337,7 +337,7 @@ const UpdatePersonalInfo = () => {
 
 	return (
 		<>
-			<Headings title="Update Personal Information" />
+			<PageTitle title="Update Personal Information" />
 			<Flex
 				direction="column"
 				borderRadius={{ base: "0", md: "10px 10px 0 0" }}

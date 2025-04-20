@@ -9,7 +9,7 @@ import {
 	Textarea,
 	useToast,
 } from "@chakra-ui/react";
-import { Button, Headings, Input } from "components";
+import { Button, Input, PageTitle } from "components";
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
@@ -148,10 +148,10 @@ const NotificationCreator = () => {
 
 	return (
 		<>
-			<Headings
+			<PageTitle
 				title="Send Notification"
 				subtitle="Send notifications to your entire network"
-				hasIcon={false}
+				hideBackIcon
 			/>
 
 			<Box p={{ base: "1em", md: "2em" }} bg="white" borderRadius={8}>

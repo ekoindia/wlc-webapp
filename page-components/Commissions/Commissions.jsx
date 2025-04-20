@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { Headings, Tags } from "components";
+import { PageTitle, Tags } from "components";
 import { tableRowLimit } from "constants";
 import { useCommissionSummary } from "contexts";
 import { useEffect, useState } from "react";
@@ -41,7 +41,7 @@ const Commissions = ({ prod_id }) => {
 
 	return (
 		<>
-			<Headings title="Know Your Commissions" />
+			<PageTitle title="Know Your Commissions" />
 			<Flex
 				direction="column"
 				w="full"

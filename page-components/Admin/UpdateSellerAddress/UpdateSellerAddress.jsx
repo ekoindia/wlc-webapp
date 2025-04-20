@@ -1,5 +1,5 @@
 import { Box, Divider, Flex, Text, useToast } from "@chakra-ui/react";
-import { ActionButtonGroup, Headings } from "components";
+import { ActionButtonGroup, PageTitle } from "components";
 import { Endpoints, ParamType, TransactionIds } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -279,7 +279,7 @@ const UpdateSellerAddress = () => {
 
 	return (
 		<>
-			<Headings title="Update Agent Address" />
+			<PageTitle title="Update Agent Address" />
 			<Flex
 				direction="column"
 				borderRadius={{ base: "0", md: "10px 10px 0 0" }}
