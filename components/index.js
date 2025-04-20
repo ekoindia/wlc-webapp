@@ -128,3 +128,6 @@ export {
 export { PhoneNumber } from "./PhoneNumber";
 
 export { ChatInput } from "./ChatInput";
+
+export { InfoTile } from "./InfoTile";
+export { InfoTileGrid } from "./InfoTileGrid";
