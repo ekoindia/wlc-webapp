@@ -11,6 +11,7 @@ const GstinPage = () => {
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/gstin": "GSTIN Verification",
 				}}
+				hideHome
 			>
 				<PageTitle title="GSTIN Verification" />
 				<GstinVerification />

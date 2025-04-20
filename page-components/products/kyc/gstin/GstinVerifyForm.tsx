@@ -4,7 +4,7 @@ import { useEpsV3Fetch } from "hooks";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ResponseToolbar } from "../../common/ResponseToolbar";
+import { ResponseSection, ResponseToolbar } from "../../common";
 
 interface SplitAddress {
 	building_name?: string;
@@ -63,10 +63,7 @@ const BasicInfoSection = ({
 }: {
 	data: GstinResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Basic Information
-		</Text>
+	<ResponseSection heading="Basic Information">
 		<Flex direction="column" gap={1}>
 			<Flex>
 				<Text width="180px" fontWeight="medium">
@@ -107,7 +104,7 @@ const BasicInfoSection = ({
 				</Text>
 			</Flex>
 		</Flex>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for business details
@@ -116,10 +113,7 @@ const BusinessDetailsSection = ({
 }: {
 	data: GstinResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Business Details
-		</Text>
+	<ResponseSection heading="Business Details">
 		<Flex direction="column" gap={1}>
 			{data.constitution_of_business && (
 				<Flex>
@@ -162,15 +156,12 @@ const BusinessDetailsSection = ({
 				</Flex>
 			)}
 		</Flex>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for dates information
 const DatesSection = ({ data }: { data: GstinResponseData }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Dates
-		</Text>
+	<ResponseSection heading="Dates">
 		<Flex direction="column" gap={1}>
 			{data.date_of_registration && (
 				<Flex>
@@ -197,7 +188,7 @@ const DatesSection = ({ data }: { data: GstinResponseData }): JSX.Element => (
 				</Flex>
 			)}
 		</Flex>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for split address display
@@ -266,10 +257,7 @@ const PrincipalAddressSection = ({
 }: {
 	data: GstinResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Principal Address
-		</Text>
+	<ResponseSection heading="Principal Address">
 		{data.principal_place_address && (
 			<Text mb={2}>{data.principal_place_address}</Text>
 		)}
@@ -277,7 +265,7 @@ const PrincipalAddressSection = ({
 		{data.principal_place_split_address && (
 			<SplitAddressDisplay address={data.principal_place_split_address} />
 		)}
-	</Box>
+	</ResponseSection>
 );
 
 // Component for additional addresses
@@ -289,10 +277,7 @@ const AdditionalAddressesSection = ({
 	if (!data.additional_address_array?.length) return null;
 
 	return (
-		<Box borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-			<Text fontWeight="medium" fontSize="md" mb={2}>
-				Additional Addresses
-			</Text>
+		<ResponseSection heading="Additional Addresses">
 			{data.additional_address_array.map((addr, index) => (
 				<Box
 					key={index}
@@ -308,7 +293,7 @@ const AdditionalAddressesSection = ({
 					)}
 				</Box>
 			))}
-		</Box>
+		</ResponseSection>
 	);
 };
 

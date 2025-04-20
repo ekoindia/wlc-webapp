@@ -10,13 +10,13 @@ const GstinSubProducts: {
 	url: string;
 }[] = [
 	{
-		label: "GSTIN Verification",
+		label: "Verify GSTIN",
 		desc: "Verify a GSTIN and view business details",
 		icon: "search",
-		url: "vehicle-rc",
+		url: "gstin/verify",
 	},
 	{
-		label: "GSTINs by PAN",
+		label: "Get GSTINs by PAN",
 		desc: "Fetch all GSTINs linked to a PAN",
 		icon: "credit-card",
 		url: "gstin/pan",

@@ -10,6 +10,7 @@ const GstinVerifyPage = () => {
 					"/products/kyc/gstin": "GSTIN Verification",
 					"/products/kyc/gstin/verify": "Verify GSTIN",
 				}}
+				hideHome
 			>
 				<GstinVerifyForm />
 			</BreadcrumbsWrapper>

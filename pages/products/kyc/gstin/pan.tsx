@@ -10,6 +10,7 @@ const GstinPanPage = () => {
 					"/products/kyc/gstin": "GSTIN Verification",
 					"/products/kyc/gstin/pan": "PAN Lookup",
 				}}
+				hideHome
 			>
 				<GstinPanForm />
 			</BreadcrumbsWrapper>

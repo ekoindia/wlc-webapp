@@ -13,7 +13,7 @@ import { useEpsV3Fetch } from "hooks";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ResponseToolbar } from "../../common/ResponseToolbar";
+import { ResponseSection, ResponseToolbar } from "../../common";
 
 // Type definitions for Vehicle RC API response
 interface SplitAddress {
@@ -110,10 +110,7 @@ const BasicInfoSection = ({
 }: {
 	data: VehicleRcResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Basic Information
-		</Text>
+	<ResponseSection heading="Basic Information">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
 				<Flex>
@@ -182,7 +179,7 @@ const BasicInfoSection = ({
 				</Flex>
 			</GridItem>
 		</Grid>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for vehicle details
@@ -191,10 +188,7 @@ const VehicleDetailsSection = ({
 }: {
 	data: VehicleRcResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Vehicle Details
-		</Text>
+	<ResponseSection heading="Vehicle Details">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
 				<Flex>
@@ -277,7 +271,7 @@ const VehicleDetailsSection = ({
 				</Flex>
 			</GridItem>
 		</Grid>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for owner information
@@ -286,10 +280,7 @@ const OwnerSection = ({
 }: {
 	data: VehicleRcResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Owner Information
-		</Text>
+	<ResponseSection heading="Owner Information">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
 				<Flex>
@@ -324,7 +315,7 @@ const OwnerSection = ({
 				</Flex>
 			</GridItem>
 		</Grid>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for registration dates
@@ -333,10 +324,7 @@ const RegistrationSection = ({
 }: {
 	data: VehicleRcResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Registration Information
-		</Text>
+	<ResponseSection heading="Registration Information">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
 				<Flex>
@@ -371,7 +359,7 @@ const RegistrationSection = ({
 				</Flex>
 			</GridItem>
 		</Grid>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for insurance and tax information
@@ -380,10 +368,7 @@ const InsuranceSection = ({
 }: {
 	data: VehicleRcResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Insurance & Tax Information
-		</Text>
+	<ResponseSection heading="Insurance & Tax Information">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
 				<Flex>
@@ -418,7 +403,7 @@ const InsuranceSection = ({
 				</Flex>
 			</GridItem>
 		</Grid>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for pollution certificate information
@@ -427,10 +412,7 @@ const PollutionSection = ({
 }: {
 	data: VehicleRcResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Pollution Certificate
-		</Text>
+	<ResponseSection heading="Pollution Certificate">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
 				<Flex>
@@ -449,7 +431,7 @@ const PollutionSection = ({
 				</Flex>
 			</GridItem>
 		</Grid>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for finance and permit details
@@ -458,10 +440,7 @@ const FinanceSection = ({
 }: {
 	data: VehicleRcResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Finance & Permits
-		</Text>
+	<ResponseSection heading="Finance & Permits">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
 				<Flex>
@@ -516,7 +495,7 @@ const FinanceSection = ({
 				</>
 			)}
 		</Grid>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for technical specifications
@@ -525,10 +504,7 @@ const TechnicalSection = ({
 }: {
 	data: VehicleRcResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Technical Specifications
-		</Text>
+	<ResponseSection heading="Technical Specifications">
 		<Grid templateColumns="repeat(2, 1fr)" gap={3}>
 			<GridItem>
 				<Flex>
@@ -579,7 +555,7 @@ const TechnicalSection = ({
 				</Flex>
 			</GridItem>
 		</Grid>
-	</Box>
+	</ResponseSection>
 );
 
 // Component for address information
@@ -588,15 +564,8 @@ const AddressSection = ({
 }: {
 	data: VehicleRcResponseData;
 }): JSX.Element => (
-	<Box mb={4} borderLeft="4px" borderLeftColor="primary.DEFAULT" pl={3}>
-		<Text fontWeight="medium" fontSize="md" mb={2}>
-			Address Information
-		</Text>
-
-		<Box mb={3}>
-			<Text fontWeight="medium" mb={1}>
-				Present Address:
-			</Text>
+	<ResponseSection heading="Address Information">
+		<ResponseSection heading="Present Address">
 			<Text mb={2}>{data.present_address}</Text>
 
 			{data.split_present_address && (
@@ -662,12 +631,9 @@ const AddressSection = ({
 					</Grid>
 				</Box>
 			)}
-		</Box>
+		</ResponseSection>
 
-		<Box>
-			<Text fontWeight="medium" mb={1}>
-				Permanent Address:
-			</Text>
+		<ResponseSection heading="Permanent Address">
 			<Text mb={2}>{data.permanent_address}</Text>
 
 			{data.split_permanent_address && (
@@ -734,8 +700,8 @@ const AddressSection = ({
 					</Grid>
 				</Box>
 			)}
-		</Box>
-	</Box>
+		</ResponseSection>
+	</ResponseSection>
 );
 
 // Component for blacklist information
@@ -747,12 +713,9 @@ const BlacklistSection = ({
 	if (data.blacklist_status.toLowerCase() !== "yes") return null;
 
 	return (
-		<Box mb={4} borderLeft="4px" borderLeftColor="red.500" pl={3}>
-			<Text fontWeight="medium" fontSize="md" mb={2} color="red.600">
-				Blacklist Information
-			</Text>
+		<ResponseSection heading="Blacklist Information">
 			<Text>Vehicle is blacklisted. Check authorities for details.</Text>
-		</Box>
+		</ResponseSection>
 	);
 };
 

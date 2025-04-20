@@ -10,6 +10,7 @@ const VehicleRcPage = (): JSX.Element => {
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/vehicle-rc": "Vehicle RC Verification",
 				}}
+				hideHome
 			>
 				<VehicleRcForm />
 			</BreadcrumbsWrapper>
