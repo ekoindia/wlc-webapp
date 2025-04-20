@@ -40,7 +40,7 @@ interface ResponseToolbarProps<T> {
  * @param root0.children
  * @template T - Type of data to be copied as JSON
  */
-export const ResponseToolbar = <T extends Record<string, any>>({
+const ResponseToolbar = <T extends Record<string, any>>({
 	onBack,
 	onReset,
 	data,
@@ -116,5 +116,7 @@ export const ResponseToolbar = <T extends Record<string, any>>({
 		</Flex>
 	);
 };
+
+ResponseToolbar.displayName = "ResponseToolbar";
 
 export default ResponseToolbar;
