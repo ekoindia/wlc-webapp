@@ -123,13 +123,15 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 					...options?.body,
 					...body,
 				},
-				method: method || options.method,
-				headers: headers || options.headers,
-				timeout: timeout || options.timeout,
+				method: method || options?.method,
+				headers: headers || options?.headers,
+				timeout: timeout || options?.timeout,
 				token:
-					token || options.token || (noAuth ? null : accessTokenLite),
+					token ||
+					options?.token ||
+					(noAuth ? null : accessTokenLite),
 				controller: controller,
-				isMultipart: isMultipart || options.isMultipart,
+				isMultipart: isMultipart || options?.isMultipart,
 			},
 		};
 
@@ -148,8 +150,8 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 			return { data, request: requestSummary };
 		} catch (err) {
 			const errResponse = {
-				data: err.response,
-				status: err.status,
+				data: err?.response,
+				status: err?.status,
 				error: true,
 				errorObject: err,
 				request: requestSummary,
@@ -216,7 +218,7 @@ export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 			...settings?.headers,
 			"tf-req-uri-root-path": "/ekoicici/v3",
 			"tf-req-uri": defaultUrlEndpoint,
-			"tf-req-method": settings.method || "GET",
+			"tf-req-method": settings?.method || "GET",
 			"content-type": "application/json",
 		},
 	});
