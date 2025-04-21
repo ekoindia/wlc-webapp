@@ -31,7 +31,7 @@ Ask for the API documentation if not provided.
 - No need to pass the following parameters to the hook (they are handled internally):
 	- `initiator_id`
 	- `client_ref_id`
-- Create a beautiful and clean custom UI to show large nested JSON responses. Use table components for better readability.
+- Create a beautiful, clean and responsive custom UI to show large nested JSON responses. Use table components for better readability.
 - Use `PageTitle` component for the page title. Eg: `<PageTitle title="GSTIN Verification" />`
 - Use the `InfoTileGrid` component for displaying a group of sub-item links (like PAN, GSTIN, etc.) in a grid format.
 - Add the `ResponseToolbar` component for actions like Back, Reset, and Copy JSON, at the end of the response card.
@@ -56,7 +56,7 @@ Ask for the API documentation if not provided.
 
 ---
 
-### 6. Example Structure (based on GSTIN)
+### 6. Example Structure (for GSTIN)
 
 ```
 pages/
