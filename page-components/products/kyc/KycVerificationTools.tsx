@@ -46,6 +46,12 @@ const KycTools: {
 		icon: "book",
 		url: "kyc/passport",
 	},
+	{
+		label: "CIN Verification",
+		desc: "Verify Corporate Identification Number details including business and director information",
+		icon: "domain",
+		url: "kyc/cin",
+	},
 ];
 
 export const KycVerificationTools = (): JSX.Element => {
