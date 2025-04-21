@@ -40,6 +40,12 @@ const KycTools: {
 		icon: "how-to-vote",
 		url: "kyc/voter-id",
 	},
+	{
+		label: "Passport Verification",
+		desc: "Verify Indian passport details using file number and date of birth",
+		icon: "book",
+		url: "kyc/passport",
+	},
 ];
 
 export const KycVerificationTools = (): JSX.Element => {
