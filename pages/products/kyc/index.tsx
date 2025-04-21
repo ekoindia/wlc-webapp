@@ -5,7 +5,7 @@ import { KycVerificationTools } from "page-components/products/kyc/KycVerificati
 const KycPage = (): JSX.Element => {
 	return (
 		<PaddingBox>
-			<PageTitle title="KYC Verification Tools" isBeta hideBackIcon />
+			<PageTitle title="KYC & Verification Tools" isBeta hideBackIcon />
 			<KycVerificationTools />
 		</PaddingBox>
 	);
