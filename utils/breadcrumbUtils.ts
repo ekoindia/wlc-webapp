@@ -7,7 +7,8 @@ type Crumb = {
 type LabelOverrides = Record<string, string>;
 
 /**
- * Generates breadcrumbs for a given path.
+ * Generates breadcrumb configuration data for a given path.
+ * This is passed to the <BreadcrumbWrapper> component to configure the state of the breadcrumb.
  * @param {string} asPath - The full path including query parameters.
  * @param {LabelOverrides} [labelOverrides] - Optional overrides for segment labels.
  * @param {string[]} [omitPaths] - Optional array of full paths to omit from breadcrumbs.
