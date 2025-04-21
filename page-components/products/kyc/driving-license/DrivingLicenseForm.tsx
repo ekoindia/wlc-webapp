@@ -211,7 +211,125 @@ const AddressSection = ({
 							{address.type} Address
 						</Text>
 					)}
-					<Text>{address.complete_address}</Text>
+					<Text mb={2}>{address.complete_address}</Text>
+
+					{address.split_address && (
+						<Box pl={3} mt={2}>
+							<Grid templateColumns="repeat(2, 1fr)" gap={3}>
+								{address.split_address.city &&
+									address.split_address.city.length > 0 && (
+										<GridItem>
+											<Flex>
+												<Text
+													width="120px"
+													fontWeight="medium"
+												>
+													City:
+												</Text>
+												<Text>
+													{address.split_address.city.join(
+														", "
+													)}
+												</Text>
+											</Flex>
+										</GridItem>
+									)}
+								{address.split_address.district &&
+									address.split_address.district.length >
+										0 && (
+										<GridItem>
+											<Flex>
+												<Text
+													width="120px"
+													fontWeight="medium"
+												>
+													District:
+												</Text>
+												<Text>
+													{address.split_address.district.join(
+														", "
+													)}
+												</Text>
+											</Flex>
+										</GridItem>
+									)}
+								{address.split_address.state &&
+									address.split_address.state.length > 0 && (
+										<GridItem>
+											<Flex>
+												<Text
+													width="120px"
+													fontWeight="medium"
+												>
+													State:
+												</Text>
+												<Text>
+													{address.split_address.state
+														.map((s) =>
+															Array.isArray(s)
+																? s.join(", ")
+																: s
+														)
+														.join("; ")}
+												</Text>
+											</Flex>
+										</GridItem>
+									)}
+								{address.split_address.pincode && (
+									<GridItem>
+										<Flex>
+											<Text
+												width="120px"
+												fontWeight="medium"
+											>
+												Pincode:
+											</Text>
+											<Text>
+												{address.split_address.pincode}
+											</Text>
+										</Flex>
+									</GridItem>
+								)}
+								{address.split_address.country &&
+									address.split_address.country.length >
+										0 && (
+										<GridItem>
+											<Flex>
+												<Text
+													width="120px"
+													fontWeight="medium"
+												>
+													Country:
+												</Text>
+												<Text>
+													{address.split_address.country.join(
+														", "
+													)}
+												</Text>
+											</Flex>
+										</GridItem>
+									)}
+								{address.split_address.address_line && (
+									<GridItem colSpan={2}>
+										<Flex>
+											<Text
+												width="120px"
+												fontWeight="medium"
+											>
+												Address Line:
+											</Text>
+											<Text>
+												{
+													address.split_address
+														.address_line
+												}
+											</Text>
+										</Flex>
+									</GridItem>
+								)}
+							</Grid>
+						</Box>
+					)}
 				</Box>
 			))}
 		</ResponseSection>
