@@ -11,7 +11,7 @@ const PanPage = (): JSX.Element => {
 				}}
 				hideHome
 			>
-				<PageTitle title="PAN Verification" isBeta hideBackIcon />
+				<PageTitle title="PAN Verification" />
 				<PanVerification />
 			</BreadcrumbsWrapper>
 		</PaddingBox>

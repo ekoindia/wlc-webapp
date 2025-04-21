@@ -30,7 +30,7 @@ const PanSubProducts: {
 	{
 		label: "Bulk PAN Verification",
 		desc: "Verify multiple PAN numbers in a batch",
-		icon: "view-list",
+		icon: "toc",
 		url: "pan/bulk",
 	},
 ];
