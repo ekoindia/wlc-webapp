@@ -34,6 +34,12 @@ const KycTools: {
 		icon: "credit-card",
 		url: "kyc/pan",
 	},
+	{
+		label: "Voter ID Verification",
+		desc: "Verify voter ID details including constituency information",
+		icon: "how-to-vote",
+		url: "kyc/voter-id",
+	},
 ];
 
 export const KycVerificationTools = (): JSX.Element => {
