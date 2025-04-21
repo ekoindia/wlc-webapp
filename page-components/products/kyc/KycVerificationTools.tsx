@@ -25,7 +25,7 @@ const KycTools: {
 	{
 		label: "GSTIN Verification",
 		desc: "Verify a GSTIN and view business details",
-		icon: "search",
+		icon: "business-center",
 		url: "kyc/gstin",
 	},
 	{
@@ -37,7 +37,7 @@ const KycTools: {
 	{
 		label: "Voter ID Verification",
 		desc: "Verify voter ID details including constituency information",
-		icon: "how-to-vote",
+		icon: "fingerprint",
 		url: "kyc/voter-id",
 	},
 	{
