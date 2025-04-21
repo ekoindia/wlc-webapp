@@ -39,14 +39,16 @@ Ask for the API documentation if not provided.
 
 ### 4. Component Reuse & Modularity
 
-- **Reuse all possible UI and logic components from:**
+- **Reuse all available UI and logic components from:**
   `page-components/products/common/`
-	- Examples:
+	- Available Components:
 		- `ResponseToolbar` (for Back, Reset, Copy JSON actions at the end of the response card)
 		- `ResponseSection` (for displaying a section of the API responses. It shows the section heading and a left border)
+	- Example Import: `import { ResponseSection, ResponseToolbar } from 'page-components/products/common';`
 - Place any new reusable logic/UI in `page-components/products/common/` for future use.
 - For all page components, wrap the page contents inside a `PaddingBox` component.
 - For sub-pages, use the `BreadcrumbsWrapper` component for navigation (inside the `PaddingBox` component)
+- Before using any internal component, verify if it actually exists.
 
 ### 5. Coding & Style Guidelines
 

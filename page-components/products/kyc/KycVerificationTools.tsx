@@ -22,6 +22,12 @@ const KycTools: {
 		icon: "search",
 		url: "kyc/gstin",
 	},
+	{
+		label: "PAN Verification",
+		desc: "Verify PAN details with multiple verification options",
+		icon: "credit-card",
+		url: "kyc/pan",
+	},
 ];
 
 export const KycVerificationTools = (): JSX.Element => {

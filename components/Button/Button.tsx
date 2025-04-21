@@ -10,8 +10,11 @@ interface IconStyleProps {
 	[key: string]: any;
 }
 
-interface ButtonProps
-	extends Omit<ChakraButtonProps, "leftIcon" | "rightIcon"> {
+interface ButtonProps extends ChakraButtonProps {
+	/**
+	 * Button variant
+	 * @default "accent"
+	 */
 	variant?:
 		| "primary"
 		| "accent"
@@ -22,15 +25,61 @@ interface ButtonProps
 		| "ghost"
 		| "link"
 		| "unstyled";
+	/**
+	 * Disable the button
+	 * @default false
+	 */
 	disabled?: boolean;
+	/**
+	 * Show loading state
+	 * @default false
+	 */
 	loading?: boolean;
+	/**
+	 * Size of the button
+	 * @default "md"
+	 */
 	size?: "lg" | "md" | "sm" | "xs";
+	/**
+	 * Border radius of the button
+	 * @default "8px"
+	 */
 	borderRadius?: string;
+	/**
+	 * The left icon component (if icon name is not provided)
+	 * @default null
+	 */
+	leftIcon?: React.ReactElement;
+	/**
+	 * The right icon component (if icon name is not provided)
+	 * @default null
+	 */
+	rightIcon?: React.ReactElement;
+	/**
+	 * Name of the icon to show in the button (e.g., "arrow-back"). This is alternatively used to show an icon in the button.
+	 */
 	icon?: string;
+	/**
+	 * Position of the icon: "left" or "right"
+	 * @default "left"
+	 */
 	iconPosition?: "left" | "right";
+	/**
+	 * Spacing between the icon and the text
+	 * @default "0.6em"
+	 */
 	iconSpacing?: string;
+	/**
+	 * Additional style properties for the icon
+	 */
 	iconStyle?: IconStyleProps;
+	/**
+	 * Click handler
+	 */
 	onClick?: () => void;
+	/**
+	 * Children elements of the button. For example, the button text.
+	 */
 	children?: ReactNode;
 }
 
@@ -41,6 +90,9 @@ interface ButtonProps
  * @param	{boolean}	[prop.disabled]	Disable the button (default: false)
  * @param	{boolean}	[prop.loading=false]	Show loading state
  * @param	{string}	[prop.size]	Size of the button: "lg" | "md" | "sm" | "xs"
+ * @param	{string}	[prop.borderRadius]	Border radius of the button
+ * @param	{ReactElement}	[prop.leftIcon]	The left icon component
+ * @param	{ReactElement}	[prop.rightIcon]	The right icon component
  * @param	{string}	[prop.icon]	Icon name to show in the button (e.g., "arrow-back")
  * @param	{string}	[prop.iconPosition="left"]	Position of the icon: "left" or "right"
  * @param	{string}	[prop.iconSpacing]	Spacing between the icon and the text
@@ -59,6 +111,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 			loading = false,
 			size,
 			borderRadius,
+			leftIcon,
+			rightIcon,
 			icon,
 			iconPosition = "left",
 			iconSpacing = "0.6em",
@@ -90,8 +144,20 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				size={size}
 				onClick={onClick}
 				iconSpacing={children ? iconSpacing : null}
-				leftIcon={icon && iconPosition === "left" ? IconComp : null}
-				rightIcon={icon && iconPosition === "right" ? IconComp : null}
+				leftIcon={
+					leftIcon
+						? leftIcon
+						: icon && iconPosition === "left"
+							? IconComp
+							: null
+				}
+				rightIcon={
+					rightIcon
+						? rightIcon
+						: icon && iconPosition === "right"
+							? IconComp
+							: null
+				}
 				borderRadius={borderRadius || default_radius}
 				ref={ref}
 				{...rest}
