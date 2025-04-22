@@ -31,6 +31,9 @@ Eloka is a **white-labeled, multi-tenant SaaS web app** enabling Admins to manag
 - Use **modular and reusable functions** to minimize duplication.
 - **Descriptive, semantic naming** for variables/functions (e.g., `isLoading`, `hasError`).
 - Use **tabs for indentation** consistently across all files.
+- For conditional rendering, prefer **ternary operators** over && and ||.
+- Always use **optional chaining** (`?.`) for object properties to avoid null/undefined errors.
+- Use **nullish coalescing** (`??`) for default values instead of logical OR (`||`).
 
 ### Repository Structure
 ```
