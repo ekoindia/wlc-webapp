@@ -1,6 +1,8 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 /**
- * A reusable section container for API response cards
+ * A reusable section container for API response cards used to show a related group of response data. It shows the section heading and a left border with an optional index number before the heading.
+ * - For nested JSON, use a nested `ResponseSection` for each level of nesting.
+ * - For displaying a list of objects, use a `ResponseSection` for each object in the list and pass `index` as a prop to the `ResponseSection` component, starting with 1.
  * @param {object} props
  * @param {string} props.heading - The heading of the section
  * @param {number} [props.index] - If provided, shows the index of the section. Used when the section represents an item of an array.
@@ -20,7 +22,7 @@ const ResponseSection = ({ heading, index, children }) => {
 		>
 			<Flex direction="row" align="center" mb={2}>
 				{/* Show an index, if provided, as a number within a colored circle before the section heading */}
-				{index !== undefined && (
+				{index !== undefined && index !== "" ? (
 					<Flex
 						as="span"
 						bg="primary.DEFAULT"
@@ -35,7 +37,7 @@ const ResponseSection = ({ heading, index, children }) => {
 					>
 						{index}
 					</Flex>
-				)}
+				) : null}
 				{/* Section heading */}
 				<Text fontWeight="bold" fontSize="md" color="primary.dark">
 					{heading}
