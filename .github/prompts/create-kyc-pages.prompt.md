@@ -43,7 +43,7 @@ Ask for the API documentation if not provided.
   `page-components/products/common/`
 	- Available Components:
 		- `ResponseToolbar` (for Back, Reset, Copy JSON actions at the end of the response card)
-		- `ResponseSection` (for displaying a section of the API responses. It shows the section heading and a left border)
+		- `ResponseSection` (for displaying a section of the API responses. It shows the section heading and a left border. For nested JSON, use a nested `ResponseSection` for each level of nesting. For displaying a list of objects, use a `ResponseSection` for each object in the list and pass `index` as a prop to the `ResponseSection` component, starting with 1. Ensure to handle the rendering of the index correctly to maintain the order of items in the list.)
 	- Example Import: `import { ResponseSection, ResponseToolbar } from 'page-components/products/common';`
 - Place any new reusable logic/UI in `page-components/products/common/` for future use.
 - For all page components, wrap the page contents inside a `PaddingBox` component.
@@ -74,6 +74,12 @@ page-components/
     └── kyc/
         └── [KycFormComponent].tsx
 ```
+
 ---
 
-**If you need clarification on any API or business logic, ask concise yes/no questions before proceeding.**
+### 7. Verification & Testing
+- Ensure to test the API integration thoroughly.
+- Use the provided sample responses to validate the API integration.
+- Ensure to test the UI for responsiveness and usability.
+- Ensure to test the API integration with different scenarios (valid, invalid, edge cases).
+- Check for any errors or warnings in the console and fix them.
