@@ -52,6 +52,12 @@ const KycTools: {
 		icon: "domain",
 		url: "kyc/cin",
 	},
+	{
+		label: "Employee Verification",
+		desc: "Verify employee employment details including UAN, company information and service history",
+		icon: "badge",
+		url: "kyc/employment",
+	},
 ];
 
 export const KycVerificationTools = (): JSX.Element => {
