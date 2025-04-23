@@ -16,7 +16,7 @@ interface ResponseToolbarProps<T> {
 	/**
 	 * Data object to copy as JSON when Copy JSON button is clicked
 	 */
-	data: T;
+	data?: T;
 
 	/**
 	 * Text to show on the reset button
@@ -97,13 +97,15 @@ const ResponseToolbar = <T extends Record<string, any>>({
 			{children}
 
 			<Flex gap={2}>
-				<Button
-					variant="outline"
-					icon="content-copy"
-					onClick={handleCopyJson}
-				>
-					Copy JSON
-				</Button>
+				{data ? (
+					<Button
+						variant="outline"
+						icon="content-copy"
+						onClick={handleCopyJson}
+					>
+						Copy JSON
+					</Button>
+				) : null}
 				<Button
 					variant="outline"
 					icon="refresh"
