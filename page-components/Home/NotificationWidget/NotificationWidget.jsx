@@ -12,7 +12,7 @@ import {
 	Spacer,
 	Text,
 } from "@chakra-ui/react";
-import { Button, Icon } from "components";
+import { Button, Icon, YoutubePlayer } from "components";
 import { useNotification } from "contexts";
 import { useAppLink } from "hooks";
 import { formatDateTime } from "libs";
@@ -29,6 +29,16 @@ import { WidgetBase } from "..";
 // 	POSITIVE: 2,
 // 	NEGATIVE: 3,
 // };
+
+/**
+ * Helper function to get Youtube Thumbnail URL
+ * @param {string} youtubeId - Youtube Video ID
+ * @param {string} size - Size of the thumbnail: "mqdefault", "hqdefault", "sddefault", "maxresdefault" (default: "mqdefault")
+ * @returns {string} Youtube Thumbnail URL
+ */
+const getYoutubeThumbnail = (youtubeId, size = "mqdefault") => {
+	return `https://img.youtube.com/vi/${youtubeId}/${size}.jpg`;
+};
 
 /**
  * Homepage widget to show a list of notifications.
@@ -75,7 +85,7 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 							}}
 							cursor="pointer"
 							_hover={{ bg: "darkShade" }}
-							borderBottom="1px solid #F5F6F8"
+							borderBottom="2px solid #F5F6F8"
 							onClick={() => openNotification(notif.id)}
 						>
 							<Flex>
@@ -97,6 +107,21 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 										src={notif.image}
 										alt="Notification Poster"
 									/>
+								) : notif.youtube ? (
+									<Image
+										fit="cover"
+										loading="lazy"
+										overflow="hidden"
+										h={{ base: "38px", md: "42px" }}
+										w={{ base: "38px", md: "42px" }}
+										minW={{ base: "38px", md: "42px" }}
+										borderRadius="10px"
+										src={getYoutubeThumbnail(
+											notif.youtube,
+											"mqdefault"
+										)}
+										alt="Video thumbnail"
+									/>
 								) : (
 									<Center
 										h={{
@@ -112,7 +137,11 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 									>
 										<Icon
 											size="22px"
-											name="notifications"
+											name={
+												notif.youtube
+													? "play-circle-outline"
+													: "notifications"
+											}
 											color="gray.400"
 										/>
 									</Center>
@@ -168,15 +197,15 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 
 							{openedNotification.link ? (
 								<Button
-									mt={2}
+									my={4}
 									fontSize="lg"
-									variant="link"
-									color="primary.DEFAULT"
+									variant="primary"
 									onClick={() => {
 										openUrl(openedNotification.link);
 									}}
 								>
-									Open Link
+									{openedNotification.link_label ||
+										"Open Link"}
 								</Button>
 							) : null}
 
@@ -185,6 +214,29 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 									src={openedNotification.image}
 									alt="notification poster"
 									mt="4"
+								/>
+							) : null}
+
+							{openedNotification.youtube ? (
+								// <Image
+								// 	src={getYoutubeThumbnail(
+								// 		openedNotification.youtube,
+								// 		"hqdefault"
+								// 	)}
+								// 	alt="Video thumbnail"
+								// 	mt="4"
+								// />
+								<YoutubePlayer
+									videoId={openedNotification.youtube}
+									autoplay={false}
+									controls={true}
+									// width="100%"
+									// height="100%"
+									style={{
+										width: "100%",
+										height: "200px",
+										marginTop: "10px",
+									}}
 								/>
 							) : null}
 						</ModalBody>
