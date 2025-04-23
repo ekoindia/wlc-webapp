@@ -61,6 +61,7 @@ import { Tabs } from "./Tabs";
 import { Tags } from "./Tags";
 import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
+import { YoutubePlayer } from "./YoutubePlayer";
 
 export {
 	Accordion,
@@ -123,6 +124,7 @@ export {
 	Tags,
 	Textarea,
 	XScrollArrow,
+	YoutubePlayer,
 };
 
 export { PhoneNumber } from "./PhoneNumber";
