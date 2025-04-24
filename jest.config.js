@@ -23,15 +23,24 @@ const customJestConfig = {
 		"^constants/(.*)$": "<rootDir>/constants/$1",
 		"^contexts/(.*)$": "<rootDir>/contexts/$1",
 		"^hooks/(.*)$": "<rootDir>/hooks/$1",
+		"^helpers/(.*)$": "<rootDir>/helpers/$1", // Add alias for helpers directory
 		"^public/(.*)$": "<rootDir>/public/$1",
 		"^styles/(.*)$": "<rootDir>/styles/$1",
 		"^utils/(.*)$": "<rootDir>/utils/$1",
 		"^tests/(.*)$": "<rootDir>/__tests__/$1",
 		"^@/pages/(.*)$": "<rootDir>/pages/$1",
+		"^libs/(.*)$": "<rootDir>/libs/$1",
 	},
-	testEnvironment: "jest-environment-jsdom",
+	testEnvironment: "jsdom",
 	fakeTimers: { enableGlobally: true },
+	// transform: {
+	// 	"^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }],
+	// },
+	// transformIgnorePatterns: [
+	// 	"node_modules/(?!(react-markdown|vfile|unist|unified|bail|is-plain-obj|trough|remark|micromark|markdown-table|decode-named-character-reference|character-entities|property-information|hast|space-separated-tokens|comma-separated-tokens|mdast|mdast-util-to-hast|remark-rehype|trim-lines|rehype|html-void-elements|ccount|escape-string-regexp|strip-markdown|react-is|estree-util|format|is-|mdast-util-|unist-util-|zwitch|hastscript|web-namespaces)/)",
+	// ],
 	collectCoverage: true,
+	coverageProvider: "v8",
 	coverageThreshold: {
 		global: {
 			// branches: 80,

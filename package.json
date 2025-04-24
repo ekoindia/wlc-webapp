@@ -37,6 +37,7 @@
 		"pretest": "npm run eslint",
 		"test-failed-only": "jest --coverage=false --onlyFailures",
 		"test-file": "jest --coverage=false --verbose",
+		"test-file-pattern": "jest --coverage=false --testPathPattern",
 		"test-watch": "jest --coverage=false --watch",
 		"test-coverage": "jest --coverage",
 		"test-update-snapshots": "jest --updateSnapshot",

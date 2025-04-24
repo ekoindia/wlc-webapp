@@ -6,10 +6,15 @@ import { SWRConfig } from "swr";
 import { KBarLazyProvider } from "components/CommandBar";
 import {
 	AppSourceProvider,
+	CommissionSummaryProvider,
+	EarningSummaryProvider,
 	GlobalSearchProvider,
 	MenuProvider,
+	NetworkUsersProvider,
+	NotificationProvider,
 	OrgDetailProvider,
 	PubSubProvider,
+	TodoProvider,
 	UserProvider,
 	WalletProvider,
 } from "contexts";
@@ -19,6 +24,7 @@ import { light } from "styles/themes";
 import { MockAdminUser, MockOrg, MockUser } from "./test-utils.mocks";
 
 import mockRouter from "next-router-mock";
+import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
 
 // Configure Chakra Toast default properties
 const toastDefaultOptions = {
@@ -30,17 +36,19 @@ const toastDefaultOptions = {
 // Add Top level providers here (which should wrap UserProvider):
 const TopProviders = ({ children }) => {
 	return (
-		<ChakraProvider
-			theme={light}
-			resetCSS={true}
-			toastOptions={{ defaultOptions: toastDefaultOptions }}
-		>
-			<AppSourceProvider>
-				<OrgDetailProvider initialData={MockOrg}>
-					{children}
-				</OrgDetailProvider>
-			</AppSourceProvider>
-		</ChakraProvider>
+		<MemoryRouterProvider>
+			<ChakraProvider
+				theme={light}
+				resetCSS={true}
+				toastOptions={{ defaultOptions: toastDefaultOptions }}
+			>
+				<AppSourceProvider>
+					<OrgDetailProvider initialData={MockOrg}>
+						{children}
+					</OrgDetailProvider>
+				</AppSourceProvider>
+			</ChakraProvider>
+		</MemoryRouterProvider>
 	);
 };
 
@@ -57,7 +65,17 @@ const BaseProviders = ({ children }) => {
 							}}
 						>
 							<PubSubProvider>
-								<Layout>{children}</Layout>
+								<NotificationProvider>
+									<EarningSummaryProvider>
+										<CommissionSummaryProvider>
+											<NetworkUsersProvider>
+												<TodoProvider>
+													<Layout>{children}</Layout>
+												</TodoProvider>
+											</NetworkUsersProvider>
+										</CommissionSummaryProvider>
+									</EarningSummaryProvider>
+								</NotificationProvider>
 							</PubSubProvider>
 						</SWRConfig>
 					</WalletProvider>
