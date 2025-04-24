@@ -13,8 +13,11 @@ const NativeVersionSessionStorageKey = "native_version";
 // Creating context
 const AppSourceContext = createContext();
 
-// Creating context provider for providing application source details
-// App source could be: web, pwa or androidwebview
+/**
+ * Context provider for application source: `web`, `pwa` or `androidwebview`
+ * @param root0
+ * @param root0.children
+ */
 const AppSourceProvider = ({ children }) => {
 	/**
 	 * App source (web, pwa or androidwebview)

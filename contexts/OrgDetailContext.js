@@ -5,7 +5,12 @@ const OrgDetailSessionStorageKey = "org_detail";
 // Creating context
 const OrgDetailContext = createContext();
 
-// Creating context provider for providing Organization details
+/**
+ * Context provider for Organization details (orgDetails & setOrgDetails)
+ * @param {object} props
+ * @param {object} props.initialData - Initial organization data
+ * @param {ReactNode} props.children - Children components
+ */
 const OrgDetailProvider = ({ initialData, children }) => {
 	const [orgDetail, setOrgDetail] = useState({});
 
@@ -52,4 +57,4 @@ const useOrgDetailContext = () => {
 	return context;
 };
 
-export { OrgDetailProvider, useOrgDetailContext, OrgDetailSessionStorageKey };
+export { OrgDetailProvider, OrgDetailSessionStorageKey, useOrgDetailContext };
