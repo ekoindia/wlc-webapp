@@ -3,12 +3,15 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SWRConfig } from "swr";
 // import { LayoutProvider } from "contexts/LayoutContext";
+import { KBarLazyProvider } from "components/CommandBar";
 import {
 	AppSourceProvider,
+	GlobalSearchProvider,
 	MenuProvider,
 	OrgDetailProvider,
 	PubSubProvider,
 	UserProvider,
+	WalletProvider,
 } from "contexts";
 import { localStorageProvider } from "helpers";
 import { Layout } from "layout-components";
@@ -24,12 +27,9 @@ const toastDefaultOptions = {
 	isClosable: true,
 };
 
-// Add in any providers here if necessary:
-const BaseProviders = ({ children }) => {
+// Add Top level providers here (which should wrap UserProvider):
+const TopProviders = ({ children }) => {
 	return (
-		// <GoogleOAuthProvider
-		// 	clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
-		// >
 		<ChakraProvider
 			theme={light}
 			resetCSS={true}
@@ -37,7 +37,20 @@ const BaseProviders = ({ children }) => {
 		>
 			<AppSourceProvider>
 				<OrgDetailProvider initialData={MockOrg}>
-					<MenuProvider>
+					{children}
+				</OrgDetailProvider>
+			</AppSourceProvider>
+		</ChakraProvider>
+	);
+};
+
+// Add in any providers here if necessary:
+const BaseProviders = ({ children }) => {
+	return (
+		<KBarLazyProvider load={false}>
+			<GlobalSearchProvider>
+				<MenuProvider>
+					<WalletProvider>
 						<SWRConfig
 							value={{
 								provider: localStorageProvider,
@@ -47,35 +60,40 @@ const BaseProviders = ({ children }) => {
 								<Layout>{children}</Layout>
 							</PubSubProvider>
 						</SWRConfig>
-					</MenuProvider>
-				</OrgDetailProvider>
-			</AppSourceProvider>
-		</ChakraProvider>
-		// </GoogleOAuthProvider>
+					</WalletProvider>
+				</MenuProvider>
+			</GlobalSearchProvider>
+		</KBarLazyProvider>
 	);
 };
 
 const LoggedOutProviders = ({ children }) => {
 	return (
-		<UserProvider>
-			<BaseProviders>{children}</BaseProviders>
-		</UserProvider>
+		<TopProviders>
+			<UserProvider>
+				<BaseProviders>{children}</BaseProviders>
+			</UserProvider>
+		</TopProviders>
 	);
 };
 
 const LoggedInProviders = ({ children }) => {
 	return (
-		<UserProvider userMockData={MockUser}>
-			<BaseProviders>{children}</BaseProviders>
-		</UserProvider>
+		<TopProviders>
+			<UserProvider userMockData={MockUser}>
+				<BaseProviders>{children}</BaseProviders>
+			</UserProvider>
+		</TopProviders>
 	);
 };
 
 const AdminProviders = ({ children }) => {
 	return (
-		<UserProvider userMockData={MockAdminUser}>
-			<BaseProviders>{children}</BaseProviders>
-		</UserProvider>
+		<TopProviders>
+			<UserProvider userMockData={MockAdminUser}>
+				<BaseProviders>{children}</BaseProviders>
+			</UserProvider>
+		</TopProviders>
 	);
 };
 

@@ -1,5 +1,5 @@
 import { Profile } from "page-components/Profile";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Profile", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Profile />);
+		const { container } = pageRender(<Profile />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
