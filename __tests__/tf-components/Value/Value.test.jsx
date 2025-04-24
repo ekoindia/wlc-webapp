@@ -1,5 +1,5 @@
-import { Value } from "components/Value";
 import { render } from "test-utils";
+import { Value } from "tf-components/Value";
 
 /*
 	* React Testing Library:

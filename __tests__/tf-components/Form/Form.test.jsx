@@ -1,5 +1,5 @@
-import { Form } from "components/Form";
 import { render } from "test-utils";
+import { Form } from "tf-components/Form";
 
 /*
 	* React Testing Library:
