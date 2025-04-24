@@ -1,4 +1,4 @@
-import { HistoryTable } from "components/HistoryTable";
+import { HistoryTable } from "page-components/History/HistoryTable";
 import { render } from "test-utils";
 
 /*

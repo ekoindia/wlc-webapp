@@ -1,4 +1,4 @@
-import { OnboardViaFile } from "components/OnboardViaFile";
+import { OnboardViaFile } from "page-components/Admin/OnboardAgents/OnboardViaFile";
 import { render } from "test-utils";
 
 /*

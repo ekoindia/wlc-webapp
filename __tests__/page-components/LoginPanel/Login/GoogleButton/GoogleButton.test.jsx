@@ -1,4 +1,4 @@
-import { GoogleButton } from "components/GoogleButton";
+import { GoogleButton } from "page-components/LoginPanel/Login/GoogleButton";
 import { render } from "test-utils";
 
 /*

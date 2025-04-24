@@ -1,4 +1,4 @@
-import { OnboardAgents } from "components/OnboardAgents";
+import { OnboardAgents } from "page-components/Admin/OnboardAgents";
 import { render } from "test-utils";
 
 /*

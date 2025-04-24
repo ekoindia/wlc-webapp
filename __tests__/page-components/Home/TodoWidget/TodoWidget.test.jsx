@@ -1,4 +1,4 @@
-import { TodoWidget } from "components/TodoWidget";
+import { TodoWidget } from "page-components/Home/TodoWidget";
 import { render } from "test-utils";
 
 /*

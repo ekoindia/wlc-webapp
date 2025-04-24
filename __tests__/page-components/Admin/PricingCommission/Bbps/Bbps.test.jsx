@@ -1,4 +1,4 @@
-import { Bbps } from "components/Bbps";
+import { Bbps } from "page-components/Admin/PricingCommission/Bbps";
 import { render } from "test-utils";
 
 /*

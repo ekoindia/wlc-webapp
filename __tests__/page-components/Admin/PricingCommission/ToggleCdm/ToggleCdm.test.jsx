@@ -1,4 +1,4 @@
-import { ToggleCdm } from "components/ToggleCdm";
+import { ToggleCdm } from "page-components/Admin/PricingCommission/ToggleCdm";
 import { render } from "test-utils";
 
 /*

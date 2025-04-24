@@ -1,4 +1,4 @@
-import { PersonalDetailCard } from "components/PersonalDetailCard";
+import { PersonalDetailCard } from "page-components/Profile/PersonalDetailCard";
 import { render } from "test-utils";
 
 /*

@@ -1,4 +1,4 @@
-import { EarningSummary } from "components/EarningSummary";
+import { EarningSummary } from "page-components/Profile/EarningSummary";
 import { render } from "test-utils";
 
 /*

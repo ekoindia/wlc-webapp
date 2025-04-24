@@ -1,4 +1,4 @@
-import { UpiFundTransfer } from "components/UpiFundTransfer";
+import { UpiFundTransfer } from "page-components/Admin/PricingCommission/UpiFundTransfer";
 import { render } from "test-utils";
 
 /*

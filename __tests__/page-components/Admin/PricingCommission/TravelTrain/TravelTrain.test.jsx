@@ -1,5 +1,5 @@
+import { TravelTrain } from "page-components/Admin/PricingCommission/TravelTrain";
 import { render } from "test-utils";
-import { TravelTrain } from "components/TravelTrain";
 
 /*
 	* React Testing Library:

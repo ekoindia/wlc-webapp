@@ -1,4 +1,4 @@
-import { QueryCenter } from "components/QueryCenter";
+import { QueryCenter } from "page-components/Admin/QueryCenter";
 import { render } from "test-utils";
 
 /*

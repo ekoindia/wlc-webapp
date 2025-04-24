@@ -1,4 +1,4 @@
-import { DynamicPopupModuleLoader } from "components/DynamicPopupModuleLoader";
+import { DynamicPopupModuleLoader } from "layout-components/DynamicPopupModuleLoader";
 import { render } from "test-utils";
 
 /*

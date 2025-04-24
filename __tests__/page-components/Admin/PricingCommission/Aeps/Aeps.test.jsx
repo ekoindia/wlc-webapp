@@ -1,4 +1,4 @@
-import { Aeps } from "components/Aeps";
+import { Aeps } from "page-components/Admin/PricingCommission/Aeps";
 import { render } from "test-utils";
 
 /*

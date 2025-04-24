@@ -1,4 +1,4 @@
-import { BillPaymentWidget } from "components/BillPaymentWidget";
+import { BillPaymentWidget } from "page-components/Home/BillPaymentWidget";
 import { render } from "test-utils";
 
 /*

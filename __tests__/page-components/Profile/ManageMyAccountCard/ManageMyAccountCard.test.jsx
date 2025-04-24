@@ -1,4 +1,4 @@
-import { ManageMyAccountCard } from "components/ManageMyAccountCard";
+import { ManageMyAccountCard } from "page-components/Profile/ManageMyAccountCard";
 import { render } from "test-utils";
 
 /*

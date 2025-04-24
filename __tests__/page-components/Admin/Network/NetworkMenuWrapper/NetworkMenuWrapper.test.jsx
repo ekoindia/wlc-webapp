@@ -1,4 +1,4 @@
-import { NetworkMenuWrapper } from "components/NetworkMenuWrapper";
+import { NetworkMenuWrapper } from "page-components/Admin/Network/NetworkMenuWrapper";
 import { render } from "test-utils";
 
 /*

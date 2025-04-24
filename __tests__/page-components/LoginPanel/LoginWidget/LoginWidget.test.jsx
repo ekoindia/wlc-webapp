@@ -1,4 +1,4 @@
-import { LoginWidget } from "components/LoginWidget";
+import { LoginWidget } from "page-components/LoginPanel/LoginWidget";
 import { render } from "test-utils";
 
 /*

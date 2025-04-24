@@ -1,4 +1,4 @@
-import { ShopCard } from "components/ShopCard";
+import { ShopCard } from "page-components/Profile/ShopCard";
 import { render } from "test-utils";
 
 /*

@@ -1,5 +1,5 @@
 import { Table } from "components/Table";
-import { mockData } from "constants/mockTableData";
+import { table_data_mock } from "constants/table_data_mock";
 import { pageRender } from "test-utils";
 
 /*
@@ -41,7 +41,7 @@ describe("Table", () => {
 			<Table
 				tableRowLimit={10}
 				renderer={renderer}
-				data={mockData}
+				data={table_data_mock}
 				variant="evenStriped"
 			/>
 		);

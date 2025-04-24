@@ -1,4 +1,4 @@
-import { Profile } from "components/Profile";
+import { Profile } from "page-components/Profile";
 import { render } from "test-utils";
 
 /*

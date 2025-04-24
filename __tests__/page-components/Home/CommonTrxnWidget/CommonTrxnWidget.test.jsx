@@ -1,4 +1,4 @@
-import { CommonTrxnWidget } from "components/CommonTrxnWidget";
+import { CommonTrxnWidget } from "page-components/Home/CommonTrxnWidget";
 import { render } from "test-utils";
 
 /*

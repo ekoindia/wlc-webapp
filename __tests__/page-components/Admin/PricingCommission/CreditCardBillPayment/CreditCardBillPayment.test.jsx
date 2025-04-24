@@ -1,4 +1,4 @@
-import { CreditCardBillPayment } from "components/CreditCardBillPayment";
+import { CreditCardBillPayment } from "page-components/Admin/PricingCommission/CreditCardBillPayment";
 import { render } from "test-utils";
 
 /*

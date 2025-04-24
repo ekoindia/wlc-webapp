@@ -1,4 +1,4 @@
-import { QueryWidget } from "components/QueryWidget";
+import { QueryWidget } from "page-components/Home/QueryWidget";
 import { render } from "test-utils";
 
 /*

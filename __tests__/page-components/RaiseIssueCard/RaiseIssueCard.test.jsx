@@ -1,4 +1,4 @@
-import { RaiseIssueCard } from "components/RaiseIssueCard";
+import { RaiseIssueCard } from "page-components/RaiseIssueCard";
 import { render } from "test-utils";
 
 /*

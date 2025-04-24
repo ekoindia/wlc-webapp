@@ -1,4 +1,4 @@
-import { Configurations } from "components/Configurations";
+import { Configurations } from "page-components/Configurations";
 import { render } from "test-utils";
 
 /*

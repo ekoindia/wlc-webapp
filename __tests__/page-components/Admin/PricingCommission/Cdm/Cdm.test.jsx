@@ -1,4 +1,4 @@
-import { Cdm } from "components/Cdm";
+import { Cdm } from "page-components/Admin/PricingCommission/Cdm";
 import { render } from "test-utils";
 
 /*

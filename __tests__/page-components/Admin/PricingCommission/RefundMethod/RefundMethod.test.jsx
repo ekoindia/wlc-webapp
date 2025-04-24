@@ -1,4 +1,4 @@
-import { RefundMethod } from "components/RefundMethod";
+import { RefundMethod } from "page-components/Admin/PricingCommission/RefundMethod";
 import { render } from "test-utils";
 
 /*

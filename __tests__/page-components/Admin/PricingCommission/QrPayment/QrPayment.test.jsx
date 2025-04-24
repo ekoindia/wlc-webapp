@@ -1,4 +1,4 @@
-import { QrPayment } from "components/QrPayment";
+import { QrPayment } from "page-components/Admin/PricingCommission/QrPayment";
 import { render } from "test-utils";
 
 /*

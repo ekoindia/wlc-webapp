@@ -1,4 +1,4 @@
-import { ProfileWidget } from "components/ProfileWidget";
+import { ProfileWidget } from "page-components/Profile/ProfileWidget";
 import { render } from "test-utils";
 
 /*

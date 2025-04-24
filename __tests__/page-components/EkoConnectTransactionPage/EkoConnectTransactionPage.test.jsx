@@ -1,5 +1,5 @@
+import { EkoConnectTransactionPage } from "page-components/EkoConnectTransactionPage";
 import { render } from "test-utils";
-import { EkoConnectTransactionPage } from "components/EkoConnectTransactionPage";
 
 /*
 	* React Testing Library:

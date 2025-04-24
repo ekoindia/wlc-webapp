@@ -1,5 +1,5 @@
+import { TravelFlight } from "page-components/Admin/PricingCommission/TravelFlight";
 import { render } from "test-utils";
-import { TravelFlight } from "components/TravelFlight";
 
 /*
 	* React Testing Library:
@@ -13,7 +13,7 @@ import { TravelFlight } from "components/TravelFlight";
 	* Jest:
 		- Docs: https://jestjs.io/docs/getting-started
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
-  
+
 */
 
 describe("TravelFlight", () => {

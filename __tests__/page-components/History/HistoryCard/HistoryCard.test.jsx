@@ -1,4 +1,4 @@
-import { HistoryCard } from "components/HistoryCard";
+import { HistoryCard } from "page-components/History/HistoryCard";
 import { render } from "test-utils";
 
 /*

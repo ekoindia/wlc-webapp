@@ -1,4 +1,4 @@
-import { NetworkSort } from "components/NetworkSort";
+import { NetworkSort } from "page-components/Admin/Network/NetworkSort";
 import { render } from "test-utils";
 
 /*

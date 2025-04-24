@@ -1,4 +1,4 @@
-import { History } from "components/History";
+import { History } from "page-components/History";
 import { render } from "test-utils";
 
 /*

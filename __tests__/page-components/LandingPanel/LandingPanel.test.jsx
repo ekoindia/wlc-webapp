@@ -1,4 +1,5 @@
-import { LandingPanel } from "components/LandingPanel";
+// filepath: /Users/abhi/DEV/eko_github/wlc-webapp/__tests__/page-components/LandingPanel/LandingPanel.test.jsx
+import { LandingPanel } from "page-components/LandingPanel";
 import { render } from "test-utils";
 
 /*

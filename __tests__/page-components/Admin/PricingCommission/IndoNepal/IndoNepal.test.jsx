@@ -1,4 +1,4 @@
-import { IndoNepal } from "components/IndoNepal";
+import { IndoNepal } from "page-components/Admin/PricingCommission/IndoNepal";
 import { render } from "test-utils";
 
 /*

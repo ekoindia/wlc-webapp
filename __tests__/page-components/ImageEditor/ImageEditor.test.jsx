@@ -1,4 +1,4 @@
-import { ImageEditor } from "components/ImageEditor";
+import { ImageEditor } from "page-components/ImageEditor";
 import { render } from "test-utils";
 
 /*

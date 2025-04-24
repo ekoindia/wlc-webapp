@@ -1,4 +1,4 @@
-import { PricingForm } from "components/PricingForm";
+import { PricingForm } from "page-components/Admin/PricingCommission/PricingForm";
 import { render } from "test-utils";
 
 /*

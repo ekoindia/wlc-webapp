@@ -1,4 +1,4 @@
-import { AadhaarPay } from "components/AadhaarPay";
+import { AadhaarPay } from "page-components/Admin/PricingCommission/AadhaarPay";
 import { render } from "test-utils";
 
 /*

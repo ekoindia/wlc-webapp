@@ -1,4 +1,4 @@
-import { Home } from "components/Home";
+import { Home } from "page-components/Home";
 import { render } from "test-utils";
 
 /*

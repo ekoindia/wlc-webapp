@@ -1,4 +1,4 @@
-import { CardPayment } from "components/CardPayment";
+import { CardPayment } from "page-components/Admin/PricingCommission/CardPayment";
 import { render } from "test-utils";
 
 /*

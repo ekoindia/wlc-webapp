@@ -1,4 +1,4 @@
-import { RecentTrxnWidget } from "components/RecentTrxnWidget";
+import { RecentTrxnWidget } from "page-components/Home/RecentTrxnWidget";
 import { render } from "test-utils";
 
 /*
