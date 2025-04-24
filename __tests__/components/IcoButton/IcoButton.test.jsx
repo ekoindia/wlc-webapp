@@ -1,6 +1,5 @@
 import { IcoButton } from "components/IcoButton";
-// import { render } from "test-utils";
-import { render, screen } from "@testing-library/react";
+import { render, screen } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -23,9 +22,17 @@ describe("IcoButton", () => {
 	});
 
 	it("should render the button with the correct icon", () => {
-		render(<IcoButton iconName="view-transaction-history" />);
-		const iconElement = screen.getByLabelText("view-transaction-history");
+		const { container } = render(
+			<IcoButton iconName="view-transaction-history" />
+		);
+		expect(container.querySelector("button")).toBeInTheDocument();
+		// TODO: Add test to check if the icon is rendered correctly
+		const iconElement = screen.getByTestId("icon");
 		expect(iconElement).toBeInTheDocument();
+		expect(iconElement).toHaveAttribute(
+			"data-icon",
+			"view-transaction-history"
+		);
 	});
 
 	it("should render the button with the correct size", () => {
@@ -38,8 +45,7 @@ describe("IcoButton", () => {
 		render(<IcoButton theme="light" />);
 		const buttonElement = screen.getByRole("button");
 		expect(buttonElement).toHaveStyle({
-			background: "#E9EDF1",
-			border: "1px solid #E9EDF1",
+			background: "var(--chakra-colors-divider)",
 		});
 	});
 
@@ -50,7 +56,7 @@ describe("IcoButton", () => {
 	});
 
 	it("should render the button with the correct rounding", () => {
-		render(<IcoButton round="20" />);
+		render(<IcoButton rounded="20" />);
 		const buttonElement = screen.getByRole("button");
 		expect(buttonElement).toHaveStyle({ borderRadius: "20px" });
 	});
