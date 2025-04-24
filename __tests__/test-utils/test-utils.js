@@ -1,33 +1,57 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { LayoutProvider } from "contexts/LayoutContext";
-import { MenuProvider } from "contexts/MenuContext";
-import { OrgDetailProvider } from "contexts/OrgDetailContext";
-import { UserProvider } from "contexts/UserContext";
+import { SWRConfig } from "swr";
+// import { LayoutProvider } from "contexts/LayoutContext";
+import {
+	AppSourceProvider,
+	MenuProvider,
+	OrgDetailProvider,
+	PubSubProvider,
+	UserProvider,
+} from "contexts";
+import { localStorageProvider } from "helpers";
 import { Layout } from "layout-components";
 import { light } from "styles/themes";
 import { MockAdminUser, MockOrg, MockUser } from "./test-utils.mocks";
 
 import mockRouter from "next-router-mock";
 
+// Configure Chakra Toast default properties
+const toastDefaultOptions = {
+	position: "bottom-right",
+	duration: 6000,
+	isClosable: true,
+};
+
 // Add in any providers here if necessary:
 const BaseProviders = ({ children }) => {
 	return (
-		<GoogleOAuthProvider
-			clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+		// <GoogleOAuthProvider
+		// 	clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}
+		// >
+		<ChakraProvider
+			theme={light}
+			resetCSS={true}
+			toastOptions={{ defaultOptions: toastDefaultOptions }}
 		>
-			<ChakraProvider theme={light}>
+			<AppSourceProvider>
 				<OrgDetailProvider initialData={MockOrg}>
-					<LayoutProvider>
-						<MenuProvider>
-							<Layout>{children}</Layout>
-						</MenuProvider>
-					</LayoutProvider>
+					<MenuProvider>
+						<SWRConfig
+							value={{
+								provider: localStorageProvider,
+							}}
+						>
+							<PubSubProvider>
+								<Layout>{children}</Layout>
+							</PubSubProvider>
+						</SWRConfig>
+					</MenuProvider>
 				</OrgDetailProvider>
-			</ChakraProvider>
-		</GoogleOAuthProvider>
+			</AppSourceProvider>
+		</ChakraProvider>
+		// </GoogleOAuthProvider>
 	);
 };
 
@@ -100,4 +124,4 @@ Object.defineProperty(window, "matchMedia", {
 // Re-export everything
 export * from "@testing-library/dom";
 export * from "@testing-library/react";
-export { pageRender, adminRender, loggedOutPageRender, userEvent, mockRouter };
+export { adminRender, loggedOutPageRender, mockRouter, pageRender, userEvent };
