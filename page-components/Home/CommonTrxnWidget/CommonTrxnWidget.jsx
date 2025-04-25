@@ -28,7 +28,7 @@ const CommonTrxnWidget = () => {
 
 	// Remove "other..." entries from the list
 	interaction_list = interaction_list.filter(
-		(tx) => OtherMenuItems.indexOf(tx.id) === -1
+		(tx) => OtherMenuItems?.indexOf(tx.id) === -1
 	);
 
 	const limit = useBreakpointValue({
