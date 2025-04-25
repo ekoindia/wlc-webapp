@@ -16,7 +16,6 @@ const localStorageMock = (() => {
 		},
 	};
 })();
-
 Object.defineProperty(window, "localStorage", {
 	value: localStorageMock,
 });
@@ -53,6 +52,35 @@ jest.mock("@chakra-ui/media-query", () => ({
 	}),
 	useMediaQuery: jest.fn(() => [true]),
 }));
+
+// Geolocation mock
+const mockGeolocation = {
+	getCurrentPosition: jest.fn((success) => {
+		success({
+			coords: {
+				latitude: 27.0881,
+				longitude: 38.4942,
+			},
+		});
+	}),
+	watchPosition: jest.fn((success) =>
+		Promise.resolve(
+			success({
+				coords: {
+					latitude: 27.01234,
+					longitude: 38.01234,
+					accuracy: 5,
+				},
+				timestamp: Date.now(),
+			})
+		)
+	),
+	clearWatch: jest.fn(),
+};
+
+Object.defineProperty(global.navigator, "geolocation", {
+	value: mockGeolocation,
+});
 
 beforeEach(() => {
 	// ✅ Mock AbortSignal.timeout()
