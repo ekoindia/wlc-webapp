@@ -1,4 +1,4 @@
-import { Headings } from "components";
+import { PageTitle } from "components";
 import { pageRender } from "test-utils";
 
 /*
@@ -15,9 +15,9 @@ import { pageRender } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("Headings", () => {
+describe("PageTitle", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<Headings />);
+		const { container } = pageRender(<PageTitle />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("Headings", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for Headings in __tests__/components/Headings/Headings.test.jsx"
+		"TODO: add proper test cases for PageTitle in __tests__/components/PageTitle/PageTitle.test.jsx"
 	);
 });
