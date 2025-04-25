@@ -17,10 +17,9 @@ import { Value } from "tf-components/Value";
 
 describe("Value", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Value />);
+		const { container } = render(<Value value="Hi" />);
 		expect(container).not.toBeEmptyDOMElement();
-
-		// expect(container).toHaveTextContent("Any text");
+		expect(container).toHaveTextContent("Hi");
 
 		// const inp = screen.getByLabelText("Input Label");
 		// expect(inp).toBeInTheDocument();

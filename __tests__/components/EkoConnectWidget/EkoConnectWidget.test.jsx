@@ -1,5 +1,5 @@
 import { EkoConnectWidget } from "components/EkoConnectWidget";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("EkoConnectWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<EkoConnectWidget />);
+		const { container } = pageRender(<EkoConnectWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

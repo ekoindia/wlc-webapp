@@ -1,5 +1,5 @@
-import BreadcrumbsWrapper from "components";
-import { render } from "test-utils";
+import { BreadcrumbsWrapper } from "components";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("BreadcrumbsWrapper", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<BreadcrumbsWrapper />);
+		const { container } = pageRender(<BreadcrumbsWrapper />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
