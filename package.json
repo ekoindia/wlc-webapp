@@ -34,6 +34,7 @@
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
 		"test": "jest",
+		"test--raw": "jest",
 		"pretest": "npm run eslint",
 		"test-failed-only": "jest --coverage=false --onlyFailures",
 		"test-file": "jest --coverage=false --verbose",
