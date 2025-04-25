@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { render } from "@testing-library/react";
+import { render as defaultRender } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SWRConfig } from "swr";
 // import { LayoutProvider } from "contexts/LayoutContext";
@@ -33,27 +33,36 @@ const toastDefaultOptions = {
 	isClosable: true,
 };
 
+// Theme providers needed for most UI elements
+const ThemeProviders = ({ children }) => {
+	return (
+		<ChakraProvider
+			theme={light}
+			resetCSS={true}
+			toastOptions={{ defaultOptions: toastDefaultOptions }}
+		>
+			{children}
+		</ChakraProvider>
+	);
+};
+
 // Add Top level providers here (which should wrap UserProvider):
 const TopProviders = ({ children }) => {
 	return (
 		<MemoryRouterProvider>
-			<ChakraProvider
-				theme={light}
-				resetCSS={true}
-				toastOptions={{ defaultOptions: toastDefaultOptions }}
-			>
+			<ThemeProviders>
 				<AppSourceProvider>
 					<OrgDetailProvider initialData={MockOrg}>
 						{children}
 					</OrgDetailProvider>
 				</AppSourceProvider>
-			</ChakraProvider>
+			</ThemeProviders>
 		</MemoryRouterProvider>
 	);
 };
 
 // Add in any providers here if necessary:
-const BaseProviders = ({ children }) => {
+const CommonProviders = ({ children }) => {
 	return (
 		<KBarLazyProvider load={false}>
 			<GlobalSearchProvider>
@@ -89,7 +98,7 @@ const LoggedOutProviders = ({ children }) => {
 	return (
 		<TopProviders>
 			<UserProvider>
-				<BaseProviders>{children}</BaseProviders>
+				<CommonProviders>{children}</CommonProviders>
 			</UserProvider>
 		</TopProviders>
 	);
@@ -99,7 +108,7 @@ const LoggedInProviders = ({ children }) => {
 	return (
 		<TopProviders>
 			<UserProvider userMockData={MockUser}>
-				<BaseProviders>{children}</BaseProviders>
+				<CommonProviders>{children}</CommonProviders>
 			</UserProvider>
 		</TopProviders>
 	);
@@ -109,11 +118,20 @@ const AdminProviders = ({ children }) => {
 	return (
 		<TopProviders>
 			<UserProvider userMockData={MockAdminUser}>
-				<BaseProviders>{children}</BaseProviders>
+				<CommonProviders>{children}</CommonProviders>
 			</UserProvider>
 		</TopProviders>
 	);
 };
+
+/**
+ * Default render wrapper function which wraps the component with necessary providers
+ * @param {ReactElement} ui - The component to render
+ * @param {object} options - Additional options for rendering
+ * @returns {RenderResult} - The rendered component
+ */
+const render = (ui, options = {}) =>
+	defaultRender(ui, { wrapper: ThemeProviders, ...options });
 
 /**
  * Standard page render (for logged-in users)
@@ -122,7 +140,7 @@ const AdminProviders = ({ children }) => {
  * @returns {RenderResult} - The rendered component
  */
 const pageRender = (ui, options = {}) =>
-	render(ui, { wrapper: LoggedInProviders, ...options });
+	defaultRender(ui, { wrapper: LoggedInProviders, ...options });
 
 /**
  * Page render for logged-out users
@@ -131,7 +149,7 @@ const pageRender = (ui, options = {}) =>
  * @returns {RenderResult} - The rendered component
  */
 const loggedOutPageRender = (ui, options = {}) =>
-	render(ui, { wrapper: LoggedOutProviders, ...options });
+	defaultRender(ui, { wrapper: LoggedOutProviders, ...options });
 
 /**
  * Page render for admin users
@@ -140,7 +158,7 @@ const loggedOutPageRender = (ui, options = {}) =>
  * @returns {RenderResult} - The rendered component
  */
 const adminRender = (ui, options = {}) =>
-	render(ui, { wrapper: AdminProviders, ...options });
+	defaultRender(ui, { wrapper: AdminProviders, ...options });
 
 // Mock JSDOM Methods (https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom)
 Object.defineProperty(window, "matchMedia", {
@@ -160,4 +178,11 @@ Object.defineProperty(window, "matchMedia", {
 // Re-export everything
 export * from "@testing-library/dom";
 export * from "@testing-library/react";
-export { adminRender, loggedOutPageRender, mockRouter, pageRender, userEvent };
+export {
+	adminRender,
+	loggedOutPageRender,
+	mockRouter,
+	pageRender,
+	render,
+	userEvent,
+};
