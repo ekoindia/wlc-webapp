@@ -47,11 +47,6 @@ const AppSourceProvider = ({ children }) => {
 			NativeVersionSessionStorageKey
 		);
 
-		console.log(
-			"[AppSourceContext] initializing with URL: ",
-			window.location.href
-		);
-
 		if (_appSource) {
 			console.log("[AppSourceContext] got from session: ", _appSource);
 			setAppSourceState(_appSource);
