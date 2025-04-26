@@ -3,5 +3,7 @@ import { renderHook } from "test-utils";
 
 test("renders hook", () => {
 	const { result } = renderHook(() => useAppLink());
-	expect(result.current).toBeUndefined();
+	expect(result.current).toBeDefined();
+	expect(result.current.openUrl).toBeDefined();
+	expect(result.current.router).toBeDefined();
 });
