@@ -1,5 +1,8 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { render as defaultRender } from "@testing-library/react";
+import {
+	render as defaultRender,
+	renderHook as defaultRenderHook,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { SWRConfig } from "swr";
 // import { LayoutProvider } from "contexts/LayoutContext";
@@ -57,6 +60,20 @@ const TopProviders = ({ children }) => {
 					</OrgDetailProvider>
 				</AppSourceProvider>
 			</ThemeProviders>
+		</MemoryRouterProvider>
+	);
+};
+
+const CommonHooksProviders = ({ children }) => {
+	return (
+		<MemoryRouterProvider>
+			<AppSourceProvider>
+				<OrgDetailProvider initialData={MockOrg}>
+					<UserProvider>
+						<PubSubProvider>{children}</PubSubProvider>
+					</UserProvider>
+				</OrgDetailProvider>
+			</AppSourceProvider>
 		</MemoryRouterProvider>
 	);
 };
@@ -160,29 +177,25 @@ const loggedOutPageRender = (ui, options = {}) =>
 const adminRender = (ui, options = {}) =>
 	defaultRender(ui, { wrapper: AdminProviders, ...options });
 
-// Mock JSDOM Methods (https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom)
-Object.defineProperty(window, "matchMedia", {
-	writable: true,
-	value: jest.fn().mockImplementation((query) => ({
-		matches: false,
-		media: query,
-		onchange: null,
-		addListener: jest.fn(), // deprecated
-		removeListener: jest.fn(), // deprecated
-		addEventListener: jest.fn(),
-		removeEventListener: jest.fn(),
-		dispatchEvent: jest.fn(),
-	})),
-});
+/**
+ *Default render hook wrapper function which wraps the component with necessary providers
+ * @param {Function} hook - The hook to render
+ * @param {object} options - Additional options for rendering
+ * @returns {RenderHookResult} - The rendered hook
+ */
+const renderHook = (hook, options = {}) =>
+	defaultRenderHook(hook, { wrapper: CommonHooksProviders, ...options });
 
 // Re-export everything
 export * from "@testing-library/dom";
 export * from "@testing-library/react";
 export {
 	adminRender,
+	CommonHooksProviders,
 	loggedOutPageRender,
 	mockRouter,
 	pageRender,
 	render,
+	renderHook,
 	userEvent,
 };

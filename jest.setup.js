@@ -1,5 +1,20 @@
 import "@testing-library/jest-dom";
 
+// Mock JSDOM Methods (https://jestjs.io/docs/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom)
+Object.defineProperty(window, "matchMedia", {
+	writable: true,
+	value: jest.fn().mockImplementation((query) => ({
+		matches: false,
+		media: query,
+		onchange: null,
+		addListener: jest.fn(), // deprecated
+		removeListener: jest.fn(), // deprecated
+		addEventListener: jest.fn(),
+		removeEventListener: jest.fn(),
+		dispatchEvent: jest.fn(),
+	})),
+});
+
 // Mock localStorage & sessionStorage
 const localStorageMock = (() => {
 	let store = {};
@@ -58,8 +73,9 @@ const mockGeolocation = {
 	getCurrentPosition: jest.fn((success) => {
 		success({
 			coords: {
-				latitude: 27.0881,
-				longitude: 38.4942,
+				latitude: 27.01234,
+				longitude: 38.01234,
+				accuracy: 5,
 			},
 		});
 	}),
