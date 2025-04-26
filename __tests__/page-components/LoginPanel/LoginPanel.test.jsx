@@ -1,4 +1,4 @@
-import { LoginPanel } from "page-components";
+import { LoginPanel } from "page-components/LoginPanel";
 import { loggedOutPageRender } from "test-utils";
 
 /*
@@ -14,6 +14,15 @@ import { loggedOutPageRender } from "test-utils";
 		- Docs: https://jestjs.io/docs/getting-started
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
+
+// Mock next/dynamic imports
+jest.mock("next/dynamic", () => () => {
+	const DynamicComponent = () => (
+		<div data-testid="mocked-dynamic-component" />
+	);
+	DynamicComponent.displayName = "DynamicComponent";
+	return DynamicComponent;
+});
 
 describe("LoginPanel", () => {
 	it("renders without error with no attributes", () => {
@@ -48,6 +57,6 @@ describe("LoginPanel", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for LoginPanel in __tests__/components/LoginPanel/LoginPanel.test.jsx"
+		"TODO: add proper test cases for LoginPanel in __tests__/page-components/LoginPanel/LoginPanel.test.jsx"
 	);
 });

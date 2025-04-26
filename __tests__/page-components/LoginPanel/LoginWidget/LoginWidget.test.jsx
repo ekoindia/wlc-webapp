@@ -1,5 +1,5 @@
 import { LoginWidget } from "page-components/LoginPanel/LoginWidget";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("LoginWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<LoginWidget />);
+		const { container } = pageRender(<LoginWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
