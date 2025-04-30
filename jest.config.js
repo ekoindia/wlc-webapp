@@ -39,7 +39,6 @@ const customJestConfig = {
 		"^styles/(.*)$": "<rootDir>/styles/$1",
 		"^utils/(.*)$": "<rootDir>/utils/$1",
 		"^tests/(.*)$": "<rootDir>/__tests__/$1",
-		"^@/pages/(.*)$": "<rootDir>/pages/$1",
 		"^libs/(.*)$": "<rootDir>/libs/$1",
 	},
 	testEnvironment: "jsdom",
