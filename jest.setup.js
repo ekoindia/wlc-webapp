@@ -15,6 +15,21 @@ Object.defineProperty(window, "matchMedia", {
 	})),
 });
 
+// Mock react-markdown
+jest.mock("react-markdown", () => {
+	return jest.fn(({ children, className }) => {
+		return {
+			$$typeof: Symbol.for("react.element"),
+			type: "div",
+			props: {
+				className: className || "react-markdown-mock",
+				dangerouslySetInnerHTML: { __html: children || "" },
+				"data-testid": "react-markdown-mock",
+			},
+		};
+	});
+});
+
 // Mock localStorage & sessionStorage
 const localStorageMock = (() => {
 	let store = {};
