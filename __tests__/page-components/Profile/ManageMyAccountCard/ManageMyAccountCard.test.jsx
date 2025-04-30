@@ -1,5 +1,5 @@
 import { ManageMyAccountCard } from "page-components/Profile/ManageMyAccountCard";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("ManageMyAccountCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<ManageMyAccountCard />);
+		const { container } = pageRender(<ManageMyAccountCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -1,5 +1,5 @@
 import { TravelTrain } from "page-components/Admin/PricingCommission/TravelTrain";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("TravelTrain", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<TravelTrain />);
+		const { container } = pageRender(<TravelTrain />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

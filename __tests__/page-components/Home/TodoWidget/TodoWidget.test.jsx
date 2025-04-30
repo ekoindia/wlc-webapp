@@ -1,5 +1,5 @@
 import { TodoWidget } from "page-components/Home/TodoWidget";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("TodoWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<TodoWidget />);
+		const { container } = pageRender(<TodoWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

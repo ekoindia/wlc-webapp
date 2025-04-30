@@ -1,5 +1,5 @@
 import { History } from "page-components/History";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("History", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<History />);
+		const { container } = pageRender(<History />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

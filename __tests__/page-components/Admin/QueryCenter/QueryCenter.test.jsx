@@ -1,5 +1,5 @@
 import { QueryCenter } from "page-components/Admin/QueryCenter";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("QueryCenter", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<QueryCenter />);
+		const { container } = pageRender(<QueryCenter />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

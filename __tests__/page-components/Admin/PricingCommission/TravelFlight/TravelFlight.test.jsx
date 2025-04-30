@@ -1,5 +1,5 @@
 import { TravelFlight } from "page-components/Admin/PricingCommission/TravelFlight";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -18,7 +18,7 @@ import { render } from "test-utils";
 
 describe("TravelFlight", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<TravelFlight />);
+		const { container } = pageRender(<TravelFlight />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

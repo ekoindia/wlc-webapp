@@ -1,5 +1,5 @@
 import { CommonTrxnWidget } from "page-components/Home/CommonTrxnWidget";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("CommonTrxnWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<CommonTrxnWidget />);
+		const { container } = pageRender(<CommonTrxnWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -1,5 +1,5 @@
 import { BillPaymentWidget } from "page-components/Home/BillPaymentWidget";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("BillPaymentWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<BillPaymentWidget />);
+		const { container } = pageRender(<BillPaymentWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

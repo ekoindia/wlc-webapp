@@ -1,5 +1,5 @@
 import Dmt from "page-components/Admin/PricingCommission/Dmt/Dmt";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Dmt", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Dmt />);
+		const { container } = pageRender(<Dmt />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

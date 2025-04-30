@@ -1,5 +1,5 @@
 import { RecentTrxnWidget } from "page-components/Home/RecentTrxnWidget";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("RecentTrxnWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<RecentTrxnWidget />);
+		const { container } = pageRender(<RecentTrxnWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

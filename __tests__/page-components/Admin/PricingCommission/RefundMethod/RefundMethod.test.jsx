@@ -1,5 +1,5 @@
 import { RefundMethod } from "page-components/Admin/PricingCommission/RefundMethod";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("RefundMethod", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<RefundMethod />);
+		const { container } = pageRender(<RefundMethod />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

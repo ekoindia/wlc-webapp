@@ -1,5 +1,5 @@
 import { QrPayment } from "page-components/Admin/PricingCommission/QrPayment";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("QrPayment", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<QrPayment />);
+		const { container } = pageRender(<QrPayment />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

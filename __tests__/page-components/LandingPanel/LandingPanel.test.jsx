@@ -1,6 +1,6 @@
 // filepath: /Users/abhi/DEV/eko_github/wlc-webapp/__tests__/page-components/LandingPanel/LandingPanel.test.jsx
 import { LandingPanel } from "page-components/LandingPanel";
-import { render } from "test-utils";
+import { loggedOutPageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -18,7 +18,7 @@ import { render } from "test-utils";
 
 describe("LandingPanel", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<LandingPanel />);
+		const { container } = loggedOutPageRender(<LandingPanel />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

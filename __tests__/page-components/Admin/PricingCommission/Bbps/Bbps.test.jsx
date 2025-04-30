@@ -1,5 +1,5 @@
 import { Bbps } from "page-components/Admin/PricingCommission/Bbps";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Bbps", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Bbps />);
+		const { container } = pageRender(<Bbps />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -1,5 +1,5 @@
 import { Aeps } from "page-components/Admin/PricingCommission/Aeps";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Aeps", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Aeps />);
+		const { container } = pageRender(<Aeps />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
