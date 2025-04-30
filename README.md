@@ -78,20 +78,13 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 
 
 ## 📒 Extended Documentation ([docs/](docs))
-- **[`docker-usage.md`](docs/docker-usage.md)**: Instructions for using Docker with the project.
-- **[`features/`](docs/features/)**: Contains detailed documentation for various features of the application.
-  - **[`dashboard.md`](docs/features/dashboard.md)**: Admin dashboard feature documentation.
-  - **[`transaction-history.md`](docs/features/transaction-history.md)**: Transaction history feature documentation.
-
-
-## 📒 Extended Documentation (docs/)
 
 - **[`docker-usage.md`](docs/docker-usage.md)**: Instructions for using Docker with the project.
 - **[`features/`](docs/features/)**: Contains detailed documentation for various features of the application.
   - **[`dashboard.md`](docs/features/dashboard.md)**: Admin dashboard feature documentation.
   - **[`transaction-history.md`](docs/features/transaction-history.md)**: Transaction history feature documentation.
-  - **[`pub-sub.md`](docs/features/pub-sub.md)**: Pub/Sub communication pattern documentation.
-  - **[`android.md`](docs/features/android.md)**: How does Eloka communicate with the Android wrapper app to provide a native experience.
+  - **[`pub-sub.md`](docs/features/pub-sub.md)**: How to enable cross-component communication using the Pub/Sub pattern?
+  - **[`android.md`](docs/features/android.md)**: How does Eloka communicate with the Android wrapper app to provide a native experience?
 
 
 ## ✅ Toggle Feature Flags:
