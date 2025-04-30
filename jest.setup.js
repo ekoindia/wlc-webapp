@@ -46,7 +46,7 @@ jest.mock("next/router", () => require("next-router-mock"));
 // but explicitly mocking can prevent issues.
 jest.mock("next/dist/client/router", () => require("next-router-mock"));
 
-// Rule: Add mock for Chakra UI's useBreakpointValue hook
+// Mock Chakra UI's useBreakpointValue hook
 jest.mock("@chakra-ui/media-query", () => ({
 	useBreakpointValue: jest.fn((values, options) => {
 		// Return the base value or fallback value
@@ -93,10 +93,43 @@ const mockGeolocation = {
 	),
 	clearWatch: jest.fn(),
 };
-
 Object.defineProperty(global.navigator, "geolocation", {
 	value: mockGeolocation,
 });
+
+// Mock next/dynamic
+// jest.mock("next/dynamic", () => ({
+// 	__esModule: true,
+// 	default: (importFunc) => {
+// 		const Component = React.lazy(importFunc);
+// 		Component.preload = importFunc;
+// 		return Component;
+// 	},
+// }));
+
+// Mock AbortSignal.any polyfill for testing
+if (!AbortSignal.any) {
+	AbortSignal.any = function (signals) {
+		// Create a new AbortController
+		const controller = new AbortController();
+
+		// Set up listeners for all signals
+		for (const signal of signals) {
+			// If any signal is already aborted, abort the controller immediately
+			if (signal.aborted) {
+				controller.abort();
+				break;
+			}
+
+			// Add listener to abort when any signal aborts
+			signal.addEventListener("abort", () => controller.abort(), {
+				once: true,
+			});
+		}
+
+		return controller.signal;
+	};
+}
 
 beforeEach(() => {
 	// ✅ Mock AbortSignal.timeout()

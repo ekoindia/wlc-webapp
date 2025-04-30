@@ -14,6 +14,17 @@ const customJestConfig = {
 	moduleDirectories: ["node_modules", "__tests__/test-utils", "<rootDir>/"],
 	moduleNameMapper: {
 		// Handle module aliases (this will be automatically configured for you soon)
+		// "^components$": "<rootDir>/components",
+		// "^page-components$": "<rootDir>/page-components",
+		// "^tf-components$": "<rootDir>/tf-components",
+		// "^layout-components$": "<rootDir>/layout-components",
+		// "^pages$": "<rootDir>/pages",
+		// "^constants$": "<rootDir>/constants",
+		// "^contexts$": "<rootDir>/contexts",
+		// "^hooks$": "<rootDir>/hooks",
+		// "^helpers$": "<rootDir>/helpers",
+		// "^utils$": "<rootDir>/utils",
+		// "^libs$": "<rootDir>/libs",
 		"^components/(.*)$": "<rootDir>/components/$1",
 		"^page-components/(.*)$": "<rootDir>/page-components/$1",
 		"^tf-components/(.*)$": "<rootDir>/tf-components/$1",
