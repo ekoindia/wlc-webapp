@@ -36,11 +36,15 @@ The Eloka Web App is an active project with a range of implemented features for 
 -   **Global Contexts (`contexts/`):** Documentation incomplete in README.
 -   **LocalStorage Usage:** Documentation incomplete in README.
 -   **Know Your Commissions (`page-components/Home/KnowYourCommissionWidget`):** Further details might be needed beyond data fetching via `CommissionContext`.
+-   **Testing:** Ensure comprehensive coverage across all components and features.
+-   **Extended Documentation in `docs/` Folder:** Move detailed documentation, features, etc from README to `docs/` folder for better organization.
+-   **Storybook:** Document all UI components in Storybook for better visibility and testing.
+-   **Performance Optimization:** Review and enhance performance across the application.
 
 ## Known Issues / Areas for Improvement
 -   **Duplicate Icon Names:** Exist for backward compatibility (`constants/IconLibrary.ts`).
 -   **Experimental Features:** LLM Chatbot is marked as experimental/beta.
 
 ## Evolution of Project Decisions
--   **Docker:** Recent enhancements (Dec 2024) improved separation of dev/prod environments, added health checks, and standardized scripts (`docs/aichanges.md`).
+-   **Docker:** Recent enhancements (Dec 2024) improved separation of dev/prod environments, and added health checks.
 -   **UI Components:** Clear preference established for custom components over direct Chakra UI usage (`.clinerules`).
