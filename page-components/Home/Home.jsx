@@ -66,7 +66,11 @@ const Home = () => {
 		{
 			id: 3,
 			component: () => (
-				<NotificationWidget title="Notifications" compactMode />
+				<NotificationWidget
+					title="Unread Notifications"
+					compactMode
+					unreadOnly
+				/>
 			),
 		},
 		{ id: 4, component: EarningSummary },

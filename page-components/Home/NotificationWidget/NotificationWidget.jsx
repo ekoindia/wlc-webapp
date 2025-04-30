@@ -43,22 +43,37 @@ const getYoutubeThumbnail = (youtubeId, size = "mqdefault") => {
  * Homepage widget to show a list of notifications.
  * @param {object} props
  * @param {string} [props.title] Title of the widget
- * @param {boolean} [props.compactMode] Flag to display the widget in compact mode
+ * @param {boolean} [props.compactMode] Flag to display the widget in compact mode (default: false)
+ * @param {boolean} [props.unreadOnly] Flag to display only unread notifications (default: false)
+ * @returns {JSX.Element|null} NotificationWidget component or null if no notifications
  */
-const NotificationWidget = ({ title = "", compactMode = false }) => {
+const NotificationWidget = ({
+	title = "",
+	compactMode = false,
+	unreadOnly = false,
+}) => {
 	// Get notifications from context
 	const {
 		notifications,
 		openedNotification,
 		openNotification,
 		closeNotification,
+		openNotificationPanel,
 	} = useNotification();
 	const { openUrl } = useAppLink();
 	const { showImage } = useFileView();
 
-	console.log("NOTIFICATIONS: ", notifications);
+	// console.log("NOTIFICATIONS: ", notifications);
 
 	if (!notifications.length) {
+		return null;
+	}
+
+	const filteredNotifications = unreadOnly
+		? notifications.filter((notif) => !notif.read)
+		: notifications;
+
+	if (!filteredNotifications.length) {
 		return null;
 	}
 
@@ -66,6 +81,8 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 		<>
 			<WidgetBase
 				title={title}
+				linkLabel={unreadOnly ? "Show All" : undefined}
+				linkOnClick={openNotificationPanel}
 				autoHeight={compactMode ? false : true}
 				noPadding
 			>
@@ -77,7 +94,7 @@ const NotificationWidget = ({ title = "", compactMode = false }) => {
 					// rowGap={{ base: "19px", md: "10px" }}
 					// mt="20px"
 				>
-					{notifications.map((notif) => (
+					{filteredNotifications.map((notif) => (
 						<Flex
 							key={notif.id}
 							p={{
