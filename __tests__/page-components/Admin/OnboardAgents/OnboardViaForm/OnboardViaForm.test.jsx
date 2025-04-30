@@ -1,5 +1,5 @@
 import { OnboardViaForm } from "page-components/Admin/OnboardAgents/OnboardViaForm";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("OnboardViaForm", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<OnboardViaForm />);
+		const { container } = pageRender(<OnboardViaForm />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

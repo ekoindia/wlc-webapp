@@ -1,5 +1,5 @@
 import { NotificationCreator } from "page-components/Admin/NotificationCreator";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("NotificationCreator", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<NotificationCreator />);
+		const { container } = pageRender(<NotificationCreator />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

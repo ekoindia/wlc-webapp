@@ -1,5 +1,5 @@
 import { OnboardViaFile } from "page-components/Admin/OnboardAgents/OnboardViaFile";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("OnboardViaFile", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<OnboardViaFile />);
+		const { container } = pageRender(<OnboardViaFile />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

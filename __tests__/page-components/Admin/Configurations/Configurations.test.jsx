@@ -1,5 +1,5 @@
 import { Configurations } from "page-components/Configurations";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Configurations", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Configurations />);
+		const { container } = pageRender(<Configurations />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
