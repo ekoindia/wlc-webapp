@@ -57,6 +57,41 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 - `npm run docker:stop` - Stop all containers
 - `npm run docker:clean` - Remove containers, images, and volumes
 
+## 📦 Project Structure
+- **`components/`**: Contains reusable components used across the application.
+- **`constants/`**: Contains constant values, configurations, and settings used throughout the application.
+- **`contexts/`**: Contains context providers for managing global state and data.
+- **`docs/`**: Contains extensive documentation files for the project.
+- **`helpers/`**: Contains helper functions and utilities for various functionalities.
+- **`hooks/`**: Contains custom React hooks for reusable logic.
+- **`layout-components/`**: Contains components related to the layout and structure of the application.
+- **`libs/`**: Contains wrapper functions for third-party libraries.
+- **`memory-bank/`**: Contains the foundational project documentation for Memory Bank to be used by AI Agents.
+- **`page-components/`**: Contains the main page components for the application.
+- **`pages/`**: Contains Next.js page routes and components.
+- **`plop-templates/`**: Contains templates for generating new components, hooks, etc. using Plop.
+- **`public/`**: Contains static assets such as images and icons.
+- **`styles/`**: Contains global styles and theme configurations.
+- **`tf-components/`**: Contains low-code components related to the transaction framework.
+- **`utils/`**: Contains shared utility functions and helpers for various functionalities.
+- **`__tests__/`**: Contains unit and integration tests for the application. The tests are organized in a similar structure to the main codebase for easy navigation.
+
+
+## 📒 Extended Documentation (docs/)
+- **[`docker-usage.md`](docs/docker-usage.md)**: Instructions for using Docker with the project.
+- **[`features/`](docs/features/)**: Contains detailed documentation for various features of the application.
+  - **[`dashboard.md`](docs/features/dashboard.md)**: Admin dashboard feature documentation.
+  - **[`transaction-history.md`](docs/features/transaction-history.md)**: Transaction history feature documentation.
+
+
+## 📒 Extended Documentation (docs/)
+
+- **[`docker-usage.md`](docs/docker-usage.md)**: Instructions for using Docker with the project.
+- **[`features/`](docs/features/)**: Contains detailed documentation for various features of the application.
+  - **[`dashboard.md`](docs/features/dashboard.md)**: Admin dashboard feature documentation.
+  - **[`transaction-history.md`](docs/features/transaction-history.md)**: Transaction history feature documentation.
+
+
 ## ✅ Toggle Feature Flags:
 
 - Feature flags are used to enable/disable a specific feature.
