@@ -23,7 +23,7 @@ const TodoWidget = dynamic(
 );
 
 // Lazy-load the experimental GPT Chat Beta Widget
-const GptChatBetaWidget = dynamic(() => import("./GptChatBetaWidget"), {
+const AiChatWidget = dynamic(() => import("./AiChatWidget"), {
 	ssr: false,
 });
 
@@ -91,7 +91,7 @@ const Home = () => {
 
 	// EXPERIMENTAL: GPT Chat widget
 	if (isGptChatAllowed) {
-		widgets.push({ id: 100, component: GptChatBetaWidget });
+		widgets.push({ id: 100, component: AiChatWidget });
 	}
 
 	return (

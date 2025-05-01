@@ -26,7 +26,7 @@ const getRandomThinkingDialogue = () => {
  * A widget component for GPT conversations
  * TODO: Move chat interface to K-Bar + modal dialog
  */
-const GptChatBetaWidget = () => {
+const AiChatWidget = () => {
 	// const router = useRouter();
 	const { accessToken } = useSession();
 	const { isLoggedIn /*, isAdminAgentMode, isAdmin */ } = useUser();
@@ -261,4 +261,4 @@ const ChatBubble = ({ from, msg }) => {
 	);
 };
 
-export default GptChatBetaWidget;
+export default AiChatWidget;
