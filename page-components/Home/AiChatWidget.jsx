@@ -23,10 +23,22 @@ const getRandomThinkingDialogue = () => {
 };
 
 /**
- * A widget component for GPT conversations
- * TODO: Move chat interface to K-Bar + modal dialog
+ * A widget component for AI chatbot
+ * @param {object} props - The component props
+ * @param {string} [props.label] - The label for the widget
+ * @param {string} [props.initialMessage] - The initial user message to start the conversation with AI
+ * @param {boolean} [props.isPopupMode] - Flag to indicate if the widget is in popup mode (default: false)
+ * @param {Function} [props.onClose] - Callback function to handle widget close event (in Popup mode)
+ * @returns {JSX.Element} - The rendered widget component
  */
-const AiChatWidget = () => {
+const AiChatWidget = ({
+	label = "Ask AI",
+	initialMessage,
+	isPopupMode = false,
+	onClose,
+}) => {
+	console.log("[GPT] Initial message: ", initialMessage);
+
 	// const router = useRouter();
 	const { accessToken } = useSession();
 	const { isLoggedIn /*, isAdminAgentMode, isAdmin */ } = useUser();
@@ -39,6 +51,16 @@ const AiChatWidget = () => {
 	const [chatLines, setChatLines] = useState([]);
 	const [inputValue, setInputValue] = useState("");
 	const [chatInput, setChatInput] = useState("");
+	const [initialMessageProcessed, setInitialMessageProcessed] =
+		useState(false);
+
+	// Start chat with user's initial message, if provided
+	useEffect(() => {
+		if (initialMessage && !chatLines.length && !initialMessageProcessed) {
+			setInitialMessageProcessed(true);
+			sendChatInput(initialMessage);
+		}
+	}, [initialMessage, chatLines, initialMessageProcessed]);
 
 	const scrollToLastChat = () => {
 		scrollRef.current?.lastElementChild?.scrollIntoView({
@@ -117,11 +139,11 @@ const AiChatWidget = () => {
 
 	return (
 		<WidgetBase
-			title="Ask Saathi" // ElokaGPT
+			title={label} //"Ask Saathi" // ElokaGPT
 			noPadding
 			pb="0"
-			linkLabel="Clear"
-			linkOnClick={clearChat}
+			linkLabel={isPopupMode ? "Close" : "Clear"}
+			linkOnClick={isPopupMode ? onClose : clearChat}
 			linkProps={{ display: chatLines.length ? "block" : "none" }}
 		>
 			<Flex direction="column" h="calc(100% - 56px)">
@@ -132,34 +154,45 @@ const AiChatWidget = () => {
 					p="1em"
 					overflowY="auto"
 				>
-					<ChatBubble
-						key={0}
-						from="system"
-						msg="Hi there! 👋🏼"
-					></ChatBubble>
+					{
+						// Show AI greeting message if user's initial message is not provided
+						initialMessage ? null : (
+							<ChatBubble
+								key={0}
+								from="system"
+								msg="Hi there! 👋🏼"
+							/>
+						)
+					}
 
 					{chatLines.map((line, i) => (
 						<ChatBubble
 							key={i + 1}
 							from={line.from}
 							msg={line.msg}
-						></ChatBubble>
+						/>
 					))}
 
-					{/* IF 'busy', show a chat bubble from the Bot saying 'thinking...' */}
-					{busy && (
-						<Flex direction="column" alignItems="flex-end" mb="1em">
-							<Text
-								bg="hint"
-								color="dark"
-								borderRadius="md"
-								p="0.5em 0.8em"
-								maxW="70%"
+					{
+						// IF 'busy', show a chat bubble from the Bot saying 'thinking...'
+						busy && (
+							<Flex
+								direction="column"
+								alignItems="flex-end"
+								mb="1em"
 							>
-								{getRandomThinkingDialogue()}
-							</Text>
-						</Flex>
-					)}
+								<Text
+									bg="hint"
+									color="dark"
+									borderRadius="md"
+									p="0.5em 0.8em"
+									maxW="70%"
+								>
+									{getRandomThinkingDialogue()}
+								</Text>
+							</Flex>
+						)
+					}
 				</Box>
 
 				{/* Chat Text Input Field */}
@@ -199,7 +232,13 @@ const AiChatWidget = () => {
 	);
 };
 
-// Component to chow a chat bubble with a message
+/**
+ * Component to chow a chat bubble with a message
+ * @param {object} props - The component props
+ * @param {string} props.from - The sender of the message (user or system)
+ * @param {string} props.msg - The message content
+ * @returns {JSX.Element|null} - The rendered chat bubble component or null if no message is provided
+ */
 const ChatBubble = ({ from, msg }) => {
 	if (!msg) return null;
 

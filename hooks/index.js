@@ -1,4 +1,5 @@
 /* PLOP_INJECT_EXPORT */
+export { default as useAiChatbotPopup } from "./useAiChatbotPopup";
 export { default as useApiFetch, useEpsV3Fetch } from "./useApiFetch";
 export { default as useAppLink } from "./useAppLink";
 export { default as useCamera } from "./useCamera";
