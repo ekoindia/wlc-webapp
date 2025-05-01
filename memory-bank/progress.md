@@ -32,7 +32,7 @@ The Eloka Web App is an active project with a range of implemented features for 
 
 ## What's Left to Build / TODOs (from README)
 -   **Feature Flags:** Enhance system for A-B testing, gradual roll-out.
--   **LLM Chatbot (`GptChatBetaWidget.jsx`):** Integrate `react-chatbot-kit` library.
+-   **LLM Chatbot (`AiChatWidget.jsx`):** Integrate `react-chatbot-kit` library.
 -   **Global Contexts (`contexts/`):** Documentation incomplete in README.
 -   **LocalStorage Usage:** Documentation incomplete in README.
 -   **Know Your Commissions (`page-components/Home/KnowYourCommissionWidget`):** Further details might be needed beyond data fetching via `CommissionContext`.
