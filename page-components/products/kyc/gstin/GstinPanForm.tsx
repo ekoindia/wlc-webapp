@@ -163,14 +163,16 @@ export const GstinPanForm = (): JSX.Element => {
 
 	// Handler to navigate back to GSTIN main page
 	const handleBack = () => {
-		router.push("/products/gstin");
+		router.push("/products/kyc/gstin");
 	};
 
 	// Handler to submit the PAN form
 	const handlePanSubmit = async (values: PanFormValues) => {
 		setCollapsed(false);
 		setError(null);
-		const response = await fetchPan({ body: { pan: values.pan } });
+		const response = await fetchPan({
+			body: { pan: values.pan.toUpperCase() },
+		});
 
 		// Check for API response
 		if (response?.data) {
@@ -231,15 +233,26 @@ export const GstinPanForm = (): JSX.Element => {
 								label="PAN"
 								required
 								placeholder="Enter PAN (ABCDE1234F)"
+								maxlength={10}
 								{...panForm.register("pan", {
 									required: true,
+									minLength: 10,
 									pattern: /^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$/,
+									onChange: (e) => {
+										// Convert input to uppercase dynamically
+										e.target.value =
+											e.target.value.toUpperCase();
+									},
 								})}
 								invalid={!!panForm.formState.errors.pan}
 								errorMsg={
-									panForm.formState.errors.pan
-										? "Invalid PAN format"
-										: ""
+									panForm.formState.errors.pan?.type ===
+									"minLength"
+										? "PAN must be exactly 10 characters"
+										: panForm.formState.errors.pan?.type ===
+											  "pattern"
+											? "Invalid PAN format"
+											: ""
 								}
 							/>
 							<Button

@@ -1,4 +1,3 @@
-import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
@@ -134,6 +133,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 				isMultipart: isMultipart || options?.isMultipart,
 			},
 		};
+		console.log("Final Request Details:", fetcherOptions);
 
 		// Summary of the request, to be used for logging and debugging
 		const requestSummary = {
@@ -210,18 +210,51 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
  * );
  * ```
  */
+// Define centralized backend endpoints
+const Endpoints = {
+	TRANSACTION_JSON: "/transactions/dojson", // Example backend endpoint
+};
+
 export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
-	return useApiFetch(Endpoints.TRANSACTION_JSON, {
-		...settings,
-		method: "POST",
-		headers: {
-			...settings?.headers,
-			"tf-req-uri-root-path": "/ekoicici/v3",
-			"tf-req-uri": defaultUrlEndpoint,
-			"tf-req-method": settings?.method || "GET",
-			"content-type": "application/json",
-		},
-	});
+	const method = (settings?.method || "GET").toUpperCase();
+	const isGetRequest = method === "GET";
+
+	let tfReqUri = defaultUrlEndpoint;
+	if (
+		isGetRequest &&
+		settings?.queryParams &&
+		Object.keys(settings.queryParams).length > 0
+	) {
+		const queryParams = new URLSearchParams(
+			settings.queryParams
+		).toString();
+		tfReqUri = `${defaultUrlEndpoint}?${queryParams}`;
+	}
+
+	const headers = {
+		...settings?.headers,
+		"tf-req-method": method,
+		"tf-req-uri-root-path": "/ekoicici/v3",
+		"tf-req-uri": tfReqUri,
+		...(isGetRequest ? {} : { "Content-Type": "application/json" }),
+	};
+
+	const finalSettings = {
+		method,
+		headers,
+		...(isGetRequest
+			? {}
+			: settings?.body
+				? { body: JSON.stringify(settings.body) }
+				: {}),
+	};
+
+	const urlToCall = Endpoints.TRANSACTION_JSON;
+
+	console.log("useEpsV3Fetch - Final URL:", urlToCall);
+	console.log("useEpsV3Fetch - Final Settings:", finalSettings);
+
+	return useApiFetch(urlToCall, finalSettings);
 };
 
 export default useApiFetch;

@@ -10,12 +10,6 @@ const PanSubProducts: {
 	url: string;
 }[] = [
 	{
-		label: "PAN Basic",
-		desc: "Verify a PAN number and view basic details",
-		icon: "search",
-		url: "pan/basic",
-	},
-	{
 		label: "PAN Lite",
 		desc: "Verify PAN with name and DOB matching",
 		icon: "description",
