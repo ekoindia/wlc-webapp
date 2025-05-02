@@ -21,12 +21,12 @@ const PanSubProducts: {
 		icon: "verified-user",
 		url: "pan/advanced",
 	},
-	{
-		label: "Bulk PAN Verification",
-		desc: "Verify multiple PAN numbers in a batch",
-		icon: "toc",
-		url: "pan/bulk",
-	},
+	// {
+	// 	label: "Bulk PAN Verification",
+	// 	desc: "Verify multiple PAN numbers in a batch",
+	// 	icon: "toc",
+	// 	url: "pan/bulk",
+	// },
 ];
 
 export const PanVerification = (): JSX.Element => {
