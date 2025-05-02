@@ -73,7 +73,7 @@ const PersonalInfoSection = ({
 			)}
 
 			<GridItem>
-				<Text fontWeight="medium">{data.relation_type}:</Text>
+				<Text fontWeight="medium">Father Name:</Text>
 			</GridItem>
 			<GridItem>
 				<Text>{data.relation_name}</Text>
@@ -82,9 +82,7 @@ const PersonalInfoSection = ({
 			{data.relation_name_in_regional_lang && (
 				<>
 					<GridItem>
-						<Text fontWeight="medium">
-							{data.relation_type} (Regional):
-						</Text>
+						<Text fontWeight="medium">Father Name (Regional):</Text>
 					</GridItem>
 					<GridItem>
 						<Text>{data.relation_name_in_regional_lang}</Text>
@@ -342,7 +340,7 @@ export const VoterIdForm = (): JSX.Element => {
 
 	// Handler to navigate back to Voter ID main page
 	const handleBack = () => {
-		router.push("/products/kyc/voter-id");
+		router.push("/products/kyc");
 	};
 
 	// Handler to submit the Voter ID form
@@ -351,7 +349,7 @@ export const VoterIdForm = (): JSX.Element => {
 		setError(null);
 
 		const requestPayload: VoterIdRequestParams = {
-			epic_number: values.epicNumber,
+			epic_number: values.epicNumber.toUpperCase(),
 		};
 
 		// Add optional name parameter if provided
@@ -424,10 +422,20 @@ export const VoterIdForm = (): JSX.Element => {
 							<Input
 								label="EPIC Number"
 								required
+								maxlength={10}
 								placeholder="Enter the Electoral Photo Identity Card Number"
 								{...voterIdForm.register("epicNumber", {
 									required: true,
-									minLength: 5,
+									pattern: {
+										value: /^[A-Z0-9]{10}$/,
+										message:
+											"Enter a valid EPIC Number (10 alphanumeric characters)",
+									},
+									onChange: (e) => {
+										// Convert input to uppercase dynamically
+										e.target.value =
+											e.target.value.toUpperCase();
+									},
 								})}
 								invalid={
 									!!voterIdForm.formState.errors.epicNumber
@@ -440,8 +448,17 @@ export const VoterIdForm = (): JSX.Element => {
 							/>
 							<Input
 								label="Name (Optional)"
+								maxlength={50}
 								placeholder="Enter voter's name for additional verification"
-								{...voterIdForm.register("name")}
+								{...voterIdForm.register("name", {
+									pattern: /^[A-Za-z\s.]+$/,
+									minLength: 2,
+								})}
+								invalid={!!voterIdForm.formState.errors.name}
+								errorMsg={
+									voterIdForm.formState.errors.name
+										?.message ?? ""
+								}
 							/>
 							<Button
 								type="submit"

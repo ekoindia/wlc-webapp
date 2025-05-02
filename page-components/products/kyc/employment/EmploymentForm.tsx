@@ -1091,11 +1091,11 @@ export const EmploymentForm = (): JSX.Element => {
 		// Build request body, only including fields with values
 		const requestBody: Record<string, string> = {};
 		if (values.phone) requestBody.phone = values.phone;
-		if (values.pan) requestBody.pan = values.pan;
+		if (values.pan) requestBody.pan = values.pan.toUpperCase();
 		if (values.uan) requestBody.uan = values.uan;
 		if (values.dob) requestBody.dob = values.dob;
 		if (values.employeeName)
-			requestBody.employee_name = values.employeeName;
+			requestBody.employee_name = values.employeeName.toUpperCase();
 		if (values.employerName)
 			requestBody.employer_name = values.employerName;
 
@@ -1168,11 +1168,12 @@ export const EmploymentForm = (): JSX.Element => {
 						<VStack spacing={4} align="stretch">
 							<Input
 								label="Phone Number"
+								maxlength={10}
 								placeholder="Enter employee phone number"
 								{...employmentForm.register("phone", {
 									validate: validateAtLeastOneField,
 									pattern: {
-										value: /^[6-9]\d{9}$/,
+										value: /^[6-9][0-9]{9}$/,
 										message:
 											"Enter a valid 10-digit phone number",
 									},
@@ -1188,12 +1189,18 @@ export const EmploymentForm = (): JSX.Element => {
 
 							<Input
 								label="PAN"
+								maxlength={10}
 								placeholder="Enter employee PAN number"
 								{...employmentForm.register("pan", {
 									validate: validateAtLeastOneField,
 									pattern: {
 										value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
 										message: "Enter a valid PAN number",
+									},
+									onChange: (e) => {
+										// Convert input to uppercase dynamically
+										e.target.value =
+											e.target.value.toUpperCase();
 									},
 								})}
 								invalid={!!employmentForm.formState.errors.pan}
@@ -1205,6 +1212,7 @@ export const EmploymentForm = (): JSX.Element => {
 							<Input
 								label="UAN"
 								placeholder="Enter employee UAN number"
+								maxlength={12}
 								{...employmentForm.register("uan", {
 									validate: validateAtLeastOneField,
 									pattern: {
@@ -1217,18 +1225,11 @@ export const EmploymentForm = (): JSX.Element => {
 									employmentForm.formState.errors.uan?.message
 								}
 							/>
-
 							<Input
 								label="Date of Birth"
+								type="date"
 								placeholder="YYYY-MM-DD"
-								{...employmentForm.register("dob", {
-									validate: validateAtLeastOneField,
-									pattern: {
-										value: /^\d{4}-\d{2}-\d{2}$/,
-										message:
-											"Enter valid date in YYYY-MM-DD format",
-									},
-								})}
+								{...employmentForm.register("dob", {})}
 								invalid={!!employmentForm.formState.errors.dob}
 								errorMsg={
 									employmentForm.formState.errors.dob?.message
@@ -1237,9 +1238,15 @@ export const EmploymentForm = (): JSX.Element => {
 
 							<Input
 								label="Employee Name"
+								maxlength={50}
 								placeholder="Enter employee's full name"
 								{...employmentForm.register("employeeName", {
 									validate: validateAtLeastOneField,
+									onChange: (e) => {
+										// Convert input to uppercase dynamically
+										e.target.value =
+											e.target.value.toUpperCase();
+									},
 								})}
 								invalid={
 									!!employmentForm.formState.errors
@@ -1254,6 +1261,7 @@ export const EmploymentForm = (): JSX.Element => {
 							<Input
 								label="Employer Name"
 								placeholder="Enter employer's name"
+								maxlength={200}
 								{...employmentForm.register("employerName", {
 									validate: validateAtLeastOneField,
 								})}

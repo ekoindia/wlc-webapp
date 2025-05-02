@@ -70,7 +70,7 @@ export const PassportForm = (): JSX.Element => {
 		// Format date from YYYY-MM-DD to proper API format
 		const response = await fetchPassport({
 			body: {
-				file_number: values.fileNumber,
+				file_number: values.fileNumber.toUpperCase(),
 				dob: values.dob,
 				name: values.name || undefined, // Only include name if provided
 			},
@@ -138,6 +138,16 @@ export const PassportForm = (): JSX.Element => {
 							<Input
 								{...register("fileNumber", {
 									required: "File number is required",
+									minLength: {
+										value: 15,
+										message:
+											"File number must be exactly 15 characters",
+									},
+									maxLength: {
+										value: 15,
+										message:
+											"File number must be exactly 15 characters",
+									},
 									pattern: {
 										value: /^[A-Za-z0-9]+$/,
 										message:
@@ -145,7 +155,9 @@ export const PassportForm = (): JSX.Element => {
 									},
 								})}
 								placeholder="Enter passport file number"
+								maxLength={15}
 							/>
+
 							<FormErrorMessage>
 								{errors.fileNumber?.message}
 							</FormErrorMessage>
@@ -156,11 +168,6 @@ export const PassportForm = (): JSX.Element => {
 							<Input
 								{...register("dob", {
 									required: "Date of birth is required",
-									pattern: {
-										value: /^\d{4}-\d{2}-\d{2}$/,
-										message:
-											"Enter a valid date in YYYY-MM-DD format",
-									},
 								})}
 								type="date"
 								placeholder="YYYY-MM-DD"

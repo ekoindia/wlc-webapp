@@ -28,6 +28,7 @@ import {
 interface PanBulkFormValues {
 	entries: BulkPanEntry[];
 	referenceId?: string;
+	bulkVerificationId?: string;
 }
 
 // Component for displaying the bulk verification result
@@ -55,6 +56,15 @@ const BulkSubmitResultCard = ({
 					</Text>
 					<Text fontWeight="semibold">{data.reference_id}</Text>
 				</Flex>
+				<Flex>
+					<Text width="200px" fontWeight="medium">
+						Bulk Verification ID:
+					</Text>
+					<Text fontWeight="semibold">
+						{data.bulk_verification_id}
+					</Text>
+				</Flex>
+
 				<Flex align="center" mt={2}>
 					<Text>
 						Your bulk PAN verification request has been submitted
@@ -162,12 +172,6 @@ export const PanBulkForm = (): JSX.Element => {
 			method: "POST",
 		}
 	);
-	const [fetchBulkStatus, isLoadingBulkStatus] = useEpsV3Fetch(
-		"/tools/kyc/pan/bulk/status",
-		{
-			method: "GET",
-		}
-	);
 
 	const bulkForm = useForm<PanBulkFormValues>({
 		mode: "onChange",
@@ -232,6 +236,10 @@ export const PanBulkForm = (): JSX.Element => {
 					"referenceId",
 					response.data.data.reference_id.toString()
 				);
+				bulkForm.setValue(
+					"bulkVerificationId",
+					response.data.data.bulk_verification_id.toString()
+				);
 			}
 			// Error case: status !== 0
 			else {
@@ -254,48 +262,51 @@ export const PanBulkForm = (): JSX.Element => {
 		}
 	};
 
+	const [fetchBulkStatus, isLoadingBulkStatus] = useEpsV3Fetch(
+		"/tools/kyc/pan/bulk/status",
+		{
+			method: "GET",
+			queryParams: {
+				reference_id:
+					bulkResponse?.reference_id ??
+					bulkForm.getValues("referenceId"),
+				bulk_verification_id:
+					bulkResponse?.bulk_verification_id ??
+					bulkForm.getValues("bulkVerificationId"),
+			},
+		}
+	);
+
 	// Handler to check bulk PAN verification status
 	const handleCheckStatus = async () => {
 		setError(null);
+		try {
+			// Make the API call with query parameters in the URL
+			const response = await fetchBulkStatus();
 
-		if (!bulkResponse?.reference_id && !bulkForm.getValues("referenceId")) {
-			setError("Reference ID is required to check status");
-			return;
-		}
+			console.log("Check Status API Response:", response);
 
-		const referenceId =
-			bulkResponse?.reference_id || bulkForm.getValues("referenceId");
-
-		const response = await fetchBulkStatus({
-			query: {
-				reference_id: referenceId,
-			},
-		});
-
-		// Check for API response
-		if (response?.data) {
-			// Success case: status === 0
-			if (response.data.status === 0 && response.data.data) {
-				setStatusResponse(response.data.data);
+			if (response?.data) {
+				if (response.data.status === 0 && response.data.data) {
+					setStatusResponse(response.data.data);
+				} else {
+					setError(
+						response.data.message ||
+							"Failed to get bulk PAN verification status. Please try again."
+					);
+				}
+			} else if (response?.error) {
+				setError(
+					"Network error. Please check your connection and try again."
+				);
+			} else {
+				setError(
+					"Invalid response from server. Please try again later."
+				);
 			}
-			// Error case: status !== 0
-			else {
-				const errorMessage =
-					response.data.message ||
-					"Failed to get bulk PAN verification status. Please check your input and try again.";
-				setError(errorMessage);
-				console.error("API Error Response:", response.data);
-			}
-		} else if (response?.error) {
-			// Network or fetch error
-			setError(
-				"Network error. Please check your connection and try again."
-			);
-			console.error("Fetch Error:", response);
-		} else {
-			// Handle unexpected response format
-			setError("Invalid response from server. Please try again later.");
-			console.error("Invalid API response format", response);
+		} catch (error) {
+			setError("An unexpected error occurred. Please try again later.");
+			console.error("Unexpected Error:", error);
 		}
 	};
 
@@ -340,15 +351,19 @@ export const PanBulkForm = (): JSX.Element => {
 									placeholder="Enter Reference ID"
 									{...bulkForm.register("referenceId")}
 								/>
-								<Button
-									onClick={handleCheckStatus}
-									isLoading={isLoadingBulkStatus}
-									loadingText="Checking"
-									size="lg"
-								>
-									Check Status
-								</Button>
+								<Input
+									placeholder="Enter Reference ID"
+									{...bulkForm.register("bulkVerificationId")}
+								/>
 							</Flex>
+							<Button
+								onClick={handleCheckStatus}
+								isLoading={isLoadingBulkStatus}
+								loadingText="Checking"
+								size="lg"
+							>
+								Check Status
+							</Button>
 						</Box>
 
 						{!statusResponse && (

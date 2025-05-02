@@ -56,8 +56,14 @@ export function fetcher(url, options, generateNewToken) {
 		? AbortSignal.any([controller.signal, timeoutSignal])
 		: timeoutSignal;
 
+	const _method = (method || DEFAULT_METHOD).toUpperCase();
+	const isGetType = _method === "GET" || _method === "DELETE";
+
 	// Add client_ref_id to the request body, if not already present
-	body.client_ref_id ??= Date.now() + "" + Math.floor(Math.random() * 1000);
+	if (!isGetType) {
+		body.client_ref_id ??=
+			Date.now() + "" + Math.floor(Math.random() * 1000);
+	}
 
 	console.log("📡 Starting Fetch:", {
 		url,
@@ -86,9 +92,9 @@ export function fetcher(url, options, generateNewToken) {
 
 	const fetchPromise = fetch(url, {
 		signal: combinedSignal,
-		method: method || DEFAULT_METHOD,
+		method: _method,
 		headers: headersData,
-		body: JSON.stringify(bodyData),
+		body: isGetType ? undefined : JSON.stringify(bodyData),
 		...restOptions,
 	}).then((res) => {
 		if (res.ok) {

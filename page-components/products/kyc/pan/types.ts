@@ -72,7 +72,8 @@ export interface BulkPanEntry {
  * Bulk PAN Verification response data structure
  */
 export interface BulkPanResponseData {
-	reference_id: number;
+	reference_id: string;
+	bulk_verification_id: string; // Updated to match the API response
 }
 
 /**

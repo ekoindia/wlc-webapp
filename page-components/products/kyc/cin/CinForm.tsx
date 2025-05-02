@@ -13,6 +13,7 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { useEpsV3Fetch } from "hooks";
+import router from "next/router";
 import {
 	ResponseSection,
 	ResponseToolbar,
@@ -56,7 +57,7 @@ export const CinForm = (): JSX.Element => {
 	const [collapsed, setCollapsed] = useState<boolean>(false);
 
 	const toast = useToast();
-	const [makeApiCall, { isLoading }] = useEpsV3Fetch("cin-verification", {
+	const [makeApiCall, { isLoading }] = useEpsV3Fetch("/tools/kyc/cin", {
 		method: "POST",
 	});
 
@@ -83,14 +84,11 @@ export const CinForm = (): JSX.Element => {
 
 		// Make API call
 		const response = await makeApiCall({
-			url: "/tools/kyc/cin",
-			method: "POST",
-			data: {
+			body: {
 				cin: cin.trim(),
-				purpose_code: "KYC",
-				purpose_desc: "KYC verification",
 			},
 		});
+		console.log("response:", response);
 
 		// Check for API response
 		if (response?.data) {
@@ -120,11 +118,9 @@ export const CinForm = (): JSX.Element => {
 			setError(
 				"Network error. Please check your connection and try again."
 			);
-			console.error("Fetch Error:", response);
 		} else {
 			// Handle unexpected response format
 			setError("Invalid response from server. Please try again later.");
-			console.error("Invalid API response format", response);
 		}
 	};
 
@@ -137,8 +133,8 @@ export const CinForm = (): JSX.Element => {
 	};
 
 	// Go back to the form
-	const handleBack = (): void => {
-		setCollapsed(false);
+	const handleBack = () => {
+		router.push("/products/kyc");
 	};
 
 	return (
@@ -206,15 +202,6 @@ export const CinForm = (): JSX.Element => {
 				<>
 					<Card p={4} mb={4}>
 						<Box mb={4}>
-							<Button
-								size="sm"
-								leftIcon={<span>←</span>}
-								variant="ghost"
-								onClick={handleBack}
-								mb={2}
-							>
-								Back to Form
-							</Button>
 							<Text fontSize="xl" fontWeight="bold">
 								CIN Verification Results
 							</Text>

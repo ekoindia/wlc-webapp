@@ -786,7 +786,7 @@ export const VehicleRcForm = (): JSX.Element => {
 		setError(null);
 		const response = await fetchVehicleRc({
 			body: {
-				vehicle_number: values.vehicleNumber,
+				vehicle_number: values.vehicleNumber.toUpperCase(),
 			},
 		});
 
@@ -853,23 +853,20 @@ export const VehicleRcForm = (): JSX.Element => {
 							<Input
 								label="Vehicle Registration Number"
 								required
+								maxlength={15}
 								placeholder="Enter vehicle registration number (e.g., DL1234567890)"
 								{...vehicleRcForm.register("vehicleNumber", {
 									required: true,
+									minLength: 8,
 									pattern: {
 										value: /^[A-Z0-9]+$/i,
 										message:
 											"Please enter a valid registration number",
 									},
-									minLength: {
-										value: 8,
-										message:
-											"Registration number must be at least 8 characters",
-									},
-									maxLength: {
-										value: 15,
-										message:
-											"Registration number must not exceed 15 characters",
+									onChange: (e) => {
+										// Convert input to uppercase dynamically
+										e.target.value =
+											e.target.value.toUpperCase();
 									},
 								})}
 								invalid={

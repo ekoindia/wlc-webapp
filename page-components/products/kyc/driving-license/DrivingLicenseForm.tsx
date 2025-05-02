@@ -517,7 +517,7 @@ export const DrivingLicenseForm = (): JSX.Element => {
 
 		const response = await fetchDl({
 			body: {
-				dl_number: values.dl_number,
+				dl_number: values.dl_number.toUpperCase(),
 				dob: formattedDob,
 			},
 		});
@@ -588,6 +588,11 @@ export const DrivingLicenseForm = (): JSX.Element => {
 									required: true,
 									minLength: 5,
 									maxLength: 20,
+									onChange: (e) => {
+										// Convert input to uppercase dynamically
+										e.target.value =
+											e.target.value.toUpperCase();
+									},
 								})}
 								invalid={!!dlForm.formState.errors.dl_number}
 								errorMsg={
@@ -600,17 +605,14 @@ export const DrivingLicenseForm = (): JSX.Element => {
 							<Input
 								label="Date of Birth"
 								required
-								placeholder="YYYY-MM-DD"
 								{...dlForm.register("dob", {
-									required: true,
-									pattern:
-										/^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$/,
+									required: "Date of birth is required",
 								})}
+								type="date" // Enables the native date picker
+								placeholder="YYYY-MM-DD"
 								invalid={!!dlForm.formState.errors.dob}
 								errorMsg={
-									dlForm.formState.errors.dob
-										? "Enter valid date (YYYY-MM-DD or DD/MM/YYYY)"
-										: ""
+									dlForm.formState.errors.dob?.message ?? ""
 								}
 							/>
 

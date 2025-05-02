@@ -10,18 +10,18 @@ const KycTools: {
 	icon?: string;
 	url: string;
 }[] = [
-	{
-		label: "Driving License Verification",
-		desc: "Verify driving license details including validity, vehicle classes, and more",
-		icon: "directions-car",
-		url: "kyc/driving-license",
-	},
-	{
-		label: "Vehicle RC Verification",
-		desc: "Verify vehicle details and registration information",
-		icon: "directions-car",
-		url: "kyc/vehicle-rc",
-	},
+	// {
+	// 	label: "Driving License Verification",
+	// 	desc: "Verify driving license details including validity, vehicle classes, and more",
+	// 	icon: "directions-car",
+	// 	url: "kyc/driving-license",
+	// },
+	// {
+	// 	label: "Vehicle RC Verification",
+	// 	desc: "Verify vehicle details and registration information",
+	// 	icon: "directions-car",
+	// 	url: "kyc/vehicle-rc",
+	// },
 	{
 		label: "GSTIN Verification",
 		desc: "Verify a GSTIN and view business details",
