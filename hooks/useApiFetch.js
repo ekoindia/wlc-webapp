@@ -134,7 +134,6 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 				isMultipart: isMultipart || options?.isMultipart,
 			},
 		};
-		console.log("Final Request Details:", fetcherOptions);
 
 		// Summary of the request, to be used for logging and debugging
 		const requestSummary = {
