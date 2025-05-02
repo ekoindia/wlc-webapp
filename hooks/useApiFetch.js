@@ -1,3 +1,4 @@
+import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
@@ -209,20 +210,6 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
  * 	}
  * );
  * ```
- */
-// Define centralized backend endpoints
-const Endpoints = {
-	TRANSACTION_JSON: "/transactions/dojson", // Example backend endpoint
-};
-
-/**
- * Custom hook to fetch data from the Eko's EPS API v3 APIs.
- * This is a specialized version of the `useApiFetch` hook that is tailored for the EPS API v3.
- * It automatically sets the required headers and query parameters for the EPS API v3.
- * MARK: useEpsV3Fetch
- * @param {string} defaultUrlEndpoint - The default URL endpoint to fetch data from. If not provided, it can be overwritten later during the actual fetch call.
- * @param {object} [settings] - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
- * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
  */
 export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 	const method = (settings?.method || "GET").toUpperCase();
