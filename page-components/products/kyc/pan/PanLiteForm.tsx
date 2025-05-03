@@ -189,12 +189,12 @@ export const PanLiteForm = (): JSX.Element => {
 
 		const response = await fetchPan({
 			body: {
-				pan: values.pan,
+				pan_number: values.pan.toUpperCase(),
 				name: values.name,
 				dob: formattedDob,
 			},
 		});
-
+		console.log("API response", response);
 		// Check for API response
 		if (response?.data) {
 			// Success case: status === 0
@@ -254,17 +254,34 @@ export const PanLiteForm = (): JSX.Element => {
 							<Input
 								label="PAN Number"
 								required
+								maxLength={10} // Restrict input to 10 characters
 								placeholder="Enter PAN Number (e.g., ABCDE1234F)"
 								{...panForm.register("pan", {
-									required: true,
-									pattern: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
-									maxLength: 10,
+									required: "PAN is required",
+									minLength: {
+										value: 10,
+										message:
+											"PAN must be exactly 10 characters",
+									},
+									maxLength: {
+										value: 10,
+										message:
+											"PAN must be exactly 10 characters",
+									},
+									pattern: {
+										value: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/,
+										message:
+											"Invalid PAN format (e.g., ABCDE1234F)",
+									},
+									onChange: (e) => {
+										// Convert input to uppercase dynamically
+										e.target.value =
+											e.target.value.toUpperCase();
+									},
 								})}
 								invalid={!!panForm.formState.errors.pan}
 								errorMsg={
-									panForm.formState.errors.pan
-										? "Valid PAN format required (e.g., ABCDE1234F)"
-										: ""
+									panForm.formState.errors.pan?.message ?? ""
 								}
 							/>
 							<Input
@@ -274,6 +291,7 @@ export const PanLiteForm = (): JSX.Element => {
 								{...panForm.register("name", {
 									required: true,
 									minLength: 3,
+									maxLength: 50,
 								})}
 								invalid={!!panForm.formState.errors.name}
 								errorMsg={
@@ -285,17 +303,19 @@ export const PanLiteForm = (): JSX.Element => {
 							<Input
 								label="Date of Birth"
 								required
-								placeholder="YYYY-MM-DD"
 								{...panForm.register("dob", {
-									required: true,
-									pattern:
-										/^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$/,
+									required: "Date of birth is required",
+									pattern: {
+										value: /^\d{4}-\d{2}-\d{2}$/, // Validate YYYY-MM-DD format
+										message:
+											"Enter a valid date in YYYY-MM-DD format",
+									},
 								})}
+								type="date" // Enables the native date picker
+								placeholder="YYYY-MM-DD"
 								invalid={!!panForm.formState.errors.dob}
 								errorMsg={
-									panForm.formState.errors.dob
-										? "Enter valid date (YYYY-MM-DD or DD/MM/YYYY)"
-										: ""
+									panForm.formState.errors.dob?.message ?? ""
 								}
 							/>
 							<Button

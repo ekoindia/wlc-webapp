@@ -347,18 +347,21 @@ export const GstinVerifyForm = (): JSX.Element => {
 
 	// Handler to navigate back to GSTIN main page
 	const handleBack = () => {
-		router.push("/products/gstin");
+		router.push("/products/kyc/gstin");
 	};
 
 	// Handler to submit the GSTIN form
 	const handleGstinSubmit = async (values: GstinFormValues) => {
 		setCollapsed(false);
 		setError(null);
+
+		const payload = {
+			gstin: values.gstin.toUpperCase(),
+			business_name: values.businessName,
+		};
+
 		const response = await fetchGstin({
-			body: {
-				gstin: values.gstin,
-				business_name: values.businessName,
-			},
+			body: payload, // Stringify the body
 		});
 
 		// Check for API response
@@ -420,27 +423,37 @@ export const GstinVerifyForm = (): JSX.Element => {
 								label="Business Name"
 								required
 								placeholder="Enter Business Name"
+								maxLength={200} // Restrict input to 200 characters
 								{...gstinForm.register("businessName", {
-									required: true,
-									maxLength: 100,
+									required: "Business Name is required",
+									pattern: {
+										value: /^[A-Za-z\s.]+$/,
+										message:
+											"Name can only contain letters, spaces, and dots",
+									},
 								})}
 								invalid={
 									!!gstinForm.formState.errors.businessName
 								}
 								errorMsg={
 									gstinForm.formState.errors.businessName
-										? "Business Name is required"
-										: ""
+										?.message ?? ""
 								}
 							/>
 							<Input
 								label="GSTIN"
 								required
 								placeholder="Enter GSTIN"
+								maxLength={15}
 								{...gstinForm.register("gstin", {
 									required: true,
 									minLength: 15,
 									maxLength: 15,
+									onChange: (e) => {
+										// Convert input to uppercase dynamically
+										e.target.value =
+											e.target.value.toUpperCase();
+									},
 								})}
 								invalid={!!gstinForm.formState.errors.gstin}
 								errorMsg={

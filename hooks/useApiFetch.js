@@ -1,4 +1,3 @@
-import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
@@ -134,6 +133,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 				isMultipart: isMultipart || options?.isMultipart,
 			},
 		};
+		console.log("Final Request Details:", fetcherOptions);
 
 		// Summary of the request, to be used for logging and debugging
 		const requestSummary = {
@@ -210,18 +210,66 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
  * );
  * ```
  */
+// Define centralized backend endpoints
+const Endpoints = {
+	TRANSACTION_JSON: "/transactions/dojson", // Example backend endpoint
+};
+
+/**
+ * Custom hook to fetch data from the Eko's EPS API v3 APIs.
+ * This is a specialized version of the `useApiFetch` hook that is tailored for the EPS API v3.
+ * It automatically sets the required headers and query parameters for the EPS API v3.
+ * MARK: useEpsV3Fetch
+ * @param {string} defaultUrlEndpoint - The default URL endpoint to fetch data from. If not provided, it can be overwritten later during the actual fetch call.
+ * @param {object} [settings] - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
+ * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
+ */
 export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
-	return useApiFetch(Endpoints.TRANSACTION_JSON, {
-		...settings,
-		method: "POST",
-		headers: {
-			...settings?.headers,
-			"tf-req-uri-root-path": "/ekoicici/v3",
-			"tf-req-uri": defaultUrlEndpoint,
-			"tf-req-method": settings?.method || "GET",
-			"content-type": "application/json",
-		},
+	const method = (settings?.method || "GET").toUpperCase();
+	const isGetRequest = method === "GET";
+
+	console.log("useEpsV3Fetch - START: ", {
+		defaultUrlEndpoint,
+		settings,
+		isGetRequest,
 	});
+
+	let tfReqUri = defaultUrlEndpoint;
+	if (
+		isGetRequest &&
+		settings?.queryParams &&
+		Object.keys(settings.queryParams).length > 0
+	) {
+		const queryParams = new URLSearchParams(
+			settings.queryParams
+		).toString();
+		tfReqUri = `${defaultUrlEndpoint}?${queryParams}`;
+	}
+
+	const headers = {
+		...settings?.headers,
+		"tf-req-method": method,
+		"tf-req-uri-root-path": "/ekoicici/v3",
+		"tf-req-uri": tfReqUri,
+		...(isGetRequest ? {} : { "Content-Type": "application/json" }),
+	};
+
+	const finalSettings = {
+		method: "POST",
+		headers,
+		...(isGetRequest
+			? {}
+			: settings?.body
+				? { body: JSON.stringify(settings.body) }
+				: {}),
+	};
+
+	const urlToCall = Endpoints.TRANSACTION_JSON;
+
+	console.log("useEpsV3Fetch - Final URL:", urlToCall);
+	console.log("useEpsV3Fetch - Final Settings:", finalSettings);
+
+	return useApiFetch(urlToCall, finalSettings);
 };
 
 export default useApiFetch;
