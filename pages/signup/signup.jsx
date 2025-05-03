@@ -895,7 +895,7 @@ const SignupPage = () => {
 					err.response = res;
 					err.status = res.status;
 					if (res.status === 401) {
-						err.name = "Unauthorized";
+						err.name = "UnauthorizedError";
 						generateNewToken(true);
 						return;
 					}
