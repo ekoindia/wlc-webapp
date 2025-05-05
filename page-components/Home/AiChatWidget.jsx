@@ -19,7 +19,7 @@ import { WidgetBase } from ".";
 // 	"🧐 Lost in thought...",
 // ];
 
-const TEST_ERROR = true; // TODO:: remove this
+// const TEST_ERROR = true; // TODO:: remove this
 
 // const getRandomThinkingDialogue = () => {
 // 	const randomIndex = Math.floor(Math.random() * THINKING_DIALOGUES.length);
@@ -110,21 +110,21 @@ const AiChatWidget = ({
 
 		setBusy(true);
 
-		if (TEST_ERROR) {
-			setChatInput("");
-			setTimeout(() => {
-				setChatLines([
-					...chatLines,
-					{
-						from: "system",
-						msg: "Sorry, I didn't get that",
-						at: Date.now(),
-					},
-				]);
-				setBusy(false);
-			}, 2000);
-			return;
-		}
+		// if (TEST_ERROR) {
+		// 	setChatInput("");
+		// 	setTimeout(() => {
+		// 		setChatLines([
+		// 			...chatLines,
+		// 			{
+		// 				from: "system",
+		// 				msg: "Sorry, I didn't get that",
+		// 				at: Date.now(),
+		// 			},
+		// 		]);
+		// 		setBusy(false);
+		// 	}, 2000);
+		// 	return;
+		// }
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/gpt/tfassistant", {
 			body: {
