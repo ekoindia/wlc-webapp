@@ -328,8 +328,8 @@ function RenderResults({ className, isSmallScreen }) {
 
 	const { showAiChatBot } = useAiChatbotPopup();
 
-	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT");
-	const [isAiChatBotAllowed] = useFeatureFlag("GPT_CHAT");
+	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT_LINK");
+	const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT");
 
 	// const { showRaiseIssueDialog } = useRaiseIssue();
 
