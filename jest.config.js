@@ -82,16 +82,20 @@ const customJestConfig = {
 		// "<rootDir>/features/**/{!(index),}.{js,ts,jsx,tsx}",
 		"!<rootDir>/**/*.stories.{js,ts,jsx,tsx,mdx}",
 		"!<rootDir>/**/*.mocks.{js,ts}",
+		"!<rootDir>/**/*.mock.{js,ts}",
 	],
 	coveragePathIgnorePatterns: [
 		"<rootDir>/__tests__/test-utils/",
 		".stories.{js,ts,jsx,tsx,mdx}",
 		".mocks.{js,ts}",
+		".mock.{js,ts}",
 	],
 	testPathIgnorePatterns: [
 		"<rootDir>/__tests__/test-utils/",
+		"<rootDir>/__tests__/fixtures/",
 		".stories.{js,ts,jsx,tsx,mdx}",
 		".mocks.{js,ts}",
+		".mock.{js,ts}",
 	],
 	verbose: true,
 };
