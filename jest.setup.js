@@ -28,7 +28,7 @@ Object.defineProperty(window, "matchMedia", {
 // Mock remark-gfm
 jest.mock("remark-gfm", () => ({
 	__esModule: true,
-	default: () => () => {},
+	default: () => (tree) => tree,
 }));
 
 // Mock react-markdown
