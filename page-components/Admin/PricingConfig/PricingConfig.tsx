@@ -72,7 +72,6 @@ const findNodeInTree = (
  * @returns {JSX.Element} - Rendered PricingConfig component.
  */
 const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
-	console.log("[Pricing] pathArray", pathArray);
 	const [currentPricingTreeNode, setCurrentPricingTreeNode] = useState<
 		ProductNode[] | null
 	>(null);
