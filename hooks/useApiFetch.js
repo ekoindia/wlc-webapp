@@ -191,6 +191,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 //  * @param {boolean} [settings.noClientRefId] - Flag to indicate if the fetch request should skip passing the unique client-reference-ID. Default is `false`.
  * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
  * @example
+ 
  * If the URL is "POST https://api.eko.in/ekoicici/v3/tools/kyc/pan", use the following:
  * ```javascript
  * const [fetchPan, loading, cancelFetchPan] = useEpsV3Fetch(
@@ -213,12 +214,6 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 	const method = (settings?.method || "GET").toUpperCase();
 	const isGetRequest = method === "GET";
-
-	console.log("useEpsV3Fetch - START: ", {
-		defaultUrlEndpoint,
-		settings,
-		isGetRequest,
-	});
 
 	let tfReqUri = defaultUrlEndpoint;
 	if (
@@ -251,10 +246,6 @@ export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 	};
 
 	const urlToCall = Endpoints.TRANSACTION_JSON;
-
-	console.log("useEpsV3Fetch - Final URL:", urlToCall);
-	console.log("useEpsV3Fetch - Final Settings:", finalSettings);
-
 	return useApiFetch(urlToCall, finalSettings);
 };
 
