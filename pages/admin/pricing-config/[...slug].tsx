@@ -5,7 +5,7 @@ import { PricingConfig, PricingConfigProvider } from "page-components/Admin";
 const PricingConfigPage = () => {
 	const { query } = useRouter();
 	const { slug } = query;
-	const pathArray = Array.isArray(slug) ? slug : null;
+	const pathArray: string[] | null = Array.isArray(slug) ? slug : null;
 
 	return (
 		<PaddingBox>
