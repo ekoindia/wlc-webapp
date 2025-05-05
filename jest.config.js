@@ -47,7 +47,7 @@ const customJestConfig = {
 	// 	"^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }],
 	// },
 	// transformIgnorePatterns: [
-	// 	"node_modules/(?!(react-markdown|vfile|unist|unified|bail|is-plain-obj|trough|remark|micromark|markdown-table|decode-named-character-reference|character-entities|property-information|hast|space-separated-tokens|comma-separated-tokens|mdast|mdast-util-to-hast|remark-rehype|trim-lines|rehype|html-void-elements|ccount|escape-string-regexp|strip-markdown|react-is|estree-util|format|is-|mdast-util-|unist-util-|zwitch|hastscript|web-namespaces)/)",
+	// 	"node_modules/(?!(remark-gfm|react-markdown|vfile|unist|unified|bail|is-plain-obj|trough|remark|micromark|markdown-table|decode-named-character-reference|character-entities|property-information|hast|space-separated-tokens|comma-separated-tokens|mdast|mdast-util-to-hast|remark-rehype|trim-lines|rehype|html-void-elements|ccount|escape-string-regexp|strip-markdown|react-is|estree-util|format|is-|mdast-util-|unist-util-|zwitch|hastscript|web-namespaces)/)",
 	// ],
 	collectCoverage: true,
 	coverageProvider: "v8",

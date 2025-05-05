@@ -10,7 +10,7 @@ describe("Login (index) page", () => {
 		expect(loginLabel).toBeInTheDocument();
 
 		// Verify that the app name is displayed
-		const appName = screen.getByText("WLC Test");
+		const appName = screen.getByText("AbhiPay");
 		expect(appName).toBeInTheDocument();
 
 		// Verify that the verify button exists
