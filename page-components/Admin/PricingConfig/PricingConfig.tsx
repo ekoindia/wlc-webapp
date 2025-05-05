@@ -1,5 +1,5 @@
 import { Avatar, Flex, Grid, Skeleton, Text, Tooltip } from "@chakra-ui/react";
-import { BreadcrumbWrapper, Headings, Icon } from "components";
+import { BreadcrumbWrapper, Icon, PageTitle } from "components";
 import useHslColor from "hooks/useHslColor";
 import { useRouter } from "next/router";
 import { DownloadPricing } from "page-components/Admin/PricingCommission/DownloadPricing";
@@ -72,6 +72,7 @@ const findNodeInTree = (
  * @returns {JSX.Element} - Rendered PricingConfig component.
  */
 const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
+	console.log("[Pricing] pathArray", pathArray);
 	const [currentPricingTreeNode, setCurrentPricingTreeNode] = useState<
 		ProductNode[] | null
 	>(null);
@@ -124,8 +125,8 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 
 	// Set the page title and icon based on the current node
 	const title = crumbs?.[crumbs.length - 1]?.label ?? "Pricing & Commissions";
-	const hasIcon = Boolean(pathArray?.length > 0);
-	const propComp = pathArray?.length > 0 ? null : <DownloadPricing />;
+	const hideBackIcon = !(pathArray?.length ?? 0 >= 1);
+	const toolComponent = pathArray?.length > 0 ? null : <DownloadPricing />;
 
 	// Render the appropriate UI based on the current pricing node
 	const renderContent = (): JSX.Element | null => {
@@ -160,10 +161,13 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 			/>
 		);
 	};
-
 	return (
 		<BreadcrumbWrapper crumbs={crumbs}>
-			<Headings title={title} hasIcon={hasIcon} propComp={propComp} />
+			<PageTitle
+				title={title}
+				hideBackIcon={hideBackIcon}
+				toolComponent={toolComponent}
+			/>
 			<Flex
 				direction="column"
 				px={{ base: "16px", md: "initial" }}
