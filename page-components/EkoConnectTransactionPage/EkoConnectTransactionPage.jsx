@@ -236,6 +236,16 @@ const EkoConnectTransactionPage = ({ start_id, paths, ...rest }) => {
 		openCamera
 	);
 
+	// Handle null user data
+	if (!userData) {
+		return null;
+	}
+
+	// Handle null start_id
+	if (!start_id) {
+		return null;
+	}
+
 	// Handle widget load error
 	if (widgetLoadState === "error" || scriptLoadState === "error") {
 		return (
@@ -372,7 +382,7 @@ const EkoConnectTransactionPage = ({ start_id, paths, ...rest }) => {
 							process.env.NEXT_PUBLIC_WIDGET_GA_ID || ""
 						}
 						analytics-partner-user-id={
-							userData.accountDetails.code || ""
+							userData.accountDetails?.code || ""
 						}
 						theme-colors={JSON.stringify(theme_colors)}
 					></tf-wlc-widget>

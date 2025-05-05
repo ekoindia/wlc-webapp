@@ -69,7 +69,7 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 			// }}
 			{...rest}
 		>
-			{todos.map((todo, index) => (
+			{todos?.map((todo, index) => (
 				<Flex
 					key={todo + index}
 					direction="row"

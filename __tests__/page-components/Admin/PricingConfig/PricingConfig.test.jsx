@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { PricingConfig } from "components/PricingConfig";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:

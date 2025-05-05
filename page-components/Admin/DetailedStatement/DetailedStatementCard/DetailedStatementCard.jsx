@@ -10,6 +10,10 @@ import { Icon } from "components";
  */
 
 const DetailedStatementCard = ({ item }) => {
+	if (!item) {
+		return null;
+	}
+
 	return (
 		<Flex
 			direction="column"

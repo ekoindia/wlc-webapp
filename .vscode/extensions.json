@@ -6,6 +6,7 @@
 		"github.copilot-chat",
 		"yoavbls.pretty-ts-errors",
 		"esbenp.prettier-vscode",
-		"joshbolduc.commitlint"
+		"joshbolduc.commitlint",
+		"orta.vscode-jest"
 	]
 }

@@ -1,5 +1,5 @@
-import { GoogleButton } from "components/GoogleButton";
-import { render } from "test-utils";
+import { GoogleButton } from "page-components/LoginPanel/Login/GoogleButton";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("GoogleButton", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<GoogleButton />);
+		const { container } = pageRender(<GoogleButton />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

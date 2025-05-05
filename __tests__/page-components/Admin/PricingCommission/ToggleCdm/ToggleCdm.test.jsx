@@ -1,5 +1,5 @@
-import { ToggleCdm } from "components/ToggleCdm";
-import { render } from "test-utils";
+import { ToggleCdm } from "page-components/Admin/PricingCommission/ToggleCdm";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("ToggleCdm", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<ToggleCdm />);
+		const { container } = pageRender(<ToggleCdm />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

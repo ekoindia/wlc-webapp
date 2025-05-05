@@ -1,5 +1,5 @@
-import { CardPayment } from "components/CardPayment";
-import { render } from "test-utils";
+import { CardPayment } from "page-components/Admin/PricingCommission/CardPayment";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("CardPayment", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<CardPayment />);
+		const { container } = pageRender(<CardPayment />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

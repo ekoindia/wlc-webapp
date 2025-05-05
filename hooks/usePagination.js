@@ -5,13 +5,23 @@ export const DOTS = "...";
 const range = (start, end) =>
 	Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
 
+/**
+ * Custom hook to handle pagination logic
+ * @param {object} params - The parameters for the hook
+ * @param {number} params.totalCount - The total number of items
+ * @param {number} params.pageSize - The number of items per page
+ * @param {number} params.siblingCount - The number of sibling pages to show
+ * @param {number} params.currentPage - The current page number
+ * @param {number} params.tableDataSize - The size of the table data
+ * @returns {Array} - The pagination array
+ */
 const usePagination = ({
 	totalCount,
 	pageSize,
 	siblingCount = 1,
 	currentPage,
 	tableDataSize,
-}) => {
+} = {}) => {
 	const pagination = useMemo(() => {
 		if (totalCount === undefined) {
 			const hasNextPage = tableDataSize >= pageSize;

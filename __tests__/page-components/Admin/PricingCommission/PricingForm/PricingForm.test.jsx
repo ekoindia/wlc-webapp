@@ -1,5 +1,5 @@
-import { PricingForm } from "components/PricingForm";
-import { render } from "test-utils";
+import { PricingForm } from "page-components/Admin/PricingCommission/PricingForm";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("PricingForm", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<PricingForm />);
+		const { container } = pageRender(<PricingForm />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

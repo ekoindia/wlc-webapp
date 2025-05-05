@@ -1,5 +1,5 @@
-import { render } from "test-utils";
 import { GatewayWidget } from "components/GatewayWidget";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { GatewayWidget } from "components/GatewayWidget";
 
 describe("GatewayWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<GatewayWidget />);
+		const { container } = pageRender(<GatewayWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

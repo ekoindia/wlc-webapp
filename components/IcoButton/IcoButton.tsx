@@ -50,7 +50,7 @@ const IcoButton = ({
 	onClick,
 	...rest
 }: IcoButtonProps): JSX.Element => {
-	const clickable: boolean = onClick === undefined;
+	const clickable: boolean = onClick && typeof onClick === "function";
 
 	const IconElement = icon;
 
@@ -120,12 +120,13 @@ const IcoButton = ({
 	return (
 		<Center
 			as="button"
+			data-testid="ico-button"
 			title={title}
 			width={bgSize}
 			height={bgSize}
 			minW={bgSize}
 			rounded={rounded}
-			cursor={clickable ? "auto" : "pointer"}
+			cursor={clickable ? "pointer" : "auto"}
 			onClick={onClick}
 			overflow="hidden"
 			{...btnTheme}

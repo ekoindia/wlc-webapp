@@ -1,5 +1,5 @@
-import { UpiFundTransfer } from "components/UpiFundTransfer";
-import { render } from "test-utils";
+import { UpiFundTransfer } from "page-components/Admin/PricingCommission/UpiFundTransfer";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("UpiFundTransfer", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<UpiFundTransfer />);
+		const { container } = pageRender(<UpiFundTransfer />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -1,5 +1,5 @@
-import { CreditCardBillPayment } from "components/CreditCardBillPayment";
-import { render } from "test-utils";
+import { CreditCardBillPayment } from "page-components/Admin/PricingCommission/CreditCardBillPayment";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("CreditCardBillPayment", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<CreditCardBillPayment />);
+		const { container } = pageRender(<CreditCardBillPayment />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

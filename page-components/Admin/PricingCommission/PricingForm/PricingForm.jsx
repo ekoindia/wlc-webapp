@@ -1,14 +1,14 @@
-import { useMemo } from "react";
 import { Flex, Text } from "@chakra-ui/react";
-import { Headings } from "components";
-import { ConfigGrid } from "../ConfigGrid";
+import { PageTitle } from "components";
 import {
-	products,
 	business_config_slug_map,
 	productPricingType,
+	products,
 } from "constants";
 import { useFeatureFlag } from "hooks";
 import dynamic from "next/dynamic";
+import { useMemo } from "react";
+import { ConfigGrid } from "../ConfigGrid";
 
 /**
  * Map template to the component name
@@ -130,7 +130,7 @@ export default PricingForm;
 const PricingPageHeader = ({ label, note, children }) => {
 	return (
 		<div>
-			<Headings title={label} />
+			<PageTitle title={label} />
 			<Flex direction="column" mx={{ base: "4", md: "0" }} mb="32">
 				{note?.length > 0 ? (
 					<Text mb="20px" fontSize={{ base: "xs", sm: "sm" }}>

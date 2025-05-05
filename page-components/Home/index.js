@@ -1,3 +1,4 @@
+export { default as AiChatWidget } from "./AiChatWidget";
 export { BillPaymentWidget } from "./BillPaymentWidget";
 export { CommonTrxnWidget } from "./CommonTrxnWidget";
 export { default as Home } from "./Home";

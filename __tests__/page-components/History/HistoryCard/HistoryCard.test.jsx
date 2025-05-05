@@ -1,5 +1,5 @@
-import { HistoryCard } from "components/HistoryCard";
-import { render } from "test-utils";
+import { HistoryCard } from "page-components/History/HistoryTable/";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("HistoryCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<HistoryCard />);
+		const { container } = pageRender(<HistoryCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

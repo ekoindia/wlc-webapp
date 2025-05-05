@@ -1,5 +1,5 @@
-import { PersonalDetailCard } from "components/PersonalDetailCard";
-import { render } from "test-utils";
+import { PersonalDetailCard } from "page-components/Profile/PersonalDetailCard";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("PersonalDetailCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<PersonalDetailCard />);
+		const { container } = pageRender(<PersonalDetailCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

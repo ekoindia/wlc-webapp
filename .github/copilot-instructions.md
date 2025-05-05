@@ -1,130 +1,175 @@
-- Every time you choose to apply a rule(s), explicitly state the rule(s) in the output. You can abbreviate the rule description to a single word or phrase.
-- Ask me, if necessary and only once, a series of yes/no questions that will help you provide a better recommendation.
-- Log every change you make with a summary and files you have changed in a log file named `aichanges.md`. If it doesn't exist then create it as well.
+## GitHub Copilot Instructions
+
+- **Explicitly state the rule(s)** you're applying in each output. Use concise phrases to indicate applied rules.
+- **When uncertain**, ask a series of concise, yes/no clarifying questions (maximum once per interaction).
+
+---
 
 ## Project Context: Eloka SaaS Web App
-White-labeled, multi-tenant, SaaS web-app to manage a network of agents who make financial transactions via this app.
-- Lets an Admin do the following:
-	- manage agent network and their business
-	- configure fintech products available for agents
-	- configure pricing and commissions for each product
-	- configure the UI of this app for their network, including custom domain, app name, logo, color theme, landing page design, etc
-	- manage their wallet
-- Lets users (agents) do the following:
-	- signup and complete their KYC
-	- use the financial services
-	- manage their wallet
-	- raise tickets for any issue
 
-## Code Style and Structure
-- Write concise, technical TypeScript code with accurate examples
-- Use functional and declarative programming patterns; avoid classes
-- Prefer iteration and modularization over code duplication
-- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError)
-- Use tabs for indentation
-- Structure repository files as follows:
+Eloka is a **white-labeled, multi-tenant SaaS web app** enabling Admins to manage networks of agents handling financial transactions.
+
+### Admin Capabilities
+- **Manage Agent Network**: Onboarding, KYC verification, activity tracking, and business analytics.
+- **Configure Fintech Products**: Enable/disable products, feature toggles, and integrations.
+- **Pricing & Commissions**: Setup flexible commission structures per agent, product, and tier.
+- **Customization & Branding**: Domain, app name, logos, color themes, and landing page layout.
+- **Wallet Management**: Admin-level wallet operations, reconciliation, and monitoring.
+
+### Agent Capabilities
+- **Account Setup**: Self-registration, KYC submission, and verification tracking.
+- **Financial Transactions**: Conduct various financial operations seamlessly.
+- **Wallet Operations**: Top-up, withdrawal, balance management, and transaction history.
+- **Issue Resolution**: Ticketing system for issue reporting and resolution tracking.
+
+---
+
+## Coding Style Guidelines
+
+- Write **concise, self-explanatory TypeScript** code with accurate examples.
+- Prefer **functional and declarative patterns**; avoid OOP and classes.
+- Use **modular and reusable functions** to minimize duplication.
+- **Descriptive, semantic naming** for variables/functions (e.g., `isLoading`, `hasError`).
+- Use **tabs for indentation** consistently across all files.
+- For conditional rendering, prefer **ternary operators** over && and ||.
+- Always use **optional chaining** (`?.`) for object properties to avoid null/undefined errors.
+- Use **nullish coalescing** (`??`) for default values instead of logical OR (`||`).
+
+### Repository Structure
 ```
 Eloka Web App
-├── __tests__/			# All Unit and integration tests. Sub-folders follow the same structure as the main codebase
-├── components/			# Reusable React UI components with sub-folders for each component
-├── constants/			# Application constants
-├── contexts/			# React context providers
-├── docs/				# Detailed project documentation
-├── helpers/			# Helper functions specific to the app business logic
-├── hooks/				# Custom React hooks
-├── layout-components/	# Layout-specific components with sub-folders for each component
-├── libs/				# External shared libraries
-├── page-components/	# Components specific to individual pages with sub-folders for each page and path
-├── pages/				# Next.js pages
-├── public/				# Public images, scripts and other files
-├── styles/				# Chakra UI Theme configurations
-├── tf-components/		# Special components for low-code form rendering based on transaction-framework rule engine
-├── utils/				# General-purpose utility functions
-└── README.md			# Project documentation
+├── __tests__/              # All tests (unit/integration), mirroring main code structure
+├── components/             # Reusable React UI components
+├── constants/              # Application-wide constants
+├── contexts/               # React context providers
+├── docs/                   # Comprehensive project documentation
+├── helpers/                # Business-specific helper functions
+├── hooks/                  # Custom React hooks
+├── layout-components/      # Components specific to layout and navigation
+├── libs/                   # External and shared libraries
+├── page-components/        # Page-specific React components
+├── pages/                  # Next.js page routes
+├── public/                 # Static assets (images, scripts)
+├── styles/                 # Chakra UI theme and global styling
+├── tf-components/          # Components for low-code forms (transaction framework)
+├── utils/                  # General-purpose utility functions
+└── README.md               # Setup and usage documentation
 ```
+
+---
 
 ## Tech Stack
-- React
-- Next.js
-- TypeScript
-- ChakraUI
-- Jest
-- Storybook
+
+- **React** (Hooks, Functional Components)
+- **Next.js** (SSR, Dynamic Routes)
+- **TypeScript**
+- **Chakra UI** (Design system)
+- **Jest** (Unit/Integration Testing)
+- **Storybook** (Component Documentation)
+
+---
 
 ## Naming Conventions
-- Use lowercase with dashes for directories (e.g., components/form-wizard)
-- Favor named exports for components and utilities
-- Use PascalCase for component files (e.g., VisaForm.tsx)
-- Use camelCase for utility files (e-g., formValidator.ts)
 
-## TypeScript Usage
-- Prefer interfaces over types
-- Avoid enums; use const objects with 'as const' assertion
-- Use functional components with TypeScript interfaces
-- Use absolute imports for all files: 'components/...', 'hooks/...', etc
-- Use explicit return types for all functions
+- **Directories**: lowercase with dashes (e.g., `form-wizard`)
+- **Component Files**: PascalCase (`VisaForm.tsx`)
+- **Utility Files**: camelCase (`formValidator.ts`)
+- **Exports**: Prefer named exports over defaults.
 
-## UI and Styling
-- Use Chakra UI for components and styling
-- Prefer components in the 'components/' directory
+---
 
-## Performance Optimization
-- Implement proper lazy loading for non-critical components
-- Use proper caching strategies
-- Implement proper cleanup for event listeners, observers and useEffect hooks
+## TypeScript Best Practices
 
-## Testing
-- Create test-cases for generated code
-- Ensure full test coverage for all components and utilities
-- Generate all tests in the `__tests__` folder. Sub-folders follow the same structure as the main codebase.
-- Use Jest for unit tests
-- Use `test-utils` helper for writing test code, which exports:
-	- * from "@testing-library/dom"
-	- * from "@testing-library/react";
-	- userEvent from "@testing-library/user-event"
-	- mockRouter from "next-router-mock"
-	- pageRender - wrapper for render() with context providers for a logged-in user
-	- adminRender - wrapper for render() with context providers for a logged-in Admin user
-	- loggedOutPageRender - wrapper for render() with context providers for a logged-out user
+- **Prefer Interfaces** over types for defining object shapes.
+- **Avoid Enums**: Use constant objects with `as const` assertion.
+- **Explicit Return Types** on all functions/components.
+- **Absolute Imports** consistently (e.g., `components/Button`).
 
-For Example:
-```
-import { render, pageRender, adminRender, renderHook } from "test-utils";
-import { Button } from "components";
+---
 
-describe("Button", () => {
-	it("renders without error", () => {
+## UI & Styling
+
+- Prefer custom components in the `components` folder over Chakra UI's built-in components (e.g., `components/Button`, `components/Input`, `components/Select`).
+- Exclusively use **Chakra UI** for styling and base components where custom components aren't available.
+
+---
+
+## Performance & Optimization
+
+- Implement **lazy loading** (dynamic imports) for non-critical components.
+- Apply appropriate **caching strategies** to minimize unnecessary re-renders.
+- Ensure proper **cleanup** for event listeners, intervals, and effects (`useEffect` cleanup).
+
+---
+
+## Testing Practices
+
+- Ensure comprehensive test coverage (**unit & integration**).
+- Write tests within the `__tests__/` directory, mirroring the main file structure.
+- Utilize `test-utils` to standardize rendering tests:
+  - Re-export from:
+    - `@testing-library/react`
+    - `@testing-library/dom`
+    - `@testing-library/user-event`
+    - `next-router-mock`
+  - Custom render wrappers:
+    - `pageRender` (logged-in user)
+    - `adminRender` (logged-in Admin)
+    - `loggedOutPageRender` (logged-out user)
+
+**Example Test Structure:**
+
+```tsx
+import { render, pageRender } from "test-utils";
+import { Button } from "components/Button";
+
+describe("Button component", () => {
+	it("renders successfully", () => {
 		const { container } = render(<Button />);
 		expect(container).not.toBeEmptyDOMElement();
-  });
+	});
 });
 ```
 
-## Git Usage
-Commit Message Prefixes:
-- "fix:" for bug fixes
-- "feat:" for new features
-- "perf:" for performance improvements
-- "docs:" for documentation changes
-- "style:" for formatting changes
-- "refactor:" for code refactoring
-- "test:" for adding missing tests
-- "build:" for build-related changes
-- "chore:" for maintenance tasks
-- "ci:" for CI/CD changes
-- "wip:" for work in progress
-- "revert:" for reverting changes
-- "security:" for security updates
-- "config:" for configuration changes
+---
 
-Rules:
-- Use lowercase for commit messages
-- keep the summary line concise
-- Include description for non-obvious changes
+## Git Commit Guidelines
 
-## Documentation
-- Maintain clear README with setup instructions
-- Include detailed comments for complex logic
-- Write detailed JSDoc-style comments wherever applicable
-	1. For example, write JSDoc for an optional parameters in the following style: `@param {data-type} [paramName] - Description of the parameter`
-- Maintain detailed documentation in `docs/` folder
+Use **semantic prefixes** for clarity:
+
+- `fix:` Bug fixes
+- `feat:` New features
+- `perf:` Performance improvements
+- `docs:` Documentation updates
+- `style:` Code formatting (no logic change)
+- `refactor:` Code refactoring
+- `test:` Adding tests
+- `build:` Build/configuration changes
+- `chore:` Maintenance tasks
+- `ci:` CI/CD pipeline updates
+- `wip:` Work-in-progress
+- `revert:` Reverting commits
+- `security:` Security patches
+- `config:` Configuration changes
+
+**Commit Messages:**
+- Lowercase, concise, and descriptive summaries.
+- Detailed body for non-obvious or major changes.
+
+---
+
+## Documentation Standards
+
+- Maintain a clear, comprehensive **README** (setup, dependencies, usage).
+- Add detailed comments/JSDoc for complex or non-trivial logic.
+- Use JSDoc format explicitly, especially for optional parameters:
+
+```typescript
+/**
+ * Example function description
+ * @param {string} userId - Unique identifier
+ * @param {boolean} [isAdmin] - Admin privileges flag
+ */
+```
+
+- Keep extensive technical documentation in the `docs/` folder.

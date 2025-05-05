@@ -1,5 +1,5 @@
 import { Box, Divider, Flex, Select, Text } from "@chakra-ui/react";
-import { Button, Calenders, Headings, Icon, Switch } from "components";
+import { Button, Calenders, Icon, PageTitle, Switch } from "components";
 import Router from "next/router";
 import { useState } from "react";
 /**
@@ -17,7 +17,7 @@ const UpdateSellerInfo = () => {
 
 	return (
 		<>
-			<Headings title="Update Agent Information" />
+			<PageTitle title="Update Agent Information" />
 			<Flex
 				pb={{ base: "0", md: "40px" }}
 				bg={{ base: "none", md: "white" }}

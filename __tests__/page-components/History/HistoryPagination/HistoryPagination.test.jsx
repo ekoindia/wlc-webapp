@@ -1,4 +1,4 @@
-import { HistoryPagination } from "components/HistoryPagination";
+import { HistoryPagination } from "page-components/History/HistoryPagination";
 import { render } from "test-utils";
 
 /*

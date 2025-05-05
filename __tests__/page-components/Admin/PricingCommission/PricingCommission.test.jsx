@@ -1,4 +1,4 @@
-import ConfigPageCard from "page-components/Admin/PricingCommission/ConfigPageCard";
+import { ConfigPageCard } from "page-components/Admin/PricingCommission/ConfigPageCard";
 import { pageRender } from "test-utils";
 
 /*

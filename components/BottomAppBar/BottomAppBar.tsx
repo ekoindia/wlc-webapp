@@ -73,7 +73,9 @@ const BottomAppBar = ({
 	}, [lastScrollTop, router.asPath]);
 
 	// If there are no bottom bar items, return null
-	if (items?.length <= 0) return null;
+	if (!(items?.length > 0)) {
+		return null;
+	}
 
 	return (
 		<Flex

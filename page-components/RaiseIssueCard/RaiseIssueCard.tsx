@@ -21,7 +21,7 @@ import {
 import useRefreshToken from "hooks/useRefreshToken";
 import { initializeTextClassifier } from "libs";
 import { useEffect, useRef, useState } from "react";
-import { RiScreenshot2Line, RiCheckboxCircleFill } from "react-icons/ri";
+import { RiCheckboxCircleFill, RiScreenshot2Line } from "react-icons/ri";
 import Markdown from "react-markdown";
 
 // MARK: Constants

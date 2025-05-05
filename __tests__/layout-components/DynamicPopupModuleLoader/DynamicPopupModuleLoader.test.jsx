@@ -1,5 +1,5 @@
-import { DynamicPopupModuleLoader } from "components/DynamicPopupModuleLoader";
-import { render } from "test-utils";
+import { DynamicPopupModuleLoader } from "layout-components/DynamicPopupModuleLoader";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("DynamicPopupModuleLoader", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<DynamicPopupModuleLoader />);
+		const { container } = pageRender(<DynamicPopupModuleLoader />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

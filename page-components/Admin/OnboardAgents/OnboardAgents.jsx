@@ -1,5 +1,5 @@
 import { Box } from "@chakra-ui/react";
-import { Headings, Tabs } from "components";
+import { PageTitle, Tabs } from "components";
 import { OnboardViaFile, OnboardViaForm } from ".";
 
 /**
@@ -13,7 +13,7 @@ const OnboardAgents = () => {
 	];
 	return (
 		<>
-			<Headings title="Onboard Agents" hasIcon={false} />
+			<PageTitle title="Onboard Agents" hideBackIcon />
 			<Box
 				bg="white"
 				borderRadius="10px"

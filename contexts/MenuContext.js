@@ -35,6 +35,11 @@ const fetchData = async (accessToken) => {
 	}
 };
 
+/**
+ * Context provider for fetching and providing the left-menu items (interactions).
+ * @param root0
+ * @param root0.children
+ */
 const MenuProvider = ({ children }) => {
 	const { isLoggedIn, isAdmin, accessToken } = useSession();
 	const [interactions, setInteractions] = useState({

@@ -1,5 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { Headings, SearchBar } from "components";
+import { PageTitle, SearchBar } from "components";
 import useRequest from "hooks/useRequest";
 import { useEffect, useState } from "react";
 import { TransactionHistoryTable } from ".";
@@ -37,7 +37,7 @@ const TransactionHistory = () => {
 
 	return (
 		<>
-			<Headings title="Transaction History" hasIcon={false} />
+			<PageTitle title="Transaction History" hideBackIcon />
 			<Flex
 				direction="column"
 				w="100%"

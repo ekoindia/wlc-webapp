@@ -1,4 +1,4 @@
-import { NetworkFilter } from "components/NetworkFilter";
+import { NetworkFilter } from "page-components/Admin/Network/NetworkFilter";
 import { render } from "test-utils";
 
 /*

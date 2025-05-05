@@ -14,6 +14,10 @@ const EarningSummary = ({ ...rest }) => {
 	const data = useEarningSummary();
 	// console.log("DataAtEarn", data);
 
+	if (!data) {
+		return null;
+	}
+
 	/**
 	 * Return the percentage change between current and last value
 	 * @param {number} currentValue

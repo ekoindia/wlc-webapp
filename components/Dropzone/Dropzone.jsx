@@ -246,7 +246,7 @@ const Dropzone = ({
 			_type = dataTransfer?.items[0]?.type || "";
 		}
 
-		if (_type && (accept === "" || accept.indexOf(_type) >= 0)) {
+		if (_type && (accept === "" || accept?.indexOf(_type) >= 0)) {
 			setIsValidDrop(true);
 		} else {
 			setIsValidDrop(false);
@@ -303,7 +303,7 @@ const Dropzone = ({
 								!(
 									_type &&
 									(accept === "" ||
-										accept.indexOf(_type) >= 0)
+										accept?.indexOf(_type) >= 0)
 								)
 							) {
 								return;

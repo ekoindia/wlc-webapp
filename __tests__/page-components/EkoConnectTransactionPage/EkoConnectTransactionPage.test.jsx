@@ -1,5 +1,5 @@
-import { render } from "test-utils";
-import { EkoConnectTransactionPage } from "components/EkoConnectTransactionPage";
+import { EkoConnectTransactionPage } from "page-components/EkoConnectTransactionPage";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { EkoConnectTransactionPage } from "components/EkoConnectTransactionPage"
 
 describe("EkoConnectTransactionPage", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<EkoConnectTransactionPage />);
+		const { container } = pageRender(<EkoConnectTransactionPage />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

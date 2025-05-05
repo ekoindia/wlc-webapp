@@ -1,5 +1,5 @@
-import { NetworkMenuWrapper } from "components/NetworkMenuWrapper";
-import { render } from "test-utils";
+import { NetworkMenuWrapper } from "page-components/Admin/Network/NetworkMenuWrapper";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("NetworkMenuWrapper", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<NetworkMenuWrapper />);
+		const { container } = pageRender(<NetworkMenuWrapper />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

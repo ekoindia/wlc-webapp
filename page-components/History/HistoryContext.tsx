@@ -112,6 +112,9 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 	 * useEffect: Calculate processedData with computed values (if the `compute` function is defined).
 	 */
 	useEffect(() => {
+		if (!data) {
+			return;
+		}
 		let _processedData = [...data];
 
 		// Get a list of all fields in mainColumns and extraColumns which has a computed value

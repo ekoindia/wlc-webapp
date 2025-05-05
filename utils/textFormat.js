@@ -36,11 +36,13 @@ export const capitalize = (str, lower = true) => {
 };
 
 /**
- * Removes null from a given text
+ * Removes null from a text representing comma-separated values
  * @param {*} text Text from which null needs to be removed
- * @returns
+ * @returns {string} Text without null values
  */
 export const nullRemover = (text) => {
+	if (!text) return "";
+
 	const _filteredText = text
 		.split(/\s*,\s*/)
 		.filter((item) => !/^null$/i.test(item.trim()));

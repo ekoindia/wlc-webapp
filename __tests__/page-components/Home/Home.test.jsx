@@ -1,5 +1,5 @@
-import { Home } from "components/Home";
-import { render } from "test-utils";
+import { Home } from "page-components/Home";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Home", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Home />);
+		const { container } = pageRender(<Home />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -9,6 +9,10 @@ import { Box, Flex } from "@chakra-ui/react";
  */
 
 const AccountStatementCard = ({ item }) => {
+	if (!item) {
+		return null;
+	}
+
 	return (
 		<Flex
 			direction="column"

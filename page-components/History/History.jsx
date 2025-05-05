@@ -1,5 +1,5 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
-import { Button, Headings, Icon, PrintReceipt } from "components";
+import { Button, Icon, PageTitle, PrintReceipt } from "components";
 import {
 	Endpoints,
 	ParamType,
@@ -743,7 +743,7 @@ const History = ({ forNetwork = false }) => {
 	// MARK: JSX
 	return (
 		<>
-			<Headings
+			<PageTitle
 				title={
 					forNetwork ? "Network Transactions" : "Transaction History"
 				}

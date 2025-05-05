@@ -1,5 +1,5 @@
-import { ProfileWidget } from "components/ProfileWidget";
-import { render } from "test-utils";
+import { ProfileWidget } from "page-components/Profile/ProfileWidget";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("ProfileWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<ProfileWidget />);
+		const { container } = pageRender(<ProfileWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

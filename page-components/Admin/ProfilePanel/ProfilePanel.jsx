@@ -1,5 +1,5 @@
 import { Box, Flex, Grid, GridItem, Text } from "@chakra-ui/react";
-import { Button, Headings, Icon, Menus } from "components";
+import { Button, Icon, Menus, PageTitle } from "components";
 import { ChangeRoleMenuList, Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -190,9 +190,9 @@ const ProfilePanel = () => {
 
 	return (
 		<>
-			<Headings
+			<PageTitle
 				title={isMenuVisible ? "Change Role" : "Agent Details"}
-				propComp={
+				toolComponent={
 					changeRoleMenuList.length > 0 && (
 						<ChangeRoleDesktop
 							changeRoleMenuList={changeRoleMenuList}
@@ -200,8 +200,8 @@ const ProfilePanel = () => {
 						/>
 					)
 				}
-				redirectHandler={isMenuVisible ? menuHandler : null}
-				isCompVisible={!isMenuVisible}
+				onBack={isMenuVisible ? menuHandler : null}
+				hideToolComponent={isMenuVisible}
 			/>
 			{isMenuVisible ? (
 				<ChangeRoleMobile changeRoleMenuList={changeRoleMenuList} />

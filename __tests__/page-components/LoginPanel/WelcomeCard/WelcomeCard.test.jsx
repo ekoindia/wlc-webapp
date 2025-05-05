@@ -1,4 +1,4 @@
-import { WelcomeCard } from "components/WelcomeCard";
+import { WelcomeCard } from "page-components/LoginPanel/WelcomeCard";
 import { render } from "test-utils";
 
 /*

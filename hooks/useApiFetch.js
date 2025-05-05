@@ -1,3 +1,4 @@
+import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
@@ -6,9 +7,10 @@ import { useEffect, useState } from "react";
 /**
  * Hook for fetching data from the Eloka internal APIs (using the fetcher utility). It's a wrapper around the fetcher utility which automatically takes care of token refresh and other common API-related tasks.
  * @param {string} defaultUrlEndpoint - The default URL endpoint to fetch data from. If not provided, it can be overwritten later during the actual fetch call.
- * @param {object} settings - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
- * @param {Function} settings.onSuccess - The callback function to be called on successful fetch.
- * @param {Function} settings.onError - The callback function to be called on fetch error.
+ * @param {object} [settings] - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
+ * @param {string} [settings.method] - The HTTP method to use for the fetch request. Default is "POST".
+ * @param {Function} [settings.onSuccess] - The callback function to be called on successful fetch.
+ * @param {Function} [settings.onError] - The callback function to be called on fetch error.
  * @param {boolean} [settings.noAuth] - Flag to indicate if the fetch request should skip passing the access token. Default is `false`.
 //  * @param {boolean} [settings.noClientRefId] - Flag to indicate if the fetch request should skip passing the unique client-reference-ID. Default is `false`.
  * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
@@ -47,13 +49,10 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 		...options
 	} = settings || {};
 
-	const [endpoint] = useState(defaultUrlEndpoint);
-	// const [options] = useState(otherOptions);
-	const [controller, setController] = useState();
-
 	const { generateNewToken } = useRefreshToken();
 	const { accessTokenLite } = useSession();
-
+	const [endpoint] = useState(defaultUrlEndpoint);
+	const [controller, setController] = useState();
 	const [loading, setLoading] = useState(false);
 
 	/**
@@ -121,13 +120,15 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 					...options?.body,
 					...body,
 				},
-				method: method || options.method,
-				headers: headers || options.headers,
-				timeout: timeout || options.timeout,
+				method: method || options?.method,
+				headers: headers || options?.headers,
+				timeout: timeout || options?.timeout,
 				token:
-					token || options.token || (noAuth ? null : accessTokenLite),
+					token ||
+					options?.token ||
+					(noAuth ? null : accessTokenLite),
 				controller: controller,
-				isMultipart: isMultipart || options.isMultipart,
+				isMultipart: isMultipart || options?.isMultipart,
 			},
 		};
 
@@ -146,8 +147,8 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 			return { data, request: requestSummary };
 		} catch (err) {
 			const errResponse = {
-				data: err.response,
-				status: err.status,
+				data: err?.response,
+				status: err?.status,
 				error: true,
 				errorObject: err,
 				request: requestSummary,
@@ -173,6 +174,54 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 	};
 
 	return [fetchApiData, loading, cancelFetch];
+};
+
+/**
+ * Wrapper around the `useApiFetch` hook to fetch data from the Eko's EPS API v3 APIs.
+ * This is a specialized version of the `useApiFetch` hook that is tailored for the EPS API v3.
+ * @param {string} defaultUrlEndpoint - The default URL endpoint to fetch data from. If not provided, it can be overwritten later during the actual fetch call.
+ * @param {object} [settings] - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
+ * @param {string} [settings.method] - The HTTP method to use for the fetch request. Default is "GET".
+ * @param {Function} [settings.onSuccess] - The callback function to be called on successful fetch.
+ * @param {Function} [settings.onError] - The callback function to be called on fetch error.
+ * @param {boolean} [settings.noAuth] - Flag to indicate if the fetch request should skip passing the access token. Default is `false`.
+//  * @param {boolean} [settings.noClientRefId] - Flag to indicate if the fetch request should skip passing the unique client-reference-ID. Default is `false`.
+ * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
+ * @example
+ * If the URL is "POST https://api.eko.in/ekoicici/v3/tools/kyc/pan", use the following:
+ * ```javascript
+ * const [fetchPan, loading, cancelFetchPan] = useEpsV3Fetch(
+ * 	"/tools/kyc/pan", {
+ * 		method: "POST",
+ * 		body: {
+ * 			pan: "ABCDE1234F",
+ * 			// other body parameters...
+ * 		},
+ * 		onSuccess: (data) => {
+ * 			console.log("Success: ", data);
+ * 		},
+ * 		onError: (error) => {
+ * 			console.error("Error: ", error);
+ * 		},
+ * 	}
+ * );
+ * ```
+ */
+export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
+	const method = (settings?.method || "GET").toUpperCase();
+	const isGetRequest = method === "GET";
+
+	return useApiFetch(Endpoints.TRANSACTION_JSON, {
+		...settings,
+		method: "POST",
+		headers: {
+			...settings?.headers,
+			"tf-req-uri-root-path": "/ekoicici/v3",
+			"tf-req-uri": defaultUrlEndpoint,
+			"tf-req-method": method,
+			...(isGetRequest ? {} : { "Content-Type": "application/json" }),
+		},
+	});
 };
 
 export default useApiFetch;

@@ -8,7 +8,7 @@ import {
 	Stack,
 	Text,
 } from "@chakra-ui/react";
-import { Icon } from "components";
+import { Icon, Input } from "components";
 import { IconCategories, IconLibrary } from "constants/IconLibrary";
 import { Fragment, useEffect, useState } from "react";
 
@@ -18,6 +18,7 @@ const IconsDemo = () => {
 	const [sortedIcons, setSortedIcons] = useState([]);
 	const [iconCount, setIconCount] = useState(0);
 	const [iconsSize, setIconsSize] = useState(0);
+	const [filter, setFilter] = useState("");
 
 	// Convert IconLibrary object to an array.
 	// Calculate individual & total sizes of all icons.
@@ -53,10 +54,20 @@ const IconsDemo = () => {
 		setIconsSize(_size);
 	}, []);
 
-	// Get sorted icons array
+	// Get sorted and filtered icons array
 	useEffect(() => {
+		const _filter = filter ? filter.toLowerCase() : "";
+		const _filteredIcons = filter
+			? icons.filter((icon) => {
+					const slug = (icon.name + icon.link + icon.category)
+						.replace(/[^a-z]/gi, "")
+						.toLowerCase();
+					return slug.includes(_filter);
+				})
+			: icons;
+
 		const _sortedIcons = sortType
-			? [...icons].sort((a, b) => {
+			? [..._filteredIcons].sort((a, b) => {
 					if (sortType === "name") {
 						return a.name.localeCompare(b.name);
 					}
@@ -74,25 +85,28 @@ const IconsDemo = () => {
 					}
 					return (a.size || 0) - (b.size || 0);
 				})
-			: icons;
+			: _filteredIcons;
 		setSortedIcons(_sortedIcons);
-	}, [icons, sortType]);
+	}, [icons, sortType, filter]);
 
 	return (
 		<>
-			<Box p="20px">
-				<Text as="b" fontSize="2xl">
-					Icon Library
-				</Text>
-				<Text>
-					{iconCount} Icons{" "}
-					<small>({Math.trunc(iconsSize / 1024)} KB bundle)</small>
-				</Text>
-				<br />
+			<Flex direction="column" p="20px" gap="1em">
+				<Flex direction="row" gap="1em" align="center">
+					<Text as="b" fontSize="2xl">
+						Icon Library
+					</Text>
+					<Text>
+						{iconCount} Icons{" "}
+						<small>
+							({Math.trunc(iconsSize / 1024)} KB bundle)
+						</small>
+					</Text>
+				</Flex>
 
 				<RadioGroup onChange={setSortType} value={sortType}>
 					<Stack direction="row" gap={2}>
-						<Text as="b">Sort by: </Text>
+						<Text as="b">Sort by:</Text>
 						<Radio value="">Default</Radio>
 						<Radio value="name">Name</Radio>
 						<Radio value="link">Linked Icons</Radio>
@@ -100,7 +114,20 @@ const IconsDemo = () => {
 						<Radio value="category">Category</Radio>
 					</Stack>
 				</RadioGroup>
-			</Box>
+
+				{/* Add a filter option */}
+				<Flex direction="row" gap={2} align="center">
+					<Text as="b">Filter by:</Text>
+					<Input
+						value={filter}
+						maxW="250px"
+						placeholder="Type to filter icons..."
+						onChange={(e) => {
+							setFilter(e.target.value);
+						}}
+					/>
+				</Flex>
+			</Flex>
 
 			<Flex
 				height={"auto"}
