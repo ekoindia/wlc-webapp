@@ -4,7 +4,7 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 ![Uptime](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fekoindia%2Fuptime%2Fmaster%2Fapi%2Feloka-webapp%2Fuptime.json)
 
 
-## 🧑‍💻 Setup Development Envoirnment:
+## 🧑‍💻 Setup Development Environment:
 
 - One-time Setup:
   - Run `npm i`
@@ -77,19 +77,14 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 - **`__tests__/`**: Contains unit and integration tests for the application. The tests are organized in a similar structure to the main codebase for easy navigation.
 
 
-## 📒 Extended Documentation (docs/)
-- **[`docker-usage.md`](docs/docker-usage.md)**: Instructions for using Docker with the project.
-- **[`features/`](docs/features/)**: Contains detailed documentation for various features of the application.
-  - **[`dashboard.md`](docs/features/dashboard.md)**: Admin dashboard feature documentation.
-  - **[`transaction-history.md`](docs/features/transaction-history.md)**: Transaction history feature documentation.
-
-
-## 📒 Extended Documentation (docs/)
+## 📒 Extended Documentation ([docs/](docs))
 
 - **[`docker-usage.md`](docs/docker-usage.md)**: Instructions for using Docker with the project.
 - **[`features/`](docs/features/)**: Contains detailed documentation for various features of the application.
   - **[`dashboard.md`](docs/features/dashboard.md)**: Admin dashboard feature documentation.
   - **[`transaction-history.md`](docs/features/transaction-history.md)**: Transaction history feature documentation.
+  - **[`pub-sub.md`](docs/features/pub-sub.md)**: How to enable cross-component communication using the Pub/Sub pattern?
+  - **[`android.md`](docs/features/android.md)**: How does Eloka communicate with the Android wrapper app to provide a native experience?
 
 
 ## ✅ Toggle Feature Flags:
@@ -174,47 +169,6 @@ To add pricing configuration page for a new product in the Admin portal under "P
 ### 🚦 Routing (Public vs Private Pages):
 - To add a public page/route (that can be accesseed by anyone, without logging in), add the route in [constants/validRoutes.js](constants/validRoutes.js) within the array: `publicLinks`.
 
-### Pub/Sub
-
-To use pub/sub, follow the following steps:
-- Add your new topic/purpose in the [constants/PubSubTopics.ts](constants/PubSubTopics.ts) file.
-- For publishing events to this topic:
-  ```jsx
-  import { usePubSub } from "contexts";
-
-  const { publish, TOPICS } = usePubSub();
-  publish(TOPIC.MY_TOPIC, data);	// data = additional data to pass to the subscribers
-  ```
-  Where, _data_ is the additional data you want to pass to the subscribers.
-- For subscribing (listening) to the published events:
-  ```jsx
-  import { usePubSub } from "contexts";
-
-  const { subscribe, TOPICS } = usePubSub();
-
-  useEffect(() => {
-	const unsubscribe = subscribe(TOPICS.MY_TOPIC, (data) => {
-			// Subscriber logic here...
-		});
-
-	return unsubscribe;	// Unsubscribe on component unmount
-  }, []);
-  ```
-
-
-### 📱 Android Communication
-
-How does communication with the Android wrapper app work?
-- On Android side:
-	- Android app has a `WebView` which loads this web-app.
-	- Android app has a `JavascriptInterface` which exposes a `postMessage` method to the web-app.
-	- Web-app can call this `postMessage` method to send messages to the Android app.
-	- Android app can listen to these messages and take appropriate actions.
-- On this web-app side:
-	- In the [Layout component](layout-components/Layout/Layout.tsx), the following 1-time setup is done:
-		- Call postMessage method to send a `connect_ready` message to the Android app to let it know that the web-app is ready to receive messages.
-		- Setup a callback function `callFromAndroid` to listen to messages from the Android app.
-	- We have a `postMessage` method in [utils/AndroidUtils.ts](utils/AndroidUtils.ts) which can be used to send messages to the Android app.
 
 ## 🛠️ Common Utilities
 
@@ -263,9 +217,8 @@ The following data is stored in the browser (localStorage & sessionStorage):
 
 ## 🧪 Experimental Features
 ### LLM Chatbot
-- Component: [GptChatBetaWidget.jsx](page-components/Home/GptChatBetaWidget.jsx)
+- Component: [AiChatWidget.jsx](page-components/Home/AiChatWidget.jsx)
 - TODO: use [`react-chatbot-kit`](https://fredrikoseberg.github.io/react-chatbot-kit-docs/) library.
-- The chatbot configuration is done in [components/ChatBot/ChatBot.jsx](components/ChatBot/ChatBot.jsx).
 
 
 ## 📄 [Pages](pages)

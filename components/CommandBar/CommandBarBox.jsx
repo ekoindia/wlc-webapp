@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { useOrgDetailContext, useSession, useTodos } from "contexts";
 import {
+	useAiChatbotPopup,
 	useClipboard,
 	useDebouncedState,
 	useFeatureFlag,
@@ -25,6 +26,7 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
+	getAiChatBotAction,
 	getCalculatorAction,
 	getChatGptAgentAction,
 	getHistorySearchActions,
@@ -185,6 +187,8 @@ function Key({ children, ...rest }) {
  * @param {string} Options.parseLoadState - The state of the dynamically-loaded parse function.
  * @param {Function} Options.setParseLoadState - The function to be used to set the parseLoadState.
  * @param {boolean} Options.isChatGptAgentAllowed - Whether ChatGPT agent is allowed or not.
+ * @param Options.isAiChatBotAllowed
+ * @param Options.showAiChatBot
  */
 const getDynamicActions = ({
 	queryValue,
@@ -201,6 +205,8 @@ const getDynamicActions = ({
 	parseLoadState,
 	setParseLoadState,
 	isChatGptAgentAllowed,
+	isAiChatBotAllowed,
+	showAiChatBot,
 	// showRaiseIssueDialog,
 }) => {
 	const preActions = [];
@@ -237,8 +243,8 @@ const getDynamicActions = ({
 			})
 		);
 
-		// Add ChatGPT agent action...
-		if (isChatGptAgentAllowed) {
+		// Add ChatGPT agent action (only when nothing is typed)...
+		if (isChatGptAgentAllowed && queryValue === "") {
 			preActions.push(
 				...getChatGptAgentAction({
 					queryValue,
@@ -247,6 +253,16 @@ const getDynamicActions = ({
 					userType,
 					toast,
 					copy,
+				})
+			);
+		}
+
+		// Add AI Chatbot action (only when a query is typed)...
+		if (isAiChatBotAllowed && queryValue.length > 0) {
+			preActions.push(
+				...getAiChatBotAction({
+					queryValue,
+					showAiChatBot,
 				})
 			);
 		}
@@ -310,7 +326,10 @@ function RenderResults({ className, isSmallScreen }) {
 		1000
 	);
 
-	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT");
+	const { showAiChatBot } = useAiChatbotPopup();
+
+	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT_LINK");
+	const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT");
 
 	// const { showRaiseIssueDialog } = useRaiseIssue();
 
@@ -337,6 +356,8 @@ function RenderResults({ className, isSmallScreen }) {
 			parseLoadState,
 			setParseLoadState,
 			isChatGptAgentAllowed,
+			isAiChatBotAllowed,
+			showAiChatBot,
 			// showRaiseIssueDialog,
 		});
 		setPreActions(_preActions);
@@ -351,6 +372,7 @@ function RenderResults({ className, isSmallScreen }) {
 		addTodo,
 		parse,
 		isChatGptAgentAllowed,
+		isAiChatBotAllowed,
 	]);
 
 	if (!isLoggedIn) {

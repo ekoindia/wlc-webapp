@@ -266,14 +266,6 @@ export const PanBulkForm = (): JSX.Element => {
 		"/tools/kyc/pan/bulk/status",
 		{
 			method: "GET",
-			queryParams: {
-				reference_id:
-					bulkResponse?.reference_id ??
-					bulkForm.getValues("referenceId"),
-				bulk_verification_id:
-					bulkResponse?.bulk_verification_id ??
-					bulkForm.getValues("bulkVerificationId"),
-			},
 		}
 	);
 
@@ -282,7 +274,16 @@ export const PanBulkForm = (): JSX.Element => {
 		setError(null);
 		try {
 			// Make the API call with query parameters in the URL
-			const response = await fetchBulkStatus();
+			const response = await fetchBulkStatus({
+				body: {
+					reference_id:
+						bulkResponse?.reference_id ??
+						bulkForm.getValues("referenceId"),
+					bulk_verification_id:
+						bulkResponse?.bulk_verification_id ??
+						bulkForm.getValues("bulkVerificationId"),
+				},
+			});
 
 			console.log("Check Status API Response:", response);
 

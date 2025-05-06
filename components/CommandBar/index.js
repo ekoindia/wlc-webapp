@@ -1,4 +1,5 @@
 export { default as ActionIcon } from "./ActionIcon";
+export { getAiChatBotAction } from "./aiChatBotPlugin";
 export { getCalculatorAction } from "./calculatorPlugin";
 export { getChatGptAgentAction } from "./chatGptAgentPlugin";
 export { default as CommandBarBox } from "./CommandBarBox";

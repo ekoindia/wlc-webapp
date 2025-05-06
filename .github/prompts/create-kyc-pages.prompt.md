@@ -36,6 +36,7 @@ Ask for the API documentation if not provided.
 - Use the `InfoTileGrid` component for displaying a group of sub-item links (like PAN, GSTIN, etc.) in a grid format.
 - Add the `ResponseToolbar` component for actions like Back, Reset, and Copy JSON, at the end of the response card.
 - Always decompose large components into smaller internal components for better readability and maintainability.
+- Ensure proper validation of input fields, such as, maxlength, regex patterns, auto-capitalization, etc, as per the API specifications.
 
 ### 4. Component Reuse & Modularity
 
@@ -53,8 +54,6 @@ Ask for the API documentation if not provided.
 ### 5. Coding & Style Guidelines
 
 - See [Copilot-Instructions](../copilot-instructions.md)
-
----
 
 ### 6. Example Structure (for GSTIN)
 
@@ -74,8 +73,6 @@ page-components/
     └── kyc/
         └── [KycFormComponent].tsx
 ```
-
----
 
 ### 7. Verification & Testing
 - Ensure to test the API integration thoroughly.

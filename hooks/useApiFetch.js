@@ -49,13 +49,10 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 		...options
 	} = settings || {};
 
-	const [endpoint] = useState(defaultUrlEndpoint);
-	// const [options] = useState(otherOptions);
-	const [controller, setController] = useState();
-
 	const { generateNewToken } = useRefreshToken();
 	const { accessTokenLite } = useSession();
-
+	const [endpoint] = useState(defaultUrlEndpoint);
+	const [controller, setController] = useState();
 	const [loading, setLoading] = useState(false);
 
 	/**
@@ -191,7 +188,6 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 //  * @param {boolean} [settings.noClientRefId] - Flag to indicate if the fetch request should skip passing the unique client-reference-ID. Default is `false`.
  * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
  * @example
- 
  * If the URL is "POST https://api.eko.in/ekoicici/v3/tools/kyc/pan", use the following:
  * ```javascript
  * const [fetchPan, loading, cancelFetchPan] = useEpsV3Fetch(
@@ -215,38 +211,17 @@ export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 	const method = (settings?.method || "GET").toUpperCase();
 	const isGetRequest = method === "GET";
 
-	let tfReqUri = defaultUrlEndpoint;
-	if (
-		isGetRequest &&
-		settings?.queryParams &&
-		Object.keys(settings.queryParams).length > 0
-	) {
-		const queryParams = new URLSearchParams(
-			settings.queryParams
-		).toString();
-		tfReqUri = `${defaultUrlEndpoint}?${queryParams}`;
-	}
-
-	const headers = {
-		...settings?.headers,
-		"tf-req-method": method,
-		"tf-req-uri-root-path": "/ekoicici/v3",
-		"tf-req-uri": tfReqUri,
-		...(isGetRequest ? {} : { "Content-Type": "application/json" }),
-	};
-
-	const finalSettings = {
+	return useApiFetch(Endpoints.TRANSACTION_JSON, {
+		...settings,
 		method: "POST",
-		headers,
-		...(isGetRequest
-			? {}
-			: settings?.body
-				? { body: JSON.stringify(settings.body) }
-				: {}),
-	};
-
-	const urlToCall = Endpoints.TRANSACTION_JSON;
-	return useApiFetch(urlToCall, finalSettings);
+		headers: {
+			...settings?.headers,
+			"tf-req-uri-root-path": "/ekoicici/v3",
+			"tf-req-uri": defaultUrlEndpoint,
+			"tf-req-method": method,
+			...(isGetRequest ? {} : { "Content-Type": "application/json" }),
+		},
+	});
 };
 
 export default useApiFetch;
