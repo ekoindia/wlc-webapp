@@ -23,7 +23,14 @@ export default [
 
 	// Global configuration
 	{
-		ignores: ["**/*.BAK.*", "**/*.stories.*", "**/*.mocks.*", "**/*.min.*"],
+		ignores: [
+			"**/*.BAK.*",
+			"**/*.stories.*",
+			"**/*.mocks.*",
+			"**/*.min.*",
+			".next/**", // Adding .next folder to ignores
+			"node_modules/**",
+		],
 
 		files: ["**/*.{ts,tsx,jsx,js}"],
 

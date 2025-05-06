@@ -1,5 +1,17 @@
 /**
- * Get dynamic sitemap.xml for the given domain
+ * Get dynamic sitemap.xml for the given domain.
+ * This is a proxy for the sitemap.xml file.
+ * To use this, add the following to your next.config.js file:
+ * ```
+ * async rewrites() {
+ * 		return [
+ * 		...
+ *  	{
+ *  		source: "/sitemap.xml",
+ *  		destination: "/api/sitemap-proxy",
+ *  	},
+ * ];
+ * ```
  * @param req
  * @param res
  */

@@ -1,4 +1,5 @@
-import { HistoryTable } from "components/HistoryTable";
+import { HistoryProvider } from "page-components/History/HistoryContext";
+import { HistoryTable } from "page-components/History/HistoryTable";
 import { render } from "test-utils";
 
 /*
@@ -17,7 +18,9 @@ import { render } from "test-utils";
 
 describe("HistoryTable", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<HistoryTable />);
+		const { container } = render(<HistoryTable />, {
+			wrapper: HistoryProvider,
+		});
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

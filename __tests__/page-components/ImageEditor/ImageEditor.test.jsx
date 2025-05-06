@@ -1,5 +1,5 @@
-import { ImageEditor } from "components/ImageEditor";
-import { render } from "test-utils";
+import { ImageEditor } from "page-components/ImageEditor";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("ImageEditor", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<ImageEditor />);
+		const { container } = pageRender(<ImageEditor />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

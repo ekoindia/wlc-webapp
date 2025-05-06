@@ -5,7 +5,11 @@ const usePlatform = () => {
 	const [isMac, setIsMac] = useState(false);
 
 	useEffect(() => {
-		const userAgent = window.navigator.userAgent.toLowerCase();
+		const userAgent = window?.navigator?.userAgent?.toLowerCase();
+		if (!userAgent) {
+			setPlatform("Unknown");
+			return;
+		}
 		if (userAgent.indexOf("mac") !== -1) {
 			setPlatform("Mac");
 			setIsMac(true);

@@ -6,7 +6,7 @@ import { useCallback } from "react";
 /**
  * @name useRefreshToken
  * @description Use this hook to refresh access_token from any component or hook or context
- * @example const { generateNewToken } =  useRefreshToken();
+ * @example const { generateNewToken } = useRefreshToken();
  */
 const useRefreshToken = () => {
 	// Taken out the data from userContext

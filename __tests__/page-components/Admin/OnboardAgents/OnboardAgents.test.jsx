@@ -1,5 +1,5 @@
-import { OnboardAgents } from "components/OnboardAgents";
-import { render } from "test-utils";
+import { OnboardAgents } from "page-components/Admin/OnboardAgents";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("OnboardAgents", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<OnboardAgents />);
+		const { container } = pageRender(<OnboardAgents />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

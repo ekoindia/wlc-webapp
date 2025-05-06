@@ -6,8 +6,8 @@ const DeleteAccount = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const { userData, isLoggedIn } = useUser();
 
-	const { user_type, mobile } = userData.userDetails;
-	const { app_name, org_id } = orgDetail;
+	const { user_type, mobile } = userData.userDetails || {};
+	const { app_name, org_id } = orgDetail || {};
 	const currentUrl = window.location.href;
 	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
 

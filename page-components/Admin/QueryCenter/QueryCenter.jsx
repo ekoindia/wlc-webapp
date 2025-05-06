@@ -1,22 +1,22 @@
 import {
 	Box,
-	Flex,
-	Text,
 	Drawer,
 	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerFooter,
 	DrawerHeader,
 	DrawerOverlay,
-	DrawerContent,
-	DrawerCloseButton,
-	DrawerFooter,
+	Flex,
+	Text,
 	useToast,
 } from "@chakra-ui/react";
-import { Headings, Button, ChatInput } from "components";
-import { Value } from "tf-components";
-import { TransactionTypes, ParamType } from "constants";
+import { Button, ChatInput, PageTitle } from "components";
+import { ParamType, TransactionTypes } from "constants";
 import { Endpoints } from "constants/EndPoints";
 import { useApiFetch, useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
+import { Value } from "tf-components";
 // import { FaRegUser } from "react-icons/fa6";
 import { FcBusinessman } from "react-icons/fc";
 import { IoTicketOutline } from "react-icons/io5";
@@ -142,7 +142,7 @@ const QueryCenter = () => {
 	// MARK: Main JSX
 	return (
 		<>
-			<Headings title="Query Center" hasIcon={false} />
+			<PageTitle title="Query Center" hideBackIcon />
 
 			<Box mx={{ base: "4", md: "0" }}>
 				{data?.length > 0 ? (

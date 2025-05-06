@@ -36,14 +36,18 @@ const HistoryCard = ({
 	visibleColumns,
 }) => {
 	const { interactions } = useMenuContext();
-	const { trxn_type_prod_map } = interactions;
-	const txicon = trxn_type_prod_map?.[item.tx_typeid]?.icon || null;
-	const { h } = useHslColor(item.tx_name);
+	const { trxn_type_prod_map } = interactions || {};
+	const txicon = trxn_type_prod_map?.[item?.tx_typeid]?.icon || null;
+	const { h } = useHslColor(item?.tx_name);
 	const { isAndroid } = useAppSource();
 	const { orgDetail } = useOrgDetailContext();
 
 	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
 	const { showRaiseIssueDialog } = useRaiseIssue();
+
+	if (!item) {
+		return null;
+	}
 
 	const visible = visibleColumns > 0;
 	const extraColumns = visible ? renderer?.slice(visibleColumns) : [];

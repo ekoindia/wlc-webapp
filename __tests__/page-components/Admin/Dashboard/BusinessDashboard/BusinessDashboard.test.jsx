@@ -1,3 +1,4 @@
+import { DashboardProvider } from "page-components/Admin/Dashboard";
 import BusinessDashboard from "page-components/Admin/Dashboard/BusinessDashboard/BusinessDashboard";
 import { pageRender } from "test-utils";
 
@@ -17,7 +18,11 @@ import { pageRender } from "test-utils";
 
 describe("BusinessDashboard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<BusinessDashboard />);
+		const { container } = pageRender(
+			<DashboardProvider>
+				<BusinessDashboard />
+			</DashboardProvider>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

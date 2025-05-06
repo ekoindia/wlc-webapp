@@ -1,6 +1,6 @@
 import { getChatGptAgentUrl } from "helpers";
 import { Priority } from "kbar";
-import { RiChatAiLine } from "react-icons/ri";
+import { RiOpenaiLine } from "react-icons/ri";
 import { getKBarAction } from ".";
 
 export const getChatGptAgentAction = ({
@@ -59,7 +59,7 @@ export const getChatGptAgentAction = ({
 	return [
 		getKBarAction({
 			id: "chatGptAgent/open",
-			name: "Ask ChatGPT",
+			name: "Ask ChatGPT About Eloka Features",
 			subtitle: `Ask anything about Eloka in your language...`,
 			keywords: queryValue,
 			IconComp: (
@@ -76,7 +76,11 @@ export const getChatGptAgentAction = ({
 							<stop stopColor="#ec2F4B" offset="100%" />
 						</linearGradient>
 					</svg>
-					<RiChatAiLine
+					{/* <RiChatAiLine
+						size="100%"
+						style={{ fill: "url(#bg-gradient)" }}
+					/> */}
+					<RiOpenaiLine
 						size="100%"
 						style={{ fill: "url(#bg-gradient)" }}
 					/>

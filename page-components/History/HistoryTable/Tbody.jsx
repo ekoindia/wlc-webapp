@@ -30,6 +30,7 @@ const Tbody = ({
 	data,
 	mainColumns,
 	extraColumns,
+	aggregatedData,
 	// onRowClick,
 	pageNumber,
 	tableRowLimit,
@@ -39,7 +40,7 @@ const Tbody = ({
 	setExpandedRow,
 }) => {
 	const { interactions } = useMenuContext();
-	const { trxn_type_prod_map } = interactions;
+	const { trxn_type_prod_map } = interactions || {};
 	const [isExpandable, setIsExpandable] = useState(false); // Is the row expandable (i.e, has extra columns)
 	const [columns, setColumns] = useState([]); // Fields to show in the table columns
 
@@ -58,7 +59,8 @@ const Tbody = ({
 						{
 							label: "",
 							show: "ExpandButton",
-							width: "35px",
+							width: "40px",
+							center: true,
 						},
 						...mainColumns,
 					]
@@ -97,23 +99,36 @@ const Tbody = ({
 			));
 	}
 
-	return data?.map((item, index) => (
-		<Trow
-			key={index}
-			{...{
-				item,
-				index,
-				mainColumns: columns,
-				extraColumns,
-				handleRowClick,
-				pageNumber,
-				tableRowLimit,
-				printExpansion,
-				expandedRow,
-				trxn_type_prod_map,
-			}}
-		/>
-	));
+	return (
+		<>
+			{/* Main table rows */}
+			{data?.map((item, index) => (
+				<Trow
+					key={index}
+					{...{
+						item,
+						index,
+						mainColumns: columns,
+						extraColumns,
+						handleRowClick,
+						pageNumber,
+						tableRowLimit,
+						printExpansion,
+						expandedRow,
+						trxn_type_prod_map,
+					}}
+				/>
+			))}
+
+			{/* Aggregated table row */}
+			{aggregatedData ? (
+				<TrowAggr
+					aggregatedData={aggregatedData}
+					extraColumns={extraColumns}
+				/>
+			) : null}
+		</>
+	);
 };
 
 /**
@@ -185,9 +200,11 @@ const Trow = ({
 								column?.parameter_type_id === 9 ? true : false
 							}
 							textAlign={
-								column?.parameter_type_id === 9
-									? "right"
-									: "left"
+								column.center
+									? "center"
+									: column?.parameter_type_id === 9
+										? "right"
+										: "left"
 							}
 						>
 							{prepareTableCell(
@@ -391,6 +408,80 @@ const Trow = ({
 				</ChakraTd>
 			)}
 		</Fragment>
+	);
+};
+
+/**
+ * Display a row with the aggregated data at the end of the table.
+ * @param 	{object}	prop	Properties passed to the component
+ * @param	{string}	prop.aggregatedData Aggregated data for the row.
+ * @param	{Array}	prop.extraColumns	Additional columns for the aggregated row.
+ */
+const TrowAggr = ({ aggregatedData, extraColumns }) => {
+	if (!aggregatedData) {
+		return null;
+	}
+
+	// Check if any aggregated data is available, i.e, if any item has a value
+	const hasAggregatedData = aggregatedData.some(
+		(column) =>
+			column.value !== null &&
+			column.value !== undefined &&
+			column.value !== ""
+	);
+
+	if (!hasAggregatedData) {
+		return null;
+	}
+
+	return (
+		<ChakraTr
+			fontSize={{ base: "10px", xl: "12px", "2xl": "16px" }}
+			sx={{
+				"@media print": {
+					display: "none !important",
+				},
+			}}
+		>
+			{extraColumns && extraColumns.length > 0 ? (
+				<ChakraTd></ChakraTd>
+			) : null}
+
+			{aggregatedData?.map((column, rendererIndex) => {
+				return (
+					<ChakraTd
+						p={{ base: "0.2em 0.4em", xl: "0.6em 1em" }}
+						w={column.width || "auto"}
+						key={`td-${rendererIndex}-${column.name}`}
+						// _notFirst={{
+						// 	borderLeft: "1px solid #dadada",
+						// }}
+						bg="shade"
+						isNumeric={
+							column?.parameter_type_id === 9 ? true : false
+						}
+						textAlign={
+							column?.parameter_type_id === 9 ? "right" : "left"
+						}
+						fontWeight="bold"
+						color="light"
+					>
+						<Flex direction="column">
+							<Text fontSize="xxs" opacity="0.8">
+								{column.label}
+							</Text>
+							{prepareTableCell(
+								{
+									[column.name]: column.value,
+								}, // item
+								column,
+								0
+							)}
+						</Flex>
+					</ChakraTd>
+				);
+			})}
+		</ChakraTr>
 	);
 };
 

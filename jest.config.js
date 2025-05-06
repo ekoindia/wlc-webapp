@@ -1,4 +1,4 @@
-const nextJest = require("next/jest");
+import nextJest from "next/jest.js";
 
 const createJestConfig = nextJest({
 	// Provide the path to your Next.js app to load next.config.js and .env files in your test environment
@@ -14,6 +14,17 @@ const customJestConfig = {
 	moduleDirectories: ["node_modules", "__tests__/test-utils", "<rootDir>/"],
 	moduleNameMapper: {
 		// Handle module aliases (this will be automatically configured for you soon)
+		// "^components$": "<rootDir>/components",
+		// "^page-components$": "<rootDir>/page-components",
+		// "^tf-components$": "<rootDir>/tf-components",
+		// "^layout-components$": "<rootDir>/layout-components",
+		// "^pages$": "<rootDir>/pages",
+		// "^constants$": "<rootDir>/constants",
+		// "^contexts$": "<rootDir>/contexts",
+		// "^hooks$": "<rootDir>/hooks",
+		// "^helpers$": "<rootDir>/helpers",
+		// "^utils$": "<rootDir>/utils",
+		// "^libs$": "<rootDir>/libs",
 		"^components/(.*)$": "<rootDir>/components/$1",
 		"^page-components/(.*)$": "<rootDir>/page-components/$1",
 		"^tf-components/(.*)$": "<rootDir>/tf-components/$1",
@@ -23,15 +34,23 @@ const customJestConfig = {
 		"^constants/(.*)$": "<rootDir>/constants/$1",
 		"^contexts/(.*)$": "<rootDir>/contexts/$1",
 		"^hooks/(.*)$": "<rootDir>/hooks/$1",
+		"^helpers/(.*)$": "<rootDir>/helpers/$1", // Add alias for helpers directory
 		"^public/(.*)$": "<rootDir>/public/$1",
 		"^styles/(.*)$": "<rootDir>/styles/$1",
 		"^utils/(.*)$": "<rootDir>/utils/$1",
 		"^tests/(.*)$": "<rootDir>/__tests__/$1",
-		"^@/pages/(.*)$": "<rootDir>/pages/$1",
+		"^libs/(.*)$": "<rootDir>/libs/$1",
 	},
-	testEnvironment: "jest-environment-jsdom",
+	testEnvironment: "jsdom",
 	fakeTimers: { enableGlobally: true },
+	// transform: {
+	// 	"^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }],
+	// },
+	// transformIgnorePatterns: [
+	// 	"node_modules/(?!(remark-gfm|react-markdown|vfile|unist|unified|bail|is-plain-obj|trough|remark|micromark|markdown-table|decode-named-character-reference|character-entities|property-information|hast|space-separated-tokens|comma-separated-tokens|mdast|mdast-util-to-hast|remark-rehype|trim-lines|rehype|html-void-elements|ccount|escape-string-regexp|strip-markdown|react-is|estree-util|format|is-|mdast-util-|unist-util-|zwitch|hastscript|web-namespaces)/)",
+	// ],
 	collectCoverage: true,
+	coverageProvider: "v8",
 	coverageThreshold: {
 		global: {
 			// branches: 80,
@@ -63,19 +82,23 @@ const customJestConfig = {
 		// "<rootDir>/features/**/{!(index),}.{js,ts,jsx,tsx}",
 		"!<rootDir>/**/*.stories.{js,ts,jsx,tsx,mdx}",
 		"!<rootDir>/**/*.mocks.{js,ts}",
+		"!<rootDir>/**/*.mock.{js,ts}",
 	],
 	coveragePathIgnorePatterns: [
 		"<rootDir>/__tests__/test-utils/",
 		".stories.{js,ts,jsx,tsx,mdx}",
 		".mocks.{js,ts}",
+		".mock.{js,ts}",
 	],
 	testPathIgnorePatterns: [
 		"<rootDir>/__tests__/test-utils/",
+		"<rootDir>/__tests__/fixtures/",
 		".stories.{js,ts,jsx,tsx,mdx}",
 		".mocks.{js,ts}",
+		".mock.{js,ts}",
 	],
 	verbose: true,
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig);
+// createJestConfig is exported as a default export
+export default createJestConfig(customJestConfig);

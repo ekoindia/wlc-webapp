@@ -1,5 +1,5 @@
-import { ShopCard } from "components/ShopCard";
-import { render } from "test-utils";
+import { ShopCard } from "page-components/Profile/ShopCard";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("ShopCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<ShopCard />);
+		const { container } = pageRender(<ShopCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

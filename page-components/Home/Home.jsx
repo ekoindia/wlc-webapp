@@ -1,6 +1,5 @@
 import { Grid } from "@chakra-ui/react";
 import { useSession, useTodos } from "contexts";
-import { useFeatureFlag } from "hooks";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import { EarningSummary } from "page-components/Profile";
@@ -23,9 +22,9 @@ const TodoWidget = dynamic(
 );
 
 // Lazy-load the experimental GPT Chat Beta Widget
-const GptChatBetaWidget = dynamic(() => import("./GptChatBetaWidget"), {
-	ssr: false,
-});
+// const AiChatWidget = dynamic(() => import("./AiChatWidget"), {
+// 	ssr: false,
+// });
 
 /**
  * A <Home> component
@@ -40,7 +39,7 @@ const Home = () => {
 	const { todos, deleteTodo } = useTodos();
 
 	// Check if the GPT Chat widget is enabled
-	const [isGptChatAllowed] = useFeatureFlag("GPT_CHAT");
+	// const [isGptChatAllowed] = useFeatureFlag("AI_CHATBOT");
 
 	// Check network speed on page load...
 	const isFastNetwork = useMemo(() => {
@@ -66,7 +65,11 @@ const Home = () => {
 		{
 			id: 3,
 			component: () => (
-				<NotificationWidget title="Notifications" compactMode />
+				<NotificationWidget
+					title="Unread Notifications"
+					compactMode
+					unreadOnly
+				/>
 			),
 		},
 		{ id: 4, component: EarningSummary },
@@ -86,9 +89,9 @@ const Home = () => {
 	widgets.push({ id: 99, component: QueryWidget });
 
 	// EXPERIMENTAL: GPT Chat widget
-	if (isGptChatAllowed) {
-		widgets.push({ id: 100, component: GptChatBetaWidget });
-	}
+	// if (isGptChatAllowed) {
+	// 	widgets.push({ id: 100, component: AiChatWidget });
+	// }
 
 	return (
 		<>

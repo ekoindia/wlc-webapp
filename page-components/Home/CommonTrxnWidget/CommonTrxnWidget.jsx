@@ -23,12 +23,12 @@ import { WidgetBase } from "..";
 const CommonTrxnWidget = () => {
 	const router = useRouter();
 	const { interactions } = useMenuContext();
-	let { interaction_list } = interactions;
+	let { interaction_list } = interactions || {};
 	const [showAll, setShowAll] = useState(false);
 
 	// Remove "other..." entries from the list
 	interaction_list = interaction_list.filter(
-		(tx) => OtherMenuItems.indexOf(tx.id) === -1
+		(tx) => OtherMenuItems?.indexOf(tx.id) === -1
 	);
 
 	const limit = useBreakpointValue({

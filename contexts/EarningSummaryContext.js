@@ -31,9 +31,12 @@ export const useEarningSummary = () => {
 };
 
 /**
- * Provider component for the EarningSummary context.
- * @param root0
- * @param root0.children
+ * Context Provider for a user's EarningSummary data: last month total, this month till yesterday, last month till yesterday.
+ * It fetches the data from the server if not already cached.
+ * It also registers the Earning Summary action for the Command Bar.
+ * @param {object} props - The component props.
+ * @param {ReactNode} props.children - The child components.
+ * @returns {JSX.Element} The EarningSummaryProvider component.
  */
 export const EarningSummaryProvider = ({ children }) => {
 	const [userEarnings, setUserEarnings, isValid] = useDailyCacheState(

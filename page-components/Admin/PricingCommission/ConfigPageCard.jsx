@@ -1,6 +1,6 @@
 import { Flex, Text, Tooltip } from "@chakra-ui/react";
+import { Icon, PageTitle } from "components";
 import { useEffect, useState } from "react";
-import { Headings, Icon } from "components";
 import { ConfigGrid } from "./ConfigGrid";
 
 /**
@@ -27,7 +27,11 @@ const ConfigPageCard = ({
 
 	return (
 		<>
-			<Headings title={heading} hasIcon={false} propComp={HeaderTool} />
+			<PageTitle
+				title={heading}
+				hideBackIcon
+				toolComponent={HeaderTool}
+			/>
 
 			<Flex
 				direction="column"

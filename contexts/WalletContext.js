@@ -62,14 +62,9 @@ const useFetchBalance = (setBalance, accessToken) => {
 };
 
 /**
+ * Context Provider for fetching and managing wallet balance.
  * @param root0
  * @param root0.children
- * @name WalletProvider
- * @description It is used in _app.js file and is used to provide context value in whole app
- * @returns {object} An object with the following properties:
- * @property {Function} refreshWallet - used to refresh wallet balance
- * @property {Function} setBalance - used to set the balance from anywhere
- * @property {string} balance - used to get the wallet balance value
  */
 const WalletProvider = ({ children }) => {
 	const [balance, setBalance] = useState(null);
@@ -143,4 +138,4 @@ const useWallet = () => {
 	return context;
 };
 
-export { WalletProvider, useWallet };
+export { useWallet, WalletProvider };

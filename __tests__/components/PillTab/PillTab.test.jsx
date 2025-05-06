@@ -15,12 +15,20 @@ import { render } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
+const list = [
+	{ label: "Business", component: <div>Business Page</div> },
+	{ label: "Onboarding", component: <div>Onboarding Page</div> },
+];
+
 describe("PillTab", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<PillTab />);
+		const { container } = render(<PillTab list={list} currTab={0} />);
 		expect(container).not.toBeEmptyDOMElement();
 
-		// expect(container).toHaveTextContent("Any text");
+		expect(container).toHaveTextContent("Business");
+		expect(container).toHaveTextContent("Onboarding");
+		// expect(container).toHaveTextContent("Business Page");
+		// expect(container).toNotHaveTextContent("Onboarding Page");
 
 		// const inp = screen.getByLabelText("Input Label");
 		// expect(inp).toBeInTheDocument();

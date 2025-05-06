@@ -1,5 +1,5 @@
 import { GlobalSearch } from "components/GlobalSearch";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("GlobalSearch", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<GlobalSearch />);
+		const { container } = pageRender(<GlobalSearch />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

@@ -1,5 +1,5 @@
-import { render } from "test-utils";
-import { TravelFlight } from "components/TravelFlight";
+import { TravelFlight } from "page-components/Admin/PricingCommission/TravelFlight";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -13,12 +13,12 @@ import { TravelFlight } from "components/TravelFlight";
 	* Jest:
 		- Docs: https://jestjs.io/docs/getting-started
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
-  
+
 */
 
 describe("TravelFlight", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<TravelFlight />);
+		const { container } = pageRender(<TravelFlight />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

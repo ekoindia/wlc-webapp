@@ -636,7 +636,11 @@ const useNotifications = () => {
 	]);
 };
 
-// NotificationProvider Component
+/**
+ * Context provider for manually fetching and managing Push Notifications
+ * @param root0
+ * @param root0.children
+ */
 const NotificationProvider = ({ children }) => {
 	const notificationState = useNotifications();
 

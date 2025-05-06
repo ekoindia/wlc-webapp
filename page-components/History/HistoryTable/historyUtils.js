@@ -71,10 +71,6 @@ export const prepareTableCell = (
 		value = item[column.name] || "";
 	}
 
-	if (column.compute && typeof column.compute === "function") {
-		value = column.compute(value, item, index);
-	}
-
 	// If a component to render the value is not provided, use the component based on the parameter type
 	let viewType = column.show;
 	if (!viewType && column.parameter_type_id) {
@@ -91,7 +87,7 @@ export const prepareTableCell = (
 		case "Modal":
 			return getModalStyle(eko_code, account_status);
 		case "ExpandButton":
-			return getExpandIcoButton(expandedRow, index);
+			return getExpandIcoButton(expandedRow, index, column.center);
 		case "IconButton":
 			return getLocationStyle(
 				value,

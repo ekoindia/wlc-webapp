@@ -1,5 +1,5 @@
-import { AadhaarPay } from "components/AadhaarPay";
-import { render } from "test-utils";
+import { AadhaarPay } from "page-components/Admin/PricingCommission/AadhaarPay";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("AadhaarPay", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<AadhaarPay />);
+		const { container } = pageRender(<AadhaarPay />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

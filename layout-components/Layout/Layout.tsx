@@ -63,10 +63,12 @@ const BottomAppBar = dynamic(
  * @param {string} pageMeta.title - The page title. This will be displayed in the browser titlebar.
  * @param {boolean} pageMeta.hideMenu - If true, then the layout will not render the left navigation drawer.
  * @param {boolean} pageMeta.pageHeight - If true, then the layout will take no more than full height of the screen.
+ * @param {boolean} pageMeta.isFixedBottomAppBar - If true, then the bottom app bar will be fixed to the bottom of the screen.
  * @param {string} [fontClassName] - A class name to apply to the layout for setting a custom Font.
  */
 const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
-	const { isSubPage, title, hideMenu, isFixedBottomAppBar } = pageMeta;
+	const { isSubPage, title, hideMenu, pageHeight, isFixedBottomAppBar } =
+		pageMeta || {};
 
 	const { isLoggedIn } = useSession();
 	// const { isOpen: isSidebarOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer from the top header bar on small screens
@@ -252,7 +254,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 									"2xl": `calc(100vh - ${NavHeight["2xl"]})`,
 								}}
 								maxH={
-									pageMeta.pageHeight
+									pageHeight
 										? {
 												base: `calc(100vh - ${NavHeight.base})`,
 												md: `calc(100vh - ${NavHeight.md})`,
@@ -265,7 +267,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 								bg={"bg"}
 								overflow={"hidden"}
 								// overflowY={
-								// 	pageMeta.pageHeight ? "auto" : "hidden"
+								// 	pageHeight ? "auto" : "hidden"
 								// }
 								sx={{
 									"@media print": {

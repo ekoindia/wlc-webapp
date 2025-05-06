@@ -4,8 +4,8 @@ import {
 	Calenders,
 	Currency,
 	DateView,
-	Headings,
 	InputLabel,
+	PageTitle,
 	SearchBar,
 } from "components";
 import { Endpoints } from "constants/EndPoints";
@@ -79,7 +79,7 @@ const DetailedStatement = () => {
 
 	return (
 		<>
-			<Headings title="Detailed Statement" />
+			<PageTitle title="Detailed Statement" />
 			<Flex direction="column" px={{ base: "20px", md: "0px" }} gap="4">
 				<Flex
 					display={{ base: "none", md: "flex" }}

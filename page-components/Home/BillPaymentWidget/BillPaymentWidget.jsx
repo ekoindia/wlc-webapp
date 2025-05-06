@@ -18,7 +18,7 @@ const BillPaymentWidget = () => {
 	const router = useRouter();
 	const [billPaymentOptions, setBillPaymentOptions] = useState([]);
 	const { interactions } = useMenuContext();
-	const { role_tx_list } = interactions;
+	const { role_tx_list } = interactions || {};
 
 	useEffect(() => {
 		const billPayment = role_tx_list[TransactionIds.BILL_PAYMENT];

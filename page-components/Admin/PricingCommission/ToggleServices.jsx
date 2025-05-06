@@ -57,7 +57,7 @@ const ToggleServices = () => {
 	 */
 	const initializeServiceLists = () => {
 		// Filter ProductRoleConfiguration to get available products based on roles
-		const { role_tx_list } = interactions;
+		const { role_tx_list } = interactions || {};
 
 		// Filter all available left-menu transactions
 		setTrxnServices(
@@ -336,7 +336,8 @@ const ProductGrid = ({ product_list, onToggleProduct }) => {
 			}}
 		>
 			{product_list?.map((product) => {
-				const { id, label, desc, value, available, selected } = product;
+				const { id, label, desc, value, available, selected } =
+					product || {};
 
 				if (!(id && label && value)) return null;
 

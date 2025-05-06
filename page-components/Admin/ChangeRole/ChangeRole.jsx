@@ -1,5 +1,5 @@
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
-import { Headings, ResponseCard, Tabs } from "components";
+import { PageTitle, ResponseCard, Tabs } from "components";
 import { ChangeRoleMenuList, Endpoints } from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -109,7 +109,7 @@ const ChangeRole = () => {
 
 	return (
 		<>
-			<Headings
+			<PageTitle
 				title={showOrgChangeRoleView ? "Change Roles" : "Change Role"}
 			/>
 

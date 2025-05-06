@@ -1,5 +1,5 @@
 import { AdminViewToggleCard } from "components/AdminViewToggleCard";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("AdminViewToggleCard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<AdminViewToggleCard />);
+		const { container } = pageRender(<AdminViewToggleCard />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

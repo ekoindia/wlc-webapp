@@ -1,14 +1,13 @@
 import { Flex } from "@chakra-ui/react";
 
 /**
- * A base card
- * @param children.className
- * @param 	{object}	children	Child elements for the card body
- * @param 	{Function}	onClick 	onClick function
- * @param	{...*}	rest	Rest of the props passed to this component
- * @param children.children
- * @param children.onClick
- * @example	`<Card></Card>` TODO: Fix example
+ * A basic card with a shadow and border
+ * @param {object} prop - Properties passed to the component
+ * @param {string} [prop.className] - Optional classes to pass to this component.
+ * @param {ReactNode} [prop.children] - Child elements of the card.
+ * @param {Function} [prop.onClick] - Function to call when the card is clicked.
+ * @param {...*} rest - Rest of the props passed to this component.
+ * @example `<Card>rest of the contents</Card>`
  */
 const Card = ({ className = "", children, onClick, ...rest }) => {
 	return (
@@ -21,7 +20,7 @@ const Card = ({ className = "", children, onClick, ...rest }) => {
 			p="5"
 			h={{ base: "auto", md: "600px" /* , xl: "620px"  */ }}
 			bg="white"
-			onClick={onClick}
+			onClick={onClick && (() => onClick())}
 			{...rest}
 		>
 			{children}

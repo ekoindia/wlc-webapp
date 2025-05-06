@@ -1,4 +1,4 @@
-import { KycWidget } from "components/KycWidget";
+import { KycWidget } from "page-components/Home/KycWidget";
 import { render } from "test-utils";
 
 /*

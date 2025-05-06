@@ -1,3 +1,4 @@
+import { useLocalStorage } from "hooks";
 import {
 	createContext,
 	FC,
@@ -58,6 +59,12 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 	const [expandedRow, setExpandedRow] = useState<number | null>(null);
 	const [isFiltered, setIsFiltered] = useState(initialIsFiltered);
 	const [visibleColumns] = useState(initialVisibleColumns);
+	const [processedData, setProcessedData] = useState([]); // Computed from data
+	const [hiddenColumns, setHiddenColumns] = useLocalStorage(
+		"infHistHidnCols",
+		{}
+	); // Track columns hidden by the user
+	const [aggregatedData, setAggregatedData] = useState([]); // Column data with aggregate values over all the rows
 
 	const toggleExpand = (index: number) => {
 		setExpandedRow(index === expandedRow ? null : index);
@@ -70,7 +77,13 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 		setIsFiltered(false);
 	};
 
-	// useEffect to update mainColumns and extraColumns based on historyParameterMetadata
+	/**
+	 * useEffect: Partition the historyParameterMetadata into mainColumns and extraColumns.
+	 * This is based on the following properties and conditions:
+	 * - `visible_in_table`: If true, the column is a main column (show as a table column). If false, it is an extra column (show in the expanded section).
+	 * - `hide_by_default`: If true, the column is hidden by default (unless the user has toggled it).
+	 * - the `name` property is not set as true in the hiddenColumns state (i.e., the user has not hidden it).
+	 */
 	useEffect(() => {
 		if (historyParameterMetadata) {
 			const mainCols: any[] = [];
@@ -78,7 +91,11 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 
 			historyParameterMetadata.forEach((column) => {
 				if (column.visible_in_table === true) {
-					if (column.hide_by_default !== true) {
+					const isHidden =
+						column.name in hiddenColumns
+							? hiddenColumns[column.name]
+							: column.hide_by_default;
+					if (!isHidden) {
 						mainCols.push(column);
 					}
 				} else {
@@ -89,17 +106,109 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 			setMainColumns(mainCols);
 			setExtraColumns(extraCols);
 		}
-	}, [historyParameterMetadata]); // rule: memoization
+	}, [historyParameterMetadata, hiddenColumns]);
+
+	/**
+	 * useEffect: Calculate processedData with computed values (if the `compute` function is defined).
+	 */
+	useEffect(() => {
+		if (!data) {
+			return;
+		}
+		let _processedData = [...data];
+
+		// Get a list of all fields in mainColumns and extraColumns which has a computed value
+		const computedFields = [...mainColumns, ...extraColumns].filter(
+			(column) => column.compute && typeof column.compute === "function"
+		);
+
+		// Process data to add computed values
+		if (computedFields.length > 0) {
+			_processedData = _processedData.map((row, index) => {
+				const newRow = { ...row };
+				computedFields.forEach((column) => {
+					let value = "";
+					if (column.name) {
+						value = row[column.name] || "";
+					}
+					value = column.compute(value, row, index);
+					newRow[column.name] = value;
+				});
+				return newRow;
+			});
+		}
+
+		// Set the processed data
+		setProcessedData(_processedData);
+	}, [data, mainColumns, extraColumns]);
+
+	/**
+	 * useEffect: Calculate Aggregated Data Row.
+	 */
+	useEffect(() => {
+		if (!mainColumns) {
+			return;
+		}
+		if (!processedData) {
+			return;
+		}
+
+		const aggregaredCols = mainColumns.map((column) => {
+			if (
+				column.aggregate &&
+				column.aggregate.type &&
+				column.visible_in_table &&
+				!hiddenColumns[column.name]
+			) {
+				return {
+					...column,
+					label: column.aggregate.label || column.aggregate.type,
+					name: column.name,
+					value: calculateAggregatedValues(
+						column.name,
+						column.aggregate.type,
+						processedData
+					),
+				};
+			}
+			return { name: column.name, label: "", value: "" };
+		});
+		setAggregatedData(aggregaredCols);
+	}, [mainColumns, hiddenColumns, processedData]);
+
+	/**
+	 * Toggle visibility of a main column in the History table.
+	 * Note: It does not impact the visibility of fields in the extra expanded section.
+	 * @param {string} name - The name of the column to toggle visibility for.
+	 * @param {boolean} isHidden - Should the column be hidden?
+	 */
+	const toggleColumnVisibility = (name: string, isHidden: boolean) => {
+		setHiddenColumns((prevHiddenColumns) => ({
+			...prevHiddenColumns,
+			[name]: isHidden,
+		}));
+	};
+
+	/**
+	 * Function to reset the columns visibility to default.
+	 */
+	const resetColumnVisibility = () => {
+		setHiddenColumns({});
+	};
 
 	// Memoize the context value to prevent unnecessary re-renders
 	const contextValue = useMemo(
 		() => ({
-			data,
+			data: processedData,
 			historyParameterMetadata,
 			mainColumns,
 			extraColumns,
+			aggregatedData,
 			visibleColumns,
 			expandedRow,
+			hiddenColumns,
+			toggleColumnVisibility,
+			resetColumnVisibility,
 			setExpandedRow,
 			toggleExpand,
 			isFiltered,
@@ -108,8 +217,14 @@ export const HistoryProvider: FC<HistoryProviderProps> = ({
 			forNetwork,
 		}),
 		[
+			processedData,
+			historyParameterMetadata,
 			mainColumns,
 			extraColumns,
+			aggregatedData,
+			hiddenColumns,
+			toggleColumnVisibility,
+			resetColumnVisibility,
 			visibleColumns,
 			expandedRow,
 			isFiltered,
@@ -136,6 +251,60 @@ export const useHistory = (): HistoryContextType => {
 		throw new Error("useHistory must be used within a HistoryProvider");
 	}
 	return context;
+};
+
+/**
+ * Helper function to calculate aggregated value for a column
+ * @param {string} field - The field name to aggregate
+ * @param {string} aggregate - The aggregation type (sum, avg, min, max, first, last)
+ * @param {Array} processedData - The data to aggregate
+ * @returns {number|string} The aggregated value
+ */
+const calculateAggregatedValues = (field, aggregate, processedData) => {
+	if (!processedData || processedData.length === 0) {
+		return "";
+	}
+
+	let value = 0;
+	switch (aggregate) {
+		case "sum":
+			value = processedData.reduce(
+				(acc, row) => acc + (row[field] || 0),
+				0
+			);
+			break;
+		case "avg":
+			value =
+				processedData.reduce((acc, row) => acc + (row[field] || 0), 0) /
+				processedData.length;
+			break;
+		case "min":
+			value = Math.min(
+				...processedData
+					.map((row) => row[field])
+					.filter(
+						(row) => row !== null && row !== undefined && row !== ""
+					)
+			);
+			break;
+		case "max":
+			value = Math.max(
+				...processedData
+					.map((row) => row[field])
+					.filter(
+						(row) => row !== null && row !== undefined && row !== ""
+					)
+			);
+			break;
+		case "first":
+			value = processedData[0][field] || "";
+			break;
+		case "last":
+			value = processedData[processedData.length - 1][field] || "";
+			break;
+	}
+
+	return value;
 };
 
 export default HistoryContext;

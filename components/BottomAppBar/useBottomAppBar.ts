@@ -124,7 +124,7 @@ export const useBottomAppBarItems = ({
 export const useAccordionMenuConverter = (list: any[]) => {
 	const { isAdmin } = useUser();
 	const { interactions } = useMenuContext();
-	const { role_tx_list } = interactions;
+	const { role_tx_list } = interactions || {};
 	const prefix = isAdmin ? "/admin" : "";
 
 	const getLink = (id: number, link?: string) => {

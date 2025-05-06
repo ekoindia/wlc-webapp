@@ -1,6 +1,4 @@
 /* PLOP_INJECT_IMPORT */
-import { Address } from "./Address";
-import { ActionButtonGroup } from "./ActionButtonGroup";
 import {
 	Accordion,
 	AccordionButton,
@@ -8,6 +6,8 @@ import {
 	AccordionPanel,
 } from "./Accordion";
 import { AccordionMenu } from "./AccordionMenu";
+import { ActionButtonGroup } from "./ActionButtonGroup";
+import { Address } from "./Address";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
 import { Breadcrumbs } from "./Breadcrumb";
@@ -28,7 +28,6 @@ import { EkoConnectWidget } from "./EkoConnectWidget";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { FileView } from "./FileView";
 import { GlobalSearch } from "./GlobalSearch";
-import { Headings } from "./Headings";
 import { IcoButton } from "./IcoButton";
 import { Icon } from "./Icon";
 import { Input } from "./Input";
@@ -42,6 +41,7 @@ import { OrgLogo } from "./OrgLogo";
 import { OtpInput } from "./OtpInput";
 import { PaddingBox } from "./PaddingBox";
 import { PageLoader } from "./PageLoader";
+import { PageTitle } from "./PageTitle";
 import { Pagination } from "./Pagination";
 import { PillTab } from "./PillTab";
 import { PrintReceipt } from "./PrintReceipt";
@@ -61,8 +61,16 @@ import { Tabs } from "./Tabs";
 import { Tags } from "./Tags";
 import { Textarea } from "./Textarea";
 import { XScrollArrow } from "./XScrollArrow";
+import { YoutubePlayer } from "./YoutubePlayer";
 
 export {
+	Accordion,
+	AccordionButton,
+	AccordionItem,
+	AccordionMenu,
+	AccordionPanel,
+	ActionButtonGroup,
+	Address,
 	AdminViewToggleCard,
 	BottomAppBar,
 	Breadcrumbs,
@@ -83,7 +91,6 @@ export {
 	ErrorBoundary,
 	FileView,
 	GlobalSearch,
-	Headings,
 	IcoButton,
 	Icon,
 	Input,
@@ -97,6 +104,7 @@ export {
 	OtpInput,
 	PaddingBox,
 	PageLoader,
+	PageTitle,
 	Pagination,
 	PillTab,
 	PrintReceipt,
@@ -116,15 +124,12 @@ export {
 	Tags,
 	Textarea,
 	XScrollArrow,
-	Address,
-	ActionButtonGroup,
-	Accordion,
-	AccordionButton,
-	AccordionPanel,
-	AccordionItem,
-	AccordionMenu,
+	YoutubePlayer,
 };
 
 export { PhoneNumber } from "./PhoneNumber";
 
 export { ChatInput } from "./ChatInput";
+
+export { InfoTile } from "./InfoTile";
+export { InfoTileGrid } from "./InfoTileGrid";

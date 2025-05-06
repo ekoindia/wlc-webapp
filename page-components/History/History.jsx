@@ -1,5 +1,5 @@
 import { Flex, Text, useBreakpointValue } from "@chakra-ui/react";
-import { Button, Headings, Icon, PrintReceipt } from "components";
+import { Button, Icon, PageTitle, PrintReceipt } from "components";
 import {
 	Endpoints,
 	ParamType,
@@ -20,7 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { ANDROID_ACTION, calculateDateBefore, doAndroidAction } from "utils";
 import { saveDataToFile } from "utils/FileSave";
-import { HistoryTable, HistoryToolbar /*, ToggleColumns */ } from ".";
+import { HistoryTable, HistoryToolbar, ToggleColumns } from ".";
 import { HistoryProvider } from "./HistoryContext";
 import {
 	getAdditionalTransactionMetadata,
@@ -72,8 +72,8 @@ const History = ({ forNetwork = false }) => {
 	};
 	const router = useRouter();
 	const { userData, isAdmin } = useUser();
-	const { accountDetails } = userData;
-	const { account_list } = accountDetails;
+	const { accountDetails } = userData ?? {};
+	const { account_list } = accountDetails ?? {};
 	const { accessToken } = useSession();
 	const { setSearchTitle } = useGlobalSearch();
 	const [data, setData] = useState();
@@ -88,7 +88,7 @@ const History = ({ forNetwork = false }) => {
 	const { isAndroid } = useAppSource();
 
 	const { interactions } = useMenuContext();
-	const { trxn_type_prod_map } = interactions;
+	const { trxn_type_prod_map } = interactions || {};
 
 	const [history_interaction_list, setHistoryInteractionList] = useState([]);
 
@@ -634,12 +634,13 @@ const History = ({ forNetwork = false }) => {
 			secondaryButtonText: "Cancel",
 			secondaryButtonAction: () => setOpenModalId(null),
 		},
-		// {
-		// 	id: action.TOGGLE_COLUMNS,
-		// 	label: "Columns",
-		// 	icon: "visibility",
-		// 	Component: ToggleColumns,
-		// },
+		{
+			id: action.TOGGLE_COLUMNS,
+			label: "Columns",
+			icon: "visibility",
+			Component: ToggleColumns,
+			desktopOnly: true,
+		},
 	];
 
 	// Set GlobalSearch title
@@ -721,7 +722,7 @@ const History = ({ forNetwork = false }) => {
 
 	// How many columns to show in the table (for self or network history)
 	// TODO: REDUNDANT. Calculate visible columns in HistoryCard (mobile view) directly from history_parameter_metadata
-	const visibleColumns = forNetwork ? 7 : 7;
+	const visibleColumns = forNetwork ? 7 : 11;
 
 	const processedData = useMemo(
 		() => getHistoryTableProcessedData(transactionList),
@@ -742,7 +743,7 @@ const History = ({ forNetwork = false }) => {
 	// MARK: JSX
 	return (
 		<>
-			<Headings
+			<PageTitle
 				title={
 					forNetwork ? "Network Transactions" : "Transaction History"
 				}

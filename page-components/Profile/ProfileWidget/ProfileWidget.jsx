@@ -72,6 +72,10 @@ const ProfileWidget = () => {
 
 	const { clr, boxShadow } = getStyle(percent);
 
+	if (!data) {
+		return null;
+	}
+
 	return (
 		<Box
 			border="1px solid var(--chakra-colors-hint)"
@@ -99,7 +103,7 @@ const ProfileWidget = () => {
 				<Flex justify="space-between" align="flex-start" gap={2}>
 					<Avatar
 						size={{ base: "md", md: "lg" }}
-						name={data.name[0]}
+						name={data.name ? data.name[0] : ""}
 						src={data.pic}
 					/>
 					<Flex direction="column" rowGap="1">

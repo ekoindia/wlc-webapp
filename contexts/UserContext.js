@@ -16,6 +16,12 @@ import { defaultUserState, UserReducer } from "./UserReducer";
 const UserContext = createContext();
 const SessionContext = createContext();
 
+/**
+ * Context provider for user & session data.
+ * @param {object} param - Props for the UserProvider component
+ * @param {object} param.userMockData - Mock static user data for testing
+ * @param {ReactNode} param.children - Child components to be rendered within the provider
+ */
 const UserProvider = ({ userMockData, children }) => {
 	const [state, dispatch] = useReducer(UserReducer, defaultUserState);
 	const [isTokenUpdating, setIsTokenUpdating] = useState(false);

@@ -10,6 +10,10 @@ import { getNameStyle } from "helpers";
  * @example	`<OnboardingDashboardCard></OnboardingDashboardCard>`
  */
 const OnboardingDashboardCard = ({ item }) => {
+	if (!item) {
+		return null;
+	}
+
 	return (
 		<Flex direction="column" bg="white" p="10px">
 			<Flex justifyContent="space-between">

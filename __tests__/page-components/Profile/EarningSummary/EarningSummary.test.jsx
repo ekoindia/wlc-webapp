@@ -1,5 +1,5 @@
-import { EarningSummary } from "components/EarningSummary";
-import { render } from "test-utils";
+import { EarningSummary } from "page-components/Profile/EarningSummary";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("EarningSummary", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<EarningSummary />);
+		const { container } = pageRender(<EarningSummary />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

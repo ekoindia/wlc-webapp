@@ -1,5 +1,5 @@
 import TransferSeller from "page-components/Admin/ChangeRole/TransferSeller/TransferSeller";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("TransferSeller", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<TransferSeller />);
+		const { container } = pageRender(<TransferSeller />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

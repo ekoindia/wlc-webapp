@@ -101,6 +101,8 @@ const Icon = ({
 	return (
 		// <Center style={style} maxH="24px" maxW="24px" {...rest}>
 		<Box
+			data-testid="icon"
+			data-icon={name}
 			w={_size}
 			h={_size}
 			minW={_size}

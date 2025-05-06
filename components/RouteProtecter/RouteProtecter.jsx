@@ -5,7 +5,7 @@ import {
 	publicLinks,
 	publicOnlyLinks,
 	publicSections,
-} from "constants";
+} from "constants"; // validRoutes.js
 import { useSession } from "contexts/UserContext";
 import { useEffect, useState } from "react";
 
@@ -142,6 +142,14 @@ const RouteProtecter = ({ router, children }) => {
 					publicOnlyLinks.includes(path) ||
 					!path.includes(baseRoute[role])
 				) {
+					// Allow "/products/.." routes for Admin...
+					if (path.startsWith("/products/")) {
+						setLoading(false);
+						setAuthorized(true);
+						isAuthorized = true;
+						return;
+					}
+
 					// Redirect to the "next" query parameter if it exists.
 					// If it does not start with the baseRoute, then redirect to the initialRoute.
 					if (_next && _next.startsWith(baseRoute[role])) {

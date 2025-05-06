@@ -89,6 +89,7 @@ export const buttonTheme = defineStyleConfig({
 		success,
 		ghost,
 		link,
+		outline: accent_outline,
 		accent_outline,
 		primary_outline,
 	},

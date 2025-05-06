@@ -17,7 +17,19 @@ import { render } from "test-utils";
 
 describe("BottomAppBar", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<BottomAppBar />);
+		const { container } = render(
+			<BottomAppBar
+				items={[
+					{
+						name: "home",
+						label: "Home",
+						icon: "home",
+						path: "/home",
+						visible: true,
+					},
+				]}
+			/>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

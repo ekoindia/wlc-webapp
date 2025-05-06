@@ -16,7 +16,10 @@ const PubSubContext = createContext();
 // 	ANDROID_RESPONSE: "ANDROID_RESPONSE",
 // };
 
-// Create a provider for components to consume and subscribe to changes
+/**
+ * Context provider for components to consume and subscribe to changes
+ * @param props
+ */
 export const PubSubProvider = (props) => {
 	const [_subscribers, setSubscribers] = useState({});
 

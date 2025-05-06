@@ -1,3 +1,4 @@
+import { DashboardProvider } from "page-components/Admin/Dashboard";
 import OnboardingDashboard from "page-components/Admin/Dashboard/OnboardingDashboard/OnboardingDashboard";
 import { pageRender } from "test-utils";
 
@@ -17,7 +18,11 @@ import { pageRender } from "test-utils";
 
 describe("OnboardingDashboard", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<OnboardingDashboard />);
+		const { container } = pageRender(
+			<DashboardProvider>
+				<OnboardingDashboard />
+			</DashboardProvider>
+		);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

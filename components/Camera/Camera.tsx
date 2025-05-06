@@ -98,7 +98,7 @@ const Camera = ({
 	};
 
 	const onEditorResponse = (result) => {
-		const { accepted } = result;
+		const { accepted } = result || {};
 
 		if (!accepted) {
 			// onClose({ image: "", accepted: false });

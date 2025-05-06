@@ -1,4 +1,4 @@
-import { SortAndFilterMobile } from "components/SortAndFilterMobile";
+import { SortAndFilterMobile } from "page-components/Admin/Network/SortAndFilterMobile";
 import { render } from "test-utils";
 
 /*

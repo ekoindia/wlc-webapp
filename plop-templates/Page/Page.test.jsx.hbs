@@ -1,5 +1,5 @@
 import { pageRender, screen, mockRouter } from "test-utils";
-import {{pascalCase name}} from "pages";
+import {{pascalCase name}} from "{{pagefolder}}/{{lowerCase name}}";
 
 
 describe("{{pascalCase name}}", () => {
@@ -12,5 +12,10 @@ describe("{{pascalCase name}}", () => {
 		expect(container).not.toBeEmptyDOMElement();
 	});
 
-	// TODO: Write other tests here..
+	// it("matches snapshot", () => {
+	//	const { asFragment } = pageRender(<{{pascalCase name}} />);
+	// 	expect(asFragment()).toMatchSnapshot();
+	// });
+
+	test.todo("TODO: add proper test cases for {{pascalCase name}} in __tests__/{{pagefolder}}/{{lowerCase name}}/{{lowerCase name}}.test.jsx");
 });

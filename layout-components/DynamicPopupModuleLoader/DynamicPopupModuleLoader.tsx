@@ -1,4 +1,10 @@
 import {
+	Drawer,
+	DrawerBody,
+	DrawerCloseButton,
+	DrawerContent,
+	DrawerHeader,
+	DrawerOverlay,
 	Flex,
 	Modal,
 	ModalCloseButton,
@@ -6,12 +12,6 @@ import {
 	ModalOverlay,
 	Spinner,
 	useToast,
-	Drawer,
-	DrawerBody,
-	DrawerHeader,
-	DrawerOverlay,
-	DrawerContent,
-	DrawerCloseButton,
 } from "@chakra-ui/react";
 import { usePubSub } from "contexts";
 import dynamic from "next/dynamic";
@@ -25,7 +25,8 @@ export type ModuleNameType =
 	| "FileViewer"
 	| "ImageEditor"
 	| "Camera"
-	| "Notifications";
+	| "Notifications"
+	| "AiChatWidget";
 // | "Support"
 // | "About";
 
@@ -148,6 +149,19 @@ const DefaultOptions: {
 		},
 		// props: {},
 	},
+	AiChatWidget: {
+		title: "Chat with AI",
+		hideCloseIcon: true,
+		dialogStyles: {
+			isCentered: true,
+		},
+		props: {
+			isPopupMode: true,
+		},
+		style: {
+			w: { base: "100%", md: "650px" },
+		},
+	},
 	// About: {},
 };
 
@@ -195,6 +209,13 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 			import(
 				"page-components/Home/NotificationWidget/NotificationWidget.jsx"
 			) as any,
+		{
+			ssr: false,
+			loading: () => <Loading />,
+		}
+	),
+	AiChatWidget: dynamic(
+		() => import("page-components/Home/AiChatWidget") as any,
 		{
 			ssr: false,
 			loading: () => <Loading />,

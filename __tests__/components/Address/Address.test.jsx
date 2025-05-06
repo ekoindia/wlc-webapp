@@ -1,5 +1,5 @@
 import { Address } from "components/Address";
-import { render } from "test-utils";
+import { pageRender } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -17,7 +17,7 @@ import { render } from "test-utils";
 
 describe("Address", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<Address />);
+		const { container } = pageRender(<Address />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");

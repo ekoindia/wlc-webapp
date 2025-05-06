@@ -10,7 +10,7 @@ const ZOHO_FORM_URL =
 const PrivacyPage = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const router = useRouter();
-	const { app_name, org_name, org_id } = orgDetail;
+	const { app_name, org_name, org_id } = orgDetail || {};
 	const currentUrl = window.location.href;
 	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
 	const reach_out_form_url = `${ZOHO_FORM_URL}?org_id=${org_id}&org_url=${baseUrl}`;

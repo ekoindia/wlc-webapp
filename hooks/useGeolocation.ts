@@ -17,15 +17,40 @@ interface GeolocationResult {
 	error: string | null;
 }
 
-const useGeolocation = ({
-	highAccuracy = false,
-	maximumAge = 60000,
-	timeout = Infinity,
-	watchPosition = false,
-	positionWatchTimeBuffer = 6000,
-	decimalPlaces = 6,
-	maxWatchUpdates = 0,
-}: UseGeolocationOptions): GeolocationResult => {
+const DEFAULT_OPTIONS: Required<UseGeolocationOptions> = {
+	highAccuracy: false,
+	maximumAge: 60000,
+	timeout: Infinity,
+	watchPosition: false,
+	positionWatchTimeBuffer: 6000,
+	decimalPlaces: 6,
+	maxWatchUpdates: 0,
+};
+
+/**
+ * Custom hook to get the user's geolocation.
+ * @param {UseGeolocationOptions} options - Options for geolocation.
+ * @param {boolean} options.highAccuracy - Whether to use high accuracy (default: false).
+ * @param {number} options.maximumAge - Maximum age of a cached position (default: 60000ms).
+ * @param {number} options.timeout - Timeout for geolocation request (default: Infinity).
+ * @param {boolean} options.watchPosition - Whether to watch the position (default: false).
+ * @param {number} options.positionWatchTimeBuffer - Time buffer for watching position (default: 6000ms).
+ * @param {number} options.decimalPlaces - Number of decimal places for latitude and longitude (default: 6).
+ * @param {number} options.maxWatchUpdates - Maximum number of watch updates (default: 0).
+ * @returns {GeolocationResult} - Geolocation result containing latitude, longitude, accuracy, and error message.
+ */
+const useGeolocation = (
+	options: UseGeolocationOptions = {}
+): GeolocationResult => {
+	const {
+		highAccuracy,
+		maximumAge,
+		timeout,
+		watchPosition,
+		positionWatchTimeBuffer,
+		decimalPlaces,
+		maxWatchUpdates,
+	} = { ...DEFAULT_OPTIONS, ...options };
 	const [position, setPosition] = useState<GeolocationResult>({
 		latitude: null,
 		longitude: null,
