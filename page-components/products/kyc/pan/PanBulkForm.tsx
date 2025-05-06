@@ -290,6 +290,8 @@ export const PanBulkForm = (): JSX.Element => {
 			if (response?.data) {
 				if (response.data.status === 0 && response.data.data) {
 					setStatusResponse(response.data.data);
+					bulkForm.resetField("referenceId");
+					bulkForm.resetField("bulkVerificationId");
 				} else {
 					setError(
 						response.data.message ||
@@ -345,7 +347,8 @@ export const PanBulkForm = (): JSX.Element => {
 					<form onSubmit={bulkForm.handleSubmit(handleBulkSubmit)}>
 						<Box mb={4}>
 							<Text mb={2} fontWeight="medium">
-								Already have a reference ID?
+								Already have a Reference ID & Bulk Verification
+								ID?
 							</Text>
 							<Flex gap={2}>
 								<Input
@@ -357,6 +360,8 @@ export const PanBulkForm = (): JSX.Element => {
 									{...bulkForm.register("bulkVerificationId")}
 								/>
 							</Flex>
+						</Box>
+						<Flex justify="space-between" mb={4}>
 							<Button
 								onClick={handleCheckStatus}
 								isLoading={isLoadingBulkStatus}
@@ -365,13 +370,14 @@ export const PanBulkForm = (): JSX.Element => {
 							>
 								Check Status
 							</Button>
-						</Box>
-
+						</Flex>
 						{!statusResponse && (
 							<>
-								<Text fontWeight="medium" mb={2}>
-									Enter PAN details:
-								</Text>
+								<Box mt={6} mb={2}>
+									<Text fontWeight="medium" mb={2}>
+										Enter PAN details:
+									</Text>
+								</Box>
 								<VStack spacing={2} align="stretch" mb={4}>
 									{fields.map((field, index) => (
 										<Flex
