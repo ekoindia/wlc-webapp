@@ -22,7 +22,7 @@ import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
 import { Layout } from "layout-components";
 import App from "next/app";
 // import { Inter } from "next/font/google";
-import { MockAdminUser, MockUser } from "__tests__/test-utils/test-utils.mocks";
+import { MockAdminUser, MockUser } from "__tests__/fixtures/session";
 import Head from "next/head";
 import { SWRConfig } from "swr";
 import { light } from "../styles/themes";

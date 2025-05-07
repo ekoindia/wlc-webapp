@@ -1,9 +1,9 @@
+import { useAiChatbotPopup } from "hooks";
 import { renderHook } from "test-utils";
-import { useUseAiChatbotPopup } from "hooks";
 
-describe("useUseAiChatbotPopup", () => {
+describe("useAiChatbotPopup", () => {
 	it("renders hook", () => {
-		const { result } = renderHook(() => useUseAiChatbotPopup());
+		const { result } = renderHook(() => useAiChatbotPopup());
 		expect(result.current).toBeDefined();
 		// expect(result.current.some_property).toBeDefined();
 		// expect(result.current.some_property).toBeInstanceOf(Function);
@@ -16,4 +16,4 @@ describe("useUseAiChatbotPopup", () => {
 	});
 });
 
-test.todo("TODO: Implement proper tests for UseAiChatbotPopup hook");
+test.todo("TODO: Implement proper tests for useAiChatbotPopup hook");

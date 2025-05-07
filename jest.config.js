@@ -47,7 +47,7 @@ const customJestConfig = {
 	// 	"^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }],
 	// },
 	// transformIgnorePatterns: [
-	// 	"node_modules/(?!(react-markdown|vfile|unist|unified|bail|is-plain-obj|trough|remark|micromark|markdown-table|decode-named-character-reference|character-entities|property-information|hast|space-separated-tokens|comma-separated-tokens|mdast|mdast-util-to-hast|remark-rehype|trim-lines|rehype|html-void-elements|ccount|escape-string-regexp|strip-markdown|react-is|estree-util|format|is-|mdast-util-|unist-util-|zwitch|hastscript|web-namespaces)/)",
+	// 	"node_modules/(?!(remark-gfm|react-markdown|vfile|unist|unified|bail|is-plain-obj|trough|remark|micromark|markdown-table|decode-named-character-reference|character-entities|property-information|hast|space-separated-tokens|comma-separated-tokens|mdast|mdast-util-to-hast|remark-rehype|trim-lines|rehype|html-void-elements|ccount|escape-string-regexp|strip-markdown|react-is|estree-util|format|is-|mdast-util-|unist-util-|zwitch|hastscript|web-namespaces)/)",
 	// ],
 	collectCoverage: true,
 	coverageProvider: "v8",
@@ -82,16 +82,20 @@ const customJestConfig = {
 		// "<rootDir>/features/**/{!(index),}.{js,ts,jsx,tsx}",
 		"!<rootDir>/**/*.stories.{js,ts,jsx,tsx,mdx}",
 		"!<rootDir>/**/*.mocks.{js,ts}",
+		"!<rootDir>/**/*.mock.{js,ts}",
 	],
 	coveragePathIgnorePatterns: [
 		"<rootDir>/__tests__/test-utils/",
 		".stories.{js,ts,jsx,tsx,mdx}",
 		".mocks.{js,ts}",
+		".mock.{js,ts}",
 	],
 	testPathIgnorePatterns: [
 		"<rootDir>/__tests__/test-utils/",
+		"<rootDir>/__tests__/fixtures/",
 		".stories.{js,ts,jsx,tsx,mdx}",
 		".mocks.{js,ts}",
+		".mock.{js,ts}",
 	],
 	verbose: true,
 };

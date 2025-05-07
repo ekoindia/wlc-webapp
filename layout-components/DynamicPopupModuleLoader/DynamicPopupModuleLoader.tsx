@@ -152,8 +152,14 @@ const DefaultOptions: {
 	AiChatWidget: {
 		title: "Chat with AI",
 		hideCloseIcon: true,
+		dialogStyles: {
+			isCentered: true,
+		},
 		props: {
 			isPopupMode: true,
+		},
+		style: {
+			w: { base: "100%", md: "650px" },
 		},
 	},
 	// About: {},

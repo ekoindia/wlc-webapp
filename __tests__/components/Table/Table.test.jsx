@@ -1,22 +1,9 @@
 import { Table } from "components/Table";
-import { table_data_mock } from "constants/table_data_mock";
 import { pageRender } from "test-utils";
+// import { renderer_mock, table_data_mock } from "./Table.mocks";
 
-/*
-	* React Testing Library:
-		- Cheatsheet: https://testing-library.com/docs/react-testing-library/cheatsheet
-		- How to query: https://testing-library.com/docs/queries/about/
-		- Testing user events: https://testing-library.com/docs/user-event/intro
-		- Migrate from Enzyme (examples): https://testing-library.com/docs/react-testing-library/migrate-from-enzyme/
-		- Testing onChange event handlers: https://testing-library.com/docs/react-testing-library/faq
-		- All APIs: https://testing-library.com/docs/react-testing-library/api
-		- Debug: https://testing-library.com/docs/queries/about/#screendebug, https://testing-library.com/docs/dom-testing-library/api-debugging/#prettydom
-	* Jest:
-		- Docs: https://jestjs.io/docs/getting-started
-		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
-*/
-
-const renderer = [
+// Mock table schema
+export const renderer_mock = [
 	{
 		name: "mobile_number",
 		label: "Transaction ID",
@@ -35,12 +22,151 @@ const renderer = [
 	{ name: "ekocsp_code", label: "Amount" },
 ];
 
+// Mock data for the table
+export const table_data_mock = [
+	{
+		name: "R. J. Technology",
+		mobile_number: "+91 95999 13099",
+		type: "iMerchant",
+		createdAt: "12/10/2012",
+		account_status: "Cancel",
+		ekocsp_code: "10167082",
+		location: "Delhi NCR",
+	},
+	{
+		name: "Aarkay Finance",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Other",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "Deepu Phinance",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Pending",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "Divu Tech",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Active",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "Aaru Pharma",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Active",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "R. J. Technology",
+		mobile_number: "+91 95999 13099",
+		type: "iMerchant",
+		createdAt: "12/10/2012",
+		account_status: "Active",
+		ekocsp_code: "10167082",
+		location: "Delhi NCR",
+	},
+	{
+		name: "Aarkay Finance",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Inactive",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "Deepu Phinance",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Pending",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "Divu Tech",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Active",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "Aaru Pharma",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Active",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "R. J. Technology",
+		mobile_number: "+91 95999 13099",
+		type: "iMerchant",
+		createdAt: "12/10/2012",
+		account_status: "Active",
+		ekocsp_code: "10167082",
+		location: "Delhi NCR",
+	},
+	{
+		name: "Aarkay Finance",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Inactive",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "Deepu Phinance",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Pending",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "Divu Tech",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Active",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+	{
+		name: "Aaru Pharma",
+		mobile_number: "+91 95999 13099",
+		type: "Retailer",
+		createdAt: "12/10/2012",
+		account_status: "Active",
+		ekocsp_code: "10167082",
+		location: "Kolkata, W. B.",
+	},
+];
+
 describe("Table", () => {
 	it("renders without error with no attributes", () => {
 		const { container } = pageRender(
 			<Table
 				tableRowLimit={10}
-				renderer={renderer}
+				renderer={renderer_mock}
 				data={table_data_mock}
 				variant="evenStriped"
 			/>

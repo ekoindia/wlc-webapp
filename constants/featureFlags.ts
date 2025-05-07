@@ -48,10 +48,22 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true, // TODO: Enable for all users
 	},
 
-	// Pricing & Commission (New)
-	PRICING_COMMISSION: {
+	// Experimental LLM conversational UI for financial transactions and queries.
+	AI_CHATBOT: {
 		enabled: true,
-		forEnv: ["development"],
+		forAdminOnly: true,
+		// forEnv: ["development"],
+		envConstraints: {
+			development: {
+				forOrgId: [3],
+			},
+			staging: {
+				forOrgId: [3],
+			},
+			production: {
+				forOrgId: [...ORG_ID.EKOTESTS, 10, 186, 306, 331, 344], // 306=Kunal Chand, 186=HI TECH RECHARGE SOLUTION, 10=RAMSON TECHNOVATIONS PVT LTD, 344=PROWESS FINTECH PRIVATE LIMITED, 331=AJ ENTERPRISES
+			},
+		},
 	},
 
 	// ------------------------------------------------------------------------
@@ -60,7 +72,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 
 	// Open ChatGPT Agent in new tab
 	// To answer Admin's queries related to Eloka products and features.
-	CHATGPT_AGENT: {
+	CHATGPT_AGENT_LINK: {
 		enabled: true,
 	},
 
@@ -141,17 +153,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	TEXT_CLASSIFIER: {
 		enabled: true,
 		forEnv: ["development"],
-	},
-
-	// Experimental LLM conversational UI for financial transactions and queries.
-	GPT_CHAT: {
-		enabled: false,
-		forEnv: ["development"],
-		// envConstraints: {
-		// 	production: {
-		// 		forUserId: [],
-		// 	},
-		// },
 	},
 
 	// Expression editor for generating custom expressions using a GUI.

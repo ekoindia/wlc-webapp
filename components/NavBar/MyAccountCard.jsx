@@ -23,7 +23,7 @@ const MyAccountCard = ({ onClose }) => {
 	const [isRaiseIssueAllowedForSbiKiosk] = useFeatureFlag(
 		"RAISE_ISSUE_SBIKIOSK"
 	);
-	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT");
+	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT_LINK");
 	const { orgDetail } = useOrgDetailContext();
 
 	const { userDetails } = userData;

@@ -4,8 +4,7 @@ import {
 	renderHook as defaultRenderHook,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { SWRConfig } from "swr";
-// import { LayoutProvider } from "contexts/LayoutContext";
+import { MockAdminUser, MockOrg, MockUser } from "__tests__/fixtures/session";
 import { KBarLazyProvider } from "components/CommandBar";
 import {
 	AppSourceProvider,
@@ -24,7 +23,7 @@ import {
 import { localStorageProvider } from "helpers";
 import { Layout } from "layout-components";
 import { light } from "styles/themes";
-import { MockAdminUser, MockOrg, MockUser } from "./test-utils.mocks";
+import { SWRConfig } from "swr";
 
 import mockRouter from "next-router-mock";
 import { MemoryRouterProvider } from "next-router-mock/MemoryRouterProvider";
