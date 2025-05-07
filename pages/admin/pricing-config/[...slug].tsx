@@ -20,7 +20,6 @@ const PricingConfigPage = () => {
 // Pages can show their own header bar with back button.
 PricingConfigPage.pageMeta = {
 	title: "Pricing Config",
-	isSubPage: false,
 };
 
 // Use a diferent layout, if needed...
