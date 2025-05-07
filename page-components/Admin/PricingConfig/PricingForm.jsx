@@ -747,31 +747,33 @@ const PricingForm = ({ agentType, productDetails }) => {
 
 	// MARK: Render Form
 	return (
-		<form onSubmit={handleSubmit(handleFormSubmit)}>
-			<Flex
-				direction="column"
-				gap="8"
-				px={{ base: "6", md: "8" }}
-				pt="6"
-				pb="8"
-				bg="white"
-				border="card"
-				boxShadow="basic"
-				borderRadius="10px"
-			>
-				<Form
-					{...{
-						parameter_list: parameter_list,
-						formValues: watcher,
-						control,
-						register,
-						errors,
-					}}
-				/>
+		<Flex direction="column" py={{ base: "4", md: "0px" }}>
+			<form onSubmit={handleSubmit(handleFormSubmit)}>
+				<Flex
+					direction="column"
+					gap="8"
+					px={{ base: "6", md: "8" }}
+					pt="6"
+					pb="8"
+					bg="white"
+					border="card"
+					boxShadow="basic"
+					borderRadius="10px"
+				>
+					<Form
+						{...{
+							parameter_list: parameter_list,
+							formValues: watcher,
+							control,
+							register,
+							errors,
+						}}
+					/>
 
-				<ActionButtonGroup {...{ buttonConfigList }} />
-			</Flex>
-		</form>
+					<ActionButtonGroup {...{ buttonConfigList }} />
+				</Flex>
+			</form>
+		</Flex>
 	);
 };
 
