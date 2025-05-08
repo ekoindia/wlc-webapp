@@ -15,12 +15,15 @@ const useRaiseIssue = () => {
 
 	/**
 	 * Open the "Raise Issue" dialog
-	 * @param {object} options - Options to pass to the dialog.
+	 * @see {@link page-components/RaiseIssueCard/RaiseIssueCard.tsx} for a list of supported options.
+	 * @param {object} options - Options to pass to the dialog. It supports all the properties accepted by the `RaiseIssueCard` component.
 	 * @param {Function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
 	 */
 	const showRaiseIssueDialog = (options, onResponse) => {
 		// Set the result handler
 		setResultHandler(() => onResponse);
+
+		console.log("Opening Raise Issue Card with options:", options);
 
 		// Show the dialog
 		publish(TOPICS.SHOW_DIALOG_FEATURE, {

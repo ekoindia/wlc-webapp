@@ -82,7 +82,13 @@ interface RaiseIssueProps {
 		files?: any; // Array of { label: string, is_required: boolean, accept: string }
 		context?: string;
 	};
-	origin: "Response" | "History" | "Global-Help" | "Command-Bar" | "Other";
+	origin:
+		| "Response"
+		| "History"
+		| "Global-Help"
+		| "Command-Bar"
+		| "Error-Boundary"
+		| "Other";
 	autoCaptureScreenshot?: boolean;
 	onResult?: Function;
 	onClose?: Function;
