@@ -28,6 +28,8 @@ const useDynamicPopup = (moduleName: ModuleNameType) => {
 	 * @param {Function} onResponse - Callback function to handle the response when the dialog is closed. The function should accept the result of the dialog as a JSON object.
 	 */
 	const showDialog = (options, onResponse) => {
+		console.log("[useDynamicPopup] showDialog:", { moduleName, options });
+
 		// Set the result handler
 		setResultHandler(() => onResponse);
 
