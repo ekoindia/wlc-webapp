@@ -7,6 +7,7 @@ export { default as useClipboard } from "./useClipboard";
 export { default as useDailyCacheState } from "./useDailyCacheState";
 export { default as useDebouncedState } from "./useDebouncedState";
 export { default as useDelayToggle } from "./useDelayToggle";
+export { default as useDynamicPopup } from "./useDynamicPopup";
 export { default as useExternalResource } from "./useExternalResource";
 export { default as useFeatureFlag } from "./useFeatureFlag";
 export { default as useFileView } from "./useFileView";

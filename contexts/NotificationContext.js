@@ -2,9 +2,9 @@ import { CloseButton, Flex, Image, Text, useToast } from "@chakra-ui/react";
 import { Icon } from "components";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { TransactionTypes } from "constants";
-import { usePubSub, useSession } from "contexts";
+import { useSession } from "contexts";
 import { fetcher } from "helpers";
-import { useLocalStorage } from "hooks";
+import { useDynamicPopup, useLocalStorage } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import {
 	createContext,
@@ -54,7 +54,7 @@ const useNotifications = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [openedNotification, setOpenedNotification] = useState(null);
 
-	const { publish, TOPICS } = usePubSub();
+	const { showDialog } = useDynamicPopup("Notifications");
 
 	// Notification settings.
 	const [notifSettings, setNotifSettings] = useLocalStorage(
@@ -169,9 +169,7 @@ const useNotifications = () => {
 	 * Open the notification panel overlay to show all notifications
 	 */
 	const openNotificationPanel = () => {
-		publish(TOPICS.SHOW_DIALOG_FEATURE, {
-			feature: "Notifications",
-		});
+		showDialog();
 	};
 
 	/**
