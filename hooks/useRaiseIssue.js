@@ -23,8 +23,6 @@ const useRaiseIssue = () => {
 		// Set the result handler
 		setResultHandler(() => onResponse);
 
-		console.log("Opening Raise Issue Card with options:", options);
-
 		// Show the dialog
 		publish(TOPICS.SHOW_DIALOG_FEATURE, {
 			feature: "Feedback",
