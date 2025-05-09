@@ -40,6 +40,29 @@ const getYoutubeThumbnail = (youtubeId, size = "mqdefault") => {
 };
 
 /**
+ * MARK: StateIcon
+ * @param {object} props
+ * @param {number} props.state - The state of the notification (e.g., POSITIVE, NEGATIVE).
+ * @param {string} [props.size] - The size of the icon.
+ * @param {object} [props.rest] - Additional props to pass to the Icon component.
+ * @returns {JSX.Element|null} StateIcon component or null if state is not POSITIVE or NEGATIVE.
+ */
+const StateIcon = ({ state, size = "1.2em", ...rest }) => {
+	if (state === STATE.POSITIVE || state === STATE.NEGATIVE) {
+		return (
+			<Icon
+				size={size}
+				name={state === STATE.POSITIVE ? "check-circle" : "error"}
+				color={state === STATE.POSITIVE ? "success" : "error"}
+				mr="0.4em"
+				{...rest}
+			/>
+		);
+	}
+	return null;
+};
+
+/**
  * A thumbnail for the notification
  * MARK: Thumbnail
  * @param {object} props
@@ -203,22 +226,8 @@ const NotificationWidget = ({
 							>
 								<Flex direction="column">
 									<Flex direction="row" align="center">
-										{/* TODO: Add Status icon here: Success, Error, etc */}
-										{notif.state === STATE.POSITIVE ? (
-											<Icon
-												name="check"
-												size="18px"
-												color="green.500"
-												mr="1"
-											/>
-										) : notif.state === STATE.NEGATIVE ? (
-											<Icon
-												name="error"
-												size="18px"
-												color="red.500"
-												mr="1"
-											/>
-										) : null}
+										{/* Status icon: Success, Error, etc */}
+										<StateIcon state={notif.state} />
 										<Text
 											fontSize={{ base: "xs", md: "sm" }}
 											fontWeight="bold"
@@ -261,21 +270,7 @@ const NotificationWidget = ({
 					<ModalOverlay bg="blackAlpha.600" backdropBlur="10px" />
 					<ModalContent>
 						<ModalHeader display="flex" alignItems="center">
-							{openedNotification.state === STATE.POSITIVE ? (
-								<Icon
-									name="check"
-									size="1.4em"
-									color="green.500"
-									mr="1"
-								/>
-							) : openedNotification.state === STATE.NEGATIVE ? (
-								<Icon
-									name="error"
-									size="1.4em"
-									color="red.500"
-									mr="1"
-								/>
-							) : null}
+							<StateIcon state={openedNotification.state} />
 							{openedNotification.title}
 						</ModalHeader>
 						<ModalCloseButton _hover={{ color: "error" }} />
