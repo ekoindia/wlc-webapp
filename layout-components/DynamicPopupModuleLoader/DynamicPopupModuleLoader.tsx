@@ -224,7 +224,7 @@ const moduleList: { [_key in ModuleNameType]: any } = {
 };
 
 /**
- * Maximum modules that can be loaded at a time
+ * Maximum modules that can be loaded at a time. The modules are rendered in a stack on top of each other.
  */
 const MAX_MODULES = 10;
 
@@ -234,7 +234,6 @@ const MAX_MODULES = 10;
  * @component
  * @param {object} prop - Properties passed to the component
  * @param {...*} rest - Rest of the props
- * @example	`<DynamicPopupModuleLoader></DynamicPopupModuleLoader>` TODO: Fix example
  */
 const DynamicPopupModuleLoader = () => {
 	/**
@@ -264,6 +263,11 @@ const DynamicPopupModuleLoader = () => {
 
 		return unsubscribe; // Unsubscribe on component unmount
 	}, []);
+
+	// Log modules
+	useEffect(() => {
+		console.log("[DynamicPopupModuleLoader] Rendered modules:", moduleData);
+	}, [moduleData]);
 
 	/**
 	 * Function to add a module to the list of modules to be displayed. If it already exists, it will be replaced.
