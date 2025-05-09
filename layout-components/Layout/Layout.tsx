@@ -4,7 +4,7 @@ import { useBottomAppBarItems } from "components/BottomAppBar";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import { NavHeight } from "components/NavBar";
 import { useAppSource, useGlobalSearch, usePubSub, useSession } from "contexts";
-import { useDelayToggle } from "hooks";
+import { useDelayToggle, useIsSubPage } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
 import dynamic from "next/dynamic";
 import Head from "next/head";
@@ -97,6 +97,9 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 
 	// Get the bottom bar items
 	const bottomAppBarItems = useBottomAppBarItems();
+
+	const calculatedIsSubPage = useIsSubPage();
+	const resolvedIsSubPage = isSubPage ?? calculatedIsSubPage;
 
 	// Delay load non-essential components...
 	const [loadNavBar] = useDelayToggle(100);
@@ -208,7 +211,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 						Hide top navbar on small screen if this is a sub-page
 						(shows it's own back button in the top header)
 					*/}
-					{isSmallScreen && isSubPage ? null : (
+					{isSmallScreen && resolvedIsSubPage ? null : (
 						<Box
 							sx={{
 								"@media print": {
