@@ -1133,7 +1133,7 @@ export const EmploymentForm = (): JSX.Element => {
 	};
 
 	return (
-		<Box maxW="800px" mx="auto" mt={8}>
+		<Box maxW="600px" mx="auto" mt={8}>
 			<Card mb={4} p={4}>
 				<Text fontSize="lg" fontWeight="semibold" mb={2}>
 					Employee Verification
