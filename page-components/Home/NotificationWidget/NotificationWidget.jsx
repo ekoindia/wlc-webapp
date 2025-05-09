@@ -253,14 +253,31 @@ const NotificationWidget = ({
 			{openedNotification && openedNotification.id ? (
 				<Modal
 					isOpen={true}
-					size="md"
+					size="xl"
 					onClose={
 						closeNotification
 					} /* isOpen={isOpen} onClose={onClose} */
 				>
 					<ModalOverlay bg="blackAlpha.600" backdropBlur="10px" />
 					<ModalContent>
-						<ModalHeader>{openedNotification.title}</ModalHeader>
+						<ModalHeader display="flex" alignItems="center">
+							{openedNotification.state === STATE.POSITIVE ? (
+								<Icon
+									name="check"
+									size="1.4em"
+									color="green.500"
+									mr="1"
+								/>
+							) : openedNotification.state === STATE.NEGATIVE ? (
+								<Icon
+									name="error"
+									size="1.4em"
+									color="red.500"
+									mr="1"
+								/>
+							) : null}
+							{openedNotification.title}
+						</ModalHeader>
 						<ModalCloseButton _hover={{ color: "error" }} />
 						<ModalBody>
 							{("" + openedNotification.desc)
@@ -272,6 +289,7 @@ const NotificationWidget = ({
 							{openedNotification.link ? (
 								<Button
 									my={4}
+									size="lg"
 									fontSize="lg"
 									variant="primary"
 									onClick={() => {
