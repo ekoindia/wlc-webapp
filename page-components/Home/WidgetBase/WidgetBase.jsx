@@ -3,7 +3,6 @@ import { IcoButton, Icon } from "components";
 
 /**
  * A base card for all Home widgets
- * TODO: Write more description here
  * @param 	{string}	title	Widget title
  * @param 	{ReactElement}	titleIcon	Icon Component to show in the header
  * @param 	{string}	titleIconName	Name of the icon to show in the header (alternative to titleIcon)
@@ -20,7 +19,6 @@ import { IcoButton, Icon } from "components";
  * @param 	{object}	headerProps	Props for the header
  * @param 	{object}	children	Child elements for the widget body
  * @param	{...*}	rest	Rest of the props passed to this component
- * @example	`<WidgetBase></WidgetBase>` TODO: Fix example
  */
 const WidgetBase = ({
 	title,
