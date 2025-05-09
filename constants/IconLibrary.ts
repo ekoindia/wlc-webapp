@@ -29,6 +29,7 @@ export type IconNameType =
 	| "check"
 	| "check-box"
 	| "check-box-outline-blank"
+	| "check-circle"
 	| "chevron-left"
 	| "chevron-right"
 	| "clipboard-download"
@@ -360,6 +361,7 @@ export const IconCategories: IconCategoriesType = {
 	],
 	Form: [
 		"check",
+		"check-circle",
 		"check-box",
 		"check-box-outline-blank",
 		"indeterminate-check-box",
@@ -533,6 +535,10 @@ export const IconLibrary: IconLibraryType = {
 	"check-box-outline-blank": {
 		viewBox: "0 0 24 24",
 		path: `<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>`,
+	},
+	"check-circle": {
+		viewBox: "0 0 24 24",
+		path: `<path fill="currentColor" d="m10.6 16.6l7.05-7.05l-1.4-1.4l-5.65 5.65l-2.85-2.85l-1.4 1.4zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/>`,
 	},
 	"chevron-left": {
 		viewBox: "0 0 17 17",
