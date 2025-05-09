@@ -13,21 +13,21 @@ import {
 } from "@chakra-ui/react";
 import { Button, Icon, YoutubePlayer } from "components";
 import { useNotification } from "contexts";
-import { useAppLink, useFileView } from "hooks";
+import { useAppLink, useFileView, useHslColor } from "hooks";
 import { formatDateTime } from "libs";
 import { WidgetBase } from "..";
 
-// const PRIORITY = {
-// 	LOW: 1,
-// 	NORMAL: 2,
-// 	HIGH: 3,
-// };
+const PRIORITY = {
+	LOW: 1,
+	NORMAL: 2,
+	HIGH: 3,
+};
 
-// const STATE = {
-// 	NORMAL: 1,
-// 	POSITIVE: 2,
-// 	NEGATIVE: 3,
-// };
+const STATE = {
+	NORMAL: 1,
+	POSITIVE: 2,
+	NEGATIVE: 3,
+};
 
 /**
  * Helper function to get Youtube Thumbnail URL
@@ -40,7 +40,85 @@ const getYoutubeThumbnail = (youtubeId, size = "mqdefault") => {
 };
 
 /**
+ * A thumbnail for the notification
+ * MARK: Thumbnail
+ * @param {object} props
+ * @param {object} props.notification - The notification details like image, youtube, read status.
+ * @returns {JSX.Element} NotificationThumbnail component
+ */
+const NotificationThumbnail = ({ notification }) => {
+	const { title, image, youtube, read } = notification || {};
+	const hasMedia = image || youtube;
+	const { h } = useHslColor(title);
+
+	return (
+		<Flex position="relative">
+			{
+				// Show a blue dot if the notification is unread
+				!read && (
+					<Flex
+						position="absolute"
+						top="-2px"
+						left="-2px"
+						h="14px"
+						w="14px"
+						borderRadius="50%"
+						bg="blue.500"
+						border="2px solid white"
+					/>
+				)
+			}
+			<Flex
+				justify="center"
+				align="center"
+				h={{ base: "38px", md: "42px" }}
+				w={{ base: "38px", md: "42px" }}
+				minW={{ base: "38px", md: "42px" }}
+				borderRadius={hasMedia ? "6px" : "50%"}
+				bg={read ? "gray.200" : `hsl(${h},50%,90%)`}
+				border="1px solid"
+				borderColor={read ? "#D2D2D2" : `hsl(${h},30%,85%)`}
+				overflow="hidden"
+			>
+				{image ? (
+					<Image
+						fit="cover"
+						loading="lazy"
+						overflow="hidden"
+						h="100%"
+						w="100%"
+						minW="100%"
+						src={image}
+						alt="Notification Poster"
+					/>
+				) : youtube ? (
+					<Image
+						fit="cover"
+						loading="lazy"
+						overflow="hidden"
+						h={{ base: "38px", md: "42px" }}
+						w={{ base: "38px", md: "42px" }}
+						minW={{ base: "38px", md: "42px" }}
+						borderRadius="10px"
+						src={getYoutubeThumbnail(youtube)}
+						alt="Video thumbnail"
+					/>
+				) : (
+					<Icon
+						size="22px"
+						name={youtube ? "play-circle-outline" : "notifications"}
+						// color="gray.400"
+						color={read ? "gray.400" : `hsl(${h},20%,65%)`}
+					/>
+				)}
+			</Flex>
+		</Flex>
+	);
+};
+
+/**
  * Homepage widget to show a list of notifications.
+ * MARK: Widget
  * @param {object} props
  * @param {string} [props.title] Title of the widget
  * @param {boolean} [props.compactMode] Flag to display the widget in compact mode (default: false)
@@ -77,6 +155,8 @@ const NotificationWidget = ({
 		return null;
 	}
 
+	console.log("NOTIFICATIONS: ", filteredNotifications);
+
 	return (
 		<>
 			<WidgetBase
@@ -90,11 +170,11 @@ const NotificationWidget = ({
 					direction="column"
 					className="customScrollbars"
 					overflowY={{ base: "none", md: "scroll" }}
-					borderTop="2px solid #E2E2E2"
+					borderTop="3px solid #E2E2E2"
 					// rowGap={{ base: "19px", md: "10px" }}
 					// mt="20px"
 				>
-					{filteredNotifications.map((notif) => (
+					{filteredNotifications?.map((notif) => (
 						<Flex
 							key={notif.id}
 							p={{
@@ -104,80 +184,17 @@ const NotificationWidget = ({
 							bg={notif.read ? "shade" : "white"}
 							cursor="pointer"
 							_hover={{ bg: "darkShade" }}
-							borderBottom="2px solid #E2E2E2"
+							borderBottom="1px ridge #E2E2E2"
+							opacity={notif.read ? 0.8 : 1}
 							onClick={() => openNotification(notif.id)}
+							borderLeft="5px solid transparent"
+							borderLeftColor={
+								notif.priority === PRIORITY.HIGH
+									? "accent.DEFAULT"
+									: "transparent"
+							}
 						>
-							<Flex position="relative">
-								{notif.read ? null : (
-									// Show a blue dot in the top-left corner if the notification is unread
-									<Flex
-										position="absolute"
-										top="-5px"
-										left="-5px"
-										h="14px"
-										w="14px"
-										borderRadius="50%"
-										bg="blue.500"
-										border="2px solid white"
-									/>
-								)}
-								<Flex
-									justify="center"
-									align="center"
-									h={{ base: "38px", md: "42px" }}
-									w={{ base: "38px", md: "42px" }}
-									minW={{ base: "38px", md: "42px" }}
-									borderRadius="8px"
-									bg="gray.300"
-									border="1px solid #D2D2D2"
-									overflow="hidden"
-								>
-									{/* <Avatar
-									h={{ base: "38px", md: "42px" }}
-									w={{ base: "38px", md: "42px" }}
-									border="2px solid #D2D2D2"
-									name={`${index + 1}`}
-								/> */}
-									{notif.image ? (
-										<Image
-											fit="cover"
-											loading="lazy"
-											overflow="hidden"
-											h="100%"
-											w="100%"
-											minW="100%"
-											src={notif.image}
-											alt="Notification Poster"
-										/>
-									) : notif.youtube ? (
-										<Image
-											fit="cover"
-											loading="lazy"
-											overflow="hidden"
-											h={{ base: "38px", md: "42px" }}
-											w={{ base: "38px", md: "42px" }}
-											minW={{ base: "38px", md: "42px" }}
-											borderRadius="10px"
-											src={getYoutubeThumbnail(
-												notif.youtube,
-												"mqdefault"
-											)}
-											alt="Video thumbnail"
-										/>
-									) : (
-										<Icon
-											size="22px"
-											name={
-												notif.youtube
-													? "play-circle-outline"
-													: "notifications"
-											}
-											color="gray.400"
-										/>
-									)}
-								</Flex>
-							</Flex>
-
+							<NotificationThumbnail notification={notif} />
 							<Flex
 								alignItems="center"
 								justifyContent="space-between"
@@ -186,7 +203,22 @@ const NotificationWidget = ({
 							>
 								<Flex direction="column">
 									<Flex direction="row" align="center">
-										{/* TODO: Add Status icon here: Success, Error, Warning, etc */}
+										{/* TODO: Add Status icon here: Success, Error, etc */}
+										{notif.state === STATE.POSITIVE ? (
+											<Icon
+												name="check"
+												size="18px"
+												color="green.500"
+												mr="1"
+											/>
+										) : notif.state === STATE.NEGATIVE ? (
+											<Icon
+												name="error"
+												size="18px"
+												color="red.500"
+												mr="1"
+											/>
+										) : null}
 										<Text
 											fontSize={{ base: "xs", md: "sm" }}
 											fontWeight="bold"
@@ -195,13 +227,21 @@ const NotificationWidget = ({
 											{notif.title}
 										</Text>
 									</Flex>
-									<Text
+									<Flex
 										mt="1"
 										fontSize="xs"
 										noOfLines={compactMode ? 2 : 3}
 									>
-										{notif.desc}
-									</Text>
+										{notif.desc
+											.split("\n")
+											.filter(
+												(line) => line.trim() !== ""
+											)
+											.slice(0, 3)
+											.map((line, index) => (
+												<Text key={index}>{line}</Text>
+											))}
+									</Flex>
 								</Flex>
 							</Flex>
 						</Flex>
