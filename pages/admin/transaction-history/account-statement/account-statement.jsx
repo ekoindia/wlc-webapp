@@ -14,7 +14,6 @@ const AccountStatementPage = () => {
 
 AccountStatementPage.pageMeta = {
 	title: "Account Statement | Admin",
-	isSubPage: true,
 };
 
 export default AccountStatementPage;

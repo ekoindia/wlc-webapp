@@ -14,7 +14,6 @@ const DetailedStatementPage = () => {
 
 DetailedStatementPage.pageMeta = {
 	title: "Detailed Statement | Admin",
-	isSubPage: true,
 };
 
 export default DetailedStatementPage;

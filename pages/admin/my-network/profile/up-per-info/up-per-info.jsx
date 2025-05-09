@@ -17,7 +17,6 @@ function UpdatePersonalInfoPage() {
 
 UpdatePersonalInfoPage.pageMeta = {
 	title: "My Network > Update Personal Info | Admin",
-	isSubPage: true,
 	isFixedBottomAppBar: true,
 };
 

@@ -15,7 +15,6 @@ const Profile = () => {
 
 Profile.pageMeta = {
 	title: "My Network > Agent Details | Admin",
-	isSubPage: true,
 };
 
 export default Profile;

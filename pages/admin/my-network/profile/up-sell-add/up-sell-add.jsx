@@ -17,7 +17,6 @@ function UpdateSellerAddressPage() {
 
 UpdateSellerAddressPage.pageMeta = {
 	title: "My Network > Update Agent Address | Admin",
-	isSubPage: true,
 	isFixedBottomAppBar: true,
 };
 

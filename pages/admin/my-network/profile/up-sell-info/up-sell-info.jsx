@@ -17,7 +17,6 @@ function UpdateSellerInfoPage() {
 
 UpdateSellerInfoPage.pageMeta = {
 	title: "My Network > Update Retailer Info | Admin",
-	isSubPage: true,
 };
 
 export default UpdateSellerInfoPage;

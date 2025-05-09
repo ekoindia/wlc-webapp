@@ -17,7 +17,6 @@ function PreviewSellerInfoPage() {
 
 PreviewSellerInfoPage.pageMeta = {
 	title: "My Network > Preview Retailer Info | Admin",
-	isSubPage: true,
 };
 
 export default PreviewSellerInfoPage;

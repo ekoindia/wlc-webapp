@@ -21,7 +21,6 @@ const BusinessSettingSubpage = () => {
 
 BusinessSettingSubpage.pageMeta = {
 	title: "Configure Business Settings",
-	isSubPage: true,
 	isFixedBottomAppBar: true,
 };
 
