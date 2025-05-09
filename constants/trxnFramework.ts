@@ -763,4 +763,5 @@ export enum InteractionBehavior {
 	GRID = 7, // Similar to GROUP but shown as a GRID (Store Listing). First one not selected by default
 	BRAND = 8, // A Brand with products (brand_products table) pointing to other transactions
 	TOKEN_SCANNER = 9, // Scan Token and Pay
+	REDIRECT = 10, // Redirect to a URL (from the `uri` field)
 }

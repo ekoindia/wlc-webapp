@@ -320,7 +320,7 @@ export const PanAdvancedForm = (): JSX.Element => {
 
 		const response = await fetchPan({
 			body: {
-				pan_number: values.pan.toUpperCase(),
+				pan: values.pan.toUpperCase(),
 				name: values.name,
 				dob: formattedDob,
 			},

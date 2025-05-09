@@ -39,22 +39,23 @@ These popups can be displayed on any page within the application, allowing for a
 
 ## How it Works
 
-1.  **Initialization**: The `DynamicPopupModuleLoader` component is typically included once in the main application layout (e.g., within `Layout.tsx`). It initializes and subscribes to the `TOPICS.SHOW_DIALOG_FEATURE` pub/sub topic upon mounting.
-2.  **Subscription**: It listens for messages published on the `TOPICS.SHOW_DIALOG_FEATURE` topic.
-3.  **Triggering a Popup**: Any component in the application can trigger a popup by publishing a message to `TOPICS.SHOW_DIALOG_FEATURE`. The message payload must include:
-    *   `feature`: The name of the module to load (must be one of the keys in `ModuleNameType` and configured in `moduleList` and `DefaultOptions`).
-    *   `options` (optional): An object containing props to pass directly to the dynamically loaded module component.
-    *   `resultTopic` (optional): A unique pub/sub topic name (string). If provided, the `DynamicPopupModuleLoader` will publish the result/response from the closed module to this topic.
-4.  **Dynamic Loading**: Upon receiving a valid message, the component:
-    *   Adds the module details to its internal state (`moduleData`).
-    *   Uses `next/dynamic` to lazy-load the specified module component (defined in `moduleList`). A loading spinner (`Loading` component) is displayed while the module loads.
-    *   Retrieves default configurations (like `popupStyle`, `title`, `props`, styling) for the module from `DefaultOptions`.
+1. **Initialization**: The `DynamicPopupModuleLoader` component is typically included once in the main application layout (e.g., within `Layout.tsx`). It initializes and subscribes to the `TOPICS.SHOW_DIALOG_FEATURE` pub/sub topic upon mounting.
+2. **Subscription**: It listens for messages published on the `TOPICS.SHOW_DIALOG_FEATURE` topic.
+3. **Triggering a Popup**: the `useDynamicPopup` hook can be used to trigger the popup and handle the result in a more streamlined way. It returns an object with a `showDialog` method that can be called with the following parameters:
+	 * `feature`: The name of the module to load (must be one of the keys in `ModuleNameType` and configured in `moduleList` and `DefaultOptions`).
+	 * `options` (optional): An object containing props to pass directly to the dynamically loaded module component.
+	 * `resultTopic` (optional): A unique pub/sub topic name (string). If provided, the `DynamicPopupModuleLoader` will publish the result/response from the closed module to this topic.
+   * Or, each module can have its own specific hook (e.g., `useRaiseIssue`, `useFileViewer`) as a wrapper around `useDynamicPopup` to simplify the triggering process and ensure type safety.
+4. **Dynamic Loading**: Upon receiving a valid message, the component:
+   * Adds the module details to its internal state (`moduleData`).
+   * Uses `next/dynamic` to lazy-load the specified module component (defined in `moduleList`). A loading spinner (`Loading` component) is displayed while the module loads.
+   * Retrieves default configurations (like `popupStyle`, `title`, `props`, styling) for the module from `DefaultOptions`.
 5.  **Rendering**: It renders the loaded module inside a Chakra UI `Modal` or `Drawer` component based on the `popupStyle` configuration. Default styles and behaviors (like overlay, close button) are applied but can be customized via `DefaultOptions`.
 6.  **Interaction & Closing**: The user interacts with the loaded module. The module itself should provide a way to close (e.g., a close button or completing an action). It calls the `onClose` prop passed down by `DynamicPopupModuleLoader`, optionally passing a result payload.
 7.  **Result Publishing**: When a popup is closed:
-    *   The `onPopupClose` handler in `DynamicPopupModuleLoader` is triggered.
-    *   If a `resultTopic` was provided when triggering the popup, the `DynamicPopupModuleLoader` publishes the result received from the module to that specific topic.
-    *   The module is removed from the `moduleData` state, effectively closing the popup.
+    * The `onPopupClose` handler in `DynamicPopupModuleLoader` is triggered.
+    * If a `resultTopic` was provided when triggering the popup, the `DynamicPopupModuleLoader` publishes the result received from the module to that specific topic.
+    * The module is removed from the `moduleData` state, effectively closing the popup.
 
 
 ## How to Use It (Directly via Pub/Sub)
