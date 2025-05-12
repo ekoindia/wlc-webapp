@@ -1,24 +1,26 @@
-## GitHub Copilot Instructions
+## Copilot Instructions
 
 - **Explicitly state the rule(s)** you're applying in each output. Use concise phrases to indicate applied rules
 - **When uncertain**, ask a series of concise, yes/no clarifying questions (maximum once per interaction)
 
 
-## Project Context: Eloka SaaS Web App
-Eloka is a **white-labeled, multi-tenant SaaS web app** enabling Admins to manage networks of agents handling financial transactions.
+## Project Context
+Eloka SaaS Web App: Multi-tenant, white-labeled platform for Admins to manage agent networks handling financial transactions.
 
-### Admin Capabilities
-- Manage Agent Network: Onboarding, KYC verification, activity tracking, and business analytics
-- Configure Fintech Products: Enable/disable products, feature toggles, and integrations
-- Pricing & Commissions: Setup flexible commission structures per agent, product, and tier
-- Customization & Branding: Domain, app name, logos, color themes, and landing page layout
-- Wallet Management: Admin-level wallet operations, reconciliation, and monitoring
+Admin features:
+- Agent onboarding, KYC, analytics
+- Fintech product config (enable/disable, toggles, integrations)
+- Flexible pricing/commissions per agent/product/tier
+- Custom branding (domain, name, logo, color, landing page)
+- Wallet ops, reconciliation, monitoring
 
-### Agent Capabilities
-- Account Setup: Self-registration, KYC submission, and verification tracking
-- Financial Transactions: Conduct various financial operations seamlessly
-- Wallet Operations: Top-up, withdrawal, balance management, and transaction history
-- Issue Resolution: Ticketing system for issue reporting and resolution tracking
+Agent features:
+- Self-registration, KYC, verification
+- Financial transactions
+- Wallet: top-up, withdraw, balance, history
+- Issue/ticketing system
+
+(Core: Admin manages agents & products; agents transact & manage wallets. Customizable, analytics, compliance, and support built-in.)
 
 
 ## Code Standards
@@ -76,25 +78,22 @@ Eloka is a **white-labeled, multi-tenant SaaS web app** enabling Admins to manag
 
 
 ## Repository Structure
-```
-Eloka Web App
-├── __tests__/              # All tests (unit/integration), mirroring main code structure
-├── components/             # Reusable React UI components
-├── constants/              # Application-wide constants
-├── contexts/               # React context providers
-├── docs/                   # Comprehensive project documentation
-├── helpers/                # Business-specific helper functions
-├── hooks/                  # Custom React hooks
-├── layout-components/      # Components specific to layout and navigation
-├── libs/                   # External and shared libraries
-├── page-components/        # Page-specific React components
-├── pages/                  # Next.js page routes
-├── public/                 # Static assets (images, scripts)
-├── styles/                 # Chakra UI theme and global styling
-├── tf-components/          # Components for low-code forms (transaction framework)
-├── utils/                  # General-purpose utility functions
-└── README.md               # Setup and usage documentation
-```
+- `__tests__`: All tests (unit/integration), mirroring main code structure
+- `components/`: Reusable React UI components
+- `constants/`: Application-wide constants
+- `contexts/`: React context providers
+- `docs/`: Comprehensive project documentation
+- `helpers/`: Business-specific helper functions
+- `hooks/`: Custom React hooks
+- `layout-components/`: Components specific to layout and navigation
+- `libs/`: External and shared libraries
+- `page-components/`: Page-specific React components
+- `pages/`: Next.js page routes
+- `public/`: Static assets (images, scripts)
+- `styles/`: Chakra UI theme and global styling
+- `tf-components/`: Components for low-code forms (transaction framework)
+- `utils/`: General-purpose utility functions
+- `README.md`: Setup and usage documentation
 
 
 ## Tech Stack
