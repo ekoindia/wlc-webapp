@@ -67,6 +67,14 @@ Eloka is a **white-labeled, multi-tenant SaaS web app** enabling Admins to manag
 - Exports: prefer named exports over defaults.
 
 
+## Development Flow
+- Install dependencies: `npm install`
+- Development server: `npm run dev`
+- Build: `npm run build`
+- Test: `npm run test`
+- Lint: `npm run lint`
+
+
 ## Repository Structure
 ```
 Eloka Web App
