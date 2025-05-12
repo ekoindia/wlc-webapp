@@ -21,6 +21,8 @@ const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
 
 // const PINCODE_REGEX = /^[1-9][0-9]{5}&}/;
 const TEXT_ONLY_REGEX = /^[A-Za-z\s]+$/;
+const ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_REGEX =
+	/^[a-zA-Z0-9\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+$/;
 
 /**
  * A ShopCard page-component
@@ -54,6 +56,7 @@ const ShopCard = () => {
 			key: "shop_name", //using this key to show data on UI
 			name: "shop_name",
 			label: "Shop Name",
+			validations: { pattern: TEXT_ONLY_REGEX },
 		},
 		{
 			key: "shop_type_ui",
@@ -66,6 +69,9 @@ const ShopCard = () => {
 			key: "shop_address",
 			name: "shop_address",
 			label: "Shop Address",
+			validations: {
+				pattern: ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_REGEX,
+			},
 		},
 		{
 			key: "city",
