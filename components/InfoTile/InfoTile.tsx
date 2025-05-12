@@ -63,7 +63,7 @@ const InfoTile = ({
 			_hover={{
 				bg: `hsl(${h},80%,98%)`,
 			}}
-			boxShadow="buttonShadow"
+			boxShadow="sh-button"
 			onMouseEnter={() => setOnHover(true)}
 			onMouseLeave={() => setOnHover(false)}
 			onClick={handleClick}
