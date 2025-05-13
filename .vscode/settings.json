@@ -22,4 +22,9 @@
     "statusBar.background": "#11299E",
     "activityBar.activeBorder": "#f38300",
   },
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "file": "docs/commit-message-instructions.md"
+    }
+  ],
 }
