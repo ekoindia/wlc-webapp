@@ -137,7 +137,7 @@ export const CinForm = (): JSX.Element => {
 	};
 
 	return (
-		<Box maxW="600px" mx="auto" mt={8}>
+		<Box maxW="800px" mx="auto" mt={8}>
 			{!collapsed && (
 				<Card mb={4} p={4}>
 					<Text fontSize="lg" fontWeight="semibold" mb={2}>
