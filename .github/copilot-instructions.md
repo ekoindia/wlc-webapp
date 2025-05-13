@@ -146,26 +146,6 @@ describe("Home page", () => {
 ```
 
 
-## Git Commit Guidelines
-### Use semantic prefixes for clarity:
-- `fix:` Bug fixes
-- `feat:` New features
-- `perf:` Performance improvements
-- `docs:` Documentation updates
-- `style:` Code formatting (no logic change)
-- `ui`: UI changes
-- `refactor:` Code refactoring
-- `test:` Adding tests
-- `build:` Build/configuration changes
-- `chore:` Maintenance tasks
-- `ci:` CI/CD pipeline updates
-- `wip:` In-progress partial commits
-
-### Commit Messages:
-- Lowercase, concise, and descriptive summaries.
-- Detailed body for non-obvious or major changes.
-
-
 ## Documentation Standards
 - Maintain a clear, comprehensive **README** (setup, dependencies, usage).
 - Maintain extensive technical documentation in the `docs/` folder.
