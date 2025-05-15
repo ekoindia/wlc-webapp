@@ -579,7 +579,7 @@ export const networkHistoryParametersMetadata = [
 		label: "TID",
 		parameter_type_id: 11,
 		pattern_format: "#### #### #",
-		display_media_id: DisplayMedia.PRINT,
+		display_media_id: DisplayMedia.BOTH,
 	},
 	{
 		name: "settlement_type",
