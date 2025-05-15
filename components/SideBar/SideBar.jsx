@@ -10,7 +10,7 @@ import {
 	useToken,
 } from "@chakra-ui/react";
 import { useBottomAppBarItems } from "components/BottomAppBar";
-import { Endpoints, UserType } from "constants";
+import { Endpoints, InteractionBehavior, UserType } from "constants";
 import { useUser } from "contexts";
 import { useFeatureFlag, useLocalStorage, useNavigationLists } from "hooks";
 import dynamic from "next/dynamic";
@@ -423,7 +423,7 @@ const AccordionMenu = ({
 };
 
 /**
- * An expandable section with a list of menu items
+ * An expandable section with a list of menu items. For example, "Start a Transaction" or "Others", and their respective sub-items.
  * MARK: Section
  * @param {string} title - The title of the section
  * @param {string} icon - The icon name of the section
@@ -496,9 +496,21 @@ const AccordionSubMenuSection = ({
 				{menuItems?.map((tx) => {
 					if (!tx) return null;
 
-					const link =
-						tx.link ||
-						`${isAdmin ? "/admin" : ""}/transaction/${tx.id}`;
+					let link;
+					if (tx.link) {
+						link = tx.link;
+					} else if (
+						tx.behavior === InteractionBehavior.REDIRECT &&
+						tx.uri
+					) {
+						link = tx.uri;
+					} else if (tx.id) {
+						link = `${isAdmin ? "/admin" : ""}/transaction/${tx.id}`;
+					} else {
+						// No link or id provided
+						return null;
+					}
+
 					const isCurrent = isCurrentRoute(router.asPath, link);
 					return (
 						<Link key={tx.id || link} href={link} prefetch={false}>
@@ -589,6 +601,7 @@ const AccordionSubMenuSection = ({
 };
 
 /**
+ * It renders the first-level menu items (for example, Home, Dashboard, My Network, etc.)
  * MARK: Link Item
  * @param root0
  * @param root0.menu

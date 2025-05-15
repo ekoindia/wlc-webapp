@@ -1,17 +1,16 @@
 // filepath: /Users/abhi/DEV/eko_github/wlc-webapp/page-components/products/kyc/cin/CinForm.tsx
 import {
 	Box,
-	Button,
 	Card,
 	FormControl,
 	FormErrorMessage,
 	FormLabel,
 	Grid,
 	GridItem,
-	Input,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
+import { Button, Input } from "components";
 import { useEpsV3Fetch } from "hooks";
 import router from "next/router";
 import {
@@ -183,16 +182,13 @@ export const CinForm = (): JSX.Element => {
 						</FormControl>
 
 						<Button
-							colorScheme="blue"
+							size="lg"
 							type="submit"
 							isLoading={isLoading}
 							loadingText="Verifying"
-							mr={3}
+							w={{ base: "100%", md: "200px" }}
 						>
 							Verify CIN
-						</Button>
-						<Button variant="ghost" onClick={handleReset}>
-							Reset
 						</Button>
 					</form>
 				</Card>

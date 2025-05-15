@@ -29,6 +29,7 @@ export type IconNameType =
 	| "check"
 	| "check-box"
 	| "check-box-outline-blank"
+	| "check-circle"
 	| "chevron-left"
 	| "chevron-right"
 	| "clipboard-download"
@@ -360,6 +361,7 @@ export const IconCategories: IconCategoriesType = {
 	],
 	Form: [
 		"check",
+		"check-circle",
 		"check-box",
 		"check-box-outline-blank",
 		"indeterminate-check-box",
@@ -420,7 +422,7 @@ export const IconCategories: IconCategoriesType = {
 		"sort",
 		"triangle-down",
 		"triangle-up",
-		"tick",
+		// "tick",
 	],
 };
 
@@ -533,6 +535,10 @@ export const IconLibrary: IconLibraryType = {
 	"check-box-outline-blank": {
 		viewBox: "0 0 24 24",
 		path: `<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>`,
+	},
+	"check-circle": {
+		viewBox: "0 0 24 24",
+		path: `<path fill="currentColor" d="m10.6 16.6l7.05-7.05l-1.4-1.4l-5.65 5.65l-2.85-2.85l-1.4 1.4zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/>`,
 	},
 	"chevron-left": {
 		viewBox: "0 0 17 17",
@@ -1167,8 +1173,9 @@ export const IconLibrary: IconLibraryType = {
 		path: `<path d="M8.3 17a.8.8 0 0 1 .8-.5 13.5 13.5 0 0 0 1.5-.2 7.1 7.1 0 0 0 3.4-1.7 7.2 7.2 0 0 0 2.4-4.4A7.3 7.3 0 0 0 15 4.6a7.1 7.1 0 0 0-1.3-1.4l-.2-.2.1 1a.7.7 0 1 1-1.5.2l-.3-2.7a.8.8 0 0 1 .7-.9l2.6-.3a.8.8 0 1 1 .3 1.5h-.8l-.1.1.2.2a8.8 8.8 0 0 1 2.7 3.6 8.7 8.7 0 0 1 .6 4 8.8 8.8 0 0 1-1.8 4.7 9 9 0 0 1-4.3 3.1A8.7 8.7 0 0 1 9 18a.7.7 0 0 1-.8-1ZM2 17a.8.8 0 0 1 .7-.8l.8-.1-.1-.2A8.8 8.8 0 0 1 .3 11a8.7 8.7 0 0 1 .5-5.7A8.9 8.9 0 0 1 5.5.7 8.7 8.7 0 0 1 8.9 0a.7.7 0 0 1 .8.5.7.7 0 0 1-.3.9 1.3 1.3 0 0 1-.5 0 7.5 7.5 0 0 0-6.9 5 7.4 7.4 0 0 0 1 7 7.2 7.2 0 0 0 1.4 1.5l.1.1-.1-1a.7.7 0 0 1 .6-.8.7.7 0 0 1 .9.7l.3 2.7a.8.8 0 0 1-.7.9l-2.6.3a1 1 0 0 1-.1 0 .7.7 0 0 1-.8-.6Z"/>`,
 	},
 	tick: {
-		viewBox: "0 0 24 24",
-		path: `<path d="M12 0a12 12 0 1 0 6 1.6A12 12 0 0 0 12 0Zm5.8 10.9-7.2 6.6a1.2 1.2 0 0 1-1.6 0l-3.6-3.7A1.2 1.2 0 1 1 7 12.1L9.8 15l6.4-5.8a1.2 1.2 0 0 1 1.6 1.8Z"/>`,
+		link: "check-circle",
+		// viewBox: "0 0 24 24",
+		// path: `<path d="M12 0a12 12 0 1 0 6 1.6A12 12 0 0 0 12 0Zm5.8 10.9-7.2 6.6a1.2 1.2 0 0 1-1.6 0l-3.6-3.7A1.2 1.2 0 1 1 7 12.1L9.8 15l6.4-5.8a1.2 1.2 0 0 1 1.6 1.8Z"/>`,
 	},
 	transaction: {
 		viewBox: "0 0 18 18",

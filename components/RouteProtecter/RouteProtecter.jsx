@@ -142,8 +142,8 @@ const RouteProtecter = ({ router, children }) => {
 					publicOnlyLinks.includes(path) ||
 					!path.includes(baseRoute[role])
 				) {
-					// Allow "/products/.." routes for Admin...
-					if (path.startsWith("/products/")) {
+					// Allow "/products/.." routes for Admin in AgentMode...
+					if (isAdminAgentMode && path.startsWith("/products/")) {
 						setLoading(false);
 						setAuthorized(true);
 						isAuthorized = true;

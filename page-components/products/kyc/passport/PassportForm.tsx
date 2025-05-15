@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	Card,
 	Divider,
 	FormControl,
@@ -8,9 +7,9 @@ import {
 	FormLabel,
 	Grid,
 	GridItem,
-	Input,
 	Text,
 } from "@chakra-ui/react";
+import { Button, Input } from "components";
 import { useEpsV3Fetch } from "hooks";
 import { useRouter } from "next/router";
 import {
@@ -190,9 +189,9 @@ export const PassportForm = (): JSX.Element => {
 
 						<Button
 							type="submit"
-							colorScheme="blue"
+							size="lg"
 							isLoading={fetchLoading}
-							w="full"
+							w={{ base: "100%", md: "200px" }}
 						>
 							Verify Passport
 						</Button>
