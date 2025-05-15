@@ -230,7 +230,7 @@ export const GstinPanForm = (): JSX.Element => {
 					<form onSubmit={panForm.handleSubmit(handlePanSubmit)}>
 						<Flex direction="column" gap={4}>
 							<Input
-								label="PAN"
+								label="PAN Number"
 								required
 								placeholder="Enter PAN (ABCDE1234F)"
 								maxlength={10}
