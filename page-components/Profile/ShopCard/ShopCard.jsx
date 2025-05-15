@@ -51,7 +51,7 @@ const ShopCard = () => {
 			key: "shop_name", //using this key to show data on UI
 			name: "shop_name",
 			label: "Shop Name",
-			validations: { pattern: /^[a-zA-Z0-9\s]+$/ },
+			validations: { pattern: /^[-\.a-zA-Z0-9\s]+$/ },
 		},
 		{
 			key: "shop_type_ui",
@@ -65,7 +65,7 @@ const ShopCard = () => {
 			name: "shop_address",
 			label: "Shop Address",
 			validations: {
-				pattern: /^[a-zA-Z0-9\s.,#-]+$/,
+				pattern: /^[-a-zA-Z0-9\s.,#\(\)]+$/,
 			},
 		},
 		{
