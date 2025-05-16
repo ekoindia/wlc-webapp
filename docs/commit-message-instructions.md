@@ -69,6 +69,7 @@ Refs: #1234
 - Always use a valid prefix
 - Keep summary concise and imperative
 - Use body/footer only if needed
+- Be extremely detailed with the file changes and the reason for the change.
 
 
 ## Tools

@@ -27,4 +27,5 @@
       "file": "docs/commit-message-instructions.md"
     }
   ],
+  "chat.promptFiles": true,
 }
