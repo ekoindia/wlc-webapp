@@ -19,9 +19,6 @@ import { Form } from "tf-components";
 
 const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
 
-// const PINCODE_REGEX = /^[1-9][0-9]{5}&}/;
-const TEXT_ONLY_REGEX = /^[A-Za-z\s]+$/;
-
 /**
  * A ShopCard page-component
  * @example	`<ShopCard></ShopCard>` TODO: Fix example
@@ -54,6 +51,7 @@ const ShopCard = () => {
 			key: "shop_name", //using this key to show data on UI
 			name: "shop_name",
 			label: "Shop Name",
+			validations: { pattern: /^[-\.a-zA-Z0-9\s]+$/ },
 		},
 		{
 			key: "shop_type_ui",
@@ -66,12 +64,17 @@ const ShopCard = () => {
 			key: "shop_address",
 			name: "shop_address",
 			label: "Shop Address",
+			validations: {
+				pattern: /^[-a-zA-Z0-9\s.,#\(\)]+$/,
+			},
 		},
 		{
 			key: "city",
 			name: "city",
 			label: "City",
-			validations: { pattern: TEXT_ONLY_REGEX },
+			validations: {
+				pattern: /^[A-Za-z\s]+$/,
+			},
 		},
 		{
 			key: "state",
