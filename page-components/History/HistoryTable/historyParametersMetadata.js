@@ -356,12 +356,44 @@ export const historyParametersMetadata = [
 		pattern_format: "### ### ### #",
 		// display_media_id: DisplayMedia.BOTH,
 	},
+	// {
+	// 	// For UPI
+	// 	name: "vpa",
+	// 	label: "Customer VPA",
+	// 	parameter_type_id: 12,
+	// 	display_media_id: DisplayMedia.SCREEN,
+	// },
 	{
-		// For UPI
+		// For UPI - reusing the same 'vpa' parameter
+		// No need to show this field for UPI Mobile transactions, as we will show this field under a different label (Mobile)
 		name: "vpa",
 		label: "Customer VPA",
 		parameter_type_id: 12,
 		display_media_id: DisplayMedia.SCREEN,
+		compute: (value, row, _index) => {
+			if (value && Number(row.tx_typeid) === 841) {
+				// Hide VPA if tx_type is UPI Mobile (841), because we show it under a different label
+				return "";
+			} else {
+				return value;
+			}
+		},
+	},
+	{
+		// For UPI - Show UPI Registered Mobile (from same 'vpa' parameter)
+		// Only shown when tx_type is UPI Mobile
+		name: "upi_mobile",
+		label: "UPI Registered Mobile",
+		parameter_type_id: 15,
+		display_media_id: DisplayMedia.SCREEN,
+		compute: (value, row, _index) => {
+			if (row.vpa && Number(row.tx_typeid) === 841) {
+				// For UPI Mobile transactions, reuse 'vpa' value and show it under mobile label
+				return row.vpa;
+			} else {
+				return "";
+			}
+		},
 	},
 	{
 		name: "user_name",
@@ -742,11 +774,36 @@ export const networkHistoryParametersMetadata = [
 		// display_media_id: DisplayMedia.BOTH,
 	},
 	{
-		// For UPI
+		// For UPI - reusing the same 'vpa' parameter
+		// No need to show this field for UPI Mobile transactions, as we will show this field under a different label (Mobile)
 		name: "vpa",
 		label: "Customer VPA",
 		parameter_type_id: 12,
 		display_media_id: DisplayMedia.SCREEN,
+		compute: (value, row, _index) => {
+			if (value && Number(row.tx_typeid) === 841) {
+				// Hide VPA if tx_type is UPI Mobile (841), because we show it under a different label
+				return "";
+			} else {
+				return value;
+			}
+		},
+	},
+	{
+		// For UPI - Show UPI Registered Mobile (from same 'vpa' parameter)
+		// Only shown when tx_type is UPI Mobile
+		name: "upi_mobile",
+		label: "UPI Registered Mobile",
+		parameter_type_id: 15,
+		display_media_id: DisplayMedia.SCREEN,
+		compute: (value, row, _index) => {
+			if (row.vpa && Number(row.tx_typeid) === 841) {
+				// For UPI Mobile transactions, reuse 'vpa' value and show it under mobile label
+				return row.vpa;
+			} else {
+				return "";
+			}
+		},
 	},
 	{
 		name: "user_name",
