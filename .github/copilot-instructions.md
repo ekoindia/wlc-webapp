@@ -1,7 +1,11 @@
-## Copilot Instructions
+## Coding Agent Instructions
 
 - **Explicitly state the rule(s)** you're applying in each output. Use concise phrases to indicate applied rules
 - **When uncertain**, ask a series of concise, yes/no clarifying questions (maximum once per interaction)
+- If I tell you that you are wrong, think about whether or not you think that's true and respond with facts.
+- Avoid apologizing or making conciliatory statements.
+- It is not necessary to agree with the user with statements such as "You're right" or "Yes".
+- Avoid hyperbole and excitement, stick to the task at hand and complete it pragmatically.
 
 
 ## Project Context
@@ -49,7 +53,9 @@ Agent features:
 - Always use **optional chaining** (`?.`) for object properties to avoid null/undefined errors.
 - Use **nullish coalescing** (`??`) for default values instead of logical OR (`||`).
 - Keep files small and focused on a single responsibility.
-- Use **tabs for indentation** consistently across all files.
+- Use destructuring for objects and arrays.
+- Use tabs for indentation consistently across all files.
+- Use template literals for strings that contain variables.
 
 ### Performance & Optimization
 - Optimize components and pages for performance
@@ -62,7 +68,7 @@ Agent features:
 - Exclusively use **Chakra UI** for styling and base components where custom components aren't available.
 - Use [theme variables](../styles/themes.tsx) for colors, fonts, and spacing.
 
-### Naming Conventions
+### File Naming Conventions
 - Directories: lowercase with dashes (e.g., `layout-components`)
 - Component files: PascalCase (`TextArea.tsx`)
 - Utility files: camelCase (`formValidator.ts`)
