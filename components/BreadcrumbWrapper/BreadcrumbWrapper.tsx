@@ -22,7 +22,7 @@ interface BreadcrumbWrapperProps {
 }
 
 /**
- * Breadcrumbs component wrapper to calculate the sub-paths and display the breadcrumbs at the top of the page. It should be used on page components. It should be put inside the <PaddingBox> component to ensure consistent padding on every page.
+ * Breadcrumb component wrapper to calculate the sub-paths and display the breadcrumbs at the top of the page. It should be used on page components. It should be put inside the <PaddingBox> component to ensure consistent padding on every page.
  * @param props - Component props
  * @param props.breadcrumbsData - Object containing the possible URLs and the labels for the breadcrumbs. Pass the current page and parent page URLs as keys and the labels as values.
  * @param props.slug - Value of the URL slug (if part of the URL)

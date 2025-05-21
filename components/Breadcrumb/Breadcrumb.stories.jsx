@@ -1,9 +1,9 @@
-import Breadcrumbs from "./Breadcrumbs";
+import Breadcrumb from "./Breadcrumb";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/Breadcrumbs",
-	component: Breadcrumbs,
+	title: "Component/Breadcrumb",
+	component: Breadcrumb,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
