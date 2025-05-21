@@ -62,6 +62,35 @@ const findNodeInTree = (
 	return nextNode ? findNodeInTree(nextNode, pathArray, index + 1) : null;
 };
 
+/**
+ * Determines the page title based on the pricing tree and path array.
+ * This function retrieves the label of the parent node of the current node
+ * or returns a default title if the parent node is not found.
+ * @param {ProductNode[]} pricingTree - The hierarchical tree structure representing pricing data.
+ * @param {string[] | null} pathArray - Array of path segments representing the navigation path.
+ * @returns {string} - The determined page title, or "Pricing & Commissions" as the default.
+ */
+const getPageTitle = (
+	pricingTree: ProductNode[],
+	pathArray: string[] | null
+): string => {
+	if (!pathArray?.length) return "Pricing & Commissions";
+
+	const parentPath = pathArray.slice(0, -1);
+	const parentNodeArray =
+		parentPath.length === 0
+			? pricingTree
+			: findNodeInTree(pricingTree, parentPath);
+
+	const currentSegmentName = pathArray[pathArray.length - 1];
+
+	const parentNode = parentNodeArray?.find(
+		(node) => node.name === currentSegmentName
+	);
+
+	return parentNode?.label ?? "Pricing & Commissions";
+};
+
 // MARK: PricingConfig
 /**
  * PricingConfig Component
@@ -134,8 +163,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 		}
 	};
 
-	// Set the page title and icon based on the current node
-	const title = crumbs?.[crumbs.length - 1]?.label ?? "Pricing & Commissions";
+	const title = getPageTitle(pricingTree, pathArray);
 	const hideBackIcon = !(pathArray?.length ?? 0 >= 1);
 	const toolComponent = pathArray?.length > 0 ? null : <DownloadPricing />;
 
