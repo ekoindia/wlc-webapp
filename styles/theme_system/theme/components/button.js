@@ -3,7 +3,7 @@ import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
 const primary = defineStyle({
 	bg: "primary.DEFAULT",
 	// boxShadow: "0px 3px 10px #FE9F0040",
-	boxShadow: "buttonShadow",
+	boxShadow: "sh-button",
 	color: "white",
 	_hover: {
 		bg: "primary.dark",
@@ -16,7 +16,7 @@ const primary = defineStyle({
 const accent = defineStyle({
 	bg: "accent.DEFAULT",
 	// boxShadow: "0px 3px 10px #11299E1A",
-	boxShadow: "buttonShadow",
+	boxShadow: "sh-button",
 	color: "white",
 	_hover: {
 		bg: "accent.dark",
@@ -41,7 +41,7 @@ const success = defineStyle({
 const ghost = defineStyle({
 	bg: "white",
 	color: "dark",
-	boxShadow: "buttonShadow",
+	boxShadow: "sh-button",
 	_hover: "none",
 });
 

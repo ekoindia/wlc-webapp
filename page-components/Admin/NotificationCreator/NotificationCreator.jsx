@@ -63,7 +63,7 @@ const NotificationCreator = () => {
 			// paddingX: "0.2em",
 			fontSize: { base: "sm", "2xl": "lg" },
 			fontWeight: "semibold",
-			color: "inputlabel",
+			color: "inputLabel",
 		},
 	});
 

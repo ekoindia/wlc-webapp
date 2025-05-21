@@ -38,7 +38,6 @@ export {
 	sidebarMenu,
 } from "./SidebarMenu";
 export { tableRowLimit } from "./tableConfig";
-export { transaction_history_mock } from "./transaction_history_mock";
 export {
 	DisplayMedia,
 	InteractionBehavior,
