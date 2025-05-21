@@ -20,8 +20,6 @@ import { WidgetBase } from ".";
 // 	return THINKING_DIALOGUES[randomIndex];
 // };
 
-const TEST_ERROR = true; // TODO:: remove this
-
 /**
  * A widget component for AI chatbot
  * @param {object} props - The component props
@@ -104,21 +102,21 @@ const AiChatWidget = ({
 		setBusy(true);
 
 		// TODO: REMOVE THIS - Only for testing
-		if (TEST_ERROR) {
-			setChatInput("");
-			setTimeout(() => {
-				setChatLines([
-					...chatLines,
-					{
-						from: "system",
-						msg: "Sorry, I didn't get that. Here is a table instead: \n\n| Name | Age |\n|------|-----|\n| John | 30  |\n| Jane | 25  |\n\n\nAlso, here is a bulleted list with long sentences:\n- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n- Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n- Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-						at: Date.now(),
-					},
-				]);
-				setBusy(false);
-			}, 2000);
-			return;
-		}
+		// if (process.env.NEXT_PUBLIC_ENV === "development") {
+		// 	setChatInput("");
+		// 	setTimeout(() => {
+		// 		setChatLines([
+		// 			...chatLines,
+		// 			{
+		// 				from: "system",
+		// 				msg: "Sorry, I didn't get that. Here is a table instead: \n\n| Name | Age |\n|------|-----|\n| John | 30  |\n| Jane | 25  |\n\n\nAlso, here is a bulleted list with long sentences:\n- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n- Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n- Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		// 				at: Date.now(),
+		// 			},
+		// 		]);
+		// 		setBusy(false);
+		// 	}, 2000);
+		// 	return;
+		// }
 
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/gpt/tfassistant", {
 			body: {
