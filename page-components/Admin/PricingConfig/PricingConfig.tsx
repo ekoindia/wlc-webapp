@@ -129,7 +129,6 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 			const name = cardElement.dataset.cardName;
 			if (name) {
 				// Navigate to the new path
-				console.log("[Pricing] name", name);
 				push(`${basePath}/${name}`);
 			}
 		}
