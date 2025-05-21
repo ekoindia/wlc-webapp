@@ -79,7 +79,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 
 		return {
 			type: "product",
-			label: product.label,
+			label: capitalizeLabel(product.label),
 			name: productName,
 			desc: product.desc,
 			meta: {
@@ -89,7 +89,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 				const providerName = formatName(provider.label);
 				const providerNode: TreeNode = {
 					type: "provider",
-					label: provider.label,
+					label: capitalizeLabel(provider.label),
 					name: providerName,
 					desc: `Set Pricing for ${provider.label} ${product.label}`,
 					children: [],
@@ -101,7 +101,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 				if (agentPricing) {
 					const agentFormNode = createNode({
 						type: "form",
-						label: `${provider.label} > Agent's Pricing`,
+						label: `${capitalizeLabel(provider.label)} > ${capitalizeLabel(agentPricing.label)}`,
 						name: formatName("agent-pricing"),
 						formlink: generateKey(
 							formatName(product.label),
@@ -115,7 +115,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 					providerNode.children!.push(
 						createNode({
 							type: "path",
-							label: "Agent's Pricing",
+							label: capitalizeLabel("Agent's Pricing"),
 							name: formatName("Agent Pricing"),
 							desc: `Set Agent's Pricing for ${provider.label}`,
 							children: [agentFormNode],
@@ -127,7 +127,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 				if (distributorCommission) {
 					const distributorFormNode = createNode({
 						type: "form",
-						label: `${provider.label} > ${distributorCommission.label}`,
+						label: `${capitalizeLabel(provider.label)} > ${capitalizeLabel(distributorCommission.label)}`,
 						name: formatName("distributor-commission"),
 						formlink: generateKey(
 							formatName(product.label),
@@ -141,7 +141,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 					providerNode.children!.push(
 						createNode({
 							type: "path",
-							label: "Distributor's Commission",
+							label: capitalizeLabel("Distributor's Commission"),
 							name: formatName("Distributor Commission"),
 							desc: `Set Distributor's Commission for ${provider.label}`,
 							children: [distributorFormNode],
@@ -248,3 +248,27 @@ export const getPricingTypeString = (type) => {
 	const match = PRICING_TYPE_OPTIONS.find((option) => option.value === type);
 	return match ? match.id : null;
 };
+
+/**
+ * Converts the first letter of each word in a given string to uppercase
+ * while converting the rest of the letters to lowercase.
+ * Handles edge cases such as empty strings, multiple spaces,
+ * and special characters gracefully.
+ * @param {string} label - The input string to be capitalized.
+ * @returns {string} - The transformed string with each word capitalized.
+ * @example
+ * capitalizeLabel("hello world"); // "Hello World"
+ * capitalizeLabel("john's book"); // "John's Book"
+ * capitalizeLabel("  multiple   spaces "); // "Multiple Spaces"
+ * capitalizeLabel(""); // ""
+ */
+function capitalizeLabel(label: string): string {
+	return label
+		.split(" ")
+		.map((word) => {
+			if (!word) return word;
+
+			return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+		})
+		.join(" ");
+}
