@@ -21,6 +21,7 @@ interface BreadcrumbItemProps {
  */
 interface BreadcrumbProps {
 	crumbs?: BreadcrumbItemProps[]; // Array of breadcrumb items to display
+	hideHome?: boolean; // Optional flag to hide the first home breadcrumb
 }
 
 /**
@@ -28,9 +29,13 @@ interface BreadcrumbProps {
  * Displays a breadcrumb navigation bar with clickable links.
  * @param {BreadcrumbProps} props - Properties passed to the component.
  * @param {BreadcrumbItemProps[]} [props.crumbs] - Array of breadcrumbs to be displayed. Each item should have a `href` and `label`. The latest item should have `isCurrent` flag set to true.
+ * @param {boolean} [props.hideHome] Optional flag to hide the first home breadcrumb.
  * @returns {JSX.Element} The rendered Breadcrumb component.
  */
-const Breadcrumb: React.FC<BreadcrumbProps> = ({ crumbs = [] }) => {
+const Breadcrumb: React.FC<BreadcrumbProps> = ({
+	crumbs = [],
+	hideHome = false,
+}) => {
 	const { isAdmin } = useSession();
 	const router = useRouter();
 
@@ -70,23 +75,25 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ crumbs = [] }) => {
 			userSelect="none"
 			separator={<Icon size="9px" name="chevron-right" color="light" />}
 		>
-			<BreadcrumbItem>
-				<BreadcrumbLink
-					fontSize="xs"
-					display="flex"
-					alignItems="center"
-					color="primary.DEFAULT"
-					_hover={{ textDecoration: "none" }}
-					onClick={onHomeClick}
-				>
-					<Icon
-						name="home"
-						size={{ base: "16px", md: "14px" }}
-						mr="1"
-					/>
-					Home
-				</BreadcrumbLink>
-			</BreadcrumbItem>
+			{hideHome !== true ? (
+				<BreadcrumbItem>
+					<BreadcrumbLink
+						fontSize="xs"
+						display="flex"
+						alignItems="center"
+						color="primary.DEFAULT"
+						_hover={{ textDecoration: "none" }}
+						onClick={onHomeClick}
+					>
+						<Icon
+							name="home"
+							size={{ base: "16px", md: "14px" }}
+							mr="1"
+						/>
+						Home
+					</BreadcrumbLink>
+				</BreadcrumbItem>
+			) : null}
 			{crumbs.map((crumb, index) => (
 				<BreadcrumbItem key={index} isCurrentPage={crumb.isCurrent}>
 					<BreadcrumbLink
