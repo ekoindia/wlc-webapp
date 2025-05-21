@@ -31,7 +31,6 @@ interface ConfigPageCardProps {
 
 interface ConfigGridProps {
 	product_list: ProductNode[]; // List of product nodes to display
-	basePath: string; // Base path for navigation
 }
 
 interface CardProps {
@@ -40,7 +39,6 @@ interface CardProps {
 	desc?: string; // Optional description for the card
 	icon?: string; // Optional icon name for the card
 	children?: ProductNode[]; // Optional child nodes for navigation
-	basePath: string; // Base path for navigation
 }
 
 // Utility function
@@ -77,7 +75,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 	>(null);
 	const [formData, setFormData] = useState<Record<string, any>>({});
 
-	const { asPath } = useRouter();
+	const { asPath, push } = useRouter();
 
 	const crumbs = generateBreadcrumbs(asPath, labelOverrides, ["/admin"]);
 
@@ -122,6 +120,21 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 		}
 	}, [pathArray, pricingTree, formDataMap]);
 
+	// Event handler for capturing clicks
+	const handleCaptureClick = (event: React.MouseEvent<HTMLDivElement>) => {
+		const target = event.target as HTMLElement;
+		const cardElement = target.closest<HTMLDivElement>("[data-card-name]");
+
+		if (cardElement) {
+			const name = cardElement.dataset.cardName;
+			if (name) {
+				// Navigate to the new path
+				console.log("[Pricing] name", name);
+				push(`${basePath}/${name}`);
+			}
+		}
+	};
+
 	// Set the page title and icon based on the current node
 	const title = crumbs?.[crumbs.length - 1]?.label ?? "Pricing & Commissions";
 	const hideBackIcon = !(pathArray?.length ?? 0 >= 1);
@@ -153,12 +166,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 			);
 		}
 
-		return (
-			<ConfigGrid
-				product_list={currentPricingTreeNode}
-				basePath={basePath}
-			/>
-		);
+		return <ConfigGrid product_list={currentPricingTreeNode} />;
 	};
 	return (
 		<BreadcrumbWrapper crumbs={crumbs}>
@@ -171,6 +179,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 				direction="column"
 				px={{ base: "16px", md: "initial" }}
 				gap={{ base: "2", md: "8" }}
+				onClickCapture={handleCaptureClick}
 			>
 				{renderContent()}
 			</Flex>
@@ -194,15 +203,6 @@ const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
 	configCategories,
 	isLoading,
 }) => {
-	const [basePath, setBasePath] = useState<string>("");
-
-	// Get the base path for the current page
-	useEffect(() => {
-		const path = window.location.pathname;
-		const pathParts = path.split("/");
-		setBasePath(pathParts[pathParts.length - 1]);
-	}, []);
-
 	// Render a loading skeleton if data is still being fetched
 	if (isLoading) {
 		return <SkeletonLoader count={2} />;
@@ -259,10 +259,7 @@ const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
 						)}
 
 						{/* List of configuration options in the category */}
-						<ConfigGrid
-							product_list={products}
-							basePath={basePath}
-						/>
+						<ConfigGrid product_list={products} />
 					</Flex>
 				);
 			})}
@@ -277,10 +274,7 @@ const ConfigPageCard: React.FC<ConfigPageCardProps> = ({
  * @param {ConfigGridProps} props - Props for the component.
  * @returns {JSX.Element} - Rendered ConfigGrid component.
  */
-const ConfigGrid = ({
-	product_list,
-	basePath,
-}: ConfigGridProps): JSX.Element => {
+const ConfigGrid = ({ product_list }: ConfigGridProps): JSX.Element => {
 	return (
 		<Grid
 			templateColumns={{
@@ -296,17 +290,21 @@ const ConfigGrid = ({
 			}}
 		>
 			{product_list?.map((product) => {
-				const { label, name, desc, icon, children } = product ?? {};
+				const { label, name, desc, icon } = product ?? {};
 				return (
-					<Card
+					<div
 						key={name}
-						name={name}
-						label={label}
-						desc={desc}
-						icon={icon}
-						children={children}
-						basePath={basePath}
-					/>
+						data-card-name={name}
+						style={{ width: "100%" }}
+					>
+						<Card
+							key={name}
+							name={name}
+							label={label}
+							desc={desc}
+							icon={icon}
+						/>
+					</div>
 				);
 			})}
 		</Grid>
@@ -320,20 +318,9 @@ const ConfigGrid = ({
  * @param {CardProps} props - Props for the component.
  * @returns {JSX.Element} - Rendered Card component.
  */
-const Card = ({
-	name,
-	label,
-	desc,
-	icon,
-	basePath,
-}: CardProps): JSX.Element => {
+const Card = ({ name, label, desc, icon }: CardProps): JSX.Element => {
 	const { h } = useHslColor(label);
 	const [onHover, setOnHover] = useState(false);
-	const router = useRouter();
-
-	const handleClick = () => {
-		router.push(`${basePath}/${name}`);
-	};
 
 	return (
 		<Flex
@@ -353,7 +340,6 @@ const Card = ({
 			boxShadow="buttonShadow"
 			onMouseEnter={() => setOnHover(true)}
 			onMouseLeave={() => setOnHover(false)}
-			onClick={handleClick}
 		>
 			<Flex align="center" gap="4" w="100%">
 				<Avatar
