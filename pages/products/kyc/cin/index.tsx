@@ -1,5 +1,5 @@
 // filepath: /Users/abhi/DEV/eko_github/wlc-webapp/pages/products/kyc/cin/index.tsx
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { CinForm } from "page-components/products/kyc/cin/CinForm";
 
 /**
@@ -8,7 +8,7 @@ import { CinForm } from "page-components/products/kyc/cin/CinForm";
 const CinVerifyPage = (): JSX.Element => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/cin": "CIN Verification",
@@ -16,7 +16,7 @@ const CinVerifyPage = (): JSX.Element => {
 				hideHome
 			>
 				<CinForm />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

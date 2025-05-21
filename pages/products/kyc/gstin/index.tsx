@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, PaddingBox, PageTitle } from "components";
+import { BreadcrumbWrapper, PaddingBox, PageTitle } from "components";
 import { GstinVerification } from "page-components/products/kyc/gstin/GstinVerification";
 
 // TODO: Confirm role
@@ -6,7 +6,7 @@ import { GstinVerification } from "page-components/products/kyc/gstin/GstinVerif
 const GstinPage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/gstin": "GSTIN Verification",
@@ -15,7 +15,7 @@ const GstinPage = () => {
 			>
 				<PageTitle title="GSTIN Verification" />
 				<GstinVerification />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };
