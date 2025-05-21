@@ -24,81 +24,6 @@ import { useEffect, useRef, useState } from "react";
 import { RiCheckboxCircleFill, RiScreenshot2Line } from "react-icons/ri";
 import Markdown from "react-markdown";
 
-// MARK: Constants
-
-/**
- * Type of solution to be provided for the feedback
- */
-// const SOLUTION_TYPE = {
-// 	TICKET: 0, // DEFAULT: Take feedback and create a support Ticket
-// 	LINK: 1, // Jump to a transaction or a page inside the app
-// };
-
-/**
- * Type-IDs for generic issue types
- */
-const GENERIC_ISSUE_TYPE = {
-	DEFAULT: "-1", // Default generic issues
-	ONBOARDING: "-2", // Onboarding generic issues
-};
-
-/**
- * Comment Type
- */
-const COMMENT_TYPE = {
-	DISABLED: -1,
-	OPTIONAL: 0,
-	MANDATORY: 1,
-};
-
-/**
- * Screenshot capture type
- */
-const SCREENSHOT_TYPE = {
-	DISABLED: -1,
-	OPTIONAL: 0,
-	MANDATORY: 1,
-};
-
-// Declare the props interface
-interface RaiseIssueProps {
-	heading?: string;
-	showCloseIcon?: boolean;
-	tid?: string;
-	tx_typeid?: string;
-	status?: -2 | -1 | 0 | 1 | 2 | 3 | 4 | 6 | 7 | 8 | 9;
-	transactionTime?: string;
-	metadata?: any;
-	context?: any;
-	logo?: string;
-	customIssueType?: string;
-	customIssueDetails?: {
-		desc?: string;
-		category?: string;
-		sub_category?: string;
-		tat?: number;
-		screenshot?: -1 | 0 | 1;
-		inputs?: any; // Array of { label: string, is_required: boolean, type: number }
-		files?: any; // Array of { label: string, is_required: boolean, accept: string }
-		context?: string;
-	};
-	origin:
-		| "Response"
-		| "History"
-		| "Global-Help"
-		| "Command-Bar"
-		| "Error-Boundary"
-		| "Other";
-	autoCaptureScreenshot?: boolean;
-	onResult?: Function;
-	onClose?: Function;
-	onOpenUrl?: Function;
-	onRequestCamCapture?: Function;
-	onHide?: Function;
-	onShow?: Function;
-	[key: string]: any;
-}
-
 /**
  * A component to for users to raise an issue or provide a feedback
  * @component
@@ -915,7 +840,7 @@ const RaiseIssueCard = ({
 
 						{/* Show option to capture screenshot */}
 						{selectedIssue.screenshot ===
-						SCREENSHOT_TYPE.DISABLED ? null : (
+						SCREENSHOT.DISABLED ? null : (
 							<Box
 								mb={4}
 								maxW={{ base: "100%", md: "350px" }}
@@ -938,8 +863,7 @@ const RaiseIssueCard = ({
 						{isUserFeedbackRequired ? (
 							<>
 								{/* Show the comments input */}
-								{selectedIssue.comment !==
-								COMMENT_TYPE.DISABLED ? (
+								{selectedIssue.comment !== COMMENT.DISABLED ? (
 									<Box
 										mb={4}
 										maxW={{ base: "100%", md: "350px" }}
@@ -948,7 +872,7 @@ const RaiseIssueCard = ({
 										<InputLabel
 											required={
 												selectedIssue.comment ===
-												COMMENT_TYPE.MANDATORY
+												COMMENT.MANDATORY
 													? true
 													: false
 											}
@@ -965,7 +889,7 @@ const RaiseIssueCard = ({
 											}
 										/>
 										{selectedIssue.comment ===
-										COMMENT_TYPE.MANDATORY ? (
+										COMMENT.MANDATORY ? (
 											<Text
 												fontSize="xs"
 												fontWeight="medium"
@@ -1610,7 +1534,62 @@ const _processIssueList = (issue_list) => {
 	};
 };
 
+// MARK: Constants
+
+/**
+ * Type of solution to be provided for the feedback
+ */
+// const SOLUTION_TYPE = {
+// 	TICKET: 0, // DEFAULT: Take feedback and create a support Ticket
+// 	LINK: 1, // Jump to a transaction or a page inside the app
+// };
+
+/**
+ * Type-IDs for generic issue types
+ */
+const GENERIC_ISSUE_TYPE = {
+	DEFAULT: "-1", // Default generic issues
+	ONBOARDING: "-2", // Onboarding generic issues
+};
+
+/**
+ * Comment Type
+ */
+const COMMENT = {
+	DISABLED: -1,
+	OPTIONAL: 0,
+	MANDATORY: 1,
+};
+
+/**
+ * Screenshot capture type
+ */
+const SCREENSHOT = {
+	DISABLED: -1,
+	OPTIONAL: 0,
+	MANDATORY: 1,
+};
+
+/**
+ * Type of issue to be raised
+ */
+export const FeedbackOrigin = {
+	RESPONSE: "Response",
+	HISTORY: "History",
+	GLOBAL_HELP: "Global-Help",
+	COMMAND_BAR: "Command-Bar",
+	ERROR_BOUNDARY: "Error-Boundary",
+	OTHER: "Other",
+} as const;
+
 // MARK: Types...
+
+export type CommentType = (typeof COMMENT)[keyof typeof COMMENT];
+
+export type ScreenshotType = (typeof SCREENSHOT)[keyof typeof SCREENSHOT];
+
+export type FeedbackOriginType =
+	(typeof FeedbackOrigin)[keyof typeof FeedbackOrigin];
 
 // Type of a selected issue...
 interface IssueType {
@@ -1654,7 +1633,7 @@ interface IssueType {
 	 * Whether to allow comments while raising the issue. -1: Disabled, 0: Optional, 1: Mandatory
 	 * @default 0
 	 */
-	comment?: -1 | 0 | 1;
+	comment?: CommentType;
 
 	/**
 	 * Additional context/comments for the support team
@@ -1665,7 +1644,7 @@ interface IssueType {
 	 * Type of screenshot capture: -1 = Disabled, 0 = Optional, 1 = Mandatory
 	 * @default 0
 	 */
-	screenshot?: -1 | 0 | 1;
+	screenshot?: ScreenshotType;
 
 	category: { id: number; title: string };
 
@@ -1685,6 +1664,39 @@ interface IssueType {
 	 * Priority of the issue
 	 */
 	priority?: string;
+}
+
+// Declare the props interface
+interface RaiseIssueProps {
+	heading?: string;
+	showCloseIcon?: boolean;
+	tid?: string;
+	tx_typeid?: string;
+	status?: -2 | -1 | 0 | 1 | 2 | 3 | 4 | 6 | 7 | 8 | 9;
+	transactionTime?: string;
+	metadata?: any;
+	context?: any;
+	logo?: string;
+	customIssueType?: string;
+	customIssueDetails?: {
+		desc?: string;
+		category?: string;
+		sub_category?: string;
+		tat?: number;
+		screenshot?: ScreenshotType;
+		inputs?: any; // Array of { label: string, is_required: boolean, type: number }
+		files?: any; // Array of { label: string, is_required: boolean, accept: string }
+		context?: string;
+	};
+	origin: FeedbackOriginType;
+	autoCaptureScreenshot?: boolean;
+	onResult?: Function;
+	onClose?: Function;
+	onOpenUrl?: Function;
+	onRequestCamCapture?: Function;
+	onHide?: Function;
+	onShow?: Function;
+	[key: string]: any;
 }
 
 // Type of an input field to be captured with the issue...

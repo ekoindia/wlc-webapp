@@ -307,7 +307,7 @@ const MenuPanelItem = ({
 	const avatarTheme: Object =
 		theme === "dark"
 			? {
-					bg: "inputlabel",
+					bg: "inputLabel",
 					color: "white",
 					boxShadow: "0px 3px 10px #0000001A",
 				}

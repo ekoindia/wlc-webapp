@@ -28,7 +28,7 @@ const InputLabel = ({
 			textTransform="capitalize"
 			pl="0"
 			mb={{ base: 2, "2xl": "0.8rem" }}
-			color="inputlabel"
+			color="inputLabel"
 			variant="selectNone"
 			noOfLines={1}
 			{...rest}
