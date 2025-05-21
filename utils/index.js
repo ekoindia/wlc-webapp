@@ -40,5 +40,6 @@ export {
 	nullRemover,
 	numberRemover,
 } from "./textFormat";
+export { throttle } from "./throttle";
 export { buildUserObjectState } from "./userObjectBuilder";
 export { validateResp } from "./validateResponse";
