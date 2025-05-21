@@ -14,7 +14,7 @@ interface BreadcrumbsData {
 }
 
 interface BreadcrumbWrapperProps {
-	breadcrumbsData: BreadcrumbsData; // Object containing possible URLs and their labels
+	breadcrumbsData?: BreadcrumbsData; // Object containing possible URLs and their labels
 	crumbs?: BreadcrumbItem[]; // Pre-generated crumbs
 	slug?: string; // Optional slug value for dynamic routes
 	children?: ReactNode; // Child components to render
