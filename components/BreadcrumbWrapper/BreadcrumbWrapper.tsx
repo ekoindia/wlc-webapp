@@ -8,8 +8,13 @@ interface BreadcrumbItem {
 	label: string; // Display label for the breadcrumb
 	isCurrent: boolean; // Indicates if the breadcrumb is the current page
 }
+
+interface BreadcrumbsData {
+	[key: string]: string;
+}
+
 interface BreadcrumbWrapperProps {
-	breadcrumbsData: BreadcrumbItem; // Object containing possible URLs and their labels
+	breadcrumbsData: BreadcrumbsData; // Object containing possible URLs and their labels
 	crumbs?: BreadcrumbItem[]; // Pre-generated crumbs
 	slug?: string; // Optional slug value for dynamic routes
 	children?: ReactNode; // Child components to render
