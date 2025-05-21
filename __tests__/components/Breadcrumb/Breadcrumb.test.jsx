@@ -17,7 +17,7 @@
 
 describe("Breadcrumb", () => {
 	it("renders without error with no attributes", () => {
-		// TODO: Need not be tested separately. Test with <Breadcrumbs> or <BreadcrumbsWrapper>
+		// TODO: Need not be tested separately. Test with <Breadcrumb> or <BreadcrumbWrapper>
 		// const { container } = render(<Breadcrumb />);
 		// expect(container).not.toBeEmptyDOMElement();
 		// expect(container).toHaveTextContent("Any text");
