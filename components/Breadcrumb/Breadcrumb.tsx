@@ -59,6 +59,9 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 		const history = window.history;
 		const crumbURL = window.location.origin + crumb.href;
 
+		// TODO: This logic checks if the document referrer matches the breadcrumb URL to navigate back in history. 
+		// While this can be useful, it might not cover all scenarios where a user navigates back. 
+		// Consider adding additional checks or providing a more robust navigation solution.
 		if (document.referrer === crumbURL) {
 			history.back();
 			return;
