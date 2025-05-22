@@ -32,6 +32,9 @@ interface BreadcrumbWrapperProps {
 /**
  * BreadcrumbWrapper component.
  * Wraps page content with a breadcrumb navigation bar.
+ * 
+ * TODO: The BreadcrumpWrapper component should not be needed. Why `wrap` the page inside an empty box?
+ *       This logic could be part of Breadcrumb component itself and used as a sibling on top of a page.
  *
  * ### Behavior:
  * - **Direct Crumbs**: If `crumbs` is provided, it directly uses the provided breadcrumb list.
