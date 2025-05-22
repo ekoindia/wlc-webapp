@@ -17,17 +17,15 @@ const useIsSubPage = (): boolean => {
 	// TODO: return `predefinedValue`, if not undefined.
 
 	// TODO: useMemo below...
-	
+
 	// Remove leading and trailing slashes, then split by "/"
 	const pathArray = pathname.replace(/^\/|\/$/g, "").split("/");
 
-	// If the user is an admin, treat any path with more than two segment as a subpage
-	if (isAdmin) {
-		return pathArray.length > 2;
-	}
+	// Minimum path length for a subpage
+	const MinPathLength = isAdmin ? 2 : 1;
 
-	// For non-admin users, determine subpage based on the path structure
-	return pathArray.length > 1;
+	// Check if the path has more segments than the minimum required
+	return pathArray.length > MinPathLength;
 };
 
 export default useIsSubPage;
