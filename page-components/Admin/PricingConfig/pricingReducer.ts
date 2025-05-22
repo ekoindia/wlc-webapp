@@ -46,16 +46,14 @@ export const PRICING_ACTIONS = {
 
 /**
  * Reducer function for managing pricing state.
- * @function
+ * This reducer manages the state for pricing configuration. It handles actions such as updating
+ * payment mode options, category list options, slab options, pricing type list, pricing validation rules,
+ * and the product ID.
  * @param {typeof pricingInitialState} state - The current state of the pricing configuration.
  * @param {object} action - The action to perform on the state.
  * @param {keyof typeof PRICING_ACTIONS} action.type - The type of action to perform.
  * @param {any} action.payload - The payload associated with the action.
  * @returns {typeof pricingInitialState} - The updated state after applying the action.
- * @description
- * This reducer manages the state for pricing configuration. It handles actions such as updating
- * payment mode options, category list options, slab options, pricing type list, pricing validation rules,
- * and the product ID.
  */
 export const pricingReducer = (
 	state: typeof pricingInitialState,
