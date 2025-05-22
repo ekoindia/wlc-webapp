@@ -75,7 +75,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 	const formRegistry: Record<string, any> = {};
 
 	const pricingTree: TreeNode[] = productList.map((product) => {
-		const productName = formatName(product.label);
+		const productName = toKebabCase(product.label);
 
 		return {
 			type: "product",
@@ -86,7 +86,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 				service_type: product.serviceType,
 			},
 			children: product.provider.map((provider) => {
-				const providerName = formatName(provider.label);
+				const providerName = toKebabCase(provider.label);
 				const providerNode: TreeNode = {
 					type: "provider",
 					label: capitalize(provider.label, false),
@@ -102,9 +102,9 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 					const agentFormNode = createNode({
 						type: "form",
 						label: `${capitalize(provider.label, false)} > ${capitalize(agentPricing.label, false)}`,
-						name: formatName("agent-pricing"),
+						name: "agent-pricing",
 						formlink: generateKey(
-							formatName(product.label),
+							toKebabCase(product.label),
 							"agent-pricing",
 							agentPricing,
 							formRegistry
@@ -116,7 +116,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 						createNode({
 							type: "path",
 							label: "Agent's Pricing",
-							name: formatName("Agent Pricing"),
+							name: toKebabCase("Agent Pricing"),
 							desc: `Set Agent's Pricing for ${provider.label}`,
 							children: [agentFormNode],
 						})
@@ -128,9 +128,9 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 					const distributorFormNode = createNode({
 						type: "form",
 						label: `${capitalize(provider.label, false)} > ${capitalize(distributorCommission.label, false)}`,
-						name: formatName("distributor-commission"),
+						name: "distributor-commission",
 						formlink: generateKey(
-							formatName(product.label),
+							toKebabCase(product.label),
 							"distributor-commission",
 							distributorCommission,
 							formRegistry
@@ -142,7 +142,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 						createNode({
 							type: "path",
 							label: "Distributor's Commission",
-							name: formatName("Distributor Commission"),
+							name: toKebabCase("Distributor Commission"),
 							desc: `Set Distributor's Commission for ${provider.label}`,
 							children: [distributorFormNode],
 						})
@@ -177,11 +177,14 @@ function generateKey(
 }
 
 /**
- * Converts a label to a formatted string (lowercase with hyphens).
- * @param {string} label - Label to format.
- * @returns {string} Formatted name.
+ * Converts a label to a kebab-case formatted string (lowercase with hyphens).
+ * Replaces all spaces with hyphens and converts the string to lowercase.
+ * @param {string} label - The input label to format.
+ * @returns {string} The formatted string in kebab-case.
+ * @example
+ * toKebabCase("Agent Pricing"); // Returns "agent-pricing"
  */
-const formatName = (label: string): string =>
+const toKebabCase = (label: string): string =>
 	label.toLowerCase().replace(/\s+/g, "-"); // Convert spaces to '-'
 
 // Helper function to format slabs
