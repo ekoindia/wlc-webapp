@@ -18,16 +18,15 @@ export const getFirstWord = (text) => {
 /**
  * Capitalizes first letters of words in string.
  * @param {string} str String to be modified
- * @param {boolean=false} lower Whether all other letters should be lowercased
- * @returns {string}
- * @usage
+ * @param {boolean=true} lower Whether all other letters should be lowercased
+ * @returns {string} String with first letters capitalized
+ * @example
  *   capitalize('fix this string');     // -> 'Fix This String'
  *   capitalize('javaSCrIPT');    // -> 'Javascript'
  *   capitalize('javaSCrIPT', false);   // -> 'JavaSCrIPT'
  */
-
 export const capitalize = (str, lower = true) => {
-	if (!str) return;
+	if (!str) return "";
 
 	const regex = /(?:^|\s|[-"'([{])+\S/g;
 	return (lower ? str.toLowerCase() : str).replace(regex, (match) =>
