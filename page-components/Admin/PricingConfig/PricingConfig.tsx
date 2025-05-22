@@ -6,6 +6,9 @@ import { DownloadPricing } from "page-components/Admin/PricingCommission/Downloa
 import { useEffect, useState } from "react";
 import { PricingForm, ProductNode, usePricingConfig } from ".";
 
+// Base path for pricing configuration
+const PricingConfigBasePath = "/admin/pricing-config";
+
 // Label overrides for specific paths
 const labelOverrides = {
 	"agent-pricing": "Agent's Pricing",
@@ -115,8 +118,8 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 
 	// Base path for navigation
 	const basePath = pathArray?.length
-		? `/admin/pricing-config/${pathArray.join("/")}`
-		: "/admin/pricing-config";
+		? `${PricingConfigBasePath}/${pathArray.join("/")}`
+		: `${PricingConfigBasePath}/`;
 
 	// Initialize the pricing tree when it becomes available
 	useEffect(() => {
