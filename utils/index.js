@@ -4,7 +4,6 @@ export {
 	doAndroidAction,
 	isAndroidApp,
 } from "./AndroidUtils";
-export { generateBreadcrumbs } from "./breadcrumbUtils";
 export {
 	clearCache,
 	clearCacheAndReload,
