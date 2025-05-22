@@ -76,7 +76,9 @@ const getPageTitle = (
 	pricingTree: ProductNode[],
 	pathArray: string[] | null
 ): string => {
-	if (!pathArray?.length) return "Pricing & Commissions";
+	const defaultTitle = "Pricing & Commissions";
+
+	if (!pathArray?.length) return defaultTitle;
 
 	const parentPath = pathArray.slice(0, -1);
 	const parentNodeArray =
@@ -90,7 +92,7 @@ const getPageTitle = (
 		(node) => node.name === currentSegmentName
 	);
 
-	return parentNode?.label ?? "Pricing & Commissions";
+	return parentNode?.label ?? defaultTitle;
 };
 
 // MARK: PricingConfig
