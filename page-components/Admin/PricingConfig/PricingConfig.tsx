@@ -1,10 +1,9 @@
 import { Avatar, Flex, Grid, Skeleton, Text, Tooltip } from "@chakra-ui/react";
 import { BreadcrumbWrapper, Icon, PageTitle } from "components";
-import useHslColor from "hooks/useHslColor";
+import { useHslColor } from "hooks";
 import { useRouter } from "next/router";
 import { DownloadPricing } from "page-components/Admin/PricingCommission/DownloadPricing";
 import { useEffect, useState } from "react";
-import { generateBreadcrumbs } from "utils/breadcrumbUtils";
 import { PricingForm, ProductNode, usePricingConfig } from ".";
 
 // Label overrides for specific paths
@@ -104,9 +103,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 	>(null);
 	const [formData, setFormData] = useState<Record<string, any>>({});
 
-	const { asPath, push } = useRouter();
-
-	const crumbs = generateBreadcrumbs(asPath, labelOverrides, ["/admin"]);
+	const { push } = useRouter();
 
 	// Get pricing tree and form data map from context
 	const {
@@ -196,7 +193,11 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 		return <ConfigGrid product_list={currentPricingTreeNode} />;
 	};
 	return (
-		<BreadcrumbWrapper crumbs={crumbs}>
+		<BreadcrumbWrapper
+			useDynamic
+			labelOverrides={labelOverrides}
+			omitPaths={["/admin"]}
+		>
 			<PageTitle
 				title={title}
 				hideBackIcon={hideBackIcon}
