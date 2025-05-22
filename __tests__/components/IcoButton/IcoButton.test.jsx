@@ -44,7 +44,7 @@ describe("IcoButton", () => {
 	// 	const computedStyles = window.getComputedStyle(buttonElement);
 	// 	console.log("Computed background color:", computedStyles);
 	// 	expect(buttonElement).toHaveStyle({
-	// 		background: "var(--chakra-colors-inputlabel)",
+	// 		background: "var(--chakra-colors-inputLabel)",
 	// 	});
 	// });
 

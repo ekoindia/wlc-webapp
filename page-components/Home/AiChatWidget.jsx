@@ -1,13 +1,10 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { Icon, Input } from "components";
-import { /* useMenuContext, */ useSession, useUser } from "contexts";
+import { Icon, Input, Markdown } from "components";
+import { useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
-// import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { RiChatAiLine } from "react-icons/ri";
 import { VscRobot } from "react-icons/vsc";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { WidgetBase } from ".";
 
 // const THINKING_DIALOGUES = [
@@ -18,9 +15,6 @@ import { WidgetBase } from ".";
 // 	"🧐 I'm on it...",
 // 	"🧐 Lost in thought...",
 // ];
-
-// const TEST_ERROR = true; // TODO:: remove this
-
 // const getRandomThinkingDialogue = () => {
 // 	const randomIndex = Math.floor(Math.random() * THINKING_DIALOGUES.length);
 // 	return THINKING_DIALOGUES[randomIndex];
@@ -43,11 +37,8 @@ const AiChatWidget = ({
 }) => {
 	console.log("[GPT] Initial message: ", initialMessage);
 
-	// const router = useRouter();
 	const { accessToken } = useSession();
-	const { isLoggedIn /*, isAdminAgentMode, isAdmin */ } = useUser();
-	// const { interactions } = useMenuContext();
-	// const { trxn_type_prod_map } = interactions || {};
+	const { isLoggedIn } = useUser();
 
 	const scrollRef = useRef(null);
 
@@ -110,14 +101,15 @@ const AiChatWidget = ({
 
 		setBusy(true);
 
-		// if (TEST_ERROR) {
+		// TODO: REMOVE THIS - Only for testing
+		// if (process.env.NEXT_PUBLIC_ENV === "development") {
 		// 	setChatInput("");
 		// 	setTimeout(() => {
 		// 		setChatLines([
 		// 			...chatLines,
 		// 			{
 		// 				from: "system",
-		// 				msg: "Sorry, I didn't get that",
+		// 				msg: "Sorry, I didn't get that. Here is a table instead: \n\n| Name | Age |\n|------|-----|\n| John | 30  |\n| Jane | 25  |\n\n\nAlso, here is a bulleted list with long sentences:\n- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n- Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n- Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
 		// 				at: Date.now(),
 		// 			},
 		// 		]);
@@ -198,7 +190,11 @@ const AiChatWidget = ({
 				color: "white",
 			}}
 		>
-			<Flex direction="column" h="calc(100% - 70px)">
+			<Flex
+				direction="column"
+				h="calc(100% - 70px)"
+				maxH="calc(100vh - 84px)"
+			>
 				<Box
 					ref={scrollRef}
 					className="customScrollbars"
@@ -238,43 +234,19 @@ const AiChatWidget = ({
 				</Box>
 
 				{/* Chat Text Input Field */}
-				{/* TODO: Migrate to ChatInput component */}
-				<Input
-					placeholder="Ask your question and press Enter"
-					inputLeftElement={
-						<Icon
-							name="chat-outline"
-							size="18px"
-							color="light"
-							opacity={isDisabled ? 0.5 : 1}
-						/>
-					}
-					inputRightElement={
-						<Icon
-							name="send"
-							size="18px"
-							color="light"
-							cursor="pointer"
-							pointerEvents={isDisabled ? "none" : "auto"}
-							onClick={(value) => {
-								sendChatInput(value);
-							}}
-							opacity={isDisabled ? 0.5 : 1}
-						/>
-					}
-					maxLength={100} //will work when type is text
-					m="2px"
-					w="calc(100% - 4px)"
+				<ChatInput
 					value={inputValue}
-					disabled={isDisabled}
-					autoComplete="off"
-					// invalid={invalid}
-					// errorMsg={errorMsg}
-					onChange={(e) => setInputValue(e.target.value)}
-					onEnter={(value) => {
-						sendChatInput(value);
-					}}
-					_placeholder={{ fontSize: "xs" }}
+					isDisabled={isDisabled}
+					state={
+						chatLines?.length >= MAX_CHAT_LINES
+							? "limit-reached"
+							: busy
+								? "busy"
+								: "ready"
+					}
+					onChange={setInputValue}
+					onSubmit={sendChatInput}
+					onRestart={clearChat}
 				/>
 			</Flex>
 		</WidgetBase>
@@ -340,28 +312,7 @@ const ChatBubble = ({ from, msg, at, isLast, ...rest }) => {
 					fontSize="sm"
 					position="relative"
 				>
-					<Markdown
-						className="markdown-body"
-						remarkPlugins={[remarkGfm]}
-						sx={{
-							"& table": {
-								fontSize: "0.8em",
-								borderCollapse: "collapse",
-								borderSpacing: 0,
-								display: "block",
-								width: "max-content",
-								maxWidth: "100%",
-								overflow: "auto",
-								margin: "0.5em 0",
-							},
-							"& table td, table th": {
-								padding: "6px 10px",
-								border: "1px solid #888",
-							},
-						}}
-					>
-						{msg}
-					</Markdown>
+					<Markdown>{msg}</Markdown>
 				</Text>
 				{at ? (
 					<Text
@@ -474,6 +425,90 @@ const AiAvatar = ({ size = "32px", ...rest }) => {
 		>
 			<VscRobot size="100%" />
 		</Flex>
+	);
+};
+
+/**
+ * Input field for AI Chatbot
+ * MARK: Input
+ * @param {object} props - The component props
+ * @param {string} props.value - The current value of the input field
+ * @param {string} [props.state] - The state of the input field (e.g., "ready", "busy", "limit-reached")
+ * @param {boolean} [props.isDisabled] - Flag to indicate if the input field is disabled
+ * @param {Function} props.onChange - Callback function to handle input value change
+ * @param {Function} [props.onSubmit] - Callback function to handle input submission
+ * @param {Function} [props.onRestart] - Callback function to handle chat reset
+ * @param {object} [props.rest] - Additional props to pass to the Input component
+ * @returns {JSX.Element} The rendered input field component
+ */
+const ChatInput = ({
+	value,
+	state,
+	isDisabled,
+	onChange,
+	onSubmit,
+	onRestart,
+	...rest
+}) => {
+	const placeholder =
+		state === "limit-reached"
+			? "Chat limit reached. Please start a new chat"
+			: state === "busy"
+				? "Please wait..."
+				: "Ask your question and press Enter";
+	return (
+		<Input
+			placeholder={placeholder}
+			inputLeftElement={
+				<Icon
+					name="chat-outline"
+					size="18px"
+					color="light"
+					opacity={isDisabled ? 0.5 : 1}
+				/>
+			}
+			inputRightElement={
+				state === "limit-reached" ? (
+					<Icon
+						name="refresh"
+						size="38px"
+						bg="error"
+						color="white"
+						p={2}
+						borderRadius="full"
+						cursor="pointer"
+						onClick={onRestart}
+						opacity={isDisabled ? 0.5 : 1}
+					/>
+				) : (
+					<Icon
+						name="send"
+						size="18px"
+						color="light"
+						cursor="pointer"
+						pointerEvents={isDisabled ? "none" : "auto"}
+						onClick={(val) => {
+							onSubmit(val);
+						}}
+						opacity={isDisabled ? 0.5 : 1}
+					/>
+				)
+			}
+			maxLength={100} //will work when type is text
+			m="2px"
+			w="calc(100% - 4px)"
+			value={value}
+			disabled={isDisabled}
+			autoComplete="off"
+			// invalid={invalid}
+			// errorMsg={errorMsg}
+			onChange={(e) => onChange(e.target.value)}
+			onEnter={(val) => {
+				onSubmit(val);
+			}}
+			_placeholder={{ fontSize: "xs" }}
+			{...rest}
+		/>
 	);
 };
 

@@ -11,6 +11,12 @@ import { useLogin } from "hooks";
  * @param	{Function}	[prop.setLoginType]	Function to set the type of login
  * @param	{Function}	[prop.setNumber]	Function to set the number
  * @param	{Function}	[prop.setEmail]	Function to set the email
+ * @param root0
+ * @param root0.org_id
+ * @param root0.setStep
+ * @param root0.setLoginType
+ * @param root0.setNumber
+ * @param root0.setEmail
  * @example	`<GoogleButton></GoogleButton>`
  */
 const GoogleButtonContent = ({
@@ -78,7 +84,7 @@ const GoogleButtonContent = ({
 			</Box>
 			{/* <Button
 				variant="nostyle"
-				bg="google-btn-bg"
+				bg="#4185F4"
 				h={{
 					base: "56px",
 					// "2xl": "62px",

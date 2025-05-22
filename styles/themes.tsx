@@ -34,18 +34,6 @@ export const light = extendTheme({
 			DEFAULT: "#FE9F00",
 			dark: "#f38300",
 		},
-		// secondary: {
-		// 	light: "#2d6cbf",
-		// 	DEFAULT: "#1F5AA7",
-		// 	dark: "#164d94",
-		// },
-		// shadow: {
-		// 	primary: "#FE9F008C",
-		// 	accent: "#11299e96",
-		// 	success: "#009B34",
-		// 	error: "#CA1B56",
-		// },
-		"google-btn-bg": "#4185F4",
 		success: "#00C341",
 		error: "#FF4081",
 		divider: "#E9EDF1",
@@ -58,16 +46,8 @@ export const light = extendTheme({
 		darkShade: "#e6e6e6",
 		highlight: "#FFD93B",
 		bg: "#d7dbe3", // Default: "#F5F6F8",   Dark: "#d7dbe3"
-		inputlabel: "#0C243B",
+		inputLabel: "#0C243B",
 		overlayBg: "#e9edf1b3",
-		// sidebar: {
-		// 	"icon-bg": "#1F3ABC", // primary.light
-		// 	"active-border": "#FE7D00",
-		// 	"active-bg": "#081E89",
-		// 	"card-bg": "#102174",
-		// 	"card-bg-dark": "#091968",
-		// 	font: "#556FEF",
-		// },
 	},
 	components: {
 		Button: buttonTheme,
@@ -86,7 +66,7 @@ export const light = extendTheme({
 				fontWeight: "semibold",
 				pl: "0",
 				mb: { base: 2, "2xl": "0.8rem" },
-				color: "inputlabel",
+				color: "inputLabel",
 			},
 		},
 
@@ -139,8 +119,7 @@ export const light = extendTheme({
 		basic: "0px 5px 15px #0000000D",
 		"sh-otpfocus": "0px 3px 6px #0000001A",
 		"sh-card": "0px 3px 20px #00000005",
-		"sh-googlebtn": "0px 3px 10px #4185F433",
-		buttonShadow: "0px 3px 10px #00000018",
+		"sh-button": "0px 3px 10px #00000018",
 	},
 	sizes: {
 		max: "max-content",

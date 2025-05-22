@@ -133,3 +133,5 @@ export { ChatInput } from "./ChatInput";
 
 export { InfoTile } from "./InfoTile";
 export { InfoTileGrid } from "./InfoTileGrid";
+
+export { Markdown } from "./Markdown";

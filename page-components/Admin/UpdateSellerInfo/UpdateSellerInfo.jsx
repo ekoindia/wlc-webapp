@@ -210,7 +210,7 @@ const UpdateSellerInfo = () => {
 								// onChange={onChangeHandler}
 								labelStyle={{
 									fontSize: { base: "md" },
-									color: "inputlabel",
+									color: "inputLabel",
 									pl: "0",
 									fontWeight: "600",
 									mb: { base: 2.5, "2xl": "0.8rem" },

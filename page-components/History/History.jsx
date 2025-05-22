@@ -600,7 +600,7 @@ const History = ({ forNetwork = false }) => {
 						bg: "primary.DEFAULT",
 						color: "white",
 						borderColor: "primary.DEFAULT",
-						boxShadow: "buttonShadow",
+						boxShadow: "sh-button",
 						_hover: {
 							bg: "primary.dark",
 							borderColor: "primary.dark",
