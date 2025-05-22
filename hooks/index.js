@@ -26,3 +26,7 @@ export { default as useRequest } from "./useRequest";
 export { default as useSessionStorage } from "./useSessionStorage";
 export { default as useSet } from "./useSet";
 export { default as useSwipe } from "./useSwipe";
+export {
+	default as useVoiceCapture,
+	UseVoiceCaptureProps,
+} from "./useVoiceCapture";
