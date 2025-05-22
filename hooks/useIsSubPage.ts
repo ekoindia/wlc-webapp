@@ -1,31 +1,40 @@
 import { useUser } from "contexts";
 import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 /**
- * Determines if the current page is a subpage based on the URL structure.
- * TODO: Add a parameter: predefinedValue (bool). If not undefined, return predefinedValue
- * TODO: Use useMemo for path calculation.
+ * Custom hook to determine whether the current route is a "subpage"
+ * based on the URL structure and admin status.
  *
- * A subpage is identified if the pathname contains more than one segment
- * (e.g., `/parent/child` or `/dashboard/settings`).
- * @returns {boolean} - `true` if the current page is a subpage, otherwise `false`.
+ * A subpage is identified based on the number of path segments:
+ * - For admin users: a subpage has more than 2 segments (e.g., /admin/pricing/config)
+ * - For non-admin users: a subpage has more than 1 segment (e.g., /dashboard/settings)
+ * @param {boolean | undefined} predefinedValue - Optional override. If provided, this value is returned directly.
+ * @returns {boolean} - Returns `true` if the current page is considered a subpage, otherwise `false`.
  */
-const useIsSubPage = (): boolean => {
-	const { pathname } = useRouter();
-	const { isAdmin } = useUser();
+const useIsSubPage = (predefinedValue?: boolean): boolean => {
+	const { pathname } = useRouter(); // Get the current route path
+	const { isAdmin } = useUser(); // Check if the current user is an admin
 
-	// TODO: return `predefinedValue`, if not undefined.
+	// Memoize the subpage check to avoid unnecessary recalculations
+	const isSubPage = useMemo(() => {
+		// If a predefined value is passed, return it directly
+		if (predefinedValue !== undefined) {
+			return predefinedValue;
+		}
 
-	// TODO: useMemo below...
+		// Normalize path by removing leading/trailing slashes and splitting by "/"
+		const pathArray = pathname.replace(/^\/|\/$/g, "").split("/");
 
-	// Remove leading and trailing slashes, then split by "/"
-	const pathArray = pathname.replace(/^\/|\/$/g, "").split("/");
+		// Define minimum path length required to *not* be a subpage
+		// Admin paths usually start with `/admin`, so we expect at least 3 segments
+		const MinPathLength = isAdmin ? 2 : 1;
 
-	// Minimum path length for a subpage
-	const MinPathLength = isAdmin ? 2 : 1;
+		// Return true if the current path exceeds the threshold
+		return pathArray.length > MinPathLength;
+	}, [pathname, isAdmin, predefinedValue]);
 
-	// Check if the path has more segments than the minimum required
-	return pathArray.length > MinPathLength;
+	return isSubPage;
 };
 
 export default useIsSubPage;
