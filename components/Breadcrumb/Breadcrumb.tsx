@@ -48,22 +48,40 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 	};
 
 	/**
-	 * Handle click event on a breadcrumb.
-	 * If the breadcrumb is not the current page, navigate to the URL.
-	 * If the breadcrumb URL matches the browser history, go back in the history.
+	 * Handles breadcrumb click navigation.
+	 * - If the breadcrumb represents the current page or lacks an `href`, it does nothing.
+	 * - If the document referrer matches the breadcrumb URL (ignoring trailing slashes),
+	 * and browser history length is greater than 1, it navigates back in history.
+	 * - Otherwise, it performs a router push to the breadcrumb's URL.
+	 *
+	 * This logic improves over a naive `document.referrer === crumb.href` check by:
+	 * - Normalizing paths to ignore trailing slashes.
+	 * - Avoiding referrer-based navigation if history is too shallow.
 	 * @param {BreadcrumbItemProps} crumb - The breadcrumb object that was clicked.
 	 */
 	const onCrumbClick = (crumb: BreadcrumbItemProps): void => {
 		if (crumb.isCurrent || !crumb.href) return;
 
-		const history = window.history;
-		const crumbURL = window.location.origin + crumb.href;
+		const { origin } = window.location;
+		const crumbURL = new URL(crumb.href, origin);
+		const referrerURL = document.referrer
+			? new URL(document.referrer)
+			: null;
 
-		// TODO: This logic checks if the document referrer matches the breadcrumb URL to navigate back in history. 
-		// While this can be useful, it might not cover all scenarios where a user navigates back. 
-		// Consider adding additional checks or providing a more robust navigation solution.
-		if (document.referrer === crumbURL) {
-			history.back();
+		/**
+		 * Normalize path by removing trailing slashes to avoid false mismatches.
+		 * @param {URL} url - The URL object to normalize.
+		 * @returns {string} Normalized pathname without trailing slashes.
+		 */
+		const normalizePath = (url: URL): string =>
+			url.pathname.replace(/\/+$/, "");
+
+		const isSamePage =
+			referrerURL &&
+			normalizePath(referrerURL) === normalizePath(crumbURL);
+
+		if (isSamePage && window.history.length > 1) {
+			window.history.back();
 			return;
 		}
 
