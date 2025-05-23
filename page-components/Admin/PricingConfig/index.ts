@@ -14,9 +14,11 @@ export {
 } from "./pricingConstants";
 export { default as PricingForm } from "./PricingForm";
 export {
+	findNodeInTree,
 	formatSlabs,
 	generatePricingTrees,
 	generateProductCategoryList,
+	getPageTitle,
 	getPricingTypeString,
 	getStatus,
 } from "./pricingHelpers";

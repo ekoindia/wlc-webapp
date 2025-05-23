@@ -4,7 +4,13 @@ import { useHslColor } from "hooks";
 import { useRouter } from "next/router";
 import { DownloadPricing } from "page-components/Admin/PricingCommission/DownloadPricing";
 import { useEffect, useState } from "react";
-import { PricingForm, ProductNode, usePricingConfig } from ".";
+import {
+	findNodeInTree,
+	getPageTitle,
+	PricingForm,
+	ProductNode,
+	usePricingConfig,
+} from ".";
 
 // Base path for pricing configuration
 const PricingConfigBasePath = "/admin/pricing-config";
@@ -42,58 +48,6 @@ interface CardProps {
 	icon?: string; // Optional icon name for the card
 	children?: ProductNode[]; // Optional child nodes for navigation
 }
-
-// Utility function
-/**
- * Recursively finds a node in a tree structure based on a path array.
- * @param {ProductNode[]} tree - The tree structure to search in.
- * @param {string[]} pathArray - Array of path segments to locate the node.
- * @param {number} [index] - Current index in the path array.
- * @returns {ProductNode[] | null} - The found node or null if not found.
- */
-const findNodeInTree = (
-	tree: ProductNode[],
-	pathArray: string[],
-	index = 0
-): ProductNode[] | null => {
-	if (!pathArray) return tree; // Base case: if no path is provided, return the root node
-	if (index === pathArray.length) return tree; // Base case: reached the target node
-
-	const currentNode = tree.find((node) => node.name === pathArray[index]);
-	const nextNode = currentNode?.children;
-	return nextNode ? findNodeInTree(nextNode, pathArray, index + 1) : null;
-};
-
-/**
- * Determines the page title based on the pricing tree and path array.
- * This function retrieves the label of the parent node of the current node
- * or returns a default title if the parent node is not found.
- * @param {ProductNode[]} pricingTree - The hierarchical tree structure representing pricing data.
- * @param {string[] | null} pathArray - Array of path segments representing the navigation path.
- * @returns {string} - The determined page title, or "Pricing & Commissions" as the default.
- */
-const getPageTitle = (
-	pricingTree: ProductNode[],
-	pathArray: string[] | null
-): string => {
-	const defaultTitle = "Pricing & Commissions";
-
-	if (!pathArray?.length) return defaultTitle;
-
-	const parentPath = pathArray.slice(0, -1);
-	const parentNodeArray =
-		parentPath.length === 0
-			? pricingTree
-			: findNodeInTree(pricingTree, parentPath);
-
-	const currentSegmentName = pathArray[pathArray.length - 1];
-
-	const parentNode = parentNodeArray?.find(
-		(node) => node.name === currentSegmentName
-	);
-
-	return parentNode?.label ?? defaultTitle;
-};
 
 // MARK: PricingConfig
 /**
@@ -417,6 +371,7 @@ const Card = ({ name, label, desc, icon }: CardProps): JSX.Element => {
 	);
 };
 
+// MARK: SkeletonLoader
 /**
  * SkeletonLoader Component
  * Renders a reusable skeleton loader for a section with a heading and multiple boxes.
