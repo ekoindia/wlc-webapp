@@ -98,8 +98,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	// Get the bottom bar items
 	const bottomAppBarItems = useBottomAppBarItems();
 
-	const calculatedIsSubPage = useIsSubPage();
-	const resolvedIsSubPage = isSubPage ?? calculatedIsSubPage;
+	const resolvedIsSubPage = useIsSubPage(isSubPage);
 
 	// Delay load non-essential components...
 	const [loadNavBar] = useDelayToggle(100);
