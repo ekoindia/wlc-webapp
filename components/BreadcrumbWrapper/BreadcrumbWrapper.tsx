@@ -1,22 +1,12 @@
-import { Box } from "@chakra-ui/react";
 import { Breadcrumb } from "components";
 import { useRouter } from "next/router";
-import { ReactNode, useEffect, useState } from "react";
-import { generateBreadcrumbs } from ".";
-
-interface BreadcrumbItem {
-	href: string; // URL for the breadcrumb
-	label: string; // Display label for the breadcrumb
-	isCurrent: boolean; // Indicates if the breadcrumb is the current page
-}
-
-interface BreadcrumbsData {
-	[path: string]: string; // Static mapping: full URL → label
-}
-
-interface LabelOverrides {
-	[segment: string]: string; // Dynamic override: segment → label
-}
+import { ReactNode, useMemo } from "react";
+import {
+	BreadcrumbItem,
+	BreadcrumbsData,
+	LabelOverrides,
+	resolveBreadcrumbs,
+} from ".";
 
 interface BreadcrumbWrapperProps {
 	breadcrumbsData?: BreadcrumbsData; // For static breadcrumb rendering
@@ -32,11 +22,9 @@ interface BreadcrumbWrapperProps {
 /**
  * BreadcrumbWrapper component.
  * Wraps page content with a breadcrumb navigation bar.
- * 
+ *
  * TODO: The BreadcrumpWrapper component should not be needed. Why `wrap` the page inside an empty box?
  *       This logic could be part of Breadcrumb component itself and used as a sibling on top of a page.
- * 
- * TODO: Migrate useeffect logic to BreadcrumbUtils.
  *
  * ### Behavior:
  * - **Direct Crumbs**: If `crumbs` is provided, it directly uses the provided breadcrumb list.
@@ -94,57 +82,35 @@ const BreadcrumbWrapper = ({
 	labelOverrides = {},
 	omitPaths = [],
 }: BreadcrumbWrapperProps): JSX.Element => {
-	const router = useRouter();
-	const [crumbs, setCrumbs] = useState<BreadcrumbItem[]>([]);
+	const { asPath, pathname } = useRouter();
 
-	useEffect(() => {
-		// Priority 1: Direct crumbs provided
-		if (providedCrumbs) {
-			setCrumbs(providedCrumbs);
-			return;
-		}
-
-		// Priority 2: Dynamic generation
-		if (useDynamic) {
-			const asPath = router.asPath;
-			const dynamicCrumbs = generateBreadcrumbs(
-				asPath,
-				labelOverrides,
-				omitPaths
-			);
-			setCrumbs(dynamicCrumbs);
-			return;
-		}
-
-		// Priority 3: Static path mapping
-		if (breadcrumbsData) {
-			// Get the current path and replace the slug if present
-			const currentURL = router.pathname.replace("[slug]", slug || "");
-			const pathArray = currentURL.split("/");
-
-			let URL = "";
-			const _crumbs: BreadcrumbItem[] = [];
-
-			pathArray.forEach((path, index) => {
-				if (!path) return;
-				URL += "/" + path;
-				if (breadcrumbsData[URL]) {
-					_crumbs.push({
-						href: URL,
-						label: breadcrumbsData[URL],
-						isCurrent: index === pathArray.length - 1,
-					});
-				}
-			});
-			setCrumbs(_crumbs);
-		}
-	}, [providedCrumbs, useDynamic, breadcrumbsData, router.asPath, slug]);
+	const crumbs = useMemo(() => {
+		return resolveBreadcrumbs({
+			asPath,
+			pathname,
+			breadcrumbsData,
+			providedCrumbs,
+			useDynamic,
+			labelOverrides,
+			omitPaths,
+			slug,
+		});
+	}, [
+		asPath,
+		pathname,
+		breadcrumbsData,
+		providedCrumbs,
+		useDynamic,
+		labelOverrides,
+		omitPaths,
+		slug,
+	]);
 
 	return (
-		<Box>
+		<div>
 			<Breadcrumb crumbs={crumbs} hideHome={hideHome} />
 			{children}
-		</Box>
+		</div>
 	);
 };
 
