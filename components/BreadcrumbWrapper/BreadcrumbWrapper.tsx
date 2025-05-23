@@ -9,28 +9,28 @@ import {
 } from ".";
 
 interface BreadcrumbWrapperProps {
-	breadcrumbsData?: BreadcrumbsData; // For static breadcrumb rendering
+	breadcrumbsData?: BreadcrumbsData; // Static mapping of full URLs to breadcrumb labels
 	crumbs?: BreadcrumbItem[]; // Direct breadcrumb list override (highest priority)
 	slug?: string; // Slug value for dynamic routes (e.g. [slug])
 	children?: ReactNode; // Page content to be rendered below the breadcrumbs
 	hideHome?: boolean; // Optional flag to hide the 'Home' breadcrumb
-	useDynamic?: boolean; // Enable dynamic breadcrumb generation via path segments
-	labelOverrides?: LabelOverrides; // Optional dynamic label overrides (used with useDynamic)
-	omitPaths?: string[]; // Optional list of full paths to omit from breadcrumbs
+	useDynamic?: boolean; // Enable dynamic breadcrumb generation via URL segments
+	labelOverrides?: LabelOverrides; // Optional overrides for specific URL segments (used with useDynamic)
+	omitPaths?: string[]; // List of full paths to omit from the generated breadcrumbs
 }
 
 /**
  * BreadcrumbWrapper component.
- * Wraps page content with a breadcrumb navigation bar.
+ * Renders a breadcrumb navigation bar and wraps the page content.
  *
  * TODO: The BreadcrumpWrapper component should not be needed. Why `wrap` the page inside an empty box?
- *       This logic could be part of Breadcrumb component itself and used as a sibling on top of a page.
+ * This logic could be part of Breadcrumb component itself and used as a sibling on top of a page.
  *
  * ### Behavior:
  * - **Direct Crumbs**: If `crumbs` is provided, it directly uses the provided breadcrumb list.
- * - **Dynamic Generation**: If `useDynamic` is true, it generates breadcrumbs from the URL segments using `generateBreadcrumbs`, with optional `labelOverrides` and `omitPaths`.
+ * - **Dynamic Generation**: If `useDynamic` is true, it generates breadcrumbs from the URL segments using `resolveBreadcrumbs`, with optional `labelOverrides` and `omitPaths`.
  * - **Static Mapping**: If `useDynamic` is false and `breadcrumbsData` is provided, it falls back to a static mapping of full paths to labels.
- * @param {object} props - Component properties.
+ * @param {BreadcrumbWrapperProps} props - Component properties.
  * @param {BreadcrumbsData} [props.breadcrumbsData] - Static mapping of full URLs to breadcrumb labels (used when `useDynamic` is false).
  * @param {BreadcrumbItem[]} [props.crumbs] - Direct breadcrumb list override (highest priority).
  * @param {string} [props.slug] - Slug value for dynamic routes (e.g., `[slug]` in Next.js).
@@ -84,6 +84,7 @@ const BreadcrumbWrapper = ({
 }: BreadcrumbWrapperProps): JSX.Element => {
 	const { asPath, pathname } = useRouter();
 
+	// Memoize the resolved breadcrumbs to avoid unnecessary recalculations
 	const crumbs = useMemo(() => {
 		return resolveBreadcrumbs({
 			asPath,
