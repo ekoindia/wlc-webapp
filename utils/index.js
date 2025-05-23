@@ -38,6 +38,7 @@ export {
 	limitText,
 	nullRemover,
 	numberRemover,
+	toKebabCase,
 } from "./textFormat";
 export { throttle } from "./throttle";
 export { buildUserObjectState } from "./userObjectBuilder";

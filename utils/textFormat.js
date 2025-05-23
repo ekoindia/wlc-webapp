@@ -35,6 +35,16 @@ export const capitalize = (str, lower = true) => {
 };
 
 /**
+ * Converts a label to a kebab-case formatted string (lowercase with hyphens).
+ * Replaces all spaces with hyphens and converts the string to lowercase.
+ * @param {string} label - The input label to format.
+ * @returns {string} The formatted string in kebab-case.
+ * @example
+ * toKebabCase("Agent Pricing"); // Returns "agent-pricing"
+ */
+export const toKebabCase = (label) => label.toLowerCase().replace(/\s+/g, "-"); // Convert spaces to '-'
+
+/**
  * Removes null from a text representing comma-separated values
  * @param {*} text Text from which null needs to be removed
  * @returns {string} Text without null values
