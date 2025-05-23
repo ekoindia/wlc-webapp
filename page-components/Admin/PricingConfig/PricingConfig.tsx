@@ -121,7 +121,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 	// Base path for navigation
 	const basePath = pathArray?.length
 		? `${PricingConfigBasePath}/${pathArray.join("/")}`
-		: `${PricingConfigBasePath}/`;
+		: PricingConfigBasePath;
 
 	// Initialize the pricing tree when it becomes available
 	useEffect(() => {
@@ -137,6 +137,8 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 		if (pathArray?.length) {
 			const node = findNodeInTree(pricingTree, pathArray);
 
+			// Check if the node is a form type
+			// If the node is a form, retrieve the form data from the map and set it in the state
 			if (node?.[0]?.type === "form") {
 				const _formData = formDataMap[node[0].formlink];
 				if (_formData) {
