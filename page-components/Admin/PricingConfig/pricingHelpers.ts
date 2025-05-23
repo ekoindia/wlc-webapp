@@ -1,4 +1,4 @@
-import { capitalize, formatCurrency } from "utils";
+import { capitalize, formatCurrency, toKebabCase } from "utils";
 import { PRICING_TYPE_OPTIONS, ProductCategory, ProductNode } from ".";
 
 const AGENT_TYPE = {
@@ -175,17 +175,6 @@ function generateKey(
 	formRegistry[key] = data;
 	return key;
 }
-
-/**
- * Converts a label to a kebab-case formatted string (lowercase with hyphens).
- * Replaces all spaces with hyphens and converts the string to lowercase.
- * @param {string} label - The input label to format.
- * @returns {string} The formatted string in kebab-case.
- * @example
- * toKebabCase("Agent Pricing"); // Returns "agent-pricing"
- */
-const toKebabCase = (label: string): string =>
-	label.toLowerCase().replace(/\s+/g, "-"); // Convert spaces to '-'
 
 // Helper function to format slabs
 export const formatSlabs = (slabs) =>
