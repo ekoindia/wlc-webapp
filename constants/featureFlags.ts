@@ -48,8 +48,9 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true, // TODO: Enable for all users
 	},
 
-	// Experimental LLM conversational UI for financial transactions and queries.
-	AI_CHATBOT: {
+	// [MASTER FLAG] Experimental AI Features
+	// Disabling this will disable all other AI-related features.
+	AI_MASTER_FLAG: {
 		enabled: true,
 		forAdminOnly: true,
 		// forEnv: ["development"],
@@ -64,6 +65,39 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 				forOrgId: [...ORG_ID.EKOTESTS, 10, 186, 306, 331, 344], // 306=Kunal Chand, 186=HI TECH RECHARGE SOLUTION, 10=RAMSON TECHNOVATIONS PVT LTD, 344=PROWESS FINTECH PRIVATE LIMITED, 331=AJ ENTERPRISES
 			},
 		},
+	},
+
+	// Experimental LLM conversational UI for financial transactions and queries.
+	AI_CHATBOT: {
+		enabled: true,
+		forAdminOnly: true,
+		requiredFeatures: ["AI_MASTER_FLAG"],
+	},
+
+	// Feature to initiate AI Text Chatbot popup from KBar
+	// It is only allowed if the AI_MASTER_FLAG feature is also enabled.
+	AI_CHATBOT_KBAR: {
+		enabled: true,
+		forAdminOnly: true,
+		requiredFeatures: ["AI_CHATBOT"],
+	},
+
+	// Feature to initiate AI Text Chatbot popup from KBar
+	// It is only allowed if the AI_MASTER_FLAG feature is also enabled.
+	AI_CHATBOT_HOME: {
+		enabled: true,
+		forAdminOnly: true,
+		forEnv: ["development"],
+		requiredFeatures: ["AI_CHATBOT"],
+	},
+
+	// Feature to enable AI Voice Chat
+	// It is only allowed if the AI_MASTER_FLAG feature is also enabled.
+	AI_VOICEBOT: {
+		enabled: true,
+		forAdminOnly: true,
+		forEnv: ["development"],
+		requiredFeatures: ["AI_MASTER_FLAG"],
 	},
 
 	// ------------------------------------------------------------------------
@@ -172,6 +206,9 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	},
 };
 
+// ------------------------------------------------------------------------
+// MARK: ⚙️ Types
+
 // Type definition for environments
 type EnvTypes = "development" | "staging" | "production" | string;
 
@@ -191,8 +228,6 @@ type EnvConstraints = {
 	 */
 	forUserId?: string[];
 };
-
-// MARK: ⚙️ Types
 
 /**
  * Type definition for a feature flag configuration.
@@ -245,4 +280,12 @@ export type FeatureFlagType = {
 	 * Specific constraints for each environment.
 	 */
 	envConstraints?: Record<EnvTypes, EnvConstraints>;
+
+	/**
+	 * An array of feature_flags that are required for this feature to be enabled.
+	 * If any of the required features are not enabled, this feature will not be available.
+	 * Each feature flagmust be one of the keys in the FeatureFlags object.
+	 * Example: ["FEATURE_A", "FEATURE_B"]
+	 */
+	requiredFeatures?: (keyof typeof FeatureFlags)[];
 };

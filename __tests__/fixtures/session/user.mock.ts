@@ -52,7 +52,7 @@ export const MockUser: User = {
 	loggedIn: true,
 	is_org_admin: 0,
 	userId: "6333331126",
-	user_type: "2",
+	user_type: "3",
 	access_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ...",
 	userDetails: {
 		name: "Kumar Abhishek",
