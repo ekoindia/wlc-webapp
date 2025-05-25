@@ -3,6 +3,11 @@ import { Priority } from "kbar";
 import { RiOpenaiLine } from "react-icons/ri";
 import { getKBarAction } from ".";
 
+/**
+ * Get the ChatGPT agent action for the command bar. It opens a new tab with ChatGPT and copies the query to the clipboard so that the user can paste it there.
+ * @param {*} param0
+ * @returns
+ */
 export const getChatGptAgentAction = ({
 	queryValue,
 	org_id,

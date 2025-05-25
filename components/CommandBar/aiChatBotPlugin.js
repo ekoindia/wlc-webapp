@@ -3,7 +3,7 @@ import { RiChatAiLine } from "react-icons/ri";
 import { getKBarAction } from ".";
 
 /**
- * KBar plugin to generate a KBar action for opening AI Chatbot with the given query.
+ * KBar plugin to generate a KBar action for opening AI Chatbot popup widget with the given query.
  * @param {object} props
  * @param {string} props.queryValue - The query value to be used in the action.
  * @param {Function} props.showAiChatBot - Function to show the AI Chatbot.
