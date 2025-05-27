@@ -13,7 +13,7 @@ const NetworkStatementPage = () => {
 // Pages can show their own header bar with back button.
 NetworkStatementPage.pageMeta = {
 	title: "Network's Transaction History | Admin",
-	isSubPage: false,
+	isSubPage: true,
 };
 
 export default NetworkStatementPage;

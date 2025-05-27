@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { MyNetworkBreadcrumbs } from "constants";
 import { PreviewSellerInfo } from "page-components/Admin/UpdateSellerInfo";
 
@@ -8,16 +8,15 @@ import { PreviewSellerInfo } from "page-components/Admin/UpdateSellerInfo";
 function PreviewSellerInfoPage() {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
+			<BreadcrumbWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
 				<PreviewSellerInfo />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 }
 
 PreviewSellerInfoPage.pageMeta = {
 	title: "My Network > Preview Retailer Info | Admin",
-	isSubPage: true,
 };
 
 export default PreviewSellerInfoPage;

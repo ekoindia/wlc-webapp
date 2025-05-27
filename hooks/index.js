@@ -15,6 +15,7 @@ export { default as useGeolocation } from "./useGeolocation";
 export { default as useHotkey } from "./useHotkey";
 export { default as useHslColor } from "./useHslColor";
 export { default as useImageEditor } from "./useImageEditor";
+export { default as useIsSubPage } from "./useIsSubPage";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLogin } from "./useLogin";
 export { default as useNavigationLists } from "./useNavigationLists";

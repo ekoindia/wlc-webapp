@@ -1,10 +1,10 @@
-import { BreadcrumbsWrapper, PaddingBox, PageTitle } from "components";
+import { BreadcrumbWrapper, PaddingBox, PageTitle } from "components";
 import { DrivingLicenseForm } from "page-components/products/kyc/driving-license/DrivingLicenseForm";
 
 const DrivingLicensePage = (): JSX.Element => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/driving-license":
@@ -18,7 +18,7 @@ const DrivingLicensePage = (): JSX.Element => {
 					hideBackIcon
 				/>
 				<DrivingLicenseForm />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

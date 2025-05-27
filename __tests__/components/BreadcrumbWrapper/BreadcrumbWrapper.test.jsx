@@ -1,5 +1,5 @@
-import { BreadcrumbsWrapper } from "components";
-import { pageRender } from "test-utils";
+import { BreadcrumbWrapper } from "components/BreadcrumbWrapper";
+import { render } from "test-utils";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { pageRender } from "test-utils";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("BreadcrumbsWrapper", () => {
+describe("BreadcrumbWrapper", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<BreadcrumbsWrapper />);
+		const { container } = render(<BreadcrumbWrapper />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("BreadcrumbsWrapper", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for BreadcrumbsWrapper in __tests__/components/BreadcrumbsWrapper/BreadcrumbsWrapper.test.jsx"
+		"TODO: add proper test cases for BreadcrumbWrapper in __tests__/components/BreadcrumbWrapper/BreadcrumbWrapper.test.jsx"
 	);
 });

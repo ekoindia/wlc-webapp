@@ -37,6 +37,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
+	// Config-driven Pricing & Commission.
+	DYNAMIC_PRICING_COMMISSION: {
+		enabled: true,
+		forEnv: ["development", "staging"],
+	},
+
 	// ------------------------------------------------------------------------
 	// MARK: 🚩BETA Flags
 	// Feature Enabled only for certain orgs/users in production

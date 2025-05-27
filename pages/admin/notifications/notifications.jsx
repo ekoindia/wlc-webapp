@@ -1,16 +1,16 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { NotificationCreator } from "page-components/Admin";
 
 const Notifications = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/admin/notifications": "Send Notifications",
 				}}
 			>
 				<NotificationCreator />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

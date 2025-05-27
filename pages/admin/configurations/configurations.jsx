@@ -1,16 +1,16 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { Configurations } from "page-components/Admin";
 
 const ConfigurationsPage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/admin/configurations": "Configurations",
 				}}
 			>
 				<Configurations />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

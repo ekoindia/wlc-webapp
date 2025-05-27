@@ -13,7 +13,11 @@ export {
 	useGlobalSearch,
 } from "./GlobalSearchContext";
 export { MenuProvider, useMenuContext } from "./MenuContext";
-export { NetworkUsersProvider, useNetworkUsers } from "./NetworkUsersContext";
+export {
+	NetworkUsersProvider,
+	useNetworkUsers,
+	type NetworkUser,
+} from "./NetworkUsersContext";
 export { NotificationProvider, useNotification } from "./NotificationContext";
 export {
 	OrgDetailProvider,

@@ -7,6 +7,7 @@ export { Network } from "./Network";
 export { NotificationCreator } from "./NotificationCreator";
 export { OnboardAgents } from "./OnboardAgents";
 export { ConfigPageCard, PricingForm } from "./PricingCommission";
+export { PricingConfig, PricingConfigProvider } from "./PricingConfig";
 export { ProfilePanel } from "./ProfilePanel";
 export { QueryCenter } from "./QueryCenter";
 export { TransactionHistory } from "./TransactionHistory";

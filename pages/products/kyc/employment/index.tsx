@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { EmploymentForm } from "page-components/products/kyc/employment/EmploymentForm";
 
 /**
@@ -7,7 +7,7 @@ import { EmploymentForm } from "page-components/products/kyc/employment/Employme
 const EmploymentVerifyPage = (): JSX.Element => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/employment": "Employee Verification",
@@ -15,7 +15,7 @@ const EmploymentVerifyPage = (): JSX.Element => {
 				hideHome
 			>
 				<EmploymentForm />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };
