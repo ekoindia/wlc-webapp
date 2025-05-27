@@ -98,6 +98,9 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	// Get the bottom bar items
 	const bottomAppBarItems = useBottomAppBarItems();
 
+	// useIsSubPage calculates whether it is a sub-page based on URL path hierarchy.
+	// If `isSubPage` is passed (not undefined) form the page metadata, it is returned as it is (no calculation).
+	// It is used to decide whether top Appbar will be shown or not (for subpages, we show a custom page navbar with back button).
 	const resolvedIsSubPage = useIsSubPage(isSubPage);
 
 	// Delay load non-essential components...
