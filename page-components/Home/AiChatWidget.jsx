@@ -1,24 +1,11 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { Icon, Input, Markdown } from "components";
-import { useSession, useUser } from "contexts";
-import { fetcher } from "helpers/apiHelper";
+import { useAiChat, useVoiceCapture } from "hooks";
 import { useEffect, useRef, useState } from "react";
+import { MdOutlineMic, MdOutlineStopCircle } from "react-icons/md";
 import { RiChatAiLine } from "react-icons/ri";
 import { VscRobot } from "react-icons/vsc";
 import { WidgetBase } from ".";
-
-// const THINKING_DIALOGUES = [
-// 	"🤔 Ummm...",
-// 	"🤖 Processing...",
-// 	"🧐 Thinking...",
-// 	"🔮 Just a moment...",
-// 	"🧐 I'm on it...",
-// 	"🧐 Lost in thought...",
-// ];
-// const getRandomThinkingDialogue = () => {
-// 	const randomIndex = Math.floor(Math.random() * THINKING_DIALOGUES.length);
-// 	return THINKING_DIALOGUES[randomIndex];
-// };
 
 /**
  * A widget component for AI chatbot
@@ -37,29 +24,31 @@ const AiChatWidget = ({
 }) => {
 	console.log("[GPT] Initial message: ", initialMessage);
 
-	const { accessToken } = useSession();
-	const { isLoggedIn } = useUser();
-
+	const [status, setStatus] = useState("");
 	const scrollRef = useRef(null);
 
-	const [busy, setBusy] = useState(false);
-	const [chatLines, setChatLines] = useState([]);
-	const [inputValue, setInputValue] = useState("");
-	const [chatInput, setChatInput] = useState("");
-	const [initialMessageProcessed, setInitialMessageProcessed] =
-		useState(false);
+	const {
+		chatLines,
+		inputValue,
+		busy,
+		isDisabled,
+		isLoggedIn,
 
-	const MAX_CHAT_LINES = 10;
+		sendChatInput,
+		setVoiceInput,
+		clearChat,
+		setInputValue,
 
-	const isDisabled = busy || chatLines?.length >= MAX_CHAT_LINES;
-
-	// Start chat with user's initial message, if provided
-	useEffect(() => {
-		if (initialMessage && !chatLines.length && !initialMessageProcessed) {
-			setInitialMessageProcessed(true);
-			sendChatInput(initialMessage);
-		}
-	}, [initialMessage, chatLines, initialMessageProcessed]);
+		isEmpty,
+		chatState,
+	} = useAiChat({
+		initialMessage,
+		maxChatLines: 10,
+		onChatLinesChange: () => {
+			// Scroll to last chat when chatLines change
+			scrollToLastChat();
+		},
+	});
 
 	const scrollToLastChat = () => {
 		scrollRef.current?.lastElementChild?.scrollIntoView({
@@ -67,100 +56,10 @@ const AiChatWidget = ({
 		});
 	};
 
-	// Function to send the chat input to GPT
-	const sendChatInput = (value) => {
-		if (!value) return;
-		if (chatLines?.length >= MAX_CHAT_LINES) return;
-		if (typeof value !== "string") {
-			console.error("[GPT] Invalid chat input: ", value);
-			return;
-		}
-
-		setChatInput(value);
-		setChatLines([
-			...chatLines,
-			{ from: "user", msg: value, at: Date.now() },
-		]);
-		setInputValue("");
-	};
-
-	// Clear chat history
-	const clearChat = () => {
-		setChatLines([]);
-	};
-
-	// Scroll to last chat line when chatLines change
+	// Scroll to last chat line when busy state changes
 	useEffect(() => {
 		scrollToLastChat();
-	}, [chatLines, busy]);
-
-	// Fetch GPT response when chatInput changes
-	useEffect(() => {
-		if (!chatInput) return;
-		if (busy) return;
-
-		setBusy(true);
-
-		// TODO: REMOVE THIS - Only for testing
-		// if (process.env.NEXT_PUBLIC_ENV === "development") {
-		// 	setChatInput("");
-		// 	setTimeout(() => {
-		// 		setChatLines([
-		// 			...chatLines,
-		// 			{
-		// 				from: "system",
-		// 				msg: "Sorry, I didn't get that. Here is a table instead: \n\n| Name | Age |\n|------|-----|\n| John | 30  |\n| Jane | 25  |\n\n\nAlso, here is a bulleted list with long sentences:\n- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n- Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n- Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-		// 				at: Date.now(),
-		// 			},
-		// 		]);
-		// 		setBusy(false);
-		// 	}, 2000);
-		// 	return;
-		// }
-
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/gpt/tfassistant", {
-			body: {
-				history: chatLines,
-				message: chatInput,
-				source: "WLC",
-			},
-			token: accessToken,
-		})
-			.then((data) => {
-				console.log("[GPT] Response: ", data);
-				if (data && data.reply && typeof data.reply === "string") {
-					setChatLines([
-						...chatLines,
-						{ from: "system", msg: data.reply, at: Date.now() },
-					]);
-				} else {
-					setChatLines([
-						...chatLines,
-						{
-							from: "system",
-							msg: "Unexpected response",
-							at: Date.now(),
-						},
-					]);
-				}
-			})
-			.catch((error) => {
-				// Handle any errors that occurred during the fetch
-				console.error("[GPT] Error:", error);
-				setChatLines([
-					...chatLines,
-					{
-						from: "system",
-						msg: "Sorry, I didn't get that",
-						at: Date.now(),
-					},
-				]);
-			})
-			.finally(() => {
-				setChatInput("");
-				setBusy(false);
-			});
-	}, [chatInput, accessToken, chatLines, busy]);
+	}, [busy]);
 
 	if (!isLoggedIn) return null;
 
@@ -178,7 +77,7 @@ const AiChatWidget = ({
 			linkLabel={isPopupMode ? "Close" : "Clear"}
 			linkOnClick={isPopupMode ? onClose : clearChat}
 			linkProps={{
-				display: chatLines.length ? "block" : "none",
+				display: isEmpty ? "none" : "block",
 				color: "white",
 			}}
 			titleProps={{
@@ -233,21 +132,29 @@ const AiChatWidget = ({
 					}
 				</Box>
 
-				{/* Chat Text Input Field */}
-				<ChatInput
-					value={inputValue}
-					isDisabled={isDisabled}
-					state={
-						chatLines?.length >= MAX_CHAT_LINES
-							? "limit-reached"
-							: busy
-								? "busy"
-								: "ready"
-					}
-					onChange={setInputValue}
-					onSubmit={sendChatInput}
-					onRestart={clearChat}
-				/>
+				<Flex direction="row" align="center" gap="2px">
+					<MicInput
+						silenceTimeoutMs={3000}
+						// onClick={status === "recording" ? stop : start}
+						onCapture={(blob) => setVoiceInput(blob)}
+						// isRecording={status === "recording"}
+						// speech={voiceType === "speech"}
+						onStatusChange={setStatus}
+						isDisabled={isDisabled}
+						m="2px"
+					/>
+					{/* Chat Text Input Field */}
+					{status === "recording" ? null : (
+						<ChatInput
+							value={inputValue}
+							isDisabled={isDisabled}
+							state={chatState}
+							onChange={setInputValue}
+							onSubmit={sendChatInput}
+							onRestart={clearChat}
+						/>
+					)}
+				</Flex>
 			</Flex>
 		</WidgetBase>
 	);
@@ -509,6 +416,138 @@ const ChatInput = ({
 			_placeholder={{ fontSize: "xs" }}
 			{...rest}
 		/>
+	);
+};
+
+/**
+ * Mic input icon button with sound wave animation whan it detects sound
+ * MARK: Mic
+ * @param {object} props - The component props
+ * @param {number} [props.maxDurationMs] - Maximum recording duration in milliseconds (default: 30000 ms)
+ * @param {number} [props.maxSizeBytes] - Maximum recording size in bytes (default: 25 * 1024 * 1024 bytes or 25 MB)
+ * @param {number} [props.silenceTimeoutMs] - Timeout for silence detection in milliseconds (default: no timeout)
+ * @param {boolean} [props.isDisabled] - Flag to indicate if the mic input is disabled
+ * @param {Function} props.onCapture - Callback function to handle captured audio blob and URL.
+ * @param {Function} [props.onStatusChange] - Callback function to handle status changes (e.g., "idle", "recording", "stopped").
+ * @returns {JSX.Element} The rendered mic input component
+ */
+const MicInput = ({
+	// onClick,
+	// isRecording,
+	// speech,
+	maxDurationMs,
+	maxSizeBytes,
+	silenceTimeoutMs,
+	isDisabled,
+	onCapture,
+	onStatusChange,
+	...rest
+}) => {
+	const { start, stop, status, voiceType } = useVoiceCapture({
+		maxDurationMs,
+		maxSizeBytes,
+		silenceTimeoutMs,
+		onStop: (blob, url) => {
+			console.log("Voice capture stopped. Blob:", blob);
+			onCapture(blob, url);
+		},
+	});
+
+	/**
+	 * Update the status when the recording starts or stops
+	 */
+	useEffect(() => {
+		onStatusChange && onStatusChange(status);
+	}, [status, onStatusChange]);
+
+	const isRecording = status === "recording";
+	const speech = voiceType === "speech";
+
+	return (
+		<Flex
+			direction="row"
+			align="center"
+			pointerEvents={isDisabled ? "none" : "auto"}
+			opacity={isDisabled ? 0.5 : 1}
+			{...rest}
+		>
+			<Flex
+				width="var(--input-height, 3rem)"
+				height="var(--input-height, 3rem)"
+				m="2px"
+				ml="6px"
+				onClick={
+					isDisabled
+						? undefined
+						: status === "recording"
+							? stop
+							: start
+				}
+				cursor="pointer"
+				align="center"
+				justify="center"
+				borderRadius="full" // "10px"
+				bg={isRecording ? (speech ? "#FF8A7D" : "#FFB8B1") : "white"}
+				boxShadow="md"
+				transition="background 0.3s ease"
+			>
+				{isRecording ? (
+					<MdOutlineStopCircle size="20px" />
+				) : (
+					<MdOutlineMic size="20px" />
+				)}
+			</Flex>
+
+			<Flex
+				boxSizing="border-box"
+				// transform={isRecording && speech ? "scaleX(1)" : "scaleX(0)"}
+				// transformOrigin={"left"}
+				width={isRecording ? "32px" : "0px"}
+				pl="6px"
+				overflow="hidden"
+				transition="width 0.2s ease"
+			>
+				{/* Define wave animation keyframes */}
+				<style>
+					{`
+						@keyframes wave {
+							0%, 100% { transform: scaleY(0.4); }
+							50% { transform: scaleY(1); }
+						}
+					`}
+				</style>
+				<Flex
+					direction="row"
+					align="center"
+					// justify="space-between"
+					gap="2px"
+					w="32px"
+					h={isRecording && speech ? "25px" : "14px"}
+					bg="transparent"
+					transition="height 0.2s ease-out"
+					transitionDuration={speech ? "0.2s" : "1.5s"}
+				>
+					{[...Array(6)].map((_, index) => (
+						<Box
+							key={index}
+							w="4px"
+							h="100%"
+							bg={speech ? "gray.600" : "gray.400"}
+							transition="background 0.3s ease-out"
+							borderRadius="full"
+							animation={
+								isRecording
+									? `wave ${1 + index * 0.1}s infinite`
+									: "none"
+							}
+							animationDelay={`${index * 0.1}s`}
+						/>
+					))}
+				</Flex>
+			</Flex>
+
+			{/* <Box ml={2}>{speech ? "Speaking..." : "Waiting..."}</Box> */}
+		</Flex>
 	);
 };
 

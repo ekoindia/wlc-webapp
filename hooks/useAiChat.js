@@ -281,7 +281,6 @@ const useAiChat = ({
 		isDisabled,
 		hasReachedLimit,
 		isLoggedIn,
-		maxChatLines,
 
 		// Actions
 		sendChatInput,
