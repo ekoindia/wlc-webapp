@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { business_setting_categories } from "constants";
 import { BusinessSettingsBreadcrumbs } from "constants/BreadcrumbsData";
 import { ConfigPageCard } from "page-components/Admin";
@@ -11,12 +11,12 @@ const BusinessPage = () => {
 
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper breadcrumbsData={BusinessSettingsBreadcrumbs}>
+			<BreadcrumbWrapper breadcrumbsData={BusinessSettingsBreadcrumbs}>
 				<ConfigPageCard
 					heading="Business Settings"
 					configCategories={business_setting_categories}
 				/>
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

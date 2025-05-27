@@ -19,4 +19,9 @@ const TransactionPage = () => {
 	return <EkoConnectWidget start_id={start_id} paths={id} />;
 };
 
+TransactionPage.pageMeta = {
+	title: "Transaction",
+	isSubPage: false,
+};
+
 export default TransactionPage;

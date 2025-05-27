@@ -1,10 +1,10 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { PanBulkForm } from "page-components/products/kyc/pan/PanBulkForm";
 
 const PanBulkPage = (): JSX.Element => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/pan": "PAN Verification",
@@ -13,7 +13,7 @@ const PanBulkPage = (): JSX.Element => {
 				hideHome
 			>
 				<PanBulkForm />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

@@ -18,22 +18,31 @@ export const getFirstWord = (text) => {
 /**
  * Capitalizes first letters of words in string.
  * @param {string} str String to be modified
- * @param {boolean=false} lower Whether all other letters should be lowercased
- * @returns {string}
- * @usage
+ * @param {boolean=true} lower Whether all other letters should be lowercased
+ * @returns {string} String with first letters capitalized
+ * @example
  *   capitalize('fix this string');     // -> 'Fix This String'
  *   capitalize('javaSCrIPT');    // -> 'Javascript'
  *   capitalize('javaSCrIPT', false);   // -> 'JavaSCrIPT'
  */
-
 export const capitalize = (str, lower = true) => {
-	if (!str) return;
+	if (!str) return "";
 
 	const regex = /(?:^|\s|[-"'([{])+\S/g;
 	return (lower ? str.toLowerCase() : str).replace(regex, (match) =>
 		match.toUpperCase()
 	);
 };
+
+/**
+ * Converts a label to a kebab-case formatted string (lowercase with hyphens).
+ * Replaces all spaces with hyphens and converts the string to lowercase.
+ * @param {string} label - The input label to format.
+ * @returns {string} The formatted string in kebab-case.
+ * @example
+ * toKebabCase("Agent Pricing"); // Returns "agent-pricing"
+ */
+export const toKebabCase = (label) => label.toLowerCase().replace(/\s+/g, "-"); // Convert spaces to '-'
 
 /**
  * Removes null from a text representing comma-separated values

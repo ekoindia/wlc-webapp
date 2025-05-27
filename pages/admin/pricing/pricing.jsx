@@ -1,7 +1,7 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import {
-	product_pricing_categories,
 	PricingCommissionBreadcrumbs,
+	product_pricing_categories,
 } from "constants";
 import { ConfigPageCard } from "page-components/Admin";
 import { DownloadPricing } from "page-components/Admin/PricingCommission/DownloadPricing";
@@ -12,13 +12,13 @@ import { DownloadPricing } from "page-components/Admin/PricingCommission/Downloa
 const PricingPage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper breadcrumbsData={PricingCommissionBreadcrumbs}>
+			<BreadcrumbWrapper breadcrumbsData={PricingCommissionBreadcrumbs}>
 				<ConfigPageCard
 					heading="Pricing & Commissions"
 					configCategories={product_pricing_categories}
 					HeaderTool={<DownloadPricing />}
 				/>
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

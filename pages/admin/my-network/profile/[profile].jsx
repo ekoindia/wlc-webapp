@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { MyNetworkBreadcrumbs } from "constants";
 
 import { ProfilePanel } from "page-components/Admin";
@@ -6,16 +6,15 @@ import { ProfilePanel } from "page-components/Admin";
 const Profile = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
+			<BreadcrumbWrapper breadcrumbsData={MyNetworkBreadcrumbs}>
 				<ProfilePanel />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };
 
 Profile.pageMeta = {
 	title: "My Network > Agent Details | Admin",
-	isSubPage: true,
 };
 
 export default Profile;
