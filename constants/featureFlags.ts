@@ -40,7 +40,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Config-driven Pricing & Commission.
 	DYNAMIC_PRICING_COMMISSION: {
 		enabled: true,
-		forEnv: ["development"],
+		forEnv: ["development", "staging"],
 	},
 
 	// ------------------------------------------------------------------------
