@@ -56,10 +56,11 @@ class UnauthorizedError extends ApiError {
  * @param {string} [options.method] - HTTP method (default: "POST")
  * @param {object} [options.headers] - Additional headers (optional)
  * @param {object} options.body - Additional data for the request
+ * @param {object} [options.files] - Files to be uploaded (optional). If provided, the request will be sent as multipart/form-data
  * @param {number} [options.timeout] - Timeout (in milliseconds. Default: 120000)
  * @param {string} options.token - Authorization access-token (if required)
  * @param {object} [options.controller] - AbortController instance
- * @param {boolean} [options.isMultipart] - Flag to indicate multipart form data
+ * @param {boolean} [options.isMultipart] - Flag to indicate multipart form data. It will automatically set to true if files are provided.
  * @param {Function} [generateNewToken] - Function to generate new access token (when current token is nearing expiry, or token-expired error is returned by the server)
  * @returns {Promise} Promise object represents the response
  * - If response is ok, returns the response as JSON
@@ -74,6 +75,7 @@ export function fetcher(url, options, generateNewToken) {
 		method,
 		headers,
 		body = {},
+		files = {},
 		timeout,
 		token,
 		controller = null,
@@ -95,6 +97,9 @@ export function fetcher(url, options, generateNewToken) {
 	const _method = (method || DEFAULT_METHOD).toUpperCase();
 	const isGetType = _method === "GET" || _method === "DELETE";
 
+	// Set isMultipart flag, if files are provided
+	const _isMultipart = isMultipart || Object.keys(files).length > 0;
+
 	// Add client_ref_id to the request body, if not already present
 	if (!isGetType) {
 		body.client_ref_id ??=
@@ -106,6 +111,11 @@ export function fetcher(url, options, generateNewToken) {
 		Authorization: token ? `Bearer ${token}` : undefined,
 		...headers,
 	};
+
+	if (_isMultipart) {
+		// If multipart/form-data, remove Content-Type header
+		delete headersData["Content-Type"];
+	}
 
 	const bodyData = {
 		...DEFAULT_DATA,
@@ -125,7 +135,9 @@ export function fetcher(url, options, generateNewToken) {
 	const finalOptions = {
 		method: _method,
 		headers: headersData,
-		body: isGetType ? undefined : prepareRequestBody(bodyData, isMultipart),
+		body: isGetType
+			? undefined
+			: prepareRequestBody(bodyData, files, _isMultipart),
 		signal: combinedSignal,
 		...restOptions,
 	};
@@ -175,31 +187,55 @@ export function fetcher(url, options, generateNewToken) {
 
 /**
  * Prepares the request body based on method and content type
+ * MARK: Req Body
  * @param {object} body - Data to be sent in the request body
+ * @param files
  * @param {boolean} [isMultipart] - Flag to indicate if the request is multipart/form-data
  * @returns {FormData|string|undefined} - FormData object for multipart requests & JSON string for other requests
  * - If isMultipart is true, returns FormData object with the body
  * - If isMultipart is false, returns JSON string with the body
  * - If body is not an object, returns undefined
  */
-function prepareRequestBody(body, isMultipart) {
+function prepareRequestBody(body, files, isMultipart) {
 	if (!body || typeof body !== "object") return undefined;
 
+	// If isMultipart is true, prepare FormData
 	if (isMultipart) {
 		const formData = new FormData();
-		Object.entries(body).forEach(([key, value]) => {
-			if (value !== null && typeof value !== undefined) {
-				formData.append(key, value);
-			}
-		});
+
+		// Append body data to FormData
+		if (body && typeof body !== "object") {
+			Object.entries(body).forEach(([key, value]) => {
+				if (value !== null && typeof value !== undefined) {
+					formData.append(key, value);
+				}
+			});
+		}
+
+		// Append files to FormData
+		if (files && typeof files === "object") {
+			Object.entries(files).forEach(([key, file]) => {
+				if (file instanceof File || file instanceof Blob) {
+					// If file is a single File or Blob, append it directly
+					formData.append(key, file);
+				} else if (Array.isArray(file)) {
+					// If file is an array of Files or Blobs, append each one
+					file.forEach((f) => formData.append(key, f));
+				} else {
+					console.warn(`Skipping non-file value for key: ${key}`);
+				}
+			});
+		}
 		return formData;
 	}
 
+	// If isMultipart is false, prepare JSON string
 	return JSON.stringify(body);
 }
 
 /**
  * Builds the final URL with query parameters for GET/DELETE requests
+ * MARK: Req URL
  * @param url
  * @param params
  */
