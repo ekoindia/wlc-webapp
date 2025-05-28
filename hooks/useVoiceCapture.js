@@ -118,8 +118,8 @@ const useVoiceCapture = (options) => {
 
 			// Start recording
 			mediaRecorder.current.start();
-			setStatus("recording");
 			requestCancelRef.current = false; // Reset cancellation flag
+			setStatus("recording");
 
 			// Handle timeout: Hard stop after maxDurationMs
 			timeoutRef.current = setTimeout(() => stop(), maxDurationMs);

@@ -1,5 +1,6 @@
 import { useSession, useUser } from "contexts";
 import { fetcher } from "helpers/apiHelper";
+import { useRefreshToken } from "hooks";
 import { useEffect, useState } from "react";
 
 // API Endpoints for AI chat and voice assistants
@@ -31,6 +32,8 @@ const useAiChat = ({
 	const [voiceInput, setVoiceInput] = useState(null);
 	const [initialMessageProcessed, setInitialMessageProcessed] =
 		useState(false);
+
+	const { generateNewToken } = useRefreshToken(); // For re-generating access-token, required by fetcher()
 
 	// Derived state
 	const isDisabled = busy || chatLines?.length >= maxChatLines;
@@ -159,7 +162,8 @@ const useAiChat = ({
 					file: _voice,
 				},
 				token: accessToken,
-			}
+			},
+			generateNewToken
 		)
 			.then((data) => {
 				// Success response from the voice assistant API
@@ -235,7 +239,8 @@ const useAiChat = ({
 					source: "WLC",
 				},
 				token: accessToken,
-			}
+			},
+			generateNewToken
 		)
 			.then((data) => {
 				console.log("[GPT] Response: ", data);
