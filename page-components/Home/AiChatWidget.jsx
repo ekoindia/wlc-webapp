@@ -76,7 +76,7 @@ const AiChatWidget = ({
 			linkLabel={isPopupMode ? "Close" : "Clear"}
 			linkOnClick={isPopupMode ? onClose : clearChat}
 			linkProps={{
-				display: isEmpty ? "none" : "block",
+				display: isPopupMode !== true && isEmpty ? "none" : "block",
 				color: "white",
 			}}
 			titleProps={{
