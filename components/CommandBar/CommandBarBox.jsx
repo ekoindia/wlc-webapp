@@ -243,6 +243,16 @@ const getDynamicActions = ({
 			})
 		);
 
+		// Add AI Chatbot action (with or without a typed query)...
+		if (isAiChatBotAllowed) {
+			preActions.push(
+				...getAiChatBotAction({
+					queryValue,
+					showAiChatBot,
+				})
+			);
+		}
+
 		// Add ChatGPT agent action (only when nothing is typed)...
 		if (isChatGptAgentAllowed && queryValue === "") {
 			preActions.push(
@@ -253,16 +263,6 @@ const getDynamicActions = ({
 					userType,
 					toast,
 					copy,
-				})
-			);
-		}
-
-		// Add AI Chatbot action (only when a query is typed)...
-		if (isAiChatBotAllowed && queryValue.length > 0) {
-			preActions.push(
-				...getAiChatBotAction({
-					queryValue,
-					showAiChatBot,
 				})
 			);
 		}

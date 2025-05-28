@@ -91,7 +91,7 @@ export const getChatGptAgentAction = ({
 					/>
 				</>
 			),
-			priority: queryValue ? -888 : Priority.HIGH,
+			priority: queryValue ? -889 : Priority.MEDIUM,
 			perform: () => {
 				openChatGptTab(queryValue);
 			},
