@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * Custom hook for voice recording functionality
  * @param {object} options - Options for the voice capture
  * @param {Function} options.onStop - Callback function to be called when recording stops. It receives the recorded audio URL as an argument.
+ * @param {Function} [options.onCancel] - Callback function to be called when recording is cancelled. It receives no arguments.
  * @param {number} [options.maxDurationMs] - Maximum duration for recording in milliseconds (defaul: 30000 ms)
  * @param {number} [options.maxSizeBytes] - Maximum size for recording in bytes (default: 25 * 1024 * 1024 bytes or 25 MB)
  * @param {number} [options.silenceTimeoutMs] - Timeout for silence detection in milliseconds (default: 0 or no timeout). It stops recording if no speech is detected for this duration.
@@ -17,6 +18,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const useVoiceCapture = (options) => {
 	const {
 		onStop,
+		onCancel,
 		maxDurationMs = 30000, // Default max duration is 30 seconds
 		maxSizeBytes = 25 * 1024 * 1024, // Default maximum size is 25 MB
 		silenceTimeoutMs = 0, // Default silence timeout is 0 ms (no timeout)
@@ -97,13 +99,15 @@ const useVoiceCapture = (options) => {
 					type: "audio/webm",
 				});
 
-				if (requestCancelRef.current !== true) {
+				if (requestCancelRef.current === true) {
+					// If recording was cancelled, just call onCancel before cleanup
+					console.log("Recording cancelled by user");
+					onCancel?.();
+				} else {
 					// If recording was not cancelled, provide the audio blob & URL
 					const audioUrl = URL.createObjectURL(audioBlob);
 					setMediaBlobUrl(audioUrl);
-					if (onStop) {
-						onStop(audioBlob, audioUrl);
-					}
+					onStop?.(audioBlob, audioUrl);
 				}
 				teardown();
 				audioChunks.current = [];

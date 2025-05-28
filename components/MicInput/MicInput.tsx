@@ -20,6 +20,7 @@ interface MicInputProps {
  * @param {boolean} [props.isDisabled] - Flag to indicate if the mic input is disabled
  * @param {Function} props.onCapture - Callback function to handle captured audio blob and URL.
  * @param {Function} [props.onStatusChange] - Callback function to handle status changes (e.g., "idle", "recording", "stopped").
+ * @param props.onCancel
  * @returns {JSX.Element} The rendered mic input component
  */
 const MicInput = ({
@@ -28,6 +29,7 @@ const MicInput = ({
 	silenceTimeoutMs,
 	isDisabled,
 	onCapture,
+	onCancel,
 	onStatusChange,
 	...rest
 }: MicInputProps) => {
@@ -36,9 +38,10 @@ const MicInput = ({
 		maxSizeBytes,
 		silenceTimeoutMs,
 		onStop: (blob, url) => {
-			console.log("Voice capture stopped. Blob:", blob);
+			console.log("Voice capture stopped.", { blob, url });
 			onCapture(blob, url);
 		},
+		onCancel,
 	});
 
 	/**
