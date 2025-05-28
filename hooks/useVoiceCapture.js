@@ -42,6 +42,7 @@ const useVoiceCapture = (options) => {
 	const lastSilenceRef = useRef(0); // Last silence start timestamp (after a speech activity)
 	const hasSpeechStartedRef = useRef(false); // Flag to track if speech has started
 	const totalSpeechTimeRef = useRef(0); // Total speech time in milliseconds
+	const requestCancelRef = useRef(false); // Flag to track if recording should be cancelled
 
 	// Timer references
 	const timeoutRef = useRef(null); // For auto-stop on timeout
@@ -54,6 +55,7 @@ const useVoiceCapture = (options) => {
 
 	/**
 	 * Starts audio recording using browser's MediaRecorder API
+	 * MARK: start()
 	 * @async
 	 * @returns {Promise<void>}
 	 */
@@ -94,10 +96,14 @@ const useVoiceCapture = (options) => {
 				const audioBlob = new Blob(audioChunks.current, {
 					type: "audio/webm",
 				});
-				const audioUrl = URL.createObjectURL(audioBlob);
-				setMediaBlobUrl(audioUrl);
-				if (onStop) {
-					onStop(audioBlob, audioUrl);
+
+				if (requestCancelRef.current !== true) {
+					// If recording was not cancelled, provide the audio blob & URL
+					const audioUrl = URL.createObjectURL(audioBlob);
+					setMediaBlobUrl(audioUrl);
+					if (onStop) {
+						onStop(audioBlob, audioUrl);
+					}
 				}
 				teardown();
 				audioChunks.current = [];
@@ -109,8 +115,9 @@ const useVoiceCapture = (options) => {
 			// Start recording
 			mediaRecorder.current.start();
 			setStatus("recording");
+			requestCancelRef.current = false; // Reset cancellation flag
 
-			// Hard stop after maxDurationMs
+			// Handle timeout: Hard stop after maxDurationMs
 			timeoutRef.current = setTimeout(() => stop(), maxDurationMs);
 		} catch (error) {
 			console.error("Error starting recording:", error);
@@ -125,6 +132,7 @@ const useVoiceCapture = (options) => {
 
 	/**
 	 * Stops the current audio recording if active
+	 * MARK: stop()
 	 * @returns {void}
 	 */
 	const stop = useCallback(() => {
@@ -138,17 +146,46 @@ const useVoiceCapture = (options) => {
 		}
 	}, []);
 
-	// ---------------------------------------------------------------------------
-	//  push‑to‑talk keyboard handler (space by default)
-	// ---------------------------------------------------------------------------
+	/**
+	 * Cancels the current recording without calling onStop()
+	 * MARK: cancel()
+	 * @returns {void}
+	 */
+	const cancel = useCallback(() => {
+		console.trace("useVoiceCapture.cancel() called");
+		requestCancelRef.current = true; // Set flag to indicate cancellation
+		stop(); // Stop the recording
+	}, []);
+
+	/**
+	 * Effect to handle push-to-talk key events
+	 * - Starts recording on key down if pushToTalkKey is provided and pressed
+	 * - Stops recording on key up if pushToTalkKey is provided
+	 * - Cancels recording on Escape key press if currently recording
+	 * MARK: KeyPress
+	 */
 	useEffect(() => {
 		if (!isBrowser) return;
 
 		const down = (e) => {
-			if (e.key === pushToTalkKey && status !== "recording") start();
+			if (
+				pushToTalkKey &&
+				e.key === pushToTalkKey &&
+				status !== "recording"
+			) {
+				start();
+			} else if (e.key === "Escape" && status === "recording") {
+				cancel();
+			}
 		};
 		const up = (e) => {
-			if (e.key === pushToTalkKey && status === "recording") stop();
+			if (
+				pushToTalkKey &&
+				e.key === pushToTalkKey &&
+				status === "recording"
+			) {
+				stop();
+			}
 		};
 		window.addEventListener("keydown", down);
 		window.addEventListener("keyup", up);
