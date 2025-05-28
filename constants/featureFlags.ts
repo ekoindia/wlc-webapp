@@ -80,7 +80,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		requiredFeatures: ["AI_MASTER_FLAG"],
 	},
 
-	// Feature to initiate AI Text Chatbot popup from KBar
+	// Feature to initiate AI Text Chatbot popup from KBar.
 	// It is only allowed if the AI_MASTER_FLAG feature is also enabled.
 	AI_CHATBOT_KBAR: {
 		enabled: true,
@@ -88,7 +88,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		requiredFeatures: ["AI_CHATBOT"],
 	},
 
-	// Feature to initiate AI Text Chatbot popup from KBar
+	// Feature to show AI Text Chatbot on Home or Dashboard page.
 	// It is only allowed if the AI_MASTER_FLAG feature is also enabled.
 	AI_CHATBOT_HOME: {
 		enabled: true,
@@ -97,7 +97,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		requiredFeatures: ["AI_CHATBOT"],
 	},
 
-	// Feature to enable AI Voice Chat
+	// Feature to enable AI Voice Chat.
 	// It is only allowed if the AI_MASTER_FLAG feature is also enabled.
 	AI_VOICEBOT: {
 		enabled: true,
