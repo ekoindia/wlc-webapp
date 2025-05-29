@@ -7,6 +7,15 @@ import { useEffect, useState } from "react";
 const CHAT_ASSISTANT_ENDPOINT = "/gpt/tfassistant";
 const VOICE_ASSISTANT_ENDPOINT = "/gpt/tfvoiceassistant";
 
+// Sample prompt messages for AI chat
+const SAMPLE_PROMPTS_COLLECTION = [
+	"Give a summary of my business",
+	"How was my business yesterday?",
+	"Who are my top users?",
+	"मेरे व्यवसाय का कल का हाल बताएं",
+	"मेरा व्यवसाय कैसा चल रहा है?",
+];
+
 /**
  * Custom hook for AI chat functionality
  * @param {object} options - Configuration options for the chat
@@ -32,8 +41,21 @@ const useAiChat = ({
 	const [voiceInput, setVoiceInput] = useState(null);
 	const [initialMessageProcessed, setInitialMessageProcessed] =
 		useState(false);
+	const [samplePrompts, setSamplePrompts] = useState([]);
 
 	const { generateNewToken } = useRefreshToken(); // For re-generating access-token, required by fetcher()
+
+	// Initialize samplePrompts with 3 random selection from the collection
+	useEffect(() => {
+		const copyPrompts = [...SAMPLE_PROMPTS_COLLECTION];
+		const randomPrompts = [];
+		for (let i = 0; i < 3; i++) {
+			const randomIndex = Math.floor(Math.random() * copyPrompts.length);
+			randomPrompts.push(copyPrompts[randomIndex]);
+			copyPrompts.splice(randomIndex, 1);
+		}
+		setSamplePrompts(randomPrompts);
+	}, []);
 
 	// Derived state
 	const isDisabled = busy || chatLines?.length >= maxChatLines;
@@ -286,6 +308,7 @@ const useAiChat = ({
 		isDisabled,
 		hasReachedLimit,
 		isLoggedIn,
+		samplePrompts,
 
 		// Actions
 		sendChatInput,
