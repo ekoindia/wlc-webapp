@@ -111,6 +111,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 						name: _name,
 						formlink: generateKey(
 							toKebabCase(product.label),
+							toKebabCase(provider.label),
 							_name,
 							agentPricing,
 							formRegistry
@@ -137,6 +138,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 						name: "distributor-commission",
 						formlink: generateKey(
 							toKebabCase(product.label),
+							toKebabCase(provider.label),
 							"distributor-commission",
 							distributorCommission,
 							formRegistry
@@ -169,6 +171,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 /**
  * Generates a unique key for forms and stores data in formRegistry.
  * @param {string} product - Formatted product name.
+ * @param {string} provider - Formatted provider name.
  * @param {string} formType - Type of form (agent-pricing/distributor-commission).
  * @param {object} data - Form data.
  * @param {object} formRegistry - Storage map for form data.
@@ -176,11 +179,12 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
  */
 function generateKey(
 	product: string,
+	provider: string,
 	formType: string,
 	data: any,
 	formRegistry: Record<string, any>
 ): string {
-	const key = `form-${product}-${formType}`;
+	const key = `form-${product}-${provider}-${formType}`;
 	formRegistry[key] = data;
 	return key;
 }
