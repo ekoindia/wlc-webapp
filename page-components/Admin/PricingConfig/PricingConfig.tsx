@@ -146,6 +146,7 @@ const PricingConfig = ({ pathArray }: PricingConfigProps): JSX.Element => {
 			return (
 				<PricingForm
 					agentType={firstNode.meta?.agentType}
+					pricingType={firstNode.meta?.pricingType}
 					productDetails={formData}
 				/>
 			);

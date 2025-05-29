@@ -76,6 +76,8 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 
 	const pricingTree: TreeNode[] = productList.map((product) => {
 		const productName = toKebabCase(product.label);
+		const pricingType = product?.pricingType ?? "pricing";
+		const pricingTypeLabel = capitalize(pricingType);
 
 		return {
 			type: "product",
@@ -91,7 +93,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 					type: "provider",
 					label: capitalize(provider.label, false),
 					name: providerName,
-					desc: `Set Pricing for ${provider.label} ${product.label}`,
+					desc: `Set ${pricingTypeLabel} for ${provider.label}`,
 					children: [],
 				};
 
@@ -99,25 +101,27 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 
 				// Add Agent Pricing node if agentPricing exists
 				if (agentPricing) {
+					const _name = `agent-${pricingType}`;
+					const _label = `Agent's ${pricingTypeLabel}`;
 					const agentFormNode = createNode({
 						type: "form",
 						label: `${capitalize(provider.label, false)} > ${capitalize(agentPricing.label, false)}`,
-						name: "agent-pricing",
+						name: _name,
 						formlink: generateKey(
 							toKebabCase(product.label),
-							"agent-pricing",
+							_name,
 							agentPricing,
 							formRegistry
 						),
-						meta: { agentType: AGENT_TYPE.RETAILERS },
+						meta: { agentType: AGENT_TYPE.RETAILERS, pricingType },
 					});
 
 					providerNode.children!.push(
 						createNode({
 							type: "path",
-							label: "Agent's Pricing",
-							name: toKebabCase("Agent Pricing"),
-							desc: `Set Agent's Pricing for ${provider.label}`,
+							label: _label,
+							name: toKebabCase(_label),
+							desc: `Set ${_label} for ${provider.label}`, // HERE
 							children: [agentFormNode],
 						})
 					);
@@ -135,7 +139,10 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 							distributorCommission,
 							formRegistry
 						),
-						meta: { agentType: AGENT_TYPE.DISTRIBUTOR },
+						meta: {
+							agentType: AGENT_TYPE.DISTRIBUTOR,
+							pricingType: "commission",
+						},
 					});
 
 					providerNode.children!.push(

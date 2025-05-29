@@ -1,19 +1,14 @@
 import { Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, Icon } from "components";
-import {
-	Endpoints,
-	ParamType,
-	productPricingType,
-	TransactionTypes,
-} from "constants";
-import { useSession } from "contexts/";
+import { Endpoints, ParamType, TransactionTypes } from "constants";
+import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useReducer } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
-import { formatCurrency } from "utils/numberFormat";
+import { capitalize, formatCurrency } from "utils";
 import {
 	AGENT_TYPES,
 	formatSlabs,
@@ -93,9 +88,11 @@ const FIELD_DEPENDENCIES = {
  * @param {object} props.productDetails - Pricing/Slab-related details of the product for which pricing/commission is to be set.
  * @returns {JSX.Element}
  */
-const PricingForm = ({ agentType, productDetails }) => {
+const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	const { paymentMode, slabs, categoryList, productId, validation } =
 		productDetails || {};
+
+	const pricingTypeLabel = capitalize(pricingType);
 
 	// Initialize reducer
 	const [state, dispatch] = useReducer(pricingReducer, pricingInitialState);
@@ -165,7 +162,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 			_list.push(
 				{
 					name: "operation_type",
-					label: `Set Pricing for`,
+					label: `Set ${pricingTypeLabel} for`,
 					parameter_type_id: ParamType.LIST,
 					list_elements: OPERATION_TYPE_OPTIONS,
 				},
@@ -195,7 +192,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 		if (state.paymentModeOptions?.length > 0) {
 			_list.push({
 				name: "payment_mode",
-				label: "Select Payment Mode",
+				label: "Select Mode",
 				parameter_type_id: ParamType.LIST,
 				list_elements: state.paymentModeOptions,
 				meta: {
@@ -231,14 +228,14 @@ const PricingForm = ({ agentType, productDetails }) => {
 		_list.push(
 			{
 				name: "pricing_type",
-				label: `Select ${productPricingType.DMT} Type`,
+				label: `Select ${pricingTypeLabel} Type`,
 				parameter_type_id: ParamType.LIST,
 				list_elements: state.pricingTypeList,
 				// defaultValue: DEFAULT.pricing_type,
 			},
 			{
 				name: "actual_pricing",
-				label: `Define ${productPricingType.DMT} (GST Inclusive)`,
+				label: `Define ${pricingTypeLabel} (GST Inclusive)`,
 				parameter_type_id: ParamType.NUMERIC, //ParamType.MONEY
 				helperText: helperText,
 				validations: {
@@ -263,6 +260,7 @@ const PricingForm = ({ agentType, productDetails }) => {
 		return _list;
 	}, [
 		agentType,
+		pricingType,
 		state.multiSelectLabel,
 		state.multiSelectOptions,
 		state.paymentModeOptions,
