@@ -1,7 +1,9 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import { Icon, Input, Markdown, MicInput } from "components";
+import { useSession } from "contexts";
 import { useAiChat } from "hooks";
 import { useEffect, useRef, useState } from "react";
+import { BsStars } from "react-icons/bs";
 import { RiChatAiLine } from "react-icons/ri";
 import { VscRobot } from "react-icons/vsc";
 import { WidgetBase } from ".";
@@ -32,6 +34,7 @@ const AiChatWidget = ({
 		busy,
 		isDisabled,
 		isLoggedIn,
+		samplePrompts,
 
 		sendChatInput,
 		setVoiceInput,
@@ -103,15 +106,28 @@ const AiChatWidget = ({
 					{
 						// Show AI greeting message if user's initial message is not provided
 						initialMessage ? null : (
-							<ChatBubble
-								key={0}
-								from="system"
-								msg="Hi there! 👋🏼"
-								isLast={
-									chatLines?.length || busy ? false : true
-								}
-								mt={chatLines?.length || busy ? "0" : "40px"}
-							/>
+							<>
+								<ChatBubble
+									key={0}
+									from="system"
+									msg="Hi there! 👋🏼 Ask me **anything** about your business"
+									isLast={
+										chatLines?.length || busy ? false : true
+									}
+									mt={
+										chatLines?.length || busy ? "0" : "40px"
+									}
+								/>
+								{/* Show sample prompts */}
+								{samplePrompts && !chatLines?.length ? (
+									<SamplePrompts
+										prompts={samplePrompts}
+										onPromptClick={(prompt) =>
+											sendChatInput(prompt)
+										}
+									/>
+								) : null}
+							</>
 						)
 					}
 
@@ -134,10 +150,7 @@ const AiChatWidget = ({
 				<Flex direction="row" align="center" gap="2px">
 					<MicInput
 						silenceTimeoutMs={3000}
-						// onClick={status === "recording" ? stop : start}
 						onCapture={(blob) => setVoiceInput(blob)}
-						// isRecording={status === "recording"}
-						// speech={voiceType === "speech"}
 						onStatusChange={setStatus}
 						isDisabled={isDisabled}
 						m="2px"
@@ -317,6 +330,8 @@ const TypingLoader = () => {
  * @returns {JSX.Element} The rendered avatar component
  */
 const AiAvatar = ({ size = "32px", ...rest }) => {
+	const { isAdmin } = useSession();
+
 	return (
 		<Flex
 			w={size}
@@ -329,7 +344,11 @@ const AiAvatar = ({ size = "32px", ...rest }) => {
 			justify="center"
 			{...rest}
 		>
-			<VscRobot size="100%" />
+			{isAdmin ? (
+				<img src="images/ai/eloka-favicon.png" />
+			) : (
+				<VscRobot size="100%" />
+			)}
 		</Flex>
 	);
 };
@@ -415,6 +434,64 @@ const ChatInput = ({
 			_placeholder={{ fontSize: "xs" }}
 			{...rest}
 		/>
+	);
+};
+
+/**
+ * Display sample prompts for the AI chat widget
+ * MARK: SamplePrompts
+ * @param prompts.prompts
+ * @param {Array} prompts - Array of sample prompts to display
+ * @param {Function} onPromptClick - Callback function to handle prompt click
+ * @param prompts.onPromptClick
+ * @returns {JSX.Element} - The rendered sample prompts component
+ */
+const SamplePrompts = ({ prompts, onPromptClick }) => {
+	if (!prompts || !prompts.length) return null;
+
+	return (
+		<Flex
+			direction="column"
+			my="2em"
+			gap="8px"
+			align="center"
+			opacity={0.8}
+		>
+			<Text fontWeight="bold" fontSize="sm" color="#666">
+				Try an example
+			</Text>
+			<Flex
+				direction="row"
+				align="center"
+				justify="center"
+				flexWrap="wrap"
+				gap="8px"
+			>
+				{prompts?.map((prompt, i) => (
+					<Flex
+						key={i + 1}
+						direction="row"
+						align="center"
+						gap="6px"
+						cursor="pointer"
+						border="1px dotted #ccc"
+						p="8px"
+						borderRadius="6px"
+						fontSize="xs"
+						bg="white"
+						color="#666"
+						_hover={{
+							bg: "#fbfbfb",
+							color: "primary",
+						}}
+						onClick={() => onPromptClick(prompt)}
+					>
+						<BsStars size="14px" color="#4a00e0" />
+						<Text>{prompt}</Text>
+					</Flex>
+				))}
+			</Flex>
+		</Flex>
 	);
 };
 
