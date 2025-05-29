@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { PassportForm } from "page-components/products/kyc/passport/PassportForm";
 
 /**
@@ -7,7 +7,7 @@ import { PassportForm } from "page-components/products/kyc/passport/PassportForm
 const PassportVerifyPage = (): JSX.Element => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/passport": "Passport Verification",
@@ -15,7 +15,7 @@ const PassportVerifyPage = (): JSX.Element => {
 				hideHome
 			>
 				<PassportForm />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

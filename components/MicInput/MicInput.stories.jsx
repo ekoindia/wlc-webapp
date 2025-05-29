@@ -1,9 +1,10 @@
-import BreadcrumbsWrapper from "./BreadcrumbsWrapper";
+import React from "react";
+import MicInput from "./MicInput";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-	title: "Component/BreadcrumbsWrapper",
-	component: BreadcrumbsWrapper,
+	title: "components/MicInput",
+	component: MicInput,
 
 	// More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 	// More on controls: https://storybook.js.org/docs/react/essentials/controls
@@ -46,7 +47,7 @@ export default {
 };
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template = (args) => <BreadcrumbsWrapper {...args} />;
+const Template = (args) => <MicInput {...args} />;
 
 export const Default = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args

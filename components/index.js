@@ -10,8 +10,8 @@ import { ActionButtonGroup } from "./ActionButtonGroup";
 import { Address } from "./Address";
 import { AdminViewToggleCard } from "./AdminViewToggleCard";
 import { BottomAppBar } from "./BottomAppBar";
-import { Breadcrumbs } from "./Breadcrumb";
-import { BreadcrumbsWrapper } from "./BreadcrumbsWrapper";
+import { Breadcrumb } from "./Breadcrumb";
+import { BreadcrumbWrapper } from "./BreadcrumbWrapper";
 import { Button } from "./Button";
 import { Calenders } from "./Calenders";
 import { Camera } from "./Camera";
@@ -73,8 +73,8 @@ export {
 	Address,
 	AdminViewToggleCard,
 	BottomAppBar,
-	Breadcrumbs,
-	BreadcrumbsWrapper,
+	Breadcrumb,
+	BreadcrumbWrapper,
 	Button,
 	Calenders,
 	Camera,
@@ -135,3 +135,5 @@ export { InfoTile } from "./InfoTile";
 export { InfoTileGrid } from "./InfoTileGrid";
 
 export { Markdown } from "./Markdown";
+
+export { MicInput } from "./MicInput";

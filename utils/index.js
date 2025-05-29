@@ -34,10 +34,12 @@ export { obj2queryparams } from "./queryBuilder";
 export {
 	capitalize,
 	getFirstWord,
+	getInitials,
 	limitText,
 	nullRemover,
 	numberRemover,
-	getInitials,
+	toKebabCase,
 } from "./textFormat";
+export { throttle } from "./throttle";
 export { buildUserObjectState } from "./userObjectBuilder";
 export { validateResp } from "./validateResponse";

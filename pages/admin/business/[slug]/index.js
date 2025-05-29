@@ -1,4 +1,4 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { BusinessSettingsBreadcrumbs } from "constants/BreadcrumbsData";
 import { useRouter } from "next/router";
 import { PricingForm } from "page-components/Admin";
@@ -9,19 +9,18 @@ const BusinessSettingSubpage = () => {
 
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={BusinessSettingsBreadcrumbs}
 				slug={slug}
 			>
 				<PricingForm slug={slug} />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };
 
 BusinessSettingSubpage.pageMeta = {
 	title: "Configure Business Settings",
-	isSubPage: true,
 	isFixedBottomAppBar: true,
 };
 

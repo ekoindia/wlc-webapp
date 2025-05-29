@@ -1,10 +1,10 @@
-import { BreadcrumbsWrapper, PaddingBox, PageTitle } from "components";
+import { BreadcrumbWrapper, PaddingBox, PageTitle } from "components";
 import { PanVerification } from "page-components/products/kyc/pan/PanVerification";
 
 const PanPage = (): JSX.Element => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/pan": "PAN Verification",
@@ -13,7 +13,7 @@ const PanPage = (): JSX.Element => {
 			>
 				<PageTitle title="PAN Verification" />
 				<PanVerification />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

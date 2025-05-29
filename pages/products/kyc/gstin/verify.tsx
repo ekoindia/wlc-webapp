@@ -1,10 +1,10 @@
-import { BreadcrumbsWrapper, PaddingBox } from "components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
 import { GstinVerifyForm } from "page-components/products/kyc/gstin/GstinVerifyForm";
 
 const GstinVerifyPage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbsWrapper
+			<BreadcrumbWrapper
 				breadcrumbsData={{
 					"/products/kyc": "KYC Verification Tools",
 					"/products/kyc/gstin": "GSTIN Verification",
@@ -13,7 +13,7 @@ const GstinVerifyPage = () => {
 				hideHome
 			>
 				<GstinVerifyForm />
-			</BreadcrumbsWrapper>
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };

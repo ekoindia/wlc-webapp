@@ -1,5 +1,7 @@
-import { Flex, Grid, Text } from "@chakra-ui/react";
+import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { Currency, IcoButton, Icon } from "components";
+import { useAiChatbotPopup, useFeatureFlag } from "hooks";
+import { RiChatAiLine } from "react-icons/ri";
 
 /**
  * A TopPanel page-component
@@ -40,6 +42,10 @@ const TopPanel = ({ panelDataList }) => {
 				},
 			}}
 		>
+			{/* AI Chat Bot Trigger – Ask AI */}
+			<AskAiCard />
+
+			{/* Other Panel Data Items */}
 			{panelDataList
 				?.filter(
 					(item) => item.value !== null && item.value !== undefined
@@ -136,6 +142,54 @@ const TopPanel = ({ panelDataList }) => {
 					</Flex>
 				))}
 		</Grid>
+	);
+};
+
+/**
+ * "Ask AI" card component for the top panel of the dashboard.
+ * This component displays a card/button that opens an AI chatbot when clicked.
+ */
+const AskAiCard = () => {
+	const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT_HOME");
+	const { showAiChatBot } = useAiChatbotPopup();
+
+	if (!isAiChatBotAllowed) return null;
+
+	return (
+		<Flex
+			position="relative"
+			bg="#8752a3"
+			bgGradient="linear(to left, #8e2de2, #4a00e0)"
+			color="white"
+			justify="space-between"
+			p="12px 22px"
+			border="basic"
+			borderRadius="10px"
+			mb="10px"
+			onClick={() => showAiChatBot()}
+			cursor="pointer"
+		>
+			<Flex direction="column" gap="1" align="center">
+				<Text fontSize="sm" fontWeight="bold">
+					Ask AI
+				</Text>
+				<Box flex="1" />
+				<RiChatAiLine size="1.9em" />
+				<Box flex="5" />
+				<Text
+					position="absolute"
+					bottom="-6px"
+					fontSize="8px"
+					fontWeight="500"
+					bg="accent.dark"
+					color="white"
+					p="1px 6px"
+					borderRadius="full"
+				>
+					BETA
+				</Text>
+			</Flex>
+		</Flex>
 	);
 };
 

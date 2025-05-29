@@ -1,4 +1,5 @@
 /* PLOP_INJECT_EXPORT */
+export { default as useAiChat } from "./useAiChat";
 export { default as useAiChatbotPopup } from "./useAiChatbotPopup";
 export { default as useApiFetch, useEpsV3Fetch } from "./useApiFetch";
 export { default as useAppLink } from "./useAppLink";
@@ -15,6 +16,7 @@ export { default as useGeolocation } from "./useGeolocation";
 export { default as useHotkey } from "./useHotkey";
 export { default as useHslColor } from "./useHslColor";
 export { default as useImageEditor } from "./useImageEditor";
+export { default as useIsSubPage } from "./useIsSubPage";
 export { default as useLocalStorage } from "./useLocalStorage";
 export { default as useLogin } from "./useLogin";
 export { default as useNavigationLists } from "./useNavigationLists";
@@ -26,3 +28,4 @@ export { default as useRequest } from "./useRequest";
 export { default as useSessionStorage } from "./useSessionStorage";
 export { default as useSet } from "./useSet";
 export { default as useSwipe } from "./useSwipe";
+export { default as useVoiceCapture } from "./useVoiceCapture";

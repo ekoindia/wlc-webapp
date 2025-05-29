@@ -3,6 +3,8 @@ import { useUser } from "contexts/UserContext";
 import { generateNewAccessToken } from "helpers/loginHelper";
 import { useCallback } from "react";
 
+const SESSION_EXPIRY_TOAST_ID = "session-expiry-toast";
+
 /**
  * @name useRefreshToken
  * @description Use this hook to refresh access_token from any component or hook or context
@@ -55,11 +57,14 @@ const useRefreshToken = () => {
 					"[generateNewToken] Token update failed. Logging out user..."
 				);
 				logout();
-				toast({
-					title: "Session Expired. Please login again.",
-					status: "warning",
-					duration: 2000,
-				});
+				if (!toast.isActive(SESSION_EXPIRY_TOAST_ID)) {
+					toast({
+						id: SESSION_EXPIRY_TOAST_ID,
+						title: "Session Expired. Please login again.",
+						status: "warning",
+						duration: 2000,
+					});
+				}
 			}
 
 			return status;
