@@ -93,7 +93,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	AI_CHATBOT_HOME: {
 		enabled: true,
 		forAdminOnly: true,
-		forEnv: ["development"],
 		requiredFeatures: ["AI_CHATBOT"],
 	},
 
@@ -102,7 +101,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	AI_VOICEBOT: {
 		enabled: true,
 		forAdminOnly: true,
-		forEnv: ["development"],
 		requiredFeatures: ["AI_MASTER_FLAG"],
 	},
 
