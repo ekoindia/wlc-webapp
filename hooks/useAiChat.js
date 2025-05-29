@@ -7,7 +7,9 @@ import { useEffect, useState } from "react";
 const CHAT_ASSISTANT_ENDPOINT = "/gpt/tfassistant";
 const VOICE_ASSISTANT_ENDPOINT = "/gpt/tfvoiceassistant";
 
-// Sample prompt messages for AI chat
+/**
+ * Sample prompt messages for AI chat
+ */
 const SAMPLE_PROMPTS_COLLECTION = [
 	"Give a summary of my business",
 	"How was my business yesterday?",
@@ -15,6 +17,10 @@ const SAMPLE_PROMPTS_COLLECTION = [
 	"मेरे व्यवसाय का कल का हाल बताएं",
 	"मेरा व्यवसाय कैसा चल रहा है?",
 ];
+
+// MOCK CHAT RESPONSE
+// const MOCK_CHAT_RESPONSE =
+// 	"This is a _sample message._ Here is a **table**:\n\n| Name | Age |\n|------|-----|\n| John | 30  |\n| Jane | 25  |\n\n\nAlso, here is a bulleted list with long sentences:\n- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n- Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
 
 /**
  * Custom hook for AI chat functionality
@@ -152,12 +158,14 @@ const useAiChat = ({
 		if (busy) return;
 		if (!isLoggedIn) return;
 
+		const voiceSentAt = Date.now();
 		const _voice = voiceInput;
 		setVoiceInput(null); // Reset voice input after processing
 
 		setBusy(true);
 
 		// TODO: REMOVE THIS - Only for testing
+		// MARK: DUMMY 🗣️
 		// if (process.env.NEXT_PUBLIC_ENV === "development") {
 		// 	setChatInput("");
 		// 	setTimeout(() => {
@@ -166,7 +174,7 @@ const useAiChat = ({
 		// 			{ from: "user", msg: "Your voice message goes here" },
 		// 			{
 		// 				from: "system",
-		// 				msg: "This is a _sample message._ Here is a **table**:\n\n| Name | Age |\n|------|-----|\n| John | 30  |\n| Jane | 25  |\n\n\nAlso, here is a bulleted list with long sentences:\n- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n- Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n- Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		// 				msg: MOCK_CHAT_RESPONSE,
 		// 				at: Date.now(),
 		// 			},
 		// 		]);
@@ -193,7 +201,7 @@ const useAiChat = ({
 				if (data?.reply && typeof data.reply === "string") {
 					setChatLines((prevLines) => [
 						...prevLines,
-						{ from: "user", msg: data.input },
+						{ from: "user", msg: data.input, at: voiceSentAt },
 						{ from: "system", msg: data.reply, at: Date.now() },
 					]);
 				} else {
@@ -236,6 +244,7 @@ const useAiChat = ({
 		setBusy(true);
 
 		// TODO: REMOVE THIS - Only for testing
+		// DUMMY 💬
 		// if (process.env.NEXT_PUBLIC_ENV === "development") {
 		// 	setChatInput("");
 		// 	setTimeout(() => {
@@ -243,7 +252,7 @@ const useAiChat = ({
 		// 			...chatLines,
 		// 			{
 		// 				from: "system",
-		// 				msg: "This is a _sample message._ Here is a **table**:\n\n| Name | Age |\n|------|-----|\n| John | 30  |\n| Jane | 25  |\n\n\nAlso, here is a bulleted list with long sentences:\n- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n- Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n- Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		// 				msg: MOCK_CHAT_RESPONSE,
 		// 				at: Date.now(),
 		// 			},
 		// 		]);
