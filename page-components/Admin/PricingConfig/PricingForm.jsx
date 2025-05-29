@@ -92,7 +92,7 @@ const PricingForm = ({ agentType, pricingType, productDetails }) => {
 	const { paymentMode, slabs, categoryList, productId, validation } =
 		productDetails || {};
 
-	const pricingTypeLabel = capitalize(pricingType);
+	const pricingTypeLabel = capitalize(pricingType); // e.g. "Commission" or "Pricing"
 
 	// Initialize reducer
 	const [state, dispatch] = useReducer(pricingReducer, pricingInitialState);

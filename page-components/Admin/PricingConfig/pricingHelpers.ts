@@ -76,8 +76,9 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 
 	const pricingTree: TreeNode[] = productList.map((product) => {
 		const productName = toKebabCase(product.label);
+
 		const pricingType = product?.pricingType ?? "pricing";
-		const pricingTypeLabel = capitalize(pricingType);
+		const pricingTypeLabel = capitalize(pricingType); // e.g., "Commission" or "Pricing"
 
 		return {
 			type: "product",
@@ -101,8 +102,9 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 
 				// Add Agent Pricing node if agentPricing exists
 				if (agentPricing) {
-					const _name = `agent-${pricingType}`;
-					const _label = `Agent's ${pricingTypeLabel}`;
+					// we need to handle both "pricing" and "commission" types
+					const _name = `agent-${pricingType}`; // e.g., "agent-pricing" or "agent-commission"
+					const _label = `Agent's ${pricingTypeLabel}`; // e.g., "Agent's Pricing" or "Agent's Commission"
 					const agentFormNode = createNode({
 						type: "form",
 						label: `${capitalize(provider.label, false)} > ${capitalize(agentPricing.label, false)}`,
@@ -121,7 +123,7 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
 							type: "path",
 							label: _label,
 							name: toKebabCase(_label),
-							desc: `Set ${_label} for ${provider.label}`, // HERE
+							desc: `Set ${_label} for ${provider.label}`,
 							children: [agentFormNode],
 						})
 					);
