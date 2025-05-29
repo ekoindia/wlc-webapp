@@ -2,6 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import useVoiceCapture from "hooks/useVoiceCapture";
 import { useEffect } from "react";
 import { MdOutlineMic, MdOutlineStopCircle } from "react-icons/md";
+import { useSound } from "react-sounds";
 
 // Declare the props interface
 interface MicInputProps {
@@ -33,6 +34,16 @@ const MicInput = ({
 	onStatusChange,
 	...rest
 }: MicInputProps) => {
+	const { play: startSound } = useSound("ui/item_select", {
+		volume: 0.5,
+		rate: 1.5,
+	}); // button_soft
+	const { play: submitSound } = useSound("ui/item_deselect", { volume: 0.5 });
+	const { play: cancelSound } = useSound("ui/blocked", {
+		volume: 0.5,
+		rate: 1.3,
+	});
+
 	const { start, stop, status, voiceType } = useVoiceCapture({
 		maxDurationMs,
 		maxSizeBytes,
@@ -41,8 +52,29 @@ const MicInput = ({
 			console.log("Voice capture stopped.", { blob, url });
 			onCapture(blob, url);
 		},
-		onCancel,
+		onCancel: () => {
+			console.log("Voice capture cancelled.");
+			cancelSound();
+			onCancel?.();
+		},
 	});
+
+	/**
+	 * Start the recording
+	 */
+	const _start = () => {
+		if (isDisabled) return;
+		startSound();
+		start();
+	};
+
+	/**
+	 * Stop the recording and submit the audio
+	 */
+	const _stop = () => {
+		stop();
+		submitSound();
+	};
 
 	/**
 	 * Update the status when the recording starts or stops
@@ -71,8 +103,8 @@ const MicInput = ({
 					isDisabled
 						? undefined
 						: status === "recording"
-							? stop
-							: start
+							? _stop
+							: _start
 				}
 				cursor="pointer"
 				align="center"
