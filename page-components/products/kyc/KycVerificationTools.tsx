@@ -11,16 +11,22 @@ const KycTools: {
 	url: string;
 }[] = [
 	{
+		label: "CIN Verification",
+		desc: "Verify Corporate Identification Number details including business and director information",
+		icon: "domain",
+		url: "kyc/cin",
+	},
+	{
 		label: "Driving License Verification",
 		desc: "Verify driving license details including validity, vehicle classes, and more",
 		icon: "directions-car",
 		url: "kyc/driving-license",
 	},
 	{
-		label: "Vehicle RC Verification",
-		desc: "Verify vehicle details and registration information",
-		icon: "directions-car",
-		url: "kyc/vehicle-rc",
+		label: "Employee Verification",
+		desc: "Verify employee employment details including UAN, company information and service history",
+		icon: "badge",
+		url: "kyc/employment",
 	},
 	{
 		label: "GSTIN Verification",
@@ -35,28 +41,22 @@ const KycTools: {
 		url: "kyc/pan",
 	},
 	{
-		label: "Voter ID Verification",
-		desc: "Verify voter ID details including constituency information",
-		icon: "fingerprint",
-		url: "kyc/voter-id",
-	},
-	{
 		label: "Passport Verification",
 		desc: "Verify Indian passport details using file number and date of birth",
 		icon: "book",
 		url: "kyc/passport",
 	},
 	{
-		label: "CIN Verification",
-		desc: "Verify Corporate Identification Number details including business and director information",
-		icon: "domain",
-		url: "kyc/cin",
+		label: "Vehicle RC Verification",
+		desc: "Verify vehicle details and registration information",
+		icon: "directions-car",
+		url: "kyc/vehicle-rc",
 	},
 	{
-		label: "Employee Verification",
-		desc: "Verify employee employment details including UAN, company information and service history",
-		icon: "badge",
-		url: "kyc/employment",
+		label: "Voter ID Verification",
+		desc: "Verify voter ID details including constituency information",
+		icon: "fingerprint",
+		url: "kyc/voter-id",
 	},
 ];
 

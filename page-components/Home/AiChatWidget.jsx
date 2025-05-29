@@ -1,24 +1,12 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { Icon, Input, Markdown } from "components";
-import { useSession, useUser } from "contexts";
-import { fetcher } from "helpers/apiHelper";
+import { Icon, Input, Markdown, MicInput } from "components";
+import { useSession } from "contexts";
+import { useAiChat } from "hooks";
 import { useEffect, useRef, useState } from "react";
+import { BsStars } from "react-icons/bs";
 import { RiChatAiLine } from "react-icons/ri";
 import { VscRobot } from "react-icons/vsc";
 import { WidgetBase } from ".";
-
-// const THINKING_DIALOGUES = [
-// 	"🤔 Ummm...",
-// 	"🤖 Processing...",
-// 	"🧐 Thinking...",
-// 	"🔮 Just a moment...",
-// 	"🧐 I'm on it...",
-// 	"🧐 Lost in thought...",
-// ];
-// const getRandomThinkingDialogue = () => {
-// 	const randomIndex = Math.floor(Math.random() * THINKING_DIALOGUES.length);
-// 	return THINKING_DIALOGUES[randomIndex];
-// };
 
 /**
  * A widget component for AI chatbot
@@ -37,29 +25,32 @@ const AiChatWidget = ({
 }) => {
 	console.log("[GPT] Initial message: ", initialMessage);
 
-	const { accessToken } = useSession();
-	const { isLoggedIn } = useUser();
-
+	const [status, setStatus] = useState("");
 	const scrollRef = useRef(null);
 
-	const [busy, setBusy] = useState(false);
-	const [chatLines, setChatLines] = useState([]);
-	const [inputValue, setInputValue] = useState("");
-	const [chatInput, setChatInput] = useState("");
-	const [initialMessageProcessed, setInitialMessageProcessed] =
-		useState(false);
+	const {
+		chatLines,
+		inputValue,
+		busy,
+		isDisabled,
+		isLoggedIn,
+		samplePrompts,
 
-	const MAX_CHAT_LINES = 10;
+		sendChatInput,
+		setVoiceInput,
+		clearChat,
+		setInputValue,
 
-	const isDisabled = busy || chatLines?.length >= MAX_CHAT_LINES;
-
-	// Start chat with user's initial message, if provided
-	useEffect(() => {
-		if (initialMessage && !chatLines.length && !initialMessageProcessed) {
-			setInitialMessageProcessed(true);
-			sendChatInput(initialMessage);
-		}
-	}, [initialMessage, chatLines, initialMessageProcessed]);
+		isEmpty,
+		chatState,
+	} = useAiChat({
+		initialMessage,
+		maxChatLines: 10,
+		onChatLinesChange: () => {
+			// Scroll to last chat when chatLines change
+			scrollToLastChat();
+		},
+	});
 
 	const scrollToLastChat = () => {
 		scrollRef.current?.lastElementChild?.scrollIntoView({
@@ -67,100 +58,10 @@ const AiChatWidget = ({
 		});
 	};
 
-	// Function to send the chat input to GPT
-	const sendChatInput = (value) => {
-		if (!value) return;
-		if (chatLines?.length >= MAX_CHAT_LINES) return;
-		if (typeof value !== "string") {
-			console.error("[GPT] Invalid chat input: ", value);
-			return;
-		}
-
-		setChatInput(value);
-		setChatLines([
-			...chatLines,
-			{ from: "user", msg: value, at: Date.now() },
-		]);
-		setInputValue("");
-	};
-
-	// Clear chat history
-	const clearChat = () => {
-		setChatLines([]);
-	};
-
-	// Scroll to last chat line when chatLines change
+	// Scroll to last chat line when busy state changes
 	useEffect(() => {
 		scrollToLastChat();
-	}, [chatLines, busy]);
-
-	// Fetch GPT response when chatInput changes
-	useEffect(() => {
-		if (!chatInput) return;
-		if (busy) return;
-
-		setBusy(true);
-
-		// TODO: REMOVE THIS - Only for testing
-		// if (process.env.NEXT_PUBLIC_ENV === "development") {
-		// 	setChatInput("");
-		// 	setTimeout(() => {
-		// 		setChatLines([
-		// 			...chatLines,
-		// 			{
-		// 				from: "system",
-		// 				msg: "Sorry, I didn't get that. Here is a table instead: \n\n| Name | Age |\n|------|-----|\n| John | 30  |\n| Jane | 25  |\n\n\nAlso, here is a bulleted list with long sentences:\n- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n- Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n- Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n- Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-		// 				at: Date.now(),
-		// 			},
-		// 		]);
-		// 		setBusy(false);
-		// 	}, 2000);
-		// 	return;
-		// }
-
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + "/gpt/tfassistant", {
-			body: {
-				history: chatLines,
-				message: chatInput,
-				source: "WLC",
-			},
-			token: accessToken,
-		})
-			.then((data) => {
-				console.log("[GPT] Response: ", data);
-				if (data && data.reply && typeof data.reply === "string") {
-					setChatLines([
-						...chatLines,
-						{ from: "system", msg: data.reply, at: Date.now() },
-					]);
-				} else {
-					setChatLines([
-						...chatLines,
-						{
-							from: "system",
-							msg: "Unexpected response",
-							at: Date.now(),
-						},
-					]);
-				}
-			})
-			.catch((error) => {
-				// Handle any errors that occurred during the fetch
-				console.error("[GPT] Error:", error);
-				setChatLines([
-					...chatLines,
-					{
-						from: "system",
-						msg: "Sorry, I didn't get that",
-						at: Date.now(),
-					},
-				]);
-			})
-			.finally(() => {
-				setChatInput("");
-				setBusy(false);
-			});
-	}, [chatInput, accessToken, chatLines, busy]);
+	}, [busy]);
 
 	if (!isLoggedIn) return null;
 
@@ -178,7 +79,7 @@ const AiChatWidget = ({
 			linkLabel={isPopupMode ? "Close" : "Clear"}
 			linkOnClick={isPopupMode ? onClose : clearChat}
 			linkProps={{
-				display: chatLines.length ? "block" : "none",
+				display: isPopupMode !== true && isEmpty ? "none" : "block",
 				color: "white",
 			}}
 			titleProps={{
@@ -205,15 +106,28 @@ const AiChatWidget = ({
 					{
 						// Show AI greeting message if user's initial message is not provided
 						initialMessage ? null : (
-							<ChatBubble
-								key={0}
-								from="system"
-								msg="Hi there! 👋🏼"
-								isLast={
-									chatLines?.length || busy ? false : true
-								}
-								mt={chatLines?.length || busy ? "0" : "40px"}
-							/>
+							<>
+								<ChatBubble
+									key={0}
+									from="system"
+									msg="Hi there! 👋🏼 Ask me **anything** about your business"
+									isLast={
+										chatLines?.length || busy ? false : true
+									}
+									mt={
+										chatLines?.length || busy ? "0" : "40px"
+									}
+								/>
+								{/* Show sample prompts */}
+								{samplePrompts && !chatLines?.length ? (
+									<SamplePrompts
+										prompts={samplePrompts}
+										onPromptClick={(prompt) =>
+											sendChatInput(prompt)
+										}
+									/>
+								) : null}
+							</>
 						)
 					}
 
@@ -233,21 +147,26 @@ const AiChatWidget = ({
 					}
 				</Box>
 
-				{/* Chat Text Input Field */}
-				<ChatInput
-					value={inputValue}
-					isDisabled={isDisabled}
-					state={
-						chatLines?.length >= MAX_CHAT_LINES
-							? "limit-reached"
-							: busy
-								? "busy"
-								: "ready"
-					}
-					onChange={setInputValue}
-					onSubmit={sendChatInput}
-					onRestart={clearChat}
-				/>
+				<Flex direction="row" align="center" gap="2px">
+					<MicInput
+						silenceTimeoutMs={3000}
+						onCapture={(blob) => setVoiceInput(blob)}
+						onStatusChange={setStatus}
+						isDisabled={isDisabled}
+						m="2px"
+					/>
+					{/* Chat Text Input Field */}
+					{status === "recording" ? null : (
+						<ChatInput
+							value={inputValue}
+							isDisabled={isDisabled}
+							state={chatState}
+							onChange={setInputValue}
+							onSubmit={sendChatInput}
+							onRestart={clearChat}
+						/>
+					)}
+				</Flex>
 			</Flex>
 		</WidgetBase>
 	);
@@ -411,6 +330,8 @@ const TypingLoader = () => {
  * @returns {JSX.Element} The rendered avatar component
  */
 const AiAvatar = ({ size = "32px", ...rest }) => {
+	const { isAdmin } = useSession();
+
 	return (
 		<Flex
 			w={size}
@@ -423,7 +344,11 @@ const AiAvatar = ({ size = "32px", ...rest }) => {
 			justify="center"
 			{...rest}
 		>
-			<VscRobot size="100%" />
+			{isAdmin ? (
+				<img src="images/ai/eloka-favicon.png" />
+			) : (
+				<VscRobot size="100%" />
+			)}
 		</Flex>
 	);
 };
@@ -509,6 +434,64 @@ const ChatInput = ({
 			_placeholder={{ fontSize: "xs" }}
 			{...rest}
 		/>
+	);
+};
+
+/**
+ * Display sample prompts for the AI chat widget
+ * MARK: SamplePrompts
+ * @param prompts.prompts
+ * @param {Array} prompts - Array of sample prompts to display
+ * @param {Function} onPromptClick - Callback function to handle prompt click
+ * @param prompts.onPromptClick
+ * @returns {JSX.Element} - The rendered sample prompts component
+ */
+const SamplePrompts = ({ prompts, onPromptClick }) => {
+	if (!prompts || !prompts.length) return null;
+
+	return (
+		<Flex
+			direction="column"
+			my="2em"
+			gap="8px"
+			align="center"
+			opacity={0.8}
+		>
+			<Text fontWeight="bold" fontSize="sm" color="#666">
+				Try an example
+			</Text>
+			<Flex
+				direction="row"
+				align="center"
+				justify="center"
+				flexWrap="wrap"
+				gap="8px"
+			>
+				{prompts?.map((prompt, i) => (
+					<Flex
+						key={i + 1}
+						direction="row"
+						align="center"
+						gap="6px"
+						cursor="pointer"
+						border="1px dotted #ccc"
+						p="8px"
+						borderRadius="6px"
+						fontSize="xs"
+						bg="white"
+						color="#666"
+						_hover={{
+							bg: "#fbfbfb",
+							color: "primary",
+						}}
+						onClick={() => onPromptClick(prompt)}
+					>
+						<BsStars size="14px" color="#4a00e0" />
+						<Text>{prompt}</Text>
+					</Flex>
+				))}
+			</Flex>
+		</Flex>
 	);
 };
 

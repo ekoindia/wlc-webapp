@@ -63,21 +63,72 @@ const TopProviders = ({ children }) => {
 	);
 };
 
+/**
+ * Common Context providers used in Eloka for rendering hooks.
+ * It does not include UserProvider, so it can be used for both logged-in and logged-out users.
+ * @param {ReactElement} children - The child components to render within the providers
+ * @returns {JSX.Element} - The rendered component wrapped with necessary providers
+ */
 const CommonHooksProviders = ({ children }) => {
 	return (
 		<MemoryRouterProvider>
 			<AppSourceProvider>
 				<OrgDetailProvider initialData={MockOrg}>
-					<UserProvider>
-						<PubSubProvider>{children}</PubSubProvider>
-					</UserProvider>
+					<PubSubProvider>{children}</PubSubProvider>
 				</OrgDetailProvider>
 			</AppSourceProvider>
 		</MemoryRouterProvider>
 	);
 };
 
-// Add in any providers here if necessary:
+/**
+ * Common Context providers, along with the UserProvider which simulates a logged-out user.
+ * This is used for rendering hooks that do not require a logged-in user.
+ * @param {ReactElement} children - The child components to render within the providers
+ * @returns {JSX.Element} - The rendered component wrapped with necessary providers
+ */
+const LoggedOutUserHookProviders = ({ children }) => {
+	return (
+		<CommonHooksProviders>
+			<UserProvider>{children}</UserProvider>
+		</CommonHooksProviders>
+	);
+};
+
+/**
+ * Common Context providers, along with the UserProvider which simulates a logged-in user.
+ * This is used for rendering hooks that require a logged-in user.
+ * @param {ReactElement} children - The child components to render within the providers
+ * @returns {JSX.Element} - The rendered component wrapped with necessary providers
+ */
+const LoggedInUserHookProviders = ({ children }) => {
+	return (
+		<CommonHooksProviders>
+			<UserProvider userMockData={MockUser}>{children}</UserProvider>
+		</CommonHooksProviders>
+	);
+};
+
+/**
+ * Common Context providers, along with the UserProvider which simulates an admin user.
+ * This is used for rendering hooks that require an admin user.
+ * @param {ReactElement} children - The child components to render within the providers
+ * @returns {JSX.Element} - The rendered component wrapped with necessary providers
+ */
+const AdminUserHookProviders = ({ children }) => {
+	return (
+		<CommonHooksProviders>
+			<UserProvider userMockData={MockAdminUser}>{children}</UserProvider>
+		</CommonHooksProviders>
+	);
+};
+
+/**
+ * Common Context providers used in Eloka for rendering components.
+ * It includes all necessary providers except UserProvider, so it can be used for both logged-in and logged-out users.
+ * @param {ReactElement} children - The child components to render within the providers
+ * @returns {JSX.Element} - The rendered component wrapped with necessary providers
+ */
 const CommonProviders = ({ children }) => {
 	return (
 		<KBarLazyProvider load={false}>
@@ -110,6 +161,12 @@ const CommonProviders = ({ children }) => {
 	);
 };
 
+/**
+ * Common Context providers, along with the UserProvider which simulates a logged-out user.
+ * This is used for rendering components that do not require a logged-in user.
+ * @param {ReactElement} children - The child components to render within the providers
+ * @returns {JSX.Element} - The rendered component wrapped with necessary providers
+ */
 const LoggedOutProviders = ({ children }) => {
 	return (
 		<TopProviders>
@@ -120,6 +177,12 @@ const LoggedOutProviders = ({ children }) => {
 	);
 };
 
+/**
+ * Common Context providers, along with the UserProvider which simulates a logged-in user.
+ * This is used for rendering components that require a logged-in user.
+ * @param {ReactElement} children - The child components to render within the providers
+ * @returns {JSX.Element} - The rendered component wrapped with necessary providers
+ */
 const LoggedInProviders = ({ children }) => {
 	return (
 		<TopProviders>
@@ -130,6 +193,12 @@ const LoggedInProviders = ({ children }) => {
 	);
 };
 
+/**
+ * Common Context providers, along with the UserProvider which simulates an admin user.
+ * This is used for rendering components that require an admin user.
+ * @param {ReactElement} children - The child components to render within the providers
+ * @returns {JSX.Element} - The rendered component wrapped with necessary providers
+ */
 const AdminProviders = ({ children }) => {
 	return (
 		<TopProviders>
@@ -141,7 +210,7 @@ const AdminProviders = ({ children }) => {
 };
 
 /**
- * Default render wrapper function which wraps the component with necessary providers
+ * Default render wrapper function which wraps the component only with necessary Context providers.
  * @param {ReactElement} ui - The component to render
  * @param {object} options - Additional options for rendering
  * @returns {RenderResult} - The rendered component
@@ -177,13 +246,25 @@ const adminRender = (ui, options = {}) =>
 	defaultRender(ui, { wrapper: AdminProviders, ...options });
 
 /**
- *Default render hook wrapper function which wraps the component with necessary providers
+ *Default render hook wrapper function which wraps the component with necessary providers simulating a logged-in user.
  * @param {Function} hook - The hook to render
  * @param {object} options - Additional options for rendering
  * @returns {RenderHookResult} - The rendered hook
  */
 const renderHook = (hook, options = {}) =>
-	defaultRenderHook(hook, { wrapper: CommonHooksProviders, ...options });
+	defaultRenderHook(hook, { wrapper: LoggedInUserHookProviders, ...options });
+
+const renderLoggedOutHook = (hook, options = {}) =>
+	defaultRenderHook(hook, {
+		wrapper: LoggedOutUserHookProviders,
+		...options,
+	});
+
+const renderAdminHook = (hook, options = {}) =>
+	defaultRenderHook(hook, {
+		wrapper: AdminUserHookProviders,
+		...options,
+	});
 
 // Re-export everything
 export * from "@testing-library/dom";
@@ -195,6 +276,8 @@ export {
 	mockRouter,
 	pageRender,
 	render,
+	renderAdminHook,
 	renderHook,
+	renderLoggedOutHook,
 	userEvent,
 };
