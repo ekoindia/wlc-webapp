@@ -49,10 +49,13 @@ const MicInput = ({
 		maxSizeBytes,
 		silenceTimeoutMs,
 		onStop: (blob, url) => {
-			console.log("Voice capture stopped.", { blob, url });
+			// Voice capture finished successfully
+			submitSound();
 			onCapture(blob, url);
+			console.log("Voice capture finished:", { blob, url });
 		},
 		onCancel: () => {
+			// Voice capture was cancelled
 			console.log("Voice capture cancelled.");
 			cancelSound();
 			onCancel?.();
@@ -60,20 +63,12 @@ const MicInput = ({
 	});
 
 	/**
-	 * Start the recording
+	 * Start the recording with an audio cue
 	 */
 	const _start = () => {
 		if (isDisabled) return;
 		startSound();
 		start();
-	};
-
-	/**
-	 * Stop the recording and submit the audio
-	 */
-	const _stop = () => {
-		stop();
-		submitSound();
 	};
 
 	/**
@@ -86,6 +81,7 @@ const MicInput = ({
 	const isRecording = status === "recording";
 	const speech = voiceType === "speech";
 
+	// MARK: JSX
 	return (
 		<Flex
 			direction="row"
@@ -95,6 +91,7 @@ const MicInput = ({
 			{...rest}
 		>
 			<Flex
+				aria-label={isRecording ? "Stop Recording" : "Start Recording"}
 				width="var(--input-height, 3rem)"
 				height="var(--input-height, 3rem)"
 				m="2px"
@@ -103,7 +100,7 @@ const MicInput = ({
 					isDisabled
 						? undefined
 						: status === "recording"
-							? _stop
+							? stop
 							: _start
 				}
 				cursor="pointer"
@@ -113,6 +110,15 @@ const MicInput = ({
 				bg={isRecording ? (speech ? "#FF8A7D" : "#FFB8B1") : "white"}
 				boxShadow="md"
 				transition="background 0.3s ease"
+				overflow="hidden"
+				tabIndex={0}
+				_focus={{
+					boxShadow: "0 0 0 2px #3182ce",
+					outline: "none",
+				}}
+				_active={{
+					bg: "#E2E8F0",
+				}}
 			>
 				{isRecording ? (
 					<MdOutlineStopCircle size="20px" />
