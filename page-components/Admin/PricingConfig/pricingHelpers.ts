@@ -173,8 +173,8 @@ export function generatePricingTrees(productList: any[]): PricingTreeResult {
  * @param {string} product - Formatted product name.
  * @param {string} provider - Formatted provider name.
  * @param {string} formType - Type of form (agent-pricing/distributor-commission).
- * @param {object} data - Form data.
- * @param {object} formRegistry - Storage map for form data.
+ * @param {any} data - Form data.
+ * @param {Record<string, any>} formRegistry - Storage map for form data.
  * @returns {string} Generated key.
  */
 function generateKey(
