@@ -49,10 +49,13 @@ const MicInput = ({
 		maxSizeBytes,
 		silenceTimeoutMs,
 		onStop: (blob, url) => {
-			console.log("Voice capture stopped.", { blob, url });
+			// Voice capture finished successfully
+			submitSound();
 			onCapture(blob, url);
+			console.log("Voice capture finished:", { blob, url });
 		},
 		onCancel: () => {
+			// Voice capture was cancelled
 			console.log("Voice capture cancelled.");
 			cancelSound();
 			onCancel?.();
@@ -60,20 +63,12 @@ const MicInput = ({
 	});
 
 	/**
-	 * Start the recording
+	 * Start the recording with an audio cue
 	 */
 	const _start = () => {
 		if (isDisabled) return;
 		startSound();
 		start();
-	};
-
-	/**
-	 * Stop the recording and submit the audio
-	 */
-	const _stop = () => {
-		stop();
-		submitSound();
 	};
 
 	/**
@@ -103,7 +98,7 @@ const MicInput = ({
 					isDisabled
 						? undefined
 						: status === "recording"
-							? _stop
+							? stop
 							: _start
 				}
 				cursor="pointer"
