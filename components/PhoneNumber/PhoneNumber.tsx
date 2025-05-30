@@ -57,7 +57,7 @@ const PhoneNumber = ({
 	const formattedNumber = formatPhoneNumber(number, format, hidePrefix);
 	const telLink = generateTelLink(number, countryCode);
 
-	return viewOnly ? (
+	return viewOnly || !telLink ? (
 		<Text display="inline" color="inherit" {...rest}>
 			{formattedNumber}
 		</Text>
