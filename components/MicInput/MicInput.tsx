@@ -81,6 +81,7 @@ const MicInput = ({
 	const isRecording = status === "recording";
 	const speech = voiceType === "speech";
 
+	// MARK: JSX
 	return (
 		<Flex
 			direction="row"
@@ -90,6 +91,7 @@ const MicInput = ({
 			{...rest}
 		>
 			<Flex
+				aria-label={isRecording ? "Stop Recording" : "Start Recording"}
 				width="var(--input-height, 3rem)"
 				height="var(--input-height, 3rem)"
 				m="2px"
@@ -108,6 +110,15 @@ const MicInput = ({
 				bg={isRecording ? (speech ? "#FF8A7D" : "#FFB8B1") : "white"}
 				boxShadow="md"
 				transition="background 0.3s ease"
+				overflow="hidden"
+				tabIndex={0}
+				_focus={{
+					boxShadow: "0 0 0 2px #3182ce",
+					outline: "none",
+				}}
+				_active={{
+					bg: "#E2E8F0",
+				}}
 			>
 				{isRecording ? (
 					<MdOutlineStopCircle size="20px" />
