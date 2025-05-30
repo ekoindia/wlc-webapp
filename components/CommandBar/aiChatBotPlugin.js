@@ -1,25 +1,21 @@
-import { Priority } from "kbar";
 import { RiChatAiLine } from "react-icons/ri";
 import { getKBarAction } from ".";
 
 /**
- * KBar plugin to generate a KBar action for opening AI Chatbot with the given query.
+ * KBar plugin to generate a KBar action for opening AI Chatbot popup widget with the given query.
  * @param {object} props
  * @param {string} props.queryValue - The query value to be used in the action.
  * @param {Function} props.showAiChatBot - Function to show the AI Chatbot.
  * @returns {Array} - An array of KBar actions.
  */
 export const getAiChatBotAction = ({ queryValue, showAiChatBot }) => {
-	if (!(queryValue?.length > 3)) {
-		return [];
-	}
-
 	return [
 		getKBarAction({
 			id: "aiChatBot/open",
 			name: "Ask AI",
-			subtitle: `Ask anything about Eloka in your language...`,
+			subtitle: `Ask anything about your business in any language...`,
 			keywords: queryValue,
+			// shortcut: ["$mod+a"],
 			IconComp: (
 				<>
 					<svg width="0" height="0">
@@ -40,9 +36,9 @@ export const getAiChatBotAction = ({ queryValue, showAiChatBot }) => {
 					/>
 				</>
 			),
-			priority: queryValue ? -888 : Priority.HIGH,
+			priority: queryValue ? -888 : -2222,
 			perform: () => {
-				showAiChatBot(queryValue);
+				showAiChatBot(queryValue?.length > 3 ? queryValue : "");
 			},
 		}),
 	];

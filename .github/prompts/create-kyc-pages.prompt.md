@@ -1,3 +1,8 @@
+---
+mode: 'agent'
+tools: ['codebase','file:KycVerificationTools.tsx']
+description: 'Generate a new React page for a KYC API integration'
+---
 Your goal is to generate new pages with forms to integrate a KYC API.
 
 Ask for the API documentation if not provided.
@@ -48,7 +53,7 @@ Ask for the API documentation if not provided.
 	- Example Import: `import { ResponseSection, ResponseToolbar } from 'page-components/products/common';`
 - Place any new reusable logic/UI in `page-components/products/common/` for future use.
 - For all page components, wrap the page contents inside a `PaddingBox` component.
-- For sub-pages, use the `BreadcrumbsWrapper` component for navigation (inside the `PaddingBox` component)
+- For sub-pages, use the `BreadcrumbWrapper` component for navigation (inside the `PaddingBox` component)
 - Before using any internal component, verify if it actually exists.
 
 ### 5. Coding & Style Guidelines

@@ -41,11 +41,10 @@ Follow these guidelines to help maintain a clean, traceable commit history and f
 ```
 feat: add wallet top-up notification system
 
-Implement real-time notifications for when agents successfully complete
-wallet top-up operations. This improves user experience by providing
-immediate feedback on transaction status.
-
-Refs: #1234
+- Implement real-time notifications for when agents successfully
+  complete wallet top-up operations.
+- This improves user experience by providing immediate feedback on
+  transaction status.
 ```
 
 
@@ -68,7 +67,7 @@ Refs: #1234
 ## For Coding Agents
 - Always use a valid prefix
 - Keep summary concise and imperative
-- Use body/footer only if needed
+- Add body/footer only if needed
 - Be extremely detailed with the file changes and the reason for the change.
 
 

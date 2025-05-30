@@ -135,3 +135,5 @@ export { InfoTile } from "./InfoTile";
 export { InfoTileGrid } from "./InfoTileGrid";
 
 export { Markdown } from "./Markdown";
+
+export { MicInput } from "./MicInput";

@@ -1,5 +1,5 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import { Dropzone, Input, Select } from "components";
+import { Dropzone, Input, Markdown, MicInput, Select } from "components";
 import { ParamType } from "constants";
 import { useNotification } from "contexts";
 import {
@@ -11,8 +11,6 @@ import {
 } from "hooks";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { Value } from "tf-components";
 
 /**
@@ -600,9 +598,9 @@ const MarkdownTest = () => {
 
 	// const markdown2 = `A simple markdown with **bold** and *italic* text.`;
 
-	const markdown3 = `| Tables        | Are           |\n
-	| ------------- | ------------- |
-	| col 3 is      | right-aligned |`;
+	const markdown3 = `| Tables        | Are           |
+| ------------- | ------------- |
+| col 3 is      | right-aligned |`;
 
 	return (
 		<Flex
@@ -612,9 +610,7 @@ const MarkdownTest = () => {
 				},
 			}}
 		>
-			<Markdown remarkPlugins={[remarkGfm]} className="markdown-body">
-				{markdown3}
-			</Markdown>
+			<Markdown>{markdown3}</Markdown>
 		</Flex>
 	);
 };
@@ -723,6 +719,43 @@ const LogoutPageTest = () => {
 	);
 };
 
+/**
+ * Test the useVoiceCapture hook
+ * MARK: Voice
+ */
+const VoiceCaptureTest = () => {
+	// Test the voice capture functionality
+	const [status, setStatus] = useState("");
+	const [mediaBlobUrl, setMediaBlobUrl] = useState("");
+
+	return (
+		<Flex direction="column" gap={4}>
+			<MicInput
+				silenceTimeoutMs={4000}
+				onCapture={(blob, url) => {
+					setMediaBlobUrl(url);
+					console.log("Voice capture stopped. Blob URL: ", blob, url);
+				}}
+				onStatusChange={setStatus}
+				mb="1em"
+			/>
+
+			<Text>Status: {status}</Text>
+			{/* <Text>Volume: {volume}</Text> */}
+			{/* <Text>Voice Type: {voiceType}</Text> */}
+			{/* <Text>Total Speech Time: {totalSpeechTime} ms</Text> */}
+			<Text>Media Blob URL: {mediaBlobUrl}</Text>
+
+			{/* Add media component to play voice after capturing */}
+			{mediaBlobUrl ? (
+				<audio controls src={mediaBlobUrl}>
+					Your browser does not support the audio element.
+				</audio>
+			) : null}
+		</Flex>
+	);
+};
+
 // List of test components
 // MARK: List of Tests
 const TestComponents = [
@@ -769,6 +802,10 @@ const TestComponents = [
 	{
 		title: "Logout Page Test",
 		component: LogoutPageTest,
+	},
+	{
+		title: "Voice Capture Test",
+		component: VoiceCaptureTest,
 	},
 ];
 

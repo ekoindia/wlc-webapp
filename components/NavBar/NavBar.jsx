@@ -83,23 +83,26 @@ const NavContent = () => {
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	const GlobalSearch = dynamic(() => import("../GlobalSearch/GlobalSearch"), {
-		ssr: false,
-		loading: () => (
-			<Box
-				ml={1}
-				w={{
-					base: "auto",
-					md: "280px",
-					lg: "400px",
-					xl: "500px",
-				}}
-				h="36px"
-				radius={6}
-				bg="shade"
-			/>
-		),
-	});
+	const GlobalSearch = dynamic(
+		() => import("components/GlobalSearch/GlobalSearch"),
+		{
+			ssr: false,
+			loading: () => (
+				<Box
+					ml={1}
+					w={{
+						base: "auto",
+						md: "280px",
+						lg: "400px",
+						xl: "500px",
+					}}
+					h="36px"
+					radius={6}
+					bg="shade"
+				/>
+			),
+		}
+	);
 
 	return (
 		<HStack

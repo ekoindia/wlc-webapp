@@ -19,6 +19,7 @@ type IcoButtonProps = {
 
 /**
  * A IcoButton component to show Icons
+ * TODO: Shadow, default theme, active (pressed) state, hover state, disabled state
  * @param {IcoButtonProps} props - The props of the component
  * @param {IconNameType} props.iconName - The name of the icon to display.
  * @param {string} [props.size] - The size of the button. Can be "lg", "md", "sm", or a custom string.
