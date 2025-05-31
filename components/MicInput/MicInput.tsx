@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import useVoiceCapture from "hooks/useVoiceCapture";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineMic, MdOutlineStopCircle } from "react-icons/md";
 import { useSound } from "react-sounds";
 
@@ -44,6 +44,8 @@ const MicInput = ({
 		rate: 1.3,
 	});
 
+	const [recordingTime, setRecordingTime] = useState(0);
+
 	const { start, stop, status, voiceType } = useVoiceCapture({
 		maxDurationMs,
 		maxSizeBytes,
@@ -53,13 +55,16 @@ const MicInput = ({
 			submitSound();
 			onCapture(blob, url);
 			console.log("Voice capture finished:", { blob, url });
+			setRecordingTime(0);
 		},
 		onCancel: () => {
 			// Voice capture was cancelled
 			console.log("Voice capture cancelled.");
 			cancelSound();
 			onCancel?.();
+			setRecordingTime(0);
 		},
+		onRecordingTimeUpdate: setRecordingTime,
 	});
 
 	/**
@@ -94,8 +99,8 @@ const MicInput = ({
 				aria-label={isRecording ? "Stop Recording" : "Start Recording"}
 				width="var(--input-height, 3rem)"
 				height="var(--input-height, 3rem)"
-				m="2px"
-				ml="6px"
+				// m="2px"
+				// ml="6px"
 				onClick={
 					isDisabled
 						? undefined
@@ -131,8 +136,7 @@ const MicInput = ({
 				boxSizing="border-box"
 				// transform={isRecording && speech ? "scaleX(1)" : "scaleX(0)"}
 				// transformOrigin={"left"}
-				width={isRecording ? "32px" : "0px"}
-				pl="6px"
+				width={isRecording ? "38px" : "0px"}
 				overflow="hidden"
 				transition="width 0.2s ease"
 			>
@@ -150,7 +154,8 @@ const MicInput = ({
 					align="center"
 					// justify="space-between"
 					gap="2px"
-					w="32px"
+					pl="8px"
+					w="38px"
 					h={isRecording && speech ? "25px" : "14px"}
 					bg="transparent"
 					transition="height 0.2s ease-out"
@@ -177,9 +182,32 @@ const MicInput = ({
 				</Flex>
 			</Flex>
 
-			{/* <Box ml={2}>{speech ? "Speaking..." : "Idle"}</Box> */}
+			{isRecording ? (
+				<Box ml={2} fontSize="sm" color="gray.500">
+					{formatMilliseconds(recordingTime)}
+				</Box>
+			) : null}
 		</Flex>
 	);
+};
+
+/**
+ * Helper function to format milliseconds into MM:SS format
+ * @param {number} ms - The time in milliseconds to format
+ * @returns {string} The formatted time string in MM:SS format
+ */
+const formatMilliseconds = (ms) => {
+	if (typeof ms !== "number" || isNaN(ms) || ms < 0) {
+		return "";
+	}
+
+	const minutes = Math.floor(ms / 60000);
+	const seconds = Math.floor((ms % 60000) / 1000);
+
+	const paddedMinutes = minutes.toString().padStart(2, "0");
+	const paddedSeconds = seconds.toString().padStart(2, "0");
+
+	return `${paddedMinutes}:${paddedSeconds}`;
 };
 
 export default MicInput;

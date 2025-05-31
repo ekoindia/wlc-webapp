@@ -3,13 +3,17 @@ import { useCallback, useEffect, useRef, useState } from "react";
 /**
  * Custom hook for voice recording functionality
  * @param {object} options - Options for the voice capture
- * @param {Function} options.onStop - Callback function to be called when recording stops. It receives the recorded audio URL as an argument.
- * @param {Function} [options.onCancel] - Callback function to be called when recording is cancelled. It receives no arguments.
  * @param {number} [options.maxDurationMs] - Maximum duration for recording in milliseconds (defaul: 30000 ms)
  * @param {number} [options.maxSizeBytes] - Maximum size for recording in bytes (default: 25 * 1024 * 1024 bytes or 25 MB)
  * @param {number} [options.silenceTimeoutMs] - Timeout for silence detection in milliseconds (default: 0 or no timeout). It stops recording if no speech is detected for this duration.
  * @param {string} [options.pushToTalkKey] - Key to trigger push-to-talk functionality (for example, " " for spacebar). If provided, recording starts on key down and stops on key up.
 //  * @param {number} [options.vadAggressiveness] - Voice Activity Detection (VAD) aggressiveness (0–3, default: 2)
+ * @param {Function} options.onStop - Callback function to be called when recording stops. It receives the following arguments:
+ *   - `audioBlob`: Blob of the recorded audio
+ *   - `audioUrl`: URL of the recorded audio
+ *   - `recordingTimeMs`: Total recording time in milliseconds
+ * @param {Function} [options.onCancel] - Callback function to be called when recording is cancelled. It receives no arguments.
+ * @param {Function} [options.onRecordingTimeUpdate] - Callback function to be called every second with the current recording time in milliseconds.
  * @returns {object} Object containing recording state and control functions
  * @returns {string} .status - Current recording state ("recording", "idle", or "unsupported")
  * @returns {Function} .start - Function to start audio recording
@@ -17,13 +21,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
  */
 const useVoiceCapture = (options) => {
 	const {
-		onStop,
-		onCancel,
 		maxDurationMs = 30000, // Default max duration is 30 seconds
 		maxSizeBytes = 25 * 1024 * 1024, // Default maximum size is 25 MB
 		silenceTimeoutMs = 0, // Default silence timeout is 0 ms (no timeout)
 		pushToTalkKey, // Key to trigger push-to-talk (for example, " " for spacebar)
 		// vadAggressiveness = 2, // WebRTC‑VAD aggressiveness (0–3). Default is 2.
+		onStop,
+		onCancel,
+		onRecordingTimeUpdate,
 	} = options;
 
 	// ---------------------------------------------------------------------------
@@ -45,6 +50,8 @@ const useVoiceCapture = (options) => {
 	const hasSpeechStartedRef = useRef(false); // Flag to track if speech has started
 	const totalSpeechTimeRef = useRef(0); // Total speech time in milliseconds
 	const requestCancelRef = useRef(false); // Flag to track if recording should be cancelled
+	const recordingStartTimeRef = useRef(0); // Timestamp when recording started
+	const secondTickTimerRef = useRef(null); // Timer update the recording time every second
 
 	// Timer references
 	const timeoutRef = useRef(null); // For auto-stop on timeout
@@ -70,6 +77,7 @@ const useVoiceCapture = (options) => {
 			mediaRecorder.current = new MediaRecorder(stream);
 
 			// Event handler for when audio data is available
+			// MARK: – onData
 			mediaRecorder.current.ondataavailable = (event) => {
 				if (hasSpeechStartedRef.current !== true) {
 					// Speech has not been detected yet. Skip silence chunks.
@@ -94,6 +102,7 @@ const useVoiceCapture = (options) => {
 			};
 
 			// Event handler for when recording stops
+			// MARK:  – onStop
 			mediaRecorder.current.onstop = () => {
 				const audioBlob = new Blob(audioChunks.current, {
 					type: "audio/webm",
@@ -107,7 +116,11 @@ const useVoiceCapture = (options) => {
 					// If recording was not cancelled, provide the audio blob & URL
 					const audioUrl = URL.createObjectURL(audioBlob);
 					setMediaBlobUrl(audioUrl);
-					onStop?.(audioBlob, audioUrl);
+					onStop?.(
+						audioBlob,
+						audioUrl,
+						Date.now() - recordingStartTimeRef.current
+					);
 				}
 				teardown();
 				audioChunks.current = [];
@@ -118,11 +131,21 @@ const useVoiceCapture = (options) => {
 
 			// Start recording
 			mediaRecorder.current.start();
+			recordingStartTimeRef.current = Date.now();
 			requestCancelRef.current = false; // Reset cancellation flag
 			setStatus("recording");
 
 			// Handle timeout: Hard stop after maxDurationMs
 			timeoutRef.current = setTimeout(() => stop(), maxDurationMs);
+
+			// Handle timer every second of recording to update the recording time
+			if (onRecordingTimeUpdate) {
+				secondTickTimerRef.current = setInterval(() => {
+					onRecordingTimeUpdate(
+						Date.now() - recordingStartTimeRef.current
+					);
+				}, 1000);
+			}
 		} catch (error) {
 			console.error("Error starting recording:", error);
 			teardown();
@@ -178,8 +201,12 @@ const useVoiceCapture = (options) => {
 				status !== "recording"
 			) {
 				start();
+				e.stopPropagation();
+				e.preventDefault();
 			} else if (e.key === "Escape" && status === "recording") {
 				cancel();
+				e.stopPropagation();
+				e.preventDefault();
 			}
 		};
 		const up = (e) => {
@@ -189,6 +216,8 @@ const useVoiceCapture = (options) => {
 				status === "recording"
 			) {
 				stop();
+				e.stopPropagation();
+				e.preventDefault();
 			}
 		};
 		window.addEventListener("keydown", down);
@@ -332,6 +361,11 @@ const useVoiceCapture = (options) => {
 			audioCtxRef.current = null;
 		}
 		vadNodeRef.current = null;
+
+		if (secondTickTimerRef.current) {
+			clearInterval(secondTickTimerRef.current);
+			secondTickTimerRef.current = null;
+		}
 
 		totalSizeRef.current = 0;
 		lastSpeechRef.current = 0;
