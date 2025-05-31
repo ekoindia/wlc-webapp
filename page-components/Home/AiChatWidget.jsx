@@ -15,6 +15,7 @@ import { WidgetBase } from ".";
  * @param {string} [props.initialMessage] - The initial user message to start the conversation with AI
  * @param {boolean} [props.isPopupMode] - Flag to indicate if the widget is in popup mode (default: false)
  * @param {Function} [props.onClose] - Callback function to handle widget close event (in Popup mode)
+ * @param {Function} [props.setAllowCloseOnEscape] - Function to set whether the widget can be closed with the Escape key
  * @returns {JSX.Element} - The rendered widget component
  */
 const AiChatWidget = ({
@@ -22,6 +23,7 @@ const AiChatWidget = ({
 	initialMessage,
 	isPopupMode = false,
 	onClose,
+	setAllowCloseOnEscape,
 }) => {
 	console.log("[GPT] Initial message: ", initialMessage);
 
@@ -62,6 +64,14 @@ const AiChatWidget = ({
 	useEffect(() => {
 		scrollToLastChat();
 	}, [busy]);
+
+	// Set allowCloseOnEscape to false when recording audio
+	// so that Esc key can be used to stop recording
+	useEffect(() => {
+		if (setAllowCloseOnEscape) {
+			setAllowCloseOnEscape(status !== "recording");
+		}
+	}, [status, setAllowCloseOnEscape]);
 
 	if (!isLoggedIn) return null;
 
@@ -147,13 +157,18 @@ const AiChatWidget = ({
 					}
 				</Box>
 
-				<Flex direction="row" align="center" gap="2px">
+				<Flex
+					direction="row"
+					align="center"
+					gap="4px"
+					p="4px 0 4px 6px"
+				>
 					<MicInput
 						silenceTimeoutMs={3000}
 						onCapture={(blob) => setVoiceInput(blob)}
 						onStatusChange={setStatus}
 						isDisabled={isDisabled}
-						m="2px"
+						// m="2px"
 					/>
 					{/* Chat Text Input Field */}
 					{status === "recording" ? null : (
@@ -420,8 +435,9 @@ const ChatInput = ({
 				)
 			}
 			maxLength={100} //will work when type is text
-			m="2px"
+			// m="2px"
 			w="calc(100% - 4px)"
+			borderRadius="full"
 			value={value}
 			disabled={isDisabled}
 			autoComplete="off"
