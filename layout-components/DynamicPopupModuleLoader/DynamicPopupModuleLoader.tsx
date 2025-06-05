@@ -406,11 +406,10 @@ const Dialog = ({
 	isBackgroundModule,
 	onPopupClose,
 }) => {
-	console.log("DynamicPopupModuleLoader: Dialog 1: " + module);
-
 	// const { isOpen, onOpen, onClose } = useDisclosure();
 	const [isHidden, setIsHidden] = useState(false);
 	const [result, setResult] = useState<any>(null); // The result returned by the module
+	const [allowCloseOnEscape, setAllowCloseOnEscape] = useState(true);
 
 	// Open the modal popup when the component is mounted
 	// useEffect(() => {
@@ -430,11 +429,11 @@ const Dialog = ({
 		hideCloseIcon,
 	} = DefaultOptions[module] || {};
 
+	console.log("[DynamicPopupModuleLoader] Dialog: ", { module, Component });
+
 	if (!Component) {
 		return null;
 	}
-
-	console.log("DynamicPopupModuleLoader: Dialog 2", module, Component);
 
 	// Check if the popup style is a drawer...
 	if (popupStyle === "drawer") {
@@ -442,6 +441,7 @@ const Dialog = ({
 			<Drawer
 				isOpen={true}
 				placement="right"
+				closeOnEsc={allowCloseOnEscape}
 				onClose={() => onPopupClose(index, module, result || {})}
 				{...dialogStyles}
 			>
@@ -459,6 +459,7 @@ const Dialog = ({
 							onClose={(resp) =>
 								onPopupClose(index, module, resp || result)
 							}
+							setAllowCloseOnEscape={setAllowCloseOnEscape}
 							onResult={setResult}
 							onHide={() => setIsHidden(true)}
 							onShow={() => setIsHidden(false)}
@@ -473,6 +474,7 @@ const Dialog = ({
 	return (
 		<Modal
 			isOpen={true}
+			closeOnEsc={allowCloseOnEscape}
 			onClose={() => onPopupClose(index, module, result || {})}
 			{...dialogStyles}
 		>
@@ -498,6 +500,7 @@ const Dialog = ({
 			>
 				<Component
 					{...{ ...props, ...options }}
+					setAllowCloseOnEscape={setAllowCloseOnEscape}
 					onClose={(resp) =>
 						onPopupClose(index, module, resp || result)
 					}

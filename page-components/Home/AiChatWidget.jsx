@@ -1,9 +1,15 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { Icon, Input, Markdown, MicInput } from "components";
+import { CopyButton, Icon, Input, Markdown, MicInput } from "components";
 import { useSession } from "contexts";
 import { useAiChat } from "hooks";
 import { useEffect, useRef, useState } from "react";
 import { BsStars } from "react-icons/bs";
+import {
+	MdOutlineThumbDown,
+	MdOutlineThumbUp,
+	MdThumbDown,
+	MdThumbUp,
+} from "react-icons/md";
 import { RiChatAiLine } from "react-icons/ri";
 import { VscRobot } from "react-icons/vsc";
 import { WidgetBase } from ".";
@@ -15,6 +21,7 @@ import { WidgetBase } from ".";
  * @param {string} [props.initialMessage] - The initial user message to start the conversation with AI
  * @param {boolean} [props.isPopupMode] - Flag to indicate if the widget is in popup mode (default: false)
  * @param {Function} [props.onClose] - Callback function to handle widget close event (in Popup mode)
+ * @param {Function} [props.setAllowCloseOnEscape] - Function to set whether the widget can be closed with the Escape key
  * @returns {JSX.Element} - The rendered widget component
  */
 const AiChatWidget = ({
@@ -22,6 +29,7 @@ const AiChatWidget = ({
 	initialMessage,
 	isPopupMode = false,
 	onClose,
+	setAllowCloseOnEscape,
 }) => {
 	console.log("[GPT] Initial message: ", initialMessage);
 
@@ -35,11 +43,13 @@ const AiChatWidget = ({
 		isDisabled,
 		isLoggedIn,
 		samplePrompts,
+		lastRating,
 
 		sendChatInput,
 		setVoiceInput,
 		clearChat,
 		setInputValue,
+		rateChat,
 
 		isEmpty,
 		chatState,
@@ -62,6 +72,17 @@ const AiChatWidget = ({
 	useEffect(() => {
 		scrollToLastChat();
 	}, [busy]);
+
+	// Set allowCloseOnEscape to false when recording audio
+	// so that Esc key can be used to stop recording
+	useEffect(() => {
+		if (setAllowCloseOnEscape) {
+			setAllowCloseOnEscape(status !== "recording");
+		}
+	}, [status, setAllowCloseOnEscape]);
+
+	const isLastChatFromSystem =
+		chatLines?.length && chatLines[chatLines.length - 1]?.from === "system";
 
 	if (!isLoggedIn) return null;
 
@@ -131,13 +152,20 @@ const AiChatWidget = ({
 						)
 					}
 
+					{/*
+						MARK: Chat Lines
+					*/}
 					{chatLines.map((line, i) => (
 						<ChatBubble
 							key={i + 1}
+							messageId={line.id}
 							from={line.from}
 							msg={line.msg}
 							at={line.at}
 							isLast={i === chatLines.length - 1 && !busy}
+							rateChat={rateChat}
+							lastRating={lastRating}
+							isDisabled={isDisabled}
 						/>
 					))}
 
@@ -147,13 +175,27 @@ const AiChatWidget = ({
 					}
 				</Box>
 
-				<Flex direction="row" align="center" gap="2px">
+				{isLastChatFromSystem ? (
+					<Flex
+						align="center"
+						justify="center"
+						color="light"
+						opacity="0.8"
+						fontSize="xxs"
+						// fontStyle="italic"
+					>
+						AI can make mistakes, double-check important
+						information.
+					</Flex>
+				) : null}
+
+				<Flex direction="row" align="center" gap="4px" p="6px">
 					<MicInput
 						silenceTimeoutMs={3000}
 						onCapture={(blob) => setVoiceInput(blob)}
 						onStatusChange={setStatus}
 						isDisabled={isDisabled}
-						m="2px"
+						// m="2px"
 					/>
 					{/* Chat Text Input Field */}
 					{status === "recording" ? null : (
@@ -164,6 +206,7 @@ const AiChatWidget = ({
 							onChange={setInputValue}
 							onSubmit={sendChatInput}
 							onRestart={clearChat}
+							flex={1}
 						/>
 					)}
 				</Flex>
@@ -176,20 +219,33 @@ const AiChatWidget = ({
  * Component to show a chat bubble with a message.
  * MARK: Bubble
  * @param {object} props - The component props
+ * @param {string} props.messageId - Unique identifier for the message
  * @param {string} props.from - The sender of the message (user or system)
  * @param {string} props.msg - The message content
  * @param {number} props.at - The timestamp of the message in milliseconds
  * @param {boolean} props.isLast - Flag to indicate if this is the last message
  * @param {object} props.rest - Additional props to pass to the Text component
+ * @param props.rateChat
+ * @param props.lastRating
+ * @param props.isDisabled
  * @returns {JSX.Element|null} - The rendered chat bubble component or null if no message is provided
  */
-const ChatBubble = ({ from, msg, at, isLast, ...rest }) => {
+const ChatBubble = ({
+	messageId,
+	from,
+	msg,
+	at,
+	isLast,
+	rateChat,
+	lastRating,
+	isDisabled = false,
+	...rest
+}) => {
 	if (!msg) return null;
 
 	if (typeof msg !== "string") {
-		console.trace("[GPT] Message is not a string: ", msg);
+		console.warn("[GPT] Message is not a string: ", msg);
 		return;
-		// msg = JSON.stringify(msg);
 	}
 
 	const bubbleRadius = "18px";
@@ -220,7 +276,7 @@ const ChatBubble = ({ from, msg, at, isLast, ...rest }) => {
 				<Text
 					as="div"
 					className="customScrollbars"
-					bg={from === "user" ? "light" : "#FFF"}
+					bg={from === "user" ? "#8e2de2" : "#FFF"} // "light"
 					color={from === "user" ? "white" : "light"}
 					borderRadius={
 						from === "user" ? userBubbleRadius : systemBubbleRadius
@@ -233,21 +289,50 @@ const ChatBubble = ({ from, msg, at, isLast, ...rest }) => {
 				>
 					<Markdown>{msg}</Markdown>
 				</Text>
-				{at ? (
-					<Text
-						as="span"
-						fontSize="xxs"
-						color="light"
-						ml="0.5em"
-						mt="0.2em"
-						opacity={0.8}
-					>
-						{new Date(at).toLocaleTimeString([], {
-							hour: "2-digit",
-							minute: "2-digit",
-						})}
-					</Text>
-				) : null}
+
+				{/*
+					Bottom toolbar: time, rating, copy
+					MARK: Toolbar
+				*/}
+				<Flex
+					direction="row"
+					align="center"
+					mt="0.4em"
+					px="0.5em"
+					gap="1em"
+					color="light"
+					w="100%"
+				>
+					{at ? (
+						// Show the time of the message
+						<Text as="span" fontSize="xxs" opacity={0.8}>
+							{new Date(at).toLocaleTimeString([], {
+								hour: "2-digit",
+								minute: "2-digit",
+							})}
+						</Text>
+					) : null}
+					<Box flex={1} />
+					{from === "system" && isLast && messageId ? (
+						// Show the following icon buttons: Thumbs Up, Thumbs Down, and Copy
+						<>
+							<RatingButton
+								type="up"
+								messageId={messageId}
+								rateChat={rateChat}
+								selected={lastRating === 2}
+								disabled={isDisabled || lastRating > 0}
+							/>
+							<RatingButton
+								type="down"
+								rateChat={rateChat}
+								selected={lastRating === 1}
+								disabled={isDisabled || lastRating > 0}
+							/>
+							<CopyButton text={msg} size="16px" />
+						</>
+					) : null}
+				</Flex>
 			</Flex>
 		</Flex>
 	);
@@ -359,6 +444,7 @@ const AiAvatar = ({ size = "32px", ...rest }) => {
  * @param {object} props - The component props
  * @param {string} props.value - The current value of the input field
  * @param {string} [props.state] - The state of the input field (e.g., "ready", "busy", "limit-reached")
+ * @param {number} [props.maxLength] - The maximum allowed length of the input (default: 100)
  * @param {boolean} [props.isDisabled] - Flag to indicate if the input field is disabled
  * @param {Function} props.onChange - Callback function to handle input value change
  * @param {Function} [props.onSubmit] - Callback function to handle input submission
@@ -369,6 +455,7 @@ const AiAvatar = ({ size = "32px", ...rest }) => {
 const ChatInput = ({
 	value,
 	state,
+	maxLength = 100,
 	isDisabled,
 	onChange,
 	onSubmit,
@@ -419,9 +506,10 @@ const ChatInput = ({
 					/>
 				)
 			}
-			maxLength={100} //will work when type is text
-			m="2px"
-			w="calc(100% - 4px)"
+			maxLength={maxLength} //will work when type is text
+			// m="2px"
+			w="100%"
+			borderRadius="full"
 			value={value}
 			disabled={isDisabled}
 			autoComplete="off"
@@ -434,6 +522,55 @@ const ChatInput = ({
 			_placeholder={{ fontSize: "xs" }}
 			{...rest}
 		/>
+	);
+};
+
+/**
+ * Thumb up/down rating component for AI chat messages
+ * MARK: Rating
+ * @param root0
+ * @param root0.type
+ * @param root0.messageId
+ * @param root0.rateChat
+ * @param root0.selected
+ * @param root0.disabled
+ */
+const RatingButton = ({
+	type = "up",
+	messageId,
+	rateChat,
+	selected,
+	disabled,
+	...rest
+}) => {
+	const Icon =
+		type === "up"
+			? selected
+				? MdThumbUp
+				: MdOutlineThumbUp
+			: selected
+				? MdThumbDown
+				: MdOutlineThumbDown;
+
+	return (
+		<Flex
+			padding={2}
+			borderRadius="full"
+			bg="#00000010"
+			_hover={{
+				bg: "#00000020",
+			}}
+			aria-label={`Give a Thumbs-${type === "up" ? "Up" : "Down"}`}
+			cursor="pointer"
+			opacity={disabled ? 0.7 : 1}
+			pointerEvents={disabled ? "none" : "auto"}
+			onClick={() =>
+				disabled ? null : rateChat(messageId, type === "up" ? 2 : 1)
+			}
+			{...rest}
+		>
+			<Icon size="16px" />
+		</Flex>
 	);
 };
 
