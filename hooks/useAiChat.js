@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 // API Endpoints for AI chat and voice assistants
 const CHAT_ASSISTANT_ENDPOINT = "/gpt/tfassistant";
 const VOICE_ASSISTANT_ENDPOINT = "/gpt/tfvoiceassistant";
+const CHAT_RATING_ENDPOINT = "/gpt/rate";
 
 /**
  * Sample prompt messages for AI chat
@@ -29,7 +30,23 @@ const SAMPLE_PROMPTS_COLLECTION = [
  * @param {number} [options.maxChatLines] - Maximum number of chat lines allowed
  * @param {Function} [options.onChatLinesChange] - Callback when chat lines change
  * @param {Function} [options.onBusyStateChange] - Callback when busy state changes
- * @returns {object} Chat state and functions
+ * @returns {object} Chat state and functions:
+ * - chatLines: Array of chat messages
+ * - inputValue: Current input value
+ * - busy: Boolean indicating if the chat is busy processing
+ * - isDisabled: Boolean indicating if the chat is disabled (busy or max lines reached)
+ * - hasReachedLimit: Boolean indicating if the max chat lines limit has been reached
+ * - isLoggedIn: Boolean indicating if the user is logged in
+ * - samplePrompts: Array of sample prompts for the chat
+ * - lastRating: Last rating given by the user
+ * - sendChatInput: Function to send a chat message
+ * - sendCurrentInput: Function to send the current input value
+ * - clearChat: Function to clear the chat history
+ * - setInputValue: Function to set the input value
+ * - setVoiceInput: Function to set voice input (Blob)
+ * - rateChat: Function to rate the last chat response
+ * - isEmpty: Boolean indicating if the chat is empty
+ * - chatState: Current state of the chat ("ready", "busy", or "limit-reached")
  */
 const useAiChat = ({
 	initialMessage,
@@ -48,6 +65,9 @@ const useAiChat = ({
 	const [initialMessageProcessed, setInitialMessageProcessed] =
 		useState(false);
 	const [samplePrompts, setSamplePrompts] = useState([]);
+
+	const [lastRating, setLastRating] = useState(null);
+	const [busyRating, setBusyRating] = useState(false);
 
 	const { generateNewToken } = useRefreshToken(); // For re-generating access-token, required by fetcher()
 
@@ -111,6 +131,7 @@ const useAiChat = ({
 			{ from: "user", msg: value, at: Date.now() },
 		]);
 		setInputValue("");
+		setLastRating(null);
 	};
 
 	/**
@@ -119,6 +140,7 @@ const useAiChat = ({
 	const clearChat = () => {
 		setChatLines([]);
 		setInitialMessageProcessed(false);
+		setLastRating(null);
 	};
 
 	/**
@@ -126,6 +148,71 @@ const useAiChat = ({
 	 */
 	const sendCurrentInput = () => {
 		sendChatInput(inputValue);
+	};
+
+	/**
+	 * Rate the last chat response
+	 * MARK: RateChat
+	 * @param {string} message_id - The ID of the message to rate (usually the last message)
+	 * @param {number} rating - The rating to send (1 = "Thumb Down", 2 = "Thumb Up")
+	 */
+	const rateChat = (message_id, rating) => {
+		if (busyRating) {
+			console.warn("[GPT] Already rating, please wait.");
+			return;
+		}
+
+		setBusyRating(true);
+		setLastRating(rating);
+
+		if (!isLoggedIn) {
+			console.warn("[GPT] User is not logged in, cannot rate.");
+			return;
+		}
+
+		if (![1, 2].includes(rating)) {
+			console.error("[GPT] Invalid rating: ", rating);
+			return;
+		}
+		if (!(chatLines?.length > 0)) {
+			console.warn("[GPT] No chat history available to rate.");
+			return;
+		}
+
+		const lastMsg = chatLines?.[chatLines.length - 1];
+
+		if (!(lastMsg && lastMsg.from === "system" && lastMsg.id)) {
+			console.warn("[GPT] No valid last message to rate.");
+			return;
+		}
+
+		console.log("[GPT] Sending rating for last message: ", {
+			lastMsg,
+			rating,
+		});
+
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + CHAT_RATING_ENDPOINT,
+			{
+				body: {
+					message_id: lastMsg.id,
+					rating: rating,
+				},
+				token: accessToken,
+				timeout: 5000,
+			},
+			generateNewToken
+		)
+			.then((data) => {
+				console.log("[GPT] Rating response: ", data);
+			})
+			.catch((error) => {
+				console.error("[GPT] Rating error:", error);
+				setLastRating(null);
+			})
+			.finally(() => {
+				setBusyRating(false);
+			});
 	};
 
 	// Notify parent components of state changes
@@ -192,6 +279,7 @@ const useAiChat = ({
 					file: _voice,
 				},
 				token: accessToken,
+				timeout: 60000,
 			},
 			generateNewToken
 		)
@@ -202,7 +290,12 @@ const useAiChat = ({
 					setChatLines((prevLines) => [
 						...prevLines,
 						{ from: "user", msg: data.input, at: voiceSentAt },
-						{ from: "system", msg: data.reply, at: Date.now() },
+						{
+							from: "system",
+							msg: data.reply,
+							at: Date.now(),
+							id: data.id,
+						},
 					]);
 				} else {
 					// Handle unexpected response format
@@ -244,7 +337,7 @@ const useAiChat = ({
 		setBusy(true);
 
 		// TODO: REMOVE THIS - Only for testing
-		// DUMMY 💬
+		// MARK: DUMMY 💬
 		// if (process.env.NEXT_PUBLIC_ENV === "development") {
 		// 	setChatInput("");
 		// 	setTimeout(() => {
@@ -254,6 +347,7 @@ const useAiChat = ({
 		// 				from: "system",
 		// 				msg: MOCK_CHAT_RESPONSE,
 		// 				at: Date.now(),
+		// 				id: Date.now(),
 		// 			},
 		// 		]);
 		// 		setBusy(false);
@@ -270,6 +364,7 @@ const useAiChat = ({
 					source: "WLC",
 				},
 				token: accessToken,
+				timeout: 60000,
 			},
 			generateNewToken
 		)
@@ -278,7 +373,12 @@ const useAiChat = ({
 				if (data?.reply && typeof data.reply === "string") {
 					setChatLines((prevLines) => [
 						...prevLines,
-						{ from: "system", msg: data.reply, at: Date.now() },
+						{
+							from: "system",
+							msg: data.reply,
+							at: Date.now(),
+							id: data.id,
+						},
 					]);
 				} else {
 					setChatLines((prevLines) => [
@@ -318,6 +418,7 @@ const useAiChat = ({
 		hasReachedLimit,
 		isLoggedIn,
 		samplePrompts,
+		lastRating,
 
 		// Actions
 		sendChatInput,
@@ -325,6 +426,7 @@ const useAiChat = ({
 		clearChat,
 		setInputValue,
 		setVoiceInput,
+		rateChat,
 
 		// Computed state
 		isEmpty: chatLines.length === 0,
