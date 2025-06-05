@@ -1,5 +1,12 @@
 import { Button, Flex, SimpleGrid, Text } from "@chakra-ui/react";
-import { Dropzone, Input, Markdown, MicInput, Select } from "components";
+import {
+	CopyButton,
+	Dropzone,
+	Input,
+	Markdown,
+	MicInput,
+	Select,
+} from "components";
 import { ParamType } from "constants";
 import { useNotification } from "contexts";
 import {
@@ -756,6 +763,18 @@ const VoiceCaptureTest = () => {
 	);
 };
 
+/**
+ * Test CopyButton component
+ * MARK: CopyButtonTest
+ */
+const CopyButtonTest = () => {
+	return (
+		<Flex>
+			<CopyButton text="Copy this text" />
+		</Flex>
+	);
+};
+
 // List of test components
 // MARK: List of Tests
 const TestComponents = [
@@ -806,6 +825,10 @@ const TestComponents = [
 	{
 		title: "Voice Capture Test",
 		component: VoiceCaptureTest,
+	},
+	{
+		title: "Copy Button Test",
+		component: CopyButtonTest,
 	},
 ];
 

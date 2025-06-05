@@ -137,3 +137,5 @@ export { InfoTileGrid } from "./InfoTileGrid";
 export { Markdown } from "./Markdown";
 
 export { MicInput } from "./MicInput";
+
+export { CopyButton } from "./CopyButton";
