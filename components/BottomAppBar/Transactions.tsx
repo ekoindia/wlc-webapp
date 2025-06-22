@@ -1,6 +1,6 @@
 import { Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { AccordionMenu, Icon } from "components";
-import { useNavigationLists } from "hooks";
+import { useMenuContext } from "contexts";
 import { useRef } from "react";
 import { BottomAppBarDrawer, useAccordionMenuConverter } from ".";
 
@@ -16,7 +16,7 @@ interface ButtonProps {
 const Transactions = ({ isSideBarMode = false }: ButtonProps) => {
 	const btnRef = useRef<HTMLButtonElement>(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const { trxnList } = useNavigationLists();
+	const { trxnList } = useMenuContext();
 
 	const list = useAccordionMenuConverter(trxnList);
 

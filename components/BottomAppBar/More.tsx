@@ -1,7 +1,6 @@
 import { Box, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { AccordionMenu, Icon, StatusCard } from "components";
-import { useUser } from "contexts/UserContext";
-import { useNavigationLists } from "hooks";
+import { useMenuContext, useUser } from "contexts";
 import { useRef } from "react";
 import {
 	BottomAppBarDrawer,
@@ -58,7 +57,7 @@ const More = ({ isSideBarMode = false }: ButtonProps) => {
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const bottomAppBarItems = useBottomAppBarItems();
-	const { menuList, otherList } = useNavigationLists();
+	const { menuList, otherList } = useMenuContext();
 
 	/**
 	 * Checks if a given item path exists in the bottom app bar list and is visible.

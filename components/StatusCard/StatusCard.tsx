@@ -103,6 +103,7 @@ const StatusCard = ({
 		cursor: disabled || loading ? "not-allowed" : "pointer",
 	};
 
+	// MARK: JSX
 	return (
 		<Flex
 			w="100%"

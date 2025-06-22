@@ -11,8 +11,8 @@ import {
 } from "@chakra-ui/react";
 import { useBottomAppBarItems } from "components/BottomAppBar";
 import { Endpoints, InteractionBehavior, UserType } from "constants";
-import { useUser } from "contexts";
-import { useFeatureFlag, useLocalStorage, useNavigationLists } from "hooks";
+import { useMenuContext, useUser } from "contexts";
+import { useFeatureFlag, useLocalStorage } from "hooks";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -67,7 +67,7 @@ const SideBar = () => {
 		userType,
 	} = useUser();
 
-	const { trxnList, menuList, otherList } = useNavigationLists();
+	const { trxnList, menuList, otherList } = useMenuContext();
 	const router = useRouter();
 	const [openIndex, setOpenIndex] = useState(-1);
 

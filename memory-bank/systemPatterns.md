@@ -23,8 +23,8 @@
 -   **Core Layout:** Managed by `layout-components/Layout/Layout.tsx`.
 -   **Navigation:**
     -   Top: `components/NavBar/NavBar.jsx` (includes `ProfileCard` with menu from `constants/profileCardMenus.js`).
-    -   Left: `components/SideBar/SideBar.jsx` (menu items from `constants/SidebarMenu.ts`, data processed via `contexts/MenuContext.tsx` and `hooks/useNavigationLists.js`).
-    -   Bottom (Small Screens): `components/BottomAppBar/BottomAppBar.tsx` (items configured via `components/BottomAppBar/useBottomAppBar.ts`).
+    -   Left: `components/SideBar/SideBar.jsx` (menu items from `constants/SidebarMenu.ts`, data processed via `contexts/MenuContext.tsx`).
+    -   Bottom (Small Screens): `components/BottomAppBar/BottomAppBar.tsx` (menu items from `constants/SidebarMenu.ts`, data processed via `contexts/MenuContext.tsx`).
 -   **Page Structure:** Next.js pages reside in `pages/`, often utilizing specific components from `page-components/`.
 -   **Low-Code Forms:** Dedicated components under `tf-components/` for the transaction framework.
 
