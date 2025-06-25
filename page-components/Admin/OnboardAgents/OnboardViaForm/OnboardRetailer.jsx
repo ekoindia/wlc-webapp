@@ -12,11 +12,15 @@ const NAME_REGEX = /^[A-Za-z\s]+$/;
 
 /**
  * OnboardRetailer page-component
- * @param root0
- * @param root0.applicantType
- * @param root0.setResponse
+ * @param {object} props - Component props
+ * @param {string} props.applicantType - Type of applicant being onboarded
+ * @param {Function} props.setResponse - Function to set the response
+ * @param {object} props.permissions - User permissions for onboarding
  */
-const OnboardRetailer = ({ applicantType, setResponse }) => {
+const OnboardRetailer = ({ applicantType, setResponse, permissions }) => {
+	// Check if distributor field should be hidden
+	const hideDistributorField = permissions?.autoMapDistributor === true;
+
 	const {
 		handleSubmit,
 		register,
@@ -155,36 +159,38 @@ const OnboardRetailer = ({ applicantType, setResponse }) => {
 										)})`}
 								</Text>
 							</FormControl>
-							<FormControl w={{ base: "100%", md: "500px" }}>
-								<Input
-									id={field.id}
-									label="Distributor's Mobile Number"
-									maxLength="10"
-									{...register(
-										`agents.${index}.dist_mobile`,
-										{
-											pattern: MOBILE_NUMBER_REGEX,
-											minLength: 10,
-											maxLength: 10,
+							{!hideDistributorField && (
+								<FormControl w={{ base: "100%", md: "500px" }}>
+									<Input
+										id={field.id}
+										label="Distributor's Mobile Number"
+										maxLength="10"
+										{...register(
+											`agents.${index}.dist_mobile`,
+											{
+												pattern: MOBILE_NUMBER_REGEX,
+												minLength: 10,
+												maxLength: 10,
+											}
+										)}
+									/>
+									<Text
+										fontSize="xs"
+										fontWeight="medium"
+										color={
+											errors?.agents
+												? "error"
+												: "primary.dark"
 										}
-									)}
-								/>
-								<Text
-									fontSize="xs"
-									fontWeight="medium"
-									color={
-										errors?.agents
-											? "error"
-											: "primary.dark"
-									}
-								>
-									{errors?.agents?.[index]?.dist_mobile &&
-										`⚠ (${getFormErrorMessage(
-											"dist_mobile",
-											errors?.agents?.[index]
-										)})`}
-								</Text>
-							</FormControl>
+									>
+										{errors?.agents?.[index]?.dist_mobile &&
+											`⚠ (${getFormErrorMessage(
+												"dist_mobile",
+												errors?.agents?.[index]
+											)})`}
+									</Text>
+								</FormControl>
+							)}
 						</Flex>
 					);
 				})}
