@@ -10,11 +10,12 @@ import {
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OnboardAgentResponse } from "..";
 
 const SAMPLE_DOWNLOAD_LINK = {
-	SELLER: "https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
+	RETAILER:
+		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Agent_Onboarding.xlsx",
 	DISTRIBUTOR:
 		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Distributor_Onboarding.xlsx",
 };
@@ -36,15 +37,41 @@ const onboardAgentTypeList = [
 
 /**
  * A OnboardViaFile component
- * @example	`<OnboardViaFile></OnboardViaFile>` TODO: Fix example
+ * @param {object} props - Component props
+ * @param {object} props.permissions - User permissions for onboarding
+ * @example	`<OnboardViaFile permissions={permissions}></OnboardViaFile>`
  */
-const OnboardViaFile = () => {
+const OnboardViaFile = ({ permissions }) => {
 	const [file, setFile] = useState(null);
 	const [data, setData] = useState(null);
 	// const [loading, setLoading] = useState(false);
 	const [applicantType, setApplicantType] = useState("0");
 	const { accessToken /* , userId, userCode */ } = useSession();
 	const router = useRouter();
+
+	// Set default applicant type based on permissions
+	useEffect(() => {
+		// If user can only onboard retailers, set it by default
+		if (
+			permissions?.allowedAgentTypes?.length === 1 &&
+			permissions.allowedAgentTypes[0] === 2
+		) {
+			setApplicantType(AGENT_TYPE.RETAILER);
+		}
+	}, [permissions]);
+
+	// Check if user can onboard multiple agent types
+	const canOnboardMultipleTypes = permissions?.allowedAgentTypes?.length > 1;
+
+	// Determine which sample file to download based on autoMapDistributor
+	const getSampleDownloadLink = () => {
+		if (applicantType === AGENT_TYPE.RETAILER) {
+			return permissions?.autoMapDistributor
+				? SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
+				: SAMPLE_DOWNLOAD_LINK.RETAILER;
+		}
+		return SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR;
+	};
 
 	const handleFileUpload = () => {
 		const formDataObj = {
@@ -115,23 +142,21 @@ const OnboardViaFile = () => {
 					gap="8"
 					w={{ base: "100%", md: "500px" }}
 				>
-					<Radio
-						value={applicantType}
-						label="Select Agent Type"
-						options={onboardAgentTypeList}
-						onChange={(value) => setApplicantType(value)}
-					/>
+					{canOnboardMultipleTypes && (
+						<Radio
+							value={applicantType}
+							label="Select Agent Type"
+							options={onboardAgentTypeList}
+							onChange={(value) => setApplicantType(value)}
+						/>
+					)}
 					<Flex direction="column">
 						<InputLabel required={true}>
 							Download Sample File (for Onboarding{" "}
 							{applicantTypeObj[applicantType]})
 						</InputLabel>
 						<Link
-							href={
-								applicantType == 0
-									? SAMPLE_DOWNLOAD_LINK.SELLER
-									: SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
-							}
+							href={getSampleDownloadLink()}
 							w="fit-content"
 							fontWeight="semibold"
 							prefetch={false}
