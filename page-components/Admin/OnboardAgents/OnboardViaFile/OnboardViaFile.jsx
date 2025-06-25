@@ -93,7 +93,6 @@ const OnboardViaFile = ({ permissions }) => {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
-					// "Content-Type": "multipart/form-data",
 					"tf-req-uri-root-path": "/ekoicici/v1",
 					"tf-req-uri": "/network/agent/bulk_onboarding",
 					"tf-req-method": "POST",
