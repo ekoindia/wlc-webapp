@@ -1,11 +1,16 @@
-import { PaddingBox } from "components";
-// import { OnboardComponent } from "page-components";
+import { BreadcrumbWrapper, PaddingBox } from "components";
+import { OnboardAgents } from "page-components/Admin";
 
 const OnboardPage = () => {
 	return (
 		<PaddingBox>
-			<h1>Add Page Content Here</h1>
-			{/* <OnboardComponent /> */}
+			<BreadcrumbWrapper
+				breadcrumbsData={{
+					"/onboard": "Onboard Vendor",
+				}}
+			>
+				<OnboardAgents />
+			</BreadcrumbWrapper>
 		</PaddingBox>
 	);
 };
@@ -14,7 +19,7 @@ const OnboardPage = () => {
 // Pages can show their own header bar with back button.
 OnboardPage.pageMeta = {
 	title: "Onboard",
-	isSubPage: false,
+	isFixedBottomAppBar: true,
 };
 
 // Use a diferent layout, if needed...
