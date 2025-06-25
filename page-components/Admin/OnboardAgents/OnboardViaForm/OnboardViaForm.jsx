@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Radio } from "components";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { OnboardDistributor, OnboardRetailer } from ".";
 import { OnboardAgentResponse } from "..";
 
@@ -23,17 +23,6 @@ const agent_type_list = [
 const OnboardViaForm = ({ permissions }) => {
 	const [applicantType, setApplicantType] = useState(AGENT_TYPE.RETAILERS);
 	const [response, setResponse] = useState(null);
-
-	// Set default applicant type based on permissions
-	useEffect(() => {
-		// If user can only onboard retailers, set it by default
-		if (
-			permissions?.allowedAgentTypes?.length === 1 &&
-			permissions.allowedAgentTypes[0] === 2
-		) {
-			setApplicantType(AGENT_TYPE.RETAILERS);
-		}
-	}, [permissions]);
 
 	// Check if user can onboard multiple agent types
 	const canOnboardMultipleTypes = permissions?.allowedAgentTypes?.length > 1;

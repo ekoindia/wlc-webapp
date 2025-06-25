@@ -10,7 +10,7 @@ import {
 import { Endpoints } from "constants";
 import { useSession } from "contexts";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { OnboardAgentResponse } from "..";
 
 const SAMPLE_DOWNLOAD_LINK = {
@@ -45,20 +45,9 @@ const OnboardViaFile = ({ permissions }) => {
 	const [file, setFile] = useState(null);
 	const [data, setData] = useState(null);
 	// const [loading, setLoading] = useState(false);
-	const [applicantType, setApplicantType] = useState("0");
+	const [applicantType, setApplicantType] = useState(AGENT_TYPE.RETAILER);
 	const { accessToken /* , userId, userCode */ } = useSession();
 	const router = useRouter();
-
-	// Set default applicant type based on permissions
-	useEffect(() => {
-		// If user can only onboard retailers, set it by default
-		if (
-			permissions?.allowedAgentTypes?.length === 1 &&
-			permissions.allowedAgentTypes[0] === 2
-		) {
-			setApplicantType(AGENT_TYPE.RETAILER);
-		}
-	}, [permissions]);
 
 	// Check if user can onboard multiple agent types
 	const canOnboardMultipleTypes = permissions?.allowedAgentTypes?.length > 1;
