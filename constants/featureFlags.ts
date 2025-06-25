@@ -101,6 +101,15 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	AI_VOICEBOT: {
 		enabled: true,
 		forAdminOnly: true,
+		forEnv: ["development", "staging"],
+		requiredFeatures: ["AI_MASTER_FLAG"],
+	},
+
+	// Feature to enable AI Copilot.
+	AI_COPILOT: {
+		enabled: true,
+		forAdminOnly: true,
+		forEnv: ["development"],
 		requiredFeatures: ["AI_MASTER_FLAG"],
 	},
 

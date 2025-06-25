@@ -35,7 +35,7 @@ export const CopilotProvider = ({
 	runtimeUrl = "/api/copilotkit",
 	showPopup = true,
 }: CopilotProviderProps) => {
-	const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT");
+	const [isAiCopilotAllowed] = useFeatureFlag("AI_COPILOT");
 
 	return (
 		<CopilotKit
@@ -46,7 +46,7 @@ export const CopilotProvider = ({
 			{children}
 			<CopilotHydrate />
 			{/* Render the CopilotPopup only if the AI_CHATBOT feature flag is enabled and showPopup is true */}
-			{isAiChatBotAllowed && showPopup ? (
+			{isAiCopilotAllowed && showPopup ? (
 				<CopilotPopup
 					instructions={CopilotSystemInstructions}
 					labels={{
