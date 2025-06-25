@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Radio } from "components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OnboardDistributor, OnboardRetailer } from ".";
 import { OnboardAgentResponse } from "..";
 
@@ -16,29 +16,53 @@ const agent_type_list = [
 
 /**
  * A OnboardViaForm page-component
- * @example	`<OnboardViaForm></OnboardViaForm>` TODO: Fix example
+ * @param {object} props - Component props
+ * @param {object} props.permissions - User permissions for onboarding
+ * @example	`<OnboardViaForm permissions={permissions}></OnboardViaForm>`
  */
-const OnboardViaForm = () => {
+const OnboardViaForm = ({ permissions }) => {
 	const [applicantType, setApplicantType] = useState(AGENT_TYPE.RETAILERS);
 	const [response, setResponse] = useState(null);
+
+	// Set default applicant type based on permissions
+	useEffect(() => {
+		// If user can only onboard retailers, set it by default
+		if (
+			permissions?.allowedAgentTypes?.length === 1 &&
+			permissions.allowedAgentTypes[0] === 2
+		) {
+			setApplicantType(AGENT_TYPE.RETAILERS);
+		}
+	}, [permissions]);
+
+	// Check if user can onboard multiple agent types
+	const canOnboardMultipleTypes = permissions?.allowedAgentTypes?.length > 1;
 
 	return (
 		<div>
 			{response === null ? (
 				<Flex direction="column" gap="8">
-					<Radio
-						id="applicant_type"
-						label="Select Agent Type"
-						value={applicantType}
-						onChange={(value) => setApplicantType(value)}
-						options={agent_type_list}
-					/>
+					{canOnboardMultipleTypes && (
+						<Radio
+							id="applicant_type"
+							label="Select Agent Type"
+							value={applicantType}
+							onChange={(value) => setApplicantType(value)}
+							options={agent_type_list}
+						/>
+					)}
 
 					{applicantType === AGENT_TYPE.RETAILERS ? (
-						<OnboardRetailer {...{ applicantType, setResponse }} />
+						<OnboardRetailer
+							applicantType={applicantType}
+							setResponse={setResponse}
+							permissions={permissions}
+						/>
 					) : (
 						<OnboardDistributor
-							{...{ applicantType, setResponse }}
+							applicantType={applicantType}
+							setResponse={setResponse}
+							permissions={permissions}
 						/>
 					)}
 				</Flex>
