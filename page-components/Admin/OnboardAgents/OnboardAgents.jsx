@@ -1,15 +1,31 @@
 import { Box } from "@chakra-ui/react";
 import { PageTitle, Tabs } from "components";
+import { useSession } from "contexts";
+import { useMemo } from "react";
 import { OnboardViaFile, OnboardViaForm } from ".";
+import { getOnboardingPermissions } from "./OnboardingPermissions";
 
 /**
  * A OnboardAgents page-component
  * @example	`<OnboardAgents></OnboardAgents>` TODO: Fix example
  */
 const OnboardAgents = () => {
+	const { isAdmin, userType } = useSession();
+
+	// Get permissions based on user role
+	const permissions = useMemo(() => {
+		return getOnboardingPermissions(isAdmin, userType);
+	}, [isAdmin, userType]);
+
 	const tabList = [
-		{ label: "Onboard Agents", comp: <OnboardViaForm /> }, // form based onboarding
-		{ label: "Bulk Onboarding (Using File)", comp: <OnboardViaFile /> }, // file based onboarding
+		{
+			label: "Onboard Agents",
+			comp: <OnboardViaForm permissions={permissions} />,
+		}, // form based onboarding
+		{
+			label: "Bulk Onboarding (Using File)",
+			comp: <OnboardViaFile permissions={permissions} />,
+		}, // file based onboarding
 	];
 	return (
 		<>
