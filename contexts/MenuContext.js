@@ -1,4 +1,3 @@
-import { useCopilotAction, useCopilotReadable } from "@copilotkit/react-core";
 import { ActionIcon, useKBarReady } from "components/CommandBar";
 import {
 	adminSidebarMenu,
@@ -14,6 +13,7 @@ import {
 } from "helpers";
 import { useAppLink, useFeatureFlag } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
+import { useCopilotAction, useCopilotReadable } from "libs";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { limitText } from "utils/textFormat";
 import { useSession } from ".";
