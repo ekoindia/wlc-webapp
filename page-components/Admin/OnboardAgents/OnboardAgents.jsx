@@ -8,8 +8,8 @@ import { getOnboardingPermissions } from "./OnboardingPermissions";
 
 // API needs this mapping for applicant_type to work
 const agentTypeValueToApi = {
-	1: "0",
-	2: "2",
+	1: "2",
+	2: "0",
 };
 
 /**
