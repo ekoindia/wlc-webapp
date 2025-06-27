@@ -1,16 +1,10 @@
-import { BreadcrumbWrapper, PaddingBox } from "components";
+import { PaddingBox } from "components";
 import { OnboardAgents } from "page-components/Admin";
 
 const OnboardPage = () => {
 	return (
 		<PaddingBox>
-			<BreadcrumbWrapper
-				breadcrumbsData={{
-					"/onboard": "Onboard Vendor",
-				}}
-			>
-				<OnboardAgents />
-			</BreadcrumbWrapper>
+			<OnboardAgents />
 		</PaddingBox>
 	);
 };
