@@ -36,7 +36,6 @@ const OnboardViaFile = ({
 	const [file, setFile] = useState(null);
 	const [data, setData] = useState(null);
 	const [applicantType, setApplicantType] = useState("");
-	console.log("[OA] applicantType", applicantType);
 	const { accessToken } = useSession();
 	const router = useRouter();
 
