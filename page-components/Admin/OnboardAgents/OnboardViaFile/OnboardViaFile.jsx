@@ -7,10 +7,10 @@ import {
 	InputLabel,
 	Radio,
 } from "components";
-import { Endpoints } from "constants";
+import { Endpoints, UserType } from "constants";
 import { useSession } from "contexts";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { OnboardAgentResponse } from "..";
 
 const SAMPLE_DOWNLOAD_LINK = {
@@ -20,41 +20,42 @@ const SAMPLE_DOWNLOAD_LINK = {
 		"https://files.eko.co.in/docs/onboarding/sample_files/Bulk_Distributor_Onboarding.xlsx",
 };
 
-const AGENT_TYPE = {
-	RETAILER: "0",
-	DISTRIBUTOR: "2",
-};
-
-const applicantTypeObj = {
-	0: "Retailers",
-	2: "Distributors",
-};
-
-const onboardAgentTypeList = [
-	{ value: AGENT_TYPE.RETAILER, label: "Retailers" },
-	{ value: AGENT_TYPE.DISTRIBUTOR, label: "Distributors" },
-];
-
 /**
  * A OnboardViaFile component
  * @param {object} props - Component props
  * @param {object} props.permissions - User permissions for onboarding
+ * @param props.agentTypeList
+ * @param props.agentTypeValueToApi
  * @example	`<OnboardViaFile permissions={permissions}></OnboardViaFile>`
  */
-const OnboardViaFile = ({ permissions }) => {
+const OnboardViaFile = ({
+	permissions,
+	agentTypeList,
+	agentTypeValueToApi,
+}) => {
 	const [file, setFile] = useState(null);
 	const [data, setData] = useState(null);
-	// const [loading, setLoading] = useState(false);
-	const [applicantType, setApplicantType] = useState(AGENT_TYPE.RETAILER);
-	const { accessToken /* , userId, userCode */ } = useSession();
+	const [applicantType, setApplicantType] = useState("");
+	console.log("[OA] applicantType", applicantType);
+	const { accessToken } = useSession();
 	const router = useRouter();
+
+	useEffect(() => {
+		if (applicantType === "" && agentTypeList.length > 0) {
+			setApplicantType(agentTypeList[0].value);
+		}
+	}, [agentTypeList]);
+
+	let _label = agentTypeList.find(
+		(type) => type.value === applicantType
+	)?.label;
 
 	// Check if user can onboard multiple agent types
 	const canOnboardMultipleTypes = permissions?.allowedAgentTypes?.length > 1;
 
 	// Determine which sample file to download based on autoMapDistributor
 	const getSampleDownloadLink = () => {
-		if (applicantType === AGENT_TYPE.RETAILER) {
+		if (applicantType == UserType.MERCHANT) {
 			return permissions?.autoMapDistributor
 				? SAMPLE_DOWNLOAD_LINK.DISTRIBUTOR
 				: SAMPLE_DOWNLOAD_LINK.RETAILER;
@@ -65,10 +66,7 @@ const OnboardViaFile = ({ permissions }) => {
 	const handleFileUpload = () => {
 		const formDataObj = {
 			client_ref_id: Date.now() + "" + Math.floor(Math.random() * 1000),
-			// initiator_id: userId,
-			// user_code: userCode,
-			// org_id: org_id,
-			applicant_type: applicantType,
+			applicant_type: agentTypeValueToApi[applicantType],
 			source: "WLC",
 		};
 
@@ -92,7 +90,6 @@ const OnboardViaFile = ({ permissions }) => {
 		)
 			.then((res) => res.json())
 			.then((data) => {
-				console.log("[BulkOnboarding] data:", data);
 				setData(data);
 			})
 			.catch((err) => {
@@ -134,14 +131,13 @@ const OnboardViaFile = ({ permissions }) => {
 						<Radio
 							value={applicantType}
 							label="Select Agent Type"
-							options={onboardAgentTypeList}
+							options={agentTypeList}
 							onChange={(value) => setApplicantType(value)}
 						/>
 					)}
 					<Flex direction="column">
 						<InputLabel required={true}>
-							Download Sample File (for Onboarding{" "}
-							{applicantTypeObj[applicantType]})
+							Download Sample File (for Onboarding {_label})
 						</InputLabel>
 						<Link
 							href={getSampleDownloadLink()}
@@ -159,8 +155,7 @@ const OnboardViaFile = ({ permissions }) => {
 
 					<Flex direction="column">
 						<InputLabel required={true}>
-							Upload the List of {applicantTypeObj[applicantType]}{" "}
-							to Onboard
+							Upload the List of {_label} to Onboard
 						</InputLabel>
 						<Dropzone
 							file={file}

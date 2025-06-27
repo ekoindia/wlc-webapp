@@ -6,6 +6,12 @@ import { useMemo } from "react";
 import { OnboardViaFile, OnboardViaForm } from ".";
 import { getOnboardingPermissions } from "./OnboardingPermissions";
 
+// API needs this mapping for applicant_type to work
+const agentTypeValueToApi = {
+	1: "0",
+	2: "2",
+};
+
 /**
  * A OnboardAgents page-component
  * @example	`<OnboardAgents></OnboardAgents>` TODO: Fix example
@@ -26,14 +32,32 @@ const OnboardAgents = () => {
 			? "Onboard Agents"
 			: `Onboard ${UserTypeLabel[permissions.allowedAgentTypes[0]]}`;
 
+	// generate agent type list of objects containing label and value based on permissions.allowedAgentTypes
+	const agentTypeList = permissions.allowedAgentTypes.map((type) => ({
+		label: UserTypeLabel[type],
+		value: `${type}`,
+	}));
+
 	const tabList = [
 		{
 			label: onboardingTitle,
-			comp: <OnboardViaForm permissions={permissions} />,
+			comp: (
+				<OnboardViaForm
+					permissions={permissions}
+					agentTypeList={agentTypeList}
+					agentTypeValueToApi={agentTypeValueToApi}
+				/>
+			),
 		}, // form based onboarding
 		{
 			label: "Bulk Onboarding (Using File)",
-			comp: <OnboardViaFile permissions={permissions} />,
+			comp: (
+				<OnboardViaFile
+					permissions={permissions}
+					agentTypeList={agentTypeList}
+					agentTypeValueToApi={agentTypeValueToApi}
+				/>
+			),
 		}, // file based onboarding
 	];
 	return (
