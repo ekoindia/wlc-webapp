@@ -2,6 +2,7 @@ import { ActionIcon } from "components/CommandBar";
 import { Endpoints, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
+import { useCopilotAction, useCopilotReadable } from "libs";
 import {
 	createContext,
 	useCallback,
@@ -67,8 +68,16 @@ const useFetchBalance = (setBalance, accessToken) => {
  * @param root0.children
  */
 const WalletProvider = ({ children }) => {
-	const [balance, setBalance] = useState(null);
 	const { isLoggedIn, userId, accessToken } = useSession();
+	const [balance, _setBalance] = useState(null);
+	const [lastUpdatedDate, setLastUpdatedDate] = useState(null);
+
+	// Function to set the balance and update the last updated date
+	const setBalance = useCallback((value) => {
+		_setBalance(value);
+		setLastUpdatedDate(new Date());
+	}, []);
+
 	const { fetchBalance, loading } = useFetchBalance(setBalance, accessToken);
 	// const router = useRouter();
 
@@ -105,6 +114,72 @@ const WalletProvider = ({ children }) => {
 	}, [balance]);
 	useBusinessSearchActions(walletAction, [walletAction]);
 
+	// MARK: Copilot
+
+	// Define AI Copilot readable state for the E-value balance
+	useCopilotReadable({
+		description:
+			"The current digital wallet (E-value) balance of the user, and it's last updated date. This balance can be used for transactions, payments, and other financial activities within the platform. It is updated when the user performs transactions or when it is refreshed manually.",
+		value: {
+			balance: formatCurrency(balance),
+			lastUpdatedDate: lastUpdatedDate?.toLocaleString(undefined, {
+				hour: "2-digit",
+				minute: "2-digit",
+				day: "numeric",
+				month: "short",
+			}),
+		},
+	});
+
+	// Add Copilot action to refresh the E-value balance
+	useCopilotAction({
+		name: "refresh-e-value-balance",
+		description:
+			"Refresh the current digital wallet (E-value) balance by fetching it again. Once refreshed, pleaase provide the updated balance to the user.",
+		handler: async () => {
+			fetchBalance();
+		},
+	});
+
+	// useCopilotAction({
+	// 	name: "showBalance",
+	// 	description:
+	// 		"Displays user's E-value wallet balance, and when was it last updated.",
+	// 	parameters: [
+	// 		{
+	// 			name: "balance",
+	// 			type: "string",
+	// 			description: "E-value balance (eg: ₹25,000.00)",
+	// 			required: true,
+	// 		},
+	// 		{
+	// 			name: "lastUpdated",
+	// 			type: "string",
+	// 			description: "Last updated date-time",
+	// 			required: false,
+	// 		},
+	// 	],
+	// 	render: ({ status, args }) => {
+	// 		const { balance, lastUpdated } = args;
+	// 		if (status === "inProgress") {
+	// 			return "Fetching..."; // loading state
+	// 		}
+
+	// 		return (
+	// 			<Stat
+	// 				border="1px solid"
+	// 				borderColor="gray.200"
+	// 				p={4}
+	// 				borderRadius="md"
+	// 			>
+	// 				<StatLabel>E-value Balance</StatLabel>
+	// 				<StatNumber>{balance}</StatNumber>
+	// 				<StatHelpText>Updated: {lastUpdated}</StatHelpText>
+	// 			</Stat>
+	// 		);
+	// 	},
+	// });
+
 	// Cache the context values
 	const contextValues = useMemo(
 		() => ({
@@ -112,8 +187,9 @@ const WalletProvider = ({ children }) => {
 			refreshWallet: fetchBalance,
 			setBalance,
 			loading,
+			lastUpdatedDate,
 		}),
-		[balance, loading, fetchBalance, setBalance]
+		[balance, loading, fetchBalance, setBalance, lastUpdatedDate]
 	);
 
 	return (

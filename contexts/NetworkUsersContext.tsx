@@ -1,3 +1,4 @@
+import { useCopilotReadable } from "@copilotkit/react-core";
 import { Endpoints } from "constants/EndPoints";
 import { UserType, UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts/UserContext";
@@ -68,8 +69,11 @@ export const useNetworkUsers = (): NetworkUsersContextValue => {
 
 /**
  * Provider component for the NetworkUsers context.
- * @param root0
- * @param root0.children
+ * This component fetches and provides the network users data to its children.
+ * It also generates a tree structure from the list of users and provides various utility functions.
+ * MARK: Context
+ * @param {ReactNode} children - The child components that will have access to the NetworkUsers context.
+ * @returns {JSX.Element} The NetworkUsersProvider component that wraps its children
  */
 export const NetworkUsersProvider = ({
 	children,
@@ -89,10 +93,14 @@ export const NetworkUsersProvider = ({
 		Record<string, TreeNode>
 	>({});
 	const [userTypeIdList, setUserTypeIdList] = useState<number[]>([]);
+	const [activeUserTypeCount, setActiveUserTypeCount] = useState<
+		Record<number, number>
+	>({});
 
 	const { isLoggedIn, isAdmin, isOnboarding, accessToken, userId } =
 		useSession();
 
+	// MARK: Fetch Users
 	const [fetchUsers, loading] = useApiFetch(Endpoints.TRANSACTION, {
 		onSuccess: (res) => {
 			if (res?.data?.csp_list) {
@@ -121,7 +129,8 @@ export const NetworkUsersProvider = ({
 		generateTree(
 			networkUsers.networkUsersList,
 			setNetworkUsersTree,
-			setUserTypeIdList
+			setUserTypeIdList,
+			setActiveUserTypeCount
 		);
 	}, [networkUsers.networkUsersList]);
 
@@ -149,12 +158,44 @@ export const NetworkUsersProvider = ({
 		userId,
 	]);
 
+	// MARK: Copilot...
+
+	// Define AI Copilot readable state for the total user count
+	const copilotReadableUserCountId = useCopilotReadable({
+		description: "Total number of users in this network.",
+		value: networkCount,
+	});
+
+	const test = Object.keys(activeUserTypeCount).map((key) => ({
+		label: UserTypeLabel[key] || `UserType-${key}`,
+		count: activeUserTypeCount[key],
+	}));
+
+	console.log("Active User Type Count:", test);
+
+	// Define AI Copilot readable state for the network users count based on user type
+	useCopilotReadable({
+		description: "Count of active users by user type.",
+		parentId: copilotReadableUserCountId,
+		value: Object.keys(activeUserTypeCount)
+			?.map((key) => ({
+				userType: UserTypeLabel[key] || `Type-${key}`,
+				count: activeUserTypeCount[key],
+			}))
+			?.reduce((acc, curr) => {
+				acc[curr.userType] = curr.count;
+				return acc;
+			}, {}),
+	});
+
+	// MARK: Value
 	const value = useMemo<NetworkUsersContextValue>(
 		() => ({
 			networkCount,
 			networkUsersList: networkUsers.networkUsersList,
 			networkUsersTree,
 			userTypeIdList,
+			activeUserTypeCount,
 			fetchedAt: networkUsers.asof,
 			loading,
 			refreshUserList,
@@ -164,6 +205,7 @@ export const NetworkUsersProvider = ({
 			networkUsers,
 			networkUsersTree,
 			userTypeIdList,
+			activeUserTypeCount,
 			loading,
 			refreshUserList,
 		]
@@ -178,15 +220,20 @@ export const NetworkUsersProvider = ({
 
 /**
  * Generate a tree structure from the list of users.
+ * MARK: Get Tree
  * @param list - The list of users.
  * @param setNetworkUsersTree - The function to set the network users tree.
  * @param setUserTypeIdList - The function to set the available user-type-id list.
+ * @param setActiveUserTypeCount
  */
 const generateTree = (
 	list: NetworkUser[],
 	setNetworkUsersTree: (_tree: Record<string, TreeNode>) => void,
-	setUserTypeIdList: (_ids: number[]) => void
+	setUserTypeIdList: (_ids: number[]) => void,
+	setActiveUserTypeCount: (_count: Record<number, number>) => void
 ): void => {
+	const activeUserTypeCount = {};
+
 	const tree: Record<string, TreeNode> = {
 		root: {
 			index: "root",
@@ -230,6 +277,10 @@ const generateTree = (
 		const { user_code, parent_user_code, user_type_id, name } = user;
 		let parent = parent_user_code;
 		_userTypeIds.add(user_type_id);
+
+		// Add user-type-wise count of active users
+		activeUserTypeCount[user_type_id] =
+			(activeUserTypeCount[user_type_id] || 0) + 1;
 
 		if (
 			parent &&
@@ -297,4 +348,5 @@ const generateTree = (
 
 	setNetworkUsersTree(tree);
 	setUserTypeIdList(Array.from(_userTypeIds));
+	setActiveUserTypeCount(activeUserTypeCount);
 };
