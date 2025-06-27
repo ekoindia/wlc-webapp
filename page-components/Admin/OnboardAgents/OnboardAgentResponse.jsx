@@ -1,10 +1,6 @@
 import { Table } from "components";
+import { UserType } from "constants/UserTypes";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
-
-const AGENT_TYPE = {
-	RETAILER: "0",
-	DISTRIBUTOR: "2",
-};
 
 const onboardRetailerRenderer = [
 	{ label: "Sr. No.", show: "#" },
@@ -53,7 +49,7 @@ const OnboardAgentResponse = ({ applicantType, responseList }) => {
 	const { orgDetail } = useOrgDetailContext();
 
 	const tableRenderer = [
-		...(applicantType === AGENT_TYPE.RETAILER
+		...(applicantType == UserType.MERCHANT
 			? onboardRetailerRenderer
 			: onboardDistributorRenderer),
 		// Add share link for the current app/website
