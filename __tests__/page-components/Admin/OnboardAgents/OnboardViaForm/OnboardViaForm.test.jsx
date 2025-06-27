@@ -16,8 +16,18 @@ import { pageRender } from "test-utils";
 */
 
 describe("OnboardViaForm", () => {
-	it("renders without error with no attributes", () => {
-		const { container } = pageRender(<OnboardViaForm />);
+	it("renders without error with basic props", () => {
+		const mockProps = {
+			permissions: {
+				allowedAgentTypes: ["retailer"],
+				autoMapDistributor: false,
+			},
+			agentTypeList: [{ value: "retailer", label: "Retailer" }],
+			agentTypeValueToApi: {
+				retailer: "merchant",
+			},
+		};
+		const { container } = pageRender(<OnboardViaForm {...mockProps} />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -45,8 +55,7 @@ describe("OnboardViaForm", () => {
 		// expect(container).toMatchSnapshot();
 	});
 
-	// TODO: Write other tests here..
-	// Start by writting all possible test cases here using test.todo()
+	// Write additional tests here as needed
 	test.todo(
 		"TODO: add proper test cases for OnboardViaForm in __tests__/components/OnboardViaForm/OnboardViaForm.test.jsx"
 	);
