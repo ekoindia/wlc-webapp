@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { PageTitle, Tabs } from "components";
+import { UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts";
 import { useMemo } from "react";
 import { OnboardViaFile, OnboardViaForm } from ".";
@@ -17,9 +18,17 @@ const OnboardAgents = () => {
 		return getOnboardingPermissions(isAdmin, userType);
 	}, [isAdmin, userType]);
 
+	// based on the permissions.allowedAgentTypes, page title & tabs label will get updated
+	// if permissions.allowedAgentTypes length is greater than 1, then tabs label will be "Onboard Agents"
+	// if permissions.allowedAgentTypes length is 1, then tabs label will be "Onboard <Agent Type>"
+	const onboardingTitle =
+		permissions.allowedAgentTypes.length > 1
+			? "Onboard Agents"
+			: `Onboard ${UserTypeLabel[permissions.allowedAgentTypes[0]]}`;
+
 	const tabList = [
 		{
-			label: "Onboard Agents",
+			label: onboardingTitle,
 			comp: <OnboardViaForm permissions={permissions} />,
 		}, // form based onboarding
 		{
@@ -29,7 +38,7 @@ const OnboardAgents = () => {
 	];
 	return (
 		<>
-			<PageTitle title="Onboard Agents" hideBackIcon />
+			<PageTitle title={onboardingTitle} hideBackIcon />
 			<Box
 				bg="white"
 				borderRadius="10px"
