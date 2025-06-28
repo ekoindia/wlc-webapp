@@ -1,10 +1,6 @@
 import { Table } from "components";
+import { UserType } from "constants/UserTypes";
 import { useOrgDetailContext } from "contexts/OrgDetailContext";
-
-const AGENT_TYPE = {
-	RETAILER: "0",
-	DISTRIBUTOR: "2",
-};
 
 const onboardRetailerRenderer = [
 	{ label: "Sr. No.", show: "#" },
@@ -42,18 +38,21 @@ const onboardDistributorRenderer = [
 ];
 
 /**
- * A OnboardAgentResponse page-component, to show result after user uploaded list of users to be onboarded on platform
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @param prop.applicantType
- * @param prop.responseList
- * @example	`<OnboardAgentResponse></OnboardAgentResponse>`
+ * Displays the results of agent onboarding operations in a tabular format
+ * @param {object} prop - Properties passed to the component
+ * @param {string} prop.applicantType - The type of agent being onboarded (e.g., MERCHANT or DISTRIBUTOR)
+ * @param {Array} prop.responseList - List of onboarding responses from the API, containing status and details
+ * @returns {JSX.Element} A table showing the onboarding results with status indicators
+ * @example
+ * ```jsx
+ * <OnboardAgentResponse applicantType={UserType.MERCHANT} responseList={apiResponseData.csp_list} />
+ * ```
  */
 const OnboardAgentResponse = ({ applicantType, responseList }) => {
 	const { orgDetail } = useOrgDetailContext();
 
 	const tableRenderer = [
-		...(applicantType === AGENT_TYPE.RETAILER
+		...(applicantType == UserType.MERCHANT
 			? onboardRetailerRenderer
 			: onboardDistributorRenderer),
 		// Add share link for the current app/website
