@@ -17,6 +17,45 @@ export interface SelectedBill {
 	amountRules: AmountRules;
 }
 
+// Raw API response structure (for reference)
+export interface BillDetailItem {
+	billAmount: string;
+	maxBillPayAmount: string;
+	authenticator4: string | null;
+	bharatBillReferenceNumber: string;
+	billDate: string;
+	amount_multiple: string;
+	billNumber: string;
+	billDueDate: string;
+	filler1: string;
+	filler2: string | null;
+	minBillPayAmount: string;
+}
+
+export interface BillFetchResponse {
+	response_status_id: number;
+	data: {
+		billerid: string;
+		amount: string;
+		bbpstrxnrefid: string;
+		ifsc_status: number;
+		utilitycustomername: string;
+		billfetchresponse: string;
+		billerstatus: string;
+		payMultipleBills: string;
+		postalcode: string;
+		billDetailsList: BillDetailItem[];
+		geocode: string;
+		billdate: string;
+		customer_id: string;
+		billDueDate: string;
+		billername: string;
+	};
+	response_type_id: number;
+	message: string;
+	status: number;
+}
+
 /* ────────────────────────────────────────── */
 /* Update BbpsState                          */
 export interface BbpsState {
@@ -35,7 +74,7 @@ export interface BbpsState {
 
 /* Initial values */
 export const initialState: BbpsState = {
-	currentStep: "product-view",
+	currentStep: "search",
 	isLoading: false,
 	error: null,
 	selectedProduct: null,
