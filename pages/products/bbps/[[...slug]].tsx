@@ -33,7 +33,8 @@ const STEP_COMPONENTS: Record<Step, FC<{ product?: BbpsProduct }>> = {
 
 /**
  * Parse route parameters from Next.js dynamic route
- * @param slug
+ * @param {string[]} slug  - The slug from the Next.js dynamic route
+ * @returns {RouteParams} - The parsed route parameters
  */
 const parseRouteParams = (slug?: string[]): RouteParams => {
 	if (!slug || slug.length === 0) {
