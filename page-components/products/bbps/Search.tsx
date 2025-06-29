@@ -1,7 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import router from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components/Form";
 import { BbpsContext } from "./context/BbpsContext";
@@ -14,6 +14,16 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 	const nav = useBbpsNavigation();
 	const { fetchBills, processBillFetchResponse, isLoadingBills } =
 		useBbpsApi(product);
+
+	// Set mock data flag based on product configuration
+	useEffect(() => {
+		if (product?.useMockData !== state.useMockData) {
+			dispatch({
+				type: "SET_MOCK_DATA_FLAG",
+				useMockData: product?.useMockData || false,
+			});
+		}
+	}, [product?.useMockData, state.useMockData, dispatch]);
 
 	const {
 		register,
