@@ -1,11 +1,16 @@
 import { PaddingBox } from "components";
 import { useRouter } from "next/router";
-import { Bbps, Payment, Preview, Search } from "page-components/products/bbps";
+import {
+	Bbps,
+	Payment,
+	Preview,
+	Search,
+	Status,
+} from "page-components/products/bbps";
 import { BbpsProducts } from "page-components/products/bbps/BbpsProducts";
 import { BbpsProvider } from "page-components/products/bbps/context/BbpsContext";
 import { Step } from "page-components/products/bbps/context/types";
 import { BbpsProduct } from "page-components/products/bbps/types";
-import { ResponseSection } from "page-components/products/common";
 import { FC } from "react";
 
 /**
@@ -24,11 +29,7 @@ const STEP_COMPONENTS: Record<Step, FC<{ product?: BbpsProduct }>> = {
 	search: Search,
 	preview: Preview,
 	payment: Payment,
-	status: () => (
-		<ResponseSection heading="Status" index={1}>
-			<div>Status</div>
-		</ResponseSection>
-	),
+	status: Status,
 };
 
 /**
