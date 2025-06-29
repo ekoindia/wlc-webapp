@@ -1,39 +1,60 @@
-import { BillFetchResponse, SelectedBill } from "../context/types";
-
-type SelectionMode = "single" | "multiOptional" | "multiMandatory";
-
-interface TransformedBillResponse {
-	selectionMode: SelectionMode;
-	bills: SelectedBill[];
-}
+import { BillFetchResponse } from "../context/types";
 
 /**
- * Transforms the raw API response into the format expected by BbpsContext
- * @param response The raw API response
- * @returns Transformed bill data in the format expected by the context, or null if no bills found
+ * Transform raw bill fetch response to application format
+ * @param response Raw API response
+ * @returns Transformed data for the application
  */
-export const transformBillFetchResponse = (
-	response: BillFetchResponse
-): TransformedBillResponse | null => {
-	if (!response?.data?.billDetailsList?.length) {
-		return null;
+export const transformBillData = (response: BillFetchResponse) => {
+	if (!response || !response.data || !response.data.billDetailsList) {
+		throw new Error("Invalid bill fetch response");
 	}
 
 	// Determine selection mode based on payMultipleBills flag
-	const selectionMode: SelectionMode =
-		response.data.payMultipleBills === "Y" ? "multiOptional" : "single";
+	let selectionMode: "single" | "multiOptional" | "multiMandatory";
+	switch (response.data.payMultipleBills) {
+		case "Y":
+			selectionMode = "multiOptional";
+			break;
+		case "M":
+			selectionMode = "multiMandatory";
+			break;
+		case "N":
+		default:
+			selectionMode = "single";
+			break;
+	}
 
-	// Transform billDetailsList into SelectedBill format
-	const bills: SelectedBill[] = response.data.billDetailsList.map((bill) => ({
-		billid: bill.bharatBillReferenceNumber || bill.billNumber,
-		label: `Bill ${bill.billNumber} - Due ${bill.billDueDate}`,
-		amount: parseFloat(bill.billAmount) || 0,
-		amountRules: {
-			min: parseFloat(bill.minBillPayAmount) || undefined,
-			max: parseFloat(bill.maxBillPayAmount) || undefined,
-			multiple: parseFloat(bill.amount_multiple) || undefined,
-		},
-	}));
+	// Transform bill details
+	const bills = response.data.billDetailsList.map((bill) => {
+		// Parse amount values
+		const amount = parseFloat(bill.billAmount);
+		const minAmount = bill.minBillPayAmount
+			? parseFloat(bill.minBillPayAmount)
+			: undefined;
+		const maxAmount = bill.maxBillPayAmount
+			? parseFloat(bill.maxBillPayAmount)
+			: undefined;
+		const amountMultiple = bill.amount_multiple
+			? parseFloat(bill.amount_multiple)
+			: undefined;
+
+		// Create label from bill number and due date
+		const label = `${bill.billNumber} - ${bill.billDueDate}`;
+
+		return {
+			billid:
+				bill.bharatBillReferenceNumber ||
+				`bill-${Math.random().toString(36).substr(2, 9)}`,
+			label,
+			amount,
+			amountRules: {
+				min: minAmount,
+				max: maxAmount,
+				multiple: amountMultiple,
+			},
+		};
+	});
 
 	return {
 		selectionMode,
