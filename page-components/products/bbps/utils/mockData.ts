@@ -1,4 +1,4 @@
-import { BillFetchResponse } from "../context/types";
+import { BillFetchResponse, PaymentStatusData } from "../context/types";
 
 /**
  * Mock response for BBPS bill fetch API
@@ -79,4 +79,75 @@ export const mockBillFetchResponse: BillFetchResponse = {
 	response_type_id: 1052,
 	message: "Due Bill Amount For utility",
 	status: 0,
+};
+
+/**
+ * Mock responses for different pay_multiple_bills scenarios
+ */
+export const mockBillFetchResponses = {
+	// Optional Multiple Selection (Y)
+	multiOptional: {
+		...mockBillFetchResponse,
+		data: {
+			...mockBillFetchResponse.data,
+			payMultipleBills: "Y",
+		},
+	},
+	// Mandatory All Selection (M)
+	multiMandatory: {
+		...mockBillFetchResponse,
+		data: {
+			...mockBillFetchResponse.data,
+			payMultipleBills: "M",
+		},
+	},
+	// Single Selection Only (N)
+	singleOnly: {
+		...mockBillFetchResponse,
+		data: {
+			...mockBillFetchResponse.data,
+			payMultipleBills: "N",
+			billDetailsList: [mockBillFetchResponse.data.billDetailsList[0]], // Only one bill
+		},
+	},
+};
+
+/**
+ * Mock payment status responses for different scenarios
+ */
+export const paymentStatusMocks: Record<string, PaymentStatusData> = {
+	success: {
+		status: "success",
+		message: "Payment processed successfully",
+		transactionId: `TXN${Date.now()}`,
+		amount: 0, // Will be set dynamically
+		timestamp: new Date().toISOString(),
+		billIds: [], // Will be set dynamically
+	},
+	failure: {
+		status: "failure",
+		message: "Payment failed due to insufficient funds",
+		transactionId: `TXN${Date.now()}`,
+		amount: 0, // Will be set dynamically
+		timestamp: new Date().toISOString(),
+		billIds: [], // Will be set dynamically
+	},
+	pending: {
+		status: "pending",
+		message: "Payment is being processed. Please check back later.",
+		transactionId: `TXN${Date.now()}`,
+		amount: 0, // Will be set dynamically
+		timestamp: new Date().toISOString(),
+		billIds: [], // Will be set dynamically
+	},
+};
+
+/**
+ * Transform bill fetch response for testing
+ * @param response Raw response
+ * @returns Transformed response
+ */
+export const transformBillFetchResponse = (response: BillFetchResponse) => {
+	// This would normally be done by the transformBillData utility
+	return response;
 };
