@@ -61,7 +61,7 @@ export interface BillFetchResponse {
 export interface BbpsState {
 	currentStep: Step;
 	selectedProduct: BbpsProduct | null;
-	validationResponse?: {
+	billFetchResult?: {
 		selectionMode: "single" | "multiOptional" | "multiMandatory";
 		bills: SelectedBill[];
 	} | null;
@@ -79,7 +79,7 @@ export const initialState: BbpsState = {
 	error: null,
 	selectedProduct: null,
 	searchFormData: {},
-	validationResponse: null,
+	billFetchResult: null,
 	selectedBills: [],
 	totalAmount: 0,
 };
@@ -93,7 +93,7 @@ export type Action =
 	  }
 	| {
 			type: "SET_VALIDATION_RESPONSE";
-			payload: BbpsState["validationResponse"];
+			payload: BbpsState["billFetchResult"];
 	  }
 	| { type: "SET_SEARCH_PAYLOAD"; payload: Record<string, string> }
 	| { type: "TOGGLE_BILL_SELECTION"; billid: string }
