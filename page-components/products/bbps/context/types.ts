@@ -2,6 +2,19 @@ import { BbpsProduct } from "../types";
 
 export type Step = "product-view" | "search" | "preview" | "payment" | "status";
 
+// Payment status types
+export type PaymentStatusType = "success" | "failure" | "pending";
+
+// Payment status data structure
+export interface PaymentStatusData {
+	status: PaymentStatusType;
+	message: string;
+	transactionId: string;
+	amount: number;
+	timestamp: string;
+	billIds: string[];
+}
+
 // ✧ NEW helper for amount constraints
 export interface AmountRules {
 	min?: number;
@@ -70,6 +83,9 @@ export interface BbpsState {
 	isLoading: boolean;
 	error: string | null;
 	searchFormData: Record<string, string>;
+	useMockData?: boolean;
+	mockResponseType?: PaymentStatusType;
+	paymentStatus?: PaymentStatusData | null;
 }
 
 /* Initial values */
@@ -82,6 +98,9 @@ export const initialState: BbpsState = {
 	billFetchResult: null,
 	selectedBills: [],
 	totalAmount: 0,
+	useMockData: false,
+	mockResponseType: "success",
+	paymentStatus: null,
 };
 
 /* ────────────────────────────────────────── */
@@ -100,4 +119,8 @@ export type Action =
 	| { type: "UPDATE_BILL_AMOUNT"; billid: string; amount: number }
 	| { type: "SET_LOADING"; value: boolean }
 	| { type: "SET_ERROR"; message: string | null }
-	| { type: "SET_CURRENT_STEP"; step: Step };
+	| { type: "SET_CURRENT_STEP"; step: Step }
+	| { type: "SET_MOCK_RESPONSE_TYPE"; responseType: PaymentStatusType }
+	| { type: "SET_PAYMENT_STATUS"; payload: PaymentStatusData }
+	| { type: "SET_MOCK_DATA_FLAG"; useMockData: boolean }
+	| { type: "RESET_STATE" };
