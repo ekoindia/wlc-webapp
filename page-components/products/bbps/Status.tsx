@@ -12,6 +12,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import Button from "components/Button/Button";
+import { formatDate } from "libs/dateFormat";
 import { useContext, useEffect, useState } from "react";
 import {
 	FaCheckCircle,
@@ -65,23 +66,6 @@ export const Status = (): JSX.Element => {
 			</Box>
 		);
 	}
-
-	/**
-	 * Format date for display
-	 * @param {string} dateString - The date string to format
-	 * @returns {string} Formatted date string
-	 */
-	const formatDate = (dateString: string): string => {
-		const date = new Date(dateString);
-		return new Intl.DateTimeFormat("en-IN", {
-			day: "numeric",
-			month: "short",
-			year: "numeric",
-			hour: "numeric",
-			minute: "numeric",
-			hour12: true,
-		}).format(date);
-	};
 
 	/**
 	 * Get status icon and color based on status type
@@ -216,7 +200,10 @@ export const Status = (): JSX.Element => {
 					<Flex justify="space-between">
 						<Text color="gray.600">Date & Time</Text>
 						<Text fontWeight="medium">
-							{formatDate(paymentStatus.timestamp)}
+							{formatDate(
+								paymentStatus.timestamp,
+								"dd/MM/yyyy hh:mm a"
+							)}
 						</Text>
 					</Flex>
 
