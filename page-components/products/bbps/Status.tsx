@@ -1,25 +1,20 @@
 import {
 	Box,
-	Button as ChakraButton,
 	Divider,
 	Flex,
 	Heading,
-	HStack,
 	Icon,
 	Stack,
 	Text,
-	useToast,
 	VStack,
 } from "@chakra-ui/react";
-import Button from "components/Button/Button";
+import { ActionButtonGroup, Button, PageTitle } from "components";
 import { formatDate } from "libs/dateFormat";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import {
 	FaCheckCircle,
 	FaExclamationTriangle,
 	FaInfoCircle,
-	FaReceipt,
-	FaShare,
 } from "react-icons/fa";
 import { formatCurrency } from "utils/numberFormat";
 import { BbpsContext } from "./context/BbpsContext";
@@ -32,11 +27,8 @@ import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
  */
 export const Status = (): JSX.Element => {
 	const nav = useBbpsNavigation();
-	const toast = useToast();
 	const { state } = useContext(BbpsContext);
-	const { paymentStatus, selectedBills } = state;
-	const [isDownloading, setIsDownloading] = useState(false);
-	const [isSharing, setIsSharing] = useState(false);
+	const { paymentStatus, selectedBills, useMockData } = state;
 
 	// Ensure we have payment status
 	useEffect(() => {
@@ -114,199 +106,179 @@ export const Status = (): JSX.Element => {
 
 	const statusConfig = getStatusConfig(paymentStatus.status);
 
-	/**
-	 * Handle receipt download
-	 */
-	const handleDownloadReceipt = (): void => {
-		setIsDownloading(true);
-
-		// Simulate download delay
-		setTimeout(() => {
-			toast({
-				title: "Receipt downloaded",
-				description: "The receipt has been downloaded to your device.",
-				status: "success",
-				duration: 3000,
-				isClosable: true,
-			});
-			setIsDownloading(false);
-		}, 1500);
-	};
-
-	/**
-	 * Handle share receipt
-	 */
-	const handleShareReceipt = (): void => {
-		setIsSharing(true);
-
-		// Simulate share delay
-		setTimeout(() => {
-			toast({
-				title: "Receipt shared",
-				description: "The receipt has been shared successfully.",
-				status: "success",
-				duration: 3000,
-				isClosable: true,
-			});
-			setIsSharing(false);
-		}, 1500);
-	};
+	const buttonConfigList = [
+		{
+			type: "submit",
+			label:
+				paymentStatus.status === "success"
+					? "Make Another Payment"
+					: "Try Again",
+			onClick: nav.goSearch,
+			disabled: false,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Back to Search",
+			onClick: nav.goSearch,
+			disabled: false,
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
+		},
+	];
 
 	return (
-		<Box>
-			{/* Status Header */}
-			<Box
-				p={8}
-				borderRadius="lg"
-				bg={statusConfig.bgColor}
-				mb={6}
-				textAlign="center"
+		<>
+			<PageTitle
+				title="Payment Status"
+				toolComponent={
+					useMockData && (
+						<Box
+							px={2}
+							py={1}
+							bg="yellow.100"
+							color="yellow.800"
+							borderRadius="md"
+							fontSize="sm"
+							fontWeight="medium"
+						>
+							Mock Mode
+						</Box>
+					)
+				}
+			/>
+			<Flex
+				direction="column"
+				gap="4"
+				mx={{ base: "4", md: "0" }}
+				mb={{ base: "128px", md: "64px" }}
 			>
-				<Icon
-					as={statusConfig.icon}
-					boxSize={16}
-					color={statusConfig.color}
-					mb={4}
-				/>
-				<Heading size="lg" mb={2} color={statusConfig.color}>
-					{statusConfig.title}
-				</Heading>
-				<Text fontSize="md" color="gray.600">
-					{statusConfig.message}
-				</Text>
-			</Box>
+				{/* Status Header */}
+				<Box
+					p={8}
+					borderRadius="lg"
+					bg={statusConfig.bgColor}
+					textAlign="center"
+				>
+					<Icon
+						as={statusConfig.icon}
+						boxSize={16}
+						color={statusConfig.color}
+						mb={4}
+					/>
+					<Heading size="lg" mb={2} color={statusConfig.color}>
+						{statusConfig.title}
+					</Heading>
+					<Text fontSize="md" color="gray.600">
+						{statusConfig.message}
+					</Text>
+				</Box>
 
-			{/* Transaction Details */}
-			<Box
-				p={6}
-				borderWidth="1px"
-				borderRadius="lg"
-				bg="white"
-				boxShadow="sm"
-				mb={6}
-			>
-				<Heading size="sm" mb={4} color="gray.700">
-					Transaction Details
-				</Heading>
-
-				<Stack spacing={4} divider={<Divider />}>
-					<Flex justify="space-between">
-						<Text color="gray.600">Transaction ID</Text>
-						<Text fontWeight="medium">
-							{paymentStatus.transactionId}
-						</Text>
-					</Flex>
-
-					<Flex justify="space-between">
-						<Text color="gray.600">Date & Time</Text>
-						<Text fontWeight="medium">
-							{formatDate(
-								paymentStatus.timestamp,
-								"dd/MM/yyyy hh:mm a"
-							)}
-						</Text>
-					</Flex>
-
-					<Flex justify="space-between">
-						<Text color="gray.600">Payment Mode</Text>
-						<Text fontWeight="medium">Wallet</Text>
-					</Flex>
-
-					<Flex justify="space-between">
-						<Text color="gray.600">Amount</Text>
-						<Text fontWeight="bold" color="primary.600">
-							{formatCurrency(
-								paymentStatus.amount,
-								"INR",
-								true,
-								false
-							)}
-						</Text>
-					</Flex>
-				</Stack>
-			</Box>
-
-			{/* Bill Details */}
-			{selectedBills.length > 0 && (
+				{/* Transaction Details */}
 				<Box
 					p={6}
 					borderWidth="1px"
 					borderRadius="lg"
 					bg="white"
 					boxShadow="sm"
-					mb={6}
 				>
+					{/* add share receipt button in this block */}
 					<Heading size="sm" mb={4} color="gray.700">
-						Bill Details
+						Transaction Details
 					</Heading>
 
-					<VStack spacing={4} align="stretch">
-						{selectedBills.map((bill) => (
-							<Box
-								key={bill.billid}
-								p={4}
-								borderWidth="1px"
-								borderRadius="md"
-								bg="gray.50"
-							>
-								<Flex justify="space-between" mb={2}>
-									<Text fontWeight="medium">
-										{bill.label}
-									</Text>
-									<Text fontWeight="bold">
-										{formatCurrency(
-											bill.amount,
-											"INR",
-											true,
-											false
-										)}
-									</Text>
-								</Flex>
-								<Text fontSize="sm" color="gray.600">
-									Bill ID: {bill.billid}
-								</Text>
-							</Box>
-						))}
-					</VStack>
+					<Stack spacing={4} divider={<Divider />}>
+						<Flex justify="space-between">
+							<Text color="gray.600">Transaction ID</Text>
+							<Text fontWeight="medium">
+								{paymentStatus.transactionId}
+							</Text>
+						</Flex>
+
+						<Flex justify="space-between">
+							<Text color="gray.600">Date & Time</Text>
+							<Text fontWeight="medium">
+								{formatDate(
+									paymentStatus.timestamp,
+									"dd/MM/yyyy hh:mm a"
+								)}
+							</Text>
+						</Flex>
+
+						<Flex justify="space-between">
+							<Text color="gray.600">Payment Mode</Text>
+							<Text fontWeight="medium">Wallet</Text>
+						</Flex>
+
+						<Flex justify="space-between">
+							<Text color="gray.600">Amount</Text>
+							<Text fontWeight="bold" color="primary.600">
+								{formatCurrency(
+									paymentStatus.amount,
+									"INR",
+									true,
+									false
+								)}
+							</Text>
+						</Flex>
+					</Stack>
 				</Box>
-			)}
 
-			{/* Action Buttons */}
-			<HStack spacing={4} justify="center" mt={6}>
-				{paymentStatus.status === "success" && (
-					<>
-						<ChakraButton
-							leftIcon={<FaReceipt />}
-							colorScheme="blue"
-							variant="outline"
-							onClick={handleDownloadReceipt}
-							isLoading={isDownloading}
-							loadingText="Downloading..."
-						>
-							Download Receipt
-						</ChakraButton>
-						<ChakraButton
-							leftIcon={<FaShare />}
-							colorScheme="blue"
-							variant="outline"
-							onClick={handleShareReceipt}
-							isLoading={isSharing}
-							loadingText="Sharing..."
-						>
-							Share Receipt
-						</ChakraButton>
-					</>
+				{/* Bill Details */}
+				{selectedBills.length > 0 && (
+					<Box
+						p={6}
+						borderWidth="1px"
+						borderRadius="lg"
+						bg="white"
+						boxShadow="sm"
+					>
+						<Heading size="sm" mb={4} color="gray.700">
+							Bill Details
+						</Heading>
+
+						<VStack spacing={4} align="stretch">
+							{selectedBills.map((bill) => (
+								<Box
+									key={bill.billid}
+									p={4}
+									borderWidth="1px"
+									borderRadius="md"
+									bg="gray.50"
+								>
+									<Flex justify="space-between" mb={2}>
+										<Text fontWeight="medium">
+											{bill.label}
+										</Text>
+										<Text fontWeight="bold">
+											{formatCurrency(
+												bill.amount,
+												"INR",
+												true,
+												false
+											)}
+										</Text>
+									</Flex>
+									<Text fontSize="sm" color="gray.600">
+										Bill ID: {bill.billid}
+									</Text>
+								</Box>
+							))}
+						</VStack>
+					</Box>
 				)}
-			</HStack>
 
-			{/* Back to Home Button */}
-			<Flex justify="center" mt={6}>
-				<Button onClick={nav.goSearch} size="lg">
-					{paymentStatus.status === "failure"
-						? "Try Again"
-						: "Make Another Payment"}
-				</Button>
+				{/* Action Buttons */}
+				<ActionButtonGroup
+					buttonConfigList={buttonConfigList}
+					bg="transparent"
+				/>
 			</Flex>
-		</Box>
+		</>
 	);
 };
