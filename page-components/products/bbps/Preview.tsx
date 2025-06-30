@@ -193,6 +193,7 @@ export const Preview = (): JSX.Element => {
 			label: "Proceed to Payment",
 			loading: false,
 			disabled: !canProceed,
+			onClick: nav.goPayment,
 			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
