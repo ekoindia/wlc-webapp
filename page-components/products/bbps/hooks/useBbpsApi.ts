@@ -87,14 +87,38 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 			// Simulate API delay
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 
-			const success = mockResponseType === "success";
-			const pending = mockResponseType === "pending";
+			console.log(
+				"[BBPS API] Creating mock response for type:",
+				mockResponseType
+			);
+
+			// Map the response type to the appropriate status code
+			let statusCode: number;
+			let message: string;
+
+			switch (mockResponseType) {
+				case "success":
+					statusCode = 0; // Success
+					message = "Payment successful";
+					break;
+				case "failure":
+					statusCode = 1; // Failure
+					message = "Payment failed";
+					break;
+				case "pending":
+					statusCode = 2; // Pending
+					message = "Payment is being processed";
+					break;
+				default:
+					statusCode = 0; // Default to success
+					message = "Payment processed";
+			}
 
 			// Return mock response based on type
 			return {
 				data: {
-					status: success ? 0 : pending ? 2 : 1,
-					message: `Payment ${mockResponseType}`,
+					status: statusCode,
+					message: message,
 					data: {
 						transactionId: `TXN${Date.now()}${Math.floor(Math.random() * 1000)}`,
 						amount: paymentRequest.payment_amount,
