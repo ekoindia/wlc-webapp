@@ -267,7 +267,12 @@ export const Status = (): JSX.Element => {
 										{bill.label}
 									</Text>
 									<Text fontWeight="bold">
-										{formatCurrency(bill.amount)}
+										{formatCurrency(
+											bill.amount,
+											"INR",
+											true,
+											false
+										)}
 									</Text>
 								</Flex>
 								<Text fontSize="sm" color="gray.600">
