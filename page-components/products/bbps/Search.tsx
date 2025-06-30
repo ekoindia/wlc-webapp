@@ -1,5 +1,5 @@
-import { Flex } from "@chakra-ui/react";
-import { ActionButtonGroup } from "components";
+import { Box, Flex } from "@chakra-ui/react";
+import { ActionButtonGroup, PageTitle } from "components";
 import router from "next/router";
 import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -15,15 +15,17 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 	const { fetchBills, processBillFetchResponse, isLoadingBills } =
 		useBbpsApi(product);
 
+	const { useMockData } = state;
+
 	// Set mock data flag based on product configuration
 	useEffect(() => {
-		if (product?.useMockData !== state.useMockData) {
+		if (product?.useMockData !== useMockData) {
 			dispatch({
 				type: "SET_MOCK_DATA_FLAG",
 				useMockData: product?.useMockData || false,
 			});
 		}
-	}, [product?.useMockData, state.useMockData, dispatch]);
+	}, [product?.useMockData, useMockData, dispatch]);
 
 	const {
 		register,
@@ -124,27 +126,50 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 	];
 
 	return (
-		<form onSubmit={handleSubmit(onSubmit)}>
-			<Flex
-				direction="column"
-				px={{ base: "6", md: "8" }}
-				pt="6"
-				pb="8"
-				bg="white"
-				gap="8"
-				border="card"
-				boxShadow="basic"
-				borderRadius="10px"
-			>
-				<Form
-					parameter_list={product.searchFields}
-					register={register}
-					formValues={state.searchFormData}
-					control={control}
-					errors={errors}
-				/>
-				<ActionButtonGroup buttonConfigList={buttonConfigList} />
-			</Flex>
-		</form>
+		<Flex direction="column">
+			<PageTitle
+				title="Search"
+				subtitle="Search for bills"
+				toolComponent={
+					useMockData && (
+						<Box
+							px={2}
+							py={1}
+							bg="yellow.100"
+							color="yellow.800"
+							borderRadius="md"
+							fontSize="sm"
+							fontWeight="medium"
+						>
+							Mock Mode
+						</Box>
+					)
+				}
+			/>
+
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<Flex
+					direction="column"
+					px={{ base: "6", md: "8" }}
+					mx={{ base: "4", md: "0" }}
+					pt="6"
+					pb="8"
+					bg="white"
+					gap="8"
+					border="card"
+					boxShadow="basic"
+					borderRadius="10px"
+				>
+					<Form
+						parameter_list={product.searchFields}
+						register={register}
+						formValues={state.searchFormData}
+						control={control}
+						errors={errors}
+					/>
+					<ActionButtonGroup buttonConfigList={buttonConfigList} />
+				</Flex>
+			</form>
+		</Flex>
 	);
 };
