@@ -99,11 +99,11 @@ export const Preview = (): JSX.Element => {
 
 		if (isNaN(amount)) {
 			error = "Please enter a valid amount";
-		} else if (min && amount < min) {
+		} else if (min !== undefined && amount < min) {
 			error = `Amount must be at least ₹${min}`;
-		} else if (max && amount > max) {
+		} else if (max !== undefined && amount > max) {
 			error = `Amount cannot exceed ₹${max}`;
-		} else if (multiple && amount % multiple !== 0) {
+		} else if (multiple !== undefined && amount % multiple !== 0) {
 			error = `Amount must be a multiple of ₹${multiple}`;
 		}
 
