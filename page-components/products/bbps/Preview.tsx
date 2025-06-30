@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import Button from "components/Button/Button";
 import Input from "components/Input/Input";
+import { PageTitle } from "components/PageTitle";
 import { useContext, useEffect, useState } from "react";
 import { BbpsContext } from "./context/BbpsContext";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
@@ -172,7 +173,7 @@ export const Preview = (): JSX.Element => {
 	 * Get selection title based on selection mode
 	 * @returns {string} The title text
 	 */
-	const getSelectionTitle = (): string => {
+	const getSelectionSubtitle = (): string => {
 		switch (selectionMode) {
 			case "multiOptional":
 				return "Select one or more bills to pay";
@@ -187,24 +188,25 @@ export const Preview = (): JSX.Element => {
 
 	return (
 		<Box>
-			<Flex justify="space-between" align="center" mb={4}>
-				<Heading size="md" color="primary.600">
-					{getSelectionTitle()}
-				</Heading>
-				{useMockData && (
-					<Box
-						px={2}
-						py={1}
-						bg="yellow.100"
-						color="yellow.800"
-						borderRadius="md"
-						fontSize="sm"
-						fontWeight="medium"
-					>
-						Mock Mode
-					</Box>
-				)}
-			</Flex>
+			<PageTitle
+				title="Select Bills"
+				subtitle={getSelectionSubtitle()}
+				toolComponent={
+					useMockData && (
+						<Box
+							px={2}
+							py={1}
+							bg="yellow.100"
+							color="yellow.800"
+							borderRadius="md"
+							fontSize="sm"
+							fontWeight="medium"
+						>
+							Mock Mode
+						</Box>
+					)
+				}
+			/>
 
 			<Stack spacing={4} mt={6}>
 				{bills.map((bill) => {
