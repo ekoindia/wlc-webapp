@@ -26,7 +26,7 @@ export const transformBillData = (response: BillFetchResponse) => {
 	}
 
 	// Transform bill details
-	const bills = response.data.billDetailsList.map((bill) => {
+	const bills = response.data.billDetailsList.map((bill, index) => {
 		// Parse amount values
 		const amount = parseFloat(bill.billAmount);
 		const minAmount = bill.minBillPayAmount
@@ -43,9 +43,7 @@ export const transformBillData = (response: BillFetchResponse) => {
 		const label = `${bill.billNumber} - ${bill.billDueDate}`;
 
 		return {
-			billid:
-				bill.bharatBillReferenceNumber ||
-				`bill-${Math.random().toString(36).substr(2, 9)}`,
+			billid: bill.bharatBillReferenceNumber || `bill-${index}-${amount}`,
 			label,
 			amount,
 			amountRules: {
