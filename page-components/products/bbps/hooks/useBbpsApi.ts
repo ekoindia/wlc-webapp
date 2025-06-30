@@ -1,4 +1,5 @@
 import { useEpsV3Fetch } from "hooks/useApiFetch";
+import { PaymentStatusType } from "../context/types";
 import { BbpsProduct } from "../types";
 import { mockBillFetchResponse } from "../utils/mockData";
 import { transformBillData } from "../utils/transformBillData";
@@ -17,7 +18,8 @@ interface PaymentRequest {
 
 /**
  * Hook to handle BBPS API calls with mock data support
- * @param product
+ * @param {BbpsProduct} [product] Product configuration
+ * @returns {object} API functions and loading states
  */
 export const useBbpsApi = (product?: BbpsProduct) => {
 	const [fetchBills, isLoadingBills] = useEpsV3Fetch(
@@ -36,7 +38,8 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 
 	/**
 	 * Fetch bills from either the API or mock data
-	 * @param data
+	 * @param {Record<string, string>} data Request data
+	 * @returns {Promise<{data: any, error: string | null}>} API response
 	 */
 	const fetchBillsWithMockSupport = async (data: Record<string, string>) => {
 		// Use mock data if specified in the product config or if API is not available
@@ -71,19 +74,27 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 
 	/**
 	 * Make payment API call
-	 * @param paymentRequest Payment request payload
+	 * @param {PaymentRequest} paymentRequest Payment request payload
+	 * @param {PaymentStatusType} [mockResponseType] Mock response type (success, pending, error)
+	 * @returns {Promise<{data: any, error: string | null}>} API response
 	 */
-	const makePayment = async (paymentRequest: PaymentRequest) => {
+	const makePayment = async (
+		paymentRequest: PaymentRequest,
+		mockResponseType: PaymentStatusType = "success"
+	) => {
 		// Use mock data if specified in the product config
 		if (product?.useMockData) {
 			// Simulate API delay
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 
-			// Return mock success response
+			const success = mockResponseType === "success";
+			const pending = mockResponseType === "pending";
+
+			// Return mock response based on type
 			return {
 				data: {
-					status: 0,
-					message: "Payment processed successfully",
+					status: success ? 0 : pending ? 2 : 1,
+					message: `Payment ${mockResponseType}`,
 					data: {
 						transactionId: `TXN${Date.now()}${Math.floor(Math.random() * 1000)}`,
 						amount: paymentRequest.payment_amount,
@@ -114,7 +125,8 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 
 	/**
 	 * Transform the API response into the format expected by the context
-	 * @param response
+	 * @param {any} response API response
+	 * @returns {any} Transformed response
 	 */
 	const processBillFetchResponse = (response: any) => {
 		if (!response) return null;
