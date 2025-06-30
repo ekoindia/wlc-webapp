@@ -211,7 +211,7 @@ export const Preview = (): JSX.Element => {
 	];
 
 	return (
-		<Flex direction="column" gap={4}>
+		<>
 			<PageTitle
 				title="Select Bills"
 				subtitle={getSelectionSubtitle()}
@@ -424,6 +424,6 @@ export const Preview = (): JSX.Element => {
 					bg="transparent"
 				/>
 			</Flex>
-		</Flex>
+		</>
 	);
 };
