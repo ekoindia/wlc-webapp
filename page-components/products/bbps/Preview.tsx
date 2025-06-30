@@ -251,7 +251,7 @@ export const Preview = (): JSX.Element => {
 							borderColor={
 								isSelected ? "primary.500" : "gray.200"
 							}
-							bg={isSelected ? "blue.50" : "white"}
+							bg={isSelected ? "focusbg" : "white"}
 							transition="all 0.2s"
 						>
 							<Flex direction="column" w="100%">
