@@ -1,14 +1,14 @@
 import {
 	Box,
+	Divider,
 	Flex,
 	Heading,
 	Radio,
 	RadioGroup,
-	Stack,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
-import { Button, PageTitle } from "components";
+import { ActionButtonGroup, PageTitle } from "components";
 import { useContext, useState } from "react";
 import { formatCurrency } from "utils/numberFormat";
 import { BbpsContext } from "./context/BbpsContext";
@@ -165,8 +165,33 @@ export const Payment = () => {
 		}
 	};
 
+	const buttonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Proceed to Payment",
+			loading: isProcessing,
+			disabled: false,
+			onClick: handlePayment,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Back to Preview",
+			onClick: nav.goPreview,
+			disabled: isProcessing,
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
+		},
+	];
+
 	return (
-		<Box>
+		<>
 			<PageTitle
 				title="Payment Summary"
 				subtitle="Confirm your payment"
@@ -187,20 +212,20 @@ export const Payment = () => {
 				}
 			/>
 
-			{/* Payment Summary */}
-			<Box
-				p={6}
-				borderWidth="1px"
-				borderRadius="lg"
-				bg="white"
-				boxShadow="sm"
-				mb={6}
-			>
-				<Heading size="sm" mb={4} color="gray.700">
-					Selected Bills
-				</Heading>
-
-				<Stack spacing={4}>
+			<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
+				{/* Payment Summary */}
+				<Flex
+					direction="column"
+					gap="4"
+					p={6}
+					borderRadius="lg"
+					bg="white"
+					boxShadow="sm"
+				>
+					<Text fontSize="lg" fontWeight="bold" color="gray.700">
+						Selected Bills
+					</Text>
+					{/* Bills List */}
 					{selectedBills.map((bill) => (
 						<Flex
 							key={bill.billid}
@@ -220,100 +245,86 @@ export const Payment = () => {
 							</Text>
 						</Flex>
 					))}
-				</Stack>
+					{/* Divider */}
+					<Divider />
 
-				{/* Total Amount */}
-				<Flex
-					justify="space-between"
-					mt={6}
-					pt={4}
-					borderTopWidth="1px"
-					borderColor="gray.200"
-					fontWeight="bold"
-				>
-					<Text fontSize="lg">Total Amount</Text>
-					<Text fontSize="lg" color="primary.600">
-						{formatCurrency(totalAmount, "INR", true, false)}
-					</Text>
+					{/* Total Amount */}
+					<Flex justify="space-between" fontWeight="bold">
+						<Text fontSize="lg">Total Amount</Text>
+						<Text fontSize="lg" color="primary.600">
+							{formatCurrency(totalAmount, "INR", true, false)}
+						</Text>
+					</Flex>
 				</Flex>
-			</Box>
 
-			{/* Payment Options (simplified) */}
-			<Box
-				p={6}
-				borderWidth="1px"
-				borderRadius="lg"
-				bg="white"
-				boxShadow="sm"
-				mb={8}
-			>
-				<Heading size="sm" mb={4} color="gray.700">
-					Payment Method
-				</Heading>
-				<Text color="gray.600">
-					Payment will be processed from your default wallet
-				</Text>
-			</Box>
-
-			{/* Mock Response Selection (only shown when useMockData is true) */}
-			{useMockData && (
-				<Box
+				{/* Payment Options (simplified) */}
+				<Flex
+					direction="column"
+					gap="4"
 					p={6}
 					borderWidth="1px"
 					borderRadius="lg"
-					bg="yellow.50"
-					boxShadow="sm"
-					mb={8}
+					bg="white"
 				>
-					<Heading size="sm" mb={4} color="yellow.700">
-						Mock Response Type
+					<Heading size="sm" color="gray.700">
+						Payment Method
 					</Heading>
-					<RadioGroup
-						onChange={(value) =>
-							handleMockResponseTypeChange(
-								value as PaymentStatusType
-							)
-						}
-						value={mockResponseType || "success"}
+					<Text fontSize="sm" color="gray.600">
+						Payment will be processed from your default wallet
+					</Text>
+				</Flex>
+
+				{/* Mock Response Selection (only shown when useMockData is true) */}
+				{useMockData && (
+					<Flex
+						direction="column"
+						gap="4"
+						p={6}
+						borderRadius="lg"
+						bg="yellow.50"
 					>
-						<Stack direction="row" spacing={6}>
-							<Radio value="success" colorScheme="green">
-								Success
-							</Radio>
-							<Radio value="failure" colorScheme="red">
-								Failure
-							</Radio>
-							<Radio value="pending" colorScheme="blue">
-								Pending
-							</Radio>
-						</Stack>
-					</RadioGroup>
-				</Box>
-			)}
+						<Heading size="sm" color="yellow.700">
+							Mock Response Type
+						</Heading>
 
-			{/* Action Buttons */}
-			<Flex justify="center" mt={8}>
-				<Button
-					onClick={handlePayment}
-					size="lg"
-					isLoading={isProcessing}
-					loadingText="Processing..."
-					px={10}
-				>
-					Confirm Payment
-				</Button>
-			</Flex>
+						<RadioGroup
+							onChange={(value) =>
+								handleMockResponseTypeChange(
+									value as PaymentStatusType
+								)
+							}
+							value={mockResponseType || "success"}
+						>
+							<Flex gap="4">
+								{Object.values(paymentStatusMocks).map(
+									(mock) => (
+										<Radio
+											key={mock.status}
+											value={mock.status}
+											colorScheme={
+												mock.status === "success"
+													? "green"
+													: mock.status === "failure"
+														? "red"
+														: "blue"
+											}
+										>
+											<Text textTransform="capitalize">
+												{mock.status}
+											</Text>
+										</Radio>
+									)
+								)}
+							</Flex>
+						</RadioGroup>
+					</Flex>
+				)}
 
-			<Flex justify="center" mt={4}>
-				<Button
-					variant="ghost"
-					onClick={nav.goPreview}
-					color="primary.500"
-					size="lg"
-				>
-					Back to Bill Selection
-				</Button>
+				<ActionButtonGroup
+					buttonConfigList={buttonConfigList}
+					bg="transparent"
+				/>
 			</Flex>
-		</Box>
+		</>
 	);
 };
