@@ -7,12 +7,12 @@ import { UserType } from "constants/UserTypes";
 const ONBOARDING_PERMISSIONS = {
 	ADMIN: {
 		key: "admin", // Corresponds to isAdmin = true
-		allowedAgentTypes: [2, 1], // 2 = Retailer, 1 = Distributor
+		allowedAgentTypes: [UserType.MERCHANT, UserType.DISTRIBUTOR], // 2 = Retailer, 1 = Distributor
 		autoMapDistributor: false,
 	},
 	SUPER_DISTRIBUTOR: {
 		key: UserType.SUPER_DISTRIBUTOR, // Corresponds to usertype = 7
-		allowedAgentTypes: [2, 1], // 2 = Retailer, 1 = Distributor
+		allowedAgentTypes: [UserType.MERCHANT, UserType.DISTRIBUTOR], // 2 = Retailer, 1 = Distributor
 		autoMapDistributor: false,
 	},
 	DISTRIBUTOR: {
