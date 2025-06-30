@@ -156,6 +156,7 @@ const OnboardViaFile = ({
 							label="Select Agent Type"
 							options={agentTypeList}
 							onChange={(value) => setApplicantType(value)}
+							required
 						/>
 					)}
 					<Flex direction="column">
