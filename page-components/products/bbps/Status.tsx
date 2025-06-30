@@ -20,6 +20,7 @@ import {
 	FaReceipt,
 	FaShare,
 } from "react-icons/fa";
+import { formatCurrency } from "utils/numberFormat";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusType } from "./context/types";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
@@ -64,22 +65,6 @@ export const Status = (): JSX.Element => {
 			</Box>
 		);
 	}
-
-	/**
-	 * Format currency for display
-	 * @param {number} amount - The amount to format
-	 * @returns {string} Formatted currency string
-	 */
-	const formatCurrency = (amount: number): string => {
-		return new Intl.NumberFormat("en-IN", {
-			style: "currency",
-			currency: "INR",
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		})
-			.format(amount)
-			.replace(/^(\D+)/, "₹");
-	};
 
 	/**
 	 * Format date for display
@@ -243,7 +228,12 @@ export const Status = (): JSX.Element => {
 					<Flex justify="space-between">
 						<Text color="gray.600">Amount</Text>
 						<Text fontWeight="bold" color="primary.600">
-							{formatCurrency(paymentStatus.amount)}
+							{formatCurrency(
+								paymentStatus.amount,
+								"INR",
+								true,
+								false
+							)}
 						</Text>
 					</Flex>
 				</Stack>
