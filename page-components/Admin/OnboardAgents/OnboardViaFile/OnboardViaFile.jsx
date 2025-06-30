@@ -160,7 +160,7 @@ const OnboardViaFile = ({
 						/>
 					)}
 					<Flex direction="column">
-						<InputLabel required={true}>
+						<InputLabel textTransform="none" required={true}>
 							Download Sample File (for Onboarding {_label})
 						</InputLabel>
 						<Link
@@ -178,8 +178,8 @@ const OnboardViaFile = ({
 					</Flex>
 
 					<Flex direction="column">
-						<InputLabel required={true}>
-							Upload the List of {_label} to Onboard
+						<InputLabel textTransform="none" required={true}>
+							Upload the list of {_label}(s) to onboard
 						</InputLabel>
 						<Dropzone
 							file={file}
