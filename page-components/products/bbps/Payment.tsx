@@ -65,19 +65,6 @@ export const Payment = () => {
 			payload: paymentStatus,
 		});
 
-		toast({
-			title: `Payment ${status === "success" ? "successful" : status === "pending" ? "pending" : "failed"}`,
-			description: paymentStatus.message,
-			status:
-				status === "success"
-					? "success"
-					: status === "pending"
-						? "info"
-						: "error",
-			duration: 5000,
-			isClosable: true,
-		});
-
 		// Navigate to status page
 		dispatch({ type: "SET_CURRENT_STEP", step: "status" });
 		nav.goStatus();
