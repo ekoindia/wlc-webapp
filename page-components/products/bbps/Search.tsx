@@ -29,7 +29,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		register,
 		control,
 		handleSubmit,
-		formState: { errors, isSubmitting, isDirty, isValid },
+		formState: { errors, isSubmitting, isValid },
 	} = useForm({
 		mode: "onChange",
 		defaultValues: product.defaultSearchValues || {},
@@ -106,7 +106,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 			size: "lg",
 			label: "Proceed",
 			loading: isSubmitting || isLoadingBills,
-			disabled: !isValid || !isDirty,
+			disabled: !isValid,
 			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
 		{
