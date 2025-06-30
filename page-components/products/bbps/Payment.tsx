@@ -10,6 +10,7 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
+import { formatCurrency } from "utils/numberFormat";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusData, PaymentStatusType } from "./context/types";
 import { useBbpsApi } from "./hooks/useBbpsApi";
@@ -31,18 +32,6 @@ export const Payment = () => {
 
 	// Get API functions
 	const { makePayment } = useBbpsApi(selectedProduct);
-
-	// Format currency for display
-	const formatCurrency = (amount: number) => {
-		return new Intl.NumberFormat("en-IN", {
-			style: "currency",
-			currency: "INR",
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		})
-			.format(amount)
-			.replace(/^(\D+)/, "₹");
-	};
 
 	// Handle mock response type change
 	const handleMockResponseTypeChange = (value: PaymentStatusType) => {
