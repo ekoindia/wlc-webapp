@@ -98,6 +98,12 @@ export const Payment = () => {
 		};
 
 		console.log("[BBPS] Payment request:", paymentRequest);
+		console.log(
+			"[BBPS] Using mock mode:",
+			useMockData,
+			"with response type:",
+			mockResponseType
+		);
 
 		// Validate that the sum of bill amounts equals total amount
 		const sumOfBillAmounts = paymentRequest.payment_amount_breakup.reduce(
@@ -122,8 +128,13 @@ export const Payment = () => {
 		}
 
 		try {
-			// Make the actual payment API call
-			const { data: response, error } = await makePayment(paymentRequest);
+			// Make the actual payment API call - pass mockResponseType when in mock mode
+			const { data: response, error } = await makePayment(
+				paymentRequest,
+				useMockData ? mockResponseType : undefined
+			);
+
+			console.log("[BBPS] API response:", response, "error:", error);
 
 			if (error || !response) {
 				// Handle payment failure
@@ -136,6 +147,14 @@ export const Payment = () => {
 				handlePaymentStatus(
 					"success",
 					response.message || "Payment processed successfully",
+					response.data?.transactionId,
+					response.data?.timestamp
+				);
+			} else if (response.status === 1) {
+				// Handle payment failure (status 1)
+				handlePaymentStatus(
+					"failure",
+					response.message || "Payment failed. Please try again.",
 					response.data?.transactionId,
 					response.data?.timestamp
 				);
