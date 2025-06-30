@@ -1,6 +1,5 @@
 import {
 	Box,
-	Button,
 	Flex,
 	Heading,
 	Radio,
@@ -9,6 +8,7 @@ import {
 	Text,
 	useToast,
 } from "@chakra-ui/react";
+import { Button, PageTitle } from "components";
 import { useContext, useState } from "react";
 import { formatCurrency } from "utils/numberFormat";
 import { BbpsContext } from "./context/BbpsContext";
@@ -167,24 +167,25 @@ export const Payment = () => {
 
 	return (
 		<Box>
-			<Flex justify="space-between" align="center" mb={6}>
-				<Heading size="md" color="primary.600">
-					Payment Summary
-				</Heading>
-				{useMockData && (
-					<Box
-						px={2}
-						py={1}
-						bg="yellow.100"
-						color="yellow.800"
-						borderRadius="md"
-						fontSize="sm"
-						fontWeight="medium"
-					>
-						Mock Mode
-					</Box>
-				)}
-			</Flex>
+			<PageTitle
+				title="Payment Summary"
+				subtitle="Confirm your payment"
+				toolComponent={
+					useMockData && (
+						<Box
+							px={2}
+							py={1}
+							bg="yellow.100"
+							color="yellow.800"
+							borderRadius="md"
+							fontSize="sm"
+							fontWeight="medium"
+						>
+							Mock Mode
+						</Box>
+					)
+				}
+			/>
 
 			{/* Payment Summary */}
 			<Box
@@ -298,7 +299,6 @@ export const Payment = () => {
 					isLoading={isProcessing}
 					loadingText="Processing..."
 					px={10}
-					borderRadius="full"
 				>
 					Confirm Payment
 				</Button>
