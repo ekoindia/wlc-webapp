@@ -252,7 +252,12 @@ export const Payment = () => {
 						>
 							<Text>{bill.label}</Text>
 							<Text fontWeight="bold">
-								{formatCurrency(bill.amount)}
+								{formatCurrency(
+									bill.amount,
+									"INR",
+									true,
+									false
+								)}
 							</Text>
 						</Flex>
 					))}
@@ -269,7 +274,7 @@ export const Payment = () => {
 				>
 					<Text fontSize="lg">Total Amount</Text>
 					<Text fontSize="lg" color="primary.600">
-						{formatCurrency(totalAmount)}
+						{formatCurrency(totalAmount, "INR", true, false)}
 					</Text>
 				</Flex>
 			</Box>
