@@ -56,7 +56,7 @@ const parseRouteParams = (slug?: string[]): RouteParams => {
  * Entry point for the Bbps page.
  * @returns {JSX.Element} Bbps page
  */
-export default function BbpsEntry() {
+export default function BbpsPage() {
 	const { query } = useRouter();
 	const { productId, step } = parseRouteParams(
 		query.slug as string[] | undefined
@@ -77,3 +77,8 @@ export default function BbpsEntry() {
 		</PaddingBox>
 	);
 }
+
+BbpsPage.pageMeta = {
+	title: "Bbps | Products",
+	isFixedBottomAppBar: true,
+};
