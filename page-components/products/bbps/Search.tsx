@@ -129,7 +129,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		<Flex direction="column">
 			<PageTitle
 				title="Search"
-				subtitle="Search for bills"
+				subtitle="Fetch your pending bills"
 				toolComponent={
 					useMockData && (
 						<Box
