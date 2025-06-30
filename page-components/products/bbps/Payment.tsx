@@ -41,6 +41,48 @@ export const Payment = () => {
 		});
 	};
 
+	// Helper function to handle payment status updates
+	const handlePaymentStatus = (
+		status: PaymentStatusType,
+		message: string,
+		transactionId?: string,
+		timestamp?: string
+	): void => {
+		const paymentStatus: PaymentStatusData = {
+			status,
+			message,
+			transactionId:
+				transactionId ||
+				`TXN${Date.now()}${Math.floor(Math.random() * 1000)}`,
+			amount: totalAmount,
+			timestamp: timestamp || new Date().toISOString(),
+			billIds: selectedBills.map((bill) => bill.billid),
+			...(status === "failure" ? paymentStatusMocks.failure : {}),
+		};
+
+		dispatch({
+			type: "SET_PAYMENT_STATUS",
+			payload: paymentStatus,
+		});
+
+		toast({
+			title: `Payment ${status === "success" ? "successful" : status === "pending" ? "pending" : "failed"}`,
+			description: paymentStatus.message,
+			status:
+				status === "success"
+					? "success"
+					: status === "pending"
+						? "info"
+						: "error",
+			duration: 5000,
+			isClosable: true,
+		});
+
+		// Navigate to status page
+		dispatch({ type: "SET_CURRENT_STEP", step: "status" });
+		nav.goStatus();
+	};
+
 	// Handle payment submission
 	const handlePayment = async () => {
 		setIsProcessing(true);
@@ -85,123 +127,33 @@ export const Payment = () => {
 
 			if (error || !response) {
 				// Handle payment failure
-				const paymentStatus: PaymentStatusData = {
-					...paymentStatusMocks.failure,
-					status: "failure",
-					message: error || "Payment failed. Please try again.",
-					amount: totalAmount,
-					billIds: selectedBills.map((bill) => bill.billid),
-					transactionId: `TXN${Date.now()}${Math.floor(Math.random() * 1000)}`,
-					timestamp: new Date().toISOString(),
-				};
-
-				dispatch({
-					type: "SET_PAYMENT_STATUS",
-					payload: paymentStatus,
-				});
-
-				toast({
-					title: "Payment failed",
-					description: paymentStatus.message,
-					status: "error",
-					duration: 5000,
-					isClosable: true,
-				});
-
-				// Navigate to status page
-				dispatch({ type: "SET_CURRENT_STEP", step: "status" });
-				nav.goStatus();
+				handlePaymentStatus(
+					"failure",
+					error || "Payment failed. Please try again."
+				);
 			} else if (response.status === 0) {
 				// Handle payment success
-				const paymentStatus: PaymentStatusData = {
-					status: "success",
-					message:
-						response.message || "Payment processed successfully",
-					transactionId:
-						response.data?.transactionId ||
-						`TXN${Date.now()}${Math.floor(Math.random() * 1000)}`,
-					amount: totalAmount,
-					timestamp:
-						response.data?.timestamp || new Date().toISOString(),
-					billIds: selectedBills.map((bill) => bill.billid),
-				};
-
-				dispatch({
-					type: "SET_PAYMENT_STATUS",
-					payload: paymentStatus,
-				});
-
-				toast({
-					title: "Payment successful",
-					description: paymentStatus.message,
-					status: "success",
-					duration: 5000,
-					isClosable: true,
-				});
-
-				// Navigate to status page
-				dispatch({ type: "SET_CURRENT_STEP", step: "status" });
-				nav.goStatus();
+				handlePaymentStatus(
+					"success",
+					response.message || "Payment processed successfully",
+					response.data?.transactionId,
+					response.data?.timestamp
+				);
 			} else {
 				// Handle payment pending or other status
-				const paymentStatus: PaymentStatusData = {
-					status: "pending",
-					message: response.message || "Payment is being processed",
-					transactionId:
-						response.data?.transactionId ||
-						`TXN${Date.now()}${Math.floor(Math.random() * 1000)}`,
-					amount: totalAmount,
-					timestamp:
-						response.data?.timestamp || new Date().toISOString(),
-					billIds: selectedBills.map((bill) => bill.billid),
-				};
-
-				dispatch({
-					type: "SET_PAYMENT_STATUS",
-					payload: paymentStatus,
-				});
-
-				toast({
-					title: "Payment pending",
-					description: paymentStatus.message,
-					status: "info",
-					duration: 5000,
-					isClosable: true,
-				});
-
-				// Navigate to status page
-				dispatch({ type: "SET_CURRENT_STEP", step: "status" });
-				nav.goStatus();
+				handlePaymentStatus(
+					"pending",
+					response.message || "Payment is being processed",
+					response.data?.transactionId,
+					response.data?.timestamp
+				);
 			}
 		} catch (error) {
 			console.error("[BBPS] Payment error:", error);
-
-			const paymentStatus: PaymentStatusData = {
-				...paymentStatusMocks.failure,
-				status: "failure",
-				message: "An unexpected error occurred during payment",
-				amount: totalAmount,
-				billIds: selectedBills.map((bill) => bill.billid),
-				transactionId: `TXN${Date.now()}${Math.floor(Math.random() * 1000)}`,
-				timestamp: new Date().toISOString(),
-			};
-
-			dispatch({
-				type: "SET_PAYMENT_STATUS",
-				payload: paymentStatus,
-			});
-
-			toast({
-				title: "Payment error",
-				description: "An unexpected error occurred during payment",
-				status: "error",
-				duration: 5000,
-				isClosable: true,
-			});
-
-			// Navigate to status page
-			dispatch({ type: "SET_CURRENT_STEP", step: "status" });
-			nav.goStatus();
+			handlePaymentStatus(
+				"failure",
+				"An unexpected error occurred during payment"
+			);
 		} finally {
 			setIsProcessing(false);
 		}
