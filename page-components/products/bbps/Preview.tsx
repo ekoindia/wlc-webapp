@@ -6,10 +6,10 @@ import {
 	Heading,
 	HStack,
 	Radio,
-	Stack,
 	Text,
 } from "@chakra-ui/react";
-import Button from "components/Button/Button";
+import { ActionButtonGroup, Button } from "components";
+
 import Input from "components/Input/Input";
 import { PageTitle } from "components/PageTitle";
 import { useContext, useEffect, useState } from "react";
@@ -186,8 +186,31 @@ export const Preview = (): JSX.Element => {
 		}
 	};
 
+	const buttonConfigList = [
+		{
+			type: "submit",
+			size: "lg",
+			label: "Proceed to Payment",
+			loading: false,
+			disabled: !canProceed,
+			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+		},
+		{
+			variant: "link",
+			label: "Back to Search",
+			onClick: nav.goSearch,
+			styles: {
+				color: "primary.DEFAULT",
+				bg: { base: "white", md: "none" },
+				h: { base: "64px", md: "64px" },
+				w: { base: "100%", md: "auto" },
+				_hover: { textDecoration: "none" },
+			},
+		},
+	];
+
 	return (
-		<Box>
+		<Flex direction="column" gap={4}>
 			<PageTitle
 				title="Select Bills"
 				subtitle={getSelectionSubtitle()}
@@ -208,7 +231,12 @@ export const Preview = (): JSX.Element => {
 				}
 			/>
 
-			<Stack spacing={4} mt={6}>
+			<Flex
+				direction="column"
+				gap={4}
+				mx={{ base: "4", md: "0" }}
+				mb={{ base: "128px", md: "64px" }}
+			>
 				{bills.map((bill) => {
 					const isSelected = isBillSelected(bill.billid);
 					const { billNumber, dueDate } = parseBillLabel(bill.label);
@@ -374,47 +402,27 @@ export const Preview = (): JSX.Element => {
 						</Box>
 					);
 				})}
-			</Stack>
+				{/* Total Amount */}
+				{selectedBills.length > 0 && (
+					<Flex
+						justify="space-between"
+						p="4"
+						bg="gray.50"
+						borderRadius="md"
+						fontWeight="bold"
+						align="center"
+					>
+						<Text>Total Amount:</Text>
+						<Text fontSize="lg">{formatCurrency(totalAmount)}</Text>
+					</Flex>
+				)}
 
-			{/* Total Amount and Actions */}
-			{selectedBills.length > 0 && (
-				<Flex
-					justify="space-between"
-					p={4}
-					bg="gray.50"
-					borderRadius="md"
-					mt={6}
-					fontWeight="bold"
-					align="center"
-				>
-					<Text>Total Amount:</Text>
-					<Text fontSize="lg">{formatCurrency(totalAmount)}</Text>
-				</Flex>
-			)}
-
-			{/* Action Buttons */}
-			<Flex justify="center" mt={6}>
-				<Button
-					onClick={nav.goPayment}
-					isDisabled={!canProceed}
-					size="lg"
-					px={10}
-					borderRadius="full"
-				>
-					Make Payment
-				</Button>
+				{/* Action Buttons */}
+				<ActionButtonGroup
+					buttonConfigList={buttonConfigList}
+					bg="transparent"
+				/>
 			</Flex>
-
-			<Flex justify="center" mt={4}>
-				<Button
-					variant="ghost"
-					onClick={nav.goSearch}
-					color="primary.500"
-					size="lg"
-				>
-					Back to Search
-				</Button>
-			</Flex>
-		</Box>
+		</Flex>
 	);
 };
