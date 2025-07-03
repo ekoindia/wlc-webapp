@@ -62,6 +62,19 @@ interface PaymentOptionConfig {
 	rightText?: string;
 }
 
+interface BillDetailConfig {
+	id: string;
+	label: string;
+	getValue: (_bill: Bill, _billNumber: string) => string;
+	isVisible: (_bill: Bill) => boolean;
+}
+
+interface BillDetailItemProps {
+	config: BillDetailConfig;
+	bill: Bill;
+	billNumber: string;
+}
+
 interface PaymentOptionCardProps {
 	config: PaymentOptionConfig;
 	bill: Bill;
@@ -134,6 +147,28 @@ const PaymentOptionCard = ({
 };
 
 /**
+ * Reusable BillDetailItem component
+ * @param {BillDetailItemProps} props - The component props
+ * @returns {JSX.Element} BillDetailItem component
+ */
+const BillDetailItem = ({
+	config,
+	bill,
+	billNumber,
+}: BillDetailItemProps): JSX.Element => {
+	if (!config.isVisible(bill)) return <></>;
+
+	return (
+		<Text fontSize="sm" color="gray.700" fontWeight="medium">
+			<Text as="span" fontWeight="normal">
+				{config.label}:
+			</Text>{" "}
+			{config.getValue(bill, billNumber)}
+		</Text>
+	);
+};
+
+/**
  * BillCard component for displaying individual bill information
  * @param {BillCardProps} props - The component props
  * @returns {JSX.Element} BillCard component
@@ -153,6 +188,28 @@ const BillCard = ({
 	const [customAmount, setCustomAmount] = useState<string>("");
 
 	const billNumber = bill.billNumber;
+
+	// Bill details configuration
+	const billDetailsConfig: BillDetailConfig[] = [
+		{
+			id: "customerName",
+			label: "Customer Name",
+			getValue: (_bill, _billNumber) => _bill.customerName || _billNumber,
+			isVisible: () => true,
+		},
+		{
+			id: "billDate",
+			label: "Bill Date",
+			getValue: (_bill, _billNumber) => _bill.billDate,
+			isVisible: () => true,
+		},
+		{
+			id: "billDueDate",
+			label: "Bill Due Date",
+			getValue: (_bill, _billNumber) => _bill.billDueDate,
+			isVisible: () => true,
+		},
+	];
 
 	// Payment options configuration
 	const paymentOptionsConfig: PaymentOptionConfig[] = [
@@ -287,7 +344,6 @@ const BillCard = ({
 					<Flex
 						direction={{ base: "column", sm: "row" }}
 						justify="space-between"
-						align={{ base: "stretch", sm: "flex-start" }}
 						mb={4}
 						gap={3}
 					>
@@ -316,24 +372,13 @@ const BillCard = ({
 								minW="0"
 								flex="1"
 							>
-								<HStack spacing={2} minW="0">
-									<Text
-										fontSize="sm"
-										color="blue.600"
-										fontWeight="medium"
-									>
-										📄
-									</Text>
-									<Text
-										fontWeight="semibold"
-										fontSize={{ base: "sm", md: "md" }}
-										color="gray.900"
-										isTruncated
-										maxW="200px"
-									>
-										{bill.billid}
-									</Text>
-								</HStack>
+								<Text
+									fontWeight="semibold"
+									fontSize={{ base: "sm", md: "md" }}
+									color="gray.900"
+								>
+									{bill.billid}
+								</Text>
 								<Text fontSize="xs" color="gray.500">
 									Bill ID
 								</Text>
@@ -362,75 +407,40 @@ const BillCard = ({
 							>
 								Total Amount
 							</Text>
-							{/* Due Date Tag */}
-							{bill.dueDateTag && (
-								<Box
-									bg={
-										bill.dueDateTag.color === "red"
-											? "red.500"
-											: "orange.400"
-									}
-									color="white"
-									px={2}
-									py={1}
-									borderRadius="md"
-									fontSize="xs"
-									fontWeight="bold"
-									mt={1}
-									alignSelf={{
-										base: "flex-start",
-										sm: "flex-end",
-									}}
-								>
-									{bill.dueDateTag.text}
-								</Box>
-							)}
 						</VStack>
 					</Flex>
 
 					{/* Bill Details */}
-					<VStack spacing={2} align="stretch">
-						<HStack spacing={2}>
-							<Text fontSize="sm" color="gray.400">
-								👤
-							</Text>
-							<Text
-								fontWeight="medium"
-								fontSize="sm"
-								color="gray.700"
+					<Flex justify="space-between" align="flex-start">
+						<Flex direction="column" gap="1">
+							{billDetailsConfig.map((config) => (
+								<BillDetailItem
+									key={config.id}
+									config={config}
+									bill={bill}
+									billNumber={billNumber}
+								/>
+							))}
+						</Flex>
+						{/* Due Date Tag */}
+						{bill.dueDateTag && (
+							<Box
+								bg={
+									bill.dueDateTag.color === "red"
+										? "red.500"
+										: "orange.400"
+								}
+								color="white"
+								px={2}
+								py={1}
+								borderRadius="md"
+								fontSize="xs"
+								fontWeight="bold"
 							>
-								{bill.customerName || billNumber}
-							</Text>
-						</HStack>
-
-						<Grid
-							templateColumns={{ base: "1fr", sm: "1fr 1fr" }}
-							gap={2}
-						>
-							<HStack spacing={2}>
-								<Text fontSize="sm" color="red.500">
-									📅
-								</Text>
-								<Text fontSize="sm" color="gray.700">
-									<Text as="span" fontWeight="medium">
-										Due:
-									</Text>{" "}
-									{bill.billDueDate}
-								</Text>
-							</HStack>
-							<HStack spacing={2}>
-								<Text fontSize="sm" color="gray.400">
-									🕒
-								</Text>
-								<Text fontSize="sm" color="gray.700">
-									<Text as="span" fontWeight="medium">
-										Bill:
-									</Text>{" "}
-									{bill.billDate}
-								</Text>
-							</HStack>
-						</Grid>
-					</VStack>
+								{bill.dueDateTag.text}
+							</Box>
+						)}
+					</Flex>
 				</Box>
 			</GridItem>
 
