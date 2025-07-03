@@ -42,7 +42,7 @@ export const mockBillFetchResponse: BillFetchResponse = {
 				billDate: "01-07-2025",
 				amount_multiple: "500.00",
 				billNumber: "HGE1VT54UCC6DB27VW6JB1",
-				billDueDate: "12-07-2025",
+				billDueDate: "02-07-2025",
 				filler1: "Sam",
 				filler2: null,
 				minBillPayAmount: "500.00",
