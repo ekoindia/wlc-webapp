@@ -743,7 +743,10 @@ export const Preview = (): JSX.Element => {
 		{
 			type: "submit",
 			size: "lg",
-			label: "Proceed to Payment",
+			label:
+				selectedBills.length > 0
+					? `Pay (${Currency({ amount: totalAmount })})`
+					: "Pay",
 			loading: false,
 			disabled: !canProceed,
 			onClick: nav.goPayment,
@@ -822,22 +825,6 @@ export const Preview = (): JSX.Element => {
 						/>
 					);
 				})}
-				{/* Total Amount */}
-				{selectedBills.length > 0 && (
-					<Flex
-						justify="space-between"
-						p="4"
-						bg="gray.50"
-						borderRadius="md"
-						fontWeight="bold"
-						align="center"
-					>
-						<Text>Total Amount:</Text>
-						<Text fontSize="lg">
-							<Currency amount={totalAmount} />
-						</Text>
-					</Flex>
-				)}
 
 				{/* Action Buttons */}
 				<ActionButtonGroup

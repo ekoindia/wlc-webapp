@@ -168,7 +168,7 @@ export const Payment = () => {
 		{
 			type: "submit",
 			size: "lg",
-			label: "Proceed to Payment",
+			label: "Pay",
 			loading: isProcessing,
 			disabled: false,
 			onClick: handlePayment,
