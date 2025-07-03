@@ -209,3 +209,63 @@ The following requirements must be met:
 - Ensure all components are properly typed with TypeScript interfaces.
 - Write unit tests for all new functionality.
 - Maintain backward compatibility with the API contract.
+
+## **10. User Flow**
+
+```mermaid
+flowchart TD
+  %% ───────────────────────────────────────────
+  %% PRE-FETCH  (Search Customer + Validate)
+  %% ───────────────────────────────────────────
+  A0([Start<br/>Open Bill-Pay screen]) --> SC1["Render **Search Customer** card<br/>• Mobile No.<br/>• Bill Account No.<br/>• Other authenticators"]
+  SC1 --> SC2{{All <br/>mandatory fields filled?}}
+  SC2 -->|No| SC1
+  SC2 -->|Yes| A1["Call Validate Payment API"]
+  A1 -->|JSON response| B0{{Read<br/>pay_multiple_bills}}
+
+  %% ───────────────────────────────────────────
+  %% MODE N — SINGLE-BILL
+  %% ───────────────────────────────────────────
+  B0 -->|N| N1["Display exactly one bill<br/>(radio button pre-selected)"]
+  N1 --> N2["Validate amount:<br/>min ≤ amt ≤ max AND amt % multiple == 0"]
+  N2 --> N3["User taps **Pay**"]
+  N3 --> N4["Build Make Payment request<br/>• billid<br/>• payment_amount"]
+  N4 --> A2([Submit<br/>Make Payment])
+
+  %% ───────────────────────────────────────────
+  %% MODE Y — OPTIONAL MULTI-BILL
+  %% ───────────────────────────────────────────
+  B0 -->|Y| Y1["Render list of bills with<br/>checkboxes (all unchecked)"]
+  Y1 --> Y2{{User selects ≥ 1 bill?}}
+  Y2 -->|No| Y1
+  Y2 -->|Yes| Y3["Compute total Σ(selected)"]
+  Y3 --> Y4["Validate each selected bill's<br/>min/max/multiple rules"]
+  Y4 --> Y5["User taps **Pay**"]
+  Y5 --> Y6["Build Make Payment request<br/>• payment_amount = Σ<br/>• payment_amount_breakup[]"]
+  Y6 --> A2
+
+  %% ───────────────────────────────────────────
+  %% MODE M — MANDATORY MULTI-BILL
+  %% ───────────────────────────────────────────
+  B0 -->|M| M1["Render all bills with<br/>checkboxes pre-selected & disabled"]
+  M1 --> M2["Auto-compute total Σ(all bills)"]
+  M2 --> M3["Validate each bill's<br/>min/max/multiple rules"]
+  M3 --> M4["User taps **Pay**"]
+  M4 --> M5["Build Make Payment request<br/>• payment_amount = Σ<br/>• payment_amount_breakup[]"]
+  M5 --> A2
+
+  %% ───────────────────────────────────────────
+  %% POST-PAYMENT
+  %% ───────────────────────────────────────────
+  A2 --> C0{{payment_status}}
+  C0 -->|PAID/SUCCESS| C1([Show Success<br/>+ BBPS ref no.])
+  C0 -->|PENDING| C2([Show Pending<br/>& poll status])
+  C0 -->|FAILED| C3([Show Failure<br/>+ retry option])
+
+  %% ───────────────────────────────────────────
+  %% NOTES
+  %% ───────────────────────────────────────────
+  subgraph Legend
+    note1[*] --> note2[Skip modulus check if **amount_multiple** absent]
+  end
+```
