@@ -69,7 +69,7 @@ export interface BillFetchResponse {
 	status: number;
 }
 
-export interface BillPaymentResponse {
+export interface BillPaymentRequest {
 	sourceid: string;
 	customerid: string;
 	paymentid: string;

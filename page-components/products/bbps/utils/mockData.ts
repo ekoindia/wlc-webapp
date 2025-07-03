@@ -1,6 +1,6 @@
 import {
 	BillFetchResponse,
-	BillPaymentResponse,
+	BillPaymentRequest,
 	PaymentStatusData,
 } from "../context/types";
 
@@ -85,7 +85,7 @@ export const mockBillFetchResponse: BillFetchResponse = {
 	status: 0,
 };
 
-export const mockBillPaymentResponse: BillPaymentResponse = {
+export const mockBillPaymentRequest: BillPaymentRequest = {
 	sourceid: "EKO01",
 	customerid: "EKO9466009091",
 	paymentid: "HGAFP016920000334231",
