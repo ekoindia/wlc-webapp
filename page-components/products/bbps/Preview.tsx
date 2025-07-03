@@ -223,7 +223,7 @@ const BillCard = ({
 		},
 		{
 			id: "minimum",
-			label: "Minimum",
+			label: "Minimum Amount",
 			getValue: (_bill) => _bill.amountRules.min || null,
 			isAvailable: (_bill) => !!_bill.amountRules.min,
 			isPresetAmount: true,
@@ -489,10 +489,7 @@ const BillCard = ({
 															)
 														}
 														inputLeftElement={
-															<Text
-																color="gray.500"
-																fontWeight="medium"
-															>
+															<Text fontWeight="medium">
 																₹
 															</Text>
 														}
@@ -502,7 +499,8 @@ const BillCard = ({
 															borderColor:
 																"primary.light",
 														}}
-														fontSize="sm"
+														fontSize="md"
+														fontWeight="semibold"
 													/>
 													{/* Amount Constraints */}
 													{getAmountConstraints() && (
@@ -555,7 +553,7 @@ const BillCard = ({
 												</Text>
 											</HStack>
 											<Text
-												fontSize="sm"
+												fontSize="md"
 												fontWeight="bold"
 												color="blue.800"
 											>
@@ -745,7 +743,7 @@ export const Preview = (): JSX.Element => {
 			size: "lg",
 			label:
 				selectedBills.length > 0
-					? `Pay (${Currency({ amount: totalAmount })})`
+					? `Pay ${Currency({ amount: totalAmount })}`
 					: "Pay",
 			loading: false,
 			disabled: !canProceed,
