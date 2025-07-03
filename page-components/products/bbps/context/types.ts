@@ -28,6 +28,10 @@ export interface SelectedBill {
 	label: string;
 	amount: number; // agent-editable
 	amountRules: AmountRules;
+	billNumber: string;
+	billDate: string;
+	billDueDate: string;
+	customerName: string;
 }
 
 // Raw API response structure (for reference)
