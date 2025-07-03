@@ -10,7 +10,13 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { ActionButtonGroup, Button, Input, PageTitle } from "components";
+import {
+	ActionButtonGroup,
+	Button,
+	Currency,
+	Input,
+	PageTitle,
+} from "components";
 import { useContext, useEffect, useState } from "react";
 import { BbpsContext } from "./context/BbpsContext";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
@@ -46,17 +52,12 @@ interface BillCardProps {
 		_isPresetAmount?: boolean
 	) => void;
 	amountError?: string;
-	formatCurrency: (_amount: number) => string;
 }
 
 interface PaymentOptionConfig {
 	id: "full" | "minimum" | "partial";
 	label: string;
 	getValue: (_bill: Bill) => number | null;
-	getDisplayValue: (
-		_bill: Bill,
-		_formatCurrency: (_amount: number) => string
-	) => string;
 	isAvailable: (_bill: Bill) => boolean;
 	isPresetAmount: boolean;
 	rightText?: string;
@@ -80,7 +81,6 @@ interface PaymentOptionCardProps {
 	bill: Bill;
 	paymentOption: string;
 	onOptionChange: (_option: "full" | "minimum" | "partial") => void;
-	formatCurrency: (_amount: number) => string;
 	children?: React.ReactNode;
 }
 
@@ -94,7 +94,6 @@ const PaymentOptionCard = ({
 	bill,
 	paymentOption,
 	onOptionChange,
-	formatCurrency,
 	children,
 }: PaymentOptionCardProps): JSX.Element => {
 	const isSelected = paymentOption === config.id;
@@ -131,14 +130,17 @@ const PaymentOptionCard = ({
 							{config.label}
 						</Text>
 					</HStack>
-					<Text
-						fontSize="sm"
-						color={config.rightText ? "gray.500" : "gray.600"}
-						fontWeight={config.rightText ? "normal" : "medium"}
-					>
-						{config.rightText ||
-							config.getDisplayValue(bill, formatCurrency)}
-					</Text>
+					{config.rightText ? (
+						<Text
+							fontSize="sm"
+							color="gray.500"
+							fontWeight="normal"
+						>
+							{config.rightText}
+						</Text>
+					) : (
+						<Currency amount={config.getValue(bill)} />
+					)}
 				</HStack>
 				{children}
 			</VStack>
@@ -180,7 +182,6 @@ const BillCard = ({
 	onSelect,
 	onAmountChange,
 	amountError,
-	formatCurrency,
 }: BillCardProps): JSX.Element => {
 	const [paymentOption, setPaymentOption] = useState<
 		"full" | "minimum" | "partial"
@@ -217,8 +218,6 @@ const BillCard = ({
 			id: "full",
 			label: "Full Amount",
 			getValue: (_bill) => _bill.amount,
-			getDisplayValue: (_bill, _formatCurrency) =>
-				_formatCurrency(_bill.amount),
 			isAvailable: () => true,
 			isPresetAmount: true,
 		},
@@ -226,10 +225,6 @@ const BillCard = ({
 			id: "minimum",
 			label: "Minimum",
 			getValue: (_bill) => _bill.amountRules.min || null,
-			getDisplayValue: (_bill, _formatCurrency) =>
-				_bill.amountRules.min
-					? _formatCurrency(_bill.amountRules.min)
-					: "",
 			isAvailable: (_bill) => !!_bill.amountRules.min,
 			isPresetAmount: true,
 		},
@@ -237,7 +232,6 @@ const BillCard = ({
 			id: "partial",
 			label: "Custom Amount",
 			getValue: () => null, // Custom amount is handled separately
-			getDisplayValue: () => "",
 			isAvailable: () => true,
 			isPresetAmount: false,
 			rightText: "Enter your amount",
@@ -398,7 +392,7 @@ const BillCard = ({
 								color="gray.900"
 								textAlign={{ base: "left", sm: "right" }}
 							>
-								{formatCurrency(bill.amount)}
+								<Currency amount={bill.amount} />
 							</Text>
 							<Text
 								fontSize="xs"
@@ -478,7 +472,6 @@ const BillCard = ({
 										onOptionChange={
 											handlePaymentOptionChange
 										}
-										formatCurrency={formatCurrency}
 									>
 										{/* Custom Amount Input - Only show when partial option is selected */}
 										{config.id === "partial" &&
@@ -566,9 +559,9 @@ const BillCard = ({
 												fontWeight="bold"
 												color="blue.800"
 											>
-												{formatCurrency(
-													getCurrentPaymentAmount()
-												)}
+												<Currency
+													amount={getCurrentPaymentAmount()}
+												/>
 											</Text>
 										</HStack>
 									</Box>
@@ -724,22 +717,6 @@ export const Preview = (): JSX.Element => {
 		return selectedBills.some((bill) => bill.billid === billId);
 	};
 
-	/**
-	 * Format currency for display
-	 * @param {number} amount - The amount to format
-	 * @returns {string} Formatted currency string
-	 */
-	const formatCurrency = (amount: number): string => {
-		return new Intl.NumberFormat("en-IN", {
-			style: "currency",
-			currency: "INR",
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		})
-			.format(amount)
-			.replace(/^(\D+)/, "₹");
-	};
-
 	// Check if proceed button should be enabled
 	const canProceed =
 		selectedBills.length > 0 &&
@@ -842,7 +819,6 @@ export const Preview = (): JSX.Element => {
 								)
 							}
 							amountError={amountErrors[bill.billid]}
-							formatCurrency={formatCurrency}
 						/>
 					);
 				})}
@@ -857,7 +833,9 @@ export const Preview = (): JSX.Element => {
 						align="center"
 					>
 						<Text>Total Amount:</Text>
-						<Text fontSize="lg">{formatCurrency(totalAmount)}</Text>
+						<Text fontSize="lg">
+							<Currency amount={totalAmount} />
+						</Text>
 					</Flex>
 				)}
 

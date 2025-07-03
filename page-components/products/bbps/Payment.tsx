@@ -8,9 +8,8 @@ import {
 	Text,
 	useToast,
 } from "@chakra-ui/react";
-import { ActionButtonGroup, PageTitle } from "components";
+import { ActionButtonGroup, Currency, PageTitle } from "components";
 import { useContext, useState } from "react";
-import { formatCurrency } from "utils/numberFormat";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusData, PaymentStatusType } from "./context/types";
 import { useBbpsApi } from "./hooks/useBbpsApi";
@@ -236,12 +235,7 @@ export const Payment = () => {
 						>
 							<Text>{bill.label}</Text>
 							<Text fontWeight="bold">
-								{formatCurrency(
-									bill.amount,
-									"INR",
-									true,
-									false
-								)}
+								<Currency amount={bill.amount} />
 							</Text>
 						</Flex>
 					))}
@@ -252,7 +246,7 @@ export const Payment = () => {
 					<Flex justify="space-between" fontWeight="bold">
 						<Text fontSize="lg">Total Amount</Text>
 						<Text fontSize="lg" color="primary.600">
-							{formatCurrency(totalAmount, "INR", true, false)}
+							<Currency amount={totalAmount} />
 						</Text>
 					</Flex>
 				</Flex>

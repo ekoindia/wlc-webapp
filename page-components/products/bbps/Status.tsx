@@ -8,7 +8,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { ActionButtonGroup, Button, PageTitle } from "components";
+import { ActionButtonGroup, Button, Currency, PageTitle } from "components";
 import { formatDate } from "libs/dateFormat";
 import { useContext, useEffect } from "react";
 import {
@@ -16,7 +16,6 @@ import {
 	FaExclamationTriangle,
 	FaInfoCircle,
 } from "react-icons/fa";
-import { formatCurrency } from "utils/numberFormat";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusType } from "./context/types";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
@@ -218,12 +217,7 @@ export const Status = (): JSX.Element => {
 						<Flex justify="space-between">
 							<Text color="gray.600">Amount</Text>
 							<Text fontWeight="bold" color="primary.600">
-								{formatCurrency(
-									paymentStatus.amount,
-									"INR",
-									true,
-									false
-								)}
+								<Currency amount={paymentStatus.amount} />
 							</Text>
 						</Flex>
 					</Stack>
@@ -256,12 +250,7 @@ export const Status = (): JSX.Element => {
 											{bill.label}
 										</Text>
 										<Text fontWeight="bold">
-											{formatCurrency(
-												bill.amount,
-												"INR",
-												true,
-												false
-											)}
+											<Currency amount={bill.amount} />
 										</Text>
 									</Flex>
 									<Text fontSize="sm" color="gray.600">
