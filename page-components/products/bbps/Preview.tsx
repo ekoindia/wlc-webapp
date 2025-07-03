@@ -109,10 +109,10 @@ const PaymentOptionCard = ({
 			bg="white"
 			borderRadius="lg"
 			borderWidth="1px"
-			borderColor={isSelected ? "blue.500" : "gray.200"}
+			borderColor={isSelected ? "primary.light" : "gray.200"}
 			cursor="pointer"
 			transition="all 0.2s"
-			_hover={{ borderColor: "blue.300" }}
+			_hover={{ borderColor: "primary.light" }}
 		>
 			<VStack align="stretch" spacing={children ? 3 : 0}>
 				<HStack justify="space-between">
@@ -328,12 +328,12 @@ const BillCard = ({
 			bg="white"
 			borderRadius="xl"
 			borderWidth="2px"
-			borderColor={isSelected ? "blue.500" : "gray.200"}
+			borderColor={isSelected ? "primary.light" : "gray.200"}
 			boxShadow={isSelected ? "lg" : "sm"}
 			transition="all 0.2s"
 			overflow="hidden"
 			_hover={{
-				borderColor: isSelected ? "blue.500" : "gray.300",
+				borderColor: isSelected ? "primary.light" : "gray.300",
 				boxShadow: isSelected ? "lg" : "md",
 			}}
 		>
@@ -503,13 +503,11 @@ const BillCard = ({
 																₹
 															</Text>
 														}
-														bg="gray.50"
+														bg="white"
 														borderColor="gray.300"
 														_focus={{
 															borderColor:
-																"blue.500",
-															boxShadow:
-																"0 0 0 1px blue.500",
+																"primary.light",
 														}}
 														fontSize="sm"
 													/>
