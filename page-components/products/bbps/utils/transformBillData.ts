@@ -51,6 +51,10 @@ export const transformBillData = (response: BillFetchResponse) => {
 				max: maxAmount,
 				multiple: amountMultiple,
 			},
+			billNumber: bill.billNumber,
+			billDate: bill.billDate,
+			billDueDate: bill.billDueDate,
+			customerName: bill.filler1 || "N/A",
 		};
 	});
 
