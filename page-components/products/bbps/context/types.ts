@@ -69,6 +69,69 @@ export interface BillFetchResponse {
 	status: number;
 }
 
+export interface BillPaymentResponse {
+	sourceid: string;
+	customerid: string;
+	paymentid: string;
+	objectid: string;
+	currency: string;
+	billerid: string;
+	validationid: string;
+	source_ref_no: string;
+	payment_amount: string;
+	biller_name: string;
+	biller_category: string;
+	authenticators: {
+		parameter_name: string;
+		value: string;
+	}[];
+	payment_type: string;
+	txn_date_time: string;
+	biller_status: string;
+	payment_account: {
+		objectid: string;
+		payment_method: string;
+		remarks: string;
+	};
+	billlist: {
+		objectid: string;
+		billid: string;
+		billerid: string;
+		sourceid: string;
+		billstatus: string;
+		authenticators: {
+			parameter_name: string;
+			value: string;
+		}[];
+		billnumber: string;
+		billperiod: string;
+		net_billamount: string;
+		description: string;
+		additional_details: {
+			seq: string;
+			label: string;
+			value: string;
+		}[];
+		validationid: string;
+		customer_name: string;
+		max_pay_amount: string;
+		min_pay_amount: string;
+		amount_multiple: string;
+		billamount: string;
+		billdate: string;
+		billduedate: string;
+	}[];
+	payment_status: string;
+	debit_amount: string;
+	cou_conv_fee: string;
+	bou_conv_fee: string;
+	bbps_ref_no: string;
+	payment_amount_breakup: {
+		billid: string;
+		bill_payment_amount: string;
+	}[];
+}
+
 /* ────────────────────────────────────────── */
 /* Update BbpsState                          */
 export interface BbpsState {
