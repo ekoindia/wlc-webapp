@@ -40,10 +40,98 @@ interface BillCardProps {
 	isSelected: boolean;
 	selectionMode: string;
 	onSelect: (_billId: string) => void;
-	onAmountChange: (_billId: string, _amount: number) => void;
+	onAmountChange: (
+		_billId: string,
+		_amount: number,
+		_isPresetAmount?: boolean
+	) => void;
 	amountError?: string;
 	formatCurrency: (_amount: number) => string;
 }
+
+interface PaymentOptionConfig {
+	id: "full" | "minimum" | "partial";
+	label: string;
+	getValue: (_bill: Bill) => number | null;
+	getDisplayValue: (
+		_bill: Bill,
+		_formatCurrency: (_amount: number) => string
+	) => string;
+	isAvailable: (_bill: Bill) => boolean;
+	isPresetAmount: boolean;
+	rightText?: string;
+}
+
+interface PaymentOptionCardProps {
+	config: PaymentOptionConfig;
+	bill: Bill;
+	paymentOption: string;
+	onOptionChange: (_option: "full" | "minimum" | "partial") => void;
+	formatCurrency: (_amount: number) => string;
+	children?: React.ReactNode;
+}
+
+/**
+ * Reusable PaymentOptionCard component
+ * @param {PaymentOptionCardProps} props - The component props
+ * @returns {JSX.Element} PaymentOptionCard component
+ */
+const PaymentOptionCard = ({
+	config,
+	bill,
+	paymentOption,
+	onOptionChange,
+	formatCurrency,
+	children,
+}: PaymentOptionCardProps): JSX.Element => {
+	const isSelected = paymentOption === config.id;
+	const isAvailable = config.isAvailable(bill);
+
+	if (!isAvailable) return <></>;
+
+	return (
+		<Box
+			as="label"
+			p={3}
+			bg="white"
+			borderRadius="lg"
+			borderWidth="1px"
+			borderColor={isSelected ? "blue.500" : "gray.200"}
+			cursor="pointer"
+			transition="all 0.2s"
+			_hover={{ borderColor: "blue.300" }}
+		>
+			<VStack align="stretch" spacing={children ? 3 : 0}>
+				<HStack justify="space-between">
+					<HStack>
+						<Radio
+							name={`payment-option-${bill.billid}`}
+							isChecked={isSelected}
+							onChange={() => onOptionChange(config.id)}
+							colorScheme="blue"
+						/>
+						<Text
+							fontWeight="medium"
+							fontSize="sm"
+							color="gray.900"
+						>
+							{config.label}
+						</Text>
+					</HStack>
+					<Text
+						fontSize="sm"
+						color={config.rightText ? "gray.500" : "gray.600"}
+						fontWeight={config.rightText ? "normal" : "medium"}
+					>
+						{config.rightText ||
+							config.getDisplayValue(bill, formatCurrency)}
+					</Text>
+				</HStack>
+				{children}
+			</VStack>
+		</Box>
+	);
+};
 
 /**
  * BillCard component for displaying individual bill information
@@ -66,6 +154,39 @@ const BillCard = ({
 
 	const billNumber = bill.billNumber;
 
+	// Payment options configuration
+	const paymentOptionsConfig: PaymentOptionConfig[] = [
+		{
+			id: "full",
+			label: "Full Amount",
+			getValue: (_bill) => _bill.amount,
+			getDisplayValue: (_bill, _formatCurrency) =>
+				_formatCurrency(_bill.amount),
+			isAvailable: () => true,
+			isPresetAmount: true,
+		},
+		{
+			id: "minimum",
+			label: "Minimum",
+			getValue: (_bill) => _bill.amountRules.min || null,
+			getDisplayValue: (_bill, _formatCurrency) =>
+				_bill.amountRules.min
+					? _formatCurrency(_bill.amountRules.min)
+					: "",
+			isAvailable: (_bill) => !!_bill.amountRules.min,
+			isPresetAmount: true,
+		},
+		{
+			id: "partial",
+			label: "Custom Amount",
+			getValue: () => null, // Custom amount is handled separately
+			getDisplayValue: () => "",
+			isAvailable: () => true,
+			isPresetAmount: false,
+			rightText: "Enter your amount",
+		},
+	];
+
 	/**
 	 * Handle payment option change
 	 * @param {string} option - The selected payment option
@@ -75,7 +196,12 @@ const BillCard = ({
 	): void => {
 		setPaymentOption(option);
 
+		const config = paymentOptionsConfig.find((c) => c.id === option);
+		if (!config) return;
+
 		let amount = bill.amount;
+		let isPresetAmount = config.isPresetAmount;
+
 		if (option === "minimum" && bill.amountRules.min) {
 			amount = bill.amountRules.min;
 		} else if (option === "partial") {
@@ -85,7 +211,7 @@ const BillCard = ({
 			amount = bill.amount;
 		}
 
-		onAmountChange(bill.billid, amount);
+		onAmountChange(bill.billid, amount, isPresetAmount);
 	};
 
 	/**
@@ -95,7 +221,7 @@ const BillCard = ({
 	const handleCustomAmountChange = (value: string): void => {
 		setCustomAmount(value);
 		const amount = parseFloat(value) || 0;
-		onAmountChange(bill.billid, amount);
+		onAmountChange(bill.billid, amount, false); // Custom amount is not preset
 	};
 
 	/**
@@ -319,226 +445,85 @@ const BillCard = ({
 						h="100%"
 					>
 						{/* Payment Options Header */}
-						<Box
+						<Text
+							fontWeight="semibold"
+							color="gray.900"
+							fontSize="sm"
 							px={{ base: 4, md: 6 }}
 							py={3}
 							borderBottomWidth="1px"
-							borderColor="gray.200"
 						>
-							<HStack spacing={2}>
-								<Text fontSize="sm" color="blue.600">
-									💳
-								</Text>
-								<Text
-									fontWeight="semibold"
-									color="gray.900"
-									fontSize="sm"
-								>
-									Payment Options
-								</Text>
-							</HStack>
-						</Box>
+							Payment Options
+						</Text>
 
 						{/* Payment Options Content */}
 						<Box px={{ base: 4, md: 6 }} py={4}>
 							<VStack spacing={3} align="stretch">
-								{/* Full Amount Option */}
-								<Box
-									as="label"
-									p={3}
-									bg="white"
-									borderRadius="lg"
-									borderWidth="1px"
-									borderColor={
-										paymentOption === "full"
-											? "blue.500"
-											: "gray.200"
-									}
-									cursor="pointer"
-									transition="all 0.2s"
-									_hover={{ borderColor: "blue.300" }}
-								>
-									<HStack justify="space-between">
-										<HStack>
-											<Radio
-												name={`payment-option-${bill.billid}`}
-												isChecked={
-													paymentOption === "full"
-												}
-												onChange={() =>
-													handlePaymentOptionChange(
-														"full"
-													)
-												}
-												colorScheme="blue"
-											/>
-											<Text
-												fontWeight="medium"
-												fontSize="sm"
-												color="gray.900"
-											>
-												Full Amount
-											</Text>
-										</HStack>
-										<Text
-											fontSize="sm"
-											color="gray.600"
-											fontWeight="medium"
-										>
-											{formatCurrency(bill.amount)}
-										</Text>
-									</HStack>
-								</Box>
-
-								{/* Minimum Amount Option */}
-								{bill.amountRules.min && (
-									<Box
-										as="label"
-										p={3}
-										bg="white"
-										borderRadius="lg"
-										borderWidth="1px"
-										borderColor={
-											paymentOption === "minimum"
-												? "blue.500"
-												: "gray.200"
+								{paymentOptionsConfig.map((config) => (
+									<PaymentOptionCard
+										key={config.id}
+										config={config}
+										bill={bill}
+										paymentOption={paymentOption}
+										onOptionChange={
+											handlePaymentOptionChange
 										}
-										cursor="pointer"
-										transition="all 0.2s"
-										_hover={{ borderColor: "blue.300" }}
+										formatCurrency={formatCurrency}
 									>
-										<HStack justify="space-between">
-											<HStack>
-												<Radio
-													name={`payment-option-${bill.billid}`}
-													isChecked={
-														paymentOption ===
-														"minimum"
-													}
-													onChange={() =>
-														handlePaymentOptionChange(
-															"minimum"
-														)
-													}
-													colorScheme="blue"
-												/>
-												<Text
-													fontWeight="medium"
-													fontSize="sm"
-													color="gray.900"
+										{/* Custom Amount Input - Only show when partial option is selected */}
+										{config.id === "partial" &&
+											paymentOption === "partial" && (
+												<VStack
+													align="stretch"
+													spacing={2}
 												>
-													Minimum
-												</Text>
-											</HStack>
-											<Text
-												fontSize="sm"
-												color="gray.600"
-												fontWeight="medium"
-											>
-												{formatCurrency(
-													bill.amountRules.min
-												)}
-											</Text>
-										</HStack>
-									</Box>
-								)}
-
-								{/* Custom Amount Option */}
-								<Box
-									p={3}
-									bg="white"
-									borderRadius="lg"
-									borderWidth="1px"
-									borderColor={
-										paymentOption === "partial"
-											? "blue.500"
-											: "gray.200"
-									}
-									transition="all 0.2s"
-								>
-									<VStack align="stretch" spacing={3}>
-										<Box as="label" cursor="pointer">
-											<HStack justify="space-between">
-												<HStack>
-													<Radio
-														name={`payment-option-${bill.billid}`}
-														isChecked={
-															paymentOption ===
-															"partial"
-														}
-														onChange={() =>
-															handlePaymentOptionChange(
-																"partial"
+													<Input
+														placeholder={bill.amount.toString()}
+														value={customAmount}
+														onChange={(e) =>
+															handleCustomAmountChange(
+																e.target.value
 															)
 														}
-														colorScheme="blue"
-													/>
-													<Text
-														fontWeight="medium"
+														inputLeftElement={
+															<Text
+																color="gray.500"
+																fontWeight="medium"
+															>
+																₹
+															</Text>
+														}
+														bg="gray.50"
+														borderColor="gray.300"
+														_focus={{
+															borderColor:
+																"blue.500",
+															boxShadow:
+																"0 0 0 1px blue.500",
+														}}
 														fontSize="sm"
-														color="gray.900"
-													>
-														Custom Amount
-													</Text>
-												</HStack>
-												<Text
-													fontSize="sm"
-													color="gray.500"
-												>
-													Enter your amount
-												</Text>
-											</HStack>
-										</Box>
-
-										{/* Custom Amount Input */}
-										{paymentOption === "partial" && (
-											<VStack align="stretch" spacing={2}>
-												<Input
-													placeholder={bill.amount.toString()}
-													value={customAmount}
-													onChange={(e) =>
-														handleCustomAmountChange(
-															e.target.value
-														)
-													}
-													inputLeftElement={
+													/>
+													{/* Amount Constraints */}
+													{getAmountConstraints() && (
 														<Text
+															fontSize="xs"
 															color="gray.500"
-															fontWeight="medium"
 														>
-															₹
+															{getAmountConstraints()}
 														</Text>
-													}
-													bg="gray.50"
-													borderColor="gray.300"
-													_focus={{
-														borderColor: "blue.500",
-														boxShadow:
-															"0 0 0 1px blue.500",
-													}}
-													fontSize="sm"
-												/>
-												{/* Amount Constraints */}
-												{getAmountConstraints() && (
-													<Text
-														fontSize="xs"
-														color="gray.500"
-													>
-														{getAmountConstraints()}
-													</Text>
-												)}
-												{amountError && (
-													<Text
-														fontSize="xs"
-														color="red.500"
-													>
-														{amountError}
-													</Text>
-												)}
-											</VStack>
-										)}
-									</VStack>
-								</Box>
+													)}
+													{amountError && (
+														<Text
+															fontSize="xs"
+															color="red.500"
+														>
+															{amountError}
+														</Text>
+													)}
+												</VStack>
+											)}
+									</PaymentOptionCard>
+								))}
 
 								{/* Selected Amount Confirmation - Only show for full and minimum options */}
 								{paymentOption !== "partial" && (
@@ -664,13 +649,35 @@ export const Preview = (): JSX.Element => {
 	 * Handle amount change for a bill
 	 * @param {string} billId - The bill ID
 	 * @param {number} amount - The amount value
+	 * @param {boolean} isPresetAmount - Whether this is a preset amount (full/minimum) vs custom amount
 	 */
-	const handleAmountChange = (billId: string, amount: number): void => {
+	const handleAmountChange = (
+		billId: string,
+		amount: number,
+		isPresetAmount: boolean = false
+	): void => {
 		const bill = bills.find((b) => b.billid === billId);
 
 		if (!bill) return;
 
-		// Validate amount based on rules
+		// For preset amounts (full/minimum), skip validation and always update
+		if (isPresetAmount) {
+			// Clear any existing errors for this bill
+			setAmountErrors({
+				...amountErrors,
+				[billId]: "",
+			});
+
+			// Always dispatch for preset amounts
+			dispatch({
+				type: "UPDATE_BILL_AMOUNT",
+				billid: billId,
+				amount,
+			});
+			return;
+		}
+
+		// Validate amount based on rules (only for custom amounts)
 		let error = "";
 		const { min, max, multiple } = bill.amountRules;
 
@@ -819,8 +826,12 @@ export const Preview = (): JSX.Element => {
 							onSelect={(billId) =>
 								handleBillSelection(billId, !isSelected)
 							}
-							onAmountChange={(billId, amount) =>
-								handleAmountChange(billId, amount)
+							onAmountChange={(billId, amount, isPresetAmount) =>
+								handleAmountChange(
+									billId,
+									amount,
+									isPresetAmount
+								)
 							}
 							amountError={amountErrors[bill.billid]}
 							formatCurrency={formatCurrency}
