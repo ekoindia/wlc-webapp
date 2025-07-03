@@ -14,6 +14,7 @@ import { ActionButtonGroup, Button, Input, PageTitle } from "components";
 import { useContext, useEffect, useState } from "react";
 import { BbpsContext } from "./context/BbpsContext";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
+import { calculateDueDateTag } from "./utils/transformBillData";
 
 interface Bill {
 	billid: string;
@@ -722,45 +723,6 @@ export const Preview = (): JSX.Element => {
 		})
 			.format(amount)
 			.replace(/^(\D+)/, "₹");
-	};
-
-	/**
-	 * Calculate due date tag based on bill's due date
-	 * @param {string} dueDate - The due date in DD/MM/YYYY format
-	 * @returns {object|null} Due date tag object or null
-	 */
-	const calculateDueDateTag = (
-		dueDate: string
-	): { text: string; color: string } | null => {
-		if (!dueDate || dueDate === "N/A") return null;
-
-		try {
-			// Parse DD/MM/YYYY format
-			const [day, month, year] = dueDate.split("/").map(Number);
-			const dueDateObj = new Date(year, month - 1, day);
-			const today = new Date();
-
-			// Reset time to compare dates only
-			today.setHours(0, 0, 0, 0);
-			dueDateObj.setHours(0, 0, 0, 0);
-
-			const diffTime = dueDateObj.getTime() - today.getTime();
-			const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-			if (diffDays < 0) {
-				return { text: "Overdue", color: "red" };
-			} else if (diffDays <= 7) {
-				return {
-					text: `Due in ${diffDays} day${diffDays !== 1 ? "s" : ""}`,
-					color: "orange",
-				};
-			}
-
-			return null;
-		} catch (error) {
-			console.warn("Error parsing due date:", dueDate, error);
-			return null;
-		}
 	};
 
 	// Check if proceed button should be enabled
