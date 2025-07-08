@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Currency, PageTitle } from "components";
 import { useContext, useState } from "react";
+import InputPintwin from "tf-components/InputPintwin/InputPintwin";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusData, PaymentStatusType } from "./context/types";
 import { useBbpsApi } from "./hooks/useBbpsApi";
@@ -28,6 +29,8 @@ export const Payment = () => {
 		selectedProduct,
 	} = state;
 	const [isProcessing, setIsProcessing] = useState(false);
+	// Store encoded PinTwin value (e.g. "4040|87") returned from InputPintwin
+	const [pintwinEncoded, setPintwinEncoded] = useState<string>("");
 
 	// Get API functions
 	const { makePayment } = useBbpsApi(selectedProduct);
@@ -80,16 +83,15 @@ export const Payment = () => {
 				billid: bill.billid,
 				bill_payment_amount: bill.amount,
 			})),
+			pintwin: pintwinEncoded, // Encoded PIN with key id (e.g. "4040|87")
 			// Add other required fields here based on API specification
 		};
 
-		console.log("[BBPS] Payment request:", paymentRequest);
-		console.log(
-			"[BBPS] Using mock mode:",
-			useMockData,
-			"with response type:",
-			mockResponseType
-		);
+		// Log the payload only when using mock data (for debugging)
+		if (useMockData) {
+			console.log("[BBPS MOCK] Final payment payload:", paymentRequest);
+			console.log("[BBPS MOCK] Response type:", mockResponseType);
+		}
 
 		// Validate that the sum of bill amounts equals total amount
 		const sumOfBillAmounts = paymentRequest.payment_amount_breakup.reduce(
@@ -266,6 +268,27 @@ export const Payment = () => {
 					<Text fontSize="sm" color="gray.600">
 						Payment will be processed from your default wallet
 					</Text>
+					<InputPintwin
+						label="PIN"
+						lengthMin={4}
+						lengthMax={4}
+						required={true}
+						pintwinApp={true}
+						useMockData={true}
+						onChange={(value, masked) => {
+							if (value.includes("|")) {
+								setPintwinEncoded(value);
+							}
+							if (useMockData) {
+								console.log(
+									"[BBPS MOCK] Pintwin encoded:",
+									value,
+									"masked:",
+									masked
+								);
+							}
+						}}
+					/>
 				</Flex>
 
 				{/* Mock Response Selection (only shown when useMockData is true) */}
