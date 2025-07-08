@@ -17,6 +17,7 @@ export interface SearchFieldDef {
 		pattern?: RegExp;
 		message?: string;
 	};
+	defaultValue?: string;
 }
 
 /** Shape for each product/biller tile in the grid */
