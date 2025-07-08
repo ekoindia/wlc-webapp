@@ -17,7 +17,7 @@ import React, {
 } from "react";
 import { FaLock } from "react-icons/fa";
 import KeyboardNumeric from "../KeyboardNumeric/KeyboardNumeric";
-import Pintwin, { PinTwinResponse } from "../Pintwin/Pintwin";
+import Pintwin from "../Pintwin/Pintwin";
 
 /**
  * Props for the InputPintwin component
@@ -31,7 +31,6 @@ import Pintwin, { PinTwinResponse } from "../Pintwin/Pintwin";
  *   lengthMax={6}
  *   required={true}
  *   pintwinApp={true}
- *   fetchPinTwinKey={async () => await api.getPinTwinKey()}
  *   onChange={(encoded, masked) => {
  *     console.log('Encoded PIN:', encoded);
  *     console.log('Masked display:', masked);
@@ -45,6 +44,13 @@ import Pintwin, { PinTwinResponse } from "../Pintwin/Pintwin";
  *   metadata="reset_pin_interaction_id"
  *   showSetPin={true}
  *   onSetPin={() => handleSetPin()}
+ * />
+ *
+ * // Using mock data for testing
+ * <InputPintwin
+ *   label="Enter PIN (Mock Mode)"
+ *   useMockData={true}
+ *   pintwinApp={true}
  * />
  * ```
  */
@@ -81,8 +87,8 @@ interface InputPintwinProps {
 	showSetPin?: boolean;
 	/** Metadata for additional configuration */
 	metadata?: string;
-	/** Custom PinTwin key fetch function */
-	fetchPinTwinKey?: () => Promise<PinTwinResponse>;
+	/** Whether to use mock data instead of making API calls */
+	useMockData?: boolean;
 	/** Callback when value changes */
 	onChange?: (_value: string, _decoratedValue: string) => void;
 	/** Callback when validation changes */
@@ -131,7 +137,7 @@ interface InputPintwinProps {
  * @param {boolean} [props.pintwinApp] - Whether to enable PinTwin secure keypad
  * @param {boolean} [props.showSetPin] - Whether to show Set PIN mode for PIN creation
  * @param {string} [props.metadata] - Additional metadata for PIN operations
- * @param {() => Promise<PinTwinResponse>} [props.fetchPinTwinKey] - Custom function to fetch PinTwin encryption key
+ * @param {boolean} [props.useMockData] - Whether to use mock data instead of making API calls
  * @param {(value: string, decoratedValue: string) => void} [props.onChange] - Callback fired when PIN value changes with encoded and masked values
  * @param {(isValid: boolean) => void} [props.onValidationChange] - Callback fired when validation state changes
  * @param {(isFocused: boolean) => void} [props.onFocusChange] - Callback fired when input focus state changes
@@ -152,10 +158,6 @@ interface InputPintwinProps {
  *   lengthMax={4}
  *   required={true}
  *   pintwinApp={true}
- *   fetchPinTwinKey={async () => {
- *     const response = await fetch('/api/pintwin-key');
- *     return response.json();
- *   }}
  *   onChange={(encodedPin, maskedPin) => {
  *     setPin(encodedPin);
  *     console.log('User sees:', maskedPin); // "****"
@@ -182,13 +184,21 @@ interface InputPintwinProps {
  *     router.push('/forgot-pin');
  *   }}
  * />
+ *
+ * // Mock data mode for testing
+ * <InputPintwin
+ *   label="Test PIN Entry"
+ *   useMockData={true}
+ *   pintwinApp={true}
+ *   onChange={(encoded) => console.log('Mock PIN:', encoded)}
+ * />
  * ```
  */
 const InputPintwin: React.FC<InputPintwinProps> = ({
 	name,
 	label = "Secret PIN",
 	_value = "",
-	valueDecorated = "",
+	valueDecorated: _valueDecorated = "",
 	disabled = false,
 	isFrozen = false,
 	isVisible = true,
@@ -201,7 +211,7 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	pintwinApp = false,
 	showSetPin = false,
 	metadata = "",
-	fetchPinTwinKey,
+	useMockData = false,
 	onChange,
 	onValidationChange,
 	onFocusChange,
@@ -392,6 +402,7 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	 */
 	const handleKeyLoadStateChange = useCallback(
 		(loaded: boolean, error: boolean) => {
+			console.log("handleKeyLoadStateChange", loaded, error);
 			setKeyLoaded(loaded);
 			setKeyLoadError(error);
 
@@ -446,13 +457,6 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	}, [metadata, showSetPin]);
 
 	/**
-	 * Determines if PinTwin should be visible
-	 */
-	const isPintwinVisible = useMemo(() => {
-		return isVisible && !isFrozen && !setPinMode && pintwinApp;
-	}, [isVisible, isFrozen, setPinMode, pintwinApp]);
-
-	/**
 	 * Determines if numeric keyboard should be visible
 	 */
 	const isKeyboardVisible = useMemo(() => {
@@ -472,12 +476,9 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	const handleInputClick = useCallback(() => {
 		if (setPinMode) {
 			onSetPin?.();
-		} else if (keyLoadError && !keyLoaded) {
-			// Retry loading PinTwin key
-			fetchPinTwinKey?.();
 		}
 		inputRef.current?.focus();
-	}, [setPinMode, keyLoadError, keyLoaded, onSetPin, fetchPinTwinKey]);
+	}, [setPinMode, onSetPin]);
 
 	/**
 	 * Renders the input field
@@ -489,7 +490,7 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 					ref={inputRef}
 					name={name}
 					label={label}
-					value={valueDecorated}
+					value={secretValue}
 					type="password"
 					inputMode="tel"
 					minLength={lengthMin}
@@ -525,7 +526,7 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 		[
 			name,
 			label,
-			valueDecorated,
+			secretValue,
 			lengthMin,
 			lengthMax,
 			required,
@@ -577,22 +578,20 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 			{renderInput}
 
 			{/* PinTwin Keypad */}
-			{isPintwinVisible && (
-				<Collapse in={showPintwin} animateOpacity>
-					<Box mt={4}>
-						<Pintwin
-							keyId={keyId}
-							keyLoaded={keyLoaded}
-							keyLoadError={keyLoadError}
-							noLookup={false}
-							disabled={disabled}
-							onKeyReloaded={handleKeyReloaded}
-							onKeyLoadStateChange={handleKeyLoadStateChange}
-							onEncodePinTwinReady={handleEncodePinTwinReady}
-							fetchPinTwinKey={fetchPinTwinKey}
-						/>
-					</Box>
-				</Collapse>
+			{pintwinApp && (
+				<Box mt={4} display={showPintwin ? "block" : "none"}>
+					<Pintwin
+						keyId={keyId}
+						keyLoaded={keyLoaded}
+						keyLoadError={keyLoadError}
+						noLookup={false}
+						disabled={disabled}
+						useMockData={useMockData}
+						onKeyReloaded={handleKeyReloaded}
+						onKeyLoadStateChange={handleKeyLoadStateChange}
+						onEncodePinTwinReady={handleEncodePinTwinReady}
+					/>
+				</Box>
 			)}
 
 			{/* Numeric Keyboard for Mobile */}
