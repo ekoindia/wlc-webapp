@@ -1,4 +1,6 @@
-import { useEpsV3Fetch } from "hooks/useApiFetch";
+import { Endpoints } from "constants/EndPoints";
+import { TransactionTypes } from "constants/EpsTransactions";
+import { useApiFetch } from "hooks";
 import { PaymentStatusType } from "../context/types";
 import { BbpsProduct } from "../types";
 import { mockBillFetchResponse } from "../utils/mockData";
@@ -22,18 +24,11 @@ interface PaymentRequest {
  * @returns {object} API functions and loading states
  */
 export const useBbpsApi = (product?: BbpsProduct) => {
-	const [fetchBills, isLoadingBills] = useEpsV3Fetch(
-		"/billpayments/fetchbill",
-		{
-			method: "POST",
-		}
-	);
+	const [fetchBills, isLoadingBills] = useApiFetch(Endpoints.TRANSACTION, {});
 
-	const [makePaymentCall, isLoadingPayment] = useEpsV3Fetch(
-		"/billpayments/makepayment",
-		{
-			method: "POST",
-		}
+	const [makePaymentCall, isLoadingPayment] = useApiFetch(
+		Endpoints.TRANSACTION,
+		{}
 	);
 
 	/**
@@ -57,7 +52,10 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 		// Otherwise use the real API
 		try {
 			const response = await fetchBills({
-				body: data,
+				body: {
+					interaction_type_id: TransactionTypes.FETCH_BILLS,
+					...data,
+				},
 			});
 			return { data: response.data, error: null };
 		} catch (error) {
@@ -132,7 +130,10 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 		// Otherwise use the real API
 		try {
 			const response = await makePaymentCall({
-				body: paymentRequest,
+				body: {
+					interaction_type_id: TransactionTypes.MAKE_PAYMENT,
+					...paymentRequest,
+				},
 			});
 			return { data: response.data, error: null };
 		} catch (error) {
