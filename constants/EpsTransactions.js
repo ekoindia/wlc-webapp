@@ -26,6 +26,10 @@ export const TransactionTypes = {
 	REOPEN_QUERY: 10019,
 	CLOSE_QUERY: 10020,
 	RAISE_ISSUE: 10000,
+
+	// For BBPS
+	FETCH_BILLS: 280,
+	MAKE_PAYMENT: 63,
 };
 
 /**
