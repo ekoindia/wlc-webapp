@@ -1,6 +1,14 @@
 import { Box, Flex, Icon, Spinner, Text, useToast } from "@chakra-ui/react";
 import { Button } from "components/Button";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Endpoints } from "constants/EndPoints";
+import { fetcher } from "helpers/apiHelper";
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { FaRedo, FaShieldAlt } from "react-icons/fa";
 
 /**
@@ -44,7 +52,6 @@ interface PinTwinResponse {
  * <Pintwin
  *   keyLoaded={true}
  *   noLookup={false}
- *   fetchPinTwinKey={async () => await api.getPinTwinKey()}
  *   onKeyReloaded={(keyId) => console.log('Key loaded:', keyId)}
  *   onKeyLoadStateChange={(loaded, error) => setKeyState({loaded, error})}
  * />
@@ -55,11 +62,16 @@ interface PinTwinResponse {
  *   noLookup={true}
  *   disabled={false}
  * />
+ *
+ * // Using mock data for testing
+ * <Pintwin
+ *   useMockData={true}
+ *   keyLoaded={false}
+ *   noLookup={false}
+ * />
  * ```
  */
 interface PintwinProps {
-	/** ID/position of the PinTwin key */
-	_keyId?: string;
 	/** Whether PinTwin key is loaded */
 	keyLoaded?: boolean;
 	/** Whether there was an error loading the key */
@@ -68,16 +80,14 @@ interface PintwinProps {
 	noLookup?: boolean;
 	/** Whether the component is disabled */
 	disabled?: boolean;
-	/** Language for localization */
-	_language?: string;
+	/** Whether to use mock data instead of making API calls */
+	useMockData?: boolean;
 	/** Callback when PinTwin key is reloaded */
 	onKeyReloaded?: (_keyId: string) => void;
 	/** Callback when key loading state changes */
 	onKeyLoadStateChange?: (_loaded: boolean, _error: boolean) => void;
 	/** Callback when encodePinTwin function is ready */
 	onEncodePinTwinReady?: (_encoderFn: (_pin: string) => string) => void;
-	/** Custom API function for fetching PinTwin key */
-	fetchPinTwinKey?: () => Promise<PinTwinResponse>;
 	/** ID/position of the PinTwin key */
 	keyId?: string;
 	/** Language for localization */
@@ -96,6 +106,28 @@ const PIN_COLORS = [
 ];
 
 /**
+ * Internal function to fetch PinTwin key from API
+ * @returns Promise that resolves to PinTwinResponse
+ */
+const fetchPinTwinKey = async (): Promise<PinTwinResponse> => {
+	const accessToken = sessionStorage.getItem("access_token");
+	const tempUserId = sessionStorage.getItem("temp_user_id");
+
+	const response = await fetcher(
+		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+		{
+			body: {
+				interaction_type_id: 10005,
+				alternate_user_id: tempUserId,
+			},
+			token: accessToken,
+		}
+	);
+
+	return response;
+};
+
+/**
  * Pintwin Component
  *
  * A secure PIN entry component that displays a PinTwin key grid for secure PIN input.
@@ -103,23 +135,21 @@ const PIN_COLORS = [
  * 1. Lookup mode: Shows a visual grid of random digits for secure PIN entry
  * 2. Direct mode: Shows security status for direct PIN entry
  *
- * The component fetches a PinTwin key from the server and displays it as a 10-digit
+ * The component internally fetches a PinTwin key from the server and displays it as a 10-digit
  * lookup table. Users can use this table to securely enter their PIN by looking up
  * the corresponding digits.
- * @param {PintwinProps} props - Component properties
- * @param {string} [props._keyId] - Internal key identifier (prefixed with underscore as unused)
- * @param {boolean} [props.keyLoaded] - Whether the PinTwin key has been successfully loaded
- * @param {boolean} [props.keyLoadError] - Whether there was an error loading the PinTwin key
- * @param {boolean} [props.noLookup] - If true, shows secure mode without lookup table
- * @param {boolean} [props.disabled] - Whether the component is disabled and non-interactive
- * @param {string} [props._language] - Language code for localization (prefixed with underscore as unused)
- * @param {(keyId: string) => void} [props.onKeyReloaded] - Callback fired when a new PinTwin key is loaded
- * @param {(loaded: boolean, error: boolean) => void} [props.onKeyLoadStateChange] - Callback fired when key loading state changes
- * @param {(encoderFn: (pin: string) => string) => void} [props.onEncodePinTwinReady] - Callback to provide the PIN encoding function
- * @param {() => Promise<PinTwinResponse>} [props.fetchPinTwinKey] - Custom function to fetch PinTwin key from API
- * @param {string} [props.keyId] - Key identifier for PIN encoding
- * @param {string} [props.language] - Language preference for UI
- * @returns {React.ReactElement} A React functional component that renders the PinTwin interface
+ * @param props Component properties
+ * @param props.keyLoaded Whether the PinTwin key has been successfully loaded
+ * @param props.keyLoadError Whether there was an error loading the PinTwin key
+ * @param props.noLookup If true, shows secure mode without lookup table
+ * @param props.disabled Whether the component is disabled and non-interactive
+ * @param props.useMockData Whether to use mock data instead of making API calls
+ * @param props.onKeyReloaded Callback fired when a new PinTwin key is loaded
+ * @param props.onKeyLoadStateChange Callback fired when key loading state changes
+ * @param props.onEncodePinTwinReady Callback to provide the PIN encoding function
+ * @param props.keyId Key identifier for PIN encoding (unused)
+ * @param props.language Language preference for UI (unused)
+ * @returns A React functional component that renders the PinTwin interface
  * @example
  * ```typescript
  * // Basic usage with automatic key fetching
@@ -127,10 +157,6 @@ const PIN_COLORS = [
  *   keyLoaded={true}
  *   keyLoadError={false}
  *   noLookup={false}
- *   fetchPinTwinKey={async () => {
- *     const response = await fetch('/api/pintwin-key');
- *     return response.json();
- *   }}
  *   onKeyReloaded={(keyId) => {
  *     console.log('New PinTwin key loaded:', keyId);
  *   }}
@@ -153,38 +179,56 @@ const PIN_COLORS = [
  *   noLookup={true}
  *   disabled={false}
  * />
+ *
+ * // Using mock data for testing/development
+ * <Pintwin
+ *   useMockData={true}
+ *   noLookup={false}
+ * />
  * ```
  */
 const Pintwin: React.FC<PintwinProps> = ({
-	_keyId,
 	keyLoaded = false,
 	keyLoadError = false,
 	noLookup = false,
 	disabled = false,
-	_language = "en",
+	useMockData = false,
 	onKeyReloaded,
 	onKeyLoadStateChange,
 	onEncodePinTwinReady,
-	fetchPinTwinKey,
-	keyId: _keyId2,
-	language: _language2,
+	keyId: _keyId,
+	language: _language,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [pintwinKey, setPintwinKey] = useState<string[]>([]);
-	const [retryCount, setRetryCount] = useState(0);
+	console.log("pintwinKey", pintwinKey);
+	const [_retryCount, setRetryCount] = useState(0);
 	const toast = useToast();
 
+	// Use ref to track retry count to avoid closure issues
+	const retryCountRef = useRef(0);
+	// Use ref to track timeout for cleanup
+	const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	// Use ref to track if component is mounted
+	const isMountedRef = useRef(true);
+
 	const MAX_RETRY_COUNT = 8;
-	const RETRY_DELAY = 1000; // Assuming a default RETRY_DELAY
+	const RETRY_DELAY = 1000;
 
 	/**
 	 * Handles key reloading with error handling and retry logic
 	 */
 	const handleKeyReload = useCallback(async () => {
-		if (loading) return;
+		console.log(
+			"[Pintwin] handleKeyReload - loading:",
+			loading,
+			"mounted:",
+			isMountedRef.current
+		);
+		if (loading || !isMountedRef.current) return;
 
 		// Mock response for development/testing
-		const mockPinTwinResponse = {
+		const mockPinTwinResponse: PinTwinResponse = {
 			response_status_id: 0,
 			data: {
 				customer_id_type: "mobile_number",
@@ -200,21 +244,25 @@ const Pintwin: React.FC<PintwinProps> = ({
 
 		try {
 			setLoading(true);
-			onKeyLoadStateChange?.(true, false);
+			onKeyLoadStateChange?.(false, false); // Loading started, key not loaded yet
 
-			let response;
-			if (fetchPinTwinKey) {
-				response = await fetchPinTwinKey();
-			} else {
-				// Use mock response when no fetch function provided
+			let response: PinTwinResponse;
+			if (useMockData) {
+				console.log("useMockData", useMockData);
+				// Use mock response when mock flag is enabled
 				response = mockPinTwinResponse;
+			} else {
+				// Use actual API call when mock flag is disabled
+				response = await fetchPinTwinKey();
 			}
 
+			console.log("response", response);
 			if (response?.data?.pintwin_key) {
-				setPintwinKey(response.data.pintwin_key);
+				setPintwinKey(response.data.pintwin_key.split(""));
 				setRetryCount(0);
+				retryCountRef.current = 0;
 				onKeyReloaded?.(response.data.key_id?.toString() || "");
-				onKeyLoadStateChange?.(false, false);
+				onKeyLoadStateChange?.(true, false); // Key loaded successfully, no error
 				toast({
 					title: "PinTwin key loaded successfully",
 					status: "success",
@@ -227,17 +275,32 @@ const Pintwin: React.FC<PintwinProps> = ({
 			console.error("Error loading PinTwin key:", error);
 			onKeyLoadStateChange?.(false, true);
 
-			if (retryCount < MAX_RETRY_COUNT) {
-				const newRetryCount = retryCount + 1;
+			if (
+				retryCountRef.current < MAX_RETRY_COUNT &&
+				isMountedRef.current
+			) {
+				const newRetryCount = retryCountRef.current + 1;
+				retryCountRef.current = newRetryCount;
 				setRetryCount(newRetryCount);
+
 				toast({
 					title: `Failed to load key. Retrying... (${newRetryCount}/${MAX_RETRY_COUNT})`,
 					status: "warning",
 					duration: 3000,
 				});
+
+				// Clear any existing timeout
+				if (retryTimeoutRef.current) {
+					clearTimeout(retryTimeoutRef.current);
+				}
+
 				// Retry after delay
-				setTimeout(() => handleKeyReload(), RETRY_DELAY);
-			} else {
+				retryTimeoutRef.current = setTimeout(() => {
+					if (isMountedRef.current) {
+						handleKeyReload();
+					}
+				}, RETRY_DELAY);
+			} else if (isMountedRef.current) {
 				toast({
 					title: "Failed to load PinTwin key after multiple attempts",
 					status: "error",
@@ -245,16 +308,11 @@ const Pintwin: React.FC<PintwinProps> = ({
 				});
 			}
 		} finally {
+			// if (isMountedRef.current) {
 			setLoading(false);
+			// }
 		}
-	}, [
-		loading,
-		retryCount,
-		fetchPinTwinKey,
-		onKeyLoadStateChange,
-		onKeyReloaded,
-		toast,
-	]);
+	}, [useMockData, onKeyLoadStateChange, onKeyReloaded]);
 
 	/**
 	 * Encodes a PIN using the current PinTwin key
@@ -294,12 +352,19 @@ const Pintwin: React.FC<PintwinProps> = ({
 	// Initialize PinTwin key on mount
 	useEffect(() => {
 		if (!keyLoaded && !keyLoadError) {
-			const timer = setTimeout(() => {
-				handleKeyReload();
-			}, 50);
-			return () => clearTimeout(timer);
+			handleKeyReload();
 		}
 	}, [keyLoaded, keyLoadError, handleKeyReload]);
+
+	// Cleanup on unmount
+	useEffect(() => {
+		return () => {
+			isMountedRef.current = false;
+			if (retryTimeoutRef.current) {
+				clearTimeout(retryTimeoutRef.current);
+			}
+		};
+	}, []);
 
 	// Expose encodePinTwin function to parent and global window
 	useEffect(() => {
@@ -375,7 +440,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 
 				<Box bg="white" p={2} borderRadius="md">
 					<Flex align="center" gap={1} opacity={loading ? 0.4 : 1}>
-						{pintwinKey.map((digit, index) => (
+						{pintwinKey?.map((digit, index) => (
 							<React.Fragment key={index}>
 								<Flex direction="column" align="center">
 									<Text fontSize="sm">{index}</Text>
