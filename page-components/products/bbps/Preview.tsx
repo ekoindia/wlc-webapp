@@ -52,6 +52,7 @@ interface BillCardProps {
 		_isPresetAmount?: boolean
 	) => void;
 	amountError?: string;
+	arePartialPaymentsAllowed: boolean;
 }
 
 interface PaymentOptionConfig {
@@ -182,6 +183,7 @@ const BillCard = ({
 	onSelect,
 	onAmountChange,
 	amountError,
+	arePartialPaymentsAllowed,
 }: BillCardProps): JSX.Element => {
 	const [paymentOption, setPaymentOption] = useState<
 		"full" | "minimum" | "partial"
@@ -439,7 +441,7 @@ const BillCard = ({
 			</GridItem>
 
 			{/* Right Side - Payment Options (Desktop) / Bottom (Mobile) */}
-			{isSelected && (
+			{isSelected && arePartialPaymentsAllowed && (
 				<GridItem>
 					<Box
 						borderLeftWidth={{ base: "0", lg: "1px" }}
@@ -820,6 +822,9 @@ export const Preview = (): JSX.Element => {
 								)
 							}
 							amountError={amountErrors[bill.billid]}
+							arePartialPaymentsAllowed={
+								billFetchResult.arePartialPaymentsAllowed
+							}
 						/>
 					);
 				})}
