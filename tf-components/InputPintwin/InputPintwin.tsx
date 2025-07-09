@@ -226,7 +226,7 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	const [secretValue, setSecretValue] = useState("");
 	const [isFocused, setIsFocused] = useState(false);
 	const [showKeyboard, setShowKeyboard] = useState(false);
-	const [stretched, setStretched] = useState(false);
+
 	const [keyLoaded, setKeyLoaded] = useState(false);
 	const [keyLoadError, setKeyLoadError] = useState(false);
 	const [isPintwinLoading, setIsPintwinLoading] = useState(false);
@@ -329,12 +329,6 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 			}
 
 			onChange?.(encodedValue, maskedValue);
-
-			// Show stretch animation if max length reached
-			if (trimmedValue.length >= lengthMax) {
-				setStretched(true);
-				setTimeout(() => setStretched(false), 100);
-			}
 
 			// Re-validate if already invalid
 			if (!isValid || invalid) {
@@ -569,14 +563,6 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 					inputRightElement={
 						<Flex align="center" gap={2}>
 							{renderSecureStatus}
-							{stretched && (
-								<Box
-									w="2px"
-									h="20px"
-									bg="red.500"
-									borderRadius="1px"
-								/>
-							)}
 						</Flex>
 					}
 				/>
@@ -597,7 +583,6 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 			errorMessage,
 			isFocused,
 			description,
-			stretched,
 			handleInputClick,
 			handleInputChange,
 			handleFocus,
