@@ -162,5 +162,6 @@ export const transformBillData = (response: BillFetchResponse) => {
 	return {
 		selectionMode,
 		bills,
+		arePartialPaymentsAllowed: response.data.ifsc_status === 0,
 	};
 };
