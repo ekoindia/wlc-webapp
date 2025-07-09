@@ -318,7 +318,10 @@ const BillCard = ({
 		<Grid
 			templateColumns={{
 				base: "1fr",
-				lg: isSelected ? "1fr 400px" : "1fr",
+				lg:
+					isSelected && arePartialPaymentsAllowed
+						? "1fr 400px"
+						: "1fr",
 			}}
 			gap={0}
 			bg="white"
