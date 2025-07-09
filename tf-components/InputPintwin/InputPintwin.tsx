@@ -62,8 +62,6 @@ interface InputPintwinProps {
 	name?: string;
 	/** Input field label */
 	label?: string;
-	/** Input field value */
-	_value?: string;
 	/** Decorated value for display (with masking) */
 	valueDecorated?: string;
 	/** Whether the input is disabled */
@@ -126,7 +124,6 @@ interface InputPintwinProps {
  * @param {InputPintwinProps} props - Component properties
  * @param {string} [props.name] - Input field name attribute for form handling
  * @param {string} [props.label] - Display label for the input field
- * @param {string} [props._value] - Internal value (prefixed with underscore as unused)
  * @param {string} [props.valueDecorated] - Masked value for display purposes (e.g., "****")
  * @param {boolean} [props.disabled] - Whether the input is disabled and non-interactive
  * @param {boolean} [props.isFrozen] - Whether the input is read-only but still displayed
@@ -200,7 +197,6 @@ interface InputPintwinProps {
 const InputPintwin: React.FC<InputPintwinProps> = ({
 	name,
 	label = "Secret PIN",
-	_value = "",
 	valueDecorated: _valueDecorated = "",
 	disabled = false,
 	isFrozen = false,
