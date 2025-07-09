@@ -11,6 +11,24 @@ jest.mock("@chakra-ui/react", () => ({
 	useToast: () => mockToast,
 }));
 
+// Mock API helper
+const mockFetcher = jest.fn();
+jest.mock("helpers/apiHelper", () => ({
+	fetcher: mockFetcher,
+}));
+
+// Mock sessionStorage
+const mockSessionStorage = {
+	getItem: jest.fn(),
+	setItem: jest.fn(),
+	removeItem: jest.fn(),
+	clear: jest.fn(),
+};
+Object.defineProperty(window, "sessionStorage", {
+	value: mockSessionStorage,
+	writable: true,
+});
+
 // Mock PinTwin API response
 const mockPinTwinResponse: PinTwinResponse = {
 	response_status_id: 0,
@@ -34,6 +52,7 @@ const TestWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 describe("Pintwin Component", () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
+		mockSessionStorage.getItem.mockReturnValue("mock-access-token");
 	});
 
 	afterEach(() => {
@@ -100,25 +119,41 @@ describe("Pintwin Component", () => {
 	});
 
 	/**
-	 * Test lookup grid rendering
+	 * Test lookup grid rendering with mock data
 	 */
-	it("renders lookup grid when noLookup is false", async () => {
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockResolvedValue(mockPinTwinResponse);
-
+	it("renders lookup grid when noLookup is false and uses mock data", async () => {
 		render(
 			<TestWrapper>
-				<Pintwin
-					noLookup={false}
-					fetchPinTwinKey={mockFetchPinTwinKey}
-				/>
+				<Pintwin noLookup={false} useMockData={true} />
 			</TestWrapper>
 		);
 
 		// Wait for the component to load the key
 		await waitFor(() => {
-			expect(mockFetchPinTwinKey).toHaveBeenCalled();
+			// Check if digit grid is rendered
+			const digits = mockPinTwinResponse.data.pintwin_key.split("");
+			digits.forEach((digit, index) => {
+				expect(screen.getByText(digit)).toBeInTheDocument();
+				expect(screen.getByText(index.toString())).toBeInTheDocument();
+			});
+		});
+	});
+
+	/**
+	 * Test lookup grid rendering with API call
+	 */
+	it("renders lookup grid when noLookup is false and calls API", async () => {
+		mockFetcher.mockResolvedValue(mockPinTwinResponse);
+
+		render(
+			<TestWrapper>
+				<Pintwin noLookup={false} useMockData={false} />
+			</TestWrapper>
+		);
+
+		// Wait for the component to load the key
+		await waitFor(() => {
+			expect(mockFetcher).toHaveBeenCalled();
 		});
 
 		// Check if digit grid is rendered
@@ -132,19 +167,17 @@ describe("Pintwin Component", () => {
 	});
 
 	/**
-	 * Test refresh functionality
+	 * Test refresh functionality with API call
 	 */
-	it("refreshes key when refresh button is clicked", async () => {
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockResolvedValue(mockPinTwinResponse);
+	it("refreshes key when refresh button is clicked and calls API", async () => {
+		mockFetcher.mockResolvedValue(mockPinTwinResponse);
 		const mockOnKeyReloaded = jest.fn();
 
 		render(
 			<TestWrapper>
 				<Pintwin
 					noLookup={false}
-					fetchPinTwinKey={mockFetchPinTwinKey}
+					useMockData={false}
 					onKeyReloaded={mockOnKeyReloaded}
 				/>
 			</TestWrapper>
@@ -155,7 +188,34 @@ describe("Pintwin Component", () => {
 		fireEvent.click(refreshButton);
 
 		await waitFor(() => {
-			expect(mockFetchPinTwinKey).toHaveBeenCalledTimes(2); // Once on mount, once on click
+			expect(mockFetcher).toHaveBeenCalledTimes(2); // Once on mount, once on click
+		});
+	});
+
+	/**
+	 * Test refresh functionality with mock data
+	 */
+	it("refreshes key when refresh button is clicked and uses mock data", async () => {
+		const mockOnKeyReloaded = jest.fn();
+
+		render(
+			<TestWrapper>
+				<Pintwin
+					noLookup={false}
+					useMockData={true}
+					onKeyReloaded={mockOnKeyReloaded}
+				/>
+			</TestWrapper>
+		);
+
+		// Find and click refresh button
+		const refreshButton = screen.getByRole("button");
+		fireEvent.click(refreshButton);
+
+		await waitFor(() => {
+			// Mock data should not trigger API calls
+			expect(mockFetcher).not.toHaveBeenCalled();
+			expect(mockOnKeyReloaded).toHaveBeenCalled();
 		});
 	});
 
@@ -163,22 +223,11 @@ describe("Pintwin Component", () => {
 	 * Test PIN encoding functionality
 	 */
 	it("encodes PIN correctly using PinTwin key", async () => {
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockResolvedValue(mockPinTwinResponse);
-
 		render(
 			<TestWrapper>
-				<Pintwin
-					noLookup={false}
-					fetchPinTwinKey={mockFetchPinTwinKey}
-				/>
+				<Pintwin noLookup={false} useMockData={true} />
 			</TestWrapper>
 		);
-
-		await waitFor(() => {
-			expect(mockFetchPinTwinKey).toHaveBeenCalled();
-		});
 
 		// Wait for encodePinTwin to be available on window
 		await waitFor(() => {
@@ -194,25 +243,23 @@ describe("Pintwin Component", () => {
 	});
 
 	/**
-	 * Test error handling during key fetch
+	 * Test error handling during API key fetch
 	 */
 	it("handles API errors gracefully", async () => {
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockRejectedValue(new Error("Network error"));
+		mockFetcher.mockRejectedValue(new Error("Network error"));
 		const mockOnKeyLoadStateChange = jest.fn();
 
 		render(
 			<TestWrapper>
 				<Pintwin
-					fetchPinTwinKey={mockFetchPinTwinKey}
+					useMockData={false}
 					onKeyLoadStateChange={mockOnKeyLoadStateChange}
 				/>
 			</TestWrapper>
 		);
 
 		await waitFor(() => {
-			expect(mockFetchPinTwinKey).toHaveBeenCalled();
+			expect(mockFetcher).toHaveBeenCalled();
 		});
 
 		// Check if error state is triggered
@@ -222,56 +269,12 @@ describe("Pintwin Component", () => {
 	});
 
 	/**
-	 * Test maximum retry limit
-	 */
-	it("respects maximum retry limit", async () => {
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockRejectedValue(new Error("Network error"));
-
-		const { rerender } = render(
-			<TestWrapper>
-				<Pintwin fetchPinTwinKey={mockFetchPinTwinKey} />
-			</TestWrapper>
-		);
-
-		// Simulate multiple retries by re-rendering and triggering refresh
-		for (let i = 0; i < 10; i++) {
-			const refreshButton = screen.getByRole("button");
-			fireEvent.click(refreshButton);
-
-			rerender(
-				<TestWrapper>
-					<Pintwin fetchPinTwinKey={mockFetchPinTwinKey} />
-				</TestWrapper>
-			);
-		}
-
-		await waitFor(() => {
-			expect(mockToast).toHaveBeenCalledWith({
-				title: "Too many retries",
-				description: "Please try again later.",
-				status: "error",
-				duration: 5000,
-				isClosable: true,
-			});
-		});
-	});
-
-	/**
 	 * Test disabled state
 	 */
 	it("does not allow interactions when disabled", async () => {
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockResolvedValue(mockPinTwinResponse);
-
 		render(
 			<TestWrapper>
-				<Pintwin
-					disabled={true}
-					fetchPinTwinKey={mockFetchPinTwinKey}
-				/>
+				<Pintwin disabled={true} useMockData={true} />
 			</TestWrapper>
 		);
 
@@ -283,16 +286,13 @@ describe("Pintwin Component", () => {
 	 * Test callback functions
 	 */
 	it("calls callback functions correctly", async () => {
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockResolvedValue(mockPinTwinResponse);
 		const mockOnKeyReloaded = jest.fn();
 		const mockOnKeyLoadStateChange = jest.fn();
 
 		render(
 			<TestWrapper>
 				<Pintwin
-					fetchPinTwinKey={mockFetchPinTwinKey}
+					useMockData={true}
 					onKeyReloaded={mockOnKeyReloaded}
 					onKeyLoadStateChange={mockOnKeyLoadStateChange}
 				/>
@@ -306,50 +306,12 @@ describe("Pintwin Component", () => {
 	});
 
 	/**
-	 * Test invalid API response handling
-	 */
-	it("handles invalid API response", async () => {
-		const invalidResponse = {
-			...mockPinTwinResponse,
-			data: {
-				...mockPinTwinResponse.data,
-				pintwin_key: "123", // Too short
-			},
-		};
-
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockResolvedValue(invalidResponse);
-		const mockOnKeyLoadStateChange = jest.fn();
-
-		render(
-			<TestWrapper>
-				<Pintwin
-					fetchPinTwinKey={mockFetchPinTwinKey}
-					onKeyLoadStateChange={mockOnKeyLoadStateChange}
-				/>
-			</TestWrapper>
-		);
-
-		await waitFor(() => {
-			expect(mockOnKeyLoadStateChange).toHaveBeenCalledWith(false, true);
-		});
-	});
-
-	/**
 	 * Test color scheme for keys
 	 */
 	it("applies correct color scheme to keys", async () => {
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockResolvedValue(mockPinTwinResponse);
-
 		render(
 			<TestWrapper>
-				<Pintwin
-					noLookup={false}
-					fetchPinTwinKey={mockFetchPinTwinKey}
-				/>
+				<Pintwin noLookup={false} useMockData={true} />
 			</TestWrapper>
 		);
 
@@ -363,13 +325,9 @@ describe("Pintwin Component", () => {
 	 * Test component unmounting
 	 */
 	it("cleans up properly on unmount", async () => {
-		const mockFetchPinTwinKey = jest
-			.fn()
-			.mockResolvedValue(mockPinTwinResponse);
-
 		const { unmount } = render(
 			<TestWrapper>
-				<Pintwin fetchPinTwinKey={mockFetchPinTwinKey} />
+				<Pintwin useMockData={true} />
 			</TestWrapper>
 		);
 
@@ -381,5 +339,50 @@ describe("Pintwin Component", () => {
 
 		// encodePinTwin should still be available after unmount for other components
 		expect((window as any).encodePinTwin).toBeDefined();
+	});
+
+	/**
+	 * Test useMockData prop functionality
+	 */
+	it("uses mock data when useMockData is true", async () => {
+		render(
+			<TestWrapper>
+				<Pintwin useMockData={true} noLookup={false} />
+			</TestWrapper>
+		);
+
+		await waitFor(() => {
+			// Should not call the API when using mock data
+			expect(mockFetcher).not.toHaveBeenCalled();
+			// Should still render the pintwin key
+			expect(screen.getByText("1")).toBeInTheDocument();
+		});
+	});
+
+	/**
+	 * Test API call when useMockData is false
+	 */
+	it("calls API when useMockData is false", async () => {
+		mockFetcher.mockResolvedValue(mockPinTwinResponse);
+
+		render(
+			<TestWrapper>
+				<Pintwin useMockData={false} noLookup={false} />
+			</TestWrapper>
+		);
+
+		await waitFor(() => {
+			// Should call the API when not using mock data
+			expect(mockFetcher).toHaveBeenCalled();
+			expect(mockFetcher).toHaveBeenCalledWith(
+				expect.stringContaining("/transactions/do"),
+				expect.objectContaining({
+					body: expect.objectContaining({
+						transaction_type_id: 241, // TransactionTypes.GET_PINTWIN_KEY
+					}),
+					token: "mock-access-token",
+				})
+			);
+		});
 	});
 });

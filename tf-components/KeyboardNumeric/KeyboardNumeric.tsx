@@ -1,7 +1,7 @@
 import { Box, Flex, Grid, Icon } from "@chakra-ui/react";
 import { Button } from "components/Button";
-import React, { useCallback, useMemo, useState } from "react";
-import { FaArrowsAltH, FaBackspace, FaCheck } from "react-icons/fa";
+import React, { useCallback, useMemo } from "react";
+import { FaBackspace, FaCheck } from "react-icons/fa";
 
 /**
  * Configuration for a single keyboard key
@@ -34,9 +34,8 @@ interface KeyConfig {
  *   onOk={() => console.log('OK pressed')}
  * />
  *
- * // Custom styling and left-handed mode
+ * // Custom styling
  * <KeyboardNumeric
- *   leftHanded={true}
  *   disabled={false}
  *   containerStyle={{ backgroundColor: '#f5f5f5' }}
  *   keyStyle={{ borderRadius: '8px' }}
@@ -47,8 +46,6 @@ interface KeyConfig {
 interface KeyboardNumericProps {
 	/** Whether the keyboard is disabled */
 	disabled?: boolean;
-	/** Whether to show the keyboard on the left side (for left-handed users) */
-	leftHanded?: boolean;
 	/** Custom key configuration */
 	keys?: KeyConfig[];
 	/** Callback when a number key is pressed */
@@ -89,7 +86,6 @@ const DEFAULT_KEYS: KeyConfig[] = [
  *
  * Key Features:
  * - Full numeric keypad (0-9) with action buttons
- * - Left-handed mode for improved accessibility
  * - Haptic feedback (vibration) on key press
  * - Customizable key configuration
  * - Responsive design optimized for mobile devices
@@ -97,7 +93,6 @@ const DEFAULT_KEYS: KeyConfig[] = [
  * - Support for custom styling
  * @param {KeyboardNumericProps} props - Component properties
  * @param {boolean} [props.disabled] - Whether the keyboard is disabled and non-interactive
- * @param {boolean} [props.leftHanded] - Whether to use left-handed layout (toggle button on left)
  * @param {KeyConfig[]} [props.keys] - Custom key configuration array (defaults to standard 0-9 layout)
  * @param {(key: string) => void} [props.onKeyPress] - Callback fired when a numeric key is pressed
  * @param {() => void} [props.onDelete] - Callback fired when delete/backspace key is pressed
@@ -129,7 +124,6 @@ const DEFAULT_KEYS: KeyConfig[] = [
  *
  * // Calculator-style keyboard with custom styling
  * <KeyboardNumeric
- *   leftHanded={false}
  *   containerStyle={{
  *     backgroundColor: '#f8f9fa',
  *     borderRadius: '12px',
@@ -158,7 +152,6 @@ const DEFAULT_KEYS: KeyConfig[] = [
  */
 const KeyboardNumeric: React.FC<KeyboardNumericProps> = ({
 	disabled = false,
-	leftHanded = false,
 	keys = DEFAULT_KEYS,
 	onKeyPress,
 	onDelete,
@@ -166,8 +159,6 @@ const KeyboardNumeric: React.FC<KeyboardNumericProps> = ({
 	containerStyle,
 	keyStyle,
 }) => {
-	const [isLeftHanded, setIsLeftHanded] = useState(leftHanded);
-
 	/**
 	 * Triggers haptic feedback if available
 	 */
@@ -200,24 +191,17 @@ const KeyboardNumeric: React.FC<KeyboardNumericProps> = ({
 	);
 
 	/**
-	 * Toggles left-handed layout
-	 */
-	const toggleLeftHanded = useCallback(() => {
-		setIsLeftHanded((prev) => !prev);
-	}, []);
-
-	/**
 	 * Gets the button variant based on key type
 	 */
 	const getButtonVariant = useCallback((keyConfig: KeyConfig) => {
 		if (keyConfig.type === "action") {
 			if (keyConfig.key === "delete") {
-				return "outline";
+				return "ghost";
 			} else if (keyConfig.key === "ok") {
 				return "accent";
 			}
 		}
-		return "outline";
+		return "solid";
 	}, []);
 
 	/**
@@ -225,20 +209,38 @@ const KeyboardNumeric: React.FC<KeyboardNumericProps> = ({
 	 */
 	const renderKey = useCallback(
 		(keyConfig: KeyConfig, index: number) => {
+			const variant = getButtonVariant(keyConfig);
+
+			let styleProps = {};
+
+			if (variant === "solid") {
+				styleProps = {
+					bg: "white",
+					color: "gray.800",
+					_hover: { bg: "gray.100" },
+					boxShadow: "sm",
+				};
+			} else if (keyConfig.key === "delete") {
+				styleProps = {
+					color: "gray.500",
+				};
+			}
+
 			return (
 				<Button
 					key={`${keyConfig.key}-${index}`}
 					size="lg"
-					variant={getButtonVariant(keyConfig)}
+					variant={variant}
 					disabled={disabled}
+					onMouseDown={(e) => e.preventDefault()}
 					onClick={() => handleKeyPress(keyConfig)}
-					w="48px"
-					h="48px"
-					minW="48px"
-					borderRadius="50%"
-					fontSize="1.2em"
-					fontWeight="300"
+					w="64px"
+					h="64px"
+					borderRadius="full"
+					fontSize="xl"
+					fontWeight="bold"
 					style={keyStyle}
+					{...styleProps}
 				>
 					{keyConfig.key === "delete" ? (
 						<Icon as={FaBackspace} />
@@ -258,15 +260,8 @@ const KeyboardNumeric: React.FC<KeyboardNumericProps> = ({
 	 */
 	const renderKeyboard = useMemo(
 		() => (
-			<Box
-				maxW="174px"
-				p={2}
-				bg="white"
-				borderRadius="md"
-				boxShadow="md"
-				style={containerStyle}
-			>
-				<Grid templateColumns="repeat(3, 1fr)" gap={2}>
+			<Box p={2} bg="transparent" style={containerStyle}>
+				<Grid templateColumns="repeat(3, 1fr)" gap={3}>
 					{keys.map(renderKey)}
 				</Grid>
 			</Box>
@@ -274,60 +269,16 @@ const KeyboardNumeric: React.FC<KeyboardNumericProps> = ({
 		[keys, renderKey, containerStyle]
 	);
 
-	/**
-	 * Renders the side toggle button
-	 */
-	const renderSideToggle = useMemo(
-		() => (
-			<Box
-				w="34px"
-				h="34px"
-				bg="gray.300"
-				color="white"
-				borderRadius="50%"
-				display="flex"
-				alignItems="center"
-				justifyContent="center"
-				cursor="pointer"
-				onClick={toggleLeftHanded}
-				mx={4}
-				my={12}
-			>
-				<Icon as={FaArrowsAltH} />
-			</Box>
-		),
-		[toggleLeftHanded]
-	);
-
 	return (
-		<Box
-			display="inline-block"
+		<Flex
+			justify="center"
+			align="center"
+			w="100%"
 			userSelect="none"
 			boxSizing="border-box"
-			p={2}
 		>
-			<Flex
-				align="center"
-				justify="center"
-				direction={isLeftHanded ? "row-reverse" : "row"}
-				w="100%"
-			>
-				{/* Side toggle for left/right handed use */}
-				<Flex
-					direction={isLeftHanded ? "row-reverse" : "row"}
-					align="center"
-					flex={1}
-				>
-					{renderSideToggle}
-				</Flex>
-
-				{/* Spacer */}
-				<Box w="1em" />
-
-				{/* Keyboard */}
-				{renderKeyboard}
-			</Flex>
-		</Box>
+			{renderKeyboard}
+		</Flex>
 	);
 };
 
