@@ -201,7 +201,7 @@ const KeyboardNumeric: React.FC<KeyboardNumericProps> = ({
 				return "accent";
 			}
 		}
-		return "solid";
+		return "primary";
 	}, []);
 
 	/**
@@ -213,7 +213,7 @@ const KeyboardNumeric: React.FC<KeyboardNumericProps> = ({
 
 			let styleProps = {};
 
-			if (variant === "solid") {
+			if (variant === "primary") {
 				styleProps = {
 					bg: "white",
 					color: "gray.800",
