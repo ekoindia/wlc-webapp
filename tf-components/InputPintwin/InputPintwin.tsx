@@ -326,6 +326,11 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 
 			onChange?.(encodedValue, maskedValue);
 
+			// Auto-hide keyboard when max length is reached
+			if (trimmedValue.length >= lengthMax) {
+				setShowKeyboard(false);
+			}
+
 			// Re-validate if already invalid
 			if (!isValid || invalid) {
 				validateInput();
@@ -347,9 +352,12 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	 */
 	const handleFocus = useCallback(() => {
 		setIsFocused(true);
-		setShowKeyboard(isMobile && keyLoaded);
+		// Show keyboard when input is focused (unless PIN is already complete)
+		if (isMobile && keyLoaded && secretValue.length < lengthMax) {
+			setShowKeyboard(true);
+		}
 		onFocusChange?.(true);
-	}, [isMobile, keyLoaded, onFocusChange]);
+	}, [isMobile, keyLoaded, secretValue.length, lengthMax, onFocusChange]);
 
 	/**
 	 * Handles blur events
@@ -399,6 +407,7 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	 * Handles numeric keyboard OK
 	 */
 	const handleKeyboardOk = useCallback(() => {
+		setShowKeyboard(false);
 		onJumpToNext?.();
 	}, [onJumpToNext]);
 
@@ -477,14 +486,25 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	}, [metadata, showSetPin]);
 
 	/**
-	 * Handles input click (for Set PIN mode)
+	 * Handles input click (for Set PIN mode and keyboard display)
 	 */
 	const handleInputClick = useCallback(() => {
 		if (setPinMode) {
 			onSetPin?.();
 		}
 		inputRef.current?.focus();
-	}, [setPinMode, onSetPin]);
+		// Show keyboard when input is clicked (unless PIN is already complete)
+		if (isMobile && keyLoaded && secretValue.length < lengthMax) {
+			setShowKeyboard(true);
+		}
+	}, [
+		setPinMode,
+		onSetPin,
+		isMobile,
+		keyLoaded,
+		secretValue.length,
+		lengthMax,
+	]);
 
 	const handleReloadPintwin = useCallback(() => {
 		setReloadPintwin((c) => c + 1);
