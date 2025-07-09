@@ -31,6 +31,8 @@ export const Payment = () => {
 	const [isProcessing, setIsProcessing] = useState(false);
 	// Store encoded PinTwin value (e.g. "4040|87") returned from InputPintwin
 	const [pintwinEncoded, setPintwinEncoded] = useState<string>("");
+	// Track if PIN has 4 digits entered
+	const [pinLength, setPinLength] = useState(0);
 
 	// Get API functions
 	const { makePayment } = useBbpsApi(selectedProduct);
@@ -172,7 +174,7 @@ export const Payment = () => {
 			size: "lg",
 			label: "Pay",
 			loading: isProcessing,
-			disabled: false,
+			disabled: pinLength < 4 || isProcessing,
 			onClick: handlePayment,
 			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
@@ -279,12 +281,16 @@ export const Payment = () => {
 							if (value.includes("|")) {
 								setPintwinEncoded(value);
 							}
+							// Track PIN length based on masked value (which shows actual digit count)
+							setPinLength(masked.length);
 							if (useMockData) {
 								console.log(
 									"[BBPS MOCK] Pintwin encoded:",
 									value,
 									"masked:",
-									masked
+									masked,
+									"length:",
+									masked.length
 								);
 							}
 						}}
