@@ -1,8 +1,10 @@
 import {
 	Box,
 	Collapse,
+	Divider,
 	Flex,
 	Icon,
+	Spinner,
 	useBreakpointValue,
 } from "@chakra-ui/react";
 import { Button } from "components/Button";
@@ -15,7 +17,8 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import { FaLock } from "react-icons/fa";
+import { FaRedo, FaShieldAlt } from "react-icons/fa";
+import { MdPassword } from "react-icons/md";
 import KeyboardNumeric from "../KeyboardNumeric/KeyboardNumeric";
 import Pintwin from "../Pintwin/Pintwin";
 
@@ -223,10 +226,11 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	const [secretValue, setSecretValue] = useState("");
 	const [isFocused, setIsFocused] = useState(false);
 	const [showKeyboard, setShowKeyboard] = useState(false);
-	const [showPintwin, setShowPintwin] = useState(false);
 	const [stretched, setStretched] = useState(false);
 	const [keyLoaded, setKeyLoaded] = useState(false);
 	const [keyLoadError, setKeyLoadError] = useState(false);
+	const [isPintwinLoading, setIsPintwinLoading] = useState(false);
+	const [reloadPintwin, setReloadPintwin] = useState(0);
 	const [keyId, setKeyId] = useState("");
 	const [isValid, setIsValid] = useState(false);
 	const [activelyDisabled, setActivelyDisabled] = useState(false);
@@ -353,7 +357,6 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	 */
 	const handleFocus = useCallback(() => {
 		setIsFocused(true);
-		setShowPintwin(true);
 		setShowKeyboard(isMobile && keyLoaded);
 		onFocusChange?.(true);
 	}, [isMobile, keyLoaded, onFocusChange]);
@@ -364,7 +367,6 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	const handleBlur = useCallback(() => {
 		setIsFocused(false);
 		setTimeout(() => {
-			setShowPintwin(false);
 			setShowKeyboard(false);
 		}, 100);
 		onFocusChange?.(false);
@@ -386,9 +388,22 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	 * Handles numeric keyboard delete
 	 */
 	const handleKeyboardDelete = useCallback(() => {
-		setSecretValue("");
-		onChange?.("", "");
-	}, [onChange]);
+		setSecretValue((currentValue) => {
+			const newValue = currentValue.slice(0, -1);
+			const maskedValue = newValue.replace(/./g, "*");
+			let encodedValue = newValue;
+			if (encodePinTwin && newValue.length > 0) {
+				encodedValue = encodePinTwin(newValue);
+				if (keyId && newValue.length === lengthMax) {
+					encodedValue += `|${keyId}`;
+				}
+			} else if (keyId && newValue.length === lengthMax) {
+				encodedValue += `|${keyId}`;
+			}
+			onChange?.(encodedValue, maskedValue);
+			return newValue;
+		});
+	}, [onChange, encodePinTwin, keyId, lengthMax]);
 
 	/**
 	 * Handles numeric keyboard OK
@@ -401,10 +416,11 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 	 * Handles PinTwin key loading state changes
 	 */
 	const handleKeyLoadStateChange = useCallback(
-		(loaded: boolean, error: boolean) => {
-			console.log("handleKeyLoadStateChange", loaded, error);
+		(loaded: boolean, error: boolean, loading: boolean) => {
+			console.log("handleKeyLoadStateChange", loaded, error, loading);
 			setKeyLoaded(loaded);
 			setKeyLoadError(error);
+			setIsPintwinLoading(loading);
 
 			if (loaded && isFocused && isMobile) {
 				setShowKeyboard(true);
@@ -480,6 +496,42 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 		inputRef.current?.focus();
 	}, [setPinMode, onSetPin]);
 
+	const handleReloadPintwin = useCallback(() => {
+		setReloadPintwin((c) => c + 1);
+	}, []);
+
+	/**
+	 * Renders the secure status indicator
+	 */
+	const renderSecureStatus = useMemo(() => {
+		if (isPintwinLoading) {
+			return <Spinner size="sm" />;
+		}
+
+		if (keyLoadError) {
+			return (
+				<Icon
+					as={FaRedo}
+					color="red.500"
+					cursor="pointer"
+					onClick={handleReloadPintwin}
+				/>
+			);
+		}
+
+		if (keyLoaded) {
+			return <Icon as={FaShieldAlt} color="green.500" fontSize="sm" />;
+		}
+
+		return null;
+	}, [
+		isPintwinLoading,
+		keyLoaded,
+		keyLoadError,
+		onResetPin,
+		handleReloadPintwin,
+	]);
+
 	/**
 	 * Renders the input field
 	 */
@@ -508,17 +560,24 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 					onChange={(e) => handleInputChange(e.target.value)}
 					onFocus={handleFocus}
 					onBlur={handleBlur}
-					inputLeftElement={<Icon as={FaLock} color="gray.400" />}
+					inputLeftElement={
+						<Flex align="center" gap={2}>
+							<Icon as={MdPassword} color="gray.400" />
+							<Divider orientation="vertical" h="24px" />
+						</Flex>
+					}
 					inputRightElement={
-						stretched ? (
-							<Box
-								w="2px"
-								h="20px"
-								bg="red.500"
-								borderRadius="1px"
-								transition="width 0.1s ease-out"
-							/>
-						) : null
+						<Flex align="center" gap={2}>
+							{renderSecureStatus}
+							{stretched && (
+								<Box
+									w="2px"
+									h="20px"
+									bg="red.500"
+									borderRadius="1px"
+								/>
+							)}
+						</Flex>
 					}
 				/>
 			</Box>
@@ -543,6 +602,7 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 			handleInputChange,
 			handleFocus,
 			handleBlur,
+			renderSecureStatus,
 		]
 	);
 
@@ -579,19 +639,18 @@ const InputPintwin: React.FC<InputPintwinProps> = ({
 
 			{/* PinTwin Keypad */}
 			{pintwinApp && (
-				<Box mt={4} display={showPintwin ? "block" : "none"}>
-					<Pintwin
-						keyId={keyId}
-						keyLoaded={keyLoaded}
-						keyLoadError={keyLoadError}
-						noLookup={true}
-						disabled={disabled}
-						useMockData={useMockData}
-						onKeyReloaded={handleKeyReloaded}
-						onKeyLoadStateChange={handleKeyLoadStateChange}
-						onEncodePinTwinReady={handleEncodePinTwinReady}
-					/>
-				</Box>
+				<Pintwin
+					keyId={keyId}
+					keyLoaded={keyLoaded}
+					keyLoadError={keyLoadError}
+					noLookup={true}
+					disabled={disabled}
+					useMockData={useMockData}
+					onKeyReloaded={handleKeyReloaded}
+					onKeyLoadStateChange={handleKeyLoadStateChange}
+					onEncodePinTwinReady={handleEncodePinTwinReady}
+					reloadTrigger={reloadPintwin}
+				/>
 			)}
 
 			{/* Numeric Keyboard for Mobile */}

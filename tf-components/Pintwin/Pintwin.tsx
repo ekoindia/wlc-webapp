@@ -1,4 +1,4 @@
-import { Box, Flex, Icon, Spinner, Text, useToast } from "@chakra-ui/react";
+import { Box, Flex, Text, useToast } from "@chakra-ui/react";
 import { Button } from "components/Button";
 import { Endpoints } from "constants/EndPoints";
 import { fetcher } from "helpers/apiHelper";
@@ -9,7 +9,7 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import { FaRedo, FaShieldAlt } from "react-icons/fa";
+import { FaRedo } from "react-icons/fa";
 
 /**
  * PinTwin response data interface
@@ -85,13 +85,19 @@ interface PintwinProps {
 	/** Callback when PinTwin key is reloaded */
 	onKeyReloaded?: (_keyId: string) => void;
 	/** Callback when key loading state changes */
-	onKeyLoadStateChange?: (_loaded: boolean, _error: boolean) => void;
+	onKeyLoadStateChange?: (
+		_loaded: boolean,
+		_error: boolean,
+		_loading: boolean
+	) => void;
 	/** Callback when encodePinTwin function is ready */
 	onEncodePinTwinReady?: (_encoderFn: (_pin: string) => string) => void;
 	/** ID/position of the PinTwin key */
 	keyId?: string;
 	/** Language for localization */
 	language?: string;
+	/** Trigger for reloading the key */
+	reloadTrigger?: number;
 }
 
 /**
@@ -149,6 +155,7 @@ const fetchPinTwinKey = async (): Promise<PinTwinResponse> => {
  * @param props.onEncodePinTwinReady Callback to provide the PIN encoding function
  * @param props.keyId Key identifier for PIN encoding (unused)
  * @param props.language Language preference for UI (unused)
+ * @param props.reloadTrigger Trigger for reloading the key
  * @returns A React functional component that renders the PinTwin interface
  * @example
  * ```typescript
@@ -198,6 +205,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 	onEncodePinTwinReady,
 	keyId: _keyId,
 	language: _language,
+	reloadTrigger,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [pintwinKey, setPintwinKey] = useState<string[]>([]);
@@ -244,7 +252,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 
 		try {
 			setLoading(true);
-			onKeyLoadStateChange?.(false, false); // Loading started, key not loaded yet
+			onKeyLoadStateChange?.(false, false, true); // Loading started, key not loaded yet
 
 			let response: PinTwinResponse;
 			if (useMockData) {
@@ -262,7 +270,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 				setRetryCount(0);
 				retryCountRef.current = 0;
 				onKeyReloaded?.(response.data.key_id?.toString() || "");
-				onKeyLoadStateChange?.(true, false); // Key loaded successfully, no error
+				onKeyLoadStateChange?.(true, false, false); // Key loaded successfully, no error
 				toast({
 					title: "PinTwin key loaded successfully",
 					status: "success",
@@ -273,7 +281,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 			}
 		} catch (error) {
 			console.error("Error loading PinTwin key:", error);
-			onKeyLoadStateChange?.(false, true);
+			onKeyLoadStateChange?.(false, true, false);
 
 			if (
 				retryCountRef.current < MAX_RETRY_COUNT &&
@@ -312,7 +320,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 			setLoading(false);
 			// }
 		}
-	}, [useMockData, onKeyLoadStateChange, onKeyReloaded]);
+	}, [useMockData, onKeyLoadStateChange, onKeyReloaded, toast]);
 
 	/**
 	 * Encodes a PIN using the current PinTwin key
@@ -356,6 +364,13 @@ const Pintwin: React.FC<PintwinProps> = ({
 		}
 	}, [keyLoaded, keyLoadError, handleKeyReload]);
 
+	// Reload on trigger
+	useEffect(() => {
+		if (reloadTrigger && reloadTrigger > 0) {
+			handleKeyReload();
+		}
+	}, [reloadTrigger, handleKeyReload]);
+
 	// Cleanup on unmount
 	useEffect(() => {
 		return () => {
@@ -374,54 +389,6 @@ const Pintwin: React.FC<PintwinProps> = ({
 		// Provide the encoder function to parent component
 		onEncodePinTwinReady?.(encodePinTwin);
 	}, [encodePinTwin, onEncodePinTwinReady]);
-
-	/**
-	 * Renders the secure mode indicator for direct PIN entry
-	 */
-	const renderSecureMode = useMemo(
-		() => (
-			<Box fontSize="sm" userSelect="none">
-				{loading && (
-					<Flex align="center" gap={2}>
-						<Text>Wait! Loading security…</Text>
-						<Spinner size="sm" />
-					</Flex>
-				)}
-
-				{!loading && keyLoaded && (
-					<Flex
-						align="center"
-						gap={2}
-						color="green.500"
-						textTransform="uppercase"
-					>
-						<Text fontWeight="bold">SECURE</Text>
-						<Icon as={FaShieldAlt} />
-					</Flex>
-				)}
-
-				{!loading && keyLoadError && (
-					<Flex
-						align="center"
-						gap={2}
-						color="red.500"
-						cursor="pointer"
-						onClick={handleKeyReload}
-						opacity={disabled ? 0.5 : 1}
-						pointerEvents={disabled ? "none" : "auto"}
-					>
-						<Text fontSize="xs">
-							Failed! Click to
-							<br />
-							reload security
-						</Text>
-						<Icon as={FaRedo} />
-					</Flex>
-				)}
-			</Box>
-		),
-		[loading, keyLoaded, keyLoadError, disabled, handleKeyReload]
-	);
 
 	/**
 	 * Renders the PinTwin lookup grid
@@ -480,9 +447,13 @@ const Pintwin: React.FC<PintwinProps> = ({
 		]
 	);
 
+	if (noLookup) {
+		return null;
+	}
+
 	return (
 		<Box fontSize="lg" userSelect="none" fontFamily="inherit">
-			{noLookup ? renderSecureMode : renderLookupGrid}
+			{renderLookupGrid}
 		</Box>
 	);
 };
