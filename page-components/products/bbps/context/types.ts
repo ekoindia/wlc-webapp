@@ -144,6 +144,7 @@ export interface BbpsState {
 	billFetchResult?: {
 		selectionMode: "single" | "multiOptional" | "multiMandatory";
 		bills: SelectedBill[];
+		arePartialPaymentsAllowed: boolean;
 	} | null;
 	selectedBills: SelectedBill[];
 	totalAmount: number;
