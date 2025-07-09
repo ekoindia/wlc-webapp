@@ -345,7 +345,7 @@ export const Payment = () => {
 
 				<ActionButtonGroup
 					buttonConfigList={buttonConfigList}
-					bg="transparent"
+					bg={{ base: "white", md: "transparent" }}
 				/>
 			</Flex>
 		</>

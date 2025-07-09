@@ -265,7 +265,7 @@ export const Status = (): JSX.Element => {
 				{/* Action Buttons */}
 				<ActionButtonGroup
 					buttonConfigList={buttonConfigList}
-					bg="transparent"
+					bg={{ base: "white", md: "transparent" }}
 				/>
 			</Flex>
 		</>
