@@ -34,7 +34,12 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		formState: { errors, isSubmitting, isValid },
 	} = useForm({
 		mode: "onChange",
-		defaultValues: product.defaultSearchValues || {},
+		// Merge product defaults with previously stored search data
+		// This ensures form is prefilled when returning from status screen
+		defaultValues: {
+			...product.defaultSearchValues,
+			...state.searchFormData,
+		},
 	});
 
 	console.log("[BBPS] Search errors", errors);
