@@ -27,7 +27,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 	const [fetchBills, isLoadingBills] = useApiFetch(Endpoints.TRANSACTION, {});
 
 	const [makePaymentCall, isLoadingPayment] = useApiFetch(
-		Endpoints.TRANSACTION,
+		Endpoints.TRANSACTION_JSON,
 		{}
 	);
 
