@@ -27,6 +27,7 @@ export const Payment = () => {
 		useMockData,
 		mockResponseType,
 		selectedProduct,
+		searchFormData,
 	} = state;
 	const [isProcessing, setIsProcessing] = useState(false);
 	// Store encoded PinTwin value (e.g. "4040|87") returned from InputPintwin
@@ -80,6 +81,7 @@ export const Payment = () => {
 
 		// Construct payment request payload
 		const paymentRequest = {
+			...searchFormData,
 			payment_amount: totalAmount,
 			payment_amount_breakup: selectedBills.map((bill) => ({
 				billid: bill.billid,
