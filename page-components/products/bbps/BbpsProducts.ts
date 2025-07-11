@@ -8,6 +8,7 @@ export const BbpsProducts: BbpsProduct[] = [
 		desc: "Pay monthly electricity dues",
 		icon: "electricity",
 		url: "/products/bbps/electricity/search",
+		categoryId: "1",
 		searchFields: [
 			{
 				name: "utility_acc_no",
@@ -42,6 +43,7 @@ export const BbpsProducts: BbpsProduct[] = [
 		desc: "Pay pending traffic challans",
 		icon: "directions-car",
 		url: "/products/bbps/echallan/search",
+		categoryId: "2",
 		searchFields: [
 			{
 				name: "utility_acc_no",
@@ -64,6 +66,7 @@ export const BbpsProducts: BbpsProduct[] = [
 		desc: "Clear outstanding corporate card dues",
 		icon: "creditcard",
 		url: "/products/bbps/corporate-cc/search",
+		categoryId: "7",
 		searchFields: [
 			{
 				name: "credit_card_no",
@@ -90,5 +93,45 @@ export const BbpsProducts: BbpsProduct[] = [
 			},
 		],
 		useMockData: true,
+	},
+	{
+		id: "loan",
+		label: "Loan",
+		desc: "Pay outstanding loan dues",
+		icon: "loan",
+		url: "/products/bbps/loan/search",
+		categoryId: "21",
+		searchFields: [
+			{
+				name: "utility_acc_no",
+				label: "Loan Number",
+				parameter_type_id: ParamType.TEXT,
+				defaultValue: "LOAN041101",
+			},
+			{
+				name: "confirmation_mobile_no",
+				label: "Mobile Number",
+				parameter_type_id: ParamType.NUMERIC,
+				defaultValue: "7023799222",
+			},
+			{
+				name: "sender_name",
+				label: "Customer Name",
+				parameter_type_id: ParamType.TEXT,
+				defaultValue: "Soumya",
+			},
+			{
+				name: "category",
+				label: "Category",
+				parameter_type_id: ParamType.NUMERIC,
+				defaultValue: "21",
+			},
+			{
+				name: "phone_operator_code",
+				label: "Phone Operator Code",
+				parameter_type_id: ParamType.NUMERIC,
+				defaultValue: "611",
+			},
+		],
 	},
 ];
