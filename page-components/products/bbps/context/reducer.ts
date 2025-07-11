@@ -165,6 +165,47 @@ export const bbpsReducer = (state: BbpsState, action: Action): BbpsState => {
 				currentStep: state.currentStep, // Preserve current step
 			};
 
+		// New dynamic fields action handlers
+		case "SET_OPERATORS":
+			return {
+				...state,
+				operators: action.payload,
+			};
+
+		case "SET_SELECTED_OPERATOR":
+			return {
+				...state,
+				selectedOperator: action.payload,
+			};
+
+		case "SET_DYNAMIC_FIELDS":
+			return {
+				...state,
+				dynamicFields: action.payload,
+			};
+
+		case "SET_LOADING_DYNAMIC_DATA":
+			return {
+				...state,
+				isLoadingDynamicData: action.value,
+			};
+
+		case "RESET_DYNAMIC_FORM":
+			return {
+				...state,
+				selectedOperator: null,
+				dynamicFields: [],
+				// Only clear dynamic field values from searchFormData
+				searchFormData: Object.fromEntries(
+					Object.entries(state.searchFormData).filter(
+						([key]) =>
+							!state.dynamicFields.some(
+								(field) => field.param_name === key
+							)
+					)
+				),
+			};
+
 		default:
 			return state;
 	}

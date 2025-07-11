@@ -1,4 +1,4 @@
-import { BbpsProduct } from "../types";
+import { BbpsProduct, DynamicField, Operator } from "../types";
 
 export type Step = "product-view" | "search" | "preview" | "payment" | "status";
 
@@ -154,6 +154,11 @@ export interface BbpsState {
 	useMockData?: boolean;
 	mockResponseType?: PaymentStatusType;
 	paymentStatus?: PaymentStatusData | null;
+	// New dynamic fields properties
+	operators: Operator[];
+	selectedOperator: Operator | null;
+	dynamicFields: DynamicField[];
+	isLoadingDynamicData: boolean;
 }
 
 /* Initial values */
@@ -169,6 +174,11 @@ export const initialState: BbpsState = {
 	useMockData: false,
 	mockResponseType: "success",
 	paymentStatus: null,
+	// New dynamic fields properties
+	operators: [],
+	selectedOperator: null,
+	dynamicFields: [],
+	isLoadingDynamicData: false,
 };
 
 /* ────────────────────────────────────────── */
@@ -191,4 +201,10 @@ export type Action =
 	| { type: "SET_MOCK_RESPONSE_TYPE"; responseType: PaymentStatusType }
 	| { type: "SET_PAYMENT_STATUS"; payload: PaymentStatusData }
 	| { type: "SET_MOCK_DATA_FLAG"; useMockData: boolean }
-	| { type: "RESET_STATE" };
+	| { type: "RESET_STATE" }
+	// New dynamic fields actions
+	| { type: "SET_OPERATORS"; payload: Operator[] }
+	| { type: "SET_SELECTED_OPERATOR"; payload: Operator | null }
+	| { type: "SET_DYNAMIC_FIELDS"; payload: DynamicField[] }
+	| { type: "SET_LOADING_DYNAMIC_DATA"; value: boolean }
+	| { type: "RESET_DYNAMIC_FORM" };
