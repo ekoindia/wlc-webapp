@@ -179,13 +179,13 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 /**
  * Wrapper around the `useApiFetch` hook to fetch data from the Eko's EPS API v3 APIs.
  * This is a specialized version of the `useApiFetch` hook that is tailored for the EPS API v3.
- * @param {number} version	- The version of the EPS API to use. Default is "3".
  * @param {string} defaultUrlEndpoint - The default URL endpoint to fetch data from. If not provided, it can be overwritten later during the actual fetch call.
  * @param {object} [settings] - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
  * @param {string} [settings.method] - The HTTP method to use for the fetch request. Default is "GET".
  * @param {Function} [settings.onSuccess] - The callback function to be called on successful fetch.
  * @param {Function} [settings.onError] - The callback function to be called on fetch error.
  * @param {boolean} [settings.noAuth] - Flag to indicate if the fetch request should skip passing the access token. Default is `false`.
+ * @param {number} [settings.epsApiVersion] - The EPS API version to use. Default is `3`. If not provided, it will use the latest version.
 //  * @param {boolean} [settings.noClientRefId] - Flag to indicate if the fetch request should skip passing the unique client-reference-ID. Default is `false`.
  * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
  * @example
