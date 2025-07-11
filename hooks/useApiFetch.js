@@ -179,6 +179,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 /**
  * Wrapper around the `useApiFetch` hook to fetch data from the Eko's EPS API v3 APIs.
  * This is a specialized version of the `useApiFetch` hook that is tailored for the EPS API v3.
+ * @param {number} version	- The version of the EPS API to use. Default is "3".
  * @param {string} defaultUrlEndpoint - The default URL endpoint to fetch data from. If not provided, it can be overwritten later during the actual fetch call.
  * @param {object} [settings] - The default options to be passed to the fetcher utility. If not provided, it can be overwritten later during the actual fetch call.
  * @param {string} [settings.method] - The HTTP method to use for the fetch request. Default is "GET".
@@ -210,13 +211,16 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 	const method = (settings?.method || "GET").toUpperCase();
 	const isGetRequest = method === "GET";
+	const _uriRootPath = settings?.epsApiVersion
+		? `/ekoicici/v${settings.epsApiVersion}`
+		: `/ekoicici/v3`;
 
 	return useApiFetch(Endpoints.TRANSACTION_JSON, {
 		...settings,
 		method: "POST",
 		headers: {
 			...settings?.headers,
-			"tf-req-uri-root-path": "/ekoicici/v3",
+			"tf-req-uri-root-path": _uriRootPath,
 			"tf-req-uri": defaultUrlEndpoint,
 			"tf-req-method": method,
 			...(isGetRequest ? {} : { "Content-Type": "application/json" }),
