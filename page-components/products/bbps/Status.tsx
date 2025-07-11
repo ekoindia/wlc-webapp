@@ -8,7 +8,13 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import { ActionButtonGroup, Button, Currency, PageTitle } from "components";
+import {
+	ActionButtonGroup,
+	Button,
+	Currency,
+	PageTitle,
+	Share,
+} from "components";
 import { formatDate } from "libs/dateFormat";
 import { useContext, useEffect } from "react";
 import {
@@ -186,10 +192,19 @@ export const Status = (): JSX.Element => {
 					bg="white"
 					boxShadow="sm"
 				>
-					{/* add share receipt button in this block */}
-					<Heading size="sm" mb={4} color="gray.700">
-						Transaction Details
-					</Heading>
+					<Flex justify="space-between" align="center" mb={4}>
+						<Heading size="sm" color="gray.700">
+							Transaction Details
+						</Heading>
+						<Share
+							title="Payment Receipt"
+							text={`Payment ${paymentStatus.status === "success" ? "Successful" : paymentStatus.status === "failure" ? "Failed" : "Pending"}\n\nTransaction ID: ${paymentStatus.transactionId}\nAmount: ₹${paymentStatus.amount}\nDate: ${formatDate(paymentStatus.timestamp, "dd/MM/yyyy hh:mm a")}`}
+							size="sm"
+							variant="outline"
+							// label="Share Receipt"
+							hideIcon={false}
+						/>
+					</Flex>
 
 					<Stack spacing={4} divider={<Divider />}>
 						<Flex justify="space-between">
