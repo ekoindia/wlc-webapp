@@ -1,8 +1,9 @@
 import { Endpoints } from "constants/EndPoints";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { useApiFetch } from "hooks";
+import { useCallback } from "react";
 import { PaymentStatusType } from "../context/types";
-import { BbpsProduct } from "../types";
+import { BbpsProduct, DynamicField, Operator } from "../types";
 import { mockBillFetchResponse } from "../utils/mockData";
 import { transformBillData } from "../utils/transformBillData";
 
@@ -29,6 +30,172 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 	const [makePaymentCall, isLoadingPayment] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{}
+	);
+
+	// New API endpoints for operators and dynamic fields
+	const [fetchOperatorsCall, isLoadingOperators] = useApiFetch(
+		Endpoints.TRANSACTION,
+		{
+			method: "POST",
+			headers: {
+				"tf-req-uri-root-path": `/ekoicici/v2`,
+				"tf-req-method": "GET",
+				"tf-req-uri": `/billpayments/operators?category=${product?.categoryId}`,
+				"Content-Type": "application/json",
+			},
+		} as any
+	);
+
+	const [fetchDynamicFieldsCall, isLoadingDynamicFields] = useApiFetch(
+		Endpoints.TRANSACTION,
+		{
+			method: "POST",
+			headers: {
+				"tf-req-uri-root-path": `/ekoicici/v2`,
+				"tf-req-method": "GET",
+				"tf-req-uri": `/billpayments/operators`, // Will append operator_id dynamically
+				"Content-Type": "application/json",
+			},
+		} as any
+	);
+
+	/**
+	 * Fetch operators from API or mock data
+	 * @param {string} _categoryId Category ID to fetch operators for (unused - passed in defaultUrlEndpoint)
+	 * @returns {Promise<{data: Operator[], error: string | null}>} API response
+	 */
+	const fetchOperators = useCallback(
+		async (_categoryId: string) => {
+			// Use mock data if specified in the product config
+			if (product?.useMockData) {
+				// Simulate API delay
+				await new Promise((resolve) => setTimeout(resolve, 500));
+
+				// Return mock operators
+				const mockOperators: Operator[] = [
+					{
+						operator_id: 1,
+						name: "Sample Gas Provider",
+						billFetchResponse: 0,
+						high_commission_channel: 1,
+						kyc_required: 0,
+						operator_category: 2,
+						location_id: 27,
+					},
+					{
+						operator_id: 2,
+						name: "Sample Electricity Board",
+						billFetchResponse: 0,
+						high_commission_channel: 1,
+						kyc_required: 0,
+						operator_category: 1,
+						location_id: 24,
+					},
+				];
+
+				return { data: mockOperators, error: null };
+			}
+
+			// Otherwise use the real API
+			try {
+				const response = await fetchOperatorsCall();
+
+				if (response.error) {
+					return { data: [], error: response.error };
+				}
+
+				// Extract operators array from the API response
+				// API response structure: { data: [{ operator_id: ..., name: ... }] }
+				const operators = response.data?.data || response.data || [];
+
+				// Ensure we have an array
+				if (!Array.isArray(operators)) {
+					console.error(
+						"[BBPS] Invalid operators response format:",
+						response
+					);
+					return { data: [], error: "Invalid response format" };
+				}
+
+				return { data: operators, error: null };
+			} catch (error) {
+				console.error("[BBPS] fetchOperators error:", error);
+				return { data: [], error: "Failed to fetch operators" };
+			}
+		},
+		[product?.useMockData]
+	);
+
+	/**
+	 * Fetch dynamic fields from API or mock data
+	 * @param {number} operatorId Operator ID to fetch dynamic fields for
+	 * @returns {Promise<{data: DynamicField[], error: string | null}>} API response
+	 */
+	const fetchDynamicFields = useCallback(
+		async (operatorId: number) => {
+			// Use mock data if specified in the product config
+			if (product?.useMockData) {
+				// Simulate API delay
+				await new Promise((resolve) => setTimeout(resolve, 500));
+
+				// Return mock dynamic fields
+				const mockDynamicFields: DynamicField[] = [
+					{
+						param_name: "utility_acc_no",
+						param_label: "Customer ID",
+						regex: "^[0-9]{10}$",
+						error_message:
+							"Please enter a valid 10 digit Customer ID",
+						param_id: "1",
+						param_type: "Numeric",
+					},
+					{
+						param_name: "mobile_no",
+						param_label: "Mobile Number",
+						regex: "^[0-9]{10}$",
+						error_message:
+							"Please enter a valid 10 digit Mobile Number",
+						param_id: "2",
+						param_type: "Numeric",
+					},
+				];
+
+				return { data: mockDynamicFields, error: null };
+			}
+
+			// Otherwise use the real API
+			try {
+				const response = await fetchDynamicFieldsCall({
+					headers: {
+						"tf-req-uri": `/billpayments/operators/${operatorId}`,
+					},
+				});
+
+				if (response.error) {
+					return { data: [], error: response.error };
+				}
+
+				// Extract dynamic fields array from the API response
+				// API response structure: { "operator_name": "...", "data": [{ param_name: ..., param_label: ... }] }
+				const dynamicFields =
+					response.data?.data || response.data || [];
+
+				// Ensure we have an array
+				if (!Array.isArray(dynamicFields)) {
+					console.error(
+						"[BBPS] Invalid dynamic fields response format:",
+						response
+					);
+					return { data: [], error: "Invalid response format" };
+				}
+
+				return { data: dynamicFields, error: null };
+			} catch (error) {
+				console.error("[BBPS] fetchDynamicFields error:", error);
+				return { data: [], error: "Failed to fetch dynamic fields" };
+			}
+		},
+		[product?.useMockData]
 	);
 
 	/**
@@ -164,7 +331,11 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 		fetchBills: fetchBillsWithMockSupport,
 		makePayment,
 		processBillFetchResponse,
+		fetchOperators,
+		fetchDynamicFields,
 		isLoadingBills,
 		isLoadingPayment,
+		isLoadingOperators,
+		isLoadingDynamicFields,
 	};
 };
