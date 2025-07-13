@@ -1,4 +1,5 @@
-import { PaddingBox } from "components";
+import { Breadcrumb, PaddingBox } from "components";
+import { generateBreadcrumbs } from "components/BreadcrumbWrapper/breadcrumbUtils";
 import { useRouter } from "next/router";
 import {
 	Bbps,
@@ -57,7 +58,8 @@ const parseRouteParams = (slug?: string[]): RouteParams => {
  * @returns {JSX.Element} Bbps page
  */
 export default function BbpsPage() {
-	const { query } = useRouter();
+	const router = useRouter();
+	const { query } = router;
 	const { productId, step } = parseRouteParams(
 		query.slug as string[] | undefined
 	);
@@ -69,9 +71,26 @@ export default function BbpsPage() {
 	const StepComponent =
 		STEP_COMPONENTS[step] || STEP_COMPONENTS["product-view"];
 
+	// Compute label overrides
+	const labelOverrides = {
+		products: "Products",
+		bbps: "Bharat Bill Payment System",
+		...(product ? { [product.id]: product.label } : {}),
+	};
+
+	const omitPaths = ["/products"];
+
+	// Generate breadcrumbs
+	const crumbs = generateBreadcrumbs(
+		router.asPath,
+		labelOverrides,
+		omitPaths
+	);
+
 	return (
 		<PaddingBox>
 			<BbpsProvider initialProductId={productId} initialStep={step}>
+				<Breadcrumb crumbs={crumbs} />
 				<StepComponent product={product} />
 			</BbpsProvider>
 		</PaddingBox>
