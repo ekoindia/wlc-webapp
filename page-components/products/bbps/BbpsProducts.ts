@@ -18,8 +18,10 @@ export const BbpsProducts: BbpsProduct[] = [
 				validations: {
 					minLength: 10,
 					maxLength: 10,
-					pattern: /^[0-9]{10}$/,
-					message: "Please enter a valid consumer number",
+					pattern: {
+						value: /^[0-9]{10}$/,
+						message: "Please enter a valid consumer number",
+					},
 				},
 			},
 			{
@@ -30,8 +32,10 @@ export const BbpsProducts: BbpsProduct[] = [
 				validations: {
 					minLength: 10,
 					maxLength: 10,
-					pattern: /^[6-9]\d{9}$/,
-					message: "Please enter a valid mobile number",
+					pattern: {
+						value: /^[6-9]\d{9}$/,
+						message: "Please enter a valid mobile number",
+					},
 				},
 			},
 		],
@@ -51,10 +55,11 @@ export const BbpsProducts: BbpsProduct[] = [
 				parameter_type_id: ParamType.TEXT,
 				required: true,
 				validations: {
-					minLength: 10,
-					maxLength: 10,
-					pattern: /^[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}$/,
-					message: "Please enter a valid vehicle registration number",
+					pattern: {
+						value: /^[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}$/,
+						message:
+							"Please enter a valid vehicle registration number",
+					},
 				},
 			},
 		],
@@ -74,9 +79,10 @@ export const BbpsProducts: BbpsProduct[] = [
 				parameter_type_id: ParamType.TEXT,
 				required: true,
 				validations: {
-					pattern:
-						/^(?:4\d{12}(?:\d{3})?|(?:5[1-5]\d{14})|(?:222[1-9]\d{12}|22[3-9]\d{13}|2[3-6]\d{14}|27[01]\d{13}|2720\d{12})|3[47]\d{13}|6(?:011|5\d{2})\d{12}|35(?:2[89]|[3-8]\d)\d{12}|6\d{15})$/,
-					message: "Please enter a valid credit card number",
+					pattern: {
+						value: /^(?:4\d{12}(?:\d{3})?|(?:5[1-5]\d{14})|(?:222[1-9]\d{12}|22[3-9]\d{13}|2[3-6]\d{14}|27[01]\d{13}|2720\d{12})|3[47]\d{13}|6(?:011|5\d{2})\d{12}|35(?:2[89]|[3-8]\d)\d{12}|6\d{15})$/,
+						message: "Please enter a valid credit card number",
+					},
 				},
 			},
 			{
@@ -87,8 +93,10 @@ export const BbpsProducts: BbpsProduct[] = [
 				validations: {
 					minLength: 10,
 					maxLength: 10,
-					pattern: /^[6-9]\d{9}$/,
-					message: "Please enter a valid mobile number",
+					pattern: {
+						value: /^[6-9]\d{9}$/,
+						message: "Please enter a valid mobile number",
+					},
 				},
 			},
 		],
