@@ -141,7 +141,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 				// Return mock dynamic fields
 				const mockDynamicFields: DynamicField[] = [
 					{
-						param_name: "utility_acc_no",
+						param_name: "customer_id",
 						param_label: "Customer ID",
 						regex: "^[0-9]{10}$",
 						error_message:
@@ -150,7 +150,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 						param_type: "Numeric",
 					},
 					{
-						param_name: "mobile_no",
+						param_name: "customer_number",
 						param_label: "Mobile Number",
 						regex: "^[0-9]{10}$",
 						error_message:
