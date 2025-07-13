@@ -2,7 +2,7 @@ import { Box, Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
 import { ParamType } from "constants/trxnFramework";
 import router from "next/router";
-import { useContext, useEffect, useMemo } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components/Form";
 import { BbpsContext } from "./context/BbpsContext";
@@ -197,7 +197,6 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 							label: op.name,
 						}))
 					: [],
-				onChange: handleOperatorChange,
 			};
 			params.push(operatorField);
 		}
@@ -242,6 +241,8 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		control,
 		handleSubmit,
 		formState: { errors, isSubmitting, isValid },
+		watch,
+		unregister,
 	} = useForm({
 		mode: "onChange",
 		// Merge product defaults with previously stored search data
@@ -251,6 +252,34 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 			...state.searchFormData,
 		},
 	});
+
+	const watchedOperatorId = watch("operator_id");
+
+	// Add this useEffect
+	useEffect(() => {
+		if (
+			watchedOperatorId &&
+			watchedOperatorId !== state.selectedOperator?.operator_id.toString()
+		) {
+			handleOperatorChange(watchedOperatorId);
+		}
+	}, [
+		watchedOperatorId,
+		state.selectedOperator?.operator_id,
+		handleOperatorChange,
+		dispatch,
+	]); // Add dependencies
+
+	const prevDynamicFieldsRef = useRef<string[]>([]);
+
+	useEffect(() => {
+		const currentNames = dynamicFields.map((field) => field.param_name);
+		const removed = prevDynamicFieldsRef.current.filter(
+			(name) => !currentNames.includes(name)
+		);
+		removed.forEach((name) => unregister(name));
+		prevDynamicFieldsRef.current = currentNames;
+	}, [dynamicFields, unregister]);
 
 	console.log("[BBPS] Search errors", errors);
 	console.log("[BBPS] Search isValid", isValid);
