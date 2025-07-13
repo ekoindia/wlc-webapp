@@ -1,7 +1,6 @@
 import { Box, Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
 import { ParamType } from "constants/trxnFramework";
-import router from "next/router";
 import { useContext, useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components/Form";
@@ -358,7 +357,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		{
 			variant: "link",
 			label: "Cancel",
-			onClick: () => router.back(),
+			onClick: nav.goPreviousStep,
 			styles: {
 				color: "primary.DEFAULT",
 				bg: { base: "white", md: "none" },
@@ -374,6 +373,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 			<PageTitle
 				title="Search"
 				subtitle="Fetch customer's pending bills"
+				onBack={nav.goPreviousStep}
 				toolComponent={
 					useMockData && (
 						<Box

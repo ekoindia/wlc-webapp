@@ -200,6 +200,7 @@ export const Payment = () => {
 			<PageTitle
 				title="Payment Summary"
 				subtitle="Confirm your payment"
+				onBack={nav.goPreviousStep}
 				toolComponent={
 					useMockData && (
 						<Box

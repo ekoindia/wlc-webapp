@@ -774,6 +774,7 @@ export const Preview = (): JSX.Element => {
 			<PageTitle
 				title="Select Bills"
 				subtitle={getSelectionSubtitle()}
+				onBack={nav.goPreviousStep}
 				toolComponent={
 					useMockData && (
 						<Box

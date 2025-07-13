@@ -141,6 +141,7 @@ export const Status = (): JSX.Element => {
 		<>
 			<PageTitle
 				title="Payment Status"
+				onBack={nav.goPreviousStep}
 				toolComponent={
 					useMockData && (
 						<Box
