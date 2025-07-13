@@ -1,7 +1,7 @@
 import { Box, Flex, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
 import { ParamType } from "constants/trxnFramework";
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components/Form";
 import { BbpsContext } from "./context/BbpsContext";
@@ -54,16 +54,19 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 	}, [product.categoryId, product.searchFields, dispatch]);
 
 	// Handle operator selection change
-	const handleOperatorChange = (operatorId: string) => {
-		const operator = operators.find(
-			(op) => op.operator_id === parseInt(operatorId)
-		);
-		if (operator) {
-			// Reset dynamic form when operator changes
-			dispatch({ type: "RESET_DYNAMIC_FORM" });
-			dispatch({ type: "SET_SELECTED_OPERATOR", payload: operator });
-		}
-	};
+	const handleOperatorChange = useCallback(
+		(operatorId: string) => {
+			const operator = operators.find(
+				(op) => op.operator_id === parseInt(operatorId)
+			);
+			if (operator) {
+				// Reset dynamic form when operator changes
+				dispatch({ type: "RESET_DYNAMIC_FORM" });
+				dispatch({ type: "SET_SELECTED_OPERATOR", payload: operator });
+			}
+		},
+		[operators, dispatch]
+	);
 
 	// Fetch operators when categoryId is available
 	useEffect(() => {
@@ -312,6 +315,10 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 				const transformedData = processBillFetchResponse(response);
 
 				if (transformedData) {
+					console.log(
+						"[BBPS Search] Setting validation response and navigating to preview:",
+						transformedData
+					);
 					dispatch({
 						type: "SET_VALIDATION_RESPONSE",
 						payload: transformedData,

@@ -10,13 +10,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import {
-	ActionButtonGroup,
-	Button,
-	Currency,
-	Input,
-	PageTitle,
-} from "components";
+import { ActionButtonGroup, Currency, Input, PageTitle } from "components";
 import { useContext, useEffect, useState } from "react";
 import { BbpsContext } from "./context/BbpsContext";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
@@ -592,6 +586,16 @@ export const Preview = (): JSX.Element => {
 		{}
 	);
 
+	// 🛡️ Navigation Guard - Redirect if invalid state
+	useEffect(() => {
+		if (!billFetchResult) {
+			console.warn(
+				"[BBPS Preview] No billFetchResult found, redirecting to search"
+			);
+			nav.goSearch();
+		}
+	}, [billFetchResult]);
+
 	// Initialize selected bills based on selection mode
 	useEffect(() => {
 		if (!billFetchResult) return;
@@ -614,14 +618,22 @@ export const Preview = (): JSX.Element => {
 		// For other modes, don't auto-select - let user choose
 	}, [billFetchResult, dispatch, selectedBills]);
 
-	// Early return if no bill fetch result
+	// Early return if no bill fetch result - show loading state while redirect happens
 	if (!billFetchResult) {
 		return (
-			<Box p={6} bg="white" borderRadius="10px" boxShadow="basic">
+			<Box
+				p={6}
+				bg="white"
+				borderRadius="10px"
+				boxShadow="basic"
+				textAlign="center"
+			>
 				<Heading size="md" mb={4}>
-					No bills found
+					Loading...
 				</Heading>
-				<Button onClick={nav.goSearch}>Back to Search</Button>
+				<Text color="gray.600" mb={4}>
+					Redirecting to search...
+				</Text>
 			</Box>
 		);
 	}

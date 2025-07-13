@@ -9,7 +9,7 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Currency, PageTitle } from "components";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import InputPintwin from "tf-components/InputPintwin/InputPintwin";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusData, PaymentStatusType } from "./context/types";
@@ -37,6 +37,36 @@ export const Payment = () => {
 
 	// Get API functions
 	const { makePayment } = useBbpsApi(selectedProduct);
+
+	// 🛡️ Navigation Guard - Redirect if invalid state
+	useEffect(() => {
+		if (selectedBills.length === 0) {
+			console.warn(
+				"[BBPS Payment] No selected bills, redirecting to preview"
+			);
+			nav.goPreview();
+		}
+	}, [selectedBills.length]);
+
+	// Early return if invalid state to prevent InputPintwin from loading
+	if (selectedBills.length === 0) {
+		return (
+			<Box
+				p={6}
+				bg="white"
+				borderRadius="10px"
+				boxShadow="basic"
+				textAlign="center"
+			>
+				<Heading size="md" mb={4}>
+					No bills selected
+				</Heading>
+				<Text color="gray.600" mb={4}>
+					Redirecting to bill selection...
+				</Text>
+			</Box>
+		);
+	}
 
 	// Handle mock response type change
 	const handleMockResponseTypeChange = (value: PaymentStatusType) => {

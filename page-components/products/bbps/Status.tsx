@@ -8,13 +8,7 @@ import {
 	Text,
 	VStack,
 } from "@chakra-ui/react";
-import {
-	ActionButtonGroup,
-	Button,
-	Currency,
-	PageTitle,
-	Share,
-} from "components";
+import { ActionButtonGroup, Currency, PageTitle, Share } from "components";
 import { formatDate } from "libs/dateFormat";
 import { useContext, useEffect } from "react";
 import {
@@ -35,15 +29,17 @@ export const Status = (): JSX.Element => {
 	const { state } = useContext(BbpsContext);
 	const { paymentStatus, selectedBills, useMockData } = state;
 
-	// Ensure we have payment status
+	// 🛡️ Navigation Guard - Redirect if invalid state
 	useEffect(() => {
 		if (!paymentStatus) {
-			// Redirect to search if no payment status
+			console.warn(
+				"[BBPS Status] No payment status, redirecting to search"
+			);
 			nav.goSearch();
 		}
-	}, [paymentStatus, nav]);
+	}, [paymentStatus]);
 
-	// Show loading or redirect if no payment status
+	// Early return if invalid state to prevent unnecessary rendering
 	if (!paymentStatus) {
 		return (
 			<Box
@@ -59,7 +55,6 @@ export const Status = (): JSX.Element => {
 				<Text color="gray.600" mb={4}>
 					Redirecting to search...
 				</Text>
-				<Button onClick={nav.goSearch}>Back to Search</Button>
 			</Box>
 		);
 	}

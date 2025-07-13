@@ -9,15 +9,31 @@ import { Action, BbpsState, initialState } from "./types";
 export const bbpsReducer = (state: BbpsState, action: Action): BbpsState => {
 	switch (action.type) {
 		case "SET_SELECTED_PRODUCT":
+			// Only reset bill-related data if it's a different product
+			const isDifferentProduct =
+				!state.selectedProduct ||
+				state.selectedProduct.id !== action.payload?.id;
+
+			console.log("[BBPS Reducer] SET_SELECTED_PRODUCT:", {
+				previousProduct: state.selectedProduct?.id,
+				newProduct: action.payload?.id,
+				isDifferentProduct,
+				willPreserveBillResult:
+					!isDifferentProduct && !!state.billFetchResult,
+			});
+
 			return {
 				...state,
 				selectedProduct: action.payload,
-				selectedBills: [],
-				billFetchResult: null,
-				totalAmount: 0,
-				searchFormData: {},
-				error: null,
-				paymentStatus: null,
+				// Only reset these fields if it's a different product
+				selectedBills: isDifferentProduct ? [] : state.selectedBills,
+				billFetchResult: isDifferentProduct
+					? null
+					: state.billFetchResult,
+				totalAmount: isDifferentProduct ? 0 : state.totalAmount,
+				searchFormData: isDifferentProduct ? {} : state.searchFormData,
+				error: isDifferentProduct ? null : state.error,
+				paymentStatus: isDifferentProduct ? null : state.paymentStatus,
 				useMockData: action.payload?.useMockData || false,
 			};
 
