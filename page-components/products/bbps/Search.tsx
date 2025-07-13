@@ -44,6 +44,16 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		}
 	}, [product?.useMockData, useMockData, dispatch]);
 
+	// Reset state when product changes or component mounts
+	useEffect(() => {
+		// Reset all dynamic state to ensure fresh parameterList
+		dispatch({ type: "RESET_DYNAMIC_FORM" });
+		dispatch({ type: "SET_OPERATORS", payload: [] });
+		dispatch({ type: "SET_SELECTED_OPERATOR", payload: null });
+		dispatch({ type: "SET_DYNAMIC_FIELDS", payload: [] });
+		dispatch({ type: "SET_LOADING_DYNAMIC_DATA", value: false });
+	}, [product.categoryId, product.searchFields, dispatch]);
+
 	// Handle operator selection change
 	const handleOperatorChange = (operatorId: string) => {
 		const operator = operators.find(
@@ -202,14 +212,17 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 						? ParamType.NUMERIC
 						: ParamType.TEXT,
 				required: true,
-				pattern: field.regex ? new RegExp(field.regex) : undefined,
-				validations: field.regex
-					? {
-							pattern: new RegExp(field.regex),
-							message:
-								field.error_message || "Invalid input format",
-						}
-					: undefined,
+				validations:
+					field.regex && field.regex.length > 0
+						? {
+								pattern: {
+									value: new RegExp(field.regex),
+									message:
+										field.error_message ||
+										"Invalid input format",
+								},
+							}
+						: undefined,
 			}));
 			params.push(...dynFields);
 		}
@@ -221,6 +234,8 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		operators,
 		dynamicFields,
 	]);
+
+	console.log("[BBPS] parameterList", parameterList);
 
 	const {
 		register,
