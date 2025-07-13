@@ -8,13 +8,15 @@ export interface SearchFieldDef {
 	label: string; // user-facing label
 	parameter_type_id: ParamType;
 	required?: boolean; // true → show a red asterisk & validate
-	pattern?: RegExp; // optional client-side regex
 	validations?: {
 		min?: number;
 		max?: number;
 		minLength?: number;
 		maxLength?: number;
-		pattern?: RegExp;
+		pattern?: {
+			value: RegExp;
+			message: string;
+		};
 		message?: string;
 	};
 	defaultValue?: string;
