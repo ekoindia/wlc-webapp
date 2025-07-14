@@ -640,6 +640,35 @@ export const Preview = (): JSX.Element => {
 
 	const { bills, selectionMode } = billFetchResult;
 
+	// Add this before the Flex
+	if (bills.length === 0) {
+		return (
+			<Box
+				p={6}
+				bg="white"
+				borderRadius="10px"
+				boxShadow="basic"
+				textAlign="center"
+			>
+				<Heading size="md" mb={4}>
+					No bills found
+				</Heading>
+				<Text color="gray.600" mb={4}>
+					Please try searching with different parameters.
+				</Text>
+				<ActionButtonGroup
+					buttonConfigList={[
+						{
+							variant: "link",
+							label: "Back to Search",
+							onClick: nav.goSearch,
+						},
+					]}
+				/>
+			</Box>
+		);
+	}
+
 	// Debug: Log the transformed bill data to verify end-to-end flow
 	console.log("[BBPS Preview] Bill fetch result:", billFetchResult);
 	console.log("[BBPS Preview] First bill data:", bills[0]);
