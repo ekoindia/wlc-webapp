@@ -143,8 +143,8 @@ describe("BBPS Search with operators and dynamic fields", () => {
 
 	it("fetches and renders operators when product has categoryId", async () => {
 		const mockOperators = [
-			{ phone_operator_code: 1, name: "Operator 1" },
-			{ phone_operator_code: 2, name: "Operator 2" },
+			{ operator_id: 1, name: "Operator 1" },
+			{ operator_id: 2, name: "Operator 2" },
 		];
 
 		useBbpsApi.mockReturnValue({
