@@ -44,8 +44,7 @@ export interface BillDetailItem {
 	amount_multiple: string;
 	billNumber: string;
 	billDueDate: string;
-	filler1: string;
-	filler2: string | null;
+	customer_name: string;
 	minBillPayAmount: string;
 }
 

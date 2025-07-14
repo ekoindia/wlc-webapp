@@ -155,7 +155,7 @@ export const transformBillData = (response: BillFetchResponse) => {
 			billNumber: bill.billNumber,
 			billDate: normalizedBillDate,
 			billDueDate: normalizedDueDate,
-			customerName: bill.filler1 || "N/A",
+			customerName: bill.customer_name || "N/A",
 		};
 	});
 
