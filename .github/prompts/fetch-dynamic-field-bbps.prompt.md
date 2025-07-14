@@ -100,7 +100,7 @@ Transform the current static BBPS search form into a dynamic one that fetches an
 - [ ] **Create new interfaces**
   ```typescript
   interface Operator {
-    operator_id: string;
+    operator_id: number;
     name: string;
     // other fields as needed
   }
