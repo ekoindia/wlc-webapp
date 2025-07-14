@@ -18,6 +18,7 @@ describe("BBPS Preview Component", () => {
 		goPayment: jest.fn(),
 		goStatus: jest.fn(),
 		backToGrid: jest.fn(),
+		goPreviousStep: jest.fn(),
 	};
 
 	beforeEach(() => {

@@ -15,6 +15,9 @@ jest.mock("page-components/products/bbps/hooks/useBbpsNavigation", () => ({
 		goPreview: jest.fn(),
 		goPayment: jest.fn(),
 		goSearch: jest.fn(),
+		goStatus: jest.fn(),
+		backToGrid: jest.fn(),
+		goPreviousStep: jest.fn(),
 	}),
 }));
 
