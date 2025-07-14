@@ -1,6 +1,7 @@
 import { Box, Flex, Text, useToast } from "@chakra-ui/react";
 import { Button } from "components/Button";
 import { Endpoints } from "constants/EndPoints";
+import { TransactionTypes } from "constants/EpsTransactions";
 import { fetcher } from "helpers/apiHelper";
 import React, {
 	useCallback,
@@ -123,7 +124,7 @@ const fetchPinTwinKey = async (): Promise<PinTwinResponse> => {
 		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 		{
 			body: {
-				interaction_type_id: 10005,
+				interaction_type_id: TransactionTypes.FETCH_PINTWIN,
 				alternate_user_id: tempUserId,
 			},
 			token: accessToken,
