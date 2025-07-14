@@ -41,6 +41,7 @@ export const BbpsProducts: BbpsProduct[] = [
 				value: "1",
 			},
 		],
+		useMockData: false,
 	},
 	{
 		id: "loan",
@@ -81,5 +82,6 @@ export const BbpsProducts: BbpsProduct[] = [
 				value: "1",
 			},
 		],
+		useMockData: false,
 	},
 ];
