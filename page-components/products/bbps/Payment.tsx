@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Currency, PageTitle } from "components";
 import { useContext, useEffect, useState } from "react";
-import InputPintwin from "tf-components/InputPintwin/InputPintwin";
+import { InputPintwin } from "tf-components";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusData, PaymentStatusType } from "./context/types";
 import { useBbpsApi } from "./hooks/useBbpsApi";
