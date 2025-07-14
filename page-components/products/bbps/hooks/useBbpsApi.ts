@@ -128,11 +128,27 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 
 	/**
 	 * Fetch dynamic fields from API or mock data
-	 * @param {number} operatorId Operator ID to fetch dynamic fields for
+	 * @param {number | { value: string; label: string }} operatorId Operator ID to fetch dynamic fields for (can be number or select object)
 	 * @returns {Promise<{data: DynamicField[], error: string | null}>} API response
 	 */
 	const fetchDynamicFields = useCallback(
-		async (operatorId: number) => {
+		async (operatorId: number | { value: string; label: string }) => {
+			// Extract operator ID value from the select object (similar to DmtRetailer pattern)
+			const actualOperatorId =
+				typeof operatorId === "object" &&
+				operatorId !== null &&
+				"value" in operatorId
+					? parseInt(operatorId.value, 10)
+					: typeof operatorId === "number"
+						? operatorId
+						: parseInt(String(operatorId), 10);
+
+			console.log(
+				"[BBPS] operatorId",
+				operatorId,
+				"actualOperatorId",
+				actualOperatorId
+			);
 			// Use mock data if specified in the product config
 			if (product?.useMockData) {
 				// Simulate API delay
@@ -167,7 +183,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 			try {
 				const response = await fetchDynamicFieldsCall({
 					headers: {
-						"tf-req-uri": `/billpayments/operators/${operatorId}`,
+						"tf-req-uri": `/billpayments/operators/${actualOperatorId}`,
 					},
 				});
 
@@ -323,7 +339,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 	const processBillFetchResponse = (response: any) => {
 		if (!response) return null;
 
-		// Transform the response
+		// Transform the selectedOperator
 		return transformBillData(response);
 	};
 

@@ -24,6 +24,9 @@ export interface SearchFieldDef {
 	list_elements?: Array<{ value: string; label: string }>;
 	// Properties for dynamic behavior
 	onChange?: (_value: string) => void;
+	meta?: {
+		force_dropdown?: boolean;
+	};
 }
 
 /** Operator from the operators API response */

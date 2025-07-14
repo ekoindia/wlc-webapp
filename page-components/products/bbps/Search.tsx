@@ -199,6 +199,9 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 							label: op.name,
 						}))
 					: [],
+				meta: {
+					force_dropdown: true,
+				},
 			};
 			params.push(operatorField);
 		}
@@ -259,11 +262,26 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 
 	// Add this useEffect
 	useEffect(() => {
-		if (
-			watchedOperatorId &&
-			watchedOperatorId !== state.selectedOperator?.operator_id.toString()
-		) {
-			handleOperatorChange(watchedOperatorId);
+		if (watchedOperatorId) {
+			// Extract the actual operator ID value from the form data (similar to DmtRetailer pattern)
+			let currentOperatorId: string;
+			if (
+				typeof watchedOperatorId === "object" &&
+				watchedOperatorId !== null &&
+				"value" in (watchedOperatorId as any)
+			) {
+				currentOperatorId = (watchedOperatorId as any).value;
+			} else {
+				currentOperatorId = watchedOperatorId as string;
+			}
+
+			if (
+				currentOperatorId &&
+				currentOperatorId !==
+					state.selectedOperator?.operator_id.toString()
+			) {
+				handleOperatorChange(currentOperatorId);
+			}
 		}
 	}, [
 		watchedOperatorId,
@@ -289,15 +307,32 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 	const onSubmit = async (payload: Record<string, string>) => {
 		console.log("[BBPS] onSubmit", payload);
 
+		const _finalPayload = { ...payload };
+
+		// Extract operator_id value from the select object (similar to DmtRetailer pattern)
+		if (payload.operator_id) {
+			if (
+				typeof payload.operator_id === "object" &&
+				payload.operator_id !== null &&
+				"value" in (payload.operator_id as any)
+			) {
+				_finalPayload.operator_id = (payload.operator_id as any).value;
+			} else {
+				_finalPayload.operator_id = payload.operator_id as string;
+			}
+		}
+
+		console.log("[BBPS] _finalPayload after extraction", _finalPayload);
+
 		// Store search form payload in context
-		dispatch({ type: "SET_SEARCH_PAYLOAD", payload: payload });
+		dispatch({ type: "SET_SEARCH_PAYLOAD", payload: _finalPayload });
 
 		// Show loading state
 		dispatch({ type: "SET_LOADING", value: true });
 
 		try {
 			// Fetch bills (will use mock if product.useMockData is true)
-			const { data: response, error } = await fetchBills(payload);
+			const { data: response, error } = await fetchBills(_finalPayload);
 
 			// Handle error case
 			if (error || !response) {
