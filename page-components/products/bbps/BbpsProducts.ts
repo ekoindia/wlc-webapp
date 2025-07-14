@@ -32,7 +32,7 @@ export const BbpsProducts: BbpsProduct[] = [
 				name: "operator_category_id",
 				label: "Operator Category",
 				parameter_type_id: ParamType.FIXED,
-				value: "21",
+				value: "7",
 			},
 			{
 				name: "communication",
