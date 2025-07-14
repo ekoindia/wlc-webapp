@@ -9,6 +9,15 @@ import { useBbpsApi } from "./hooks/useBbpsApi";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
 import { BbpsProduct, SearchFieldDef } from "./types";
 
+/**
+ * Renderer configuration for operator select component
+ * Maps operator object properties to select component format
+ */
+const operatorRenderer = {
+	value: "operator_id",
+	label: "name",
+};
+
 export const Search = ({ product }: { product: BbpsProduct }) => {
 	const { state, dispatch } = useContext(BbpsContext);
 	const nav = useBbpsNavigation();
@@ -189,14 +198,14 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		// Add operator selection field if needed
 		if (needsOperatorSelection) {
 			const operatorField: SearchFieldDef = {
-				name: "operator_id",
+				name: "phone_operator_code",
 				label: "Select Operator",
 				parameter_type_id: ParamType.LIST,
 				required: true,
 				list_elements: Array.isArray(operators)
 					? operators.map((op) => ({
-							value: op.operator_id.toString(),
-							label: op.name,
+							value: op[operatorRenderer.value].toString(),
+							label: op[operatorRenderer.label],
 						}))
 					: [],
 				meta: {
@@ -258,7 +267,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		},
 	});
 
-	const watchedOperatorId = watch("operator_id");
+	const watchedOperatorId = watch("phone_operator_code");
 
 	// Add this useEffect
 	useEffect(() => {
@@ -309,16 +318,19 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 
 		const _finalPayload = { ...payload };
 
-		// Extract operator_id value from the select object (similar to DmtRetailer pattern)
-		if (payload.operator_id) {
+		// Extract phone_operator_code value from the select object (similar to DmtRetailer pattern)
+		if (payload.phone_operator_code) {
 			if (
-				typeof payload.operator_id === "object" &&
-				payload.operator_id !== null &&
-				"value" in (payload.operator_id as any)
+				typeof payload.phone_operator_code === "object" &&
+				payload.phone_operator_code !== null &&
+				"value" in (payload.phone_operator_code as any)
 			) {
-				_finalPayload.operator_id = (payload.operator_id as any).value;
+				_finalPayload.phone_operator_code = (
+					payload.phone_operator_code as any
+				).value;
 			} else {
-				_finalPayload.operator_id = payload.operator_id as string;
+				_finalPayload.phone_operator_code =
+					payload.phone_operator_code as string;
 			}
 		}
 
