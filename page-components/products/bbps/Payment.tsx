@@ -309,7 +309,7 @@ export const Payment = () => {
 						lengthMax={4}
 						required={true}
 						pintwinApp={true}
-						useMockData={true}
+						// useMockData={true}
 						onChange={(value, masked) => {
 							if (value.includes("|")) {
 								setPintwinEncoded(value);
