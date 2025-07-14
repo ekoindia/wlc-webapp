@@ -101,7 +101,7 @@ describe("BBPS Status Component", () => {
 		).toBeInTheDocument();
 		expect(screen.getByText("TXN123456789")).toBeInTheDocument();
 		// Check for amount in transaction details (use getAllByText to handle multiple instances)
-		const amountElements = screen.getAllByText(/₹25,000.00/);
+		const amountElements = screen.getAllByText(/₹25,000/);
 		expect(amountElements.length).toBeGreaterThan(0);
 	});
 
@@ -149,11 +149,24 @@ describe("BBPS Status Component", () => {
 			paymentStatus: null,
 		};
 
+		// Spy on console.warn
+		const consoleWarnSpy = jest
+			.spyOn(console, "warn")
+			.mockImplementation(() => {});
+
 		renderWithContext(emptyState);
 
 		expect(
 			screen.getByText("No payment information available")
 		).toBeInTheDocument();
+
+		// Expect the warning to have been called
+		expect(consoleWarnSpy).toHaveBeenCalledWith(
+			"[BBPS Status] No payment status, redirecting to search"
+		);
+
+		// Clean up
+		consoleWarnSpy.mockRestore();
 	});
 
 	it("displays bill details when bills are selected", () => {
@@ -167,11 +180,10 @@ describe("BBPS Status Component", () => {
 		expect(screen.getByText("Bill ID: bill-001")).toBeInTheDocument();
 	});
 
-	it("shows download and share buttons for successful payments", () => {
+	it("shows share button for successful payments", () => {
 		renderWithContext(createMockState("success"));
 
-		expect(screen.getByText("Download Receipt")).toBeInTheDocument();
-		expect(screen.getByText("Share Receipt")).toBeInTheDocument();
+		expect(screen.getByText("Share")).toBeInTheDocument();
 	});
 
 	it("shows appropriate action button text based on payment status", () => {

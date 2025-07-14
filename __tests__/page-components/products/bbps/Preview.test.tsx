@@ -98,7 +98,7 @@ describe("BBPS Preview Component", () => {
 	});
 
 	// Test for multi-optional selection mode
-	test("renders multi-optional selection mode correctly", () => {
+	test("renders multiOptional mode correctly", () => {
 		// Mock state for multi-optional selection
 		const mockState: Partial<BbpsState> = {
 			currentStep: "preview",
@@ -113,6 +113,7 @@ describe("BBPS Preview Component", () => {
 			},
 			billFetchResult: {
 				selectionMode: "multiOptional",
+				arePartialPaymentsAllowed: true,
 				bills: [
 					{
 						billid: "bill-1",
@@ -261,7 +262,11 @@ describe("BBPS Preview Component", () => {
 			currentStep: "preview",
 			searchFormData: {},
 			selectedProduct: null,
-			billFetchResult: null,
+			billFetchResult: {
+				selectionMode: "multiOptional",
+				bills: [],
+				arePartialPaymentsAllowed: false,
+			},
 			selectedBills: [],
 			totalAmount: 0,
 			isLoading: false,
@@ -314,6 +319,7 @@ describe("BBPS Preview Component", () => {
 			},
 			billFetchResult: {
 				selectionMode: "single",
+				arePartialPaymentsAllowed: true,
 				bills: [
 					{
 						billid: "bill-1",
