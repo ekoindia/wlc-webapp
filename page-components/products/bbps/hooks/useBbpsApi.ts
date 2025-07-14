@@ -53,7 +53,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 	 * @returns {Promise<{data: Operator[], error: string | null}>} API response
 	 */
 	const fetchOperators = useCallback(
-		async (_categoryId: string) => {
+		async (categoryId: string) => {
 			// Use mock data if specified in the product config
 			if (product?.useMockData) {
 				// Simulate API delay
@@ -90,7 +90,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 					headers: {
 						"tf-req-uri-root-path": `/ekoicici/v2`,
 						"tf-req-method": "GET",
-						"tf-req-uri": `/billpayments/operators?category=${product?.categoryId}`,
+						"tf-req-uri": `/billpayments/operators?category=${categoryId}`,
 					},
 				});
 
