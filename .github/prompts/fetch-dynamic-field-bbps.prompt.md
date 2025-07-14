@@ -270,8 +270,7 @@ Transform the current static BBPS search form into a dynamic one that fetches an
 9. **Field Validation**: Dynamic field validation happens in real-time (on change)
 10. **Persistence**: Selected operator stored in context for navigation persistence
 11. **API Error Handling**: If operators API fails, show error and prevent form submission
-12. **Form Re-render**: Don't preserve previously entered values during form re-render
-13. **Performance**: Minimize unnecessary API calls and re-renders
+12. **Performance**: Minimize unnecessary API calls and re-renders
 
 ### Dependencies
 - Existing Form component from tf-components/
