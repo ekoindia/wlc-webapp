@@ -19,7 +19,7 @@ export interface SearchFieldDef {
 		};
 		message?: string;
 	};
-	defaultValue?: string;
+	value?: string;
 	// Properties for LIST type fields
 	list_elements?: Array<{ value: string; label: string }>;
 	// Properties for dynamic behavior
