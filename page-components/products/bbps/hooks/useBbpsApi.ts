@@ -34,28 +34,16 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 
 	// New API endpoints for operators and dynamic fields
 	const [fetchOperatorsCall, isLoadingOperators] = useApiFetch(
-		Endpoints.TRANSACTION,
+		Endpoints.TRANSACTION_JSON,
 		{
 			method: "POST",
-			headers: {
-				"tf-req-uri-root-path": `/ekoicici/v2`,
-				"tf-req-method": "GET",
-				"tf-req-uri": `/billpayments/operators?category=${product?.categoryId}`,
-				"Content-Type": "application/json",
-			},
 		} as any
 	);
 
 	const [fetchDynamicFieldsCall, isLoadingDynamicFields] = useApiFetch(
-		Endpoints.TRANSACTION,
+		Endpoints.TRANSACTION_JSON,
 		{
 			method: "POST",
-			headers: {
-				"tf-req-uri-root-path": `/ekoicici/v2`,
-				"tf-req-method": "GET",
-				"tf-req-uri": `/billpayments/operators`, // Will append operator_id dynamically
-				"Content-Type": "application/json",
-			},
 		} as any
 	);
 
@@ -98,7 +86,13 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 
 			// Otherwise use the real API
 			try {
-				const response = await fetchOperatorsCall();
+				const response = await fetchOperatorsCall({
+					headers: {
+						"tf-req-uri-root-path": `/ekoicici/v2`,
+						"tf-req-method": "GET",
+						"tf-req-uri": `/billpayments/operators?category=${product?.categoryId}`,
+					},
+				});
 
 				if (response.error) {
 					return { data: [], error: response.error };
@@ -183,6 +177,8 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 			try {
 				const response = await fetchDynamicFieldsCall({
 					headers: {
+						"tf-req-uri-root-path": `/ekoicici/v2`,
+						"tf-req-method": "GET",
 						"tf-req-uri": `/billpayments/operators/${actualOperatorId}`,
 					},
 				});
