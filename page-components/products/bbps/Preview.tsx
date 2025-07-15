@@ -848,8 +848,9 @@ export const Preview = (): JSX.Element => {
 
 			<Flex
 				direction="column"
+				maxW="900px"
 				gap={4}
-				mx={{ base: "4", md: "0" }}
+				mx={{ base: "4", md: "auto" }}
 				mb={{ base: "128px", md: "64px" }}
 			>
 				{bills.map((bill) => {

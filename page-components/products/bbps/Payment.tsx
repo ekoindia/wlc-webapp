@@ -263,7 +263,12 @@ export const Payment = () => {
 				}
 			/>
 
-			<Flex direction="column" gap="4" mx={{ base: "4", md: "0" }}>
+			<Flex
+				direction="column"
+				gap="4"
+				maxW="900px"
+				mx={{ base: "4", md: "auto" }}
+			>
 				{/* Payment Summary */}
 				<Flex
 					direction="column"

@@ -459,12 +459,12 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 					</HStack>
 				}
 			/>
-
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Flex
 					direction="column"
+					maxW="900px"
 					px={{ base: "6", md: "8" }}
-					mx={{ base: "4", md: "0" }}
+					mx={{ base: "4", md: "auto" }}
 					pt="6"
 					pb="8"
 					bg="white"

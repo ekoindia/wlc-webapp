@@ -141,7 +141,7 @@ export const Status = (): JSX.Element => {
 		},
 		{
 			variant: "link",
-			label: "Back to Search",
+			label: "Back to Fetch Bills",
 			onClick: nav.goSearch,
 			disabled: false,
 			styles: {
@@ -181,7 +181,8 @@ export const Status = (): JSX.Element => {
 			<Flex
 				direction="column"
 				gap="4"
-				mx={{ base: "4", md: "0" }}
+				maxW="900px"
+				mx={{ base: "4", md: "auto" }}
 				mb={{ base: "128px", md: "64px" }}
 			>
 				{/* Status Header */}
