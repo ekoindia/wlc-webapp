@@ -36,7 +36,7 @@ export const BbpsProducts: BbpsProduct[] = [
 			},
 			{
 				name: "communication",
-				label: "Operator Category",
+				label: "Communication",
 				parameter_type_id: ParamType.FIXED,
 				value: "1",
 			},
@@ -77,7 +77,7 @@ export const BbpsProducts: BbpsProduct[] = [
 			},
 			{
 				name: "communication",
-				label: "Operator Category",
+				label: "Communication",
 				parameter_type_id: ParamType.FIXED,
 				value: "1",
 			},
