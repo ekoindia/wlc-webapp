@@ -12,7 +12,7 @@ import { transformBillData } from "../utils/transformBillData";
  * @interface PaymentRequest
  */
 interface PaymentRequest {
-	payment_amount: number;
+	amount: number;
 	payment_amount_breakup: Array<{
 		billid: string;
 		bill_payment_amount: number;
@@ -303,7 +303,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 					message: message,
 					data: {
 						transactionId: `TXN${Date.now()}${Math.floor(Math.random() * 1000)}`,
-						amount: paymentRequest.payment_amount,
+						amount: paymentRequest.amount,
 						timestamp: new Date().toISOString(),
 					},
 				},
