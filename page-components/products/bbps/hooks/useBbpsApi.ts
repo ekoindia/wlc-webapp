@@ -1,6 +1,6 @@
 import { Endpoints } from "constants/EndPoints";
 import { TransactionTypes } from "constants/EpsTransactions";
-import { useApiFetch } from "hooks";
+import { useApiFetch, useEpsV3Fetch } from "hooks";
 import { useCallback } from "react";
 import { PaymentStatusType } from "../context/types";
 import { BbpsProduct, DynamicField, Operator } from "../types";
@@ -38,23 +38,25 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 	);
 
 	// New API endpoints for operators and dynamic fields
-	const [fetchOperatorsCall, isLoadingOperators] = useApiFetch(
-		Endpoints.TRANSACTION_JSON,
+	const [fetchOperatorsCall, isLoadingOperators] = useEpsV3Fetch(
+		"/billpayments/operators",
 		{
-			method: "POST",
-		} as any
+			method: "GET",
+			epsApiVersion: 2,
+		}
 	);
 
-	const [fetchDynamicFieldsCall, isLoadingDynamicFields] = useApiFetch(
-		Endpoints.TRANSACTION_JSON,
+	const [fetchDynamicFieldsCall, isLoadingDynamicFields] = useEpsV3Fetch(
+		"/billpayments/operators",
 		{
-			method: "POST",
-		} as any
+			method: "GET",
+			epsApiVersion: 2,
+		}
 	);
 
 	/**
 	 * Fetch operators from API or mock data
-	 * @param {string} _categoryId Category ID to fetch operators for (unused - passed in defaultUrlEndpoint)
+	 * @param {string} categoryId Category ID to fetch operators for
 	 * @returns {Promise<{data: Operator[], error: string | null}>} API response
 	 */
 	const fetchOperators = useCallback(
@@ -93,8 +95,6 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 			try {
 				const response = await fetchOperatorsCall({
 					headers: {
-						"tf-req-uri-root-path": `/ekoicici/v2`,
-						"tf-req-method": "GET",
 						"tf-req-uri": `/billpayments/operators?category=${categoryId}`,
 					},
 				});
@@ -182,8 +182,6 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 			try {
 				const response = await fetchDynamicFieldsCall({
 					headers: {
-						"tf-req-uri-root-path": `/ekoicici/v2`,
-						"tf-req-method": "GET",
 						"tf-req-uri": `/billpayments/operators/${actualOperatorId}`,
 					},
 				});
