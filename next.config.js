@@ -103,6 +103,10 @@ const nextConfig = {
 				protocol: "https",
 				hostname: "**.eko.in",
 			},
+			{
+				protocol: "https",
+				hostname: "files.eko.co.in",
+			},
 		],
 	},
 	async rewrites() {
