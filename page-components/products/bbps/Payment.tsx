@@ -314,7 +314,7 @@ export const Payment = () => {
 						Payment will be processed from your default wallet
 					</Text>
 					<InputPintwin
-						label="PIN"
+						label="Secret PIN"
 						lengthMin={4}
 						lengthMax={4}
 						required={true}
