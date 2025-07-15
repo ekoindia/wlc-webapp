@@ -29,6 +29,44 @@ jest.mock("@chakra-ui/react", () => ({
 	useToast: () => jest.fn(),
 }));
 
+// Mock InputPintwin component to allow controlled PIN simulation
+jest.mock("tf-components/InputPintwin", () => {
+	const MockInputPintwin = ({
+		onChange,
+		onValidationChange,
+		label,
+		...props
+	}) => {
+		return (
+			<div data-testid="pintwin-component">
+				<label>{label}</label>
+				<input
+					data-testid="pin-input"
+					type="password"
+					maxLength={4}
+					onChange={(e) => {
+						const value = e.target.value;
+						const maskedValue = value.replace(/./g, "*");
+						// Simulate encoded PIN with key ID (as per component logic)
+						const encodedValue =
+							value.length === 4 ? `encoded_${value}|87` : value;
+						onChange?.(encodedValue, maskedValue);
+						// Simulate validation change
+						onValidationChange?.(value.length === 4);
+					}}
+					{...props}
+				/>
+			</div>
+		);
+	};
+
+	return {
+		__esModule: true,
+		default: MockInputPintwin,
+		InputPintwin: MockInputPintwin,
+	};
+});
+
 describe("BBPS Payment Component", () => {
 	const mockState = {
 		...initialState,
@@ -79,35 +117,83 @@ describe("BBPS Payment Component", () => {
 		expect(getByRole("radio", { name: "pending" })).toBeInTheDocument();
 	});
 
-	// Uncomment and modify the submission test
-	it("handles payment submission", async () => {
-		const { getByText } = renderComponent();
+	it("handles payment submission after PIN entry", async () => {
+		const { getByText, getByTestId } = renderComponent();
 
-		// Simulate PIN entry - assuming InputPintwin has a way to input
-		// For testing, we might need to mock InputPintwin or find a way to set the value
-		// Assuming it has an input with placeholder "Enter PIN"
-		// But since it's custom, perhaps fire events on the component
-
-		// For now, assume we set the pintwinEncoded somehow
-		// Actually, since it's mock, perhaps mock the onChange
-
+		// First, verify the Pay button is initially disabled
 		const payButton = getByText("Pay");
+		expect(payButton).toBeDisabled();
 
-		// Simulate clicking pay - but may need to set PIN first
+		// Simulate entering a 4-digit PIN using our mocked InputPintwin
+		const pinInput = getByTestId("pin-input");
+		fireEvent.change(pinInput, { target: { value: "1234" } });
 
+		// Wait for the component to update and enable the Pay button
+		await waitFor(() => {
+			const updatedPayButton = getByText("Pay");
+			expect(updatedPayButton).not.toBeDisabled();
+		});
+
+		// Now click the enabled Pay button
 		await act(async () => {
 			fireEvent.click(payButton);
 		});
 
+		// Verify payment status was set and navigation occurred
 		await waitFor(() => {
 			expect(mockDispatch).toHaveBeenCalledWith({
 				type: "SET_PAYMENT_STATUS",
-				payload: expect.objectContaining({ status: "success" }),
+				payload: expect.objectContaining({
+					status: "success",
+					amount: 3000,
+					billIds: ["bill1", "bill2"],
+				}),
 			});
 			expect(mockDispatch).toHaveBeenCalledWith({
 				type: "SET_CURRENT_STEP",
 				step: "status",
 			});
+		});
+	});
+
+	it("keeps Pay button disabled with insufficient PIN length", async () => {
+		const { getByText, getByTestId } = renderComponent();
+
+		// Verify Pay button is initially disabled
+		const payButton = getByText("Pay");
+		expect(payButton).toBeDisabled();
+
+		// Simulate entering only 2 digits (insufficient)
+		const pinInput = getByTestId("pin-input");
+		fireEvent.change(pinInput, { target: { value: "12" } });
+
+		// Pay button should remain disabled
+		expect(payButton).toBeDisabled();
+	});
+
+	it("validates PIN input correctly", async () => {
+		const { getByText, getByTestId } = renderComponent();
+
+		const payButton = getByText("Pay");
+		const pinInput = getByTestId("pin-input");
+
+		// Initially disabled
+		expect(payButton).toBeDisabled();
+
+		// Still disabled with 3 digits
+		fireEvent.change(pinInput, { target: { value: "123" } });
+		expect(payButton).toBeDisabled();
+
+		// Enabled with 4 digits
+		fireEvent.change(pinInput, { target: { value: "1234" } });
+		await waitFor(() => {
+			expect(payButton).not.toBeDisabled();
+		});
+
+		// Disabled again if cleared
+		fireEvent.change(pinInput, { target: { value: "" } });
+		await waitFor(() => {
+			expect(payButton).toBeDisabled();
 		});
 	});
 
