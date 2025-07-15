@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Currency, PageTitle, Share } from "components";
 import { formatDate } from "libs/dateFormat";
+import Image from "next/image";
 import { useContext, useEffect } from "react";
 import {
 	FaCheckCircle,
@@ -23,8 +24,11 @@ import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusType } from "./context/types";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
 
-const successSoundUrl =
+const BBPS_SUCCESS_SOUND_URL =
 	"https://files.eko.co.in/docs/sound/BharatConnectSuccessSound.mp3";
+
+const BBPS_LOGO_URL =
+	"https://files.eko.co.in/docs/logos/utility/BBPS_Be_Assured.jpg";
 
 /**
  * Status component for displaying BBPS payment status and transaction details
@@ -36,7 +40,7 @@ export const Status = (): JSX.Element => {
 	const { paymentStatus, selectedBills, useMockData } = state;
 
 	// Sound hook for success notification
-	const { play: playSuccessSound } = useSound(successSoundUrl, {
+	const { play: playSuccessSound } = useSound(BBPS_SUCCESS_SOUND_URL, {
 		volume: 0.7,
 	});
 
@@ -213,14 +217,23 @@ export const Status = (): JSX.Element => {
 						<Heading size="sm" color="gray.700">
 							Transaction Details
 						</Heading>
-						<Share
-							title="Payment Receipt"
-							text={`Payment ${paymentStatus.status === "success" ? "Successful" : paymentStatus.status === "failure" ? "Failed" : "Pending"}\n\nTransaction ID: ${paymentStatus.transactionId}\nAmount: ₹${paymentStatus.amount}\nDate: ${formatDate(paymentStatus.timestamp, "dd/MM/yyyy hh:mm a")}`}
-							size="sm"
-							variant="outline"
-							// label="Share Receipt"
-							hideIcon={false}
-						/>
+						<HStack spacing={3}>
+							<Share
+								title="Payment Receipt"
+								text={`Payment ${paymentStatus.status === "success" ? "Successful" : paymentStatus.status === "failure" ? "Failed" : "Pending"}\n\nTransaction ID: ${paymentStatus.transactionId}\nAmount: ₹${paymentStatus.amount}\nDate: ${formatDate(paymentStatus.timestamp, "dd/MM/yyyy hh:mm a")}`}
+								size="sm"
+								variant="outline"
+								// label="Share Receipt"
+								hideIcon={false}
+							/>
+							<Image
+								src={BBPS_LOGO_URL}
+								alt="BBPS Be Assured Logo"
+								width={48}
+								height={24}
+								style={{ objectFit: "contain" }}
+							/>
+						</HStack>
 					</Flex>
 
 					<Stack spacing={4} divider={<Divider />}>
