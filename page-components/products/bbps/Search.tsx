@@ -436,7 +436,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 	return (
 		<Flex direction="column">
 			<PageTitle
-				title="Search"
+				title="Fetch Bills"
 				subtitle="Fetch customer's pending bills"
 				onBack={nav.goPreviousStep}
 				toolComponent={
