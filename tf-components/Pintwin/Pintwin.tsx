@@ -210,7 +210,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [pintwinKey, setPintwinKey] = useState<string[]>([]);
-	console.log("pintwinKey", pintwinKey);
+	// console.log("pintwinKey", pintwinKey);
 	const [_retryCount, setRetryCount] = useState(0);
 	const toast = useToast();
 
@@ -228,12 +228,12 @@ const Pintwin: React.FC<PintwinProps> = ({
 	 * Handles key reloading with error handling and retry logic
 	 */
 	const handleKeyReload = useCallback(async () => {
-		console.log(
-			"[Pintwin] handleKeyReload - loading:",
-			loading,
-			"mounted:",
-			isMountedRef.current
-		);
+		// console.log(
+		// 	"[Pintwin] handleKeyReload - loading:",
+		// 	loading,
+		// 	"mounted:",
+		// 	isMountedRef.current
+		// );
 		if (loading || !isMountedRef.current) return;
 
 		// Mock response for development/testing
@@ -257,7 +257,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 
 			let response: PinTwinResponse;
 			if (useMockData) {
-				console.log("useMockData", useMockData);
+				// console.log("useMockData", useMockData);
 				// Use mock response when mock flag is enabled
 				response = mockPinTwinResponse;
 			} else {
@@ -265,7 +265,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 				response = await fetchPinTwinKey();
 			}
 
-			console.log("response", response);
+			// console.log("response", response);
 			if (response?.data?.pintwin_key) {
 				setPintwinKey(response.data.pintwin_key.split(""));
 				setRetryCount(0);
