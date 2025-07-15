@@ -16,9 +16,13 @@ import {
 	FaExclamationTriangle,
 	FaInfoCircle,
 } from "react-icons/fa";
+import { useSound } from "react-sounds";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusType } from "./context/types";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
+
+const successSoundUrl =
+	"https://files.eko.co.in/docs/sound/BharatConnectSuccessSound.mp3";
 
 /**
  * Status component for displaying BBPS payment status and transaction details
@@ -29,6 +33,11 @@ export const Status = (): JSX.Element => {
 	const { state } = useContext(BbpsContext);
 	const { paymentStatus, selectedBills, useMockData } = state;
 
+	// Sound hook for success notification
+	const { play: playSuccessSound } = useSound(successSoundUrl, {
+		volume: 0.7,
+	});
+
 	// 🛡️ Navigation Guard - Redirect if invalid state
 	useEffect(() => {
 		if (!paymentStatus) {
@@ -38,6 +47,13 @@ export const Status = (): JSX.Element => {
 			nav.goSearch();
 		}
 	}, [paymentStatus]);
+
+	// Play success sound when payment is successful
+	useEffect(() => {
+		if (paymentStatus?.status === "success") {
+			playSuccessSound();
+		}
+	}, [paymentStatus?.status, playSuccessSound]);
 
 	// Early return if invalid state to prevent unnecessary rendering
 	if (!paymentStatus) {
