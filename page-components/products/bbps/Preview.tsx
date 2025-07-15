@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Currency, Input, PageTitle } from "components";
 import { useContext, useEffect, useState } from "react";
+import { BbpsLogo } from "./components/BbpsLogo";
 import { BbpsContext } from "./context/BbpsContext";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
 import { calculateDueDateTag } from "./utils/transformBillData";
@@ -826,19 +827,22 @@ export const Preview = (): JSX.Element => {
 				subtitle={getSelectionSubtitle()}
 				onBack={nav.goPreviousStep}
 				toolComponent={
-					useMockData && (
-						<Box
-							px={2}
-							py={1}
-							bg="yellow.100"
-							color="yellow.800"
-							borderRadius="md"
-							fontSize="sm"
-							fontWeight="medium"
-						>
-							Mock Mode
-						</Box>
-					)
+					<HStack spacing={2}>
+						{useMockData && (
+							<Box
+								px={2}
+								py={1}
+								bg="yellow.100"
+								color="yellow.800"
+								borderRadius="md"
+								fontSize="sm"
+								fontWeight="medium"
+							>
+								Mock Mode
+							</Box>
+						)}
+						<BbpsLogo />
+					</HStack>
 				}
 			/>
 

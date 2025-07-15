@@ -3,6 +3,7 @@ import {
 	Divider,
 	Flex,
 	Heading,
+	HStack,
 	Icon,
 	Stack,
 	Text,
@@ -17,6 +18,7 @@ import {
 	FaInfoCircle,
 } from "react-icons/fa";
 import { useSound } from "react-sounds";
+import { BbpsLogo } from "./components/BbpsLogo";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusType } from "./context/types";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
@@ -154,19 +156,22 @@ export const Status = (): JSX.Element => {
 				title="Payment Status"
 				onBack={nav.goPreviousStep}
 				toolComponent={
-					useMockData && (
-						<Box
-							px={2}
-							py={1}
-							bg="yellow.100"
-							color="yellow.800"
-							borderRadius="md"
-							fontSize="sm"
-							fontWeight="medium"
-						>
-							Mock Mode
-						</Box>
-					)
+					<HStack spacing={2}>
+						{useMockData && (
+							<Box
+								px={2}
+								py={1}
+								bg="yellow.100"
+								color="yellow.800"
+								borderRadius="md"
+								fontSize="sm"
+								fontWeight="medium"
+							>
+								Mock Mode
+							</Box>
+						)}
+						<BbpsLogo />
+					</HStack>
 				}
 			/>
 			<Flex

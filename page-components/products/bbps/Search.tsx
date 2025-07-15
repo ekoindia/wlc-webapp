@@ -1,9 +1,10 @@
-import { Box, Flex, useToast } from "@chakra-ui/react";
+import { Box, Flex, HStack, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
 import { ParamType } from "constants/trxnFramework";
 import { useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "tf-components/Form";
+import { BbpsLogo } from "./components/BbpsLogo";
 import { BbpsContext } from "./context/BbpsContext";
 import { useBbpsApi } from "./hooks/useBbpsApi";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
@@ -440,19 +441,22 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 				subtitle="Fetch customer's pending bills"
 				onBack={nav.goPreviousStep}
 				toolComponent={
-					useMockData && (
-						<Box
-							px={2}
-							py={1}
-							bg="yellow.100"
-							color="yellow.800"
-							borderRadius="md"
-							fontSize="sm"
-							fontWeight="medium"
-						>
-							Mock Mode
-						</Box>
-					)
+					<HStack spacing={2}>
+						{useMockData && (
+							<Box
+								px={2}
+								py={1}
+								bg="yellow.100"
+								color="yellow.800"
+								borderRadius="md"
+								fontSize="sm"
+								fontWeight="medium"
+							>
+								Mock Mode
+							</Box>
+						)}
+						<BbpsLogo />
+					</HStack>
 				}
 			/>
 

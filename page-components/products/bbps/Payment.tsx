@@ -3,6 +3,7 @@ import {
 	Divider,
 	Flex,
 	Heading,
+	HStack,
 	Radio,
 	RadioGroup,
 	Text,
@@ -11,6 +12,7 @@ import {
 import { ActionButtonGroup, Currency, PageTitle } from "components";
 import { useContext, useEffect, useState } from "react";
 import { InputPintwin } from "tf-components";
+import { BbpsLogo } from "./components/BbpsLogo";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusData, PaymentStatusType } from "./context/types";
 import { useBbpsApi } from "./hooks/useBbpsApi";
@@ -242,19 +244,22 @@ export const Payment = () => {
 				subtitle="Confirm your payment"
 				onBack={nav.goPreviousStep}
 				toolComponent={
-					useMockData && (
-						<Box
-							px={2}
-							py={1}
-							bg="yellow.100"
-							color="yellow.800"
-							borderRadius="md"
-							fontSize="sm"
-							fontWeight="medium"
-						>
-							Mock Mode
-						</Box>
-					)
+					<HStack spacing={2}>
+						{useMockData && (
+							<Box
+								px={2}
+								py={1}
+								bg="yellow.100"
+								color="yellow.800"
+								borderRadius="md"
+								fontSize="sm"
+								fontWeight="medium"
+							>
+								Mock Mode
+							</Box>
+						)}
+						<BbpsLogo />
+					</HStack>
 				}
 			/>
 
