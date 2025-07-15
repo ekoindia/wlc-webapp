@@ -221,6 +221,7 @@ export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 			"tf-req-uri-root-path": _uriRootPath,
 			"tf-req-uri": defaultUrlEndpoint,
 			"tf-req-method": method,
+			...settings?.headers,
 			...(isGetRequest ? {} : { "Content-Type": "application/json" }),
 		},
 	});
