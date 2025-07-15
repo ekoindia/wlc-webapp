@@ -2,31 +2,30 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 import { IcoButton, Icon } from "components";
 import { useKBarReady } from "components/CommandBar";
 import { useClipboard } from "hooks";
-import { useKBar } from "kbar";
-import { useState } from "react";
 
 /**
  * A <TodoWidget> component to show a list of Todo notes on homepage for agents.
  * @param 	{object}	prop	Properties passed to the component
  * @param	{Array}		prop.todos	List of todos to show.
  * @param	{Function}	prop.onDeleteTodo	Function to delete a todo.
+ * @param	{Function}	prop.onToggleTodoDone	Function to toggle a todo as done.
  * @param	{...*}		rest	Rest of the props passed to this component.
  * @example	`<TodoWidget />` TODO: Fix example
  */
-const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
+const TodoWidget = ({ todos, onDeleteTodo, onToggleTodoDone, ...rest }) => {
 	const { copy, state } = useClipboard();
-	const [markedDone, setMarkedDone] = useState(-1);
-	const { query } = useKBar();
+	// const [markedDone, setMarkedDone] = useState(-1);
+	// const { query } = useKBar();
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
 
-	const markDone = (index) => {
-		setMarkedDone(index);
-		setTimeout(() => {
-			onDeleteTodo(index);
-		}, 500);
-	};
+	// const markDone = (index) => {
+	// 	setMarkedDone(index);
+	// 	setTimeout(() => {
+	// 		onDeleteTodo(index);
+	// 	}, 500);
+	// };
 
 	return (
 		<Box
@@ -103,7 +102,7 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 						<Icon
 							title="Mark as done"
 							name={
-								markedDone === index
+								todo.done
 									? "check-box"
 									: "check-box-outline-blank"
 							}
@@ -112,7 +111,7 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 							color="yellow.600"
 							size="md"
 							mx="5px"
-							onClick={() => markDone(index)}
+							onClick={() => onToggleTodoDone(todo.id)}
 						/>
 						<Text
 							as="span"
@@ -120,11 +119,9 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 							textAlign="middle"
 							ml="5px"
 							noOfLines={1}
-							textDecoration={
-								markedDone === index ? "line-through" : "none"
-							}
+							textDecoration={todo.done ? "line-through" : "none"}
 						>
-							{todo}
+							{todo.note}
 						</Text>
 						<Flex
 							align="center"
@@ -138,22 +135,17 @@ const TodoWidget = ({ todos, onDeleteTodo, ...rest }) => {
 						>
 							{ready && (
 								<IcoBtn
-									title="Search with this note"
-									iconName="search"
-									onClick={() => {
-										query.toggle();
-										setTimeout(() => {
-											query.setSearch(todo);
-										}, 100);
-									}}
+									title="Delete this note"
+									iconName="delete"
+									onClick={() => onDeleteTodo(todo.id)}
 								/>
 							)}
 							<IcoBtn
 								title="Copy note"
 								iconName={
-									state[todo] ? "check" : "content-copy"
+									state[todo.note] ? "check" : "content-copy"
 								}
-								onClick={() => copy(todo)}
+								onClick={() => copy(todo.note)}
 							/>
 						</Flex>
 					</Flex>

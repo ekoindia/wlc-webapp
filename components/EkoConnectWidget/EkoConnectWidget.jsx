@@ -392,6 +392,7 @@ const EkoConnectWidget = ({ start_id, paths, language = "en", ...rest }) => {
 
 /**
  * Add listeners for the custom events dispatched by the Connect widget.
+ * MARK: Event Listeners
  * @param {object} params - The parameters for the event listeners
  * @param {Function} params.setWidgetLoading - Function to set the widget loading state.
  * @param {Function} params.generateNewToken - Function to generate a new access token.

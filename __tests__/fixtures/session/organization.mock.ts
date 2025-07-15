@@ -13,5 +13,5 @@ export const MockOrg: Organization = {
 	org_id: 2,
 	app_name: "AbhiPay",
 	app_logo: "",
-	org_name: "AbhiPay Pvt. Ltd.",
+	org_name: "AbhiWeb Tech Solutions Pvt. Ltd.",
 };

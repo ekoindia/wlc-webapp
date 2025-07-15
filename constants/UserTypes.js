@@ -15,9 +15,9 @@ export const UserType = {
 
 export const UserTypeLabel = {
 	1: "Distributor",
-	2: "Retailer",
+	2: "Retailer", // Agent / Merchant
 	3: "Independent Retailer", // I-Merchant
-	4: "Cash Executive", // FOS / CCE / Cash Executive / EkoStar?
+	4: "Field Executive", // FOS / Field Agent / CCE / Cash Executive / EkoStar?
 	5: "Sales Executive",
 	6: "Sub-Retailer",
 	7: "Super-Distributor",
@@ -32,6 +32,6 @@ export const UserTypeIcon = {
 	1: "refer", // Distributor
 	2: "people", // Retailer
 	3: "person", // I-Merchant
-	4: "directions-walk", // FOS / CCE / Cash Executive / EkoStar?
+	4: "directions-walk", // FOS / Field Agent / CCE / Cash Executive / EkoStar?
 	7: "person", // Super-Distributor
 };

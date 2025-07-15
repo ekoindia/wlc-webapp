@@ -1,4 +1,5 @@
 import { Endpoints } from "constants";
+import { UserTypeLabel } from "constants/UserTypes";
 import { fetcher } from "helpers/apiHelper";
 import { createUserState, getSessions } from "helpers/loginHelper";
 import {
@@ -175,6 +176,13 @@ const UserProvider = ({ userMockData, children }) => {
 	const isOnboarding =
 		state?.onboarding == 1 || state?.userId == "1" ? true : false;
 
+	/**
+	 * User Type Label
+	 */
+	const userTypeLabel = isAdmin
+		? "Organization Admin"
+		: UserTypeLabel[state?.userDetails?.user_type] || "";
+
 	// MARK: useUser()
 	const userContextValue = useMemo(() => {
 		return {
@@ -183,6 +191,7 @@ const UserProvider = ({ userMockData, children }) => {
 			isAdminAgentMode: isAdmin ? state?.isAdminAgentMode : false,
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
+			UserTypeLabel: userTypeLabel,
 			accessToken: state?.access_token || "",
 			accessTokenLite:
 				state?.access_token_lite || state?.access_token || "",
@@ -212,6 +221,7 @@ const UserProvider = ({ userMockData, children }) => {
 			isAdminAgentMode: isAdmin ? state?.isAdminAgentMode : false,
 			userId: state?.userId || 0,
 			userType: state?.userDetails?.user_type || 0,
+			UserTypeLabel: userTypeLabel,
 			accessToken: state?.access_token || "",
 			accessTokenLite:
 				state?.access_token_lite || state?.access_token || "",
