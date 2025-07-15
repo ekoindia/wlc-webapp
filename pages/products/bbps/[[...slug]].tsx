@@ -78,7 +78,7 @@ export default function BbpsPage() {
 		...(product ? { [product.id]: product.label } : {}),
 	};
 
-	const omitPaths = ["/products"];
+	const omitPaths = ["/products", "/products/bbps"];
 
 	// Generate breadcrumbs
 	const crumbs = generateBreadcrumbs(
@@ -90,7 +90,7 @@ export default function BbpsPage() {
 	return (
 		<PaddingBox>
 			<BbpsProvider initialProductId={productId} initialStep={step}>
-				<Breadcrumb crumbs={crumbs} />
+				<Breadcrumb crumbs={crumbs} hideHome />
 				<StepComponent product={product} />
 			</BbpsProvider>
 		</PaddingBox>
