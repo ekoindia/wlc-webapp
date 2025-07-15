@@ -439,7 +439,8 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 			<PageTitle
 				title="Fetch Bills"
 				subtitle="Fetch customer's pending bills"
-				onBack={nav.goPreviousStep}
+				// onBack={nav.goPreviousStep}
+				hideBackIcon={true}
 				toolComponent={
 					<HStack spacing={2}>
 						{useMockData && (
