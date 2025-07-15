@@ -1,4 +1,5 @@
-import { Image } from "@chakra-ui/react";
+import { useBreakpointValue } from "@chakra-ui/react";
+import Image from "next/image";
 
 const BBPS_LOGO_URL =
 	"https://files.eko.co.in/docs/logos/utility/BharatConnectLogoNoBG.svg";
@@ -13,32 +14,20 @@ const BBPS_LOGO_URL =
  * ```
  */
 export const BbpsLogo = (): JSX.Element => {
-	// CDN placeholder - replace with actual logo URL when available
+	const height = useBreakpointValue({ base: 32, md: 48 });
 
 	return (
 		<Image
 			src={BBPS_LOGO_URL}
 			alt="BBPS Logo"
-			height={{ base: "32px", md: "48px" }}
-			width="auto"
-			objectFit="contain"
-			fallback={
-				<div
-					style={{
-						height: "24px",
-						width: "48px",
-						backgroundColor: "#e2e8f0",
-						borderRadius: "4px",
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						fontSize: "10px",
-						color: "#718096",
-					}}
-				>
-					BBPS
-				</div>
-			}
+			height={height}
+			width={0}
+			style={{
+				width: "auto",
+				height: `${height}px`,
+				objectFit: "contain",
+			}}
+			priority
 		/>
 	);
 };
