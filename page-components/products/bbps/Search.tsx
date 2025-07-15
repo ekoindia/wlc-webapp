@@ -259,7 +259,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		dynamicFields,
 	]);
 
-	console.log("[BBPS] parameterList", parameterList);
+	// console.log("[BBPS] parameterList", parameterList);
 
 	const {
 		register,
@@ -321,11 +321,11 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 		prevDynamicFieldsRef.current = currentNames;
 	}, [dynamicFields, unregister]);
 
-	console.log("[BBPS] Search errors", errors);
-	console.log("[BBPS] Search isValid", isValid);
+	// console.log("[BBPS] Search errors", errors);
+	// console.log("[BBPS] Search isValid", isValid);
 
 	const onSubmit = async (payload: Record<string, string>) => {
-		console.log("[BBPS] onSubmit", payload);
+		// console.log("[BBPS] onSubmit", payload);
 
 		const _finalPayload = { ...payload };
 
@@ -345,7 +345,7 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 			}
 		}
 
-		console.log("[BBPS] _finalPayload after extraction", _finalPayload);
+		// console.log("[BBPS] _finalPayload after extraction", _finalPayload);
 
 		// Store search form payload in context
 		dispatch({ type: "SET_SEARCH_PAYLOAD", payload: _finalPayload });
@@ -373,16 +373,16 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 				const transformedData = processBillFetchResponse(response);
 
 				if (transformedData) {
-					console.log(
-						"[BBPS Search] Setting validation response and navigating to preview:",
-						transformedData
-					);
+					// console.log(
+					// 	"[BBPS Search] Setting validation response and navigating to preview:",
+					// 	transformedData
+					// );
 					dispatch({
 						type: "SET_VALIDATION_RESPONSE",
 						payload: transformedData,
 					});
 
-					console.log("[BBPS] Transformed response", transformedData);
+					// console.log("[BBPS] Transformed response", transformedData);
 					nav.goPreview();
 				} else {
 					dispatch({

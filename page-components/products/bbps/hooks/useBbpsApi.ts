@@ -142,12 +142,12 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 						? operatorId
 						: parseInt(String(operatorId), 10);
 
-			console.log(
-				"[BBPS] operatorId",
-				operatorId,
-				"actualOperatorId",
-				actualOperatorId
-			);
+			// console.log(
+			// 	"[BBPS] operatorId",
+			// 	operatorId,
+			// 	"actualOperatorId",
+			// 	actualOperatorId
+			// );
 			// Use mock data if specified in the product config
 			if (product?.useMockData) {
 				// Simulate API delay
@@ -267,10 +267,10 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 			// Simulate API delay
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 
-			console.log(
-				"[BBPS API] Creating mock response for type:",
-				mockResponseType
-			);
+			// console.log(
+			// 	"[BBPS API] Creating mock response for type:",
+			// 	mockResponseType
+			// );
 
 			// Map the response type to the appropriate status code
 			let statusCode: number;

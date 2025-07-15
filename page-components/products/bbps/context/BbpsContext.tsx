@@ -46,7 +46,7 @@ export const BbpsProvider: React.FC<{
 			const product = BbpsProducts.find(
 				(product) => product.id === initialProductId
 			);
-			console.log("[BBPS] Selecting product", product);
+			// console.log("[BBPS] Selecting product", product);
 
 			// Only dispatch if it's a different product
 			if (

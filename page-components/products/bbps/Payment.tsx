@@ -133,8 +133,8 @@ export const Payment = () => {
 
 		// Log the payload only when using mock data (for debugging)
 		if (useMockData) {
-			console.log("[BBPS MOCK] Final payment payload:", paymentRequest);
-			console.log("[BBPS MOCK] Response type:", mockResponseType);
+			// console.log("[BBPS MOCK] Final payment payload:", paymentRequest);
+			// console.log("[BBPS MOCK] Response type:", mockResponseType);
 		}
 
 		// Validate that the sum of bill amounts equals total amount
@@ -166,7 +166,7 @@ export const Payment = () => {
 				useMockData ? mockResponseType : undefined
 			);
 
-			console.log("[BBPS] API response:", response, "error:", error);
+			// console.log("[BBPS] API response:", response, "error:", error);
 
 			if (error || !response) {
 				// Handle payment failure
@@ -327,14 +327,14 @@ export const Payment = () => {
 							// Track PIN length based on masked value (which shows actual digit count)
 							setPinLength(masked.length);
 							if (useMockData) {
-								console.log(
-									"[BBPS MOCK] Pintwin encoded:",
-									value,
-									"masked:",
-									masked,
-									"length:",
-									masked.length
-								);
+								// console.log(
+								// 	"[BBPS MOCK] Pintwin encoded:",
+								// 	value,
+								// 	"masked:",
+								// 	masked,
+								// 	"length:",
+								// 	masked.length
+								// );
 							}
 						}}
 					/>

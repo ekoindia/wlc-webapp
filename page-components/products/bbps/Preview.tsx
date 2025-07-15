@@ -679,8 +679,8 @@ export const Preview = (): JSX.Element => {
 	}
 
 	// Debug: Log the transformed bill data to verify end-to-end flow
-	console.log("[BBPS Preview] Bill fetch result:", billFetchResult);
-	console.log("[BBPS Preview] First bill data:", bills[0]);
+	// console.log("[BBPS Preview] Bill fetch result:", billFetchResult);
+	// console.log("[BBPS Preview] First bill data:", bills[0]);
 
 	/**
 	 * Handle bill selection change

@@ -15,13 +15,13 @@ export const bbpsReducer = (state: BbpsState, action: Action): BbpsState => {
 				!state.selectedProduct ||
 				state.selectedProduct.id !== action.payload?.id;
 
-			console.log("[BBPS Reducer] SET_SELECTED_PRODUCT:", {
-				previousProduct: state.selectedProduct?.id,
-				newProduct: action.payload?.id,
-				isDifferentProduct,
-				willPreserveBillResult:
-					!isDifferentProduct && !!state.billFetchResult,
-			});
+			// console.log("[BBPS Reducer] SET_SELECTED_PRODUCT:", {
+			// 	previousProduct: state.selectedProduct?.id,
+			// 	newProduct: action.payload?.id,
+			// 	isDifferentProduct,
+			// 	willPreserveBillResult:
+			// 		!isDifferentProduct && !!state.billFetchResult,
+			// });
 
 			return {
 				...state,
