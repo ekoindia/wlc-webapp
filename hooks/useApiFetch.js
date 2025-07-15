@@ -121,7 +121,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 					...body,
 				},
 				method: method || options?.method,
-				headers: headers || options?.headers,
+				headers: { ...options?.headers, ...headers },
 				timeout: timeout || options?.timeout,
 				token:
 					token ||
@@ -217,7 +217,6 @@ export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 		...settings,
 		method: "POST",
 		headers: {
-			...settings?.headers,
 			"tf-req-uri-root-path": _uriRootPath,
 			"tf-req-uri": defaultUrlEndpoint,
 			"tf-req-method": method,
