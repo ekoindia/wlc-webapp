@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Bbps Component renders with correct structure 1`] = `
+<h1
+  data-testid="page-title"
+>
+  Bharat Bill Payment System
+</h1>
+`;

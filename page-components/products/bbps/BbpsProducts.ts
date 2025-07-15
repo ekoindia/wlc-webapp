@@ -1,0 +1,95 @@
+import { ParamType } from "constants/trxnFramework";
+import { BbpsProduct } from "./types";
+
+/**
+ * Configuration array for BBPS products/services
+ * Defines the available bill payment products with their search fields and settings
+ * @example
+ * ```tsx
+ * const electricityProduct = BbpsProducts.find(p => p.id === 'electricity');
+ * ```
+ */
+export const BbpsProducts: BbpsProduct[] = [
+	{
+		id: "corporate-cc",
+		label: "Corporate Credit Card",
+		desc: "Clear outstanding corporate card dues",
+		icon: "creditcard",
+		url: "corporate-cc/search",
+		categoryId: "7",
+		searchFields: [
+			{
+				name: "sender_name",
+				label: "Customer Name",
+				parameter_type_id: ParamType.TEXT,
+			},
+			{
+				name: "confirmation_mobile_no",
+				label: "Customer's Mobile",
+				parameter_type_id: ParamType.NUMERIC,
+				validations: {
+					minLength: 10,
+					maxLength: 10,
+					pattern: {
+						value: /^[6-9]\d{9}$/,
+						message: "Please enter a valid mobile number",
+					},
+				},
+			},
+			{
+				name: "operator_category_id",
+				label: "Operator Category",
+				parameter_type_id: ParamType.FIXED,
+				value: "7",
+			},
+			{
+				name: "communication",
+				label: "Communication",
+				parameter_type_id: ParamType.FIXED,
+				value: "1",
+			},
+		],
+		useMockData: false,
+	},
+	{
+		id: "loan",
+		label: "Loan",
+		desc: "Pay outstanding loan dues",
+		icon: "loan",
+		url: "loan/search",
+		categoryId: "21",
+		searchFields: [
+			{
+				name: "sender_name",
+				label: "Customer Name",
+				parameter_type_id: ParamType.TEXT,
+			},
+			{
+				name: "confirmation_mobile_no",
+				label: "Customer's Mobile",
+				parameter_type_id: ParamType.NUMERIC,
+				validations: {
+					minLength: 10,
+					maxLength: 10,
+					pattern: {
+						value: /^[6-9]\d{9}$/,
+						message: "Please enter a valid mobile number",
+					},
+				},
+			},
+			{
+				name: "operator_category_id",
+				label: "Operator Category",
+				parameter_type_id: ParamType.FIXED,
+				value: "21",
+			},
+			{
+				name: "communication",
+				label: "Communication",
+				parameter_type_id: ParamType.FIXED,
+				value: "1",
+			},
+		],
+		useMockData: false,
+	},
+];

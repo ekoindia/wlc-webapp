@@ -121,7 +121,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 					...body,
 				},
 				method: method || options?.method,
-				headers: headers || options?.headers,
+				headers: { ...options?.headers, ...headers },
 				timeout: timeout || options?.timeout,
 				token:
 					token ||
@@ -185,6 +185,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
  * @param {Function} [settings.onSuccess] - The callback function to be called on successful fetch.
  * @param {Function} [settings.onError] - The callback function to be called on fetch error.
  * @param {boolean} [settings.noAuth] - Flag to indicate if the fetch request should skip passing the access token. Default is `false`.
+ * @param {number} [settings.epsApiVersion] - The EPS API version to use. Default is `3`. If not provided, it will use the latest version.
 //  * @param {boolean} [settings.noClientRefId] - Flag to indicate if the fetch request should skip passing the unique client-reference-ID. Default is `false`.
  * @returns {Array} An array containing the function to fetch the API data, function to cancel the fetch request, and a boolean flag indicating if the fetch request is in progress.
  * @example
@@ -210,15 +211,16 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 	const method = (settings?.method || "GET").toUpperCase();
 	const isGetRequest = method === "GET";
+	const _uriRootPath = `/ekoicici/v${settings.epsApiVersion || 3}`;
 
 	return useApiFetch(Endpoints.TRANSACTION_JSON, {
 		...settings,
 		method: "POST",
 		headers: {
-			...settings?.headers,
-			"tf-req-uri-root-path": "/ekoicici/v3",
+			"tf-req-uri-root-path": _uriRootPath,
 			"tf-req-uri": defaultUrlEndpoint,
 			"tf-req-method": method,
+			...settings?.headers,
 			...(isGetRequest ? {} : { "Content-Type": "application/json" }),
 		},
 	});
