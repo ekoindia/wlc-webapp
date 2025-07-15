@@ -8,6 +8,7 @@ import { Action, BbpsState, initialState } from "./types";
  */
 export const bbpsReducer = (state: BbpsState, action: Action): BbpsState => {
 	switch (action.type) {
+		// Set the selected product and reset related state if it's a different product
 		case "SET_SELECTED_PRODUCT":
 			// Only reset bill-related data if it's a different product
 			const isDifferentProduct =
@@ -37,6 +38,7 @@ export const bbpsReducer = (state: BbpsState, action: Action): BbpsState => {
 				useMockData: action.payload?.useMockData || false,
 			};
 
+		// Set the bill fetch result and auto-select bills if mandatory
 		case "SET_VALIDATION_RESPONSE":
 			return {
 				...state,
@@ -58,12 +60,14 @@ export const bbpsReducer = (state: BbpsState, action: Action): BbpsState => {
 						: 0,
 			};
 
+		// Store the search form data
 		case "SET_SEARCH_PAYLOAD":
 			return {
 				...state,
 				searchFormData: action.payload,
 			};
 
+		// Toggle bill selection based on selection mode (single/multi)
 		case "TOGGLE_BILL_SELECTION":
 			// Find the bill to toggle
 			const billToToggle = state.billFetchResult?.bills.find(
@@ -151,6 +155,7 @@ export const bbpsReducer = (state: BbpsState, action: Action): BbpsState => {
 				error: action.message,
 			};
 
+		// Update the current step in the workflow
 		case "SET_CURRENT_STEP":
 			return {
 				...state,

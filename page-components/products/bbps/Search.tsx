@@ -18,6 +18,17 @@ const operatorRenderer = {
 	label: "name",
 };
 
+/**
+ * Search component for BBPS bill payment workflow
+ * Handles dynamic form generation, operator selection, and bill fetching
+ * @param {object} props - Component props
+ * @param {BbpsProduct} props.product - BBPS product configuration containing search fields and settings
+ * @returns {JSX.Element} Search form component with dynamic fields and operator selection
+ * @example
+ * ```tsx
+ * <Search product={BbpsProducts.find(p => p.id === 'electricity')} />
+ * ```
+ */
 export const Search = ({ product }: { product: BbpsProduct }) => {
 	const { state, dispatch } = useContext(BbpsContext);
 	const nav = useBbpsNavigation();

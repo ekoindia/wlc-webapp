@@ -2,12 +2,16 @@
 
 import { ParamType } from "constants/trxnFramework";
 
-/** Field definition for the dynamic search form */
+/**
+ * Field definition for the dynamic search form
+ * Used to generate form fields dynamically based on product configuration
+ * @interface SearchFieldDef
+ */
 export interface SearchFieldDef {
-	name: string; // key used in form state & API payload
-	label: string; // user-facing label
+	name: string;
+	label: string;
 	parameter_type_id: ParamType;
-	required?: boolean; // true → show a red asterisk & validate
+	required?: boolean;
 	validations?: {
 		min?: number;
 		max?: number;
@@ -20,16 +24,18 @@ export interface SearchFieldDef {
 		message?: string;
 	};
 	value?: string;
-	// Properties for LIST type fields
 	list_elements?: Array<{ value: string; label: string }>;
-	// Properties for dynamic behavior
 	onChange?: (_value: string) => void;
 	meta?: {
 		force_dropdown?: boolean;
 	};
 }
 
-/** Operator from the operators API response */
+/**
+ * Operator from the operators API response
+ * Represents a biller/operator that can process bill payments
+ * @interface Operator
+ */
 export interface Operator {
 	operator_id: number;
 	name: string;
@@ -40,7 +46,11 @@ export interface Operator {
 	location_id: number;
 }
 
-/** Dynamic field from the operator-specific fields API response */
+/**
+ * Dynamic field from the operator-specific fields API response
+ * Represents additional form fields required by specific operators
+ * @interface DynamicField
+ */
 export interface DynamicField {
 	param_name: string;
 	param_label: string;
@@ -50,15 +60,19 @@ export interface DynamicField {
 	error_message?: string;
 }
 
-/** Shape for each product/biller tile in the grid */
+/**
+ * Shape for each product/biller tile in the grid
+ * Defines the configuration for a BBPS product/service
+ * @interface BbpsProduct
+ */
 export interface BbpsProduct {
-	id: string; // "electricity", "echallan", …
-	label: string; // "Electricity Bill"
-	desc: string; // short tagline
-	icon: string; // later swap to a React component
-	url: string; // url for the product
-	categoryId?: string; // category ID for filtering - optional for backward compatibility
-	searchFields: SearchFieldDef[]; // drives SearchForm generation
-	useMockData?: boolean; // load mock JSON instead of API
-	defaultSearchValues?: Record<string, string>; // pre-fill form (optional)
+	id: string;
+	label: string;
+	desc: string;
+	icon: string;
+	url: string;
+	categoryId?: string;
+	searchFields: SearchFieldDef[];
+	useMockData?: boolean;
+	defaultSearchValues?: Record<string, string>;
 }

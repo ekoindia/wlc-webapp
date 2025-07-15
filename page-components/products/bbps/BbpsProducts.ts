@@ -1,6 +1,14 @@
 import { ParamType } from "constants/trxnFramework";
 import { BbpsProduct } from "./types";
 
+/**
+ * Configuration array for BBPS products/services
+ * Defines the available bill payment products with their search fields and settings
+ * @example
+ * ```tsx
+ * const electricityProduct = BbpsProducts.find(p => p.id === 'electricity');
+ * ```
+ */
 export const BbpsProducts: BbpsProduct[] = [
 	{
 		id: "corporate-cc",
@@ -82,6 +90,6 @@ export const BbpsProducts: BbpsProduct[] = [
 				value: "1",
 			},
 		],
-		useMockData: false,
+		useMockData: true,
 	},
 ];

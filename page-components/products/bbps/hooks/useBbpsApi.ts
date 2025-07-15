@@ -8,7 +8,8 @@ import { mockBillFetchResponse } from "../utils/mockData";
 import { transformBillData } from "../utils/transformBillData";
 
 /**
- * Payment request payload structure
+ * Payment request payload structure for BBPS bill payment API
+ * @interface PaymentRequest
  */
 interface PaymentRequest {
 	payment_amount: number;
@@ -16,13 +17,17 @@ interface PaymentRequest {
 		billid: string;
 		bill_payment_amount: number;
 	}>;
-	// Add other required fields based on API specification
 }
 
 /**
  * Hook to handle BBPS API calls with mock data support
- * @param {BbpsProduct} [product] Product configuration
- * @returns {object} API functions and loading states
+ * Provides functions for fetching operators, dynamic fields, bills, and making payments
+ * @param {BbpsProduct} [product] Product configuration containing API settings and mock data flags
+ * @returns {object} Object containing API functions and loading states
+ * @example
+ * ```tsx
+ * const { fetchBills, makePayment, isLoadingBills } = useBbpsApi(product);
+ * ```
  */
 export const useBbpsApi = (product?: BbpsProduct) => {
 	const [fetchBills, isLoadingBills] = useApiFetch(Endpoints.TRANSACTION, {});

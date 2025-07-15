@@ -99,8 +99,8 @@ export const calculateDueDateTag = (
 
 /**
  * Transform raw bill fetch response to application format
- * @param response Raw API response
- * @returns Transformed data for the application
+ * @param {BillFetchResponse} response Raw API response
+ * @returns {any} Transformed data for the application
  */
 export const transformBillData = (response: BillFetchResponse) => {
 	if (!response || !response.data || !response.data.billDetailsList) {

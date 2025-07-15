@@ -17,6 +17,16 @@ import { useBbpsApi } from "./hooks/useBbpsApi";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
 import { paymentStatusMocks } from "./utils/mockData";
 
+/**
+ * Payment component for BBPS bill payment processing
+ * Handles PIN entry, payment validation, and API calls for bill payment
+ * Supports both live API calls and mock data for testing
+ * @returns {JSX.Element} Payment component with PIN input and payment processing
+ * @example
+ * ```tsx
+ * <Payment />
+ * ```
+ */
 export const Payment = () => {
 	const nav = useBbpsNavigation();
 	const toast = useToast();
@@ -112,7 +122,7 @@ export const Payment = () => {
 		// Construct payment request payload
 		const paymentRequest = {
 			...searchFormData,
-			payment_amount: totalAmount,
+			amount: totalAmount,
 			payment_amount_breakup: selectedBills.map((bill) => ({
 				billid: bill.billid,
 				bill_payment_amount: bill.amount,

@@ -16,6 +16,9 @@ import { BbpsContext } from "./context/BbpsContext";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
 import { calculateDueDateTag } from "./utils/transformBillData";
 
+/**
+ * Bill interface for preview display
+ */
 interface Bill {
 	billid: string;
 	label: string;
@@ -574,7 +577,13 @@ const BillCard = ({
 
 /**
  * Preview component for BBPS bill selection and payment amount input
- * @returns {JSX.Element} Preview component
+ * Displays fetched bills with selection controls (radio/checkbox) based on payment mode
+ * Handles amount validation and calculates total payment amount
+ * @returns {JSX.Element} Preview component with bill selection and amount input
+ * @example
+ * ```tsx
+ * <Preview />
+ * ```
  */
 export const Preview = (): JSX.Element => {
 	const nav = useBbpsNavigation();

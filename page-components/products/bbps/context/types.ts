@@ -1,11 +1,19 @@
 import { BbpsProduct, DynamicField, Operator } from "../types";
 
+/**
+ * Workflow steps for BBPS bill payment process
+ */
 export type Step = "product-view" | "search" | "preview" | "payment" | "status";
 
-// Payment status types
+/**
+ * Payment status types for transaction results
+ */
 export type PaymentStatusType = "success" | "failure" | "pending";
 
-// Payment status data structure
+/**
+ * Payment status data structure for transaction results
+ * @interface PaymentStatusData
+ */
 export interface PaymentStatusData {
 	status: PaymentStatusType;
 	message: string;
@@ -15,18 +23,24 @@ export interface PaymentStatusData {
 	billIds: string[];
 }
 
-// ✧ NEW helper for amount constraints
+/**
+ * Helper interface for amount constraints and validation rules
+ * @interface AmountRules
+ */
 export interface AmountRules {
 	min?: number;
 	max?: number;
 	multiple?: number;
 }
 
-// ✧ Selected bill for Preview/Pay
+/**
+ * Selected bill interface for Preview/Payment steps
+ * @interface SelectedBill
+ */
 export interface SelectedBill {
 	billid: string;
 	label: string;
-	amount: number; // agent-editable
+	amount: number;
 	amountRules: AmountRules;
 	billNumber: string;
 	billDate: string;
@@ -34,7 +48,10 @@ export interface SelectedBill {
 	customerName: string;
 }
 
-// Raw API response structure (for reference)
+/**
+ * Raw API response structure for bill details
+ * @interface BillDetailItem
+ */
 export interface BillDetailItem {
 	billAmount: string;
 	maxBillPayAmount: string;
@@ -48,6 +65,10 @@ export interface BillDetailItem {
 	minBillPayAmount: string;
 }
 
+/**
+ * Bill fetch API response structure
+ * @interface BillFetchResponse
+ */
 export interface BillFetchResponse {
 	response_status_id: number;
 	data: {
@@ -72,6 +93,10 @@ export interface BillFetchResponse {
 	status: number;
 }
 
+/**
+ * Bill payment request structure for API calls
+ * @interface BillPaymentRequest
+ */
 export interface BillPaymentRequest {
 	sourceid: string;
 	customerid: string;
@@ -135,8 +160,11 @@ export interface BillPaymentRequest {
 	}[];
 }
 
-/* ────────────────────────────────────────── */
-/* Update BbpsState                          */
+/**
+ * Main BBPS context state interface
+ * Contains all state needed for the BBPS workflow
+ * @interface BbpsState
+ */
 export interface BbpsState {
 	currentStep: Step;
 	selectedProduct: BbpsProduct | null;
@@ -160,7 +188,9 @@ export interface BbpsState {
 	isLoadingDynamicData: boolean;
 }
 
-/* Initial values */
+/**
+ * Initial state values for BBPS context
+ */
 export const initialState: BbpsState = {
 	currentStep: "search",
 	isLoading: false,
@@ -180,8 +210,10 @@ export const initialState: BbpsState = {
 	isLoadingDynamicData: false,
 };
 
-/* ────────────────────────────────────────── */
-/* Extend Action union                       */
+/**
+ * Action union type for BBPS reducer
+ * Defines all possible actions that can be dispatched to update state
+ */
 export type Action =
 	| {
 			type: "SET_SELECTED_PRODUCT";

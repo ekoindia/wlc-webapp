@@ -7,6 +7,12 @@ import {
 /**
  * Mock response for BBPS bill fetch API
  * Used for both testing and development when API is unavailable
+ * Contains sample bill data with various payment modes and amount rules
+ * @example
+ * ```tsx
+ * const mockResponse = mockBillFetchResponse;
+ * console.log(mockResponse.data.billDetailsList);
+ * ```
  */
 export const mockBillFetchResponse: BillFetchResponse = {
 	response_status_id: -1,
@@ -264,6 +270,12 @@ export const mockBillPaymentRequest: BillPaymentRequest = {
 
 /**
  * Mock responses for different pay_multiple_bills scenarios
+ * Provides test data for various bill selection modes
+ * @example
+ * ```tsx
+ * const optionalResponse = mockBillFetchResponses.multiOptional;
+ * const mandatoryResponse = mockBillFetchResponses.multiMandatory;
+ * ```
  */
 export const mockBillFetchResponses = {
 	// Optional Multiple Selection (Y)
@@ -295,6 +307,12 @@ export const mockBillFetchResponses = {
 
 /**
  * Mock payment status responses for different scenarios
+ * Provides test data for success, failure, and pending payment states
+ * @example
+ * ```tsx
+ * const successMock = paymentStatusMocks.success;
+ * const failureMock = paymentStatusMocks.failure;
+ * ```
  */
 export const paymentStatusMocks: Record<string, PaymentStatusData> = {
 	success: {
@@ -325,8 +343,13 @@ export const paymentStatusMocks: Record<string, PaymentStatusData> = {
 
 /**
  * Transform bill fetch response for testing
- * @param response Raw response
- * @returns Transformed response
+ * Utility function to modify mock responses for different test scenarios
+ * @param {any} response - Raw response to transform
+ * @returns {any} Transformed response
+ * @example
+ * ```tsx
+ * const transformed = transformMockResponse(mockBillFetchResponse);
+ * ```
  */
 export const transformBillFetchResponse = (response: BillFetchResponse) => {
 	// This would normally be done by the transformBillData utility
