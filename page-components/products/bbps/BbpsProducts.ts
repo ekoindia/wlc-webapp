@@ -15,7 +15,7 @@ export const BbpsProducts: BbpsProduct[] = [
 		label: "Corporate Credit Card",
 		desc: "Clear outstanding corporate card dues",
 		icon: "creditcard",
-		url: "/products/bbps/corporate-cc/search",
+		url: "corporate-cc/search",
 		categoryId: "7",
 		searchFields: [
 			{
@@ -56,7 +56,7 @@ export const BbpsProducts: BbpsProduct[] = [
 		label: "Loan",
 		desc: "Pay outstanding loan dues",
 		icon: "loan",
-		url: "/products/bbps/loan/search",
+		url: "loan/search",
 		categoryId: "21",
 		searchFields: [
 			{
