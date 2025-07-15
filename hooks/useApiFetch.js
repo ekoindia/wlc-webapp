@@ -211,9 +211,7 @@ const useApiFetch = (defaultUrlEndpoint, settings) => {
 export const useEpsV3Fetch = (defaultUrlEndpoint, settings) => {
 	const method = (settings?.method || "GET").toUpperCase();
 	const isGetRequest = method === "GET";
-	const _uriRootPath = settings?.epsApiVersion
-		? `/ekoicici/v${settings.epsApiVersion}`
-		: `/ekoicici/v3`;
+	const _uriRootPath = `/ekoicici/v${settings.epsApiVersion || 3}`;
 
 	return useApiFetch(Endpoints.TRANSACTION_JSON, {
 		...settings,
