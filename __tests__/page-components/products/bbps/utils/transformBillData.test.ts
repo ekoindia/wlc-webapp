@@ -1,4 +1,3 @@
-import { afterEach, beforeEach, describe, it } from "node:test";
 import { calculateDueDateTag } from "page-components/products/bbps/utils/transformBillData";
 import { BillFetchResponse } from "../../../../../page-components/products/bbps/context/types";
 import { transformBillData } from "../../../../../page-components/products/bbps/utils/transformBillData";
@@ -26,8 +25,7 @@ describe("transformBillData", () => {
 					amount_multiple: "100.00",
 					billNumber: "BILL001",
 					billDueDate: "07-08-2023", // DD-MM-YYYY format from mock data
-					filler1: "Test Customer",
-					filler2: null,
+					customer_name: "Test Customer",
 					minBillPayAmount: "50.00",
 				},
 			],
