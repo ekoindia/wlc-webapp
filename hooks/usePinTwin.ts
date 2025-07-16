@@ -1,4 +1,3 @@
-import { useToast } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionTypes } from "constants/EpsTransactions";
 import { fetcher } from "helpers/apiHelper";
@@ -87,7 +86,6 @@ export const usePinTwin = (
 	const [retryCount, setRetryCount] = useState(0);
 	const [keyId, setKeyId] = useState("");
 
-	const toast = useToast();
 	const retryCountRef = useRef(0);
 	const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const isMountedRef = useRef(true);
@@ -153,12 +151,6 @@ export const usePinTwin = (
 				setKeyLoadError(false);
 				setRetryCount(0);
 				retryCountRef.current = 0;
-
-				toast({
-					title: "PinTwin key loaded successfully",
-					status: "success",
-					duration: 2000,
-				});
 			} else {
 				throw new Error("Invalid response format");
 			}
@@ -175,12 +167,6 @@ export const usePinTwin = (
 				retryCountRef.current = newRetryCount;
 				setRetryCount(newRetryCount);
 
-				toast({
-					title: `Failed to load key. Retrying... (${newRetryCount}/${optionsRef.current.maxRetries})`,
-					status: "warning",
-					duration: 3000,
-				});
-
 				if (retryTimeoutRef.current) {
 					clearTimeout(retryTimeoutRef.current);
 				}
@@ -191,18 +177,13 @@ export const usePinTwin = (
 					}
 				}, optionsRef.current.retryDelay);
 			} else if (isMountedRef.current) {
-				toast({
-					title: "Failed to load PinTwin key after multiple attempts",
-					status: "error",
-					duration: 5000,
-				});
 			}
 		} finally {
 			if (isMountedRef.current) {
 				setLoading(false);
 			}
 		}
-	}, [loading, fetchPinTwinKey, toast]);
+	}, [loading, fetchPinTwinKey]);
 
 	/**
 	 * Encodes a PIN using the current PinTwin key
