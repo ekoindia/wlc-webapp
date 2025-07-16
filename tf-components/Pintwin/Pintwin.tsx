@@ -122,7 +122,7 @@ const PIN_COLORS = ["#FFEB3B", "#81D4FA"];
  */
 const Pintwin: React.FC<PintwinProps> = ({
 	disabled = false,
-	useMockData = true,
+	useMockData = false,
 	noLookup = true,
 	onPinChange,
 	maxLength = 4,
@@ -139,9 +139,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 	 */
 	const handlePinChange = useCallback(
 		(value: string) => {
-			console.log("value", value);
 			if (onPinChange) {
-				// Encode with PinTwin if available (keyId appending handled internally)
 				const encodedValue = encodePinTwin
 					? encodePinTwin(value)
 					: value;
