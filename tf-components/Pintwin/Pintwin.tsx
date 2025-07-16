@@ -2,6 +2,7 @@ import { Box, Flex, PinInput, PinInputField, Text } from "@chakra-ui/react";
 import { IcoButton } from "components/IcoButton";
 import { InputLabel } from "components/InputLabel";
 import { usePinTwin } from "hooks/usePinTwin";
+import { rotateAntiClockwise } from "libs/chakraKeyframes";
 import React, { useCallback } from "react";
 
 /**
@@ -127,7 +128,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 	maxLength = 4,
 	label = "Secret PIN",
 }) => {
-	const { pintwinKey, loading, reloadKey, encodePinTwin, keyLoadError } =
+	const { pintwinKey, reloadKey, encodePinTwin, loading, keyLoadError } =
 		usePinTwin({
 			useMockData,
 			autoLoad: true,
@@ -194,6 +195,9 @@ const Pintwin: React.FC<PintwinProps> = ({
 								: loading
 									? "highlight"
 									: "success",
+							animation: loading
+								? `${rotateAntiClockwise} 1s linear infinite`
+								: "none",
 						}}
 					/>
 
