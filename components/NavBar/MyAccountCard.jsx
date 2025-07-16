@@ -231,7 +231,7 @@ const MyAccountCard = ({ onClose }) => {
 				h="0"
 				borderLeft="8px solid transparent"
 				borderRight="8px solid transparent"
-				borderBottom="8px solid #1F3ABC"
+				borderBottom="8px solid var(--chakra-colors-primary-DEFAULT)"
 				zIndex="999"
 			/>
 
@@ -250,10 +250,8 @@ const MyAccountCard = ({ onClose }) => {
 				{/* MARK: PROFILE SECTION */}
 				<Flex
 					direction="column"
-					// px="6"
-					// pt="6"
 					w="full"
-					bg="linear-gradient(135deg, #1F3ABC 0%, #11299E 100%)"
+					bg="linear-gradient(135deg, var(--chakra-colors-primary-light) 0%, var(--chakra-colors-primary-DEFAULT) 100%)"
 					position="relative"
 					borderRadius="20px 20px 0 0"
 				>
@@ -281,7 +279,6 @@ const MyAccountCard = ({ onClose }) => {
 							align="center"
 							gap="4"
 							p={{ base: "0.8em", md: "1em" }}
-							// mb="6"
 							position="relative"
 							zIndex="2"
 							// For Dual-tone overlay:
