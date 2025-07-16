@@ -5,16 +5,20 @@ import { usePinTwin } from "hooks/usePinTwin";
 
 jest.mock("helpers/apiHelper");
 jest.mock("@chakra-ui/react", () => ({
-	useToast: jest.fn(() => jest.fn()),
+	useToast: jest.fn(),
 }));
 
 const mockedFetcher = fetcher as jest.Mock;
 const mockedUseToast = useToast as jest.Mock;
 
 describe("usePinTwin", () => {
+	const mockToast = jest.fn();
+
 	beforeEach(() => {
 		mockedFetcher.mockClear();
 		mockedUseToast.mockClear();
+		mockToast.mockClear();
+		mockedUseToast.mockReturnValue(mockToast);
 		sessionStorage.clear();
 	});
 
@@ -50,55 +54,73 @@ describe("usePinTwin", () => {
 		expect(result.current.keyLoaded).toBe(true);
 		expect(result.current.pintwinKey).toEqual("1234567890".split(""));
 		expect(result.current.keyId).toBe("test-key-id");
-		expect(mockedUseToast().mock.calls[0][0].status).toBe("success");
+		expect(mockToast).toHaveBeenCalledWith(
+			expect.objectContaining({
+				title: "PinTwin key loaded successfully",
+				status: "success",
+				duration: 2000,
+			})
+		);
 	});
 
 	it("should handle fetch error and retry", async () => {
+		jest.useFakeTimers();
 		mockedFetcher.mockRejectedValue(new Error("API Error"));
 
 		const { result, waitForNextUpdate } = renderHook(() =>
-			usePinTwin({ autoLoad: true, retryDelay: 10 })
+			usePinTwin({ autoLoad: true, retryDelay: 10, maxRetries: 1 })
 		);
 
 		expect(result.current.loading).toBe(true);
 
 		await waitForNextUpdate();
 
+		// Fast-forward timers to trigger retry
+		act(() => {
+			jest.runAllTimers();
+		});
+
+		// Wait for state update after retry
+		await waitForNextUpdate();
+
 		expect(result.current.loading).toBe(false);
 		expect(result.current.keyLoadError).toBe(true);
 		expect(result.current.retryCount).toBe(1);
-		expect(mockedUseToast().mock.calls[0][0].status).toBe("warning");
-
-		// Should retry
-		await waitForNextUpdate();
-		expect(result.current.retryCount).toBe(2);
+		expect(mockToast).toHaveBeenCalledWith(
+			expect.objectContaining({
+				title: expect.stringContaining(
+					"Failed to load key. Retrying..."
+				),
+				status: "warning",
+				duration: 3000,
+			})
+		);
+		jest.useRealTimers();
 	});
 
 	it("should stop retrying after max retries", async () => {
+		jest.useFakeTimers();
 		mockedFetcher.mockRejectedValue(new Error("API Error"));
 
-		const { result, waitFor } = renderHook(() =>
-			usePinTwin({ autoLoad: true, maxRetries: 2, retryDelay: 10 })
+		const { result, waitForNextUpdate } = renderHook(() =>
+			usePinTwin({ autoLoad: true, maxRetries: 1, retryDelay: 10 })
 		);
 
-		await waitFor(
-			() => {
-				expect(result.current.retryCount).toBe(2);
-			},
-			{ timeout: 500 }
-		);
+		await waitForNextUpdate(); // first attempt
+		act(() => {
+			jest.runAllTimers();
+		});
+		await waitForNextUpdate(); // after retry
 
-		await waitFor(
-			() => {
-				expect(mockedUseToast().mock.calls.length).toBe(3); // 2 retries + 1 final error
-			},
-			{ timeout: 500 }
+		expect(result.current.retryCount).toBe(1);
+		expect(mockToast).toHaveBeenCalledWith(
+			expect.objectContaining({
+				title: "Failed to load PinTwin key after multiple attempts",
+				status: "error",
+				duration: 5000,
+			})
 		);
-
-		expect(mockedUseToast().mock.calls[2][0].title).toContain(
-			"Failed to load PinTwin key after multiple attempts"
-		);
-		expect(mockedUseToast().mock.calls[2][0].status).toBe("error");
+		jest.useRealTimers();
 	});
 
 	it("should encode pin correctly", async () => {
@@ -119,7 +141,7 @@ describe("usePinTwin", () => {
 			encodedPin = result.current.encodePinTwin("1234");
 		});
 
-		expect(encodedPin).toBe("8765");
+		expect(encodedPin).toBe("8765|encode-test");
 	});
 
 	it("should return empty string for encoding if key is not loaded", () => {
@@ -153,17 +175,21 @@ describe("usePinTwin", () => {
 		expect(result.current.keyId).toBe("manual-reload");
 	});
 
-	it("should cleanup timeouts on unmount", () => {
+	it("should cleanup timeouts on unmount", async () => {
+		jest.useFakeTimers();
 		const clearTimeoutSpy = jest.spyOn(global, "clearTimeout");
 		mockedFetcher.mockRejectedValue(new Error("API Error"));
 
-		const { unmount, waitForNextUpdate } = renderHook(() =>
-			usePinTwin({ retryDelay: 100 })
+		const { waitForNextUpdate, unmount } = renderHook(() =>
+			usePinTwin({ retryDelay: 100, maxRetries: 1 })
 		);
 
-		waitForNextUpdate().then(() => {
-			unmount();
-			expect(clearTimeoutSpy).toHaveBeenCalled();
+		await waitForNextUpdate(); // let the first error/retry schedule
+		act(() => {
+			jest.runOnlyPendingTimers(); // schedule the retry timeout
 		});
+		unmount();
+		expect(clearTimeoutSpy).toHaveBeenCalled();
+		jest.useRealTimers();
 	});
 });

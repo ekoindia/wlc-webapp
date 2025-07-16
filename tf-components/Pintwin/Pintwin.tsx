@@ -1,6 +1,7 @@
-import { Box, Flex, PinInput, PinInputField, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { IcoButton } from "components/IcoButton";
 import { InputLabel } from "components/InputLabel";
+import { OtpInput } from "components/OtpInput";
 import { usePinTwin } from "hooks/usePinTwin";
 import React, { useCallback } from "react";
 
@@ -164,17 +165,17 @@ const Pintwin: React.FC<PintwinProps> = ({
 				</InputLabel>
 				{/* PIN Input Section */}
 				<Flex align="center" gap="4">
-					<PinInput
-						type="number"
+					<OtpInput
 						mask={true}
-						size="lg"
-						isDisabled={disabled || loading}
+						length={maxLength}
 						onComplete={handlePinChange}
-					>
-						{Array.from({ length: maxLength }, (_, index) => (
-							<PinInputField key={index} />
-						))}
-					</PinInput>
+						inputStyle={{
+							w: { base: 12, sm: 14 },
+							h: { base: 12 },
+							fontSize: "sm",
+						}}
+						isDisabled={disabled || loading}
+					/>
 
 					<IcoButton
 						iconName={
