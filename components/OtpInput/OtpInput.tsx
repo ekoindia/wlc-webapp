@@ -143,7 +143,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 			>
 				{Array(length)
 					.fill(null)
-					.map((el, idx) => (
+					.map((_, idx) => (
 						<PinInputField
 							key={idx}
 							ref={(ref: HTMLInputElement | null) => {
