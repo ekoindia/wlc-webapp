@@ -19,6 +19,9 @@ import { useBbpsApi } from "./hooks/useBbpsApi";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
 import { paymentStatusMocks } from "./utils/mockData";
 
+// Maximum PIN length for Pintwin
+const MAX_PIN_LENGTH = 4;
+
 /**
  * Payment component for BBPS bill payment processing
  * Handles PIN entry, payment validation, and API calls for bill payment
@@ -218,7 +221,7 @@ export const Payment = () => {
 			size: "lg",
 			label: "Pay",
 			loading: isProcessing,
-			disabled: pinLength < 4 || isProcessing,
+			disabled: pinLength < MAX_PIN_LENGTH || isProcessing,
 			onClick: handlePayment,
 			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
@@ -325,7 +328,7 @@ export const Payment = () => {
 					</Text>
 					<Pintwin
 						label="Secret PIN"
-						maxLength={4}
+						maxLength={MAX_PIN_LENGTH}
 						useMockData={useMockData}
 						onPinChange={(pin, encodedPin) => {
 							if (encodedPin && encodedPin.includes("|")) {
