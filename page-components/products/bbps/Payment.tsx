@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Currency, PageTitle } from "components";
 import { useContext, useEffect, useState } from "react";
-import { InputPintwin } from "tf-components";
+import { Pintwin } from "tf-components";
 import { BbpsLogo } from "./components/BbpsLogo";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusData, PaymentStatusType } from "./context/types";
@@ -323,29 +323,16 @@ export const Payment = () => {
 					<Text fontSize="sm" color="gray.600">
 						Payment will be processed from your default wallet
 					</Text>
-					<InputPintwin
+					<Pintwin
 						label="Secret PIN"
-						lengthMin={4}
-						lengthMax={4}
-						required={true}
-						pintwinApp={true}
-						// useMockData={true}
-						onChange={(value, masked) => {
-							if (value.includes("|")) {
-								setPintwinEncoded(value);
+						maxLength={4}
+						useMockData={useMockData}
+						onPinChange={(pin, encodedPin) => {
+							if (encodedPin && encodedPin.includes("|")) {
+								setPintwinEncoded(encodedPin);
 							}
-							// Track PIN length based on masked value (which shows actual digit count)
-							setPinLength(masked.length);
-							if (useMockData) {
-								// console.log(
-								// 	"[BBPS MOCK] Pintwin encoded:",
-								// 	value,
-								// 	"masked:",
-								// 	masked,
-								// 	"length:",
-								// 	masked.length
-								// );
-							}
+							// Track PIN length based on actual PIN length
+							setPinLength(pin.length);
 						}}
 					/>
 				</Flex>

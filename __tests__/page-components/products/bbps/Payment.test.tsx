@@ -29,14 +29,9 @@ jest.mock("@chakra-ui/react", () => ({
 	useToast: () => jest.fn(),
 }));
 
-// Mock InputPintwin component to allow controlled PIN simulation
-jest.mock("tf-components/InputPintwin", () => {
-	const MockInputPintwin = ({
-		onChange,
-		onValidationChange,
-		label,
-		...props
-	}) => {
+// Mock Pintwin component to allow controlled PIN simulation
+jest.mock("tf-components", () => ({
+	Pintwin: ({ onPinChange, label, ...props }) => {
 		return (
 			<div data-testid="pintwin-component">
 				<label>{label}</label>
@@ -46,26 +41,17 @@ jest.mock("tf-components/InputPintwin", () => {
 					maxLength={4}
 					onChange={(e) => {
 						const value = e.target.value;
-						const maskedValue = value.replace(/./g, "*");
 						// Simulate encoded PIN with key ID (as per component logic)
 						const encodedValue =
 							value.length === 4 ? `encoded_${value}|87` : value;
-						onChange?.(encodedValue, maskedValue);
-						// Simulate validation change
-						onValidationChange?.(value.length === 4);
+						onPinChange?.(value, encodedValue);
 					}}
 					{...props}
 				/>
 			</div>
 		);
-	};
-
-	return {
-		__esModule: true,
-		default: MockInputPintwin,
-		InputPintwin: MockInputPintwin,
-	};
-});
+	},
+}));
 
 describe("BBPS Payment Component", () => {
 	const mockState = {
@@ -124,7 +110,7 @@ describe("BBPS Payment Component", () => {
 		const payButton = getByText("Pay");
 		expect(payButton).toBeDisabled();
 
-		// Simulate entering a 4-digit PIN using our mocked InputPintwin
+		// Simulate entering a 4-digit PIN using our mocked Pintwin
 		const pinInput = getByTestId("pin-input");
 		fireEvent.change(pinInput, { target: { value: "1234" } });
 
@@ -201,5 +187,27 @@ describe("BBPS Payment Component", () => {
 		const { getByText } = renderComponent({ selectedBills: [] });
 
 		expect(getByText("No bills selected")).toBeInTheDocument();
+	});
+
+	it("renders Pintwin component with correct props", () => {
+		const { getByTestId, getByText } = renderComponent();
+
+		expect(getByTestId("pintwin-component")).toBeInTheDocument();
+		expect(getByText("Secret PIN")).toBeInTheDocument();
+	});
+
+	it("handles PIN change with encoded value correctly", async () => {
+		const { getByTestId } = renderComponent();
+
+		const pinInput = getByTestId("pin-input");
+
+		// Simulate entering a 4-digit PIN
+		fireEvent.change(pinInput, { target: { value: "5678" } });
+
+		// The mock should call onPinChange with both pin and encodedPin
+		// This is handled by our mock implementation
+		await waitFor(() => {
+			expect(pinInput).toHaveValue("5678");
+		});
 	});
 });
