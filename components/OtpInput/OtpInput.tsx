@@ -110,7 +110,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 	onChange = () => {},
 	onKeyDown = () => {},
 	onEnter = () => {},
-	onComplete,
+	onComplete = () => {},
 	isDisabled,
 	...rest
 }) => {
