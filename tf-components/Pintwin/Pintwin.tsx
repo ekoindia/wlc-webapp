@@ -135,15 +135,26 @@ const Pintwin: React.FC<PintwinProps> = ({
 		});
 
 	/**
-	 * Handles PIN input changes
+	 * Handles PIN input changes (for length tracking only, no encoding)
 	 */
-	const handlePinChange = useCallback(
+	const handlePinInputChange = useCallback(
+		(value: string) => {
+			if (onPinChange) {
+				onPinChange(value, undefined); // Only track length, do not encode
+			}
+		},
+		[onPinChange]
+	);
+
+	/**
+	 * Handles PIN input completion (encode only when complete)
+	 */
+	const handlePinComplete = useCallback(
 		(value: string) => {
 			if (onPinChange) {
 				const encodedValue = encodePinTwin
 					? encodePinTwin(value)
 					: value;
-
 				onPinChange(value, encodedValue);
 			}
 		},
@@ -166,7 +177,8 @@ const Pintwin: React.FC<PintwinProps> = ({
 					<OtpInput
 						mask={true}
 						length={maxLength}
-						onComplete={handlePinChange}
+						onChange={handlePinInputChange}
+						onComplete={handlePinComplete}
 						inputStyle={{
 							w: { base: 12, sm: 14 },
 							h: { base: 12 },
