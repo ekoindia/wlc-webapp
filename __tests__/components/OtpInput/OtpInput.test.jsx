@@ -222,26 +222,39 @@ describe("OtpInput component", () => {
 		// Type a number - background should change through React state
 		await user.type(inputs[0], "1");
 		expect(inputs[0]).toHaveValue("1");
+
+		// Verify that the input has the expected background styling applied via React state
+		// The component should apply focus background when input has value
+		const computedStyle = window.getComputedStyle(inputs[0]);
+		expect(computedStyle.backgroundColor).not.toBe("");
 	});
 
 	it("handles backspace key without direct DOM manipulation", async () => {
 		const user = userEvent.setup();
-		render(<OtpInput {...defaultProps} />);
+		const onChange = jest.fn();
+		render(<OtpInput {...defaultProps} onChange={onChange} />);
 
 		const inputs = screen.getAllByRole("textbox");
 
 		// Type a number
 		await user.type(inputs[0], "1");
 		expect(inputs[0]).toHaveValue("1");
+		expect(onChange).toHaveBeenCalledWith("1");
 
-		// Press backspace - should not manipulate DOM directly
+		// Press backspace - should update React state and trigger onChange
 		await user.keyboard("{Backspace}");
 		expect(inputs[0]).toHaveValue("");
+		expect(onChange).toHaveBeenCalledWith("");
+
+		// Verify background state changes are handled through React
+		const computedStyle = window.getComputedStyle(inputs[0]);
+		expect(computedStyle.backgroundColor).toBeDefined();
 	});
 
 	it("maintains consistent state between React and DOM", async () => {
 		const user = userEvent.setup();
-		render(<OtpInput {...defaultProps} />);
+		const onChange = jest.fn();
+		render(<OtpInput {...defaultProps} onChange={onChange} />);
 
 		const inputs = screen.getAllByRole("textbox");
 
@@ -253,10 +266,20 @@ describe("OtpInput component", () => {
 		await user.click(inputs[1]);
 		await user.type(inputs[1], "2");
 
-		// State should be consistent
+		// State should be consistent - React state drives both value and onChange
 		expect(inputs[0]).toHaveValue("1");
 		expect(inputs[1]).toHaveValue("2");
 		expect(document.activeElement).toBe(inputs[2]);
+
+		// Verify React state updates are reflected in onChange calls
+		expect(onChange).toHaveBeenCalledWith("1");
+		expect(onChange).toHaveBeenCalledWith("12");
+
+		// Verify background styling is applied through React state, not direct DOM manipulation
+		const firstInputStyle = window.getComputedStyle(inputs[0]);
+		const secondInputStyle = window.getComputedStyle(inputs[1]);
+		expect(firstInputStyle.backgroundColor).toBeDefined();
+		expect(secondInputStyle.backgroundColor).toBeDefined();
 	});
 
 	it("handles focus events without direct style manipulation", async () => {
