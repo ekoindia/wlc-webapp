@@ -182,7 +182,12 @@ const Pintwin: React.FC<PintwinProps> = ({
 						inputStyle={{
 							w: { base: 12, sm: 14 },
 							h: { base: 12 },
-							fontSize: "sm",
+							fontSize: "2em",
+							textAlign: "center",
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							sx: { caretColor: "transparent" },
 						}}
 						isDisabled={disabled || loading}
 					/>
