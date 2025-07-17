@@ -1,6 +1,7 @@
-import { Box, Flex, PinInput, PinInputField, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { IcoButton } from "components/IcoButton";
 import { InputLabel } from "components/InputLabel";
+import { OtpInput } from "components/OtpInput";
 import { usePinTwin } from "hooks/usePinTwin";
 import { rotateAntiClockwise } from "libs/chakraKeyframes";
 import React, { useCallback } from "react";
@@ -122,7 +123,7 @@ const PIN_COLORS = ["#FFEB3B", "#81D4FA"];
  */
 const Pintwin: React.FC<PintwinProps> = ({
 	disabled = false,
-	useMockData = true,
+	useMockData = false,
 	noLookup = true,
 	onPinChange,
 	maxLength = 4,
@@ -135,17 +136,26 @@ const Pintwin: React.FC<PintwinProps> = ({
 		});
 
 	/**
-	 * Handles PIN input changes
+	 * Handles PIN input changes (for length tracking only, no encoding)
 	 */
-	const handlePinChange = useCallback(
+	const handlePinInputChange = useCallback(
 		(value: string) => {
-			console.log("value", value);
 			if (onPinChange) {
-				// Encode with PinTwin if available (keyId appending handled internally)
+				onPinChange(value, undefined); // Only track length, do not encode
+			}
+		},
+		[onPinChange]
+	);
+
+	/**
+	 * Handles PIN input completion (encode only when complete)
+	 */
+	const handlePinComplete = useCallback(
+		(value: string) => {
+			if (onPinChange) {
 				const encodedValue = encodePinTwin
 					? encodePinTwin(value)
 					: value;
-
 				onPinChange(value, encodedValue);
 			}
 		},
@@ -165,17 +175,18 @@ const Pintwin: React.FC<PintwinProps> = ({
 				</InputLabel>
 				{/* PIN Input Section */}
 				<Flex align="center" gap="4">
-					<PinInput
-						type="number"
+					<OtpInput
 						mask={true}
-						size="lg"
+						length={maxLength}
+						onChange={handlePinInputChange}
+						onComplete={handlePinComplete}
+						inputStyle={{
+							w: { base: 12, sm: 14 },
+							h: { base: 12 },
+							fontSize: "sm",
+						}}
 						isDisabled={disabled || loading}
-						onComplete={handlePinChange}
-					>
-						{Array.from({ length: maxLength }, (_, index) => (
-							<PinInputField key={index} />
-						))}
-					</PinInput>
+					/>
 
 					<IcoButton
 						iconName={

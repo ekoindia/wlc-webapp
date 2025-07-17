@@ -11,13 +11,16 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, Currency, PageTitle } from "components";
 import { useContext, useEffect, useState } from "react";
-import { InputPintwin } from "tf-components";
+import { Pintwin } from "tf-components";
 import { BbpsLogo } from "./components/BbpsLogo";
 import { BbpsContext } from "./context/BbpsContext";
 import { PaymentStatusData, PaymentStatusType } from "./context/types";
 import { useBbpsApi } from "./hooks/useBbpsApi";
 import { useBbpsNavigation } from "./hooks/useBbpsNavigation";
 import { paymentStatusMocks } from "./utils/mockData";
+
+// Maximum PIN length for Pintwin
+const MAX_PIN_LENGTH = 4;
 
 /**
  * Payment component for BBPS bill payment processing
@@ -218,7 +221,7 @@ export const Payment = () => {
 			size: "lg",
 			label: "Pay",
 			loading: isProcessing,
-			disabled: pinLength < 4 || isProcessing,
+			disabled: pinLength < MAX_PIN_LENGTH || isProcessing,
 			onClick: handlePayment,
 			styles: { h: "64px", w: { base: "100%", md: "200px" } },
 		},
@@ -323,29 +326,16 @@ export const Payment = () => {
 					<Text fontSize="sm" color="gray.600">
 						Payment will be processed from your default wallet
 					</Text>
-					<InputPintwin
+					<Pintwin
 						label="Secret PIN"
-						lengthMin={4}
-						lengthMax={4}
-						required={true}
-						pintwinApp={true}
-						// useMockData={true}
-						onChange={(value, masked) => {
-							if (value.includes("|")) {
-								setPintwinEncoded(value);
+						maxLength={MAX_PIN_LENGTH}
+						useMockData={useMockData}
+						onPinChange={(pin, encodedPin) => {
+							if (encodedPin && encodedPin.includes("|")) {
+								setPintwinEncoded(encodedPin);
 							}
-							// Track PIN length based on masked value (which shows actual digit count)
-							setPinLength(masked.length);
-							if (useMockData) {
-								// console.log(
-								// 	"[BBPS MOCK] Pintwin encoded:",
-								// 	value,
-								// 	"masked:",
-								// 	masked,
-								// 	"length:",
-								// 	masked.length
-								// );
-							}
+							// Track PIN length based on actual PIN length
+							setPinLength(pin.length);
 						}}
 					/>
 				</Flex>
