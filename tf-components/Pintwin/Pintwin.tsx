@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, Tooltip } from "@chakra-ui/react";
 import { IcoButton } from "components/IcoButton";
 import { InputLabel } from "components/InputLabel";
 import { OtpInput } from "components/OtpInput";
@@ -133,7 +133,6 @@ const Pintwin: React.FC<PintwinProps> = ({
 		usePinTwin({
 			useMockData,
 		});
-
 	/**
 	 * Handles PIN input changes (for length tracking only, no encoding)
 	 */
@@ -192,29 +191,59 @@ const Pintwin: React.FC<PintwinProps> = ({
 						isDisabled={disabled || loading || keyLoadError}
 					/>
 
-					<IcoButton
-						iconName={
+					<Tooltip
+						hasArrow
+						label={
 							keyLoadError
-								? "replay"
+								? "Failed! Click to reload security"
 								: loading
-									? "retry"
-									: "insurance"
+									? "Wait! Loading security…"
+									: "SECURE"
 						}
-						onClick={keyLoadError ? reloadKey : undefined}
-						iconSize="sm"
-						size="xs"
-						theme="ghost"
-						iconStyle={{
-							color: keyLoadError
+						aria-label={
+							keyLoadError
+								? "Failed! Click to reload security"
+								: loading
+									? "Wait! Loading security…"
+									: "SECURE"
+						}
+						placement="right"
+						bg={
+							keyLoadError
 								? "error"
 								: loading
 									? "highlight"
-									: "success",
-							animation: loading
-								? `${rotateAntiClockwise} 1s linear infinite`
-								: "none",
-						}}
-					/>
+									: "success"
+						}
+						color="white"
+						borderRadius="8"
+					>
+						<span>
+							<IcoButton
+								iconName={
+									keyLoadError
+										? "replay"
+										: loading
+											? "retry"
+											: "insurance"
+								}
+								onClick={keyLoadError ? reloadKey : undefined}
+								iconSize="sm"
+								size="xs"
+								theme="ghost"
+								iconStyle={{
+									color: keyLoadError
+										? "error"
+										: loading
+											? "highlight"
+											: "success",
+									animation: loading
+										? `${rotateAntiClockwise} 1s linear infinite`
+										: "none",
+								}}
+							/>
+						</span>
+					</Tooltip>
 
 					{noLookup ? null : (
 						<Flex
