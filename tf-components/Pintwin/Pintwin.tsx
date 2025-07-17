@@ -189,7 +189,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 							justifyContent: "center",
 							sx: { caretColor: "transparent" },
 						}}
-						isDisabled={disabled || loading}
+						isDisabled={disabled || loading || keyLoadError}
 					/>
 
 					<IcoButton
