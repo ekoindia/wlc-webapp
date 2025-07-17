@@ -207,4 +207,70 @@ describe("OtpInput component", () => {
 		// Should focus the first empty field
 		expect(document.activeElement).toBe(inputs[0]);
 	});
+
+	// New tests for React state-based background management
+	it("manages background colors through React state instead of DOM manipulation", async () => {
+		const user = userEvent.setup();
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+
+		// Focus first input - should not manipulate DOM directly
+		await user.click(inputs[0]);
+		expect(document.activeElement).toBe(inputs[0]);
+
+		// Type a number - background should change through React state
+		await user.type(inputs[0], "1");
+		expect(inputs[0]).toHaveValue("1");
+	});
+
+	it("handles backspace key without direct DOM manipulation", async () => {
+		const user = userEvent.setup();
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+
+		// Type a number
+		await user.type(inputs[0], "1");
+		expect(inputs[0]).toHaveValue("1");
+
+		// Press backspace - should not manipulate DOM directly
+		await user.keyboard("{Backspace}");
+		expect(inputs[0]).toHaveValue("");
+	});
+
+	it("maintains consistent state between React and DOM", async () => {
+		const user = userEvent.setup();
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+
+		// Focus and type in first input
+		await user.click(inputs[0]);
+		await user.type(inputs[0], "1");
+
+		// Focus second input
+		await user.click(inputs[1]);
+		await user.type(inputs[1], "2");
+
+		// State should be consistent
+		expect(inputs[0]).toHaveValue("1");
+		expect(inputs[1]).toHaveValue("2");
+		expect(document.activeElement).toBe(inputs[2]);
+	});
+
+	it("handles focus events without direct style manipulation", async () => {
+		const user = userEvent.setup();
+		render(<OtpInput {...defaultProps} />);
+
+		const inputs = screen.getAllByRole("textbox");
+
+		// Click on different inputs - should not manipulate styles directly
+		await user.click(inputs[0]);
+		expect(document.activeElement).toBe(inputs[0]);
+
+		await user.click(inputs[2]);
+		// Should auto-focus to first empty field (index 0)
+		expect(document.activeElement).toBe(inputs[0]);
+	});
 });

@@ -115,11 +115,79 @@ const OtpInput: React.FC<OtpInputProps> = ({
 	...rest
 }) => {
 	const inputRef = useRef<(HTMLInputElement | null)[]>([]);
-	const [Otp, setOtp] = useState("");
-	const inputfocusbg =
+	const [otp, setOtp] = useState("");
+	const [activeInputIndex, setActiveInputIndex] = useState<number | null>(
+		null
+	);
+	const [isBackspacePressed, setIsBackspacePressed] = useState(false);
+
+	const inputFocusBg =
 		(inputStyle?.focus as Record<string, any>)?.background ||
 		"var(--chakra-colors-focusbg)";
-	const inputbg = (inputStyle?.background as string) || " ";
+	const inputBg = (inputStyle?.background as string) || " ";
+
+	/**
+	 * Determines the background color for a specific input field
+	 * @param {number} index - The index of the input field
+	 * @returns {string} The background color to apply
+	 */
+	const getInputBackground = (index: number): string => {
+		// If input has a value, use focus background
+		if (otp[index]) {
+			return inputFocusBg;
+		}
+
+		// If this is the active input and backspace was pressed, use default background
+		if (activeInputIndex === index && isBackspacePressed) {
+			return inputBg;
+		}
+
+		// If this is the active input, use focus background
+		if (activeInputIndex === index) {
+			return inputFocusBg;
+		}
+
+		// Default background
+		return inputBg;
+	};
+
+	/**
+	 * Handles focus events on input fields
+	 * @param {React.FocusEvent} _e - The focus event
+	 * @param {number} index - The index of the focused input
+	 */
+	const handleFocus = (_e: React.FocusEvent, index: number) => {
+		setActiveInputIndex(index);
+		setIsBackspacePressed(false);
+
+		// Auto-focus to first empty field if clicking on a field beyond current OTP length
+		if (!otp.length || index > otp.length - 1) {
+			const firstEmptyIndex = otp.length;
+			if (firstEmptyIndex < length) {
+				inputRef.current[firstEmptyIndex]?.focus();
+				setActiveInputIndex(firstEmptyIndex);
+			}
+		}
+	};
+
+	/**
+	 * Handles key down events on input fields
+	 * @param {React.KeyboardEvent} e - The keyboard event
+	 * @param {number} index - The index of the input field
+	 */
+	const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+		setActiveInputIndex(index);
+
+		if (e.code === "Enter") {
+			onEnter(otp);
+		} else if (e.code === "Backspace") {
+			setIsBackspacePressed(true);
+		} else {
+			setIsBackspacePressed(false);
+		}
+
+		onKeyDown(e);
+	};
 
 	return (
 		<Flex minW={"10rem"} columnGap={"10px"} wrap="wrap" {...containerStyle}>
@@ -135,9 +203,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
 					setOtp(e);
 					onChange(e);
 				}}
-				onComplete={(val) => {
-					onComplete && onComplete(val);
-				}}
+				onComplete={onComplete}
 				mask={mask}
 				{...rest}
 			>
@@ -150,34 +216,16 @@ const OtpInput: React.FC<OtpInputProps> = ({
 								inputRef.current[idx] = ref;
 							}}
 							borderColor="hint"
-							bg={Otp[idx] ? inputfocusbg : inputbg}
+							bg={getInputBackground(idx)}
 							borderRadius="10"
-							boxShadow={Otp[idx] ? "sh-otpfocus" : ""}
+							boxShadow={otp[idx] ? "sh-otpfocus" : ""}
 							_focus={{
-								// bg: "focusbg",
 								boxShadow: "sh-otpfocus",
 								borderColor: "hint",
 								transition: "box-shadow 0.3s ease-out",
 							}}
-							onFocus={(e) => {
-								if (!Otp.length || idx - Otp.length - 1 >= 0) {
-									inputRef.current[Otp.length]?.focus();
-								} else {
-									const target = e.target as HTMLInputElement;
-									target.style.background = inputfocusbg;
-								}
-							}}
-							onKeyDown={(e) => {
-								const target = e.target as HTMLInputElement;
-								if (e.code === "Enter") {
-									onEnter && onEnter(Otp);
-								} else if (e.code === "Backspace") {
-									target.style.background = "#fff";
-								} else {
-									target.style.background = inputfocusbg;
-								}
-								onKeyDown && onKeyDown(e);
-							}}
+							onFocus={(e) => handleFocus(e, idx)}
+							onKeyDown={(e) => handleKeyDown(e, idx)}
 							{...inputStyle}
 						/>
 					))}
