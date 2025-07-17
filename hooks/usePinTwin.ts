@@ -22,8 +22,6 @@ interface PinTwinResponse {
 interface UsePinTwinOptions {
 	/** Whether to use mock data instead of API calls */
 	useMockData?: boolean;
-	/** Whether to auto-load key on mount */
-	autoLoad?: boolean;
 	/** Maximum retry attempts */
 	maxRetries?: number;
 	/** Retry delay in milliseconds */
@@ -72,15 +70,10 @@ export interface UsePinTwinReturn {
 export const usePinTwin = (
 	options: UsePinTwinOptions = {}
 ): UsePinTwinReturn => {
-	const {
-		useMockData = false,
-		autoLoad = true,
-		maxRetries = 8,
-		retryDelay = 1000,
-	} = options;
+	const { useMockData = false, maxRetries = 8, retryDelay = 1000 } = options;
 
 	const [pintwinKey, setPintwinKey] = useState<string[]>([]);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const [keyLoaded, setKeyLoaded] = useState(false);
 	const [keyLoadError, setKeyLoadError] = useState(false);
 	const [retryCount, setRetryCount] = useState(0);
@@ -120,7 +113,7 @@ export const usePinTwin = (
 	 * Reloads the PinTwin key with retry logic
 	 */
 	const reloadKey = useCallback(async (): Promise<void> => {
-		if (loading || !isMountedRef.current) return;
+		if (!isMountedRef.current) return;
 
 		const mockResponse: PinTwinResponse = {
 			response_status_id: 0,
@@ -136,53 +129,64 @@ export const usePinTwin = (
 			status: 0,
 		};
 
-		try {
-			setLoading(true);
-			setKeyLoadError(false);
+		// Set loading to true at the start of the entire retry process
+		setLoading(true);
+		setKeyLoadError(false);
 
-			const response = optionsRef.current.useMockData
-				? mockResponse
-				: await fetchPinTwinKey();
+		const attemptLoad = async (): Promise<void> => {
+			try {
+				const response = optionsRef.current.useMockData
+					? mockResponse
+					: await fetchPinTwinKey();
 
-			if (response?.data?.pintwin_key) {
-				setPintwinKey(response.data.pintwin_key.split(""));
-				setKeyId(response.data.key_id?.toString() ?? "");
-				setKeyLoaded(true);
-				setKeyLoadError(false);
-				setRetryCount(0);
-				retryCountRef.current = 0;
-			} else {
-				throw new Error("Invalid response format");
-			}
-		} catch (error) {
-			console.error("Error loading PinTwin key:", error);
-			setKeyLoaded(false);
-			setKeyLoadError(true);
-
-			if (
-				retryCountRef.current < optionsRef.current.maxRetries &&
-				isMountedRef.current
-			) {
-				const newRetryCount = retryCountRef.current + 1;
-				retryCountRef.current = newRetryCount;
-				setRetryCount(newRetryCount);
-
-				if (retryTimeoutRef.current) {
-					clearTimeout(retryTimeoutRef.current);
-				}
-
-				retryTimeoutRef.current = setTimeout(() => {
+				if (response?.data?.pintwin_key) {
+					setPintwinKey(response.data.pintwin_key.split(""));
+					setKeyId(response.data.key_id?.toString() ?? "");
+					setKeyLoaded(true);
+					setKeyLoadError(false);
+					setRetryCount(0);
+					retryCountRef.current = 0;
+					// Success - stop loading
 					if (isMountedRef.current) {
-						reloadKey();
+						setLoading(false);
 					}
-				}, optionsRef.current.retryDelay);
-			} else if (isMountedRef.current) {
+				} else {
+					throw new Error("Invalid response format");
+				}
+			} catch (error) {
+				console.error("Error loading PinTwin key:", error);
+				setKeyLoaded(false);
+
+				if (
+					retryCountRef.current < optionsRef.current.maxRetries &&
+					isMountedRef.current
+				) {
+					// Still retrying - keep loading true, error false
+					const newRetryCount = retryCountRef.current + 1;
+					retryCountRef.current = newRetryCount;
+					setRetryCount(newRetryCount);
+
+					if (retryTimeoutRef.current) {
+						clearTimeout(retryTimeoutRef.current);
+					}
+
+					retryTimeoutRef.current = setTimeout(() => {
+						if (isMountedRef.current) {
+							attemptLoad();
+						}
+					}, optionsRef.current.retryDelay);
+				} else {
+					// All retries exhausted - show error and stop loading
+					if (isMountedRef.current) {
+						setKeyLoadError(true);
+						setLoading(false);
+					}
+				}
 			}
-		} finally {
-			if (isMountedRef.current) {
-				setLoading(false);
-			}
-		}
+		};
+
+		// Start the first attempt
+		attemptLoad();
 	}, [loading, fetchPinTwinKey]);
 
 	/**
@@ -211,7 +215,7 @@ export const usePinTwin = (
 
 	// Auto-load key on mount - run only once
 	useEffect(() => {
-		if (autoLoad && !hasAutoLoaded.current) {
+		if (!hasAutoLoaded.current) {
 			hasAutoLoaded.current = true;
 			reloadKey();
 		}
