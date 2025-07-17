@@ -132,7 +132,6 @@ const Pintwin: React.FC<PintwinProps> = ({
 	const { pintwinKey, reloadKey, encodePinTwin, loading, keyLoadError } =
 		usePinTwin({
 			useMockData,
-			autoLoad: true,
 		});
 
 	/**
