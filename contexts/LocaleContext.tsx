@@ -26,7 +26,7 @@ export const LocaleProvider: React.FC<LocaleProviderProps> = ({ children }) => {
 	const [locale, setLocale] = useState<string>(router.locale || "en");
 
 	useEffect(() => {
-		const saved = localStorage.getItem("preferredLocale");
+		const saved = localStorage.getItem("user-locale-preference");
 		if (saved && saved !== locale) {
 			setLocale(saved);
 			router.replace(router.asPath, undefined, { locale: saved });
@@ -39,7 +39,7 @@ export const LocaleProvider: React.FC<LocaleProviderProps> = ({ children }) => {
 	 */
 	const changeLocale = (lng: string): void => {
 		setLocale(lng);
-		localStorage.setItem("preferredLocale", lng);
+		localStorage.setItem("user-locale-preference", lng);
 		document.cookie = `NEXT_LOCALE=${lng}; path=/; max-age=31536000`;
 		router.push(router.asPath, undefined, { locale: lng });
 	};

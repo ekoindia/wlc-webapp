@@ -74,7 +74,7 @@ export const LocaleProvider \= ({ children }) \=\> {
   const \[locale, setLocale\] \= useState(router.locale || 'en');
 
   useEffect(() \=\> {  
-    const saved \= localStorage.getItem('preferredLocale');  
+    const saved \= localStorage.getItem('user-locale-preference');  
     if (saved && saved \!== locale) {  
       setLocale(saved);  
       router.replace(router.asPath, undefined, { locale: saved });  
@@ -83,7 +83,7 @@ export const LocaleProvider \= ({ children }) \=\> {
 
   const changeLocale \= (lng) \=\> {  
     setLocale(lng);  
-    localStorage.setItem('preferredLocale', lng);  
+    localStorage.setItem('user-locale-preference', lng);  
     document.cookie \= \`NEXT\_LOCALE=${lng}; path=/; max-age=31536000\`;  
     router.push(router.asPath, undefined, { locale: lng });  
   };
