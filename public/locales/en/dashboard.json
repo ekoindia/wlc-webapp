@@ -1,1 +1,11 @@
-{}
+{
+	"welcome_title": "Welcome to your Dashboard",
+	"balance_label": "Your Balance",
+	"recent_transactions": "Recent Transactions",
+	"quick_actions": "Quick Actions",
+	"statistics": "Statistics",
+	"total_users": "Total Users",
+	"monthly_revenue": "Monthly Revenue",
+	"pending_approvals": "Pending Approvals",
+	"system_health": "System Health"
+}

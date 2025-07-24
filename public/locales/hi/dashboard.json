@@ -1,1 +1,11 @@
-{}
+{
+	"welcome_title": "आपके डैशबोर्ड में आपका स्वागत है",
+	"balance_label": "आपका बैलेंस",
+	"recent_transactions": "हाल की लेनदेन",
+	"quick_actions": "त्वरित क्रियाएं",
+	"statistics": "आंकड़े",
+	"total_users": "कुल उपयोगकर्ता",
+	"monthly_revenue": "मासिक आय",
+	"pending_approvals": "लंबित अनुमोदन",
+	"system_health": "सिस्टम स्वास्थ्य"
+}

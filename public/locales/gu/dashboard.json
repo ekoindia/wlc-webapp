@@ -1,1 +1,11 @@
-{}
+{
+	"welcome_title": "તમારા ડેશબોર્ડમાં આપનું સ્વાગત છે",
+	"balance_label": "તમારું બેલેન્સ",
+	"recent_transactions": "તાજેતરના વ્યવહારો",
+	"quick_actions": "ઝડપી ક્રિયાઓ",
+	"statistics": "આંકડાશાસ્ત્ર",
+	"total_users": "કુલ વપરાશકર્તાઓ",
+	"monthly_revenue": "માસિક આવક",
+	"pending_approvals": "બાકી મંજૂરીઓ",
+	"system_health": "સિસ્ટમ સ્વાસ્થ્ય"
+}
