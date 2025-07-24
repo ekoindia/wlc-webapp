@@ -9,6 +9,7 @@ const publicLinks = [
 	"/test",
 	"/redirect",
 	"/gateway",
+	"/i18n-sample",
 ];
 
 // These links can be visited only by logged-out (public) users
