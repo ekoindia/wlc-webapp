@@ -7,6 +7,7 @@ import {
 	CommissionSummaryProvider,
 	EarningSummaryProvider,
 	GlobalSearchProvider,
+	LocaleProvider,
 	NetworkUsersProvider,
 	NotificationProvider,
 	OrgDetailProvider,
@@ -20,6 +21,7 @@ import { MenuProvider } from "contexts/MenuContext";
 import { localStorageProvider } from "helpers";
 import { fetchOrgDetails } from "helpers/fetchOrgDetailsHelper";
 import { Layout } from "layout-components";
+import { appWithTranslation } from "next-i18next";
 import App from "next/app";
 // import { Inter } from "next/font/google";
 import { MockAdminUser, MockUser } from "__tests__/fixtures/session";
@@ -27,6 +29,9 @@ import { CopilotProvider } from "libs";
 import Head from "next/head";
 import { SWRConfig } from "swr";
 import { light } from "../styles/themes";
+
+// Import CommonJS config for i18n
+const nextI18NextConfig = require("../next-i18next.config.cjs");
 
 // Variable Font
 // const inter = Inter({
@@ -53,7 +58,7 @@ const toastDefaultOptions = {
  * @param {object} props.org - The organization details.
  * @returns {JSX.Element} The rendered component.
  */
-export default function InfinityApp({ Component, pageProps, router, org }) {
+function InfinityApp({ Component, pageProps, router, org }) {
 	console.log("[_app.tsx] Started: ", {
 		org,
 		is_local: typeof window === "undefined" ? false : true,
@@ -189,62 +194,64 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 		router.pathname === "/" || router.pathname === "/signup" ? true : false;
 
 	const AppCompArray = (
-		<ChakraProvider
-			theme={theme}
-			resetCSS={true}
-			toastOptions={{ defaultOptions: toastDefaultOptions }}
-		>
-			<AppSourceProvider>
-				<OrgDetailProvider initialData={org || null}>
-					<UserProvider userMockData={mockUser}>
-						<CopilotProvider
-							runtimeUrl={
-								process.env.NEXT_PUBLIC_API_BASE_URL +
-								"/copilotkit"
-							}
-							showPopup
-						>
-							<KBarLazyProvider load={!isLoginPage}>
-								<GlobalSearchProvider>
-									<MenuProvider>
-										<WalletProvider>
-											<RouteProtecter router={router}>
-												<SWRConfig
-													value={{
-														provider:
-															localStorageProvider,
-													}}
-												>
-													<PubSubProvider>
-														<NotificationProvider>
-															<EarningSummaryProvider>
-																<CommissionSummaryProvider>
-																	<NetworkUsersProvider>
-																		<TodoProvider>
-																			<ErrorBoundary>
-																				{getLayout(
-																					<Component
-																						{...pageProps}
-																					/>
-																				)}
-																			</ErrorBoundary>
-																		</TodoProvider>
-																	</NetworkUsersProvider>
-																</CommissionSummaryProvider>
-															</EarningSummaryProvider>
-														</NotificationProvider>
-													</PubSubProvider>
-												</SWRConfig>
-											</RouteProtecter>
-										</WalletProvider>
-									</MenuProvider>
-								</GlobalSearchProvider>
-							</KBarLazyProvider>
-						</CopilotProvider>
-					</UserProvider>
-				</OrgDetailProvider>
-			</AppSourceProvider>
-		</ChakraProvider>
+		<LocaleProvider>
+			<ChakraProvider
+				theme={theme}
+				resetCSS={true}
+				toastOptions={{ defaultOptions: toastDefaultOptions }}
+			>
+				<AppSourceProvider>
+					<OrgDetailProvider initialData={org || null}>
+						<UserProvider userMockData={mockUser}>
+							<CopilotProvider
+								runtimeUrl={
+									process.env.NEXT_PUBLIC_API_BASE_URL +
+									"/copilotkit"
+								}
+								showPopup
+							>
+								<KBarLazyProvider load={!isLoginPage}>
+									<GlobalSearchProvider>
+										<MenuProvider>
+											<WalletProvider>
+												<RouteProtecter router={router}>
+													<SWRConfig
+														value={{
+															provider:
+																localStorageProvider,
+														}}
+													>
+														<PubSubProvider>
+															<NotificationProvider>
+																<EarningSummaryProvider>
+																	<CommissionSummaryProvider>
+																		<NetworkUsersProvider>
+																			<TodoProvider>
+																				<ErrorBoundary>
+																					{getLayout(
+																						<Component
+																							{...pageProps}
+																						/>
+																					)}
+																				</ErrorBoundary>
+																			</TodoProvider>
+																		</NetworkUsersProvider>
+																	</CommissionSummaryProvider>
+																</EarningSummaryProvider>
+															</NotificationProvider>
+														</PubSubProvider>
+													</SWRConfig>
+												</RouteProtecter>
+											</WalletProvider>
+										</MenuProvider>
+									</GlobalSearchProvider>
+								</KBarLazyProvider>
+							</CopilotProvider>
+						</UserProvider>
+					</OrgDetailProvider>
+				</AppSourceProvider>
+			</ChakraProvider>
+		</LocaleProvider>
 	);
 
 	// const useDefaultGoogleLogin = org?.login_types?.google?.default
@@ -412,3 +419,5 @@ if (typeof window !== "undefined") {
 		"font-size:16px"
 	);
 }
+
+export default appWithTranslation(InfinityApp, nextI18NextConfig);
