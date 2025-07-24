@@ -12,6 +12,7 @@ export {
 	useBusinessSearchActions,
 	useGlobalSearch,
 } from "./GlobalSearchContext";
+export { LocaleProvider, useLocale } from "./LocaleContext";
 export { MenuProvider, useMenuContext } from "./MenuContext";
 export {
 	NetworkUsersProvider,
