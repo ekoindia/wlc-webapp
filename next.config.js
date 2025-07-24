@@ -1,4 +1,8 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const nextI18NextConfig = require("./next-i18next.config.cjs");
 
 const isProd = process.env.NEXT_PUBLIC_ENV === "production";
 const isDev = process.env.NEXT_PUBLIC_ENV === "development";
@@ -77,6 +81,8 @@ const nextConfig = {
 	reactStrictMode: isDev ? true : false,
 	poweredByHeader: false,
 	swcMinify: true,
+	// Internationalization configuration
+	i18n: nextI18NextConfig.i18n,
 	eslint: {
 		dirs: [
 			"components",
