@@ -2,7 +2,10 @@ import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import { IcoButton } from "components";
 import { useOrgDetailContext } from "contexts";
 import { LayoutLogin } from "layout-components";
+import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { withPageTranslations } from "../../utils/withPageTranslations";
 
 const ZOHO_FORM_URL =
 	"https://forms.zohopublic.in/ekoindiafinancialservicespvtlt/form/Reachouttous/formperma/zlHNZZ7Kyaw0S-8SpVtUMZLZ_bMHYLMjlzXeP12FRoc";
@@ -11,10 +14,17 @@ const PrivacyPage = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const router = useRouter();
 	const { app_name, org_name, org_id } = orgDetail || {};
-	const currentUrl = window.location.href;
-	const baseUrl = currentUrl.split("/").slice(0, 3).join("/");
+	const [baseUrl, setBaseUrl] = useState("");
+
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			setBaseUrl(window.location.origin);
+		}
+	}, []);
+
 	const reach_out_form_url = `${ZOHO_FORM_URL}?org_id=${org_id}&org_url=${baseUrl}`;
 	const delete_my_account_form_url = `${baseUrl}/delete_my_account`;
+	const { t } = useTranslation(["common"]);
 
 	// Is Google Login available?
 	const showGoogle =
@@ -51,7 +61,7 @@ const PrivacyPage = () => {
 						w="full"
 						textAlign="center"
 					>
-						Privacy Policy
+						{t("common:privacy_policy")}
 					</H1>
 
 					<P>
@@ -563,3 +573,7 @@ PrivacyPage.pageMeta = {
 PrivacyPage.getLayout = LayoutLogin;
 
 export default PrivacyPage;
+
+export const getStaticProps = withPageTranslations({
+	namespaces: ["common"],
+});
