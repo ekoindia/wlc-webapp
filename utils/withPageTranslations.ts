@@ -1,7 +1,5 @@
 import { GetStaticProps, GetStaticPropsContext } from "next";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-// @ts-ignore - Config file type compatibility
-import nextI18nextConfig from "../next-i18next.config.cjs";
+import type { UserConfig } from "next-i18next";
 
 interface TranslationConfig {
 	namespaces?: string[];
@@ -10,12 +8,18 @@ interface TranslationConfig {
 
 /**
  * Higher-order function that creates getStaticProps with translation support
+ * Only available in server-side context
  * @param {TranslationConfig} config - Translation configuration options
  * @returns {GetStaticProps} getStaticProps function with internationalization
  */
 export const withPageTranslations = (
 	config: TranslationConfig = {}
 ): GetStaticProps => {
+	// Ensure this only runs on server
+	if (typeof window !== "undefined") {
+		throw new Error("withPageTranslations can only be used server-side");
+	}
+
 	const { namespaces = ["common"], additionalProps = {} } = config;
 
 	return async (context: GetStaticPropsContext) => {
@@ -23,34 +27,33 @@ export const withPageTranslations = (
 
 		console.log(`[Page] locale: ${locale}`);
 
-		return {
-			props: {
-				...(await serverSideTranslations(
-					locale,
-					namespaces,
-					nextI18nextConfig as any
-				)),
-				...additionalProps,
-			},
-		};
+		try {
+			// Dynamic import to avoid client-side bundling
+			const { serverSideTranslations } = await import(
+				"next-i18next/serverSideTranslations"
+			);
+			const nextI18nextConfig = await import(
+				"../next-i18next.config.cjs"
+			);
+
+			return {
+				props: {
+					...(await serverSideTranslations(
+						locale,
+						namespaces,
+						(nextI18nextConfig.default ||
+							nextI18nextConfig) as UserConfig
+					)),
+					...additionalProps,
+				},
+			};
+		} catch (error) {
+			console.error("Translation loading error:", error);
+			return {
+				props: {
+					...additionalProps,
+				},
+			};
+		}
 	};
-};
-
-/**
- * App Router translation helper (future migration)
- * @param {string} locale - Current locale
- * @param {TranslationConfig} config - Translation configuration
- * @returns {Promise<any>} Translation props for App Router
- */
-export const getAppTranslations = async (
-	locale: string,
-	config: TranslationConfig = {}
-) => {
-	const { namespaces = ["common"] } = config;
-
-	return await serverSideTranslations(
-		locale,
-		namespaces,
-		nextI18nextConfig as any
-	);
 };
