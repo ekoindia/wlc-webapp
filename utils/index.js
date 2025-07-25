@@ -43,3 +43,7 @@ export {
 export { throttle } from "./throttle";
 export { buildUserObjectState } from "./userObjectBuilder";
 export { validateResp } from "./validateResponse";
+export {
+	getAppTranslations,
+	withPageTranslations,
+} from "./withPageTranslations";
