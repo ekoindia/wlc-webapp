@@ -142,8 +142,11 @@ The i18n setup has been successfully implemented with the following features:
 
 5. **Translation Utility**
    - `utils/withPageTranslations.ts` - Centralized getStaticProps utility
+   - Server-side only execution with runtime protection
+   - Dynamic imports to prevent client-side bundling issues
    - Standardized pattern for directory-based pages
    - Type-safe configuration with TypeScript interfaces
+   - Direct import requirement (not available via barrel export)
 
 ## 🛠️ Technical Implementation
 
@@ -221,7 +224,7 @@ export async function getStaticProps({ locale }) {
 
 **Using Translation Utility (Recommended):**
 ```tsx
-import { withPageTranslations } from 'utils/withPageTranslations';
+import { withPageTranslations } from '../../utils/withPageTranslations';
 
 // For directory-based pages (pages/privacy/index.js)
 export { default } from "./privacy";
@@ -312,6 +315,8 @@ export const getStaticProps = withPageTranslations({
 - Centralized translation loading
 - Type-safe configuration
 - Consistent implementation pattern
+- Server-side only execution (prevents client-side fs errors)
+- Dynamic imports for better bundle separation
 - Future App Router compatibility
 ```
 
@@ -422,7 +427,18 @@ import nextI18NextConfig from "../next-i18next.config.cjs";
 import nextI18NextConfig from "../next-i18next.config.js";
 ```
 
-#### 2. Translations Not Loading
+#### 2. Module not found: Can't resolve 'fs'
+**Problem**: `serverSideTranslations` imported on client-side
+**Solution**: Use direct import from withPageTranslations file
+```javascript
+// ✅ Correct - Direct import
+import { withPageTranslations } from "../../utils/withPageTranslations";
+
+// ❌ Wrong - Barrel export causes client-side bundling
+import { withPageTranslations } from "utils";
+```
+
+#### 3. Translations Not Loading
 **Problem**: serverSideTranslations not working
 **Solution**: Pass config explicitly
 ```javascript
@@ -433,7 +449,7 @@ serverSideTranslations(locale, namespaces, nextI18NextConfig)
 serverSideTranslations(locale, namespaces)
 ```
 
-#### 3. Language Switch Not Persisting
+#### 4. Language Switch Not Persisting
 **Problem**: Locale resets on page reload
 **Solution**: Check localStorage and cookie implementation
 ```typescript
@@ -442,7 +458,7 @@ localStorage.setItem("user-locale-preference", lng);
 document.cookie = `NEXT_LOCALE=${lng}; path=/; max-age=31536000`;
 ```
 
-#### 4. Middleware Conflicts
+#### 5. Middleware Conflicts
 **Problem**: API routes getting locale prefixes
 **Solution**: Ensure proper exclusions in middleware
 ```typescript
@@ -547,10 +563,23 @@ export const getStaticProps = withPageTranslations({
 });
 ```
 
+### Important: Direct Import Required
+**Note**: `withPageTranslations` must be imported directly from the file, not from the utils barrel export, to prevent client-side bundling of server-only code.
+
+```javascript
+// ✅ Correct - Direct import
+import { withPageTranslations } from "../../utils/withPageTranslations";
+
+// ❌ Wrong - Barrel export (causes fs module errors)
+import { withPageTranslations } from "utils";
+```
+
 ### Benefits
 - **Centralized Logic**: Single source of truth for translation loading
 - **Type Safety**: TypeScript interfaces ensure proper configuration
 - **Consistent Pattern**: Standardized approach across all directory-based pages
+- **Server-Side Safety**: Dynamic imports prevent client-side fs module errors
+- **Bundle Optimization**: Server-only code excluded from client bundles
 - **Future-Proof**: Ready for App Router migration
 - **Maintainable**: Changes to translation logic only require utility updates
 
@@ -560,6 +589,8 @@ export const getStaticProps = withPageTranslations({
 - **Fallback language is English** for missing translations
 - **localStorage persistence** maintains user language preferences
 - **Server-side rendering** ensures SEO-friendly localized URLs
+- **Translation utility requires direct import** to prevent client-side fs module errors
+- **Dynamic imports used** for server-only dependencies to optimize bundle size
 
 ## ⚡ Performance Considerations
 
@@ -582,6 +613,17 @@ export const getStaticProps = withPageTranslations({
 - No memory leaks in locale switching
 
 ## 🔒 Security & Best Practices
+
+### Server-Side Safety
+```tsx
+// withPageTranslations includes runtime protection
+if (typeof window !== "undefined") {
+  throw new Error("withPageTranslations can only be used server-side");
+}
+
+// Dynamic imports prevent client-side bundling
+const { serverSideTranslations } = await import("next-i18next/serverSideTranslations");
+```
 
 ### Input Sanitization
 ```tsx
