@@ -1,1 +1,1 @@
-export { default } from "./my-network";
+export { default, getStaticProps } from "./my-network";

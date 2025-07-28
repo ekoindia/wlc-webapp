@@ -5,6 +5,7 @@ import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useFeatureFlag } from "hooks";
 import { formatDate } from "libs/dateFormat";
+import { useTranslation } from "next-i18next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -27,18 +28,6 @@ const action = {
 	// EXPORT: 1,
 };
 
-const operation_type_list = [
-	{ label: "Independent Retailer", value: "3" },
-	{ label: "Retailer", value: "2" },
-	{ label: "Distributor", value: "1" },
-];
-
-const status_list = [
-	{ label: "Active", value: "Active" },
-	{ label: "Inactive", value: "Inactive" },
-	// { label: "Closed", value: "closed" },
-];
-
 const generateQueryParams = (params) => {
 	return Object.keys(params)
 		.map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
@@ -47,11 +36,25 @@ const generateQueryParams = (params) => {
 
 /**
  * A My Network page-component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @returns {JSX.Element} Network component
  * @example	`<Network></Network>`
  */
 const Network = () => {
+	const { t } = useTranslation("network");
+	const { t: common } = useTranslation("common");
+
+	const operation_type_list = [
+		{ label: t("filter.independent_retailer"), value: "3" },
+		{ label: t("filter.retailer"), value: "2" },
+		{ label: t("filter.distributor"), value: "1" },
+	];
+
+	const status_list = [
+		{ label: common("status.active"), value: "Active" },
+		{ label: common("status.inactive"), value: "Inactive" },
+		// { label: "Closed", value: "closed" },
+	];
+
 	const formElements = {
 		agentType: "",
 		agentAccountStatus: "",
@@ -371,7 +374,7 @@ const Network = () => {
 	return (
 		<>
 			<PageTitle
-				title="My Network"
+				title={t("title")}
 				hideBackIcon
 				toolComponent={
 					<Button
@@ -380,7 +383,7 @@ const Network = () => {
 							router.push("/admin/my-network/profile/change-role")
 						}
 					>
-						Change Roles
+						{common("buttons.change_roles")}
 					</Button>
 				}
 			/>

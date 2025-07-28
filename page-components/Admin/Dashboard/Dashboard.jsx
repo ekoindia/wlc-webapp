@@ -1,5 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
+import { useTranslation } from "next-i18next";
 import { useState } from "react";
 import {
 	AnnouncementsDashboard,
@@ -10,21 +11,21 @@ import {
 
 /**
  * A Dashboard page component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * @returns {JSX.Element} Dashboard component
  * @example	`<Dashboard></Dashboard>`
  */
 const Dashboard = () => {
+	const { t } = useTranslation("dashboard");
 	const [currTab, setCurrTab] = useState(0);
 
 	const list = [
-		{ label: "Business", component: <BusinessDashboard /> },
-		{ label: "Onboarding", component: <OnboardingDashboard /> },
+		{ label: t("tabs.business"), component: <BusinessDashboard /> },
+		{ label: t("tabs.onboarding"), component: <OnboardingDashboard /> },
 	];
 
 	if (process.env.NEXT_PUBLIC_ADMIN_ANNOUNCEMENT_EMBED_URL) {
 		list.push({
-			label: "Announcements",
+			label: t("tabs.announcements"),
 			component: <AnnouncementsDashboard />,
 		});
 	}
@@ -51,7 +52,7 @@ const Dashboard = () => {
 						justify="space-between"
 					>
 						<Text fontWeight="semibold" fontSize="2xl">
-							Dashboard
+							{t("title")}
 						</Text>
 						<PillTab {...{ list, onClick, currTab }} />
 					</Flex>
