@@ -25,5 +25,15 @@
 	"menu": "मेनू",
 	"close": "बंद करें",
 	"open": "खोलें",
-	"privacy_policy": "गोपनीयता नीति"
+	"privacy_policy": "गोपनीयता नीति",
+	"status": {
+		"active": "सक्रिय",
+		"inactive": "निष्क्रिय",
+		"pending": "लंबित",
+		"success": "सफल",
+		"failed": "असफल"
+	},
+	"buttons": {
+		"change_roles": "भूमिका बदलें"
+	}
 }

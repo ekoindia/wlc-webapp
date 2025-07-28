@@ -1,0 +1,28 @@
+{
+	"title": "मेरा नेटवर्क",
+	"filter": {
+		"hierarchy": "पदानुक्रम",
+		"operation_type": "ऑपरेशन प्रकार",
+		"status": "स्थिति",
+		"date_range": "दिनांक सीमा",
+		"independent_retailer": "स्वतंत्र खुदरा विक्रेता",
+		"retailer": "खुदरा विक्रेता",
+		"distributor": "वितरक"
+	},
+	"table": {
+		"agent_name": "एजेंट का नाम",
+		"contact": "संपर्क",
+		"location": "स्थान",
+		"operation_type": "ऑपरेशन प्रकार",
+		"agent_status": "एजेंट स्थिति",
+		"onboarded_on": "ऑनबोर्ड किया गया",
+		"last_transaction": "अंतिम लेनदेन",
+		"wallet_balance": "वॉलेट बैलेंस"
+	},
+	"toolbar": {
+		"add_agent": "एजेंट जोड़ें",
+		"export_data": "डेटा निर्यात करें",
+		"tree_view": "ट्री व्यू",
+		"table_view": "टेबल व्यू"
+	}
+}

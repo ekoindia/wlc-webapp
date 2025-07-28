@@ -1,4 +1,10 @@
 {
+	"title": "ડેશબોર્ડ",
+	"tabs": {
+		"business": "વ્યવસાય",
+		"onboarding": "ઓનબોર્ડિંગ",
+		"announcements": "જાહેરાતો"
+	},
 	"welcome_title": "તમારા ડેશબોર્ડમાં આપનું સ્વાગત છે",
 	"balance_label": "તમારું બેલેન્સ",
 	"recent_transactions": "તાજેતરના વ્યવહારો",

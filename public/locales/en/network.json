@@ -1,0 +1,28 @@
+{
+	"title": "My Network",
+	"filter": {
+		"hierarchy": "Hierarchy",
+		"operation_type": "Operation Type",
+		"status": "Status",
+		"date_range": "Date Range",
+		"independent_retailer": "Independent Retailer",
+		"retailer": "Retailer",
+		"distributor": "Distributor"
+	},
+	"table": {
+		"agent_name": "Agent Name",
+		"contact": "Contact",
+		"location": "Location",
+		"operation_type": "Operation Type",
+		"agent_status": "Agent Status",
+		"onboarded_on": "Onboarded On",
+		"last_transaction": "Last Transaction",
+		"wallet_balance": "Wallet Balance"
+	},
+	"toolbar": {
+		"add_agent": "Add Agent",
+		"export_data": "Export Data",
+		"tree_view": "Tree View",
+		"table_view": "Table View"
+	}
+}

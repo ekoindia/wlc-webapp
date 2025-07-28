@@ -25,5 +25,15 @@
 	"menu": "Menu",
 	"close": "Close",
 	"open": "Open",
-	"privacy_policy": "Privacy Policy"
+	"privacy_policy": "Privacy Policy",
+	"status": {
+		"active": "Active",
+		"inactive": "Inactive",
+		"pending": "Pending",
+		"success": "Success",
+		"failed": "Failed"
+	},
+	"buttons": {
+		"change_roles": "Change Roles"
+	}
 }

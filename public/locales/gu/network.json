@@ -1,0 +1,28 @@
+{
+	"title": "મારું નેટવર્ક",
+	"filter": {
+		"hierarchy": "વંશવેલો",
+		"operation_type": "ઓપરેશન પ્રકાર",
+		"status": "સ્થિતિ",
+		"date_range": "તારીખ રેન્જ",
+		"independent_retailer": "સ્વતંત્ર રિટેલર",
+		"retailer": "રિટેલર",
+		"distributor": "વિતરક"
+	},
+	"table": {
+		"agent_name": "એજન્ટનું નામ",
+		"contact": "સંપર્ક",
+		"location": "સ્થાન",
+		"operation_type": "ઓપરેશન પ્રકાર",
+		"agent_status": "એજન્ટ સ્થિતિ",
+		"onboarded_on": "ઓનબોર્ડ કરેલ",
+		"last_transaction": "છેલ્લું વ્યવહાર",
+		"wallet_balance": "વૉલેટ બેલેન્સ"
+	},
+	"toolbar": {
+		"add_agent": "એજન્ટ ઉમેરો",
+		"export_data": "ડેટા નિકાસ કરો",
+		"tree_view": "ટ્રી વ્યૂ",
+		"table_view": "ટેબલ વ્યૂ"
+	}
+}

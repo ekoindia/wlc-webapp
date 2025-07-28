@@ -1,4 +1,10 @@
 {
+	"title": "Dashboard",
+	"tabs": {
+		"business": "Business",
+		"onboarding": "Onboarding",
+		"announcements": "Announcements"
+	},
 	"welcome_title": "Welcome to your Dashboard",
 	"balance_label": "Your Balance",
 	"recent_transactions": "Recent Transactions",

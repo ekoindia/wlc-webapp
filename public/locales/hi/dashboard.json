@@ -1,4 +1,10 @@
 {
+	"title": "डैशबोर्ड",
+	"tabs": {
+		"business": "व्यापार",
+		"onboarding": "ऑनबोर्डिंग",
+		"announcements": "घोषणाएं"
+	},
 	"welcome_title": "आपके डैशबोर्ड में आपका स्वागत है",
 	"balance_label": "आपका बैलेंस",
 	"recent_transactions": "हाल की लेनदेन",
