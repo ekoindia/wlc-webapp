@@ -8,27 +8,28 @@ graph TD
     A([User Visits Page]) --> B[Middleware]
     B --> C{Skip Static/API Routes?}
     C --> |Yes| Z[Continue to Page]
-    C --> |No| D[Extract URL Locale]
-    D --> E{URL contains Locale?}
-    E --> |Yes| F{Validate URL Locale}
-    E --> |No| G{Check Cookie Locale}
-    F --> |Valid| H[Use URL Locale]
-    F --> |Invalid| G
-    G --> |Present & Valid| I[Use Cookie Locale]
-    G --> |Not Present or Invalid| J{Check Accept-Language}
-    J --> |Present & Supported| K[Use Accept-Language]
-    J --> |Not Present or Not Supported| L[Use Default Locale]
-    H --> M{Build Target Path}
-    I --> M
-    K --> M
-    L --> M
-    M --> N{Path Already Correct?}
-    N --> |Yes| O[Continue to Page]
-    N --> |No| P[Redirect to Target Path]
-    P --> Q[Update Locale Cookie]
-    O --> R[Page Renders with Locale]
-    Q --> R
-    Z --> R
+    C --> |No| D[Extract URL Locale & Cookie & Accept-Language]
+    D --> E{URL Locale Valid?}
+    E --> |Yes| F{Cookie Matches URL Locale?}
+    E --> |No| G{Cookie Locale Valid?}
+    F --> |Yes| H[Continue to Page]
+    F --> |No| I[Update Cookie & Continue]
+    G --> |Yes| J[Redirect to Cookie Locale]
+    G --> |No| K{Accept-Language Available?}
+    K --> |Yes| L{Extract Preferred Locale}
+    K --> |No| M[Redirect to Default Locale]
+    L --> |Valid Locale Found| N[Redirect to Preferred Locale]
+    L --> |No Valid Locale| M
+    H --> O[Page Renders with Locale]
+    I --> P[Update Cookie]
+    J --> Q[Redirect & Update Cookie]
+    N --> R[Redirect & Update Cookie]
+    M --> S[Redirect & Update Cookie]
+    P --> O
+    Q --> O
+    R --> O
+    S --> O
+    Z --> O
 ```
 
 ## 🏗️ Architecture Overview
