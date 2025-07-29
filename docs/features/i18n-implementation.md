@@ -1,5 +1,5 @@
 # Internationalization (i18n)
-This document provides an overview of the internationalization (i18n) implementation for the WLC-WEBAPP project.
+This document provides a comprehensive overview of the internationalization (i18n) implementation for the WLC-WEBAPP project, including cookie mechanics, multiple namespace usage, and detailed implementation patterns.
 
 ## � Code Flow Diagram
 
@@ -64,10 +64,7 @@ _app.tsx
 next-i18next.config.cjs → next.config.js → middleware.ts → LocaleContext
 ```
 
-## �🚀 Implementation Summary
-## i18n Configuration
-
-This section details the Next.js i18n configuration for next-i18next.
+## 🚀 Implementation Summary
 
 ### Configuration File: `next-i18next.config.cjs`
 - Contains the complete i18n configuration in CommonJS format
@@ -133,10 +130,12 @@ The i18n setup has been successfully implemented with the following features:
    - English (`/public/locales/en/`)
    - Hindi (`/public/locales/hi/`)
    - Gujarati (`/public/locales/gu/`)
-   - Sample namespaces: `common.json` and `dashboard.json`
+   - Available namespaces: `common.json`, `dashboard.json`, and `network.json`
 
 4. **Sample Implementation**
    - `/pages/i18n-sample/index.jsx` - Demonstration page with language switching
+   - Shows multiple namespace usage: `useTranslation(["common", "dashboard"])`
+   - Demonstrates both explicit (`common:app_name`) and default namespace syntax
    - Basic tests in `__tests__/contexts/LocaleContext.test.tsx`
 
 5. **Translation Utility**
@@ -157,8 +156,8 @@ The i18n setup has been successfully implemented with the following features:
 ### Key Features
 - **URL-based localization** with locale prefixes (e.g., `/hi/`, `/gu/`)
 - **Persistent language preferences** via localStorage and cookies
+- **Cookie-based middleware redirects** that honor user's saved language preference
 - **Fallback to English** for missing translations
-- **Middleware-based redirects** based on user preferences
 - **Server-side translations** using `getStaticProps`
 - **Centralized translation utility** for consistent getStaticProps implementation
 - **Directory-based page support** with automatic translation loading
@@ -168,13 +167,16 @@ The i18n setup has been successfully implemented with the following features:
 public/locales/
 ├── en/
 │   ├── common.json
-│   └── dashboard.json
+│   ├── dashboard.json
+│   └── network.json
 ├── hi/
 │   ├── common.json
-│   └── dashboard.json
+│   ├── dashboard.json
+│   └── network.json
 └── gu/
     ├── common.json
-    └── dashboard.json
+    ├── dashboard.json
+    └── network.json
 ```
 
 ## 🎯 Usage Examples
@@ -190,6 +192,33 @@ const MyComponent = () => {
 ```
 
 **⚠️ Important**: Always import `useTranslation` directly from `next-i18next`. Do not use custom wrapper hooks as they can bypass locale persistence logic and cause conflicts with the `LocaleContext`.
+
+### Multiple Namespaces Support
+```tsx
+import { useTranslation } from 'next-i18next';
+
+const MyComponent = () => {
+  // Method 1: Array of namespaces
+  const { t } = useTranslation(['common', 'dashboard']);
+  
+  return (
+    <div>
+      {/* Access keys with namespace prefix */}
+      <h1>{t('common:welcome')}</h1>
+      <p>{t('dashboard:welcome_title')}</p>
+      
+      {/* Default namespace (first in array) doesn't need prefix */}
+      <span>{t('app_name')}</span>
+    </div>
+  );
+};
+```
+
+**📝 Namespace Usage**:
+- **Array format**: `useTranslation(['common', 'dashboard'])` loads multiple namespaces
+- **Namespace access**: Use `namespace:key` syntax (e.g., `t('common:welcome')`)
+- **Default namespace**: First namespace in array is default, no prefix needed
+- **Single namespace**: `useTranslation('common')` for single namespace access
 
 ### Language Switching
 ```tsx
@@ -265,13 +294,16 @@ export const getStaticProps = withPageTranslations({
 ├── public/locales/
 │   ├── en/
 │   │   ├── common.json             # Common translations
-│   │   └── dashboard.json          # Page-specific translations
+│   │   ├── dashboard.json          # Page-specific translations
+│   │   └── network.json            # Network-related translations
 │   ├── hi/
 │   │   ├── common.json
-│   │   └── dashboard.json
+│   │   ├── dashboard.json
+│   │   └── network.json
 │   └── gu/
 │       ├── common.json
-│       └── dashboard.json
+│       ├── dashboard.json
+│       └── network.json
 └── __tests__/
     └── contexts/
         └── LocaleContext.test.tsx   # Context tests
@@ -306,10 +338,17 @@ export const getStaticProps = withPageTranslations({
 ```typescript
 // Key features:
 - Provides current locale state
-- Handles locale changes
-- Persists preferences (localStorage + cookies)
-- Triggers router navigation
+- Handles locale changes with changeLocale function
+- Persists preferences in localStorage as "user-locale-preference"
+- Sets browser cookie as "NEXT_LOCALE" for middleware detection
+- Triggers router navigation to new locale URLs
 ```
+
+**Cookie Implementation**:
+- **Cookie name**: `NEXT_LOCALE`
+- **Storage**: Browser cookie with 1-year expiration
+- **Purpose**: Middleware reads this to redirect users to preferred language
+- **Update flow**: Set when user changes language via `changeLocale()`
 
 ### 4. Translation Utility (`withPageTranslations.ts`)
 **Purpose**: Standardized getStaticProps for translations
@@ -323,6 +362,44 @@ export const getStaticProps = withPageTranslations({
 - Future App Router compatibility
 ```
 
+## 🍪 Cookie Mechanism Deep Dive
+
+The i18n implementation uses a specific cookie-based system for persistent language preferences:
+
+### Cookie Details
+- **Name**: `NEXT_LOCALE`
+- **Purpose**: Store user's preferred language for automatic redirects
+- **Lifetime**: 1 year (`max-age=31536000` seconds)
+- **Scope**: Site-wide (`path=/`)
+- **Set by**: `LocaleContext.changeLocale()` function
+- **Read by**: Middleware on every request
+
+### Cookie Flow
+1. **Initial Setup**: User changes language → `changeLocale()` called
+2. **Storage**: Cookie set with `document.cookie = \`NEXT_LOCALE=\${lng}; path=/; max-age=31536000\``
+3. **Detection**: Middleware reads cookie with `req.cookies.get("NEXT_LOCALE")?.value`
+4. **Redirect Logic**: If URL locale differs from cookie, redirect to preferred locale
+5. **Persistence**: Cookie survives browser restarts and maintains preference
+
+### Middleware Cookie Logic
+```typescript
+// Only redirect when visiting default locale (en) with different preference
+if (locale === "en") {
+  const preferred = req.cookies.get("NEXT_LOCALE")?.value;
+  if (preferred && preferred !== "en" && SUPPORTED_LOCALES.includes(preferred)) {
+    // Redirect from /dashboard to /hi/dashboard if cookie shows 'hi'
+    const redirectUrl = new URL(`/${preferred}${pathname}`, req.url);
+    return NextResponse.redirect(redirectUrl);
+  }
+}
+```
+
+### Cookie vs LocalStorage
+- **Cookie**: Used by middleware for server-side redirects
+- **LocalStorage**: Used by client-side context for state management
+- **Sync**: Both updated simultaneously to ensure consistency
+- **Fallback**: LocalStorage checked on client hydration if cookie unavailable
+
 ## 🔄 Request Lifecycle
 
 ### 1. Initial Page Load
@@ -331,8 +408,8 @@ export const getStaticProps = withPageTranslations({
 2. Middleware intercepts request
 3. Checks locale in URL path
 4. Validates against supported locales
-5. Checks user's cookie preference
-6. Redirects if locale mismatch
+5. Checks user's NEXT_LOCALE cookie preference
+6. If cookie differs from URL locale, redirects to preferred locale
 7. Continues to page component
 ```
 
@@ -350,9 +427,9 @@ export const getStaticProps = withPageTranslations({
 ```
 1. User selects new language
 2. changeLocale function called
-3. Updates local state
-4. Saves to localStorage
-5. Sets browser cookie
+3. Updates local state in LocaleContext
+4. Saves to localStorage as "user-locale-preference"
+5. Sets browser cookie "NEXT_LOCALE" with 1-year expiration
 6. Router pushes to new locale URL
 7. Page re-renders with new translations
 ```
@@ -363,21 +440,28 @@ export const getStaticProps = withPageTranslations({
 ```json
 // common.json - Global UI elements
 {
-  "app_name": "...",
-  "welcome": "...",
+  "app_name": "Eko White Label Platform",
+  "welcome": "Welcome",
   "buttons": {
-    "save": "...",
-    "cancel": "..."
+    "save": "Save",
+    "cancel": "Cancel"
   }
 }
 
 // dashboard.json - Page-specific content
 {
-  "welcome_title": "...",
-  "quick_actions": "...",
+  "welcome_title": "Welcome to Dashboard",
+  "quick_actions": "Quick Actions",
   "stats": {
-    "total_users": "..."
+    "total_users": "Total Users"
   }
+}
+
+// network.json - Network-related content
+{
+  "agents": "Agents",
+  "distributors": "Distributors",
+  "retailers": "Retailers"
 }
 ```
 
@@ -387,33 +471,87 @@ export const getStaticProps = withPageTranslations({
 const { t } = useTranslation('common');
 t('welcome') // "Welcome"
 
-// Multiple namespaces
+// Multiple namespaces (array format)
 const { t } = useTranslation(['common', 'dashboard']);
-t('common:welcome')      // "Welcome"
-t('dashboard:stats.total_users') // Nested key access
+t('common:welcome')      // "Welcome" (explicit namespace)
+t('welcome')             // "Welcome" (from default namespace 'common')
+t('dashboard:stats.total_users') // "Total Users" (nested key access)
+
+// Multiple namespaces with different default
+const { t } = useTranslation(['dashboard', 'common']);
+t('welcome_title')       // "Welcome to Dashboard" (from default namespace 'dashboard')
+t('common:welcome')      // "Welcome" (explicit namespace)
 
 // With interpolation
 t('welcome_user', { name: 'John' }) // "Welcome, John!"
+
+// Nested object access
+t('buttons.save')        // "Save"
+t('stats.total_users')   // "Total Users"
+```
+
+**Key Points**:
+- First namespace in array becomes the default (no prefix needed)
+- Use `namespace:key` syntax for explicit namespace access
+- Nested keys accessed with dot notation
+- Interpolation works with all namespace patterns
+
+## 🎯 Advanced useTranslation Patterns
+
+### Conditional Namespace Loading
+```tsx
+// Load namespaces based on user role
+const userRole = 'admin'; // or 'user', 'guest'
+const namespaces = ['common'];
+if (userRole === 'admin') namespaces.push('admin', 'dashboard');
+if (userRole === 'user') namespaces.push('dashboard');
+
+const { t } = useTranslation(namespaces);
+```
+
+### Dynamic Namespace Access
+```tsx
+// When you need to access different namespaces programmatically
+const { t } = useTranslation(['common', 'dashboard', 'network']);
+
+const getTranslation = (namespace: string, key: string) => {
+  return t(`${namespace}:${key}`);
+};
+
+// Usage
+getTranslation('network', 'agents'); // "Agents"
+getTranslation('dashboard', 'welcome_title'); // "Welcome to Dashboard"
+```
+
+### Namespace Fallback Strategy
+```tsx
+// If a key doesn't exist in primary namespace, it falls back to 'common'
+const { t } = useTranslation(['dashboard', 'common'], { fallbackNS: 'common' });
+
+// If 'dashboard:save' doesn't exist, it will look for 'common:save'
+t('save'); // Falls back to common namespace if not in dashboard
 ```
 
 ## 🧪 Testing
 
-- **Development Server**: Running on `http://localhost:3002`
-- **Sample Page**: `http://localhost:3002/i18n-sample`
+- **Development Server**: Running on `http://localhost:3003` (or available port)
+- **Sample Page**: `http://localhost:3003/i18n-sample`
 - **Language URLs**: 
-  - English: `http://localhost:3002/i18n-sample`
-  - Hindi: `http://localhost:3002/hi/i18n-sample`
-  - Gujarati: `http://localhost:3002/gu/i18n-sample`
+  - English: `http://localhost:3003/i18n-sample`
+  - Hindi: `http://localhost:3003/hi/i18n-sample`
+  - Gujarati: `http://localhost:3003/gu/i18n-sample`
 
 ### Testing Checklist
 - [ ] All translation keys render correctly
 - [ ] Language switching works without errors
-- [ ] Middleware redirects function properly
-- [ ] localStorage persistence works
-- [ ] Cookie-based preferences are respected
+- [ ] Middleware redirects function properly based on NEXT_LOCALE cookie
+- [ ] localStorage persistence works (key: "user-locale-preference")
+- [ ] Cookie-based preferences are respected (NEXT_LOCALE cookie)
 - [ ] Fallback translations display for missing keys
 - [ ] URL structure maintains locale prefixes
 - [ ] Page reloads preserve selected language
+- [ ] Multiple namespaces work correctly with array syntax
+- [ ] Cookie expiration set to 1 year (31536000 seconds)
 
 ## 🐛 Troubleshooting Guide
 
@@ -456,10 +594,18 @@ serverSideTranslations(locale, namespaces)
 **Problem**: Locale resets on page reload
 **Solution**: Check localStorage and cookie implementation
 ```typescript
-// Verify in LocaleContext.tsx
+// Verify in LocaleContext.tsx - both storage mechanisms used
 localStorage.setItem("user-locale-preference", lng);
 document.cookie = `NEXT_LOCALE=${lng}; path=/; max-age=31536000`;
+
+// Check middleware reads cookie correctly
+const preferred = req.cookies.get("NEXT_LOCALE")?.value;
 ```
+
+**Debugging**: 
+- Check browser DevTools → Application → Local Storage for "user-locale-preference"
+- Check browser DevTools → Application → Cookies for "NEXT_LOCALE"
+- Verify cookie has 1-year expiration (max-age=31536000)
 
 #### 5. Middleware Conflicts
 **Problem**: API routes getting locale prefixes
@@ -841,10 +987,13 @@ import { withPageTranslations } from "utils";
 
 - **Middleware excludes API routes** to prevent locale prefixes on API calls
 - **Fallback language is English** for missing translations
-- **localStorage persistence** maintains user language preferences
+- **Dual persistence mechanism**: localStorage for client-side, NEXT_LOCALE cookie for server-side
+- **Cookie-driven redirects**: Middleware automatically redirects based on NEXT_LOCALE cookie preference
 - **Server-side rendering** ensures SEO-friendly localized URLs
 - **Translation utility requires direct import** to prevent client-side fs module errors
 - **Dynamic imports used** for server-only dependencies to optimize bundle size
+- **Multiple namespace support**: Use array syntax with useTranslation for multiple namespaces
+- **Cookie expiration**: NEXT_LOCALE cookie set with 1-year lifetime for long-term persistence
 
 ## ⚡ Performance Considerations
 
@@ -923,6 +1072,105 @@ analytics.track('language_changed', {
 ```
 
 The i18n setup is now ready for production use and can be extended as needed for additional languages and features.
+
+## ❓ Frequently Asked Questions
+
+### Q: Can I use multiple namespaces with useTranslation?
+**A**: Yes! Use array syntax: `useTranslation(['common', 'dashboard'])`. The first namespace becomes default (no prefix needed), others require `namespace:key` syntax.
+
+### Q: How do I access nested translation keys?
+**A**: Use dot notation: `t('stats.total_users')` for nested objects in JSON, or `t('dashboard:stats.total_users')` with explicit namespace.
+
+### Q: What happens if a translation key is missing?
+**A**: The system falls back to English. If key missing in English too, it returns the key name itself as a visual indicator.
+
+### Q: Can I add new languages easily?
+**A**: Yes! Follow these steps:
+1. Add locale to `next-i18next.config.cjs` locales array
+2. Create new folder in `public/locales/` 
+3. Copy translation files from existing language
+4. Update `SUPPORTED_LOCALES` in `middleware.ts`
+5. Add option to language selector component
+
+## 💡 Real Implementation Examples
+
+### Working Sample Page (`/pages/i18n-sample/index.jsx`)
+```jsx
+import { useTranslation } from "next-i18next";
+import { useLocale } from "contexts";
+
+const I18nSamplePage = () => {
+  // Multiple namespaces loaded
+  const { t } = useTranslation(["common", "dashboard"]);
+  const { locale, changeLocale } = useLocale();
+
+  return (
+    <div>
+      {/* Explicit namespace syntax */}
+      <h1>{t("common:app_name")}</h1>
+      
+      {/* Default namespace (first in array) */}
+      <h2>{t("welcome")}</h2>
+      
+      {/* Different namespace */}
+      <p>{t("dashboard:welcome_title")}</p>
+      
+      {/* Language selector */}
+      <select value={locale} onChange={(e) => changeLocale(e.target.value)}>
+        <option value="en">English</option>
+        <option value="hi">हिंदी</option>
+        <option value="gu">ગુજરાતી</option>
+      </select>
+    </div>
+  );
+};
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["common", "dashboard"], nextI18NextConfig)),
+    },
+  };
+}
+```
+
+### Privacy Page Example (`/pages/privacy/privacy.jsx`)
+```jsx
+const PrivacyPage = () => {
+  const { t } = useTranslation(["common"]); // Single namespace
+  
+  return (
+    <div>
+      <h1>{t("privacy_policy")}</h1>
+      <p>{t("last_updated")}</p>
+    </div>
+  );
+};
+```
+
+### Actual Translation Files
+```json
+// public/locales/en/common.json
+{
+  "app_name": "Eko White Label Platform",
+  "welcome": "Welcome",
+  "language": "Language",
+  "privacy_policy": "Privacy Policy"
+}
+
+// public/locales/en/dashboard.json
+{
+  "welcome_title": "Welcome to Dashboard",
+  "quick_actions": "Quick Actions"
+}
+
+// public/locales/en/network.json
+{
+  "agents": "Agents", 
+  "distributors": "Distributors",
+  "retailers": "Retailers"
+}
+```
 
 ## 📊 Feasibility Assessment & Implementation Status
 
@@ -1061,471 +1309,8 @@ The i18n implementation demonstrates **exceptional technical quality** and is re
 2. **Phase 2** (Parallel): Implement enhancement recommendations
 3. **Phase 3** (Ongoing): Monitor, optimize, and expand language support
 
-# Implementation Tracker
-
-This document tracks the progress of translating the entire application into multiple languages. Each file that renders UI content needs to go through the following four steps.
-
-## 📊 **Project Scope Analysis**
-
-**Based on automated project structure analysis:**
-
-### **Scale & Complexity:**
-- 📁 **Total Directories**: 179
-- 📄 **Total Files**: 406
-- 🖥️ **UI Components (.jsx/.tsx)**: 237
-- 📃 **Page Files**: 55
-- ⚙️ **Admin Components**: 29
-- 🛍️ **Product Components**: 27
-- 🔧 **Utility Files**: 30
-
-### **Translation Effort Estimation:**
-- 🔑 **Estimated Translation Keys**: 1,185 - 3,555 keys
-- 🎯 **High-Priority Pages** (user-facing): ~44 components
-- ⚙️ **Medium-Priority** (admin): ~17 components
-- 🛍️ **Product Pages**: ~27 components
-
-### **Implementation Phases:**
-
-#### **Phase 1: Core User Experience (Priority: HIGH)**
-- **Target**: 44 user-facing components
-- **Estimated Keys**: 500-800 translation keys
-- **Timeline**: 2-3 weeks with current utility
-
-#### **Phase 2: Admin Interface (Priority: MEDIUM)**
-- **Target**: 17 admin components
-- **Estimated Keys**: 300-500 translation keys
-- **Timeline**: 1-2 weeks
-
-#### **Phase 3: Product Features (Priority: MEDIUM-LOW)**
-- **Target**: 27 product components
-- **Estimated Keys**: 400-700 translation keys
-- **Timeline**: 2-3 weeks
-
-#### **Phase 4: Remaining Components (Priority: LOW)**
-- **Target**: Remaining components and edge cases
-- **Estimated Keys**: 200-400 translation keys
-- **Timeline**: 1-2 weeks
-
-## 🔄 **Translation Process Steps**
-
-Each UI component requiring translation must complete these four steps:
-
--   **Step 1: Identify Hardcoded Strings**: Analyze the file and all its children to find any user-facing text that needs translation.
--   **Step 2: Create Translation Keys**: Add the identified strings to the appropriate JSON namespace files (e.g., `common.json`, `dashboard.json`) for all supported languages.
--   **Step 3: Implement Translations**: Use the `useTranslation` hook in the component to replace hardcoded text with the `t('key')` function.
--   **Step 4: Load Namespaces**: Ensure the page's `getStaticProps` loads all required namespaces using the `withPageTranslations` utility.
-
-## 📈 **Progress Overview**
-
-### **Current Status:**
-- ✅ **Foundation Complete**: Infrastructure ready for scale-out
-- ✅ **Sample Implementation**: 1 complete example (`i18n-sample`)
-- ⏳ **In Progress**: 0 files currently being translated
-- ❌ **Pending**: 236 UI components awaiting translation
-
-### **Completion Rate:**
-```
-Overall Progress: [▓░░░░░░░░░] 0.4% (1/237 components)
-```
-
-| Category | Completed | Total | Progress |
-|----------|-----------|-------|----------|
-| Page Files | 1 | 55 | 1.8% |
-| Admin Components | 0 | 29 | 0% |
-| Product Components | 0 | 27 | 0% |
-| Other Components | 0 | 126 | 0% |
-
-## Pages
-
-| File Path | Step 1: Identify Strings | Step 2: Create Keys | Step 3: Implement Translations | Step 4: Load Namespaces |
-| :--- | :---: | :---: | :---: | :---: |
-| `pages/404/404.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/404/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/_app.tsx` | ☐ | ☐ | ☐ | N/A |
-| `pages/_document.tsx` | ☐ | ☐ | ☐ | N/A |
-| `pages/admin/business/[slug]/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/business/business.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/business/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/commissions/[id].js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/company/company.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/company/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/configurations/configurations.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/configurations/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/expression-editor/ExpressionEditor.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/expression-editor/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/history/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/home/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/invoicing/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/invoicing/invoicing.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/my-network.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/[profile].jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/change-role/change-role.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/change-role/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/up-per-info/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/up-per-info/up-per-info.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/up-sell-add/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/up-sell-add/up-sell-add.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/up-sell-info/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/up-sell-info/preview-sell-info/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/up-sell-info/preview-sell-info/preview-sell-info.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/my-network/profile/up-sell-info/up-sell-info.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/network-statement/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/network-statement/network-statement.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/notifications/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/notifications/notifications.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/onboard-agents/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/onboard-agents/onboard-agents.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/pricing/[slug]/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/pricing/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/pricing/pricing.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/pricing-config/[...slug].tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/pricing-config/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/query/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/query/query.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/test/index.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/transaction/[...id].js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/transaction-history/account-statement/account-statement.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/transaction-history/account-statement/detailed-statement/detailed-statement.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/transaction-history/account-statement/detailed-statement/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/transaction-history/account-statement/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/transaction-history/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/admin/transaction-history/transaction-history.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/clear_org_cache/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/commissions/[id].js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/delete_my_account/deleteAccount.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/delete_my_account/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/gateway/[...id].jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/history/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/home/index.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/i18n-sample/index.jsx` | ✅ | ✅ | ✅ | ✅ |
-| `pages/icons_demo.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/issue/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/issue/issue.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/logout/index.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/onboard/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/onboard/onboard.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/privacy/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/privacy/privacy.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/bbps/[[...slug]].tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/cin/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/driving-license/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/employment/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/gstin/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/gstin/pan.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/gstin/verify.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/pan/advanced.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/pan/bulk.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/pan/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/pan/lite.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/passport/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/vehicle-rc/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/products/kyc/voter-id/index.tsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/profile/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/profile/profile.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/redirect/index.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/redirect/redirect.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/signup/index.js` | ☐ | ☐ | ☐ | ☐ |
-| `pages/signup/signup.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/test/index.jsx` | ☐ | ☐ | ☐ | ☐ |
-| `pages/transaction/[...id].js` | ☐ | ☐ | ☐ | ☐ |
-
-## Page Components
-
-| File Path | Step 1: Identify Strings | Step 2: Create Keys | Step 3: Implement Translations | Step 4: Load Namespaces |
-| :--- | :---: | :---: | :---: | :---: |
-| `page-components/Admin/AccountStatement/AccountStatement.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/AccountStatement/AccountStatementCard/AccountStatementCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/AccountStatement/AccountStatementTable/AccountStatementTable.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ChangeRole/ChangeRole.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ChangeRole/DemoteDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ChangeRole/PromoteSellerToDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ChangeRole/TransferSeller/MoveAgents.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ChangeRole/TransferSeller/TransferSeller.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ChangeRole/UpgradeSellerToIseller.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Configurations/AppPreview.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Configurations/Configurations.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Configurations/GeneralConfig.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Configurations/LandingPageConfig.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Configurations/LandingPagePreview.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Configurations/ThemeConfig.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/AnnouncementsDashboard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/BusinessDashboard/BusinessDashboard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/BusinessDashboard/BusinessDashboardCard/BusinessDashboardCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/BusinessDashboard/BusinessDashboardFilters.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/BusinessDashboard/EarningOverview.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/BusinessDashboard/SuccessRate.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/BusinessDashboard/TopMerchants.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/Dashboard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/DashboardContext.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/DashboardDateFilter.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/OnboardingDashboard/OnboardedMerchants.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/OnboardingDashboard/OnboardingDashboard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/OnboardingDashboard/OnboardingDashboardCard/OnboardingDashboardCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/OnboardingDashboard/OnboardingDashboardFilters.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Dashboard/TopPanel.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/DetailedStatement/DetailedStatement.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/DetailedStatement/DetailedStatementCard/DetailedStatementCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/DetailedStatement/DetailedStatementTable/DetailedStatementTable.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Network/Network.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Network/NetworkCard/NetworkCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Network/NetworkFilter/NetworkFilter.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Network/NetworkMenuWrapper/NetworkMenuWrapper.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Network/NetworkSort/NetworkSort.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Network/NetworkTable/NetworkTable.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Network/NetworkToolbar.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Network/NetworkTreeView.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/Network/SortAndFilterMobile/SortAndFilterMobile.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/NotificationCreator/NotificationCreator.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/OnboardAgents/OnboardAgentResponse.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/OnboardAgents/OnboardAgents.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/OnboardAgents/OnboardViaFile/OnboardViaFile.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/OnboardAgents/OnboardViaForm/OnboardViaForm.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/AadhaarPay/AadhaarPay.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/AccountVerification.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/Aeps/Aeps.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/Aeps/AepsDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/Aeps/AepsRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/AgreementSigning.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/Bbps/Bbps.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/CardPayment/CardPayment.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/CardPayment/CardPaymentDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/CardPayment/CardPaymentRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/CardPaymentRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/Cdm/Cdm.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/CommissionFrequency.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/ConfigGrid.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/ConfigPageCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/CreditCardBillPayment/CreditCardBillPayment.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/CreditCardBillPayment/CreditCardBillPaymentDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/CreditCardBillPayment/CreditCardBillPaymentRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/Dmt/Dmt.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/Dmt/DmtDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/Dmt/DmtRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/DownloadPricing.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/FormFileUpload/FormFileUpload.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/FormPricing/FormPricing.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/FormSetPricingSlug/FormSetPricingSlug.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/IndoNepal/IndoNepal.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/IndoNepal/IndoNepalDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/IndoNepal/IndoNepalRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/InsuranceDekho/InsuranceDekho.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/InsuranceDekho/InsuranceDekhoDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/InsuranceDekho/InsuranceDekhoRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/OptionalVerification.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/PricingForm/PricingForm.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/QrPayment/QrPayment.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/RefundMethod/RefundMethod.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/ToggleCdm/ToggleCdm.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/ToggleServices.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/TravelFlight/TravelFlight.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/TravelFlight/TravelFlightDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/TravelFlight/TravelFlightRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/TravelTrain/TravelTrain.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/TravelTrain/TravelTrainDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/TravelTrain/TravelTrainRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/UpiFundTransfer/UpiFundTransfer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/UpiFundTransfer/UpiFundTransferDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/UpiFundTransfer/UpiFundTransferRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/UpiMoneyTransfer/UpiMoneyTransfer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/UpiMoneyTransfer/UpiMoneyTransferDistributor.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/UpiMoneyTransfer/UpiMoneyTransferRetailer.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingCommission/ValidateUpiId.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingConfig/PricingConfig.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingConfig/PricingConfigContext.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/PricingConfig/PricingForm.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ProfilePanel/AddressPane/AddressPane.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ProfilePanel/CompanyPane/CompanyPane.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ProfilePanel/ContactPane/ContactPane.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ProfilePanel/DocPane/DocPane.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ProfilePanel/PersonalPane/PersonalPane.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/ProfilePanel/ProfilePanel.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/QueryCenter/QueryCenter.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/QueryCenter/QueryCenterTable/QueryCenterTable.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/TransactionHistory/TransactionHistory.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/TransactionHistory/TransactionHistoryCard/TransactionHistoryCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/TransactionHistory/TransactionHistoryTable/TransactionHistoryTable.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/UpdatePersonalInfo/UpdatePersonalInfo.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/UpdateSellerAddress/UpdateSellerAddress.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/UpdateSellerInfo/PreviewSellerInfo/PreviewSellerInfo.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Admin/UpdateSellerInfo/UpdateSellerInfo.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Commissions/Commissions.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Commissions/CommissionsCard/CommissionsCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Commissions/CommissionsPagination/CommissionsPagination.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Commissions/CommissionsTable/CommissionsTable.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/EkoConnectTransactionPage/EkoConnectTransactionPage.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/History.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/HistoryContext.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/HistoryPagination/HistoryPagination.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/HistoryTable/HistoryCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/HistoryTable/HistoryTable.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/HistoryTable/Table.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/HistoryTable/Tbody.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/HistoryTable/Th.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/HistoryToolbar.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/History/ToggleColumns.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/AiChatWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/BillPaymentWidget/BillPaymentWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/CommonTrxnWidget/CommonTrxnWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/Home.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/KnowYourCommissionWidget/KnowYourCommissionWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/KycWidget/KycWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/NotificationWidget/NotificationWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/QueryWidget/QueryWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/RecentTrxnWidget/RecentTrxnWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/TodoWidget/TodoWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Home/WidgetBase/WidgetBase.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/ImageEditor/ImageEditor.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/LandingPanel/LandingPanel.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/LoginPanel/ImageCard/ImageCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/LoginPanel/Login/GoogleButton/GoogleButton.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/LoginPanel/Login/Login.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/LoginPanel/LoginPanel.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/LoginPanel/LoginWidget/LoginWidget.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/LoginPanel/SocialVerify/SocialVerify.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/LoginPanel/VerifyOtp/VerifyOtp.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/LoginPanel/WelcomeCard/WelcomeCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Profile/EarningSummary/EarningSummary.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Profile/ManageMyAccountCard/ManageMyAccountCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Profile/PersonalDetailCard/PersonalDetailCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Profile/Profile.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Profile/ProfileWidget/ProfileWidget.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/Profile/ShopCard/ShopCard.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/RaiseIssueCard/RaiseIssueCard.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/TestPage/TestPage.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/bbps/Bbps.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/bbps/Payment.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/bbps/Preview.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/bbps/Search.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/bbps/Status.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/bbps/components/BbpsLogo.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/bbps/context/BbpsContext.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/common/ResponseSection.jsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/common/ResponseToolbar.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/KycVerificationTools.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/cin/CinForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/driving-license/DrivingLicenseForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/employment/EmploymentForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/gstin/GstinPanForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/gstin/GstinVerification.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/gstin/GstinVerifyForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/pan/PanAdvancedForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/pan/PanBulkForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/pan/PanLiteForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/pan/PanVerification.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/passport/PassportForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/vehicle-rc/VehicleRcForm.tsx` | ☐ | ☐ | ☐ | N/A |
-| `page-components/products/kyc/voter-id/VoterIdForm.tsx` | ☐ | ☐ | ☐ | N/A |
-
 ---
 
-## 🎯 **Implementation Progress Dashboard**
-
-### **Next Action Items:**
-
-#### **Immediate (This Sprint):**
-1. **Begin Phase 1**: Start with high-priority user-facing pages
-2. **Set up automation**: Implement `i18next-parser` for key extraction
-3. **Create workflow**: Establish translation review process
-
-#### **Short Term (Next 2 Sprints):**
-1. **Complete Phase 1**: All core user pages translated
-2. **Testing framework**: Comprehensive i18n test coverage
-3. **Monitor & optimize**: Key usage analytics
-
-#### **Medium Term (Next Quarter):**
-1. **Complete Phases 2-3**: Admin and product components
-2. **Enhancement features**: RTL support, advanced formatting
-3. **Process automation**: Translation management tools
-
-### **Risk Mitigation Status:**
-
-| Risk Category | Current Status | Mitigation Actions |
-|---------------|----------------|-------------------|
-| **Technical Risks** | ✅ Low | Foundation architecture prevents common issues |
-| **Performance** | ✅ Managed | Bundle optimization and caching in place |
-| **Execution Bandwidth** | ⚠️ Medium | Standardized process reduces effort per component |
-| **Content Consistency** | ⚠️ Medium | Need to establish style guides and review process |
-| **Maintenance Overhead** | ✅ Low | Well-structured patterns reduce complexity |
-
-### **Quality Metrics to Track:**
-
-1. **Translation Coverage**: % of components with translations
-2. **Key Utilization**: Unused vs. used translation keys
-3. **Performance Impact**: Bundle size changes per language
-4. **Error Rate**: Missing translation fallbacks triggered
-5. **User Adoption**: Language preference analytics
-
-### **Success Criteria:**
-
-- [ ] **100% UI Component Coverage**: All user-facing text translated
-- [ ] **Performance Maintained**: <5% bundle size increase per language
-- [ ] **Zero Missing Keys**: All text has appropriate fallbacks
-- [ ] **User Adoption**: Multi-language usage analytics available
-- [ ] **Developer Experience**: <30min to add new translation namespace
+📋 **For detailed progress tracking of all UI components, see [i18n Implementation Tracker](./i18n-implementation-tracker.md)**
 
 ---
-
-## 📚 **Quick Reference for Contributors**
-
-### **Adding Translations to Existing Component:**
-
-```jsx
-// 1. Import hook
-import { useTranslation } from 'next-i18next';
-
-// 2. Use in component
-const MyComponent = () => {
-  const { t } = useTranslation('common'); // or specific namespace
-  return <h1>{t('my_translation_key')}</h1>;
-};
-```
-
-### **Adding New Page with Translations:**
-
-```jsx
-// Component file
-import { withPageTranslations } from '../../utils/withPageTranslations';
-
-export { default } from './MyPageComponent';
-export const getStaticProps = withPageTranslations({
-  namespaces: ['common', 'my-namespace'],
-});
-```
-
-### **Creating Translation Keys:**
-
-```json
-// public/locales/en/my-namespace.json
-{
-  "title": "My Page Title",
-  "description": "Page description text",
-  "buttons": {
-    "submit": "Submit",
-    "cancel": "Cancel"
-  }
-}
-```
-
-### **Testing Translations:**
-
-```javascript
-// Use pageRender for testing components with translation context
-import { pageRender } from "test-utils";
-import MyComponent from "components/MyComponent";
-
-test("renders with translations", () => {
-  const { getByText } = pageRender(<MyComponent />);
-  expect(getByText("Expected Translation")).toBeInTheDocument();
-});
-```
-
----
-
-*Last Updated: July 28, 2025*  
-*Document Version: 2.0*  
-*Implementation Status: Foundation Complete - Ready for Scale-out*
