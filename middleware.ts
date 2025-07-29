@@ -1,144 +1,102 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+/**
+ * Regular expression to match static file extensions
+ * Used to skip middleware processing for public assets
+ */
 const PUBLIC_FILE = /\.(.*)$/;
+
+/**
+ * Array of supported locale codes for internationalization
+ * Currently supports English, Hindi, and Gujarati
+ */
 const SUPPORTED_LOCALES = ["en", "hi", "gu"] as const;
+
+/**
+ * Default locale used as fallback when no valid locale is detected
+ */
 const DEFAULT_LOCALE = "en";
 
 /**
- * Extract locale from pathname using improved regex pattern
- * Uses positive lookahead for more precise matching
- * @param pathname - The URL pathname to extract locale from
- * @returns The extracted locale or null if not found/unsupported
+ * Type definition for supported locale strings
  */
-function extractLocaleFromPath(pathname: string): string | null {
-	const match = pathname.match(/^\/([a-zA-Z-]+)(?=\/|$)/);
-	return match && SUPPORTED_LOCALES.includes(match[1] as any)
-		? match[1]
-		: null;
-}
+type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 /**
- * Parse Accept-Language header and find best matching locale
- * Handles language codes with regions and quality values
- * @param acceptLanguage - Raw Accept-Language header value
- * @returns Best matching locale or null if no supported language found
+ * Validates if a given locale string is supported by the application
+ * @param {string} locale - Locale string to validate
+ * @returns {locale is SupportedLocale} True if locale is supported, false otherwise
  */
-function parseAcceptLanguage(acceptLanguage: string | null): string | null {
-	if (!acceptLanguage) return null;
-
-	// Parse Accept-Language header with quality values
-	const languages = acceptLanguage
-		.split(",")
-		.map((lang) => {
-			const [language, quality = "1"] = lang.trim().split(";q=");
-			return {
-				language: language.split("-")[0], // Extract base language code
-				quality: parseFloat(quality),
-			};
-		})
-		.sort((a, b) => b.quality - a.quality); // Sort by quality (highest first)
-
-	console.log("[i18n] Parsed Accept-Language:", languages);
-
-	// Find first supported locale
-	for (const { language } of languages) {
-		if (SUPPORTED_LOCALES.includes(language as any)) {
-			console.log(
-				"[i18n] Found supported language in Accept-Language:",
-				language
-			);
-			return language;
-		}
-	}
-
-	console.log("[i18n] No supported language found in Accept-Language");
-	return null;
-}
+const isLocaleValid = (locale: string): locale is SupportedLocale => {
+	return SUPPORTED_LOCALES.includes(locale as SupportedLocale);
+};
 
 /**
- * Determine the target locale using unified fallback chain
- * Priority: URL locale > Cookie locale > Accept-Language > Default locale
- * @param urlLocale - Locale extracted from URL path
- * @param cookieLocale - Locale from NEXT_LOCALE cookie
- * @param acceptLanguage - Accept-Language header value
- * @returns The target locale to use
+ * Extract preferred locale from Accept-Language header
+ * Parses the Accept-Language header and finds the first supported locale
+ * @param {string} acceptLanguage - Accept-Language header value from the request
+ * @returns {SupportedLocale | null} First supported locale found or null if none are supported
  */
-function determineTargetLocale(
-	urlLocale: string | null,
-	cookieLocale: string | null,
-	acceptLanguage: string | null
-): string {
-	// If URL has a valid locale, use it (highest priority)
-	if (urlLocale && SUPPORTED_LOCALES.includes(urlLocale as any)) {
-		console.log("[i18n] Using URL locale:", urlLocale);
-		return urlLocale;
-	}
+const getPreferredLocale = (acceptLanguage: string): SupportedLocale | null => {
+	const preferredLocale = acceptLanguage
+		.split(",") // Split multiple language preferences
+		.map((lang) => lang.split(";")[0].trim().split("-")[0]) // Extract base language code (en-US -> en)
+		.find((lang) => isLocaleValid(lang)); // Find first supported locale
 
-	// If URL has invalid locale, log and continue with fallback
-	if (urlLocale && !SUPPORTED_LOCALES.includes(urlLocale as any)) {
-		console.log(
-			"[i18n] Invalid URL locale, falling back to cookie/accept-language"
-		);
-	}
-
-	// Check cookie preference (second priority)
-	if (cookieLocale && SUPPORTED_LOCALES.includes(cookieLocale as any)) {
-		console.log("[i18n] Using cookie locale:", cookieLocale);
-		return cookieLocale;
-	}
-
-	// Fallback to Accept-Language header (third priority)
-	if (acceptLanguage) {
-		const matched = parseAcceptLanguage(acceptLanguage);
-		if (matched) {
-			console.log("[i18n] Using Accept-Language:", matched);
-			return matched;
-		}
-	}
-
-	// Final fallback to default locale
-	console.log("[i18n] Using default locale:", DEFAULT_LOCALE);
-	return DEFAULT_LOCALE;
-}
+	return preferredLocale ?? null;
+};
 
 /**
- * Build the desired path with proper locale handling
- * Handles edge cases like root paths and prevents double slashes
- * @param pathname - Original pathname
- * @param targetLocale - The target locale to use
- * @returns The properly formatted path with locale
+ * Create redirect response with locale cookie update
+ * Constructs a new URL with the locale prefix and sets the locale cookie
+ * @param {string} url - Original request URL
+ * @param {SupportedLocale} locale - Target locale to redirect to
+ * @param {string} pathname - Current pathname without locale prefix
+ * @returns {NextResponse} NextResponse with redirect and updated locale cookie
  */
-function buildDesiredPath(pathname: string, targetLocale: string): string {
-	// Strip any existing locale prefix using improved regex
-	const cleanedPath = pathname.replace(/^\/[a-zA-Z-]+(?=\/|$)/, "");
-
-	if (targetLocale === DEFAULT_LOCALE) {
-		// For default locale, use clean path (no prefix)
-		return cleanedPath || "/";
-	} else {
-		// For non-default locale, add prefix and handle root path edge case
-		return `/${targetLocale}${cleanedPath === "/" ? "" : cleanedPath}`;
-	}
-}
+const createLocaleRedirect = (
+	url: string,
+	locale: SupportedLocale,
+	pathname: string
+): NextResponse => {
+	const newUrl = new URL(url);
+	newUrl.pathname = `/${locale}${pathname}`;
+	const response = NextResponse.redirect(newUrl);
+	response.cookies.set("NEXT_LOCALE", locale);
+	return response;
+};
 
 /**
- * Middleware for handling locale-based redirects
- * Implements sophisticated locale detection with fallback chain
- * @param req - The incoming Next.js request
- * @returns NextResponse with redirect or continuation
+ * Middleware for handling locale-based redirects and internationalization
+ *
+ * Implements sophisticated locale detection with the following priority chain:
+ * 1. URL locale (if valid) - takes precedence, updates cookie if needed
+ * 2. Cookie locale (if valid) - redirects to cookie locale with URL prefix
+ * 3. Accept-Language header (if contains supported locale) - uses browser preference
+ * 4. Default locale - fallback when no other valid locale is found
+ *
+ * Flow:
+ * - Skips processing for static files, API routes, and Next.js internals
+ * - Extracts locale from URL, cookie, and Accept-Language header
+ * - Follows priority chain to determine the appropriate locale
+ * - Redirects to localized URL when necessary
+ * - Updates locale cookie to maintain consistency
+ * @param {NextRequest} req - The incoming Next.js request object
+ * @returns {NextResponse} NextResponse with either a redirect to the appropriate locale or continuation to the page
  */
 export function middleware(req: NextRequest): NextResponse {
-	const { pathname } = req.nextUrl;
-	const urlLocale = extractLocaleFromPath(pathname);
+	// Extract locale information from different sources
+	const { locale: urlLocale, pathname } = req.nextUrl;
 	const cookieLocale = req.cookies.get("NEXT_LOCALE")?.value;
 	const acceptLanguage = req.headers.get("accept-language");
 
+	// Debug logging for development
 	console.log("[i18n] middleware pathname:", pathname);
-	console.log("[i18n] middleware urlLocale:", urlLocale);
 	console.log("[i18n] middleware cookieLocale:", cookieLocale);
 
 	// Skip middleware for Next.js internals, API routes, and static files
+	// These routes don't need internationalization processing
 	if (
 		pathname.startsWith("/_next") ||
 		pathname.startsWith("/api") ||
@@ -148,47 +106,42 @@ export function middleware(req: NextRequest): NextResponse {
 		return NextResponse.next();
 	}
 
-	// Determine target locale using unified fallback logic
-	const targetLocale = determineTargetLocale(
-		urlLocale,
-		cookieLocale,
-		acceptLanguage
-	);
-
-	// Build desired path with proper handling
-	const desiredPath = buildDesiredPath(pathname, targetLocale);
-
-	// Avoid redundant redirects
-	if (pathname === desiredPath) {
-		console.log("[i18n] Path already correct, continuing");
+	// Priority 1: Valid URL locale
+	// If URL contains a valid locale, use it and ensure cookie is synchronized
+	if (urlLocale && isLocaleValid(urlLocale)) {
+		// Update cookie if it differs from URL locale to maintain consistency
+		if (cookieLocale !== urlLocale) {
+			const response = NextResponse.next();
+			response.cookies.set("NEXT_LOCALE", urlLocale);
+			return response;
+		}
+		// Cookie matches URL locale, continue without changes
 		return NextResponse.next();
 	}
-
-	// Perform redirect with cookie update
-	const url = req.nextUrl.clone();
-	url.pathname = desiredPath;
-	const response = NextResponse.redirect(url);
-
-	// Update cookie only if locale changed
-	if (cookieLocale !== targetLocale) {
-		console.log(
-			"[i18n] Updating locale cookie from",
-			cookieLocale,
-			"to",
-			targetLocale
-		);
-		response.cookies.set("NEXT_LOCALE", targetLocale, {
-			path: "/",
-			maxAge: 31536000, // 1 year
-			httpOnly: false,
-			sameSite: "lax",
-		});
+	// Priority 2: Valid cookie locale
+	// If no valid URL locale but valid cookie locale exists, redirect to cookie locale
+	else if (cookieLocale && isLocaleValid(cookieLocale)) {
+		return createLocaleRedirect(req.url, cookieLocale, pathname);
+	}
+	// Priority 3: Valid Accept-Language locale
+	// Check browser's language preferences for supported locales
+	else if (acceptLanguage) {
+		const preferredLocale = getPreferredLocale(acceptLanguage);
+		if (preferredLocale) {
+			return createLocaleRedirect(req.url, preferredLocale, pathname);
+		}
 	}
 
-	console.log("[i18n] Redirecting to:", url.pathname);
-	return response;
+	// Fallback: Default locale
+	// When no valid locale is found through any method, use default
+	return createLocaleRedirect(req.url, DEFAULT_LOCALE, pathname);
 }
 
+/**
+ * Middleware configuration
+ * Defines which routes should be processed by the middleware
+ * Excludes API routes, Next.js static files, and favicon
+ */
 export const config = {
 	matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
