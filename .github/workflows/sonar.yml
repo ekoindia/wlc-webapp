@@ -37,9 +37,13 @@ jobs:
 
             - name: SonarQube Scan
 
-              uses: SonarSource/sonarqube-scan-action@v1.2
-
               env:
                   SONAR_TOKEN: ${{ secrets.SONARQUBE_ELOKA_TOKEN }}
 
-                  SONAR_HOST_URL: https://lint.eko.in
+                  run: |
+
+                      npm install -g sonar-scanner
+
+                      sonar-scanner \
+
+                        -Dsonar.login=${SONAR_TOKEN}
