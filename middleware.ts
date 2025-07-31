@@ -93,6 +93,7 @@ export function middleware(req: NextRequest): NextResponse {
 
 	// Debug logging for development
 	console.log("[i18n] middleware pathname:", pathname);
+	console.log("[i18n] middleware urlLocale:", urlLocale);
 	console.log("[i18n] middleware cookieLocale:", cookieLocale);
 
 	// Skip middleware for Next.js internals, API routes, and static files
@@ -123,6 +124,8 @@ export function middleware(req: NextRequest): NextResponse {
 	else if (cookieLocale && isLocaleValid(cookieLocale)) {
 		return createLocaleRedirect(req.url, cookieLocale, pathname);
 	}
+
+	// TODO: Decide if needed?
 	// Priority 3: Valid Accept-Language locale
 	// Check browser's language preferences for supported locales
 	else if (acceptLanguage) {
