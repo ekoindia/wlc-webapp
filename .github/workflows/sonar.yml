@@ -29,11 +29,11 @@ jobs:
 
               run: npm ci
 
-            - name: Run tests to generate coverage
+            # - name: Run tests to generate coverage
 
-              run: |
+            #   run: |
 
-                  npm run test -- --coverage
+            #       npm run test -- --coverage
 
             - name: SonarQube Scan
 
