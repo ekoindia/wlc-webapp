@@ -47,5 +47,6 @@ jobs:
                   npm install -g sonar-scanner
 
                   sonar-scanner \
-
+                    -Dsonar.host.url=${SONAR_HOST_URL} \
                     -Dsonar.login=${SONAR_TOKEN}
+ 
