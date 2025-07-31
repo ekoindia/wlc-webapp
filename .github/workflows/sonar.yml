@@ -40,10 +40,12 @@ jobs:
               env:
                   SONAR_TOKEN: ${{ secrets.SONARQUBE_ELOKA_TOKEN }}
 
-                  run: |
+                  SONAR_HOST_URL: https://lint.eko.in
 
-                      npm install -g sonar-scanner
+              run: |
 
-                      sonar-scanner \
+                  npm install -g sonar-scanner
 
-                        -Dsonar.login=${SONAR_TOKEN}
+                  sonar-scanner \
+
+                    -Dsonar.login=${SONAR_TOKEN}
