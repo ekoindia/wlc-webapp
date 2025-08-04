@@ -20,6 +20,7 @@ export const adminProfileMenu = [
 	// {
 	// 	title: "Settings",
 	// 	link: "",
+	// 	icon: "settings",
 	// },
 ];
 
@@ -29,8 +30,14 @@ export const adminProfileMenu = [
  */
 export const profileMenu = [
 	{
+		title: "View My Profile",
+		link: "/profile",
+		icon: "account-circle",
+	},
+	{
 		title: "Settings",
 		link: "/transaction/" + TransactionIds.MANAGE_MY_ACCOUNT,
 		trxn_id: TransactionIds.MANAGE_MY_ACCOUNT, // Used to check for allowed role
+		icon: "settings",
 	},
 ];

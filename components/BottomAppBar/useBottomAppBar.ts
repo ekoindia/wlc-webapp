@@ -1,7 +1,6 @@
 import { useKBarReady } from "components/CommandBar";
 import { InteractionBehavior } from "constants/trxnFramework";
 import { useMenuContext, useUser } from "contexts";
-import { useNavigationLists } from "hooks";
 import { useKBar } from "kbar";
 import { More, Transactions } from ".";
 
@@ -42,7 +41,7 @@ export const useBottomAppBarItems = ({
 	const { isAdmin, isAdminAgentMode } = useUser();
 	const { query } = useKBar();
 	const { ready } = useKBarReady();
-	const { trxnList } = useNavigationLists();
+	const { trxnList } = useMenuContext();
 
 	return [
 		{

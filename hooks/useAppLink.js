@@ -7,8 +7,10 @@ const useAppLink = () => {
 	const router = useRouter();
 	const regRemoveConnectUrl = new RegExp(
 		"^(" +
-			window.location.origin +
-			"|(https?://)?connect.eko.in|ekoconnect://)",
+			(typeof window !== "undefined" && window?.location?.origin
+				? window?.location?.origin + "|"
+				: "") +
+			"(https?://)?connect.eko.in|ekoconnect://)",
 		"i"
 	);
 
@@ -38,7 +40,9 @@ const useAppLink = () => {
 		} else {
 			// Open External Link (new browser tab/window)...
 			console.log("[useAppLink] Opening External Link:", url);
-			window.open(url, "_blank");
+			if (typeof window !== "undefined") {
+				window.open(url, "_blank");
+			}
 		}
 	};
 

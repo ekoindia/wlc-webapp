@@ -37,7 +37,7 @@ const AiChatWidget = dynamic(() => import("./AiChatWidget"), {
  */
 const Home = () => {
 	const { isLoggedIn } = useSession();
-	const { todos, deleteTodo } = useTodos();
+	const { todos, deleteTodo, toggleTodoDone } = useTodos();
 
 	// Check if the GPT Chat widget is enabled
 	const [isGptChatAllowed] = useFeatureFlag("AI_CHATBOT_HOME");
@@ -82,7 +82,11 @@ const Home = () => {
 		widgets.push({
 			id: 91,
 			component: () => (
-				<TodoWidget todos={todos} onDeleteTodo={deleteTodo} />
+				<TodoWidget
+					todos={todos}
+					onDeleteTodo={deleteTodo}
+					onToggleTodoDone={toggleTodoDone}
+				/>
 			),
 		});
 	}
