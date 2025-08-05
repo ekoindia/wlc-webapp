@@ -11,14 +11,40 @@ const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
 const isDockerBuild = process.env.DOCKER_BUILD === "true";
 
 // Enhanced Content Security Policy for multi-tenant environment
+const getConnectSrcDomains = () => {
+	const baseDomains = [
+		"'self'",
+		"https://*.eko.in",
+		"https://files.eko.co.in",
+		"https://accounts.google.com",
+		"https://*.googleapis.com",
+	];
+
+	if (isProd) {
+		return [
+			...baseDomains,
+			"https://api.connect.eko.in",
+			"https://eko.connect.in",
+		];
+	} else {
+		return [
+			...baseDomains,
+			"https://api.beta.ekoconnect.in",
+			"https://beta.ekoconnect.in",
+			// "http://localhost:3000",
+			// "http://localhost:8001",
+		];
+	}
+};
+
 const cspHeaders = [
 	"default-src 'self'",
-	"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.eko.in https://*.eko.in",
-	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+	"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com",
+	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
 	"img-src 'self' blob: data: https://*.eko.in https://files.eko.co.in", // Allow tenant images
 	"font-src 'self' https://fonts.gstatic.com",
-	"connect-src 'self' https://*.eko.in https://files.eko.co.in", // API calls to tenant domains
-	"frame-src 'self' https://connect.eko.in", // Embedded widgets
+	`connect-src ${getConnectSrcDomains().join(" ")}`, // API calls to tenant domains + Google auth
+	"frame-src 'self' https://connect.eko.in https://accounts.google.com", // Embedded widgets + Google auth iframe
 	"object-src 'none'",
 	"base-uri 'self'",
 	"form-action 'self'",
