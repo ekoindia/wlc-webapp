@@ -10,7 +10,59 @@ const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
  */
 const isDockerBuild = process.env.DOCKER_BUILD === "true";
 
+// Enhanced Content Security Policy for multi-tenant environment
+const cspHeaders = [
+	"default-src 'self'",
+	"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.eko.in https://*.eko.in",
+	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+	"img-src 'self' blob: data: https://*.eko.in https://files.eko.co.in", // Allow tenant images
+	"font-src 'self' https://fonts.gstatic.com",
+	"connect-src 'self' https://*.eko.in https://files.eko.co.in", // API calls to tenant domains
+	"frame-src 'self' https://connect.eko.in", // Embedded widgets
+	"object-src 'none'",
+	"base-uri 'self'",
+	"form-action 'self'",
+	"frame-ancestors 'none'", // Prevent clickjacking by default
+].join("; ");
+
+// Security headers for production
+const securityHeaders = [
+	{
+		key: "X-DNS-Prefetch-Control",
+		value: "on",
+	},
+	{
+		key: "X-Frame-Options",
+		value: "SAMEORIGIN", // Allow same-origin framing
+	},
+	{
+		key: "X-Content-Type-Options",
+		value: "nosniff",
+	},
+	{
+		key: "X-XSS-Protection",
+		value: "1; mode=block",
+	},
+	{
+		key: "Referrer-Policy",
+		value: "strict-origin-when-cross-origin", // More secure than origin-when-cross-origin
+	},
+	{
+		key: "Content-Security-Policy",
+		value: cspHeaders,
+	},
+	{
+		key: "Strict-Transport-Security",
+		value: "max-age=31536000; includeSubDomains", // Force HTTPS for 1 year
+	},
+	{
+		key: "Permissions-Policy",
+		value: "camera=(self), microphone=(self), geolocation=(self), payment=(self), usb=(), bluetooth=(), serial=()", // Allow essential features for fintech app, block potentially dangerous APIs
+	},
+];
+
 /*
+// ORIGINAL COMMENTED SECURITY HEADERS (kept for reference)
 // Default Content Security Policy
 const cspHeaders = [
 	// "default-src 'self';",
@@ -164,6 +216,17 @@ const nextConfig = {
 			// },
 		];
 	},
+	// Enable security headers to fix vulnerabilities
+	async headers() {
+		return [
+			{
+				// Apply security headers to all routes to fix security vulnerabilities
+				source: "/(.*)",
+				headers: securityHeaders,
+			},
+		];
+	},
+
 	// async headers() {
 	// 	return [
 	// 		{
