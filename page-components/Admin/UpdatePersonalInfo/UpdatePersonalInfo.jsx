@@ -13,7 +13,7 @@ import { fetcher } from "helpers";
 import useLocalStorage from "hooks/useLocalStorage";
 import { formatDate } from "libs";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { Form } from "tf-components";
 
@@ -47,7 +47,8 @@ const nameSplitter = (name) => {
 	};
 };
 
-const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
+const findObjectByValue = (arr, value) =>
+	arr.find((obj) => obj.value === value);
 
 /**
  * Validation patterns for form fields
@@ -118,7 +119,7 @@ const UpdatePersonalInfo = () => {
 		control,
 	});
 
-	const fetchShopTypes = () => {
+	const fetchShopTypes = useCallback(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: TransactionIds.SHOP_TYPE,
@@ -133,7 +134,24 @@ const UpdatePersonalInfo = () => {
 			.catch((err) => {
 				console.error("err", err);
 			});
-	};
+	}, [accessToken, setShopTypes]);
+
+	const fetchAgentDataViaCellNumber = useCallback(() => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				// "tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
+				"tf-req-method": "GET",
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				setAgentData(res?.data?.agent_details[0]);
+			})
+			.catch((error) => {
+				console.error("[ProfilePanel] Get Agent Detail Error:", error);
+			});
+	}, [accessToken]);
 
 	useEffect(() => {
 		if (!shopTypes?.length) {
@@ -143,8 +161,7 @@ const UpdatePersonalInfo = () => {
 		if (!agentData) {
 			fetchAgentDataViaCellNumber();
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [agentData, shopTypes?.length]);
 
 	useEffect(() => {
 		if (agentData !== undefined) {
@@ -204,7 +221,7 @@ const UpdatePersonalInfo = () => {
 						_previewDataObj.key !== "shop_type"
 							? previewData[key]
 							: shopTypes?.find(
-									(item) => item.value == previewData[key]
+									(item) => item.value === previewData[key]
 								)?.label,
 				};
 				_previewData.push(_previewDataObj);
@@ -262,23 +279,6 @@ const UpdatePersonalInfo = () => {
 			})
 			.catch((error) => {
 				console.log(error);
-			});
-	};
-
-	const fetchAgentDataViaCellNumber = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				// "tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				setAgentData(res?.data?.agent_details[0]);
-			})
-			.catch((error) => {
-				console.error("[ProfilePanel] Get Agent Detail Error:", error);
 			});
 	};
 
