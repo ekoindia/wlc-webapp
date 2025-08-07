@@ -38,14 +38,14 @@ const isLocaleValid = (locale: string): locale is SupportedLocale => {
  * @param {string} acceptLanguage - Accept-Language header value from the request
  * @returns {SupportedLocale | null} First supported locale found or null if none are supported
  */
-const getPreferredLocale = (acceptLanguage: string): SupportedLocale | null => {
-	const preferredLocale = acceptLanguage
-		.split(",") // Split multiple language preferences
-		.map((lang) => lang.split(";")[0].trim().split("-")[0]) // Extract base language code (en-US -> en)
-		.find((lang) => isLocaleValid(lang)); // Find first supported locale
+// const getPreferredLocale = (acceptLanguage: string): SupportedLocale | null => {
+// 	const preferredLocale = acceptLanguage
+// 		.split(",") // Split multiple language preferences
+// 		.map((lang) => lang.split(";")[0].trim().split("-")[0]) // Extract base language code (en-US -> en)
+// 		.find((lang) => isLocaleValid(lang)); // Find first supported locale
 
-	return preferredLocale ?? null;
-};
+// 	return preferredLocale ?? null;
+// };
 
 /**
  * Create redirect response with locale cookie update
@@ -89,7 +89,7 @@ export function middleware(req: NextRequest): NextResponse {
 	// Extract locale information from different sources
 	const { locale: urlLocale, pathname } = req.nextUrl;
 	const cookieLocale = req.cookies.get("NEXT_LOCALE")?.value;
-	const acceptLanguage = req.headers.get("accept-language");
+	// const acceptLanguage = req.headers.get("accept-language");
 
 	// Debug logging for development
 	console.log("[i18n] middleware pathname:", pathname);
@@ -128,12 +128,12 @@ export function middleware(req: NextRequest): NextResponse {
 	// TODO: Decide if needed?
 	// Priority 3: Valid Accept-Language locale
 	// Check browser's language preferences for supported locales
-	else if (acceptLanguage) {
-		const preferredLocale = getPreferredLocale(acceptLanguage);
-		if (preferredLocale) {
-			return createLocaleRedirect(req.url, preferredLocale, pathname);
-		}
-	}
+	// else if (acceptLanguage) {
+	// 	const preferredLocale = getPreferredLocale(acceptLanguage);
+	// 	if (preferredLocale) {
+	// 		return createLocaleRedirect(req.url, preferredLocale, pathname);
+	// 	}
+	// }
 
 	// Fallback: Default locale
 	// When no valid locale is found through any method, use default
