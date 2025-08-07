@@ -1,6 +1,6 @@
 import { PaddingBox } from "components";
 import { Dashboard } from "page-components/Admin";
-import { withPageTranslations } from "../../utils/withPageTranslations";
+import { withPageTranslations } from "/utils/withPageTranslations";
 
 const DashboardPage = () => {
 	return (
