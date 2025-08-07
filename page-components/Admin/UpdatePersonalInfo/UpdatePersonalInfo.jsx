@@ -140,7 +140,7 @@ const UpdatePersonalInfo = () => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			headers: {
 				"tf-req-uri-root-path": "/ekoicici/v1",
-				// "tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
+				"tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
 				"tf-req-method": "GET",
 			},
 			token: accessToken,
