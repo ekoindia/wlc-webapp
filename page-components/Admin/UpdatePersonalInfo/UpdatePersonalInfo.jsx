@@ -154,10 +154,12 @@ const UpdatePersonalInfo = () => {
 	}, [accessToken]);
 
 	useEffect(() => {
+		// if shopTypes is not available, fetch it
 		if (!shopTypes?.length) {
 			fetchShopTypes();
 		}
 
+		// if agentData is not available, fetch it using the cell number
 		if (!agentData) {
 			fetchAgentDataViaCellNumber();
 		}
