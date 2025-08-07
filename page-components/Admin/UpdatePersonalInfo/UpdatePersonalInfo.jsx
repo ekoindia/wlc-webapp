@@ -54,8 +54,8 @@ const findObjectByValue = (arr, value) =>
  * Validation patterns for form fields
  */
 const VALIDATION_PATTERNS = {
-	name: /^[a-zA-Z\s.'-]{2,50}$/,
-	shopName: /^[a-zA-Z0-9\s.&'-]{2,100}$/,
+	name: /^(?!(?:(?:([a-z]) *\1(?: *\1)*)|(?:.*?(?:(?:(?:^|[^d])([a-z])\2\2)|(?:d([a-df-z])\3\3)).*)|(?:.*?([a-z]{3,})\4\4).*|(?:.*(?:^|[^a-z])[^aeiou \.]{4,}(?:$|[^a-z]).*))$)(?:[a-z]+\.? ){0,2}[a-z]+$/i,
+	shopName: /^[-a-zA-Z0-9 ,./:]*$/,
 };
 
 const gender_list = [
