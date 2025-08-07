@@ -126,7 +126,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 	},
 	{
 		id: 30,
-		label: "Pricing Configuration",
+		label: "Pricing & Commissions",
 		icon: "commission-percent",
 		link: "/admin/pricing-config",
 		summary: "Configure dynamic pricing and commissions for your products.",
