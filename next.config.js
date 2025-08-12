@@ -52,8 +52,8 @@ const cspHeaders = [
 	"default-src 'self'", // Only allow resources from the same origin. Blocks all external sources by default.
 	// 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager). To remove 'unsafe-inline', migrate all inline <Script> to use a nonce/hash or load as external files. See pages/_app.tsx for GTM example.
 	isProd
-		? "script-src 'self' 'unsafe-inline' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com" // Added cdnjs and data: for webcomponents polyfill
-		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com", // Added cdnjs and data: for webcomponents polyfill
+		? "script-src 'self' 'unsafe-inline' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://connect.eko.in" // Added google-analytics and connect.eko.in for production
+		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://beta.ekoconnect.in", // Added google-analytics and beta.ekoconnect.in for development
 
 	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com", // Allows styles from self, Google Fonts, and Google accounts. 'unsafe-inline' allows inline styles.
 	"img-src 'self' blob: data: https://*.eko.in https://eko.in https://files.eko.co.in", // Added https://eko.in for logo and static assets
