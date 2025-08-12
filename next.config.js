@@ -51,7 +51,10 @@ const getConnectSrcDomains = () => {
 const cspHeaders = [
 	"default-src 'self'", // Only allow resources from the same origin. Blocks all external sources by default.
 	// 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager). To remove 'unsafe-inline', migrate all inline <Script> to use a nonce/hash or load as external files. See pages/_app.tsx for GTM example.
-	"script-src 'self' 'unsafe-inline' https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com", // 'unsafe-inline' is required for inline <Script> (e.g., analytics). Remove after migrating to nonce/hash or external scripts.
+	isProd
+		? "script-src 'self' 'unsafe-inline' https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com" // 'unsafe-inline' is required for inline <Script> (e.g., analytics). Remove after migrating to nonce/hash or external scripts.
+		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com", // 'unsafe-eval' is required in development for React Fast Refresh (HMR). It must NOT be present in production for security reasons.
+
 	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com", // Allows styles from self, Google Fonts, and Google accounts. 'unsafe-inline' allows inline styles.
 	"img-src 'self' blob: data: https://*.eko.in https://files.eko.co.in", // Allows images from self, Eko domains, blobs, and data URIs. Enables tenant images and inline images.
 	"font-src 'self' https://fonts.gstatic.com", // Allows fonts from self and Google Fonts CDN.
