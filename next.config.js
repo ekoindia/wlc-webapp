@@ -49,48 +49,48 @@ const getConnectSrcDomains = () => {
 };
 
 const cspHeaders = [
-	"default-src 'self'",
-	"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com",
-	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
-	"img-src 'self' blob: data: https://*.eko.in https://files.eko.co.in", // Allow tenant images
-	"font-src 'self' https://fonts.gstatic.com",
-	`connect-src ${getConnectSrcDomains().join(" ")}`, // API calls to tenant domains + Google auth
-	"frame-src 'self' https://connect.eko.in https://accounts.google.com", // Embedded widgets + Google auth iframe
-	"object-src 'none'",
-	"base-uri 'self'",
-	"form-action 'self'",
-	"frame-ancestors 'none'", // Prevent clickjacking by default
+	"default-src 'self'", // Only allow resources from the same origin. Blocks all external sources by default.
+	"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com", // Allows scripts from self, Eko domains, Google accounts, and Google static. 'unsafe-inline' and 'unsafe-eval' are allowed for compatibility but reduce security.
+	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com", // Allows styles from self, Google Fonts, and Google accounts. 'unsafe-inline' allows inline styles.
+	"img-src 'self' blob: data: https://*.eko.in https://files.eko.co.in", // Allows images from self, Eko domains, blobs, and data URIs. Enables tenant images and inline images.
+	"font-src 'self' https://fonts.gstatic.com", // Allows fonts from self and Google Fonts CDN.
+	`connect-src ${getConnectSrcDomains().join(" ")}`, // Allows API calls to tenant domains, Google auth, and other whitelisted domains. Blocks all other connections.
+	"frame-src 'self' https://connect.eko.in https://accounts.google.com", // Allows embedding widgets and Google auth iframes. Blocks other external iframes.
+	"object-src 'none'", // Blocks all plugins and object/embed elements for security.
+	"base-uri 'self'", // Only allows base URI to be set to self. Prevents base tag abuse.
+	"form-action 'self'", // Only allows forms to be submitted to self. Blocks data exfiltration via forms.
+	"frame-ancestors 'none'", // Prevents the site from being embedded in any iframe. Protects against clickjacking.
 ].join("; ");
 
 // Security headers for production
 const securityHeaders = [
 	{
 		key: "X-DNS-Prefetch-Control",
-		value: "on",
+		value: "on", // Enables DNS prefetching for faster external resource loading.
 	},
 	{
 		key: "X-Frame-Options",
-		value: "SAMEORIGIN", // Allow same-origin framing
+		value: "SAMEORIGIN", // Only allows the site to be framed by itself. Blocks clickjacking from other origins.
 	},
 	{
 		key: "X-Content-Type-Options",
-		value: "nosniff",
+		value: "nosniff", // Prevents browsers from MIME-sniffing a response away from the declared content-type. Blocks some XSS attacks.
 	},
 	{
 		key: "Referrer-Policy",
-		value: "strict-origin-when-cross-origin", // More secure than origin-when-cross-origin
+		value: "strict-origin-when-cross-origin", // Sends only the origin as referrer to other origins. Protects user privacy.
 	},
 	{
 		key: "Content-Security-Policy",
-		value: cspHeaders,
+		value: cspHeaders, // Applies the above CSP rules to all responses.
 	},
 	{
 		key: "Strict-Transport-Security",
-		value: "max-age=31536000; includeSubDomains", // Force HTTPS for 1 year
+		value: "max-age=31536000; includeSubDomains", // Forces HTTPS for 1 year on all subdomains. Blocks downgrade attacks.
 	},
 	{
 		key: "Permissions-Policy",
-		value: "camera=(self), microphone=(self), geolocation=(self), payment=(self), usb=(), bluetooth=(), serial=()", // Allow essential features for fintech app, block potentially dangerous APIs
+		value: "camera=(self), microphone=(self), geolocation=(self), payment=(self), usb=(), bluetooth=(), serial=()", // Allows only self to access camera, mic, geolocation, payment. Blocks USB, Bluetooth, Serial APIs.
 	},
 ];
 
