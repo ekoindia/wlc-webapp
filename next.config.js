@@ -18,6 +18,17 @@ const getConnectSrcDomains = () => {
 		"https://files.eko.co.in",
 		"https://accounts.google.com",
 		"https://*.googleapis.com",
+		"https://maps.google.com",
+		"https://chatgpt.com",
+		"https://zfrmz.in",
+		"https://forms.zohopublic.in",
+		"https://www.youtube.com",
+		"https://contracting-v2-preproduction.signzy.app",
+		"https://cdnjs.cloudflare.com",
+		"https://fonts.googleapis.com",
+		"https://fonts.gstatic.com",
+		"https://www.googletagmanager.com",
+		"https://www.gstatic.com",
 	];
 
 	if (isProd) {
@@ -31,8 +42,8 @@ const getConnectSrcDomains = () => {
 			...baseDomains,
 			"https://api.beta.ekoconnect.in",
 			"https://beta.ekoconnect.in",
-			// "http://localhost:3000",
-			// "http://localhost:8001",
+			"http://localhost:3000",
+			"http://localhost:8001",
 		];
 	}
 };
