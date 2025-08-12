@@ -52,16 +52,16 @@ const cspHeaders = [
 	"default-src 'self'", // Only allow resources from the same origin. Blocks all external sources by default.
 	// 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager). To remove 'unsafe-inline', migrate all inline <Script> to use a nonce/hash or load as external files. See pages/_app.tsx for GTM example.
 	isProd
-		? "script-src 'self' 'unsafe-inline' https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com" // 'unsafe-inline' is required for inline <Script> (e.g., analytics). Remove after migrating to nonce/hash or external scripts.
-		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com", // 'unsafe-eval' is required in development for React Fast Refresh (HMR). It must NOT be present in production for security reasons.
+		? "script-src 'self' 'unsafe-inline' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com" // Added cdnjs and data: for webcomponents polyfill
+		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com", // Added cdnjs and data: for webcomponents polyfill
 
 	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com", // Allows styles from self, Google Fonts, and Google accounts. 'unsafe-inline' allows inline styles.
-	"img-src 'self' blob: data: https://*.eko.in https://files.eko.co.in", // Allows images from self, Eko domains, blobs, and data URIs. Enables tenant images and inline images.
+	"img-src 'self' blob: data: https://*.eko.in https://eko.in https://files.eko.co.in", // Added https://eko.in for logo and static assets
 	"font-src 'self' https://fonts.gstatic.com", // Allows fonts from self and Google Fonts CDN.
-	`connect-src ${getConnectSrcDomains().join(" ")}`, // Allows API calls to tenant domains, Google auth, and other whitelisted domains. Blocks all other connections.
+	`connect-src ${[...getConnectSrcDomains(), "https://api.cloud.copilotkit.ai"].join(" ")}`, // Added copilotkit cloud API
 	"frame-src 'self' https://connect.eko.in https://accounts.google.com", // Allows embedding widgets and Google auth iframes. Blocks other external iframes.
 	"object-src 'none'", // Blocks all plugins and object/embed elements for security.
-	"base-uri 'self'", // Only allows base URI to be set to self. Prevents base tag abuse.
+	"base-uri 'self' https://beta.ekoconnect.in https://connect.eko.in/", // Allows base URI to be set to self or beta.ekoconnect.in or connect.eko.in for widget compatibility. Prevents base tag abuse from other origins.
 	"form-action 'self'", // Only allows forms to be submitted to self. Blocks data exfiltration via forms.
 	"frame-ancestors 'none'", // Prevents the site from being embedded in any iframe. Protects against clickjacking.
 ].join("; ");
