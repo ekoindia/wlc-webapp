@@ -136,7 +136,7 @@ const UpdatePersonalInfo = () => {
 			.catch((err) => {
 				console.error("err", err);
 			});
-	}, [accessToken, setShopTypes]);
+	}, [accessToken]);
 
 	const fetchAgentDataViaCellNumber = useCallback(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -153,7 +153,7 @@ const UpdatePersonalInfo = () => {
 			.catch((error) => {
 				console.error("[ProfilePanel] Get Agent Detail Error:", error);
 			});
-	}, [accessToken, mobile, setAgentData]);
+	}, [accessToken, mobile]);
 
 	useEffect(() => {
 		// if shopTypes is not available, fetch it
