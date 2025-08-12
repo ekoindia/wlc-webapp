@@ -10,7 +10,8 @@ const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
  */
 const isDockerBuild = process.env.DOCKER_BUILD === "true";
 
-// Enhanced Content Security Policy for multi-tenant environment
+// Content Security Policy (CSP) for multi-tenant environment
+// NOTE: 'unsafe-inline' in script-src is required due to inline <Script> usage (e.g., Google Tag Manager). To improve security, migrate all inline scripts to use a nonce/hash or load as external files. See pages/_app.tsx for GTM example. Remove 'unsafe-inline' if/when all inline scripts are eliminated.
 const getConnectSrcDomains = () => {
 	const baseDomains = [
 		"'self'",
@@ -49,24 +50,34 @@ const getConnectSrcDomains = () => {
 };
 
 const cspHeaders = [
-	"default-src 'self'", // Only allow resources from the same origin. Blocks all external sources by default.
-	// 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager). To remove 'unsafe-inline', migrate all inline <Script> to use a nonce/hash or load as external files. See pages/_app.tsx for GTM example.
+	// Only allow resources from the same origin by default. Blocks all external sources unless explicitly allowed below.
+	"default-src 'self'",
+	// 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager). Remove 'unsafe-inline' if all inline scripts are migrated to nonce/hash or external files.
 	isProd
-		? "script-src 'self' 'unsafe-inline' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://connect.eko.in" // Added google-analytics and connect.eko.in for production
-		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://beta.ekoconnect.in", // Added google-analytics and beta.ekoconnect.in for development
-
-	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com", // Allows styles from self, Google Fonts, and Google accounts. 'unsafe-inline' allows inline styles.
-	"img-src 'self' blob: data: https://*.eko.in https://eko.in https://files.eko.co.in", // Added https://eko.in for logo and static assets
-	"font-src 'self' https://fonts.gstatic.com", // Allows fonts from self and Google Fonts CDN.
-	`connect-src ${[...getConnectSrcDomains(), "https://api.cloud.copilotkit.ai"].join(" ")}`, // Added copilotkit cloud API
-	"frame-src 'self' https://connect.eko.in https://accounts.google.com", // Allows embedding widgets and Google auth iframes. Blocks other external iframes.
-	"object-src 'none'", // Blocks all plugins and object/embed elements for security.
-	"base-uri 'self' https://beta.ekoconnect.in https://connect.eko.in/", // Allows base URI to be set to self or beta.ekoconnect.in or connect.eko.in for widget compatibility. Prevents base tag abuse from other origins.
-	"form-action 'self'", // Only allows forms to be submitted to self. Blocks data exfiltration via forms.
-	"frame-ancestors 'none'", // Prevents the site from being embedded in any iframe. Protects against clickjacking.
+		? "script-src 'self' 'unsafe-inline' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://connect.eko.in"
+		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://beta.ekoconnect.in",
+	// Allows styles from self, Google Fonts, and Google accounts. 'unsafe-inline' allows inline styles (required for some libraries, but should be avoided if possible).
+	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
+	// Allow images from self, blob, data, and trusted domains (e.g., for logos and static assets).
+	"img-src 'self' blob: data: https://*.eko.in https://eko.in https://files.eko.co.in",
+	// Allow fonts from self and Google Fonts CDN.
+	"font-src 'self' https://fonts.gstatic.com",
+	// Allow XHR/fetch/WebSocket connections to trusted domains (see getConnectSrcDomains for dynamic domains).
+	`connect-src ${[...getConnectSrcDomains(), "https://api.cloud.copilotkit.ai"].join(" ")}`,
+	// Allow embedding widgets and Google auth iframes. Blocks other external iframes.
+	"frame-src 'self' https://connect.eko.in https://accounts.google.com",
+	// Block all plugins and object/embed elements for security.
+	"object-src 'none'",
+	// Allow base URI to be set to self or trusted widget domains. Prevents base tag abuse from other origins.
+	"base-uri 'self' https://beta.ekoconnect.in https://connect.eko.in/",
+	// Only allow forms to be submitted to self. Blocks data exfiltration via forms.
+	"form-action 'self'",
+	// Prevent the site from being embedded in any iframe. Protects against clickjacking.
+	"frame-ancestors 'none'",
 ].join("; ");
 
-// Security headers for production
+// Security headers for all routes (applied in Next.js custom headers)
+// These headers help mitigate common web vulnerabilities and enforce best practices.
 const securityHeaders = [
 	{
 		key: "X-DNS-Prefetch-Control",
@@ -74,11 +85,11 @@ const securityHeaders = [
 	},
 	{
 		key: "X-Frame-Options",
-		value: "SAMEORIGIN", // Only allows the site to be framed by itself. Blocks clickjacking from other origins.
+		value: "SAMEORIGIN", // Prevents clickjacking by only allowing the site to be framed by itself.
 	},
 	{
 		key: "X-Content-Type-Options",
-		value: "nosniff", // Prevents browsers from MIME-sniffing a response away from the declared content-type. Blocks some XSS attacks.
+		value: "nosniff", // Prevents browsers from MIME-sniffing a response away from the declared content-type.
 	},
 	{
 		key: "Referrer-Policy",
@@ -90,11 +101,11 @@ const securityHeaders = [
 	},
 	{
 		key: "Strict-Transport-Security",
-		value: "max-age=31536000; includeSubDomains", // Forces HTTPS for 1 year on all subdomains. Blocks downgrade attacks.
+		value: "max-age=31536000; includeSubDomains", // Forces HTTPS for 1 year on all subdomains.
 	},
 	{
 		key: "Permissions-Policy",
-		value: "camera=(self), microphone=(self), geolocation=(self), payment=(self), usb=(), bluetooth=(), serial=()", // Allows only self to access camera, mic, geolocation, payment. Blocks USB, Bluetooth, Serial APIs.
+		value: "camera=(self), microphone=(self), geolocation=(self), payment=(self), usb=(), bluetooth=(), serial=()", // Restricts access to sensitive APIs to self only.
 	},
 ];
 
