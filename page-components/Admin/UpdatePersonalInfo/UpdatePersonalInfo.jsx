@@ -200,7 +200,7 @@ const UpdatePersonalInfo = () => {
 
 			reset({ ...defaultValues });
 		}
-	}, [agentData, shopTypes, reset]);
+	}, [agentData, shopTypes]);
 
 	const handleFormPreview = (previewData) => {
 		console.log("previewData", previewData);
