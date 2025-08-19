@@ -136,12 +136,6 @@ export const Payment = () => {
 			// Add other required fields here based on API specification
 		};
 
-		// Log the payload only when using mock data (for debugging)
-		if (useMockData) {
-			// console.log("[BBPS MOCK] Final payment payload:", paymentRequest);
-			// console.log("[BBPS MOCK] Response type:", mockResponseType);
-		}
-
 		// Validate that the sum of bill amounts equals total amount
 		const sumOfBillAmounts = paymentRequest.payment_amount_breakup.reduce(
 			(sum, item) => sum + item.bill_payment_amount,
@@ -332,6 +326,7 @@ export const Payment = () => {
 						useMockData={useMockData}
 						onPinChange={(pin, encodedPin) => {
 							if (encodedPin && encodedPin.includes("|")) {
+								console.log("[PINTWIN] encodedPin", encodedPin);
 								setPintwinEncoded(encodedPin);
 							}
 							// Track PIN length based on actual PIN length
