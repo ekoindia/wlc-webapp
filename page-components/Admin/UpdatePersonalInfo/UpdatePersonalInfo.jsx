@@ -7,7 +7,12 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
-import { Endpoints, ParamType, TransactionIds } from "constants";
+import {
+	Endpoints,
+	ParamType,
+	TransactionIds,
+	VALIDATION_PATTERNS,
+} from "constants";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import useLocalStorage from "hooks/useLocalStorage";
@@ -49,14 +54,6 @@ const nameSplitter = (name) => {
 
 const findObjectByValue = (arr, value) =>
 	arr.find((obj) => obj.value === value);
-
-/**
- * Validation patterns for form fields
- */
-const VALIDATION_PATTERNS = {
-	name: /^(?!(?:(?:([a-z]) *\1(?: *\1)*)|(?:.*?(?:(?:(?:^|[^d])([a-z])\2\2)|(?:d([a-df-z])\3\3)).*)|(?:.*?([a-z]{3,})\4\4).*|(?:.*(?:^|[^a-z])[^aeiou \.]{4,}(?:$|[^a-z]).*))$)(?:[a-z]+\.? ){0,2}[a-z]+$/i,
-	shopName: /^[-a-zA-Z0-9 ,./:]*$/,
-};
 
 const gender_list = [
 	{ value: "Male", label: "Male" },
@@ -136,7 +133,7 @@ const UpdatePersonalInfo = () => {
 			.catch((err) => {
 				console.error("err", err);
 			});
-	}, [accessToken]);
+	}, [accessToken, setShopTypes]);
 
 	const fetchAgentDataViaCellNumber = useCallback(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
@@ -153,7 +150,7 @@ const UpdatePersonalInfo = () => {
 			.catch((error) => {
 				console.error("[ProfilePanel] Get Agent Detail Error:", error);
 			});
-	}, [accessToken, mobile]);
+	}, [accessToken, mobile, setAgentData]);
 
 	useEffect(() => {
 		// if shopTypes is not available, fetch it
@@ -207,7 +204,7 @@ const UpdatePersonalInfo = () => {
 
 			reset({ ...defaultValues });
 		}
-	}, [agentData, shopTypes]);
+	}, [agentData, shopTypes, reset]);
 
 	const handleFormPreview = (previewData) => {
 		console.log("previewData", previewData);
