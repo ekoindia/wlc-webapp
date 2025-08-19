@@ -187,7 +187,7 @@ export const usePinTwin = (
 
 		// Start the first attempt
 		attemptLoad();
-	}, [loading, fetchPinTwinKey]);
+	}, [fetchPinTwinKey]);
 
 	/**
 	 * Encodes a PIN using the current PinTwin key
