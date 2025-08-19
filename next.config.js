@@ -20,17 +20,6 @@ const getConnectSrcDomains = () => {
 		"https://www.youtube.com",
 		"https://cdnjs.cloudflare.com",
 		"https://*.digitaloceanspaces.com",
-		// Form embedding domains (not needed in connect-src)
-		// "https://zfrmz.in",
-		// "https://forms.zohopublic.in",
-		// Google domains (commented as requested)
-		// "https://*.googleapis.com",
-		// "https://maps.google.com",
-		// "https://contracting-v2-preproduction.signzy.app",
-		// "https://fonts.googleapis.com",
-		// "https://fonts.gstatic.com",
-		// "https://www.googletagmanager.com",
-		// "https://www.gstatic.com",
 	];
 
 	if (isProd) {
