@@ -17,19 +17,18 @@ const getConnectSrcDomains = () => {
 		"'self'",
 		"https://*.eko.in",
 		"https://files.eko.co.in",
-		"https://accounts.google.com",
-		"https://*.googleapis.com",
-		"https://maps.google.com",
-		"https://chatgpt.com",
 		"https://zfrmz.in",
 		"https://forms.zohopublic.in",
 		"https://www.youtube.com",
-		"https://contracting-v2-preproduction.signzy.app",
 		"https://cdnjs.cloudflare.com",
-		"https://fonts.googleapis.com",
-		"https://fonts.gstatic.com",
-		"https://www.googletagmanager.com",
-		"https://www.gstatic.com",
+		"https://*.digitaloceanspaces.com",
+		// "https://*.googleapis.com",
+		// "https://maps.google.com",
+		// "https://contracting-v2-preproduction.signzy.app",
+		// "https://fonts.googleapis.com",
+		// "https://fonts.gstatic.com",
+		// "https://www.googletagmanager.com",
+		// "https://www.gstatic.com",
 	];
 
 	if (isProd) {
@@ -54,18 +53,18 @@ const cspHeaders = [
 	"default-src 'self'",
 	// 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager). Remove 'unsafe-inline' if all inline scripts are migrated to nonce/hash or external files.
 	isProd
-		? "script-src 'self' 'unsafe-inline' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://connect.eko.in"
-		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://beta.ekoconnect.in",
+		? "script-src 'self' 'unsafe-inline' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.youtube.com https://connect.eko.in"
+		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.youtube.com https://beta.ekoconnect.in",
 	// Allows styles from self, Google Fonts, and Google accounts. 'unsafe-inline' allows inline styles (required for some libraries, but should be avoided if possible).
 	"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com",
 	// Allow images from self, blob, data, and trusted domains (e.g., for logos and static assets).
-	"img-src 'self' blob: data: https://*.eko.in https://eko.in https://files.eko.co.in",
+	"img-src 'self' blob: data: https://*.eko.in https://eko.in https://files.eko.co.in https://img.youtube.com",
 	// Allow fonts from self and Google Fonts CDN.
 	"font-src 'self' https://fonts.gstatic.com",
 	// Allow XHR/fetch/WebSocket connections to trusted domains (see getConnectSrcDomains for dynamic domains).
 	`connect-src ${[...getConnectSrcDomains(), "https://api.cloud.copilotkit.ai"].join(" ")}`,
 	// Allow embedding widgets and Google auth iframes. Blocks other external iframes.
-	"frame-src 'self' https://connect.eko.in https://accounts.google.com",
+	"frame-src 'self' https://connect.eko.in https://accounts.google.com https://www.bing.com https://www.youtube.com/",
 	// Block all plugins and object/embed elements for security.
 	"object-src 'none'",
 	// Allow base URI to be set to self or trusted widget domains. Prevents base tag abuse from other origins.
