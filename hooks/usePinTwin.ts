@@ -56,11 +56,11 @@ export interface UsePinTwinReturn {
  * // Basic usage with auto-loading
  * const { pintwinKey, loading, keyLoaded, encodePinTwin } = usePinTwin();
  *
- * // Custom configuration
+ * // Custom configuration with mock data
  * const { encodePinTwin, reloadKey } = usePinTwin({
  *   useMockData: true,
- *   autoLoad: false,
- *   maxRetries: 5
+ *   maxRetries: 5,
+ *   retryDelay: 2000
  * });
  *
  * // Encode a PIN immediately
