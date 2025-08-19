@@ -37,12 +37,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development"],
 	},
 
-	// Config-driven Pricing & Commission.
-	DYNAMIC_PRICING_COMMISSION: {
-		enabled: true,
-		forEnv: ["development", "staging"],
-	},
-
 	// ------------------------------------------------------------------------
 	// MARK: 🚩BETA Flags
 	// Feature Enabled only for certain orgs/users in production
@@ -111,6 +105,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		forEnv: ["development"],
 		requiredFeatures: ["AI_MASTER_FLAG"],
+	},
+
+	// Config-driven Pricing & Commission.
+	DYNAMIC_PRICING_COMMISSION: {
+		enabled: true,
+		forAdminOnly: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 92], // 92=OCPay
+			},
+		},
 	},
 
 	// ------------------------------------------------------------------------
