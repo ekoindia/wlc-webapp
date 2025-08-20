@@ -398,6 +398,7 @@ export const Payment = () => {
 				<ActionButtonGroup
 					buttonConfigList={buttonConfigList}
 					bg={{ base: "white", md: "transparent" }}
+					marginBottom={{ base: "0", md: "12" }}
 				/>
 			</Flex>
 		</>
