@@ -139,8 +139,6 @@ export const Payment = () => {
 				bill_payment_amount: bill.amount,
 			})),
 			pintwin: pintwinValue,
-
-			// Add other required fields here based on API specification
 		};
 
 		// Validate that the sum of bill amounts equals total amount
