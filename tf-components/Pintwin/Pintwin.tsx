@@ -43,8 +43,6 @@ interface PintwinProps {
 	noLookup?: boolean;
 	/** Callback function called when PIN is entered or changed */
 	onPinChange?: (_pin: string, _encodedPin?: string) => void;
-	/** Maximum length of PIN (default: 4) */
-	maxLength?: number;
 	/** Placeholder text for PIN input */
 	placeholder?: string;
 	/** Label for the PIN input field */
@@ -106,7 +104,6 @@ const PIN_COLORS = ["#FFEB3B", "#81D4FA"];
  *     <form>
  *       <Pintwin
  *         onPinChange={handlePinChange}
- *         maxLength={6}
  *         placeholder="Enter your secure PIN"
  *       />
  *       <input type="hidden" value={encodedPin} name="encoded_pin" />
@@ -126,7 +123,6 @@ const Pintwin: React.FC<PintwinProps> = ({
 	useMockData = false,
 	noLookup = true,
 	onPinChange,
-	maxLength = 4,
 	label = "Secret PIN",
 }) => {
 	const { pintwinKey, reloadKey, encodePinTwin, loading, keyLoadError } =
@@ -175,7 +171,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 				<Flex align="center" gap="4">
 					<OtpInput
 						mask={true}
-						length={maxLength}
+						length={4}
 						onChange={handlePinInputChange}
 						onComplete={handlePinComplete}
 						inputStyle={{

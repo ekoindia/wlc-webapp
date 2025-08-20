@@ -322,7 +322,6 @@ export const Payment = () => {
 					</Text>
 					<Pintwin
 						label="Secret PIN"
-						maxLength={MAX_PIN_LENGTH}
 						useMockData={useMockData}
 						onPinChange={(pin, encodedPin) => {
 							if (encodedPin && encodedPin.includes("|")) {
