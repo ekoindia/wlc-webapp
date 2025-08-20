@@ -8,14 +8,24 @@ import {
 } from "contexts";
 import { useUser } from "contexts/UserContext";
 // import { Home, SelectionScreen } from "eko-oaas-package";
-import { OnboardingWidget, SelectionScreen } from "@ekoindia/oaas-widget";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
 // import { distributorStepsData } from "./distributorStepsData";
+
+const OnboardingWidget = dynamic(
+	() => import("@ekoindia/oaas-widget").then((mod) => mod.OnboardingWidget),
+	{ ssr: false }
+);
+
+const SelectionScreen = dynamic(
+	() => import("@ekoindia/oaas-widget").then((mod) => mod.SelectionScreen),
+	{ ssr: false }
+);
 
 const selectionStepData = {
 	id: 0,
