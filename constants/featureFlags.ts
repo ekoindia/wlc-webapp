@@ -22,7 +22,14 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Show Admin Network pages to (Super)Distributors
 	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1], // 1 (SuperDistributor)
+		forUserType: [1], // 7 = (SuperDistributor)
+		forEnv: ["development", "staging"],
+	},
+
+	// Show Admin-like dashboard to other sub-network owners like (Super)Distributor
+	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1], // 7 = SuperDistributor
 		forEnv: ["development", "staging"],
 	},
 
