@@ -19,6 +19,13 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// MARK: 🚩Dev Flags
 	// Put all in-development flags in this section.
 
+	// Show Admin Network pages to (Super)Distributors
+	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1], // 1 (SuperDistributor)
+		forEnv: ["development", "staging"],
+	},
+
 	// Custom theme support (paid tier)
 	CUSTOM_THEME_CREATOR: {
 		enabled: true,

@@ -1,5 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { Table } from "components";
+import { useSession } from "contexts";
 import { useRouter } from "next/router";
 import { NetworkCard } from "..";
 
@@ -72,6 +73,7 @@ const NetworkTable = ({
 	agentDetails,
 	setPageNumber,
 }) => {
+	const { isAdmin } = useSession();
 	const router = useRouter();
 	// const [lastPageWithData, setLastPageWithData] = useState(1);
 
@@ -87,6 +89,9 @@ const NetworkTable = ({
 	 * @param {*} rowData
 	 */
 	const onRowClick = (rowData) => {
+		// TODO: Enable Agent Profile view for non-Admins
+		if (!isAdmin) return;
+
 		const mobile = rowData?.agent_mobile;
 		localStorage.setItem(
 			"oth_last_selected_agent",
@@ -134,7 +139,10 @@ const NetworkTable = ({
 				data: agentDetails,
 				ResponsiveCard: NetworkCard,
 				variant: "stripedActionRedirect",
-				renderer: networkTableParameterList,
+				// For non-admins, remove last table column (menu-dropdown)
+				renderer: isAdmin
+					? networkTableParameterList
+					: networkTableParameterList.slice(0, -2),
 			}}
 		/>
 	);
