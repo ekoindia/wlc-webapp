@@ -233,12 +233,21 @@ export const sidebarMenu: sidebarMenuType[] = [
 	},
 	{
 		id: 215,
+		label: "Product Catalogue",
+		icon: "shopping-cart",
+		link: "/products/inventory",
+		summary: "View and purchase products from the inventory.",
+		featureFlag: "INVENTORY_MANAGEMENT_FOR_SUBNETWORK",
+		beta: true,
+	},
+	{
+		id: 215,
 		label: "Manage Inventory",
 		icon: "shopping-cart",
 		link: "/products/inventory/manage",
 		summary: "Manage inventory for your agents",
 		featureFlag: "INVENTORY_MANAGEMENT_FOR_SUBNETWORK",
-		// beta: true,
+		beta: true,
 	},
 	// {
 	// 	id: 220,
