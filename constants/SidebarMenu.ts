@@ -214,7 +214,6 @@ export const sidebarMenu: sidebarMenuType[] = [
 		summary:
 			"View your homepage and dashboard with key metrics and insights about your business.",
 	},
-
 	{
 		id: 5,
 		label: "My Network",
@@ -231,6 +230,15 @@ export const sidebarMenu: sidebarMenuType[] = [
 		summary: "View transactions of agents in your network.",
 		featureFlag: "ADMIN_NETWORK_PAGES_FOR_SUBNETWORK",
 		beta: true,
+	},
+	{
+		id: 215,
+		label: "Manage Inventory",
+		icon: "shopping-cart",
+		link: "/products/inventory/manage",
+		summary: "Manage inventory for your agents",
+		featureFlag: "INVENTORY_MANAGEMENT_FOR_SUBNETWORK",
+		// beta: true,
 	},
 	// {
 	// 	id: 220,

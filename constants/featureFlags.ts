@@ -33,6 +33,13 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forEnv: ["development", "staging"],
 	},
 
+	// Inventory Management for (Super)Distributors
+	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1], // 7 = (SuperDistributor)
+		forEnv: ["development", "staging"],
+	},
+
 	// Custom theme support (paid tier)
 	CUSTOM_THEME_CREATOR: {
 		enabled: true,
