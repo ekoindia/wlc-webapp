@@ -1058,7 +1058,7 @@ const SignupPage = () => {
 		}
 	};
 
-	const getSHopTypes = () => {
+	const getShopTypes = () => {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -1373,7 +1373,7 @@ const SignupPage = () => {
 		};
 		if (!userLoginData) {
 			refreshApiCall();
-			getSHopTypes();
+			getShopTypes();
 			getStateType();
 			// getPincodeType();
 		}
