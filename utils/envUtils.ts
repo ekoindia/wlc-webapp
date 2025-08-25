@@ -13,16 +13,12 @@
  * 	parseOrgIds(undefined) // []
  */
 export const parseOrgIds = (envVar: string | undefined): number[] => {
-	if (!envVar || envVar.trim() === "") {
+	if (!envVar) {
 		return [];
 	}
 
 	return envVar
 		.split(",") // Split comma-separated string into array
-		.map((id) => {
-			const trimmed = id.trim(); // Remove leading/trailing whitespace
-			// Convert to number if not empty, otherwise return NaN for filtering
-			return trimmed.length > 0 ? Number(trimmed) : NaN;
-		})
+		.map((id) => parseInt(id.trim(), 10)) // Parse as base-10 integer, handles empty strings as NaN
 		.filter((num) => !isNaN(num)); // Remove invalid number conversions
 };
