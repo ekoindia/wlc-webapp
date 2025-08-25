@@ -1,3 +1,5 @@
+// TODO: Delete this file after mograting to Dynamic Pricing & Commissions
+//
 // import { Flex, useToast } from "@chakra-ui/react";
 // import { Button, Icon } from "components";
 // import {
