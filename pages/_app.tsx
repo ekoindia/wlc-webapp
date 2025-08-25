@@ -208,7 +208,12 @@ export default function InfinityApp({ Component, pageProps, router, org }) {
 								<GlobalSearchProvider>
 									<MenuProvider>
 										<WalletProvider>
-											<RouteProtecter router={router}>
+											<RouteProtecter
+												router={router}
+												pageMeta={
+													Component?.pageMeta || {}
+												}
+											>
 												<SWRConfig
 													value={{
 														provider:

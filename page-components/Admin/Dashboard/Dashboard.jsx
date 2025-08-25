@@ -1,5 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
+import { useSession } from "contexts";
+import { Home } from "page-components"; // Non-Admin Homepage
 import { useState } from "react";
 import {
 	AnnouncementsDashboard,
@@ -15,14 +17,23 @@ import {
  * @example	`<Dashboard></Dashboard>`
  */
 const Dashboard = () => {
+	const { isAdmin, isLoggedIn } = useSession();
 	const [currTab, setCurrTab] = useState(0);
 
-	const list = [
-		{ label: "Business", component: <BusinessDashboard /> },
-		{ label: "Onboarding", component: <OnboardingDashboard /> },
-	];
+	const list = isAdmin
+		? [
+				{ label: "Business", component: <BusinessDashboard /> },
+				{ label: "Onboarding", component: <OnboardingDashboard /> },
+			]
+		: [
+				{
+					label: "Home",
+					component: <Home mt={{ base: "12px", md: "30px" }} />,
+				},
+				{ label: "Business", component: <BusinessDashboard /> },
+			];
 
-	if (process.env.NEXT_PUBLIC_ADMIN_ANNOUNCEMENT_EMBED_URL) {
+	if (isAdmin && process.env.NEXT_PUBLIC_ADMIN_ANNOUNCEMENT_EMBED_URL) {
 		list.push({
 			label: "Announcements",
 			component: <AnnouncementsDashboard />,
@@ -32,6 +43,10 @@ const Dashboard = () => {
 	const onClick = (idx) => setCurrTab(idx);
 
 	const getComp = (idx) => list[idx].component;
+
+	if (!isLoggedIn) {
+		return null;
+	}
 
 	return (
 		<DashboardProvider>
