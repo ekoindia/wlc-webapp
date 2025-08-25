@@ -4,11 +4,11 @@
 
 /**
  * Converts comma-separated environment variable to array of numbers
- * @param {string | undefined} envVar - Environment variable value (e.g., "101,259")
+ * @param {string | undefined} envVar - Environment variable value (e.g., "9001,9002")
  * @returns {number[]} Array of numbers
  * @example
- * 	parseOrgIds("101,259") // [101, 259]
- * 	parseOrgIds("101, 259 ,300") // [101, 259, 300]
+ * 	parseOrgIds("9001,9002") // [9001, 9002]
+ * 	parseOrgIds("9001, 9002, 9003") // [9001, 9002, 9003]
  * 	parseOrgIds("") // []
  * 	parseOrgIds(undefined) // []
  */
