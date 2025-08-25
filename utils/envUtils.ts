@@ -18,9 +18,11 @@ export const parseOrgIds = (envVar: string | undefined): number[] => {
 	}
 
 	return envVar
-		.split(",")
-		.map((id) => id.trim())
-		.filter((id) => id.length > 0)
-		.map(Number)
-		.filter((id) => !isNaN(id));
+		.split(",") // Split comma-separated string into array
+		.map((id) => {
+			const trimmed = id.trim(); // Remove leading/trailing whitespace
+			// Convert to number if not empty, otherwise return NaN for filtering
+			return trimmed.length > 0 ? Number(trimmed) : NaN;
+		})
+		.filter((num) => !isNaN(num)); // Remove invalid number conversions
 };
