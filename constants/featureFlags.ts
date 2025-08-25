@@ -1,13 +1,15 @@
-import { parseOrgIds } from "utils";
+import { parseOrgIds } from "utils/envUtils";
 
 // Few pre-defined org-ids for configuring feature flags on production
 // NOTE: The production org-ids must be read from environment variables
 const ORG_ID = {
-	EKOSTORE: Number(process.env.ORG_IDS_EKOSTORE),
-	EKOTESTS: parseOrgIds(process.env.ORG_IDS_EKOTESTS),
-	SBIKIOSK: Number(process.env.ORG_IDS_SBIKIOSK),
-	AI_TEST: parseOrgIds(process.env.ORG_IDS_AI_TEST),
-	DYNAMIC_PRICING: parseOrgIds(process.env.ORG_IDS_DYNAMIC_PRICING),
+	EKOSTORE: Number(process.env.NEXT_PUBLIC_ORG_IDS_EKOSTORE),
+	EKOTESTS: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_EKOTESTS),
+	SBIKIOSK: Number(process.env.NEXT_PUBLIC_ORG_IDS_SBIKIOSK),
+	AI_TEST: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_AI_TEST),
+	DYNAMIC_PRICING: parseOrgIds(
+		process.env.NEXT_PUBLIC_ORG_IDS_DYNAMIC_PRICING
+	),
 };
 
 /**
