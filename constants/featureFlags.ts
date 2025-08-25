@@ -1,8 +1,13 @@
-// Few pre-defined org-ids for configuring feature flags:
+import { parseOrgIds } from "utils";
+
+// Few pre-defined org-ids for configuring feature flags on production
+// NOTE: The production org-ids must be read from environment variables
 const ORG_ID = {
-	EKOSTORE: 1,
-	EKOTESTS: [101, 259], // 101: SuperPay (Production UAT), 259: VijayPay (Production UAT)
-	SBIKIOSK: 287,
+	EKOSTORE: Number(process.env.ORG_IDS_EKOSTORE),
+	EKOTESTS: parseOrgIds(process.env.ORG_IDS_EKOTESTS),
+	SBIKIOSK: Number(process.env.ORG_IDS_SBIKIOSK),
+	AI_TEST: parseOrgIds(process.env.ORG_IDS_AI_TEST),
+	DYNAMIC_PRICING: parseOrgIds(process.env.ORG_IDS_DYNAMIC_PRICING),
 };
 
 /**
@@ -84,7 +89,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 				forOrgId: [3],
 			},
 			production: {
-				forOrgId: [...ORG_ID.EKOTESTS, 10, 186, 306, 331, 344], // 306=Kunal Chand, 186=HI TECH RECHARGE SOLUTION, 10=RAMSON TECHNOVATIONS PVT LTD, 344=PROWESS FINTECH PRIVATE LIMITED, 331=AJ ENTERPRISES
+				forOrgId: [...ORG_ID.EKOTESTS, ...ORG_ID.AI_TEST], // 306=Kunal Chand, 186=HI TECH RECHARGE SOLUTION, 10=RAMSON TECHNOVATIONS PVT LTD, 344=PROWESS FINTECH PRIVATE LIMITED, 331=AJ ENTERPRISES
 			},
 		},
 	},
@@ -135,7 +140,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 92], // 92=OCPay
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DYNAMIC_PRICING,
+				],
 			},
 		},
 	},
