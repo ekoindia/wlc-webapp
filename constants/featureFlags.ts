@@ -19,6 +19,27 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// MARK: 🚩Dev Flags
 	// Put all in-development flags in this section.
 
+	// Show Admin Network pages to (Super)Distributors
+	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1], // 7 = (SuperDistributor)
+		forEnv: ["development", "staging"],
+	},
+
+	// Show Admin-like dashboard to other sub-network owners like (Super)Distributor
+	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1], // 7 = SuperDistributor
+		forEnv: ["development", "staging"],
+	},
+
+	// Inventory Management for (Super)Distributors
+	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1], // 7 = (SuperDistributor)
+		forEnv: ["development", "staging"],
+	},
+
 	// Custom theme support (paid tier)
 	CUSTOM_THEME_CREATOR: {
 		enabled: true,
@@ -42,10 +63,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Feature Enabled only for certain orgs/users in production
 	// Put all UAT/Beta testing flags in this section.
 
-	// Feature to Raise Issues...
-	RAISE_ISSUE: {
+	// Feature to Raise Generic Issues (from Top-Right  Menu)...
+	RAISE_ISSUE_GENERIC: {
 		enabled: true,
 		forAdminOnly: true, // TODO: Enable for all users
+		requiredFeatures: ["RAISE_ISSUE"],
 	},
 
 	// [MASTER FLAG] Experimental AI Features
@@ -171,14 +193,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 	},
 
-	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
-	RAISE_ISSUE_SBIKIOSK: {
+	// Feature to Raise Issues (Generic + Trxn History)...
+	RAISE_ISSUE: {
 		enabled: true,
+	},
+
+	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
+	RAISE_ISSUE_GENERIC_SBIKIOSK: {
+		enabled: true,
+		requiredFeatures: ["RAISE_ISSUE"],
 		envConstraints: {
 			development: {
-				forOrgId: [1],
-			},
-			staging: {
 				forOrgId: [1],
 			},
 			production: {
