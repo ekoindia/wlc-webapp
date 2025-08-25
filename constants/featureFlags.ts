@@ -1,9 +1,4 @@
-// Few pre-defined org-ids for configuring feature flags:
-const ORG_ID = {
-	EKOSTORE: 1,
-	EKOTESTS: [101, 259], // 101: SuperPay (Production UAT), 259: VijayPay (Production UAT)
-	SBIKIOSK: 287,
-};
+import { parseOrgIds } from "utils/envUtils";
 
 /**
  * Note: This file is used to enable or disable features in the application.
@@ -84,7 +79,10 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 				forOrgId: [3],
 			},
 			production: {
-				forOrgId: [...ORG_ID.EKOTESTS, 10, 186, 306, 331, 344], // 306=Kunal Chand, 186=HI TECH RECHARGE SOLUTION, 10=RAMSON TECHNOVATIONS PVT LTD, 344=PROWESS FINTECH PRIVATE LIMITED, 331=AJ ENTERPRISES
+				forOrgId: [
+					...parseOrgIds(process.env.ORG_IDS_EKOTESTS),
+					...parseOrgIds(process.env.ORG_IDS_AI_TEST),
+				],
 			},
 		},
 	},
@@ -135,7 +133,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 92], // 92=OCPay
+				forOrgId: [
+					Number(process.env.ORG_IDS_EKOSTORE),
+					...parseOrgIds(process.env.ORG_IDS_EKOTESTS),
+					...parseOrgIds(process.env.ORG_IDS_DYNAMIC_PRICING),
+				],
 			},
 		},
 	},
@@ -207,7 +209,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 				forOrgId: [1],
 			},
 			production: {
-				forOrgId: [ORG_ID.SBIKIOSK],
+				forOrgId: [Number(process.env.ORG_IDS_SBIKIOSK)],
 			},
 		},
 	},
