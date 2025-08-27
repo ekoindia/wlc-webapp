@@ -1,7 +1,4 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
-import { createRequire } from "module";
-
-const require = createRequire(import.meta.url);
 
 const isProd = process.env.NEXT_PUBLIC_ENV === "production";
 const isDev = process.env.NEXT_PUBLIC_ENV === "development";
@@ -80,25 +77,6 @@ const nextConfig = {
 	reactStrictMode: isDev ? true : false,
 	poweredByHeader: false,
 	swcMinify: true,
-
-	// Fix React instance conflicts for @ekoindia/oaas-widget
-	webpack: (config, { isServer }) => {
-		// Only apply client-side to avoid SSR issues
-		if (!isServer) {
-			config.resolve.alias = {
-				...config.resolve.alias,
-				// Ensure all React imports resolve to the same instance
-				// The '$' suffix ensures exact matching (not sub-paths like 'react/jsx-runtime')
-				react$: require.resolve("react"),
-				"react-dom$": require.resolve("react-dom"),
-			};
-		}
-		return config;
-	},
-
-	// Transpile the widget package from node_modules to handle ES modules and JSX
-	transpilePackages: ["@ekoindia/oaas-widget"],
-
 	eslint: {
 		dirs: [
 			"components",
