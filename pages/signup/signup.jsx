@@ -568,7 +568,7 @@ const SignupPage = () => {
 			})
 			.catch((err) => console.error("[getStateType] Error:", err));
 	};
-	// const getPincodeType = () => {k
+	// const getPincodeType = () => {
 	// 	console.log("inside mainfunction");
 	// 	fetcher(
 	// 		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -909,7 +909,7 @@ const SignupPage = () => {
 		if (bookletNumber) {
 			getBookletKey();
 		}
-	}, [bookletNumber, getBookletKey]);
+	}, [bookletNumber]);
 
 	// Get theme primary color
 	const [primaryColor] = useToken("colors", ["primary.DEFAULT"]);
