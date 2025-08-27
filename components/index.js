@@ -60,6 +60,7 @@ import { Table } from "./Table";
 import { Tabs } from "./Tabs";
 import { Tags } from "./Tags";
 import { Textarea } from "./Textarea";
+import { WaffleChart } from "./WaffleChart";
 import { XScrollArrow } from "./XScrollArrow";
 import { YoutubePlayer } from "./YoutubePlayer";
 
@@ -123,6 +124,7 @@ export {
 	Tabs,
 	Tags,
 	Textarea,
+	WaffleChart,
 	XScrollArrow,
 	YoutubePlayer,
 };
