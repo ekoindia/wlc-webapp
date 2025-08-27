@@ -113,7 +113,7 @@ const RaiseIssueCard = ({
 	// Check if the feature is enabled...
 	const [isFeatureEnabled] = useFeatureFlag("RAISE_ISSUE");
 	const [isRaiseIssueAllowedForSbiKiosk] = useFeatureFlag(
-		"RAISE_ISSUE_SBIKIOSK"
+		"RAISE_ISSUE_GENERIC_SBIKIOSK"
 	);
 
 	// Experimental text-classifier for user comments...
