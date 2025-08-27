@@ -7,12 +7,11 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
+import { Endpoints, ParamType, TransactionIds } from "constants";
 import {
-	Endpoints,
-	ParamType,
-	TransactionIds,
-	VALIDATION_PATTERNS,
-} from "constants";
+	nameValidation,
+	shopNameValidation,
+} from "constants/validationPatterns";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import useLocalStorage from "hooks/useLocalStorage";
@@ -298,9 +297,9 @@ const UpdatePersonalInfo = () => {
 			parameter_type_id: ParamType.TEXT,
 			required: true,
 			validations: {
-				pattern: VALIDATION_PATTERNS.name,
-				minLength: 2,
-				maxLength: 50,
+				pattern: nameValidation.regex,
+				minLength: nameValidation.minLength,
+				maxLength: nameValidation.maxLength,
 			},
 		},
 		{
@@ -309,9 +308,9 @@ const UpdatePersonalInfo = () => {
 			parameter_type_id: ParamType.TEXT,
 			required: false,
 			validations: {
-				pattern: VALIDATION_PATTERNS.name,
-				minLength: 2,
-				maxLength: 50,
+				pattern: nameValidation.regex,
+				minLength: nameValidation.minLength,
+				maxLength: nameValidation.maxLength,
 			},
 		},
 		{
@@ -320,9 +319,9 @@ const UpdatePersonalInfo = () => {
 			parameter_type_id: ParamType.TEXT,
 			required: true,
 			validations: {
-				pattern: VALIDATION_PATTERNS.name,
-				minLength: 2,
-				maxLength: 50,
+				pattern: nameValidation.regex,
+				minLength: nameValidation.minLength,
+				maxLength: nameValidation.maxLength,
 			},
 		},
 		{
@@ -352,9 +351,9 @@ const UpdatePersonalInfo = () => {
 			parameter_type_id: ParamType.TEXT,
 			required: true,
 			validations: {
-				pattern: VALIDATION_PATTERNS.shopName,
-				minLength: 2,
-				maxLength: 100,
+				pattern: shopNameValidation.regex,
+				minLength: shopNameValidation.minLength,
+				maxLength: shopNameValidation.maxLength,
 			},
 		},
 		{
