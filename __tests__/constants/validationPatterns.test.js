@@ -1,7 +1,8 @@
 import {
-	VALIDATION_LENGTHS,
-	VALIDATION_MESSAGES,
-	VALIDATION_PATTERNS,
+	emailValidation,
+	nameValidation,
+	phoneValidation,
+	shopNameValidation,
 } from "constants/validationPatterns";
 
 describe("Validation Patterns", () => {
@@ -17,10 +18,10 @@ describe("Validation Patterns", () => {
 
 			validNames.forEach((name) => {
 				console.log(
-					`Testing name: "${name}" with pattern: ${VALIDATION_PATTERNS.name}`
+					`Testing name: "${name}" with pattern: ${nameValidation.regex}`
 				);
-				console.log(`Result: ${VALIDATION_PATTERNS.name.test(name)}`);
-				expect(VALIDATION_PATTERNS.name.test(name)).toBe(true);
+				console.log(`Result: ${nameValidation.regex.test(name)}`);
+				expect(nameValidation.regex.test(name)).toBe(true);
 			});
 		});
 
@@ -35,10 +36,10 @@ describe("Validation Patterns", () => {
 
 			invalidNames.forEach((name) => {
 				console.log(
-					`Testing invalid name: "${name}" with pattern: ${VALIDATION_PATTERNS.name}`
+					`Testing invalid name: "${name}" with pattern: ${nameValidation.regex}`
 				);
-				console.log(`Result: ${VALIDATION_PATTERNS.name.test(name)}`);
-				expect(VALIDATION_PATTERNS.name.test(name)).toBe(false);
+				console.log(`Result: ${nameValidation.regex.test(name)}`);
+				expect(nameValidation.regex.test(name)).toBe(false);
 			});
 		});
 	});
@@ -55,12 +56,12 @@ describe("Validation Patterns", () => {
 
 			validShopNames.forEach((shopName) => {
 				console.log(
-					`Testing shop name: "${shopName}" with pattern: ${VALIDATION_PATTERNS.shopName}`
+					`Testing shop name: "${shopName}" with pattern: ${shopNameValidation.regex}`
 				);
 				console.log(
-					`Result: ${VALIDATION_PATTERNS.shopName.test(shopName)}`
+					`Result: ${shopNameValidation.regex.test(shopName)}`
 				);
-				expect(VALIDATION_PATTERNS.shopName.test(shopName)).toBe(true);
+				expect(shopNameValidation.regex.test(shopName)).toBe(true);
 			});
 		});
 
@@ -72,7 +73,7 @@ describe("Validation Patterns", () => {
 			];
 
 			invalidShopNames.forEach((shopName) => {
-				expect(VALIDATION_PATTERNS.shopName.test(shopName)).toBe(false);
+				expect(shopNameValidation.regex.test(shopName)).toBe(false);
 			});
 		});
 	});
@@ -86,7 +87,7 @@ describe("Validation Patterns", () => {
 			];
 
 			validEmails.forEach((email) => {
-				expect(VALIDATION_PATTERNS.email.test(email)).toBe(true);
+				expect(emailValidation.regex.test(email)).toBe(true);
 			});
 		});
 
@@ -99,7 +100,7 @@ describe("Validation Patterns", () => {
 			];
 
 			invalidEmails.forEach((email) => {
-				expect(VALIDATION_PATTERNS.email.test(email)).toBe(false);
+				expect(emailValidation.regex.test(email)).toBe(false);
 			});
 		});
 	});
@@ -114,7 +115,7 @@ describe("Validation Patterns", () => {
 			];
 
 			validPhones.forEach((phone) => {
-				expect(VALIDATION_PATTERNS.phone.test(phone)).toBe(true);
+				expect(phoneValidation.regex.test(phone)).toBe(true);
 			});
 		});
 
@@ -127,26 +128,34 @@ describe("Validation Patterns", () => {
 			];
 
 			invalidPhones.forEach((phone) => {
-				expect(VALIDATION_PATTERNS.phone.test(phone)).toBe(false);
+				expect(phoneValidation.regex.test(phone)).toBe(false);
 			});
 		});
 	});
 });
 
-describe("Validation Lengths", () => {
-	it("should have correct length constraints", () => {
-		expect(VALIDATION_LENGTHS.name.min).toBe(2);
-		expect(VALIDATION_LENGTHS.name.max).toBe(50);
-		expect(VALIDATION_LENGTHS.shopName.min).toBe(2);
-		expect(VALIDATION_LENGTHS.shopName.max).toBe(100);
+describe("Validation Configuration", () => {
+	it("should have correct validation properties for name", () => {
+		expect(nameValidation.regex).toBeInstanceOf(RegExp);
+		expect(nameValidation.minLength).toBe(2);
+		expect(nameValidation.maxLength).toBe(50);
 	});
-});
 
-describe("Validation Messages", () => {
-	it("should have messages for all patterns", () => {
-		expect(VALIDATION_MESSAGES.name.required).toBeDefined();
-		expect(VALIDATION_MESSAGES.name.pattern).toBeDefined();
-		expect(VALIDATION_MESSAGES.shopName.required).toBeDefined();
-		expect(VALIDATION_MESSAGES.email.pattern).toBeDefined();
+	it("should have correct validation properties for shopName", () => {
+		expect(shopNameValidation.regex).toBeInstanceOf(RegExp);
+		expect(shopNameValidation.minLength).toBe(2);
+		expect(shopNameValidation.maxLength).toBe(100);
+	});
+
+	it("should have correct validation properties for email", () => {
+		expect(emailValidation.regex).toBeInstanceOf(RegExp);
+		expect(emailValidation.minLength).toBe(5);
+		expect(emailValidation.maxLength).toBe(100);
+	});
+
+	it("should have correct validation properties for phone", () => {
+		expect(phoneValidation.regex).toBeInstanceOf(RegExp);
+		expect(phoneValidation.minLength).toBe(10);
+		expect(phoneValidation.maxLength).toBe(10);
 	});
 });
