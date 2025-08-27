@@ -113,8 +113,6 @@ export const selectionStepData: OnboardingStep = {
 
 /**
  * Onboarding steps data for distributor.
- * Based on user-type (seller or distributor), the oaas-widget will manually remove a few steps for the distributor (hard-coded in the oaas-widget file `src/components/Common/Sidebar/Sidebar.tsx`).
- * Currently, only "Business Details" & "Secret PIN" steps are removed from the Distributor onboarding.
  * Some steps are disabled by marking `isVisible` as `false`.
  * Key steps include:
  * - LocationCapture: Initial step to capture user's location (role: 13000)
