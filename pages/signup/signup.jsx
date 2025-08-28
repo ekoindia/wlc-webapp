@@ -286,7 +286,6 @@ const SignupPage = () => {
 				interaction_type_id = TransactionIds.USER_AADHAR_OTP_CONFIRM;
 				bodyData.form_data.is_consent = "Y";
 				bodyData.form_data.token_id = digilockerData?.requestId;
-				// add redirect url
 			}
 			updateOnboarding(bodyData);
 		} else {
