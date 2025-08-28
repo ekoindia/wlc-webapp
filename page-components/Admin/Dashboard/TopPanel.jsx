@@ -1,5 +1,11 @@
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
-import { Currency, IcoButton, Icon, XScrollArrow } from "components";
+import {
+	Currency,
+	IcoButton,
+	Icon,
+	WaffleChart,
+	XScrollArrow,
+} from "components";
 import { useAiChatbotPopup, useFeatureFlag } from "hooks";
 import { RiChatAiLine } from "react-icons/ri";
 
@@ -29,7 +35,7 @@ const TopPanel = ({ panelDataList }) => {
 			<Grid
 				px="30px"
 				templateColumns="repeat(auto-fit, minmax(250px, 1fr))"
-				gap="4"
+				gap={{ base: "2", md: "4" }}
 				whiteSpace="nowrap"
 				display="flex"
 				py="10px"
@@ -60,7 +66,8 @@ const TopPanel = ({ panelDataList }) => {
 							p="12px 18px"
 							border="basic"
 							borderRadius="10px"
-							minW={{ base: "250px", sm: "300px" }}
+							minW="250px" // {{ base: "200px", sm: "250px" }}
+							gap="1em"
 						>
 							<Flex direction="column" gap="1">
 								<Text fontSize="sm">{item.label}</Text>
@@ -132,13 +139,35 @@ const TopPanel = ({ panelDataList }) => {
 								</Flex>
 							</Flex>
 							<Flex align="center">
-								<IcoButton
-									size="md"
-									color="white"
-									iconName={item.icon}
-									rounded={10}
-									bgGradient="linear(to-b, primary.light, primary.dark)"
-								/>
+								{item.key === "activeOverall" ? (
+									<WaffleChart
+										data={[
+											{
+												value: item.value,
+												label: "Active Users",
+											},
+											{
+												value: item.total - item.value,
+												label: "Inactive Users",
+											},
+										]}
+										colors={["#4ECDC4", "#FF6B6B"]}
+										rows={4}
+										cols={8}
+										size="6px"
+										gap="3px"
+										animationDuration="0.2s"
+										animationDelay="0.02s"
+									/>
+								) : (
+									<IcoButton
+										size="md"
+										color="white"
+										iconName={item.icon}
+										rounded={10}
+										bgGradient="linear(to-b, primary.light, primary.dark)"
+									/>
+								)}
 							</Flex>
 						</Flex>
 					))}

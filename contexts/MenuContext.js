@@ -13,7 +13,7 @@ import {
 } from "helpers";
 import { useAppLink, useFeatureFlag } from "hooks";
 import { Priority, useRegisterActions } from "kbar";
-import { useCopilotAction, useCopilotReadable } from "libs";
+import { useCopilotAction, useCopilotInfo } from "libs";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { limitText } from "utils/textFormat";
 import { useSession } from ".";
@@ -273,7 +273,7 @@ const MenuProvider = ({ children }) => {
 
 	// MARK: Copilot
 	// Define AI Copilot readable state for the main left menu items
-	useCopilotReadable({
+	useCopilotInfo({
 		description:
 			"Main features (menu items) available to the user for managing their business, account, network, etc. The `link` field contains the relative URL for this feature.",
 		value: appLists.menuList.map((item) => ({
@@ -285,7 +285,7 @@ const MenuProvider = ({ children }) => {
 	});
 
 	// Define AI Copilot readable state for the transaction list
-	useCopilotReadable({
+	useCopilotInfo({
 		description:
 			"Financial transactions (products and services) available for the user. These are the main transactions that the user can perform. The `link` field contains the relative URL for this feature." +
 			(isAdmin && isAdminAgentMode !== true
@@ -302,7 +302,7 @@ const MenuProvider = ({ children }) => {
 	console.log("[COPILOT] Adding data...");
 
 	// Define AI Copilot readable state for the other items list
-	useCopilotReadable({
+	useCopilotInfo({
 		description:
 			"Other options available to the user. These are not the main transactions, but still important to view their transaction history, manage their account, etc. The `link` field contains the relative URL for this feature.",
 		value: appLists.otherList.map((item) => ({
