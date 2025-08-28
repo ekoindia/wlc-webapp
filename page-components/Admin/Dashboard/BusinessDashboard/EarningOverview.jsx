@@ -181,14 +181,14 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 				w="100%"
 			>
 				<Text fontSize="xl" fontWeight="semibold">
-					Earning Overview
+					Business Overview
 				</Text>
 				<Flex w={{ base: "100%", md: "auto" }}>
 					<Select
 						variant="filled"
 						value={productFilter}
 						onChange={(e) => setProductFilter(e.target.value)}
-						size="sm"
+						size="xs"
 					>
 						{productFilterList.map(({ label, value }) => (
 							<option key={value} value={value}>

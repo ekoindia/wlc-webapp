@@ -150,7 +150,7 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 						variant="filled"
 						value={productFilter}
 						onChange={(e) => setProductFilter(e.target.value)}
-						size="sm"
+						size="xs"
 					>
 						{productFilterList.map(({ label, value }) => (
 							<option key={value} value={value}>

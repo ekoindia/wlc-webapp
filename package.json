@@ -64,9 +64,9 @@
 	"dependencies": {
 		"@chakra-ui/icons": "^2.1.1",
 		"@chakra-ui/react": "^2.8.2",
-		"@copilotkit/react-core": "^1.9.2",
-		"@copilotkit/react-textarea": "^1.9.2",
-		"@copilotkit/react-ui": "^1.9.2",
+		"@copilotkit/react-core": "^1.10.2",
+		"@copilotkit/react-textarea": "^1.10.2",
+		"@copilotkit/react-ui": "^1.10.2",
 		"@ekoindia/oaas-widget": "^2.5.0",
 		"@emotion/react": "^11.10.5",
 		"@emotion/styled": "^11.10.5",

@@ -7,7 +7,7 @@ import {
 } from "@chakra-ui/react";
 import {
 	CopilotKit,
-	useCopilotAction,
+	useCopilotAction as useCopilotActionHook,
 	useCopilotReadable,
 } from "@copilotkit/react-core";
 import { CopilotPopup, useCopilotChatSuggestions } from "@copilotkit/react-ui";
@@ -64,6 +64,12 @@ export const CopilotProvider = ({
 	runtimeUrl = "/api/copilotkit",
 	showPopup = true,
 }: CopilotProviderProps) => {
+	const [isAiCopilotAllowed] = useFeatureFlag("AI_COPILOT");
+
+	if (!isAiCopilotAllowed) {
+		return <>{children}</>;
+	}
+
 	return (
 		<CopilotKit
 			runtimeUrl={runtimeUrl}
@@ -78,10 +84,39 @@ export const CopilotProvider = ({
 };
 
 /**
+ * Safely adds the given information to the AI Copilot context.
+ * It safely calls the `useCopilotReadable` hook by handling ContextProvider not available error.
+ * @param {any} config - The configuration object for the Copilot readable state
+ */
+export const useCopilotInfo = (config: any) => {
+	try {
+		return useCopilotReadable(config);
+	} catch (error) {
+		console.error("Error occurred while using Copilot:", error);
+		return null;
+	}
+};
+
+/**
+ * Safely setup frontend actions (tools) that the AI Copilot can call.
+ * It safely calls the actual `useCopilotAction` hook by handling ContextProvider not available error.
+ * @param {any} config - The configuration object for the Copilot action
+ */
+export const useCopilotAction = (config: any) => {
+	try {
+		return useCopilotActionHook(config);
+	} catch (error) {
+		console.error("Error occurred while using Copilot:", error);
+		return null;
+	}
+};
+
+/**
  * Component to hidrate Copilot context and show Chat Popup
  * MARK: <Hydrate>
- * @param root0
- * @param root0.showPopup
+ * @param {object} props - The component props
+ * @param {boolean} props.showPopup - Whether to show the Copilot popup
+ * @returns {JSX.Element | null} The CopilotHydrate component or null
  */
 const CopilotHydrate = ({ showPopup }: { showPopup: boolean }) => {
 	const { orgDetail } = useOrgDetailContext();
@@ -92,14 +127,14 @@ const CopilotHydrate = ({ showPopup }: { showPopup: boolean }) => {
 
 	// Define AI Copilot readable state for the organization details
 	// MARK: Org Details
-	useCopilotReadable({
+	useCopilotInfo({
 		description: "Name of this application",
 		value: JSON.stringify(orgDetail?.app_name),
 	});
 
 	// Define AI Copilot readable state for the user details
 	// MARK: User Details
-	useCopilotReadable({
+	useCopilotInfo({
 		description: `Details of this user. If available, call them by their first name. The \`role\` field defines the type of the user.
 Role hierarchy:
 	- Admin
@@ -173,13 +208,19 @@ Role hierarchy:
 
 	if (!(isAiCopilotAllowed && showPopup)) {
 		// If AI_COPILOT feature flag is not enabled or showPopup is false, return null
+		console.log("Copilot not allowed");
 		return null;
 	}
 
 	// Render the CopilotPopup only if the AI_CHATBOT feature flag is enabled and showPopup is true
 	// MARK: Chat Window
 	return (
-		<Box sx={{ ".poweredBy": { display: "none" } }}>
+		<Box
+			sx={{
+				".poweredBy": { display: "none !important" },
+				".poweredByContainer": { paddingBottom: "10px" },
+			}}
+		>
 			<CopilotPopup
 				onThumbsUp={() => {
 					// Handle thumbs up action
@@ -198,11 +239,6 @@ Role hierarchy:
 };
 
 // Re-export commonly used CopilotKit hooks and components
-export {
-	useCopilotAction,
-	useCopilotChat,
-	useCopilotContext,
-	useCopilotReadable,
-} from "@copilotkit/react-core";
+export { useCopilotChat, useCopilotContext } from "@copilotkit/react-core";
 
 export { CopilotPopup, CopilotSidebar } from "@copilotkit/react-ui";
