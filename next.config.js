@@ -10,56 +10,122 @@ const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
  */
 const isDockerBuild = process.env.DOCKER_BUILD === "true";
 
+// --- Domain Constants for CSP ---
+const SELF = "'self'";
+const LOCALHOST_DOMAINS = {
+	WEBAPP: "http://localhost:3000",
+	API: "http://localhost:8001",
+};
+
+// Core Eko Domains
+const EKO_DOMAINS = { GENERIC: "*.eko.in", FILES: "files.eko.co.in" };
+const EKO_CONNECT_PROD = {
+	API: "api.connect.eko.in",
+	APP: "connect.eko.in",
+};
+const EKO_CONNECT_DEV = {
+	API: "api.beta.ekoconnect.in",
+	APP: "beta.ekoconnect.in",
+};
+
+// Third-Party Domains
+const CDN_DOMAINS = {
+	CLOUDFLARE: "cdnjs.cloudflare.com",
+	DIGITALOCEAN: "*.digitaloceanspaces.com",
+};
+const GOOGLE_DOMAINS = {
+	ACCOUNTS: "accounts.google.com",
+	ANALYTICS: "www.google-analytics.com",
+};
+const YOUTUBE_DOMAINS = {
+	DEFAULT: "www.youtube.com",
+	IMG: "img.youtube.com",
+};
+const IFRAME_DOMAINS = {
+	BING: "www.bing.com",
+	ZOHO_FORMS: "zfrmz.in",
+	ZOHO_PUBLIC_FORMS: "forms.zohopublic.in",
+};
+
+// Misc Domains
+const MISC_DOMAINS = { COPILOT_KIT: "api.cloud.copilotkit.ai" };
+
+// --- Environment-Specific Configuration ---
+const envConfig = {
+	production: {
+		connectDomains: Object.values(EKO_CONNECT_PROD),
+		scriptSrcUnsafe: [],
+	},
+	development: {
+		connectDomains: [
+			...Object.values(EKO_CONNECT_DEV),
+			...Object.values(LOCALHOST_DOMAINS),
+		],
+		scriptSrcUnsafe: ["'unsafe-eval'"],
+	},
+};
+
+const currentConfig = isProd ? envConfig.production : envConfig.development;
+// --- End of Configuration ---
+
 // Content Security Policy (CSP) for multi-tenant environment
 // NOTE: 'unsafe-inline' in script-src is required due to inline <Script> usage (e.g., Google Tag Manager). To improve security, migrate all inline scripts to use a nonce/hash or load as external files. See pages/_app.tsx for GTM example. Remove 'unsafe-inline' if/when all inline scripts are eliminated.
 const getConnectSrcDomains = () => {
 	const baseDomains = [
-		"'self'",
-		"https://*.eko.in",
-		"https://files.eko.co.in",
-		"https://www.youtube.com",
-		"https://cdnjs.cloudflare.com",
-		"https://*.digitaloceanspaces.com",
+		SELF,
+		...Object.values(EKO_DOMAINS),
+		...Object.values(CDN_DOMAINS),
+		YOUTUBE_DOMAINS.DEFAULT,
 	];
-
-	if (isProd) {
-		return [
-			...baseDomains,
-			"https://api.connect.eko.in",
-			"https://eko.connect.in",
-		];
-	} else {
-		return [
-			...baseDomains,
-			"https://api.beta.ekoconnect.in",
-			"https://beta.ekoconnect.in",
-			"http://localhost:3000",
-			"http://localhost:8001",
-		];
-	}
+	return [...baseDomains, ...currentConfig.connectDomains];
 };
 
 const cspHeaders = [
 	// Only allow resources from the same origin by default. Blocks all external sources unless explicitly allowed below.
-	"default-src 'self'",
+	`default-src ${SELF}`,
 	// 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager). Remove 'unsafe-inline' if all inline scripts are migrated to nonce/hash or external files.
-	isProd
-		? "script-src 'self' 'unsafe-inline' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.youtube.com"
-		: "script-src 'self' 'unsafe-inline' 'unsafe-eval' data: https://connect.eko.in https://*.eko.in https://accounts.google.com https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.youtube.com https://beta.ekoconnect.in",
+	`script-src ${[
+		SELF,
+		"'unsafe-inline'",
+		"data:",
+		...Object.values(EKO_DOMAINS),
+		...Object.values(GOOGLE_DOMAINS),
+		...currentConfig.scriptSrcUnsafe,
+		...currentConfig.connectDomains.filter(
+			(d) => !Object.values(LOCALHOST_DOMAINS).includes(d)
+		), // Exclude localhost from script-src
+		CDN_DOMAINS.CLOUDFLARE,
+		YOUTUBE_DOMAINS.DEFAULT,
+	].join(" ")}`,
 	// Allows styles from self and Google accounts. 'unsafe-inline' allows inline styles (required for some libraries, but should be avoided if possible).
-	"style-src 'self' 'unsafe-inline' https://accounts.google.com",
+	`style-src ${SELF} 'unsafe-inline' ${GOOGLE_DOMAINS.ACCOUNTS}`,
 	// Allow images from self, blob, data, and trusted domains (e.g., for logos and static assets).
-	"img-src 'self' blob: data: https://*.eko.in https://files.eko.co.in https://img.youtube.com",
+	`img-src ${SELF} blob: data: ${[
+		...Object.values(EKO_DOMAINS),
+		YOUTUBE_DOMAINS.IMG,
+	].join(" ")}`,
 	// Allow fonts from self only.
-	"font-src 'self'",
+	`font-src ${SELF}`,
 	// Allow XHR/fetch/WebSocket connections to trusted domains (see getConnectSrcDomains for dynamic domains).
-	`connect-src ${[...getConnectSrcDomains(), "https://api.cloud.copilotkit.ai"].join(" ")}`,
+	`connect-src ${[
+		...getConnectSrcDomains(),
+		...Object.values(MISC_DOMAINS),
+	].join(" ")}`,
 	// Allow embedding widgets and Google auth iframes. Blocks other external iframes.
-	"frame-src 'self' https://connect.eko.in https://accounts.google.com https://www.bing.com https://www.youtube.com/ https://zfrmz.in https://forms.zohopublic.in",
+	`frame-src ${SELF} ${[
+		...Object.values(EKO_CONNECT_PROD),
+		...Object.values(EKO_CONNECT_DEV),
+		GOOGLE_DOMAINS.ACCOUNTS,
+		...Object.values(IFRAME_DOMAINS),
+		YOUTUBE_DOMAINS.DEFAULT,
+	].join(" ")}`,
 	// Block all plugins and object/embed elements for security.
 	"object-src 'none'",
 	// Allow base URI to be set to self or trusted widget domains. Prevents base tag abuse from other origins.
-	"base-uri 'self' https://beta.ekoconnect.in https://connect.eko.in",
+	`base-uri ${SELF} ${[
+		...Object.values(EKO_CONNECT_PROD),
+		...Object.values(EKO_CONNECT_DEV),
+	].join(" ")}`,
 	// Only allow forms to be submitted to self. Blocks data exfiltration via forms.
 	"form-action 'self'",
 	// Prevent the site from being embedded in any iframe. Protects against clickjacking.
@@ -104,7 +170,7 @@ const securityHeaders = [
 // Default Content Security Policy
 const cspHeaders = [
 	// "default-src 'self';",
-	// "script-src * 'unsafe-inline';", // 'unsafe-eval' is not recommended
+	// "script-src * 'unsafe-inline';" // 'unsafe-eval' is not recommended
 	// "style-src 'self' 'unsafe-inline';",
 	// "img-src 'self' blob: data:;",
 	// "font-src 'self';",
