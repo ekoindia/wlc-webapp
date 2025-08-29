@@ -107,6 +107,7 @@ const WaffleChart = ({
 		return result;
 	}, [squareDistribution, rows, cols]);
 
+	// MARK: jsx
 	return (
 		<Tooltip
 			label={<CustomTooltip data={data} colors={dataColors} />}
@@ -121,7 +122,6 @@ const WaffleChart = ({
 				gap={gap}
 				width="fit-content"
 				height="fit-content"
-				cursor="help"
 				sx={{
 					"& > div": {
 						animation: `waffleSquareEntrance ${animationDuration} ease-out both`,
@@ -163,11 +163,11 @@ const WaffleChart = ({
 							borderColor="hint"
 							sx={{
 								animationDelay: `${diagonalDelay}s !important`,
-								"&:hover": {
-									transform: "scale(1.15)",
-									transition: "transform 0.2s ease-out",
-								},
-								transition: "background-color 0.3s ease",
+								// "&:hover": {
+								// 	transition: "transform 0.2s ease-out",
+								// 	transform: "scale(1.15)",
+								// },
+								transition: "background-color 0.3s ease-out",
 							}}
 						/>
 					);
@@ -179,6 +179,7 @@ const WaffleChart = ({
 
 /**
  * Tooltip custom body component to show waffle chart data with corresponding colored dots
+ * MARK: Tooltip
  * @param {string} [label] - The label text (optional)
  * @param {Array} data - The data array containing values
  * @param {Array} colors - The array of colors corresponding to the data
