@@ -1,6 +1,6 @@
 import { Box, Flex, Grid, Text, Tooltip } from "@chakra-ui/react";
-import { useHslColor } from "hooks";
 import { useMemo } from "react";
+import { str2Hue } from "utils";
 
 interface WaffleChartData {
 	value: number;
@@ -51,9 +51,8 @@ const WaffleChart = ({
 			if (colors && colors[index]) {
 				return colors[index];
 			}
-			// eslint-disable-next-line react-hooks/rules-of-hooks
-			const hslColor = useHslColor(item.label);
-			return `hsl(${hslColor.h}, ${hslColor.s}%, ${hslColor.l}%)`;
+			const hue = str2Hue(item.label);
+			return `hsl(${hue}, 90%, 40%)`;
 		});
 	}, [data, colors]);
 
