@@ -1,10 +1,13 @@
 import { Divider, Flex, Select, Text } from "@chakra-ui/react";
 import { Table } from "components";
 import { Endpoints } from "constants";
-import { useApiFetch } from "hooks";
+import { useApiFetch, useFeatureFlag } from "hooks";
 import { useEffect, useState } from "react";
+import { LuTrophy } from "react-icons/lu";
 import { useDashboard } from "..";
+import { TopMerchantsTable } from "./TopMerchantsTable";
 
+// TODO: Redundant. used only for the old generic table
 const topMerchantsTableParameterList = [
 	{ label: "#", show: "#" },
 	{ name: "name", label: "Name", sorting: true, show: "Avatar" },
@@ -55,6 +58,7 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
  * @param {Array} props.productFilterList - List of product filters.
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
+ * @param {object} props.totalBusiness - Total business data (total GTV, Transaction count, etc).
  * @example
  * <TopMerchants
  *   dateFrom="2023-01-01"
@@ -62,10 +66,17 @@ const getCacheKey = (productFilter, dateFrom, dateTo) => {
  *   productFilterList={[{ label: "Product 1", value: "81" }]}
  * />
  */
-const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
+const TopMerchants = ({
+	dateFrom,
+	dateTo,
+	productFilterList,
+	totalBusiness,
+}) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [topMerchantsData, setTopMerchantsData] = useState([]);
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
+
+	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
 	// Fetching Top Merchants Data
 	const [fetchTopMerchantsOverviewData, isLoading] = useApiFetch(
@@ -141,9 +152,15 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 				gap={{ base: "2", md: "4" }}
 				w="100%"
 			>
-				<Text fontSize="xl" fontWeight="semibold">
-					GTV-wise Top Retailers
-				</Text>
+				<Flex
+					fontSize="lg"
+					fontWeight="semibold"
+					align="center"
+					gap="0.4em"
+				>
+					<LuTrophy color="#f97415" />
+					GTV Leaderboard
+				</Flex>
 
 				<Flex w={{ base: "100%", md: "auto" }}>
 					<Select
@@ -163,11 +180,24 @@ const TopMerchants = ({ dateFrom, dateTo, productFilterList }) => {
 			<Divider />
 			<Flex direction="column">
 				{topMerchantsData?.length > 0 ? (
-					<Table
-						data={topMerchantsData}
-						renderer={topMerchantsTableParameterList}
-						isLoading={isLoading}
-					/>
+					showNewDashboard ? (
+						// New table with graphs & enhanced UI
+						<TopMerchantsTable
+							data={topMerchantsData}
+							totalGtv={+totalBusiness?.gtv?.amount ?? 0}
+							totalTransactions={
+								+totalBusiness?.transactions?.transactions ?? 0
+							}
+							isLoading={isLoading}
+						/>
+					) : (
+						// Old generic table
+						<Table
+							data={topMerchantsData}
+							renderer={topMerchantsTableParameterList}
+							isLoading={isLoading}
+						/>
+					)
 				) : (
 					<Text
 						color="gray.500"

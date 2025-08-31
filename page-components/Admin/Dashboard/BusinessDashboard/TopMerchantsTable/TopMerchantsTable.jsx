@@ -15,6 +15,26 @@ const formatNumber = (num) => {
 };
 
 /**
+ * A small label element for the table elements
+ * Used to display the parent name, joining date, and other labels like "GTV", "Transactions, etc"
+ * @param {object} props - Component props
+ * @param {React.ReactNode} props.children - Label text
+ * @param {object} props.rest - Additional props to pass to the Text component
+ * @returns {JSX.Element} - Rendered label element
+ */
+const Label = ({ children, ...rest }) => (
+	<Text
+		fontSize="0.7rem"
+		color="gray.500"
+		fontWeight="medium"
+		noOfLines={1}
+		{...rest}
+	>
+		{children}
+	</Text>
+);
+
+/**
  * Horizontal bar chart component for GTV and Transactions
  * MARK: Bar Chart
  * @param {object} props - Component props
@@ -33,15 +53,16 @@ const HorizontalBarChart = ({
 	const percentage = total > 0 ? ((value / total) * 100).toFixed(0) : 0;
 
 	return (
-		<VStack spacing="6px" align="stretch" minW="160px" {...rest}>
+		<VStack spacing="6px" align="stretch" minW="0" {...rest}>
 			{/* GTV Bar */}
 			<HStack spacing="8px" align="center">
-				<VStack spacing="2px" align="stretch" flex="1">
+				<VStack spacing="2px" align="stretch" flex="1" minW="0">
 					{/* Top Layer: Label */}
 					<Text
-						fontSize="1em"
+						fontSize="0.9rem"
 						fontWeight="bold"
 						color="accent.DEFAULT"
+						noOfLines={1}
 					>
 						{isCurrency ? (
 							<Currency amount={value} showSymbol={true} />
@@ -51,37 +72,35 @@ const HorizontalBarChart = ({
 					</Text>
 
 					{/* Mid Layer: Bar */}
-					<Box
-						h="6px"
-						bg="gray.100"
-						borderRadius="full"
-						overflow="hidden"
-					>
+					{total > 0 ? (
 						<Box
-							h="100%"
-							bg="primary.DEFAULT"
+							h="8px"
+							bg="gray.100"
 							borderRadius="full"
-							width={`${Math.min(percentage, 100)}%`}
-							transition="width 0.3s ease"
-						/>
-					</Box>
+							overflow="hidden"
+						>
+							<Box
+								h="100%"
+								bg="green.700"
+								borderRadius="full"
+								width={`${Math.min(percentage, 100)}%`}
+								transition="width 0.3s ease"
+							/>
+						</Box>
+					) : null}
 
 					{/* Bottom Layer: Label & Percentage */}
-					<HStack justify="space-between" align="center">
-						<Text
-							fontSize="xs"
-							color="gray.500"
-							fontWeight="medium"
-						>
-							{label}
-						</Text>
-						<Text
-							fontSize="xs"
-							color="primary.DEFAULT"
-							fontWeight="semibold"
-						>
-							{percentage}%
-						</Text>
+					<HStack
+						justify="space-between"
+						align="center"
+						fontSize="0.7rem"
+					>
+						<Label>{label}</Label>
+						{total > 0 ? (
+							<Text color="primary.DEFAULT" fontWeight="semibold">
+								{percentage}%
+							</Text>
+						) : null}
 					</HStack>
 				</VStack>
 			</HStack>
@@ -107,6 +126,7 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 		totalTransactions: merchantTransactions = 0,
 		onboardingDate = "",
 		distributorMapped = "",
+		raCases = 0,
 	} = merchant;
 
 	console.log(
@@ -137,8 +157,10 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 	// 	router.push(`/admin/my-network/profile?mobile=${mobile}`);
 	// };
 
+	// MARK: row jsx
 	return (
 		<Flex
+			w="100%"
 			p="16px"
 			bg="white"
 			borderRadius="10px"
@@ -146,13 +168,14 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 			borderColor="divider"
 			mb="12px"
 			align="center"
-			gap="24px"
-			wrap="wrap"
+			gap={{ base: "8px", md: "16px" }}
+			wrap={{ base: "wrap", lg: "nowrap" }}
 			_hover={{ bg: "focusbg" }}
 			transition="background-color 0.2s"
+			// minW="0"
 		>
 			{/* Merchant Details */}
-			<HStack gap="12px" flex="2">
+			<HStack gap="12px" flex="4" minW={{ base: "full", md: "auto" }}>
 				{/* Rank */}
 				<Box
 					w="28px"
@@ -199,60 +222,69 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 							colorScheme={
 								statusColors[status?.toLowerCase()] || "gray"
 							}
-							variant="solid"
+							variant="outline"
 							borderRadius="full"
+							fontSize="0.7em"
+							cursor="default"
+							userSelect="none"
 						>
 							{status}
 						</Tag>
 					</HStack>
 					<HStack spacing="8px" wrap="wrap">
 						{distributorMapped && (
-							<Text fontSize="xs" color="gray.600" noOfLines={1}>
-								{distributorMapped}
-							</Text>
+							<Label color="gray.600">{distributorMapped}</Label>
 						)}
 						{onboardingDate && (
-							<Text fontSize="xs" color="gray.500">
+							<Label>
 								<DateView date={onboardingDate} />
-							</Text>
+							</Label>
 						)}
 					</HStack>
 				</VStack>
 			</HStack>
 
+			{/* GTV Chart */}
 			<HorizontalBarChart
 				value={gtv}
 				total={totalGtv}
 				label="GTV"
 				isCurrency
-				flex="1"
+				flex="2"
+				minW={{ base: "40%", md: "auto" }}
 			/>
 
+			{/* Transaction Count Chart */}
 			<HorizontalBarChart
 				value={merchantTransactions}
 				total={totalTransactions}
 				label="Transactions"
-				flex="1"
+				flex="2"
+				minW={{ base: "40%", md: "auto" }}
 			/>
 
+			{/* Pending (Response Awaited) Transactions */}
+			<VStack spacing="2px" align="center" flex="1">
+				<Text fontSize="0.85rem" fontWeight="bold" color="orange.400">
+					{(+raCases)?.toFixed(0) || 0}
+				</Text>
+				<Label>Pending </Label>
+			</VStack>
+
 			{/* Average Ticket */}
-			<VStack spacing="2px" align="center" minW="80px" flex="1">
-				<Text fontSize="lg" fontWeight="bold" color="accent.DEFAULT">
+			<VStack spacing="2px" align="center" flex="1">
+				<Text fontSize="0.85rem" fontWeight="bold" color="gray.500">
 					<Currency amount={avgTicket.toFixed(0)} showSymbol={true} />
 				</Text>
-				<Text fontSize="xs" color="gray.500">
-					Avg Ticket
-				</Text>
+				<Label>Avg Ticket</Label>
 			</VStack>
 
 			{/* Cumulative Percentage */}
-			<VStack spacing="2px" align="center" minW="60px" flex="1">
-				<Text fontSize="lg" fontWeight="bold" color="success">
+			<VStack spacing="2px" align="center" flex="1">
+				<Text fontSize="0.85rem" fontWeight="bold" color="success">
 					{cumulativePercentage.toFixed(0)}%
 				</Text>
-				<Text fontSize="xs" color="gray.500">
-					Cumulative
-				</Text>
+				<Label>Cumulative</Label>
 			</VStack>
 			{/* </HStack> */}
 		</Flex>
@@ -273,8 +305,7 @@ const TopMerchantsTable = ({
 	totalTransactions,
 	isLoading = false,
 }) => {
-	console.log("Total Business: 222: ", totalGtv, totalTransactions);
-
+	//MARK: table jsx
 	if (isLoading) {
 		return (
 			<VStack spacing="12px" w="100%">

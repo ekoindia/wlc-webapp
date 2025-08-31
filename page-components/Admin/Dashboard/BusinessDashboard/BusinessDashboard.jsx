@@ -26,6 +26,7 @@ const BusinessDashboard = () => {
 	const { role_list } = userDetails;
 
 	const [dateRange, setDateRange] = useState("today");
+	const [totalBusiness, setTotalBusiness] = useState({});
 
 	const { cachedTodaysDateTo, setCachedTodaysDateTo } = useDashboard();
 
@@ -106,6 +107,7 @@ const BusinessDashboard = () => {
 					dateFrom={prevDate}
 					dateTo={_currDate}
 					productFilterList={productFilterList}
+					setTotalBusiness={setTotalBusiness}
 				/>
 
 				<SuccessRate dateFrom={prevDate} dateTo={currDate} />
@@ -115,6 +117,7 @@ const BusinessDashboard = () => {
 				dateFrom={prevDate}
 				dateTo={_currDate}
 				productFilterList={productFilterList}
+				totalBusiness={totalBusiness}
 			/>
 		</Flex>
 	);
