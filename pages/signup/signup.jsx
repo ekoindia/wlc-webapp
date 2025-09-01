@@ -593,7 +593,7 @@ const SignupPage = () => {
 					method: "POST",
 					headers: {
 						"tf-req-method": "POST",
-						"tf-req-uri": "/digilocker/digilocker-redirection-url",
+						"tf-req-uri": "/karza/digilocker-redirection-url",
 						"tf-req-uri-root-path": "/ekoicici/v1/marketuat",
 					},
 				},
