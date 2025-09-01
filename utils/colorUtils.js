@@ -1,3 +1,5 @@
+import { numericHash } from "utils/hash";
+
 /**
  * Get the luminance of a color.
  * @param {number} r - The red value (0-255).
@@ -212,3 +214,12 @@ export const getContrastColor = (hex) => {
 export const getHighContrastColor = (color, color2, color3) => {
 	return contrast(color, color2) > contrast(color, color3) ? color2 : color3;
 };
+
+/**
+ * Get a random Hue (for HSL) color. If str is provided, it generates a constent hue
+ * 	value as the hash of 'str'.
+ * @param {string} [str] The string to generate hash to get the hue value.
+ * @returns The hue value
+ */
+export const str2Hue = (str) =>
+	(str ? numericHash(str) % 360 : 360 * Math.random()).toFixed(2);

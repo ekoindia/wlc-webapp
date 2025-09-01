@@ -19,6 +19,7 @@ export {
 	hexToRgba,
 	lighten,
 	rgbaToHex,
+	str2Hue,
 } from "./colorUtils";
 export { default as CombineProviders } from "./CombineProviders";
 export { calculateDateBefore } from "./dateUtils";

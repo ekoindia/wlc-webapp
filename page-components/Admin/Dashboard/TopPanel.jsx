@@ -28,7 +28,9 @@ import { RiChatAiLine } from "react-icons/ri";
  * @returns {JSX.Element|null} The rendered component or null if no data
  */
 const TopPanel = ({ panelDataList }) => {
-	if (!panelDataList?.length) return null;
+	const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT_HOME");
+
+	if (!isAiChatBotAllowed && !panelDataList?.length) return null;
 
 	return (
 		<XScrollArrow pos="center" mb="10px" ml="-30px" w="calc(100% + 60px)">

@@ -1,20 +1,44 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { PillTab } from "components";
 import { useSession } from "contexts";
+import dynamic from "next/dynamic";
 import { Home } from "page-components"; // Non-Admin Homepage
 import { useState } from "react";
-import {
-	AnnouncementsDashboard,
-	BusinessDashboard,
-	DashboardProvider,
-	OnboardingDashboard,
-} from ".";
+import { DashboardProvider } from ".";
+
+// Dynamically load dashboard components for better performance
+const AnnouncementsDashboard = dynamic(
+	() => import("./AnnouncementsDashboard"),
+	{
+		ssr: false,
+		loading: () => <DashboardSkeleton />,
+	}
+);
+
+const BusinessDashboard = dynamic(
+	() =>
+		import("./BusinessDashboard").then((mod) => ({
+			default: mod.BusinessDashboard,
+		})),
+	{
+		ssr: false,
+		loading: () => <DashboardSkeleton />,
+	}
+);
+
+const OnboardingDashboard = dynamic(
+	() =>
+		import("./OnboardingDashboard").then((mod) => ({
+			default: mod.OnboardingDashboard,
+		})),
+	{
+		ssr: false,
+		loading: () => <DashboardSkeleton />,
+	}
+);
 
 /**
- * A Dashboard page component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
- * @example	`<Dashboard></Dashboard>`
+ * The Dashboard page component
  */
 const Dashboard = () => {
 	const { isAdmin, isLoggedIn } = useSession();
@@ -74,6 +98,18 @@ const Dashboard = () => {
 				{getComp(currTab)}
 			</div>
 		</DashboardProvider>
+	);
+};
+
+/**
+ * Skeleton component for a typical dashboard page load animation
+ */
+const DashboardSkeleton = () => {
+	return (
+		<Flex direction="column" gap="2em" p="6" overflow="hidden">
+			<Skeleton height="100px" borderRadius="10px" />
+			<Skeleton height="300px" borderRadius="10px" />
+		</Flex>
 	);
 };
 

@@ -3,6 +3,7 @@ import { Currency, Icon } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch } from "hooks";
 import React, { useEffect, useState } from "react";
+import { LuActivity } from "react-icons/lu";
 import { useDashboard } from "..";
 
 // Helper function to generate cache key
@@ -29,6 +30,7 @@ const calculateVariation = (current, lastMonth) => {
  * @param {Array} props.productFilterList - List of product filters.
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
+ * @param {Function} props.setTotalBusiness - Function to set total business data (total GTV & Transaction count) in parent component.
  * @example
  * <EarningOverview
  *   dateFrom="2023-01-01"
@@ -36,7 +38,12 @@ const calculateVariation = (current, lastMonth) => {
  *   productFilterList={[{ label: "Product 1", value: "81" }]}
  * />
  */
-const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
+const EarningOverview = ({
+	dateFrom,
+	dateTo,
+	productFilterList,
+	setTotalBusiness,
+}) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
@@ -61,6 +68,11 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 				}));
 
 				setEarningOverviewData(_data);
+
+				// Inform parent component
+				if (!productFilter) {
+					setTotalBusiness(_data);
+				}
 			},
 		}
 	);
@@ -71,10 +83,14 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 		const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
 
 		// Use cached data if available
-		if (businessDashboardData?.earningOverviewCache?.[cacheKey]) {
-			setEarningOverviewData(
-				businessDashboardData.earningOverviewCache[cacheKey]
-			);
+		const cachedData =
+			businessDashboardData?.earningOverviewCache?.[cacheKey];
+		if (cachedData) {
+			setEarningOverviewData(cachedData);
+			// Inform parent component
+			if (!productFilter) {
+				setTotalBusiness(cachedData);
+			}
 			return;
 		}
 
@@ -180,9 +196,15 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 				gap={{ base: "2", md: "4" }}
 				w="100%"
 			>
-				<Text fontSize="xl" fontWeight="semibold">
+				<Flex
+					fontSize="lg"
+					fontWeight="semibold"
+					align="center"
+					gap="0.4em"
+				>
+					<LuActivity color="#3c83f6" />
 					Business Overview
-				</Text>
+				</Flex>
 				<Flex w={{ base: "100%", md: "auto" }}>
 					<Select
 						variant="filled"
