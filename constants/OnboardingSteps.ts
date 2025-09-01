@@ -59,7 +59,7 @@ export interface OnboardingStep {
  * Selection step data for role capture during user onboarding.
  * This step allows users to select their role (Retailer, Distributor, or Enterprise).
  * Used in the initial onboarding flow to determine the appropriate steps for each user type.
- * 
+ *
  * TODO:
  * - Extract form_data.roles into a separate function to return this data structure. It should take label-map (to rename user types), and hide/show user types.
  * - In the OaaS widget project, if only one usertype is visible, auto-select and proceed.
