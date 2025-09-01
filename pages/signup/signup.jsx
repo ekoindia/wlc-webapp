@@ -113,11 +113,12 @@ const SignupPage = () => {
 	// const widgetRef = useRef(null);
 	const { isAndroid } = useAppSource();
 	const { subscribe, TOPICS } = usePubSub();
+	const toast = useToast();
 
 	// Subscribe to the Android responses
 	useEffect(() => {
 		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
-			console.log("[signup] [PubSub] >>> android-response:: ", data);
+			// console.log("[signup] [PubSub] >>> android-response:: ", data);
 
 			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
 				androidleegalityResponseHandler(data?.data);
@@ -125,7 +126,7 @@ const SignupPage = () => {
 		});
 
 		return unsubscribe;
-	}, []);
+	}, [TOPICS.ANDROID_RESPONSE, subscribe]);
 
 	const androidleegalityResponseHandler = (res) => {
 		let value = JSON.parse(res);
@@ -186,13 +187,12 @@ const SignupPage = () => {
 
 	let bookletKeys = [];
 
-	const toast = useToast();
 	const user_id =
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
 
 	const handleStepDataSubmit = (data) => {
-		console.log("HandleWlcStepData", data);
+		// console.log("HandleWlcStepData", data);
 		if (data?.id === 3) {
 			setLatLong(data?.form_data?.latlong);
 		}
@@ -319,7 +319,7 @@ const SignupPage = () => {
 				new URLSearchParams(bodyData["formdata"])
 			);
 		} else if (data.id === 8) {
-			console.log("PAN data", data);
+			// console.log("PAN data", data);
 			bodyData.file1 = data?.form_data?.panImage?.fileData;
 			bodyData.formdata.file1 = "";
 			bodyData.formdata.doc_type = 2;
@@ -342,7 +342,7 @@ const SignupPage = () => {
 			);
 		}
 
-		console.log("inside handle file upload ", bodyData, formData);
+		// console.log("inside handle file upload ", bodyData, formData);
 
 		const uploadResponse = await fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD,
@@ -356,15 +356,15 @@ const SignupPage = () => {
 		)
 			.then((res) => {
 				if (res.ok) {
-					console.log("📡 Fetch Result:", {
-						res,
-					});
+					// console.log("📡 Fetch Result:", {
+					// 	res,
+					// });
 					return res.json();
 				} else {
 					res.text().then(() => {
-						console.error("📡 Fetch Error:", {
-							res,
-						});
+						// console.error("📡 Fetch Error:", {
+						// 	res,
+						// });
 					});
 
 					const err = new Error("API Error");
@@ -386,7 +386,7 @@ const SignupPage = () => {
 					status: "error",
 					duration: 2000,
 				});
-				console.error("error in update onboarding: ", err);
+				// console.error("error in update onboarding: ", err);
 				return err;
 			});
 
@@ -415,7 +415,7 @@ const SignupPage = () => {
 
 		setApiInProgress(false);
 
-		console.log("uploadResponse", uploadResponse);
+		// console.log("uploadResponse", uploadResponse);
 	};
 
 	const updateOnboarding = (bodyData) => {
@@ -558,12 +558,12 @@ const SignupPage = () => {
 				if (res.status === 0) {
 					setStateTypesData(res?.param_attributes.list_elements);
 				}
-				console.log("[getStateType] resp:", res);
+				// console.log("[getStateType] resp:", res);
 			})
 			.catch((err) => console.error("[getStateType] Error:", err));
 	};
 	// const getPincodeType = () => {
-	// 	console.log("inside mainfunction");
+	// 	// console.log("inside mainfunction");
 	// 	fetcher(
 	// 		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 	// 		{
@@ -600,7 +600,7 @@ const SignupPage = () => {
 				generateNewToken
 			);
 
-			console.log("[getDigilockerUrl] Response:", data);
+			// console.log("[getDigilockerUrl] Response:", data);
 
 			if (data?.status === 0) {
 				// Handle successful response
@@ -615,7 +615,7 @@ const SignupPage = () => {
 				}
 			}
 		} catch (error) {
-			console.error("[getDigilockerUrl] Error:", error);
+			// console.error("[getDigilockerUrl] Error:", error);
 			toast({
 				title:
 					error?.message ??
@@ -627,9 +627,9 @@ const SignupPage = () => {
 	};
 
 	const handleLeegalityCallback = (res) => {
-		console.log("Leegality callback response", res);
+		// console.log("Leegality callback response", res);
 		if (res.error) {
-			console.error("LeegalityCallBack Error", res.error);
+			// console.error("LeegalityCallBack Error", res.error);
 			toast({
 				title:
 					res?.error ||
@@ -677,7 +677,7 @@ const SignupPage = () => {
 	}, [signUrlData]);
 
 	const handleStepCallBack = (callType) => {
-		console.log("[stepcallback]", callType, latLong, userLoginData);
+		// console.log("[stepcallback]", callType, latLong, userLoginData);
 		if (callType.type === 12) {
 			// Leegality Esign
 			if (callType.method === "getSignUrl") {
@@ -695,9 +695,9 @@ const SignupPage = () => {
 					window.open(signUrlData?.short_url, "SignAgreementWindow");
 				} else if (signUrlData?.pipe == agreementProvider.KARZA) {
 					if (!signUrlData?.short_url) {
-						console.error(
-							"[oaas Leegality] Didn't receive short-url"
-						);
+						// console.error(
+						// 	"[oaas Leegality] Didn't receive short-url"
+						// );
 						toast({
 							title: "Error starting eSign session. Please reload and try again later.",
 							status: "error",
@@ -759,7 +759,7 @@ const SignupPage = () => {
 	};
 
 	const getSignUrl = () => {
-		console.log("Getting Signed URL for Leegality...");
+		// console.log("Getting Signed URL for Leegality...");
 		// if (agreementId) {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -795,10 +795,10 @@ const SignupPage = () => {
 						status: "error",
 						duration: 5000,
 					});
-					console.error(
-						"[getSignUrl] Error: E-sign initialization failed: " +
-							res?.message
-					);
+					// console.error(
+					// 	"[getSignUrl] Error: E-sign initialization failed: " +
+					// 		res?.message
+					// );
 					setEsignStatus(2);
 					// widgetRef?.current?.postMessage({
 					// 	type: "esign:failed",
@@ -871,10 +871,10 @@ const SignupPage = () => {
 		script.id = "legality";
 		document.body.appendChild(script);
 		script.onload = () => {
-			console.log("Leegality script loaded", script);
+			// console.log("Leegality script loaded", script);
 		};
 		script.onerror = () => {
-			console.error("Failed to load Leegality script");
+			// console.error("Failed to load Leegality script");
 			toast({
 				title: "Failed to initialize eSign",
 				description:
