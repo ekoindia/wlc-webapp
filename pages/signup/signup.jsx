@@ -1,4 +1,5 @@
 import { Center, Spinner, useToast, useToken } from "@chakra-ui/react";
+import { SelectionScreen } from "@ekoindia/oaas-widget";
 import { agreementProvider, Endpoints, TransactionIds } from "constants";
 import {
 	distributorStepsData,
@@ -12,8 +13,7 @@ import {
 	useSession,
 } from "contexts";
 import { useUser } from "contexts/UserContext";
-// import { Home, SelectionScreen } from "eko-oaas-package";
-import { fetcher } from "helpers/apiHelper";
+import { fetcher } from "helpers";
 import useRefreshToken from "hooks/useRefreshToken";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -24,11 +24,6 @@ import { createPintwinFormat } from "../../utils/pintwinFormat";
 
 const OnboardingWidget = dynamic(
 	() => import("@ekoindia/oaas-widget").then((mod) => mod.OnboardingWidget),
-	{ ssr: false }
-);
-
-const SelectionScreen = dynamic(
-	() => import("@ekoindia/oaas-widget").then((mod) => mod.SelectionScreen),
 	{ ssr: false }
 );
 
