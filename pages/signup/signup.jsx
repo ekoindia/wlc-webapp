@@ -906,7 +906,10 @@ const SignupPage = () => {
 	}, [bookletNumber]);
 
 	// Get theme primary color
-	const [primaryColor] = useToken("colors", ["primary.DEFAULT"]);
+	const [primaryColor, accentColor] = useToken("colors", [
+		"primary.DEFAULT",
+		"accent.DEFAULT",
+	]);
 
 	// console.log("[wlc>oaas] Loading Widget: ", {
 	// 	selectedRole,
@@ -942,6 +945,7 @@ const SignupPage = () => {
 							}}
 							isDisabledCTA={apiInProgress}
 							primaryColor={primaryColor}
+							accentColor={accentColor}
 						/>
 					) : (
 						<OnboardingWidget
@@ -961,6 +965,7 @@ const SignupPage = () => {
 							handleStepCallBack={handleStepCallBack}
 							esignStatus={esignStatus}
 							primaryColor={primaryColor}
+							accentColor={accentColor}
 							orgDetail={orgDetail}
 							digilockerData={digilockerData}
 						/>
