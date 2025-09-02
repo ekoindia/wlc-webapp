@@ -4,6 +4,7 @@ import { useSession } from "contexts";
 import dynamic from "next/dynamic";
 import { Home } from "page-components"; // Non-Admin Homepage
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DashboardProvider } from ".";
 
 // Dynamically load dashboard components for better performance
@@ -43,15 +44,19 @@ const OnboardingDashboard = dynamic(
 const Dashboard = () => {
 	const { isAdmin, isLoggedIn } = useSession();
 	const [currTab, setCurrTab] = useState(0);
+	const { t } = useTranslation("dashboard");
 
 	const list = isAdmin
 		? [
-				{ label: "Business", component: <BusinessDashboard /> },
-				{ label: "Onboarding", component: <OnboardingDashboard /> },
+				{ label: t("tabs.business"), component: <BusinessDashboard /> },
+				{
+					label: t("tabs.onboarding"),
+					component: <OnboardingDashboard />,
+				},
 			]
 		: [
 				{
-					label: "Home",
+					label: t("tabs.home"),
 					component: <Home mt={{ base: "12px", md: "30px" }} />,
 				},
 				{ label: "Business", component: <BusinessDashboard /> },
