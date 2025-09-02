@@ -62,7 +62,7 @@ const Network = () => {
 		onBoardingDateTo: "",
 	};
 	const router = useRouter();
-	const { accessToken } = useSession();
+	const { accessToken, isAdmin, userType } = useSession();
 	const [pageNumber, setPageNumber] = useState(1);
 	const [isLoading, setIsLoading] = useState(true);
 	const [networkData, setNetworkData] = useState([]);
@@ -126,9 +126,13 @@ const Network = () => {
 			.then((res) => {
 				let _networkData = res?.data;
 				setNetworkData(_networkData);
-				router.push(`/admin/my-network?page=${pageNumber}`, undefined, {
-					shallow: true,
-				});
+				router.push(
+					`${isAdmin ? "/admin" : ""}/my-network?page=${pageNumber}`,
+					undefined,
+					{
+						shallow: true,
+					}
+				);
 			})
 			.catch((err) => {
 				console.log("[Network] error", err);
@@ -207,7 +211,25 @@ const Network = () => {
 			name: "agentType",
 			label: "Agent Type",
 			parameter_type_id: ParamType.LIST,
-			list_elements: operation_type_list,
+			list_elements: operation_type_list.filter((item) => {
+				// Based on current user-type, show selected network-user-types
+				if (userType === 1) {
+					// For distributors, hide following agent-types: (Super)Distributor, Indipendent Retailer
+					if (
+						item.value === "1" ||
+						item.value === "3" ||
+						item.value === "7"
+					) {
+						return false;
+					}
+				} else if (userType === 7) {
+					// For Super-Distributor, hide following agent-types: (Independent Retailer & Super-Distributor)
+					if (item.value === "3" || item.value === "7") {
+						return false;
+					}
+				}
+				return true;
+			}),
 			required: false,
 		},
 		{
@@ -377,14 +399,18 @@ const Network = () => {
 				title={t("title")}
 				hideBackIcon
 				toolComponent={
-					<Button
-						size={{ base: "sm", md: "md" }}
-						onClick={() =>
-							router.push("/admin/my-network/profile/change-role")
-						}
-					>
-						{common("buttons.change_roles")}
-					</Button>
+					isAdmin ? (
+						<Button
+							size={{ base: "sm", md: "md" }}
+							onClick={() =>
+								router.push(
+									"/admin/my-network/profile/change-role"
+								)
+							}
+						>
+							{common("buttons.change_roles")}
+						</Button>
+					) : null
 				}
 			/>
 			<Flex

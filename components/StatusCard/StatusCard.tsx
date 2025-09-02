@@ -49,7 +49,7 @@ const StatusCard = ({
 			i++
 		) {
 			let trxn_id = TransactionIds.LOAD_WALLET_TRXN_ID_LIST[i];
-			if (role_tx_list[trxn_id]) {
+			if (role_tx_list && role_tx_list[trxn_id]) {
 				id = trxn_id;
 				break;
 			}

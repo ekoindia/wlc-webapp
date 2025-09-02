@@ -18,5 +18,5 @@ export {
 	useCopilotAction,
 	useCopilotChat,
 	useCopilotContext,
-	useCopilotReadable,
+	useCopilotInfo,
 } from "./CopilotProvider";

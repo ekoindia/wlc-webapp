@@ -19,10 +19,12 @@ export {
 	hexToRgba,
 	lighten,
 	rgbaToHex,
+	str2Hue,
 } from "./colorUtils";
 export { default as CombineProviders } from "./CombineProviders";
 export { calculateDateBefore } from "./dateUtils";
 export { debounce } from "./debounce";
+export { parseOrgIds } from "./envUtils";
 export { areObjectsEqual } from "./equalityUtils";
 export { getFormErrorMessage } from "./errorMessages";
 export { parse } from "./exprParser";

@@ -13,7 +13,7 @@ import { transformBillData } from "../utils/transformBillData";
  */
 interface PaymentRequest {
 	amount: number;
-	payment_amount_breakup: Array<{
+	paymentamountbreakup: Array<{
 		billid: string;
 		bill_payment_amount: number;
 	}>;

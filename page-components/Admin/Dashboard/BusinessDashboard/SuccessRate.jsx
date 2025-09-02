@@ -2,6 +2,7 @@ import { Divider, Flex, Skeleton, Text } from "@chakra-ui/react";
 import { Endpoints, ProductRoleConfiguration } from "constants";
 import { useApiFetch, useDailyCacheState } from "hooks";
 import { useEffect, useMemo, useState } from "react";
+import { LuShieldCheck } from "react-icons/lu";
 import { useDashboard } from "..";
 
 const successRateLocalCacheKey = "inf-dashboard-success-rate";
@@ -130,14 +131,15 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			className="customScrollbars"
 			gap="4"
 		>
-			<Text
-				as="h2"
-				fontSize="xl"
+			<Flex
+				fontSize="lg"
 				fontWeight="semibold"
-				aria-label="Success Rate"
+				align="center"
+				gap="0.4em"
 			>
+				<LuShieldCheck color="#16a249" />
 				Success Rate
-			</Text>
+			</Flex>
 
 			<Divider />
 
