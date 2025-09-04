@@ -1,4 +1,4 @@
-export { formatDate, formatDateTime } from "./dateFormat";
+export { formatDate, formatDateTime, getDateDistance } from "./dateFormat";
 export {
 	getCompositeFaceBound,
 	getDefaultCrop,
