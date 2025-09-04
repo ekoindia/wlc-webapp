@@ -157,7 +157,7 @@ const securityHeaders = [
 // Default Content Security Policy
 const cspHeaders = [
 	// "default-src 'self';",
-	// "script-src * 'unsafe-inline';" // 'unsafe-eval' is not recommended
+	// "script-src * 'unsafe-inline';", // 'unsafe-eval' is not recommended
 	// "style-src 'self' 'unsafe-inline';",
 	// "img-src 'self' blob: data:;",
 	// "font-src 'self';",
