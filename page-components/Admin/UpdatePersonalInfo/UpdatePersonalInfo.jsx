@@ -8,10 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { ActionButtonGroup, PageTitle } from "components";
 import { Endpoints, ParamType, TransactionIds } from "constants";
-import {
-	nameValidation,
-	shopNameValidation,
-} from "constants/validationPatterns";
+import { nameValidation, shopNameValidation } from "constants/validation";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import useLocalStorage from "hooks/useLocalStorage";

@@ -3,7 +3,7 @@ import {
 	nameValidation,
 	phoneValidation,
 	shopNameValidation,
-} from "constants/validationPatterns";
+} from "constants/validation";
 
 describe("Validation Patterns", () => {
 	describe("Name validation", () => {

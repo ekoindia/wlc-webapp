@@ -57,7 +57,7 @@ export {
 	phoneValidation,
 	pincodeValidation,
 	shopNameValidation,
-} from "./validationPatterns";
+} from "./validation";
 export {
 	baseRoute,
 	initialRoute,
