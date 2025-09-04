@@ -151,6 +151,16 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
+	// New Dashboard Features (Graphs & updated UI)
+	DASHBOARD_V2: {
+		enabled: true,
+		envConstraints: {
+			production: {
+				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS],
+			},
+		},
+	},
+
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.

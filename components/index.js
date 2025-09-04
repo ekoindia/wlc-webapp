@@ -141,3 +141,5 @@ export { Markdown } from "./Markdown";
 export { MicInput } from "./MicInput";
 
 export { CopyButton } from "./CopyButton";
+
+export { SegmentedControl } from "./SegmentedControl";

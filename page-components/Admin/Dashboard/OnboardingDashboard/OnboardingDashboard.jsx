@@ -3,6 +3,7 @@ import { Endpoints, UserTypeIcon, UserTypeLabel } from "constants";
 import { useSession } from "contexts";
 import { useApiFetch } from "hooks";
 import { useEffect, useMemo, useState } from "react";
+import { LuHeartHandshake } from "react-icons/lu";
 import { OnboardedMerchants, OnboardingDashboardFilters } from ".";
 import { DashboardDateFilter, getDateRange, TopPanel, useDashboard } from "..";
 
@@ -240,9 +241,15 @@ const OnboardingDashboard = () => {
 			<TopPanel panelDataList={onboardingAgentsTopPanelData} />
 
 			<Flex direction="column" gap="2">
-				<Text fontSize="xl" fontWeight="semibold">
+				<Flex
+					fontSize="lg"
+					fontWeight="semibold"
+					align="center"
+					gap="0.4em"
+				>
+					<LuHeartHandshake color="#7c3bed" />
 					Onboarding Agents
-				</Text>
+				</Flex>
 
 				<Flex
 					direction="column"
