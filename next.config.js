@@ -1,5 +1,11 @@
 import withBundleAnalyzer from "@next/bundle-analyzer";
 
+// Extract domain from URL (remove protocol and path)
+const getDomainFromUrl = (url) => {
+	if (!url) return null;
+	return new URL(url).hostname;
+};
+
 const isProd = process.env.NEXT_PUBLIC_ENV === "production";
 const isDev = process.env.NEXT_PUBLIC_ENV === "development";
 const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
@@ -10,122 +16,103 @@ const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
  */
 const isDockerBuild = process.env.DOCKER_BUILD === "true";
 
-// --- Domain Constants for CSP ---
+// Domain Constants for CSP organized by directive type
 const SELF = "'self'";
-const LOCALHOST_DOMAINS = {
-	WEBAPP: "http://localhost:3000",
-	API: "http://localhost:8001",
-};
 
-// Core Eko Domains
-const EKO_DOMAINS = { GENERIC: "*.eko.in", FILES: "files.eko.co.in" };
-const EKO_CONNECT_PROD = {
-	API: "api.connect.eko.in",
-	APP: "connect.eko.in",
-};
-const EKO_CONNECT_DEV = {
-	API: "api.beta.ekoconnect.in",
-	APP: "beta.ekoconnect.in",
-};
+// Extract domains once for reuse
+const EKO_CONNECT_API_DOMAIN = getDomainFromUrl(
+	process.env.NEXT_PUBLIC_API_BASE_URL
+);
+const EKO_CONNECT_WIDGET_DOMAIN = getDomainFromUrl(
+	process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL
+);
 
-// Third-Party Domains
-const CDN_DOMAINS = {
-	CLOUDFLARE: "cdnjs.cloudflare.com",
-	DIGITALOCEAN: "*.digitaloceanspaces.com",
-};
-const GOOGLE_DOMAINS = {
-	ACCOUNTS: "accounts.google.com",
-	ANALYTICS: "www.google-analytics.com",
-};
-const YOUTUBE_DOMAINS = {
-	DEFAULT: "www.youtube.com",
-	IMG: "img.youtube.com",
-};
-const IFRAME_DOMAINS = {
-	BING: "www.bing.com",
-	ZOHO_FORMS: "zfrmz.in",
-	ZOHO_PUBLIC_FORMS: "forms.zohopublic.in",
-};
+// Create array of dynamic domains, filtering out null values
+const EKO_DOMAINS = [EKO_CONNECT_API_DOMAIN, EKO_CONNECT_WIDGET_DOMAIN].filter(
+	Boolean
+);
 
-// Misc Domains
-const MISC_DOMAINS = { COPILOT_KIT: "api.cloud.copilotkit.ai" };
+// --- CSP Domains organized by directive type ---
 
-// --- Environment-Specific Configuration ---
-const envConfig = {
-	production: {
-		connectDomains: Object.values(EKO_CONNECT_PROD),
-		scriptSrcUnsafe: [],
-	},
-	development: {
-		connectDomains: [
-			...Object.values(EKO_CONNECT_DEV),
-			...Object.values(LOCALHOST_DOMAINS),
-		],
-		scriptSrcUnsafe: ["'unsafe-eval'"],
-	},
-};
+// Domains for script-src directive (JavaScript execution)
+const SCRIPT_SRC_DOMAINS = [
+	SELF,
+	"'unsafe-inline'", // Required for inline scripts (GTM, etc.)
+	"data:", // Required for data: URIs in scripts
+	"*.eko.in", // Eko platform scripts
+	"accounts.google.com", // Google authentication scripts
+	"www.google-analytics.com", // Google Analytics scripts
+	"cdnjs.cloudflare.com", // CDN scripts
+	"www.youtube.com", // YouTube embed scripts
+	...EKO_DOMAINS,
+	...(isDev ? ["'unsafe-eval'"] : []),
+].filter(Boolean);
 
-const currentConfig = isProd ? envConfig.production : envConfig.development;
-// --- End of Configuration ---
+// Domains for style-src directive (CSS styles)
+const STYLE_SRC_DOMAINS = [
+	SELF,
+	"'unsafe-inline'", // Required for inline styles
+	"accounts.google.com", // Google authentication styles
+];
 
+// Domains for img-src directive (images)
+const IMG_SRC_DOMAINS = [
+	SELF,
+	"blob:", // Required for blob URLs
+	"data:", // Required for data: URIs
+	"*.eko.in", // Eko platform images
+	"files.eko.co.in", // Eko file server
+	"img.youtube.com", // YouTube thumbnails
+];
+
+// Domains for font-src directive (fonts)
+const FONT_SRC_DOMAINS = [SELF];
+
+// Domains for connect-src directive (XHR, fetch, WebSocket)
+const CONNECT_SRC_DOMAINS = [
+	SELF,
+	"*.eko.in", // Eko platform APIs
+	"files.eko.co.in", // Eko file server
+	"*.digitaloceanspaces.com", // DigitalOcean CDN
+	"www.youtube.com", // YouTube API
+	"api.cloud.copilotkit.ai", // CopilotKit API
+	...EKO_DOMAINS,
+].filter(Boolean);
+
+// Domains for frame-src directive (iframes)
+const FRAME_SRC_DOMAINS = [
+	SELF,
+	"accounts.google.com", // Google authentication iframe
+	"www.bing.com", // Bing maps iframe
+	"zfrmz.in", // Zoho forms iframe
+	"forms.zohopublic.in", // Zoho public forms iframe
+	"www.youtube.com", // YouTube embed iframe
+	...EKO_DOMAINS,
+].filter(Boolean);
+
+// Domains for base-uri directive (base tag restrictions)
+const BASE_URI_DOMAINS = [SELF, ...EKO_DOMAINS].filter(Boolean);
 // Content Security Policy (CSP) for multi-tenant environment
 // NOTE: 'unsafe-inline' in script-src is required due to inline <Script> usage (e.g., Google Tag Manager). To improve security, migrate all inline scripts to use a nonce/hash or load as external files. See pages/_app.tsx for GTM example. Remove 'unsafe-inline' if/when all inline scripts are eliminated.
-const getConnectSrcDomains = () => {
-	const baseDomains = [
-		SELF,
-		...Object.values(EKO_DOMAINS),
-		...Object.values(CDN_DOMAINS),
-		YOUTUBE_DOMAINS.DEFAULT,
-	];
-	return [...baseDomains, ...currentConfig.connectDomains];
-};
-
 const cspHeaders = [
 	// Only allow resources from the same origin by default. Blocks all external sources unless explicitly allowed below.
 	`default-src ${SELF}`,
-	// 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager). Remove 'unsafe-inline' if all inline scripts are migrated to nonce/hash or external files.
-	`script-src ${[
-		SELF,
-		"'unsafe-inline'",
-		"data:",
-		...Object.values(EKO_DOMAINS),
-		...Object.values(GOOGLE_DOMAINS),
-		...currentConfig.scriptSrcUnsafe,
-		...currentConfig.connectDomains.filter(
-			(d) => !Object.values(LOCALHOST_DOMAINS).includes(d)
-		), // Exclude localhost from script-src
-		CDN_DOMAINS.CLOUDFLARE,
-		YOUTUBE_DOMAINS.DEFAULT,
-	].join(" ")}`,
-	// Allows styles from self and Google accounts. 'unsafe-inline' allows inline styles (required for some libraries, but should be avoided if possible).
-	`style-src ${SELF} 'unsafe-inline' ${GOOGLE_DOMAINS.ACCOUNTS}`,
+	// Allow JavaScript execution from trusted domains. 'unsafe-inline' is present due to inline <Script> usage (e.g., Google Tag Manager).
+	`script-src ${SCRIPT_SRC_DOMAINS.join(" ")}`,
+	// Allow styles from self and trusted domains. 'unsafe-inline' allows inline styles (required for some libraries).
+	`style-src ${STYLE_SRC_DOMAINS.join(" ")}`,
 	// Allow images from self, blob, data, and trusted domains (e.g., for logos and static assets).
-	`img-src ${SELF} blob: data: ${[
-		...Object.values(EKO_DOMAINS),
-		YOUTUBE_DOMAINS.IMG,
-	].join(" ")}`,
+	`img-src ${IMG_SRC_DOMAINS.join(" ")}`,
 	// Allow fonts from self only.
-	`font-src ${SELF}`,
-	// Allow XHR/fetch/WebSocket connections to trusted domains (see getConnectSrcDomains for dynamic domains).
-	`connect-src ${[
-		...getConnectSrcDomains(),
-		...Object.values(MISC_DOMAINS),
-	].join(" ")}`,
-	// Allow embedding widgets and Google auth iframes. Blocks other external iframes.
-	`frame-src ${SELF} ${[
-		...Object.values(EKO_CONNECT_PROD),
-		...Object.values(EKO_CONNECT_DEV),
-		GOOGLE_DOMAINS.ACCOUNTS,
-		...Object.values(IFRAME_DOMAINS),
-		YOUTUBE_DOMAINS.DEFAULT,
-	].join(" ")}`,
+	`font-src ${FONT_SRC_DOMAINS.join(" ")}`,
+	// Allow XHR/fetch/WebSocket connections to trusted domains.
+	`connect-src ${CONNECT_SRC_DOMAINS.join(" ")}`,
+	// Allow embedding widgets and trusted iframes. Blocks other external iframes.
+	`frame-src ${FRAME_SRC_DOMAINS.join(" ")}`,
 	// Block all plugins and object/embed elements for security.
 	"object-src 'none'",
-	// Allow base URI to be set to self or trusted widget domains. Prevents base tag abuse from other origins.
-	`base-uri ${SELF} ${[
-		...Object.values(EKO_CONNECT_PROD),
-		...Object.values(EKO_CONNECT_DEV),
-	].join(" ")}`,
+	// Allow base URI to be set to self or trusted domains. Prevents base tag abuse from other origins.
+	`base-uri ${BASE_URI_DOMAINS.join(" ")}`,
 	// Only allow forms to be submitted to self. Blocks data exfiltration via forms.
 	"form-action 'self'",
 	// Prevent the site from being embedded in any iframe. Protects against clickjacking.
