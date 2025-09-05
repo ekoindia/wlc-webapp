@@ -19,18 +19,11 @@ const isDockerBuild = process.env.DOCKER_BUILD === "true";
 // Domain Constants for CSP organized by directive type
 const SELF = "'self'";
 
-// Extract domains once for reuse
-const EKO_CONNECT_API_DOMAIN = getDomainFromUrl(
-	process.env.NEXT_PUBLIC_API_BASE_URL
-);
-const EKO_CONNECT_WIDGET_DOMAIN = getDomainFromUrl(
-	process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL
-);
-
 // Create array of dynamic domains, filtering out null values
-const EKO_DOMAINS = [EKO_CONNECT_API_DOMAIN, EKO_CONNECT_WIDGET_DOMAIN].filter(
-	Boolean
-);
+const EKO_DOMAINS = [
+	getDomainFromUrl(process.env.NEXT_PUBLIC_API_BASE_URL),
+	getDomainFromUrl(process.env.NEXT_PUBLIC_CONNECT_WIDGET_URL),
+].filter(Boolean);
 
 // --- CSP Domains organized by directive type ---
 
