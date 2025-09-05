@@ -10,6 +10,10 @@ const isProd = process.env.NEXT_PUBLIC_ENV === "production";
 const isDev = process.env.NEXT_PUBLIC_ENV === "development";
 const isDebugMode = process.env.NEXT_PUBLIC_DEBUG === "true";
 
+// Feature flag to enable/disable security headers (CSP, etc.)
+const ENABLE_SECURITY_HEADERS =
+	process.env.NEXT_PUBLIC_ENABLE_SECURITY_HEADERS === "true";
+
 /**
  * Check if the build is running inside a Docker container to generate the standalone build.
  * This envoirnment variable can be passed in the Dockerfile.
@@ -300,8 +304,25 @@ const nextConfig = {
 			// },
 		];
 	},
-	// Enable security headers to fix vulnerabilities
+
+	/**
+	 * Conditionally applies security headers to all application routes.
+	 *
+	 * This function checks the `ENABLE_SECURITY_HEADERS` environment variable.
+	 * - If `true`, it applies the `securityHeaders` array to all routes (`/(.*)`).
+	 * - If `false`, it returns an empty array, effectively disabling all custom security headers.
+	 *
+	 * Note: Next.js does not apply security headers like CSP by default. Disabling this
+	 * in production will expose the application to common web vulnerabilities. Standard
+	 * HTTP headers required for responses (e.g., `Content-Type`) will still be applied
+	 * even if this function returns an empty array.
+	 * @returns {Promise<Array<{source: string, headers: Array<{key: string, value: string}>}>>} A promise that resolves to an array of header objects.
+	 */
 	async headers() {
+		if (!ENABLE_SECURITY_HEADERS) {
+			return [];
+		}
+
 		return [
 			{
 				// Apply security headers to all routes to fix security vulnerabilities
