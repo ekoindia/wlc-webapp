@@ -319,17 +319,17 @@ const nextConfig = {
 	 * @returns {Promise<Array<{source: string, headers: Array<{key: string, value: string}>}>>} A promise that resolves to an array of header objects.
 	 */
 	async headers() {
-		if (!ENABLE_SECURITY_HEADERS) {
-			return [];
+		if (ENABLE_SECURITY_HEADERS) {
+			return [
+				{
+					// Apply security headers to all routes to fix security vulnerabilities
+					source: "/(.*)",
+					headers: securityHeaders,
+				},
+			];
 		}
 
-		return [
-			{
-				// Apply security headers to all routes to fix security vulnerabilities
-				source: "/(.*)",
-				headers: securityHeaders,
-			},
-		];
+		return [];	// Disable security headers by default
 	},
 
 	// async headers() {
