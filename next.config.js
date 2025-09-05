@@ -88,7 +88,7 @@ const FRAME_SRC_DOMAINS = [
 ].filter(Boolean);
 
 // Domains for base-uri directive (base tag restrictions)
-const BASE_URI_DOMAINS = [SELF, ...EKO_DOMAINS].filter(Boolean);
+const BASE_URI_DOMAINS = [SELF, ...EKO_DOMAINS];
 // Content Security Policy (CSP) for multi-tenant environment
 // NOTE: 'unsafe-inline' in script-src is required due to inline <Script> usage (e.g., Google Tag Manager). To improve security, migrate all inline scripts to use a nonce/hash or load as external files. See pages/_app.tsx for GTM example. Remove 'unsafe-inline' if/when all inline scripts are eliminated.
 const cspHeaders = [
