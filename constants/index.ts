@@ -46,6 +46,19 @@ export {
 } from "./trxnFramework";
 export { UserType, UserTypeIcon, UserTypeLabel } from "./UserTypes";
 export {
+	aadhaarValidation,
+	addressValidation,
+	alphanumericValidation,
+	amountValidation,
+	descriptionValidation,
+	emailValidation,
+	nameValidation,
+	panValidation,
+	phoneValidation,
+	pincodeValidation,
+	shopNameValidation,
+} from "./validation";
+export {
 	baseRoute,
 	initialRoute,
 	publicLinks,
