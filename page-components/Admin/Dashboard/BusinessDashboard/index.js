@@ -4,4 +4,5 @@ export { default as BusinessDashboardFilters } from "./BusinessDashboardFilters"
 export { default as EarningOverview } from "./EarningOverview";
 export { default as SuccessRate } from "./SuccessRate";
 export { default as TopMerchants } from "./TopMerchants";
-export { TopMerchantsTable } from "./TopMerchantsTable";
+export { default as TopMerchantsChart } from "./TopMerchantsChart";
+export { default as TopMerchantsTable } from "./TopMerchantsTable";
