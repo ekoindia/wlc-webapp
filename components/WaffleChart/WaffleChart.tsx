@@ -106,6 +106,11 @@ const WaffleChart = ({
 		return result;
 	}, [squareDistribution, rows, cols]);
 
+	// Handle empty data case
+	if (!data || data.length === 0) {
+		return null;
+	}
+
 	// MARK: jsx
 	return (
 		<Tooltip
