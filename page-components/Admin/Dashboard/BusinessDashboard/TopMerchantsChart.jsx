@@ -45,7 +45,7 @@ const TopMerchantsChart = ({ agentList }) => {
 					accessibilityLayer={false}
 					// syncMethod="index"
 					layout="vertical"
-					data={agentList}
+					data={agentList?.slice(0, 10)} // Limit agentList to max top 10
 					barGap={0}
 					barCategoryGap="10px"
 					margin={{
