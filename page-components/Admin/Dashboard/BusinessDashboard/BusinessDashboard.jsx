@@ -26,6 +26,7 @@ const BusinessDashboard = () => {
 	const { role_list } = userDetails;
 
 	const [dateRange, setDateRange] = useState("today");
+	const [totalBusiness, setTotalBusiness] = useState({});
 
 	const { cachedTodaysDateTo, setCachedTodaysDateTo } = useDashboard();
 
@@ -42,7 +43,7 @@ const BusinessDashboard = () => {
 		const productListWithRoleList =
 			ProductRoleConfiguration?.products ?? [];
 
-		const allOption = { label: "All", value: "" };
+		const allOption = { label: "All Products", value: "" };
 
 		if (!role_list || productListWithRoleList.length === 0) {
 			return [allOption];
@@ -106,6 +107,7 @@ const BusinessDashboard = () => {
 					dateFrom={prevDate}
 					dateTo={_currDate}
 					productFilterList={productFilterList}
+					setTotalBusiness={setTotalBusiness}
 				/>
 
 				<SuccessRate dateFrom={prevDate} dateTo={currDate} />
@@ -115,6 +117,7 @@ const BusinessDashboard = () => {
 				dateFrom={prevDate}
 				dateTo={_currDate}
 				productFilterList={productFilterList}
+				totalBusiness={totalBusiness}
 			/>
 		</Flex>
 	);
@@ -130,21 +133,57 @@ export default BusinessDashboard;
 const transformActiveAgentsData = (apiData) => {
 	if (!apiData || typeof apiData !== "object") return [];
 
-	return Object.entries(apiData)
+	const agentsData = Object.entries(apiData)
 		.map(([key, data]) => {
 			const userType = UserTypeLabel[key]; // Get label from mapping
 			const userTypeIcon = UserTypeIcon[key];
 			if (!userType) return null; // Ignore unknown user types
+			if (!data) return null; // Ignore if no data is present
+
+			const activeCount = parseInt(data.activecount, 10);
+			const totalCount = parseInt(data.totalcount, 10);
+
+			if (!activeCount) return null;
 
 			return {
 				key: `active${userType.replace(/\s+/g, "")}`, // Convert to camelCase
 				label: `Active ${userType}(s)`,
-				value: parseInt(data.activecount, 10), // Ensure numeric value
+				value: activeCount, // Ensure numeric value
 				type: "number",
 				// variation: `${(data.activecount / data.totalcount) * 100}`,
-				info: `of ${data.totalcount} Total`,
+				total: totalCount,
+				info: `of ${totalCount} Total`,
 				icon: userTypeIcon ?? "person",
 			};
 		})
 		.filter(Boolean); // Remove null values
+
+	// If only one data point, don't calculate total...
+	if (agentsData?.length <= 1) {
+		return agentsData;
+	}
+
+	// Calculate total active & total overall agents...
+	const totalAgents = agentsData.reduce(
+		(sum, agent) => {
+			sum.active += agent.value;
+			sum.total += agent.total;
+			return sum;
+		},
+		{ active: 0, total: 0 }
+	);
+
+	return [
+		{
+			key: `activeOverall`,
+			label: `Total Active Users`,
+			value: totalAgents.active,
+			type: "number",
+			// variation: `${(data.activecount / data.totalcount) * 100}`,
+			info: `of ${totalAgents.total} Total`,
+			total: totalAgents.total,
+			icon: "",
+		},
+		...agentsData,
+	];
 };

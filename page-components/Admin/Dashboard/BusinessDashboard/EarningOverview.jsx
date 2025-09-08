@@ -1,9 +1,23 @@
 import { Divider, Flex, Grid, Select, Skeleton, Text } from "@chakra-ui/react";
-import { Currency, Icon } from "components";
+import { Currency, Icon, WaffleChart } from "components";
 import { Endpoints } from "constants";
-import { useApiFetch } from "hooks";
-import React, { useEffect, useState } from "react";
+import { useApiFetch, useFeatureFlag } from "hooks";
+import { useEffect, useState } from "react";
+import { LuActivity } from "react-icons/lu";
 import { useDashboard } from "..";
+
+// Product Chart Colors
+const COLORS = [
+	"#7eb0d5",
+	"#bd7ebe",
+	"#b2e061",
+	"#ffb55a",
+	"#ffee65",
+	"#beb9db",
+	"#fdcce5",
+	"#8bd3c7",
+	"#fd7f6f",
+];
 
 // Helper function to generate cache key
 const getCacheKey = (productFilter, dateFrom, dateTo) => {
@@ -29,6 +43,7 @@ const calculateVariation = (current, lastMonth) => {
  * @param {Array} props.productFilterList - List of product filters.
  * @param {string} props.dateFrom - Start date for filtering data.
  * @param {string} props.dateTo - End date for filtering data.
+ * @param {Function} props.setTotalBusiness - Function to set total business data (total GTV & Transaction count) in parent component.
  * @example
  * <EarningOverview
  *   dateFrom="2023-01-01"
@@ -36,18 +51,44 @@ const calculateVariation = (current, lastMonth) => {
  *   productFilterList={[{ label: "Product 1", value: "81" }]}
  * />
  */
-const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
+const EarningOverview = ({
+	dateFrom,
+	dateTo,
+	productFilterList,
+	setTotalBusiness,
+}) => {
 	const [productFilter, setProductFilter] = useState("");
 	const [earningOverviewData, setEarningOverviewData] = useState({});
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
+	const [productWiseData, setProductWiseData] = useState([]);
 
-	// MARK: Fetching Product Overview Data
+	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
+
+	// MARK: API Handler
 	const [fetchEarningOverviewData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
 		{
 			onSuccess: (res) => {
 				const _data =
 					res?.data?.dashboard_object?.products_overview || [];
+
+				// const productWiseData = JSON.parse(
+				// 	_data?.gtv?.typeBreakdown || {}
+				// );
+
+				// // Convert `productWiseData` object to array
+				// const productWiseDataArray = Object.entries(
+				// 	productWiseData
+				// ).map(([key, value]) => ({
+				// 	id: key,
+				// 	...value,
+				// 	label: value.name, // For Waffle Chart
+				// 	value: value.amount, // For Waffle Chart
+				// }));
+
+				// if (productWiseDataArray) {
+				// 	setProductWiseData(productWiseDataArray);
+				// }
 
 				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
 
@@ -61,20 +102,69 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 				}));
 
 				setEarningOverviewData(_data);
+
+				// Inform parent component
+				if (!productFilter) {
+					setTotalBusiness(_data);
+				}
 			},
 		}
 	);
 
+	// Calculate/parse Product-wise data...
+	useEffect(() => {
+		let typeBreakdown = earningOverviewData?.gtv?.typeBreakdown;
+
+		try {
+			if (typeof typeBreakdown === "string") {
+				typeBreakdown = JSON.parse(typeBreakdown);
+			}
+		} catch (error) {
+			console.error("Error parsing product-wise data:", error);
+			setProductWiseData([]);
+			return;
+		}
+
+		// if (!typeBreakdown) return;
+
+		const parsedData = typeBreakdown
+			? Object.entries(typeBreakdown)?.map(([key, value]) => ({
+					id: key,
+					...value,
+					label: value.name, // For Waffle Chart
+					value: value.amount, // For Waffle Chart
+				}))
+			: null;
+
+		// const parsedData = typeBreakdown.map((item) => ({
+		// 	...item,
+		// 	value: item.value || 0,
+		// 	label: item.label || "Unknown",
+		// }));
+		// console.log("Earning Overview Data - parsed data:", parsedData);
+
+		if (parsedData && Array.isArray(parsedData) && parsedData.length > 0) {
+			setProductWiseData(parsedData || []);
+		} else {
+			setProductWiseData([]);
+		}
+	}, [earningOverviewData]);
+
+	// MARK: Fetch Data
 	useEffect(() => {
 		if (!dateFrom || !dateTo) return;
 
 		const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
 
 		// Use cached data if available
-		if (businessDashboardData?.earningOverviewCache?.[cacheKey]) {
-			setEarningOverviewData(
-				businessDashboardData.earningOverviewCache[cacheKey]
-			);
+		const cachedData =
+			businessDashboardData?.earningOverviewCache?.[cacheKey];
+		if (cachedData) {
+			setEarningOverviewData(cachedData);
+			// Inform parent component
+			if (!productFilter) {
+				setTotalBusiness(cachedData);
+			}
 			return;
 		}
 
@@ -164,6 +254,7 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 		},
 	];
 
+	// MARK: jsx
 	return (
 		<Flex
 			direction="column"
@@ -180,15 +271,22 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 				gap={{ base: "2", md: "4" }}
 				w="100%"
 			>
-				<Text fontSize="xl" fontWeight="semibold">
-					Earning Overview
-				</Text>
+				<Flex
+					fontSize="lg"
+					fontWeight="semibold"
+					align="center"
+					gap="0.4em"
+				>
+					<LuActivity color="#3c83f6" />
+					Business Overview
+				</Flex>
+
 				<Flex w={{ base: "100%", md: "auto" }}>
 					<Select
 						variant="filled"
 						value={productFilter}
 						onChange={(e) => setProductFilter(e.target.value)}
-						size="sm"
+						size="xs"
 					>
 						{productFilterList.map(({ label, value }) => (
 							<option key={value} value={value}>
@@ -198,186 +296,181 @@ const EarningOverview = ({ dateFrom, dateTo, productFilterList }) => {
 					</Select>
 				</Flex>
 			</Flex>
+
 			<Divider />
-			<Flex h="100%" w="100%" align="center">
+
+			<Flex direction="row-reverse" gap="8">
+				{showNewDashboard ? (
+					<WaffleChart
+						data={productWiseData}
+						colors={COLORS}
+						rows={10}
+						cols={3}
+						size="10px"
+						gap="4px"
+						animationDuration="0.2s"
+						animationDelay="0.02s"
+					/>
+				) : null}
+
 				<Grid
-					templateColumns={{
-						base: "1fr",
-						md: "repeat(auto-fit, minmax(160px, 1fr))",
-					}}
-					gap={{ base: "2", md: "8" }}
+					templateColumns="repeat(auto-fit, minmax(130px, 1fr))"
+					gap={{ base: "4", md: "8" }}
 					w="100%"
 				>
 					{earningOverviewList.map(
-						(item, index) =>
-							item.value !== 0 && (
-								<React.Fragment key={item.key}>
-									<Flex
-										direction={{
-											base: "row",
-											md: "column",
-										}}
-										justify={{
-											base: "space-between",
-											md: "flex-start",
-										}}
-										w="100%"
-										gap="1"
-									>
+						(item) =>
+							item.value != 0 && (
+								<Flex
+									key={item.key}
+									direction={{
+										base: "row",
+										md: "column",
+									}}
+									justify={{
+										base: "space-between",
+										md: "flex-start",
+									}}
+									w="100%"
+									gap="1"
+									paddingLeft="8px"
+									borderLeft="4px solid"
+									borderColor="divider"
+								>
+									<Flex direction="column" align="flex-start">
+										{/* Value */}
+										<Flex
+											fontWeight="500"
+											fontSize="1.3em"
+											color="primary.DEFAULT"
+										>
+											<Skeleton isLoaded={!isLoading}>
+												{item.type === "amount" ? (
+													<Currency
+														amount={item.value}
+													/>
+												) : (
+													<span>{item.value}</span>
+												)}
+											</Skeleton>
+										</Flex>
+										{/* Label */}
+										<Text
+											fontSize="0.75em"
+											textAlign="center"
+											whiteSpace="nowrap"
+											opacity="0.7"
+										>
+											<Skeleton isLoaded={!isLoading}>
+												{item.label}
+											</Skeleton>
+										</Text>
+									</Flex>
+
+									{item.lastPeriod !== 0 && (
 										<Flex
 											direction="column"
 											align={{
-												base: "flex-start",
+												base: "flex-end",
 												md: "center",
 											}}
 											gap="1"
 										>
-											<Text
-												fontSize="sm"
-												textAlign="center"
+											<Flex
+												fontSize="xs"
 												whiteSpace="nowrap"
-											>
-												<Skeleton isLoaded={!isLoading}>
-													{item.label}
-												</Skeleton>
-											</Text>
-											<Flex
-												fontWeight="semibold"
-												color="primary.DEFAULT"
-											>
-												<Skeleton isLoaded={!isLoading}>
-													{item.type === "amount" ? (
-														<Currency
-															amount={item.value}
-														/>
-													) : (
-														<span>
-															{item.value}
-														</span>
-													)}
-												</Skeleton>
-											</Flex>
-										</Flex>
-										{item.lastPeriod !== 0 && (
-											<Flex
-												direction="column"
-												align={{
-													base: "flex-end",
-													md: "center",
-												}}
 												gap="1"
 											>
-												<Flex
-													fontSize="xs"
-													whiteSpace="nowrap"
-													gap="1"
-												>
-													<span>Last Period:</span>
-													<Flex fontWeight="semibold">
-														<Skeleton
-															isLoaded={
-																!isLoading
-															}
-														>
-															{item.type ===
-															"amount" ? (
-																<Currency
-																	amount={
-																		item.lastPeriod
-																	}
-																/>
-															) : (
-																<span>
-																	{
-																		item.lastPeriod
-																	}
-																</span>
-															)}
-														</Skeleton>
-													</Flex>
-												</Flex>
-												{item.variation && (
-													<Flex
-														gap="1"
-														align="center"
+												<span>Last Period:</span>
+												<Flex fontWeight="semibold">
+													<Skeleton
+														isLoaded={!isLoading}
 													>
-														<Skeleton
-															isLoaded={
-																!isLoading
+														{item.type ===
+														"amount" ? (
+															<Currency
+																amount={
+																	item.lastPeriod
+																}
+															/>
+														) : (
+															<span>
+																{
+																	item.lastPeriod
+																}
+															</span>
+														)}
+													</Skeleton>
+												</Flex>
+											</Flex>
+											{item.variation && (
+												<Flex gap="1" align="center">
+													<Skeleton
+														isLoaded={!isLoading}
+													>
+														<Icon
+															name={
+																parseFloat(
+																	item.variation
+																) > 0
+																	? "arrow-increase"
+																	: "arrow-decrease"
+															}
+															color={
+																parseFloat(
+																	item.variation
+																) > 0
+																	? "success"
+																	: "error"
+															}
+															size="xs"
+														/>
+													</Skeleton>
+													<Flex
+														fontSize="10px"
+														wrap="nowrap"
+														gap="1"
+													>
+														<Text
+															color={
+																parseFloat(
+																	item.variation
+																) > 0
+																	? "success"
+																	: "error"
 															}
 														>
-															<Icon
-																name={
-																	parseFloat(
-																		item.variation
-																	) > 0
-																		? "arrow-increase"
-																		: "arrow-decrease"
-																}
-																color={
-																	parseFloat(
-																		item.variation
-																	) > 0
-																		? "success"
-																		: "error"
-																}
-																size="xs"
-															/>
-														</Skeleton>
-														<Flex
-															fontSize="10px"
-															wrap="nowrap"
-															gap="1"
-														>
-															<Text
-																color={
-																	parseFloat(
-																		item.variation
-																	) > 0
-																		? "success"
-																		: "error"
+															<Skeleton
+																isLoaded={
+																	!isLoading
 																}
 															>
-																<Skeleton
-																	isLoaded={
-																		!isLoading
-																	}
-																>
-																	{isNaN(
-																		item.variation
-																	)
-																		? item.variation
-																		: `${item.variation}%`}
-																</Skeleton>
-															</Text>
-															<Text>
-																<Skeleton
-																	isLoaded={
-																		!isLoading
-																	}
-																>
-																	{parseFloat(
-																		item.variation
-																	) > 0
-																		? "Increase"
-																		: "Decrease"}
-																</Skeleton>
-															</Text>
-														</Flex>
+																{isNaN(
+																	item.variation
+																)
+																	? item.variation
+																	: `${item.variation}%`}
+															</Skeleton>
+														</Text>
+														<Text>
+															<Skeleton
+																isLoaded={
+																	!isLoading
+																}
+															>
+																{parseFloat(
+																	item.variation
+																) > 0
+																	? "Increase"
+																	: "Decrease"}
+															</Skeleton>
+														</Text>
 													</Flex>
-												)}
-											</Flex>
-										)}
-									</Flex>
-									{index < earningOverviewList.length - 1 && (
-										<Divider
-											display={{
-												base: "block",
-												md: "none",
-											}}
-										/>
+												</Flex>
+											)}
+										</Flex>
 									)}
-								</React.Fragment>
+								</Flex>
 							)
 					)}
 				</Grid>

@@ -2,6 +2,7 @@ import { Box, Flex, Grid, Text } from "@chakra-ui/react";
 import { Currency, IcoButton, Icon, XScrollArrow } from "components";
 import { useAiChatbotPopup, useFeatureFlag } from "hooks";
 import { RiChatAiLine } from "react-icons/ri";
+import { Cell, Label, Pie, PieChart, Tooltip } from "recharts";
 
 /**
  * A TopPanel page-component
@@ -22,14 +23,17 @@ import { RiChatAiLine } from "react-icons/ri";
  * @returns {JSX.Element|null} The rendered component or null if no data
  */
 const TopPanel = ({ panelDataList }) => {
-	if (!panelDataList?.length) return null;
+	const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT_HOME");
+	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
+
+	if (!isAiChatBotAllowed && !panelDataList?.length) return null;
 
 	return (
 		<XScrollArrow pos="center" mb="10px" ml="-30px" w="calc(100% + 60px)">
 			<Grid
 				px="30px"
 				templateColumns="repeat(auto-fit, minmax(250px, 1fr))"
-				gap="4"
+				gap={{ base: "2", md: "4" }}
 				whiteSpace="nowrap"
 				display="flex"
 				py="10px"
@@ -50,7 +54,9 @@ const TopPanel = ({ panelDataList }) => {
 				{panelDataList
 					?.filter(
 						(item) =>
-							item.value !== null && item.value !== undefined
+							item &&
+							item.value !== null &&
+							item.value !== undefined
 					)
 					.map((item) => (
 						<Flex
@@ -60,7 +66,8 @@ const TopPanel = ({ panelDataList }) => {
 							p="12px 18px"
 							border="basic"
 							borderRadius="10px"
-							minW={{ base: "250px", sm: "300px" }}
+							minW="250px" // {{ base: "200px", sm: "250px" }}
+							gap="1em"
 						>
 							<Flex direction="column" gap="1">
 								<Text fontSize="sm">{item.label}</Text>
@@ -131,14 +138,85 @@ const TopPanel = ({ panelDataList }) => {
 									) : null}
 								</Flex>
 							</Flex>
-							<Flex align="center">
-								<IcoButton
-									size="md"
-									color="white"
-									iconName={item.icon}
-									rounded={10}
-									bgGradient="linear(to-b, primary.light, primary.dark)"
-								/>
+							<Flex align="center" position="relative">
+								{item.key === "activeOverall" ? (
+									showNewDashboard ? (
+										<PieChart
+											accessibilityLayer={false}
+											width={65}
+											height={65}
+											margin={{
+												top: 0,
+												right: 0,
+												bottom: 0,
+												left: 0,
+											}}
+											style={{ outline: "none" }}
+										>
+											<Pie
+												data={[
+													{
+														name: "Active Users",
+														value: item.value,
+													},
+													{
+														name: "Inactive Users",
+														value:
+															item.total -
+															item.value,
+													},
+												]}
+												// cx="50%"
+												// cy="50%"
+												// radius={35}
+												// startAngle={360}
+												// endAngle={0}
+												outerRadius="100%"
+												innerRadius="70%" //{22}
+												cornerRadius={99}
+												paddingAngle={6}
+												minAngle={1}
+												dataKey="value"
+												nameKey="name"
+												tabIndex={-1}
+												style={{ outline: "none" }}
+											>
+												{item.value > 0 && (
+													<Cell fill="#4ECDC4" />
+												)}
+												{item.total - item.value >
+													0 && (
+													<Cell fill="#FF6B6B" />
+												)}
+											</Pie>
+											{/* Show a label at the center of the piechart */}
+											<Label
+												position="center"
+												fontSize="0.7em"
+												fontWeight="700"
+											>
+												{`${(
+													(item.value / item.total) *
+													100
+												).toFixed(0)}%`}
+											</Label>
+											<Tooltip
+												contentStyle={{
+													fontSize: "0.6em",
+													padding: "0 8px",
+												}}
+											/>
+										</PieChart>
+									) : null
+								) : (
+									<IcoButton
+										size="md"
+										color="white"
+										iconName={item.icon}
+										rounded={10}
+										bgGradient="linear(to-b, primary.light, primary.dark)"
+									/>
+								)}
 							</Flex>
 						</Flex>
 					))}
