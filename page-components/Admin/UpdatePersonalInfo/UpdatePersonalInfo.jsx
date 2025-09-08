@@ -2,27 +2,21 @@ import {
 	Box,
 	Divider,
 	Flex,
-	FormControl,
 	SimpleGrid,
 	Text,
 	useToast,
 } from "@chakra-ui/react";
-import {
-	ActionButtonGroup,
-	Calenders,
-	Input,
-	PageTitle,
-	Radio,
-	Select,
-} from "components";
-import { Endpoints, TransactionIds } from "constants";
+import { ActionButtonGroup, PageTitle } from "components";
+import { Endpoints, ParamType, TransactionIds } from "constants";
+import { nameValidation, shopNameValidation } from "constants/validation";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
 import useLocalStorage from "hooks/useLocalStorage";
 import { formatDate } from "libs";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useCallback, useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { Form } from "tf-components";
 
 const getStatus = (status) => {
 	switch (status) {
@@ -54,7 +48,8 @@ const nameSplitter = (name) => {
 	};
 };
 
-const findObjectByValue = (arr, value) => arr.find((obj) => obj.value == value);
+const findObjectByValue = (arr, value) =>
+	arr.find((obj) => obj.value === value);
 
 const gender_list = [
 	{ value: "Male", label: "Male" },
@@ -85,9 +80,9 @@ let thirteenYearsAgo = new Date();
 thirteenYearsAgo.setFullYear(currentDate.getFullYear() - 13);
 
 /**
- * A UpdatePersonalInformation page-component
- * @param 	{object}	prop	Properties passed to the component
- * @param	{string}	[prop.className]	Optional classes to pass to this component.
+ * UpdatePersonalInformation page component for updating agent personal details
+ * Includes comprehensive form validation for all input fields
+ * @returns {JSX.Element} - The UpdatePersonalInfo component
  * @example	`<UpdatePersonalInfo></UpdatePersonalInfo>`
  */
 const UpdatePersonalInfo = () => {
@@ -102,6 +97,8 @@ const UpdatePersonalInfo = () => {
 	const { accessToken } = useSession();
 	const toast = useToast();
 	const router = useRouter();
+	const { query } = router;
+	const mobile = query.mobile;
 
 	const {
 		handleSubmit,
@@ -109,9 +106,15 @@ const UpdatePersonalInfo = () => {
 		formState: { errors, isSubmitting },
 		control,
 		reset,
-	} = useForm();
+	} = useForm({
+		mode: "onChange",
+	});
 
-	const fetchShopTypes = () => {
+	const watcher = useWatch({
+		control,
+	});
+
+	const fetchShopTypes = useCallback(() => {
 		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
 			body: {
 				interaction_type_id: TransactionIds.SHOP_TYPE,
@@ -126,17 +129,41 @@ const UpdatePersonalInfo = () => {
 			.catch((err) => {
 				console.error("err", err);
 			});
-	};
+	}, [accessToken, setShopTypes]);
+
+	const fetchAgentDataViaCellNumber = useCallback(() => {
+		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
+			headers: {
+				"tf-req-uri-root-path": "/ekoicici/v1",
+				"tf-req-uri": `/network/agents?record_count=1&search_value=${encodeURIComponent(mobile)}`,
+				"tf-req-method": "GET",
+			},
+			token: accessToken,
+		})
+			.then((res) => {
+				setAgentData(res?.data?.agent_details[0]);
+			})
+			.catch((error) => {
+				console.error("[ProfilePanel] Get Agent Detail Error:", error);
+			});
+	}, [accessToken, mobile, setAgentData]);
 
 	useEffect(() => {
+		// if shopTypes is not available, fetch it
 		if (!shopTypes?.length) {
 			fetchShopTypes();
 		}
 
+		// if agentData is not available, fetch it using the cell number
 		if (!agentData) {
 			fetchAgentDataViaCellNumber();
 		}
-	}, []);
+	}, [
+		agentData,
+		shopTypes?.length,
+		fetchShopTypes,
+		fetchAgentDataViaCellNumber,
+	]);
 
 	useEffect(() => {
 		if (agentData !== undefined) {
@@ -173,7 +200,7 @@ const UpdatePersonalInfo = () => {
 
 			reset({ ...defaultValues });
 		}
-	}, [agentData, shopTypes]);
+	}, [agentData, shopTypes, reset]);
 
 	const handleFormPreview = (previewData) => {
 		console.log("previewData", previewData);
@@ -196,7 +223,7 @@ const UpdatePersonalInfo = () => {
 						_previewDataObj.key !== "shop_type"
 							? previewData[key]
 							: shopTypes?.find(
-									(item) => item.value == previewData[key]
+									(item) => item.value === previewData[key]
 								)?.label,
 				};
 				_previewData.push(_previewDataObj);
@@ -257,46 +284,96 @@ const UpdatePersonalInfo = () => {
 			});
 	};
 
-	const fetchAgentDataViaCellNumber = () => {
-		fetcher(process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION, {
-			headers: {
-				"tf-req-uri-root-path": "/ekoicici/v1",
-				// "tf-req-uri": `/network/agents?record_count=1&search_value=${mobile}`,
-				"tf-req-method": "GET",
-			},
-			token: accessToken,
-		})
-			.then((res) => {
-				setAgentData(res?.data?.agent_details[0]);
-			})
-			.catch((error) => {
-				console.error("[ProfilePanel] Get Agent Detail Error:", error);
-			});
-	};
-
-	const formNameInputList = [
+	/**
+	 * Parameter list for the Form component following tf-components pattern
+	 */
+	const parameter_list = [
 		{
-			id: "first_name",
+			name: "first_name",
 			label: "First Name",
+			parameter_type_id: ParamType.TEXT,
 			required: true,
-			defaultValue: agentData?.agent_name,
-			validation: { required: "⚠ Required" },
+			validations: {
+				pattern: nameValidation.regex,
+				minLength: nameValidation.minLength,
+				maxLength: nameValidation.maxLength,
+			},
 		},
-		{ id: "middle_name", label: "Middle Name", required: false },
 		{
-			id: "last_name",
+			name: "middle_name",
+			label: "Middle Name",
+			parameter_type_id: ParamType.TEXT,
+			required: false,
+			validations: {
+				pattern: nameValidation.regex,
+				minLength: nameValidation.minLength,
+				maxLength: nameValidation.maxLength,
+			},
+		},
+		{
+			name: "last_name",
 			label: "Last Name",
+			parameter_type_id: ParamType.TEXT,
 			required: true,
-			validation: { required: "⚠ Required" },
+			validations: {
+				pattern: nameValidation.regex,
+				minLength: nameValidation.minLength,
+				maxLength: nameValidation.maxLength,
+			},
+		},
+		{
+			name: "dob",
+			label: "Date of birth",
+			parameter_type_id: ParamType.FROM_DATE,
+			required: true,
+			maxDate: maxDate,
+		},
+		{
+			name: "gender",
+			label: "Gender",
+			parameter_type_id: ParamType.LIST,
+			required: true,
+			list_elements: gender_list,
+		},
+		{
+			name: "marital_status",
+			label: "Marital Status",
+			parameter_type_id: ParamType.LIST,
+			required: false,
+			list_elements: marital_status_list,
+		},
+		{
+			name: "shop_name",
+			label: "Shop Name",
+			parameter_type_id: ParamType.TEXT,
+			required: true,
+			validations: {
+				pattern: shopNameValidation.regex,
+				minLength: shopNameValidation.minLength,
+				maxLength: shopNameValidation.maxLength,
+			},
+		},
+		{
+			name: "shop_type",
+			label: "Shop Type",
+			parameter_type_id: ParamType.LIST,
+			required: true,
+			list_elements: shopTypes,
 		},
 	];
 
-	const PreviewButtonConfigList = [
+	const previewButtonConfigList = [
 		{
 			type: "submit",
 			size: "lg",
 			label: "Preview",
-			styles: { h: "64px", w: { base: "100%", md: "200px" } },
+			styles: {
+				h: "64px",
+				w: {
+					base: "100%",
+					md: "200px",
+				},
+			},
 		},
 		{
 			variant: "link",
@@ -304,15 +381,26 @@ const UpdatePersonalInfo = () => {
 			onClick: () => router.back(),
 			styles: {
 				color: "primary.DEFAULT",
-				bg: { base: "white", md: "none" },
-				h: { base: "64px", md: "64px" },
-				w: { base: "100%", md: "auto" },
-				_hover: { textDecoration: "none" },
+				bg: {
+					base: "white",
+					md: "none",
+				},
+				h: {
+					base: "64px",
+					md: "64px",
+				},
+				w: {
+					base: "100%",
+					md: "auto",
+				},
+				_hover: {
+					textDecoration: "none",
+				},
 			},
 		},
 	];
 
-	const SubmitButtonConfigList = [
+	const submitButtonConfigList = [
 		{
 			type: "submit",
 			size: "lg",
@@ -368,270 +456,18 @@ const UpdatePersonalInfo = () => {
 						borderRadius={{ base: "10px", md: "0 0 10px 10px" }}
 						p={{ base: "20px", md: "0 30px 30px" }}
 						marginTop={{ base: "20px", md: "0" }}
-						gap="2"
 					>
-						<Flex w="100%" justify="space-between" align="baseline">
-							<Text fontSize="lg" fontWeight="medium">
-								Retailer Information
-							</Text>
-						</Flex>
-
 						{!inPreviewMode ? (
 							<Flex direction="column" gap="8">
-								{/* TODO DRAG & DROP */}
-
-								{/* Name */}
-								<Flex wrap="wrap" gap="8">
-									{formNameInputList.map(
-										({
-											id,
-											label,
-											required,
-											value,
-											defaultValue,
-											validation,
-										}) => (
-											<FormControl
-												key={id}
-												w={{
-													base: "100%",
-													md: "315px",
-												}}
-											>
-												<Input
-													id={id}
-													label={label}
-													required={required}
-													value={value}
-													defaultValue={defaultValue}
-													fontSize="sm"
-													{...register(id, {
-														...validation,
-													})}
-												/>
-												{errors[id] && (
-													<Text
-														fontSize="xs"
-														fontWeight="medium"
-														color={
-															errors[id]
-																? "error"
-																: "primary.dark"
-														}
-													>
-														{errors[id].message}
-													</Text>
-												)}
-											</FormControl>
-										)
-									)}
-								</Flex>
-								{/* DOB */}
-								<FormControl w={{ base: "100%", md: "500px" }}>
-									<Controller
-										name="dob"
-										control={control}
-										rules={{ required: "⚠ Required" }}
-										render={({
-											field: { onChange, value },
-										}) => (
-											<>
-												<Calenders
-													label="Date of birth"
-													onChange={onChange}
-													value={value}
-													maxDate={maxDate}
-													required
-												/>
-												{errors.dob && (
-													<Text
-														fontSize="xs"
-														fontWeight="medium"
-														color={
-															errors.dob
-																? "error"
-																: "primary.dark"
-														}
-													>
-														{errors.dob.message}
-													</Text>
-												)}
-											</>
-										)}
-									/>
-								</FormControl>
-
-								{/* Gender */}
-								<FormControl>
-									<Controller
-										name="gender"
-										control={control}
-										rules={{ required: "⚠ Required" }}
-										render={({
-											field: { onChange, value },
-										}) => (
-											<>
-												<Radio
-													label="Gender"
-													options={gender_list}
-													value={value}
-													onChange={onChange}
-													required
-												/>
-
-												{errors.gender && (
-													<Text
-														fontSize="xs"
-														fontWeight="medium"
-														color={
-															errors.gender
-																? "error"
-																: "primary.dark"
-														}
-													>
-														{errors.gender.message}
-													</Text>
-												)}
-											</>
-										)}
-									/>
-								</FormControl>
-
-								{/* Marital Status */}
-								<FormControl
-									id="select"
-									w={{ base: "100%", md: "500px" }}
-								>
-									<Controller
-										name="marital_status"
-										control={control}
-										render={({
-											field: { onChange, value },
-										}) => {
-											return (
-												<Select
-													label="Marital Status"
-													options={
-														marital_status_list
-													}
-													value={value}
-													onChange={onChange}
-												/>
-											);
-										}}
-									/>
-								</FormControl>
-
-								<Flex wrap="wrap" gap="8">
-									<FormControl
-										w={{ base: "100%", md: "315px" }}
-									>
-										<Input
-											id="shop_name"
-											label="Shop Name"
-											fontSize="sm"
-											required
-											{...register("shop_name", {
-												required: "⚠ Required",
-											})}
-										/>
-										{errors.shop_name && (
-											<Text
-												fontSize="xs"
-												fontWeight="medium"
-												color={
-													errors.shop_name
-														? "error"
-														: "primary.dark"
-												}
-											>
-												{errors.shop_name.message}
-											</Text>
-										)}
-									</FormControl>
-									<FormControl
-										id="shop_type"
-										w={{ base: "100%", md: "315px" }}
-									>
-										<Controller
-											name="shop_type"
-											control={control}
-											rules={{ required: "⚠ Required" }}
-											render={({
-												field: { onChange, value },
-											}) => {
-												return (
-													<Select
-														label="Shop Type"
-														value={value}
-														options={shopTypes}
-														onChange={onChange}
-														required
-													/>
-												);
-											}}
-										/>
-										{errors.shop_type && (
-											<Text
-												fontSize="xs"
-												fontWeight="medium"
-												color={
-													errors.shop_type
-														? "error"
-														: "primary.dark"
-												}
-											>
-												{errors.shop_type.message}
-											</Text>
-										)}
-									</FormControl>
-								</Flex>
-								{/* <Flex
-									direction={{
-										base: "row-reverse",
-										md: "row",
-									}}
-									w={{ base: "100%", md: "500px" }}
-									position={{ base: "fixed", md: "initial" }}
-									gap={{ base: "0", md: "16" }}
-									align="center"
-									bottom="0"
-									left="0"
-								>
-									<Button
-										type="submit"
-										size="lg"
-										h="64px"
-										w={{ base: "100%", md: "200px" }}
-										fontWeight="bold"
-										borderRadius={{
-											base: "none",
-											md: "10",
-										}}
-									>
-										Preview
-									</Button>
-
-									<Button
-										h={{ base: "64px", md: "auto" }}
-										w={{ base: "100%", md: "initial" }}
-										bg={{ base: "white", md: "none" }}
-										variant="link"
-										fontWeight="bold"
-										color="primary.DEFAULT"
-										_hover={{ textDecoration: "none" }}
-										borderRadius={{
-											base: "none",
-											md: "10",
-										}}
-										onClick={() => router.back()}
-									>
-										Cancel
-									</Button>
-								</Flex> */}
-
+								<Form
+									parameter_list={parameter_list}
+									register={register}
+									formValues={watcher}
+									control={control}
+									errors={errors}
+								/>
 								<ActionButtonGroup
-									buttonConfigList={PreviewButtonConfigList}
+									buttonConfigList={previewButtonConfigList}
 								/>
 							</Flex>
 						) : (
@@ -662,56 +498,8 @@ const UpdatePersonalInfo = () => {
 									)}
 								</SimpleGrid>
 
-								{/* <Flex
-									direction={{
-										base: "row-reverse",
-										md: "row",
-									}}
-									w={{ base: "100%", md: "500px" }}
-									position={{ base: "fixed", md: "initial" }}
-									gap={{ base: "0", md: "16" }}
-									align="center"
-									bottom="0"
-									left="0"
-								>
-									<Button
-										type="submit"
-										size="lg"
-										h="64px"
-										w={{ base: "100%", md: "200px" }}
-										fontWeight="bold"
-										borderRadius={{
-											base: "none",
-											md: "10",
-										}}
-										onClick={handleFormSubmit}
-										loading={isSubmitting}
-									>
-										Save
-									</Button>
-
-									<Button
-										h={{ base: "64px", md: "auto" }}
-										w={{ base: "100%", md: "initial" }}
-										bg={{ base: "white", md: "none" }}
-										variant="link"
-										fontWeight="bold"
-										color="primary.DEFAULT"
-										_hover={{ textDecoration: "none" }}
-										borderRadius={{
-											base: "none",
-											md: "10",
-										}}
-										onClick={() =>
-											setInPreviewMode(!inPreviewMode)
-										}
-									>
-										Cancel
-									</Button>
-								</Flex> */}
-
 								<ActionButtonGroup
-									buttonConfigList={SubmitButtonConfigList}
+									buttonConfigList={submitButtonConfigList}
 								/>
 							</Flex>
 						)}
