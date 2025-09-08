@@ -103,6 +103,19 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 					return { data: [], error: response.error };
 				}
 
+				// Check if API returned error status (response_status_id: 1)
+				if (response.data?.response_status_id === 1) {
+					const errorMessage =
+						response.data?.message ||
+						response.data?.data?.reason ||
+						"Failed to fetch operators";
+					console.error(
+						"[BBPS] Operators API Error Response:",
+						response.data
+					);
+					return { data: [], error: errorMessage };
+				}
+
 				// Extract operators array from the API response
 				// API response structure: { data: [{ operator_id: ..., name: ... }] }
 				const operators = response.data?.data || response.data || [];
@@ -190,6 +203,19 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 					return { data: [], error: response.error };
 				}
 
+				// Check if API returned error status (response_status_id: 1)
+				if (response.data?.response_status_id === 1) {
+					const errorMessage =
+						response.data?.message ||
+						response.data?.data?.reason ||
+						"Failed to fetch dynamic fields";
+					console.error(
+						"[BBPS] Dynamic Fields API Error Response:",
+						response.data
+					);
+					return { data: [], error: errorMessage };
+				}
+
 				// Extract dynamic fields array from the API response
 				// API response structure: { "operator_name": "...", "data": [{ param_name: ..., param_label: ... }] }
 				const dynamicFields =
@@ -239,6 +265,20 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 					...data,
 				},
 			});
+
+			// Check if API returned error status (response_status_id: 1)
+			if (response.data?.response_status_id === 1) {
+				const errorMessage =
+					response.data?.message ||
+					response.data?.data?.reason ||
+					"Bill fetch failed";
+				console.error("[BBPS] API Error Response:", response.data);
+				return {
+					data: null,
+					error: errorMessage,
+				};
+			}
+
 			return { data: response.data, error: null };
 		} catch (error) {
 			console.error("[BBPS] API Error:", error);
@@ -317,6 +357,23 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 					...paymentRequest,
 				},
 			});
+
+			// Check if API returned error status (response_status_id: 1)
+			if (response.data?.response_status_id === 1) {
+				const errorMessage =
+					response.data?.message ||
+					response.data?.data?.reason ||
+					"Payment failed";
+				console.error(
+					"[BBPS] Payment API Error Response:",
+					response.data
+				);
+				return {
+					data: null,
+					error: errorMessage,
+				};
+			}
+
 			return { data: response.data, error: null };
 		} catch (error) {
 			console.error("[BBPS] Payment API Error:", error);
