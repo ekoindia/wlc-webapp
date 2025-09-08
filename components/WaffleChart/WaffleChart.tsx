@@ -34,6 +34,20 @@ interface WaffleChartProps {
  * @param {string} [animationDuration] - Duration of entrance animation for each square
  * @param {string} [animationDelay] - Base delay multiplied by diagonal position (row + col) for staggered effect
  * @returns {JSX.Element} WaffleChart component
+ * @example
+ * <WaffleChart
+ *   data={[
+ *     { value: 40, label: "Active Users" },
+ *     { value: 60, label: "Inactive Users" },
+ *   ]}
+ *   colors={["#4ECDC4", "#FF6B6B"]}
+ *   rows={4}
+ *   cols={8}
+ *   size="6px"
+ *   gap="3px"
+ *   animationDuration="0.2s"
+ *   animationDelay="0.02s"
+ * />
  */
 const WaffleChart = ({
 	data,
