@@ -10,6 +10,7 @@ const ORG_ID = {
 	DYNAMIC_PRICING: parseOrgIds(
 		process.env.NEXT_PUBLIC_ORG_IDS_DYNAMIC_PRICING
 	),
+	DASHBOARD_V2: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_DASHBOARD_V2),
 };
 
 /**
@@ -29,21 +30,39 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Show Admin Network pages to (Super)Distributors
 	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1], // 7 = (SuperDistributor)
-		forEnv: ["development", "staging"],
+		forUserType: [1, 7], // 7 = (SuperDistributor)
+		// forEnv: ["development", "staging"],
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DASHBOARD_V2,
+				],
+			},
+		},
 	},
 
 	// Show Admin-like dashboard to other sub-network owners like (Super)Distributor
 	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1], // 7 = SuperDistributor
-		forEnv: ["development", "staging"],
+		forUserType: [1, 7, 4], // 7 = SuperDistributor, 4 = FOS
+		// forEnv: ["development", "staging"],
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DASHBOARD_V2,
+				],
+			},
+		},
 	},
 
 	// Inventory Management for (Super)Distributors
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1], // 7 = (SuperDistributor)
+		forUserType: [1], // 7 = SuperDistributor
 		forEnv: ["development", "staging"],
 	},
 
@@ -156,7 +175,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		enabled: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS],
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DASHBOARD_V2,
+				],
 			},
 		},
 	},
