@@ -8,6 +8,40 @@ import { mockBillFetchResponse } from "../utils/mockData";
 import { transformBillData } from "../utils/transformBillData";
 
 /**
+ * Handle API error responses with standardized error checking and logging
+ * @param {object} response - API response object
+ * @param {object} [response.data] - Response data object
+ * @param {number} [response.data.response_status_id] - Response status ID (1 indicates error)
+ * @param {string} [response.data.message] - Error message from API
+ * @param {object} [response.data.data] - Nested data object containing additional error info
+ * @param {string} [response.data.data.reason] - Detailed error reason
+ * @param {string} context - Context string for error logging
+ * @param {any[] | null} errorReturnValue - Value to return on error
+ * @returns {object | null} Error response object or null if no error
+ */
+const handleApiErrorResponse = (
+	response: {
+		data?: {
+			response_status_id?: number;
+			message?: string;
+			data?: { reason?: string };
+		};
+	},
+	context: string,
+	errorReturnValue: any[] | null
+) => {
+	if (response.data?.response_status_id === 1) {
+		const errorMessage =
+			response.data?.message ||
+			response.data?.data?.reason ||
+			`Failed during ${context}`;
+		console.error(`[BBPS] ${context} API Error Response:`, response.data);
+		return { data: errorReturnValue, error: errorMessage };
+	}
+	return null;
+};
+
+/**
  * Payment request payload structure for BBPS bill payment API
  * @interface PaymentRequest
  */
@@ -53,43 +87,6 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 			epsApiVersion: 2,
 		}
 	);
-
-	/**
-	 * Handle API error responses with standardized error checking and logging
-	 * @param {object} response - API response object
-	 * @param {object} [response.data] - Response data object
-	 * @param {number} [response.data.response_status_id] - Response status ID (1 indicates error)
-	 * @param {string} [response.data.message] - Error message from API
-	 * @param {object} [response.data.data] - Nested data object containing additional error info
-	 * @param {string} [response.data.data.reason] - Detailed error reason
-	 * @param {string} context - Context string for error logging
-	 * @param {any[] | null} errorReturnValue - Value to return on error
-	 * @returns {object | null} Error response object or null if no error
-	 */
-	const handleApiErrorResponse = (
-		response: {
-			data?: {
-				response_status_id?: number;
-				message?: string;
-				data?: { reason?: string };
-			};
-		},
-		context: string,
-		errorReturnValue: any[] | null
-	) => {
-		if (response.data?.response_status_id === 1) {
-			const errorMessage =
-				response.data?.message ||
-				response.data?.data?.reason ||
-				`Failed during ${context}`;
-			console.error(
-				`[BBPS] ${context} API Error Response:`,
-				response.data
-			);
-			return { data: errorReturnValue, error: errorMessage };
-		}
-		return null;
-	};
 
 	/**
 	 * Fetch operators from API or mock data
