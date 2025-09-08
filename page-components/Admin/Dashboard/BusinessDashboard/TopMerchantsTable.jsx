@@ -1,5 +1,7 @@
 import { Box, Flex, HStack, Tag, Text, VStack } from "@chakra-ui/react";
-import { Currency, DateView } from "components";
+import { Currency, Icon } from "components";
+import { getDateDistance } from "libs";
+import { LuCake } from "react-icons/lu";
 
 /**
  * Format large numbers with appropriate suffixes
@@ -42,15 +44,19 @@ const Label = ({ children, ...rest }) => (
  * @param {number} props.total - Total value
  * @param {string} props.label - Label for the chart
  * @param {boolean} props.isCurrency - Whether to format the value as currency
+ * @param props.color
  */
 const HorizontalBarChart = ({
 	value,
 	total,
 	label,
 	isCurrency = false,
+	color = "accent.DEFAULT",
 	...rest
 }) => {
-	const percentage = total > 0 ? ((value / total) * 100).toFixed(0) : 0;
+	let percentage = total > 0 ? (value / total) * 100 : 0;
+	percentage =
+		percentage > 0 ? percentage.toFixed(percentage > 1 ? 0 : 1) : 0;
 
 	return (
 		<VStack spacing="6px" align="stretch" minW="0" {...rest}>
@@ -61,7 +67,7 @@ const HorizontalBarChart = ({
 					<Text
 						fontSize="0.9rem"
 						fontWeight="bold"
-						color="accent.DEFAULT"
+						color={color}
 						noOfLines={1}
 					>
 						{isCurrency ? (
@@ -81,7 +87,9 @@ const HorizontalBarChart = ({
 						>
 							<Box
 								h="100%"
-								bg="green.700"
+								bg={color}
+								// gradient bg
+								// bgGradient="linear(to-r, #8827F0, #4469F1)"
 								borderRadius="full"
 								width={`${Math.min(percentage, 100)}%`}
 								transition="width 0.3s ease"
@@ -110,39 +118,43 @@ const HorizontalBarChart = ({
 
 /**
  * Individual merchant row component for the leaderboard
+ * MARK: row
  * @param {object} props - Component props
  * @param {object} props.merchant - Merchant data
  * @param {number} props.rank - Merchant rank position
  * @param {number} props.totalGtv - Total GTV for percentage calculation
  * @param {number} props.totalTransactions - Total transactions for percentage calculation
+ * @param {Date} props.now - Current date/time
+ * @param props.onViewProfile
  */
-const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
+const MerchantRow = ({
+	merchant,
+	rank,
+	totalGtv,
+	totalTransactions,
+	now,
+	onViewProfile,
+}) => {
 	// Extract `merchant` data...
 	const {
 		name = "",
 		status = "inactive",
-		// usercode = "", // TODO: use this to link to agent profile page (or, use mobile number)
 		gtv = 0,
 		totalTransactions: merchantTransactions = 0,
 		onboardingDate = "",
 		distributorMapped = "",
 		raCases = 0,
+		// gtvPercent = 0,
+		gtvCumulativePercent = 0,
+		usercode = "",
+		cellNumber,
 	} = merchant;
-
-	console.log(
-		"Merchant Row:",
-		merchant,
-		gtv,
-		merchantTransactions,
-		totalGtv,
-		totalTransactions
-	);
 
 	// Calculate average ticket
 	const avgTicket = merchantTransactions > 0 ? gtv / merchantTransactions : 0;
 
 	// Calculate cumulative percentage
-	const cumulativePercentage = totalGtv > 0 ? (gtv / totalGtv) * 100 : 0;
+	// const cumulativePercentage = totalGtv > 0 ? (gtv / totalGtv) * 100 : 0;
 
 	// Status color mapping
 	const statusColors = {
@@ -151,11 +163,6 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 		pending: "orange",
 		suspended: "red",
 	};
-
-	// TODO
-	// const onViewProfile = () => {
-	// 	router.push(`/admin/my-network/profile?mobile=${mobile}`);
-	// };
 
 	// MARK: row jsx
 	return (
@@ -169,6 +176,7 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 			mb="12px"
 			align="center"
 			gap={{ base: "8px", md: "16px" }}
+			rowGap="16px"
 			wrap={{ base: "wrap", lg: "nowrap" }}
 			_hover={{ bg: "focusbg" }}
 			transition="background-color 0.2s"
@@ -207,16 +215,25 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 				/> */}
 
 				{/* Agent Details */}
-				<VStack align="start" spacing="2px" flex="1" minW="0">
-					<HStack spacing="8px" wrap="wrap">
-						<Text
-							fontSize="md"
-							fontWeight="semibold"
-							color="dark"
-							noOfLines={1}
-						>
-							{name}
-						</Text>
+				<VStack align="start" spacing="4px" flex="1" minW="0">
+					<Text
+						fontSize="md"
+						fontWeight="semibold"
+						color="dark"
+						noOfLines={1}
+						cursor="pointer"
+						onClick={() => onViewProfile(cellNumber)}
+					>
+						{name}
+					</Text>
+					<Flex
+						direction="row"
+						gap="8px"
+						wrap="wrap"
+						alignItems="center"
+						color="gray.500"
+					>
+						<Label># {usercode}</Label>
 						<Tag
 							size="sm"
 							colorScheme={
@@ -224,23 +241,38 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 							}
 							variant="outline"
 							borderRadius="full"
-							fontSize="0.7em"
+							fontSize="0.6em"
 							cursor="default"
 							userSelect="none"
 						>
 							{status}
 						</Tag>
-					</HStack>
-					<HStack spacing="8px" wrap="wrap">
+					</Flex>
+					<Flex
+						direction="row"
+						gap="8px"
+						wrap="wrap"
+						alignItems="center"
+						color="gray.500"
+					>
 						{distributorMapped && (
-							<Label color="gray.600">{distributorMapped}</Label>
+							<>
+								<Icon name="refer" size="12px" />
+								<Label color="gray.600">
+									{distributorMapped}
+								</Label>
+							</>
 						)}
 						{onboardingDate && (
-							<Label>
-								<DateView date={onboardingDate} />
-							</Label>
+							<>
+								<LuCake />
+								<Label>
+									{getDateDistance(onboardingDate, now)}
+									{/* <DateView date={onboardingDate} /> */}
+								</Label>
+							</>
 						)}
-					</HStack>
+					</Flex>
 				</VStack>
 			</HStack>
 
@@ -250,8 +282,9 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 				total={totalGtv}
 				label="GTV"
 				isCurrency
+				color="#e27c7c"
 				flex="2"
-				minW={{ base: "40%", md: "auto" }}
+				minW={{ base: "45%", md: "auto" }}
 			/>
 
 			{/* Transaction Count Chart */}
@@ -259,8 +292,9 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 				value={merchantTransactions}
 				total={totalTransactions}
 				label="Transactions"
+				color="#858299"
 				flex="2"
-				minW={{ base: "40%", md: "auto" }}
+				minW={{ base: "45%", md: "auto" }}
 			/>
 
 			{/* Pending (Response Awaited) Transactions */}
@@ -280,12 +314,14 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 			</VStack>
 
 			{/* Cumulative Percentage */}
-			<VStack spacing="2px" align="center" flex="1">
-				<Text fontSize="0.85rem" fontWeight="bold" color="success">
-					{cumulativePercentage.toFixed(0)}%
-				</Text>
-				<Label>Cumulative</Label>
-			</VStack>
+			{totalTransactions ? (
+				<VStack spacing="2px" align="center" flex="1">
+					<Text fontSize="0.85rem" fontWeight="bold" color="success">
+						{gtvCumulativePercent}%
+					</Text>
+					<Label>Cumulative</Label>
+				</VStack>
+			) : null}
 			{/* </HStack> */}
 		</Flex>
 	);
@@ -293,19 +329,21 @@ const MerchantRow = ({ merchant, rank, totalGtv, totalTransactions }) => {
 
 /**
  * Custom table component for Top Merchants leaderboard
+ * MARK: table
  * @param {object} props - Component props
  * @param {Array} props.data - Array of merchant data
  * @param {boolean} props.isLoading - Loading state
  * @param props.totalGtv
  * @param props.totalTransactions
+ * @param props.onViewProfile
  */
 const TopMerchantsTable = ({
 	data = [],
 	totalGtv,
 	totalTransactions,
 	isLoading = false,
+	onViewProfile,
 }) => {
-	//MARK: table jsx
 	if (isLoading) {
 		return (
 			<VStack spacing="12px" w="100%">
@@ -334,11 +372,13 @@ const TopMerchantsTable = ({
 				borderColor="divider"
 			>
 				<Text color="gray.500" fontSize="md">
-					No merchants found
+					No data available for this period.
 				</Text>
 			</Box>
 		);
 	}
+
+	const now = new Date();
 
 	return (
 		<VStack spacing="0" w="100%" align="stretch">
@@ -349,6 +389,8 @@ const TopMerchantsTable = ({
 					rank={index + 1}
 					totalGtv={totalGtv}
 					totalTransactions={totalTransactions}
+					now={now}
+					onViewProfile={onViewProfile}
 				/>
 			))}
 		</VStack>

@@ -28,6 +28,7 @@ import { Pagination, XScrollArrow } from "..";
  * @param prop.setPageNumber
  * @param prop.variant
  * @param prop.tableRowLimit
+ * @param prop.rest
  */
 const Table = ({
 	data,
@@ -44,6 +45,7 @@ const Table = ({
 	setPageNumber = () => {},
 	variant = "stripedActionNone",
 	tableRowLimit = trl?.DEFAULT,
+	...rest
 }) => {
 	const router = useRouter();
 	const [isSmallScreen] = useMediaQuery("only screen and (max-width: 860px)");
@@ -72,7 +74,7 @@ const Table = ({
 	}, [router.query.page]);
 
 	return (
-		<div id="table-pagination-container">
+		<Box id="table-pagination-container" {...rest}>
 			{!isSmallScreen ? (
 				// Large screen
 				<XScrollArrow allowScrollbar>
@@ -156,7 +158,7 @@ const Table = ({
 					tableDataSize={tableDataSize}
 				/>
 			)}
-		</div>
+		</Box>
 	);
 };
 
