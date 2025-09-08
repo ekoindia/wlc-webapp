@@ -167,7 +167,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 				return { data: [], error: "Failed to fetch operators" };
 			}
 		},
-		[product?.useMockData, fetchOperatorsCall]
+		[product?.useMockData]
 	);
 
 	/**
@@ -263,7 +263,7 @@ export const useBbpsApi = (product?: BbpsProduct) => {
 				return { data: [], error: "Failed to fetch dynamic fields" };
 			}
 		},
-		[product?.useMockData, fetchDynamicFieldsCall]
+		[product?.useMockData]
 	);
 
 	/**
