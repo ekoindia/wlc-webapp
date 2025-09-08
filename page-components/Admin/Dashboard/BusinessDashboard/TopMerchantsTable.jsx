@@ -54,7 +54,9 @@ const HorizontalBarChart = ({
 	color = "accent.DEFAULT",
 	...rest
 }) => {
-	const percentage = total > 0 ? ((value / total) * 100).toFixed(0) : 0;
+	let percentage = total > 0 ? (value / total) * 100 : 0;
+	percentage =
+		percentage > 0 ? percentage.toFixed(percentage > 1 ? 0 : 1) : 0;
 
 	return (
 		<VStack spacing="6px" align="stretch" minW="0" {...rest}>
