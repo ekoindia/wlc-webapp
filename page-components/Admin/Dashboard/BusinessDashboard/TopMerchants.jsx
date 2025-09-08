@@ -288,6 +288,8 @@ const TopMerchants = ({
 							data={topMerchantsData}
 							renderer={topMerchantsTableParameterList}
 							isLoading={isLoading}
+							width="100%"
+							maxWidth="100%"
 						/>
 					)
 				) : (
