@@ -1,4 +1,12 @@
-import { Divider, Flex, Grid, Select, Skeleton, Text } from "@chakra-ui/react";
+import {
+	Divider,
+	Flex,
+	Grid,
+	Select,
+	Skeleton,
+	Text,
+	useBreakpointValue,
+} from "@chakra-ui/react";
 import { Currency, Icon, WaffleChart } from "components";
 import { Endpoints } from "constants";
 import { useApiFetch, useFeatureFlag } from "hooks";
@@ -64,6 +72,8 @@ const EarningOverview = ({
 
 	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
+	const isSmallScreen = useBreakpointValue({ base: true, md: false });
+
 	// MARK: API Handler
 	const [fetchEarningOverviewData, isLoading] = useApiFetch(
 		Endpoints.TRANSACTION_JSON,
@@ -71,24 +81,6 @@ const EarningOverview = ({
 			onSuccess: (res) => {
 				const _data =
 					res?.data?.dashboard_object?.products_overview || [];
-
-				// const productWiseData = JSON.parse(
-				// 	_data?.gtv?.typeBreakdown || {}
-				// );
-
-				// // Convert `productWiseData` object to array
-				// const productWiseDataArray = Object.entries(
-				// 	productWiseData
-				// ).map(([key, value]) => ({
-				// 	id: key,
-				// 	...value,
-				// 	label: value.name, // For Waffle Chart
-				// 	value: value.amount, // For Waffle Chart
-				// }));
-
-				// if (productWiseDataArray) {
-				// 	setProductWiseData(productWiseDataArray);
-				// }
 
 				const cacheKey = getCacheKey(productFilter, dateFrom, dateTo);
 
@@ -128,12 +120,14 @@ const EarningOverview = ({
 		// if (!typeBreakdown) return;
 
 		const parsedData = typeBreakdown
-			? Object.entries(typeBreakdown)?.map(([key, value]) => ({
-					id: key,
-					...value,
-					label: value.name, // For Waffle Chart
-					value: value.amount, // For Waffle Chart
-				}))
+			? Object.entries(typeBreakdown)
+					?.map(([key, value]) => ({
+						id: key,
+						...value,
+						label: value.name, // For Waffle Chart
+						value: value.amount, // For Waffle Chart
+					}))
+					.sort((a, b) => b.value - a.value)
 			: null;
 
 		// const parsedData = typeBreakdown.map((item) => ({
@@ -299,13 +293,17 @@ const EarningOverview = ({
 
 			<Divider />
 
-			<Flex direction="row-reverse" gap="8">
+			<Flex
+				direction={isSmallScreen ? "column-reverse" : "row-reverse"}
+				align={isSmallScreen ? "center" : "flex-start"}
+				gap="8"
+			>
 				{showNewDashboard ? (
 					<WaffleChart
 						data={productWiseData}
 						colors={COLORS}
-						rows={10}
-						cols={3}
+						rows={isSmallScreen ? 3 : 10}
+						cols={isSmallScreen ? 15 : 3}
 						size="10px"
 						gap="4px"
 						animationDuration="0.2s"
