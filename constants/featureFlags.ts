@@ -46,7 +46,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Show Admin-like dashboard to other sub-network owners like (Super)Distributor
 	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1, 7, 4], // 7 = SuperDistributor, 4 = FOS
+		forUserType: [1, 7], // 7 = SuperDistributor, 4 = FOS
 		// forEnv: ["development", "staging"],
 		envConstraints: {
 			production: {
