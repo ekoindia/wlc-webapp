@@ -126,6 +126,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 		successRateCache,
 	]);
 
+	// MARK: jsx
 	return (
 		<Flex
 			direction="column"
@@ -133,7 +134,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			borderRadius="10px"
 			p="5"
 			w="100%"
-			h={{ base: "auto", xl: "280px" }}
+			// h={{ base: "auto", xl: "280px" }}
 			overflowY="auto"
 			className="customScrollbars"
 			gap="4"
@@ -157,6 +158,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 				flex="1"
 				justify={successRateData?.length ? "flex-start" : "center"}
 				align="center"
+				maxH="180px"
 				// gap="10px"
 			>
 				{successRateData?.length ? (
