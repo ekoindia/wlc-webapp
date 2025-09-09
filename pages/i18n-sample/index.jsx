@@ -1,8 +1,8 @@
 import { Box, Button, Select, Text, VStack } from "@chakra-ui/react";
 import { PaddingBox } from "components";
-import { useLocale } from "contexts";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useRouter } from "next/router";
 import nextI18NextConfig from "../../next-i18next.config.cjs";
 
 /**
@@ -12,10 +12,12 @@ import nextI18NextConfig from "../../next-i18next.config.cjs";
  */
 const I18nSamplePage = () => {
 	const { t } = useTranslation(["common", "dashboard"]);
-	const { locale, changeLocale } = useLocale();
+	const router = useRouter();
+	const { locale } = router;
 
 	const handleLocaleChange = (event) => {
-		changeLocale(event.target.value);
+		const newLocale = event.target.value;
+		router.push(router.asPath, router.asPath, { locale: newLocale });
 	};
 
 	return (
