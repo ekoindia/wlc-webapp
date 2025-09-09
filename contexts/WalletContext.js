@@ -2,7 +2,7 @@ import { ActionIcon } from "components/CommandBar";
 import { Endpoints, TransactionTypes } from "constants";
 import { fetcher } from "helpers/apiHelper";
 import useRefreshToken from "hooks/useRefreshToken";
-import { useCopilotAction, useCopilotReadable } from "libs";
+import { useCopilotAction, useCopilotInfo } from "libs";
 import {
 	createContext,
 	useCallback,
@@ -117,7 +117,7 @@ const WalletProvider = ({ children }) => {
 	// MARK: Copilot
 
 	// Define AI Copilot readable state for the E-value balance
-	useCopilotReadable({
+	useCopilotInfo({
 		description:
 			"The current digital wallet (E-value) balance of the user, and it's last updated date. This balance can be used for transactions, payments, and other financial activities within the platform. It is updated when the user performs transactions or when it is refreshed manually.",
 		value: {

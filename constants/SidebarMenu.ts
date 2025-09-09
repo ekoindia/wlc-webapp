@@ -66,6 +66,7 @@ export const AdminBlacklistMenuItems: number[] = [
 
 /**
  * Fixed menu items for admin left-menu.
+ * MARK: For Admin
  */
 export const adminSidebarMenu: sidebarMenuType[] = [
 	{
@@ -201,6 +202,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 
 /**
  * Fixed menu items for agents left-menu.
+ * MARK: For Agent
  */
 export const sidebarMenu: sidebarMenuType[] = [
 	{
@@ -211,6 +213,41 @@ export const sidebarMenu: sidebarMenuType[] = [
 		dynamicAdminView: true,
 		summary:
 			"View your homepage and dashboard with key metrics and insights about your business.",
+	},
+	{
+		id: 5,
+		label: "My Network",
+		icon: "refer",
+		link: "/my-network",
+		summary: "View all users in your network.",
+		featureFlag: "ADMIN_NETWORK_PAGES_FOR_SUBNETWORK",
+	},
+	{
+		id: 10,
+		label: "Network Transactions",
+		icon: "swap-horiz",
+		link: "/network-statement",
+		summary: "View transactions of agents in your network.",
+		featureFlag: "ADMIN_NETWORK_PAGES_FOR_SUBNETWORK",
+		beta: true,
+	},
+	{
+		id: 215,
+		label: "Product Catalogue",
+		icon: "shopping-cart",
+		link: "/products/inventory",
+		summary: "View and purchase products from the inventory.",
+		featureFlag: "INVENTORY_MANAGEMENT_FOR_SUBNETWORK",
+		beta: true,
+	},
+	{
+		id: 215,
+		label: "Manage Inventory",
+		icon: "shopping-cart",
+		link: "/products/inventory/manage",
+		summary: "Manage inventory for your agents",
+		featureFlag: "INVENTORY_MANAGEMENT_FOR_SUBNETWORK",
+		beta: true,
 	},
 	// {
 	// 	id: 220,
