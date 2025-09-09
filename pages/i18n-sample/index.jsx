@@ -17,6 +17,8 @@ const I18nSamplePage = () => {
 
 	const handleLocaleChange = (event) => {
 		const newLocale = event.target.value;
+		localStorage.setItem("user-locale-preference", newLocale);
+		document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
 		router.push(router.asPath, router.asPath, { locale: newLocale });
 	};
 
