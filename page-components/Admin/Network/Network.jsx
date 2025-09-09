@@ -40,8 +40,7 @@ const generateQueryParams = (params) => {
  * @example	`<Network></Network>`
  */
 const Network = () => {
-	const { t } = useTranslation("network");
-	const { t: common } = useTranslation("common");
+	const { t } = useTranslation(["network", "common"]);
 
 	const operation_type_list = [
 		{ label: t("filter.independent_retailer"), value: "3" },
@@ -50,8 +49,8 @@ const Network = () => {
 	];
 
 	const status_list = [
-		{ label: common("status.active"), value: "Active" },
-		{ label: common("status.inactive"), value: "Inactive" },
+		{ label: t("status.active"), value: "Active" },
+		{ label: t("status.inactive"), value: "Inactive" },
 		// { label: "Closed", value: "closed" },
 	];
 
@@ -408,7 +407,7 @@ const Network = () => {
 								)
 							}
 						>
-							Change Roles
+							{t("buttons.change_roles")}
 						</Button>
 					) : null
 				}
