@@ -1,4 +1,8 @@
-import { b64toByteArrays, saveDataToFile } from "utils/fileUtils";
+import {
+	b64toByteArrays,
+	dataUrlToBlob,
+	saveDataToFile,
+} from "utils/fileUtils";
 
 // Mock for window.URL
 const mockURL = {
@@ -105,6 +109,36 @@ describe("fileUtils", () => {
 
 			expect(mockAnchor.click).toHaveBeenCalled();
 			expect(mockURL.createObjectURL).toHaveBeenCalled();
+		});
+	});
+
+	describe("dataUrlToBlob", () => {
+		it("converts data URL to blob successfully", () => {
+			const mockDataUrl = "data:image/jpeg;base64,SGVsbG9Xb3JsZA==";
+			global.atob = jest.fn().mockReturnValue("HelloWorld");
+
+			const result = dataUrlToBlob(mockDataUrl);
+
+			expect(global.atob).toHaveBeenCalledWith("SGVsbG9Xb3JsZA==");
+			expect(result).toBeInstanceOf(Blob);
+			expect(result.type).toBe("image/jpeg");
+		});
+
+		it("throws error for invalid data URL format", () => {
+			const invalidDataUrl = "invalid-data-url";
+
+			expect(() => dataUrlToBlob(invalidDataUrl)).toThrow(
+				"Invalid data URL format"
+			);
+		});
+
+		it("handles different MIME types correctly", () => {
+			const pngDataUrl = "data:image/png;base64,SGVsbG8=";
+			global.atob = jest.fn().mockReturnValue("Hello");
+
+			const result = dataUrlToBlob(pngDataUrl);
+
+			expect(result.type).toBe("image/png");
 		});
 	});
 });
