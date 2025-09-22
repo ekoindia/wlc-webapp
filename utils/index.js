@@ -10,6 +10,7 @@ export {
 	clearLocalStorage,
 	clearSessionStorage,
 } from "./cacheUtils";
+export { dataURLtoBlob } from "./CameraUtils";
 export {
 	darken,
 	generateShades,
