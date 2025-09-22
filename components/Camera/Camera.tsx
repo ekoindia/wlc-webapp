@@ -5,6 +5,7 @@ import { useImageEditor } from "hooks";
 import React, { useCallback, useRef, useState } from "react";
 import { MdCamera, MdCameraswitch, MdClose } from "react-icons/md";
 import Webcam from "react-webcam";
+import { dataURLtoBlob } from "utils";
 import {
 	FACING_MODE_ENVIRONMENT,
 	FACING_MODE_USER,
@@ -269,7 +270,7 @@ const Camera = ({
 	 */
 	const capture = useCallback(async () => {
 		const imageSrc = webcamRef?.current?.getScreenshot();
-		const blob = await fetch(imageSrc).then((res) => res.blob());
+		const blob = dataURLtoBlob(imageSrc);
 		const timestamp = new Date().toLocaleString().replace(/[^0-9]+/g, "_");
 		const filename = `Cam_${timestamp}.${blob.type.split("/")[1] || "jpg"}`;
 		const imageFile = new File([blob], filename, { type: blob.type });
