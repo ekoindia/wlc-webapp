@@ -12,8 +12,9 @@
  * const blob = dataURLtoBlob(dataUrl);
  * const file = new File([blob], "image.jpg", { type: blob.type });
  * ```
+ * TODO: Use this util function instead of all such custom implementations (for eg: createSupportTicket.ts)
  */
-export const dataURLtoBlob = (dataUrl: string): Blob => {
+export const dataUrlToBlob = (dataUrl: string): Blob => {
 	const arr = dataUrl.split(",");
 	const mimeMatch = arr[0].match(/:(.*?);/);
 
