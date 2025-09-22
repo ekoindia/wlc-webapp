@@ -40,7 +40,7 @@ const SCRIPT_SRC_DOMAINS = [
 	"accounts.google.com", // Google authentication scripts
 	"www.google-analytics.com", // Google Analytics scripts
 	"cdnjs.cloudflare.com", // CDN scripts
-	"cdn.jsdelivr.net", // jsDelivr CDN scripts (MediaPipe, etc.)
+	"cdn.jsdelivr.net", // CDN scripts (MediaPipe, etc.)
 	"www.youtube.com", // YouTube embed scripts
 	...EKO_DOMAINS,
 	...(isDev ? ["'unsafe-eval'"] : []),
