@@ -329,7 +329,7 @@ const nextConfig = {
 			];
 		}
 
-		return [];	// Disable security headers by default
+		return []; // Disable security headers by default
 	},
 
 	// async headers() {
