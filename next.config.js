@@ -68,6 +68,8 @@ const FONT_SRC_DOMAINS = [SELF];
 // Domains for connect-src directive (XHR, fetch, WebSocket)
 const CONNECT_SRC_DOMAINS = [
 	SELF,
+	"blob:", // Required for blob URLs in fetch/XHR
+	"data:", // Required for data URIs in fetch/XHR (e.g., image capture)
 	"*.eko.in", // Eko platform APIs
 	"files.eko.co.in", // Eko file server
 	"*.digitaloceanspaces.com", // DigitalOcean CDN
@@ -329,7 +331,7 @@ const nextConfig = {
 			];
 		}
 
-		return [];	// Disable security headers by default
+		return []; // Disable security headers by default
 	},
 
 	// async headers() {
