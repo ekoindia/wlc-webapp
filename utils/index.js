@@ -10,7 +10,6 @@ export {
 	clearLocalStorage,
 	clearSessionStorage,
 } from "./cacheUtils";
-export { dataURLtoBlob } from "./CameraUtils";
 export {
 	darken,
 	generateShades,
@@ -31,6 +30,7 @@ export { getFormErrorMessage } from "./errorMessages";
 export { parse } from "./exprParser";
 export { b64toByteArrays, saveDataToFile } from "./FileSave";
 export { numericHash } from "./hash";
+export { dataURLtoBlob } from "./ImageUtils";
 export { formatCurrency, getCurrencySymbol } from "./numberFormat";
 export { printPage } from "./print";
 export { obj2queryparams } from "./queryBuilder";
