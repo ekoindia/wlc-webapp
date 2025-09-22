@@ -28,7 +28,7 @@ export { parseOrgIds } from "./envUtils";
 export { areObjectsEqual } from "./equalityUtils";
 export { getFormErrorMessage } from "./errorMessages";
 export { parse } from "./exprParser";
-export { b64toByteArrays, saveDataToFile } from "./FileSave";
+export { b64toByteArrays, saveDataToFile } from "./fileUtils";
 export { numericHash } from "./hash";
 export { dataURLtoBlob } from "./ImageUtils";
 export { formatCurrency, getCurrencySymbol } from "./numberFormat";
