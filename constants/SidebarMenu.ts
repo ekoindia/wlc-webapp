@@ -124,6 +124,10 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		label: "Pricing & Commissions",
 		icon: "commission-percent",
 		link: "/admin/pricing",
+		summary: "Configure legacy pricing and commissions for your products.",
+		fullDescription:
+			"Manage traditional pricing and commission structures for your products. This is the legacy interface for orgs that need the original pricing configuration.",
+		featureFlag: "LEGACY_PRICING_COMMISSION",
 	},
 	{
 		id: 30,
@@ -133,7 +137,7 @@ export const adminSidebarMenu: sidebarMenuType[] = [
 		summary: "Configure dynamic pricing and commissions for your products.",
 		fullDescription:
 			"Set up and manage dynamic pricing rules and commission structures for your products. This includes defining pricing tiers, setting commission rates for different user roles, etc.",
-		featureFlag: "DYNAMIC_PRICING_COMMISSION",
+		featureFlag: "!LEGACY_PRICING_COMMISSION",
 		beta: true,
 	},
 	// {
