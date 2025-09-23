@@ -40,6 +40,7 @@ const SCRIPT_SRC_DOMAINS = [
 	"accounts.google.com", // Google authentication scripts
 	"www.google-analytics.com", // Google Analytics scripts
 	"cdnjs.cloudflare.com", // CDN scripts
+	"cdn.jsdelivr.net", // CDN scripts (MediaPipe, etc.)
 	"www.youtube.com", // YouTube embed scripts
 	...EKO_DOMAINS,
 	...(isDev ? ["'unsafe-eval'"] : []),
@@ -73,6 +74,7 @@ const CONNECT_SRC_DOMAINS = [
 	"*.digitaloceanspaces.com", // DigitalOcean CDN
 	"www.youtube.com", // YouTube API
 	"api.cloud.copilotkit.ai", // CopilotKit API
+	"cdn.jsdelivr.net", // CDN for MediaPipe WASM/model files
 	...EKO_DOMAINS,
 ].filter(Boolean);
 
