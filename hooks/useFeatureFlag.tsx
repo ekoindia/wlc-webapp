@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 /**
  * Hook for FeatureFlags. Check if a feature is enabled based on featureName, userId, userType, environment (process.env.NEXT_PUBLIC_ENV), etc.
  * The feature-flags (including featureName) are defined in the [constants/featureFlags.js](constants/featureFlags.js) file.
- * @param {string} featureName - Name of the feature (eg: "CHAT")
+ * Supports inverted logic using ! prefix (e.g., "!FEATURE_NAME" returns opposite of FEATURE_NAME).
+ * @param {string} featureName - Name of the feature (eg: "CHAT") or inverted feature (eg: "!LEGACY_FEATURE")
  * @returns {[boolean, (featureName: string) => boolean]} - Returns an array with the first element being true if the feature is defined, enabled & passes all conditions, else false. The second element is a function that can be used to check if a feature is enabled based on the same conditions.
  */
 const useFeatureFlag = (
@@ -25,6 +26,7 @@ const useFeatureFlag = (
 
 	/**
 	 * Check if a feature is enabled based on the conditions defined in the featureFlags.
+	 * Supports inverted logic using ! prefix (e.g., "!FEATURE_NAME" returns opposite of FEATURE_NAME).
 	 */
 	const checkFeatureFlag = useCallback(
 		(
@@ -37,50 +39,56 @@ const useFeatureFlag = (
 				return false;
 			}
 
-			// Check cache first
+			// Handle inverted logic with ! prefix
+			const isInverted = customFeatureName.startsWith("!");
+			const actualFeatureName = isInverted
+				? customFeatureName.substring(1)
+				: customFeatureName;
+
+			// Check cache first (using original customFeatureName to include inversion in cache key)
 			const cacheKeyForFeature = `${cacheKey}-${customFeatureName}`;
 			if (cache.has(cacheKeyForFeature)) {
 				return cache.get(cacheKeyForFeature)!;
 			}
 
-			// Check for circular dependency
-			if (visitedFeatures.has(customFeatureName)) {
+			// Check for circular dependency (using actualFeatureName for dependency tracking)
+			if (visitedFeatures.has(actualFeatureName)) {
 				console.error(
 					"Circular dependency detected for feature:",
-					customFeatureName
+					actualFeatureName
 				);
 				cache.set(cacheKeyForFeature, false);
 				return false;
 			}
 
-			// Add current feature to visited set
+			// Add current feature to visited set (using actualFeatureName)
 			const newVisitedFeatures = new Set(visitedFeatures);
-			newVisitedFeatures.add(customFeatureName);
+			newVisitedFeatures.add(actualFeatureName);
 
-			const feature: FeatureFlagType = FeatureFlags[customFeatureName];
+			const feature: FeatureFlagType = FeatureFlags[actualFeatureName];
 
 			// If feature is not defined, return false.
 			if (!feature) {
-				console.log("Feature not defined:", customFeatureName);
-				cache.set(cacheKeyForFeature, false);
-				return false;
+				console.log("Feature not defined:", actualFeatureName);
+				cache.set(cacheKeyForFeature, isInverted ? true : false);
+				return isInverted ? true : false;
 			}
 
-			// If the feature is disabled, return false.
+			// If the feature is disabled, return false (or true if inverted).
 			if (feature.enabled !== true) {
-				console.log("Feature disabled:", customFeatureName);
-				cache.set(cacheKeyForFeature, false);
-				return false;
+				console.log("Feature disabled:", actualFeatureName);
+				cache.set(cacheKeyForFeature, isInverted ? true : false);
+				return isInverted ? true : false;
 			}
 
 			// Check if the feature is allowed for Admin only
 			if (feature.forAdminOnly && !isAdmin) {
 				console.log(
 					"Feature not allowed for non-Admins:",
-					customFeatureName
+					actualFeatureName
 				);
-				cache.set(cacheKeyForFeature, false);
-				return false;
+				cache.set(cacheKeyForFeature, isInverted ? true : false);
+				return isInverted ? true : false;
 			}
 
 			// Check if the feature is enabled for the environment (if a set of envoirnments are allowed).
@@ -90,10 +98,10 @@ const useFeatureFlag = (
 			) {
 				console.log(
 					"Feature not allowed for this environment:",
-					customFeatureName
+					actualFeatureName
 				);
-				cache.set(cacheKeyForFeature, false);
-				return false;
+				cache.set(cacheKeyForFeature, isInverted ? true : false);
+				return isInverted ? true : false;
 			}
 
 			// Check if the feature is enabled for the user-type (if a set of allowed user-types is defined).
@@ -107,13 +115,13 @@ const useFeatureFlag = (
 			) {
 				console.log(
 					"Feature not allowed for this user-type:",
-					customFeatureName,
+					actualFeatureName,
 					feature.forUserType,
 					userType
 				);
 
-				cache.set(cacheKeyForFeature, false);
-				return false;
+				cache.set(cacheKeyForFeature, isInverted ? true : false);
+				return isInverted ? true : false;
 			}
 
 			// Check envoirnment specific conditions, such as user-id or org-id:
@@ -133,8 +141,8 @@ const useFeatureFlag = (
 						envConstraints.forUserId.includes(userId)
 					)
 				) {
-					cache.set(cacheKeyForFeature, false);
-					return false;
+					cache.set(cacheKeyForFeature, isInverted ? true : false);
+					return isInverted ? true : false;
 				}
 
 				// Check if the current org is allowed for the feature.
@@ -142,8 +150,8 @@ const useFeatureFlag = (
 					envConstraints.forOrgId?.length > 0 &&
 					!(org_id && envConstraints.forOrgId.includes(+org_id))
 				) {
-					cache.set(cacheKeyForFeature, false);
-					return false;
+					cache.set(cacheKeyForFeature, isInverted ? true : false);
+					return isInverted ? true : false;
 				}
 			}
 
@@ -159,18 +167,18 @@ const useFeatureFlag = (
 				if (!allRequiredFeaturesEnabled) {
 					console.log(
 						"Feature not enabled due to missing dependencies:",
-						customFeatureName
+						actualFeatureName
 					);
-					cache.set(cacheKeyForFeature, false);
-					return false;
+					cache.set(cacheKeyForFeature, isInverted ? true : false);
+					return isInverted ? true : false;
 				}
 			}
 
-			// If all conditions are satisfied, return true.
-			console.log("Feature enabled:", customFeatureName);
-			cache.set(cacheKeyForFeature, true);
+			// If all conditions are satisfied, return true (or false if inverted).
+			console.log("Feature enabled:", actualFeatureName);
+			cache.set(cacheKeyForFeature, isInverted ? false : true);
 
-			return true;
+			return isInverted ? false : true;
 		},
 		[cacheKey, isAdmin, userId, userType, isLoggedIn, org_id]
 	);
