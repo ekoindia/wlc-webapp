@@ -74,6 +74,7 @@ const CONNECT_SRC_DOMAINS = [
 	"*.digitaloceanspaces.com", // DigitalOcean CDN
 	"www.youtube.com", // YouTube API
 	"api.cloud.copilotkit.ai", // CopilotKit API
+	"cdn.jsdelivr.net", // CDN for MediaPipe WASM/model files
 	...EKO_DOMAINS,
 ].filter(Boolean);
 
