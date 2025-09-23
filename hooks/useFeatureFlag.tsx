@@ -57,8 +57,8 @@ const useFeatureFlag = (
 					"Circular dependency detected for feature:",
 					actualFeatureName
 				);
-				cache.set(cacheKeyForFeature, isInverted ? true : false);
-				return isInverted ? true : false;
+				cache.set(cacheKeyForFeature, isInverted);
+				return isInverted;
 			}
 
 			// Add current feature to visited set (using actualFeatureName)
@@ -70,15 +70,15 @@ const useFeatureFlag = (
 			// If feature is not defined, return false.
 			if (!feature) {
 				console.log("Feature not defined:", actualFeatureName);
-				cache.set(cacheKeyForFeature, isInverted ? true : false);
-				return isInverted ? true : false;
+				cache.set(cacheKeyForFeature, isInverted);
+				return isInverted;
 			}
 
 			// If the feature is disabled, return false (or true if inverted).
 			if (feature.enabled !== true) {
 				console.log("Feature disabled:", actualFeatureName);
-				cache.set(cacheKeyForFeature, isInverted ? true : false);
-				return isInverted ? true : false;
+				cache.set(cacheKeyForFeature, isInverted);
+				return isInverted;
 			}
 
 			// Check if the feature is allowed for Admin only
@@ -87,8 +87,8 @@ const useFeatureFlag = (
 					"Feature not allowed for non-Admins:",
 					actualFeatureName
 				);
-				cache.set(cacheKeyForFeature, isInverted ? true : false);
-				return isInverted ? true : false;
+				cache.set(cacheKeyForFeature, isInverted);
+				return isInverted;
 			}
 
 			// Check if the feature is enabled for the environment (if a set of envoirnments are allowed).
@@ -100,8 +100,8 @@ const useFeatureFlag = (
 					"Feature not allowed for this environment:",
 					actualFeatureName
 				);
-				cache.set(cacheKeyForFeature, isInverted ? true : false);
-				return isInverted ? true : false;
+				cache.set(cacheKeyForFeature, isInverted);
+				return isInverted;
 			}
 
 			// Check if the feature is enabled for the user-type (if a set of allowed user-types is defined).
@@ -120,8 +120,8 @@ const useFeatureFlag = (
 					userType
 				);
 
-				cache.set(cacheKeyForFeature, isInverted ? true : false);
-				return isInverted ? true : false;
+				cache.set(cacheKeyForFeature, isInverted);
+				return isInverted;
 			}
 
 			// Check envoirnment specific conditions, such as user-id or org-id:
@@ -141,8 +141,8 @@ const useFeatureFlag = (
 						envConstraints.forUserId.includes(userId)
 					)
 				) {
-					cache.set(cacheKeyForFeature, isInverted ? true : false);
-					return isInverted ? true : false;
+					cache.set(cacheKeyForFeature, isInverted);
+					return isInverted;
 				}
 
 				// Check if the current org is allowed for the feature.
@@ -150,8 +150,8 @@ const useFeatureFlag = (
 					envConstraints.forOrgId?.length > 0 &&
 					!(org_id && envConstraints.forOrgId.includes(+org_id))
 				) {
-					cache.set(cacheKeyForFeature, isInverted ? true : false);
-					return isInverted ? true : false;
+					cache.set(cacheKeyForFeature, isInverted);
+					return isInverted;
 				}
 			}
 
@@ -169,16 +169,16 @@ const useFeatureFlag = (
 						"Feature not enabled due to missing dependencies:",
 						actualFeatureName
 					);
-					cache.set(cacheKeyForFeature, isInverted ? true : false);
-					return isInverted ? true : false;
+					cache.set(cacheKeyForFeature, isInverted);
+					return isInverted;
 				}
 			}
 
 			// If all conditions are satisfied, return true (or false if inverted).
 			console.log("Feature enabled:", actualFeatureName);
-			cache.set(cacheKeyForFeature, isInverted ? false : true);
+			cache.set(cacheKeyForFeature, !isInverted);
 
-			return isInverted ? false : true;
+			return !isInverted;
 		},
 		[cacheKey, isAdmin, userId, userType, isLoggedIn, org_id]
 	);
