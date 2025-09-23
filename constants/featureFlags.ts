@@ -7,8 +7,11 @@ const ORG_ID = {
 	EKOTESTS: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_EKOTESTS),
 	SBIKIOSK: Number(process.env.NEXT_PUBLIC_ORG_IDS_SBIKIOSK),
 	AI_TEST: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_AI_TEST),
-	DYNAMIC_PRICING: parseOrgIds(
-		process.env.NEXT_PUBLIC_ORG_IDS_DYNAMIC_PRICING
+	// DYNAMIC_PRICING: parseOrgIds(
+	// 	process.env.NEXT_PUBLIC_ORG_IDS_DYNAMIC_PRICING
+	// ),
+	LEGACY_PRICING_COMMISSION: parseOrgIds(
+		process.env.NEXT_PUBLIC_ORG_IDS_LEGACY_PRICING_COMMISSION
 	),
 	DASHBOARD_V2: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_DASHBOARD_V2),
 };
@@ -146,17 +149,30 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		requiredFeatures: ["AI_MASTER_FLAG"],
 	},
 
-	// Config-driven Pricing & Commission.
-	DYNAMIC_PRICING_COMMISSION: {
+	// // Config-driven Pricing & Commission.
+	// DYNAMIC_PRICING_COMMISSION: {
+	// 	enabled: true,
+	// 	forAdminOnly: true,
+	// 	envConstraints: {
+	// 		production: {
+	// 			forOrgId: [
+	// 				ORG_ID.EKOSTORE,
+	// 				...ORG_ID.EKOTESTS,
+	// 				...ORG_ID.DYNAMIC_PRICING,
+	// 			],
+	// 		},
+	// 	},
+	// },
+
+	// Legacy Pricing & Commission (for orgs that need old pricing UI).
+	// This flag controls access to the old /admin/pricing page.
+	// The new pricing page uses inverted logic: !LEGACY_PRICING_COMMISSION
+	LEGACY_PRICING_COMMISSION: {
 		enabled: true,
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					...ORG_ID.EKOTESTS,
-					...ORG_ID.DYNAMIC_PRICING,
-				],
+				forOrgId: [...ORG_ID.LEGACY_PRICING_COMMISSION],
 			},
 		},
 	},
