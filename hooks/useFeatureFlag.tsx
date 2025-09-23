@@ -57,8 +57,8 @@ const useFeatureFlag = (
 					"Circular dependency detected for feature:",
 					actualFeatureName
 				);
-				cache.set(cacheKeyForFeature, false);
-				return false;
+				cache.set(cacheKeyForFeature, isInverted ? true : false);
+				return isInverted ? true : false;
 			}
 
 			// Add current feature to visited set (using actualFeatureName)
