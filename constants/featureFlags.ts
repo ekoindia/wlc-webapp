@@ -17,10 +17,14 @@ const ORG_ID = {
  * Note: This file is used to enable or disable features in the application.
  * Can be used to enable or disable features based on user roles or environment.
  *
+ * To add a feature-flag, add a new entry in the `FeatureFlags` object below.
+ * The key should be the name of the feature-flag (eg: "CHAT").
+ *
  * To check for a feature-flag, use the "useFeatureFlag" hook.
  * @example
  * 	import { useFeatureFlag } from "hooks";
  * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
+ *  const [isNotFeatureEnabled] = useFeatureFlag("!FEATURE_NAME"); // To check for "feature not enabled"
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// ------------------------------------------------------------------------
