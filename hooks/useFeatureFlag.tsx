@@ -25,40 +25,6 @@ const useFeatureFlag = (
 	);
 
 	/**
-	 * Check if a feature is enabled based on the conditions defined in the featureFlags.
-	 * @param {string | null | undefined} featureName - Name of the feature to check. If the feature name starts with "!", the result is inverted (to check for "feature not enabled").
-	 * @returns {boolean} - Returns true if the feature is defined, enabled & passes all conditions, else false.
-	 */
-	const checkFeatureFlag = (
-		featureName: string | null | undefined
-	): boolean => {
-		// Guard non-string early to avoid runtime errors (e.g. calling .startsWith on null)
-		if (typeof featureName !== "string") {
-			console.error(
-				"Feature name not provided:",
-				featureName as unknown as string
-			);
-			return false;
-		}
-		let localFeatureName: string = featureName;
-		const isInverted = localFeatureName.startsWith("!");
-		if (isInverted) {
-			localFeatureName = localFeatureName.substring(1);
-		}
-		if (!localFeatureName) {
-			console.error("Feature name not provided:", localFeatureName);
-			return false;
-		}
-
-		const result = _checkFeatureFlagImpl(localFeatureName);
-
-		// If the feature name starts with "!", invert the result.
-		// This is to allow checking for "feature not enabled" in a simple way.
-		// Eg: checkFeatureFlag("!MY_FEATURE") will return true if MY_FEATURE is not enabled.
-		return isInverted ? !result : result;
-	};
-
-	/**
 	 * Internal implementation of checkFeatureFlag, with additional parameters for caching and tracking visited features (to avoid circular dependencies).
 	 * @param {string} customFeatureName - Name of the feature to check
 	 * @param {Map<string, boolean>} cache - Cache to store results of feature checks (internal implementation; do not pass this parameter)
@@ -216,6 +182,41 @@ const useFeatureFlag = (
 			return true;
 		},
 		[cacheKey, isAdmin, userId, userType, isLoggedIn, org_id]
+	);
+
+	/**
+	 * Check if a feature is enabled based on the conditions defined in the featureFlags.
+	 * @param {string | null | undefined} featureName - Name of the feature to check. If the feature name starts with "!", the result is inverted (to check for "feature not enabled").
+	 * @returns {boolean} - Returns true if the feature is defined, enabled & passes all conditions, else false.
+	 */
+	const checkFeatureFlag = useCallback(
+		(featureName: string | null | undefined): boolean => {
+			// Guard non-string early to avoid runtime errors (e.g. calling .startsWith on null)
+			if (typeof featureName !== "string") {
+				console.error(
+					"Feature name not provided:",
+					featureName as unknown as string
+				);
+				return false;
+			}
+			let localFeatureName: string = featureName;
+			const isInverted = localFeatureName.startsWith("!");
+			if (isInverted) {
+				localFeatureName = localFeatureName.substring(1);
+			}
+			if (!localFeatureName) {
+				console.error("Feature name not provided:", localFeatureName);
+				return false;
+			}
+
+			const result = _checkFeatureFlagImpl(localFeatureName);
+
+			// If the feature name starts with "!", invert the result.
+			// This is to allow checking for "feature not enabled" in a simple way.
+			// Eg: checkFeatureFlag("!MY_FEATURE") will return true if MY_FEATURE is not enabled.
+			return isInverted ? !result : result;
+		},
+		[_checkFeatureFlagImpl]
 	);
 
 	/**
