@@ -1,5 +1,18 @@
 import { parseOrgIds } from "utils/envUtils";
 
+// Few pre-defined org-ids for configuring feature flags on production
+// NOTE: The production org-ids must be read from environment variables
+const ORG_ID = {
+	EKOSTORE: Number(process.env.NEXT_PUBLIC_ORG_IDS_EKOSTORE),
+	EKOTESTS: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_EKOTESTS),
+	SBIKIOSK: Number(process.env.NEXT_PUBLIC_ORG_IDS_SBIKIOSK),
+	AI_TEST: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_AI_TEST),
+	DYNAMIC_PRICING: parseOrgIds(
+		process.env.NEXT_PUBLIC_ORG_IDS_DYNAMIC_PRICING
+	),
+	DASHBOARD_V2: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_DASHBOARD_V2),
+};
+
 /**
  * Note: This file is used to enable or disable features in the application.
  * Can be used to enable or disable features based on user roles or environment.
@@ -17,21 +30,23 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Show Admin Network pages to (Super)Distributors
 	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1], // 7 = (SuperDistributor)
-		forEnv: ["development", "staging"],
-	},
-
-	// Show Admin-like dashboard to other sub-network owners like (Super)Distributor
-	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
-		enabled: true,
-		forUserType: [1], // 7 = SuperDistributor
-		forEnv: ["development", "staging"],
+		forUserType: [1, 7], // 7 = (SuperDistributor)
+		// forEnv: ["development", "staging"],
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DASHBOARD_V2,
+				],
+			},
+		},
 	},
 
 	// Inventory Management for (Super)Distributors
 	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
 		enabled: true,
-		forUserType: [1], // 7 = (SuperDistributor)
+		forUserType: [1], // 7 = SuperDistributor
 		forEnv: ["development", "staging"],
 	},
 
@@ -58,6 +73,13 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Feature Enabled only for certain orgs/users in production
 	// Put all UAT/Beta testing flags in this section.
 
+	// Show Admin-like (business) dashboard to other sub-network owners like (Super)Distributor
+	// TODO: Rename to ADMIN_BUSINESS_DASHBOARD_FOR_SUBNETWORK & introduce another flag for ADMIN_ONBOARDING_DASHBOARD_FOR_SUBNETWORK
+	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
+	},
+
 	// Feature to Raise Generic Issues (from Top-Right  Menu)...
 	RAISE_ISSUE_GENERIC: {
 		enabled: true,
@@ -79,10 +101,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 				forOrgId: [3],
 			},
 			production: {
-				forOrgId: [
-					...parseOrgIds(process.env.ORG_IDS_EKOTESTS),
-					...parseOrgIds(process.env.ORG_IDS_AI_TEST),
-				],
+				forOrgId: [...ORG_ID.EKOTESTS, ...ORG_ID.AI_TEST], // 306=Kunal Chand, 186=HI TECH RECHARGE SOLUTION, 10=RAMSON TECHNOVATIONS PVT LTD, 344=PROWESS FINTECH PRIVATE LIMITED, 331=AJ ENTERPRISES
 			},
 		},
 	},
@@ -134,9 +153,9 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		envConstraints: {
 			production: {
 				forOrgId: [
-					Number(process.env.ORG_IDS_EKOSTORE),
-					...parseOrgIds(process.env.ORG_IDS_EKOTESTS),
-					...parseOrgIds(process.env.ORG_IDS_DYNAMIC_PRICING),
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DYNAMIC_PRICING,
 				],
 			},
 		},
@@ -145,6 +164,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
+
+	// New Dashboard Features (Graphs & updated UI)
+	// TODO: Remove this flag after the new dashboard is fully rolled out to all users.
+	DASHBOARD_V2: {
+		enabled: true,
+	},
 
 	// Open ChatGPT Agent in new tab
 	// To answer Admin's queries related to Eloka products and features.

@@ -7,7 +7,7 @@ import {
 	publicSections,
 } from "constants"; // validRoutes.js
 import { useSession } from "contexts/UserContext";
-import { useCopilotReadable } from "libs";
+import { useCopilotInfo } from "libs";
 import { useEffect, useState } from "react";
 
 const isBrowser = typeof window !== "undefined";
@@ -220,7 +220,7 @@ const RouteProtecter = ({ router, pageMeta, children }) => {
 	}, [router.asPath, loading, isLoggedIn, userId, role, isAdminAgentMode]);
 
 	// Define AI Copilot readable state for the E-value balance
-	useCopilotReadable({
+	useCopilotInfo({
 		description:
 			"Currently open page that the user is viewing. It can be used to provide context-aware assistance.",
 		value: {

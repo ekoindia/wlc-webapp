@@ -5,10 +5,10 @@ import { fetcher } from "helpers/apiHelper";
 import { useState } from "react";
 
 /**
- *
- * @param login
- * @param setStep
- * @param setEmail
+ * A custom hook to submit login request to the server process the login response (user profile data, tokens, etc)
+ * @param {Function} login - The login function to call
+ * @param {Function} setStep - Function to set the current step in the login process
+ * @param {Function} setEmail - Function to set the email address for social login
  */
 function useLogin(login, setStep, setEmail) {
 	const { login: processLoginResponse } = useUser();
