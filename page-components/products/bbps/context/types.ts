@@ -72,21 +72,23 @@ export interface BillDetailItem {
 export interface BillFetchResponse {
 	response_status_id: number;
 	data: {
-		billerid: string;
-		amount: string;
-		bbpstrxnrefid: string;
-		ifsc_status: number;
-		utilitycustomername: string;
-		billfetchresponse: string;
-		billerstatus: string;
-		payMultipleBills: string;
-		postalcode: string;
-		billDetailsList: BillDetailItem[];
-		geocode: string;
-		billdate: string;
-		customer_id: string;
-		billDueDate: string;
-		billername: string;
+		billerid?: string;
+		amount?: string;
+		bbpstrxnrefid?: string;
+		ifsc_status?: number;
+		utilitycustomername?: string;
+		billfetchresponse?: string;
+		billerstatus?: string;
+		payMultipleBills?: string;
+		postalcode?: string;
+		billDetailsList?: BillDetailItem[];
+		geocode?: string;
+		billdate?: string;
+		customer_id?: string;
+		billDueDate?: string;
+		billername?: string;
+		reason?: string;
+		user_code?: string;
 	};
 	response_type_id: number;
 	message: string;

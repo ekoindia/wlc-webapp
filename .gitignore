@@ -8,6 +8,7 @@
 # testing & analysis
 /coverage
 /analyze
+gitleaks-report.json
 
 # next.js
 /.next/

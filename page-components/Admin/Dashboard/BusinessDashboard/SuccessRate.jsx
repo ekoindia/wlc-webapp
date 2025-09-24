@@ -1,8 +1,9 @@
-import { Divider, Flex, Skeleton, Text } from "@chakra-ui/react";
+import { Flex, Skeleton, Text } from "@chakra-ui/react";
 import { Endpoints, ProductRoleConfiguration } from "constants";
-import { useApiFetch, useDailyCacheState } from "hooks";
+import { useApiFetch, useDailyCacheState, useFeatureFlag } from "hooks";
 import { useEffect, useMemo, useState } from "react";
 import { LuShieldCheck } from "react-icons/lu";
+import { Cell, Label, Pie, PieChart } from "recharts";
 import { useDashboard } from "..";
 
 const successRateLocalCacheKey = "inf-dashboard-success-rate";
@@ -16,6 +17,8 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 	const { businessDashboardData, setBusinessDashboardData } = useDashboard();
 	const [successRateCache, setSuccessRateCache, isCacheValid] =
 		useDailyCacheState(successRateLocalCacheKey, {});
+
+	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
 	const cacheKey = useMemo(
 		() => getCacheKey(dateFrom, dateTo),
@@ -61,17 +64,21 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 							return null;
 						}
 
-						const successRate =
-							(
-								(productData.successCount /
-									productData.totalCount) *
-								100
-							).toFixed(2) + "%";
+						const successPercent =
+							(productData.successCount /
+								productData.totalCount) *
+							100;
+
+						const successRate = successPercent.toFixed(
+							successPercent == 100 ? 0 : 1
+						);
 
 						return {
 							key: p.tx_typeid,
 							label: p.label,
 							value: successRate,
+							success: productData.successCount,
+							total: productData.totalCount,
 						};
 					})
 					.filter(Boolean); // Remove null values
@@ -119,6 +126,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 		successRateCache,
 	]);
 
+	// MARK: jsx
 	return (
 		<Flex
 			direction="column"
@@ -126,7 +134,7 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 			borderRadius="10px"
 			p="5"
 			w="100%"
-			h={{ base: "auto", xl: "280px" }}
+			// h={{ base: "auto", xl: "280px" }}
 			overflowY="auto"
 			className="customScrollbars"
 			gap="4"
@@ -138,10 +146,10 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 				gap="0.4em"
 			>
 				<LuShieldCheck color="#16a249" />
-				Success Rate
+				Success Rates
 			</Flex>
 
-			<Divider />
+			{/* <Divider /> */}
 
 			<Flex
 				direction="column"
@@ -150,38 +158,45 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 				flex="1"
 				justify={successRateData?.length ? "flex-start" : "center"}
 				align="center"
+				maxH="180px"
+				// gap="10px"
 			>
 				{successRateData?.length ? (
 					successRateData.map((item, index) => {
-						const showDivider = index > 0;
 						return (
 							<Flex
-								key={item.key}
-								direction="column"
-								gap="2"
+								key={item.label}
+								direction="row"
+								align="center"
+								fontSize="sm"
+								gap="10px"
+								py="6px"
 								w="100%"
+								borderTop={index > 0 ? "1px solid" : "none"}
+								borderTopColor="divider"
 							>
-								{showDivider && <Divider />}
-								<Flex
-									justify="space-between"
-									fontSize="sm"
-									gap="2"
-									pb="2"
+								<Text flex="1" fontSize="0.75rem">
+									<Skeleton isLoaded={!isLoading}>
+										{item.label}
+									</Skeleton>
+								</Text>
+								<Text
+									fontWeight="semibold"
+									color="primary.DEFAULT"
 								>
-									<Text>
-										<Skeleton isLoaded={!isLoading}>
-											{item.label}
-										</Skeleton>
-									</Text>
-									<Text
-										fontWeight="semibold"
-										color="primary.DEFAULT"
-									>
-										<Skeleton isLoaded={!isLoading}>
-											{item.value}
-										</Skeleton>
-									</Text>
-								</Flex>
+									<Skeleton isLoaded={!isLoading}>
+										{item.value}%
+									</Skeleton>
+								</Text>
+								{showNewDashboard ? (
+									<Chart
+										successCount={item.success}
+										totalCount={item.total}
+										size={30}
+										innerRadius="60%"
+										hideLabel
+									/>
+								) : null}
 							</Flex>
 						);
 					})
@@ -192,6 +207,58 @@ const SuccessRate = ({ dateFrom, dateTo }) => {
 				)}
 			</Flex>
 		</Flex>
+	);
+};
+
+const Chart = ({
+	successCount,
+	totalCount,
+	size = 55,
+	innerRadius = "70%",
+	hideLabel = false,
+}) => {
+	if (!successCount || !totalCount) return null;
+
+	const isFull = successCount === totalCount;
+
+	return (
+		<PieChart
+			accessibilityLayer={false}
+			width={size}
+			height={size}
+			margin={{
+				top: 0,
+				right: 0,
+				bottom: 0,
+				left: 0,
+			}}
+			style={{ outline: "none" }}
+		>
+			<Pie
+				data={[
+					{ name: "Success", value: successCount },
+					{ name: "Failure", value: totalCount - successCount },
+				]}
+				outerRadius="100%"
+				innerRadius={innerRadius}
+				cornerRadius={isFull ? 0 : 99}
+				paddingAngle={isFull ? 0 : 6}
+				minAngle={1}
+				dataKey="value"
+				nameKey="name"
+				tabIndex={-1}
+				style={{ outline: "none" }}
+			>
+				<Cell fill="#76c68f" />
+				<Cell fill="#FF6B6B" />
+			</Pie>
+			{/* Show a label at the center of the piechart */}
+			{hideLabel ? null : (
+				<Label position="center" fontSize="0.7em" fontWeight="700">
+					{`${((successCount / totalCount) * 100).toFixed(successCount === totalCount ? 0 : 1)}%`}
+				</Label>
+			)}
+		</PieChart>
 	);
 };
 

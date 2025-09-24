@@ -1,13 +1,8 @@
 import { Box, Flex, Grid, Text } from "@chakra-ui/react";
-import {
-	Currency,
-	IcoButton,
-	Icon,
-	WaffleChart,
-	XScrollArrow,
-} from "components";
+import { Currency, IcoButton, Icon, XScrollArrow } from "components";
 import { useAiChatbotPopup, useFeatureFlag } from "hooks";
 import { RiChatAiLine } from "react-icons/ri";
+import { Cell, Label, Pie, PieChart, Tooltip } from "recharts";
 
 /**
  * A TopPanel page-component
@@ -29,6 +24,7 @@ import { RiChatAiLine } from "react-icons/ri";
  */
 const TopPanel = ({ panelDataList }) => {
 	const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT_HOME");
+	const [showNewDashboard] = useFeatureFlag("DASHBOARD_V2");
 
 	if (!isAiChatBotAllowed && !panelDataList?.length) return null;
 
@@ -58,7 +54,9 @@ const TopPanel = ({ panelDataList }) => {
 				{panelDataList
 					?.filter(
 						(item) =>
-							item.value !== null && item.value !== undefined
+							item &&
+							item.value !== null &&
+							item.value !== undefined
 					)
 					.map((item) => (
 						<Flex
@@ -140,27 +138,76 @@ const TopPanel = ({ panelDataList }) => {
 									) : null}
 								</Flex>
 							</Flex>
-							<Flex align="center">
+							<Flex align="center" position="relative">
 								{item.key === "activeOverall" ? (
-									<WaffleChart
-										data={[
-											{
-												value: item.value,
-												label: "Active Users",
-											},
-											{
-												value: item.total - item.value,
-												label: "Inactive Users",
-											},
-										]}
-										colors={["#4ECDC4", "#FF6B6B"]}
-										rows={4}
-										cols={8}
-										size="6px"
-										gap="3px"
-										animationDuration="0.2s"
-										animationDelay="0.02s"
-									/>
+									showNewDashboard ? (
+										<PieChart
+											accessibilityLayer={false}
+											width={65}
+											height={65}
+											margin={{
+												top: 0,
+												right: 0,
+												bottom: 0,
+												left: 0,
+											}}
+											style={{ outline: "none" }}
+										>
+											<Pie
+												data={[
+													{
+														name: "Active Users",
+														value: item.value,
+													},
+													{
+														name: "Inactive Users",
+														value:
+															item.total -
+															item.value,
+													},
+												]}
+												// cx="50%"
+												// cy="50%"
+												// radius={35}
+												// startAngle={360}
+												// endAngle={0}
+												outerRadius="100%"
+												innerRadius="70%" //{22}
+												cornerRadius={99}
+												paddingAngle={6}
+												minAngle={1}
+												dataKey="value"
+												nameKey="name"
+												tabIndex={-1}
+												style={{ outline: "none" }}
+											>
+												{item.value > 0 && (
+													<Cell fill="#4ECDC4" />
+												)}
+												{item.total - item.value >
+													0 && (
+													<Cell fill="#FF6B6B" />
+												)}
+											</Pie>
+											{/* Show a label at the center of the piechart */}
+											<Label
+												position="center"
+												fontSize="0.7em"
+												fontWeight="700"
+											>
+												{`${(
+													(item.value / item.total) *
+													100
+												).toFixed(0)}%`}
+											</Label>
+											<Tooltip
+												contentStyle={{
+													fontSize: "0.6em",
+													padding: "0 8px",
+												}}
+											/>
+										</PieChart>
+									) : null
 								) : (
 									<IcoButton
 										size="md"

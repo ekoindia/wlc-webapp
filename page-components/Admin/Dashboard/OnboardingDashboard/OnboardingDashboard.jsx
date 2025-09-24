@@ -248,7 +248,7 @@ const OnboardingDashboard = () => {
 					gap="0.4em"
 				>
 					<LuHeartHandshake color="#7c3bed" />
-					Onboarding Agents
+					All Onboarding Agents
 				</Flex>
 
 				<Flex
