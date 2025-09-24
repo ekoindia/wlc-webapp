@@ -1,5 +1,11 @@
 import { Center, Spinner, useToast, useToken } from "@chakra-ui/react";
+import { SelectionScreen } from "@ekoindia/oaas-widget";
 import { agreementProvider, Endpoints, TransactionIds } from "constants";
+import {
+	distributorStepsData,
+	retailerStepsData,
+	selectionStepData,
+} from "constants/OnboardingSteps";
 import {
 	useAppSource,
 	useOrgDetailContext,
@@ -7,554 +13,19 @@ import {
 	useSession,
 } from "contexts";
 import { useUser } from "contexts/UserContext";
-// import { Home, SelectionScreen } from "eko-oaas-package";
-import { OnboardingWidget, SelectionScreen } from "@ekoindia/oaas-widget";
-import { fetcher } from "helpers/apiHelper";
+import { fetcher } from "helpers";
 import useRefreshToken from "hooks/useRefreshToken";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
 // import { distributorStepsData } from "./distributorStepsData";
 
-const selectionStepData = {
-	id: 0,
-	name: "RoleCapture",
-	label: "Tell us who you are?",
-	isSkipable: false,
-	isRequired: false,
-	isVisible: false,
-	stepStatus: 0,
-	primaryCTAText: "Continue",
-	description: "",
-	form_data: {
-		roles: [
-			{
-				id: 1,
-				merchant_type: 1,
-				applicant_type: 0,
-				label: "I'm a Retailer",
-				description: "I serve customers from my shop",
-				icon: "../assets/icons/user_merchant.png",
-				isVisible: true,
-				user_type: [
-					{ key: 3, name: "I Merchant" },
-					{ key: 2, name: "Merchant" },
-				],
-			},
-			{
-				id: 2,
-				merchant_type: 3,
-				applicant_type: 2,
-				label: "I'm a Distributor",
-				description:
-					"I have a network of retailer and i want to serve them",
-				icon: "../assets/icons/user_distributor.png",
-				isVisible: true,
-				user_type: [{ key: 1, name: "Distributor" }],
-			},
-			{
-				id: 3,
-				merchant_type: 2,
-				applicant_type: 1,
-				label: "I'm an Enterprise",
-				description:
-					"I want to use API and other solutions to make my own service",
-				icon: "../assets/icons/user_enterprise.png",
-				isVisible: false,
-				user_type: [{ key: 23, name: "Partner" }],
-			},
-		],
-	},
-};
-
-/**
- * Onboarding steps data for both sellers & distributor.
- * Based on user-type (seller or distributor), the oaas-widget will manually remove a few steps for the distributor (hard-coded in the oaas-widget file `src/components/Common/Sidebar/Sidebar.tsx`).
- * Currently, only "Business Details" & "Secret PIN" steps are removed from the Distributor onboarding.
- *
- * Some steps are disabled by marking `isVisible` as `false`.
- */
-const distributorStepsData = [
-	{
-		id: 1,
-		name: "Welcome",
-		label: "Welcome",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Start Onboarding",
-		description: "",
-		form_data: {},
-	},
-	{
-		id: 2,
-		name: "RoleCapture",
-		label: "Tell us who you are?",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Continue",
-		description: "",
-		form_data: {
-			roles: [
-				{
-					id: 1,
-					merchant_type: 1,
-					applicant_type: 0,
-					label: "I'm a retailer",
-					description: "I serve customers from my shop",
-					icon: "../assets/icons/user_merchant.png",
-					isVisible: true,
-				},
-				{
-					id: 2,
-					merchant_type: 3,
-					applicant_type: 2,
-					label: "I'm a distributor",
-					description:
-						"I have a network of retailer and i want to serve them",
-					icon: "../assets/icons/user_distributor.png",
-					isVisible: true,
-				},
-				{
-					id: 3,
-					merchant_type: 2,
-					applicant_type: 1,
-					label: "I'm a Enterprise",
-					description:
-						"I want to use API and other solution to make my own service",
-					icon: "../assets/icons/user_enterprise.png",
-					isVisible: false,
-				},
-			],
-		},
-	},
-	{
-		id: 3,
-		name: "LocationCapture",
-		label: "Location Capturing",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 13000,
-		primaryCTAText: "Start Location Capture",
-		description: "",
-		form_data: {},
-		success_message: "Location captured successfully.",
-	},
-	{
-		id: 4,
-		name: "AadhaarVerification",
-		label: "Aadhaar Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12400,
-		primaryCTAText: "Verify Aadhaar",
-		description:
-			"Upload your Aadhaar Copy front and back to verify yourself. Accepted formats are",
-		form_data: {},
-		success_message: "Aadhaar uploaded successfully.",
-	},
-	{
-		id: 5,
-		name: "Aadhaar Consent",
-		label: "Aadhaar Consent",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Verify Consent",
-		description: "",
-		form_data: {},
-		success_message: "Aadhaar consent taken.",
-	},
-	{
-		id: 6,
-		name: "Confirm Aadhaar Number",
-		label: "Confirm Aadhaar Number",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Proceed",
-		description: "",
-		form_data: {},
-		success_message: "Aadhaar number confirmed.",
-	},
-
-	{
-		id: 7,
-		name: "ConfirmAadhaarOTP",
-		label: "Confirm Aadhaar OTP",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Confirm",
-		description: "",
-		form_data: {},
-		success_message: "Aadhaar confirmed successfully.",
-	},
-	{
-		id: 11,
-		name: "SelfieKYC",
-		label: "Selfie KYC",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12500,
-		primaryCTAText: "Next",
-		description:
-			"Thanks for completing your personal and address verification. Take a clear selfie to complete the eKYC process.",
-		form_data: {},
-		success_message: "KYC completed.",
-	},
-	{
-		id: 9,
-		name: "BusinessDetails",
-		label: "Business Details",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 13300,
-		primaryCTAText: "Next",
-		description: "",
-		form_data: {},
-	},
-	{
-		id: 10,
-		name: "SecretPin",
-		label: "Secret Pin",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12600,
-		primaryCTAText: "Next",
-		description: "Set Your 4-Digit Secret Pin",
-		form_data: {},
-	},
-	{
-		id: 12,
-		name: "Sign Agreement",
-		label: "Sign Agreement",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12800,
-		primaryCTAText: "Sign Agreement",
-		description: "",
-		form_data: {},
-		success_message: "Agreement signed successfully.",
-	},
-	{
-		id: 8,
-		name: "PanVerification",
-		label: "Pan Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12300,
-		primaryCTAText: "Verify PAN",
-		description:
-			"Upload your PAN copy to verify your business. Accepted formats are",
-		form_data: {},
-		success_message: "PAN verified successfully.",
-	},
-
-	{
-		id: 16,
-		name: "PanVerification",
-		label: "Pan Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 13000,
-		primaryCTAText: "Verify PAN",
-		description: "Enter your PAN Number to verify your business.",
-		form_data: {},
-		success_message: "PAN verified successfully.",
-	},
-
-	{
-		id: 13,
-		name: "Activation Plans",
-		label: "Activation Plans",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: false,
-		stepStatus: 0,
-		role: 13400,
-		primaryCTAText: "Sign Agreement",
-		description: "Select Plans To See Details",
-		form_data: {},
-		success_message: "Agreement signed successfully.",
-	},
-	{
-		id: 14,
-		name: "OnboardingStatus",
-		label: "Onboarding Status",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Submit",
-		description: "",
-		form_data: {},
-	},
-	{
-		id: 15,
-		name: "PANAadhaarMatching",
-		label: "PAN - Aadhaar Matching",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Start Matching",
-		description: "",
-		form_data: {},
-	},
-];
-
-const retailerStepsData = [
-	{
-		id: 1,
-		name: "Welcome",
-		label: "Welcome",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Start Onboarding",
-		description: "",
-		form_data: {},
-	},
-	{
-		id: 2,
-		name: "RoleCapture",
-		label: "Tell us who you are?",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Continue",
-		description: "",
-		form_data: {
-			roles: [
-				{
-					id: 1,
-					merchant_type: 1,
-					applicant_type: 0,
-					label: "I'm a retailer",
-					description: "I serve customers from my shop",
-					icon: "../assets/icons/user_merchant.png",
-					isVisible: true,
-				},
-				{
-					id: 2,
-					merchant_type: 3,
-					applicant_type: 2,
-					label: "I'm a distributor",
-					description:
-						"I have a network of retailer and i want to serve them",
-					icon: "../assets/icons/user_distributor.png",
-					isVisible: true,
-				},
-				{
-					id: 3,
-					merchant_type: 2,
-					applicant_type: 1,
-					label: "I'm a Enterprise",
-					description:
-						"I want to use API and other solution to make my own service",
-					icon: "../assets/icons/user_enterprise.png",
-					isVisible: false,
-				},
-			],
-		},
-	},
-	{
-		id: 3,
-		name: "LocationCapture",
-		label: "Location Capturing",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12400,
-		primaryCTAText: "Start Location Capture",
-		description: "",
-		form_data: {},
-		success_message: "Location captured successfully.",
-	},
-	{
-		id: 4,
-		name: "AadhaarVerification",
-		label: "Aadhaar Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12400,
-		primaryCTAText: "Verify Aadhaar",
-		description:
-			"Upload your Aadhaar Copy front and back to verify yourself. Accepted formats are",
-		form_data: {},
-		success_message: "Aadhaar uploaded successfully.",
-	},
-	{
-		id: 5,
-		name: "Aadhaar Consent",
-		label: "Aadhaar Consent",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Verify Consent",
-		description: "",
-		form_data: {},
-		success_message: "Aadhaar consent taken.",
-	},
-	{
-		id: 6,
-		name: "Confirm Aadhaar Number",
-		label: "Confirm Aadhaar Number",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Proceed",
-		description: "",
-		form_data: {},
-		success_message: "Aadhaar number confirmed.",
-	},
-
-	{
-		id: 7,
-		name: "ConfirmAadhaarOTP",
-		label: "Confirm Aadhaar OTP",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 24000,
-		primaryCTAText: "Confirm",
-		description: "",
-		form_data: {},
-		success_message: "Aadhaar confirmed successfully.",
-	},
-	{
-		id: 11,
-		name: "SelfieKYC",
-		label: "Selfie KYC",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12500,
-		primaryCTAText: "Next",
-		description:
-			"Thanks for completing your personal and address verification. Take a clear selfie to complete the eKYC process.",
-		form_data: {},
-		success_message: "KYC completed.",
-	},
-	{
-		id: 10,
-		name: "SecretPin",
-		label: "Secret Pin",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12600,
-		primaryCTAText: "Next",
-		description: "Set Your 4-Digit Secret Pin",
-		form_data: {},
-	},
-	{
-		id: 12,
-		name: "Sign Agreement",
-		label: "Sign Agreement",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12800,
-		primaryCTAText: "Sign Agreement",
-		description: "",
-		form_data: {},
-		success_message: "Agreement signed successfully.",
-	},
-	{
-		id: 8,
-		name: "PanVerification",
-		label: "Pan Verification",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: true,
-		stepStatus: 0,
-		role: 12300,
-		primaryCTAText: "Verify PAN",
-		description:
-			"Upload your PAN copy to verify your business. Accepted formats are",
-		form_data: {},
-		success_message: "PAN verified successfully.",
-	},
-	{
-		id: 13,
-		name: "Activation Plans",
-		label: "Activation Plans",
-		isSkipable: false,
-		isRequired: true,
-		isVisible: false,
-		stepStatus: 0,
-		role: 13400,
-		primaryCTAText: "Sign Agreement",
-		description: "Select Plans To See Details",
-		form_data: {},
-		success_message: "Agreement signed successfully.",
-	},
-	{
-		id: 14,
-		name: "OnboardingStatus",
-		label: "Onboarding Status",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Submit",
-		description: "",
-		form_data: {},
-	},
-	{
-		id: 15,
-		name: "PANAadhaarMatching",
-		label: "PAN - Aadhaar Matching",
-		isSkipable: false,
-		isRequired: false,
-		isVisible: false,
-		stepStatus: 0,
-		primaryCTAText: "Start Matching",
-		description: "",
-		form_data: {},
-	},
-];
+const OnboardingWidget = dynamic(
+	() => import("@ekoindia/oaas-widget").then((mod) => mod.OnboardingWidget),
+	{ ssr: false }
+);
 
 const SignupPage = () => {
 	const { userData, updateUserInfo } = useUser();
@@ -578,6 +49,7 @@ const SignupPage = () => {
 	const [isSpinner, setisSpinner] = useState(true);
 	const [apiInProgress, setApiInProgress] = useState(false);
 	const [esignStatus, setEsignStatus] = useState(0); // 0: loading, 1: ready, 2: failed
+	const [digilockerData, setDigilockerData] = useState(null);
 
 	const [stepperData, setStepperData] = useState([
 		{
@@ -641,11 +113,12 @@ const SignupPage = () => {
 	// const widgetRef = useRef(null);
 	const { isAndroid } = useAppSource();
 	const { subscribe, TOPICS } = usePubSub();
+	const toast = useToast();
 
 	// Subscribe to the Android responses
 	useEffect(() => {
 		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
-			console.log("[signup] [PubSub] >>> android-response:: ", data);
+			// console.log("[signup] [PubSub] >>> android-response:: ", data);
 
 			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
 				androidleegalityResponseHandler(data?.data);
@@ -653,7 +126,7 @@ const SignupPage = () => {
 		});
 
 		return unsubscribe;
-	}, []);
+	}, [TOPICS.ANDROID_RESPONSE, subscribe]);
 
 	const androidleegalityResponseHandler = (res) => {
 		let value = JSON.parse(res);
@@ -714,13 +187,12 @@ const SignupPage = () => {
 
 	let bookletKeys = [];
 
-	const toast = useToast();
 	const user_id =
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
 
 	const handleStepDataSubmit = (data) => {
-		console.log("HandleWlcStepData", data);
+		// console.log("HandleWlcStepData", data);
 		if (data?.id === 3) {
 			setLatLong(data?.form_data?.latlong);
 		}
@@ -805,6 +277,10 @@ const SignupPage = () => {
 				bodyData.form_data.csp_id =
 					userData.userDetails.signup_mobile ||
 					userData.userDetails.mobile;
+			} else if (data?.id === 20) {
+				interaction_type_id = TransactionIds.USER_AADHAR_OTP_CONFIRM;
+				bodyData.form_data.is_consent = "Y";
+				bodyData.form_data.token_id = digilockerData?.requestId;
 			}
 			updateOnboarding(bodyData);
 		} else {
@@ -843,7 +319,7 @@ const SignupPage = () => {
 				new URLSearchParams(bodyData["formdata"])
 			);
 		} else if (data.id === 8) {
-			console.log("PAN data", data);
+			// console.log("PAN data", data);
 			bodyData.file1 = data?.form_data?.panImage?.fileData;
 			bodyData.formdata.file1 = "";
 			bodyData.formdata.doc_type = 2;
@@ -866,7 +342,7 @@ const SignupPage = () => {
 			);
 		}
 
-		console.log("inside handle file upload ", bodyData, formData);
+		// console.log("inside handle file upload ", bodyData, formData);
 
 		const uploadResponse = await fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD,
@@ -880,15 +356,15 @@ const SignupPage = () => {
 		)
 			.then((res) => {
 				if (res.ok) {
-					console.log("📡 Fetch Result:", {
-						res,
-					});
+					// console.log("📡 Fetch Result:", {
+					// 	res,
+					// });
 					return res.json();
 				} else {
 					res.text().then(() => {
-						console.error("📡 Fetch Error:", {
-							res,
-						});
+						// console.error("📡 Fetch Error:", {
+						// 	res,
+						// });
 					});
 
 					const err = new Error("API Error");
@@ -910,7 +386,7 @@ const SignupPage = () => {
 					status: "error",
 					duration: 2000,
 				});
-				console.error("error in update onboarding: ", err);
+				// console.error("error in update onboarding: ", err);
 				return err;
 			});
 
@@ -939,7 +415,7 @@ const SignupPage = () => {
 
 		setApiInProgress(false);
 
-		console.log("uploadResponse", uploadResponse);
+		// console.log("uploadResponse", uploadResponse);
 	};
 
 	const updateOnboarding = (bodyData) => {
@@ -1048,7 +524,7 @@ const SignupPage = () => {
 		}
 	};
 
-	const getSHopTypes = () => {
+	const getShopTypes = () => {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -1082,12 +558,12 @@ const SignupPage = () => {
 				if (res.status === 0) {
 					setStateTypesData(res?.param_attributes.list_elements);
 				}
-				console.log("[getStateType] resp:", res);
+				// console.log("[getStateType] resp:", res);
 			})
 			.catch((err) => console.error("[getStateType] Error:", err));
 	};
 	// const getPincodeType = () => {
-	// 	console.log("inside mainfunction");
+	// 	// console.log("inside mainfunction");
 	// 	fetcher(
 	// 		process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 	// 		{
@@ -1107,10 +583,53 @@ const SignupPage = () => {
 	// 		.catch((err) => console.log("inside initial api error", err));
 	// };
 
+	// Fetcher function for Digilocker URL
+	const getDigilockerUrl = async () => {
+		try {
+			const data = await fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					token: userData?.access_token,
+					method: "POST",
+					headers: {
+						"tf-req-method": "POST",
+						"tf-req-uri": "/karza/digilocker-redirection-url",
+						"tf-req-uri-root-path": "/ekoicici/v1/marketuat",
+					},
+				},
+				generateNewToken
+			);
+
+			// console.log("[getDigilockerUrl] Response:", data);
+
+			if (data?.status === 0) {
+				// Handle successful response
+				if (data?.data?.link) {
+					// Store the response data for future use
+					setDigilockerData({
+						link: data.data.link,
+						requestId: data.data.requestId,
+						initiatorId: data.data.initiator_id,
+						timestamp: data.data.timestamp,
+					});
+				}
+			}
+		} catch (error) {
+			// console.error("[getDigilockerUrl] Error:", error);
+			toast({
+				title:
+					error?.message ??
+					"Something went wrong, please try again later!",
+				status: "error",
+				duration: 2000,
+			});
+		}
+	};
+
 	const handleLeegalityCallback = (res) => {
-		console.log("Leegality callback response", res);
+		// console.log("Leegality callback response", res);
 		if (res.error) {
-			console.error("LeegalityCallBack Error", res.error);
+			// console.error("LeegalityCallBack Error", res.error);
 			toast({
 				title:
 					res?.error ||
@@ -1158,7 +677,7 @@ const SignupPage = () => {
 	}, [signUrlData]);
 
 	const handleStepCallBack = (callType) => {
-		console.log("[stepcallback]", callType, latLong, userLoginData);
+		// console.log("[stepcallback]", callType, latLong, userLoginData);
 		if (callType.type === 12) {
 			// Leegality Esign
 			if (callType.method === "getSignUrl") {
@@ -1176,9 +695,9 @@ const SignupPage = () => {
 					window.open(signUrlData?.short_url, "SignAgreementWindow");
 				} else if (signUrlData?.pipe == agreementProvider.KARZA) {
 					if (!signUrlData?.short_url) {
-						console.error(
-							"[oaas Leegality] Didn't receive short-url"
-						);
+						// console.error(
+						// 	"[oaas Leegality] Didn't receive short-url"
+						// );
 						toast({
 							title: "Error starting eSign session. Please reload and try again later.",
 							status: "error",
@@ -1232,11 +751,15 @@ const SignupPage = () => {
 					);
 				}
 			}
+		} else if (callType.type === 20) {
+			if (callType.method === "getDigilockerUrl") {
+				getDigilockerUrl();
+			}
 		}
 	};
 
 	const getSignUrl = () => {
-		console.log("Getting Signed URL for Leegality...");
+		// console.log("Getting Signed URL for Leegality...");
 		// if (agreementId) {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -1272,10 +795,10 @@ const SignupPage = () => {
 						status: "error",
 						duration: 5000,
 					});
-					console.error(
-						"[getSignUrl] Error: E-sign initialization failed: " +
-							res?.message
-					);
+					// console.error(
+					// 	"[getSignUrl] Error: E-sign initialization failed: " +
+					// 		res?.message
+					// );
 					setEsignStatus(2);
 					// widgetRef?.current?.postMessage({
 					// 	type: "esign:failed",
@@ -1348,10 +871,10 @@ const SignupPage = () => {
 		script.id = "legality";
 		document.body.appendChild(script);
 		script.onload = () => {
-			console.log("Leegality script loaded", script);
+			// console.log("Leegality script loaded", script);
 		};
 		script.onerror = () => {
-			console.error("Failed to load Leegality script");
+			// console.error("Failed to load Leegality script");
 			toast({
 				title: "Failed to initialize eSign",
 				description:
@@ -1363,7 +886,7 @@ const SignupPage = () => {
 		};
 		if (!userLoginData) {
 			refreshApiCall();
-			getSHopTypes();
+			getShopTypes();
 			getStateType();
 			// getPincodeType();
 		}
@@ -1379,12 +902,14 @@ const SignupPage = () => {
 	useEffect(() => {
 		if (bookletNumber) {
 			getBookletKey();
-			getBookletKey();
 		}
-	}, [bookletNumber, getBookletKey]);
+	}, [bookletNumber]);
 
 	// Get theme primary color
-	const [primaryColor] = useToken("colors", ["primary.DEFAULT"]);
+	const [primaryColor, accentColor] = useToken("colors", [
+		"primary.DEFAULT",
+		"accent.DEFAULT",
+	]);
 
 	// console.log("[wlc>oaas] Loading Widget: ", {
 	// 	selectedRole,
@@ -1420,6 +945,7 @@ const SignupPage = () => {
 							}}
 							isDisabledCTA={apiInProgress}
 							primaryColor={primaryColor}
+							accentColor={accentColor}
 						/>
 					) : (
 						<OnboardingWidget
@@ -1439,7 +965,9 @@ const SignupPage = () => {
 							handleStepCallBack={handleStepCallBack}
 							esignStatus={esignStatus}
 							primaryColor={primaryColor}
+							accentColor={accentColor}
 							orgDetail={orgDetail}
+							digilockerData={digilockerData}
 						/>
 					)}
 				</div>

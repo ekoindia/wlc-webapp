@@ -360,6 +360,15 @@ export const Search = ({ product }: { product: BbpsProduct }) => {
 
 			// Handle error case
 			if (error || !response) {
+				toast({
+					title: "Error",
+					description:
+						error || "Failed to fetch bills. Please try again.",
+					status: "error",
+					duration: 5000,
+					isClosable: true,
+				});
+
 				dispatch({
 					type: "SET_ERROR",
 					message:

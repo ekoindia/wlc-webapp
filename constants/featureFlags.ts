@@ -17,10 +17,14 @@ const ORG_ID = {
  * Note: This file is used to enable or disable features in the application.
  * Can be used to enable or disable features based on user roles or environment.
  *
+ * To add a feature-flag, add a new entry in the `FeatureFlags` object below.
+ * The key should be the name of the feature-flag (eg: "CHAT").
+ *
  * To check for a feature-flag, use the "useFeatureFlag" hook.
  * @example
  * 	import { useFeatureFlag } from "hooks";
  * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
+ *  const [isNotFeatureEnabled] = useFeatureFlag("!FEATURE_NAME"); // To check for "feature not enabled"
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// ------------------------------------------------------------------------
@@ -31,22 +35,6 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
 		enabled: true,
 		forUserType: [1, 7], // 7 = (SuperDistributor)
-		// forEnv: ["development", "staging"],
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					...ORG_ID.EKOTESTS,
-					...ORG_ID.DASHBOARD_V2,
-				],
-			},
-		},
-	},
-
-	// Show Admin-like dashboard to other sub-network owners like (Super)Distributor
-	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
-		enabled: true,
-		forUserType: [1, 7], // 7 = SuperDistributor, 4 = FOS
 		// forEnv: ["development", "staging"],
 		envConstraints: {
 			production: {
@@ -88,6 +76,22 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// MARK: 🚩BETA Flags
 	// Feature Enabled only for certain orgs/users in production
 	// Put all UAT/Beta testing flags in this section.
+
+	// Show Admin-like (business) dashboard to other sub-network owners like (Super)Distributor
+	// TODO: Rename to ADMIN_BUSINESS_DASHBOARD_FOR_SUBNETWORK & introduce another flag for ADMIN_ONBOARDING_DASHBOARD_FOR_SUBNETWORK
+	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DASHBOARD_V2,
+				],
+			},
+		},
+	},
 
 	// Feature to Raise Generic Issues (from Top-Right  Menu)...
 	RAISE_ISSUE_GENERIC: {
@@ -170,23 +174,15 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		},
 	},
 
-	// New Dashboard Features (Graphs & updated UI)
-	DASHBOARD_V2: {
-		enabled: true,
-		envConstraints: {
-			production: {
-				forOrgId: [
-					ORG_ID.EKOSTORE,
-					...ORG_ID.EKOTESTS,
-					...ORG_ID.DASHBOARD_V2,
-				],
-			},
-		},
-	},
-
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
+
+	// New Dashboard Features (Graphs & updated UI)
+	// TODO: Remove this flag after the new dashboard is fully rolled out to all users.
+	DASHBOARD_V2: {
+		enabled: true,
+	},
 
 	// Open ChatGPT Agent in new tab
 	// To answer Admin's queries related to Eloka products and features.
