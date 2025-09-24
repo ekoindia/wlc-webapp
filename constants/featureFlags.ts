@@ -82,6 +82,15 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
 		enabled: true,
 		forUserType: [1, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DASHBOARD_V2,
+				],
+			},
+		},
 	},
 
 	// Feature to Raise Generic Issues (from Top-Right  Menu)...
