@@ -10,14 +10,12 @@ import React, { useCallback } from "react";
  * Props for the Pintwin component
  */
 interface PintwinProps {
+	/** Label for the PIN input field */
+	label?: string;
 	/** Whether the component is disabled and non-interactive */
 	disabled?: boolean;
 	/** Callback function called when PIN is entered or changed */
 	onPinChange?: (_pin: string, _encodedPin?: string) => void;
-	/** Placeholder text for PIN input */
-	placeholder?: string;
-	/** Label for the PIN input field */
-	label?: string;
 }
 
 /**
@@ -47,9 +45,9 @@ interface PintwinProps {
  * ```
  */
 const Pintwin: React.FC<PintwinProps> = ({
+	label = "Secret PIN",
 	disabled = false,
 	onPinChange,
-	label = "Secret PIN",
 }) => {
 	const { refreshPinTwinKey, encodePinTwin, pinTwinKeyLoadStatus } =
 		usePinTwin();
