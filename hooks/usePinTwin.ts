@@ -45,7 +45,13 @@ export interface UsePinTwinReturn {
 }
 
 /**
- * Custom hook for managing PinTwin key operations
+ * Custom hook for managing PinTwin key operations with consolidated state management
+ *
+ * This hook manages the complete lifecycle of PinTwin keys including:
+ * - Automatic key fetching on mount with retry logic
+ * - Manual key refresh functionality
+ * - PIN encoding using the loaded key
+ * - Consolidated loading status tracking (loading/loaded/error)
  * @param {UsePinTwinOptions} options Configuration options for the hook
  * @returns {UsePinTwinReturn} Object containing PinTwin state and operations
  * @example
@@ -53,17 +59,24 @@ export interface UsePinTwinReturn {
  * // Basic usage with auto-loading
  * const { pinTwinKey, pinTwinKeyLoadStatus, encodePinTwin } = usePinTwin();
  *
- * // Custom configuration with mock data
+ * // Custom configuration with mock data for development
  * const { encodePinTwin, refreshPinTwinKey } = usePinTwin({
  *   useMockData: true,
  *   maxRetries: 5,
  *   retryDelay: 2000
  * });
  *
- * // Check status and encode PIN
+ * // Status-based conditional logic
  * if (pinTwinKeyLoadStatus === 'loaded') {
  *   const encodedPin = encodePinTwin('1234');
+ * } else if (pinTwinKeyLoadStatus === 'error') {
+ *   // Handle error state - user can retry with refreshPinTwinKey
  * }
+ *
+ * // Component integration example
+ * const isLoading = pinTwinKeyLoadStatus === 'loading';
+ * const hasError = pinTwinKeyLoadStatus === 'error';
+ * const isReady = pinTwinKeyLoadStatus === 'loaded';
  * ```
  */
 export const usePinTwin = (
@@ -81,7 +94,8 @@ export const usePinTwin = (
 	const isMountedRef = useRef(true);
 	const hasAutoLoaded = useRef(false);
 
-	// Store options in refs to avoid recreating refreshPinTwinKey function
+	// Store options in refs to prevent refreshPinTwinKey function recreation
+	// This optimization ensures stable function reference while allowing dynamic option access
 	const optionsRef = useRef({ useMockData, maxRetries, retryDelay });
 	optionsRef.current = { useMockData, maxRetries, retryDelay };
 
@@ -107,7 +121,13 @@ export const usePinTwin = (
 	}, []);
 
 	/**
-	 * Reloads the PinTwin key with retry logic
+	 * Reloads the PinTwin key with automatic retry logic
+	 *
+	 * This function handles the complete key loading process including:
+	 * - Setting initial loading status
+	 * - Making API calls with fallback to mock data
+	 * - Automatic retry logic with configurable attempts and delays
+	 * - Final status updates (loaded/error) based on outcome
 	 */
 	const refreshPinTwinKey = useCallback(async (): Promise<void> => {
 		if (!isMountedRef.current) return;
@@ -126,7 +146,7 @@ export const usePinTwin = (
 			status: 0,
 		};
 
-		// Set loading to true at the start of the entire retry process
+		// Initialize loading status at the start of the refresh process
 		setPinTwinKeyLoadStatus("loading");
 
 		const attemptLoad = async (): Promise<void> => {
@@ -139,7 +159,7 @@ export const usePinTwin = (
 					setPinTwinKey(response.data.pintwin_key.split(""));
 					setPinTwinKeyId(response.data.key_id?.toString() ?? "");
 					retryCountRef.current = 0;
-					// Success - set to loaded
+					// Success: Update status to loaded and complete the process
 					if (isMountedRef.current) {
 						setPinTwinKeyLoadStatus("loaded");
 					}
@@ -153,7 +173,8 @@ export const usePinTwin = (
 					retryCountRef.current < optionsRef.current.maxRetries &&
 					isMountedRef.current
 				) {
-					// Still retrying - keep loading status
+					// Retry attempt: increment counter and schedule next attempt
+					// Status remains "loading" during retry process
 					const newRetryCount = retryCountRef.current + 1;
 					retryCountRef.current = newRetryCount;
 
@@ -167,7 +188,7 @@ export const usePinTwin = (
 						}
 					}, optionsRef.current.retryDelay);
 				} else {
-					// All retries exhausted - set error status
+					// Failure: All retries exhausted, update status to error
 					if (isMountedRef.current) {
 						setPinTwinKeyLoadStatus("error");
 					}
@@ -180,7 +201,13 @@ export const usePinTwin = (
 	}, [fetchPinTwinKey]);
 
 	/**
-	 * Encodes a PIN using the current PinTwin key
+	 * Encodes a PIN using the current PinTwin key with server identification
+	 *
+	 * This function transforms a user's PIN by mapping each digit through the
+	 * PinTwin key lookup table and appends the key ID for server verification.
+	 * Returns empty string if the key is not fully loaded (< 10 digits).
+	 * @param {string} pin The PIN to encode (typically 4 digits, max 10)
+	 * @returns {string} Encoded PIN with key ID suffix (format: "encodedPin|keyId") or empty string if key not ready
 	 */
 	const encodePinTwin = useCallback(
 		(pin: string): string => {
@@ -203,7 +230,8 @@ export const usePinTwin = (
 		[pinTwinKey, pinTwinKeyId]
 	);
 
-	// Auto-load key on mount - run only once
+	// Auto-load PinTwin key on component mount (runs only once)
+	// This initiates the loading process with status tracking
 	useEffect(() => {
 		if (!hasAutoLoaded.current) {
 			hasAutoLoaded.current = true;
@@ -212,7 +240,8 @@ export const usePinTwin = (
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	// Cleanup on unmount
+	// Component lifecycle management and cleanup
+	// Ensures proper cleanup of timeouts and prevents memory leaks
 	useEffect(() => {
 		isMountedRef.current = true;
 		return () => {

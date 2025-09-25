@@ -59,13 +59,13 @@ const PIN_COLORS = ["#FFEB3B", "#81D4FA"];
  *
  * A secure PIN lookup display component that shows a PinTwin key grid for secure PIN entry.
  * This is a pure presentational component that uses the `usePinTwin` hook for all business logic
- * including API calls, state management, and PIN encoding functionality.
+ * including API calls, consolidated state management, and PIN encoding functionality.
  *
  * Key Features:
  * - Displays a 10-digit lookup table with colored indicators
  * - Automatic key fetching with retry logic
  * - Manual reload capability with visual feedback
- * - Loading states and error handling
+ * - Consolidated loading state management (loading/loaded/error)
  * - Mock data support for testing
  * - Responsive design with proper accessibility
  *
@@ -134,7 +134,8 @@ const Pintwin: React.FC<PintwinProps> = ({
 		useMockData,
 	});
 
-	// Derive individual status flags for component logic
+	// Derive individual status flags from consolidated state for component logic
+	// This maintains component readability while using the cleaner hook interface
 	const loading = pinTwinKeyLoadStatus === "loading";
 	const keyLoadError = pinTwinKeyLoadStatus === "error";
 
