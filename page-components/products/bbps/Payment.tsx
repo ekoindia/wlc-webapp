@@ -221,9 +221,6 @@ export const Payment = () => {
 			label: "Secret PIN",
 			parameter_type_id: ParamType.PINTWIN,
 			required: true,
-			meta: {
-				useMockData,
-			},
 		},
 	];
 

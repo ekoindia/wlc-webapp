@@ -116,8 +116,6 @@ const Form = ({
 												{...{
 													label,
 													disabled,
-													useMockData:
-														meta?.useMockData,
 													onPinChange: (
 														pin,
 														encodedPin
