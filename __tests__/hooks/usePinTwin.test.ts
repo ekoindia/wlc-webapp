@@ -27,16 +27,12 @@ describe("usePinTwin", () => {
 		jest.clearAllTimers();
 	});
 
-	it("should return initial state with loading true", () => {
+	it("should return initial state with loading status", () => {
 		const { result } = renderHook(() => usePinTwin());
 
 		expect(result.current).toBeDefined();
-		expect(result.current.pintwinKey).toEqual([]);
-		expect(result.current.loading).toBe(true);
-		expect(result.current.keyLoaded).toBe(false);
-		expect(result.current.keyLoadError).toBe(false);
-		expect(result.current.retryCount).toBe(0);
-		expect(result.current.keyId).toBe("");
+		expect(result.current.pinTwinKey).toEqual([]);
+		expect(result.current.pinTwinKeyLoadStatus).toBe("loading");
 	});
 
 	it("should return empty string for encoding if key is not loaded", () => {
@@ -54,10 +50,8 @@ describe("usePinTwin", () => {
 		await act(async () => {
 			jest.runAllTimers();
 		});
-		expect(result.current.loading).toBe(false);
-		expect(result.current.keyLoaded).toBe(true);
-		expect(result.current.pintwinKey).toEqual("1974856302".split(""));
-		expect(result.current.keyId).toBe("39");
+		expect(result.current.pinTwinKeyLoadStatus).toBe("loaded");
+		expect(result.current.pinTwinKey).toEqual("1974856302".split(""));
 		const encodedPin = result.current.encodePinTwin("1234");
 		expect(encodedPin).toBe("8765|39");
 		jest.useRealTimers();
@@ -75,7 +69,7 @@ describe("usePinTwin", () => {
 		jest.useRealTimers();
 	});
 
-	it("should reload key manually with reloadKey", async () => {
+	it("should reload key manually with refreshPinTwinKey", async () => {
 		jest.useFakeTimers();
 		const { result } = renderHook(() => usePinTwin());
 		expect(result.current).toBeDefined();
@@ -94,12 +88,11 @@ describe("usePinTwin", () => {
 		};
 		mockedFetcher.mockResolvedValue(mockResponse);
 		await act(async () => {
-			await result.current.reloadKey();
+			await result.current.refreshPinTwinKey();
 			jest.runAllTimers();
 		});
-		expect(result.current.keyLoaded).toBe(true);
-		expect(result.current.pintwinKey).toEqual("0123456789".split(""));
-		expect(result.current.keyId).toBe("55");
+		expect(result.current.pinTwinKeyLoadStatus).toBe("loaded");
+		expect(result.current.pinTwinKey).toEqual("0123456789".split(""));
 		jest.useRealTimers();
 	});
 });

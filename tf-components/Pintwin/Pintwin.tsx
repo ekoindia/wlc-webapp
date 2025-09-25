@@ -129,11 +129,14 @@ const Pintwin: React.FC<PintwinProps> = ({
 		pinTwinKey,
 		refreshPinTwinKey,
 		encodePinTwin,
-		loading,
-		keyLoadError,
+		pinTwinKeyLoadStatus,
 	} = usePinTwin({
 		useMockData,
 	});
+
+	// Derive individual status flags for component logic
+	const loading = pinTwinKeyLoadStatus === "loading";
+	const keyLoadError = pinTwinKeyLoadStatus === "error";
 
 	/**
 	 * Handles PIN input changes (for length tracking only, no encoding)

@@ -22,6 +22,8 @@ interface PinTwinResponse {
 	status: number;
 }
 
+type PinTwinKeyLoadStatus = "loading" | "loaded" | "error";
+
 interface UsePinTwinOptions {
 	/** Whether to use mock data instead of API calls. Defaults to false */
 	useMockData?: boolean;
@@ -34,12 +36,8 @@ interface UsePinTwinOptions {
 export interface UsePinTwinReturn {
 	/** The current PinTwin key as an array of 10-digits. This one-time key is used to encode (encrypt) the user's secret-PIN */
 	pinTwinKey: string[];
-	/** Whether the key is currently being loaded */
-	loading: boolean;
-	/** Whether the key has been successfully loaded */
-	keyLoaded: boolean;
-	/** Whether there was an error loading the key */
-	keyLoadError: boolean;
+	/** Current load status of the PinTwin key: 'loading', 'loaded', or 'error' */
+	pinTwinKeyLoadStatus: PinTwinKeyLoadStatus;
 	/** Function to manually reload the PinTwin key */
 	refreshPinTwinKey: () => Promise<void>;
 	/** Function to encode a PIN using the current key. It is usually 4-digit long but can be of any length (upto 10-digits) */
@@ -53,7 +51,7 @@ export interface UsePinTwinReturn {
  * @example
  * ```typescript
  * // Basic usage with auto-loading
- * const { pinTwinKey, loading, keyLoaded, encodePinTwin } = usePinTwin();
+ * const { pinTwinKey, pinTwinKeyLoadStatus, encodePinTwin } = usePinTwin();
  *
  * // Custom configuration with mock data
  * const { encodePinTwin, refreshPinTwinKey } = usePinTwin({
@@ -62,8 +60,10 @@ export interface UsePinTwinReturn {
  *   retryDelay: 2000
  * });
  *
- * // Encode a PIN immediately
- * const encodedPin = encodePinTwin('1234');
+ * // Check status and encode PIN
+ * if (pinTwinKeyLoadStatus === 'loaded') {
+ *   const encodedPin = encodePinTwin('1234');
+ * }
  * ```
  */
 export const usePinTwin = (
@@ -72,9 +72,8 @@ export const usePinTwin = (
 	const { useMockData = false } = options;
 
 	const [pinTwinKey, setPinTwinKey] = useState<string[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [keyLoaded, setKeyLoaded] = useState(false);
-	const [keyLoadError, setKeyLoadError] = useState(false);
+	const [pinTwinKeyLoadStatus, setPinTwinKeyLoadStatus] =
+		useState<PinTwinKeyLoadStatus>("loading");
 	const [pinTwinKeyId, setPinTwinKeyId] = useState("");
 
 	const retryCountRef = useRef(0);
@@ -128,8 +127,7 @@ export const usePinTwin = (
 		};
 
 		// Set loading to true at the start of the entire retry process
-		setLoading(true);
-		setKeyLoadError(false);
+		setPinTwinKeyLoadStatus("loading");
 
 		const attemptLoad = async (): Promise<void> => {
 			try {
@@ -140,25 +138,22 @@ export const usePinTwin = (
 				if (response?.data?.pintwin_key) {
 					setPinTwinKey(response.data.pintwin_key.split(""));
 					setPinTwinKeyId(response.data.key_id?.toString() ?? "");
-					setKeyLoaded(true);
-					setKeyLoadError(false);
 					retryCountRef.current = 0;
-					// Success - stop loading
+					// Success - set to loaded
 					if (isMountedRef.current) {
-						setLoading(false);
+						setPinTwinKeyLoadStatus("loaded");
 					}
 				} else {
 					throw new Error("Invalid response format");
 				}
 			} catch (error) {
 				console.error("Error loading PinTwin key:", error);
-				setKeyLoaded(false);
 
 				if (
 					retryCountRef.current < optionsRef.current.maxRetries &&
 					isMountedRef.current
 				) {
-					// Still retrying - keep loading true, error false
+					// Still retrying - keep loading status
 					const newRetryCount = retryCountRef.current + 1;
 					retryCountRef.current = newRetryCount;
 
@@ -172,10 +167,9 @@ export const usePinTwin = (
 						}
 					}, optionsRef.current.retryDelay);
 				} else {
-					// All retries exhausted - show error and stop loading
+					// All retries exhausted - set error status
 					if (isMountedRef.current) {
-						setKeyLoadError(true);
-						setLoading(false);
+						setPinTwinKeyLoadStatus("error");
 					}
 				}
 			}
@@ -231,9 +225,7 @@ export const usePinTwin = (
 
 	return {
 		pinTwinKey,
-		loading, // 1.
-		keyLoaded, // 2.
-		keyLoadError, // 3. → Combine 1,2,3 into `pinTwinKeyLoadStatus` = loading, error, loaded
+		pinTwinKeyLoadStatus,
 		refreshPinTwinKey,
 		encodePinTwin,
 	};
