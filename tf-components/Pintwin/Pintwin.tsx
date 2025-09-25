@@ -125,10 +125,16 @@ const Pintwin: React.FC<PintwinProps> = ({
 	onPinChange,
 	label = "Secret PIN",
 }) => {
-	const { pintwinKey, reloadKey, encodePinTwin, loading, keyLoadError } =
-		usePinTwin({
-			useMockData,
-		});
+	const {
+		pintwinKey,
+		refreshPinTwinKey,
+		encodePinTwin,
+		loading,
+		keyLoadError,
+	} = usePinTwin({
+		useMockData,
+	});
+
 	/**
 	 * Handles PIN input changes (for length tracking only, no encoding)
 	 */
@@ -223,7 +229,9 @@ const Pintwin: React.FC<PintwinProps> = ({
 											? "retry"
 											: "insurance"
 								}
-								onClick={keyLoadError ? reloadKey : undefined}
+								onClick={
+									keyLoadError ? refreshPinTwinKey : undefined
+								}
 								iconSize="sm"
 								size="xs"
 								theme="ghost"
