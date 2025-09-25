@@ -3,6 +3,9 @@ import { TransactionTypes } from "constants/EpsTransactions";
 import { fetcher } from "helpers/apiHelper";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+const maxRetries = 8;
+const retryDelay = 1000;
+
 interface PinTwinData {
 	customer_id_type: string;
 	key_id: number;
@@ -37,14 +40,10 @@ export interface UsePinTwinReturn {
 	keyLoaded: boolean;
 	/** Whether there was an error loading the key */
 	keyLoadError: boolean;
-	/** Current retry count */
-	retryCount: number;
 	/** Function to manually reload the PinTwin key */
-	reloadKey: () => Promise<void>;
+	refreshPinTwinKey: () => Promise<void>;
 	/** Function to encode a PIN using the current key. It is usually 4-digit long but can be of any length (upto 10-digits) */
 	encodePinTwin: (_pin: string) => string;
-	/** ID of the current pintwin-Key */
-	keyId: string;
 }
 
 /**
@@ -57,7 +56,7 @@ export interface UsePinTwinReturn {
  * const { pintwinKey, loading, keyLoaded, encodePinTwin } = usePinTwin();
  *
  * // Custom configuration with mock data
- * const { encodePinTwin, reloadKey } = usePinTwin({
+ * const { encodePinTwin, refreshPinTwinKey } = usePinTwin({
  *   useMockData: true,
  *   maxRetries: 5,
  *   retryDelay: 2000
@@ -70,21 +69,20 @@ export interface UsePinTwinReturn {
 export const usePinTwin = (
 	options: UsePinTwinOptions = {}
 ): UsePinTwinReturn => {
-	const { useMockData = false, maxRetries = 8, retryDelay = 1000 } = options;
+	const { useMockData = false } = options;
 
 	const [pintwinKey, setPintwinKey] = useState<string[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [keyLoaded, setKeyLoaded] = useState(false);
 	const [keyLoadError, setKeyLoadError] = useState(false);
-	const [retryCount, setRetryCount] = useState(0);
-	const [keyId, setKeyId] = useState("");
+	const [pinTwinKeyId, setPinTwinKeyId] = useState("");
 
 	const retryCountRef = useRef(0);
 	const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const isMountedRef = useRef(true);
 	const hasAutoLoaded = useRef(false);
 
-	// Store options in refs to avoid recreating reloadKey function
+	// Store options in refs to avoid recreating refreshPinTwinKey function
 	const optionsRef = useRef({ useMockData, maxRetries, retryDelay });
 	optionsRef.current = { useMockData, maxRetries, retryDelay };
 
@@ -112,7 +110,7 @@ export const usePinTwin = (
 	/**
 	 * Reloads the PinTwin key with retry logic
 	 */
-	const reloadKey = useCallback(async (): Promise<void> => {
+	const refreshPinTwinKey = useCallback(async (): Promise<void> => {
 		if (!isMountedRef.current) return;
 
 		const mockResponse: PinTwinResponse = {
@@ -141,10 +139,9 @@ export const usePinTwin = (
 
 				if (response?.data?.pintwin_key) {
 					setPintwinKey(response.data.pintwin_key.split(""));
-					setKeyId(response.data.key_id?.toString() ?? "");
+					setPinTwinKeyId(response.data.key_id?.toString() ?? "");
 					setKeyLoaded(true);
 					setKeyLoadError(false);
-					setRetryCount(0);
 					retryCountRef.current = 0;
 					// Success - stop loading
 					if (isMountedRef.current) {
@@ -164,7 +161,6 @@ export const usePinTwin = (
 					// Still retrying - keep loading true, error false
 					const newRetryCount = retryCountRef.current + 1;
 					retryCountRef.current = newRetryCount;
-					setRetryCount(newRetryCount);
 
 					if (retryTimeoutRef.current) {
 						clearTimeout(retryTimeoutRef.current);
@@ -204,20 +200,20 @@ export const usePinTwin = (
 			}, "");
 
 			// Append key ID for server identification when PIN has content
-			if (keyId && pin.length > 0) {
-				encodedValue += `|${keyId}`;
+			if (pinTwinKeyId && pin.length > 0) {
+				encodedValue += `|${pinTwinKeyId}`;
 			}
 
 			return encodedValue;
 		},
-		[pintwinKey, keyId]
+		[pintwinKey, pinTwinKeyId]
 	);
 
 	// Auto-load key on mount - run only once
 	useEffect(() => {
 		if (!hasAutoLoaded.current) {
 			hasAutoLoaded.current = true;
-			reloadKey();
+			refreshPinTwinKey();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -234,13 +230,11 @@ export const usePinTwin = (
 	}, []);
 
 	return {
-		pintwinKey,		// pinTwinKey
-		loading,		// 1.
-		keyLoaded,		// 2.
-		keyLoadError,	// 3. → Combine 1,2,3 into `pinTwinKeyLoadStatus` = loading, error, loaded
-		retryCount,		// REMOVE IT
-		reloadKey,		// refreshPinTwinKey
+		pintwinKey, // pinTwinKey
+		loading, // 1.
+		keyLoaded, // 2.
+		keyLoadError, // 3. → Combine 1,2,3 into `pinTwinKeyLoadStatus` = loading, error, loaded
+		refreshPinTwinKey,
 		encodePinTwin,
-		keyId,			// pinTwinKeyId
 	};
 };
