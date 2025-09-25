@@ -179,9 +179,9 @@ const MyAccountCard = ({ onClose }) => {
 		isLoggedIn,
 	} = useUser();
 	const { showRaiseIssueDialog } = useRaiseIssue();
-	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE");
+	const [isRaiseIssueAllowed] = useFeatureFlag("RAISE_ISSUE_GENERIC");
 	const [isRaiseIssueAllowedForSbiKiosk] = useFeatureFlag(
-		"RAISE_ISSUE_SBIKIOSK"
+		"RAISE_ISSUE_GENERIC_SBIKIOSK"
 	);
 	const [isChatGptAgentAllowed] = useFeatureFlag("CHATGPT_AGENT_LINK");
 	const { orgDetail } = useOrgDetailContext();

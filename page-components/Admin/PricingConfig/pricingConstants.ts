@@ -17,7 +17,7 @@ export const AGENT_TYPES = {
  * @property {string} label - The label for the operation type.
  */
 export const OPERATION_TYPE_OPTIONS = [
-	{ value: "3", label: "Whole Network" },
+	{ value: "3", label: "Entire Network" },
 	{ value: "2", label: "Distributor's Network" },
 	{ value: "1", label: "Individual Distributor/Retailer" },
 ];

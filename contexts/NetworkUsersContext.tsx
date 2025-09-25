@@ -1,8 +1,8 @@
-import { useCopilotReadable } from "@copilotkit/react-core";
 import { Endpoints } from "constants/EndPoints";
 import { UserType, UserTypeLabel } from "constants/UserTypes";
 import { useSession } from "contexts/UserContext";
 import { useApiFetch, useDailyCacheState } from "hooks";
+import { useCopilotInfo } from "libs";
 import {
 	createContext,
 	ReactNode,
@@ -161,7 +161,7 @@ export const NetworkUsersProvider = ({
 	// MARK: Copilot...
 
 	// Define AI Copilot readable state for the total user count
-	const copilotReadableUserCountId = useCopilotReadable({
+	const copilotReadableUserCountId = useCopilotInfo({
 		description: "Total number of users in this network.",
 		value: networkCount,
 	});
@@ -174,7 +174,7 @@ export const NetworkUsersProvider = ({
 	console.log("Active User Type Count:", test);
 
 	// Define AI Copilot readable state for the network users count based on user type
-	useCopilotReadable({
+	useCopilotInfo({
 		description: "Count of active users by user type.",
 		parentId: copilotReadableUserCountId,
 		value: Object.keys(activeUserTypeCount)

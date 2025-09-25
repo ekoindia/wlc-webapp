@@ -1,5 +1,5 @@
-# Eloka Web App by Eko
-Project "Infinity": A white-labelled SaaS platform to run your business like agent-banking, micro-finance, etc.
+# Eloka SaaS WebApp
+Webapp for the Eloka white-labelled SaaS platform to run your business like agent-banking, micro-finance, payments, etc.
 
 ![Uptime](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fekoindia%2Fuptime%2Fmaster%2Fapi%2Feloka-webapp%2Fuptime.json)
 
@@ -79,29 +79,16 @@ Project "Infinity": A white-labelled SaaS platform to run your business like age
 
 ## 📒 Extended Documentation ([docs/](docs))
 
-- **[`docker-usage.md`](docs/docker-usage.md)**: Instructions for using Docker with the project.
+- **[`commit-message-instructions.md`](docs/commit-message-instructions.md)**: Guidelines for writing good commit messages.
+- **[`docker-usage.md`](docs/docker-usage.md)**: Instructions for using Docker with the project.]
 - **[`features/`](docs/features/)**: Contains detailed documentation for various features of the application.
-  - **[`dashboard.md`](docs/features/dashboard.md)**: Admin dashboard feature documentation.
-  - **[`transaction-history.md`](docs/features/transaction-history.md)**: Transaction history feature documentation.
-  - **[`pub-sub.md`](docs/features/pub-sub.md)**: How to enable cross-component communication using the Pub/Sub pattern?
   - **[`android.md`](docs/features/android.md)**: How does Eloka communicate with the Android wrapper app to provide a native experience?
-
-
-## ✅ Toggle Feature Flags:
-
-- Feature flags are used to enable/disable a specific feature.
-  - Features can also be allowed for specific environments, user-types, user-ids, etc. Especially helpful for experimental features.
-  - TODO: Provide for A-B testing, gradual roll-out, etc.
-- To add a new feature-flag, add a new entry in the [constants/featureFlags.ts](constants/featureFlags.ts) file.
-- To test for a feature-flag, use the `useFeatureFlag` hook from [hooks/useFeatureFlag.tsx](hooks/useFeatureFlag.tsx).
-  - Eg: `const [isFeatureEnabled] = useFeatureFlag('MY_FEATURE');`
-  - to dynamically check for feature flags, use the `checkFeatureFlag` function:
-    ```jsx
-	import { useFeatureFlag } from 'hooks/useFeatureFlag';
-	const [_isFeatureEnabled, checkFeatureFlag] = useFeatureFlag();
-
-	const isAnotherFeatureEnabled = checkFeatureFlag('ANOTHER_FEATURE');
-	```
+  - **[`dashboard.md`](docs/features/dashboard.md)**: Admin dashboard feature documentation.
+  - **[`dynamic-popup-module.md`](docs/features/dynamic-popup-module.md)**: How to use the dynamic popup module to show custom popups throughout the app?
+  - **[`feature-flags.md`](docs/features/feature-flags.md)**: How to use feature flags to conditionally enable/disable features, or for a beta rollout?
+  - **[`inventory-management.md`](docs/features/inventory-management.md)**: Inventory management feature documentation.
+  - **[`pub-sub.md`](docs/features/pub-sub.md)**: How to enable cross-component communication using the Pub/Sub pattern?
+  - **[`transaction-history.md`](docs/features/transaction-history.md)**: Transaction history feature documentation.
 
 
 ## 🎨 UI Features:
@@ -206,12 +193,12 @@ The following data is stored in the browser (localStorage & sessionStorage):
 
 ### SessionStorage
 1. `org_detail`: Organization details
-1. `user_detail`: User details
-1. `access_token`: Access token
-1. `access_token_lite`
-1. `access_token_crm`
-1. `token_timeout`: Token timeout
-1. `refresh_token`: Refresh token
+2. `user_detail`: User details
+3. `access_token`: Access token
+4. `access_token_lite`
+5. `access_token_crm`
+6. `token_timeout`: Token timeout
+7. `refresh_token`: Refresh token
 
 
 ## 🧪 Experimental Features

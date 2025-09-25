@@ -17,6 +17,7 @@ const useFeatureFlag = (
 	const [allowed, setAllowed] = useState<boolean>(false);
 
 	// Create a cache key based on user context
+	// It is used to cache the results of feature flag checks in memory, so that repeated checks are faster (for circular dependencies, etc.)
 	const cacheKey = useMemo(
 		() =>
 			`${isAdmin}-${userId}-${userType}-${isLoggedIn}-${org_id}-${process.env.NEXT_PUBLIC_ENV}`,
@@ -24,9 +25,13 @@ const useFeatureFlag = (
 	);
 
 	/**
-	 * Check if a feature is enabled based on the conditions defined in the featureFlags.
+	 * Internal implementation of checkFeatureFlag, with additional parameters for caching and tracking visited features (to avoid circular dependencies).
+	 * @param {string} customFeatureName - Name of the feature to check
+	 * @param {Map<string, boolean>} cache - Cache to store results of feature checks (internal implementation; do not pass this parameter)
+	 * @param {Set<string>} visitedFeatures - Set of features already visited in the current check (to avoid circular dependencies) (internal implementation; do not pass this parameter)
+	 * @returns {boolean} - Returns true if the feature is defined, enabled & passes all conditions, else false.
 	 */
-	const checkFeatureFlag = useCallback(
+	const _checkFeatureFlagImpl = useCallback(
 		(
 			customFeatureName: string,
 			cache: Map<string, boolean> = new Map(),
@@ -148,13 +153,17 @@ const useFeatureFlag = (
 			}
 
 			// Check if the dependency on other FeatureFlags (from `requiredFeatures` array) is satisfied.
-			// Call the checkFeatureFlag recursively for each required feature.
+			// Call the _checkFeatureFlagImpl recursively for each required feature.
 			// If any required feature is not enabled, return false.
 			// This is to ensure that the feature is not enabled if any of its dependencies are not met.
 			if (feature.requiredFeatures?.length > 0) {
 				const allRequiredFeaturesEnabled =
 					feature.requiredFeatures.every((reqFeature) =>
-						checkFeatureFlag(reqFeature, cache, newVisitedFeatures)
+						_checkFeatureFlagImpl(
+							reqFeature,
+							cache,
+							newVisitedFeatures
+						)
 					);
 				if (!allRequiredFeaturesEnabled) {
 					console.log(
@@ -173,6 +182,41 @@ const useFeatureFlag = (
 			return true;
 		},
 		[cacheKey, isAdmin, userId, userType, isLoggedIn, org_id]
+	);
+
+	/**
+	 * Check if a feature is enabled based on the conditions defined in the featureFlags.
+	 * @param {string | null | undefined} featureName - Name of the feature to check. If the feature name starts with "!", the result is inverted (to check for "feature not enabled").
+	 * @returns {boolean} - Returns true if the feature is defined, enabled & passes all conditions, else false.
+	 */
+	const checkFeatureFlag = useCallback(
+		(featureName: string | null | undefined): boolean => {
+			// Guard non-string early to avoid runtime errors (e.g. calling .startsWith on null)
+			if (typeof featureName !== "string") {
+				console.error(
+					"Feature name not provided:",
+					featureName as unknown as string
+				);
+				return false;
+			}
+			let localFeatureName: string = featureName;
+			const isInverted = localFeatureName.startsWith("!");
+			if (isInverted) {
+				localFeatureName = localFeatureName.substring(1);
+			}
+			if (!localFeatureName) {
+				console.error("Feature name not provided:", localFeatureName);
+				return false;
+			}
+
+			const result = _checkFeatureFlagImpl(localFeatureName);
+
+			// If the feature name starts with "!", invert the result.
+			// This is to allow checking for "feature not enabled" in a simple way.
+			// Eg: checkFeatureFlag("!MY_FEATURE") will return true if MY_FEATURE is not enabled.
+			return isInverted ? !result : result;
+		},
+		[_checkFeatureFlagImpl]
 	);
 
 	/**

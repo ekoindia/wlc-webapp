@@ -7,6 +7,7 @@ import {
 	publicSections,
 } from "constants"; // validRoutes.js
 import { useSession } from "contexts/UserContext";
+import { useCopilotInfo } from "libs";
 import { useEffect, useState } from "react";
 
 const isBrowser = typeof window !== "undefined";
@@ -16,9 +17,10 @@ const isBrowser = typeof window !== "undefined";
  * TODO: To protect the private routes and give access to route according to user role.
  * @param 	{object}	prop	Properties passed to the component
  * @param	{string}	[prop.router]	Router is passed from _app.js
+ * @param	{object}	[prop.pageMeta]	Page metadata for the current route
  * @param	{object}	[prop.children]	Children of the component
  */
-const RouteProtecter = ({ router, children }) => {
+const RouteProtecter = ({ router, pageMeta, children }) => {
 	const {
 		isLoggedIn,
 		isAdmin,
@@ -44,6 +46,7 @@ const RouteProtecter = ({ router, children }) => {
 		userId: userId,
 		authorized: authorized,
 		loading: loading,
+		pageMeta,
 	});
 
 	/**
@@ -215,6 +218,17 @@ const RouteProtecter = ({ router, children }) => {
 			);
 		}
 	}, [router.asPath, loading, isLoggedIn, userId, role, isAdminAgentMode]);
+
+	// Define AI Copilot readable state for the E-value balance
+	useCopilotInfo({
+		description:
+			"Currently open page that the user is viewing. It can be used to provide context-aware assistance.",
+		value: {
+			path: router.asPath,
+			title: pageMeta?.title || undefined,
+			description: pageMeta?.description || undefined,
+		},
+	});
 
 	/**
 	 * Remove the flash of private pages when user is not nonLogged

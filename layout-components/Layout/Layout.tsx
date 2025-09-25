@@ -70,7 +70,7 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	const { isSubPage, title, hideMenu, pageHeight, isFixedBottomAppBar } =
 		pageMeta || {};
 
-	const { isLoggedIn } = useSession();
+	const { isLoggedIn, isOnboarding } = useSession();
 	// const { isOpen: isSidebarOpen, onOpen, onClose } = useDisclosure(); // For controlling the left navigation drawer from the top header bar on small screens
 
 	const isSmallScreen = useBreakpointValue(
@@ -91,6 +91,8 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 	const { isAndroid, setNativeVersion } = useAppSource();
 
 	const [isPageLoading, setIsPageLoading] = useState(false);
+
+	// const [isAiChatBotAllowed] = useFeatureFlag("AI_CHATBOT");
 
 	// Check if CommandBar is loaded...
 	const { ready } = useKBarReady();
@@ -282,13 +284,24 @@ const Layout = ({ appName, pageMeta, fontClassName = null, children }) => {
 							>
 								{children}
 							</Box>
+							{/* {isAiChatBotAllowed ? (
+								<CopilotPopup
+									instructions={
+										"You are assisting the user as best as you can. Answer in the best way possible given the data you have."
+									}
+									labels={{
+										title: "AI Assistant",
+										initial: "Need any help?",
+									}}
+								/>
+							) : null} */}
 						</Flex>
 					)}
 
 					{/*
 						MARK: BottomAppBar
 					*/}
-					{isBottomAppBarScreen ? (
+					{!isOnboarding && isBottomAppBarScreen ? (
 						<Box
 							className="layout-bottom-app-bar"
 							pos="fixed"

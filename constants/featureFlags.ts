@@ -1,23 +1,58 @@
-// Few pre-defined org-ids for configuring feature flags:
+import { parseOrgIds } from "utils/envUtils";
+
+// Few pre-defined org-ids for configuring feature flags on production
+// NOTE: The production org-ids must be read from environment variables
 const ORG_ID = {
-	EKOSTORE: 1,
-	EKOTESTS: [101, 259], // 101: SuperPay (Production UAT), 259: VijayPay (Production UAT)
-	SBIKIOSK: 287,
+	EKOSTORE: Number(process.env.NEXT_PUBLIC_ORG_IDS_EKOSTORE),
+	EKOTESTS: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_EKOTESTS),
+	SBIKIOSK: Number(process.env.NEXT_PUBLIC_ORG_IDS_SBIKIOSK),
+	AI_TEST: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_AI_TEST),
+	DYNAMIC_PRICING: parseOrgIds(
+		process.env.NEXT_PUBLIC_ORG_IDS_DYNAMIC_PRICING
+	),
+	DASHBOARD_V2: parseOrgIds(process.env.NEXT_PUBLIC_ORG_IDS_DASHBOARD_V2),
 };
 
 /**
  * Note: This file is used to enable or disable features in the application.
  * Can be used to enable or disable features based on user roles or environment.
  *
+ * To add a feature-flag, add a new entry in the `FeatureFlags` object below.
+ * The key should be the name of the feature-flag (eg: "CHAT").
+ *
  * To check for a feature-flag, use the "useFeatureFlag" hook.
  * @example
  * 	import { useFeatureFlag } from "hooks";
  * 	const [isFeatureEnabled] = useFeatureFlag("FEATURE_NAME");
+ *  const [isNotFeatureEnabled] = useFeatureFlag("!FEATURE_NAME"); // To check for "feature not enabled"
  */
 export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Dev Flags
 	// Put all in-development flags in this section.
+
+	// Show Admin Network pages to (Super)Distributors
+	ADMIN_NETWORK_PAGES_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1, 7], // 7 = (SuperDistributor)
+		// forEnv: ["development", "staging"],
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DASHBOARD_V2,
+				],
+			},
+		},
+	},
+
+	// Inventory Management for (Super)Distributors
+	INVENTORY_MANAGEMENT_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1], // 7 = SuperDistributor
+		forEnv: ["development", "staging"],
+	},
 
 	// Custom theme support (paid tier)
 	CUSTOM_THEME_CREATOR: {
@@ -42,10 +77,27 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// Feature Enabled only for certain orgs/users in production
 	// Put all UAT/Beta testing flags in this section.
 
-	// Feature to Raise Issues...
-	RAISE_ISSUE: {
+	// Show Admin-like (business) dashboard to other sub-network owners like (Super)Distributor
+	// TODO: Rename to ADMIN_BUSINESS_DASHBOARD_FOR_SUBNETWORK & introduce another flag for ADMIN_ONBOARDING_DASHBOARD_FOR_SUBNETWORK
+	ADMIN_DASHBOARD_FOR_SUBNETWORK: {
+		enabled: true,
+		forUserType: [1, 7], // 1 = Dist, 7 = SuperDistributor, 4 = FOS
+		envConstraints: {
+			production: {
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DASHBOARD_V2,
+				],
+			},
+		},
+	},
+
+	// Feature to Raise Generic Issues (from Top-Right  Menu)...
+	RAISE_ISSUE_GENERIC: {
 		enabled: true,
 		forAdminOnly: true, // TODO: Enable for all users
+		requiredFeatures: ["RAISE_ISSUE"],
 	},
 
 	// [MASTER FLAG] Experimental AI Features
@@ -62,7 +114,7 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 				forOrgId: [3],
 			},
 			production: {
-				forOrgId: [...ORG_ID.EKOTESTS, 10, 186, 306, 331, 344], // 306=Kunal Chand, 186=HI TECH RECHARGE SOLUTION, 10=RAMSON TECHNOVATIONS PVT LTD, 344=PROWESS FINTECH PRIVATE LIMITED, 331=AJ ENTERPRISES
+				forOrgId: [...ORG_ID.EKOTESTS, ...ORG_ID.AI_TEST], // 306=Kunal Chand, 186=HI TECH RECHARGE SOLUTION, 10=RAMSON TECHNOVATIONS PVT LTD, 344=PROWESS FINTECH PRIVATE LIMITED, 331=AJ ENTERPRISES
 			},
 		},
 	},
@@ -113,7 +165,11 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 		envConstraints: {
 			production: {
-				forOrgId: [ORG_ID.EKOSTORE, ...ORG_ID.EKOTESTS, 92], // 92=OCPay
+				forOrgId: [
+					ORG_ID.EKOSTORE,
+					...ORG_ID.EKOTESTS,
+					...ORG_ID.DYNAMIC_PRICING,
+				],
 			},
 		},
 	},
@@ -121,6 +177,12 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 	// ------------------------------------------------------------------------
 	// MARK: 🚩Production Flags
 	// Put all production flags (visible to all relevant users) in this section.
+
+	// New Dashboard Features (Graphs & updated UI)
+	// TODO: Remove this flag after the new dashboard is fully rolled out to all users.
+	DASHBOARD_V2: {
+		enabled: true,
+	},
 
 	// Open ChatGPT Agent in new tab
 	// To answer Admin's queries related to Eloka products and features.
@@ -171,14 +233,17 @@ export const FeatureFlags: Record<string, FeatureFlagType> = {
 		forAdminOnly: true,
 	},
 
-	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
-	RAISE_ISSUE_SBIKIOSK: {
+	// Feature to Raise Issues (Generic + Trxn History)...
+	RAISE_ISSUE: {
 		enabled: true,
+	},
+
+	// Custom flag for enabling raise issue only for SBI Kiosk _Agents_
+	RAISE_ISSUE_GENERIC_SBIKIOSK: {
+		enabled: true,
+		requiredFeatures: ["RAISE_ISSUE"],
 		envConstraints: {
 			development: {
-				forOrgId: [1],
-			},
-			staging: {
 				forOrgId: [1],
 			},
 			production: {
