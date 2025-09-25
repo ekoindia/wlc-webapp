@@ -126,7 +126,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 	label = "Secret PIN",
 }) => {
 	const {
-		pintwinKey,
+		pinTwinKey,
 		refreshPinTwinKey,
 		encodePinTwin,
 		loading,
@@ -255,7 +255,7 @@ const Pintwin: React.FC<PintwinProps> = ({
 							gap={1}
 							opacity={loading ? 0.4 : 1}
 						>
-							{pintwinKey?.map((digit, index) => (
+							{pinTwinKey?.map((digit, index) => (
 								<React.Fragment key={index}>
 									<Flex direction="column" align="center">
 										<Text fontSize="sm">{index}</Text>

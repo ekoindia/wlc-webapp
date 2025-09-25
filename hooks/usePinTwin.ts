@@ -33,7 +33,7 @@ interface UsePinTwinOptions {
 
 export interface UsePinTwinReturn {
 	/** The current PinTwin key as an array of 10-digits. This one-time key is used to encode (encrypt) the user's secret-PIN */
-	pintwinKey: string[];
+	pinTwinKey: string[];
 	/** Whether the key is currently being loaded */
 	loading: boolean;
 	/** Whether the key has been successfully loaded */
@@ -53,7 +53,7 @@ export interface UsePinTwinReturn {
  * @example
  * ```typescript
  * // Basic usage with auto-loading
- * const { pintwinKey, loading, keyLoaded, encodePinTwin } = usePinTwin();
+ * const { pinTwinKey, loading, keyLoaded, encodePinTwin } = usePinTwin();
  *
  * // Custom configuration with mock data
  * const { encodePinTwin, refreshPinTwinKey } = usePinTwin({
@@ -71,7 +71,7 @@ export const usePinTwin = (
 ): UsePinTwinReturn => {
 	const { useMockData = false } = options;
 
-	const [pintwinKey, setPintwinKey] = useState<string[]>([]);
+	const [pinTwinKey, setPinTwinKey] = useState<string[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [keyLoaded, setKeyLoaded] = useState(false);
 	const [keyLoadError, setKeyLoadError] = useState(false);
@@ -138,7 +138,7 @@ export const usePinTwin = (
 					: await fetchPinTwinKey();
 
 				if (response?.data?.pintwin_key) {
-					setPintwinKey(response.data.pintwin_key.split(""));
+					setPinTwinKey(response.data.pintwin_key.split(""));
 					setPinTwinKeyId(response.data.key_id?.toString() ?? "");
 					setKeyLoaded(true);
 					setKeyLoadError(false);
@@ -190,13 +190,13 @@ export const usePinTwin = (
 	 */
 	const encodePinTwin = useCallback(
 		(pin: string): string => {
-			if (!pintwinKey || pintwinKey.length < 10) {
+			if (!pinTwinKey || pinTwinKey.length < 10) {
 				return "";
 			}
 
 			let encodedValue = pin.split("").reduce((encoded, digit) => {
 				const index = parseInt(digit, 10);
-				return encoded + (pintwinKey[index] ?? "");
+				return encoded + (pinTwinKey[index] ?? "");
 			}, "");
 
 			// Append key ID for server identification when PIN has content
@@ -206,7 +206,7 @@ export const usePinTwin = (
 
 			return encodedValue;
 		},
-		[pintwinKey, pinTwinKeyId]
+		[pinTwinKey, pinTwinKeyId]
 	);
 
 	// Auto-load key on mount - run only once
@@ -230,7 +230,7 @@ export const usePinTwin = (
 	}, []);
 
 	return {
-		pintwinKey, // pinTwinKey
+		pinTwinKey,
 		loading, // 1.
 		keyLoaded, // 2.
 		keyLoadError, // 3. → Combine 1,2,3 into `pinTwinKeyLoadStatus` = loading, error, loaded
