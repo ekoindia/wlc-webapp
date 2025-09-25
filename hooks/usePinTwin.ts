@@ -20,16 +20,16 @@ interface PinTwinResponse {
 }
 
 interface UsePinTwinOptions {
-	/** Whether to use mock data instead of API calls */
+	/** Whether to use mock data instead of API calls. Defaults to false */
 	useMockData?: boolean;
-	/** Maximum retry attempts */
+	/** Maximum retry attempts. Defaults to 8 */
 	maxRetries?: number;
-	/** Retry delay in milliseconds */
+	/** Retry delay in milliseconds. Defaults to 1000 */
 	retryDelay?: number;
 }
 
 export interface UsePinTwinReturn {
-	/** The current PinTwin key as an array of digits */
+	/** The current PinTwin key as an array of 10-digits. This one-time key is used to encode (encrypt) the user's secret-PIN */
 	pintwinKey: string[];
 	/** Whether the key is currently being loaded */
 	loading: boolean;
@@ -41,9 +41,9 @@ export interface UsePinTwinReturn {
 	retryCount: number;
 	/** Function to manually reload the PinTwin key */
 	reloadKey: () => Promise<void>;
-	/** Function to encode a PIN using the current key */
+	/** Function to encode a PIN using the current key. It is usually 4-digit long but can be of any length (upto 10-digits) */
 	encodePinTwin: (_pin: string) => string;
-	/** Current key ID */
+	/** ID of the current pintwin-Key */
 	keyId: string;
 }
 
@@ -234,13 +234,13 @@ export const usePinTwin = (
 	}, []);
 
 	return {
-		pintwinKey,
-		loading,
-		keyLoaded,
-		keyLoadError,
-		retryCount,
-		reloadKey,
+		pintwinKey,		// pinTwinKey
+		loading,		// 1.
+		keyLoaded,		// 2.
+		keyLoadError,	// 3. → Combine 1,2,3 into `pinTwinKeyLoadStatus` = loading, error, loaded
+		retryCount,		// REMOVE IT
+		reloadKey,		// refreshPinTwinKey
 		encodePinTwin,
-		keyId,
+		keyId,			// pinTwinKeyId
 	};
 };
