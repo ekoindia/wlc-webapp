@@ -8,23 +8,6 @@ import React, { useCallback } from "react";
 
 /**
  * Props for the Pintwin component
- * @example
- * ```typescript
- * Basic usage with automatic key loading
- * <Pintwin />
- *
- * Disabled state (non-interactive)
- * <Pintwin disabled={true} />
- *
- * With PIN change handler
- * <Pintwin onPinChange={(pin, encodedPin) => console.log('PIN entered:', encodedPin)} />
- *
- * Combined configuration
- * <Pintwin
- *   disabled={false}
- *   onPinChange={handlePinEntry}
- * />
- * ```
  */
 interface PintwinProps {
 	/** Whether the component is disabled and non-interactive */
@@ -43,61 +26,23 @@ interface PintwinProps {
  * A secure PIN lookup display component that shows a PinTwin key grid for secure PIN entry.
  * This is a pure presentational component that uses the `usePinTwin` hook for all business logic
  * including API calls, consolidated state management, and PIN encoding functionality.
- *
- * Key Features:
- * - Displays a 10-digit lookup table with colored indicators
- * - Automatic key fetching with retry logic
- * - Manual reload capability with visual feedback
- * - Consolidated loading state management (loading/loaded/error)
- * - Mock data support for testing
- * - Responsive design with proper accessibility
- *
- * The component shows a grid where each digit (0-9) maps to a randomly generated digit from the server.
- * Users can use this visual lookup table to securely enter their PIN by referencing the corresponding digits.
  * @param {PintwinProps} props Component properties
- * @returns {React.ReactElement | null} A React functional component that renders the PinTwin interface, or null if noLookup is true
+ * @returns {React.ReactElement | null} A React functional component that renders the PinTwin interface
  * @example
  * ```typescript
- * // Basic usage - automatically fetches and displays PinTwin key
+ * Basic usage with automatic key loading
  * <Pintwin />
  *
- * // Development/testing mode with mock data
- * <Pintwin useMockData={true} />
- *
- * // Disabled state (user cannot reload key)
+ * Disabled state (non-interactive)
  * <Pintwin disabled={true} />
  *
- * // Hidden mode (useful for secure transactions where visual lookup should be disabled)
- * <Pintwin noLookup={true} />
+ * With PIN change handler
+ * <Pintwin onPinChange={(pin, encodedPin) => console.log('PIN entered:', encodedPin)} />
  *
- * // Complete form integration example
- * import { useState } from 'react';
- * import { Pintwin } from 'tf-components/Pintwin/Pintwin';
- *
- * const PinEntryForm = () => {
- *   const [encodedPin, setEncodedPin] = useState('');
- *
- *   const handlePinChange = (pin, encoded) => {
- *     console.log('PIN entered:', pin);
- *     console.log('Encoded PIN:', encoded);
- *     setEncodedPin(encoded);
- *   };
- *
- *   return (
- *     <form>
- *       <Pintwin
- *         onPinChange={handlePinChange}
- *         placeholder="Enter your secure PIN"
- *       />
- *       <input type="hidden" value={encodedPin} name="encoded_pin" />
- *     </form>
- *   );
- * };
- *
- * // Advanced usage with custom configuration
+ * Combined configuration
  * <Pintwin
- *   useMockData={process.env.NODE_ENV === 'development'}
- *   disabled={isSubmitting}
+ *   disabled={false}
+ *   onPinChange={handlePinEntry}
  * />
  * ```
  */
