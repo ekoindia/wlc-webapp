@@ -34,8 +34,6 @@ interface UsePinTwinOptions {
 }
 
 export interface UsePinTwinReturn {
-	/** The current PinTwin key as an array of 10-digits. This one-time key is used to encode (encrypt) the user's secret-PIN */
-	pinTwinKey: string[];
 	/** Current load status of the PinTwin key: 'loading', 'loaded', or 'error' */
 	pinTwinKeyLoadStatus: PinTwinKeyLoadStatus;
 	/** Function to manually reload the PinTwin key */
@@ -253,7 +251,6 @@ export const usePinTwin = (
 	}, []);
 
 	return {
-		pinTwinKey,
 		pinTwinKeyLoadStatus,
 		refreshPinTwinKey,
 		encodePinTwin,

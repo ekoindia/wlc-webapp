@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Tooltip } from "@chakra-ui/react";
+import { Flex, Text, Tooltip } from "@chakra-ui/react";
 import { IcoButton } from "components/IcoButton";
 import { InputLabel } from "components/InputLabel";
 import { OtpInput } from "components/OtpInput";
@@ -48,11 +48,6 @@ interface PintwinProps {
 	/** Label for the PIN input field */
 	label?: string;
 }
-
-/**
- * Color palette for PinTwin key display
- */
-const PIN_COLORS = ["#FFEB3B", "#81D4FA"];
 
 /**
  * Pintwin Component
@@ -121,18 +116,13 @@ const PIN_COLORS = ["#FFEB3B", "#81D4FA"];
 const Pintwin: React.FC<PintwinProps> = ({
 	disabled = false,
 	useMockData = false,
-	noLookup = true,
 	onPinChange,
 	label = "Secret PIN",
 }) => {
-	const {
-		pinTwinKey,
-		refreshPinTwinKey,
-		encodePinTwin,
-		pinTwinKeyLoadStatus,
-	} = usePinTwin({
-		useMockData,
-	});
+	const { refreshPinTwinKey, encodePinTwin, pinTwinKeyLoadStatus } =
+		usePinTwin({
+			useMockData,
+		});
 
 	// Derive individual status flags from consolidated state for component logic
 	// This maintains component readability while using the cleaner hook interface
@@ -252,38 +242,6 @@ const Pintwin: React.FC<PintwinProps> = ({
 							/>
 						</span>
 					</Tooltip>
-
-					{noLookup ? null : (
-						<Flex
-							align="center"
-							gap={1}
-							opacity={loading ? 0.4 : 1}
-						>
-							{pinTwinKey?.map((digit, index) => (
-								<React.Fragment key={index}>
-									<Flex direction="column" align="center">
-										<Text fontSize="sm">{index}</Text>
-										<Box
-											w="1.5em"
-											h="1.5em"
-											border="1px solid"
-											borderRadius="50%"
-											borderColor={PIN_COLORS[index % 2]}
-											bg={PIN_COLORS[index % 2]}
-											display="flex"
-											alignItems="center"
-											justifyContent="center"
-											fontWeight="bold"
-											fontSize="sm"
-											color="gray.800"
-										>
-											{digit}
-										</Box>
-									</Flex>
-								</React.Fragment>
-							))}
-						</Flex>
-					)}
 				</Flex>
 			</Flex>
 		</Flex>
