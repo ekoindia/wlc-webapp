@@ -24,15 +24,6 @@ interface PinTwinResponse {
 
 type PinTwinKeyLoadStatus = "loading" | "loaded" | "error";
 
-interface UsePinTwinOptions {
-	/** Whether to use mock data instead of API calls. Defaults to false */
-	useMockData?: boolean;
-	/** Maximum retry attempts. Defaults to 8 */
-	maxRetries?: number;
-	/** Retry delay in milliseconds. Defaults to 1000 */
-	retryDelay?: number;
-}
-
 export interface UsePinTwinReturn {
 	/** Current load status of the PinTwin key: 'loading', 'loaded', or 'error' */
 	pinTwinKeyLoadStatus: PinTwinKeyLoadStatus;
@@ -77,11 +68,7 @@ export interface UsePinTwinReturn {
  * const isReady = pinTwinKeyLoadStatus === 'loaded';
  * ```
  */
-export const usePinTwin = (
-	options: UsePinTwinOptions = {}
-): UsePinTwinReturn => {
-	const { useMockData = false } = options;
-
+export const usePinTwin = (): UsePinTwinReturn => {
 	const [pinTwinKey, setPinTwinKey] = useState<string[]>([]);
 	const [pinTwinKeyLoadStatus, setPinTwinKeyLoadStatus] =
 		useState<PinTwinKeyLoadStatus>("loading");
@@ -94,8 +81,8 @@ export const usePinTwin = (
 
 	// Store options in refs to prevent refreshPinTwinKey function recreation
 	// This optimization ensures stable function reference while allowing dynamic option access
-	const optionsRef = useRef({ useMockData, maxRetries, retryDelay });
-	optionsRef.current = { useMockData, maxRetries, retryDelay };
+	const optionsRef = useRef({ maxRetries, retryDelay });
+	optionsRef.current = { maxRetries, retryDelay };
 
 	/**
 	 * Fetches PinTwin key from API
@@ -130,28 +117,12 @@ export const usePinTwin = (
 	const refreshPinTwinKey = useCallback(async (): Promise<void> => {
 		if (!isMountedRef.current) return;
 
-		const mockResponse: PinTwinResponse = {
-			response_status_id: 0,
-			data: {
-				customer_id_type: "mobile_number",
-				key_id: 39,
-				pintwin_key: "1974856302",
-				id_type: "mobile_number",
-				customer_id: "9002333333",
-			},
-			response_type_id: 2,
-			message: "Success!",
-			status: 0,
-		};
-
 		// Initialize loading status at the start of the refresh process
 		setPinTwinKeyLoadStatus("loading");
 
 		const attemptLoad = async (): Promise<void> => {
 			try {
-				const response = optionsRef.current.useMockData
-					? mockResponse
-					: await fetchPinTwinKey();
+				const response = await fetchPinTwinKey();
 
 				if (response?.data?.pintwin_key) {
 					setPinTwinKey(response.data.pintwin_key.split(""));

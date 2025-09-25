@@ -10,26 +10,18 @@ import React, { useCallback } from "react";
  * Props for the Pintwin component
  * @example
  * ```typescript
- * // Basic usage with automatic key loading
+ * Basic usage with automatic key loading
  * <Pintwin />
  *
- * // Disabled state (non-interactive)
+ * Disabled state (non-interactive)
  * <Pintwin disabled={true} />
  *
- * // Using mock data for testing/development
- * <Pintwin useMockData={true} />
- *
- * // Hidden mode (no lookup table shown)
- * <Pintwin noLookup={true} />
- *
- * // With PIN change handler
+ * With PIN change handler
  * <Pintwin onPinChange={(pin, encodedPin) => console.log('PIN entered:', encodedPin)} />
  *
- * // Combined configuration
+ * Combined configuration
  * <Pintwin
- *   useMockData={true}
  *   disabled={false}
- *   noLookup={false}
  *   onPinChange={handlePinEntry}
  * />
  * ```
@@ -37,10 +29,6 @@ import React, { useCallback } from "react";
 interface PintwinProps {
 	/** Whether the component is disabled and non-interactive */
 	disabled?: boolean;
-	/** Whether to use mock data instead of making API calls */
-	useMockData?: boolean;
-	/** Whether to show the lookup table (if true, component returns null) */
-	noLookup?: boolean;
 	/** Callback function called when PIN is entered or changed */
 	onPinChange?: (_pin: string, _encodedPin?: string) => void;
 	/** Placeholder text for PIN input */
@@ -115,14 +103,11 @@ interface PintwinProps {
  */
 const Pintwin: React.FC<PintwinProps> = ({
 	disabled = false,
-	useMockData = false,
 	onPinChange,
 	label = "Secret PIN",
 }) => {
 	const { refreshPinTwinKey, encodePinTwin, pinTwinKeyLoadStatus } =
-		usePinTwin({
-			useMockData,
-		});
+		usePinTwin();
 
 	// Derive individual status flags from consolidated state for component logic
 	// This maintains component readability while using the cleaner hook interface
