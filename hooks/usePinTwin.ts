@@ -3,8 +3,8 @@ import { TransactionTypes } from "constants/EpsTransactions";
 import { fetcher } from "helpers/apiHelper";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const maxRetries = 8;
-const retryDelay = 1000;
+const maxRetries = 8; // Maximum number of retry attempts
+const retryDelay = 1000; // Delay between retry attempts in milliseconds
 
 interface PinTwinData {
 	customer_id_type: string;
