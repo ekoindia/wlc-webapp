@@ -19,29 +19,19 @@ interface PintwinProps {
 }
 
 /**
- * Pintwin Component
+ * A secure PIN input component that uses a PinTwin key grid for entry.
  *
- * A secure PIN lookup display component that shows a PinTwin key grid for secure PIN entry.
- * This is a pure presentational component that uses the `usePinTwin` hook for all business logic
- * including API calls, consolidated state management, and PIN encoding functionality.
- * @param {PintwinProps} props Component properties
- * @returns {React.ReactElement | null} A React functional component that renders the PinTwin interface
+ * It relies on the `usePinTwin` hook for its logic, including API calls,
+ * state management, and PIN encoding, functioning as a presentational component.
+ * @param {PintwinProps} props - The props for the component.
+ * @returns {React.ReactElement | null} A React functional component that renders the PinTwin interface.
  * @example
- * ```typescript
+ * ```tsx
  * Basic usage with automatic key loading
  * <Pintwin />
  *
- * Disabled state (non-interactive)
- * <Pintwin disabled={true} />
- *
- * With PIN change handler
+ * With a PIN change handler
  * <Pintwin onPinChange={(pin, encodedPin) => console.log('PIN entered:', encodedPin)} />
- *
- * Combined configuration
- * <Pintwin
- *   disabled={false}
- *   onPinChange={handlePinEntry}
- * />
  * ```
  */
 const Pintwin: React.FC<PintwinProps> = ({
