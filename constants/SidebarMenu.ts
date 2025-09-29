@@ -232,6 +232,16 @@ export const sidebarMenu: sidebarMenuType[] = [
 		beta: true,
 	},
 	{
+		id: 15,
+		label: "Field Agent Onboarding",
+		icon: "person-add",
+		link: "/field-agent-onboarding",
+		summary:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+		fullDescription:
+			"Onboard new users to your network in a assisted manner, one at a time.",
+	},
+	{
 		id: 215,
 		label: "Product Catalogue",
 		icon: "shopping-cart",
