@@ -51,10 +51,10 @@
 -   MediaPipe (via `libs/faceDetector.js`)
 
 ## Tool Usage Patterns
--   **Code Generation:** `npm run g` or `npm run generate` (uses Plop).
--   **Linting/Formatting:** `npm run lint`, `npm run eslint`, `npm run format` (integrated with pre-commit hooks via Husky).
--   **Testing:** `npm test`, `npm run test-file`, `npm run test-watch`, `npm run test-coverage`.
+-   **Static Templated Code Generation:** `npm run generate` (uses Plop).
+-   **Linting/Formatting:** `npm run lint`, `npm run format` (integrated with pre-commit hooks via Husky).
+-   **Testing:** `npm test`, `npm run test:file`, `npm run test:watch`, `npm run test:coverage`.
 -   **Dependency Management:** `npm i`, `npm run check-updates`, `npm run check-deps`.
 -   **Build/Analysis:** `npm run build`, `npm run analyze`.
--   **Storybook:** `npm run sb`, `npm run build-storybook`.
+-   **Storybook:** `npm run sb`, `npm run build:storybook`.
 -   **Icon Optimization:** Manual optimization using SVGO GUI recommended (`README.md`).
