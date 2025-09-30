@@ -1,5 +1,5 @@
 import { useToast } from "@chakra-ui/react";
-import { OaasWidget } from "components";
+import { OnboardingWidget } from "components";
 import {
 	retailerStepsData,
 	selectionStepData,
@@ -15,7 +15,7 @@ interface AssistedOnboardingProps {
 
 /**
  * An AssistedOnboarding component for assisted onboarding of retailers
- * Uses the OaasWidget with assisted onboarding specific configuration
+ * Uses the OnboardingWidget with assisted onboarding specific configuration
  * @param {AssistedOnboardingProps} props - Properties passed to the component
  * @returns {JSX.Element} The rendered AssistedOnboarding component
  * @example
@@ -81,7 +81,7 @@ const AssistedOnboarding = ({ ...rest }: AssistedOnboardingProps) => {
 
 	// MARK: JSX
 	return (
-		<OaasWidget
+		<OnboardingWidget
 			{...rest}
 			stepperData={stepperData}
 			userData={userData}

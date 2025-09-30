@@ -1,5 +1,5 @@
+import { OnboardingWidget } from "components/OnboardingWidget";
 import { render } from "test-utils";
-import { OaasWidget } from "components/OaasWidget";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { OaasWidget } from "components/OaasWidget";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("OaasWidget", () => {
+describe("OnboardingWidget", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<OaasWidget />);
+		const { container } = render(<OnboardingWidget />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
@@ -48,6 +48,6 @@ describe("OaasWidget", () => {
 	// TODO: Write other tests here..
 	// Start by writting all possible test cases here using test.todo()
 	test.todo(
-		"TODO: add proper test cases for OaasWidget in __tests__/components/OaasWidget/OaasWidget.test.jsx"
+		"TODO: add proper test cases for OnboardingWidget in __tests__/components/OnboardingWidget/OnboardingWidget.test.jsx"
 	);
 });

@@ -144,4 +144,4 @@ export { CopyButton } from "./CopyButton";
 
 export { SegmentedControl } from "./SegmentedControl";
 
-export { OaasWidget } from "./OaasWidget";
+export { OnboardingWidget } from "./OnboardingWidget";
