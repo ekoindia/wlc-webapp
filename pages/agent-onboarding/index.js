@@ -1,10 +1,10 @@
 import { PaddingBox } from "components";
-import { FieldAgentOnboarding } from "page-components";
+import { AssistedOnboarding } from "page-components";
 
 const FieldAgentOnboardingPage = () => {
 	return (
 		<PaddingBox>
-			<FieldAgentOnboarding />
+			<AssistedOnboarding />
 		</PaddingBox>
 	);
 };

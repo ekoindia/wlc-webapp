@@ -1,5 +1,5 @@
+import { AssistedOnboarding } from "page-components/AssistedOnboarding";
 import { render } from "test-utils";
-import { FieldAgentOnboarding } from "page-components/FieldAgentOnboarding";
 
 /*
 	* React Testing Library:
@@ -15,9 +15,9 @@ import { FieldAgentOnboarding } from "page-components/FieldAgentOnboarding";
 		- Jest-dom (matchers): https://github.com/testing-library/jest-dom
 */
 
-describe("FieldAgentOnboarding", () => {
+describe("AssistedOnboarding", () => {
 	it("renders without error with no attributes", () => {
-		const { container } = render(<FieldAgentOnboarding />);
+		const { container } = render(<AssistedOnboarding />);
 		expect(container).not.toBeEmptyDOMElement();
 
 		// expect(container).toHaveTextContent("Any text");
