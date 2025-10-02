@@ -221,7 +221,7 @@ const OnboardingWidget = ({
 			.catch((err) => console.error("[getBookletKey] Error: ", err));
 	}, []);
 
-	const refreshApiCall = async () => {
+	const refreshApiCall = useCallback(async () => {
 		setApiInProgress(true);
 		try {
 			const res = await fetcher(
@@ -255,10 +255,10 @@ const OnboardingWidget = ({
 
 			console.log("inside initial api error", error);
 		}
-	};
+	}, []);
 
 	// Fetcher function for Digilocker URL
-	const getDigilockerUrl = async () => {
+	const getDigilockerUrl = useCallback(async () => {
 		try {
 			const data = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -299,7 +299,7 @@ const OnboardingWidget = ({
 				duration: 2000,
 			});
 		}
-	};
+	}, []);
 
 	const initialStepSetter = (user_data) => {
 		const currentStepData: OnboardingStep[] = [];
