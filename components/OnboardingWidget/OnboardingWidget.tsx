@@ -120,24 +120,27 @@ const OnboardingWidget = ({
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
 
-	const androidleegalityResponseHandler = useCallback((res) => {
-		let value = JSON.parse(res);
-		if (value.agreement_status === "success") {
-			handleStepDataSubmit({
-				id: 12,
-				form_data: {
-					agreement_id: userData?.userDetails?.agreement_id,
-					document_id: value.document_id,
-				},
-			});
-		} else {
-			toast({
-				title: "Something went wrong, please try again later!",
-				status: "error",
-				duration: 2000,
-			});
-		}
-	}, []);
+	const androidleegalityResponseHandler = useCallback(
+		(res) => {
+			let value = JSON.parse(res);
+			if (value.agreement_status === "success") {
+				handleStepDataSubmit({
+					id: 12,
+					form_data: {
+						agreement_id: userData?.userDetails?.agreement_id,
+						document_id: value.document_id,
+					},
+				});
+			} else {
+				toast({
+					title: "Something went wrong, please try again later!",
+					status: "error",
+					duration: 2000,
+				});
+			}
+		},
+		[userData]
+	);
 
 	const getSignUrl = useCallback(() => {
 		fetcher(
@@ -174,7 +177,7 @@ const OnboardingWidget = ({
 			.catch((err) =>
 				console.error("[getSignUrl for Leegality] Error:", err)
 			);
-	}, []);
+	}, [userData, latLong]);
 
 	const getBookletNumber = useCallback(() => {
 		fetcher(
@@ -197,7 +200,7 @@ const OnboardingWidget = ({
 				}
 			})
 			.catch((err) => console.error("[getBookletNumber] Error:", err));
-	}, []);
+	}, [latLong]);
 
 	const getBookletKey = useCallback(() => {
 		fetcher(
@@ -220,7 +223,7 @@ const OnboardingWidget = ({
 				}
 			})
 			.catch((err) => console.error("[getBookletKey] Error: ", err));
-	}, []);
+	}, [latLong]);
 
 	const refreshApiCall = useCallback(async () => {
 		setApiInProgress(true);
@@ -256,7 +259,7 @@ const OnboardingWidget = ({
 
 			console.log("inside initial api error", error);
 		}
-	}, []);
+	}, [userData, accessToken, isAssistedOnboarding]);
 
 	// Fetcher function for Digilocker URL
 	const getDigilockerUrl = useCallback(async () => {
@@ -301,6 +304,29 @@ const OnboardingWidget = ({
 			});
 		}
 	}, []);
+
+	const handleLeegalityCallback = useCallback(
+		(res) => {
+			if (res.error) {
+				toast({
+					title:
+						res?.error ||
+						"Something went wrong, please try again later!",
+					status: "error",
+					duration: 2000,
+				});
+			} else {
+				handleStepDataSubmit({
+					id: 12,
+					form_data: {
+						document_id: res.documentId,
+						agreement_id: userData?.userDetails?.agreement_id,
+					},
+				});
+			}
+		},
+		[userData]
+	);
 
 	const initialStepSetter = (user_data) => {
 		const currentStepData: OnboardingStep[] = [];
@@ -631,26 +657,6 @@ const OnboardingWidget = ({
 			.finally(() => {
 				setApiInProgress(false);
 			});
-	};
-
-	const handleLeegalityCallback = (res) => {
-		if (res.error) {
-			toast({
-				title:
-					res?.error ||
-					"Something went wrong, please try again later!",
-				status: "error",
-				duration: 2000,
-			});
-		} else {
-			handleStepDataSubmit({
-				id: 12,
-				form_data: {
-					document_id: res.documentId,
-					agreement_id: userData?.userDetails?.agreement_id,
-				},
-			});
-		}
 	};
 
 	const handleStepCallBack = (callType) => {
