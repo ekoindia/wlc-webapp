@@ -4,7 +4,6 @@ import { TransactionIds } from "constants/EpsTransactions";
 import {
 	distributorStepsData,
 	retailerStepsData,
-	roleSelectionStepData,
 	type OnboardingStep,
 } from "constants/OnboardingSteps";
 import { agreementProvider } from "constants/ProductDetails";
@@ -63,6 +62,7 @@ interface OnboardingWidgetProps {
 	orgName: string;
 	userData: any;
 	updateUserInfo: any;
+	roleSelectionStep?: OnboardingStep;
 }
 
 /**
@@ -74,6 +74,7 @@ interface OnboardingWidgetProps {
  * @param {string} [props.orgName] - Name of the organization
  * @param {any} [props.userData] - User data object
  * @param {any} [props.updateUserInfo] - Function to update user information
+ * @param {OnboardingStep} [props.roleSelectionStep] - Custom role selection step configuration
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
@@ -84,6 +85,7 @@ const OnboardingWidget = ({
 	orgName,
 	userData,
 	updateUserInfo,
+	roleSelectionStep,
 }: OnboardingWidgetProps): JSX.Element => {
 	const { accessToken } = useSession();
 
@@ -372,12 +374,11 @@ const OnboardingWidget = ({
 		) {
 			const bodyData = data;
 			if (data?.id === 0) {
-				const applicantData =
-					roleSelectionStepData.form_data.roles.find(
-						(role) =>
-							role.merchant_type ===
-							parseInt(data.form_data.merchant_type)
-					)?.applicant_type;
+				const applicantData = roleSelectionStep.form_data.roles.find(
+					(role) =>
+						role.merchant_type ===
+						parseInt(data.form_data.merchant_type)
+				)?.applicant_type;
 				bodyData.form_data.applicant_type = applicantData;
 				bodyData.form_data.csp_id =
 					userData.userDetails.signup_mobile ||
@@ -824,7 +825,7 @@ const OnboardingWidget = ({
 					userData?.userDetails?.mobile === "1" ? (
 						<ExternalSelectionScreen
 							{...({
-								stepData: roleSelectionStepData,
+								stepData: roleSelectionStep,
 								handleSubmit: (data: any) => {
 									handleStepDataSubmit(data);
 								},

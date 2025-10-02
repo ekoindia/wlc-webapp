@@ -1,3 +1,5 @@
+import { UserTypeLabel } from "./UserTypes";
+
 /**
  * Role interface representing different user types in the onboarding process
  */
@@ -18,6 +20,20 @@ export interface Role {
 	isVisible: boolean;
 	/** Optional array of user types associated with this role */
 	user_type?: Array<{ key: number; name: string }>;
+}
+
+/**
+ * Configuration for generating role data
+ */
+export interface RoleConfig {
+	/** Whether to show/hide specific merchant types */
+	visibleMerchantTypes?: number[];
+	/** Custom labels for roles (optional override) */
+	labelMap?: Partial<Record<number, string>>;
+	/** Custom descriptions for roles (optional override) */
+	descriptionMap?: Partial<Record<number, string>>;
+	/** Custom user type labels mapping (e.g., {1: "Distributor", 2: "Agent"}) */
+	userTypeLabels?: Record<number, string>;
 }
 
 /**
@@ -56,64 +72,121 @@ export interface OnboardingStep {
 }
 
 /**
- * Selection step data for role capture during user onboarding.
- * This step allows users to select their role (Retailer, Distributor, or Enterprise).
- * Used in the initial onboarding flow to determine the appropriate steps for each user type.
- *
- * TODO:
- * - Extract form_data.roles into a separate function to return this data structure. It should take label-map (to rename user types), and hide/show user types.
- * - In the OaaS widget project, if only one usertype is visible, auto-select and proceed.
+ * Base role data containing all possible roles with default labels
+ * Labels will be dynamically replaced based on organization configuration
+ * @param {Record<number, string>} userTypeLabels - User type labels mapping
+ * @returns {Role[]} Array of role data
  */
-export const roleSelectionStepData: OnboardingStep = {
-	id: 0,
-	name: "RoleCapture",
-	label: "Tell us who you are?",
-	isSkipable: false,
-	isRequired: false,
-	isVisible: false,
-	stepStatus: 0,
-	primaryCTAText: "Continue",
-	description: "",
-	form_data: {
-		roles: [
-			{
-				id: 1,
-				merchant_type: 1,
-				applicant_type: 0,
-				label: "I'm a Retailer",
-				description: "I serve customers from my shop",
-				icon: "../assets/icons/user_merchant.png",
-				isVisible: true,
-				user_type: [
-					{ key: 3, name: "I Merchant" },
-					{ key: 2, name: "Merchant" },
-				],
-			},
-			{
-				id: 2,
-				merchant_type: 3,
-				applicant_type: 2,
-				label: "I'm a Distributor",
-				description:
-					"I have a network of retailer and i want to serve them",
-				icon: "../assets/icons/user_distributor.png",
-				isVisible: true,
-				user_type: [{ key: 1, name: "Distributor" }],
-			},
-			{
-				id: 3,
-				merchant_type: 2,
-				applicant_type: 1,
-				label: "I'm an Enterprise",
-				description:
-					"I want to use API and other solutions to make my own service",
-				icon: "../assets/icons/user_enterprise.png",
-				isVisible: false,
-				user_type: [{ key: 23, name: "Partner" }],
-			},
+const getBaseRoleData = (
+	userTypeLabels: Record<number, string> = UserTypeLabel
+): Role[] => [
+	{
+		id: 1,
+		merchant_type: 1,
+		applicant_type: 0,
+		label: `I'm a ${userTypeLabels[2] || "Retailer"}`,
+		description: "I serve customers from my shop",
+		icon: "../assets/icons/user_merchant.png",
+		isVisible: true,
+		user_type: [
+			{ key: 3, name: "I Merchant" },
+			{ key: 2, name: "Merchant" },
 		],
 	},
+	{
+		id: 2,
+		merchant_type: 3,
+		applicant_type: 2,
+		label: `I'm a ${userTypeLabels[1] || "Distributor"}`,
+		description: "I have a network of retailer and i want to serve them",
+		icon: "../assets/icons/user_distributor.png",
+		isVisible: true,
+		user_type: [{ key: 1, name: "Distributor" }],
+	},
+	{
+		id: 3,
+		merchant_type: 2,
+		applicant_type: 1,
+		label: `I'm an ${userTypeLabels[23] || "Enterprise Partner"}`,
+		description:
+			"I want to use API and other solutions to make my own service",
+		icon: "../assets/icons/user_enterprise.png",
+		isVisible: true,
+		user_type: [{ key: 23, name: "Partner" }],
+	},
+];
+
+/**
+ * Generates role data based on configuration parameters
+ * @param {RoleConfig} config - Configuration for filtering and customizing roles
+ * @returns {Role[]} Array of configured roles
+ */
+export const generateRoleData = (config: RoleConfig = {}): Role[] => {
+	const { visibleMerchantTypes, labelMap, descriptionMap, userTypeLabels } =
+		config;
+
+	// Use custom user type labels or fall back to defaults
+	const effectiveUserTypeLabels = userTypeLabels || UserTypeLabel;
+	const baseRoleData = getBaseRoleData(effectiveUserTypeLabels);
+
+	return baseRoleData
+		.filter((role) => {
+			// If visibleMerchantTypes is specified, only show those merchant types
+			if (visibleMerchantTypes && visibleMerchantTypes.length > 0) {
+				return visibleMerchantTypes.includes(role.merchant_type);
+			}
+			// Otherwise, show all roles that are marked as visible
+			return role.isVisible;
+		})
+		.map((role) => ({
+			...role,
+			label: labelMap?.[role.merchant_type] || role.label,
+			description:
+				descriptionMap?.[role.merchant_type] || role.description,
+			isVisible: true, // All filtered roles should be visible
+		}));
 };
+
+/**
+ * Creates a role selection step with configurable roles based on agent types
+ * @param {number[]} forAgentTypes - Array of merchant types to include (e.g., [1, 3] for Retailer and Distributor)
+ * @param {RoleConfig} [config] - Optional configuration for labels and descriptions
+ * @returns {OnboardingStep} The configured role selection step
+ */
+export const createRoleSelectionStep = (
+	forAgentTypes: number[],
+	config: RoleConfig = {}
+): OnboardingStep => {
+	const roles = generateRoleData({
+		...config,
+		visibleMerchantTypes: forAgentTypes,
+	});
+
+	return {
+		id: 0,
+		name: "RoleCapture",
+		label: "Tell us who you are?",
+		isSkipable: false,
+		isRequired: false,
+		isVisible: false,
+		stepStatus: 0,
+		primaryCTAText: "Continue",
+		description: "",
+		form_data: {
+			roles,
+		},
+	};
+};
+
+/**
+ * Default role selection step data for role capture during user onboarding.
+ * This step allows users to select their role (Retailer, Distributor, or Enterprise).
+ * Used in the initial onboarding flow to determine the appropriate steps for each user type.
+ * @deprecated Use createRoleSelectionStep() with appropriate agent types instead
+ */
+export const roleSelectionStepData: OnboardingStep = createRoleSelectionStep(
+	[1, 3] // Default: Retailer and Distributor
+);
 
 /**
  * Onboarding steps data for distributor.
