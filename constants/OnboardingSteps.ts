@@ -27,7 +27,7 @@ export interface Role {
  */
 export interface RoleConfig {
 	/** Whether to show/hide specific merchant types */
-	visibleMerchantTypes?: number[];
+	visibleAgentTypes?: number[];
 	/** Custom labels for roles (optional override) */
 	labelMap?: Partial<Record<number, string>>;
 	/** Custom descriptions for roles (optional override) */
@@ -122,7 +122,7 @@ const getBaseRoleData = (
  * @returns {Role[]} Array of configured roles
  */
 export const generateRoleData = (config: RoleConfig = {}): Role[] => {
-	const { visibleMerchantTypes, labelMap, descriptionMap, userTypeLabels } =
+	const { visibleAgentTypes, labelMap, descriptionMap, userTypeLabels } =
 		config;
 
 	// Use custom user type labels or fall back to defaults
@@ -131,9 +131,9 @@ export const generateRoleData = (config: RoleConfig = {}): Role[] => {
 
 	return baseRoleData
 		.filter((role) => {
-			// If visibleMerchantTypes is specified, only show those merchant types
-			if (visibleMerchantTypes && visibleMerchantTypes.length > 0) {
-				return visibleMerchantTypes.includes(role.merchant_type);
+			// If visibleAgentTypes is specified, only show those merchant types
+			if (visibleAgentTypes && visibleAgentTypes.length > 0) {
+				return visibleAgentTypes.includes(role.merchant_type);
 			}
 			// Otherwise, show all roles that are marked as visible
 			return role.isVisible;
@@ -149,17 +149,17 @@ export const generateRoleData = (config: RoleConfig = {}): Role[] => {
 
 /**
  * Creates a role selection step with configurable roles based on agent types
- * @param {number[]} forAgentTypes - Array of merchant types to include (e.g., [1, 3] for Retailer and Distributor)
+ * @param {number[]} visibleAgentTypes - Array of merchant types to include (e.g., [1, 3] for Retailer and Distributor)
  * @param {RoleConfig} [config] - Optional configuration for labels and descriptions
  * @returns {OnboardingStep} The configured role selection step
  */
 export const createRoleSelectionStep = (
-	forAgentTypes: number[],
+	visibleAgentTypes: number[],
 	config: RoleConfig = {}
 ): OnboardingStep => {
 	const roles = generateRoleData({
 		...config,
-		visibleMerchantTypes: forAgentTypes,
+		visibleAgentTypes,
 	});
 
 	return {

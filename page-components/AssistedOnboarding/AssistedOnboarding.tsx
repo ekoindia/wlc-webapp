@@ -5,7 +5,7 @@ import { useOrgDetailContext } from "contexts/OrgDetailContext";
 import { useUser } from "contexts/UserContext";
 
 // Define agent types for assisted onboarding (only merchant/retailer)
-const forAgentTypes = [UserType.MERCHANT];
+const visibleAgentTypes = [UserType.MERCHANT];
 
 /**
  * An AssistedOnboarding component for assisted onboarding of agents
@@ -22,7 +22,8 @@ const AssistedOnboarding = () => {
 	const { orgDetail } = useOrgDetailContext();
 	const { logo, app_name, org_name } = orgDetail ?? {};
 
-	const assistedOnboardingRoleStep = createRoleSelectionStep(forAgentTypes);
+	const assistedOnboardingRoleStep =
+		createRoleSelectionStep(visibleAgentTypes);
 
 	// MARK: JSX
 	return (
