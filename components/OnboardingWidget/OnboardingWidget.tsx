@@ -19,7 +19,7 @@ import { fetcher } from "helpers";
 import { useCountryStates, useRefreshToken, useShopTypes } from "hooks";
 import dynamic from "next/dynamic";
 import router from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
 
@@ -71,7 +71,7 @@ interface SignUrlData {
 /**
  * A OnboardingWidget component for handling user onboarding flow
  * @param {object} props - Properties passed to the component
- * @param {string} [props.isAssistedOnboarding] - Is the onboarding assisted
+ * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a user (assisted onboarding)
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
@@ -119,7 +119,7 @@ const OnboardingWidget = ({
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
 
-	const androidleegalityResponseHandler = (res) => {
+	const androidleegalityResponseHandler = useCallback((res) => {
 		let value = JSON.parse(res);
 		if (value.agreement_status === "success") {
 			handleStepDataSubmit({
@@ -136,9 +136,9 @@ const OnboardingWidget = ({
 				duration: 2000,
 			});
 		}
-	};
+	}, []);
 
-	const getSignUrl = () => {
+	const getSignUrl = useCallback(() => {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -173,10 +173,9 @@ const OnboardingWidget = ({
 			.catch((err) =>
 				console.error("[getSignUrl for Leegality] Error:", err)
 			);
-		// }
-	};
+	}, []);
 
-	const getBookletNumber = () => {
+	const getBookletNumber = useCallback(() => {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -197,9 +196,9 @@ const OnboardingWidget = ({
 				}
 			})
 			.catch((err) => console.error("[getBookletNumber] Error:", err));
-	};
+	}, []);
 
-	const getBookletKey = () => {
+	const getBookletKey = useCallback(() => {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -220,7 +219,7 @@ const OnboardingWidget = ({
 				}
 			})
 			.catch((err) => console.error("[getBookletKey] Error: ", err));
-	};
+	}, []);
 
 	const refreshApiCall = async () => {
 		setApiInProgress(true);
