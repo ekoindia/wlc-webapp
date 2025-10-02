@@ -8,3 +8,5 @@ export { LandingPanel } from "./LandingPanel";
 export { LoginPanel } from "./LoginPanel";
 export { Profile } from "./Profile";
 export { RaiseIssueCard } from "./RaiseIssueCard";
+
+export { Onboarding } from "./Onboarding";
