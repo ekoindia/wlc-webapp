@@ -114,6 +114,8 @@ const OnboardingWidget = ({
 		"accent.DEFAULT",
 	]);
 
+	let bookletKeys = [];
+
 	const androidleegalityResponseHandler = (res) => {
 		let value = JSON.parse(res);
 		if (value.agreement_status === "success") {
@@ -158,8 +160,6 @@ const OnboardingWidget = ({
 		stepSetter();
 		setStepperData([/* ...stepperData, */ ...currentStepData]); // FIX: by Kr.Abhishek (duplicate data)
 	};
-
-	let bookletKeys = [];
 
 	const user_id =
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
@@ -239,7 +239,6 @@ const OnboardingWidget = ({
 				bodyData.form_data.booklet_serial_number =
 					bookletNumber?.booklet_serial_number ?? "";
 				bodyData.form_data.latlong = latLong;
-
 				interaction_type_id = TransactionIds.USER_ONBOARDING_SECRET_PIN;
 			} else if (data?.id === 12) {
 				interaction_type_id =
@@ -412,7 +411,7 @@ const OnboardingWidget = ({
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
-				token: userData?.access_token,
+				token: accessToken,
 				body: {
 					interaction_type_id: interaction_type_id,
 					user_id,
@@ -478,9 +477,9 @@ const OnboardingWidget = ({
 				process.env.NEXT_PUBLIC_API_BASE_URL +
 					Endpoints.REFRESH_PROFILE,
 				{
-					token: userData?.access_token,
+					token: accessToken,
 					body: {
-						last_refresh_token: userData?.access_token,
+						last_refresh_token: userData?.refresh_token,
 					},
 				},
 				generateNewToken
@@ -512,7 +511,7 @@ const OnboardingWidget = ({
 			const data = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 				{
-					token: userData?.access_token,
+					token: accessToken,
 					method: "POST",
 					body: {},
 					headers: {
@@ -649,7 +648,7 @@ const OnboardingWidget = ({
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
-				token: userData?.access_token,
+				token: accessToken,
 				body: {
 					interaction_type_id:
 						TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL,
