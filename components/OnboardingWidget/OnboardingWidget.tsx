@@ -81,6 +81,7 @@ const OnboardingWidget = ({
 }: OnboardingWidgetProps): JSX.Element => {
 	const { userData, updateUserInfo } = useUser();
 	const { orgDetail } = useOrgDetailContext();
+	const { logo, app_name, org_name } = orgDetail ?? {};
 	const { accessToken } = useSession();
 	const [selectedRole, setSelectedRole] = useState(null);
 	const { generateNewToken } = useRefreshToken();
@@ -606,13 +607,6 @@ const OnboardingWidget = ({
 				getSignUrl();
 			}
 			if (callType.method === "legalityOpen") {
-				// console.log(
-				// 	"Opening Leegality Popup: ",
-				// 	orgDetail.logo,
-				// 	signUrlData,
-				// 	isAndroid ? "Android" : "Web"
-				// );
-
 				if (
 					signUrlData &&
 					signUrlData.pipe == agreementProvider.SIGNZY
@@ -639,14 +633,12 @@ const OnboardingWidget = ({
 							JSON.stringify({
 								signing_url: signUrlData?.short_url,
 								document_id: signUrlData?.document_id,
-								//	signUrlData?.short_url,
-								// logo: orgDetail.logo,
 							})
 						);
 					} else {
 						const leegality = new (window as any).Leegality({
 							callback: handleLeegalityCallback.bind(this),
-							logo: orgDetail.logo,
+							logo: logo,
 						});
 						leegality.init();
 						leegality.esign(signUrlData?.short_url); // signUrlData?.short_url
@@ -923,7 +915,8 @@ const OnboardingWidget = ({
 								esignStatus: esignStatus,
 								primaryColor: primaryColor,
 								accentColor: accentColor,
-								orgDetail: orgDetail,
+								appName: app_name,
+								orgName: org_name,
 								digilockerData: digilockerData,
 							} as any)}
 						/>
