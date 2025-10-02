@@ -686,7 +686,7 @@ const OnboardingWidget = ({
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
-				token: userData?.access_token,
+				token: accessToken,
 				body: {
 					interaction_type_id: TransactionIds?.GET_BOOKLET_NUMBER,
 					document_id: "",
@@ -709,7 +709,7 @@ const OnboardingWidget = ({
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
-				token: userData?.access_token,
+				token: accessToken,
 				body: {
 					interaction_type_id: TransactionIds?.GET_PINTWIN_KEY,
 					document_id: "",
