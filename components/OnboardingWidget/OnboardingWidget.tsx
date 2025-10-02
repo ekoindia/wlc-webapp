@@ -69,9 +69,9 @@ interface SignUrlData {
 }
 
 /**
- * A OnboardingWidget component for handling user onboarding flow
+ * A OnboardingWidget component for handling agent onboarding flow
  * @param {object} props - Properties passed to the component
- * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a user (assisted onboarding)
+ * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a agent (assisted onboarding)
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
@@ -96,9 +96,7 @@ const OnboardingWidget = ({
 	const [apiInProgress, setApiInProgress] = useState(false);
 	const [esignStatus, setEsignStatus] = useState(0); // 0: loading, 1: ready, 2: failed
 	const [digilockerData, setDigilockerData] = useState(null);
-	const [stepperData, setStepperData] = useState<OnboardingStep[]>([
-		roleSelectionStepData,
-	]);
+	const [stepperData, setStepperData] = useState<OnboardingStep[]>([]);
 
 	const toast = useToast();
 	const { isAndroid } = useAppSource();
@@ -324,6 +322,7 @@ const OnboardingWidget = ({
 			});
 		}
 		stepSetter();
+		console.log("[OnboardingWidget] currentStepData", currentStepData);
 		setStepperData([...currentStepData]); // FIX: by Kr.Abhishek (duplicate data)
 	};
 
@@ -806,7 +805,6 @@ const OnboardingWidget = ({
 					style={
 						selectedRole === null
 							? {
-									background: "#FFF",
 									display: "flex",
 									justifyContent: "center",
 								}

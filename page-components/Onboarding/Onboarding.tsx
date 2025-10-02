@@ -1,25 +1,17 @@
-import { Flex } from "@chakra-ui/react";
-
-// Declare the props interface
-interface OnboardingProps {
-	prop1?: string;
-	// size: "lg" | "md" | "sm" | "xs" | string;
-	[key: string]: any;
-}
+import { OnboardingWidget } from "components";
 
 /**
- * A <Onboarding> component
- * TODO: Write more description here
- * @component
- * @param {object} prop - Properties passed to the component
- * @param {string} prop.prop1 - TODO: Property description. A normal property.
- * @param {number} [prop.optionalProp2] - TODO: Property description. An optional property with default value.
- * @param {...*} rest - Rest of the props
- * @example	`<Onboarding></Onboarding>` TODO: Fix example
+ * An Onboarding component for onboarding of agents
+ * Uses the OnboardingWidget with onboarding specific configuration
+ * @returns {JSX.Element} The rendered Onboarding component
+ * @example
+ * ```tsx
+ * <Onboarding />
+ * ```
  */
-const Onboarding = ({ prop1, ...rest }: OnboardingProps) => {
+const Onboarding = () => {
 	// MARK: JSX
-	return <Flex {...rest}>Onboarding</Flex>;
+	return <OnboardingWidget />;
 };
 
 export default Onboarding;
