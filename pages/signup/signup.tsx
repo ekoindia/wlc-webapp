@@ -2,7 +2,7 @@ import { useToast } from "@chakra-ui/react";
 import { OnboardingWidget } from "components";
 import {
 	retailerStepsData,
-	selectionStepData,
+	roleSelectionStepData,
 } from "constants/OnboardingSteps";
 import { useOrgDetailContext } from "contexts";
 import { useUser } from "contexts/UserContext";
@@ -69,7 +69,7 @@ const SignupPage = () => {
 			stepperData={stepperData}
 			userData={userData}
 			orgDetail={orgDetail}
-			selectionStepData={selectionStepData}
+			selectionStepData={roleSelectionStepData}
 			selectedRole={selectedRole}
 			defaultStep="12400" // Start with location capture for retailers
 			isBranding={false}

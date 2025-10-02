@@ -4,7 +4,8 @@ import { TransactionIds } from "constants/EpsTransactions";
 import {
 	distributorStepsData,
 	retailerStepsData,
-	selectionStepData,
+	roleSelectionStepData,
+	type OnboardingStep,
 } from "constants/OnboardingSteps";
 import { agreementProvider } from "constants/ProductDetails";
 import {
@@ -97,63 +98,8 @@ const OnboardingWidget = ({
 	const [esignStatus, setEsignStatus] = useState(0); // 0: loading, 1: ready, 2: failed
 	const [digilockerData, setDigilockerData] = useState(null);
 
-	const [stepperData, setStepperData] = useState([
-		{
-			id: 1,
-			name: "Welcome",
-			label: "Welcome",
-			isSkipable: false,
-			isRequired: false,
-			isVisible: false,
-			stepStatus: 0,
-			primaryCTAText: "Start Onboarding",
-			description: "",
-			form_data: {},
-		},
-		{
-			id: 2,
-			name: "RoleCapture",
-			label: "Tell us who you are?",
-			isSkipable: false,
-			isRequired: false,
-			isVisible: false,
-			stepStatus: 0,
-			primaryCTAText: "Continue",
-			description: "",
-			form_data: {
-				roles: [
-					{
-						id: 1,
-						merchant_type: 1,
-						applicant_type: 0,
-						label: "I'm a retailer",
-						description: "I serve customers from my shop",
-						icon: "../assets/icons/user_merchant.png",
-						isVisible: true,
-					},
-					{
-						id: 2,
-						merchant_type: 3,
-						applicant_type: 2,
-						label: "I'm a distributor",
-						description:
-							"I have a network of retailer and i want to serve them",
-						icon: "../assets/icons/user_distributor.png",
-						isVisible: true,
-					},
-					{
-						id: 3,
-						merchant_type: 2,
-						applicant_type: 1,
-						label: "I'm a Enterprise",
-						description:
-							"I want to use API and other solution to make my own service",
-						icon: "../assets/icons/user_enterprise.png",
-						isVisible: false,
-					},
-				],
-			},
-		},
+	const [stepperData, setStepperData] = useState<OnboardingStep[]>([
+		roleSelectionStepData,
 	]);
 
 	const { isAndroid } = useAppSource();
@@ -190,18 +136,12 @@ const OnboardingWidget = ({
 	};
 
 	const initialStepSetter = (user_data) => {
-		const currentStepData = [];
+		const currentStepData: OnboardingStep[] = [];
 		/**
 		 * Sets up the appropriate onboarding steps based on user type
 		 */
 		function stepSetter() {
-			// console.log(
-			// 	"[oaas] > Setup Steps #1: ",
-			// 	userData,
-			// 	userData?.details?.onboarding_steps
-			// );
-
-			var step_data = [];
+			var step_data: OnboardingStep[] = [];
 			// User_Type = 1 : Distributor
 			// User Type = 3 : Retailer
 			if (user_data?.details?.userDetails?.user_type == 1) {
@@ -245,11 +185,12 @@ const OnboardingWidget = ({
 		) {
 			const bodyData = data;
 			if (data?.id === 0) {
-				const applicantData = selectionStepData.form_data.roles.find(
-					(role) =>
-						role.merchant_type ===
-						parseInt(data.form_data.merchant_type)
-				)?.applicant_type;
+				const applicantData =
+					roleSelectionStepData.form_data.roles.find(
+						(role) =>
+							role.merchant_type ===
+							parseInt(data.form_data.merchant_type)
+					)?.applicant_type;
 				bodyData.form_data.applicant_type = applicantData;
 				bodyData.form_data.csp_id =
 					userData.userDetails.signup_mobile ||
@@ -953,7 +894,7 @@ const OnboardingWidget = ({
 					userData?.userDetails?.mobile === "1" ? (
 						<ExternalSelectionScreen
 							{...({
-								stepData: selectionStepData,
+								stepData: roleSelectionStepData,
 								handleSubmit: (data: any) => {
 									// setSelectedRole(data.form_data.value);
 									handleStepDataSubmit(data);

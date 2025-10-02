@@ -64,7 +64,7 @@ export interface OnboardingStep {
  * - Extract form_data.roles into a separate function to return this data structure. It should take label-map (to rename user types), and hide/show user types.
  * - In the OaaS widget project, if only one usertype is visible, auto-select and proceed.
  */
-export const selectionStepData: OnboardingStep = {
+export const roleSelectionStepData: OnboardingStep = {
 	id: 0,
 	name: "RoleCapture",
 	label: "Tell us who you are?",
