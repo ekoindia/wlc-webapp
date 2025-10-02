@@ -18,6 +18,7 @@ import {
 import { fetcher } from "helpers";
 import { useCountryStates, useRefreshToken, useShopTypes } from "hooks";
 import dynamic from "next/dynamic";
+import router from "next/router";
 import { useEffect, useState } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
@@ -34,9 +35,7 @@ const ExternalOnboardingWidget = dynamic(
 
 // Declare the props interface
 interface OnboardingWidgetProps {
-	prop1?: string;
-	// size: "lg" | "md" | "sm" | "xs" | string;
-	[key: string]: any;
+	isAssistedOnboarding?: boolean;
 }
 
 // Define interfaces for proper typing
@@ -72,12 +71,12 @@ interface SignUrlData {
 /**
  * A OnboardingWidget component for handling user onboarding flow
  * @param {object} props - Properties passed to the component
- * @param {string} [props.prop1] - Optional property description
+ * @param {string} [props.isAssistedOnboarding] - Is the onboarding assisted
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
 const OnboardingWidget = ({
-	prop1: _prop1,
+	isAssistedOnboarding = false,
 }: OnboardingWidgetProps): JSX.Element => {
 	const { userData, updateUserInfo } = useUser(); // TODO: move to parent
 	console.log("[OnboardingWidget] userData", userData);
@@ -115,6 +114,10 @@ const OnboardingWidget = ({
 	]);
 
 	let bookletKeys = [];
+	console.log("[OnboardingWidget] bookletKeys", bookletKeys);
+	const user_id =
+		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
+	let interaction_type_id = TransactionIds.USER_ONBOARDING;
 
 	const androidleegalityResponseHandler = (res) => {
 		let value = JSON.parse(res);
@@ -129,6 +132,170 @@ const OnboardingWidget = ({
 		} else {
 			toast({
 				title: "Something went wrong, please try again later!",
+				status: "error",
+				duration: 2000,
+			});
+		}
+	};
+
+	const getSignUrl = () => {
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				token: accessToken,
+				body: {
+					interaction_type_id:
+						TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL,
+					document_id: "",
+					agreement_id: userData?.userDetails?.agreement_id ?? 5,
+					latlong: latLong || "27.176670,78.008075,7787",
+					user_id,
+					locale: "en",
+				},
+			},
+			generateNewToken
+		)
+			.then((res) => {
+				if (res?.data?.short_url) {
+					setSignUrlData(res.data);
+					setEsignStatus(1);
+				} else {
+					toast({
+						title:
+							res?.message ||
+							"E-sign initialization failed, please try again.",
+						status: "error",
+						duration: 5000,
+					});
+					setEsignStatus(2);
+				}
+			})
+			.catch((err) =>
+				console.error("[getSignUrl for Leegality] Error:", err)
+			);
+		// }
+	};
+
+	const getBookletNumber = () => {
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				token: accessToken,
+				body: {
+					interaction_type_id: TransactionIds?.GET_BOOKLET_NUMBER,
+					document_id: "",
+					latlong: latLong || "27.176670,78.008075,7787",
+					user_id,
+					locale: "en",
+				},
+			},
+			generateNewToken
+		)
+			.then((res) => {
+				if (res.response_status_id === 0) {
+					setBookletNumber(res.data);
+				}
+			})
+			.catch((err) => console.error("[getBookletNumber] Error:", err));
+	};
+
+	const getBookletKey = () => {
+		fetcher(
+			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+			{
+				token: accessToken,
+				body: {
+					interaction_type_id: TransactionIds?.GET_PINTWIN_KEY,
+					document_id: "",
+					latlong: latLong || "27.176670,78.008075,7787",
+					user_id,
+					locale: "en",
+				},
+			},
+			generateNewToken
+		)
+			.then((res) => {
+				if (res.response_status_id === 0) {
+					bookletKeys = [...bookletKeys, res.data];
+				}
+			})
+			.catch((err) => console.error("[getBookletKey] Error: ", err));
+	};
+
+	const refreshApiCall = async () => {
+		setApiInProgress(true);
+		try {
+			const res = await fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL +
+					Endpoints.REFRESH_PROFILE,
+				{
+					token: accessToken,
+					body: {
+						last_refresh_token: userData?.refresh_token,
+					},
+				},
+				generateNewToken
+			);
+			updateUserInfo(res);
+			setIsLoading(false);
+
+			if (
+				res?.details?.onboarding !== 1 &&
+				res?.details?.onboarding !== undefined &&
+				res?.details?.onboarding !== null &&
+				!isAssistedOnboarding
+			) {
+				router.push("/home");
+			}
+
+			setApiInProgress(false);
+			return res;
+		} catch (error) {
+			setIsLoading(false);
+			setApiInProgress(false);
+
+			console.log("inside initial api error", error);
+		}
+	};
+
+	// Fetcher function for Digilocker URL
+	const getDigilockerUrl = async () => {
+		try {
+			const data = await fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					token: accessToken,
+					method: "POST",
+					body: {},
+					headers: {
+						"tf-req-method": "POST",
+						"tf-req-uri": "/karza/digilocker-redirection-url",
+						"tf-req-uri-root-path": "/ekoicici/v1/marketuat",
+					},
+				},
+				generateNewToken
+			);
+
+			// console.log("[getDigilockerUrl] Response:", data);
+
+			if (data?.status === 0) {
+				// Handle successful response
+				if (data?.data?.link) {
+					// Store the response data for future use
+					setDigilockerData({
+						link: data.data.link,
+						requestId: data.data.requestId,
+						initiatorId: data.data.initiator_id,
+						timestamp: data.data.timestamp,
+					});
+				}
+			}
+		} catch (error) {
+			// console.error("[getDigilockerUrl] Error:", error);
+			toast({
+				title:
+					error?.message ??
+					"Something went wrong, please try again later!",
 				status: "error",
 				duration: 2000,
 			});
@@ -158,12 +325,8 @@ const OnboardingWidget = ({
 			});
 		}
 		stepSetter();
-		setStepperData([/* ...stepperData, */ ...currentStepData]); // FIX: by Kr.Abhishek (duplicate data)
+		setStepperData([...currentStepData]); // FIX: by Kr.Abhishek (duplicate data)
 	};
-
-	const user_id =
-		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
-	let interaction_type_id = TransactionIds.USER_ONBOARDING;
 
 	const handleStepDataSubmit = (data) => {
 		console.log("[OnboardingWidget] handleStepDataSubmit data", data);
@@ -469,86 +632,6 @@ const OnboardingWidget = ({
 			});
 	};
 
-	const refreshApiCall = async () => {
-		// setIsLoading(true);
-		setApiInProgress(true);
-		try {
-			const res = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL +
-					Endpoints.REFRESH_PROFILE,
-				{
-					token: accessToken,
-					body: {
-						last_refresh_token: userData?.refresh_token,
-					},
-				},
-				generateNewToken
-			);
-			updateUserInfo(res);
-			setIsLoading(false);
-
-			if (
-				res?.details?.onboarding !== 1 &&
-				res?.details?.onboarding !== undefined &&
-				res?.details?.onboarding !== null
-			) {
-				// router.push("/home"); // TODO: Handle this accordingly
-			}
-
-			setApiInProgress(false);
-			return res;
-		} catch (error) {
-			setIsLoading(false);
-			setApiInProgress(false);
-
-			console.log("inside initial api error", error);
-		}
-	};
-
-	// Fetcher function for Digilocker URL
-	const getDigilockerUrl = async () => {
-		try {
-			const data = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-				{
-					token: accessToken,
-					method: "POST",
-					body: {},
-					headers: {
-						"tf-req-method": "POST",
-						"tf-req-uri": "/karza/digilocker-redirection-url",
-						"tf-req-uri-root-path": "/ekoicici/v1/marketuat",
-					},
-				},
-				generateNewToken
-			);
-
-			// console.log("[getDigilockerUrl] Response:", data);
-
-			if (data?.status === 0) {
-				// Handle successful response
-				if (data?.data?.link) {
-					// Store the response data for future use
-					setDigilockerData({
-						link: data.data.link,
-						requestId: data.data.requestId,
-						initiatorId: data.data.initiator_id,
-						timestamp: data.data.timestamp,
-					});
-				}
-			}
-		} catch (error) {
-			// console.error("[getDigilockerUrl] Error:", error);
-			toast({
-				title:
-					error?.message ??
-					"Something went wrong, please try again later!",
-				status: "error",
-				duration: 2000,
-			});
-		}
-	};
-
 	const handleLeegalityCallback = (res) => {
 		if (res.error) {
 			toast({
@@ -642,90 +725,6 @@ const OnboardingWidget = ({
 				getDigilockerUrl();
 			}
 		}
-	};
-
-	const getSignUrl = () => {
-		fetcher(
-			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-			{
-				token: accessToken,
-				body: {
-					interaction_type_id:
-						TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL,
-					document_id: "",
-					agreement_id: userData?.userDetails?.agreement_id ?? 5,
-					latlong: latLong || "27.176670,78.008075,7787",
-					user_id,
-					locale: "en",
-				},
-			},
-			generateNewToken
-		)
-			.then((res) => {
-				if (res?.data?.short_url) {
-					setSignUrlData(res.data);
-					setEsignStatus(1);
-				} else {
-					toast({
-						title:
-							res?.message ||
-							"E-sign initialization failed, please try again.",
-						status: "error",
-						duration: 5000,
-					});
-					setEsignStatus(2);
-				}
-			})
-			.catch((err) =>
-				console.error("[getSignUrl for Leegality] Error:", err)
-			);
-		// }
-	};
-
-	const getBookletNumber = () => {
-		fetcher(
-			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-			{
-				token: accessToken,
-				body: {
-					interaction_type_id: TransactionIds?.GET_BOOKLET_NUMBER,
-					document_id: "",
-					latlong: latLong || "27.176670,78.008075,7787",
-					user_id,
-					locale: "en",
-				},
-			},
-			generateNewToken
-		)
-			.then((res) => {
-				if (res.response_status_id === 0) {
-					setBookletNumber(res.data);
-				}
-			})
-			.catch((err) => console.error("[getBookletNumber] Error:", err));
-	};
-
-	const getBookletKey = () => {
-		fetcher(
-			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-			{
-				token: accessToken,
-				body: {
-					interaction_type_id: TransactionIds?.GET_PINTWIN_KEY,
-					document_id: "",
-					latlong: latLong || "27.176670,78.008075,7787",
-					user_id,
-					locale: "en",
-				},
-			},
-			generateNewToken
-		)
-			.then((res) => {
-				if (res.response_status_id === 0) {
-					bookletKeys = [...bookletKeys, res.data];
-				}
-			})
-			.catch((err) => console.error("[getBookletKey] Error: ", err));
 	};
 
 	// Note: Load leegality script only when E-sign step is reached...track script status independently
