@@ -8,13 +8,7 @@ import {
 	type OnboardingStep,
 } from "constants/OnboardingSteps";
 import { agreementProvider } from "constants/ProductDetails";
-import {
-	useAppSource,
-	useOrgDetailContext,
-	usePubSub,
-	useSession,
-	useUser,
-} from "contexts";
+import { useAppSource, usePubSub, useSession } from "contexts";
 import { fetcher } from "helpers";
 import { useCountryStates, useRefreshToken, useShopTypes } from "hooks";
 import dynamic from "next/dynamic";
@@ -33,12 +27,6 @@ const ExternalOnboardingWidget = dynamic(
 	{ ssr: false }
 );
 
-// Declare the props interface
-interface OnboardingWidgetProps {
-	isAssistedOnboarding?: boolean;
-}
-
-// Define interfaces for proper typing
 interface OnboardingFormData {
 	client_ref_id: string;
 	user_id: any;
@@ -68,20 +56,35 @@ interface SignUrlData {
 	document_id?: string;
 }
 
+interface OnboardingWidgetProps {
+	isAssistedOnboarding?: boolean;
+	logo: string;
+	appName: string;
+	orgName: string;
+	userData: any;
+	updateUserInfo: any;
+}
+
 /**
  * A OnboardingWidget component for handling agent onboarding flow
  * @param {object} props - Properties passed to the component
  * @param {string} [props.isAssistedOnboarding] - Is the onboarding being done on behalf of a agent (assisted onboarding)
+ * @param {string} [props.logo] - Logo URL of the organization
+ * @param {string} [props.appName] - Name of the application
+ * @param {string} [props.orgName] - Name of the organization
+ * @param {any} [props.userData] - User data object
+ * @param {any} [props.updateUserInfo] - Function to update user information
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
 const OnboardingWidget = ({
 	isAssistedOnboarding = false,
+	logo,
+	appName,
+	orgName,
+	userData,
+	updateUserInfo,
 }: OnboardingWidgetProps): JSX.Element => {
-	const { userData, updateUserInfo } = useUser(); // TODO: move to parent
-	console.log("[OnboardingWidget] userData", userData);
-	const { orgDetail } = useOrgDetailContext();
-	const { logo, app_name, org_name } = orgDetail ?? {};
 	const { accessToken } = useSession();
 
 	const [selectedRole, setSelectedRole] = useState(null);
@@ -841,8 +844,8 @@ const OnboardingWidget = ({
 								esignStatus: esignStatus,
 								primaryColor: primaryColor,
 								accentColor: accentColor,
-								appName: app_name,
-								orgName: org_name,
+								appName: appName,
+								orgName: orgName,
 								digilockerData: digilockerData,
 							} as any)}
 						/>
