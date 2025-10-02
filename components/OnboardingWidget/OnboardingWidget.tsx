@@ -79,43 +79,40 @@ interface SignUrlData {
 const OnboardingWidget = ({
 	prop1: _prop1,
 }: OnboardingWidgetProps): JSX.Element => {
-	const { userData, updateUserInfo } = useUser();
+	const { userData, updateUserInfo } = useUser(); // TODO: move to parent
+	console.log("[OnboardingWidget] userData", userData);
 	const { orgDetail } = useOrgDetailContext();
 	const { logo, app_name, org_name } = orgDetail ?? {};
 	const { accessToken } = useSession();
+
 	const [selectedRole, setSelectedRole] = useState(null);
-	const { generateNewToken } = useRefreshToken();
 	const [lastStepResponse, setLastStepResponse] = useState();
 	const [latLong, setLatLong] = useState();
 	const [aadhaar, setAadhaar] = useState();
-	const [accesskey, setAccessKey] = useState();
-	const [userCode, setUserCode] = useState();
-
-	const [userLoginData, setUserLoginData] = useState<any>(null);
+	const [accesskey, setAccessKey] = useState(); // For Aadhaar OTP
+	const [userCode, setUserCode] = useState(); // For Aadhaar OTP
 	const [signUrlData, setSignUrlData] = useState<SignUrlData | null>(null);
 	const [bookletNumber, setBookletNumber] = useState<any>(null);
-	const [isSpinner, setisSpinner] = useState(true);
+	const [isLoading, setIsLoading] = useState(true);
 	const [apiInProgress, setApiInProgress] = useState(false);
 	const [esignStatus, setEsignStatus] = useState(0); // 0: loading, 1: ready, 2: failed
 	const [digilockerData, setDigilockerData] = useState(null);
-
 	const [stepperData, setStepperData] = useState<OnboardingStep[]>([
 		roleSelectionStepData,
 	]);
 
+	const toast = useToast();
 	const { isAndroid } = useAppSource();
 	const { subscribe, TOPICS } = usePubSub();
-	const toast = useToast();
+	const { generateNewToken } = useRefreshToken();
+	const { shopTypes: shopTypesData } = useShopTypes();
+	const { states: stateTypesData } = useCountryStates();
 
 	// Get theme primary color
 	const [primaryColor, accentColor] = useToken("colors", [
 		"primary.DEFAULT",
 		"accent.DEFAULT",
 	]);
-
-	// Use custom hooks for data fetching
-	const { shopTypes: shopTypesData } = useShopTypes();
-	const { states: stateTypesData } = useCountryStates();
 
 	const androidleegalityResponseHandler = (res) => {
 		let value = JSON.parse(res);
@@ -152,7 +149,6 @@ const OnboardingWidget = ({
 			}
 
 			user_data?.details?.onboarding_steps?.forEach((step) => {
-				//console.log("[oaas] > Setup Steps #2: ", step, step_data);
 				let currentData = step_data?.filter(
 					(singleStep) => singleStep.role === step.role
 				);
@@ -170,7 +166,7 @@ const OnboardingWidget = ({
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
 
 	const handleStepDataSubmit = (data) => {
-		// console.log("HandleWlcStepData", data);
+		console.log("[OnboardingWidget] handleStepDataSubmit data", data);
 		if (data?.id === 3) {
 			setLatLong(data?.form_data?.latlong);
 		}
@@ -213,7 +209,6 @@ const OnboardingWidget = ({
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_OTP_CONFIRM;
 					bodyData.form_data.aadhar = aadhaar;
-					// bodyData.form_data.accessKey = lastStepResponse?.data?.access_key
 				}
 			} else if (data?.id === 9) {
 				interaction_type_id = TransactionIds.USER_ONBOARDING_BUSINESS;
@@ -221,7 +216,6 @@ const OnboardingWidget = ({
 				bodyData.form_data.csp_id = userData.userDetails.mobile;
 				bodyData.form_data.communication = 1;
 			} else if (data?.id === 10) {
-				// Object.keys(data.form_data) {}
 				if (
 					data?.form_data?.first_okekey &&
 					bookletKeys[bookletKeys?.length - 2]
@@ -270,7 +264,6 @@ const OnboardingWidget = ({
 	// Method only for file upload data
 	const handleFileUploadOnboarding = async (data) => {
 		// Handle all file upload API's here only
-
 		setApiInProgress(true);
 		const formData = new FormData();
 		const bodyData: BodyData = {
@@ -308,7 +301,6 @@ const OnboardingWidget = ({
 				new URLSearchParams(formdataParams).toString()
 			);
 		} else if (data.id === 8) {
-			// console.log("PAN data", data);
 			bodyData.file1 = data?.form_data?.panImage?.fileData;
 			bodyData.formdata.file1 = "";
 			bodyData.formdata.doc_type = 2;
@@ -351,8 +343,6 @@ const OnboardingWidget = ({
 			);
 		}
 
-		// console.log("inside handle file upload ", bodyData, formData);
-
 		const uploadResponse = await fetch(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.UPLOAD,
 			{
@@ -365,16 +355,9 @@ const OnboardingWidget = ({
 		)
 			.then((res) => {
 				if (res.ok) {
-					// console.log("📡 Fetch Result:", {
-					// 	res,
-					// });
 					return res.json();
 				} else {
-					res.text().then(() => {
-						// console.error("📡 Fetch Error:", {
-						// 	res,
-						// });
-					});
+					res.text().then(() => {});
 
 					const err = new Error("API Error") as any;
 					err.response = res;
@@ -395,7 +378,6 @@ const OnboardingWidget = ({
 					status: "error",
 					duration: 2000,
 				});
-				// console.error("error in update onboarding: ", err);
 				return err;
 			});
 
@@ -423,12 +405,9 @@ const OnboardingWidget = ({
 		}
 
 		setApiInProgress(false);
-
-		// console.log("uploadResponse", uploadResponse);
 	};
 
 	const updateOnboarding = (bodyData) => {
-		// setisSpinner(true);
 		setApiInProgress(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -467,8 +446,6 @@ const OnboardingWidget = ({
 							initialStepSetter(res);
 						}
 					});
-
-					// setisSpinner(false);
 				} else {
 					toast({
 						title: data.message,
@@ -476,12 +453,9 @@ const OnboardingWidget = ({
 						duration: 2000,
 					});
 					setLastStepResponse(data);
-					// setisSpinner(false);
 				}
-				// onClose();
 			})
 			.catch((err) => {
-				// setDisabled(false);
 				toast({
 					title:
 						err.message ||
@@ -497,7 +471,7 @@ const OnboardingWidget = ({
 	};
 
 	const refreshApiCall = async () => {
-		// setisSpinner(true);
+		// setIsLoading(true);
 		setApiInProgress(true);
 		try {
 			const res = await fetcher(
@@ -511,9 +485,8 @@ const OnboardingWidget = ({
 				},
 				generateNewToken
 			);
-			setUserLoginData(res);
 			updateUserInfo(res);
-			setisSpinner(false);
+			setIsLoading(false);
 
 			if (
 				res?.details?.onboarding !== 1 &&
@@ -526,7 +499,7 @@ const OnboardingWidget = ({
 			setApiInProgress(false);
 			return res;
 		} catch (error) {
-			setisSpinner(false);
+			setIsLoading(false);
 			setApiInProgress(false);
 
 			console.log("inside initial api error", error);
@@ -578,9 +551,7 @@ const OnboardingWidget = ({
 	};
 
 	const handleLeegalityCallback = (res) => {
-		// console.log("Leegality callback response", res);
 		if (res.error) {
-			// console.error("LeegalityCallBack Error", res.error);
 			toast({
 				title:
 					res?.error ||
@@ -600,7 +571,6 @@ const OnboardingWidget = ({
 	};
 
 	const handleStepCallBack = (callType) => {
-		// console.log("[stepcallback]", callType, latLong, userLoginData);
 		if (callType.type === 12) {
 			// Leegality Esign
 			if (callType.method === "getSignUrl") {
@@ -617,9 +587,6 @@ const OnboardingWidget = ({
 					signUrlData.pipe == agreementProvider.KARZA
 				) {
 					if (!signUrlData.short_url) {
-						// console.error(
-						// 	"[oaas Leegality] Didn't receive short-url"
-						// );
 						toast({
 							title: "Error starting eSign session. Please reload and try again later.",
 							status: "error",
@@ -679,8 +646,6 @@ const OnboardingWidget = ({
 	};
 
 	const getSignUrl = () => {
-		// console.log("Getting Signed URL for Leegality...");
-		// if (agreementId) {
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -689,7 +654,7 @@ const OnboardingWidget = ({
 					interaction_type_id:
 						TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL,
 					document_id: "",
-					agreement_id: userLoginData?.details?.agreement_id ?? 5,
+					agreement_id: userData?.userDetails?.agreement_id ?? 5,
 					latlong: latLong || "27.176670,78.008075,7787",
 					user_id,
 					locale: "en",
@@ -698,15 +663,9 @@ const OnboardingWidget = ({
 			generateNewToken
 		)
 			.then((res) => {
-				// console.log("[getSignUrl] resp:", res);
-				// console.log("Get Signed URL for Leegality Response: ", res);
 				if (res?.data?.short_url) {
 					setSignUrlData(res.data);
-					// Inform the OaaS Widget that Leegality is ready
 					setEsignStatus(1);
-					// widgetRef?.current?.postMessage({
-					// 	type: "esign:ready",
-					// });
 				} else {
 					toast({
 						title:
@@ -715,14 +674,7 @@ const OnboardingWidget = ({
 						status: "error",
 						duration: 5000,
 					});
-					// console.error(
-					// 	"[getSignUrl] Error: E-sign initialization failed: " +
-					// 		res?.message
-					// );
 					setEsignStatus(2);
-					// widgetRef?.current?.postMessage({
-					// 	type: "esign:failed",
-					// });
 				}
 			})
 			.catch((err) =>
@@ -747,14 +699,11 @@ const OnboardingWidget = ({
 			generateNewToken
 		)
 			.then((res) => {
-				// console.log("[getBookletNumber] resp:", res);
 				if (res.response_status_id === 0) {
 					setBookletNumber(res.data);
-					// setSignUrlData(res.data);
 				}
 			})
 			.catch((err) => console.error("[getBookletNumber] Error:", err));
-		// }
 	};
 
 	const getBookletKey = () => {
@@ -773,28 +722,21 @@ const OnboardingWidget = ({
 			generateNewToken
 		)
 			.then((res) => {
-				// console.log("[getBookletKey] resp: ", res, bookletKeys);
 				if (res.response_status_id === 0) {
 					bookletKeys = [...bookletKeys, res.data];
-					// setSignUrlData(res.data);
 				}
 			})
 			.catch((err) => console.error("[getBookletKey] Error: ", err));
-		// }
 	};
 
 	// Note: Load leegality script only when E-sign step is reached...track script status independently
 	useEffect(() => {
 		const script = document.createElement("script");
 		script.src = "/scripts/leegalityv5.min.js";
-		// script.src = '../scripts/leegalityv5.min.js';
 		script.id = "legality";
 		document.body.appendChild(script);
-		script.onload = () => {
-			// console.log("Leegality script loaded", script);
-		};
+		script.onload = () => {};
 		script.onerror = () => {
-			// console.error("Failed to load Leegality script");
 			toast({
 				title: "Failed to initialize eSign",
 				description:
@@ -804,22 +746,16 @@ const OnboardingWidget = ({
 			});
 			setEsignStatus(2); // Set E-sign load status to failed
 		};
-		if (!userLoginData) {
-			refreshApiCall();
-			// Data fetching now handled by useShopTypes and useCountryStates hooks
-		}
-		// setLeegalityLoaded(true);
-	}, [userLoginData]);
+
+		refreshApiCall(); // TODO: Handle this efficiently
+	}, []);
 
 	useEffect(() => {
 		const handleMessage = (event) => {
 			if (event.data.type === "STATUS_UPDATE") {
-				//const { body } = event.data;
-
 				handleStepDataSubmit({
 					id: 12,
 					form_data: {
-						//agreement_status: body.status == 0 ? "success" : "fail",
 						document_id: signUrlData?.document_id ?? "",
 						agreement_id: userData?.userDetails?.agreement_id,
 					},
@@ -848,8 +784,6 @@ const OnboardingWidget = ({
 	// Subscribe to the Android responses
 	useEffect(() => {
 		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
-			// console.log("[signup] [PubSub] >>> android-response:: ", data);
-
 			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
 				androidleegalityResponseHandler(data?.data);
 			}
@@ -866,8 +800,8 @@ const OnboardingWidget = ({
 	// MARK: JSX
 	return (
 		<>
-			{isSpinner ? (
-				<Center height={"100vh"}>
+			{isLoading ? (
+				<Center height="100vh">
 					<Spinner />
 				</Center>
 			) : (
@@ -888,7 +822,6 @@ const OnboardingWidget = ({
 							{...({
 								stepData: roleSelectionStepData,
 								handleSubmit: (data: any) => {
-									// setSelectedRole(data.form_data.value);
 									handleStepDataSubmit(data);
 								},
 								isDisabledCTA: apiInProgress,
@@ -899,8 +832,6 @@ const OnboardingWidget = ({
 					) : (
 						<ExternalOnboardingWidget
 							{...({
-								// ref={widgetRef}
-								// defaultStep="24000"
 								defaultStep:
 									userData?.userDetails?.role_list || "12400",
 								isBranding: false,
