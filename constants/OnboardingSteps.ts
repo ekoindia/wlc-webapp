@@ -33,7 +33,7 @@ export interface RoleConfig {
 	/** Custom descriptions for roles (optional override) */
 	descriptionMap?: Partial<Record<number, string>>;
 	/** Custom user type labels mapping (e.g., {1: "Distributor", 2: "Agent"}) */
-	userTypeLabels?: Record<number, string>;
+	userTypeLabel?: Record<number, string>;
 }
 
 /**
@@ -74,17 +74,17 @@ export interface OnboardingStep {
 /**
  * Base role data containing all possible roles with default labels
  * Labels will be dynamically replaced based on organization configuration
- * @param {Record<number, string>} userTypeLabels - User type labels mapping
+ * @param {Record<number, string>} userTypeLabel - User type labels mapping
  * @returns {Role[]} Array of role data
  */
 const getBaseRoleData = (
-	userTypeLabels: Record<number, string> = UserTypeLabel
+	userTypeLabel: Record<number, string> = UserTypeLabel
 ): Role[] => [
 	{
 		id: 1,
 		merchant_type: 1,
 		applicant_type: 0,
-		label: `I'm a ${userTypeLabels[2] || "Retailer"}`,
+		label: `I'm a ${userTypeLabel[2] || "Retailer"}`,
 		description: "I serve customers from my shop",
 		icon: "../assets/icons/user_merchant.png",
 		isVisible: true,
@@ -97,7 +97,7 @@ const getBaseRoleData = (
 		id: 2,
 		merchant_type: 3,
 		applicant_type: 2,
-		label: `I'm a ${userTypeLabels[1] || "Distributor"}`,
+		label: `I'm a ${userTypeLabel[1] || "Distributor"}`,
 		description: "I have a network of retailer and i want to serve them",
 		icon: "../assets/icons/user_distributor.png",
 		isVisible: true,
@@ -107,7 +107,7 @@ const getBaseRoleData = (
 		id: 3,
 		merchant_type: 2,
 		applicant_type: 1,
-		label: `I'm an ${userTypeLabels[23] || "Enterprise Partner"}`,
+		label: `I'm an ${userTypeLabel[23] || "Enterprise Partner"}`,
 		description:
 			"I want to use API and other solutions to make my own service",
 		icon: "../assets/icons/user_enterprise.png",
@@ -122,12 +122,12 @@ const getBaseRoleData = (
  * @returns {Role[]} Array of configured roles
  */
 export const generateRoleData = (config: RoleConfig = {}): Role[] => {
-	const { visibleAgentTypes, labelMap, descriptionMap, userTypeLabels } =
+	const { visibleAgentTypes, labelMap, descriptionMap, userTypeLabel } =
 		config;
 
 	// Use custom user type labels or fall back to defaults
-	const effectiveUserTypeLabels = userTypeLabels || UserTypeLabel;
-	const baseRoleData = getBaseRoleData(effectiveUserTypeLabels);
+	const effectiveUserTypeLabel = userTypeLabel || UserTypeLabel;
+	const baseRoleData = getBaseRoleData(effectiveUserTypeLabel);
 
 	return baseRoleData
 		.filter((role) => {

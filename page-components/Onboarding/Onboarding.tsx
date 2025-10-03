@@ -25,12 +25,12 @@ const Onboarding = () => {
 	// Example: Custom user type labels from org_metadata (in the future from orgDetail)
 	// const customUserTypeLabels = {
 	// 	1: "Partner", // Custom label for Distributor
-	// 	3: "Agent", // Custom label for I_MERCHANT
+	// 	2: "Agent", // Custom label for I_MERCHANT
 	// 	23: "API Partner", // Custom label for Enterprise
 	// };
 
 	// const onboardingRoleStep = createRoleSelectionStep(visibleAgentTypes, {
-	// 	userTypeLabels: customUserTypeLabels,
+	// 	userTypeLabel: customUserTypeLabels,
 	// });
 
 	const onboardingRoleStep = createRoleSelectionStep(visibleAgentTypes);
