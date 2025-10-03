@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 // Define agent types for assisted onboarding (only merchant/retailer)
 const visibleAgentTypes = [UserType.MERCHANT];
 
-interface AgentOnboardingProps {
+export interface AgentOnboardingProps {
 	agentMobile?: string;
 }
 

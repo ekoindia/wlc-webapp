@@ -2,8 +2,10 @@ import { Flex, Text } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { ASSISTED_ONBOARDING_STEPS } from "./AssistedOnboarding";
 
-interface AgentAlreadyExistsScreenProps {
-	setStep: React.Dispatch<React.SetStateAction<string>>;
+export interface AgentAlreadyExistsScreenProps {
+	setStep: React.Dispatch<
+		React.SetStateAction<keyof typeof ASSISTED_ONBOARDING_STEPS>
+	>;
 	agentMobile: string;
 }
 

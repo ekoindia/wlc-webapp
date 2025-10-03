@@ -11,8 +11,10 @@ import {
 	RESPONSE_TYPE_IDS,
 } from "./AssistedOnboarding";
 
-interface OtpVerificationFormProps {
-	setStep: React.Dispatch<React.SetStateAction<string>>;
+export interface OtpVerificationFormProps {
+	setStep: React.Dispatch<
+		React.SetStateAction<keyof typeof ASSISTED_ONBOARDING_STEPS>
+	>;
 	agentMobile: string;
 }
 

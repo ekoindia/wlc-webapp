@@ -1,10 +1,11 @@
 import { Box } from "@chakra-ui/react";
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import React, { useState } from "react";
 import {
 	AddAgentForm,
-	AgentAlreadyExistsScreen,
-	AgentOnboarding,
-	OtpVerificationForm,
+	type AgentAlreadyExistsScreenProps,
+	type AgentOnboardingProps,
+	type OtpVerificationFormProps,
 } from ".";
 
 /**
@@ -35,6 +36,20 @@ export const INTERACTION_TYPE_IDS = {
 	ADD_AGENT_CHECK: 194,
 	OTP_VERIFICATION: 197,
 } as const;
+
+// Dynamic imports with proper typing and SSR disabled
+const AgentAlreadyExistsScreen = dynamic(
+	() => import("./AgentAlreadyExistsScreen"),
+	{ ssr: false }
+) as React.ComponentType<AgentAlreadyExistsScreenProps>;
+
+const AgentOnboarding = dynamic(() => import("./AgentOnboarding"), {
+	ssr: false,
+}) as React.ComponentType<AgentOnboardingProps>;
+
+const OtpVerificationForm = dynamic(() => import("./OtpVerificationForm"), {
+	ssr: false,
+}) as React.ComponentType<OtpVerificationFormProps>;
 
 /**
  * AssistedOnboarding component that manages the multi-step agent onboarding flow
