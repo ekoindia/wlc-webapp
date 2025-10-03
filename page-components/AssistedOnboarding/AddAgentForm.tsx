@@ -1,6 +1,7 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { Endpoints } from "constants/EndPoints";
+import { TransactionIds } from "constants/EpsTransactions";
 import { ParamType } from "constants/trxnFramework";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -91,7 +92,8 @@ const AddAgentForm = ({
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 				{
 					body: {
-						interaction_type_id: 194,
+						interaction_type_id:
+							TransactionIds.ASSISTED_ONBOARDING_ADD_AGENT,
 						csp_id: _cspId,
 						merchant_type: "",
 					},

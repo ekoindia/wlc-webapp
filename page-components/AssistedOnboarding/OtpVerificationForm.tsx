@@ -1,6 +1,7 @@
 import { Flex, Text, useToast } from "@chakra-ui/react";
 import { ActionButtonGroup } from "components";
 import { Endpoints } from "constants/EndPoints";
+import { TransactionIds } from "constants/EpsTransactions";
 import { ParamType } from "constants/trxnFramework";
 import { useSession } from "contexts";
 import { fetcher } from "helpers";
@@ -96,7 +97,8 @@ const OtpVerificationForm = ({
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 				{
 					body: {
-						interaction_type_id: 197,
+						interaction_type_id:
+							TransactionIds.ASSISTED_ONBOARDING_VERIFY_AGENT_OTP,
 						csp_id: agentMobile,
 						otp: _otp,
 						merchant_type: "",

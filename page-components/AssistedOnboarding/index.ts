@@ -10,7 +10,6 @@ export {
 export {
 	ASSISTED_ONBOARDING_STEPS,
 	default as AssistedOnboarding,
-	INTERACTION_TYPE_IDS,
 	RESPONSE_TYPE_IDS,
 } from "./AssistedOnboarding";
 export {

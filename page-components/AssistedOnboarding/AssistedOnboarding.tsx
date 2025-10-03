@@ -29,14 +29,6 @@ export const RESPONSE_TYPE_IDS = {
 	OTP_VERIFICATION_ERROR: 302,
 } as const;
 
-/**
- * Interaction type IDs for API calls
- */
-export const INTERACTION_TYPE_IDS = {
-	ADD_AGENT_CHECK: 194,
-	OTP_VERIFICATION: 197,
-} as const;
-
 // Dynamic imports with proper typing and SSR disabled
 const AgentAlreadyExistsScreen = dynamic(
 	() => import("./AgentAlreadyExistsScreen"),
