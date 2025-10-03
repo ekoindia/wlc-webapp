@@ -95,7 +95,7 @@ const AssistedOnboarding = (): JSX.Element => {
 				return <AgentOnboarding agentMobile={agentMobile} />;
 
 			default:
-				return null;
+				return <div>Invalid Step!</div>;
 		}
 	};
 
