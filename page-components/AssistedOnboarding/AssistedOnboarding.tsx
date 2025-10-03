@@ -29,7 +29,6 @@ export const RESPONSE_TYPE_IDS = {
 	OTP_VERIFICATION_ERROR: 302,
 } as const;
 
-// Dynamic imports with proper typing and SSR disabled
 const AgentAlreadyExistsScreen = dynamic(
 	() => import("./AgentAlreadyExistsScreen"),
 	{ ssr: false }
@@ -87,7 +86,7 @@ const AssistedOnboarding = (): JSX.Element => {
 				return <AgentOnboarding agentMobile={agentMobile} />;
 
 			default:
-				return <div>Invalid Step!</div>;
+				return <div>Oops! Something went wrong.</div>;
 		}
 	};
 
