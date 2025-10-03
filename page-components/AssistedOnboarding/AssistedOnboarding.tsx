@@ -1,41 +1,94 @@
-import { OnboardingWidget } from "components";
-import { createRoleSelectionStep } from "constants/OnboardingSteps";
-import { UserType } from "constants/UserTypes";
-import { useOrgDetailContext } from "contexts/OrgDetailContext";
-import { useUser } from "contexts/UserContext";
-
-// Define agent types for assisted onboarding (only merchant/retailer)
-const visibleAgentTypes = [UserType.MERCHANT];
+import { Box } from "@chakra-ui/react";
+import { useState } from "react";
+import {
+	AddAgentForm,
+	AgentAlreadyExistsScreen,
+	AgentOnboarding,
+	OtpVerificationForm,
+} from ".";
 
 /**
- * An AssistedOnboarding component for assisted onboarding of agents
- * Uses the OnboardingWidget with assisted onboarding specific configuration
+ * Constants representing the different steps in the assisted onboarding flow
+ */
+export const ASSISTED_ONBOARDING_STEPS = {
+	ADD_AGENT: "ADD_AGENT",
+	AGENT_ALREADY_EXISTS: "AGENT_ALREADY_EXISTS",
+	OTP_VERIFICATION: "OTP_VERIFICATION",
+	ONBOARDING_WIDGET: "ONBOARDING_WIDGET",
+} as const;
+
+/**
+ * API Response type IDs for different scenarios
+ */
+export const RESPONSE_TYPE_IDS = {
+	AGENT_COMPLETED_ONBOARDING: 874,
+	AGENT_OTP_VERIFIED_PENDING_ONBOARDING: 862,
+	AGENT_NOT_EXISTS_NEED_OTP: 873,
+	OTP_VERIFICATION_SUCCESS: 876,
+	OTP_VERIFICATION_ERROR: 302,
+} as const;
+
+/**
+ * Interaction type IDs for API calls
+ */
+export const INTERACTION_TYPE_IDS = {
+	ADD_AGENT_CHECK: 194,
+	OTP_VERIFICATION: 197,
+} as const;
+
+/**
+ * AssistedOnboarding component that manages the multi-step agent onboarding flow
  * @returns {JSX.Element} The rendered AssistedOnboarding component
  * @example
  * ```tsx
  * <AssistedOnboarding />
  * ```
  */
-const AssistedOnboarding = () => {
-	const { userData, updateUserInfo } = useUser();
-	console.log("[AssistedOnboarding] userData", userData);
-	const { orgDetail } = useOrgDetailContext();
-	const { logo, app_name, org_name } = orgDetail ?? {};
+const AssistedOnboarding = (): JSX.Element => {
+	const [step, setStep] = useState<keyof typeof ASSISTED_ONBOARDING_STEPS>(
+		ASSISTED_ONBOARDING_STEPS.ADD_AGENT
+	);
+	const [agentMobile, setAgentMobile] = useState<string>("");
+	// MARK: Render Functions
+	const renderCurrentStep = (): JSX.Element => {
+		switch (step) {
+			case ASSISTED_ONBOARDING_STEPS.ADD_AGENT:
+				return (
+					<AddAgentForm
+						setStep={setStep}
+						setAgentMobile={setAgentMobile}
+					/>
+				);
 
-	const assistedOnboardingRoleStep =
-		createRoleSelectionStep(visibleAgentTypes);
+			case ASSISTED_ONBOARDING_STEPS.AGENT_ALREADY_EXISTS:
+				return (
+					<AgentAlreadyExistsScreen
+						setStep={setStep}
+						agentMobile={agentMobile}
+					/>
+				);
+
+			case ASSISTED_ONBOARDING_STEPS.OTP_VERIFICATION:
+				return (
+					<OtpVerificationForm
+						setStep={setStep}
+						agentMobile={agentMobile}
+					/>
+				);
+
+			case ASSISTED_ONBOARDING_STEPS.ONBOARDING_WIDGET:
+				return <AgentOnboarding agentMobile={agentMobile} />;
+
+			default:
+				return null;
+		}
+	};
 
 	// MARK: JSX
 	return (
-		<OnboardingWidget
-			isAssistedOnboarding
-			logo={logo}
-			appName={app_name}
-			orgName={org_name}
-			userData={userData}
-			updateUserInfo={updateUserInfo}
-			roleSelectionStep={assistedOnboardingRoleStep}
-		/>
+		<Box w="full" maxW="md" mx="auto" p="6">
+			{renderCurrentStep()}
+		</Box>
 	);
 };
 
