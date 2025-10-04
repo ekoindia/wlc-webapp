@@ -63,6 +63,7 @@ interface OnboardingWidgetProps {
 	userData: any;
 	updateUserInfo: any;
 	roleSelectionStep?: OnboardingStep;
+	assistedAgentDetails?: any;
 }
 
 /**
@@ -75,6 +76,7 @@ interface OnboardingWidgetProps {
  * @param {any} [props.userData] - User data object
  * @param {any} [props.updateUserInfo] - Function to update user information
  * @param {OnboardingStep} [props.roleSelectionStep] - Custom role selection step configuration
+ * @param {any} [props.assistedAgentDetails] - Details of the assisted agent
  * @returns {JSX.Element} - The rendered OnboardingWidget component
  * @example	`<OnboardingWidget></OnboardingWidget>`
  */
@@ -86,7 +88,9 @@ const OnboardingWidget = ({
 	userData,
 	updateUserInfo,
 	roleSelectionStep,
+	assistedAgentDetails,
 }: OnboardingWidgetProps): JSX.Element => {
+	console.log("[AgentOnboarding] assistedAgentDetails", assistedAgentDetails);
 	const { accessToken } = useSession();
 
 	const [selectedRole, setSelectedRole] = useState(null);
@@ -117,7 +121,7 @@ const OnboardingWidget = ({
 	]);
 
 	let bookletKeys = [];
-	console.log("[OnboardingWidget] bookletKeys", bookletKeys);
+	console.log("[AgentOnboarding] bookletKeys", bookletKeys);
 	const user_id =
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id = TransactionIds.USER_ONBOARDING;
@@ -353,12 +357,12 @@ const OnboardingWidget = ({
 			});
 		}
 		stepSetter();
-		console.log("[OnboardingWidget] currentStepData", currentStepData);
+		console.log("[AgentOnboarding] currentStepData", currentStepData);
 		setStepperData([...currentStepData]); // FIX: by Kr.Abhishek (duplicate data)
 	};
 
 	const handleStepDataSubmit = (data) => {
-		console.log("[OnboardingWidget] handleStepDataSubmit data", data);
+		console.log("[AgentOnboarding] handleStepDataSubmit data", data);
 		if (data?.id === 3) {
 			setLatLong(data?.form_data?.latlong);
 		}

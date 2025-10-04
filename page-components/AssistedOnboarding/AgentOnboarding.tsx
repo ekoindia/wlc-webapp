@@ -29,6 +29,7 @@ export interface AgentOnboardingProps {
 const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 	const [agentDetails, setAgentDetails] = useState({});
 	console.log("[AgentOnboarding] agentDetails", agentDetails);
+	console.log("[AgentOnboarding] agentMobile", agentMobile);
 	const { userData, updateUserInfo } = useUser();
 	const { accessToken } = useSession();
 
@@ -37,6 +38,39 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 	const { logo, app_name, org_name } = orgDetail ?? {};
 
 	const agentOnboardingRoleStep = createRoleSelectionStep(visibleAgentTypes);
+
+	// call api for getting agent details (151)
+	const fetchAgentDetails = async (cspId: string) => {
+		console.log("[AgentOnboarding] fetchAgentDetails cspId", cspId);
+		try {
+			const response = await fetcher(
+				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
+				{
+					method: "POST",
+					body: {
+						interaction_type_id: 151,
+						csp_id: cspId,
+					},
+					token: accessToken,
+				}
+			);
+
+			if (response?.data) {
+				console.log(
+					"[AgentOnboarding] Agent details fetched:",
+					response.data
+				);
+
+				// Update user info with fetched agent details
+				setAgentDetails(response.data);
+			}
+		} catch (error) {
+			console.error(
+				"[AgentOnboarding] Error fetching agent details:",
+				error
+			);
+		}
+	};
 
 	// call api for creating partial account (521)
 	const createPartialAccount = async () => {
@@ -78,44 +112,13 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 		}
 	};
 
-	// call api for getting agent details (151)
-	const fetchAgentDetails = async (cspId: string) => {
-		try {
-			const response = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-				{
-					method: "POST",
-					body: {
-						interaction_type_id: 151,
-						csp_id: cspId,
-					},
-					token: accessToken,
-				}
-			);
-
-			if (response?.data) {
-				console.log(
-					"[AgentOnboarding] Agent details fetched:",
-					response.data
-				);
-
-				// Update user info with fetched agent details
-				setAgentDetails(response.data);
-			}
-		} catch (error) {
-			console.error(
-				"[AgentOnboarding] Error fetching agent details:",
-				error
-			);
-		}
-	};
-
 	useEffect(() => {
-		if (agentMobile && userData?.id && accessToken) {
-			createPartialAccount();
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [agentMobile, userData?.id, accessToken]);
+		console.log("[AgentOnboarding] accessToken", accessToken);
+		console.log("[AgentOnboarding] userData?.id", userData?.id);
+		console.log("[AgentOnboarding] agentMobile", agentMobile);
+		console.log("[AgentOnboarding] Initiating partial account creation");
+		createPartialAccount();
+	}, []);
 
 	// MARK: JSX
 	return (
