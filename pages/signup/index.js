@@ -1,4 +1,3 @@
-import { PaddingBox } from "components";
 import { Onboarding } from "page-components";
 
 /**
@@ -12,11 +11,7 @@ import { Onboarding } from "page-components";
  */
 const SignupPage = () => {
 	// MARK: JSX
-	return (
-		<PaddingBox>
-			<Onboarding />
-		</PaddingBox>
-	);
+	return <Onboarding />;
 };
 
 SignupPage.pageMeta = {
