@@ -28,6 +28,9 @@ export interface AgentOnboardingProps {
  */
 const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 	const [agentDetails, setAgentDetails] = useState({});
+	const [isLoading, setIsLoading] = useState(true);
+	const [hasError, setHasError] = useState(false);
+
 	console.log("[AgentOnboarding] agentDetails", agentDetails);
 	console.log("[AgentOnboarding] agentMobile", agentMobile);
 	const { userData, updateUserInfo } = useUser();
@@ -40,7 +43,7 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 	const agentOnboardingRoleStep = createRoleSelectionStep(visibleAgentTypes);
 
 	// call api for getting agent details (151)
-	const fetchAgentDetails = async () => {
+	const fetchAgentDetails = async (): Promise<any> => {
 		try {
 			const response = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -62,17 +65,20 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 
 				// Update user info with fetched agent details
 				setAgentDetails(response.data);
+				return response.data;
 			}
+			return null;
 		} catch (error) {
 			console.error(
 				"[AgentOnboarding] Error fetching agent details:",
 				error
 			);
+			throw error;
 		}
 	};
 
 	// call api for creating partial account (521)
-	const createPartialAccount = async () => {
+	const createPartialAccount = async (): Promise<any> => {
 		try {
 			const response = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -96,28 +102,67 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 					"[AgentOnboarding] Partial account created:",
 					response.data
 				);
-
-				// Call fetchAgentDetails after successful partial account creation
-				await fetchAgentDetails();
+				return response.data;
 			} else {
 				console.error(
 					"[AgentOnboarding] No data in response:",
 					response
 				);
+				return null;
 			}
 		} catch (error) {
 			console.error(
 				"[AgentOnboarding] Error creating partial account:",
 				error
 			);
+			throw error;
+		}
+	};
+
+	// Call both APIs simultaneously
+	const initializeAgentOnboarding = async () => {
+		setIsLoading(true);
+		setHasError(false);
+
+		try {
+			console.log("[AgentOnboarding] Starting simultaneous API calls");
+
+			// Execute both API calls simultaneously
+			const [partialAccountResponse, agentDetailsResponse] =
+				await Promise.all([
+					createPartialAccount(),
+					fetchAgentDetails(),
+				]);
+
+			console.log("[AgentOnboarding] Both APIs completed successfully");
+			console.log("Partial account:", partialAccountResponse);
+			console.log("Agent details:", agentDetailsResponse);
+
+			setIsLoading(false);
+		} catch (error) {
+			console.error(
+				"[AgentOnboarding] Error in simultaneous API calls:",
+				error
+			);
+			setHasError(true);
+			setIsLoading(false);
 		}
 	};
 
 	useEffect(() => {
-		createPartialAccount();
+		initializeAgentOnboarding();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// MARK: JSX
+	if (isLoading) {
+		return <div>Loading agent onboarding...</div>;
+	}
+
+	if (hasError) {
+		return <div>Error loading agent onboarding. Please try again.</div>;
+	}
+
 	return (
 		<OnboardingWidget
 			isAssistedOnboarding
