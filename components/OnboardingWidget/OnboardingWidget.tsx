@@ -1,4 +1,4 @@
-import { Center, Spinner, useToast, useToken } from "@chakra-ui/react";
+import { Box, Center, Spinner, useToast, useToken } from "@chakra-ui/react";
 import { Endpoints } from "constants/EndPoints";
 import { TransactionIds } from "constants/EpsTransactions";
 import {
@@ -809,7 +809,7 @@ const OnboardingWidget = ({
 
 	// MARK: JSX
 	return (
-		<>
+		<Box bg="bg" w="100%" minH="100vh">
 			{isLoading ? (
 				<Center height="100vh">
 					<Spinner />
@@ -863,7 +863,7 @@ const OnboardingWidget = ({
 					)}
 				</div>
 			)}
-		</>
+		</Box>
 	);
 };
 
