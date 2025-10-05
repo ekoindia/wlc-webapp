@@ -40,8 +40,7 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 	const agentOnboardingRoleStep = createRoleSelectionStep(visibleAgentTypes);
 
 	// call api for getting agent details (151)
-	const fetchAgentDetails = async (cspId: string) => {
-		console.log("[AgentOnboarding] fetchAgentDetails cspId", cspId);
+	const fetchAgentDetails = async () => {
 		try {
 			const response = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -49,7 +48,7 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 					method: "POST",
 					body: {
 						interaction_type_id: 151,
-						csp_id: cspId,
+						csp_id: agentMobile,
 					},
 					token: accessToken,
 				}
@@ -98,11 +97,13 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 					response.data
 				);
 
-				// Get the csp_id from response for subsequent API calls
-				const cspId = response.data.csp_id;
-
 				// Call fetchAgentDetails after successful partial account creation
-				await fetchAgentDetails(cspId);
+				await fetchAgentDetails();
+			} else {
+				console.error(
+					"[AgentOnboarding] No data in response:",
+					response
+				);
 			}
 		} catch (error) {
 			console.error(
@@ -113,10 +114,6 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 	};
 
 	useEffect(() => {
-		console.log("[AgentOnboarding] accessToken", accessToken);
-		console.log("[AgentOnboarding] userData?.id", userData?.id);
-		console.log("[AgentOnboarding] agentMobile", agentMobile);
-		console.log("[AgentOnboarding] Initiating partial account creation");
 		createPartialAccount();
 	}, []);
 
