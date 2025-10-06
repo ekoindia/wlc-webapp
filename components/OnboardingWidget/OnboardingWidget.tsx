@@ -124,7 +124,9 @@ const OnboardingWidget = ({
 	console.log("[AgentOnboarding] bookletKeys", bookletKeys);
 	const user_id =
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
-	let interaction_type_id = TransactionIds.USER_ONBOARDING;
+	let interaction_type_id =
+		TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE;
+	let assistedAgentMobile = assistedAgentDetails?.user_detail?.mobile || null;
 
 	const androidleegalityResponseHandler = useCallback(
 		(res) => {
@@ -245,6 +247,8 @@ const OnboardingWidget = ({
 				},
 				generateNewToken
 			);
+
+			// TODO: Fix this logic, on every refresh state list is being captured
 			updateUserInfo(res);
 			setIsLoading(false);
 
@@ -339,6 +343,11 @@ const OnboardingWidget = ({
 		/**
 		 * Sets up the appropriate onboarding steps based on user type
 		 */
+
+		// TODO: Fix this for assisted onboarding
+		/**
+		 *
+		 */
 		function stepSetter() {
 			var step_data: OnboardingStep[] = [];
 			// User_Type = 1 : Distributor
@@ -375,8 +384,6 @@ const OnboardingWidget = ({
 		if (
 			data?.id !== 1 &&
 			data?.id !== 4 &&
-			// data?.id !== 5 &&
-			// data?.id !== 6 &&
 			data?.id !== 8 &&
 			data?.id !== 11
 		) {
@@ -461,6 +468,9 @@ const OnboardingWidget = ({
 
 	// Method only for file upload data
 	const handleFileUploadOnboarding = async (data) => {
+		const _cspId = isAssistedOnboarding
+			? { csp_id: assistedAgentMobile }
+			: {};
 		// Handle all file upload API's here only
 		setApiInProgress(true);
 		const formData = new FormData();
@@ -475,6 +485,7 @@ const OnboardingWidget = ({
 				doc_type: 1,
 				latlong: latLong,
 				source: "WLC",
+				..._cspId,
 			},
 		};
 		if (data.id === 4) {
@@ -606,6 +617,9 @@ const OnboardingWidget = ({
 	};
 
 	const updateOnboarding = (bodyData) => {
+		const _cspId = isAssistedOnboarding
+			? { csp_id: assistedAgentMobile }
+			: {};
 		setApiInProgress(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
@@ -615,6 +629,7 @@ const OnboardingWidget = ({
 					interaction_type_id: interaction_type_id,
 					user_id,
 					...bodyData.form_data,
+					..._cspId,
 				},
 				timeout: 30000,
 			},
