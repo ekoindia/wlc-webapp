@@ -15,7 +15,13 @@ import router from "next/router";
 import { useCallback, useEffect } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
-import { useOnboardingState } from "./hooks";
+import {
+	useAndroidIntegration,
+	useDigilockerApi,
+	useEsignIntegration,
+	useOnboardingState,
+	usePintwinIntegration,
+} from "./hooks";
 
 const ExternalSelectionScreen = dynamic(
 	() => import("@ekoindia/oaas-widget").then((mod) => mod.SelectionScreen),
@@ -110,110 +116,36 @@ const OnboardingWidget = ({
 		TransactionIds.USER_ONBOARDING_GEO_LOCATION_CAPTURE;
 	let assistedAgentMobile = assistedAgentDetails?.user_detail?.mobile || null;
 
-	const androidleegalityResponseHandler = useCallback(
-		(res) => {
-			let value = JSON.parse(res);
-			if (value.agreement_status === "success") {
-				handleStepDataSubmit({
-					id: 12,
-					form_data: {
-						agreement_id: userData?.userDetails?.agreement_id,
-						document_id: value.document_id,
-					},
-				});
-			} else {
-				toast({
-					title: "Something went wrong, please try again later!",
-					status: "error",
-					duration: 2000,
-				});
-			}
-		},
-		[userData]
-	);
+	// Initialize specialized hooks
+	const esign = useEsignIntegration({
+		userData,
+		state,
+		actions,
+		isAndroid,
+		logo,
+		onStepSubmit: (data) => handleStepDataSubmit(data),
+	});
 
-	const getSignUrl = useCallback(() => {
-		fetcher(
-			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-			{
-				token: accessToken,
-				body: {
-					interaction_type_id:
-						TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL,
-					document_id: "",
-					agreement_id: userData?.userDetails?.agreement_id ?? 5,
-					latlong: state.latLong || "27.176670,78.008075,7787",
-					user_id,
-					locale: "en",
-				},
-			},
-			generateNewToken
-		)
-			.then((res) => {
-				if (res?.data?.short_url) {
-					actions.setSignUrlData(res.data);
-					actions.updateEsignStatus("ready");
-				} else {
-					toast({
-						title:
-							res?.message ||
-							"E-sign initialization failed, please try again.",
-						status: "error",
-						duration: 5000,
-					});
-					actions.updateEsignStatus("failed");
-				}
-			})
-			.catch((err) =>
-				console.error("[getSignUrl for Leegality] Error:", err)
-			);
-	}, [userData, state.latLong]);
+	const android = useAndroidIntegration({
+		userData,
+		onStepSubmit: (data) => handleStepDataSubmit(data),
+	});
 
-	const getBookletNumber = useCallback(() => {
-		fetcher(
-			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-			{
-				token: accessToken,
-				body: {
-					interaction_type_id: TransactionIds?.GET_BOOKLET_NUMBER,
-					document_id: "",
-					latlong: state.latLong || "27.176670,78.008075,7787",
-					user_id,
-					locale: "en",
-				},
-			},
-			generateNewToken
-		)
-			.then((res) => {
-				if (res.response_status_id === 0) {
-					actions.setBookletNumber(res.data);
-				}
-			})
-			.catch((err) => console.error("[getBookletNumber] Error:", err));
-	}, [state.latLong, user_id]);
+	const digilocker = useDigilockerApi({
+		actions,
+	});
 
-	const getBookletKey = useCallback(() => {
-		fetcher(
-			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-			{
-				token: accessToken,
-				body: {
-					interaction_type_id: TransactionIds?.GET_PINTWIN_KEY,
-					document_id: "",
-					latlong: state.latLong || "27.176670,78.008075,7787",
-					user_id,
-					locale: "en",
-				},
-			},
-			generateNewToken
-		)
-			.then((res) => {
-				if (res.response_status_id === 0) {
-					actions.addBookletKey(res.data);
-				}
-			})
-			.catch((err) => console.error("[getBookletKey] Error: ", err));
-	}, [state.latLong, user_id]);
+	const pintwin = usePintwinIntegration({
+		state,
+		actions,
+		userData,
+	});
+
+	// Note: androidleegalityResponseHandler now comes from useAndroidIntegration hook
+
+	// Note: getSignUrl now comes from useEsignIntegration hook
+
+	// Note: getBookletNumber and getBookletKey now come from usePintwinIntegration hook
 
 	const refreshApiCall = useCallback(async () => {
 		actions.setApiInProgress(true);
@@ -253,72 +185,9 @@ const OnboardingWidget = ({
 		}
 	}, [userData, isAssistedOnboarding]);
 
-	// Fetcher function for Digilocker URL
-	const getDigilockerUrl = useCallback(async () => {
-		try {
-			const data = await fetcher(
-				process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
-				{
-					token: accessToken,
-					method: "POST",
-					body: {},
-					headers: {
-						"tf-req-method": "POST",
-						"tf-req-uri": "/karza/digilocker-redirection-url",
-						"tf-req-uri-root-path": "/ekoicici/v1/marketuat",
-					},
-				},
-				generateNewToken
-			);
+	// Note: getDigilockerUrl now comes from useDigilockerApi hook
 
-			// console.log("[getDigilockerUrl] Response:", data);
-
-			if (data?.status === 0) {
-				// Handle successful response
-				if (data?.data?.link) {
-					// Store the response data for future use
-					actions.setDigilockerData({
-						link: data.data.link,
-						requestId: data.data.requestId,
-						initiatorId: data.data.initiator_id,
-						timestamp: data.data.timestamp,
-					});
-				}
-			}
-		} catch (error) {
-			// console.error("[getDigilockerUrl] Error:", error);
-			toast({
-				title:
-					error?.message ??
-					"Something went wrong, please try again later!",
-				status: "error",
-				duration: 2000,
-			});
-		}
-	}, [accessToken]);
-
-	const handleLeegalityCallback = useCallback(
-		(res) => {
-			if (res.error) {
-				toast({
-					title:
-						res?.error ||
-						"Something went wrong, please try again later!",
-					status: "error",
-					duration: 2000,
-				});
-			} else {
-				handleStepDataSubmit({
-					id: 12,
-					form_data: {
-						document_id: res.documentId,
-						agreement_id: userData?.userDetails?.agreement_id,
-					},
-				});
-			}
-		},
-		[userData]
-	);
+	// Note: handleLeegalityCallback now comes from useEsignIntegration hook
 
 	const initialStepSetter = useCallback(
 		(user_data) => {
@@ -680,7 +549,7 @@ const OnboardingWidget = ({
 		if (callType.type === 12) {
 			// Leegality Esign
 			if (callType.method === "getSignUrl") {
-				getSignUrl();
+				esign.getSignUrl();
 			}
 			if (callType.method === "legalityOpen") {
 				if (
@@ -714,7 +583,7 @@ const OnboardingWidget = ({
 						);
 					} else {
 						const leegality = new (window as any).Leegality({
-							callback: handleLeegalityCallback.bind(this),
+							callback: esign.handleLeegalityCallback.bind(this),
 							logo: logo,
 						});
 						leegality.init();
@@ -724,10 +593,10 @@ const OnboardingWidget = ({
 			}
 		} else if (callType.type === 10) {
 			if (callType.method === "getBookletNumber") {
-				getBookletNumber();
+				pintwin.getBookletNumber();
 			}
 			if (callType.method === "getBookletKey") {
-				getBookletKey();
+				pintwin.getBookletKey();
 			}
 		} else if (callType.type === 7) {
 			if (callType.method === "resendOtp") {
@@ -750,7 +619,7 @@ const OnboardingWidget = ({
 			}
 		} else if (callType.type === 20) {
 			if (callType.method === "getDigilockerUrl") {
-				getDigilockerUrl();
+				digilocker.getDigilockerUrl();
 			}
 		}
 	};
@@ -803,7 +672,7 @@ const OnboardingWidget = ({
 
 	useEffect(() => {
 		if (state.pintwin.bookletNumber) {
-			getBookletKey();
+			pintwin.getBookletKey();
 		}
 	}, [state.pintwin.bookletNumber]);
 
@@ -811,7 +680,7 @@ const OnboardingWidget = ({
 	useEffect(() => {
 		const unsubscribe = subscribe(TOPICS.ANDROID_RESPONSE, (data) => {
 			if (data?.action === ANDROID_ACTION.LEEGALITY_ESIGN_RESPONSE) {
-				androidleegalityResponseHandler(data?.data);
+				android.androidleegalityResponseHandler(data?.data);
 			}
 		});
 
