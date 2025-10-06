@@ -349,7 +349,11 @@ const OnboardingWidget = ({
 				step_data = retailerStepsData;
 			}
 
-			user_data?.details?.onboarding_steps?.forEach((step) => {
+			const _onboardingSteps = isAssistedOnboarding
+				? assistedAgentDetails?.user_detail?.onboarding_steps
+				: user_data?.details?.onboarding_steps;
+
+			_onboardingSteps?.forEach((step) => {
 				let currentData = step_data?.filter(
 					(singleStep) => singleStep.role === step.role
 				);
