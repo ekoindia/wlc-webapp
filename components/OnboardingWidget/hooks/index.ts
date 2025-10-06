@@ -8,4 +8,7 @@ export type {
 export { useAndroidIntegration } from "./useAndroidIntegration";
 export { useDigilockerApi } from "./useDigilockerApi";
 export { useEsignIntegration } from "./useEsignIntegration";
+export { useFileUpload } from "./useFileUpload";
+export { useFormSubmission } from "./useFormSubmission";
 export { usePintwinIntegration } from "./usePintwinIntegration";
+export { useStepConfiguration } from "./useStepConfiguration";
