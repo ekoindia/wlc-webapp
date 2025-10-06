@@ -1,4 +1,4 @@
-import { OnboardingWidget } from "components";
+import { OnboardingWidget } from "components/OnboardingWidget";
 import { Endpoints } from "constants/EndPoints";
 import { createRoleSelectionStep } from "constants/OnboardingSteps";
 import { UserType } from "constants/UserTypes";
@@ -52,6 +52,10 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 					body: {
 						interaction_type_id: 151,
 						csp_id: agentMobile,
+						user_identity_type: "mobile_number",
+						user_identity: userData?.userId,
+						mobile: userData?.userId,
+						id_type: "Mobile",
 					},
 					token: accessToken,
 				}
@@ -65,7 +69,7 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 
 				// Update user info with fetched agent details
 				setAgentDetails(response.data);
-				return response.data;
+				// return response.data;
 			}
 			return null;
 		} catch (error) {
@@ -125,23 +129,21 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 		setHasError(false);
 
 		try {
-			console.log("[AgentOnboarding] Starting simultaneous API calls");
+			console.log("[AgentOnboarding] Starting sequential API calls...");
 
-			// Execute both API calls simultaneously
-			const [partialAccountResponse, agentDetailsResponse] =
-				await Promise.all([
-					createPartialAccount(),
-					fetchAgentDetails(),
-				]);
+			// Step 1: Create partial account
+			await createPartialAccount();
 
-			console.log("[AgentOnboarding] Both APIs completed successfully");
-			console.log("Partial account:", partialAccountResponse);
-			console.log("Agent details:", agentDetailsResponse);
+			// Step 2: Wait for 1 second before calling next API
+			await new Promise((resolve) => setTimeout(resolve, 1000));
+
+			// Step 3: Fetch agent details AFTER the delay
+			await fetchAgentDetails();
 
 			setIsLoading(false);
 		} catch (error) {
 			console.error(
-				"[AgentOnboarding] Error in simultaneous API calls:",
+				"[AgentOnboarding] Error in sequential API calls:",
 				error
 			);
 			setHasError(true);
@@ -172,6 +174,7 @@ const AgentOnboarding = ({ agentMobile }: AgentOnboardingProps) => {
 			userData={userData}
 			updateUserInfo={updateUserInfo}
 			roleSelectionStep={agentOnboardingRoleStep}
+			assistedAgentDetails={agentDetails}
 		/>
 	);
 };
