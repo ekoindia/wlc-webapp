@@ -12,9 +12,10 @@ import { fetcher } from "helpers";
 import { useCountryStates, useRefreshToken, useShopTypes } from "hooks";
 import dynamic from "next/dynamic";
 import router from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { ANDROID_ACTION, ANDROID_PERMISSION, doAndroidAction } from "utils";
 import { createPintwinFormat } from "../../utils/pintwinFormat";
+import { useOnboardingState } from "./hooks";
 
 const ExternalSelectionScreen = dynamic(
 	() => import("@ekoindia/oaas-widget").then((mod) => mod.SelectionScreen),
@@ -47,12 +48,6 @@ interface BodyData {
 	file1?: any;
 	file2?: any;
 	form_data?: any;
-}
-
-interface SignUrlData {
-	pipe?: number;
-	short_url?: string;
-	document_id?: string;
 }
 
 interface OnboardingWidgetProps {
@@ -93,19 +88,8 @@ const OnboardingWidget = ({
 	console.log("[AgentOnboarding] assistedAgentDetails", assistedAgentDetails);
 	const { accessToken } = useSession();
 
-	const [selectedRole, setSelectedRole] = useState(null);
-	const [lastStepResponse, setLastStepResponse] = useState();
-	const [latLong, setLatLong] = useState();
-	const [aadhaar, setAadhaar] = useState();
-	const [accesskey, setAccessKey] = useState(); // For Aadhaar OTP
-	const [userCode, setUserCode] = useState(); // For Aadhaar OTP
-	const [signUrlData, setSignUrlData] = useState<SignUrlData | null>(null);
-	const [bookletNumber, setBookletNumber] = useState<any>(null);
-	const [isLoading, setIsLoading] = useState(true);
-	const [apiInProgress, setApiInProgress] = useState(false);
-	const [esignStatus, setEsignStatus] = useState(0); // 0: loading, 1: ready, 2: failed
-	const [digilockerData, setDigilockerData] = useState(null);
-	const [stepperData, setStepperData] = useState<OnboardingStep[]>([]);
+	// Use our new reducer-based state management
+	const { state, actions } = useOnboardingState();
 
 	const toast = useToast();
 	const { isAndroid } = useAppSource();
@@ -120,8 +104,6 @@ const OnboardingWidget = ({
 		"accent.DEFAULT",
 	]);
 
-	let bookletKeys = [];
-	console.log("[AgentOnboarding] bookletKeys", bookletKeys);
 	const user_id =
 		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
 	let interaction_type_id =
@@ -160,7 +142,7 @@ const OnboardingWidget = ({
 						TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL,
 					document_id: "",
 					agreement_id: userData?.userDetails?.agreement_id ?? 5,
-					latlong: latLong || "27.176670,78.008075,7787",
+					latlong: state.latLong || "27.176670,78.008075,7787",
 					user_id,
 					locale: "en",
 				},
@@ -169,8 +151,8 @@ const OnboardingWidget = ({
 		)
 			.then((res) => {
 				if (res?.data?.short_url) {
-					setSignUrlData(res.data);
-					setEsignStatus(1);
+					actions.setSignUrlData(res.data);
+					actions.updateEsignStatus("ready");
 				} else {
 					toast({
 						title:
@@ -179,13 +161,13 @@ const OnboardingWidget = ({
 						status: "error",
 						duration: 5000,
 					});
-					setEsignStatus(2);
+					actions.updateEsignStatus("failed");
 				}
 			})
 			.catch((err) =>
 				console.error("[getSignUrl for Leegality] Error:", err)
 			);
-	}, [userData, latLong]);
+	}, [userData, state.latLong]);
 
 	const getBookletNumber = useCallback(() => {
 		fetcher(
@@ -195,7 +177,7 @@ const OnboardingWidget = ({
 				body: {
 					interaction_type_id: TransactionIds?.GET_BOOKLET_NUMBER,
 					document_id: "",
-					latlong: latLong || "27.176670,78.008075,7787",
+					latlong: state.latLong || "27.176670,78.008075,7787",
 					user_id,
 					locale: "en",
 				},
@@ -204,11 +186,11 @@ const OnboardingWidget = ({
 		)
 			.then((res) => {
 				if (res.response_status_id === 0) {
-					setBookletNumber(res.data);
+					actions.setBookletNumber(res.data);
 				}
 			})
 			.catch((err) => console.error("[getBookletNumber] Error:", err));
-	}, [latLong]);
+	}, [state.latLong, user_id]);
 
 	const getBookletKey = useCallback(() => {
 		fetcher(
@@ -218,7 +200,7 @@ const OnboardingWidget = ({
 				body: {
 					interaction_type_id: TransactionIds?.GET_PINTWIN_KEY,
 					document_id: "",
-					latlong: latLong || "27.176670,78.008075,7787",
+					latlong: state.latLong || "27.176670,78.008075,7787",
 					user_id,
 					locale: "en",
 				},
@@ -227,14 +209,14 @@ const OnboardingWidget = ({
 		)
 			.then((res) => {
 				if (res.response_status_id === 0) {
-					bookletKeys = [...bookletKeys, res.data];
+					actions.addBookletKey(res.data);
 				}
 			})
 			.catch((err) => console.error("[getBookletKey] Error: ", err));
-	}, [latLong]);
+	}, [state.latLong, user_id]);
 
 	const refreshApiCall = useCallback(async () => {
-		setApiInProgress(true);
+		actions.setApiInProgress(true);
 		try {
 			const res = await fetcher(
 				process.env.NEXT_PUBLIC_API_BASE_URL +
@@ -248,9 +230,9 @@ const OnboardingWidget = ({
 				generateNewToken
 			);
 
-			// TODO: Fix this logic, on every refresh state list is being captured
+			// Check if states list needs to be captured on refresh
 			updateUserInfo(res);
-			setIsLoading(false);
+			actions.setIsLoading(false);
 
 			if (
 				res?.details?.onboarding !== 1 &&
@@ -261,15 +243,15 @@ const OnboardingWidget = ({
 				router.push("/home");
 			}
 
-			setApiInProgress(false);
+			actions.setApiInProgress(false);
 			return res;
 		} catch (error) {
-			setIsLoading(false);
-			setApiInProgress(false);
+			actions.setIsLoading(false);
+			actions.setApiInProgress(false);
 
 			console.log("inside initial api error", error);
 		}
-	}, [userData, accessToken, isAssistedOnboarding]);
+	}, [userData, isAssistedOnboarding]);
 
 	// Fetcher function for Digilocker URL
 	const getDigilockerUrl = useCallback(async () => {
@@ -295,7 +277,7 @@ const OnboardingWidget = ({
 				// Handle successful response
 				if (data?.data?.link) {
 					// Store the response data for future use
-					setDigilockerData({
+					actions.setDigilockerData({
 						link: data.data.link,
 						requestId: data.data.requestId,
 						initiatorId: data.data.initiator_id,
@@ -313,7 +295,7 @@ const OnboardingWidget = ({
 				duration: 2000,
 			});
 		}
-	}, []);
+	}, [accessToken]);
 
 	const handleLeegalityCallback = useCallback(
 		(res) => {
@@ -338,46 +320,49 @@ const OnboardingWidget = ({
 		[userData]
 	);
 
-	const initialStepSetter = (user_data) => {
-		const currentStepData: OnboardingStep[] = [];
-		/**
-		 * Sets up the appropriate onboarding steps based on user type
-		 */
+	const initialStepSetter = useCallback(
+		(user_data) => {
+			const currentStepData: OnboardingStep[] = [];
+			/**
+			 * Sets up the appropriate onboarding steps based on user type
+			 */
 
-		// TODO: Fix this for assisted onboarding
-		/**
-		 *
-		 */
-		function stepSetter() {
-			var step_data: OnboardingStep[] = [];
-			// User_Type = 1 : Distributor
-			// User Type = 3 : Retailer
-			if (user_data?.details?.userDetails?.user_type == 1) {
-				step_data = distributorStepsData;
-			} else if (user_data?.details?.userDetails?.user_type == 3) {
-				step_data = retailerStepsData;
+			// Handle assisted onboarding flow enhancement
+			/**
+			 * Sets up the appropriate onboarding steps based on user type and role
+			 */
+			function stepSetter() {
+				var step_data: OnboardingStep[] = [];
+				// User_Type = 1 : Distributor
+				// User Type = 3 : Retailer
+				if (user_data?.details?.userDetails?.user_type == 1) {
+					step_data = distributorStepsData;
+				} else if (user_data?.details?.userDetails?.user_type == 3) {
+					step_data = retailerStepsData;
+				}
+
+				const _onboardingSteps = isAssistedOnboarding
+					? assistedAgentDetails?.user_detail?.onboarding_steps
+					: user_data?.details?.onboarding_steps;
+
+				_onboardingSteps?.forEach((step) => {
+					let currentData = step_data?.filter(
+						(singleStep) => singleStep.role === step.role
+					);
+					currentStepData.push(...currentData);
+				});
 			}
-
-			const _onboardingSteps = isAssistedOnboarding
-				? assistedAgentDetails?.user_detail?.onboarding_steps
-				: user_data?.details?.onboarding_steps;
-
-			_onboardingSteps?.forEach((step) => {
-				let currentData = step_data?.filter(
-					(singleStep) => singleStep.role === step.role
-				);
-				currentStepData.push(...currentData);
-			});
-		}
-		stepSetter();
-		console.log("[AgentOnboarding] currentStepData", currentStepData);
-		setStepperData([...currentStepData]); // FIX: by Kr.Abhishek (duplicate data)
-	};
+			stepSetter();
+			console.log("[AgentOnboarding] currentStepData", currentStepData);
+			actions.setStepperData([...currentStepData]); // FIX: by Kr.Abhishek (duplicate data)
+		},
+		[isAssistedOnboarding, assistedAgentDetails]
+	);
 
 	const handleStepDataSubmit = (data) => {
 		console.log("[AgentOnboarding] handleStepDataSubmit data", data);
 		if (data?.id === 3) {
-			setLatLong(data?.form_data?.latlong);
+			actions.setLocation(data?.form_data?.latlong);
 		}
 
 		// If the form does not require file-upload...
@@ -401,50 +386,58 @@ const OnboardingWidget = ({
 				interaction_type_id = TransactionIds.USER_ONBOARDING_ROLE;
 			} else if (data?.id === 5) {
 				bodyData.form_data.company_name = userData.userDetails.mobile;
-				bodyData.form_data.latlong = latLong;
+				bodyData.form_data.latlong = state.latLong;
 				interaction_type_id = TransactionIds.USER_AADHAR_CONSENT;
 			} else if (data?.id === 6 || data?.id === 7) {
-				bodyData.form_data.caseId = userCode;
+				bodyData.form_data.caseId = state.aadhaar.userCode;
 				bodyData.form_data.hold_timeout = "";
-				bodyData.form_data.access_key = accesskey;
+				bodyData.form_data.access_key = state.aadhaar.accessKey;
 				if (data?.id === 6) {
-					setAadhaar(bodyData.form_data.aadhar);
+					actions.setAadhaarNumber(bodyData.form_data.aadhar);
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_NUMBER_CONFIRM;
 				} else {
 					interaction_type_id =
 						TransactionIds.USER_AADHAR_OTP_CONFIRM;
-					bodyData.form_data.aadhar = aadhaar;
+					bodyData.form_data.aadhar = state.aadhaar.number;
 				}
 			} else if (data?.id === 9) {
 				interaction_type_id = TransactionIds.USER_ONBOARDING_BUSINESS;
-				bodyData.form_data.latlong = latLong;
+				bodyData.form_data.latlong = state.latLong;
 				bodyData.form_data.csp_id = userData.userDetails.mobile;
 				bodyData.form_data.communication = 1;
 			} else if (data?.id === 10) {
 				if (
 					data?.form_data?.first_okekey &&
-					bookletKeys[bookletKeys?.length - 2]
+					state.pintwin.bookletKeys[
+						state.pintwin.bookletKeys?.length - 2
+					]
 				) {
 					bodyData.form_data.first_okekey = createPintwinFormat(
 						data.form_data.first_okekey,
-						bookletKeys[bookletKeys.length - 2]
+						state.pintwin.bookletKeys[
+							state.pintwin.bookletKeys.length - 2
+						]
 					);
 				}
 				if (
 					data?.form_data?.second_okekey &&
-					bookletKeys[bookletKeys?.length - 1]
+					state.pintwin.bookletKeys[
+						state.pintwin.bookletKeys?.length - 1
+					]
 				) {
 					bodyData.form_data.second_okekey = createPintwinFormat(
 						data?.form_data?.second_okekey,
-						bookletKeys[bookletKeys.length - 1]
+						state.pintwin.bookletKeys[
+							state.pintwin.bookletKeys.length - 1
+						]
 					);
 				}
 				bodyData.form_data.is_pintwin_user =
-					bookletNumber?.is_pintwin_user ?? false;
+					state.pintwin.bookletNumber?.is_pintwin_user ?? false;
 				bodyData.form_data.booklet_serial_number =
-					bookletNumber?.booklet_serial_number ?? "";
-				bodyData.form_data.latlong = latLong;
+					state.pintwin.bookletNumber?.booklet_serial_number ?? "";
+				bodyData.form_data.latlong = state.latLong;
 				interaction_type_id = TransactionIds.USER_ONBOARDING_SECRET_PIN;
 			} else if (data?.id === 12) {
 				interaction_type_id =
@@ -458,7 +451,7 @@ const OnboardingWidget = ({
 			} else if (data?.id === 20) {
 				interaction_type_id = TransactionIds.USER_AADHAR_OTP_CONFIRM;
 				bodyData.form_data.is_consent = "Y";
-				bodyData.form_data.token_id = digilockerData?.requestId;
+				bodyData.form_data.token_id = state.digilocker.data?.requestId;
 			}
 			updateOnboarding(bodyData);
 		} else {
@@ -472,7 +465,7 @@ const OnboardingWidget = ({
 			? { csp_id: assistedAgentMobile }
 			: {};
 		// Handle all file upload API's here only
-		setApiInProgress(true);
+		actions.setApiInProgress(true);
 		const formData = new FormData();
 		const bodyData: BodyData = {
 			formdata: {
@@ -483,7 +476,7 @@ const OnboardingWidget = ({
 				intent_id: 3,
 				locale: "en",
 				doc_type: 1,
-				latlong: latLong,
+				latlong: state.latLong,
 				source: "WLC",
 				..._cspId,
 			},
@@ -600,7 +593,7 @@ const OnboardingWidget = ({
 				status: "success",
 				duration: 2000,
 			});
-			setLastStepResponse(uploadResponse);
+			actions.setLastStepResponse(uploadResponse);
 			refreshApiCall();
 		} else {
 			toast({
@@ -610,17 +603,17 @@ const OnboardingWidget = ({
 				status: "error",
 				duration: 2000,
 			});
-			setLastStepResponse(uploadResponse);
+			actions.setLastStepResponse(uploadResponse);
 		}
 
-		setApiInProgress(false);
+		actions.setApiInProgress(false);
 	};
 
 	const updateOnboarding = (bodyData) => {
 		const _cspId = isAssistedOnboarding
 			? { csp_id: assistedAgentMobile }
 			: {};
-		setApiInProgress(true);
+		actions.setApiInProgress(true);
 		fetcher(
 			process.env.NEXT_PUBLIC_API_BASE_URL + Endpoints.TRANSACTION,
 			{
@@ -647,13 +640,13 @@ const OnboardingWidget = ({
 						duration: 2000,
 					});
 					if (bodyData?.id === 5) {
-						setAccessKey(data?.data?.access_key);
-						setUserCode(data?.data?.user_code);
+						actions.setAadhaarAccessKey(data?.data?.access_key);
+						actions.setAadhaarUserCode(data?.data?.user_code);
 					}
 					if (bodyData?.id == 2) {
-						setSelectedRole(bodyData?.form_data?.merchant_type);
+						actions.setRole(bodyData?.form_data?.merchant_type);
 					}
-					setLastStepResponse(data);
+					actions.setLastStepResponse(data);
 					refreshApiCall().then((res) => {
 						if (bodyData?.id === 0) {
 							initialStepSetter(res);
@@ -665,7 +658,7 @@ const OnboardingWidget = ({
 						status: "error",
 						duration: 2000,
 					});
-					setLastStepResponse(data);
+					actions.setLastStepResponse(data);
 				}
 			})
 			.catch((err) => {
@@ -676,10 +669,10 @@ const OnboardingWidget = ({
 					status: "error",
 					duration: 2000,
 				});
-				setLastStepResponse(err);
+				actions.setLastStepResponse(err);
 			})
 			.finally(() => {
-				setApiInProgress(false);
+				actions.setApiInProgress(false);
 			});
 	};
 
@@ -691,15 +684,18 @@ const OnboardingWidget = ({
 			}
 			if (callType.method === "legalityOpen") {
 				if (
-					signUrlData &&
-					signUrlData.pipe == agreementProvider.SIGNZY
+					state.esign.signUrlData &&
+					state.esign.signUrlData.pipe == agreementProvider.SIGNZY
 				) {
-					window.open(signUrlData.short_url, "SignAgreementWindow");
+					window.open(
+						state.esign.signUrlData.short_url,
+						"SignAgreementWindow"
+					);
 				} else if (
-					signUrlData &&
-					signUrlData.pipe == agreementProvider.KARZA
+					state.esign.signUrlData &&
+					state.esign.signUrlData.pipe == agreementProvider.KARZA
 				) {
-					if (!signUrlData.short_url) {
+					if (!state.esign.signUrlData.short_url) {
 						toast({
 							title: "Error starting eSign session. Please reload and try again later.",
 							status: "error",
@@ -711,8 +707,9 @@ const OnboardingWidget = ({
 						doAndroidAction(
 							ANDROID_ACTION.LEEGALITY_ESIGN_OPEN,
 							JSON.stringify({
-								signing_url: signUrlData?.short_url,
-								document_id: signUrlData?.document_id,
+								signing_url: state.esign.signUrlData?.short_url,
+								document_id:
+									state.esign.signUrlData?.document_id,
 							})
 						);
 					} else {
@@ -721,7 +718,7 @@ const OnboardingWidget = ({
 							logo: logo,
 						});
 						leegality.init();
-						leegality.esign(signUrlData?.short_url); // signUrlData?.short_url
+						leegality.esign(state.esign.signUrlData?.short_url);
 					}
 				}
 			}
@@ -737,7 +734,7 @@ const OnboardingWidget = ({
 				handleStepDataSubmit({
 					id: 6,
 					form_data: {
-						aadhar: aadhaar,
+						aadhar: state.aadhaar.number,
 						is_consent: "Y",
 					},
 				});
@@ -773,10 +770,10 @@ const OnboardingWidget = ({
 				status: "error",
 				duration: 2000,
 			});
-			setEsignStatus(2); // Set E-sign load status to failed
+			actions.updateEsignStatus("failed");
 		};
 
-		refreshApiCall(); // TODO: Handle this efficiently
+		refreshApiCall(); // Consider optimizing this call frequency
 	}, []);
 
 	useEffect(() => {
@@ -785,7 +782,7 @@ const OnboardingWidget = ({
 				handleStepDataSubmit({
 					id: 12,
 					form_data: {
-						document_id: signUrlData?.document_id ?? "",
+						document_id: state.esign.signUrlData?.document_id ?? "",
 						agreement_id: userData?.userDetails?.agreement_id,
 					},
 				});
@@ -802,13 +799,13 @@ const OnboardingWidget = ({
 		return () => {
 			controller.abort();
 		};
-	}, [signUrlData]);
+	}, [state.esign.signUrlData, userData?.userDetails?.agreement_id]);
 
 	useEffect(() => {
-		if (bookletNumber) {
+		if (state.pintwin.bookletNumber) {
 			getBookletKey();
 		}
-	}, [bookletNumber]);
+	}, [state.pintwin.bookletNumber]);
 
 	// Subscribe to the Android responses
 	useEffect(() => {
@@ -829,14 +826,14 @@ const OnboardingWidget = ({
 	// MARK: JSX
 	return (
 		<Box bg="bg" w="100%" minH="100vh">
-			{isLoading ? (
+			{state.ui.isLoading ? (
 				<Center height="100vh">
 					<Spinner />
 				</Center>
 			) : (
 				<div
 					style={
-						selectedRole === null
+						state.selectedRole === null
 							? {
 									display: "flex",
 									justifyContent: "center",
@@ -844,7 +841,7 @@ const OnboardingWidget = ({
 							: {}
 					}
 				>
-					{selectedRole === null &&
+					{state.selectedRole === null &&
 					userData?.userDetails?.mobile === "1" ? (
 						<ExternalSelectionScreen
 							{...({
@@ -852,7 +849,7 @@ const OnboardingWidget = ({
 								handleSubmit: (data: any) => {
 									handleStepDataSubmit(data);
 								},
-								isDisabledCTA: apiInProgress,
+								isDisabledCTA: state.ui.apiInProgress,
 								primaryColor: primaryColor,
 								accentColor: accentColor,
 							} as any)}
@@ -865,18 +862,23 @@ const OnboardingWidget = ({
 								isBranding: false,
 								userData: userData,
 								handleSubmit: handleStepDataSubmit,
-								stepResponse: lastStepResponse,
-								selectedMerchantType: selectedRole,
+								stepResponse: state.lastStepResponse,
+								selectedMerchantType: state.selectedRole,
 								shopTypes: shopTypesData,
 								stateTypes: stateTypesData,
-								stepsData: stepperData,
+								stepsData: state.stepperData,
 								handleStepCallBack: handleStepCallBack,
-								esignStatus: esignStatus,
+								esignStatus:
+									state.esign.status === "ready"
+										? 1
+										: state.esign.status === "failed"
+											? 2
+											: 0,
 								primaryColor: primaryColor,
 								accentColor: accentColor,
 								appName: appName,
 								orgName: orgName,
-								digilockerData: digilockerData,
+								digilockerData: state.digilocker.data,
 							} as any)}
 						/>
 					)}
