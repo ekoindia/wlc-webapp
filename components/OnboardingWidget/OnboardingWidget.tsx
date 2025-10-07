@@ -70,7 +70,6 @@ const OnboardingWidget = ({
 	console.log("[AgentOnboarding] assistedAgentDetails", assistedAgentDetails);
 	const { accessToken } = useSession();
 
-	// Use our new reducer-based state management
 	const { state, actions } = useOnboardingState();
 
 	const toast = useToast();
@@ -140,12 +139,6 @@ const OnboardingWidget = ({
 		refreshApiCall: () => refreshApiCall(),
 	});
 
-	// Note: androidleegalityResponseHandler now comes from useAndroidIntegration hook
-
-	// Note: getSignUrl now comes from useEsignIntegration hook
-
-	// Note: getBookletNumber and getBookletKey now come from usePintwinIntegration hook
-
 	const refreshApiCall = useCallback(async () => {
 		actions.setApiInProgress(true);
 		try {
@@ -183,10 +176,6 @@ const OnboardingWidget = ({
 			console.log("inside initial api error", error);
 		}
 	}, [userData, isAssistedOnboarding]);
-
-	// Note: getDigilockerUrl now comes from useDigilockerApi hook
-
-	// Note: handleLeegalityCallback now comes from useEsignIntegration hook
 
 	const initialStepSetter = useCallback(
 		(user_data) => {
