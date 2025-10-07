@@ -5,12 +5,13 @@ import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback, useEffect } from "react";
 import { createPintwinFormat } from "../../../utils/pintwinFormat";
+import { getMobileFromData, type UnifiedUserData } from "../utils";
 import type { OnboardingStateHook } from "./useOnboardingState";
 
 interface UsePintwinIntegrationProps {
 	state: OnboardingStateHook["state"];
 	actions: OnboardingStateHook["actions"];
-	userData: any;
+	userData: UnifiedUserData;
 }
 
 interface UsePintwinIntegrationReturn {
@@ -36,8 +37,7 @@ export const usePintwinIntegration = ({
 	const { accessToken } = useSession();
 	const { generateNewToken } = useRefreshToken();
 
-	const user_id =
-		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
+	const user_id = getMobileFromData(userData);
 
 	/**
 	 * Fetches booklet number from the backend
@@ -52,7 +52,6 @@ export const usePintwinIntegration = ({
 					document_id: "",
 					latlong: state.latLong || "27.176670,78.008075,7787",
 					user_id,
-					locale: "en",
 				},
 			},
 			generateNewToken
@@ -63,7 +62,7 @@ export const usePintwinIntegration = ({
 				}
 			})
 			.catch((err) => console.error("[getBookletNumber] Error:", err));
-	}, [accessToken, state.latLong, user_id, generateNewToken, actions]);
+	}, [accessToken, state.latLong, user_id]);
 
 	/**
 	 * Fetches booklet key from the backend
@@ -78,7 +77,6 @@ export const usePintwinIntegration = ({
 					document_id: "",
 					latlong: state.latLong || "27.176670,78.008075,7787",
 					user_id,
-					locale: "en",
 				},
 			},
 			generateNewToken
@@ -89,7 +87,7 @@ export const usePintwinIntegration = ({
 				}
 			})
 			.catch((err) => console.error("[getBookletKey] Error: ", err));
-	}, [accessToken, state.latLong, user_id, generateNewToken, actions]);
+	}, [accessToken, state.latLong, user_id]);
 
 	/**
 	 * Formats pintwin data using the utility function

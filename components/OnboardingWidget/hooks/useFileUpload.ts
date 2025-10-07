@@ -4,6 +4,7 @@ import { TransactionIds } from "constants/EpsTransactions";
 import { useSession } from "contexts";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
+import { getMobileFromData, type UnifiedUserData } from "../utils";
 
 /**
  * File upload data structure for different document types
@@ -20,16 +21,6 @@ interface FileUploadData {
 		shopType?: string;
 		shopName?: string;
 		videoKyc?: { fileData: File };
-	};
-}
-
-/**
- * User data interface for file upload
- */
-interface UserData {
-	userDetails: {
-		mobile?: string;
-		signup_mobile?: string;
 	};
 }
 
@@ -52,7 +43,7 @@ interface OnboardingActions {
  * Props for useFileUpload hook
  */
 interface UseFileUploadProps {
-	userData: UserData;
+	userData: UnifiedUserData;
 	state: OnboardingState;
 	actions: OnboardingActions;
 	isAssistedOnboarding: boolean;
@@ -72,7 +63,7 @@ interface UseFileUploadReturn {
  * Custom hook for handling file upload operations
  * Manages formData creation, upload API calls, and response processing
  * @param {UseFileUploadProps} props - Configuration object for the hook
- * @param {UserData} props.userData - User data containing mobile information
+ * @param {UnifiedUserData} props.userData - User data containing mobile information
  * @param {OnboardingState} props.state - Current onboarding state including location
  * @param {OnboardingActions} props.actions - State management actions for API progress and responses
  * @param {boolean} props.isAssistedOnboarding - Whether this is an assisted onboarding flow
@@ -92,8 +83,7 @@ export const useFileUpload = ({
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
 
-	const user_id =
-		userData?.userDetails?.mobile || userData?.userDetails?.signup_mobile;
+	const user_id = getMobileFromData(userData);
 
 	/**
 	 * Converts object to URLSearchParams format for form data
@@ -125,7 +115,6 @@ export const useFileUpload = ({
 			user_id,
 			interaction_type_id: TransactionIds.USER_ONBOARDING_AADHAR,
 			intent_id: 3,
-			locale: "en",
 			doc_type: 1,
 			latlong: state.latLong,
 			source: "WLC",

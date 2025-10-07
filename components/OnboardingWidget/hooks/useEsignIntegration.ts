@@ -7,10 +7,15 @@ import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
 import { ANDROID_ACTION, doAndroidAction } from "utils";
+import {
+	getAgreementIdFromData,
+	getMobileFromData,
+	type UnifiedUserData,
+} from "../utils";
 import type { OnboardingStateHook } from "./useOnboardingState";
 
 interface UseEsignIntegrationProps {
-	userData: any;
+	userData: UnifiedUserData;
 	state: OnboardingStateHook["state"];
 	actions: OnboardingStateHook["actions"];
 	isAndroid: boolean;
@@ -49,8 +54,9 @@ export const useEsignIntegration = ({
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
 
-	const user_id =
-		userData?.userDetails?.mobile || userData?.userDetails.signup_mobile;
+	console.log("[AgentOnboarding] useEsignIntegration userData", userData);
+
+	const user_id = getMobileFromData(userData);
 
 	/**
 	 * Fetches the e-signature URL from the backend
@@ -64,10 +70,10 @@ export const useEsignIntegration = ({
 					interaction_type_id:
 						TransactionIds?.USER_ONBOARDING_GET_AGREEMENT_URL,
 					document_id: "",
-					agreement_id: userData?.userDetails?.agreement_id ?? 5,
+					agreement_id: getAgreementIdFromData(userData) ?? 5,
 					latlong: state.latLong || "27.176670,78.008075,7787",
+					csp_id: user_id || "",
 					user_id,
-					locale: "en",
 				},
 			},
 			generateNewToken
@@ -90,15 +96,7 @@ export const useEsignIntegration = ({
 			.catch((err) =>
 				console.error("[getSignUrl for Leegality] Error:", err)
 			);
-	}, [
-		accessToken,
-		userData?.userDetails?.agreement_id,
-		state.latLong,
-		user_id,
-		generateNewToken,
-		actions,
-		toast,
-	]);
+	}, [userData?.details?.user_detail?.agreement_id, state.latLong, user_id]);
 
 	/**
 	 * Handles the leegality callback response
@@ -118,12 +116,12 @@ export const useEsignIntegration = ({
 					id: 12,
 					form_data: {
 						document_id: res.documentId,
-						agreement_id: userData?.userDetails?.agreement_id,
+						agreement_id: getAgreementIdFromData(userData),
 					},
 				});
 			}
 		},
-		[userData?.userDetails?.agreement_id, onStepSubmit, toast]
+		[userData]
 	);
 
 	/**
@@ -168,13 +166,7 @@ export const useEsignIntegration = ({
 				leegality.esign(state.esign.signUrlData?.short_url);
 			}
 		}
-	}, [
-		state.esign.signUrlData,
-		isAndroid,
-		handleLeegalityCallback,
-		logo,
-		toast,
-	]);
+	}, [state.esign.signUrlData, isAndroid, logo]);
 
 	/**
 	 * Initializes the leegality script

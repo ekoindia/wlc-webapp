@@ -4,27 +4,11 @@ import {
 	type OnboardingStep,
 } from "constants/OnboardingSteps";
 import { useCallback } from "react";
-
-/**
- * User data interface for step configuration
- */
-interface UserData {
-	details?: {
-		userDetails?: {
-			user_type?: number;
-		};
-		onboarding_steps?: Array<{ role: number }>;
-	};
-}
-
-/**
- * Assisted agent details interface
- */
-interface AssistedAgentDetails {
-	user_detail?: {
-		onboarding_steps?: Array<{ role: number }>;
-	};
-}
+import {
+	getOnboardingStepsFromData,
+	getUserTypeFromData,
+	type UnifiedUserData,
+} from "../utils";
 
 /**
  * Onboarding actions interface for step configuration
@@ -38,35 +22,33 @@ interface OnboardingActions {
  */
 interface UseStepConfigurationProps {
 	actions: OnboardingActions;
-	isAssistedOnboarding: boolean;
-	assistedAgentDetails?: AssistedAgentDetails;
 }
 
 /**
  * Return type for useStepConfiguration hook
  */
 interface UseStepConfigurationReturn {
-	initializeSteps: (_userData: UserData) => void;
+	initializeSteps: (_userData: UnifiedUserData) => void;
 	getStepsForUserType: (_userType: number) => OnboardingStep[];
 	filterStepsByRoles: (
 		_stepData: OnboardingStep[],
-		_onboardingSteps: Array<{ role: number }>
+		_onboardingSteps: Array<{ role: number; label?: string }>
 	) => OnboardingStep[];
+	getUserTypeFromData: (_userData: UnifiedUserData) => number | undefined;
+	getOnboardingStepsFromData: (
+		_userData: UnifiedUserData
+	) => Array<{ role: number; label?: string }> | undefined;
 }
 
 /**
  * Custom hook for handling onboarding step configuration
- * Manages step setup based on user type and assisted onboarding flow
+ * Manages step setup based on user type for both normal and assisted onboarding flows
  * @param {UseStepConfigurationProps} props - Configuration object for the hook
  * @param {OnboardingActions} props.actions - State management actions for updating step data
- * @param {boolean} props.isAssistedOnboarding - Whether this is an assisted onboarding flow
- * @param {AssistedAgentDetails} [props.assistedAgentDetails] - Details of the assisted agent including their onboarding steps
  * @returns {UseStepConfigurationReturn} Object containing step configuration methods
  */
 export const useStepConfiguration = ({
 	actions,
-	isAssistedOnboarding,
-	assistedAgentDetails,
 }: UseStepConfigurationProps): UseStepConfigurationReturn => {
 	/**
 	 * Gets the appropriate step data based on user type
@@ -92,7 +74,7 @@ export const useStepConfiguration = ({
 	const filterStepsByRoles = useCallback(
 		(
 			stepData: OnboardingStep[],
-			onboardingSteps: Array<{ role: number }>
+			onboardingSteps: Array<{ role: number; label?: string }>
 		): OnboardingStep[] => {
 			const filteredSteps: OnboardingStep[] = [];
 
@@ -109,17 +91,17 @@ export const useStepConfiguration = ({
 	);
 
 	/**
-	 * Initializes onboarding steps based on user data and assisted onboarding settings
+	 * Initializes onboarding steps based on user data
 	 */
 	const initializeSteps = useCallback(
-		(userData: UserData) => {
+		(userData: UnifiedUserData) => {
 			console.log(
 				"[StepConfiguration] Initializing steps for userData:",
 				userData
 			);
 
-			// Get user type and determine base step data
-			const userType = userData?.details?.userDetails?.user_type;
+			// Get user type using utility function
+			const userType = getUserTypeFromData(userData);
 			if (!userType) {
 				console.warn(
 					"[StepConfiguration] No user type found in userData"
@@ -136,10 +118,8 @@ export const useStepConfiguration = ({
 				return;
 			}
 
-			// Determine which onboarding steps to use
-			const onboardingSteps = isAssistedOnboarding
-				? assistedAgentDetails?.user_detail?.onboarding_steps
-				: userData?.details?.onboarding_steps;
+			// Get onboarding steps using utility function
+			const onboardingSteps = getOnboardingStepsFromData(userData);
 
 			if (!onboardingSteps || onboardingSteps.length === 0) {
 				console.warn("[StepConfiguration] No onboarding steps found");
@@ -158,18 +138,14 @@ export const useStepConfiguration = ({
 			// Create a new array to prevent reference issues
 			actions.setStepperData([...filteredSteps]);
 		},
-		[
-			isAssistedOnboarding,
-			assistedAgentDetails,
-			getStepsForUserType,
-			filterStepsByRoles,
-			actions,
-		]
+		[getStepsForUserType, filterStepsByRoles, actions]
 	);
 
 	return {
 		initializeSteps,
 		getStepsForUserType,
 		filterStepsByRoles,
+		getUserTypeFromData,
+		getOnboardingStepsFromData,
 	};
 };

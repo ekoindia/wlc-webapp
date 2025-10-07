@@ -7,6 +7,7 @@ import { fetcher } from "helpers";
 import { useRefreshToken } from "hooks";
 import { useCallback } from "react";
 import { createPintwinFormat } from "../../../utils/pintwinFormat";
+import { getMobileFromData, type UnifiedUserData } from "../utils";
 
 /**
  * Form submission data structure
@@ -15,20 +16,6 @@ interface FormSubmissionData {
 	id: number;
 	form_data: Record<string, any>;
 	success_message?: string;
-}
-
-/**
- * User data interface for form submission
- */
-interface UserData {
-	userDetails: {
-		mobile?: string;
-		signup_mobile?: string;
-		user_type?: number;
-		role_list?: string;
-		agreement_id?: string;
-	};
-	refresh_token?: string;
 }
 
 /**
@@ -73,7 +60,7 @@ interface OnboardingActions {
  * Props for useFormSubmission hook
  */
 interface UseFormSubmissionProps {
-	userData: UserData;
+	userData: UnifiedUserData;
 	state: OnboardingState;
 	actions: OnboardingActions;
 	isAssistedOnboarding: boolean;
@@ -95,7 +82,7 @@ interface UseFormSubmissionReturn {
  * Custom hook for handling form submission logic
  * Handles different form types with proper validation and API communication
  * @param {UseFormSubmissionProps} props - Configuration object for the hook
- * @param {UserData} props.userData - User data containing details and mobile info
+ * @param {UnifiedUserData} props.userData - User data containing details and mobile info
  * @param {OnboardingState} props.state - Current onboarding state including location and integration data
  * @param {OnboardingActions} props.actions - State management actions for updating onboarding state
  * @param {boolean} props.isAssistedOnboarding - Whether this is an assisted onboarding flow
@@ -119,8 +106,7 @@ export const useFormSubmission = ({
 	const { generateNewToken } = useRefreshToken();
 	const toast = useToast();
 
-	const user_id =
-		userData?.userDetails?.mobile || userData?.userDetails?.signup_mobile;
+	const user_id = getMobileFromData(userData);
 
 	/**
 	 * Determines the interaction type ID based on form data
@@ -171,15 +157,13 @@ export const useFormSubmission = ({
 							)?.applicant_type;
 
 						bodyData.form_data.applicant_type = applicantData;
-						bodyData.form_data.csp_id =
-							userData.userDetails.signup_mobile ||
-							userData.userDetails.mobile;
+						bodyData.form_data.csp_id = getMobileFromData(userData);
 					}
 					break;
 
 				case 5: // Aadhaar consent
 					bodyData.form_data.company_name =
-						userData.userDetails.mobile;
+						getMobileFromData(userData);
 					bodyData.form_data.latlong = state.latLong;
 					break;
 
@@ -198,7 +182,7 @@ export const useFormSubmission = ({
 
 				case 9: // Business details
 					bodyData.form_data.latlong = state.latLong;
-					bodyData.form_data.csp_id = userData.userDetails.mobile;
+					bodyData.form_data.csp_id = getMobileFromData(userData);
 					bodyData.form_data.communication = 1;
 					break;
 
@@ -242,9 +226,7 @@ export const useFormSubmission = ({
 					break;
 
 				case 16: // PAN verification
-					bodyData.form_data.csp_id =
-						userData.userDetails.signup_mobile ||
-						userData.userDetails.mobile;
+					bodyData.form_data.csp_id = getMobileFromData(userData);
 					break;
 
 				case 20: // Digilocker OTP confirmation

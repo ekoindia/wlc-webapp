@@ -20,6 +20,7 @@ import {
 	usePintwinIntegration,
 	useStepConfiguration,
 } from "./hooks";
+import { getMobileFromData } from "./utils";
 
 const ExternalSelectionScreen = dynamic(
 	() => import("@ekoindia/oaas-widget").then((mod) => mod.SelectionScreen),
@@ -82,11 +83,27 @@ const OnboardingWidget = ({
 		"accent.DEFAULT",
 	]);
 
+	// Agent mobile number for assisted onboarding
 	let assistedAgentMobile = assistedAgentDetails?.user_detail?.mobile || null;
+
+	// Determine the user details to use for onboarding
+	const onboardingUserDetails = isAssistedOnboarding
+		? assistedAgentDetails
+		: { details: userData.details };
+
+	console.log(
+		"[AgentOnboarding] useEsignIntegration getMobileFromData onboardingUserDetails",
+		onboardingUserDetails
+	);
+
+	console.log(
+		"[AgentOnboarding] useEsignIntegration getMobileFromData agent mobile",
+		getMobileFromData(onboardingUserDetails)
+	);
 
 	// Initialize specialized hooks
 	const esign = useEsignIntegration({
-		userData,
+		userData: onboardingUserDetails,
 		state,
 		actions,
 		isAndroid,
@@ -95,7 +112,7 @@ const OnboardingWidget = ({
 	});
 
 	const android = useAndroidIntegration({
-		userData,
+		userData: onboardingUserDetails,
 		onStepSubmit: (data) => handleStepDataSubmit(data),
 	});
 
@@ -106,18 +123,17 @@ const OnboardingWidget = ({
 	const pintwin = usePintwinIntegration({
 		state,
 		actions,
-		userData,
+		userData: onboardingUserDetails,
 	});
 
-	// Initialize the new specialized hooks
+	// Initialize step configuration hook
 	const stepConfiguration = useStepConfiguration({
 		actions,
-		isAssistedOnboarding,
-		assistedAgentDetails,
 	});
 
+	// TODO: Check if isAssistedOnboarding is needed here
 	const formSubmission = useFormSubmission({
-		userData,
+		userData: onboardingUserDetails,
 		state,
 		actions,
 		isAssistedOnboarding,
@@ -127,8 +143,9 @@ const OnboardingWidget = ({
 		initialStepSetter: stepConfiguration.initializeSteps,
 	});
 
+	// TODO: Check if isAssistedOnboarding is needed here
 	const fileUpload = useFileUpload({
-		userData,
+		userData: onboardingUserDetails,
 		state,
 		actions,
 		isAssistedOnboarding,
@@ -136,6 +153,7 @@ const OnboardingWidget = ({
 		refreshApiCall: () => refreshApiCall(),
 	});
 
+	// Method to refresh user profile and update states
 	const refreshApiCall = useCallback(async () => {
 		actions.setApiInProgress(true);
 		try {
@@ -295,10 +313,16 @@ const OnboardingWidget = ({
 		return unsubscribe;
 	}, [TOPICS.ANDROID_RESPONSE, subscribe]);
 
-	// FIX: HACK: ADDED BY KR.ABHISHEK FOR TESTING...INITIAL STEP LIST NOT GETTING POPULATED...
 	useEffect(() => {
-		initialStepSetter({ details: userData });
-	}, [userData]);
+		initialStepSetter({
+			details: onboardingUserDetails,
+		});
+	}, []);
+
+	useEffect(() => {
+		// TODO: based on the assisted onboarding prop, decide that to do.
+		refreshApiCall();
+	}, []);
 
 	// MARK: JSX
 	return (
